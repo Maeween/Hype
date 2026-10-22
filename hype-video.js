@@ -66,27 +66,27 @@
        que des chapitres de Galop 3 et 4 : rien ne pouvait se rattacher a un
        cours du Galop 1, faute de libelle. Les intitules reprennent exactement
        ceux des cours (regle : jamais d'identifiant technique a l'ecran). */
-    "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege", ar: "العناية بالشعر، أول رعاية", zh: "刷拭，最初的照料", nl: "Verzorgen, de eerste zorg", pt: "A escovação, o primeiro cuidado", sv: "Ryktning, den första omsorgen", ru: "Чистка — первая забота о лошади", pl: "Czyszczenie konia, pierwsza forma opieki" },
-    "g1-c5":  { fr: "La position du cavalier", en: "The rider's position", es: "La posición del jinete", it: "La posizione del cavaliere", ja: "騎手の姓勢", de: "Die Sitzposition des Reiters", ar: "وضعية الفارس", zh: "骑手的骑姿", nl: "De houding van de ruiter", pt: "A posição do cavaleiro", sv: "Ryttarens ridställning", ru: "Посадка всадника", pl: "Dosiad jeźdźca" },
-    "g1-c9":  { fr: "Les aides naturelles et artificielles", en: "Natural and artificial aids", es: "Las ayudas naturales y artificiales", it: "Gli aiuti naturali e artificiali", ja: "自然の扶助と人工の扶助", de: "Natürliche und künstliche Hilfen", ar: "المساعدات الطبيعية والاصطناعية", zh: "自然扶助和人工扶助", nl: "De natuurlijke en kunstmatige hulpen", pt: "As ajudas naturais e artificiais", sv: "Naturliga och konstgjorda hjälper", ru: "Естественные и искусственные помощи", pl: "Pomoce naturalne i sztuczne" },
-    "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung", ar: "المعدات الأساسية", zh: "基本装备", nl: "De basisuitrusting", pt: "O equipamento básico", sv: "Grundutrustningen", ru: "Основная амуниция", pl: "Podstawowy sprzęt" },
-    "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten", ar: "عقدة الربط", zh: "拴马结", nl: "De bindknoop", pt: "O nó de amarrar", sv: "Snabbknuten", ru: "Узел для привязи", pl: "Węzeł do uwiązywania" },
-    "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst", ar: "السلامة أولا", zh: "安全第一", nl: "Veiligheid boven alles", pt: "A segurança em primeiro lugar", sv: "Säkerheten främst", ru: "Безопасность прежде всего", pl: "Bezpieczeństwo przede wszystkim" },
-    "g1-c18": { fr: "Conduire en main en sécurité", en: "Leading in hand safely", es: "Llevar de la mano con seguridad", it: "Condurre a mano in sicurezza", ja: "安全な手級での引き马", de: "Sicher an der Hand führen", ar: "القيادة باليد بأمان", zh: "安全地牵马行走", nl: "Veilig een paard aan de hand leiden", pt: "Conduzir o cavalo com segurança, a pé", sv: "Leda häst i hand på ett säkert sätt", ru: "Как безопасно водить лошадь в поводу", pl: "Bezpieczne prowadzenie konia z ziemi" },
-    "g1-c19": { fr: "Monter et descendre en sécurité", en: "Mounting and dismounting safely", es: "Montar y desmontar con seguridad", it: "Salire e scendere in sicurezza", ja: "安全な乗降", de: "Sicher auf- und absteigen", ar: "الركوب والنزول بأمان", zh: "安全地上马和下马", nl: "Veilig opstijgen en afstijgen", pt: "Montar e desmontar com segurança", sv: "Sitta upp och av säkert", ru: "Безопасно садиться в седло и слезать", pl: "Bezpieczne wsiadanie i zsiadanie" },
+    "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege", ar: "العناية بالشعر، أول رعاية", zh: "刷拭，最初的照料", nl: "Verzorgen, de eerste zorg", pt: "A escovação, o primeiro cuidado", sv: "Ryktning, den första omsorgen", ru: "Чистка — первая забота о лошади", pl: "Czyszczenie konia, pierwsza forma opieki", ko: "손질, 첫 번째 케어" },
+    "g1-c5":  { fr: "La position du cavalier", en: "The rider's position", es: "La posición del jinete", it: "La posizione del cavaliere", ja: "騎手の姓勢", de: "Die Sitzposition des Reiters", ar: "وضعية الفارس", zh: "骑手的骑姿", nl: "De houding van de ruiter", pt: "A posição do cavaleiro", sv: "Ryttarens ridställning", ru: "Посадка всадника", pl: "Dosiad jeźdźca", ko: "기수의 자세" },
+    "g1-c9":  { fr: "Les aides naturelles et artificielles", en: "Natural and artificial aids", es: "Las ayudas naturales y artificiales", it: "Gli aiuti naturali e artificiali", ja: "自然の扶助と人工の扶助", de: "Natürliche und künstliche Hilfen", ar: "المساعدات الطبيعية والاصطناعية", zh: "自然扶助和人工扶助", nl: "De natuurlijke en kunstmatige hulpen", pt: "As ajudas naturais e artificiais", sv: "Naturliga och konstgjorda hjälper", ru: "Естественные и искусственные помощи", pl: "Pomoce naturalne i sztuczne", ko: "자연 보조와 인공 보조" },
+    "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung", ar: "المعدات الأساسية", zh: "基本装备", nl: "De basisuitrusting", pt: "O equipamento básico", sv: "Grundutrustningen", ru: "Основная амуниция", pl: "Podstawowy sprzęt", ko: "기본 장비" },
+    "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten", ar: "عقدة الربط", zh: "拴马结", nl: "De bindknoop", pt: "O nó de amarrar", sv: "Snabbknuten", ru: "Узел для привязи", pl: "Węzeł do uwiązywania", ko: "묶는 매듭" },
+    "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst", ar: "السلامة أولا", zh: "安全第一", nl: "Veiligheid boven alles", pt: "A segurança em primeiro lugar", sv: "Säkerheten främst", ru: "Безопасность прежде всего", pl: "Bezpieczeństwo przede wszystkim", ko: "안전이 최우선" },
+    "g1-c18": { fr: "Conduire en main en sécurité", en: "Leading in hand safely", es: "Llevar de la mano con seguridad", it: "Condurre a mano in sicurezza", ja: "安全な手級での引き马", de: "Sicher an der Hand führen", ar: "القيادة باليد بأمان", zh: "安全地牵马行走", nl: "Veilig een paard aan de hand leiden", pt: "Conduzir o cavalo com segurança, a pé", sv: "Leda häst i hand på ett säkert sätt", ru: "Как безопасно водить лошадь в поводу", pl: "Bezpieczne prowadzenie konia z ziemi", ko: "안전하게 말 끌기" },
+    "g1-c19": { fr: "Monter et descendre en sécurité", en: "Mounting and dismounting safely", es: "Montar y desmontar con seguridad", it: "Salire e scendere in sicurezza", ja: "安全な乗降", de: "Sicher auf- und absteigen", ar: "الركوب والنزول بأمان", zh: "安全地上马和下马", nl: "Veilig opstijgen en afstijgen", pt: "Montar e desmontar com segurança", sv: "Sitta upp och av säkert", ru: "Безопасно садиться в седло и слезать", pl: "Bezpieczne wsiadanie i zsiadanie", ko: "안전하게 올라타고 내려오기" },
     /* 06/08 : premieres cles du Galop 2, pour les deux films « Objectif Galop® 2 ». */
-    "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten", ar: "التوجيه على مسار", zh: "在路线上骑行", nl: "Sturen op een rijlijn", pt: "Conduzir em um traçado", sv: "Rida en linje", ru: "Езда по траектории", pl: "Prowadzenie konia po wyznaczonej linii" },
-    "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens", ar: "اكتشاف القفز", zh: "初识跳跃", nl: "De kennismaking met springen", pt: "A descoberta do salto", sv: "Upptäcka hoppningen", ru: "Знакомство с прыжком", pl: "Odkrywanie skoku" },
+    "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten", ar: "التوجيه على مسار", zh: "在路线上骑行", nl: "Sturen op een rijlijn", pt: "Conduzir em um traçado", sv: "Rida en linje", ru: "Езда по траектории", pl: "Prowadzenie konia po wyznaczonej linii", ko: "선을 그리며 말 몰기" },
+    "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens", ar: "اكتشاف القفز", zh: "初识跳跃", nl: "De kennismaking met springen", pt: "A descoberta do salto", sv: "Upptäcka hoppningen", ru: "Знакомство с прыжком", pl: "Odkrywanie skoku", ko: "장애물 처음 만나기" },
     /* 06/08 : cles ajoutees pour les films « Objectif Galop® 4 ». Les trois
        chapitres existaient deja dans les cours, ils n'avaient pas de libelle ici. */
-    "g4-transitions": { fr: "Réussir ses transitions", en: "Clean transitions", es: "Lograr sus transiciones", it: "Riuscire le transizioni", ja: "変換を成功させる", de: "Übergänge gelingen lassen", ar: "إتقان الانتقالات", zh: "漂亮地完成步伐转换", nl: "Je overgangen goed rijden", pt: "Fazer boas transições", sv: "Lyckade övergångar", ru: "Как чисто выполнять переходы", pl: "Czyste przejścia" },
-    "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen", ar: "تحريك الكتفين والوركين", zh: "移动肩膀和臀部", nl: "Schouders en heupen verplaatsen", pt: "Deslocar os ombros e os quadris", sv: "Flytta bogar och bakdel", ru: "Перемещение плеч и крупа", pl: "Przesuwanie łopatek i zadu" },
-    "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung", ar: "التوازن فوق الحاجز", zh: "过障碍时的平衡", nl: "Balans bij de sprong", pt: "Equilíbrio no obstáculo", sv: "Balans vid hindret", ru: "Равновесие на препятствиях", pl: "Równowaga przy przeszkodzie" },
-    "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände", ar: "في الخارج", zh: "户外骑行", nl: "Buiten rijden", pt: "Passeio no campo", sv: "Ute i terrängen", ru: "Прогулка за пределами манежа", pl: "W terenie" },
-    "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung", ar: "الاتصال", zh: "接触", nl: "Het contact", pt: "O contato", sv: "Kontakten", ru: "Контакт", pl: "Kontakt" },
-    "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen", ar: "تنسيق المساعدات", zh: "扶助的协调", nl: "De samenwerking van de hulpen", pt: "A harmonia das ajudas", sv: "Samspelet mellan hjälperna", ru: "Согласованность помощей", pl: "Zgranie pomocy" },
-    "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung", ar: "الانحناء", zh: "弯曲", nl: "De buiging", pt: "A flexão lateral", sv: "Böjningen", ru: "Изгиб", pl: "Zgięcie" },
-    "g4-biomeca": { fr: "La biomécanique du cheval", en: "The horse's biomechanics", es: "La biomecánica del caballo", it: "La biomeccanica del cavallo", ja: "馬のバイオメカニクス", de: "Die Biomechanik des Pferdes", ar: "الميكانيكا الحيوية للحصان", zh: "马的生物力学", nl: "De biomechanica van het paard", pt: "A biomecânica do cavalo", sv: "Hästens biomekanik", ru: "Биомеханика лошади", pl: "Biomechanika konia" }
+    "g4-transitions": { fr: "Réussir ses transitions", en: "Clean transitions", es: "Lograr sus transiciones", it: "Riuscire le transizioni", ja: "変換を成功させる", de: "Übergänge gelingen lassen", ar: "إتقان الانتقالات", zh: "漂亮地完成步伐转换", nl: "Je overgangen goed rijden", pt: "Fazer boas transições", sv: "Lyckade övergångar", ru: "Как чисто выполнять переходы", pl: "Czyste przejścia", ko: "전이 잘 해내기" },
+    "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen", ar: "تحريك الكتفين والوركين", zh: "移动肩膀和臀部", nl: "Schouders en heupen verplaatsen", pt: "Deslocar os ombros e os quadris", sv: "Flytta bogar och bakdel", ru: "Перемещение плеч и крупа", pl: "Przesuwanie łopatek i zadu", ko: "어깨와 엉덩이 움직이게 하기" },
+    "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung", ar: "التوازن فوق الحاجز", zh: "过障碍时的平衡", nl: "Balans bij de sprong", pt: "Equilíbrio no obstáculo", sv: "Balans vid hindret", ru: "Равновесие на препятствиях", pl: "Równowaga przy przeszkodzie", ko: "장애물 앞에서의 균형" },
+    "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände", ar: "في الخارج", zh: "户外骑行", nl: "Buiten rijden", pt: "Passeio no campo", sv: "Ute i terrängen", ru: "Прогулка за пределами манежа", pl: "W terenie", ko: "야외에서" },
+    "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung", ar: "الاتصال", zh: "接触", nl: "Het contact", pt: "O contato", sv: "Kontakten", ru: "Контакт", pl: "Kontakt", ko: "콘택트" },
+    "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen", ar: "تنسيق المساعدات", zh: "扶助的协调", nl: "De samenwerking van de hulpen", pt: "A harmonia das ajudas", sv: "Samspelet mellan hjälperna", ru: "Согласованность помощей", pl: "Zgranie pomocy", ko: "보조의 조화" },
+    "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung", ar: "الانحناء", zh: "弯曲", nl: "De buiging", pt: "A flexão lateral", sv: "Böjningen", ru: "Изгиб", pl: "Zgięcie", ko: "굴곡" },
+    "g4-biomeca": { fr: "La biomécanique du cheval", en: "The horse's biomechanics", es: "La biomecánica del caballo", it: "La biomeccanica del cavallo", ja: "馬のバイオメカニクス", de: "Die Biomechanik des Pferdes", ar: "الميكانيكا الحيوية للحصان", zh: "马的生物力学", nl: "De biomechanica van het paard", pt: "A biomecânica do cavalo", sv: "Hästens biomekanik", ru: "Биомеханика лошади", pl: "Biomechanika konia", ko: "말의 생체역학" }
   };
 
   /* Thèmes de la passation -> univers de la bibliothèque. */
@@ -104,7 +104,7 @@
     {
       id: "v-contact-01", yt: "0mAl3ZptRpg",
       source: "IFCE", intervenant: "Bernard Maurel",
-      intervenantRole: { fr: "Juge international de dressage", en: "International dressage judge", es: "Juez internacional de doma", it: "Giudice internazionale di dressage", ja: "国際馬場馬術審判員", de: "Internationaler Dressurrichter", ar: "حكم دولي في الترويض", zh: "国际盛装舞步裁判", nl: "Internationaal dressuurjury", pt: "Juiz internacional de adestramento", sv: "Internationell dressyrdomare", ru: "Международный судья по выездке", pl: "Międzynarodowy sędzia ujeżdżenia" },
+      intervenantRole: { fr: "Juge international de dressage", en: "International dressage judge", es: "Juez internacional de doma", it: "Giudice internazionale di dressage", ja: "国際馬場馬術審判員", de: "Internationaler Dressurrichter", ar: "حكم دولي في الترويض", zh: "国际盛装舞步裁判", nl: "Internationaal dressuurjury", pt: "Juiz internacional de adestramento", sv: "Internationell dressyrdomare", ru: "Международный судья по выездке", pl: "Międzynarodowy sędzia ujeżdżenia", ko: "국제 마장마술 심판" },
       titreSource: "Le contact : élément physique et psychologique essentiel dans la relation cheval-cavalier",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-1-b-maurel/",
       langueVideo: "fr", cours: ["g4-contact"], galop: 4, theme: "comprendre-le-cheval",
@@ -115,7 +115,7 @@
         es: "Comprender el contacto entre el caballo y su jinete",
         it: "Capire il contatto tra cavallo e cavaliere",
         ja: "馬と乗り手のコンタクトを理解する",
-        de: "Die Anlehnung zwischen Pferd und Reiter verstehen", ar: "فهم الاتصال بين الحصان وفارسه", zh: "理解马与骑手之间的接触", nl: "Het contact tussen paard en ruiter begrijpen", pt: "Entender o contato entre o cavalo e o cavaleiro", sv: "Förstå kontakten mellan häst och ryttare", ru: "Понять контакт между лошадью и всадником", pl: "Zrozumieć kontakt między koniem a jeźdźcem"
+        de: "Die Anlehnung zwischen Pferd und Reiter verstehen", ar: "فهم الاتصال بين الحصان وفارسه", zh: "理解马与骑手之间的接触", nl: "Het contact tussen paard en ruiter begrijpen", pt: "Entender o contato entre o cavalo e o cavaleiro", sv: "Förstå kontakten mellan häst och ryttare", ru: "Понять контакт между лошадью и всадником", pl: "Zrozumieć kontakt między koniem a jeźdźcem", ko: "말과 기수 사이의 접촉 이해하기"
       },
       resume: {
         fr: "Ce que la main touche par les rênes, ce n'est pas seulement la bouche : c'est tout le fonctionnement du dos, du garrot et de l'encolure.",
@@ -123,7 +123,7 @@
         es: "Lo que la mano toca por las riendas no es solo la boca: es todo el funcionamiento del dorso, la cruz y el cuello.",
         it: "Ciò che la mano tocca tramite le redini non è solo la bocca: è tutto il funzionamento del dorso, del garrese e dell'incollatura.",
         ja: "手綱を通して手が触れているのは口だけではありません。背中、き甲、首の働き全体です。",
-        de: "Was die Hand über die Zügel berührt, ist nicht nur das Maul: es ist das ganze Zusammenspiel von Rücken, Widerrist und Hals.", ar: "ما تلمسه اليد عبر اللجام ليس الفم فقط: بل هو عمل الظهر والحارك والرقبة كله.", zh: "手通过缰绳感受到的，不只是马的嘴：而是整个背部、鬐甲和颈部的运作。", nl: "Wat de hand via de teugels voelt, is niet alleen de bek: het is de hele werking van de rug, de schoft en de hals.", pt: "O que a mão sente pelas rédeas não é só a boca: é todo o funcionamento do dorso, da cernelha e do pescoço.", sv: "Det handen känner genom tyglarna är inte bara munnen: det är hela ryggens, manke och halsens funktion.", ru: "Через поводья рука чувствует не только рот: это работа всей спины, холки и шеи.", pl: "To, czego dłoń dotyka przez wodze, to nie tylko pysk: to całe działanie grzbietu, kłębu i szyi."
+        de: "Was die Hand über die Zügel berührt, ist nicht nur das Maul: es ist das ganze Zusammenspiel von Rücken, Widerrist und Hals.", ar: "ما تلمسه اليد عبر اللجام ليس الفم فقط: بل هو عمل الظهر والحارك والرقبة كله.", zh: "手通过缰绳感受到的，不只是马的嘴：而是整个背部、鬐甲和颈部的运作。", nl: "Wat de hand via de teugels voelt, is niet alleen de bek: het is de hele werking van de rug, de schoft en de hals.", pt: "O que a mão sente pelas rédeas não é só a boca: é todo o funcionamento do dorso, da cernelha e do pescoço.", sv: "Det handen känner genom tyglarna är inte bara munnen: det är hela ryggens, manke och halsens funktion.", ru: "Через поводья рука чувствует не только рот: это работа всей спины, холки и шеи.", pl: "To, czego dłoń dotyka przez wodze, to nie tylko pysk: to całe działanie grzbietu, kłębu i szyi.", ko: "고삐를 통해 손에 닿는 건 입만이 아니에요. 등, 기갑, 목이 어떻게 움직이는지 전체가 전해져요."
       },
       observer: {
         fr: ["La main qui suit les mouvements de l'encolure", "Le lien entre le contact et le mouvement vers l'avant", "La relation entre les mains, l'assiette et les jambes", "Le confort et la confiance du cheval"],
@@ -131,13 +131,13 @@
         es: ["La mano que sigue los movimientos del cuello", "El vínculo entre el contacto y el movimiento hacia delante", "La relación entre manos, asiento y piernas", "La comodidad y la confianza del caballo"],
         it: ["La mano che segue i movimenti dell'incollatura", "Il legame tra contatto e movimento in avanti", "La relazione tra mani, assetto e gambe", "Il comfort e la fiducia del cavallo"],
         ja: ["首の動きに従う手", "コンタクトと前進の動きのつながり", "手、騎座、脚の関係", "馬の快適さと信頼"],
-        de: ["Die Hand, die den Bewegungen des Halses folgt", "Die Verbindung zwischen Anlehnung und Vorwärtsbewegung", "Das Verhältnis von Händen, Sitz und Beinen", "Der Komfort und das Vertrauen des Pferdes"], ar: ["اليد التي تتبع حركات الرقبة","العلاقة بين الاتصال والحركة إلى الأمام","العلاقة بين اليدين والجلسة والساقين","راحة الحصان وثقته"], zh: ["手跟随颈部的动作", "接触与向前运动之间的联系", "手、骑坐和腿之间的关系", "马的舒适和信任"], nl: ["De hand die de bewegingen van de hals volgt", "Het verband tussen contact en voorwaartse beweging", "De relatie tussen de handen, de zit en de benen", "Het comfort en het vertrouwen van het paard"], pt: ["A mão acompanhando os movimentos do pescoço", "A relação entre o contato e o movimento para a frente", "A relação entre as mãos, o assento e as pernas", "O conforto e a confiança do cavalo"], sv: ["Handen som följer halsens rörelser", "Sambandet mellan kontakt och rörelse framåt", "Samspelet mellan händer, sits och ben", "Hästens komfort och förtroende"], ru: ["Рука, следующая за движениями шеи", "Связь между контактом и движением вперёд", "Взаимосвязь рук, посадки и ног", "Комфорт и доверие лошади"], pl: ["Dłoń podążająca za ruchami szyi", "Związek między kontaktem a ruchem do przodu", "Zależność między rękami, dosiadem i łydkami", "Komfort i zaufanie konia"]
+        de: ["Die Hand, die den Bewegungen des Halses folgt", "Die Verbindung zwischen Anlehnung und Vorwärtsbewegung", "Das Verhältnis von Händen, Sitz und Beinen", "Der Komfort und das Vertrauen des Pferdes"], ar: ["اليد التي تتبع حركات الرقبة","العلاقة بين الاتصال والحركة إلى الأمام","العلاقة بين اليدين والجلسة والساقين","راحة الحصان وثقته"], zh: ["手跟随颈部的动作", "接触与向前运动之间的联系", "手、骑坐和腿之间的关系", "马的舒适和信任"], nl: ["De hand die de bewegingen van de hals volgt", "Het verband tussen contact en voorwaartse beweging", "De relatie tussen de handen, de zit en de benen", "Het comfort en het vertrouwen van het paard"], pt: ["A mão acompanhando os movimentos do pescoço", "A relação entre o contato e o movimento para a frente", "A relação entre as mãos, o assento e as pernas", "O conforto e a confiança do cavalo"], sv: ["Handen som följer halsens rörelser", "Sambandet mellan kontakt och rörelse framåt", "Samspelet mellan händer, sits och ben", "Hästens komfort och förtroende"], ru: ["Рука, следующая за движениями шеи", "Связь между контактом и движением вперёд", "Взаимосвязь рук, посадки и ног", "Комфорт и доверие лошади"], pl: ["Dłoń podążająca za ruchami szyi", "Związek między kontaktem a ruchem do przodu", "Zależność między rękami, dosiadem i łydkami", "Komfort i zaufanie konia"], ko: ["목의 움직임을 따라가는 손", "접촉과 전진 운동의 관계", "손, 좌골, 다리의 관계", "말의 편안함과 믿음"]
       }
     },
     {
       id: "v-contact-02", yt: "_NDiPIGzdLk",
       source: "IFCE", intervenant: "Géraldine Vandevenne",
-      intervenantRole: { fr: "Ergonome équin, spécialiste des mors", en: "Equine ergonomist, bitting specialist", es: "Ergónoma equina, especialista en bocados", it: "Ergonoma equina, specialista dei morsi", ja: "馬のエルゴノミスト、ハミの専門家", de: "Pferde-Ergonomin, Gebiss-Spezialistin", ar: "أخصائي في بيئة عمل الخيول، متخصص في الشكائم", zh: "马匹工效学专家，衔铁专家", nl: "Paardenergonoom, specialist in bitten", pt: "Ergonomista equino, especialista em freios", sv: "Hästergonom, specialist på bett", ru: "Эргономист по лошадям, специалист по удилам", pl: "Ergonom koński, specjalista od wędzideł" },
+      intervenantRole: { fr: "Ergonome équin, spécialiste des mors", en: "Equine ergonomist, bitting specialist", es: "Ergónoma equina, especialista en bocados", it: "Ergonoma equina, specialista dei morsi", ja: "馬のエルゴノミスト、ハミの専門家", de: "Pferde-Ergonomin, Gebiss-Spezialistin", ar: "أخصائي في بيئة عمل الخيول، متخصص في الشكائم", zh: "马匹工效学专家，衔铁专家", nl: "Paardenergonoom, specialist in bitten", pt: "Ergonomista equino, especialista em freios", sv: "Hästergonom, specialist på bett", ru: "Эргономист по лошадям, специалист по удилам", pl: "Ergonom koński, specjalista od wędzideł", ko: "말 인체공학 전문가, 재갈 전문가" },
       titreSource: "Les mors : leurs actions dans la bouche du cheval, leurs effets et leurs conséquences",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-2-g-vandevenne/",
       langueVideo: "fr", cours: ["g4-contact"], galop: 4, theme: "soins-et-materiel",
@@ -148,7 +148,7 @@
         es: "Los bocados y su acción en la boca",
         it: "I morsi e la loro azione nella bocca",
         ja: "ハミと、口の中でのその作用",
-        de: "Gebisse und ihre Wirkung im Maul", ar: "الشكائم وتأثيرها في الفم", zh: "衔铁以及它在嘴里的作用", nl: "De bitten en hun werking in de bek", pt: "Os freios e sua ação na boca", sv: "Bett och hur de verkar i munnen", ru: "Удила и их действие во рту", pl: "Wędzidła i ich działanie w pysku"
+        de: "Gebisse und ihre Wirkung im Maul", ar: "الشكائم وتأثيرها في الفم", zh: "衔铁以及它在嘴里的作用", nl: "De bitten en hun werking in de bek", pt: "Os freios e sua ação na boca", sv: "Bett och hur de verkar i munnen", ru: "Удила и их действие во рту", pl: "Wędzidła i ich działanie w pysku", ko: "재갈과 입 안에서의 작용"
       },
       resume: {
         fr: "Sur quelles parties du corps le mors agit-il, et à partir de quand devient-il un instrument de douleur ?",
@@ -156,13 +156,13 @@
         es: "¿Sobre qué partes del cuerpo actúa el bocado, y cuándo se convierte en un instrumento de dolor?",
         it: "Su quali parti del corpo agisce il morso, e da quando diventa uno strumento di dolore?",
         ja: "ハミは体のどの部分に作用し、どこから痛みの道具になるのか。",
-        de: "Auf welche Körperteile wirkt das Gebiss, und ab wann wird es zu einem Instrument des Schmerzes?", ar: "على أي أجزاء من الجسم تؤثر الشكيمة، ومتى تصبح أداة للألم؟", zh: "衔铁作用在身体的哪些部位？又是从什么时候开始变成造成疼痛的工具？", nl: "Op welke delen van het lichaam werkt het bit, en vanaf wanneer wordt het een pijnlijk instrument?", pt: "Em quais partes do corpo o freio atua, e a partir de quando ele se torna um instrumento de dor?", sv: "Vilka delar av kroppen verkar bettet på, och när blir det ett smärtsamt redskap?", ru: "На какие части тела действуют удила и в какой момент они становятся орудием боли?", pl: "Na które części ciała działa wędzidło i od kiedy staje się narzędziem bólu?"
+        de: "Auf welche Körperteile wirkt das Gebiss, und ab wann wird es zu einem Instrument des Schmerzes?", ar: "على أي أجزاء من الجسم تؤثر الشكيمة، ومتى تصبح أداة للألم؟", zh: "衔铁作用在身体的哪些部位？又是从什么时候开始变成造成疼痛的工具？", nl: "Op welke delen van het lichaam werkt het bit, en vanaf wanneer wordt het een pijnlijk instrument?", pt: "Em quais partes do corpo o freio atua, e a partir de quando ele se torna um instrumento de dor?", sv: "Vilka delar av kroppen verkar bettet på, och när blir det ett smärtsamt redskap?", ru: "На какие части тела действуют удила и в какой момент они становятся орудием боли?", pl: "Na które części ciała działa wędzidło i od kiedy staje się narzędziem bólu?", ko: "재갈은 몸의 어느 부분에 작용하며, 언제부터 고통을 주는 도구가 될까요?"
       }
     },
     {
       id: "v-contact-03", yt: "_-jWx21-oqk",
       source: "IFCE", intervenant: "Stéphane Montavon",
-      intervenantRole: { fr: "Docteur vétérinaire, médecine équine sportive", en: "Veterinarian, equine sports medicine", es: "Doctor veterinario, medicina equina deportiva", it: "Dottore veterinario, medicina equina sportiva", ja: "獣医師、馬のスポーツ医学", de: "Tierarzt, Pferdesportmedizin", ar: "طبيب بيطري، طب الخيول الرياضي", zh: "兽医博士，马匹运动医学", nl: "Dierenarts, sportpaardengeneeskunde", pt: "Médico-veterinário, medicina esportiva equina", sv: "Veterinär, idrottsmedicin för häst", ru: "Ветеринарный врач, спортивная медицина лошадей", pl: "Lekarz weterynarii, medycyna sportowa koni" },
+      intervenantRole: { fr: "Docteur vétérinaire, médecine équine sportive", en: "Veterinarian, equine sports medicine", es: "Doctor veterinario, medicina equina deportiva", it: "Dottore veterinario, medicina equina sportiva", ja: "獣医師、馬のスポーツ医学", de: "Tierarzt, Pferdesportmedizin", ar: "طبيب بيطري، طب الخيول الرياضي", zh: "兽医博士，马匹运动医学", nl: "Dierenarts, sportpaardengeneeskunde", pt: "Médico-veterinário, medicina esportiva equina", sv: "Veterinär, idrottsmedicin för häst", ru: "Ветеринарный врач, спортивная медицина лошадей", pl: "Lekarz weterynarii, medycyna sportowa koni", ko: "수의사 박사, 스포츠 말 의학" },
       titreSource: "Les aspects biomécaniques du contact, la relation avec l'engagement et avec l'équilibre",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-3-s-montavon/",
       langueVideo: "fr", cours: ["g4-contact", "g4-biomeca"], galop: 4, theme: "comprendre-le-cheval",
@@ -173,7 +173,7 @@
         es: "Contacto, enganche y equilibrio",
         it: "Contatto, impegno ed equilibrio",
         ja: "コンタクト、踏み込み、バランス",
-        de: "Anlehnung, Hinterhandaktivität und Gleichgewicht", ar: "الاتصال والانخراط والتوازن", zh: "接触、推进与平衡", nl: "Contact, engagement en balans", pt: "Contato, engajamento e equilíbrio", sv: "Kontakt, engagemang och balans", ru: "Контакт, включение в работу и равновесие", pl: "Kontakt, zaangażowanie i równowaga"
+        de: "Anlehnung, Hinterhandaktivität und Gleichgewicht", ar: "الاتصال والانخراط والتوازن", zh: "接触、推进与平衡", nl: "Contact, engagement en balans", pt: "Contato, engajamento e equilíbrio", sv: "Kontakt, engagemang och balans", ru: "Контакт, включение в работу и равновесие", pl: "Kontakt, zaangażowanie i równowaga", ko: "접촉, 후구의 들어옴, 균형"
       },
       resume: {
         fr: "Comment un contact juste laisse passer la poussée des postérieurs vers l'avant-main, et permet au garrot de s'élever.",
@@ -181,7 +181,7 @@
         es: "Cómo un contacto justo deja pasar el impulso de los posteriores hacia la mano delantera y permite que la cruz se eleve.",
         it: "Come un contatto giusto lascia passare la spinta dei posteriori verso l'anteriore, permettendo al garrese di elevarsi.",
         ja: "正しいコンタクトが後肢の推進を前躯へ通し、き甲を持ち上げさせる仕組み。",
-        de: "Wie eine korrekte Anlehnung den Schub der Hinterhand zur Vorhand durchlässt und den Widerrist anheben lässt.", ar: "كيف يسمح الاتصال الصحيح بانتقال دفع الأطراف الخلفية نحو المقدمة، ويتيح للحارك أن يرتفع.", zh: "恰当的接触如何让后躯的推力传到前躯，并让鬐甲得以抬起。", nl: "Hoe een juist contact de stuwkracht van de achterbenen naar de voorhand laat doorstromen en de schoft laat opkomen.", pt: "Como um contato correto deixa passar a impulsão dos posteriores até o anterior, permitindo que a cernelha se eleve.", sv: "Hur en rätt kontakt låter bakbenens drivkraft gå vidare till framdelen och gör att manken kan lyfta sig.", ru: "Как правильный контакт пропускает толчок задних ног к передней части и позволяет холке подняться.", pl: "Jak prawidłowy kontakt przepuszcza impuls z zadu do przodu i pozwala kłębowi się unieść."
+        de: "Wie eine korrekte Anlehnung den Schub der Hinterhand zur Vorhand durchlässt und den Widerrist anheben lässt.", ar: "كيف يسمح الاتصال الصحيح بانتقال دفع الأطراف الخلفية نحو المقدمة، ويتيح للحارك أن يرتفع.", zh: "恰当的接触如何让后躯的推力传到前躯，并让鬐甲得以抬起。", nl: "Hoe een juist contact de stuwkracht van de achterbenen naar de voorhand laat doorstromen en de schoft laat opkomen.", pt: "Como um contato correto deixa passar a impulsão dos posteriores até o anterior, permitindo que a cernelha se eleve.", sv: "Hur en rätt kontakt låter bakbenens drivkraft gå vidare till framdelen och gör att manken kan lyfta sig.", ru: "Как правильный контакт пропускает толчок задних ног к передней части и позволяет холке подняться.", pl: "Jak prawidłowy kontakt przepuszcza impuls z zadu do przodu i pozwala kłębowi się unieść.", ko: "알맞은 접촉이 어떻게 뒷다리의 밀어 주는 힘을 전구로 흘려 보내고 기갑을 올라오게 하는지 보여 줘요."
       }
     },
     {
@@ -196,7 +196,7 @@
         es: "Comprender la incurvación a caballo",
         it: "Capire l'incurvamento in sella",
         ja: "騎乗しての内方姿勢を理解する",
-        de: "Stellung und Biegung im Sattel verstehen", ar: "فهم الانحناء على السرج", zh: "理解骑乘中的弯曲", nl: "De buiging begrijpen onder het zadel", pt: "Entender a flexão lateral na sela", sv: "Förstå böjning i sadeln", ru: "Понять изгиб в седле", pl: "Zrozumieć zgięcie w siodle"
+        de: "Stellung und Biegung im Sattel verstehen", ar: "فهم الانحناء على السرج", zh: "理解骑乘中的弯曲", nl: "De buiging begrijpen onder het zadel", pt: "Entender a flexão lateral na sela", sv: "Förstå böjning i sadeln", ru: "Понять изгиб в седле", pl: "Zrozumieć zgięcie w siodle", ko: "말 위에서 굴곡 이해하기"
       },
       resume: {
         fr: "Une séance montée pour voir quand, pourquoi et comment demander l'incurvation : la vidéo la plus accessible sur ce sujet.",
@@ -204,7 +204,7 @@
         es: "Una sesión montada para ver cuándo, por qué y cómo pedir la incurvación: el vídeo más accesible sobre este tema.",
         it: "Una sessione montata per vedere quando, perché e come chiedere l'incurvamento: il video più accessibile su questo tema.",
         ja: "内方姿勢をいつ、なぜ、どのように求めるかを見る実技セッション。このテーマでもっとも分かりやすい映像。",
-        de: "Eine gerittene Einheit, die zeigt, wann, warum und wie man Biegung verlangt: das zugänglichste Video zu diesem Thema.", ar: "حصة ركوب لمعرفة متى ولماذا وكيف نطلب الانحناء: أسهل فيديو في هذا الموضوع.", zh: "一堂骑乘课，看什么时候、为什么、怎样要求弯曲：这是这个主题上最容易理解的视频。", nl: "Een gereden training om te zien wanneer, waarom en hoe je om buiging vraagt: de toegankelijkste video over dit onderwerp.", pt: "Uma sessão montada para ver quando, por que e como pedir a flexão lateral: o vídeo mais acessível sobre o assunto.", sv: "Ett ridpass som visar när, varför och hur man ber om böjning: den mest lättillgängliga videon om det här ämnet.", ru: "Занятие верхом: когда, зачем и как просить изгиб. Самое доступное видео по этой теме.", pl: "Lekcja pod siodłem pokazująca, kiedy, dlaczego i jak prosić o zgięcie: najbardziej przystępny film na ten temat."
+        de: "Eine gerittene Einheit, die zeigt, wann, warum und wie man Biegung verlangt: das zugänglichste Video zu diesem Thema.", ar: "حصة ركوب لمعرفة متى ولماذا وكيف نطلب الانحناء: أسهل فيديو في هذا الموضوع.", zh: "一堂骑乘课，看什么时候、为什么、怎样要求弯曲：这是这个主题上最容易理解的视频。", nl: "Een gereden training om te zien wanneer, waarom en hoe je om buiging vraagt: de toegankelijkste video over dit onderwerp.", pt: "Uma sessão montada para ver quando, por que e como pedir a flexão lateral: o vídeo mais acessível sobre o assunto.", sv: "Ett ridpass som visar när, varför och hur man ber om böjning: den mest lättillgängliga videon om det här ämnet.", ru: "Занятие верхом: когда, зачем и как просить изгиб. Самое доступное видео по этой теме.", pl: "Lekcja pod siodłem pokazująca, kiedy, dlaczego i jak prosić o zgięcie: najbardziej przystępny film na ten temat.", ko: "굴곡을 언제, 왜, 어떻게 요청하는지 직접 타면서 보여 주는 수업이에요. 이 주제에서 가장 쉽게 볼 수 있는 영상이에요."
       },
       observer: {
         fr: ["Le moment où le cavalier demande l'incurvation", "La coordination entre la jambe intérieure et la rêne extérieure", "La légèreté de la main intérieure", "La réaction du cheval sur la courbe"],
@@ -212,7 +212,7 @@
         es: ["El momento en que el jinete pide la incurvación", "La coordinación entre la pierna interior y la rienda exterior", "La ligereza de la mano interior", "La reacción del caballo en la curva"],
         it: ["Il momento in cui il cavaliere chiede l'incurvamento", "La coordinazione tra la gamba interna e la redine esterna", "La leggerezza della mano interna", "La reazione del cavallo sulla curva"],
         ja: ["乗り手が内方姿勢を求める瞬間", "内方の脚と外方の手綱の連係", "内方の手の軽さ", "曲線上での馬の反応"],
-        de: ["Der Moment, in dem der Reiter Biegung verlangt", "Das Zusammenspiel von innerem Bein und äußerem Zügel", "Die Leichtigkeit der inneren Hand", "Die Reaktion des Pferdes auf der Kurve"], ar: ["اللحظة التي يطلب فيها الفارس الانحناء","التنسيق بين الساق الداخلية واللجام الخارجي","خفة اليد الداخلية","رد فعل الحصان على المنحنى"], zh: ["骑手要求弯曲的那一刻", "内侧腿与外侧缰绳之间的配合", "内侧手的轻柔", "马在弯道上的反应"], nl: ["Het moment waarop de ruiter om buiging vraagt", "De coördinatie tussen het binnenbeen en de buitenteugel", "De lichtheid van de binnenhand", "De reactie van het paard in de bocht"], pt: ["O momento em que o cavaleiro pede a flexão lateral", "A coordenação entre a perna interna e a rédea externa", "A leveza da mão interna", "A reação do cavalo na curva"], sv: ["Ögonblicket då ryttaren ber om böjning", "Samspelet mellan det inre benet och den yttre tygeln", "Lättheten i den inre handen", "Hästens reaktion i svängen"], ru: ["Момент, когда всадник просит изгиб", "Согласованность внутренней ноги и наружного повода", "Лёгкость внутренней руки", "Реакция лошади на повороте"], pl: ["Moment, w którym jeździec prosi o zgięcie", "Współpraca wewnętrznej łydki i zewnętrznej wodzy", "Lekkość wewnętrznej ręki", "Reakcja konia na łuku"]
+        de: ["Der Moment, in dem der Reiter Biegung verlangt", "Das Zusammenspiel von innerem Bein und äußerem Zügel", "Die Leichtigkeit der inneren Hand", "Die Reaktion des Pferdes auf der Kurve"], ar: ["اللحظة التي يطلب فيها الفارس الانحناء","التنسيق بين الساق الداخلية واللجام الخارجي","خفة اليد الداخلية","رد فعل الحصان على المنحنى"], zh: ["骑手要求弯曲的那一刻", "内侧腿与外侧缰绳之间的配合", "内侧手的轻柔", "马在弯道上的反应"], nl: ["Het moment waarop de ruiter om buiging vraagt", "De coördinatie tussen het binnenbeen en de buitenteugel", "De lichtheid van de binnenhand", "De reactie van het paard in de bocht"], pt: ["O momento em que o cavaleiro pede a flexão lateral", "A coordenação entre a perna interna e a rédea externa", "A leveza da mão interna", "A reação do cavalo na curva"], sv: ["Ögonblicket då ryttaren ber om böjning", "Samspelet mellan det inre benet och den yttre tygeln", "Lättheten i den inre handen", "Hästens reaktion i svängen"], ru: ["Момент, когда всадник просит изгиб", "Согласованность внутренней ноги и наружного повода", "Лёгкость внутренней руки", "Реакция лошади на повороте"], pl: ["Moment, w którym jeździec prosi o zgięcie", "Współpraca wewnętrznej łydki i zewnętrznej wodzy", "Lekkość wewnętrznej ręki", "Reakcja konia na łuku"], ko: ["기수가 굴곡을 요청하는 순간", "안쪽 다리와 바깥쪽 고삐의 협응", "안쪽 손의 가벼움", "곡선에서 말의 반응"]
       }
     },
     {
@@ -227,7 +227,7 @@
         es: "Comprender cómo coordinar las ayudas",
         it: "Capire come coordinare i propri aiuti",
         ja: "扶助をどう連係させるかを理解する",
-        de: "Verstehen, wie man seine Hilfen abstimmt", ar: "فهم كيفية تنسيق المساعدات", zh: "理解如何协调你的扶助", nl: "Begrijpen hoe je je hulpen op elkaar afstemt", pt: "Entender como coordenar suas ajudas", sv: "Förstå hur du samordnar dina hjälper", ru: "Понять, как согласовывать свои помощи", pl: "Zrozumieć, jak koordynować pomoce"
+        de: "Verstehen, wie man seine Hilfen abstimmt", ar: "فهم كيفية تنسيق المساعدات", zh: "理解如何协调你的扶助", nl: "Begrijpen hoe je je hulpen op elkaar afstemt", pt: "Entender como coordenar suas ajudas", sv: "Förstå hur du samordnar dina hjälper", ru: "Понять, как согласовывать свои помощи", pl: "Zrozumieć, jak koordynować pomoce", ko: "부조를 조화롭게 쓰는 법 이해하기"
       },
       resume: {
         fr: "L'accord des aides sur une courbe : le pli, l'incurvation, et la différence entre plier l'encolure et faire tourner tout le cheval.",
@@ -235,7 +235,7 @@
         es: "El acuerdo de las ayudas en una curva: el pliegue, la incurvación y la diferencia entre plegar el cuello y hacer girar a todo el caballo.",
         it: "L'accordo degli aiuti su una curva: la piega, l'incurvamento e la differenza tra flettere l'incollatura e far girare tutto il cavallo.",
         ja: "曲線上での扶助の一致。屈曲、内方姿勢、そして首を曲げることと馬全体を回すことの違い。",
-        de: "Das Zusammenspiel der Hilfen im Bogen: die Stellung, die Biegung, und der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes.", ar: "تنسيق المساعدات على منحنى: الثني، والانحناء، والفرق بين ثني الرقبة وجعل الحصان كله يدور.", zh: "在弯道上协调扶助：屈曲、弯曲，以及只弯脖子和让整匹马转弯之间的区别。", nl: "De samenwerking van de hulpen in een bocht: de stelling, de buiging en het verschil tussen de hals buigen en het hele paard laten draaien.", pt: "A coordenação das ajudas em uma curva: a flexão, a flexão lateral e a diferença entre dobrar o pescoço e fazer o cavalo inteiro virar.", sv: "Hjälperna i samspel i en sväng: nackböjningen, böjningen och skillnaden mellan att böja halsen och att vrida hela hästen.", ru: "Согласованность помощей на повороте: постановка, изгиб и разница между сгибанием шеи и поворотом всей лошади.", pl: "Zgranie pomocy na łuku: ustawienie, zgięcie i różnica między zginaniem szyi a skręcaniem całego konia."
+        de: "Das Zusammenspiel der Hilfen im Bogen: die Stellung, die Biegung, und der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes.", ar: "تنسيق المساعدات على منحنى: الثني، والانحناء، والفرق بين ثني الرقبة وجعل الحصان كله يدور.", zh: "在弯道上协调扶助：屈曲、弯曲，以及只弯脖子和让整匹马转弯之间的区别。", nl: "De samenwerking van de hulpen in een bocht: de stelling, de buiging en het verschil tussen de hals buigen en het hele paard laten draaien.", pt: "A coordenação das ajudas em uma curva: a flexão, a flexão lateral e a diferença entre dobrar o pescoço e fazer o cavalo inteiro virar.", sv: "Hjälperna i samspel i en sväng: nackböjningen, böjningen och skillnaden mellan att böja halsen och att vrida hela hästen.", ru: "Согласованность помощей на повороте: постановка, изгиб и разница между сгибанием шеи и поворотом всей лошади.", pl: "Zgranie pomocy na łuku: ustawienie, zgięcie i różnica między zginaniem szyi a skręcaniem całego konia.", ko: "곡선에서의 부조 조화: 굽힘, 굴곡, 그리고 목만 굽히는 것과 말 전체를 돌리는 것의 차이예요."
       },
       observer: {
         fr: ["Le rôle de la jambe intérieure", "Le rôle des aides extérieures", "La coordination entre les jambes et les mains", "La différence entre plier l'encolure et faire tourner tout le cheval", "Le maintien de l'impulsion pendant la demande"],
@@ -243,7 +243,7 @@
         es: ["El papel de la pierna interior", "El papel de las ayudas exteriores", "La coordinación entre piernas y manos", "La diferencia entre plegar el cuello y hacer girar a todo el caballo", "El mantenimiento de la impulsión durante la demanda"],
         it: ["Il ruolo della gamba interna", "Il ruolo degli aiuti esterni", "La coordinazione tra gambe e mani", "La differenza tra flettere l'incollatura e far girare tutto il cavallo", "Il mantenimento dell'impulso durante la richiesta"],
         ja: ["内方の脚の役割", "外方の扶助の役割", "脚と手の連係", "首を曲げることと馬全体を回すことの違い", "要求のあいだ推進を保つこと"],
-        de: ["Die Rolle des inneren Beins", "Die Rolle der äußeren Hilfen", "Das Zusammenspiel von Beinen und Händen", "Der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes", "Den Schwung während der Hilfengebung erhalten"], ar: ["دور الساق الداخلية","دور المساعدات الخارجية","التنسيق بين الساقين واليدين","الفرق بين ثني الرقبة وجعل الحصان كله يدور","الحفاظ على الاندفاع أثناء الطلب"], zh: ["内侧腿的作用", "外侧扶助的作用", "腿和手之间的配合", "只弯脖子和让整匹马转弯之间的区别", "在发出要求时保持冲力"], nl: ["De rol van het binnenbeen", "De rol van de buitenste hulpen", "De coördinatie tussen de benen en de handen", "Het verschil tussen de hals buigen en het hele paard laten draaien", "Het behouden van de impuls tijdens de aanvraag"], pt: ["O papel da perna interna", "O papel das ajudas externas", "A coordenação entre as pernas e as mãos", "A diferença entre dobrar o pescoço e fazer o cavalo inteiro virar", "Manter a impulsão durante o pedido"], sv: ["Det inre benets roll", "De yttre hjälparnas roll", "Samspelet mellan ben och händer", "Skillnaden mellan att böja halsen och att vrida hela hästen", "Att behålla impulsionen under förfrågan"], ru: ["Роль внутренней ноги", "Роль наружных помощей", "Согласованность между ногами и руками", "Разница между сгибанием шеи и поворотом всей лошади", "Сохранение импульса во время просьбы"], pl: ["Rola wewnętrznej łydki", "Rola pomocy zewnętrznych", "Współpraca łydek i rąk", "Różnica między zginaniem szyi a skręcaniem całego konia", "Utrzymanie impulsu podczas prośby"]
+        de: ["Die Rolle des inneren Beins", "Die Rolle der äußeren Hilfen", "Das Zusammenspiel von Beinen und Händen", "Der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes", "Den Schwung während der Hilfengebung erhalten"], ar: ["دور الساق الداخلية","دور المساعدات الخارجية","التنسيق بين الساقين واليدين","الفرق بين ثني الرقبة وجعل الحصان كله يدور","الحفاظ على الاندفاع أثناء الطلب"], zh: ["内侧腿的作用", "外侧扶助的作用", "腿和手之间的配合", "只弯脖子和让整匹马转弯之间的区别", "在发出要求时保持冲力"], nl: ["De rol van het binnenbeen", "De rol van de buitenste hulpen", "De coördinatie tussen de benen en de handen", "Het verschil tussen de hals buigen en het hele paard laten draaien", "Het behouden van de impuls tijdens de aanvraag"], pt: ["O papel da perna interna", "O papel das ajudas externas", "A coordenação entre as pernas e as mãos", "A diferença entre dobrar o pescoço e fazer o cavalo inteiro virar", "Manter a impulsão durante o pedido"], sv: ["Det inre benets roll", "De yttre hjälparnas roll", "Samspelet mellan ben och händer", "Skillnaden mellan att böja halsen och att vrida hela hästen", "Att behålla impulsionen under förfrågan"], ru: ["Роль внутренней ноги", "Роль наружных помощей", "Согласованность между ногами и руками", "Разница между сгибанием шеи и поворотом всей лошади", "Сохранение импульса во время просьбы"], pl: ["Rola wewnętrznej łydki", "Rola pomocy zewnętrznych", "Współpraca łydek i rąk", "Różnica między zginaniem szyi a skręcaniem całego konia", "Utrzymanie impulsu podczas prośby"], ko: ["안쪽 다리의 역할", "바깥쪽 부조의 역할", "다리와 손의 협응", "목만 굽히는 것과 말 전체를 돌리는 것의 차이", "요청하는 동안 추진력 유지하기"]
       }
     },
     {
@@ -258,7 +258,7 @@
         es: "La independencia de las ayudas",
         it: "L'indipendenza degli aiuti",
         ja: "扶助の独立",
-        de: "Die Unabhängigkeit der Hilfen", ar: "استقلالية المساعدات", zh: "扶助的独立性", nl: "De onafhankelijkheid van de hulpen", pt: "A independência das ajudas", sv: "Hjälparnas oberoende", ru: "Независимость помощей", pl: "Niezależność pomocy"
+        de: "Die Unabhängigkeit der Hilfen", ar: "استقلالية المساعدات", zh: "扶助的独立性", nl: "De onafhankelijkheid van de hulpen", pt: "A independência das ajudas", sv: "Hjälparnas oberoende", ru: "Независимость помощей", pl: "Niezależność pomocy", ko: "부조의 독립성"
       },
       resume: {
         fr: "Agir d'une jambe sans tirer, fermer les doigts sans bloquer le reste du corps, tourner le regard sans se déséquilibrer.",
@@ -266,7 +266,7 @@
         es: "Actuar con una pierna sin tirar, cerrar los dedos sin bloquear el resto del cuerpo, girar la mirada sin desequilibrarse.",
         it: "Agire con una gamba senza tirare, chiudere le dita senza bloccare il resto del corpo, girare lo sguardo senza squilibrarsi.",
         ja: "引かずに片脚で作用する。体の残りを固めずに指を閉じる。バランスを崩さずに視線を向ける。",
-        de: "Mit einem Bein wirken ohne zu ziehen, die Finger schließen ohne den übrigen Körper festzumachen, den Blick wenden ohne das Gleichgewicht zu verlieren.", ar: "استعمال ساق دون الشد، وإغلاق الأصابع دون تجميد بقية الجسم، وتحويل النظر دون فقدان التوازن.", zh: "一条腿发力却不拉扯，握紧手指却不让身体其他部位僵住，转动视线却不失去平衡。", nl: "Met één been werken zonder te trekken, je vingers sluiten zonder de rest van je lichaam te blokkeren, je blik draaien zonder uit balans te raken.", pt: "Agir com uma perna sem puxar, fechar os dedos sem travar o resto do corpo, virar o olhar sem perder o equilíbrio.", sv: "Använda ett ben utan att dra, sluta fingrarna utan att spänna resten av kroppen, vrida blicken utan att tappa balansen.", ru: "Действовать одной ногой, не дёргая; сжимать пальцы, не зажимая остальное тело; поворачивать взгляд, не теряя равновесия.", pl: "Działać jedną łydką bez ciągnięcia, zaciskać palce bez blokowania reszty ciała, obracać wzrok bez utraty równowagi."
+        de: "Mit einem Bein wirken ohne zu ziehen, die Finger schließen ohne den übrigen Körper festzumachen, den Blick wenden ohne das Gleichgewicht zu verlieren.", ar: "استعمال ساق دون الشد، وإغلاق الأصابع دون تجميد بقية الجسم، وتحويل النظر دون فقدان التوازن.", zh: "一条腿发力却不拉扯，握紧手指却不让身体其他部位僵住，转动视线却不失去平衡。", nl: "Met één been werken zonder te trekken, je vingers sluiten zonder de rest van je lichaam te blokkeren, je blik draaien zonder uit balans te raken.", pt: "Agir com uma perna sem puxar, fechar os dedos sem travar o resto do corpo, virar o olhar sem perder o equilíbrio.", sv: "Använda ett ben utan att dra, sluta fingrarna utan att spänna resten av kroppen, vrida blicken utan att tappa balansen.", ru: "Действовать одной ногой, не дёргая; сжимать пальцы, не зажимая остальное тело; поворачивать взгляд, не теряя равновесия.", pl: "Działać jedną łydką bez ciągnięcia, zaciskać palce bez blokowania reszty ciała, obracać wzrok bez utraty równowagi.", ko: "당기지 않고 한쪽 다리로 부조하기, 몸의 나머지를 굳히지 않고 손가락 쥐기, 균형을 잃지 않고 시선 돌리기."
       }
     },
     {
@@ -282,7 +282,7 @@
         es: "La dosificación de las ayudas",
         it: "Il dosaggio degli aiuti",
         ja: "扶助の加減",
-        de: "Die Dosierung der Hilfen", ar: "ضبط قوة المساعدات", zh: "掌握扶助的力度", nl: "De dosering van de hulpen", pt: "A dosagem das ajudas", sv: "Rätt dosering av hjälperna", ru: "Дозировка помощей", pl: "Dozowanie pomocy"
+        de: "Die Dosierung der Hilfen", ar: "ضبط قوة المساعدات", zh: "掌握扶助的力度", nl: "De dosering van de hulpen", pt: "A dosagem das ajudas", sv: "Rätt dosering av hjälperna", ru: "Дозировка помощей", pl: "Dozowanie pomocy", ko: "부조 세기 조절"
       },
       resume: {
         fr: "Une demande claire, progressive, suivie d'un relâchement : l'illustration directe de « la plus petite aide efficace ».",
@@ -290,7 +290,7 @@
         es: "Una demanda clara, progresiva, seguida de un relajamiento: la ilustración directa de «la ayuda más pequeña que funciona».",
         it: "Una richiesta chiara, progressiva, seguita da un rilascio: l'illustrazione diretta del «più piccolo aiuto efficace».",
         ja: "はっきりと、段階的に求め、そして解放する。「効く最小の扶助」をそのまま示す内容。",
-        de: "Eine klare, abgestufte Hilfe mit anschließendem Nachgeben: die direkte Veranschaulichung der \u201ekleinsten Hilfe, die wirkt\u201c.", ar: "طلب واضح وتدريجي يتبعه إرخاء: مثال مباشر على «أصغر مساعدة فعالة».", zh: "一个清晰、循序渐进的要求，随后放松：这直接演示了“最小的有效扶助”。", nl: "Een duidelijke, geleidelijke aanvraag, gevolgd door een loslaten: de directe illustratie van \"de kleinst mogelijke effectieve hulp\".", pt: "Um pedido claro e progressivo, seguido de um relaxamento: a ilustração direta de “a menor ajuda eficaz”.", sv: "En tydlig, gradvis förfrågan följd av ett släpp: ett direkt exempel på ”den minsta hjälp som fungerar”.", ru: "Ясная, постепенная просьба с последующим отпусканием: прямая иллюстрация принципа «наименьшая эффективная помощь».", pl: "Jasna, stopniowa prośba, po której następuje odpuszczenie: bezpośrednia ilustracja zasady „najmniejszej skutecznej pomocy”."
+        de: "Eine klare, abgestufte Hilfe mit anschließendem Nachgeben: die direkte Veranschaulichung der \u201ekleinsten Hilfe, die wirkt\u201c.", ar: "طلب واضح وتدريجي يتبعه إرخاء: مثال مباشر على «أصغر مساعدة فعالة».", zh: "一个清晰、循序渐进的要求，随后放松：这直接演示了“最小的有效扶助”。", nl: "Een duidelijke, geleidelijke aanvraag, gevolgd door een loslaten: de directe illustratie van \"de kleinst mogelijke effectieve hulp\".", pt: "Um pedido claro e progressivo, seguido de um relaxamento: a ilustração direta de “a menor ajuda eficaz”.", sv: "En tydlig, gradvis förfrågan följd av ett släpp: ett direkt exempel på ”den minsta hjälp som fungerar”.", ru: "Ясная, постепенная просьба с последующим отпусканием: прямая иллюстрация принципа «наименьшая эффективная помощь».", pl: "Jasna, stopniowa prośba, po której następuje odpuszczenie: bezpośrednia ilustracja zasady „najmniejszej skutecznej pomocy”.", ko: "분명하고 점진적인 요청 뒤에 풀어 주기. “가장 작은 효과적인 부조”를 그대로 보여 주는 예시예요."
       }
     },
     /* ============================================================
@@ -321,7 +321,7 @@
         es: "Abordar a su caballo",
         it: "Avvicinarsi al proprio cavallo",
         ja: "馬に近づく",
-        de: "An das Pferd herantreten", ar: "الاقتراب من الحصان", zh: "接近你的马", nl: "Je paard benaderen", pt: "Aproximar-se do seu cavalo", sv: "Att närma sig sin häst", ru: "Как подойти к лошади", pl: "Podchodzenie do konia"
+        de: "An das Pferd herantreten", ar: "الاقتراب من الحصان", zh: "接近你的马", nl: "Je paard benaderen", pt: "Aproximar-se do seu cavalo", sv: "Att närma sig sin häst", ru: "Как подойти к лошади", pl: "Podchodzenie do konia", ko: "말에게 다가가기"
       },
       resume: {
         fr: "Se faire voir, se faire entendre, puis toucher : l'ordre des gestes qui font qu'un cheval ne sursaute pas.",
@@ -329,7 +329,7 @@
         es: "Hacerse ver, hacerse oír, y luego tocar: el orden de los gestos que evita que un caballo se sobresalte.",
         it: "Farsi vedere, farsi sentire, poi toccare: l'ordine dei gesti che evita che un cavallo si spaventi.",
         ja: "まず見てもらい、声をかけ、それから触れる。馬を驚かせないための順番。",
-        de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt.", ar: "أن يراك، ثم أن يسمعك، ثم أن تلمسيه: ترتيب الحركات الذي يمنع الحصان من الفزع.", zh: "让它看见你，让它听见你，然后再触摸：这一连串动作的顺序，能让马不被吓到。", nl: "Je laten zien, je laten horen en dan pas aanraken: de volgorde van handelingen waardoor een paard niet schrikt.", pt: "Fazer-se ver, fazer-se ouvir e só então tocar: a ordem dos gestos que evita que o cavalo se assuste.", sv: "Bli sedd, bli hörd, rör sedan vid hästen: ordningen på rörelserna som gör att en häst inte rycker till.", ru: "Дать себя увидеть, дать себя услышать, а потом коснуться: порядок действий, при котором лошадь не вздрагивает.", pl: "Pokaż się, odezwij się, potem dotknij: kolejność gestów, dzięki której koń się nie płoszy."
+        de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt.", ar: "أن يراك، ثم أن يسمعك، ثم أن تلمسيه: ترتيب الحركات الذي يمنع الحصان من الفزع.", zh: "让它看见你，让它听见你，然后再触摸：这一连串动作的顺序，能让马不被吓到。", nl: "Je laten zien, je laten horen en dan pas aanraken: de volgorde van handelingen waardoor een paard niet schrikt.", pt: "Fazer-se ver, fazer-se ouvir e só então tocar: a ordem dos gestos que evita que o cavalo se assuste.", sv: "Bli sedd, bli hörd, rör sedan vid hästen: ordningen på rörelserna som gör att en häst inte rycker till.", ru: "Дать себя увидеть, дать себя услышать, а потом коснуться: порядок действий, при котором лошадь не вздрагивает.", pl: "Pokaż się, odezwij się, potem dotknij: kolejność gestów, dzięki której koń się nie płoszy.", ko: "모습을 보이고, 소리를 들려주고, 그다음에 만지기. 말이 깜짝 놀라지 않게 하는 동작의 순서예요."
       },
       observer: {
         fr: ["La position du cavalier par rapport a l'œil du cheval", "La voix avant la main", "Le premier point de contact sur l'encolure", "Le changement de cote"],
@@ -337,7 +337,7 @@
         es: ["La posición del jinete respecto al ojo del caballo", "La voz antes que la mano", "El primer punto de contacto en el cuello", "El cambio de lado"],
         it: ["La posizione del cavaliere rispetto all'occhio del cavallo", "La voce prima della mano", "Il primo punto di contatto sull'incollatura", "Il cambio di lato"],
         ja: ["馬の目に対する位置", "手より先に声", "首への最初の接触", "左右の入れ替わり"],
-        de: ["Die Position des Reiters zum Auge des Pferdes", "Die Stimme vor der Hand", "Der erste Kontaktpunkt am Hals", "Der Seitenwechsel"], ar: ["موقع الفارس بالنسبة إلى عين الحصان","الصوت قبل اليد","أول نقطة لمس على الرقبة","تغيير الجهة"], zh: ["骑手相对于马的眼睛所站的位置", "先出声，再伸手", "颈部上的第一个接触点", "换边"], nl: ["De positie van de ruiter ten opzichte van het oog van het paard", "De stem vóór de hand", "Het eerste contactpunt op de hals", "De wisseling van kant"], pt: ["A posição do cavaleiro em relação ao olho do cavalo", "A voz antes da mão", "O primeiro ponto de contato no pescoço", "A troca de lado"], sv: ["Var ryttaren står i förhållande till hästens öga", "Rösten före handen", "Den första kontaktpunkten på halsen", "Att byta sida"], ru: ["Где стоит всадник относительно глаза лошади", "Голос раньше руки", "Первая точка касания на шее", "Смена стороны"], pl: ["Miejsce jeźdźca względem oka konia", "Głos przed ręką", "Pierwszy punkt kontaktu na szyi", "Zmiana strony"]
+        de: ["Die Position des Reiters zum Auge des Pferdes", "Die Stimme vor der Hand", "Der erste Kontaktpunkt am Hals", "Der Seitenwechsel"], ar: ["موقع الفارس بالنسبة إلى عين الحصان","الصوت قبل اليد","أول نقطة لمس على الرقبة","تغيير الجهة"], zh: ["骑手相对于马的眼睛所站的位置", "先出声，再伸手", "颈部上的第一个接触点", "换边"], nl: ["De positie van de ruiter ten opzichte van het oog van het paard", "De stem vóór de hand", "Het eerste contactpunt op de hals", "De wisseling van kant"], pt: ["A posição do cavaleiro em relação ao olho do cavalo", "A voz antes da mão", "O primeiro ponto de contato no pescoço", "A troca de lado"], sv: ["Var ryttaren står i förhållande till hästens öga", "Rösten före handen", "Den första kontaktpunkten på halsen", "Att byta sida"], ru: ["Где стоит всадник относительно глаза лошади", "Голос раньше руки", "Первая точка касания на шее", "Смена стороны"], pl: ["Miejsce jeźdźca względem oka konia", "Głos przed ręką", "Pierwszy punkt kontaktu na szyi", "Zmiana strony"], ko: ["말의 눈에 대한 기수의 위치", "손보다 먼저 목소리", "목에서 처음 닿는 지점", "반대쪽으로 옮기기"]
       }
     },
     {
@@ -351,7 +351,7 @@
         es: "Poner el cabestro",
         it: "Mettere la testiera",
         ja: "絵口をつける",
-        de: "Das Halfter anlegen", ar: "وضع الرسن", zh: "戴上笼头", nl: "De halster aandoen", pt: "Colocar o cabresto", sv: "Att sätta på grimman", ru: "Как надеть недоуздок", pl: "Zakładanie kantara"
+        de: "Das Halfter anlegen", ar: "وضع الرسن", zh: "戴上笼头", nl: "De halster aandoen", pt: "Colocar o cabresto", sv: "Att sätta på grimman", ru: "Как надеть недоуздок", pl: "Zakładanie kantara", ko: "홀터 씌우기"
       },
       resume: {
         fr: "Chaque partie du licol a un nom et une place. Le film montre le geste complet, sans precipitation.",
@@ -359,7 +359,7 @@
         es: "Cada parte del cabestro tiene un nombre y un lugar. El vídeo muestra el gesto completo, sin prisa.",
         it: "Ogni parte della testiera ha un nome e un posto. Il film mostra il gesto completo, senza fretta.",
         ja: "絵口の各部には名前と位置がある。あわてずに、一連の動作を見せる。",
-        de: "Jeder Teil des Halfters hat einen Namen und einen Platz. Der Film zeigt den ganzen Ablauf, ohne Eile.", ar: "لكل جزء من الرسن اسم ومكان. يعرض الفيلم الحركة كاملة، دون تسرع.", zh: "笼头的每个部分都有名称和位置。视频展示了完整的动作，不慌不忙。", nl: "Elk deel van de halster heeft een naam en een plek. De film laat de hele handeling zien, zonder haast.", pt: "Cada parte do cabresto tem um nome e um lugar. O filme mostra o gesto completo, sem pressa.", sv: "Varje del av grimman har ett namn och en plats. Filmen visar hela handlingen, utan brådska.", ru: "У каждой части недоуздка есть название и своё место. На видео показано всё движение целиком, без спешки.", pl: "Każda część kantara ma swoją nazwę i miejsce. Film pokazuje cały gest, bez pośpiechu."
+        de: "Jeder Teil des Halfters hat einen Namen und einen Platz. Der Film zeigt den ganzen Ablauf, ohne Eile.", ar: "لكل جزء من الرسن اسم ومكان. يعرض الفيلم الحركة كاملة، دون تسرع.", zh: "笼头的每个部分都有名称和位置。视频展示了完整的动作，不慌不忙。", nl: "Elk deel van de halster heeft een naam en een plek. De film laat de hele handeling zien, zonder haast.", pt: "Cada parte do cabresto tem um nome e um lugar. O filme mostra o gesto completo, sem pressa.", sv: "Varje del av grimman har ett namn och en plats. Filmen visar hela handlingen, utan brådska.", ru: "У каждой части недоуздка есть название и своё место. На видео показано всё движение целиком, без спешки.", pl: "Każda część kantara ma swoją nazwę i miejsce. Film pokazuje cały gest, bez pośpiechu.", ko: "홀터의 각 부분에는 이름과 자리가 있어요. 영상에서 서두르지 않고 전체 동작을 보여 줘요."
       }
     },
     {
@@ -373,7 +373,7 @@
         es: "Llevar a su caballo de la mano",
         it: "Condurre il cavallo a mano",
         ja: "馬を引く",
-        de: "Das Pferd an der Hand führen", ar: "قيادة الحصان باليد", zh: "牵着你的马走", nl: "Je paard aan de hand leiden", pt: "Conduzir seu cavalo a pé", sv: "Att leda sin häst i hand", ru: "Как водить лошадь в поводу", pl: "Prowadzenie konia z ziemi"
+        de: "Das Pferd an der Hand führen", ar: "قيادة الحصان باليد", zh: "牵着你的马走", nl: "Je paard aan de hand leiden", pt: "Conduzir seu cavalo a pé", sv: "Att leda sin häst i hand", ru: "Как водить лошадь в поводу", pl: "Prowadzenie konia z ziemi", ko: "말 끌기"
       },
       resume: {
         fr: "A la hauteur de l'épaule, jamais devant, jamais derriere. Ou se placer, comment tenir la longe, comment tourner.",
@@ -381,7 +381,7 @@
         es: "A la altura del hombro, nunca delante, nunca detrás. Dónde colocarse, cómo sujetar la cuerda, cómo girar.",
         it: "All'altezza della spalla, mai davanti, mai dietro. Dove mettersi, come tenere la longhina, come girare.",
         ja: "肩の位置で、前すぎず後ろすぎず。立ち位置、索の持ち方、曲がるときの動き。",
-        de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet.", ar: "بمحاذاة الكتف، لا أمامه أبدا ولا خلفه أبدا. أين نقف، وكيف نمسك حبل القيادة، وكيف ندور.", zh: "与肩膀齐平，不在前面，也不在后面。站在哪里，怎么拿牵引绳，怎么转弯。", nl: "Ter hoogte van de schouder, nooit ervoor, nooit erachter. Waar je moet lopen, hoe je de longeerlijn vasthoudt, hoe je draait.", pt: "Na altura do ombro, nunca à frente, nunca atrás. Onde se posicionar, como segurar a guia, como virar.", sv: "I höjd med bogen, aldrig framför, aldrig bakom. Var du ska stå, hur du håller longerlinan, hur du svänger.", ru: "На уровне плеча, никогда не впереди и никогда не позади. Где встать, как держать корду, как поворачивать.", pl: "Na wysokości łopatki, nigdy z przodu, nigdy z tyłu. Gdzie stanąć, jak trzymać lonżę, jak skręcać."
+        de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet.", ar: "بمحاذاة الكتف، لا أمامه أبدا ولا خلفه أبدا. أين نقف، وكيف نمسك حبل القيادة، وكيف ندور.", zh: "与肩膀齐平，不在前面，也不在后面。站在哪里，怎么拿牵引绳，怎么转弯。", nl: "Ter hoogte van de schouder, nooit ervoor, nooit erachter. Waar je moet lopen, hoe je de longeerlijn vasthoudt, hoe je draait.", pt: "Na altura do ombro, nunca à frente, nunca atrás. Onde se posicionar, como segurar a guia, como virar.", sv: "I höjd med bogen, aldrig framför, aldrig bakom. Var du ska stå, hur du håller longerlinan, hur du svänger.", ru: "На уровне плеча, никогда не впереди и никогда не позади. Где встать, как держать корду, как поворачивать.", pl: "Na wysokości łopatki, nigdy z przodu, nigdy z tyłu. Gdzie stanąć, jak trzymać lonżę, jak skręcać.", ko: "어깨 높이에서, 앞도 뒤도 안 돼요. 어디에 서는지, 론지를 어떻게 잡는지, 어떻게 돌아가는지 알려 줘요."
       },
       observer: {
         fr: ["La place du cavalier a hauteur d'epaule", "La main qui ne tire pas", "Le regard porte la ou l'on va", "Le tour effectue en poussant, pas en tirant"],
@@ -389,7 +389,7 @@
         es: ["El sitio del jinete a la altura del hombro", "La mano que no tira", "La mirada puesta donde se va", "El giro empujando, no tirando"],
         it: ["Il posto del cavaliere all'altezza della spalla", "La mano che non tira", "Lo sguardo dove si va", "La girata spingendo, non tirando"],
         ja: ["肩の横に並ぶ位置", "引っ張らない手", "進む先を見る目線", "引かずに押して回る"],
-        de: ["Der Platz auf Höhe der Schulter", "Die Hand, die nicht zieht", "Der Blick dorthin, wohin man geht", "Die Wendung durch Schieben, nicht Ziehen"], ar: ["موقع القائد بمحاذاة الكتف","اليد التي لا تشد","النظر موجه إلى حيث نذهب","الدوران بالدفع لا بالشد"], zh: ["牵马的人与肩膀齐平", "不拉扯的手", "目光看向要去的地方", "用推而不是用拉来完成转弯"], nl: ["De plek van de ruiter ter hoogte van de schouder", "De hand die niet trekt", "De blik gaat waar je naartoe gaat", "De draai maak je door te duwen, niet door te trekken"], pt: ["A posição do condutor na altura do ombro", "A mão que não puxa", "O olhar vai para onde você está indo", "A virada feita empurrando, não puxando"], sv: ["Ryttaren i höjd med bogen", "Handen som inte drar", "Blicken riktad dit du ska", "Att svänga genom att skjuta på, inte dra"], ru: ["Место человека на уровне плеча лошади", "Рука, которая не тянет", "Взгляд направлен туда, куда идёшь", "Поворот выполняется толчком, а не рывком"], pl: ["Miejsce prowadzącego na wysokości łopatki", "Ręka, która nie ciągnie", "Wzrok skierowany tam, dokąd idziesz", "Skręt wykonany pchnięciem, nie ciągnięciem"]
+        de: ["Der Platz auf Höhe der Schulter", "Die Hand, die nicht zieht", "Der Blick dorthin, wohin man geht", "Die Wendung durch Schieben, nicht Ziehen"], ar: ["موقع القائد بمحاذاة الكتف","اليد التي لا تشد","النظر موجه إلى حيث نذهب","الدوران بالدفع لا بالشد"], zh: ["牵马的人与肩膀齐平", "不拉扯的手", "目光看向要去的地方", "用推而不是用拉来完成转弯"], nl: ["De plek van de ruiter ter hoogte van de schouder", "De hand die niet trekt", "De blik gaat waar je naartoe gaat", "De draai maak je door te duwen, niet door te trekken"], pt: ["A posição do condutor na altura do ombro", "A mão que não puxa", "O olhar vai para onde você está indo", "A virada feita empurrando, não puxando"], sv: ["Ryttaren i höjd med bogen", "Handen som inte drar", "Blicken riktad dit du ska", "Att svänga genom att skjuta på, inte dra"], ru: ["Место человека на уровне плеча лошади", "Рука, которая не тянет", "Взгляд направлен туда, куда идёшь", "Поворот выполняется толчком, а не рывком"], pl: ["Miejsce prowadzącego na wysokości łopatki", "Ręka, która nie ciągnie", "Wzrok skierowany tam, dokąd idziesz", "Skręt wykonany pchnięciem, nie ciągnięciem"], ko: ["어깨 높이에 서는 기수의 위치", "당기지 않는 손", "가려는 곳을 바라보는 시선", "당기지 않고 밀면서 하는 회전"]
       }
     },
     {
@@ -403,7 +403,7 @@
         es: "Montar y desmontar",
         it: "Salire e scendere",
         ja: "乗ると降りる",
-        de: "Aufsteigen und Absteigen", ar: "الركوب والنزول", zh: "上马和下马", nl: "Opstappen en afstappen", pt: "Montar e desmontar", sv: "Att sitta upp och av", ru: "Как садиться и спешиваться", pl: "Wsiadanie i zsiadanie"
+        de: "Aufsteigen und Absteigen", ar: "الركوب والنزول", zh: "上马和下马", nl: "Opstappen en afstappen", pt: "Montar e desmontar", sv: "Att sitta upp och av", ru: "Как садиться и спешиваться", pl: "Wsiadanie i zsiadanie", ko: "오르고 내리기"
       },
       resume: {
         fr: "Le montoir, les renes tenues, le pied qui ne pousse pas dans le flanc, et une descente qui ne surprend personne.",
@@ -411,7 +411,7 @@
         es: "El montador, las riendas en la mano, el pie que no empuja el flanco, y una bajada que no sorprende a nadie.",
         it: "Il montatoio, le redini in mano, il piede che non spinge nel fianco, e una discesa che non sorprende nessuno.",
         ja: "踏台、手継の持ち方、脅を押さない足、そして馬を驚かせない下馬。",
-        de: "Die Aufstiegshilfe, die Zügel in der Hand, ein Fuß, der nicht in die Flanke drückt, und ein Absteigen, das niemanden überrascht.", ar: "درج الركوب، واللجام في اليد، والقدم التي لا تضغط على الخاصرة، ونزول لا يفاجئ أحدا.", zh: "上马台、握好缰绳、脚不要顶到马的肋部，还有一次不会让任何人吓一跳的下马。", nl: "De opstapblok, de teugels vast, de voet die niet in de flank duwt, en een afstap waar niemand van schrikt.", pt: "O bloco de montaria, as rédeas seguradas, o pé que não cutuca o flanco e uma desmontada que não surpreende ninguém.", sv: "Uppsittningsblocket, tyglarna i handen, foten som inte trycker i flanken och en avsittning som inte överraskar någon.", ru: "Подставка для посадки, поводья в руках, нога, которая не давит в бок, и спешивание, которое никого не удивит.", pl: "Schodki do wsiadania, wodze w ręku, noga, która nie wbija się w bok, i zsiadanie, które nikogo nie zaskakuje."
+        de: "Die Aufstiegshilfe, die Zügel in der Hand, ein Fuß, der nicht in die Flanke drückt, und ein Absteigen, das niemanden überrascht.", ar: "درج الركوب، واللجام في اليد، والقدم التي لا تضغط على الخاصرة، ونزول لا يفاجئ أحدا.", zh: "上马台、握好缰绳、脚不要顶到马的肋部，还有一次不会让任何人吓一跳的下马。", nl: "De opstapblok, de teugels vast, de voet die niet in de flank duwt, en een afstap waar niemand van schrikt.", pt: "O bloco de montaria, as rédeas seguradas, o pé que não cutuca o flanco e uma desmontada que não surpreende ninguém.", sv: "Uppsittningsblocket, tyglarna i handen, foten som inte trycker i flanken och en avsittning som inte överraskar någon.", ru: "Подставка для посадки, поводья в руках, нога, которая не давит в бок, и спешивание, которое никого не удивит.", pl: "Schodki do wsiadania, wodze w ręku, noga, która nie wbija się w bok, i zsiadanie, które nikogo nie zaskakuje.", ko: "마운팅 블록, 잡은 고삐, 옆구리를 밀지 않는 발, 그리고 누구도 놀라게 하지 않는 내리기를 보여 줘요."
       }
     },
     {
@@ -425,7 +425,7 @@
         es: "El acicalado, gesto a gesto",
         it: "La pulizia, gesto per gesto",
         ja: "手入れを一つずつ",
-        de: "Die Fellpflege, Schritt für Schritt", ar: "العناية بالشعر، حركة بحركة", zh: "刷拭，一步一步来", nl: "Het verzorgen, handeling voor handeling", pt: "A escovação, gesto por gesto", sv: "Ryktning, steg för steg", ru: "Чистка шаг за шагом", pl: "Czyszczenie, krok po kroku"
+        de: "Die Fellpflege, Schritt für Schritt", ar: "العناية بالشعر، حركة بحركة", zh: "刷拭，一步一步来", nl: "Het verzorgen, handeling voor handeling", pt: "A escovação, gesto por gesto", sv: "Ryktning, steg för steg", ru: "Чистка шаг за шагом", pl: "Czyszczenie, krok po kroku", ko: "손질, 동작 하나하나"
       },
       resume: {
         fr: "Film tourne pour le Galop 3, donc il va plus loin que le programme du Galop 1 : l'ordre des brosses y est montre en entier.",
@@ -433,7 +433,7 @@
         es: "Vídeo rodado para el Galop 3, por lo que va más allá del programa del Galop 1: se muestra el orden completo de los cepillos.",
         it: "Girato per il Galoppo 3, quindi va oltre il programma del Galoppo 1: l'ordine delle spazzole è mostrato per intero.",
         ja: "ガロー3向けに撮られたため、ガロー1の範囲を超える。ブラシの順番がすべて示される。",
-        de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt.", ar: "صور الفيلم للغالوب 3، لذلك يتجاوز برنامج الغالوب 1: يظهر فيه ترتيب الفرش كاملا.", zh: "这段视频是为 Galop 3 拍摄的，所以内容超出了 Galop 1 的大纲：完整展示了刷子的使用顺序。", nl: "Film gemaakt voor Galop 3, dus hij gaat verder dan het programma van Galop 1: de volgorde van de borstels wordt hier helemaal getoond.", pt: "Filmado para o Galop 3, então vai além do programa do Galop 1: a ordem das escovas é mostrada por inteiro.", sv: "Filmad för Galop 3, så den går längre än programmet för Galop 1: hela ordningen på borstarna visas.", ru: "Снято для Galop 3, поэтому выходит за рамки программы Galop 1: здесь полностью показан порядок щёток.", pl: "Nagrane na Galop 3, więc wykracza poza program Galop 1: pokazana jest pełna kolejność szczotek."
+        de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt.", ar: "صور الفيلم للغالوب 3، لذلك يتجاوز برنامج الغالوب 1: يظهر فيه ترتيب الفرش كاملا.", zh: "这段视频是为 Galop 3 拍摄的，所以内容超出了 Galop 1 的大纲：完整展示了刷子的使用顺序。", nl: "Film gemaakt voor Galop 3, dus hij gaat verder dan het programma van Galop 1: de volgorde van de borstels wordt hier helemaal getoond.", pt: "Filmado para o Galop 3, então vai além do programa do Galop 1: a ordem das escovas é mostrada por inteiro.", sv: "Filmad för Galop 3, så den går längre än programmet för Galop 1: hela ordningen på borstarna visas.", ru: "Снято для Galop 3, поэтому выходит за рамки программы Galop 1: здесь полностью показан порядок щёток.", pl: "Nagrane na Galop 3, więc wykracza poza program Galop 1: pokazana jest pełna kolejność szczotek.", ko: "Galop 3용으로 촬영한 영상이라 Galop 1 과정보다 더 나아가요. 솔 사용 순서를 처음부터 끝까지 보여 줘요."
       }
     },
     {
@@ -447,7 +447,7 @@
         es: "Conducir al paso",
         it: "Condurre al passo",
         ja: "\u5e38\u6b69\u3067\u306e\u624b\u7dbf\u64cd\u4f5c",
-        de: "Im Schritt lenken", ar: "التوجيه في المشي", zh: "慢步时的控制", nl: "In stap rijden", pt: "Conduzir ao passo", sv: "Att styra i skritt", ru: "Управление на шагу", pl: "Prowadzenie w stępie"
+        de: "Im Schritt lenken", ar: "التوجيه في المشي", zh: "慢步时的控制", nl: "In stap rijden", pt: "Conduzir ao passo", sv: "Att styra i skritt", ru: "Управление на шагу", pl: "Prowadzenie w stępie", ko: "평보로 이끌기"
       },
       resume: {
         fr: "Tourner, s'arreter, repartir : la premiere conversation entre la main, la jambe et le cheval.",
@@ -455,7 +455,7 @@
         es: "Girar, parar, volver a andar: la primera conversaci\u00f3n entre la mano, la pierna y el caballo.",
         it: "Girare, fermarsi, ripartire: la prima conversazione tra mano, gamba e cavallo.",
         ja: "\u66f2\u304c\u308b\u3001\u6b62\u307e\u308b\u3001\u518d\u3073\u9032\u3080\u3002\u624b\u3068\u8107\u3068\u99ac\u306e\u3001\u306f\u3058\u3081\u306e\u4f1a\u8a71\u3002",
-        de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd.", ar: "الدوران، والتوقف، والانطلاق من جديد: أول حوار بين اليد والساق والحصان.", zh: "转弯、停下、再出发：手、腿和马之间的第一次对话。", nl: "Draaien, stoppen, weer vertrekken: het eerste gesprek tussen de hand, het been en het paard.", pt: "Virar, parar, partir de novo: a primeira conversa entre a mão, a perna e o cavalo.", sv: "Svänga, stanna, starta igen: det första samtalet mellan hand, ben och häst.", ru: "Повернуть, остановиться, снова тронуться: первый разговор между рукой, ногой и лошадью.", pl: "Skręcać, zatrzymywać się, ruszać: pierwsza rozmowa między ręką, łydką i koniem."
+        de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd.", ar: "الدوران، والتوقف، والانطلاق من جديد: أول حوار بين اليد والساق والحصان.", zh: "转弯、停下、再出发：手、腿和马之间的第一次对话。", nl: "Draaien, stoppen, weer vertrekken: het eerste gesprek tussen de hand, het been en het paard.", pt: "Virar, parar, partir de novo: a primeira conversa entre a mão, a perna e o cavalo.", sv: "Svänga, stanna, starta igen: det första samtalet mellan hand, ben och häst.", ru: "Повернуть, остановиться, снова тронуться: первый разговор между рукой, ногой и лошадью.", pl: "Skręcać, zatrzymywać się, ruszać: pierwsza rozmowa między ręką, łydką i koniem.", ko: "돌고, 멈추고, 다시 출발하기. 손, 다리, 말 사이의 첫 번째 대화예요."
       },
       observer: {
         fr: ["La main basse et le poignet souple", "Le regard porte dans la direction voulue", "La jambe qui demande avant que la main tourne", "L'arret obtenu sans tirer"],
@@ -463,7 +463,7 @@
         es: ["La mano baja y la mu\u00f1eca flexible", "La mirada puesta en la direcci\u00f3n elegida", "La pierna que pide antes de que la mano gire", "La parada obtenida sin tirar"],
         it: ["La mano bassa e il polso morbido", "Lo sguardo nella direzione scelta", "La gamba che chiede prima che la mano giri", "L'arresto ottenuto senza tirare"],
         ja: ["\u4f4e\u3044\u624b\u3068\u67d4\u3089\u304b\u3044\u624b\u9996", "\u884c\u304d\u305f\u3044\u65b9\u5411\u3092\u898b\u308b\u76ee\u7dda", "\u624b\u3092\u4f7f\u3046\u524d\u306b\u8107\u3067\u6c42\u3081\u308b", "\u5f15\u304b\u305a\u306b\u5f97\u308b\u505c\u6b62"],
-        de: ["Tiefe Hand, weiches Handgelenk", "Der Blick in die gew\u00e4hlte Richtung", "Das Bein fragt, bevor die Hand wendet", "Das Halten ohne Ziehen"], ar: ["اليد منخفضة والمعصم لين","النظر موجه إلى الاتجاه المطلوب","الساق تطلب قبل أن تدير اليد","التوقف دون شد"], zh: ["低位的手和柔软的手腕", "目光看向想去的方向", "手转动之前，腿先发出要求", "不靠拉扯就让马停下"], nl: ["De lage hand en de soepele pols", "De blik gericht op de gewenste richting", "Het been dat vraagt voordat de hand draait", "De stop zonder te trekken"], pt: ["A mão baixa e o punho flexível", "O olhar na direção desejada", "A perna que pede antes de a mão virar", "Uma parada obtida sem puxar"], sv: ["Låg hand och mjuk handled", "Blicken riktad åt det håll du vill", "Benet som ber innan handen svänger", "Ett stopp utan att dra"], ru: ["Низкая рука и мягкое запястье", "Взгляд направлен в нужную сторону", "Нога просит раньше, чем рука поворачивает", "Остановка без рывка поводом"], pl: ["Niska ręka i miękki nadgarstek", "Wzrok skierowany w wybranym kierunku", "Łydka prosi, zanim ręka skręci", "Zatrzymanie bez ciągnięcia"]
+        de: ["Tiefe Hand, weiches Handgelenk", "Der Blick in die gew\u00e4hlte Richtung", "Das Bein fragt, bevor die Hand wendet", "Das Halten ohne Ziehen"], ar: ["اليد منخفضة والمعصم لين","النظر موجه إلى الاتجاه المطلوب","الساق تطلب قبل أن تدير اليد","التوقف دون شد"], zh: ["低位的手和柔软的手腕", "目光看向想去的方向", "手转动之前，腿先发出要求", "不靠拉扯就让马停下"], nl: ["De lage hand en de soepele pols", "De blik gericht op de gewenste richting", "Het been dat vraagt voordat de hand draait", "De stop zonder te trekken"], pt: ["A mão baixa e o punho flexível", "O olhar na direção desejada", "A perna que pede antes de a mão virar", "Uma parada obtida sem puxar"], sv: ["Låg hand och mjuk handled", "Blicken riktad åt det håll du vill", "Benet som ber innan handen svänger", "Ett stopp utan att dra"], ru: ["Низкая рука и мягкое запястье", "Взгляд направлен в нужную сторону", "Нога просит раньше, чем рука поворачивает", "Остановка без рывка поводом"], pl: ["Niska ręka i miękki nadgarstek", "Wzrok skierowany w wybranym kierunku", "Łydka prosi, zanim ręka skręci", "Zatrzymanie bez ciągnięcia"], ko: ["낮은 손과 부드러운 손목", "가려는 방향을 향한 시선", "손이 돌기 전에 요청하는 다리", "당기지 않고 얻는 정지"]
       }
     },
     {
@@ -477,7 +477,7 @@
         es: "En equilibrio sobre los estribos",
         it: "In equilibrio sulle staffe",
         ja: "\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9",
-        de: "Im Gleichgewicht in den B\u00fcgeln", ar: "التوازن على الركابين", zh: "在马镫上保持平衡", nl: "In balans op je stijgbeugels", pt: "Em equilíbrio nos estribos", sv: "I balans på stigbyglarna", ru: "В равновесии на стременах", pl: "W równowadze na strzemionach"
+        de: "Im Gleichgewicht in den B\u00fcgeln", ar: "التوازن على الركابين", zh: "在马镫上保持平衡", nl: "In balans op je stijgbeugels", pt: "Em equilíbrio nos estribos", sv: "I balans på stigbyglarna", ru: "В равновесии на стременах", pl: "W równowadze na strzemionach", ko: "등자 위에서 균형 잡기"
       },
       resume: {
         fr: "Le talon qui descend, le genou qui plie, et tout le poids qui trouve enfin son chemin jusqu'au pied.",
@@ -485,7 +485,7 @@
         es: "El tal\u00f3n que baja, la rodilla que se dobla, y todo el peso que encuentra por fin su camino hasta el pie.",
         it: "Il tallone che scende, il ginocchio che si flette, e tutto il peso che trova finalmente la strada fino al piede.",
         ja: "\u8e75\u3092\u4e0b\u3052\u3001\u819d\u3092\u3086\u308b\u3081\u308b\u3002\u4f53\u91cd\u304c\u3084\u3063\u3068\u8db3\u3078\u3068\u9053\u3092\u898b\u3064\u3051\u308b\u3002",
-        de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df.", ar: "الكعب ينزل، والركبة تنثني، والوزن كله يجد أخيرا طريقه إلى القدم.", zh: "脚跟下沉，膝盖弯曲，整个身体的重量终于顺着路径落到脚上。", nl: "De hiel die zakt, de knie die buigt, en al het gewicht dat eindelijk zijn weg naar de voet vindt.", pt: "O calcanhar que desce, o joelho que dobra e todo o peso encontrando, enfim, o caminho até o pé.", sv: "Hälen ner, knät som böjer sig och hela vikten som äntligen hittar vägen ner till foten.", ru: "Пятка вниз, колено сгибается, и весь вес наконец находит свой путь к ступне.", pl: "Pięta w dół, kolano się zgina, a cały ciężar w końcu znajduje drogę do stopy."
+        de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df.", ar: "الكعب ينزل، والركبة تنثني، والوزن كله يجد أخيرا طريقه إلى القدم.", zh: "脚跟下沉，膝盖弯曲，整个身体的重量终于顺着路径落到脚上。", nl: "De hiel die zakt, de knie die buigt, en al het gewicht dat eindelijk zijn weg naar de voet vindt.", pt: "O calcanhar que desce, o joelho que dobra e todo o peso encontrando, enfim, o caminho até o pé.", sv: "Hälen ner, knät som böjer sig och hela vikten som äntligen hittar vägen ner till foten.", ru: "Пятка вниз, колено сгибается, и весь вес наконец находит свой путь к ступне.", pl: "Pięta w dół, kolano się zgina, a cały ciężar w końcu znajduje drogę do stopy.", ko: "뒤꿈치는 내려가고, 무릎은 굽고, 몸무게 전체가 마침내 발까지 제 길을 찾아요."
       },
       observer: {
         fr: ["Le talon plus bas que la pointe du pied", "Le genou qui absorbe le mouvement", "Le buste qui avance sans s'effondrer", "Les mains qui restent independantes de l'equilibre"],
@@ -493,7 +493,7 @@
         es: ["El tal\u00f3n m\u00e1s bajo que la punta del pie", "La rodilla que absorbe el movimiento", "El busto que avanza sin hundirse", "Las manos que siguen independientes del equilibrio"],
         it: ["Il tallone pi\u00f9 basso della punta del piede", "Il ginocchio che assorbe il movimento", "Il busto che avanza senza cedere", "Le mani che restano indipendenti dall'equilibrio"],
         ja: ["\u3064\u307e\u5148\u3088\u308a\u4f4e\u3044\u8e75", "\u52d5\u304d\u3092\u5438\u6536\u3059\u308b\u819d", "\u5d29\u308c\u305a\u306b\u524d\u306b\u51fa\u308b\u4e0a\u4f53", "\u30d0\u30e9\u30f3\u30b9\u3068\u5207\u308a\u96e2\u3055\u308c\u305f\u624b"],
-        de: ["Die Ferse tiefer als die Fu\u00dfspitze", "Das Knie, das die Bewegung aufnimmt", "Der Oberk\u00f6rper kommt vor, ohne einzusinken", "Die H\u00e4nde bleiben unabh\u00e4ngig vom Gleichgewicht"], ar: ["الكعب أخفض من مقدمة القدم","الركبة تمتص الحركة","الجذع يتقدم دون أن ينهار","اليدان تبقيان مستقلتين عن التوازن"], zh: ["脚跟比脚尖低", "吸收动作的膝盖", "身体前倾却不塌下去", "不受平衡影响、保持独立的双手"], nl: ["De hiel lager dan de teen", "De knie die de beweging opvangt", "Het bovenlichaam dat naar voren gaat zonder in te zakken", "De handen die onafhankelijk blijven van de balans"], pt: ["O calcanhar mais baixo que a ponta do pé", "O joelho que absorve o movimento", "O tronco que avança sem desabar", "As mãos que ficam independentes do equilíbrio"], sv: ["Hälen lägre än tåspetsen", "Knät som tar upp rörelsen", "Överkroppen som lutar framåt utan att kollapsa", "Händerna som förblir oberoende av balansen"], ru: ["Пятка ниже носка", "Колено, которое смягчает движение", "Корпус, который идёт вперёд и не заваливается", "Руки, не зависящие от равновесия"], pl: ["Pięta niżej niż palce stopy", "Kolano amortyzujące ruch", "Tułów, który idzie do przodu bez zapadania się", "Ręce niezależne od równowagi"]
+        de: ["Die Ferse tiefer als die Fu\u00dfspitze", "Das Knie, das die Bewegung aufnimmt", "Der Oberk\u00f6rper kommt vor, ohne einzusinken", "Die H\u00e4nde bleiben unabh\u00e4ngig vom Gleichgewicht"], ar: ["الكعب أخفض من مقدمة القدم","الركبة تمتص الحركة","الجذع يتقدم دون أن ينهار","اليدان تبقيان مستقلتين عن التوازن"], zh: ["脚跟比脚尖低", "吸收动作的膝盖", "身体前倾却不塌下去", "不受平衡影响、保持独立的双手"], nl: ["De hiel lager dan de teen", "De knie die de beweging opvangt", "Het bovenlichaam dat naar voren gaat zonder in te zakken", "De handen die onafhankelijk blijven van de balans"], pt: ["O calcanhar mais baixo que a ponta do pé", "O joelho que absorve o movimento", "O tronco que avança sem desabar", "As mãos que ficam independentes do equilíbrio"], sv: ["Hälen lägre än tåspetsen", "Knät som tar upp rörelsen", "Överkroppen som lutar framåt utan att kollapsa", "Händerna som förblir oberoende av balansen"], ru: ["Пятка ниже носка", "Колено, которое смягчает движение", "Корпус, который идёт вперёд и не заваливается", "Руки, не зависящие от равновесия"], pl: ["Pięta niżej niż palce stopy", "Kolano amortyzujące ruch", "Tułów, który idzie do przodu bez zapadania się", "Ręce niezależne od równowagi"], ko: ["발끝보다 낮은 뒤꿈치", "움직임을 흡수하는 무릎", "무너지지 않고 앞으로 나아가는 상체", "균형과 상관없이 독립적으로 있는 손"]
       }
     },
     /* --- Galop 4, meme serie FFE. Cinq films sur les sept trouves.
@@ -514,7 +514,7 @@
         es: "Equilibrarse sentado",
         it: "Equilibrarsi in sella",
         ja: "\u5750\u3063\u3066\u30d0\u30e9\u30f3\u30b9\u3092\u53d6\u308b",
-        de: "Im Sitz ins Gleichgewicht kommen", ar: "التوازن في الجلسة", zh: "坐姿中的平衡", nl: "In balans zitten", pt: "Equilíbrio sentado", sv: "Balans i sitsen", ru: "Равновесие в седле", pl: "Równowaga w dosiadzie"
+        de: "Im Sitz ins Gleichgewicht kommen", ar: "التوازن في الجلسة", zh: "坐姿中的平衡", nl: "In balans zitten", pt: "Equilíbrio sentado", sv: "Balans i sitsen", ru: "Равновесие в седле", pl: "Równowaga w dosiadzie", ko: "앉아서 균형 잡기"
       },
       resume: {
         fr: "L'assiette n'est pas une position, c'est une aide. Le film montre ce que le bassin dit au cheval quand il cesse de resister.",
@@ -522,7 +522,7 @@
         es: "El asiento no es una posici\u00f3n, es una ayuda. El v\u00eddeo muestra lo que la pelvis dice al caballo cuando deja de resistir.",
         it: "L'assetto non \u00e8 una posizione, \u00e8 un aiuto. Il film mostra cosa dice il bacino al cavallo quando smette di resistere.",
         ja: "\u9a0e\u5750\u306f\u59d3\u52e2\u3067\u306f\u306a\u304f\u6276\u52a9\u3067\u3042\u308b\u3002\u9aa8\u76e4\u304c\u62b5\u6297\u3092\u3084\u3081\u305f\u3068\u304d\u3001\u99ac\u306b\u4f55\u3092\u4f1d\u3048\u308b\u306e\u304b\u3002",
-        de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen.", ar: "الجلسة ليست وضعية، بل هي مساعدة. يعرض الفيلم ما يقوله الحوض للحصان عندما يتوقف عن المقاومة.", zh: "骑坐不是一个姿势，而是一种扶助。视频展示了骨盆不再抗拒之后，它向马传达了什么。", nl: "De zit is geen houding, het is een hulp. De film laat zien wat het bekken tegen het paard zegt als het ophoudt weerstand te bieden.", pt: "O assento não é uma posição, é uma ajuda. O filme mostra o que a bacia diz ao cavalo quando para de resistir.", sv: "Sitsen är ingen position, den är en hjälp. Filmen visar vad bäckenet säger till hästen när det slutar spänna sig.", ru: "Посадка — это не поза, а помощь. На видео показано, что таз говорит лошади, когда перестаёт сопротивляться.", pl: "Dosiad to nie pozycja, to pomoc. Film pokazuje, co miednica mówi koniowi, gdy przestaje się opierać."
+        de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen.", ar: "الجلسة ليست وضعية، بل هي مساعدة. يعرض الفيلم ما يقوله الحوض للحصان عندما يتوقف عن المقاومة.", zh: "骑坐不是一个姿势，而是一种扶助。视频展示了骨盆不再抗拒之后，它向马传达了什么。", nl: "De zit is geen houding, het is een hulp. De film laat zien wat het bekken tegen het paard zegt als het ophoudt weerstand te bieden.", pt: "O assento não é uma posição, é uma ajuda. O filme mostra o que a bacia diz ao cavalo quando para de resistir.", sv: "Sitsen är ingen position, den är en hjälp. Filmen visar vad bäckenet säger till hästen när det slutar spänna sig.", ru: "Посадка — это не поза, а помощь. На видео показано, что таз говорит лошади, когда перестаёт сопротивляться.", pl: "Dosiad to nie pozycja, to pomoc. Film pokazuje, co miednica mówi koniowi, gdy przestaje się opierać.", ko: "좌골은 자세가 아니라 부조예요. 골반이 저항을 멈출 때 말에게 무엇을 말해 주는지 영상에서 보여 줘요."
       },
       observer: {
         fr: ["Le bassin qui suit le mouvement sans le forcer", "Les epaules qui restent au-dessus des hanches", "La jambe qui pend au lieu de serrer", "Le moment ou le cheval se detend sous l'assiette"],
@@ -530,7 +530,7 @@
         es: ["La pelvis que sigue el movimiento sin forzarlo", "Los hombros que se mantienen sobre las caderas", "La pierna que cuelga en vez de apretar", "El momento en que el caballo se relaja bajo el asiento"],
         it: ["Il bacino che segue il movimento senza forzarlo", "Le spalle che restano sopra le anche", "La gamba che pende invece di stringere", "Il momento in cui il cavallo si distende sotto l'assetto"],
         ja: ["\u52d5\u304d\u3092\u5f37\u3081\u305a\u306b\u5f93\u3046\u9aa8\u76e4", "\u8170\u306e\u771f\u4e0a\u306b\u3068\u3069\u307e\u308b\u80a9", "\u7de0\u3081\u3064\u3051\u305a\u306b\u5782\u308c\u308b\u8107", "\u9a0e\u5750\u306e\u4e0b\u3067\u99ac\u304c\u7de9\u3080\u77ac\u9593"],
-        de: ["Das Becken folgt der Bewegung, ohne sie zu erzwingen", "Die Schultern bleiben \u00fcber den H\u00fcften", "Das Bein h\u00e4ngt, statt zu klemmen", "Der Moment, in dem sich das Pferd unter dem Sitz l\u00f6st"], ar: ["الحوض يتبع الحركة دون أن يفرضها","الكتفان تبقيان فوق الوركين","الساق تتدلى بدل أن تضغط","اللحظة التي يسترخي فيها الحصان تحت الجلسة"], zh: ["跟随动作却不强行带动的骨盆", "始终保持在臀部上方的肩膀", "自然垂下而不是夹紧的腿", "马在骑坐之下放松下来的那一刻"], nl: ["Het bekken dat de beweging volgt zonder haar te forceren", "De schouders die boven de heupen blijven", "Het been dat hangt in plaats van klemt", "Het moment waarop het paard ontspant onder de zit"], pt: ["A bacia que acompanha o movimento sem forçá-lo", "Os ombros que ficam acima dos quadris", "A perna que pende em vez de apertar", "O momento em que o cavalo relaxa sob o assento"], sv: ["Bäckenet som följer rörelsen utan att tvinga den", "Axlarna som stannar ovanför höfterna", "Benet som hänger i stället för att klämma", "Ögonblicket då hästen slappnar av under sitsen"], ru: ["Таз, который следует за движением и не навязывает его", "Плечи, которые остаются над бёдрами", "Нога, которая свободно висит, а не сжимает", "Момент, когда лошадь расслабляется под посадкой"], pl: ["Miednica podążająca za ruchem bez forsowania go", "Ramiona nad biodrami", "Łydka, która zwisa zamiast ściskać", "Moment, w którym koń rozluźnia się pod dosiadem"]
+        de: ["Das Becken folgt der Bewegung, ohne sie zu erzwingen", "Die Schultern bleiben \u00fcber den H\u00fcften", "Das Bein h\u00e4ngt, statt zu klemmen", "Der Moment, in dem sich das Pferd unter dem Sitz l\u00f6st"], ar: ["الحوض يتبع الحركة دون أن يفرضها","الكتفان تبقيان فوق الوركين","الساق تتدلى بدل أن تضغط","اللحظة التي يسترخي فيها الحصان تحت الجلسة"], zh: ["跟随动作却不强行带动的骨盆", "始终保持在臀部上方的肩膀", "自然垂下而不是夹紧的腿", "马在骑坐之下放松下来的那一刻"], nl: ["Het bekken dat de beweging volgt zonder haar te forceren", "De schouders die boven de heupen blijven", "Het been dat hangt in plaats van klemt", "Het moment waarop het paard ontspant onder de zit"], pt: ["A bacia que acompanha o movimento sem forçá-lo", "Os ombros que ficam acima dos quadris", "A perna que pende em vez de apertar", "O momento em que o cavalo relaxa sob o assento"], sv: ["Bäckenet som följer rörelsen utan att tvinga den", "Axlarna som stannar ovanför höfterna", "Benet som hänger i stället för att klämma", "Ögonblicket då hästen slappnar av under sitsen"], ru: ["Таз, который следует за движением и не навязывает его", "Плечи, которые остаются над бёдрами", "Нога, которая свободно висит, а не сжимает", "Момент, когда лошадь расслабляется под посадкой"], pl: ["Miednica podążająca za ruchem bez forsowania go", "Ramiona nad biodrami", "Łydka, która zwisa zamiast ściskać", "Moment, w którym koń rozluźnia się pod dosiadem"], ko: ["억지로 하지 않고 움직임을 따라가는 골반", "엉덩이 위에 그대로 있는 어깨", "조이지 않고 늘어뜨린 다리", "말이 좌골 아래에서 긴장을 푸는 순간"]
       }
     },
     {
@@ -544,7 +544,7 @@
         es: "Una reprise de doma",
         it: "Una ripresa di dressage",
         ja: "\u99ac\u5834\u99ac\u8853\u306e\u6f14\u76ee",
-        de: "Eine Dressuraufgabe", ar: "عرض ترويض", zh: "一套盛装舞步套路", nl: "Een dressuurproef", pt: "Uma reprise de adestramento", sv: "Ett dressyrprogram", ru: "Программа выездки", pl: "Program ujeżdżeniowy"
+        de: "Eine Dressuraufgabe", ar: "عرض ترويض", zh: "一套盛装舞步套路", nl: "Een dressuurproef", pt: "Uma reprise de adestramento", sv: "Ett dressyrprogram", ru: "Программа выездки", pl: "Program ujeżdżeniowy", ko: "마장마술 프로그램"
       },
       resume: {
         fr: "La reprise attendue au Galop 4, montee en entier. Tout ce que les chapitres expliquent separement, enchaine sans coupure.",
@@ -552,7 +552,7 @@
         es: "La reprise esperada en el Galop 4, montada por completo. Todo lo que los cap\u00edtulos explican por separado, encadenado sin cortes.",
         it: "La ripresa richiesta al Galoppo 4, montata per intero. Tutto ci\u00f2 che i capitoli spiegano separatamente, legato senza interruzioni.",
         ja: "\u30ac\u30ed\u30fc4\u3067\u6c42\u3081\u3089\u308c\u308b\u6f14\u76ee\u3092\u901a\u3057\u3067\u3002\u5404\u7ae0\u304c\u5225\u3005\u306b\u8aac\u304f\u3053\u3068\u304c\u3001\u5207\u308c\u76ee\u306a\u304f\u7d9a\u304f\u3002",
-        de: "Die bei Galopp 4 erwartete Aufgabe, komplett geritten. Alles, was die Kapitel einzeln erkl\u00e4ren, ohne Unterbrechung verkn\u00fcpft.", ar: "العرض المطلوب في الغالوب 4، مؤدى كاملا. كل ما تشرحه الفصول منفصلا، متسلسلا دون انقطاع.", zh: "Galop 4 要求的舞步套路，完整骑下来。各章节分别讲解的内容，在这里连贯地串在一起，不间断。", nl: "De proef die bij Galop 4 verwacht wordt, helemaal gereden. Alles wat de hoofdstukken afzonderlijk uitleggen, aaneengeschakeld zonder onderbreking.", pt: "A reprise esperada no Galop 4, montada por inteiro. Tudo o que os capítulos explicam separadamente, encadeado sem cortes.", sv: "Programmet som krävs i Galop 4, ridet i sin helhet. Allt som kapitlen förklarar var för sig, sammanlänkat utan avbrott.", ru: "Программа Galop 4, показанная целиком. Всё, что главы объясняют по отдельности, — без единого перерыва.", pl: "Program wymagany na Galop 4, przejechany w całości. Wszystko, co rozdziały tłumaczą osobno, połączone bez przerw."
+        de: "Die bei Galopp 4 erwartete Aufgabe, komplett geritten. Alles, was die Kapitel einzeln erkl\u00e4ren, ohne Unterbrechung verkn\u00fcpft.", ar: "العرض المطلوب في الغالوب 4، مؤدى كاملا. كل ما تشرحه الفصول منفصلا، متسلسلا دون انقطاع.", zh: "Galop 4 要求的舞步套路，完整骑下来。各章节分别讲解的内容，在这里连贯地串在一起，不间断。", nl: "De proef die bij Galop 4 verwacht wordt, helemaal gereden. Alles wat de hoofdstukken afzonderlijk uitleggen, aaneengeschakeld zonder onderbreking.", pt: "A reprise esperada no Galop 4, montada por inteiro. Tudo o que os capítulos explicam separadamente, encadeado sem cortes.", sv: "Programmet som krävs i Galop 4, ridet i sin helhet. Allt som kapitlen förklarar var för sig, sammanlänkat utan avbrott.", ru: "Программа Galop 4, показанная целиком. Всё, что главы объясняют по отдельности, — без единого перерыва.", pl: "Program wymagany na Galop 4, przejechany w całości. Wszystko, co rozdziały tłumaczą osobno, połączone bez przerw.", ko: "Galop 4에서 요구하는 프로그램을 처음부터 끝까지 타요. 챕터에서 따로 설명한 모든 것이 끊김 없이 이어져요."
       }
     },
     {
@@ -566,7 +566,7 @@
         es: "El contacto, en la pr\u00e1ctica",
         it: "Il contatto, in pratica",
         ja: "\u5b9f\u8df5\u3068\u3057\u3066\u306e\u30b3\u30f3\u30bf\u30af\u30c8",
-        de: "Anlehnung in der Praxis", ar: "الاتصال، عمليا", zh: "接触的实际应用", nl: "Het contact, in de praktijk", pt: "O contato, na prática", sv: "Kontakt i praktiken", ru: "Контакт на практике", pl: "Kontakt w praktyce"
+        de: "Anlehnung in der Praxis", ar: "الاتصال، عمليا", zh: "接触的实际应用", nl: "Het contact, in de praktijk", pt: "O contato, na prática", sv: "Kontakt i praktiken", ru: "Контакт на практике", pl: "Kontakt w praktyce", ko: "실전에서의 접촉"
       },
       resume: {
         fr: "Apres les trois interventions IFCE sur la theorie du contact, voici le meme sujet monte, filme, en trois minutes.",
@@ -574,7 +574,7 @@
         es: "Despu\u00e9s de las tres intervenciones del IFCE sobre la teor\u00eda del contacto, aqu\u00ed est\u00e1 el mismo tema montado, filmado, en tres minutos.",
         it: "Dopo i tre interventi IFCE sulla teoria del contatto, ecco lo stesso tema a cavallo, filmato, in tre minuti.",
         ja: "\u30b3\u30f3\u30bf\u30af\u30c8\u306e\u7406\u8ad6\u3092\u8a9e\u308bIFCE\u306e\u4e09\u3064\u306e\u8b1b\u6f14\u306e\u3042\u3068\u306b\u3001\u540c\u3058\u4e3b\u984c\u3092\u99ac\u4e0a\u3067\u3001\u4e09\u5206\u3067\u3002",
-        de: "Nach den drei IFCE-Beitr\u00e4gen zur Theorie der Anlehnung hier dasselbe Thema geritten, gefilmt, in drei Minuten.", ar: "بعد مداخلات IFCE الثلاث حول نظرية الاتصال، إليك الموضوع نفسه على ظهر الحصان، مصورا، في ثلاث دقائق.", zh: "在三场 IFCE 关于接触理论的讲座之后，这里是同一个主题的骑乘实拍，三分钟。", nl: "Na de drie lezingen van het IFCE over de theorie van het contact volgt hier hetzelfde onderwerp gereden en gefilmd, in drie minuten.", pt: "Depois das três palestras do IFCE sobre a teoria do contato, aqui está o mesmo assunto montado, filmado, em três minutos.", sv: "Efter de tre föredragen från IFCE om kontaktens teori kommer här samma ämne ridet och filmat, på tre minuter.", ru: "После трёх выступлений IFCE о теории контакта — та же тема верхом, на видео, за три минуты.", pl: "Po trzech wystąpieniach IFCE o teorii kontaktu — ten sam temat pod siodłem, nagrany w trzy minuty."
+        de: "Nach den drei IFCE-Beitr\u00e4gen zur Theorie der Anlehnung hier dasselbe Thema geritten, gefilmt, in drei Minuten.", ar: "بعد مداخلات IFCE الثلاث حول نظرية الاتصال، إليك الموضوع نفسه على ظهر الحصان، مصورا، في ثلاث دقائق.", zh: "在三场 IFCE 关于接触理论的讲座之后，这里是同一个主题的骑乘实拍，三分钟。", nl: "Na de drie lezingen van het IFCE over de theorie van het contact volgt hier hetzelfde onderwerp gereden en gefilmd, in drie minuten.", pt: "Depois das três palestras do IFCE sobre a teoria do contato, aqui está o mesmo assunto montado, filmado, em três minutos.", sv: "Efter de tre föredragen från IFCE om kontaktens teori kommer här samma ämne ridet och filmat, på tre minuter.", ru: "После трёх выступлений IFCE о теории контакта — та же тема верхом, на видео, за три минуты.", pl: "Po trzech wystąpieniach IFCE o teorii kontaktu — ten sam temat pod siodłem, nagrany w trzy minuty.", ko: "접촉 이론에 대한 IFCE의 세 가지 강연에 이어, 같은 주제를 직접 타고 촬영한 3분 영상이에요."
       }
     },
     {
@@ -588,7 +588,7 @@
         es: "Desplazar las ancas",
         it: "Spostare le anche",
         ja: "\u8170\u3092\u52d5\u304b\u3059",
-        de: "Die Hanken versetzen", ar: "تحريك الوركين", zh: "移动后躯", nl: "De achterhand verplaatsen", pt: "Deslocar as ancas", sv: "Flytta bakdelen", ru: "Смещение крупа", pl: "Przesuwanie zadu"
+        de: "Die Hanken versetzen", ar: "تحريك الوركين", zh: "移动后躯", nl: "De achterhand verplaatsen", pt: "Deslocar as ancas", sv: "Flytta bakdelen", ru: "Смещение крупа", pl: "Przesuwanie zadu", ko: "엉덩이 움직이기"
       },
       resume: {
         fr: "La jambe reculee demande, la main accompagne, et l'arriere-main se deplace d'un pas. Pas deux.",
@@ -596,7 +596,7 @@
         es: "La pierna atrasada pide, la mano acompa\u00f1a, y los cuartos traseros se desplazan un paso. No dos.",
         it: "La gamba arretrata chiede, la mano accompagna, e le anche si spostano di un passo. Non due.",
         ja: "\u5f8c\u308d\u306b\u5f15\u3044\u305f\u8107\u3067\u6c42\u3081\u3001\u624b\u304c\u5bfe\u5fdc\u3057\u3001\u5f8c\u80a2\u304c\u4e00\u6b69\u52d5\u304f\u3002\u4e8c\u6b69\u3067\u306f\u306a\u3044\u3002",
-        de: "Das zur\u00fcckgenommene Bein fragt, die Hand begleitet, und die Hinterhand tritt einen Schritt zur Seite. Nicht zwei.", ar: "الساق المرجعة إلى الخلف تطلب، واليد ترافق، والمؤخرة تتحرك خطوة واحدة. لا خطوتين.", zh: "后撤的腿发出要求，手随之配合，后躯移动一步。只是一步，不是两步。", nl: "Het teruggeplaatste been vraagt, de hand gaat mee, en de achterhand verplaatst zich één stap. Niet twee.", pt: "A perna recuada pede, a mão acompanha e a garupa se desloca um passo. Não dois.", sv: "Det tillbakaflyttade benet ber, handen följer med och bakdelen flyttar sig ett steg. Inte två.", ru: "Отодвинутая назад нога просит, рука следует, и круп сдвигается на один шаг. Не на два.", pl: "Cofnięta łydka prosi, ręka podąża, a zad przesuwa się o jeden krok. Nie dwa."
+        de: "Das zur\u00fcckgenommene Bein fragt, die Hand begleitet, und die Hinterhand tritt einen Schritt zur Seite. Nicht zwei.", ar: "الساق المرجعة إلى الخلف تطلب، واليد ترافق، والمؤخرة تتحرك خطوة واحدة. لا خطوتين.", zh: "后撤的腿发出要求，手随之配合，后躯移动一步。只是一步，不是两步。", nl: "Het teruggeplaatste been vraagt, de hand gaat mee, en de achterhand verplaatst zich één stap. Niet twee.", pt: "A perna recuada pede, a mão acompanha e a garupa se desloca um passo. Não dois.", sv: "Det tillbakaflyttade benet ber, handen följer med och bakdelen flyttar sig ett steg. Inte två.", ru: "Отодвинутая назад нога просит, рука следует, и круп сдвигается на один шаг. Не на два.", pl: "Cofnięta łydka prosi, ręka podąża, a zad przesuwa się o jeden krok. Nie dwa.", ko: "뒤로 뺀 다리가 요청하고, 손은 따라가고, 후구가 한 걸음 옮겨 가요. 두 걸음이 아니에요."
       }
     },
     {
@@ -610,7 +610,7 @@
         es: "Desplazar los hombros",
         it: "Spostare le spalle",
         ja: "\u80a9\u3092\u52d5\u304b\u3059",
-        de: "Die Schultern versetzen", ar: "تحريك الكتفين", zh: "移动肩膀", nl: "De schouders verplaatsen", pt: "Deslocar os ombros", sv: "Flytta skuldrorna", ru: "Смещать плечи", pl: "Przesuwanie łopatek"
+        de: "Die Schultern versetzen", ar: "تحريك الكتفين", zh: "移动肩膀", nl: "De schouders verplaatsen", pt: "Deslocar os ombros", sv: "Flytta skuldrorna", ru: "Смещать плечи", pl: "Przesuwanie łopatek", ko: "어깨 움직이기"
       },
       resume: {
         fr: "Le pendant du precedent, par l'avant-main. Regarder les deux a la suite rend la difference evidente.",
@@ -618,7 +618,7 @@
         es: "La contraparte del anterior, por el tercio delantero. Verlos seguidos hace la diferencia evidente.",
         it: "Il corrispondente del precedente, dall'avantreno. Guardarli di seguito rende la differenza evidente.",
         ja: "\u524d\u306e\u4f5c\u54c1\u306e\u5bfe\u3092\u306a\u3059\u3001\u524d\u80a2\u304b\u3089\u306e\u8a71\u3002\u7d9a\u3051\u3066\u898b\u308b\u3068\u9055\u3044\u304c\u306f\u3063\u304d\u308a\u3059\u308b\u3002",
-        de: "Das Gegenst\u00fcck zum vorigen Film, \u00fcber die Vorhand. Beide hintereinander gesehen, wird der Unterschied offensichtlich.", ar: "المقابل للفيلم السابق، عبر المقدمة. مشاهدة الفيلمين متتاليين تجعل الفرق واضحا.", zh: "上一个视频的对照，从前躯入手。连续看这两个视频，差别一目了然。", nl: "Het tegenovergestelde van de vorige, via de voorhand. Beide na elkaar bekijken maakt het verschil duidelijk.", pt: "O par do filme anterior, pelo anterior do cavalo. Assistir aos dois em sequência deixa a diferença evidente.", sv: "Motstycket till den förra filmen, via framdelen. Att se båda efter varandra gör skillnaden tydlig.", ru: "Пара к предыдущему видео, но через переднюю часть. Если посмотреть оба подряд, разница становится очевидной.", pl: "Odpowiednik poprzedniego filmu, tym razem przez przód. Obejrzenie obu po kolei wyraźnie pokazuje różnicę."
+        de: "Das Gegenst\u00fcck zum vorigen Film, \u00fcber die Vorhand. Beide hintereinander gesehen, wird der Unterschied offensichtlich.", ar: "المقابل للفيلم السابق، عبر المقدمة. مشاهدة الفيلمين متتاليين تجعل الفرق واضحا.", zh: "上一个视频的对照，从前躯入手。连续看这两个视频，差别一目了然。", nl: "Het tegenovergestelde van de vorige, via de voorhand. Beide na elkaar bekijken maakt het verschil duidelijk.", pt: "O par do filme anterior, pelo anterior do cavalo. Assistir aos dois em sequência deixa a diferença evidente.", sv: "Motstycket till den förra filmen, via framdelen. Att se båda efter varandra gör skillnaden tydlig.", ru: "Пара к предыдущему видео, но через переднюю часть. Если посмотреть оба подряд, разница становится очевидной.", pl: "Odpowiednik poprzedniego filmu, tym razem przez przód. Obejrzenie obu po kolei wyraźnie pokazuje różnicę.", ko: "앞의 동작과 짝을 이루는 동작으로, 전구로 해요. 두 영상을 이어서 보면 차이가 분명해져요."
       }
     },
     {
@@ -632,7 +632,7 @@
         es: "El primer recorrido",
         it: "Il primo percorso",
         ja: "\u306f\u3058\u3081\u3066\u306e\u30b3\u30fc\u30b9",
-        de: "Der erste Parcours", ar: "المسار الأول", zh: "第一次跑场地", nl: "Je eerste parcours", pt: "O primeiro percurso", sv: "Den första banan", ru: "Первая трасса", pl: "Pierwszy parkur"
+        de: "Der erste Parcours", ar: "المسار الأول", zh: "第一次跑场地", nl: "Je eerste parcours", pt: "O primeiro percurso", sv: "Den första banan", ru: "Первая трасса", pl: "Pierwszy parkur", ko: "첫 코스"
       },
       resume: {
         fr: "Reconnaitre, compter ses foulees, garder le meme galop du premier au dernier obstacle.",
@@ -640,7 +640,7 @@
         es: "Reconocer el recorrido, contar las zancadas, mantener el mismo galope del primer al \u00faltimo obst\u00e1culo.",
         it: "Ricognizione, conteggio delle falcate, e lo stesso galoppo dal primo all'ultimo ostacolo.",
         ja: "\u30b3\u30fc\u30b9\u3092\u4e0b\u898b\u3057\u3001\u6b69\u6570\u3092\u6570\u3048\u3001\u6700\u521d\u304b\u3089\u6700\u5f8c\u306e\u969c\u5bb3\u307e\u3067\u540c\u3058\u99c8\u6b69\u3092\u4fdd\u3064\u3002",
-        de: "Den Parcours abgehen, Galoppspr\u00fcnge z\u00e4hlen, denselben Galopp vom ersten bis zum letzten Sprung halten.", ar: "استطلاع المسار، وعد الخطوات، والحفاظ على العدو نفسه من أول حاجز إلى آخر حاجز.", zh: "勘察路线、数步数，从第一个障碍到最后一个障碍都保持同样的跑步。", nl: "Verkennen, je galopsprongen tellen, dezelfde galop houden van de eerste tot de laatste hindernis.", pt: "Reconhecer o percurso, contar as passadas, manter o mesmo galope do primeiro ao último obstáculo.", sv: "Gå banan, räkna galoppsprång och behålla samma galopp från första till sista hindret.", ru: "Осмотреть трассу, считать конские шаги, сохранять один и тот же галоп от первого препятствия до последнего.", pl: "Obejść parkur, liczyć wykroki, utrzymać ten sam galop od pierwszej do ostatniej przeszkody."
+        de: "Den Parcours abgehen, Galoppspr\u00fcnge z\u00e4hlen, denselben Galopp vom ersten bis zum letzten Sprung halten.", ar: "استطلاع المسار، وعد الخطوات، والحفاظ على العدو نفسه من أول حاجز إلى آخر حاجز.", zh: "勘察路线、数步数，从第一个障碍到最后一个障碍都保持同样的跑步。", nl: "Verkennen, je galopsprongen tellen, dezelfde galop houden van de eerste tot de laatste hindernis.", pt: "Reconhecer o percurso, contar as passadas, manter o mesmo galope do primeiro ao último obstáculo.", sv: "Gå banan, räkna galoppsprång och behålla samma galopp från första till sista hindret.", ru: "Осмотреть трассу, считать конские шаги, сохранять один и тот же галоп от первого препятствия до последнего.", pl: "Obejść parkur, liczyć wykroki, utrzymać ten sam galop od pierwszej do ostatniej przeszkody.", ko: "코스를 알아보고, 보폭 수를 세고, 첫 장애물부터 마지막까지 같은 구보를 유지해요."
       }
     },
     {
@@ -654,7 +654,7 @@
         es: "Circular en exterior",
         it: "Uscire in esterno",
         ja: "\u5916\u4e57\u3067\u306e\u884c\u52d5",
-        de: "Im Gel\u00e4nde unterwegs", ar: "الركوب في الخارج", zh: "户外骑行", nl: "Buiten rijden", pt: "Passear fora do picadeiro", sv: "Att rida ute i terrängen", ru: "Выезд на прогулку", pl: "Jazda w terenie"
+        de: "Im Gel\u00e4nde unterwegs", ar: "الركوب في الخارج", zh: "户外骑行", nl: "Buiten rijden", pt: "Passear fora do picadeiro", sv: "Att rida ute i terrängen", ru: "Выезд на прогулку", pl: "Jazda w terenie", ko: "야외에서 이동하기"
       },
       resume: {
         fr: "Le groupe, les distances, la route, et ce qu'on fait quand un cheval derriere n'est plus d'accord.",
@@ -662,7 +662,7 @@
         es: "El grupo, las distancias, la carretera, y qu\u00e9 hacer cuando un caballo de atr\u00e1s deja de estar de acuerdo.",
         it: "Il gruppo, le distanze, la strada, e cosa fare quando un cavallo dietro non \u00e8 pi\u00f9 d'accordo.",
         ja: "\u96c6\u56e3\u3001\u8eca\u9593\u8ddd\u96e2\u3001\u8def\u4e0a\u3001\u305d\u3057\u3066\u5f8c\u308d\u306e\u99ac\u304c\u7d0d\u5f97\u3057\u306a\u304f\u306a\u3063\u305f\u3068\u304d\u306e\u5bfe\u5fdc\u3002",
-        de: "Die Gruppe, die Abst\u00e4nde, die Stra\u00dfe, und was man tut, wenn ein Pferd hinten nicht mehr einverstanden ist.", ar: "المجموعة، والمسافات، والطريق، وما نفعله عندما لا يعود حصان في الخلف موافقا.", zh: "队伍、间距、马路，以及后面的马不愿意配合时该怎么办。", nl: "De groep, de afstanden, de weg, en wat je doet als een paard achteraan niet meer meewerkt.", pt: "O grupo, as distâncias, a estrada e o que fazer quando um cavalo atrás deixa de concordar.", sv: "Gruppen, avstånden, vägen och vad du gör när en häst bakom inte längre är med på noterna.", ru: "Группа, дистанции, дорога и что делать, когда лошадь сзади перестаёт слушаться.", pl: "Grupa, odległości, droga i co robić, gdy koń z tyłu przestaje się zgadzać."
+        de: "Die Gruppe, die Abst\u00e4nde, die Stra\u00dfe, und was man tut, wenn ein Pferd hinten nicht mehr einverstanden ist.", ar: "المجموعة، والمسافات، والطريق، وما نفعله عندما لا يعود حصان في الخلف موافقا.", zh: "队伍、间距、马路，以及后面的马不愿意配合时该怎么办。", nl: "De groep, de afstanden, de weg, en wat je doet als een paard achteraan niet meer meewerkt.", pt: "O grupo, as distâncias, a estrada e o que fazer quando um cavalo atrás deixa de concordar.", sv: "Gruppen, avstånden, vägen och vad du gör när en häst bakom inte längre är med på noterna.", ru: "Группа, дистанции, дорога и что делать, когда лошадь сзади перестаёт слушаться.", pl: "Grupa, odległości, droga i co robić, gdy koń z tyłu przestaje się zgadzać.", ko: "무리, 간격, 도로, 그리고 뒤에 있는 말이 더 이상 따라오지 않을 때 어떻게 하는지 알려 줘요."
       }
     },
     /* --- Galop 2, meme serie FFE. Deux films trouves sur les sept annonces.
@@ -680,7 +680,7 @@
         es: "Los primeros saltos",
         it: "I primi salti",
         ja: "\u306f\u3058\u3081\u306e\u8df3\u8e8d",
-        de: "Die ersten Spr\u00fcnge", ar: "القفزات الأولى", zh: "第一次跳跃", nl: "De eerste sprongen", pt: "Os primeiros saltos", sv: "De första hoppen", ru: "Первые прыжки", pl: "Pierwsze skoki"
+        de: "Die ersten Spr\u00fcnge", ar: "القفزات الأولى", zh: "第一次跳跃", nl: "De eerste sprongen", pt: "Os primeiros saltos", sv: "De första hoppen", ru: "Первые прыжки", pl: "Pierwsze skoki", ko: "첫 점프"
       },
       resume: {
         fr: "Franchir un premier obstacle sans rien brusquer : l'abord, l'equilibre sur les etriers, et le regard qui passe par-dessus.",
@@ -688,7 +688,7 @@
         es: "Franquear un primer obst\u00e1culo sin brusquedad: la aproximaci\u00f3n, el equilibrio sobre los estribos y la mirada m\u00e1s all\u00e1.",
         it: "Superare il primo ostacolo senza forzare nulla: l'avvicinamento, l'equilibrio sulle staffe e lo sguardo oltre.",
         ja: "\u7121\u7406\u306e\u306a\u3044\u521d\u3081\u3066\u306e\u8df3\u8e8d\u3002\u30a2\u30d7\u30ed\u30fc\u30c1\u3001\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9\u3001\u305d\u3057\u3066\u5148\u3092\u898b\u308b\u76ee\u7dda\u3002",
-        de: "Ein erstes Hindernis ohne Hast \u00fcberwinden: das Heranreiten, das Gleichgewicht in den B\u00fcgeln und der Blick dar\u00fcber hinaus.", ar: "اجتياز أول حاجز دون تسرع: الاقتراب، والتوازن على الركابين، والنظر الذي يتجاوز الحاجز.", zh: "不慌不忙地跨过第一个障碍：接近、马镫上的平衡，还有越过障碍向前看的目光。", nl: "Een eerste hindernis nemen zonder iets te forceren: de nadering, de balans op de stijgbeugels en de blik die erover heen gaat.", pt: "Transpor um primeiro obstáculo sem atropelar nada: a aproximação, o equilíbrio nos estribos e o olhar que passa por cima.", sv: "Att ta ett första hinder utan att forcera något: framridningen, balansen på stigbyglarna och blicken som ser bortom hindret.", ru: "Преодолеть первое препятствие, ничего не торопя: подход, равновесие на стременах и взгляд, устремлённый поверх.", pl: "Pokonać pierwszą przeszkodę, niczego nie przyspieszając: dojazd, równowaga na strzemionach i wzrok patrzący ponad przeszkodę."
+        de: "Ein erstes Hindernis ohne Hast \u00fcberwinden: das Heranreiten, das Gleichgewicht in den B\u00fcgeln und der Blick dar\u00fcber hinaus.", ar: "اجتياز أول حاجز دون تسرع: الاقتراب، والتوازن على الركابين، والنظر الذي يتجاوز الحاجز.", zh: "不慌不忙地跨过第一个障碍：接近、马镫上的平衡，还有越过障碍向前看的目光。", nl: "Een eerste hindernis nemen zonder iets te forceren: de nadering, de balans op de stijgbeugels en de blik die erover heen gaat.", pt: "Transpor um primeiro obstáculo sem atropelar nada: a aproximação, o equilíbrio nos estribos e o olhar que passa por cima.", sv: "Att ta ett första hinder utan att forcera något: framridningen, balansen på stigbyglarna och blicken som ser bortom hindret.", ru: "Преодолеть первое препятствие, ничего не торопя: подход, равновесие на стременах и взгляд, устремлённый поверх.", pl: "Pokonać pierwszą przeszkodę, niczego nie przyspieszając: dojazd, równowaga na strzemionach i wzrok patrzący ponad przeszkodę.", ko: "서두르지 않고 첫 장애물 넘기. 접근, 등자 위 균형, 그리고 장애물 너머로 향하는 시선을 다뤄요."
       }
     },
     {
@@ -702,7 +702,7 @@
         es: "Un recorrido tipo",
         it: "Un percorso tipo",
         ja: "\u6a19\u6e96\u7684\u306a\u30b3\u30fc\u30b9",
-        de: "Ein Musterparcours", ar: "مسار نموذجي", zh: "一条标准路线", nl: "Een typisch parcours", pt: "Um percurso modelo", sv: "En typbana", ru: "Образцовая трасса", pl: "Przykładowy parkur"
+        de: "Ein Musterparcours", ar: "مسار نموذجي", zh: "一条标准路线", nl: "Een typisch parcours", pt: "Um percurso modelo", sv: "En typbana", ru: "Образцовая трасса", pl: "Przykładowy parkur", ko: "전형적인 코스"
       },
       resume: {
         fr: "A quoi ressemble le parcours attendu au Galop 2, du premier tracé au dernier arrêt.",
@@ -710,7 +710,7 @@
         es: "C\u00f3mo es el recorrido esperado en el Galop 2, del primer trazado a la \u00faltima parada.",
         it: "Com'\u00e8 fatto il percorso richiesto al Galoppo 2, dal primo tracciato all'ultimo arresto.",
         ja: "\u30ac\u30ed\u30fc2\u3067\u6c42\u3081\u3089\u308c\u308b\u30b3\u30fc\u30b9\u306e\u5168\u4f53\u50cf\u3002\u6700\u521d\u306e\u30e9\u30a4\u30f3\u304b\u3089\u6700\u5f8c\u306e\u505c\u6b62\u307e\u3067\u3002",
-        de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten.", ar: "كيف يبدو المسار المطلوب في الغالوب 2، من أول خط إلى آخر توقف.", zh: "Galop 2 要求的路线实际是什么样子，从第一条路线到最后的停止。", nl: "Hoe het parcours eruitziet dat bij Galop 2 verwacht wordt, van de eerste lijn tot de laatste stop.", pt: "Como é o percurso esperado no Galop 2, do primeiro traçado até a última parada.", sv: "Hur banan som krävs i Galop 2 ser ut, från första linjen till sista stoppet.", ru: "Как выглядит трасса, которую ждут на Galop 2, от первого рисунка до последней остановки.", pl: "Jak wygląda parkur wymagany na Galop 2, od pierwszej linii do ostatniego zatrzymania."
+        de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten.", ar: "كيف يبدو المسار المطلوب في الغالوب 2، من أول خط إلى آخر توقف.", zh: "Galop 2 要求的路线实际是什么样子，从第一条路线到最后的停止。", nl: "Hoe het parcours eruitziet dat bij Galop 2 verwacht wordt, van de eerste lijn tot de laatste stop.", pt: "Como é o percurso esperado no Galop 2, do primeiro traçado até a última parada.", sv: "Hur banan som krävs i Galop 2 ser ut, från första linjen till sista stoppet.", ru: "Как выглядит трасса, которую ждут на Galop 2, от первого рисунка до последней остановки.", pl: "Jak wygląda parkur wymagany na Galop 2, od pierwszej linii do ostatniego zatrzymania.", ko: "Galop 2에서 요구하는 코스가 첫 경로부터 마지막 정지까지 어떻게 이루어지는지 보여 줘요."
       }
     }
   ];
@@ -802,34 +802,34 @@
   /* ---------------- COLLECTIONS ÉDITORIALES ---------------- */
   var COLLS = [
     { id: "hvc-contact", sceau: "◉", format: "affiche",
-      nom: { fr: "Le contact, du geste à la sensation", en: "Contact, from gesture to feel", es: "El contacto, del gesto a la sensación", it: "Il contatto, dal gesto alla sensazione", ja: "コンタクト — 動作から感覚へ", de: "Die Anlehnung, von der Hand zum Gefühl", ar: "الاتصال، من الحركة إلى الإحساس", zh: "接触，从动作到感觉", nl: "Het contact, van handeling tot gevoel", pt: "O contato, do gesto à sensação", sv: "Kontakt, från handling till känsla", ru: "Контакт: от движения к ощущению", pl: "Kontakt, od gestu do wyczucia" },
-      sous: { fr: "Le chapitre « Le contact » en vidéo", en: "The Contact chapter, in video", es: "El capítulo « El contacto » en vídeo", it: "Il capitolo « Il contatto » in video", ja: "「コンタクト」の章を動画で", de: "Das Kapitel Anlehnung als Video", ar: "فصل «الاتصال» بالفيديو", zh: "“接触”章节的视频版", nl: "Het hoofdstuk \"Het contact\" in video", pt: "O capítulo “O contato” em vídeo", sv: "Kapitlet ”Kontakt” i videoform", ru: "Глава «Контакт» в видео", pl: "Rozdział „Kontakt” w wideo" },
+      nom: { fr: "Le contact, du geste à la sensation", en: "Contact, from gesture to feel", es: "El contacto, del gesto a la sensación", it: "Il contatto, dal gesto alla sensazione", ja: "コンタクト — 動作から感覚へ", de: "Die Anlehnung, von der Hand zum Gefühl", ar: "الاتصال، من الحركة إلى الإحساس", zh: "接触，从动作到感觉", nl: "Het contact, van handeling tot gevoel", pt: "O contato, do gesto à sensação", sv: "Kontakt, från handling till känsla", ru: "Контакт: от движения к ощущению", pl: "Kontakt, od gestu do wyczucia", ko: "접촉, 동작에서 감각까지" },
+      sous: { fr: "Le chapitre « Le contact » en vidéo", en: "The Contact chapter, in video", es: "El capítulo « El contacto » en vídeo", it: "Il capitolo « Il contatto » in video", ja: "「コンタクト」の章を動画で", de: "Das Kapitel Anlehnung als Video", ar: "فصل «الاتصال» بالفيديو", zh: "“接触”章节的视频版", nl: "Het hoofdstuk \"Het contact\" in video", pt: "O capítulo “O contato” em vídeo", sv: "Kapitlet ”Kontakt” i videoform", ru: "Глава «Контакт» в видео", pl: "Rozdział „Kontakt” w wideo", ko: "챕터 “접촉”을 영상으로" },
       ids: ["v-contact-01", "v-contact-02", "v-contact-03"] },
 
     { id: "hvc-aides", sceau: "❖", format: "affiche",
-      nom: { fr: "Mieux utiliser ses aides", en: "Using your aids better", es: "Usar mejor tus ayudas", it: "Usare meglio i propri aiuti", ja: "扶助をより上手に使う", de: "Die Hilfen besser einsetzen", ar: "استعمال المساعدات بشكل أفضل", zh: "更好地使用你的扶助", nl: "Je hulpen beter gebruiken", pt: "Usar melhor suas ajudas", sv: "Använd dina hjälper bättre", ru: "Лучше использовать свои помощи", pl: "Lepsze używanie pomocy" },
-      sous: { fr: "Le chapitre « L'accord des aides » en vidéo", en: "The Coordination of Aids chapter, in video", es: "El capítulo « El acuerdo de las ayudas » en vídeo", it: "Il capitolo « L'accordo degli aiuti » in video", ja: "「扶助の連携」の章を動画で", de: "Das Kapitel Hilfengebung als Video", ar: "فصل «تنسيق المساعدات» بالفيديو", zh: "“扶助的配合”章节的视频版", nl: "Het hoofdstuk \"De samenwerking van de hulpen\" in video", pt: "O capítulo “A coordenação das ajudas” em vídeo", sv: "Kapitlet ”Hjälparnas samspel” i videoform", ru: "Глава «Согласованность помощей» в видео", pl: "Rozdział „Zgranie pomocy” w wideo" },
+      nom: { fr: "Mieux utiliser ses aides", en: "Using your aids better", es: "Usar mejor tus ayudas", it: "Usare meglio i propri aiuti", ja: "扶助をより上手に使う", de: "Die Hilfen besser einsetzen", ar: "استعمال المساعدات بشكل أفضل", zh: "更好地使用你的扶助", nl: "Je hulpen beter gebruiken", pt: "Usar melhor suas ajudas", sv: "Använd dina hjälper bättre", ru: "Лучше использовать свои помощи", pl: "Lepsze używanie pomocy", ko: "부조를 더 잘 쓰기" },
+      sous: { fr: "Le chapitre « L'accord des aides » en vidéo", en: "The Coordination of Aids chapter, in video", es: "El capítulo « El acuerdo de las ayudas » en vídeo", it: "Il capitolo « L'accordo degli aiuti » in video", ja: "「扶助の連携」の章を動画で", de: "Das Kapitel Hilfengebung als Video", ar: "فصل «تنسيق المساعدات» بالفيديو", zh: "“扶助的配合”章节的视频版", nl: "Het hoofdstuk \"De samenwerking van de hulpen\" in video", pt: "O capítulo “A coordenação das ajudas” em vídeo", sv: "Kapitlet ”Hjälparnas samspel” i videoform", ru: "Глава «Согласованность помощей» в видео", pl: "Rozdział „Zgranie pomocy” w wideo", ko: "챕터 “부조의 조화”를 영상으로" },
       ids: ["v-aides-01", "v-aides-02", "v-aides-03"] },
 
     /* Angle « académie équestre » : on met en avant qui parle, pas seulement
        le sujet. C'est ce qui distingue d'une plateforme de streaming. */
     { id: "hvc-voix", sceau: "❋", format: "liste", parIntervenant: true,
-      nom: { fr: "Paroles d'experts", en: "Expert voices", es: "Voces expertas", it: "Voci di esperti", ja: "専門家の声", de: "Stimmen der Fachleute", ar: "كلمات الخبراء", zh: "专家之声", nl: "Experts aan het woord", pt: "Palavra de especialistas", sv: "Experternas röster", ru: "Слово экспертам", pl: "Głosy ekspertów" },
-      sous: { fr: "Juges, vétérinaires et ergonomes, sur le contact", en: "Judges, vets and ergonomists on contact", es: "Jueces, veterinarios y ergónomos, sobre el contacto", it: "Giudici, veterinari ed ergonomi, sul contatto", ja: "審判員・獣医師・エルゴノミストが語るコンタクト", de: "Richter, Tierärzte und Ergonomen zur Anlehnung", ar: "حكام وأطباء بيطريون وأخصائيو بيئة العمل، حول الاتصال", zh: "裁判、兽医和工效学专家谈接触", nl: "Juryleden, dierenartsen en ergonomen over het contact", pt: "Juízes, veterinários e ergonomistas falam sobre o contato", sv: "Domare, veterinärer och ergonomer om kontakt", ru: "Судьи, ветеринары и эргономисты о контакте", pl: "Sędziowie, weterynarze i ergonomowie o kontakcie" },
+      nom: { fr: "Paroles d'experts", en: "Expert voices", es: "Voces expertas", it: "Voci di esperti", ja: "専門家の声", de: "Stimmen der Fachleute", ar: "كلمات الخبراء", zh: "专家之声", nl: "Experts aan het woord", pt: "Palavra de especialistas", sv: "Experternas röster", ru: "Слово экспертам", pl: "Głosy ekspertów", ko: "전문가의 이야기" },
+      sous: { fr: "Juges, vétérinaires et ergonomes, sur le contact", en: "Judges, vets and ergonomists on contact", es: "Jueces, veterinarios y ergónomos, sobre el contacto", it: "Giudici, veterinari ed ergonomi, sul contatto", ja: "審判員・獣医師・エルゴノミストが語るコンタクト", de: "Richter, Tierärzte und Ergonomen zur Anlehnung", ar: "حكام وأطباء بيطريون وأخصائيو بيئة العمل، حول الاتصال", zh: "裁判、兽医和工效学专家谈接触", nl: "Juryleden, dierenartsen en ergonomen over het contact", pt: "Juízes, veterinários e ergonomistas falam sobre o contato", sv: "Domare, veterinärer och ergonomer om kontakt", ru: "Судьи, ветеринары и эргономисты о контакте", pl: "Sędziowie, weterynarze i ergonomowie o kontakcie", ko: "접촉에 대한 심판, 수의사, 인체공학 전문가의 이야기" },
       ids: ["v-contact-01", "v-contact-03", "v-contact-02"] }
   ];
 
   /* ---------------- UNIVERS ---------------- */
   var UNIVERS = [
-    { k: "tous",     nom: { fr: "Tous", en: "All", es: "Todos", it: "Tutti", ja: "すべて", de: "Alle", ar: "الكل", zh: "全部", nl: "Alles", pt: "Todos", sv: "Alla", ru: "Все", pl: "Wszystkie" } },
-    { k: "position", nom: { fr: "Position du cavalier", en: "Rider position", es: "Posición del jinete", it: "Posizione del cavaliere", ja: "騎手の姿勢", de: "Sitz des Reiters", ar: "وضعية الفارس", zh: "骑手的骑姿", nl: "Houding van de ruiter", pt: "Posição do cavaleiro", sv: "Ryttarens position", ru: "Посадка всадника", pl: "Pozycja jeźdźca" } },
-    { k: "cheval",   nom: { fr: "Comprendre le cheval", en: "Understanding the horse", es: "Entender al caballo", it: "Capire il cavallo", ja: "馬を理解する", de: "Das Pferd verstehen", ar: "فهم الحصان", zh: "读懂马", nl: "Het paard begrijpen", pt: "Entender o cavalo", sv: "Att förstå hästen", ru: "Понимать лошадь", pl: "Zrozumieć konia" } },
-    { k: "dressage", nom: { fr: "Dressage", en: "Dressage", es: "Doma", it: "Dressage", ja: "馬場馬術", de: "Dressur", ar: "الترويض", zh: "盛装舞步", nl: "Dressuur", pt: "Adestramento", sv: "Dressyr", ru: "Выездка", pl: "Ujeżdżenie" } },
-    { k: "obstacle", nom: { fr: "Obstacle", en: "Jumping", es: "Salto", it: "Salto ostacoli", ja: "障害飛越", de: "Springen", ar: "قفز الحواجز", zh: "障碍", nl: "Hindernis", pt: "Salto", sv: "Hoppning", ru: "Преодоление препятствий", pl: "Skoki" } },
-    { k: "pied",     nom: { fr: "Travail à pied", en: "Groundwork", es: "Trabajo a pie", it: "Lavoro da terra", ja: "地上作業", de: "Bodenarbeit", ar: "العمل على الأرض", zh: "地面训练", nl: "Grondwerk", pt: "Trabalho a pé", sv: "Arbete från marken", ru: "Работа с земли", pl: "Praca z ziemi" } },
-    { k: "soins",    nom: { fr: "Soins et préparation", en: "Care and preparation", es: "Cuidados y preparación", it: "Cura e preparazione", ja: "手入れと準備", de: "Pflege und Vorbereitung", ar: "العناية والتحضير", zh: "护理与准备", nl: "Verzorging en voorbereiding", pt: "Cuidados e preparação", sv: "Skötsel och förberedelse", ru: "Уход и подготовка", pl: "Opieka i przygotowanie" } },
-    { k: "securite", nom: { fr: "Sécurité", en: "Safety", es: "Seguridad", it: "Sicurezza", ja: "安全", de: "Sicherheit", ar: "السلامة", zh: "安全", nl: "Veiligheid", pt: "Segurança", sv: "Säkerhet", ru: "Безопасность", pl: "Bezpieczeństwo" } },
-    { k: "baby",     nom: { fr: "Hey Baby", en: "Hey Baby", es: "Hey Baby", it: "Hey Baby", ja: "Hey Baby", de: "Hey Baby", ar: "Hey Baby", zh: "Hey Baby", nl: "Hey Baby", pt: "Hey Baby", sv: "Hey Baby", ru: "Hey Baby", pl: "Hey Baby" } }
+    { k: "tous",     nom: { fr: "Tous", en: "All", es: "Todos", it: "Tutti", ja: "すべて", de: "Alle", ar: "الكل", zh: "全部", nl: "Alles", pt: "Todos", sv: "Alla", ru: "Все", pl: "Wszystkie", ko: "전체" } },
+    { k: "position", nom: { fr: "Position du cavalier", en: "Rider position", es: "Posición del jinete", it: "Posizione del cavaliere", ja: "騎手の姿勢", de: "Sitz des Reiters", ar: "وضعية الفارس", zh: "骑手的骑姿", nl: "Houding van de ruiter", pt: "Posição do cavaleiro", sv: "Ryttarens position", ru: "Посадка всадника", pl: "Pozycja jeźdźca", ko: "기수의 자세" } },
+    { k: "cheval",   nom: { fr: "Comprendre le cheval", en: "Understanding the horse", es: "Entender al caballo", it: "Capire il cavallo", ja: "馬を理解する", de: "Das Pferd verstehen", ar: "فهم الحصان", zh: "读懂马", nl: "Het paard begrijpen", pt: "Entender o cavalo", sv: "Att förstå hästen", ru: "Понимать лошадь", pl: "Zrozumieć konia", ko: "말 이해하기" } },
+    { k: "dressage", nom: { fr: "Dressage", en: "Dressage", es: "Doma", it: "Dressage", ja: "馬場馬術", de: "Dressur", ar: "الترويض", zh: "盛装舞步", nl: "Dressuur", pt: "Adestramento", sv: "Dressyr", ru: "Выездка", pl: "Ujeżdżenie", ko: "마장마술" } },
+    { k: "obstacle", nom: { fr: "Obstacle", en: "Jumping", es: "Salto", it: "Salto ostacoli", ja: "障害飛越", de: "Springen", ar: "قفز الحواجز", zh: "障碍", nl: "Hindernis", pt: "Salto", sv: "Hoppning", ru: "Преодоление препятствий", pl: "Skoki", ko: "장애물" } },
+    { k: "pied",     nom: { fr: "Travail à pied", en: "Groundwork", es: "Trabajo a pie", it: "Lavoro da terra", ja: "地上作業", de: "Bodenarbeit", ar: "العمل على الأرض", zh: "地面训练", nl: "Grondwerk", pt: "Trabalho a pé", sv: "Arbete från marken", ru: "Работа с земли", pl: "Praca z ziemi", ko: "지상 훈련" } },
+    { k: "soins",    nom: { fr: "Soins et préparation", en: "Care and preparation", es: "Cuidados y preparación", it: "Cura e preparazione", ja: "手入れと準備", de: "Pflege und Vorbereitung", ar: "العناية والتحضير", zh: "护理与准备", nl: "Verzorging en voorbereiding", pt: "Cuidados e preparação", sv: "Skötsel och förberedelse", ru: "Уход и подготовка", pl: "Opieka i przygotowanie", ko: "케어와 준비" } },
+    { k: "securite", nom: { fr: "Sécurité", en: "Safety", es: "Seguridad", it: "Sicurezza", ja: "安全", de: "Sicherheit", ar: "السلامة", zh: "安全", nl: "Veiligheid", pt: "Segurança", sv: "Säkerhet", ru: "Безопасность", pl: "Bezpieczeństwo", ko: "안전" } },
+    { k: "baby",     nom: { fr: "Hey Baby", en: "Hey Baby", es: "Hey Baby", it: "Hey Baby", ja: "Hey Baby", de: "Hey Baby", ar: "Hey Baby", zh: "Hey Baby", nl: "Hey Baby", pt: "Hey Baby", sv: "Hey Baby", ru: "Hey Baby", pl: "Hey Baby", ko: "Hey Baby" } }
   ];
 
   var SUGGESTS = ["contact", "accord des aides", "position", "céder", "départ au galop", "coudes", "indépendance des aides", "équilibre"];
@@ -949,9 +949,9 @@
      webconférences IFCE : on affiche la tranche, ou rien du tout plutôt
      qu'un chiffre inventé. */
   var TRANCHES = {
-    court: { fr: "moins de 3 min", en: "under 3 min", es: "menos de 3 min", it: "meno di 3 min", ja: "3分未満", de: "unter 3 Min", ar: "أقل من 3 دقائق", zh: "不到3分钟", nl: "minder dan 3 min", pt: "menos de 3 min", sv: "under 3 min", ru: "меньше 3 мин", pl: "poniżej 3 min" },
-    moyen: { fr: "3 à 8 min", en: "3 to 8 min", es: "3 a 8 min", it: "da 3 a 8 min", ja: "3〜8分", de: "3 bis 8 Min", ar: "من 3 إلى 8 دقائق", zh: "3到8分钟", nl: "3 tot 8 min", pt: "3 a 8 min", sv: "3 till 8 min", ru: "от 3 до 8 мин", pl: "3 do 8 min" },
-    plus8: { fr: "format long", en: "long format", es: "formato largo", it: "formato lungo", ja: "長編", de: "Langformat", ar: "صيغة طويلة", zh: "长视频", nl: "lang formaat", pt: "formato longo", sv: "långt format", ru: "длинный формат", pl: "format długi" }
+    court: { fr: "moins de 3 min", en: "under 3 min", es: "menos de 3 min", it: "meno di 3 min", ja: "3分未満", de: "unter 3 Min", ar: "أقل من 3 دقائق", zh: "不到3分钟", nl: "minder dan 3 min", pt: "menos de 3 min", sv: "under 3 min", ru: "меньше 3 мин", pl: "poniżej 3 min", ko: "3분 미만" },
+    moyen: { fr: "3 à 8 min", en: "3 to 8 min", es: "3 a 8 min", it: "da 3 a 8 min", ja: "3〜8分", de: "3 bis 8 Min", ar: "من 3 إلى 8 دقائق", zh: "3到8分钟", nl: "3 tot 8 min", pt: "3 a 8 min", sv: "3 till 8 min", ru: "от 3 до 8 мин", pl: "3 do 8 min", ko: "3~8분" },
+    plus8: { fr: "format long", en: "long format", es: "formato largo", it: "formato lungo", ja: "長編", de: "Langformat", ar: "صيغة طويلة", zh: "长视频", nl: "lang formaat", pt: "formato longo", sv: "långt format", ru: "длинный формат", pl: "format długi", ko: "긴 영상" }
   };
 
   function fondCouv(v) {
@@ -1156,7 +1156,7 @@
     var h = React.createElement;
     var app = useApp();
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue, premium = app.premium;
-    function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl }); }
+    function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
 
     /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
@@ -1294,17 +1294,17 @@
        l'image. Rend "" quand il n'y a rien de notable a dire. */
     function etatDe(v) {
       var pv = prog(v.id);
-      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium", "بريميوم", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium");
-      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce");
-      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane");
-      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki");
+      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium", "بريميوم", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium");
+      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개");
+      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함");
+      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상");
       return "";
     }
     /* Galop · duree · etat, sous l'image, separes par des points medians.
        Les elements vides sont ecartes : jamais de « · · » orphelin. */
     function metaDe(v) {
       return [
-        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop,
+        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop,
         dureeDe(v),
         etatDe(v)
       ].filter(function (x) { return !!x; }).join(" · ");
@@ -1321,9 +1321,9 @@
     }
     function carteLigne(v, n) {
       var p = prog(v.id);
-      var etatTxt = !v.src ? T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce")
-        : (p && p.vue) ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane")
-        : (p && p.ouverte) ? T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki")
+      var etatTxt = !v.src ? T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")
+        : (p && p.vue) ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
+        : (p && p.ouverte) ? T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")
         : (v.intervenant || dureeDe(v) || "");
       return h("div", { key: v.id, style: { display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,.05)" } },
         h("button", { className: "hv-ligne", style: { borderBottom: "none", flex: 1, minWidth: 0 }, onClick: function () { ouvrir(v); } },
@@ -1333,10 +1333,10 @@
             h("h4", null, titreDe(v)),
             h("span", { className: "hv-meta", style: { display: "block" } },
               v.estAnim ? (v.source + " · " + v.titreSource)
-                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop + " · " + etatTxt)))),
+                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop + " · " + etatTxt)))),
         h("button", {
           className: "hv-fav" + (estFav(v.id) ? " on" : ""),
-          "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony"),
+          "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기"),
           onClick: function () { basculerFav(v.id); }
         }, estFav(v.id) ? "★" : "☆"));
     }
@@ -1382,21 +1382,21 @@
       }),
       h("div", { key: "voile", className: "hv-hero-voile" }),
       h("div", { key: "txt", className: "hv-hero-in" },
-        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie", "Hype · الأكاديمية", "Hype · 学院", "Hype · Academie", "Hype · Academia", "Hype · Akademi", "Hype · Академия", "Hype · Akademia")),
+        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie", "Hype · الأكاديمية", "Hype · 学院", "Hype · Academie", "Hype · Academia", "Hype · Akademi", "Hype · Академия", "Hype · Akademia", "Hype · 아카데미")),
         h("h1", null,
-          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video", "مكتبة", "书架", "Bibliotheek", "Biblioteca", "Bibliotek", "Библиотека", "Biblioteka"),
-          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo"))),
-        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen", "لاحظي، افهمي، تقدمي", "观察、理解、进步", "Kijk, begrijp, groei", "Observe, entenda, evolua", "Titta, förstå, utvecklas", "Смотри, понимай, развивайся", "Obserwuj, rozumiej, rób postępy")),
+          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video", "مكتبة", "书架", "Bibliotheek", "Biblioteca", "Bibliotek", "Библиотека", "Biblioteka", "서재"),
+          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상"))),
+        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen", "لاحظي، افهمي، تقدمي", "观察、理解、进步", "Kijk, begrijp, groei", "Observe, entenda, evolua", "Titta, förstå, utvecklas", "Смотри, понимай, развивайся", "Obserwuj, rozumiej, rób postępy", "관찰하고, 이해하고, 성장해요")),
         h("div", { className: "hv-stats" },
-          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo"))),
-          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten", "متحدثين", "位讲者", "sprekers", "palestrantes", "medverkande", "выступающие", "prelegenci"))),
-          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel", "فصول", "个章节", "hoofdstukken", "capítulos", "kapitel", "глав", "rozdziałów"))))));
+          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상"))),
+          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten", "متحدثين", "位讲者", "sprekers", "palestrantes", "medverkande", "выступающие", "prelegenci", "강연자"))),
+          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel", "فصول", "个章节", "hoofdstukken", "capítulos", "kapitel", "глав", "rozdziałów", "개 챕터"))))));
 
     var recherche = h("div", { className: "hv-rech" },
       h("span", { style: { opacity: .5, fontSize: 14 } }, "⌕"),
       h("input", {
         type: "search", value: rq, autoComplete: "off",
-        placeholder: T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen", "ابحثي عن فيديو أو تمرين أو مفهوم", "搜索视频、练习或知识点", "Zoek een video, een oefening of een begrip", "Procure um vídeo, um exercício ou uma noção", "Sök efter en video, en övning eller ett begrepp", "Найти видео, упражнение или понятие", "Szukaj wideo, ćwiczenia lub pojęcia"),
+        placeholder: T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen", "ابحثي عن فيديو أو تمرين أو مفهوم", "搜索视频、练习或知识点", "Zoek een video, een oefening of een begrip", "Procure um vídeo, um exercício ou uma noção", "Sök efter en video, en övning eller ett begrepp", "Найти видео, упражнение или понятие", "Szukaj wideo, ćwiczenia lub pojęcia", "영상, 운동, 개념 검색"),
         onChange: function (e) { setRq(e.target.value); }
       }),
       rq ? h("button", { className: "hv-fav", onClick: function () { setRq(""); } }, "×") : null);
@@ -1413,7 +1413,7 @@
         }, L(x.nom, langue));
       }).concat([
         h("button", { key: "__f", className: "hv-filtres", onClick: function () { setFeuille(true); } },
-          "⚟ " + T("Filtres", "Filters", "Filtros", "Filtri", "絞り込み", "Filter", "عوامل التصفية", "筛选", "Filters", "Filtros", "Filter", "Фильтры", "Filtry") + (nbFiltres ? " · " + nbFiltres : ""))
+          "⚟ " + T("Filtres", "Filters", "Filtros", "Filtri", "絞り込み", "Filter", "عوامل التصفية", "筛选", "Filters", "Filtros", "Filter", "Фильтры", "Filtry", "필터") + (nbFiltres ? " · " + nbFiltres : ""))
       ]));
 
     /* ---------- bibliothèque encore vide ----------
@@ -1422,11 +1422,11 @@
     if (!dispo.length) {
       return h("div", { className: "hv-wrap" }, hero,
         h("div", { className: "hv-vide", style: { paddingTop: 34 } },
-          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.", "首批视频马上就来。", "De eerste video's komen eraan.", "Os primeiros vídeos estão chegando.", "De första videorna är på väg.", "Первые видео скоро появятся.", "Pierwsze filmy już wkrótce.")),
-          h("p", { className: "hv-s2" }, T("La bibliothèque s'ouvrira ici, chapitre par chapitre.", "The library will open here, chapter by chapter.", "La biblioteca se abrirá aquí, capítulo a capítulo.", "La videoteca si aprirà qui, capitolo per capitolo.", "章ごとに、ここに開いていきます。", "Die Bibliothek öffnet hier, Kapitel für Kapitel.", "ستفتح المكتبة هنا، فصلا بعد فصل.", "视频库将在这里按章节逐步开放。", "De bibliotheek gaat hier open, hoofdstuk per hoofdstuk.", "A biblioteca vai abrir aqui, capítulo por capítulo.", "Biblioteket öppnar här, kapitel för kapitel.", "Библиотека откроется здесь, глава за главой.", "Biblioteka otworzy się tutaj, rozdział po rozdziale."))),
+          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.", "首批视频马上就来。", "De eerste video's komen eraan.", "Os primeiros vídeos estão chegando.", "De första videorna är på väg.", "Первые видео скоро появятся.", "Pierwsze filmy już wkrótce.", "첫 영상들이 곧 올라와요.")),
+          h("p", { className: "hv-s2" }, T("La bibliothèque s'ouvrira ici, chapitre par chapitre.", "The library will open here, chapter by chapter.", "La biblioteca se abrirá aquí, capítulo a capítulo.", "La videoteca si aprirà qui, capitolo per capitolo.", "章ごとに、ここに開いていきます。", "Die Bibliothek öffnet hier, Kapitel für Kapitel.", "ستفتح المكتبة هنا، فصلا بعد فصل.", "视频库将在这里按章节逐步开放。", "De bibliotheek gaat hier open, hoofdstuk per hoofdstuk.", "A biblioteca vai abrir aqui, capítulo por capítulo.", "Biblioteket öppnar här, kapitel för kapitel.", "Библиотека откроется здесь, глава за главой.", "Biblioteka otworzy się tutaj, rozdział po rozdziale.", "라이브러리가 여기에서 챕터별로 열려요."))),
         h("div", { className: "hv-sec" },
           h("button", { className: "hv-btn hv-btn-p", style: { width: "100%" }, onClick: function () { setEcran("galops"); } },
-            T("Retour aux Galops", "Back to levels", "Volver a los Galops", "Torna ai Galop", "ガロー一覧に戻る", "Zurück zu den Galopps", "العودة إلى مستويات الغالوب", "返回 Galop 等级", "Terug naar de Galop-niveaus", "Voltar aos Galops", "Tillbaka till Galop-nivåerna", "Назад к уровням Galop", "Wróć do poziomów Galop"))));
+            T("Retour aux Galops", "Back to levels", "Volver a los Galops", "Torna ai Galop", "ガロー一覧に戻る", "Zurück zu den Galopps", "العودة إلى مستويات الغالوب", "返回 Galop 等级", "Terug naar de Galop-niveaus", "Voltar aos Galops", "Tillbaka till Galop-nivåerna", "Назад к уровням Galop", "Wróć do poziomów Galop", "Galop 단계로 돌아가기"))));
     }
 
     /* ---------- continuer à regarder ---------- */
@@ -1444,11 +1444,11 @@
         couv(mv, { galop: false }),
         h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
           h("h4", null, titreDe(mv)),
-          h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ", "الفصل: ", "章节：", "Hoofdstuk: ", "Capítulo: ", "Kapitel: ", "Глава: ", "Rozdział: ") + chapitreDe(mv)),
+          h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ", "الفصل: ", "章节：", "Hoofdstuk: ", "Capítulo: ", "Kapitel: ", "Глава: ", "Rozdział: ", "챕터: ") + chapitreDe(mv)),
           /* 06/08 : la duree quittait la miniature, elle se lit ici. */
           dureeDe(mv) ? h("span", { className: "hv-lie", style: { display: "block", marginTop: 2 } }, dureeDe(mv)) : null,
           h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 9, letterSpacing: ".1em", textTransform: "uppercase" } },
-            T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen", "متابعة", "继续", "Hervatten", "Retomar", "Fortsätt", "Продолжить", "Wznów"))));
+            T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen", "متابعة", "继续", "Hervatten", "Retomar", "Fortsätt", "Продолжить", "Wznów", "이어하기"))));
     }
 
     /* ---------- à la une ---------- */
@@ -1464,21 +1464,21 @@
          decoratives et sans enjeu de lecture. */
       couv(une, { galop: false, sansVoile: true, sansMini: true }),
       h("div", { className: "hv-une-txt" },
-        h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen", "موصى به لك", "为你推荐", "Aanbevolen voor jou", "Recomendado para você", "Rekommenderad för dig", "Рекомендуем тебе", "Polecane dla ciebie")),
+        h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen", "موصى به لك", "为你推荐", "Aanbevolen voor jou", "Recomendado para você", "Rekommenderad för dig", "Рекомендуем тебе", "Polecane dla ciebie", "추천 영상")),
         h("h3", null, titreDe(une)),
         h("p", { className: "hv-desc" }, resumeDe(une)),
         h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + une.galop),
+          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + une.galop),
           dureeDe(une) ? h("span", { className: "hv-mini" }, dureeDe(une)) : null,
           h("span", { className: "hv-mini" }, chapitreDe(une)),
           une.source ? h("span", { className: "hv-mini" }, une.source) : null,
           etatDe(une) ? h("span", { className: "hv-mini" }, etatDe(une)) : null),
         h("div", { className: "hv-act" },
           h("button", { className: "hv-btn hv-btn-p", onClick: function () { ouvrir(une); } },
-            T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen", "مشاهدة", "观看", "Kijken", "Assistir", "Titta", "Смотреть", "Oglądaj")),
+            T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen", "مشاهدة", "观看", "Kijken", "Assistir", "Titta", "Смотреть", "Oglądaj", "시청하기")),
           h("button", {
             className: "hv-btn hv-btn-s" + (estFav(une.id) ? " on" : ""),
-            "aria-label": T("Ajouter à mes favoris", "Add to favourites", "Añadir a favoritos", "Aggiungi ai preferiti", "お気に入りに追加", "Zu Favoriten", "إضافة إلى مفضلاتي", "加入我的收藏", "Aan mijn favorieten toevoegen", "Adicionar aos meus favoritos", "Lägg till i mina favoriter", "Добавить в избранное", "Dodaj do ulubionych"),
+            "aria-label": T("Ajouter à mes favoris", "Add to favourites", "Añadir a favoritos", "Aggiungi ai preferiti", "お気に入りに追加", "Zu Favoriten", "إضافة إلى مفضلاتي", "加入我的收藏", "Aan mijn favorieten toevoegen", "Adicionar aos meus favoritos", "Lägg till i mina favoriter", "Добавить в избранное", "Dodaj do ulubionych", "즐겨찾기에 추가"),
             onClick: function () { basculerFav(une.id); }
           }, estFav(une.id) ? "★" : "☆"))));
 
@@ -1486,8 +1486,8 @@
     var niveaux = [1, 2, 3, 4, 5, 6, 7];
     var blocGalops = h("div", { className: "hv-galops" },
       h("div", { className: "hv-sec", style: { marginTop: 0 } },
-        h("h2", null, T("Explorer par Galop", "Explore by level", "Explorar por Galop", "Esplora per Galop", "ガロー別に見る", "Nach Galopp entdecken", "استكشفي حسب الغالوب", "按 Galop 浏览", "Verkennen per Galop", "Explorar por Galop", "Utforska per Galop", "Выбрать по уровню Galop", "Przeglądaj według poziomu Galop")),
-        h("p", null, T("Le fil de ta progression fédérale", "The thread of your federal progression", "El hilo de tu progresión federal", "Il filo della tua progressione federale", "連盟級位に沿った道すじ", "Der Faden deiner Ausbildung", "مسار تقدمك في مستويات الاتحاد", "你在法国马术协会等级上的进步脉络", "De rode draad van je federale voortgang", "O fio da sua progressão federal", "Tråden i din förbundsprogression", "Нить твоего федерального прогресса", "Twoja ścieżka w poziomach federalnych"))),
+        h("h2", null, T("Explorer par Galop", "Explore by level", "Explorar por Galop", "Esplora per Galop", "ガロー別に見る", "Nach Galopp entdecken", "استكشفي حسب الغالوب", "按 Galop 浏览", "Verkennen per Galop", "Explorar por Galop", "Utforska per Galop", "Выбрать по уровню Galop", "Przeglądaj według poziomu Galop", "Galop별로 둘러보기")),
+        h("p", null, T("Le fil de ta progression fédérale", "The thread of your federal progression", "El hilo de tu progresión federal", "Il filo della tua progressione federale", "連盟級位に沿った道すじ", "Der Faden deiner Ausbildung", "مسار تقدمك في مستويات الاتحاد", "你在法国马术协会等级上的进步脉络", "De rode draad van je federale voortgang", "O fio da sua progressão federal", "Tråden i din förbundsprogression", "Нить твоего федерального прогресса", "Twoja ścieżka w poziomach federalnych", "연맹 단계를 따라가는 나의 성장"))),
       h("div", { className: "hv-gscroll" }, niveaux.map(function (n) {
         var nb = dispo.filter(function (v) { return v.galop === n; }).length;
         return h("button", {
@@ -1495,8 +1495,8 @@
           onClick: function () { setGalop(galop === n ? null : n); setUniv("tous"); }
         },
           h("span", { className: "hv-cristal" }, h("b", null, n)),
-          h("small", null, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + n),
-          h("em", null, nb + " " + (nb > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo"))));
+          h("small", null, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + n),
+          h("em", null, nb + " " + (nb > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상"))));
       })));
 
     /* ---------- collections ---------- */
@@ -1526,22 +1526,22 @@
     if (onglet === "hist") mesVs = dispo.filter(function (v) { var p = prog(v.id); return p && p.vue; });
 
     var videTxt = {
-      fav: [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych."),
-            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.")],
-      cours: [T("Aucune vidéo en cours.", "No video in progress.", "Ningún vídeo en curso.", "Nessun video in corso.", "視聴中の動画はありません。", "Kein Video läuft.", "لا يوجد فيديو قيد المشاهدة.", "没有正在看的视频。", "Geen video bezig.", "Nenhum vídeo em andamento.", "Ingen video pågår.", "Нет видео в процессе.", "Żaden film nie jest w toku."),
-              T("Les vidéos commencées apparaîtront ici avec leur progression.", "Videos you start will appear here with their progress.", "Los vídeos empezados aparecerán aquí con su progreso.", "I video iniziati appariranno qui con il loro avanzamento.", "見はじめた動画が進捗つきで並びます。", "Begonnene Videos erscheinen hier mit ihrem Fortschritt.", "ستظهر هنا الفيديوهات التي بدأتها مع مدى تقدمك فيها.", "你开始看的视频会连同进度一起显示在这里。", "Video's die je begonnen bent verschijnen hier met je voortgang.", "Os vídeos que você começar aparecerão aqui com o seu progresso.", "Videor du har börjat titta på visas här med din framgång.", "Начатые видео появятся здесь вместе с твоим прогрессом.", "Rozpoczęte filmy pojawią się tutaj wraz z postępem.")],
-      hist: [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer.", "سجلك فارغ.", "你的历史记录是空的。", "Je geschiedenis is leeg.", "Seu histórico está vazio.", "Din historik är tom.", "Твоя история пуста.", "Twoja historia jest pusta."),
-             T("Les vidéos terminées viendront se ranger ici.", "Finished videos will be filed here.", "Los vídeos terminados se guardarán aquí.", "I video completati si raccoglieranno qui.", "見終わった動画がここに並びます。", "Fertige Videos werden hier abgelegt.", "ستصنف هنا الفيديوهات التي أنهيتها.", "看完的视频会收纳在这里。", "Video's die je hebt afgekeken komen hier te staan.", "Os vídeos concluídos serão guardados aqui.", "Avslutade videor hamnar här.", "Просмотренные видео будут складываться здесь.", "Obejrzane filmy trafią tutaj.")]
+      fav: [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych.", "아직 즐겨찾기가 없어요."),
+            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.", "영상의 별을 터치하면 여기서 다시 볼 수 있어요.")],
+      cours: [T("Aucune vidéo en cours.", "No video in progress.", "Ningún vídeo en curso.", "Nessun video in corso.", "視聴中の動画はありません。", "Kein Video läuft.", "لا يوجد فيديو قيد المشاهدة.", "没有正在看的视频。", "Geen video bezig.", "Nenhum vídeo em andamento.", "Ingen video pågår.", "Нет видео в процессе.", "Żaden film nie jest w toku.", "보고 있는 영상이 없어요."),
+              T("Les vidéos commencées apparaîtront ici avec leur progression.", "Videos you start will appear here with their progress.", "Los vídeos empezados aparecerán aquí con su progreso.", "I video iniziati appariranno qui con il loro avanzamento.", "見はじめた動画が進捗つきで並びます。", "Begonnene Videos erscheinen hier mit ihrem Fortschritt.", "ستظهر هنا الفيديوهات التي بدأتها مع مدى تقدمك فيها.", "你开始看的视频会连同进度一起显示在这里。", "Video's die je begonnen bent verschijnen hier met je voortgang.", "Os vídeos que você começar aparecerão aqui com o seu progresso.", "Videor du har börjat titta på visas här med din framgång.", "Начатые видео появятся здесь вместе с твоим прогрессом.", "Rozpoczęte filmy pojawią się tutaj wraz z postępem.", "보기 시작한 영상이 진행 상황과 함께 여기에 나타나요.")],
+      hist: [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer.", "سجلك فارغ.", "你的历史记录是空的。", "Je geschiedenis is leeg.", "Seu histórico está vazio.", "Din historik är tom.", "Твоя история пуста.", "Twoja historia jest pusta.", "기록이 비어 있어요."),
+             T("Les vidéos terminées viendront se ranger ici.", "Finished videos will be filed here.", "Los vídeos terminados se guardarán aquí.", "I video completati si raccoglieranno qui.", "見終わった動画がここに並びます。", "Fertige Videos werden hier abgelegt.", "ستصنف هنا الفيديوهات التي أنهيتها.", "看完的视频会收纳在这里。", "Video's die je hebt afgekeken komen hier te staan.", "Os vídeos concluídos serão guardados aqui.", "Avslutade videor hamnar här.", "Просмотренные видео будут складываться здесь.", "Obejrzane filmy trafią tutaj.", "끝까지 본 영상이 여기에 정리돼요.")]
     }[onglet];
 
     var blocMes = h("div", null,
       h("div", { className: "hv-sec", style: { marginTop: 36 } },
-        h("h2", null, T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي", "我的视频", "Mijn video's", "Meus vídeos", "Mina videor", "Мои видео", "Moje filmy")),
-        h("p", null, T("Ce que tu as gardé, commencé ou terminé", "What you saved, started or finished", "Lo que has guardado, empezado o terminado", "Ciò che hai salvato, iniziato o finito", "保存・視聴中・視聴済みのもの", "Gespeichert, begonnen oder beendet", "ما حفظته أو بدأته أو أنهيته", "你收藏、开始看或看完的内容", "Wat je bewaard, begonnen of afgekeken hebt", "O que você guardou, começou ou terminou", "Det du har sparat, påbörjat eller avslutat", "То, что ты сохранила, начала или закончила", "Zapisane, rozpoczęte lub ukończone"))),
+        h("h2", null, T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي", "我的视频", "Mijn video's", "Meus vídeos", "Mina videor", "Мои видео", "Moje filmy", "내 영상")),
+        h("p", null, T("Ce que tu as gardé, commencé ou terminé", "What you saved, started or finished", "Lo que has guardado, empezado o terminado", "Ciò che hai salvato, iniziato o finito", "保存・視聴中・視聴済みのもの", "Gespeichert, begonnen oder beendet", "ما حفظته أو بدأته أو أنهيته", "你收藏、开始看或看完的内容", "Wat je bewaard, begonnen of afgekeken hebt", "O que você guardou, começou ou terminou", "Det du har sparat, påbörjat eller avslutat", "То, что ты сохранила, начала или закончила", "Zapisane, rozpoczęte lub ukończone", "담아 둔 영상, 보기 시작한 영상, 끝까지 본 영상"))),
       h("div", { className: "hv-ongl", style: { marginTop: 14 } },
-        [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione")],
-         ["cours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki")],
-         ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia")]].map(function (x) {
+        [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione", "즐겨찾기")],
+         ["cours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")],
+         ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")]].map(function (x) {
           return h("button", { key: x[0], className: onglet === x[0] ? "on" : "", onClick: function () { setOnglet(x[0]); } }, x[1]);
         })),
       mesVs.length
@@ -1555,32 +1555,32 @@
       var lib = [];
       if (rq) lib.push("« " + rq + " »");
       if (univ !== "tous") { for (var iv = 0; iv < UNIVERS.length; iv++) { if (UNIVERS[iv].k === univ) lib.push(L(UNIVERS[iv].nom, langue)); } }
-      if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + galop);
-      if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter", "عوامل تصفية", "筛选", "filters", "filtros", "filter", "фильтры", "filtry"));
+      if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + galop);
+      if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter", "عوامل تصفية", "筛选", "filters", "filtros", "filter", "фильтры", "filtry", "필터"));
       blocResultats = h("div", { style: { marginTop: 18 } },
         h("button", {
           className: "hv-retourmenu",
           onClick: function () { setRq(""); setUniv("tous"); setGalop(null); setFiltres({ duree: [], etat: [] }); }
-        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü", "العودة إلى القائمة", "返回菜单", "Terug naar het menu", "Voltar ao menu", "Tillbaka till menyn", "Назад в меню", "Wróć do menu")),
-        h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo")) + " · " + lib.join(" · ")),
+        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü", "العودة إلى القائمة", "返回菜单", "Terug naar het menu", "Voltar ao menu", "Tillbaka till menyn", "Назад в меню", "Wróć do menu", "메뉴로 돌아가기")),
+        h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상")) + " · " + lib.join(" · ")),
         res.length
           ? h("div", { className: "hv-grille" }, res.map(carteAffiche))
           : h("div", { className: "hv-vide" },
-              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.")),
-              h("p", { className: "hv-s2" }, T("Essaie un autre mot, ou élargis le niveau et la durée.", "Try another word, or widen level and duration.", "Prueba otra palabra, o amplía nivel y duración.", "Prova un'altra parola, o allarga livello e durata.", "別の言葉を試すか、級位と長さを広げてみて。", "Versuche ein anderes Wort oder erweitere Galopp und Dauer.", "جربي كلمة أخرى، أو وسعي المستوى والمدة.", "换个词试试，或者放宽等级和时长。", "Probeer een ander woord, of verruim het niveau en de duur.", "Tente outra palavra, ou amplie o nível e a duração.", "Prova ett annat ord, eller bredda nivå och längd.", "Попробуй другое слово или расширь уровень и длительность.", "Spróbuj innego słowa albo poszerz poziom i długość."))));
+              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.", "조건에 맞는 영상이 아직 없어요.")),
+              h("p", { className: "hv-s2" }, T("Essaie un autre mot, ou élargis le niveau et la durée.", "Try another word, or widen level and duration.", "Prueba otra palabra, o amplía nivel y duración.", "Prova un'altra parola, o allarga livello e durata.", "別の言葉を試すか、級位と長さを広げてみて。", "Versuche ein anderes Wort oder erweitere Galopp und Dauer.", "جربي كلمة أخرى، أو وسعي المستوى والمدة.", "换个词试试，或者放宽等级和时长。", "Probeer een ander woord, of verruim het niveau en de duur.", "Tente outra palavra, ou amplie o nível e a duração.", "Prova ett annat ord, eller bredda nivå och längd.", "Попробуй другое слово или расширь уровень и длительность.", "Spróbuj innego słowa albo poszerz poziom i długość.", "다른 단어로 검색하거나 레벨과 길이 범위를 넓혀 보세요."))));
     }
 
     /* ---------- feuille de filtres ---------- */
     var GROUPES = [
-      { cle: "duree", nom: T("Durée", "Duration", "Duración", "Durata", "長さ", "Dauer", "المدة", "时长", "Duur", "Duração", "Längd", "Длительность", "Czas trwania"), opts: [
-        ["court", T("Moins de 3 min", "Under 3 min", "Menos de 3 min", "Meno di 3 min", "3分未満", "Unter 3 Min", "أقل من 3 د", "不到3分钟", "Minder dan 3 min", "Menos de 3 min", "Under 3 min", "Меньше 3 мин", "Mniej niż 3 min")],
-        ["moyen", T("3 à 8 min", "3 to 8 min", "3 a 8 min", "Da 3 a 8 min", "3〜8分", "3 bis 8 Min", "من 3 إلى 8 د", "3到8分钟", "3 tot 8 min", "3 a 8 min", "3 till 8 min", "от 3 до 8 мин", "3 do 8 min")],
-        ["long", T("Plus de 8 min", "Over 8 min", "Más de 8 min", "Più di 8 min", "8分以上", "Über 8 Min", "أكثر من 8 د", "超过8分钟", "Meer dan 8 min", "Mais de 8 min", "Över 8 min", "Больше 8 мин", "Ponad 8 min")]] },
-      { cle: "etat", nom: T("Où tu en es", "Where you are", "Dónde estás", "Dove sei arrivato", "進み具合", "Wo du stehst", "أين وصلت", "你的进度", "Waar je staat", "Onde você está", "Där du är", "На каком ты этапе", "Twój postęp"), opts: [
-        ["nonvue", T("Pas encore vues", "Not watched yet", "Aún sin ver", "Non ancora viste", "未視聴", "Noch nicht gesehen", "لم تشاهد بعد", "还没看过", "Nog niet bekeken", "Ainda não vistos", "Inte sedda än", "Ещё не просмотрено", "Jeszcze nieobejrzane")],
-        ["encours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki")],
-        ["vue", T("Déjà vues", "Already watched", "Ya vistas", "Già viste", "視聴済み", "Schon gesehen", "تمت مشاهدتها", "已经看过", "Al bekeken", "Já vistos", "Redan sedda", "Уже просмотрено", "Już obejrzane")],
-        ["fav", T("Mes favoris", "My favourites", "Mis favoritos", "I miei preferiti", "お気に入り", "Meine Favoriten", "مفضلاتي", "我的收藏", "Mijn favorieten", "Meus favoritos", "Mina favoriter", "Моё избранное", "Moje ulubione")]] }
+      { cle: "duree", nom: T("Durée", "Duration", "Duración", "Durata", "長さ", "Dauer", "المدة", "时长", "Duur", "Duração", "Längd", "Длительность", "Czas trwania", "길이"), opts: [
+        ["court", T("Moins de 3 min", "Under 3 min", "Menos de 3 min", "Meno di 3 min", "3分未満", "Unter 3 Min", "أقل من 3 د", "不到3分钟", "Minder dan 3 min", "Menos de 3 min", "Under 3 min", "Меньше 3 мин", "Mniej niż 3 min", "3분 미만")],
+        ["moyen", T("3 à 8 min", "3 to 8 min", "3 a 8 min", "Da 3 a 8 min", "3〜8分", "3 bis 8 Min", "من 3 إلى 8 د", "3到8分钟", "3 tot 8 min", "3 a 8 min", "3 till 8 min", "от 3 до 8 мин", "3 do 8 min", "3~8분")],
+        ["long", T("Plus de 8 min", "Over 8 min", "Más de 8 min", "Più di 8 min", "8分以上", "Über 8 Min", "أكثر من 8 د", "超过8分钟", "Meer dan 8 min", "Mais de 8 min", "Över 8 min", "Больше 8 мин", "Ponad 8 min", "8분 초과")]] },
+      { cle: "etat", nom: T("Où tu en es", "Where you are", "Dónde estás", "Dove sei arrivato", "進み具合", "Wo du stehst", "أين وصلت", "你的进度", "Waar je staat", "Onde você está", "Där du är", "На каком ты этапе", "Twój postęp", "진행 상황"), opts: [
+        ["nonvue", T("Pas encore vues", "Not watched yet", "Aún sin ver", "Non ancora viste", "未視聴", "Noch nicht gesehen", "لم تشاهد بعد", "还没看过", "Nog niet bekeken", "Ainda não vistos", "Inte sedda än", "Ещё не просмотрено", "Jeszcze nieobejrzane", "아직 안 봤어요")],
+        ["encours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")],
+        ["vue", T("Déjà vues", "Already watched", "Ya vistas", "Già viste", "視聴済み", "Schon gesehen", "تمت مشاهدتها", "已经看过", "Al bekeken", "Já vistos", "Redan sedda", "Уже просмотрено", "Już obejrzane", "이미 봤어요")],
+        ["fav", T("Mes favoris", "My favourites", "Mis favoritos", "I miei preferiti", "お気に入り", "Meine Favoriten", "مفضلاتي", "我的收藏", "Mijn favorieten", "Meus favoritos", "Mina favoriter", "Моё избранное", "Moje ulubione", "내 즐겨찾기")]] }
     ];
     var blocFeuille = feuille ? h(React.Fragment, null,
       h("div", { className: "hv-voile-m", onClick: function () { setFeuille(false); } }),
@@ -1604,20 +1604,20 @@
         }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 6 } },
           h("button", { className: "hv-btn hv-btn-s", style: { width: "auto", flex: 1 }, onClick: function () { setFiltres({ duree: [], etat: [] }); } },
-            T("Tout effacer", "Clear all", "Borrar todo", "Cancella tutto", "すべて解除", "Alles löschen", "مسح الكل", "全部清除", "Alles wissen", "Apagar tudo", "Radera allt", "Стереть всё", "Wyczyść wszystko")),
+            T("Tout effacer", "Clear all", "Borrar todo", "Cancella tutto", "すべて解除", "Alles löschen", "مسح الكل", "全部清除", "Alles wissen", "Apagar tudo", "Radera allt", "Стереть всё", "Wyczyść wszystko", "모두 지우기")),
           h("button", { className: "hv-btn hv-btn-p", style: { flex: 1.4 }, onClick: function () { setFeuille(false); } },
-            T("Voir les vidéos", "Show videos", "Ver los vídeos", "Vedi i video", "動画を見る", "Videos anzeigen", "عرض الفيديوهات", "查看视频", "Video's bekijken", "Ver os vídeos", "Visa videor", "Показать видео", "Pokaż filmy"))))) : null;
+            T("Voir les vidéos", "Show videos", "Ver los vídeos", "Vedi i video", "動画を見る", "Videos anzeigen", "عرض الفيديوهات", "查看视频", "Video's bekijken", "Ver os vídeos", "Visa videor", "Показать видео", "Pokaż filmy", "영상 보기"))))) : null;
 
     return h("div", { className: "hv-wrap" },
       hero, recherche, sugs, chips,
       actif ? blocResultats : h("div", null,
         reprise ? h("div", null,
           h("div", { className: "hv-sec", style: { marginTop: 22 } },
-            h("h2", null, T("Continuer à regarder", "Keep watching", "Seguir viendo", "Continua a guardare", "つづきを見る", "Weiterschauen", "متابعة المشاهدة", "继续观看", "Verder kijken", "Continuar assistindo", "Fortsätt titta", "Продолжить просмотр", "Oglądaj dalej"))),
+            h("h2", null, T("Continuer à regarder", "Keep watching", "Seguir viendo", "Continua a guardare", "つづきを見る", "Weiterschauen", "متابعة المشاهدة", "继续观看", "Verder kijken", "Continuar assistindo", "Fortsätt titta", "Продолжить просмотр", "Oglądaj dalej", "이어서 보기"))),
           h("div", { style: { marginTop: 14 } }, reprise)) : null,
         h("div", { className: "hv-sec" },
-          h("h2", null, T("À la une", "Featured", "Destacado", "In primo piano", "注目", "Im Fokus", "مميز", "置顶", "Uitgelicht", "Em destaque", "Utvalt", "На главной", "Wyróżnione")),
-          h("p", null, T("Choisie pour ton niveau et ton dernier chapitre", "Picked for your level and latest chapter", "Elegida para tu nivel y tu último capítulo", "Scelta per il tuo livello e il tuo ultimo capitolo", "あなたの級位と最新の章に合わせて", "Für dein Niveau und dein letztes Kapitel", "مختار لمستواك ولآخر فصل وصلت إليه", "根据你的等级和最近学的章节挑选", "Gekozen voor jouw niveau en je laatste hoofdstuk", "Escolhido para o seu nível e o seu último capítulo", "Vald efter din nivå och ditt senaste kapitel", "Подобрано под твой уровень и последнюю главу", "Wybrane dla twojego poziomu i ostatniego rozdziału"))),
+          h("h2", null, T("À la une", "Featured", "Destacado", "In primo piano", "注目", "Im Fokus", "مميز", "置顶", "Uitgelicht", "Em destaque", "Utvalt", "На главной", "Wyróżnione", "대표")),
+          h("p", null, T("Choisie pour ton niveau et ton dernier chapitre", "Picked for your level and latest chapter", "Elegida para tu nivel y tu último capítulo", "Scelta per il tuo livello e il tuo ultimo capitolo", "あなたの級位と最新の章に合わせて", "Für dein Niveau und dein letztes Kapitel", "مختار لمستواك ولآخر فصل وصلت إليه", "根据你的等级和最近学的章节挑选", "Gekozen voor jouw niveau en je laatste hoofdstuk", "Escolhido para o seu nível e o seu último capítulo", "Vald efter din nivå och ditt senaste kapitel", "Подобрано под твой уровень и последнюю главу", "Wybrane dla twojego poziomu i ostatniego rozdziału", "내 레벨과 마지막 챕터에 맞춰 골랐어요"))),
         h("div", { style: { marginTop: 14 } }, blocUne),
         blocGalops,
         blocColls,
@@ -1679,7 +1679,7 @@
     var h = React.createElement;
     var app = useApp();
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue;
-    function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl }); }
+    function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
 
     /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
@@ -1698,9 +1698,9 @@
 
     if (!v) {
       return h("div", { className: "hv-lect" }, h("div", { className: "hv-corps" },
-        h("p", { className: "hv-d" }, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.", "هذا الفيديو لم يعد متاحا.", "这个视频已经不可用了。", "Deze video is niet meer beschikbaar.", "Este vídeo não está mais disponível.", "Den här videon är inte längre tillgänglig.", "Это видео больше недоступно.", "Ten film nie jest już dostępny.")),
+        h("p", { className: "hv-d" }, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.", "هذا الفيديو لم يعد متاحا.", "这个视频已经不可用了。", "Deze video is niet meer beschikbaar.", "Este vídeo não está mais disponível.", "Den här videon är inte längre tillgänglig.", "Это видео больше недоступно.", "Ten film nie jest już dostępny.", "이 영상은 더 이상 볼 수 없어요.")),
         h("button", { className: "hv-btn hv-btn-p", style: { marginTop: 18 }, onClick: function () { setEcran("videos"); } },
-          T("Retour à la bibliothèque", "Back to library", "Volver a la biblioteca", "Torna alla videoteca", "ライブラリに戻る", "Zurück zur Bibliothek", "العودة إلى المكتبة", "返回视频库", "Terug naar de bibliotheek", "Voltar à biblioteca", "Tillbaka till biblioteket", "Назад в библиотеку", "Wróć do biblioteki"))));
+          T("Retour à la bibliothèque", "Back to library", "Volver a la biblioteca", "Torna alla videoteca", "ライブラリに戻る", "Zurück zur Bibliothek", "العودة إلى المكتبة", "返回视频库", "Terug naar de bibliotheek", "Voltar à biblioteca", "Tillbaka till biblioteket", "Назад в библиотеку", "Wróć do biblioteki", "라이브러리로 돌아가기"))));
     }
 
     var p = (etat.prog && etat.prog[v.id]) || null;
@@ -1743,57 +1743,57 @@
             allowFullScreen: true
           })
         : h("div", { className: "hv-soon" },
-            h("b", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce")),
+            h("b", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")),
             h("span", null, T("Cette vidéo n'est pas encore tournée. Tout le reste de la fiche est déjà là : garde-la en favori, tu seras prévenue.",
               "This video has not been filmed yet. Everything else is already here: save it and you will be notified.",
               "Este vídeo aún no está grabado. Todo lo demás ya está aquí: guárdalo y te avisaremos.",
               "Questo video non è ancora girato. Tutto il resto è già qui: salvalo e ti avviseremo.",
               "この動画はまだ撮影されていません。ほかの内容はすでにあります。お気に入りに入れておいてください。",
-              "Dieses Video ist noch nicht gedreht. Alles andere ist schon da: speichere es, du wirst informiert.", "لم يصور هذا الفيديو بعد. كل ما تبقى من البطاقة موجود بالفعل: احفظيه في المفضلة وسيصلك إشعار.", "这个视频还没有拍摄。页面上其他内容都已经准备好了：收藏它，上线时你会收到通知。", "Deze video is nog niet opgenomen. De rest van de pagina staat er al: bewaar hem als favoriet, dan krijg je een melding.", "Este vídeo ainda não foi gravado. Todo o resto da ficha já está aqui: guarde nos favoritos e você será avisada.", "Den här videon är inte filmad ännu. Allt annat på sidan finns redan här: spara den som favorit så får du besked.", "Это видео ещё не снято. Всё остальное в карточке уже готово: добавь его в избранное, и тебе придёт уведомление.", "Ten film nie został jeszcze nagrany. Cała reszta karty jest już gotowa: dodaj go do ulubionych, a dostaniesz powiadomienie."))));
+              "Dieses Video ist noch nicht gedreht. Alles andere ist schon da: speichere es, du wirst informiert.", "لم يصور هذا الفيديو بعد. كل ما تبقى من البطاقة موجود بالفعل: احفظيه في المفضلة وسيصلك إشعار.", "这个视频还没有拍摄。页面上其他内容都已经准备好了：收藏它，上线时你会收到通知。", "Deze video is nog niet opgenomen. De rest van de pagina staat er al: bewaar hem als favoriet, dan krijg je een melding.", "Este vídeo ainda não foi gravado. Todo o resto da ficha já está aqui: guarde nos favoritos e você será avisada.", "Den här videon är inte filmad ännu. Allt annat på sidan finns redan här: spara den som favorit så får du besked.", "Это видео ещё не снято. Всё остальное в карточке уже готово: добавь его в избранное, и тебе придёт уведомление.", "Ten film nie został jeszcze nagrany. Cała reszta karty jest już gotowa: dodaj go do ulubionych, a dostaniesz powiadomienie.", "이 영상은 아직 촬영되지 않았어요. 나머지 내용은 모두 준비돼 있어요. 즐겨찾기에 담아 두면 알려 줄게요."))));
 
     return h("div", { className: "hv-lect" }, lecteur,
       h("div", { className: "hv-corps" },
         h("span", { className: "hv-kick" }, chapitreDe(v)),
         h("h2", null, titreDe(v)),
         h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop),
+          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop),
           dureeDe(v) ? h("span", { className: "hv-mini" }, dureeDe(v)) : null,
-          h("span", { className: "hv-mini" }, vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane") : T("À regarder", "To watch", "Por ver", "Da guardare", "これから見る", "Anzusehen", "للمشاهدة", "值得一看", "Om te kijken", "Para assistir", "Att titta på", "Что посмотреть", "Do obejrzenia"))),
+          h("span", { className: "hv-mini" }, vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함") : T("À regarder", "To watch", "Por ver", "Da guardare", "これから見る", "Anzusehen", "للمشاهدة", "值得一看", "Om te kijken", "Para assistir", "Att titta på", "Что посмотреть", "Do obejrzenia", "볼거리"))),
         h("p", { className: "hv-d" }, resumeDe(v)),
 
         h("button", { className: "hv-lien", onClick: versLeCours },
           h("span", { style: { minWidth: 0 } },
-            h("span", { className: "hv-k" }, T("Liée au chapitre", "Linked to chapter", "Vinculada al capítulo", "Collegata al capitolo", "関連する章", "Zum Kapitel", "مرتبط بالفصل", "关联章节", "Gekoppeld aan het hoofdstuk", "Ligado ao capítulo", "Kopplad till kapitlet", "Связано с главой", "Powiązane z rozdziałem")),
+            h("span", { className: "hv-k" }, T("Liée au chapitre", "Linked to chapter", "Vinculada al capítulo", "Collegata al capitolo", "関連する章", "Zum Kapitel", "مرتبط بالفصل", "关联章节", "Gekoppeld aan het hoofdstuk", "Ligado ao capítulo", "Kopplad till kapitlet", "Связано с главой", "Powiązane z rozdziałem", "연결된 챕터")),
             h("span", { className: "hv-t" }, chapitreDe(v))),
           h("span", { style: { color: "#20D9F5", fontSize: 14, flex: "0 0 auto" } },
-            T("Voir le cours ›", "See the lesson ›", "Ver el curso ›", "Vedi il corso ›", "コースを見る ›", "Zum Kurs ›", "عرض الدرس ›", "查看课程 ›", "Bekijk de les ›", "Ver a aula ›", "Se lektionen ›", "Смотреть урок ›", "Zobacz lekcję ›"))),
+            T("Voir le cours ›", "See the lesson ›", "Ver el curso ›", "Vedi il corso ›", "コースを見る ›", "Zum Kurs ›", "عرض الدرس ›", "查看课程 ›", "Bekijk de les ›", "Ver a aula ›", "Se lektionen ›", "Смотреть урок ›", "Zobacz lekcję ›", "레슨 보기 ›"))),
 
         /* Points à observer : seulement pour les vidéos principales, qui en ont. */
         observerDe(v).length ? h("div", { className: "hv-bloc obs" },
-          h("h5", null, T("Pendant la vidéo, observe particulièrement…", "While watching, look especially at…", "Durante el vídeo, observa sobre todo…", "Durante il video, osserva soprattutto…", "動画では、とくにここを見て…", "Achte im Video besonders auf…", "أثناء الفيديو، لاحظي بشكل خاص…", "观看视频时，请特别留意……", "Let tijdens de video vooral op…", "Durante o vídeo, observe principalmente…", "Titta särskilt på det här medan du ser videon…", "Во время просмотра обрати особое внимание на…", "Podczas filmu zwróć szczególną uwagę na…")),
+          h("h5", null, T("Pendant la vidéo, observe particulièrement…", "While watching, look especially at…", "Durante el vídeo, observa sobre todo…", "Durante il video, osserva soprattutto…", "動画では、とくにここを見て…", "Achte im Video besonders auf…", "أثناء الفيديو، لاحظي بشكل خاص…", "观看视频时，请特别留意……", "Let tijdens de video vooral op…", "Durante o vídeo, observe principalmente…", "Titta särskilt på det här medan du ser videon…", "Во время просмотра обрати особое внимание на…", "Podczas filmu zwróć szczególną uwagę na…", "영상을 보는 동안 특히 이런 점을 살펴보세요…")),
           h("ul", { className: "hv-li" }, observerDe(v).map(function (x, i) { return h("li", { key: i }, x); }))) : null,
 
         /* Qui parle. C'est l'angle « académie » : on nomme l'intervenant. */
         v.intervenant ? h("div", { className: "hv-bloc" },
-          h("h5", null, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث", "讲者", "De spreker", "O palestrante", "Medverkande", "Выступающий", "Prelegent")),
+          h("h5", null, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث", "讲者", "De spreker", "O palestrante", "Medverkande", "Выступающий", "Prelegent", "강연자")),
           h("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 500, color: "#F4F6F7" } }, v.intervenant),
           v.intervenantRole ? h("p", { style: { margin: "4px 0 0", fontSize: 11.5, color: "#8A95A1" } }, L(v.intervenantRole, langue)) : null,
           v.titreSource ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55, fontStyle: "italic" } }, "« " + v.titreSource + " »") : null,
           v.doc ? h("a", {
             href: v.doc, target: "_blank", rel: "noopener",
             style: { display: "inline-block", marginTop: 12, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", textDecoration: "none", fontWeight: 600 }
-          }, T("Le document de l'intervention ›", "The talk's handout ›", "El documento de la intervención ›", "Il documento dell'intervento ›", "講演資料 ›", "Das Dokument zum Vortrag ›", "وثيقة المداخلة ›", "讲座资料 ›", "Het document van de lezing ›", "O material da palestra ›", "Föredragets dokument ›", "Материал выступления ›", "Materiały z wystąpienia ›")) : null) : null,
+          }, T("Le document de l'intervention ›", "The talk's handout ›", "El documento de la intervención ›", "Il documento dell'intervento ›", "講演資料 ›", "Das Dokument zum Vortrag ›", "وثيقة المداخلة ›", "讲座资料 ›", "Het document van de lezing ›", "O material da palestra ›", "Föredragets dokument ›", "Материал выступления ›", "Materiały z wystąpienia ›", "강연 자료 ›")) : null) : null,
 
         /* Avertissement honnête : les cartes sont traduites, la vidéo non. */
         (v.langueVideo && langue !== v.langueVideo) ? h("div", { className: "hv-bloc" },
           h("p", { style: { margin: 0, fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55 } },
-            T("Cette vidéo est en français.", "This video is in French.", "Este vídeo está en francés.", "Questo video è in francese.", "この動画はフランス語です。", "Dieses Video ist auf Französisch.", "هذا الفيديو باللغة الفرنسية.", "这个视频是法语的。", "Deze video is in het Frans.", "Este vídeo é em francês.", "Den här videon är på franska.", "Это видео на французском языке.", "Ten film jest po francusku."))) : null,
+            T("Cette vidéo est en français.", "This video is in French.", "Este vídeo está en francés.", "Questo video è in francese.", "この動画はフランス語です。", "Dieses Video ist auf Französisch.", "هذا الفيديو باللغة الفرنسية.", "这个视频是法语的。", "Deze video is in het Frans.", "Este vídeo é em francês.", "Den här videon är på franska.", "Это видео на французском языке.", "Ten film jest po francusku.", "이 영상은 프랑스어예요."))) : null,
 
         h("div", { className: "hv-act" },
           h("button", { className: "hv-vue" + (vue ? " on" : ""), onClick: basculerVue },
-            vue ? "✓ " + T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane")
-                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren", "تحديد كفيديو تمت مشاهدته", "标记为已看", "Markeren als bekeken", "Marcar como visto", "Markera som sedd", "Отметить как просмотренное", "Oznacz jako obejrzane")),
-          h("button", { className: "hv-btn hv-btn-s" + (fav ? " on" : ""), onClick: basculerFav, "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony") },
+            vue ? "✓ " + T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
+                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren", "تحديد كفيديو تمت مشاهدته", "标记为已看", "Markeren als bekeken", "Marcar como visto", "Markera som sedd", "Отметить как просмотренное", "Oznacz jako obejrzane", "시청함으로 표시")),
+          h("button", { className: "hv-btn hv-btn-s" + (fav ? " on" : ""), onClick: basculerFav, "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기") },
             fav ? "★" : "☆")),
 
         (function () {
@@ -1801,7 +1801,7 @@
           if (!suiv.length) return null;
           return h("div", { style: { marginTop: 28 } },
             h("h5", { style: { fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 500, letterSpacing: ".1em", textTransform: "uppercase", margin: 0, color: "#F4F6F7" } },
-              T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا", "接下来观看", "Hierna kijken", "Para assistir em seguida", "Titta på härnäst", "Что смотреть дальше", "Do obejrzenia dalej")),
+              T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا", "接下来观看", "Hierna kijken", "Para assistir em seguida", "Titta på härnäst", "Что смотреть дальше", "Do obejrzenia dalej", "다음에 볼 영상")),
             h("div", { className: "hv-fil", style: { margin: "12px 0" } }),
             suiv.map(function (x) {
               return h("button", {

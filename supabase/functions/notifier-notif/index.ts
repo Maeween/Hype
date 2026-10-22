@@ -32,19 +32,19 @@ async function rest(chemin: string, init: RequestInit = {}) {
   return t ? JSON.parse(t) : null
 }
 
-type L = "fr" | "en" | "es" | "it" | "ja" | "de" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl"
+type L = "fr" | "en" | "es" | "it" | "ja" | "de" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko"
 const T7 = (lg: L, o: Partial<Record<L, string>> & { fr: string }) => o[lg] || o.en || o.fr
 
 function phrase(type: string, lg: L, nom: string, sur: string): string {
-  if (type === "heybaby") return T7(lg, { fr: "Hey Baby t'a répondu", en: "Hey Baby answered you", es: "Hey Baby te ha respondido", it: "Hey Baby ti ha risposto", ja: "Hey Babyが返信しました", de: "Hey Baby hat dir geantwortet", ar: "Hey Baby ردّ عليكِ", zh: "Hey Baby 回复了你", nl: "Hey Baby heeft je geantwoord", pt: "O Hey Baby respondeu você", sv: "Hey Baby har svarat dig", ru: "Hey Baby ответил тебе", pl: "Hey Baby ci odpowiedział" })
-  const n = nom || T7(lg, { fr: "Quelqu'un", en: "Someone", es: "Alguien", it: "Qualcuno", ja: "誰か", de: "Jemand", ar: "شخص ما", zh: "有人", nl: "Iemand", pt: "Alguém", sv: "Någon", ru: "Кто-то", pl: "Ktoś" })
+  if (type === "heybaby") return T7(lg, { fr: "Hey Baby t'a répondu", en: "Hey Baby answered you", es: "Hey Baby te ha respondido", it: "Hey Baby ti ha risposto", ja: "Hey Babyが返信しました", de: "Hey Baby hat dir geantwortet", ar: "Hey Baby ردّ عليكِ", zh: "Hey Baby 回复了你", nl: "Hey Baby heeft je geantwoord", pt: "O Hey Baby respondeu você", sv: "Hey Baby har svarat dig", ru: "Hey Baby ответил тебе", pl: "Hey Baby ci odpowiedział", ko: "Hey Baby가 답했어요" })
+  const n = nom || T7(lg, { fr: "Quelqu'un", en: "Someone", es: "Alguien", it: "Qualcuno", ja: "誰か", de: "Jemand", ar: "شخص ما", zh: "有人", nl: "Iemand", pt: "Alguém", sv: "Någon", ru: "Кто-то", pl: "Ktoś", ko: "누군가" })
   if (type.indexOf("identification") === 0) {
-    if (type === "identification_photos") return T7(lg, { fr: n + " t'a identifié(e) sur des photos", en: n + " tagged you in photos", es: n + " te etiquetó en fotos", it: n + " ti ha taggato in alcune foto", ja: n + "が写真であなたをタグ付けしました", de: n + " hat dich auf Fotos markiert", ar: n + " أشار إليك في صور", zh: n + "在照片中标记了你", nl: n + " heeft je getagd op foto's", pt: n + " marcou você em fotos", sv: n + " har taggat dig i foton", ru: n + " отметил(а) тебя на фото", pl: n + " oznaczył(a) cię na zdjęciach" })
-    return T7(lg, { fr: n + " t'a mentionné(e)", en: n + " mentioned you", es: n + " te mencionó", it: n + " ti ha menzionato", ja: n + "があなたをメンションしました", de: n + " hat dich erwähnt", ar: n + " أشار إليك", zh: n + "提到了你", nl: n + " heeft je genoemd", pt: n + " mencionou você", sv: n + " har nämnt dig", ru: n + " упомянул(а) тебя", pl: n + " wspomniał(a) o tobie" })
+    if (type === "identification_photos") return T7(lg, { fr: n + " t'a identifié(e) sur des photos", en: n + " tagged you in photos", es: n + " te etiquetó en fotos", it: n + " ti ha taggato in alcune foto", ja: n + "が写真であなたをタグ付けしました", de: n + " hat dich auf Fotos markiert", ar: n + " أشار إليك في صور", zh: n + "在照片中标记了你", nl: n + " heeft je getagd op foto's", pt: n + " marcou você em fotos", sv: n + " har taggat dig i foton", ru: n + " отметил(а) тебя на фото", pl: n + " oznaczył(a) cię na zdjęciach", ko: n + "님이 사진에 태그했어요" })
+    return T7(lg, { fr: n + " t'a mentionné(e)", en: n + " mentioned you", es: n + " te mencionó", it: n + " ti ha menzionato", ja: n + "があなたをメンションしました", de: n + " hat dich erwähnt", ar: n + " أشار إليك", zh: n + "提到了你", nl: n + " heeft je genoemd", pt: n + " mencionou você", sv: n + " har nämnt dig", ru: n + " упомянул(а) тебя", pl: n + " wspomniał(a) o tobie", ko: n + "님이 멘션했어요" })
   }
-  if (type === "photo") return T7(lg, { fr: n + " a ajouté une photo" + sur, en: n + " added a photo" + sur, es: n + " añadió una foto" + sur, it: n + " ha aggiunto una foto" + sur, ja: n + "が写真を追加しました" + sur, de: n + " hat ein Foto hinzugefügt" + sur, ar: n + " أضاف صورة" + sur, zh: n + "添加了一张照片" + sur, nl: n + " heeft een foto toegevoegd" + sur, pt: n + " adicionou uma foto" + sur, sv: n + " har lagt till ett foto" + sur, ru: n + " добавил(а) фото" + sur , pl: n + " dodał(a) zdjęcie" + sur })
-  if (type === "video") return T7(lg, { fr: n + " a ajouté une vidéo" + sur, en: n + " added a video" + sur, es: n + " añadió un vídeo" + sur, it: n + " ha aggiunto un video" + sur, ja: n + "が動画を追加しました" + sur, de: n + " hat ein Video hinzugefügt" + sur, ar: n + " أضاف فيديو" + sur, zh: n + "添加了一个视频" + sur, nl: n + " heeft een video toegevoegd" + sur, pt: n + " adicionou um vídeo" + sur, sv: n + " har lagt till en video" + sur, ru: n + " добавил(а) видео" + sur , pl: n + " dodał(a) film" + sur })
-  return T7(lg, { fr: n + " a commenté" + sur, en: n + " commented" + sur, es: n + " comentó" + sur, it: n + " ha commentato" + sur, ja: n + "がコメントしました" + sur, de: n + " hat kommentiert" + sur, ar: n + " علّق" + sur, zh: n + "发表了评论" + sur, nl: n + " heeft gereageerd" + sur, pt: n + " comentou" + sur, sv: n + " har kommenterat" + sur, ru: n + " прокомментировал(а)" + sur , pl: n + " skomentował(a)" + sur })
+  if (type === "photo") return T7(lg, { fr: n + " a ajouté une photo" + sur, en: n + " added a photo" + sur, es: n + " añadió una foto" + sur, it: n + " ha aggiunto una foto" + sur, ja: n + "が写真を追加しました" + sur, de: n + " hat ein Foto hinzugefügt" + sur, ar: n + " أضاف صورة" + sur, zh: n + "添加了一张照片" + sur, nl: n + " heeft een foto toegevoegd" + sur, pt: n + " adicionou uma foto" + sur, sv: n + " har lagt till ett foto" + sur, ru: n + " добавил(а) фото" + sur , pl: n + " dodał(a) zdjęcie" + sur, ko: n + "님이 사진을 추가했어요" + sur })
+  if (type === "video") return T7(lg, { fr: n + " a ajouté une vidéo" + sur, en: n + " added a video" + sur, es: n + " añadió un vídeo" + sur, it: n + " ha aggiunto un video" + sur, ja: n + "が動画を追加しました" + sur, de: n + " hat ein Video hinzugefügt" + sur, ar: n + " أضاف فيديو" + sur, zh: n + "添加了一个视频" + sur, nl: n + " heeft een video toegevoegd" + sur, pt: n + " adicionou um vídeo" + sur, sv: n + " har lagt till en video" + sur, ru: n + " добавил(а) видео" + sur , pl: n + " dodał(a) film" + sur, ko: n + "님이 동영상을 추가했어요" + sur })
+  return T7(lg, { fr: n + " a commenté" + sur, en: n + " commented" + sur, es: n + " comentó" + sur, it: n + " ha commentato" + sur, ja: n + "がコメントしました" + sur, de: n + " hat kommentiert" + sur, ar: n + " علّق" + sur, zh: n + "发表了评论" + sur, nl: n + " heeft gereageerd" + sur, pt: n + " comentou" + sur, sv: n + " har kommenterat" + sur, ru: n + " прокомментировал(а)" + sur , pl: n + " skomentował(a)" + sur, ko: n + "님이 댓글을 남겼어요" + sur })
 }
 
 // où mène le toucher : les liens de page qui existent déjà dans Hype (#hp, #hv, #ha, #pp, #pv, #r)
@@ -61,9 +61,9 @@ async function lien(cible: string): Promise<{ url: string; sur: (lg: L) => strin
   }
   const video = /\.(mp4|mov|webm|m4v|m3u8)(\?|#|$)/i.test(pu) || (m && m[1] === "videocom")
   const album = pu.indexOf("album:") === 0
-  const surAlbum = (lg: L) => T7(lg, { fr: " ton album", en: " on your album", es: " tu álbum", it: " il tuo album", ja: "（アルバム）", de: " dein Album", ar: " على ألبومك", zh: "（相册）", nl: " op je album", pt: " no seu álbum", sv: " i ditt album", ru: " твой альбом", pl: " w twoim albumie" })
-  const surVideo = (lg: L) => T7(lg, { fr: " une vidéo", en: " on a video", es: " un vídeo", it: " un video", ja: "（動画）", de: " ein Video", ar: " على فيديو", zh: "（视频）", nl: " op een video", pt: " em um vídeo", sv: " på en video", ru: " видео", pl: " pod filmem" })
-  const surPhoto = (lg: L) => T7(lg, { fr: " une photo", en: " on a photo", es: " una foto", it: " una foto", ja: "（写真）", de: " ein Foto", ar: " على صورة", zh: "（照片）", nl: " op een foto", pt: " em uma foto", sv: " på ett foto", ru: " фото", pl: " pod zdjęciem" })
+  const surAlbum = (lg: L) => T7(lg, { fr: " ton album", en: " on your album", es: " tu álbum", it: " il tuo album", ja: "（アルバム）", de: " dein Album", ar: " على ألبومك", zh: "（相册）", nl: " op je album", pt: " no seu álbum", sv: " i ditt album", ru: " твой альбом", pl: " w twoim albumie", ko: " (내 앨범)" })
+  const surVideo = (lg: L) => T7(lg, { fr: " une vidéo", en: " on a video", es: " un vídeo", it: " un video", ja: "（動画）", de: " ein Video", ar: " على فيديو", zh: "（视频）", nl: " op een video", pt: " em um vídeo", sv: " på en video", ru: " видео", pl: " pod filmem", ko: " (동영상)" })
+  const surPhoto = (lg: L) => T7(lg, { fr: " une photo", en: " on a photo", es: " una foto", it: " una foto", ja: "（写真）", de: " ein Foto", ar: " على صورة", zh: "（照片）", nl: " op een foto", pt: " em uma foto", sv: " på ett foto", ru: " фото", pl: " pod zdjęciem", ko: " (사진)" })
   const sur = m ? (album ? surAlbum : (video ? surVideo : surPhoto)) : ((_: L) => "")
   if (cb.indexOf("cheval:") === 0) return { url: "/#" + (m ? (video ? "hv" : "hp") : "ha") + "=" + encodeURIComponent(cb.slice(7)), sur }
   if (cb.indexOf("cavalier:") === 0) return { url: "/#" + (video ? "pv" : (m ? "pp" : "p")) + "=" + encodeURIComponent(cb.slice(9)), sur }
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
     const profils = await rest("profiles?id=in.(" + [dest, n.acteur].filter(Boolean).map((x: string) => encodeURIComponent(x)).join(",") + ")&select=id,pseudo,langue", { headers: ent() }) || []
     const pDest = profils.find((p: any) => p.id === dest) || {}
     const pAct = profils.find((p: any) => p.id === n.acteur) || {}
-    const lg = (["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl"].indexOf(pDest.langue) >= 0 ? pDest.langue : "fr") as L
+    const lg = (["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"].indexOf(pDest.langue) >= 0 ? pDest.langue : "fr") as L
     const li = await lien(String(n.cible || ""))
     const titre = phrase(String(n.type), lg, String(pAct.pseudo || "").trim(), li.sur(lg))
     const charge = JSON.stringify({ titre, corps: n.extrait ? String(n.extrait).slice(0, 140) : "", url: li.url, tag: "notif-" + id })

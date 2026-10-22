@@ -6,7 +6,7 @@
   {
    "id": "jeune-espoir",
    "numero": "01",
-   "photo": null,
+   "photo": "images/team-competition-performances-hero.webp",
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-jeune-espoir",
    "textes": {
@@ -74,13 +74,18 @@
      "titre": "Koń dla młodego talentu",
      "court": "Pomóc obiecującemu młodemu jeźdźcowi zdobyć konia odpowiedniego do jego ambicji sportowych.",
      "long": "Wesprzeć obiecującego młodego jeźdźca, który dziś nie ma środków na zakup konia na poziomie zawodowym. Dzięki temu projektowi mógłby przygotować się do dyplomu instruktora jazdy konnej (DE) i dalej się rozwijać w konkurencjach Pro."
+    },
+    "ko": {
+     "titre": "유망한 젊은 기수를 위한 말 한 마리",
+     "court": "유망한 젊은 기수가 자신의 경기 목표에 맞는 말을 마련하도록 도와요.",
+     "long": "전문 수준의 말을 마련할 형편이 아직 되지 않는 유망한 젊은 기수를 도와요. 이 프로젝트로 승마 강사 자격(DE)을 준비하고, 프로 경기에서 계속 성장할 수 있을 거예요."
     }
    }
   },
   {
    "id": "retraite-chevaux-club",
    "numero": "02",
-   "photo": null,
+   "photo": "images/fond-recit.webp",
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-retraite-chevaux-club",
    "textes": {
@@ -148,13 +153,18 @@
      "titre": "Emerytura naszych koni klubowych",
      "court": "Wesprzeć żywienie, opiekę i dobrostan koni, które przez lata towarzyszyły jeźdźcom.",
      "long": "Zadbać o konie, które towarzyszyły całym pokoleniom jeźdźców, a dziś spokojnie żyją na emeryturze w stajni. Zapewnienie im spokojnej starości oznacza, że nadal troszczymy się o ich żywienie, opiekę i dobrostan."
+    },
+    "ko": {
+     "titre": "승마 클럽 말들의 은퇴 생활",
+     "court": "오랫동안 기수들과 함께해 온 말들의 먹이, 케어, 복지를 보태요.",
+     "long": "여러 세대의 기수와 함께해 왔고, 지금은 마구간에서 평화로운 은퇴 생활을 즐기는 말들을 돌봐요. 편안한 노후를 보장하려면 먹이, 케어, 복지를 계속 살펴야 해요."
     }
    }
   },
   {
    "id": "espaces",
    "numero": "03",
-   "photo": null,
+   "photo": "images/ecurie-couverture-defaut-2.webp",
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-espaces",
    "textes": {
@@ -222,6 +232,11 @@
      "titre": "Utrzymanie i odnowa naszych terenów",
      "court": "Pomóc w odnowie ogrodzeń, pastwisk i urządzeń jeździeckich, z poszanowaniem środowiska naturalnego.",
      "long": "Odnowić ogrodzenia, pastwiska i urządzenia na terenie, aby zapewnić koniom odpowiednie warunki życia, a jednocześnie dbać o otaczające nas przestrzenie naturalne i je chronić."
+    },
+    "ko": {
+     "titre": "우리 공간 가꾸고 되살리기",
+     "court": "자연 환경을 존중하면서 울타리, 초지, 승마 시설을 새롭게 고치는 일에 함께해요.",
+     "long": "울타리, 초지, 부지의 시설을 새롭게 고쳐 말들에게 알맞은 생활 환경을 마련하고, 우리를 둘러싼 자연 공간도 가꾸고 지켜요."
     }
    }
   }

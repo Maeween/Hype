@@ -2,10 +2,10 @@
 import os, json, html, sys
 RACINE = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/hype"
 DOM="https://2hype.fr"; CHEMIN="association/"
-L=["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl"]
+L=["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl","ko"]
 HL={"zh":"zh-Hans","pt":"pt-BR"}  # code de langue HTML/hreflang quand il diffère du dossier
-NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português","sv":"Svenska","ru":"Русский","pl":"Polski"}
-LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR","zh":"zh_CN","nl":"nl_NL","pt":"pt_BR","sv":"sv_SE","ru":"ru_RU","pl":"pl_PL"}
+NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português","sv":"Svenska","ru":"Русский","pl":"Polski","ko":"한국어"}
+LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR","zh":"zh_CN","nl":"nl_NL","pt":"pt_BR","sv":"sv_SE","ru":"ru_RU","pl":"pl_PL","ko":"ko_KR"}
 e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
@@ -324,6 +324,28 @@ T["pl"]=dict(title="Stowarzyszenie FEINN Équitation et Environnement | Hype",
  donnees="Dane osobowe", donnees_v="Użytkownicy mogą zwrócić się do stowarzyszenia o dostęp do swoich danych osobowych lub o ich usunięcie.",
  abos="Subskrypcje", abos_v="Informacje o subskrypcjach i zarządzaniu płatnościami znajdziesz w warunkach obowiązujących dla Hype.",
  decouvrir="Poznaj Hype")
+T["ko"]=dict(title="FEINN Équitation et Environnement 협회 | Hype",
+ desc="2020년부터 FEINN Équitation et Environnement 협회는 말과 지식의 전수, 자연에 대한 존중을 소중히 여기는 사람들이 모이는 곳이에요. 협회의 사명, 프로젝트, 법적 고지를 소개해요.",
+ sur="협회", sous="Équitation et Environnement", retour="홈", langue="언어", photo="FEINN 사진 준비 중",
+ notre="우리 협회",
+ intro=["2020년부터 FEINN Équitation et Environnement 협회는 말과 지식의 전수, 자연에 대한 존중을 소중히 여기는 사람들이 모이는 곳이에요.",
+        "우리는 말의 복지와 말을 둘러싼 환경을 살피는 승마를 위해 일해요. 교육, 대회에 나가는 젊은 기수 지원, 은퇴한 승마 클럽 말 돌보기, 소규모 번식, 자연 부지 보존을 통해서요.",
+        "협회는 기수를 위한 앱 Hype도 만들어요. Hype+ 구독이 협회의 활동과 프로젝트를 뒷받침해요."],
+ missions=["승마 교육","유망한 젊은 기수 지원","승마 클럽 말의 은퇴","소규모 번식","환경과 부지 보존"],
+ citation1="말은 사람과 자연을 이어 주는 끈이에요",
+ projets_t="후원할 수 있는 우리의 프로젝트",
+ projets_intro="이 프로젝트들은 우리에게 특별히 소중하고 협회의 가치를 살아 있게 해 줘요. 우리가 무엇에 힘쓰는지 알리기 위해 여기에 소개해요.",
+ projets=[("유망한 젊은 기수를 위한 말 한 마리","전문 수준의 말을 마련할 형편이 아직 되지 않는 유망한 젊은 기수를 도와요. 이 프로젝트로 승마 강사 자격(DE)을 준비하고, 프로 경기에서 계속 성장할 수 있을 거예요."),
+          ("승마 클럽 말들의 은퇴 생활","여러 세대의 기수와 함께해 왔고, 지금은 마구간에서 평화로운 은퇴 생활을 즐기는 말들을 돌봐요. 편안한 노후를 보장하려면 먹이, 케어, 복지를 계속 살펴야 해요."),
+          ("우리 공간 가꾸고 되살리기","울타리, 초지, 부지의 시설을 새롭게 고쳐 말들에게 알맞은 생활 환경을 마련하고, 우리를 둘러싼 자연 공간도 가꾸고 지켜요.")],
+ citation2="오늘 지켜서 내일을 위해…",
+ ml_t="법적 고지",
+ editeur="발행인", editeur_v=["FEINN Équitation et Environnement 협회","프랑스에 신고된 협회","3 chemin des Prés Picard","91760 Itteville, 프랑스","SIREN: 898 028 980"],
+ resp="발행 책임자", resp_v=["Blandine Pronost","협회장"],
+ contact="문의", hebergeur="호스팅", heb_v=["Netlify, Inc.","101 2nd Street, Suite 575","San Francisco, CA, 미국","전화: +1 415 691 1573"],
+ donnees="개인정보", donnees_v="이용자는 협회에 연락해 자신의 개인정보 열람이나 삭제를 요청할 수 있어요.",
+ abos="구독", abos_v="구독과 결제 관리에 관한 안내는 Hype에 적용되는 약관에서 확인할 수 있어요.",
+ decouvrir="Hype 알아보기")
 
 # ═══ REFONTE 14/10/2026 (maquette validée par Blandine) — ÉTAPE 1 : base, menu, hero, pied de page ═══
 # Nouveaux textes (7 langues). « Équitation et Environnement » reste en français partout (nom propre).
@@ -367,6 +389,9 @@ NV["ru"]=dict(accueil="Главная",asso="Ассоциация",engag="Наш
 NV["pl"]=dict(accueil="Strona główna",asso="Stowarzyszenie",engag="Nasze zobowiązania",nprojets="Nasze projekty",lieu="Nasze miejsce",soutenir="Wesprzyj nas",menu="Menu",fermer="Zamknij",
  accroche="Konie, jeźdźcy i bardziej zrównoważona przyszłość.",hero_desc="Stowarzyszenie według prawa francuskiego z 1901 roku, zaangażowane w nauczanie, solidarność, dobrostan zwierząt i ochronę środowiska.",
  btn_asso="Poznaj nasze stowarzyszenie",loi1901="Stowarzyszenie według prawa z 1901 roku",contacter="Skontaktuj się z nami",cit_pied="Razem, dla koni dzisiejszych i jutrzejszych.",logo_alt="Logo FEINN Équitation et Environnement")
+NV["ko"]=dict(accueil="홈",asso="협회",engag="우리의 약속",nprojets="우리의 프로젝트",lieu="우리의 공간",soutenir="후원하기",menu="메뉴",fermer="닫기",
+ accroche="말, 기수, 그리고 더 지속 가능한 미래.",hero_desc="1901년 프랑스 법에 따른 협회로, 교육, 연대, 동물 복지, 환경 보호에 힘쓰고 있어요.",
+ btn_asso="우리 협회 알아보기",loi1901="1901년 법에 따른 협회",contacter="문의하기",cit_pied="오늘과 내일의 말들을 위해, 함께해요.",logo_alt="FEINN Équitation et Environnement 로고")
 for _l in L: T[_l].update(NV[_l])
 # 14/10 (refonte) : la phrase « les abonnements Hype+ financent l'association » est retirée (inexacte : Stripe est au nom de Blandine — voir SUIVI)
 for _l in L: T[_l]["intro"]=T[_l]["intro"][:2]
@@ -396,6 +421,7 @@ ENG={
 "sv":(["Undervisning och utbildning","Ung talang","Pension för hästar","Småskalig uppfödning","Miljö"],["Undervisning","Ung talang","Pension","Uppfödning","Miljö"],["Förmedla passionen för och kunskapen om ridsport.","Stödja morgondagens talanger.","Ge våra följeslagare ett andra liv.","Ett genomtänkt och respektfullt arbetssätt.","Bevara en hållbar naturmiljö."]),
 "ru":(["Обучение и подготовка","Молодые таланты","Отдых лошадей","Небольшое разведение","Окружающая среда"],["Обучение","Таланты","Отдых","Разведение","Среда"],["Передавать страсть к верховой езде и знания о ней.","Поддерживать талантов завтрашнего дня.","Подарить нашим спутникам вторую жизнь.","Разумный и бережный подход.","Сохранять устойчивую природную среду."]),
 "pl":(["Nauka i szkolenie","Młode talenty","Emerytura koni","Mała hodowla","Środowisko"],["Nauka","Talenty","Emerytura","Hodowla","Środowisko"],["Przekazywać pasję i wiedzę jeździecką.","Wspierać talenty jutra.","Dać naszym towarzyszom drugie życie.","Przemyślane i pełne szacunku podejście.","Chronić trwale naturalne otoczenie."]),
+"ko":(["교육과 훈련","젊은 인재","말의 은퇴","소규모 번식","환경"],["교육","젊은 인재","은퇴","번식","환경"],["승마에 대한 열정과 지식을 전해요.","내일의 인재를 응원해요.","우리의 동반자에게 두 번째 삶을 선물해요.","신중하고 존중하는 방식으로 해요.","오래 이어질 자연 환경을 지켜요."]),
 }
 ICO["groupe"]='<circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/>'
 ICO["tete"]='<path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/>'
@@ -432,9 +458,11 @@ PJ={
  pj_courts=["Помочь перспективному молодому всаднику приобрести лошадь, подходящую для его спортивных амбиций.","Помогать с кормлением, уходом и благополучием лошадей, которые годами сопровождали всадников.","Участвовать в обновлении оград, пастбищ и конноспортивных сооружений, бережно относясь к природной среде."]),
 "pl":dict(pj_titre="Trzy projekty, które robią różnicę",pj_voir="Poznaj ten projekt",pj_tous="Poznaj wszystkie nasze projekty",pj_detail="Nasze projekty w szczegółach",pj_prec="Poprzedni projekt",pj_suiv="Następny projekt",
  pj_courts=["Pomóc obiecującemu młodemu jeźdźcowi zdobyć konia odpowiedniego do jego ambicji sportowych.","Wesprzeć żywienie, opiekę i dobrostan koni, które przez lata towarzyszyły jeźdźcom.","Pomóc w odnowie ogrodzeń, pastwisk i urządzeń jeździeckich, z poszanowaniem środowiska naturalnego."]),
+"ko":dict(pj_titre="변화를 만드는 세 가지 프로젝트",pj_voir="이 프로젝트 보기",pj_tous="모든 프로젝트 보기",pj_detail="프로젝트 자세히 보기",pj_prec="이전 프로젝트",pj_suiv="다음 프로젝트",
+ pj_courts=["유망한 젊은 기수가 자신의 경기 목표에 맞는 말을 마련하도록 도와요.","오랫동안 기수들과 함께해 온 말들의 먹이, 케어, 복지를 보태요.","자연 환경을 존중하면서 울타리, 초지, 승마 시설을 새롭게 고치는 일에 함께해요."]),
 }
 for _l in L: T[_l].update(PJ[_l])
-for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل', 'zh': '收起', 'nl': 'Minder tonen', 'pt': 'Mostrar menos', 'sv': 'Visa mindre', 'ru': 'Свернуть', 'pl': 'Zwiń'}.items(): T[_l]['pj_reduire']=_v
+for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل', 'zh': '收起', 'nl': 'Minder tonen', 'pt': 'Mostrar menos', 'sv': 'Visa mindre', 'ru': 'Свернуть', 'pl': 'Zwiń', 'ko': '접기'}.items(): T[_l]['pj_reduire']=_v
 ICO["fg"]='<path d="M15 6l-6 6 6 6"/>'
 ICO["fd"]='<path d="M9 6l6 6-6 6"/>'
 PROJ_IDS=["jeune-espoir","retraite-chevaux-club","espaces"]; PROJ_PH=["jeune","retraite","espaces"]
@@ -472,6 +500,7 @@ LIEU={
 "sv":("En plats att leva och dela på","Ridanläggningen i Itteville, som föreningen har använt sedan 2020, tar emot våra hästar och ryttare i en privilegierad naturmiljö.",["12 boxar","En utebana","En longeringsrund","Hagar och rasthagar"]),
 "ru":("Место для жизни и общения","Конноспортивная площадка в Итвиле, которую ассоциация использует с 2020 года, принимает наших лошадей и всадников в чудесной природной обстановке.",["12 денников","Открытый плац","Круглый загон для работы на корде","Пастбища и левады"]),
 "pl":("Miejsce do życia i spotkań","Ośrodek jeździecki w Itteville, z którego stowarzyszenie korzysta od 2020 roku, przyjmuje nasze konie i jeźdźców w wyjątkowo pięknym, naturalnym otoczeniu.",["12 boksów","Plac","Okrąg do lonżowania","Pastwiska i padoki"]),
+"ko":("삶과 나눔의 공간","2020년부터 협회가 사용하는 이트빌의 승마 시설은 빼어난 자연 속에서 우리의 말과 기수를 맞이해요.",["마방 12개","야외 마장","원형 론지 마장","초지와 패덕"]),
 }
 ICO["carriere"]='<rect x="3" y="7" width="18" height="10" rx="1"/><path d="M3 10.5h18M3 13.5h18M7.5 7v10M16.5 7v10"/>'
 ICO["rond"]='<ellipse cx="12" cy="10.5" rx="8.5" ry="4.5"/><path d="M3.5 10.5v3c0 2.5 3.8 4.5 8.5 4.5s8.5-2 8.5-4.5v-3"/>'
@@ -499,6 +528,7 @@ SOUT={
 "sv":("Tillsammans för våra hästar och vår miljö","Ditt stöd ger liv åt våra projekt och hjälper oss att driva vårt arbete långsiktigt. Donationer online blir snart möjliga. Till dess kan du kontakta oss för att veta mer.","Kontakta oss för att stödja ett projekt","Eftersom en häst kan förändra ett liv förtjänar den all vår uppmärksamhet.","Stöd ett FEINN-projekt"),
 "ru":("Действуем вместе ради наших лошадей и нашей среды","Твоя поддержка помогает нашим проектам жить и позволяет нам долго продолжать нашу работу. Онлайн-пожертвования скоро станут доступны. А пока ты можешь связаться с нами, чтобы узнать больше.","Связаться с нами, чтобы поддержать проект","Потому что лошадь может изменить жизнь, она заслуживает всего нашего внимания.","Поддержать проект FEINN"),
 "pl":("Działamy razem dla naszych koni i naszego środowiska","Twoje wsparcie pozwala naszym projektom żyć i pomaga nam prowadzić naszą działalność przez długi czas. Darowizny online będą wkrótce dostępne. Do tego czasu możesz się z nami skontaktować, aby dowiedzieć się więcej.","Skontaktuj się z nami, aby wesprzeć projekt","Ponieważ koń może odmienić życie, zasługuje na całą naszą uwagę.","Wesprzyj projekt FEINN"),
+"ko":("우리의 말과 환경을 위해 함께 행동해요","여러분의 후원은 우리 프로젝트를 이어 가고 활동을 오래 지속하는 힘이 돼요. 온라인 기부는 곧 열릴 예정이에요. 그동안 더 궁금한 점이 있다면 문의해 주세요.","프로젝트 후원 문의하기","말은 삶을 바꾸기에, 우리의 온 마음을 받을 자격이 있어요.","FEINN 프로젝트 후원하기"),
 }
 SOUT_ATTENTE="images/evenements-passes-large.webp"
 def section_soutenir(lg):

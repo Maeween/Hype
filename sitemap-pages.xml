@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Hype — 12/10/2026 : l'accueil et les pages de présentation dans les 13 langues (fichier fixe, à compléter à la main quand une page de ce type est ajoutée). -->
+<!-- Hype — 12/10/2026 : l'accueil et les pages de présentation dans les 14 langues (fichier fixe, à compléter à la main quand une page de ce type est ajoutée). -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://2hype.fr/</loc>
@@ -19,6 +19,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -36,6 +37,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -53,6 +55,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -70,6 +73,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -87,6 +91,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -104,6 +109,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -121,6 +127,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -138,6 +145,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -155,6 +163,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -172,6 +181,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -189,6 +199,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -206,6 +217,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -223,6 +235,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -240,6 +253,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -257,6 +271,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -274,6 +289,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -291,6 +307,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -308,6 +325,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -325,6 +343,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -342,6 +361,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -359,6 +379,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -376,6 +397,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -393,6 +415,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -410,6 +433,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -427,6 +451,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -444,6 +469,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -461,6 +487,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -478,6 +505,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -495,6 +523,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -512,6 +541,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -529,6 +559,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -546,6 +577,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -563,6 +595,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -580,6 +613,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -597,6 +631,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -614,6 +649,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -631,6 +667,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -648,6 +685,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -665,6 +703,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -682,6 +721,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
 <url>
@@ -699,6 +739,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -716,6 +757,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -733,6 +775,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -750,6 +793,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -767,6 +811,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -784,6 +829,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -801,6 +847,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -818,6 +865,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/plan-lamotte-beuvron/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/plan-lamotte-beuvron/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/plan-lamotte-beuvron/"/>
   </url>
 <url>
@@ -835,6 +883,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -852,6 +901,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -869,6 +919,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -886,6 +937,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -903,6 +955,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -920,6 +973,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -937,6 +991,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -954,6 +1009,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/gestion-ecurie/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
 <url>
@@ -971,6 +1027,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -988,6 +1045,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1005,6 +1063,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1022,6 +1081,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1039,6 +1099,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1056,6 +1117,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1073,6 +1135,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1090,6 +1153,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
   </url>
 <url>
@@ -1107,6 +1171,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1124,6 +1189,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1141,6 +1207,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1158,6 +1225,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1175,6 +1243,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1192,6 +1261,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1209,6 +1279,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
 <url>
@@ -1226,6 +1297,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/association/mentions-legales/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/association/mentions-legales/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/mentions-legales/"/>
   </url>
   <url>
@@ -1243,6 +1315,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -1260,6 +1333,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -1277,6 +1351,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -1294,6 +1369,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -1311,6 +1387,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -1328,6 +1405,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -1345,6 +1423,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -1362,6 +1441,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -1379,6 +1459,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -1396,6 +1477,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -1413,6 +1495,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -1430,6 +1513,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -1447,6 +1531,25 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ko/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://2hype.fr/zh/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://2hype.fr/nl/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://2hype.fr/pt/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
   </url>
   <url>
@@ -1464,6 +1567,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -1481,6 +1585,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -1498,6 +1603,25 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ko/ia-equestre/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://2hype.fr/zh/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://2hype.fr/nl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://2hype.fr/pt/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/ia-equestre/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/ia-equestre/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/ia-equestre/"/>
   </url>
   <url>
@@ -1515,6 +1639,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -1532,6 +1657,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -1549,6 +1675,25 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ko/sante-cheval/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://2hype.fr/zh/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://2hype.fr/nl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://2hype.fr/pt/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/sante-cheval/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
   <url>
@@ -1566,6 +1711,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -1583,6 +1729,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -1600,6 +1747,25 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ko/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://2hype.fr/zh/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://2hype.fr/nl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://2hype.fr/pt/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
   <url>
@@ -1617,6 +1783,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -1634,6 +1801,7 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
   <url>
@@ -1651,6 +1819,25 @@
     <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ko/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://2hype.fr/zh/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://2hype.fr/nl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://2hype.fr/pt/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://2hype.fr/sv/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://2hype.fr/ru/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://2hype.fr/pl/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://2hype.fr/ko/photos-souvenirs/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
   </url>
 </urlset>

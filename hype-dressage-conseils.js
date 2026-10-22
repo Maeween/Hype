@@ -18,7 +18,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Entrada por la línea media",
    "it": "Ingresso sulla linea di mezzo",
    "de": "Einreiten auf der Mittellinie",
-   "ja": "中央線での入場", "zh": "从中线入场", "ar": "الدخول على الخط الأوسط", "nl": "Inkomen op de middenlijn", "pt": "Entrada pela linha do meio", "sv": "Ingång på mittlinjen", "ru": "Въезд по средней линии", "pl": "Wjazd na linię środkową"
+   "ja": "中央線での入場", "zh": "从中线入场", "ar": "الدخول على الخط الأوسط", "nl": "Inkomen op de middenlijn", "pt": "Entrada pela linha do meio", "sv": "Ingång på mittlinjen", "ru": "Въезд по средней линии", "pl": "Wjazd na linię środkową", "ko": "중앙선 입장"
   },
   "phase": "Entrée",
   "galopMin": 3,
@@ -34,7 +34,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la rectitud sobre el eje",
     "it": "la rettitudine sull'asse",
     "de": "die Geraderichtung auf der Linie",
-    "ja": "中央線上の直進性", "zh": "沿中轴线保持端正", "ar": "الاستقامة على المحور", "nl": "de rechtgerichtheid op de as", "pt": "a retidão no eixo", "sv": "rakriktningen på mittlinjen", "ru": "прямолинейность на оси", "pl": "prostość na osi"
+    "ja": "中央線上の直進性", "zh": "沿中轴线保持端正", "ar": "الاستقامة على المحور", "nl": "de rechtgerichtheid op de as", "pt": "a retidão no eixo", "sv": "rakriktningen på mittlinjen", "ru": "прямолинейность на оси", "pl": "prostość na osi", "ko": "중앙선 위에서의 직진성"
    },
    {
     "fr": "la régularité de l'allure",
@@ -42,7 +42,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la regularidad del aire",
     "it": "la regolarità dell'andatura",
     "de": "die Gleichmäßigkeit der Gangart",
-    "ja": "歩様の規則正しさ", "zh": "步伐的规律", "ar": "انتظام الحركة", "nl": "de regelmaat van de gang", "pt": "a regularidade do andamento", "sv": "gångartens regelbundenhet", "ru": "ровность аллюра", "pl": "regularność chodu"
+    "ja": "歩様の規則正しさ", "zh": "步伐的规律", "ar": "انتظام الحركة", "nl": "de regelmaat van de gang", "pt": "a regularidade do andamento", "sv": "gångartens regelbundenhet", "ru": "ровность аллюра", "pl": "regularność chodu", "ko": "걸음의 규칙성"
    },
    {
     "fr": "la tenue du cavalier",
@@ -50,7 +50,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la posición del jinete",
     "it": "l'assetto del cavaliere",
     "de": "die Haltung des Reiters",
-    "ja": "騎乗者の姿勢", "zh": "骑手的姿态", "ar": "وضعية الفارس", "nl": "de houding van de ruiter", "pt": "a postura do cavaleiro", "sv": "ryttarens hållning", "ru": "посадка всадника", "pl": "postawa jeźdźca"
+    "ja": "騎乗者の姿勢", "zh": "骑手的姿态", "ar": "وضعية الفارس", "nl": "de houding van de ruiter", "pt": "a postura do cavaleiro", "sv": "ryttarens hållning", "ru": "посадка всадника", "pl": "postawa jeźdźca", "ko": "기수의 자세"
    }
   ],
   "tips": [
@@ -61,7 +61,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Entra bien recto entre las dos vallas.",
      "it": "Entra ben diritto tra le due staccionate.",
      "de": "Reite ganz gerade zwischen den beiden Banden ein.",
-     "ja": "二本の柵の間をまっすぐ入場しよう。", "zh": "笔直地走进两道围栏之间。", "ar": "ادخلي مستقيمة تماما بين الحاجزين.", "nl": "Kom mooi recht binnen tussen de twee banden.", "pt": "Entre bem reto entre as duas cercas.", "sv": "Rid in alldeles rakt mellan de två sargerna.", "ru": "Въезжай совершенно прямо между двумя бортами.", "pl": "Wjedź idealnie prosto między dwiema bandami."
+     "ja": "二本の柵の間をまっすぐ入場しよう。", "zh": "笔直地走进两道围栏之间。", "ar": "ادخلي مستقيمة تماما بين الحاجزين.", "nl": "Kom mooi recht binnen tussen de twee banden.", "pt": "Entre bem reto entre as duas cercas.", "sv": "Rid in alldeles rakt mellan de två sargerna.", "ru": "Въезжай совершенно прямо между двумя бортами.", "pl": "Wjedź idealnie prosto między dwiema bandami.", "ko": "두 울타리 사이로 똑바로 들어가세요."
     },
     "type": "faire",
     "prio": 1,
@@ -74,7 +74,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mira a X desde la entrada.",
      "it": "Guarda X già dall'ingresso.",
      "de": "Blicke vom Einreiten an auf X.",
-     "ja": "入場した瞬間からXを見よう。", "zh": "一入场就看着 X。", "ar": "انظري إلى X منذ الدخول.", "nl": "Kijk vanaf de ingang naar X.", "pt": "Olhe para X desde a entrada.", "sv": "Titta mot X redan vid ingången.", "ru": "Смотри на X с самого въезда.", "pl": "Patrz na X od momentu wjazdu."
+     "ja": "入場した瞬間からXを見よう。", "zh": "一入场就看着 X。", "ar": "انظري إلى X منذ الدخول.", "nl": "Kijk vanaf de ingang naar X.", "pt": "Olhe para X desde a entrada.", "sv": "Titta mot X redan vid ingången.", "ru": "Смотри на X с самого въезда.", "pl": "Patrz na X od momentu wjazdu.", "ko": "들어갈 때부터 X를 바라보세요."
     },
     "type": "faire",
     "prio": 1,
@@ -87,7 +87,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén las dos piernas presentes para evitar los zigzags.",
      "it": "Tieni entrambe le gambe presenti per evitare gli zigzag.",
      "de": "Halte beide Beine anliegend, um Schlangenlinien zu vermeiden.",
-     "ja": "蛇行しないよう両脚を効かせ続けよう。", "zh": "两条腿都要保持在位，避免走成之字形。", "ar": "أبقي الساقين حاضرتين لتجنب التعرج.", "nl": "Houd beide benen aanwezig om zigzaggen te voorkomen.", "pt": "Mantenha as duas pernas presentes para evitar zigue-zagues.", "sv": "Håll båda skänklarna aktiva för att undvika sicksack.", "ru": "Держи обе ноги активными, чтобы не вилять.", "pl": "Utrzymuj obie łydki aktywne, żeby uniknąć zygzakowania."
+     "ja": "蛇行しないよう両脚を効かせ続けよう。", "zh": "两条腿都要保持在位，避免走成之字形。", "ar": "أبقي الساقين حاضرتين لتجنب التعرج.", "nl": "Houd beide benen aanwezig om zigzaggen te voorkomen.", "pt": "Mantenha as duas pernas presentes para evitar zigue-zagues.", "sv": "Håll båda skänklarna aktiva för att undvika sicksack.", "ru": "Держи обе ноги активными, чтобы не вилять.", "pl": "Utrzymuj obie łydki aktywne, żeby uniknąć zygzakowania.", "ko": "지그재그가 되지 않도록 두 다리를 계속 붙여 주세요."
     },
     "type": "faire",
     "prio": 2,
@@ -100,7 +100,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No mires al jurado a costa de la rectitud.",
      "it": "Non guardare la giuria a scapito della rettitudine.",
      "de": "Schau nicht zum Richter, wenn du dafür die Geradheit verlierst.",
-     "ja": "直進性を犠牲にして審判を見ないこと。", "zh": "不要因为看评委而影响了端正性。", "ar": "لا تنظري إلى الحكام على حساب الاستقامة.", "nl": "Kijk niet naar de jury ten koste van de rechtgerichtheid.", "pt": "Não olhe para o júri em detrimento da retidão.", "sv": "Titta inte på domaren på bekostnad av rakriktningen.", "ru": "Не смотри на судей в ущерб прямолинейности.", "pl": "Nie patrz na sędziów kosztem prostości."
+     "ja": "直進性を犠牲にして審判を見ないこと。", "zh": "不要因为看评委而影响了端正性。", "ar": "لا تنظري إلى الحكام على حساب الاستقامة.", "nl": "Kijk niet naar de jury ten koste van de rechtgerichtheid.", "pt": "Não olhe para o júri em detrimento da retidão.", "sv": "Titta inte på domaren på bekostnad av rakriktningen.", "ru": "Не смотри на судей в ущерб прямолинейности.", "pl": "Nie patrz na sędziów kosztem prostości.", "ko": "직진성을 놓치면서까지 심사위원을 쳐다보지 마세요."
     },
     "type": "eviter",
     "prio": 2,
@@ -113,7 +113,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Estabiliza el aire antes de entrar.",
      "it": "Stabilizza l'andatura prima di entrare.",
      "de": "Stabilisiere die Gangart vor dem Einreiten.",
-     "ja": "入場前に歩様を安定させよう。", "zh": "入场前先稳定好步伐。", "ar": "ثبتي الحركة قبل الدخول.", "nl": "Stabiliseer de gang voordat je binnenkomt.", "pt": "Estabilize o andamento antes de entrar.", "sv": "Stabilisera gångarten innan du rider in.", "ru": "Стабилизируй аллюр до въезда.", "pl": "Ustabilizuj chód przed wjazdem."
+     "ja": "入場前に歩様を安定させよう。", "zh": "入场前先稳定好步伐。", "ar": "ثبتي الحركة قبل الدخول.", "nl": "Stabiliseer de gang voordat je binnenkomt.", "pt": "Estabilize o andamento antes de entrar.", "sv": "Stabilisera gångarten innan du rider in.", "ru": "Стабилизируй аллюр до въезда.", "pl": "Ustabilizuj chód przed wjazdem.", "ko": "들어가기 전에 걸음을 안정시키세요."
     },
     "type": "faire",
     "prio": 3,
@@ -126,7 +126,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita corregir demasiado tarde con las manos.",
      "it": "Evita di correggere troppo tardi con le mani.",
      "de": "Vermeide zu späte Korrekturen mit der Hand.",
-     "ja": "手綱での修正が遅れないようにしよう。", "zh": "避免太晚才用手去纠正。", "ar": "تجنبي التصحيح المتأخر جدا بيديك.", "nl": "Voorkom dat je te laat corrigeert met de handen.", "pt": "Evite corrigir tarde demais com as mãos.", "sv": "Undvik att korrigera för sent med händerna.", "ru": "Не исправляй слишком поздно руками.", "pl": "Unikaj korygowania zbyt późno rękami."
+     "ja": "手綱での修正が遅れないようにしよう。", "zh": "避免太晚才用手去纠正。", "ar": "تجنبي التصحيح المتأخر جدا بيديك.", "nl": "Voorkom dat je te laat corrigeert met de handen.", "pt": "Evite corrigir tarde demais com as mãos.", "sv": "Undvik att korrigera för sent med händerna.", "ru": "Не исправляй слишком поздно руками.", "pl": "Unikaj korygowania zbyt późno rękami.", "ko": "너무 늦게 손으로 바로잡지 않도록 해요."
     },
     "type": "eviter",
     "prio": 3,
@@ -153,7 +153,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Parada en X",
    "it": "Alt a X",
    "de": "Halt bei X",
-   "ja": "Xでの停止", "zh": "在 X 点停住", "ar": "التوقف عند X", "nl": "Halt in X", "pt": "Parada em X", "sv": "Halt i X", "ru": "Остановка в X", "pl": "Zatrzymanie w X"
+   "ja": "Xでの停止", "zh": "在 X 点停住", "ar": "التوقف عند X", "nl": "Halt in X", "pt": "Parada em X", "sv": "Halt i X", "ru": "Остановка в X", "pl": "Zatrzymanie w X", "ko": "X에서 정지"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -169,7 +169,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la precisión de la parada sobre la letra",
     "it": "la precisione dell'alt sulla lettera",
     "de": "die Genauigkeit des Halts am Buchstaben",
-    "ja": "標示文字上での停止の正確さ", "zh": "停在字母标记上的准确度", "ar": "دقة التوقف على الحرف", "nl": "de nauwkeurigheid van de halt op de letter", "pt": "a precisão da parada sobre a letra", "sv": "halten måste vara exakt på bokstaven", "ru": "точность остановки на букве", "pl": "dokładność zatrzymania na literze"
+    "ja": "標示文字上での停止の正確さ", "zh": "停在字母标记上的准确度", "ar": "دقة التوقف على الحرف", "nl": "de nauwkeurigheid van de halt op de letter", "pt": "a precisão da parada sobre a letra", "sv": "halten måste vara exakt på bokstaven", "ru": "точность остановки на букве", "pl": "dokładność zatrzymania na literze", "ko": "표시된 문자 위에서 정지하는 정확도"
    },
    {
     "fr": "l'immobilité",
@@ -177,7 +177,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la inmovilidad",
     "it": "l'immobilità",
     "de": "das Stillstehen",
-    "ja": "静止", "zh": "静止", "ar": "السكون", "nl": "de onbeweeglijkheid", "pt": "a imobilidade", "sv": "stillheten", "ru": "неподвижность", "pl": "bezruch"
+    "ja": "静止", "zh": "静止", "ar": "السكون", "nl": "de onbeweeglijkheid", "pt": "a imobilidade", "sv": "stillheten", "ru": "неподвижность", "pl": "bezruch", "ko": "움직이지 않고 서 있기"
    },
    {
     "fr": "un cheval carré et droit",
@@ -185,7 +185,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "un caballo cuadrado y recto",
     "it": "un cavallo quadrato e diritto",
     "de": "ein geschlossen und gerade stehendes Pferd",
-    "ja": "四肢がそろい真っすぐな馬", "zh": "四蹄方正且笔直的马", "ar": "حصان متوازن ومستقيم", "nl": "een vierkant en recht paard", "pt": "um cavalo quadrado e reto", "sv": "en fyrkantig och rak häst", "ru": "ровная и прямая лошадь", "pl": "koń ustawiony równo i prosto"
+    "ja": "四肢がそろい真っすぐな馬", "zh": "四蹄方正且笔直的马", "ar": "حصان متوازن ومستقيم", "nl": "een vierkant en recht paard", "pt": "um cavalo quadrado e reto", "sv": "en fyrkantig och rak häst", "ru": "ровная и прямая лошадь", "pl": "koń ustawiony równo i prosto", "ko": "네 다리가 고르고 곧게 선 말"
    }
   ],
   "tips": [
@@ -196,7 +196,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Prepara la parada varias zancadas antes de X.",
      "it": "Prepara l'alt diverse falcate prima di X.",
      "de": "Bereite den Halt mehrere Tritte vor X vor.",
-     "ja": "Xの数歩手前から停止を準備しよう。", "zh": "在 X 之前几步就开始准备停止。", "ar": "حضري التوقف قبل X بعدة خطوات.", "nl": "Bereid de halt een paar passen voor X voor.", "pt": "Prepare a parada várias passadas antes de X.", "sv": "Förbered halten flera språng före X.", "ru": "Готовь остановку за несколько шагов до X.", "pl": "Przygotuj zatrzymanie kilka kroków przed X."
+     "ja": "Xの数歩手前から停止を準備しよう。", "zh": "在 X 之前几步就开始准备停止。", "ar": "حضري التوقف قبل X بعدة خطوات.", "nl": "Bereid de halt een paar passen voor X voor.", "pt": "Prepare a parada várias passadas antes de X.", "sv": "Förbered halten flera språng före X.", "ru": "Готовь остановку за несколько шагов до X.", "pl": "Przygotuj zatrzymanie kilka kroków przed X.", "ko": "X에 닿기 몇 보폭 전부터 정지를 준비하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -209,7 +209,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén el caballo recto entre las piernas y las riendas.",
      "it": "Mantieni il cavallo diritto tra gambe e redini.",
      "de": "Halte das Pferd gerade zwischen Bein und Hand.",
-     "ja": "脚と手綱の間で馬をまっすぐ保とう。", "zh": "让马保持笔直，夹在腿和缰绳之间。", "ar": "أبقي الحصان مستقيما بين الساقين والعنان.", "nl": "Houd het paard recht tussen de benen en de teugels.", "pt": "Mantenha o cavalo reto entre as pernas e as rédeas.", "sv": "Håll hästen rak mellan skänklarna och tyglarna.", "ru": "Держи лошадь прямо между ногами и поводьями.", "pl": "Utrzymuj konia prosto między łydkami i wodzami."
+     "ja": "脚と手綱の間で馬をまっすぐ保とう。", "zh": "让马保持笔直，夹在腿和缰绳之间。", "ar": "أبقي الحصان مستقيما بين الساقين والعنان.", "nl": "Houd het paard recht tussen de benen en de teugels.", "pt": "Mantenha o cavalo reto entre as pernas e as rédeas.", "sv": "Håll hästen rak mellan skänklarna och tyglarna.", "ru": "Держи лошадь прямо между ногами и поводьями.", "pl": "Utrzymuj konia prosto między łydkami i wodzami.", "ko": "다리와 고삐 사이에서 말을 곧게 유지하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -222,7 +222,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Busca una parada nítida sin tirar bruscamente.",
      "it": "Cerca un alt netto senza tirare bruscamente.",
      "de": "Suche einen klaren Halt, ohne hart zu ziehen.",
-     "ja": "急に引かず、はっきりとした停止を目指そう。", "zh": "追求干脆的停止，但不要猛拉。", "ar": "اسعي إلى توقف واضح دون الشد بعنف.", "nl": "Zoek een duidelijke halt, maar zonder bruut te trekken.", "pt": "Busque uma parada nítida, mas sem puxar bruscamente.", "sv": "Sikta på en tydlig halt, men utan att dra hårt.", "ru": "Добивайся чёткой остановки, не дёргая резко.", "pl": "Dąż do wyraźnego zatrzymania, ale bez gwałtownego ciągnięcia."
+     "ja": "急に引かず、はっきりとした停止を目指そう。", "zh": "追求干脆的停止，但不要猛拉。", "ar": "اسعي إلى توقف واضح دون الشد بعنف.", "nl": "Zoek een duidelijke halt, maar zonder bruut te trekken.", "pt": "Busque uma parada nítida, mas sem puxar bruscamente.", "sv": "Sikta på en tydlig halt, men utan att dra hårt.", "ru": "Добивайся чёткой остановки, не дёргая резко.", "pl": "Dąż do wyraźnego zatrzymania, ale bez gwałtownego ciągnięcia.", "ko": "고삐를 갑자기 당기지 말고 또렷하게 정지하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -235,7 +235,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita pararte antes o después de X.",
      "it": "Evita di fermarti prima o dopo X.",
      "de": "Vermeide es, vor oder hinter X zu halten.",
-     "ja": "Xの前後で停止しないようにしよう。", "zh": "避免在 X 之前或之后停住。", "ar": "تجنبي التوقف قبل X أو بعده.", "nl": "Voorkom dat je voor of na X stopt.", "pt": "Evite parar antes ou depois de X.", "sv": "Undvik att stanna före eller efter X.", "ru": "Не останавливайся до или после X.", "pl": "Unikaj zatrzymania przed X lub za X."
+     "ja": "Xの前後で停止しないようにしよう。", "zh": "避免在 X 之前或之后停住。", "ar": "تجنبي التوقف قبل X أو بعده.", "nl": "Voorkom dat je voor of na X stopt.", "pt": "Evite parar antes ou depois de X.", "sv": "Undvik att stanna före eller efter X.", "ru": "Не останавливайся до или после X.", "pl": "Unikaj zatrzymania przed X lub za X.", "ko": "X보다 앞이나 뒤에서 서지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -248,7 +248,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Permanece inmóvil unos segundos.",
      "it": "Resta immobile per alcuni secondi.",
      "de": "Bleibe einige Sekunden stehen.",
-     "ja": "数秒間静止しよう。", "zh": "静止几秒钟。", "ar": "ابقي ساكنة بضع ثوان.", "nl": "Blijf een paar seconden stilstaan.", "pt": "Fique imóvel por alguns segundos.", "sv": "Stå stilla några sekunder.", "ru": "Постой неподвижно несколько секунд.", "pl": "Pozostań w bezruchu przez kilka sekund."
+     "ja": "数秒間静止しよう。", "zh": "静止几秒钟。", "ar": "ابقي ساكنة بضع ثوان.", "nl": "Blijf een paar seconden stilstaan.", "pt": "Fique imóvel por alguns segundos.", "sv": "Stå stilla några sekunder.", "ru": "Постой неподвижно несколько секунд.", "pl": "Pozostań w bezruchu przez kilka sekund.", "ko": "몇 초 동안 움직이지 말고 서 있으세요."
     },
     "type": "faire",
     "prio": 3,
@@ -261,7 +261,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No lo sueltes todo antes de que la parada esté realmente estabilizada.",
      "it": "Non lasciare tutto prima che l'alt sia davvero stabile.",
      "de": "Gib nicht alles auf, bevor der Halt wirklich steht.",
-     "ja": "停止が本当に安定するまで気を緩めないこと。", "zh": "在停止真正稳定之前，不要全都放松。", "ar": "لا ترخي كل شيء قبل أن يستقر التوقف فعلا.", "nl": "Laat niet alles los voordat de halt echt stabiel is.", "pt": "Não relaxe tudo antes de a parada estar realmente estabilizada.", "sv": "Släpp inte allt innan halten är riktigt stabil.", "ru": "Не расслабляйся полностью, пока остановка по-настоящему не стабилизировалась.", "pl": "Nie puszczaj wszystkiego, zanim zatrzymanie nie będzie naprawdę ustabilizowane."
+     "ja": "停止が本当に安定するまで気を緩めないこと。", "zh": "在停止真正稳定之前，不要全都放松。", "ar": "لا ترخي كل شيء قبل أن يستقر التوقف فعلا.", "nl": "Laat niet alles los voordat de halt echt stabiel is.", "pt": "Não relaxe tudo antes de a parada estar realmente estabilizada.", "sv": "Släpp inte allt innan halten är riktigt stabil.", "ru": "Не расслабляйся полностью, пока остановка по-настоящему не стабилизировалась.", "pl": "Nie puszczaj wszystkiego, zanim zatrzymanie nie będzie naprawdę ustabilizowane.", "ko": "정지가 정말 안정되기 전에 전부 풀어 주지 마세요."
     },
     "type": "eviter",
     "prio": 3,
@@ -288,7 +288,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Saludo",
    "it": "Saluto",
    "de": "Gruß",
-   "ja": "あいさつ", "zh": "敬礼", "ar": "التحية", "nl": "Groet", "pt": "Saudação", "sv": "Hälsning", "ru": "Приветствие", "pl": "Pozdrowienie"
+   "ja": "あいさつ", "zh": "敬礼", "ar": "التحية", "nl": "Groet", "pt": "Saudação", "sv": "Hälsning", "ru": "Приветствие", "pl": "Pozdrowienie", "ko": "경례"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -304,7 +304,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la inmovilidad durante el saludo",
     "it": "l'immobilità durante il saluto",
     "de": "das Stillstehen während des Grußes",
-    "ja": "あいさつ中の静止", "zh": "敬礼时保持静止", "ar": "السكون أثناء التحية", "nl": "de onbeweeglijkheid tijdens de groet", "pt": "a imobilidade durante a saudação", "sv": "stillheten under hälsningen", "ru": "неподвижность во время приветствия", "pl": "bezruch podczas pozdrowienia"
+    "ja": "あいさつ中の静止", "zh": "敬礼时保持静止", "ar": "السكون أثناء التحية", "nl": "de onbeweeglijkheid tijdens de groet", "pt": "a imobilidade durante a saudação", "sv": "stillheten under hälsningen", "ru": "неподвижность во время приветствия", "pl": "bezruch podczas pozdrowienia", "ko": "경례하는 동안 움직이지 않기"
    },
    {
     "fr": "le calme du cheval",
@@ -312,7 +312,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la calma del caballo",
     "it": "la calma del cavallo",
     "de": "die Ruhe des Pferdes",
-    "ja": "馬の落ち着き", "zh": "马的平静", "ar": "هدوء الحصان", "nl": "de rust van het paard", "pt": "a calma do cavalo", "sv": "hästens lugn", "ru": "спокойствие лошади", "pl": "spokój konia"
+    "ja": "馬の落ち着き", "zh": "马的平静", "ar": "هدوء الحصان", "nl": "de rust van het paard", "pt": "a calma do cavalo", "sv": "hästens lugn", "ru": "спокойствие лошади", "pl": "spokój konia", "ko": "말의 차분함"
    },
    {
     "fr": "la reprise des rênes sans geste brusque",
@@ -320,7 +320,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "recoger las riendas sin gestos bruscos",
     "it": "la ripresa delle redini senza gesti bruschi",
     "de": "das Aufnehmen der Zügel ohne ruckartige Bewegung",
-    "ja": "急な動作なく手綱を取り直すこと", "zh": "收回缰绳时不要有突兀的动作", "ar": "استعادة العنان دون حركة مفاجئة", "nl": "de teugels opnemen zonder abrupte beweging", "pt": "retomar as rédeas sem gesto brusco", "sv": "att ta upp tyglarna utan häftiga rörelser", "ru": "подбор поводьев без резких движений", "pl": "zebranie wodzy bez gwałtownego ruchu"
+    "ja": "急な動作なく手綱を取り直すこと", "zh": "收回缰绳时不要有突兀的动作", "ar": "استعادة العنان دون حركة مفاجئة", "nl": "de teugels opnemen zonder abrupte beweging", "pt": "retomar as rédeas sem gesto brusco", "sv": "att ta upp tyglarna utan häftiga rörelser", "ru": "подбор поводьев без резких движений", "pl": "zebranie wodzy bez gwałtownego ruchu", "ko": "갑작스러운 동작 없이 고삐 다시 잡기"
    }
   ],
   "tips": [
@@ -331,7 +331,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Estabiliza primero la parada antes de saludar.",
      "it": "Stabilizza prima l'alt, poi saluta.",
      "de": "Stabilisiere erst den Halt, dann grüße.",
-     "ja": "まず停止を安定させてからあいさつしよう。", "zh": "先把停止稳定下来，再敬礼。", "ar": "ثبتي التوقف أولا ثم حيي.", "nl": "Stabiliseer eerst de halt voordat je groet.", "pt": "Estabilize primeiro a parada antes de saudar.", "sv": "Stabilisera först halten innan du hälsar.", "ru": "Сначала стабилизируй остановку, потом приветствуй.", "pl": "Najpierw ustabilizuj zatrzymanie, potem pozdrów."
+     "ja": "まず停止を安定させてからあいさつしよう。", "zh": "先把停止稳定下来，再敬礼。", "ar": "ثبتي التوقف أولا ثم حيي.", "nl": "Stabiliseer eerst de halt voordat je groet.", "pt": "Estabilize primeiro a parada antes de saudar.", "sv": "Stabilisera först halten innan du hälsar.", "ru": "Сначала стабилизируй остановку, потом приветствуй.", "pl": "Najpierw ustabilizuj zatrzymanie, potem pozdrów.", "ko": "경례하기 전에 먼저 정지를 안정시키세요."
     },
     "type": "faire",
     "prio": 1,
@@ -344,7 +344,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén el torso recto y la mirada tranquila.",
      "it": "Tieni il busto diritto e lo sguardo calmo.",
      "de": "Halte den Oberkörper gerade und den Blick ruhig.",
-     "ja": "上体をまっすぐ、視線は落ち着かせよう。", "zh": "上身挺直，目光平静。", "ar": "أبقي جذعك مستقيما ونظرك هادئا.", "nl": "Houd je bovenlichaam recht en je blik rustig.", "pt": "Mantenha o tronco reto e o olhar calmo.", "sv": "Håll överkroppen rak och blicken lugn.", "ru": "Держи корпус прямо, а взгляд спокойным.", "pl": "Trzymaj tułów prosto, a spojrzenie spokojne."
+     "ja": "上体をまっすぐ、視線は落ち着かせよう。", "zh": "上身挺直，目光平静。", "ar": "أبقي جذعك مستقيما ونظرك هادئا.", "nl": "Houd je bovenlichaam recht en je blik rustig.", "pt": "Mantenha o tronco reto e o olhar calmo.", "sv": "Håll överkroppen rak och blicken lugn.", "ru": "Держи корпус прямо, а взгляд спокойным.", "pl": "Trzymaj tułów prosto, a spojrzenie spokojne.", "ko": "상체를 곧게 펴고 차분한 시선을 유지하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -357,7 +357,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Saluda sin precipitación.",
      "it": "Saluta senza fretta.",
      "de": "Grüße ohne Eile.",
-     "ja": "慌てずにあいさつしよう。", "zh": "敬礼不要慌张。", "ar": "حيي بلا استعجال.", "nl": "Groet zonder haast.", "pt": "Saude sem pressa.", "sv": "Hälsa utan att stressa.", "ru": "Приветствуй не торопясь.", "pl": "Pozdrów bez pośpiechu."
+     "ja": "慌てずにあいさつしよう。", "zh": "敬礼不要慌张。", "ar": "حيي بلا استعجال.", "nl": "Groet zonder haast.", "pt": "Saude sem pressa.", "sv": "Hälsa utan att stressa.", "ru": "Приветствуй не торопясь.", "pl": "Pozdrów bez pośpiechu.", "ko": "서두르지 말고 경례하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -370,7 +370,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita que el caballo se ponga en marcha durante el saludo.",
      "it": "Evita che il cavallo riparta durante il saluto.",
      "de": "Vermeide, dass das Pferd während des Grußes antritt.",
-     "ja": "あいさつ中に馬が動き出さないようにしよう。", "zh": "避免让马在敬礼时又走开。", "ar": "تجنبي ترك الحصان ينطلق أثناء التحية.", "nl": "Voorkom dat het paard tijdens de groet weer wegloopt.", "pt": "Evite deixar o cavalo sair andando durante a saudação.", "sv": "Undvik att låta hästen gå iväg under hälsningen.", "ru": "Не давай лошади тронуться во время приветствия.", "pl": "Unikaj sytuacji, w której koń rusza podczas pozdrowienia."
+     "ja": "あいさつ中に馬が動き出さないようにしよう。", "zh": "避免让马在敬礼时又走开。", "ar": "تجنبي ترك الحصان ينطلق أثناء التحية.", "nl": "Voorkom dat het paard tijdens de groet weer wegloopt.", "pt": "Evite deixar o cavalo sair andando durante a saudação.", "sv": "Undvik att låta hästen gå iväg under hälsningen.", "ru": "Не давай лошади тронуться во время приветствия.", "pl": "Unikaj sytuacji, w której koń rusza podczas pozdrowienia.", "ko": "경례하는 동안 말이 다시 걸어가지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -383,7 +383,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Recoge las riendas sin gestos bruscos.",
      "it": "Riprendi le redini senza gesti bruschi.",
      "de": "Nimm die Zügel ohne ruckartige Bewegung auf.",
-     "ja": "急な動作をせず手綱を取り直そう。", "zh": "收回你的缰绳时不要有突兀的动作。", "ar": "استعيدي العنان دون حركة مفاجئة.", "nl": "Neem je teugels op zonder abrupte beweging.", "pt": "Retome suas rédeas sem gesto brusco.", "sv": "Ta upp tyglarna utan häftiga rörelser.", "ru": "Подбери поводья без резких движений.", "pl": "Zbierz wodze z powrotem bez gwałtownego ruchu."
+     "ja": "急な動作をせず手綱を取り直そう。", "zh": "收回你的缰绳时不要有突兀的动作。", "ar": "استعيدي العنان دون حركة مفاجئة.", "nl": "Neem je teugels op zonder abrupte beweging.", "pt": "Retome suas rédeas sem gesto brusco.", "sv": "Ta upp tyglarna utan häftiga rörelser.", "ru": "Подбери поводья без резких движений.", "pl": "Zbierz wodze z powrotem bez gwałtownego ruchu.", "ko": "갑작스러운 동작 없이 고삐를 다시 잡으세요."
     },
     "type": "faire",
     "prio": 3,
@@ -396,7 +396,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Prepara ya la partida que sigue.",
      "it": "Prepara già la partenza successiva.",
      "de": "Bereite schon das folgende Anreiten vor.",
-     "ja": "次の発進をすでに準備しておこう。", "zh": "提前准备接下来的起步。", "ar": "حضري من الآن الانطلاق الذي يليه.", "nl": "Bereid alvast de aanzet voor die erna komt.", "pt": "Já prepare a partida que vem em seguida.", "sv": "Förbered redan starten som följer.", "ru": "Уже готовь следующий старт.", "pl": "Przygotuj już kolejne ruszenie."
+     "ja": "次の発進をすでに準備しておこう。", "zh": "提前准备接下来的起步。", "ar": "حضري من الآن الانطلاق الذي يليه.", "nl": "Bereid alvast de aanzet voor die erna komt.", "pt": "Já prepare a partida que vem em seguida.", "sv": "Förbered redan starten som följer.", "ru": "Уже готовь следующий старт.", "pl": "Przygotuj już kolejne ruszenie.", "ko": "이어지는 출발을 미리 준비하세요."
     },
     "type": "faire",
     "prio": 3,
@@ -423,7 +423,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Parada final",
    "it": "Alt finale",
    "de": "Schlusshalt",
-   "ja": "最後の停止", "zh": "最后的停止", "ar": "التوقف الأخير", "nl": "Laatste halt", "pt": "Parada final", "sv": "Slutlig halt", "ru": "Финальная остановка", "pl": "Zatrzymanie końcowe"
+   "ja": "最後の停止", "zh": "最后的停止", "ar": "التوقف الأخير", "nl": "Laatste halt", "pt": "Parada final", "sv": "Slutlig halt", "ru": "Финальная остановка", "pl": "Zatrzymanie końcowe", "ko": "마지막 정지"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -439,7 +439,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la precisión de la parada",
     "it": "la precisione dell'alt",
     "de": "die Genauigkeit des Halts",
-    "ja": "停止の正確さ", "zh": "停止的准确度", "ar": "دقة التوقف", "nl": "de nauwkeurigheid van de halt", "pt": "a precisão da parada", "sv": "halten måste vara exakt", "ru": "точность остановки", "pl": "dokładność zatrzymania"
+    "ja": "停止の正確さ", "zh": "停止的准确度", "ar": "دقة التوقف", "nl": "de nauwkeurigheid van de halt", "pt": "a precisão da parada", "sv": "halten måste vara exakt", "ru": "точность остановки", "pl": "dokładność zatrzymania", "ko": "정지의 정확도"
    },
    {
     "fr": "l'immobilité",
@@ -447,7 +447,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la inmovilidad",
     "it": "l'immobilità",
     "de": "das Stillstehen",
-    "ja": "静止", "zh": "静止", "ar": "السكون", "nl": "de onbeweeglijkheid", "pt": "a imobilidade", "sv": "stillheten", "ru": "неподвижность", "pl": "bezruch"
+    "ja": "静止", "zh": "静止", "ar": "السكون", "nl": "de onbeweeglijkheid", "pt": "a imobilidade", "sv": "stillheten", "ru": "неподвижность", "pl": "bezruch", "ko": "움직이지 않고 서 있기"
    },
    {
     "fr": "la qualité de la dernière transition",
@@ -455,7 +455,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la calidad de la última transición",
     "it": "la qualità dell'ultima transizione",
     "de": "die Qualität des letzten Übergangs",
-    "ja": "最後の移行の質", "zh": "最后一次转换的质量", "ar": "جودة آخر انتقال", "nl": "de kwaliteit van de laatste overgang", "pt": "a qualidade da última transição", "sv": "kvaliteten på den sista övergången", "ru": "качество последнего перехода", "pl": "jakość ostatniego przejścia"
+    "ja": "最後の移行の質", "zh": "最后一次转换的质量", "ar": "جودة آخر انتقال", "nl": "de kwaliteit van de laatste overgang", "pt": "a qualidade da última transição", "sv": "kvaliteten på den sista övergången", "ru": "качество последнего перехода", "pl": "jakość ostatniego przejścia", "ko": "마지막 전이의 질"
    }
   ],
   "tips": [
@@ -466,7 +466,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Termina la reprise con la misma precisión que al principio.",
      "it": "Concludi la ripresa con la stessa precisione dell'inizio.",
      "de": "Beende die Aufgabe mit derselben Genauigkeit wie am Anfang.",
-     "ja": "最初と同じ正確さで課目を終えよう。", "zh": "用和开始时一样的精确度结束套路。", "ar": "أنهي الاختبار بنفس الدقة التي بدأت بها.", "nl": "Sluit de proef af met dezelfde nauwkeurigheid als aan het begin.", "pt": "Termine a reprise de adestramento com a mesma precisão do início.", "sv": "Avsluta programmet med samma precision som i början.", "ru": "Закончи программу с той же точностью, с какой начал.", "pl": "Zakończ program z taką samą dokładnością jak na początku."
+     "ja": "最初と同じ正確さで課目を終えよう。", "zh": "用和开始时一样的精确度结束套路。", "ar": "أنهي الاختبار بنفس الدقة التي بدأت بها.", "nl": "Sluit de proef af met dezelfde nauwkeurigheid als aan het begin.", "pt": "Termine a reprise de adestramento com a mesma precisão do início.", "sv": "Avsluta programmet med samma precision som i början.", "ru": "Закончи программу с той же точностью, с какой начал.", "pl": "Zakończ program z taką samą dokładnością jak na początku.", "ko": "프로그램을 시작할 때와 같은 정확도로 마무리하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -479,7 +479,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Prepara la parada antes de X.",
      "it": "Prepara l'alt prima di X.",
      "de": "Bereite den Halt vor X vor.",
-     "ja": "Xの手前で停止を準備しよう。", "zh": "在 X 之前就准备好停止。", "ar": "جهزي التوقف قبل X.", "nl": "Bereid de halt voor X voor.", "pt": "Prepare a parada antes de X.", "sv": "Förbered halten före X.", "ru": "Готовь остановку перед X.", "pl": "Przygotuj zatrzymanie przed X."
+     "ja": "Xの手前で停止を準備しよう。", "zh": "在 X 之前就准备好停止。", "ar": "جهزي التوقف قبل X.", "nl": "Bereid de halt voor X voor.", "pt": "Prepare a parada antes de X.", "sv": "Förbered halten före X.", "ru": "Готовь остановку перед X.", "pl": "Przygotuj zatrzymanie przed X.", "ko": "X 전에 정지를 준비하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -492,7 +492,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén el caballo recto hasta la inmovilidad.",
      "it": "Mantieni il cavallo diritto fino all'immobilità.",
      "de": "Halte das Pferd gerade bis zum Stillstand.",
-     "ja": "完全に静止するまで馬をまっすぐ保とう。", "zh": "让马保持笔直，直到静止。", "ar": "حافظي على استقامة الحصان حتى يثبت تماما.", "nl": "Houd het paard recht tot het stilstaat.", "pt": "Mantenha o cavalo reto até a imobilidade.", "sv": "Håll hästen rak ända till stillhet.", "ru": "Держи лошадь прямо до полной неподвижности.", "pl": "Utrzymuj konia prosto aż do pełnego bezruchu."
+     "ja": "完全に静止するまで馬をまっすぐ保とう。", "zh": "让马保持笔直，直到静止。", "ar": "حافظي على استقامة الحصان حتى يثبت تماما.", "nl": "Houd het paard recht tot het stilstaat.", "pt": "Mantenha o cavalo reto até a imobilidade.", "sv": "Håll hästen rak ända till stillhet.", "ru": "Держи лошадь прямо до полной неподвижности.", "pl": "Utrzymuj konia prosto aż do pełnego bezruchu.", "ko": "완전히 멈출 때까지 말을 곧게 유지하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -505,7 +505,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No relajes la atención demasiado pronto.",
      "it": "Non allentare l'attenzione troppo presto.",
      "de": "Lass deine Aufmerksamkeit nicht zu früh nach.",
-     "ja": "早すぎる気の緩みは避けよう。", "zh": "不要太早放松注意力。", "ar": "لا تخففي تركيزك مبكرا.", "nl": "Laat je aandacht niet te vroeg verslappen.", "pt": "Não relaxe sua atenção cedo demais.", "sv": "Släpp inte koncentrationen för tidigt.", "ru": "Не ослабляй концентрацию слишком рано.", "pl": "Nie rozluźniaj koncentracji zbyt wcześnie."
+     "ja": "早すぎる気の緩みは避けよう。", "zh": "不要太早放松注意力。", "ar": "لا تخففي تركيزك مبكرا.", "nl": "Laat je aandacht niet te vroeg verslappen.", "pt": "Não relaxe sua atenção cedo demais.", "sv": "Släpp inte koncentrationen för tidigt.", "ru": "Не ослабляй концентрацию слишком рано.", "pl": "Nie rozluźniaj koncentracji zbyt wcześnie.", "ko": "집중을 너무 일찍 놓지 마세요."
     },
     "type": "eviter",
     "prio": 2,
@@ -518,7 +518,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita una parada precipitada.",
      "it": "Evita un alt affrettato.",
      "de": "Vermeide einen überstürzten Halt.",
-     "ja": "慌てた停止は避けよう。", "zh": "避免仓促的停止。", "ar": "تجنبي التوقف المتسرع.", "nl": "Voorkom een overhaaste halt.", "pt": "Evite uma parada precipitada.", "sv": "Undvik en förhastad halt.", "ru": "Не допускай торопливой остановки.", "pl": "Unikaj pośpiesznego zatrzymania."
+     "ja": "慌てた停止は避けよう。", "zh": "避免仓促的停止。", "ar": "تجنبي التوقف المتسرع.", "nl": "Voorkom een overhaaste halt.", "pt": "Evite uma parada precipitada.", "sv": "Undvik en förhastad halt.", "ru": "Не допускай торопливой остановки.", "pl": "Unikaj pośpiesznego zatrzymania.", "ko": "서둘러 정지하지 않도록 해요."
     },
     "type": "eviter",
     "prio": 3,
@@ -531,7 +531,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Cuida el saludo final.",
      "it": "Cura il saluto finale.",
      "de": "Achte auf den Schlussgruß.",
-     "ja": "最後のあいさつを丁寧に。", "zh": "认真做好最后的敬礼。", "ar": "اعتني بالتحية الأخيرة.", "nl": "Werk de laatste groet netjes af.", "pt": "Capriche na saudação final.", "sv": "Gör den sista hälsningen med omsorg.", "ru": "Постарайся с финальным приветствием.", "pl": "Zadbaj o końcowe pozdrowienie."
+     "ja": "最後のあいさつを丁寧に。", "zh": "认真做好最后的敬礼。", "ar": "اعتني بالتحية الأخيرة.", "nl": "Werk de laatste groet netjes af.", "pt": "Capriche na saudação final.", "sv": "Gör den sista hälsningen med omsorg.", "ru": "Постарайся с финальным приветствием.", "pl": "Zadbaj o końcowe pozdrowienie.", "ko": "마지막 경례에 정성을 들이세요."
     },
     "type": "faire",
     "prio": 3,
@@ -558,7 +558,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Paso de trabajo",
    "it": "Passo di lavoro",
    "de": "Arbeitsschritt",
-   "ja": "ワーキングウォーク", "zh": "工作慢步", "ar": "خطوة العمل", "nl": "Werkstap", "pt": "Passo de trabalho", "sv": "Arbetsskritt", "ru": "Рабочий шаг", "pl": "Stęp roboczy"
+   "ja": "ワーキングウォーク", "zh": "工作慢步", "ar": "خطوة العمل", "nl": "Werkstap", "pt": "Passo de trabalho", "sv": "Arbetsskritt", "ru": "Рабочий шаг", "pl": "Stęp roboczy", "ko": "작업 평보"
   },
   "phase": "Pas",
   "galopMin": 2,
@@ -574,7 +574,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la regularidad del paso a cuatro tiempos",
     "it": "la regolarità del passo a quattro tempi",
     "de": "die Gleichmäßigkeit des Viertakts",
-    "ja": "四節の常歩の規則正しさ", "zh": "四拍慢步的规律", "ar": "انتظام المشي ذي الإيقاع الرباعي", "nl": "de regelmaat van de stap in vier tempo's", "pt": "a regularidade do passo em quatro tempos", "sv": "regelbundenheten i fyrtaktsskritten", "ru": "ровность четырёхтактного шага", "pl": "regularność czterotaktowego stępa"
+    "ja": "四節の常歩の規則正しさ", "zh": "四拍慢步的规律", "ar": "انتظام المشي ذي الإيقاع الرباعي", "nl": "de regelmaat van de stap in vier tempo's", "pt": "a regularidade do passo em quatro tempos", "sv": "regelbundenheten i fyrtaktsskritten", "ru": "ровность четырёхтактного шага", "pl": "regularność czterotaktowego stępa", "ko": "4박자 평보의 규칙성"
    },
    {
     "fr": "l'activité",
@@ -582,7 +582,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la actividad",
     "it": "l'attività",
     "de": "die Aktivität",
-    "ja": "活発さ", "zh": "活跃度", "ar": "النشاط", "nl": "de activiteit", "pt": "a atividade", "sv": "aktiviteten", "ru": "активность", "pl": "aktywność"
+    "ja": "活発さ", "zh": "活跃度", "ar": "النشاط", "nl": "de activiteit", "pt": "a atividade", "sv": "aktiviteten", "ru": "активность", "pl": "aktywność", "ko": "활동성"
    },
    {
     "fr": "la souplesse du contact",
@@ -590,7 +590,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la suavidad del contacto",
     "it": "la morbidezza del contatto",
     "de": "die Weichheit der Anlehnung",
-    "ja": "コンタクトの柔らかさ", "zh": "接触的柔和", "ar": "ليونة التماس", "nl": "de soepelheid van het contact", "pt": "a suavidade do contato", "sv": "kontaktens mjukhet", "ru": "мягкость контакта", "pl": "miękkość kontaktu"
+    "ja": "コンタクトの柔らかさ", "zh": "接触的柔和", "ar": "ليونة التماس", "nl": "de soepelheid van het contact", "pt": "a suavidade do contato", "sv": "kontaktens mjukhet", "ru": "мягкость контакта", "pl": "miękkość kontaktu", "ko": "접촉의 부드러움"
    }
   ],
   "tips": [
@@ -601,7 +601,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Deja que el caballo avance con una cadencia regular.",
      "it": "Lascia il cavallo avanzare con una cadenza regolare.",
      "de": "Lass das Pferd in gleichmäßigem Takt vorwärtsgehen.",
-     "ja": "一定のリズムで馬を前進させよう。", "zh": "让马以规律的节奏向前走。", "ar": "دعي الحصان يتقدم بإيقاع منتظم.", "nl": "Laat het paard met een regelmatige cadans vooruitgaan.", "pt": "Deixe o cavalo avançar com uma cadência regular.", "sv": "Låt hästen gå framåt med jämn takt.", "ru": "Дай лошади идти вперёд в ровном ритме.", "pl": "Pozwól koniowi iść do przodu w regularnym rytmie."
+     "ja": "一定のリズムで馬を前進させよう。", "zh": "让马以规律的节奏向前走。", "ar": "دعي الحصان يتقدم بإيقاع منتظم.", "nl": "Laat het paard met een regelmatige cadans vooruitgaan.", "pt": "Deixe o cavalo avançar com uma cadência regular.", "sv": "Låt hästen gå framåt med jämn takt.", "ru": "Дай лошади идти вперёд в ровном ритме.", "pl": "Pozwól koniowi iść do przodu w regularnym rytmie.", "ko": "말이 일정한 박자로 나아가게 두세요."
     },
     "type": "faire",
     "prio": 1,
@@ -614,7 +614,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Acompaña el movimiento con la pelvis.",
      "it": "Accompagna il movimento con il bacino.",
      "de": "Begleite die Bewegung mit dem Becken.",
-     "ja": "骨盤で動きに合わせよう。", "zh": "用你的骨盆跟随动作。", "ar": "جاري الحركة بحوضك.", "nl": "Volg de beweging mee met je bekken.", "pt": "Acompanhe o movimento com a bacia.", "sv": "Följ rörelsen med bäckenet.", "ru": "Следуй за движением тазом.", "pl": "Podążaj za ruchem miednicą."
+     "ja": "骨盤で動きに合わせよう。", "zh": "用你的骨盆跟随动作。", "ar": "جاري الحركة بحوضك.", "nl": "Volg de beweging mee met je bekken.", "pt": "Acompanhe o movimento com a bacia.", "sv": "Följ rörelsen med bäckenet.", "ru": "Следуй за движением тазом.", "pl": "Podążaj za ruchem miednicą.", "ko": "골반으로 움직임을 따라가 주세요."
     },
     "type": "faire",
     "prio": 1,
@@ -627,7 +627,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén un contacto suave.",
      "it": "Mantieni un contatto morbido.",
      "de": "Halte eine weiche Anlehnung.",
-     "ja": "柔らかいコンタクトを保とう。", "zh": "保持柔和的接触。", "ar": "حافظي على تماس ليّن.", "nl": "Houd een soepel contact.", "pt": "Mantenha um contato suave.", "sv": "Behåll en mjuk kontakt.", "ru": "Держи мягкий контакт.", "pl": "Utrzymuj miękki kontakt."
+     "ja": "柔らかいコンタクトを保とう。", "zh": "保持柔和的接触。", "ar": "حافظي على تماس ليّن.", "nl": "Houd een soepel contact.", "pt": "Mantenha um contato suave.", "sv": "Behåll en mjuk kontakt.", "ru": "Держи мягкий контакт.", "pl": "Utrzymuj miękki kontakt.", "ko": "부드러운 접촉을 유지하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -640,7 +640,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita acortar el cuello con las manos.",
      "it": "Evita di accorciare l'incollatura con le mani.",
      "de": "Vermeide, den Hals mit der Hand zu verkürzen.",
-     "ja": "手綱で首を縮めないようにしよう。", "zh": "避免用手把脖子压短。", "ar": "تجنبي تقصير العنق بيديك.", "nl": "Voorkom dat je de hals met de handen verkort.", "pt": "Evite encurtar o pescoço com as mãos.", "sv": "Undvik att korta av halsen med händerna.", "ru": "Не укорачивай шею руками.", "pl": "Unikaj skracania szyi rękami."
+     "ja": "手綱で首を縮めないようにしよう。", "zh": "避免用手把脖子压短。", "ar": "تجنبي تقصير العنق بيديك.", "nl": "Voorkom dat je de hals met de handen verkort.", "pt": "Evite encurtar o pescoço com as mãos.", "sv": "Undvik att korta av halsen med händerna.", "ru": "Не укорачивай шею руками.", "pl": "Unikaj skracania szyi rękami.", "ko": "손으로 목을 짧게 만들지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -653,7 +653,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No empujes en cada zancada.",
      "it": "Non spingere a ogni falcata.",
      "de": "Treibe nicht bei jedem Tritt.",
-     "ja": "一歩ごとに押し続けないこと。", "zh": "不要每一步都去推。", "ar": "لا تدفعي مع كل خطوة.", "nl": "Duw niet bij elke pas.", "pt": "Não empurre a cada passada.", "sv": "Driv inte i varje språng.", "ru": "Не толкай каждым шагом.", "pl": "Nie pchaj w każdym kroku."
+     "ja": "一歩ごとに押し続けないこと。", "zh": "不要每一步都去推。", "ar": "لا تدفعي مع كل خطوة.", "nl": "Duw niet bij elke pas.", "pt": "Não empurre a cada passada.", "sv": "Driv inte i varje språng.", "ru": "Не толкай каждым шагом.", "pl": "Nie pchaj w każdym kroku.", "ko": "보폭마다 밀어 주지 마세요."
     },
     "type": "eviter",
     "prio": 3,
@@ -666,7 +666,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Busca un paso activo sin precipitación.",
      "it": "Cerca un passo attivo senza fretta.",
      "de": "Suche einen aktiven Schritt ohne Eile.",
-     "ja": "慌てずに活発な常歩を求めよう。", "zh": "追求活跃但不匆忙的慢步。", "ar": "ابحثي عن مشي نشط دون تسرع.", "nl": "Zoek een actieve stap zonder haast.", "pt": "Busque um passo ativo sem precipitação.", "sv": "Sträva efter en aktiv skritt utan att stressa.", "ru": "Добивайся активного шага без спешки.", "pl": "Szukaj aktywnego stępa bez pośpiechu."
+     "ja": "慌てずに活発な常歩を求めよう。", "zh": "追求活跃但不匆忙的慢步。", "ar": "ابحثي عن مشي نشط دون تسرع.", "nl": "Zoek een actieve stap zonder haast.", "pt": "Busque um passo ativo sem precipitação.", "sv": "Sträva efter en aktiv skritt utan att stressa.", "ru": "Добивайся активного шага без спешки.", "pl": "Szukaj aktywnego stępa bez pośpiechu.", "ko": "서두르지 않으면서 활기찬 평보를 찾아보세요."
     },
     "type": "faire",
     "prio": 3,
@@ -693,7 +693,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Paso medio",
    "it": "Passo medio",
    "de": "Mittelschritt",
-   "ja": "中間常歩", "zh": "中间慢步", "ar": "الخطوة المتوسطة", "nl": "Middenstap", "pt": "Passo médio", "sv": "Mellanskritt", "ru": "Средний шаг", "pl": "Stęp pośredni"
+   "ja": "中間常歩", "zh": "中间慢步", "ar": "الخطوة المتوسطة", "nl": "Middenstap", "pt": "Passo médio", "sv": "Mellanskritt", "ru": "Средний шаг", "pl": "Stęp pośredni", "ko": "중간 평보"
   },
   "phase": "Pas",
   "galopMin": 4,
@@ -709,7 +709,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la amplitud de las zancadas",
     "it": "l'ampiezza delle falcate",
     "de": "die Länge der Tritte",
-    "ja": "歩幅の大きさ", "zh": "步幅的幅度", "ar": "اتساع الخطوات", "nl": "de ruimte van de passen", "pt": "a amplitude das passadas", "sv": "stegens längd", "ru": "размах шагов", "pl": "długość kroków"
+    "ja": "歩幅の大きさ", "zh": "步幅的幅度", "ar": "اتساع الخطوات", "nl": "de ruimte van de passen", "pt": "a amplitude das passadas", "sv": "stegens längd", "ru": "размах шагов", "pl": "długość kroków", "ko": "보폭의 크기"
    },
    {
     "fr": "l'activité des postérieurs",
@@ -717,7 +717,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la actividad de los posteriores",
     "it": "l'attività dei posteriori",
     "de": "die Aktivität der Hinterbeine",
-    "ja": "後肢の活発さ", "zh": "后肢的活跃度", "ar": "نشاط الرجلين الخلفيتين", "nl": "de activiteit van de achterbenen", "pt": "a atividade dos posteriores", "sv": "bakbenens aktivitet", "ru": "активность задних ног", "pl": "aktywność zadu"
+    "ja": "後肢の活発さ", "zh": "后肢的活跃度", "ar": "نشاط الرجلين الخلفيتين", "nl": "de activiteit van de achterbenen", "pt": "a atividade dos posteriores", "sv": "bakbenens aktivitet", "ru": "активность задних ног", "pl": "aktywność zadu", "ko": "뒷다리의 활동성"
    },
    {
     "fr": "la rectitude",
@@ -725,7 +725,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la rectitud",
     "it": "la rettitudine",
     "de": "die Geradheit",
-    "ja": "直進性", "zh": "端正性", "ar": "الاستقامة", "nl": "de rechtgerichtheid", "pt": "a retidão", "sv": "rakriktningen", "ru": "прямолинейность", "pl": "prostość"
+    "ja": "直進性", "zh": "端正性", "ar": "الاستقامة", "nl": "de rechtgerichtheid", "pt": "a retidão", "sv": "rakriktningen", "ru": "прямолинейность", "pl": "prostość", "ko": "직진성"
    }
   ],
   "tips": [
@@ -736,7 +736,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Deja que el caballo cubra terreno.",
      "it": "Lascia che il cavallo copra terreno.",
      "de": "Lass das Pferd Boden gewinnen.",
-     "ja": "馬に地面を大きくカバーさせよう。", "zh": "让马多跨出一些距离。", "ar": "دعي الحصان يقطع مساحة أكبر.", "nl": "Laat het paard terrein winnen.", "pt": "Deixe o cavalo cobrir terreno.", "sv": "Låt hästen ta ut sina steg över marken.", "ru": "Дай лошади покрыть пространство.", "pl": "Pozwól koniowi pokonywać teren."
+     "ja": "馬に地面を大きくカバーさせよう。", "zh": "让马多跨出一些距离。", "ar": "دعي الحصان يقطع مساحة أكبر.", "nl": "Laat het paard terrein winnen.", "pt": "Deixe o cavalo cobrir terreno.", "sv": "Låt hästen ta ut sina steg över marken.", "ru": "Дай лошади покрыть пространство.", "pl": "Pozwól koniowi pokonywać teren.", "ko": "말이 넓게 땅을 덮으며 가게 하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -749,7 +749,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén una actividad regular de los posteriores.",
      "it": "Mantieni un'attività regolare dei posteriori.",
      "de": "Halte die Hinterbeine gleichmäßig aktiv.",
-     "ja": "後肢の活発さを一定に保とう。", "zh": "保持后肢规律的活跃。", "ar": "حافظي على نشاط منتظم للرجلين الخلفيتين.", "nl": "Houd een regelmatige activiteit van de achterbenen.", "pt": "Mantenha uma atividade regular dos posteriores.", "sv": "Behåll en jämn aktivitet i bakbenen.", "ru": "Сохраняй ровную активность задних ног.", "pl": "Utrzymuj regularną aktywność zadu."
+     "ja": "後肢の活発さを一定に保とう。", "zh": "保持后肢规律的活跃。", "ar": "حافظي على نشاط منتظم للرجلين الخلفيتين.", "nl": "Houd een regelmatige activiteit van de achterbenen.", "pt": "Mantenha uma atividade regular dos posteriores.", "sv": "Behåll en jämn aktivitet i bakbenen.", "ru": "Сохраняй ровную активность задних ног.", "pl": "Utrzymuj regularną aktywność zadu.", "ko": "뒷다리의 활동성을 고르게 유지하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -762,7 +762,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Permite que el cuello se extienda sin perder el contacto.",
      "it": "Permetti all'incollatura di allungarsi senza perdere il contatto.",
      "de": "Erlaube dem Hals, sich zu dehnen, ohne die Anlehnung zu verlieren.",
-     "ja": "コンタクトを失わずに首を伸ばさせよう。", "zh": "允许脖子伸展，同时不失去接触。", "ar": "اسمحي للعنق بالامتداد دون فقدان التماس.", "nl": "Laat de hals zich uitstrekken zonder het contact te verliezen.", "pt": "Permita que o pescoço se estenda sem perder o contato.", "sv": "Låt halsen sträcka ut sig utan att tappa kontakten.", "ru": "Позволь шее вытянуться, не теряя контакта.", "pl": "Pozwól szyi się wyciągnąć, nie tracąc kontaktu."
+     "ja": "コンタクトを失わずに首を伸ばさせよう。", "zh": "允许脖子伸展，同时不失去接触。", "ar": "اسمحي للعنق بالامتداد دون فقدان التماس.", "nl": "Laat de hals zich uitstrekken zonder het contact te verliezen.", "pt": "Permita que o pescoço se estenda sem perder o contato.", "sv": "Låt halsen sträcka ut sig utan att tappa kontakten.", "ru": "Позволь шее вытянуться, не теряя контакта.", "pl": "Pozwól szyi się wyciągnąć, nie tracąc kontaktu.", "ko": "접촉을 잃지 않으면서 목이 뻗도록 허락하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -775,7 +775,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita bloquear el movimiento con las manos.",
      "it": "Evita di bloccare il movimento con le mani.",
      "de": "Vermeide, die Bewegung mit der Hand zu blockieren.",
-     "ja": "手綱で動きを止めないようにしよう。", "zh": "避免用手卡住动作。", "ar": "تجنبي إعاقة الحركة بيديك.", "nl": "Voorkom dat je de beweging met de handen blokkeert.", "pt": "Evite bloquear o movimento com as mãos.", "sv": "Undvik att blockera rörelsen med händerna.", "ru": "Не блокируй движение руками.", "pl": "Unikaj blokowania ruchu rękami."
+     "ja": "手綱で動きを止めないようにしよう。", "zh": "避免用手卡住动作。", "ar": "تجنبي إعاقة الحركة بيديك.", "nl": "Voorkom dat je de beweging met de handen blokkeert.", "pt": "Evite bloquear o movimento com as mãos.", "sv": "Undvik att blockera rörelsen med händerna.", "ru": "Не блокируй движение руками.", "pl": "Unikaj blokowania ruchu rękami.", "ko": "손으로 움직임을 막지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -788,7 +788,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No confundas amplitud con velocidad.",
      "it": "Non confondere ampiezza e velocità.",
      "de": "Verwechsle Raumgriff nicht mit Geschwindigkeit.",
-     "ja": "歩幅と速さを混同しないこと。", "zh": "不要把幅度和速度混为一谈。", "ar": "لا تخلطي بين اتساع الخطوة والسرعة.", "nl": "Verwar ruimte niet met snelheid.", "pt": "Não confunda amplitude com velocidade.", "sv": "Blanda inte ihop steglängd och fart.", "ru": "Не путай размах шагов со скоростью.", "pl": "Nie myl długości kroku z prędkością."
+     "ja": "歩幅と速さを混同しないこと。", "zh": "不要把幅度和速度混为一谈。", "ar": "لا تخلطي بين اتساع الخطوة والسرعة.", "nl": "Verwar ruimte niet met snelheid.", "pt": "Não confunda amplitude com velocidade.", "sv": "Blanda inte ihop steglängd och fart.", "ru": "Не путай размах шагов со скоростью.", "pl": "Nie myl długości kroku z prędkością.", "ko": "보폭의 크기와 속도를 혼동하지 마세요."
     },
     "type": "eviter",
     "prio": 3,
@@ -801,7 +801,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén una trayectoria precisa.",
      "it": "Mantieni una traiettoria precisa.",
      "de": "Halte eine genaue Linie.",
-     "ja": "正確な線を保とう。", "zh": "保持精确的轨迹。", "ar": "حافظي على مسار دقيق.", "nl": "Houd een nauwkeurig spoor aan.", "pt": "Mantenha uma trajetória precisa.", "sv": "Håll ett exakt spår.", "ru": "Держи точную траекторию.", "pl": "Utrzymuj dokładną linię."
+     "ja": "正確な線を保とう。", "zh": "保持精确的轨迹。", "ar": "حافظي على مسار دقيق.", "nl": "Houd een nauwkeurig spoor aan.", "pt": "Mantenha uma trajetória precisa.", "sv": "Håll ett exakt spår.", "ru": "Держи точную траекторию.", "pl": "Utrzymuj dokładną linię.", "ko": "정확한 경로를 유지하세요."
     },
     "type": "faire",
     "prio": 3,
@@ -828,7 +828,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Paso libre",
    "it": "Passo libero",
    "de": "Schritt am langen Zügel",
-   "ja": "自由常歩", "zh": "自由慢步", "ar": "الخطوة الحرة", "nl": "Stap aan lange teugel", "pt": "Passo livre", "sv": "Fri skritt", "ru": "Свободный шаг", "pl": "Stęp swobodny"
+   "ja": "自由常歩", "zh": "自由慢步", "ar": "الخطوة الحرة", "nl": "Stap aan lange teugel", "pt": "Passo livre", "sv": "Fri skritt", "ru": "Свободный шаг", "pl": "Stęp swobodny", "ko": "자유 평보"
   },
   "phase": "Pas",
   "galopMin": 3,
@@ -844,7 +844,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "el descenso del cuello",
     "it": "la discesa dell'incollatura",
     "de": "das Vorwärts-Abwärts des Halses",
-    "ja": "首の下げ", "zh": "脖子的放低", "ar": "خفض العنق", "nl": "het laten zakken van de hals", "pt": "a descida do pescoço", "sv": "att hästen sänker halsen", "ru": "опускание шеи", "pl": "opuszczenie szyi"
+    "ja": "首の下げ", "zh": "脖子的放低", "ar": "خفض العنق", "nl": "het laten zakken van de hals", "pt": "a descida do pescoço", "sv": "att hästen sänker halsen", "ru": "опускание шеи", "pl": "opuszczenie szyi", "ko": "목을 아래로 내리기"
    },
    {
     "fr": "l'activité du pas",
@@ -852,7 +852,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la actividad del paso",
     "it": "l'attività del passo",
     "de": "die Aktivität im Schritt",
-    "ja": "常歩の活発さ", "zh": "慢步的活跃度", "ar": "نشاط الخطوة", "nl": "de activiteit van de stap", "pt": "a atividade do passo", "sv": "skrittens aktivitet", "ru": "активность шага", "pl": "aktywność stępa"
+    "ja": "常歩の活発さ", "zh": "慢步的活跃度", "ar": "نشاط الخطوة", "nl": "de activiteit van de stap", "pt": "a atividade do passo", "sv": "skrittens aktivitet", "ru": "активность шага", "pl": "aktywność stępa", "ko": "평보의 활동성"
    },
    {
     "fr": "un tracé maîtrisé",
@@ -860,7 +860,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "un trazado controlado",
     "it": "una traiettoria controllata",
     "de": "eine kontrollierte Linie",
-    "ja": "制御された動線", "zh": "把握好的路线", "ar": "مسار منضبط", "nl": "een beheerst spoor", "pt": "um traçado dominado", "sv": "ett kontrollerat spår", "ru": "выдержанная траектория", "pl": "kontrolowany tor"
+    "ja": "制御された動線", "zh": "把握好的路线", "ar": "مسار منضبط", "nl": "een beheerst spoor", "pt": "um traçado dominado", "sv": "ett kontrollerat spår", "ru": "выдержанная траектория", "pl": "kontrolowany tor", "ko": "잘 통제된 경로"
    }
   ],
   "tips": [
@@ -871,7 +871,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Deja que el caballo baje el cuello.",
      "it": "Lascia che il cavallo abbassi l'incollatura.",
      "de": "Lass das Pferd den Hals fallen lassen.",
-     "ja": "馬に首を下げさせよう。", "zh": "让马放低脖子。", "ar": "دعي الحصان يخفض عنقه.", "nl": "Laat het paard zijn hals laten zakken.", "pt": "Deixe o cavalo baixar o pescoço.", "sv": "Låt hästen sänka halsen.", "ru": "Дай лошади опустить шею.", "pl": "Pozwól koniowi opuścić szyję."
+     "ja": "馬に首を下げさせよう。", "zh": "让马放低脖子。", "ar": "دعي الحصان يخفض عنقه.", "nl": "Laat het paard zijn hals laten zakken.", "pt": "Deixe o cavalo baixar o pescoço.", "sv": "Låt hästen sänka halsen.", "ru": "Дай лошади опустить шею.", "pl": "Pozwól koniowi opuścić szyję.", "ko": "말이 목을 내리게 두세요."
     },
     "type": "faire",
     "prio": 1,
@@ -884,7 +884,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén las riendas suficientemente largas.",
      "it": "Tieni le redini abbastanza lunghe.",
      "de": "Halte die Zügel ausreichend lang.",
-     "ja": "手綱を十分に長く保とう。", "zh": "让缰绳保持足够的长度。", "ar": "اتركي الأعنة طويلة بما يكفي.", "nl": "Houd de teugels lang genoeg.", "pt": "Mantenha as rédeas suficientemente longas.", "sv": "Håll tyglarna tillräckligt långa.", "ru": "Держи поводья достаточно длинными.", "pl": "Trzymaj wodze wystarczająco długie."
+     "ja": "手綱を十分に長く保とう。", "zh": "让缰绳保持足够的长度。", "ar": "اتركي الأعنة طويلة بما يكفي.", "nl": "Houd de teugels lang genoeg.", "pt": "Mantenha as rédeas suficientemente longas.", "sv": "Håll tyglarna tillräckligt långa.", "ru": "Держи поводья достаточно длинными.", "pl": "Trzymaj wodze wystarczająco długie.", "ko": "고삐를 충분히 길게 유지하세요."
     },
     "type": "faire",
     "prio": 1,
@@ -897,7 +897,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Conserva una marcha activa y regular.",
      "it": "Mantieni un'andatura attiva e regolare.",
      "de": "Erhalte einen aktiven, gleichmäßigen Schritt.",
-     "ja": "活発で規則的な歩みを保とう。", "zh": "保持活跃而规律的步伐。", "ar": "حافظي على مشي نشط ومنتظم.", "nl": "Houd een actieve en regelmatige gang aan.", "pt": "Conserve uma marcha ativa e regular.", "sv": "Behåll en aktiv och jämn gång.", "ru": "Сохраняй шаг активным и ровным.", "pl": "Utrzymuj aktywny i regularny stęp."
+     "ja": "活発で規則的な歩みを保とう。", "zh": "保持活跃而规律的步伐。", "ar": "حافظي على مشي نشط ومنتظم.", "nl": "Houd een actieve en regelmatige gang aan.", "pt": "Conserve uma marcha ativa e regular.", "sv": "Behåll en aktiv och jämn gång.", "ru": "Сохраняй шаг активным и ровным.", "pl": "Utrzymuj aktywny i regularny stęp.", "ko": "활기차고 규칙적인 걸음을 유지하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -910,7 +910,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita soltar completamente las riendas.",
      "it": "Evita di abbandonare completamente le redini.",
      "de": "Vermeide, die Zügel völlig hinzugeben.",
-     "ja": "手綱を完全に放り出さないこと。", "zh": "避免把缰绳完全扔掉。", "ar": "تجنبي رمي الأعنة تماما.", "nl": "Voorkom dat je de teugels helemaal weggooit.", "pt": "Evite largar completamente as rédeas.", "sv": "Undvik att släppa tyglarna helt.", "ru": "Не отпускай поводья совсем.", "pl": "Unikaj całkowitego rzucenia wodzy."
+     "ja": "手綱を完全に放り出さないこと。", "zh": "避免把缰绳完全扔掉。", "ar": "تجنبي رمي الأعنة تماما.", "nl": "Voorkom dat je de teugels helemaal weggooit.", "pt": "Evite largar completamente as rédeas.", "sv": "Undvik att släppa tyglarna helt.", "ru": "Не отпускай поводья совсем.", "pl": "Unikaj całkowitego rzucenia wodzy.", "ko": "고삐를 완전히 던져 버리지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -923,7 +923,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No dejes que el caballo zigzaguee.",
      "it": "Non lasciare che il cavallo zigzaghi.",
      "de": "Lass das Pferd nicht schlängeln.",
-     "ja": "馬を蛇行させないこと。", "zh": "不要让马走成之字形。", "ar": "لا تدعي الحصان يتعرج.", "nl": "Laat het paard niet zigzaggen.", "pt": "Não deixe o cavalo ziguezaguear.", "sv": "Låt inte hästen gå i sicksack.", "ru": "Не давай лошади вилять.", "pl": "Nie pozwól koniowi zygzakować."
+     "ja": "馬を蛇行させないこと。", "zh": "不要让马走成之字形。", "ar": "لا تدعي الحصان يتعرج.", "nl": "Laat het paard niet zigzaggen.", "pt": "Não deixe o cavalo ziguezaguear.", "sv": "Låt inte hästen gå i sicksack.", "ru": "Не давай лошади вилять.", "pl": "Nie pozwól koniowi zygzakować.", "ko": "말이 지그재그로 가지 않게 하세요."
     },
     "type": "eviter",
     "prio": 3,
@@ -936,7 +936,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Recupera el contacto progresivamente antes de la siguiente transición.",
      "it": "Riprendi il contatto gradualmente prima della transizione successiva.",
      "de": "Nimm die Anlehnung vor dem nächsten Übergang allmählich wieder auf.",
-     "ja": "次の移行の前に徐々にコンタクトを取り戻そう。", "zh": "在下一次转换之前，逐步重新建立接触。", "ar": "استعيدي التماس تدريجيا قبل الانتقال التالي.", "nl": "Neem het contact geleidelijk weer op voor de volgende overgang.", "pt": "Retome o contato progressivamente antes da transição seguinte.", "sv": "Ta upp kontakten gradvis före nästa övergång.", "ru": "Постепенно возьми контакт перед следующим переходом.", "pl": "Stopniowo zbierz kontakt przed następnym przejściem."
+     "ja": "次の移行の前に徐々にコンタクトを取り戻そう。", "zh": "在下一次转换之前，逐步重新建立接触。", "ar": "استعيدي التماس تدريجيا قبل الانتقال التالي.", "nl": "Neem het contact geleidelijk weer op voor de volgende overgang.", "pt": "Retome o contato progressivamente antes da transição seguinte.", "sv": "Ta upp kontakten gradvis före nästa övergång.", "ru": "Постепенно возьми контакт перед следующим переходом.", "pl": "Stopniowo zbierz kontakt przed następnym przejściem.", "ko": "다음 전이 전에 접촉을 서서히 다시 잡으세요."
     },
     "type": "faire",
     "prio": 3,
@@ -963,7 +963,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Paso alargado",
    "it": "Passo allungato",
    "de": "Starker Schritt",
-   "ja": "伸長常歩", "zh": "伸长慢步", "ar": "الخطوة الممدودة", "nl": "Uitgestrekte stap", "pt": "Passo alongado", "sv": "Förlängd skritt", "ru": "Удлинённый шаг", "pl": "Stęp wyciągnięty"
+   "ja": "伸長常歩", "zh": "伸长慢步", "ar": "الخطوة الممدودة", "nl": "Uitgestrekte stap", "pt": "Passo alongado", "sv": "Förlängd skritt", "ru": "Удлинённый шаг", "pl": "Stęp wyciągnięty", "ko": "신장 평보"
   },
   "phase": "Pas",
   "galopMin": 6,
@@ -979,7 +979,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la amplitud máxima",
     "it": "l'ampiezza massima",
     "de": "der größte Raumgriff",
-    "ja": "最大の歩幅", "zh": "最大的幅度", "ar": "أقصى اتساع للخطوة", "nl": "de maximale ruimte", "pt": "a amplitude máxima", "sv": "maximal steglängd", "ru": "максимальный размах шагов", "pl": "maksymalna długość kroków"
+    "ja": "最大の歩幅", "zh": "最大的幅度", "ar": "أقصى اتساع للخطوة", "nl": "de maximale ruimte", "pt": "a amplitude máxima", "sv": "maximal steglängd", "ru": "максимальный размах шагов", "pl": "maksymalna długość kroków", "ko": "최대 보폭"
    },
    {
     "fr": "l'extension de l'encolure",
@@ -987,7 +987,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la extensión del cuello",
     "it": "l'estensione dell'incollatura",
     "de": "die Dehnung des Halses",
-    "ja": "首の伸展", "zh": "脖子的伸展", "ar": "امتداد العنق", "nl": "het uitstrekken van de hals", "pt": "a extensão do pescoço", "sv": "halsens utsträckning", "ru": "вытягивание шеи", "pl": "wyciągnięcie szyi"
+    "ja": "首の伸展", "zh": "脖子的伸展", "ar": "امتداد العنق", "nl": "het uitstrekken van de hals", "pt": "a extensão do pescoço", "sv": "halsens utsträckning", "ru": "вытягивание шеи", "pl": "wyciągnięcie szyi", "ko": "목 뻗기"
    },
    {
     "fr": "la régularité des quatre temps",
@@ -995,7 +995,7 @@ window.HYPE_DRESSAGE.fiches = {
     "es": "la regularidad de los cuatro tiempos",
     "it": "la regolarità dei quattro tempi",
     "de": "die Gleichmäßigkeit des Viertakts",
-    "ja": "四節の規則正しさ", "zh": "四拍的规律", "ar": "انتظام الإيقاعات الأربعة", "nl": "de regelmaat van de vier tempo's", "pt": "a regularidade dos quatro tempos", "sv": "regelbundenheten i de fyra takterna", "ru": "ровность четырёх тактов", "pl": "regularność czterech taktów"
+    "ja": "四節の規則正しさ", "zh": "四拍的规律", "ar": "انتظام الإيقاعات الأربعة", "nl": "de regelmaat van de vier tempo's", "pt": "a regularidade dos quatro tempos", "sv": "regelbundenheten i de fyra takterna", "ru": "ровность четырёх тактов", "pl": "regularność czterech taktów", "ko": "4박자의 규칙성"
    }
   ],
   "tips": [
@@ -1006,7 +1006,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Busca más amplitud sin acelerar.",
      "it": "Cerca più ampiezza senza accelerare.",
      "de": "Suche mehr Raumgriff, ohne schneller zu werden.",
-     "ja": "速くならずに歩幅を大きくしよう。", "zh": "追求更大的幅度，但不要加快。", "ar": "ابحثي عن اتساع أكبر دون تسريع.", "nl": "Zoek meer ruimte zonder te versnellen.", "pt": "Busque mais amplitude sem acelerar.", "sv": "Sök längre steg utan att öka farten.", "ru": "Добивайся большего размаха шагов, не ускоряясь.", "pl": "Szukaj większej długości kroku bez przyspieszania."
+     "ja": "速くならずに歩幅を大きくしよう。", "zh": "追求更大的幅度，但不要加快。", "ar": "ابحثي عن اتساع أكبر دون تسريع.", "nl": "Zoek meer ruimte zonder te versnellen.", "pt": "Busque mais amplitude sem acelerar.", "sv": "Sök längre steg utan att öka farten.", "ru": "Добивайся большего размаха шагов, не ускоряясь.", "pl": "Szukaj większej długości kroku bez przyspieszania.", "ko": "빨라지지 않으면서 더 큰 보폭을 찾아보세요."
     },
     "type": "faire",
     "prio": 1,
@@ -1019,7 +1019,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Deja que el cuello se extienda.",
      "it": "Lascia estendere l'incollatura.",
      "de": "Lass den Hals sich dehnen.",
-     "ja": "首を伸ばさせよう。", "zh": "让脖子伸展。", "ar": "دعي العنق يمتد.", "nl": "Laat de hals zich uitstrekken.", "pt": "Deixe o pescoço se estender.", "sv": "Låt halsen sträcka ut sig.", "ru": "Позволь шее вытянуться.", "pl": "Pozwól szyi się wyciągnąć."
+     "ja": "首を伸ばさせよう。", "zh": "让脖子伸展。", "ar": "دعي العنق يمتد.", "nl": "Laat de hals zich uitstrekken.", "pt": "Deixe o pescoço se estender.", "sv": "Låt halsen sträcka ut sig.", "ru": "Позволь шее вытянуться.", "pl": "Pozwól szyi się wyciągnąć.", "ko": "목이 뻗어 나가게 두세요."
     },
     "type": "faire",
     "prio": 1,
@@ -1032,7 +1032,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Mantén el caballo recto.",
      "it": "Mantieni il cavallo diritto.",
      "de": "Halte das Pferd gerade.",
-     "ja": "馬をまっすぐ保とう。", "zh": "让马保持笔直。", "ar": "حافظي على استقامة الحصان.", "nl": "Houd het paard recht.", "pt": "Mantenha o cavalo reto.", "sv": "Håll hästen rak.", "ru": "Держи лошадь прямо.", "pl": "Utrzymuj konia prosto."
+     "ja": "馬をまっすぐ保とう。", "zh": "让马保持笔直。", "ar": "حافظي على استقامة الحصان.", "nl": "Houd het paard recht.", "pt": "Mantenha o cavalo reto.", "sv": "Håll hästen rak.", "ru": "Держи лошадь прямо.", "pl": "Utrzymuj konia prosto.", "ko": "말을 곧게 유지하세요."
     },
     "type": "faire",
     "prio": 2,
@@ -1045,7 +1045,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Evita empujar demasiado con las piernas.",
      "it": "Evita di spingere troppo con le gambe.",
      "de": "Vermeide zu starkes Treiben mit den Beinen.",
-     "ja": "脚で押しすぎないようにしよう。", "zh": "避免用腿推得太用力。", "ar": "تجنبي الدفع بقوة زائدة بساقيك.", "nl": "Voorkom dat je te hard met de benen duwt.", "pt": "Evite empurrar forte demais com as pernas.", "sv": "Undvik att driva för hårt med skänklarna.", "ru": "Не толкай слишком сильно ногами.", "pl": "Unikaj zbyt mocnego pchania łydkami."
+     "ja": "脚で押しすぎないようにしよう。", "zh": "避免用腿推得太用力。", "ar": "تجنبي الدفع بقوة زائدة بساقيك.", "nl": "Voorkom dat je te hard met de benen duwt.", "pt": "Evite empurrar forte demais com as pernas.", "sv": "Undvik att driva för hårt med skänklarna.", "ru": "Не толкай слишком сильно ногами.", "pl": "Unikaj zbyt mocnego pchania łydkami.", "ko": "다리로 너무 세게 밀지 않도록 해요."
     },
     "type": "eviter",
     "prio": 2,
@@ -1058,7 +1058,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "No pierdas el ritmo de cuatro tiempos.",
      "it": "Non perdere il ritmo a quattro tempi.",
      "de": "Verliere den Viertakt nicht.",
-     "ja": "四節のリズムを失わないこと。", "zh": "不要丢掉四拍的节奏。", "ar": "لا تفقدي الإيقاع الرباعي.", "nl": "Verlies het ritme in vier tempo's niet.", "pt": "Não perca o ritmo de quatro tempos.", "sv": "Tappa inte fyrtakten.", "ru": "Не теряй четырёхтактный ритм.", "pl": "Nie trać czterotaktowego rytmu."
+     "ja": "四節のリズムを失わないこと。", "zh": "不要丢掉四拍的节奏。", "ar": "لا تفقدي الإيقاع الرباعي.", "nl": "Verlies het ritme in vier tempo's niet.", "pt": "Não perca o ritmo de quatro tempos.", "sv": "Tappa inte fyrtakten.", "ru": "Не теряй четырёхтактный ритм.", "pl": "Nie trać czterotaktowego rytmu.", "ko": "4박자 리듬을 잃지 마세요."
     },
     "type": "eviter",
     "prio": 3,
@@ -1071,7 +1071,7 @@ window.HYPE_DRESSAGE.fiches = {
      "es": "Prepara la recuperación de las riendas sin romper la actividad.",
      "it": "Prepara la ripresa delle redini senza spezzare l'attività.",
      "de": "Bereite das Aufnehmen der Zügel vor, ohne die Aktivität zu verlieren.",
-     "ja": "活発さを損なわずに手綱を取り直す準備をしよう。", "zh": "准备收回缰绳，同时不破坏活跃度。", "ar": "جهزي استعادة الأعنة دون كسر النشاط.", "nl": "Bereid het opnemen van de teugels voor zonder de activiteit te breken.", "pt": "Prepare a retomada das rédeas sem quebrar a atividade.", "sv": "Förbered att ta upp tyglarna utan att bryta aktiviteten.", "ru": "Готовься подобрать поводья, не ломая активность.", "pl": "Przygotuj zebranie wodzy, nie zabijając aktywności."
+     "ja": "活発さを損なわずに手綱を取り直す準備をしよう。", "zh": "准备收回缰绳，同时不破坏活跃度。", "ar": "جهزي استعادة الأعنة دون كسر النشاط.", "nl": "Bereid het opnemen van de teugels voor zonder de activiteit te breken.", "pt": "Prepare a retomada das rédeas sem quebrar a atividade.", "sv": "Förbered att ta upp tyglarna utan att bryta aktiviteten.", "ru": "Готовься подобрать поводья, не ломая активность.", "pl": "Przygotuj zebranie wodzy, nie zabijając aktywności.", "ko": "활동성을 깨뜨리지 않고 고삐를 다시 잡을 준비를 하세요."
     },
     "type": "faire",
     "prio": 3,
