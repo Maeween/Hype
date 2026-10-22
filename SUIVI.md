@@ -14240,14 +14240,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 22/10 00 h 10 : reposée encore sur 20261022-0005 (questions en attente sans réseau + notification, colonne de droite « Mes conseils Hey Baby » + historique sur grand écran). La colonne de droite est remplacée par la colonne Historique de la refonte ; l'accès « 📌 Mes conseils Hey Baby » (même panneau, PanneauConseilsHB) est dans l'Historique (colonne sur ordinateur/tablette, panneau sur téléphone). Renvoi automatique des questions en attente et notification inchangés. Restent dans le code sans servir : listeHistoHB et HB_CSS (ancienne colonne de droite).
 - 44 vérifications automatiques + ouverture de « Mes conseils » sur ordinateur et téléphone : OK.
 
-## 22/10 — 0 h, PRÊT, NON PUBLIÉ : tutoiement partout (Blandine : « corrige-les et modifie les traductions aussi »)
+## 22/10 — 0 h, PUBLIÉ le 22/10 à 7 h (Blandine « Ok vas y ») : tutoiement partout (Blandine : « corrige-les et modifie les traductions aussi »)
 - Branche `tutoiement`, partie de main (cc47824). index.html seul.
 - 27 textes français au vouvoiement passés au tutoiement : écrans d'accueil (onboarding 1 et 3), connexion (« Connecte-toi… », « ou avec ton email »), conditions, questions de profil (prénom, âge, club, Galop), « Continue ton apprentissage », sous-titre Articles, texte générique d'article, « À retenir : relis… », Statistiques, « Lance-toi depuis l'accueil », les 3 messages de limite Hey Baby, paiement Stripe (« depuis ton profil »), « Merci ! Ton idée… », encart enseignants (« suis tes élèves »).
 - Traductions : l'espagnol était au « usted » sur ces mêmes textes → passé au « tú » (Aprende, Sigue, Inicia sesión, ¿Cómo te llamas?, Has usado tus…, te espera…). Encart enseignants : arabe, portugais, russe et polonais passés du pluriel au singulier familier. Les autres langues tutoyaient déjà (le « você » brésilien est la forme familière normale).
 - Gardés volontairement : « Rendez-vous demain » et « a ajouté un rendez-vous » (le nom rendez-vous), et la citation « Faites du cheval un compagnon… » (citation, non réécrite).
 - node --check : 17 blocs OK.
 
-## 22/10 — 0 h 05, PRÊT, NON PUBLIÉ (même branche `tutoiement`) : nouvelle photo du cheval sur « Créer mon compte » (ordinateur et tablette)
+## 22/10 — 0 h 05, PUBLIÉ le 22/10 à 7 h (Blandine « Ok vas y ») : nouvelle photo du cheval sur « Créer mon compte » (ordinateur et tablette)
 - Blandine : « le cheval ne devrait pas être si sombre » + sa photo (tête de cheval noir, liste blanche, filet). Ajoutée en fichier : images/inscription-cheval.webp (995 × 1580, 113 Ko) — pas de base64, AUCUN filtre (l'essai B « éclaircir » est abandonné).
 - index.html — EcranConnexionSpectral, vue large : l'image remplace images/accueil-video-ordi-poster.jpg ; elle remplit la colonne (object-fit cover, cadrage 50 % 4 % pour garder les oreilles), fondu en bas et vers le formulaire. Tablette debout : bandeau cadré à 50 % 14 % (oreilles, liste, yeux). Téléphone (mascotte) inchangé.
 - Captures : 1440×900, 1024×768, 820×1180, 768×1024, arabe 1440 ; aucun débordement ; node --check 17 blocs OK.
+- Publication (tutoiement + photo du cheval, ensemble) : marqueur 20261022-0704 ; index.html, images/inscription-cheval.webp, SUIVI.md.
