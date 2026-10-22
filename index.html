@@ -35569,6 +35569,11 @@ function EcranMonCavalier() {
      (rotation de l iPad, fenetre agrandie). En dessous de 768 px : rien ne change. */
   var cavTab = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;
   var cavOrdi = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
+  /* 22/10 (brief Blandine « Refonte responsive de la page Cavalier », proposition 3) : des 1200 px, mise en page ordinateur
+     avec panneau lateral a gauche (profil + 6 acces), bandeau photo, chevaux en grille de 6, amis et resultats cote a cote.
+     En dessous de 1200 px (iPad, petit ordinateur) : rien ne change. */
+  var cavPanneau = (typeof useHypeLargeur === "function") ? useHypeLargeur(1200) : false;
+  var cavColCh = cavPanneau ? 6 : 4;   /* colonnes de la grille des chevaux (tablette / ordinateur) */
   /* 05/10 (671) — PALETTE ALIGNEE sur Accueil / Ecurie / Communaute : turquoise -> champagne (#C5AA78, clair #C5AA78, bronze #AD8B57),
      blancs bleutes -> ivoire #F3EEE4, gris -> gris ivoire (#BDB6AA / #878D8E), fond #05080B. Couleurs seulement, dans cette page
      et ses blocs (EncartPhotoInvisible, BlocResultatsCavaliere, HypeAmisVitrine, PortraitChevalSpectral, EncreLumineuse). */
@@ -36256,7 +36261,39 @@ function EcranMonCavalier() {
             ecV2 ? h("span", { style: { color: "#F3EEE4" } }, ecV2) : null) : null,
           citation ? h("div", { style: { marginTop: 8, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16, lineHeight: 1.35, color: "rgba(243,238,228,0.78)", textShadow: ombreTxt } }, "« " + citation + " »") : null)));
   }
-  return h("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? 1180 : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
+  /* 22/10 (brief « Refonte responsive de la page Cavalier », proposition 3) — MISE EN PAGE ORDINATEUR (>= 1200 px).
+     Les parties de la page sont les MEMES (aucune nouvelle fonction, aucun texte remplace) ; cavZ les etiquette, et
+     cavMiseEnPage les range : panneau a gauche (photo ronde, prenom, identifiant, badge Coach, les 6 acces en liste),
+     a droite le bandeau photo, les ecuries, le groupe et le recit ; puis les chevaux sur toute la largeur ; puis
+     « Mes amis » et « Mes resultats » cote a cote. Sous 1200 px, cavZ rend la partie telle quelle : page inchangee. */
+  function cavZ(zone, el) { return (CAV_V2 && cavPanneau) ? { __cavZone: zone, el: el } : el; }
+  function cavPanneauProfil() {
+    var srcP = __estVisite ? (__visitePub || profil) : (profRecit || profil);
+    var handleP = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcP) : "";
+    var avP = profil.avatar || "";
+    return h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start" } },
+      h("div", { "aria-hidden": "true", style: { width: 76, height: 76, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", background: avP ? ("#101D22 url(" + avP + ") center 22%/cover") : "#101D22", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A66B", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 30, boxShadow: "0 10px 26px rgba(0,0,0,0.5)" } }, avP ? null : String(prenom || "?").trim().charAt(0).toUpperCase()),
+      h("div", { style: { marginTop: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 26, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
+      handleP ? h("div", { dir: "ltr", style: { marginTop: 4, fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.62)" } }, handleP) : null,
+      roleTeamAff ? h("button", { onClick: function () { setEcran("team-competition"); }, style: { marginTop: 12, display: "inline-flex", alignItems: "center", gap: 4, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null);
+  }
+  function cavMiseEnPage(tag, props) {
+    var kids = Array.prototype.slice.call(arguments, 2);
+    if (!(CAV_V2 && cavPanneau)) return h.apply(null, [tag, props].concat(kids));
+    var Z = {}, avant = [], milieu = [], apres = [], vuZone = false, finHaut = false;
+    kids.forEach(function (k) {
+      if (k && typeof k === "object" && k.__cavZone) { Z[k.__cavZone] = k.el; vuZone = true; if (k.__cavZone === "chevaux") finHaut = true; return; }
+      if (!vuZone) avant.push(k); else if (!finHaut) milieu.push(k); else apres.push(k);
+    });
+    var cle = function (el, c) { return el ? h("div", { key: c, style: { minWidth: 0 } }, el) : null; };
+    var panneau = h("aside", { key: "cavPanneau", "data-cav-panneau": "1", style: { position: "sticky", top: 16, alignSelf: "start", paddingTop: 76, paddingInlineEnd: 22, borderInlineEnd: "1px solid rgba(201,166,107,0.16)", minHeight: 420, boxSizing: "border-box" } },
+      cavPanneauProfil(), Z.acces || null);
+    var colonne = h.apply(null, ["div", { key: "cavCol", style: { minWidth: 0 } }].concat([cle(Z.hero, "zh"), cle(Z.ecuries, "ze"), cle(Z.recit, "zr")]).concat(milieu.map(function (m, iM) { return cle(m, "zm" + iM); })));
+    var haut = h("div", { key: "cavHaut", style: { display: "grid", gridTemplateColumns: "236px minmax(0, 1fr)", columnGap: 14, paddingInlineStart: 16 } }, panneau, colonne);
+    var duo = h("div", { key: "cavDuo", className: "cav-duo", style: { display: "grid", gridAutoFlow: "column", gridAutoColumns: "minmax(0, 1fr)", alignItems: "stretch" } }, cle(Z.amis, "za"), cle(Z.res, "zs"));
+    return h.apply(null, [tag, props].concat(avant, [h("style", { key: "cavDuoCss" }, ".cav-duo>div{display:flex;flex-direction:column}.cav-duo>div>section{flex:1}.cav-duo>div:empty{display:none}"), haut, cle(Z.chevaux, "zc"), duo], apres));
+  }
+  return cavMiseEnPage("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? (cavPanneau ? 1240 : 1180) : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
     /* 11/10 (955) — LE HALO QUI RESPIRE DE L ACCUEIL, A L IDENTIQUE (Blandine : « identique », « tu peux laisser la couleur de fond de page de ma page cavalier et juste mettre le halo qui respire »).
        Memes reglages que .acc2 .hero-pulse + @keyframes acc2breathe (ACC2_CSS) : rond de 360 px, pétrole rgba(127,163,173,0.407) -> transparent a 62 %, 7 s en boucle (opacite 0,45 -> 0,8, taille x1,1).
        Comme sur l accueil il passe DERRIERE la photo (la carte photo recoit position relative + zIndex 1). Fond de la page inchange. */
@@ -36273,7 +36310,7 @@ function EcranMonCavalier() {
        Le carnet se rejoint desormais par APPRENTISSAGE, comme les deux autres rubriques. */
     h("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } }),
     h("button", { onClick: function () { /* 01/10 (533) : la fleche revient a la page precedente (comme le geste retour) ; sans page precedente, Accueil comme avant */ if (ctx && ctx.peutReculer && typeof ctx.retourEcran === "function") ctx.retourEcran(); else setEcran("dashboard"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 26 /* (957) */, zIndex: 6, width: 36, height: 36, borderRadius: "50%", background: CAV_ICONE, border: "1px solid rgba(197,170,120,0.36)", color: "#F3EEE4", fontSize: 19, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
-    CAV_V2 ? cavV2Hero() : null,   /* (1104) */
+    cavZ("hero", CAV_V2 ? cavV2Hero() : null),   /* (1104) */
     CAV_V2 ? null : h("div", { style: { position: "relative", zIndex: 1 /* (955) au-dessus du halo, comme la video de l accueil */, margin: "calc(env(safe-area-inset-top) + 62px) 26px 0" /* 11/10 (957) 16 -> 26 px (Blandine : « un peu plus d espace entre la bordure du telephone et celles de la photo hero ») */, borderRadius: 24, overflow: "hidden", background: "#05080B", border: "1px solid " + CAV_BORD, WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 66%, rgba(0,0,0,0.55) 84%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 66%, rgba(0,0,0,0.55) 84%, rgba(0,0,0,0) 100%)" } },   /* (679) Blandine : « faire fondre le bas de la photo hero avec le fond de la page » : MASQUE (transparence), aucune couleur posee sur la photo */
       /* 17/08 (137, demande de Blandine : « la laisser en entier, ca m'enerve
          de la voir coupee ainsi que son cadre »). LA PHOTO N'EST PLUS ROGNEE.
@@ -36547,7 +36584,7 @@ function EcranMonCavalier() {
        déjà lire la visite) ; Performances -> « resultats-cavalier » (346) ; Progression ->
        « carnet » ; Théorie -> « galops ». Vidéos et Actualité : aucune page n existe -> grisées
        « Prochainement » (jamais un lien qui ne mène nulle part). */
-    (function () {
+    cavZ("acces", (function () {
       /* 22/09 (367) - LE MEME DESSIN QUE LES TUILES DE LA FICHE CHEVAL (carteR), trait pour trait :
          pastille a bord teinte 0,7 avec halo, fond de pastille plus sombre, voile degrade sur la
          carte, teinte de l appli (teinteHypeActive, comme la fiche) au lieu d un turquoise fige.
@@ -36569,7 +36606,7 @@ function EcranMonCavalier() {
         var rtlA = false; try { rtlA = document.documentElement.dir === "rtl"; } catch (eRa) { }
         /* 15/10 (1131) CAVALIER V2 IPAD / ORDINATEUR, BUILD 2 : des 768 px, les 6 acces deviennent une rangee de cartes photo
            (memes images, memes destinations, memes regles : grisee « Prochainement », cadenas en visite). iPhone : la liste N, inchangee. */
-        if (cavTab) return h("div", { key: kP, role: fermeV ? null : "button", "aria-label": tiP, onClick: actP || null,
+        if (cavTab && !cavPanneau) return h("div", { key: kP, role: fermeV ? null : "button", "aria-label": tiP, onClick: actP || null,
           style: { minWidth: 0, cursor: fermeV ? "default" : "pointer", opacity: fermeV ? 0.5 : 1, textAlign: "center" } },
           h("div", { "aria-hidden": "true", style: { position: "relative", width: "100%", aspectRatio: "5 / 4", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(201,166,107,0.34)", backgroundColor: "#0b1316", backgroundImage: "url(images/cavalier-acces-" + (IMG_ACCES_V2[kP] || "histoire") + ".webp)", backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 10px 24px rgba(0,0,0,0.45)" } },
             priveP ? h("span", { style: { position: "absolute", top: 6, insetInlineEnd: 6, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.7)", border: "1px solid rgba(201,166,107,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\uD83D\uDD12") : null),
@@ -36647,10 +36684,11 @@ function EcranMonCavalier() {
       ];
       /* 22/09 (365) : en visite il reste 4 tuiles - sur 3 colonnes, la 4e restait seule sur sa ligne
          (sa capture de 13 h 24). 4 tuiles -> grille 2 x 2 ; 6 tuiles -> 3 x 2 comme avant. */
+      if (CAV_V2 && cavPanneau) return h("nav", { "data-cav-acces": "panneau", style: { display: "flex", flexDirection: "column", marginTop: 22 } }, cartes);   /* 22/10 ordinateur : liste du panneau gauche */
       if (CAV_V2 && cavTab) return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: cavOrdi ? 16 : 10, margin: cavOrdi ? "30px 16px 0" : "26px 16px 0", maxWidth: cavOrdi ? 900 : "none" } }, cartes);   /* (1131) une rangee de 6 cartes photo */
       if (CAV_V2) return h("div", { style: { display: "grid", gridTemplateColumns: largAcc >= 700 ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: largAcc >= 700 ? 24 : 16, margin: largAcc >= 700 ? "26px 24px 0" : "20px 16px 0" } }, cartes);   /* (1105) ; (1118) liste N */
       return h("div", { style: { display: "grid", gridTemplateColumns: (cartes.length === 4 ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))"), gap: 9, margin: "26px 16px 0" } }, cartes);
-    })(),
+    })()),
     /* 22/09 (347) - L ENCART ECURIE DE LA PAGE CAVALIER. Blandine : « rares sont ceux qui en ont
        deux ; il vaudrait mieux un petit + quelque part pour ajouter une écurie qu un gros onglet qui
        prend la moitié de la largeur ; tant qu il y a une seule écurie on garde l onglet horizontal
@@ -36662,7 +36700,7 @@ function EcranMonCavalier() {
        · « + Ajouter une écurie » devient un petit lien sous la carte, et N APPARAÎT PLUS EN VISITE
          (avant, une visiteuse voyait la grosse case « Ajouter une écurie » sur la page d une autre).
        Clics, crayons et éditeurs : inchangés. */
-    (function () {
+    cavZ("ecuries", (function () {
       function lieuDe(nomE) {
         /* (348) : d abord les clubs REVENDIQUES, écrits à la main dans la page du club
            (CLUBS_REVENDIQUES d EcranGuilde : « ecurie feinn » → « Itteville (Essonne) ») - c est
@@ -36740,17 +36778,23 @@ function EcranMonCavalier() {
            champagne, nom en grand), posé juste sous les écuries. Plusieurs groupes : l un sous l autre sur iPhone, deux
            par rangée sur tablette et ordinateur. Même ouverture qu avant (page de l équipe ou piquet de l écurie). */
         var rtlG = false; try { rtlG = document.documentElement.dir === "rtl"; } catch (eRg) { }
-        var plusG = (groupesCav || []).length > 1;
-        var lignesG = (groupesCav || []).map(function (g) {
+        /* 22/10 22 h 35 (Blandine) : seuls les groupes de cavaliers (nature « equipe »), jamais les piquets de chevaux. */
+        var groupesCavE = (groupesCav || []).filter(function (gE) { return gE && gE.nature === "equipe"; });
+        var plusG = groupesCavE.length > 1;
+        /* 22/10 soir (Blandine, maquette téléphone : « ne rajoute que le bloc groupe comme sur la maquette ») : l encart groupe
+           suit la maquette — « Mon groupe » en Cormorant ivoire en haut, puis une petite vignette (photo du groupe), le nom
+           (+ sigle de l écurie s il existe, ex. « – SEP ») et la ligne saison · niveau ; un cheval sombre fondu à droite
+           (même image que l encart récit) et une flèche dans un rond. Même dessin sur tablette et ordinateur.
+           Mêmes ouvertures qu avant (page de l équipe ou piquet de l écurie) ; « Prochainement » si pas de page. */
+        var lignesG = groupesCavE.map(function (g) {
           var photoG = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : hypePhotoPiquet(g);
           var sansPageG = g.nature === "equipe" && !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
           var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
-          var meta = [g.__club, g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + g.saison) : "", niv].filter(Boolean);
-          var labG = g.nature === "equipe"
-            ? (autreV2 ? T("Son \u00e9quipe", "Their team", "Su equipo", "La sua squadra", "\u6240\u5c5e\u30c1\u30fc\u30e0", "Ihr Team", "\u0641\u0631\u064a\u0642\u0647\u0627", "TA的队伍", "Hun team", "A equipe dele(a)", "Deras lag", "Команда", "Jej drużyna", "그의 팀") : T("Mon \u00e9quipe", "My team", "Mi equipo", "La mia squadra", "\u79c1\u306e\u30c1\u30fc\u30e0", "Mein Team", "\u0641\u0631\u064a\u0642\u064a", "我的队伍", "Mijn team", "Minha equipe", "Mitt lag", "Моя команда", "Moja drużyna", "내 팀"))
-            : (autreV2 ? T("Son groupe", "Their group", "Su grupo", "Il suo gruppo", "\u6240\u5c5e\u30b0\u30eb\u30fc\u30d7", "Ihre Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u0647\u0627", "TA的小组", "Hun groep", "O grupo dele(a)", "Deras grupp", "Группа", "Jej grupa", "그의 그룹") : T("Mon groupe", "My group", "Mi grupo", "Il mio gruppo", "\u79c1\u306e\u30b0\u30eb\u30fc\u30d7", "Meine Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u064a", "我的小组", "Mijn groep", "Meu grupo", "Min grupp", "Моя группа", "Moja grupa", "내 그룹"));
-          var coteG = plusG && cavTab;
-          var mG = "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 0%, #000 " + (coteG ? "62%" : "50%") + ")";
+          var sigleG = (String(g.__club || "").match(/\(([^()]{2,12})\)\s*$/) || [])[1] || "";
+          var saisonG = g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + String(g.saison).replace(/\s*[-\u2013]\s*/, " \u2013 ")) : "";
+          var meta = [sigleG ? "" : g.__club, saisonG, niv].filter(Boolean);
+          var labG = autreV2 ? T("Son groupe", "Their group", "Su grupo", "Il suo gruppo", "\u6240\u5c5e\u30b0\u30eb\u30fc\u30d7", "Ihre Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u0647\u0627", "TA的小组", "Hun groep", "O grupo dele(a)", "Deras grupp", "Группа", "Jej grupa", "그의 그룹") : T("Mon groupe", "My group", "Mi grupo", "Il mio gruppo", "\u79c1\u306e\u30b0\u30eb\u30fc\u30d7", "Meine Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u064a", "我的小组", "Mijn groep", "Meu grupo", "Min grupp", "Моя группа", "Moja grupa", "내 그룹");
+          var mG = "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 0%, #000 55%)";
           return h("div", { key: "grp" + g.id, role: "button", "data-groupe-cavalier": g.id, "aria-disabled": sansPageG ? "true" : undefined,
               onClick: function () {
                 if (sansPageG) return;
@@ -36758,16 +36802,18 @@ function EcranMonCavalier() {
                 try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eGo) { }
                 setEcran("ecurie-hype");
               },
-              style: { position: "relative", isolation: "isolate", minWidth: 0, height: cavOrdi ? 112 : (cavTab ? 100 : 96), borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", display: "flex", alignItems: "center", padding: cavTab ? (coteG ? "0 34px 0 20px" : "0 52px 0 28px") : "0 40px 0 16px", boxSizing: "border-box" } },
-            h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: coteG ? "100%" : "68%", height: "100%", objectFit: "cover", objectPosition: "center 35%", zIndex: -1, pointerEvents: "none", WebkitMaskImage: mG, maskImage: mG } }),
-            h("div", { style: { minWidth: 0 } },
-              h("div", { style: { fontFamily: M, fontSize: cavTab ? (coteG ? 9.5 : 11) : 10, fontWeight: 500, letterSpacing: coteG ? "0.18em" : "0.24em", textTransform: "uppercase", color: "#C9A66B", textShadow: ombreV2 } }, labG),
-              h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? (coteG ? 24 : (cavOrdi ? 30 : 28)) : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, g.nom || ""),
-              meta.length ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12 : 10.5, color: "rgba(243,238,228,0.72)", marginTop: cavTab ? 5 : 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-                meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null),
+              style: { position: "relative", isolation: "isolate", minWidth: 0, borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", padding: cavTab ? "14px 22px 16px" : "11px 16px 13px", paddingInlineEnd: cavTab ? 70 : 60, boxSizing: "border-box" } },
+            h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "52%", zIndex: -1, pointerEvents: "none", backgroundImage: "url(" + HYPE_FOND_RECIT + ")", backgroundSize: "cover", backgroundPosition: "center 40%", WebkitMaskImage: mG, maskImage: mG, opacity: 0.9 } }),
+            h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 24 : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, textShadow: ombreV2 } }, labG),
+            h("div", { style: { display: "flex", alignItems: "center", gap: cavTab ? 12 : 10, marginTop: cavTab ? 10 : 8, minWidth: 0 } },
+              h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 auto", width: cavTab ? 58 : 46, height: cavTab ? 42 : 34, borderRadius: 6, objectFit: "cover", objectPosition: "center 35%", border: "1px solid rgba(243,238,228,0.18)", background: "#101D22" } }),
+              h("div", { style: { minWidth: 0 } },
+                h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 21 : 18, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, h("bdi", null, (g.nom || "") + (sigleG ? " \u2013 " + sigleG : ""))),
+                meta.length ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12.5 : 11.5, color: "rgba(243,238,228,0.75)", marginTop: 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                  meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null)),
             sansPageG
-              ? h("span", { style: { position: "absolute", bottom: 9, insetInlineEnd: 10, fontFamily: M, fontSize: 9, letterSpacing: 1.3, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "3px 8px", background: "rgba(5,8,11,0.55)" } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 출시"))
-              : h("span", { "aria-hidden": "true", style: { position: "absolute", bottom: 9, insetInlineEnd: 10, color: "#C9A66B", fontSize: 18, lineHeight: 1, textShadow: ombreV2 } }, rtlG ? "\u2039" : "\u203a"));
+              ? h("span", { style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: 12, fontFamily: M, fontSize: 9, letterSpacing: 1.3, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "3px 8px", background: "rgba(5,8,11,0.6)" } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 출시"))
+              : h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: cavTab ? 18 : 14, width: cavTab ? 38 : 34, height: cavTab ? 38 : 34, borderRadius: "50%", background: "rgba(5,8,11,0.62)", border: "1px solid rgba(243,238,228,0.28)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1 } }, rtlG ? "\u2190" : "\u2192"));
         });
         var sectionG = lignesG.length ? h("div", { "data-groupes-cavalier": "1", style: { marginTop: 10, display: "grid", gridTemplateColumns: (plusG && cavTab) ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: 10 } }, lignesG) : null;
         return h("div", { "data-zone-ecuries": "1", style: { margin: "48px 16px 0" } }, titreEc, cartesEc, sectionG);
@@ -36792,11 +36838,11 @@ function EcranMonCavalier() {
                   h("span", { style: { width: 22, height: 22, borderRadius: "50%", border: "1.3px solid #C5AA78", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, lineHeight: 1 } }, "+"),
                   T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0", "Stall hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0625\u0633\u0637\u0628\u0644", "添加马厩", "Een stal toevoegen", "Adicionar uma cocheira", "Lägg till ett stall", "Добавить конюшню", "Dodaj stajnię", "마구간 추가하기"))
               : null));
-    })(),
+    })()),
     /* 14/10 (1106) Cavalier V2, etape 3 : « Ma story » dans un encart compact (le meme bandeau de stories qu avant, accent
        champagne, marges reduites). Sur sa page : la phrase d invitation en champagne. Pas de « Voir toutes » : aucune page
        « toutes les stories » n existe, on ne met pas de lien qui ne mene nulle part. */
-    ((function () {
+    cavZ("recit", (function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#C5AA78", lumineux: "#C5AA78" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
       var recitTxt = __estVisite ? ((profil && profil.histoire) || "") : ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
@@ -36815,7 +36861,7 @@ function EcranMonCavalier() {
           h("div", { style: { position: "relative", maxWidth: "68%" } },
             cavV2Titre(__estVisite ? T("Son r\u00e9cit", "Their story", "Su relato", "Il suo racconto", "\u5f7c\u306e\u7269\u8a9e", "Ihre Geschichte", "\u0642\u0635\u062a\u0647\u0627", "TA的故事", "Hun verhaal", "A história dele(a)", "Deras berättelse", "Рассказ", "Jej opowieść", "그의 이야기") : T("Mon r\u00e9cit", "My story", "Mi relato", "Il mio racconto", "\u79c1\u306e\u7269\u8a9e", "Meine Geschichte", "\u0642\u0635\u062a\u064a", "我的故事", "Mijn verhaal", "Minha história", "Min berättelse", "Мой рассказ", "Moja opowieść", "내 이야기")),
             recitTxt
-              ? h("div", { style: { marginTop: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 14 /* (1122) 16 -> 14, Blandine */, lineHeight: 1.42, color: "#F3EEE4", whiteSpace: "pre-line", textShadow: "0 1px 6px rgba(0,0,0,0.9)", display: "-webkit-box", WebkitLineClamp: 8, WebkitBoxOrient: "vertical", overflow: "hidden" } }, recitTxt)
+              ? h("div", { style: { marginTop: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 14 /* (1122) 16 -> 14, Blandine */, lineHeight: 1.42, color: "#F3EEE4", whiteSpace: "pre-line", textShadow: "0 1px 6px rgba(0,0,0,0.9)", display: "-webkit-box", WebkitLineClamp: (CAV_V2 && cavPanneau) ? "unset" : 8 /* 22/10 ordinateur : le recit en entier */, WebkitBoxOrient: "vertical", overflow: "hidden" } }, recitTxt)
               : h("div", { style: { marginTop: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 18, lineHeight: 1.35, color: "#F3EEE4" } }, T("Les plus belles histoires ne se mesurent pas en victoires.", "The finest stories aren\u2019t measured in wins.", "Las historias m\u00e1s bellas no se miden en victorias.", "Le storie pi\u00f9 belle non si misurano in vittorie.", "\u6700\u3082\u7f8e\u3057\u3044\u7269\u8a9e\u306f\u3001\u52dd\u5229\u306e\u6570\u3067\u306f\u6e2c\u308c\u306a\u3044\u3002", "Die sch\u00f6nsten Geschichten misst man nicht in Siegen.", "\u0623\u062c\u0645\u0644 \u0627\u0644\u0642\u0635\u0635 \u0644\u0627 \u062a\u064f\u0642\u0627\u0633 \u0628\u0627\u0644\u0627\u0646\u062a\u0635\u0627\u0631\u0627\u062a.", "最美的故事，不是用胜利来衡量的。", "De mooiste verhalen worden niet in overwinningen gemeten.", "As histórias mais bonitas não se medem em vitórias.", "De finaste historierna mäts inte i segrar.", "Самые красивые истории не измеряются победами.", "Najpiękniejsze historie nie mierzą się zwycięstwami.", "가장 아름다운 이야기는 승리로만 가늠할 수 없어요.")),
             (!recitTxt && !__estVisite) ? h("div", { style: { marginTop: 8, fontFamily: M, fontSize: 13, color: "#C9A66B" } }, T("Et si tu racontais la tienne ?", "Why not tell yours?", "\u00bfY si contaras la tuya?", "E se raccontassi la tua?", "\u3042\u306a\u305f\u306e\u7269\u8a9e\u3082\u8a71\u3057\u3066\u307f\u306a\u3044\uff1f", "Und wenn du deine erz\u00e4hlst?", "\u0645\u0627 \u0631\u0623\u064a\u0643 \u0623\u0646 \u062a\u0631\u0648\u064a \u0642\u0635\u062a\u0643\u061f", "不如讲讲你的故事？", "En als je nu eens het jouwe vertelde?", "E se você contasse a sua?", "Tänk om du berättade din?", "А что, если ты расскажешь свою?", "A gdyby tak opowiedzieć swoją?", "내 이야기를 들려주지 않을래요?")) : null,
             (__estVisite && !recitTxt) ? null : h("button", { onClick: function () { setEcran("memoirescavalier"); }, style: btnRc },
@@ -36846,7 +36892,7 @@ function EcranMonCavalier() {
     /* 27/09 (418) : LA BANNIERE « MON ECURIE » (cheval noir, ouvrait `guilde`) EST RETIREE de la page
        Cavalier. Blandine : « retire-la » — doublon de la carte « Mon club » en haut de page. « Mes chevaux »
        et « Gerer mon ecurie › » juste en dessous restent. */
-    h("div", { style: { padding: CAV_V2 ? "36px 0 0" : "26px 0 0" } },
+    cavZ("chevaux", h("div", { style: { padding: CAV_V2 ? "36px 0 0" : "26px 0 0" } },
       /* 13/09 (119) : ses resultats de concours, juste avant ses chevaux. Composant
          AUTONOME (ses propres etats) : les hooks React ne peuvent pas vivre dans une
          fonction de rendu interieure, et un bloc ne part jamais sans ses variables. */
@@ -36880,7 +36926,7 @@ function EcranMonCavalier() {
               color: onEc ? "#F3EEE4" : "#BDB6AA",
               fontSize: 11.5, fontWeight: 700, fontFamily: M } }, libEc);
         })) : null,
-      h("div", { style: { display: "grid", gridTemplateColumns: (CAV_V2 && cavTab) ? "repeat(4, minmax(0, 1fr))" : "repeat(3, 1fr)" /* (1133) */, gap: (CAV_V2 && cavTab) ? 16 : 10, padding: "2px 16px 4px" } }, (function () {
+      h("div", { style: { display: "grid", gridTemplateColumns: (CAV_V2 && cavTab) ? ("repeat(" + cavColCh + ", minmax(0, 1fr))") : "repeat(3, 1fr)" /* (1133) ; 22/10 : 6 colonnes des 1200 px */, gap: (CAV_V2 && cavTab) ? 16 : 10, padding: "2px 16px 4px" } }, (function () {
         var source = __estVisite ? chevauxVisite : chevaux; var PLAFOND_VUS = PLAFOND_CHV; var slots = (__estVisite || premium) ? (tousChevauxVus ? source.slice() : source.slice(0, PLAFOND_VUS)) : source.slice(0, 6);
         /* 04/10 (656) — PAS ENCORE DE CHEVAL : UN ENCART PLEINE LARGEUR AVEC IMAGE DE FOND (sa maquette, version C : texte a
            gauche, image a droite). Sur SA page : « Ajoute ton cheval » + bouton « Creer sa fiche » (meme action que la carte
@@ -36901,7 +36947,7 @@ function EcranMonCavalier() {
           if (decV[0]) cellsV.push(decV[0]);
           cellsV.push(milV);
           if (decV[1]) cellsV.push(decV[1]);
-          if (cavTab) return [cellsV[0]].concat(cavV2Justifier(cellsV.slice(1), 4, 16));   /* (1133) */
+          if (cavTab) return [cellsV[0]].concat(cavV2Justifier(cellsV.slice(1), cavColCh, 16));   /* (1133) */
           return cellsV;
         }
         if (!source.length) {
@@ -36964,15 +37010,15 @@ function EcranMonCavalier() {
                « Ajouter mon cheval » ; n multiple de 3 (3, 6) : l ecurie en lien pleine largeur ; 8 et plus : ecurie au milieu. */
             /* (1133) meme regle, ecrite pour 3 colonnes (iPhone, a l identique) ou 4 (iPad / ordinateur) :
                4 col. : 7 chevaux (plafond) -> + ecurie ; reste 3 -> + ecurie ; reste 2 ou 1 -> + ecurie + ajout ; reste 0 -> lien pleine largeur. */
-            var colJ = cavTab ? 4 : 3, nJ = cartes.length;
+            var colJ = cavTab ? cavColCh : 3, nJ = cartes.length;
             if (!cavTab && nJ >= 8) cartes.splice(4, 0, milC);
-            else if (cavTab && nJ >= 7) cartes.push(milC);
-            else if (nJ % colJ === colJ - 2 || (cavTab && nJ % colJ === 1)) { cartes.push(milC); cartes.push(cavV2CarteAjout("__ajV2")); }
+            else if (cavTab && nJ >= 7 && colJ === 4) cartes.push(milC);
+            else if (nJ % colJ === colJ - 2 || (cavTab && colJ === 4 && nJ % colJ === 1)) { cartes.push(milC); cartes.push(cavV2CarteAjout("__ajV2")); }
             else if (nJ % colJ === 0) cartes.push(h("button", { key: "__milLien", onClick: function () { try { window.__ecurieHypeClub = clubCarteC; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { gridColumn: "1 / -1", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 42, marginTop: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.62)", background: "rgba(5,8,11,0.6)", color: "#F3EEE4", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
               T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a9\u820e\u306e\u99ac", "Die Pferde des Stalls", "\u062e\u064a\u0648\u0644 \u0627\u0644\u0625\u0633\u0637\u0628\u0644", "马厩里的马", "De paarden van de stal", "Os cavalos da cocheira", "Stallets hästar", "Лошади конюшни", "Konie ze stajni", "마구간의 말들"),
               h("span", { "aria-hidden": "true", style: { color: "#C9A66B" } }, (function () { try { return document.documentElement.dir === "rtl" ? "\u2190" : "\u2192"; } catch (eD) { return "\u2192"; } })())));
             else cartes.push(milC);
-            if (cavTab) return cavV2Justifier(cartes, 4, 16);   /* (1133) */
+            if (cavTab) return cavV2Justifier(cartes, cavColCh, 16);   /* (1133) */
             return cartes;
           }
           return hypePlacerAuMilieu(cartes, carteCentreC, "__videCentreChevauxC");
@@ -36982,7 +37028,7 @@ function EcranMonCavalier() {
            « Reduire » les replie). Avec 1 ou 2 chevaux, ou une fois deplie, la derniere ligne incomplete est CENTREE. */
         if (CAV_V2 && __estVisite && cartes.length) {
           var totV = source.length, nV = cartes.length;
-          var cV3 = cavTab ? 4 : 3, gV = cavTab ? 16 : 10;   /* (1133) 4 colonnes sur iPad / ordinateur ; iPhone : 3, a l identique */
+          var cV3 = cavTab ? cavColCh : 3, gV = cavTab ? 16 : 10;   /* (1133) 4 colonnes sur iPad / ordinateur ; iPhone : 3, a l identique */
           var visV = (!tousChevauxVus && nV > cV3 && nV % cV3) ? cartes.slice(0, nV - (nV % cV3)) : cartes.slice();
           var defautV = (function () { var m = Math.min(totV, PLAFOND_CHV); return m > cV3 ? m - (m % cV3) : m; })();
           var rV = visV.length % cV3;
@@ -37000,9 +37046,9 @@ function EcranMonCavalier() {
           }
           return visV;
         }
-        if (CAV_V2 && cavTab) return cavV2Justifier(cartes, 4, 16);   /* (1133) sa page sans ecurie : derniere ligne centree */
+        if (CAV_V2 && cavTab) return cavV2Justifier(cartes, cavColCh, 16);   /* (1133) sa page sans ecurie : derniere ligne centree */
         return cartes;
-      })())),
+      })()))),
     /* 11/10 (963) Blandine : « Sur la page cavalier passe mes amis sous mes chevaux » — bloc « Mes amis » deplace ici, tel quel. */
     CAV_V2 ? null : h("div", { style: { padding: "26px 16px 0" } },   /* (1109) en V2 : cavV2Amis, apres les chevaux */
       (function () {
@@ -37051,14 +37097,14 @@ function EcranMonCavalier() {
                 : (T("Voir les autres", "See the others", "Ver los dem\u00e1s", "Vedi gli altri", "\u4ed6\u3092\u898b\u308b", "Weitere anzeigen", "\u0639\u0631\u0636 \u0627\u0644\u0628\u0642\u064a\u0629", "查看其他", "De anderen bekijken", "Ver os outros", "Se de andra", "Посмотреть остальных", "Zobacz pozostałe", "다른 말 보기") + " (" + (tousChv.length - PLAFOND_CHV) + ")")),
             h("span", { style: { fontSize: 11, lineHeight: 1 } }, tousChevauxVus ? "\u25b4" : "\u25be")));
       })(),
-    CAV_V2 ? cavV2Amis() : null,   /* (1109) */
+    cavZ("amis", CAV_V2 ? cavV2Amis() : null),   /* (1109) */
     /* 19/09 (246) : LE RAIL DES RESULTATS PASSE SOUS LES CHEVAUX. Sa demande : « dans l idee
        il devrait plutot poper en dessous de mes chevaux non », puis « sous ses chevaux avec un
        titre et un bon espace de separation ». C est aussi l ordre de la page Ecurie : les
        chevaux, PUIS « Derniers resultats ». Il etait AU-DESSUS et chevauchait « Mes chevaux ».
        Le composant est AUTONOME (ses propres etats) : le deplacer ne casse pas l ordre des
        hooks — c est la raison pour laquelle il avait ete sorti en composant a part le 13/09. */
-    h(BlocResultatsCavaliere, { userId: (__estVisite ? ((__visitePub && __visitePub.id) || null) : ((profil && profil.id) || null)), sien: !__estVisite, v2: CAV_V2 /* (1110) */ }),
+    cavZ("res", h(BlocResultatsCavaliere, { userId: (__estVisite ? ((__visitePub && __visitePub.id) || null) : ((profil && profil.id) || null)), sien: !__estVisite, v2: CAV_V2 /* (1110) */ })),
     /* 27/09 (444) : L ENCART « HYPE MEMORIES » EST RETIRE de la page Cavalier. Blandine : « on
        peut juste virer l onglet hype memories du coup ? » (option A). La PAGE memoirescavalier
        RESTE : la tuile « Photos » et le bouton du recit y menent encore, ainsi que les albums
