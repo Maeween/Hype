@@ -79652,7 +79652,8 @@ function PageReglesOr({ bloc, onNext, onPrev, langue }) {
             regles.map((r, i) => React.createElement(React.Fragment, { key: "r" + i }, carteRegle(r, i))),
             schema));
 }
-function EcranCours() {
+function EcranCours() { return React.createElement(AvecLecture, null, React.createElement(EcranCoursCorps, null)); }
+function EcranCoursCorps() {
     const { coursOuvert, galopOuvert, setEcran, coursTermines, setCoursTermines, setXp, t, tr, langue, quizResultats, chevaux, profil } = useApp();
     const modeEnseignantCours = !!(profil && profil.estPro);
     const coursListe = obtenirCoursParGalop(galopOuvert, langue);
@@ -87282,7 +87283,8 @@ function renderBlocArticle(b, i, lang) {
     }
     return null;
 }
-function EcranArticleDetail() {
+function EcranArticleDetail() { return React.createElement(AvecLecture, null, React.createElement(EcranArticleDetailCorps, null)); }
+function EcranArticleDetailCorps() {
     const { setEcran, t, langue, setLangue, tr } = useApp();
     const article = ARTICLES.find((a) => a.id === window.__articleOuvert) || ARTICLES[0];
     const riche = Array.isArray(article.contenu) && article.contenu.length > 0;
@@ -89364,6 +89366,57 @@ function EcranAssistantIA() {
 /* 22/10/2026 — HEY BABY LIT SES REPONSES A VOIX HAUTE (Blandine : « voix de l iPhone »). Voix du telephone (speechSynthesis), gratuite, aucun serveur.
    Un seul texte lu a la fois ; reappui = arret ; la lecture s arrete en quittant la page. Le texte est nettoye (puces, titres, emojis) et lu phrase par phrase
    (certains iPhone coupent les longs textes). Langue = celle de l appli (14 langues), la voix est choisie parmi celles installees sur l appareil. */
+var HB_LECT_TXT = {
+    ecouter: { fr: "Écouter", en: "Listen", es: "Escuchar", it: "Ascolta", ja: "聞く", de: "Anhören", ar: "استمعي", zh: "收听", nl: "Beluisteren", pt: "Ouvir", sv: "Lyssna", ru: "Послушать", pl: "Posłuchaj", ko: "듣기" },
+    arreter: { fr: "Arrêter", en: "Stop", es: "Detener", it: "Interrompi", ja: "停止", de: "Stopp", ar: "إيقاف", zh: "停止", nl: "Stoppen", pt: "Parar", sv: "Stoppa", ru: "Остановить", pl: "Zatrzymaj", ko: "멈추기" }
+};
+/* 22/10/2026 — LECTURE A VOIX HAUTE des pages de cours (Galops) et des articles (Blandine : « on peut ajouter la lecture sur les cours
+   des galops et sur les articles ? »). Un bouton rond flottant lit le texte AFFICHE de la page (boutons, images et menus exclus),
+   avec la voix du telephone (memes fonctions hbVoix* que Hey Baby). Changer de page ou quitter l ecran arrete la lecture. */
+function hbVoixTexteDe(el) {
+    try {
+        if (!el) return "";
+        const c = el.cloneNode(true);
+        c.querySelectorAll("button, svg, img, video, audio, script, style, nav, input, textarea, select, [aria-hidden='true'], [data-nolecture]").forEach((n) => { try { n.remove(); } catch (e) { } });
+        document.body.appendChild(c); c.style.cssText = "position:absolute;left:-99999px;top:0;width:600px";
+        const t = c.innerText || c.textContent || "";
+        document.body.removeChild(c);
+        return String(t);
+    } catch (e) { return ""; }
+}
+function AvecLecture({ children }) {
+    const { langue } = useApp();
+    const refEl = React.useRef(null);
+    const cleV = React.useRef("p" + Math.random().toString(36).slice(2));
+    const [on, setOn] = React.useState(false);
+    const empreinte = React.useRef("");
+    React.useEffect(() => { return () => { if (HB_VOIX_ACTIVE.cle === cleV.current) hbVoixArreter(); }; }, []);
+    React.useEffect(() => {
+        if (!on) return;
+        const iv = setInterval(() => {
+            try {
+                const el = refEl.current; const brut = el ? (el.innerText || "") : "";
+                const now = brut.length + "|" + brut.slice(0, 60);
+                if (now !== empreinte.current) { hbVoixArreter(); setOn(false); }
+            } catch (e) { }
+        }, 600);
+        return () => clearInterval(iv);
+    }, [on]);
+    const dispo = hbVoixDispo();
+    const basculer = () => {
+        if (on) { hbVoixArreter(); setOn(false); return; }
+        const el = refEl.current; const texte = hbVoixTexteDe(el);
+        if (!texte.trim()) return;
+        const brut = el ? (el.innerText || "") : ""; empreinte.current = brut.length + "|" + brut.slice(0, 60);
+        setOn(hbVoixLire(cleV.current, texte, langue || "fr", () => setOn(false)));
+    };
+    const L = (k) => { const e = HB_LECT_TXT[k]; return e[langue] || e.en || e.fr; };
+    return React.createElement(React.Fragment, null,
+        React.createElement("div", { ref: refEl }, children),
+        dispo ? React.createElement("button", { type: "button", onClick: basculer, "aria-pressed": on, "aria-label": on ? L("arreter") : L("ecouter"), title: on ? L("arreter") : L("ecouter"),
+            style: { position: "fixed", insetInlineEnd: 14, bottom: "calc(env(safe-area-inset-bottom, 0px) + 150px)", zIndex: 40, width: 48, height: 48, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.7)", background: on ? "#C9A66B" : "rgba(7,10,8,0.82)", color: on ? "#070A08" : "#F3EEE4", fontSize: 21, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 18px rgba(0,0,0,0.4)", cursor: "pointer", padding: 0 } },
+            React.createElement("span", { "aria-hidden": "true" }, on ? "⏹️" : "🔊")) : null);
+}
 var HB_VOIX_LANG = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-SA", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
 var HB_VOIX_ACTIVE = { cle: null, stop: null };
 function hbVoixDispo() { try { return typeof window !== "undefined" && "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined"; } catch (e) { return false; } }
