@@ -36728,36 +36728,41 @@ function EcranMonCavalier() {
                 : null));
         /* « Mes groupes à l écurie » : section à part, SOUS les écuries, seulement s il y a au moins un groupe. */
         var rtlG = false; try { rtlG = document.documentElement.dir === "rtl"; } catch (eRg) { }
+        /* 22/10 (Blandine : « un onglet similaire à celui écurie juste en dessous de celui écurie ») : chaque groupe est un
+           ENCART du même dessin que l encart écurie (dégradé pétrole, photo du groupe fondue sur le côté, petit libellé
+           champagne, nom en grand), posé juste sous les écuries. Plusieurs groupes : l un sous l autre sur iPhone, deux
+           par rangée sur tablette et ordinateur. Même ouverture qu avant (page de l équipe ou piquet de l écurie). */
+        var rtlG = false; try { rtlG = document.documentElement.dir === "rtl"; } catch (eRg) { }
+        var plusG = (groupesCav || []).length > 1;
         var lignesG = (groupesCav || []).map(function (g) {
           var photoG = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : hypePhotoPiquet(g);
-          /* 21/10 : seule la Team de la SEP a sa page ; une autre équipe affiche « Prochainement » et ne s'ouvre pas */
           var sansPageG = g.nature === "equipe" && !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
           var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
           var meta = [g.__club, g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + g.saison) : "", niv].filter(Boolean);
-          var hG = cavOrdi ? 92 : (cavTab ? 84 : 96);
-          return h("button", { key: "grp" + g.id, type: "button", "data-groupe-cavalier": g.id,
-              disabled: sansPageG, "aria-disabled": sansPageG ? "true" : undefined,
+          var labG = g.nature === "equipe"
+            ? (autreV2 ? T("Son \u00e9quipe", "Their team", "Su equipo", "La sua squadra", "\u6240\u5c5e\u30c1\u30fc\u30e0", "Ihr Team", "\u0641\u0631\u064a\u0642\u0647\u0627", "TA的队伍", "Hun team", "A equipe dele(a)", "Deras lag", "Команда", "Jej drużyna", "그의 팀") : T("Mon \u00e9quipe", "My team", "Mi equipo", "La mia squadra", "\u79c1\u306e\u30c1\u30fc\u30e0", "Mein Team", "\u0641\u0631\u064a\u0642\u064a", "我的队伍", "Mijn team", "Minha equipe", "Mitt lag", "Моя команда", "Moja drużyna", "내 팀"))
+            : (autreV2 ? T("Son groupe", "Their group", "Su grupo", "Il suo gruppo", "\u6240\u5c5e\u30b0\u30eb\u30fc\u30d7", "Ihre Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u0647\u0627", "TA的小组", "Hun groep", "O grupo dele(a)", "Deras grupp", "Группа", "Jej grupa", "그의 그룹") : T("Mon groupe", "My group", "Mi grupo", "Il mio gruppo", "\u79c1\u306e\u30b0\u30eb\u30fc\u30d7", "Meine Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u064a", "我的小组", "Mijn groep", "Meu grupo", "Min grupp", "Моя группа", "Moja grupa", "내 그룹"));
+          var coteG = plusG && cavTab;
+          var mG = "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 0%, #000 " + (coteG ? "62%" : "50%") + ")";
+          return h("div", { key: "grp" + g.id, role: "button", "data-groupe-cavalier": g.id, "aria-disabled": sansPageG ? "true" : undefined,
               onClick: function () {
                 if (sansPageG) return;
                 if (g.nature === "equipe") { setEcran("team-competition"); return; }
                 try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eGo) { }
                 setEcran("ecurie-hype");
               },
-              style: { display: "flex", alignItems: "stretch", width: "100%", height: hG, padding: 0, borderRadius: 16, overflow: "hidden", cursor: "pointer", textAlign: "start", border: "1px solid rgba(201,166,107,0.30)", background: "linear-gradient(160deg, rgba(16,29,34,0.92), rgba(7,10,8,0.85))", boxShadow: "0 12px 26px rgba(0,0,0,0.38)", color: "#F3EEE4", boxSizing: "border-box" } },
-            h("span", { style: { position: "relative", flex: "0 0 " + (cavOrdi ? 240 : (cavTab ? 180 : 92)) + "px", overflow: "hidden", background: "#0F1B19" } },
-              h("img", { src: photoG, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-              h("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 55%, rgba(12,22,26,0.95) 100%)" } })),
-            h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: cavTab ? "0 18px" : "0 12px" } },
-              h("span", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavOrdi ? 25 : (cavTab ? 23 : 19), fontWeight: 500, lineHeight: 1.12, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: cavTab ? 1 : 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere" } }, h("bdi", null, g.nom || "")),
-              h("span", { style: { fontFamily: M, fontSize: cavTab ? 12.5 : 11, color: "rgba(243,238,228,0.70)", marginTop: cavTab ? 4 : 3, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } },
-                meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); }))),
-            h("span", { style: { flex: "0 0 auto", display: "flex", alignItems: "center", paddingInlineEnd: cavTab ? 18 : 12 } },
-              sansPageG ? h("span", { style: { fontSize: 9.5, letterSpacing: 1.4, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "4px 8px", whiteSpace: "nowrap" } }, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبًا", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))
-              : h("span", { "aria-hidden": "true", style: { width: cavTab ? 38 : 32, height: cavTab ? 38 : 32, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.7)", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: cavTab ? 17 : 15, lineHeight: 1 } }, rtlG ? "\u2190" : "\u2192")));
+              style: { position: "relative", isolation: "isolate", minWidth: 0, height: cavOrdi ? 112 : (cavTab ? 100 : 96), borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", display: "flex", alignItems: "center", padding: cavTab ? (coteG ? "0 34px 0 20px" : "0 52px 0 28px") : "0 40px 0 16px", boxSizing: "border-box" } },
+            h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: coteG ? "100%" : "68%", height: "100%", objectFit: "cover", objectPosition: "center 35%", zIndex: -1, pointerEvents: "none", WebkitMaskImage: mG, maskImage: mG } }),
+            h("div", { style: { minWidth: 0 } },
+              h("div", { style: { fontFamily: M, fontSize: cavTab ? (coteG ? 9.5 : 11) : 10, fontWeight: 500, letterSpacing: coteG ? "0.18em" : "0.24em", textTransform: "uppercase", color: "#C9A66B", textShadow: ombreV2 } }, labG),
+              h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? (coteG ? 24 : (cavOrdi ? 30 : 28)) : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, g.nom || ""),
+              meta.length ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12 : 10.5, color: "rgba(243,238,228,0.72)", marginTop: cavTab ? 5 : 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null),
+            sansPageG
+              ? h("span", { style: { position: "absolute", bottom: 9, insetInlineEnd: 10, fontFamily: M, fontSize: 9, letterSpacing: 1.3, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "3px 8px", background: "rgba(5,8,11,0.55)" } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 출시"))
+              : h("span", { "aria-hidden": "true", style: { position: "absolute", bottom: 9, insetInlineEnd: 10, color: "#C9A66B", fontSize: 18, lineHeight: 1, textShadow: ombreV2 } }, rtlG ? "\u2039" : "\u203a"));
         });
-        var sectionG = lignesG.length ? h("div", { "data-groupes-cavalier": "1", style: { marginTop: cavTab ? 34 : 30 } },
-          h("div", { style: { marginBottom: 14 } }, cavV2Titre(autreV2 ? T("Ses groupes \u00e0 l\u2019\u00e9curie", "Their stable groups", "Sus grupos en la cuadra", "I suoi gruppi in scuderia", "\u53a9\u820e\u306e\u30b0\u30eb\u30fc\u30d7", "Ihre Stallgruppen", "\u0645\u062c\u0645\u0648\u0639\u0627\u062a\u0647\u0627 \u0641\u064a \u0627\u0644\u0625\u0633\u0637\u0628\u0644", "TA 在马厩的小组", "Hun groepen in de stal", "Os grupos dele(a) na cocheira", "Deras grupper i stallet", "Группы в конюшне", "Jej grupy w stajni", "그의 마구간 그룹") : T("Mes groupes \u00e0 l\u2019\u00e9curie", "My stable groups", "Mis grupos en la cuadra", "I miei gruppi in scuderia", "\u79c1\u306e\u53a9\u820e\u30b0\u30eb\u30fc\u30d7", "Meine Stallgruppen", "\u0645\u062c\u0645\u0648\u0639\u0627\u062a\u064a \u0641\u064a \u0627\u0644\u0625\u0633\u0637\u0628\u0644", "我在马厩的小组", "Mijn groepen in de stal", "Meus grupos na cocheira", "Mina grupper i stallet", "Мои группы в конюшне", "Moje grupy w stajni", "내 마구간 그룹"))),
-          h("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, lignesG)) : null;
+        var sectionG = lignesG.length ? h("div", { "data-groupes-cavalier": "1", style: { marginTop: 10, display: "grid", gridTemplateColumns: (plusG && cavTab) ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: 10 } }, lignesG) : null;
         return h("div", { "data-zone-ecuries": "1", style: { margin: "48px 16px 0" } }, titreEc, cartesEc, sectionG);
       }
       return h("div", { style: nom2 ? { margin: "46px 16px 0", display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, alignItems: "stretch" } : { margin: "46px 16px 0" } },
