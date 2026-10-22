@@ -3115,6 +3115,99 @@ const HB_RESP_TXT = {
   s6: {fr: "Comment vérifier si mon mors est correctement réglé ?", en: "How can I check that my bit is fitted correctly?", es: "¿Cómo compruebo si mi bocado está bien ajustado?", it: "Come verifico che il mio morso sia regolato correttamente?", ja: "ハミが正しく調整されているか、どう確認すればいい？", de: "Wie prüfe ich, ob mein Gebiss richtig verschnallt ist?", ar: "كيف أتحقق من أن الشكيمة مضبوطة بشكل صحيح؟", zh: "怎样检查我的衔铁是否调整得当？", nl: "Hoe controleer ik of mijn bit goed is afgesteld?", pt: "Como verificar se a minha embocadura está bem ajustada?", sv: "Hur kontrollerar jag att mitt bett sitter rätt?", ru: "Как проверить, правильно ли подогнано мое удило?", pl: "Jak sprawdzić, czy wędzidło jest dobrze dopasowane?", ko: "재갈이 제대로 맞춰졌는지 어떻게 확인하나요?"}
 };
 function hbRTxt(langue, k, x) { var e = HB_RESP_TXT[k]; if (!e) return k; var s = e[langue] || e.en || e.fr; return x != null ? s.replace("%s", x) : s; }
+/* 22/10/2026 — HEY BABY : CATEGORIES DANS L HISTORIQUE (Blandine : une categorie par cheval creee toute seule quand un cheval est
+   cite, quelques themes, un bouton « Classer »). Stockage : petite table `conversations_heybaby_categories` (une ligne = une
+   conversation rangee dans une categorie ; AUCUN message n est touche). Une categorie s ecrit « t:veto » (theme) ou « c:Elfe »
+   (cheval). Reperage 100 % dans l appli (noms de tes chevaux + mots-cles des questions), rien n est envoye a l IA. Une categorie
+   retiree a la main n est jamais remise toute seule (liste gardee dans le telephone). Si la table est absente, tout continue sans. */
+const HB_CAT_TABLE = "conversations_heybaby_categories";
+const HB_THEMES = ["cours", "veto", "materiel", "concours", "autre"];
+const HB_CLE_RETIRES = "hb_cat_retires_v1";
+function _hbNorm(x) { try { return String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { return String(x || "").toLowerCase(); } }
+const HB_THEME_RE = (() => {
+  const mk = (src) => { try { return new RegExp(_hbNorm(src)); } catch (e) { return null; } };
+  return {
+    veto: mk("veterinai|\\bveto\\b|\\bvet\\b|boit|boiter|boiterie|blessur|vermif|vaccin|colique|fourbure|dentiste|osteo|tendon|\\bplaie|fievre|\\btoux|\\bsante|alimentation|nourrir|\\bfoin|granule|\\bration|complement alim|maigr|abces|ferrure|marechal|veterinar|lameness|\\blame\\b|limp|injur|colic|\\bworm|health|\\bfeed|\\bhay\\b|\\bdiet|supplement|wound|fever|cough|farrier|cojera|herida|salud|alimentaci|\\bheno|pienso|zoppi|ferita|salute|alimentazione|fieno|tierarzt|lahm|verletz|gesundheit|futter|hufschmied|coxe|ferida|saude|\\bfeno|dierenarts|kreupel|\\bwond|gezondheid|\\bvoer\\b|hooi|獣医|健康|怪我|跛行|兽医|受伤|饲料|بيطر|صحة|عرج|علف|ветеринар|здоров|хром|\\bкорм|сено|weterynar|zdrow|kulaw|siano|pasza|veterinar|hälsa|halt\\b|foder|수의|건강|절뚝|사료|건초"),
+    cours: mk("\\bcours\\b|lecon|galop|reprise|progress|exercice|technique|theori|apprend|enseign|moniteur|instructeur|assiette|transition|lesson|\\bclass\\b|exercise|learn|gallop|training|improve|\\bclases?\\b|leccion|ejercicio|aprend|lezion|esercizi|impar|unterricht|reitstunde|\\bubung|lernen|\\baulas?\\b|licao|exercicio|\\blessen\\b|oefening|leren|レッスン|練習|授業|课|练习|教学|دروس|تمرين|درس|занят|урок|упражн|lekcj|cwicz|\\bnauk|lektion|övning|ovning|수업|연습|레슨"),
+    materiel: mk("\\bselle\\b|\\bfilet\\b|\\bmors\\b|\\bbride\\b|etrier|sangle|\\btapis|licol|guetre|casque|\\bbombe\\b|\\bbottes?\\b|materiel|harnach|enrenement|\\brenes?\\b|saddle|\\bbit\\b|bridle|girth|stirrup|helmet|\\bboots\\b|\\btack\\b|equipment|montura|bocado|riendas|estribo|casco|\\bsella\\b|morso|staffa|redini|sattel|trense|gebiss|zugel|steigbugel|reithelm|\\bsela\\b|freio|rédea|\\bzadel|stijgbeugel|teugel|馬具|鞍|手綱|鐙|ヘルメット|缰|马鞍|镫|头盔|سرج|لجام|ركاب|седл|уздечк|стремен|шлем|удил|siodl|uzda|strzemi|\\bkask|sadel|träns|stigbygel|hjälm|안장|고삐|등자|헬멧|굴레"),
+    concours: mk("concours|competition|epreuve|\\bffe\\b|classement|parcours|\\bcso\\b|\\bcce\\b|\\bshow\\b|contest|\\bconcurso|competicion|\\bprueba|\\bgara\\b|\\bgare\\b|competizione|turnier|wettkampf|prufung|\\bprova|wedstrijd|\\bproef|大会|競技|試合|比赛|竞赛|مسابق|بطولة|соревн|конкур|zawod|turniej|tävling|대회|시합|경기")
+  };
+})();
+function hbCatDetecter(questions, chevauxNoms) {
+  const texte = _hbNorm((questions || []).join(" \n "));
+  const res = [];
+  if (!texte.trim()) return res;
+  HB_THEMES.forEach((k) => { const re = HB_THEME_RE[k]; if (re && re.test(texte)) res.push("t:" + k); });
+  (chevauxNoms || []).forEach((nom) => {
+    const n = _hbNorm(nom).trim(); if (n.length < 3) return;
+    const esc = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    try { if (new RegExp("(^|[^a-z0-9])" + esc + "($|[^a-z0-9])").test(texte)) res.push("c:" + String(nom).trim()); } catch (e) { }
+  });
+  return res;
+}
+function _hbRetires() { try { return JSON.parse(localStorage.getItem(HB_CLE_RETIRES) || "[]") || []; } catch (e) { return []; } }
+function _hbRetiresSauver(l) { try { localStorage.setItem(HB_CLE_RETIRES, JSON.stringify(l.slice(-2000))); } catch (e) { } }
+async function hbCatLire(user) {
+  try {
+    const r = await supa.from(HB_CAT_TABLE).select("conversation_id, categorie").eq("user_id", user.id).limit(5000);
+    if (r.error) return null;
+    const m = {}; (r.data || []).forEach((x) => { (m[x.conversation_id] = m[x.conversation_id] || []).push(x.categorie); });
+    return m;
+  } catch (e) { return null; }
+}
+async function hbCatAjouter(user, lignes, auto) {
+  if (!lignes.length) return true;
+  try {
+    const rows = lignes.map((l) => ({ user_id: user.id, conversation_id: l[0], categorie: String(l[1]).slice(0, 60), auto: !!auto }));
+    const r = await supa.from(HB_CAT_TABLE).upsert(rows, { onConflict: "user_id,conversation_id,categorie", ignoreDuplicates: true });
+    return !r.error;
+  } catch (e) { return false; }
+}
+async function hbCatRetirer(user, convId, cats) {
+  if (!cats.length) return true;
+  try {
+    const r = await supa.from(HB_CAT_TABLE).delete().eq("user_id", user.id).eq("conversation_id", convId).in("categorie", cats);
+    return !r.error;
+  } catch (e) { return false; }
+}
+async function hbNomsChevaux() {
+  const noms = [];
+  try { const a = await mesChevaux(); ((a && a.data) || []).forEach((c) => { if (c && c.nom) noms.push(String(c.nom).trim()); }); } catch (e) { }
+  try { const b = await mesChevauxLies(); ((b && b.data) || []).forEach((c) => { if (c && c.nom) noms.push(String(c.nom).trim()); }); } catch (e) { }
+  return noms.filter((n, i) => n && noms.indexOf(n) === i);
+}
+/* rangement unique des anciens echanges : toutes les questions de la personne, groupees par conversation */
+async function hbCatClasserAnciens(user, noms, dejaRangees) {
+  try {
+    const r = await supa.from("conversations_heybaby").select("conversation_id, contenu, created_at").eq("user_id", user.id).eq("role", "user").not("conversation_id", "is", null).order("created_at", { ascending: true }).limit(5000);
+    if (r.error) return false;
+    const par = {}; (r.data || []).forEach((x) => { (par[x.conversation_id] = par[x.conversation_id] || []).push(String(x.contenu || "")); });
+    const retires = _hbRetires(); const lignes = [];
+    Object.keys(par).forEach((id) => {
+      if (dejaRangees[id] && dejaRangees[id].length) return;
+      hbCatDetecter(par[id], noms).forEach((c) => { if (retires.indexOf(id + "|" + c) < 0) lignes.push([id, c]); });
+    });
+    return (await hbCatAjouter(user, lignes, true)) ? lignes : false;
+  } catch (e) { return false; }
+}
+Object.assign(HB_RESP_TXT, {
+  catToutes: {fr: "Toutes", en: "All", es: "Todas", it: "Tutte", ja: "すべて", de: "Alle", ar: "الكل", zh: "全部", nl: "Alle", pt: "Todas", sv: "Alla", ru: "Все", pl: "Wszystkie", ko: "전체"},
+  catChevaux: {fr: "Mes chevaux", en: "My horses", es: "Mis caballos", it: "I miei cavalli", ja: "私の馬", de: "Meine Pferde", ar: "خيولي", zh: "我的马", nl: "Mijn paarden", pt: "Meus cavalos", sv: "Mina hästar", ru: "Мои лошади", pl: "Moje konie", ko: "내 말"},
+  catCours: {fr: "Cours", en: "Lessons", es: "Clases", it: "Lezioni", ja: "レッスン", de: "Unterricht", ar: "الدروس", zh: "课程", nl: "Lessen", pt: "Aulas", sv: "Lektioner", ru: "Занятия", pl: "Lekcje", ko: "수업"},
+  catVeto: {fr: "Vétérinaire et santé", en: "Vet and health", es: "Veterinario y salud", it: "Veterinario e salute", ja: "獣医と健康", de: "Tierarzt und Gesundheit", ar: "البيطري والصحة", zh: "兽医与健康", nl: "Dierenarts en gezondheid", pt: "Veterinário e saúde", sv: "Veterinär och hälsa", ru: "Ветеринар и здоровье", pl: "Weterynarz i zdrowie", ko: "수의사와 건강"},
+  catMateriel: {fr: "Matériel", en: "Equipment", es: "Material", it: "Attrezzatura", ja: "馬具・装備", de: "Ausrüstung", ar: "المعدات", zh: "装备", nl: "Uitrusting", pt: "Equipamento", sv: "Utrustning", ru: "Снаряжение", pl: "Sprzęt", ko: "장비"},
+  catConcours: {fr: "Concours", en: "Competitions", es: "Concursos", it: "Gare", ja: "競技会", de: "Turniere", ar: "المسابقات", zh: "比赛", nl: "Wedstrijden", pt: "Concursos", sv: "Tävlingar", ru: "Соревнования", pl: "Zawody", ko: "대회"},
+  catAutre: {fr: "Autre", en: "Other", es: "Otro", it: "Altro", ja: "その他", de: "Sonstiges", ar: "أخرى", zh: "其他", nl: "Overig", pt: "Outro", sv: "Övrigt", ru: "Другое", pl: "Inne", ko: "기타"},
+  classer: {fr: "Classer", en: "File", es: "Clasificar", it: "Classifica", ja: "分類する", de: "Einordnen", ar: "تصنيف", zh: "分类", nl: "Indelen", pt: "Classificar", sv: "Sortera", ru: "В категорию", pl: "Przypisz", ko: "분류"},
+  classerT: {fr: "Classer cette conversation", en: "File this conversation", es: "Clasificar esta conversación", it: "Classifica questa conversazione", ja: "この会話を分類", de: "Diese Unterhaltung einordnen", ar: "تصنيف هذه المحادثة", zh: "分类此对话", nl: "Dit gesprek indelen", pt: "Classificar esta conversa", sv: "Sortera den här konversationen", ru: "Отнести разговор к категории", pl: "Przypisz rozmowę do kategorii", ko: "이 대화 분류하기"},
+  classerX: {fr: "Coche les catégories qui correspondent. Les chevaux repérés par Hey Baby sont déjà cochés.", en: "Tick the categories that fit. Horses spotted by Hey Baby are already ticked.", es: "Marca las categorías que correspondan. Los caballos detectados por Hey Baby ya están marcados.", it: "Spunta le categorie giuste. I cavalli riconosciuti da Hey Baby sono già selezionati.", ja: "当てはまるカテゴリにチェックを入れてください。Hey Babyが見つけた馬はすでに選択されています。", de: "Wähle die passenden Kategorien. Von Hey Baby erkannte Pferde sind bereits angehakt.", ar: "ضع علامة على الفئات المناسبة. الخيول التي تعرّف عليها Hey Baby محددة مسبقًا.", zh: "勾选合适的分类。Hey Baby 识别出的马已自动勾选。", nl: "Vink de passende categorieën aan. Paarden die Hey Baby herkende zijn al aangevinkt.", pt: "Marca as categorias adequadas. Os cavalos reconhecidos pelo Hey Baby já estão marcados.", sv: "Kryssa i passande kategorier. Hästar som Hey Baby hittat är redan ikryssade.", ru: "Отметь подходящие категории. Лошади, найденные Hey Baby, уже отмечены.", pl: "Zaznacz pasujące kategorie. Konie rozpoznane przez Hey Baby są już zaznaczone.", ko: "맞는 카테고리를 체크해 주세요. Hey Baby가 찾은 말은 이미 체크되어 있어요."},
+  catVide: {fr: "Aucune conversation dans cette catégorie.", en: "No conversations in this category.", es: "Ninguna conversación en esta categoría.", it: "Nessuna conversazione in questa categoria.", ja: "このカテゴリに会話はありません。", de: "Keine Unterhaltungen in dieser Kategorie.", ar: "لا توجد محادثات في هذه الفئة.", zh: "此分类下没有对话。", nl: "Geen gesprekken in deze categorie.", pt: "Nenhuma conversa nesta categoria.", sv: "Inga konversationer i den här kategorin.", ru: "В этой категории нет разговоров.", pl: "Brak rozmów w tej kategorii.", ko: "이 카테고리에 대화가 없어요."},
+  catErr: {fr: "La catégorie n'a pas pu être enregistrée. Réessaie.", en: "Could not save the category. Try again.", es: "No se pudo guardar la categoría. Inténtalo de nuevo.", it: "Impossibile salvare la categoria. Riprova.", ja: "カテゴリを保存できませんでした。もう一度お試しください。", de: "Die Kategorie konnte nicht gespeichert werden. Versuch es noch einmal.", ar: "تعذّر حفظ الفئة. حاول مرة أخرى.", zh: "无法保存分类，请重试。", nl: "De categorie kon niet worden opgeslagen. Probeer het opnieuw.", pt: "Não foi possível guardar a categoria. Tenta novamente.", sv: "Kategorin kunde inte sparas. Försök igen.", ru: "Не удалось сохранить категорию. Попробуй ещё раз.", pl: "Nie udało się zapisać kategorii. Spróbuj ponownie.", ko: "카테고리를 저장하지 못했어요. 다시 시도해 주세요."}
+});
+function hbCatNom(langue, cat) {
+  if (String(cat).indexOf("c:") === 0) return String(cat).slice(2);
+  const k = String(cat).slice(2); return hbRTxt(langue, "cat" + k.charAt(0).toUpperCase() + k.slice(1));
+}
 /* 21/10 — HEY BABY RESPONSIVE : LISTE DES CONVERSATIONS, RENOMMAGE, SUPPRESSIONS.
    Aucun second stockage des messages : une conversation = les lignes de `conversations_heybaby`
    qui partagent le même `conversation_id` (le système en place depuis le cloisonnement).
@@ -88683,6 +88776,74 @@ function EcranAssistantIA() {
         } catch (e) { setHbConvsErr(true); setHbConvs((p) => p || []); }
     };
     useEffect(() => { hbChargerConvs(); }, [conversationId]);
+    /* 22/10 — CATEGORIES (voir le bloc HB_CAT_TABLE) */
+    const [hbCats, setHbCats] = useState({});
+    const [hbCatsOk, setHbCatsOk] = useState(false);
+    const [hbChevauxNoms, setHbChevauxNoms] = useState(null);
+    const [hbFiltre, setHbFiltre] = useState(null);
+    const [hbChevOuvert, setHbChevOuvert] = useState(false);
+    const [hbCatDlg, setHbCatDlg] = useState(null);       /* { id, sel: [], envoi, erreur } */
+    const hbCatsRef = useRef({});
+    hbCatsRef.current = hbCats;
+    const hbCatUserRef = useRef(null);
+    useEffect(() => {
+        let vivant = true;
+        (async () => {
+            try {
+                const user = await utilisateurActuel(); if (!user || !vivant) return;
+                hbCatUserRef.current = user;
+                const lues = await hbCatLire(user);
+                const noms = await hbNomsChevaux();
+                if (!vivant) return;
+                setHbChevauxNoms(noms);
+                if (!lues) return;                        /* table absente : tout marche sans */
+                let tout = lues;
+                const cleFait = "hb_cat_passe_v1_" + user.id;
+                let fait = false; try { fait = localStorage.getItem(cleFait) === "1"; } catch (e) { }
+                if (!fait) {
+                    const ajout = await hbCatClasserAnciens(user, noms, lues);
+                    if (ajout) {
+                        tout = Object.assign({}, lues);
+                        ajout.forEach((l) => { tout[l[0]] = (tout[l[0]] || []).concat([l[1]]); });
+                        try { localStorage.setItem(cleFait, "1"); } catch (e) { }
+                    }
+                }
+                if (vivant) { setHbCats(tout); setHbCatsOk(true); }
+            } catch (e) { }
+        })();
+        return () => { vivant = false; };
+    }, []);
+    /* une conversation qui vient de recevoir une réponse : on repère les chevaux et thèmes cités dans les questions */
+    useEffect(() => {
+        if (enCours || !hbCatsOk || !conversationId || hbChevauxNoms === null) return;
+        const qs = messages.filter((m) => m.role === "user" && m.contenu).map((m) => String(m.contenu));
+        if (!qs.length) return;
+        const user = hbCatUserRef.current; if (!user) return;
+        const deja = hbCatsRef.current[conversationId] || [];
+        const retires = _hbRetires();
+        const neufs = hbCatDetecter(qs, hbChevauxNoms).filter((c) => deja.indexOf(c) < 0 && retires.indexOf(conversationId + "|" + c) < 0);
+        if (!neufs.length) return;
+        hbCatAjouter(user, neufs.map((c) => [conversationId, c]), true).then((ok) => {
+            if (ok) setHbCats((p) => { const n = Object.assign({}, p); n[conversationId] = (n[conversationId] || []).concat(neufs.filter((c) => (n[conversationId] || []).indexOf(c) < 0)); return n; });
+        });
+    }, [enCours, messages.length, conversationId, hbCatsOk, hbChevauxNoms]);
+    const hbCatsDe = (id) => (hbCats[id] || []);
+    const hbOuvrirCat = (id) => { setHbMenu(null); setHbCatDlg({ id: id, sel: hbCatsDe(id).slice(), envoi: false, erreur: "" }); };
+    const hbValiderCat = async () => {
+        const d = hbCatDlg; if (!d || d.envoi) return;
+        const user = hbCatUserRef.current; if (!user) { setHbCatDlg(Object.assign({}, d, { erreur: HBR("catErr") })); return; }
+        const avant = hbCatsDe(d.id);
+        const ajouts = d.sel.filter((c) => avant.indexOf(c) < 0);
+        const retraits = avant.filter((c) => d.sel.indexOf(c) < 0);
+        setHbCatDlg(Object.assign({}, d, { envoi: true, erreur: "" }));
+        const ok1 = await hbCatAjouter(user, ajouts.map((c) => [d.id, c]), false);
+        const ok2 = ok1 ? await hbCatRetirer(user, d.id, retraits) : false;
+        if (!ok1 || !ok2) { setHbCatDlg(Object.assign({}, d, { envoi: false, erreur: HBR("catErr") })); return; }
+        const ret = _hbRetires(); retraits.forEach((c) => { const k = d.id + "|" + c; if (ret.indexOf(k) < 0) ret.push(k); });
+        ajouts.forEach((c) => { const k = d.id + "|" + c; const i = ret.indexOf(k); if (i >= 0) ret.splice(i, 1); }); _hbRetiresSauver(ret);
+        setHbCats((p) => { const n = Object.assign({}, p); n[d.id] = d.sel.slice(); return n; });
+        setHbCatDlg(null); hbRendreFocus();
+    };
     const hbEnCoursAvant = useRef(false);
     useEffect(() => {
         if (hbEnCoursAvant.current && !enCours) { const tm = setTimeout(hbChargerConvs, 1500); hbEnCoursAvant.current = enCours; return () => clearTimeout(tm); }
@@ -88793,7 +88954,7 @@ function EcranAssistantIA() {
     };
     /* Échap ferme menu, confirmation, renommage ou panneau ; Tab reste dans la fenêtre ouverte */
     useEffect(() => {
-        const ouvert = hbMenu || hbConfirm || hbRenom || histoOuvert;
+        const ouvert = hbMenu || hbConfirm || hbRenom || hbCatDlg || histoOuvert;
         if (!ouvert) return;
         const onKey = (e) => {
             if (e.key === "Escape") {
@@ -88859,6 +89020,19 @@ function EcranAssistantIA() {
     const hbBoutonConseils = () => React.createElement("button", { type: "button", onClick: () => { setHistoOuvert(false); setHbPanCote(true); }, style: { minHeight: 44, padding: "10px 14px", borderRadius: 12, background: "rgba(16,29,34,0.7)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, fontFamily: HB_SANS, fontSize: hbVue === "tablette" ? 12.5 : 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, cursor: "pointer", textAlign: "start", lineHeight: 1.25 } },
         React.createElement("span", null, "\uD83D\uDCCC " + tr({ fr: "Mes conseils Hey Baby", en: "My Hey Baby tips", es: "Mis consejos Hey Baby", it: "I miei consigli Hey Baby", ja: "\u30a2\u30c9\u30d0\u30a4\u30b9", de: "Meine Hey-Baby-Tipps", ar: "\u0646\u0635\u0627\u0626\u062d\u064a \u0645\u0646 Hey Baby", zh: "我的 Hey Baby 建议", nl: "Mijn Hey Baby-tips", pt: "Minhas dicas do Hey Baby", sv: "Mina Hey Baby-tips", ru: "Мои советы Hey Baby" , pl: "Moje porady Hey Baby", ko: "내 Hey Baby 조언" })),
         React.createElement("span", { "aria-hidden": "true", style: { color: HB_C.champ, fontSize: 18 } }, hbRtl ? "\u2039" : "\u203a"));
+    /* 22/10 — catégories : filtre, pastilles, étiquettes */
+    const hbListeF = hbFiltre ? hbListe.filter((c) => hbCatsDe(c.id).indexOf(hbFiltre) >= 0) : hbListe;
+    const hbCompteCats = (() => { const n = {}; hbListe.forEach((c) => { hbCatsDe(c.id).forEach((k) => { n[k] = (n[k] || 0) + 1; }); }); return n; })();
+    const hbCatsPresentes = Object.keys(hbCompteCats);
+    const hbThemesPresents = HB_THEMES.filter((k) => hbCompteCats["t:" + k]).map((k) => "t:" + k);
+    const hbChevauxPresents = hbCatsPresentes.filter((k) => k.indexOf("c:") === 0).sort();
+    const hbPuce = (cle, texte, nb, actif, onClick, extra) => React.createElement("button", { key: cle, type: "button", onClick: onClick, "aria-pressed": actif, style: Object.assign({ minHeight: 34, padding: "5px 11px", borderRadius: 999, border: "1px solid " + (actif ? HB_C.champ : "rgba(243,238,228,0.22)"), background: actif ? "rgba(201,166,107,0.20)" : "rgba(7,10,8,0.4)", color: HB_C.ivoire, fontSize: 12.5, fontWeight: actif ? 700 : 500, fontFamily: HB_SANS, cursor: "pointer", whiteSpace: "nowrap" }, extra || {}) }, texte + (nb != null ? " · " + nb : ""));
+    const hbPuces = hbCatsPresentes.length ? React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, margin: "0 6px 10px" } },
+        hbPuce("tout", HBR("catToutes"), null, !hbFiltre, () => setHbFiltre(null)),
+        hbThemesPresents.map((k) => hbPuce(k, hbCatNom(langue, k), hbCompteCats[k], hbFiltre === k, () => setHbFiltre(hbFiltre === k ? null : k))),
+        hbChevauxPresents.length ? hbPuce("chevaux", "🐴 " + HBR("catChevaux") + (hbChevOuvert || (hbFiltre && hbFiltre.indexOf("c:") === 0) ? " ▴" : " ▾"), hbChevauxPresents.length, false, () => setHbChevOuvert(!hbChevOuvert), { borderStyle: "dashed" }) : null,
+        (hbChevOuvert || (hbFiltre && hbFiltre.indexOf("c:") === 0)) ? hbChevauxPresents.map((k) => hbPuce(k, hbCatNom(langue, k), hbCompteCats[k], hbFiltre === k, () => setHbFiltre(hbFiltre === k ? null : k))) : null) : null;
+    const hbTagsConv = (id) => { const l = hbCatsDe(id); if (!l.length) return null; const vus = l.slice(0, 2).map((k) => hbCatNom(langue, k)); return React.createElement("span", { style: { fontSize: 10.5, color: HB_C.champ, opacity: 0.85, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, vus.join(" · ") + (l.length > 2 ? " +" + (l.length - 2) : "")); };
     /* liste de l'historique : colonne permanente (ordinateur, tablette) ou panneau (téléphone) */
     const hbRendreHistorique = (panneau) => React.createElement("nav", { "aria-label": HBR("historique"), style: { display: "flex", flexDirection: "column", height: "100%", minHeight: 0, boxSizing: "border-box", fontFamily: HB_SANS } },
         React.createElement("div", { style: { padding: panneau ? "calc(env(safe-area-inset-top) + 18px) 16px 12px" : "18px 14px 12px", display: "flex", flexDirection: "column", gap: 14, flexShrink: 0 } },
@@ -88879,15 +89053,18 @@ function EcranAssistantIA() {
             hbConvsErr ? React.createElement("div", { style: { margin: "6px 6px 10px", fontSize: 12.5, color: HB_C.doux, lineHeight: 1.45 } }, HBR("chargeErr"), " ",
                 React.createElement("button", { type: "button", onClick: hbChargerConvs, style: { background: "none", border: "none", color: HB_C.champ, textDecoration: "underline", fontSize: 12.5, padding: "6px 2px", cursor: "pointer", fontFamily: HB_SANS } }, HBR("reessayer"))) : null,
             (hbConvs !== null && !hbListe.length && !hbConvsErr) ? React.createElement("p", { style: { color: HB_C.doux, fontSize: 13, textAlign: "center", margin: "18px 8px", lineHeight: 1.5 } }, HBR("vide")) : null,
+            hbPuces,
+            (hbFiltre && !hbListeF.length) ? React.createElement("p", { style: { color: HB_C.doux, fontSize: 13, textAlign: "center", margin: "14px 8px", lineHeight: 1.5 } }, HBR("catVide")) : null,
             React.createElement("ul", { style: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 2 } },
-                hbListe.map((c) => {
+                hbListeF.map((c) => {
                     const actif = c.id === conversationId; const nom = hbNom(c);
                     return React.createElement("li", { key: c.id, style: { position: "relative", display: "flex", alignItems: "stretch", borderRadius: 10, background: actif ? "rgba(26,45,52,0.92)" : "transparent", boxShadow: actif ? ("inset " + (hbRtl ? "-2px" : "2px") + " 0 0 " + HB_C.champ) : "none" } },
                         React.createElement("button", { type: "button", onClick: () => hbOuvrirConv(c.id), "aria-current": actif ? "true" : undefined, title: nom, style: { flex: 1, minWidth: 0, minHeight: 48, padding: "9px 6px 9px 12px", paddingInlineStart: 12, paddingInlineEnd: 4, background: "none", border: "none", color: actif ? HB_C.ivoire : "rgba(243,238,228,0.84)", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", textAlign: "start", fontFamily: HB_SANS } },
                             React.createElement("span", { style: { color: actif ? HB_C.champ : "rgba(201,166,107,0.7)", display: "flex" } }, hbIconeBulles(17)),
                             React.createElement("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 } },
                                 React.createElement("span", { style: { fontSize: hbVue === "tablette" ? 12.5 : 13, fontWeight: actif ? 600 : 500, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere", unicodeBidi: "plaintext" } }, nom),
-                                c.date ? React.createElement("span", { style: { fontSize: 11, color: "rgba(243,238,228,0.5)" } }, hbDate(c.date), actif ? React.createElement("span", { style: { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" } }, " · " + HBR("active")) : null) : null)),
+                                c.date ? React.createElement("span", { style: { fontSize: 11, color: "rgba(243,238,228,0.5)" } }, hbDate(c.date), actif ? React.createElement("span", { style: { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" } }, " · " + HBR("active")) : null) : null,
+                                hbTagsConv(c.id))),
                         React.createElement("button", { type: "button", onClick: (e) => hbOuvrirMenu(e, { type: "ligne", id: c.id }), "aria-label": HBR("optLigne", nom), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "ligne" && hbMenu.id === c.id), style: { width: 40, minHeight: 44, background: "none", border: "none", color: "rgba(243,238,228,0.7)", cursor: "pointer", fontSize: 18, lineHeight: 1, flexShrink: 0, borderRadius: 8, padding: 0 } }, React.createElement("span", { "aria-hidden": "true", style: { display: "block", marginTop: -6 } }, "…")));
                 }))));
     /* image du cheval : telle quelle (21/10, Blandine : « on n'est pas obligés de retirer le turquoise » ; jamais de filtre sur une photo de cheval) ; visage jamais recouvert — quand la place manque, l'image ne s'affiche pas plutôt que d'être voilée */
@@ -88936,7 +89113,7 @@ function EcranAssistantIA() {
         (planAbo === "ai" || planAbo === "duo") ? null : React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: HB_C.champ, secondaire: true, onClick: () => setEcran("premium") })) : null;
     const hbBulles = messages.map((m, i) => {
         if (i === 0 && m.intro) return null;
-        const bulle = React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null, onCorriger: (estModoHB && m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirCorrection(i)) : null });
+        const bulle = React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null, onCorriger: (estModoHB && m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirCorrection(i)) : null, onClasser: (hbCatsOk && m.role === "assistant" && !m.intro && !m.pending && m.contenu && conversationId) ? (() => hbOuvrirCat(conversationId)) : null });
         if (m.role !== "user") return bulle;
         /* le « ⋯ » d'un échange se pose juste à côté de la question (prop `avant` de BulleMessage) */
         return React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, avant: React.createElement("button", { type: "button", onClick: (e) => hbOuvrirMenu(e, { type: "echange", idx: i }), "aria-label": HBR("optEch"), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "echange" && hbMenu.idx === i), style: { width: 36, height: 44, flexShrink: 0, background: "none", border: "none", color: "rgba(243,238,228,0.55)", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0, borderRadius: 8 } }, React.createElement("span", { "aria-hidden": "true", style: { display: "block", marginTop: -6 } }, "…")) });
@@ -88994,10 +89171,12 @@ function EcranAssistantIA() {
             const gauche = (hbMenu.type === "ligne") ? (hbRtl ? r.right - W : r.left) : (hbRtl ? r.left : r.right - W);
             st.left = Math.max(12, Math.min(vw - W - 12, gauche)); return st; })() },
             hbMenu.type === "entete" ? React.createElement(React.Fragment, null,
+                hbCatsOk ? hbItem({ onClick: () => hbOuvrirCat(conversationId) }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 15, width: 16, textAlign: "center", flexShrink: 0 } }, "\uD83C\uDFF7\uFE0F"), HBR("classer")) : null,
                 hbItem({ onClick: () => hbDemander({ type: "vider", id: conversationId }) }, hbIconeBalai(), HBR("viderConv")),
                 hbItem({ onClick: () => hbDemander({ type: "supprimer", id: conversationId }) }, hbIconeCorbeille(), HBR("supprimerConv"), true))
             : hbMenu.type === "ligne" ? React.createElement(React.Fragment, null,
                 hbMeta ? hbItem({ onClick: () => hbOuvrirRenom(hbMenu.id) }, hbIconeCrayon(), HBR("renommer")) : null,
+                hbCatsOk ? hbItem({ onClick: () => hbOuvrirCat(hbMenu.id) }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 15, width: 16, textAlign: "center", flexShrink: 0 } }, "\uD83C\uDFF7\uFE0F"), HBR("classer")) : null,
                 hbItem({ onClick: () => hbDemander({ type: "supprimer", id: hbMenu.id }) }, hbIconeCorbeille(), HBR("supprimer"), true))
             : hbItem({ onClick: () => hbDemander({ type: "echange", idx: hbMenu.idx }) }, hbIconeCorbeille(), HBR("supprimerEch"), true)))) : null;
     const hbFenetre = (titre, enfants, fermer) => hypePortailBody(React.createElement("div", { "data-noswipe": "true", onMouseDown: fermer, style: { position: "fixed", inset: 0, zIndex: 410, background: "rgba(4,6,5,0.74)", display: "flex", alignItems: "center", justifyContent: "center", padding: 18, fontFamily: HB_SANS } },
@@ -89023,6 +89202,24 @@ function EcranAssistantIA() {
         React.createElement("div", { style: { fontSize: 11, color: "rgba(243,238,228,0.45)", textAlign: "end", marginTop: 4 } }, String(hbRenom.valeur || "").length + " / " + HB_TITRE_MAX),
         hbRenom.erreur ? React.createElement("p", { role: "alert", style: { margin: "10px 0 0", fontSize: 13, color: HB_C.rouge, lineHeight: 1.45 } }, hbRenom.erreur) : null,
         hbBoutonsDlg(() => { if (!hbRenom.envoi) { setHbRenom(null); hbRendreFocus(); } }, hbValiderRenom, hbRenom.envoi ? HBR("enregEnCours") : HBR("enregistrer"), false, hbRenom.envoi)), () => { if (!hbRenom.envoi) { setHbRenom(null); hbRendreFocus(); } }) : null;
+    const hbCatRendu = hbCatDlg ? (() => {
+        const d = hbCatDlg;
+        const chev = (hbChevauxNoms || []).map((n) => "c:" + n);
+        hbCatsDe(d.id).concat(d.sel).forEach((k) => { if (k.indexOf("c:") === 0 && chev.indexOf(k) < 0) chev.push(k); });
+        const themes = HB_THEMES.map((k) => "t:" + k);
+        const bascule = (k) => setHbCatDlg(Object.assign({}, d, { erreur: "", sel: d.sel.indexOf(k) >= 0 ? d.sel.filter((x) => x !== k) : d.sel.concat([k]) }));
+        const ligne = (k) => React.createElement("label", { key: k, style: { display: "flex", alignItems: "center", gap: 10, minHeight: 44, padding: "6px 4px", cursor: "pointer", fontSize: 14.5, color: HB_C.ivoire } },
+            React.createElement("input", { type: "checkbox", checked: d.sel.indexOf(k) >= 0, disabled: d.envoi, onChange: () => bascule(k), style: { width: 22, height: 22, accentColor: "#C9A66B", flexShrink: 0 } }),
+            React.createElement("span", { style: { minWidth: 0, overflowWrap: "anywhere" } }, hbCatNom(langue, k)));
+        return hbFenetre(HBR("classerT"), React.createElement(React.Fragment, null,
+            React.createElement("p", { id: "hb-dlg-texte", style: { margin: "0 0 8px", fontSize: 13.5, lineHeight: 1.5, color: "rgba(243,238,228,0.8)" } }, HBR("classerX")),
+            React.createElement("div", { style: { maxHeight: "46vh", overflowY: "auto" } },
+                themes.map(ligne),
+                chev.length ? React.createElement("p", { style: { margin: "10px 0 2px", fontSize: 12, fontWeight: 700, letterSpacing: 0.4, color: HB_C.champ } }, "🐴 " + HBR("catChevaux")) : null,
+                chev.map(ligne)),
+            d.erreur ? React.createElement("p", { role: "alert", style: { margin: "10px 0 0", fontSize: 13, color: HB_C.rouge, lineHeight: 1.45 } }, d.erreur) : null,
+            hbBoutonsDlg(() => { if (!d.envoi) { setHbCatDlg(null); hbRendreFocus(); } }, hbValiderCat, d.envoi ? HBR("enregEnCours") : HBR("enregistrer"), false, d.envoi)), () => { if (!d.envoi) { setHbCatDlg(null); hbRendreFocus(); } });
+    })() : null;
     const hbPanneau = (!hbGrand && histoOuvert) ? React.createElement("div", { onClick: () => { setHistoOuvert(false); setTimeout(() => { try { hbHistoBtnRef.current && hbHistoBtnRef.current.focus(); } catch (e) { } }, 0); }, "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(4,6,5,0.6)", animation: "fadeIn 0.2s ease-out" } },
         React.createElement("div", { ref: hbPanneauRef, role: "dialog", "aria-modal": "true", "aria-label": HBR("historique"), onClick: (e) => e.stopPropagation(), style: { position: "absolute", [hbDebut]: 0, top: 0, height: "100%", width: "85%", maxWidth: 360, background: HB_C.petrole2, [hbRtl ? "borderLeft" : "borderRight"]: "1px solid rgba(201,166,107,0.2)", boxShadow: "0 0 40px rgba(0,0,0,0.6)", boxSizing: "border-box", animation: "fadeIn 0.25s ease-out" } }, hbRendreHistorique(true))) : null;
     /* 21/10 (tests Blandine, probleme 4) : la liste des questions posees, une seule fonction pour le tiroir (telephone)
@@ -89161,12 +89358,61 @@ function EcranAssistantIA() {
                         (chevauxEcurie || []).map((cv) => React.createElement("button", { key: "ec" + cv.id, onClick: () => choisirChevalEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: "transparent", border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 600, fontSize: 14, textAlign: "left", cursor: "pointer" } }, cv.nom)),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소"))))) : null,
         toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${"#C9A66B"}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: "#C9A66B", marginTop: 3 } : null }, ln)) : toastHB) : null,
-        hbMenuRendu, hbConfirmRendu, hbRenomRendu));
+        hbMenuRendu, hbConfirmRendu, hbRenomRendu, hbCatRendu));
 }
 
-function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler, onCorriger, avant }) {
-    const { t, tr, setZoomImg } = useApp();
+/* 22/10/2026 — HEY BABY LIT SES REPONSES A VOIX HAUTE (Blandine : « voix de l iPhone »). Voix du telephone (speechSynthesis), gratuite, aucun serveur.
+   Un seul texte lu a la fois ; reappui = arret ; la lecture s arrete en quittant la page. Le texte est nettoye (puces, titres, emojis) et lu phrase par phrase
+   (certains iPhone coupent les longs textes). Langue = celle de l appli (14 langues), la voix est choisie parmi celles installees sur l appareil. */
+var HB_VOIX_LANG = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-SA", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
+var HB_VOIX_ACTIVE = { cle: null, stop: null };
+function hbVoixDispo() { try { return typeof window !== "undefined" && "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined"; } catch (e) { return false; } }
+function hbVoixArreter() {
+    try { if (hbVoixDispo()) window.speechSynthesis.cancel(); } catch (e) { }
+    var f = HB_VOIX_ACTIVE.stop; HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null;
+    try { if (f) f(); } catch (e) { }
+}
+function hbVoixNettoyer(txt) {
+    var t = String(txt || "");
+    t = t.replace(/```[\s\S]*?```/g, " ").replace(/`([^`]*)`/g, "$1").replace(/\*\*([^*]*)\*\*/g, "$1").replace(/\*([^*\n]*)\*/g, "$1").replace(/^\s{0,3}#{1,6}\s*/gm, "").replace(/^\s*[-*•]\s+/gm, "").replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
+    t = t.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, " ").replace(/\s*\n+\s*/g, ". ").replace(/\.\s*\./g, ".").replace(/\s{2,}/g, " ");
+    return t.trim();
+}
+function hbVoixMorceaux(txt) {
+    var phrases = txt.match(/[^.!?。！？؟]+[.!?。！？؟]*/g) || [txt];
+    var res = [], cur = "";
+    phrases.forEach(function (ph) { if ((cur + ph).length > 220 && cur) { res.push(cur.trim()); cur = ph; } else cur += ph; });
+    if (cur.trim()) res.push(cur.trim());
+    return res;
+}
+function hbVoixLire(cle, texte, langue, onFin) {
+    if (!hbVoixDispo()) return false;
+    hbVoixArreter();
+    var morceaux = hbVoixMorceaux(hbVoixNettoyer(texte));
+    if (!morceaux.length) return false;
+    var code = HB_VOIX_LANG[langue] || "fr-FR", court = code.slice(0, 2), voix = null;
+    try { var vs = window.speechSynthesis.getVoices() || []; voix = vs.filter(function (v) { return v.lang === code; })[0] || vs.filter(function (v) { return String(v.lang || "").slice(0, 2) === court; })[0] || null; } catch (e) { }
+    HB_VOIX_ACTIVE.cle = cle; HB_VOIX_ACTIVE.stop = onFin;
+    var i = 0;
+    function suite() {
+        if (HB_VOIX_ACTIVE.cle !== cle) return;
+        if (i >= morceaux.length) { HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; try { onFin && onFin(); } catch (e) { } return; }
+        var u = new window.SpeechSynthesisUtterance(morceaux[i++]);
+        u.lang = code; if (voix) u.voice = voix; u.rate = 1;
+        u.onend = suite; u.onerror = function () { if (HB_VOIX_ACTIVE.cle === cle) { HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; try { onFin && onFin(); } catch (e) { } } };
+        try { window.speechSynthesis.speak(u); } catch (e) { suite(); }
+    }
+    suite();
+    return true;
+}
+function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler, onCorriger, onClasser, avant }) {
+    const { t, tr, setZoomImg, langue: langueVoix } = useApp();
     const estUser = role === "user";
+    const [voixOn, setVoixOn] = React.useState(false);
+    const cleVoix = React.useRef("v" + Math.random().toString(36).slice(2));
+    React.useEffect(() => { return () => { if (HB_VOIX_ACTIVE.cle === cleVoix.current) hbVoixArreter(); }; }, []);
+    const voixPossible = !estUser && !intro && !enCours && !!contenu && hbVoixDispo();
+    const basculerVoix = () => { if (voixOn) { hbVoixArreter(); setVoixOn(false); } else { setVoixOn(hbVoixLire(cleVoix.current, contenu, langueVoix || "fr", () => setVoixOn(false))); } };
     if (intro) { return React.createElement("div", { style: { width: "100%", padding: "14px 18px", borderRadius: 16, background: "rgba(16,29,34,0.82)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#F3EEE4", border: "1px solid rgba(201,166,107,0.22)", fontSize: 14.5, lineHeight: 1.55, textAlign: "center", boxSizing: "border-box", animation: "slideUp 0.25s ease-out" } }, contenu); }
     return (React.createElement("div", { style: { display: "flex", justifyContent: estUser ? "flex-end" : "flex-start", alignItems: "flex-start", gap: 4, animation: "slideUp 0.25s ease-out" } },
         avant || null,
@@ -89177,8 +89423,10 @@ function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpi
                 image ? React.createElement("img", { src: image, alt: "", onClick: () => { try { if (setZoomImg) setZoomImg(image); } catch (eZ) { } }, style: { display: "block", width: 200, maxWidth: "100%", borderRadius: 10, marginBottom: contenu ? 8 : 0, cursor: "zoom-in" } }) : null,   /* 21/10 : toucher pour agrandir */
                 (!image && imageMarque) ? React.createElement("div", { style: { fontSize: 12, opacity: 0.8, marginBottom: contenu ? 6 : 0 } }, "\uD83D\uDCF7 " + tr({ fr: "Photo envoy\u00e9e", en: "Photo sent", es: "Foto enviada", it: "Foto inviata", ja: "\u5199\u771f\u3092\u9001\u4fe1\u3057\u307e\u3057\u305f", de: "Foto gesendet", ar: "\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0635\u0648\u0631\u0629", zh: "照片已发送", nl: "Foto verstuurd", pt: "Foto enviada", sv: "Foto skickat", ru: "Фото отправлено", pl: "Zdjęcie wysłane", ko: "사진을 보냈어요" })) : null,
                 contenu,
-                (onEpingler || onCorriger) ? React.createElement("div", { style: { marginTop: 9, display: "flex", gap: 8, flexWrap: "wrap" } },
+                (onEpingler || onCorriger || onClasser || voixPossible) ? React.createElement("div", { style: { marginTop: 9, display: "flex", gap: 8, flexWrap: "wrap" } },
+                    voixPossible ? React.createElement("button", { type: "button", onClick: basculerVoix, "aria-pressed": voixOn, style: { fontSize: 12, fontWeight: 700, color: "#F3EEE4", background: voixOn ? "rgba(201,166,107,0.22)" : "rgba(243,238,228,0.07)", border: "1px solid rgba(243,238,228,0.28)", borderRadius: 999, padding: "5px 12px" } }, (voixOn ? "\u23F9\uFE0F " + tr({ fr: "Arr\u00eater", en: "Stop", es: "Detener", it: "Interrompi", ja: "\u505c\u6b62", de: "Stopp", ar: "\u0625\u064a\u0642\u0627\u0641", zh: "停止", nl: "Stoppen", pt: "Parar", sv: "Stoppa", ru: "Остановить", pl: "Zatrzymaj", ko: "멈추기" }) : "\uD83D\uDD0A " + tr({ fr: "\u00c9couter", en: "Listen", es: "Escuchar", it: "Ascolta", ja: "\u8074\u304f", de: "Anh\u00f6ren", ar: "\u0627\u0633\u062a\u0645\u0639\u064a", zh: "收听", nl: "Beluisteren", pt: "Ouvir", sv: "Lyssna", ru: "Послушать", pl: "Posłuchaj", ko: "듣기" }))) : null,
                     onEpingler ? React.createElement("button", { onClick: onEpingler, style: { fontSize: 12, fontWeight: 700, color: "#C9A66B", background: "rgba(201,166,107,0.08)", border: "1px solid rgba(201,166,107,0.4)", borderRadius: 999, padding: "5px 12px" } }, "\uD83D\uDCCC " + tr({ fr: "\u00c9pingler", en: "Pin", es: "Fijar", it: "Fissa", ja: "\u30d4\u30f3\u7559\u3081", de: "Anheften", ar: "\u062a\u062b\u0628\u064a\u062a", zh: "置顶", nl: "Vastzetten", pt: "Fixar", sv: "Fäst", ru: "Закрепить", pl: "Przypnij", ko: "고정하기" })) : null,
+                    onClasser ? React.createElement("button", { type: "button", onClick: onClasser, style: { fontSize: 12, fontWeight: 700, color: "#F3EEE4", background: "rgba(243,238,228,0.07)", border: "1px solid rgba(243,238,228,0.28)", borderRadius: 999, padding: "5px 12px" } }, "\uD83C\uDFF7\uFE0F " + hbRTxt(langueVoix || "fr", "classer")) : null,
                     onCorriger ? React.createElement("button", { onClick: onCorriger, style: { fontSize: 12, fontWeight: 700, color: "#E8C27A", background: "rgba(232,194,122,0.10)", border: "1px solid rgba(232,194,122,0.45)", borderRadius: 999, padding: "5px 12px" } }, "\u270F\uFE0F Corriger") : null) : null))));
 }
 function SpinnerPoints() {

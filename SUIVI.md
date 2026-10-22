@@ -14260,3 +14260,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - index.html — EcranConnexionSpectral, vue large : l'image remplace images/accueil-video-ordi-poster.jpg ; elle remplit la colonne (object-fit cover, cadrage 50 % 4 % pour garder les oreilles), fondu en bas et vers le formulaire. Tablette debout : bandeau cadré à 50 % 14 % (oreilles, liste, yeux). Téléphone (mascotte) inchangé.
 - Captures : 1440×900, 1024×768, 820×1180, 768×1024, arabe 1440 ; aucun débordement ; node --check 17 blocs OK.
 - Publication (tutoiement + photo du cheval, ensemble) : marqueur 20261022-0704 ; index.html, images/inscription-cheval.webp, SUIVI.md.
+
+## 22/10/2026 — Hey Baby lit ses réponses à voix haute (PRÉPARÉ, NON PUBLIÉ)
+- Bouton « 🔊 Écouter / ⏹ Arrêter » sous chaque réponse de Hey Baby (hors message d'accueil et réponse en cours), à côté de Épingler / Corriger. Voix du téléphone (speechSynthesis), gratuite, sans serveur ; langue = langue de l'appli (14 langues) ; texte nettoyé (puces, titres, emojis) et lu phrase par phrase ; un seul texte lu à la fois ; arrêt en quittant l'écran.
+- Code : helpers hbVoix* juste avant BulleMessage dans index.html. Bouton masqué si le navigateur n'a pas de synthèse vocale.
+- NON testé sur iPhone réel (la lecture doit partir d'un appui, ce qui est le cas).
+
+## 22/10/2026 — Hey Baby : catégories dans l'historique (PRÉPARÉ, NON PUBLIÉ)
+- Base : table créée le 22/10 avec l'accord de Blandine, `conversations_heybaby_categories` (user_id, conversation_id, categorie, auto, created_at ; clé unique user+conversation+catégorie ; RLS : chacune ne voit/ajoute/retire que les siennes). Aucun message touché ; supprimer la table remet Hey Baby comme avant (le code tolère son absence).
+- Catégories : 5 thèmes seulement (Cours, Vétérinaire et santé — alimentation incluse —, Matériel, Concours, Autre) + une catégorie par cheval, créée toute seule quand le nom d'un de ses chevaux (possédés ou rattachés) apparaît dans une de SES questions. Thèmes repérés par mots-clés dans les 14 langues (« Autre » : seulement à la main).
+- Anciens échanges : rangés automatiquement UNE fois par personne (drapeau `hb_cat_passe_v1_<id>` dans le téléphone). Une catégorie retirée à la main n'est jamais remise (`hb_cat_retires_v1`).
+- Écran : pastilles de filtre au-dessus de l'historique (Toutes / thèmes / « 🐴 Mes chevaux » repliable), étiquettes sous chaque conversation, bouton « 🏷️ Classer » sous les réponses de Hey Baby + entrée « Classer » dans les menus ⋯ ; fenêtre à cases à cocher ; 14 langues ; même code téléphone/tablette/ordinateur.
+- Limites connues : une conversation supprimée laisse ses lignes de catégorie en base (invisibles, comptées nulle part) ; mots-clés plus riches en fr/en/es/it/de/pt/nl qu'ailleurs ; NON testé à l'écran sur iPhone (syntaxe et détection testées seulement).
