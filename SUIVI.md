@@ -14339,3 +14339,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Points 3 et 4 de l'entrée précédente (retrait de photo, paragraphe CGV, trace de l'accord à l'inscription) publiés avec.
 - Toujours en attente : faire disparaître l'ancienne page « seuil » (Retour depuis Se connecter / Créer mon compte y mène encore).
 - Tests : inscription majeur/mineur (accord envoyé), tuile retrait fr/ar 390/1440, captures groupes 390/1024/1440. node --check 17 blocs OK. Marqueur 20261022-2235.
+
+## 22/10/2026 — 22 h 45, PUBLIÉ (Blandine : « ne confonds pas les groupes de cavalier avec les piquets de chevaux créés », « laisse-moi juste la gestion du groupe de la SEP CSO Club ») : page Cavalier, groupes de cavaliers seulement
+- index.html, EcranMonCavalier : les encarts sous « Mes écuries » ne montrent plus que les groupes de nature « equipe » (Team CSO Club de la SEP). Les piquets de chevaux (7 créés par Blandine) n'y apparaissent plus. Aucune donnée touchée.
+- Remplace la partie « option A » du 22/10 15 h 45 (créateur qui voyait aussi ses piquets) pour la page Cavalier.
+- Test : 1 équipe + 2 piquets en données de test → seule l'équipe s'affiche (390 / 1024 / 1440). node --check 17 blocs OK. Marqueur 20261022-2245.
+
+## 22/10/2026 — 23 h, BRANCHE cavalier-ordi (PAS PUBLIÉ, attend le « vas-y » de Blandine) : page Cavalier, version ordinateur + bloc groupe de la maquette
+- Bloc « Mon groupe » (téléphone, et même dessin sur tablette / ordinateur) comme sa maquette : « Mon groupe » en Cormorant ivoire, vignette photo du groupe, nom + sigle de l'écurie (« Team CSO Club – SEP »), ligne « Saison 2026 – 2027 · Club », cheval sombre fondu à droite (image de l'encart récit), flèche dans un rond. Libellé « Mon groupe » aussi pour l'équipe (avant : « Mon équipe »). Seuls les groupes de cavaliers (pas les piquets).
+- Ordinateur à partir de 1200 px de large (en dessous, iPad / petit écran : inchangé) : panneau à gauche (photo ronde, prénom, identifiant, badge Coach, les 6 accès en liste) ; à droite le bandeau photo, les deux écuries côte à côte, le groupe, « Mon récit » en entier (plus de coupe à 8 lignes) ; puis « Mes chevaux » sur toute la largeur en 6 colonnes (mêmes règles de remplissage, carte « Les chevaux de l'écurie ») ; puis « Mes amis » et « Mes résultats » côte à côte (même hauteur).
+- Aucune partie retirée, aucun texte remplacé, aucun nouveau texte (rien à traduire). Arabe : tout passe en miroir.
+- Écart avec le brief : la navigation Hype reste la barre de gauche actuelle de l'appli (le brief disait « en haut ») — la changer toucherait toutes les pages.
+- Tests : 390, 1024, 1280, 1440 ; fr et ar ; sa page et la page d'un autre cavalier (visite) sans erreur. node --check 17 blocs OK.
