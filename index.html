@@ -29185,6 +29185,8 @@ function Router() {
        d arriere-plan, body.overflow est realigne sur la realite du DOM. */
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
+    const appL1200 = useHypeLargeur(1200);
+    const cavHautApp = largeEcranApp && appL1200 && (ecran === "moncavalier" || ecran === "cavalier");   /* 22/10 : page Cavalier ordinateur, barre generale en haut (voir NavBar) */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
     /* 21/10 (tests de Blandine, probleme 10) — CAUSE COMMUNE des pages « enfermees » en largeur telephone :
        l enveloppe de l appli limite a 480 px tout ecran absent des listes ci-dessous. Ces ecrans recoivent
@@ -29270,8 +29272,8 @@ function Router() {
                 retourEcran();
         }
     };
-    return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: ((largeEcranApp || tabletteApp) && ECRANS_LARGES_TESTS.indexOf(ecran) >= 0) ? 1280 /* 21/10 (tests, probleme 10) */ : ((largeEcranApp || tabletteApp) && ECRANS_LECTURE_TESTS.indexOf(ecran) >= 0) ? 820 : (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */ || ecran === "assistant" /* 21/10 Hey Baby responsive */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+    return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav && !cavHautApp) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, paddingTop: (cavHautApp && showNav) ? 64 : 0 /* 22/10 barre en haut sur la page Cavalier */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
+        React.createElement("div", { style: { maxWidth: cavHautApp ? 1600 : ((largeEcranApp || tabletteApp) && ECRANS_LARGES_TESTS.indexOf(ecran) >= 0) ? 1280 /* 21/10 (tests, probleme 10) */ : ((largeEcranApp || tabletteApp) && ECRANS_LECTURE_TESTS.indexOf(ecran) >= 0) ? 820 : (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */ || ecran === "assistant" /* 21/10 Hey Baby responsive */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -35424,25 +35426,25 @@ function BlocResultatsCavaliere(props) {
       var nomCh = (infoCh && infoCh.nom) || "";
       var photoCh = (infoCh && infoCh.photo) || "";
       var qui = meilleur.cav || "";
-      return h("div", { key: "rc" + i, style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: CAV_GRAND, border: "1px solid " + CAV_BORD, WebkitBackdropFilter: CAV_FLOU, backdropFilter: CAV_FLOU, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } },
+      return h("div", { key: "rc" + i, style: { flex: grR ? "0 0 260px" : "0 0 46%", height: grR ? 250 : 240, boxSizing: "border-box", overflow: "hidden", padding: grR ? "16px 18px 18px" : "12px 13px 14px", borderRadius: 20, background: CAV_GRAND, border: "1px solid " + CAV_BORD, WebkitBackdropFilter: CAV_FLOU, backdropFilter: CAV_FLOU, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
           h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
           /* 19/09 (246) : meme date qu a l Ecurie, meme place, meme discretion. */
-          (gr.d || gr.an) ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: TURQ, letterSpacing: ".08em", fontFamily: M } },
+          (gr.d || gr.an) ? h("span", { style: { marginLeft: "auto", fontSize: grR ? 11 : 9, color: TURQ, letterSpacing: ".08em", fontFamily: M } },
             gr.d ? gr.d.slice(8, 10) + "/" + gr.d.slice(5, 7) + "/" + gr.d.slice(0, 4) : gr.an) : null),
         photoCh
           ? h("img", { src: photoCh, alt: "", loading: "lazy", decoding: "async",
               onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } },
-              style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(255,255,255,0.16)" } })
+              style: { width: grR ? 64 : 56, height: grR ? 64 : 56, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(255,255,255,0.16)" } })
           : null,
         (rangTxt || qui || nomCh)
-          ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: "#F3EEE4", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
+          ? h("div", { style: { fontSize: grR ? 13.5 : 11.5, fontFamily: M, fontWeight: 700, color: "#F3EEE4", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
               (rangTxt ? (rangTxt + " ") : "") + qui,
               nomCh ? h("span", { style: { color: TURQ, fontWeight: 600 } }, (qui ? " sur " : "") + nomCh) : null)
           : null,
-        h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, color: "#F3EEE4", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "\u2014"),
+        h("div", { style: { fontFamily: C, fontSize: grR ? 15 : 11, fontWeight: 700, color: "#F3EEE4", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "\u2014"),
         /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
-        (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "#BDB6AA", fontFamily: M, marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
+        (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: grR ? 12 : 9.5, color: "#BDB6AA", fontFamily: M, marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
         null);
     });
   }
@@ -35589,7 +35591,8 @@ function EcranMonCavalier() {
   /* 22/10 23 h (corrections ordinateur de Blandine, point 7 : cartes chevaux « sensiblement » plus grandes) : 4 colonnes
      sur ordinateur comme sur grand ecran ; avant : 6. iPad : 4, inchange. */
   var cavTresLarge = (typeof useHypeLargeur === "function") ? useHypeLargeur(1800) : false;
-  var cavColCh = 4;   /* (la zone de contenu de l appli plafonne vers 1280 px, meme sur 1920 : 4 colonnes partout, cartes larges) */   /* colonnes de la grille des chevaux (tablette / ordinateur) */
+  var cavColCh = 4;
+  var cavGalerie = false;   /* calcule plus bas (une fois les chevaux connus) */   /* (la zone de contenu de l appli plafonne vers 1280 px, meme sur 1920 : 4 colonnes partout, cartes larges) */   /* colonnes de la grille des chevaux (tablette / ordinateur) */
   /* 05/10 (671) — PALETTE ALIGNEE sur Accueil / Ecurie / Communaute : turquoise -> champagne (#C5AA78, clair #C5AA78, bronze #AD8B57),
      blancs bleutes -> ivoire #F3EEE4, gris -> gris ivoire (#BDB6AA / #878D8E), fond #05080B. Couleurs seulement, dans cette page
      et ses blocs (EncartPhotoInvisible, BlocResultatsCavaliere, HypeAmisVitrine, PortraitChevalSpectral, EncreLumineuse). */
@@ -35974,6 +35977,7 @@ function EcranMonCavalier() {
     : (chevauxReels || []);
   var chevauxPerso = (chevauxSource || []).filter(function (rP) { if (!rP || !rP.id || vusPerso[rP.id]) return false; vusPerso[rP.id] = true; return true; }).map(function (r) { return { id: r.id, lien: !!r.__lien, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" \u00b7 "), flots: [] } }; });
   var chevaux = chevauxDemo.concat(chevauxPerso); var chevauxVisite = (visiteChevaux || []).map(function (r) { return { id: r.id, lien: false, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" · "), flots: [] } }; });
+  cavGalerie = !!cavPanneau && ((__estVisite ? chevauxVisite : chevaux).length > 0);   /* 22/10 : galerie horizontale sur ordinateur (>= 1200 px) */
   var serie = (ctx.serie != null) ? ctx.serie : 0;
   function ouvrirCheval(id) { return function () { if (typeof window !== "undefined") { window.__chevalOuvert = id; } setEcran("cheval"); }; }
   var coeurIco = h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: TURQ }, h("path", { d: "M12 21 C12 21 4 14.5 4 9 C4 6 6.2 4 9 4 C10.6 4 12 5 12 6.2 C12 5 13.4 4 15 4 C17.8 4 20 6 20 9 C20 14.5 12 21 12 21 Z" }));
@@ -36149,7 +36153,7 @@ function EcranMonCavalier() {
       T("Ajouter mon cheval", "Add my horse", "A\u00f1adir mi caballo", "Aggiungi il mio cavallo", "\u79c1\u306e\u99ac\u3092\u8ffd\u52a0", "Mein Pferd hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u062d\u0635\u0627\u0646\u064a", "添加我的马", "Mijn paard toevoegen", "Adicionar meu cavalo", "Lägg till min häst", "Добавить мою лошадь", "Dodaj mojego konia", "내 말 추가하기"));
     /* 21/10 (Blandine) : même carte du milieu que la page Écurie (cadre champagne fin, surface pétrole, filets, « Voir tout → ») */
     var rtlM = false; try { rtlM = document.documentElement.dir === "rtl"; } catch (eRm) { }
-    var carteM = clubM ? h("button", { key: "ecM", onClick: function () { try { window.__ecurieHypeClub = clubM; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", minWidth: 0, aspectRatio: cavOrdi ? "3 / 2" : "10 / 11", padding: 6, overflow: "hidden", borderRadius: 10, border: "1px solid rgba(201,166,107,0.28)", background: "#101D22", cursor: "pointer", boxShadow: "0 6px 18px rgba(0,0,0,0.28)", boxSizing: "border-box" } },
+    var carteM = clubM ? h("button", { key: "ecM", onClick: function () { try { window.__ecurieHypeClub = clubM; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", minWidth: 0, aspectRatio: cavGalerie ? "4 / 3" : (cavOrdi ? "3 / 2" : "10 / 11"), padding: 6, overflow: "hidden", borderRadius: 10, border: "1px solid rgba(201,166,107,0.28)", background: "#101D22", cursor: "pointer", boxShadow: "0 6px 18px rgba(0,0,0,0.28)", boxSizing: "border-box" } },
       h("span", { "aria-hidden": "true", style: { width: 26, height: 1, background: "rgba(201,166,107,0.28)" } }),
       h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: cavPanneau ? 17 : (cavTab ? 14 : 12), fontWeight: 600, letterSpacing: 0.5, textTransform: "uppercase", color: "#F3EEE4", textAlign: "center", lineHeight: 1.2 } }, T("Les chevaux de l\u2019\u00e9curie", "The stable\u2019s horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a9\u820e\u306e\u99ac", "Die Pferde des Stalls", "\u062e\u064a\u0648\u0644 \u0627\u0644\u0625\u0633\u0637\u0628\u0644", "马厩里的马", "De paarden van de stal", "Os cavalos da cocheira", "Stallets hästar", "Лошади конюшни", "Konie ze stajni", "마구간의 말들")),
       h("span", { style: { fontFamily: M, fontSize: cavPanneau ? 14 : (cavTab ? 12.5 : 11.5), color: "#C9A66B" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기") + " " + (rtlM ? "\u2190" : "\u2192")),
@@ -36172,7 +36176,7 @@ function EcranMonCavalier() {
   }
   /* (1117) la carte « + Ajouter mon cheval » de la taille d une carte cheval (bouche-trou de la grille, sa page seulement) */
   function cavV2CarteAjout(cleA) {
-    return h("div", { key: cleA, style: { minWidth: 0, alignSelf: "start" } }, h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { width: "100%", aspectRatio: (CAV_V2 && cavOrdi) ? "3 / 2" : "10 / 11" /* 15/10 (1140) ordinateur : cartes en largeur */, borderRadius: 14, border: "1.5px dashed rgba(197,170,120,0.5)", background: "rgba(197,170,120,0.04)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#C5AA78", padding: 0 } },
+    return h("div", { key: cleA, style: { minWidth: 0, alignSelf: "start" } }, h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { width: "100%", aspectRatio: cavGalerie ? "4 / 3" : ((CAV_V2 && cavOrdi) ? "3 / 2" : "10 / 11") /* 15/10 (1140) ordinateur : cartes en largeur */, borderRadius: 14, border: "1.5px dashed rgba(197,170,120,0.5)", background: "rgba(197,170,120,0.04)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#C5AA78", padding: 0 } },
       h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.5px solid #C5AA78", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 } }, "+"),
       h("span", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 600, letterSpacing: 0.4, padding: "0 6px", lineHeight: 1.3 } }, T("Ajouter mon cheval", "Add my horse", "A\u00f1adir mi caballo", "Aggiungi il mio cavallo", "\u79c1\u306e\u99ac\u3092\u8ffd\u52a0", "Mein Pferd hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u062d\u0635\u0627\u0646\u064a", "添加我的马", "Mijn paard toevoegen", "Adicionar meu cavalo", "Lägg till min häst", "Добавить мою лошадь", "Dodaj mojego konia", "내 말 추가하기"))));
     /* 14/10 (1111) Blandine : « retire le bouton Ajouter mon cheval sous l encart du milieu et mets-le a la place de Voir tout,
@@ -36227,14 +36231,14 @@ function EcranMonCavalier() {
   function cavV2Hero() {
     var tabV2 = cavTab, grandV2 = cavOrdi;   /* (1130) avant : largeur lue une fois, seuils 700 / 1100 */
     var rtlV2 = false; try { rtlV2 = document.documentElement.dir === "rtl"; } catch (eR) { }
-    var hV2 = cavPanneau ? 520 : (grandV2 ? 400 : (tabV2 ? 340 : 380));   /* 22/10 ordinateur (correction 1) : bandeau plus haut */   /* (1130) iPad moins haut, ordinateur panoramique (350-410) */
+    var hV2 = cavPanneau ? 460 : (grandV2 ? 400 : (tabV2 ? 340 : 380));   /* 22/10 ordinateur (correction 1) : bandeau plus haut */   /* (1130) iPad moins haut, ordinateur panoramique (350-410) */
     var srcV2 = __estVisite ? (__visitePub || profil) : (profRecit || profil);
     var handleV2 = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcV2) : "";
     var ecV2 = String((profil && (profil.club || profil.ecurie)) || "").trim();
     var masqueV2 = cavPanneau
-      ? "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent 0%, rgba(0,0,0,0.55) 16%, #000 34%), linear-gradient(180deg, transparent 0%, #000 10%, #000 74%, transparent 100%)"   /* 22/10 ordinateur : la photo occupe plus de place, toujours fondue dans l ombre */
+      ? "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 22%, #000 42%), linear-gradient(180deg, #000 0%, #000 72%, transparent 100%)"   /* 22/10 maquette : photo sur tout le bandeau, assombrie a gauche sous le nom */   /* 22/10 ordinateur : la photo occupe plus de place, toujours fondue dans l ombre */
       : "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent 0%, #000 40%), linear-gradient(180deg, transparent 0%, #000 14%, #000 66%, transparent 100%)";
-    var photoV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: (tabV2 && !profil.avatar) ? (grandV2 ? "42%" : "50%") /* (1134) photo par defaut (portrait) : cadre plus etroit, le cheval reste entier */ : (cavPanneau ? "82%" : (grandV2 ? "64%" : (tabV2 ? "60%" : "84%"))), WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
+    var photoV2 = { position: "absolute", top: cavPanneau ? 0 : "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, borderRadius: cavPanneau ? 4 : undefined, width: cavPanneau ? "100%" : (tabV2 && !profil.avatar) ? (grandV2 ? "42%" : "50%") /* (1134) photo par defaut (portrait) : cadre plus etroit, le cheval reste entier */ : (cavPanneau ? "82%" : (grandV2 ? "64%" : (tabV2 ? "60%" : "84%"))), WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
     var ombreTxt = "0 2px 16px rgba(0,0,0,0.75)";
     var entreesV2 = [];
     if (!__estVisite) {
@@ -36249,7 +36253,7 @@ function EcranMonCavalier() {
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden" } },
         estLogo
           ? h("div", { style: Object.assign({}, photoV2, { backgroundImage: "url(" + heroImg + ")", backgroundSize: "auto 86%", backgroundRepeat: "no-repeat", backgroundPosition: "center 30%", opacity: 0.9 }) })
-          : h("img", { src: heroImg, alt: "", decoding: "async", style: Object.assign({}, photoV2, { objectFit: "cover", objectPosition: (profil.avatar ? (cavPanneau ? "center 26%" : "center 22%") : (tabV2 ? "center 10%" : "center 22%")), display: "block", height: "calc(100% - env(safe-area-inset-top) - 58px)" }) })),
+          : h("img", { src: heroImg, alt: "", decoding: "async", style: Object.assign({}, photoV2, { objectFit: "cover", objectPosition: (profil.avatar ? (cavPanneau ? "60% 28%" : "center 22%") : (cavPanneau ? "center 30%" : (tabV2 ? "center 10%" : "center 22%"))), display: "block", height: cavPanneau ? "100%" : "calc(100% - env(safe-area-inset-top) - 58px)" }) })),
       /* le menu « Mes actions » (sa page) ou la bulle « ecrire » (visite), en haut a droite */
       !__estVisite
         ? h("button", { onClick: function (eM) { if (eM && eM.stopPropagation) eM.stopPropagation(); setMenuOuvertProfil(!menuOuvertProfil); }, "aria-label": T("Mes actions", "My actions", "Mis acciones", "Le mie azioni", "メニュー", "Meine Aktionen", "إجراءاتي", "我的操作", "Mijn acties", "Minhas ações", "Mina åtgärder", "Мои действия", "Moje działania", "내 활동"), style: Object.assign({}, rondV2, { fontSize: 17, lineHeight: 1, paddingBottom: 4, color: menuOuvertProfil ? "#C5AA78" : "#F3EEE4" }) }, "⋯")
@@ -36271,7 +36275,7 @@ function EcranMonCavalier() {
         h("div", { style: { maxWidth: "none", margin: "0 auto", padding: cavPanneau ? "0 48px" : (grandV2 ? "0 34px" : "0 26px") } },   /* (1130) texte aligne a gauche, sous la fleche retour */
           h("div", { style: { fontFamily: M, fontSize: cavPanneau ? 12.5 : 11, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, textShadow: ombreTxt } }, T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手", "Reiter", "فارس", "骑手", "Ruiter", "Cavaleiro", "Ryttare", "Всадник", "Jeździec", "기수")),
           h("div", { style: { display: "flex", alignItems: "flex-end", flexWrap: "wrap", gap: "6px 12px", marginTop: 8 } },
-            h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavPanneau ? 72 : (grandV2 ? 52 : (tabV2 ? 48 : 40)), lineHeight: 1, color: "#F3EEE4", textShadow: ombreTxt, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" } }, prenom),
+            h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavPanneau ? 64 : (grandV2 ? 52 : (tabV2 ? 48 : 40)), lineHeight: 1, color: "#F3EEE4", textShadow: ombreTxt, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" } }, prenom),
             (!__estVisite) ? h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": hypeT7("Modifier mon pseudo", "Edit my username", "Modificar mi seudónimo", "Modifica il mio nickname", "ユーザー名を変更", "Meinen Benutzernamen ändern", "تعديل اسم المستخدم", "修改我的昵称", "Mijn gebruikersnaam wijzigen", "Editar meu apelido", "Redigera mitt användarnamn", "Изменить мой ник", "Edytuj mój pseudonim", "닉네임 수정하기"), style: { flexShrink: 0, marginBottom: 6, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.55)", border: "1px solid rgba(243,238,228,0.22)", color: "#F3EEE4", fontSize: 11, cursor: "pointer", padding: 0 } }, "✎") : null,
             roleTeamAff ? h("button", { onClick: function (eTm) { if (eTm && eTm.stopPropagation) eTm.stopPropagation(); setEcran("team-competition"); }, style: { flexShrink: 0, marginBottom: 6, display: "inline-flex", alignItems: "center", gap: 4, minHeight: 24, padding: "0 10px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "rgba(5,8,11,0.5)", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null),
           (handleV2 || ecV2) ? h("div", { style: { fontFamily: M, fontSize: cavPanneau ? 15.5 : 13, color: "rgba(243,238,228,0.78)", marginTop: cavPanneau ? 14 : 10, textShadow: ombreTxt } },
@@ -36290,11 +36294,11 @@ function EcranMonCavalier() {
     var srcP = __estVisite ? (__visitePub || profil) : (profRecit || profil);
     var handleP = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcP) : "";
     var avP = profil.avatar || "";
-    return h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start" } },
-      h("div", { "aria-hidden": "true", style: { width: 104, height: 104, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", background: avP ? ("#101D22 url(" + avP + ") center 22%/cover") : "#101D22", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A66B", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 40, boxShadow: "0 10px 26px rgba(0,0,0,0.5)" } }, avP ? null : String(prenom || "?").trim().charAt(0).toUpperCase()),
-      h("div", { style: { marginTop: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 32, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
-      handleP ? h("div", { dir: "ltr", style: { marginTop: 5, fontFamily: M, fontSize: 13.5, color: "rgba(243,238,228,0.62)" } }, handleP) : null,
-      roleTeamAff ? h("button", { onClick: function () { setEcran("team-competition"); }, style: { marginTop: 14, display: "inline-flex", alignItems: "center", gap: 5, minHeight: 30, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null);
+    return h("div", { style: { display: "grid", gridTemplateColumns: "72px minmax(0, 1fr)", columnGap: 14, alignItems: "center" } },
+      h("div", { "aria-hidden": "true", style: { gridRow: "1 / span 3", width: 72, height: 72, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", background: avP ? ("#101D22 url(" + avP + ") center 22%/cover") : "#101D22", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A66B", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 30, boxShadow: "0 10px 26px rgba(0,0,0,0.5)" } }, avP ? null : String(prenom || "?").trim().charAt(0).toUpperCase()),
+      h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 25, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
+      handleP ? h("div", { dir: "ltr", style: { marginTop: 3, fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.62)" } }, handleP) : null,
+      roleTeamAff ? h("button", { onClick: function () { setEcran("team-competition"); }, style: { justifySelf: "start", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null);
   }
   function cavMiseEnPage(tag, props) {
     var kids = Array.prototype.slice.call(arguments, 2);
@@ -36305,14 +36309,15 @@ function EcranMonCavalier() {
       if (!vuZone) avant.push(k); else if (!finHaut) milieu.push(k); else apres.push(k);
     });
     var cle = function (el, c) { return el ? h("div", { key: c, style: { minWidth: 0 } }, el) : null; };
-    var panneau = h("aside", { key: "cavPanneau", "data-cav-panneau": "1", style: { position: "sticky", top: 16, alignSelf: "start", paddingTop: 76, paddingInlineEnd: 22, borderInlineEnd: "1px solid rgba(201,166,107,0.16)", minHeight: 420, boxSizing: "border-box" } },
+    var panneau = h("aside", { key: "cavPanneau", "data-cav-panneau": "1", style: { position: "sticky", top: 80, alignSelf: "start", paddingTop: 64, paddingInlineEnd: 22, paddingBottom: 24, borderInlineEnd: "1px solid rgba(201,166,107,0.16)", boxSizing: "border-box" } },
       cavPanneauProfil(), Z.acces || null);
     var colonne = h.apply(null, ["div", { key: "cavCol", style: { minWidth: 0 } }].concat([cle(Z.hero, "zh"), cle(Z.ecuries, "ze"), cle(Z.recit, "zr")]).concat(milieu.map(function (m, iM) { return cle(m, "zm" + iM); })));
-    var haut = h("div", { key: "cavHaut", style: { display: "grid", gridTemplateColumns: "264px minmax(0, 1fr)", columnGap: 18, paddingInlineStart: 16 } }, panneau, colonne);
-    var duo = h("div", { key: "cavDuo", className: "cav-duo", style: { marginTop: 8, display: "grid", gridAutoFlow: "column", gridAutoColumns: "minmax(0, 1fr)", alignItems: "start" /* 22/10 correction 8 : chacun sa hauteur (« Mes amis » n est plus etire en grand bloc vide a cote des resultats) */ } }, cle(Z.amis, "za"), cle(Z.res, "zs"));
-    return h.apply(null, [tag, props].concat(avant, [h("style", { key: "cavDuoCss" }, ".cav-duo>div:empty{display:none}"), haut, cle(Z.chevaux, "zc"), duo], apres));
+    /* 22/10 23 h (« retour strict a la maquette ») : colonne profil 250 px | grand contenu ; puis chevaux, amis et resultats
+       sur toute la largeur (Blandine : « laisse les resultats sur toute la largeur »). */
+    var haut = h("div", { key: "cavHaut", style: { display: "grid", gridTemplateColumns: "250px minmax(0, 1fr)", columnGap: 12, paddingInlineStart: 16 } }, panneau, colonne);
+    return h.apply(null, [tag, props].concat(avant, [haut, cle(Z.chevaux, "zc"), cle(Z.amis, "za"), cle(Z.res, "zs")], apres));
   }
-  return cavMiseEnPage("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? (cavPanneau ? (cavTresLarge ? 1520 : 1280) : 1180) : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
+  return cavMiseEnPage("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? (cavPanneau ? 1600 : 1180) : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
     /* 11/10 (955) — LE HALO QUI RESPIRE DE L ACCUEIL, A L IDENTIQUE (Blandine : « identique », « tu peux laisser la couleur de fond de page de ma page cavalier et juste mettre le halo qui respire »).
        Memes reglages que .acc2 .hero-pulse + @keyframes acc2breathe (ACC2_CSS) : rond de 360 px, pétrole rgba(127,163,173,0.407) -> transparent a 62 %, 7 s en boucle (opacite 0,45 -> 0,8, taille x1,1).
        Comme sur l accueil il passe DERRIERE la photo (la carte photo recoit position relative + zIndex 1). Fond de la page inchange. */
@@ -36631,9 +36636,9 @@ function EcranMonCavalier() {
             priveP ? h("span", { style: { position: "absolute", top: 6, insetInlineEnd: 6, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.7)", border: "1px solid rgba(201,166,107,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\uD83D\uDD12") : null),
           h("div", { style: { fontFamily: M, fontSize: cavOrdi ? 12.5 : 11.5, color: "#F3EEE4", marginTop: 8, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, tiP));
         return h("div", { key: kP, role: fermeV ? null : "button", "aria-label": tiP, onClick: actP || null,
-          style: { display: "flex", alignItems: "center", gap: cavPanneau ? 14 : 10, height: cavPanneau ? 64 : 46, minWidth: 0, borderBottom: "1px solid rgba(201,166,107,0.16)", cursor: fermeV ? "default" : "pointer", opacity: fermeV ? 0.5 : 1 } },
-          h("span", { "aria-hidden": "true", style: { flex: cavPanneau ? "0 0 42px" : "0 0 30px", height: cavPanneau ? 42 : 30, borderRadius: cavPanneau ? 10 : 8, backgroundColor: "#0b1316", backgroundImage: "url(images/cavalier-acces-" + (IMG_ACCES_V2[kP] || "histoire") + ".webp)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.9 } }),
-          h("span", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: cavPanneau ? 15 : 12.5, color: "#F3EEE4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, tiP),
+          style: { display: "flex", alignItems: "center", gap: 10, height: cavPanneau ? 60 : 46, minWidth: 0, paddingInlineStart: cavPanneau ? 4 : 0, borderBottom: "1px solid rgba(201,166,107,0.16)", cursor: fermeV ? "default" : "pointer", opacity: fermeV ? 0.5 : 1 } },
+          cavPanneau ? null : h("span", { "aria-hidden": "true", style: { flex: "0 0 30px", height: 30, borderRadius: 8, backgroundColor: "#0b1316", backgroundImage: "url(images/cavalier-acces-" + (IMG_ACCES_V2[kP] || "histoire") + ".webp)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.9 } }),
+          h("span", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: cavPanneau ? 14.5 : 12.5, color: "#F3EEE4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, tiP),
           h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: "#C9A66B", fontSize: priveP ? (cavPanneau ? 13 : 11) : (cavPanneau ? 20 : 16), lineHeight: 1 } }, priveP ? "\uD83D\uDD12" : (fermeV ? "" : (rtlA ? "\u2039" : "\u203a"))));
       }
       function carteP(icP, tiP, ctaP, actP, kP, priveP) {
@@ -36703,7 +36708,7 @@ function EcranMonCavalier() {
       ];
       /* 22/09 (365) : en visite il reste 4 tuiles - sur 3 colonnes, la 4e restait seule sur sa ligne
          (sa capture de 13 h 24). 4 tuiles -> grille 2 x 2 ; 6 tuiles -> 3 x 2 comme avant. */
-      if (CAV_V2 && cavPanneau) return h("nav", { "data-cav-acces": "panneau", style: { display: "flex", flexDirection: "column", marginTop: 30 } }, cartes);   /* 22/10 ordinateur : liste du panneau gauche */
+      if (CAV_V2 && cavPanneau) return h("nav", { "data-cav-acces": "panneau", style: { display: "flex", flexDirection: "column", marginTop: 28, borderTop: "1px solid rgba(201,166,107,0.16)" } }, cartes);   /* 22/10 ordinateur : liste du panneau gauche */
       if (CAV_V2 && cavTab) return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: cavOrdi ? 16 : 10, margin: cavOrdi ? "30px 16px 0" : "26px 16px 0", maxWidth: cavOrdi ? 900 : "none" } }, cartes);   /* (1131) une rangee de 6 cartes photo */
       if (CAV_V2) return h("div", { style: { display: "grid", gridTemplateColumns: largAcc >= 700 ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: largAcc >= 700 ? 24 : 16, margin: largAcc >= 700 ? "26px 24px 0" : "20px 16px 0" } }, cartes);   /* (1105) ; (1118) liste N */
       return h("div", { style: { display: "grid", gridTemplateColumns: (cartes.length === 4 ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))"), gap: 9, margin: "26px 16px 0" } }, cartes);
@@ -36821,18 +36826,18 @@ function EcranMonCavalier() {
                 try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eGo) { }
                 setEcran("ecurie-hype");
               },
-              style: { position: "relative", isolation: "isolate", minWidth: 0, borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", padding: cavPanneau ? "22px 28px 24px" : (cavTab ? "14px 22px 16px" : "11px 16px 13px"), paddingInlineEnd: cavPanneau ? 90 : (cavTab ? 70 : 60), boxSizing: "border-box" } },
+              style: { position: "relative", isolation: "isolate", minWidth: 0, borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", padding: cavTab ? "14px 22px 16px" : "11px 16px 13px", paddingInlineEnd: cavTab ? 70 : 60, boxSizing: "border-box" } },
             h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "52%", zIndex: -1, pointerEvents: "none", backgroundImage: "url(" + HYPE_FOND_RECIT + ")", backgroundSize: "cover", backgroundPosition: "center 40%", WebkitMaskImage: mG, maskImage: mG, opacity: 0.9 } }),
-            h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavPanneau ? 30 : (cavTab ? 24 : 21), fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, textShadow: ombreV2 } }, labG),
+            h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 24 : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, textShadow: ombreV2 } }, labG),
             h("div", { style: { display: "flex", alignItems: "center", gap: cavTab ? 12 : 10, marginTop: cavTab ? 10 : 8, minWidth: 0 } },
-              h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 auto", width: cavPanneau ? 84 : (cavTab ? 58 : 46), height: cavPanneau ? 60 : (cavTab ? 42 : 34), borderRadius: cavPanneau ? 8 : 6, objectFit: "cover", objectPosition: "center 35%", border: "1px solid rgba(243,238,228,0.18)", background: "#101D22" } }),
+              h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 auto", width: cavTab ? 58 : 46, height: cavTab ? 42 : 34, borderRadius: 6, objectFit: "cover", objectPosition: "center 35%", border: "1px solid rgba(243,238,228,0.18)", background: "#101D22" } }),
               h("div", { style: { minWidth: 0 } },
-                h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavPanneau ? 26 : (cavTab ? 21 : 18), fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, h("bdi", null, (g.nom || "") + (sigleG ? " \u2013 " + sigleG : ""))),
-                meta.length ? h("div", { style: { fontFamily: M, fontSize: cavPanneau ? 14 : (cavTab ? 12.5 : 11.5), color: "rgba(243,238,228,0.75)", marginTop: cavPanneau ? 5 : 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 21 : 18, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, h("bdi", null, (g.nom || "") + (sigleG ? " \u2013 " + sigleG : ""))),
+                meta.length ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12.5 : 11.5, color: "rgba(243,238,228,0.75)", marginTop: 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
                   meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null)),
             sansPageG
               ? h("span", { style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: 12, fontFamily: M, fontSize: 9, letterSpacing: 1.3, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "3px 8px", background: "rgba(5,8,11,0.6)" } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 출시"))
-              : h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: cavPanneau ? 26 : (cavTab ? 18 : 14), width: cavPanneau ? 46 : (cavTab ? 38 : 34), height: cavPanneau ? 46 : (cavTab ? 38 : 34), borderRadius: "50%", background: "rgba(5,8,11,0.62)", border: "1px solid rgba(243,238,228,0.28)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1 } }, rtlG ? "\u2190" : "\u2192"));
+              : h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: cavTab ? 18 : 14, width: cavTab ? 38 : 34, height: cavTab ? 38 : 34, borderRadius: "50%", background: "rgba(5,8,11,0.62)", border: "1px solid rgba(243,238,228,0.28)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1 } }, rtlG ? "\u2190" : "\u2192"));
         });
         var sectionG = lignesG.length ? h("div", { "data-groupes-cavalier": "1", style: { marginTop: cavPanneau ? 14 : 10, display: "grid", gridTemplateColumns: (plusG && cavTab) ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: 10 } }, lignesG) : null;
         return h("div", { "data-zone-ecuries": "1", style: { margin: cavPanneau ? "56px 16px 0" : "48px 16px 0" } }, titreEc, cartesEc, sectionG);
@@ -36945,7 +36950,11 @@ function EcranMonCavalier() {
               color: onEc ? "#F3EEE4" : "#BDB6AA",
               fontSize: cavPanneau ? 13 : 11.5, fontWeight: 700, fontFamily: M } }, libEc);
         })) : null,
-      h("div", { style: { display: "grid", gridTemplateColumns: (CAV_V2 && cavTab) ? ("repeat(" + cavColCh + ", minmax(0, 1fr))") : "repeat(3, 1fr)" /* (1133) ; 22/10 : 6 colonnes des 1200 px */, gap: (CAV_V2 && cavTab) ? (cavPanneau ? 22 : 16) : 10, padding: "2px 16px 4px" } }, (function () {
+      h("div", { "data-hscroll": cavGalerie ? "1" : undefined, "data-cav-galerie": cavGalerie ? "1" : undefined, style: cavGalerie
+          /* 22/10 23 h (maquette) : sur ordinateur, galerie HORIZONTALE homogene — cartes de memes dimensions sur une ligne,
+             defilement de cote s il y en a trop ; plus de deuxieme ligne centree. */
+          ? { display: "grid", gridAutoFlow: "column", gridAutoColumns: "minmax(200px, calc((100% - 5 * 20px) / 6))", gap: 20, overflowX: "auto", padding: "2px 16px 10px", scrollbarWidth: "thin", scrollbarColor: "rgba(201,166,107,0.35) transparent" }
+          : { display: "grid", gridTemplateColumns: (CAV_V2 && cavTab) ? ("repeat(" + cavColCh + ", minmax(0, 1fr))") : "repeat(3, 1fr)" /* (1133) */, gap: (CAV_V2 && cavTab) ? 16 : 10, padding: "2px 16px 4px" } }, (function () {
         var source = __estVisite ? chevauxVisite : chevaux; var PLAFOND_VUS = PLAFOND_CHV; var slots = (__estVisite || premium) ? (tousChevauxVus ? source.slice() : source.slice(0, PLAFOND_VUS)) : source.slice(0, 6);
         /* 04/10 (656) — PAS ENCORE DE CHEVAL : UN ENCART PLEINE LARGEUR AVEC IMAGE DE FOND (sa maquette, version C : texte a
            gauche, image a droite). Sur SA page : « Ajoute ton cheval » + bouton « Creer sa fiche » (meme action que la carte
@@ -36989,7 +36998,7 @@ function EcranMonCavalier() {
           return h("button", { key: "cg" + i, onClick: verrouille ? function () { setEcran("premium"); } : ouvrirCheval(x.id), style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0, alignSelf: "start" /* 01/10 (518) : collee en haut de sa case comme la carte du milieu - un bouton centre son contenu en hauteur, et la ligne « \u25C7 Cheval de l ecurie » un peu plus haute faisait descendre les voisines de 2-3 px */ } },
             /* 21/10 (Blandine : « pourquoi il est écrit des choses sous certaines photos ? aligne le design des cartes sur la page Écurie ») :
                en V2, même cadre que la mosaïque de la page Écurie ; puis (22 h 29) le NOM SEUL reste écrit sous la carte, rien d'autre. */
-            h("div", { style: CAV_V2 ? { position: "relative", width: "100%", aspectRatio: cavOrdi ? "3 / 2" : "10 / 11", borderRadius: cavPanneau ? 12 : 10, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#101D22", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(201,166,107,0.18)", boxShadow: "0 12px 24px rgba(0,0,0,0.6), 0 3px 6px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.09), inset 0 -14px 22px rgba(0,0,0,0.28)" }
+            h("div", { style: CAV_V2 ? { position: "relative", width: "100%", aspectRatio: cavGalerie ? "4 / 3" : (cavOrdi ? "3 / 2" : "10 / 11"), borderRadius: cavPanneau ? 12 : 10, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#101D22", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(201,166,107,0.18)", boxShadow: "0 12px 24px rgba(0,0,0,0.6), 0 3px 6px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.09), inset 0 -14px 22px rgba(0,0,0,0.28)" }
               : { position: "relative", width: "100%", aspectRatio: "10 / 11", borderRadius: 14, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#101D22", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid " + CAV_BORD, boxShadow: "0 14px 26px -20px rgba(0,0,0,0.9)" } },
               !x.ch.photo ? h(PortraitChevalSpectral, { mien: !verrouille }) : null,
               coeur && !verrouille ? h("div", { style: { position: "absolute", top: 7, right: 7, width: 24, height: 24, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\u2764\ufe0f") : null,
@@ -37005,7 +37014,7 @@ function EcranMonCavalier() {
         var __barreChv = (__estVisite || premium) && source.length > PLAFOND_CHV;
         /* 15/10 (1136) la carte « Ajouter un cheval » n apparait plus chez un autre cavalier (visite) : elle ouvrait la creation d un cheval pour le visiteur. */
         if (!__barreChv && !clubCarteMil && !__estVisite) cartes.push(h("button", { key: "ajout", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
-          h("div", { style: { width: "100%", aspectRatio: (CAV_V2 && cavOrdi) ? "3 / 2" : "10 / 11" /* 15/10 (1140) ordinateur : cartes en largeur */, borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
+          h("div", { style: { width: "100%", aspectRatio: cavGalerie ? "4 / 3" : ((CAV_V2 && cavOrdi) ? "3 / 2" : "10 / 11") /* 15/10 (1140) ordinateur : cartes en largeur */, borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
             h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.5px solid #C5AA78", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#C5AA78" } }, "+"),
             h("span", { style: { fontSize: 9.5, color: "#C5AA78", fontFamily: M, fontWeight: 600, letterSpacing: 0.4, padding: "0 6px", lineHeight: 1.3 } }, T("Ajouter un cheval", "Add a horse", "A\u00f1adir un caballo", "Aggiungi un cavallo", "\u99ac\u3092\u8ffd\u52a0", "Pferd hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u062d\u0635\u0627\u0646", "添加一匹马", "Een paard toevoegen", "Adicionar um cavalo", "Lägg till en häst", "Добавить лошадь", "Dodaj konia", "말 추가")))));
         /* 27/09 (449) : LA CARTE DU MILIEU, comme sur la page Ecurie. Blandine : « on peut appliquer la
@@ -37029,6 +37038,7 @@ function EcranMonCavalier() {
                « Ajouter mon cheval » ; n multiple de 3 (3, 6) : l ecurie en lien pleine largeur ; 8 et plus : ecurie au milieu. */
             /* (1133) meme regle, ecrite pour 3 colonnes (iPhone, a l identique) ou 4 (iPad / ordinateur) :
                4 col. : 7 chevaux (plafond) -> + ecurie ; reste 3 -> + ecurie ; reste 2 ou 1 -> + ecurie + ajout ; reste 0 -> lien pleine largeur. */
+            if (cavGalerie) { cartes.push(milC); return cartes; }   /* 22/10 galerie : la carte de l ecurie en bout de ligne */
             var colJ = cavTab ? cavColCh : 3, nJ = cartes.length;
             if (!cavTab && nJ >= 8) cartes.splice(4, 0, milC);
             else if (cavTab && nJ >= 7 && colJ === 4) cartes.push(milC);
@@ -37045,6 +37055,11 @@ function EcranMonCavalier() {
         /* 14/10 (1121) Blandine : « fais les grilles justes quoi qu il arrive » — EN VISITE (V2) : on montre un nombre de chevaux
            multiple de 3 (9 au plus) ; s il en reste, un bouton pleine largeur « Voir tous ses chevaux (n) » les deplie (et
            « Reduire » les replie). Avec 1 ou 2 chevaux, ou une fois deplie, la derniere ligne incomplete est CENTREE. */
+        if (cavGalerie && __estVisite) {   /* 22/10 galerie en visite : tous les chevaux montres, puis « Voir tous » s il en reste */
+          if (!tousChevauxVus && source.length > cartes.length) cartes.push(h("button", { key: "__voirG", onClick: function () { setTousChevauxVus(true); }, style: { alignSelf: "start", width: "100%", aspectRatio: "4 / 3", borderRadius: 12, border: "1px solid rgba(201,166,107,0.4)", background: "#101D22", color: "#F3EEE4", fontFamily: M, fontSize: 13, cursor: "pointer", padding: 10 } },
+            T("Voir tous ses chevaux", "See all their horses", "Ver todos sus caballos", "Vedi tutti i suoi cavalli", "\u3059\u3079\u3066\u306e\u99ac\u3092\u898b\u308b", "Alle Pferde ansehen", "\u0639\u0631\u0636 \u0643\u0644 \u062e\u064a\u0648\u0644\u0647\u0627", "查看TA所有的马", "Al hun paarden bekijken", "Ver todos os cavalos dele(a)", "Se alla deras hästar", "Посмотреть всех лошадей", "Zobacz wszystkie jej konie", "말 모두 보기") + " (" + source.length + ")"));
+          return cartes;
+        }
         if (CAV_V2 && __estVisite && cartes.length) {
           var totV = source.length, nV = cartes.length;
           var cV3 = cavTab ? cavColCh : 3, gV = cavTab ? (cavPanneau ? 22 : 16) : 10;   /* (1133) 4 colonnes sur iPad / ordinateur ; iPhone : 3, a l identique */
@@ -37065,6 +37080,7 @@ function EcranMonCavalier() {
           }
           return visV;
         }
+        if (cavGalerie) return cartes;
         if (CAV_V2 && cavTab) return cavV2Justifier(cartes, cavColCh, cavPanneau ? 22 : 16);   /* (1133) sa page sans ecurie : derniere ligne centree */
         return cartes;
       })()))),
@@ -77405,6 +77421,12 @@ function NavBar() {
        croit avoir, on descend la barre de l ecart. Le clavier (zone visible plus COURTE) n est jamais touche. */
     const [decalBas, setDecalBas] = React.useState(0);
     const navLarge = useHypeLarge();   /* 10/10 (862) ordinateur : barre verticale a gauche (maquette validee par Blandine) */
+    /* 22/10 23 h (Blandine : « retour strict a la maquette Cavalier validee », « une seule navigation generale Hype, compacte »,
+       « ne pas creer deux immenses barres laterales ») : sur la page Cavalier en ordinateur (>= 1200 px), la navigation generale
+       devient une barre compacte EN HAUT, comme sur la maquette (memes onglets, memes destinations). Toutes les autres pages
+       gardent la barre verticale. */
+    const navL1200 = useHypeLargeur(1200);
+    const navTop = navLarge && navL1200 && (ecran === "moncavalier" || ecran === "cavalier");
     const navRtl = langue === "ar";
     React.useEffect(() => {
       var vv = (typeof window !== "undefined") ? window.visualViewport : null;
@@ -77449,7 +77471,11 @@ function NavBar() {
        Ce n est pas une certitude : c est la derniere cause connue encore presente. Si la barre
        se promene toujours, la piste suivante est le recalcul de hauteur du visual viewport
        (barre d URL iOS), et il faudra alors l observer en direct. */
-    return (React.createElement("div", { className: "hype-barre-onglets", "data-large": navLarge ? "1" : undefined, style: navLarge ? {
+    return (React.createElement("div", { className: "hype-barre-onglets", "data-large": navLarge ? "1" : undefined, "data-haut": navTop ? "1" : undefined, style: navTop ? {
+        position: "fixed", top: 0, left: 0, right: 0, height: 64, display: "flex", flexDirection: "row", alignItems: "center", gap: 6,
+        padding: "0 32px", boxSizing: "border-box", zIndex: 50,
+        background: "linear-gradient(180deg, rgba(7,10,8,0.97), rgba(7,10,8,0.90))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)",
+        borderBottom: "1px solid rgba(201,166,107,0.12)" } : navLarge ? {
         /* (862) ORDINATEUR (>= 1024 px) : colonne fixe de 210 px a gauche (a droite en arabe), toute la hauteur. */
         position: "fixed", top: 0, bottom: 0, [navRtl ? "right" : "left"]: 0, width: 210, display: "flex", flexDirection: "column", alignItems: "stretch",
         padding: "26px 0 20px", boxSizing: "border-box", zIndex: 50, overflowY: "auto",
@@ -77467,7 +77493,10 @@ function NavBar() {
         WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)",
         borderTop: "1px solid rgba(201,166,107,0.10)", display: "flex", padding: "12px 2px calc(10px + env(safe-area-inset-bottom))", zIndex: 50 } },
         /* (587) zone de transition : 16 px de fondu au-dessus de la barre, pour qu elle « naisse » du fond. */
-        navLarge ? React.createElement("div", { key: "logo", "aria-hidden": "true", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "0 0 22px", margin: "0 22px 18px", borderBottom: "1px solid rgba(201,166,107,0.14)" } },
+        navTop ? React.createElement("div", { key: "logo", "aria-hidden": "true", style: { display: "flex", flexDirection: "row", alignItems: "center", gap: 10, [navRtl ? "marginLeft" : "marginRight"]: 26 } },
+            React.createElement("span", { style: { width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", color: NAV_CHAMPAGNE, transform: "scale(1.15)" } }, icNavBarre("ecurie")),
+            React.createElement("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 17, letterSpacing: 6, color: NAV_CHAMPAGNE } }, "HYPE"))
+        : navLarge ? React.createElement("div", { key: "logo", "aria-hidden": "true", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "0 0 22px", margin: "0 22px 18px", borderBottom: "1px solid rgba(201,166,107,0.14)" } },
             React.createElement("span", { style: { width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", color: NAV_CHAMPAGNE, transform: "scale(1.7)" } }, icNavBarre("ecurie")),
             React.createElement("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 19, letterSpacing: 7, paddingInlineStart: 7, color: NAV_CHAMPAGNE } }, "HYPE"))
           : React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: "100%", height: 16, background: "linear-gradient(180deg, rgba(6,7,9,0) 0%, rgba(6,7,9,0.55) 100%)", pointerEvents: "none" } }),
@@ -77475,10 +77504,10 @@ function NavBar() {
         const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && (ecran === "evenement" || ecran === "decouvrir" /* (1051) */)) || (item.id === "moncavalier" && ["profil", "apprentissage"].includes(ecran)) || (item.id === "ecurie" && ["guilde", "cheval", "cavalier", "ecurie-hype", "album-ecurie"].includes(ecran)); /* 21/10 (tests, probleme 7) : "sellerie" retire — Ma sellerie (Le coin des pros, ouvert depuis l accueil) n allume plus « Ecurie ». 29/08 : "guilde" ajoute — l'onglet redirigeait deja vers le club mais ne s'allumait pas une fois dessus */
         const petits = String(item.label || "").length >= 9;
         const ferme = item.id === "communaute" && !accesCommu; /* (368) */
-        return (React.createElement("button", { key: item.id, onClick: () => { if (ferme) { setBulleCommu(true); setTimeout(() => setBulleCommu(false), 2200); return; } try { if (typeof window !== "undefined") { window.__cavalierOuvert = null; window.__cavalierPublic = null; window.__hypeEcurieVisite = null; } } catch (eNb) { }   /* (830) un toucher sur la barre du bas termine une visite d ecurie par lien */ setEcran(item.id === "ecurie" ? "guilde" : item.id); }, style: navLarge ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 14, width: "100%", minHeight: 48, padding: "0 22px", boxSizing: "border-box", textAlign: "start", background: actif ? ("linear-gradient(" + (navRtl ? "270deg" : "90deg") + ", rgba(201,166,107,0.16), rgba(201,166,107,0))") : "transparent", [navRtl ? "borderRight" : "borderLeft"]: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } /* (862) */ : { position: "relative", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 0 6px", opacity: ferme ? 0.45 : 1 } },
+        return (React.createElement("button", { key: item.id, onClick: () => { if (ferme) { setBulleCommu(true); setTimeout(() => setBulleCommu(false), 2200); return; } try { if (typeof window !== "undefined") { window.__cavalierOuvert = null; window.__cavalierPublic = null; window.__hypeEcurieVisite = null; } } catch (eNb) { }   /* (830) un toucher sur la barre du bas termine une visite d ecurie par lien */ setEcran(item.id === "ecurie" ? "guilde" : item.id); }, style: navTop ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 7, height: 64, padding: "0 13px", boxSizing: "border-box", background: "transparent", border: "none", borderBottom: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } : navLarge ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 14, width: "100%", minHeight: 48, padding: "0 22px", boxSizing: "border-box", textAlign: "start", background: actif ? ("linear-gradient(" + (navRtl ? "270deg" : "90deg") + ", rgba(201,166,107,0.16), rgba(201,166,107,0))") : "transparent", [navRtl ? "borderRight" : "borderLeft"]: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } /* (862) */ : { position: "relative", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 0 6px", opacity: ferme ? 0.45 : 1 } },
             (ferme && bulleCommu) ? React.createElement("span", { style: { position: "absolute", bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)", background: "#12161C", border: "1px solid rgba(244,239,228,0.18)", color: "#F4EFE4", fontSize: 11.5, fontWeight: 700, padding: "7px 12px", borderRadius: 10, whiteSpace: "nowrap", boxShadow: "0 8px 20px rgba(0,0,0,0.4)" } }, ({ fr: "Prochainement", en: "Coming soon", es: "Pr\u00f3ximamente", it: "Prossimamente", ja: "\u8fd1\u65e5\u516c\u958b", de: "Demn\u00e4chst", ar: "\u0642\u0631\u064a\u0628\u0627", zh: "即将到来", nl: "Binnenkort", pt: "Em breve", sv: "Kommer snart", ru: "Скоро", pl: "Wkrótce", ko: "곧 공개" }[langue] || "Prochainement")) : null,
-            React.createElement("span", { style: { width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", color: actif ? NAV_CHAMPAGNE : NAV_IVOIRE } }, icNavBarre(item.id)),
-            React.createElement("span", { style: { fontSize: navLarge ? 13.5 : (langue === "ja" ? 9 : 9.8) /* (1039) 8 onglets sur iPhone : meme taille pour tous */, letterSpacing: navLarge ? undefined : -0.1, fontWeight: actif ? 700 : 500, color: actif ? NAV_CHAMPAGNE : NAV_IVOIRE, whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "clip" } }, item.label),
+            React.createElement("span", { style: { width: navTop ? 18 : 24, height: navTop ? 18 : 24, display: "flex", alignItems: "center", justifyContent: "center", color: actif ? NAV_CHAMPAGNE : NAV_IVOIRE, transform: navTop ? "scale(0.8)" : undefined } }, icNavBarre(item.id)),
+            React.createElement("span", { style: { fontSize: navTop ? 13 : navLarge ? 13.5 : (langue === "ja" ? 9 : 9.8) /* (1039) 8 onglets sur iPhone : meme taille pour tous */, letterSpacing: navLarge ? undefined : -0.1, fontWeight: actif ? 700 : 500, color: actif ? NAV_CHAMPAGNE : NAV_IVOIRE, whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "clip" } }, item.label),
             /* la ligne fine sous le libelle actif est posee en absolu : elle n ajoute rien a la hauteur de la barre */
             (actif && !navLarge) ? React.createElement("span", { "aria-hidden": "true", style: { position: "absolute", left: "50%", marginLeft: -7, bottom: 1, width: 14, height: 1.5, borderRadius: 1, background: NAV_CHAMPAGNE, opacity: 0.9 } }) : null));
     })));

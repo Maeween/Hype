@@ -14358,7 +14358,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - La carte « HYPE dans ta poche » (installer l'appli) reste sur la page « Se connecter ».
 - Tests 390 et 1440 : entrée → Créer mon compte → Retour → entrée ; entrée → Se connecter → Retour → entrée ; chemin « seuil » forcé → entrée ; aucune erreur. Marqueur 20261022-2300.
 
-## 22/10/2026 — 23 h 30, BRANCHE cavalier-ordi-2 (PAS PUBLIÉ, attend le « vas-y » de Blandine) : corrections de la page Cavalier sur ordinateur (son brief en 11 points)
+## 22/10/2026 — 23 h 30, BRANCHE cavalier-ordi-2 (PAS PUBLIÉ ; en partie remplacé par l'entrée suivante « retour strict à la maquette ») : corrections de la page Cavalier sur ordinateur (son brief en 11 points)
 - Tout ne joue qu'à partir de 1200 px de large. iPhone : capture identique pixel par pixel à la version publiée ; iPad : identique.
 - 1 Bandeau : 400 → 520 px de haut, la photo prend 82 % de la largeur (avant 64 %) avec un fondu plus doux, tête plus visible ; prénom 52 → 72, ligne identifiant/écurie et « CAVALIER » plus grands, texte mieux posé (48 px du bas). Mêmes commandes.
 - 2 Panneau : 236 → 264 px ; photo ronde 76 → 104, prénom 26 → 32, badge Coach plus grand ; les 6 accès : lignes 46 → 64 px, vignettes 30 → 42, texte 12,5 → 15. Mêmes destinations.
@@ -14370,3 +14370,13 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 8 Amis : portraits 58 → 84, sur plusieurs lignes (plus de défilement de côté), chaque encart garde sa hauteur (plus de grand bloc vide à côté des résultats). Résultats : encart, titres, médailles, lignes et boutons plus grands ; les deux parties « Principaux résultats » et « Derniers résultats » existaient déjà et restent (vraies données seulement, aucun résultat inventé) ; état vide plus grand, mêmes textes.
 - 9 Espacements : titres de partie 28 → 34, encarts 44 → 52 px d'écart et marges intérieures plus larges.
 - Tests : 1440 et 1920, fr et ar, avec et sans résultats ; clics Histoire / Performances / Photos / groupe / écurie / filtre sans erreur ; iPhone et iPad sans changement. node --check 17 blocs OK.
+
+## 22/10/2026 — 23 h 55, BRANCHE cavalier-ordi-2 (PAS PUBLIÉ, attend sa validation visuelle) : page Cavalier ordinateur, retour strict à la maquette validée
+- Uniquement à partir de 1200 px de large. iPhone et iPad : captures identiques pixel par pixel à la version en ligne. Autres pages : barre générale inchangée (vérifié Accueil et Écurie à 1440, et toutes les pages à 1100).
+- Navigation générale : sur la page Cavalier (sa page et celle d'un autre cavalier) en ordinateur, la barre Hype devient une barre compacte EN HAUT (logo + les 8 onglets, mêmes destinations), comme sur la maquette ; plus de deuxième grande colonne à gauche. Zone de page 1600 px max.
+- Colonne profil 250 px : photo ronde + prénom + identifiant + badge Coach côte à côte, puis les 6 rubriques en texte (comme la maquette), lignes de 60 px.
+- Bandeau : la photo du profil couvre tout le bandeau (cavalière et cheval), assombrie seulement à gauche sous le nom ; 460 px de haut ; prénom 64.
+- Écuries : deux grandes cartes photo côte à côte (168 px). Groupe : revenu à une taille discrète (celle de la tablette). Récit : grande carte, texte à gauche, cheval à droite.
+- Chevaux : galerie horizontale homogène (cartes de même taille 4:3, 6 visibles, défilement de côté s'il y en a plus), carte « Les chevaux de l'écurie » en bout de ligne ; en visite, « Voir tous ses chevaux (n) » en dernière carte s'il en reste. Plus de deuxième ligne centrée. Filtres, cadenas et Premium inchangés.
+- Amis puis Résultats sur toute la largeur (Blandine : « laisse les résultats sur toute la largeur ») ; amis en rangée compacte ; résultats : « Principaux résultats » + « Derniers résultats » (cartes 260 px, textes plus grands) + Ajouter / Importer FFE.
+- Tests : 1440 et 1920 (fr), 1440 (ar), 1280, avec résultats de test ; node --check 17 blocs OK.
