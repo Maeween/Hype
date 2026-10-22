@@ -13,7 +13,7 @@
    CE QUI EST FABRIQUÉ, pour chaque langue <lg> :
      /<lg>/galops/                  le sommaire des 7 Galops
      /<lg>/galop-1/                 le sommaire du Galop 1 (chapitres en liens)
-     /<lg>/galop-1/<chapitre>/      un chapitre (adresse tirée du titre français, identique dans les 10 langues)
+     /<lg>/galop-1/<chapitre>/      un chapitre (adresse tirée du titre français, identique dans les 14 langues)
      /<lg>/galop-2/ … /<lg>/galop-7/
    + /sitemap-galops.xml (déclaré dans sitemap.xml).
    Les images des cours vivent dans l'appli (paquets hype-images) : elles ne sont PAS reprises ici, seules les
@@ -39,91 +39,91 @@ function log() { console.log.apply(console, ["[seo-galops]"].concat([].slice.cal
 /* ---------- Textes de l'interface ---------- */
 const UI = {
   fr: { theorie: "Théorie des Galops", galop: (n) => "Galop " + n, chap: "chapitres", ouvrir: "Ouvrir Hype", accueil: "Accueil",
-    sousTitre: "La théorie de l'équitation, du Galop 1 au Galop 7, en 10 langues : chapitres illustrés et quiz pour t'entraîner.",
+    sousTitre: "La théorie de l'équitation, du Galop 1 au Galop 7, en 14 langues : chapitres illustrés et quiz pour t'entraîner.",
     gratuit: "Gratuit", reserve: "Réservé aux abonnés Hype+", reserveTxt: "Les chapitres de ce Galop se lisent dans l'appli Hype avec l'abonnement Hype+, avec leurs schémas, leurs affiches et leurs quiz.",
     lire: "Lire dans l'appli", suivant: "Chapitre suivant", precedent: "Chapitre précédent", sommaire: "Sommaire du Galop", quiz: "Entraîne-toi",
     reponse: "Voir la réponse", vrai: "Vrai", faux: "Faux", appli: "Retrouve ce chapitre dans l'appli Hype, avec ses images, son quiz noté et le suivi de ta progression.",
     legal: "Contenu pédagogique Hype, construit autour du programme des Galops. Hype est une application indépendante, sans lien officiel avec la Fédération française d'équitation (FFE).",
     langue: "Langue", min: "", decouvrir: "Découvrir Hype" },
   en: { theorie: "Riding theory, levels 1 to 7", galop: (n) => "Level " + n, chap: "chapters", ouvrir: "Open Hype", accueil: "Home",
-    sousTitre: "Riding theory based on the French Galop levels 1 to 7, in 10 languages: illustrated chapters and quizzes to practise.",
+    sousTitre: "Riding theory based on the French Galop levels 1 to 7, in 14 languages: illustrated chapters and quizzes to practise.",
     gratuit: "Free", reserve: "For Hype+ subscribers", reserveTxt: "The chapters of this level are available in the Hype app with a Hype+ subscription, with their diagrams, posters and quizzes.",
     lire: "Read in the app", suivant: "Next chapter", precedent: "Previous chapter", sommaire: "Level contents", quiz: "Practise",
     reponse: "Show the answer", vrai: "True", faux: "False", appli: "Find this chapter in the Hype app, with its images, a scored quiz and your progress tracking.",
     legal: "Hype educational content, built around the French Galop curriculum. Hype is an independent app with no official link to the French Equestrian Federation (FFE).",
     langue: "Language", decouvrir: "Discover Hype" },
   es: { theorie: "Teoría de equitación, niveles 1 a 7", galop: (n) => "Nivel " + n, chap: "capítulos", ouvrir: "Abrir Hype", accueil: "Inicio",
-    sousTitre: "La teoría de la equitación basada en los niveles franceses «Galop» del 1 al 7, en 10 idiomas: capítulos ilustrados y cuestionarios para practicar.",
+    sousTitre: "La teoría de la equitación basada en los niveles franceses «Galop» del 1 al 7, en 14 idiomas: capítulos ilustrados y cuestionarios para practicar.",
     gratuit: "Gratis", reserve: "Para suscriptores de Hype+", reserveTxt: "Los capítulos de este nivel se leen en la app Hype con la suscripción Hype+, con sus esquemas, carteles y cuestionarios.",
     lire: "Leer en la app", suivant: "Capítulo siguiente", precedent: "Capítulo anterior", sommaire: "Índice del nivel", quiz: "Practica",
     reponse: "Ver la respuesta", vrai: "Verdadero", faux: "Falso", appli: "Encuentra este capítulo en la app Hype, con sus imágenes, un cuestionario puntuado y el seguimiento de tu progreso.",
     legal: "Contenido educativo de Hype, construido en torno al programa francés de los «Galops». Hype es una aplicación independiente, sin vínculo oficial con la Federación Francesa de Equitación (FFE).",
     langue: "Idioma", decouvrir: "Descubre Hype" },
   it: { theorie: "Teoria dell'equitazione, livelli da 1 a 7", galop: (n) => "Livello " + n, chap: "capitoli", ouvrir: "Apri Hype", accueil: "Home",
-    sousTitre: "La teoria dell'equitazione basata sui livelli francesi «Galop» da 1 a 7, in 10 lingue: capitoli illustrati e quiz per allenarti.",
+    sousTitre: "La teoria dell'equitazione basata sui livelli francesi «Galop» da 1 a 7, in 14 lingue: capitoli illustrati e quiz per allenarti.",
     gratuit: "Gratis", reserve: "Per gli abbonati Hype+", reserveTxt: "I capitoli di questo livello si leggono nell'app Hype con l'abbonamento Hype+, con i loro schemi, poster e quiz.",
     lire: "Leggi nell'app", suivant: "Capitolo successivo", precedent: "Capitolo precedente", sommaire: "Indice del livello", quiz: "Allenati",
     reponse: "Mostra la risposta", vrai: "Vero", faux: "Falso", appli: "Ritrova questo capitolo nell'app Hype, con le sue immagini, un quiz con punteggio e il monitoraggio dei tuoi progressi.",
     legal: "Contenuto didattico di Hype, costruito intorno al programma francese dei «Galop». Hype è un'applicazione indipendente, senza legame ufficiale con la Federazione Equestre Francese (FFE).",
     langue: "Lingua", decouvrir: "Scopri Hype" },
   de: { theorie: "Reitlehre, Stufen 1 bis 7", galop: (n) => "Galopp " + n, chap: "Kapitel", ouvrir: "Hype öffnen", accueil: "Startseite",
-    sousTitre: "Reitlehre nach den französischen „Galop“-Stufen 1 bis 7, in 10 Sprachen: illustrierte Kapitel und Quiz zum Üben.",
+    sousTitre: "Reitlehre nach den französischen „Galop“-Stufen 1 bis 7, in 14 Sprachen: illustrierte Kapitel und Quiz zum Üben.",
     gratuit: "Kostenlos", reserve: "Für Hype+-Abonnenten", reserveTxt: "Die Kapitel dieser Stufe gibt es in der Hype-App mit einem Hype+-Abo, mit Schemazeichnungen, Plakaten und Quiz.",
     lire: "In der App lesen", suivant: "Nächstes Kapitel", precedent: "Vorheriges Kapitel", sommaire: "Inhalt der Stufe", quiz: "Übe selbst",
     reponse: "Antwort anzeigen", vrai: "Richtig", faux: "Falsch", appli: "Finde dieses Kapitel in der Hype-App, mit Bildern, einem bewerteten Quiz und deinem Lernfortschritt.",
     legal: "Lerninhalte von Hype, aufgebaut auf dem französischen „Galop“-Programm. Hype ist eine unabhängige App ohne offizielle Verbindung zum Französischen Reitverband (FFE).",
     langue: "Sprache", decouvrir: "Entdecke Hype" },
   ja: { theorie: "乗馬理論 レベル1〜7", galop: (n) => "ギャロップ" + n, chap: "章", ouvrir: "Hypeを開く", accueil: "ホーム",
-    sousTitre: "フランスの「ギャロ」レベル1〜7に基づく乗馬理論を10か国語で。図解付きの章と練習用クイズ。",
+    sousTitre: "フランスの「ギャロ」レベル1〜7に基づく乗馬理論を14か国語で。図解付きの章と練習用クイズ。",
     gratuit: "無料", reserve: "Hype+会員限定", reserveTxt: "このレベルの章は、Hype+の会員になるとHypeアプリで図解・ポスター・クイズ付きで読めます。",
     lire: "アプリで読む", suivant: "次の章", precedent: "前の章", sommaire: "このレベルの目次", quiz: "練習問題",
     reponse: "答えを見る", vrai: "正しい", faux: "誤り", appli: "この章はHypeアプリでも読めます。画像、採点付きクイズ、学習の進み具合の記録付き。",
     legal: "Hypeの教育コンテンツは、フランスの「ギャロ」課程をもとに作成しています。Hypeは独立したアプリであり、フランス馬術連盟（FFE）とは公式な関係はありません。",
     langue: "言語", decouvrir: "Hypeを始めよう" },
   ar: { theorie: "نظرية الفروسية، المستويات من 1 إلى 7", galop: (n) => "غالوب " + n, chap: "فصول", ouvrir: "افتح Hype", accueil: "الرئيسية",
-    sousTitre: "نظرية الفروسية المبنية على مستويات «غالوب» الفرنسية من 1 إلى 7، بعشر لغات: فصول مصورة واختبارات للتدريب.",
+    sousTitre: "نظرية الفروسية المبنية على مستويات «غالوب» الفرنسية من 1 إلى 7، بأربع عشرة لغة: فصول مصورة واختبارات للتدريب.",
     gratuit: "مجاني", reserve: "لمشتركي Hype+", reserveTxt: "تُقرأ فصول هذا المستوى في تطبيق Hype مع اشتراك Hype+، مع رسومها التوضيحية وملصقاتها واختباراتها.",
     lire: "اقرأ في التطبيق", suivant: "الفصل التالي", precedent: "الفصل السابق", sommaire: "فهرس المستوى", quiz: "تدرب",
     reponse: "اعرض الإجابة", vrai: "صحيح", faux: "خطأ", appli: "تجد هذا الفصل في تطبيق Hype، مع صوره واختبار بعلامات ومتابعة تقدمك.",
     legal: "محتوى تعليمي من Hype مبني على برنامج «غالوب» الفرنسي. Hype تطبيق مستقل لا تربطه أي صلة رسمية بالاتحاد الفرنسي للفروسية (FFE).",
     langue: "اللغة", decouvrir: "اكتشف Hype" },
   zh: { theorie: "Galop 马术理论 1 至 7 级", galop: (n) => "Galop " + n, chap: "个章节", ouvrir: "打开 Hype", accueil: "首页",
-    sousTitre: "基于法国 Galop 等级（Galop 1 至 Galop 7）的马术理论，提供 10 种语言：配图章节和测验，帮你练习。",
+    sousTitre: "基于法国 Galop 等级（Galop 1 至 Galop 7）的马术理论，提供 14 种语言：配图章节和测验，帮你练习。",
     gratuit: "免费", reserve: "仅限 Hype+ 订阅用户", reserveTxt: "这个等级的章节需订阅 Hype+，在 Hype 应用中阅读，附有图解、海报和测验。",
     lire: "在应用中阅读", suivant: "下一章", precedent: "上一章", sommaire: "本级目录", quiz: "来练习一下",
     reponse: "查看答案", vrai: "正确", faux: "错误", appli: "在 Hype 应用中也能找到这一章，还有图片、计分测验和你的学习进度记录。",
     legal: "Hype 的教学内容，围绕法国 Galop 课程体系编写。Hype 是一款独立的应用，与法国马术协会（FFE）没有任何官方关系。",
     langue: "语言", decouvrir: "了解 Hype" },
   nl: { theorie: "Rijtheorie, niveau 1 tot 7", galop: (n) => "Galop " + n, chap: "hoofdstukken", ouvrir: "Open Hype", accueil: "Startpagina",
-    sousTitre: "Rijtheorie volgens de Franse Galop-niveaus 1 tot 7, in 10 talen: geïllustreerde hoofdstukken en quizzen om te oefenen.",
+    sousTitre: "Rijtheorie volgens de Franse Galop-niveaus 1 tot 7, in 14 talen: geïllustreerde hoofdstukken en quizzen om te oefenen.",
     gratuit: "Gratis", reserve: "Voor abonnees van Hype+", reserveTxt: "De hoofdstukken van dit niveau lees je in de Hype-app met een Hype+-abonnement, met schema’s, posters en quizzen.",
     lire: "Lees in de app", suivant: "Volgend hoofdstuk", precedent: "Vorig hoofdstuk", sommaire: "Inhoud van het niveau", quiz: "Oefen zelf",
     reponse: "Toon het antwoord", vrai: "Juist", faux: "Onjuist", appli: "Vind dit hoofdstuk in de Hype-app, met afbeeldingen, een quiz met score en je voortgang.",
     legal: "Lesinhoud van Hype, opgebouwd rond het Franse Galop-programma. Hype is een onafhankelijke app zonder officiële band met de Franse ruitersportfederatie (FFE).",
     langue: "Taal", decouvrir: "Ontdek Hype" },
   pt: { theorie: "Teoria de equitação, níveis 1 a 7", galop: (n) => "Galop " + n, chap: "capítulos", ouvrir: "Abrir o Hype", accueil: "Início",
-    sousTitre: "A teoria da equitação baseada nos níveis franceses «Galop» de 1 a 7, em 10 idiomas: capítulos ilustrados e quizzes para você praticar.",
+    sousTitre: "A teoria da equitação baseada nos níveis franceses «Galop» de 1 a 7, em 14 idiomas: capítulos ilustrados e quizzes para você praticar.",
     gratuit: "Grátis", reserve: "Para assinantes do Hype+", reserveTxt: "Os capítulos deste nível ficam no app Hype com a assinatura Hype+, com seus esquemas, pôsteres e quizzes.",
     lire: "Ler no app", suivant: "Próximo capítulo", precedent: "Capítulo anterior", sommaire: "Sumário do nível", quiz: "Pratique",
     reponse: "Ver a resposta", vrai: "Verdadeiro", faux: "Falso", appli: "Encontre este capítulo no app Hype, com suas imagens, um quiz com nota e o acompanhamento do seu progresso.",
     legal: "Conteúdo educativo do Hype, construído em torno do programa francês dos «Galops». O Hype é um aplicativo independente, sem vínculo oficial com a Federação Francesa de Equitação (FFE).",
     langue: "Idioma", decouvrir: "Conheça o Hype" },
   sv: { theorie: "Ridteori, nivå 1 till 7", galop: (n) => "Galop " + n, chap: "kapitel", ouvrir: "Öppna Hype", accueil: "Startsida",
-    sousTitre: "Ridteorin baserad på de franska «Galop»-nivåerna 1 till 7, på 11 språk: illustrerade kapitel och quiz att öva med.",
+    sousTitre: "Ridteorin baserad på de franska «Galop»-nivåerna 1 till 7, på 14 språk: illustrerade kapitel och quiz att öva med.",
     gratuit: "Gratis", reserve: "För Hype+-prenumeranter", reserveTxt: "Kapitlen på den här nivån finns i appen Hype med Hype+-prenumerationen, med scheman, affischer och quiz.",
     lire: "Läs i appen", suivant: "Nästa kapitel", precedent: "Föregående kapitel", sommaire: "Nivåns innehåll", quiz: "Öva själv",
     reponse: "Visa svaret", vrai: "Sant", faux: "Falskt", appli: "Hitta det här kapitlet i appen Hype, med bilder, ett quiz med poäng och uppföljning av dina framsteg.",
     legal: "Utbildningsinnehåll från Hype, uppbyggt kring det franska «Galop»-programmet. Hype är en oberoende app utan officiell koppling till det franska ridsportförbundet (FFE).",
     langue: "Språk", decouvrir: "Upptäck Hype" },
   ru: { theorie: "Теория верховой езды, уровни с 1 по 7", galop: (n) => "Galop " + n, chap: "главы", ouvrir: "Открыть Hype", accueil: "Главная",
-    sousTitre: "Теория верховой езды по французским уровням «Galop» с 1 по 7, на 12 языках: иллюстрированные главы и квизы для тренировки.",
+    sousTitre: "Теория верховой езды по французским уровням «Galop» с 1 по 7, на 14 языках: иллюстрированные главы и квизы для тренировки.",
     gratuit: "Бесплатно", reserve: "Для подписчиков Hype+", reserveTxt: "Главы этого уровня читаются в приложении Hype по подписке Hype+, со схемами, плакатами и квизами.",
     lire: "Читать в приложении", suivant: "Следующая глава", precedent: "Предыдущая глава", sommaire: "Содержание уровня", quiz: "Потренируйся",
     reponse: "Показать ответ", vrai: "Верно", faux: "Неверно", appli: "Найди эту главу в приложении Hype: с картинками, квизом с оценкой и отслеживанием твоего прогресса.",
     legal: "Учебные материалы Hype, построенные вокруг французской программы Galop. Hype — независимое приложение, не имеющее официальной связи с Французской федерацией конного спорта (FFE).",
     langue: "Язык", decouvrir: "Узнай Hype" },
   pl: { theorie: "Teoria jazdy konnej, poziomy od 1 do 7", galop: (n) => "Galop " + n, chap: "rozdziały", ouvrir: "Otwórz Hype", accueil: "Strona główna",
-    sousTitre: "Teoria jazdy konnej oparta na francuskich poziomach «Galop» od 1 do 7, w 13 językach: ilustrowane rozdziały i quizy do ćwiczeń.",
+    sousTitre: "Teoria jazdy konnej oparta na francuskich poziomach «Galop» od 1 do 7, w 14 językach: ilustrowane rozdziały i quizy do ćwiczeń.",
     gratuit: "Za darmo", reserve: "Dla subskrybentów Hype+", reserveTxt: "Rozdziały tego poziomu przeczytasz w aplikacji Hype w ramach subskrypcji Hype+, ze schematami, plakatami i quizami.",
     lire: "Czytaj w aplikacji", suivant: "Następny rozdział", precedent: "Poprzedni rozdział", sommaire: "Spis treści poziomu", quiz: "Poćwicz",
     reponse: "Pokaż odpowiedź", vrai: "Prawda", faux: "Fałsz", appli: "Znajdziesz ten rozdział w aplikacji Hype: z obrazkami, quizem z oceną i śledzeniem twoich postępów.",
@@ -389,7 +389,9 @@ function principal() {
       const titreG = nomGalop(n, lg) + (sousTitre(n, lg) ? " — " + sousTitre(n, lg) : "");
       if (n === 1) {
         let c = `<ol class="liste">`;
-        liste.forEach((ch, i) => { c += `<li><a href="${DOM}/${lg}/galop-1/${slugs[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`; });
+        // chapitres réellement publiés dans cette langue (même règle que la page du chapitre ci-dessous) : sommaire et « précédent / suivant » ne pointent que vers eux
+        const pub = liste.map((ch, i) => (aLaLangue(ch.titre, lg) ? i : -1)).filter((i) => i >= 0);
+        liste.forEach((ch, i) => { if (pub.indexOf(i) < 0) return; c += `<li><a href="${DOM}/${lg}/galop-1/${slugs[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`; });
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
         ecrire(`${lg}/galop-1`, page({ lg, chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${nomGalop(1, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(1, lg), description: sousTitre(1, lg), inLanguage: HL[lg], isAccessibleForFree: true, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
@@ -403,8 +405,9 @@ function principal() {
           for (const b of ch.blocs || []) cc += bloc(b, lg);
           cc += quiz(ch.quiz, lg, ui);
           cc += `<div class="appel"><p>${e(ui.appli)}</p><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></div><p class="nav">`;
-          cc += i > 0 ? `<a class="btn second" href="${DOM}/${lg}/galop-1/${slugs[i - 1]}/">‹ ${e(ui.precedent)}</a>` : "<span></span>";
-          cc += i < liste.length - 1 ? `<a class="btn second" href="${DOM}/${lg}/galop-1/${slugs[i + 1]}/">${e(ui.suivant)} ›</a>` : `<a class="btn second" href="${DOM}/${lg}/galop-1/">${e(ui.sommaire)}</a>`;
+          const pos = pub.indexOf(i);
+          cc += pos > 0 ? `<a class="btn second" href="${DOM}/${lg}/galop-1/${slugs[pub[pos - 1]]}/">‹ ${e(ui.precedent)}</a>` : "<span></span>";
+          cc += pos < pub.length - 1 ? `<a class="btn second" href="${DOM}/${lg}/galop-1/${slugs[pub[pos + 1]]}/">${e(ui.suivant)} ›</a>` : `<a class="btn second" href="${DOM}/${lg}/galop-1/">${e(ui.sommaire)}</a>`;
           cc += `</p>`;
           const premierTexte = ((ch.blocs || []).map((b) => b.type === "texte-riche" && b.contenu && (lk(b.contenu, lg) || []).find((x) => x && x.k === "para")).find(Boolean) || {}).texte || "";
           const desc = (premierTexte || `${tr(ch.titre, lg)} — ${nomGalop(1, lg)}`).slice(0, 155);

@@ -9,7 +9,7 @@
    2. Dans index.html (l'adresse 2hype.fr), il ajoute ce que Google lit :
         - le titre de l'onglet et de Google, à la place de <title>Hype</title> ;
         - la description, l'adresse canonique https://2hype.fr/, l'aperçu de partage (Open Graph) ;
-        - une fiche « application » schema.org (gratuite, 10 langues) ;
+        - une fiche « application » schema.org (gratuite, 14 langues) ;
         - le texte de présentation, glissé dans <div id="root">, comme les fiches chevaux : l'appli le
           remplace en démarrant, rien ne change à l'écran.
 
@@ -31,7 +31,7 @@ function echapper(t) {
 const DOMAINE = "https://2hype.fr";
 const TITRE = "Hype — l'appli des cavaliers : ton cheval, ton écurie et une IA équestre";
 const DESCRIPTION = "Photos, souvenirs, vidéos, résultats en concours, santé et soins de ton cheval, " +
-  "agenda de ton écurie et Hey Baby, l'IA équestre. En 10 langues.";
+  "agenda de ton écurie et Hey Baby, l'IA équestre. En 14 langues.";
 const IMAGE = DOMAINE + "/images/hype-partage-1200x630.jpg";   // 12/10 : image de partage de Blandine (1200 × 630)
 
 const H2 = 'style="font-size:17px;color:#d8d2c4;margin:22px 0 6px"';
@@ -43,7 +43,7 @@ const TEXTE =
   `<h2 ${H2}>Hey Baby, l'IA équestre</h2>` +
   `<p>Pose toutes tes questions d'équitation à Hey Baby. Il se souvient de toi et de ton cheval, et ses conseils suivent vos progrès au fil du temps. Il analyse les photos de ton cheval et de ta position, et te répond dans ta langue.</p>` +
 
-  `<h2 ${H2}>Apprendre l'équitation, en 10 langues</h2>` +
+  `<h2 ${H2}>Apprendre l'équitation, en 14 langues</h2>` +
   `<p>Toute la théorie des Galops 1 à 7, illustrée de schémas et d'affiches, avec des quiz pour t'entraîner. Elle est disponible en français, anglais, espagnol, italien, allemand, japonais, arabe, chinois, néerlandais et português do Brasil : apprends l'équitation dans ta langue, ou le vocabulaire équestre dans une autre.</p>` +
 
   `<h2 ${H2}>Toute la vie de ton cheval</h2><ul style="padding-left:18px;margin:0">` +
