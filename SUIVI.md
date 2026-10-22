@@ -14319,3 +14319,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Conséquence : sa page Cavalier affiche la Team + les 7 piquets (4 SEP, 3 Feinn).
 - Toujours en attente : accès aux groupes depuis la page Écurie (visible par tous, ou par les membres seulement).
 - node --check 17 blocs OK. Marqueur 20261022-1545.
+
+## 22/10/2026 — 16 h, PUBLIÉ (Blandine : « Oui par tlm », « En dessous de l'onglet écurie ») : rangée « Groupes » sur la page Écurie
+- index.html, EcranEcurieV2 : rangée « Groupes » juste sous l'en-tête de l'écurie (nom, ville, membres), avant la citation, sur téléphone, tablette et ordinateur. Visible par toutes les personnes connectées (pas sur la vitrine visiteur sans compte).
+- Contenu : la Team (équipe) + les piquets qui ont au moins un cavalier inscrit, de l'écurie affichée. Pastilles (photo ronde + nom + ›) qui défilent de côté sur téléphone ; même navigation que la page Cavalier (Team → page Team ; piquet → page Chevaux sur ce piquet ; équipe sans page → « Prochainement », non cliquable). Aucun nouveau texte (« Groupes », « Prochainement » déjà traduits).
+- État actuel : SEP → seule la Team CSO Club s'affiche (aucun piquet n'a de cavalier) ; Feinn → rien, la rangée est masquée.
+- Interprétation de « en dessous de l'onglet écurie » = sous l'en-tête de l'écurie : à déplacer si elle voulait autre chose.
+- node --check 17 blocs OK. Marqueur 20261022-1600.
