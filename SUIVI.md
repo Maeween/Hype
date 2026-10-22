@@ -14345,9 +14345,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Remplace la partie « option A » du 22/10 15 h 45 (créateur qui voyait aussi ses piquets) pour la page Cavalier.
 - Test : 1 équipe + 2 piquets en données de test → seule l'équipe s'affiche (390 / 1024 / 1440). node --check 17 blocs OK. Marqueur 20261022-2245.
 
-## 22/10/2026 — 23 h, BRANCHE cavalier-ordi (PAS PUBLIÉ, attend le « vas-y » de Blandine) : page Cavalier, version ordinateur + bloc groupe de la maquette
+## 22/10/2026 — 23 h, PUBLIÉ (Blandine : « Publie », 22 h 40) : page Cavalier, version ordinateur + bloc groupe de la maquette
 - Bloc « Mon groupe » (téléphone, et même dessin sur tablette / ordinateur) comme sa maquette : « Mon groupe » en Cormorant ivoire, vignette photo du groupe, nom + sigle de l'écurie (« Team CSO Club – SEP »), ligne « Saison 2026 – 2027 · Club », cheval sombre fondu à droite (image de l'encart récit), flèche dans un rond. Libellé « Mon groupe » aussi pour l'équipe (avant : « Mon équipe »). Seuls les groupes de cavaliers (pas les piquets).
 - Ordinateur à partir de 1200 px de large (en dessous, iPad / petit écran : inchangé) : panneau à gauche (photo ronde, prénom, identifiant, badge Coach, les 6 accès en liste) ; à droite le bandeau photo, les deux écuries côte à côte, le groupe, « Mon récit » en entier (plus de coupe à 8 lignes) ; puis « Mes chevaux » sur toute la largeur en 6 colonnes (mêmes règles de remplissage, carte « Les chevaux de l'écurie ») ; puis « Mes amis » et « Mes résultats » côte à côte (même hauteur).
 - Aucune partie retirée, aucun texte remplacé, aucun nouveau texte (rien à traduire). Arabe : tout passe en miroir.
 - Écart avec le brief : la navigation Hype reste la barre de gauche actuelle de l'appli (le brief disait « en haut ») — la changer toucherait toutes les pages.
 - Tests : 390, 1024, 1280, 1440 ; fr et ar ; sa page et la page d'un autre cavalier (visite) sans erreur. node --check 17 blocs OK.
+
+## 22/10/2026 — 23 h, PUBLIÉ avec l'entrée précédente (Blandine : « ok pour la page de connexion ») : l'ancienne page « seuil » disparaît
+- index.html, EcranConnexionSpectral : dès que l'écran de connexion passe en mode « seuil » (Retour depuis Se connecter / Créer mon compte, déconnexion, page réservée ouverte sans compte, ancien bouton « Entrer dans Hype »), on revient à la page d'entrée (Créer mon compte / Se connecter), sans rejouer son animation.
+- Exception gardée : le visiteur venu d'un challenge partagé garde son chemin d'avant.
+- La carte « HYPE dans ta poche » (installer l'appli) reste sur la page « Se connecter ».
+- Tests 390 et 1440 : entrée → Créer mon compte → Retour → entrée ; entrée → Se connecter → Retour → entrée ; chemin « seuil » forcé → entrée ; aucune erreur. Marqueur 20261022-2300.
