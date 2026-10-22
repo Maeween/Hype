@@ -14311,3 +14311,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - index.html : la vérification de largeur (encadré rouge réservé aux admins) ne s'affiche plus du tout (`if (true || …)` en tête de `verifier()`). Pour la rallumer : retirer le `true ||`.
 - Dernière capture avant coupure (13 h 54, page Écurie) : écran 390 mais page mise en page sur 844 de large (innerW 844, zoom 1) — vraie anomalie cette fois, probablement après une rotation du téléphone ; NON diagnostiquée, à surveiller si la page paraît trop large ou trop petite.
 - node --check 17 blocs OK. Marqueur 20261022-1355.
+
+## 22/10/2026 — 15 h 45, PUBLIÉ (Blandine : « Fais en sorte que le créateur d'un groupe en fasse tjs partie », puis « Et A ») : groupes créés visibles sur la page Cavalier
+- Option A choisie : le créateur VOIT son groupe sur sa page Cavalier (rubrique « Mes groupes à l'écurie ») sans être inscrit dans groupes_membres — il n'apparaît ni dans la liste des cavalières ni dans les effectifs.
+- index.html : la lecture des groupes du cavalier ajoute ceux où `groupes.cree_par` = ce cavalier (même filtre d'écurie, sans doublon).
+- Base (écriture passée par l'assistant le 22/10 sur son « Et A ») : `groupes.cree_par` de la « Team CSO Club » (vide, créée en SQL) = Blandine (bc7c52ee-…). Les 7 piquets avaient déjà Blandine comme créatrice. Les futurs groupes reçoivent le créateur automatiquement (valeur par défaut auth.uid()).
+- Conséquence : sa page Cavalier affiche la Team + les 7 piquets (4 SEP, 3 Feinn).
+- Toujours en attente : accès aux groupes depuis la page Écurie (visible par tous, ou par les membres seulement).
+- node --check 17 blocs OK. Marqueur 20261022-1545.
