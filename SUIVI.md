@@ -14326,3 +14326,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - État actuel : SEP → seule la Team CSO Club s'affiche (aucun piquet n'a de cavalier) ; Feinn → rien, la rangée est masquée.
 - Interprétation de « en dessous de l'onglet écurie » = sous l'en-tête de l'écurie : à déplacer si elle voulait autre chose.
 - node --check 17 blocs OK. Marqueur 20261022-1600.
+
+## 22/10/2026 — soir, BRANCHE retrait-accord (PAS PUBLIÉ, attend le « vas-y » de Blandine) : points 3 et 4
+- Point 3 : Mon compte, nouvelle tuile « Demander le retrait d'une photo » (après « Suggestion »), 14 langues. Ouvre un e-mail vers feinn@live.fr déjà rempli (où est la photo, pourquoi, pseudo + e-mail du compte). Testé fr et ar, 390 et 1440 px.
+- Point 3 : CGV (outils/cgv-generer.py puis pages des 14 langues régénérées), section 10 : paragraphe « Photos et vidéos » (respect des personnes photographiées, accord des parents pour les mineurs, retrait via Mon compte ou feinn@live.fr, traitement rapide).
+- Point 4 : trace de l'accord à l'inscription. `inscription()` envoie avec le compte (Supabase Auth, user_metadata.accord_inscription) : cgv (oui), cgv_version 2026-10-15, majeur (oui/non), accord_parental (si mineur), date-heure, langue. Aucun changement de table ni de SQL. Testé avec un faux serveur : majeur → accord_parental vide ; mineur → accord_parental oui.
+- Option plus solide possible plus tard : une table dédiée aux accords (SQL à valider avant).
+- node --check 17 blocs OK.

@@ -128,11 +128,16 @@ const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stoc
 /* --- 2. Comptes (inscription / connexion) ------------------ */
 
 // Créer un compte. Le pseudo est enregistré et sert au profil.
-async function inscription(email, motDePasse, pseudo) {
+async function inscription(email, motDePasse, pseudo, accord) {
+  /* 22/10 (Blandine, point 4) : TRACE DE L ACCORD donne a l inscription. Les cases cochees (conditions generales,
+     tranche d age, accord d un parent) sont gardees avec le compte, dans ses donnees d inscription (Supabase Auth,
+     user_metadata), avec la date, la langue et la version des conditions. Aucun changement de table. */
+  var data = { pseudo };
+  if (accord) data.accord_inscription = accord;
   return await supa.auth.signUp({
     email,
     password: motDePasse,
-    options: { data: { pseudo } }
+    options: { data: data }
   });
 }
 
@@ -31130,7 +31135,9 @@ function EcranConnexionSpectral() {
         if (!pseudoDep) { try { var etA = JSON.parse(localStorage.getItem("augalop_etat_v1") || "null"); if (etA && etA.profil && etA.profil.prenom) pseudoDep = String(etA.profil.prenom).slice(0, 30); } catch (e) { } }
         if (!pseudoDep && ctx.profil && ctx.profil.prenom) pseudoDep = String(ctx.profil.prenom).slice(0, 30);
         if (!pseudoDep) pseudoDep = em.split("@")[0];
-        var r1 = await inscription(em, mdp, pseudoDep);
+        var accordI = null;
+        try { var trA = trancheRef.current; accordI = { cgv: !!accCgv, cgv_version: "2026-10-15", majeur: (trA === true || trA === false) ? trA : null, accord_parental: trA === false ? !!accAge : null, le: new Date().toISOString(), langue: (ctx && ctx.langue) || "fr" }; } catch (eAc) { accordI = null; }
+        var r1 = await inscription(em, mdp, pseudoDep, accordI);
         if (r1.error) { setErreur(traduireErr(r1.error)); setEnCours(false); return; }
         /* Supabase ne renvoie PAS de session quand « Confirm email » est actif :
            le compte existe mais dort tant que le lien n'est pas touche. C'est
@@ -90927,6 +90934,24 @@ function EcranProfilInterne() {
                 sous: tr({ fr: "Une idée pour la suite", en: "An idea for what's next", es: "Una idea para el futuro", it: "Un'idea per il futuro", ja: "今後のアイデア", de: "Eine Idee für später", ar: "\u0641\u0643\u0631\u0629 \u0644\u0644\u0645\u0633\u062a\u0642\u0628\u0644", zh: "对未来的一个想法", nl: "Een idee voor later", pt: "Uma ideia para o futuro", sv: "En idé för framtiden", ru: "Идея для будущего", pl: "Pomysł na przyszłość", ko: "앞으로를 위한 아이디어" }),
                 onClick: () => { try { if (typeof ouvrirSuggestions === "function") ouvrirSuggestions(); else window.hypeOuvrirLien("mailto:feinn@live.fr?subject=" + encodeURIComponent("Hype — suggestion")); } catch (e) { } },
                 ico: [React.createElement("path", { key: "a", d: "M12 3a6 6 0 0 1 3.6 10.8c-.6.5-1 1.2-1.1 2H9.5c-.1-.8-.5-1.5-1.1-2A6 6 0 0 1 12 3z" }), React.createElement("path", { key: "b", d: "M9.6 19h4.8" })],
+            }),
+            /* 22/10 (Blandine) : DEMANDER LE RETRAIT D UNE PHOTO. Un seul endroit, ici (pas un bouton sur chaque photo).
+               Comme « Signaler un bug » : un e-mail tout pret vers feinn@live.fr, dans la langue de la cavaliere, avec son
+               compte deja rempli ; Blandine est donc prevenue a chaque demande. Les CGV (section 10) renvoient ici. */
+            tuile({
+                cle: "retrait-photo",
+                titre: tr({ fr: "Demander le retrait d'une photo", en: "Request a photo removal", es: "Pedir que se retire una foto", it: "Chiedi di rimuovere una foto", ja: "写真の削除を依頼", de: "Entfernung eines Fotos beantragen", ar: "طلب حذف صورة", zh: "申请删除照片", nl: "Verwijdering van een foto aanvragen", pt: "Pedir a remoção de uma foto", sv: "Begär borttagning av ett foto", ru: "Запросить удаление фото", pl: "Poproś o usunięcie zdjęcia", ko: "사진 삭제 요청" }),
+                sous: tr({ fr: "Une photo de toi à retirer", en: "A photo of you to remove", es: "Una foto tuya que retirar", it: "Una tua foto da rimuovere", ja: "あなたが写った写真", de: "Ein Foto von dir entfernen", ar: "صورة لك تريد حذفها", zh: "有你的照片需要删除", nl: "Een foto van jou laten verwijderen", pt: "Uma foto sua para remover", sv: "Ett foto på dig som ska bort", ru: "Фото с тобой, которое нужно удалить", pl: "Twoje zdjęcie do usunięcia", ko: "삭제할 내 사진" }),
+                onClick: () => {
+                    try {
+                        const CR = { fr: ["Bonjour, je souhaite le retrait d'une photo (ou d'une vidéo) sur Hype.", "Où se trouve-t-elle (page, cheval, album, date) :", "Pourquoi :", "Mon compte Hype :"], en: ["Hello, I would like a photo (or video) removed from Hype.", "Where is it (page, horse, album, date):", "Why:", "My Hype account:"], es: ["Hola, quiero que se retire una foto (o un vídeo) de Hype.", "Dónde está (página, caballo, álbum, fecha):", "Por qué:", "Mi cuenta Hype:"], it: ["Ciao, vorrei che una foto (o un video) fosse rimossa da Hype.", "Dove si trova (pagina, cavallo, album, data):", "Perché:", "Il mio account Hype:"], ja: ["こんにちは。Hype上の写真（または動画）の削除をお願いします。", "場所（ページ、馬、アルバム、日付）：", "理由：", "私のHypeアカウント："], de: ["Hallo, ich möchte, dass ein Foto (oder Video) von Hype entfernt wird.", "Wo ist es (Seite, Pferd, Album, Datum):", "Warum:", "Mein Hype-Konto:"], ar: ["مرحبا، أرغب في حذف صورة (أو فيديو) من Hype.", "أين توجد (الصفحة، الحصان، الألبوم، التاريخ):", "السبب:", "حسابي على Hype:"], zh: ["你好，我希望删除 Hype 上的一张照片（或一个视频）。", "在哪里（页面、马匹、相册、日期）：", "原因：", "我的 Hype 账户："], nl: ["Hallo, ik wil graag dat een foto (of video) van Hype wordt verwijderd.", "Waar staat hij (pagina, paard, album, datum):", "Waarom:", "Mijn Hype-account:"], pt: ["Olá, gostaria que uma foto (ou vídeo) fosse removida do Hype.", "Onde está (página, cavalo, álbum, data):", "Por quê:", "Minha conta Hype:"], sv: ["Hej, jag vill att ett foto (eller en video) tas bort från Hype.", "Var finns det (sida, häst, album, datum):", "Varför:", "Mitt Hype-konto:"], ru: ["Здравствуйте, я хочу, чтобы фото (или видео) удалили из Hype.", "Где оно (страница, лошадь, альбом, дата):", "Почему:", "Мой аккаунт Hype:"], pl: ["Dzień dobry, chcę, aby zdjęcie (lub film) zostało usunięte z Hype.", "Gdzie się znajduje (strona, koń, album, data):", "Dlaczego:", "Moje konto Hype:"], ko: ["안녕하세요, Hype에 있는 사진(또는 동영상)을 삭제해 주세요.", "위치 (페이지, 말, 앨범, 날짜):", "이유:", "내 Hype 계정:"] };
+                        const c = CR[langue] || CR.fr;
+                        const qui = ((profil && (profil.pseudo || profil.prenom)) || "") + ((emailAuth || (profil && profil.email)) ? " (" + (emailAuth || profil.email) + ")" : "");
+                        const corpsMail = c[0] + "\n\n" + c[1] + "\n\n\n" + c[2] + "\n\n\n" + c[3] + " " + qui;
+                        window.hypeOuvrirLien("mailto:feinn@live.fr?subject=" + encodeURIComponent("Hype — " + tr({ fr: "Demander le retrait d'une photo", en: "Request a photo removal", es: "Pedir que se retire una foto", it: "Chiedi di rimuovere una foto", ja: "写真の削除を依頼", de: "Entfernung eines Fotos beantragen", ar: "طلب حذف صورة", zh: "申请删除照片", nl: "Verwijdering van een foto aanvragen", pt: "Pedir a remoção de uma foto", sv: "Begär borttagning av ett foto", ru: "Запросить удаление фото", pl: "Poproś o usunięcie zdjęcia", ko: "사진 삭제 요청" })) + "&body=" + encodeURIComponent(corpsMail));
+                    } catch (e) { }
+                },
+                ico: [React.createElement("rect", { key: "a", x: "3.5", y: "5", width: "17", height: "14", rx: "2" }), React.createElement("circle", { key: "b", cx: "9", cy: "10", r: "1.6" }), React.createElement("path", { key: "c", d: "M20.5 15.5l-4.5-4.5-7.5 7.5" }), React.createElement("path", { key: "d", d: "M15 3l6 6M21 3l-6 6" })],
             }),
         ]),
 
