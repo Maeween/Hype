@@ -14306,3 +14306,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Petits zooms : l'encadré « Diagnostic largeur » et la remise à zéro du zoom réagissent désormais dès 1,001 (au lieu de 1,01) — sa capture de 13 h 32 montrait une fausse alerte à vv 387@1.01.
 - Vérifié : node --check 17 blocs + assistant.js ; serveur testé avec fausses réponses ; fusion testée (2 morceaux, doublon entre morceaux, horaire déjà présent → pas répété). NON testé sur iPhone.
 - Marqueur 20261022-1340. Marqueurs de garde présents.
+
+## 22/10/2026 — 13 h 55, PUBLIÉ (Blandine : « Vire moi les alertes j'en peux plus ») : encadré « Diagnostic largeur » coupé
+- index.html : la vérification de largeur (encadré rouge réservé aux admins) ne s'affiche plus du tout (`if (true || …)` en tête de `verifier()`). Pour la rallumer : retirer le `true ||`.
+- Dernière capture avant coupure (13 h 54, page Écurie) : écran 390 mais page mise en page sur 844 de large (innerW 844, zoom 1) — vraie anomalie cette fois, probablement après une rotation du téléphone ; NON diagnostiquée, à surveiller si la page paraît trop large ou trop petite.
+- node --check 17 blocs OK. Marqueur 20261022-1355.
