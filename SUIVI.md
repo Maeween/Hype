@@ -14333,3 +14333,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Point 4 : trace de l'accord à l'inscription. `inscription()` envoie avec le compte (Supabase Auth, user_metadata.accord_inscription) : cgv (oui), cgv_version 2026-10-15, majeur (oui/non), accord_parental (si mineur), date-heure, langue. Aucun changement de table ni de SQL. Testé avec un faux serveur : majeur → accord_parental vide ; mineur → accord_parental oui.
 - Option plus solide possible plus tard : une table dédiée aux accords (SQL à valider avant).
 - node --check 17 blocs OK.
+
+## 22/10/2026 — 22 h 35, PUBLIÉ (Blandine : « Publie d'abord ») : groupes en encarts + points 3 et 4
+- Page Cavalier : chaque groupe est un encart dans le style de l'encart écurie, juste sous « Mes écuries » (dégradé pétrole, photo du groupe en fondu, étiquette champagne « Mon groupe » / « Mon équipe », nom en Cormorant, ligne d'infos, flèche ou « Prochainement »). Le titre « Mes groupes à l'écurie » disparaît. Tablette et ordinateur : deux colonnes s'il y a plusieurs groupes.
+- Points 3 et 4 de l'entrée précédente (retrait de photo, paragraphe CGV, trace de l'accord à l'inscription) publiés avec.
+- Toujours en attente : faire disparaître l'ancienne page « seuil » (Retour depuis Se connecter / Créer mon compte y mène encore).
+- Tests : inscription majeur/mineur (accord envoyé), tuile retrait fr/ar 390/1440, captures groupes 390/1024/1440. node --check 17 blocs OK. Marqueur 20261022-2235.
