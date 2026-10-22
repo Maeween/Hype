@@ -14339,3 +14339,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Points 3 et 4 de l'entrée précédente (retrait de photo, paragraphe CGV, trace de l'accord à l'inscription) publiés avec.
 - Toujours en attente : faire disparaître l'ancienne page « seuil » (Retour depuis Se connecter / Créer mon compte y mène encore).
 - Tests : inscription majeur/mineur (accord envoyé), tuile retrait fr/ar 390/1440, captures groupes 390/1024/1440. node --check 17 blocs OK. Marqueur 20261022-2235.
+
+## 22/10/2026 — 22 h 45, PUBLIÉ (Blandine : « ne confonds pas les groupes de cavalier avec les piquets de chevaux créés », « laisse-moi juste la gestion du groupe de la SEP CSO Club ») : page Cavalier, groupes de cavaliers seulement
+- index.html, EcranMonCavalier : les encarts sous « Mes écuries » ne montrent plus que les groupes de nature « equipe » (Team CSO Club de la SEP). Les piquets de chevaux (7 créés par Blandine) n'y apparaissent plus. Aucune donnée touchée.
+- Remplace la partie « option A » du 22/10 15 h 45 (créateur qui voyait aussi ses piquets) pour la page Cavalier.
+- Test : 1 équipe + 2 piquets en données de test → seule l'équipe s'affiche (390 / 1024 / 1440). node --check 17 blocs OK. Marqueur 20261022-2245.
