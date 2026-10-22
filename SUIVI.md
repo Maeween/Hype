@@ -14298,3 +14298,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Vérifié : node --check 17 blocs + assistant.js ; serveur testé avec fausses réponses (consigne et morceau bien ajoutés, palmarès inchangé) ; découpage testé en navigateur (1170×2532 → pas découpé ; ×9000 → 6 morceaux ; ×25000 → 8, tronqué). NON testé sur iPhone : pincement du parchemin, retour du zoom de page, lecture réelle d'une pleine page FFE.
 - Marqueur 20261022-1255. Marqueurs de garde présents.
 - En attente de sa décision (rien codé) : groupes sur la page Cavalier (elle n'est membre d'aucun groupe, piquets sans cavaliers) et accès aux groupes depuis la page Écurie.
+
+## 22/10/2026 — 13 h 40, PUBLIÉ (Blandine « Oui et oui ») : document du concours, UNE consigne et UN bouton pour tout ; petits zooms
+- Test de Blandine à 13 h 25 : sa consigne était dans la partie Horaires, donc le bouton Horaires n'a rempli que les horaires (CSO Club 2 Vitesse 14h / 14h30). Avec la partie Ordre de passage, à 13 h 32, les 6 cavaliers coachés par elle sont sortis (n° 1, 5, 6, 8, 11, 12) : la consigne fonctionne.
+- index.html, document du concours : la case Consigne et le bouton « Lire une capture d'écran » sont désormais UNIQUES, en haut, sous le titre et le sous-titre (plus de case ni de bouton par partie). Une lecture remplit les horaires ET l'ordre de passage (numéro d'ordre gardé, sur sa décision). Les lignes lues S'AJOUTENT aux lignes déjà remplies (lignes vides retirées, doublons ignorés) : on peut lire la page de la Club 2 puis celle de la Club 3. Petite phrase d'explication sous le bouton, 14 langues.
+- netlify/functions/assistant.js : nouvelle opération `lecture_document` (réponse {horaires:[…], ordre:[…]}, 6000 jetons), consigne et « morceau » acceptés comme pour les deux autres. `lecture_horaires` / `lecture_ordre` restent en place, plus appelées par l'appli.
+- Petits zooms : l'encadré « Diagnostic largeur » et la remise à zéro du zoom réagissent désormais dès 1,001 (au lieu de 1,01) — sa capture de 13 h 32 montrait une fausse alerte à vv 387@1.01.
+- Vérifié : node --check 17 blocs + assistant.js ; serveur testé avec fausses réponses ; fusion testée (2 morceaux, doublon entre morceaux, horaire déjà présent → pas répété). NON testé sur iPhone.
+- Marqueur 20261022-1340. Marqueurs de garde présents.
