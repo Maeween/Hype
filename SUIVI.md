@@ -14357,3 +14357,16 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Exception gardée : le visiteur venu d'un challenge partagé garde son chemin d'avant.
 - La carte « HYPE dans ta poche » (installer l'appli) reste sur la page « Se connecter ».
 - Tests 390 et 1440 : entrée → Créer mon compte → Retour → entrée ; entrée → Se connecter → Retour → entrée ; chemin « seuil » forcé → entrée ; aucune erreur. Marqueur 20261022-2300.
+
+## 22/10/2026 — 23 h 30, BRANCHE cavalier-ordi-2 (PAS PUBLIÉ, attend le « vas-y » de Blandine) : corrections de la page Cavalier sur ordinateur (son brief en 11 points)
+- Tout ne joue qu'à partir de 1200 px de large. iPhone : capture identique pixel par pixel à la version publiée ; iPad : identique.
+- 1 Bandeau : 400 → 520 px de haut, la photo prend 82 % de la largeur (avant 64 %) avec un fondu plus doux, tête plus visible ; prénom 52 → 72, ligne identifiant/écurie et « CAVALIER » plus grands, texte mieux posé (48 px du bas). Mêmes commandes.
+- 2 Panneau : 236 → 264 px ; photo ronde 76 → 104, prénom 26 → 32, badge Coach plus grand ; les 6 accès : lignes 46 → 64 px, vignettes 30 → 42, texte 12,5 → 15. Mêmes destinations.
+- 3 Écuries : cartes 112 → 168 px, nom 30 px (un nom long passe sur 2 lignes au lieu d'être coupé), lieu 14 px.
+- 4 Groupe : même place, plus grand (titre 30, nom 26, vignette 84×60, flèche 46). Seulement les groupes de cavaliers.
+- 5 Récit : hauteur mini 200 → 300, texte 14 → 18, interligne plus large, bouton plus grand ; cheval noir à droite inchangé. Aucun texte touché.
+- 6 Alerte photo : inchangée (même fonctionnement) ; elle ne prend aucune place quand elle n'a pas lieu d'être.
+- 7 Chevaux : 4 colonnes (avant 6) donc cartes bien plus grandes, noms 13,5 → 17, filtres plus grands, carte « Les chevaux de l'écurie » plus lisible. Cadenas et accès Premium inchangés. (La zone de contenu de l'appli plafonne vers 1280 px même sur 1920 : 4 colonnes partout.)
+- 8 Amis : portraits 58 → 84, sur plusieurs lignes (plus de défilement de côté), chaque encart garde sa hauteur (plus de grand bloc vide à côté des résultats). Résultats : encart, titres, médailles, lignes et boutons plus grands ; les deux parties « Principaux résultats » et « Derniers résultats » existaient déjà et restent (vraies données seulement, aucun résultat inventé) ; état vide plus grand, mêmes textes.
+- 9 Espacements : titres de partie 28 → 34, encarts 44 → 52 px d'écart et marges intérieures plus larges.
+- Tests : 1440 et 1920, fr et ar, avec et sans résultats ; clics Histoire / Performances / Photos / groupe / écurie / filtre sans erreur ; iPhone et iPad sans changement. node --check 17 blocs OK.
