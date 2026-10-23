@@ -14382,10 +14382,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Tests : 1440 et 1920 (fr), 1440 (ar), 1280, avec résultats de test ; node --check 17 blocs OK. Marqueur 20261023-0820.
 - À vérifier sur son ordinateur avec sa vraie photo de profil (le cadrage du bandeau n'a pu être testé qu'avec une photo de test).
 
-## 23/10/2026 — 10 h, BRANCHE effets-photos (PAS PUBLIÉ, attend le « vas-y » de Blandine) : effet photo du Challenge sur les photos des chevaux et des événements (pages Cavalier et Écurie)
+## 23/10/2026 — 10 h 15, PUBLIÉ (Blandine : « Va s'y déjà ») : effet photo du Challenge sur les photos des chevaux et des événements (pages Cavalier et Écurie)
 - Demande : « les effets sur les photos qu'on a mis sur la page challenge, aux photos d'expo et des événements sur la page cavalier et écurie », « des chevaux ».
 - Effet repris à l'identique de challenge.html (vignettes .ed / .ap) : ton légèrement chaud, lumière dorée « coucher de soleil » au centre, bords assombris dans un brun chaud, fin liseré clair. Règles communes HYPE_PH_SOLEIL_CSS + hypeVoileSoleil() (deux calques posés juste après la photo, le texte des cartes reste au-dessus).
 - Appliqué : page Cavalier → cartes de « Mes chevaux » (et « chevaux à découvrir » quand on n'a pas encore de cheval) ; page Écurie → mosaïque « Nos chevaux de l'écurie » et affiches de « Prochains événements ». Téléphone, tablette et ordinateur. Arabe : lumière en miroir.
 - Pas touché : la photo ouverte en grand, les fichiers, les fiches cheval, la photo du bandeau, les cartes « Événements en cours » (challenges, déjà leur propre dessin).
 - ⚠️ C'est un filtre sur les photos de chevaux : fait parce qu'elle le demande explicitement (règle « pas de filtre » posée pour la photo de la page d'inscription).
-- Tests : 390 et 1440, avant / après ; aucune erreur. node --check 17 blocs OK.
+- Tests : 390 et 1440, avant / après ; aucune erreur. node --check 17 blocs OK. Marqueur 20261023-1015.
