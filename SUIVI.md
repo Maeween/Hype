@@ -14371,7 +14371,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 9 Espacements : titres de partie 28 → 34, encarts 44 → 52 px d'écart et marges intérieures plus larges.
 - Tests : 1440 et 1920, fr et ar, avec et sans résultats ; clics Histoire / Performances / Photos / groupe / écurie / filtre sans erreur ; iPhone et iPad sans changement. node --check 17 blocs OK.
 
-## 22/10/2026 — 23 h 55, BRANCHE cavalier-ordi-2 (PAS PUBLIÉ, attend sa validation visuelle) : page Cavalier ordinateur, retour strict à la maquette validée
+## 22/10/2026 — 23 h 55, PUBLIÉ le 23/10 à 8 h 20 (Blandine : « Vas y ») : page Cavalier ordinateur, retour strict à la maquette validée
 - Uniquement à partir de 1200 px de large. iPhone et iPad : captures identiques pixel par pixel à la version en ligne. Autres pages : barre générale inchangée (vérifié Accueil et Écurie à 1440, et toutes les pages à 1100).
 - Navigation générale : sur la page Cavalier (sa page et celle d'un autre cavalier) en ordinateur, la barre Hype devient une barre compacte EN HAUT (logo + les 8 onglets, mêmes destinations), comme sur la maquette ; plus de deuxième grande colonne à gauche. Zone de page 1600 px max.
 - Colonne profil 250 px : photo ronde + prénom + identifiant + badge Coach côte à côte, puis les 6 rubriques en texte (comme la maquette), lignes de 60 px.
@@ -14379,4 +14379,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Écuries : deux grandes cartes photo côte à côte (168 px). Groupe : revenu à une taille discrète (celle de la tablette). Récit : grande carte, texte à gauche, cheval à droite.
 - Chevaux : galerie horizontale homogène (cartes de même taille 4:3, 6 visibles, défilement de côté s'il y en a plus), carte « Les chevaux de l'écurie » en bout de ligne ; en visite, « Voir tous ses chevaux (n) » en dernière carte s'il en reste. Plus de deuxième ligne centrée. Filtres, cadenas et Premium inchangés.
 - Amis puis Résultats sur toute la largeur (Blandine : « laisse les résultats sur toute la largeur ») ; amis en rangée compacte ; résultats : « Principaux résultats » + « Derniers résultats » (cartes 260 px, textes plus grands) + Ajouter / Importer FFE.
-- Tests : 1440 et 1920 (fr), 1440 (ar), 1280, avec résultats de test ; node --check 17 blocs OK.
+- Tests : 1440 et 1920 (fr), 1440 (ar), 1280, avec résultats de test ; node --check 17 blocs OK. Marqueur 20261023-0820.
+- À vérifier sur son ordinateur avec sa vraie photo de profil (le cadrage du bandeau n'a pu être testé qu'avec une photo de test).
