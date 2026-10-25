@@ -14432,3 +14432,16 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - À FAIRE PAR BLANDINE dans Supabase (Claude n'y a pas accès) : Authentication → Emails → Templates : « Reset Password » et « Confirm signup » → coller objet + corps ; vérifier dans SMTP le nom d'expéditeur « HYPE » (c'est ce nom que les cavaliers voient) ; URL Configuration : Site URL https://2hype.fr.
 - Part aussi avec cette mise en ligne : le retrait du bouton Retour de la page « Qu'aimerais-tu faire avec Hype ? » (commit 988af02 d'une autre conversation, prévu pour la prochaine mise en ligne).
 - node --check 17 blocs OK. Marqueur 20261025-0830.
+
+## 25/10/2026 — marqueur 20261025-0835, PUBLIÉ (Blandine : « Tu peux pas faire avec ? », « Oui vas-y ») : nouvelle photo de l'œil sur la page d'entrée
+- Images ChatGPT (reçues en une seule capture 1862 × 845, les deux versions côte à côte) découpées en deux fichiers : images/entree-oeil-portrait.jpg (559 × 845) et images/entree-oeil-paysage.jpg (1292 × 845), léger renforcement de netteté.
+- Téléphone et tablette en hauteur : la version verticale (avant : images/inline-03.jpg, 441 × 700, conservé dans le dépôt). Ordinateur et tablette en largeur : la version paysage pleine largeur, l'œil à gauche, le titre et les boutons sur le noir à droite. Arabe : photo en miroir (l'œil à droite, le texte à gauche).
+- Animation d'arrivée, drapeaux, boutons : inchangés. Tests 390, 1024 × 1366, 1366 × 1024, 1440 (fr) et 1440 (ar) : aucune erreur.
+- Le bouton Retour retiré de « Qu'aimerais-tu faire avec Hype ? » est parti en ligne avec la publication de 8 h 30.
+
+### À REPRENDRE PLUS TARD (noté le 25/10 à la demande de Blandine)
+- Photo de l'œil en vraie haute définition : la verticale (559 × 845) reste un peu juste sur iPhone. Redemander à ChatGPT UNE image par message (verticale 1024 × 1536 minimum, puis paysage 1536 × 1024 minimum), sans bordure ; remplacer les deux fichiers images/entree-oeil-*.jpg (mêmes noms → rien d'autre à changer).
+- Point 7 — se servir des envies, du niveau et de l'âge (aucune choisie encore) : (1) ligne « Pour toi » en haut de l'Accueil selon les envies ; (2) page Galops ouverte sur le prochain Galop ; (3) Hey Baby : questions proposées selon les envies, réponses selon le niveau ; (4) protections pour les moins de 18 ans (messages privés limités à l'écurie, profil non public par défaut) — vraie règle à décider point par point ; (5) carte de bienvenue unique « Ton Hype est prêt ». Conseil : 1 + 2 d'abord. Avant : vérifier que envies / niveau / âge sont gardés sur le compte (pas seulement sur le téléphone).
+- Photos Hey Baby des cavalières : toujours en maintenance (HEYBABY_PHOTO_MAINTENANCE = true). Le mécanisme du 25/10 (analyse finie par le serveur) pourrait contourner la coupure de Netlify : à essayer avant de rallumer — décision de Blandine.
+- Tests sur iPhone à faire : page d'entrée (nouvelle photo), Créer mon compte avec l'âge, page des envies, Hey Baby (quitter l'appli puis revenir : réponse + pastille + notification ; mode avion).
+- Réponses Hey Baby en base : on les garde (pas de nettoyage pour l'instant).
