@@ -1,0 +1,11 @@
+OBJET « Reset Password » (mot de passe oublié) — version 14 langues :
+{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}{{ if eq $l "en" }}HYPE — your horse is waiting 🐴{{ else if eq $l "es" }}HYPE — tu caballo te espera 🐴{{ else if eq $l "it" }}HYPE — il tuo cavallo ti aspetta 🐴{{ else if eq $l "de" }}HYPE — dein Pferd wartet auf dich 🐴{{ else if eq $l "ja" }}HYPE — きみの馬が待ってるよ 🐴{{ else if eq $l "ar" }}HYPE — حصانكِ ينتظركِ 🐴{{ else if eq $l "zh" }}HYPE — 你的马在等你 🐴{{ else if eq $l "nl" }}HYPE — je paard wacht op je 🐴{{ else if eq $l "pt" }}HYPE — seu cavalo está esperando você 🐴{{ else if eq $l "sv" }}HYPE — din häst väntar på dig 🐴{{ else if eq $l "ru" }}HYPE — твоя лошадь ждёт тебя 🐴{{ else if eq $l "pl" }}HYPE — twój koń na ciebie czeka 🐴{{ else if eq $l "ko" }}HYPE — 말이 기다리고 있어요 🐴{{ else }}HYPE — ton cheval t'attend 🐴{{ end }}
+
+OBJET « Reset Password » — version de secours (si Supabase n'accepte pas les conditions dans l'objet) :
+HYPE — ton cheval t'attend 🐴
+
+OBJET « Confirm signup » (confirmation d'inscription) — version 14 langues :
+{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}{{ if eq $l "en" }}HYPE — welcome to the saddle 🐴{{ else if eq $l "es" }}HYPE — ¡a la silla! 🐴{{ else if eq $l "it" }}HYPE — in sella! 🐴{{ else if eq $l "de" }}HYPE — willkommen im Sattel 🐴{{ else if eq $l "ja" }}HYPE — ようこそ鞍の上へ 🐴{{ else if eq $l "ar" }}HYPE — أهلًا بكِ على السرج 🐴{{ else if eq $l "zh" }}HYPE — 欢迎上马 🐴{{ else if eq $l "nl" }}HYPE — welkom in het zadel 🐴{{ else if eq $l "pt" }}HYPE — boas-vindas à sela 🐴{{ else if eq $l "sv" }}HYPE — välkommen i sadeln 🐴{{ else if eq $l "ru" }}HYPE — добро пожаловать в седло 🐴{{ else if eq $l "pl" }}HYPE — witaj w siodle 🐴{{ else if eq $l "ko" }}HYPE — 안장 위에 오신 걸 환영해요 🐴{{ else }}HYPE — bienvenue en selle 🐴{{ end }}
+
+OBJET « Confirm signup » — version de secours :
+HYPE — bienvenue en selle 🐴
