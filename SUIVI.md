@@ -14533,3 +14533,18 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Couleurs de la bande claire : fond ivoire, textes et boutons noir bleuté (#101A1D) à contour champagne — plus aucun marron dans la page.
 - Photo du Chemin des Poneys : le portrait du cheval gris en double (provisoire) à la place du poney bleu ; images/galops-v2-chemin-provisoire.jpg n'est plus utilisée.
 - Tests : 360 à 1920, fr / ar / ja, aucun débordement ; boutons Chemin → Baby, programme et conclusion → Galop 3 ; cavalière ordinaire : ancienne page inchangée. node --check 17 blocs OK.
+
+## 25/10/2026 — marqueur 20261025-1110, PUBLIÉ : Ma Sellerie — photos des cartes, corrections téléphone, « Partager un code »
+- Photos (PROVISOIRES, découpées dans la capture ordinateur de la version validée envoyée par Blandine, agrandies ×2) : images/sellerie-adr-demivolte.jpg, sellerie-adr-helite.jpg, sellerie-adr-delgrange.jpg, sellerie-adr-pincebourde.jpg, sellerie-adr-salon.jpg, sellerie-adr-goldenhorse.jpg, sellerie-code-salon.jpg. ⚠️ Les images ont un cache d'un an : les vraies photos HD devront arriver sous de NOUVEAUX noms (champ `img` de SELL_CODES / SELL_ADRESSES).
+- Corrections demandées : téléphone = titre et phrase AU-DESSUS du cheval (plus de texte sur l'image), puis les 4 univers ; ordinateur = texte à gauche (50 %), image à droite ; cartes d'adresses réduites (« gros et vides ») avec photo à droite ; cartes de codes un peu réduites ; flèches ↗ remplacées par une flèche dessinée (l'iPhone les affichait en émoji bleu) ; chiffres « −10 % » en chiffres normaux.
+- « Partager un code » (règles de Blandine) :
+  - Bloc « Un bon plan à partager ? » + bouton → formulaire : marque, code, avantage, lien du site, date de fin facultative.
+  - Ouvert à TOUT compte connecté ; le code apparaît TOUT DE SUITE juste après Demi Volte (épinglé), du plus récent au plus ancien, avec « Code non vérifié », « Partagé par {pseudo} · date », « jusqu'au … » si date de fin.
+  - Vérifications : champs remplis, lien https valide (https:// ajouté si absent), code 3–30 lettres/chiffres/tirets (mis en majuscules), pas de doublon (ni FEINN10 / AMBGJ48W), date de fin pas passée, 6 codes max par jour et par personne (heure de Paris).
+  - « Ce code ne marche pas » (1 fois par personne, pas sur son propre code) ; au 3e signalement le code est caché automatiquement.
+  - Code expiré (date de fin passée) caché automatiquement ; sans date, il reste.
+  - Modératrice (feinn@live.fr / malicia2008@hotmail.fr) : « Marquer vérifié », « Retirer », « Remettre » (code caché par signalements ; remet le compteur à 0). L'auteur peut retirer son propre code. Les codes cachés restent visibles (grisés, « Caché ») pour la modératrice et l'auteur.
+  - Demi Volte : aucune mention « Partagé par » (décision de Blandine) — seulement sur les codes des cavaliers.
+- BASE (Supabase, appliqué le 25/10 par Claude avec la « carte blanche » de Blandine ; texte complet dans sql/sellerie-codes-partages.sql) : nouvelles tables `sellerie_codes` et `sellerie_codes_signalements` + 3 fonctions de contrôle (avant ajout, avant/après signalement) + règles d'accès (RLS). Aucune table existante modifiée. Essai en base (annulé ensuite) : ajout OK, mauvais code refusé, auto-signalement refusé, caché au 3e signalement, mise à jour refusée à une non-modératrice.
+- Tests (Playwright, base simulée avec faux codes) : ordre des cartes, « non vérifié » / « vérifié », formulaire (vide → message ; envoi → code en majuscules, https ajouté, fermeture + « Ton code est en ligne, merci ! »), boutons modératrice ; fr / ar (droite-gauche) ; 0 erreur ; 17 blocs OK.
+- À tester sur iPhone : partager un vrai code puis le retirer ; « Ce code ne marche pas » depuis un autre compte.
