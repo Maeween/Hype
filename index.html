@@ -58941,8 +58941,8 @@ var HYPE_SELLERIE_CSS = `
 .hsl-codes{display:grid;grid-template-columns:repeat(var(--nd,2),minmax(0,1fr));gap:16px}
 .hsl-code{position:relative;min-height:0;padding:22px 24px 18px;border-radius:22px;overflow:hidden;border:1px solid rgba(127,163,173,.34);background:#0d1719;color:#f3eee4;cursor:pointer;display:flex;flex-direction:column;text-align:start;box-shadow:0 16px 40px rgba(0,0,0,.3);transition:transform .2s ease,border-color .2s ease;outline:none}
 .hsl-code:hover,.hsl-code:focus-visible{transform:translateY(-3px);border-color:rgba(201,166,107,.6)}
-.hsl-code-bg{position:absolute;inset:0;background-size:cover;background-position:70% center;background-repeat:no-repeat;opacity:.5}
-.hsl-code:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,11,.94) 0%,rgba(6,10,11,.72) 50%,rgba(6,10,11,.25) 100%)}
+.hsl-code-bg{position:absolute;inset:0;background-size:cover;background-position:70% center;background-repeat:no-repeat;opacity:.8}
+.hsl-code:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,11,.94) 0%,rgba(6,10,11,.7) 42%,rgba(6,10,11,.1) 100%)}
 .hsl-code-noimg{background:radial-gradient(circle at 85% 20%,rgba(37,83,91,.38),transparent 55%),linear-gradient(160deg,#0f1c1f,#0a1213)}
 .hsl-code>*:not(.hsl-code-bg){position:relative;z-index:2}
 .hsl-code h3{margin:0 0 12px;font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;font-weight:500;line-height:1.08}
@@ -58958,8 +58958,8 @@ var HYPE_SELLERIE_CSS = `
 .hsl-adrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .hsl-adr{position:relative;display:flex;flex-direction:column;min-height:150px;padding:22px 22px 20px;border-radius:22px;overflow:hidden;border:1px solid rgba(127,163,173,.3);background:#0c1517;color:#f3eee4;text-decoration:none;transition:transform .2s ease,border-color .2s ease}
 .hsl-adr:hover,.hsl-adr:focus-visible{transform:translateY(-3px);border-color:rgba(201,166,107,.55);outline:none}
-.hsl-adr-bg{position:absolute;inset:0 0 0 38%;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.62}
-.hsl-adr-bg:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c1517 0%,rgba(12,21,23,.55) 35%,rgba(12,21,23,.1) 100%)}
+.hsl-adr-bg{position:absolute;inset:0 0 0 38%;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.95}
+.hsl-adr-bg:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c1517 0%,rgba(12,21,23,.35) 30%,rgba(12,21,23,0) 60%)}
 .hsl-adr-glyph{position:absolute;right:-6px;bottom:-26px;font-family:Georgia,serif;font-size:150px;line-height:1;color:rgba(201,166,107,.07);pointer-events:none}
 .hsl-adr-noimg{background:radial-gradient(circle at 92% 18%,rgba(37,83,91,.32),transparent 52%),#0c1517}
 .hsl-adr>*:not(.hsl-adr-bg):not(.hsl-adr-glyph){position:relative;z-index:2}
@@ -59044,16 +59044,16 @@ var SELL_TX = {
    (règle de Blandine, 25/10) : un nouveau code se place juste après Demi Volte. date = jour de mise en ligne (AAAA-MM-JJ). */
 var SELL_CODES = [
   { nom: "Demi Volte", code: "FEINN10", avantage: "−10 %", sous: "surSite", url: "https://www.demivolte.fr/", img: "images/sellerieEncart.jpg", epingle: true, coeur: true },
-  { nom: "Salon du Cheval de Paris", code: "AMBGJ48W", avantage: "−10 %", sous: "surBillet", url: "https://www.salon-cheval.fr/billetterie", img: "", par: "Écurie Feinn", date: "2026-10-25" }
+  { nom: "Salon du Cheval de Paris", code: "AMBGJ48W", avantage: "−10 %", sous: "surBillet", url: "https://www.salon-cheval.fr/billetterie", img: "images/sellerie-code-salon.jpg", par: "Écurie Feinn", date: "2026-10-25" }
 ];
 /* Adresses à découvrir — img vide = carte sobre en attendant la photo (nommer les futures images sellerie-adr-*.jpg). */
 var SELL_ADRESSES = [
-  { nom: "Sellerie Demi Volte", cat: "c1", desc: "d1", url: "https://www.demivolte.fr/", img: "images/sellerieEncart.jpg", glyph: "♘" },
-  { nom: "Helite", cat: "c2", desc: "d2", url: "https://www.helite.com/nos-produits/airbag-equitation/", img: "", glyph: "✦" },
-  { nom: "Bruno Delgrange", cat: "c3", desc: "d3", url: "https://www.brunodelgrange.com/fr/14-selles-d-obstacle", img: "", glyph: "◇" },
-  { nom: "Manon Pincebourde", cat: "c4", desc: "d4", url: "https://manonpincebourde-photographie.com/", img: "", glyph: "◎" },
-  { nom: "Salon du Cheval de Paris", cat: "c5", desc: "d5", url: "https://www.salon-cheval.fr/", img: "", glyph: "✧" },
-  { nom: "Golden Horse", cat: "c6", desc: "d6", url: "https://goldenhorse.fr/", img: "", glyph: "◈" }
+  { nom: "Sellerie Demi Volte", cat: "c1", desc: "d1", url: "https://www.demivolte.fr/", img: "images/sellerie-adr-demivolte.jpg", glyph: "♘" },
+  { nom: "Helite", cat: "c2", desc: "d2", url: "https://www.helite.com/nos-produits/airbag-equitation/", img: "images/sellerie-adr-helite.jpg", glyph: "✦" },
+  { nom: "Bruno Delgrange", cat: "c3", desc: "d3", url: "https://www.brunodelgrange.com/fr/14-selles-d-obstacle", img: "images/sellerie-adr-delgrange.jpg", glyph: "◇" },
+  { nom: "Manon Pincebourde", cat: "c4", desc: "d4", url: "https://manonpincebourde-photographie.com/", img: "images/sellerie-adr-pincebourde.jpg", glyph: "◎" },
+  { nom: "Salon du Cheval de Paris", cat: "c5", desc: "d5", url: "https://www.salon-cheval.fr/", img: "images/sellerie-adr-salon.jpg", glyph: "✧" },
+  { nom: "Golden Horse", cat: "c6", desc: "d6", url: "https://goldenhorse.fr/", img: "images/sellerie-adr-goldenhorse.jpg", glyph: "◈" }
 ];
 
 function sellCopier(txt) {
