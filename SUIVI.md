@@ -14419,3 +14419,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Titre centré sur téléphone et tablette (Blandine : « centre le titre ») ; sur ordinateur il reste à gauche, à côté du choix du niveau.
 - Fusionné avec la publication Hey Baby de 8 h 05 (autre conversation), sans rien retirer.
 - Tests : 390, 768, 1024, 1440 ; arabe 390 et 1440 ; aucune erreur. node --check 17 blocs OK. Marqueur 20261025-0815.
+
+## 25/10/2026 — 8 h 25, NON PUBLIÉ (partira avec la prochaine mise en ligne) : page « Qu'aimerais-tu faire avec Hype ? » sans bouton Retour
+- Demande de Blandine : « Retire le bouton retour de cette page ». Retiré en haut de page et dans le petit bandeau qui apparaît en défilant ; « Passer → » reste seul, calé à droite (à gauche en arabe). Téléphone, tablette, ordinateur vérifiés, aucune erreur.
+- Rappel vérifié : la page ne s'affiche qu'UNE fois, juste après « Créer mon compte » (les comptes sont confirmés automatiquement, la session est ouverte tout de suite). Une connexion à un compte existant va directement à l'Accueil.
+- Réponses Hey Baby en base (heybaby_analyses) : Blandine préfère les garder pour l'instant — pas de nettoyage automatique.

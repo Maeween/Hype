@@ -32091,9 +32091,9 @@ function EcranPersonnalisation(props){
   return h("div", { ref: rootRef, className: "onb", dir: rtl ? "rtl" : "ltr", lang: langue },
     h("style", null, ONB_CSS),
     h("div", { className: "onb-mini" + (mini ? " vu" : ""), "aria-hidden": mini ? "false" : "true" },
-      lienRetour("mr"), h("span", { className: "onb-mini-t" }, TX.envies), lienPasser("mp")),
+      h("span", { className: "onb-mini-t", style: { paddingInlineStart: 12 } }, TX.envies), lienPasser("mp")),   /* 25/10 (Blandine : « retire le bouton retour de cette page ») */
     h("div", { className: "onb-photo" }, h("img", { src: IMG_ONBOARDING_CHEVAL, alt: "", decoding: "async" })),
-    h("nav", { className: "onb-nav" }, lienRetour("r"), lienPasser("p")),
+    h("nav", { className: "onb-nav", style: { justifyContent: "flex-end" } }, lienPasser("p")),   /* 25/10 : plus de « Retour » (la page ne s affiche qu une fois, juste apres la creation du compte) */
     h("main", { className: "onb-main" },
       h("div", { className: "onb-tete" },
         h("div", null,
