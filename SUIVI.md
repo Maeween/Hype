@@ -14475,3 +14475,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Coût : chaque photo = un appel au modèle vision (comptée comme 1 question dans le quota du jour, la 2e étape n'est pas recomptée).
 - Part aussi avec cette mise en ligne : la page Galops V2 étape 1 (modératrices seulement), préparée par l'autre conversation et notée « partira avec la prochaine mise en ligne ».
 - Tests : photo normale (réponse mot à mot), photo coupée (réponse retrouvée en base) ; aucune erreur.
+
+## 25/10/2026 — marqueur 20261025-0955, NON PUBLIÉ : page Galops V2 — courbe refaite comme la maquette (modératrices seulement)
+- Blandine, après avoir vu l'étape 1 en ligne (partie avec la mise en ligne Hey Baby de 09 h 40) : « la courbe ça va pas du tout comparé à ce qu'on t'a envoyé ».
+- Refait (index.html, bloc `GalopsV2Haut` seul) : bord bas du hero en vague prononcée (creux sous la tête du cheval, remontée à droite) avec filet champagne ; juste dessous, les 7 pastilles posées sur une ligne douce ondulée, presque horizontale, « GALOP n » + sous-titre sous chaque pastille (ordinateur et tablette). Téléphone : arc compact des 7 pastilles sous le hero, comme la maquette mobile ; seul le Galop actuel est nommé dessous ; zone de toucher 48 px (pastilles 42 px, 52 px pour le Galop actuel). L'ancienne courbe en escalier et la trajectoire verticale du téléphone sont abandonnées. Rien d'autre n'a changé.
+- Tests : 360 à 1920, fr / ar / ja, aucun débordement, 0 erreur ; clics Galops 2 et 4, Continuer OK ; cavalière ordinaire : ancienne page inchangée. node --check 17 blocs OK.
