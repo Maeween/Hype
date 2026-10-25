@@ -14400,3 +14400,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Pas touché : niveau, sélection multiple, sauvegarde, Retour / Passer / Entrer, inscription, données.
 - Laissé tel quel volontairement : la description de la carte langues dit « Horse Lingo » (la maquette dit « Linguae ») — le brief demandait de garder les textes.
 - Tests : 390×844, 768×1024, 1024×1366, 1440×900 (rien de coupé, bouton visible à 1440×900), arabe 390 et 1440 ; choix + niveau sauvegardés et retrouvés à la réouverture ; Passer et Retour OK ; aucune erreur. node --check 17 blocs OK. Marqueur 20261025-0800.
+
+## 25/10/2026 — 7 h 45, BRANCHE perso-design (PAS PUBLIÉ, maquette à valider) : page « Qu'aimerais-tu faire avec Hype ? », suite
+- iPhone et tablette (Blandine : « descends en dessous de la photo avec les textes, que ça n'écrase pas le cheval ») : la tête entière de la jument est visible (des oreilles au bout du nez) et le titre commence SOUS la photo. Tablette : photo ajustée à la hauteur, bords fondus. Ordinateur inchangé.
+- Sous-titre « Choisis ce qui t'intéresse… » retiré (Blandine : « est-elle vraiment indispensable ») ; les traductions restent dans le code si on veut le remettre.
+- Bas de page Hype commun (FinPageHype : paysage fondu + HYPE) ajouté sous le bouton, avec beaucoup d'air (44 px téléphone, 64 px tablette, 72 px ordinateur).
+- Tests : 390, 768, 1024, 1440 ; arabe 390 ; aucune erreur. node --check 17 blocs OK.
