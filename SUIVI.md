@@ -14389,3 +14389,14 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Pas touché : la photo ouverte en grand, les fichiers, les fiches cheval, la photo du bandeau, les cartes « Événements en cours » (challenges, déjà leur propre dessin).
 - ⚠️ C'est un filtre sur les photos de chevaux : fait parce qu'elle le demande explicitement (règle « pas de filtre » posée pour la photo de la page d'inscription).
 - Tests : 390 et 1440, avant / après ; aucune erreur. node --check 17 blocs OK. Marqueur 20261023-1015.
+
+## 25/10/2026 — 8 h, PUBLIÉ (Blandine : « Gère tout de façon autonome jusqu'au bout sans mon accord, dis-moi quand c'est fini ») : finalisation de la page « Qu'aimerais-tu faire avec Hype ? »
+- index.html, EcranPersonnalisation (styles ONB_CSS + sous-titre de ONB_TXT) ; rien d'autre.
+- Photo (la jument noire à l'étoile, même image qu'avant) : ordinateur 30 % → 42 % de la largeur, bord droit fondu progressivement dans le fond (plus de découpe), léger fondu haut et bas ; iPhone : bandeau 132 → 300 px, oreilles visibles, le titre remonte un peu sur le fondu ; tablette portrait : bandeau ~34 % de la hauteur.
+- Sous-titre (demandé par le brief) : « Choisis ce qui t'intéresse. Tu pourras changer d'avis. », traduit dans les 14 langues (tutoiement).
+- Cartes : mêmes 10 propositions, mêmes titres, descriptions et pictogrammes ; deux colonnes un peu moins larges et plus aérées sur ordinateur (texte 13,5 / 12) ; sélection pétrole + coche champagne inchangées.
+- Bouton « Entrer dans Hype → » : fond sombre, contour champagne discret (avant : contour bleu) ; contour de focus champagne (avant : cyan) ; sous-titre en ivoire grisé (avant : bleuté).
+- Barre de progression en haut : il n'y en avait déjà plus sur cette page (seulement Retour / Passer) — rien à retirer.
+- Pas touché : niveau, sélection multiple, sauvegarde, Retour / Passer / Entrer, inscription, données.
+- Laissé tel quel volontairement : la description de la carte langues dit « Horse Lingo » (la maquette dit « Linguae ») — le brief demandait de garder les textes.
+- Tests : 390×844, 768×1024, 1024×1366, 1440×900 (rien de coupé, bouton visible à 1440×900), arabe 390 et 1440 ; choix + niveau sauvegardés et retrouvés à la réouverture ; Passer et Retour OK ; aucune erreur. node --check 17 blocs OK. Marqueur 20261025-0800.
