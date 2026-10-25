@@ -14559,3 +14559,16 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 25/10/2026 (soir) — marqueur 20261025-2220, NON PUBLIÉ (partira avec les prochaines photos) : page Galops — vraie photo du hero
 - Blandine a fourni la photo du cheval gris en vraie définition (1920 × 819, sans texte). Enregistrée sous un NOUVEAU nom : images/galops-v2-hero-ordi-hd1.jpg (208 Ko) ; `GV2_IMG_ORDI` pointe dessus → hero ordinateur/tablette + conclusion. Rendu vérifié à 820, 1440, 1920, fr et ar (miroir) : net, aucun débordement.
 - Reste provisoire : hero téléphone, 6 cartes, Chemin des Poneys (la planche ChatGPT du soir — livres, appareil photo, cavalière de dos, main qui écrit, fillette et poney, etc. — est arrivée en capture : il faut chaque photo séparément en pleine taille).
+
+## 25/10/2026 (soir) — marqueur 20261025-2225, PUBLIÉ (avec la photo du hero de 22 h 20) : page Galops — toutes les vraies photos
+- Blandine a fourni 8 photos séparées (1122 × 1402, et 1030 × 1526 pour le portrait), enregistrées sous de NOUVEAUX noms, allégées (900 px de large pour les cartes) :
+  - hero téléphone → images/galops-v2-hero-tel-hd1.jpg (portrait du cheval gris) ; cadrage téléphone ajusté (rapport 1030/1360, tête entière) ;
+  - Cours théoriques → galops-v2-carte-cours-hd1.jpg (livres et petit cheval de bronze) ;
+  - Exercices pratiques → galops-v2-carte-exercices-hd1.jpg (cavalière front contre le cheval gris) ;
+  - Vidéothèque → galops-v2-carte-videos-hd1.jpg (caméra qui filme la reprise) ;
+  - Reprises de dressage → galops-v2-carte-reprises-hd1.jpg (cavalière de dressage) ;
+  - Quiz → galops-v2-carte-quiz-hd1.jpg (carnet ouvert, stylo, dessin de tête de cheval) ;
+  - Examens → galops-v2-carte-examens-hd1.jpg (main qui remplit une grille de QCM) ;
+  - Chemin des Poneys → galops-v2-chemin-hd1.jpg (fillette et son poney).
+- Plus aucune photo provisoire affichée dans la page Galops (les anciens fichiers *-provisoire.jpg restent dans le dépôt, inutilisés). Toutes les images vérifiées chargées à 390 et 1440, aucun débordement, 0 erreur. node --check 17 blocs OK.
+- Répartition Quiz / Examens choisie par moi (grille de QCM = Examens, carnet = Quiz) : à inverser en une ligne si Blandine préfère.
