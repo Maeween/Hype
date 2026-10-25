@@ -14400,9 +14400,22 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Pas touché : niveau, sélection multiple, sauvegarde, Retour / Passer / Entrer, inscription, données.
 - Laissé tel quel volontairement : la description de la carte langues dit « Horse Lingo » (la maquette dit « Linguae ») — le brief demandait de garder les textes.
 - Tests : 390×844, 768×1024, 1024×1366, 1440×900 (rien de coupé, bouton visible à 1440×900), arabe 390 et 1440 ; choix + niveau sauvegardés et retrouvés à la réouverture ; Passer et Retour OK ; aucune erreur. node --check 17 blocs OK. Marqueur 20261025-0800.
+## 25/10/2026 — marqueur 20261025-0805, PUBLIÉ (Blandine : « 5 et 6 », « Gère tout de façon autonome ») : Hey Baby — analyses photo gardées pour toutes + pastille sur l'onglet
+- 5 · Analyses gardées pour toutes les cavalières (voie Netlify) :
+  - Vidéos : déjà gardées depuis le 21/10 (une vidéo part comme une question écrite : réponse rangée en base, relue au retour, notification).
+  - Photos : l'observation ne s'arrête plus si le téléphone part. Une ligne heybaby_analyses est notée dès l'envoi ; si l'appli est quittée pendant l'observation, le relais lance lui-même la 2e étape (non recomptée), range la réponse dans cette ligne et envoie « Hey Baby t'a répondu ». Appli restée ouverte : rien ne change (réponse mot à mot). Coupure : la réponse est relue en base dès le retour ; si elle n'est pas encore prête, message « Hey Baby termine encore son analyse… » (14 langues) et reprise à la prochaine ouverture.
+  - ⚠️ Les photos restent EN MAINTENANCE pour les cavalières (HEYBABY_PHOTO_MAINTENANCE = true, décision du 26/09) : non modifié. Ce travail prépare leur retour ; rallumer reste la décision de Blandine (le relais Netlify coupait vers 30 s, ce mécanisme pourrait justement contourner la coupure — à essayer d'abord).
+  - Corrigé au passage dans assistant.js : un « else » mal placé repassait en « erreur » (avec le texte) une réponse complète quand le téléphone était resté. Sans effet visible, mais l'état en base est maintenant juste.
+  - Aucune modification de la base (table heybaby_analyses existante, mêmes droits) ; compte de Blandine (voie Supabase) inchangé.
+- 6 · Pastille sur l'onglet Hey Baby (iPhone, tablette, ordinateur, arabe en miroir) : champagne qui pulse doucement = une réponse t'attend ; petit point ivoire qui respire = Hey Baby y travaille encore ou la question attend le réseau. Disparaît en ouvrant Hey Baby. Texte pour lecteur d'écran en 14 langues.
+- Tests : relais simulé (photo, téléphone resté / parti / ancienne appli ; question écrite normale / coupée) ; appli : photo coupée (réponse retrouvée en base / encore en route), photo normale, question écrite coupée puis relancée, pastille (prête, en cours, erreur, question en attente, rien) à 390 et 1440. Aucune erreur.
+- À vérifier sur iPhone : quitter l'appli juste après une question → pastille sur Hey Baby au retour + notification.
 
-## 25/10/2026 — 7 h 45, BRANCHE perso-design (PAS PUBLIÉ, maquette à valider) : page « Qu'aimerais-tu faire avec Hype ? », suite
+
+## 25/10/2026 — 8 h 15, PUBLIÉ (Blandine : « Ok et centre le titre », « tu peux mettre en ligne ») : page « Qu'aimerais-tu faire avec Hype ? », suite
 - iPhone et tablette (Blandine : « descends en dessous de la photo avec les textes, que ça n'écrase pas le cheval ») : la tête entière de la jument est visible (des oreilles au bout du nez) et le titre commence SOUS la photo. Tablette : photo ajustée à la hauteur, bords fondus. Ordinateur inchangé.
 - Sous-titre « Choisis ce qui t'intéresse… » retiré (Blandine : « est-elle vraiment indispensable ») ; les traductions restent dans le code si on veut le remettre.
-- Bas de page Hype commun (FinPageHype : paysage fondu + HYPE) ajouté sous le bouton, avec beaucoup d'air (44 px téléphone, 64 px tablette, 72 px ordinateur).
-- Tests : 390, 768, 1024, 1440 ; arabe 390 ; aucune erreur. node --check 17 blocs OK.
+- Bas de page Hype essayé puis RETIRÉ (Blandine : « il ne va pas avec le reste, on verra plus tard »).
+- Titre centré sur téléphone et tablette (Blandine : « centre le titre ») ; sur ordinateur il reste à gauche, à côté du choix du niveau.
+- Fusionné avec la publication Hey Baby de 8 h 05 (autre conversation), sans rien retirer.
+- Tests : 390, 768, 1024, 1440 ; arabe 390 et 1440 ; aucune erreur. node --check 17 blocs OK. Marqueur 20261025-0815.
