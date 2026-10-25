@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261025-1125"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261025-1130"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -58922,11 +58922,11 @@ var HYPE_SELLERIE_CSS = `
 .hsl-back{width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.55);background:rgba(9,14,14,.8);color:#f3eee4;font-size:24px;line-height:1;cursor:pointer}
 .hsl-ptitle{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:600;letter-spacing:.3em;text-transform:uppercase}
 .hsl-hero{position:relative;min-height:340px;margin:16px 0 50px;border:1px solid rgba(127,163,173,.32);border-radius:28px;overflow:hidden;background:#0a1214;box-shadow:0 28px 70px rgba(0,0,0,.45)}
-.hsl-hero-img{position:absolute;inset:0 0 0 46%;background:url('images/duoPartenaires.jpg') 62% 42%/cover no-repeat}
+.hsl-hero-img{position:absolute;inset:0 0 0 50%;background:url('images/duoPartenaires.jpg') 62% 42%/cover no-repeat}
 .hsl-hero-img:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0a1214 0%,rgba(10,18,20,.7) 16%,rgba(10,18,20,.05) 58%),linear-gradient(0deg,rgba(6,9,10,.35),transparent 40%)}
 .hsl-bell{position:absolute;z-index:3;top:22px;right:22px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.22);background:rgba(7,10,8,.55);display:grid;place-items:center}
 .hsl-bell svg{width:19px;height:19px;stroke:#f3eee4;fill:none;stroke-width:1.6}.hsl-bell i{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:#7fa3ad}
-.hsl-hero-copy{position:relative;z-index:2;width:58%;min-height:340px;padding:40px 28px 30px 42px;display:flex;flex-direction:column;justify-content:center}
+.hsl-hero-copy{position:relative;z-index:2;width:50%;min-height:340px;padding:40px 28px 30px 42px;display:flex;flex-direction:column;justify-content:center}
 .hsl-kicker{font-size:11px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:#c9a66b;margin-bottom:14px}
 .hsl h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(44px,4.4vw,60px);font-weight:500;line-height:.98}
 .hsl-intro{max-width:480px;margin:14px 0 24px;color:rgba(243,238,228,.78);font-size:15px;line-height:1.7}
@@ -58941,8 +58941,8 @@ var HYPE_SELLERIE_CSS = `
 .hsl-codes{display:grid;grid-template-columns:repeat(var(--nd,2),minmax(0,1fr));gap:16px}
 .hsl-code{position:relative;min-height:0;padding:22px 24px 18px;border-radius:22px;overflow:hidden;border:1px solid rgba(127,163,173,.34);background:#0d1719;color:#f3eee4;cursor:pointer;display:flex;flex-direction:column;text-align:start;box-shadow:0 16px 40px rgba(0,0,0,.3);transition:transform .2s ease,border-color .2s ease;outline:none}
 .hsl-code:hover,.hsl-code:focus-visible{transform:translateY(-3px);border-color:rgba(201,166,107,.6)}
-.hsl-code-bg{position:absolute;inset:0;background-size:cover;background-position:70% center;background-repeat:no-repeat;opacity:.5}
-.hsl-code:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,11,.94) 0%,rgba(6,10,11,.72) 50%,rgba(6,10,11,.25) 100%)}
+.hsl-code-bg{position:absolute;inset:0;background-size:cover;background-position:70% center;background-repeat:no-repeat;opacity:.8}
+.hsl-code:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,11,.94) 0%,rgba(6,10,11,.7) 42%,rgba(6,10,11,.1) 100%)}
 .hsl-code-noimg{background:radial-gradient(circle at 85% 20%,rgba(37,83,91,.38),transparent 55%),linear-gradient(160deg,#0f1c1f,#0a1213)}
 .hsl-code>*:not(.hsl-code-bg){position:relative;z-index:2}
 .hsl-code h3{margin:0 0 12px;font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;font-weight:500;line-height:1.08}
@@ -58954,48 +58954,79 @@ var HYPE_SELLERIE_CSS = `
 .hsl-foot{margin-top:auto;padding-top:18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hsl-by{color:rgba(243,238,228,.42);font-size:11px}
 .hsl-heart{width:20px;height:20px;stroke:rgba(243,238,228,.55);fill:none;stroke-width:1.6}
-.hsl-go{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(243,238,228,.3);background:rgba(7,10,8,.5);color:#f3eee4;font-size:16px;text-decoration:none}
+.hsl-go{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(243,238,228,.3);background:rgba(7,10,8,.5);color:#f3eee4;text-decoration:none}
+.hsl-arr{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hsl-link{display:inline-flex;align-items:center;gap:6px}.hsl-link .hsl-arr{width:12px;height:12px}
+[dir=rtl] .hsl-arr{transform:scaleX(-1)}
+.hsl-benefit{font-variant-numeric:lining-nums}.hsl-hero-spacer{display:none}
 .hsl-adrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .hsl-adr{position:relative;display:flex;flex-direction:column;min-height:150px;padding:22px 22px 20px;border-radius:22px;overflow:hidden;border:1px solid rgba(127,163,173,.3);background:#0c1517;color:#f3eee4;text-decoration:none;transition:transform .2s ease,border-color .2s ease}
 .hsl-adr:hover,.hsl-adr:focus-visible{transform:translateY(-3px);border-color:rgba(201,166,107,.55);outline:none}
-.hsl-adr-bg{position:absolute;inset:0 0 0 38%;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.62}
-.hsl-adr-bg:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c1517 0%,rgba(12,21,23,.55) 35%,rgba(12,21,23,.1) 100%)}
+.hsl-adr-bg{position:absolute;inset:0 0 0 48%;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.95}
+.hsl-adr-bg:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c1517 0%,rgba(12,21,23,.35) 30%,rgba(12,21,23,0) 60%)}
 .hsl-adr-glyph{position:absolute;right:-6px;bottom:-26px;font-family:Georgia,serif;font-size:150px;line-height:1;color:rgba(201,166,107,.07);pointer-events:none}
 .hsl-adr-noimg{background:radial-gradient(circle at 92% 18%,rgba(37,83,91,.32),transparent 52%),#0c1517}
 .hsl-adr>*:not(.hsl-adr-bg):not(.hsl-adr-glyph){position:relative;z-index:2}
 .hsl-adr h3{margin:0 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;font-weight:500;line-height:1.05}
 .hsl-cat{color:#c9a66b;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;margin-bottom:10px}
-.hsl-desc{max-width:62%;margin:0 0 12px;color:rgba(243,238,228,.7);font-size:12.5px;line-height:1.6}
+.hsl-desc{max-width:50%;margin:0 0 12px;color:rgba(243,238,228,.7);font-size:12.5px;line-height:1.6}
 .hsl-link{color:#c9a66b;font-size:12.5px;font-weight:600;letter-spacing:.04em}
-.hsl-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;padding:11px 18px;border-radius:999px;border:1px solid rgba(127,163,173,.55);background:rgba(10,18,20,.96);color:#f3eee4;font-size:12.5px;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.hsl-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2100;padding:11px 18px;border-radius:999px;border:1px solid rgba(127,163,173,.55);background:rgba(10,18,20,.96);color:#f3eee4;font-size:12.5px;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.hsl-nv{position:relative;z-index:2;display:inline-block;align-self:flex-start;margin:0 0 8px;padding:3px 9px;border-radius:999px;border:1px solid rgba(201,166,107,.5);color:#dccaa3;font-size:9.5px;font-weight:600;letter-spacing:.05em;background:rgba(7,10,8,.55)}
+.hsl-nv.ok{border-color:rgba(127,163,173,.6);color:#cfe0e2}.hsl-nv.cache{border-color:rgba(205,130,118,.6);color:#e6bab1}
+.hsl-code-cache{opacity:.6}
+.hsl-benefit.long{font-size:22px;line-height:1.15}@media(max-width:760px){.hsl-benefit.long{font-size:17px}}
+.hsl-acts{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px}
+.hsl-act{background:none;border:0;padding:4px 0;color:rgba(243,238,228,.6);font:500 11px 'Montserrat',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.hsl-act.mod{color:#c9a66b}.hsl-act-ok{padding:4px 0;color:rgba(207,224,226,.75);font-size:11px}
+.hsl-share{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 34px;padding:22px 24px;border:1px solid rgba(127,163,173,.3);border-radius:20px;background:linear-gradient(120deg,#0f1c1f,#0b1315)}
+.hsl-share-txt{display:flex;align-items:center;gap:14px}
+.hsl-share-ico svg{display:block;width:20px;height:20px;stroke:#c9a66b;fill:none;stroke-width:1.6;stroke-linejoin:round}
+.hsl-share h3{margin:0 0 3px;font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;font-weight:500}
+.hsl-share p{margin:0;color:rgba(243,238,228,.62);font-size:12px;line-height:1.5}
+.hsl-share-btn{flex:none;padding:12px 24px;border-radius:999px;border:1px solid rgba(201,166,107,.7);background:rgba(7,10,8,.4);color:#efe3c8;font:600 13px 'Montserrat',sans-serif;cursor:pointer}
+.hsl-share-btn:hover,.hsl-share-btn:focus-visible{background:rgba(201,166,107,.12);outline:none}
+.hsl-modal{position:fixed;inset:0;z-index:2000;background:rgba(3,5,5,.74);display:flex;align-items:center;justify-content:center;padding:16px}
+.hsl-form{width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:22px 20px 18px;border-radius:22px;border:1px solid rgba(127,163,173,.4);background:#0c1517;color:#f3eee4;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.hsl-form h3{margin:0 0 14px;font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:500}
+.hsl-field{display:block;margin-bottom:11px}.hsl-field span{display:block;margin-bottom:5px;color:#c9a66b;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.hsl-field input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(243,238,228,.18);background:#070a08;color:#f3eee4;font:16px 'Montserrat',sans-serif;color-scheme:dark}
+.hsl-field input:focus{outline:none;border-color:rgba(201,166,107,.7)}
+.hsl-form-info{margin:4px 0 10px;color:rgba(243,238,228,.55);font-size:11.5px;line-height:1.5}
+.hsl-form-err{margin:0 0 10px;color:#e6bab1;font-size:12.5px;line-height:1.45}
+.hsl-form-btns{display:flex;gap:10px;justify-content:flex-end}
+.hsl-btn1,.hsl-btn2{padding:11px 18px;border-radius:999px;font:600 13px 'Montserrat',sans-serif;cursor:pointer}
+.hsl-btn1{border:1px solid rgba(201,166,107,.8);background:rgba(201,166,107,.14);color:#f3eee4}.hsl-btn1[disabled]{opacity:.5}
+.hsl-btn2{border:1px solid rgba(243,238,228,.2);background:none;color:rgba(243,238,228,.75)}
+@media(max-width:760px){.hsl-share{flex-direction:column;align-items:stretch;padding:18px 16px;gap:14px}.hsl-share h3{font-size:21px}.hsl-share-btn{width:100%}.hsl-nv{font-size:8.5px;padding:2px 7px}.hsl-act,.hsl-act-ok{font-size:10px}}
 @media(min-width:761px) and (max-width:1199px){.hsl-codes{grid-template-columns:repeat(var(--nt,2),minmax(0,1fr))}}
 @media(min-width:761px) and (max-width:1100px){.hsl-shell{width:min(920px,100%)}.hsl-hero-copy{width:60%;padding-left:40px}.hsl-hero-img{inset:0 0 0 40%}}
 @media(max-width:760px){.hsl{padding:0 14px 116px}.hsl-head{min-height:66px}.hsl-ptitle{font-size:15px;letter-spacing:.16em}
-.hsl-hero{min-height:340px;margin:10px 0 40px;border-radius:22px}
-.hsl-hero-img{inset:0;background-position:40% 50%;background-size:cover}
-.hsl-hero-img:after{background:linear-gradient(180deg,rgba(10,18,20,.92) 0%,rgba(10,18,20,.6) 34%,rgba(10,18,20,.1) 60%,rgba(8,12,13,.7) 86%,#0a1214 100%)}
-.hsl-hero-copy{width:100%;min-height:340px;padding:22px 18px 14px;justify-content:flex-start}
-.hsl-bell{top:18px;right:18px;width:42px;height:42px}
-.hsl-kicker{font-size:9.5px;margin-bottom:8px;padding-right:52px}.hsl h1{font-size:40px}.hsl-intro{margin:8px 0 0;font-size:12.5px;line-height:1.55;padding-right:30px}
+.hsl-hero{min-height:0;margin:8px 0 34px;border-radius:20px}
+.hsl-hero-img{inset:auto 0 62px 0;height:170px;background-position:50% 45%;background-size:cover}
+.hsl-hero-img:after{background:linear-gradient(180deg,#0a1214 0%,rgba(10,18,20,0) 22%,rgba(10,18,20,0) 75%,#0a1214 100%)}
+.hsl-hero-copy{width:100%;min-height:0;padding:20px 16px 12px;justify-content:flex-start}.hsl-hero-spacer{display:block;height:170px}
+.hsl-bell{top:14px;right:14px;width:38px;height:38px}
+.hsl-kicker{font-size:9px;margin-bottom:6px;padding-right:50px}.hsl h1{font-size:36px}.hsl-intro{margin:8px 0 0;font-size:12.5px;line-height:1.55;padding-right:30px}
 .hsl-quals{margin-top:auto}.hsl-quals{padding-top:12px}.hsl-qual{font-size:8.5px;letter-spacing:.05em;padding:2px 3px}.hsl-qual b{width:28px;height:28px;margin-bottom:6px;font-size:13px}
 .hsl-ann{margin:-16px 0 32px}.hsl-sec{margin-bottom:40px}.hsl h2{font-size:24px;gap:10px}.hsl-sechead{margin-bottom:14px}
-.hsl-codes{gap:10px;grid-template-columns:repeat(var(--nm,2),minmax(0,1fr))}.hsl-code{min-height:0;padding:15px 14px 13px;border-radius:18px}.hsl-code h3{font-size:19px;margin-bottom:10px}
-.hsl-pill{padding:7px 9px;font-size:11px;letter-spacing:.1em;gap:6px}.hsl-benefit{font-size:27px;margin-top:10px}.hsl-sub{font-size:10.5px}.hsl-foot{padding-top:12px}.hsl-by{font-size:9.5px}.hsl-go{width:30px;height:30px;font-size:14px}
-.hsl-adrs{grid-template-columns:1fr;gap:10px}.hsl-adr{min-height:0;padding:16px 18px 15px;border-radius:18px}.hsl-adr h3{font-size:22px;margin-bottom:5px}.hsl-cat{font-size:9.5px;margin-bottom:8px}.hsl-desc{font-size:12.5px;margin-bottom:10px;max-width:72%}.hsl-link{font-size:12px}.hsl-adr-glyph{font-size:96px;bottom:-16px}.hsl-adr-bg{inset:0 0 0 30%}}
+.hsl-codes{gap:10px;grid-template-columns:repeat(var(--nm,2),minmax(0,1fr))}.hsl-code{min-height:0;padding:13px 13px 12px;border-radius:17px}.hsl-code h3{font-size:17.5px;margin-bottom:9px;line-height:1.1}
+.hsl-pill{padding:6px 9px;font-size:10.5px;letter-spacing:.09em;gap:6px}.hsl-pill svg{width:12px;height:12px}.hsl-benefit{font-size:24px;margin-top:9px}.hsl-sub{font-size:10px}.hsl-foot{padding-top:10px}.hsl-by{font-size:9px;line-height:1.3}.hsl-go{width:28px;height:28px}.hsl-go .hsl-arr{width:12px;height:12px}.hsl-heart{width:18px;height:18px}
+.hsl-adrs{grid-template-columns:1fr;gap:9px}.hsl-adr{min-height:0;padding:13px 15px 12px;border-radius:16px}.hsl-adr h3{font-size:19px;margin-bottom:3px}.hsl-cat{font-size:8.5px;margin-bottom:6px}.hsl-desc{font-size:11.5px;line-height:1.45;margin-bottom:7px;max-width:58%}.hsl-link{font-size:11px}.hsl-adr-glyph{font-size:96px;bottom:-16px}.hsl-adr-bg{inset:0 0 0 42%}}
 @media(max-width:360px){.hsl-codes{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.hsl-code,.hsl-adr{transition:none}}
 [dir=rtl] .hsl,[dir=rtl] .hsl *{letter-spacing:normal!important}
-[dir=rtl] .hsl-hero-img{inset:0 46% 0 0;transform:scaleX(-1)}
+[dir=rtl] .hsl-hero-img{inset:0 50% 0 0;transform:scaleX(-1)}
 [dir=rtl] .hsl-hero-copy{padding:40px 42px 30px 28px}
 [dir=rtl] .hsl-bell{right:auto;left:22px}[dir=rtl] .hsl-bell i{right:auto;left:7px}
 [dir=rtl] .hsl-qual+.hsl-qual{border-left:0;border-right:1px solid rgba(243,238,228,.14)}
 [dir=rtl] .hsl-code:after{background:linear-gradient(270deg,rgba(6,10,11,.94) 0%,rgba(6,10,11,.72) 50%,rgba(6,10,11,.25) 100%)}
 [dir=rtl] .hsl-code-bg{background-position:30% center;transform:scaleX(-1)}
 [dir=rtl] .hsl-benefit{text-align:right}
-[dir=rtl] .hsl-adr-bg{inset:0 38% 0 0;transform:scaleX(-1)}
+[dir=rtl] .hsl-adr-bg{inset:0 48% 0 0;transform:scaleX(-1)}
 [dir=rtl] .hsl-adr-glyph{right:auto;left:-6px}
 @media(min-width:761px) and (max-width:1100px){[dir=rtl] .hsl-hero-copy{padding-left:28px;padding-right:40px}[dir=rtl] .hsl-hero-img{inset:0 40% 0 0}}
-@media(max-width:760px){[dir=rtl] .hsl-hero-img{inset:0;transform:none}[dir=rtl] .hsl-hero-copy{padding:22px 18px 14px}[dir=rtl] .hsl-bell{left:18px}[dir=rtl] .hsl-kicker{padding-right:0;padding-left:52px}[dir=rtl] .hsl-adr-bg{inset:0 30% 0 0}}
+@media(max-width:760px){[dir=rtl] .hsl-hero-img{inset:auto 0 62px 0;transform:none}[dir=rtl] .hsl-hero-copy{padding:20px 16px 12px}[dir=rtl] .hsl-bell{left:18px}[dir=rtl] .hsl-kicker{padding-right:0;padding-left:52px}[dir=rtl] .hsl-adr-bg{inset:0 42% 0 0}}
 `;
 
 function installHypeSellerieStyles() {
@@ -59037,23 +59068,52 @@ var SELL_TX = {
   d3: { fr: "Le savoir-faire français au service de la performance.", en: "French craftsmanship serving performance.", es: "El saber hacer francés al servicio del rendimiento.", it: "Il savoir-faire francese al servizio della performance.", de: "Französische Handwerkskunst für Höchstleistung.", ja: "パフォーマンスを支えるフランスの職人技。", ar: "الحرفية الفرنسية في خدمة الأداء.", zh: "法式匠艺，成就卓越表现。", nl: "Frans vakmanschap ten dienste van prestaties.", pt: "O saber-fazer francês ao serviço da performance.", sv: "Franskt hantverk i prestationens tjänst.", ru: "Французское мастерство на службе результата.", pl: "Francuskie rzemiosło w służbie wyników.", ko: "퍼포먼스를 위한 프랑스 장인 정신." },
   d4: { fr: "Des images sensibles pour garder une trace de ton histoire.", en: "Sensitive images to keep a trace of your story.", es: "Imágenes sensibles para guardar el recuerdo de tu historia.", it: "Immagini sensibili per conservare la tua storia.", de: "Feinfühlige Bilder, die deine Geschichte festhalten.", ja: "あなたの物語を残す、繊細な写真。", ar: "صور مرهفة تحفظ أثر قصتك.", zh: "以细腻影像记录你的故事。", nl: "Gevoelige beelden om je verhaal vast te leggen.", pt: "Imagens sensíveis para guardar a tua história.", sv: "Känsliga bilder som bevarar din historia.", ru: "Тонкие снимки, чтобы сохранить твою историю.", pl: "Wrażliwe zdjęcia, które zachowają twoją historię.", ko: "너의 이야기를 간직할 섬세한 사진." },
   d5: { fr: "Le rendez-vous parisien de tous les passionnés du cheval.", en: "Paris's meeting place for all horse lovers.", es: "La cita parisina de todos los apasionados del caballo.", it: "L'appuntamento parigino di tutti gli appassionati di cavalli.", de: "Der Pariser Treffpunkt aller Pferdebegeisterten.", ja: "馬を愛するすべての人のためのパリの祭典。", ar: "موعد باريس لكل عشاق الخيل.", zh: "所有爱马人士的巴黎盛会。", nl: "De Parijse ontmoetingsplek voor alle paardenliefhebbers.", pt: "O encontro parisiense de todos os apaixonados por cavalos.", sv: "Paris mötesplats för alla hästälskare.", ru: "Парижская встреча всех любителей лошадей.", pl: "Paryskie spotkanie wszystkich miłośników koni.", ko: "모든 말 애호가를 위한 파리의 만남." },
-  d6: { fr: "Des solutions dédiées au bien-être quotidien du cheval.", en: "Solutions for your horse's everyday well-being.", es: "Soluciones para el bienestar diario del caballo.", it: "Soluzioni per il benessere quotidiano del cavallo.", de: "Lösungen für das tägliche Wohlbefinden des Pferdes.", ja: "馬の毎日の健康のためのソリューション。", ar: "حلول مخصصة لراحة الحصان اليومية.", zh: "关注马匹日常健康的解决方案。", nl: "Oplossingen voor het dagelijkse welzijn van het paard.", pt: "Soluções para o bem-estar diário do cavalo.", sv: "Lösningar för hästens dagliga välmående.", ru: "Решения для ежедневного благополучия лошади.", pl: "Rozwiązania dla codziennego dobrostanu konia.", ko: "말의 일상 웰빙을 위한 솔루션." }
+  d6: { fr: "Des solutions dédiées au bien-être quotidien du cheval.", en: "Solutions for your horse's everyday well-being.", es: "Soluciones para el bienestar diario del caballo.", it: "Soluzioni per il benessere quotidiano del cavallo.", de: "Lösungen für das tägliche Wohlbefinden des Pferdes.", ja: "馬の毎日の健康のためのソリューション。", ar: "حلول مخصصة لراحة الحصان اليومية.", zh: "关注马匹日常健康的解决方案。", nl: "Oplossingen voor het dagelijkse welzijn van het paard.", pt: "Soluções para o bem-estar diário do cavalo.", sv: "Lösningar för hästens dagliga välmående.", ru: "Решения для ежедневного благополучия лошади.", pl: "Rozwiązania dla codziennego dobrostanu konia.", ko: "말의 일상 웰빙을 위한 솔루션." },
+  partTitre: { fr: "Un bon plan à partager ?", en: "Got a deal to share?", es: "¿Tienes un chollo para compartir?", it: "Hai un'offerta da condividere?", de: "Ein guter Deal zum Teilen?", ja: "シェアしたいお得情報は？", ar: "لديك عرض جيد تشاركينه؟", zh: "有好优惠要分享吗？", nl: "Een goede deal om te delen?", pt: "Tens uma boa oferta para partilhar?", sv: "Har du ett bra erbjudande att dela?", ru: "Есть выгодное предложение?", pl: "Masz dobrą ofertę do podzielenia się?", ko: "공유할 좋은 혜택이 있어?" },
+  partTexte: { fr: "Publie ton code promo dans la communauté Hype.", en: "Post your promo code to the Hype community.", es: "Publica tu código promocional en la comunidad Hype.", it: "Pubblica il tuo codice promo nella community Hype.", de: "Teile deinen Rabattcode mit der Hype-Community.", ja: "Hypeコミュニティにプロモコードを投稿しよう。", ar: "انشري رمزك الترويجي في مجتمع Hype.", zh: "把你的优惠码发布到 Hype 社区。", nl: "Plaats je kortingscode in de Hype-community.", pt: "Publica o teu código promocional na comunidade Hype.", sv: "Lägg upp din rabattkod i Hype-communityn.", ru: "Опубликуй свой промокод в сообществе Hype.", pl: "Opublikuj swój kod rabatowy w społeczności Hype.", ko: "Hype 커뮤니티에 프로모션 코드를 올려 봐." },
+  partBtn: { fr: "Partager un code", en: "Share a code", es: "Compartir un código", it: "Condividi un codice", de: "Code teilen", ja: "コードをシェア", ar: "شاركي رمزًا", zh: "分享优惠码", nl: "Code delen", pt: "Partilhar um código", sv: "Dela en kod", ru: "Поделиться кодом", pl: "Udostępnij kod", ko: "코드 공유하기" },
+  fMarque: { fr: "Marque ou boutique", en: "Brand or shop", es: "Marca o tienda", it: "Marca o negozio", de: "Marke oder Shop", ja: "ブランド・ショップ", ar: "العلامة أو المتجر", zh: "品牌或店铺", nl: "Merk of winkel", pt: "Marca ou loja", sv: "Märke eller butik", ru: "Бренд или магазин", pl: "Marka lub sklep", ko: "브랜드 또는 매장" },
+  fCode: { fr: "Code promo", en: "Promo code", es: "Código promocional", it: "Codice promo", de: "Rabattcode", ja: "プロモコード", ar: "الرمز الترويجي", zh: "优惠码", nl: "Kortingscode", pt: "Código promocional", sv: "Rabattkod", ru: "Промокод", pl: "Kod rabatowy", ko: "프로모션 코드" },
+  fAvantage: { fr: "Avantage (ex. −15 %)", en: "Benefit (e.g. −15%)", es: "Ventaja (ej. −15 %)", it: "Vantaggio (es. −15 %)", de: "Vorteil (z. B. −15 %)", ja: "特典（例：−15%）", ar: "الميزة (مثال: ‎−15‎%)", zh: "优惠（如 −15%）", nl: "Voordeel (bijv. −15%)", pt: "Vantagem (ex. −15 %)", sv: "Förmån (t.ex. −15 %)", ru: "Выгода (напр. −15 %)", pl: "Korzyść (np. −15%)", ko: "혜택 (예: −15%)" },
+  fUrl: { fr: "Lien du site", en: "Website link", es: "Enlace de la web", it: "Link del sito", de: "Link zur Website", ja: "サイトのリンク", ar: "رابط الموقع", zh: "网站链接", nl: "Link naar de site", pt: "Link do site", sv: "Länk till sajten", ru: "Ссылка на сайт", pl: "Link do strony", ko: "사이트 링크" },
+  fFin: { fr: "Date de fin (si tu la connais)", en: "End date (if you know it)", es: "Fecha de fin (si la sabes)", it: "Data di fine (se la conosci)", de: "Enddatum (falls bekannt)", ja: "終了日（わかれば）", ar: "تاريخ الانتهاء (إن كنتِ تعرفينه)", zh: "截止日期（如果知道）", nl: "Einddatum (als je die weet)", pt: "Data de fim (se souberes)", sv: "Slutdatum (om du vet det)", ru: "Дата окончания (если знаешь)", pl: "Data końcowa (jeśli ją znasz)", ko: "종료일 (알고 있다면)" },
+  fEnvoyer: { fr: "Publier le code", en: "Post the code", es: "Publicar el código", it: "Pubblica il codice", de: "Code veröffentlichen", ja: "コードを投稿", ar: "انشري الرمز", zh: "发布优惠码", nl: "Code plaatsen", pt: "Publicar o código", sv: "Publicera koden", ru: "Опубликовать код", pl: "Opublikuj kod", ko: "코드 올리기" },
+  fAnnuler: { fr: "Annuler", en: "Cancel", es: "Cancelar", it: "Annulla", de: "Abbrechen", ja: "キャンセル", ar: "إلغاء", zh: "取消", nl: "Annuleren", pt: "Cancelar", sv: "Avbryt", ru: "Отмена", pl: "Anuluj", ko: "취소" },
+  fInfo: { fr: "Ton code apparaît tout de suite, avec ton pseudo et la mention « non vérifié ».", en: "Your code appears right away, with your username and an “unverified” label.", es: "Tu código aparece al instante, con tu apodo y la mención «no verificado».", it: "Il tuo codice appare subito, con il tuo nickname e la dicitura «non verificato».", de: "Dein Code erscheint sofort, mit deinem Namen und dem Hinweis „nicht geprüft“.", ja: "コードはすぐに表示されます（ニックネームと「未確認」の表示つき）。", ar: "يظهر رمزك فورًا مع اسمك وعبارة «غير مُتحقَّق منه».", zh: "你的优惠码会立即显示，并附上你的昵称和“未验证”标记。", nl: "Je code verschijnt meteen, met je gebruikersnaam en de vermelding ‘niet gecontroleerd’.", pt: "O teu código aparece logo, com o teu nome e a menção «não verificado».", sv: "Din kod visas direkt, med ditt användarnamn och märkningen ”ej verifierad”.", ru: "Твой код появится сразу, с твоим ником и пометкой «не проверен».", pl: "Twój kod pojawi się od razu, z twoim pseudonimem i oznaczeniem „niezweryfikowany”.", ko: "코드는 바로 올라가고, 닉네임과 ‘미확인’ 표시가 함께 보여." },
+  nonVerifie: { fr: "Code non vérifié", en: "Unverified code", es: "Código no verificado", it: "Codice non verificato", de: "Code nicht geprüft", ja: "未確認のコード", ar: "رمز غير مُتحقَّق منه", zh: "未验证的优惠码", nl: "Niet gecontroleerde code", pt: "Código não verificado", sv: "Ej verifierad kod", ru: "Код не проверен", pl: "Kod niezweryfikowany", ko: "미확인 코드" },
+  verifie: { fr: "Vérifié", en: "Verified", es: "Verificado", it: "Verificato", de: "Geprüft", ja: "確認済み", ar: "تم التحقق", zh: "已验证", nl: "Gecontroleerd", pt: "Verificado", sv: "Verifierad", ru: "Проверен", pl: "Zweryfikowany", ko: "확인됨" },
+  jusquau: { fr: "jusqu’au", en: "until", es: "hasta el", it: "fino al", de: "bis", ja: "まで：", ar: "حتى", zh: "截至", nl: "tot", pt: "até", sv: "till", ru: "до", pl: "do", ko: "까지:" },
+  signaler: { fr: "Ce code ne marche pas", en: "This code doesn't work", es: "Este código no funciona", it: "Questo codice non funziona", de: "Dieser Code funktioniert nicht", ja: "このコードは使えない", ar: "هذا الرمز لا يعمل", zh: "这个优惠码无效", nl: "Deze code werkt niet", pt: "Este código não funciona", sv: "Den här koden fungerar inte", ru: "Этот код не работает", pl: "Ten kod nie działa", ko: "이 코드가 안 돼" },
+  signale: { fr: "Merci, c’est noté", en: "Thanks, noted", es: "Gracias, anotado", it: "Grazie, registrato", de: "Danke, notiert", ja: "ありがとう、受け付けたよ", ar: "شكرًا، تم التسجيل", zh: "谢谢，已记录", nl: "Bedankt, genoteerd", pt: "Obrigado, registado", sv: "Tack, noterat", ru: "Спасибо, учтено", pl: "Dzięki, zapisane", ko: "고마워, 접수됐어" },
+  modVerif: { fr: "Marquer vérifié", en: "Mark as verified", es: "Marcar como verificado", it: "Segna come verificato", de: "Als geprüft markieren", ja: "確認済みにする", ar: "وضع علامة «تم التحقق»", zh: "标记为已验证", nl: "Markeren als gecontroleerd", pt: "Marcar como verificado", sv: "Markera som verifierad", ru: "Отметить как проверенный", pl: "Oznacz jako zweryfikowany", ko: "확인됨으로 표시" },
+  modRetirer: { fr: "Retirer", en: "Remove", es: "Quitar", it: "Rimuovi", de: "Entfernen", ja: "削除", ar: "إزالة", zh: "移除", nl: "Verwijderen", pt: "Retirar", sv: "Ta bort", ru: "Убрать", pl: "Usuń", ko: "삭제" },
+  modRemettre: { fr: "Remettre", en: "Restore", es: "Restaurar", it: "Ripristina", de: "Wiederherstellen", ja: "元に戻す", ar: "إعادة", zh: "恢复", nl: "Terugzetten", pt: "Repor", sv: "Återställ", ru: "Вернуть", pl: "Przywróć", ko: "되돌리기" },
+  cache: { fr: "Caché", en: "Hidden", es: "Oculto", it: "Nascosto", de: "Ausgeblendet", ja: "非表示", ar: "مخفي", zh: "已隐藏", nl: "Verborgen", pt: "Oculto", sv: "Dold", ru: "Скрыт", pl: "Ukryty", ko: "숨김" },
+  errChamps: { fr: "Remplis la marque, le code, l’avantage et le lien.", en: "Fill in the brand, code, benefit and link.", es: "Rellena la marca, el código, la ventaja y el enlace.", it: "Compila marca, codice, vantaggio e link.", de: "Fülle Marke, Code, Vorteil und Link aus.", ja: "ブランド・コード・特典・リンクを入力してね。", ar: "املئي العلامة والرمز والميزة والرابط.", zh: "请填写品牌、优惠码、优惠和链接。", nl: "Vul merk, code, voordeel en link in.", pt: "Preenche a marca, o código, a vantagem e o link.", sv: "Fyll i märke, kod, förmån och länk.", ru: "Заполни бренд, код, выгоду и ссылку.", pl: "Uzupełnij markę, kod, korzyść i link.", ko: "브랜드, 코드, 혜택, 링크를 입력해." },
+  errUrl: { fr: "Le lien doit être une adresse de site valide (https://…).", en: "The link must be a valid website address (https://…).", es: "El enlace debe ser una dirección web válida (https://…).", it: "Il link deve essere un indirizzo valido (https://…).", de: "Der Link muss eine gültige Webadresse sein (https://…).", ja: "リンクは有効なサイトアドレス（https://…）にしてね。", ar: "يجب أن يكون الرابط عنوان موقع صالحًا (https://…).", zh: "链接必须是有效的网址（https://…）。", nl: "De link moet een geldig webadres zijn (https://…).", pt: "O link tem de ser um endereço válido (https://…).", sv: "Länken måste vara en giltig webbadress (https://…).", ru: "Ссылка должна быть действующим адресом (https://…).", pl: "Link musi być poprawnym adresem (https://…).", ko: "링크는 올바른 사이트 주소(https://…)여야 해." },
+  errCode: { fr: "Le code : lettres, chiffres, tirets, de 3 à 30 caractères.", en: "Code: letters, numbers, dashes, 3 to 30 characters.", es: "Código: letras, números y guiones, de 3 a 30 caracteres.", it: "Codice: lettere, numeri e trattini, da 3 a 30 caratteri.", de: "Code: Buchstaben, Zahlen, Bindestriche, 3 bis 30 Zeichen.", ja: "コード：英数字とハイフン、3〜30文字。", ar: "الرمز: حروف وأرقام وشرطات، من 3 إلى 30 حرفًا.", zh: "优惠码：字母、数字、短横线，3 到 30 个字符。", nl: "Code: letters, cijfers, streepjes, 3 tot 30 tekens.", pt: "Código: letras, números e hífens, de 3 a 30 caracteres.", sv: "Kod: bokstäver, siffror, bindestreck, 3–30 tecken.", ru: "Код: буквы, цифры, дефисы, от 3 до 30 символов.", pl: "Kod: litery, cyfry, myślniki, od 3 do 30 znaków.", ko: "코드: 영문, 숫자, 하이픈, 3~30자." },
+  errLimite: { fr: "Tu as déjà partagé 6 codes aujourd’hui, reviens demain.", en: "You've already shared 6 codes today, come back tomorrow.", es: "Ya has compartido 6 códigos hoy, vuelve mañana.", it: "Hai già condiviso 6 codici oggi, torna domani.", de: "Du hast heute schon 6 Codes geteilt, komm morgen wieder.", ja: "今日はもう6件シェアしたよ。また明日ね。", ar: "لقد شاركتِ 6 رموز اليوم، عودي غدًا.", zh: "你今天已经分享了 6 个优惠码，明天再来吧。", nl: "Je hebt vandaag al 6 codes gedeeld, kom morgen terug.", pt: "Já partilhaste 6 códigos hoje, volta amanhã.", sv: "Du har redan delat 6 koder i dag, kom tillbaka i morgon.", ru: "Ты уже поделилась 6 кодами сегодня, возвращайся завтра.", pl: "Udostępniłeś już dziś 6 kodów, wróć jutro.", ko: "오늘은 이미 코드 6개를 공유했어. 내일 다시 와." },
+  errDoublon: { fr: "Ce code est déjà sur la page.", en: "This code is already on the page.", es: "Este código ya está en la página.", it: "Questo codice è già nella pagina.", de: "Dieser Code ist schon auf der Seite.", ja: "このコードはすでに掲載されているよ。", ar: "هذا الرمز موجود بالفعل في الصفحة.", zh: "这个优惠码已经在页面上了。", nl: "Deze code staat al op de pagina.", pt: "Este código já está na página.", sv: "Den här koden finns redan på sidan.", ru: "Этот код уже есть на странице.", pl: "Ten kod jest już na stronie.", ko: "이 코드는 이미 페이지에 있어." },
+  errFin: { fr: "La date de fin est déjà passée.", en: "The end date has already passed.", es: "La fecha de fin ya ha pasado.", it: "La data di fine è già passata.", de: "Das Enddatum ist schon vorbei.", ja: "終了日はもう過ぎているよ。", ar: "تاريخ الانتهاء قد مضى بالفعل.", zh: "截止日期已经过了。", nl: "De einddatum is al voorbij.", pt: "A data de fim já passou.", sv: "Slutdatumet har redan passerat.", ru: "Дата окончания уже прошла.", pl: "Data końcowa już minęła.", ko: "종료일이 이미 지났어." },
+  errConnexion: { fr: "Connecte-toi pour partager un code.", en: "Log in to share a code.", es: "Inicia sesión para compartir un código.", it: "Accedi per condividere un codice.", de: "Melde dich an, um einen Code zu teilen.", ja: "コードをシェアするにはログインしてね。", ar: "سجّلي الدخول لمشاركة رمز.", zh: "登录后即可分享优惠码。", nl: "Log in om een code te delen.", pt: "Inicia sessão para partilhar um código.", sv: "Logga in för att dela en kod.", ru: "Войди, чтобы поделиться кодом.", pl: "Zaloguj się, aby udostępnić kod.", ko: "코드를 공유하려면 로그인해." },
+  errAutre: { fr: "Ça n’a pas marché, réessaie dans un instant.", en: "That didn't work, try again in a moment.", es: "No ha funcionado, inténtalo de nuevo en un momento.", it: "Non ha funzionato, riprova tra un attimo.", de: "Das hat nicht geklappt, versuch es gleich noch mal.", ja: "うまくいかなかったよ。少ししてからもう一度試してね。", ar: "لم ينجح ذلك، أعيدي المحاولة بعد قليل.", zh: "没有成功，请稍后再试。", nl: "Dat lukte niet, probeer het zo opnieuw.", pt: "Não funcionou, tenta de novo daqui a pouco.", sv: "Det gick inte, försök igen om en stund.", ru: "Не получилось, попробуй ещё раз чуть позже.", pl: "Nie udało się, spróbuj za chwilę.", ko: "잘 안 됐어. 잠시 후 다시 해 봐." },
+  fMerci: { fr: "Ton code est en ligne, merci !", en: "Your code is live, thank you!", es: "¡Tu código ya está publicado, gracias!", it: "Il tuo codice è online, grazie!", de: "Dein Code ist online, danke!", ja: "コードが公開されたよ、ありがとう！", ar: "رمزك منشور الآن، شكرًا!", zh: "你的优惠码已上线，谢谢！", nl: "Je code staat online, bedankt!", pt: "O teu código está online, obrigado!", sv: "Din kod är publicerad, tack!", ru: "Твой код опубликован, спасибо!", pl: "Twój kod jest już online, dzięki!", ko: "코드가 올라갔어, 고마워!" }
 };
 
 /* Codes : Demi Volte (epingle) TOUJOURS tout à gauche ; ensuite les autres codes du plus RÉCENT au plus ancien
    (règle de Blandine, 25/10) : un nouveau code se place juste après Demi Volte. date = jour de mise en ligne (AAAA-MM-JJ). */
 var SELL_CODES = [
   { nom: "Demi Volte", code: "FEINN10", avantage: "−10 %", sous: "surSite", url: "https://www.demivolte.fr/", img: "images/sellerieEncart.jpg", epingle: true, coeur: true },
-  { nom: "Salon du Cheval de Paris", code: "AMBGJ48W", avantage: "−10 %", sous: "surBillet", url: "https://www.salon-cheval.fr/billetterie", img: "", par: "Écurie Feinn", date: "2026-10-25" }
+  { nom: "Salon du Cheval de Paris", code: "AMBGJ48W", avantage: "−10 %", sous: "surBillet", url: "https://www.salon-cheval.fr/billetterie", img: "images/sellerie-code-salon.jpg", par: "Écurie Feinn", date: "2026-10-25", tri: "2026-10-25T00:00:00" }
 ];
 /* Adresses à découvrir — img vide = carte sobre en attendant la photo (nommer les futures images sellerie-adr-*.jpg). */
 var SELL_ADRESSES = [
-  { nom: "Sellerie Demi Volte", cat: "c1", desc: "d1", url: "https://www.demivolte.fr/", img: "images/sellerieEncart.jpg", glyph: "♘" },
-  { nom: "Helite", cat: "c2", desc: "d2", url: "https://www.helite.com/nos-produits/airbag-equitation/", img: "", glyph: "✦" },
-  { nom: "Bruno Delgrange", cat: "c3", desc: "d3", url: "https://www.brunodelgrange.com/fr/14-selles-d-obstacle", img: "", glyph: "◇" },
-  { nom: "Manon Pincebourde", cat: "c4", desc: "d4", url: "https://manonpincebourde-photographie.com/", img: "", glyph: "◎" },
-  { nom: "Salon du Cheval de Paris", cat: "c5", desc: "d5", url: "https://www.salon-cheval.fr/", img: "", glyph: "✧" },
-  { nom: "Golden Horse", cat: "c6", desc: "d6", url: "https://goldenhorse.fr/", img: "", glyph: "◈" }
+  { nom: "Sellerie Demi Volte", cat: "c1", desc: "d1", url: "https://www.demivolte.fr/", img: "images/sellerie-adr-demivolte.jpg", glyph: "♘" },
+  { nom: "Helite", cat: "c2", desc: "d2", url: "https://www.helite.com/nos-produits/airbag-equitation/", img: "images/sellerie-adr-helite.jpg", glyph: "✦" },
+  { nom: "Bruno Delgrange", cat: "c3", desc: "d3", url: "https://www.brunodelgrange.com/fr/14-selles-d-obstacle", img: "images/sellerie-adr-delgrange.jpg", glyph: "◇" },
+  { nom: "Manon Pincebourde", cat: "c4", desc: "d4", url: "https://manonpincebourde-photographie.com/", img: "images/sellerie-adr-pincebourde.jpg", glyph: "◎" },
+  { nom: "Salon du Cheval de Paris", cat: "c5", desc: "d5", url: "https://www.salon-cheval.fr/", img: "images/sellerie-adr-salon.jpg", glyph: "✧" },
+  { nom: "Golden Horse", cat: "c6", desc: "d6", url: "https://goldenhorse.fr/", img: "images/sellerie-adr-goldenhorse.jpg", glyph: "◈" }
 ];
 
 function sellCopier(txt) {
@@ -59074,6 +59134,76 @@ function EcranSellerie() {
   var tr = ctx.tr, setEcran = ctx.setEcran, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
   function t(k) { return tr(SELL_TX[k]); }
   var cS = React.useState(""); var copie = cS[0], setCopie = cS[1];
+  /* Codes partagés par les cavaliers (tables sellerie_codes / sellerie_codes_signalements, 25/10) */
+  var mS = React.useState(null); var moi = mS[0], setMoi = mS[1];
+  var kS = React.useState([]); var comm = kS[0], setComm = kS[1];
+  var sgS = React.useState({}); var mesSig = sgS[0], setMesSig = sgS[1];
+  var fS = React.useState(false); var formOuvert = fS[0], setFormOuvert = fS[1];
+  var vS = React.useState({ marque: "", code: "", avantage: "", url: "", fin: "" }); var fv = vS[0], setFv = vS[1];
+  var eS = React.useState(""); var err = eS[0], setErr = eS[1];
+  var bS = React.useState(false); var envoi = bS[0], setEnvoi = bS[1];
+  var tS = React.useState(""); var toast = tS[0], setToast = tS[1];
+  var estMod = !!(moi && typeof estModerateurHype === "function" && estModerateurHype(moi));
+  var dAj = new Date(); var ajd = dAj.getFullYear() + "-" + String(dAj.getMonth() + 1).padStart(2, "0") + "-" + String(dAj.getDate()).padStart(2, "0");
+  function montrer(m) { setToast(m); setTimeout(function () { setToast(function (x) { return x === m ? "" : x; }); }, 2600); }
+  function stop(e) { if (e) { e.stopPropagation(); e.preventDefault(); } }
+  function charger() {
+    if (typeof supa === "undefined" || !supa) return;
+    supa.from("sellerie_codes").select("id,user_id,marque,code,avantage,url,expire_le,verifie,masque,nb_signalements,created_at").order("created_at", { ascending: false }).limit(60).then(function (r) {
+      var rows = (r && r.data) || [];
+      var ids = rows.map(function (x) { return x.user_id; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
+      if (!ids.length) { setComm(rows); return; }
+      supa.from("profiles").select("id, pseudo").in("id", ids).then(function (pr) {
+        var m = {}; ((pr && pr.data) || []).forEach(function (x) { m[x.id] = x.pseudo; });
+        setComm(rows.map(function (x) { return Object.assign({}, x, { pseudo: m[x.user_id] || "" }); }));
+      }, function () { setComm(rows); });
+    }, function () { });
+  }
+  React.useEffect(function () {
+    var vivant = true;
+    try {
+      (typeof utilisateurActuel === "function" ? utilisateurActuel() : Promise.resolve(null)).then(function (u) {
+        if (!vivant) return; setMoi(u || null);
+        if (u && typeof supa !== "undefined" && supa) supa.from("sellerie_codes_signalements").select("code_id").eq("user_id", u.id).then(function (r) {
+          if (!vivant) return; var m = {}; ((r && r.data) || []).forEach(function (x) { m[x.code_id] = 1; }); setMesSig(m);
+        }, function () { });
+      }, function () { });
+    } catch (e0) { }
+    charger();
+    return function () { vivant = false; };
+  }, []);
+  function signaler(c, e) {
+    stop(e); if (!moi) { montrer(t("errConnexion")); return; }
+    supa.from("sellerie_codes_signalements").insert({ code_id: c.id, user_id: moi.id }).then(function (r) {
+      if (r && r.error && r.error.code !== "23505") { montrer(t("errAutre")); return; }
+      var m = Object.assign({}, mesSig); m[c.id] = 1; setMesSig(m); montrer(t("signale")); charger();
+    }, function () { montrer(t("errAutre")); });
+  }
+  function modMaj(c, champs, e) { stop(e); supa.from("sellerie_codes").update(champs).eq("id", c.id).then(function (r) { if (r && r.error) montrer(t("errAutre")); charger(); }, function () { montrer(t("errAutre")); }); }
+  function retirer(c, e) { stop(e); supa.from("sellerie_codes").delete().eq("id", c.id).then(function (r) { if (r && r.error) montrer(t("errAutre")); charger(); }, function () { montrer(t("errAutre")); }); }
+  function envoyer(e) {
+    if (e) e.preventDefault(); setErr("");
+    var marque = fv.marque.trim(), code = fv.code.trim().toUpperCase(), av = fv.avantage.trim(), url = fv.url.trim();
+    if (!moi) { setErr(t("errConnexion")); return; }
+    if (marque.length < 2 || !code || !av || !url) { setErr(t("errChamps")); return; }
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    url = url.replace(/^http:\/\//i, "https://");
+    if (url.length > 300 || !/^https:\/\/[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+(:[0-9]{2,5})?(\/[^\s<>"]*)?$/i.test(url)) { setErr(t("errUrl")); return; }
+    if (!/^[A-Z0-9_-]{3,30}$/.test(code)) { setErr(t("errCode")); return; }
+    if (code === "FEINN10" || code === "AMBGJ48W" || comm.some(function (x) { return x.code === code && String(x.marque).toLowerCase() === marque.toLowerCase(); })) { setErr(t("errDoublon")); return; }
+    if (fv.fin && fv.fin < ajd) { setErr(t("errFin")); return; }
+    setEnvoi(true);
+    supa.from("sellerie_codes").insert({ user_id: moi.id, marque: marque.slice(0, 60), code: code, avantage: av.slice(0, 40), url: url, expire_le: fv.fin || null }).then(function (r) {
+      setEnvoi(false);
+      if (r && r.error) { var msg = String(r.error.message || ""); setErr(/6 codes/.test(msg) ? t("errLimite") : (r.error.code === "23505" || /deja present/.test(msg)) ? t("errDoublon") : /date de fin/.test(msg) ? t("errFin") : t("errAutre")); return; }
+      setFormOuvert(false); setFv({ marque: "", code: "", avantage: "", url: "", fin: "" }); montrer(t("fMerci")); charger();
+    }, function () { setEnvoi(false); setErr(t("errAutre")); });
+  }
+  function champ(k, lab, type, max) {
+    return h("label", { className: "hsl-field", key: k }, h("span", null, lab),
+      h("input", { type: type, value: fv[k], maxLength: max, min: type === "date" ? ajd : undefined, autoCapitalize: k === "code" ? "characters" : "off", autoComplete: "off", spellCheck: false, dir: (k === "url" || k === "code") ? "ltr" : undefined, inputMode: k === "url" ? "url" : undefined,
+        onChange: function (ev) { var o = Object.assign({}, fv); o[k] = ev.target.value; setFv(o); if (err) setErr(""); } }));
+  }
   var rtl = (typeof document !== "undefined" && document.documentElement.dir === "rtl");
   function retour() { if (peutReculer && retourEcran) retourEcran(); else setEcran("moncavalier"); }
   function ouvrir(url) { try { window.open(url, "_blank", "noopener,noreferrer"); } catch (e) { } }
@@ -59082,26 +59212,36 @@ function EcranSellerie() {
     sellCopier(code).then(function () { setCopie(code); setTimeout(function () { setCopie(function (c) { return c === code ? "" : c; }); }, 2200); }, function () { });
   }
   var icoCopie = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("rect", { x: 9, y: 9, width: 11, height: 11, rx: 2 }), h("path", { d: "M5 15V6a2 2 0 0 1 2-2h8" }));
-  var fleche = rtl ? "↖" : "↗";
+  var fleche = h("svg", { className: "hsl-arr", viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 17L17 7M9 7h8v8" }));
 
   var lgDate = (ctx.langue || "fr");
   function fmtDate(d) { try { return new Date(d + "T12:00:00").toLocaleDateString(lgDate === "zh" ? "zh-CN" : lgDate, { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return d; } }
+  var commCartes = comm.map(function (x) {
+    var exp = !!(x.expire_le && x.expire_le < ajd);
+    return { id: x.id, comm: true, nom: x.marque, code: x.code, avantage: x.avantage, url: x.url, img: "", par: x.pseudo, date: String(x.created_at || "").slice(0, 10), tri: x.created_at, fin: x.expire_le, verifie: x.verifie, masque: x.masque, cache: x.masque || exp, auteur: !!(moi && x.user_id === moi.id) };
+  }).filter(function (c) { return !c.cache || estMod || c.auteur; });
   var codesTries = SELL_CODES.filter(function (c) { return c.epingle; }).concat(
-    SELL_CODES.filter(function (c) { return !c.epingle; }).sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); }));
+    SELL_CODES.filter(function (c) { return !c.epingle; }).concat(commCartes).sort(function (a, b) { return String(b.tri || b.date || "").localeCompare(String(a.tri || a.date || "")); }));
   var cartesCodes = codesTries.map(function (c) {
     var ok = copie === c.code;
-    return h("div", { className: "hsl-code" + (c.img ? "" : " hsl-code-noimg"), key: c.code, role: "link", tabIndex: 0, "aria-label": c.nom + " — " + c.code + " " + c.avantage,
+    return h("div", { className: "hsl-code" + (c.img ? "" : " hsl-code-noimg") + (c.cache ? " hsl-code-cache" : ""), key: c.id || c.code, role: "link", tabIndex: 0, "aria-label": c.nom + " — " + c.code + " " + c.avantage,
         onClick: function () { ouvrir(c.url); }, onKeyDown: function (e) { if (e.key === "Enter") ouvrir(c.url); } },
       c.img ? h("span", { className: "hsl-code-bg", "aria-hidden": "true", style: { backgroundImage: "url('" + c.img + "')" } }) : null,
+      c.comm ? h("span", { className: "hsl-nv" + (c.cache ? " cache" : c.verifie ? " ok" : "") }, c.cache ? t("cache") : c.verifie ? ("✓ " + t("verifie")) : t("nonVerifie")) : null,
       h("h3", null, c.nom),
       h("button", { type: "button", className: "hsl-pill" + (ok ? " ok" : ""), onClick: function (e) { copier(c.code, e); }, "aria-label": t("copier") + " " + c.code },
         ok ? ("✓ " + t("copie")) : c.code, ok ? null : icoCopie),
-      h("div", { className: "hsl-benefit" }, c.avantage),
-      h("div", { className: "hsl-sub" }, t(c.sous)),
+      h("div", { className: "hsl-benefit" + (String(c.avantage).length > 8 ? " long" : "") }, c.avantage),
+      h("div", { className: "hsl-sub" }, c.sous ? t(c.sous) : (c.fin ? t("jusquau") + " " + fmtDate(c.fin) : "")),
       h("div", { className: "hsl-foot" },
         c.coeur ? h("svg", { className: "hsl-heart", viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" }))
-          : h("span", { className: "hsl-by" }, t("partagePar") + " " + c.par + (c.date ? " · " + fmtDate(c.date) : "")),
-        h("span", { className: "hsl-go", "aria-hidden": "true" }, fleche)));
+          : h("span", { className: "hsl-by" }, (c.par ? t("partagePar") + " " + c.par + " · " : "") + (c.date ? fmtDate(c.date) : "")),
+        h("span", { className: "hsl-go", "aria-hidden": "true" }, fleche)),
+      c.comm ? h("div", { className: "hsl-acts" },
+        (moi && !c.auteur && !estMod) ? (mesSig[c.id] ? h("span", { className: "hsl-act-ok" }, t("signale")) : h("button", { type: "button", className: "hsl-act", onClick: function (e) { signaler(c, e); } }, t("signaler"))) : null,
+        estMod && !c.verifie && !c.cache ? h("button", { type: "button", className: "hsl-act mod", onClick: function (e) { modMaj(c, { verifie: true }, e); } }, t("modVerif")) : null,
+        estMod && c.masque ? h("button", { type: "button", className: "hsl-act mod", onClick: function (e) { modMaj(c, { masque: false, nb_signalements: 0 }, e); } }, t("modRemettre")) : null,
+        (estMod || c.auteur) ? h("button", { type: "button", className: "hsl-act", onClick: function (e) { retirer(c, e); } }, t("modRetirer")) : null) : null);
   });
 
   var cartesAdr = SELL_ADRESSES.map(function (a) {
@@ -59110,7 +59250,7 @@ function EcranSellerie() {
       h("h3", null, a.nom),
       h("div", { className: "hsl-cat" }, t(a.cat)),
       h("p", { className: "hsl-desc" }, t(a.desc)),
-      h("span", { className: "hsl-link" }, t("decouvrir") + "  " + fleche));
+      h("span", { className: "hsl-link" }, t("decouvrir"), fleche));
   });
 
   var quals = [["♘", "q1"], ["✦", "q2"], ["◇", "q3"], ["◎", "q4"]];
@@ -59123,9 +59263,11 @@ function EcranSellerie() {
       h("div", { className: "hsl-hero-img", "aria-hidden": "true" }),
       h("span", { className: "hsl-bell", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" }), h("path", { d: "M10 20a2 2 0 0 0 4 0" })), h("i")),
       h("div", { className: "hsl-hero-copy" },
-        h("div", { className: "hsl-kicker" }, t("kicker")),
-        h("h1", null, t("titre")),
-        h("p", { className: "hsl-intro" }, t("intro")),
+        h("div", { className: "hsl-hero-txt" },
+          h("div", { className: "hsl-kicker" }, t("kicker")),
+          h("h1", null, t("titre")),
+          h("p", { className: "hsl-intro" }, t("intro"))),
+        h("div", { className: "hsl-hero-spacer", "aria-hidden": "true" }),
         h("div", { className: "hsl-quals" }, quals.map(function (q) { return h("div", { className: "hsl-qual", key: q[1] }, h("b", { "aria-hidden": "true" }, q[0]), t(q[1])); })))),
     typeof FilAnnoncesB === "function" ? h("div", { className: "hsl-ann" }, h(FilAnnoncesB, { cible: "annonces-sellerie", libelle: t("nouveau") })) : null,
     h("section", { className: "hsl-sec" },
@@ -59134,7 +59276,25 @@ function EcranSellerie() {
     h("section", { className: "hsl-sec" },
       h("div", { className: "hsl-sechead" }, h("h2", null, h("span", { "aria-hidden": "true" }, "◇"), t("adresses"))),
       h("div", { className: "hsl-adrs" }, cartesAdr)),
-    copie ? h("div", { className: "hsl-toast", role: "status" }, t("copieLong")) : null
+    h("section", { className: "hsl-share" },
+      h("div", { className: "hsl-share-txt" },
+        h("span", { className: "hsl-share-ico", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M13 2L4 14h7l-1 8 9-12h-7z" }))),
+        h("div", null, h("h3", null, t("partTitre")), h("p", null, t("partTexte")))),
+      h("button", { type: "button", className: "hsl-share-btn", onClick: function () { setErr(""); setFormOuvert(true); } }, t("partBtn"))),
+    formOuvert ? h("div", { className: "hsl-modal", role: "dialog", "aria-modal": "true", "aria-label": t("partBtn"), onClick: function () { if (!envoi) setFormOuvert(false); } },
+      h("form", { className: "hsl-form", onClick: function (e) { e.stopPropagation(); }, onSubmit: envoyer, noValidate: true },
+        h("h3", null, t("partBtn")),
+        champ("marque", t("fMarque"), "text", 60),
+        champ("code", t("fCode"), "text", 30),
+        champ("avantage", t("fAvantage"), "text", 40),
+        champ("url", t("fUrl"), "url", 300),
+        champ("fin", t("fFin"), "date"),
+        h("p", { className: "hsl-form-info" }, t("fInfo")),
+        err ? h("p", { className: "hsl-form-err", role: "alert" }, err) : null,
+        h("div", { className: "hsl-form-btns" },
+          h("button", { type: "button", className: "hsl-btn2", onClick: function () { setFormOuvert(false); } }, t("fAnnuler")),
+          h("button", { type: "submit", className: "hsl-btn1", disabled: envoi }, envoi ? "…" : t("fEnvoyer"))))) : null,
+    (copie || toast) ? h("div", { className: "hsl-toast", role: "status" }, copie ? t("copieLong") : toast) : null
   ));
 }
 
