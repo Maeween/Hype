@@ -305,10 +305,11 @@ async function rpc(service, nom, params) {
 // suivie dans la table EXISTANTE heybaby_analyses (déjà utilisée pour les analyses photo/vidéo différées : RLS
 // lecture = son propre compte, écriture = clé de service). Ligne id = réservation, statut en_cours → termine / erreur.
 // L'appli peut ainsi quitter la page ou être fermée : la réponse continue d'être écrite et elle la relit au retour.
-async function jobHB(service, reqId, methode, idRes, champs) {
+async function jobHB(service, reqId, methode, idRes, champs, uidFiltre) {
     if (!idRes) return;
     try {
-        const url = SUPABASE_URL + "/rest/v1/heybaby_analyses" + (methode === "PATCH" ? "?id=eq." + encodeURIComponent(idRes) : "");
+        // 25/10 : uidFiltre = n'écrire que dans une ligne de CE compte (ligne « parente » d'une analyse photo).
+        const url = SUPABASE_URL + "/rest/v1/heybaby_analyses" + (methode === "PATCH" ? "?id=eq." + encodeURIComponent(idRes) + (uidFiltre ? "&user_id=eq." + encodeURIComponent(uidFiltre) : "") : "");
         const r = await fetch(url, { method: methode, headers: { apikey: service, Authorization: "Bearer " + service, "Content-Type": "application/json",
             Prefer: methode === "POST" ? "resolution=merge-duplicates,return=minimal" : "return=minimal" }, body: JSON.stringify(champs) });
         if (!r.ok) log(reqId, "réponse gardée en base : écriture refusée (HTTP " + r.status + ")");
@@ -533,15 +534,45 @@ export default async (req, context) => {
         const encP = new TextEncoder();
         const ctrlP = new AbortController();
         let vieP = null, minuteurP = null, fini = false;
+        // 25/10/2026 (Blandine : « 5 », garder les analyses photo de TOUTES les cavalières) — si l'appli envoie
+        // « etape2 » (contexte de la 2e étape), l'analyse ne dépend plus du téléphone :
+        //   - une ligne heybaby_analyses (id = cette réservation) est créée ; l'appli la note et la relit au retour ;
+        //   - si le téléphone part pendant l'observation, on ne coupe plus l'IA : à la fin, le serveur lance LUI-MÊME
+        //     la 2e étape (appel à ce même relais, « suite » = cette réservation, donc non recomptée), qui écrit la
+        //     réponse finale dans cette ligne et envoie la notification « Hey Baby t'a répondu ».
+        //   - téléphone resté là : rien ne change, l'appli fait la 2e étape elle-même (réponse affichée mot à mot),
+        //     et cette 2e étape recopie aussi sa réponse finale dans la ligne.
+        // Sans « etape2 » (ancienne version de l'appli encore en cache) : comportement d'avant, inchangé.
+        const e2 = (corps.etape2 && typeof corps.etape2 === "object") ? corps.etape2 : null;
+        let clientPartiP = false, travailP = null;
+        if (e2) await jobHB(service, reqId, "POST", idRes, { id: idRes, user_id: uid, statut: "en_cours", resultat: null, erreur_code: null, erreur_message: null });
+        const enEchecP = (code) => { if (e2) return jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", erreur_code: code, updated_at: new Date().toISOString() }); };
+        const etape2ParServeur = async (texteObs) => {
+            let obs = texteObs; try { obs = JSON.stringify(JSON.parse(String(texteObs).replace(/```json|```/g, "").trim())); } catch (eO) { }
+            const q = String(corps.question || "").slice(0, 2000) || String(e2.texte || "").slice(0, 300) || "Analyse cette photo.";
+            const corps2 = { operation: "question", stream: true, langue: langue, contexte: e2.contexte || {}, messages: [{ role: "user", content: q }], suite: idRes, observations: obs };
+            try {
+                const ctrl2 = new AbortController();
+                const lim2 = setTimeout(() => { try { ctrl2.abort(); } catch (e) { } }, 15000);
+                const r2 = await fetch(req.url, { method: "POST", signal: ctrl2.signal, headers: { "Content-Type": "application/json", Authorization: "Bearer " + jeton }, body: JSON.stringify(corps2) });
+                clearTimeout(lim2);
+                log(reqId, "téléphone parti : 2e étape lancée par le serveur — HTTP " + r2.status);
+                if (!r2.ok) await enEchecP("ETAPE2_" + r2.status);
+                // On raccroche : l'autre appel voit le téléphone « parti », finit seul, écrit la réponse et notifie.
+                try { if (r2.body) await r2.body.cancel(); } catch (eC) { }
+            } catch (e) { log(reqId, "2e étape par le serveur impossible —", e && e.message); await enEchecP("ETAPE2_IMPOSSIBLE"); }
+        };
         const fluxP = new ReadableStream({
             async start(controller) {
-                const envoyer = (txt) => { try { controller.enqueue(encP.encode(txt)); } catch (e) { } };
+                const envoyer = (txt) => { if (clientPartiP) return; try { controller.enqueue(encP.encode(txt)); } catch (e) { clientPartiP = true; } };
                 const finir = (objet) => {
                     if (fini) return; fini = true;
                     clearInterval(vieP); clearTimeout(minuteurP);
                     envoyer(JSON.stringify(objet));
-                    try { controller.close(); } catch (e) { }
+                    try { if (!clientPartiP) controller.close(); } catch (e) { }
                 };
+                let finTravail = null; travailP = new Promise((ok) => { finTravail = ok; });
+                try {
                 envoyer(" ");
                 vieP = setInterval(() => envoyer(" "), SIGNE_DE_VIE_MS);
                 let expireP = false;
@@ -554,6 +585,7 @@ export default async (req, context) => {
                         const detailTxt = await amontP.text().catch(() => "");
                         log(reqId, "OpenAI HTTP", amontP.status, "(perception)");
                         await terminer(service, reqId, idRes, false);
+                        await enEchecP(classerErreurAmont(amontP.status, detailTxt));
                         finir({ ok: false, code: classerErreurAmont(amontP.status, detailTxt), message: "Le fournisseur IA a renvoyé une erreur (HTTP " + amontP.status + ").", reqId: reqId, quota: quota });
                         return;
                     }
@@ -563,19 +595,29 @@ export default async (req, context) => {
                     log(reqId, "perception en", Date.now() - t0, "ms —", texte.length, "caractères");
                     if (!texte) {
                         await terminer(service, reqId, idRes, false);
+                        await enEchecP("INVALID_RESPONSE");
                         finir({ ok: false, code: "INVALID_RESPONSE", message: "Observation vide.", reqId: reqId, quota: quota });
                         return;
                     }
                     await terminer(service, reqId, idRes, true);
                     // « reservation » : l'appli la renvoie (champ suite) pour l'étape suivante, qui ne compte pas une 2e fois.
-                    finir({ ok: true, reqId: reqId, mode: mode, reservation: idRes, quota: quota, content: [{ type: "text", text: texte }] });
+                    if (e2 && clientPartiP) { fini = true; clearInterval(vieP); clearTimeout(minuteurP); await etape2ParServeur(texte); }
+                    else finir({ ok: true, reqId: reqId, mode: mode, reservation: idRes, quota: quota, content: [{ type: "text", text: texte }] });
                 } catch (e) {
                     await terminer(service, reqId, idRes, false);
+                    await enEchecP(expireP ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR");
                     if (expireP) finir({ ok: false, code: "AI_TIMEOUT", message: "L'analyse a pris trop de temps.", reqId: reqId, quota: quota });
                     else finir({ ok: false, code: "OPENAI_SERVER_ERROR", message: "Connexion au fournisseur IA impossible.", reqId: reqId, quota: quota });
                 }
+                } finally { finTravail(); }
             },
             cancel() {
+                if (e2) {
+                    // 25/10 : nouvelle appli → on continue sans le téléphone (voir plus haut).
+                    clientPartiP = true; clearInterval(vieP);
+                    log(reqId, "téléphone déconnecté pendant l'observation après", Date.now() - t0, "ms — l'analyse continue sans lui");
+                    return;
+                }
                 // Téléphone déconnecté : l'analyse est arrêtée, l'utilisation reste comptée (règle validée).
                 fini = true; clearInterval(vieP); clearTimeout(minuteurP);
                 try { ctrlP.abort(); } catch (e) { }
@@ -583,11 +625,14 @@ export default async (req, context) => {
                 log(reqId, "perception annulée par le client après", Date.now() - t0, "ms (comptée)");
             },
         });
+        // 25/10 : la fonction reste en vie jusqu'à la fin de l'observation (et de l'envoi de la 2e étape), même téléphone parti.
+        try { if (e2 && context && typeof context.waitUntil === "function") context.waitUntil(new Promise((ok) => { const v = () => travailP ? travailP.then(ok, ok) : setTimeout(v, 50); v(); })); } catch (eW) { }
         return new Response(fluxP, { status: 200, headers: { ...CORS, ...entetesQuota, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-Id": reqId } });
     }
 
     // ----- 5b. Appel standard -----
     const garderEnBase = streaming && operation === "question";   // 21/10 : réponse gardée en base (voir jobHB)
+    const parentHB = (garderEnBase && corps.suite) ? String(corps.suite).slice(0, 80) : null;   // 25/10 : ligne de la 1re étape photo
     if (garderEnBase) await jobHB(service, reqId, "POST", idRes, { id: idRes, user_id: uid, statut: "en_cours", resultat: null, erreur_code: null, erreur_message: null });
     const ctrl = new AbortController();
     let futTimeout = false;
@@ -601,6 +646,7 @@ export default async (req, context) => {
         clearTimeout(minuteur);
         await terminer(service, reqId, idRes, false);   // rien n'a été produit : rendu
         if (garderEnBase) await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", erreur_code: futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", updated_at: new Date().toISOString() });
+        if (parentHB) await jobHB(service, reqId, "PATCH", parentHB, { statut: "erreur", erreur_code: futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", updated_at: new Date().toISOString() }, uid);
         log(reqId, futTimeout ? "OpenAI : délai dépassé" : "OpenAI : connexion impossible", "après", Date.now() - t0, "ms (rendue)");
         return erreurJSON(futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", futTimeout ? "L'analyse a pris trop de temps." : "Connexion au fournisseur IA impossible.", { quota: quota }, entetesQuota);
     }
@@ -610,6 +656,7 @@ export default async (req, context) => {
         await terminer(service, reqId, idRes, false);
         const code = classerErreurAmont(amont.status, detailTxt);
         if (garderEnBase) await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", erreur_code: code, updated_at: new Date().toISOString() });
+        if (parentHB) await jobHB(service, reqId, "PATCH", parentHB, { statut: "erreur", erreur_code: code, updated_at: new Date().toISOString() }, uid);
         log(reqId, "OpenAI HTTP", amont.status, "→", code, "(rendue)");
         return erreurJSON(code, "Le fournisseur IA a renvoyé une erreur.", { statutAmont: amont.status, quota: quota }, entetesQuota);
     }
@@ -669,7 +716,14 @@ export default async (req, context) => {
             clearTimeout(minuteur);
             if (!termine) { termine = true; await terminer(service, reqId, idRes, total > 0); }
             if (garderEnBase) {
-                if (complet && !erreurSurvenue) await jobHB(service, reqId, "PATCH", idRes, { statut: "termine", resultat: complet, updated_at: new Date().toISOString() });
+                if (complet && !erreurSurvenue) {
+                    await jobHB(service, reqId, "PATCH", idRes, { statut: "termine", resultat: complet, updated_at: new Date().toISOString() });
+                    // 25/10 : 2e étape d'une photo → la réponse finale va aussi dans la ligne de la 1re étape (celle que l'appli a notée).
+                    if (parentHB) await jobHB(service, reqId, "PATCH", parentHB, { statut: "termine", resultat: complet, erreur_code: null, updated_at: new Date().toISOString() }, uid);
+                } else {
+                    await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", resultat: complet || null, erreur_code: erreurSurvenue || "INVALID_RESPONSE", updated_at: new Date().toISOString() });
+                    if (parentHB) await jobHB(service, reqId, "PATCH", parentHB, { statut: "erreur", resultat: complet || null, erreur_code: erreurSurvenue || "INVALID_RESPONSE", updated_at: new Date().toISOString() }, uid);
+                }
                 // 21/10 (Blandine « Ok continue », option B) : téléphone parti avant la fin → notification « Hey Baby t'a répondu »
                 // (table notifications ; la règle en base appelle notifier-notif, qui l'envoie sur ses téléphones abonnés).
                 if (complet && !erreurSurvenue && clientParti) {
@@ -679,7 +733,7 @@ export default async (req, context) => {
                         log(reqId, rn.ok ? "notification « Hey Baby t'a répondu » créée" : "notification refusée (HTTP " + rn.status + ")");
                     } catch (eN) { log(reqId, "notification impossible —", eN && eN.message); }
                 }
-                else await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", resultat: complet || null, erreur_code: erreurSurvenue || "INVALID_RESPONSE", updated_at: new Date().toISOString() });
+                // 25/10 : retiré un « else » mal rattaché qui repassait en « erreur » une réponse complète quand le téléphone était resté.
             }
             if (erreurSurvenue) envoyerAuTel(marqueurErreur(erreurSurvenue, reqId));
             if (!clientParti && sortie) { try { sortie.close(); } catch (e) { } }
