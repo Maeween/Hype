@@ -14668,9 +14668,29 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Ordinateur/tablette : photo en fond, texte à gauche sur la zone sombre, fondu haut/bas ; en arabe la photo est retournée en miroir.
 - Téléphone : texte d'abord, photo en dessous avec fondu.
 
+## 26/10 19h25 — Page Galops : descriptions et « Programme officiel » d'après le programme fédéral (build 20261026-1925) — NON PUBLIÉ
+- Source : Programme officiel des Galops® 1 à 7 de la FFE, applicable au 1er septembre 2012 (toujours la version publiée par la FFE en oct. 2026) — https://www.ffe.com/system/files/cavalier/documents/pdf/programme-officiel-galops-cavalier-1a7-synthetique.pdf
+- Descriptions des 7 Galops (GV2_DESC) réécrites d'après ce programme, 14 langues (demande de Blandine : « fais en suivant le programme fédéral »).
+- Nouvelle rubrique « Programme officiel » dans l'espace du Galop (après Objectifs) : résumé fidèle (À cheval / À pied et soins / Connaissances, 3 points chacun), mention de la date d'application + lien vers le document FFE. Données : GV2_FFE. Ordinateur : vue à droite ; téléphone : se déplie.
+- Objectifs (competences) des Galops 5, 6 et 7 dans GALOPS_I18N remplacés pour coller au programme (ils ne sont pas encore construits ; l'ancien Galop 7 citait élevage / gestion d'écurie, absents du programme).
+- À REVÉRIFIER chaque saison : la FFE peut revoir son programme.
+
+## 26/10 19h30 — PUBLICATION groupée (build 20261026-1930), accord de Blandine (« publie »)
+- Met en ligne tous les envois en attente de la page Galops : 1020, 1735, 1752, 1805, 1830, 1840 (espace du Galop), 1850 (photo « Une progression à ton rythme »), 1925 (programme fédéral). Seul changement de ce build : le marqueur.
+
 ## 26/10 19h05 — Stripe : Horse Lingo Premium créé sur le compte de l'association (aucune publication de l'appli)
 - Décision de Blandine : TOUT passe sur le compte Stripe de l'association « Feinn équitation et environnement » (acct_1UQVjPHWk0xyvsbC), Hype comme Horse Lingo. Les liens Hype actuels sont encore sur l'ancien compte « Feinn » (acct_1ToLYYHnB1OJ7FOm) : migration Hype = chantier séparé, à valider (sort des 4 abonnés payants actuels en attente de sa réponse).
 - Créé sur l'association, mode réel : produit « Horse Lingo Premium » prod_VVu44KmIqfaL0l ; prix mensuel 7,90 € price_1UUsGbHWk0xyvsbCPZpYxRZH (lookup horse_lingo_mensuel) ; prix annuel 64 € price_1UUsGdHWk0xyvsbCoNuYKqMT (lookup horse_lingo_annuel).
 - Liens de paiement (retour vers https://horselingo.fr/?merci=1, métadonnées appli=horse-lingo + plan) : mensuel https://buy.stripe.com/28EfZh0XCfIJdxfggz4Ni00 ; annuel https://buy.stripe.com/7sYaEXayccwx3WFe8r4Ni01.
 - Erreur signalée : un premier produit « Horse Lingo Premium » (prod_VVlSJ6fxGFCEdq, sans prix ni lien) avait été créé par erreur sur l'ancien compte « Feinn » avant que Blandine précise « tout sur l'association » ; archivé aussitôt.
 - Pas encore branché : aucun webhook sur le compte de l'association → un paiement n'active encore rien. Prochaines étapes (à valider une par une) : webhook de l'association + table des abonnements Horse Lingo + page Abonnement de Horse Lingo.
+
+## 26/10 19h45 — PUBLICATION (build 20261026-1945) : Hype passe sur le compte Stripe de l'association — carte blanche de Blandine (« gère tout l'ensemble de façon autonome »)
+- Compte de l'association (acct_1UQVjPHWk0xyvsbC), mode réel : mêmes formules et mêmes prix que l'ancien compte « Feinn » — Premium mensuel 12,99 €, Cercle Crystal 99,99 € (paiement unique), Pack Duo 24,99 €, Hype IA 14,99 €, Premium Famille 19,99 €, dons 20/40/80/120/150/200/250/500 €. Les formules Pro, désactivées le 14/10, ne sont pas recréées.
+- Appli : tous les liens de paiement et de dons pointent vers l'association (les dons passent par donate.stripe.com). Correspondances Apple (endormies) complétées avec les nouveaux liens.
+- « Gérer mon abonnement » : ouvre le portail de l'association, SAUF pour un abonnement pris avant le 26/10 (colonne compte_stripe = « feinn » dans abonnements_premium / familles) → ancien portail « Feinn ». Portail association : résilier, carte, factures, passage Premium / Duo / IA.
+- Relais Netlify stripe-webhook : reconnaît les DEUX comptes (STRIPE_WEBHOOK_SECRET = Feinn ; STRIPE_WEBHOOK_SECRET_ASSO = association, posée dans Netlify), écrit compte_stripe sur chaque achat ; ignore les messages Horse Lingo (traités par la fonction Supabase stripe-lingo). Testé avec des messages signés simulés (2 comptes, Famille, don, Horse Lingo, mauvaise signature).
+- Webhook « Hype » de l'association (we_1UUsY0HWk0xyvsbCRBKIyNxK) : activé APRÈS la mise en ligne du relais.
+- Base : colonne compte_stripe ajoutée (abonnements_premium, familles) ; les lignes Stripe existantes marquées « feinn ».
+- Rien ne change pour les abonnés actuels : ils restent sur l'ancien compte « Feinn » jusqu'à leur déplacement.
+- RESTE À FAIRE (Blandine) : (1) déplacer les abonnés en cours vers l'association — copie des cartes à lancer depuis le tableau de bord Stripe de l'ancien compte (outil « copier des données vers un autre compte »), puis recréation des abonnements à la même échéance et arrêt des anciens, guidé pas à pas ; (2) RIB de l'association sur l'ancien compte « Feinn » pour récupérer le solde (voir avec le comptable) ; (3) demander au comptable si l'association doit facturer la TVA (prix actuellement sans TVA calculée).
