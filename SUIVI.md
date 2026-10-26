@@ -14776,3 +14776,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 23h10 — PUBLICATION (build 20261026-2310), accord de Blandine (« Publié »)
 - Met en ligne le haut de page plus court de la page Galops (2305, maquette A). Seul changement de ce build : le marqueur.
+
+## 26/10 23h20 — Page Galops : 1er écran du téléphone ajusté (build 20261026-2320) — NON PUBLIÉ
+- Demande de Blandine : sur téléphone, redescendre la photo et le titre pour qu'à l'ouverture on voie juste jusqu'à la courbe des Galops et « Découverte du cheval » (le titre « Une progression à ton rythme » ne dépasse plus en bas).
+- La photo du haut prend la hauteur de l'écran moins la place du titre, de la courbe et de la barre du bas (min. 300 px) : testé 375×667, 390×844, 430×932. Ordinateur et tablette inchangés.
