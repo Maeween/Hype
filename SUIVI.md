@@ -14581,3 +14581,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Blandine a trouvé les 3 selles répétitives → Demi Volte sans selle ; entre deux jeux d'images (A : banc + boutique moderne ; B : à plat + boutique en bois) elle a validé la B.
 - Cadrages refaits (sujet à droite, texte sur la zone sombre) : ordinateur hero pleine largeur ; tablette image sur 62 % droite ; téléphone bande dédiée ; adresses image à droite avec fondu ; arabe en miroir.
 - Rien d'autre changé (FEINN10 en premier, codes, liens, 6 adresses, Partager un code, 14 langues). Tests : 390, 1024×1366, 1366×1024, 1440 ; fr / ar ; 0 erreur ; 17 blocs OK.
+
+## 26/10/2026 — marqueur 20261026-0910, PUBLIÉ : Ma Sellerie — plus d'espace entre les cartes « Adresses à découvrir »
+- Demande de Blandine : augmenter UNIQUEMENT l'espace entre les cartes d'adresses, sans changer leurs dimensions ni le carrousel des codes. Téléphone 9 → 18 px ; tablette/ordinateur 18 → 28 px (`.hsl-adrs` gap). Rien d'autre touché.
+- Le prompt ChatGPT « FINALISATION DE MA SELLERIE » joint au même message n'est PAS appliqué (en attente des choix de Blandine) : carrousel horizontal des codes + vrai « Voir tout », mention « Épinglé », retrait cloche/cœur, titre court « Des adresses pour vivre ta passion. », images v4-dore non fournies, question Golden Horse.
