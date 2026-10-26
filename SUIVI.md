@@ -14608,7 +14608,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Non concernés : « Quoi de neuf », reprises de dressage (autres lecteurs).
 - Tests : voix simulée (cas iPhone qui coupe / cas qui continue) → aucun morceau sauté ni répété ; 17 blocs OK. À tester sur iPhone : lancer la lecture d'un cours, verrouiller quelques secondes, revenir.
 
-## 26/10/2026 — 9 h 50 : séparation future Hype / Horse Lingo — constats et décisions (rien modifié)
+## 26/10/2026 — 9 h 50 : séparation future Hype / Horse Lingo — constats et décisions (rien modifié) [corrigé 9 h 52]
 - Constat (lecture seule) : Horse Lingo utilise le même Supabase que Hype (comptes, abonnements_premium, hype_ambassadeurs, hype_lingua_progression). 69 comptes ; 15 fiches Horse Lingo (tous ont un profil Hype) ; seuls 3 joueurs ont vraiment une progression (Blandine, Evan, Silvia), les 12 autres fiches sont vides. Aucun abonnement propre à Horse Lingo : les 17 abonnements sont des abonnements Hype (mensuel / duo / annuel), dont 4 payants Stripe en cours ; 8 des 15 comptes Horse Lingo ont un Premium Hype (7 valides, 2 payants Stripe). 5 abonnements « actif » ont une date de fin dépassée (non touchés).
-- Décisions de Blandine : un compte commun pour toutes ses applis (« comme Battle.net ») ; un abonnement Horse Lingo À PART ; pour les Premium Hype encore valides au moment de la séparation → choix A : Horse Lingo Premium gratuit jusqu'à la fin de leur abonnement Hype en cours.
+- Décisions de Blandine : un compte commun pour toutes ses applis (« comme Battle.net ») ; un abonnement Horse Lingo À PART ; pour les Premium Hype encore valides au moment de la séparation → PAS ENCORE TRANCHÉ (son « À » était un message coupé, pas un choix) ; recommandation de Claude : A = Horse Lingo Premium gratuit jusqu'à la fin de leur abonnement Hype en cours.
 - Reste à décider avant tout code : prix et formule de l'abonnement Horse Lingo ; feu vert pour créer le produit dans Stripe.
