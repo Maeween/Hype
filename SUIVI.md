@@ -14702,3 +14702,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 19h55 — Page Galops : photo « Une progression » plus courte sur téléphone (build 20261026-1955) — NON PUBLIÉ
 - Demande de Blandine : la photo en portrait était trop haute, on croyait la page finie. Téléphone : format 4/3 au lieu de 4/5, cadrage sur le cheval, fondu bas plus doux, espace réduit. Ordinateur inchangé.
+
+## 26/10 20h00 — Correction du plantage « Un caillou dans le sabot » sur les cours des Galops 5 et 7 (build 20261026-2000) — NON PUBLIÉ
+- Cause : les cours des Galops 5 et 7 (en préparation) n'ont pas encore de fichiers par langue ; leurs textes sont des objets {fr, en…} que la page du cours affichait tels quels → React #31.
+- Correction : quand un Galop 5 ou 7 est chargé depuis son fichier complet, on range une copie traduite dans la langue choisie (hypeLocaliserCours) ; titre du cours protégé aussi. Galops 1 à 4 et 6 non touchés.
+- Testé : les 6 cours du Galop 5 et les 6 cours du Galop 7 s'ouvrent (modératrice) ; Galop 3 inchangé.
