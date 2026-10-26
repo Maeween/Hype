@@ -14725,3 +14725,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Demande de Blandine : objectifs et programme officiel font doublon. On ne garde que : Cours, « Objectifs officiels » (ex-« Programme officiel », renommé en 14 langues) et Reprises de dressage (Galops 3 à 7). Sur ordinateur, « Présentation » reste en tête (vue par défaut).
 - Retirés des rubriques : Objectifs, Exercices (Prochainement), Vidéothèque, Évaluation. Le quiz et l'examen blanc restent accessibles dans la page du Galop et par les cartes « Tout pour progresser ».
 - Galops 5 et 7 (Bientôt) : Présentation + Objectifs officiels.
+
+## 26/10 20h55 — « Des connaissances qui font la différence » remise sur téléphone, sans recouvrir le cheval (build 20261026-2055) — NON PUBLIÉ
+- Blandine : « laisse-le pour l'instant, mais faut surtout que ça n'écrase plus la photo du cheval ». Annule le retrait de 20h20.
+- Téléphone : texte et bouton d'abord, photo du cheval gris en dessous (tête entière visible, fondue dans le noir en haut et en bas). Ordinateur et tablette inchangés.
