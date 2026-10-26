@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261026-2330"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261027-0030"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -29214,7 +29214,7 @@ function Router() {
     /* 21/10 (tests de Blandine, probleme 10) — CAUSE COMMUNE des pages « enfermees » en largeur telephone :
        l enveloppe de l appli limite a 480 px tout ecran absent des listes ci-dessous. Ces ecrans recoivent
        desormais la largeur (1280 max) des la tablette ; chacun gere ensuite sa propre composition. */
-    const ECRANS_LARGES_TESTS = ["communaute", "apprentissage", "carnet", "assistant", "articles", "videos", "galops", "galop-detail", "profil", "sellerie"];
+    const ECRANS_LARGES_TESTS = ["communaute", "apprentissage", "carnet", "assistant", "articles", "videos", "galops", "galop-detail", "galop5", "profil", "sellerie"];
     /* pages de lecture longue (cours, quiz, examens, article) : une colonne confortable de 820 px, jamais toute la largeur */
     const ECRANS_LECTURE_TESTS = ["cours", "quiz", "examen", "examen-blanc", "article-detail", "video-lecture"];
     const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */, "challenge" /* 20/10 */, "assistant" /* 21/10 Hey Baby responsive */];
@@ -29327,6 +29327,7 @@ function Router() {
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
                 ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
                 ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null))),   /* 09/10 (764) : verrou Premium a l arrivee */
+                ecran === "galop5" && React.createElement(EcranGalop5, null),   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
                 ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null))),
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
@@ -78035,7 +78036,7 @@ function NavBar() {
             React.createElement("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 19, letterSpacing: 7, paddingInlineStart: 7, color: NAV_CHAMPAGNE } }, "HYPE"))
           : React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: "100%", height: 16, background: "linear-gradient(180deg, rgba(6,7,9,0) 0%, rgba(6,7,9,0.55) 100%)", pointerEvents: "none" } }),
         items.map((item) => {
-        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && (ecran === "evenement" || ecran === "decouvrir" /* (1051) */)) || (item.id === "moncavalier" && ["profil", "apprentissage"].includes(ecran)) || (item.id === "ecurie" && ["guilde", "cheval", "cavalier", "ecurie-hype", "album-ecurie"].includes(ecran)); /* 21/10 (tests, probleme 7) : "sellerie" retire — Ma sellerie (Le coin des pros, ouvert depuis l accueil) n allume plus « Ecurie ». 29/08 : "guilde" ajoute — l'onglet redirigeait deja vers le club mais ne s'allumait pas une fois dessus */
+        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "galop5", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && (ecran === "evenement" || ecran === "decouvrir" /* (1051) */)) || (item.id === "moncavalier" && ["profil", "apprentissage"].includes(ecran)) || (item.id === "ecurie" && ["guilde", "cheval", "cavalier", "ecurie-hype", "album-ecurie"].includes(ecran)); /* 21/10 (tests, probleme 7) : "sellerie" retire — Ma sellerie (Le coin des pros, ouvert depuis l accueil) n allume plus « Ecurie ». 29/08 : "guilde" ajoute — l'onglet redirigeait deja vers le club mais ne s'allumait pas une fois dessus */
         const petits = String(item.label || "").length >= 9;
         const ferme = item.id === "communaute" && !accesCommu; /* (368) */
         return (React.createElement("button", { key: item.id, onClick: () => { if (ferme) { setBulleCommu(true); setTimeout(() => setBulleCommu(false), 2200); return; } try { if (typeof window !== "undefined") { window.__cavalierOuvert = null; window.__cavalierPublic = null; window.__hypeEcurieVisite = null; } } catch (eNb) { }   /* (830) un toucher sur la barre du bas termine une visite d ecurie par lien */ setEcran(item.id === "ecurie" ? "guilde" : item.id); }, style: navTop ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 7, height: 64, padding: "0 13px", boxSizing: "border-box", background: "transparent", border: "none", borderBottom: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } : navLarge ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 14, width: "100%", minHeight: 48, padding: "0 22px", boxSizing: "border-box", textAlign: "start", background: actif ? ("linear-gradient(" + (navRtl ? "270deg" : "90deg") + ", rgba(201,166,107,0.16), rgba(201,166,107,0))") : "transparent", [navRtl ? "borderRight" : "borderLeft"]: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } /* (862) */ : { position: "relative", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 0 6px", opacity: ferme ? 0.45 : 1 } },
@@ -80051,7 +80052,9 @@ function GalopsV2Haut(props) {
 
     /* bouton principal : reprendre là où on s'est arrêtée (ou commencer / revoir) */
     var btnP = null;
-    if (bientot) btnP = null;
+    if (id === 5 && estModGal && typeof EcranGalop5 === "function") btnP = h("button", { type: "button", className: "gv2-btn gv2-e-btn", onClick: function () { setEcran("galop5"); } },   /* 27/10 : accès à la nouvelle page du Galop 5 (modératrices seules) */
+      tr(gv2L("Découvrir le Galop 5", "Discover Level 5", "Descubrir el nivel 5", "Scopri il livello 5", "Galopp 5 entdecken", "ギャロップ5を見る", "اكتشفي Galop 5", "了解 Galop 5", "Ontdek Galop 5", "Descobrir o Galop 5", "Upptäck Galop 5", "Открыть Galop 5", "Odkryj Galop 5", "Galop 5 살펴보기")), h("span", { className: "gv2-fl", "aria-hidden": "true" }, "\u2192"));
+    else if (bientot) btnP = null;
     else if (verrou) btnP = h("button", { type: "button", className: "gv2-btn gv2-e-btn", onClick: function () { setEcran("premium"); } }, tr(TE.premium), h("span", { className: "gv2-fl", "aria-hidden": "true" }, "\u2192"));
     else if (!total) btnP = h("button", { type: "button", className: "gv2-btn gv2-e-btn", onClick: function () { ouvrir(id); } }, tr(TE.voirTous), h("span", { className: "gv2-fl", "aria-hidden": "true" }, "\u2192"));
     else if (!suivant) btnP = h("button", { type: "button", className: "gv2-btn gv2-e-btn", onClick: function () { ouvrir(id); } }, tr(TE.revoir), h("span", { className: "gv2-fl", "aria-hidden": "true" }, "\u2192"));
@@ -80251,6 +80254,457 @@ function GalopsV2Haut(props) {
         h("p", { className: "gv2-tpp-intro" }, tr(TP.intro))),
       h("div", { className: "gv2-grille" }, cartes)),
     suite);
+}
+
+/* ══ 27/10 — PAGE DU GALOP 5 (pack « HYPE_Galop5 » validé par Blandine le 26/10, « Oui ok » le 27/10 à 00h20) ══
+   Une seule page qui défile : haut (photo d'Elfe et Liam), pastilles 1 → 7, onglets (ancres), présentation, objectifs officiels,
+   les 12 cours en 4 thèmes dépliants, extraits vidéo, Reprises + Évaluation. Décisions de Blandine :
+   - page visible des SEULES modératrices tant que le Galop 5 est « Bientôt » (GALOPS_I18N id 5, disponible:false) ;
+   - accès par un bouton « Découvrir le Galop 5 » dans l'espace du Galop 5 de la page Galops ;
+   - onglet Programme = encart des 4 objectifs du Galop 5 + lien vers le programme officiel FFE ;
+   - Évaluation = « Bientôt » (l'examen blanc du Galop 5 existe mais Blandine ne l'a pas vérifié).
+   Rien d'inventé : les 12 cours ne sont pas encore écrits → « En préparation », pas de durée, pas de bouton lecture ;
+   ATTENTION : 6 brouillons du Galop 5 existent déjà (hype-cours-galop5.js, g5-c1 … g5-c6, titres DIFFÉRENTS, aucun « prêt »).
+   Les 12 cours prévus ont donc des identifiants réservés à part (g5n-01 … g5n-12) qui ne correspondent à rien : tout reste
+   « En préparation » tant que Blandine n'a pas décidé comment relier les 12 titres aux cours écrits (une ligne s'ouvre dès que
+   obtenirSommaireGalop(5) contient son identifiant et que le cours est prêt).
+   Les 3 extraits vidéo sont de simples photos (aucune vidéo du Galop 5 n'existe) ; « Ressources utiles » masquée (ni fiches mémo, ni lexique). */
+var G5_IMG = {
+  hero: "images/galop5-hero-elfe-liam.webp",
+  connaissances: "images/galop5-theme-connaissances.webp",
+  cheval: "images/galop5-theme-cheval.webp",
+  soins: "images/galop5-theme-soins-pied.webp",
+  montee: "images/galop5-theme-pratique-montee.webp",
+  vDressage: "images/galop5-video-dressage.webp",
+  vParcours: "images/galop5-video-parcours.webp",
+  vSaut: "images/galop5-video-saut.webp",
+  reprises: "images/galop5-reprises-dressage.webp"
+};
+var G5_T = {
+  pre: gv2L("Galop", "Level", "Nivel", "Livello", "Galopp", "ギャロップ", "Galop", "Galop", "Galop", "Galop", "Galop", "Galop", "Galop", "Galop"),
+  sous: gv2L("Plus d'aisance, plus d'autonomie", "More ease, more independence", "Más soltura, más autonomía", "Più disinvoltura, più autonomia", "Mehr Leichtigkeit, mehr Selbstständigkeit", "もっと余裕を、もっと自立を", "مزيد من السهولة، مزيد من الاستقلالية", "更从容，更自主", "Meer gemak, meer zelfstandigheid", "Mais à-vontade, mais autonomia", "Mer lätthet, mer självständighet", "Больше лёгкости, больше самостоятельности", "Więcej swobody, więcej samodzielności", "더 여유롭게, 더 자립적으로"),
+  retour: gv2L("Retour", "Back", "Volver", "Indietro", "Zurück", "戻る", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로"),
+  nav: gv2L("Sections du Galop 5", "Level 5 sections", "Secciones del nivel 5", "Sezioni del livello 5", "Bereiche von Galopp 5", "ギャロップ5のセクション", "أقسام Galop 5", "Galop 5 的栏目", "Onderdelen van Galop 5", "Secções do Galop 5", "Delar av Galop 5", "Разделы Galop 5", "Sekcje Galopu 5", "Galop 5 섹션"),
+  oPres: gv2L("Présentation", "Overview", "Presentación", "Presentazione", "Überblick", "概要", "تقديم", "简介", "Overzicht", "Apresentação", "Översikt", "Обзор", "Prezentacja", "소개"),
+  oProg: gv2L("Programme", "Programme", "Programa", "Programma", "Programm", "プログラム", "البرنامج", "大纲", "Programma", "Programa", "Program", "Программа", "Program", "프로그램"),
+  oCours: gv2L("Cours", "Lessons", "Cursos", "Corsi", "Kurse", "レッスン", "الدروس", "课程", "Lessen", "Aulas", "Lektioner", "Уроки", "Lekcje", "수업"),
+  oRep: gv2L("Reprises", "Tests", "Reprises", "Riprese", "Aufgaben", "経路", "العروض", "套路", "Proeven", "Provas", "Program", "Схемы", "Programy", "과제"),
+  oVid: gv2L("Vidéos", "Videos", "Vídeos", "Video", "Videos", "動画", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"),
+  oEval: gv2L("Évaluation", "Assessment", "Evaluación", "Valutazione", "Bewertung", "評価", "التقييم", "评估", "Evaluatie", "Avaliação", "Utvärdering", "Оценка", "Ocena", "평가"),
+  capT: gv2L("Un cap vers plus d'autonomie", "A step towards more independence", "Un paso hacia más autonomía", "Un passo verso più autonomia", "Ein Schritt zu mehr Selbstständigkeit", "より大きな自立への一歩", "خطوة نحو مزيد من الاستقلالية", "迈向更自主的一步", "Een stap naar meer zelfstandigheid", "Um passo rumo a mais autonomia", "Ett steg mot mer självständighet", "Шаг к большей самостоятельности", "Krok ku większej samodzielności", "더 큰 자립을 향한 한 걸음"),
+  capP: gv2L("Le Galop 5 te permet de renforcer tes connaissances, d'affiner ta technique et de gagner en autonomie, à pied comme à cheval. Tu consolides tes acquis et tu découvres de nouvelles pratiques, sur le plat comme à l'obstacle et en extérieur.",
+    "Level 5 helps you deepen your knowledge, refine your technique and become more independent, on the ground as well as in the saddle. You consolidate what you have learnt and discover new practices, on the flat, over fences and out on varied terrain.",
+    "El nivel 5 te permite reforzar tus conocimientos, afinar tu técnica y ganar autonomía, pie a tierra y a caballo. Consolidas lo aprendido y descubres nuevas prácticas, en plano, en salto y en el exterior.",
+    "Il livello 5 ti permette di rafforzare le tue conoscenze, affinare la tecnica e guadagnare autonomia, da terra come in sella. Consolidi ciò che hai imparato e scopri nuove pratiche, in piano, sugli ostacoli e all'esterno.",
+    "Mit Galopp 5 vertiefst du dein Wissen, verfeinerst deine Technik und wirst selbstständiger, vom Boden aus wie im Sattel. Du festigst das Gelernte und entdeckst Neues, auf dem Viereck, über Hindernisse und im Gelände.",
+    "ギャロップ5では、地上でも馬上でも、知識を深め、技術を磨き、より自立できるようになります。これまでの成果を固め、平地・障害・野外で新しい練習に取り組みます。",
+    "يتيح لك Galop 5 تعزيز معارفك وصقل تقنيتك واكتساب مزيد من الاستقلالية، على الأرض كما على ظهر الحصان. ترسّخين مكتسباتك وتكتشفين ممارسات جديدة، في الأرض المستوية وفي القفز وفي الخارج.",
+    "Galop 5 帮助你巩固知识、精进技术、变得更加自主，无论是在地面还是在马背上。你将巩固已学内容，并在平地、障碍和野外探索新的练习。",
+    "Met Galop 5 versterk je je kennis, verfijn je je techniek en word je zelfstandiger, naast het paard en in het zadel. Je verankert wat je geleerd hebt en ontdekt nieuwe oefeningen, op vlak terrein, over hindernissen en buiten.",
+    "O Galop 5 permite-te reforçar os teus conhecimentos, afinar a tua técnica e ganhar autonomia, a pé e a cavalo. Consolidas o que aprendeste e descobres novas práticas, no plano, no salto e no exterior.",
+    "Galop 5 hjälper dig att fördjupa dina kunskaper, finslipa din teknik och bli mer självständig, både från marken och i sadeln. Du befäster det du lärt dig och upptäcker nya moment, på plan mark, över hinder och i terrängen.",
+    "Galop 5 помогает углубить знания, отточить технику и стать самостоятельнее — и с земли, и в седле. Ты закрепляешь освоенное и открываешь новые упражнения: в манеже, на препятствиях и на природе.",
+    "Galop 5 pozwala ci pogłębić wiedzę, dopracować technikę i zyskać samodzielność, zarówno z ziemi, jak i w siodle. Utrwalasz to, czego się nauczyłeś, i odkrywasz nowe ćwiczenia: na płaskim, na przeszkodach i w terenie.",
+    "Galop 5에서는 땅에서도 말 위에서도 지식을 다지고 기술을 다듬으며 더 자립적으로 성장해요. 배운 것을 굳히고 평지, 장애물, 야외에서 새로운 연습을 만나요."),
+  progT: gv2L("Les objectifs du Galop 5", "Level 5 goals", "Los objetivos del nivel 5", "Gli obiettivi del livello 5", "Die Ziele von Galopp 5", "ギャロップ5の目標", "أهداف Galop 5", "Galop 5 的目标", "De doelen van Galop 5", "Os objetivos do Galop 5", "Målen för Galop 5", "Цели Galop 5", "Cele Galopu 5", "Galop 5의 목표"),
+  ffeLien: gv2L("Voir le programme officiel (FFE)", "See the official programme (FFE)", "Ver el programa oficial (FFE)", "Vedi il programma ufficiale (FFE)", "Offizielles Programm ansehen (FFE)", "公式プログラムを見る（FFE）", "عرض البرنامج الرسمي (FFE)", "查看官方大纲（FFE）", "Officieel programma bekijken (FFE)", "Ver o programa oficial (FFE)", "Se det officiella programmet (FFE)", "Официальная программа (FFE)", "Zobacz program oficjalny (FFE)", "공식 프로그램 보기 (FFE)"),
+  coursT: gv2L("Les cours du Galop 5", "Level 5 lessons", "Los cursos del nivel 5", "I corsi del livello 5", "Die Kurse von Galopp 5", "ギャロップ5のレッスン", "دروس Galop 5", "Galop 5 的课程", "De lessen van Galop 5", "As aulas do Galop 5", "Lektionerna i Galop 5", "Уроки Galop 5", "Lekcje Galopu 5", "Galop 5 수업"),
+  nb: gv2L("{n} cours", "{n} lessons", "{n} cursos", "{n} corsi", "{n} Kurse", "{n}レッスン", "{n} دروس", "{n} 节课", "{n} lessen", "{n} aulas", "{n} lektioner", "уроков: {n}", "lekcje: {n}", "수업 {n}개"),
+  prepa: gv2L("En préparation", "In preparation", "En preparación", "In preparazione", "In Vorbereitung", "準備中", "قيد الإعداد", "准备中", "In voorbereiding", "Em preparação", "Under förberedelse", "Готовится", "W przygotowaniu", "준비 중"),
+  fait: gv2L("Terminé", "Completed", "Completado", "Completato", "Abgeschlossen", "完了", "مكتمل", "已完成", "Voltooid", "Concluído", "Klar", "Пройдено", "Ukończono", "완료"),
+  ouvrirC: gv2L("Ouvrir le cours", "Open the lesson", "Abrir el curso", "Apri il corso", "Kurs öffnen", "レッスンを開く", "افتحي الدرس", "打开课程", "Les openen", "Abrir a aula", "Öppna lektionen", "Открыть урок", "Otwórz lekcję", "수업 열기"),
+  vidT: gv2L("Extraits vidéo du Galop 5", "Level 5 video clips", "Extractos en vídeo del nivel 5", "Estratti video del livello 5", "Videoausschnitte zu Galopp 5", "ギャロップ5の動画クリップ", "مقتطفات فيديو من Galop 5", "Galop 5 视频片段", "Videofragmenten van Galop 5", "Excertos em vídeo do Galop 5", "Videoklipp från Galop 5", "Видеофрагменты Galop 5", "Fragmenty wideo Galopu 5", "Galop 5 영상 클립"),
+  vidTous: gv2L("Voir toute la vidéothèque", "See the whole video library", "Ver toda la videoteca", "Vedi tutta la videoteca", "Ganze Videothek ansehen", "動画ライブラリをすべて見る", "عرض مكتبة الفيديو كاملة", "查看全部视频库", "De hele videotheek bekijken", "Ver toda a videoteca", "Se hela videobiblioteket", "Вся видеотека", "Zobacz całą wideotekę", "영상 라이브러리 전체 보기"),
+  vidBientot: gv2L("Vidéos à découvrir", "Videos coming soon", "Vídeos por descubrir", "Video in arrivo", "Videos folgen", "動画は近日公開", "فيديوهات قادمة", "视频即将上线", "Video's volgen", "Vídeos a descobrir", "Videor kommer snart", "Видео скоро", "Filmy wkrótce", "영상 공개 예정"),
+  v1: gv2L("Les transitions et la régularité", "Transitions and steadiness", "Las transiciones y la regularidad", "Le transizioni e la regolarità", "Übergänge und Gleichmäßigkeit", "移行と安定したリズム", "الانتقالات والانتظام", "转换与稳定性", "Overgangen en regelmaat", "As transições e a regularidade", "Övergångar och jämnhet", "Переходы и ровность", "Przejścia i regularność", "이행과 규칙성"),
+  v2: gv2L("L'abord d'un obstacle", "Approaching a fence", "El abordaje de un obstáculo", "L'approccio all'ostacolo", "Das Anreiten eines Hindernisses", "障害へのアプローチ", "الاقتراب من الحاجز", "障碍前的接近", "Het aanrijden van een hindernis", "A abordagem de um obstáculo", "Att rida an mot ett hinder", "Подход к препятствию", "Najazd na przeszkodę", "장애물 접근"),
+  v3: gv2L("Le travail sur les courbes", "Working on curved lines", "El trabajo en las curvas", "Il lavoro sulle curve", "Arbeit auf gebogenen Linien", "曲線上の運動", "العمل على المنحنيات", "弧线练习", "Werk op gebogen lijnen", "O trabalho em curvas", "Arbete på böjda spår", "Работа на дугах", "Praca na łukach", "곡선 운동"),
+  repT: gv2L("Reprises de dressage", "Dressage tests", "Reprises de doma", "Riprese di dressage", "Dressuraufgaben", "馬場馬術の経路", "عروض الترويض", "盛装舞步套路", "Dressuurproeven", "Provas de adestramento", "Dressyrprogram", "Схемы выездки", "Programy ujeżdżenia", "마장마술 과제"),
+  repS: gv2L("Découvre les reprises du Galop 5 et entraîne-toi.", "Discover the Level 5 tests and practise.", "Descubre las reprises del nivel 5 y entrénate.", "Scopri le riprese del livello 5 e allenati.", "Entdecke die Aufgaben von Galopp 5 und übe.", "ギャロップ5の経路を見て練習しよう。", "اكتشفي عروض Galop 5 وتدرّبي.", "了解 Galop 5 的套路并练习。", "Ontdek de proeven van Galop 5 en oefen.", "Descobre as provas do Galop 5 e treina.", "Upptäck programmen för Galop 5 och träna.", "Изучи схемы Galop 5 и тренируйся.", "Poznaj programy Galopu 5 i ćwicz.", "Galop 5 과제를 살펴보고 연습해요."),
+  evS: gv2L("Fais le point sur tes acquis avec l'examen blanc du Galop 5.", "Check what you know with the Level 5 mock exam.", "Haz balance de lo aprendido con el examen de prueba del nivel 5.", "Fai il punto su ciò che sai con l'esame di prova del livello 5.", "Prüfe dein Wissen mit der Probeprüfung von Galopp 5.", "ギャロップ5の模擬試験で理解度を確かめよう。", "قيّمي مكتسباتك مع الامتحان التجريبي لـ Galop 5.", "用 Galop 5 模拟考试检验所学。", "Test wat je weet met het proefexamen van Galop 5.", "Faz o ponto da situação com o exame simulado do Galop 5.", "Testa dina kunskaper med provexamen för Galop 5.", "Проверь свои знания на пробном экзамене Galop 5.", "Sprawdź swoją wiedzę na egzaminie próbnym Galopu 5.", "Galop 5 모의 시험으로 실력을 점검해요."),
+  bientot: gv2L("Bientôt", "Soon", "Pronto", "Presto", "Bald", "近日公開", "قريبا", "即将推出", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧 공개"),
+  ouvrirT: gv2L("Afficher les cours", "Show the lessons", "Mostrar los cursos", "Mostra i corsi", "Kurse anzeigen", "レッスンを表示", "عرض الدروس", "显示课程", "Lessen tonen", "Mostrar as aulas", "Visa lektionerna", "Показать уроки", "Pokaż lekcje", "수업 보기")
+};
+/* Les 12 cours (titres éditoriaux validés ; la FFE n'impose pas 12 cours distincts). id = identifiant réservé (g5n-…), sans lien avec les brouillons g5-c1 … g5-c6. */
+var G5_THEMES = [
+  { k: "conn", img: G5_IMG.connaissances, pos: "50% 30%",
+    t: gv2L("Connaissances générales", "General knowledge", "Conocimientos generales", "Conoscenze generali", "Allgemeinwissen", "一般知識", "معارف عامة", "基础知识", "Algemene kennis", "Conhecimentos gerais", "Allmänna kunskaper", "Общие знания", "Wiedza ogólna", "일반 지식"),
+    cours: [
+      { id: "g5n-01", img: G5_IMG.connaissances, pos: "45% 30%", t: gv2L("Le matériel, la carrière et les obstacles", "Tack, the arena and the fences", "El equipo, la pista y los obstáculos", "L'attrezzatura, il campo e gli ostacoli", "Ausrüstung, Reitplatz und Hindernisse", "馬具、馬場、障害", "المعدات والميدان والحواجز", "马具、场地与障碍", "Het materiaal, de rijbaan en de hindernissen", "O material, a pista e os obstáculos", "Utrustningen, ridbanan och hindren", "Снаряжение, плац и препятствия", "Sprzęt, ujeżdżalnia i przeszkody", "마구, 마장, 장애물") },
+      { id: "g5n-02", img: G5_IMG.reprises, pos: "55% 40%", t: gv2L("Identification du cheval et compétition", "Horse identification and competition", "Identificación del caballo y competición", "Identificazione del cavallo e competizione", "Identifizierung des Pferdes und Turniersport", "馬の個体識別と競技", "تعريف الحصان والمنافسات", "马匹识别与比赛", "Identificatie van het paard en wedstrijden", "Identificação do cavalo e competição", "Hästens identifiering och tävling", "Идентификация лошади и соревнования", "Identyfikacja konia i zawody", "말의 식별과 대회") }
+    ] },
+  { k: "cheval", img: G5_IMG.cheval, pos: "35% 35%",
+    t: gv2L("Connaissance du cheval", "Knowing the horse", "Conocer al caballo", "Conoscere il cavallo", "Pferdekunde", "馬を知る", "معرفة الحصان", "认识马", "Kennis van het paard", "Conhecer o cavalo", "Hästkunskap", "Знание лошади", "Wiedza o koniu", "말에 대한 이해"),
+    cours: [
+      { id: "g5n-03", img: G5_IMG.cheval, pos: "30% 35%", t: gv2L("Comment apprend le cheval ?", "How does a horse learn?", "¿Cómo aprende el caballo?", "Come impara il cavallo?", "Wie lernt das Pferd?", "馬はどのように学ぶ？", "كيف يتعلّم الحصان؟", "马是如何学习的？", "Hoe leert een paard?", "Como aprende o cavalo?", "Hur lär sig hästen?", "Как учится лошадь?", "Jak uczy się koń?", "말은 어떻게 배울까?") },
+      { id: "g5n-04", img: G5_IMG.soins, pos: "50% 55%", t: gv2L("Mieux connaître le corps du cheval", "Getting to know the horse's body", "Conocer mejor el cuerpo del caballo", "Conoscere meglio il corpo del cavallo", "Den Körper des Pferdes besser kennen", "馬の体をもっと知る", "التعرّف أكثر على جسم الحصان", "更好地了解马的身体", "Het lichaam van het paard beter leren kennen", "Conhecer melhor o corpo do cavalo", "Lära känna hästens kropp bättre", "Лучше узнать тело лошади", "Lepiej poznać ciało konia", "말의 몸 더 잘 알기") }
+    ] },
+  { k: "soins", img: G5_IMG.soins, pos: "50% 55%",
+    t: gv2L("Soins et travail à pied", "Care and groundwork", "Cuidados y trabajo pie a tierra", "Cure e lavoro da terra", "Pflege und Bodenarbeit", "手入れとグランドワーク", "العناية والعمل من الأرض", "护理与地面工作", "Verzorging en grondwerk", "Cuidados e trabalho a pé", "Skötsel och markarbete", "Уход и работа с земли", "Pielęgnacja i praca z ziemi", "관리와 지상 작업"),
+    cours: [
+      { id: "g5n-05", img: G5_IMG.hero, pos: "70% 60%", t: gv2L("Les soins et les bandes de repos", "Care and stable bandages", "Los cuidados y las vendas de descanso", "Le cure e le fasce da riposo", "Pflege und Stallbandagen", "手入れと休養用バンデージ", "العناية وأربطة الراحة", "护理与休息绷带", "Verzorging en stalbandages", "Os cuidados e as ligaduras de descanso", "Skötsel och stallbandage", "Уход и денниковые бинты", "Pielęgnacja i bandaże stajenne", "관리와 휴식용 붕대") },
+      { id: "g5n-06", img: G5_IMG.montee, pos: "50% 45%", t: gv2L("Le travail du cheval à pied", "Working the horse from the ground", "El trabajo del caballo pie a tierra", "Il lavoro del cavallo da terra", "Bodenarbeit mit dem Pferd", "馬のグランドワーク", "العمل مع الحصان من الأرض", "马的地面工作", "Grondwerk met het paard", "O trabalho do cavalo a pé", "Markarbete med hästen", "Работа с лошадью с земли", "Praca z koniem z ziemi", "말의 지상 작업") },
+      { id: "g5n-07", img: G5_IMG.hero, pos: "20% 35%", t: gv2L("Embarquer et transporter un cheval", "Loading and transporting a horse", "Embarcar y transportar un caballo", "Caricare e trasportare un cavallo", "Verladen und Transportieren eines Pferdes", "馬の積み込みと輸送", "إركاب الحصان ونقله", "马匹装载与运输", "Een paard laden en vervoeren", "Embarcar e transportar um cavalo", "Lasta och transportera en häst", "Погрузка и перевозка лошади", "Załadunek i transport konia", "말 싣기와 수송") }
+    ] },
+  { k: "montee", img: G5_IMG.montee, pos: "50% 40%",
+    t: gv2L("Pratique équestre montée", "Ridden practice", "Práctica ecuestre montada", "Pratica equestre in sella", "Reitpraxis", "騎乗での実践", "الممارسة على ظهر الحصان", "骑乘实践", "Rijpraktijk", "Prática equestre montada", "Ridpraktik", "Практика верховой езды", "Praktyka w siodle", "기승 실습"),
+    cours: [
+      { id: "g5n-08", img: G5_IMG.vDressage, pos: "50% 45%", t: gv2L("Équilibre, cadence et transitions", "Balance, rhythm and transitions", "Equilibrio, cadencia y transiciones", "Equilibrio, cadenza e transizioni", "Gleichgewicht, Takt und Übergänge", "バランス、リズム、移行", "التوازن والإيقاع والانتقالات", "平衡、节奏与转换", "Evenwicht, cadans en overgangen", "Equilíbrio, cadência e transições", "Balans, takt och övergångar", "Равновесие, ритм и переходы", "Równowaga, rytm i przejścia", "균형, 리듬, 이행") },
+      { id: "g5n-09", img: G5_IMG.montee, pos: "50% 40%", t: gv2L("L'incurvation et le travail sur les courbes", "Bend and work on curved lines", "La incurvación y el trabajo en curvas", "L'incurvamento e il lavoro sulle curve", "Biegung und Arbeit auf gebogenen Linien", "湾曲と曲線上の運動", "التقوّس والعمل على المنحنيات", "侧弯与弧线练习", "Buiging en werk op gebogen lijnen", "A incurvação e o trabalho em curvas", "Böjning och arbete på böjda spår", "Изгиб и работа на дугах", "Zgięcie i praca na łukach", "휨과 곡선 운동") },
+      { id: "g5n-10", img: G5_IMG.reprises, pos: "50% 40%", t: gv2L("La cession à la jambe et les départs au galop", "Leg-yielding and canter departs", "La cesión a la pierna y las salidas al galope", "La cessione alla gamba e le partenze al galoppo", "Schenkelweichen und Angaloppieren", "脚への譲歩と駈歩発進", "الإزاحة بالساق والانطلاق في العدو", "腿部让步与跑步起步", "Wijken voor de kuit en galopaanspringen", "A cedência à perna e as partidas a galope", "Skänkelvikning och galoppfattningar", "Уступка шенкелю и подъёмы в галоп", "Ustępowanie od łydki i zagalopowania", "레그일딩과 구보 발진") },
+      { id: "g5n-11", img: G5_IMG.vSaut, pos: "50% 45%", t: gv2L("Le saut d'obstacles : technique et parcours", "Show jumping: technique and courses", "El salto de obstáculos: técnica y recorrido", "Il salto ostacoli: tecnica e percorso", "Springreiten: Technik und Parcours", "障害飛越：技術とコース", "قفز الحواجز: التقنية والمسار", "障碍跳跃：技术与路线", "Springen: techniek en parcours", "O salto de obstáculos: técnica e percurso", "Hoppning: teknik och bana", "Конкур: техника и маршрут", "Skoki przez przeszkody: technika i parkur", "장애물 비월: 기술과 코스") },
+      { id: "g5n-12", img: G5_IMG.vParcours, pos: "50% 45%", t: gv2L("Le cross et l'équitation en terrain varié", "Cross-country and riding over varied terrain", "El cross y la equitación en terreno variado", "Il cross e l'equitazione su terreno vario", "Gelände und Reiten in abwechslungsreichem Terrain", "クロスカントリーと変化のある地形での騎乗", "الكروس والركوب في تضاريس متنوعة", "越野与多样地形骑乘", "Cross en rijden in gevarieerd terrein", "O cross e a equitação em terreno variado", "Terräng och ridning i varierad terräng", "Кросс и езда по пересечённой местности", "Cross i jazda w zróżnicowanym terenie", "크로스컨트리와 다양한 지형 승마") }
+    ] }
+];
+var G5_CSS = ""
+  + ".g5{--g5-fond:#070A08;--g5-fond2:#050809;--g5-petrole:#101D22;--g5-petrole2:#101A1D;--g5-ivoire:#F3EEE4;--g5-t2:rgba(243,238,228,0.74);--g5-t3:rgba(243,238,228,0.52);--g5-champ:#C9A66B;--g5-filet:rgba(201,166,107,0.30);--g5-bord:rgba(201,166,107,0.22);"
+  + "position:relative;min-height:100vh;background:var(--g5-fond);color:var(--g5-ivoire);font-family:'Montserrat',sans-serif;overflow-x:clip;padding-bottom:calc(env(safe-area-inset-bottom) + 110px)}"
+  + ".g5 *{box-sizing:border-box}"
+  + ".g5 button{font-family:inherit;color:inherit}"
+  + ".g5 button:focus-visible,.g5 a:focus-visible{outline:2px solid var(--g5-champ);outline-offset:3px}"
+  + ".g5-serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500}"
+  /* barre du haut : retour + langue (posées sur la photo) */
+  + ".g5-barre{position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 12px);left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}"
+  + ".g5-barre>*{pointer-events:auto}"
+  + ".g5-retour{width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,166,107,0.36);background:rgba(7,10,8,0.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 2px}"
+  /* HERO */
+  + ".g5-hero{position:relative;height:clamp(330px,52vh,420px);overflow:hidden;background:var(--g5-fond)}"
+  + ".g5-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:33% 30%;display:block}"
+  + ".g5-hero-voile{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(7,10,8,1) 0%,rgba(7,10,8,0.88) 22%,rgba(7,10,8,0.35) 52%,rgba(7,10,8,0.10) 72%,rgba(7,10,8,0.45) 100%),linear-gradient(90deg,rgba(7,10,8,0.55) 0%,rgba(7,10,8,0) 60%)}"
+  + "[dir=rtl] .g5-hero-voile{background:linear-gradient(0deg,rgba(7,10,8,1) 0%,rgba(7,10,8,0.88) 22%,rgba(7,10,8,0.35) 52%,rgba(7,10,8,0.10) 72%,rgba(7,10,8,0.45) 100%),linear-gradient(270deg,rgba(7,10,8,0.55) 0%,rgba(7,10,8,0) 60%)}"
+  + ".g5-hero-txt{position:absolute;z-index:2;left:22px;right:22px;bottom:18px}"
+  + ".g5-pre{display:block;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--g5-champ);font-weight:600;margin-bottom:2px}"
+  + ".g5-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(48px,13vw,60px);line-height:0.95;color:var(--g5-ivoire)}"
+  + ".g5-sous{margin:8px 0 0;font-size:15px;line-height:1.4;color:var(--g5-ivoire);font-weight:500}"
+  /* PASTILLES 1 → 7 */
+  + ".g5-pastilles{position:relative;display:flex;align-items:center;justify-content:space-between;margin:14px 22px 0;padding:0;list-style:none}"
+  + ".g5-pastilles:before{content:'';position:absolute;left:14px;right:14px;top:50%;height:1px;background:var(--g5-filet)}"
+  + ".g5-pastilles li{position:relative;z-index:1}"
+  + ".g5-pas{position:relative;width:30px;height:30px;border-radius:50%;border:1px solid rgba(201,166,107,0.62);background:var(--g5-fond);font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;color:var(--g5-ivoire)}"
+  + ".g5-pas.g5-bientot{border-style:dashed;border-color:rgba(201,166,107,0.32);color:var(--g5-t3)}"
+  + ".g5-pas.g5-ici{width:40px;height:40px;font-size:16px;background:radial-gradient(circle at 35% 30%,#E2C38C,#C9A66B 60%,#A8864F);color:#0B110F;border:1px solid #E2C38C;box-shadow:0 0 0 4px rgba(201,166,107,0.16),0 0 18px rgba(201,166,107,0.35);cursor:default}"
+  + ".g5-pas i{position:absolute;top:-6px;inset-inline-end:-6px;width:15px;height:15px;border-radius:50%;background:#0B110F;border:1px solid rgba(201,166,107,0.5);display:flex;align-items:center;justify-content:center}"
+  + ".g5-pas i svg{width:9px;height:9px}"
+  /* ONGLETS (ancres) — collants en haut quand on défile */
+  + ".g5-onglets{position:sticky;top:env(safe-area-inset-top);z-index:4;margin-top:14px;background:rgba(7,10,8,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,166,107,0.14)}"
+  + ".g5-onglets:before{content:'';position:absolute;left:0;right:0;bottom:100%;height:env(safe-area-inset-top);background:var(--g5-fond)}"
+  + ".g5-onglets-rang{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:0 14px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}"
+  + ".g5-onglets-rang::-webkit-scrollbar{display:none}"
+  + ".g5-onglet{flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;padding:12px 8px 10px;font-size:13px;font-weight:500;color:var(--g5-t2);cursor:pointer;white-space:nowrap}"
+  + ".g5-onglet.on{color:var(--g5-champ);border-bottom-color:var(--g5-champ);font-weight:600}"
+  /* CONTENU */
+  + ".g5-in{max-width:880px;margin:0 auto;padding:0 16px}"
+  + ".g5-sec{scroll-margin-top:calc(env(safe-area-inset-top) + 58px)}"
+  + ".g5-carte{position:relative;margin-top:18px;border:1px solid var(--g5-bord);border-radius:16px;background:linear-gradient(160deg,rgba(16,29,34,0.75),rgba(16,26,29,0.35));padding:18px 18px 18px}"
+  + ".g5-cap{display:flex;gap:14px;align-items:flex-start}"
+  + ".g5-cap-tx{flex:1;min-width:0}"
+  + ".g5-cap-ic{flex:0 0 auto;width:58px;color:var(--g5-champ);opacity:0.85;padding-top:6px}"
+  + ".g5-cap-ic svg{width:58px;height:auto;display:block}"
+  + ".g5-h2{margin:0 0 8px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:23px;line-height:1.15;color:var(--g5-ivoire)}"
+  + ".g5-p{margin:0;font-size:13.5px;line-height:1.65;color:var(--g5-t2)}"
+  + ".g5-obj{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:9px}"
+  + ".g5-obj li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--g5-ivoire)}"
+  + ".g5-obj li span{flex:0 0 auto;width:16px;height:16px;margin-top:1px}"
+  + ".g5-lien{display:inline-block;margin-top:14px;font-size:12.5px;font-weight:600;color:var(--g5-champ);text-decoration:none}"
+  + ".g5-titre-sec{display:flex;align-items:center;gap:14px;margin:30px 0 4px}"
+  + ".g5-titre-sec h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:25px;line-height:1.15}"
+  + ".g5-titre-sec:after{content:'';flex:1;height:1px;background:var(--g5-filet);max-width:80px}"
+  /* THÈMES (accordéon) */
+  + ".g5-themes{display:grid;gap:10px;margin-top:14px}"
+  + ".g5-th{border:1px solid var(--g5-bord);border-radius:14px;background:rgba(16,29,34,0.55);overflow:hidden}"
+  + ".g5-th-tete{position:relative;width:100%;display:flex;align-items:center;gap:12px;min-height:72px;padding:0 14px 0 0;background:none;border:0;cursor:pointer;text-align:start}"
+  + "[dir=rtl] .g5-th-tete{padding:0 0 0 14px}"
+  + ".g5-th-ph{position:relative;flex:0 0 auto;align-self:stretch;width:27%;max-width:150px;min-height:72px;overflow:hidden}"
+  + ".g5-th-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}"
+  + ".g5-th-ph:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,29,34,0) 45%,rgba(16,29,34,0.95) 100%)}"
+  + "[dir=rtl] .g5-th-ph:after{background:linear-gradient(270deg,rgba(16,29,34,0) 45%,rgba(16,29,34,0.95) 100%)}"
+  + ".g5-ic{flex:0 0 auto;width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,166,107,0.55);color:var(--g5-champ);display:flex;align-items:center;justify-content:center}"
+  + ".g5-ic svg{width:21px;height:21px}"
+  + ".g5-th-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 0}"
+  + ".g5-th-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:20px;line-height:1.15;color:var(--g5-ivoire)}"
+  + ".g5-th-n{font-size:12px;color:var(--g5-t2)}"
+  + ".g5-chev{flex:0 0 auto;width:22px;height:22px;color:var(--g5-champ);transition:transform .25s}"
+  + ".g5-th.ouvert .g5-chev{transform:rotate(180deg)}"
+  + ".g5-th.ouvert .g5-th-ph{width:0;min-width:0;max-width:0;margin-inline-start:14px}"
+  + ".g5-th.ouvert .g5-th-tete{min-height:60px;border-bottom:1px solid rgba(201,166,107,0.14)}"
+  + ".g5-th-liste{list-style:none;margin:0;padding:4px 12px 8px}"
+  + ".g5-li{display:flex;align-items:center;gap:12px;width:100%;padding:9px 2px;border:0;border-bottom:1px solid rgba(243,238,228,0.06);background:none;text-align:start}"
+  + ".g5-th-liste li:last-child .g5-li{border-bottom:0}"
+  + "button.g5-li{cursor:pointer}"
+  + ".g5-li-v{flex:0 0 auto;width:66px;height:42px;border-radius:7px;object-fit:cover;display:block}"
+  + ".g5-li-prepa .g5-li-v{opacity:0.55}"
+  + ".g5-li-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}"
+  + ".g5-li-t{font-size:13.5px;line-height:1.35;color:var(--g5-ivoire)}"
+  + ".g5-li-n{color:var(--g5-champ);font-weight:600;margin-inline-end:6px;font-variant-numeric:tabular-nums}"
+  + ".g5-li-e{font-size:11px;color:var(--g5-t3);letter-spacing:0.02em}"
+  + ".g5-li-go{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid rgba(201,166,107,0.62);color:var(--g5-champ);display:flex;align-items:center;justify-content:center;font-size:15px}"
+  /* EXTRAITS VIDÉO */
+  + ".g5-vid-tete{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 12px;flex-wrap:wrap}"
+  + ".g5-vid-tete h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:23px;line-height:1.15}"
+  + ".g5-lien-b{background:none;border:0;padding:4px 0;font-size:12px;font-weight:600;color:var(--g5-champ);cursor:pointer}"
+  + ".g5-vids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}"
+  + ".g5-vid-ph{position:relative;aspect-ratio:16/11;border-radius:10px;overflow:hidden;border:1px solid var(--g5-bord)}"
+  + ".g5-vid-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}"
+  + ".g5-vid-ph:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,10,8,0.55),rgba(7,10,8,0) 55%)}"
+  + ".g5-vid-l{display:block;margin-top:6px;font-size:11.5px;line-height:1.35;color:var(--g5-t2)}"
+  + ".g5-vid-note{margin:10px 0 0;font-size:11.5px;color:var(--g5-t3);letter-spacing:0.02em}"
+  /* REPRISES + ÉVALUATION */
+  + ".g5-duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin-top:22px}"
+  + ".g5-mini{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:132px;padding:14px;border-radius:14px;border:1px solid var(--g5-bord);overflow:hidden;background:var(--g5-petrole2);cursor:pointer;text-align:start}"
+  + ".g5-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}"
+  + ".g5-mini:before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(7,10,8,0.95) 15%,rgba(7,10,8,0.55) 60%,rgba(7,10,8,0.25))}"
+  + ".g5-mini>*:not(img){position:relative;z-index:2}"
+  + ".g5-mini .g5-ic{width:34px;height:34px;margin-bottom:auto;background:rgba(7,10,8,0.45)}"
+  + ".g5-mini .g5-ic svg{width:18px;height:18px}"
+  + ".g5-mini-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19px;line-height:1.15;color:var(--g5-ivoire);padding-inline-end:18px}"
+  + ".g5-mini-s{font-size:11.5px;line-height:1.4;color:var(--g5-t2);padding-inline-end:18px}"
+  + ".g5-mini-off{cursor:default}.g5-mini-off img{opacity:0.45}.g5-mini-off .g5-mini-s{color:var(--g5-champ);font-weight:600;letter-spacing:0.04em}"
+  + ".g5-mini-fl{position:absolute !important;bottom:14px;inset-inline-end:12px;color:var(--g5-champ);font-size:16px}"
+  /* tablette / ordinateur */
+  + "@media (min-width:768px){"
+  + ".g5-hero{height:clamp(400px,52vh,500px)}"
+  + ".g5-hero-img{left:auto;right:0;width:min(72%,980px);object-position:40% 30%;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 30%);mask-image:linear-gradient(90deg,transparent 0%,#000 30%)}"
+  + "[dir=rtl] .g5-hero-img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 30%);mask-image:linear-gradient(270deg,transparent 0%,#000 30%)}"
+  + ".g5-hero-voile{background:linear-gradient(0deg,rgba(7,10,8,1) 0%,rgba(7,10,8,0.5) 22%,rgba(7,10,8,0) 50%)}"
+  + "[dir=rtl] .g5-hero-voile{background:linear-gradient(0deg,rgba(7,10,8,1) 0%,rgba(7,10,8,0.5) 22%,rgba(7,10,8,0) 50%)}"
+  + ".g5-hero-txt{left:max(32px,calc((100% - 880px)/2 + 16px));right:auto;bottom:auto;top:50%;transform:translateY(-45%);max-width:420px}"
+  + "[dir=rtl] .g5-hero-txt{left:auto;right:max(32px,calc((100% - 880px)/2 + 16px))}"
+  + ".g5-titre{font-size:clamp(64px,7vw,92px)}"
+  + ".g5-sous{font-size:17px}"
+  + ".g5-pastilles{max-width:560px;margin:18px auto 0}"
+  + ".g5-onglets-rang{justify-content:center}"
+  + ".g5-onglet{font-size:14px;padding:14px 12px 12px}"
+  + ".g5-carte{padding:24px 26px}"
+  + ".g5-h2{font-size:27px}"
+  + ".g5-p,.g5-obj li{font-size:14.5px}"
+  + ".g5-th-t{font-size:22px}"
+  + ".g5-th-tete{min-height:84px}"
+  + ".g5-th-ph{min-height:84px}"
+  + ".g5-li-v{width:84px;height:52px}"
+  + ".g5-li-t{font-size:14.5px}"
+  + ".g5-vids{gap:14px}"
+  + ".g5-vid-l{font-size:13px}"
+  + ".g5-duo{grid-template-columns:1fr 1fr;gap:14px}"
+  + ".g5-mini{min-height:170px;padding:18px}"
+  + ".g5-mini-t{font-size:22px}"
+  + ".g5-mini-s{font-size:12.5px}"
+  + "}"
+  + "@media (max-width:359px){.g5-vids{grid-template-columns:repeat(2,minmax(0,1fr))}.g5-titre{font-size:46px}}"
+  + "@media (prefers-reduced-motion:reduce){.g5-chev{transition:none}.g5-onglets-rang{scroll-behavior:auto}}";
+
+function g5Svg(enfants, vb) { return React.createElement("svg", { viewBox: vb || "0 0 32 32", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, enfants); }
+
+function EcranGalop5() {
+  const h = React.createElement;
+  const app = useApp();
+  const { setEcran, setGalopOuvert, setCoursOuvert, premium, coursTermines, profil, tr, langue } = app;
+  const rtl = (langue === "ar");
+  const [moi, setMoi] = useState(undefined);            /* undefined = vérification en cours */
+  const [ouvert, setOuvert] = useState("conn");          /* une seule thématique ouverte à l'arrivée (décision du pack) */
+  const [actif, setActif] = useState("pres");
+  const rangRef = useRef(null);
+  const verrouSpy = useRef(0);                           /* après un toucher d'onglet, l'onglet choisi reste allumé pendant le défilement */
+  useEffect(() => { let ok = true; (async () => { try { const u = await utilisateurActuel(); if (ok) setMoi(u || null); } catch (e) { if (ok) setMoi(null); } })(); return () => { ok = false; }; }, []);
+  const estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
+  const g5 = GALOPS_I18N.find(function (g) { return g.id === 5; }) || {};
+  const autorise = estMod || !!g5.disponible;            /* tant que le Galop 5 est « Bientôt » : modératrices seules */
+  useEffect(() => { if (moi !== undefined && !autorise) { try { setEcran("galops"); } catch (e) { } } }, [moi, autorise]);
+
+  /* onglet actif selon la section visible (on lit la position des sections au défilement) */
+  const SECTIONS = ["pres", "prog", "cours", "vid", "rep", "eval"];
+  useEffect(() => {
+    var att = null;
+    function f() {
+      if (att) return;
+      att = setTimeout(function () {
+        att = null;
+        if (Date.now() < verrouSpy.current) return;
+        try {
+          var lim = 90, cur = "pres";
+          for (var i = 0; i < SECTIONS.length; i++) { var el = document.getElementById("g5-" + SECTIONS[i]); if (el && el.getBoundingClientRect().top - lim <= 0) cur = SECTIONS[i]; }
+          if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 4)) cur = "eval";
+          setActif(cur);
+        } catch (e) { }
+      }, 80);
+    }
+    window.addEventListener("scroll", f, { passive: true });
+    return function () { window.removeEventListener("scroll", f); if (att) clearTimeout(att); };
+  }, []);
+  useEffect(() => {   /* l'onglet actif reste visible dans la rangée (téléphone) */
+    try { var r = rangRef.current; if (!r) return; var b = r.querySelector(".g5-onglet.on"); if (b && b.scrollIntoView) b.scrollIntoView({ block: "nearest", inline: "center" }); } catch (e) { }
+  }, [actif]);
+
+  if (moi === undefined || !autorise) return h("div", { className: "g5", style: { minHeight: "100vh" } }, h("style", null, G5_CSS));
+
+  function aller(id) {
+    try {
+      var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var el = document.getElementById("g5-" + id);
+      verrouSpy.current = Date.now() + 1200;
+      if (el) el.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" });
+      setActif(id);
+    } catch (e) { }
+  }
+  function retour() { try { if (app.peutReculer && typeof app.retourEcran === "function") { app.retourEcran(); return; } } catch (e) { } setEcran("galops"); }
+  function versGalop(id) {   /* mêmes règles que la page Galops : « Bientôt » sans effet, cadenas → Premium */
+    if (id === 5) return;
+    var g = GALOPS_I18N.find(function (gg) { return gg.id === id; });
+    if (!g) return;
+    if (!g.disponible && !estMod) return;
+    if (!g.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
+    setGalopOuvert(id); setEcran("galop-detail");
+  }
+
+  /* pastilles 1 → 7 : mêmes états que la courbe de la page Galops (fait / Bientôt / cadenas), la 5 = page actuelle */
+  var gActBrut = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1 && profil.galopActuel <= 7) ? profil.galopActuel : 1;
+  var gActObj = GALOPS_I18N.find(function (g) { return g.id === gActBrut; });
+  var gAct = (gActObj && (gActObj.disponible || estMod)) ? gActBrut : 1;
+  var icCoche = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
+  var icCadenas = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 2.2, strokeLinecap: "round", "aria-hidden": "true" }, h("rect", { x: 5, y: 10.5, width: 14, height: 10, rx: 2 }), h("path", { d: "M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" }));
+  var pastilles = [1, 2, 3, 4, 5, 6, 7].map(function (id) {
+    var g = GALOPS_I18N.find(function (gg) { return gg.id === id; }) || {};
+    var ici = (id === 5);
+    var bientot = !ici && !g.disponible;
+    var verrou = !ici && !bientot && !g.debloque && !premium && !estMod;
+    var fait = !ici && !bientot && id < gAct;
+    var nom = g.titre ? tr(g.titre) : ("Galop " + id);
+    var aria = nom + (g.sousTitre ? " — " + tr(g.sousTitre) : "") + (bientot ? " — " + tr({ fr: "Bientôt", en: "Soon", es: "Pronto", it: "Presto", de: "Bald", ja: "近日公開", ar: "قريبا", zh: "即将推出", nl: "Binnenkort", pt: "Em breve", sv: "Snart", ru: "Скоро", pl: "Wkrótce", ko: "곧 공개" }) : "")
+      + (verrou ? " — " + tr({ fr: "Réservé aux abonnés Premium", en: "Premium members only", es: "Solo para miembros Premium", it: "Riservato agli abbonati Premium", de: "Nur für Premium-Mitglieder", ja: "プレミアム会員限定", ar: "مخصص لمشتركي Premium", zh: "仅限 Premium 会员", nl: "Alleen voor Premium-leden", pt: "Exclusivo para assinantes Premium", sv: "Endast för Premium-medlemmar", ru: "Только для подписчиков Premium", pl: "Tylko dla subskrybentów Premium", ko: "프리미엄 회원 전용" }) : "")
+      + (fait ? " — " + tr(G5_T.fait) : "");
+    return h("li", { key: id },
+      h("button", { type: "button", className: "g5-pas" + (ici ? " g5-ici" : "") + (bientot ? " g5-bientot" : ""), onClick: function () { versGalop(id); },
+        "aria-label": aria, "aria-current": ici ? "page" : undefined, "aria-disabled": (bientot && !estMod) ? "true" : undefined },
+        String(id), verrou ? h("i", null, icCadenas) : (fait ? h("i", null, icCoche) : null)));
+  });
+
+  var ONGLETS = [["pres", G5_T.oPres], ["prog", G5_T.oProg], ["cours", G5_T.oCours], ["rep", G5_T.oRep], ["vid", G5_T.oVid], ["eval", G5_T.oEval]];
+  var onglets = h("nav", { className: "g5-onglets", "aria-label": tr(G5_T.nav) },
+    h("div", { className: "g5-onglets-rang", ref: rangRef }, ONGLETS.map(function (o) {
+      return h("button", { key: o[0], type: "button", className: "g5-onglet" + (actif === o[0] ? " on" : ""), "aria-current": actif === o[0] ? "true" : undefined, onClick: function () { aller(o[0]); } }, tr(o[1]));
+    })));
+
+  /* Présentation + Programme */
+  var icCheval = h("svg", { viewBox: "0 0 64 80", fill: "none", stroke: "currentColor", strokeWidth: 1.3, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" },
+    h("path", { d: "M22 10l3-7 4 6c9 0 18 6 22 16 3 8 3 18 1 26l-5-1c-2-7-6-11-11-13-4 6-10 9-17 9-3 0-5-2-5-5 0-2 1-4 3-5 4-2 8-5 10-9" }),
+    h("path", { d: "M22 10c-5 4-8 10-9 17" }), h("circle", { cx: 27, cy: 19, r: 1 }), h("path", { d: "M14 76h36" }));
+  var comp = (g5.competences && (g5.competences[langue] || g5.competences.fr)) || [];
+  var pres = h("section", { id: "g5-pres", className: "g5-sec g5-carte", "aria-labelledby": "g5-pres-t" },
+    h("div", { className: "g5-cap" },
+      h("div", { className: "g5-cap-tx" },
+        h("h2", { className: "g5-h2", id: "g5-pres-t" }, tr(G5_T.capT)),
+        h("p", { className: "g5-p" }, tr(G5_T.capP))),
+      h("div", { className: "g5-cap-ic" }, icCheval)));
+  var prog = h("section", { id: "g5-prog", className: "g5-sec g5-carte", "aria-labelledby": "g5-prog-t" },
+    h("h2", { className: "g5-h2", id: "g5-prog-t" }, tr(G5_T.progT)),
+    h("ul", { className: "g5-obj" }, comp.map(function (c, i) { return h("li", { key: i }, h("span", null, icCoche), c); })),
+    (typeof GV2_FFE_LIEN !== "undefined") ? h("a", { className: "g5-lien", href: GV2_FFE_LIEN, target: "_blank", rel: "noopener noreferrer" }, tr(G5_T.ffeLien) + " ↗") : null);
+
+  /* Les 12 cours : un cours s'ouvre seulement s'il existe vraiment (même id) et qu'il est prêt */
+  var sommaire = [];
+  try { sommaire = obtenirSommaireGalop(5, langue) || []; } catch (eS) { sommaire = []; }
+  function coursReel(id) {
+    var c = sommaire.find(function (x) { return x && x.id === id; });
+    if (!c) return null;
+    if (typeof coursEstPret === "function" && !coursEstPret(5, id) && !estMod) return null;
+    return c;
+  }
+  function ouvrirCours(id) {
+    if (!g5.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    try { if (typeof marquerGalopVu === "function") marquerGalopVu(5); } catch (eV) { }
+    setGalopOuvert(5); setCoursOuvert(id); setEcran("cours");
+  }
+  var ICONES = {
+    conn: [h("path", { key: 1, d: "M3 12l13-6 13 6-13 6z" }), h("path", { key: 2, d: "M9 15v6c3 2.5 11 2.5 14 0v-6" }), h("path", { key: 3, d: "M29 12v7" })],
+    cheval: [h("path", { key: 1, d: "M12 27c0-6 2-9 5-11-3-1-6 0-8 2l-3-2c2-5 6-9 12-9l2-3 1 4c4 2 6 6 6 11v8" }), h("circle", { key: 2, cx: 18, cy: 11, r: 0.8 })],
+    soins: [h("rect", { key: 1, x: 7, y: 9, width: 18, height: 16, rx: 3 }), h("path", { key: 2, d: "M7 14h18M7 19h18M12 9V6h8v3" })],
+    montee: [h("path", { key: 1, d: "M5 25V11M27 25V11M5 14h22M5 20h22" }), h("path", { key: 2, d: "M3 25h4M25 25h4" })]
+  };
+  var numero = 0;
+  var themes = h("div", { className: "g5-themes" }, G5_THEMES.map(function (th) {
+    var estOuvert = (ouvert === th.k);
+    var idListe = "g5-th-" + th.k;
+    var lignes = th.cours.map(function (c) {
+      numero += 1;
+      var n = (numero < 10 ? "0" : "") + numero;
+      var reel = coursReel(c.id);
+      var fini = !!(reel && coursTermines && coursTermines.includes(c.id));
+      var etat = reel ? (fini ? tr(G5_T.fait) : "") : tr(G5_T.prepa);
+      var corps = [
+        h("img", { key: "v", className: "g5-li-v", src: c.img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: c.pos } }),
+        h("span", { key: "t", className: "g5-li-tx" },
+          h("span", { className: "g5-li-t" }, h("span", { className: "g5-li-n" }, n), tr(c.t)),
+          etat ? h("span", { className: "g5-li-e" }, etat) : null),
+        reel ? h("span", { key: "go", className: "g5-li-go", "aria-hidden": "true" }, rtl ? "‹" : "›") : null
+      ];
+      return h("li", { key: c.id }, reel
+        ? h("button", { type: "button", className: "g5-li", onClick: function () { ouvrirCours(c.id); }, "aria-label": n + ". " + tr(c.t) + (etat ? " — " + etat : "") + " — " + tr(G5_T.ouvrirC) }, corps)
+        : h("div", { className: "g5-li g5-li-prepa" }, corps));
+    });
+    return h("div", { key: th.k, className: "g5-th" + (estOuvert ? " ouvert" : "") },
+      h("h3", { style: { margin: 0 } },
+        h("button", { type: "button", className: "g5-th-tete", "aria-expanded": estOuvert ? "true" : "false", "aria-controls": idListe, onClick: function () { setOuvert(estOuvert ? null : th.k); } },
+          h("span", { className: "g5-th-ph", "aria-hidden": "true" }, h("img", { src: th.img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: th.pos } })),
+          h("span", { className: "g5-ic", "aria-hidden": "true" }, g5Svg(ICONES[th.k])),
+          h("span", { className: "g5-th-tx" },
+            h("span", { className: "g5-th-t" }, tr(th.t)),
+            h("span", { className: "g5-th-n" }, tr(G5_T.nb).replace("{n}", th.cours.length))),
+          h("svg", { className: "g5-chev", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M6 9l6 6 6-6" })))),
+      h("ul", { className: "g5-th-liste", id: idListe, hidden: !estOuvert }, lignes));
+  }));
+  var cours = h("section", { id: "g5-cours", className: "g5-sec", "aria-labelledby": "g5-cours-t" },
+    h("div", { className: "g5-titre-sec" }, h("h2", { id: "g5-cours-t" }, tr(G5_T.coursT))),
+    themes);
+
+  /* Extraits vidéo : de simples photos tant qu'aucune vidéo du Galop 5 n'est reliée (pas de bouton lecture, pas de durée) */
+  var VIDS = [[G5_IMG.vDressage, "50% 45%", G5_T.v1], [G5_IMG.vSaut, "50% 45%", G5_T.v2], [G5_IMG.vParcours, "50% 45%", G5_T.v3]];
+  var vid = h("section", { id: "g5-vid", className: "g5-sec", "aria-labelledby": "g5-vid-t" },
+    h("div", { className: "g5-vid-tete" },
+      h("h2", { id: "g5-vid-t" }, tr(G5_T.vidT)),
+      h("button", { type: "button", className: "g5-lien-b", onClick: function () { setEcran("videos"); } }, tr(G5_T.vidTous) + (rtl ? " ←" : " →"))),
+    h("ul", { className: "g5-vids" }, VIDS.map(function (v, i) {
+      return h("li", { key: i },
+        h("div", { className: "g5-vid-ph" }, h("img", { src: v[0], alt: "", loading: "lazy", decoding: "async", style: { objectPosition: v[1] } })),
+        h("span", { className: "g5-vid-l" }, tr(v[2])));
+    })),
+    h("p", { className: "g5-vid-note" }, tr(G5_T.vidBientot)));
+
+  /* Reprises (vraies reprises du Galop 5) + Évaluation (vrai examen blanc du Galop 5) */
+  var aReprises = (typeof ORDRE_REPRISES_FFE !== "undefined") && ORDRE_REPRISES_FFE.indexOf("g5") >= 0;
+  var fl = rtl ? "‹" : "›";
+  var mini = function (id, img, pos, ic, titre, sous, go) {
+    return h("button", { id: id, type: "button", className: "g5-mini g5-sec", onClick: go, "aria-label": titre + ". " + sous },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: pos } }),
+      h("span", { className: "g5-ic", "aria-hidden": "true" }, g5Svg(ic)),
+      h("span", { className: "g5-mini-t" }, titre),
+      h("span", { className: "g5-mini-s" }, sous),
+      h("span", { className: "g5-mini-fl", "aria-hidden": "true" }, fl));
+  };
+  var duo = h("div", { className: "g5-duo" },
+    aReprises ? mini("g5-rep", G5_IMG.reprises, "50% 40%", [h("path", { key: 1, d: "M9 4h11l5 5v19H9z" }), h("path", { key: 2, d: "M20 4v5h5M13 15h8M13 19h8M13 23h5" })], tr(G5_T.repT), tr(G5_T.repS),
+      function () { setGalopOuvert(5); setEcran("reprises"); }) : h("span", { id: "g5-rep", className: "g5-sec" }),
+    /* 27/10 00h24 (Blandine : « Laisse bientôt j'ai rien vérifié ») : l'examen blanc du Galop 5 existe mais n'est pas vérifié → carte « Bientôt », sans lien */
+    h("div", { id: "g5-eval", className: "g5-mini g5-mini-off g5-sec", role: "group", "aria-label": tr(G5_T.oEval) + " — " + tr(G5_T.bientot) },
+      h("img", { src: G5_IMG.cheval, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: "30% 35%" } }),
+      h("span", { className: "g5-ic", "aria-hidden": "true" }, g5Svg([h("path", { key: 1, d: "M8 26V17M14 26V10M20 26V14M26 26V7" })])),
+      h("span", { className: "g5-mini-t" }, tr(G5_T.oEval)),
+      h("span", { className: "g5-mini-s" }, tr(G5_T.bientot))));
+
+  return h("div", { className: "g5", dir: rtl ? "rtl" : undefined },
+    h("style", null, G5_CSS),
+    h("div", { className: "g5-hero" },
+      h("img", { className: "g5-hero-img", src: G5_IMG.hero, alt: "", fetchpriority: "high", decoding: "async" }),
+      h("div", { className: "g5-hero-voile" }),
+      h("div", { className: "g5-barre" },
+        h("button", { type: "button", className: "g5-retour", onClick: retour, "aria-label": tr(G5_T.retour) }, rtl ? "›" : "‹"),
+        (typeof SelecteurLangue === "function") ? h(SelecteurLangue, { compact: true }) : null),
+      h("div", { className: "g5-hero-txt" },
+        h("span", { className: "g5-pre", "aria-hidden": "true" }, tr(G5_T.pre)),
+        h("h1", { className: "g5-titre" }, g5.titre ? tr(g5.titre) : "Galop 5"),
+        h("p", { className: "g5-sous" }, tr(G5_T.sous)))),
+    h("ol", { className: "g5-pastilles", "aria-label": tr({ fr: "Les 7 Galops", en: "The 7 levels", es: "Los 7 niveles", it: "I 7 livelli", de: "Die 7 Galops", ja: "7つのギャロップ", ar: "الغالوبات السبعة", zh: "7 个 Galop 等级", nl: "De 7 Galops", pt: "Os 7 Galops", sv: "De 7 Galop-nivåerna", ru: "7 уровней Galop", pl: "7 poziomów Galop", ko: "7개의 Galop 단계" }) }, pastilles),
+    onglets,
+    h("div", { className: "g5-in" }, pres, prog, cours, vid, duo));
 }
 
 function EcranBibliothequeGalops() {
