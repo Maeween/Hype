@@ -90652,11 +90652,22 @@ function AvecLecture({ children }) {
             React.createElement("span", { "aria-hidden": "true" }, on ? "⏹️" : "🔊")) : null);
 }
 var HB_VOIX_LANG = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-SA", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
-var HB_VOIX_ACTIVE = { cle: null, stop: null };
+var HB_VOIX_ACTIVE = { cle: null, stop: null, reprise: null };
+/* 26/10/2026 — Blandine : « on peut conserver l audio de Hype quand on met l appli en fond ? » (cours + reponses Hey Baby).
+   Sur iPhone, l appli web perd le son en fond (regle d Apple, impossible a contourner). On fait donc REPRENDRE la lecture au retour,
+   a la phrase interrompue, au lieu de l arreter. Si le telephone a continue a lire en fond (Android, ordinateur), on ne touche a rien. */
+var HB_VOIX_CACHE_A = 0;
+try {
+    if (typeof document !== "undefined") document.addEventListener("visibilitychange", function () {
+        if (document.hidden) { HB_VOIX_CACHE_A = Date.now(); return; }
+        var r = HB_VOIX_ACTIVE.reprise, depuis = HB_VOIX_CACHE_A;
+        if (r && HB_VOIX_ACTIVE.cle) setTimeout(function () { try { r(depuis); } catch (e) { } }, 400);
+    });
+} catch (eVis) { }
 function hbVoixDispo() { try { return typeof window !== "undefined" && "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined"; } catch (e) { return false; } }
 function hbVoixArreter() {
     try { if (hbVoixDispo()) window.speechSynthesis.cancel(); } catch (e) { }
-    var f = HB_VOIX_ACTIVE.stop; HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null;
+    var f = HB_VOIX_ACTIVE.stop; HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; HB_VOIX_ACTIVE.reprise = null;
     try { if (f) f(); } catch (e) { }
 }
 function hbVoixNettoyer(txt) {
@@ -90680,15 +90691,30 @@ function hbVoixLire(cle, texte, langue, onFin) {
     var code = HB_VOIX_LANG[langue] || "fr-FR", court = code.slice(0, 2), voix = null;
     try { var vs = window.speechSynthesis.getVoices() || []; voix = vs.filter(function (v) { return v.lang === code; })[0] || vs.filter(function (v) { return String(v.lang || "").slice(0, 2) === court; })[0] || null; } catch (e) { }
     HB_VOIX_ACTIVE.cle = cle; HB_VOIX_ACTIVE.stop = onFin;
-    var i = 0;
+    var i = 0, gen = 0, etat = { idx: 0, dernier: Date.now() };
+    function fin() { if (HB_VOIX_ACTIVE.cle === cle) { HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; HB_VOIX_ACTIVE.reprise = null; try { onFin && onFin(); } catch (e) { } } }
     function suite() {
         if (HB_VOIX_ACTIVE.cle !== cle) return;
-        if (i >= morceaux.length) { HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; try { onFin && onFin(); } catch (e) { } return; }
+        if (i >= morceaux.length) { fin(); return; }
+        var g = gen; etat.idx = i;
         var u = new window.SpeechSynthesisUtterance(morceaux[i++]);
         u.lang = code; if (voix) u.voice = voix; u.rate = 1;
-        u.onend = suite; u.onerror = function () { if (HB_VOIX_ACTIVE.cle === cle) { HB_VOIX_ACTIVE.cle = null; HB_VOIX_ACTIVE.stop = null; try { onFin && onFin(); } catch (e) { } } };
+        var vu = function () { etat.dernier = Date.now(); };
+        u.onstart = vu; u.onboundary = vu;
+        u.onend = function () { if (g !== gen) return; vu(); suite(); };
+        /* coupure pendant que l appli est en fond : on ne termine pas, la lecture reprendra au retour */
+        u.onerror = function () { if (g !== gen) return; if (typeof document !== "undefined" && document.hidden) return; fin(); };
         try { window.speechSynthesis.speak(u); } catch (e) { suite(); }
     }
+    HB_VOIX_ACTIVE.reprise = function (cacheDepuis) {
+        if (HB_VOIX_ACTIVE.cle !== cle) return;
+        var s = window.speechSynthesis;
+        var lit = !!(s.speaking && !s.paused);
+        if (lit && (etat.dernier > cacheDepuis + 300 || Date.now() - cacheDepuis < 1000)) return; /* a continue en fond */
+        gen++; try { s.cancel(); } catch (e) { }
+        i = etat.idx;
+        setTimeout(suite, 250);
+    };
     suite();
     return true;
 }
