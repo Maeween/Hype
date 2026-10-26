@@ -14746,3 +14746,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 22h05 — Page Galops : conclusion retirée sur téléphone (build 20261026-2205) — NON PUBLIÉ
 - Blandine confirme : sur téléphone, « Des connaissances qui font la différence » est retirée (« ça sert à rien »). Ordinateur et tablette inchangés.
+
+## 26/10 22h10 — Page Galops : photo verticale du haut de page sur téléphone (build 20261026-2210) — NON PUBLIÉ
+- Nouvelle image fournie par Blandine (même scène en 2:3) : images/galops-v2-hero-tel-hd3.jpg (nouveau nom) remplace le recadrage hd2 sur téléphone. Ordinateur inchangé.
