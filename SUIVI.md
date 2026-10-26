@@ -14649,3 +14649,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Non repris (pas dans le contenu réel) : lien « Voir tout », intitulés erronés de la maquette (« Meneur avancé »…), cloche/recherche/avatar de l'en-tête.
 - EN ATTENTE de Blandine (elle consulte ChatGPT) : petit titre « MON ÉVOLUTION » au-dessus de « Les Galops » ? ; cartes ordinateur/tablette avec ou sans phrase + lien texte ? ; photo de fond pour « Une progression à ton rythme » (à fournir) ; choix A / B / C pour le programme qui se déplie.
 - Tests : 390, 768, 1024, 1440 ; fr et ar ; aucun débordement ; node --check 17 blocs OK.
+
+## 26/10/2026 — marqueur 20261026-1830, NON PUBLIÉ (part avec les envois de la journée) : page Galops — sélecteur de langue (drapeaux)
+- Blandine : « il manque les drapeaux pour changer de langue, ne l'oublie pas ».
+- Ajout en haut à droite de la page Galops (à gauche en arabe) du sélecteur commun `SelecteurLangue` (même composant que les autres pages) : drapeau de la langue actuelle, liste des 14 langues avec drapeaux. Testé à 390 et 1440 : liste complète, passage en allemand OK, 0 erreur. node --check 17 blocs OK.
+- En parallèle : nouveau brief ChatGPT « espace pédagogique sous la courbe » (+ 2 maquettes) ; plus de programme qui se déplie (A/B/C abandonné). Audit des données présenté, EN ATTENTE des choix de Blandine : description des Galops (à rédiger ou non), vidéo de présentation (inexistante → vidéos du Galop ou rien), photos des cours (inexistantes), filtres (aucune catégorie dans les données), rubrique Ressources (inexistante).
