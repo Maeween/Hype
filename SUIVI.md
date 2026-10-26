@@ -14743,3 +14743,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 22h00 — Page Galops : les 7 onglets côte à côte sur téléphone (build 20261026-2200) — NON PUBLIÉ
 - Demande de Blandine : sur téléphone, les 7 Galops sur une seule ligne (au lieu de 4 + 3). Chaque onglet : numéro + « Galop » (mot du titre dans la langue) ; « Bientôt » (G5, G7) = contour en pointillés ; petit cadenas Premium. Ordinateur inchangé.
+
+## 26/10 22h05 — Page Galops : conclusion retirée sur téléphone (build 20261026-2205) — NON PUBLIÉ
+- Blandine confirme : sur téléphone, « Des connaissances qui font la différence » est retirée (« ça sert à rien »). Ordinateur et tablette inchangés.
