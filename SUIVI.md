@@ -14729,3 +14729,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 26/10 20h55 — « Des connaissances qui font la différence » remise sur téléphone, sans recouvrir le cheval (build 20261026-2055) — NON PUBLIÉ
 - Blandine : « laisse-le pour l'instant, mais faut surtout que ça n'écrase plus la photo du cheval ». Annule le retrait de 20h20.
 - Téléphone : texte et bouton d'abord, photo du cheval gris en dessous (tête entière visible, fondue dans le noir en haut et en bas). Ordinateur et tablette inchangés.
+
+## 26/10 21h05 — Page Galops : « Une progression à ton rythme » sous la courbe + 7 onglets des Galops — PUBLICATION groupée (build 20261026-2105), accord de Blandine (« publie »)
+- D'après la maquette de Blandine : la section remonte juste sous la courbe ; dessous, « Les 7 Galops » en 7 onglets (ordinateur : une ligne, légèrement remontée sur le bas de la photo ; téléphone : 4 + 3). Chaque onglet ouvre le même espace du Galop que les pastilles de la courbe, juste dessous. Bientôt (G5, G7) et cadenas Premium affichés. Bouton « Voir le programme détaillé » retiré.
+- Téléphone : titre au-dessus de la photo (posé dessus, il tomberait sur le ciel trop lumineux).
+- Cette publication met aussi en ligne : page Écurie (3 prochains + 3 événements passés), rubriques réduites de l'espace du Galop (Cours, Objectifs officiels, Reprises), conclusion « Des connaissances… » sur téléphone avec le cheval sous le texte.
