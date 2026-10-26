@@ -94,12 +94,24 @@ const OFFRES_PAR_LIEN = {
     "plink_1TrFwtHnB1OJ7FOmVdlbOVhT": { plan: "annuel", jours: 367 },   // Cercle Crystal 99,99 € (paiement unique)
     "plink_1TrGrTHnB1OJ7FOmZscujhRX": { plan: "duo", jours: 32 },       // Pack Duo 24,99 € (Premium + IA, un compte)
     "plink_1TrGWfHnB1OJ7FOmQfLvaAsl": { plan: "ai", jours: 32 },        // Hype IA 14,99 € (IA seule, SANS Premium)
+    /* 26/10/2026 : mêmes formules, mêmes prix, sur le compte Stripe de l'ASSOCIATION
+       (FEINN Équitation et Environnement, acct_1UQVjPHWk0xyvsbC). Décision de Blandine :
+       tout passe sur l'association ; les abonnés déjà en cours restent sur l'ancien compte
+       « Feinn » jusqu'à leur déplacement. Les deux comptes sont reconnus. */
+    "plink_1UUsXHHWk0xyvsbCy7nEE0oL": { plan: "mensuel", jours: 32 },   // association — Premium mensuel 12,99 €
+    "plink_1UUsXKHWk0xyvsbCErtj6orM": { plan: "annuel", jours: 367 },   // association — Cercle Crystal 99,99 € (paiement unique)
+    "plink_1UUsXMHWk0xyvsbC5oGxf0A5": { plan: "duo", jours: 32 },       // association — Pack Duo 24,99 €
+    "plink_1UUsXPHWk0xyvsbC3u4B8PGf": { plan: "ai", jours: 32 },        // association — Hype IA 14,99 €
 };
 const OFFRES_PAR_PRIX = {
     "price_1TrFsxHnB1OJ7FOmIUhz6c2t": { plan: "mensuel" },   // 12,99 €/mois
     "price_1TrGrMHnB1OJ7FOmyXeAxdKt": { plan: "duo" },       // 24,99 €/mois
     "price_1TrGW8HnB1OJ7FOmxDCQ9pyU": { plan: "ai" },        // 14,99 €/mois
     "price_1TrFwmHnB1OJ7FOmLywabzpo": { plan: "annuel" },    // 99,99 € une fois (pas de facture de renouvellement)
+    "price_1UUsWaHWk0xyvsbCGbzuTe0D": { plan: "mensuel" },   // association — 12,99 €/mois
+    "price_1UUsWgHWk0xyvsbCe4041rxq": { plan: "duo" },       // association — 24,99 €/mois
+    "price_1UUsWjHWk0xyvsbC5A3QW7Ji": { plan: "ai" },        // association — 14,99 €/mois
+    "price_1UUsWdHWk0xyvsbCzlQg2qHE": { plan: "annuel" },    // association — 99,99 € une fois
 };
 // Liens de DONS (mécénat « Soutenez Hype ») : aucun droit, jamais.
 const LIENS_DONS = new Set([
@@ -112,7 +124,36 @@ const LIENS_DONS = new Set([
     "plink_1Tp55WHnB1OJ7FOmyxHf2I5R", // 200 € (inutilisé)
     "plink_1Tpw0fHnB1OJ7FOm32agYGI7", // 250 €
     "plink_1TpvvFHnB1OJ7FOmJ3VdMPMA", // 500 €
+    // 26/10/2026 — dons sur le compte de l'association
+    "plink_1UUsXWHWk0xyvsbC8JGeSxsF", // 20 €
+    "plink_1UUsXYHWk0xyvsbCFUrv4rJb", // 40 €
+    "plink_1UUsXaHWk0xyvsbCzFJKrZsB", // 80 €
+    "plink_1UUsXcHWk0xyvsbCcN1JjEpz", // 120 €
+    "plink_1UUsXfHWk0xyvsbC97TVcaAb", // 150 €
+    "plink_1UUsXhHWk0xyvsbCWLMvFqyx", // 200 €
+    "plink_1UUsXkHWk0xyvsbCOIENrZjR", // 250 €
+    "plink_1UUsXmHWk0xyvsbCxhQAHgVM", // 500 €
 ]);
+/* 26/10/2026 : Horse Lingo Premium est vendu sur le MÊME compte Stripe (association) ; ses messages
+   arrivent donc aussi ici. Ils sont traités par la fonction Supabase stripe-lingo : ici, on les ignore
+   (ni droit Hype, ni anomalie). */
+const LINGO_LIENS = new Set(["plink_1UUsGhHWk0xyvsbCawBmcpxw", "plink_1UUsGjHWk0xyvsbCUzVGROn1"]);
+const LINGO_PRIX = new Set(["price_1UUsGbHWk0xyvsbCPZpYxRZH", "price_1UUsGdHWk0xyvsbCoNuYKqMT"]);
+function estLingo(objet) {
+    try {
+        if (!objet) return false;
+        const lien = typeof objet.payment_link === "string" ? objet.payment_link : (objet.payment_link && objet.payment_link.id);
+        if (lien && LINGO_LIENS.has(lien)) return true;
+        if (objet.metadata && objet.metadata.appli === "horse-lingo") return true;
+        const lignes = (objet.lines && objet.lines.data) || (objet.items && objet.items.data) || [];
+        for (const l of lignes) {
+            const pd = l && l.pricing && l.pricing.price_details;
+            const p = pd && pd.price ? (typeof pd.price === "string" ? pd.price : pd.price.id) : (l && l.price ? (typeof l.price === "string" ? l.price : l.price.id) : null);
+            if (p && LINGO_PRIX.has(p)) return true;
+        }
+    } catch (e) { }
+    return false;
+}
 const PLANS_PAYES = { mensuel: 1, annuel: 1, duo: 1, ai: 1 };
 /* 18/10/2026 : formules entre lesquelles on peut passer dans l'espace « Gérer mon abonnement ». */
 const FORMULES_ECHANGEABLES = { mensuel: 1, duo: 1, ai: 1 };
@@ -127,9 +168,11 @@ const FORMULES_ECHANGEABLES = { mensuel: 1, duo: 1, ai: 1 };
    exactement comme aujourd'hui.                                              */
 const FAMILLE_LIENS = {
     "plink_1UQbSCHnB1OJ7FOmzXn56OBq": { jours: 32 },   // Premium Famille 19,99 €/mois (créé le 15/10/2026, mis en vente le 15/10)
+    "plink_1UUsXRHWk0xyvsbCPInjBr1p": { jours: 32 },   // association — Premium Famille 19,99 €/mois (26/10/2026)
 };
 const FAMILLE_PRIX = new Set([
     "price_1UQbS7HnB1OJ7FOm5fRCm686",   // Premium Famille 19,99 €/mois (créé le 15/10/2026)
+    "price_1UUsWlHWk0xyvsbCS4URkaDq",   // association — Premium Famille 19,99 €/mois (26/10/2026)
 ]);
 /* Tant que rien n'est rempli ci-dessus, le relais NE PARLE JAMAIS aux tables
    Famille : il fonctionne même si le SQL Famille n'est pas encore passé. */
@@ -243,6 +286,19 @@ async function ouvrirFamille(service, evenement, userId, sub, client, expire, in
         }
     }
     return true;
+}
+
+/* 26/10/2026 : retient de quel compte Stripe vient une famille (pour « Gérer mon abonnement »).
+   Sans conséquence sur les droits : un échec est seulement écrit dans le journal. */
+async function noterCompteFamille(service, sub, compte) {
+    if (!sub || !compte) return;
+    try {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/familles?stripe_subscription=eq." + encodeURIComponent(sub), {
+            method: "PATCH", headers: { ...entetesSupabase(service), Prefer: "return=minimal" },
+            body: JSON.stringify({ compte_stripe: compte }),
+        });
+        if (!r.ok) log("compte de la famille non noté", r.status);
+    } catch (e) { log("compte de la famille non noté :", e && e.message); }
 }
 
 function prixDeFacture(f) {
@@ -434,18 +490,30 @@ function aboDeFacture(f) {
 export default async (req) => {
     if (req.method !== "POST") return new Response("POST uniquement", { status: 405 });
 
+    /* 26/10/2026 : DEUX comptes Stripe pendant la transition. Chaque compte signe avec son propre secret :
+       STRIPE_WEBHOOK_SECRET = ancien compte « Feinn » ; STRIPE_WEBHOOK_SECRET_ASSO = compte de l'association.
+       Le secret qui valide la signature dit d'où vient le message (compteStripe), ce qui sert à ouvrir le
+       bon espace « Gérer mon abonnement » dans l'appli. */
     const secretStripe = process.env.STRIPE_WEBHOOK_SECRET;
+    const secretAsso = process.env.STRIPE_WEBHOOK_SECRET_ASSO;
     const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!secretStripe || !service) { log("variables d'environnement manquantes"); return new Response("Config incomplète", { status: 500 }); }
+    if ((!secretStripe && !secretAsso) || !service) { log("variables d'environnement manquantes"); return new Response("Config incomplète", { status: 500 }); }
 
     const corps = await req.text();
-    const ok = await signatureValide(corps, req.headers.get("stripe-signature"), secretStripe);
-    if (!ok) { log("signature invalide — requête refusée"); return new Response("Signature invalide", { status: 400 }); }
+    const enTeteSig = req.headers.get("stripe-signature");
+    let compteStripe = null;
+    if (secretAsso && await signatureValide(corps, enTeteSig, secretAsso)) compteStripe = "asso";
+    else if (secretStripe && await signatureValide(corps, enTeteSig, secretStripe)) compteStripe = "feinn";
+    if (!compteStripe) { log("signature invalide — requête refusée"); return new Response("Signature invalide", { status: 400 }); }
 
     let evenement;
     try { evenement = JSON.parse(corps); } catch (e) { return new Response("JSON invalide", { status: 400 }); }
     const objet = evenement.data && evenement.data.object;
-    log("événement", evenement.type);
+    log("événement", evenement.type, "· compte", compteStripe);
+    if (compteStripe === "asso" && estLingo(objet)) {
+        log("message Horse Lingo, ignoré ici (traité par stripe-lingo) :", evenement.id);
+        return new Response("OK (Horse Lingo)", { status: 200 });
+    }
     // Livraison 2 : message déjà traité → on répond OK sans rien refaire.
     try {
         const deja = await fetch(SUPABASE_URL + "/rest/v1/relais_evenements_traites?select=stripe_event_id&stripe_event_id=eq." + encodeURIComponent(evenement.id), { headers: entetesSupabase(service) });
@@ -521,6 +589,7 @@ export default async (req) => {
                     const expireF = new Date(depart + FAMILLE_LIENS[lien].jours * 86400000).toISOString();
                     ecritureOk = await ouvrirFamille(service, evenement, userId, objet.subscription || refS,
                         objet.customer || null, expireF, infosBase);
+                    await noterCompteFamille(service, objet.subscription || refS, compteStripe);
                 }
             } else if (!offre) {
                 // Lien inconnu : on ne devine JAMAIS la formule par le montant.
@@ -563,6 +632,7 @@ export default async (req) => {
                     statut: "actif",
                     expire_le: expire,
                     maj_le: new Date().toISOString(),
+                    compte_stripe: compteStripe,
                 });
                 log("Accès activé :", plan, "—", email,
                     "— mode :", modeSession,
@@ -610,6 +680,7 @@ export default async (req) => {
                 } else {
                     ecritureOk = await ouvrirFamille(service, evenement, userIdF, aboFacture, objet.customer || null,
                         expireFam || new Date(Date.now() + 32 * 86400000).toISOString(), infosF, periodeF);
+                    await noterCompteFamille(service, aboFacture, compteStripe);
                 }
             } else if (touchees > 0) {
                 // Renouvellement d'une ligne existante : on prolonge SEULEMENT ses droits
@@ -651,6 +722,7 @@ export default async (req) => {
                         statut: "actif",
                         expire_le: expire || new Date(Date.now() + tF.jours * 86400000).toISOString(),
                         maj_le: new Date().toISOString(),
+                        compte_stripe: compteStripe,
                     });
                     log("Ligne créée depuis invoice.paid pour", email);
                     if (ecritureOk) ecritureOk = await signalerSiFamille(service, evenement, userId, tF.plan, { ...infosF, user_id: userId });
