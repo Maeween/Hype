@@ -14740,3 +14740,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Photo plus visible : voile sombre allégé (seulement sous le titre à gauche et en bas). Téléphone : photo entière sans voile, fondue en bas, titre « Les Galops » sous les sabots.
 - La conclusion « Des connaissances qui font la différence » garde l'ancienne photo (GV2_IMG_FIN = galops-v2-hero-ordi-hd1.jpg) pour ne pas doubler la nouvelle.
 - À faire si possible : version verticale 2:3 de la même scène pour le téléphone (le recadrage actuel est un peu moins net).
+
+## 26/10 22h00 — Page Galops : les 7 onglets côte à côte sur téléphone (build 20261026-2200) — NON PUBLIÉ
+- Demande de Blandine : sur téléphone, les 7 Galops sur une seule ligne (au lieu de 4 + 3). Chaque onglet : numéro + « Galop » (mot du titre dans la langue) ; « Bientôt » (G5, G7) = contour en pointillés ; petit cadenas Premium. Ordinateur inchangé.
