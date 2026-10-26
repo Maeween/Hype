@@ -14720,3 +14720,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - « Prochains événements » : 3 cartes au lieu de 2 (l'agenda n'avait aucune limite de création ; seule la page Écurie n'en montrait que 2).
 - Nouvelle section « Événements passés » juste dessous : les 3 plus récents (même carte que les prochains), toucher une carte ouvre son souvenir ; « Voir tout » ouvre la page Événements passés. N'apparaît pas si l'écurie n'a aucun événement passé. 14 langues. Téléphone et ordinateur.
 - Inclut aussi le retrait de la conclusion Galops sur téléphone (20h20).
+
+## 26/10 20h50 — Espace du Galop : rubriques réduites (build 20261026-2050) — NON PUBLIÉ
+- Demande de Blandine : objectifs et programme officiel font doublon. On ne garde que : Cours, « Objectifs officiels » (ex-« Programme officiel », renommé en 14 langues) et Reprises de dressage (Galops 3 à 7). Sur ordinateur, « Présentation » reste en tête (vue par défaut).
+- Retirés des rubriques : Objectifs, Exercices (Prochainement), Vidéothèque, Évaluation. Le quiz et l'examen blanc restent accessibles dans la page du Galop et par les cartes « Tout pour progresser ».
+- Galops 5 et 7 (Bientôt) : Présentation + Objectifs officiels.
