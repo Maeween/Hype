@@ -14618,3 +14618,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Nouvel ordre : hero + courbe → Tout pour progresser (6 cartes) → « Une progression à ton rythme » sur le fond sombre de la page (titre ivoire, « à ton rythme » en italique champagne, bouton transparent à contour champagne) → conclusion « Des connaissances qui font la différence » → bande claire ondulée avec le Chemin des Poneys seul → fin de page HYPE.
 - Seule la partie basse de `GalopsV2Haut` (tableau `suite`) et 1 ligne de styles sont touchées ; textes, liens et photos inchangés.
 - Tests : 390, 820, 1440 ; fr et ar ; aucun débordement ; node --check 17 blocs OK.
+
+## 26/10/2026 — marqueur 20261026-1020, PUBLIÉ : Ma Sellerie — fin de page HYPE remontée
+- Demande de Blandine : « ajoute en bas la fin de page Hype ». Elle existait déjà (« sellerie » est dans ECRANS_FIN_PAGE) mais arrivait très loin sous « Un bon plan à partager ? » : la page Sellerie gardait une hauteur minimale d'un écran entier + une grande marge en bas (130 px / 116 px téléphone). Hauteur minimale retirée et marge du bas ramenée à 8 px / 4 px : la fin de page suit maintenant directement, comme sur les autres pages. Pas de deuxième fin de page ajoutée.
