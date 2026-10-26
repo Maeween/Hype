@@ -14633,3 +14633,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Corrigé (marge du bas ramenée à 8 px ou cale retirée, rien d'autre touché) : Fil de la communauté (EcranEvenement : paddingBottom 96 → 8 + cale 112 px retirée), Partager (min-height plein écran retirée, marge 44 → 12), Mon carnet (130 → 8), Détail du carnet (40 → 8), Mon apprentissage (cale caleBarreHype retirée), Santé (120 → 8), Clinique (120 → 8), Album écurie (120 → 8), Team Compétition (110 → 8), Écurie Hype (120 → 8), Mon compte (min-height plein écran retirée, marge 60 → 12), Challenge de reprise (hauteur fixe plein écran retirée), Cadre Noir + Jerez + Vienne + École portugaise (feuille .cnx commune : 96 → 8).
 - Après : toutes les pages entre 64 et 95 px (Premium 124 px laissé tel quel : c'est l'espacement de sa dernière section). La fin de page reste au-dessus de la barre du bas. Sellerie déjà corrigée à 10 h 17.
 - Tests : mesure automatique des 40 pages + captures du bas de chaque page corrigée ; 0 erreur ; 17 blocs OK.
+
+## 26/10/2026 — marqueur 20261026-1752, NON PUBLIÉ (part avec les envois de 10 h 20 et 17 h 35) : page Galops — tuiles téléphone aussi lumineuses que sur ordinateur
+- Blandine : « je veux la même couleur sur les images sur tel que sur l'ordi, elles sont beaucoup plus fades sur tel ».
+- Cause : sur téléphone, les 6 tuiles « Tout pour progresser » avaient un voile sombre UNIFORME (78 %) sur toute la photo. Maintenant : même dégradé que sur ordinateur (sombre en bas seulement, photo claire en haut), icône et titre descendus en bas de la tuile pour rester lisibles ; tuiles 128 px de haut (au lieu de 118).
+- Tests : 390, fr et ar ; aucun débordement ; node --check 17 blocs OK.
