@@ -14698,3 +14698,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 26/10 19h40 — Page Galops : « Le Chemin des Poneys » retiré des rubriques de l'espace du Galop (build 20261026-1950) — NON PUBLIÉ
 - Demande de Blandine : il n'a rien à faire dans le menu d'un Galop. Il reste accessible par sa bande ivoire en bas de la page.
 - Incident 19h40 : le premier envoi n'a contenu que ce suivi (la modification de index.html avait échoué car le marqueur en ligne était passé à 1945 par la livraison Stripe d'une autre conversation). Corrigé dans l'envoi suivant (marqueur 1950). Rien n'a été publié entre-temps.
+
+## 26/10 19h55 — Page Galops : photo « Une progression » plus courte sur téléphone (build 20261026-1955) — NON PUBLIÉ
+- Demande de Blandine : la photo en portrait était trop haute, on croyait la page finie. Téléphone : format 4/3 au lieu de 4/5, cadrage sur le cheval, fondu bas plus doux, espace réduit. Ordinateur inchangé.
