@@ -14654,3 +14654,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Blandine : « il manque les drapeaux pour changer de langue, ne l'oublie pas ».
 - Ajout en haut à droite de la page Galops (à gauche en arabe) du sélecteur commun `SelecteurLangue` (même composant que les autres pages) : drapeau de la langue actuelle, liste des 14 langues avec drapeaux. Testé à 390 et 1440 : liste complète, passage en allemand OK, 0 erreur. node --check 17 blocs OK.
 - En parallèle : nouveau brief ChatGPT « espace pédagogique sous la courbe » (+ 2 maquettes) ; plus de programme qui se déplie (A/B/C abandonné). Audit des données présenté, EN ATTENTE des choix de Blandine : description des Galops (à rédiger ou non), vidéo de présentation (inexistante → vidéos du Galop ou rien), photos des cours (inexistantes), filtres (aucune catégorie dans les données), rubrique Ressources (inexistante).
+
+## 26/10 18h40 — Page Galops : espace du Galop sous la courbe (build 20261026-1840) — NON PUBLIÉ
+- Toucher un Galop sur la courbe ouvre son espace juste dessous (aucun ouvert à l'arrivée ; re-toucher ou × referme).
+- Ordinateur/tablette : rubriques semi-transparentes à gauche (Présentation, Objectifs, Cours, Exercices « Prochainement », Reprises G3-7, Chemin des Poneys, Vidéothèque si vidéos du Galop, Évaluation → onglet Quiz de la page du Galop) ; à droite Galop, sous-titre, description, progression réelle, bouton Reprendre (vrai prochain cours), carrousel des vrais cours (état terminé / à suivre / à découvrir / prochainement), « Voir tous les cours ».
+- Téléphone : présentation, 6 premiers cours en lignes, « Voir les X cours », rubriques en lignes fines (Objectifs se déplie).
+- Verrouillé → cadenas + Premium ; Galops 5 et 7 → « Bientôt ».
+- À VALIDER PAR BLANDINE : textes GV2_DESC (descriptions des 7 Galops, écrites à partir des objectifs réels) en 14 langues.
+- Page du Galop : nouvel onglet initial possible via window.__hypeGdOnglet (« quiz » / « examen »).
