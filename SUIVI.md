@@ -14674,3 +14674,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Nouvelle rubrique « Programme officiel » dans l'espace du Galop (après Objectifs) : résumé fidèle (À cheval / À pied et soins / Connaissances, 3 points chacun), mention de la date d'application + lien vers le document FFE. Données : GV2_FFE. Ordinateur : vue à droite ; téléphone : se déplie.
 - Objectifs (competences) des Galops 5, 6 et 7 dans GALOPS_I18N remplacés pour coller au programme (ils ne sont pas encore construits ; l'ancien Galop 7 citait élevage / gestion d'écurie, absents du programme).
 - À REVÉRIFIER chaque saison : la FFE peut revoir son programme.
+
+## 26/10 19h30 — PUBLICATION groupée (build 20261026-1930), accord de Blandine (« publie »)
+- Met en ligne tous les envois en attente de la page Galops : 1020, 1735, 1752, 1805, 1830, 1840 (espace du Galop), 1850 (photo « Une progression à ton rythme »), 1925 (programme fédéral). Seul changement de ce build : le marqueur.
