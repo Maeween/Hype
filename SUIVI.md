@@ -14784,3 +14784,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 23h30 — PUBLICATION (build 20261026-2330), accord de Blandine (« ok top »)
 - Met en ligne le 1er écran du téléphone ajusté (2320) et le bouton remonté au-dessus de la vague (2325). Seul changement de ce build : le marqueur.
+
+## 27/10 00h10 — Déplacement des 4 abonnés vers l'association : copie faite, abonnements NON déplacés (cartes refusées)
+- Blandine a copié tous les clients de l'ancien compte « Feinn » vers l'association (8 clients, copie acceptée et terminée) et donné à Claude l'accès aux deux comptes Stripe.
+- Essai sur Eva Reguillet : nouvel abonnement créé sur l'association (même prix, même date de prélèvement, aucun débit) → Stripe a vérifié la carte copiée et la banque l'a REFUSÉE (« card_declined / try_again_later »). Ses 3 cartes (Eva, Aurélie, Lauren) sont des cartes Apple Pay : leur numéro Apple Pay est lié au compte Stripe d'origine et ne passe pas sur un autre compte. Dominique paie par Link, même risque.
+- Abonnement d'essai annulé aussitôt (sub_1UUwwJHWk0xyvsbCO3z0zaXJ, aucun prélèvement). Rien n'a été touché sur l'ancien compte : les 4 abonnements continuent normalement sur « Feinn », base inchangée (vérifié).
+- EN ATTENTE du choix de Blandine : laisser les 4 sur « Feinn », ou leur demander de se réabonner eux-mêmes avec le nouveau lien à leur date de renouvellement (Claude arrête alors l'ancien abonnement à la fin de la période payée).
