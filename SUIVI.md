@@ -14585,3 +14585,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 26/10/2026 — marqueur 20261026-0910, PUBLIÉ : Ma Sellerie — plus d'espace entre les cartes « Adresses à découvrir »
 - Demande de Blandine : augmenter UNIQUEMENT l'espace entre les cartes d'adresses, sans changer leurs dimensions ni le carrousel des codes. Téléphone 9 → 18 px ; tablette/ordinateur 18 → 28 px (`.hsl-adrs` gap). Rien d'autre touché.
 - Le prompt ChatGPT « FINALISATION DE MA SELLERIE » joint au même message n'est PAS appliqué (en attente des choix de Blandine) : carrousel horizontal des codes + vrai « Voir tout », mention « Épinglé », retrait cloche/cœur, titre court « Des adresses pour vivre ta passion. », images v4-dore non fournies, question Golden Horse.
+
+## 26/10/2026 — marqueur 20261026-0930, PUBLIÉ : Ma Sellerie — finalisation (prompt ChatGPT « FINALISATION DE MA SELLERIE »)
+- Codes partagés : rangée unique qui défile au doigt (plus de passage à la ligne). Nombre de cartes visibles = min(nb codes, 2 téléphone / 3 tablette / 4 ordinateur), réparties sur toute la largeur ; 2 premières cartes toujours entières sur téléphone ; Demi Volte toujours premier. Flèches ‹ › discrètes seulement avec souris/trackpad et à partir de 3 codes. Pas de défilement automatique.
+- « Voir tout » (à partir de 3 codes) : affiche tous les codes sur plusieurs lignes ; « Réduire » revient à la rangée.
+- Demi Volte : « ★ Épinglé » à la place du cœur décoratif. Cloche décorative du haut retirée.
+- En-tête : « HYPE » au lieu de répéter « Ma Sellerie » (titre gardé dans le haut de page). Phrase du haut : « Des adresses pour vivre ta passion. » ; phrase du bas : « Fais-en profiter la communauté. » — 14 langues, + nouveaux textes Voir tout / Réduire / Épinglé / Précédent / Suivant.
+- Golden Horse : confirmé « alimentation » par Blandine (déjà le cas, rien changé).
+- Non fait : images « v4-dore » de Demi Volte (non reçues) ; images actuelles gardées.
+- Tests (Playwright, base simulée) : 2, 3, 4 codes ; 390, 1024×1366, 1366×1024, 1440 ; fr / de / ar (rangée en miroir) ; Voir tout ; copie FEINN10 sans ouvrir le site ; aucun débordement de page ; 0 erreur ; 17 blocs OK.
