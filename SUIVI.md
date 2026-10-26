@@ -14764,3 +14764,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Répartition : Cours = trot tête basse ; Exercices = saut obstacle bleu ; Vidéothèque = oxer jaune et vert ; Reprises = trot en manège ; Quiz = trot au soleil couchant ; Examens = cavalière en gros plan.
 - Chemin des Poneys (bande claire en bas de page) : prend l'image du puzzle du Poney d'Argent (k494 = images/hi/98f194c0ef78deca4e70.jpg) à la place de galops-v2-chemin-hd1.jpg.
 - Inchangé volontairement : les vignettes des cours dans l'espace d'un Galop (GV2_VIGNETTES) gardent les anciennes photos -hd1.jpg.
+
+## 26/10 22h50 — Page Galops : image dorée pour le Chemin des Poneys — PUBLICATION (build 20261026-2250), accord de Blandine (« Ok mets en ligne »)
+- Nouvelle image fournie par Blandine (le poney et le petit cavalier, version dorée sur fond sombre) : images/galops-v2-chemin-hd2.jpg (nouveau nom), validée sur maquette.
+- Remplace dans la bande du Chemin des Poneys l'image bleue du puzzle du Poney d'Argent (k494), mise au build 2245. Le puzzle lui-même garde son image (k494) : inchangé.
