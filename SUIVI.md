@@ -14638,3 +14638,14 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Blandine : « je veux la même couleur sur les images sur tel que sur l'ordi, elles sont beaucoup plus fades sur tel ».
 - Cause : sur téléphone, les 6 tuiles « Tout pour progresser » avaient un voile sombre UNIFORME (78 %) sur toute la photo. Maintenant : même dégradé que sur ordinateur (sombre en bas seulement, photo claire en haut), icône et titre descendus en bas de la tuile pour rester lisibles ; tuiles 128 px de haut (au lieu de 118).
 - Tests : 390, fr et ar ; aucun débordement ; node --check 17 blocs OK.
+
+## 26/10/2026 — marqueur 20261026-1805, NON PUBLIÉ (part avec 10 h 20, 17 h 35, 17 h 52) : page Galops — espacements et ajustements validés (prompt ChatGPT du 26/10)
+- Prompt ChatGPT « refonte responsive » + nouvelle maquette 3 formats. Inventaire présenté à Blandine, 5 corrections validées (« ok pour le reste ») :
+  1. Plus d'air entre les sections, fluide selon l'écran : avant « Tout pour progresser » (48 → 96 px), avant « Une progression » (64 → 120 px), avant la conclusion (48 → 96 px), avant la bande du Chemin des Poneys (56 → 110 px ; 48 px sur téléphone).
+  2. Téléphone : les 6 cartes en 2 colonnes × 3 rangées (au lieu de 3 × 2).
+  3. Petite flèche champagne en bas à droite de chaque carte active, sur tous les écrans (le lien texte perd sa propre flèche pour éviter le doublon ; pas de flèche sur « Exercices pratiques », qui est Prochainement).
+  4. Bande ivoire du Chemin des Poneys plus basse ; photo à droite du texte partout, y compris sur téléphone (photo 118 px de large, bouton sur deux lignes si besoin).
+  5. Tablette : « Tout pour progresser » sur une seule ligne, phrase d'intro dessous.
+- Non repris (pas dans le contenu réel) : lien « Voir tout », intitulés erronés de la maquette (« Meneur avancé »…), cloche/recherche/avatar de l'en-tête.
+- EN ATTENTE de Blandine (elle consulte ChatGPT) : petit titre « MON ÉVOLUTION » au-dessus de « Les Galops » ? ; cartes ordinateur/tablette avec ou sans phrase + lien texte ? ; photo de fond pour « Une progression à ton rythme » (à fournir) ; choix A / B / C pour le programme qui se déplie.
+- Tests : 390, 768, 1024, 1440 ; fr et ar ; aucun débordement ; node --check 17 blocs OK.
