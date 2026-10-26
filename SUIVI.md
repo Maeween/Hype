@@ -14572,3 +14572,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
   - Chemin des Poneys → galops-v2-chemin-hd1.jpg (fillette et son poney).
 - Plus aucune photo provisoire affichée dans la page Galops (les anciens fichiers *-provisoire.jpg restent dans le dépôt, inutilisés). Toutes les images vérifiées chargées à 390 et 1440, aucun débordement, 0 erreur. node --check 17 blocs OK.
 - Répartition Quiz / Examens choisie par moi (grille de QCM = Examens, carnet = Quiz) : à inverser en une ligne si Blandine préfère.
+
+## 26/10/2026 — marqueur 20261026-0845, PUBLIÉ : Ma Sellerie — vraies images HD (fin des découpes floues)
+- Les découpes de capture (sellerie-adr-*.jpg, sellerie-code-salon.jpg) sont remplacées par les images fournies par Blandine (illustrations d'ambiance générées avec ChatGPT ; PAS des photos officielles des marques ; la photographe est générique, pas un portrait de Manon Pincebourde) :
+  - hero : images/sellerie-hero-ordi-hd.jpg (ordinateur/tablette, 1844 × 853 natif) et sellerie-hero-tel-hd.jpg (bande sous le titre sur téléphone) ;
+  - codes : sellerie-code-demivolte-v3.jpg (équipement à plat sur bois, sans selle), sellerie-code-salon-hd.jpg (cavalière en saut) ;
+  - adresses : sellerie-adr-demivolte-v3.jpg (boutique en bois), sellerie-adr-helite-hd.jpg, sellerie-adr-delgrange-hd.jpg (selle marron, gardée pour Delgrange à la demande de Blandine), sellerie-adr-pincebourde-hd.jpg, sellerie-adr-salon-hd.jpg, sellerie-adr-goldenhorse-hd.jpg.
+- Blandine a trouvé les 3 selles répétitives → Demi Volte sans selle ; entre deux jeux d'images (A : banc + boutique moderne ; B : à plat + boutique en bois) elle a validé la B.
+- Cadrages refaits (sujet à droite, texte sur la zone sombre) : ordinateur hero pleine largeur ; tablette image sur 62 % droite ; téléphone bande dédiée ; adresses image à droite avec fondu ; arabe en miroir.
+- Rien d'autre changé (FEINN10 en premier, codes, liens, 6 adresses, Partager un code, 14 langues). Tests : 390, 1024×1366, 1366×1024, 1440 ; fr / ar ; 0 erreur ; 17 blocs OK.
