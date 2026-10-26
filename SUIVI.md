@@ -14752,3 +14752,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 22h15 — PUBLICATION (build 20261026-2215), accord de Blandine (« ok »)
 - Met en ligne : photo verticale du hero sur téléphone (2210), 7 Galops côte à côte sur téléphone (2200), conclusion retirée sur téléphone (2205). Seul changement de ce build : le marqueur.
+
+## 26/10 22h20 — Page Galops : nouvelle photo de « Une progression à ton rythme » — PUBLICATION (build 20261026-2220), accord de Blandine (« vas-y »)
+- Nouvelle image fournie par Blandine (cavalier de dos aux cheveux courts, cheval gris, soleil entre les arbres) : images/galops-v2-progression-hd2.jpg (nouveau nom), utilisée sur ordinateur ET téléphone (remplace les photos hd1 de la cavalière).
+- Téléphone : cadrage 58 % 35 % (cavalier et cheval entiers). Ordinateur : cadrage plus bas (right 48 %) et voile allégé pour mieux voir la photo.
+- À faire si possible : version 16:9 de la même scène (cheval plus petit, plus à droite) pour l'ordinateur.
