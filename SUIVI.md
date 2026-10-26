@@ -14662,3 +14662,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Verrouillé → cadenas + Premium ; Galops 5 et 7 → « Bientôt ».
 - À VALIDER PAR BLANDINE : textes GV2_DESC (descriptions des 7 Galops, écrites à partir des objectifs réels) en 14 langues.
 - Page du Galop : nouvel onglet initial possible via window.__hypeGdOnglet (« quiz » / « examen »).
+
+## 26/10 18h50 — Page Galops : photo de fond de « Une progression à ton rythme » (build 20261026-1850) — NON PUBLIÉ
+- Nouvelles images (fournies par Blandine via ChatGPT) : images/galops-v2-progression-ordi-hd1.jpg (1918×820) et images/galops-v2-progression-tel-hd1.jpg (portrait).
+- Ordinateur/tablette : photo en fond, texte à gauche sur la zone sombre, fondu haut/bas ; en arabe la photo est retournée en miroir.
+- Téléphone : texte d'abord, photo en dessous avec fondu.
