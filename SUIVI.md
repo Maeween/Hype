@@ -14734,3 +14734,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - D'après la maquette de Blandine : la section remonte juste sous la courbe ; dessous, « Les 7 Galops » en 7 onglets (ordinateur : une ligne, légèrement remontée sur le bas de la photo ; téléphone : 4 + 3). Chaque onglet ouvre le même espace du Galop que les pastilles de la courbe, juste dessous. Bientôt (G5, G7) et cadenas Premium affichés. Bouton « Voir le programme détaillé » retiré.
 - Téléphone : titre au-dessus de la photo (posé dessus, il tomberait sur le ciel trop lumineux).
 - Cette publication met aussi en ligne : page Écurie (3 prochains + 3 événements passés), rubriques réduites de l'espace du Galop (Cours, Objectifs officiels, Reprises), conclusion « Des connaissances… » sur téléphone avec le cheval sous le texte.
+
+## 26/10 21h50 — Page Galops : nouvelle photo du haut de page — PUBLICATION (build 20261026-2150), accord de Blandine (« vas-y mets en ligne »)
+- Nouvelle photo (fournie par Blandine via ChatGPT) : cavalier de dos sur cheval gris natté, contre-jour doré. Fichiers NOUVEAUX : images/galops-v2-hero-ordi-hd2.jpg (1920 large) et images/galops-v2-hero-tel-hd2.jpg (recadrage portrait de la même scène).
+- Photo plus visible : voile sombre allégé (seulement sous le titre à gauche et en bas). Téléphone : photo entière sans voile, fondue en bas, titre « Les Galops » sous les sabots.
+- La conclusion « Des connaissances qui font la différence » garde l'ancienne photo (GV2_IMG_FIN = galops-v2-hero-ordi-hd1.jpg) pour ne pas doubler la nouvelle.
+- À faire si possible : version verticale 2:3 de la même scène pour le téléphone (le recadrage actuel est un peu moins net).
