@@ -14601,3 +14601,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Modèles « Reset password » et « Confirm sign up » : le mail Hype (14 langues) ne part QUE si la demande vient de Hype (RedirectTo = https://2hype.fr) ; sinon (Horse Lingo, ou autre) le mail d'origine de Supabase, inchangé. Vérifié avec le moteur Go (Hype en/ar/sans langue → mail Hype ; Horse Lingo / Site URL / vide → mail d'origine).
 - Fonction serveur ponctuelle hype-mails-config utilisée puis NEUTRALISÉE. À faire par Blandine : supprimer la clé d'accès (supabase.com/dashboard/account/tokens) et le secret HYPE_CLE_MAILS.
 - Reste à faire (proposé) : brancher un vrai service d'envoi (SMTP, ex. Brevo) — le service intégré n'envoie que 2 mails/heure et peut ne livrer qu'aux membres de l'équipe Supabase.
+
+## 26/10/2026 — marqueur 20261026-0945, PUBLIÉ : lecture à voix haute (cours + réponses Hey Baby) qui reprend au retour dans l'appli
+- Question de Blandine : garder l'audio de Hype quand l'appli passe en fond (cours, réponse de Hey Baby). Réponse : impossible pour l'appli web sur iPhone (Apple coupe le son des applis web en fond) ; seule la version App Store pourra (mode audio en arrière-plan à déclarer).
+- Fait (fonction commune hbVoixLire, utilisée par AvecLecture = cours/articles et BulleMessage = Hey Baby) : une coupure pendant que l'appli est en fond ne termine plus la lecture ; au retour, si le téléphone n'a pas continué à lire, la lecture reprend au morceau interrompu (≈ phrase, ≤ 220 caractères). Si l'appareil a continué à lire en fond (Android, ordinateur), rien n'est touché. Bouton Arrêter inchangé.
+- Non concernés : « Quoi de neuf », reprises de dressage (autres lecteurs).
+- Tests : voix simulée (cas iPhone qui coupe / cas qui continue) → aucun morceau sauté ni répété ; 17 blocs OK. À tester sur iPhone : lancer la lecture d'un cours, verrouiller quelques secondes, revenir.
