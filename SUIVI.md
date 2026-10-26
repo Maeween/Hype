@@ -14780,3 +14780,4 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 26/10 23h20 — Page Galops : 1er écran du téléphone ajusté (build 20261026-2320) — NON PUBLIÉ
 - Demande de Blandine : sur téléphone, redescendre la photo et le titre pour qu'à l'ouverture on voie juste jusqu'à la courbe des Galops et « Découverte du cheval » (le titre « Une progression à ton rythme » ne dépasse plus en bas).
 - La photo du haut prend la hauteur de l'écran moins la place du titre, de la courbe et de la barre du bas (min. 300 px) : testé 375×667, 390×844, 430×932. Ordinateur et tablette inchangés.
+- 23h25 (build 20261026-2325) : la vague de la courbe traversait le bouton « Découvrir les Galops » (signalé par Blandine) → bouton remonté (marge sous le texte 74 px), photo un peu plus courte pour garder le 1er écran jusqu'à « Découverte du cheval ». Vérifié 375 / 390 / 430 px.
