@@ -14773,3 +14773,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Téléphone : photo du haut réduite à environ la moitié de l'écran (cadrage 390/400, centre 62 %, fondu en bas), « Les Galops » plus petit (28 / 56 px) posé sur le bas de la photo, phrase (11 px) et bouton « Découvrir les Galops » gardés mais plus serrés. La courbe des Galops apparaît dès l'ouverture.
 - Tablette : hero moins haut (clamp 380-480 px au lieu de 440-560). Ordinateur : clamp 400-540 px au lieu de 460-640. Cadrage remonté (centre 38 %) pour garder la tête de la cavalière.
 - Seul fichier modifié : index.html (règles CSS ajoutées à la fin de GV2_CSS). Aucun texte nouveau, aucune traduction à faire.
+
+## 26/10 23h10 — PUBLICATION (build 20261026-2310), accord de Blandine (« Publié »)
+- Met en ligne le haut de page plus court de la page Galops (2305, maquette A). Seul changement de ce build : le marqueur.
