@@ -14714,3 +14714,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 26/10 20h20 — Page Galops : conclusion retirée sur téléphone (build 20261026-2020) — NON PUBLIÉ
 - Note : les corrections Galops de 19h40 à 20h00 (Chemin des Poneys retiré des rubriques, photo raccourcie, plantage G5/G7) sont parties en ligne avec la publication groupée Stripe de 19h53 (autre conversation).
 - Demande de Blandine : sur téléphone, la section « Des connaissances qui font la différence » est retirée (son bouton menait au même endroit que ceux du dessus). Ordinateur et tablette inchangés.
+
+## 26/10 20h40 — Page Écurie : 3 prochains événements + 3 événements passés (build 20261026-2040) — NON PUBLIÉ
+- Demande de Blandine : « permets la publication d'un troisième événement à venir sur la page écurie et affiche trois événements passés aussi ».
+- « Prochains événements » : 3 cartes au lieu de 2 (l'agenda n'avait aucune limite de création ; seule la page Écurie n'en montrait que 2).
+- Nouvelle section « Événements passés » juste dessous : les 3 plus récents (même carte que les prochains), toucher une carte ouvre son souvenir ; « Voir tout » ouvre la page Événements passés. N'apparaît pas si l'écurie n'a aucun événement passé. 14 langues. Téléphone et ordinateur.
+- Inclut aussi le retrait de la conclusion Galops sur téléphone (20h20).
