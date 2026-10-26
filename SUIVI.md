@@ -14667,3 +14667,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Nouvelles images (fournies par Blandine via ChatGPT) : images/galops-v2-progression-ordi-hd1.jpg (1918×820) et images/galops-v2-progression-tel-hd1.jpg (portrait).
 - Ordinateur/tablette : photo en fond, texte à gauche sur la zone sombre, fondu haut/bas ; en arabe la photo est retournée en miroir.
 - Téléphone : texte d'abord, photo en dessous avec fondu.
+
+## 26/10 19h05 — Stripe : Horse Lingo Premium créé sur le compte de l'association (aucune publication de l'appli)
+- Décision de Blandine : TOUT passe sur le compte Stripe de l'association « Feinn équitation et environnement » (acct_1UQVjPHWk0xyvsbC), Hype comme Horse Lingo. Les liens Hype actuels sont encore sur l'ancien compte « Feinn » (acct_1ToLYYHnB1OJ7FOm) : migration Hype = chantier séparé, à valider (sort des 4 abonnés payants actuels en attente de sa réponse).
+- Créé sur l'association, mode réel : produit « Horse Lingo Premium » prod_VVu44KmIqfaL0l ; prix mensuel 7,90 € price_1UUsGbHWk0xyvsbCPZpYxRZH (lookup horse_lingo_mensuel) ; prix annuel 64 € price_1UUsGdHWk0xyvsbCoNuYKqMT (lookup horse_lingo_annuel).
+- Liens de paiement (retour vers https://horselingo.fr/?merci=1, métadonnées appli=horse-lingo + plan) : mensuel https://buy.stripe.com/28EfZh0XCfIJdxfggz4Ni00 ; annuel https://buy.stripe.com/7sYaEXayccwx3WFe8r4Ni01.
+- Erreur signalée : un premier produit « Horse Lingo Premium » (prod_VVlSJ6fxGFCEdq, sans prix ni lien) avait été créé par erreur sur l'ancien compte « Feinn » avant que Blandine précise « tout sur l'association » ; archivé aussitôt.
+- Pas encore branché : aucun webhook sur le compte de l'association → un paiement n'active encore rien. Prochaines étapes (à valider une par une) : webhook de l'association + table des abonnements Horse Lingo + page Abonnement de Horse Lingo.
