@@ -14710,3 +14710,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10 20h05 — PUBLICATION (build 20261026-2000), accord de Blandine (« Publié » = publie)
 - Met en ligne : la prise en compte du secret Stripe de l'association par le relais (le Premium s'active maintenant pour les paiements faits sur l'association ; Stripe renvoie seul les messages refusés plus tôt) + les envois Galops en attente (retrait du Chemin des Poneys des rubriques d'un Galop, photo « Une progression » plus courte sur téléphone, cours des Galops 5 et 7 sans plantage).
+
+## 26/10 20h20 — Page Galops : conclusion retirée sur téléphone (build 20261026-2020) — NON PUBLIÉ
+- Note : les corrections Galops de 19h40 à 20h00 (Chemin des Poneys retiré des rubriques, photo raccourcie, plantage G5/G7) sont parties en ligne avec la publication groupée Stripe de 19h53 (autre conversation).
+- Demande de Blandine : sur téléphone, la section « Des connaissances qui font la différence » est retirée (son bouton menait au même endroit que ceux du dessus). Ordinateur et tablette inchangés.
