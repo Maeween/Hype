@@ -14621,3 +14621,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 26/10/2026 — marqueur 20261026-1020, PUBLIÉ : Ma Sellerie — fin de page HYPE remontée
 - Demande de Blandine : « ajoute en bas la fin de page Hype ». Elle existait déjà (« sellerie » est dans ECRANS_FIN_PAGE) mais arrivait très loin sous « Un bon plan à partager ? » : la page Sellerie gardait une hauteur minimale d'un écran entier + une grande marge en bas (130 px / 116 px téléphone). Hauteur minimale retirée et marge du bas ramenée à 8 px / 4 px : la fin de page suit maintenant directement, comme sur les autres pages. Pas de deuxième fin de page ajoutée.
+
+## 26/10/2026 — marqueur 20261026-1735, NON PUBLIÉ (avec celui de 10 h 20, en attente de l'accord de Blandine) : courbe des Galops parallèle à la vague du hero
+- Demande de Blandine (17 h 23) : « la courbe des Galops sur tel doit être collée, sur ordinateur parallèle à la courbe au-dessus ».
+- La hauteur de chaque pastille est maintenant calculée à partir du tracé même de la vague du bas du hero (`gv2VagueY`, hauteur à l'écran clamp(60px, 9vw, 130px)) : ordinateur/tablette = ligne parallèle à la vague, 72 px (62 px sur tablette) en dessous ; téléphone = arc collé sous la vague (40 px). La piste couvre toute la largeur du hero (marges latérales retirées) et sa hauteur s'adapte. Arabe en miroir.
+- Tests : 360, 390, 820, 1440 ; fr et ar ; aucun débordement ; node --check 17 blocs OK.
+- En attente de Blandine : déploiement d'un Galop sur la page (option 1 = panneau qui s'ouvre sous la courbe au toucher d'une pastille ; option 2 = liste des 7 Galops dépliée par « Voir le programme détaillé »).
