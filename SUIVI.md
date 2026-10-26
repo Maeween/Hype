@@ -14757,3 +14757,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Nouvelle image fournie par Blandine (cavalier de dos aux cheveux courts, cheval gris, soleil entre les arbres) : images/galops-v2-progression-hd2.jpg (nouveau nom), utilisée sur ordinateur ET téléphone (remplace les photos hd1 de la cavalière).
 - Téléphone : cadrage 58 % 35 % (cavalier et cheval entiers). Ordinateur : cadrage plus bas (right 48 %) et voile allégé pour mieux voir la photo.
 - À faire si possible : version 16:9 de la même scène (cheval plus petit, plus à droite) pour l'ordinateur.
+
+## 26/10 22h45 — Page Galops : nouvelles photos des 6 cartes + image du Chemin des Poneys — PUBLICATION (build 20261026-2245), accord de Blandine (« tu peux mettre en ligne »)
+- Les 6 cartes (Cours théoriques, Exercices pratiques, Vidéothèque, Reprises de dressage, Quiz, Examens) prennent les photos choisies par Blandine sur aperçu : nouveaux fichiers images/galops-v2-carte-{cours,exercices,videos,reprises,quiz,examens}-hd2.jpg (photos entières, 1200 px max).
+- Chaque carte a son cadrage (champ « pos » → object-position) pour garder le cheval et le cavalier visibles sur téléphone (cartes larges), tablette et ordinateur (cartes hautes).
+- Répartition : Cours = trot tête basse ; Exercices = saut obstacle bleu ; Vidéothèque = oxer jaune et vert ; Reprises = trot en manège ; Quiz = trot au soleil couchant ; Examens = cavalière en gros plan.
+- Chemin des Poneys (bande claire en bas de page) : prend l'image du puzzle du Poney d'Argent (k494 = images/hi/98f194c0ef78deca4e70.jpg) à la place de galops-v2-chemin-hd1.jpg.
+- Inchangé volontairement : les vignettes des cours dans l'espace d'un Galop (GV2_VIGNETTES) gardent les anciennes photos -hd1.jpg.
