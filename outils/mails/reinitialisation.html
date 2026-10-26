@@ -1,4 +1,4 @@
-{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}<!DOCTYPE html>
+{{ if or (eq .RedirectTo "https://2hype.fr") (eq .RedirectTo "https://2hype.fr/") }}{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}<!DOCTYPE html>
 <html lang="{{ $l }}" dir="{{ if eq $l "ar" }}rtl{{ else }}ltr{{ end }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>HYPE</title></head>
 <body style="margin:0;padding:0;background:#070A08;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ if eq $l "en" }}Pick a new password in one tap.{{ else if eq $l "es" }}Elige una nueva contraseña con un toque.{{ else if eq $l "it" }}Scegli una nuova password con un tocco.{{ else if eq $l "de" }}Wähle mit einem Tipp ein neues Passwort.{{ else if eq $l "ja" }}ワンタップで新しいパスワードを設定しよう。{{ else if eq $l "ar" }}اختاري كلمة مرور جديدة بلمسة واحدة.{{ else if eq $l "zh" }}轻点一下，设置新密码。{{ else if eq $l "nl" }}Kies met één tik een nieuw wachtwoord.{{ else if eq $l "pt" }}Escolha uma nova senha com um toque.{{ else if eq $l "sv" }}Välj ett nytt lösenord med ett tryck.{{ else if eq $l "ru" }}Выбери новый пароль в одно касание.{{ else if eq $l "pl" }}Wybierz nowe hasło jednym dotknięciem.{{ else if eq $l "ko" }}한 번의 터치로 새 비밀번호를 정하세요.{{ else }}Choisis un nouveau mot de passe en un geste.{{ end }}</div>
@@ -18,3 +18,9 @@
 <tr><td style="padding:26px 32px 30px;text-align:{{ if eq $l "ar" }}right{{ else }}left{{ end }};font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:17px;color:#F3EEE4;">{{ if eq $l "en" }}See you in the saddle — the Hype team{{ else if eq $l "es" }}¡Nos vemos en la silla! — el equipo de Hype{{ else if eq $l "it" }}A presto in sella — il team di Hype{{ else if eq $l "de" }}Bis gleich im Sattel — dein Hype-Team{{ else if eq $l "ja" }}鞍の上で待ってるね — Hypeチーム{{ else if eq $l "ar" }}نراكِ على السرج قريبًا — فريق Hype{{ else if eq $l "zh" }}马鞍上见 — Hype 团队{{ else if eq $l "nl" }}Tot zo in het zadel — het Hype-team{{ else if eq $l "pt" }}Até já na sela — equipe Hype{{ else if eq $l "sv" }}Vi ses i sadeln — Hype-teamet{{ else if eq $l "ru" }}До встречи в седле — команда Hype{{ else if eq $l "pl" }}Do zobaczenia w siodle — zespół Hype{{ else if eq $l "ko" }}곧 안장 위에서 만나요 — Hype 팀{{ else }}À tout de suite en selle — l'équipe Hype{{ end }}<br><a href="https://2hype.fr" style="font-family:'Montserrat',Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:2px;color:#C9A66B;text-decoration:none;">2HYPE.FR</a></td></tr>
 </table></td></tr></table>
 </body></html>
+{{ else }}<h2>Reset your password</h2>
+
+<p>We received a request to reset your password. Follow the link below to choose a new one.</p>
+<p><a href="{{ .ConfirmationURL }}">Reset password</a></p>
+
+<p>If you didn't request this, you can safely ignore this email.</p>{{ end }}

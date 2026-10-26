@@ -14594,3 +14594,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Golden Horse : confirmé « alimentation » par Blandine (déjà le cas, rien changé).
 - Non fait : images « v4-dore » de Demi Volte (non reçues) ; images actuelles gardées.
 - Tests (Playwright, base simulée) : 2, 3, 4 codes ; 390, 1024×1366, 1366×1024, 1440 ; fr / de / ar (rangée en miroir) ; Voir tout ; copie FEINN10 sans ouvrir le site ; aucun débordement de page ; 0 erreur ; 17 blocs OK.
+
+## 26/10/2026 — 9 h 40 (Blandine : « vas-y dis-moi quoi faire », « l'autre fois t'avais fait toi-même ») : mails Hype installés dans Supabase + VRAIE CAUSE du lien « mot de passe oublié »
+- CAUSE TROUVÉE : le projet Supabase est PARTAGÉ entre Hype et Horse Lingo. Ses réglages (lus le 26/10) : Site URL = https://majestic-melba-997a68.netlify.app/ (= horselingo.fr, Horse Lingo) ; adresses autorisées = majestic-melba…/* et https://horselingo.fr/** — PAS 2hype.fr. Donc un lien « mot de passe oublié » demandé depuis Hype renvoyait vers HORSE LINGO. Envoi des mails : service intégré de Supabase (2 mails/heure, pas de SMTP) ; inscription en confirmation automatique (aucun mail de confirmation envoyé).
+- Correctif (via l'API de gestion Supabase, clé d'accès créée par Blandine, gardée en secret serveur HYPE_CLE_MAILS) : 2hype.fr et 2hype.netlify.app AJOUTÉS aux adresses autorisées (rien retiré ; Site URL inchangée pour ne pas casser Horse Lingo).
+- Modèles « Reset password » et « Confirm sign up » : le mail Hype (14 langues) ne part QUE si la demande vient de Hype (RedirectTo = https://2hype.fr) ; sinon (Horse Lingo, ou autre) le mail d'origine de Supabase, inchangé. Vérifié avec le moteur Go (Hype en/ar/sans langue → mail Hype ; Horse Lingo / Site URL / vide → mail d'origine).
+- Fonction serveur ponctuelle hype-mails-config utilisée puis NEUTRALISÉE. À faire par Blandine : supprimer la clé d'accès (supabase.com/dashboard/account/tokens) et le secret HYPE_CLE_MAILS.
+- Reste à faire (proposé) : brancher un vrai service d'envoi (SMTP, ex. Brevo) — le service intégré n'envoie que 2 mails/heure et peut ne livrer qu'aux membres de l'équipe Supabase.

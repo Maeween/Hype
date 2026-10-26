@@ -93,17 +93,25 @@ def corps(textes, champ, lg=None):
 </table></td></tr></table>
 </body></html>
 '''
-def objet_modele(textes):
-    return '{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}' + choix(textes, "objet", echap=False)
+def objet_modele(textes, nom):
+    return COND_HYPE + '{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}' + choix(textes, "objet", echap=False) + "{{ else }}" + DEFAUT[nom][0] + "{{ end }}"
+
+# 26/10 : le projet Supabase est PARTAGE avec Horse Lingo (horselingo.fr). Le mail Hype ne part que si la demande vient de
+# Hype (RedirectTo = https://2hype.fr) ; sinon, le mail d origine de Supabase, inchange, comme avant.
+COND_HYPE = '{{ if or (eq .RedirectTo "https://2hype.fr") (eq .RedirectTo "https://2hype.fr/") }}'
+DEFAUT = {
+ "reinitialisation": ("Reset your password", "<h2>Reset your password</h2>\n\n<p>We received a request to reset your password. Follow the link below to choose a new one.</p>\n<p><a href=\"{{ .ConfirmationURL }}\">Reset password</a></p>\n\n<p>If you didn't request this, you can safely ignore this email.</p>"),
+ "confirmation": ("Confirm your email address", "<h2>Confirm your email address</h2>\n\n<p>Follow the link below to confirm this email address and finish signing up.</p>\n<p><a href=\"{{ .ConfirmationURL }}\">Confirm email address</a></p>"),
+}
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(os.path.join(OUT, "apercus"), exist_ok=True)
 for nom, textes in (("reinitialisation", RESET), ("confirmation", CONF)):
-    open(os.path.join(OUT, nom + ".html"), "w", encoding="utf-8").write(corps(textes, nom))
+    open(os.path.join(OUT, nom + ".html"), "w", encoding="utf-8").write(COND_HYPE + corps(textes, nom) + "{{ else }}" + DEFAUT[nom][1] + "{{ end }}")
     for lg in LANGUES:
         open(os.path.join(OUT, "apercus", f"{nom}-{lg}.html"), "w", encoding="utf-8").write(corps(textes, nom, lg))
 open(os.path.join(OUT, "objets.txt"), "w", encoding="utf-8").write(
-"OBJET « Reset Password » (mot de passe oublié) — version 14 langues :\n" + objet_modele(RESET) +
+"OBJET « Reset Password » (mot de passe oublié) — version 14 langues :\n" + objet_modele(RESET, "reinitialisation") +
 "\n\nOBJET « Reset Password » — version de secours (si Supabase n'accepte pas les conditions dans l'objet) :\n" + RESET["fr"][0] +
-"\n\nOBJET « Confirm signup » (confirmation d'inscription) — version 14 langues :\n" + objet_modele(CONF) +
+"\n\nOBJET « Confirm signup » (confirmation d'inscription) — version 14 langues :\n" + objet_modele(CONF, "confirmation") +
 "\n\nOBJET « Confirm signup » — version de secours :\n" + CONF["fr"][0] + "\n")
 print("ok")
