@@ -14695,5 +14695,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Rien ne change pour les abonnés actuels : ils restent sur l'ancien compte « Feinn » jusqu'à leur déplacement.
 - RESTE À FAIRE (Blandine) : (1) déplacer les abonnés en cours vers l'association — copie des cartes à lancer depuis le tableau de bord Stripe de l'ancien compte (outil « copier des données vers un autre compte »), puis recréation des abonnements à la même échéance et arrêt des anciens, guidé pas à pas ; (2) RIB de l'association sur l'ancien compte « Feinn » pour récupérer le solde (voir avec le comptable) ; (3) demander au comptable si l'association doit facturer la TVA (prix actuellement sans TVA calculée).
 
-## 26/10 19h40 — Page Galops : « Le Chemin des Poneys » retiré des rubriques de l'espace du Galop (build 20261026-1940) — NON PUBLIÉ
+## 26/10 19h40 — Page Galops : « Le Chemin des Poneys » retiré des rubriques de l'espace du Galop (build 20261026-1950) — NON PUBLIÉ
 - Demande de Blandine : il n'a rien à faire dans le menu d'un Galop. Il reste accessible par sa bande ivoire en bas de la page.
+- Incident 19h40 : le premier envoi n'a contenu que ce suivi (la modification de index.html avait échoué car le marqueur en ligne était passé à 1945 par la livraison Stripe d'une autre conversation). Corrigé dans l'envoi suivant (marqueur 1950). Rien n'a été publié entre-temps.
