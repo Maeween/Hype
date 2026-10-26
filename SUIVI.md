@@ -14707,3 +14707,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Cause : les cours des Galops 5 et 7 (en préparation) n'ont pas encore de fichiers par langue ; leurs textes sont des objets {fr, en…} que la page du cours affichait tels quels → React #31.
 - Correction : quand un Galop 5 ou 7 est chargé depuis son fichier complet, on range une copie traduite dans la langue choisie (hypeLocaliserCours) ; titre du cours protégé aussi. Galops 1 à 4 et 6 non touchés.
 - Testé : les 6 cours du Galop 5 et les 6 cours du Galop 7 s'ouvrent (modératrice) ; Galop 3 inchangé.
+
+## 26/10 20h05 — PUBLICATION (build 20261026-2000), accord de Blandine (« Publié » = publie)
+- Met en ligne : la prise en compte du secret Stripe de l'association par le relais (le Premium s'active maintenant pour les paiements faits sur l'association ; Stripe renvoie seul les messages refusés plus tôt) + les envois Galops en attente (retrait du Chemin des Poneys des rubriques d'un Galop, photo « Une progression » plus courte sur téléphone, cours des Galops 5 et 7 sans plantage).
