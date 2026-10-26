@@ -14667,3 +14667,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Nouvelles images (fournies par Blandine via ChatGPT) : images/galops-v2-progression-ordi-hd1.jpg (1918×820) et images/galops-v2-progression-tel-hd1.jpg (portrait).
 - Ordinateur/tablette : photo en fond, texte à gauche sur la zone sombre, fondu haut/bas ; en arabe la photo est retournée en miroir.
 - Téléphone : texte d'abord, photo en dessous avec fondu.
+
+## 26/10 19h25 — Page Galops : descriptions et « Programme officiel » d'après le programme fédéral (build 20261026-1925) — NON PUBLIÉ
+- Source : Programme officiel des Galops® 1 à 7 de la FFE, applicable au 1er septembre 2012 (toujours la version publiée par la FFE en oct. 2026) — https://www.ffe.com/system/files/cavalier/documents/pdf/programme-officiel-galops-cavalier-1a7-synthetique.pdf
+- Descriptions des 7 Galops (GV2_DESC) réécrites d'après ce programme, 14 langues (demande de Blandine : « fais en suivant le programme fédéral »).
+- Nouvelle rubrique « Programme officiel » dans l'espace du Galop (après Objectifs) : résumé fidèle (À cheval / À pied et soins / Connaissances, 3 points chacun), mention de la date d'application + lien vers le document FFE. Données : GV2_FFE. Ordinateur : vue à droite ; téléphone : se déplie.
+- Objectifs (competences) des Galops 5, 6 et 7 dans GALOPS_I18N remplacés pour coller au programme (ils ne sont pas encore construits ; l'ancien Galop 7 citait élevage / gestion d'écurie, absents du programme).
+- À REVÉRIFIER chaque saison : la FFE peut revoir son programme.
