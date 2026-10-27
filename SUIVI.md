@@ -14987,3 +14987,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 20h35 — PUBLICATION (build 20261027-2035), accord de Blandine (« Ok publié », 20h32)
 - Met en ligne le build 1955 (embouchures : famille « Les releveurs », passage de langue, nouvelle photo du haut, cours ouvert à tous avec la règle Premium du Galop 5), repris de la branche embouchures-releveurs sur main à jour (b05bb51). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
+
+## 27/10 22h50 — Embouchures : les 3 images manquantes (build 20261027-2250) — NON PUBLIÉ, branche embouchures-3-images
+- Blandine envoie hype-trois-mors.zip (ChatGPT, 2048 × 1536) : releveur-cordes, mors-americain, canon-passage-langue → images/galop5-emb-{releveur, americain, langue}-v2.webp (1200 × 900, 21-23 Ko).
+- index.html : GE_SANS_IMAGE vidé (les 3 fiches ont maintenant vignette + grande image). Aucun texte modifié.
+- Vérifié (390 px, 18 fiches ouvertes) : 38 images chargées, aucune vide, aucune erreur.
