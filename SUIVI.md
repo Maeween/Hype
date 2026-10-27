@@ -14892,3 +14892,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Fond de la bande = noir pur (#000, le même que la vidéo : aucun bord visible). Ordinateur : vidéo montrée en entier (cavalière et sabots), plus de recadrage.
 - Comprend aussi le build 0240 (bande plus haute, vidéos après Reprises/Évaluation), non publié.
 - Vérifié : node --check OK ; vidéo en lecture muette en 390 et 1440.
+
+## 27/10 02h50 — PUBLICATION (build 20261027-0250), accord de Blandine (« Publié »)
+- Met en ligne : bande Reprises plus haute + vidéos après Reprises/Évaluation (0240), nouvelle vidéo sur fond noir (0245). Seul changement de ce build : le marqueur.
