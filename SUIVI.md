@@ -14953,3 +14953,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Les autres listes de Galops de l'appli (qui parcourent GALOPS_I18N) montrent aussi 8 et 9, en « Bientôt ».
 - Vérifié (téléphone 390 px et ordinateur 1280 px) : Galops 1 à 7 inchangés (mêmes nombres de cours, quiz, ouvrables qu'avant), Galops 8 et 9 s'affichent, rien ne déborde, aucune erreur.
 - Fichier modifié : index.html (+ ce suivi). Aucune image nouvelle.
+
+## 27/10 15h25 — PUBLICATION (build 20261027-1525), accord de Blandine (« Et mets en ligne ce qui est fait »)
+- Met en ligne le build 1520 (Galops 8 et 9 : pages « Prochainement », 9 pastilles, « Les 9 Galops »). Seul changement de ce build : le marqueur. Version en ligne récupérée juste avant.
