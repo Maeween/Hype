@@ -14886,3 +14886,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Ordre de la page : cours → Reprises de dressage → Évaluation → Extraits vidéo → fin de page Hype. Onglets du haut dans le même ordre (… Reprises, Évaluation, Vidéos).
 - Bande Reprises : téléphone = vidéo en haut sur toute la largeur (16:9, fondu vers le bas), titre plus grand + phrase + flèche dessous ; ordinateur/tablette = bande pleine largeur de 260 px, vidéo sur les 62 % de droite, textes à gauche. Évaluation inchangée.
 - Vérifié : node --check OK ; vidéo en lecture (390, 1440) ; 375 arabe ; rien ne déborde.
+
+## 27/10 02h45 — Galop 5 : nouvelle vidéo dans la bande Reprises (build 20261027-0245) — NON PUBLIÉ
+- 2e vidéo de Blandine (cheval gris et cavalière détourés sur fond noir, .mov iPhone HEVC 5,7 s) mise au format web : images/galop5-reprises-video2.mp4 (H.264 sans le son, 317 Ko) + images/galop5-reprises-video2-affiche.jpg. Fichiers NOUVEAUX (nouveaux noms pour éviter l'ancienne version en cache). Elle remplace galop5-reprises-video.mp4 (plus utilisée, laissée sur le dépôt).
+- Fond de la bande = noir pur (#000, le même que la vidéo : aucun bord visible). Ordinateur : vidéo montrée en entier (cavalière et sabots), plus de recadrage.
+- Comprend aussi le build 0240 (bande plus haute, vidéos après Reprises/Évaluation), non publié.
+- Vérifié : node --check OK ; vidéo en lecture muette en 390 et 1440.
