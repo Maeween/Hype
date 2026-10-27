@@ -14843,3 +14843,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Ordinateur/tablette : photo du haut plus haute (cavalière et cheval entiers, du casque aux sabots), pastilles 1 → 7 et onglets posés sur le bas de la photo, onglets semi-transparents (plus opaques seulement quand ils restent collés en haut). Vérifié 1280, 1440, 1920.
 - Fond de page = #060709 (même noir bleuté que l'accueil, --bg) ; voiles et dégradés de la page passés sur ce noir. Pétrole allégé : encadrés, cartes des parties, dégradé sous les photos des cartes (la photo est moins recouverte par les titres).
 - Vérifié : node --check OK ; 390, 375 arabe, 820, 1280, 1440, 1920 ; rien ne déborde.
+
+## 27/10 01h45 — Galop 5 : nouvelle photo pour « Vie équestre » (build 20261027-0145) — NON PUBLIÉ
+- Photo fournie par Blandine (cavalier sur cheval gris tressé, sous-bois doré) → images/galop5-th-vie2.webp (NOUVEAU), cadrée sur la tête du cheval et les mains (la photo est verticale : dans une carte large, on ne peut pas avoir à la fois le casque du cavalier et la tête du cheval). galop5-th-vie.webp n'est plus utilisée.
+- En attente : choix de Blandine pour la séparation entre les cours dans chaque carte (4 visuels montrés).
