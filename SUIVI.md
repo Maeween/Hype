@@ -14812,3 +14812,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 01h05 — PUBLICATION (build 20261027-0105), accord de Blandine (« Publié en attendant »)
 - Met en ligne la page du Galop 5 (builds 0030 et 0055), visible des seules modératrices. Seul changement de ce build : le marqueur.
+
+## 27/10 01h15 — Page du Galop 5 : lignes éditoriales + couleurs plus chaudes — PUBLICATION (build 20261027-0115), accord de Blandine (« Ok vas y »)
+- Brief « corrections UX/UI » : les cours deviennent des lignes simples (petite photo, numéro + titre, filet pétrole entre les cours), sans cadres imbriqués ; ordinateur/tablette en deux colonnes larges (Connaissances | Cheval, puis Soins | Pratique montée) ; téléphone : les 4 thèmes l'un sous l'autre, 12 cours visibles. « En préparation » retiré sous chaque cours, remplacé par une seule phrase sous le titre (« Les cours arrivent progressivement : chacun s'ouvrira ici dès qu'il sera prêt. », 14 langues). Présentation + objectifs moins hauts.
+- Brief « correction colorimétrique » : plus de pétrole (#14252A, #101D22) dans les fonds, léger fond pétrole par thème (sans cadre), petit trait champagne sous chaque titre de thème, pictogrammes champagne mats, séparateurs pétrole ; vignettes, extraits vidéo et cartes du bas éclaircies (léger réchauffement, sans voile noir) ; haut de page : ombre seulement derrière le titre ; textes secondaires moins gris, intitulés plus grands sur ordinateur.
+- Photo du haut : celle de Blandine (galop5-hero-v2.webp), conservée (« t'occupe pas de la photo »). Aucun fichier image nouveau dans ce build ; seul index.html change (+ ce suivi).
+- Vérifié : node --check OK ; 390, 375 arabe, tablette 820, ordinateur 1440 : rien ne déborde.
