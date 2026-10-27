@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261027-1505"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261027-1510"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -29326,7 +29326,7 @@ function Router() {
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
                 ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
-                ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopChoix, null))),   /* 27/10 14h38 (Blandine : « mets en ligne ») : Galops 1-4, 6, 7 au design du Galop 5 ; Baby et Galop 5 inchangés ; GALOPS_V3_ACTIF = false ramène l'ancienne page */   /* 09/10 (764) : verrou Premium a l arrivee */
+                ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetailAiguille, null))),   /* 27/10 14h50 : Galop 1 sur ordinateur (≥ 1200 px) → EcranGalop1Ordi, sinon EcranGalopChoix (inchangé) */   /* 27/10 14h38 (Blandine : « mets en ligne ») : Galops 1-4, 6, 7 au design du Galop 5 ; Baby et Galop 5 inchangés ; GALOPS_V3_ACTIF = false ramène l'ancienne page */   /* 09/10 (764) : verrou Premium a l arrivee */
                 ecran === "galop5" && React.createElement(EcranGalop5, null),
                 ecran === "cours-g5-emb" && React.createElement(EcranCoursG5Emb, null),
                 ecran === "galop-v3" && React.createElement(EcranGalopV3, null),   /* 27/10 : APERÇU de la page de chaque Galop au design du Galop 5 (modératrices seules) */   /* 27/10 : cours du Galop 5 « Les embouchures » (modératrices seules) */   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
@@ -79302,9 +79302,10 @@ var GV2_CSS = ""
   + ".gv2-courbe{position:relative;z-index:2;padding:0 0 34px;margin-top:-4px}"
   + ".gv2-piste{position:relative;height:250px;margin:0}"
   + ".gv2-piste svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}"
-  + ".gv2-niv{position:absolute;transform:translate(-50%,-31px);width:15%;display:flex;flex-direction:column;align-items:center;text-align:center;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}"
+  + ".gv2-niv{position:absolute;transform:translate(-50%,-31px);width:11%;display:flex;flex-direction:column;align-items:center;text-align:center;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}"
   + ".gv2-dot{position:relative;width:62px;height:62px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gv2-pastille);border:1px solid var(--gv2-champ-doux);box-shadow:0 0 0 5px var(--gv2-fond),0 0 18px rgba(201,166,107,0.10);font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;font-weight:500;color:var(--gv2-ivoire);line-height:1;transition:transform .2s,border-color .2s}"
   + ".gv2-niv:hover .gv2-dot{border-color:var(--gv2-champ);transform:scale(1.04)}"
+  + ".gv2-futur{cursor:default}.gv2-futur:hover .gv2-dot{border-color:rgba(201,166,107,0.28);transform:none}"
   + ".gv2-courant .gv2-dot{width:76px;height:76px;font-size:40px;margin-top:-7px;border:1.5px solid var(--gv2-champ);box-shadow:0 0 0 5px var(--gv2-fond),0 0 0 9px rgba(201,166,107,0.16),0 0 34px rgba(201,166,107,0.38)}"
   + ".gv2-fait .gv2-dot{border-color:var(--gv2-champ)}"
   + ".gv2-bientot .gv2-dot{color:var(--gv2-texte3);border-style:dashed;border-color:rgba(201,166,107,0.28)}"
@@ -79423,7 +79424,7 @@ var GV2_CSS = ""
   + ".gv2-cont-c{flex:0 0 auto;font-size:12px;color:var(--gv2-texte3)}"
   + ".gv2-cont-a{flex:0 0 auto;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gv2-champ)}"
   /* TABLETTE */
-  + "@media (min-width:768px) and (max-width:1199px){.gv2-hero{height:clamp(440px,56vh,560px)}.gv2-hero-txt{max-width:52%}.gv2-piste{height:240px}.gv2-niv{width:14.2%;transform:translate(-50%,-27px)}.gv2-dot{width:54px;height:54px;font-size:27px}.gv2-courant .gv2-dot{width:66px;height:66px;font-size:34px;margin-top:-6px}.gv2-lbl{font-size:10px;letter-spacing:0.12em}.gv2-sous{font-size:11.5px}}"
+  + "@media (min-width:768px) and (max-width:1199px){.gv2-hero{height:clamp(440px,56vh,560px)}.gv2-hero-txt{max-width:52%}.gv2-piste{height:240px}.gv2-niv{width:11%;transform:translate(-50%,-27px)}.gv2-dot{width:54px;height:54px;font-size:27px}.gv2-courant .gv2-dot{width:66px;height:66px;font-size:34px;margin-top:-6px}.gv2-lbl{font-size:10px;letter-spacing:0.12em}.gv2-sous{font-size:11.5px}}"
   /* TÉLÉPHONE : hero vertical, courbe en trajectoire verticale ondulante */
   + "@media (max-width:767px){"
   + ".gv2-hero{height:auto;aspect-ratio:auto;min-height:0;display:flex;flex-direction:column}"
@@ -79435,9 +79436,9 @@ var GV2_CSS = ""
   + ".gv2-btn{margin-top:22px}"
   + ".gv2-courbe{padding:0 0 22px;margin-top:-6px}"
   + ".gv2-piste{height:116px}"
-  + ".gv2-niv{width:48px;height:48px;transform:translate(-50%,-50%);justify-content:center}"
-  + ".gv2-dot{width:42px;height:42px;font-size:22px;box-shadow:0 0 0 4px var(--gv2-fond)}"
-  + ".gv2-courant .gv2-dot{width:52px;height:52px;font-size:28px;margin-top:0;box-shadow:0 0 0 4px var(--gv2-fond),0 0 0 7px rgba(201,166,107,0.16),0 0 24px rgba(201,166,107,0.38)}"
+  + ".gv2-niv{width:40px;height:44px;transform:translate(-50%,-50%);justify-content:center}"   /* 27/10 : 9 pastilles (G8, G9) → un peu plus petites sur téléphone */
+  + ".gv2-dot{width:34px;height:34px;font-size:19px;box-shadow:0 0 0 3px var(--gv2-fond)}"
+  + ".gv2-courant .gv2-dot{width:42px;height:42px;font-size:24px;margin-top:0;box-shadow:0 0 0 3px var(--gv2-fond),0 0 0 6px rgba(201,166,107,0.16),0 0 20px rgba(201,166,107,0.38)}"
   + ".gv2-badge{width:17px;height:17px;right:-4px;bottom:-4px}.gv2-badge svg{width:9px;height:9px}"
   + ".gv2-niv .gv2-txt{display:none}"
   + ".gv2-legende{display:flex!important}"
@@ -79791,7 +79792,9 @@ function GalopsV2Haut(props) {
   var ecartCourbe = tel ? 40 : (larg < 1200 ? 62 : 72);          /* distance entre la vague et le centre des pastilles */
   var decalCourbe = tel ? 6 : 4;                                 /* la piste commence légèrement au-dessus du bas du hero */
   function yCourbe(fx) { return gv2VagueY(fx) * hVague / 110 - hVague + decalCourbe + ecartCourbe; }
-  var xs = [7, 21, 35, 50, 64, 79, 93];
+  /* 27/10 (Blandine : « Ne modifie pas le tracé de la courbe des galops tu ajoutes juste un g8 et un g9 ») : 9 pastilles posées sur le MÊME tracé
+     (la vague du hero, yCourbe inchangée) — seules les positions des pastilles sont resserrées ; G8 et G9 = « Bientôt », sans effet au toucher. */
+  var xs = [6, 17, 28, 39, 50, 61, 72, 83, 94];
   var ptsPx = xs.map(function (x) { return [rtl ? (100 - x) : x, Math.round(yCourbe(x / 100))]; });
   var yMax = Math.max.apply(null, ptsPx.map(function (q) { return q[1]; }));
   var hPiste = Math.round(yMax + (tel ? 30 : 110));
@@ -79815,13 +79818,14 @@ function GalopsV2Haut(props) {
   var icCoche = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
   var icCadenas = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 2.2, strokeLinecap: "round", "aria-hidden": "true" }, h("rect", { x: 5, y: 10.5, width: 14, height: 10, rx: 2 }), h("path", { d: "M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" }));
 
-  var niveaux = [1, 2, 3, 4, 5, 6, 7].map(function (id, i) {
+  var niveaux = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (id, i) {
     var g = GALOPS_I18N.find(function (gg) { return gg.id === id; }) || {};
+    var futur = id > 7;                                                /* 27/10 : G8 et G9 n'existent pas encore dans les données → « Bientôt », jamais ouverts */
     var bientot = !g.disponible;                                       /* prioritaire sur Premium (montré aussi aux modératrices) */
     var verrou = !bientot && !g.debloque && !premium && !estModGal;     /* cadenas seulement si l'accès est vraiment refusé */
     var etat = bientot ? "bientot" : (id < gAct ? "fait" : (id === gAct ? "courant" : "avenir"));
     var p = pts[i];
-    var cls = "gv2-niv gv2-" + etat + (choisi === id ? " gv2-choisi" : "");
+    var cls = "gv2-niv gv2-" + etat + (choisi === id ? " gv2-choisi" : "") + (futur ? " gv2-futur" : "");
     var aria = (g.titre ? tr(g.titre) : ("Galop " + id)) + " — " + (g.sousTitre ? tr(g.sousTitre) : "")
       + (bientot ? " — " + tr(T.bientot) : "") + (verrou ? " — " + tr(T.verrou) : "")
       + (etat === "fait" ? " — " + tr(T.fait) : "") + (etat === "courant" ? " — " + tr(T.actuel) : "");
@@ -79833,9 +79837,9 @@ function GalopsV2Haut(props) {
     return h("button", {
       key: "gv2n" + id, type: "button", className: cls,
       style: { left: p[0] + "%", top: p[1] + "%" },
-      onClick: function () { choisirGalop(id); },
-      "aria-expanded": choisi === id ? "true" : "false", "aria-controls": choisi === id ? "gv2-espace" : undefined,
-      "aria-label": aria, "aria-disabled": (bientot && !estModGal) ? "true" : undefined,
+      onClick: function () { if (!futur) choisirGalop(id); },
+      "aria-expanded": futur ? undefined : (choisi === id ? "true" : "false"), "aria-controls": choisi === id ? "gv2-espace" : undefined,
+      "aria-label": aria, "aria-disabled": ((bientot && !estModGal) || futur) ? "true" : undefined,
       "aria-current": etat === "courant" ? "step" : undefined
     }, h("span", { className: "gv2-dot", "aria-hidden": "true" }, String(id), badge), textes);
   });
@@ -81469,6 +81473,459 @@ var GV3_CSS = ""
   + ".gv3-q-t small{display:block;font-size:11px;color:rgba(243,238,228,0.6);margin-top:2px}"
   + ".gv3-q-s{flex:0 0 auto;font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px;color:#D9A07F;background:rgba(217,160,127,0.12)}.gv3-q-s.ok{color:#C9A66B;background:rgba(201,166,107,0.14)}"
   + "@media (min-width:768px){.gv3-vids{grid-template-columns:repeat(4,minmax(0,1fr))}.g5-vid-ph{aspect-ratio:16/10}}";
+
+/* ══ 27/10 — PAGE DU GALOP 1, VERSION ORDINATEUR (maquette validée par Blandine, brief « Intégration de la nouvelle page Galop 1 (ordinateur) ») ══
+   Écran « galop-detail » quand le Galop ouvert est le 1 ET que la fenêtre fait au moins 1200 px (ordinateur).
+   En dessous (téléphone, tablette), et pour les autres Galops : ce que choisit EcranGalopChoix (page au design du Galop 5, publiée le 27/10 à 14h45
+   par une autre conversation), STRICTEMENT inchangé.
+   Composant et styles isolés (préfixe g1o-) : rien de partagé n'est modifié.
+   Rien d'inventé : cours, nombres de cours, vignettes (couvertures réelles des cours), objectifs (GALOPS_I18N), progression (coursTermines).
+   - Les 4 parties = les mêmes que dans tous les Galops (décision du 27/10), photos et titres repris de G5_THEMES ; le rangement des cours
+     dans les parties = celui de l'ancienne page (CATEGORIE_PAR_COURS, recopié ici pour le seul Galop 1, sans toucher à l'original).
+   - « Le grand quiz du Galop 1 » (g1-c14, partie Bilan) n'est pas un cours : il reste dans l'onglet Quiz de l'ancienne page, ouvert par l'encart Quiz.
+   - Quiz ouvre la vraie liste des quiz du Galop 1 (page EcranGalopChoix, partie Quiz dépliée, impression comprise) ; Évaluation ouvre le vrai examen blanc.
+   - Reprises : il n'existe pas de reprise officielle du Galop 1 (elles commencent au Galop 3) → l'encart le dit et ouvre la vraie page des reprises.
+   - Vidéos : les vraies vidéos du Galop 1 de la vidéothèque (hype-video.js), 4 premières, sans durée (la vidéothèque n'en a pas) ; état vide s'il n'y en a aucune.
+   - Pastilles 1 → 9 : mêmes règles que la courbe de la page Galops ; 8 et 9 « Prochainement », jamais ouvertes.
+   - Photo du haut : G1O_HERO, un seul endroit à changer pour la remplacer. */
+var G1O_HERO = "images/galops-v2-progression-ordi-hd1.jpg";
+var G1O_REPRISES_IMG = "images/galops-v2-carte-reprises-hd2.jpg";
+var G1O_QUIZ_IMG = "images/galops-v2-carte-cours-hd2.jpg";
+var G1O_EVAL_IMG = "images/galops-v2-carte-examens-hd2.jpg";
+var G1O_PARTIES = [   /* index dans G5_THEMES (photo + titre communs à tous les Galops) → catégorie des cours du Galop 1 */
+  { th: 0, cat: "culture", ic: "conn" },
+  { th: 1, cat: "connaissance", ic: "cheval" },
+  { th: 2, cat: "vie", ic: "soins" },
+  { th: 3, cat: "technique", ic: "montee" }
+];
+var G1O_CAT = { "g1-c3": "connaissance", "g1-c6": "connaissance", "g1-c7": "connaissance", "g1-c15": "vie", "g1-c2": "vie", "g1-c4": "connaissance", "g1-c5": "technique", "g1-c9": "technique", "g1-c12": "culture", "g1-c13": "culture", "g1-c8": "vie", "g1-c10": "vie", "g1-c11": "culture", "g1-c16": "culture", "g1-c17": "vie", "g1-c18": "vie", "g1-c19": "technique", "g1-c14": "bilan", "g1-c20": "connaissance" };
+var G1O_T = {
+  pre: gv2L("Galops FFE", "FFE levels", "Galops FFE", "Galop FFE", "FFE-Galops", "FFE ギャロップ", "غالوبات FFE", "FFE Galop 等级", "FFE-Galops", "Galops FFE", "FFE Galop", "Уровни Galop FFE", "Galopy FFE", "FFE Galop 단계"),
+  sous: gv2L("La sécurité avant tout", "Safety first", "La seguridad ante todo", "La sicurezza prima di tutto", "Sicherheit geht vor", "何よりも安全を", "السلامة أولا", "安全第一", "Veiligheid voor alles", "A segurança acima de tudo", "Säkerheten först", "Безопасность прежде всего", "Bezpieczeństwo przede wszystkim", "무엇보다 안전"),
+  intro: gv2L("Tes premiers pas aux côtés du cheval : le découvrir, t'en occuper et monter en toute sécurité.",
+    "Your first steps alongside the horse: getting to know it, caring for it and riding safely.",
+    "Tus primeros pasos junto al caballo: conocerlo, cuidarlo y montar con total seguridad.",
+    "I tuoi primi passi accanto al cavallo: conoscerlo, prendertene cura e montare in tutta sicurezza.",
+    "Deine ersten Schritte mit dem Pferd: es kennenlernen, dich um es kümmern und sicher reiten.",
+    "馬と歩む最初の一歩：馬を知り、世話をし、安全に乗るために。",
+    "خطواتك الأولى مع الحصان: تتعرفين عليه وتعتنين به وتركبين بأمان تام.",
+    "与马同行的第一步：认识它、照顾它，安全地骑乘。",
+    "Je eerste stappen naast het paard: het leren kennen, ervoor zorgen en veilig rijden.",
+    "Seus primeiros passos ao lado do cavalo: conhecê-lo, cuidar dele e montar com total segurança.",
+    "Dina första steg vid hästens sida: lära känna den, ta hand om den och rida säkert.",
+    "Твои первые шаги рядом с лошадью: узнать её, ухаживать за ней и ездить верхом безопасно.",
+    "Twoje pierwsze kroki przy koniu: poznać go, zadbać o niego i jeździć bezpiecznie.",
+    "말과 함께하는 첫걸음: 말을 알고, 돌보고, 안전하게 타기."),
+  galops: gv2L("Les Galops", "The levels", "Los Galops", "I Galop", "Die Galops", "ギャロップ一覧", "الغالوبات", "Galop 等级", "De Galops", "Os Galops", "Galop-nivåerna", "Уровни Galop", "Galopy", "Galop 단계"),
+  nav: gv2L("Sections du Galop 1", "Level 1 sections", "Secciones del Galop 1", "Sezioni del Galop 1", "Abschnitte von Galop 1", "ギャロップ1のセクション", "أقسام Galop 1", "Galop 1 板块", "Onderdelen van Galop 1", "Seções do Galop 1", "Avsnitt i Galop 1", "Разделы Galop 1", "Sekcje Galopu 1", "Galop 1 섹션"),
+  presT: gv2L("Bien débuter avec le cheval", "Getting off to a good start with horses", "Empezar bien con el caballo", "Iniziare bene con il cavallo", "Ein guter Start mit dem Pferd", "馬との良いスタート", "بداية جيدة مع الحصان", "与马的良好开端", "Goed beginnen met het paard", "Começar bem com o cavalo", "En bra start med hästen", "Хорошее начало с лошадью", "Dobry start z koniem", "말과 함께하는 좋은 시작"),
+  presP: gv2L("Le Galop 1 te permet de découvrir le cheval, de comprendre son mode de vie, d'apprendre à t'en occuper et d'acquérir les bases pour monter en sécurité.",
+    "Level 1 lets you discover the horse, understand how it lives, learn to look after it and gain the basics to ride safely.",
+    "El Galop 1 te permite descubrir el caballo, comprender su modo de vida, aprender a cuidarlo y adquirir las bases para montar con seguridad.",
+    "Il Galop 1 ti permette di scoprire il cavallo, capire il suo modo di vivere, imparare a prendertene cura e acquisire le basi per montare in sicurezza.",
+    "Mit Galop 1 entdeckst du das Pferd, verstehst seine Lebensweise, lernst, dich um es zu kümmern, und erwirbst die Grundlagen, um sicher zu reiten.",
+    "ギャロップ1では、馬を知り、その暮らし方を理解し、世話の仕方を学び、安全に乗るための基礎を身につけます。",
+    "يتيح لك Galop 1 اكتشاف الحصان وفهم نمط حياته وتعلم العناية به واكتساب الأساسيات للركوب بأمان.",
+    "Galop 1 让你认识马，了解它的生活方式，学会照顾它，并掌握安全骑乘的基础。",
+    "Met Galop 1 ontdek je het paard, begrijp je hoe het leeft, leer je ervoor te zorgen en leg je de basis om veilig te rijden.",
+    "O Galop 1 permite que você descubra o cavalo, entenda seu modo de vida, aprenda a cuidar dele e adquira as bases para montar com segurança.",
+    "Galop 1 låter dig upptäcka hästen, förstå hur den lever, lära dig ta hand om den och skaffa grunderna för att rida säkert.",
+    "Galop 1 помогает тебе познакомиться с лошадью, понять её образ жизни, научиться ухаживать за ней и освоить основы безопасной верховой езды.",
+    "Galop 1 pozwala ci poznać konia, zrozumieć jego tryb życia, nauczyć się o niego dbać i opanować podstawy bezpiecznej jazdy.",
+    "Galop 1에서는 말을 알아가고, 말의 생활 방식을 이해하고, 돌보는 법을 배우며, 안전하게 타기 위한 기초를 익혀요."),
+  objT: gv2L("Objectifs principaux", "Main goals", "Objetivos principales", "Obiettivi principali", "Hauptziele", "主な目標", "الأهداف الرئيسية", "主要目标", "Belangrijkste doelen", "Objetivos principais", "Huvudmål", "Основные цели", "Główne cele", "주요 목표"),
+  citation: gv2L("Tout commence par la confiance.", "It all begins with trust.", "Todo empieza por la confianza.", "Tutto comincia dalla fiducia.", "Alles beginnt mit Vertrauen.", "すべては信頼から始まる。", "كل شيء يبدأ بالثقة.", "一切始于信任。", "Alles begint met vertrouwen.", "Tudo começa pela confiança.", "Allt börjar med tillit.", "Всё начинается с доверия.", "Wszystko zaczyna się od zaufania.", "모든 것은 신뢰에서 시작돼요."),
+  progT: gv2L("Le programme du Galop 1", "The Level 1 programme", "El programa del Galop 1", "Il programma del Galop 1", "Das Programm von Galop 1", "ギャロップ1のプログラム", "برنامج Galop 1", "Galop 1 课程安排", "Het programma van Galop 1", "O programa do Galop 1", "Programmet för Galop 1", "Программа Galop 1", "Program Galopu 1", "Galop 1 프로그램"),
+  compte: gv2L("{t} thèmes · {n} cours", "{t} themes · {n} lessons", "{t} temas · {n} cursos", "{t} temi · {n} corsi", "{t} Themen · {n} Kurse", "{t}つのテーマ · {n}レッスン", "{t} محاور · {n} دروس", "{t} 个主题 · {n} 节课", "{t} thema's · {n} lessen", "{t} temas · {n} aulas", "{t} teman · {n} lektioner", "тем: {t} · уроков: {n}", "tematy: {t} · lekcje: {n}", "테마 {t}개 · 수업 {n}개"),
+  voirTous: gv2L("Voir tous les cours", "See all lessons", "Ver todos los cursos", "Vedi tutti i corsi", "Alle Kurse ansehen", "すべてのレッスンを見る", "عرض كل الدروس", "查看全部课程", "Alle lessen bekijken", "Ver todas as aulas", "Se alla lektioner", "Все уроки", "Zobacz wszystkie lekcje", "모든 수업 보기"),
+  voirMoins: gv2L("Réduire la liste", "Show fewer", "Mostrar menos", "Mostra meno", "Weniger anzeigen", "表示を減らす", "عرض أقل", "收起列表", "Minder tonen", "Mostrar menos", "Visa färre", "Свернуть список", "Pokaż mniej", "목록 접기"),
+  repS: gv2L("Elles commencent au Galop 3 : découvre-les déjà.", "They start at Level 3: take a first look.", "Empiezan en el Galop 3: échales ya un vistazo.", "Iniziano dal Galop 3: dai già un'occhiata.", "Sie beginnen ab Galop 3: wirf schon einen Blick darauf.", "ギャロップ3から始まります。先にのぞいてみよう。", "تبدأ من Galop 3: ألقي نظرة عليها من الآن.", "从 Galop 3 开始：先来看看吧。", "Ze beginnen bij Galop 3: neem alvast een kijkje.", "Começam no Galop 3: dê uma olhada desde já.", "De börjar på Galop 3: ta en första titt.", "Они начинаются с Galop 3 — загляни уже сейчас.", "Zaczynają się od Galopu 3: zajrzyj już teraz.", "Galop 3부터 시작해요. 미리 살펴봐요."),
+  quizT: gv2L("Quiz", "Quizzes", "Cuestionarios", "Quiz", "Quiz", "クイズ", "اختبارات", "测验", "Quizzen", "Quiz", "Quiz", "Тесты", "Quizy", "퀴즈"),
+  quizS: gv2L("Teste et révise tes connaissances.", "Test and revise what you know.", "Pon a prueba y repasa tus conocimientos.", "Metti alla prova e ripassa le tue conoscenze.", "Teste und wiederhole dein Wissen.", "知識を試して復習しよう。", "اختبري معلوماتك وراجعيها.", "测试并复习你的知识。", "Test en herhaal je kennis.", "Teste e revise seus conhecimentos.", "Testa och repetera dina kunskaper.", "Проверь и повтори свои знания.", "Sprawdź i powtórz swoją wiedzę.", "지식을 확인하고 복습해요."),
+  evalS: gv2L("Fais le point sur tes acquis et suis ta progression.", "Review what you've learnt and track your progress.", "Haz balance de lo aprendido y sigue tu progreso.", "Fai il punto su ciò che hai imparato e segui i tuoi progressi.", "Zieh Bilanz und verfolge deinen Fortschritt.", "学んだことを確認し、上達を確かめよう。", "قيّمي مكتسباتك وتابعي تقدمك.", "检验所学，跟踪你的进步。", "Maak de balans op en volg je vooruitgang.", "Faça um balanço do que aprendeu e acompanhe seu progresso.", "Gör en avstämning och följ dina framsteg.", "Подведи итоги и следи за своим прогрессом.", "Podsumuj swoją wiedzę i śledź postępy.", "배운 것을 점검하고 진행 상황을 확인해요."),
+  vidT: gv2L("Extraits vidéo du Galop 1", "Level 1 video clips", "Extractos en vídeo del Galop 1", "Estratti video del Galop 1", "Videoausschnitte zu Galop 1", "ギャロップ1の動画", "مقاطع فيديو Galop 1", "Galop 1 视频片段", "Videofragmenten van Galop 1", "Trechos em vídeo do Galop 1", "Videoklipp för Galop 1", "Видео к Galop 1", "Fragmenty wideo Galopu 1", "Galop 1 영상"),
+  vidVide: gv2L("Les vidéos du Galop 1 arrivent bientôt. En attendant, la vidéothèque t'attend.", "Level 1 videos are coming soon. Meanwhile, the video library is waiting for you.", "Los vídeos del Galop 1 llegarán pronto. Mientras tanto, te espera la videoteca.", "I video del Galop 1 arriveranno presto. Nel frattempo, ti aspetta la videoteca.", "Die Videos zu Galop 1 kommen bald. Bis dahin wartet die Videothek auf dich.", "ギャロップ1の動画は近日公開。それまでは動画ライブラリをどうぞ。", "فيديوهات Galop 1 قادمة قريبا. في الأثناء، مكتبة الفيديو بانتظارك.", "Galop 1 的视频即将上线。在此之前，视频库等你来看。", "De video's van Galop 1 komen binnenkort. Intussen wacht de videotheek op je.", "Os vídeos do Galop 1 chegam em breve. Enquanto isso, a videoteca espera por você.", "Videorna för Galop 1 kommer snart. Under tiden väntar videoteket på dig.", "Видео к Galop 1 скоро появятся. А пока тебя ждёт видеотека.", "Filmy do Galopu 1 pojawią się wkrótce. Tymczasem czeka na ciebie wideoteka.", "Galop 1 영상은 곧 공개돼요. 그동안 영상 라이브러리를 둘러봐요.")
+};
+
+var G1O_CSS = ""
+  + ".g1o{--n:#070A08;--p:#101A1D;--iv:#F3EEE4;--ch:#C9A66B;--chf:#7E6233;--tx2:rgba(243,238,228,0.74);--tx3:rgba(243,238,228,0.52);--fil:rgba(201,166,107,0.2);"
+  + "background:var(--n);color:var(--iv);font-family:'Montserrat',sans-serif;min-height:100vh;position:relative}"
+  + ".g1o *{box-sizing:border-box}"
+  + ".g1o button{font-family:inherit}"
+  + ".g1o :focus-visible{outline:2px solid var(--ch);outline-offset:3px}"
+  /* haut de page : plus haut que la maquette, contenu descendu (demande du brief) */
+  + ".g1o-hero{position:relative;min-height:600px;height:clamp(600px,72vh,700px);overflow:hidden;background:var(--n)}"
+  + ".g1o-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 38%}"
+  + ".g1o-hero-voile{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,10,8,0.9) 0%,rgba(7,10,8,0.66) 30%,rgba(7,10,8,0.12) 58%,rgba(7,10,8,0) 72%),linear-gradient(0deg,rgba(7,10,8,0.85) 0%,rgba(7,10,8,0) 30%)}"
+  + "[dir=rtl] .g1o-hero-img{transform:scaleX(-1)}"   /* arabe : photo en miroir (comme la page Galops), le cavalier reste du côté opposé au texte */
+  + "[dir=rtl] .g1o-hero-voile{background:linear-gradient(270deg,rgba(7,10,8,0.9) 0%,rgba(7,10,8,0.66) 30%,rgba(7,10,8,0.12) 58%,rgba(7,10,8,0) 72%),linear-gradient(0deg,rgba(7,10,8,0.85) 0%,rgba(7,10,8,0) 30%)}"
+  + ".g1o-barre{position:absolute;top:22px;left:40px;right:40px;display:flex;justify-content:space-between;align-items:center;z-index:3}"
+  + ".g1o-retour{width:40px;height:40px;border-radius:50%;border:1px solid var(--fil);background:rgba(7,10,8,0.45);color:var(--iv);font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}"
+  + ".g1o-retour:hover{border-color:var(--ch)}"
+  + ".g1o-hero-txt{position:absolute;left:56px;right:40px;bottom:58px;z-index:2;max-width:560px}"
+  + "[dir=rtl] .g1o-hero-txt{left:40px;right:56px}"
+  + ".g1o-pre{display:block;font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--ch);margin-bottom:12px}"
+  + ".g1o-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:96px;line-height:0.95;color:var(--iv);letter-spacing:0.005em}"
+  + ".g1o-sous{margin:10px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:36px;line-height:1.15;color:var(--iv)}"
+  + ".g1o-intro{margin:18px 0 0;font-size:15px;line-height:1.7;color:var(--tx2);max-width:440px}"
+  /* pastilles 1 → 9 */
+  + ".g1o-pas{list-style:none;margin:30px 0 0;padding:0;display:flex;align-items:flex-start;gap:0}"
+  + ".g1o-pas li{position:relative;display:flex;flex-direction:column;align-items:center;width:48px}"
+  + ".g1o-pas li+li::before{content:'';position:absolute;top:16px;right:calc(50% + 17px);width:calc(48px - 34px);height:1px;background:rgba(201,166,107,0.5)}"
+  + "[dir=rtl] .g1o-pas li+li::before{right:auto;left:calc(50% + 17px)}"
+  + ".g1o-p{position:relative;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,166,107,0.6);background:rgba(7,10,8,0.55);color:var(--iv);font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;font-weight:600;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:border-color .2s,transform .2s}"
+  + ".g1o-p:hover{border-color:var(--ch);transform:scale(1.06)}"
+  + ".g1o-p.ici{background:var(--ch);border-color:var(--ch);color:var(--n);cursor:default;transform:none}"
+  + ".g1o-p.bie{border-style:dashed;border-color:rgba(201,166,107,0.4);color:var(--tx3)}"
+  + ".g1o-p.fut{cursor:default}.g1o-p.fut:hover{transform:none;border-color:rgba(201,166,107,0.4)}"
+  + ".g1o-p i{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;border-radius:50%;background:var(--n);border:1px solid var(--ch);display:flex;align-items:center;justify-content:center}"
+  + ".g1o-p i svg{width:9px;height:9px}"
+  + ".g1o-pas small{position:absolute;top:43px;left:100%;transform:translateX(-50%);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ch);white-space:nowrap}"
+  + "[dir=rtl] .g1o-pas small{left:auto;right:100%;transform:translateX(50%)}"
+  /* onglets : collés en haut au défilement, semi-transparents */
+  + ".g1o-onglets{position:sticky;top:0;z-index:20;background:rgba(7,10,8,0.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--fil)}"
+  + ".g1o-onglets-in{max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:minmax(240px,1fr) 3fr;column-gap:40px}"
+  + ".g1o-onglets-rang{grid-column:2;display:flex;gap:6px}"
+  + ".g1o-onglet{position:relative;background:none;border:0;padding:17px 18px 16px;font-size:13px;font-weight:500;letter-spacing:0.02em;color:var(--tx2);cursor:pointer;white-space:nowrap}"
+  + ".g1o-onglet:hover{color:var(--iv)}"
+  + ".g1o-onglet.on{color:var(--ch)}"
+  + ".g1o-onglet.on::after{content:'';position:absolute;left:14px;right:14px;bottom:-1px;height:2px;background:var(--ch);border-radius:2px}"
+  /* corps : colonne gauche (≈25 %) + zone droite (≈75 %) */
+  + ".g1o-corps{max-width:1280px;margin:0 auto;padding:44px 40px 56px;display:grid;grid-template-columns:minmax(240px,1fr) 3fr;column-gap:40px;align-items:stretch}"
+  + ".g1o-gauche{display:flex;flex-direction:column;min-width:0;scroll-margin-top:72px}"
+  + ".g1o-lab{display:block;font-size:11px;font-weight:600;letter-spacing:0.26em;text-transform:uppercase;color:var(--ch)}"
+  + ".g1o-h2{margin:14px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:40px;line-height:1.05;color:var(--iv)}"
+  + ".g1o-txt{margin:18px 0 0;font-size:14px;line-height:1.75;color:var(--tx2)}"
+  + ".g1o-obj-t{margin:30px 0 0}"
+  + ".g1o-obj{list-style:none;margin:14px 0 0;padding:0}"
+  + ".g1o-obj li{display:flex;gap:11px;align-items:flex-start;padding:7px 0;font-size:13.5px;line-height:1.45;color:var(--iv)}"
+  + ".g1o-obj li span{flex:0 0 auto;width:16px;height:16px;margin-top:2px}"
+  + ".g1o-ffe{display:inline-block;margin-top:14px;font-size:12.5px;color:var(--ch);text-decoration:none;border-bottom:1px solid rgba(201,166,107,0.4);padding-bottom:2px;align-self:flex-start}"
+  + ".g1o-ffe:hover{border-bottom-color:var(--ch)}"
+  + ".g1o-deco{display:block;width:100%;height:auto;margin:34px 0 0;opacity:0.5}"
+  + ".g1o-cit{margin:auto 0 0;padding-top:26px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:27px;line-height:1.25;color:var(--iv)}"
+  + ".g1o-cit::before{content:'\\201C';display:block;font-size:44px;line-height:0.6;color:var(--ch);margin-bottom:6px;font-style:normal}"
+  + ".g1o-droite{min-width:0}"
+  + ".g1o-tete{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:16px}"
+  + ".g1o-tete h2{margin:0;font-size:11.5px;font-weight:600;letter-spacing:0.26em;text-transform:uppercase;color:var(--ch)}"
+  + ".g1o-tete .g1o-cpt{font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--tx3)}"
+  + ".g1o-sec{scroll-margin-top:72px}"
+  /* les 4 parties */
+  + ".g1o-themes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}"
+  + ".g1o-th{display:flex;flex-direction:column;background:var(--iv);border-radius:14px;overflow:hidden;min-width:0}"
+  + ".g1o-th-ph{position:relative;height:128px;flex:0 0 auto}"
+  + ".g1o-th-ph img{width:100%;height:100%;object-fit:cover;display:block}"
+  + ".g1o-th-ic{position:absolute;left:16px;bottom:-22px;width:46px;height:46px;border-radius:50%;background:var(--iv);border:1px solid var(--ch);color:var(--ch);display:flex;align-items:center;justify-content:center}"
+  + "[dir=rtl] .g1o-th-ic{left:auto;right:16px}"
+  + ".g1o-th-ic svg{width:24px;height:24px}"
+  + ".g1o-th-corps{display:flex;flex-direction:column;flex:1 1 auto;padding:32px 16px 16px}"
+  + ".g1o-th-t{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:22px;line-height:1.1;color:var(--p)}"
+  + ".g1o-th-n{margin-top:4px;font-size:11.5px;color:#6B675E}"
+  + ".g1o-cl{list-style:none;margin:12px 0 0;padding:0}"
+  + ".g1o-cl li+li{border-top:1px solid rgba(16,26,29,0.09)}"
+  + ".g1o-cl button{width:100%;display:flex;align-items:center;gap:10px;padding:7px 0;background:none;border:0;text-align:start;cursor:pointer;color:#22292B}"
+  + ".g1o-cl button:hover .g1o-cl-t{color:var(--chf)}"
+  + ".g1o-cl img{flex:0 0 auto;width:40px;height:30px;border-radius:5px;object-fit:cover;display:block;background:#DCD5C7}"
+  + ".g1o-cl-t{flex:1 1 auto;min-width:0;font-size:12.5px;line-height:1.3;font-weight:500}"
+  + ".g1o-cl-ok{flex:0 0 auto;width:16px;height:16px;color:var(--chf)}"
+  + ".g1o-cl-off{opacity:0.55;cursor:default!important}"
+  + ".g1o-cl small{display:block;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--chf);margin-top:2px}"
+  + ".g1o-tous{margin-top:auto;padding-top:12px;align-self:flex-start;background:none;border:0;padding-left:0;padding-right:0;font-size:12px;font-weight:600;color:var(--chf);cursor:pointer;display:inline-flex;gap:6px;align-items:center}"
+  + ".g1o-tous:hover{text-decoration:underline}"
+  /* accès pédagogiques */
+  + ".g1o-acces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}"
+  + ".g1o-enc{position:relative;display:flex;align-items:center;gap:14px;min-height:100px;padding:18px 18px;border-radius:14px;border:1px solid var(--fil);background:var(--p);color:var(--iv);overflow:hidden;cursor:pointer;text-align:start;transition:border-color .2s}"
+  + ".g1o-enc:hover{border-color:rgba(201,166,107,0.55)}"
+  + ".g1o-enc>img{position:absolute;top:0;right:0;width:58%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 70%);mask-image:linear-gradient(90deg,transparent 0%,#000 70%);opacity:0.55}"
+  + "[dir=rtl] .g1o-enc>img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 70%);mask-image:linear-gradient(270deg,transparent 0%,#000 70%)}"
+  + ".g1o-enc-ic{position:relative;flex:0 0 auto;width:40px;height:40px;color:var(--ch)}"
+  + ".g1o-enc-ic svg{width:100%;height:100%}"
+  + ".g1o-enc-tx{position:relative;flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}"
+  + ".g1o-enc-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;line-height:1.1}"
+  + ".g1o-enc-s{font-size:12px;line-height:1.45;color:var(--tx2)}"
+  + ".g1o-fl{position:relative;flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--ch);color:var(--ch);display:flex;align-items:center;justify-content:center;font-size:15px;align-self:flex-end;background:rgba(7,10,8,0.5)}"
+  /* extraits vidéo */
+  + ".g1o-vid{margin-top:34px}"
+  + ".g1o-lien{background:none;border:0;padding:0;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ch);cursor:pointer}"
+  + ".g1o-lien:hover{text-decoration:underline}"
+  + ".g1o-vide{display:flex;align-items:center;gap:20px;padding:24px 26px;border-radius:14px;border:1px solid var(--fil);background:linear-gradient(120deg,rgba(16,26,29,0.95),rgba(16,26,29,0.55))}"
+  + ".g1o-vide-ic{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:1px solid var(--ch);color:var(--ch);display:flex;align-items:center;justify-content:center}"
+  + ".g1o-vide-ic svg{width:20px;height:20px;margin-left:3px}"
+  + ".g1o-vide p{margin:0;flex:1 1 auto;font-size:14px;line-height:1.6;color:var(--tx2)}"
+  + ".g1o-vide button{flex:0 0 auto;padding:11px 20px;border-radius:999px;border:1px solid var(--ch);background:transparent;color:var(--ch);font-size:12.5px;font-weight:600;cursor:pointer}"
+  + ".g1o-vide button:hover{background:rgba(201,166,107,0.1)}"
+  + ".g1o-vids{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}"
+  + ".g1o-vids button{width:100%;display:flex;flex-direction:column;gap:9px;background:none;border:0;padding:0;color:var(--iv);text-align:start;cursor:pointer}"
+  + ".g1o-vid-ph{position:relative;display:block;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--p);border:1px solid var(--fil)}"
+  + ".g1o-vid-ph img{width:100%;height:100%;object-fit:cover;display:block}"
+  + ".g1o-vid-play{position:absolute;left:12px;bottom:12px;width:38px;height:38px;border-radius:50%;background:rgba(7,10,8,0.6);border:1px solid var(--ch);display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}"
+  + "[dir=rtl] .g1o-vid-play{left:auto;right:12px}"
+  + ".g1o-vid-play svg{width:18px;height:18px}"
+  + ".g1o-vids button:hover .g1o-vid-ph{border-color:rgba(201,166,107,0.55)}"
+  + ".g1o-vid-t{font-size:12.5px;font-weight:500;line-height:1.35;color:var(--iv)}"
+  + ".g1o-fin{margin-top:8px}"
+  /* ordinateur plus étroit (1200 → 1339 px, menu latéral compris) : les 4 parties en 2 × 2 */
+  + "@media (max-width:1339px){.g1o-themes{grid-template-columns:repeat(2,minmax(0,1fr))}.g1o-th-ph{height:112px}.g1o-acces{grid-template-columns:1fr}.g1o-titre{font-size:84px}.g1o-vids{grid-template-columns:repeat(2,minmax(0,1fr))}}"
+  + "@media (prefers-reduced-motion:reduce){.g1o-p,.g1o-enc{transition:none}}";
+
+function g1oSvg(enfants, vb) { return React.createElement("svg", { viewBox: vb || "0 0 32 32", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, enfants); }
+function g1oCouv(cours) {   /* la vraie photo de couverture du cours (bloc « couv ») */
+  try {
+    var b = (cours && cours.blocs) || [];
+    for (var i = 0; i < b.length; i++) {
+      var x = b[i];
+      if (x && x.couv && x.src) { var s = x.src; if (s && typeof s === "object") s = s.fr || ""; if (typeof s === "string" && s) return { src: s, pos: (x.couv && x.couv.pos) || "50% 50%" }; }
+    }
+  } catch (e) { }
+  return { src: (typeof GALOPS_HERO !== "undefined" ? GALOPS_HERO : ""), pos: "50% 40%" };
+}
+
+function EcranGalop1Ordi(props) {
+  const h = React.createElement;
+  const app = useApp();
+  const { setEcran, setGalopOuvert, setCoursOuvert, premium, coursTermines, profil, tr, langue } = app;
+  const rtl = (langue === "ar");
+  const [moi, setMoi] = useState(null);
+  const [actif, setActif] = useState("pres");
+  const [ouverts, setOuverts] = useState({});
+  const verrouSpy = useRef(0);
+  useEffect(() => { let ok = true; (async () => { try { const u = await utilisateurActuel(); if (ok) setMoi(u || null); } catch (e) { } })(); return () => { ok = false; }; }, []);
+  const estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
+  const g1 = GALOPS_I18N.find(function (g) { return g.id === 1; }) || {};
+
+  /* arrivée : en haut de page, sauf retour d'un cours (même mémoire que l'ancienne page) */
+  useEffect(() => {
+    try {
+      var y = window.__scrollGalopDetail && window.__scrollGalopDetail[1];
+      if (y) { requestAnimationFrame(function () { requestAnimationFrame(function () { window.scrollTo(0, y); }); }); }
+      else window.scrollTo(0, 0);
+    } catch (e) { }
+  }, []);
+  /* onglet allumé selon la partie visible */
+  const SECTIONS = ["pres", "prog", "cours", "rep", "vid", "eval"];
+  const CIBLE = { pres: "g1o-pres", prog: "g1o-prog", cours: "g1o-prog", rep: "g1o-acces", eval: "g1o-acces", vid: "g1o-vid" };
+  useEffect(() => {
+    var att = null;
+    function f() {
+      if (att) return;
+      att = setTimeout(function () {
+        att = null;
+        if (Date.now() < verrouSpy.current) return;
+        try {
+          var lim = 110, cur = "pres";
+          [["pres", "g1o-pres"], ["prog", "g1o-prog"], ["rep", "g1o-acces"], ["vid", "g1o-vid"]].forEach(function (s) { var el = document.getElementById(s[1]); if (el && el.getBoundingClientRect().top - lim <= 0) cur = s[0]; });
+          if (window.scrollY < 40) cur = "pres";
+          setActif(cur);
+        } catch (e) { }
+      }, 80);
+    }
+    window.addEventListener("scroll", f, { passive: true });
+    return function () { window.removeEventListener("scroll", f); if (att) clearTimeout(att); };
+  }, []);
+
+  function aller(id) {
+    if (id === "cours") { var tous = {}; G1O_PARTIES.forEach(function (p) { tous[p.cat] = true; }); setOuverts(tous); }
+    try {
+      var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var el = document.getElementById(CIBLE[id]);
+      verrouSpy.current = Date.now() + 1200;
+      if (el) setTimeout(function () { el.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" }); }, id === "cours" ? 30 : 0);
+      setActif(id);
+    } catch (e) { }
+  }
+  function retour() { try { if (app.peutReculer && typeof app.retourEcran === "function") { app.retourEcran(); return; } } catch (e) { } setEcran("galops"); }
+  function versGalop(id) {   /* mêmes règles que la page Galops : « Bientôt » sans effet, cadenas → Premium ; 8 et 9 n'existent pas encore */
+    if (id === 1 || id > 7) return;
+    var g = GALOPS_I18N.find(function (gg) { return gg.id === id; });
+    if (!g) return;
+    if (!g.disponible && !estMod) return;
+    if (!g.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
+    if (id === 5 && estMod && typeof EcranGalop5 === "function") { setEcran("galop5"); return; }
+    setGalopOuvert(id); setEcran("galop-detail");
+  }
+  function ouvrirCours(id) {
+    try { window.__scrollGalopDetail = window.__scrollGalopDetail || {}; window.__scrollGalopDetail[1] = window.scrollY; } catch (e) { }
+    setCoursOuvert(id); setEcran("cours");
+  }
+  function classique(onglet) {   /* la vraie liste des quiz du Galop 1 (page EcranGalopChoix) */
+    try { window.__scrollGalopDetail = window.__scrollGalopDetail || {}; window.__scrollGalopDetail[1] = 0; } catch (e) { }
+    if (props && typeof props.versClassique === "function") props.versClassique(onglet);
+  }
+
+  /* pastilles 1 → 9 */
+  var gActBrut = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1 && profil.galopActuel <= 7) ? profil.galopActuel : 1;
+  var gActObj = GALOPS_I18N.find(function (g) { return g.id === gActBrut; });
+  var gAct = (gActObj && (gActObj.disponible || estMod)) ? gActBrut : 1;
+  var icCoche = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
+  var icCadenas = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 2.2, strokeLinecap: "round", "aria-hidden": "true" }, h("rect", { x: 5, y: 10.5, width: 14, height: 10, rx: 2 }), h("path", { d: "M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" }));
+  var pastilles = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (id) {
+    var g = GALOPS_I18N.find(function (gg) { return gg.id === id; }) || {};
+    var ici = (id === 1), futur = (id > 7);
+    var bientot = !ici && (futur || !g.disponible);
+    var verrou = !ici && !bientot && !g.debloque && !premium && !estMod;
+    var fait = !ici && !bientot && id < gAct;
+    var nom = g.titre ? tr(g.titre) : ("Galop " + id);
+    var aria = nom + (g.sousTitre ? " — " + tr(g.sousTitre) : "")
+      + (futur ? " — " + tr(G5_T.prochainement) : (bientot ? " — " + tr(G5_T.bientot) : ""))
+      + (verrou ? " — " + tr({ fr: "Réservé aux abonnés Premium", en: "Premium members only", es: "Solo para miembros Premium", it: "Riservato agli abbonati Premium", de: "Nur für Premium-Mitglieder", ja: "プレミアム会員限定", ar: "مخصص لمشتركي Premium", zh: "仅限 Premium 会员", nl: "Alleen voor Premium-leden", pt: "Exclusivo para assinantes Premium", sv: "Endast för Premium-medlemmar", ru: "Только для подписчиков Premium", pl: "Tylko dla subskrybentów Premium", ko: "프리미엄 회원 전용" }) : "")
+      + (fait ? " — " + tr(G5_T.fait) : "");
+    return h("li", { key: id },
+      h("button", { type: "button", className: "g1o-p" + (ici ? " ici" : "") + (bientot ? " bie" : "") + (futur ? " fut" : ""), onClick: function () { versGalop(id); },
+        "aria-label": aria, "aria-current": ici ? "page" : undefined, "aria-disabled": ((bientot && !estMod) || futur) ? "true" : undefined },
+        String(id), verrou ? h("i", null, icCadenas) : (fait ? h("i", null, icCoche) : null)),
+      id === 8 ? h("small", { "aria-hidden": "true" }, tr(G5_T.prochainement)) : null);   /* une seule mention, centrée sous 8 et 9 */
+  });
+
+  /* onglets */
+  var ONGLETS = [["pres", G5_T.oPres], ["prog", G5_T.oProg], ["cours", G5_T.oCours], ["rep", G5_T.oRep], ["vid", G5_T.oVid], ["eval", G5_T.oEval]];
+  var onglets = h("nav", { className: "g1o-onglets", "aria-label": tr(G1O_T.nav) },
+    h("div", { className: "g1o-onglets-in" },
+      h("div", { className: "g1o-onglets-rang" }, ONGLETS.map(function (o) {
+        return h("button", { key: o[0], type: "button", className: "g1o-onglet" + (actif === o[0] ? " on" : ""), "aria-current": actif === o[0] ? "true" : undefined, onClick: function () { aller(o[0]); } }, tr(o[1]));
+      }))));
+
+  /* colonne gauche */
+  /* objectifs = GALOPS_I18N (données réelles) ; l'arabe y manque → traduction locale à cet écran, sans toucher aux données */
+  var G1O_COMP_AR = ["أساسيات السلامة", "تنظيف بسيط", "ألوان الحصان وأجزاء الجسم", "المشيات والتوازن"];
+  var comp = (g1.competences && (g1.competences[langue] || (langue === "ar" ? G1O_COMP_AR : null) || g1.competences.fr)) || [];
+  var deco = h("svg", { className: "g1o-deco", viewBox: "0 0 260 70", fill: "none", "aria-hidden": "true" },
+    h("path", { d: "M0 62 C30 60 44 40 70 38 C92 36 98 52 118 50 C140 48 150 18 176 16 C200 14 214 44 236 46 C246 47 254 44 260 42", stroke: "#C9A66B", strokeWidth: 1, strokeLinecap: "round" }),
+    h("path", { d: "M0 66 C40 64 70 56 104 58 C140 60 170 50 206 52 C230 53 248 56 260 56", stroke: "#C9A66B", strokeOpacity: 0.5, strokeWidth: 0.8, strokeLinecap: "round" }));
+  var gauche = h("aside", { id: "g1o-pres", className: "g1o-gauche g1o-sec", "aria-labelledby": "g1o-pres-t" },
+    h("span", { className: "g1o-lab" }, tr(G5_T.oPres)),
+    h("h2", { className: "g1o-h2", id: "g1o-pres-t" }, tr(G1O_T.presT)),
+    h("p", { className: "g1o-txt" }, tr(G1O_T.presP)),
+    h("h3", { className: "g1o-lab g1o-obj-t" }, tr(G1O_T.objT)),
+    h("ul", { className: "g1o-obj" }, comp.map(function (c, i) { return h("li", { key: i }, h("span", null, icCoche), c); })),
+    (typeof GV2_FFE_LIEN !== "undefined") ? h("a", { className: "g1o-ffe", href: GV2_FFE_LIEN, target: "_blank", rel: "noopener noreferrer" }, tr(G5_T.ffeLien) + " ↗") : null,
+    deco,
+    h("blockquote", { className: "g1o-cit" }, tr(G1O_T.citation)));
+
+  /* les 4 parties, avec les vrais cours du Galop 1 */
+  var liste = [];
+  try { liste = obtenirCoursParGalop(1, langue) || []; } catch (eL) { liste = []; }
+  var ICONES = {
+    conn: [h("path", { key: 1, d: "M3 12l13-6 13 6-13 6z" }), h("path", { key: 2, d: "M9 15v6c3 2.5 11 2.5 14 0v-6" }), h("path", { key: 3, d: "M29 12v7" })],
+    cheval: [h("path", { key: 1, d: "M12 27c0-6 2-9 5-11-3-1-6 0-8 2l-3-2c2-5 6-9 12-9l2-3 1 4c4 2 6 6 6 11v8" }), h("circle", { key: 2, cx: 18, cy: 11, r: 0.8 })],
+    soins: [h("rect", { key: 1, x: 7, y: 9, width: 18, height: 16, rx: 3 }), h("path", { key: 2, d: "M7 14h18M7 19h18M12 9V6h8v3" })],
+    montee: [h("path", { key: 1, d: "M5 25V11M27 25V11M5 14h22M5 20h22" }), h("path", { key: 2, d: "M3 25h4M25 25h4" })]
+  };
+  var MAX = 5;
+  var totalCours = 0;
+  var fl = rtl ? "←" : "→";
+  var themes = G1O_PARTIES.map(function (pa) {
+    var th = (typeof G5_THEMES !== "undefined" && G5_THEMES[pa.th]) || {};
+    var cours = liste.filter(function (c) { return G1O_CAT[c.id] === pa.cat; });
+    totalCours += cours.length;
+    var ouvert = !!ouverts[pa.cat];
+    var vus = ouvert ? cours : cours.slice(0, MAX);
+    var lignes = vus.map(function (c) {
+      var titre = typeof c.titre === "string" ? c.titre : tr(c.titre || {});
+      var pret = (typeof coursEstPret === "function") ? coursEstPret(1, c.id) : true;
+      var fini = !!(coursTermines && coursTermines.includes(c.id));
+      var cv = g1oCouv(c);
+      var corps = [
+        h("img", { key: "i", src: cv.src, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: cv.pos } }),
+        h("span", { key: "t", className: "g1o-cl-t" }, titre, (!pret && !estMod) ? h("small", null, tr(G5_T.prochainement)) : null),
+        fini ? h("span", { key: "ok", className: "g1o-cl-ok", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }))) : null
+      ];
+      return h("li", { key: c.id }, (pret || estMod)
+        ? h("button", { type: "button", onClick: function () { ouvrirCours(c.id); }, "aria-label": titre + (fini ? " — " + tr(G5_T.fait) : "") }, corps)
+        : h("button", { type: "button", className: "g1o-cl-off", "aria-disabled": "true", "aria-label": titre + " — " + tr(G5_T.prochainement) }, corps));
+    });
+    return h("article", { key: pa.cat, className: "g1o-th" },
+      h("div", { className: "g1o-th-ph" },
+        th.img ? h("img", { src: th.img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: th.pos || "50% 50%" } }) : null,
+        h("span", { className: "g1o-th-ic", "aria-hidden": "true" }, g1oSvg(ICONES[pa.ic]))),
+      h("div", { className: "g1o-th-corps" },
+        h("h3", { className: "g1o-th-t" }, th.t ? tr(th.t) : ""),
+        h("span", { className: "g1o-th-n" }, tr(G5_T.nb).replace("{n}", cours.length)),
+        h("ul", { className: "g1o-cl" }, lignes),
+        cours.length > MAX ? h("button", { type: "button", className: "g1o-tous", "aria-expanded": ouvert ? "true" : "false",
+          onClick: function () { var o = Object.assign({}, ouverts); o[pa.cat] = !ouvert; setOuverts(o); } },
+          ouvert ? tr(G1O_T.voirMoins) : (tr(G1O_T.voirTous) + " (" + cours.length + ")"), h("span", { "aria-hidden": "true" }, ouvert ? "↑" : fl)) : null));
+  });
+  var prog = h("section", { id: "g1o-prog", className: "g1o-sec", "aria-labelledby": "g1o-prog-t" },
+    h("div", { className: "g1o-tete" },
+      h("h2", { id: "g1o-prog-t" }, tr(G1O_T.progT)),
+      h("span", { className: "g1o-cpt" }, tr(G1O_T.compte).replace("{t}", G1O_PARTIES.length).replace("{n}", totalCours))),
+    h("div", { className: "g1o-themes" }, themes));
+
+  /* accès pédagogiques : vraies fonctions de Hype */
+  var enc = function (id, img, ic, titre, sous, go) {
+    return h("button", { id: id, type: "button", className: "g1o-enc", onClick: go, "aria-label": titre + ". " + sous },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async" }),
+      h("span", { className: "g1o-enc-ic", "aria-hidden": "true" }, g1oSvg(ic)),
+      h("span", { className: "g1o-enc-tx" }, h("span", { className: "g1o-enc-t" }, titre), h("span", { className: "g1o-enc-s" }, sous)),
+      h("span", { className: "g1o-fl", "aria-hidden": "true" }, rtl ? "‹" : "›"));
+  };
+  var acces = h("section", { id: "g1o-acces", className: "g1o-acces g1o-sec", "aria-label": tr(G5_T.oRep) + ", " + tr(G1O_T.quizT) + ", " + tr(G5_T.oEval) },
+    enc("g1o-rep", G1O_REPRISES_IMG, [h("path", { key: 1, d: "M9 4h11l5 5v19H9z" }), h("path", { key: 2, d: "M20 4v5h5M13 15h8M13 19h8M13 23h5" })], tr(G5_T.repT), tr(G1O_T.repS), function () { setEcran("reprises"); }),
+    enc("g1o-quiz", G1O_QUIZ_IMG, [h("rect", { key: 1, x: 8, y: 5, width: 16, height: 22, rx: 2 }), h("path", { key: 2, d: "M12 5V3h8v2M12 12l2 2 4-4M12 20l2 2 4-4" })], tr(G1O_T.quizT), tr(G1O_T.quizS), function () { classique("quiz"); }),
+    enc("g1o-eval", G1O_EVAL_IMG, [h("circle", { key: 1, cx: 16, cy: 12, r: 7 }), h("path", { key: 2, d: "M12 18l-3 10 7-3 7 3-3-10" }), h("path", { key: 3, d: "M13 12l2 2 4-4" })], tr(G5_T.oEval), tr(G1O_T.evalS),
+      function () { if ((typeof EXAMENS_BLANCS !== "undefined") && EXAMENS_BLANCS[1] && EXAMENS_BLANCS[1].length) { setGalopOuvert(1); setEcran("examen-blanc"); } else classique("examen"); }));
+
+  /* extraits vidéo : les VRAIES vidéos du Galop 1 de la vidéothèque (hype-video.js, galop: 1), ouvertes dans le lecteur de Hype ;
+     aucune durée affichée (la vidéothèque n'en a pas) ; état vide seulement s'il n'y en a aucune */
+  var vids = [];
+  try { vids = ((window.HYPE_VIDEO && window.HYPE_VIDEO.videos) || []).filter(function (v) { return v && v.galop === 1; }); } catch (eV) { vids = []; }
+  var vid = h("section", { id: "g1o-vid", className: "g1o-vid g1o-sec", "aria-labelledby": "g1o-vid-t" },
+    h("div", { className: "g1o-tete" },
+      h("h2", { id: "g1o-vid-t" }, tr(G1O_T.vidT)),
+      h("button", { type: "button", className: "g1o-lien", onClick: function () { setEcran("videos"); } }, tr(G5_T.vidTous) + " " + fl)),
+    vids.length ? h("ul", { className: "g1o-vids" }, vids.slice(0, 4).map(function (v) {
+      var bloque = v.premium && !premium && !estMod;
+      var titreV = tr(v.i18nTitre || {}) || (v.i18nTitre && v.i18nTitre.fr) || "";
+      return h("li", { key: v.id }, h("button", { type: "button", onClick: function () { if (bloque) { setEcran("premium"); return; } try { window.__hypeVideoOuverte = v.id; } catch (e) { } setEcran("video-lecture"); }, "aria-label": titreV },
+        h("span", { className: "g1o-vid-ph" },
+          v.vignetteUrl ? h("img", { src: v.vignetteUrl, alt: "", loading: "lazy", decoding: "async" }) : null,
+          h("span", { className: "g1o-vid-play", "aria-hidden": "true" }, bloque ? icCadenas : h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M9 7l8 5-8 5z", fill: "#F3EEE4" })))),
+        h("span", { className: "g1o-vid-t" }, titreV)));
+    })) : h("div", { className: "g1o-vide" },
+      h("span", { className: "g1o-vide-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", fill: "currentColor" }, h("path", { d: "M7 4.5v15l12-7.5z" }))),
+      h("p", null, tr(G1O_T.vidVide)),
+      h("button", { type: "button", onClick: function () { setEcran("videos"); } }, tr(G5_T.vidTous))));
+
+  return h("div", { className: "g1o", dir: rtl ? "rtl" : undefined, "data-l": langue },
+    h("style", null, G1O_CSS),
+    h("header", { className: "g1o-hero" },
+      h("img", { className: "g1o-hero-img", src: G1O_HERO, alt: "", fetchpriority: "high", decoding: "async" }),
+      h("div", { className: "g1o-hero-voile" }),
+      h("div", { className: "g1o-barre" },
+        h("button", { type: "button", className: "g1o-retour", onClick: retour, "aria-label": tr(G5_T.retour) }, rtl ? "›" : "‹"),
+        (typeof SelecteurLangue === "function") ? h(SelecteurLangue, { compact: true }) : null),
+      h("div", { className: "g1o-hero-txt" },
+        h("span", { className: "g1o-pre" }, tr(G1O_T.pre)),
+        h("h1", { className: "g1o-titre" }, g1.titre ? tr(g1.titre) : "Galop 1"),
+        h("p", { className: "g1o-sous" }, tr(G1O_T.sous)),
+        h("p", { className: "g1o-intro" }, tr(G1O_T.intro)),
+        h("ol", { className: "g1o-pas", "aria-label": tr(G1O_T.galops) }, pastilles))),
+    onglets,
+    h("div", { className: "g1o-corps" },
+      gauche,
+      h("div", { className: "g1o-droite" }, prog, acces, vid)),
+    (typeof FinPageHype === "function") ? h("div", { className: "g1o-fin" }, h(FinPageHype, null)) : null);
+}
+
+/* Aiguillage de l'écran « galop-detail » : la nouvelle page seulement pour le Galop 1 sur ordinateur (≥ 1200 px) ;
+   sinon EcranGalopChoix (inchangé). Le passage à la liste des quiz (encart Quiz) est pris une fois, à l'arrivée, puis gardé. */
+function EcranGalopDetailAiguille() {
+  const app = useApp();
+  const [large, setLarge] = useState(function () { try { return !!(window.matchMedia && window.matchMedia("(min-width: 1200px)").matches); } catch (e) { return false; } });
+  const [classique, setClassique] = useState(function () { try { return !!window.__hypeGdOnglet; } catch (e) { return false; } });
+  useEffect(function () {
+    var mq = null; try { mq = window.matchMedia ? window.matchMedia("(min-width: 1200px)") : null; } catch (e) { mq = null; }
+    if (!mq) return;
+    var f = function () { setLarge(!!mq.matches); };
+    try { mq.addEventListener("change", f); } catch (e1) { try { mq.addListener(f); } catch (e2) { } }
+    return function () { try { mq.removeEventListener("change", f); } catch (e3) { try { mq.removeListener(f); } catch (e4) { } } };
+  }, []);
+  if (app.galopOuvert === 1 && large && !classique) {
+    return React.createElement(EcranGalop1Ordi, { versClassique: function (onglet) { try { window.__hypeGdOnglet = onglet; window.scrollTo(0, 0); } catch (e) { } setClassique(true); } });
+  }
+  return React.createElement((typeof EcranGalopChoix === "function") ? EcranGalopChoix : EcranGalopDetail, null);
+}
 
 function EcranBibliothequeGalops() {
     const { setEcran, setGalopOuvert, premium, coursTermines, quizResultats, profil, t, tr, langue } = useApp();
