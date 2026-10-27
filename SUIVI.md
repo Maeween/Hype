@@ -14928,3 +14928,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Parties : « La santé du cheval » (G4) → Connaissance du cheval ; Galop 6 : Incurvation, Impulsion, Cession à la jambe → Pratique équestre ; Longe et longues rênes → Vie équestre ; Pied/ferrure, Maladies, Reproduction → Connaissance du cheval. Galop 7 : Cheval sur la main, Épaule en dedans, Contre-galop → Pratique ; Bride, Longe enrênée → Vie ; Aplombs/rationnement → Connaissance. PROPOSITION À RECONFIRMER par Blandine. Plus de carte « Autres cours ».
 - Galops 8 et 9 : n'existent pas dans Hype (Baby + Galops 1 à 7) → question posée à Blandine.
 - Vérifié (cavalière non modératrice, écran Premium contourné pour le test) : G4 15 cours / 3 parties ; G5 12 cours fermés ; G6 « L'impulsion » seule ouverte ; G7 6 cours fermés ; boutons « Découvrir » ; node --check OK.
+
+## 27/10 15h05 — PUBLICATION (build 20261027-1505), accord de Blandine (« Ok vas-y »)
+- Met en ligne le build 1500 (pages des Galops 5 et 7 visibles de tous, cours « Prochainement » ; parties des Galops 4, 6, 7 à reconfirmer). Seul changement de ce build : le marqueur. Version en ligne récupérée juste avant (une autre conversation code en parallèle).
