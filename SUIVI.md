@@ -14862,3 +14862,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Reprises de dressage et Évaluation : deux bandes horizontales (icône, titre, phrase, flèche ou « Bientôt ») au lieu de deux cartes carrées ; l'une sous l'autre sur téléphone, côte à côte sur ordinateur/tablette.
 - Fin de page Hype (FinPageHype, la même que sur la page Galops) ajoutée tout en bas.
 - Vérifié : node --check OK ; 390, 375 arabe, 1440 ; rien ne déborde.
+
+## 27/10 02h05 — PUBLICATION (build 20261027-0205), accord de Blandine (« Publie »)
+- Met en ligne le build 0200 (2 extraits vidéo « Prochainement », Reprises/Évaluation en bandes horizontales, fin de page Hype). Seul changement de ce build : le marqueur.
