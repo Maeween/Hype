@@ -14851,3 +14851,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 27/10 01h50 — Galop 5 : séparation entre les cours, visuel 4 (build 20261027-0150) — NON PUBLIÉ
 - Choix de Blandine (« Ok 4 ») parmi 4 visuels : numéro du cours dans un petit cercle champagne + filet ivoire doux entre chaque cours, dans les 4 cartes, téléphone et ordinateur.
 - Vérifié : node --check OK ; 390, 375 arabe, 1440 ; rien ne déborde.
+
+## 27/10 01h55 — Galop 5 : nouvelle photo « Connaissance du cheval » + PUBLICATION (build 20261027-0155), accord de Blandine (« Vas-y publie », 01h41)
+- Photo fournie par Blandine (cheval gris tressé, contre-jour doré, cavalière en veste noire) → images/galop5-th-cheval2.webp (NOUVEAU), cadrée sur la tête et l'encolure.
+- Met en ligne en une fois les builds non publiés 0120 → 0155 : onglets qui ne bloquent plus le défilement, pastilles visibles sur iPhone, grandes cartes photo par partie (proposition C), 4 parties communes à tous les Galops (« Équitation » → « Pratique équestre » dans les Galops 1 à 4), fond noir bleuté de l'accueil, photo du haut entière sur ordinateur avec onglets semi-transparents, photos « Vie équestre » et « Connaissance du cheval » de Blandine, numéros des cours dans un cercle + filet entre les cours.
+- Vérifié : node --check OK ; 390, 375 arabe, 1440.
