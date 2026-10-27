@@ -14956,3 +14956,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 15h25 — PUBLICATION (build 20261027-1525), accord de Blandine (« Et mets en ligne ce qui est fait »)
 - Met en ligne le build 1520 (Galops 8 et 9 : pages « Prochainement », 9 pastilles, « Les 9 Galops »). Seul changement de ce build : le marqueur. Version en ligne récupérée juste avant.
+
+## 27/10 15h30 — Programme des Galops 8 et 9 (build 20261027-1530) — NON PUBLIÉ
+- Source : Programme officiel FFE des Galops® 8 & 9 (applicable au 1er décembre 2022, medias.ffe.com REF-237-c2). Découpage proposé par Claude, validé par Blandine (« Ok »).
+- Galop 8 : 16 cours (Culture 2, Connaissance du cheval 4, Vie équestre 3, Pratique équestre 7) ; Galop 9 : 15 cours (3, 3, 4, 5). Identifiants g8-c1…c16 et g9-c1…c15, liste seule (HYPE_SOMMAIRE_G89, 14 langues), tous « Bientôt » (Galops non disponibles). Rangement dans les 4 parties : HYPE_CATEGORIE_PAR_COURS (ajout par Object.assign après la table, table d'origine intacte).
+- Objectifs (4 par Galop) dans GALOPS_I18N et présentation (GV2_DESC_TOUS 8 et 9), 14 langues, tutoiement.
+- Vérifié (390 px, fr et ar) : Galops 1 à 7 inchangés (mêmes nombres de cours, quiz, ouvrables), G8 16 cours et G9 15 cours affichés en « Bientôt », rien ne déborde, aucune erreur.
+- Fichier modifié : index.html (+ ce suivi). Aucune image nouvelle.
