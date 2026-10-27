@@ -14824,3 +14824,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Deux causes possibles sur Safari iPhone, corrigées toutes les deux : (1) la rangée d'onglets (défilement horizontal) pouvait aussi défiler un peu à la VERTICALE et « avalait » le geste du doigt → défilement vertical interdit dans la rangée (overflow-y:hidden, touch-action pan-x pan-y) ; (2) à chaque changement d'onglet actif pendant le défilement, scrollIntoView faisait aussi bouger la page → on ne fait plus défiler que la rangée d'onglets, à l'horizontale.
 - L'effet « coucher de soleil » essayé sur les photos de la page (01h15) a été RETIRÉ (« bof, ça passe mal ») ; jamais publié.
 - Vérifié : node --check OK ; défilement pas à pas sans retour en arrière (Chromium). Non reproductible ici sur Safari : à vérifier sur iPhone.
+
+## 27/10 01h25 — Page du Galop 5 : les pastilles 1 → 7 ne sont plus cachées sur iPhone (build 20261027-0125) — NON PUBLIÉ
+- Signalé par Blandine (capture 01h19) : une bande noire cachait les pastilles 1 → 7 sous la photo du haut.
+- Cause : la bande qui masque la zone de l'heure quand les onglets restent collés en haut était affichée en permanence (sa hauteur = zone de l'heure de l'iPhone, nulle sur ordinateur). Elle n'apparaît plus que lorsque les onglets sont réellement collés en haut.
+- Photo du haut gardée telle quelle (Blandine : « on garde le hero actuel il est parfait »).
+- Vérifié : node --check OK ; zone de l'heure simulée à 47 px : pastilles visibles en haut de page, bande présente seulement une fois les onglets collés. À vérifier sur iPhone avec la correction des onglets (0120), à publier ensemble.
