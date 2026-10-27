@@ -14997,3 +14997,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Vignettes vidéo vides sur les captures précédentes : blocage du navigateur de test (i.ytimg.com non autorisé ici), pas un problème de production — même adresse que la vidéothèque en ligne depuis août (hype-video.js, vignetteUrl). Sur les nouvelles captures, une image grise « Vignette YouTube (bloquée dans le navigateur de test) » marque leur place.
 - Vérifié : 17 blocs node --check OK ; texte des pages identique à main en 390 px (Galops 1, 3, 6, 9 vus par une modératrice, Galop 5) et Galop 5 en 820 et 1440 ; vue cavalière G6 téléphone : 0 cours ouvrable, pas de bloc quiz, Évaluation sans lien ; garde testée (seuil abaissé dans une copie de test : cavalière → « Prochainement », modératrice → cours ouvert) ; cours du Galop 1 s'ouvre normalement ; 820, 1024, 1280, 1440, arabe ; rien ne déborde. NON VÉRIFIÉ : vraie tablette, vraies polices, VoiceOver.
 - Fichier modifié : index.html seulement (+ ce suivi).
+
+## 27/10 16h10 — Pastille 6 en « Prochainement » (build 20261027-1610) — NON PUBLIÉ, branche travail-galops-tablette
+- Blandine (« Oui mets sur la 6 ») : sur la page d'un Galop en tablette/ordinateur (EcranGalopOrdi), les pastilles 6, 7, 8 et 9 sont en « Prochainement » (pointillés, sans cadenas), avec une seule mention centrée sous les quatre. Seuil = HYPE_GALOP_PROCHAIN_DES (6). Clic inchangé (la pastille ouvre toujours la page du Galop, règles Premium comprises).
+- Téléphone, page Galops (courbe) et page Galop 5 : non touchés.
+- Vérifié : 1440 fr et ar, 820 fr ; rien ne déborde, aucune erreur. Fichier modifié : index.html (+ ce suivi).
