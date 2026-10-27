@@ -14856,3 +14856,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Photo fournie par Blandine (cheval gris tressé, contre-jour doré, cavalière en veste noire) → images/galop5-th-cheval2.webp (NOUVEAU), cadrée sur la tête et l'encolure.
 - Met en ligne en une fois les builds non publiés 0120 → 0155 : onglets qui ne bloquent plus le défilement, pastilles visibles sur iPhone, grandes cartes photo par partie (proposition C), 4 parties communes à tous les Galops (« Équitation » → « Pratique équestre » dans les Galops 1 à 4), fond noir bleuté de l'accueil, photo du haut entière sur ordinateur avec onglets semi-transparents, photos « Vie équestre » et « Connaissance du cheval » de Blandine, numéros des cours dans un cercle + filet entre les cours.
 - Vérifié : node --check OK ; 390, 375 arabe, 1440.
+
+## 27/10 02h00 — Galop 5 : 2 extraits vidéo « Prochainement », Reprises/Évaluation en bandes horizontales, fin de page Hype (build 20261027-0200) — NON PUBLIÉ
+- Demandes de Blandine (01h54) : extraits vidéo réduits à 2 (« Les transitions et la régularité », « L'abord d'un obstacle » ; « Le travail sur les courbes » retiré), « Prochainement » posé sur chaque photo (14 langues), effet photo des événements (HYPE_PH_SOLEIL_CSS : teinte chaude, lumière dorée, bords brun chaud) sur ces 2 photos seulement ; la ligne « Vidéos à découvrir » disparaît.
+- Reprises de dressage et Évaluation : deux bandes horizontales (icône, titre, phrase, flèche ou « Bientôt ») au lieu de deux cartes carrées ; l'une sous l'autre sur téléphone, côte à côte sur ordinateur/tablette.
+- Fin de page Hype (FinPageHype, la même que sur la page Galops) ajoutée tout en bas.
+- Vérifié : node --check OK ; 390, 375 arabe, 1440 ; rien ne déborde.
