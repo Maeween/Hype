@@ -14818,3 +14818,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Brief « correction colorimétrique » : plus de pétrole (#14252A, #101D22) dans les fonds, léger fond pétrole par thème (sans cadre), petit trait champagne sous chaque titre de thème, pictogrammes champagne mats, séparateurs pétrole ; vignettes, extraits vidéo et cartes du bas éclaircies (léger réchauffement, sans voile noir) ; haut de page : ombre seulement derrière le titre ; textes secondaires moins gris, intitulés plus grands sur ordinateur.
 - Photo du haut : celle de Blandine (galop5-hero-v2.webp), conservée (« t'occupe pas de la photo »). Aucun fichier image nouveau dans ce build ; seul index.html change (+ ce suivi).
 - Vérifié : node --check OK ; 390, 375 arabe, tablette 820, ordinateur 1440 : rien ne déborde.
+
+## 27/10 01h20 — Page du Galop 5 : les onglets ne bloquent plus le défilement (build 20261027-0120) — NON PUBLIÉ
+- Signalé par Blandine (01h18, sur iPhone) : « les onglets du haut bloquent la page quand on veut la faire défiler ».
+- Deux causes possibles sur Safari iPhone, corrigées toutes les deux : (1) la rangée d'onglets (défilement horizontal) pouvait aussi défiler un peu à la VERTICALE et « avalait » le geste du doigt → défilement vertical interdit dans la rangée (overflow-y:hidden, touch-action pan-x pan-y) ; (2) à chaque changement d'onglet actif pendant le défilement, scrollIntoView faisait aussi bouger la page → on ne fait plus défiler que la rangée d'onglets, à l'horizontale.
+- L'effet « coucher de soleil » essayé sur les photos de la page (01h15) a été RETIRÉ (« bof, ça passe mal ») ; jamais publié.
+- Vérifié : node --check OK ; défilement pas à pas sans retour en arrière (Chromium). Non reproductible ici sur Safari : à vérifier sur iPhone.
