@@ -14973,3 +14973,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - index.html : seule l'adresse des images des fiches change (3 endroits, « -v2.webp »), aucun texte modifié.
 - Vérifié (390 px, modératrice, 15 fiches ouvertes) : 15 vignettes + 15 grandes images chargées, aucune image manquante, aucune erreur.
 - Branche à part (pas main) : rien publié ; la branche travail-galops-tablette n'est pas touchée.
+
+## 27/10 19h40 — PUBLICATION (build 20261027-1940), accord de Blandine (« Ok publié pour voir », 19h31)
+- Met en ligne le build 1935 (15 nouvelles images du cours « Les embouchures », -v2.webp), repris de la branche embouchures-images-v2 sur main à jour (28b28a0). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée (rien de son travail ne part en ligne).
