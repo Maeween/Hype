@@ -14944,3 +14944,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Erreur de ma part corrigée avant publication : j'avais d'abord annoncé « aucune vidéo du Galop 1 » (je n'avais regardé que la liste de démonstration de l'index) ; il y en a 7 dans hype-video.js, elles sont maintenant affichées.
 - Vérifié (navigateur de test, polices de remplacement car Google Fonts et YouTube sont inaccessibles ici, base simulée) : 17 blocs node --check OK ; 1280, 1440, 1920 ; fr, de, ja, ar ; rien ne déborde ; cours, Quiz, Évaluation, Reprises, onglets, « Voir tous », pastille 2 testés. NON VÉRIFIÉ : vrai ordinateur avec les vraies polices et les vignettes YouTube, VoiceOver.
 - Fichier modifié : index.html seulement (+ ce suivi). Aucune image nouvelle.
+
+## 27/10 15h20 — Galops 8 et 9 ajoutés (build 20261027-1520) — NON PUBLIÉ
+- Demande de Blandine : « Ok ajoute galop 8 et 9 aussi » (« Non ça existe galop 8 et galop 9 »).
+- Données : GALOPS_I18N reçoit les Galops 8 et 9 (14 langues, « Vers le Galop N fédéral », disponible:false, debloque:false, objectifs vides). Aucun cours inventé : le programme est à donner par Blandine.
+- Page de chaque Galop (EcranGalopV3, design du Galop 5) : s'ouvre aussi pour 8 et 9 ; sans cours, les 4 parties s'affichent en « Bientôt », présentation = « Le programme du Galop N arrive bientôt sur Hype. » (14 langues, GV3_T.prepa), objectifs = « Bientôt », Évaluation « Bientôt ». Photo du haut provisoire (GV3_HERO 8 et 9).
+- Pastilles 1 → 9 sur les pages des Galops (V3 et Galop 5) ; page Galop 1 ordinateur : 8 et 9 s'ouvrent maintenant (avant : sans effet). Page Galops : la courbe ouvre 8 et 9 (bouton « Découvrir le Galop N », même règle que 5 et 7 : Premium demandé aux non-abonnés), rangée « Les 9 Galops » (9 onglets, 14 langues). Liens #g=8 / #g=9 acceptés.
+- Les autres listes de Galops de l'appli (qui parcourent GALOPS_I18N) montrent aussi 8 et 9, en « Bientôt ».
+- Vérifié (téléphone 390 px et ordinateur 1280 px) : Galops 1 à 7 inchangés (mêmes nombres de cours, quiz, ouvrables qu'avant), Galops 8 et 9 s'affichent, rien ne déborde, aucune erreur.
+- Fichier modifié : index.html (+ ce suivi). Aucune image nouvelle.
