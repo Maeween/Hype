@@ -14976,3 +14976,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 19h40 — PUBLICATION (build 20261027-1940), accord de Blandine (« Ok publié pour voir », 19h31)
 - Met en ligne le build 1935 (15 nouvelles images du cours « Les embouchures », -v2.webp), repris de la branche embouchures-images-v2 sur main à jour (28b28a0). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée (rien de son travail ne part en ligne).
+
+## 27/10 19h55 — Embouchures : famille « Les releveurs », passage de langue, nouvelle photo du haut, cours ouvert à tous (build 20261027-1955) — NON PUBLIÉ, branche embouchures-releveurs
+- Blandine (19h42-19h47) : il manque le releveur et le Pessoa passe inaperçu → choix « 6 et les trois premières » ; « prépare le texte et la mise en page, on ajoutera les images plus tard » ; « change l'image du hero, assure-toi que le titre ne soit pas sur l'image » ; « tu peux rendre le cours accessible ».
+- Textes (hype-cours-g5-embouchures.js, ?v=2, 14 langues) : nouvelle famille « Les releveurs » (entre les mors à levier et la bride) avec Pessoa (déplacé des leviers, fiche réécrite), releveur à cordes, mors américain ; fiche « Passage de langue » ajoutée à « La forme du canon ». Rien d'autre changé dans les textes.
+- Images : Pessoa garde la sienne ; releveur à cordes, mors américain et passage de langue sans photo pour l'instant (vignette en pointillés, pas de grande image) — GE_SANS_IMAGE, à vider quand les images galop5-emb-{releveur, americain, langue}-v2.webp arriveront (prompts ChatGPT donnés à Blandine).
+- Photo du haut : images/galop5-emb-hero-v2.webp (tête de cheval grise envoyée par Blandine). Téléphone : photo en haut, titres en dessous ; tablette/ordinateur : titres à gauche, photo à droite ; arabe en miroir. Vérifié : aucun chevauchement titre/photo en 390, 820, 1440 (fr et ar).
+- Accès : le cours s'ouvre pour tout le monde (avant : modératrices seules), avec la même règle Premium que les autres cours du Galop 5 (non abonnée → page Premium, y compris par accès direct). Les 11 autres cours du Galop 5 restent « Prochainement ».
+- Vérifié : aucune erreur, rien ne déborde. Fichiers : index.html, hype-cours-g5-embouchures.js, images/galop5-emb-hero-v2.webp (+ ce suivi).
