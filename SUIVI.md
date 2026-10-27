@@ -14966,3 +14966,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 15h35 — PUBLICATION (build 20261027-1535), accord de Blandine (« Ok », 15h17)
 - Met en ligne le build 1530 (programme des Galops 8 et 9 : 16 et 15 cours « Bientôt », objectifs, présentation, 14 langues). Seul changement de ce build : le marqueur. Version en ligne récupérée juste avant.
+
+## 27/10 19h35 — Cours « Les embouchures » : 15 nouvelles images (build 20261027-1935) — NON PUBLIÉ, branche embouchures-images-v2
+- Blandine envoie HYPE_Embouchures_Galop5.zip (15 visuels photoréalistes ChatGPT, 1448 × 1086, + LIRE_AVANT_INTEGRATION.md et PROMPTS.md).
+- Converties en WebP 1200 × 900 (même format 4:3 que les précédentes), nouveaux fichiers images/galop5-emb-{olive, aiguilles, verdun, libres, droit, simple, double, levier, pelham, pessoa, bride, baucher, souple, hackamore, muserolle}-v2.webp (647 Ko au total). Les anciennes images restent dans le dépôt (retour arrière = retirer « -v2 »).
+- index.html : seule l'adresse des images des fiches change (3 endroits, « -v2.webp »), aucun texte modifié.
+- Vérifié (390 px, modératrice, 15 fiches ouvertes) : 15 vignettes + 15 grandes images chargées, aucune image manquante, aucune erreur.
+- Branche à part (pas main) : rien publié ; la branche travail-galops-tablette n'est pas touchée.
