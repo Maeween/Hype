@@ -14880,3 +14880,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 02h30 — PUBLICATION (build 20261027-0230), accord de Blandine (« Ok vas y on verra »)
 - Met en ligne : vidéo en fond de la bande « Reprises de dressage » (0215), plus d'espace entre les bandes (0220), vidéo dégagée des textes (0225). Seul changement de ce build : le marqueur. À vérifier sur iPhone : la vidéo démarre seule, muette, en boucle.
+
+## 27/10 02h40 — Galop 5 : bande Reprises plus haute, vidéos après Reprises/Évaluation (build 20261027-0240) — NON PUBLIÉ
+- Demande de Blandine (02h25) : « fais un onglet plus haut pour les reprises de dressage et passe les vidéos ensuite seulement ».
+- Ordre de la page : cours → Reprises de dressage → Évaluation → Extraits vidéo → fin de page Hype. Onglets du haut dans le même ordre (… Reprises, Évaluation, Vidéos).
+- Bande Reprises : téléphone = vidéo en haut sur toute la largeur (16:9, fondu vers le bas), titre plus grand + phrase + flèche dessous ; ordinateur/tablette = bande pleine largeur de 260 px, vidéo sur les 62 % de droite, textes à gauche. Évaluation inchangée.
+- Vérifié : node --check OK ; vidéo en lecture (390, 1440) ; 375 arabe ; rien ne déborde.
