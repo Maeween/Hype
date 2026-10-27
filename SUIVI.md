@@ -14809,3 +14809,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 12 photos de cours NOUVELLES, simples recadrages des vraies photos de Liam et Elfe du pack : images/galop5-c01-materiel.webp … galop5-c12-cross.webp. ⚠️ Pas de vraie photo pour 06 (longe), 07 (embarquement), 12 (cross) : photos provisoires de Liam et Elfe à remplacer.
 - Vérifié (navigateur de test) : node --check OK, 375/390/430, tablette 820, ordinateur 1440, arabe, allemand ; rien ne déborde. NON VÉRIFIÉ : vrai iPhone.
 - À part (signalé par Blandine 00h50) : plantage « Un caillou dans le sabot » sur l'écran cours en ligne (erreur React #31, texte {fr} affiché tel quel). Non reproduit en test sur les cours des Galops 5, 6 et 7 (toutes les pages parcourues en français) : il faut savoir quel cours et quelle page.
+
+## 27/10 01h05 — PUBLICATION (build 20261027-0105), accord de Blandine (« Publié en attendant »)
+- Met en ligne la page du Galop 5 (builds 0030 et 0055), visible des seules modératrices. Seul changement de ce build : le marqueur.
