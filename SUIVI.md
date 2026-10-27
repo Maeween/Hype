@@ -14984,3 +14984,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Photo du haut : images/galop5-emb-hero-v2.webp (tête de cheval grise envoyée par Blandine). Téléphone : photo en haut, titres en dessous ; tablette/ordinateur : titres à gauche, photo à droite ; arabe en miroir. Vérifié : aucun chevauchement titre/photo en 390, 820, 1440 (fr et ar).
 - Accès : le cours s'ouvre pour tout le monde (avant : modératrices seules), avec la même règle Premium que les autres cours du Galop 5 (non abonnée → page Premium, y compris par accès direct). Les 11 autres cours du Galop 5 restent « Prochainement ».
 - Vérifié : aucune erreur, rien ne déborde. Fichiers : index.html, hype-cours-g5-embouchures.js, images/galop5-emb-hero-v2.webp (+ ce suivi).
+
+## 27/10 20h35 — PUBLICATION (build 20261027-2035), accord de Blandine (« Ok publié », 20h32)
+- Met en ligne le build 1955 (embouchures : famille « Les releveurs », passage de langue, nouvelle photo du haut, cours ouvert à tous avec la règle Premium du Galop 5), repris de la branche embouchures-releveurs sur main à jour (b05bb51). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
