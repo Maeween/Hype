@@ -14837,3 +14837,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Photos des cartes : Culture = galops-v2-carte-exercices-hd2.jpg, Connaissance = galops-v2-hero-ordi-hd1.jpg, Vie = images/galop5-th-vie.webp (NOUVEAU, recadrage de la vraie photo d'Elfe et Liam en manège), Pratique = galops-v2-carte-quiz-hd2.jpg.
 - Comprend aussi les corrections non publiées 0120 (onglets) et 0125 (pastilles).
 - Vérifié : node --check OK ; 390, 375 arabe et allemand, ordinateur 1440 ; rien ne déborde.
+
+## 27/10 01h40 — Galop 5 : photo du haut entière sur ordinateur, moins de pétrole, onglets semi-transparents, fond noir bleuté de l'accueil (build 20261027-0140) — NON PUBLIÉ
+- Demandes de Blandine (01h31-01h32) : photo pas coupée par les titres sur ordinateur, pas trop de bleu pétrole, onglets semi-transparents au besoin, « garde bien le noir bleuté en fond de page comme sur la page accueil ».
+- Ordinateur/tablette : photo du haut plus haute (cavalière et cheval entiers, du casque aux sabots), pastilles 1 → 7 et onglets posés sur le bas de la photo, onglets semi-transparents (plus opaques seulement quand ils restent collés en haut). Vérifié 1280, 1440, 1920.
+- Fond de page = #060709 (même noir bleuté que l'accueil, --bg) ; voiles et dégradés de la page passés sur ce noir. Pétrole allégé : encadrés, cartes des parties, dégradé sous les photos des cartes (la photo est moins recouverte par les titres).
+- Vérifié : node --check OK ; 390, 375 arabe, 820, 1280, 1440, 1920 ; rien ne déborde.
