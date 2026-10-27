@@ -14877,3 +14877,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 27/10 02h25 — Galop 5 : la vidéo de la bande Reprises n'est plus cachée par les textes (build 20261027-0225) — NON PUBLIÉ
 - Demande de Blandine (« attention à ce que les écritures n'empêchent pas la visualisation de la vidéo ») : la vidéo occupe la moitié droite de la bande (fondu doux à gauche), les textes restent sur la moitié gauche sur fond noir, la flèche passe en bas à droite. Arabe : en miroir.
 - Vérifié : node --check OK ; 390 et 1440, vidéo en lecture, cavalier et cheval entièrement visibles.
+
+## 27/10 02h30 — PUBLICATION (build 20261027-0230), accord de Blandine (« Ok vas y on verra »)
+- Met en ligne : vidéo en fond de la bande « Reprises de dressage » (0215), plus d'espace entre les bandes (0220), vidéo dégagée des textes (0225). Seul changement de ce build : le marqueur. À vérifier sur iPhone : la vidéo démarre seule, muette, en boucle.
