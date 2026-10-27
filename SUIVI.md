@@ -14963,3 +14963,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Objectifs (4 par Galop) dans GALOPS_I18N et présentation (GV2_DESC_TOUS 8 et 9), 14 langues, tutoiement.
 - Vérifié (390 px, fr et ar) : Galops 1 à 7 inchangés (mêmes nombres de cours, quiz, ouvrables), G8 16 cours et G9 15 cours affichés en « Bientôt », rien ne déborde, aucune erreur.
 - Fichier modifié : index.html (+ ce suivi). Aucune image nouvelle.
+
+## 27/10 15h35 — PUBLICATION (build 20261027-1535), accord de Blandine (« Ok », 15h17)
+- Met en ligne le build 1530 (programme des Galops 8 et 9 : 16 et 15 cours « Bientôt », objectifs, présentation, 14 langues). Seul changement de ce build : le marqueur. Version en ligne récupérée juste avant.
