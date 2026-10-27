@@ -14847,3 +14847,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 27/10 01h45 — Galop 5 : nouvelle photo pour « Vie équestre » (build 20261027-0145) — NON PUBLIÉ
 - Photo fournie par Blandine (cavalier sur cheval gris tressé, sous-bois doré) → images/galop5-th-vie2.webp (NOUVEAU), cadrée sur la tête du cheval et les mains (la photo est verticale : dans une carte large, on ne peut pas avoir à la fois le casque du cavalier et la tête du cheval). galop5-th-vie.webp n'est plus utilisée.
 - En attente : choix de Blandine pour la séparation entre les cours dans chaque carte (4 visuels montrés).
+
+## 27/10 01h50 — Galop 5 : séparation entre les cours, visuel 4 (build 20261027-0150) — NON PUBLIÉ
+- Choix de Blandine (« Ok 4 ») parmi 4 visuels : numéro du cours dans un petit cercle champagne + filet ivoire doux entre chaque cours, dans les 4 cartes, téléphone et ordinateur.
+- Vérifié : node --check OK ; 390, 375 arabe, 1440 ; rien ne déborde.
