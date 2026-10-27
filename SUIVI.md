@@ -14865,3 +14865,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 02h05 — PUBLICATION (build 20261027-0205), accord de Blandine (« Publie »)
 - Met en ligne le build 0200 (2 extraits vidéo « Prochainement », Reprises/Évaluation en bandes horizontales, fin de page Hype). Seul changement de ce build : le marqueur.
+
+## 27/10 02h15 — Galop 5 : vidéo en fond de la bande « Reprises de dressage » (build 20261027-0215) — NON PUBLIÉ
+- Vidéo fournie par Blandine (.mov iPhone, HEVC 1280×720, 5,7 s, 2,3 Mo) mise au format web : images/galop5-reprises-video.mp4 (H.264, sans le son, 1280×720, 650 Ko, lecture rapide) + images/galop5-reprises-video-affiche.jpg (image fixe affichée avant la lecture et quand l'iPhone demande de réduire les animations). Fichiers NOUVEAUX.
+- La vidéo tourne en boucle, muette, dans la bande « Reprises de dressage » de la page du Galop 5 (bande un peu plus haute, voile plus léger à droite pour la voir). Toucher la bande ouvre toujours les reprises du Galop 5.
+- Vérifié : node --check OK ; lecture automatique muette en 390 et 1440 (Chromium). À vérifier sur iPhone.
