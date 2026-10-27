@@ -14987,6 +14987,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 20h35 — PUBLICATION (build 20261027-2035), accord de Blandine (« Ok publié », 20h32)
 - Met en ligne le build 1955 (embouchures : famille « Les releveurs », passage de langue, nouvelle photo du haut, cours ouvert à tous avec la règle Premium du Galop 5), repris de la branche embouchures-releveurs sur main à jour (b05bb51). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
+<<<<<<< HEAD
 ## 27/10 16h00 — Pages des Galops sur TABLETTE et ORDINATEUR (design Galop 1) + « Prochainement » dès le Galop 6 partout (build 20261027-1600) — NON PUBLIÉ, branche travail-galops-tablette
 - Décisions de Blandine (15h15) : Galop 5 inchangé ; G8 et G9 dans la navigation avec « Prochainement », cours inaccessibles ; Galops 6 et 7 : cours, quiz et évaluations « Prochainement » sur ordinateur, tablette ET téléphone (reprises et vidéos restent ouvertes) ; photos actuelles gardées, aucune photo générée ; Galop 1 ordinateur à rapprocher de la maquette ; tablette = 2 parties par ligne ; téléphone : aucune modification de design, seulement le blocage des cours des Galops 6 à 9 ; rien sur main, rien publié, captures d'abord.
 - Construit sur main à jour (d41e2d0 : Galops 8 et 9 ajoutés par l'autre session — GALOPS_I18N, HYPE_SOMMAIRE_G89, 9 pastilles, « Les 9 Galops »). La courbe et la rangée des 9 Galops de la page Galops sont celles de l'autre session (déjà en ligne), non retouchées ici.
@@ -15007,3 +15008,13 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Met en ligne la branche travail-galops-tablette : pages des Galops 1-4 et 6-9 sur tablette et ordinateur (Galop 1 retravaillé d'après la maquette), « Prochainement » dès le Galop 6 pour cours, quiz et examens sur tous les écrans (lien direct compris, modératrices exceptées), pastilles 6 à 9 en « Prochainement » (ajout de l'autre session).
 - Reconstruit sur la version en ligne 8c62ca7 (cours « Les embouchures » : releveurs, passage de langue, photo du haut, 15 images) : rien de ce qui était en ligne n'est retiré — seules lignes enlevées : l'ancienne version de la page Galop 1 ordinateur, les 3 routes protégées (cours, quiz, examen blanc), 2 lignes de la page téléphone (pret, allerEval) et le marqueur.
 - Vérifié juste avant : 17 blocs node --check OK ; texte des pages identique à la version en ligne sur téléphone (Galops 1, 3, 5, 6, 9) et pour la page du Galop 5 (tablette, ordinateur) ; Galops 1 à 9 en 1440 (vue cavalière) : bons nombres de cours, 6 à 9 non ouvrables, rien ne déborde, aucune erreur.
+=======
+
+## 27/10 22h50 — Embouchures : les 3 images manquantes (build 20261027-2250) — NON PUBLIÉ, branche embouchures-3-images
+- Blandine envoie hype-trois-mors.zip (ChatGPT, 2048 × 1536) : releveur-cordes, mors-americain, canon-passage-langue → images/galop5-emb-{releveur, americain, langue}-v2.webp (1200 × 900, 21-23 Ko).
+- index.html : GE_SANS_IMAGE vidé (les 3 fiches ont maintenant vignette + grande image). Aucun texte modifié.
+- Vérifié (390 px, 18 fiches ouvertes) : 38 images chargées, aucune vide, aucune erreur.
+>>>>>>> 664595a (Embouchures : images du releveur à cordes, du mors américain et du passage de langue — non publié)
+
+## 27/10 23h00 — PUBLICATION (build 20261027-2300), accord de Blandine (« Vas y », 22h56)
+- Met en ligne le build 2250 (images du releveur à cordes, du mors américain et du passage de langue), repris de la branche embouchures-3-images sur main à jour. Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
