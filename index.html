@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261027-0250"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261027-0310"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -29214,7 +29214,7 @@ function Router() {
     /* 21/10 (tests de Blandine, probleme 10) — CAUSE COMMUNE des pages « enfermees » en largeur telephone :
        l enveloppe de l appli limite a 480 px tout ecran absent des listes ci-dessous. Ces ecrans recoivent
        desormais la largeur (1280 max) des la tablette ; chacun gere ensuite sa propre composition. */
-    const ECRANS_LARGES_TESTS = ["communaute", "apprentissage", "carnet", "assistant", "articles", "videos", "galops", "galop-detail", "galop5", "profil", "sellerie"];
+    const ECRANS_LARGES_TESTS = ["communaute", "apprentissage", "carnet", "assistant", "articles", "videos", "galops", "galop-detail", "galop5", "cours-g5-emb", "profil", "sellerie"];
     /* pages de lecture longue (cours, quiz, examens, article) : une colonne confortable de 820 px, jamais toute la largeur */
     const ECRANS_LECTURE_TESTS = ["cours", "quiz", "examen", "examen-blanc", "article-detail", "video-lecture"];
     const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */, "challenge" /* 20/10 */, "assistant" /* 21/10 Hey Baby responsive */];
@@ -29327,7 +29327,8 @@ function Router() {
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
                 ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
                 ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null))),   /* 09/10 (764) : verrou Premium a l arrivee */
-                ecran === "galop5" && React.createElement(EcranGalop5, null),   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
+                ecran === "galop5" && React.createElement(EcranGalop5, null),
+                ecran === "cours-g5-emb" && React.createElement(EcranCoursG5Emb, null),   /* 27/10 : cours du Galop 5 « Les embouchures » (modératrices seules) */   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
                 ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null))),
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
@@ -78036,7 +78037,7 @@ function NavBar() {
             React.createElement("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 19, letterSpacing: 7, paddingInlineStart: 7, color: NAV_CHAMPAGNE } }, "HYPE"))
           : React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: "100%", height: 16, background: "linear-gradient(180deg, rgba(6,7,9,0) 0%, rgba(6,7,9,0.55) 100%)", pointerEvents: "none" } }),
         items.map((item) => {
-        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "galop5", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && (ecran === "evenement" || ecran === "decouvrir" /* (1051) */)) || (item.id === "moncavalier" && ["profil", "apprentissage"].includes(ecran)) || (item.id === "ecurie" && ["guilde", "cheval", "cavalier", "ecurie-hype", "album-ecurie"].includes(ecran)); /* 21/10 (tests, probleme 7) : "sellerie" retire — Ma sellerie (Le coin des pros, ouvert depuis l accueil) n allume plus « Ecurie ». 29/08 : "guilde" ajoute — l'onglet redirigeait deja vers le club mais ne s'allumait pas une fois dessus */
+        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "galop5", "cours-g5-emb", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && (ecran === "evenement" || ecran === "decouvrir" /* (1051) */)) || (item.id === "moncavalier" && ["profil", "apprentissage"].includes(ecran)) || (item.id === "ecurie" && ["guilde", "cheval", "cavalier", "ecurie-hype", "album-ecurie"].includes(ecran)); /* 21/10 (tests, probleme 7) : "sellerie" retire — Ma sellerie (Le coin des pros, ouvert depuis l accueil) n allume plus « Ecurie ». 29/08 : "guilde" ajoute — l'onglet redirigeait deja vers le club mais ne s'allumait pas une fois dessus */
         const petits = String(item.label || "").length >= 9;
         const ferme = item.id === "communaute" && !accesCommu; /* (368) */
         return (React.createElement("button", { key: item.id, onClick: () => { if (ferme) { setBulleCommu(true); setTimeout(() => setBulleCommu(false), 2200); return; } try { if (typeof window !== "undefined") { window.__cavalierOuvert = null; window.__cavalierPublic = null; window.__hypeEcurieVisite = null; } } catch (eNb) { }   /* (830) un toucher sur la barre du bas termine une visite d ecurie par lien */ setEcran(item.id === "ecurie" ? "guilde" : item.id); }, style: navTop ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 7, height: 64, padding: "0 13px", boxSizing: "border-box", background: "transparent", border: "none", borderBottom: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } : navLarge ? { position: "relative", display: "flex", flexDirection: "row", alignItems: "center", gap: 14, width: "100%", minHeight: 48, padding: "0 22px", boxSizing: "border-box", textAlign: "start", background: actif ? ("linear-gradient(" + (navRtl ? "270deg" : "90deg") + ", rgba(201,166,107,0.16), rgba(201,166,107,0))") : "transparent", [navRtl ? "borderRight" : "borderLeft"]: "2px solid " + (actif ? NAV_CHAMPAGNE : "transparent"), opacity: ferme ? 0.45 : 1, cursor: "pointer" } /* (862) */ : { position: "relative", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 0 6px", opacity: ferme ? 0.45 : 1 } },
@@ -80711,6 +80712,7 @@ function EcranGalop5() {
   var sommaire = [];
   try { sommaire = obtenirSommaireGalop(5, langue) || []; } catch (eS) { sommaire = []; }
   function coursReel(id) {
+    if (id === "g5n-02" && typeof EcranCoursG5Emb === "function") return { id: id };   /* 27/10 : « Les embouchures » a sa propre page */
     var c = sommaire.find(function (x) { return x && x.id === id; });
     if (!c) return null;
     if (typeof coursEstPret === "function" && !coursEstPret(5, id) && !estMod) return null;
@@ -80718,6 +80720,7 @@ function EcranGalop5() {
   }
   function ouvrirCours(id) {
     if (!g5.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    if (id === "g5n-02" && typeof EcranCoursG5Emb === "function") { setEcran("cours-g5-emb"); return; }
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(5); } catch (eV) { }
     setGalopOuvert(5); setCoursOuvert(id); setEcran("cours");
   }
@@ -80818,6 +80821,350 @@ function EcranGalop5() {
     onglets,
     h("div", { className: "g5-in" }, h("div", { className: "g5-intro" }, pres, prog), cours, duo, vid),   /* 27/10 02h25 (Blandine) : Reprises (bande plus haute) et Évaluation d'abord, les vidéos ensuite */
     (typeof FinPageHype === "function") ? h("div", { className: "g5-fin" }, h(FinPageHype, null)) : null);   /* 27/10 01h54 (Blandine) : fin de page Hype */
+}
+
+/* ══ 27/10 — COURS DU GALOP 5 « LES EMBOUCHURES » (brief de Blandine, « carte blanche » le 27/10 à 02h40) ══
+   Écran « cours-g5-emb ». Textes (14 langues) dans hype-cours-g5-embouchures.js, chargé à l'ouverture (window.HYPE_G5_EMB).
+   Rien d'inventé : aucune photo de mors n'existe encore dans Hype → schémas dessinés (marqués « Schéma ») + « Photo à venir » ;
+   aucune vidéo sur les embouchures → vignettes « Vidéo à venir », sans lecteur ; aucun quiz → bouton « Bientôt ».
+   Lecture audio : la même que les autres cours (AvecLecture). Visible des modératrices seules, comme la page du Galop 5. */
+var GE_SRC = "hype-cours-g5-embouchures.js?v=1";
+var GE_CSS = ""
+  + ".ge{--f:#060709;--p:#101D22;--p2:#14252A;--iv:#F3EEE4;--t2:rgba(243,238,228,0.84);--t3:rgba(243,238,228,0.62);--ch:#C9A66B;--bd:rgba(201,166,107,0.20);"
+  + "position:relative;min-height:100vh;background:var(--f);color:var(--iv);font-family:'Montserrat',sans-serif;overflow-x:clip;padding-bottom:calc(env(safe-area-inset-bottom) + 90px)}"
+  + ".ge *{box-sizing:border-box}.ge button{font-family:inherit;color:inherit}"
+  + ".ge button:focus-visible,.ge a:focus-visible{outline:2px solid var(--ch);outline-offset:3px}"
+  + ".ge-serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500}"
+  /* hero */
+  + ".ge-hero{position:relative;height:clamp(300px,46vh,380px);overflow:hidden}"
+  + ".ge-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 40%;display:block}"
+  + ".ge-hero-v{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,7,9,1) 0%,rgba(6,7,9,0.82) 26%,rgba(6,7,9,0.2) 58%,rgba(6,7,9,0.35) 100%)}"
+  + ".ge-barre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 12px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:center}"
+  + ".ge-retour{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 10px;border-radius:999px;border:1px solid rgba(201,166,107,0.4);background:rgba(6,7,9,0.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:12.5px;font-weight:600;cursor:pointer}"
+  + ".ge-hero-tx{position:absolute;z-index:2;left:20px;right:20px;bottom:16px}"
+  + ".ge-kick{font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ch);font-weight:600}"
+  + ".ge-h1{margin:6px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,11vw,52px);line-height:1}"
+  + ".ge-sous{margin:6px 0 0;font-size:15px;color:var(--t2)}"
+  + ".ge-meta{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}"
+  + ".ge-meta li{font-size:11px;padding:5px 10px;border-radius:999px;border:1px solid var(--bd);background:rgba(6,7,9,0.45);color:var(--t2)}"
+  /* sommaire collant + progression */
+  + ".ge-nav{position:sticky;top:env(safe-area-inset-top);z-index:5;background:rgba(6,7,9,0.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,166,107,0.14)}"
+  + ".ge-nav-r{display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:0 12px;touch-action:pan-x pan-y}"
+  + ".ge-nav-r::-webkit-scrollbar{display:none}"
+  + ".ge-nav button{flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;padding:11px 9px 9px;font-size:12.5px;color:var(--t2);cursor:pointer;white-space:nowrap}"
+  + ".ge-nav button b{color:var(--ch);font-weight:600;margin-inline-end:5px}"
+  + ".ge-nav button.on{color:var(--ch);border-bottom-color:var(--ch)}"
+  + ".ge-prog{height:2px;background:rgba(201,166,107,0.12)}.ge-prog i{display:block;height:100%;background:var(--ch);transition:width .15s linear}"
+  /* mise en page */
+  + ".ge-in{max-width:1180px;margin:0 auto;padding:0 16px}"
+  + ".ge-grid{display:grid;gap:28px}"
+  + ".ge-sec{scroll-margin-top:calc(env(safe-area-inset-top) + 64px);padding-top:30px}"
+  + ".ge-sec-t{display:flex;align-items:baseline;gap:12px;margin:0 0 12px}"
+  + ".ge-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;line-height:1;color:var(--ch)}"
+  + ".ge-sec-t h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;line-height:1.15}"
+  + ".ge-p{margin:0 0 12px;font-size:15px;line-height:1.7;color:var(--t2)}"
+  /* encadrés */
+  + ".ge-box{margin:16px 0;padding:14px 16px;border-radius:14px;border:1px solid var(--bd);background:linear-gradient(165deg,rgba(20,37,42,0.7),rgba(16,26,29,0.5))}"
+  + ".ge-box-t{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:var(--ch)}"
+  + ".ge-box-t svg{width:16px;height:16px}"
+  + ".ge-box p{margin:0;font-size:14px;line-height:1.6;color:var(--t2)}"
+  + ".ge-box ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}"
+  + ".ge-box li{display:flex;gap:9px;font-size:14px;line-height:1.5;color:var(--iv)}"
+  + ".ge-box li:before{content:'';flex:0 0 6px;height:6px;margin-top:8px;border-radius:50%;background:var(--ch)}"
+  + ".ge-box.err li:before{border-radius:1px;transform:rotate(45deg);background:#C98B6B}"
+  + ".ge-box.err .ge-box-t{color:#D9A07F}"
+  /* groupes et cartes de mors */
+  + ".ge-grp{margin-top:20px}"
+  + ".ge-grp h3{margin:0 0 4px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px}"
+  + ".ge-grp>p{margin:0 0 10px;font-size:13.5px;line-height:1.6;color:var(--t3)}"
+  + ".ge-cartes{display:grid;gap:10px}"
+  + ".ge-carte{border-radius:14px;border:1px solid var(--bd);background:rgba(16,29,34,0.55);overflow:hidden}"
+  + ".ge-carte-h{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;background:none;border:0;cursor:pointer;text-align:start}"
+  + ".ge-sch{flex:0 0 96px;height:64px;border-radius:9px;background:#0B1416;border:1px solid rgba(201,166,107,0.14);display:flex;align-items:center;justify-content:center;position:relative}"
+  + ".ge-sch svg{width:86px;height:54px}"
+  + ".ge-sch small{position:absolute;bottom:2px;inset-inline-end:5px;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3)}"
+  + ".ge-carte-tx{flex:1;min-width:0}"
+  + ".ge-carte-n{display:block;font-size:15px;font-weight:600;color:var(--iv)}"
+  + ".ge-carte-c{display:block;margin-top:2px;font-size:12.5px;line-height:1.45;color:var(--t3)}"
+  + ".ge-chev{flex:0 0 auto;width:20px;height:20px;color:var(--ch);transition:transform .2s}"
+  + ".ge-carte.ouv .ge-chev{transform:rotate(180deg)}"
+  + ".ge-carte-d{padding:0 14px 14px;display:grid;gap:10px}"
+  + ".ge-carte-d dt{font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:var(--ch);margin:0}"
+  + ".ge-carte-d dd{margin:2px 0 0;font-size:13.5px;line-height:1.55;color:var(--t2)}"
+  + ".ge-photo-av{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;border:1px dashed rgba(201,166,107,0.3);font-size:11.5px;color:var(--t3)}"
+  /* anatomie */
+  + ".ge-ana{margin-top:12px;border-radius:16px;border:1px solid var(--bd);background:#0B1416;padding:12px}"
+  + ".ge-ana svg{display:block;width:100%;height:auto}"
+  + ".ge-ana figcaption{margin-top:6px;font-size:11px;color:var(--t3)}"
+  + ".ge-zones{display:grid;gap:8px;margin-top:14px;padding:0;list-style:none}"
+  + ".ge-zones li{display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:14px;line-height:1.5;color:var(--t2)}"
+  + ".ge-zones b{display:block;color:var(--iv);font-weight:600}"
+  + ".ge-pin{width:24px;height:24px;border-radius:50%;border:1px solid var(--ch);color:var(--ch);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}"
+  + ".ge-meca{display:grid;gap:10px;margin-top:16px}"
+  + ".ge-meca div{padding:12px 14px;border-radius:12px;background:rgba(20,37,42,0.5);border-inline-start:2px solid var(--ch)}"
+  + ".ge-meca b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19px;margin-bottom:3px}"
+  + ".ge-meca p{margin:0;font-size:13.5px;line-height:1.55;color:var(--t2)}"
+  /* critères */
+  + ".ge-crit{display:grid;gap:10px;margin:12px 0 0;padding:0;list-style:none}"
+  + ".ge-crit li{padding:12px 14px;border-radius:12px;border:1px solid rgba(201,166,107,0.14);background:rgba(16,29,34,0.45)}"
+  + ".ge-crit b{display:block;font-size:14.5px;color:var(--iv);margin-bottom:3px}"
+  + ".ge-crit span{font-size:13.5px;line-height:1.55;color:var(--t2)}"
+  /* vérifications */
+  + ".ge-verif{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}"
+  + ".ge-verif li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.55;color:var(--t2)}"
+  + ".ge-verif li span{flex:0 0 20px;height:20px;border-radius:5px;border:1px solid var(--ch);display:flex;align-items:center;justify-content:center;margin-top:1px}"
+  + ".ge-verif li span svg{width:12px;height:12px}"
+  + ".ge-h3{margin:20px 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:21px}"
+  /* cas particuliers */
+  + ".ge-cas{display:grid;gap:10px;margin-top:12px}"
+  /* colonne latérale */
+  + ".ge-side{display:grid;gap:14px;align-content:start;padding-top:30px}"
+  + ".ge-obs{border-radius:14px;overflow:hidden;border:1px solid var(--bd);background:rgba(16,29,34,0.6)}"
+  + ".ge-obs button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative}"
+  + ".ge-obs img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}"
+  + ".ge-obs .ge-loupe{position:absolute;bottom:8px;inset-inline-end:8px;width:30px;height:30px;border-radius:50%;background:rgba(6,7,9,0.6);border:1px solid rgba(201,166,107,0.5);display:flex;align-items:center;justify-content:center}"
+  + ".ge-obs .ge-box{margin:0;border:0;border-radius:0;background:none}"
+  + ".ge-vids h3{margin:0 0 10px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:21px}"
+  + ".ge-vid{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid rgba(243,238,228,0.08)}"
+  + ".ge-vid:first-of-type{border-top:0}"
+  + ".ge-vid-ph{position:relative;flex:0 0 96px;height:60px;border-radius:8px;overflow:hidden}"
+  + ".ge-vid-ph img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.8)}"
+  + ".ge-vid-ph em{position:absolute;inset:auto 4px 4px 4px;font-style:normal;font-size:8.5px;letter-spacing:0.08em;text-transform:uppercase;text-align:center;padding:2px 4px;border-radius:999px;background:rgba(6,7,9,0.7);color:var(--iv)}"
+  + ".ge-vid-t{font-size:13px;line-height:1.4;color:var(--t2)}"
+  + ".ge-lien{margin-top:8px;background:none;border:0;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--ch);cursor:pointer}"
+  + ".ge-quiz{padding:18px;border-radius:16px;border:1px solid rgba(201,166,107,0.35);background:radial-gradient(ellipse at 20% 0%,rgba(201,166,107,0.14),rgba(201,166,107,0) 60%),linear-gradient(165deg,#14252A,#101A1D)}"
+  + ".ge-quiz h3{margin:0 0 6px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px}"
+  + ".ge-quiz p{margin:0 0 12px;font-size:13.5px;line-height:1.55;color:var(--t2)}"
+  + ".ge-quiz-b{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--ch);background:rgba(6,7,9,0.35);font-size:13.5px;font-weight:600;cursor:pointer}"
+  + ".ge-quiz-b[disabled]{opacity:0.6;cursor:default}"
+  + ".ge-quiz-b small{font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ch)}"
+  /* visionneuse */
+  + ".ge-lb{position:fixed;inset:0;z-index:200;background:rgba(6,7,9,0.96);display:flex;align-items:center;justify-content:center;padding:20px}"
+  + ".ge-lb img{max-width:100%;max-height:86vh;border-radius:10px}"
+  + ".ge-lb button{position:absolute;top:calc(env(safe-area-inset-top) + 14px);inset-inline-end:16px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,166,107,0.5);background:rgba(6,7,9,0.6);font-size:20px;cursor:pointer}"
+  + ".ge-charge{min-height:60vh;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px}"
+  /* ordinateur */
+  + "@media (min-width:768px){"
+  + ".ge-hero{height:clamp(360px,48vh,460px)}"
+  + ".ge-hero img{left:auto;right:0;width:68%;object-position:35% 40%;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 30%);mask-image:linear-gradient(90deg,transparent 0%,#000 30%)}"
+  + "[dir=rtl] .ge-hero img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 30%);mask-image:linear-gradient(270deg,transparent 0%,#000 30%)}"
+  + ".ge-hero-v{background:linear-gradient(0deg,rgba(6,7,9,1) 0%,rgba(6,7,9,0) 32%)}"
+  + ".ge-hero-tx{left:max(24px,calc((100% - 1180px)/2 + 16px));right:auto;max-width:520px;bottom:30px}"
+  + "[dir=rtl] .ge-hero-tx{right:max(24px,calc((100% - 1180px)/2 + 16px));left:auto}"
+  + ".ge-h1{font-size:64px}"
+  + ".ge-nav-r{justify-content:center}"
+  + ".ge-nav button{font-size:13.5px;padding:13px 12px 11px}"
+  + ".ge-grid{grid-template-columns:minmax(0,1fr) 320px;gap:40px;align-items:start}"
+  + ".ge-side{position:sticky;top:calc(env(safe-area-inset-top) + 70px)}"
+  + ".ge-cartes{grid-template-columns:1fr 1fr}"
+  + ".ge-meca{grid-template-columns:repeat(3,1fr)}"
+  + ".ge-crit{grid-template-columns:1fr 1fr}"
+  + ".ge-cas{grid-template-columns:1fr 1fr}"
+  + ".ge-ana{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}"
+  + ".ge-zones{margin-top:0}"
+  + "}"
+  + "@media (min-width:768px) and (max-width:1023px){.ge-grid{grid-template-columns:1fr}.ge-side{position:static;grid-template-columns:1fr 1fr}}"
+  + "@media (prefers-reduced-motion:reduce){.ge-chev,.ge-prog i{transition:none}}";
+
+/* Schémas de mors (vue de face, simplifiés). Traits ivoire, sans texte : rien à traduire. */
+function geSchema(type) {
+  var h = React.createElement;
+  var S = { fill: "none", stroke: "#E7DCC6", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" };
+  var C = { fill: "none", stroke: "#C9A66B", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" };
+  var anneau = function (cx, k) { return h("circle", Object.assign({ key: k, cx: cx, cy: 27, r: 10 }, C)); };
+  var canonBrise = [h("path", Object.assign({ key: "c1", d: "M24 27 Q37 31 42 29" }, S)), h("path", Object.assign({ key: "c2", d: "M66 27 Q53 31 48 29" }, S)), h("ellipse", Object.assign({ key: "c3", cx: 45, cy: 29, rx: 3.5, ry: 2.5 }, S))];
+  var d = [];
+  if (type === "olive") d = [anneau(12, "a"), anneau(78, "b"), h("path", Object.assign({ key: "o1", d: "M20 23 L27 25 L27 31 L20 33" }, C)), h("path", Object.assign({ key: "o2", d: "M70 23 L63 25 L63 31 L70 33" }, C)), h("path", Object.assign({ key: "c", d: "M27 28 Q36 31 42 29 M63 28 Q54 31 48 29" }, S)), h("ellipse", Object.assign({ key: "j", cx: 45, cy: 29, rx: 3.5, ry: 2.5 }, S))];
+  else if (type === "aiguilles") d = [anneau(14, "a"), anneau(76, "b"), h("path", Object.assign({ key: "n1", d: "M14 5 L14 49" }, C)), h("path", Object.assign({ key: "n2", d: "M76 5 L76 49" }, C))].concat(canonBrise);
+  else if (type === "verdun") d = [h("path", Object.assign({ key: "d1", d: "M22 15 L22 39 Q6 39 6 27 Q6 15 22 15 Z" }, C)), h("path", Object.assign({ key: "d2", d: "M68 15 L68 39 Q84 39 84 27 Q84 15 68 15 Z" }, C))].concat(canonBrise);
+  else if (type === "libres") d = [anneau(12, "a"), anneau(78, "b")].concat(canonBrise);
+  else if (type === "droit") d = [anneau(12, "a"), anneau(78, "b"), h("path", Object.assign({ key: "c", d: "M22 27 Q45 22 68 27" }, S)), h("path", Object.assign({ key: "c2", d: "M22 30 Q45 25 68 30" }, S))];
+  else if (type === "simple") d = [anneau(12, "a"), anneau(78, "b"), h("path", Object.assign({ key: "c1", d: "M22 27 L42 34" }, S)), h("path", Object.assign({ key: "c2", d: "M68 27 L48 34" }, S)), h("circle", Object.assign({ key: "j1", cx: 43, cy: 34, r: 2.5 }, S)), h("circle", Object.assign({ key: "j2", cx: 47, cy: 34, r: 2.5 }, S))];
+  else if (type === "double") d = [anneau(12, "a"), anneau(78, "b"), h("path", Object.assign({ key: "c1", d: "M22 27 L36 31" }, S)), h("path", Object.assign({ key: "c2", d: "M68 27 L54 31" }, S)), h("rect", Object.assign({ key: "m", x: 38, y: 28, width: 14, height: 6, rx: 3 }, S))];
+  else if (type === "levier" || type === "pelham") d = [h("path", Object.assign({ key: "b1", d: "M14 6 L14 50" }, C)), h("path", Object.assign({ key: "b2", d: "M76 6 L76 50" }, C)), h("circle", Object.assign({ key: "r1", cx: 14, cy: 6, r: 3 }, C)), h("circle", Object.assign({ key: "r2", cx: 76, cy: 6, r: 3 }, C)), h("circle", Object.assign({ key: "r3", cx: 14, cy: 50, r: 3 }, C)), h("circle", Object.assign({ key: "r4", cx: 76, cy: 50, r: 3 }, C)), h("path", Object.assign({ key: "c", d: "M14 22 Q45 16 76 22" }, S)), h("path", Object.assign({ key: "g", d: "M17 9 Q45 20 73 9", strokeDasharray: "2 3" }, S))].concat(type === "pelham" ? [h("circle", Object.assign({ key: "p1", cx: 14, cy: 22, r: 4 }, C)), h("circle", Object.assign({ key: "p2", cx: 76, cy: 22, r: 4 }, C))] : []);
+  else if (type === "pessoa") d = [h("circle", Object.assign({ key: "a", cx: 13, cy: 22, r: 9 }, C)), h("circle", Object.assign({ key: "b", cx: 77, cy: 22, r: 9 }, C)), h("circle", Object.assign({ key: "a2", cx: 13, cy: 36, r: 4.5 }, C)), h("circle", Object.assign({ key: "a3", cx: 13, cy: 46, r: 4.5 }, C)), h("circle", Object.assign({ key: "b2", cx: 77, cy: 36, r: 4.5 }, C)), h("circle", Object.assign({ key: "b3", cx: 77, cy: 46, r: 4.5 }, C)), h("path", Object.assign({ key: "c1", d: "M22 22 L42 27 M68 22 L48 27" }, S)), h("ellipse", Object.assign({ key: "j", cx: 45, cy: 27, rx: 3.5, ry: 2.5 }, S))];
+  else if (type === "bride") d = [h("circle", Object.assign({ key: "f1", cx: 18, cy: 12, r: 6 }, C)), h("circle", Object.assign({ key: "f2", cx: 72, cy: 12, r: 6 }, C)), h("path", Object.assign({ key: "fc", d: "M24 12 L42 15 M66 12 L48 15" }, S)), h("ellipse", Object.assign({ key: "fj", cx: 45, cy: 15, rx: 3, ry: 2 }, S)), h("path", Object.assign({ key: "b1", d: "M14 24 L14 52 M76 24 L76 52" }, C)), h("path", Object.assign({ key: "mc", d: "M14 32 Q45 26 76 32" }, S))];
+  else if (type === "souple") d = [anneau(12, "a"), anneau(78, "b"), h("rect", Object.assign({ key: "c", x: 21, y: 23, width: 48, height: 9, rx: 4.5 }, S))];
+  else if (type === "baucher") d = [h("circle", Object.assign({ key: "a", cx: 12, cy: 32, r: 9 }, C)), h("circle", Object.assign({ key: "b", cx: 78, cy: 32, r: 9 }, C)), h("path", Object.assign({ key: "s1", d: "M12 23 L12 10" }, C)), h("path", Object.assign({ key: "s2", d: "M78 23 L78 10" }, C)), h("circle", Object.assign({ key: "t1", cx: 12, cy: 7, r: 3.5 }, C)), h("circle", Object.assign({ key: "t2", cx: 78, cy: 7, r: 3.5 }, C)), h("path", Object.assign({ key: "c", d: "M12 23 L42 25 M78 23 L48 25" }, S)), h("ellipse", Object.assign({ key: "j", cx: 45, cy: 25, rx: 3.5, ry: 2.5 }, S))];
+  else if (type === "hackamore") d = [h("path", Object.assign({ key: "n", d: "M8 20 Q45 8 82 20" }, S)), h("path", Object.assign({ key: "b1", d: "M14 18 L20 50 M76 18 L70 50" }, C)), h("path", Object.assign({ key: "g", d: "M18 34 Q45 44 72 34", strokeDasharray: "2 3" }, S))];
+  else if (type === "muserolle") d = [h("path", Object.assign({ key: "n", d: "M10 18 Q45 10 80 18 L80 30 Q45 22 10 30 Z" }, C)), h("path", Object.assign({ key: "f", d: "M28 40 L40 28 M38 40 L50 28", strokeDasharray: "1 3" }, S))];
+  return h("svg", { viewBox: "0 0 90 54", "aria-hidden": "true" }, d);
+}
+var GE_SCHEMAS = [["olive", "aiguilles", "verdun", "libres"], ["droit", "simple", "double"], ["levier", "pelham", "pessoa"], ["bride"]];
+var GE_SCHEMAS_CAS = ["baucher", "souple", "hackamore", "muserolle"];
+
+/* Schéma de la bouche en coupe (profil, cheval tourné vers la gauche), 6 repères numérotés dans l'ordre de la légende traduite :
+   1 langue, 2 barres, 3 commissures/lèvres, 4 palais, 5 nuque (flèche vers le haut de la tête), 6 creux du menton. Aucun texte dans le dessin. */
+var GE_SVG_BOUCHE = '<path d="M40 92 C40 70 60 58 90 54 C150 46 230 38 340 26" fill="none" stroke="#E7DCC6" stroke-width="2" stroke-linecap="round"/> <path d="M58 66 C64 60 74 60 78 66" fill="none" stroke="#E7DCC6" stroke-width="1.6" stroke-linecap="round"/> <path d="M62 100 C110 90 200 84 320 80" fill="none" stroke="#8FA7AE" stroke-width="1.8" stroke-dasharray="4 3"/> <path d="M46 96 L52 112 L60 112 L56 96 Z" fill="#E7DCC6"/> <path d="M50 132 L56 118 L64 118 L60 132 Z" fill="#E7DCC6"/> <g fill="#E7DCC6"><rect x="196" y="88" width="16" height="12" rx="2"/><rect x="215" y="87" width="16" height="12" rx="2"/><rect x="234" y="86" width="16" height="12" rx="2"/><rect x="253" y="85" width="16" height="12" rx="2"/><rect x="272" y="84" width="16" height="12" rx="2"/> <rect x="196" y="126" width="16" height="12" rx="2"/><rect x="215" y="126" width="16" height="12" rx="2"/><rect x="234" y="126" width="16" height="12" rx="2"/><rect x="253" y="126" width="16" height="12" rx="2"/><rect x="272" y="126" width="16" height="12" rx="2"/></g> <path d="M66 126 C90 110 150 106 200 112 C250 118 300 116 330 110 L330 126 C290 128 240 128 200 126 C150 126 100 130 66 130 Z" fill="#B9826B" fill-opacity="0.85"/> <path d="M58 134 C90 136 150 140 196 138" fill="none" stroke="#E7DCC6" stroke-width="3" stroke-linecap="round"/> <path d="M50 134 C44 150 56 166 84 170 C140 178 240 186 340 196" fill="none" stroke="#E7DCC6" stroke-width="2" stroke-linecap="round"/> <path d="M40 92 C34 104 36 112 44 116 C70 118 98 120 122 122" fill="none" stroke="#E7DCC6" stroke-width="1.6" stroke-linecap="round"/> <path d="M44 140 C70 136 98 128 122 122" fill="none" stroke="#E7DCC6" stroke-width="1.6" stroke-linecap="round"/> <circle cx="132" cy="124" r="6.5" fill="#C9A66B"/> <circle cx="132" cy="124" r="13" fill="none" stroke="#C9A66B" stroke-width="2.2"/> <path d="M140 132 C200 170 270 190 350 206" fill="none" stroke="#C9A66B" stroke-width="1.6" stroke-opacity="0.8"/> <path d="M70 168 C78 176 92 178 104 174" fill="none" stroke="#8FA7AE" stroke-width="2"/> <path d="M104 174 C120 160 128 142 132 132" fill="none" stroke="#C9A66B" stroke-width="1.4" stroke-dasharray="2 3"/> <path d="M300 40 L340 10" fill="none" stroke="#C9A66B" stroke-width="1.4" stroke-dasharray="3 3"/> <path d="M332 10 L341 9 L338 18" fill="none" stroke="#C9A66B" stroke-width="1.4"/> <g font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#C9A66B" text-anchor="middle"> <circle cx="250" cy="148" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="250" y="152">1</text> <line x1="250" y1="137" x2="245" y2="122" stroke="#C9A66B" stroke-width="1"/> <circle cx="168" cy="158" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="168" y="162">2</text> <line x1="166" y1="147" x2="160" y2="140" stroke="#C9A66B" stroke-width="1"/> <circle cx="108" cy="100" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="108" y="104">3</text> <line x1="114" y1="109" x2="121" y2="119" stroke="#C9A66B" stroke-width="1"/> <circle cx="160" cy="70" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="160" y="74">4</text> <line x1="162" y1="81" x2="166" y2="90" stroke="#C9A66B" stroke-width="1"/> <circle cx="316" cy="56" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="316" y="60">5</text> <circle cx="64" cy="196" r="11" fill="#0B1416" stroke="#C9A66B" stroke-width="1.5"/><text x="64" y="200">6</text> <line x1="70" y1="186" x2="80" y2="176" stroke="#C9A66B" stroke-width="1"/> </g>';
+function geSchemaTete() {
+  return React.createElement("svg", { viewBox: "0 0 360 230", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: GE_SVG_BOUCHE } });
+}
+
+function EcranCoursG5Emb() {
+  const h = React.createElement;
+  const app = useApp();
+  const { setEcran, tr, langue } = app;
+  const rtl = (langue === "ar");
+  const [pret, setPret] = useState(function () { return !!(window.HYPE_G5_EMB && window.HYPE_G5_EMB.fr); });
+  const [moi, setMoi] = useState(undefined);
+  const [ouv, setOuv] = useState({});
+  const [actif, setActif] = useState("s1");
+  const [prog, setProg] = useState(0);
+  const [lb, setLb] = useState(null);
+  const rangRef = useRef(null);
+  const verrou = useRef(0);
+  useEffect(() => { let ok = true; (async () => { try { const u = await utilisateurActuel(); if (ok) setMoi(u || null); } catch (e) { if (ok) setMoi(null); } })(); return () => { ok = false; }; }, []);
+  useEffect(() => {
+    if (pret) return;
+    var vivant = true;
+    var fin = function () { if (vivant && window.HYPE_G5_EMB && window.HYPE_G5_EMB.fr) setPret(true); };
+    try {
+      if (typeof hypeAjouterScriptCours === "function") hypeAjouterScriptCours(GE_SRC).then(fin);
+      else { var sc = document.createElement("script"); sc.src = GE_SRC; sc.onload = fin; document.head.appendChild(sc); }
+    } catch (e) { }
+    return function () { vivant = false; };
+  }, []);
+  const estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
+  const g5 = (typeof GALOPS_I18N !== "undefined" && GALOPS_I18N.find(function (g) { return g.id === 5; })) || {};
+  const autorise = estMod || !!g5.disponible;
+  useEffect(() => { if (moi !== undefined && !autorise) { try { setEcran("galops"); } catch (e) { } } }, [moi, autorise]);
+  const IDS = ["s1", "s2", "s3", "s4", "s5", "s6"];
+  useEffect(() => {
+    var att = null;
+    function f() {
+      if (att) return;
+      att = setTimeout(function () {
+        att = null;
+        try {
+          var hD = document.documentElement.scrollHeight - window.innerHeight;
+          setProg(hD > 0 ? Math.max(0, Math.min(100, Math.round(window.scrollY / hD * 100))) : 0);
+          if (Date.now() < verrou.current) return;
+          var cur = "s1";
+          for (var i = 0; i < IDS.length; i++) { var el = document.getElementById("ge-" + IDS[i]); if (el && el.getBoundingClientRect().top - 100 <= 0) cur = IDS[i]; }
+          setActif(cur);
+        } catch (e) { }
+      }, 60);
+    }
+    window.addEventListener("scroll", f, { passive: true });
+    return function () { window.removeEventListener("scroll", f); if (att) clearTimeout(att); };
+  }, []);
+  useEffect(() => { try { var r = rangRef.current; if (!r) return; var b = r.querySelector("button.on"); if (!b) return; var x = b.offsetLeft - (r.clientWidth - b.offsetWidth) / 2; if (Math.abs(r.scrollLeft - x) > 4) r.scrollTo({ left: Math.max(0, x), behavior: "auto" }); } catch (e) { } }, [actif]);
+
+  if (moi === undefined || !autorise || !pret) return h("div", { className: "ge" }, h("style", null, GE_CSS), h("div", { className: "ge-charge", role: "status" }, "…"));
+  var D = window.HYPE_G5_EMB[langue] || ((langue === "zh" || langue === "nl" || langue === "pt" || langue === "sv" || langue === "ru" || langue === "pl" || langue === "ko") && window.HYPE_G5_EMB.en) || window.HYPE_G5_EMB.fr;
+  var M = D.meta;
+  function aller(id) {
+    try { verrou.current = Date.now() + 1200; var el = document.getElementById("ge-" + id); var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; if (el) el.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" }); setActif(id); } catch (e) { }
+  }
+  function retour() { try { if (app.peutReculer && typeof app.retourEcran === "function") { app.retourEcran(); return; } } catch (e) { } setEcran("galop5"); }
+  var chev = h("svg", { className: "ge-chev", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M6 9l6 6 6-6" }));
+  var ic = function (d) { return h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: d })); };
+  var IC = { retenir: "M5 12.5l4.5 4.5L19 7.5", coach: "M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z", observer: "M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z", erreur: "M12 4L2 20h20zM12 10v4M12 17h.01", savais: "M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z", defi: "M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4" };
+  var boite = function (cls, icone, titre, contenu) { return h("aside", { className: "ge-box " + (cls || "") }, h("p", { className: "ge-box-t" }, ic(IC[icone]), titre), contenu); };
+  var liste = function (pts) { return h("ul", null, pts.map(function (p, i) { return h("li", { key: i }, p); })); };
+  var titreSec = function (s) { return h("div", { className: "ge-sec-t" }, h("span", { className: "ge-num", "aria-hidden": "true" }, s.num), h("h2", null, s.titre)); };
+  var carte = function (k, c, schema) {
+    var o = !!ouv[k];
+    var idD = "ge-d-" + k;
+    var detail = c.detail
+      ? h("dl", { className: "ge-carte-d", id: idD }, h("dd", { style: { margin: 0 } }, c.detail))
+      : h("dl", { className: "ge-carte-d", id: idD },
+          h("div", null, h("dt", null, M.fonctionnement), h("dd", null, c.fonctionnement)),
+          h("div", null, h("dt", null, M.caracteristiques), h("dd", null, c.caracteristiques)),
+          h("div", null, h("dt", null, M.precautions), h("dd", null, c.precautions)),
+          h("div", { className: "ge-photo-av" }, ic("M4 7h3l2-3h6l2 3h3v12H4zM12 10a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"), M.photoAVenir));
+    return h("div", { key: k, className: "ge-carte" + (o ? " ouv" : "") },
+      h("button", { type: "button", className: "ge-carte-h", "aria-expanded": o ? "true" : "false", "aria-controls": idD, onClick: function () { var n = Object.assign({}, ouv); n[k] = !o; setOuv(n); } },
+        h("span", { className: "ge-sch" }, geSchema(schema)),
+        h("span", { className: "ge-carte-tx" }, h("span", { className: "ge-carte-n" }, c.nom), h("span", { className: "ge-carte-c" }, c.court)),
+        chev),
+      o ? detail : null);
+  };
+
+  var s1 = D.s1, s2 = D.s2, s3 = D.s3, s4 = D.s4, s5 = D.s5, s6 = D.s6, LAT = D.lateral, V = D.videos, Q = D.quiz;
+  var main = h("div", { className: "ge-main" },
+    h("section", { id: "ge-s1", className: "ge-sec", "aria-labelledby": "ge-s1-t" },
+      h("div", { className: "ge-sec-t" }, h("span", { className: "ge-num", "aria-hidden": "true" }, s1.num), h("h2", { id: "ge-s1-t" }, s1.titre)),
+      s1.paras.map(function (p, i) { return h("p", { key: i, className: "ge-p" }, p); }),
+      boite("", "retenir", s1.retenir.titre, liste(s1.retenir.points))),
+    h("section", { id: "ge-s2", className: "ge-sec" },
+      titreSec(s2),
+      h("p", { className: "ge-p" }, s2.intro),
+      s2.groupes.map(function (g, gi) {
+        return h("div", { key: gi, className: "ge-grp" }, h("h3", null, g.titre), h("p", null, g.texte),
+          h("div", { className: "ge-cartes" }, g.cartes.map(function (c, ci) { return carte("g" + gi + "c" + ci, c, (GE_SCHEMAS[gi] || [])[ci] || "libres"); })));
+      }),
+      boite("", "savais", s2.matieres.titre, h("p", null, s2.matieres.texte))),
+    h("section", { id: "ge-s3", className: "ge-sec" },
+      titreSec(s3),
+      h("p", { className: "ge-p" }, s3.intro),
+      h("figure", { className: "ge-ana", style: { margin: "12px 0 0" } },
+        h("div", null, geSchemaTete(), h("figcaption", null, s3.schemaNote)),
+        h("ol", { className: "ge-zones", "aria-label": s3.schemaTitre }, s3.zones.map(function (z, i) {
+          var n = i + 1;   /* même ordre que les repères du schéma */
+          return h("li", { key: i }, h("span", { className: "ge-pin", "aria-hidden": "true" }, n), h("span", null, h("b", null, z.nom), z.texte));
+        }))),
+      h("h3", { className: "ge-h3" }, s3.mecaTitre),
+      h("div", { className: "ge-meca" }, s3.mecanismes.map(function (m, i) { return h("div", { key: i }, h("b", null, m.nom), h("p", null, m.texte)); }))),
+    h("section", { id: "ge-s4", className: "ge-sec" },
+      titreSec(s4),
+      h("p", { className: "ge-p" }, s4.intro),
+      h("ul", { className: "ge-crit" }, s4.criteres.map(function (c, i) { return h("li", { key: i }, h("b", null, c.nom), h("span", null, c.texte)); })),
+      boite("", "coach", s4.important.titre, h("p", null, s4.important.texte))),
+    h("section", { id: "ge-s5", className: "ge-sec" },
+      titreSec(s5),
+      h("p", { className: "ge-p" }, s5.intro),
+      h("h3", { className: "ge-h3" }, s5.verifTitre),
+      h("ul", { className: "ge-verif" }, s5.verifs.map(function (v, i) { return h("li", { key: i }, h("span", { "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "#C9A66B", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }))), v); })),
+      h("h3", { className: "ge-h3" }, s5.entretienTitre),
+      h("p", { className: "ge-p" }, s5.entretien),
+      boite("err", "erreur", s5.erreurs.titre, liste(s5.erreurs.points))),
+    h("section", { id: "ge-s6", className: "ge-sec" },
+      titreSec(s6),
+      h("p", { className: "ge-p" }, s6.intro),
+      h("div", { className: "ge-cas" }, s6.cartes.map(function (c, i) { return carte("cas" + i, c, GE_SCHEMAS_CAS[i]); }))));
+
+  var photoObs = "images/galop5-c03-apprendre.webp";
+  var VIGN = ["images/galop5-c02-embouchures.webp", "images/galop5-emb-hero.webp", "images/galop5-c03-apprendre.webp"];
+  var side = h("div", { className: "ge-side" },
+    h("div", { className: "ge-obs" },
+      h("button", { type: "button", onClick: function () { setLb(photoObs); }, "aria-label": M.agrandir },
+        h("img", { src: photoObs, alt: "", loading: "lazy", decoding: "async" }),
+        h("span", { className: "ge-loupe", "aria-hidden": "true" }, ic("M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5M11 8v6M8 11h6"))),
+      boite("", "observer", LAT.observerTitre, h("p", null, LAT.observer))),
+    h("div", { className: "ge-vids" },
+      h("h3", null, V.titre),
+      [V.v1, V.v2, V.v3].map(function (t, i) { return h("div", { key: i, className: "ge-vid" }, h("div", { className: "ge-vid-ph" }, h("img", { src: VIGN[i], alt: "", loading: "lazy", decoding: "async" }), h("em", null, V.aVenir)), h("span", { className: "ge-vid-t" }, t)); }),
+      h("button", { type: "button", className: "ge-lien", onClick: function () { setEcran("videos"); } }, V.tous + (rtl ? " ←" : " →"))),
+    boite("", "defi", LAT.defiTitre, h("p", null, LAT.defi)),
+    h("div", { className: "ge-quiz" },
+      h("h3", null, Q.titre), h("p", null, Q.texte),
+      h("button", { type: "button", className: "ge-quiz-b", disabled: true, "aria-disabled": "true" }, Q.bouton, h("small", null, Q.bientot))));
+
+  var corps = h("div", { className: "ge", dir: rtl ? "rtl" : undefined },
+    h("style", null, GE_CSS),
+    h("header", { className: "ge-hero" },
+      h("img", { src: "images/galop5-emb-hero.webp", alt: "", fetchpriority: "high", decoding: "async" }),
+      h("div", { className: "ge-hero-v" }),
+      h("div", { className: "ge-barre" },
+        h("button", { type: "button", className: "ge-retour", onClick: retour }, h("span", { "aria-hidden": "true" }, rtl ? "›" : "‹"), M.retour),
+        (typeof SelecteurLangue === "function") ? h(SelecteurLangue, { compact: true }) : null),
+      h("div", { className: "ge-hero-tx" },
+        h("div", { className: "ge-kick" }, M.kicker),
+        h("h1", { className: "ge-h1" }, M.titre),
+        h("p", { className: "ge-sous" }, M.sous),
+        h("ul", { className: "ge-meta" }, h("li", null, M.duree), h("li", null, M.type), h("li", null, M.audio), h("li", null, M.langues)))),
+    h("nav", { className: "ge-nav", "aria-label": M.sommaire },
+      h("div", { className: "ge-nav-r", ref: rangRef }, D.nav.map(function (n, i) {
+        var id = IDS[i];
+        return h("button", { key: id, type: "button", className: actif === id ? "on" : "", "aria-current": actif === id ? "true" : undefined, onClick: function () { aller(id); } }, h("b", null, "0" + (i + 1)), n);
+      })),
+      h("div", { className: "ge-prog", role: "progressbar", "aria-label": M.progression, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": prog }, h("i", { style: { width: prog + "%" } }))),
+    h("div", { className: "ge-in" }, h("div", { className: "ge-grid" }, main, side)),
+    lb ? h("div", { className: "ge-lb", role: "dialog", "aria-modal": "true", onClick: function () { setLb(null); } },
+      h("img", { src: lb, alt: "" }),
+      h("button", { type: "button", onClick: function () { setLb(null); }, "aria-label": M.fermer }, "×")) : null);
+  return (typeof AvecLecture === "function") ? h(AvecLecture, null, corps) : corps;
 }
 
 function EcranBibliothequeGalops() {
