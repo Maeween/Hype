@@ -14873,3 +14873,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 02h20 — Galop 5 : plus d'espace entre les bandes Reprises / Évaluation (build 20261027-0220) — NON PUBLIÉ
 - Demande de Blandine (« laisse plus d'espace entre les onglets ») : 18 px entre les deux bandes et 30 px au-dessus sur téléphone (22 / 34 px sur ordinateur). Comprend aussi la vidéo de la bande Reprises (0215), non publiée.
+
+## 27/10 02h25 — Galop 5 : la vidéo de la bande Reprises n'est plus cachée par les textes (build 20261027-0225) — NON PUBLIÉ
+- Demande de Blandine (« attention à ce que les écritures n'empêchent pas la visualisation de la vidéo ») : la vidéo occupe la moitié droite de la bande (fondu doux à gauche), les textes restent sur la moitié gauche sur fond noir, la flèche passe en bas à droite. Arabe : en miroir.
+- Vérifié : node --check OK ; 390 et 1440, vidéo en lecture, cavalier et cheval entièrement visibles.
