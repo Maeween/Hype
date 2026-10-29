@@ -15033,3 +15033,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Non touché : page Performances du cheval (même défaut possible, pas demandé), version cachée EcranChevalV2, toutes les autres pages.
 - Repris sur la version en ligne e3c8045 (build 2016, Galops) : rien de ce qui était en ligne n'est retiré ; seules lignes modifiées = ces 2 zones et le marqueur 20261029-2016 → 20261029-2025. node --check OK. Aucun texte ajouté (pas de traduction).
 - À tester sur iPhone puis ordinateur : tête du cheval visible sur la fiche (My Dream de Feinn), Santé ; Histoire/Photos n'ont pas bougé.
+
+## 29/10 20h35 — Ordre des 4 grandes parties des Galops (build 20261029-2035) — NON PUBLIÉ
+- Demande de Blandine : « D'abord la vie équestre, ensuite la connaissance du cheval, la pratique équestre et pour finir la culture équestre ».
+- Nouvel ordre partout : Vie équestre (I) → Connaissance du cheval (II) → Pratique équestre (III) → Culture équestre (IV). Avant : Culture, Connaissance, Vie, Pratique.
+- index.html, 4 endroits : G5_THEMES (page du Galop 5, chiffres romains renumérotés), GV3_PARTIES (pages des autres Galops, renumérotées), G1O_PARTIES (Galop 1 ordinateur : liste réordonnée, les « th » repointent vers les nouveaux index de G5_THEMES), CATEGORIES_COURS (ancienne page détail : Vie, Connaissance, Pratique, Culture, puis Bilan en dernier).
+- Conséquence à connaître : sur la page du Galop 5 les cours sont numérotés dans l'ordre d'affichage (01, 02…) ; ils sont donc renumérotés (les 3 cours de Vie équestre deviennent 01 à 03, ceux de Culture équestre 11 et 12.). Les identifiants internes (g5n-01…) ne changent pas : progression, quiz et cours terminés intacts.
+- Vérifié : seules les lignes d'ordre / chiffres romains changent (comparaison ligne à ligne, aucun cours ni texte perdu) ; node --check OK sur 13 blocs. Marqueur 20261029-2025 → 20261029-2035. Aucun texte ajouté (pas de traduction).
+- À tester sur iPhone : page du Galop 5, un autre Galop (2, 3 ou 4) et, si possible, Galop 1 sur ordinateur ; l'ancienne page détail (Galops 8-9).
