@@ -15018,3 +15018,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 23h00 — PUBLICATION (build 20261027-2300), accord de Blandine (« Vas y », 22h56)
 - Met en ligne le build 2250 (images du releveur à cordes, du mors américain et du passage de langue), repris de la branche embouchures-3-images sur main à jour. Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
+
+## 20261029-2016 — Correction de suivi (Galops)
+- Le changement « un tap sur un galop ouvre directement sa page » (GalopDepliant, une ligne) est en ligne depuis 20261029-2015, mais le numéro de version et ce suivi n'avaient pas été mis à jour à ce moment-là.
+- Corrigé ici : numéro de version 20261029-2016 dans index.html, et cette entrée.
+- Aucun changement de code dans cette correction. Test iPhone à faire : taper sur un galop dans la liste.
+
