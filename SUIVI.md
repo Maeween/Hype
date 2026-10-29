@@ -15024,3 +15024,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Corrigé ici : numéro de version 20261029-2016 dans index.html, et cette entrée.
 - Aucun changement de code dans cette correction. Test iPhone à faire : taper sur un galop dans la liste.
 
+
+## 29/10 20h25 — Photo du haut descendue sur la fiche du cheval et sur Santé & soins (build 20261029-2025) — PUBLIÉ, accord de Blandine (« Ok », 20h22)
+- Demande de Blandine (« descends un peu les photos des chevaux », puis « seulement la fiche cheval, reprendre la position des autres pages photos, vidéos… », « il faut la baisser sur santé aussi », « vérifie la version ordi »).
+- Cause : la photo (même fichier partout) était cadrée pleine largeur depuis le bord haut sur la fiche, et à 80 % depuis le bord haut sur Santé ; sur Histoire / Photos / Vidéos elle commence 58 px plus bas (sous la ligne des boutons), 84 % de large, fondue en haut, à gauche et en bas (fonction hypeHeroSousPageCavalier). Changer le seul réglage « 22 % » ne déplaçait presque rien.
+- index.html, fiche (EcranCheval) : photo à droite, démarre 58 px plus bas, 84 % iPhone / 60 % tablette / 64 % ordinateur, mêmes fondus que Histoire/Photos ; voile sombre latéral retiré (il assombrissait la tête) ; hauteur du bloc +30 px iPhone (360 au lieu de 330) et +58 px tablette/ordinateur. Nom, race, écurie, boutons et reste de la page inchangés (ils descendent juste d'autant).
+- index.html, Santé (EcranSanteCheval) : photo démarre 58 px plus bas avec fondu en haut ; largeur inchangée (80 % / 68 %) ; hauteur du bloc +30 px iPhone, +58 px grand écran.
+- Non touché : page Performances du cheval (même défaut possible, pas demandé), version cachée EcranChevalV2, toutes les autres pages.
+- Repris sur la version en ligne e3c8045 (build 2016, Galops) : rien de ce qui était en ligne n'est retiré ; seules lignes modifiées = ces 2 zones et le marqueur 20261029-2016 → 20261029-2025. node --check OK. Aucun texte ajouté (pas de traduction).
+- À tester sur iPhone puis ordinateur : tête du cheval visible sur la fiche (My Dream de Feinn), Santé ; Histoire/Photos n'ont pas bougé.
