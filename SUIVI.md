@@ -15447,7 +15447,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h15 : photo alezan brûlé rangée (images/robes-g3-alezan-brule.webp, Galop 3, déclinaisons). Reste G3 : balzane, épis, café au lait, noir pangaré.
 
 - 30/10 21h20 : photo balzane rangée (images/robes-g3-balzane.webp, Galop 3). Reste G3 : épis, café au lait, noir pangaré.
-<<<<<<< HEAD
 ## 30/10 19h45 — Aperçu des chapitres payants (Galops 2 à 5) + pages Google des chapitres des Galops 2 à 4 (build 20261030-1945) — PUBLIÉ le 30/10 vers 19h25 (« Publie ce que t'as fait »)
 - Repris sur la version en ligne 16f9f22 (build 1930 des robes, publié entre-temps) : rien de ce qui était en ligne n'est retiré. Les nouvelles versions ordinateur des robes (g2-robes, g3-c7, g5-robes) sont elles aussi écartées pendant un aperçu (le non-abonné lit le début page par page). Marqueur 1930 → 1945.
 - Décision de Blandine (choix B, 18h01) : un non-abonné lit le DÉBUT du vrai chapitre d'un Galop payant, puis « La suite est réservée à Premium » — dans l'appli comme depuis Google. Feu vert « ok vas-y » à 19h04.
