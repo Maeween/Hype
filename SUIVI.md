@@ -15229,3 +15229,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Vérifié (banc de test avec données vides de type liste) : texte de la page identique à la version en ligne (« Mon écurie · 24 membres · Bienvenue sur Hype… »), aucune erreur, fichier demandé seulement à l'ouverture. Sans cette précaution mon test précédent affichait « Un caillou dans le sabot » AUSSI sur la version en ligne : c'était mes fausses données, pas l'appli.
 - À pousser avec la pièce 7 : index.html + SUIVI.md (ensemble) + hype-ecran-agenda.js + hype-ecran-guilde.js.
 - À tester sur iPhone avec ton vrai compte : page Écurie (bannière, membres, chevaux, agenda, fil), ouvrir un rendez-vous depuis la page.
+
+## 30/10 13h00 — Allègement du démarrage, pièce 9 : dessin de la page Écurie du club (build 20261030-1300) — NON PUBLIÉ
+- EcranEcurieV2 (147 Ko, le dessin de la page Écurie du club, appelé par EcranGuilde) détaché dans hype-ecran-ecurie-v2.js, chargé à l'ouverture de la page Écurie, code non modifié. index.html : 10,08 → 9,93 Mo.
+- Vérifié : texte de la page Écurie identique à la version précédente (comparaison fichier à fichier), aucune erreur, fichier demandé seulement à l'ouverture.
+- À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-ecurie-v2.js. À tester sur iPhone : la page Écurie (comme pour la pièce 8).
