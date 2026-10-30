@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 6;
+var VERSION = 7;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -36,6 +36,7 @@ var N = {
   photo: tt("Photo à venir", "Photo coming soon", "Foto próximamente", "Foto in arrivo", "写真は近日公開", "Foto folgt", "الصورة قريبا", "照片即将上线", "Foto volgt", "Foto em breve", "Foto kommer", "Фото скоро", "Zdjęcie wkrótce", "사진 준비 중"),
   vMarques: tt("Marques blanches", "White markings", "Marcas blancas", "Marcature bianche", "白斑", "Weiße Abzeichen", "العلامات البيضاء", "白色标记", "Witte aftekeningen", "Marcas brancas", "Vita tecken", "Белые отметины", "Białe odmiany", "흰 표식"),
   vEpis: tt("Épis", "Whorls", "Remolinos", "Vortici", "旋毛", "Wirbel", "الدوامات", "旋毛", "Wervels", "Redemoinhos", "Hvirvlar", "Завитки", "Włosy odwrócone", "가마"),
+  vPieTach: tt("Pie et tachetée", "Pinto and spotted", "Pío y moteado", "Pezzato e maculato", "パイと斑点", "Schecke und getupft", "الأبقع والمرقط", "花毛与斑点毛", "Bont en gespikkeld", "Pampa e pintado", "Skäck och fläckig", "Пегая и пятнистая", "Srokata i cętkowana", "얼룩무늬와 점박이"),
   parcours: tt("Parcours des robes", "Coat colour path", "Recorrido de las capas", "Percorso dei mantelli", "毛色コース", "Fellfarben-Pfad", "مسار ألوان الخيل", "毛色路径", "Vachtkleurenroute", "Percurso das pelagens", "Färgvägen", "Путь по мастям", "Ścieżka maści", "털색 코스"),
   vDecl: tt("Déclinaisons", "Variations", "Variantes", "Declinazioni", "派生色", "Abwandlungen", "التدرجات", "衍生毛色", "Varianten", "Variações", "Varianter", "Производные масти", "Odmiany", "파생 털색"),
   vPies: tt("Pies", "Pies", "Pías", "Pezzati", "ぶち", "Schecken", "الأبلق", "花斑", "Bonten", "Pies", "Skäckar", "Пегие", "Srokate", "얼룩"),
@@ -67,7 +68,7 @@ var P = {
   cheval: "images/cheval-defaut-alezan.webp", noir: "images/robes-g1-noir.webp", alezan: "images/robes-g1-alezan.webp", bai: "images/robes-g1-bai.webp", trio: "images/robes-g1-trio.webp", quiz: "images/pansage-quiz.webp",
   g5hero: "images/galop5-hero-v2.webp", g5cheval: "images/galop5-theme-cheval.webp",
   /* Galop 2 — à fournir */
-  g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
+  g2creme: "images/robes-g2-creme.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
   /* Galop 3 — à fournir */
   g3parties: "images/robes-g3-parties-du-corps.webp", g3tete: "images/robes-g3-marques-tete.webp", g3balzane: "images/robes-g3-balzane.webp", g3epis: "images/robes-g3-epis.webp",
   g3isabelle: "images/robes-g3-isabelle.webp", g3souris: "images/robes-g3-souris.webp", g3brule: "images/robes-g3-alezan-brule.webp", g3cafe: "images/robes-g3-cafe-au-lait.webp", g3palomino: "images/robes-g3-palomino.webp", g3pangare: "images/robes-g3-noir-pangare.webp",
@@ -166,8 +167,8 @@ function okG5(cours) {
 }
 function okG2(cours) {
   try {
-    if (!cours || cours.id !== "g2-robes" || !cours.blocs || cours.blocs.length !== 2 || !quizOk(cours.quiz, 5)) return false;
-    return kinds(cours, 1) === "para,para,section,encadre,section,section,encadre,section,encadre,section,encadre,section,encadre";
+    if (!cours || cours.id !== "g2-robes" || !cours.blocs || cours.blocs.length !== 2 || !quizOk(cours.quiz, 8)) return false;
+    return kinds(cours, 1) === "para,para,section,encadre,section,section,section,encadre,section,encadre,section,encadre,section,encadre,section,encadre";
   } catch (e) { return false; }
 }
 function ok(cours) { return okG2(cours) || okG3(cours) || okG5(cours); }
@@ -182,7 +183,7 @@ function HypeRobesGalopsOrdi(props) {
   var d = lire(cours, lg);
   var a = d.blocs[1].seg, mm = (g5 || g2) ? null : d.blocs[2].seg, z = g2 ? null : d.blocs[g5 ? 2 : 3].seg;
   var Q = d.quiz(cours.quiz), QB = d.quiz(cours.quizBonus);
-  var NB = g2 ? 5 : 6;
+  var NB = 6;
   var ids = []; for (var i = 1; i <= NB; i++) ids.push("s" + i);
 
   var _e = useState("s1"), actif = _e[0], setActif = _e[1];
@@ -251,14 +252,15 @@ function HypeRobesGalopsOrdi(props) {
   var coach, hbQ, defiT, defiTxt, defiCible, vig, corps;
 
   if (g2) {
-    /* ====== GALOP 2 : tout vient du cours g2-robes (aucun texte ajouté) ====== */
-    coach = a[8]; hbQ = props.questionsHB || []; defiT = a[10].titre; defiTxt = a[10].texte; defiCible = "s4";
+    /* ====== GALOP 2 : tout vient du cours g2-robes ====== */
+    coach = a[11]; hbQ = props.questionsHB || []; defiT = a[13].titre; defiTxt = a[13].texte; defiCible = "s5";
     vig = [
       { id: "s1", lab: L("vComprendre"), img: P.cheval, pos: "80% 40%" },
-      { id: "s2", lab: nettoyer(sansNum(a[4].titre)), img: P.trio, pos: "50% 40%" },
-      { id: "s3", lab: nettoyer(sansNum(a[7].titre)), img: P.alezan, pos: "70% 50%" },
-      { id: "s4", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
-      { id: "s5", lab: L("vQuiz"), img: P.quiz, pos: "center" }
+      { id: "s2", lab: d.titre, img: P.trio, pos: "50% 40%" },
+      { id: "s3", lab: X("vPieTach"), img: P.noir, pos: "60% 35%" },
+      { id: "s4", lab: nettoyer(sansNum(a[10].titre)), img: P.alezan, pos: "70% 50%" },
+      { id: "s5", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
+      { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
     corps = [
       Sec("s1", "01", d.blocs[1].titre || L("vComprendre"), "noir", h("div", null,
@@ -268,28 +270,32 @@ function HypeRobesGalopsOrdi(props) {
             h("ol", { className: "rbo-ordre" }, a[2].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
         h("div", { style: { marginTop: 64 } }, Photo("trio", "pano")))),
       Vague(NOIR, PET),
-      Sec("s2", "02", nettoyer(sansNum(a[4].titre)), "petrole", h("div", null,
-        h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("alezan", "grand", "55% 40%")),
-        h("div", { style: { marginTop: 88 } }, Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", null, "Galop 2")),
-        h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "30% 78%"), h("div", { className: "rbo-txt" }, M(a[6], "a6"))))),
+      Sec("s2", "02", d.titre, "petrole", h("div", null,
+        h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("alezan", "grand", "55% 40%")),
+        h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "30% 78%"), h("div", { className: "rbo-txt" }, M(a[7], "a7"))),
+        h("div", { className: "rbo-robe", style: { marginTop: 88 } }, Photo("g2creme", "", "45% 45%"), h("div", { className: "rbo-txt" }, M(a[8], "a8"), M(a[9], "a9"))))),
       Vague(PET, NOIR),
-      Sec("s3", "03", nettoyer(sansNum(a[7].titre)), "noir", h("div", { className: "rbo-robe" },
-        Photo("alezan", "", "55% 40%"),
-        h("div", { className: "rbo-txt" }, M(a[7], "a7")))),
+      Sec("s3", "03", X("vPieTach"), "noir", h("div", null,
+        Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", null, "Galop 2"),
+        h("div", { style: { marginTop: 88 } }, Compo("g5leopard", a[6].titre, a[6].texte, true, "50% 45%", null, "Galop 2")))),
       Vague(NOIR, PET),
-      Sec("s4", "04", L("vPratique"), "petrole", h("div", null,
+      Sec("s4", "04", nettoyer(sansNum(a[10].titre)), "petrole", h("div", { className: "rbo-robe" },
+        Photo("alezan", "", "55% 40%"),
+        h("div", { className: "rbo-txt" }, M(a[10], "a10")))),
+      Vague(PET, NOIR),
+      Sec("s5", "05", L("vPratique"), "noir", h("div", null,
         h("div", { className: "rbo-colonnes", style: { marginTop: 0 } },
-          h("div", { className: "rbo-txt" }, M(a[8], "a8")),
-          h("div", { className: "rbo-txt" }, M(a[9], "a9"))),
+          h("div", { className: "rbo-txt" }, M(a[11], "a11")),
+          h("div", { className: "rbo-txt" }, M(a[12], "a12"))),
         h("div", { className: "rbo-colonnes" },
-          h("div", { className: "rbo-defi rbo-txt" }, M(a[10], "a10")),
+          h("div", { className: "rbo-defi rbo-txt" }, M(a[13], "a13")),
           h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, L("heyBaby")),
             h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); })))),
-        h("div", { className: "rbo-synth" }, h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[11].titre)))),
-          h("ol", null, a[11].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
-        h("p", { className: "rbo-fin" }, "« " + sansGuillemets(a[12].texte) + " »"))),
-      Vague(PET, NOIR),
-      Sec("s5", "05", L("secQuiz"), "noir", h(QuizBloc, { Q: Q, L: L, rtl: rtl, photo: P.quiz, setEcran: props.setEcran, onTerminer: props.onTerminer }))
+        h("div", { className: "rbo-synth" }, h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[14].titre)))),
+          h("ol", null, a[14].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
+        h("p", { className: "rbo-fin" }, "« " + sansGuillemets(a[15].texte) + " »"))),
+      Vague(NOIR, PET),
+      Sec("s6", "06", L("secQuiz"), "petrole", h(QuizBloc, { Q: Q, L: L, rtl: rtl, photo: P.quiz, setEcran: props.setEcran, onTerminer: props.onTerminer }))
     ];
   } else if (!g5) {
     /* ====== GALOP 3 ====== */
@@ -456,7 +462,7 @@ function HypeRobesGalopsOrdi(props) {
             h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(coach.titre)), h("p", null, coach.texte)),
             h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
             h("button", { type: "button", className: "rbo-card defi", onClick: function () { aller(defiCible); } }, h("h3", null, ICO.coupe(20), nettoyer(defiT)), h("p", null, defiTxt)))),
-        h("div", { className: "rbo-vig" + (NB === 6 ? " n6" : ""), role: "tablist" },
+        h("div", { className: "rbo-vig" + " n6", role: "tablist" },
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
