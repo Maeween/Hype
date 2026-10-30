@@ -15234,3 +15234,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - EcranEcurieV2 (147 Ko, le dessin de la page Écurie du club, appelé par EcranGuilde) détaché dans hype-ecran-ecurie-v2.js, chargé à l'ouverture de la page Écurie, code non modifié. index.html : 10,08 → 9,93 Mo.
 - Vérifié : texte de la page Écurie identique à la version précédente (comparaison fichier à fichier), aucune erreur, fichier demandé seulement à l'ouverture.
 - À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-ecurie-v2.js. À tester sur iPhone : la page Écurie (comme pour la pièce 8).
+
+## 30/10 13h10 — Vidéos des Galops : vignette estompée à 40 %, titre au centre (build 20261030-1310) — PUBLIÉ, accord de Blandine (« Ok continue », 11h54)
+- Demande de Blandine : revenir à la maquette « vignette estompée » vue le 29/10 (plus jolie que la version voilée en bas), image à 40 %.
+- index.html, une seule zone (le bloc de style .vidv, commun aux 3 grilles : pages des Galops, page du Galop 5, Galop 1 ordinateur) : image à 40 % d'opacité sur fond noir, voile doux centré, titre ivoire centré (Cormorant, 2 lignes max), petit bouton lecture (34 px, cadenas si Premium) au-dessus du titre. Aucun texte, aucune logique modifiés.
+- Repris sur la version en ligne 335d930 (build 1300, allègement pièce 9) : rien de ce qui était en ligne n'est retiré ; seules lignes modifiées = ce bloc de style et le marqueur 20261030-1300 → 20261030-1310. node --check OK sur 13 blocs. Pas de nouveau texte : pas de traduction à faire.
+- À tester sur iPhone : onglet Vidéos d'un Galop (Galop 1), page du Galop 5 (« Prochainement »), puis ordinateur.
