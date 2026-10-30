@@ -15724,6 +15724,7 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 31/10 00h40 (v29, NON publié) : dans la nouvelle fin, « Demande à Hey Baby » (3 bulles) et « Le défi du cavalier » (en entier) repris de la version d'avant, à la demande de Blandine ; carrousel et cercles du défi gardés dans le code, désactivés (duoMaquette).
 - 31/10 00h45 (build 20261031-0410, hype-cours-robes-ordi.js v30) : phrase « Je regarde toujours… » retirée sous les portraits (redisait la liste du défi) ; cartes Hey Baby et défi au même style que le reste de la fin (dégradé sombre, filet champagne, questions en bleu pétrole #172A30, liste du défi dans un encart) ; portraits un peu moins zoomés (plus nets).
 - 31/10 00h45 : PUBLICATION build 20261031-0410 (fin de cours du Galop 1 d'après la maquette + autres Galops grisés) — accord « Ok arrange tout ça ».
+<<<<<<< HEAD
 - 31/10 01h00 (build 20261031-0430 ; hype-cours-robes-ordi.js v31, hype-cours-robes-galops-ordi.js v14 ; NON publié) : la fin d'après la maquette (FinCours) est branchée sur les robes des Galops 2, 3 et 5, avec en portraits TOUTES les robes du cours (rappel final, demande de Blandine) :
   · G2 (6) : gris, blanc, crème, chocolat, pie, tacheté — blanc et chocolat n'ont pas de photo : cercle de la couleur (pas de fausse photo).
   · G3 (5) : isabelle, souris, alezan brûlé, café au lait, palomino.
@@ -15733,3 +15734,11 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 31/10 01h20 (build 20261031-0500 ; hype-cours-robes-ordi.js v33, hype-cours-robes-galops-ordi.js v17 ; NON publié) :
   · MENU DU COURS = modèle B choisi par Blandine (cartes magazine) pour les 4 cours de robes : « Dans ce cours » (photos, numéro doré et titre SOUS la photo, partie en cours cerclée d'or) puis « Les autres Galops » (photos grisées, G2/G3/G5 + nom). Composant partagé Onglets (HypeRobesOrdi.shared). Téléphone : 3 colonnes ; ordi : une ligne. Libellés « Dans ce cours » / « Les autres Galops » en 14 langues. Onglets collants : autres Galops « G2 Gris, pie, tacheté »… ; plus de débordement sur ordi.
   · DÉFI DU CAVALIER du Galop 2 remplacé par l'idée de Blandine : « Trouve un cheval gris dans ton club et essaie de deviner son âge d'après la blancheur de sa robe. Ensuite, demande son âge à ton moniteur pour vérifier ! » (14 langues).
+=======
+
+## 30/10 23h45 — « Tous les résultats des cavaliers » rangés par épreuve (demande 23h32 : « Range les résultats par épreuve et ordre de classement on s'y perd ») — PUBLIÉ 31/10 (« Oui », 00h41), build 20261031-0445 [publier]
+- hype-ecran-resultats-ecurie.js v6 (index.html ?v=6) : la liste complète est triée jour (récent d'abord) → concours → épreuve (Club 2 avant Club 3…) → classement (1er, 2e… ; éliminé / abandon / sans place à la fin).
+- Un titre par épreuve (« Club 3 Vitesse », date · lieu), dessous seulement rang, cavalière, cheval, « Sans faute ». Aucun nouveau texte (rien à traduire). Même affichage téléphone / tablette / ordinateur.
+- Testé : téléphone 390 px (FR), ordinateur 1440 px (FR, AR), aucune erreur.
+>>>>>>> origin/main
+- 31/10 01h25 : PUBLICATION build 20261031-0500 (onglets modèle B, fin des Galops 2/3/5 avec toutes les robes, défi du Galop 2) — accord « Ok ».
