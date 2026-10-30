@@ -15174,3 +15174,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Tests (copie locale, comparaison avec la version en ligne) : Santé + 4 écoles s'ouvrent avec un texte identique, 0 erreur. Syntaxe du code d'index.html vérifiée.
 - À tester par Blandine sur iPhone : ouvrir la page Santé (et les 4 écrans écoles).
 - Méthode pour détacher un autre écran : copier la fonction EcranXxx dans hype-xxx.js (dans une fonction qui s'exécute seule, puis window.HypeXxx = { Xxx: EcranXxx }), et la remplacer dans index.html par const EcranXxx = hypeEcranDiffere("hype-xxx.js?v=1", "HypeXxx", "Xxx");
+
+## 30/10 11h40 - Page Galops : tap direct sur chaque Galop, bouton du haut remplace, carres retires (build 20261030-1400) - NON PUBLIE
+- Demandes de Blandine : (1) toucher un Galop sur la courbe doit ouvrir directement la page de ce Galop (avant : un volet se depliait dessous) ; (2) bouton « Decouvrir les Galops » (inutile) remplace par le simple texte « Decouvrir les 9 Galops » (14 langues, nouvelle cle T.btn9) ; (3) rangee de carres « Les 9 Galops » retiree (doublon de la courbe).
+- index.html (page GalopsV2 seulement) : nouvelle fonction gv2Ouvrable (memes regles que ouvrir) ; pastilles de la courbe -> ouvrir(id) ; volet garde seulement pour un Galop qui n'a pas de page. Galop verrouille sans abonnement -> page Premium (comme avant dans le volet). Telephone, tablette et ordinateur : meme code.
+- Teste (navigateur automatique, connexion simulee) : abonnee simulee -> G1 a G9 ouvrent chacun leur page (telephone 390 et ordinateur 1440) ; sans abonnement -> G1 ouvre sa page, G2-G9 -> Premium ; fr et arabe (RTL) verifies a l'image ; 0 erreur ; 27/27 tests reprises.
+- Signale, non modifie : « Tout pour progresser » dit encore « du Galop 1 au Galop 7 ».
+- Non verifie : vrai iPhone.
