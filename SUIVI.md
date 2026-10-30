@@ -14987,7 +14987,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 27/10 20h35 — PUBLICATION (build 20261027-2035), accord de Blandine (« Ok publié », 20h32)
 - Met en ligne le build 1955 (embouchures : famille « Les releveurs », passage de langue, nouvelle photo du haut, cours ouvert à tous avec la règle Premium du Galop 5), repris de la branche embouchures-releveurs sur main à jour (b05bb51). Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
-<<<<<<< HEAD
 ## 27/10 16h00 — Pages des Galops sur TABLETTE et ORDINATEUR (design Galop 1) + « Prochainement » dès le Galop 6 partout (build 20261027-1600) — NON PUBLIÉ, branche travail-galops-tablette
 - Décisions de Blandine (15h15) : Galop 5 inchangé ; G8 et G9 dans la navigation avec « Prochainement », cours inaccessibles ; Galops 6 et 7 : cours, quiz et évaluations « Prochainement » sur ordinateur, tablette ET téléphone (reprises et vidéos restent ouvertes) ; photos actuelles gardées, aucune photo générée ; Galop 1 ordinateur à rapprocher de la maquette ; tablette = 2 parties par ligne ; téléphone : aucune modification de design, seulement le blocage des cours des Galops 6 à 9 ; rien sur main, rien publié, captures d'abord.
 - Construit sur main à jour (d41e2d0 : Galops 8 et 9 ajoutés par l'autre session — GALOPS_I18N, HYPE_SOMMAIRE_G89, 9 pastilles, « Les 9 Galops »). La courbe et la rangée des 9 Galops de la page Galops sont celles de l'autre session (déjà en ligne), non retouchées ici.
@@ -15008,13 +15007,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Met en ligne la branche travail-galops-tablette : pages des Galops 1-4 et 6-9 sur tablette et ordinateur (Galop 1 retravaillé d'après la maquette), « Prochainement » dès le Galop 6 pour cours, quiz et examens sur tous les écrans (lien direct compris, modératrices exceptées), pastilles 6 à 9 en « Prochainement » (ajout de l'autre session).
 - Reconstruit sur la version en ligne 8c62ca7 (cours « Les embouchures » : releveurs, passage de langue, photo du haut, 15 images) : rien de ce qui était en ligne n'est retiré — seules lignes enlevées : l'ancienne version de la page Galop 1 ordinateur, les 3 routes protégées (cours, quiz, examen blanc), 2 lignes de la page téléphone (pret, allerEval) et le marqueur.
 - Vérifié juste avant : 17 blocs node --check OK ; texte des pages identique à la version en ligne sur téléphone (Galops 1, 3, 5, 6, 9) et pour la page du Galop 5 (tablette, ordinateur) ; Galops 1 à 9 en 1440 (vue cavalière) : bons nombres de cours, 6 à 9 non ouvrables, rien ne déborde, aucune erreur.
-=======
+
 
 ## 27/10 22h50 — Embouchures : les 3 images manquantes (build 20261027-2250) — NON PUBLIÉ, branche embouchures-3-images
 - Blandine envoie hype-trois-mors.zip (ChatGPT, 2048 × 1536) : releveur-cordes, mors-americain, canon-passage-langue → images/galop5-emb-{releveur, americain, langue}-v2.webp (1200 × 900, 21-23 Ko).
 - index.html : GE_SANS_IMAGE vidé (les 3 fiches ont maintenant vignette + grande image). Aucun texte modifié.
 - Vérifié (390 px, 18 fiches ouvertes) : 38 images chargées, aucune vide, aucune erreur.
->>>>>>> 664595a (Embouchures : images du releveur à cordes, du mors américain et du passage de langue — non publié)
 
 ## 27/10 23h00 — PUBLICATION (build 20261027-2300), accord de Blandine (« Vas y », 22h56)
 - Met en ligne le build 2250 (images du releveur à cordes, du mors américain et du passage de langue), repris de la branche embouchures-3-images sur main à jour. Seul autre changement : le marqueur. La branche travail-galops-tablette n'est PAS fusionnée.
@@ -15360,3 +15358,35 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Reçues en planche de 8 chevaux (montage, ~510 px de large chacun) : découpées et converties en .webp. Ajoutées : images/robes-g2-gris.webp, robes-g2-pie.webp, robes-g3-isabelle.webp, robes-g3-souris.webp, robes-g5-adj-crins-laves.webp, robes-g5-tachete-leopard.webp. BASSE RÉSOLUTION : à remplacer par les fichiers séparés en pleine taille quand elle les aura (même nom).
 - Non utilisées : cheval n°5 de la planche (pie alezan : tobiano ou ovéro, à trancher), cheval n°8 (crème : robe du programme G2 sans texte pour l'instant). Trio noir/alezan/bai reçu : l'existant (robes-g1-trio.webp, 2172 px) est plus grand, laissé tel quel. Photos individuelles noir/alezan/bai reçues, rien remplacé (en attente de sa décision).
 - À pousser SEULEMENT après accord, avec le cumul précédent : les 6 images ci-dessus en plus.
+
+## 30/10 18h15 — Page Écurie (SEP) : encart du groupe compétition comme sur la page Profil, sous la citation (build 20261030-1815) — PUBLIÉ, accord de Blandine (« Vas y », 18h12)
+- Demande de Blandine : « le bouton du groupe compet n'est pas le même dans la page de la SEP et sur la page profil, fais-le sur la page SEP comme sur la page profil » + « il devrait venir en dessous de la citation, pas avant ».
+- hype-ecran-ecurie-v2.js (?v=2) : les groupes de cavaliers (nature « equipe ») prennent l'encart de la page Cavalier (dégradé pétrole, cheval sombre fondu à droite, vignette du groupe, nom + sigle « – SEP », « Saison 2026 – 2027 · Club », flèche dans un rond ; « Prochainement » si pas de page) ; titre de l'encart « Groupe » (14 langues) au lieu de « Mon groupe ». Les piquets de chevaux gardent leurs pastilles. Même ouverture qu'avant (page Team). Bloc déplacé SOUS la citation, téléphone et tablette/ordinateur.
+- Repris sur la version en ligne 6d8d94d (build 1730, robes Galop 1) : rien de ce qui était en ligne n'est retiré ; index.html : seulement ?v=1 → ?v=2 de la page Écurie et le marqueur 20261030-1730 → 20261030-1815.
+- Vérifié : encart rendu au téléphone et en grand (même code que la page) ; 17 blocs de code valides ; 27/27 tests. LIMITE : la page Écurie complète n'a pas pu être ouverte dans le banc (elle demande un vrai compte) → à voir sur iPhone.
+- À pousser après accord : index.html + SUIVI.md (ensemble) + hype-ecran-ecurie-v2.js. Fichiers inchangés : tout le reste.
+
+## 30/10 18h30 — Cours sur Google : les adresses publiques ouvrent le VRAI cours (build 20261030-1830) — PUBLIÉ le 30/10 à 18h20 (accord de Blandine : « vas-y »)
+- Repris sur la version en ligne 5a3a1e6 (build 1815, encart groupe compétition de la page Écurie) : rien de ce qui était en ligne n'est retiré ; seul le marqueur 1815 → 1830 change en plus de ce qui suit.
+- Constat de Blandine (captures Safari depuis Google, 17h23) : 2hype.fr/fr/galop-1/la-securite-avant-tout/ montrait une copie du cours en texte brut (pas la mise en page, pas les images, quiz en liste à puces). « Fallait mettre les vrais chapitres pas des faux semblants. »
+- Vérifié : seul le Galop 1 était publié en entier ; Galops 2 à 7 = seulement la liste des titres + « Réservé aux abonnés Hype+ » (règle Premium du 09/10 respectée).
+- Correctif (même principe que les fiches chevaux /cheval/) :
+  · NOUVEAU netlify/edge-functions/cours-route.ts : sur /<langue>/galops/, /<langue>/galop-1 à 7/ et /<langue>/galop-1/<chapitre>/ (14 langues), sert la vraie appli (app-base.html) avec le titre, la description, l'adresse canonique, les liens de langues et le texte du cours pour Google (caché dès que l'appli démarre). L'adresse affichée ne change pas. Au moindre souci : l'ancienne page part telle quelle.
+  · outils/seo-galops.cjs : chaque page porte <meta name="hype-cible"> (galops, 1 à 7 ou l'identifiant du chapitre) et deux repères (<!--hype-seo-->, <!--hype-texte-->). Contenu des pages inchangé.
+  · index.html : CIBLE_DIRECTE lit window.__HYPE_ROUTE_COURS (même effet que #g=) ; un visiteur sans langue enregistrée lit l'appli dans la langue de l'adresse (window.__HYPE_ROUTE_LANGUE). Marqueur 20261030-1730 → 20261030-1830.
+- Vérifié (copie du site fabriquée comme sur Netlify + navigateur, iPhone 390 px et ordinateur 1440 px) : chapitre Galop 1 en français et en anglais = vrai cours ; sur ordinateur = mise en page ordinateur du pansage ; /fr/galops/ = vraie page Galops ; /fr/galop-3/ = écran « Premium requis » de l'appli ; texte Google présent dans la page et caché à l'écran ; 0 erreur.
+- Décision de Blandine pour la suite (ÉTAPE 2, pas encore faite) : Galops 2 à 7 en aperçu — début du vrai chapitre puis « Débloque la suite avec Premium », pour TOUS les non-abonnés, dans l'appli comme depuis Google (choix B) ; ensuite une page Google par chapitre des Galops 2 à 7 avec ce début seulement.
+- À pousser après accord : index.html + SUIVI.md (ensemble) + outils/seo-galops.cjs + netlify/edge-functions/cours-route.ts (nouveau). Fichiers inchangés : tous les fichiers de cours, app-base (fabriquée à la publication), les autres fonctions Netlify.
+
+## 30/10 19h35 — PUBLICATION demandée par Blandine (« mets-en en ligne avec ce que tu as ») — build 20261030-1930 [publier]
+- Fusion avec main (builds 1815 et 1830 publiés entre-temps : page Écurie, cours sur Google) : seuls conflits = la ligne de marqueur de build et SUIVI.md, résolus en gardant les deux côtés ; build 20261030-1930.
+- En ligne avec ce commit : pages ordinateur des robes G1 (sélecteur « Parcours des robes »), G2, G3, G5 ; correctifs de contenu G3 (déclinaisons, noir pangaré facultatif, quiz isabelle corrigé) ; G4 (puce/SIRE déplacés vers G5) ; nouveau cours g5-robes. RENDU VISIBLE (ajouté à HYPE_COURS_PRETS, daté 30/10) car sinon la carte puce/SIRE et ses 3 questions retirées du G4 auraient disparu de l'appli.
+- Erreur trouvée et corrigée avant mise en ligne : une double virgule dans hype-cours-galop5.js créait une case vide dans la liste des cours du Galop 5 (risque de plantage) ; vérifié sur les 4 fichiers de Galop (aucune case vide). Page G2 : titre de la 1re partie manquant (corrigé), et photo « trio » (montage de 3 photos) retirée de la partie « Les principales robes » (on voyait les coutures).
+- Vérifié : scripts de build lancés à blanc (cours-langues 14 langues, seo-galops : OK, sans plantage) ; 1100/1280/1440/1920 + 14 langues sur G2/G3/G5, 0 erreur ; marqueurs 2/7/0/0 ; scripts inline OK.
+- Photos : 6 présentes (G2 gris, G2 pie, G3 isabelle, G3 souris, G5 crins lavés, G5 léopard), basse résolution. Les autres emplacements affichent « Photo à venir » (sans nom de fichier visible).
+- LISTE DES PHOTOS MANQUANTES (à redemander à Chat, noms exacts, fichiers séparés en grand) :
+  · G3 : robes-g3-parties-du-corps, robes-g3-marques-tete, robes-g3-balzane, robes-g3-epis, robes-g3-alezan-brule, robes-g3-cafe-au-lait, robes-g3-palomino, robes-g3-noir-pangare
+  · G5 : robes-g5-pie-tobiano, robes-g5-pie-overo, robes-g5-pie-tovero, robes-g5-pie-balzan, robes-g5-pie-sabino, robes-g5-tachete-autres, robes-g5-adj-raie-de-mulet, robes-g5-adj-pommele, robes-g5-adj-bande-scapulaire, robes-g5-adj-zebrures, robes-g5-rouan, robes-g5-aubere, robes-g5-gris-comparaison
+  · G2 (sans texte pour l'instant) : robes-g2-creme
+  · À refaire en pleine taille (mêmes noms) : robes-g2-gris, robes-g2-pie, robes-g3-isabelle, robes-g3-souris, robes-g5-adj-crins-laves, robes-g5-tachete-leopard
+- Restent à décider : photos noir/alezan/bai individuelles du G1 (remplacer ou non), pie alezan (tobiano ou ovéro ?), textes blanc/crème/chocolat/tachetée du G2, définitions à valider (souris, alezan brûlé, café au lait, noir pangaré, adjonctions), lien du cours g5-robes dans le hub G5, mentions puce/SIRE restantes dans les compléments G4.

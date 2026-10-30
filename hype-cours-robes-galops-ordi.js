@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 3;
+var VERSION = 4;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -133,7 +133,7 @@ var CSS2 = [
 function Img(props) {
   var _e = useState(false), err = _e[0], setErr = _e[1];
   var src = props.src;
-  if (err || !src) return h("div", { className: "rbo-ph" }, ICO.livre(26), h("span", null, props.ph || ""), h("small", null, src || ""));
+  if (err || !src) return h("div", { className: "rbo-ph" }, ICO.livre(26), h("span", null, props.ph || ""));
   return h("img", { src: src, alt: props.alt || "", loading: "lazy", onError: function () { setErr(true); } });
 }
 /* anneau de zoom : la même photo, agrandie sur un détail (n'apparaît que si la photo existe) */
@@ -261,7 +261,7 @@ function HypeRobesGalopsOrdi(props) {
       { id: "s5", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
     corps = [
-      Sec("s1", "01", d.blocs[1].titre, "noir", h("div", null,
+      Sec("s1", "01", d.blocs[1].titre || L("vComprendre"), "noir", h("div", null,
         h("div", { className: "rbo-grid2" },
           h("div", { className: "rbo-txt" }, M(a[0], "a0"), M(a[1], "a1"), M(a[3], "a3")),
           h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[2].titre))), a[2].sous ? h("p", null, a[2].sous) : null,
@@ -269,7 +269,7 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { style: { marginTop: 64 } }, Photo("trio", "pano")))),
       Vague(NOIR, PET),
       Sec("s2", "02", nettoyer(sansNum(a[4].titre)), "petrole", h("div", null,
-        h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("trio", "grand")),
+        h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("alezan", "grand", "55% 40%")),
         h("div", { style: { marginTop: 88 } }, Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", null, "Galop 2")),
         h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "55% 40%"), h("div", { className: "rbo-txt" }, M(a[6], "a6"))))),
       Vague(PET, NOIR),

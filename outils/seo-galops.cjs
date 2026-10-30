@@ -305,6 +305,9 @@ footer{max-width:820px;margin:0 auto;padding:22px 20px max(28px,env(safe-area-in
 :lang(ar) h1,:lang(ar) h2,:lang(ar) .btn,:lang(ja) h1,:lang(ja) h2,:lang(zh) h1,:lang(zh) h2,:lang(zh) .btn{letter-spacing:0}:lang(ar) body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}`;
 
 function page(o) {
+  // 30/10/2026 : o.cible (ce que l'appli ouvre : « galops », « 1 » à « 7 » ou l'identifiant du chapitre) → <meta name="hype-cible"> ;
+  // les repères <!--hype-seo--> et <!--hype-texte--> servent à netlify/edge-functions/cours-route.ts, qui sert la VRAIE appli
+  // à cette adresse avec ce texte et ces balises pour Google (décision de Blandine du 30/10 : « mettre les vrais chapitres »).
   // o : lg, chemin (ex. "galop-1/"), titre, desc, h1, corps, fil, jsonld
   const lg = o.lg, ui = UI[lg];
   const url = `${DOM}/${lg}/${o.chemin}`;
@@ -314,6 +317,7 @@ function page(o) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+${o.cible ? `<meta name="hype-cible" content="${e(o.cible)}">\n` : ""}<!--hype-seo-->
 <title>${e(o.titre)}</title>
 <meta name="description" content="${e(o.desc)}">
 <link rel="canonical" href="${url}">
@@ -334,16 +338,17 @@ ${alts.map((x) => `<link rel="alternate" hreflang="${HL[x]}" href="${DOM}/${x}/$
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 ${o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld).replace(/</g, "\\u003c")}</script>` : ""}
+<!--/hype-seo-->
 <style>${CSS}</style>
 </head>
 <body>
 <header class="barre"><a class="marque" href="${DOM}/${lg}/">HYPE</a><a class="langue" href="#langues">${lg.toUpperCase()} · ${e(ui.langue)}</a></header>
-<main>
+<!--hype-texte--><main>
 <nav class="fil" aria-label="fil">${o.fil}</nav>
 <h1>${e(o.h1)}</h1>
 ${o.corps}
 </main>
-<footer><p>${e(ui.legal)}</p><p id="langues" style="margin-top:8px">${alts.map((x) => (x === lg ? `<strong lang="${HL[x]}">${NOMS[x]}</strong>` : `<a href="${DOM}/${x}/${o.chemin}" hreflang="${HL[x]}" lang="${HL[x]}">${NOMS[x]}</a>`)).join(" · ")}</p></footer>
+<footer><p>${e(ui.legal)}</p><p id="langues" style="margin-top:8px">${alts.map((x) => (x === lg ? `<strong lang="${HL[x]}">${NOMS[x]}</strong>` : `<a href="${DOM}/${x}/${o.chemin}" hreflang="${HL[x]}" lang="${HL[x]}">${NOMS[x]}</a>`)).join(" · ")}</p></footer><!--/hype-texte-->
 </body>
 </html>
 `;
@@ -379,7 +384,7 @@ function principal() {
       corps += `<li><a href="${DOM}/${lg}/galop-${n}/"><strong>${e(nomGalop(n, lg))}</strong><span class="pastille">${e(n === 1 ? ui.gratuit : "Hype+")}</span><span class="sous">${e(sousTitre(n, lg))} · ${nb} ${e(ui.chap)}</span></a></li>`;
     }
     corps += `</ul><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
-    ecrire(`${lg}/galops`, page({ lg, chemin: "galops/", titre: `${ui.theorie} | Hype`, desc: ui.sousTitre, h1: ui.theorie, fil: accueil, corps,
+    ecrire(`${lg}/galops`, page({ lg, cible: "galops", chemin: "galops/", titre: `${ui.theorie} | Hype`, desc: ui.sousTitre, h1: ui.theorie, fil: accueil, corps,
       jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: ui.theorie, inLanguage: HL[lg], url: `${DOM}/${lg}/galops/`, isPartOf: { "@id": DOM + "/#website" } } }));
     if (lg === LANGS[0]) urls.push({ chemin: "galops/" });
 
@@ -393,7 +398,7 @@ function principal() {
         const pub = liste.map((ch, i) => (aLaLangue(ch.titre, lg) ? i : -1)).filter((i) => i >= 0);
         liste.forEach((ch, i) => { if (pub.indexOf(i) < 0) return; c += `<li><a href="${DOM}/${lg}/galop-1/${slugs[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`; });
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
-        ecrire(`${lg}/galop-1`, page({ lg, chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${nomGalop(1, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-1`, page({ lg, cible: "1", chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${nomGalop(1, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(1, lg), description: sousTitre(1, lg), inLanguage: HL[lg], isAccessibleForFree: true, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: "galop-1/" });
 
@@ -411,7 +416,7 @@ function principal() {
           cc += `</p>`;
           const premierTexte = ((ch.blocs || []).map((b) => b.type === "texte-riche" && b.contenu && (lk(b.contenu, lg) || []).find((x) => x && x.k === "para")).find(Boolean) || {}).texte || "";
           const desc = (premierTexte || `${tr(ch.titre, lg)} — ${nomGalop(1, lg)}`).slice(0, 155);
-          ecrire(`${lg}/galop-1/${slugs[i]}`, page({ lg, chemin: `galop-1/${slugs[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${nomGalop(1, lg)} | Hype`, desc,
+          ecrire(`${lg}/galop-1/${slugs[i]}`, page({ lg, cible: String(ch.id || ""), chemin: `galop-1/${slugs[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${nomGalop(1, lg)} | Hype`, desc,
             h1: tr(ch.titre, lg), fil: `${filG} › <a href="${DOM}/${lg}/galop-1/">${e(nomGalop(1, lg))}</a>`, corps: cc,
             jsonld: { "@context": "https://schema.org", "@type": "LearningResource", name: tr(ch.titre, lg), inLanguage: HL[lg], learningResourceType: "lesson",
               isAccessibleForFree: true, educationalLevel: nomGalop(1, lg), timeRequired: undefined, url: `${DOM}/${lg}/galop-1/${slugs[i]}/`,
@@ -422,7 +427,7 @@ function principal() {
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;
         for (const ch of liste) c += `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`;
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
-        ecrire(`${lg}/galop-${n}`, page({ lg, chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${nomGalop(n, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${nomGalop(n, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
       }

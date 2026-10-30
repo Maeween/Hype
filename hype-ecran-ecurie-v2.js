@@ -220,13 +220,44 @@ function EcranEcurieV2(props) {
       }),
       h("button", { type: "button", onClick: function () { setFeuilleEc(false); }, style: { marginTop: 12, width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid " + BORD2, background: "transparent", color: IV, fontFamily: M, fontSize: 13.5, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))) : null;
 
-  /* 22/10 : rangée « Groupes » sous l en-tête (voir l effet groupesEc plus haut). Même navigation que la page Cavalier. */
-  var blocGroupes = (groupesEc && groupesEc.length) ? h("div", { "data-groupes-ecurie": "1", style: { padding: large ? "18px 0 0" : "18px 16px 0", maxWidth: large ? 820 : undefined, margin: large ? "0 auto" : undefined } },
+  /* 22/10 : rangée « Groupes » sous l en-tête (voir l effet groupesEc plus haut). Même navigation que la page Cavalier.
+     30/10 (Blandine : « le bouton du groupe compet n est pas le même dans la page de la SEP et sur la page profil ») :
+     les groupes de CAVALIERS (nature « equipe ») prennent l ENCART de la page Cavalier (dégradé pétrole, cheval sombre fondu
+     à droite, vignette du groupe, nom + sigle du club, saison · niveau, flèche dans un rond). Les piquets de chevaux gardent
+     leurs pastilles. Et le tout passe SOUS la citation (« il devrait venir en dessous de la citation, pas avant »). */
+  var equipesEc = (groupesEc || []).filter(function (g) { return g && g.nature === "equipe"; });
+  var piquetsEc = (groupesEc || []).filter(function (g) { return g && g.nature !== "equipe"; });
+  var ombreGr = "0 1px 10px rgba(0,0,0,0.8)";
+  var cartesEquipes = equipesEc.length ? h("div", { "data-equipes-ecurie": "1", style: { display: "grid", gridTemplateColumns: (large && equipesEc.length > 1) ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: 10 } },
+    equipesEc.map(function (g) {
+      var sansPageG = !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
+      var photoG = g.photo_url || "images/TEAM_COMPETITION.webp";
+      var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
+      var sigleG = (String(g.__club || "").match(/\(([^()]{2,12})\)\s*$/) || [])[1] || "";
+      var saisonG = g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + String(g.saison).replace(/\s*[-\u2013]\s*/, " \u2013 ")) : "";
+      var meta = [saisonG, niv].filter(Boolean);
+      var mG = "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", transparent 0%, #000 55%)";
+      return h("div", { key: "eqe" + g.id, role: "button", "data-groupe-ecurie": g.id, "aria-disabled": sansPageG ? "true" : undefined,
+          onClick: function () { if (sansPageG) return; try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eT) { } setEcran("team-competition"); },
+          style: { position: "relative", isolation: "isolate", minWidth: 0, borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", padding: large ? "16px 70px 16px 18px" : "14px 60px 14px 15px" } },
+        h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "52%", zIndex: -1, pointerEvents: "none", backgroundImage: "url(" + ((typeof HYPE_FOND_RECIT !== "undefined") ? HYPE_FOND_RECIT : "images/fond-recit.webp") + ")", backgroundSize: "cover", backgroundPosition: "center 40%", WebkitMaskImage: mG, maskImage: mG, opacity: 0.9 } }),
+        h("div", { style: { fontFamily: SERIF, fontSize: large ? 24 : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, textShadow: ombreGr } }, T("Groupe", "Group", "Grupo", "Gruppo", "グループ", "Gruppe", "المجموعة", "小组", "Groep", "Grupo", "Grupp", "Группа", "Grupa", "그룹")),
+        h("div", { style: { display: "flex", alignItems: "center", gap: large ? 12 : 10, marginTop: large ? 10 : 8, minWidth: 0 } },
+          h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 auto", width: large ? 58 : 46, height: large ? 42 : 34, borderRadius: 6, objectFit: "cover", objectPosition: "center 35%", border: "1px solid rgba(201,166,107,0.35)" } }),
+          h("div", { style: { minWidth: 0 } },
+            h("div", { style: { fontFamily: SERIF, fontSize: large ? 21 : 18, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreGr } }, h("bdi", null, (g.nom || "") + (sigleG ? " \u2013 " + sigleG : ""))),
+            meta.length ? h("div", { style: { fontFamily: M, fontSize: large ? 12.5 : 11.5, color: "rgba(243,238,228,0.75)", marginTop: 3, textShadow: ombreGr, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+              meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null)),
+        sansPageG
+          ? h("span", { style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: 12, fontFamily: M, fontSize: 9, letterSpacing: 1.3, textTransform: "uppercase", color: "#C9A66B", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "3px 8px", background: "rgba(5,8,11,0.6)" } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 출시"))
+          : h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: large ? 18 : 14, width: large ? 38 : 34, height: large ? 38 : 34, borderRadius: "50%", background: "rgba(5,8,11,0.62)", border: "1px solid rgba(243,238,228,0.28)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1 } }, rtl ? "\u2190" : "\u2192"));
+    })) : null;
+  var pastillesPiquets = (piquetsEc.length) ? h("div", { "data-groupes-ecurie": "1", style: { padding: large ? "18px 0 0" : "18px 16px 0", maxWidth: large ? 820 : undefined, margin: large ? "0 auto" : undefined } },
     h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 } },
       h("h2", { style: { margin: 0, flex: "0 0 auto", fontFamily: SERIF, fontWeight: 500, fontSize: 20, lineHeight: 1.15, color: IV } }, T("Groupes", "Groups", "Grupos", "Gruppi", "グループ", "Gruppen", "المجموعات", "小组", "Groepen", "Grupos", "Grupper", "Группы", "Grupy", "그룹")),
       h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtl ? "to left" : "to right") + ", rgba(201,166,107,0.45), rgba(201,166,107,0))" } })),
     h("div", { "data-noswipe": "1", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollbarWidth: "none", paddingBottom: 4, flexWrap: large ? "wrap" : "nowrap" } },
-      groupesEc.map(function (g) {
+      piquetsEc.map(function (g) {
         var sansPage = g.nature === "equipe" && !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
         var photo = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : ((typeof hypePhotoPiquet === "function") ? hypePhotoPiquet(g) : (g.photo_url || ""));
         var nomG = (g.nature !== "equipe" && typeof hypeLibPiquet === "function") ? hypeLibPiquet(g.nom) : g.nom;
@@ -242,6 +273,9 @@ function EcranEcurieV2(props) {
           h("bdi", null, nomG),
           sansPage ? h("span", { style: { fontSize: 9.5, letterSpacing: 1.2, textTransform: "uppercase", color: CH } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demnächst", "\u0642\u0631\u064a\u0628\u0627", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : h("span", { "aria-hidden": "true", style: { color: CH, fontSize: 15 } }, CHEV));
       }))) : null;
+  var blocGroupes = (cartesEquipes || pastillesPiquets) ? h("div", { "data-groupes-ecurie-bloc": "1" },
+    cartesEquipes ? h("div", { style: { padding: large ? "22px 0 0" : "22px 16px 0", maxWidth: large ? 820 : undefined, margin: large ? "0 auto" : undefined } }, cartesEquipes) : null,
+    pastillesPiquets) : null;
 
   /* ── 2. SIX ONGLETS ── */
   var ONGLETS = [
@@ -853,7 +887,7 @@ function EcranEcurieV2(props) {
       : h(React.Fragment, { key: "ev2-vitrine" }, invite, citation, (d.chevauxClub && !d.chevauxClub.length) ? blocCh : null, blocContact, lienReclamer))
     :     /* (863) ORDINATEUR, etape 2 (maquette validee) : UNE colonne qui se deroule (plus de colonne collante a droite) */
     large ? h("div", { key: "ev2-large", style: { padding: "0 24px", boxSizing: "content-box", maxWidth: menuFondEc ? 1120 : undefined, margin: "0 auto" } /* 19/10 etape A */ },
-      invite ? h("div", { style: { maxWidth: 820, margin: "0 auto" } }, invite) : null, blocGroupes, citation, onglets, blocVivre, blocCh,
+      invite ? h("div", { style: { maxWidth: 820, margin: "0 auto" } }, invite) : null, citation, blocGroupes /* 30/10 : sous la citation */, onglets, blocVivre, blocCh,
       /* (865) etape 5 : derniers resultats (a gauche) et prochains evenements (a droite) cote a cote, comme sur la maquette ;
          en dessous de 1 280 px de large, l un sous l autre (classe ev2-resev) */
       (blocRes && blocEv) ? h("div", { className: "ev2-resev" }, h("div", { style: { minWidth: 0 } }, blocRes), h("div", { style: { minWidth: 0 } }, blocEv)) : h(React.Fragment, null, blocRes, blocEv),
@@ -862,8 +896,8 @@ function EcranEcurieV2(props) {
       blocContact, lienReclamer)
     : h(React.Fragment, { key: "ev2-tel" },
     invite,
-    blocGroupes,   /* 22/10 : groupes de l ecurie, sous l en-tete */
     citation,
+    blocGroupes,   /* 22/10 : groupes de l ecurie ; 30/10 (Blandine) : SOUS la citation */
     onglets,   /* (554) Blandine : la citation au-dessus des acces rapides */
     blocVivre,   /* (565) */
     blocCh,
