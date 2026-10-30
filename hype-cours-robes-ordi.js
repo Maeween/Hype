@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 20;   /* 31/10 00h : En pratique sur fond noir (plus de pétrole sur pétrole) */
+var VERSION = 21;   /* 31/10 00h05 : « À retenir » des 3 robes retiré ; onglets actifs sans fond doré plein */
+/* v20 :   /* 31/10 00h : En pratique sur fond noir (plus de pétrole sur pétrole) */
 /* v19 :   /* 30/10 23h55 : titre sous la photo ; vague + noir à peine éclairci pour la partie 02 */
 /* v18 :   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
 /* v17 :   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
@@ -141,7 +142,7 @@ var CSS = [
 ".rbo-parc .tt{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:#C9A66B;margin-inline-end:8px}",
 ".rbo-parc button{font:inherit;font-size:13px;font-weight:600;color:#F3EEE4;background:rgba(16,29,34,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.5);border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:8px 18px;cursor:pointer}",
 ".rbo-parc button:hover{border-color:#C9A66B}",
-".rbo-parc button[aria-current=true]{background:#C9A66B;color:#070A08;border-color:#C9A66B;cursor:default}",
+".rbo-parc button[aria-current=true]{color:#C9A66B;border-color:#C9A66B;cursor:default}",
 /* haut de page (structure validée, inchangée) */
 ".rbo-top{display:grid;grid-template-columns:minmax(0,1fr)}",
 "@media (min-width:1480px){.rbo-top{grid-template-columns:minmax(0,1fr) 340px}}",
@@ -187,7 +188,7 @@ var CSS = [
 ".rbo-mini.on{opacity:1;pointer-events:auto;transform:none}",
 ".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.55);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
 ".rbo-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
-".rbo-mini button[aria-current=true]{border-color:var(--champ);background:rgba(201,166,107,.16)}",
+".rbo-mini button[aria-current=true]{border-color:var(--champ);color:var(--champ)}",
 /* sections : magazine, grandes photos, beaucoup d'air */
 ".rbo-sec{padding:76px 56px 80px;scroll-margin-top:64px}",
 ".rbo-sec.noir{background:var(--noir)}.rbo-sec.noir2{background:#0A1116}.rbo-sec.petrole{background:var(--petrole2)}",
@@ -422,8 +423,7 @@ function HypeRobesOrdi(props) {
       h("div", { className: "rbo-txt" },
         h("span", { className: "kick" }, "Galop 1"),
         h("h3", null, nom),
-        h("p", null, t.texte), h("p", null, p.texte),
-        h("div", { className: "rbo-ret" }, h("b", null, nettoyer(r.titre)), h("span", null, r.texte))));
+        h("p", null, t.texte), h("p", null, p.texte)));   /* 31/10 : « À retenir » retiré (redit le texte) — reste dans les données */
   }
 
   var nomsTrois = Q[1] && Q[1].options[Q[1].correct] || "";    /* « Noir, alezan et bai » dans la langue choisie (réponse juste de la question 2) */
