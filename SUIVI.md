@@ -15390,3 +15390,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
   · G2 (sans texte pour l'instant) : robes-g2-creme
   · À refaire en pleine taille (mêmes noms) : robes-g2-gris, robes-g2-pie, robes-g3-isabelle, robes-g3-souris, robes-g5-adj-crins-laves, robes-g5-tachete-leopard
 - Restent à décider : photos noir/alezan/bai individuelles du G1 (remplacer ou non), pie alezan (tobiano ou ovéro ?), textes blanc/crème/chocolat/tachetée du G2, définitions à valider (souris, alezan brûlé, café au lait, noir pangaré, adjonctions), lien du cours g5-robes dans le hub G5, mentions puce/SIRE restantes dans les compléments G4.
+
+## 30/10 19h30 — Photo « crins lavés » en pleine taille (non publiée)
+- images/robes-g5-adj-crins-laves.webp remplacée par la photo fournie par Blandine (1669 × 942 px, alezan à crins et queue lavés, balzanes aux membres, licol ; cheval en saut, pas de cavalier). Retirée de la liste « à refaire en pleine taille ». Rien d'autre modifié. À publier avec le prochain groupe de photos (pas de [publier] pour l'instant).
