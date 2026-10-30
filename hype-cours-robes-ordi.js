@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 16;   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
+var VERSION = 17;   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
+/* v16 :   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
 /* ancien : VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
 var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
@@ -492,21 +493,21 @@ function HypeRobesOrdi(props) {
                 h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
             h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
             h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[5], "a5"), M(a[6], "a6")))),
-        Vague(NOIR, PET),
 
         /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
-        Sec("s2", "02", nomsTrois, "petrole",
+        Sec("s2", "02", nomsTrois, "noir",   /* 30/10 : fond noir (Blandine) */
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
-        Vague(PET, NOIR),
+        Vague(NOIR, PET),
 
         /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
         /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
-        Sec("s4", "03", d.t3 || L("vPratique"), "noir",
+        Sec("s4", "03", d.t3 || L("vPratique"), "petrole",
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
               h("div", { className: "rbo-txt" }, M(z[1], "z1")),
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
+        Vague(PET, NOIR),
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
         h("div", { className: "rbo-coachfin" },
           h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
