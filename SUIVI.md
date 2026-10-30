@@ -15240,3 +15240,25 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - index.html, une seule zone (le bloc de style .vidv, commun aux 3 grilles : pages des Galops, page du Galop 5, Galop 1 ordinateur) : image à 40 % d'opacité sur fond noir, voile doux centré, titre ivoire centré (Cormorant, 2 lignes max), petit bouton lecture (34 px, cadenas si Premium) au-dessus du titre. Aucun texte, aucune logique modifiés.
 - Repris sur la version en ligne 335d930 (build 1300, allègement pièce 9) : rien de ce qui était en ligne n'est retiré ; seules lignes modifiées = ce bloc de style et le marqueur 20261030-1300 → 20261030-1310. node --check OK sur 13 blocs. Pas de nouveau texte : pas de traduction à faire.
 - À tester sur iPhone : onglet Vidéos d'un Galop (Galop 1), page du Galop 5 (« Prochainement »), puis ordinateur.
+
+## 30/10 13h15 — Allègement du démarrage, pièce 10 : Performances du cheval / du cavalier (build 20261030-1315) — NON PUBLIÉ
+- Pièce 9 (dessin de la page Écurie) publiée à 13h00 avec l'accord de Blandine (« Ok continue »).
+- EcranPerformancesCheval (133 Ko, sert aux pages Performances du cheval ET du cavalier) détaché dans hype-ecran-perf-cheval.js, chargé à l'ouverture, code non modifié. index.html : 9,93 → 9,80 Mo.
+- Vérifié, mais SEULEMENT en partie : sans vrai cheval dans mon banc de test, la page affiche « Cheval introuvable » comme avant, sans erreur, et le fichier ne se charge qu'à l'ouverture. Le contenu réel (Performances d'un vrai cheval) n'a PAS pu être comparé : à tester sur iPhone.
+- À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-perf-cheval.js.
+
+## 30/10 13h30 — Allègement du démarrage, pièces 11 à 18 : 8 écrans détachés d'un coup (build 20261030-1330) — NON PUBLIÉ
+- Demande de Blandine (« détache plusieurs pages d'un coup »). Pièce 10 (Performances du cheval/cavalier, build 1315) incluse, non publiée.
+- Détachés, code non modifié, chargés à l'ouverture : EcranResultatsCavaliere (116 Ko, hype-ecran-resultats-cav.js), EcranCarnetDetail (109 Ko, hype-ecran-carnet-detail.js), EcranTeamCompetition (94 Ko, hype-ecran-team.js), EcranChevalV2 (83 Ko, hype-ecran-cheval-v2.js, fiche cheval V2 en construction, adresse cachée), EcranEvenementPasse (79 Ko, hype-ecran-evenement-passe.js), EcranPhotosCavaliere (57 Ko, hype-ecran-photos-cav.js), EcranArticles (57 Ko, hype-ecran-articles.js), EcranMonCarnet (55 Ko, hype-ecran-mon-carnet.js). Plus pièce 10 : hype-ecran-perf-cheval.js.
+- index.html : 9,93 → 9,17 Mo (13,67 au début du chantier). Volontairement laissés dans index.html : connexion/entrée, accueil, communauté, mon compte, messagerie, profil.
+- Vérifié (banc de test, comparaison fichier à fichier avec la version en ligne) : 7 écrans au texte IDENTIQUE, fiche cheval V2 identique, aucune erreur nouvelle (une seule erreur 404 d'une ressource externe, la même qu'en ligne), fichier demandé seulement à l'ouverture. LIMITE : banc sans vraies données (« Cheval introuvable », listes vides) → le contenu réel reste à voir sur iPhone.
+- À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-perf-cheval.js, hype-ecran-resultats-cav.js, hype-ecran-carnet-detail.js, hype-ecran-team.js, hype-ecran-cheval-v2.js, hype-ecran-evenement-passe.js, hype-ecran-photos-cav.js, hype-ecran-articles.js, hype-ecran-mon-carnet.js.
+
+## 30/10 14h00 — Allègement du démarrage, pièces 19 à 23 : 5 écrans de plus (build 20261030-1415) — NON PUBLIÉ
+- Détachés, code non modifié, chargés à l'ouverture : EcranCommunauteV2 (111 Ko, hype-ecran-communaute-v2.js ; la page Communauté), EcranMonCompte (76 Ko, hype-ecran-mon-compte.js), EcranMessagerie (68 Ko, hype-ecran-messagerie.js), EcranProfilInterne (66 Ko, hype-ecran-profil-interne.js ; page Profil), EcranEcurieHype (65 Ko, hype-ecran-ecurie-hype.js).
+- index.html : 9,17 → 8,79 Mo (13,67 au début du chantier). Toujours dans index.html, volontairement : connexion/entrée, accueil (EcranUnivers), ancienne Communauté (EcranCommunaute, repli si la V2 est coupée).
+- Vérifié (banc de test, comparaison fichier à fichier avec la version en ligne) : Mon compte, Messagerie, Écurie Hype, Communauté, Profil au texte IDENTIQUE (seul le numéro de build affiché change), aucune erreur nouvelle, fichier demandé seulement à l'ouverture. LIMITE : banc sans vraies données.
+- Lien Communauté : le test « typeof EcranCommunauteV2 === "function" » reste vrai (enveloppe de chargement) → la V2 reste active.
+- Cumul non publié depuis la pièce 9 : pièces 10 à 23 (Performances ; 8 écrans du lot de 13h30 ; ces 5). À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-perf-cheval.js, -resultats-cav.js, -carnet-detail.js, -team.js, -cheval-v2.js, -evenement-passe.js, -photos-cav.js, -articles.js, -mon-carnet.js, -communaute-v2.js, -mon-compte.js, -messagerie.js, -profil-interne.js, -ecurie-hype.js.
+
+- Repris sur la version en ligne 5e34e68 (vidéos des Galops, build 1310) : ses deux lignes modifiées sont conservées telles quelles ; build final 20261030-1415.
