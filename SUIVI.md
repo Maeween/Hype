@@ -15355,3 +15355,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Contenu manquant au programme FFE G2 (non créé, à décider par Blandine) : blanc, crème, chocolat, tachetée ; le cours g2-robes ne traite que gris, pie, bai/alezan.
 - Vérifié : 1100/1280/1440/1920 + 14 langues dont arabe de droite à gauche, 0 erreur, 0 débordement, 5 onglets, quiz interactif, navigation par onglet ; sélecteur G1→G2 OK ; marqueurs chevalCommunDemoData=2, EcranSanteCheval=7, liensClub=0, palmTech=0 ; scripts inline OK.
 - À pousser SEULEMENT après son accord (cumul des entrées 18h45, 18h50 et 19h20) : index.html + SUIVI.md (ensemble) + hype-cours-robes-galops-ordi.js (v3) + hype-cours-robes-ordi.js (v7) + hype-cours-galop3.js + hype-cours-galop4.js + hype-cours-galop5.js ; photos quand fournies.
+
+## 30/10 19h05 — Robes : premières photos G2/G3/G5 ajoutées (images générées par Chat, fournies par Blandine) — NON PUBLIÉ, branche travail-robes-ordi
+- Reçues en planche de 8 chevaux (montage, ~510 px de large chacun) : découpées et converties en .webp. Ajoutées : images/robes-g2-gris.webp, robes-g2-pie.webp, robes-g3-isabelle.webp, robes-g3-souris.webp, robes-g5-adj-crins-laves.webp, robes-g5-tachete-leopard.webp. BASSE RÉSOLUTION : à remplacer par les fichiers séparés en pleine taille quand elle les aura (même nom).
+- Non utilisées : cheval n°5 de la planche (pie alezan : tobiano ou ovéro, à trancher), cheval n°8 (crème : robe du programme G2 sans texte pour l'instant). Trio noir/alezan/bai reçu : l'existant (robes-g1-trio.webp, 2172 px) est plus grand, laissé tel quel. Photos individuelles noir/alezan/bai reçues, rien remplacé (en attente de sa décision).
+- À pousser SEULEMENT après accord, avec le cumul précédent : les 6 images ci-dessus en plus.
