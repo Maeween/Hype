@@ -15681,3 +15681,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Retour de Blandine (23h33, capture) : « il n'y a plus rien là » — le menu du cours (publié 0110) était vide sous les vignettes, rien n'indiquait qu'il faut toucher une vignette.
 - hype-cours-robes-ordi.js v14 : gros bouton « Commencer le cours → » sous les vignettes (ouvre l'écran 01), texte en 14 langues (clé commencer). index.html : ?v=14, marker 20261031-0120.
 - Fichiers : hype-cours-robes-ordi.js v14, index.html, SUIVI.md. Étoiles de la liste des cours : en attente du choix A/B/C.
+
+## 30/10 23h40 — PUBLICATION : retour à la version précédente des robes du Galop 1 (« Reviens à la version précédente », 23h34) — build 20261031-0130 [publier]
+- Le découpage en écrans (publié 0110) ne convenait pas (« c'est nimp »). hype-cours-robes-ordi.js remis tel qu'il était à 22h58 (une seule page, conseil du coach en fin de cours, page de fin Hey Baby/défi/quiz de l'appli) ; VERSION 15 / ?v=15 pour forcer le rechargement. La version découpée est conservée dans scratchpad (robes_ordi_ecrans_v14.js) et dans l'historique git (commits f100ba4 et b3252dc).
+- Gardé : page « Cours terminé ! » de l'appli en or (index.html), bouton « Commencer le cours » non repris (il n'existe que dans la version découpée).
+- Fichiers : hype-cours-robes-ordi.js (v15), index.html (?v=15, marker 20261031-0130), SUIVI.md. Inchangés : Galops 2, 3, 5.
+- À décider avec Blandine : comment raccourcir la page (sections repliables ?), étoiles de la liste des cours (A/B/C).

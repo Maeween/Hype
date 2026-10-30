@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 14;
+var VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
 var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
@@ -40,10 +40,6 @@ var T = {
   quizBtn: tt("Passer le quiz", "Take the quiz", "Hacer el quiz", "Fai il quiz", "クイズに挑戦", "Quiz starten", "ابدأ الاختبار", "开始测验", "Doe de quiz", "Fazer o quiz", "Gör quizet", "Пройти викторину", "Zrób quiz", "퀴즈 풀기"),
   terminer: tt("Terminer le cours", "Finish the lesson", "Terminar el curso", "Termina il corso", "レッスンを終える", "Kurs abschließen", "إنهاء الدرس", "完成课程", "Les afronden", "Terminar o curso", "Avsluta lektionen", "Завершить урок", "Zakończ lekcję", "수업 마치기"),
   retour: tt("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
-  pPrec: tt("Précédent", "Previous", "Anterior", "Indietro", "前へ", "Zurück", "السابق", "上一步", "Vorige", "Anterior", "Föregående", "Назад", "Wstecz", "이전"),
-  pSuiv: tt("Suivant", "Next", "Siguiente", "Avanti", "次へ", "Weiter", "التالي", "下一步", "Volgende", "Seguinte", "Nästa", "Далее", "Dalej", "다음"),
-  commencer: tt("Commencer le cours", "Start the lesson", "Empezar el curso", "Inizia il corso", "レッスンを始める", "Kurs starten", "ابدأ الدرس", "开始课程", "Les starten", "Começar o curso", "Starta lektionen", "Начать урок", "Zacznij lekcję", "수업 시작하기"),
-  vResume: tt("À retenir", "Key points", "A retener", "Da ricordare", "ポイント", "Merke", "للتذكّر", "要点", "Onthouden", "A reter", "Att komma ihåg", "Запомни", "Do zapamiętania", "기억할 것"),
   retourCours: tt("Revenir au cours", "Back to the lesson", "Volver al curso", "Torna al corso", "レッスンに戻る", "Zurück zum Kurs", "العودة إلى الدرس", "返回课程", "Terug naar de les", "Voltar ao curso", "Tillbaka till lektionen", "Вернуться к уроку", "Wróć do lekcji", "수업으로 돌아가기"),
   suiteFin: tt("Résumé, Hey Baby et quiz", "Summary, Hey Baby and quiz", "Resumen, Hey Baby y quiz", "Riepilogo, Hey Baby e quiz", "まとめ、Hey Baby、クイズ", "Zusammenfassung, Hey Baby und Quiz", "الملخص وHey Baby والاختبار", "总结、Hey Baby 和测验", "Samenvatting, Hey Baby en quiz", "Resumo, Hey Baby e quiz", "Sammanfattning, Hey Baby och quiz", "Итоги, Hey Baby и викторина", "Podsumowanie, Hey Baby i quiz", "요약, Hey Baby, 퀴즈"),
   chapitres: tt("Chapitres du Galop 1", "Galop 1 lessons", "Capítulos del Galop 1", "Capitoli del Galop 1", "Galop 1のレッスン", "Kapitel Galop 1", "دروس Galop 1", "Galop 1 的课程", "Lessen Galop 1", "Capítulos do Galop 1", "Lektioner Galop 1", "Уроки Galop 1", "Lekcje Galop 1", "Galop 1 수업"),
@@ -285,10 +281,6 @@ var CSS = [
 ".rbo-coachfin{background:var(--noir);padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
-".rbo-vig.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
-".rbo-sp{height:58px;background:var(--noir)}",
-".rbo-start{background:var(--noir);display:flex;justify-content:center;padding:34px 40px 64px}",
-".rbo-pas{display:flex;justify-content:space-between;gap:14px;padding:30px 40px 44px;background:var(--noir)}",
 ".rbo-citband{background:var(--noir);padding:64px 56px 28px;text-align:center}",
 ".rbo-citband .rbo-cit{max-width:860px;margin:0 auto;font-size:clamp(26px,2.4vw,36px);line-height:1.35}",
 ".rbo-citband .rbo-cit:before,.rbo-citband .rbo-cit:after{content:'';display:block;width:44px;height:1px;background:var(--champ);margin:0 auto 24px}",
@@ -310,7 +302,7 @@ var CSS = [
 ".rbo .rbo-vig .big{font-size:30px;top:6px;inset-inline-start:10px}",
 ".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:14.5px;inset-inline:10px 36px;bottom:10px;max-width:none}",
 ".rbo .rbo-vig .arr{width:24px;height:24px;font-size:12px;bottom:8px;inset-inline-end:8px}",
-".rbo .rbo-mini{padding:8px 14px;overflow-x:auto}.rbo .rbo-sp{height:54px}.rbo .rbo-pas{padding:22px 16px 34px}.rbo .rbo-vig.n4{display:flex}",
+".rbo .rbo-mini{padding:8px 14px;overflow-x:auto}",
 ".rbo .rbo-coachfin{padding:36px 16px 44px}.rbo .rbo-coachfin .rbo-card{padding:18px 18px}.rbo .rbo-coachfin .rbo-card h3{font-size:22px}.rbo .rbo-coachfin .rbo-card p{font-size:15px}.rbo .rbo-retcours{padding:16px 16px 0}",
 ".rbo .rbo-photo.trio{aspect-ratio:auto}.rbo .rbo-photo.trio img{height:auto;object-fit:contain}",
 ".rbo .rbo-sec{padding:40px 20px 46px;scroll-margin-top:52px}",
@@ -363,7 +355,7 @@ function HypeRobesOrdi(props) {
   var _m = useState(false), mini = _m[0], setMini = _m[1];
   var _r = useState({}), reps = _r[0], setReps = _r[1];
   var _q = useState(0), qi = _q[0], setQi = _q[1];
-  var _v = useState("menu"), vue = _v[0], setVue = _v[1];   /* 30/10 : « cours » (page longue) ou « fin » (Hey Baby, défi, résumé, quiz) */
+  var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 30/10 : « cours » (page longue) ou « fin » (Hey Baby, défi, résumé, quiz) */
 
   useEffect(function () {
     var on = function () { var el = document.querySelector(".rbo-vig"); setMini(el ? el.getBoundingClientRect().bottom < 0 : false); };
@@ -378,16 +370,11 @@ function HypeRobesOrdi(props) {
     return function () { io.disconnect(); };
   }, [vue]);
 
+  var aller = function (id) { var el = document.getElementById("rbo-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   var haut = function () { var el = document.querySelector(".rbo"); if (el && el.scrollIntoView) el.scrollIntoView({ block: "start" }); };
-  var aller = function (id) { setVue(id); setTimeout(haut, 30); };
-  var nav = aller;
-  var versCours = function (id) { setVue(id || "menu"); setTimeout(haut, 30); };
-  var versFin = function () { if (props.onTerminer) props.onTerminer(); };   /* page « Cours terminé ! » de l'appli (étoiles, Hey Baby, quiz) */
-  function Pas(prev, next) {
-    return h("div", { className: "rbo-pas" },
-      h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { if (prev) aller(prev); else versCours(null); } }, (rtl ? "→ " : "← ") + (prev ? L("pPrec") : L("retour"))),
-      next ? h("button", { type: "button", className: "rbo-btn", onClick: function () { aller(next); } }, L("pSuiv") + (rtl ? " ←" : " →")) : null);
-  }
+  var versFin = function () { setVue("fin"); setTimeout(haut, 30); };
+  var versCours = function (id) { setVue("cours"); setTimeout(function () { if (id) aller(id); else haut(); }, 60); };
+  var nav = function (id) { if (id === "s5") versFin(); else aller(id); };
   var hey = function (q) {
     try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: d.titre, score: null, cheval: null, question: q || "" }; } catch (e) { }
     props.setEcran("assistant");
@@ -429,8 +416,9 @@ function HypeRobesOrdi(props) {
   var vig = [
     { id: "s1", lab: L("vComprendre"), img: IMG.cheval, pos: "80% 40%" },
     { id: "s2", lab: nomsTrois, img: IMG.noir, pos: "60% 40%" },
-    { id: "s3", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
-    { id: "s4", lab: L("vResume"), img: IMG.quiz, pos: "center" }
+    { id: "s3", lab: L("vComparer"), img: IMG.bai, pos: "70% 50%" },
+    { id: "s4", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
+    { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
   ];
   var hbQ = z[3].puces.map(function (p) { return p.texte; });
   /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
@@ -460,8 +448,7 @@ function HypeRobesOrdi(props) {
             var cur = pc2[0] === cours.id;
             return h("button", { key: pc2[0], type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur) props.onOuvrirRobes(pc2[1], pc2[0]); } }, "Galop " + pc2[1]);
           })) : null,
-        /* 30/10 : le cours est découpé en ÉCRANS (menu -> une section par écran -> « À retenir » + conseil du coach -> page « Cours terminé ! » de l'appli) */
-        vue === "menu" ? h("div", { className: "rbo-top seul" },
+        h("div", { className: "rbo-top" + (vue === "fin" ? "" : " seul") },
           h("header", { className: "rbo-hero" },
             h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
             h("div", { className: "rbo-bar" },
@@ -472,24 +459,25 @@ function HypeRobesOrdi(props) {
             h("div", { className: "rbo-meta" },
               d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
-              h("span", null, ICO.coupe(16), "Galop 1")))) : null,
-        vue === "menu" ? h(React.Fragment, null,
+              h("span", null, ICO.coupe(16), "Galop 1"))),
+          vue === "fin" ? h("aside", { className: "rbo-cards deux" },
+            h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
+            h("button", { type: "button", className: "rbo-card defi", onClick: function () { versCours("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche))) : null),
+
+        vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h("div", { className: "rbo-vig n4", role: "tablist" },
+        h("div", { className: "rbo-vig", role: "tablist" },
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           })),
-          h("div", { className: "rbo-start" }, h("button", { type: "button", className: "rbo-btn", onClick: function () { aller("s1"); } }, L("commencer") + (rtl ? " ←" : " →")))
-        ) : null,
-        vue !== "menu" ? h("div", { className: "rbo-minih" },
-          h("div", { className: "rbo-mini on" },
-            h("button", { type: "button", className: "home", "aria-label": L("retour"), onClick: function () { versCours(null); } }, rtl ? "›" : "‹"),
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", "aria-current": vue === v.id ? "true" : undefined, onClick: function () { aller(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }))) : null,
-        vue !== "menu" ? h("div", { className: "rbo-sp" }) : null,
+        h("div", { className: "rbo-minih" },
+          h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
+            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); })))),
 
-        /* 01 — COMPRENDRE */
-        vue === "s1" ? h(React.Fragment, null,
+
+        vue !== "cours" ? null : h(React.Fragment, null,
+        /* 01 — COMPRENDRE : a[1]…a[6] (a[0] = citation d'ouverture, dans le haut de page) */
         Sec("s1", "01", d.t1, "noir",
           h("div", null,
             h("div", { className: "rbo-grid2" },
@@ -499,33 +487,79 @@ function HypeRobesOrdi(props) {
                 h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
             h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
             h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[5], "a5"), M(a[6], "a6")))),
-          Pas(null, "s2")) : null,
-        /* 02 — NOIR, ALEZAN, BAI (la planche illisible et les photos « Ne pas confondre » en doublon ne sont plus affichées ; elles restent dans les données du cours) */
-        vue === "s2" ? h(React.Fragment, null,
+        Vague(NOIR, PET),
+
+        /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
         Sec("s2", "02", nomsTrois, "petrole",
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
-          Pas("s1", "s3")) : null,
-        /* 03 — EN PRATIQUE (erreurs à éviter, défi du cavalier) */
-        vue === "s3" ? h(React.Fragment, null,
-        Sec("s3", "03", d.t3 || L("vPratique"), "petrole",
+        Vague(PET, NOIR),
+
+        /* 03 — COMPARER : a[16]…a[19] + le tableau d'origine (bloc photo-liste) */
+        Sec("s3", "03", nettoyer(sansNum(a[16].titre)), "noir",
+          h("div", null,
+            h("div", { className: "rbo-txt", style: { maxWidth: 820 } }, h("p", null, a[16].texte)),
+            h("div", { className: "rbo-duel" },
+              h("div", { className: "rbo-txt" }, Photo("bai", "", sansNum(a[13].titre)), M(a[17], "a17")),
+              h("div", { className: "rbo-txt" }, Photo("alezan", "", sansNum(a[10].titre)), M(a[18], "a18"))),
+            h("div", { className: "rbo-reflexe" }, h("div", { className: "kick" }, nettoyer(a[19].titre)), h("p", null, a[19].texte)),
+            h("div", { className: "rbo-tableau" },
+              h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(d.tableau.titre)), h("ul", null, d.tableau.items.map(function (t, i) { return h("li", { key: i }, t); }))),
+              d.tableau.src ? h("img", { src: d.tableau.src, alt: nettoyer(d.tableau.titre) }) : null))),
+        Vague(NOIR, PET),
+
+        /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
+        Sec("s4", "04", d.t3 || L("vPratique"), "petrole",
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
               h("div", { className: "rbo-txt" }, M(z[1], "z1")),
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
-          Pas("s2", "s4")) : null,
-        /* 04 — À RETENIR + conseil du coach + bouton Terminer */
-        vue === "s4" ? h(React.Fragment, null,
-          Sec("s4", "04", L("vResume"), "noir",
-            h("div", null,
+        Vague(PET, NOIR),
+        /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
+        h("div", { className: "rbo-coachfin" },
+          h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
+          h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →")))),
+        vue !== "fin" ? null : h(React.Fragment, null,
+          h("div", { className: "rbo-retcours" }, h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { versCours(null); } }, (rtl ? "→ " : "← ") + L("retourCours"))),
+          h("section", { id: "rbo-s4f", className: "rbo-sec petrole" }, h("div", null,
+            h("div", { className: "rbo-txt", style: { marginTop: 0 } },
+              h("h3", { style: { marginTop: 0 } }, nettoyer(z[3].titre)),
+              h("div", { className: "rbo-hb" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); }))),
             h("div", { className: "rbo-synth" },
               h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[4].titre))),
               h("ol", null, z[4].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
             h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[5].texte) + " »"))),
-          h("div", { className: "rbo-coachfin" },
-            h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
-            h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("terminer"))),
-          Pas("s3", null)) : null,
+          Vague(PET, NOIR),
+        /* 05 — QUIZ : les 10 questions du cours, une à la fois, correction et explication du cours */
+        /* 30/10 : le quiz est celui de l'appli (écran « quiz » : correction, étoiles du cours sur le menu des Galops). L'ancien quiz intégré est gardé, désactivé (QUIZ_INTEGRE). */
+        QUIZ_INTEGRE ? (
+        Sec("s5", "05", L("secQuiz"), "noir",
+          h("div", null,
+            h("div", { className: "rbo-qz" },
+              h("div", { className: "rbo-q" },
+                h("div", { className: "rbo-prog" }, h("span", null, fmt("qSur", { n: qi + 1, t: Q.length })), h("span", { className: "barre" }, h("i", { style: { width: Math.round(nbRep / Q.length * 100) + "%" } }))),
+                h("h3", null, q.question),
+                h("div", { className: "rbo-opts" }, q.options.map(function (t, j) {
+                  var cls = repondu ? (j === q.correct ? "bon" : (j === rep ? "mauvais" : "")) : "";
+                  return h("button", { key: j, type: "button", className: cls, disabled: repondu, "aria-pressed": repondu && j === rep, onClick: function () { var n = Object.assign({}, reps); n[qi] = j; setReps(n); } },
+                    h("span", { className: "lt" }, String.fromCharCode(65 + j)), h("span", null, t));
+                })),
+                repondu ? h("div", { className: "rbo-res " + (juste ? "ok" : "ko"), "aria-live": "polite" }, h("strong", null, juste ? L("bravo") : L("pasTout")), " ", q.explication) : null,
+                h("div", { className: "rbo-qnav" },
+                  h("button", { type: "button", className: "rbo-btn neutre", disabled: qi === 0, onClick: function () { setQi(qi - 1); } }, (rtl ? "→ " : "← ") + L("qPrec")),
+                  h("button", { type: "button", className: "rbo-btn", disabled: qi === Q.length - 1, onClick: function () { setQi(qi + 1); } }, L("qSuiv") + (rtl ? " ←" : " →")),
+                  nbRep ? h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { setReps({}); setQi(0); } }, L("exoRestart")) : null),
+                nbRep === Q.length ? h("p", { className: "rbo-score", "aria-live": "polite" }, fmt("score", { s: nbJuste, t: Q.length })) : null),
+              Photo(photoQ, "", null)),
+            h("div", { className: "rbo-cta" },
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))) :
+        Sec("s5", "05", L("secQuiz"), "noir",
+          h("div", null,
+            Photo("quiz", "pano", null),
+            h("div", { className: "rbo-cta" },
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
+              h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))),
         /* fin de page Hype (composant commun de l'appli), comme sur les autres pages */
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));
