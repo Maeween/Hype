@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 280" role="img" aria-label="Vue de dessus : une unique courbe serrée vers la droite, suivie d’une courte ligne droite vers l’obstacle. Aucune contre-courbe.">
+ <defs><marker id="turnArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#C9A66B"/></marker></defs>
+ <g opacity=".33" stroke="#52716c" stroke-width="1"><path d="M33 43 H497 M33 245 H497" stroke-dasharray="3 10"/></g>
+ <path d="M54 210 L265 210 Q302 210 333 179 L425 87" fill="none" stroke="#C9A66B" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 9" marker-end="url(#turnArrow)"/>
+ <path d="M390 35 L469 114 M402 23 L481 102" stroke="#F3EEE4" stroke-width="7" stroke-linecap="square"/>
+ <g fill="#F3EEE4"><circle cx="84" cy="210" r="5"/><circle cx="130" cy="210" r="5"/><circle cx="176" cy="210" r="5"/><circle cx="222" cy="210" r="5"/></g>
+ <g fill="#C9A66B"><circle cx="267" cy="210" r="7"/><circle cx="306" cy="197" r="6"/><circle cx="345" cy="167" r="5"/><circle cx="382" cy="130" r="5"/></g>
+ <g font-family="Arial,sans-serif" font-size="13" letter-spacing="1.2" fill="#b8c8c2"><text x="62" y="181">ENTRÉE</text><text x="215" y="258">UN SEUL VIRAGE SERRÉ</text><text x="397" y="152">OBSTACLE</text></g>
+ <path d="M266 191 Q281 155 322 162" stroke="#a3b5ab" stroke-width="1.5" fill="none" stroke-dasharray="4 6"/>
+</svg>

@@ -633,6 +633,22 @@ function EcranTeamCompetition() {
         h("span", { style: { width: 26, height: 26, borderRadius: "50%", background: "rgba(6,7,9,0.6)", border: "1px solid rgba(244,241,234,0.5)", display: "flex", alignItems: "center", justifyContent: "center" } },
           h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 0.8v8.4L8.2 5Z", fill: IV })))) : null);
   }
+  /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
+     la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
+  var blocCoach = section(h("div", null,
+    enTete(T("Conseils du coach", "Coach’s tips", "Consejos del entrenador", "Consigli del coach", "コーチのアドバイス", "Tipps vom Coach", "نصائح المدرّب", "教练建议", "Tips van de coach", "Dicas do treinador", "Tränarens råd", "Советы тренера", "Rady trenera", "코치의 조언"), "co", 0, 0),
+    h("button", { type: "button", "data-article-cso": "1", onClick: function () { setEcran("article-cso"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.25)", color: IV, cursor: "pointer", textAlign: "start" } },
+      h("img", { src: "images/article-cso-tuile.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "42%", height: "100%", objectFit: "cover", objectPosition: "center 35%" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
+      h("svg", { width: 26, height: 26, viewBox: "0 0 20 20", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
+        h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }),
+        h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: OR, strokeWidth: 1.3 })),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(214,182,118,0.28)" } }),
+      h("div", { style: { flex: 1, minWidth: 0, position: "relative", maxWidth: "66%" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Pourquoi éviter la longue après un virage serré ?", "Why avoid the long spot after a tight turn?", "¿Por qué evitar la batida larga tras un giro cerrado?", "Perché evitare la battuta lunga dopo una curva stretta?", "急なターンの直後、なぜ遠い踏み切りを避けるの？", "Warum nach einer engen Wendung den weiten Absprung vermeiden?", "لماذا تتجنّبين الارتقاء البعيد بعد منعطف حاد؟", "急转弯之后，为什么要避免远点起跳？", "Waarom geen lange afstand na een korte wending?", "Por que evitar a distância longa depois de uma curva fechada?", "Varför undvika långt avsprång efter en snäv sväng?", "Почему не стоит брать далёкую точку после крутого поворота?", "Dlaczego unikać dalekiego wybicia po ciasnym zakręcie?", "급회전 직후, 왜 먼 도약은 피해야 할까요?")),
+        h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Décryptage CSO · 7 min", "Show-jumping breakdown · 7 min", "Análisis de salto · 7 min", "Analisi salto ostacoli · 7 min", "障害飛越の解説 · 7分", "Analyse Springen · 7 Min.", "تحليل قفز الحواجز · 7 دقائق", "场地障碍解析 · 7 分钟", "Springanalyse · 7 min", "Análise de salto · 7 min", "Hoppanalys · 7 min", "Разбор конкура · 7 мин", "Analiza skoków · 7 min", "장애물 비월 분석 · 7분"))),
+      h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1, marginInlineStart: "auto" } }, CHEV))));
+
   /* (721) CHAPITRE « Règlements » : le règlement officiel Open de France 2026 (PDF dans docs/), ouvert dans un nouvel onglet. */
   var blocReg = section(h("div", null,
     enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정"), "rg", 0, 0),
@@ -775,7 +791,7 @@ function EcranTeamCompetition() {
     hero,
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
-    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, blocSv, trait(), blocReg,
+    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, blocSv, trait(), blocCoach, trait(), blocReg,
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
