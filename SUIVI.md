@@ -15563,3 +15563,7 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - En ligne : index.html (?v=2 de la page Résultats), hype-ecran-resultats-ecurie.js v2 (âge déclaré à l'inscription, choix B), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne 26745ff (article CSO) : aucune ligne retirée.
 - Base (21h20) : Eva (compte « Eva », SEP) cochée « majorité vérifiée » par Blandine (« Eva est adulte aussi mais pas Ella »). Ella NON cochée.
 - EN ATTENTE de sa réponse : relier « EVA REGUILLET » au compte « Eva » et « ELLA JACOBS » au compte « Ella » (toutes deux SEP, comptes créés les 23/09 et 30/09) — tant que ce n'est pas fait, leurs 2 résultats chacune n'apparaissent pas sur la page.
+
+## 30/10 21h30 — Eva reliée, Ella en attente (base seulement, rien republié)
+- Eva : « EVA REGUILLET » relié au compte « Eva » (SEP) après confirmation de Blandine (« celle qui s'est classée sur Yellow et Apache au dernier concours » — vérifié : 1re / 21 sur Orchid's yellow et 5e / 21 sur Apache du Lys, Club 3 Vitesse, Folleville 25/10, sans faute). 2 résultats rattachés à son compte et reliés au rendez-vous SEP « CSO équipe club / challenge » (lien 'auto'). Majorité vérifiée cochée.
+- Ella : décision de Blandine — on la reliera quand elle sera abonnée. Rien fait.
