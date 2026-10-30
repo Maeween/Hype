@@ -15693,3 +15693,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Page de fin : 3 questions Hey Baby en tout, chacune dans sa petite bulle, dans la carte « Demande à Hey Baby » (plus de liste en dessous). Synthèse resserrée sur téléphone.
 - Onglets du haut : plus de bandeau, pastilles semi-transparentes ombrées (flou), placées sous la barre d'état de l'iPhone. Boutons « Parcours des robes » idem.
 - 23h50 (build 20261031-0150, v17) : la partie 02 « Noir, alezan et bai » passe sur fond noir ; « En pratique » passe en pétrole pour garder l'alternance. NON publié.
+- 23h52 : PUBLICATION des builds 0145 + 0150 (doublons retirés, Hey Baby 3 bulles, onglets translucides, partie 02 sur fond noir) — accord de Blandine « Oui ».
