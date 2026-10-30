@@ -15609,3 +15609,24 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Aussi dans cette livraison non publiée : bouton « Reprendre » retiré du Galop déroulé (22h25).
 
 - 30/10 23h55 : citation du cours remise dans un bandeau aéré entre le haut de page et le menu (ordinateur et téléphone, 4 cours) ; sur téléphone le fil d Ariane du haut est masqué (il se chevauchait avec le sélecteur de langue). robes-ordi.js v10, moteur v10, build 20261030-2355. NON publié.
+
+## 30/10 23h05 — Contrôle sur les vraies données + correction de « Gérer » (build 20261030-2305) — NON PUBLIÉ
+- Contrôle SQL (Feinn et SEP) : Blandine importe aussi les résultats SEP depuis son compte (membre des deux écuries) → l'écran « Gérer » de Feinn aurait proposé de rattacher à Feinn des cavalières SEP AYANT un compte (Lauren, Maëlys, Margot, Emma…), plus ~145 noms anciens et des noms abîmés par l'import de dressage (« CLEMENTINE BRANCHU Note/Score 63,08% »).
+- Correction (hype-ecran-resultats-ecurie.js v3, ?v=3) : un nom FFE déjà relié à un compte (n'importe quelle écurie) n'est jamais proposé comme « sans compte » ; noms contenant chiffres, % ou / jamais proposés ; par défaut seulement les noms vus depuis le début de la saison précédente, « Voir plus (N) » pour les autres. Testé au banc (Eva reliée → absente ; nom abîmé → absent ; nom de 2022 → derrière « Voir plus »).
+- ⚠️ À signaler (hors périmètre, non corrigé) : l'import des résultats de DRESSAGE range la note dans le nom du cavalier (« … Note/Score 63,08% ») — 3 lignes CLEMENTINE BRANCHU au moins.
+- Base : Aurélie Bussonnais (compte relié à son nom FFE) cochée « majorité vérifiée » (« Aurélie bussonais est adulte aussi », 22h02).
+
+## 30/10 22h15 — Téléphone refait d'après la maquette + filtre fantôme + Ella (build à publier) — NON PUBLIÉ
+- Retours de Blandine (22h05-22h10) sur la version en ligne : « la version tel est catastrophique », « trop de bleu pétrole partout », « tout est deux fois trop grand », « les titres sont sur les images », « une seule cavalière ».
+- Cause du « une seule cavalière » : un filtre Cavalier (Maëlys) gardé en mémoire d'une visite à l'autre et invisible sur téléphone (caché dans le panneau Filtres) — ses captures correspondent exactement aux résultats de Maëlys seule. Corrigé : la page repart TOUJOURS sans filtre ; tout filtre actif s'affiche en pastille « Nom × » (téléphone et ordinateur).
+- hype-ecran-resultats-ecurie.js v4 (?v=4) : téléphone reconstruit d'après la maquette 02 (3 cartes cavalières par écran, titres courts + « Voir tout », dernier concours en bande photo à gauche, 5 chiffres sur une ligne avec icônes, concours en lignes compactes, 4 chevaux par ligne, moments forts en vignettes carrées) ; tailles divisées par ~2 ; plus aucun bleu pétrole (fonds noirs #0E1210 / #0B0E0C, filets champagne) ; plus aucun texte posé sur une photo (haut de page téléphone : photo puis titre dessous ; dernier concours : photo à gauche, texte à droite, ordinateur compris).
+- « Nos chevaux » : un cheval compte TOUS ses parcours de la saison, y compris avec une cavalière non rattachée (Blandine : Aceitunero « était classé club 3 aussi avec une autre cavalière »), sauf quand un filtre cavalière ou concours est actif.
+- Base : Ella reliée sur demande (« rattache Ella à ses résultats », 22h10) : « ELLA JACOBS » → compte « Ella » (SEP), 2 résultats rattachés et reliés à « CSO équipe club / challenge » (lien 'auto'). Non cochée majeure → « Ella J. ».
+
+## 30/10 22h15 — PUBLICATION (« Vas y », 22h13) — build 20261030-2330 [publier]
+- En ligne : index.html (?v=4), hype-ecran-resultats-ecurie.js v4 (téléphone d'après la maquette, sans bleu pétrole, filtres remis à zéro et visibles, « Gérer » corrigé, chevaux = tous leurs parcours), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne b260bf8 (robes 23h10) : aucune ligne retirée.
+
+## 30/10 22h35 — PUBLICATION (« Ok vas y », 22h27) — build 20261031-0000 [publier]
+- En ligne : version téléphone des robes (Galops 1, 2, 3, 5), citation en bandeau aéré entre le haut de page et le menu, bouton « Reprendre » retiré du Galop déroulé, photos des robes G2/G3/G5.
+- Fichiers : index.html (marker 20261031-0000), hype-cours-robes-ordi.js ?v=10, hype-cours-robes-galops-ordi.js ?v=10, hype-cours-galop2.js ?v=9sv1ru1pl1ko1, images/ (robes-*), SUIVI.md.
+- Fusion avec main (build 20261030-2330 des résultats écurie) : seule la ligne du marqueur d'index.html différait ; rien perdu des deux côtés.
