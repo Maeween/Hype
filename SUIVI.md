@@ -15442,3 +15442,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h00 : photo alezan pie remplacée par la bonne (robes-g2-pie-alezan.webp) ; l autre rangée en réserve (images/robes-reserve-pie-brun-crins-noirs.webp, non affichée).
 
 - 30/10 21h05 : photo pie sabino rangée (images/robes-g5-pie-sabino.webp, Galop 5, pies). Reste pour les pies G5 : tobiano, ovéro, tovero, balzan.
+
+- 30/10 21h10 : photo sans légende (bai à couverture blanche tachetée) rangée en réserve : images/robes-reserve-tachete-bai-couverture.webp, en attente de son nom.
