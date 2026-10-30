@@ -72,6 +72,25 @@ var W = {
   precedent: ["Précédent", "Previous", "Anterior", "Precedente", "前へ", "Zurück", "السابق", "上一个", "Vorige", "Anterior", "Föregående", "Назад", "Poprzedni", "이전"],
   suivant: ["Suivant", "Next", "Siguiente", "Successivo", "次へ", "Weiter", "التالي", "下一个", "Volgende", "Seguinte", "Nästa", "Далее", "Następny", "다음"]
 };
+/* panneau de gestion (gestionnaires de l écurie) */
+var WG = {
+  gerer: ["Gérer", "Manage", "Gestionar", "Gestisci", "管理", "Verwalten", "إدارة", "管理", "Beheren", "Gerir", "Hantera", "Управление", "Zarządzaj", "관리"],
+  gTitre: ["Gestion des résultats de l'écurie", "Manage the stable's results", "Gestión de los resultados de la cuadra", "Gestione dei risultati della scuderia", "厩舎の成績の管理", "Ergebnisse des Stalls verwalten", "إدارة نتائج الإسطبل", "管理马厩成绩", "Resultaten van de stal beheren", "Gestão dos resultados do estábulo", "Hantera stallets resultat", "Управление результатами конюшни", "Zarządzanie wynikami stajni", "마구간 성적 관리"],
+  gSans: ["Cavaliers sans compte Hype", "Riders without a Hype account", "Jinetes sin cuenta Hype", "Cavalieri senza account Hype", "Hypeアカウントのないライダー", "Reiter ohne Hype-Konto", "فرسان بدون حساب Hype", "没有Hype账号的骑手", "Ruiters zonder Hype-account", "Cavaleiros sem conta Hype", "Ryttare utan Hype-konto", "Всадники без аккаунта Hype", "Jeźdźcy bez konta Hype", "Hype 계정이 없는 기수"],
+  gSansAide: ["Noms trouvés dans les résultats importés par les membres de l'écurie. Rattache seulement ceux dont tu es sûre qu'ils montent à l'écurie.", "Names found in results imported by the stable's members. Only add riders you are sure ride at the stable.", "Nombres encontrados en los resultados importados por los miembros. Añade solo a quienes seguro montan en la cuadra.", "Nomi trovati nei risultati importati dai membri. Aggiungi solo chi sei sicura che monti in scuderia.", "メンバーが取り込んだ成績にある名前です。厩舎で乗っていると確かな人だけ追加してね。", "Namen aus den von Mitgliedern importierten Ergebnissen. Füge nur Reiter hinzu, die sicher im Stall reiten.", "أسماء وجدت في النتائج التي استوردها الأعضاء. أضيفي فقط من تتأكدين أنهم يركبون في الإسطبل.", "成员导入的成绩中出现的名字。只添加确定在本马厩骑马的骑手。", "Namen uit resultaten die leden importeerden. Voeg alleen ruiters toe van wie je zeker weet dat ze op stal rijden.", "Nomes encontrados nos resultados importados pelos membros. Adiciona só quem tens a certeza que monta no estábulo.", "Namn från resultat som medlemmar importerat. Lägg bara till ryttare som säkert rider i stallet.", "Имена из результатов, импортированных участниками. Добавляй только тех, кто точно ездит в конюшне.", "Imiona z wyników zaimportowanych przez członków. Dodaj tylko tych, którzy na pewno jeżdżą w stajni.", "멤버가 가져온 성적에서 찾은 이름이에요. 마구간에서 타는 게 확실한 기수만 추가하세요."],
+  gRattacher: ["Rattacher à l'écurie", "Add to the stable", "Añadir a la cuadra", "Aggiungi alla scuderia", "厩舎に追加", "Zum Stall hinzufügen", "إضافة إلى الإسطبل", "加入马厩", "Aan de stal toevoegen", "Adicionar ao estábulo", "Lägg till i stallet", "Добавить в конюшню", "Dodaj do stajni", "마구간에 추가"],
+  gRetirer: ["Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Retirar", "Ta bort", "Убрать", "Usuń", "제거"],
+  gDeja: ["Déjà rattachés", "Already added", "Ya añadidos", "Già aggiunti", "追加済み", "Bereits hinzugefügt", "تمت إضافتهم", "已加入", "Al toegevoegd", "Já adicionados", "Redan tillagda", "Уже добавлены", "Już dodani", "이미 추가됨"],
+  gRelier: ["Résultats à relier à l'agenda", "Results to link to the calendar", "Resultados para vincular a la agenda", "Risultati da collegare all'agenda", "予定に結びつける成績", "Ergebnisse mit dem Kalender verknüpfen", "نتائج لربطها بالأجندة", "需关联到日程的成绩", "Resultaten te koppelen aan de agenda", "Resultados a ligar à agenda", "Resultat att koppla till kalendern", "Результаты для привязки к календарю", "Wyniki do powiązania z kalendarzem", "일정에 연결할 성적"],
+  gRelierAide: ["Aucun lien automatique (plusieurs rendez-vous possibles ou concours non reconnu) : choisis le bon rendez-vous. Ce choix ne sera jamais modifié automatiquement.", "No automatic link (several possible events or unrecognised competition): choose the right event. This choice will never be changed automatically.", "Sin vínculo automático: elige la cita correcta. Esta elección nunca se cambiará automáticamente.", "Nessun collegamento automatico: scegli l'appuntamento giusto. Questa scelta non verrà mai cambiata automaticamente.", "自動で結びつけられませんでした。正しい予定を選んでね。この選択は自動では変わりません。", "Keine automatische Verknüpfung: wähle den richtigen Termin. Diese Wahl wird nie automatisch geändert.", "لا يوجد ربط تلقائي: اختاري الموعد الصحيح. لن يتغير هذا الاختيار تلقائيا أبدا.", "没有自动关联：请选择正确的日程。此选择不会被自动更改。", "Geen automatische koppeling: kies de juiste afspraak. Deze keuze wordt nooit automatisch gewijzigd.", "Sem ligação automática: escolhe o compromisso certo. Esta escolha nunca será alterada automaticamente.", "Ingen automatisk koppling: välj rätt händelse. Valet ändras aldrig automatiskt.", "Нет автоматической привязки: выбери нужное событие. Этот выбор никогда не изменится автоматически.", "Brak automatycznego powiązania: wybierz właściwe wydarzenie. Ten wybór nigdy nie zmieni się automatycznie.", "자동 연결이 없어요. 맞는 일정을 선택하세요. 이 선택은 자동으로 바뀌지 않아요."],
+  gMaj: ["Majorité vérifiée", "Verified adults", "Mayoría de edad verificada", "Maggiore età verificata", "成人確認済み", "Volljährigkeit geprüft", "تم التحقق من البلوغ", "已核实成年", "Meerderjarigheid gecontroleerd", "Maioridade verificada", "Myndighet kontrollerad", "Совершеннолетие проверено", "Pełnoletność sprawdzona", "성인 확인 완료"],
+  gMajAide: ["Coche seulement les cavaliers dont tu as vérifié qu'ils sont majeurs : leur nom complet et leur photo de profil apparaîtront sur cette page.", "Only tick riders you have checked are adults: their full name and profile photo will appear on this page.", "Marca solo a quienes has verificado que son mayores: su nombre completo y su foto aparecerán.", "Spunta solo chi hai verificato essere maggiorenne: nome completo e foto appariranno.", "成人と確認した人だけチェックしてね。フルネームとプロフィール写真が表示されます。", "Hake nur geprüfte Volljährige an: ihr voller Name und ihr Profilfoto erscheinen.", "حددي فقط من تحققت من بلوغهم: سيظهر اسمهم الكامل وصورتهم.", "只勾选已核实成年的骑手：将显示全名和头像。", "Vink alleen gecontroleerde meerderjarigen aan: volledige naam en profielfoto verschijnen.", "Marca só quem verificaste ser maior: o nome completo e a foto aparecerão.", "Kryssa bara i kontrollerat myndiga: fullt namn och profilbild visas.", "Отмечай только проверенных совершеннолетних: появятся полное имя и фото.", "Zaznacz tylko sprawdzonych pełnoletnich: pojawi się pełne imię i zdjęcie.", "성인으로 확인한 기수만 체크하세요. 전체 이름과 프로필 사진이 표시돼요."],
+  gRien: ["Rien à traiter.", "Nothing to do.", "Nada pendiente.", "Niente da fare.", "対応するものはありません。", "Nichts zu tun.", "لا شيء للمعالجة.", "暂无待处理。", "Niets te doen.", "Nada a tratar.", "Inget att göra.", "Нечего обрабатывать.", "Nic do zrobienia.", "처리할 항목이 없어요."],
+  gSql: ["Disponible dès que la mise à jour de la base sera faite.", "Available once the database update is done.", "Disponible cuando se actualice la base.", "Disponibile dopo l'aggiornamento della base.", "データベース更新後に利用できます。", "Verfügbar nach dem Datenbank-Update.", "متاح بعد تحديث قاعدة البيانات.", "数据库更新后可用。", "Beschikbaar na de database-update.", "Disponível após a atualização da base.", "Tillgängligt efter databasuppdateringen.", "Доступно после обновления базы.", "Dostępne po aktualizacji bazy.", "데이터베이스 업데이트 후 사용할 수 있어요."],
+  gRefus: ["La base a refusé : ", "The database refused: ", "La base rechazó: ", "La base ha rifiutato: ", "データベースが拒否しました：", "Die Datenbank hat abgelehnt: ", "رفضت قاعدة البيانات: ", "数据库拒绝：", "De database weigerde: ", "A base recusou: ", "Databasen nekade: ", "База отказала: ", "Baza odmówiła: ", "데이터베이스가 거부했어요: "],
+  gFait: ["C'est enregistré.", "Saved.", "Guardado.", "Salvato.", "保存しました。", "Gespeichert.", "تم الحفظ.", "已保存。", "Opgeslagen.", "Guardado.", "Sparat.", "Сохранено.", "Zapisano.", "저장했어요."],
+  gRelierA: ["Relier à", "Link to", "Vincular a", "Collega a", "結びつける：", "Verknüpfen mit", "ربط بـ", "关联到", "Koppelen aan", "Ligar a", "Koppla till", "Привязать к", "Powiąż z", "연결:"]
+};
 /* singuliers (quand le nombre vaut 1) */
 var W1 = {
   nConcours: ["concours", "competition", "concurso", "concorso", "大会", "Turnier", "مسابقة", "场比赛", "wedstrijd", "concurso", "tävling", "соревнование", "zawody", "대회"],
@@ -112,6 +131,7 @@ function EcranResultatsEcurie() {
   if (LANGS.indexOf(lg) === -1) lg = "fr";
   var iL = LANGS.indexOf(lg);
   function t(k) { var l = W[k]; return l ? (l[iL] || l[1] || l[0]) : k; }
+  function tg(k) { var l = WG[k]; return l ? (l[iL] || l[1] || l[0]) : k; }
   function tn(k, n) { if (n === 1 && W1[k]) return W1[k][iL] || W1[k][0]; return t(k); }
   var rtl = lg === "ar";
   var R = window.HYPE_RESULTATS || null;
@@ -129,6 +149,8 @@ function EcranResultatsEcurie() {
   var _vu = React.useState("page"), vue = _vu[0], setVue = _vu[1];
   var _np = React.useState(60), nListe = _np[0], setNListe = _np[1];
   var rail = React.useRef(null);
+  var _rc = React.useState(0), recharge = _rc[0], setRecharge = _rc[1];
+  var _gp = React.useState(false), gestionOuverte = _gp[0], setGestionOuverte = _gp[1];
 
   React.useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, [vue]);
   React.useEffect(function () { try { window.__rv3Filtres = F; } catch (e) { } }, [F]);
@@ -177,26 +199,44 @@ function EcranResultatsEcurie() {
         }
         lignes = lignes.filter(function (x) { return x && x.visible !== false; });
         try { if (typeof hypeReparerLignes === "function") lignes = hypeReparerLignes(lignes); } catch (eRp) { }
-        /* les cavaliers DÉCLARÉS de l écurie (même règle et même liste que la page actuelle) */
-        var ffeUser = {};
-        try {
-          var rFf = await supa.from("cavaliers_ffe").select("nom, user_id, statut").in("user_id", ids);
-          if (rFf && !rFf.error && rFf.data) {
-            var noms = {}; rFf.data.forEach(function (l) { if (l && l.nom) { noms[nrm(l.nom)] = true; if (l.user_id) ffeUser[nrm(l.nom)] = l.user_id; } });
-            var MANUELS_ECURIE = [{ motif: "feinn", noms: ["ELEA BRILLARD", "EMMA VICTOIRE DURAND", "VALENTINE LANGLOIS DEPOIX", "PAULINE GILLES", "ILONA HUGOT", "CHLOE BERTHIER"] }];
-            var clubN = nrm(club).toLowerCase();
-            MANUELS_ECURIE.forEach(function (m) { if (clubN.indexOf(m.motif) !== -1) m.noms.forEach(function (n) { noms[nrm(n)] = true; }); });
-            lignes = lignes.filter(function (x) { return x && noms[nrm(x.cavalier)]; });
-          }
-        } catch (eFf) { }
-        if (!lignes.length) { if (vivant) { setD({ lignes: [] }); setEtat("vide"); } return; }
+        /* les cavaliers DÉCLARÉS de l écurie. 30/10 (relecture) : comportement RESTRICTIF — si la liste des noms FFE ne peut pas
+           être lue, on n affiche RIEN (état d erreur), jamais toutes les lignes importées par les membres. */
+        var ffeUser = {}, noms = {};
+        var rFf = await supa.from("cavaliers_ffe").select("nom, user_id, statut").in("user_id", ids);
+        if (!rFf || rFf.error || !Array.isArray(rFf.data)) throw new Error("noms FFE illisibles");
+        rFf.data.forEach(function (l) { if (l && l.nom) { noms[nrm(l.nom)] = true; if (l.user_id) ffeUser[nrm(l.nom)] = l.user_id; } });
+        /* cavaliers SANS compte Hype rattachés à l écurie : liste centrale club_cavaliers_ffe (rattachement confirmé par une gestionnaire).
+           Tant que la table n existe pas en base (SQL en attente), repli PROVISOIRE sur la liste écrite de la page actuelle. */
+        var clefClub = (typeof clefClubG === "function") ? clefClubG(club) : club.toLowerCase();
+        var sansCompte = [], tableCentrale = true;
+        var rCc = await supa.from("club_cavaliers_ffe").select("nom").eq("club_clef", clefClub);
+        if (rCc && rCc.error) {
+          if (/club_cavaliers_ffe|does not exist|schema cache|42P01|PGRST205/i.test(String(rCc.error.message || rCc.error.code || ""))) {
+            tableCentrale = false;
+            var MANUELS_ECURIE_PROVISOIRE = [{ motif: "feinn", noms: ["ELEA BRILLARD", "EMMA VICTOIRE DURAND", "VALENTINE LANGLOIS DEPOIX", "PAULINE GILLES", "ILONA HUGOT", "CHLOE BERTHIER"] }];
+            MANUELS_ECURIE_PROVISOIRE.forEach(function (m) { if (nrm(club).toLowerCase().indexOf(m.motif) !== -1) m.noms.forEach(function (n) { sansCompte.push(n); }); });
+          } else throw new Error("liste des cavaliers sans compte illisible");
+        } else ((rCc && rCc.data) || []).forEach(function (x) { if (x && x.nom) sansCompte.push(x.nom); });
+        sansCompte.forEach(function (n) { noms[nrm(n)] = true; });
+        /* noms présents dans les résultats importés par les membres mais rattachés à personne : candidats pour la gestionnaire */
+        var candidats = {};
+        lignes.forEach(function (x) { var k = nrm(x.cavalier); if (!k || noms[k]) return; var c = candidats[k] || (candidats[k] = { nom: x.cavalier, n: 0, der: "" }); c.n++; if ((x.date_epreuve || "") > c.der) c.der = x.date_epreuve || ""; });
+        lignes = lignes.filter(function (x) { return x && noms[nrm(x.cavalier)]; });
+        if (!lignes.length) { if (vivant) { setD({ lignes: [], candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u }); setEtat("vide"); } return; }
         /* profils des cavalières (photo, âge), chevaux, rendez-vous reliés, photos des rendez-vous */
         var idsP = [];
         lignes.forEach(function (x) { var uid = x.cavalier_id || ffeUser[nrm(x.cavalier)] || (!x.cavalier ? x.user_id : null); if (uid && idsP.indexOf(uid) === -1) idsP.push(uid); });
         var profils = {};
         for (var iP = 0; iP < idsP.length; iP += 150) {
-          try { var rP = await supa.from("profiles").select("id, pseudo, avatar_url, est_mineur").in("id", idsP.slice(iP, iP + 150)); ((rP && rP.data) || []).forEach(function (p) { profils[p.id] = p; }); } catch (eP) { }
+          try { var rP = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsP.slice(iP, iP + 150)); ((rP && rP.data) || []).forEach(function (p) { profils[p.id] = p; }); } catch (eP) { }
         }
+        /* 30/10 (relecture) : majorité VÉRIFIÉE par une modératrice (table majorites_verifiees) — seule condition pour le nom complet
+           et la photo de profil. Table absente ou illisible = personne de vérifié (prénom + initiale pour tous). */
+        var majeures = {}, tableMaj = true;
+        try {
+          var rMj = await supa.from("majorites_verifiees").select("user_id").in("user_id", idsP.slice(0, 300));
+          if (rMj && rMj.error) tableMaj = false; else ((rMj && rMj.data) || []).forEach(function (x) { if (x && x.user_id) majeures[x.user_id] = true; });
+        } catch (eMj) { tableMaj = false; }
         var idsC = [];
         lignes.forEach(function (x) { if (x.cheval_id && idsC.indexOf(x.cheval_id) === -1) idsC.push(x.cheval_id); });
         var chevaux = {};
@@ -227,12 +267,12 @@ function EcranResultatsEcurie() {
           } catch (eMd) { }
         }
         if (!vivant) return;
-        setD({ lignes: lignes, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos });
+        setD({ lignes: lignes, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos, majeures: majeures, tableMaj: tableMaj, candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u });
         setEtat("ok");
       } catch (e) { if (vivant) setEtat("panne"); }
     })();
     return function () { vivant = false; };
-  }, [club]);
+  }, [club, recharge]);
 
   /* ── préparation des lignes ── */
   var tout = React.useMemo(function () {
@@ -243,17 +283,17 @@ function EcranResultatsEcurie() {
       var pr = uid && D.profils ? D.profils[uid] : null;
       var nomComplet = joliNom(b.cavalier) || (pr && pr.pseudo) || "";
       var mots = nomComplet.split(" ").filter(Boolean);
-      /* Décision du 30/10 : mineure -> prénom + initiale. ⚠️ Constaté le 30/10 : profiles.est_mineur vaut false pour les 69 comptes
-         (valeur par défaut, jamais demandée) — on ne peut PAS reconnaître une mineure. Par prudence, TOUT LE MONDE est affiché
-         « Prénom + initiale » tant que RV3_NOMS_COMPLETS_ADULTES reste false. Le jour où l âge est vraiment renseigné, passer à true :
-         seules les comptes marqués majeurs (est_mineur === false) retrouveront leur nom complet. */
-      var mineure = !RV3_NOMS_COMPLETS_ADULTES || !pr || pr.est_mineur !== false;
+      /* Décisions du 30/10 : prénom + initiale du nom pour TOUT LE MONDE tant que la majorité n est pas VÉRIFIÉE par une modératrice
+         (table majorites_verifiees). profiles.est_mineur n est PAS utilisé : il vaut false par défaut sur tous les comptes. */
+      var verifiee = !!(uid && D.majeures && D.majeures[uid]);
+      var mineure = !verifiee;
       var nomAff = (mineure && mots.length > 1) ? (mots[0] + " " + mots[1].charAt(0).toUpperCase() + ".") : nomComplet;
       var cleCav = uid ? ("u:" + uid) : ("n:" + nrm(b.cavalier));
       var ch = (b.cheval_id && D.chevaux) ? D.chevaux[b.cheval_id] : null;
       var lieuBrut = sansDate(b.concours);
       return {
         b: b, x: x, date: x.date, saison: saisonDe(x.date), uid: uid, profil: pr, nom: nomAff, cleCav: cleCav,
+        verifiee: verifiee, sansCompte: !uid,
         cheval: ch, nomCheval: ch ? joliNom(ch.alias || ch.nom) : "", lieu: joliNom(lieuBrut),
         identLieu: nrm((R.rdvNom && R.rdvNom(lieuBrut)) || (R.lieuNormal ? R.lieuNormal(lieuBrut) : lieuBrut)),
         sf: !!(R.estSansFaute && R.estSansFaute(x)), rdv: (b.agenda_id && D.rdvs) ? (D.rdvs[b.agenda_id] || null) : null
@@ -334,13 +374,14 @@ function EcranResultatsEcurie() {
     if (/^ab/.test(c)) return { t: t("abandon"), place: null };
     return null;
   }
-  function photoCav(pr) { var v = pr && pr.avatar_url; if (!v || String(v).charAt(0) === "@" || !/^https?:/i.test(String(v))) return null; return String(v); }
+  function photoCav(pr, verifiee) { if (!verifiee) return null; var v = pr && pr.avatar_url; if (!v || String(v).charAt(0) === "@" || !/^https?:/i.test(String(v))) return null; return String(v); }
   function photoCh(ch) { if (!ch || ch.supprime_le || ch.visibilite === "prive" || !ch.photo_url) return null; return String(ch.photo_url); }
   function vign(u, w, hh) { try { return (typeof vignetteHype === "function") ? vignetteHype(u, w, hh) : u; } catch (e) { return u; } }
   function ouvrirRdv(id) { try { window.__evPasse = null; window.__evPasseId = id; } catch (e) { } setEcran("evenement-passe"); }
   function ouvrirCavaliere(l) {
     if (l.uid) { try { window.__resCavaliereId = l.uid; } catch (e) { } setEcran("resultats-cavalier"); return; }
-    if (l.b.agenda_id) ouvrirRdv(l.b.agenda_id);
+    /* cavalier SANS compte Hype : la liste de SES résultats, sur cette page (pas de fiche à ouvrir, rien d inventé) */
+    setF(Object.assign({}, F, { cav: l.cleCav, conc: "" })); setNListe(60); setVue("tous");
   }
   function ouvrirCheval(id) { try { window.__chevalOuvert = id; window.__perfCavalierId = null; } catch (e) { } setEcran("performances-cheval"); }
   function ouvrirGroupe(g) {
@@ -359,17 +400,19 @@ function EcranResultatsEcurie() {
     ".rv3-h2{font-family:" + SERIF + ";font-weight:500;font-size:25px;line-height:1.15;margin:0;color:" + IVOIRE + "}" +
     ".rv3-sec{padding-top:26px;padding-bottom:6px;min-width:0}.rv3-tete{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}" +
     ".rv3-lien{background:none;border:0;color:" + CHAMP + ";font-family:" + M + ";font-size:11.5px;font-weight:600;letter-spacing:.4px;cursor:pointer;padding:6px 0;white-space:nowrap}" +
-    ".rv3-rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}.rv3-rail::-webkit-scrollbar{display:none}" +
+    ".rv3-rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}.rv3-rail::-webkit-scrollbar{display:none}" +
     ".rv3-carte{flex:0 0 78%;scroll-snap-align:start;background:" + PETROLE + ";border:1px solid rgba(201,166,107,.28);border-radius:14px;overflow:hidden;cursor:pointer;text-align:start;color:inherit;padding:0;font:inherit;display:flex;flex-direction:column}" +
     ".rv3-ph{position:relative;aspect-ratio:4/3;background:" + PETROLE2 + ";overflow:hidden}.rv3-ph img{width:100%;height:100%;object-fit:cover;display:block}" +
     ".rv3-sel{appearance:none;-webkit-appearance:none;background:rgba(16,29,34,.82);color:" + IVOIRE + ";border:1px solid rgba(201,166,107,.35);border-radius:10px;font-family:" + M + ";font-size:16px;padding:10px 30px 10px 12px;min-height:44px;max-width:100%;background-image:linear-gradient(45deg,transparent 50%," + CHAMP + " 50%),linear-gradient(135deg," + CHAMP + " 50%,transparent 50%);background-position:calc(100% - 15px) 19px,calc(100% - 10px) 19px;background-size:5px 5px;background-repeat:no-repeat}" +
     "[dir=rtl] .rv3-sel{padding:10px 12px 10px 30px;background-position:15px 19px,10px 19px}" +
     ".rv3-bt{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid " + CHAMP + ";background:transparent;color:#E9DCC0;font-family:" + M + ";font-size:12.5px;font-weight:600;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}" +
-    ".rv3-kpi{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}" +
+    ".rv3-kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}" +
+    ".rv3-bande{background:linear-gradient(180deg," + NOIR + " 0%," + PETROLE2 + " 14%," + PETROLE2 + " 86%," + NOIR + " 100%);padding:6px 0 18px;margin-top:6px}" +
+    ".rv3-dci{position:relative;aspect-ratio:16/9;overflow:hidden}.rv3-dco{display:none}" +
     ".rv3-k{background:" + PETROLE + ";border:1px solid rgba(201,166,107,.22);border-radius:12px;padding:12px 4px;text-align:center}" +
     ".rv3-duo{display:grid;grid-template-columns:minmax(0,1fr);gap:0}.rv3-ch{flex:0 0 42%}.rv3-mo{flex:0 0 70%}" +
     ".rv3-fl{display:none}.rv3-fm{display:flex}.rv3-hero{min-height:236px}" +
-    "@media(min-width:768px){.rv3-carte{flex-basis:calc((100% - 24px)/3)}.rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-mo{flex-basis:calc((100% - 24px)/3)}.rv3-h2{font-size:28px}.rv3-w{padding-left:24px;padding-right:24px}.rv3-k{padding:16px 6px}.rv3-hero{min-height:320px}}" +
+    "@media(min-width:768px){.rv3-carte{flex-basis:calc((100% - 24px)/3)}.rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-mo{flex-basis:calc((100% - 24px)/3)}.rv3-h2{font-size:28px}.rv3-w{padding-left:24px;padding-right:24px}.rv3-k{padding:16px 6px}.rv3-kpi{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.rv3-dc-img{min-height:300px}.rv3-dci{position:absolute;inset:0;aspect-ratio:auto}.rv3-dco{display:block}.rv3-hero{min-height:320px}}" +
     "@media(min-width:1024px){.rv3-fl{display:flex}.rv3-fm{display:none}}" +
     "@media(min-width:1200px){.rv3-carte{flex-basis:calc((100% - 36px)/4)}.rv3-duo{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px}.rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-mo{flex-basis:calc((100% - 48px)/5)}}";
 
@@ -387,6 +430,8 @@ function EcranResultatsEcurie() {
   var icImp = h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" },
     h("path", { d: "M12 3v12" }), h("path", { d: "M7 10l5 5 5-5" }), h("path", { d: "M4 17v3h16v-3" }));
   var btImport = peutImp ? h("button", { key: "i", type: "button", className: "rv3-bt", onClick: ouvrirImport }, icImp, t("importer")) : null;
+  var btGerer = peutImp ? h("button", { key: "g", type: "button", className: "rv3-lien", onClick: function () { setVue("gestion"); } }, tg("gerer")) : null;
+  var btImportCompact = peutImp ? h("button", { key: "ic", type: "button", className: "rv3-bt", "aria-label": t("importer"), title: t("importer"), onClick: ouvrirImport, style: { width: 44, padding: 0, justifyContent: "center", flex: "0 0 44px" } }, icImp) : null;
 
   /* ── HERO ── */
   var hero = h("div", { className: "rv3-hero", style: { position: "relative", overflow: "hidden", background: PETROLE2 } },
@@ -401,13 +446,14 @@ function EcranResultatsEcurie() {
 
   /* ── FILTRES ── */
   var barreFiltres = (etat === "ok" && tout.length) ? h("div", { className: "rv3-w", style: { paddingTop: 14 } },
-    h("div", { className: "rv3-fl", style: { flexWrap: "wrap", gap: 10, alignItems: "center" } }, selSaison, selCav, selCh, selConc, filtreActif ? btReinit : null, h("span", { style: { flex: 1 } }), btImport),
+    h("div", { className: "rv3-fl", style: { flexWrap: "wrap", gap: 10, alignItems: "center" } }, selSaison, selCav, selCh, selConc, filtreActif ? btReinit : null, h("span", { style: { flex: 1 } }), btGerer, btImport),
     h("div", { className: "rv3-fm", style: { flexDirection: "column", gap: 10 } },
       h("div", { style: { display: "flex", gap: 10 } },
         h("div", { style: { flex: 1, minWidth: 0, display: "flex" } }, h("div", { style: { width: "100%" } }, React.cloneElement(selSaison, { style: { width: "100%" } }))),
         h("button", { type: "button", className: "rv3-bt", "aria-expanded": panneau, onClick: function () { setPanneau(!panneau); } },
           h("svg", { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("path", { d: "M4 5h16l-6 7v6l-4 2v-8z" })),
-          t("filtres") + ((F.cav || F.ch || F.conc) ? " · " + [F.cav, F.ch, F.conc].filter(Boolean).length : ""))),
+          t("filtres") + ((F.cav || F.ch || F.conc) ? " · " + [F.cav, F.ch, F.conc].filter(Boolean).length : "")),
+        btImportCompact),
       panneau ? h("div", { style: { display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: PETROLE, border: "1px solid rgba(201,166,107,0.22)" } },
         React.cloneElement(selCav, { style: { width: "100%" } }), React.cloneElement(selCh, { style: { width: "100%" } }), React.cloneElement(selConc, { style: { width: "100%" } }),
         h("div", { style: { display: "flex", justifyContent: "flex-end" } }, btReinit)) : null)) : null;
@@ -416,7 +462,7 @@ function EcranResultatsEcurie() {
     return h("div", { className: "rv3-w", style: { padding: "48px 16px", textAlign: "center" } },
       h("div", { style: { fontFamily: SERIF, fontSize: 22, color: IVOIRE } }, txt),
       (avecImport && peutImp) ? h("div", { style: { marginTop: 10, fontSize: 12.5, color: GRIS } }, t("videImport")) : null,
-      (avecImport && peutImp) ? h("div", { style: { marginTop: 18 } }, h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport }, icImp, t("importer"))) : null);
+      (avecImport && peutImp) ? h("div", { style: { marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" } }, h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport }, icImp, t("importer")), h("button", { type: "button", className: "rv3-bt", onClick: function () { setVue("gestion"); } }, tg("gerer"))) : null);
   }
   function teteSection(titre, lien, onLien, cle) {
     return h("div", { className: "rv3-tete", key: cle }, h("h2", { className: "rv3-h2" }, titre), lien ? h("button", { type: "button", className: "rv3-lien", onClick: onLien }, lien + (rtl ? " ←" : " →")) : null);
@@ -429,6 +475,10 @@ function EcranResultatsEcurie() {
     var c = place === 1 ? "#D8B46A" : place === 2 ? "#C9CDD2" : place === 3 ? "#C08A5B" : "rgba(201,166,107,0.6)";
     return h("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: c, strokeWidth: 1.6, "aria-hidden": "true" }, h("path", { d: "M7 4h10v4a5 5 0 0 1-10 0z" }), h("path", { d: "M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9 17h6" }));
   }
+  function pastille(txt) {
+    var ini = String(txt || "?").split(" ").filter(Boolean).slice(0, 2).map(function (m) { return m.charAt(0).toUpperCase(); }).join("");
+    return h("span", { "aria-hidden": "true", style: { flex: "0 0 44px", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 18, color: CHAMP, background: PETROLE2 } }, ini);
+  }
   function monogramme(txt) {
     var ini = String(txt || "?").split(" ").filter(Boolean).slice(0, 2).map(function (m) { return m.charAt(0).toUpperCase(); }).join("");
     return h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 50% 40%, #16282E 0%, " + PETROLE2 + " 70%)" } },
@@ -438,15 +488,15 @@ function EcranResultatsEcurie() {
   /* ── C. LES DERNIERS RÉSULTATS DE NOS CAVALIERS ── */
   var derniers = (function () { var vusD = {}, out = []; filtrees.forEach(function (l) { if (vusD[l.cleCav]) return; vusD[l.cleCav] = true; out.push(l); }); return out.slice(0, 16); })();
   function carteCav(l) {
-    var ph = photoCav(l.profil) || photoCh(l.cheval);
+    var ph = photoCav(l.profil, l.verifiee) || photoCh(l.cheval);
     var r = rang(l);
-    return h("button", { key: l.b.id, type: "button", className: "rv3-carte", onClick: function () { ouvrirCavaliere(l); }, style: { cursor: (l.uid || l.b.agenda_id) ? "pointer" : "default" } },
-      h("div", { className: "rv3-ph" }, ph ? h("img", { src: vign(ph, 480, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } }) : monogramme(l.nom),
-        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(16,29,34,0.9) 0%, rgba(16,29,34,0) 45%)" } })),
-      h("div", { style: { padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 } },
-        h("div", null,
+    return h("button", { key: l.b.id, type: "button", className: "rv3-carte" + (ph ? "" : " rv3-sansph"), onClick: function () { ouvrirCavaliere(l); } },
+      ph ? h("div", { className: "rv3-ph" }, h("img", { src: vign(ph, 480, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } }),
+        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(16,29,34,0.9) 0%, rgba(16,29,34,0) 45%)" } })) : null,
+      h("div", { style: { padding: ph ? "10px 12px 12px" : "14px 14px 14px", display: "flex", flexDirection: "column", gap: 6, flex: 1 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 10, minWidth: 0 } }, ph ? null : pastille(l.nom), h("div", { style: { minWidth: 0, flex: 1 } },
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 20, lineHeight: 1.1, color: IVOIRE, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nom),
-          l.nomCheval ? h("div", { dir: "auto", style: { fontSize: 11.5, color: GRIS, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nomCheval) : null),
+          l.nomCheval ? h("div", { dir: "auto", style: { fontSize: 11.5, color: GRIS, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nomCheval) : null)),
         h("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", minHeight: 24 } },
           r ? h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 16, fontWeight: 600, color: IVOIRE } }, r.place && r.place <= 3 ? trophee(r.place) : null, h("bdi", { dir: "ltr" }, r.t)) : null,
           l.sf ? badgeSF() : null),
@@ -487,10 +537,10 @@ function EcranResultatsEcurie() {
     var G = grF[0], sG = stats(G.l), imgG = imageGroupe(G.g);
     var meilleurs = G.l.slice().sort(function (a, b) { return (a.x.place || 999) - (b.x.place || 999); }).slice(0, 4);
     secDernier = h("section", { className: "rv3-sec", "aria-label": t("dernierConc") },
-      h("div", { style: { position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(201,166,107,0.28)", background: PETROLE, minHeight: imgG ? 300 : 0 } },
-        imgG ? h("img", { src: vign(imgG, 1100, 620), alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }) : null,
-        imgG ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.7) 50%, rgba(7,10,8,0.25) 100%)" } }) : null,
-        h("div", { style: { position: "relative", padding: "20px 18px", maxWidth: 560 } },
+      h("div", { className: "rv3-dc" + (imgG ? " rv3-dc-img" : ""), style: { position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(201,166,107,0.28)", background: PETROLE } },
+        imgG ? h("div", { className: "rv3-dci" }, h("img", { src: vign(imgG, 1100, 620), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.style.display = "none"; } catch (er) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+          h("div", { className: "rv3-dco", "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.7) 50%, rgba(7,10,8,0.25) 100%)" } })) : null,
+        h("div", { style: { position: "relative", padding: "18px 16px 20px", maxWidth: 560 } },
           h("span", { style: { display: "inline-block", fontSize: 9.5, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: CHAMP, border: "1px solid rgba(201,166,107,0.55)", borderRadius: 6, padding: "4px 8px" } }, t("dernierConc")),
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.1, margin: "10px 0 4px", color: IVOIRE } }, titreGroupe(G.g)),
           (G.g.rdv && G.g.rdv.titre) ? h("div", { dir: "auto", style: { fontSize: 12, color: GRIS } }, G.g.rdv.titre) : null,
@@ -574,7 +624,7 @@ function EcranResultatsEcurie() {
       ls.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 6 } }, ls.map(function (l) {
         var r = rang(l);
         return h("button", { key: l.b.id, type: "button", onClick: function () { ouvrirCavaliere(l); },
-          style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", color: IVOIRE, textAlign: "start", font: "inherit", cursor: (l.uid || l.b.agenda_id) ? "pointer" : "default" } },
+          style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", color: IVOIRE, textAlign: "start", font: "inherit", cursor: "pointer" } },
           h("div", { style: { flex: "0 0 74px", textAlign: "center" } },
             h("div", { style: { fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 } }, r && r.place && r.place <= 3 ? trophee(r.place) : null, r ? h("bdi", { dir: "ltr" }, r.t) : "—")),
           h("div", { style: { flex: 1, minWidth: 0 } },
@@ -586,19 +636,100 @@ function EcranResultatsEcurie() {
       filtrees.length > nListe ? h("button", { type: "button", className: "rv3-lien", style: { marginTop: 10 }, onClick: function () { setNListe(nListe + 60); } }, t("voirPlus")) : null);
   }
 
+  /* ── VUE « GESTION » (gestionnaires seulement ; la base reste seule juge) ── */
+  var _ge = React.useState(null), evtsClub = _ge[0], setEvtsClub = _ge[1];
+  var _gm = React.useState({ t: "", err: false }), gMsg = _gm[0], setGMsg = _gm[1];
+  var _gb = React.useState(""), gBusy = _gb[0], setGBusy = _gb[1];
+  React.useEffect(function () {
+    if (vue !== "gestion" || !D || !D.clefClub || typeof supa === "undefined" || !supa) return;
+    var vif = true;
+    supa.from("club_agenda").select("id, club_clef, type, titre, lieu, date_jour, date_fin").eq("club_clef", D.clefClub).eq("type", "concours").limit(1000)
+      .then(function (r) { if (vif) setEvtsClub((r && !r.error && r.data) || []); });
+    return function () { vif = false; };
+  }, [vue, D && D.clefClub]);
+  async function action(cle, fn) {
+    setGBusy(cle); setGMsg({ t: "", err: false });
+    try {
+      var r = await fn();
+      if (r && r.error) throw new Error(String(r.error.message || r.error));
+      if (r && Array.isArray(r.data) && !r.data.length) throw new Error("0");
+      setGMsg({ t: tg("gFait"), err: false }); setRecharge(recharge + 1);
+    } catch (e) {
+      var m = String((e && e.message) || e);
+      setGMsg({ t: (/does not exist|schema cache|PGRST205|42P01/i.test(m) ? tg("gSql") : tg("gRefus") + (m === "0" ? "0" : m)), err: true });
+    }
+    setGBusy("");
+  }
+  function vueGestion() {
+    var estMod = (typeof estModerateurHype === "function") && estModerateurHype(D && D.moi);
+    var cands = Object.keys((D && D.candidats) || {}).map(function (k) { return D.candidats[k]; }).sort(function (a, b) { return b.n - a.n || (a.der < b.der ? 1 : -1); });
+    var titreG = function (txt) { return h("h3", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 21, margin: "26px 0 6px", color: IVOIRE } }, txt); };
+    var aide = function (txt) { return h("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.5, color: GRIS } }, txt); };
+    var ligne = function (cle, gauche, droite) { return h("div", { key: cle, style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", marginBottom: 6 } }, h("div", { style: { flex: 1, minWidth: 0, fontSize: 13 } }, gauche), droite); };
+    var petitBt = function (cle, txt, fn) { return h("button", { key: cle, type: "button", className: "rv3-bt", disabled: !!gBusy, onClick: fn, style: { minHeight: 38, padding: "0 12px", fontSize: 11.5, opacity: gBusy && gBusy !== cle ? 0.5 : 1 } }, gBusy === cle ? "…" : txt); };
+    /* résultats sans lien ayant au moins un rendez-vous plausible dans l agenda de l écurie, regroupés par concours */
+    var aRelier = [];
+    if (evtsClub && typeof hypeRdvCandidats === "function") {
+      var vusR = {};
+      tout.forEach(function (l) {
+        if (l.b.agenda_id || !l.g) return;
+        var c = hypeRdvCandidats(l.b, evtsClub, [D.clefClub]);
+        if (!c.length) return;
+        var e = vusR[l.g.cle] || (vusR[l.g.cle] = { g: l.g, ids: [], cands: c });
+        e.ids.push(l.b.id);
+      });
+      aRelier = Object.keys(vusR).map(function (k) { return vusR[k]; }).sort(function (a, b) { return a.g.fin < b.g.fin ? 1 : -1; });
+    }
+    var cavComptes = (function () { var v = {}, o = []; tout.forEach(function (l) { if (l.uid && !v[l.uid]) { v[l.uid] = true; o.push(l); } }); return o.sort(function (a, b) { return a.b.cavalier < b.b.cavalier ? -1 : 1; }); })();
+    return h("section", { className: "rv3-w rv3-sec", "aria-label": tg("gTitre") },
+      h("div", { className: "rv3-tete" }, h("h2", { className: "rv3-h2" }, tg("gTitre")), h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("page"); setGMsg({ t: "", err: false }); } }, (rtl ? "→ " : "← ") + t("retourPage"))),
+      gMsg.t ? h("div", { role: "status", style: { padding: "10px 12px", borderRadius: 10, marginBottom: 8, fontSize: 12.5, border: "1px solid " + (gMsg.err ? "rgba(255,120,120,0.45)" : "rgba(201,166,107,0.45)"), color: gMsg.err ? "#FFB4B4" : "#E9DCC0" } }, gMsg.t) : null,
+      titreG(tg("gSans")), aide(tg("gSansAide")),
+      D && D.tableCentrale === false ? aide(tg("gSql")) : null,
+      cands.length ? cands.map(function (c) {
+        return ligne("c" + c.nom, h("span", null, h("b", { style: { fontWeight: 600 } }, joliNom(c.nom)), h("span", { style: { color: GRIS, fontSize: 11.5 } }, " · " + c.n + " " + tn("nResultats", c.n) + (c.der ? " · " + fmtDate(c.der) : ""))),
+          (D && D.tableCentrale) ? petitBt("a" + c.nom, tg("gRattacher"), function () { action("a" + c.nom, function () { return supa.from("club_cavaliers_ffe").insert({ club_clef: D.clefClub, nom: c.nom }).select("nom"); }); }) : null);
+      }) : aide(tg("gRien")),
+      (D && D.sansCompte && D.sansCompte.length) ? h("div", { style: { marginTop: 10 } }, h("div", { style: { fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase", color: CHAMP, margin: "6px 0 8px" } }, tg("gDeja")),
+        D.sansCompte.map(function (n) { return ligne("d" + n, joliNom(n), (D.tableCentrale) ? petitBt("r" + n, tg("gRetirer"), function () { action("r" + n, function () { return supa.from("club_cavaliers_ffe").delete().eq("club_clef", D.clefClub).eq("nom", n).select("nom"); }); }) : null); })) : null,
+      titreG(tg("gRelier")), aide(tg("gRelierAide")),
+      evtsClub === null ? aide(t("chargement")) : (aRelier.length ? aRelier.map(function (e) {
+        return h("div", { key: "g" + e.g.cle, style: { padding: "12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", marginBottom: 8 } },
+          h("div", { style: { fontSize: 13, fontWeight: 600 } }, titreGroupe(e.g) + " · " + fmtPeriode(e.g.debAff, e.g.fin)),
+          h("div", { style: { fontSize: 11.5, color: GRIS, margin: "2px 0 8px" } }, e.ids.length + " " + tn("nResultats", e.ids.length)),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8 } }, e.cands.map(function (ev) {
+            return petitBt("l" + e.g.cle + ev.id, tg("gRelierA") + " « " + (ev.titre || ev.lieu || "") + " » · " + fmtDate(ev.date_jour, true), function () {
+              action("l" + e.g.cle + ev.id, function () { return (typeof hypeEcrireLienAgenda === "function") ? hypeEcrireLienAgenda(e.ids, ev.id, "manuel", function (q) { return q.is("agenda_id", null); }) : Promise.resolve({ error: "indisponible" }); });
+            });
+          })));
+      }) : aide(tg("gRien"))),
+      estMod ? h(React.Fragment, null, titreG(tg("gMaj")), aide(tg("gMajAide")),
+        D && D.tableMaj === false ? aide(tg("gSql")) : null,
+        cavComptes.map(function (l) {
+          var ok = !!(D.majeures && D.majeures[l.uid]);
+          return ligne("m" + l.uid, joliNom(l.b.cavalier) || (l.profil && l.profil.pseudo) || "", D.tableMaj === false ? null : h("label", { style: { display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: IVOIRE, cursor: "pointer" } },
+            h("input", { type: "checkbox", checked: ok, disabled: !!gBusy, style: { width: 20, height: 20, accentColor: CHAMP }, onChange: function () {
+              action("m" + l.uid, function () { return ok ? supa.from("majorites_verifiees").delete().eq("user_id", l.uid).select("user_id") : supa.from("majorites_verifiees").insert({ user_id: l.uid }).select("user_id"); });
+            } }), tg("gMaj")));
+        })) : null);
+  }
+
   var corps;
   if (etat === "chargement") corps = message(t("chargement"), false);
   else if (etat === "panne") corps = message(t("panne"), false);
+  else if (vue === "gestion" && peutImp && D) corps = vueGestion();
   else if (etat === "vide" || !tout.length) corps = message(t("vide"), true);
+  else if (vue === "gestion" && peutImp) corps = vueGestion();
   else if (vue === "tous") corps = vueTous();
   else corps = h(React.Fragment, null,
     secCav,
     h("div", { style: { background: "linear-gradient(180deg, " + NOIR + " 0%, " + PETROLE2 + " 12%, " + PETROLE2 + " 88%, " + NOIR + " 100%)", marginTop: 16, paddingBottom: 14 } },
       h("div", { className: "rv3-w rv3-duo" }, secDernier || h("div"), secChiffres)),
-    h("div", { className: "rv3-w rv3-duo" }, secConcours || h("div"), secChevaux),
-    secMoments,
-    peutImp ? h("div", { className: "rv3-w rv3-fm", style: { paddingTop: 24 } },
-      h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport, style: { width: "100%", justifyContent: "center", minHeight: 52 } }, icImp, t("importer"))) : null);
+    h("div", { className: "rv3-w rv3-duo", style: { paddingBottom: 18 } }, secConcours || h("div"), secChevaux),
+    secMoments ? h("div", { className: "rv3-bande" }, secMoments) : null,
+    peutImp ? h("div", { className: "rv3-w rv3-fm", style: { paddingTop: 24, flexDirection: "column", gap: 10 } },
+      h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport, style: { width: "100%", justifyContent: "center", minHeight: 52 } }, icImp, t("importer")),
+      h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("gestion"); }, style: { alignSelf: "center" } }, tg("gerer"))) : null);
 
   return h("div", { className: "rv3", dir: rtl ? "rtl" : "ltr" },
     h("style", null, CSS),

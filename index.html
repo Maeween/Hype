@@ -3597,25 +3597,46 @@ function hypeRdvCandidats(res, rdvs, clubsCav) {
 function hypeLierApresSaisie(id) {
   try { if (!id || typeof utilisateurActuel !== "function") return; utilisateurActuel().then(function (u) { return hypeRelierResultatsAgenda([id], u); }).catch(function () { }); } catch (e) { }
 }
-async function hypeRelierResultatsAgenda(ids, user) {
-  var info = { relies: 0, rdv: {}, plusieurs: 0, sansRdv: 0, erreur: "" };
+/* 30/10 (relecture) : un resultat MODIFIE (date, concours…) — son lien AUTOMATIQUE est reevalue (garde, change ou retire) ;
+   un lien choisi a la main ('manuel') ou valide par Blandine ('valide') n est JAMAIS touche. Sans la colonne agenda_lien en base,
+   on ne peut pas distinguer : on ne reevalue rien (on ne touche qu aux resultats sans lien). */
+function hypeReevaluerLienApresModif(id) {
+  try { if (!id || typeof utilisateurActuel !== "function") return; utilisateurActuel().then(function (u) { return hypeRelierResultatsAgenda([id], u, { reevaluer: true }); }).catch(function () { }); } catch (e) { }
+}
+/* Ecrit agenda_id (+ agenda_lien) ; si la colonne agenda_lien n existe pas encore en base, rejoue sans elle. */
+async function hypeEcrireLienAgenda(ids, agendaId, nature, garde) {
+  var champs = { agenda_id: agendaId, agenda_lien: agendaId ? nature : null };
+  var req = function (c) { var q = supa.from("resultats").update(c).in("id", ids); return garde ? garde(q) : q; };
+  var r = await delaiDeGarde(req(champs).select("id"), 15, "lien avec l agenda");
+  if (r && r.error && /agenda_lien/i.test(String(r.error.message || r.error))) r = await delaiDeGarde(req({ agenda_id: agendaId }).select("id"), 15, "lien avec l agenda");
+  return r;
+}
+async function hypeRelierResultatsAgenda(ids, user, opts) {
+  var reevaluer = !!(opts && opts.reevaluer);
+  var info = { relies: 0, rdv: {}, plusieurs: 0, sansRdv: 0, retires: 0, erreur: "" };
   try {
     if (!ids || !ids.length || typeof supa === "undefined" || !supa) return info;
-    var lignes = [];
+    var lignes = [], colLien = true;
     for (var i = 0; i < ids.length; i += 200) {
-      var rL = await delaiDeGarde(supa.from("resultats").select("id, date_epreuve, concours, cavalier, cavalier_id, agenda_id").in("id", ids.slice(i, i + 200)), 15, "lecture des résultats enregistrés");
+      var tranche = ids.slice(i, i + 200);
+      var rL = await delaiDeGarde(supa.from("resultats").select("id, date_epreuve, concours, cavalier, cavalier_id, agenda_id, agenda_lien").in("id", tranche), 15, "lecture des résultats enregistrés");
+      if (rL && rL.error && /agenda_lien/i.test(String(rL.error.message || rL.error))) { colLien = false; rL = await delaiDeGarde(supa.from("resultats").select("id, date_epreuve, concours, cavalier, cavalier_id, agenda_id").in("id", tranche), 15, "lecture des résultats enregistrés"); }
       if (rL && rL.error) { info.erreur = String(rL.error.message || rL.error); return info; }
       lignes = lignes.concat((rL && rL.data) || []);
     }
-    lignes = lignes.filter(function (l) { return l && l.id && !l.agenda_id && l.date_epreuve; });
+    /* a traiter : les lignes sans lien ; en reevaluation, aussi celles dont le lien a ete pose AUTOMATIQUEMENT */
+    lignes = lignes.filter(function (l) { return l && l.id && (!l.agenda_id || (reevaluer && colLien && l.agenda_lien === "auto")); });
     if (!lignes.length) return info;
-    var dates = lignes.map(function (l) { return String(l.date_epreuve).slice(0, 10); }).sort();
-    var dMin = new Date(dates[0] + "T00:00:00Z"); dMin.setUTCDate(dMin.getUTCDate() - 10);   /* un concours de plusieurs jours commence avant */
-    var rA = await delaiDeGarde(supa.from("club_agenda").select("id, club_clef, type, titre, lieu, date_jour, date_fin")
-      .eq("type", "concours").gte("date_jour", dMin.toISOString().slice(0, 10)).lte("date_jour", dates[dates.length - 1]).limit(1000), 15, "lecture de l agenda");
-    if (rA && rA.error) { info.erreur = String(rA.error.message || rA.error); return info; }
-    var rdvs = (rA && rA.data) || [];
-    if (!rdvs.length) { info.sansRdv = lignes.length; return info; }
+    var avecDate = lignes.filter(function (l) { return l.date_epreuve; });
+    var rdvs = [];
+    if (avecDate.length) {
+      var dates = avecDate.map(function (l) { return String(l.date_epreuve).slice(0, 10); }).sort();
+      var dMin = new Date(dates[0] + "T00:00:00Z"); dMin.setUTCDate(dMin.getUTCDate() - 10);   /* un concours de plusieurs jours commence avant */
+      var rA = await delaiDeGarde(supa.from("club_agenda").select("id, club_clef, type, titre, lieu, date_jour, date_fin")
+        .eq("type", "concours").gte("date_jour", dMin.toISOString().slice(0, 10)).lte("date_jour", dates[dates.length - 1]).limit(1000), 15, "lecture de l agenda");
+      if (rA && rA.error) { info.erreur = String(rA.error.message || rA.error); return info; }
+      rdvs = (rA && rA.data) || [];
+    }
     /* Clubs de chaque cavalière : son compte relié (cavalier_id), sinon son nom FFE relié (cavaliers_ffe), sinon la personne qui importe. */
     var clubsDe = function (p) { var o = []; if (p) { [p.ecurie, p.ecurie2].forEach(function (c) { var k = clefClubG(String(c || "")); if (k && o.indexOf(k) === -1) o.push(k); }); } return o; };
     var idsCav = [], nomsSans = [];
@@ -3637,27 +3658,33 @@ async function hypeRelierResultatsAgenda(ids, user) {
       ((rP && rP.data) || []).forEach(function (p) { if (p && p.id) profils[p.id] = p; });
     } catch (eP) { }
     var clubsImporteur = clubsDe(user && profils[user.id]);
-    var parRdv = {}, titres = {};
+    var parRdv = {}, titres = {}, aRetirer = [];
     lignes.forEach(function (l) {
       var uid = l.cavalier_id || userParNom[l.cavalier] || null;
       var clubs = uid && profils[uid] ? clubsDe(profils[uid]) : clubsImporteur;
-      var cands = hypeRdvCandidats(l, rdvs, clubs);
-      /* Cavalière CONNUE inscrite dans deux clubs, les deux ayant ce concours à l agenda : son club PRINCIPAL (1re écurie) tranche.
-         Cavalière inconnue (repli sur les clubs de la personne qui importe) : on ne tranche jamais. */
-      if (cands.length > 1 && uid && profils[uid] && clubs.length > 1) {
-        var c1 = hypeRdvCandidats(l, rdvs, clubs.slice(0, 1));
-        if (c1.length === 1) cands = c1;
+      /* 30/10 (relecture) : AUCUN choix arbitraire — plusieurs rendez-vous plausibles (même pour une cavalière inscrite dans deux
+         écuries) = aucun lien ; une gestionnaire tranche à la main depuis la page Résultats de l écurie. */
+      var cands = l.date_epreuve ? hypeRdvCandidats(l, rdvs, clubs) : [];
+      var dejaAuto = !!(l.agenda_id && l.agenda_lien === "auto");
+      if (cands.length === 1) {
+        if (dejaAuto && String(l.agenda_id) === String(cands[0].id)) return;   /* toujours bon : on garde */
+        (parRdv[cands[0].id] = parRdv[cands[0].id] || []).push(l.id); titres[cands[0].id] = cands[0].titre || cands[0].lieu || "";
+      } else {
+        if (cands.length > 1) info.plusieurs++; else info.sansRdv++;
+        if (dejaAuto) aRetirer.push(l.id);   /* lien automatique devenu faux ou ambigu : retiré */
       }
-      if (cands.length === 1) { (parRdv[cands[0].id] = parRdv[cands[0].id] || []).push(l.id); titres[cands[0].id] = cands[0].titre || cands[0].lieu || ""; }
-      else if (cands.length > 1) info.plusieurs++;
-      else info.sansRdv++;
     });
     var cles = Object.keys(parRdv);
     for (var k = 0; k < cles.length; k++) {
-      var rU = await delaiDeGarde(supa.from("resultats").update({ agenda_id: cles[k] }).in("id", parRdv[cles[k]]).is("agenda_id", null).select("id"), 15, "lien avec l agenda");
+      /* garde : sans lien, ou lien automatique (jamais un lien manuel / validé) */
+      var rU = await hypeEcrireLienAgenda(parRdv[cles[k]], cles[k], "auto", function (q) { return colLien ? q.or("agenda_id.is.null,agenda_lien.eq.auto") : q.is("agenda_id", null); });
       if (rU && rU.error) { info.erreur = String(rU.error.message || rU.error); continue; }
       var nU = (rU && rU.data) ? rU.data.length : 0;
       if (nU) { info.relies += nU; info.rdv[titres[cles[k]]] = (info.rdv[titres[cles[k]]] || 0) + nU; }
+    }
+    if (aRetirer.length && colLien) {
+      var rR = await hypeEcrireLienAgenda(aRetirer, null, null, function (q) { return q.eq("agenda_lien", "auto"); });
+      if (rR && !rR.error && rR.data) info.retires = rR.data.length;
     }
   } catch (e) { info.erreur = String((e && e.message) || e); }
   return info;
@@ -56157,6 +56184,7 @@ function FeuilleAjoutResultatV2(props) {
         if (rM && rM.error && anneeV && /annee/i.test(String(rM.error.message || rM.error))) rM = await supa.from("resultats").update(champsM).eq("id", ed.id).eq("user_id", props.moi.id).select("id");
         if (rM && rM.error) throw new Error(rM.error.message || String(rM.error));
         if (!rM || !rM.data || !rM.data.length) throw new Error(T("la base n'a modifié aucune ligne (pas autorisé sur ce résultat, ou résultat déjà supprimé).", "the database changed no row (not allowed on this result, or already deleted).", "la base no modificó ninguna línea (no autorizado, o ya eliminado).", "il database non ha modificato nessuna riga (non autorizzato, o già eliminato).", "変更された行はありません（権限なし、または削除済み）。", "keine Zeile geändert (nicht erlaubt oder bereits gelöscht).", "لم تُعدَّل أي سطر (غير مسموح أو محذوف).", "数据库没有修改任何一行（没有权限修改这条成绩，或者它已被删除）。", "de database heeft geen enkele rij gewijzigd (niet toegestaan voor dit resultaat, of het resultaat is al verwijderd).", "o banco de dados não alterou nenhuma linha (sem permissão para este resultado, ou o resultado já foi excluído).", "databasen ändrade ingen rad (inte tillåtet på det här resultatet, eller så är resultatet redan borttaget).", "база не изменила ни одной строки (нет прав на этот результат или он уже удалён).", "baza nie zmieniła żadnego wiersza (brak uprawnień do tego wyniku albo wynik został już usunięty).", "데이터베이스에서 수정된 행이 없어요 (이 결과에 대한 권한이 없거나 이미 삭제된 결과예요)."));
+        try { hypeReevaluerLienApresModif(ed.id); } catch (eRv) { }   /* 30/10 : le lien automatique avec l agenda suit la modification (jamais un lien manuel) */
         setBusy(false);
         if (props.onEnregistre) props.onEnregistre();
       } catch (eM) {
