@@ -376,6 +376,7 @@ function HypeRobesGalopsOrdi(props) {
     ];
     var pies = [[a[5], "g5tobiano"], [a[6], "g5overo"], [a[7], "g5tovero"], [a[8], "g5balzan"], [a[9], "g5sabino"]];
     var adjCles = ["g5crins", "g5raie", "g5pommele", "g5scap", "g5zebr"];
+    var adjZoom = ["50% 50%", "50% 25%", "50% 50%", "46% 45%", "70% 82%"];
     corps = [
       /* 01 COMPRENDRE : a[0..3] */
       Sec("s1", "01", d.blocs[1].titre, "noir", h("div", null,
@@ -407,7 +408,7 @@ function HypeRobesGalopsOrdi(props) {
       Sec("s4", "04", nettoyer(sansNum(a[13].titre)), "petrole", h("div", null,
         h("div", { className: "rbo-txt", style: { maxWidth: 900 } }, h("p", null, a[13].texte)),
         h("div", { className: "rbo-adj" }, a[13].puces.map(function (p, i) {
-          return h("div", { key: i }, Photo(adjCles[i], "", "50% 50%"), h("strong", null, nettoyer(p.gras).replace(/\s*:\s*$/, "")), h("span", null, p.texte));
+          return h("div", { key: i }, Photo(adjCles[i], "", adjZoom[i]), h("strong", null, nettoyer(p.gras).replace(/\s*:\s*$/, "")), h("span", null, p.texte));
         })),
         h("div", { className: "rbo-reflexe" }, h("p", null, a[14].texte)))),
       Vague(PET, NOIR),
