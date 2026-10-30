@@ -15430,3 +15430,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Tests G2 : 1100/1280/1440/1920, 14 langues, arabe RTL, quiz : OK.
 
 - 30/10 20h35 : photo palomino (liste + balzanes blanches) rangée en images/robes-g3-palomino.webp (Galop 3, déclinaisons). Reste à manquer côté G3 : balzane, épis, alezan brûlé, café au lait, noir pangaré.
+
+- 30/10 20h40 : photo cheval blanc à taches brunes rangée en images/robes-g5-tachete-autres.webp (Galop 5, tachetés — autres types), sans légende de Blandine : à confirmer.
