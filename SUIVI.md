@@ -15687,3 +15687,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Gardé : page « Cours terminé ! » de l'appli en or (index.html), bouton « Commencer le cours » non repris (il n'existe que dans la version découpée).
 - Fichiers : hype-cours-robes-ordi.js (v15), index.html (?v=15, marker 20261031-0130), SUIVI.md. Inchangés : Galops 2, 3, 5.
 - À décider avec Blandine : comment raccourcir la page (sections repliables ?), étoiles de la liste des cours (A/B/C).
+
+## 30/10 23h45 — Robes Galop 1 : doublons retirés, Hey Baby regroupé, onglets translucides (build 20261031-0145, hype-cours-robes-ordi.js v16, NON publié)
+- Section 03 « Ne pas confondre le bai et l'alezan » retirée (téléphone ET ordi) : photos bai/alezan en double, « Chez le bai / Chez l'alezan » (redit les « À retenir » de la section 02), « Le bon réflexe » (redit les erreurs à éviter) et la planche officielle illisible « Les 3 robes de base ». Les textes restent dans les données. Vignettes : 4 au lieu de 5 (En pratique = 03, Quiz = 04).
+- Page de fin : 3 questions Hey Baby en tout, chacune dans sa petite bulle, dans la carte « Demande à Hey Baby » (plus de liste en dessous). Synthèse resserrée sur téléphone.
+- Onglets du haut : plus de bandeau, pastilles semi-transparentes ombrées (flou), placées sous la barre d'état de l'iPhone. Boutons « Parcours des robes » idem.

@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
+var VERSION = 16;   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
+/* ancien : VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
 var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
@@ -134,7 +135,7 @@ var CSS = [
 ".rbo-main{min-width:0}",
 ".rbo-parc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0;padding:26px 0 22px}",
 ".rbo-parc .tt{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:#C9A66B;margin-inline-end:8px}",
-".rbo-parc button{font:inherit;font-size:13px;font-weight:600;color:#F3EEE4;background:#101D22;border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:8px 18px;cursor:pointer}",
+".rbo-parc button{font:inherit;font-size:13px;font-weight:600;color:#F3EEE4;background:rgba(16,29,34,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.5);border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:8px 18px;cursor:pointer}",
 ".rbo-parc button:hover{border-color:#C9A66B}",
 ".rbo-parc button[aria-current=true]{background:#C9A66B;color:#070A08;border-color:#C9A66B;cursor:default}",
 /* haut de page (structure validée, inchangée) */
@@ -168,7 +169,7 @@ var CSS = [
 ".rbo-card.defi{border:1px solid rgba(201,166,107,.78);background:#0B1515}",
 ".rbo-card.defi:hover{border-color:var(--champ);background:#0f1c1c}",
 /* vignettes */
-".rbo-vig{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;padding:36px 40px 20px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
+".rbo-vig{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:36px 40px 20px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
 ".rbo-vig button{position:relative;height:150px;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.16);background:var(--petrole) center/cover no-repeat;text-align:start;padding:0}",
 ".rbo-vig button:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 30%,rgba(7,10,8,.88) 100%)}",
 ".rbo-vig .big{position:absolute;top:8px;inset-inline-start:14px;z-index:1;font-family:'Cormorant Garamond',serif;font-size:44px;line-height:1;font-weight:500;color:#E9D9B4}",
@@ -178,9 +179,9 @@ var CSS = [
 "@media (max-width:1479px){.rbo-vig{gap:10px}.rbo-vig .lab{font-size:16px;inset-inline:12px 40px}.rbo-vig .arr{width:26px;height:26px;font-size:13px}.rbo-vig .big{font-size:36px}}",
 /* barre compacte qui suit le défilement */
 ".rbo-minih{position:sticky;top:0;z-index:30;height:0}",
-".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:8px 40px;background:rgba(7,10,8,.58);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.45);border-bottom:1px solid rgba(201,166,107,.22);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
+".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 40px 8px;background:transparent;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".rbo-mini.on{opacity:1;pointer-events:auto;transform:none}",
-".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.55);box-shadow:0 3px 10px rgba(0,0,0,.4);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
+".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.55);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
 ".rbo-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".rbo-mini button[aria-current=true]{border-color:var(--champ);background:rgba(201,166,107,.16)}",
 /* sections : magazine, grandes photos, beaucoup d'air */
@@ -239,6 +240,10 @@ var CSS = [
 ".rbo-defi{border:1px solid rgba(201,166,107,.78);border-radius:18px;background:#0B1515;padding:30px 34px}",
 ".rbo-defi h3{color:var(--champ)!important;margin-top:0!important}",
 ".rbo-hb{display:flex;flex-wrap:wrap;gap:10px}",
+".rbo-hbq{display:grid;gap:7px;margin-top:10px}",
+".rbo-hbq button{display:flex;align-items:center;gap:10px;width:100%;text-align:start;border:1px solid rgba(201,166,107,.32);border-radius:12px;background:rgba(7,10,8,.5);box-shadow:0 3px 10px rgba(0,0,0,.35);padding:8px 12px;font-size:13px;line-height:1.35;color:var(--ivoire);cursor:pointer}",
+".rbo-hbq button span{flex:1 1 auto;min-width:0}.rbo-hbq button i{font-style:normal;color:var(--champ);font-size:16px}",
+".rbo-hbq button:hover{border-color:var(--champ)}",
 ".rbo-hb button{border:1px solid var(--ligne);border-radius:999px;background:rgba(7,10,8,.4);padding:10px 18px;font-size:13.5px;color:var(--ivoire);text-align:start}",
 ".rbo-hb button:hover{border-color:var(--champ)}",
 ".rbo-synth{margin-top:72px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}",
@@ -302,7 +307,7 @@ var CSS = [
 ".rbo .rbo-vig .big{font-size:30px;top:6px;inset-inline-start:10px}",
 ".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:14.5px;inset-inline:10px 36px;bottom:10px;max-width:none}",
 ".rbo .rbo-vig .arr{width:24px;height:24px;font-size:12px;bottom:8px;inset-inline-end:8px}",
-".rbo .rbo-mini{padding:8px 14px;overflow-x:auto}",
+".rbo .rbo-mini{padding:calc(8px + env(safe-area-inset-top)) 14px 10px;overflow-x:auto}",
 ".rbo .rbo-coachfin{padding:36px 16px 44px}.rbo .rbo-coachfin .rbo-card{padding:18px 18px}.rbo .rbo-coachfin .rbo-card h3{font-size:22px}.rbo .rbo-coachfin .rbo-card p{font-size:15px}.rbo .rbo-retcours{padding:16px 16px 0}",
 ".rbo .rbo-photo.trio{aspect-ratio:auto}.rbo .rbo-photo.trio img{height:auto;object-fit:contain}",
 ".rbo .rbo-sec{padding:40px 20px 46px;scroll-margin-top:52px}",
@@ -327,7 +332,7 @@ var CSS = [
 ".rbo .rbo-methode,.rbo .rbo-defi,.rbo .rbo-sig,.rbo .rbo-memo{padding:20px 18px}",
 ".rbo .rbo-ordre li{font-size:14.5px;padding:12px 2px 4px}.rbo .rbo-ordre .nn{font-size:26px}",
 ".rbo .rbo-reflexe{margin-top:40px;padding:26px 8px}",
-".rbo .rbo-synth{gap:28px}.rbo .rbo-ret{flex-direction:column;gap:4px}",
+".rbo .rbo-synth{gap:12px}.rbo .rbo-synth ol{gap:0}.rbo .rbo-synth li{padding:9px 0;font-size:14.5px;line-height:1.45}.rbo .rbo-ret{flex-direction:column;gap:4px}",
 ".rbo .rbo-fin{font-size:24px;margin:52px auto 0}",
 ".rbo .rbo-q h3{font-size:24px!important;margin-bottom:20px!important}.rbo .rbo-opts button{padding:13px 14px;font-size:14.5px}",
 ".rbo .rbo-qz .rbo-photo{aspect-ratio:16/9;min-height:0}.rbo .rbo-qnav .rbo-btn{padding:11px 18px}",
@@ -363,7 +368,7 @@ function HypeRobesOrdi(props) {
     return function () { window.removeEventListener("scroll", on); };
   }, [vue]);
   useEffect(function () {
-    var els = ["s1", "s2", "s3", "s4", "s5"].map(function (i) { return document.getElementById("rbo-" + i); }).filter(Boolean);
+    var els = ["s1", "s2", "s4", "s5"].map(function (i) { return document.getElementById("rbo-" + i); }).filter(Boolean);
     if (!els.length || typeof IntersectionObserver === "undefined") return undefined;
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) setActif(en.target.id.replace("rbo-", "")); }); }, { rootMargin: "-25% 0px -62% 0px", threshold: 0 });
     els.forEach(function (e) { io.observe(e); });
@@ -416,13 +421,12 @@ function HypeRobesOrdi(props) {
   var vig = [
     { id: "s1", lab: L("vComprendre"), img: IMG.cheval, pos: "80% 40%" },
     { id: "s2", lab: nomsTrois, img: IMG.noir, pos: "60% 40%" },
-    { id: "s3", lab: L("vComparer"), img: IMG.bai, pos: "70% 50%" },
     { id: "s4", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
     { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
   ];
   var hbQ = z[3].puces.map(function (p) { return p.texte; });
   /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
-  var hbListe = [hbQ[1], hbQ[3]].filter(Boolean);
+  var hbListe = [hbQ[0], hbQ[1], hbQ[3]].filter(Boolean);   /* 30/10 23h40 : 3 questions en tout, regroupées dans la carte Hey Baby */
   var defiAccroche = String(z[2].sous || "").replace(/\s*[:：]\s*$/, "") + " …";
   var NOIR = "#070A08", PET = "#101D22";
 
@@ -461,7 +465,8 @@ function HypeRobesOrdi(props) {
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
               h("span", null, ICO.coupe(16), "Galop 1"))),
           vue === "fin" ? h("aside", { className: "rbo-cards deux" },
-            h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
+            h("div", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
+              h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, qq), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))),
             h("button", { type: "button", className: "rbo-card defi", onClick: function () { versCours("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche))) : null),
 
         vue !== "cours" ? null : h(React.Fragment, null,
@@ -494,27 +499,14 @@ function HypeRobesOrdi(props) {
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
         Vague(PET, NOIR),
 
-        /* 03 — COMPARER : a[16]…a[19] + le tableau d'origine (bloc photo-liste) */
-        Sec("s3", "03", nettoyer(sansNum(a[16].titre)), "noir",
-          h("div", null,
-            h("div", { className: "rbo-txt", style: { maxWidth: 820 } }, h("p", null, a[16].texte)),
-            h("div", { className: "rbo-duel" },
-              h("div", { className: "rbo-txt" }, Photo("bai", "", sansNum(a[13].titre)), M(a[17], "a17")),
-              h("div", { className: "rbo-txt" }, Photo("alezan", "", sansNum(a[10].titre)), M(a[18], "a18"))),
-            h("div", { className: "rbo-reflexe" }, h("div", { className: "kick" }, nettoyer(a[19].titre)), h("p", null, a[19].texte)),
-            h("div", { className: "rbo-tableau" },
-              h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(d.tableau.titre)), h("ul", null, d.tableau.items.map(function (t, i) { return h("li", { key: i }, t); }))),
-              d.tableau.src ? h("img", { src: d.tableau.src, alt: nettoyer(d.tableau.titre) }) : null))),
-        Vague(NOIR, PET),
-
+        /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
         /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
-        Sec("s4", "04", d.t3 || L("vPratique"), "petrole",
+        Sec("s4", "03", d.t3 || L("vPratique"), "noir",
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
               h("div", { className: "rbo-txt" }, M(z[1], "z1")),
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
-        Vague(PET, NOIR),
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
         h("div", { className: "rbo-coachfin" },
           h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
@@ -522,10 +514,7 @@ function HypeRobesOrdi(props) {
         vue !== "fin" ? null : h(React.Fragment, null,
           h("div", { className: "rbo-retcours" }, h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { versCours(null); } }, (rtl ? "→ " : "← ") + L("retourCours"))),
           h("section", { id: "rbo-s4f", className: "rbo-sec petrole" }, h("div", null,
-            h("div", { className: "rbo-txt", style: { marginTop: 0 } },
-              h("h3", { style: { marginTop: 0 } }, nettoyer(z[3].titre)),
-              h("div", { className: "rbo-hb" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); }))),
-            h("div", { className: "rbo-synth" },
+            h("div", { className: "rbo-synth", style: { marginTop: 0 } },
               h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[4].titre))),
               h("ol", null, z[4].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
             h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[5].texte) + " »"))),
@@ -533,7 +522,7 @@ function HypeRobesOrdi(props) {
         /* 05 — QUIZ : les 10 questions du cours, une à la fois, correction et explication du cours */
         /* 30/10 : le quiz est celui de l'appli (écran « quiz » : correction, étoiles du cours sur le menu des Galops). L'ancien quiz intégré est gardé, désactivé (QUIZ_INTEGRE). */
         QUIZ_INTEGRE ? (
-        Sec("s5", "05", L("secQuiz"), "noir",
+        Sec("s5", "04", L("secQuiz"), "noir",
           h("div", null,
             h("div", { className: "rbo-qz" },
               h("div", { className: "rbo-q" },
@@ -554,7 +543,7 @@ function HypeRobesOrdi(props) {
             h("div", { className: "rbo-cta" },
               h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
               h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))) :
-        Sec("s5", "05", L("secQuiz"), "noir",
+        Sec("s5", "04", L("secQuiz"), "noir",
           h("div", null,
             Photo("quiz", "pano", null),
             h("div", { className: "rbo-cta" },
