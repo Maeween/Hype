@@ -207,9 +207,9 @@ function imageFichier(src, lg) {
 /* ---------- 30/10/2026 : l'APERÇU d'un chapitre payant (même découpe que l'appli, hypeCoursApercu dans index.html) ----------
    Décision de Blandine (choix B) : les Galops 2 à 4 montrent le DÉBUT du vrai chapitre (couverture, intro éventuelle, premier
    bloc coupé au tiers, au moins 2 morceaux), puis « réservé aux abonnés ». Google ne voit que ce début, comme le visiteur.
-   Galops 6 et 7 : « Prochainement » dans l'appli → pas de page de chapitre. Galop 5 : pas de page de chapitre tant que ses
-   cours plantent à l'ouverture dans l'appli (constaté le 30/10 : obtenirCoursParGalop(5) rend les textes non traduits, erreur
-   React #31 « object with keys {fr} ») — passer à 5 une fois ce plantage corrigé. */
+   Galops 6 et 7 : « Prochainement » dans l'appli → pas de page de chapitre. Galop 5 : pas de page de chapitre pour l'instant
+   (plantage des chapitres corrigé le 30/10, build 2045, mais la page du Galop 5 de l'appli présente de nouveaux chapitres qui
+   arrivent progressivement : à décider avec Blandine avant de les mettre sur Google). */
 const APERCU_JUSQUA = 4;
 function couperApercu(a) { if (!Array.isArray(a)) return a; const n = Math.max(2, Math.ceil(a.length / 3)); return a.length > n ? a.slice(0, n) : a; }
 function blocApercu(b) {
