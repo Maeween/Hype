@@ -15641,3 +15641,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Demande de Blandine (22h56) : reprendre le quiz de l'appli (celui qui donne les étoiles sur le menu des Galops) ; « pas besoin d'en mettre autant » de questions Hey Baby.
 - hype-cours-robes-ordi.js v12 : le quiz intégré à la page est remplacé par un bouton « Passer le quiz » qui ouvre le quiz de l'appli (écran quiz, étoiles). L'ancien quiz intégré est conservé désactivé (QUIZ_INTEGRE = false). Questions Hey Baby : 3 en tout (la carte + 2 dans la liste : bai/alezan et « devine la robe ») ; les 2 autres restent dans les données du cours.
 - Fichiers : hype-cours-robes-ordi.js v12, index.html (?v=12, marker 20261031-0020), SUIVI.md. Non appliqué encore aux Galops 2, 3, 5.
+
+## 30/10 23h35 — PUBLICATION (« Ok », 22h58) — build 20261031-0030 [publier]
+- En ligne : Galop 1 (robes) avec conseil du coach en fin de cours, page de fin à part (Hey Baby, défi, quiz de l'appli avec étoiles), 3 questions Hey Baby, titres plus petits sur téléphone, onglets semi-transparents, image des 3 chevaux entière.
+- Fichiers : index.html (marker 20261031-0030, hype-cours-robes-ordi.js ?v=12), hype-cours-robes-ordi.js v12, SUIVI.md. Inchangés : Galops 2, 3, 5 (hype-cours-robes-galops-ordi.js v10).
+- Fusion avec main : rien de nouveau en ligne, aucun conflit.
