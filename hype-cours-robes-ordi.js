@@ -21,7 +21,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 21;   /* 31/10 00h05 : « À retenir » des 3 robes retiré ; onglets actifs sans fond doré plein */
+var VERSION = 23;   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
+/* v22 :   /* 31/10 00h10 : Galop 2/3/5 dans le menu des vignettes et les onglets ; « Galop 1 » au-dessus des robes retiré */
+/* v21 :   /* 31/10 00h05 : « À retenir » des 3 robes retiré ; onglets actifs sans fond doré plein */
 /* v20 :   /* 31/10 00h : En pratique sur fond noir (plus de pétrole sur pétrole) */
 /* v19 :   /* 30/10 23h55 : titre sous la photo ; vague + noir à peine éclairci pour la partie 02 */
 /* v18 :   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
@@ -167,6 +169,7 @@ var CSS = [
 ".rbo-card h3{font-size:19px;color:var(--ivoire);display:flex;gap:9px;align-items:center;margin-bottom:6px}",
 ".rbo-card h3 svg{flex:0 0 auto;color:var(--champ)}",
 ".rbo-card p{font-size:12.5px;line-height:1.55;color:var(--doux)}",
+".rbo-defil{margin:8px 0 0;padding-inline-start:18px;display:grid;gap:3px;font-size:13px;line-height:1.45;color:var(--ivoire)}.rbo-defil li::marker{color:var(--champ)}",
 ".rbo-card.coach{border:1px solid rgba(201,166,107,.3);background:linear-gradient(90deg,rgba(7,10,8,.94) 42%,rgba(7,10,8,.66)),url(images/robes-g1-alezan.webp) center 30%/cover no-repeat}",
 "[dir=rtl] .rbo-card.coach{background:linear-gradient(270deg,rgba(7,10,8,.94) 42%,rgba(7,10,8,.66)),url(images/robes-g1-alezan.webp) center 30%/cover no-repeat}",
 ".rbo-card.hb{border:1px solid rgba(243,238,228,.16);background:#101D22}",
@@ -174,13 +177,16 @@ var CSS = [
 ".rbo-card.defi{border:1px solid rgba(201,166,107,.78);background:#0B1515}",
 ".rbo-card.defi:hover{border-color:var(--champ);background:#0f1c1c}",
 /* vignettes */
-".rbo-vig{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:36px 40px 20px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
+".rbo-vig{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:14px;padding:36px 40px 20px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
 ".rbo-vig button{position:relative;height:150px;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.16);background:var(--petrole) center/cover no-repeat;text-align:start;padding:0}",
 ".rbo-vig button:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 30%,rgba(7,10,8,.88) 100%)}",
 ".rbo-vig .big{position:absolute;top:8px;inset-inline-start:14px;z-index:1;font-family:'Cormorant Garamond',serif;font-size:44px;line-height:1;font-weight:500;color:#E9D9B4}",
 ".rbo-vig .lab{position:absolute;inset-inline:14px 52px;bottom:12px;z-index:1;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:21px;line-height:1.1;font-weight:600}",
 ".rbo-vig .arr{position:absolute;bottom:10px;inset-inline-end:12px;z-index:1;width:32px;height:32px;border-radius:50%;border:1px solid #E9D9B4;display:flex;align-items:center;justify-content:center;font-size:15px;color:#E9D9B4}",
 ".rbo-vig button[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
+".rbo-vig button.gal{border:1px dashed rgba(201,166,107,.6)}.rbo-vig button.gal .big{color:var(--champ)}",
+".rbo-mini .sep{flex:0 0 1px;align-self:stretch;margin:6px 4px;background:rgba(201,166,107,.45)}",
+".rbo-mini button.gal{border-style:dashed;border-color:rgba(201,166,107,.55)}.rbo-mini button.gal span{color:var(--champ)}",
 "@media (max-width:1479px){.rbo-vig{gap:10px}.rbo-vig .lab{font-size:16px;inset-inline:12px 40px}.rbo-vig .arr{width:26px;height:26px;font-size:13px}.rbo-vig .big{font-size:36px}}",
 /* barre compacte qui suit le défilement */
 ".rbo-minih{position:sticky;top:0;z-index:30;height:0}",
@@ -421,7 +427,6 @@ function HypeRobesOrdi(props) {
     return h("article", { className: "rbo-robe" + (inv ? " inv" : "") },
       Photo(cle, "", null),
       h("div", { className: "rbo-txt" },
-        h("span", { className: "kick" }, "Galop 1"),
         h("h3", null, nom),
         h("p", null, t.texte), h("p", null, p.texte)));   /* 31/10 : « À retenir » retiré (redit le texte) — reste dans les données */
   }
@@ -433,6 +438,12 @@ function HypeRobesOrdi(props) {
     { id: "s4", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
     { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
   ];
+  /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes */
+  var autresG = props.onOuvrirRobes ? [
+    { id: "g2-robes", n: 2, img: "images/robes-g2-pie.webp", pos: "60% 40%" },
+    { id: "g3-c7", n: 3, img: "images/robes-g3-palomino.webp", pos: "60% 40%" },
+    { id: "g5-robes", n: 5, img: "images/robes-g5-aubere.webp", pos: "60% 40%" }
+  ] : [];
   var hbQ = z[3].puces.map(function (p) { return p.texte; });
   /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
   var hbListe = [hbQ[0], hbQ[1], hbQ[3]].filter(Boolean);   /* 30/10 23h40 : 3 questions en tout, regroupées dans la carte Hey Baby */
@@ -455,12 +466,7 @@ function HypeRobesOrdi(props) {
             h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
         })),
       h("main", { className: "rbo-main" },
-        props.onOuvrirRobes ? h("div", { className: "rbo-parc", role: "navigation", "aria-label": PARC_LAB[lg] || PARC_LAB.en },
-          h("span", { className: "tt" }, PARC_LAB[lg] || PARC_LAB.en),
-          [["g1-c7", 1], ["g2-robes", 2], ["g3-c7", 3], ["g5-robes", 5]].map(function (pc2) {
-            var cur = pc2[0] === cours.id;
-            return h("button", { key: pc2[0], type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur) props.onOuvrirRobes(pc2[1], pc2[0]); } }, "Galop " + pc2[1]);
-          })) : null,
+        /* 31/10 : la barre « Parcours des robes » du haut est remplacée par des onglets Galop 2/3/5 dans le menu des vignettes (Blandine) */
         h("div", { className: "rbo-top" + (vue === "fin" ? "" : " seul") },
           h("header", { className: "rbo-hero" },
             h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
@@ -476,7 +482,8 @@ function HypeRobesOrdi(props) {
           vue === "fin" ? h("aside", { className: "rbo-cards deux" },
             h("div", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
               h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, qq), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))),
-            h("button", { type: "button", className: "rbo-card defi", onClick: function () { versCours("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche))) : null),
+            h("div", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), z[2].sous ? h("p", null, z[2].sous) : null,
+              h("ul", { className: "rbo-defil" }, z[2].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })))) : null),   /* 31/10 : le défi n'est plus qu'ici (retiré de « En pratique ») */
 
         vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
@@ -484,10 +491,16 @@ function HypeRobesOrdi(props) {
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+          }),
+          autresG.map(function (g) {
+            return h("button", { key: g.id, type: "button", className: "gal", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
+              h("span", { className: "lab" }, "Galop " + g.n), h("span", { className: "arr", "aria-hidden": true }, "↗"));
           })),
         h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); })))),
+            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
+            autresG.length ? h("span", { className: "sep", "aria-hidden": true }) : null,
+            autresG.map(function (g) { return h("button", { key: g.id, type: "button", className: "gal", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, "Galop " + g.n, h("span", { "aria-hidden": true }, " ↗")); })))),
 
 
         vue !== "cours" ? null : h(React.Fragment, null,
@@ -500,7 +513,7 @@ function HypeRobesOrdi(props) {
                 h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), a[4].sous ? h("p", { className: "sous" }, a[4].sous) : null,
                 h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
             h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
-            h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[5], "a5"), M(a[6], "a6")))),
+            h("div", { className: "rbo-txt", style: { marginTop: 48, maxWidth: 820 } }, M(a[5], "a5")))),   /* 31/10 : « À observer » (a[6]) retiré — redit le 2e paragraphe */
         Vague(NOIR, NOIR2),
         /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
         Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
@@ -512,9 +525,7 @@ function HypeRobesOrdi(props) {
         Sec("s4", "03", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
           h("div", null,
             Photo("cheval", "pano", null),
-            h("div", { className: "rbo-colonnes" },
-              h("div", { className: "rbo-erreurs rbo-txt" }, M(z[1], "z1")),   /* 30/10 : encart à part pour les erreurs */
-              h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
+            h("div", { className: "rbo-erreurs rbo-txt", style: { marginTop: 40, maxWidth: 820 } }, M(z[1], "z1")))),   /* 30/10 : encart à part ; 31/10 : le défi est sur la page de fin */
         Vague(NOIR, NOIR2),
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
         h("div", { className: "rbo-coachfin" },
