@@ -23,7 +23,7 @@
 (function () {
 var IMG_HERO = "images/piquet-cso.webp";
 var RV3_NOMS_COMPLETS_ADULTES = false;   /* voir plus bas (nom affiché) */
-var NOIR = "#070A08", PETROLE = "#101D22", PETROLE2 = "#0C1619", IVOIRE = "#F3EEE4", CHAMP = "#C9A66B", GRIS = "#A9A398";
+var NOIR = "#070A08", PETROLE = "#0E1210", PETROLE2 = "#0B0E0C",   /* 30/10 22h05 Blandine : « trop de bleu pétrole partout » -> fonds noirs */ IVOIRE = "#F3EEE4", CHAMP = "#C9A66B", GRIS = "#A9A398";
 var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',sans-serif";
 var LANGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 /* Textes : une ligne par texte, les 14 langues dans l'ordre de LANGS. */
@@ -68,6 +68,10 @@ var W = {
   aucunFiltre: ["Aucun résultat avec ces filtres.", "No results with these filters.", "No hay resultados con estos filtros.", "Nessun risultato con questi filtri.", "この条件の成績はありません。", "Keine Ergebnisse mit diesen Filtern.", "لا توجد نتائج بهذه الفلاتر.", "没有符合筛选条件的成绩。", "Geen resultaten met deze filters.", "Nenhum resultado com estes filtros.", "Inga resultat med dessa filter.", "Нет результатов с этими фильтрами.", "Brak wyników dla tych filtrów.", "이 필터에 맞는 성적이 없어요."],
   voirPlus: ["Voir plus", "See more", "Ver más", "Vedi altro", "もっと見る", "Mehr anzeigen", "عرض المزيد", "查看更多", "Meer bekijken", "Ver mais", "Visa fler", "Показать ещё", "Pokaż więcej", "더 보기"],
   nResultats: ["résultats", "results", "resultados", "risultati", "件の成績", "Ergebnisse", "نتائج", "条成绩", "resultaten", "resultados", "resultat", "результатов", "wyników", "개 성적"],
+  derniersCourt: ["Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Neueste Ergebnisse", "آخر النتائج", "最新成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultat", "Последние результаты", "Najnowsze wyniki", "최근 성적"],
+  voirTout: ["Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "모두 보기"],
+  perfCourt: ["Nos performances", "Our performance", "Nuestro rendimiento", "Le nostre prestazioni", "私たちの成績", "Unsere Leistungen", "أداؤنا", "我们的表现", "Onze prestaties", "Nosso desempenho", "Våra prestationer", "Наши выступления", "Nasze wyniki", "우리의 성과"],
+  chevauxCourt: ["Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"],
   retour: ["Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로"],
   precedent: ["Précédent", "Previous", "Anterior", "Precedente", "前へ", "Zurück", "السابق", "上一个", "Vorige", "Anterior", "Föregående", "Назад", "Poprzedni", "이전"],
   suivant: ["Suivant", "Next", "Siguiente", "Successivo", "次へ", "Weiter", "التالي", "下一个", "Volgende", "Seguinte", "Nästa", "Далее", "Następny", "다음"]
@@ -144,7 +148,9 @@ function EcranResultatsEcurie() {
   var _et = React.useState("chargement"), etat = _et[0], setEtat = _et[1];
   var _d = React.useState(null), D = _d[0], setD = _d[1];
   var _pi = React.useState(false), peutImp = _pi[0], setPeutImp = _pi[1];
-  var memo = {}; try { memo = window.__rv3Filtres || {}; } catch (eM) { }
+  /* 30/10 22h08 : un filtre « Cavalier » resté en mémoire faisait croire qu il n y avait qu une cavalière. La page repart TOUJOURS
+     sans filtre à l ouverture ; un filtre actif est affiché en clair (pastille avec croix), téléphone compris. */
+  var memo = {};
   var _f = React.useState({ saison: memo.saison === undefined ? null : memo.saison, cav: memo.cav || "", ch: memo.ch || "", conc: memo.conc || "" }), F = _f[0], setF = _f[1];
   var _pf = React.useState(false), panneau = _pf[0], setPanneau = _pf[1];
   var _vu = React.useState("page"), vue = _vu[0], setVue = _vu[1];
@@ -154,7 +160,7 @@ function EcranResultatsEcurie() {
   var _gp = React.useState(false), gestionOuverte = _gp[0], setGestionOuverte = _gp[1];
 
   React.useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, [vue]);
-  React.useEffect(function () { try { window.__rv3Filtres = F; } catch (e) { } }, [F]);
+  React.useEffect(function () { try { window.__rv3Filtres = null; } catch (e) { } }, []);
 
   /* ── chargement : même monde que la page « Performances en concours » ── */
   React.useEffect(function () {
@@ -235,6 +241,9 @@ function EcranResultatsEcurie() {
             ((rLi && !rLi.error && rLi.data) || []).forEach(function (x) { if (x && x.user_id) delete candidats[nrm(x.nom)]; });
           }
         } catch (eLi) { }
+        /* 30/10 22h09 (Blandine : Aceitunero « était classé club 3 aussi avec une autre cavalière ») : les parcours d un cheval montés par
+           une cavalière NON rattachée sont gardés à part, pour compter TOUS les parcours du cheval dans « Nos chevaux » (jamais ailleurs). */
+        var autres = lignes.filter(function (x) { return x && x.cheval_id && !noms[nrm(x.cavalier)]; });
         lignes = lignes.filter(function (x) { return x && noms[nrm(x.cavalier)]; });
         if (!lignes.length) { if (vivant) { setD({ lignes: [], candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u }); setEtat("vide"); } return; }
         /* profils des cavalières (photo, âge), chevaux, rendez-vous reliés, photos des rendez-vous */
@@ -288,7 +297,7 @@ function EcranResultatsEcurie() {
           } catch (eMd) { }
         }
         if (!vivant) return;
-        setD({ lignes: lignes, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos, majeures: majeures, declares: declares, tableMaj: tableMaj, candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u });
+        setD({ lignes: lignes, autres: autres, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos, majeures: majeures, declares: declares, tableMaj: tableMaj, candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u });
         setEtat("ok");
       } catch (e) { if (vivant) setEtat("panne"); }
     })();
@@ -416,24 +425,54 @@ function EcranResultatsEcurie() {
   function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (e) { } if (vue !== "page") { setVue("page"); return; } setEcran("guilde"); }
 
   /* ── éléments communs ── */
+  /* 30/10 22h05 (Blandine : « la version tel est catastrophique », « tout est deux fois trop grand », « les titres sont sur les images »)
+     -> téléphone reconstruit d après la maquette 02 : 3 cartes cavalières par écran, dernier concours en bande photo à gauche,
+     5 chiffres sur une ligne, 4 chevaux par ligne, titres courts + « Voir tout », plus aucun texte posé sur une photo. */
   var CSS = ".rv3{min-height:100vh;background:" + NOIR + ";color:" + IVOIRE + ";font-family:" + M + ";padding-bottom:96px;overflow-x:clip}" +
-    ".rv3 *{box-sizing:border-box}.rv3-w{max-width:1240px;margin:0 auto;padding:0 16px}" +
-    ".rv3-h2{font-family:" + SERIF + ";font-weight:500;font-size:25px;line-height:1.15;margin:0;color:" + IVOIRE + "}" +
-    ".rv3-sec{padding-top:26px;padding-bottom:6px;min-width:0}.rv3-tete{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}" +
-    ".rv3-lien{background:none;border:0;color:" + CHAMP + ";font-family:" + M + ";font-size:11.5px;font-weight:600;letter-spacing:.4px;cursor:pointer;padding:6px 0;white-space:nowrap}" +
-    ".rv3-rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}.rv3-rail::-webkit-scrollbar{display:none}" +
-    ".rv3-carte{flex:0 0 78%;scroll-snap-align:start;background:" + PETROLE + ";border:1px solid rgba(201,166,107,.28);border-radius:14px;overflow:hidden;cursor:pointer;text-align:start;color:inherit;padding:0;font:inherit;display:flex;flex-direction:column}" +
+    ".rv3 *{box-sizing:border-box}.rv3-w{max-width:1240px;margin:0 auto;padding:0 14px}" +
+    ".rv3-m{}.rv3-d{display:none}" +
+    ".rv3-h2{font-family:" + SERIF + ";font-weight:500;font-size:19px;line-height:1.15;margin:0;color:" + IVOIRE + "}" +
+    ".rv3-sec{padding-top:20px;padding-bottom:4px;min-width:0}.rv3-tete{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}" +
+    ".rv3-lien{background:none;border:0;color:" + CHAMP + ";font-family:" + M + ";font-size:11px;font-weight:600;letter-spacing:.3px;cursor:pointer;padding:4px 0;white-space:nowrap}" +
+    ".rv3-rail{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.rv3-rail::-webkit-scrollbar{display:none}" +
+    ".rv3-carte{flex:0 0 calc((100% - 16px)/3);scroll-snap-align:start;background:" + PETROLE + ";border:1px solid rgba(201,166,107,.22);border-radius:10px;overflow:hidden;cursor:pointer;text-align:start;color:inherit;padding:0;font:inherit;display:flex;flex-direction:column}" +
     ".rv3-ph{position:relative;aspect-ratio:4/3;background:" + PETROLE2 + ";overflow:hidden}.rv3-ph img{width:100%;height:100%;object-fit:cover;display:block}" +
-    ".rv3-sel{appearance:none;-webkit-appearance:none;background:rgba(16,29,34,.82);color:" + IVOIRE + ";border:1px solid rgba(201,166,107,.35);border-radius:10px;font-family:" + M + ";font-size:16px;padding:10px 30px 10px 12px;min-height:44px;max-width:100%;background-image:linear-gradient(45deg,transparent 50%," + CHAMP + " 50%),linear-gradient(135deg," + CHAMP + " 50%,transparent 50%);background-position:calc(100% - 15px) 19px,calc(100% - 10px) 19px;background-size:5px 5px;background-repeat:no-repeat}" +
-    "[dir=rtl] .rv3-sel{padding:10px 12px 10px 30px;background-position:15px 19px,10px 19px}" +
-    ".rv3-bt{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid " + CHAMP + ";background:transparent;color:#E9DCC0;font-family:" + M + ";font-size:12.5px;font-weight:600;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}" +
-    ".rv3-kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}" +
-    ".rv3-bande{background:linear-gradient(180deg," + NOIR + " 0%," + PETROLE2 + " 14%," + PETROLE2 + " 86%," + NOIR + " 100%);padding:6px 0 18px;margin-top:6px}" +
-    ".rv3-dci{position:relative;aspect-ratio:16/9;overflow:hidden}.rv3-dco{display:none}" +
-    ".rv3-k{background:" + PETROLE + ";border:1px solid rgba(201,166,107,.22);border-radius:12px;padding:12px 4px;text-align:center}" +
-    ".rv3-duo{display:grid;grid-template-columns:minmax(0,1fr);gap:0}.rv3-ch{flex:0 0 42%}.rv3-mo{flex:0 0 70%}" +
-    ".rv3-fl{display:none}.rv3-fm{display:flex}.rv3-hero{min-height:236px}" +
-    "@media(min-width:768px){.rv3-carte{flex-basis:calc((100% - 24px)/3)}.rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-mo{flex-basis:calc((100% - 24px)/3)}.rv3-h2{font-size:28px}.rv3-w{padding-left:24px;padding-right:24px}.rv3-k{padding:16px 6px}.rv3-kpi{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.rv3-dc-img{min-height:300px}.rv3-dci{position:absolute;inset:0;aspect-ratio:auto}.rv3-dco{display:block}.rv3-hero{min-height:320px}}" +
+    ".rv3-cb{padding:7px 8px 8px;display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}" +
+    ".rv3-cn{font-family:" + SERIF + ";font-size:14px;line-height:1.1;color:" + IVOIRE + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-cc{font-size:10px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-rk{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:" + IVOIRE + "}.rv3-rk svg{width:14px;height:14px}" +
+    ".rv3-ep{font-size:10px;color:rgba(243,238,228,.82);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-dt{font-size:9.5px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-sf{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;color:#E9DCC0;border:1px solid rgba(201,166,107,.45);border-radius:999px;padding:1px 6px;white-space:nowrap}" +
+    ".rv3-sel{appearance:none;-webkit-appearance:none;background:rgba(14,18,16,.92);color:" + IVOIRE + ";border:1px solid rgba(201,166,107,.35);border-radius:9px;font-family:" + M + ";font-size:16px;padding:7px 28px 7px 11px;min-height:40px;max-width:100%;background-image:linear-gradient(45deg,transparent 50%," + CHAMP + " 50%),linear-gradient(135deg," + CHAMP + " 50%,transparent 50%);background-position:calc(100% - 15px) 17px,calc(100% - 10px) 17px;background-size:5px 5px;background-repeat:no-repeat}" +
+    "[dir=rtl] .rv3-sel{padding:7px 11px 7px 28px;background-position:15px 17px,10px 17px}" +
+    ".rv3-bt{min-height:40px;padding:0 13px;border-radius:9px;border:1px solid " + CHAMP + ";background:transparent;color:#E9DCC0;font-family:" + M + ";font-size:12px;font-weight:600;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}" +
+    ".rv3-kpi{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}" +
+    ".rv3-k{background:" + PETROLE + ";border:1px solid rgba(201,166,107,.2);border-radius:9px;padding:8px 2px 7px;text-align:center}" +
+    ".rv3-kn{font-family:" + SERIF + ";font-size:21px;line-height:1;color:" + IVOIRE + ";margin-top:4px}.rv3-kl{font-size:9px;color:" + GRIS + ";margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-dc{display:flex;align-items:stretch;width:100%;border-radius:12px;overflow:hidden;border:1px solid rgba(201,166,107,.25);background:" + PETROLE + ";color:" + IVOIRE + ";text-align:start;font:inherit;padding:0;cursor:pointer}" +
+    ".rv3-dci{position:relative;flex:0 0 36%;min-height:112px;background:" + PETROLE2 + "}.rv3-dci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
+    ".rv3-dct{flex:1;min-width:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px}" +
+    ".rv3-dcn{font-family:" + SERIF + ";font-size:18px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-st{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:10px}" +
+    ".rv3-co{display:flex;align-items:stretch;width:100%;min-height:58px;padding:0;border-radius:10px;overflow:hidden;border:1px solid rgba(201,166,107,.2);background:" + PETROLE + ";color:" + IVOIRE + ";cursor:pointer;text-align:start;font:inherit}" +
+    ".rv3-coi{flex:0 0 74px;position:relative;background:" + PETROLE2 + "}.rv3-coi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
+    ".rv3-cot{flex:1;min-width:0;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;gap:3px}" +
+    ".rv3-cod{font-size:10px;color:" + GRIS + "}.rv3-con{font-family:" + SERIF + ";font-size:15px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-ch{flex:0 0 calc((100% - 24px)/4)}.rv3-chn{font-family:" + SERIF + ";font-size:12.5px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rv3-chs{font-size:9px;color:" + GRIS + ";margin-top:2px;line-height:1.45}" +
+    ".rv3-mo{flex:0 0 calc((100% - 16px)/3)}" +
+    ".rv3-duo{display:grid;grid-template-columns:minmax(0,1fr);gap:0}" +
+    ".rv3-fl{display:none}.rv3-fm{display:flex}" +
+    ".rv3-hero{position:relative;background:" + NOIR + "}.rv3-hi{position:relative;height:168px;overflow:hidden}.rv3-hi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 35%}" +
+    ".rv3-hg{position:absolute;inset:0;background:linear-gradient(0deg," + NOIR + " 0%,rgba(7,10,8,0) 45%)}.rv3-ht{position:relative;padding-top:6px;padding-bottom:4px}" +
+    ".rv3-h1{font-family:" + SERIF + ";font-weight:500;font-size:27px;line-height:1.05;margin:4px 0 6px;color:" + IVOIRE + "}.rv3-ki{font-size:9.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:" + CHAMP + "}.rv3-so{margin:0;font-size:12px;line-height:1.5;color:rgba(243,238,228,.78);max-width:440px}" +
+    "@media(min-width:768px){.rv3-m{display:none}.rv3-d{display:revert}.rv3-w{padding-left:24px;padding-right:24px}.rv3-h2{font-size:26px}.rv3-sec{padding-top:26px}.rv3-tete{margin-bottom:12px}.rv3-rail{gap:12px}" +
+      ".rv3-carte{flex-basis:calc((100% - 24px)/3);border-radius:13px}.rv3-cb{padding:10px 12px 12px;gap:5px}.rv3-cn{font-size:19px}.rv3-cc{font-size:11.5px}.rv3-rk{font-size:15px;gap:6px}.rv3-rk svg{width:18px;height:18px}.rv3-ep{font-size:11.5px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.rv3-dt{font-size:10.5px}.rv3-sf{font-size:10.5px;padding:2px 8px}" +
+      ".rv3-k{padding:14px 6px;border-radius:12px}.rv3-kn{font-size:28px}.rv3-kl{font-size:10px}" +
+      ".rv3-dci{flex-basis:42%;min-height:240px}.rv3-dct{padding:18px 20px;gap:6px}.rv3-dcn{font-size:28px;white-space:normal}.rv3-st{font-size:11.5px;gap:6px 14px}" +
+      ".rv3-coi{flex-basis:96px}.rv3-con{font-size:18px}.rv3-cod{font-size:11px}.rv3-co{min-height:72px;border-radius:12px}" +
+      ".rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-chn{font-size:17px}.rv3-chs{font-size:10.5px}.rv3-mo{flex-basis:calc((100% - 24px)/3)}" +
+      ".rv3-hero{min-height:320px;overflow:hidden}.rv3-hi{position:absolute;inset:0;height:auto}.rv3-hg{background:linear-gradient(" + (rtl ? "270deg" : "90deg") + ",rgba(7,10,8,.95) 0%,rgba(7,10,8,.78) 40%,rgba(7,10,8,.1) 100%),linear-gradient(0deg," + NOIR + " 0%,rgba(7,10,8,0) 38%)}.rv3-ht{padding-top:calc(env(safe-area-inset-top) + 72px);padding-bottom:20px}.rv3-h1{font-size:clamp(38px,5vw,54px)}.rv3-ki{font-size:10.5px;letter-spacing:2.4px}.rv3-so{font-size:13px}}" +
     "@media(min-width:1024px){.rv3-fl{display:flex}.rv3-fm{display:none}}" +
     "@media(min-width:1200px){.rv3-carte{flex-basis:calc((100% - 36px)/4)}.rv3-duo{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px}.rv3-ch{flex-basis:calc((100% - 36px)/4)}.rv3-mo{flex-basis:calc((100% - 48px)/5)}}";
 
@@ -455,19 +494,30 @@ function EcranResultatsEcurie() {
   var btImportCompact = peutImp ? h("button", { key: "ic", type: "button", className: "rv3-bt", "aria-label": t("importer"), title: t("importer"), onClick: ouvrirImport, style: { width: 44, padding: 0, justifyContent: "center", flex: "0 0 44px" } }, icImp) : null;
 
   /* ── HERO ── */
-  var hero = h("div", { className: "rv3-hero", style: { position: "relative", overflow: "hidden", background: PETROLE2 } },
-    h("img", { src: IMG_HERO, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "62% 38%", transform: rtl ? "scaleX(-1)" : "none" } }),
-    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.94) 0%, rgba(7,10,8,0.72) 42%, rgba(7,10,8,0.15) 100%), linear-gradient(0deg, " + NOIR + " 0%, rgba(7,10,8,0) 38%)" } }),
-    h("button", { type: "button", onClick: retour, "aria-label": t("retour"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 3, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.22)", background: "rgba(7,10,8,0.55)", color: IVOIRE, fontSize: 22, cursor: "pointer", lineHeight: "36px" } }, rtl ? "›" : "‹"),
+  var hero = h("div", { className: "rv3-hero" },
+    h("div", { className: "rv3-hi" }, h("img", { src: IMG_HERO, alt: "", decoding: "async", style: { transform: rtl ? "scaleX(-1)" : "none" } }), h("div", { className: "rv3-hg", "aria-hidden": "true" })),
+    h("button", { type: "button", onClick: retour, "aria-label": t("retour"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 3, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.22)", background: "rgba(7,10,8,0.55)", color: IVOIRE, fontSize: 21, cursor: "pointer", lineHeight: "34px" } }, rtl ? "›" : "‹"),
     (typeof HypeDrapeauLangue === "function") ? h(HypeDrapeauLangue, { top: "calc(env(safe-area-inset-top) + 12px)", right: 14 }) : null,
-    h("div", { className: "rv3-w", style: { position: "relative", zIndex: 2, paddingTop: "calc(env(safe-area-inset-top) + 70px)", paddingBottom: 18 } },
-      h("div", { style: { fontSize: 10.5, fontWeight: 600, letterSpacing: 2.4, textTransform: "uppercase", color: CHAMP } }, t("kicker") + (club ? " · " + club : "")),
-      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(34px, 7vw, 54px)", lineHeight: 1.02, margin: "8px 0 10px", maxWidth: 560, color: IVOIRE } }, t("titre")),
-      h("p", { style: { margin: 0, maxWidth: 440, fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,0.82)" } }, t("sous"))));
+    h("div", { className: "rv3-w rv3-ht", style: { zIndex: 2 } },
+      h("div", { className: "rv3-ki" }, t("kicker") + (club ? " · " + club : "")),
+      h("h1", { className: "rv3-h1" }, t("titre")),
+      h("p", { className: "rv3-so" }, t("sous"))));
+
+  function pastilleFiltre(cle, libelle, retirer) {
+    return h("button", { key: cle, type: "button", onClick: retirer, style: { display: "inline-flex", alignItems: "center", gap: 6, maxWidth: "100%", minHeight: 30, padding: "0 10px", borderRadius: 999, border: "1px solid " + CHAMP, background: "rgba(201,166,107,0.12)", color: "#E9DCC0", fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } },
+      h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, libelle), h("span", { "aria-hidden": "true", style: { fontSize: 14, lineHeight: 1 } }, "×"));
+  }
+  var libDe = function (liste, v) { var o = liste.filter(function (x) { return x.v === v; })[0]; return o ? o.t : v; };
+  var pastilles = [];
+  if (F.cav) pastilles.push(pastilleFiltre("pc", libDe(optCav, F.cav), function () { setF(Object.assign({}, F, { cav: "" })); }));
+  if (F.ch) pastilles.push(pastilleFiltre("ph", libDe(optCh, F.ch), function () { setF(Object.assign({}, F, { ch: "" })); }));
+  if (F.conc) pastilles.push(pastilleFiltre("po", libDe(optConc, F.conc), function () { setF(Object.assign({}, F, { conc: "" })); }));
+  var lignePastilles = pastilles.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 } }, pastilles) : null;
 
   /* ── FILTRES ── */
   var barreFiltres = (etat === "ok" && tout.length) ? h("div", { className: "rv3-w", style: { paddingTop: 14 } },
     h("div", { className: "rv3-fl", style: { flexWrap: "wrap", gap: 10, alignItems: "center" } }, selSaison, selCav, selCh, selConc, filtreActif ? btReinit : null, h("span", { style: { flex: 1 } }), btGerer, btImport),
+    h("div", { className: "rv3-fl" }, lignePastilles),
     h("div", { className: "rv3-fm", style: { flexDirection: "column", gap: 10 } },
       h("div", { style: { display: "flex", gap: 10 } },
         h("div", { style: { flex: 1, minWidth: 0, display: "flex" } }, h("div", { style: { width: "100%" } }, React.cloneElement(selSaison, { style: { width: "100%" } }))),
@@ -475,7 +525,8 @@ function EcranResultatsEcurie() {
           h("svg", { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("path", { d: "M4 5h16l-6 7v6l-4 2v-8z" })),
           t("filtres") + ((F.cav || F.ch || F.conc) ? " · " + [F.cav, F.ch, F.conc].filter(Boolean).length : "")),
         btImportCompact),
-      panneau ? h("div", { style: { display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: PETROLE, border: "1px solid rgba(201,166,107,0.22)" } },
+      lignePastilles,
+      panneau ? h("div", { style: { display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: PETROLE2, border: "1px solid rgba(201,166,107,0.22)" } },
         React.cloneElement(selCav, { style: { width: "100%" } }), React.cloneElement(selCh, { style: { width: "100%" } }), React.cloneElement(selConc, { style: { width: "100%" } }),
         h("div", { style: { display: "flex", justifyContent: "flex-end" } }, btReinit)) : null)) : null;
 
@@ -485,11 +536,13 @@ function EcranResultatsEcurie() {
       (avecImport && peutImp) ? h("div", { style: { marginTop: 10, fontSize: 12.5, color: GRIS } }, t("videImport")) : null,
       (avecImport && peutImp) ? h("div", { style: { marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" } }, h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport }, icImp, t("importer")), h("button", { type: "button", className: "rv3-bt", onClick: function () { setVue("gestion"); } }, tg("gerer"))) : null);
   }
-  function teteSection(titre, lien, onLien, cle) {
-    return h("div", { className: "rv3-tete", key: cle }, h("h2", { className: "rv3-h2" }, titre), lien ? h("button", { type: "button", className: "rv3-lien", onClick: onLien }, lien + (rtl ? " ←" : " →")) : null);
+  function teteSection(titre, lien, onLien, cle, court) {
+    return h("div", { className: "rv3-tete", key: cle },
+      h("h2", { className: "rv3-h2" }, court ? h("span", { className: "rv3-m" }, court) : null, h("span", { className: court ? "rv3-d" : "" }, titre)),
+      lien ? h("button", { type: "button", className: "rv3-lien", onClick: onLien }, lien + (rtl ? " ←" : " →")) : null);
   }
   function badgeSF() {
-    return h("span", { style: { display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, fontWeight: 600, color: "#E9DCC0", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "2px 8px", whiteSpace: "nowrap" } },
+    return h("span", { className: "rv3-sf" },
       h("svg", { width: 10, height: 10, viewBox: "0 0 24 24", fill: CHAMP, "aria-hidden": "true" }, h("path", { d: "M12 2l3 7h7l-5.5 4.5 2 7.5L12 16.5 5.5 21l2-7.5L2 9h7z" })), t("sansFaute"));
   }
   function trophee(place) {
@@ -498,11 +551,11 @@ function EcranResultatsEcurie() {
   }
   function pastille(txt) {
     var ini = String(txt || "?").split(" ").filter(Boolean).slice(0, 2).map(function (m) { return m.charAt(0).toUpperCase(); }).join("");
-    return h("span", { "aria-hidden": "true", style: { flex: "0 0 44px", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 18, color: CHAMP, background: PETROLE2 } }, ini);
+    return h("span", { "aria-hidden": "true", style: { flex: "0 0 30px", width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 13, color: CHAMP, background: PETROLE2 } }, ini);
   }
   function monogramme(txt) {
     var ini = String(txt || "?").split(" ").filter(Boolean).slice(0, 2).map(function (m) { return m.charAt(0).toUpperCase(); }).join("");
-    return h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 50% 40%, #16282E 0%, " + PETROLE2 + " 70%)" } },
+    return h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at 50% 40%, #171C19 0%, " + PETROLE2 + " 70%)" } },
       h("span", { style: { fontFamily: SERIF, fontSize: 44, color: "rgba(201,166,107,0.75)", letterSpacing: 2 } }, ini));
   }
 
@@ -512,17 +565,16 @@ function EcranResultatsEcurie() {
     var ph = photoCav(l.profil, l.verifiee) || photoCh(l.cheval);
     var r = rang(l);
     return h("button", { key: l.b.id, type: "button", className: "rv3-carte" + (ph ? "" : " rv3-sansph"), onClick: function () { ouvrirCavaliere(l); } },
-      ph ? h("div", { className: "rv3-ph" }, h("img", { src: vign(ph, 480, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } }),
-        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(16,29,34,0.9) 0%, rgba(16,29,34,0) 45%)" } })) : null,
-      h("div", { style: { padding: ph ? "10px 12px 12px" : "14px 14px 14px", display: "flex", flexDirection: "column", gap: 6, flex: 1 } },
-        h("div", { style: { display: "flex", alignItems: "center", gap: 10, minWidth: 0 } }, ph ? null : pastille(l.nom), h("div", { style: { minWidth: 0, flex: 1 } },
-          h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 20, lineHeight: 1.1, color: IVOIRE, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nom),
-          l.nomCheval ? h("div", { dir: "auto", style: { fontSize: 11.5, color: GRIS, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nomCheval) : null)),
-        h("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", minHeight: 24 } },
-          r ? h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 16, fontWeight: 600, color: IVOIRE } }, r.place && r.place <= 3 ? trophee(r.place) : null, h("bdi", { dir: "ltr" }, r.t)) : null,
+      ph ? h("div", { className: "rv3-ph" }, h("img", { src: vign(ph, 480, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } })) : null,
+      h("div", { className: "rv3-cb" },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 7, minWidth: 0 } }, ph ? null : pastille(l.nom), h("div", { style: { minWidth: 0, flex: 1 } },
+          h("div", { dir: "auto", className: "rv3-cn" }, l.nom),
+          l.nomCheval ? h("div", { dir: "auto", className: "rv3-cc" }, l.nomCheval) : null)),
+        h("div", { style: { display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", minHeight: 18 } },
+          r ? h("span", { className: "rv3-rk" }, r.place && r.place <= 3 ? trophee(r.place) : null, h("bdi", { dir: "ltr" }, r.t)) : null,
           l.sf ? badgeSF() : null),
-        h("div", { dir: "auto", style: { fontSize: 11.5, color: "rgba(243,238,228,0.86)", lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, l.x.ep || ""),
-        h("div", { dir: "auto", style: { fontSize: 10.5, color: GRIS, marginTop: "auto", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, fmtDate(l.date) + (l.lieu ? " · " + l.lieu : ""))));
+        h("div", { dir: "auto", className: "rv3-ep" }, l.x.ep || ""),
+        h("div", { dir: "auto", className: "rv3-dt" }, fmtDate(l.date), l.lieu ? h("span", { className: "rv3-d" }, " · " + l.lieu) : null)));
   }
   function defiler(sens) { try { var el = rail.current; if (!el) return; var pas = el.clientWidth * 0.9 * (rtl ? -1 : 1); el.scrollBy({ left: sens * pas, behavior: "smooth" }); } catch (e) { } }
   var fleche = function (sens) {
@@ -530,11 +582,13 @@ function EcranResultatsEcurie() {
       style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "transparent", color: CHAMP, cursor: "pointer", alignItems: "center", justifyContent: "center", fontSize: 18 } },
       (sens < 0) !== rtl ? "‹" : "›");
   };
+  var voirTousCav = function () { setNListe(60); setVue("tous"); };
   var secCav = h("section", { className: "rv3-w rv3-sec", "aria-label": t("derniers") },
-    h("div", { className: "rv3-tete" }, h("h2", { className: "rv3-h2" }, t("derniers")),
+    h("div", { className: "rv3-tete" }, h("h2", { className: "rv3-h2" }, h("span", { className: "rv3-m" }, t("derniersCourt")), h("span", { className: "rv3-d" }, t("derniers"))),
+      h("span", { className: "rv3-m" }, h("button", { type: "button", className: "rv3-lien", onClick: voirTousCav }, t("voirTout") + (rtl ? " ←" : " →"))),
       h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, derniers.length > 3 ? fleche(-1) : null, derniers.length > 3 ? fleche(1) : null)),
     derniers.length ? h("div", { ref: rail, className: "rv3-rail" }, derniers.map(carteCav)) : h("div", { style: { padding: "24px 0", color: GRIS, fontSize: 13 } }, t("aucunFiltre")),
-    h("div", { style: { marginTop: 10 } }, h("button", { type: "button", className: "rv3-lien", onClick: function () { setNListe(60); setVue("tous"); } }, t("voirTous") + (rtl ? " ←" : " →"))));
+    h("div", { className: "rv3-d", style: { marginTop: 10 } }, h("button", { type: "button", className: "rv3-lien", onClick: voirTousCav }, t("voirTous") + (rtl ? " ←" : " →"))));
 
   /* ── D. DERNIER CONCOURS ── */
   var grF = groupes.map(function (g) { var l2 = g.l.filter(function (l) { return passe(l); }); return l2.length ? { g: g, l: l2 } : null; }).filter(Boolean);
@@ -543,11 +597,11 @@ function EcranResultatsEcurie() {
     ls.forEach(function (l) { if (l.sf) sf++; if (R.estP(l.x)) pod++; if (R.estV(l.x)) v++; if (R.estVPrepa(l.x)) vp++; cav[l.cleCav] = true; });
     return { sf: sf, pod: pod, v: v, vp: vp, cav: Object.keys(cav).length, n: ls.length };
   }
-  function petitStat(icone, n, lib, cle) { return h("span", { key: cle, style: { display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "rgba(243,238,228,0.86)", whiteSpace: "nowrap" } }, icone, h("b", { style: { fontWeight: 600, color: IVOIRE } }, n), lib); }
+  function petitStat(icone, n, lib, cle) { return h("span", { key: cle, style: { display: "inline-flex", alignItems: "center", gap: 4, color: "rgba(243,238,228,0.86)", whiteSpace: "nowrap" } }, icone, h("b", { style: { fontWeight: 600, color: IVOIRE } }, n), lib); }
   var icPod = h("svg", { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("path", { d: "M7 4h10v4a5 5 0 0 1-10 0zM12 13v4M8 21h8" }));
   var icSF = h("svg", { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("path", { d: "M12 3l2.6 6 6.4.6-4.9 4.3 1.5 6.3L12 17l-5.6 3.2 1.5-6.3L3 9.6 9.4 9z" }));
   var icCav = h("svg", { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("circle", { cx: 12, cy: 8, r: 4 }), h("path", { d: "M4 21a8 8 0 0 1 16 0" }));
-  function ligneStats(s) { return h("div", { style: { display: "flex", flexWrap: "wrap", gap: "6px 14px" } }, petitStat(icPod, s.pod, tn("nPodiums", s.pod), "p"), petitStat(icSF, s.sf, tn("nSansFaute", s.sf), "s"), petitStat(icCav, s.cav, tn("nCavaliers", s.cav), "c")); }
+  function ligneStats(s) { return h("div", { className: "rv3-st" }, petitStat(icPod, s.pod, tn("nPodiums", s.pod), "p"), petitStat(icSF, s.sf, tn("nSansFaute", s.sf), "s"), petitStat(icCav, s.cav, tn("nCavaliers", s.cav), "c")); }
   function imageGroupe(g) {
     if (g.rdv && g.rdv.image_url) return String(g.rdv.image_url);
     if (g.rdv && D && D.photos) { var p = D.photos.filter(function (x) { return x.agenda_id === g.rdv.id; })[0]; if (p) return p.url; }
@@ -558,52 +612,58 @@ function EcranResultatsEcurie() {
     var G = grF[0], sG = stats(G.l), imgG = imageGroupe(G.g);
     var meilleurs = G.l.slice().sort(function (a, b) { return (a.x.place || 999) - (b.x.place || 999); }).slice(0, 4);
     secDernier = h("section", { className: "rv3-sec", "aria-label": t("dernierConc") },
-      h("div", { className: "rv3-dc" + (imgG ? " rv3-dc-img" : ""), style: { position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(201,166,107,0.28)", background: PETROLE } },
-        imgG ? h("div", { className: "rv3-dci" }, h("img", { src: vign(imgG, 1100, 620), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.style.display = "none"; } catch (er) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
-          h("div", { className: "rv3-dco", "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.7) 50%, rgba(7,10,8,0.25) 100%)" } })) : null,
-        h("div", { style: { position: "relative", padding: "18px 16px 20px", maxWidth: 560 } },
-          h("span", { style: { display: "inline-block", fontSize: 9.5, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: CHAMP, border: "1px solid rgba(201,166,107,0.55)", borderRadius: 6, padding: "4px 8px" } }, t("dernierConc")),
-          h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.1, margin: "10px 0 4px", color: IVOIRE } }, titreGroupe(G.g)),
-          (G.g.rdv && G.g.rdv.titre) ? h("div", { dir: "auto", style: { fontSize: 12, color: GRIS } }, G.g.rdv.titre) : null,
-          h("div", { style: { fontSize: 12.5, color: "rgba(243,238,228,0.86)", margin: "6px 0 12px" } }, fmtPeriode(G.g.debAff, G.g.fin)),
+      h("button", { type: "button", className: "rv3-dc", onClick: function () { ouvrirGroupe(G.g); } },
+        imgG ? h("div", { className: "rv3-dci" }, h("img", { src: vign(imgG, 900, 600), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.style.display = "none"; } catch (er) { } } })) : null,
+        h("div", { className: "rv3-dct" },
+          h("div", { style: { fontSize: 9.5, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", color: CHAMP } }, t("dernierConc")),
+          h("div", { dir: "auto", className: "rv3-dcn" }, titreGroupe(G.g)),
+          (G.g.rdv && G.g.rdv.titre) ? h("div", { dir: "auto", className: "rv3-cod" }, G.g.rdv.titre) : null,
+          h("div", { className: "rv3-cod" }, fmtPeriode(G.g.debAff, G.g.fin)),
           ligneStats(sG),
-          h("div", { style: { marginTop: 14, display: "flex", flexDirection: "column", gap: 6 } }, meilleurs.map(function (l) {
+          h("div", { className: "rv3-d" }, h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 5 } }, meilleurs.map(function (l) {
             var r = rang(l);
             return h("div", { key: l.b.id, dir: "auto", style: { display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "rgba(243,238,228,0.9)" } },
-              h("span", { dir: "ltr", style: { flex: "0 0 62px", fontWeight: 600, color: IVOIRE, unicodeBidi: "isolate", textAlign: rtl ? "right" : "left" } }, r ? r.t : "—"),
+              h("span", { dir: "ltr", style: { flex: "0 0 58px", fontWeight: 600, color: IVOIRE, unicodeBidi: "isolate", textAlign: rtl ? "right" : "left" } }, r ? r.t : "—"),
               h("span", { style: { flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nom + (l.nomCheval ? " · " + l.nomCheval : "") + (l.x.ep ? " · " + l.x.ep : "")),
               l.sf ? h("span", { style: { flex: "0 0 auto" } }, badgeSF()) : null);
-          })),
-          h("div", { style: { marginTop: 16 } }, h("button", { type: "button", className: "rv3-bt", onClick: function () { ouvrirGroupe(G.g); } }, (G.g.rdv ? t("voirConc") : t("voirResConc")) + (rtl ? " ←" : " →"))))));
+          })), h("div", { style: { marginTop: 12, fontSize: 12, fontWeight: 600, color: CHAMP } }, (G.g.rdv ? t("voirConc") : t("voirResConc")) + (rtl ? " ←" : " →")))),
+        h("div", { className: "rv3-m", "aria-hidden": "true", style: { flex: "0 0 26px", display: "flex", alignItems: "center", justifyContent: "center", color: CHAMP, fontSize: 18 } }, rtl ? "‹" : "›")));
   }
 
   /* ── E. LA SAISON EN QUELQUES CHIFFRES ── */
   var sTot = stats(filtrees);
   var nSorties = (function () { var c = {}; filtrees.forEach(function (l) { if (l.g) c[l.g.cle] = true; }); return Object.keys(c).length; })();
+  var ICK = {
+    c: "M4 6h16v14H4zM4 10h16M8 3v5M16 3v5",
+    p: "M4 20V6M20 20V6M4 9h16M4 14h16",
+    s: "M12 3l2.6 6 6.4.6-4.9 4.3 1.5 6.3L12 17l-5.6 3.2 1.5-6.3L3 9.6 9.4 9z",
+    o: "M7 4h10v4a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8",
+    v: "M6 4c-2 4-1 9 3 11M18 4c2 4 1 9-3 11M9 15c1 2 5 2 6 0M12 17v4"
+  };
   function kpi(n, lib, extra, cle) {
     return h("div", { key: cle, className: "rv3-k" },
-      h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1, color: IVOIRE } }, n, extra ? h("span", { style: { fontSize: 16, color: GRIS } }, " (" + extra + ")") : null),
-      h("div", { style: { fontSize: 10, color: GRIS, marginTop: 6, letterSpacing: 0.3, overflow: "hidden", textOverflow: "ellipsis" } }, lib));
+      h("svg", { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: ICK[cle] })),
+      h("div", { className: "rv3-kn" }, n, extra ? h("span", { style: { fontSize: "0.55em", color: GRIS } }, " (" + extra + ")") : null),
+      h("div", { className: "rv3-kl" }, lib));
   }
   var secChiffres = filtrees.length ? h("section", { className: "rv3-sec", "aria-label": t("chiffres") },
-    teteSection(saisonActive === "tout" ? t("chiffresTout") : (t("chiffres") + " · " + libSaison(saisonActive)), null, null, "t"),
+    teteSection(saisonActive === "tout" ? t("chiffresTout") : (t("chiffres") + " · " + libSaison(saisonActive)), null, null, "t", t("perfCourt")),
     h("div", { className: "rv3-kpi" }, kpi(nSorties, tn("nConcours", nSorties), null, "c"), kpi(sTot.n, tn("nParcours", sTot.n), null, "p"), kpi(sTot.sf, tn("nSansFaute", sTot.sf), null, "s"), kpi(sTot.pod, tn("nPodiums", sTot.pod), null, "o"), kpi(sTot.v, tn("nVictoires", sTot.v), sTot.vp || null, "v")),
-    h("div", { style: { fontSize: 10.5, color: GRIS, marginTop: 8, lineHeight: 1.5 } }, t("suitFiltres") + (sTot.vp ? " " + t("notePrepa") : ""))) : null;
+    h("div", { style: { fontSize: 9.5, color: GRIS, marginTop: 6, lineHeight: 1.45 } }, t("suitFiltres") + (sTot.vp ? " " + t("notePrepa") : ""))) : null;
 
   /* ── F. TOUS LES CONCOURS ── */
   var _nc = React.useState(6), nConc = _nc[0], setNConc = _nc[1];
   var secConcours = grF.length ? h("section", { className: "rv3-sec", "aria-label": t("tousConc") },
     teteSection(t("tousConc"), null, null, "t"),
-    h("div", { style: { display: "flex", flexDirection: "column", gap: 8 } }, grF.slice(0, nConc).map(function (e) {
+    h("div", { style: { display: "flex", flexDirection: "column", gap: 7 } }, grF.slice(0, nConc).map(function (e) {
       var s = stats(e.l), img = imageGroupe(e.g);
-      return h("button", { key: e.g.cle, type: "button", onClick: function () { ouvrirGroupe(e.g); },
-        style: { display: "flex", alignItems: "stretch", gap: 0, width: "100%", minHeight: 76, padding: 0, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(201,166,107,0.22)", background: PETROLE, color: IVOIRE, cursor: "pointer", textAlign: "start", font: "inherit" } },
-        h("div", { style: { flex: "0 0 78px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "8px 4px", borderInlineEnd: "1px solid rgba(201,166,107,0.18)", fontSize: 11.5, fontWeight: 600, textAlign: "center", lineHeight: 1.3 } }, fmtPeriode(e.g.debAff, e.g.fin, true), h("span", { style: { fontSize: 10, color: GRIS, fontWeight: 500 } }, String(e.g.fin).slice(0, 4))),
-        img ? h("div", { style: { flex: "0 0 88px", position: "relative" } }, h("img", { src: vign(img, 200, 160), alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } })) : null,
-        h("div", { style: { flex: 1, minWidth: 0, padding: "10px 12px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 5 } },
-          h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 18, lineHeight: 1.15, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, titreGroupe(e.g)),
+      return h("button", { key: e.g.cle, type: "button", className: "rv3-co", onClick: function () { ouvrirGroupe(e.g); } },
+        img ? h("div", { className: "rv3-coi" }, h("img", { src: vign(img, 200, 160), alt: "", loading: "lazy", decoding: "async", onError: function (ev) { try { ev.target.parentNode.style.display = "none"; } catch (er) { } } })) : null,
+        h("div", { className: "rv3-cot" },
+          h("div", { className: "rv3-cod" }, fmtPeriode(e.g.debAff, e.g.fin)),
+          h("div", { dir: "auto", className: "rv3-con" }, titreGroupe(e.g)),
           ligneStats(s)),
-        h("div", { "aria-hidden": "true", style: { flex: "0 0 30px", display: "flex", alignItems: "center", justifyContent: "center", color: CHAMP, fontSize: 18 } }, rtl ? "‹" : "›"));
+        h("div", { "aria-hidden": "true", style: { flex: "0 0 26px", display: "flex", alignItems: "center", justifyContent: "center", color: CHAMP, fontSize: 17 } }, rtl ? "‹" : "›"));
     })),
     grF.length > nConc ? h("button", { type: "button", className: "rv3-lien", style: { marginTop: 8 }, onClick: function () { setNConc(nConc + 10); } }, t("voirPlus")) : null) : null;
 
@@ -611,19 +671,30 @@ function EcranResultatsEcurie() {
   var chevauxF = (function () {
     var m = {};
     filtrees.forEach(function (l) { if (!l.b.cheval_id || !l.cheval) return; var k = String(l.b.cheval_id); if (!m[k]) m[k] = { id: k, ch: l.cheval, nom: l.nomCheval, l: [] }; m[k].l.push(l); });
+    /* + les parcours de ces chevaux avec une cavalière non rattachée (même saison ; pas quand on filtre une cavalière ou un concours) */
+    if (!F.cav && !F.conc && D && D.autres && R) {
+      var vusA = {};
+      D.autres.forEach(function (b) {
+        var k = String(b.cheval_id || ""); if (!m[k] || vusA[b.id]) return;
+        var x = R.normaliser(b); if (!x.date) return;
+        if (saisonActive !== "tout" && saisonDe(x.date) !== saisonActive) return;
+        if (F.ch && F.ch !== k) return;
+        vusA[b.id] = true;
+        m[k].l.push({ x: x, b: b, cleCav: "a:" + nrm(b.cavalier), sf: !!(R.estSansFaute && R.estSansFaute(x)) });
+      });
+    }
     return Object.keys(m).map(function (k) { var o = m[k]; o.s = stats(o.l); return o; })
       .sort(function (a, b) { return (b.s.pod - a.s.pod) || (b.s.n - a.s.n) || a.nom.localeCompare(b.nom); });
   })();
   var secChevaux = chevauxF.length ? h("section", { className: "rv3-sec", "aria-label": t("nosChevaux") },
-    teteSection(t("nosChevaux"), null, null, "t"),
+    teteSection(t("nosChevaux"), null, null, "t", t("chevauxCourt")),
     h("div", { className: "rv3-rail" }, chevauxF.slice(0, 20).map(function (o) {
       var ph = photoCh(o.ch);
       return h("button", { key: o.id, type: "button", className: "rv3-carte rv3-ch", onClick: function () { ouvrirCheval(o.id); } },
-        h("div", { className: "rv3-ph", style: { aspectRatio: "1 / 1" } }, ph ? h("img", { src: vign(ph, 360, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } }) : monogramme(o.nom)),
-        h("div", { style: { padding: "8px 10px 10px" } },
-          h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 18, lineHeight: 1.1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, o.nom),
-          h("div", { style: { fontSize: 10.5, color: GRIS, marginTop: 4, lineHeight: 1.5 } },
-            o.s.n + " " + tn("nParcours", o.s.n) + " · " + o.s.sf + " " + tn("nSansFaute", o.s.sf), h("br"), o.s.pod + " " + tn("nPodiums", o.s.pod))));
+        h("div", { className: "rv3-ph", style: { aspectRatio: "5 / 4" } }, ph ? h("img", { src: vign(ph, 360, 290), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (er) { } } }) : monogramme(o.nom)),
+        h("div", { style: { padding: "6px 7px 7px" } },
+          h("div", { dir: "auto", className: "rv3-chn" }, o.nom),
+          h("div", { className: "rv3-chs" }, o.s.sf + " " + tn("nSansFaute", o.s.sf), h("br"), o.s.pod + " " + tn("nPodiums", o.s.pod))));
     }))) : null;
 
   /* ── H. MOMENTS FORTS (photos réelles des rendez-vous reliés, dans la sélection) ── */
@@ -633,7 +704,7 @@ function EcranResultatsEcurie() {
     teteSection(t("moments"), null, null, "t"),
     h("div", { className: "rv3-rail" }, photosSel.map(function (p, i) {
       return h("button", { key: p.url + i, type: "button", className: "rv3-carte rv3-mo", onClick: function () { ouvrirRdv(p.agenda_id); }, style: { border: "1px solid rgba(201,166,107,0.18)" } },
-        h("div", { className: "rv3-ph", style: { aspectRatio: "4 / 3" } }, h("img", { src: vign(p.url, 420, 315), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.parentNode.style.display = "none"; } catch (er) { } } })));
+        h("div", { className: "rv3-ph", style: { aspectRatio: "1 / 1" } }, h("img", { src: vign(p.url, 360, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.parentNode.style.display = "none"; } catch (er) { } } })));
     }))) : null;
 
   /* ── VUE « TOUS LES RÉSULTATS » ── */
@@ -751,10 +822,10 @@ function EcranResultatsEcurie() {
   else if (vue === "tous") corps = vueTous();
   else corps = h(React.Fragment, null,
     secCav,
-    h("div", { style: { background: "linear-gradient(180deg, " + NOIR + " 0%, " + PETROLE2 + " 12%, " + PETROLE2 + " 88%, " + NOIR + " 100%)", marginTop: 16, paddingBottom: 14 } },
+    h("div", { style: { marginTop: 4 } },
       h("div", { className: "rv3-w rv3-duo" }, secDernier || h("div"), secChiffres)),
     h("div", { className: "rv3-w rv3-duo", style: { paddingBottom: 18 } }, secConcours || h("div"), secChevaux),
-    secMoments ? h("div", { className: "rv3-bande" }, secMoments) : null,
+    secMoments ? h("div", null, secMoments) : null,
     peutImp ? h("div", { className: "rv3-w rv3-fm", style: { paddingTop: 24, flexDirection: "column", gap: 10 } },
       h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport, style: { width: "100%", justifyContent: "center", minHeight: 52 } }, icImp, t("importer")),
       h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("gestion"); }, style: { alignSelf: "center" } }, tg("gerer"))) : null);
