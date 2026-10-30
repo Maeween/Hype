@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 30;   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
+var VERSION = 31;   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
+/* v30 :   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
 /* v29 :   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
 /* v28 :   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
 /* v26 :   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
@@ -359,7 +360,7 @@ var CSS = [
 ".rbo-fc-por li{display:grid;grid-template-columns:auto 14px minmax(0,1fr);align-items:center;gap:0 14px;padding:6px 0;position:relative}",
 ".rbo-fc-por li:before{content:'';position:absolute;inset-inline-start:calc(var(--r) + 20px);top:0;bottom:0;width:1px;background:rgba(201,166,107,.45)}",
 ".rbo-fc-por li:first-child:before{top:50%}.rbo-fc-por li:last-child:before{bottom:50%}",
-".rbo-fc-por{--r:84px}",
+".rbo-fc-por{--r:84px}.rbo-fc-por.nb{--r:62px}.rbo-fc-por.nb li{padding:4px 0}.rbo-fc-por.nb .tx b{font-size:19px}.rbo-fc-por.nb .tx span{font-size:13px}",
 ".rbo-fc-por .rond{width:var(--r);height:var(--r);border-radius:50%;border:1.5px solid var(--champ);background-size:220%;background-repeat:no-repeat;box-shadow:0 8px 22px rgba(0,0,0,.5)}",
 ".rbo-fc-por .pt{width:7px;height:7px;border-radius:50%;background:var(--champ);justify-self:center;position:relative;z-index:1}",
 ".rbo-fc-por .tx{display:flex;flex-direction:column;gap:2px}",
@@ -378,7 +379,7 @@ var CSS = [
 ".rbo-fc-q .vi{flex:0 0 auto;width:72px;height:50px;border-radius:9px;background-size:260%;background-repeat:no-repeat}",
 ".rbo-fc-q .qt{flex:1 1 auto;min-width:0}.rbo-fc-q i{font-style:normal;color:var(--champ);font-size:20px;flex:0 0 auto}",
 ".rbo-fc-hb .pts{display:none}",
-".rbo-fc-duo.ancien{align-items:stretch}",
+".rbo-fc-duo.ancien{align-items:stretch}.rbo-fc-duo.ancien.seul{grid-template-columns:minmax(0,1fr);max-width:760px}",
 ".rbo-fc-duo.ancien .rbo-card{padding:22px 24px;border-radius:18px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,#132228,#0F1B20);box-shadow:0 14px 34px rgba(0,0,0,.35)}",
 ".rbo-fc-duo.ancien .rbo-card.defi{background:linear-gradient(180deg,#0E181C,#0B1417)}",
 ".rbo-fc-duo.ancien .rbo-card h3{font-size:26px;margin-bottom:12px}",
@@ -420,7 +421,7 @@ var CSS = [
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
 ".rbo .rbo-fc-hero .vo,[dir=rtl] .rbo .rbo-fc-hero .vo{background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.72) 50%,rgba(7,10,8,.18) 100%),linear-gradient(180deg,rgba(7,10,8,.4) 0%,rgba(7,10,8,0) 30%,#070A08 100%)}",
 ".rbo .rbo-fc-hero h2{font-size:36px}.rbo .rbo-fc-hero .sous{max-width:none}",
-".rbo .rbo-fc-por{--r:70px;margin-top:18px}.rbo .rbo-fc-por li{gap:0 10px;padding:4px 0}.rbo .rbo-fc-por li:before{inset-inline-start:calc(var(--r) + 16px)}",
+".rbo .rbo-fc-por{--r:70px;margin-top:18px}.rbo .rbo-fc-por.nb{--r:56px}.rbo .rbo-fc-por li{gap:0 10px;padding:4px 0}.rbo .rbo-fc-por li:before{inset-inline-start:calc(var(--r) + 16px)}",
 ".rbo .rbo-fc-por .tx b{font-size:20px}.rbo .rbo-fc-por .tx span{font-size:13px}",
 ".rbo .rbo-fc-duo{padding:36px 16px 0;gap:36px}",
 ".rbo .rbo-fc-hb,.rbo .rbo-fc-defi,.rbo .rbo-fc-duo.ancien .rbo-card{padding:18px 16px}.rbo .rbo-fc-duo.ancien .rbo-card h3{font-size:23px}",
@@ -772,19 +773,19 @@ function FinCours(c) {
         h("span", { className: "trait", "aria-hidden": true }),
         h("p", { className: "sous" }, L("finSous")),
         reussi ? h("p", { className: "ok" }, h("span", { "aria-hidden": true }, "★★★★★".slice(0, etoiles) + "☆☆☆☆☆".slice(0, 5 - etoiles)), " " + L("quizReussi") + " · " + c.quizScore + " %") : null,
-        h("ul", { className: "rbo-fc-por" }, c.portraits.map(function (p, i) {
+        h("ul", { className: "rbo-fc-por" + (c.portraits.length > 4 ? " nb" : "") }, c.portraits.map(function (p, i) {
           return h("li", { key: i },
-            h("span", { className: "rond", role: "img", "aria-label": p.nom, style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }),
+            h("span", { className: "rond" + (p.img ? "" : " teinte"), role: "img", "aria-label": p.nom, style: p.img ? { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center", backgroundSize: p.taille || undefined } : { background: p.couleur } }),
             h("span", { className: "pt", "aria-hidden": true }),
             h("span", { className: "tx" }, h("b", null, p.nom), h("span", null, p.desc)));
         })),
         c.note ? h("p", { className: "note" }, c.note) : null)),
     /* 2 + 3 — Hey Baby, défi. 31/10 00h35 (Blandine) : on garde « Demande à Hey Baby » et « Le défi du cavalier » de la version d'avant
        (cartes, 3 questions en bulles, défi en entier). Le carrousel et les cercles du défi restent dans le code (c.duoMaquette = true). */
-    !c.duoMaquette && c.defiSeg ? h("div", { className: "rbo-fc-duo ancien" },
+    !c.duoMaquette ? h("div", { className: "rbo-fc-duo ancien" + (c.defiSeg ? "" : " seul") },
       c.hb.length ? h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
         h("div", { className: "rbo-hbq" }, c.hb.map(function (q, i) { return h("button", { key: i, type: "button", onClick: function () { c.onHey(q); } }, h("span", null, q), h("i", { "aria-hidden": true }, fl)); }))) : null,
-      h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), c.defiSeg.titre), c.defiSeg.sous ? h("p", null, c.defiSeg.sous) : null, c.defiSeg.texte ? h("p", null, c.defiSeg.texte) : null,
+      !c.defiSeg ? null : h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), c.defiSeg.titre), c.defiSeg.sous ? h("p", null, c.defiSeg.sous) : null, c.defiSeg.texte ? h("p", null, c.defiSeg.texte) : null,
         c.defiSeg.puces && c.defiSeg.puces.length ? h("ul", { className: "rbo-defil" }, c.defiSeg.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })) : null)) :
     h("div", { className: "rbo-fc-duo" },
       c.hb.length ? h("section", { className: "rbo-fc-hb", "aria-labelledby": "rbo-fc-hbt" },

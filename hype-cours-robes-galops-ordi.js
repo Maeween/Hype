@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 13;   /* 31/10 : autres Galops grisés dans le menu */
+var VERSION = 14;   /* 31/10 : page de fin = FinCours (maquette), portraits de toutes les robes du cours */
+/* v13 :   /* 31/10 : autres Galops grisés dans le menu */
 /* v12 :   /* 31/10 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
 /* v11 :   /* 31/10 : même traitement que le Galop 1 — doublons retirés, page de fin, autres Galops dans le menu, plus de bleu pétrole */
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
@@ -184,7 +185,7 @@ var PARC = [{ id: "g1-c7", galop: 1, lab: "Galop 1" }, { id: "g2-robes", galop: 
 /* ---------------- composant ---------------- */
 function HypeRobesGalopsOrdi(props) {
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";
-  var g5 = cours.id === "g5-robes", g2 = cours.id === "g2-robes";
+  var g5 = cours.id === "g5-robes", g2 = cours.id === "g2-robes", g3 = cours.id === "g3-c7";
   var L = function (k) { var o = S.T[k]; return (o && (o[lg] || o.en || o.fr)) || ""; };
   var X = function (k) { var o = N[k]; return (o && (o[lg] || o.en || o.fr)) || ""; };
   var d = lire(cours, lg);
@@ -464,29 +465,40 @@ function HypeRobesGalopsOrdi(props) {
       coach ? h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(coach.titre)), h("p", null, coach.texte)) : null,
       h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →"))));
 
-  /* 31/10 : PAGE DE FIN (même modèle que le Galop 1) — remplace le quiz intégré et l'ancienne page « Cours terminé ! » */
-  var pageFin = h("div", { className: "rbo-f" },
-    h("div", { className: "rbo-f-bar" },
-      h("button", { type: "button", className: "rbo-back", "aria-label": L("retourCours"), onClick: versCours }, rtl ? "›" : "‹"),
-      h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
-    h("header", { className: "rbo-f-head" },
-      h("div", { className: "rbo-f-ok", "aria-hidden": true }, "✓"),
-      h("p", { className: "rbo-f-kick" }, kicker + "  ·  " + d.titre),
-      h("h1", null, L("coursFini")),
-      gagneXp ? h("span", { className: "rbo-f-xp" }, "+25 XP") : null),
-    h("div", { className: "rbo-f-grid" + (synth ? "" : " sans") },
-      synth ? h("section", { className: "rbo-card rbo-f-ess" }, h("h3", null, ICO.livre(20), nettoyer(sansNum(synth.titre))),
-        h("ul", null, synth.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); }))) : null,
-      h("div", { className: "rbo-f-col" },
-        hbListe.length ? h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
-          h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, nettoyer(qq)), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))) : null,
-        defi ? h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(sansNum(defi.titre))), defi.sous ? h("p", null, defi.sous) : null, defi.texte ? h("p", null, defi.texte) : null,
-          defi.puces.length ? h("ul", { className: "rbo-defil" }, defi.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })) : null) : null),
-      h("section", { className: "rbo-f-quiz" },
-        h("div", null, h("h3", null, L("secQuiz")), h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn") + (rtl ? " ←" : " →"))))),
-    h("div", { className: "rbo-f-act" },
-      suivant ? h("button", { type: "button", className: "rbo-btn", onClick: function () { props.onOuvrirCours(suivant.id); } }, L("coursSuivant") + "  ·  " + (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)) + (rtl ? " ←" : " →")) : null,
-      h("button", { type: "button", className: "rbo-btn neutre", onClick: props.onRetour }, L("retourGalops"))));
+  /* 31/10 : PAGE DE FIN = composant FinCours du Galop 1 (maquette validée). Portraits = toutes les robes du cours (rappel final). */
+  var phrase1 = function (t) { t = String(t || "").trim(); var m = t.match(/^[^.。!?！？]*[.。!?！？]/); return m ? m[0] : t; };
+  var maj = function (t) { t = String(t || "").trim(); return t.charAt(0).toUpperCase() + t.slice(1); };
+  var coupe = function (t, re) { t = String(t || ""); var m = t.match(re); return m ? [t.slice(0, m.index).trim(), maj(phrase1(t.slice(m.index + m[0].length)))] : [t.trim(), ""]; };
+  var por = function (img, nom, desc, pos) { return { img: img, pos: pos || "48% 55%", taille: "290%", nom: nettoyer(sansNum(nom)).replace(/\s*[—–―:：]+\s*$/, ""), desc: desc }; };
+  var portraits = [];
+  if (g2) {
+    var gris = coupe(a[4].puces[3] && a[4].puces[3].texte, /\s*[—–―]+\s*/);
+    var aut = a[8].puces.map(function (pp) { return [pp.gras || "", maj(phrase1(pp.texte))]; });
+    portraits = [
+      por(P.g2gris, gris[0], gris[1], "80% 30%"),
+      { couleur: "radial-gradient(circle at 35% 30%,#FFFFFF,#E9E4DA 55%,#CFC8BB)", nom: nettoyer(aut[0][0]).replace(/\s*[—–―:：]+\s*$/, ""), desc: aut[0][1] },
+      por(P.g2creme, aut[1][0], aut[1][1]),
+      { couleur: "radial-gradient(circle at 35% 30%,#6B4630,#3B2416 60%,#24150C)", nom: nettoyer(aut[2][0]).replace(/\s*[—–―:：]+\s*$/, ""), desc: aut[2][1] },
+      por(P.g2pie, a[5].titre, maj(phrase1(a[5].texte))),
+      por(P.g2tachete, a[6].titre, maj(phrase1(a[6].texte)))
+    ];
+  } else if (!g5) {
+    portraits = [[P.g3isabelle, mm[8], "18% 40%"], [P.g3souris, mm[9], "18% 40%"], [P.g3brule, mm[10]], [P.g3cafe, mm[11]], [P.g3palomino, mm[12]]].map(function (x) { return por(x[0], x[1].titre, maj(phrase1(x[1].texte)), x[2]); });
+  } else {
+    var leo = coupe(a[11].puces[0] && ((a[11].puces[0].gras || "") + (a[11].puces[0].texte || "")), /\s*[:：]\s*/);
+    portraits = [[P.g5tobiano, a[5]], [P.g5overo, a[6]], [P.g5tovero, a[7]], [P.g5balzan, a[8]], [P.g5sabino, a[9]]].map(function (x) { return por(x[0], x[1].titre, maj(phrase1(x[1].texte))); })
+      .concat([por(P.g5leopard, leo[0], leo[1]), por(P.g5rouan, a[16].titre, maj(phrase1(a[16].texte))), por(P.g5aubere, a[17].titre, maj(phrase1(a[17].texte)))]);
+  }
+  var pageFin = h(S.FinCours, {
+    L: L, lg: lg, rtl: rtl, kicker: kicker, titre: d.titre, Selecteur: Selecteur, coursId: cours.id,
+    heroImg: g3 ? P.g3tete : "images/robes-g3-epis.webp", heroPos: g3 ? "60% 35%" : "62% 45%", heroFlip: !g3,
+    portraits: portraits.filter(function (x) { return x.nom; }), note: "",
+    hb: hbListe.map(function (q) { return nettoyer(q); }), onHey: hey,
+    defiSeg: defi ? { titre: nettoyer(sansNum(defi.titre)), sous: defi.sous, texte: defi.texte, puces: defi.puces } : null,
+    quizImg: "images/galops-v2-carte-quiz-hd1.jpg", onQuiz: function () { props.setEcran("quiz"); }, quizScore: props.quizScore,
+    suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
+    onGalops: props.onRetour, onRetourCours: versCours
+  });
 
   return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, S.CSS + "\n" + CSS2),

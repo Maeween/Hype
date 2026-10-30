@@ -15724,3 +15724,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 31/10 00h40 (v29, NON publié) : dans la nouvelle fin, « Demande à Hey Baby » (3 bulles) et « Le défi du cavalier » (en entier) repris de la version d'avant, à la demande de Blandine ; carrousel et cercles du défi gardés dans le code, désactivés (duoMaquette).
 - 31/10 00h45 (build 20261031-0410, hype-cours-robes-ordi.js v30) : phrase « Je regarde toujours… » retirée sous les portraits (redisait la liste du défi) ; cartes Hey Baby et défi au même style que le reste de la fin (dégradé sombre, filet champagne, questions en bleu pétrole #172A30, liste du défi dans un encart) ; portraits un peu moins zoomés (plus nets).
 - 31/10 00h45 : PUBLICATION build 20261031-0410 (fin de cours du Galop 1 d'après la maquette + autres Galops grisés) — accord « Ok arrange tout ça ».
+- 31/10 01h00 (build 20261031-0430 ; hype-cours-robes-ordi.js v31, hype-cours-robes-galops-ordi.js v14 ; NON publié) : la fin d'après la maquette (FinCours) est branchée sur les robes des Galops 2, 3 et 5, avec en portraits TOUTES les robes du cours (rappel final, demande de Blandine) :
+  · G2 (6) : gris, blanc, crème, chocolat, pie, tacheté — blanc et chocolat n'ont pas de photo : cercle de la couleur (pas de fausse photo).
+  · G3 (5) : isabelle, souris, alezan brûlé, café au lait, palomino.
+  · G5 (8) : tobiano, ovéro, tovero, balzan, sabino, léopard, rouan, aubère.
+  Noms et descriptions lus dans chaque cours (1re phrase), 14 langues vérifiées (dont japonais/chinois avec « —— »). Photo d'ambiance : œil (G2, G5), tête marquée du G3 (G3). Hey Baby (3 questions) et défi du cavalier comme au Galop 1 (G2 n'a pas de défi : Hey Baby seul). Au-delà de 4 portraits, cercles un peu plus petits.
