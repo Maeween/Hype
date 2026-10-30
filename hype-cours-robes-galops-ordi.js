@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 4;
+var VERSION = 5;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -271,7 +271,7 @@ function HypeRobesGalopsOrdi(props) {
       Sec("s2", "02", nettoyer(sansNum(a[4].titre)), "petrole", h("div", null,
         h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("alezan", "grand", "55% 40%")),
         h("div", { style: { marginTop: 88 } }, Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", null, "Galop 2")),
-        h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "55% 40%"), h("div", { className: "rbo-txt" }, M(a[6], "a6"))))),
+        h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "30% 78%"), h("div", { className: "rbo-txt" }, M(a[6], "a6"))))),
       Vague(PET, NOIR),
       Sec("s3", "03", nettoyer(sansNum(a[7].titre)), "noir", h("div", { className: "rbo-robe" },
         Photo("alezan", "", "55% 40%"),
@@ -331,7 +331,7 @@ function HypeRobesGalopsOrdi(props) {
       Sec("s4", "04", nettoyer(sansNum(decl.titre)), "petrole", h("div", null,
         h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt" }, decl.sous ? h("p", null, decl.sous) : null),
           h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, decl.puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, h("strong", null, p.gras + " "), p.texte)); })))),
-        h("div", { style: { marginTop: 72 } }, Compo("g3isabelle", isab.titre, isab.texte, false, "55% 40%", null, "Galop 3")),
+        h("div", { style: { marginTop: 72 } }, Compo("g3isabelle", isab.titre, isab.texte, false, "22% 38%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3souris", sour.titre, sour.texte, true, "55% 40%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3brule", brul.titre, brul.texte, false, "55% 40%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3cafe", cafe.titre, cafe.texte, true, "55% 40%", null, "Galop 3")),

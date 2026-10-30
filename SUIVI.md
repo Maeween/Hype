@@ -15393,3 +15393,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 30/10 19h30 — Photo « crins lavés » en pleine taille (non publiée)
 - images/robes-g5-adj-crins-laves.webp remplacée par la photo fournie par Blandine (1669 × 942 px, alezan à crins et queue lavés, balzanes aux membres, licol ; cheval en saut, pas de cavalier). Retirée de la liste « à refaire en pleine taille ». Rien d'autre modifié. À publier avec le prochain groupe de photos (pas de [publier] pour l'instant).
+
+## 30/10 19h45 — Photos isabelle (G3) et gris (G2) remplacées sur demande de Blandine (« on s'en fout, mets-les ») — NON PUBLIÉ
+- images/robes-g3-isabelle.webp : isabelle (corps sable, crins et membres noirs) en saut avec jeune cavalier et harnachement, 1415 × 1112 px, fournie par Blandine ; le zoom rond est placé sur le poil de l'encolure (22 % 38 %). Mise à la demande de Blandine malgré le cavalier (signalé).
+- images/robes-g2-gris.webp : gris avec cavalière, recadrée de 1024 × 1536 en 1024 × 890 autour du cheval ; zoom rond sur la croupe (30 % 78 %).
+- hype-cours-robes-galops-ordi.js v5 (?v=5), build 20261030-1945. Reste à refaire en pleine taille : robes-g2-pie, robes-g3-souris, robes-g5-tachete-leopard. À publier avec le prochain groupe (pas de [publier] pour l'instant).
