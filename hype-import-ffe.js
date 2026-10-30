@@ -1033,6 +1033,16 @@
       } catch (eRg) { }
       if (E.completes > 0) phrase += " " + E.completes + " point" + (E.completes > 1 ? "s manquants ont été complétés" : " manquant a été complété") + " sur des lignes déjà là.";
       if (E.rattachees > 0) phrase += " " + E.rattachees + " résultat" + (E.rattachees > 1 ? "s ont été rattachés" : " a été rattaché") + " au compte de" + (E.rattachees > 1 ? " leurs cavalières" : " sa cavalière") + " (visibles sur leur page Performances).";
+      /* 30/10 : DIRE le lien avec l agenda — relie, non relie faute de pouvoir trancher, ou souci de lecture. */
+      try {
+        var Ag = E.agenda;
+        if (Ag) {
+          var lstR = Ag.rdv ? Object.keys(Ag.rdv) : [];
+          if (Ag.relies > 0 && lstR.length) phrase += " " + lstR.map(function (k) { return Ag.rdv[k] + " reli\u00e9" + (Ag.rdv[k] > 1 ? "s" : "") + " au rendez-vous \u00ab " + (k || "concours") + " \u00bb"; }).join(", ") + " de l'agenda.";
+          if (Ag.plusieurs > 0) phrase += " " + Ag.plusieurs + " r\u00e9sultat" + (Ag.plusieurs > 1 ? "s n'ont" : " n'a") + " pas \u00e9t\u00e9 reli\u00e9" + (Ag.plusieurs > 1 ? "s" : "") + " \u00e0 l'agenda : plusieurs rendez-vous possibles, je n'ai pas devin\u00e9.";
+          if (Ag.erreur) phrase += " Le lien avec l'agenda n'a pas pu se faire (" + Ag.erreur + ") \u2014 les r\u00e9sultats, eux, sont bien enregistr\u00e9s.";
+        }
+      } catch (eAgd) { }
       phrase += " Tu peux importer une autre saison quand tu veux.";
     } else if (E.completes > 0) {
       titre = E.completes + " point" + (E.completes > 1 ? "s complétés" : " complété");
@@ -1383,6 +1393,7 @@
         /* 18/09 (243) : les homonymes, a distinguer des inconnus — « il y en a plusieurs de
            ce nom » n appelle pas la meme action que « je ne connais pas ce cheval ». */
         E.ambigus = (rep.ambigus && typeof rep.ambigus === "object") ? rep.ambigus : null;
+        E.agenda = (rep.agenda && typeof rep.agenda === "object") ? rep.agenda : null;   /* 30/10 : lien avec les rendez-vous de l agenda */
       } else {
         E.enregistres = (typeof rep === "number") ? rep : aGarder.length;
         E.doublons = 0; E.completes = 0; E.refusees = 0;

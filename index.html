@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-2130"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-2000"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}/* 30/10 (Blandine) - vignettes des videos des Galops : image assombrie, voile semi-transparent, titre ivoire ecrit dessus */.vidv{position:relative;display:block;overflow:hidden;background:#030405}.vidv img{opacity:.4!important;filter:none!important}.vidv:after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(3,4,5,.18),rgba(3,4,5,.78))!important}.vidv .gv3-play,.vidv .g1o-vid-play,.vidv .g5-vid-bientot{z-index:2}.vidv .g1o-vid-play,[dir=rtl] .vidv .g1o-vid-play{left:50%;right:auto;top:28%;bottom:auto;width:34px;height:34px;transform:translate(-50%,-50%)}.vidv .gv3-play{top:28%;width:34px;height:34px}.vidv .gv3-play svg{width:16px;height:16px}.vidv .g5-vid-bientot{top:28%}.vidv-t{position:absolute;left:10px;right:10px;top:64%;transform:translateY(-50%);text-align:center;z-index:3;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16px;line-height:1.15;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.9);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}@media (min-width:1024px){.vidv-t{left:14px;right:14px;font-size:18px}}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -3555,6 +3555,110 @@ function nomsHippiquesProches(a, b) {
   try { if (!procheAssez && cA.length >= 4 && cA.length === cB.length && distEdit(cA, cB) <= 1) procheAssez = true; } catch (eD2) { }
   return (nA.indexOf(nB) >= 0 || nB.indexOf(nA) >= 0 || (cA && cB && (cA.indexOf(cB) >= 0 || cB.indexOf(cA) >= 0)) || procheAssez);
 }
+/* ════════ 30/10 — RÉSULTAT ↔ RENDEZ-VOUS DE L AGENDA (colonne resultats.agenda_id) ════════
+   Demande de Blandine (19 h 15) : « lier automatiquement un résultat quand on le rentre ». Règle validée (« Ok », 19 h 16) :
+   un résultat n est relié à un rendez-vous que si TOUT colle à la fois —
+     · la date du résultat tombe dans les dates du rendez-vous (date_jour → date_fin) ;
+     · le rendez-vous est de type « concours » ;
+     · le lieu correspond : au moins un mot distinctif commun entre le nom du concours FFE et le lieu / titre du rendez-vous
+       (les mots génériques — haras, centre, équestre, club, Paris… — ne comptent pas) ;
+     · le rendez-vous appartient au club de la cavalière (son compte relié ; à défaut, les clubs de la personne qui importe).
+   Un seul rendez-vous → lien posé. Plusieurs → AUCUN lien (on ne devine pas), compté « plusieurs possibles ». Aucun → rien.
+   ⚠️ Jamais de création de rendez-vous. ⚠️ Ne fait JAMAIS échouer l import : toute erreur est rendue en information.
+   ⚠️ N écrit que sur des lignes encore sans lien (.is("agenda_id", null)) : un lien posé à la main n est jamais écrasé. */
+var HYPE_LIEU_MOTS_GENERIQUES = ["HARAS", "CENTRE", "EQUESTRE", "EQUESTRES", "ECURIE", "ECURIES", "CLUB", "HIPPIQUE", "HIPPIQUES", "PONEY", "PONEYS", "CHALLENGE",
+  "CONCOURS", "SOCIETE", "EQUITATION", "POLE", "DOMAINE", "PARIS", "JUMP", "DRESS", "DRESSAGE", "MANCHE", "EQUIPE", "PARC", "SAINT", "SAINTE", "FRANCE",
+  "OPEN", "GRAND", "PRIX", "AMATEUR", "AMATEURS", "ETAPE", "FINALE", "FINALES", "REGIONALE", "REGIONAL", "DEPARTEMENTAL", "DEPARTEMENTALE", "INITIATION", "STAGE",
+  "ASSOCIATION", "ELEVAGE", "ESPACE", "PREMIERE", "DEUXIEME", "TROISIEME", "EVENEMENT", "COMPETITION", "COMPETITIONS"];
+function hypeMotsLieu(t) {
+  var x = String(t || "");
+  try { x = x.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { }
+  x = x.toUpperCase().replace(/[^A-Z]+/g, " ").trim();
+  var out = [];
+  x.split(" ").forEach(function (m) { if (m.length >= 4 && HYPE_LIEU_MOTS_GENERIQUES.indexOf(m) === -1 && out.indexOf(m) === -1) out.push(m); });
+  return out;
+}
+/* Fonction pure (testable) : la liste des rendez-vous candidats pour UN résultat. */
+function hypeRdvCandidats(res, rdvs, clubsCav) {
+  var d = String((res && res.date_epreuve) || "").slice(0, 10);
+  if (!d) return [];
+  var motsC = hypeMotsLieu(res && res.concours);
+  if (!motsC.length) return [];
+  return (rdvs || []).filter(function (a) {
+    if (!a || a.type !== "concours") return false;
+    var deb = String(a.date_jour || "").slice(0, 10), fin = String(a.date_fin || a.date_jour || "").slice(0, 10);
+    if (!deb || d < deb || d > fin) return false;
+    if (!clubsCav || !clubsCav.length || clubsCav.indexOf(String(a.club_clef || "")) === -1) return false;
+    var motsA = hypeMotsLieu(String(a.lieu || "") + " " + String(a.titre || ""));
+    return motsC.some(function (m) { return motsA.indexOf(m) !== -1; });
+  });
+}
+async function hypeRelierResultatsAgenda(ids, user) {
+  var info = { relies: 0, rdv: {}, plusieurs: 0, sansRdv: 0, erreur: "" };
+  try {
+    if (!ids || !ids.length || typeof supa === "undefined" || !supa) return info;
+    var lignes = [];
+    for (var i = 0; i < ids.length; i += 200) {
+      var rL = await delaiDeGarde(supa.from("resultats").select("id, date_epreuve, concours, cavalier, cavalier_id, agenda_id").in("id", ids.slice(i, i + 200)), 15, "lecture des résultats enregistrés");
+      if (rL && rL.error) { info.erreur = String(rL.error.message || rL.error); return info; }
+      lignes = lignes.concat((rL && rL.data) || []);
+    }
+    lignes = lignes.filter(function (l) { return l && l.id && !l.agenda_id && l.date_epreuve; });
+    if (!lignes.length) return info;
+    var dates = lignes.map(function (l) { return String(l.date_epreuve).slice(0, 10); }).sort();
+    var dMin = new Date(dates[0] + "T00:00:00Z"); dMin.setUTCDate(dMin.getUTCDate() - 10);   /* un concours de plusieurs jours commence avant */
+    var rA = await delaiDeGarde(supa.from("club_agenda").select("id, club_clef, type, titre, lieu, date_jour, date_fin")
+      .eq("type", "concours").gte("date_jour", dMin.toISOString().slice(0, 10)).lte("date_jour", dates[dates.length - 1]).limit(1000), 15, "lecture de l agenda");
+    if (rA && rA.error) { info.erreur = String(rA.error.message || rA.error); return info; }
+    var rdvs = (rA && rA.data) || [];
+    if (!rdvs.length) { info.sansRdv = lignes.length; return info; }
+    /* Clubs de chaque cavalière : son compte relié (cavalier_id), sinon son nom FFE relié (cavaliers_ffe), sinon la personne qui importe. */
+    var clubsDe = function (p) { var o = []; if (p) { [p.ecurie, p.ecurie2].forEach(function (c) { var k = clefClubG(String(c || "")); if (k && o.indexOf(k) === -1) o.push(k); }); } return o; };
+    var idsCav = [], nomsSans = [];
+    lignes.forEach(function (l) {
+      if (l.cavalier_id) { if (idsCav.indexOf(l.cavalier_id) === -1) idsCav.push(l.cavalier_id); }
+      else if (l.cavalier && nomsSans.indexOf(l.cavalier) === -1) nomsSans.push(l.cavalier);
+    });
+    var userParNom = {};
+    if (nomsSans.length) {
+      try {
+        var rF = await delaiDeGarde(supa.from("cavaliers_ffe").select("nom, user_id").in("nom", nomsSans.slice(0, 200)), 15, "lecture des noms FFE");
+        ((rF && rF.data) || []).forEach(function (x) { if (x && x.nom && x.user_id) { userParNom[x.nom] = x.user_id; if (idsCav.indexOf(x.user_id) === -1) idsCav.push(x.user_id); } });
+      } catch (eF) { }
+    }
+    if (user && user.id && idsCav.indexOf(user.id) === -1) idsCav.push(user.id);
+    var profils = {};
+    try {
+      var rP = await delaiDeGarde(supa.from("profiles").select("id, ecurie, ecurie2").in("id", idsCav.slice(0, 300)), 15, "lecture des clubs");
+      ((rP && rP.data) || []).forEach(function (p) { if (p && p.id) profils[p.id] = p; });
+    } catch (eP) { }
+    var clubsImporteur = clubsDe(user && profils[user.id]);
+    var parRdv = {}, titres = {};
+    lignes.forEach(function (l) {
+      var uid = l.cavalier_id || userParNom[l.cavalier] || null;
+      var clubs = uid && profils[uid] ? clubsDe(profils[uid]) : clubsImporteur;
+      var cands = hypeRdvCandidats(l, rdvs, clubs);
+      /* Cavalière CONNUE inscrite dans deux clubs, les deux ayant ce concours à l agenda : son club PRINCIPAL (1re écurie) tranche.
+         Cavalière inconnue (repli sur les clubs de la personne qui importe) : on ne tranche jamais. */
+      if (cands.length > 1 && uid && profils[uid] && clubs.length > 1) {
+        var c1 = hypeRdvCandidats(l, rdvs, clubs.slice(0, 1));
+        if (c1.length === 1) cands = c1;
+      }
+      if (cands.length === 1) { (parRdv[cands[0].id] = parRdv[cands[0].id] || []).push(l.id); titres[cands[0].id] = cands[0].titre || cands[0].lieu || ""; }
+      else if (cands.length > 1) info.plusieurs++;
+      else info.sansRdv++;
+    });
+    var cles = Object.keys(parRdv);
+    for (var k = 0; k < cles.length; k++) {
+      var rU = await delaiDeGarde(supa.from("resultats").update({ agenda_id: cles[k] }).in("id", parRdv[cles[k]]).is("agenda_id", null).select("id"), 15, "lien avec l agenda");
+      if (rU && rU.error) { info.erreur = String(rU.error.message || rU.error); continue; }
+      var nU = (rU && rU.data) ? rU.data.length : 0;
+      if (nU) { info.relies += nU; info.rdv[titres[cles[k]]] = (info.rdv[titres[cles[k]]] || 0) + nU; }
+    }
+  } catch (e) { info.erreur = String((e && e.message) || e); }
+  return info;
+}
+
 async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts) {
   var modeCav = !!(opts && opts.cavaliere);
   var modeMulti = !!(opts && opts.multi);   /* (729) import de plusieurs fichiers / plusieurs chevaux : chaque ligne va sur le cheval nomme dans son fichier, aucun cheval impose */   /* 07/10 (694) : import depuis la page Performances de la cavaliere, sans cheval impose */
@@ -3932,6 +4036,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
 
   /* par paquets de 50 : un import de sept saisons fait 166 lignes */
   let n = 0;
+  let idsNeufs = [];   /* 30/10 : identifiants des lignes ecrites, pour le lien avec l agenda */
   let manquePS = false;   /* 06/09 : vrai si la base n'a pas encore les colonnes mention/points */
   for (let i = 0; i < neufs.length; i += 50) {
     let r;
@@ -3959,6 +4064,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
     }
     if (r && r.error) return { n: n, doublons: doublons, error: String(r.error.message || r.error) };
     n += (r && r.data ? r.data.length : 0);
+    ((r && r.data) || []).forEach(function (xI) { if (xI && xI.id) idsNeufs.push(xI.id); });
   }
   /* 🟥 aucune diffusion à l'écurie : sept saisons noieraienT le fil. */
   var infoOg = null;
@@ -4014,6 +4120,10 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
       if (rRat && !rRat.error && typeof rRat.data === "number") rattachees = rRat.data;
     } catch (eRat) { }
   }
+  /* 30/10 : lien automatique avec le rendez-vous de l agenda (apres le rattachement aux cavalieres, qui donne leur club).
+     Ne fait jamais echouer l import : en cas de souci, l information part dans le compte rendu. */
+  var infoAgenda = null;
+  if (idsNeufs.length) { try { infoAgenda = await hypeRelierResultatsAgenda(idsNeufs, user); } catch (eAg) { infoAgenda = { relies: 0, rdv: {}, plusieurs: 0, sansRdv: 0, erreur: String((eAg && eAg.message) || eAg) }; } }
   var ailleurs = {};
   neufs.forEach(function (x) {
     if (x && x.cheval_id && String(x.cheval_id) !== String(chevalId)) {
@@ -4027,7 +4137,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
       ailleurs[k2] = (ailleurs[k2] || 0) + 1;
     }
   });
-  return { n: n, doublons: doublons, completes: completes, refusees: refusees, rattachees: rattachees, origines: infoOg, ailleurs: ailleurs, inconnus: inconnus, ambigus: ambigus,
+  return { n: n, doublons: doublons, completes: completes, refusees: refusees, rattachees: rattachees, origines: infoOg, ailleurs: ailleurs, inconnus: inconnus, ambigus: ambigus, agenda: infoAgenda,
     avertissement: ((avertLien || "") + (ignoreesCav ? (ignoreesCav + " ligne" + (ignoreesCav > 1 ? "s" : "") + " au nom d'une autre personne " + (ignoreesCav > 1 ? "ont" : "a") + " \u00e9t\u00e9 ignor\u00e9e" + (ignoreesCav > 1 ? "s" : "") + ". ") : "") + (manquePS ? "Les r\u00e9sultats sont enregistr\u00e9s, mais PAS la mention « sans faute » ni les points : la base n'a pas encore les colonnes. Passe le SQL sql-06-09-sansfaute-points.sql, puis relance cet import pour les r\u00e9cup\u00e9rer." : "")) || null };
 }
 async function appliquerOriginesOfficielles(chevalId, originesOff) { /* 26/08 : le cavalier a choisi « prendre l officiel » — on remplace pere/mere et on complete le reste */
@@ -28611,7 +28721,7 @@ function Router() {
                         .then(function (rM) {
                           if (rM && rM.error) throw new Error(rM.error);
                           if (rM && rM.avertissement) { try { window.alert(rM.avertissement); } catch (eAvM) { } }
-                          return { n: (rM && rM.n) || 0, doublons: (rM && rM.doublons) || 0, completes: (rM && rM.completes) || 0, refusees: (rM && rM.refusees) || 0, ailleurs: (rM && rM.ailleurs) || null, inconnus: (rM && rM.inconnus) || null, ambigus: (rM && rM.ambigus) || null };
+                          return { n: (rM && rM.n) || 0, doublons: (rM && rM.doublons) || 0, completes: (rM && rM.completes) || 0, refusees: (rM && rM.refusees) || 0, ailleurs: (rM && rM.ailleurs) || null, inconnus: (rM && rM.inconnus) || null, ambigus: (rM && rM.ambigus) || null, agenda: (rM && rM.agenda) || null };
                         });
                     }
                     if (window.HYPE_IMPORT_CAVALIERE) {   /* 07/10 (694) : import depuis la page Performances de la cavaliere — chaque ligne va a son cheval, nom FFE verifie */
@@ -28619,7 +28729,7 @@ function Router() {
                         .then(function (rC) {
                           if (rC && rC.error) throw new Error(rC.error);
                           if (rC && rC.avertissement) { try { window.alert(rC.avertissement); } catch (eAvC) { } }
-                          return { n: (rC && rC.n) || 0, doublons: (rC && rC.doublons) || 0, completes: (rC && rC.completes) || 0, refusees: (rC && rC.refusees) || 0 };
+                          return { n: (rC && rC.n) || 0, doublons: (rC && rC.doublons) || 0, completes: (rC && rC.completes) || 0, refusees: (rC && rC.refusees) || 0, agenda: (rC && rC.agenda) || null };
                         });
                     }
                     var chId = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : CIBLE FRAICHE OBLIGATOIRE — plus aucun repli sur une memoire de session */
@@ -28635,7 +28745,7 @@ function Router() {
                            on le DIT a l'ecran au lieu de laisser croire que le sans-faute
                            est enregistre (le message reste jusqu'a fermeture). */
                         if (r && r.avertissement) { try { window.alert(r.avertissement); } catch (eAv) { } }
-                        return { n: (r && r.n) || 0, doublons: (r && r.doublons) || 0, completes: (r && r.completes) || 0, refusees: (r && r.refusees) || 0, rattachees: (r && r.rattachees) || 0 };
+                        return { n: (r && r.n) || 0, doublons: (r && r.doublons) || 0, completes: (r && r.completes) || 0, refusees: (r && r.refusees) || 0, rattachees: (r && r.rattachees) || 0, agenda: (r && r.agenda) || null };
                       });
                   }
                 })) /* (1064) import reserve a Premium */,
@@ -55290,7 +55400,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=26";   /* 30/10 : v25 -> v26, reglage d affichage bloque pour qui n est pas proprietaire. */   /* 07/10 (695) : v20 -> v21, creation de la fiche d un cheval inconnu. 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
+    sc.src = "hype-import-ffe.js?v=27";   /* 30/10 : v26 -> v27, compte rendu du lien avec l agenda. */   /* 30/10 : v25 -> v26, reglage d affichage bloque pour qui n est pas proprietaire. */   /* 07/10 (695) : v20 -> v21, creation de la fiche d un cheval inconnu. 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);

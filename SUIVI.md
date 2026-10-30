@@ -15132,8 +15132,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - POINT RELEVE (non corrige, a valider par Blandine) : conseil de l'arret d'entree G4 genere par remplacement de X -> R : « Evite de t'arreter avant ou apres R. » contredit « Arret avant R » (meme phrase dans les 14 langues).
 - A noter : la rotation du corps est lissee ; en avancant le curseur par sauts, le corps tourne avec un temps de retard dans les coins (pas observe en lecture continue, non mesure).
 - NON VERIFIE : vrai iPhone, tablette, vraies polices, lecture continue avec voix/musique, notation d'un dessin reel dans Tracer (seule la reference est couverte par les tests).
-- Hors perimetre, signale : un ancien marqueur de conflit Git (entree Embouchures, « <<<<<<< HEAD ... >>>>>>> 664595a ») est present dans ce SUIVI.md depuis avant cette integration ; non touche.
-
+- Hors perimetre, signale : un ancien marqueur de conflit Git (entree Embouchures, « 
 ## 30/10 10h50 - Reprises : conseil de l'arret d'entree du G4 corrige (build 20261030-1245) - NON PUBLIE
 - Demande de Blandine (« Ok corrige ça ») : le conseil « Evite de t'arreter avant ou apres R. » contredisait « Arret avant R ». Remplace dans la copie locale halt_before_r (14 langues) par « Evite de t'arreter trop tot ou de depasser R. ». La fiche generique de l'arret en X reste intacte.
 - hype-dressage-conseils.js version 1.8 ; URL du script passee de ?v=20261027-reprises2 a ?v=20261030-reprises3 (cache renouvele) ; marqueur 20261030-1200 -> 20261030-1245.
@@ -15448,6 +15447,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h15 : photo alezan brûlé rangée (images/robes-g3-alezan-brule.webp, Galop 3, déclinaisons). Reste G3 : balzane, épis, café au lait, noir pangaré.
 
 - 30/10 21h20 : photo balzane rangée (images/robes-g3-balzane.webp, Galop 3). Reste G3 : épis, café au lait, noir pangaré.
+<<<<<<< HEAD
 ## 30/10 19h45 — Aperçu des chapitres payants (Galops 2 à 5) + pages Google des chapitres des Galops 2 à 4 (build 20261030-1945) — PUBLIÉ le 30/10 vers 19h25 (« Publie ce que t'as fait »)
 - Repris sur la version en ligne 16f9f22 (build 1930 des robes, publié entre-temps) : rien de ce qui était en ligne n'est retiré. Les nouvelles versions ordinateur des robes (g2-robes, g3-c7, g5-robes) sont elles aussi écartées pendant un aperçu (le non-abonné lit le début page par page). Marqueur 1930 → 1945.
 - Décision de Blandine (choix B, 18h01) : un non-abonné lit le DÉBUT du vrai chapitre d'un Galop payant, puis « La suite est réservée à Premium » — dans l'appli comme depuis Google. Feu vert « ok vas-y » à 19h04.
@@ -15494,3 +15494,12 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Fusionné avec les 4 mises en ligne précédentes de main (aperçus, Google, embouchures) : seules 3 lignes d index.html changent (build, moteur, clé galop2).
 - Réserve non affichée : robes-reserve-pie-brun-crins-noirs, robes-reserve-tachete-bai-couverture (en attente de nom).
 - Manque encore (photos) : G3 épis, café au lait, noir pangaré ; G5 pies tobiano/ovéro/tovero/balzan, raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris comparaison.
+## 30/10 20h00 — Résultat ↔ rendez-vous de l'agenda : lien automatique à l'import (build 20261030-2000) — NON PUBLIÉ, branche travail-resultats-agenda
+- Demande de Blandine (19h15) : « lier automatiquement un résultat quand on le rentre » ; règle validée (« Ok », 19h16). Première étape du chantier « Page Résultats de l'écurie V3 » (pack HYPE_Resultats_Ecurie_V3_Cavaliers), faite AVANT la page.
+- SQL PASSÉ (sur son « Ok » à la proposition) : colonne `resultats.agenda_id` (uuid, vide par défaut, liée à `club_agenda`, effacée si le rendez-vous est supprimé) + index. Vérifié : 1 995 résultats, 0 relié — aucune ligne existante modifiée.
+- index.html : nouvelles fonctions `hypeMotsLieu`, `hypeRdvCandidats` (pure) et `hypeRelierResultatsAgenda`, appelée en FIN d'`enregistrerImportFFE` (après le rattachement aux cavalières), sur les seules lignes NEUVES. Règle : date dans les dates du rendez-vous + type concours + au moins un mot distinctif commun entre le nom du concours FFE et le lieu/titre du rendez-vous (mots génériques exclus : haras, centre, équestre, club, Paris…) + rendez-vous du club de la cavalière (compte relié, sinon nom FFE relié, sinon clubs de la personne qui importe). Un seul candidat → lien ; plusieurs → rien (sauf cavalière connue dans deux clubs : sa 1re écurie tranche) ; aucun → rien. Jamais de création de rendez-vous, jamais d'écrasement d'un lien existant, jamais d'échec de l'import à cause du lien.
+- hype-import-ffe.js (v26 → v27, ?v= mis à jour) : le compte rendu de fin dit « N reliés au rendez-vous « … » de l'agenda », « N non reliés : plusieurs rendez-vous possibles » ou l'erreur éventuelle (les résultats restant enregistrés).
+- ÉCART avec ce qui avait été annoncé : le lien se voit dans le compte rendu juste APRÈS l'enregistrement, pas sur l'écran de relecture avant ; en cas de plusieurs rendez-vous possibles, rien n'est relié (pas encore d'écran de choix). Choix fait pour ne pas toucher à l'écran de relecture (fragile sur iPhone) dans la même étape.
+- Testé : règle rejouée sur les vrais rendez-vous et résultats depuis le 01/09 → Folleville 25/10 : cavalières SEP reliées à « CSO équipe club / challenge » (Aurélie aussi, SEP en 1re écurie) ; Challenge de Folleville 12 et 13/09 → rendez-vous Feinn du jour ; Étrier 20/09 → « CSO l'étrier » (SEP) ; Ella, Eva, Romy (sans compte relié) → non reliées (2 possibles). node --check des 17 blocs + module OK ; ouverture de l'appli en navigateur de test : mêmes erreurs qu'avant (pas d'accès réseau ici), nouvelles fonctions présentes.
+- NON TESTÉ : un vrai import (rien écrit dans ses résultats sans elle). À tester sur iPhone : importer un télémat d'un concours qui a un rendez-vous à l'agenda et lire le compte rendu.
+- Restent dans ce chantier : saisie à la main (choisir le rendez-vous), rattrapage des résultats déjà importés (liste montrée avant écriture), écran de choix quand plusieurs rendez-vous, puis la page Résultats de l'écurie en 4 étapes.
