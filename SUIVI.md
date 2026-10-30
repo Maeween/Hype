@@ -15725,7 +15725,7 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 31/10 00h45 (build 20261031-0410, hype-cours-robes-ordi.js v30) : phrase « Je regarde toujours… » retirée sous les portraits (redisait la liste du défi) ; cartes Hey Baby et défi au même style que le reste de la fin (dégradé sombre, filet champagne, questions en bleu pétrole #172A30, liste du défi dans un encart) ; portraits un peu moins zoomés (plus nets).
 - 31/10 00h45 : PUBLICATION build 20261031-0410 (fin de cours du Galop 1 d'après la maquette + autres Galops grisés) — accord « Ok arrange tout ça ».
 
-## 30/10 23h45 — « Tous les résultats des cavaliers » rangés par épreuve (demande 23h32 : « Range les résultats par épreuve et ordre de classement on s'y perd ») — PAS ENCORE PUBLIÉ
+## 30/10 23h45 — « Tous les résultats des cavaliers » rangés par épreuve (demande 23h32 : « Range les résultats par épreuve et ordre de classement on s'y perd ») — PUBLIÉ 31/10 (« Oui », 00h41), build 20261031-0445 [publier]
 - hype-ecran-resultats-ecurie.js v6 (index.html ?v=6) : la liste complète est triée jour (récent d'abord) → concours → épreuve (Club 2 avant Club 3…) → classement (1er, 2e… ; éliminé / abandon / sans place à la fin).
 - Un titre par épreuve (« Club 3 Vitesse », date · lieu), dessous seulement rang, cavalière, cheval, « Sans faute ». Aucun nouveau texte (rien à traduire). Même affichage téléphone / tablette / ordinateur.
 - Testé : téléphone 390 px (FR), ordinateur 1440 px (FR, AR), aucune erreur.
