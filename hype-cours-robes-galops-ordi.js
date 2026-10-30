@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 5;
+var VERSION = 6;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -332,7 +332,7 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt" }, decl.sous ? h("p", null, decl.sous) : null),
           h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, decl.puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, h("strong", null, p.gras + " "), p.texte)); })))),
         h("div", { style: { marginTop: 72 } }, Compo("g3isabelle", isab.titre, isab.texte, false, "22% 38%", null, "Galop 3")),
-        h("div", { style: { marginTop: 88 } }, Compo("g3souris", sour.titre, sour.texte, true, "55% 40%", null, "Galop 3")),
+        h("div", { style: { marginTop: 88 } }, Compo("g3souris", sour.titre, sour.texte, true, "22% 38%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3brule", brul.titre, brul.texte, false, "55% 40%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3cafe", cafe.titre, cafe.texte, true, "55% 40%", null, "Galop 3")),
         h("div", { style: { marginTop: 88 } }, Compo("g3palomino", palo.titre, palo.texte, false, "55% 40%", null, "Galop 3")),

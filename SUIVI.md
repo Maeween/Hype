@@ -15398,3 +15398,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - images/robes-g3-isabelle.webp : isabelle (corps sable, crins et membres noirs) en saut avec jeune cavalier et harnachement, 1415 × 1112 px, fournie par Blandine ; le zoom rond est placé sur le poil de l'encolure (22 % 38 %). Mise à la demande de Blandine malgré le cavalier (signalé).
 - images/robes-g2-gris.webp : gris avec cavalière, recadrée de 1024 × 1536 en 1024 × 890 autour du cheval ; zoom rond sur la croupe (30 % 78 %).
 - hype-cours-robes-galops-ordi.js v5 (?v=5), build 20261030-1945. Reste à refaire en pleine taille : robes-g2-pie, robes-g3-souris, robes-g5-tachete-leopard. À publier avec le prochain groupe (pas de [publier] pour l'instant).
+
+## 30/10 19h55 — Photo souris (G3) remplacée à la demande de Blandine — NON PUBLIÉ
+- images/robes-g3-souris.webp : gris cendré, crins et membres sombres, en saut avec jeune cavalier (1415 × 1112 px, fournie par Blandine). Poil texturé « pommelé » visible : à surveiller. Zoom rond sur l'encolure. hype-cours-robes-galops-ordi.js v6, build 20261030-1955. Reste à refaire en pleine taille : robes-g2-pie, robes-g5-tachete-leopard.
