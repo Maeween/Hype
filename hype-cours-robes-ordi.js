@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 6;
+var VERSION = 7;
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -376,7 +376,7 @@ function HypeRobesOrdi(props) {
       h("main", { className: "rbo-main" },
         props.onOuvrirRobes ? h("div", { className: "rbo-parc", role: "navigation", "aria-label": PARC_LAB[lg] || PARC_LAB.en },
           h("span", { className: "tt" }, PARC_LAB[lg] || PARC_LAB.en),
-          [["g1-c7", 1], ["g2-c6", 2], ["g3-c7", 3], ["g5-robes", 5]].map(function (pc2) {
+          [["g1-c7", 1], ["g2-robes", 2], ["g3-c7", 3], ["g5-robes", 5]].map(function (pc2) {
             var cur = pc2[0] === cours.id;
             return h("button", { key: pc2[0], type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur) props.onOuvrirRobes(pc2[1], pc2[0]); } }, "Galop " + pc2[1]);
           })) : null,

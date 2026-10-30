@@ -15345,3 +15345,13 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Vérifié : 4 boutons, bouton actif correct, clic Galop 2 → cours g2-c6, 0 erreur, 0 débordement (G1, G3, G5 dont arabe) ; marqueurs chevalCommunDemoData=2, EcranSanteCheval=7, liensClub=0, palmTech=0 ; scripts inline OK.
 - Pas fait : page ordinateur du Galop 2 (le bouton Galop 2 ouvre le cours existant tel quel) ; attend ses photos pour G3/G5.
 - À pousser SEULEMENT après son accord (cumul avec l'entrée de 18h45) : index.html + SUIVI.md (ensemble) + hype-cours-robes-ordi.js (v6) + les fichiers de l'entrée précédente. Attention : le G1 est déjà en ligne en v4, la v6 changerait donc la page en ligne.
+
+## 30/10 19h20 — Robes : page ordinateur du Galop 2 (g2-robes) + sélecteur corrigé (build 20261030-1920) — PROPOSITION, NON PUBLIÉE, branche travail-robes-ordi
+- Demande de Blandine : « fais la page ordinateur des galops suivants aussi ». Seuls G2, G3 et G5 ont un cours de robes (G4/G6/G7 n'en ont pas) : G2 ajouté au moteur hype-cours-robes-galops-ordi.js (v3), mêmes règles de mise en page, fin de page Hype comprise.
+- G2 = 5 onglets tirés UNIQUEMENT du cours existant g2-robes (aucun texte ajouté, aucun supprimé) : Comprendre, Les principales robes (+ le pie, + « Le savais-tu ? » sur le gris), Bai ou alezan ?, En pratique, Quiz (5 questions). Encarts : conseil du coach, Hey Baby (questions du cours), « Les erreurs fréquentes ». Fond du hero = images/couv-g2-robes.jpg (existante). Garde stricte sur la structure du cours, sinon page téléphone.
+- CORRECTION : le sélecteur « Parcours des robes » pointait le Galop 2 vers g2-c6 (cours « sens, robes, aliments »), alors que le cours des robes est g2-robes. Corrigé dans hype-cours-robes-ordi.js (v7) et le moteur G2/3/5.
+- index.html : la branche ordinateur couvre g2-robes, g3-c7, g5-robes ; ?v=3 (moteur), ?v=7 (G1) ; build 20261030-1920.
+- Photos G2 à fournir (sinon « Photo à venir ») : images/robes-g2-pie.webp, images/robes-g2-gris.webp. Les autres visuels viennent des images G1 existantes.
+- Contenu manquant au programme FFE G2 (non créé, à décider par Blandine) : blanc, crème, chocolat, tachetée ; le cours g2-robes ne traite que gris, pie, bai/alezan.
+- Vérifié : 1100/1280/1440/1920 + 14 langues dont arabe de droite à gauche, 0 erreur, 0 débordement, 5 onglets, quiz interactif, navigation par onglet ; sélecteur G1→G2 OK ; marqueurs chevalCommunDemoData=2, EcranSanteCheval=7, liensClub=0, palmTech=0 ; scripts inline OK.
+- À pousser SEULEMENT après son accord (cumul des entrées 18h45, 18h50 et 19h20) : index.html + SUIVI.md (ensemble) + hype-cours-robes-galops-ordi.js (v3) + hype-cours-robes-ordi.js (v7) + hype-cours-galop3.js + hype-cours-galop4.js + hype-cours-galop5.js ; photos quand fournies.
