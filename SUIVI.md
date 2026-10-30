@@ -15585,3 +15585,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h55 : photo zébrures rangée (images/robes-g5-adj-zebrures.webp, Galop 5, adjonctions) ; cercles de zoom des adjonctions réglés photo par photo. Tests G5 OK. Reste G5 : rouan, aubère, gris.
 
 - 30/10 22h00 : photos rouan (robes-g5-rouan.webp) et aubère (robes-g5-aubere.webp) rangées, Galop 5 ; noms déduits de l ordre du prompt, à confirmer. Reste G5 : gris de comparaison.
+
+- 30/10 22h02 : photo gris de comparaison rangée (images/robes-g5-gris-comparaison.webp, Galop 5). Toutes les photos prévues sont là (reste seulement la photo en réserve bai à couverture, sans nom). Pas encore en ligne.
