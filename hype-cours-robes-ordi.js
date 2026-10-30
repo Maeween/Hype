@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 18;   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
+var VERSION = 19;   /* 30/10 23h55 : titre sous la photo ; vague + noir à peine éclairci pour la partie 02 */
+/* v18 :   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
 /* v17 :   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
 /* v16 :   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
 /* ancien : VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
@@ -143,16 +144,16 @@ var CSS = [
 /* haut de page (structure validée, inchangée) */
 ".rbo-top{display:grid;grid-template-columns:minmax(0,1fr)}",
 "@media (min-width:1480px){.rbo-top{grid-template-columns:minmax(0,1fr) 340px}}",
-".rbo-hero{position:relative;min-height:340px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:22px 40px 30px}",
-".rbo-hero .bg{position:absolute;inset:0;background:#070A08 url(images/cheval-defaut-alezan.webp) 78% 30%/cover no-repeat}",
-".rbo-hero .vo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,10,8,.95) 0%,rgba(7,10,8,.8) 34%,rgba(7,10,8,.2) 66%,rgba(7,10,8,.05) 100%),linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 28%,rgba(7,10,8,.62) 100%)}",
-"[dir=rtl] .rbo-hero .vo{background:linear-gradient(270deg,rgba(7,10,8,.95) 0%,rgba(7,10,8,.8) 34%,rgba(7,10,8,.2) 66%,rgba(7,10,8,.05) 100%),linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 28%,rgba(7,10,8,.62) 100%)}",
+".rbo-hero{--ph:330px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;background:var(--noir);padding:calc(var(--ph) + 20px) 40px 28px}",
+".rbo-hero .bg{position:absolute;inset:0 0 auto 0;height:var(--ph);background:#070A08 url(images/cheval-defaut-alezan.webp) 78% 30%/cover no-repeat}",
+".rbo-hero .vo{position:absolute;inset:0 0 auto 0;height:var(--ph);background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 26%,rgba(7,10,8,0) 66%,#070A08 100%)}",
+"[dir=rtl] .rbo-hero .vo{background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 26%,rgba(7,10,8,0) 66%,#070A08 100%)}",
 "[dir=rtl] .rbo-hero .bg{transform:scaleX(-1)}",
 ".rbo-hero>*:not(.bg):not(.vo){position:relative}",
 ".rbo-bar{display:flex;align-items:center;gap:12px;position:absolute!important;top:18px;inset-inline:40px;z-index:2}",
 ".rbo-back{width:38px;height:38px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px}",
 ".rbo-crumb{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--champ)}",
-".rbo-hero h1{font-size:clamp(36px,3.5vw,54px);line-height:1.04;max-width:440px;margin:10px 0 12px}",
+".rbo-hero h1{font-size:clamp(36px,3.5vw,54px);line-height:1.04;max-width:none;margin:0 0 8px}",
 ".rbo-cit{font-family:'Cormorant Garamond','Noto Serif JP',Georgia,serif;font-style:italic;font-size:20px;line-height:1.4;max-width:480px;color:var(--ivoire)}",
 ".rbo-cit small{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:11.5px;letter-spacing:.6px;color:var(--champ);margin-top:6px}",
 ".rbo-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--doux)}",
@@ -188,7 +189,7 @@ var CSS = [
 ".rbo-mini button[aria-current=true]{border-color:var(--champ);background:rgba(201,166,107,.16)}",
 /* sections : magazine, grandes photos, beaucoup d'air */
 ".rbo-sec{padding:76px 56px 80px;scroll-margin-top:64px}",
-".rbo-sec.noir{background:var(--noir)}.rbo-sec.petrole{background:var(--petrole2)}",
+".rbo-sec.noir{background:var(--noir)}.rbo-sec.noir2{background:#0A1116}.rbo-sec.petrole{background:var(--petrole2)}",
 ".rbo-vague{display:block;width:100%;height:26px;margin:-1px 0}",
 ".rbo-sechead{display:flex;gap:22px;align-items:baseline;margin-bottom:42px}",
 ".rbo-num{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--champ);flex:0 0 auto}",
@@ -303,10 +304,10 @@ var CSS = [
 "@media (max-width:760px){",
 ".rbo{padding-bottom:110px;overflow-x:clip}",
 ".rbo .rbo-parc{padding:14px 16px 12px;gap:8px}.rbo .rbo-parc .tt{flex:0 0 100%;margin:0 0 2px}.rbo .rbo-parc button{padding:7px 14px;font-size:12.5px}",
-".rbo .rbo-hero{min-height:300px;padding:16px 18px 22px}",
-".rbo .rbo-hero .vo,[dir=rtl] .rbo .rbo-hero .vo{background:linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,.35) 30%,rgba(7,10,8,.9) 100%)}",
+".rbo .rbo-hero{--ph:240px;padding:calc(var(--ph) + 14px) 18px 16px}",
+".rbo .rbo-hero .vo,[dir=rtl] .rbo .rbo-hero .vo{background:linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,0) 30%,rgba(7,10,8,0) 62%,#070A08 100%)}",
 ".rbo .rbo-bar{top:14px;inset-inline:16px}.rbo .rbo-crumb{display:none}",
-".rbo .rbo-hero h1{font-size:34px;max-width:100%;margin:8px 0 10px}",
+".rbo .rbo-hero h1{font-size:34px;max-width:100%;margin:0 0 6px}",
 ".rbo .rbo-citband{padding:40px 24px 14px}.rbo .rbo-citband .rbo-cit{font-size:22px}.rbo .rbo-meta{gap:12px;font-size:12px;margin-top:12px}",
 ".rbo .rbo-cards{grid-template-columns:minmax(0,1fr);padding:14px 16px 8px;gap:10px}",
 ".rbo .rbo-vig{display:flex;overflow-x:auto;gap:10px;padding:26px 16px 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}",
@@ -435,7 +436,7 @@ function HypeRobesOrdi(props) {
   /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
   var hbListe = [hbQ[0], hbQ[1], hbQ[3]].filter(Boolean);   /* 30/10 23h40 : 3 questions en tout, regroupées dans la carte Hey Baby */
   var defiAccroche = String(z[2].sous || "").replace(/\s*[:：]\s*$/, "") + " …";
-  var NOIR = "#070A08", PET = "#101D22";
+  var NOIR = "#070A08", NOIR2 = "#0A1116", PET = "#101D22";
 
   /* quiz */
   var q = Q[qi], rep = reps[qi], repondu = rep !== undefined, juste = repondu && rep === q.correct;
@@ -499,11 +500,11 @@ function HypeRobesOrdi(props) {
                 h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
             h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
             h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[5], "a5"), M(a[6], "a6")))),
-
+        Vague(NOIR, NOIR2),
         /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
-        Sec("s2", "02", nomsTrois, "noir",   /* 30/10 : fond noir (Blandine) */
+        Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
-        Vague(NOIR, PET),
+        Vague(NOIR2, PET),
 
         /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
         /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */

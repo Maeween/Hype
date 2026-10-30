@@ -15695,3 +15695,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 23h50 (build 20261031-0150, v17) : la partie 02 « Noir, alezan et bai » passe sur fond noir ; « En pratique » passe en pétrole pour garder l'alternance. NON publié.
 - 23h52 : PUBLICATION des builds 0145 + 0150 (doublons retirés, Hey Baby 3 bulles, onglets translucides, partie 02 sur fond noir) — accord de Blandine « Oui ».
 - 23h55 (build 20261031-0200, v18) : « Les erreurs à éviter » dans son propre encart (bord rouge doux, croix ✕), séparé du défi du cavalier — téléphone et ordi. NON publié.
+- 23h58 (build 20261031-0210, v19) : titre « Les robes du cheval » et infos sous la photo (plus sur l'image), téléphone et ordi ; partie 02 : vague gardée + fond noir très légèrement bleuté (#0A1116). NON publié.
