@@ -15229,3 +15229,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Vérifié (banc de test avec données vides de type liste) : texte de la page identique à la version en ligne (« Mon écurie · 24 membres · Bienvenue sur Hype… »), aucune erreur, fichier demandé seulement à l'ouverture. Sans cette précaution mon test précédent affichait « Un caillou dans le sabot » AUSSI sur la version en ligne : c'était mes fausses données, pas l'appli.
 - À pousser avec la pièce 7 : index.html + SUIVI.md (ensemble) + hype-ecran-agenda.js + hype-ecran-guilde.js.
 - À tester sur iPhone avec ton vrai compte : page Écurie (bannière, membres, chevaux, agenda, fil), ouvrir un rendez-vous depuis la page.
+
+## 30/10 12h55 — Vidéos des Galops : vignette estompée à 40 %, titre au centre (build 20261030-1255) — NON PUBLIÉ, branche video-estompee
+- Demande de Blandine : revenir à la maquette « vignette estompée » vue le 29/10 (plus jolie que la version voilée en bas), image à 40 %.
+- index.html, une seule zone (le bloc de style .vidv, commun aux 3 grilles : pages des Galops, page du Galop 5, Galop 1 ordinateur) : image à 40 % d'opacité sur fond noir, voile doux centré, titre ivoire centré (Cormorant, 2 lignes max), petit bouton lecture (34 px, cadenas si Premium) au-dessus du titre. Aucun texte, aucune logique modifiés.
+- Marqueur 20261030-1245 → 20261030-1255. node --check OK sur 13 blocs. Pas de nouveau texte : pas de traduction à faire.
+- À tester sur iPhone : onglet Vidéos d'un Galop (Galop 1), page du Galop 5 (« Prochainement »), puis ordinateur.
