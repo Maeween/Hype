@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-2030"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-2130"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}/* 30/10 (Blandine) - vignettes des videos des Galops : image assombrie, voile semi-transparent, titre ivoire ecrit dessus */.vidv{position:relative;display:block;overflow:hidden;background:#030405}.vidv img{opacity:.4!important;filter:none!important}.vidv:after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(3,4,5,.18),rgba(3,4,5,.78))!important}.vidv .gv3-play,.vidv .g1o-vid-play,.vidv .g5-vid-bientot{z-index:2}.vidv .g1o-vid-play,[dir=rtl] .vidv .g1o-vid-play{left:50%;right:auto;top:28%;bottom:auto;width:34px;height:34px;transform:translate(-50%,-50%)}.vidv .gv3-play{top:28%;width:34px;height:34px}.vidv .gv3-play svg{width:16px;height:16px}.vidv .g5-vid-bientot{top:28%}.vidv-t{position:absolute;left:10px;right:10px;top:64%;transform:translateY(-50%);text-align:center;z-index:3;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16px;line-height:1.15;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.9);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}@media (min-width:1024px){.vidv-t{left:14px;right:14px;font-size:18px}}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -24008,7 +24008,7 @@ const CIBLE_DIRECTE = (function () {
            « galops » (/<langue>/galops/), « 1 » a « 7 » (/<langue>/galop-N/) ou l identifiant d un chapitre (g1-c15).
            On ouvre alors le VRAI ecran, exactement comme les liens #g= ; le verrou Premium des Galops 2 a 7 reste celui
            de l appli. Seulement sans hash. Hors de ces pages, la variable n existe pas : ligne inerte. */
-        if (!h) { try { var rteCo = (typeof window !== "undefined") ? window.__HYPE_ROUTE_COURS : null; if (typeof rteCo === "string") { if (rteCo === "galops") return { ecran: "galops" }; if (/^[1-7]$/.test(rteCo)) return { ecran: "galop-detail", galop: parseInt(rteCo, 10) }; var mCo = rteCo.match(/^g([1-7])-[a-z0-9-]{1,60}$/); if (mCo) return { galop: parseInt(mCo[1], 10), cours: rteCo, page: 0 }; } } catch (eRco) { } }
+        if (!h) { try { var rteCo = (typeof window !== "undefined") ? window.__HYPE_ROUTE_COURS : null; if (typeof rteCo === "string") { if (rteCo === "galops") return { ecran: "galops" }; if (rteCo === "g5n-02") return { ecran: "cours-g5-emb" }; if (/^[1-7]$/.test(rteCo)) return { ecran: "galop-detail", galop: parseInt(rteCo, 10) }; var mCo = rteCo.match(/^g([1-7])-[a-z0-9-]{1,60}$/); if (mCo) return { galop: parseInt(mCo[1], 10), cours: rteCo, page: 0 }; } } catch (eRco) { } }
         if (!h) { try { var rteEv = (typeof window !== "undefined") ? window.__HYPE_ROUTE_EVENEMENT : null; if (rteEv && typeof rteEv.id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rteEv.id)) { if (typeof rteEv.club === "string" && rteEv.club.trim() && rteEv.club.length < 200) { window.__guildeEcurie = rteEv.club.trim(); window.__hypeEcurieVisite = rteEv.club.trim(); } window.__agendaFiche = rteEv.id; try { hypeMemoriserRetourAuth(rteEv.id); } catch (eMrE) { } return { ecran: "guilde" }; } } catch (eRev) { } }
         if (!h) { try { var rteEc = (typeof window !== "undefined") ? window.__HYPE_ROUTE_ECURIE : null; if (typeof rteEc === "string" && rteEc.trim() && rteEc.length < 200) { window.__guildeEcurie = rteEc.trim(); window.__hypeEcurieVisite = rteEc.trim(); return { ecran: "guilde" }; } } catch (eRe) { } }
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
@@ -28529,7 +28529,7 @@ function Router() {
                 ecran === "galop5" && React.createElement(EcranGalop5, null),
                 ecran === "cours-g5-emb" && React.createElement(EcranCoursG5Emb, null),
                 ecran === "galop-v3" && React.createElement(EcranGalopV3, null),   /* 27/10 : APERÇU de la page de chaque Galop au design du Galop 5 (modératrices seules) */   /* 27/10 : cours du Galop 5 « Les embouchures » (modératrices seules) */   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
-                ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(GardeGalopProchain, { mode: "cours" }, React.createElement(EcranCours, null)))),   /* 27/10 : Galops 6+ « Prochainement » */
+                ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours", apercu: true }, React.createElement(GardeGalopProchain, { mode: "cours" }, React.createElement(EcranCours, null)))),   /* 27/10 : Galops 6+ « Prochainement » */
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
                 ecran === "trace-anime" && React.createElement(EcranTraceAnime, null),
@@ -29011,8 +29011,10 @@ function obtenirCoursParGalop(galopId, langue) {
         return convertirCoursI18nVersInterne(COURS_GALOP3_FR, langue);
     if (galopId === 4)
         return convertirCoursI18nVersInterne(COURS_GALOP4_FR, langue);
-    if (galopId === 5)
-        return COURS_GALOP5_FR;
+    if (galopId === 5)   /* 30/10 : les chapitres du Galop 5 (textes en { fr, en, … }) plantaient à l'ouverture sur téléphone (erreur React #31,
+                            et « contenu.map » pour « Les robes ») : ils passent par la même traduction que les Galops 2 à 4. Le quiz bonus, que cette
+                            traduction ne recopie pas, est remis tel quel (la page ordinateur des robes s'en sert). */
+        return COURS_GALOP5_FR.map(function (c) { if (!c || !c.titre || typeof c.titre !== "object" || !Array.isArray(c.blocs) || !Array.isArray(c.quiz)) return c; var x = convertirCoursI18nVersInterne([c], langue)[0]; if (c.quizBonus) x.quizBonus = c.quizBonus; return x; });
     if (galopId === 6)
         return convertirCoursI18nVersInterne(COURS_GALOP6_FR, langue);
     if (galopId === 7)
@@ -32142,7 +32144,7 @@ function EcranDashboard() {
             const estEnCours = g.id === profil.galopActuel;
             const img = PHOTOS[`galop_${g.id}`]; // toutes les photos de galop sont en paysage 3:2 -> cheval entier visible
             const topLabel = verrou ? t("premium_requis") : estEnCours ? t("en_cours") : pctG > 0 ? `${pctG}%` : "";
-            return (React.createElement("button", { key: g.id, onClick: () => { if (verrou) { setEcran("premium"); return; } setGalopOuvert(g.id); setEcran("galop-detail"); }, style: { flex: "0 0 calc(100% - 16px)", scrollSnapAlign: "start", textAlign: "left", borderRadius: 22, overflow: "hidden", position: "relative", border: `1px solid ${estEnCours ? COLORS.turquoise + "66" : COLORS.nuitBordure}` } },
+            return (React.createElement("button", { key: g.id, onClick: () => { /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ setGalopOuvert(g.id); setEcran("galop-detail"); }, style: { flex: "0 0 calc(100% - 16px)", scrollSnapAlign: "start", textAlign: "left", borderRadius: 22, overflow: "hidden", position: "relative", border: `1px solid ${estEnCours ? COLORS.turquoise + "66" : COLORS.nuitBordure}` } },
                 React.createElement("div", { style: { aspectRatio: "3 / 2", position: "relative", background: img ? `${COLORS.nuit} url(${img}) center/cover no-repeat` : `linear-gradient(135deg, ${g.couleur}, ${shadeColor(g.couleur, -25)})` } },
                     React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}06 0%, ${COLORS.nuit}3C 92%)` } }),
                     !img && React.createElement("div", { style: { position: "absolute", right: -6, top: -6, fontSize: 76, opacity: 0.16 } }, g.icone),
@@ -32219,7 +32221,7 @@ function SommaireGalops() {
             const total = coursGalop.length;
             const verrouille = !galop.debloque && !premium;
             const url = PHOTOS[`galop_${galop.id}`];
-            return (React.createElement("button", { key: galop.id, onClick: () => { if (verrouille) { setEcran("premium"); return; } setGalopOuvert(galop.id); setEcran("galop-detail"); }, style: { flexShrink: 0, width: 158, scrollSnapAlign: "start", textAlign: "left", background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, overflow: "hidden", display: "flex", flexDirection: "column", opacity: verrouille ? 0.65 : 1 } },
+            return (React.createElement("button", { key: galop.id, onClick: () => { /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ setGalopOuvert(galop.id); setEcran("galop-detail"); }, style: { flexShrink: 0, width: 158, scrollSnapAlign: "start", textAlign: "left", background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, overflow: "hidden", display: "flex", flexDirection: "column", opacity: verrouille ? 0.65 : 1 } },
                 React.createElement("div", { style: { width: "100%", height: 92, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, background: verrouille ? COLORS.nuitElevee : (url ? `${COLORS.nuit} url(${url}) center/cover no-repeat` : `linear-gradient(135deg, ${galop.couleur}33, ${galop.couleur}0D)`) } }, verrouille ? "🔒" : (!url && galop.icone)),
                 React.createElement("div", { style: { padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 8 } },
                     React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 700, color: COLORS.blanc } }, tr(galop.titre)),
@@ -58571,7 +58573,7 @@ function GalopsV2Haut(props) {
     var g = GALOPS_I18N.find(function (gg) { return gg.id === id; });
     if (!g) return;
     if (!g.disponible && !estModGal && [5, 7, 8, 9].indexOf(id) < 0) return;   /* Galop pas encore publié : rien, sauf Galops 5, 7, 8 et 9 (27/10 15h : G8 et G9 ajoutés, Blandine « ajoute galop 8 et 9 aussi ») (27/10 14h45 : pages visibles, cours « Prochainement ») */
-    if (!g.debloque && !premium && !estModGal) { setEcran("premium"); return; }
+    /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ 
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
     setGalopOuvert(id); setEcran("galop-detail");
   }
@@ -59478,7 +59480,7 @@ function EcranGalop5() {
     var g = GALOPS_I18N.find(function (gg) { return gg.id === id; });
     if (!g) return;
     if (!g.disponible && !estMod && [6, 7, 8, 9].indexOf(id) < 0) return;
-    if (!g.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ 
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
     setGalopOuvert(id); setEcran("galop-detail");
   }
@@ -59539,7 +59541,7 @@ function EcranGalop5() {
     return c;
   }
   function ouvrirCours(id) {
-    if (!g5.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    /* 30/10 (choix B) : chapitre d'un Galop verrouillé → ouvert en aperçu (GardeGalopPremium) ; quiz, examen, reprises restent vers Premium */ 
     if (id === "g5n-02" && typeof EcranCoursG5Emb === "function") { setEcran("cours-g5-emb"); return; }
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(5); } catch (eV) { }
     setGalopOuvert(5); setCoursOuvert(id); setEcran("cours");
@@ -59869,7 +59871,9 @@ function EcranCoursG5Emb() {
   const g5 = (typeof GALOPS_I18N !== "undefined" && GALOPS_I18N.find(function (g) { return g.id === 5; })) || {};
   const autorise = true;   /* 27/10 19h47 : cours ouvert à tous (même règle Premium que les autres cours du Galop 5, ci-dessous) */
   const verrouPrem = !estMod && !g5.debloque && !app.premium;
-  useEffect(() => { if (moi !== undefined && verrouPrem) { try { setEcran("premium"); } catch (e) { } } }, [moi, verrouPrem]);
+  /* 30/10 (Blandine, choix B) : un non-abonné lit le DÉBUT du cours (la 1re partie, coupée au tiers, au moins 2 paragraphes), puis la
+     carte « La suite de ce chapitre est réservée à Premium » — au lieu d'être renvoyé tout de suite vers la page Premium. */
+  const apercuEmb = verrouPrem;
   useEffect(() => { if (moi !== undefined && !autorise) { try { setEcran("galops"); } catch (e) { } } }, [moi, autorise]);
   const IDS = ["s1", "s2", "s3", "s4", "s5", "s6"];
   useEffect(() => {
@@ -59893,7 +59897,7 @@ function EcranCoursG5Emb() {
   }, []);
   useEffect(() => { try { var r = rangRef.current; if (!r) return; var b = r.querySelector("button.on"); if (!b) return; var x = b.offsetLeft - (r.clientWidth - b.offsetWidth) / 2; if (Math.abs(r.scrollLeft - x) > 4) r.scrollTo({ left: Math.max(0, x), behavior: "auto" }); } catch (e) { } }, [actif]);
 
-  if (moi === undefined || !autorise || verrouPrem || !pret) return h("div", { className: "ge" }, h("style", null, GE_CSS), h("div", { className: "ge-charge", role: "status" }, "…"));
+  if (moi === undefined || !autorise || !pret) return h("div", { className: "ge" }, h("style", null, GE_CSS), h("div", { className: "ge-charge", role: "status" }, "…"));
   var D = window.HYPE_G5_EMB[langue] || ((langue === "zh" || langue === "nl" || langue === "pt" || langue === "sv" || langue === "ru" || langue === "pl" || langue === "ko") && window.HYPE_G5_EMB.en) || window.HYPE_G5_EMB.fr;
   var M = D.meta;
   function aller(id) {
@@ -59926,7 +59930,11 @@ function EcranCoursG5Emb() {
   };
 
   var s1 = D.s1, s2 = D.s2, s3 = D.s3, s4 = D.s4, s5 = D.s5, s6 = D.s6, LAT = D.lateral, V = D.videos, Q = D.quiz;
-  var main = h("div", { className: "ge-main" },
+  var main = apercuEmb ? h("div", { className: "ge-main", "data-apercu-emb": "1" },
+    h("section", { id: "ge-s1", className: "ge-sec", "aria-labelledby": "ge-s1-t" },
+      h("div", { className: "ge-sec-t" }, h("span", { className: "ge-num", "aria-hidden": "true" }, s1.num), h("h2", { id: "ge-s1-t" }, s1.titre)),
+      hypeCouperApercu(s1.paras || []).map(function (p, i) { return h("p", { key: i, className: "ge-p" }, p); })),
+    h(FinApercuPremium, { integre: true, titre: M.titre })) : h("div", { className: "ge-main" },
     h("section", { id: "ge-s1", className: "ge-sec", "aria-labelledby": "ge-s1-t" },
       h("div", { className: "ge-sec-t" }, h("span", { className: "ge-num", "aria-hidden": "true" }, s1.num), h("h2", { id: "ge-s1-t" }, s1.titre)),
       s1.paras.map(function (p, i) { return h("p", { key: i, className: "ge-p" }, p); }),
@@ -59998,13 +60006,13 @@ function EcranCoursG5Emb() {
         h("h1", { className: "ge-h1" }, M.titre),
         h("p", { className: "ge-sous" }, M.sous),
         h("ul", { className: "ge-meta" }, h("li", null, M.duree), h("li", null, M.type), h("li", null, M.audio), h("li", null, M.langues)))),
-    h("nav", { className: "ge-nav", "aria-label": M.sommaire },
+    apercuEmb ? null : h("nav", { className: "ge-nav", "aria-label": M.sommaire },
       h("div", { className: "ge-nav-r", ref: rangRef }, D.nav.map(function (n, i) {
         var id = IDS[i];
         return h("button", { key: id, type: "button", className: actif === id ? "on" : "", "aria-current": actif === id ? "true" : undefined, onClick: function () { aller(id); } }, h("b", null, "0" + (i + 1)), n);
       })),
       h("div", { className: "ge-prog", role: "progressbar", "aria-label": M.progression, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": prog }, h("i", { style: { width: prog + "%" } }))),
-    h("div", { className: "ge-in" }, h("div", { className: "ge-grid" }, main, side)),
+    h("div", { className: "ge-in" }, h("div", { className: "ge-grid" }, main, apercuEmb ? null : side)),
     lb ? h("div", { className: "ge-lb", role: "dialog", "aria-modal": "true", onClick: function () { setLb(null); } },
       h("img", { src: lb, alt: "" }),
       h("button", { type: "button", onClick: function () { setLb(null); }, "aria-label": M.fermer }, "×")) : null);
@@ -60109,7 +60117,7 @@ function EcranGalopV3() {
     if (n === id) return;
     var gg = GALOPS_I18N.find(function (x) { return x.id === n; }); if (!gg) return;
     if (!gg.disponible && !estMod && [5, 7, 8, 9].indexOf(n) < 0) return;
-    if (!gg.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ 
     setGalopOuvert(n); setEcran("galop-detail");
   }
 
@@ -60153,7 +60161,7 @@ function EcranGalopV3() {
   var total = cours0.length, nFinis = cours0.filter(function (c) { return coursTermines.includes(c.id); }).length;
   var suivant = cours0.find(function (c) { return !coursTermines.includes(c.id) && pret(c); });
   function ouvrirCours(c) {
-    if (verrouG) { setEcran("premium"); return; }
+    /* 30/10 (choix B) : chapitre d'un Galop verrouillé → ouvert en aperçu (GardeGalopPremium) ; quiz, examen, reprises restent vers Premium */ 
     if (!pret(c)) return;
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
     setGalopOuvert(id); setCoursOuvert(c.id); setEcran("cours");
@@ -60620,12 +60628,12 @@ function EcranGalopOrdi(props) {
     var gg = GALOPS_I18N.find(function (x) { return x.id === n; });
     if (!gg) return;
     if (!gg.disponible && !estMod && [5, 7].indexOf(n) < 0) return;
-    if (!gg.debloque && !premium && !estMod) { setEcran("premium"); return; }
+    /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ 
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(n); } catch (eV) { }
     setGalopOuvert(n); setEcran("galop-detail");
   }
   function ouvrirCours(cid) {
-    if (verrouG) { setEcran("premium"); return; }
+    /* 30/10 (choix B) : chapitre d'un Galop verrouillé → ouvert en aperçu (GardeGalopPremium) ; quiz, examen, reprises restent vers Premium */ 
     try { window.__scrollGalopDetail = window.__scrollGalopDetail || {}; window.__scrollGalopDetail[id] = window.scrollY; } catch (e) { }
     try { if (typeof marquerGalopVu === "function") marquerGalopVu(id); } catch (eV) { }
     setGalopOuvert(id); setCoursOuvert(cid); setEcran("cours");
@@ -60859,7 +60867,7 @@ function EcranBibliothequeGalops() {
                 var aVenirG = g && !g.disponible && !estModGal;
                 var verrouilleG = g && !g.debloque && !premium && !estModGal;
                 if (aVenirG) { return; }
-                if (verrouilleG) { setEcran("premium"); return; }
+                /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ 
                 setGalopOuvert(id); setEcran("galop-detail");
             };
             var POS_MEVO = [
@@ -60988,7 +60996,7 @@ function EcranBibliothequeGalops() {
                 estNouveau: !!galop.nouveau && vusGal.indexOf(String(galop.id)) === -1,
                 onToggle: function () { setGalopDeplie(galopDeplie === galop.id ? null : galop.id); },
                 onOuvrirGalop: function () { marquerGalopVu(galop.id); setVusGal(galopsVus()); setGalopOuvert(galop.id); setEcran("galop-detail"); },
-                onPremium: function () { setEcran("premium"); }
+                onPremium: function () { /* 30/10 (Blandine, choix B) : Galop verrouillé → on ouvre sa page (chapitres en aperçu) au lieu de la page Premium */ marquerGalopVu(galop.id); setVusGal(galopsVus()); setGalopOuvert(galop.id); setEcran("galop-detail"); }
             });
         })),
         React.createElement("div", { style: { padding: "0 16px 26px" } }, React.createElement(EncartBibliothequeVideo, null))));
@@ -61345,6 +61353,63 @@ function BandeauDejaAbonne(props) {
             ? T("Vérification…", "Checking…", "Comprobando…", "Verifica…", "確認中…", "Wird geprüft…", "جارٍ التحقق…", "正在验证……", "Controleren…", "Verificando…", "Kontrollerar…", "Проверка…", "Sprawdzanie…", "확인 중…")
             : T("Déjà abonné ? Vérifier mon abonnement", "Already subscribed? Check my subscription", "¿Ya suscrito? Comprobar mi suscripción", "Già abbonato? Verifica il mio abbonamento", "登録済みですか？登録を確認する", "Schon Abo? Mein Abo prüfen", "مشتركة بالفعل؟ تحققي من اشتراكي", "已经订阅？验证我的订阅", "Al abonnee? Mijn abonnement controleren", "Já é assinante? Verificar minha assinatura", "Redan prenumerant? Kontrollera min prenumeration", "Уже есть подписка? Проверить мою подписку", "Masz już subskrypcję? Sprawdź moją subskrypcję", "이미 구독 중이세요? 내 구독 확인하기"))));
 }
+/* 30/10 — APERÇU DES CHAPITRES PAYANTS (voir GardeGalopPremium). Le début = la ou les couvertures, l'intro éventuelle, puis le
+   premier bloc de contenu coupé au tiers (au moins 2 morceaux). Le reste du chapitre n'est jamais transmis à l'écran. */
+var HypeApercuCours = React.createContext(false);
+function hypeCouperApercu(a) { if (!Array.isArray(a)) return a; var n = Math.max(2, Math.ceil(a.length / 3)); return a.length > n ? a.slice(0, n) : a; }
+function hypeBlocApercu(b) {
+  if (!b || typeof b !== "object") return b;
+  var o = Object.assign({}, b);
+  ["contenu", "items"].forEach(function (k) {
+    var v = b[k];
+    if (Array.isArray(v)) o[k] = hypeCouperApercu(v);
+    else if (v && typeof v === "object") { var w = {}; Object.keys(v).forEach(function (lg) { w[lg] = hypeCouperApercu(v[lg]); }); o[k] = w; }
+  });
+  delete o.contenuApres;
+  return o;
+}
+function hypeCoursApercu(c) {
+  if (!c || !Array.isArray(c.blocs) || !c.blocs.length) return c;
+  var bl = c.blocs, out = [], i = 0;
+  while (i < bl.length && bl[i] && /^couv/.test(String(bl[i].type || ""))) { out.push(bl[i]); i++; }
+  if (i < bl.length && bl[i] && bl[i].type === "intro" && i + 1 < bl.length) { out.push(bl[i]); i++; }
+  if (i < bl.length) out.push(hypeBlocApercu(bl[i]));
+  return Object.assign({}, c, { blocs: out, apercuPremium: true });
+}
+function FinApercuPremium(props) {
+  var h = React.createElement;
+  var app = useApp();
+  var tr = app.tr || function (o) { return (o && o.fr) || ""; };
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
+  var M = "'Montserrat',sans-serif", CG = "'Cormorant Garamond',Georgia,serif";
+  return h("div", { "data-fin-apercu": "1", style: { minHeight: props.integre ? 0 : "100vh", borderRadius: props.integre ? 18 : 0, border: props.integre ? "1px solid rgba(201,166,107,0.35)" : "none", margin: props.integre ? "26px 0 40px" : 0, boxSizing: "border-box", background: "#05080B", color: "#F3EEE4", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: props.integre ? "34px 22px" : "calc(env(safe-area-inset-top) + 40px) 26px calc(env(safe-area-inset-bottom) + 110px)", textAlign: "center" } },
+    h("div", { "aria-hidden": "true", style: { width: 64, height: 64, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 } },
+      h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
+        h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
+    props.titre ? h("div", { style: { fontSize: 10.5, fontWeight: 600, letterSpacing: 2.6, textTransform: "uppercase", color: "#C9A66B", fontFamily: M, marginBottom: 10, maxWidth: 340 } }, props.titre) : null,
+    h("div", { style: { fontFamily: CG, fontSize: 28, fontWeight: 600, lineHeight: 1.15, marginBottom: 12, maxWidth: 360 } },
+      T("La suite de ce chapitre est réservée à Premium", "The rest of this chapter is for Premium", "El resto de este capítulo es para Premium", "Il seguito di questo capitolo è riservato a Premium", "この章の続きはPremium限定です", "Der Rest dieses Kapitels ist für Premium", "تتمة هذا الفصل مخصصة لمشتركي Premium", "本章后续内容仅限 Premium", "De rest van dit hoofdstuk is voor Premium", "O restante deste capítulo é para Premium", "Resten av kapitlet är för Premium", "Продолжение главы доступно в Premium", "Dalsza część rozdziału jest dla Premium", "이 장의 나머지는 Premium 전용이에요")),
+    h("div", { style: { fontFamily: M, fontSize: 13.5, lineHeight: 1.6, color: "rgba(243,238,228,0.72)", maxWidth: 340, marginBottom: 22 } },
+      T("Tu viens de lire le début. Débloque la suite, le quiz et tous les chapitres des Galops avec Hype Premium.",
+        "You've just read the beginning. Unlock the rest, the quiz and every Galop chapter with Hype Premium.",
+        "Acabas de leer el comienzo. Desbloquea el resto, el cuestionario y todos los capítulos de los Galops con Hype Premium.",
+        "Hai appena letto l'inizio. Sblocca il seguito, il quiz e tutti i capitoli dei Galop con Hype Premium.",
+        "ここまでが章のはじめです。続き、クイズ、すべてのギャロップの章はHype Premiumで読めます。",
+        "Du hast gerade den Anfang gelesen. Schalte den Rest, das Quiz und alle Galopp-Kapitel mit Hype Premium frei.",
+        "قرأت للتو بداية الفصل. افتح التتمة والاختبار وجميع فصول الغالوب مع Hype Premium.",
+        "你刚读完本章的开头。开通 Hype Premium，解锁后续内容、测验和所有 Galop 章节。",
+        "Je hebt net het begin gelezen. Ontgrendel de rest, de quiz en alle Galop-hoofdstukken met Hype Premium.",
+        "Você acabou de ler o começo. Desbloqueie o restante, o quiz e todos os capítulos dos Galops com o Hype Premium.",
+        "Du har precis läst början. Lås upp resten, quizet och alla Galop-kapitel med Hype Premium.",
+        "Это было начало главы. Открой продолжение, тест и все главы Galop с Hype Premium.",
+        "To był początek rozdziału. Odblokuj resztę, quiz i wszystkie rozdziały Galopów z Hype Premium.",
+        "방금 이 장의 앞부분을 읽었어요. Hype Premium으로 나머지 내용, 퀴즈, 모든 갤럽 장을 열어 보세요.")),
+    h(BandeauDejaAbonne, null),
+    h("button", { type: "button", "data-apercu-premium": "1", onClick: function () { app.setEcran("premium"); }, style: { minHeight: 48, padding: "0 28px", borderRadius: 999, border: "1px solid #C9A66B", background: "rgba(201,166,107,0.08)", color: "#D8BA82", fontFamily: M, fontSize: 14.5, fontWeight: 600, cursor: "pointer", marginBottom: 12 } },
+      T("Débloquer la suite avec Premium", "Unlock the rest with Premium", "Desbloquear el resto con Premium", "Sblocca il seguito con Premium", "Premiumで続きを読む", "Den Rest mit Premium freischalten", "افتح التتمة مع Premium", "开通 Premium 继续阅读", "Ontgrendel de rest met Premium", "Desbloquear o restante com Premium", "Lås upp resten med Premium", "Открыть продолжение с Premium", "Odblokuj resztę z Premium", "Premium으로 나머지 열기")),
+    props.integre ? null : h("button", { type: "button", onClick: props.onRetour, style: { minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: "rgba(243,238,228,0.8)", fontFamily: M, fontSize: 13.5, cursor: "pointer" } },
+      T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로")));
+}
 function GardeGalopPremium(props) {
   var h = React.createElement;
   var app = useApp();
@@ -61356,6 +61421,13 @@ function GardeGalopPremium(props) {
   var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
   var verrou = !!(info && !info.debloque) && !app.premium && !estMod;
   if (!verrou) return props.children;
+  /* 30/10 (décision de Blandine, choix B) : un chapitre d'un Galop payant s'ouvre en APERÇU pour tous les non-abonnés
+     (début du vrai chapitre, puis « Débloque la suite avec Premium »). Seulement sur l'écran du cours (apercu: true) :
+     le quiz et la page du Galop gardent ce panneau. Le chapitre complet revient tout seul dès que l'abonnement est lu. */
+  if (props.apercu && props.mode === "cours") return h(HypeApercuCours.Provider, { value: true }, props.children);
+  /* 30/10 (point 2) : la PAGE d'un Galop verrouillé s'ouvre aussi (liste des chapitres, cadenas affichés) ; chaque chapitre s'ouvre
+     en aperçu, le quiz et l'examen blanc gardent leur verrou. */
+  if (props.mode === "galop") return props.children;
   var tr = app.tr || function (o) { return (o && o.fr) || ""; };
   var nomG = (info && info.titre) ? tr(info.titre) : "";
   function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } app.setEcran("galops"); }
@@ -62054,7 +62126,9 @@ function EcranCoursCorps() {
     const ordiPansage = useHypeLargeur(1100);   /* 30/10 : cours g1-c2 en version ordinateur (hype-cours-pansage-ordi.js) ; téléphone et tablette étroite inchangés */
     const modeEnseignantCours = !!(profil && profil.estPro);
     const coursListe = obtenirCoursParGalop(galopOuvert, langue);
-    const cours = coursListe.find((c) => c.id === coursOuvert);
+    const apercuPremium = React.useContext(HypeApercuCours);   /* 30/10 : chapitre payant lu par un non-abonné → début seulement */
+    const coursComplet = coursListe.find((c) => c.id === coursOuvert);
+    const cours = apercuPremium ? hypeCoursApercu(coursComplet) : coursComplet;
     const [blocIdx, setBlocIdx] = useState(() => { const v = SAUT_BLOC_INITIAL; SAUT_BLOC_INITIAL = null; return (v == null ? 0 : v); });
     const [termineAffiche, setTermineAffiche] = useState(function () { return (typeof window !== "undefined" && window.__coursTerminePreview) ? true : false; });
     const touchDebut = useRef(null);
@@ -62068,7 +62142,7 @@ function EcranCoursCorps() {
             setBlocIdx(blocIdx + 1);
             return;
         }
-        if (!dejaTermine) {
+        if (!dejaTermine && !apercuPremium) {
             setCoursTermines([...coursTermines, cours.id]);
             setXp((x) => x + 25);
         }
@@ -62151,6 +62225,8 @@ function EcranCoursCorps() {
         } catch (eCtx) { }
         setEcran("assistant");
     };
+    if (termineAffiche && apercuPremium)
+        return React.createElement(FinApercuPremium, { titre: (typeof cours.titre === "string") ? cours.titre : "", onRetour: function () { setTermineAffiche(false); setBlocIdx(0); setEcran("galops"); } });
     if (termineAffiche) {
         var idxCT = coursListe.findIndex(function (c) { return c && c.id === coursOuvert; });
         var chapitreNumCT = (idxCT >= 0 ? idxCT : 0) + 1;
@@ -62176,7 +62252,7 @@ function EcranCoursCorps() {
     }
     /* 30/10 : COURS « LE PANSAGE » (g1-c2) EN VERSION ORDINATEUR — page magazine d'après la maquette validée. Seulement si la largeur
        est >= 1100 px ET si le composant est chargé ET si le cours a bien la structure attendue (sinon : l'affichage page par page d'avant). */
-    if (cours.id === "g1-c2" && ordiPansage && window.HypePansageOrdi && window.HypePansageOrdi.ok(cours)) {
+    if (!apercuPremium && cours.id === "g1-c2" && ordiPansage && window.HypePansageOrdi && window.HypePansageOrdi.ok(cours)) {
         return React.createElement(window.HypePansageOrdi, {
             cours: cours, coursListe: coursListe, langue: langue, galopOuvert: galopOuvert, coursTermines: coursTermines, setEcran: setEcran,
             questionsHB: questionsHeyBabyPourCours(cours.id, langue), Selecteur: SelecteurLangue,
@@ -62187,7 +62263,7 @@ function EcranCoursCorps() {
     }
     /* 30/10 : COURS « LES ROBES DU CHEVAL » (g1-c7) EN VERSION ORDINATEUR (hype-cours-robes-ordi.js) — même cadre que le pansage
        ordinateur validé. Seulement si largeur >= 1100 px, composant chargé et structure du cours attendue ; sinon l'affichage d'avant. */
-    if (cours.id === "g1-c7" && ordiPansage && window.HypeRobesOrdi && window.HypeRobesOrdi.ok(cours)) {
+    if (!apercuPremium && cours.id === "g1-c7" && ordiPansage && window.HypeRobesOrdi && window.HypeRobesOrdi.ok(cours)) {
         return React.createElement(window.HypeRobesOrdi, {
             cours: cours, coursListe: coursListe, langue: langue, galopOuvert: galopOuvert, coursTermines: coursTermines, setEcran: setEcran,
             questionsHB: questionsHeyBabyPourCours(cours.id, langue), Selecteur: SelecteurLangue,
@@ -62199,7 +62275,7 @@ function EcranCoursCorps() {
     }
     /* 30/10 : ROBES DES GALOPS 3 (g3-c7) ET 5 (g5-robes) EN VERSION ORDINATEUR (hype-cours-robes-galops-ordi.js) — PROPOSITION.
        Même cadre que le pansage et le Galop 1 ; seulement si largeur >= 1100 px, composant chargé et structure du cours reconnue. */
-    if ((cours.id === "g2-robes" || cours.id === "g3-c7" || cours.id === "g5-robes") && ordiPansage && window.HypeRobesGalopsOrdi && window.HypeRobesGalopsOrdi.ok(cours)) {
+    if (!apercuPremium && (cours.id === "g2-robes" || cours.id === "g3-c7" || cours.id === "g5-robes") && ordiPansage && window.HypeRobesGalopsOrdi && window.HypeRobesGalopsOrdi.ok(cours)) {
         return React.createElement(window.HypeRobesGalopsOrdi, {
             cours: cours, coursListe: coursListe, langue: langue, galopOuvert: galopOuvert, coursTermines: coursTermines, setEcran: setEcran,
             questionsHB: questionsHeyBabyPourCours(cours.id, langue), Selecteur: SelecteurLangue,
@@ -62212,7 +62288,7 @@ function EcranCoursCorps() {
     /* 30/10 (après-midi) : MODÈLE DE COURS ÉDITORIAL (hype-cours-modele.js) pour TÉLÉPHONE et TABLETTE. Blandine : « garder la version ordi
        qu'on a » -> placé APRÈS la version ordinateur ci-dessus, qui reste prioritaire dès 1100 px. Seulement pour les cours qui ont une
        configuration dans le modèle (pour l'instant g1-c2 « Le pansage ») ; sinon l'affichage page par page d'avant. */
-    if (window.HypeCoursModele && window.HypeCoursModele.ok(cours)) {
+    if (!apercuPremium && window.HypeCoursModele && window.HypeCoursModele.ok(cours)) {
         return React.createElement(window.HypeCoursModele, {
             cours: cours, coursListe: coursListe, langue: langue, galopOuvert: galopOuvert, coursTermines: coursTermines, setEcran: setEcran,
             questionsHB: questionsHeyBabyPourCours(cours.id, langue), Selecteur: SelecteurLangue,
@@ -62222,7 +62298,7 @@ function EcranCoursCorps() {
             onTerminer: function () { if (!dejaTermine) { setCoursTermines([...coursTermines, cours.id]); setXp((x) => x + 25); } setTermineAffiche(true); }
         });
     }
-    const bloc = cours.blocs[blocIdx];
+    const bloc = cours.blocs[apercuPremium ? Math.min(blocIdx, total - 1) : blocIdx];
     if (bloc && bloc.type === "couverture")
         return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd }, React.createElement(CouvertureCours, { bloc: bloc, onCommencer: suivant, onRetour: () => setEcran("galop-detail"), langue: langue }));
         if (bloc && bloc.type === "couv-lecon")
@@ -62257,7 +62333,7 @@ function EcranCoursCorps() {
             React.createElement(BlocCours, { bloc: bloc, key: blocIdx, astuceLabel: t("astuce_label"), onSuivant: suivant })),
         React.createElement("div", { style: { padding: "0 24px 28px", display: "flex", gap: 10, alignItems: "stretch" } }, /* 30/07 : fleche retour + boutons discrets (maquette validee par Blandine) */
             React.createElement("button", { onClick: precedent, "aria-label": hypeT7("Page pr\u00e9c\u00e9dente", "Previous page", "P\u00e1gina anterior", "Pagina precedente", "\u524d\u306e\u30da\u30fc\u30b8", "Vorherige Seite", "\u0627\u0644\u0635\u0641\u062d\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629", "上一页", "Vorige pagina", "Página anterior", "Föregående sida", "Предыдущая страница", "Poprzednia strona", "이전 페이지"), style: { width: 46, borderRadius: 14, background: "#0D1114", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(234,242,244,0.7)", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "0 0 auto" } }, "\u2190"),
-            React.createElement("button", { onClick: suivant, style: { flex: 1, padding: "12px", borderRadius: 14, border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.12)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',-apple-system,sans-serif", cursor: "pointer" } }, estDernier ? t("terminer_cours") : t("suivant")))));
+            React.createElement("button", { onClick: suivant, style: { flex: 1, padding: "12px", borderRadius: 14, border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.12)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',-apple-system,sans-serif", cursor: "pointer" } }, estDernier ? (apercuPremium ? tr({ fr: "Lire la suite", en: "Read the rest", es: "Leer el resto", it: "Leggi il seguito", ja: "続きを読む", de: "Weiterlesen", ar: "اقرأ التتمة", zh: "继续阅读", nl: "Verder lezen", pt: "Ler o restante", sv: "Läs resten", ru: "Читать дальше", pl: "Czytaj dalej", ko: "계속 읽기" }) : t("terminer_cours")) : t("suivant")))));
 }
 /* ==========================================================================
    VignetteZoom — 17/08 (session 138). L ENVELOPPE.

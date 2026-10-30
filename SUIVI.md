@@ -15448,3 +15448,49 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h15 : photo alezan brûlé rangée (images/robes-g3-alezan-brule.webp, Galop 3, déclinaisons). Reste G3 : balzane, épis, café au lait, noir pangaré.
 
 - 30/10 21h20 : photo balzane rangée (images/robes-g3-balzane.webp, Galop 3). Reste G3 : épis, café au lait, noir pangaré.
+## 30/10 19h45 — Aperçu des chapitres payants (Galops 2 à 5) + pages Google des chapitres des Galops 2 à 4 (build 20261030-1945) — PUBLIÉ le 30/10 vers 19h25 (« Publie ce que t'as fait »)
+- Repris sur la version en ligne 16f9f22 (build 1930 des robes, publié entre-temps) : rien de ce qui était en ligne n'est retiré. Les nouvelles versions ordinateur des robes (g2-robes, g3-c7, g5-robes) sont elles aussi écartées pendant un aperçu (le non-abonné lit le début page par page). Marqueur 1930 → 1945.
+- Décision de Blandine (choix B, 18h01) : un non-abonné lit le DÉBUT du vrai chapitre d'un Galop payant, puis « La suite est réservée à Premium » — dans l'appli comme depuis Google. Feu vert « ok vas-y » à 19h04.
+- index.html :
+  · GardeGalopPremium : sur l'écran du cours seulement (prop apercu), un chapitre verrouillé s'ouvre en aperçu au lieu du panneau « Premium requis ». Le quiz et la page d'un Galop gardent le panneau. Galops 6-7 : toujours « Prochainement » (garde inchangée).
+  · Découpe (hypeCoursApercu) : couverture(s), intro éventuelle, puis le premier bloc de contenu coupé au tiers (au moins 2 morceaux). Le reste n'est pas affiché.
+  · Fin de l'aperçu : nouvelle carte FinApercuPremium (cadenas doré, titre du chapitre, « La suite de ce chapitre est réservée à Premium », « Déjà abonné ? », bouton « Débloquer la suite avec Premium », Retour vers la page Galops), 14 langues. Dernier bouton du chapitre : « Lire la suite » au lieu de « Terminer le cours ». Aucun chapitre marqué terminé, aucun XP pendant un aperçu.
+  · Les versions ordinateur / modèle éditorial (cours du Galop 1) ne sont jamais utilisées en aperçu. Abonné, modératrice, Evan/Liam : chapitre complet comme avant.
+- outils/seo-galops.cjs : Galops 2 à 4 → une page par chapitre (/<langue>/galop-N/<chapitre>/) avec le même début seulement + encadré « réservé à Premium » (14 langues), liens depuis la page du Galop, plan du site (73 pages par langue au lieu de 27). Ces pages ouvrent l'aperçu dans l'appli (cours-route.ts, inchangé).
+- ⚠️ GALOP 5 : ses chapitres PLANTENT à l'ouverture dans l'appli (constaté le 30/10, aussi par le lien #g=g5-c1, donc AVANT ce build : obtenirCoursParGalop(5) rend les textes non traduits → erreur React #31). Pas de page Google pour ses chapitres tant que ce n'est pas corrigé (APERCU_JUSQUA = 4 dans seo-galops.cjs). Non corrigé ici (hors périmètre) — à proposer à Blandine.
+- Vérifié (copie du site fabriquée comme sur Netlify + navigateur) : Galop 2 et 3 au téléphone, Galop 3 en arabe, Galop 4 en anglais, Galop 3 sur ordinateur 1440 px : début du chapitre puis carte de fin ; Galop 1 toujours complet jusqu'à la page « cours terminé » ; page /ar/galop-3/ = panneau Premium ; 0 erreur sur ces pages.
+- 19h20 — Vérifié à la demande de Blandine : « Débloquer la suite avec Premium » ouvre bien la page d'abonnement (Rejoins Hype Premium, formules). Dans la page lue par Google, le bouton « Lire la suite dans l'appli » mène aussi à la page d'abonnement (2hype.fr/#premium) au lieu de l'accueil.
+- À pousser après accord : index.html + SUIVI.md (ensemble) + outils/seo-galops.cjs. Fichiers inchangés : netlify/edge-functions/cours-route.ts, fichiers de cours, tout le reste.
+
+## 30/10 20h45 — Galop 5 réparé + pages des Galops verrouillés ouvertes aux non-abonnés (build 20261030-2045) — PUBLIÉ le 30/10 à 19h35 (« Ok oui »)
+- Demande de Blandine (19h17) : « Publie ce que t'as fait et enchaîne sur 1 et 2 ensuite ».
+- POINT 1 — Galop 5 : obtenirCoursParGalop(5) renvoyait les cours sans traduction (textes en { fr, en, … }) → les 6 chapitres g5-c1 à g5-c6 plantaient à l'ouverture (erreur React #31) et « Les robes » (g5-robes) plantait au téléphone dès la 2e page (« contenu.map »). Ils passent maintenant par la même traduction que les Galops 2 à 4 (convertirCoursI18nVersInterne) ; le quiz bonus est recopié tel quel pour la page ordinateur des robes. Vérifié : les 7 chapitres s'ouvrent jusqu'au bout au téléphone (modératrice) ; « Les robes » G5 sur ordinateur = page ordinateur des robes ; en aperçu (non-abonné) : début + carte Premium, 0 erreur.
+- POINT 2 — choix B dans l'appli : un Galop verrouillé ne renvoie plus vers la page Premium, il ouvre sa page (chapitres, cadenas toujours affichés) ; un chapitre s'ouvre en aperçu. Changé : cartes de l'accueil (EcranDashboard), sommaire des Galops, haut de la page Galops (GalopsV2Haut), sélecteurs de Galop (EcranGalop5, EcranGalopV3, EcranGalopOrdi), bibliothèque (EcranBibliothequeGalops, GalopDepliant), ouverture d'un chapitre depuis la page d'un Galop (V3, ordinateur, Galop 5) ; GardeGalopPremium laisse passer la page d'un Galop. TOUJOURS vers Premium : quiz, examen blanc, reprises depuis la page d'un Galop, et le cours des embouchures (g5n-02, écran à part sans aperçu). Galops 6-7 : « Prochainement » inchangé.
+- Vérifié (copie du site + navigateur, visiteur non connecté) : pages des Galops 2, 3 et 5 au téléphone et Galop 3 sur ordinateur s'ouvrent ; depuis l'onglet Cours, « Agir, résister et céder » (G3, téléphone et ordinateur) et « Les robes » (G2) s'ouvrent en aperçu puis carte Premium ; 0 erreur.
+- ⚠️ Constaté, NON corrigé (travail des robes, autre conversation) : la page ordinateur des robes du Galop 3 (g3-c7) ne s'affiche pas, même pour une modératrice — la traduction des cours du Galop 3 ne recopie pas le quiz bonus que cette page exige (okG3) ; même cause probable pour g2-robes si un quiz bonus y est ajouté.
+- Google : Galop 5 toujours sans pages de chapitres (la page du Galop 5 de l'appli présente de nouveaux chapitres qui arrivent progressivement) — à décider avec Blandine.
+- Publié : index.html + SUIVI.md + outils/seo-galops.cjs (commentaire seulement). Fichiers inchangés : tout le reste.
+
+## 30/10 19h45 — Google : Galop 5 = chapitres refaits seulement — PUBLIÉ le 30/10 (« Mets uniquement ceux refaits en ligne sur Google pour le galop 5 »)
+- outils/seo-galops.cjs : Galop 5 ouvert aux pages Google (APERCU_JUSQUA = 5), mais seulement pour les chapitres de la liste G5_SUR_GOOGLE, aujourd'hui « Les robes : pies, tachetés et adjonctions » (g5-robes). La page /<langue>/galop-5/ ne liste plus que ce chapitre (avant : les titres des 6 anciens chapitres). La page du chapitre montre son début seulement (aperçu), comme les Galops 2 à 4 ; elle ouvre l'aperçu dans l'appli (testé à 20h45 : début + carte Premium, 0 erreur).
+- « Les embouchures » (g5n-02) n'y est pas : son cours a une page à part qui ne sait pas encore faire d'aperçu (un non-abonné va directement à la page Premium). À ajouter quand cette page aura son aperçu.
+- À chaque nouveau chapitre du Galop 5 refait : ajouter son identifiant dans G5_SUR_GOOGLE.
+- Publié : outils/seo-galops.cjs + SUIVI.md. index.html inchangé (marqueur toujours 20261030-2045).
+
+## 30/10 21h15 — « Les embouchures » (Galop 5) en aperçu + sur Google (build 20261030-2115) — PUBLIÉ le 30/10 (« Top continue »)
+- index.html :
+  · EcranCoursG5Emb : un non-abonné n'est plus renvoyé tout de suite vers la page Premium ; il lit le début de la 1re partie (« Pourquoi utiliser une embouchure ? », paragraphes coupés au tiers, au moins 2), puis la carte « La suite de ce chapitre est réservée à Premium » intégrée sous le texte. Menu des parties, colonne de droite et parties 2 à 6 non affichés pendant l'aperçu. Abonnés / modératrices : cours complet inchangé.
+  · FinApercuPremium : nouvelle option « integre » (carte dans la page, sans plein écran ni bouton Retour) ; version plein écran inchangée.
+  · Page du Galop 5 : « Les embouchures » s'ouvre aussi en aperçu pour un non-abonné (avant : page Premium).
+  · Adresse publique : la cible « g5n-02 » ouvre l'écran des embouchures.
+  · Marqueur 20261030-2045 → 20261030-2115.
+- outils/seo-galops.cjs : G5_SUR_GOOGLE = « Les robes » + « Les embouchures ». Les embouchures (fichier à part) sont lues dans hype-cours-g5-embouchures.js, 1re partie seulement → page /<langue>/galop-5/les-embouchures/ en 14 langues, début seulement + encadré Premium (75 pages par langue).
+- netlify/edge-functions/cours-route.ts : la cible « g5n-02 » est acceptée.
+- Vérifié (copie du site + navigateur) : /fr/galop-5/les-embouchures/ au téléphone et /en/... sur ordinateur = début + carte Premium ; modératrice = les 6 parties ; « Les robes » G5 toujours en aperçu ; 0 erreur.
+- Publié : index.html + SUIVI.md + outils/seo-galops.cjs + netlify/edge-functions/cours-route.ts. Fichiers inchangés : hype-cours-g5-embouchures.js et tout le reste.
+
+## 30/10 21h30 — PUBLICATION (accord de Blandine 20h48) : robes ordi, photos et pies G2
+- Mis en ligne : pies du programme en G2 (noir/alezan/bai pie, 14 langues), photos G2 (gris, pie, crème, pie bai, alezan pie, tachetée appaloosa), G3 (isabelle, souris, parties du corps, marques tête, palomino, alezan brûlé, balzane), G5 (crins lavés, léopard, tachetés autres, pommelé, pie sabino). Build 20261030-2130 ; galop2 v8 (clé ?v=9), moteur ?v=8.
+- Fusionné avec les 4 mises en ligne précédentes de main (aperçus, Google, embouchures) : seules 3 lignes d index.html changent (build, moteur, clé galop2).
+- Réserve non affichée : robes-reserve-pie-brun-crins-noirs, robes-reserve-tachete-bai-couverture (en attente de nom).
+- Manque encore (photos) : G3 épis, café au lait, noir pangaré ; G5 pies tobiano/ovéro/tovero/balzan, raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris comparaison.
