@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 29;   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
+var VERSION = 30;   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
+/* v29 :   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
 /* v28 :   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
 /* v26 :   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
 /* v25 :   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
@@ -359,7 +360,7 @@ var CSS = [
 ".rbo-fc-por li:before{content:'';position:absolute;inset-inline-start:calc(var(--r) + 20px);top:0;bottom:0;width:1px;background:rgba(201,166,107,.45)}",
 ".rbo-fc-por li:first-child:before{top:50%}.rbo-fc-por li:last-child:before{bottom:50%}",
 ".rbo-fc-por{--r:84px}",
-".rbo-fc-por .rond{width:var(--r);height:var(--r);border-radius:50%;border:1.5px solid var(--champ);background-size:270%;background-repeat:no-repeat;box-shadow:0 8px 22px rgba(0,0,0,.5)}",
+".rbo-fc-por .rond{width:var(--r);height:var(--r);border-radius:50%;border:1.5px solid var(--champ);background-size:220%;background-repeat:no-repeat;box-shadow:0 8px 22px rgba(0,0,0,.5)}",
 ".rbo-fc-por .pt{width:7px;height:7px;border-radius:50%;background:var(--champ);justify-self:center;position:relative;z-index:1}",
 ".rbo-fc-por .tx{display:flex;flex-direction:column;gap:2px}",
 ".rbo-fc-por .tx b{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:22px;font-weight:600;color:var(--ivoire)}",
@@ -377,7 +378,16 @@ var CSS = [
 ".rbo-fc-q .vi{flex:0 0 auto;width:72px;height:50px;border-radius:9px;background-size:260%;background-repeat:no-repeat}",
 ".rbo-fc-q .qt{flex:1 1 auto;min-width:0}.rbo-fc-q i{font-style:normal;color:var(--champ);font-size:20px;flex:0 0 auto}",
 ".rbo-fc-hb .pts{display:none}",
-".rbo-fc-duo.ancien{align-items:start}.rbo-fc-duo.ancien .rbo-card{padding:20px 22px}.rbo-fc-duo.ancien .rbo-card h3{font-size:22px;margin-bottom:10px}.rbo-fc-duo.ancien .rbo-card p{font-size:14px}.rbo-fc-duo.ancien .rbo-defil{font-size:14px}",
+".rbo-fc-duo.ancien{align-items:stretch}",
+".rbo-fc-duo.ancien .rbo-card{padding:22px 24px;border-radius:18px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,#132228,#0F1B20);box-shadow:0 14px 34px rgba(0,0,0,.35)}",
+".rbo-fc-duo.ancien .rbo-card.defi{background:linear-gradient(180deg,#0E181C,#0B1417)}",
+".rbo-fc-duo.ancien .rbo-card h3{font-size:26px;margin-bottom:12px}",
+".rbo-fc-duo.ancien .rbo-card p{font-size:14px;line-height:1.55;color:var(--doux)}",
+".rbo-fc-duo.ancien .rbo-hbq{gap:10px;margin-top:4px}",
+".rbo-fc-duo.ancien .rbo-hbq button{border:1px solid rgba(201,166,107,.28);border-radius:14px;background:linear-gradient(90deg,rgba(27,49,56,.95),rgba(23,42,48,.92));box-shadow:none;padding:12px 14px;font-size:14px}",
+".rbo-fc-duo.ancien .rbo-hbq button:hover{border-color:rgba(201,166,107,.55)}",
+".rbo-fc-duo.ancien .rbo-defil{font-size:14px;gap:6px;margin-top:12px;padding:14px 16px 14px 34px;border:1px solid rgba(201,166,107,.18);border-radius:14px;background:rgba(7,10,8,.35)}",
+"[dir=rtl] .rbo-fc-duo.ancien .rbo-defil{padding:14px 34px 14px 16px}",
 ".rbo-fc-defi .ronds{display:flex;justify-content:space-around;gap:10px;margin-top:20px;padding:16px 8px;border:1px solid rgba(201,166,107,.18);border-radius:14px;background:rgba(7,10,8,.35)}",
 ".rbo-fc-defi .ronds button{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ivoire);padding:2px}",
 ".rbo-fc-defi .c{width:48px;height:48px;border-radius:50%;border:1px solid var(--champ);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--champ);transition:background .2s}",
@@ -413,7 +423,7 @@ var CSS = [
 ".rbo .rbo-fc-por{--r:70px;margin-top:18px}.rbo .rbo-fc-por li{gap:0 10px;padding:4px 0}.rbo .rbo-fc-por li:before{inset-inline-start:calc(var(--r) + 16px)}",
 ".rbo .rbo-fc-por .tx b{font-size:20px}.rbo .rbo-fc-por .tx span{font-size:13px}",
 ".rbo .rbo-fc-duo{padding:36px 16px 0;gap:36px}",
-".rbo .rbo-fc-hb,.rbo .rbo-fc-defi,.rbo .rbo-fc-duo.ancien .rbo-card{padding:16px 16px}.rbo .rbo-fc-duo.ancien .rbo-card h3{font-size:20px}",
+".rbo .rbo-fc-hb,.rbo .rbo-fc-defi,.rbo .rbo-fc-duo.ancien .rbo-card{padding:18px 16px}.rbo .rbo-fc-duo.ancien .rbo-card h3{font-size:23px}",
 ".rbo .rbo-fc h3{font-size:23px}",
 ".rbo .rbo-fc-hbc{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:14px;scroll-behavior:smooth}",
 ".rbo .rbo-fc-hbc::-webkit-scrollbar{display:none}",
@@ -697,7 +707,7 @@ function HypeRobesOrdi(props) {
             t = (k >= 0 ? t.slice(k + 1) : t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1);
             return { img: x[1], pos: "100% 2%", nom: sansNum(a[x[0]].titre), desc: t };
           }),
-          note: (z[4].puces[z[4].puces.length - 1] || {}).texte || "",
+          note: "",   /* 31/10 : « Je regarde toujours… » retiré — redit la liste du défi */
           hb: hbListe, hbImgs: [{ img: IMG.bai, pos: "100% 4%" }, { img: IMG.alezan, pos: "100% 4%" }, { img: IMG.noir, pos: "100% 4%" }],
           onHey: hey, defiTexte: L("defiG1"), defiN: 3,
           defiSeg: { titre: nettoyer(z[2].titre), sous: z[2].sous, texte: z[2].texte, puces: z[2].puces },
