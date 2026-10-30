@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 5;
+var VERSION = 6;
+var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
 var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -128,6 +129,11 @@ var CSS = [
 ".rbo-chap .n.fait{background:var(--champ);color:var(--noir);border-color:var(--champ)}",
 "@media (min-width:1280px){.rbo-wrap{grid-template-columns:230px minmax(0,1fr)}.rbo-chap{display:block}}",
 ".rbo-main{min-width:0}",
+".rbo-parc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0;padding:26px 0 22px}",
+".rbo-parc .tt{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:#C9A66B;margin-inline-end:8px}",
+".rbo-parc button{font:inherit;font-size:13px;font-weight:600;color:#F3EEE4;background:#101D22;border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:8px 18px;cursor:pointer}",
+".rbo-parc button:hover{border-color:#C9A66B}",
+".rbo-parc button[aria-current=true]{background:#C9A66B;color:#070A08;border-color:#C9A66B;cursor:default}",
 /* haut de page (structure validée, inchangée) */
 ".rbo-top{display:grid;grid-template-columns:minmax(0,1fr)}",
 "@media (min-width:1480px){.rbo-top{grid-template-columns:minmax(0,1fr) 340px}}",
@@ -368,6 +374,12 @@ function HypeRobesOrdi(props) {
             h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
         })),
       h("main", { className: "rbo-main" },
+        props.onOuvrirRobes ? h("div", { className: "rbo-parc", role: "navigation", "aria-label": PARC_LAB[lg] || PARC_LAB.en },
+          h("span", { className: "tt" }, PARC_LAB[lg] || PARC_LAB.en),
+          [["g1-c7", 1], ["g2-c6", 2], ["g3-c7", 3], ["g5-robes", 5]].map(function (pc2) {
+            var cur = pc2[0] === cours.id;
+            return h("button", { key: pc2[0], type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur) props.onOuvrirRobes(pc2[1], pc2[0]); } }, "Galop " + pc2[1]);
+          })) : null,
         h("div", { className: "rbo-top" },
           h("header", { className: "rbo-hero" },
             h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
