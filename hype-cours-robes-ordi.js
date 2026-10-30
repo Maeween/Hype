@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 25;   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
+var VERSION = 26;   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
+/* v25 :   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
 /* v23 :   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
 /* v22 :   /* 31/10 00h10 : Galop 2/3/5 dans le menu des vignettes et les onglets ; « Galop 1 » au-dessus des robes retiré */
 /* v21 :   /* 31/10 00h05 : « À retenir » des 3 robes retiré ; onglets actifs sans fond doré plein */
@@ -60,6 +61,10 @@ var T = {
   qSur: tt("Question {n} sur {t}", "Question {n} of {t}", "Pregunta {n} de {t}", "Domanda {n} di {t}", "第{n}問（全{t}問）", "Frage {n} von {t}", "السؤال {n} من {t}", "第 {n} 题，共 {t} 题", "Vraag {n} van {t}", "Pergunta {n} de {t}", "Fråga {n} av {t}", "Вопрос {n} из {t}", "Pytanie {n} z {t}", "{t}문제 중 {n}번"),
   qPrec: tt("Question précédente", "Previous question", "Pregunta anterior", "Domanda precedente", "前の問題", "Vorherige Frage", "السؤال السابق", "上一题", "Vorige vraag", "Pergunta anterior", "Föregående fråga", "Предыдущий вопрос", "Poprzednie pytanie", "이전 문제"),
   qSuiv: tt("Question suivante", "Next question", "Siguiente pregunta", "Domanda successiva", "次の問題", "Nächste Frage", "السؤال التالي", "下一题", "Volgende vraag", "Próxima pergunta", "Nästa fråga", "Следующий вопрос", "Następne pytanie", "다음 문제"),
+  gal1: tt("Robes de base", "Base coats", "Capas básicas", "Mantelli di base", "基本の毛色", "Grundfarben", "الألوان الأساسية", "基本毛色", "Basiskleuren", "Pelagens de base", "Grundfärger", "Основные масти", "Maści podstawowe", "기본 모색"),
+  gal2: tt("Gris, pie, tacheté", "Grey, pinto, spotted", "Tordo, pío, moteado", "Grigio, pezzato, maculato", "芦毛・ぶち・斑点", "Schimmel, Schecke, getupft", "الرمادي والأبلق والمرقط", "青毛、花斑、斑点", "Schimmel, bont, gevlekt", "Tordilho, pampa, malhado", "Skimmel, skäck, prickig", "Серая, пегая, чубарая", "Siwa, srokata, tarantowata", "회색·얼룩·점박이"),
+  gal3: tt("Marques et nuances", "Markings and shades", "Marcas y matices", "Marcature e sfumature", "白斑と色合い", "Abzeichen und Nuancen", "العلامات والدرجات", "白色标记与色调", "Aftekeningen en tinten", "Marcas e nuances", "Tecken och nyanser", "Отметины и оттенки", "Odmiany i odcienie", "흰 반점과 색조"),
+  gal5: tt("Pies et adjonctions", "Pintos and additions", "Píos y adiciones", "Pezzati e aggiunte", "ぶちと付加特徴", "Schecken und Zusätze", "الأبلق والإضافات", "花斑与附加特征", "Bonten en toevoegingen", "Pampas e adições", "Skäckar och tillägg", "Пегие и дополнения", "Srokate i dodatki", "얼룩과 추가 특징"),
   coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
   coursSuivant: tt("Cours suivant", "Next lesson", "Siguiente curso", "Corso successivo", "次のレッスン", "Nächste Lektion", "الدرس التالي", "下一课", "Volgende les", "Próximo curso", "Nästa lektion", "Следующий урок", "Następna lekcja", "다음 수업"),
   retourGalops: tt("Retour aux Galops", "Back to the Galops", "Volver a los Galops", "Torna ai Galop", "ギャロップに戻る", "Zurück zu den Galops", "العودة إلى الغالوب", "返回 Galop", "Terug naar de Galops", "Voltar aos Galops", "Tillbaka till Galops", "Назад к Galop", "Powrót do Galopów", "갤럽으로 돌아가기"),
@@ -344,11 +349,11 @@ var CSS = [
 ".rbo .rbo-hero h1{font-size:34px;max-width:100%;margin:0 0 6px}",
 ".rbo .rbo-citband{padding:40px 24px 14px}.rbo .rbo-citband .rbo-cit{font-size:22px}.rbo .rbo-meta{gap:12px;font-size:12px;margin-top:12px}",
 ".rbo .rbo-cards{grid-template-columns:minmax(0,1fr);padding:14px 16px 8px;gap:10px}",
-".rbo .rbo-vig{display:flex;overflow-x:auto;gap:10px;padding:26px 16px 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}",
-".rbo .rbo-vig button{flex:0 0 138px;height:118px;scroll-snap-align:start}",
-".rbo .rbo-vig .big{font-size:30px;top:6px;inset-inline-start:10px}",
-".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:14.5px;inset-inline:10px 36px;bottom:10px;max-width:none}",
-".rbo .rbo-vig .arr{width:24px;height:24px;font-size:12px;bottom:8px;inset-inline-end:8px}",
+".rbo .rbo-vig{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px;padding:26px 16px 16px}",
+".rbo .rbo-vig button{height:104px}",
+".rbo .rbo-vig .big{font-size:24px;top:6px;inset-inline-start:9px}",
+".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:12.5px!important;line-height:1.15;inset-inline:9px 9px;bottom:9px;max-width:none}",
+".rbo .rbo-vig .arr{display:none}",
 ".rbo .rbo-mini{padding:calc(8px + env(safe-area-inset-top)) 14px 10px;overflow-x:auto}",
 ".rbo .rbo-coachfin{padding:36px 16px 44px}.rbo .rbo-coachfin .rbo-card{padding:18px 18px}.rbo .rbo-coachfin .rbo-card h3{font-size:22px}.rbo .rbo-coachfin .rbo-card p{font-size:15px}.rbo .rbo-retcours{padding:16px 16px 0}",
 ".rbo .rbo-photo.trio{aspect-ratio:auto}.rbo .rbo-photo.trio img{height:auto;object-fit:contain}",
@@ -443,7 +448,7 @@ function HypeRobesOrdi(props) {
   }
   function Sec(id, num, titre, ton, enfants) {
     return h("section", { id: "rbo-" + id, className: "rbo-sec " + ton },
-      h("div", { className: "rbo-sechead" }, h("div", { className: "rbo-num" }, num), h("h2", null, titre)), enfants);
+      h("div", { className: "rbo-sechead" }, num ? h("div", { className: "rbo-num" }, num) : null, h("h2", null, titre)), enfants);   /* 31/10 : l'introduction n'a plus de numéro */
   }
   function Photo(cle, cls, legende) {
     return h("figure", { className: "rbo-photo " + (cls || "") }, h("img", { src: IMG[cle], alt: legende || "", loading: "lazy" }), legende ? h("figcaption", null, legende) : null);
@@ -464,6 +469,8 @@ function HypeRobesOrdi(props) {
     { id: "s4", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
     { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
   ];
+  var vigM = vig.slice(1);   /* 31/10 (Blandine) : « Comprendre » n'est plus dans le menu (2 lignes de 3) ; la section reste en haut du cours */
+  var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
   /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes */
   var autresG = props.onOuvrirRobes ? [
     { id: "g2-robes", n: 2, img: "images/robes-g2-pie.webp", pos: "60% 40%" },
@@ -496,7 +503,7 @@ function HypeRobesOrdi(props) {
         /* 05 — QUIZ : les 10 questions du cours, une à la fois, correction et explication du cours */
         /* 30/10 : le quiz est celui de l'appli (écran « quiz » : correction, étoiles du cours sur le menu des Galops). L'ancien quiz intégré est gardé, désactivé (QUIZ_INTEGRE). */
         QUIZ_INTEGRE ? (
-        Sec("s5", "04", L("secQuiz"), "noir",
+        Sec("s5", "03", L("secQuiz"), "noir",
           h("div", null,
             h("div", { className: "rbo-qz" },
               h("div", { className: "rbo-q" },
@@ -517,7 +524,7 @@ function HypeRobesOrdi(props) {
             h("div", { className: "rbo-cta" },
               h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
               h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))) :
-        Sec("s5", "04", L("secQuiz"), "noir",
+        Sec("s5", "03", L("secQuiz"), "noir",
           h("div", null,
             Photo("quiz", "pano", null),
             h("div", { className: "rbo-cta" },
@@ -550,24 +557,24 @@ function HypeRobesOrdi(props) {
 
         vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h("div", { className: "rbo-vig", role: "tablist" },
-          vig.map(function (v, i) {
+        h("div", { className: "rbo-vig", role: "tablist", style: { gridTemplateColumns: "repeat(" + Math.ceil((vigM.length + autresG.length) / 2) + ",minmax(0,1fr))" } },
+          vigM.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           }),
           autresG.map(function (g, k) {
             return h("button", { key: g.id, type: "button", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
-              h("b", { className: "big" }, "0" + (vig.length + k + 1)), h("span", { className: "lab" }, "Galop " + g.n), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+              h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           })),
         h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
-            autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vig.length + k + 1)), "Galop " + g.n); })))),
+            vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
+            autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vigM.length + k + 1)), galLab(g.n)); })))),
 
 
         vue !== "cours" ? null : h(React.Fragment, null,
         /* 01 — COMPRENDRE : a[1]…a[6] (a[0] = citation d'ouverture, dans le haut de page) */
-        Sec("s1", "01", d.t1, "noir",
+        Sec("s1", "", d.t1, "noir",
           h("div", null,
             h("div", { className: "rbo-grid2" },
               h("div", { className: "rbo-txt" }, M(a[1], "a1"), M(a[2], "a2"), M(a[3], "a3")),
@@ -578,13 +585,13 @@ function HypeRobesOrdi(props) {
             h("div", { className: "rbo-txt", style: { marginTop: 48, maxWidth: 820 } }, M(a[5], "a5")))),   /* 31/10 : « À observer » (a[6]) retiré — redit le 2e paragraphe */
         Vague(NOIR, NOIR2),
         /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
-        Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
+        Sec("s2", "01", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
         Vague(NOIR2, NOIR),
 
         /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
         /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
-        Sec("s4", "03", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
+        Sec("s4", "02", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-erreurs rbo-txt", style: { marginTop: 40, maxWidth: 820 } }, M(z[1], "z1")))),   /* 30/10 : encart à part ; 31/10 : le défi est sur la page de fin */

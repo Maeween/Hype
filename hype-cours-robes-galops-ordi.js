@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 10;
+var VERSION = 12;   /* 31/10 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
+/* v11 :   /* 31/10 : même traitement que le Galop 1 — doublons retirés, page de fin, autres Galops dans le menu, plus de bleu pétrole */
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -86,8 +87,6 @@ var CSS2 = [
   ".rbo-parc button{font:inherit;font-size:13px;font-weight:600;color:#F3EEE4;background:#101D22;border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:8px 18px;cursor:pointer}",
   ".rbo-parc button:hover{border-color:#C9A66B}",
   ".rbo-parc button[aria-current=true]{background:#C9A66B;color:#070A08;border-color:#C9A66B;cursor:default}",
-  ".rbo-vig{padding-top:56px}",                          /* 56 px d'air entre le haut de page et le menu */
-  ".rbo-vig.n6{grid-template-columns:repeat(6,minmax(0,1fr))}",
   ".rbo-vig.n6 .lab{font-size:16px;max-width:calc(100% - 40px);line-height:1.15}",
   ".rbo-ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:220px;background:radial-gradient(120% 90% at 30% 20%,#17262b 0%,#0d1618 70%);border:1px dashed rgba(201,166,107,.45);color:rgba(243,238,228,.7);font-size:13px;letter-spacing:.4px;text-align:center;padding:20px}",
   ".rbo-ph svg{color:var(--champ)}",
@@ -127,7 +126,10 @@ var CSS2 = [
   ".rbo-sig{border:1px solid var(--ligne);border-radius:18px;background:rgba(16,26,29,.55);padding:32px 38px;margin-top:56px}",
   ".rbo-sig h3{font-size:30px!important;margin:0 0 12px!important}",
   ".rbo-avant{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px;margin-bottom:64px}",
-  "@media (max-width:1279px){.rbo-avant{grid-template-columns:minmax(0,1fr)}}"
+  "@media (max-width:1279px){.rbo-avant{grid-template-columns:minmax(0,1fr)}}",
+  ".rbo-f-grid.sans{grid-template-columns:minmax(0,1fr)}.rbo-f-grid.sans .rbo-f-col{grid-template-columns:repeat(2,minmax(0,1fr))}",
+  "@media (max-width:760px){.rbo .rbo-f-grid.sans .rbo-f-col{grid-template-columns:minmax(0,1fr)}}",
+  "@media (max-width:1479px){.rbo-vig .lab{font-size:14.5px!important}}"
 ].join("\n");
 
 /* ---------------- photo avec repli « Photo à venir » ---------------- */
@@ -173,6 +175,10 @@ function okG2(cours) {
 }
 function ok(cours) { return okG2(cours) || okG3(cours) || okG5(cours); }
 
+var AUTRES = [
+  { id: "g1-c7", n: 1, img: "images/robes-g1-bai.webp" }, { id: "g2-robes", n: 2, img: "images/robes-g2-pie.webp" },
+  { id: "g3-c7", n: 3, img: "images/robes-g3-palomino.webp" }, { id: "g5-robes", n: 5, img: "images/robes-g5-aubere.webp" }
+];
 var PARC = [{ id: "g1-c7", galop: 1, lab: "Galop 1" }, { id: "g2-robes", galop: 2, lab: "Galop 2" }, { id: "g3-c7", galop: 3, lab: "Galop 3" }, { id: "g5-robes", galop: 5, lab: "Galop 5" }];
 /* ---------------- composant ---------------- */
 function HypeRobesGalopsOrdi(props) {
@@ -201,13 +207,18 @@ function HypeRobesGalopsOrdi(props) {
     return function () { io.disconnect(); };
   }, []);
 
+  var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 31/10 : « cours » ou « fin » (page de fin : terminé, synthèse, Hey Baby, défi, quiz) */
+  var _gx = useState(function () { return (props.coursTermines || []).indexOf(cours.id) < 0; }), gagneXp = _gx[0];
+  var haut = function () { try { window.scrollTo(0, 0); } catch (e) { } };
   var aller = function (id) { var el = document.getElementById("rbo-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  var versFin = function () { setVue("fin"); setTimeout(haut, 30); if (props.onValider) props.onValider(); };
+  var versCours = function () { setVue("cours"); setTimeout(haut, 60); };
   var hey = function (q) {
     try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: d.titre, score: null, cheval: null, question: q || "" }; } catch (e) { }
     props.setEcran("assistant");
   };
   var Selecteur = props.Selecteur;
-  var NOIR = "#070A08", PET = "#101D22";
+  var NOIR = "#070A08", PET = "#0A1116";   /* 31/10 : noir légèrement bleuté (plus de bleu pétrole) */
 
   /* --- briques --- */
   function M(s, key) {
@@ -224,7 +235,7 @@ function HypeRobesGalopsOrdi(props) {
   }
   function Sec(id, num, titre, ton, enfants, badge) {
     return h("section", { id: "rbo-" + id, className: "rbo-sec " + ton },
-      h("div", { className: "rbo-sechead" }, h("div", { className: "rbo-num" }, num), h("h2", null, titre), badge ? h("span", { className: "rbo-badge" }, badge) : null), enfants);
+      h("div", { className: "rbo-sechead" }, num ? h("div", { className: "rbo-num" }, num) : null, h("h2", null, titre), badge ? h("span", { className: "rbo-badge" }, badge) : null), enfants);
   }
   /* photo (ou cadre « Photo à venir »), avec anneau de zoom facultatif */
   function Photo(cle, cls, zoom) {
@@ -238,10 +249,17 @@ function HypeRobesGalopsOrdi(props) {
       Photo(cle, "", zoom),
       h("div", { className: "rbo-txt" }, kick ? h("span", { className: "kick" }, kick) : null, h("h3", null, nettoyer(sansNum(titre))), texte ? h("p", null, texte) : null, plus || null));
   }
+  /* encart « erreurs à éviter », à part (bord rouge doux, croix) */
+  function Erreurs(sg) {
+    if (!sg) return null;
+    return h("div", { className: "rbo-erreurs rbo-txt", style: { maxWidth: 820, marginTop: 32 } },
+      h("h3", null, nettoyer(sansNum(sg.titre))), sg.texte ? h("p", null, sg.texte) : null,
+      sg.puces.length ? h("ul", null, sg.puces.map(function (p, i) { return h("li", { key: i }, p.texte); })) : null);
+  }
   function Memo(titre, texte) { return h("div", { className: "rbo-memo" }, h("h3", null, nettoyer(titre)), h("p", null, texte)); }
   function Fac(titre, enfants, ouvert) {
     return h("details", { className: "rbo-fac", open: !!ouvert },
-      h("summary", null, h("span", { className: "rbo-badge" }, X("facultatif")), h("span", null, nettoyer(sansNum(titre))), h("span", { className: "pl" }, X("ouvrir"))), enfants);
+      h("summary", null, h("span", { className: "rbo-badge" }, X("facultatif")), h("span", null, nettoyer(sansNum(titre)).replace(/\s*[(（][^()（）]*[)）]\s*/g, " ").replace(/\s+:/, " :").trim()),   /* 31/10 : « (facultatif) » déjà dit par l'étiquette */ h("span", { className: "pl" }, X("ouvrir"))), enfants);
   }
   function Reviser(liste, titre) {
     return h("div", { className: "rbo-mqz" }, h("h3", null, titre || X("reviser")), liste.map(function (q, i) { return h(MiniQ, { key: i, q: q, L: L }); }));
@@ -249,129 +267,105 @@ function HypeRobesGalopsOrdi(props) {
 
   var pc = L("chapitres");
   var kicker = g5 ? "Galop 5" : (g2 ? "Galop 2" : "Galop 3");
-  var coach, hbQ, defiT, defiTxt, defiCible, vig, corps;
+  var coach, hbQ, synth, defi, hbListe, vig, corps;
 
   if (g2) {
     /* ====== GALOP 2 : tout vient du cours g2-robes ====== */
-    coach = a[11]; hbQ = props.questionsHB || []; defiT = a[13].titre; defiTxt = a[13].texte; defiCible = "s5";
+    coach = a[11]; hbQ = props.questionsHB || []; synth = a[14]; defi = null; hbListe = hbQ.slice(0, 3);
     vig = [
       { id: "s1", lab: L("vComprendre"), img: P.cheval, pos: "80% 40%" },
-      { id: "s2", lab: d.titre, img: P.trio, pos: "50% 40%" },
-      { id: "s3", lab: X("vPieTach"), img: P.noir, pos: "60% 35%" },
-      { id: "s4", lab: nettoyer(sansNum(a[10].titre)), img: P.alezan, pos: "70% 50%" },
-      { id: "s5", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
-      { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
+      { id: "s2", lab: d.titre, img: P.g2gris, pos: "50% 40%" },
+      { id: "s3", lab: X("vPieTach"), img: P.g2pie, pos: "55% 40%" },
+      { id: "s4", lab: L("vPratique"), img: P.g2creme, pos: "60% 40%" },
+      { id: "s5", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
     corps = [
-      Sec("s1", "01", d.blocs[1].titre || L("vComprendre"), "noir", h("div", null,
+      Sec("s1", "", d.blocs[1].titre || L("vComprendre"), "noir", h("div", null,
         h("div", { className: "rbo-grid2" },
-          h("div", { className: "rbo-txt" }, M(a[0], "a0"), M(a[1], "a1"), M(a[3], "a3")),
+          h("div", { className: "rbo-txt" }, M(a[0], "a0"), M(a[1], "a1")),   /* 31/10 : « À retenir » (a[3]) retiré — redit la méthode à côté */
           h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[2].titre))), a[2].sous ? h("p", null, a[2].sous) : null,
             h("ol", { className: "rbo-ordre" }, a[2].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
         h("div", { style: { marginTop: 64 } }, Photo("trio", "pano")))),
       Vague(NOIR, PET),
-      Sec("s2", "02", d.titre, "petrole", h("div", null,
-        h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); }))), Photo("alezan", "grand", "55% 40%")),
+      Sec("s2", "01", d.titre, "noir2", h("div", null,
+        h("div", { style: { maxWidth: 820 } }, h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), h("ul", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),   /* 31/10 : photo de l'alezan retirée (déjà dans le Galop 1 et dans la photo des trois robes) */
         h("div", { className: "rbo-robe inv", style: { marginTop: 88 } }, Photo("g2gris", "", "30% 78%"), h("div", { className: "rbo-txt" }, M(a[7], "a7"))),
         h("div", { className: "rbo-robe", style: { marginTop: 88 } }, Photo("g2creme", "", "45% 45%"), h("div", { className: "rbo-txt" }, M(a[8], "a8"), M(a[9], "a9"))))),
       Vague(PET, NOIR),
-      Sec("s3", "03", X("vPieTach"), "noir", h("div", null,
-        Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", (a[5].puces && a[5].puces.length) ? h("ul", { style: { margin: "14px 0 0", paddingLeft: 22, lineHeight: 1.7 } }, a[5].puces.map(function (p, i) { return h("li", { key: i }, h("strong", null, p.gras + " "), p.texte); })) : null, "Galop 2"),
+      Sec("s3", "02", X("vPieTach"), "noir", h("div", null,
+        Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", (a[5].puces && a[5].puces.length) ? h("ul", { style: { margin: "14px 0 0", paddingLeft: 22, lineHeight: 1.7 } }, a[5].puces.map(function (p, i) { return h("li", { key: i }, h("strong", null, p.gras + " "), p.texte); })) : null, null),
         h("div", { style: { marginTop: 64 } }, Photo("g2piealezan", "pano")),
         h("div", { style: { marginTop: 40 } }, Photo("g2piebai", "pano")),
-        h("div", { style: { marginTop: 88 } }, Compo("g2tachete", a[6].titre, a[6].texte, true, "50% 45%", null, "Galop 2")))),
+        h("div", { style: { marginTop: 88 } }, Compo("g2tachete", a[6].titre, a[6].texte, true, "50% 45%", null, null)))),
       Vague(NOIR, PET),
-      Sec("s4", "04", nettoyer(sansNum(a[10].titre)), "petrole", h("div", { className: "rbo-robe" },
-        Photo("alezan", "", "55% 40%"),
-        h("div", { className: "rbo-txt" }, M(a[10], "a10")))),
-      Vague(PET, NOIR),
-      Sec("s5", "05", L("vPratique"), "noir", h("div", null,
-        h("div", { className: "rbo-colonnes", style: { marginTop: 0 } },
-          h("div", { className: "rbo-txt" }, M(a[11], "a11")),
-          h("div", { className: "rbo-txt" }, M(a[12], "a12"))),
-        h("div", { className: "rbo-colonnes" },
-          h("div", { className: "rbo-defi rbo-txt" }, M(a[13], "a13")),
-          h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, L("heyBaby")),
-            h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); })))),
-        h("div", { className: "rbo-synth" }, h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[14].titre)))),
-          h("ol", null, a[14].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
-        h("p", { className: "rbo-fin" }, "« " + sansGuillemets(a[15].texte) + " »"))),
-      Vague(NOIR, PET),
-      Sec("s6", "06", L("secQuiz"), "petrole", h(QuizBloc, { Q: Q, L: L, rtl: rtl, photo: P.quiz, setEcran: props.setEcran, onTerminer: props.onTerminer }))
+      /* 31/10 : « Bai ou alezan ? » (a[10]) retiré — redit la liste des robes, le Galop 1 et les erreurs fréquentes */
+      Sec("s4", "03", L("vPratique"), "noir2", h("div", null,
+        h("div", { className: "rbo-txt", style: { maxWidth: 820 } }, M(a[12], "a12")),
+        Erreurs(a[13])))
     ];
   } else if (!g5) {
     /* ====== GALOP 3 ====== */
-    coach = z[0]; hbQ = z[5].puces.map(function (p) { return p.texte; }); defiT = z[2].titre; defiTxt = z[2].texte; defiCible = "s5";
+    coach = z[0]; hbQ = z[5].puces.map(function (p) { return p.texte; }); synth = z[6]; defi = z[2];
+    hbListe = [hbQ[6], hbQ[7], hbQ[4]].filter(Boolean);   /* 3 questions sans photo à joindre */
     vig = [
       { id: "s1", lab: L("vComprendre"), img: P.cheval, pos: "80% 40%" },
-      { id: "s2", lab: X("vMarques"), img: P.noir, pos: "60% 35%" },
-      { id: "s3", lab: X("vEpis"), img: P.cheval, pos: "55% 30%" },
-      { id: "s4", lab: X("vDecl"), img: P.alezan, pos: "70% 50%" },
+      { id: "s2", lab: X("vMarques"), img: P.g3tete, pos: "60% 35%" },
+      { id: "s3", lab: X("vEpis"), img: P.g3epis, pos: "55% 35%" },
+      { id: "s4", lab: X("vDecl"), img: P.g3isabelle, pos: "60% 45%" },
       { id: "s5", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
       { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
     var decl = mm[7], isab = mm[8], sour = mm[9], brul = mm[10], cafe = mm[11], palo = mm[12], pang = mm[13], nuan = mm[14];
     corps = [
       /* 01 COMPRENDRE : a[0..4] */
-      Sec("s1", "01", d.blocs[1].titre, "noir", h("div", null,
+      Sec("s1", "", d.blocs[1].titre, "noir", h("div", null,
         h("div", { className: "rbo-grid2" },
-          h("div", { className: "rbo-txt" }, M(a[0], "a0"), M(a[1], "a1")),
+          h("div", { className: "rbo-txt" }, M(a[0], "a0")),   /* 31/10 : la citation a[1] retirée — doublon de la citation du haut */
           h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[2].titre))),
-            h("ol", { className: "rbo-ordre" }, a[2].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
+            h("ol", { className: "rbo-ordre" }, a[2].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, String(p.texte).replace(/^\s*✅\s*/, ""))); })))),
         h("div", { style: { marginTop: 64 } }, Photo("g3parties", "pano")),
         h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[3], "a3"), M(a[4], "a4")))),
       Vague(NOIR, PET),
       /* 02 MARQUES ET ÉPIS : m[0..6] */
-      Sec("s2", "02", nettoyer(sansNum(mm[0].titre)), "petrole", h("div", null,
+      Sec("s2", "01", nettoyer(sansNum(mm[0].titre)), "noir2", h("div", null,
         h("div", { className: "rbo-grid2" },
-          h("div", { className: "rbo-txt" }, M(mm[0], "m0"), M(mm[1], "m1")),
+          h("div", { className: "rbo-txt" }, mm[0].sous ? h("p", null, mm[0].sous) : null, h("ul", null, mm[0].puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); }))),   /* 31/10 : sans le titre répété ; mm[1] (même titre, même idée) retiré */
           Photo("g3tete", "grand", "62% 38%")),
         h("div", { className: "rbo-duo" },
-          h("div", { className: "rbo-txt" }, Photo("g3balzane", "", "50% 80%"), M(mm[2], "m2")),
-          h("div", { className: "rbo-txt" }, M(mm[3], "m3"), M(mm[4], "m4"), M(mm[5], "m5"))),
+          h("div", { className: "rbo-txt" }, Photo("g3balzane", "", "50% 80%")),
+          h("div", { className: "rbo-txt" }, M(mm[4], "m4"), M(mm[5], "m5"))),   /* 31/10 : mm[2] et mm[3] retirés — redisent la liste au-dessus */
       )),
       Vague(PET, NOIR),
-      Sec("s3", "03", nettoyer(sansNum(mm[6].titre)), "noir", h("div", null,
-        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "62% 44%"), h("div", { className: "rbo-txt" }, h("h3", null, nettoyer(sansNum(mm[6].titre))), mm[6].sous ? h("p", null, mm[6].sous) : null,
+      Sec("s3", "02", nettoyer(sansNum(mm[6].titre)), "noir", h("div", null,
+        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "62% 44%"), h("div", { className: "rbo-txt" }, mm[6].sous ? h("p", null, mm[6].sous) : null,
           h("ul", null, mm[6].puces.map(function (p, i) { return h("li", { key: i }, p.texte); })))))),
       Vague(PET, NOIR),
       /* 03 DÉCLINAISONS : m[7..14] */
-      Sec("s4", "04", nettoyer(sansNum(decl.titre)), "petrole", h("div", null,
+      Sec("s4", "03", nettoyer(sansNum(decl.titre)), "noir2", h("div", null,
         h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt" }, decl.sous ? h("p", null, decl.sous) : null),
           h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, decl.puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, h("strong", null, p.gras + " "), p.texte)); })))),
-        h("div", { style: { marginTop: 72 } }, Compo("g3isabelle", isab.titre, isab.texte, false, "22% 38%", null, "Galop 3")),
-        h("div", { style: { marginTop: 88 } }, Compo("g3souris", sour.titre, sour.texte, true, "22% 38%", null, "Galop 3")),
-        h("div", { style: { marginTop: 88 } }, Compo("g3brule", brul.titre, brul.texte, false, "55% 40%", null, "Galop 3")),
-        h("div", { style: { marginTop: 88 } }, Compo("g3cafe", cafe.titre, cafe.texte, true, "55% 40%", null, "Galop 3")),
-        h("div", { style: { marginTop: 88 } }, Compo("g3palomino", palo.titre, palo.texte, false, "55% 40%", null, "Galop 3")),
+        h("div", { style: { marginTop: 72 } }, Compo("g3isabelle", isab.titre, isab.texte, false, "22% 38%", null, null)),
+        h("div", { style: { marginTop: 88 } }, Compo("g3souris", sour.titre, sour.texte, true, "22% 38%", null, null)),
+        h("div", { style: { marginTop: 88 } }, Compo("g3brule", brul.titre, brul.texte, false, "55% 40%", null, null)),
+        h("div", { style: { marginTop: 88 } }, Compo("g3cafe", cafe.titre, cafe.texte, true, "55% 40%", null, null)),
+        h("div", { style: { marginTop: 88 } }, Compo("g3palomino", palo.titre, palo.texte, false, "55% 40%", null, null)),
         Fac(pang.titre, h("div", { className: "rbo-robe" }, Photo("g3pangare", "", "50% 45%"), h("div", { className: "rbo-txt" }, h("p", null, pang.texte), Reviser(QB, null))), false),
         Fac(nuan.titre, h("div", { className: "rbo-txt", style: { maxWidth: 860 } }, nuan.sous ? h("p", { className: "sous" }, nuan.sous) : null, h("ul", null, nuan.puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); }))), false))),
       Vague(PET, NOIR),
       /* 04 EN PRATIQUE : z[1..7] */
-      Sec("s5", "05", d.blocs[3].titre || L("vPratique"), "noir", h("div", null,
-        h("div", { className: "rbo-colonnes", style: { marginTop: 0 } },
-          h("div", { className: "rbo-txt" }, M(z[1], "z1")),
-          h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"), M(z[3], "z3"))),
-        h("div", { className: "rbo-colonnes" },
-          h("div", { className: "rbo-txt" }, M(z[4], "z4")),
-          h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(z[5].titre))),
-            h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); })))),
-        h("div", { className: "rbo-synth" }, h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(z[6].titre)))),
-          h("ol", null, z[6].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
-        h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[7].texte) + " »"))),
-      Vague(NOIR, PET),
-      /* 05 QUIZ */
-      Sec("s6", "06", L("secQuiz"), "petrole", h(QuizBloc, { Q: Q, L: L, rtl: rtl, photo: P.quiz, setEcran: props.setEcran, onTerminer: props.onTerminer }))
+      Sec("s5", "04", L("vPratique"), "noir", h("div", null,
+        Erreurs(z[4]),
+        h("div", { className: "rbo-txt", style: { maxWidth: 820, marginTop: 36 } }, M(z[3], "z3"))))   /* 31/10 : « À ressentir » retiré ; défi, Hey Baby et synthèse sur la page de fin */
     ];
   } else {
     /* ====== GALOP 5 ====== */
-    coach = z[0]; hbQ = z[2].puces.map(function (p) { return p.texte; }); defiT = z[1].titre; defiTxt = String(z[1].sous || "").replace(/\s*[:：]\s*$/, "") + " …"; defiCible = "s6";
+    coach = z[0]; hbQ = z[2].puces.map(function (p) { return p.texte; }); synth = null; defi = z[1]; hbListe = hbQ.slice(0, 3);
     vig = [
       { id: "s1", lab: L("vComprendre"), img: P.g5cheval, pos: "60% 35%" },
-      { id: "s2", lab: X("vPies"), img: P.noir, pos: "60% 35%" },
-      { id: "s3", lab: X("vTaches"), img: P.cheval, pos: "80% 40%" },
-      { id: "s4", lab: X("vAdj"), img: P.bai, pos: "70% 40%" },
-      { id: "s5", lab: X("vMel"), img: P.alezan, pos: "70% 45%" },
+      { id: "s2", lab: X("vPies"), img: P.g5overo, pos: "55% 40%" },
+      { id: "s3", lab: X("vTaches"), img: P.g5leopard, pos: "55% 40%" },
+      { id: "s4", lab: X("vAdj"), img: P.g5pommele, pos: "55% 40%" },
+      { id: "s5", lab: X("vMel"), img: P.g5aubere, pos: "55% 40%" },
       { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
     var pies = [[a[5], "g5tobiano"], [a[6], "g5overo"], [a[7], "g5tovero"], [a[8], "g5balzan"], [a[9], "g5sabino"]];
@@ -379,15 +373,15 @@ function HypeRobesGalopsOrdi(props) {
     var adjZoom = ["50% 50%", "50% 25%", "50% 50%", "46% 45%", "70% 82%"];
     corps = [
       /* 01 COMPRENDRE : a[0..3] */
-      Sec("s1", "01", d.blocs[1].titre, "noir", h("div", null,
+      Sec("s1", "", d.blocs[1].titre, "noir", h("div", null,
         h("div", { className: "rbo-grid2" },
-          h("div", { className: "rbo-txt" }, M(a[0], "a0"), M(a[2], "a2")),
+          h("div", { className: "rbo-txt" }, M(a[0], "a0")),   /* 31/10 : « À retenir » (a[2]) retiré — redit les 4 étapes à côté */
           h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[1].titre))), a[1].sous ? h("p", { className: "sous" }, a[1].sous) : null,
             h("ol", { className: "rbo-ordre" }, a[1].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
         h("div", { className: "rbo-sig" }, h("div", { className: "rbo-txt" }, M(a[3], "a3"))))),
       Vague(NOIR, PET),
       /* 02 PIES : a[4..10] */
-      Sec("s2", "02", nettoyer(sansNum(a[4].titre)), "petrole", h("div", null,
+      Sec("s2", "01", nettoyer(sansNum(a[4].titre)), "noir2", h("div", null,
         h("div", { className: "rbo-txt", style: { maxWidth: 900 } }, h("p", null, a[4].texte)),
         h("div", { style: { marginTop: 64 } }, Compo(pies[0][1], pies[0][0].titre, pies[0][0].texte, false, "55% 45%", null, "1 / 5")),
         h("div", { style: { marginTop: 88 } }, Compo(pies[1][1], pies[1][0].titre, pies[1][0].texte, true, "55% 45%", null, "2 / 5")),
@@ -397,7 +391,7 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { className: "rbo-reflexe" }, h("div", { className: "kick" }, nettoyer(a[10].titre)), h("p", null, a[10].texte)))),
       Vague(PET, NOIR),
       /* 03 TACHETÉS : a[11..12] */
-      Sec("s3", "03", nettoyer(sansNum(a[11].titre)), "noir", h("div", null,
+      Sec("s3", "02", nettoyer(sansNum(a[11].titre)), "noir", h("div", null,
         h("div", { className: "rbo-grid2" },
           h("div", { className: "rbo-txt" }, h("p", null, a[11].texte), h("ul", null, a[11].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
           Photo("g5leopard", "grand", "50% 50%")),
@@ -405,7 +399,7 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { className: "rbo-txt", style: { marginTop: 48, maxWidth: 900 } }, M(a[12], "a12")))),
       Vague(NOIR, PET),
       /* 04 ADJONCTIONS : a[13..14] */
-      Sec("s4", "04", nettoyer(sansNum(a[13].titre)), "petrole", h("div", null,
+      Sec("s4", "03", nettoyer(sansNum(a[13].titre)), "noir2", h("div", null,
         h("div", { className: "rbo-txt", style: { maxWidth: 900 } }, h("p", null, a[13].texte)),
         h("div", { className: "rbo-adj" }, a[13].puces.map(function (p, i) {
           return h("div", { key: i }, Photo(adjCles[i], "", adjZoom[i]), h("strong", null, nettoyer(p.gras).replace(/\s*:\s*$/, "")), h("span", null, p.texte));
@@ -413,23 +407,85 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { className: "rbo-reflexe" }, h("p", null, a[14].texte)))),
       Vague(PET, NOIR),
       /* 05 MÉLANGES (bonus) : a[15..18] + révision */
-      Sec("s5", "05", nettoyer(sansNum(a[15].titre)), "noir", h("div", null,
+      Sec("s5", "04", nettoyer(sansNum(a[15].titre)), "noir", h("div", null,
         h("div", { className: "rbo-txt", style: { maxWidth: 900 } }, h("p", null, a[15].texte)),
         h("div", { className: "rbo-duo" },
           h("div", null, Photo("g5rouan", "", "50% 50%"), h("h3", null, nettoyer(a[16].titre)), h("p", { style: { fontSize: 16, lineHeight: 1.8, color: "rgba(243,238,228,.78)" } }, a[16].texte)),
           h("div", null, Photo("g5aubere", "", "50% 50%"), h("h3", null, nettoyer(a[17].titre)), h("p", { style: { fontSize: 16, lineHeight: 1.8, color: "rgba(243,238,228,.78)" } }, a[17].texte))),
         h("div", { className: "rbo-tableau" }, h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(a[18].titre)), h("p", null, a[18].texte)), Photo("g5gris", "", "50% 50%")),
         Reviser(QB, null)), X("bonus")),
-      Vague(NOIR, PET),
-      /* 06 QUIZ : défi + Hey Baby (z), puis les 9 questions */
-      Sec("s6", "06", L("secQuiz"), "petrole", h("div", null,
-        h("div", { className: "rbo-avant" },
-          h("div", { className: "rbo-defi rbo-txt" }, M(z[1], "z1")),
-          h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[2].titre)), h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); })))),
-        h(QuizBloc, { Q: Q, L: L, rtl: rtl, photo: P.quiz, setEcran: props.setEcran, onTerminer: props.onTerminer }),
-        h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[3].texte) + " »")))
+      /* 31/10 : 06 QUIZ retiré d'ici — défi, Hey Baby et quiz de l'appli sur la page de fin */
     ];
   }
+
+  var quizId = vig[vig.length - 1].id;
+  var nav = function (id) { if (id === quizId) versFin(); else aller(id); };
+  /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes (numérotées à la suite) */
+  var autresG = props.onOuvrirRobes ? AUTRES.filter(function (g) { return g.id !== cours.id; }) : [];
+  var vigM = vig.slice(1);   /* 31/10 : « Comprendre » n'est plus dans le menu */
+  var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
+  var nbVig = Math.ceil((vigM.length + autresG.length) / 2);   /* 2 lignes */
+  var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
+  var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;
+  var finSurNoir2 = g2;   /* couleur de la dernière section, pour la vague avant le conseil du coach */
+
+  var pageCours = h(React.Fragment, null,
+    h("div", { className: "rbo-top seul" },
+      h("header", { className: "rbo-hero" },
+        h("div", { className: "bg", role: "img", "aria-label": d.titre, style: g5 ? { backgroundImage: "url(" + P.g5hero + ")" } : (g2 ? { backgroundImage: "url(" + (cours.blocs[0].src || P.cheval) + ")" } : undefined) }), h("div", { className: "vo" }),
+        h("div", { className: "rbo-bar" },
+          h("button", { type: "button", className: "rbo-back", "aria-label": L("retour"), onClick: props.onRetour }, rtl ? "›" : "‹"),
+          h("span", { className: "rbo-crumb" }, kicker + "  ›  " + d.titre),
+          h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
+        h("h1", null, d.titre),
+        h("div", { className: "rbo-meta" },
+          d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
+          d.type ? h("span", null, ICO.livre(16), d.type) : null,
+          h("span", null, ICO.coupe(16), kicker)))),
+    d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
+    h("div", { className: "rbo-vig", role: "tablist", style: { gridTemplateColumns: "repeat(" + nbVig + ",minmax(0,1fr))" } },
+      vigM.map(function (v, i) {
+        return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
+          h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+      }),
+      autresG.map(function (g, k) {
+        return h("button", { key: g.id, type: "button", "aria-label": X("parcours") + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: "60% 40%" } },
+          h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+      })),
+    h("div", { className: "rbo-minih" },
+      h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
+        vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
+        autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vigM.length + k + 1)), galLab(g.n)); }))),
+    corps,
+    finSurNoir2 ? Vague(PET, NOIR) : Vague(NOIR, PET),
+    /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
+    h("div", { className: "rbo-coachfin", style: finSurNoir2 ? { background: NOIR } : undefined },
+      coach ? h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(coach.titre)), h("p", null, coach.texte)) : null,
+      h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →"))));
+
+  /* 31/10 : PAGE DE FIN (même modèle que le Galop 1) — remplace le quiz intégré et l'ancienne page « Cours terminé ! » */
+  var pageFin = h("div", { className: "rbo-f" },
+    h("div", { className: "rbo-f-bar" },
+      h("button", { type: "button", className: "rbo-back", "aria-label": L("retourCours"), onClick: versCours }, rtl ? "›" : "‹"),
+      h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
+    h("header", { className: "rbo-f-head" },
+      h("div", { className: "rbo-f-ok", "aria-hidden": true }, "✓"),
+      h("p", { className: "rbo-f-kick" }, kicker + "  ·  " + d.titre),
+      h("h1", null, L("coursFini")),
+      gagneXp ? h("span", { className: "rbo-f-xp" }, "+25 XP") : null),
+    h("div", { className: "rbo-f-grid" + (synth ? "" : " sans") },
+      synth ? h("section", { className: "rbo-card rbo-f-ess" }, h("h3", null, ICO.livre(20), nettoyer(sansNum(synth.titre))),
+        h("ul", null, synth.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); }))) : null,
+      h("div", { className: "rbo-f-col" },
+        hbListe.length ? h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
+          h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, nettoyer(qq)), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))) : null,
+        defi ? h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(sansNum(defi.titre))), defi.sous ? h("p", null, defi.sous) : null, defi.texte ? h("p", null, defi.texte) : null,
+          defi.puces.length ? h("ul", { className: "rbo-defil" }, defi.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })) : null) : null),
+      h("section", { className: "rbo-f-quiz" },
+        h("div", null, h("h3", null, L("secQuiz")), h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn") + (rtl ? " ←" : " →"))))),
+    h("div", { className: "rbo-f-act" },
+      suivant ? h("button", { type: "button", className: "rbo-btn", onClick: function () { props.onOuvrirCours(suivant.id); } }, L("coursSuivant") + "  ·  " + (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)) + (rtl ? " ←" : " →")) : null,
+      h("button", { type: "button", className: "rbo-btn neutre", onClick: props.onRetour }, L("retourGalops"))));
 
   return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, S.CSS + "\n" + CSS2),
@@ -442,38 +498,7 @@ function HypeRobesGalopsOrdi(props) {
             h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
         })),
       h("main", { className: "rbo-main" },
-        h("div", { className: "rbo-parc", role: "navigation", "aria-label": X("parcours") },
-          h("span", { className: "tt" }, X("parcours")),
-          PARC.map(function (pc2) {
-            var cur = pc2.id === cours.id;
-            return h("button", { key: pc2.id, type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur && props.onOuvrirRobes) props.onOuvrirRobes(pc2.galop, pc2.id); } }, pc2.lab);
-          })),
-        h("div", { className: "rbo-top" },
-          h("header", { className: "rbo-hero" },
-            h("div", { className: "bg", role: "img", "aria-label": d.titre, style: g5 ? { backgroundImage: "url(" + P.g5hero + ")" } : (g2 ? { backgroundImage: "url(" + (cours.blocs[0].src || P.cheval) + ")" } : undefined) }), h("div", { className: "vo" }),
-            h("div", { className: "rbo-bar" },
-              h("button", { type: "button", className: "rbo-back", "aria-label": L("retour"), onClick: props.onRetour }, rtl ? "›" : "‹"),
-              h("span", { className: "rbo-crumb" }, kicker + "  ›  " + d.titre),
-              h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
-            h("h1", null, d.titre),
-            h("div", { className: "rbo-meta" },
-              d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
-              d.type ? h("span", null, ICO.livre(16), d.type) : null,
-              h("span", null, ICO.coupe(16), kicker))),
-          h("aside", { className: "rbo-cards" },
-            h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(coach.titre)), h("p", null, coach.texte)),
-            h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
-            h("button", { type: "button", className: "rbo-card defi", onClick: function () { aller(defiCible); } }, h("h3", null, ICO.coupe(20), nettoyer(defiT)), h("p", null, defiTxt)))),
-        d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h("div", { className: "rbo-vig" + " n6", role: "tablist" },
-          vig.map(function (v, i) {
-            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
-              h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-          })),
-        h("div", { className: "rbo-minih" },
-          h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }))),
-        corps,
+        vue === "fin" ? pageFin : pageCours,
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null)));
 }
 
