@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 17;   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
+var VERSION = 18;   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
+/* v17 :   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
 /* v16 :   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
 /* ancien : VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
 var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
@@ -240,6 +241,11 @@ var CSS = [
 ".rbo-colonnes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:64px;margin-top:56px}",
 ".rbo-defi{border:1px solid rgba(201,166,107,.78);border-radius:18px;background:#0B1515;padding:30px 34px}",
 ".rbo-defi h3{color:var(--champ)!important;margin-top:0!important}",
+".rbo-erreurs{border:1px solid rgba(214,122,104,.5);border-radius:18px;background:rgba(7,10,8,.42);box-shadow:0 8px 24px rgba(0,0,0,.3);padding:30px 34px}",
+".rbo-erreurs h3{color:#E9A493!important;margin-top:0!important}",
+".rbo-erreurs ul{list-style:none;padding-inline-start:0}",
+".rbo-erreurs li{position:relative;padding-inline-start:28px}",
+".rbo-erreurs li:before{content:'✕';position:absolute;inset-inline-start:0;top:0;color:#E9A493;font-weight:700}",
 ".rbo-hb{display:flex;flex-wrap:wrap;gap:10px}",
 ".rbo-hbq{display:grid;gap:7px;margin-top:10px}",
 ".rbo-hbq button{display:flex;align-items:center;gap:10px;width:100%;text-align:start;border:1px solid rgba(201,166,107,.32);border-radius:12px;background:rgba(7,10,8,.5);box-shadow:0 3px 10px rgba(0,0,0,.35);padding:8px 12px;font-size:13px;line-height:1.35;color:var(--ivoire);cursor:pointer}",
@@ -330,7 +336,7 @@ var CSS = [
 ".rbo .rbo-card h3{font-size:17px}.rbo .rbo-coachfin .rbo-card h3{font-size:19px}",
 ".rbo .rbo-ring{width:30%;inset-inline-end:8px;bottom:-14px}",
 ".rbo .rbo-fac{margin-top:44px;padding:22px 18px}.rbo .rbo-fac summary{font-size:21px;gap:10px;flex-wrap:wrap}.rbo .rbo-fac[open] summary{margin-bottom:20px}",
-".rbo .rbo-methode,.rbo .rbo-defi,.rbo .rbo-sig,.rbo .rbo-memo{padding:20px 18px}",
+".rbo .rbo-methode,.rbo .rbo-defi,.rbo .rbo-erreurs,.rbo .rbo-sig,.rbo .rbo-memo{padding:20px 18px}",
 ".rbo .rbo-ordre li{font-size:14.5px;padding:12px 2px 4px}.rbo .rbo-ordre .nn{font-size:26px}",
 ".rbo .rbo-reflexe{margin-top:40px;padding:26px 8px}",
 ".rbo .rbo-synth{gap:12px}.rbo .rbo-synth ol{gap:0}.rbo .rbo-synth li{padding:9px 0;font-size:14.5px;line-height:1.45}.rbo .rbo-ret{flex-direction:column;gap:4px}",
@@ -505,7 +511,7 @@ function HypeRobesOrdi(props) {
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
-              h("div", { className: "rbo-txt" }, M(z[1], "z1")),
+              h("div", { className: "rbo-erreurs rbo-txt" }, M(z[1], "z1")),   /* 30/10 : encart à part pour les erreurs */
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
         Vague(PET, NOIR),
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
