@@ -85,6 +85,7 @@ var WG = {
   gRelierAide: ["Aucun lien automatique (plusieurs rendez-vous possibles ou concours non reconnu) : choisis le bon rendez-vous. Ce choix ne sera jamais modifié automatiquement.", "No automatic link (several possible events or unrecognised competition): choose the right event. This choice will never be changed automatically.", "Sin vínculo automático: elige la cita correcta. Esta elección nunca se cambiará automáticamente.", "Nessun collegamento automatico: scegli l'appuntamento giusto. Questa scelta non verrà mai cambiata automaticamente.", "自動で結びつけられませんでした。正しい予定を選んでね。この選択は自動では変わりません。", "Keine automatische Verknüpfung: wähle den richtigen Termin. Diese Wahl wird nie automatisch geändert.", "لا يوجد ربط تلقائي: اختاري الموعد الصحيح. لن يتغير هذا الاختيار تلقائيا أبدا.", "没有自动关联：请选择正确的日程。此选择不会被自动更改。", "Geen automatische koppeling: kies de juiste afspraak. Deze keuze wordt nooit automatisch gewijzigd.", "Sem ligação automática: escolhe o compromisso certo. Esta escolha nunca será alterada automaticamente.", "Ingen automatisk koppling: välj rätt händelse. Valet ändras aldrig automatiskt.", "Нет автоматической привязки: выбери нужное событие. Этот выбор никогда не изменится автоматически.", "Brak automatycznego powiązania: wybierz właściwe wydarzenie. Ten wybór nigdy nie zmieni się automatycznie.", "자동 연결이 없어요. 맞는 일정을 선택하세요. 이 선택은 자동으로 바뀌지 않아요."],
   gMaj: ["Majorité vérifiée", "Verified adults", "Mayoría de edad verificada", "Maggiore età verificata", "成人確認済み", "Volljährigkeit geprüft", "تم التحقق من البلوغ", "已核实成年", "Meerderjarigheid gecontroleerd", "Maioridade verificada", "Myndighet kontrollerad", "Совершеннолетие проверено", "Pełnoletność sprawdzona", "성인 확인 완료"],
   gMajAide: ["Coche seulement les cavaliers dont tu as vérifié qu'ils sont majeurs : leur nom complet et leur photo de profil apparaîtront sur cette page.", "Only tick riders you have checked are adults: their full name and profile photo will appear on this page.", "Marca solo a quienes has verificado que son mayores: su nombre completo y su foto aparecerán.", "Spunta solo chi hai verificato essere maggiorenne: nome completo e foto appariranno.", "成人と確認した人だけチェックしてね。フルネームとプロフィール写真が表示されます。", "Hake nur geprüfte Volljährige an: ihr voller Name und ihr Profilfoto erscheinen.", "حددي فقط من تحققت من بلوغهم: سيظهر اسمهم الكامل وصورتهم.", "只勾选已核实成年的骑手：将显示全名和头像。", "Vink alleen gecontroleerde meerderjarigen aan: volledige naam en profielfoto verschijnen.", "Marca só quem verificaste ser maior: o nome completo e a foto aparecerão.", "Kryssa bara i kontrollerat myndiga: fullt namn och profilbild visas.", "Отмечай только проверенных совершеннолетних: появятся полное имя и фото.", "Zaznacz tylko sprawdzonych pełnoletnich: pojawi się pełne imię i zdjęcie.", "성인으로 확인한 기수만 체크하세요. 전체 이름과 프로필 사진이 표시돼요."],
+  gDeclare: ["Majeure (déclaré à l'inscription)", "Adult (declared at sign-up)", "Mayor de edad (declarado al registrarse)", "Maggiorenne (dichiarato all'iscrizione)", "成人（登録時に申告）", "Volljährig (bei der Anmeldung angegeben)", "بالغة (مصرح به عند التسجيل)", "成年（注册时声明）", "Meerderjarig (opgegeven bij inschrijving)", "Maior (declarado na inscrição)", "Myndig (angivet vid registrering)", "Совершеннолетняя (указано при регистрации)", "Pełnoletnia (zadeklarowane przy rejestracji)", "성인 (가입 시 신고)"],
   gRien: ["Rien à traiter.", "Nothing to do.", "Nada pendiente.", "Niente da fare.", "対応するものはありません。", "Nichts zu tun.", "لا شيء للمعالجة.", "暂无待处理。", "Niets te doen.", "Nada a tratar.", "Inget att göra.", "Нечего обрабатывать.", "Nic do zrobienia.", "처리할 항목이 없어요."],
   gSql: ["Disponible dès que la mise à jour de la base sera faite.", "Available once the database update is done.", "Disponible cuando se actualice la base.", "Disponibile dopo l'aggiornamento della base.", "データベース更新後に利用できます。", "Verfügbar nach dem Datenbank-Update.", "متاح بعد تحديث قاعدة البيانات.", "数据库更新后可用。", "Beschikbaar na de database-update.", "Disponível após a atualização da base.", "Tillgängligt efter databasuppdateringen.", "Доступно после обновления базы.", "Dostępne po aktualizacji bazy.", "데이터베이스 업데이트 후 사용할 수 있어요."],
   gRefus: ["La base a refusé : ", "The database refused: ", "La base rechazó: ", "La base ha rifiutato: ", "データベースが拒否しました：", "Die Datenbank hat abgelehnt: ", "رفضت قاعدة البيانات: ", "数据库拒绝：", "De database weigerde: ", "A base recusou: ", "Databasen nekade: ", "База отказала: ", "Baza odmówiła: ", "데이터베이스가 거부했어요: "],
@@ -237,6 +238,13 @@ function EcranResultatsEcurie() {
           var rMj = await supa.from("majorites_verifiees").select("user_id").in("user_id", idsP.slice(0, 300));
           if (rMj && rMj.error) tableMaj = false; else ((rMj && rMj.data) || []).forEach(function (x) { if (x && x.user_id) majeures[x.user_id] = true; });
         } catch (eMj) { tableMaj = false; }
+        /* 30/10 (choix B de Blandine) : la réponse « + de 18 ans » donnée à l inscription suffit (comptes créés depuis le 21/10).
+           Fonction hype_majeurs_declares : ne renvoie QUE les comptes déclarés majeurs, rien d autre du compte. */
+        var declares = {};
+        try {
+          var rDc = await supa.rpc("hype_majeurs_declares", { p_ids: idsP.slice(0, 300) });
+          ((rDc && !rDc.error && rDc.data) || []).forEach(function (x) { var id = (x && typeof x === "object") ? (x.hype_majeurs_declares || x.id) : x; if (id) { declares[id] = true; majeures[id] = true; } });
+        } catch (eDc) { }
         var idsC = [];
         lignes.forEach(function (x) { if (x.cheval_id && idsC.indexOf(x.cheval_id) === -1) idsC.push(x.cheval_id); });
         var chevaux = {};
@@ -267,7 +275,7 @@ function EcranResultatsEcurie() {
           } catch (eMd) { }
         }
         if (!vivant) return;
-        setD({ lignes: lignes, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos, majeures: majeures, tableMaj: tableMaj, candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u });
+        setD({ lignes: lignes, ffeUser: ffeUser, profils: profils, chevaux: chevaux, rdvs: rdvs, photos: photos, majeures: majeures, declares: declares, tableMaj: tableMaj, candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u });
         setEtat("ok");
       } catch (e) { if (vivant) setEtat("panne"); }
     })();
@@ -283,8 +291,8 @@ function EcranResultatsEcurie() {
       var pr = uid && D.profils ? D.profils[uid] : null;
       var nomComplet = joliNom(b.cavalier) || (pr && pr.pseudo) || "";
       var mots = nomComplet.split(" ").filter(Boolean);
-      /* Décisions du 30/10 : prénom + initiale du nom pour TOUT LE MONDE tant que la majorité n est pas VÉRIFIÉE par une modératrice
-         (table majorites_verifiees). profiles.est_mineur n est PAS utilisé : il vaut false par défaut sur tous les comptes. */
+      /* Décisions du 30/10 : prénom + initiale du nom tant que la majorité n est pas connue — cochée par une modératrice
+         (majorites_verifiees) OU déclarée « + de 18 ans » à l inscription (choix B, hype_majeurs_declares). profiles.est_mineur n est PAS utilisé. */
       var verifiee = !!(uid && D.majeures && D.majeures[uid]);
       var mineure = !verifiee;
       var nomAff = (mineure && mots.length > 1) ? (mots[0] + " " + mots[1].charAt(0).toUpperCase() + ".") : nomComplet;
@@ -706,7 +714,9 @@ function EcranResultatsEcurie() {
       estMod ? h(React.Fragment, null, titreG(tg("gMaj")), aide(tg("gMajAide")),
         D && D.tableMaj === false ? aide(tg("gSql")) : null,
         cavComptes.map(function (l) {
-          var ok = !!(D.majeures && D.majeures[l.uid]);
+          var dec = !!(D.declares && D.declares[l.uid]);
+          var ok = !!(D.majeures && D.majeures[l.uid]) && !dec;
+          if (dec) return ligne("m" + l.uid, joliNom(l.b.cavalier) || (l.profil && l.profil.pseudo) || "", h("span", { style: { fontSize: 11.5, color: CHAMP } }, tg("gDeclare")));
           return ligne("m" + l.uid, joliNom(l.b.cavalier) || (l.profil && l.profil.pseudo) || "", D.tableMaj === false ? null : h("label", { style: { display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: IVOIRE, cursor: "pointer" } },
             h("input", { type: "checkbox", checked: ok, disabled: !!gBusy, style: { width: 20, height: 20, accentColor: CHAMP }, onChange: function () {
               action("m" + l.uid, function () { return ok ? supa.from("majorites_verifiees").delete().eq("user_id", l.uid).select("user_id") : supa.from("majorites_verifiees").insert({ user_id: l.uid }).select("user_id"); });
