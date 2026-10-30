@@ -15583,3 +15583,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h50 : photo raie de mulet rangée (images/robes-g5-adj-raie-de-mulet.webp = vue de profil recadrée ; image complète profil + dos en réserve : robes-reserve-raie-de-mulet-2-vues.webp). Reste G5 : zébrures, rouan, aubère, gris.
 
 - 30/10 21h55 : photo zébrures rangée (images/robes-g5-adj-zebrures.webp, Galop 5, adjonctions) ; cercles de zoom des adjonctions réglés photo par photo. Tests G5 OK. Reste G5 : rouan, aubère, gris.
+
+- 30/10 22h00 : photos rouan (robes-g5-rouan.webp) et aubère (robes-g5-aubere.webp) rangées, Galop 5 ; noms déduits de l ordre du prompt, à confirmer. Reste G5 : gris de comparaison.
