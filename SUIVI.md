@@ -15567,3 +15567,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h25 : photo noir pangaré rangée (images/robes-g3-noir-pangare.webp, Galop 3) — pas encore en ligne. Reste G3 : épis, café au lait.
 
 - 30/10 21h30 : photo café au lait rangée (images/robes-g3-cafe-au-lait.webp, Galop 3) — pas encore en ligne. Reste G3 : épis (génération difficile : gros plan du front proposé, ou vraie photo).
+
+- 30/10 21h35 : photo épi (gros plan du front) rangée (images/robes-g3-epis.webp), anneau de zoom centré sur le tourbillon. Galop 3 : toutes les photos sont là. Tests G3 OK. Pas encore en ligne.

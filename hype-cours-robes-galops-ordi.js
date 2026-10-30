@@ -332,7 +332,7 @@ function HypeRobesGalopsOrdi(props) {
       )),
       Vague(PET, NOIR),
       Sec("s3", "03", nettoyer(sansNum(mm[6].titre)), "noir", h("div", null,
-        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "45% 30%"), h("div", { className: "rbo-txt" }, h("h3", null, nettoyer(sansNum(mm[6].titre))), mm[6].sous ? h("p", null, mm[6].sous) : null,
+        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "62% 44%"), h("div", { className: "rbo-txt" }, h("h3", null, nettoyer(sansNum(mm[6].titre))), mm[6].sous ? h("p", null, mm[6].sous) : null,
           h("ul", null, mm[6].puces.map(function (p, i) { return h("li", { key: i }, p.texte); })))))),
       Vague(PET, NOIR),
       /* 03 DÉCLINAISONS : m[7..14] */
