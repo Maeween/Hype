@@ -15428,3 +15428,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Photo « gris pommelé » reçue, rangée en images/robes-g5-adj-pommele.webp (affichée dans Galop 5, adjonctions).
 - Manque encore : photo du alezan pie (profil, sans cavalier, 16:9) + la liste précédente.
 - Tests G2 : 1100/1280/1440/1920, 14 langues, arabe RTL, quiz : OK.
+
+- 30/10 20h35 : photo palomino (liste + balzanes blanches) rangée en images/robes-g3-palomino.webp (Galop 3, déclinaisons). Reste à manquer côté G3 : balzane, épis, alezan brûlé, café au lait, noir pangaré.
