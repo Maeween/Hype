@@ -15198,3 +15198,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Teste (navigateur automatique, abonnee simulee) telephone 390 + ordinateur 1440 : G1-G9 -> volet sans liste ; « Voir les X cours » (G1, G2, G3, G4, G6) -> page du Galop, section Cours en haut ; G5/G7/G8/G9 (cours « Prochainement ») -> bouton « Decouvrir le Galop X » ; 0 erreur ; syntaxe 17 blocs OK.
 - Publication des le feu vert de Blandine (« Oui corrige ») ; publication precedente 17788aa en ligne a 11h38 (tap direct + videos voilees), remplacee ici pour le tap.
 - Non verifie : vrai iPhone.
+
+## 30/10 11h45 — PUBLICATION (build 20261030-1145), accord de Blandine (« Ok continue », 11h41) — allègement du démarrage, pièces 3, 4 et 5
+- Détache de index.html, sans changer une ligne de leur code, trois écrans chargés seulement à leur ouverture : la fiche cheval (hype-ecran-cheval.js, 802 Ko), la page Cavalier (hype-ecran-cavalier.js, 233 Ko) et la Santé du cheval (hype-ecran-sante-cheval.js, 202 Ko). Même mécanisme que les pièces 1-2 (hypeEcranDiffere : « … » pendant le chargement, ↻ pour réessayer en cas d'échec).
+- index.html passe de 13,67 Mo (début du chantier) à 10,66 Mo.
+- Repris sur la version en ligne à jour (pages Galops incluses) ; les 3 fichiers ont été régénérés depuis cette version et sont identiques à ceux testés (texte identique, aucune erreur, chargement différé vérifié).
+- À tester sur iPhone avec un vrai cheval : fiche (Son histoire, Performances, Photos, Vidéos, Actualité, Santé, Identité, ajout d'un souvenir, vedette), page Cavalier (Histoire, Performances, Progression, Photos, Vidéos, Actualité), Santé & soins (rappels, soins).
+- Fichiers : index.html, SUIVI.md, hype-ecran-cheval.js, hype-ecran-cavalier.js, hype-ecran-sante-cheval.js. Aucune image.
