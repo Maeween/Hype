@@ -15567,3 +15567,7 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 ## 30/10 21h30 — Eva reliée, Ella en attente (base seulement, rien republié)
 - Eva : « EVA REGUILLET » relié au compte « Eva » (SEP) après confirmation de Blandine (« celle qui s'est classée sur Yellow et Apache au dernier concours » — vérifié : 1re / 21 sur Orchid's yellow et 5e / 21 sur Apache du Lys, Club 3 Vitesse, Folleville 25/10, sans faute). 2 résultats rattachés à son compte et reliés au rendez-vous SEP « CSO équipe club / challenge » (lien 'auto'). Majorité vérifiée cochée.
 - Ella : décision de Blandine — on la reliera quand elle sera abonnée. Rien fait.
+
+## 30/10 21h45 — Nouvelle page activée pour tout le monde (« Fais en sorte que le bouton voir tout amène dessus », 21h38) — build 20261030-2245 [publier]
+- index.html : HYPE_RESULTATS_V3 = true → la route perf-concours (« Voir tout » et cartes de la section Derniers résultats de la page Écurie, page Guilde) ouvre la nouvelle page « Les résultats de l'écurie », sur l'écurie de la page ouverte (__perfClub), en pleine largeur sur tablette/ordinateur. L'ancienne page reste dans le code : remettre false pour revenir en arrière.
+- Testé (banc local) : depuis la page Écurie, même chemin que le bouton → nouvelle page SEP (2 concours, 8 parcours, 5 sans faute, 3 podiums), retour → page Écurie ; aucune erreur.
