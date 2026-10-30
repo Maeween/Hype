@@ -15436,3 +15436,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 20h45 : Galop 2, « La robe tachetée » affiche maintenant l appaloosa (programme : robe tachetée) ; le léopard reste pour Galop 5. Tests G2 OK.
 
 - 30/10 20h50 : photo « tachetée autre » (alezan à couverture tachetée) rangée en images/robes-g5-tachete-autres.webp (Galop 5) ; l appaloosa blanc reste pour Galop 2 (images/robes-g2-tachetee.webp).
+
+- 30/10 20h55 : photo alezan pie reçue (images/robes-g2-pie-alezan.webp), affichée en G2 avec noir pie et bai pie : les trois pies du programme ont leur photo. Tests G2 OK (17/17).
