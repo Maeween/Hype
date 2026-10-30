@@ -15186,3 +15186,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Demande de Blandine : videos « un peu filtrees en mode semi-transparent ombre avec les titres ecrits dessus en ivoire sur un fond noirci ».
 - index.html : nouvelle classe commune .vidv (image assombrie brightness .7, voile degrade noir plus fonce en bas) + .vidv-t (titre ivoire #F3EEE4, Cormorant Garamond, 2 lignes max, en bas de la vignette) ; titre deplace DANS la vignette pour les 3 grilles : pages des Galops (onglet Videos), page du Galop 5 (extraits « Prochainement »), Galop 1 ordinateur. Bouton lecture / etiquette « Prochainement » remontes pour ne pas toucher le titre (bouton du Galop 1 ordinateur recentre au lieu d'en bas a gauche). Aucun texte nouveau (titres existants, deja traduits).
 - Teste (navigateur automatique) : Galop 1 telephone + ordinateur, Galop 5 telephone, arabe (titres alignes a droite) ; titres en ivoire ; 0 erreur ; syntaxe 17 blocs OK. Vignettes Mux non chargees dans l'essai (serveur video inaccessible ici) : rendu sur vraies images a verifier sur iPhone.
+
+## 30/10 11h45 - Publication : page Galops (tap direct, « Decouvrir les 9 Galops », carres retires) + videos voilees (build 20261030-1415)
+- Accord de Blandine (« Ok »). Contenu publie = uniquement f38f6e7 et 3e932ea par-dessus main ff75a78 (deja en ligne) : rien d'autre en attente.
+- A verifier sur iPhone : tap sur chaque Galop de la courbe, texte « Decouvrir les 9 Galops », vignettes des videos sur vraies images.
