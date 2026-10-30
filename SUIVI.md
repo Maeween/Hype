@@ -15565,3 +15565,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - EN ATTENTE de sa réponse : relier « EVA REGUILLET » au compte « Eva » et « ELLA JACOBS » au compte « Ella » (toutes deux SEP, comptes créés les 23/09 et 30/09) — tant que ce n'est pas fait, leurs 2 résultats chacune n'apparaissent pas sur la page.
 
 - 30/10 21h25 : photo noir pangaré rangée (images/robes-g3-noir-pangare.webp, Galop 3) — pas encore en ligne. Reste G3 : épis, café au lait.
+
+- 30/10 21h30 : photo café au lait rangée (images/robes-g3-cafe-au-lait.webp, Galop 3) — pas encore en ligne. Reste G3 : épis (génération difficile : gros plan du front proposé, ou vraie photo).
