@@ -15653,3 +15653,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - index.html : seulement ?v=2 → ?v=3 de la page Articles + marqueur 20261031-0030 → 20261031-0045. Repris sur la version en ligne 054c4795 (robes Galop 1) : rien de ce qui était en ligne n'est retiré.
 - Vérifié (appli complète, connexion simulée) : abonnée 390 et 1440, visiteuse 390 (badge Premium), arabe 390 ; aucune erreur, aucun débordement ; 17 blocs de code valides ; marqueurs de garde inchangés (chevalCommunDemoData 2, EcranSanteCheval 7).
 - Publié : index.html + SUIVI.md + hype-ecran-articles.js. Tout le reste inchangé.
+## 30/10 23h25 — Retours de Blandine (23h17) — NON PUBLIÉ
+- hype-ecran-resultats-ecurie.js v5 (?v=5) :
+  · « Derniers résultats » : les MEILLEURS d'abord — par cavalière, son meilleur résultat de sa dernière journée ; tri par date puis place (victoire, podiums, puis les autres ; sans faute avant à place égale ; prépas après). Ex. SEP 25/10 : Eva 1re, Ella 2e, Lauren 3e, Emma 3e (Écolo), Maëlys, Aurélie, Romy.
+  · « Importer des résultats » (+ « Gérer ») SOUS les derniers résultats ; retirés de la barre ordinateur, de l'icône téléphone et du bas de page.
+  · « Ajouter des photos » sous « Moments forts » : ouvre la journée du dernier concours relié à l'agenda (son fil permet d'y publier des photos) ; section affichée même sans photo si un concours est relié ; 14 langues.
+  · Fin de page rapprochée (marge du bas 96 → 8 px) ; textes du téléphone ~12 % plus grands.
