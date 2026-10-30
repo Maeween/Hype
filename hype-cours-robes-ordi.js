@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 19;   /* 30/10 23h55 : titre sous la photo ; vague + noir à peine éclairci pour la partie 02 */
+var VERSION = 20;   /* 31/10 00h : En pratique sur fond noir (plus de pétrole sur pétrole) */
+/* v19 :   /* 30/10 23h55 : titre sous la photo ; vague + noir à peine éclairci pour la partie 02 */
 /* v18 :   /* 30/10 23h55 : encart à part pour « Les erreurs à éviter » */
 /* v17 :   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
 /* v16 :   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
@@ -240,9 +241,9 @@ var CSS = [
 "@media (max-width:1279px){.rbo-duel,.rbo-tableau{grid-template-columns:minmax(0,1fr)}}",
 /* en pratique */
 ".rbo-colonnes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:64px;margin-top:56px}",
-".rbo-defi{border:1px solid rgba(201,166,107,.78);border-radius:18px;background:#0B1515;padding:30px 34px}",
+".rbo-defi{border:1px solid rgba(201,166,107,.78);border-radius:18px;background:#0C1317;padding:30px 34px}",
 ".rbo-defi h3{color:var(--champ)!important;margin-top:0!important}",
-".rbo-erreurs{border:1px solid rgba(214,122,104,.5);border-radius:18px;background:rgba(7,10,8,.42);box-shadow:0 8px 24px rgba(0,0,0,.3);padding:30px 34px}",
+".rbo-erreurs{border:1px solid rgba(214,122,104,.5);border-radius:18px;background:#0C1317;box-shadow:0 8px 24px rgba(0,0,0,.3);padding:30px 34px}",
 ".rbo-erreurs h3{color:#E9A493!important;margin-top:0!important}",
 ".rbo-erreurs ul{list-style:none;padding-inline-start:0}",
 ".rbo-erreurs li{position:relative;padding-inline-start:28px}",
@@ -291,7 +292,7 @@ var CSS = [
 "@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}",
 ".rbo-cards.deux{grid-template-columns:repeat(2,minmax(0,1fr))}",
 "@media (min-width:1480px){.rbo-cards.deux{grid-template-columns:minmax(0,1fr)}.rbo-top.seul{grid-template-columns:minmax(0,1fr)}}",
-".rbo-coachfin{background:var(--noir);padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
+".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
 ".rbo-citband{background:var(--noir);padding:64px 56px 28px;text-align:center}",
@@ -504,17 +505,17 @@ function HypeRobesOrdi(props) {
         /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
         Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
           h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
-        Vague(NOIR2, PET),
+        Vague(NOIR2, NOIR),
 
         /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
         /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
-        Sec("s4", "03", d.t3 || L("vPratique"), "petrole",
+        Sec("s4", "03", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
           h("div", null,
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
               h("div", { className: "rbo-erreurs rbo-txt" }, M(z[1], "z1")),   /* 30/10 : encart à part pour les erreurs */
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
-        Vague(PET, NOIR),
+        Vague(NOIR, NOIR2),
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
         h("div", { className: "rbo-coachfin" },
           h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),

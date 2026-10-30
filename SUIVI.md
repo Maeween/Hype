@@ -15697,3 +15697,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 23h55 (build 20261031-0200, v18) : « Les erreurs à éviter » dans son propre encart (bord rouge doux, croix ✕), séparé du défi du cavalier — téléphone et ordi. NON publié.
 - 23h58 (build 20261031-0210, v19) : titre « Les robes du cheval » et infos sous la photo (plus sur l'image), téléphone et ordi ; partie 02 : vague gardée + fond noir très légèrement bleuté (#0A1116). NON publié.
 - 23h59 : PUBLICATION des builds 0200 + 0210 (encart erreurs à éviter, titre sous la photo, partie 02 noir bleuté avec vague) — accord « Ok vas y ».
+- 31/10 00h00 (build 20261031-0220, v20) : « En pratique » sur fond noir (plus de pétrole sous les encarts erreurs/défi, jugé « vomitif ») ; encarts en noir bleuté #0C1317 ; conseil du coach sur noir bleuté #0A1116 avec vague. NON publié.
