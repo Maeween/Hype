@@ -15579,3 +15579,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h46 : photo balzan rangée (images/robes-g5-pie-balzan.webp, Galop 5). Reste G5 : raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris.
 
 - 30/10 21h48 : photo bande scapulaire rangée (images/robes-g5-adj-bande-scapulaire.webp, Galop 5). Reste G5 : raie de mulet, zébrures, rouan, aubère, gris.
+
+- 30/10 21h50 : photo raie de mulet rangée (images/robes-g5-adj-raie-de-mulet.webp = vue de profil recadrée ; image complète profil + dos en réserve : robes-reserve-raie-de-mulet-2-vues.webp). Reste G5 : zébrures, rouan, aubère, gris.
