@@ -15599,3 +15599,6 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Mis en ligne : G3 noir pangaré, café au lait, épis (+ cercle de zoom sur le tourbillon) ; G5 pies tobiano/ovéro/tovero/balzan, adjonctions (bande scapulaire, raie de mulet, zébrures), rouan, aubère, gris de comparaison, cercles de zoom réglés photo par photo. Moteur ordinateur v9, build 20261030-2310.
 - Fusionné avec la mise en ligne de la page Écurie (build 2245) : seules 4 lignes d index.html changent par rapport à main.
 - En réserve (non affichées) : robes-reserve-pie-brun-crins-noirs, robes-reserve-tachete-bai-couverture (sans nom), robes-reserve-raie-de-mulet-2-vues.
+
+## 30/10 22h25 — Page des Galops : bouton « Reprendre » retiré (NON publié)
+- Demande de Blandine : « Retire le bouton reprendre, ça complique tout ». Dans le Galop déroulé de la page des Galops, le bouton « Reprendre : <cours> » n est plus affiché (téléphone et ordinateur : même code). « Commencer » reste tant qu aucun cours du Galop n est fait ; « Revoir », « Voir tous les cours », « Premium », « Découvrir » inchangés. Build 20261030-2325. Pas testé sur iPhone.
