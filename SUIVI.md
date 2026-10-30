@@ -15571,3 +15571,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h35 : photo épi (gros plan du front) rangée (images/robes-g3-epis.webp), anneau de zoom centré sur le tourbillon. Galop 3 : toutes les photos sont là. Tests G3 OK. Pas encore en ligne.
 
 - 30/10 21h40 : photo pie tobiano rangée (images/robes-g5-pie-tobiano.webp, Galop 5). Reste G5 : ovéro, tovero, balzan, raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris.
+
+- 30/10 21h42 : photo pie ovéro rangée (images/robes-g5-pie-overo.webp, Galop 5). Reste G5 : tovero, balzan, raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris.
