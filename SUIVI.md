@@ -15205,3 +15205,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Repris sur la version en ligne à jour (pages Galops incluses) ; les 3 fichiers ont été régénérés depuis cette version et sont identiques à ceux testés (texte identique, aucune erreur, chargement différé vérifié).
 - À tester sur iPhone avec un vrai cheval : fiche (Son histoire, Performances, Photos, Vidéos, Actualité, Santé, Identité, ajout d'un souvenir, vedette), page Cavalier (Histoire, Performances, Progression, Photos, Vidéos, Actualité), Santé & soins (rappels, soins).
 - Fichiers : index.html, SUIVI.md, hype-ecran-cheval.js, hype-ecran-cavalier.js, hype-ecran-sante-cheval.js. Aucune image.
+
+## 30/10 12h00 — Allègement du démarrage, pièce 6 : assistant IA Hey Baby (build 20261030-1200) — NON PUBLIÉ
+- EcranAssistantIA (202 Ko) détaché dans hype-ecran-assistant.js, chargé seulement à l'ouverture de l'écran, code non modifié.
+- index.html : 10,66 → 10,46 Mo.
+- Vérifié : l'écran s'ouvre (Retour, Historique, Nouvelle conversation, Mes conseils Hey Baby), aucune erreur, le fichier n'est demandé qu'à l'ouverture.
+- À pousser avec la prochaine publication : index.html + SUIVI.md (ensemble) + hype-ecran-assistant.js.
+
+## 30/10 12h15 — Suppression de l'ancienne page Écurie perso (build 20261030-1215) — NON PUBLIÉ
+- Demande de Blandine (« l'ancienne page Écurie perso on peut la virer »). La « guilde » = la page Écurie actuelle (club), CONSERVÉE.
+- Retiré de index.html : la fonction EcranEcurie (63 Ko, code mort sorti de la navigation), son accès interne et la tuile « Ancienne écurie perso (aperçu) » réservée aux modératrices. index.html : 10,46 → 10,36 Mo environ (en plus de la pièce 6).
+- Vérifié : l'appli démarre sans erreur ; la page Écurie du club s'ouvre comme avant (même comportement que la version en ligne dans mon banc de test) ; l'ancienne route n'affiche plus rien.
+- Fichiers à pousser avec la pièce 6 : index.html + SUIVI.md (ensemble) + hype-ecran-assistant.js.
