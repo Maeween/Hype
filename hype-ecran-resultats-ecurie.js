@@ -72,6 +72,7 @@ var W = {
   voirTout: ["Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "모두 보기"],
   perfCourt: ["Nos performances", "Our performance", "Nuestro rendimiento", "Le nostre prestazioni", "私たちの成績", "Unsere Leistungen", "أداؤنا", "我们的表现", "Onze prestaties", "Nosso desempenho", "Våra prestationer", "Наши выступления", "Nasze wyniki", "우리의 성과"],
   chevauxCourt: ["Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"],
+  ajouterPhotos: ["Ajouter des photos", "Add photos", "Añadir fotos", "Aggiungi foto", "写真を追加", "Fotos hinzufügen", "إضافة صور", "添加照片", "Foto's toevoegen", "Adicionar fotos", "Lägg till foton", "Добавить фото", "Dodaj zdjęcia", "사진 추가"],
   retour: ["Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로"],
   precedent: ["Précédent", "Previous", "Anterior", "Precedente", "前へ", "Zurück", "السابق", "上一个", "Vorige", "Anterior", "Föregående", "Назад", "Poprzedni", "이전"],
   suivant: ["Suivant", "Next", "Siguiente", "Successivo", "次へ", "Weiter", "التالي", "下一个", "Volgende", "Seguinte", "Nästa", "Далее", "Następny", "다음"]
@@ -428,44 +429,44 @@ function EcranResultatsEcurie() {
   /* 30/10 22h05 (Blandine : « la version tel est catastrophique », « tout est deux fois trop grand », « les titres sont sur les images »)
      -> téléphone reconstruit d après la maquette 02 : 3 cartes cavalières par écran, dernier concours en bande photo à gauche,
      5 chiffres sur une ligne, 4 chevaux par ligne, titres courts + « Voir tout », plus aucun texte posé sur une photo. */
-  var CSS = ".rv3{min-height:100vh;background:" + NOIR + ";color:" + IVOIRE + ";font-family:" + M + ";padding-bottom:96px;overflow-x:clip}" +
+  var CSS = ".rv3{min-height:100vh;background:" + NOIR + ";color:" + IVOIRE + ";font-family:" + M + ";padding-bottom:8px;overflow-x:clip}" +
     ".rv3 *{box-sizing:border-box}.rv3-w{max-width:1240px;margin:0 auto;padding:0 14px}" +
     ".rv3-m{}.rv3-d{display:none}" +
-    ".rv3-h2{font-family:" + SERIF + ";font-weight:500;font-size:19px;line-height:1.15;margin:0;color:" + IVOIRE + "}" +
+    ".rv3-h2{font-family:" + SERIF + ";font-weight:500;font-size:21px;line-height:1.15;margin:0;color:" + IVOIRE + "}" +
     ".rv3-sec{padding-top:20px;padding-bottom:4px;min-width:0}.rv3-tete{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}" +
     ".rv3-lien{background:none;border:0;color:" + CHAMP + ";font-family:" + M + ";font-size:11px;font-weight:600;letter-spacing:.3px;cursor:pointer;padding:4px 0;white-space:nowrap}" +
     ".rv3-rail{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.rv3-rail::-webkit-scrollbar{display:none}" +
     ".rv3-carte{flex:0 0 calc((100% - 16px)/3);scroll-snap-align:start;background:" + PETROLE + ";border:1px solid rgba(201,166,107,.22);border-radius:10px;overflow:hidden;cursor:pointer;text-align:start;color:inherit;padding:0;font:inherit;display:flex;flex-direction:column}" +
     ".rv3-ph{position:relative;aspect-ratio:4/3;background:" + PETROLE2 + ";overflow:hidden}.rv3-ph img{width:100%;height:100%;object-fit:cover;display:block}" +
-    ".rv3-cb{padding:7px 8px 8px;display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}" +
-    ".rv3-cn{font-family:" + SERIF + ";font-size:14px;line-height:1.1;color:" + IVOIRE + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-cc{font-size:10px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-rk{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:" + IVOIRE + "}.rv3-rk svg{width:14px;height:14px}" +
-    ".rv3-ep{font-size:10px;color:rgba(243,238,228,.82);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-dt{font-size:9.5px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-sf{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;color:#E9DCC0;border:1px solid rgba(201,166,107,.45);border-radius:999px;padding:1px 6px;white-space:nowrap}" +
+    ".rv3-cb{padding:8px 9px 9px;display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}" +
+    ".rv3-cn{font-family:" + SERIF + ";font-size:15.5px;line-height:1.1;color:" + IVOIRE + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-cc{font-size:11px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-rk{display:inline-flex;align-items:center;gap:4px;font-size:14.5px;font-weight:600;color:" + IVOIRE + "}.rv3-rk svg{width:15px;height:15px}" +
+    ".rv3-ep{font-size:11px;color:rgba(243,238,228,.82);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-dt{font-size:10.5px;color:" + GRIS + ";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-sf{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:600;color:#E9DCC0;border:1px solid rgba(201,166,107,.45);border-radius:999px;padding:1px 6px;white-space:nowrap}" +
     ".rv3-sel{appearance:none;-webkit-appearance:none;background:rgba(14,18,16,.92);color:" + IVOIRE + ";border:1px solid rgba(201,166,107,.35);border-radius:9px;font-family:" + M + ";font-size:16px;padding:7px 28px 7px 11px;min-height:40px;max-width:100%;background-image:linear-gradient(45deg,transparent 50%," + CHAMP + " 50%),linear-gradient(135deg," + CHAMP + " 50%,transparent 50%);background-position:calc(100% - 15px) 17px,calc(100% - 10px) 17px;background-size:5px 5px;background-repeat:no-repeat}" +
     "[dir=rtl] .rv3-sel{padding:7px 11px 7px 28px;background-position:15px 17px,10px 17px}" +
     ".rv3-bt{min-height:40px;padding:0 13px;border-radius:9px;border:1px solid " + CHAMP + ";background:transparent;color:#E9DCC0;font-family:" + M + ";font-size:12px;font-weight:600;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}" +
     ".rv3-kpi{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}" +
     ".rv3-k{background:" + PETROLE + ";border:1px solid rgba(201,166,107,.2);border-radius:9px;padding:8px 2px 7px;text-align:center}" +
-    ".rv3-kn{font-family:" + SERIF + ";font-size:21px;line-height:1;color:" + IVOIRE + ";margin-top:4px}.rv3-kl{font-size:9px;color:" + GRIS + ";margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-kn{font-family:" + SERIF + ";font-size:24px;line-height:1;color:" + IVOIRE + ";margin-top:4px}.rv3-kl{font-size:10px;color:" + GRIS + ";margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
     ".rv3-dc{display:flex;align-items:stretch;width:100%;border-radius:12px;overflow:hidden;border:1px solid rgba(201,166,107,.25);background:" + PETROLE + ";color:" + IVOIRE + ";text-align:start;font:inherit;padding:0;cursor:pointer}" +
-    ".rv3-dci{position:relative;flex:0 0 36%;min-height:112px;background:" + PETROLE2 + "}.rv3-dci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
+    ".rv3-dci{position:relative;flex:0 0 36%;min-height:124px;background:" + PETROLE2 + "}.rv3-dci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
     ".rv3-dct{flex:1;min-width:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px}" +
-    ".rv3-dcn{font-family:" + SERIF + ";font-size:18px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-st{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:10px}" +
-    ".rv3-co{display:flex;align-items:stretch;width:100%;min-height:58px;padding:0;border-radius:10px;overflow:hidden;border:1px solid rgba(201,166,107,.2);background:" + PETROLE + ";color:" + IVOIRE + ";cursor:pointer;text-align:start;font:inherit}" +
+    ".rv3-dcn{font-family:" + SERIF + ";font-size:20px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-st{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:11px}" +
+    ".rv3-co{display:flex;align-items:stretch;width:100%;min-height:64px;padding:0;border-radius:10px;overflow:hidden;border:1px solid rgba(201,166,107,.2);background:" + PETROLE + ";color:" + IVOIRE + ";cursor:pointer;text-align:start;font:inherit}" +
     ".rv3-coi{flex:0 0 74px;position:relative;background:" + PETROLE2 + "}.rv3-coi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
     ".rv3-cot{flex:1;min-width:0;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;gap:3px}" +
-    ".rv3-cod{font-size:10px;color:" + GRIS + "}.rv3-con{font-family:" + SERIF + ";font-size:15px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
-    ".rv3-ch{flex:0 0 calc((100% - 24px)/4)}.rv3-chn{font-family:" + SERIF + ";font-size:12.5px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rv3-chs{font-size:9px;color:" + GRIS + ";margin-top:2px;line-height:1.45}" +
+    ".rv3-cod{font-size:11px;color:" + GRIS + "}.rv3-con{font-family:" + SERIF + ";font-size:16.5px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
+    ".rv3-ch{flex:0 0 calc((100% - 24px)/4)}.rv3-chn{font-family:" + SERIF + ";font-size:14px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rv3-chs{font-size:10px;color:" + GRIS + ";margin-top:2px;line-height:1.45}" +
     ".rv3-mo{flex:0 0 calc((100% - 16px)/3)}" +
     ".rv3-duo{display:grid;grid-template-columns:minmax(0,1fr);gap:0}" +
     ".rv3-fl{display:none}.rv3-fm{display:flex}" +
     ".rv3-hero{position:relative;background:" + NOIR + "}.rv3-hi{position:relative;height:168px;overflow:hidden}.rv3-hi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 35%}" +
     ".rv3-hg{position:absolute;inset:0;background:linear-gradient(0deg," + NOIR + " 0%,rgba(7,10,8,0) 45%)}.rv3-ht{position:relative;padding-top:6px;padding-bottom:4px}" +
-    ".rv3-h1{font-family:" + SERIF + ";font-weight:500;font-size:27px;line-height:1.05;margin:4px 0 6px;color:" + IVOIRE + "}.rv3-ki{font-size:9.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:" + CHAMP + "}.rv3-so{margin:0;font-size:12px;line-height:1.5;color:rgba(243,238,228,.78);max-width:440px}" +
+    ".rv3-h1{font-family:" + SERIF + ";font-weight:500;font-size:30px;line-height:1.05;margin:4px 0 6px;color:" + IVOIRE + "}.rv3-ki{font-size:9.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:" + CHAMP + "}.rv3-so{margin:0;font-size:13px;line-height:1.5;color:rgba(243,238,228,.78);max-width:440px}" +
     "@media(min-width:768px){.rv3-m{display:none}.rv3-d{display:revert}.rv3-w{padding-left:24px;padding-right:24px}.rv3-h2{font-size:26px}.rv3-sec{padding-top:26px}.rv3-tete{margin-bottom:12px}.rv3-rail{gap:12px}" +
       ".rv3-carte{flex-basis:calc((100% - 24px)/3);border-radius:13px}.rv3-cb{padding:10px 12px 12px;gap:5px}.rv3-cn{font-size:19px}.rv3-cc{font-size:11.5px}.rv3-rk{font-size:15px;gap:6px}.rv3-rk svg{width:18px;height:18px}.rv3-ep{font-size:11.5px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.rv3-dt{font-size:10.5px}.rv3-sf{font-size:10.5px;padding:2px 8px}" +
       ".rv3-k{padding:14px 6px;border-radius:12px}.rv3-kn{font-size:28px}.rv3-kl{font-size:10px}" +
@@ -516,15 +517,14 @@ function EcranResultatsEcurie() {
 
   /* ── FILTRES ── */
   var barreFiltres = (etat === "ok" && tout.length) ? h("div", { className: "rv3-w", style: { paddingTop: 14 } },
-    h("div", { className: "rv3-fl", style: { flexWrap: "wrap", gap: 10, alignItems: "center" } }, selSaison, selCav, selCh, selConc, filtreActif ? btReinit : null, h("span", { style: { flex: 1 } }), btGerer, btImport),
+    h("div", { className: "rv3-fl", style: { flexWrap: "wrap", gap: 10, alignItems: "center" } }, selSaison, selCav, selCh, selConc, filtreActif ? btReinit : null),
     h("div", { className: "rv3-fl" }, lignePastilles),
     h("div", { className: "rv3-fm", style: { flexDirection: "column", gap: 10 } },
       h("div", { style: { display: "flex", gap: 10 } },
         h("div", { style: { flex: 1, minWidth: 0, display: "flex" } }, h("div", { style: { width: "100%" } }, React.cloneElement(selSaison, { style: { width: "100%" } }))),
         h("button", { type: "button", className: "rv3-bt", "aria-expanded": panneau, onClick: function () { setPanneau(!panneau); } },
           h("svg", { width: 15, height: 15, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, "aria-hidden": "true" }, h("path", { d: "M4 5h16l-6 7v6l-4 2v-8z" })),
-          t("filtres") + ((F.cav || F.ch || F.conc) ? " · " + [F.cav, F.ch, F.conc].filter(Boolean).length : "")),
-        btImportCompact),
+          t("filtres") + ((F.cav || F.ch || F.conc) ? " · " + [F.cav, F.ch, F.conc].filter(Boolean).length : ""))),
       lignePastilles,
       panneau ? h("div", { style: { display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: PETROLE2, border: "1px solid rgba(201,166,107,0.22)" } },
         React.cloneElement(selCav, { style: { width: "100%" } }), React.cloneElement(selCh, { style: { width: "100%" } }), React.cloneElement(selConc, { style: { width: "100%" } }),
@@ -560,7 +560,21 @@ function EcranResultatsEcurie() {
   }
 
   /* ── C. LES DERNIERS RÉSULTATS DE NOS CAVALIERS ── */
-  var derniers = (function () { var vusD = {}, out = []; filtrees.forEach(function (l) { if (vusD[l.cleCav]) return; vusD[l.cleCav] = true; out.push(l); }); return out.slice(0, 16); })();
+  /* 30/10 23h17 (Blandine) : « les derniers résultats devraient mettre en avant les meilleurs résultats en premier, la victoire et les
+     podiums ». Par cavalière : son MEILLEUR résultat de sa dernière journée de concours ; puis tri par date (la plus récente d abord) et,
+     à date égale, par place (victoire, podiums, puis les autres ; sans place en dernier), sans faute avant à place égale. */
+  var derniers = (function () {
+    var parCav = {};
+    filtrees.forEach(function (l) {
+      var c = parCav[l.cleCav];
+      if (!c || l.date > c.date) { parCav[l.cleCav] = { date: l.date, l: [l] }; return; }
+      if (l.date === c.date) c.l.push(l);
+    });
+    var rangDe = function (l) { return (l.x && l.x.place && !(R.estPrepa && R.estPrepa(l.x))) ? l.x.place : 999; };
+    var mieux = function (a, b) { return (rangDe(a) - rangDe(b)) || ((b.sf ? 1 : 0) - (a.sf ? 1 : 0)); };
+    return Object.keys(parCav).map(function (k) { return parCav[k].l.slice().sort(mieux)[0]; })
+      .sort(function (a, b) { return (a.date < b.date ? 1 : a.date > b.date ? -1 : 0) || mieux(a, b); }).slice(0, 16);
+  })();
   function carteCav(l) {
     var ph = photoCav(l.profil, l.verifiee) || photoCh(l.cheval);
     var r = rang(l);
@@ -588,7 +602,10 @@ function EcranResultatsEcurie() {
       h("span", { className: "rv3-m" }, h("button", { type: "button", className: "rv3-lien", onClick: voirTousCav }, t("voirTout") + (rtl ? " ←" : " →"))),
       h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, derniers.length > 3 ? fleche(-1) : null, derniers.length > 3 ? fleche(1) : null)),
     derniers.length ? h("div", { ref: rail, className: "rv3-rail" }, derniers.map(carteCav)) : h("div", { style: { padding: "24px 0", color: GRIS, fontSize: 13 } }, t("aucunFiltre")),
-    h("div", { className: "rv3-d", style: { marginTop: 10 } }, h("button", { type: "button", className: "rv3-lien", onClick: voirTousCav }, t("voirTous") + (rtl ? " ←" : " →"))));
+    h("div", { className: "rv3-d", style: { marginTop: 10 } }, h("button", { type: "button", className: "rv3-lien", onClick: voirTousCav }, t("voirTous") + (rtl ? " ←" : " →"))),
+    peutImp ? h("div", { style: { marginTop: 14, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
+      h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport, style: { flex: "1 1 auto", maxWidth: 360, justifyContent: "center" } }, icImp, t("importer")),
+      h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("gestion"); } }, tg("gerer"))) : null);
 
   /* ── D. DERNIER CONCOURS ── */
   var grF = groupes.map(function (g) { var l2 = g.l.filter(function (l) { return passe(l); }); return l2.length ? { g: g, l: l2 } : null; }).filter(Boolean);
@@ -700,12 +717,20 @@ function EcranResultatsEcurie() {
   /* ── H. MOMENTS FORTS (photos réelles des rendez-vous reliés, dans la sélection) ── */
   var agSel = {}; filtrees.forEach(function (l) { if (l.b.agenda_id) agSel[l.b.agenda_id] = true; });
   var photosSel = (D && D.photos ? D.photos : []).filter(function (p) { return agSel[p.agenda_id]; }).slice(0, 15);
-  var secMoments = photosSel.length ? h("section", { className: "rv3-w rv3-sec", "aria-label": t("moments") },
+  /* 30/10 23h17 (Blandine) : « Importer des photos » sous les photos -> ouvre la journée du DERNIER concours relié à l agenda, où le fil
+     permet de publier ses photos (même règles d écriture que la page de la journée). Sans concours relié : pas de bouton. */
+  var rdvPhotos = (function () { for (var i = 0; i < grF.length; i++) { if (grF[i].g.rdv && grF[i].g.rdv.id) return grF[i].g.rdv; } return null; })();
+  var btPhotos = (rdvPhotos && D && D.moi) ? h("div", { style: { marginTop: 12 } },
+    h("button", { type: "button", className: "rv3-bt", onClick: function () { ouvrirRdv(rdvPhotos.id); }, style: { width: "100%", maxWidth: 360, justifyContent: "center" } },
+      h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: CHAMP, strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 7h3l2-2h6l2 2h3v12H4z" }), h("circle", { cx: 12, cy: 13, r: 3.5 })),
+      t("ajouterPhotos"))) : null;
+  var secMoments = (photosSel.length || btPhotos) ? h("section", { className: "rv3-w rv3-sec", "aria-label": t("moments") },
     teteSection(t("moments"), null, null, "t"),
-    h("div", { className: "rv3-rail" }, photosSel.map(function (p, i) {
+    photosSel.length ? h("div", { className: "rv3-rail" }, photosSel.map(function (p, i) {
       return h("button", { key: p.url + i, type: "button", className: "rv3-carte rv3-mo", onClick: function () { ouvrirRdv(p.agenda_id); }, style: { border: "1px solid rgba(201,166,107,0.18)" } },
         h("div", { className: "rv3-ph", style: { aspectRatio: "1 / 1" } }, h("img", { src: vign(p.url, 360, 360), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.parentNode.parentNode.style.display = "none"; } catch (er) { } } })));
-    }))) : null;
+    })) : null,
+    btPhotos) : null;
 
   /* ── VUE « TOUS LES RÉSULTATS » ── */
   function vueTous() {
@@ -826,9 +851,7 @@ function EcranResultatsEcurie() {
       h("div", { className: "rv3-w rv3-duo" }, secDernier || h("div"), secChiffres)),
     h("div", { className: "rv3-w rv3-duo", style: { paddingBottom: 18 } }, secConcours || h("div"), secChevaux),
     secMoments ? h("div", null, secMoments) : null,
-    peutImp ? h("div", { className: "rv3-w rv3-fm", style: { paddingTop: 24, flexDirection: "column", gap: 10 } },
-      h("button", { type: "button", className: "rv3-bt", onClick: ouvrirImport, style: { width: "100%", justifyContent: "center", minHeight: 52 } }, icImp, t("importer")),
-      h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("gestion"); }, style: { alignSelf: "center" } }, tg("gerer"))) : null);
+    null);
 
   return h("div", { className: "rv3", dir: rtl ? "rtl" : "ltr" },
     h("style", null, CSS),

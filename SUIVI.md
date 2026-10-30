@@ -15661,8 +15661,18 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Vérifié (appli complète, connexion simulée) : abonnée 390 et 1440, visiteuse 390 (badge Premium), arabe 390 ; aucune erreur, aucun débordement ; 17 blocs de code valides ; marqueurs de garde inchangés (chevalCommunDemoData 2, EcranSanteCheval 7).
 - Publié : index.html + SUIVI.md + hype-ecran-articles.js. Tout le reste inchangé.
 
-## 30/10 23h45 — PUBLICATION (« Ah ben vas y », 23h28) — build 20261031-0050 [publier]
+## 30/10 23h45 — PUBLICATION (« Ah ben vas y », 23h28) — build 20261031-0110 [publier]
 - En ligne : Galop 1 (robes) découpé en écrans (menu, Comprendre, Noir/alezan/bai, En pratique, À retenir), sans doublons de photos ni de « ne pas confondre », planche illisible retirée de l'affichage ; page « Cours terminé ! » de l'appli en or pour les robes et le pansage.
-- Fichiers : index.html (marker 20261031-0050, hype-cours-robes-ordi.js ?v=13), hype-cours-robes-ordi.js v13, SUIVI.md. Inchangés : Galops 2, 3, 5 (hype-cours-robes-galops-ordi.js v10).
-- Fusion avec main (Le Mag, build 20261031-0045) : seule la ligne du marqueur d'index.html différait ; rien perdu.
+- Fichiers : index.html (marker 20261031-0110, hype-cours-robes-ordi.js ?v=13), hype-cours-robes-ordi.js v13, SUIVI.md. Inchangés : Galops 2, 3, 5 (hype-cours-robes-galops-ordi.js v10).
+- Fusion avec main (Le Mag 0045, Résultats écurie 0100) : seule la ligne du marqueur d'index.html différait ; rien perdu.
 - Pas encore fait : étoiles sur la liste des cours (en attente du choix A/B/C de Blandine), mêmes écrans pour Galops 2, 3, 5 et pansage.
+
+## 30/10 23h25 — Retours de Blandine (23h17) — NON PUBLIÉ
+- hype-ecran-resultats-ecurie.js v5 (?v=5) :
+  · « Derniers résultats » : les MEILLEURS d'abord — par cavalière, son meilleur résultat de sa dernière journée ; tri par date puis place (victoire, podiums, puis les autres ; sans faute avant à place égale ; prépas après). Ex. SEP 25/10 : Eva 1re, Ella 2e, Lauren 3e, Emma 3e (Écolo), Maëlys, Aurélie, Romy.
+  · « Importer des résultats » (+ « Gérer ») SOUS les derniers résultats ; retirés de la barre ordinateur, de l'icône téléphone et du bas de page.
+  · « Ajouter des photos » sous « Moments forts » : ouvre la journée du dernier concours relié à l'agenda (son fil permet d'y publier des photos) ; section affichée même sans photo si un concours est relié ; 14 langues.
+  · Fin de page rapprochée (marge du bas 96 → 8 px) ; textes du téléphone ~12 % plus grands.
+
+## 30/10 23h30 — PUBLICATION (« Ok vas y », 23h28) — build 20261031-0100 [publier]
+- En ligne : index.html (?v=5), hype-ecran-resultats-ecurie.js v5 (meilleurs résultats d'abord, import sous les résultats, « Ajouter des photos », fin de page rapprochée, textes un peu plus grands), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne 7a30efa (Le Mag, article à la une) : aucune ligne retirée.
