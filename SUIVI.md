@@ -15190,3 +15190,11 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 ## 30/10 11h45 - Publication : page Galops (tap direct, « Decouvrir les 9 Galops », carres retires) + videos voilees (build 20261030-1415)
 - Accord de Blandine (« Ok »). Contenu publie = uniquement f38f6e7 et 3e932ea par-dessus main ff75a78 (deja en ligne) : rien d'autre en attente.
 - A verifier sur iPhone : tap sur chaque Galop de la courbe, texte « Decouvrir les 9 Galops », vignettes des videos sur vraies images.
+
+## 30/10 12h00 - Page Galops : retour du petit descriptif au tap, sans liste de cours ; « Galop 9 » ; publication (build 20261030-1430)
+- Demande de Blandine : garder le petit descriptif qui se deplie au tap, mais retirer les cours choisis arbitrairement dessous (surchargeaient) ; bouton « Voir les X cours » qui mene a la page des cours de chaque Galop ; corriger « du Galop 1 au Galop 7 » -> 9.
+- index.html : pastilles de la courbe -> volet (choisirGalop) comme avant ; gv2Ouvrable retire ; volet telephone : liste des 6 premiers cours retiree ; volet ordinateur : carrousel des cours retire ; nouveau bouton commun « Voir les X cours » (versCours : ouvre la page du Galop puis descend a la section des cours g5-cours / g1o-prog) ; rubrique « Cours » du volet ordinateur -> meme destination. « Commencer / Reprendre », Objectifs officiels et Reprises de dressage conserves.
+- « du Galop 1 au Galop 7 » -> « 9 » dans 3 textes, 14 langues chacun (intro « Tout pour progresser », preP, phrase L5acc d'une autre page).
+- Teste (navigateur automatique, abonnee simulee) telephone 390 + ordinateur 1440 : G1-G9 -> volet sans liste ; « Voir les X cours » (G1, G2, G3, G4, G6) -> page du Galop, section Cours en haut ; G5/G7/G8/G9 (cours « Prochainement ») -> bouton « Decouvrir le Galop X » ; 0 erreur ; syntaxe 17 blocs OK.
+- Publication des le feu vert de Blandine (« Oui corrige ») ; publication precedente 17788aa en ligne a 11h38 (tap direct + videos voilees), remplacee ici pour le tap.
+- Non verifie : vrai iPhone.
