@@ -15404,3 +15404,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 30/10 19h45 — Photo pie noir (G2) en pleine taille — NON PUBLIÉ
 - images/robes-g2-pie.webp remplacée par la photo fournie par Blandine (1672 × 941 px, pie noir, de profil, sans cavalier). Reste à refaire en pleine taille : robes-g5-tachete-leopard. Toujours manquantes : voir l'entrée de 19h35 (liste). À publier avec le prochain groupe.
+
+## 30/10 19h55 — Photo crème (G2) mise en réserve — NON PUBLIÉ
+- images/robes-g2-creme.webp ajoutée (1672 × 941 px, corps crème très pâle, crins blancs, peau claire, de profil, sans cavalier). Pas encore affichée : le cours g2-robes n'a pas de texte « crème » (en attente de la décision de Blandine). Aucun changement de page.
