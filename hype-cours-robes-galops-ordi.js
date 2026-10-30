@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 12;   /* 31/10 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
+var VERSION = 13;   /* 31/10 : autres Galops grisés dans le menu */
+/* v12 :   /* 31/10 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
 /* v11 :   /* 31/10 : même traitement que le Galop 1 — doublons retirés, page de fin, autres Galops dans le menu, plus de bleu pétrole */
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
@@ -449,7 +450,7 @@ function HypeRobesGalopsOrdi(props) {
           h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
       }),
       autresG.map(function (g, k) {
-        return h("button", { key: g.id, type: "button", "aria-label": X("parcours") + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: "60% 40%" } },
+        return h("button", { key: g.id, type: "button", className: "gal", "aria-label": X("parcours") + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: "60% 40%" } },
           h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
       })),
     h("div", { className: "rbo-minih" },

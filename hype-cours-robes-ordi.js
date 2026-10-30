@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 26;   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
+var VERSION = 28;   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
+/* v26 :   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
 /* v25 :   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
 /* v23 :   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
 /* v22 :   /* 31/10 00h10 : Galop 2/3/5 dans le menu des vignettes et les onglets ; « Galop 1 » au-dessus des robes retiré */
@@ -65,6 +66,16 @@ var T = {
   gal2: tt("Gris, pie, tacheté", "Grey, pinto, spotted", "Tordo, pío, moteado", "Grigio, pezzato, maculato", "芦毛・ぶち・斑点", "Schimmel, Schecke, getupft", "الرمادي والأبلق والمرقط", "青毛、花斑、斑点", "Schimmel, bont, gevlekt", "Tordilho, pampa, malhado", "Skimmel, skäck, prickig", "Серая, пегая, чубарая", "Siwa, srokata, tarantowata", "회색·얼룩·점박이"),
   gal3: tt("Marques et nuances", "Markings and shades", "Marcas y matices", "Marcature e sfumature", "白斑と色合い", "Abzeichen und Nuancen", "العلامات والدرجات", "白色标记与色调", "Aftekeningen en tinten", "Marcas e nuances", "Tecken och nyanser", "Отметины и оттенки", "Odmiany i odcienie", "흰 반점과 색조"),
   gal5: tt("Pies et adjonctions", "Pintos and additions", "Píos y adiciones", "Pezzati e aggiunte", "ぶちと付加特徴", "Schecken und Zusätze", "الأبلق والإضافات", "花斑与附加特征", "Bonten en toevoegingen", "Pampas e adições", "Skäckar och tillägg", "Пегие и дополнения", "Srokate i dodatki", "얼룩과 추가 특징"),
+  finTitre: tt("Tu as terminé ce cours !", "You've finished this lesson!", "¡Has terminado este curso!", "Hai finito questo corso!", "このレッスンを読み終えました！", "Du hast diese Lektion beendet!", "لقد أنهيت هذا الدرس!", "你已读完这节课！", "Je hebt deze les afgerond!", "Terminaste este curso!", "Du har gått igenom lektionen!", "Ты прошёл этот урок!", "Ukończyłeś tę lekcję!", "이 수업을 다 읽었어요!"),
+  finSous: tt("Voici l'essentiel à retenir avant de passer au quiz.", "Here's what to remember before the quiz.", "Esto es lo esencial antes del quiz.", "Ecco l'essenziale da ricordare prima del quiz.", "クイズの前に覚えておきたいポイントです。", "Das Wichtigste vor dem Quiz.", "إليك أهم ما يجب تذكّره قبل الاختبار.", "测验前需要记住的要点。", "Dit moet je onthouden voor de quiz.", "O essencial a reter antes do quiz.", "Det viktigaste att komma ihåg före quizet.", "Главное, что нужно запомнить перед тестом.", "Najważniejsze przed quizem.", "퀴즈 전에 기억할 핵심이에요."),
+  hbTitre: tt("Hey Baby t'accompagne", "Hey Baby is here to help", "Hey Baby te acompaña", "Hey Baby ti accompagna", "Hey Babyがサポート", "Hey Baby begleitet dich", "Hey Baby يرافقك", "Hey Baby 陪你学习", "Hey Baby helpt je", "A Hey Baby acompanha-te", "Hey Baby hjälper dig", "Hey Baby рядом", "Hey Baby ci pomoże", "Hey Baby가 함께해요"),
+  hbSous: tt("Une question ? Hey Baby t'aide à observer les bons indices.", "A question? Hey Baby helps you spot the right clues.", "¿Una pregunta? Hey Baby te ayuda a observar las pistas correctas.", "Una domanda? Hey Baby ti aiuta a osservare gli indizi giusti.", "質問がある？Hey Babyが見るべきポイントを教えてくれます。", "Eine Frage? Hey Baby hilft dir, die richtigen Hinweise zu erkennen.", "لديك سؤال؟ يساعدك Hey Baby على ملاحظة الدلائل الصحيحة.", "有问题？Hey Baby 帮你找到关键线索。", "Een vraag? Hey Baby helpt je de juiste aanwijzingen te zien.", "Uma pergunta? A Hey Baby ajuda-te a observar os indícios certos.", "En fråga? Hey Baby hjälper dig att se rätt ledtrådar.", "Есть вопрос? Hey Baby поможет заметить нужные признаки.", "Masz pytanie? Hey Baby pomoże ci dostrzec właściwe wskazówki.", "궁금한 게 있나요? Hey Baby가 단서를 찾도록 도와줘요."),
+  defiTitre: tt("Ton défi terrain", "Your yard challenge", "Tu reto en el terreno", "La tua sfida sul campo", "現場チャレンジ", "Deine Praxis-Challenge", "تحدّيك الميداني", "你的实地挑战", "Jouw praktijkuitdaging", "O teu desafio no terreno", "Din utmaning i stallet", "Твоё задание на практике", "Twoje wyzwanie w stajni", "현장 도전"),
+  defiG1: tt("Observe trois chevaux de ton club et identifie leur robe.", "Observe three horses at your club and identify their coat colour.", "Observa tres caballos de tu club e identifica su capa.", "Osserva tre cavalli del tuo circolo e riconosci il loro mantello.", "クラブの馬を3頭観察して、毛色を見分けよう。", "Beobachte drei Pferde in deinem Stall und bestimme ihre Fellfarbe.", "راقب ثلاثة خيول في ناديك وحدّد ألوانها.", "观察俱乐部里的三匹马，说出它们的毛色。", "Bekijk drie paarden op je club en herken hun vachtkleur.", "Observa três cavalos do teu clube e identifica a pelagem.", "Titta på tre hästar i din klubb och bestäm deras färg.", "Понаблюдай за тремя лошадьми в клубе и определи их масть.", "Przyjrzyj się trzem koniom w klubie i rozpoznaj ich maść.", "클럽의 말 세 마리를 관찰하고 모색을 알아맞혀 보세요."),
+  chevalN: tt("Cheval {n}", "Horse {n}", "Caballo {n}", "Cavallo {n}", "馬 {n}", "Pferd {n}", "الحصان {n}", "马 {n}", "Paard {n}", "Cavalo {n}", "Häst {n}", "Лошадь {n}", "Koń {n}", "말 {n}"),
+  defiBravo: tt("Bravo, tu as relevé le défi !", "Well done, challenge complete!", "¡Bravo, has superado el reto!", "Bravo, hai superato la sfida!", "やったね、チャレンジ達成！", "Bravo, Challenge geschafft!", "أحسنت، لقد أنجزت التحدي!", "太棒了，挑战完成！", "Bravo, uitdaging gehaald!", "Bravo, cumpriste o desafio!", "Bra jobbat, utmaningen klar!", "Браво, задание выполнено!", "Brawo, wyzwanie zaliczone!", "잘했어요, 도전 완료!"),
+  quizSous: tt("Vérifie tes connaissances et valide tes acquis.", "Check your knowledge and confirm what you've learned.", "Comprueba tus conocimientos y valida lo aprendido.", "Verifica le tue conoscenze e convalida ciò che hai imparato.", "知識を確認して、学んだことを確かめよう。", "Prüfe dein Wissen und festige das Gelernte.", "تحقّق من معلوماتك وثبّت ما تعلّمته.", "检验你的知识，巩固所学。", "Test je kennis en bevestig wat je hebt geleerd.", "Verifica os teus conhecimentos e valida o que aprendeste.", "Testa dina kunskaper och bekräfta det du lärt dig.", "Проверь знания и закрепи пройденное.", "Sprawdź wiedzę i potwierdź to, czego się nauczyłeś.", "지식을 확인하고 배운 것을 다져 보세요."),
+  quizReussi: tt("Quiz réussi", "Quiz passed", "Quiz superado", "Quiz superato", "クイズ合格", "Quiz bestanden", "نجحت في الاختبار", "测验通过", "Quiz gehaald", "Quiz superado", "Quiz klarat", "Тест пройден", "Quiz zaliczony", "퀴즈 통과"),
   coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
   coursSuivant: tt("Cours suivant", "Next lesson", "Siguiente curso", "Corso successivo", "次のレッスン", "Nächste Lektion", "الدرس التالي", "下一课", "Volgende les", "Próximo curso", "Nästa lektion", "Следующий урок", "Następna lekcja", "다음 수업"),
   retourGalops: tt("Retour aux Galops", "Back to the Galops", "Volver a los Galops", "Torna ai Galop", "ギャロップに戻る", "Zurück zu den Galops", "العودة إلى الغالوب", "返回 Galop", "Terug naar de Galops", "Voltar aos Galops", "Tillbaka till Galops", "Назад к Galop", "Powrót do Galopów", "갤럽으로 돌아가기"),
@@ -194,7 +205,7 @@ var CSS = [
 ".rbo-vig .lab{position:absolute;inset-inline:14px 52px;bottom:12px;z-index:1;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:21px;line-height:1.1;font-weight:600}",
 ".rbo-vig .arr{position:absolute;bottom:10px;inset-inline-end:12px;z-index:1;width:32px;height:32px;border-radius:50%;border:1px solid #E9D9B4;display:flex;align-items:center;justify-content:center;font-size:15px;color:#E9D9B4}",
 ".rbo-vig button[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
-".rbo-vig button.gal{border:1px dashed rgba(201,166,107,.6)}.rbo-vig button.gal .big{color:var(--champ)}",
+".rbo-vig button.gal{filter:grayscale(.85) brightness(.72);transition:filter .2s}.rbo-vig button.gal:hover,.rbo-vig button.gal:focus-visible{filter:none}",   /* 31/10 : les autres Galops un peu grisés */
 ".rbo-mini .sep{flex:0 0 1px;align-self:stretch;margin:6px 4px;background:rgba(201,166,107,.45)}",
 ".rbo-mini button.gal{border-style:dashed;border-color:rgba(201,166,107,.55)}.rbo-mini button.gal span{color:var(--champ)}",
 "@media (max-width:1479px){.rbo-vig{gap:10px}.rbo-vig .lab{font-size:16px;inset-inline:12px 40px}.rbo-vig .arr{width:26px;height:26px;font-size:13px}.rbo-vig .big{font-size:36px}}",
@@ -329,6 +340,60 @@ var CSS = [
 ".rbo-f-quiz{grid-column:1/-1;position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,.55);background:linear-gradient(90deg,rgba(7,10,8,.92) 30%,rgba(7,10,8,.35)),url(images/pansage-quiz.webp) center 40%/cover no-repeat;padding:26px 26px}",
 ".rbo-f-quiz h3{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:26px;font-weight:600;color:var(--ivoire);margin:0 0 14px}",
 ".rbo-f-act{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:1080px;margin:28px auto 0}",
+".rbo-fc{background:var(--noir);padding:0 0 24px}",
+".rbo-fc-hero{position:relative;overflow:hidden;min-height:560px;background:#070A08}",
+".rbo-fc-hero .ph{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat}",
+".rbo-fc-hero .vo{position:absolute;inset:0;background:linear-gradient(90deg,#070A08 0%,rgba(7,10,8,.94) 34%,rgba(10,17,22,.55) 62%,rgba(7,10,8,.15) 100%),linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
+"[dir=rtl] .rbo-fc-hero .vo{background:linear-gradient(270deg,#070A08 0%,rgba(7,10,8,.94) 34%,rgba(10,17,22,.55) 62%,rgba(7,10,8,.15) 100%),linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
+"[dir=rtl] .rbo-fc-hero .ph{transform:scaleX(-1)}.rbo-fc-hero .ph.flip{transform:scaleX(-1)}[dir=rtl] .rbo-fc-hero .ph.flip{transform:none}",
+".rbo-fc-hero .bar{position:relative;z-index:2;display:flex;align-items:center;padding:18px 40px 0}",
+".rbo-fc-hero .in{position:relative;z-index:1;max-width:560px;padding:26px 40px 40px}",
+".rbo-fc .kick{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--champ);margin:0 0 10px}",
+".rbo-fc-hero h2{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:clamp(38px,3.6vw,54px);font-weight:600;line-height:1.02;color:var(--ivoire);margin:0}",
+".rbo-fc-hero .trait{display:block;width:48px;height:2px;background:var(--champ);margin:16px 0 14px}",
+".rbo-fc .sous{font-size:14px;line-height:1.55;color:var(--doux);margin:0}",
+".rbo-fc-hero .ok{margin:10px 0 0;font-size:13px;color:var(--champ)}.rbo-fc-hero .ok span{letter-spacing:2px}",
+".rbo-fc-por{list-style:none;margin:22px 0 0;padding:0;position:relative}",
+".rbo-fc-por li{display:grid;grid-template-columns:auto 14px minmax(0,1fr);align-items:center;gap:0 14px;padding:6px 0;position:relative}",
+".rbo-fc-por li:before{content:'';position:absolute;inset-inline-start:calc(var(--r) + 20px);top:0;bottom:0;width:1px;background:rgba(201,166,107,.45)}",
+".rbo-fc-por li:first-child:before{top:50%}.rbo-fc-por li:last-child:before{bottom:50%}",
+".rbo-fc-por{--r:84px}",
+".rbo-fc-por .rond{width:var(--r);height:var(--r);border-radius:50%;border:1.5px solid var(--champ);background-size:270%;background-repeat:no-repeat;box-shadow:0 8px 22px rgba(0,0,0,.5)}",
+".rbo-fc-por .pt{width:7px;height:7px;border-radius:50%;background:var(--champ);justify-self:center;position:relative;z-index:1}",
+".rbo-fc-por .tx{display:flex;flex-direction:column;gap:2px}",
+".rbo-fc-por .tx b{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:22px;font-weight:600;color:var(--ivoire)}",
+".rbo-fc-por .tx span{font-size:13.5px;line-height:1.45;color:var(--doux)}",
+".rbo-fc-hero .note{margin:14px 0 0;font-size:13px;line-height:1.5;color:var(--champ);font-style:italic}",
+".rbo-fc-duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:56px 40px 0;max-width:1180px;margin:0 auto}",
+".rbo-fc-hb,.rbo-fc-defi{border-radius:18px;padding:22px 24px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,#132228,#0F1B20)}",
+".rbo-fc-defi{background:linear-gradient(180deg,#0E181C,#0B1417)}",
+".rbo-fc h3{display:flex;align-items:center;gap:10px;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:26px;font-weight:600;color:var(--ivoire);margin:0 0 6px}",
+".rbo-fc h3 svg{color:var(--champ);flex:0 0 auto}",
+".rbo-fc-hbc{display:grid;gap:10px;margin-top:16px}",
+".rbo-fc-q{display:flex;align-items:center;gap:14px;width:100%;text-align:start;border:1px solid rgba(201,166,107,.28);border-radius:14px;background:linear-gradient(90deg,rgba(27,49,56,.95),rgba(23,42,48,.92));padding:8px 14px 8px 8px;color:var(--ivoire);font-size:14.5px;line-height:1.35;cursor:pointer}",
+"[dir=rtl] .rbo-fc-q{padding:8px 8px 8px 14px}",
+".rbo-fc-q:hover,.rbo-fc-q:focus-visible{border-color:rgba(201,166,107,.55)}",
+".rbo-fc-q .vi{flex:0 0 auto;width:72px;height:50px;border-radius:9px;background-size:260%;background-repeat:no-repeat}",
+".rbo-fc-q .qt{flex:1 1 auto;min-width:0}.rbo-fc-q i{font-style:normal;color:var(--champ);font-size:20px;flex:0 0 auto}",
+".rbo-fc-hb .pts{display:none}",
+".rbo-fc-defi .ronds{display:flex;justify-content:space-around;gap:10px;margin-top:20px;padding:16px 8px;border:1px solid rgba(201,166,107,.18);border-radius:14px;background:rgba(7,10,8,.35)}",
+".rbo-fc-defi .ronds button{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ivoire);padding:2px}",
+".rbo-fc-defi .c{width:48px;height:48px;border-radius:50%;border:1px solid var(--champ);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--champ);transition:background .2s}",
+".rbo-fc-defi .c.on{background:rgba(201,166,107,.16)}",
+".rbo-fc-defi .l{font-size:12.5px;color:var(--doux)}",
+".rbo-fc-defi .bravo{margin:14px 0 0;text-align:center;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:20px;color:var(--champ)}",
+".rbo-fc-quiz{position:relative;margin:56px max(40px,calc((100% - 1100px) / 2)) 0;border-radius:20px;overflow:hidden;border:1px solid rgba(201,166,107,.4);background-size:cover;background-position:center 22%;min-height:220px;display:flex;align-items:center}",
+".rbo-fc-quiz:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.78) 42%,rgba(7,10,8,.2) 100%)}",
+"[dir=rtl] .rbo-fc-quiz:before{background:linear-gradient(270deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.78) 42%,rgba(7,10,8,.2) 100%)}",
+".rbo-fc-quiz .in{position:relative;padding:30px 34px;max-width:480px}",
+".rbo-fc-quiz h3{font-size:34px;margin:0 0 6px}.rbo-fc-quiz p{color:var(--ivoire);opacity:.85;font-size:14.5px;line-height:1.5;margin:0 0 18px}",
+".rbo-fc-nav{max-width:1100px;margin:56px auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;padding:0 40px}",
+".rbo-fc-nav .lig{display:flex;align-items:center;gap:16px;width:100%}",
+".rbo-fc-nav .lig>span{flex:1;height:1px;background:rgba(201,166,107,.3)}",
+".rbo-fc-nav .suiv{border:1px solid rgba(201,166,107,.6);border-radius:999px;background:rgba(7,10,8,.4);color:var(--champ);font-size:14px;font-weight:600;padding:11px 22px;cursor:pointer;max-width:72%;text-align:center}",
+".rbo-fc-nav .gal{background:none;border:0;color:var(--doux);font-size:13.5px;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:6px}",
+"@media (max-width:1279px){.rbo-fc-duo{grid-template-columns:minmax(0,1fr)}}",
+"@media (prefers-reduced-motion:reduce){.rbo-fc-hbc{scroll-behavior:auto}.rbo-fc-defi .c{transition:none}}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
@@ -340,6 +405,25 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
+".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
+".rbo .rbo-fc-hero .vo,[dir=rtl] .rbo .rbo-fc-hero .vo{background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.72) 50%,rgba(7,10,8,.18) 100%),linear-gradient(180deg,rgba(7,10,8,.4) 0%,rgba(7,10,8,0) 30%,#070A08 100%)}",
+".rbo .rbo-fc-hero h2{font-size:36px}.rbo .rbo-fc-hero .sous{max-width:none}",
+".rbo .rbo-fc-por{--r:70px;margin-top:18px}.rbo .rbo-fc-por li{gap:0 10px;padding:4px 0}.rbo .rbo-fc-por li:before{inset-inline-start:calc(var(--r) + 16px)}",
+".rbo .rbo-fc-por .tx b{font-size:20px}.rbo .rbo-fc-por .tx span{font-size:13px}",
+".rbo .rbo-fc-duo{padding:36px 16px 0;gap:36px}",
+".rbo .rbo-fc-hb,.rbo .rbo-fc-defi{padding:18px 16px}",
+".rbo .rbo-fc h3{font-size:23px}",
+".rbo .rbo-fc-hbc{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:14px;scroll-behavior:smooth}",
+".rbo .rbo-fc-hbc::-webkit-scrollbar{display:none}",
+".rbo .rbo-fc-q{flex:0 0 100%;scroll-snap-align:start;font-size:14px}",
+".rbo .rbo-fc-hb .pts{display:flex;justify-content:center;gap:8px;margin-top:12px}",
+".rbo .rbo-fc-hb .pts button{width:7px;height:7px;padding:0;border-radius:50%;border:0;background:rgba(243,238,228,.28);cursor:pointer}",
+".rbo .rbo-fc-hb .pts button[aria-current=true]{background:var(--ivoire)}",
+".rbo .rbo-fc-defi .c{width:44px;height:44px}",
+".rbo .rbo-fc-quiz{margin:36px 16px 0;min-height:0}.rbo .rbo-fc-quiz .in{padding:22px 18px}.rbo .rbo-fc-quiz h3{font-size:30px}",
+".rbo .rbo-fc-quiz:before,[dir=rtl] .rbo .rbo-fc-quiz:before{background:linear-gradient(90deg,rgba(7,10,8,.92) 0%,rgba(7,10,8,.7) 60%,rgba(7,10,8,.35) 100%)}",
+".rbo .rbo-fc-nav{margin-top:36px;padding:0 16px 84px}.rbo .rbo-fc-nav .suiv{max-width:none;font-size:13.5px;padding:11px 16px}.rbo .rbo-fc-nav .lig{gap:10px}",
+".rbo .rbo-finpage>div{padding-top:8px!important}",
 ".rbo .rbo-f{padding:0 16px 40px}.rbo .rbo-f-grid{grid-template-columns:minmax(0,1fr);gap:12px}.rbo .rbo-f-col{gap:12px}.rbo .rbo-f-head{padding:18px 0 24px}.rbo .rbo-f-head h1{font-size:34px}.rbo .rbo-f .rbo-card{padding:16px 16px}.rbo .rbo-f .rbo-card h3{font-size:20px}.rbo .rbo-f-quiz{padding:20px 18px}.rbo .rbo-f-act{flex-direction:column;align-items:stretch}.rbo .rbo-f-act .rbo-btn{width:100%}",
 ".rbo{padding-bottom:110px;overflow-x:clip}",
 ".rbo .rbo-parc{padding:14px 16px 12px;gap:8px}.rbo .rbo-parc .tt{flex:0 0 100%;margin:0 0 2px}.rbo .rbo-parc button{padding:7px 14px;font-size:12.5px}",
@@ -563,7 +647,7 @@ function HypeRobesOrdi(props) {
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           }),
           autresG.map(function (g, k) {
-            return h("button", { key: g.id, type: "button", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
+            return h("button", { key: g.id, type: "button", className: "gal", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
               h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           })),
         h("div", { className: "rbo-minih" },
@@ -603,35 +687,125 @@ function HypeRobesOrdi(props) {
         /* 31/10 : PAGE DE FIN refaite (Blandine : « même la dernière page c'est nimp ») — une seule page, sans doublons :
            Cours terminé + XP, l'essentiel, Hey Baby (3 questions), le défi, le quiz de l'appli (étoiles), cours suivant / retour aux Galops.
            Elle remplace l'ancienne page « Cours terminé ! » de l'appli. L'ancienne page de fin (synthèse + citation + bloc quiz) est gardée, désactivée (FIN_ANCIENNE). */
-        vue !== "fin" ? null : (FIN_ANCIENNE ? ANCIENNE_FIN : h("div", { className: "rbo-f" },
-          h("div", { className: "rbo-f-bar" },
-            h("button", { type: "button", className: "rbo-back", "aria-label": L("retourCours"), onClick: function () { versCours(null); } }, rtl ? "›" : "‹"),
-            h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
-          h("header", { className: "rbo-f-head" },
-            h("div", { className: "rbo-f-ok", "aria-hidden": true }, "✓"),
-            h("p", { className: "rbo-f-kick" }, "Galop 1  ·  " + d.titre),
-            h("h1", null, L("coursFini")),
-            gagneXp ? h("span", { className: "rbo-f-xp" }, "+25 XP") : null),
-          h("div", { className: "rbo-f-grid" },
-            h("section", { className: "rbo-card rbo-f-ess" }, h("h3", null, ICO.livre(20), nettoyer(z[4].titre)),
-              h("ul", null, z[4].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); }))),
-            h("div", { className: "rbo-f-col" },
-              h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
-                h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, qq), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))),
-              h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), z[2].sous ? h("p", null, z[2].sous) : null,
-                h("ul", { className: "rbo-defil" }, z[2].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })))),
-            h("section", { className: "rbo-f-quiz" },
-              h("div", null, h("h3", null, L("secQuiz")), h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn") + (rtl ? " ←" : " →"))))),
-          h("div", { className: "rbo-f-act" },
-            suivant ? h("button", { type: "button", className: "rbo-btn", onClick: function () { props.onOuvrirCours(suivant.id); } }, L("coursSuivant") + "  ·  " + (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)) + (rtl ? " ←" : " →")) : null,
-            h("button", { type: "button", className: "rbo-btn neutre", onClick: props.onRetour }, L("retourGalops"))))),
+        vue !== "fin" ? null : (FIN_ANCIENNE ? ANCIENNE_FIN : h(FinCours, {
+          L: L, lg: lg, rtl: rtl, kicker: "Galop 1", titre: d.titre, Selecteur: Selecteur, coursId: cours.id,
+          heroImg: "images/robes-g3-epis.webp", heroPos: "62% 45%", heroFlip: true,
+          portraits: [[7, IMG.noir], [10, IMG.alezan], [13, IMG.bai]].map(function (x) {
+            var r = a[x[0] + 2], t = String(r.texte || ""), k = t.search(/[=＝]/);
+            t = (k >= 0 ? t.slice(k + 1) : t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1);
+            return { img: x[1], pos: "100% 2%", nom: sansNum(a[x[0]].titre), desc: t };
+          }),
+          note: (z[4].puces[z[4].puces.length - 1] || {}).texte || "",
+          hb: hbListe, hbImgs: [{ img: IMG.bai, pos: "100% 4%" }, { img: IMG.alezan, pos: "100% 4%" }, { img: IMG.noir, pos: "100% 4%" }],
+          onHey: hey, defiTexte: L("defiG1"), defiN: 3,
+          quizImg: "images/galops-v2-carte-quiz-hd1.jpg", onQuiz: function () { props.setEcran("quiz"); }, quizScore: props.quizScore,
+          suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
+          onGalops: props.onRetour, onRetourCours: function () { versCours(null); }
+        })),
+        /* (31/10 : la page de fin du matin — ✓ / Cours terminé / cartes — est remplacée par FinCours, d'après la maquette validée) */
         /* fin de page Hype (composant commun de l'appli), comme sur les autres pages */
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));
 }
+/* =====================================================================================
+   31/10 — FIN DE COURS (composant réutilisable, d'après la 3e maquette validée par Blandine).
+   Blocs : 1) synthèse immersive (photo d'ambiance + portraits reliés par un filet)  2) Hey Baby t'accompagne
+   (carrousel au doigt sur téléphone, liste sur ordinateur ; ouvre vraiment Hey Baby)  3) Ton défi terrain (cercles
+   à cocher, mémorisés sur l'appareil, ne bloque rien)  4) Quiz et révision (bandeau photo, quiz de l'appli)
+   5) navigation (cours suivant, retour aux Galops). Aucun texte de cours en dur : tout arrive par la config
+   (lue dans le cours) ou par les libellés traduits (14 langues). Config :
+   { L, lg, rtl, kicker, titre, heroImg, heroPos, portraits:[{img,pos,nom,desc}], note, hb:[questions], hbImgs:[img],
+     onHey(q), defiTexte, defiN, coursId, quizImg, onQuiz, quizScore, suivant:{titre,onClick}|null, onGalops,
+     onRetourCours, Selecteur }
+   ===================================================================================== */
+function FinCours(c) {
+  var L = c.L, rtl = c.rtl;
+  var cle = "hype_defi_" + c.coursId;
+  var _d = useState(function () {
+    var v = []; try { v = JSON.parse(window.localStorage.getItem(cle) || "[]"); } catch (e) { v = []; }
+    var n = c.defiN || 3, o = []; for (var i = 0; i < n; i++) o.push(!!v[i]); return o;
+  }), coche = _d[0], setCoche = _d[1];
+  var basculer = function (i) {
+    setCoche(function (av) {
+      var n = av.slice(); n[i] = !n[i];
+      try { window.localStorage.setItem(cle, JSON.stringify(n)); } catch (e) { }
+      return n;
+    });
+  };
+  var tous = coche.length > 0 && coche.every(Boolean);
+  var _s = useState(0), slide = _s[0], setSlide = _s[1];
+  var surDefil = function (e) {
+    var el = e.currentTarget, w = el.clientWidth || 1;
+    var i = Math.round(Math.abs(el.scrollLeft) / w); if (i !== slide) setSlide(i);
+  };
+  var aller = function (i) {
+    var el = document.querySelector(".rbo-fc-hbc"); if (!el) return;
+    try { el.scrollTo({ left: (rtl ? -1 : 1) * i * el.clientWidth, behavior: "smooth" }); } catch (e) { el.scrollLeft = (rtl ? -1 : 1) * i * el.clientWidth; }
+  };
+  var fl = rtl ? "‹" : "›", fl2 = rtl ? "←" : "→";
+  var etoiles = typeof c.quizScore === "number" ? Math.max(0, Math.min(5, Math.floor(c.quizScore / 20))) : 0;
+  var reussi = typeof c.quizScore === "number" && c.quizScore >= 60;
+  return h("div", { className: "rbo-fc" },
+    /* 1 — synthèse immersive */
+    h("section", { className: "rbo-fc-hero", "aria-labelledby": "rbo-fc-t" },
+      h("div", { className: "ph" + (c.heroFlip ? " flip" : ""), "aria-hidden": true, style: { backgroundImage: "url(" + c.heroImg + ")", backgroundPosition: c.heroPos || "70% 40%" } }),
+      h("div", { className: "vo" }),
+      h("div", { className: "bar" },
+        h("button", { type: "button", className: "rbo-back", "aria-label": L("retourCours"), onClick: c.onRetourCours }, rtl ? "›" : "‹"),
+        h("span", { style: { marginInlineStart: "auto" } }, c.Selecteur ? h(c.Selecteur, { compact: true }) : null)),
+      h("div", { className: "in" },
+        h("p", { className: "kick" }, c.kicker + "  ·  " + c.titre),
+        h("h2", { id: "rbo-fc-t" }, L("finTitre").replace(/ ([!?:;»])/g, "\u00A0$1")),
+        h("span", { className: "trait", "aria-hidden": true }),
+        h("p", { className: "sous" }, L("finSous")),
+        reussi ? h("p", { className: "ok" }, h("span", { "aria-hidden": true }, "★★★★★".slice(0, etoiles) + "☆☆☆☆☆".slice(0, 5 - etoiles)), " " + L("quizReussi") + " · " + c.quizScore + " %") : null,
+        h("ul", { className: "rbo-fc-por" }, c.portraits.map(function (p, i) {
+          return h("li", { key: i },
+            h("span", { className: "rond", role: "img", "aria-label": p.nom, style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }),
+            h("span", { className: "pt", "aria-hidden": true }),
+            h("span", { className: "tx" }, h("b", null, p.nom), h("span", null, p.desc)));
+        })),
+        c.note ? h("p", { className: "note" }, c.note) : null)),
+    /* 2 + 3 — Hey Baby, défi */
+    h("div", { className: "rbo-fc-duo" },
+      c.hb.length ? h("section", { className: "rbo-fc-hb", "aria-labelledby": "rbo-fc-hbt" },
+        h("h3", { id: "rbo-fc-hbt" }, ICO.bulle(22), L("hbTitre")),
+        h("p", { className: "sous" }, L("hbSous")),
+        h("div", { className: "rbo-fc-hbc", onScroll: surDefil },
+          c.hb.map(function (q, i) {
+            return h("button", { key: i, type: "button", className: "rbo-fc-q", onClick: function () { c.onHey(q); } },
+              c.hbImgs && c.hbImgs[i] ? h("span", { className: "vi", "aria-hidden": true, style: { backgroundImage: "url(" + c.hbImgs[i].img + ")", backgroundPosition: c.hbImgs[i].pos || "center" } }) : null,
+              h("span", { className: "qt" }, q), h("i", { "aria-hidden": true }, fl));
+          })),
+        c.hb.length > 1 ? h("div", { className: "pts" }, c.hb.map(function (q, i) {
+          return h("button", { key: i, type: "button", "aria-label": (i + 1) + " / " + c.hb.length, "aria-current": i === slide ? "true" : undefined, onClick: function () { aller(i); } });
+        })) : null) : null,
+      h("section", { className: "rbo-fc-defi", "aria-labelledby": "rbo-fc-dt" },
+        h("h3", { id: "rbo-fc-dt" }, ICO.coupe(22), L("defiTitre")),
+        h("p", { className: "sous" }, c.defiTexte),
+        h("div", { className: "ronds" }, coche.map(function (v, i) {
+          var lab = L("chevalN").replace("{n}", i + 1);
+          return h("button", { key: i, type: "button", "aria-pressed": v ? "true" : "false", "aria-label": lab, onClick: function () { basculer(i); } },
+            h("span", { className: "c" + (v ? " on" : ""), "aria-hidden": true }, v ? "✓" : "+"), h("span", { className: "l" }, lab));
+        })),
+        tous ? h("p", { className: "bravo", "aria-live": "polite" }, L("defiBravo")) : null)),
+    /* 4 — quiz */
+    h("section", { className: "rbo-fc-quiz", style: { backgroundImage: "url(" + c.quizImg + ")" } },
+      h("div", { className: "in" },
+        h("h3", null, L("secQuiz")),
+        h("p", null, L("quizSous")),
+        h("button", { type: "button", className: "rbo-btn", onClick: c.onQuiz }, L("quizBtn") + " " + fl2))),
+    /* 5 — navigation */
+    h("nav", { className: "rbo-fc-nav" },
+      c.suivant ? h("div", { className: "lig" }, h("span", { "aria-hidden": true }),
+        h("button", { type: "button", className: "suiv", onClick: c.suivant.onClick }, L("coursSuivant") + " · " + c.suivant.titre + " " + fl2),
+        h("span", { "aria-hidden": true })) : null,
+      h("button", { type: "button", className: "gal", onClick: c.onGalops }, L("retourGalops"))));
+}
+
 HypeRobesOrdi.ok = ok;
 /* 30/10 (v5) : éléments partagés avec hype-cours-robes-galops-ordi.js (Galops 3 et 5) — AUCUN changement d'affichage du Galop 1 */
-HypeRobesOrdi.shared = { CSS: CSS, T: T, tt: tt, ICO: ICO, morceaux: morceaux, pickLg: pickLg, arrLg: arrLg, nettoyer: nettoyer, sansNum: sansNum, sansGuillemets: sansGuillemets, LGS: LGS };
+HypeRobesOrdi.shared = { FinCours: FinCours, CSS: CSS, T: T, tt: tt, ICO: ICO, morceaux: morceaux, pickLg: pickLg, arrLg: arrLg, nettoyer: nettoyer, sansNum: sansNum, sansGuillemets: sansGuillemets, LGS: LGS };
 HypeRobesOrdi.version = VERSION;
 window.HypeRobesOrdi = HypeRobesOrdi;
 })();
