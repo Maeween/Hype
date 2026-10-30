@@ -15577,3 +15577,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 21h45 : photo pie tovero rangée (images/robes-g5-pie-tovero.webp, Galop 5) — nom déduit de l ordre du prompt, à confirmer. Reste G5 : balzan, raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris.
 
 - 30/10 21h46 : photo balzan rangée (images/robes-g5-pie-balzan.webp, Galop 5). Reste G5 : raie de mulet, bande scapulaire, zébrures, rouan, aubère, gris.
+
+- 30/10 21h48 : photo bande scapulaire rangée (images/robes-g5-adj-bande-scapulaire.webp, Galop 5). Reste G5 : raie de mulet, zébrures, rouan, aubère, gris.
