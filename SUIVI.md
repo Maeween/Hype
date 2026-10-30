@@ -15729,3 +15729,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
   · G3 (5) : isabelle, souris, alezan brûlé, café au lait, palomino.
   · G5 (8) : tobiano, ovéro, tovero, balzan, sabino, léopard, rouan, aubère.
   Noms et descriptions lus dans chaque cours (1re phrase), 14 langues vérifiées (dont japonais/chinois avec « —— »). Photo d'ambiance : œil (G2, G5), tête marquée du G3 (G3). Hey Baby (3 questions) et défi du cavalier comme au Galop 1 (G2 n'a pas de défi : Hey Baby seul). Au-delà de 4 portraits, cercles un peu plus petits.
+- 31/10 01h10 (v15 galops, NON publié) : défi du cavalier ajouté au Galop 2 (le cours n'en avait pas) : « Dans ton club, cherche : un cheval gris (encore foncé ou déjà très clair ?) ; un cheval pie (sa robe de base ?) ; si possible une robe plus rare (blanc, crème, chocolat ou tacheté) et nomme-la » — 14 langues. Six propositions d'onglets (A à F) envoyées à Blandine, aucune codée.
