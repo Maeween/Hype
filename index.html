@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-1130"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261030-1200"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -22832,7 +22832,7 @@ exports.hydrateRoot = function (container, initialChildren, options) {
 };
 exports.version = "19.2.5";
 
-});</script><script>window.onerror=function(m,s,l,c,err){try{localStorage.removeItem("hype_reprise_v1");}catch(xR){}/* (929) un plantage efface la reprise */var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(!r||r.firstChild)return false;var lg="fr";try{var e=JSON.parse(localStorage.getItem("augalop_etat_v1")||"null");if(e&&e.langue)lg=e.langue;}catch(x){}var T={fr:["Un caillou dans le sabot","Hype s'est arr\u00eat\u00e9 net. Rien n'est perdu : ta progression est enregistr\u00e9e.","Revenir \u00e0 l'accueil","D\u00e9tails techniques"],en:["A stone in the hoof","Hype stopped short. Nothing is lost \u2014 your progress is saved.","Back to home","Technical details"],es:["Una piedra en el casco","Hype se ha detenido. No se pierde nada: tu progreso est\u00e1 guardado.","Volver al inicio","Detalles t\u00e9cnicos"],it:["Un sassolino nello zoccolo","Hype si \u00e8 fermato. Non \u00e8 perso nulla: i tuoi progressi sono salvati.","Torna alla home","Dettagli tecnici"],de:["Ein Stein im Huf","Hype ist stehen geblieben. Nichts ist verloren: Dein Fortschritt ist gespeichert.","Zur\u00fcck zur Startseite","Technische Details"],ja:["\u3072\u3065\u3081\u306b\u5c0f\u77f3\u304c","Hype \u304c\u3068\u307e\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002\u304d\u308d\u304f\u306f\u306e\u3053\u3063\u3066\u3044\u307e\u3059\u3002","\u30db\u30fc\u30e0\u306b\u3082\u3069\u308b","\u304f\u308f\u3057\u3044\u3058\u3087\u3046\u307b\u3046"], zh: ["马蹄里的小石子", "Hype 突然停止了运行。别担心，什么都没丢：你的进度已保存。", "回到首页", "技术详情"], nl: ["Een steentje in de hoef", "Hype is abrupt gestopt. Er is niets verloren: je voortgang is opgeslagen.", "Terug naar home", "Technische details"], pt: ["Uma pedrinha no casco", "O Hype parou de repente. Nada se perdeu: seu progresso está salvo.", "Voltar ao início", "Detalhes técnicos"], sv: ["En sten i hoven", "Hype stannade tvärt. Inget har gått förlorat: dina framsteg är sparade.", "Tillbaka till startsidan", "Tekniska detaljer"], ru: ["Камешек в копыте", "Hype внезапно остановился. Ничего не потеряно: твой прогресс сохранён.", "Вернуться на главную", "Технические подробности"], pl: ["Kamyk w kopycie", "Hype nagle się zatrzymał. Nic nie przepadło: twoje postępy są zapisane.", "Wróć do strony głównej", "Szczegóły techniczne"], ko: ["발굽에 낀 돌멩이", "Hype가 갑자기 멈췄어요. 걱정하지 마세요. 진행 상황은 저장돼 있어요.", "홈으로 돌아가기", "기술 세부 정보"]};var w=T[lg]||T.fr;var im=(window.HYPE_IMGS&&window.HYPE_IMGS["k554"])||"";var st=String((err&&err.stack)||m||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");r.innerHTML='<div class="hyperr">'+'<video id="hyperr-vid" src="images/APY_SABOT.mp4" autoplay muted loop playsinline preload="auto" aria-label="Apy"></video><div class="hyperr-apy" id="hyperr-apy" hidden>\ud83d\udc34</div>'+'<h1>'+w[0]+'</h1><p>'+w[1]+'</p>'+'<button type="button" id="hyperr-go">'+w[2]+'</button>'+'<button type="button" id="hyperr-det">'+w[3]+'</button>'+'<pre class="err" id="hyperr-pre" hidden>'+st+'</pre></div>';/* 16/09 (222) : video d Apy (images/APY_SABOT.mp4, 170 px) a la place de k554, casse. Si la video ne charge pas : emoji cheval. */var vA=document.getElementById("hyperr-vid");if(vA){var koA=function(){try{vA.remove();}catch(x){}var eA=document.getElementById("hyperr-apy");if(eA)eA.hidden=false;};vA.addEventListener("error",koA);try{vA.muted=true;var pA=vA.play();if(pA&&pA.catch)pA.catch(function(){});}catch(x){}}var g=document.getElementById("hyperr-go");if(g)g.onclick=function(){try{location.replace(location.pathname);}catch(x){location.reload();}};var d=document.getElementById("hyperr-det");if(d)d.onclick=function(){var p=document.getElementById("hyperr-pre");if(p)p.hidden=!p.hidden;};return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};/* 25/08 : createPortal vit dans le module de base react-dom, pas dans react-dom-client — sans lui, la sortie de la barre du bas (session 160) retombait silencieusement sur le rendu d avant. */try{var __pB=__require("react-dom");if(__pB&&__pB.createPortal){window.ReactDOM.createPortal=__pB.createPortal;}}catch(ePortail){}}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-tout-v1.js"></script><script src="hype-images-webp-v1.js"></script><!-- 21/10 : images des cours en WebP (outils/images-cours-webp.py) --><script src="hype-dressage-conseils.js?v=21102026dsv1ru1pl1ko1"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-db-4.js"></script><script src="hype-clubs-loader.js"></script><script src="hype-pedagogie.js"></script><script src="hype-video.js?v=21102026grand1pl1"></script><script>
+});</script><script>window.onerror=function(m,s,l,c,err){try{localStorage.removeItem("hype_reprise_v1");}catch(xR){}/* (929) un plantage efface la reprise */var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(!r||r.firstChild)return false;var lg="fr";try{var e=JSON.parse(localStorage.getItem("augalop_etat_v1")||"null");if(e&&e.langue)lg=e.langue;}catch(x){}var T={fr:["Un caillou dans le sabot","Hype s'est arr\u00eat\u00e9 net. Rien n'est perdu : ta progression est enregistr\u00e9e.","Revenir \u00e0 l'accueil","D\u00e9tails techniques"],en:["A stone in the hoof","Hype stopped short. Nothing is lost \u2014 your progress is saved.","Back to home","Technical details"],es:["Una piedra en el casco","Hype se ha detenido. No se pierde nada: tu progreso est\u00e1 guardado.","Volver al inicio","Detalles t\u00e9cnicos"],it:["Un sassolino nello zoccolo","Hype si \u00e8 fermato. Non \u00e8 perso nulla: i tuoi progressi sono salvati.","Torna alla home","Dettagli tecnici"],de:["Ein Stein im Huf","Hype ist stehen geblieben. Nichts ist verloren: Dein Fortschritt ist gespeichert.","Zur\u00fcck zur Startseite","Technische Details"],ja:["\u3072\u3065\u3081\u306b\u5c0f\u77f3\u304c","Hype \u304c\u3068\u307e\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002\u304d\u308d\u304f\u306f\u306e\u3053\u3063\u3066\u3044\u307e\u3059\u3002","\u30db\u30fc\u30e0\u306b\u3082\u3069\u308b","\u304f\u308f\u3057\u3044\u3058\u3087\u3046\u307b\u3046"], zh: ["马蹄里的小石子", "Hype 突然停止了运行。别担心，什么都没丢：你的进度已保存。", "回到首页", "技术详情"], nl: ["Een steentje in de hoef", "Hype is abrupt gestopt. Er is niets verloren: je voortgang is opgeslagen.", "Terug naar home", "Technische details"], pt: ["Uma pedrinha no casco", "O Hype parou de repente. Nada se perdeu: seu progresso está salvo.", "Voltar ao início", "Detalhes técnicos"], sv: ["En sten i hoven", "Hype stannade tvärt. Inget har gått förlorat: dina framsteg är sparade.", "Tillbaka till startsidan", "Tekniska detaljer"], ru: ["Камешек в копыте", "Hype внезапно остановился. Ничего не потеряно: твой прогресс сохранён.", "Вернуться на главную", "Технические подробности"], pl: ["Kamyk w kopycie", "Hype nagle się zatrzymał. Nic nie przepadło: twoje postępy są zapisane.", "Wróć do strony głównej", "Szczegóły techniczne"], ko: ["발굽에 낀 돌멩이", "Hype가 갑자기 멈췄어요. 걱정하지 마세요. 진행 상황은 저장돼 있어요.", "홈으로 돌아가기", "기술 세부 정보"]};var w=T[lg]||T.fr;var im=(window.HYPE_IMGS&&window.HYPE_IMGS["k554"])||"";var st=String((err&&err.stack)||m||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");r.innerHTML='<div class="hyperr">'+'<video id="hyperr-vid" src="images/APY_SABOT.mp4" autoplay muted loop playsinline preload="auto" aria-label="Apy"></video><div class="hyperr-apy" id="hyperr-apy" hidden>\ud83d\udc34</div>'+'<h1>'+w[0]+'</h1><p>'+w[1]+'</p>'+'<button type="button" id="hyperr-go">'+w[2]+'</button>'+'<button type="button" id="hyperr-det">'+w[3]+'</button>'+'<pre class="err" id="hyperr-pre" hidden>'+st+'</pre></div>';/* 16/09 (222) : video d Apy (images/APY_SABOT.mp4, 170 px) a la place de k554, casse. Si la video ne charge pas : emoji cheval. */var vA=document.getElementById("hyperr-vid");if(vA){var koA=function(){try{vA.remove();}catch(x){}var eA=document.getElementById("hyperr-apy");if(eA)eA.hidden=false;};vA.addEventListener("error",koA);try{vA.muted=true;var pA=vA.play();if(pA&&pA.catch)pA.catch(function(){});}catch(x){}}var g=document.getElementById("hyperr-go");if(g)g.onclick=function(){try{location.replace(location.pathname);}catch(x){location.reload();}};var d=document.getElementById("hyperr-det");if(d)d.onclick=function(){var p=document.getElementById("hyperr-pre");if(p)p.hidden=!p.hidden;};return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};/* 25/08 : createPortal vit dans le module de base react-dom, pas dans react-dom-client — sans lui, la sortie de la barre du bas (session 160) retombait silencieusement sur le rendu d avant. */try{var __pB=__require("react-dom");if(__pB&&__pB.createPortal){window.ReactDOM.createPortal=__pB.createPortal;}}catch(ePortail){}}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-tout-v1.js"></script><script src="hype-images-webp-v1.js"></script><!-- 21/10 : images des cours en WebP (outils/images-cours-webp.py) --><script src="hype-dressage-conseils.js?v=20261027-reprises2"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-db-4.js"></script><script src="hype-clubs-loader.js"></script><script src="hype-pedagogie.js"></script><script src="hype-video.js?v=21102026grand1pl1"></script><script>
 /* k645 : puzzle du Poney de Bronze. Cette cle FONCTIONNE — le puzzle s'affiche
    correctement chez Blandine. C'est la preuve que les cles de cette plage ne sont
    PAS ecrasees par les lots d'images : la theorie de l'ecrasement etait fausse.
@@ -85402,6 +85402,17 @@ const REPRISES_FFE = {
     },
 };
 const ORDRE_REPRISES_FFE = ["g3", "g4", "g5", "g6", "g7", "clubelite"];
+/* Choix de reprise indépendant du niveau de cours ; conservé au retour des modes.
+   Une nouvelle page de Galop conserve son propre niveau de départ. */
+var REPRISE_CHOIX_SESSION = null;
+function memoriserNiveauReprise(niveau, galopSource) {
+    if (ORDRE_REPRISES_FFE.includes(niveau)) REPRISE_CHOIX_SESSION = { niveau, galopSource };
+}
+function niveauInitialReprise(galopSource, secours) {
+    if (REPRISE_CHOIX_SESSION && REPRISE_CHOIX_SESSION.galopSource === galopSource) return REPRISE_CHOIX_SESSION.niveau;
+    return ORDRE_REPRISES_FFE.includes("g" + galopSource) ? "g" + galopSource : secours;
+}
+
 // Palettes du jeu "Plan de Reprise" (construction libre), différenciées par niveau. Tracés indicatifs (svg 300x150), pas un géomètre officiel.
 const REPRISE_FIGURES_TIER = {
     "45": [
@@ -85637,7 +85648,7 @@ function EncartVivreLaReprise({ niveau, tr, onModes }) {
             React.createElement("button", { onClick: onModes, style: { marginTop: 14, width: "100%", padding: 13, borderRadius: 14, border: "none", fontSize: 13, fontWeight: 800, background: ouvert ? COLORS.turquoise : "rgba(127,163,173,0.25)", color: ouvert ? COLORS.nuit : "rgba(11,15,20,0.6)", transition: "background .4s ease 1.1s, color .4s ease 1.1s" } }, tr(VLR_TXT.decouvrir))));
 }
 
-function PanneauModesReprise({ tr, onFermer, setEcran }) {
+function PanneauModesReprise({ tr, onFermer, setEcran, niveau, galopOuvert }) {
     return React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 60, background: COLORS.nuit, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
             React.createElement("button", { onClick: onFermer, style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0, border: "none" } }, "\u2190"),
@@ -85649,7 +85660,7 @@ function PanneauModesReprise({ tr, onFermer, setEcran }) {
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, tr(m.titre)),
                 m.phare ? React.createElement("div", { style: { marginLeft: "auto", fontSize: 8.5, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.turquoise, border: "1px solid rgba(127,163,173,0.4)", borderRadius: 999, padding: "3px 8px" } }, tr(VLR_TXT.ici)) : null),
             React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.55, color: COLORS.grisDoux } }, tr(m.texte)),
-            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran(m.id === "tracer" ? "entrainer-tracer" : m.id === "challenge" ? "challenge-reprise" : "trace-anime"); },
+            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; memoriserNiveauReprise(niveau, galopOuvert); if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran(m.id === "tracer" ? "entrainer-tracer" : m.id === "challenge" ? "challenge-reprise" : "trace-anime"); },
                 style: { width: "100%", padding: 12, borderRadius: 13, fontSize: 12.5, fontWeight: 800, border: m.pret ? "none" : `1px solid ${COLORS.nuitBordure}`, background: m.pret ? (m.phare ? COLORS.turquoise : "rgba(127,163,173,0.14)") : "transparent", color: m.pret ? (m.phare ? COLORS.nuit : COLORS.turquoise) : COLORS.grisTresDoux } },
                 tr(m.pret ? VLR_TXT.lancer : VLR_TXT.bientot)))),
         React.createElement("div", { style: { height: "calc(env(safe-area-inset-bottom) + 40px)" } }));
@@ -85703,8 +85714,9 @@ function EcranReprisesFiches() {
        bibliotheque, l accueil ou un raccourci. On utilise desormais l historique reel de
        l appli (retourEcran), et on ne retombe sur galop-detail que s il n y a pas d historique. */
     const revenir = () => { if (peutReculer) retourEcran(); else setEcran(galopOuvert ? "galop-detail" : "dashboard"); };
-    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g3";
+    const initial = niveauInitialReprise(galopOuvert, "g3");
     const [niveau, setNiveau] = React.useState(initial);
+    React.useEffect(() => { memoriserNiveauReprise(niveau, galopOuvert); }, [niveau, galopOuvert]);
     /* 27/07 : panneau de choix des modes (« Vivre la reprise »), en surimpression pour ne
        pas toucher au routeur. L ancien gros encart carre « Voir le trace anime » est
        REMPLACE par le nouvel encart : il faisait doublon, meme place, meme role. */
@@ -85745,7 +85757,7 @@ function EcranReprisesFiches() {
         React.createElement(ConseilsCoachReprise, { niveau: niveau, tr: tr, galop: galopConseils }),
         React.createElement("p", { style: { margin: "22px 20px 0", fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
             tr({ fr: "Reprise officielle FFE, mise en forme pour la révision. Les reprises évoluent parfois d'une saison à l'autre : en cas de doute avant un examen, vérifie la dernière version sur ffe.com ou avec ton club.", en: "Official FFE test, laid out for revision. Tests can change from one season to the next: before an exam, check the latest version on ffe.com or with your club.", es: "Reprise oficial de la FFE, presentada para repasar. Las reprises cambian a veces de una temporada a otra: antes de un examen, comprueba la última versión en ffe.com o con tu club.", it: "Ripresa ufficiale FFE, impaginata per la revisione. Le riprese cambiano a volte da una stagione all'altra: prima di un esame, verifica l'ultima versione su ffe.com o con il tuo club.", de: "Offizielle FFE-Aufgabe, für die Wiederholung aufbereitet. Aufgaben ändern sich manchmal von Saison zu Saison: prüfe vor einer Prüfung die aktuelle Fassung auf ffe.com oder im Verein.", ja: "FFE公式の課目を復習用に整えたものです。課目は年度によって変わることがあります。試験前にffe.comまたはクラブで最新版を確認してください。", ar: "\u0639\u0631\u0636 \u0631\u0633\u0645\u064a \u0645\u0646 FFE \u0645\u0646\u0633\u0642 \u0644\u0644\u0645\u0631\u0627\u062c\u0639\u0629. \u062a\u062a\u063a\u064a\u0631 \u0627\u0644\u0639\u0631\u0648\u0636 \u0623\u062d\u064a\u0627\u0646\u0627 \u0645\u0646 \u0645\u0648\u0633\u0645 \u0644\u0622\u062e\u0631: \u0625\u0646 \u0634\u0643\u0643\u062a \u0642\u0628\u0644 \u0627\u0645\u062a\u062d\u0627\u0646\u060c \u062a\u062d\u0642\u0642\u064a \u0645\u0646 \u0622\u062e\u0631 \u0646\u0633\u062e\u0629 \u0639\u0644\u0649 ffe.com \u0623\u0648 \u0645\u0639 \u0646\u0627\u062f\u064a\u0643.", zh: "FFE 官方舞步套路，已整理成便于复习的版式。舞步套路有时会随赛季变化：考试前如有疑问，请到 ffe.com 或向你的俱乐部确认最新版本。", nl: "Officiële FFE-proef, opgemaakt om te leren. Proeven veranderen soms van seizoen tot seizoen: check bij twijfel voor een examen de nieuwste versie op ffe.com of bij je manege.", pt: "Reprise oficial da FFE, formatada para revisão. As reprises às vezes mudam de uma temporada para outra: em caso de dúvida antes de uma prova, confira a versão mais recente em ffe.com ou com seu clube.", sv: "Officiellt FFE-program, anpassat för repetition. Programmen ändras ibland från en säsong till nästa: om du är osäker inför ett prov, kolla den senaste versionen på ffe.com eller med din ridklubb.", ru: "Официальная программа FFE, оформленная для повторения. Программы иногда меняются от сезона к сезону: если сомневаешься перед экзаменом, проверь последнюю версию на ffe.com или спроси в своём клубе.", pl: "Oficjalny program FFE, przygotowany do nauki. Programy czasem zmieniają się z sezonu na sezon: przed egzaminem sprawdź najnowszą wersję na ffe.com albo w swoim klubie.", ko: "복습용으로 정리한 FFE 공식 프로그램이에요. 프로그램은 시즌마다 바뀔 수 있으니, 시험 전에 헷갈리면 ffe.com이나 클럽에서 최신 버전을 확인하세요." })),
-        modes ? React.createElement(PanneauModesReprise, { tr: tr, onFermer: () => setModes(false), setEcran: setEcran }) : null);
+        modes ? React.createElement(PanneauModesReprise, { tr: tr, onFermer: () => setModes(false), setEcran: setEcran, niveau: niveau, galopOuvert: galopOuvert }) : null);
 }
 
 const LETTER_POINTS = {
@@ -85814,17 +85826,23 @@ function arcDeuxPoints(p0, p1, angleBalayage, dernierPoint) {
     return arcPoints(centre, rayon, angleDepart, balayage, Math.abs(angleBalayage) >= 350 ? 40 : 20);
 }
 // Cercle défini par une seule lettre (ex: "S — cercle à gauche de 12 m") : le centre est décalé depuis la
-// lettre vers l'intérieur de la carrière (rail gauche → +x, rail droit → -x, ligne du milieu → selon le texte).
-function arcUnPoint(p0, lettre, diametreM, texte, dernierPoint) {
+// lettre vers l'intérieur : verticalement en A/C, horizontalement sur les grands côtés ou selon la main au centre.
+function arcUnPoint(p0, lettre, diametreM, texte, dernierPoint, sensPiste) {
     const rayon = diametreM * 4;
-    let dir = 1;
-    if (LETTRES_RAIL_GAUCHE.includes(lettre)) dir = 1;
-    else if (LETTRES_RAIL_DROITE.includes(lettre)) dir = -1;
-    else dir = /gauche/i.test(texte) ? -1 : 1;
-    const centre = { x: p0.x + dir * rayon, y: p0.y };
-    const angleDepart = (Math.atan2(p0.y - centre.y, p0.x - centre.x) * 180) / Math.PI;
-    const balayage = balayageCoherent(angleDepart, dernierPoint, p0, 360);
-    return arcPoints(centre, rayon, angleDepart, balayage, 40);
+    let centre;
+    if (lettre === "A") centre = { x: p0.x, y: p0.y - rayon };
+    else if (lettre === "C") centre = { x: p0.x, y: p0.y + rayon };
+    else {
+        const dir = LETTRES_RAIL_GAUCHE.includes(lettre) ? 1 : LETTRES_RAIL_DROITE.includes(lettre) ? -1 : /gauche/i.test(texte) ? -1 : 1;
+        centre = { x: p0.x + dir * rayon, y: p0.y };
+    }
+    const angle = Math.atan2(p0.y - centre.y, p0.x - centre.x) * 180 / Math.PI;
+    let balayage = /gauche/i.test(texte) ? -360 : /droite/i.test(texte) ? 360 : (sensPiste || 1) * 360;
+    if (dernierPoint) {
+        const dx = p0.x - dernierPoint.x, dy = p0.y - dernierPoint.y, rad = angle * Math.PI / 180;
+        if (Math.abs(-Math.sin(rad) * dx + Math.cos(rad) * dy) > .01) balayage = balayageCoherent(angle, dernierPoint, p0, 360);
+    }
+    return arcPoints(centre, rayon, angle, balayage, 72);
 }
 // Vitesse relative du point lumineux selon l'allure/le mouvement décrit dans le texte de la figure
 // (1 = trot de travail, référence). "pause" ajoute un vrai temps d'arrêt visuel, pas juste un ralenti.
@@ -85859,137 +85877,292 @@ function vitesseDepuisTexte(seg) {
        l allure courante. */
     return { v: null, pause: false };
 }
+/* 27/10/2026 - les figures sont construites avant de placer les événements
+   d'allure. Un repère « vers X » ne devient jamais une nouvelle destination. */
+function reprisePositionPiste(p) {
+    const e = 0.001;
+    if (Math.abs(p.y - 20) < e) return p.x - 20;
+    if (Math.abs(p.x - 180) < e) return 160 + p.y - 20;
+    if (Math.abs(p.y - 500) < e) return 640 + 180 - p.x;
+    if (Math.abs(p.x - 20) < e) return 800 + 500 - p.y;
+    return null;
+}
+function reprisePointPiste(s) {
+    s = ((s % 1280) + 1280) % 1280;
+    if (s <= 160) return { x: 20 + s, y: 20 };
+    if (s <= 640) return { x: 180, y: 20 + s - 160 };
+    if (s <= 800) return { x: 180 - (s - 640), y: 500 };
+    return { x: 20, y: 500 - (s - 800) };
+}
+function repriseLigne(p0, p1) {
+    const n = Math.max(1, Math.ceil(Math.hypot(p1.x - p0.x, p1.y - p0.y) / 10));
+    return Array.from({ length: n + 1 }, (_, i) => ({ x: p0.x + (p1.x - p0.x) * i / n, y: p0.y + (p1.y - p0.y) * i / n }));
+}
+function repriseCheminPiste(p0, p1) {
+    const s0 = reprisePositionPiste(p0), s1 = reprisePositionPiste(p1);
+    if (s0 === null || s1 === null) return repriseLigne(p0, p1);
+    let delta = ((s1 - s0 + 1280) % 1280);
+    if (delta > 640) delta -= 1280;
+    const sens = delta < 0 ? -1 : 1, fin = s0 + delta;
+    const coins = [];
+    for (let tour = -1; tour <= 2; tour++) {
+        [0, 160, 640, 800].forEach(s => {
+            const v = s + tour * 1280;
+            if ((v - s0) * sens > 0.001 && (fin - v) * sens > 0.001) coins.push(v);
+        });
+    }
+    coins.sort((a, b) => (a - b) * sens);
+    const sommets = [p0].concat(coins.map(reprisePointPiste), [p1]);
+    const out = [p0];
+    for (let i = 1; i < sommets.length - 1; i++) {
+        const a = sommets[i - 1], coin = sommets[i], b = sommets[i + 1];
+        const na = Math.hypot(coin.x - a.x, coin.y - a.y), nb = Math.hypot(b.x - coin.x, b.y - coin.y);
+        const r = Math.min(9, na / 2, nb / 2);
+        const da = { x: (coin.x - a.x) / na, y: (coin.y - a.y) / na };
+        const db = { x: (b.x - coin.x) / nb, y: (b.y - coin.y) / nb };
+        const avant = { x: coin.x - da.x * r, y: coin.y - da.y * r };
+        const apres = { x: coin.x + db.x * r, y: coin.y + db.y * r };
+        const centre = { x: avant.x + db.x * r, y: avant.y + db.y * r };
+        out.push(...repriseLigne(out[out.length - 1], avant).slice(1));
+        const angle = Math.atan2(avant.y - centre.y, avant.x - centre.x) * 180 / Math.PI;
+        const balayage = sens * 90;
+        out.push(...arcPoints(centre, r, angle, balayage, 6).slice(1));
+        out[out.length - 1] = apres;
+    }
+    out.push(...repriseLigne(out[out.length - 1], p1).slice(1));
+    return out;
+}
+function repriseCourbe(p0, p1, p2) {
+    const out = [];
+    [[p0, p1], [p1, p2]].forEach(([a, b], rang) => {
+        for (let i = rang ? 1 : 0; i <= 32; i++) {
+            const t = i / 32, u = t * t * (3 - 2 * t);
+            out.push({ x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * t });
+        }
+    });
+    return out;
+}
 function construireTraceReprise(fiche) {
     const pts = [];
-    /* allure en cours : elle PERSISTE d un segment a l autre et d une figure a l autre,
-       jusqu a ce qu un texte annonce explicitement autre chose. 1 = trot de travail au depart. */
-    let allureCourante = 1;
-    // Le point juste avant un cercle a souvent les mêmes coordonnées que son point de départ (ex: la lettre S
-    // apparaît deux fois d'affilée) : impossible d'en déduire une direction. On remonte jusqu'au dernier point
-    // aux coordonnées réellement différentes pour connaître la vraie direction d'arrivée du cheval.
-    function dernierPointDistinct(p0) {
-        for (let i = pts.length - 1; i >= 0; i--) {
-            if (Math.hypot(pts[i].x - p0.x, pts[i].y - p0.y) > 0.5) return pts[i];
-        }
+    let allureCourante = 1, allureLiaison = 1, sensPiste = 1, dernierMouvement = null;
+    const dernier = () => pts[pts.length - 1];
+    const distinct = p => {
+        for (let i = pts.length - 1; i >= 0; i--) if (Math.hypot(pts[i].x - p.x, pts[i].y - p.y) > 0.01) return pts[i];
         return null;
+    };
+    function ajouter(liste, figIndex, meta) {
+        const debut = pts.length;
+        liste.forEach(p => pts.push(Object.assign({ x: p.x, y: p.y, figIndex, vitesse: allureCourante, pause: false, cercle: false, diametre: 0 }, meta)));
+        dernierMouvement = { debut, fin: pts.length - 1 };
     }
-    fiche.figures.forEach((figureObj, figIndex) => {
-        figureObj.fr.split(" · ").forEach((segBrut) => {
-            const seg = segBrut.trim();
-            const lettres = repriseLettresDeSegment(seg);
+    function rejoindre(p, lettre, figIndex, piste) {
+        const suivante = allureCourante;
+        allureCourante = allureLiaison;
+        if (!dernier()) { ajouter([p], figIndex, { lettre }); allureCourante = suivante; return; }
+        const a = dernier();
+        const surPiste = reprisePositionPiste(a) !== null && reprisePositionPiste(p) !== null;
+        const axeAC = Math.abs(a.x - 100) < .001 && Math.abs(p.x - 100) < .001;
+        ajouter(piste && surPiste && !axeAC ? repriseCheminPiste(a, p) : repriseLigne(a, p), figIndex, { lettre, mouvement: piste ? "piste" : "droite" });
+        allureCourante = suivante;
+    }
+    function route(lettres, figIndex, meta) {
+        const liste = [];
+        lettres.forEach((l, i) => {
+            const p = LETTER_POINTS[l];
+            if (!i) { rejoindre(p, l, figIndex, true); liste.push(p); return; }
+            const a = LETTER_POINTS[lettres[i - 1]];
+            const memeBord = (a.x === p.x && (p.x === 20 || p.x === 180)) || (a.y === p.y && (p.y === 20 || p.y === 500));
+            const petitCote = ((lettres[i - 1] === "A" || lettres[i - 1] === "C") && (p.x === 20 || p.x === 180)) || ((l === "A" || l === "C") && (a.x === 20 || a.x === 180));
+            liste.push(...(memeBord || petitCote ? repriseCheminPiste(a, p) : repriseLigne(a, p)).slice(1));
+        });
+        if (liste.length > 1) ajouter(liste, figIndex, Object.assign({ lettre: lettres[0], mouvement: "droite" }, meta));
+    }
+    function arreter(figIndex, lettre) {
+        if (!dernier()) return;
+        const p = dernier();
+        ajouter([p], figIndex, { lettre: lettre || p.lettre, vitesse: .12, pause: true, mouvement: "arret", capCorps: p.capCorps });
+        ajouter([p], figIndex, { lettre: lettre || p.lettre, vitesse: .12, mouvement: "arret", capCorps: p.capCorps });
+    }
+    // Projection sur le mouvement déjà construit : demi-cercle vers G, diagonale vers L, etc.
+    function evenement(rep, avant, info, figIndex, texte, milieu) {
+        if (!dernierMouvement || dernierMouvement.fin <= dernierMouvement.debut) return;
+        const m = dernierMouvement, cum = [0];
+        for (let i = m.debut + 1; i <= m.fin; i++) cum.push(cum[cum.length - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+        let cible = 0, min = Infinity;
+        for (let i = m.debut; i < m.fin; i++) {
+            const a = pts[i], b = pts[i + 1], dx = b.x - a.x, dy = b.y - a.y;
+            const f = Math.max(0, Math.min(1, ((rep.x - a.x) * dx + (rep.y - a.y) * dy) / (dx * dx + dy * dy || 1)));
+            const d = Math.hypot(a.x + f * dx - rep.x, a.y + f * dy - rep.y);
+            if (d < min) { min = d; cible = cum[i - m.debut] + f * Math.hypot(dx, dy); }
+        }
+        const total = cum[cum.length - 1];
+        if (milieu) cible = total / 2;
+        else if (avant || (/vers/i.test(texte) && cible > total - .01)) cible = Math.max(0, cible - 8);
+        let k = 0;
+        while (k < cum.length - 2 && cum[k + 1] < cible - .001) k++;
+        const ia = m.debut + k, a = pts[ia], b = pts[ia + 1];
+        const f = (cible - cum[k]) / (cum[k + 1] - cum[k] || 1);
+        const point = Object.assign({}, a, { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, figIndex, evenement: texte });
+        const index = ia + 1;
+        pts.splice(index, 0, point); m.fin++;
+        // L'allure ne change qu'à partir du repère, jamais au début du mouvement.
+        if (info.v !== null && !info.pause) {
+            allureCourante = info.v;
+            for (let i = index; i <= m.fin; i++) { pts[i].vitesse = info.v; pts[i].figIndex = figIndex; }
+        }
+    }
+    fiche.figures.forEach((figure, figIndex) => {
+        figure.fr.split(" · ").forEach(brut => {
+            allureLiaison = allureCourante;
+            const seg = brut.trim(), lettres = repriseLettresDeSegment(seg), info = vitesseDepuisTexte(seg);
+            const repere = seg.match(/^(?:un peu\s+)?(avant|vers)\s+([A-Z])\b/i);
+            const main = seg.match(/main\s+(droite|gauche)/i);
+            if (main) sensPiste = main[1].toLowerCase() === "droite" ? 1 : -1;
+            if (repere && pts.length) { evenement(LETTER_POINTS[repere[2]], /avant/i.test(repere[1]), info, figIndex, seg, false); return; }
             if (!lettres.length) {
-                // segment sans lettre propre (ex: "arrêt, immobilité, salut" juste après "Avant R") :
-                // applique quand même l'allure/la pause décrite au dernier point déjà posé.
-                const infoRetro = vitesseDepuisTexte(seg);
-                if (infoRetro.v !== null) allureCourante = infoRetro.v;
-                if (pts.length && (infoRetro.pause || infoRetro.v !== null)) {
-                    pts[pts.length - 1].vitesse = allureCourante;
-                    /* 27/07 : la pause n est conservee que pour un ARRET REEL (pause:true = arret/immobilite/salut),
-                       plus de temps mort ajoute sur les simples changements d allure. */
-                    pts[pts.length - 1].pause = pts[pts.length - 1].pause || infoRetro.pause;
+                if (info.pause) arreter(figIndex);
+                else if (info.v !== null) allureCourante = info.v;
+                return;
+            }
+            // La première position « Avant R » est sur la piste, un peu avant la lettre.
+            if (repere && !pts.length) {
+                const p = LETTER_POINTS[lettres[0]], s = reprisePositionPiste(p);
+                ajouter([s === null ? p : reprisePointPiste(s - sensPiste * 12)], figIndex, { lettre: lettres[0], mouvement: "piste" });
+                if (info.pause) arreter(figIndex);
+                const reprise = seg.match(/rompre\s+au\s+(.+)$/i);
+                if (reprise) allureCourante = vitesseDepuisTexte(reprise[1]).v || allureCourante;
+                return;
+            }
+            if (info.v !== null && !info.pause) allureCourante = info.v;
+            const diamMatch = seg.match(/(\d+)\s*m/), diametre = diamMatch ? Number(diamMatch[1]) : 15;
+            const entre = seg.match(/entre\s+([A-Z])\s+et\s+([A-Z])/i);
+            if (/cession à la jambe/i.test(seg)) {
+                const cible = seg.match(/rejoindre entre\s+([A-Z])\s+et\s+([A-Z])/i);
+                let depart, arrivee;
+                if (entre && cible) {
+                    const a = LETTER_POINTS[entre[1]], b = LETTER_POINTS[entre[2]];
+                    depart = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+                    const c = LETTER_POINTS[cible[1]], d = LETTER_POINTS[cible[2]];
+                    arrivee = { x: (c.x + d.x) / 2, y: (c.y + d.y) / 2 };
+                } else { depart = LETTER_POINTS[lettres[0]]; arrivee = LETTER_POINTS[lettres[lettres.length - 1]]; }
+                rejoindre(depart, lettres[0], figIndex, false);
+                ajouter(repriseLigne(depart, arrivee), figIndex, { lettre: lettres[0], mouvement: "cession", capCorps: arrivee.y < depart.y ? 0 : 180 });
+                return;
+            }
+            if (/serpentine/i.test(seg)) {
+                const depart = LETTER_POINTS[lettres[0]], fin = LETTER_POINTS[lettres[lettres.length - 1]];
+                rejoindre(depart, lettres[0], figIndex, true);
+                const pAvant = distinct(depart), n = Number((seg.match(/(\d+)\s+boucles?/i) || [0, 3])[1]);
+                const dy = (fin.y - depart.y) / n, r = Math.min(80, Math.abs(dy) / 2), direction = Math.sign(dy);
+                let cote = pAvant && Math.abs(pAvant.x - depart.x) > .1 ? Math.sign(depart.x - pAvant.x) : (lettres[0] === "A" ? -sensPiste : sensPiste);
+                const chemin = [depart];
+                for (let i = 0; i < n; i++) {
+                    const cx = cote > 0 ? 180 - r : 20 + r, y = depart.y + dy * i;
+                    chemin.push(...repriseLigne(chemin[chemin.length - 1], { x: cx, y }).slice(1));
+                    chemin.push(...arcPoints({ x: cx, y: y + direction * r }, r, direction > 0 ? -90 : 90, cote * direction * 180, 32).slice(1));
+                    cote *= -1;
+                }
+                chemin.push(...repriseLigne(chemin[chemin.length - 1], fin).slice(1));
+                ajouter(chemin, figIndex, { lettre: lettres[0], mouvement: "serpentine", boucles: n });
+                return;
+            }
+            if (/demi-volte/i.test(seg)) {
+                const a = LETTER_POINTS[lettres[0]], b = LETTER_POINTS[lettres[lettres.length - 1]];
+                rejoindre(a, lettres[0], figIndex, true);
+                const renversee = /renversée/i.test(seg), d = diamMatch ? diametre : 10;
+                const interieur = { x: a.x + (a.x === 20 ? 1 : -1) * d * 8, y: renversee ? b.y : a.y };
+                if (renversee) {
+                    ajouter(repriseLigne(a, interieur), figIndex, { lettre: lettres[0], mouvement: "oblique" });
+                    ajouter(arcDeuxPoints(interieur, b, 180, distinct(interieur)), figIndex, { lettre: lettres[0], mouvement: "demi-volte-renversee", cercle: true, diametre: d });
+                } else {
+                    ajouter(arcDeuxPoints(a, interieur, 180, distinct(a)), figIndex, { lettre: lettres[0], mouvement: "demi-volte", cercle: true, diametre: d });
+                    ajouter(repriseLigne(interieur, b), figIndex, { lettre: lettres[0], mouvement: "oblique" });
                 }
                 return;
             }
-            const estDemiCercle = /demi-cercle/i.test(seg);
-            const estCercle = !estDemiCercle && /cercle/i.test(seg);
-            const diamMatch = seg.match(/(\d+)\s*m/);
-            const diametre = diamMatch ? parseInt(diamMatch[1], 10) : 15;
-            const infoAllure = vitesseDepuisTexte(seg);
-            if (infoAllure.v !== null) allureCourante = infoAllure.v;
-            const vitesse = allureCourante, pause = infoAllure.pause;
-            if ((estCercle || estDemiCercle) && lettres.length >= 2) {
-                const p0 = LETTER_POINTS[lettres[0]], p1 = LETTER_POINTS[lettres[1]];
-                if (p0 && p1) {
-                    arcDeuxPoints(p0, p1, estCercle ? 360 : 180, dernierPointDistinct(p0)).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
-                    return;
-                }
+            if (/ligne courbe/i.test(seg) && lettres.length >= 3) {
+                const a = LETTER_POINTS[lettres[0]];
+                rejoindre(a, lettres[0], figIndex, true);
+                ajouter(repriseCourbe(a, LETTER_POINTS[lettres[1]], LETTER_POINTS[lettres[2]]), figIndex, { lettre: lettres[0], mouvement: "ligne-courbe" });
+                return;
             }
-            if ((estCercle || estDemiCercle) && lettres.length === 1) {
-                const p0 = LETTER_POINTS[lettres[0]];
-                if (p0) {
-                    arcUnPoint(p0, lettres[0], diametre, seg, dernierPointDistinct(p0)).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
-                    return;
-                }
+            const demi = /demi-cercle/i.test(seg);
+            if (/cercle/i.test(seg)) {
+                const a = LETTER_POINTS[lettres[0]];
+                rejoindre(a, lettres[0], figIndex, true);
+                const chemin = lettres.length >= 2
+                    ? arcDeuxPoints(a, LETTER_POINTS[lettres[1]], demi ? 180 : 360, distinct(a))
+                    : arcUnPoint(a, lettres[0], diametre, seg, distinct(a), sensPiste);
+                ajouter(chemin, figIndex, { lettre: lettres[0], mouvement: demi ? "demi-cercle" : "cercle", cercle: true, diametre });
+                return;
             }
-            const entreMatch = seg.match(/(?:entre|Entre)\s+([A-Z])\s+et\s+([A-Z])/);
-            if (entreMatch) {
-                const chemin = cheminPiste(entreMatch[1], entreMatch[2]);
-                if (chemin) {
-                    /* 27/07 (bug signale par Blandine) : « entre F et K — depart au galop » decrit un
-                       point SITUE ENTRE ces deux lettres. On donnait l allure demandee a TOUT le chemin
-                       F -> A -> K, donc la couleur passait au galop des F, deux lettres trop tot. La
-                       nouvelle allure ne commence plus qu a partir de la MOITIE du chemin : les
-                       premieres lettres gardent l allure precedente. */
-                    const vAvant = pts.length ? (pts[pts.length - 1].vitesse || 1) : vitesse;
-                    const bascule = Math.max(1, Math.floor(chemin.length / 2));
-                    chemin.forEach((l, rang) => { const p = LETTER_POINTS[l]; if (p) pts.push({ x: p.x, y: p.y, lettre: l, figIndex: figIndex, cercle: false, diametre: diametre, vitesse: rang < bascule ? vAvant : vitesse, pause: false }); });
-                    return;
-                }
+            if (entre) {
+                const nouvelleAllure = allureCourante;
+                const precedente = allureLiaison;
+                allureCourante = precedente;
+                rejoindre(LETTER_POINTS[entre[1]], entre[1], figIndex, true);
+                ajouter(repriseCheminPiste(LETTER_POINTS[entre[1]], LETTER_POINTS[entre[2]]), figIndex, { lettre: entre[1], mouvement: "piste" });
+                evenement(LETTER_POINTS[entre[2]], false, { v: nouvelleAllure, pause: false }, figIndex, seg, true);
+                return;
             }
-            lettres.forEach((l) => { const p = LETTER_POINTS[l]; if (p) pts.push({ x: p.x, y: p.y, lettre: l, figIndex: figIndex, cercle: estCercle || estDemiCercle, diametre: diametre, vitesse: vitesse, pause: pause }); });
+            if (/épaule en dedans/i.test(seg)) {
+                const a = LETTER_POINTS[lettres[0]], b = LETTER_POINTS[lettres[lettres.length - 1]];
+                rejoindre(a, lettres[0], figIndex, true);
+                const cap = b.y < a.y ? 0 : 180;
+                ajouter(repriseLigne(a, b), figIndex, { lettre: lettres[0], mouvement: "epaule-en-dedans", capCorps: cap + (/droite/i.test(seg) ? 30 : -30) });
+                return;
+            }
+            route(lettres, figIndex);
+            if (info.pause) arreter(figIndex, lettres[lettres.length - 1]);
+            if (/reculer/i.test(seg) && dernier()) {
+                const a = dernier(), avant = distinct(a);
+                const dx = avant ? a.x - avant.x : 0, dy = avant ? a.y - avant.y : -1, norm = Math.hypot(dx, dy) || 1;
+                const b = { x: a.x - dx / norm * 17.6, y: a.y - dy / norm * 17.6 };
+                ajouter(repriseLigne(a, b), figIndex, { lettre: lettres[0], mouvement: "reculer", vitesse: .3, capCorps: Math.atan2(dy, dx) * 180 / Math.PI + 90 });
+                const reprise = seg.match(/rompre\s+au\s+(.+)$/i);
+                allureCourante = reprise ? (vitesseDepuisTexte(reprise[1]).v || .55) : .55;
+            }
         });
     });
-    // La carrière est rectangulaire : le passage entre A ou C et une lettre latérale (K/F pour A, H/M pour C)
-    // doit prendre le coin, jamais couper tout droit en diagonale (c'est un critère de notation) — avec un
-    // très léger arrondi (petit rayon) pour rester crédible, un cheval ne tourne pas sur un angle parfaitement vif.
-    const COINS = { "A-K": { x: 20, y: 500 }, "K-A": { x: 20, y: 500 }, "A-F": { x: 180, y: 500 }, "F-A": { x: 180, y: 500 }, "C-H": { x: 20, y: 20 }, "H-C": { x: 20, y: 20 }, "C-M": { x: 180, y: 20 }, "M-C": { x: 180, y: 20 } };
-    const RAYON_COIN = 9;
-    function pointsCoinArrondi(prevPoint, coin, nextPoint, rayon) {
-        const din0 = { x: coin.x - prevPoint.x, y: coin.y - prevPoint.y };
-        const dinN = Math.hypot(din0.x, din0.y) || 1;
-        const din = { x: din0.x / dinN, y: din0.y / dinN };
-        const dout0 = { x: nextPoint.x - coin.x, y: nextPoint.y - coin.y };
-        const doutN = Math.hypot(dout0.x, dout0.y) || 1;
-        const dout = { x: dout0.x / doutN, y: dout0.y / doutN };
-        const pointAvant = { x: coin.x - din.x * rayon, y: coin.y - din.y * rayon };
-        const pointApres = { x: coin.x + dout.x * rayon, y: coin.y + dout.y * rayon };
-        const centre = { x: pointAvant.x + dout.x * rayon, y: pointAvant.y + dout.y * rayon };
-        const angleDepart = (Math.atan2(pointAvant.y - centre.y, pointAvant.x - centre.x) * 180) / Math.PI;
-        let angleArrivee = (Math.atan2(pointApres.y - centre.y, pointApres.x - centre.x) * 180) / Math.PI;
-        let diff = angleArrivee - angleDepart;
-        while (diff > 180) diff -= 360;
-        while (diff <= -180) diff += 360;
-        return arcPoints(centre, rayon, angleDepart, diff, 6);
-    }
-    const ptsAvecCoins = [];
-    pts.forEach((p, i) => {
-        if (i > 0) {
-            const coin = COINS[pts[i - 1].lettre + "-" + p.lettre];
-            if (coin) {
-                pointsCoinArrondi(pts[i - 1], coin, p, RAYON_COIN).forEach((fp) => ptsAvecCoins.push({ x: fp.x, y: fp.y, lettre: pts[i - 1].lettre, figIndex: pts[i - 1].figIndex, cercle: false, diametre: 0, vitesse: pts[i - 1].vitesse, pause: false }));
-            }
-        }
-        ptsAvecCoins.push(p);
-    });
-    // "dist" représente ici une distance pondérée par la vitesse de l'allure (pas une distance physique brute) :
-    // un même nombre de mètres réels prend plus ou moins de "temps" selon l'allure, et un arrêt ajoute une vraie
-    // pause (le point lumineux reste immobile un instant) plutôt qu'un simple ralentissement.
-    const PAUSE_TEMPS = 14; /* 27/07 : 26 -> 14, l arrêt reste lisible sans casser le rythme. */
+    // Une pause est un segment immobile, y compris à l'arrêt final. L'allure
+    // appartient au segment sortant : pas de changement anticipé par interpolation.
     let cum = 0;
-    ptsAvecCoins.forEach((p, i) => {
-        if (i > 0) {
-            const prev = ptsAvecCoins[i - 1];
-            const d = Math.hypot(p.x - prev.x, p.y - prev.y);
-            const vMoy = ((prev.vitesse || 1) + (p.vitesse || 1)) / 2;
-            cum += d / Math.max(vMoy, 0.05);
-            if (prev.pause) cum += PAUSE_TEMPS;
-        }
+    pts.forEach((p, i) => {
+        if (i) { const a = pts[i - 1]; cum += Math.hypot(p.x - a.x, p.y - a.y) / Math.max(a.vitesse || 1, .05) + (a.pause ? 14 : 0); }
         p.dist = cum;
     });
-    return { points: ptsAvecCoins, longueur: cum };
+    return { points: pts, longueur: cum };
 }
+
 // Palettes du jeu "Plan de Reprise" (construction libre), différenciées par niveau. Tracés indicatifs (svg 300x150), pas un géomètre officiel.
 // Position (x,y) + vitesse/figure sur le tracé à une distance pondérée donnée — réutilisé pour le point
 // principal ET pour les points fantômes de la traînée.
+// Le cap suit le segment courant, pas une ancienne position : le cheval
+// conserve ainsi son orientation quand il recule puis repart en avant.
+function guidesCourbesReprise(trace) {
+    const guides = [];
+    let groupe = null;
+    trace.points.forEach(p => {
+        if (!p.cercle) { groupe = null; return; }
+        const cle = p.figIndex + ":" + p.lettre + ":" + p.mouvement;
+        if (!groupe || groupe.cle !== cle) { groupe = { cle, points: [] }; guides.push(groupe); }
+        groupe.points.push(p);
+    });
+    return guides.map(g => ({ points: g.points, d: "M " + g.points.map(p => p.x + " " + p.y).join(" L ") }));
+}
+function capCorpsReprise(point, suivant, capActuel) {
+    if (Number.isFinite(point.capCorps)) return point.capCorps;
+    const dx = suivant.x - point.x, dy = suivant.y - point.y;
+    return Math.hypot(dx, dy) > .001 ? Math.atan2(dy, dx) * 180 / Math.PI + 90 : capActuel;
+}
 function pointADistance(trace, cible) {
     const pts = trace.points;
-    let idx = 0;
-    for (let i = 0; i < pts.length; i++) { if (pts[i].dist <= cible) idx = i; else break; }
-    const pA = pts[idx] || pts[0];
-    const pB = pts[idx + 1] || pA;
-    const segLen = Math.max(pB.dist - pA.dist, 0.0001);
-    const frac = Math.min(Math.max((cible - pA.dist) / segLen, 0), 1);
-    return { x: pA.x + (pB.x - pA.x) * frac, y: pA.y + (pB.y - pA.y) * frac, vitesse: pB.vitesse, figIndex: pB.figIndex, idx: idx };
+    if (!pts.length) return { x: 100, y: 500, vitesse: 1, figIndex: 0, idx: 0 };
+    let lo = 0, hi = pts.length;
+    while (lo < hi) { const m = (lo + hi) >>> 1; if (pts[m].dist <= cible) lo = m + 1; else hi = m; }
+    const idx = Math.max(0, lo - 1), a = pts[idx], b = pts[idx + 1] || a;
+    const f = Math.min(1, Math.max(0, (cible - a.dist) / Math.max(b.dist - a.dist, .0001)));
+    return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, vitesse: a.vitesse, figIndex: a.figIndex, idx, capCorps: a.capCorps };
 }
 function couleurSelonAllure(v) {
     /* 27/07 (demande Blandine) : code couleur des allures — pas = VERT, trot = BLEU, galop = ROUGE.
@@ -86426,8 +86599,9 @@ function EcranEntrainerTracer() {
     /* La coquille de l'appli ajoute paddingBottom 84 pour la barre de navigation : un écran plein
        doit donc faire 100dvh MOINS ces 84 px, sinon la page scrolle. */
     const HAUTEUR_ECRAN = "calc(100dvh - 84px)";
-    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
+    const initial = niveauInitialReprise(galopOuvert, "g4");
     const [niveau, setNiveau] = React.useState(initial);
+    React.useEffect(() => { memoriserNiveauReprise(niveau, galopOuvert); }, [niveau, galopOuvert]);
     const [liste, setListe] = React.useState(false);
     const [indices, setIndices] = React.useState(0);
     const [libelleIndice, setLibelleIndice] = React.useState(null);
@@ -87136,8 +87310,9 @@ function ChalEpreuveReprise({ decor, setDecor, tr, onFin, onRetour }) {
 function EcranChallengeReprise() {
     const { galopOuvert, setEcran, tr, retourEcran, peutReculer } = useApp();
     /* la coquille ajoute paddingBottom 84 pour la barre de navigation */
-    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
+    const initial = niveauInitialReprise(galopOuvert, "g4");
     const [cle, setCle] = React.useState(initial);
+    React.useEffect(() => { memoriserNiveauReprise(cle, galopOuvert); }, [cle, galopOuvert]);
     const [epreuve, setEpreuve] = React.useState("");
     const [decor, setDecor] = React.useState(hypeDecorMemorise);
     const [scores, setScores] = React.useState({});
@@ -87344,9 +87519,10 @@ function EcranPhasesSaut() {
 
 function EcranTraceAnime() {
     const { galopOuvert, setEcran, tr, langue, profil, retourEcran, peutReculer } = useApp();
-    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
+    const initial = niveauInitialReprise(galopOuvert, "g4");
     const [onglet, setOnglet] = React.useState("immersion");
     const [niveau, setNiveau] = React.useState(initial);
+    React.useEffect(() => { memoriserNiveauReprise(niveau, galopOuvert); }, [niveau, galopOuvert]);
     /* Famille « Reprises visualisées » : une minute d écran actif sur cette reprise. */
     hypeMinuteDeVue("reprise-voir", niveau);
     const [t, setT] = React.useState(0);
@@ -87479,9 +87655,7 @@ function EcranTraceAnime() {
         if (d && d.couleur === couleur) d.pts.push({ x: pos.x, y: pos.y });
         else troncons.push({ couleur: couleur, pts: [parcourus[parcourus.length - 1], { x: pos.x, y: pos.y }] });
     }
-    const cerclesMarques = [];
-    const dejaVus = {};
-    trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!dejaVus[k]) { dejaVus[k] = true; cerclesMarques.push(p); } } });
+    const cerclesMarques = guidesCourbesReprise(trace);
     const OFFSETS = [26, 56, 92, 134];
     const traineePoints = OFFSETS.map((off) => {
         const p = pointADistance(trace, Math.max(cibleLen - off, 0));
@@ -87489,15 +87663,12 @@ function EcranTraceAnime() {
         return { x: p.x, y: p.y, v: q.vitesse !== undefined ? q.vitesse : p.vitesse };
     });
     /* orientation lissée du cheval */
-    const arriere = pointADistance(trace, Math.max(cibleLen - 9, 0));
-    let cap = capRef.current;
-    if (Math.hypot(pos.x - arriere.x, pos.y - arriere.y) > 0.4) {
-        const viseur = (Math.atan2(pos.y - arriere.y, pos.x - arriere.x) * 180) / Math.PI + 90;
-        let e = viseur - capRef.current;
-        while (e > 180) e -= 360;
-        while (e <= -180) e += 360;
-        cap = capRef.current + e * 0.22;
-    }
+    const pointSuivant = trace.points[pos.idx + 1] || ptAtteint;
+    const viseur = capCorpsReprise(ptAtteint, pointSuivant, capRef.current);
+    let ecartCap = viseur - capRef.current;
+    while (ecartCap > 180) ecartCap -= 360;
+    while (ecartCap <= -180) ecartCap += 360;
+    const cap = capRef.current + ecartCap * 0.22;
     capRef.current = cap;
     const largCheval = longueurCheval * CHEVAL_DESSUS_RATIO;
     /* boutons flottants de la carrière : son, musique, ambiance, aide */
@@ -87563,7 +87734,7 @@ function EcranTraceAnime() {
                                 return React.createElement("text", { key: l, x: p.x + (p.x === 100 ? 0 : (p.x < 100 ? -10 : 10)), y: p.y + 3.2, textAnchor: "middle",
                                     style: { fontFamily: "'Montserrat',sans-serif", fontWeight: 800, fontSize: (on ? (axe ? 27 : 25) : (axe ? 24 : 22)) + "px", fill: on ? P.accent : (axe ? P.lettreAxe : P.lettre), paintOrder: "stroke", stroke: P.contourLettre, strokeWidth: 6.5, strokeLinejoin: "round", filter: on ? "drop-shadow(0 0 5px " + P.accent + ")" : "drop-shadow(0 0 4px rgba(6,7,9,0.85))", transition: "fill .9s ease, font-size .9s ease" } }, l);
                             }),
-                            cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: P.cercle, strokeWidth: 0.8, strokeDasharray: "2 5" })),
+                            cerclesMarques.map((g, i) => React.createElement("path", { key: "c" + i, d: g.d, fill: "none", stroke: P.cercle, strokeWidth: 0.8, strokeDasharray: "2 5" })),
                             React.createElement("path", { d: dFull, fill: "none", stroke: P.froid, strokeWidth: 1.2, strokeDasharray: "1.5 4" }),
                             React.createElement("path", { d: dVus, fill: "none", stroke: P.accent, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", opacity: infoDecor.clair ? 0.5 : 0.36 }),
                             troncons.map((tc, i) => {

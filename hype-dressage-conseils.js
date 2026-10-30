@@ -8,7 +8,7 @@
    Traductions en/es/it/de/ja à ajouter dans les mêmes objets {fr:...}.
    ──────────────────────────────────────────────────────────────────────────── */
 window.HYPE_DRESSAGE = window.HYPE_DRESSAGE || {};
-window.HYPE_DRESSAGE.version = "1.6"; /* 21/10/2026 : néerlandais (9e langue) */
+window.HYPE_DRESSAGE.version = "1.7"; /* 21/10/2026 : néerlandais (9e langue) */
 window.HYPE_DRESSAGE.fiches = {
  "entry_centerline": {
   "id": "entry_centerline",
@@ -7296,6 +7296,37 @@ window.HYPE_DRESSAGE.figuresIds = {
   ]
  ]
 };
+
+/* 27/10/2026 - les arrêts ont les repères de LEUR reprise. Les fiches
+   génériques restent intactes ; seules des copies locales changent la lettre. */
+(function (b) {
+    function auRepere(valeur, lettre) {
+        if (typeof valeur === "string") return valeur.replace(/X/g, lettre);
+        if (Array.isArray(valeur)) return valeur.map(v => auRepere(v, lettre));
+        if (valeur && typeof valeur === "object") {
+            const out = {};
+            Object.keys(valeur).forEach(k => { out[k] = auRepere(valeur[k], lettre); });
+            return out;
+        }
+        return valeur;
+    }
+    const avantR = auRepere(b.fiches.halt_at_x, "R");
+    avantR.id = "halt_before_r";
+    avantR.label = { fr: "Arrêt avant R", en: "Halt before R", es: "Parada antes de R", it: "Alt prima di R",
+        de: "Halt vor R", ja: "Rの手前で停止", zh: "在 R 之前停住", ar: "التوقف قبل R",
+        nl: "Halt vóór R", pt: "Parada antes de R", sv: "Halt före R", ru: "Остановка перед R",
+        pl: "Zatrzymanie przed R", ko: "R 전에 정지" };
+    avantR.obs[0] = b.fiches.final_halt.obs[0];
+    b.fiches.halt_before_r = avantR;
+    b.figuresIds.g4[0] = ["halt_before_r", "salute", "trot_rising"];
+    const arrets = { g3: "G", g4: "S", g5: "I", g6: "I", g7: "I", clubelite: "I" };
+    Object.keys(arrets).forEach(niveau => {
+        const lettre = arrets[niveau], id = "final_halt_" + lettre.toLowerCase();
+        if (!b.fiches[id]) { b.fiches[id] = auRepere(b.fiches.final_halt, lettre); b.fiches[id].id = id; }
+        const i = b.figuresIds[niveau].length - 1;
+        b.figuresIds[niveau][i] = b.figuresIds[niveau][i].map(k => k === "final_halt" ? id : k);
+    });
+})(window.HYPE_DRESSAGE);
 
 /* Sélection des conseils : filtre le niveau du cavalier, puis prend le meilleur
    « faire » et le meilleur « eviter » (priorité croissante). Le décalage permet
