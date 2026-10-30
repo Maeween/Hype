@@ -15444,3 +15444,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h05 : photo pie sabino rangée (images/robes-g5-pie-sabino.webp, Galop 5, pies). Reste pour les pies G5 : tobiano, ovéro, tovero, balzan.
 
 - 30/10 21h10 : photo sans légende (bai à couverture blanche tachetée) rangée en réserve : images/robes-reserve-tachete-bai-couverture.webp, en attente de son nom.
+
+- 30/10 21h15 : photo alezan brûlé rangée (images/robes-g3-alezan-brule.webp, Galop 3, déclinaisons). Reste G3 : balzane, épis, café au lait, noir pangaré.
