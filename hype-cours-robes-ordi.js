@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 23;   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
+var VERSION = 25;   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
+/* v23 :   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
 /* v22 :   /* 31/10 00h10 : Galop 2/3/5 dans le menu des vignettes et les onglets ; « Galop 1 » au-dessus des robes retiré */
 /* v21 :   /* 31/10 00h05 : « À retenir » des 3 robes retiré ; onglets actifs sans fond doré plein */
 /* v20 :   /* 31/10 00h : En pratique sur fond noir (plus de pétrole sur pétrole) */
@@ -30,7 +31,8 @@ var VERSION = 23;   /* 31/10 00h15 : tour des doublons — « À observer » ret
 /* v17 :   /* 30/10 23h50 : section 02 (noir, alezan, bai) sur fond noir */
 /* v16 :   /* 30/10 23h45 : section 03 Comparer retirée (doublons : photos bai/alezan, Chez le bai/l'alezan, planche officielle) */
 /* ancien : VERSION = 15;   /* 30/10 23h40 : retour à la version de 22h58 (le découpage en écrans est retiré à la demande de Blandine) */
-var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
+var QUIZ_INTEGRE = false;
+var FIN_ANCIENNE = false;   /* 31/10 : true = ancienne page de fin (synthèse longue + citation + bloc quiz + « Terminer le cours ») */   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -58,6 +60,9 @@ var T = {
   qSur: tt("Question {n} sur {t}", "Question {n} of {t}", "Pregunta {n} de {t}", "Domanda {n} di {t}", "第{n}問（全{t}問）", "Frage {n} von {t}", "السؤال {n} من {t}", "第 {n} 题，共 {t} 题", "Vraag {n} van {t}", "Pergunta {n} de {t}", "Fråga {n} av {t}", "Вопрос {n} из {t}", "Pytanie {n} z {t}", "{t}문제 중 {n}번"),
   qPrec: tt("Question précédente", "Previous question", "Pregunta anterior", "Domanda precedente", "前の問題", "Vorherige Frage", "السؤال السابق", "上一题", "Vorige vraag", "Pergunta anterior", "Föregående fråga", "Предыдущий вопрос", "Poprzednie pytanie", "이전 문제"),
   qSuiv: tt("Question suivante", "Next question", "Siguiente pregunta", "Domanda successiva", "次の問題", "Nächste Frage", "السؤال التالي", "下一题", "Volgende vraag", "Próxima pergunta", "Nästa fråga", "Следующий вопрос", "Następne pytanie", "다음 문제"),
+  coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
+  coursSuivant: tt("Cours suivant", "Next lesson", "Siguiente curso", "Corso successivo", "次のレッスン", "Nächste Lektion", "الدرس التالي", "下一课", "Volgende les", "Próximo curso", "Nästa lektion", "Следующий урок", "Następna lekcja", "다음 수업"),
+  retourGalops: tt("Retour aux Galops", "Back to the Galops", "Volver a los Galops", "Torna ai Galop", "ギャロップに戻る", "Zurück zu den Galops", "العودة إلى الغالوب", "返回 Galop", "Terug naar de Galops", "Voltar aos Galops", "Tillbaka till Galops", "Назад к Galop", "Powrót do Galopów", "갤럽으로 돌아가기"),
   score: tt("Ton score : {s} / {t}", "Your score: {s} / {t}", "Tu puntuación: {s} / {t}", "Il tuo punteggio: {s} / {t}", "スコア：{s} / {t}", "Dein Ergebnis: {s} / {t}", "نتيجتك: {s} / {t}", "你的得分：{s} / {t}", "Je score: {s} / {t}", "Sua pontuação: {s} / {t}", "Ditt resultat: {s} / {t}", "Твой результат: {s} / {t}", "Twój wynik: {s} / {t}", "점수: {s} / {t}")
 };
 
@@ -180,7 +185,7 @@ var CSS = [
 ".rbo-vig{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:14px;padding:36px 40px 20px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
 ".rbo-vig button{position:relative;height:150px;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.16);background:var(--petrole) center/cover no-repeat;text-align:start;padding:0}",
 ".rbo-vig button:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 30%,rgba(7,10,8,.88) 100%)}",
-".rbo-vig .big{position:absolute;top:8px;inset-inline-start:14px;z-index:1;font-family:'Cormorant Garamond',serif;font-size:44px;line-height:1;font-weight:500;color:#E9D9B4}",
+".rbo-vig .big{text-shadow:0 2px 12px rgba(0,0,0,.75),0 0 2px rgba(0,0,0,.6);position:absolute;top:8px;inset-inline-start:14px;z-index:1;font-family:'Cormorant Garamond',serif;font-size:44px;line-height:1;font-weight:500;color:#E9D9B4}",
 ".rbo-vig .lab{position:absolute;inset-inline:14px 52px;bottom:12px;z-index:1;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:21px;line-height:1.1;font-weight:600}",
 ".rbo-vig .arr{position:absolute;bottom:10px;inset-inline-end:12px;z-index:1;width:32px;height:32px;border-radius:50%;border:1px solid #E9D9B4;display:flex;align-items:center;justify-content:center;font-size:15px;color:#E9D9B4}",
 ".rbo-vig button[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
@@ -299,6 +304,26 @@ var CSS = [
 "@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}",
 ".rbo-cards.deux{grid-template-columns:repeat(2,minmax(0,1fr))}",
 "@media (min-width:1480px){.rbo-cards.deux{grid-template-columns:minmax(0,1fr)}.rbo-top.seul{grid-template-columns:minmax(0,1fr)}}",
+".rbo-f{background:var(--noir);padding:0 40px 56px}",
+".rbo-f-bar{display:flex;align-items:center;gap:12px;padding:18px 0 0}",
+".rbo-f-head{text-align:center;padding:26px 0 34px;display:flex;flex-direction:column;align-items:center;gap:8px}",
+".rbo-f-ok{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--champ);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--champ);box-shadow:0 0 0 6px rgba(201,166,107,.08),0 10px 30px rgba(0,0,0,.4)}",
+".rbo-f-kick{font-size:11.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--champ);margin:6px 0 0}",
+".rbo-f-head h1{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:clamp(34px,3.4vw,50px);font-weight:600;line-height:1.05;margin:0;color:var(--ivoire)}",
+".rbo-f-xp{display:inline-block;margin-top:4px;padding:5px 14px;border-radius:999px;border:1px solid rgba(201,166,107,.5);color:var(--champ);font-size:13px;font-weight:600}",
+".rbo-f-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;max-width:1080px;margin:0 auto}",
+".rbo-f-col{display:grid;gap:16px;align-content:start}",
+".rbo-f .rbo-card{padding:20px 22px}.rbo-f .rbo-card h3{font-size:22px;margin-bottom:10px}.rbo-f .rbo-card p{font-size:14px}",
+".rbo-f-ess{border:1px solid rgba(201,166,107,.32);background:#0C1317}",
+".rbo-f-ess ul{list-style:none;margin:0;padding:0;display:grid;gap:0}",
+".rbo-f-ess li{position:relative;padding:8px 0 8px 20px;border-top:1px solid rgba(201,166,107,.14);font-size:14.5px;line-height:1.45;color:var(--ivoire)}",
+".rbo-f-ess li:first-child{border-top:0}",
+".rbo-f-ess li:before{content:'';position:absolute;inset-inline-start:2px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--champ)}",
+"[dir=rtl] .rbo-f-ess li{padding:8px 20px 8px 0}",
+".rbo-f .rbo-defil{font-size:14px}",
+".rbo-f-quiz{grid-column:1/-1;position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,.55);background:linear-gradient(90deg,rgba(7,10,8,.92) 30%,rgba(7,10,8,.35)),url(images/pansage-quiz.webp) center 40%/cover no-repeat;padding:26px 26px}",
+".rbo-f-quiz h3{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:26px;font-weight:600;color:var(--ivoire);margin:0 0 14px}",
+".rbo-f-act{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:1080px;margin:28px auto 0}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
@@ -310,6 +335,7 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
+".rbo .rbo-f{padding:0 16px 40px}.rbo .rbo-f-grid{grid-template-columns:minmax(0,1fr);gap:12px}.rbo .rbo-f-col{gap:12px}.rbo .rbo-f-head{padding:18px 0 24px}.rbo .rbo-f-head h1{font-size:34px}.rbo .rbo-f .rbo-card{padding:16px 16px}.rbo .rbo-f .rbo-card h3{font-size:20px}.rbo .rbo-f-quiz{padding:20px 18px}.rbo .rbo-f-act{flex-direction:column;align-items:stretch}.rbo .rbo-f-act .rbo-btn{width:100%}",
 ".rbo{padding-bottom:110px;overflow-x:clip}",
 ".rbo .rbo-parc{padding:14px 16px 12px;gap:8px}.rbo .rbo-parc .tt{flex:0 0 100%;margin:0 0 2px}.rbo .rbo-parc button{padding:7px 14px;font-size:12.5px}",
 ".rbo .rbo-hero{--ph:240px;padding:calc(var(--ph) + 14px) 18px 16px}",
@@ -393,7 +419,7 @@ function HypeRobesOrdi(props) {
 
   var aller = function (id) { var el = document.getElementById("rbo-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   var haut = function () { var el = document.querySelector(".rbo"); if (el && el.scrollIntoView) el.scrollIntoView({ block: "start" }); };
-  var versFin = function () { setVue("fin"); setTimeout(haut, 30); };
+  var versFin = function () { setVue("fin"); setTimeout(haut, 30); if (props.onValider) props.onValider(); };   /* 31/10 : arriver sur la page de fin = cours terminé (XP), sans l'ancienne page de l'appli */
   var versCours = function (id) { setVue("cours"); setTimeout(function () { if (id) aller(id); else haut(); }, 60); };
   var nav = function (id) { if (id === "s5") versFin(); else aller(id); };
   var hey = function (q) {
@@ -444,6 +470,10 @@ function HypeRobesOrdi(props) {
     { id: "g3-c7", n: 3, img: "images/robes-g3-palomino.webp", pos: "60% 40%" },
     { id: "g5-robes", n: 5, img: "images/robes-g5-aubere.webp", pos: "60% 40%" }
   ] : [];
+  /* page de fin : cours suivant, XP gagnés (seulement si le cours n'était pas déjà terminé à l'ouverture) */
+  var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
+  var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;
+  var _gx = useState(function () { return (props.coursTermines || []).indexOf(cours.id) < 0; }), gagneXp = _gx[0];
   var hbQ = z[3].puces.map(function (p) { return p.texte; });
   /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
   var hbListe = [hbQ[0], hbQ[1], hbQ[3]].filter(Boolean);   /* 30/10 23h40 : 3 questions en tout, regroupées dans la carte Hey Baby */
@@ -455,83 +485,7 @@ function HypeRobesOrdi(props) {
   var nbRep = Object.keys(reps).length, nbJuste = Object.keys(reps).filter(function (k) { return reps[k] === Q[k].correct; }).length;
   var photoQ = repondu ? PHOTO_REPONSE[qi] || "quiz" : "quiz";
 
-  return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
-    h("style", null, CSS),
-    h("div", { className: "rbo-wrap" },
-      h("nav", { className: "rbo-chap", "aria-label": L("chapitres") },
-        h("h3", null, L("chapitres")),
-        (props.coursListe || []).map(function (c, i) {
-          var fait = (props.coursTermines || []).indexOf(c.id) >= 0;
-          return h("button", { key: c.id, type: "button", "aria-current": c.id === cours.id ? "true" : undefined, onClick: function () { if (c.id !== cours.id && props.onOuvrirCours) props.onOuvrirCours(c.id); } },
-            h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
-        })),
-      h("main", { className: "rbo-main" },
-        /* 31/10 : la barre « Parcours des robes » du haut est remplacée par des onglets Galop 2/3/5 dans le menu des vignettes (Blandine) */
-        h("div", { className: "rbo-top" + (vue === "fin" ? "" : " seul") },
-          h("header", { className: "rbo-hero" },
-            h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
-            h("div", { className: "rbo-bar" },
-              h("button", { type: "button", className: "rbo-back", "aria-label": L("retour"), onClick: props.onRetour }, rtl ? "›" : "‹"),
-              h("span", { className: "rbo-crumb" }, "Galop 1  ›  " + d.titre),
-              h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
-            h("h1", null, d.titre),
-            h("div", { className: "rbo-meta" },
-              d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
-              d.type ? h("span", null, ICO.livre(16), d.type) : null,
-              h("span", null, ICO.coupe(16), "Galop 1"))),
-          vue === "fin" ? h("aside", { className: "rbo-cards deux" },
-            h("div", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
-              h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, qq), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))),
-            h("div", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), z[2].sous ? h("p", null, z[2].sous) : null,
-              h("ul", { className: "rbo-defil" }, z[2].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })))) : null),   /* 31/10 : le défi n'est plus qu'ici (retiré de « En pratique ») */
-
-        vue !== "cours" ? null : h(React.Fragment, null,
-        d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h("div", { className: "rbo-vig", role: "tablist" },
-          vig.map(function (v, i) {
-            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
-              h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-          }),
-          autresG.map(function (g) {
-            return h("button", { key: g.id, type: "button", className: "gal", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
-              h("span", { className: "lab" }, "Galop " + g.n), h("span", { className: "arr", "aria-hidden": true }, "↗"));
-          })),
-        h("div", { className: "rbo-minih" },
-          h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
-            autresG.length ? h("span", { className: "sep", "aria-hidden": true }) : null,
-            autresG.map(function (g) { return h("button", { key: g.id, type: "button", className: "gal", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, "Galop " + g.n, h("span", { "aria-hidden": true }, " ↗")); })))),
-
-
-        vue !== "cours" ? null : h(React.Fragment, null,
-        /* 01 — COMPRENDRE : a[1]…a[6] (a[0] = citation d'ouverture, dans le haut de page) */
-        Sec("s1", "01", d.t1, "noir",
-          h("div", null,
-            h("div", { className: "rbo-grid2" },
-              h("div", { className: "rbo-txt" }, M(a[1], "a1"), M(a[2], "a2"), M(a[3], "a3")),
-              h("div", { className: "rbo-txt rbo-methode" },
-                h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), a[4].sous ? h("p", { className: "sous" }, a[4].sous) : null,
-                h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
-            h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
-            h("div", { className: "rbo-txt", style: { marginTop: 48, maxWidth: 820 } }, M(a[5], "a5")))),   /* 31/10 : « À observer » (a[6]) retiré — redit le 2e paragraphe */
-        Vague(NOIR, NOIR2),
-        /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
-        Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
-          h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
-        Vague(NOIR2, NOIR),
-
-        /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
-        /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
-        Sec("s4", "03", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
-          h("div", null,
-            Photo("cheval", "pano", null),
-            h("div", { className: "rbo-erreurs rbo-txt", style: { marginTop: 40, maxWidth: 820 } }, M(z[1], "z1")))),   /* 30/10 : encart à part ; 31/10 : le défi est sur la page de fin */
-        Vague(NOIR, NOIR2),
-        /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
-        h("div", { className: "rbo-coachfin" },
-          h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
-          h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →")))),
-        vue !== "fin" ? null : h(React.Fragment, null,
+  var ANCIENNE_FIN = FIN_ANCIENNE ? h(React.Fragment, null,
           h("div", { className: "rbo-retcours" }, h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { versCours(null); } }, (rtl ? "→ " : "← ") + L("retourCours"))),
           h("section", { id: "rbo-s4f", className: "rbo-sec petrole" }, h("div", null,
             h("div", { className: "rbo-synth", style: { marginTop: 0 } },
@@ -568,7 +522,102 @@ function HypeRobesOrdi(props) {
             Photo("quiz", "pano", null),
             h("div", { className: "rbo-cta" },
               h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
-              h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))),
+              h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))) : null;
+  return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
+    h("style", null, CSS),
+    h("div", { className: "rbo-wrap" },
+      h("nav", { className: "rbo-chap", "aria-label": L("chapitres") },
+        h("h3", null, L("chapitres")),
+        (props.coursListe || []).map(function (c, i) {
+          var fait = (props.coursTermines || []).indexOf(c.id) >= 0;
+          return h("button", { key: c.id, type: "button", "aria-current": c.id === cours.id ? "true" : undefined, onClick: function () { if (c.id !== cours.id && props.onOuvrirCours) props.onOuvrirCours(c.id); } },
+            h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
+        })),
+      h("main", { className: "rbo-main" },
+        /* 31/10 : la barre « Parcours des robes » du haut est remplacée par des onglets Galop 2/3/5 dans le menu des vignettes (Blandine) */
+        vue !== "cours" ? null : h("div", { className: "rbo-top seul" },
+          h("header", { className: "rbo-hero" },
+            h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
+            h("div", { className: "rbo-bar" },
+              h("button", { type: "button", className: "rbo-back", "aria-label": L("retour"), onClick: props.onRetour }, rtl ? "›" : "‹"),
+              h("span", { className: "rbo-crumb" }, "Galop 1  ›  " + d.titre),
+              h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
+            h("h1", null, d.titre),
+            h("div", { className: "rbo-meta" },
+              d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
+              d.type ? h("span", null, ICO.livre(16), d.type) : null,
+              h("span", null, ICO.coupe(16), "Galop 1")))),
+
+        vue !== "cours" ? null : h(React.Fragment, null,
+        d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
+        h("div", { className: "rbo-vig", role: "tablist" },
+          vig.map(function (v, i) {
+            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
+              h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+          }),
+          autresG.map(function (g, k) {
+            return h("button", { key: g.id, type: "button", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
+              h("b", { className: "big" }, "0" + (vig.length + k + 1)), h("span", { className: "lab" }, "Galop " + g.n), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
+          })),
+        h("div", { className: "rbo-minih" },
+          h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
+            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
+            autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vig.length + k + 1)), "Galop " + g.n); })))),
+
+
+        vue !== "cours" ? null : h(React.Fragment, null,
+        /* 01 — COMPRENDRE : a[1]…a[6] (a[0] = citation d'ouverture, dans le haut de page) */
+        Sec("s1", "01", d.t1, "noir",
+          h("div", null,
+            h("div", { className: "rbo-grid2" },
+              h("div", { className: "rbo-txt" }, M(a[1], "a1"), M(a[2], "a2"), M(a[3], "a3")),
+              h("div", { className: "rbo-txt rbo-methode" },
+                h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), a[4].sous ? h("p", { className: "sous" }, a[4].sous) : null,
+                h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
+            h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
+            h("div", { className: "rbo-txt", style: { marginTop: 48, maxWidth: 820 } }, M(a[5], "a5")))),   /* 31/10 : « À observer » (a[6]) retiré — redit le 2e paragraphe */
+        Vague(NOIR, NOIR2),
+        /* 02 — NOIR, ALEZAN, BAI : a[7]…a[15], trois grandes compositions */
+        Sec("s2", "02", nomsTrois, "noir2",   /* 30/10 : fond noir à peine éclairci (Blandine), vague gardée */
+          h("div", null, Robe(7, "noir", false), Robe(10, "alezan", true), Robe(13, "bai", false))),
+        Vague(NOIR2, NOIR),
+
+        /* 03 — COMPARER retiré le 30/10 (Blandine : « vire tous les doublons ») : tout y redisait la section 02 et les erreurs à éviter ; les textes restent dans les données */
+        /* 04 — EN PRATIQUE : z[1]…z[5] (z[0], le conseil du coach, est dans le haut de page) */
+        Sec("s4", "03", d.t3 || L("vPratique"), "noir",   /* 30/10 : plus de pétrole sous les encarts (Blandine) */
+          h("div", null,
+            Photo("cheval", "pano", null),
+            h("div", { className: "rbo-erreurs rbo-txt", style: { marginTop: 40, maxWidth: 820 } }, M(z[1], "z1")))),   /* 30/10 : encart à part ; 31/10 : le défi est sur la page de fin */
+        Vague(NOIR, NOIR2),
+        /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
+        h("div", { className: "rbo-coachfin" },
+          h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
+          h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →")))),
+        /* 31/10 : PAGE DE FIN refaite (Blandine : « même la dernière page c'est nimp ») — une seule page, sans doublons :
+           Cours terminé + XP, l'essentiel, Hey Baby (3 questions), le défi, le quiz de l'appli (étoiles), cours suivant / retour aux Galops.
+           Elle remplace l'ancienne page « Cours terminé ! » de l'appli. L'ancienne page de fin (synthèse + citation + bloc quiz) est gardée, désactivée (FIN_ANCIENNE). */
+        vue !== "fin" ? null : (FIN_ANCIENNE ? ANCIENNE_FIN : h("div", { className: "rbo-f" },
+          h("div", { className: "rbo-f-bar" },
+            h("button", { type: "button", className: "rbo-back", "aria-label": L("retourCours"), onClick: function () { versCours(null); } }, rtl ? "›" : "‹"),
+            h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
+          h("header", { className: "rbo-f-head" },
+            h("div", { className: "rbo-f-ok", "aria-hidden": true }, "✓"),
+            h("p", { className: "rbo-f-kick" }, "Galop 1  ·  " + d.titre),
+            h("h1", null, L("coursFini")),
+            gagneXp ? h("span", { className: "rbo-f-xp" }, "+25 XP") : null),
+          h("div", { className: "rbo-f-grid" },
+            h("section", { className: "rbo-card rbo-f-ess" }, h("h3", null, ICO.livre(20), nettoyer(z[4].titre)),
+              h("ul", null, z[4].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); }))),
+            h("div", { className: "rbo-f-col" },
+              h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
+                h("div", { className: "rbo-hbq" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, h("span", null, qq), h("i", { "aria-hidden": true }, rtl ? "‹" : "›")); }))),
+              h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), z[2].sous ? h("p", null, z[2].sous) : null,
+                h("ul", { className: "rbo-defil" }, z[2].puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })))),
+            h("section", { className: "rbo-f-quiz" },
+              h("div", null, h("h3", null, L("secQuiz")), h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn") + (rtl ? " ←" : " →"))))),
+          h("div", { className: "rbo-f-act" },
+            suivant ? h("button", { type: "button", className: "rbo-btn", onClick: function () { props.onOuvrirCours(suivant.id); } }, L("coursSuivant") + "  ·  " + (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)) + (rtl ? " ←" : " →")) : null,
+            h("button", { type: "button", className: "rbo-btn neutre", onClick: props.onRetour }, L("retourGalops"))))),
         /* fin de page Hype (composant commun de l'appli), comme sur les autres pages */
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));
