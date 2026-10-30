@@ -15432,3 +15432,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 20h35 : photo palomino (liste + balzanes blanches) rangée en images/robes-g3-palomino.webp (Galop 3, déclinaisons). Reste à manquer côté G3 : balzane, épis, alezan brûlé, café au lait, noir pangaré.
 
 - 30/10 20h40 : photo cheval blanc à taches brunes rangée en images/robes-g5-tachete-autres.webp (Galop 5, tachetés — autres types), confirmé par Blandine : appaloosa.
+
+- 30/10 20h45 : Galop 2, « La robe tachetée » affiche maintenant l appaloosa (programme : robe tachetée) ; le léopard reste pour Galop 5. Tests G2 OK.
