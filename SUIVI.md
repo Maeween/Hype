@@ -15602,3 +15602,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 
 ## 30/10 22h25 — Page des Galops : bouton « Reprendre » retiré (NON publié)
 - Demande de Blandine : « Retire le bouton reprendre, ça complique tout ». Dans le Galop déroulé de la page des Galops, le bouton « Reprendre : <cours> » n est plus affiché (téléphone et ordinateur : même code). « Commencer » reste tant qu aucun cours du Galop n est fait ; « Revoir », « Voir tous les cours », « Premium », « Découvrir » inchangés. Build 20261030-2325. Pas testé sur iPhone.
+
+## 30/10 23h40 — Robes : VERSION TÉLÉPHONE (NON publié)
+- Demande de Blandine (22h19) : « la version tel doit être encore faite ». La page des robes (Galops 1, 2, 3, 5) s adapte maintenant à l écran du téléphone : même contenu, mêmes photos, mêmes onglets et quiz, mise en page empilée (écran de 760 px ou moins), vignettes en bande qui défile, 14 langues, arabe de droite à gauche. Elle remplace l ancien affichage page par page des robes sur téléphone et tablette ; si la structure du cours n est pas reconnue, l ancien affichage revient.
+- Fichiers : hype-cours-robes-ordi.js (v8, styles téléphone), index.html (3 conditions sans le seuil 1100 px, ?v=8, build 20261030-2340), SUIVI.md. Tests : pas de débordement à 390 px, G1/G2/G3/G5 + arabe vus ; ordinateur inchangé (tests OK). Pas testé sur un vrai iPhone.
+- Aussi dans cette livraison non publiée : bouton « Reprendre » retiré du Galop déroulé (22h25).

@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 7;
+var VERSION = 8;
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -272,7 +272,47 @@ var CSS = [
 ".rbo-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:56px;padding-top:40px;border-top:1px solid rgba(201,166,107,.2)}",
 "@media (max-width:1279px){.rbo-qz{grid-template-columns:minmax(0,1fr)}.rbo-qz .rbo-photo{min-height:0;aspect-ratio:16/9}}",
 "@media (max-width:1479px){.rbo-sec{padding:64px 44px 70px}}",
-"@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}"
+"@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}",
+/* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
+"@media (max-width:760px){",
+".rbo{padding-bottom:110px;overflow-x:clip}",
+".rbo .rbo-parc{padding:14px 16px 12px;gap:8px}.rbo .rbo-parc .tt{flex:0 0 100%;margin:0 0 2px}.rbo .rbo-parc button{padding:7px 14px;font-size:12.5px}",
+".rbo .rbo-hero{min-height:300px;padding:16px 18px 22px}",
+".rbo .rbo-hero .vo,[dir=rtl] .rbo .rbo-hero .vo{background:linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,.35) 30%,rgba(7,10,8,.9) 100%)}",
+".rbo .rbo-bar{top:14px;inset-inline:16px}",
+".rbo .rbo-hero h1{font-size:34px;max-width:100%;margin:8px 0 10px}",
+".rbo .rbo-cit{font-size:17px;max-width:100%}.rbo .rbo-meta{gap:12px;font-size:12px;margin-top:12px}",
+".rbo .rbo-cards{grid-template-columns:minmax(0,1fr);padding:14px 16px 8px;gap:10px}",
+".rbo .rbo-vig{display:flex;overflow-x:auto;gap:10px;padding:26px 16px 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}",
+".rbo .rbo-vig button{flex:0 0 138px;height:118px;scroll-snap-align:start}",
+".rbo .rbo-vig .big{font-size:30px;top:6px;inset-inline-start:10px}",
+".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:14.5px;inset-inline:10px 36px;bottom:10px;max-width:none}",
+".rbo .rbo-vig .arr{width:24px;height:24px;font-size:12px;bottom:8px;inset-inline-end:8px}",
+".rbo .rbo-mini{padding:8px 14px;overflow-x:auto}",
+".rbo .rbo-sec{padding:40px 20px 46px;scroll-margin-top:52px}",
+".rbo .rbo-sechead{gap:14px;margin-bottom:24px}.rbo .rbo-num{font-size:28px}.rbo .rbo-sec h2{font-size:28px}",
+".rbo .rbo-grid2,.rbo .rbo-duo,.rbo .rbo-trio,.rbo .rbo-duel,.rbo .rbo-tableau,.rbo .rbo-colonnes,.rbo .rbo-synth,.rbo .rbo-synth ol,.rbo .rbo-avant,.rbo .rbo-qz{grid-template-columns:minmax(0,1fr);gap:24px}",
+".rbo .rbo-duo,.rbo .rbo-trio,.rbo .rbo-tableau,.rbo .rbo-synth{margin-top:36px}",
+".rbo .rbo-adj{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px;margin-top:30px}.rbo .rbo-adj strong{font-size:19px}.rbo .rbo-adj>div{font-size:13.5px}",
+".rbo .rbo-txt{font-size:15.5px;line-height:1.75;gap:16px}.rbo .rbo-txt h3{font-size:24px;margin-top:10px}",
+".rbo .rbo-robe{grid-template-columns:minmax(0,1fr);gap:22px}.rbo .rbo-robe+.rbo-robe{margin-top:44px}",
+".rbo .rbo-robe.inv .rbo-photo{order:0}.rbo .rbo-robe .rbo-photo{aspect-ratio:4/3;max-height:none}",
+".rbo .rbo-robe h3,.rbo .rbo-trio h3,.rbo .rbo-duo h3,.rbo .rbo-duel h3,.rbo .rbo-sig h3,.rbo .rbo-mqz h3{font-size:28px!important}",
+".rbo .rbo-sec div[style*='margin-top: 88px'],.rbo .rbo-sec div[style*='margin-top:88px']{margin-top:44px!important}",
+".rbo .rbo-sec div[style*='margin-top: 64px'],.rbo .rbo-sec div[style*='margin-top:64px']{margin-top:36px!important}",
+".rbo .rbo-photo.pano{aspect-ratio:2/1}.rbo .rbo-photo figcaption{font-size:22px;padding:30px 18px 14px}",
+".rbo .rbo-ring{width:30%;inset-inline-end:8px;bottom:-14px}",
+".rbo .rbo-fac{margin-top:44px;padding:22px 18px}.rbo .rbo-fac summary{font-size:21px;gap:10px;flex-wrap:wrap}.rbo .rbo-fac[open] summary{margin-bottom:20px}",
+".rbo .rbo-methode,.rbo .rbo-defi,.rbo .rbo-sig,.rbo .rbo-memo{padding:20px 18px}",
+".rbo .rbo-ordre li{font-size:14.5px;padding:12px 2px 4px}.rbo .rbo-ordre .nn{font-size:26px}",
+".rbo .rbo-reflexe{margin-top:40px;padding:26px 8px}",
+".rbo .rbo-synth{gap:28px}.rbo .rbo-ret{flex-direction:column;gap:4px}",
+".rbo .rbo-fin{font-size:24px;margin:52px auto 0}",
+".rbo .rbo-q h3{font-size:24px!important;margin-bottom:20px!important}.rbo .rbo-opts button{padding:13px 14px;font-size:14.5px}",
+".rbo .rbo-qz .rbo-photo{aspect-ratio:16/9;min-height:0}.rbo .rbo-qnav .rbo-btn{padding:11px 18px}",
+".rbo .rbo-cta{margin-top:40px;padding-top:28px}",
+".rbo .rbo-mqz{margin-top:36px;padding-top:28px}.rbo .rbo-mq>p{font-size:21px}",
+"}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
