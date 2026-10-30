@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 8;
+var VERSION = 9;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */

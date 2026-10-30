@@ -15587,3 +15587,15 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - 30/10 22h00 : photos rouan (robes-g5-rouan.webp) et aubère (robes-g5-aubere.webp) rangées, Galop 5 ; noms déduits de l ordre du prompt, à confirmer. Reste G5 : gris de comparaison.
 
 - 30/10 22h02 : photo gris de comparaison rangée (images/robes-g5-gris-comparaison.webp, Galop 5). Toutes les photos prévues sont là (reste seulement la photo en réserve bai à couverture, sans nom). Pas encore en ligne.
+## 30/10 21h30 — Eva reliée, Ella en attente (base seulement, rien republié)
+- Eva : « EVA REGUILLET » relié au compte « Eva » (SEP) après confirmation de Blandine (« celle qui s'est classée sur Yellow et Apache au dernier concours » — vérifié : 1re / 21 sur Orchid's yellow et 5e / 21 sur Apache du Lys, Club 3 Vitesse, Folleville 25/10, sans faute). 2 résultats rattachés à son compte et reliés au rendez-vous SEP « CSO équipe club / challenge » (lien 'auto'). Majorité vérifiée cochée.
+- Ella : décision de Blandine — on la reliera quand elle sera abonnée. Rien fait.
+
+## 30/10 21h45 — Nouvelle page activée pour tout le monde (« Fais en sorte que le bouton voir tout amène dessus », 21h38) — build 20261030-2245 [publier]
+- index.html : HYPE_RESULTATS_V3 = true → la route perf-concours (« Voir tout » et cartes de la section Derniers résultats de la page Écurie, page Guilde) ouvre la nouvelle page « Les résultats de l'écurie », sur l'écurie de la page ouverte (__perfClub), en pleine largeur sur tablette/ordinateur. L'ancienne page reste dans le code : remettre false pour revenir en arrière.
+- Testé (banc local) : depuis la page Écurie, même chemin que le bouton → nouvelle page SEP (2 concours, 8 parcours, 5 sans faute, 3 podiums), retour → page Écurie ; aucune erreur.
+
+## 30/10 23h10 — PUBLICATION (accord de Blandine 22h01) : toutes les photos des robes G3 et G5
+- Mis en ligne : G3 noir pangaré, café au lait, épis (+ cercle de zoom sur le tourbillon) ; G5 pies tobiano/ovéro/tovero/balzan, adjonctions (bande scapulaire, raie de mulet, zébrures), rouan, aubère, gris de comparaison, cercles de zoom réglés photo par photo. Moteur ordinateur v9, build 20261030-2310.
+- Fusionné avec la mise en ligne de la page Écurie (build 2245) : seules 4 lignes d index.html changent par rapport à main.
+- En réserve (non affichées) : robes-reserve-pie-brun-crins-noirs, robes-reserve-tachete-bai-couverture (sans nom), robes-reserve-raie-de-mulet-2-vues.
