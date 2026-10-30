@@ -68,7 +68,7 @@ var P = {
   cheval: "images/cheval-defaut-alezan.webp", noir: "images/robes-g1-noir.webp", alezan: "images/robes-g1-alezan.webp", bai: "images/robes-g1-bai.webp", trio: "images/robes-g1-trio.webp", quiz: "images/pansage-quiz.webp",
   g5hero: "images/galop5-hero-v2.webp", g5cheval: "images/galop5-theme-cheval.webp",
   /* Galop 2 — à fournir */
-  g2creme: "images/robes-g2-creme.webp", g2piebai: "images/robes-g2-pie-bai.webp", g2tachete: "images/robes-g5-tachete-autres.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
+  g2creme: "images/robes-g2-creme.webp", g2piebai: "images/robes-g2-pie-bai.webp", g2tachete: "images/robes-g2-tachetee.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
   /* Galop 3 — à fournir */
   g3parties: "images/robes-g3-parties-du-corps.webp", g3tete: "images/robes-g3-marques-tete.webp", g3balzane: "images/robes-g3-balzane.webp", g3epis: "images/robes-g3-epis.webp",
   g3isabelle: "images/robes-g3-isabelle.webp", g3souris: "images/robes-g3-souris.webp", g3brule: "images/robes-g3-alezan-brule.webp", g3cafe: "images/robes-g3-cafe-au-lait.webp", g3palomino: "images/robes-g3-palomino.webp", g3pangare: "images/robes-g3-noir-pangare.webp",
