@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 10;
+var VERSION = 11;
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -39,6 +39,8 @@ var T = {
   quizBtn: tt("Passer le quiz", "Take the quiz", "Hacer el quiz", "Fai il quiz", "クイズに挑戦", "Quiz starten", "ابدأ الاختبار", "开始测验", "Doe de quiz", "Fazer o quiz", "Gör quizet", "Пройти викторину", "Zrób quiz", "퀴즈 풀기"),
   terminer: tt("Terminer le cours", "Finish the lesson", "Terminar el curso", "Termina il corso", "レッスンを終える", "Kurs abschließen", "إنهاء الدرس", "完成课程", "Les afronden", "Terminar o curso", "Avsluta lektionen", "Завершить урок", "Zakończ lekcję", "수업 마치기"),
   retour: tt("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
+  retourCours: tt("Revenir au cours", "Back to the lesson", "Volver al curso", "Torna al corso", "レッスンに戻る", "Zurück zum Kurs", "العودة إلى الدرس", "返回课程", "Terug naar de les", "Voltar ao curso", "Tillbaka till lektionen", "Вернуться к уроку", "Wróć do lekcji", "수업으로 돌아가기"),
+  suiteFin: tt("Résumé, Hey Baby et quiz", "Summary, Hey Baby and quiz", "Resumen, Hey Baby y quiz", "Riepilogo, Hey Baby e quiz", "まとめ、Hey Baby、クイズ", "Zusammenfassung, Hey Baby und Quiz", "الملخص وHey Baby والاختبار", "总结、Hey Baby 和测验", "Samenvatting, Hey Baby en quiz", "Resumo, Hey Baby e quiz", "Sammanfattning, Hey Baby och quiz", "Итоги, Hey Baby и викторина", "Podsumowanie, Hey Baby i quiz", "요약, Hey Baby, 퀴즈"),
   chapitres: tt("Chapitres du Galop 1", "Galop 1 lessons", "Capítulos del Galop 1", "Capitoli del Galop 1", "Galop 1のレッスン", "Kapitel Galop 1", "دروس Galop 1", "Galop 1 的课程", "Lessen Galop 1", "Capítulos do Galop 1", "Lektioner Galop 1", "Уроки Galop 1", "Lekcje Galop 1", "Galop 1 수업"),
   bravo: tt("Bravo !", "Well done!", "¡Bien hecho!", "Bravo!", "正解です！", "Richtig!", "أحسنت!", "答对了！", "Goed zo!", "Muito bem!", "Bra!", "Верно!", "Brawo!", "정답이에요!"),
   pasTout: tt("Pas tout à fait.", "Not quite.", "No exactamente.", "Non proprio.", "惜しい！", "Nicht ganz.", "ليس تماماً.", "不太对。", "Net niet.", "Quase.", "Inte riktigt.", "Не совсем.", "Nie do końca.", "아쉬워요."),
@@ -175,9 +177,9 @@ var CSS = [
 "@media (max-width:1479px){.rbo-vig{gap:10px}.rbo-vig .lab{font-size:16px;inset-inline:12px 40px}.rbo-vig .arr{width:26px;height:26px;font-size:13px}.rbo-vig .big{font-size:36px}}",
 /* barre compacte qui suit le défilement */
 ".rbo-minih{position:sticky;top:0;z-index:30;height:0}",
-".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:8px 40px;background:#070A08;border-bottom:1px solid rgba(201,166,107,.28);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
+".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:8px 40px;background:rgba(7,10,8,.58);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.45);border-bottom:1px solid rgba(201,166,107,.22);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".rbo-mini.on{opacity:1;pointer-events:auto;transform:none}",
-".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,26,29,.9);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
+".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.55);box-shadow:0 3px 10px rgba(0,0,0,.4);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
 ".rbo-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".rbo-mini button[aria-current=true]{border-color:var(--champ);background:rgba(201,166,107,.16)}",
 /* sections : magazine, grandes photos, beaucoup d'air */
@@ -273,6 +275,11 @@ var CSS = [
 "@media (max-width:1279px){.rbo-qz{grid-template-columns:minmax(0,1fr)}.rbo-qz .rbo-photo{min-height:0;aspect-ratio:16/9}}",
 "@media (max-width:1479px){.rbo-sec{padding:64px 44px 70px}}",
 "@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}",
+".rbo-cards.deux{grid-template-columns:repeat(2,minmax(0,1fr))}",
+"@media (min-width:1480px){.rbo-cards.deux{grid-template-columns:minmax(0,1fr)}.rbo-top.seul{grid-template-columns:minmax(0,1fr)}}",
+".rbo-coachfin{background:var(--noir);padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
+".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
+".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
 ".rbo-citband{background:var(--noir);padding:64px 56px 28px;text-align:center}",
 ".rbo-citband .rbo-cit{max-width:860px;margin:0 auto;font-size:clamp(26px,2.4vw,36px);line-height:1.35}",
 ".rbo-citband .rbo-cit:before,.rbo-citband .rbo-cit:after{content:'';display:block;width:44px;height:1px;background:var(--champ);margin:0 auto 24px}",
@@ -295,6 +302,8 @@ var CSS = [
 ".rbo .rbo-vig .lab,.rbo .rbo-vig.n6 .lab{font-size:14.5px;inset-inline:10px 36px;bottom:10px;max-width:none}",
 ".rbo .rbo-vig .arr{width:24px;height:24px;font-size:12px;bottom:8px;inset-inline-end:8px}",
 ".rbo .rbo-mini{padding:8px 14px;overflow-x:auto}",
+".rbo .rbo-coachfin{padding:36px 16px 44px}.rbo .rbo-coachfin .rbo-card{padding:18px 18px}.rbo .rbo-coachfin .rbo-card h3{font-size:22px}.rbo .rbo-coachfin .rbo-card p{font-size:15px}.rbo .rbo-retcours{padding:16px 16px 0}",
+".rbo .rbo-photo.trio{aspect-ratio:auto}.rbo .rbo-photo.trio img{height:auto;object-fit:contain}",
 ".rbo .rbo-sec{padding:40px 20px 46px;scroll-margin-top:52px}",
 ".rbo .rbo-sechead{gap:14px;margin-bottom:24px}.rbo .rbo-num{font-size:28px}.rbo .rbo-sec h2{font-size:28px}",
 ".rbo .rbo-grid2,.rbo .rbo-duo,.rbo .rbo-trio,.rbo .rbo-duel,.rbo .rbo-tableau,.rbo .rbo-colonnes,.rbo .rbo-synth,.rbo .rbo-synth ol,.rbo .rbo-avant,.rbo .rbo-qz{grid-template-columns:minmax(0,1fr);gap:24px}",
@@ -306,7 +315,12 @@ var CSS = [
 ".rbo .rbo-robe h3,.rbo .rbo-trio h3,.rbo .rbo-duo h3,.rbo .rbo-duel h3,.rbo .rbo-sig h3,.rbo .rbo-mqz h3{font-size:28px!important}",
 ".rbo .rbo-sec div[style*='margin-top: 88px'],.rbo .rbo-sec div[style*='margin-top:88px']{margin-top:44px!important}",
 ".rbo .rbo-sec div[style*='margin-top: 64px'],.rbo .rbo-sec div[style*='margin-top:64px']{margin-top:36px!important}",
-".rbo .rbo-photo.pano{aspect-ratio:2/1}.rbo .rbo-photo figcaption{font-size:22px;padding:30px 18px 14px}",
+".rbo .rbo-photo.pano{aspect-ratio:2/1}.rbo .rbo-photo.pano.trio{aspect-ratio:auto}.rbo .rbo-photo.pano.trio img{height:auto;object-fit:contain}.rbo .rbo-photo figcaption{font-size:17px;padding:24px 14px 10px}",
+/* 30/10 : titres moins gros sur téléphone (« pas besoin de titres aussi gros ») */
+".rbo .rbo-sechead{gap:10px;margin-bottom:18px}.rbo .rbo-num{font-size:20px}.rbo .rbo-num:after{width:20px}.rbo .rbo-sec h2{font-size:21px;line-height:1.2}",
+".rbo .rbo-txt h3{font-size:18px;margin-top:6px}",
+".rbo .rbo-robe h3,.rbo .rbo-trio h3,.rbo .rbo-duo h3,.rbo .rbo-duel h3,.rbo .rbo-sig h3,.rbo .rbo-mqz h3{font-size:21px!important}",
+".rbo .rbo-card h3{font-size:17px}.rbo .rbo-coachfin .rbo-card h3{font-size:19px}",
 ".rbo .rbo-ring{width:30%;inset-inline-end:8px;bottom:-14px}",
 ".rbo .rbo-fac{margin-top:44px;padding:22px 18px}.rbo .rbo-fac summary{font-size:21px;gap:10px;flex-wrap:wrap}.rbo .rbo-fac[open] summary{margin-bottom:20px}",
 ".rbo .rbo-methode,.rbo .rbo-defi,.rbo .rbo-sig,.rbo .rbo-memo{padding:20px 18px}",
@@ -340,21 +354,26 @@ function HypeRobesOrdi(props) {
   var _m = useState(false), mini = _m[0], setMini = _m[1];
   var _r = useState({}), reps = _r[0], setReps = _r[1];
   var _q = useState(0), qi = _q[0], setQi = _q[1];
+  var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 30/10 : « cours » (page longue) ou « fin » (Hey Baby, défi, résumé, quiz) */
 
   useEffect(function () {
-    var on = function () { var el = document.querySelector(".rbo-vig"); if (el) setMini(el.getBoundingClientRect().bottom < 0); };
+    var on = function () { var el = document.querySelector(".rbo-vig"); setMini(el ? el.getBoundingClientRect().bottom < 0 : false); };
     window.addEventListener("scroll", on, { passive: true }); on();
     return function () { window.removeEventListener("scroll", on); };
-  }, []);
+  }, [vue]);
   useEffect(function () {
     var els = ["s1", "s2", "s3", "s4", "s5"].map(function (i) { return document.getElementById("rbo-" + i); }).filter(Boolean);
     if (!els.length || typeof IntersectionObserver === "undefined") return undefined;
     var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) setActif(en.target.id.replace("rbo-", "")); }); }, { rootMargin: "-25% 0px -62% 0px", threshold: 0 });
     els.forEach(function (e) { io.observe(e); });
     return function () { io.disconnect(); };
-  }, []);
+  }, [vue]);
 
   var aller = function (id) { var el = document.getElementById("rbo-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  var haut = function () { var el = document.querySelector(".rbo"); if (el && el.scrollIntoView) el.scrollIntoView({ block: "start" }); };
+  var versFin = function () { setVue("fin"); setTimeout(haut, 30); };
+  var versCours = function (id) { setVue("cours"); setTimeout(function () { if (id) aller(id); else haut(); }, 60); };
+  var nav = function (id) { if (id === "s5") versFin(); else aller(id); };
   var hey = function (q) {
     try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: d.titre, score: null, cheval: null, question: q || "" }; } catch (e) { }
     props.setEcran("assistant");
@@ -426,7 +445,7 @@ function HypeRobesOrdi(props) {
             var cur = pc2[0] === cours.id;
             return h("button", { key: pc2[0], type: "button", "aria-current": cur ? "true" : undefined, onClick: function () { if (!cur) props.onOuvrirRobes(pc2[1], pc2[0]); } }, "Galop " + pc2[1]);
           })) : null,
-        h("div", { className: "rbo-top" },
+        h("div", { className: "rbo-top" + (vue === "fin" ? "" : " seul") },
           h("header", { className: "rbo-hero" },
             h("div", { className: "bg", role: "img", "aria-label": d.titre }), h("div", { className: "vo" }),
             h("div", { className: "rbo-bar" },
@@ -438,22 +457,23 @@ function HypeRobesOrdi(props) {
               d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
               h("span", null, ICO.coupe(16), "Galop 1"))),
-          h("aside", { className: "rbo-cards" },
-            /* le conseil du coach est DÉPLACÉ ici (il n'est pas répété plus bas) */
-            h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
+          vue === "fin" ? h("aside", { className: "rbo-cards deux" },
             h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
-            h("button", { type: "button", className: "rbo-card defi", onClick: function () { aller("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche)))),
+            h("button", { type: "button", className: "rbo-card defi", onClick: function () { versCours("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche))) : null),
 
+        vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
         h("div", { className: "rbo-vig", role: "tablist" },
           vig.map(function (v, i) {
-            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
+            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           })),
         h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
-            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }))),
+            vig.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); })))),
 
+
+        vue !== "cours" ? null : h(React.Fragment, null,
         /* 01 — COMPRENDRE : a[1]…a[6] (a[0] = citation d'ouverture, dans le haut de page) */
         Sec("s1", "01", d.t1, "noir",
           h("div", null,
@@ -462,7 +482,7 @@ function HypeRobesOrdi(props) {
               h("div", { className: "rbo-txt rbo-methode" },
                 h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[4].titre))), a[4].sous ? h("p", { className: "sous" }, a[4].sous) : null,
                 h("ol", { className: "rbo-ordre" }, a[4].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, p.texte)); })))),
-            h("div", { style: { marginTop: 64 } }, Photo("trio", "pano", null)),
+            h("div", { style: { marginTop: 64 } }, Photo("trio", "pano trio", null)),
             h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[5], "a5"), M(a[6], "a6")))),
         Vague(NOIR, PET),
 
@@ -490,16 +510,23 @@ function HypeRobesOrdi(props) {
             Photo("cheval", "pano", null),
             h("div", { className: "rbo-colonnes" },
               h("div", { className: "rbo-txt" }, M(z[1], "z1")),
-              h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))),
-            h("div", { className: "rbo-txt", style: { marginTop: 64 } },
+              h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
+        Vague(PET, NOIR),
+        /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
+        h("div", { className: "rbo-coachfin" },
+          h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
+          h("button", { type: "button", className: "rbo-btn", onClick: versFin }, L("suiteFin") + (rtl ? " ←" : " →")))),
+        vue !== "fin" ? null : h(React.Fragment, null,
+          h("div", { className: "rbo-retcours" }, h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { versCours(null); } }, (rtl ? "→ " : "← ") + L("retourCours"))),
+          h("section", { id: "rbo-s4f", className: "rbo-sec petrole" }, h("div", null,
+            h("div", { className: "rbo-txt", style: { marginTop: 0 } },
               h("h3", { style: { marginTop: 0 } }, nettoyer(z[3].titre)),
               h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); }))),
             h("div", { className: "rbo-synth" },
               h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[4].titre))),
               h("ol", null, z[4].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
             h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[5].texte) + " »"))),
-        Vague(PET, NOIR),
-
+          Vague(PET, NOIR),
         /* 05 — QUIZ : les 10 questions du cours, une à la fois, correction et explication du cours */
         Sec("s5", "05", L("secQuiz"), "noir",
           h("div", null,
@@ -521,7 +548,7 @@ function HypeRobesOrdi(props) {
               Photo(photoQ, "", null)),
             h("div", { className: "rbo-cta" },
               h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
-              h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer"))))),
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))),
         /* fin de page Hype (composant commun de l'appli), comme sur les autres pages */
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));

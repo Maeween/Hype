@@ -15630,3 +15630,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - En ligne : version téléphone des robes (Galops 1, 2, 3, 5), citation en bandeau aéré entre le haut de page et le menu, bouton « Reprendre » retiré du Galop déroulé, photos des robes G2/G3/G5.
 - Fichiers : index.html (marker 20261031-0000), hype-cours-robes-ordi.js ?v=10, hype-cours-robes-galops-ordi.js ?v=10, hype-cours-galop2.js ?v=9sv1ru1pl1ko1, images/ (robes-*), SUIVI.md.
 - Fusion avec main (build 20261030-2330 des résultats écurie) : seule la ligne du marqueur d'index.html différait ; rien perdu des deux côtés.
+
+## 30/10 23h15 — Galop 1 (robes) : conseil du coach, Hey Baby et défi en fin de cours + page de fin (build 20261031-0010) — NON publié
+- Demande de Blandine (22h46-22h55, après la mise en ligne de 22h35) : page trop longue ; remettre les 3 cartes (conseil du coach, Hey Baby, défi) au design validé mais en fin de cours ; titres moins gros sur téléphone ; barre d'onglets semi-transparente avec ombre ; image des 3 chevaux non coupée.
+- hype-cours-robes-ordi.js v11 : le haut de page ne garde que titre + citation + menu. Le « conseil du coach » est en bas de la page du cours, avec un bouton « Résumé, Hey Baby et quiz ». Page de fin à part : cartes Hey Baby + défi (design inchangé), questions Hey Baby, synthèse, quiz. Boutons « Revenir au cours » ; la carte défi ramène à la section En pratique ; la vignette 05 ouvre la page de fin. Textes ajoutés en 14 langues (retourCours, suiteFin). Rien supprimé.
+- Téléphone : titres de section/robes réduits, barre d'onglets en semi-transparent + flou + ombre, image des 3 chevaux entière (plus de recadrage).
+- Pas encore appliqué aux Galops 2, 3, 5 (en attente de la validation de Blandine sur le Galop 1). Fichiers : hype-cours-robes-ordi.js v11, index.html (?v=11, marker), SUIVI.md.
