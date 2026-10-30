@@ -15563,3 +15563,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - En ligne : index.html (?v=2 de la page Résultats), hype-ecran-resultats-ecurie.js v2 (âge déclaré à l'inscription, choix B), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne 26745ff (article CSO) : aucune ligne retirée.
 - Base (21h20) : Eva (compte « Eva », SEP) cochée « majorité vérifiée » par Blandine (« Eva est adulte aussi mais pas Ella »). Ella NON cochée.
 - EN ATTENTE de sa réponse : relier « EVA REGUILLET » au compte « Eva » et « ELLA JACOBS » au compte « Ella » (toutes deux SEP, comptes créés les 23/09 et 30/09) — tant que ce n'est pas fait, leurs 2 résultats chacune n'apparaissent pas sur la page.
+
+- 30/10 21h25 : photo noir pangaré rangée (images/robes-g3-noir-pangare.webp, Galop 3) — pas encore en ligne. Reste G3 : épis, café au lait.
