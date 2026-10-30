@@ -8,7 +8,7 @@
    Traductions en/es/it/de/ja à ajouter dans les mêmes objets {fr:...}.
    ──────────────────────────────────────────────────────────────────────────── */
 window.HYPE_DRESSAGE = window.HYPE_DRESSAGE || {};
-window.HYPE_DRESSAGE.version = "1.7"; /* 21/10/2026 : néerlandais (9e langue) */
+window.HYPE_DRESSAGE.version = "1.8"; /* 21/10/2026 : néerlandais (9e langue) */
 window.HYPE_DRESSAGE.fiches = {
  "entry_centerline": {
   "id": "entry_centerline",
@@ -7317,6 +7317,15 @@ window.HYPE_DRESSAGE.figuresIds = {
         nl: "Halt vóór R", pt: "Parada antes de R", sv: "Halt före R", ru: "Остановка перед R",
         pl: "Zatrzymanie przed R", ko: "R 전에 정지" };
     avantR.obs[0] = b.fiches.final_halt.obs[0];
+    /* 30/10 : « avant ou après R » contredisait « Arrêt avant R » (demande de Blandine). */
+    avantR.tips[3] = Object.assign({}, avantR.tips[3], { txt: {
+        fr: "Évite de t’arrêter trop tôt ou de dépasser R.", en: "Avoid halting too early or going past R.",
+        es: "Evita pararte demasiado pronto o pasar R.", it: "Evita di fermarti troppo presto o di superare R.",
+        de: "Vermeide es, zu früh zu halten oder über R hinauszureiten.", ja: "早すぎる停止や、Rを越えてしまわないようにしよう。",
+        zh: "避免停得太早，也不要越过 R。", ar: "تجنبي التوقف مبكرًا جدًا أو تجاوز R.",
+        nl: "Voorkom dat je te vroeg stopt of voorbij R gaat.", pt: "Evite parar cedo demais ou passar de R.",
+        sv: "Undvik att stanna för tidigt eller rida förbi R.", ru: "Не останавливайся слишком рано и не проезжай R.",
+        pl: "Unikaj zatrzymania za wcześnie lub minięcia R.", ko: "너무 일찍 서거나 R을 지나치지 않도록 해요." } });
     b.fiches.halt_before_r = avantR;
     b.figuresIds.g4[0] = ["halt_before_r", "salute", "trot_rising"];
     const arrets = { g3: "G", g4: "S", g5: "I", g6: "I", g7: "I", clubelite: "I" };

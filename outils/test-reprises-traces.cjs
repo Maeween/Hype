@@ -182,6 +182,9 @@ test('les conseils ne confondent plus les arrêts en G/S/I avec X, dans les 14 l
     vm.runInContext(fs.readFileSync(path.join(racine, 'hype-dressage-conseils.js'), 'utf8'), c);
     const b = c.window.HYPE_DRESSAGE;
     assert.equal(b.ficheFigure('g4', 0).principale.label.fr, 'Arrêt avant R');
+    const avantR = b.ficheFigure('g4', 0).principale;
+    for (const tip of avantR.tips) assert.equal(Object.keys(tip.txt).length, 14);
+    assert(!avantR.tips.some(t => /avant ou après/.test(t.txt.fr)), 'conseil « avant ou après R » contradictoire');
     for (const [niveau, lettre] of Object.entries({ g3: 'G', g4: 'S', g5: 'I', g6: 'I', g7: 'I', clubelite: 'I' })) {
         const f = b.ficheFigure(niveau, reprises[niveau].figures.length - 1).principale;
         const tip = f.tips.find(t => t.txt.fr.startsWith('Prépare'));

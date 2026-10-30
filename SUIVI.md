@@ -15135,3 +15135,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - A noter : la rotation du corps est lissee ; en avancant le curseur par sauts, le corps tourne avec un temps de retard dans les coins (pas observe en lecture continue, non mesure).
 - NON VERIFIE : vrai iPhone, tablette, vraies polices, lecture continue avec voix/musique, notation d'un dessin reel dans Tracer (seule la reference est couverte par les tests).
 - Hors perimetre, signale : un ancien marqueur de conflit Git (entree Embouchures, « <<<<<<< HEAD ... >>>>>>> 664595a ») est present dans ce SUIVI.md depuis avant cette integration ; non touche.
+
+## 30/10 10h50 - Reprises : conseil de l'arret d'entree du G4 corrige (build 20261030-1245) - NON PUBLIE
+- Demande de Blandine (« Ok corrige ça ») : le conseil « Evite de t'arreter avant ou apres R. » contredisait « Arret avant R ». Remplace dans la copie locale halt_before_r (14 langues) par « Evite de t'arreter trop tot ou de depasser R. ». La fiche generique de l'arret en X reste intacte.
+- hype-dressage-conseils.js version 1.8 ; URL du script passee de ?v=20261027-reprises2 a ?v=20261030-reprises3 (cache renouvele) ; marqueur 20261030-1200 -> 20261030-1245.
+- Test ajoute dans outils/test-reprises-traces.cjs (14 langues presentes, plus de « avant ou apres » sur l'arret avant R) : 27/27 OK. 14 langues ouvertes dans l'appli : 0 erreur, arabe en RTL.
+- Relecture de tous les conseils des 114 figures : aucune autre contradiction trouvee (seul « Regarde X des l'entree » cite un repere absent du texte, correct car X est sur la ligne du milieu).
+- Non verifie : vrai iPhone.
