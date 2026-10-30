@@ -15181,3 +15181,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Teste (navigateur automatique, connexion simulee) : abonnee simulee -> G1 a G9 ouvrent chacun leur page (telephone 390 et ordinateur 1440) ; sans abonnement -> G1 ouvre sa page, G2-G9 -> Premium ; fr et arabe (RTL) verifies a l'image ; 0 erreur ; 27/27 tests reprises.
 - Signale, non modifie : « Tout pour progresser » dit encore « du Galop 1 au Galop 7 ».
 - Non verifie : vrai iPhone.
+
+## 30/10 11h55 - Videos des Galops : vignettes voilees, titre ivoire ecrit dessus (build 20261030-1415) - NON PUBLIE
+- Demande de Blandine : videos « un peu filtrees en mode semi-transparent ombre avec les titres ecrits dessus en ivoire sur un fond noirci ».
+- index.html : nouvelle classe commune .vidv (image assombrie brightness .7, voile degrade noir plus fonce en bas) + .vidv-t (titre ivoire #F3EEE4, Cormorant Garamond, 2 lignes max, en bas de la vignette) ; titre deplace DANS la vignette pour les 3 grilles : pages des Galops (onglet Videos), page du Galop 5 (extraits « Prochainement »), Galop 1 ordinateur. Bouton lecture / etiquette « Prochainement » remontes pour ne pas toucher le titre (bouton du Galop 1 ordinateur recentre au lieu d'en bas a gauche). Aucun texte nouveau (titres existants, deja traduits).
+- Teste (navigateur automatique) : Galop 1 telephone + ordinateur, Galop 5 telephone, arabe (titres alignes a droite) ; titres en ivoire ; 0 erreur ; syntaxe 17 blocs OK. Vignettes Mux non chargees dans l'essai (serveur video inaccessible ici) : rendu sur vraies images a verifier sur iPhone.
