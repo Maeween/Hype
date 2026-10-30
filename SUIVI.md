@@ -15509,7 +15509,7 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 7 laissés SANS lien (Eva Reguillet ×2, Ella Jacobs ×2, Romy ×3 : nom FFE relié à aucun compte, concours présent à la fois dans l'agenda Feinn et SEP) — Blandine n'a pas demandé de les rattacher à la SEP.
 - Décision de Blandine (19h27) pour la future page Résultats de l'écurie : cavalières MINEURES affichées « Prénom + initiale du nom » (ex. « Emma P. »).
 
-## 30/10 21h00 — Page « Les résultats de l'écurie » V3 + lien agenda à la saisie (build 20261030-2100) — NON PUBLIÉ, branche travail-resultats-agenda
+## 30/10 21h00 — Page « Les résultats de l'écurie » V3 + lien agenda à la saisie (build 20261030-2130, repris sur la version en ligne 95c7565) — NON PUBLIÉ, branche travail-resultats-agenda
 Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi quand c'est fini ». Rien publié.
 - SAISIE À LA MAIN : `hypeLierApresSaisie(id)` (index.html, à côté de hypeRelierResultatsAgenda), appelée après l'enregistrement de la feuille d'ajout `FeuilleAjoutResultatV2` (la seule saisie à la main qui porte une DATE ; les autres n'ont que l'année → aucun lien possible). Tâche de fond, ne bloque jamais la saisie.
 - NOUVELLE PAGE `hype-ecran-resultats-ecurie.js` (v1, chargée à l'ouverture via hypeEcranDiffere) — route « resultats-ecurie », adresse cachée #resultats-ecurie (club = celui de la page Écurie ouverte, sinon le sien). L'ancienne page « Performances en concours » (perf-concours) est INTACTE. Interrupteur `HYPE_RESULTATS_V3 = false` dans index.html : à true, le bouton « Voir les résultats » de la page Écurie ouvre la nouvelle page (et elle passe en pleine largeur) — bascule seulement sur sa décision.
