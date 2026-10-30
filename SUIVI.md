@@ -15155,3 +15155,8 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Chevauchement corrigé : les 5 vignettes ne sont plus collées en haut (elles restent en tête de page) ; une fine barre « 01 Comprendre … 05 Quiz » apparaît seulement quand on a défilé. Marge de fin de page (le bouton 🔊 ne masque plus la dernière carte). Blocs un peu plus aérés.
 - Nouveaux textes « Teste-toi en 6 questions », « Bravo ! », « Pas tout à fait. » traduits dans les 14 langues. Script en ?v=21.
 - Tests : texte d'origine 69/69, interactions, langues, 0 erreur.
+
+## 30/10 11h05 - Reprises de dressage : EN LIGNE (build 20261030-1250)
+- Les deux commits des reprises (ff5148a build 1200, c44411c build 1245) sont partis en ligne avec le commit [publier] 54af9f0 de la conversation pansage (deploiement Netlify 6ae46a14, pret a 10h58, production 2hype.fr). Blandine a donne son accord (« Vas y ») juste apres.
+- Verifie sur la version publiee : code des reprises intact, 27/27 tests, conseils ?v=20261030-reprises3, pansage ?v=21 conserve.
+- Reste a faire : test sur vrai iPhone (6 reprises, modes Voir/Tracer/Challenge, conseil de l'arret avant R).
