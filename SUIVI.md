@@ -15446,3 +15446,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 21h10 : photo sans légende (bai à couverture blanche tachetée) rangée en réserve : images/robes-reserve-tachete-bai-couverture.webp, en attente de son nom.
 
 - 30/10 21h15 : photo alezan brûlé rangée (images/robes-g3-alezan-brule.webp, Galop 3, déclinaisons). Reste G3 : balzane, épis, café au lait, noir pangaré.
+
+- 30/10 21h20 : photo balzane rangée (images/robes-g3-balzane.webp, Galop 3). Reste G3 : épis, café au lait, noir pangaré.
