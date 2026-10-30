@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 4;
+var VERSION = 5;
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
 var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -469,6 +469,8 @@ function HypeRobesOrdi(props) {
       )));
 }
 HypeRobesOrdi.ok = ok;
+/* 30/10 (v5) : éléments partagés avec hype-cours-robes-galops-ordi.js (Galops 3 et 5) — AUCUN changement d'affichage du Galop 1 */
+HypeRobesOrdi.shared = { CSS: CSS, T: T, tt: tt, ICO: ICO, morceaux: morceaux, pickLg: pickLg, arrLg: arrLg, nettoyer: nettoyer, sansNum: sansNum, sansGuillemets: sansGuillemets, LGS: LGS };
 HypeRobesOrdi.version = VERSION;
 window.HypeRobesOrdi = HypeRobesOrdi;
 })();
