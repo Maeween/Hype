@@ -1,0 +1,12 @@
+{
+ "etapes_cle": "Interactif",
+ "etapes_titre": "Le tracé, étape par étape",
+ "etapes_intro": "Touche une étape pour la voir sur le tracé.",
+ "e1_t": "La courbe serrée",
+ "e1_d": "Le cheval se rassemble : il raccourcit sa foulée, engage ses postérieurs et contrôle son équilibre pour tourner.",
+ "e2_t": "La sortie de courbe",
+ "e2_d": "Il termine son virage, se remet droit et retrouve un galop régulier, actif et organisé.",
+ "e3_t": "L’amplitude, ensuite",
+ "e3_d": "Seulement une fois rééquilibré, et si la distance le permet, il peut ouvrir sa foulée vers l’obstacle.",
+ "etapes_note": "Schéma de principe : un seul virage serré, à une seule main, sans contre-courbe. Les points ne sont pas des distances mesurées."
+}

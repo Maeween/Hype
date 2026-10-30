@@ -6,6 +6,7 @@
    validés (images/article-cso/*.svg) ; seuls les libellés sont traduits. Toutes les classes CSS commencent par « acso- ». */
 (function () {
 var TXT = __TXT__;
+var ETAPES = __ETAPES__;
 var IMG = { hero: "images/article-cso-hero.webp", virage: "images/article-cso-virage.webp", appel: "images/article-cso-appel.webp", saut: "images/article-cso-saut.webp" };
 
 var CSS = [
@@ -85,6 +86,20 @@ var CSS = [
   ".acso-tk span{color:var(--or);font-size:16px;flex:0 0 auto;line-height:1.5}",
   ".acso-lock{min-height:100vh;position:relative;overflow:hidden;background:#060709;color:var(--iv)}",
   /* tablette : un peu plus d'air, toujours une colonne pour le texte */
+  ".acso-et{margin-top:56px;border-top:1px solid #3d4a41;padding-top:30px}",
+  ".acso-et-g{display:grid;grid-template-columns:1fr;gap:18px;margin-top:20px}",
+  ".acso-et-svg{direction:ltr;background:#112427;border:1px solid #243936;padding:6px 4px 10px}",
+  ".acso-et-svg svg{display:block;width:100%;height:auto}",
+  ".acso-et-svg path.seg{transition:stroke-opacity .35s ease,stroke-width .35s ease}",
+  "@media (prefers-reduced-motion:reduce){.acso-et-svg path.seg{transition:none}}",
+  ".acso-et-b{display:grid;gap:10px}",
+  ".acso-et-b button{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:start;background:transparent;border:1px solid #32443e;color:var(--tx);padding:14px 14px;cursor:pointer;font:inherit}",
+  ".acso-et-b button[aria-pressed=true]{border-color:var(--or);background:rgba(201,166,107,.07)}",
+  ".acso-et-b button:focus-visible{outline:2px solid var(--or);outline-offset:2px}",
+  ".acso-et-b b{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--or);color:var(--or);display:inline-flex;align-items:center;justify-content:center;font-family:var(--se);font-size:17px;font-weight:500}",
+  ".acso-et-b strong{display:block;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv);margin-bottom:4px}",
+  ".acso-et-b span{font-size:13.5px;line-height:1.6}",
+  "@container (min-width:900px){.acso-et-g{grid-template-columns:1.25fr 1fr;align-items:center;gap:32px}}",
   "@container (min-width:640px){.acso-w{padding:0 40px}.acso-hero-tx{padding:34px 40px 54px}.acso-cmp{grid-template-columns:1fr 1fr}.acso-steps{grid-template-columns:repeat(3,1fr)}.acso-take{grid-template-columns:1fr 1fr;gap:16px 34px}.acso-risk{grid-template-columns:1fr 1fr;gap:6px 18px}.acso-s{padding:76px 0}.acso-mech{grid-template-columns:1.1fr .9fr}.acso-mech-in{padding:28px 30px 18px}.acso-svg{display:flex;align-items:center}.acso-coach{padding:46px 48px}.acso-coach blockquote{font-size:28px}.acso-band-t{font-size:26px}.acso-band{padding:46px 0}.acso-sign{font-size:56px}}",
   /* ordinateur : mise en page éditoriale, deux colonnes, photo du haut à droite */
   "@container (min-width:900px){.acso-w{padding:0 42px}.acso-top{padding:12px 42px}.acso-logo{font-size:36px}.acso-logo span{font-size:8.5px;margin-top:10px}",
@@ -115,6 +130,7 @@ function Article() {
   var L = TXT[lg] || TXT.fr;
   var rtl = (lg === "ar");
   var appRef = React.useRef(app); appRef.current = app;
+  var stEt = React.useState(1); var etape = stEt[0], setEtape = stEt[1];
   React.useEffect(function () { polices(); try { if (typeof hypeMarquerVue === "function") hypeMarquerVue("article", 8); } catch (e) { } try { if (typeof hypeQueteMarquer === "function") hypeQueteMarquer("article"); } catch (e2) { } }, []);
   function t(k) { return (L[k] != null && L[k] !== "") ? L[k] : (TXT.fr[k] || ""); }
   /* **gras** et *doré italique* ; en français, espace insécable avant ? ! : ; */
@@ -231,7 +247,36 @@ function Article() {
     chap("s3_num", "s3_cat"), h("h2", null, riche("s3_titre")),
     h("p", { className: "acso-lead", style: { maxWidth: 920 } }, riche("s3_lead")),
     h("div", { className: "acso-cmp" }, panneau(false), panneau(true)),
-    h("p", { className: "acso-note", style: { marginTop: 16 } }, riche("s3_note"))));
+    h("p", { className: "acso-note", style: { marginTop: 16 } }, riche("s3_note")),
+    /* 31/10 — schéma INTERACTIF (pack « Culture équestre ») : même tracé que le schéma validé n° 1 (un seul virage serré, une seule main),
+       3 étapes activables (boutons, clavier) : 1 courbe serrée, 2 sortie de courbe, 3 amplitude ensuite. À FAIRE VALIDER par Blandine. */
+    (function () {
+      var E = ETAPES[lg] || ETAPES.fr; function e(k) { return E[k] || ETAPES.fr[k]; }
+      var SEG = { 1: "M222 210 L265 210 Q302 210 333 179", 2: "M333 179 L372 140", 3: "M372 140 L425 87" };
+      var BADGE = { 1: [300, 236], 2: [322, 130], 3: [366, 90] };
+      return h("div", { className: "acso-et" },
+        h("div", { className: "acso-eye" }, e("etapes_cle")),
+        h("h3", { className: "acso-pt", style: { marginTop: 10 } }, e("etapes_titre")),
+        h("p", { className: "acso-note", style: { margin: "6px 0 0" } }, e("etapes_intro")),
+        h("div", { className: "acso-et-g" },
+          h("div", { className: "acso-et-svg" },
+            h("svg", { viewBox: "0 0 530 280", role: "img", "aria-label": e("e" + etape + "_t") + " : " + e("e" + etape + "_d") },
+              marqueur("acsoEt", 6),
+              h("path", { d: "M54 210 L265 210 Q302 210 333 179 L425 87", fill: "none", stroke: "#C9A66B", strokeOpacity: .28, strokeWidth: 3, strokeLinecap: "round", strokeDasharray: "8 9", markerEnd: "url(#acsoEt)" }),
+              [1, 2, 3].map(function (n) { return h("path", { key: n, className: "seg", d: SEG[n], fill: "none", stroke: "#C9A66B", strokeOpacity: etape === n ? 1 : 0, strokeWidth: etape === n ? 6 : 3, strokeLinecap: "round" }); }),
+              h("path", { d: "M390 35 L469 114 M402 23 L481 102", stroke: "#F3EEE4", strokeWidth: 7, strokeLinecap: "square" }),
+              [84, 130, 176, 222].map(function (x, i) { return rond(x, 210, 5, "#F3EEE4", "b" + i); }),
+              rond(267, 210, 7, "#C9A66B", "c1"), rond(306, 197, 6, "#C9A66B", "c2"), rond(345, 167, 5, "#C9A66B", "c3"), rond(382, 130, 5, "#C9A66B", "c4"),
+              [1, 2, 3].map(function (n) { var p = BADGE[n]; var on = etape === n; return h("g", { key: "n" + n, style: { cursor: "pointer" }, onClick: function () { setEtape(n); } },
+                h("circle", { cx: p[0], cy: p[1], r: 15, fill: on ? "#C9A66B" : "#0b1516", stroke: "#C9A66B", strokeWidth: 1.5 }),
+                h("text", { x: p[0], y: p[1] + 5, textAnchor: "middle", fontSize: 15, fontFamily: "Georgia,serif", fill: on ? "#070A08" : "#C9A66B" }, String(n))); }),
+              h("g", { fontFamily: "Arial,sans-serif", fill: "#b8c8c2" }, etiq(62, 181, "svg_entree", 18, 260, 1.2), etiq(397, 152, "svg_obstacle", 18, 530, 1.2)))),
+          h("div", { className: "acso-et-b" }, [1, 2, 3].map(function (n) {
+            return h("button", { key: n, type: "button", "aria-pressed": etape === n ? "true" : "false", onClick: function () { setEtape(n); } },
+              h("b", null, String(n)), h("span", null, h("strong", null, e("e" + n + "_t")), e("e" + n + "_d")));
+          }))),
+        h("p", { className: "acso-note", style: { marginTop: 14 } }, e("etapes_note")));
+    })()));
 
   var s4 = h("section", { className: "acso-s acso-no acso-li" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },

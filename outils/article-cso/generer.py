@@ -31,5 +31,10 @@ if erreurs:
     print("\n".join(erreurs)); sys.exit(1)
 modele = open(os.path.join(ICI, "modele.js"), encoding="utf-8").read()
 js = modele.replace("__TXT__", json.dumps(txt, ensure_ascii=False, separators=(",", ":")), 1)
+etapes = json.load(open(os.path.join(ICI, "etapes.json"), encoding="utf-8"))
+for lg in LANGUES:
+    if lg not in etapes or set(etapes[lg]) != set(etapes["fr"]) or not all(str(v).strip() for v in etapes[lg].values()):
+        print("etapes.json : langue " + lg + " incomplète"); sys.exit(1)
+js = js.replace("__ETAPES__", json.dumps(etapes, ensure_ascii=False, separators=(",", ":")), 1)
 open(os.path.join(RACINE, "hype-article-cso.js"), "w", encoding="utf-8").write(js)
 print("OK hype-article-cso.js", len(js.encode("utf-8")), "octets,", len(txt), "langues,", len(fr), "textes")
