@@ -15065,3 +15065,48 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Sous les 5 outils : 2 liens (pansage) ; sous le curage : 1 lien. Bouton « Voir une vidéo sur YouTube » (14 langues), ouvre un nouvel onglet. Aucune durée affichée.
 - Chaînes et contenus non vérifiés (YouTube bloquait la lecture) : à regarder et valider par Blandine avant mise en ligne.
 - hype-cours-pansage-ordi.js en ?v=3.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de l'étrille (1/11) — NON PUBLIÉ
+- images/pansage-outil-etrille.webp remplacée par la version nette (1448×1086, fournie par Blandine) ; l'étiquette « Photo provisoire » est retirée pour l'étrille seulement.
+- hype-cours-pansage-ordi.js en ?v=4. Reste 10 images à recevoir (bouchon, brosse douce, cure-pied, éponge, queue ×4, couverture, quiz).
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette du bouchon (2/11) — NON PUBLIÉ
+- images/pansage-outil-bouchon.webp remplacée (1448×1086) ; étiquette « Photo provisoire » retirée pour le bouchon. Script en ?v=5.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de la brosse douce (3/11) — NON PUBLIÉ
+- images/pansage-outil-brosse-douce.webp remplacée (1448×1086) ; étiquette « Photo provisoire » retirée. Script en ?v=6.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette du cure-pied (4/11) — NON PUBLIÉ
+- images/pansage-outil-cure-pied.webp remplacée (1448×1086) ; étiquette « Photo provisoire » retirée. Script en ?v=7.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de l'éponge (5/11) — les 5 outils sont nets — NON PUBLIÉ
+- images/pansage-outil-eponge.webp remplacée ; images/pansage-outil-ensemble.webp (vignette 02) refaite en collage des 5 photos nettes. Script en ?v=8.
+
+## 30/10 — Cours g1-c2 ordinateur : photo d'ambiance de la vignette 03 « Les pieds » (6/12) — NON PUBLIÉ
+- images/pansage-pieds.webp (1448×1086, fournie par Blandine) : pied posé au sol, aucun geste technique. Remplace le dessin du sabot dans la vignette seulement ; le schéma interactif de la section 03 reste. À valider côté équitation par Blandine. Script en ?v=9.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de la queue, étape 2 « Commencer par le bas » (7/12) — NON PUBLIÉ
+- images/pansage-queue-2.webp remplacée (1448×1086) : une main tient la mèche, la brosse travaille vers les pointes. Sert aussi à la vignette 04. Script en ?v=10. Reste queue 1, 3, 4, couverture, quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de la queue, étape 1 « Démêler à la main » (8/12) — NON PUBLIÉ
+- images/pansage-queue-1.webp remplacée (1448×1086). Script en ?v=11. Reste queue 3, 4, couverture, quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de la queue, étape 3 « Remonter petit à petit » (9/12) — NON PUBLIÉ
+- images/pansage-queue-3.webp remplacée (1448×1086). Script en ?v=12. Reste queue 4, couverture, quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette de la queue, étape 4 « Vérifier le résultat » (10/12) — NON PUBLIÉ
+- images/pansage-queue-4.webp remplacée (1448×1086). Les 4 photos de la queue sont nettes. Script en ?v=13. Reste couverture, quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : 2 photos nettes « Comprendre » (11/12) — NON PUBLIÉ
+- images/pansage-comprendre.webp (vignette 01) remplacée ; NOUVEAU images/pansage-comprendre-2.webp (grande photo de la section 01). 1448×1086. La couverture du haut (pansage-hero) n'est pas changée. Script en ?v=14. Reste : couverture 16:9, quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : nouvelle couverture nette (12/12) — NON PUBLIÉ
+- images/pansage-hero.webp remplacée (1672×941, fournie par Blandine) ; la photo occupe tout le bandeau (plus de décalage à gauche), cadrage à droite. Script en ?v=15. Reste : photo du quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : photo large de la queue pour la vignette 04 (13) — NON PUBLIÉ
+- NOUVEAU images/pansage-queue-large.webp (1672×941, fournie par Blandine) : sert à la vignette 04 « La queue ». Les 4 photos d'étapes ne changent pas. Script en ?v=16. Reste : photo du quiz.
+
+## 30/10 — Cours g1-c2 ordinateur : photo nette du quiz (14/14) — toutes les photos du cours sont nettes — NON PUBLIÉ
+- images/pansage-quiz.webp remplacée (1586×992). Plus aucune « Photo provisoire ». Script en ?v=17.
+- Tests complets refaits : texte d'origine 69/69, interactions, 14 langues, mobile (390 px) et tablette inchangés.
+- Reste à faire par Blandine : valider le schéma du sabot et la photo des pieds (vignette 03) côté équitation ; regarder les 3 vidéos YouTube.

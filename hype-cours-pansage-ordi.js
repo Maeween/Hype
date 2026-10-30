@@ -149,10 +149,10 @@ var CSS = [
 ".pso-top{display:grid;grid-template-columns:minmax(0,1fr);gap:0}",
 "@media (min-width:1480px){.pso-top{grid-template-columns:minmax(0,1fr) 340px}}",
 ".pso-hero{position:relative;min-height:330px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:22px 40px 30px}",
-".pso-hero .bg{position:absolute;top:0;bottom:0;inset-inline-start:24%;inset-inline-end:0;background:#070A08 url(images/pansage-hero.webp) 62% 36%/cover no-repeat}",
+".pso-hero .bg{position:absolute;top:0;bottom:0;inset-inline-start:0;inset-inline-end:0;background:#070A08 url(images/pansage-hero.webp) 70% 22%/cover no-repeat}",
 ".pso-hero .vo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,10,8,.92) 0%,rgba(7,10,8,.72) 34%,rgba(7,10,8,.12) 66%,rgba(7,10,8,0) 100%),linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 28%,rgba(7,10,8,.55) 100%)}",
 "[dir=rtl] .pso-hero .vo{background:linear-gradient(270deg,rgba(7,10,8,.92) 0%,rgba(7,10,8,.72) 34%,rgba(7,10,8,.12) 66%,rgba(7,10,8,0) 100%),linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 28%,rgba(7,10,8,.55) 100%)}",
-"[dir=rtl] .pso-hero .bg{background-position:38% 36%;transform:scaleX(-1)}",
+"[dir=rtl] .pso-hero .bg{background-position:30% 22%;transform:scaleX(-1)}",
 ".pso-hero>*:not(.bg):not(.vo){position:relative}",
 ".pso-bar{display:flex;align-items:center;gap:12px;position:absolute;top:18px;inset-inline:40px;z-index:2}",
 ".pso-back{width:38px;height:38px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px}",
@@ -399,9 +399,9 @@ function HypePansageOrdi(props) {
 
   /* outils : l'ordre des 5 puces du cours = étrille, bouchon, brosse douce, cure-pied, éponge */
   var OUTILS = [
-    { img: "images/pansage-outil-etrille.webp" }, { img: "images/pansage-outil-bouchon.webp" },
-    { img: "images/pansage-outil-brosse-douce.webp" }, { img: "images/pansage-outil-cure-pied.webp" },
-    { img: "images/pansage-outil-eponge.webp" }
+    { img: "images/pansage-outil-etrille.webp", net: true }, { img: "images/pansage-outil-bouchon.webp", net: true },
+    { img: "images/pansage-outil-brosse-douce.webp", net: true }, { img: "images/pansage-outil-cure-pied.webp", net: true },
+    { img: "images/pansage-outil-eponge.webp", net: true }
   ];
   var nomOutil = function (p) { return String(p.gras || "").replace(/\s*[:：]\s*$/, ""); };
 
@@ -452,8 +452,8 @@ function HypePansageOrdi(props) {
   var vig = [
     { id: "s1", t: "vComprendre", img: "images/pansage-comprendre.webp" },
     { id: "s2", t: "vOutils", img: "images/pansage-outil-ensemble.webp" },
-    { id: "s3", t: "vPieds", sch: true },
-    { id: "s4", t: "vQueue", img: "images/pansage-queue-2.webp" },
+    { id: "s3", t: "vPieds", img: "images/pansage-pieds.webp" },
+    { id: "s4", t: "vQueue", img: "images/pansage-queue-large.webp" },
     { id: "s5", t: "vQuiz", img: "images/pansage-quiz.webp" }
   ];
   var idxCourant = -1;
@@ -503,7 +503,7 @@ function HypePansageOrdi(props) {
               h("p", null, d.para1.gras ? h("strong", null, d.para1.gras + " ") : null, d.para1.texte),
               h("div", { className: "pso-benef" },
                 h("div", null, ICO.coeur(22), L("benef1")), h("div", null, ICO.loupe(22), L("benef2")), h("div", null, ICO.eclair(22), L("benef3")))),
-            h("div", { className: "pso-photo grand" }, h("img", { src: "images/pansage-comprendre.webp", alt: "", loading: "lazy" })))),
+            h("div", { className: "pso-photo grand" }, h("img", { src: "images/pansage-comprendre-2.webp", alt: "", loading: "lazy" })))),
 
         /* 02 — LES OUTILS */
         Sec("s2", "02", nettoyerTitre(d.outilsSec.titre),
@@ -511,7 +511,7 @@ function HypePansageOrdi(props) {
             h("div", { className: "pso-outrow" },
               d.outilsSec.puces.map(function (p, i) {
                 return h("article", { key: i, className: "pso-ocard" },
-                  h("div", { className: "ph" }, h("img", { src: OUTILS[i] ? OUTILS[i].img : "", alt: nomOutil(p), loading: "lazy" }), h("span", { className: "pso-tmp" }, L("temp"))),
+                  h("div", { className: "ph" }, h("img", { src: OUTILS[i] ? OUTILS[i].img : "", alt: nomOutil(p), loading: "lazy" }), OUTILS[i] && OUTILS[i].net ? null : h("span", { className: "pso-tmp" }, L("temp"))),
                   h("h4", null, nomOutil(p)),
                   h("p", null, p.texte));
               })),
