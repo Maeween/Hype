@@ -15440,3 +15440,5 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - 30/10 20h55 : photo alezan pie reçue (images/robes-g2-pie-alezan.webp), affichée en G2 avec noir pie et bai pie : les trois pies du programme ont leur photo. Tests G2 OK (17/17).
 
 - 30/10 21h00 : photo alezan pie remplacée par la bonne (robes-g2-pie-alezan.webp) ; l autre rangée en réserve (images/robes-reserve-pie-brun-crins-noirs.webp, non affichée).
+
+- 30/10 21h05 : photo pie sabino rangée (images/robes-g5-pie-sabino.webp, Galop 5, pies). Reste pour les pies G5 : tobiano, ovéro, tovero, balzan.
