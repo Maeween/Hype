@@ -221,7 +221,20 @@ function EcranResultatsEcurie() {
         sansCompte.forEach(function (n) { noms[nrm(n)] = true; });
         /* noms présents dans les résultats importés par les membres mais rattachés à personne : candidats pour la gestionnaire */
         var candidats = {};
-        lignes.forEach(function (x) { var k = nrm(x.cavalier); if (!k || noms[k]) return; var c = candidats[k] || (candidats[k] = { nom: x.cavalier, n: 0, der: "" }); c.n++; if ((x.date_epreuve || "") > c.der) c.der = x.date_epreuve || ""; });
+        lignes.forEach(function (x) {
+          var k = nrm(x.cavalier); if (!k || noms[k]) return;
+          if (/[0-9%\/]/.test(String(x.cavalier || ""))) return;   /* nom abîmé à l import (ex. « … Note/Score 63,08% ») : jamais proposé */
+          var c = candidats[k] || (candidats[k] = { nom: x.cavalier, n: 0, der: "" }); c.n++; if ((x.date_epreuve || "") > c.der) c.der = x.date_epreuve || "";
+        });
+        /* 30/10 (contrôle sur les vraies données) : un nom FFE DÉJÀ RELIÉ À UN COMPTE (quelle que soit son écurie) n est pas un « cavalier sans
+           compte » — sinon une cavalière de la SEP importée depuis le compte de Blandine serait proposée pour Feinn. */
+        try {
+          var nomsCands = Object.keys(candidats).map(function (k) { return candidats[k].nom; });
+          for (var iCd = 0; iCd < nomsCands.length; iCd += 150) {
+            var rLi = await supa.from("cavaliers_ffe").select("nom, user_id").in("nom", nomsCands.slice(iCd, iCd + 150));
+            ((rLi && !rLi.error && rLi.data) || []).forEach(function (x) { if (x && x.user_id) delete candidats[nrm(x.nom)]; });
+          }
+        } catch (eLi) { }
         lignes = lignes.filter(function (x) { return x && noms[nrm(x.cavalier)]; });
         if (!lignes.length) { if (vivant) { setD({ lignes: [], candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u }); setEtat("vide"); } return; }
         /* profils des cavalières (photo, âge), chevaux, rendez-vous reliés, photos des rendez-vous */
@@ -648,6 +661,7 @@ function EcranResultatsEcurie() {
   var _ge = React.useState(null), evtsClub = _ge[0], setEvtsClub = _ge[1];
   var _gm = React.useState({ t: "", err: false }), gMsg = _gm[0], setGMsg = _gm[1];
   var _gb = React.useState(""), gBusy = _gb[0], setGBusy = _gb[1];
+  var _gt = React.useState(false), gToutes = _gt[0], setGToutes = _gt[1];
   React.useEffect(function () {
     if (vue !== "gestion" || !D || !D.clefClub || typeof supa === "undefined" || !supa) return;
     var vif = true;
@@ -670,7 +684,10 @@ function EcranResultatsEcurie() {
   }
   function vueGestion() {
     var estMod = (typeof estModerateurHype === "function") && estModerateurHype(D && D.moi);
-    var cands = Object.keys((D && D.candidats) || {}).map(function (k) { return D.candidats[k]; }).sort(function (a, b) { return b.n - a.n || (a.der < b.der ? 1 : -1); });
+    var candsTous = Object.keys((D && D.candidats) || {}).map(function (k) { return D.candidats[k]; }).sort(function (a, b) { return (a.der < b.der ? 1 : a.der > b.der ? -1 : 0) || b.n - a.n; });
+    var ySeuil = (saisons.length ? saisons[0] : (new Date()).getFullYear()) - 1;   /* saison en cours + la précédente */
+    var seuil = ySeuil + "-09-01";
+    var cands = gToutes ? candsTous : candsTous.filter(function (c) { return (c.der || "") >= seuil; });
     var titreG = function (txt) { return h("h3", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 21, margin: "26px 0 6px", color: IVOIRE } }, txt); };
     var aide = function (txt) { return h("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.5, color: GRIS } }, txt); };
     var ligne = function (cle, gauche, droite) { return h("div", { key: cle, style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", marginBottom: 6 } }, h("div", { style: { flex: 1, minWidth: 0, fontSize: 13 } }, gauche), droite); };
@@ -698,6 +715,7 @@ function EcranResultatsEcurie() {
         return ligne("c" + c.nom, h("span", null, h("b", { style: { fontWeight: 600 } }, joliNom(c.nom)), h("span", { style: { color: GRIS, fontSize: 11.5 } }, " · " + c.n + " " + tn("nResultats", c.n) + (c.der ? " · " + fmtDate(c.der) : ""))),
           (D && D.tableCentrale) ? petitBt("a" + c.nom, tg("gRattacher"), function () { action("a" + c.nom, function () { return supa.from("club_cavaliers_ffe").insert({ club_clef: D.clefClub, nom: c.nom }).select("nom"); }); }) : null);
       }) : aide(tg("gRien")),
+      (!gToutes && candsTous.length > cands.length) ? h("button", { type: "button", className: "rv3-lien", onClick: function () { setGToutes(true); } }, t("voirPlus") + " (" + (candsTous.length - cands.length) + ")") : null,
       (D && D.sansCompte && D.sansCompte.length) ? h("div", { style: { marginTop: 10 } }, h("div", { style: { fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase", color: CHAMP, margin: "6px 0 8px" } }, tg("gDeja")),
         D.sansCompte.map(function (n) { return ligne("d" + n, joliNom(n), (D.tableCentrale) ? petitBt("r" + n, tg("gRetirer"), function () { action("r" + n, function () { return supa.from("club_cavaliers_ffe").delete().eq("club_clef", D.clefClub).eq("nom", n).select("nom"); }); }) : null); })) : null,
       titreG(tg("gRelier")), aide(tg("gRelierAide")),
