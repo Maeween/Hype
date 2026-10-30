@@ -207,10 +207,11 @@ function imageFichier(src, lg) {
 /* ---------- 30/10/2026 : l'APERÇU d'un chapitre payant (même découpe que l'appli, hypeCoursApercu dans index.html) ----------
    Décision de Blandine (choix B) : les Galops 2 à 4 montrent le DÉBUT du vrai chapitre (couverture, intro éventuelle, premier
    bloc coupé au tiers, au moins 2 morceaux), puis « réservé aux abonnés ». Google ne voit que ce début, comme le visiteur.
-   Galops 6 et 7 : « Prochainement » dans l'appli → pas de page de chapitre. Galop 5 : pas de page de chapitre pour l'instant
-   (plantage des chapitres corrigé le 30/10, build 2045, mais la page du Galop 5 de l'appli présente de nouveaux chapitres qui
-   arrivent progressivement : à décider avec Blandine avant de les mettre sur Google). */
-const APERCU_JUSQUA = 4;
+   Galops 6 et 7 : « Prochainement » dans l'appli → pas de page de chapitre. Galop 5 (décision de Blandine, 30/10 19h32 :
+   « mets uniquement ceux refaits en ligne sur Google ») : seuls les chapitres refaits de G5_SUR_GOOGLE ont leur page, et la page
+   du Galop 5 ne liste qu'eux. À compléter au fur et à mesure que les nouveaux chapitres du Galop 5 sont prêts. */
+const APERCU_JUSQUA = 5;
+const G5_SUR_GOOGLE = ["g5-robes"];
 function couperApercu(a) { if (!Array.isArray(a)) return a; const n = Math.max(2, Math.ceil(a.length / 3)); return a.length > n ? a.slice(0, n) : a; }
 function blocApercu(b) {
   if (!b || typeof b !== "object") return b;
@@ -410,13 +411,14 @@ function principal() {
   const urls = [];   // { chemin, langues }
   const nomGalop = (n, lg) => UI[lg].galop(n);
   const sousTitre = (n, lg) => (lg === "ar" ? SOUS_AR[n] : lg === "zh" ? (lk(infos[n] && infos[n].sousTitre, "zh") || SOUS_ZH[n]) : tr(infos[n] && infos[n].sousTitre, lg)) || "";
+  if (Array.isArray(cours[5])) cours[5] = cours[5].filter((c) => c && G5_SUR_GOOGLE.indexOf(c.id) >= 0);   // 30/10 : Galop 5 = chapitres refaits seulement
   const galops = [1, 2, 3, 4, 5, 6, 7].filter((n) => cours[n] && cours[n].length);
 
   // slugs des chapitres du Galop 1 (titre français, rendu unique)
   const g1 = cours[1] || [];
   const vus = {};
   const slugs = g1.map((c) => { let s = slug(tr(c.titre, "fr")) || slug(c.id); if (vus[s]) s += "-" + slug(c.id); vus[s] = 1; return s; });
-  // 30/10 : mêmes adresses pour les chapitres en aperçu des Galops 2 à 4 (titre français, rendu unique dans chaque Galop)
+  // 30/10 : mêmes adresses pour les chapitres en aperçu des Galops 2 à 5 (titre français, rendu unique dans chaque Galop)
   const slugsG = {};
   for (const n of galops) {
     if (n === 1 || n > APERCU_JUSQUA) continue;
@@ -475,7 +477,7 @@ function principal() {
           if (lg === LANGS[0]) urls.push({ chemin: `galop-1/${slugs[i]}/`, langues });
         });
       } else if (n <= APERCU_JUSQUA && slugsG[n]) {
-        // 30/10 : Galops 2 à 4 — chaque chapitre a sa page, avec le DÉBUT seulement (aperçu), comme dans l'appli
+        // 30/10 : Galops 2 à 5 — chaque chapitre a sa page, avec le DÉBUT seulement (aperçu), comme dans l'appli
         const sg = slugsG[n];
         const pub = liste.map((ch, i) => (dispo(ch, lg) ? i : -1)).filter((i) => i >= 0);
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;

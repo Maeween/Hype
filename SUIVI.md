@@ -15412,3 +15412,9 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - ⚠️ Constaté, NON corrigé (travail des robes, autre conversation) : la page ordinateur des robes du Galop 3 (g3-c7) ne s'affiche pas, même pour une modératrice — la traduction des cours du Galop 3 ne recopie pas le quiz bonus que cette page exige (okG3) ; même cause probable pour g2-robes si un quiz bonus y est ajouté.
 - Google : Galop 5 toujours sans pages de chapitres (la page du Galop 5 de l'appli présente de nouveaux chapitres qui arrivent progressivement) — à décider avec Blandine.
 - Publié : index.html + SUIVI.md + outils/seo-galops.cjs (commentaire seulement). Fichiers inchangés : tout le reste.
+
+## 30/10 19h45 — Google : Galop 5 = chapitres refaits seulement — PUBLIÉ le 30/10 (« Mets uniquement ceux refaits en ligne sur Google pour le galop 5 »)
+- outils/seo-galops.cjs : Galop 5 ouvert aux pages Google (APERCU_JUSQUA = 5), mais seulement pour les chapitres de la liste G5_SUR_GOOGLE, aujourd'hui « Les robes : pies, tachetés et adjonctions » (g5-robes). La page /<langue>/galop-5/ ne liste plus que ce chapitre (avant : les titres des 6 anciens chapitres). La page du chapitre montre son début seulement (aperçu), comme les Galops 2 à 4 ; elle ouvre l'aperçu dans l'appli (testé à 20h45 : début + carte Premium, 0 erreur).
+- « Les embouchures » (g5n-02) n'y est pas : son cours a une page à part qui ne sait pas encore faire d'aperçu (un non-abonné va directement à la page Premium). À ajouter quand cette page aura son aperçu.
+- À chaque nouveau chapitre du Galop 5 refait : ajouter son identifiant dans G5_SUR_GOOGLE.
+- Publié : outils/seo-galops.cjs + SUIVI.md. index.html inchangé (marqueur toujours 20261030-2045).
