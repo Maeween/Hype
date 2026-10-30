@@ -372,7 +372,8 @@ function HypeRobesOrdi(props) {
 
   var aller = function (id) { var el = document.getElementById("rbo-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   var haut = function () { var el = document.querySelector(".rbo"); if (el && el.scrollIntoView) el.scrollIntoView({ block: "start" }); };
-  var versFin = function () { setVue("fin"); setTimeout(haut, 30); };
+  var finExt = !!props.onTerminer;   /* 30/10 : la fin de cours = la page « Cours terminé ! » de l'appli (aux couleurs actuelles : Hey Baby, quiz de l'appli avec étoiles). Sans onTerminer : ma page de fin intégrée. */
+  var versFin = function () { if (finExt) props.onTerminer(); else { setVue("fin"); setTimeout(haut, 30); } };
   var versCours = function (id) { setVue("cours"); setTimeout(function () { if (id) aller(id); else haut(); }, 60); };
   var nav = function (id) { if (id === "s5") versFin(); else aller(id); };
   var hey = function (q) {
@@ -515,6 +516,11 @@ function HypeRobesOrdi(props) {
               h("div", { className: "rbo-txt" }, M(z[1], "z1")),
               h("div", { className: "rbo-defi rbo-txt" }, M(z[2], "z2"))))),
         Vague(PET, NOIR),
+        finExt ? h("section", { className: "rbo-sec noir" }, h("div", null,
+            h("div", { className: "rbo-synth" },
+              h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[4].titre))),
+              h("ol", null, z[4].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
+            h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[5].texte) + " »"))) : null,
         /* conseil du coach : en bas de la page du cours, juste avant la page de fin */
         h("div", { className: "rbo-coachfin" },
           h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(z[0].titre)), h("p", null, z[0].texte)),
