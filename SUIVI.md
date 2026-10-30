@@ -15676,3 +15676,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 
 ## 30/10 23h30 — PUBLICATION (« Ok vas y », 23h28) — build 20261031-0100 [publier]
 - En ligne : index.html (?v=5), hype-ecran-resultats-ecurie.js v5 (meilleurs résultats d'abord, import sous les résultats, « Ajouter des photos », fin de page rapprochée, textes un peu plus grands), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne 7a30efa (Le Mag, article à la une) : aucune ligne retirée.
+
+## 30/10 23h50 — Galop 1 (robes) : bouton « Commencer le cours » sous les vignettes (build 20261031-0120) — NON publié
+- Retour de Blandine (23h33, capture) : « il n'y a plus rien là » — le menu du cours (publié 0110) était vide sous les vignettes, rien n'indiquait qu'il faut toucher une vignette.
+- hype-cours-robes-ordi.js v14 : gros bouton « Commencer le cours → » sous les vignettes (ouvre l'écran 01), texte en 14 langues (clé commencer). index.html : ?v=14, marker 20261031-0120.
+- Fichiers : hype-cours-robes-ordi.js v14, index.html, SUIVI.md. Étoiles de la liste des cours : en attente du choix A/B/C.

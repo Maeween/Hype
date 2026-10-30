@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 13;
+var VERSION = 14;
 var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
@@ -42,6 +42,7 @@ var T = {
   retour: tt("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
   pPrec: tt("Précédent", "Previous", "Anterior", "Indietro", "前へ", "Zurück", "السابق", "上一步", "Vorige", "Anterior", "Föregående", "Назад", "Wstecz", "이전"),
   pSuiv: tt("Suivant", "Next", "Siguiente", "Avanti", "次へ", "Weiter", "التالي", "下一步", "Volgende", "Seguinte", "Nästa", "Далее", "Dalej", "다음"),
+  commencer: tt("Commencer le cours", "Start the lesson", "Empezar el curso", "Inizia il corso", "レッスンを始める", "Kurs starten", "ابدأ الدرس", "开始课程", "Les starten", "Começar o curso", "Starta lektionen", "Начать урок", "Zacznij lekcję", "수업 시작하기"),
   vResume: tt("À retenir", "Key points", "A retener", "Da ricordare", "ポイント", "Merke", "للتذكّر", "要点", "Onthouden", "A reter", "Att komma ihåg", "Запомни", "Do zapamiętania", "기억할 것"),
   retourCours: tt("Revenir au cours", "Back to the lesson", "Volver al curso", "Torna al corso", "レッスンに戻る", "Zurück zum Kurs", "العودة إلى الدرس", "返回课程", "Terug naar de les", "Voltar ao curso", "Tillbaka till lektionen", "Вернуться к уроку", "Wróć do lekcji", "수업으로 돌아가기"),
   suiteFin: tt("Résumé, Hey Baby et quiz", "Summary, Hey Baby and quiz", "Resumen, Hey Baby y quiz", "Riepilogo, Hey Baby e quiz", "まとめ、Hey Baby、クイズ", "Zusammenfassung, Hey Baby und Quiz", "الملخص وHey Baby والاختبار", "总结、Hey Baby 和测验", "Samenvatting, Hey Baby en quiz", "Resumo, Hey Baby e quiz", "Sammanfattning, Hey Baby och quiz", "Итоги, Hey Baby и викторина", "Podsumowanie, Hey Baby i quiz", "요약, Hey Baby, 퀴즈"),
@@ -286,6 +287,7 @@ var CSS = [
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
 ".rbo-vig.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
 ".rbo-sp{height:58px;background:var(--noir)}",
+".rbo-start{background:var(--noir);display:flex;justify-content:center;padding:34px 40px 64px}",
 ".rbo-pas{display:flex;justify-content:space-between;gap:14px;padding:30px 40px 44px;background:var(--noir)}",
 ".rbo-citband{background:var(--noir);padding:64px 56px 28px;text-align:center}",
 ".rbo-citband .rbo-cit{max-width:860px;margin:0 auto;font-size:clamp(26px,2.4vw,36px);line-height:1.35}",
@@ -477,7 +479,9 @@ function HypeRobesOrdi(props) {
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-          }))) : null,
+          })),
+          h("div", { className: "rbo-start" }, h("button", { type: "button", className: "rbo-btn", onClick: function () { aller("s1"); } }, L("commencer") + (rtl ? " ←" : " →")))
+        ) : null,
         vue !== "menu" ? h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini on" },
             h("button", { type: "button", className: "home", "aria-label": L("retour"), onClick: function () { versCours(null); } }, rtl ? "›" : "‹"),
