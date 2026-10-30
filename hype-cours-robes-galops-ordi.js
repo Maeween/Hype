@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 15;   /* 31/10 : défi du cavalier ajouté au Galop 2 */
+var VERSION = 17;   /* 31/10 : menu du cours modèle B */
+/* v15 :   /* 31/10 : défi du cavalier ajouté au Galop 2 */
 /* v14 :   /* 31/10 : page de fin = FinCours (maquette), portraits de toutes les robes du cours */
 /* v13 :   /* 31/10 : autres Galops grisés dans le menu */
 /* v12 :   /* 31/10 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
@@ -51,10 +52,7 @@ var N = {
   avant: tt("Avant le quiz", "Before the quiz", "Antes del quiz", "Prima del quiz", "クイズの前に", "Vor dem Quiz", "قبل الاختبار", "测验之前", "Voor de quiz", "Antes do quiz", "Före quizet", "Перед викториной", "Przed quizem", "퀴즈 전에"),
   plusLoin: tt("Pour aller plus loin", "Going further", "Para ir más lejos", "Per approfondire", "さらに学ぶ", "Zum Vertiefen", "للتعمق أكثر", "深入了解", "Verder kijken", "Para ir mais longe", "Gå djupare", "Для углубления", "Dla chętnych", "더 알아보기"),
   /* 31/10 : défi du cavalier du Galop 2 (le cours n'en avait pas) — proposé par Claude, à valider par Blandine */
-  defiG2s: tt("Dans ton club, cherche :", "At your club, look for:", "En tu club, busca:", "Nel tuo circolo, cerca:", "クラブで探してみよう：", "Suche in deinem Stall:", "ابحث في ناديك عن:", "在你的俱乐部里找一找：", "Zoek op je club:", "No teu clube, procura:", "Leta i din klubb efter:", "Найди в своём клубе:", "Poszukaj w swoim klubie:", "클럽에서 찾아보세요:"),
-  defiG2a: tt("un cheval gris : est-il encore foncé ou déjà très clair ?", "a grey horse: is it still dark or already very light?", "un caballo tordo: ¿todavía es oscuro o ya muy claro?", "un cavallo grigio: è ancora scuro o già molto chiaro?", "芦毛の馬：まだ濃い色？それともかなり白い？", "einen Schimmel: Ist er noch dunkel oder schon sehr hell?", "حصانًا رماديًا: هل ما زال داكنًا أم أصبح فاتحًا جدًا؟", "一匹青毛马：它还是深色，还是已经很浅了？", "een schimmel: is hij nog donker of al heel licht?", "um cavalo tordilho: ainda é escuro ou já muito claro?", "en skimmel: är den fortfarande mörk eller redan mycket ljus?", "серую лошадь: она ещё тёмная или уже совсем светлая?", "siwego konia: jest jeszcze ciemny czy już bardzo jasny?", "회색 말: 아직 어두운가요, 이미 아주 밝은가요?"),
-  defiG2b: tt("un cheval pie : quelle est sa robe de base (noir, alezan ou bai) ?", "a pinto horse: what is its base coat (black, chestnut or bay)?", "un caballo pío: ¿cuál es su capa de base (negro, alazán o castaño)?", "un cavallo pezzato: qual è il suo mantello di base (morello, sauro o baio)?", "ぶちの馬：基本の毛色は？（青毛・栗毛・鹿毛）", "einen Schecken: Was ist seine Grundfarbe (Rappe, Fuchs oder Brauner)?", "حصانًا أبلق: ما لونه الأساسي (أسود، أشقر أو كميت)؟", "一匹花毛马：它的基础毛色是什么（黑、栗还是骝）？", "een bont paard: wat is zijn basiskleur (zwart, vos of bruin)?", "um cavalo pampa: qual é a pelagem de base (preto, alazão ou castanho)?", "en skäck: vilken är grundfärgen (svart, fux eller brun)?", "пегую лошадь: какая у неё основная масть (вороная, рыжая или гнедая)?", "srokatego konia: jaka jest jego maść podstawowa (kara, kasztanowata czy gniada)?", "얼룩말: 기본 모색은 무엇인가요(흑마, 밤색, 갈색)?"),
-  defiG2c: tt("si possible, une robe plus rare (blanc, crème, chocolat ou tacheté) et nomme-la.", "if possible, a rarer coat (white, cream, chocolate or spotted), and name it.", "si es posible, una capa más rara (blanco, crema, chocolate o moteado) y nómbrala.", "se possibile, un mantello più raro (bianco, crema, cioccolato o maculato) e dagli un nome.", "できれば、珍しい毛色（白毛・クリーム・チョコレート・斑点）を見つけて名前を言おう。", "wenn möglich eine seltenere Farbe (Weiß, Cream, Schokolade oder getupft) und benenne sie.", "إن أمكن، لونًا أندر (أبيض، كريمي، شوكولاتي أو مرقط) وسمِّه.", "如果可以，再找一种少见的毛色（白、奶油、巧克力或斑点）并说出名字。", "zo mogelijk een zeldzamere kleur (wit, crème, chocolade of gevlekt) en benoem die.", "se possível, uma pelagem mais rara (branco, creme, chocolate ou malhado) e diz o nome.", "om möjligt en ovanligare färg (vit, cremefärgad, choklad eller prickig) och namnge den.", "если получится — более редкую масть (белую, кремовую, шоколадную или чубарую) и назови её.", "jeśli się da, rzadszą maść (białą, kremową, czekoladową lub tarantowatą) i nazwij ją.", "가능하면 더 드문 모색(백마, 크림, 초콜릿, 점박이)을 찾아 이름을 말해 보세요."),
+  defiG2: tt("Trouve un cheval gris dans ton club et essaie de deviner son âge d'après la blancheur de sa robe. Ensuite, demande son âge à ton moniteur pour vérifier !", "Find a grey horse at your club and try to guess its age from how white its coat is. Then ask your instructor how old it is to check!", "Busca un caballo tordo en tu club e intenta adivinar su edad según lo blanca que sea su capa. Después, pregunta su edad a tu monitor para comprobarlo.", "Trova un cavallo grigio nel tuo circolo e prova a indovinare la sua età da quanto è bianco il suo mantello. Poi chiedi la sua età al tuo istruttore per verificare!", "クラブで芦毛の馬を見つけて、毛色の白さから年齢を当ててみよう。そのあとインストラクターに年齢を聞いて答え合わせ！", "Suche einen Schimmel in deinem Stall und versuche, sein Alter an der Helligkeit seines Fells zu schätzen. Frag danach deinen Reitlehrer, wie alt er ist!", "ابحث عن حصان رمادي في ناديك وحاول تخمين عمره من شدة بياض لونه. ثم اسأل مدرّبك عن عمره لتتأكد!", "在俱乐部里找一匹青毛马，根据它毛色有多白来猜猜它的年龄。然后问问教练，核对一下！", "Zoek een schimmel op je club en probeer zijn leeftijd te raden aan hoe wit zijn vacht is. Vraag daarna aan je instructeur hoe oud hij is!", "Encontra um cavalo tordilho no teu clube e tenta adivinhar a idade pela brancura da pelagem. Depois, pergunta a idade ao teu monitor para confirmar!", "Hitta en skimmel i din klubb och försök gissa hur gammal den är utifrån hur vit pälsen är. Fråga sedan din ridlärare för att kontrollera!", "Найди в клубе серую лошадь и попробуй угадать её возраст по тому, насколько она побелела. Потом спроси у тренера, сколько ей лет!", "Znajdź w klubie siwego konia i spróbuj zgadnąć jego wiek po tym, jak bardzo pobielała jego sierść. Potem zapytaj instruktora, ile ma lat!", "클럽에서 회색 말을 찾아 털이 얼마나 하얀지 보고 나이를 맞혀 보세요. 그다음 강사님께 나이를 물어 확인해 보세요!"),
   ouvrir: tt("Afficher", "Show", "Mostrar", "Mostra", "表示する", "Anzeigen", "عرض", "展开", "Tonen", "Mostrar", "Visa", "Показать", "Pokaż", "보기")
 };
 
@@ -203,7 +201,7 @@ function HypeRobesGalopsOrdi(props) {
   var _e = useState("s1"), actif = _e[0], setActif = _e[1];
   var _m = useState(false), mini = _m[0], setMini = _m[1];
   useEffect(function () {
-    var on = function () { var el = document.querySelector(".rbo-vig"); if (el) setMini(el.getBoundingClientRect().bottom < 0); };
+    var on = function () { var el = document.querySelector(".rbo-ong"); if (el) setMini(el.getBoundingClientRect().bottom < 0); };
     window.addEventListener("scroll", on, { passive: true }); on();
     return function () { window.removeEventListener("scroll", on); };
   }, []);
@@ -280,7 +278,7 @@ function HypeRobesGalopsOrdi(props) {
   if (g2) {
     /* ====== GALOP 2 : tout vient du cours g2-robes ====== */
     coach = a[11]; hbQ = props.questionsHB || []; synth = a[14]; hbListe = hbQ.slice(0, 3);
-    defi = { titre: L("defi"), sous: X("defiG2s"), texte: "", puces: [{ texte: X("defiG2a") }, { texte: X("defiG2b") }, { texte: X("defiG2c") }] };   /* 31/10 : défi ajouté (Blandine : « ajoute un défi du cavalier ») */
+    defi = { titre: L("defi"), sous: "", texte: X("defiG2"), puces: [] };   /* 31/10 : défi ajouté (Blandine : « ajoute un défi du cavalier ») */
     vig = [
       { id: "s1", lab: L("vComprendre"), img: P.cheval, pos: "80% 40%" },
       { id: "s2", lab: d.titre, img: P.g2gris, pos: "50% 40%" },
@@ -452,19 +450,11 @@ function HypeRobesGalopsOrdi(props) {
           d.type ? h("span", null, ICO.livre(16), d.type) : null,
           h("span", null, ICO.coupe(16), kicker)))),
     d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-    h("div", { className: "rbo-vig", role: "tablist", style: { gridTemplateColumns: "repeat(" + nbVig + ",minmax(0,1fr))" } },
-      vigM.map(function (v, i) {
-        return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
-          h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-      }),
-      autresG.map(function (g, k) {
-        return h("button", { key: g.id, type: "button", className: "gal", "aria-label": X("parcours") + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: "60% 40%" } },
-          h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-      })),
+    h(S.Onglets, { L: L, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
     h("div", { className: "rbo-minih" },
       h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
         vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
-        autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vigM.length + k + 1)), galLab(g.n)); }))),
+        autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "G" + g.n), L("gal" + g.n)); }))),
     corps,
     finSurNoir2 ? Vague(PET, NOIR) : Vague(NOIR, PET),
     /* conseil du coach : en bas de la page du cours, juste avant la page de fin */

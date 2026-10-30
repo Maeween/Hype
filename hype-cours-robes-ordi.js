@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 31;   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
+var VERSION = 33;   /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
+/* v31 :   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
 /* v30 :   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
 /* v29 :   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
 /* v28 :   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
@@ -79,6 +80,8 @@ var T = {
   defiBravo: tt("Bravo, tu as relevé le défi !", "Well done, challenge complete!", "¡Bravo, has superado el reto!", "Bravo, hai superato la sfida!", "やったね、チャレンジ達成！", "Bravo, Challenge geschafft!", "أحسنت، لقد أنجزت التحدي!", "太棒了，挑战完成！", "Bravo, uitdaging gehaald!", "Bravo, cumpriste o desafio!", "Bra jobbat, utmaningen klar!", "Браво, задание выполнено!", "Brawo, wyzwanie zaliczone!", "잘했어요, 도전 완료!"),
   quizSous: tt("Vérifie tes connaissances et valide tes acquis.", "Check your knowledge and confirm what you've learned.", "Comprueba tus conocimientos y valida lo aprendido.", "Verifica le tue conoscenze e convalida ciò che hai imparato.", "知識を確認して、学んだことを確かめよう。", "Prüfe dein Wissen und festige das Gelernte.", "تحقّق من معلوماتك وثبّت ما تعلّمته.", "检验你的知识，巩固所学。", "Test je kennis en bevestig wat je hebt geleerd.", "Verifica os teus conhecimentos e valida o que aprendeste.", "Testa dina kunskaper och bekräfta det du lärt dig.", "Проверь знания и закрепи пройденное.", "Sprawdź wiedzę i potwierdź to, czego się nauczyłeś.", "지식을 확인하고 배운 것을 다져 보세요."),
   quizReussi: tt("Quiz réussi", "Quiz passed", "Quiz superado", "Quiz superato", "クイズ合格", "Quiz bestanden", "نجحت في الاختبار", "测验通过", "Quiz gehaald", "Quiz superado", "Quiz klarat", "Тест пройден", "Quiz zaliczony", "퀴즈 통과"),
+  dansCours: tt("Dans ce cours", "In this lesson", "En este curso", "In questo corso", "このレッスンでは", "In dieser Lektion", "في هذا الدرس", "本课内容", "In deze les", "Neste curso", "I den här lektionen", "В этом уроке", "W tej lekcji", "이번 수업"),
+  autresGal: tt("Les autres Galops", "The other Galops", "Los otros Galops", "Gli altri Galop", "ほかのギャロップ", "Die anderen Galops", "الغالوبات الأخرى", "其他 Galop", "De andere Galops", "Os outros Galops", "De andra Galops", "Другие Galop", "Pozostałe Galopy", "다른 갤럽"),
   coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
   coursSuivant: tt("Cours suivant", "Next lesson", "Siguiente curso", "Corso successivo", "次のレッスン", "Nächste Lektion", "الدرس التالي", "下一课", "Volgende les", "Próximo curso", "Nästa lektion", "Следующий урок", "Następna lekcja", "다음 수업"),
   retourGalops: tt("Retour aux Galops", "Back to the Galops", "Volver a los Galops", "Torna ai Galop", "ギャロップに戻る", "Zurück zu den Galops", "العودة إلى الغالوب", "返回 Galop", "Terug naar de Galops", "Voltar aos Galops", "Tillbaka till Galops", "Назад к Galop", "Powrót do Galopów", "갤럽으로 돌아가기"),
@@ -216,6 +219,7 @@ var CSS = [
 ".rbo-minih{position:sticky;top:0;z-index:30;height:0}",
 ".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 40px 8px;background:transparent;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".rbo-mini.on{opacity:1;pointer-events:auto;transform:none}",
+".rbo-mini{overflow-x:auto;scrollbar-width:none}.rbo-mini::-webkit-scrollbar{display:none}",
 ".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.55);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
 ".rbo-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".rbo-mini button[aria-current=true]{border-color:var(--champ);color:var(--champ)}",
@@ -407,6 +411,20 @@ var CSS = [
 ".rbo-fc-nav .gal{background:none;border:0;color:var(--doux);font-size:13.5px;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:6px}",
 "@media (max-width:1279px){.rbo-fc-duo{grid-template-columns:minmax(0,1fr)}}",
 "@media (prefers-reduced-motion:reduce){.rbo-fc-hbc{scroll-behavior:auto}.rbo-fc-defi .c{transition:none}}",
+".rbo-ong{padding:30px 40px 24px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
+".rbo-ong .st{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;color:var(--champ);margin:0 0 12px}",
+".rbo-ong .st:after{content:'';flex:1;height:1px;background:rgba(201,166,107,.25)}",
+".rbo-ong .g+.st{margin-top:22px}",
+".rbo-ong .g{display:grid;gap:14px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}",
+".rbo-ong .g.autres{grid-template-columns:repeat(5,minmax(0,1fr))}",
+".rbo-ong .c{display:block;background:none;border:0;padding:0;margin:0;text-align:start;cursor:pointer;color:var(--ivoire);font:inherit;min-width:0}",
+".rbo-ong .ph{display:block;aspect-ratio:4/3;border-radius:12px;background-size:cover;background-repeat:no-repeat;border:1px solid rgba(201,166,107,.25);transition:border-color .2s,box-shadow .2s,filter .2s}",
+".rbo-ong .c:hover .ph,.rbo-ong .c:focus-visible .ph{border-color:rgba(201,166,107,.6)}",
+".rbo-ong .c[aria-current=true] .ph{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
+".rbo-ong .n{display:block;font-family:'Cormorant Garamond',serif;font-size:21px;line-height:1;color:var(--champ);margin-top:8px}",
+".rbo-ong .t{display:block;font-size:13px;line-height:1.3;margin-top:3px}",
+".rbo-ong .o .ph{filter:grayscale(.85) brightness(.75)}.rbo-ong .o:hover .ph,.rbo-ong .o:focus-visible .ph{filter:none}.rbo-ong .o .t{color:var(--doux)}",
+"@media (max-width:1279px){.rbo-ong{padding-inline:28px}}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
@@ -418,6 +436,8 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
+".rbo .rbo-ong{padding:24px 16px 20px}.rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 9px}",
+".rbo .rbo-ong .g:not(.autres) .ph{aspect-ratio:4/5}.rbo .rbo-ong .n{font-size:18px;margin-top:7px}.rbo .rbo-ong .t{font-size:12px}",
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
 ".rbo .rbo-fc-hero .vo,[dir=rtl] .rbo .rbo-fc-hero .vo{background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.72) 50%,rgba(7,10,8,.18) 100%),linear-gradient(180deg,rgba(7,10,8,.4) 0%,rgba(7,10,8,0) 30%,#070A08 100%)}",
 ".rbo .rbo-fc-hero h2{font-size:36px}.rbo .rbo-fc-hero .sous{max-width:none}",
@@ -507,7 +527,7 @@ function HypeRobesOrdi(props) {
   var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 30/10 : « cours » (page longue) ou « fin » (Hey Baby, défi, résumé, quiz) */
 
   useEffect(function () {
-    var on = function () { var el = document.querySelector(".rbo-vig"); setMini(el ? el.getBoundingClientRect().bottom < 0 : false); };
+    var on = function () { var el = document.querySelector(".rbo-ong"); setMini(el ? el.getBoundingClientRect().bottom < 0 : false); };
     window.addEventListener("scroll", on, { passive: true }); on();
     return function () { window.removeEventListener("scroll", on); };
   }, [vue]);
@@ -654,19 +674,11 @@ function HypeRobesOrdi(props) {
 
         vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h("div", { className: "rbo-vig", role: "tablist", style: { gridTemplateColumns: "repeat(" + Math.ceil((vigM.length + autresG.length) / 2) + ",minmax(0,1fr))" } },
-          vigM.map(function (v, i) {
-            return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
-              h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, v.lab), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-          }),
-          autresG.map(function (g, k) {
-            return h("button", { key: g.id, type: "button", className: "gal", "aria-label": (PARC_LAB[lg] || PARC_LAB.en) + " — Galop " + g.n, onClick: function () { props.onOuvrirRobes(g.n, g.id); }, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos } },
-              h("b", { className: "big" }, "0" + (vigM.length + k + 1)), h("span", { className: "lab" }, galLab(g.n)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
-          })),
+        h(Onglets, { L: L, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
         h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
             vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
-            autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "0" + (vigM.length + k + 1)), galLab(g.n)); })))),
+            autresG.map(function (g, k) { return h("button", { key: g.id, type: "button", tabIndex: mini ? 0 : -1, onClick: function () { props.onOuvrirRobes(g.n, g.id); } }, h("b", null, "G" + g.n), L("gal" + g.n)); })))),
 
 
         vue !== "cours" ? null : h(React.Fragment, null,
@@ -721,6 +733,25 @@ function HypeRobesOrdi(props) {
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));
 }
+/* 31/10 — MENU DU COURS, modèle B choisi par Blandine : cartes magazine, numéro et titre SOUS la photo ;
+   « Dans ce cours » puis « Les autres Galops » (photos grisées). Partagé par les 4 cours de robes. */
+function Onglets(c) {
+  var L = c.L;
+  return h("div", { className: "rbo-ong" },
+    h("div", { className: "st" }, L("dansCours")),
+    h("div", { className: "g", role: "tablist", style: { "--n": c.vig.length } }, c.vig.map(function (v, i) {
+      return h("button", { key: v.id, type: "button", role: "tab", className: "c", "aria-current": c.actif === v.id ? "true" : undefined, onClick: function () { c.nav(v.id); } },
+        h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos || "center" } }),
+        h("span", { className: "n" }, "0" + (i + 1)), h("span", { className: "t" }, v.lab));
+    })),
+    c.autres.length ? h("div", { className: "st" }, L("autresGal")) : null,
+    c.autres.length ? h("div", { className: "g autres" }, c.autres.map(function (g) {
+      return h("button", { key: g.id, type: "button", className: "c o", onClick: function () { c.onAutre(g); } },
+        h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos || "60% 40%" } }),
+        h("span", { className: "n" }, "G" + g.n), h("span", { className: "t" }, L("gal" + g.n)));
+    })) : null);
+}
+
 /* =====================================================================================
    31/10 — FIN DE COURS (composant réutilisable, d'après la 3e maquette validée par Blandine).
    Blocs : 1) synthèse immersive (photo d'ambiance + portraits reliés par un filet)  2) Hey Baby t'accompagne
@@ -825,7 +856,7 @@ function FinCours(c) {
 
 HypeRobesOrdi.ok = ok;
 /* 30/10 (v5) : éléments partagés avec hype-cours-robes-galops-ordi.js (Galops 3 et 5) — AUCUN changement d'affichage du Galop 1 */
-HypeRobesOrdi.shared = { FinCours: FinCours, CSS: CSS, T: T, tt: tt, ICO: ICO, morceaux: morceaux, pickLg: pickLg, arrLg: arrLg, nettoyer: nettoyer, sansNum: sansNum, sansGuillemets: sansGuillemets, LGS: LGS };
+HypeRobesOrdi.shared = { Onglets: Onglets, FinCours: FinCours, CSS: CSS, T: T, tt: tt, ICO: ICO, morceaux: morceaux, pickLg: pickLg, arrLg: arrLg, nettoyer: nettoyer, sansNum: sansNum, sansGuillemets: sansGuillemets, LGS: LGS };
 HypeRobesOrdi.version = VERSION;
 window.HypeRobesOrdi = HypeRobesOrdi;
 })();
