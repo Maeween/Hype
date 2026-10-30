@@ -734,21 +734,46 @@ function EcranResultatsEcurie() {
 
   /* ── VUE « TOUS LES RÉSULTATS » ── */
   function vueTous() {
-    var ls = filtrees.slice(0, nListe);
+    /* 30/10 23h32 — Blandine : « Range les résultats par épreuve et ordre de classement on s'y perd ».
+       Ordre : jour (récent d'abord) → concours → épreuve → classement (1er, 2e… ; éliminé / abandon / sans place à la fin).
+       Un titre par épreuve (épreuve · date · lieu), dessous seulement le rang, la cavalière et le cheval. */
+    var cmpEp = function (u, v) { try { return String(u || "").localeCompare(String(v || ""), undefined, { numeric: true, sensitivity: "base" }); } catch (e) { return String(u || "") < String(v || "") ? -1 : String(u || "") > String(v || "") ? 1 : 0; } };
+    var plc = function (l) { return (l.x && l.x.place) ? l.x.place : 9999; };
+    var triees = filtrees.slice().sort(function (a, b) {
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      var ga = (a.g && a.g.cle) || a.lieu || "", gb = (b.g && b.g.cle) || b.lieu || "";
+      if (ga !== gb) return ga < gb ? -1 : 1;
+      var e = cmpEp(a.x.ep, b.x.ep); if (e) return e;
+      var pa = plc(a), pb = plc(b); if (pa !== pb) return pa - pb;
+      return a.nom < b.nom ? -1 : a.nom > b.nom ? 1 : 0;
+    });
+    var ls = triees.slice(0, nListe);
+    var blocs = [], cour = null;
+    ls.forEach(function (l) {
+      var cle = l.date + "|" + ((l.g && l.g.cle) || l.lieu || "") + "|" + String(l.x.ep || "").toLowerCase();
+      if (!cour || cour.cle !== cle) { cour = { cle: cle, ep: l.x.ep || "", date: l.date, lieu: l.lieu, l: [] }; blocs.push(cour); }
+      cour.l.push(l);
+    });
+    function ligne(l) {
+      var r = rang(l);
+      return h("button", { key: l.b.id, type: "button", onClick: function () { ouvrirCavaliere(l); },
+        style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "9px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", color: IVOIRE, textAlign: "start", font: "inherit", cursor: "pointer" } },
+        h("div", { style: { flex: "0 0 88px", textAlign: "center" } },
+          h("div", { style: { fontSize: 15, fontWeight: 600, whiteSpace: "nowrap", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 } }, r && r.place && r.place <= 3 ? trophee(r.place) : null, r ? h("bdi", { dir: "ltr" }, r.t) : "—")),
+        h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { dir: "auto", style: { fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nom),
+          l.nomCheval ? h("div", { dir: "auto", style: { fontSize: 11.5, color: "rgba(243,238,228,0.8)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nomCheval) : null),
+        l.sf ? badgeSF() : null);
+    }
     return h("section", { className: "rv3-w rv3-sec", "aria-label": t("tousRes") },
       h("div", { className: "rv3-tete" }, h("h2", { className: "rv3-h2" }, t("tousRes")), h("button", { type: "button", className: "rv3-lien", onClick: function () { setVue("page"); } }, (rtl ? "→ " : "← ") + t("retourPage"))),
       h("div", { style: { fontSize: 11.5, color: GRIS, marginBottom: 10 } }, filtrees.length + " " + tn("nResultats", filtrees.length)),
-      ls.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 6 } }, ls.map(function (l) {
-        var r = rang(l);
-        return h("button", { key: l.b.id, type: "button", onClick: function () { ouvrirCavaliere(l); },
-          style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px", borderRadius: 10, background: PETROLE, border: "1px solid rgba(201,166,107,0.16)", color: IVOIRE, textAlign: "start", font: "inherit", cursor: "pointer" } },
-          h("div", { style: { flex: "0 0 74px", textAlign: "center" } },
-            h("div", { style: { fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 } }, r && r.place && r.place <= 3 ? trophee(r.place) : null, r ? h("bdi", { dir: "ltr" }, r.t) : "—")),
-          h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { dir: "auto", style: { fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.nom + (l.nomCheval ? " · " + l.nomCheval : "")),
-            h("div", { dir: "auto", style: { fontSize: 11.5, color: "rgba(243,238,228,0.8)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, l.x.ep || ""),
-            h("div", { dir: "auto", style: { fontSize: 10.5, color: GRIS } }, fmtDate(l.date) + (l.lieu ? " · " + l.lieu : ""))),
-          l.sf ? badgeSF() : null);
+      blocs.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 16 } }, blocs.map(function (bl) {
+        return h("div", { key: bl.cle },
+          h("div", { style: { padding: "0 2px 6px", borderBottom: "1px solid rgba(201,166,107,0.28)", marginBottom: 6 } },
+            h("div", { dir: "auto", style: { fontSize: 14, fontWeight: 700, color: CHAMP } }, bl.ep || "—"),
+            h("div", { dir: "auto", style: { fontSize: 11, color: GRIS, marginTop: 1 } }, fmtDate(bl.date) + (bl.lieu ? " · " + bl.lieu : ""))),
+          h("div", { style: { display: "flex", flexDirection: "column", gap: 5 } }, bl.l.map(ligne)));
       })) : h("div", { style: { padding: "24px 0", color: GRIS, fontSize: 13 } }, t("aucunFiltre")),
       filtrees.length > nListe ? h("button", { type: "button", className: "rv3-lien", style: { marginTop: 10 }, onClick: function () { setNListe(nListe + 60); } }, t("voirPlus")) : null);
   }
