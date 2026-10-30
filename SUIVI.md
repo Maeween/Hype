@@ -15217,3 +15217,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Retiré de index.html : la fonction EcranEcurie (63 Ko, code mort sorti de la navigation), son accès interne et la tuile « Ancienne écurie perso (aperçu) » réservée aux modératrices. index.html : 10,46 → 10,36 Mo environ (en plus de la pièce 6).
 - Vérifié : l'appli démarre sans erreur ; la page Écurie du club s'ouvre comme avant (même comportement que la version en ligne dans mon banc de test) ; l'ancienne route n'affiche plus rien.
 - Fichiers à pousser avec la pièce 6 : index.html + SUIVI.md (ensemble) + hype-ecran-assistant.js.
+
+## 30/10 12h30 — Allègement du démarrage, pièce 7 : agenda du club et événements passés (build 20261030-1230) — NON PUBLIÉ
+- EcranAgendaClub (181 Ko, sert aux deux écrans « Agenda du club » et « Événements passés ») détaché dans hype-ecran-agenda.js, chargé à l'ouverture, code non modifié. index.html : 10,36 → 10,23 Mo.
+- Vérifié : les deux écrans affichent exactement le même début de page que la version en ligne, aucune erreur, fichier demandé seulement à l'ouverture.
+- À pousser : index.html + SUIVI.md (ensemble) + hype-ecran-agenda.js. À tester sur iPhone : agenda (mois, ouvrir un rendez-vous, retour) et événements passés.
+- Rappel : la publication précédente (pièce 6 assistant IA + suppression de l'ancienne page Écurie perso, build 1215) est en ligne ; à tester : Hey Baby et la page Écurie du club.
+
+## 30/10 12h45 — Allègement du démarrage, pièce 8 : page Écurie du club « guilde » (build 20261030-1245) — NON PUBLIÉ
+- EcranGuilde (153 Ko, la page Écurie du club ; elle charge ensuite le dessin EcranEcurieV2 qui reste dans index.html) détaché dans hype-ecran-guilde.js, chargé à l'ouverture, code non modifié. index.html : 10,23 → 10,08 Mo.
+- Vérifié (banc de test avec données vides de type liste) : texte de la page identique à la version en ligne (« Mon écurie · 24 membres · Bienvenue sur Hype… »), aucune erreur, fichier demandé seulement à l'ouverture. Sans cette précaution mon test précédent affichait « Un caillou dans le sabot » AUSSI sur la version en ligne : c'était mes fausses données, pas l'appli.
+- À pousser avec la pièce 7 : index.html + SUIVI.md (ensemble) + hype-ecran-agenda.js + hype-ecran-guilde.js.
+- À tester sur iPhone avec ton vrai compte : page Écurie (bannière, membres, chevaux, agenda, fil), ouvrir un rendez-vous depuis la page.
