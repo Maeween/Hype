@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 11;
+var VERSION = 12;
+var QUIZ_INTEGRE = false;   /* 30/10 : false = quiz de l'appli (étoiles) ; true = ancien quiz dans la page */
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -420,6 +421,8 @@ function HypeRobesOrdi(props) {
     { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
   ];
   var hbQ = z[3].puces.map(function (p) { return p.texte; });
+  /* 30/10 : « pas besoin d'en mettre autant » — la carte montre la 1re question, la liste en garde 2 des plus intéressantes (3 en tout) ; les autres restent dans les données du cours */
+  var hbListe = [hbQ[1], hbQ[3]].filter(Boolean);
   var defiAccroche = String(z[2].sous || "").replace(/\s*[:：]\s*$/, "") + " …";
   var NOIR = "#070A08", PET = "#101D22";
 
@@ -521,13 +524,15 @@ function HypeRobesOrdi(props) {
           h("section", { id: "rbo-s4f", className: "rbo-sec petrole" }, h("div", null,
             h("div", { className: "rbo-txt", style: { marginTop: 0 } },
               h("h3", { style: { marginTop: 0 } }, nettoyer(z[3].titre)),
-              h("div", { className: "rbo-hb" }, hbQ.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); }))),
+              h("div", { className: "rbo-hb" }, hbListe.map(function (qq, i) { return h("button", { key: i, type: "button", onClick: function () { hey(qq); } }, qq); }))),
             h("div", { className: "rbo-synth" },
               h("div", { className: "rbo-txt" }, h("h3", { style: { marginTop: 0 } }, nettoyer(z[4].titre))),
               h("ol", null, z[4].puces.map(function (p, i) { return h("li", { key: i }, p.texte); }))),
             h("p", { className: "rbo-fin" }, "« " + sansGuillemets(z[5].texte) + " »"))),
           Vague(PET, NOIR),
         /* 05 — QUIZ : les 10 questions du cours, une à la fois, correction et explication du cours */
+        /* 30/10 : le quiz est celui de l'appli (écran « quiz » : correction, étoiles du cours sur le menu des Galops). L'ancien quiz intégré est gardé, désactivé (QUIZ_INTEGRE). */
+        QUIZ_INTEGRE ? (
         Sec("s5", "05", L("secQuiz"), "noir",
           h("div", null,
             h("div", { className: "rbo-qz" },
@@ -548,7 +553,13 @@ function HypeRobesOrdi(props) {
               Photo(photoQ, "", null)),
             h("div", { className: "rbo-cta" },
               h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
-              h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))),
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))) :
+        Sec("s5", "05", L("secQuiz"), "noir",
+          h("div", null,
+            Photo("quiz", "pano", null),
+            h("div", { className: "rbo-cta" },
+              h("button", { type: "button", className: "rbo-btn", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
+              h("button", { type: "button", className: "rbo-btn neutre", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer")))))),
         /* fin de page Hype (composant commun de l'appli), comme sur les autres pages */
         (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null
       )));

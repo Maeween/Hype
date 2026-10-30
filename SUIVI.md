@@ -15636,3 +15636,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - hype-cours-robes-ordi.js v11 : le haut de page ne garde que titre + citation + menu. Le « conseil du coach » est en bas de la page du cours, avec un bouton « Résumé, Hey Baby et quiz ». Page de fin à part : cartes Hey Baby + défi (design inchangé), questions Hey Baby, synthèse, quiz. Boutons « Revenir au cours » ; la carte défi ramène à la section En pratique ; la vignette 05 ouvre la page de fin. Textes ajoutés en 14 langues (retourCours, suiteFin). Rien supprimé.
 - Téléphone : titres de section/robes réduits, barre d'onglets en semi-transparent + flou + ombre, image des 3 chevaux entière (plus de recadrage).
 - Pas encore appliqué aux Galops 2, 3, 5 (en attente de la validation de Blandine sur le Galop 1). Fichiers : hype-cours-robes-ordi.js v11, index.html (?v=11, marker), SUIVI.md.
+
+## 30/10 23h25 — Galop 1 (robes) : quiz de l'appli + 3 questions Hey Baby (build 20261031-0020) — NON publié
+- Demande de Blandine (22h56) : reprendre le quiz de l'appli (celui qui donne les étoiles sur le menu des Galops) ; « pas besoin d'en mettre autant » de questions Hey Baby.
+- hype-cours-robes-ordi.js v12 : le quiz intégré à la page est remplacé par un bouton « Passer le quiz » qui ouvre le quiz de l'appli (écran quiz, étoiles). L'ancien quiz intégré est conservé désactivé (QUIZ_INTEGRE = false). Questions Hey Baby : 3 en tout (la carte + 2 dans la liste : bai/alezan et « devine la robe ») ; les 2 autres restent dans les données du cours.
+- Fichiers : hype-cours-robes-ordi.js v12, index.html (?v=12, marker 20261031-0020), SUIVI.md. Non appliqué encore aux Galops 2, 3, 5.
