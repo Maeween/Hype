@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 7;
+var VERSION = 8;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -68,7 +68,7 @@ var P = {
   cheval: "images/cheval-defaut-alezan.webp", noir: "images/robes-g1-noir.webp", alezan: "images/robes-g1-alezan.webp", bai: "images/robes-g1-bai.webp", trio: "images/robes-g1-trio.webp", quiz: "images/pansage-quiz.webp",
   g5hero: "images/galop5-hero-v2.webp", g5cheval: "images/galop5-theme-cheval.webp",
   /* Galop 2 — à fournir */
-  g2creme: "images/robes-g2-creme.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
+  g2creme: "images/robes-g2-creme.webp", g2piebai: "images/robes-g2-pie-bai.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
   /* Galop 3 — à fournir */
   g3parties: "images/robes-g3-parties-du-corps.webp", g3tete: "images/robes-g3-marques-tete.webp", g3balzane: "images/robes-g3-balzane.webp", g3epis: "images/robes-g3-epis.webp",
   g3isabelle: "images/robes-g3-isabelle.webp", g3souris: "images/robes-g3-souris.webp", g3brule: "images/robes-g3-alezan-brule.webp", g3cafe: "images/robes-g3-cafe-au-lait.webp", g3palomino: "images/robes-g3-palomino.webp", g3pangare: "images/robes-g3-noir-pangare.webp",
@@ -276,7 +276,8 @@ function HypeRobesGalopsOrdi(props) {
         h("div", { className: "rbo-robe", style: { marginTop: 88 } }, Photo("g2creme", "", "45% 45%"), h("div", { className: "rbo-txt" }, M(a[8], "a8"), M(a[9], "a9"))))),
       Vague(PET, NOIR),
       Sec("s3", "03", X("vPieTach"), "noir", h("div", null,
-        Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", null, "Galop 2"),
+        Compo("g2pie", a[5].titre, a[5].texte, false, "50% 40%", (a[5].puces && a[5].puces.length) ? h("ul", { style: { margin: "14px 0 0", paddingLeft: 22, lineHeight: 1.7 } }, a[5].puces.map(function (p, i) { return h("li", { key: i }, h("strong", null, p.gras + " "), p.texte); })) : null, "Galop 2"),
+        h("div", { style: { marginTop: 64 } }, Photo("g2piebai", "pano")),
         h("div", { style: { marginTop: 88 } }, Compo("g5leopard", a[6].titre, a[6].texte, true, "50% 45%", null, "Galop 2")))),
       Vague(NOIR, PET),
       Sec("s4", "04", nettoyer(sansNum(a[10].titre)), "petrole", h("div", { className: "rbo-robe" },

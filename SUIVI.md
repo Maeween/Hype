@@ -15421,3 +15421,10 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 30/10 20h20 — Photo pie bai mise en réserve — NON PUBLIÉ, pas affichée
 - images/robes-g2-pie-bai.webp ajoutée (1944 × 809 px, bai pie : plages brun foncé et blanc, crins blancs à l'encolure, de profil, sans cavalier). Pas encore utilisée dans une page : le Galop 2 montre déjà le pie noir ; pour le Galop 5 il faut savoir de quel type de pie il s'agit (tobiano, ovéro, tovero, balzan, sabino) — à décider par Blandine.
+
+
+## 30/10 20h30 — Robes ordi : pies du programme + photo pommelé (NON publié)
+- Galop 2, « Le pie » : ajout de la liste noir pie / alezan pie / bai pie (14 langues, aucun texte perdu : 1694 anciens textes retrouvés) + photo du bai pie (robes-g2-pie-bai.webp). Version galop2 v8 (clé ?v=9), moteur v8, build 20261030-2030.
+- Photo « gris pommelé » reçue, rangée en images/robes-g5-adj-pommele.webp (affichée dans Galop 5, adjonctions).
+- Manque encore : photo du alezan pie (profil, sans cavalier, 16:9) + la liste précédente.
+- Tests G2 : 1100/1280/1440/1920, 14 langues, arabe RTL, quiz : OK.
