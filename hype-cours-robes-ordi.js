@@ -21,7 +21,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 8;
+var VERSION = 10;
 var PARC_LAB = { fr: "Parcours des robes", en: "Coat colour path", es: "Recorrido de las capas", it: "Percorso dei mantelli", ja: "毛色コース", de: "Fellfarben-Pfad", ar: "مسار ألوان الخيل", zh: "毛色路径", nl: "Vachtkleurenroute", pt: "Percurso das pelagens", sv: "Färgvägen", ru: "Путь по мастям", pl: "Ścieżka maści", ko: "털색 코스" };
 
 /* ordre des langues : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko */
@@ -273,15 +273,21 @@ var CSS = [
 "@media (max-width:1279px){.rbo-qz{grid-template-columns:minmax(0,1fr)}.rbo-qz .rbo-photo{min-height:0;aspect-ratio:16/9}}",
 "@media (max-width:1479px){.rbo-sec{padding:64px 44px 70px}}",
 "@media (max-width:1279px){.rbo-mini,.rbo-vig,.rbo-hero,.rbo-cards{padding-inline:28px}.rbo-bar{inset-inline:28px}.rbo-sec{padding:56px 32px 62px}}",
+".rbo-citband{background:var(--noir);padding:64px 56px 28px;text-align:center}",
+".rbo-citband .rbo-cit{max-width:860px;margin:0 auto;font-size:clamp(26px,2.4vw,36px);line-height:1.35}",
+".rbo-citband .rbo-cit:before,.rbo-citband .rbo-cit:after{content:'';display:block;width:44px;height:1px;background:var(--champ);margin:0 auto 24px}",
+".rbo-citband .rbo-cit:after{margin:24px auto 0}",
+".rbo-citband .rbo-cit small{font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;margin-top:14px}",
+"@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
 ".rbo{padding-bottom:110px;overflow-x:clip}",
 ".rbo .rbo-parc{padding:14px 16px 12px;gap:8px}.rbo .rbo-parc .tt{flex:0 0 100%;margin:0 0 2px}.rbo .rbo-parc button{padding:7px 14px;font-size:12.5px}",
 ".rbo .rbo-hero{min-height:300px;padding:16px 18px 22px}",
 ".rbo .rbo-hero .vo,[dir=rtl] .rbo .rbo-hero .vo{background:linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,.35) 30%,rgba(7,10,8,.9) 100%)}",
-".rbo .rbo-bar{top:14px;inset-inline:16px}",
+".rbo .rbo-bar{top:14px;inset-inline:16px}.rbo .rbo-crumb{display:none}",
 ".rbo .rbo-hero h1{font-size:34px;max-width:100%;margin:8px 0 10px}",
-".rbo .rbo-cit{font-size:17px;max-width:100%}.rbo .rbo-meta{gap:12px;font-size:12px;margin-top:12px}",
+".rbo .rbo-citband{padding:40px 24px 14px}.rbo .rbo-citband .rbo-cit{font-size:22px}.rbo .rbo-meta{gap:12px;font-size:12px;margin-top:12px}",
 ".rbo .rbo-cards{grid-template-columns:minmax(0,1fr);padding:14px 16px 8px;gap:10px}",
 ".rbo .rbo-vig{display:flex;overflow-x:auto;gap:10px;padding:26px 16px 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}",
 ".rbo .rbo-vig button{flex:0 0 138px;height:118px;scroll-snap-align:start}",
@@ -428,7 +434,6 @@ function HypeRobesOrdi(props) {
               h("span", { className: "rbo-crumb" }, "Galop 1  ›  " + d.titre),
               h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
             h("h1", null, d.titre),
-            d.citation ? h("p", { className: "rbo-cit" }, "« " + sansGuillemets(d.citation) + " »", d.auteur ? h("small", null, d.auteur) : null) : null,
             h("div", { className: "rbo-meta" },
               d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
@@ -439,6 +444,7 @@ function HypeRobesOrdi(props) {
             h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
             h("button", { type: "button", className: "rbo-card defi", onClick: function () { aller("s4"); } }, h("h3", null, ICO.coupe(20), nettoyer(z[2].titre)), h("p", null, defiAccroche)))),
 
+        d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
         h("div", { className: "rbo-vig", role: "tablist" },
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },

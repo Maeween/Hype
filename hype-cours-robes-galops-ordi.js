@@ -23,7 +23,7 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 9;
+var VERSION = 10;
 var S = window.HypeRobesOrdi.shared, tt = S.tt, ICO = S.ICO, morceaux = S.morceaux, pickLg = S.pickLg, arrLg = S.arrLg;
 var nettoyer0 = S.nettoyer, sansNum = S.sansNum, sansGuillemets = S.sansGuillemets;
 /* retire aussi les numéros en emoji (4️⃣) des titres : le numéro est déjà affiché à côté */
@@ -456,7 +456,6 @@ function HypeRobesGalopsOrdi(props) {
               h("span", { className: "rbo-crumb" }, kicker + "  ›  " + d.titre),
               h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
             h("h1", null, d.titre),
-            d.citation ? h("p", { className: "rbo-cit" }, "« " + sansGuillemets(d.citation) + " »", d.auteur ? h("small", null, d.auteur) : null) : null,
             h("div", { className: "rbo-meta" },
               d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
@@ -465,6 +464,7 @@ function HypeRobesGalopsOrdi(props) {
             h("div", { className: "rbo-card coach" }, h("h3", null, ICO.coupe(20), nettoyer(coach.titre)), h("p", null, coach.texte)),
             h("button", { type: "button", className: "rbo-card hb", onClick: function () { hey(hbQ[0]); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQ[0] || "")),
             h("button", { type: "button", className: "rbo-card defi", onClick: function () { aller(defiCible); } }, h("h3", null, ICO.coupe(20), nettoyer(defiT)), h("p", null, defiTxt)))),
+        d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
         h("div", { className: "rbo-vig" + " n6", role: "tablist" },
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos } },
