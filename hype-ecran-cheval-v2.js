@@ -576,6 +576,7 @@ function EcranChevalV2() {
   function ouvrirImportV2() {
     if (!chV || !chV.dbId) return;
     try {
+      window.HYPE_IMPORT_VERROU_AFFICHAGE = !(estMien || (typeof estModerateurHype === "function" && estModerateurHype(moi)));   /* 30/10 */
       window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false;
       window.HYPE_CHEVAL_IMPORT = chV.dbId; window.HYPE_CHEVAL_IMPORT_NOM = chV.nom || null;
       window.localStorage.removeItem("hype_cheval_import");

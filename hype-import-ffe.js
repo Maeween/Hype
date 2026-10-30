@@ -836,6 +836,28 @@
       '<span>Quelques secondes. Rien n\'est enregistré pour l\'instant.</span></div>';
   }
 
+  /* 30/10 (Blandine) : « n importe quelle cavaliere d une ecurie peut ajouter les resultats aux chevaux,
+     elle ne doit par contre pas pouvoir changer le choix d affichage par defaut » (choix A : « Ses classements »).
+     options.verrou = vrai quand la personne n est NI la proprietaire du cheval NI une moderatrice :
+     niveau bloque sur « classe », coches ligne par ligne non modifiables. Rien d autre ne change. */
+  var TXT_VERROU = {
+    fr: "Seule la propriétaire du cheval peut changer ce qui s'affiche. Tes résultats seront enregistrés avec le réglage par défaut : ses classements.",
+    en: "Only the horse's owner can change what is displayed. Your results will be saved with the default setting: placings.",
+    es: "Solo la propietaria del caballo puede cambiar lo que se muestra. Tus resultados se guardarán con el ajuste por defecto: sus clasificaciones.",
+    it: "Solo la proprietaria del cavallo può cambiare ciò che viene mostrato. I tuoi risultati saranno salvati con l'impostazione predefinita: i suoi piazzamenti.",
+    de: "Nur die Besitzerin des Pferdes kann ändern, was angezeigt wird. Deine Ergebnisse werden mit der Standardeinstellung gespeichert: Platzierungen.",
+    ja: "表示内容を変更できるのは馬のオーナーだけです。あなたの成績は既定の設定（入賞）で保存されます。",
+    ar: "مالكة الحصان وحدها يمكنها تغيير ما يُعرض. ستُحفظ نتائجك بالإعداد الافتراضي: الترتيبات.",
+    zh: "只有马主可以更改显示内容。你的成绩将按默认设置保存：名次。",
+    nl: "Alleen de eigenaar van het paard kan wijzigen wat wordt getoond. Je resultaten worden opgeslagen met de standaardinstelling: klasseringen.",
+    pt: "Só a proprietária do cavalo pode mudar o que aparece. Os teus resultados serão guardados com a definição padrão: as classificações.",
+    sv: "Bara hästens ägare kan ändra vad som visas. Dina resultat sparas med standardinställningen: placeringar.",
+    ru: "Только владелица лошади может менять то, что показывается. Твои результаты будут сохранены с настройкой по умолчанию: призовые места.",
+    pl: "Tylko właścicielka konia może zmienić to, co jest wyświetlane. Twoje wyniki zostaną zapisane z ustawieniem domyślnym: lokaty.",
+    ko: "표시 내용은 말 주인만 바꿀 수 있어요. 내 성적은 기본 설정(입상)으로 저장돼요."
+  };
+  function txtVerrou() { var lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (eLg) { } return TXT_VERROU[lg] || TXT_VERROU.en; }
+
   /* ==== 2bis · QUE VEUT-ELLE VOIR ? ===================================
      Posé AVANT d'afficher 27 lignes à relire. Le filtre n'efface rien :
      tout sera enregistré, il décide seulement de ce qui s'affiche.    */
@@ -847,9 +869,11 @@
       'plus tard sans réimporter.</p></div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i></i></div>';
     if (E.avisMulti) h += '<div class="hi-aide" style="margin:0 16px 12px">' + ech(E.avisMulti) + '</div>';
+    if (E.verrou) h += '<div class="hi-aide" style="margin:0 16px 12px">' + ech(txtVerrou()) + '</div>';
     h += '<div class="hi-nv">';
     n.forEach(function (o) {
-      h += '<div class="hi-n' + (E.niveau === o.c ? " on" : "") + '" data-hi-nv="' + o.c + '">' +
+      var bloque = E.verrou && o.c !== "classe";
+      h += '<div class="hi-n' + (E.niveau === o.c ? " on" : "") + '"' + (bloque ? ' aria-disabled="true" style="opacity:.38;pointer-events:none"' : ' data-hi-nv="' + o.c + '"') + '>' +
         '<span class="hi-rd"></span><span class="co"><b>' + o.t + '</b>' +
         '<span>' + o.s + '</span></span><span class="nb">' + o.n + '</span></div>';
     });
@@ -871,8 +895,8 @@
 
     var h = '<div class="hi-h"><div class="hi-k">Étape 3 sur 3</div>' +
       '<h2>Relis avant d\'enregistrer</h2>' +
-      '<p>Coche ce que tu veux voir apparaître. Les lignes en doré demandent ' +
-      'ton œil : l\'app n\'est pas sûre d\'elle.</p>' +
+      '<p>' + (E.verrou ? ech(txtVerrou()) : 'Coche ce que tu veux voir apparaître. Les lignes en doré demandent ' +
+      'ton œil : l\'app n\'est pas sûre d\'elle.') + '</p>' +
       (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Ces r\u00e9sultats iront sur la fiche de <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i class="on"></i></div>';
 
@@ -1079,6 +1103,8 @@
     if (!hote) return;
     options = options || {};
     E.peutCreer = (typeof options.onCreerCheval === "function");   /* 07/10 (695) */
+    E.verrou = !!options.verrou;   /* 30/10 : reglage d affichage bloque (ni proprietaire ni moderatrice) */
+    if (E.verrou && E.niveau !== "classe" && E.lignes && E.lignes.length) { E.niveau = "classe"; window.HYPE_IMPORT.appliquer(E.lignes, E.niveau); }
     E.nomCheval = options.nomCheval || E.nomCheval || null; /* 26/08 : la cible affichable voyage par E (les vues ne voient pas options) */
     poserStyle();
     if (hote.className.indexOf("hi") < 0) hote.className += " hi";
@@ -1244,12 +1270,14 @@
       }
       var nv = cible.getAttribute("data-hi-nv");
       if (nv) {
+        if (E.verrou && nv !== "classe") return;   /* 30/10 : niveau bloque pour qui n est pas proprietaire */
         E.niveau = nv;
         window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
         refaire(); return;
       }
       var lg = cible.getAttribute("data-hi-l");
       if (lg) {
+        if (E.verrou) return;   /* 30/10 : coches non modifiables pour qui n est pas proprietaire */
         var n = Number(lg);
         E.lignes.forEach(function (r) { if (r.rang === n) r.garder = !r.garder; });
         refaire(); return;
@@ -1300,6 +1328,7 @@
   }
 
   function enregistrer(hote, options, refaire) {
+    if (E.verrou && E.lignes && E.lignes.length) { E.niveau = "classe"; window.HYPE_IMPORT.appliquer(E.lignes, "classe"); }   /* 30/10 : ceinture et bretelles */
     if (E.occupe) return;
     /* 🟥 23/08 session 156 — ON ENVOIE TOUT. C EST LA REGLE DE BLANDINE,
        elle etait ecrite en commentaire au-dessus des NIVEAUX et le code

@@ -92,7 +92,7 @@ function EcranPerformancesCheval(props) {
     return function () { v = false; };
   }, [moi && moi.id, dbId]);
   var peutSaisir = modeCav ? estProprio : !!(moi && dbId && (estProprio || estMod || droits.lie || droits.memeEcurie));
-  var peutImporter = modeCav ? estProprio : !!(moi && dbId && (estProprio || estMod || droits.lie));
+  var peutImporter = modeCav ? estProprio : !!(moi && dbId && (estProprio || estMod || droits.lie || droits.memeEcurie));   /* 30/10 (Blandine) : + cavalieres de l ecurie du cheval ; le reglage d affichage reste a la proprietaire (verrou dans l import) */
   var peutForts = modeCav ? !!(moi && (estProprio || estMod)) : !!(moi && dbId && (estProprio || estMod));   /* (g9) cavalier : choix des moments forts comme l ancienne page (la base reste juge) */
   var premiumOk = !!(app.premium || estMod);
 
@@ -281,7 +281,7 @@ function EcranPerformancesCheval(props) {
   function ouvrirImport() {
     if (!peutImporter) return;
     if (modeCav) { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.HYPE_IMPORT_RETOUR = "performances-cavalier"; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); return; }   /* (g9) import a son nom, comme l ancienne page cavaliere */
-    try { window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; window.HYPE_CHEVAL_IMPORT = dbId; window.HYPE_CHEVAL_IMPORT_NOM = nomCh || null; window.HYPE_IMPORT_RETOUR = "performances-cheval"; window.localStorage.removeItem("hype_cheval_import"); } catch (eI) { }
+    try { window.HYPE_IMPORT_VERROU_AFFICHAGE = !(estProprio || estMod); window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; window.HYPE_CHEVAL_IMPORT = dbId; window.HYPE_CHEVAL_IMPORT_NOM = nomCh || null; window.HYPE_IMPORT_RETOUR = "performances-cheval"; window.localStorage.removeItem("hype_cheval_import"); } catch (eI) { }
     setEcran("import-resultats");
   }
   function ouvrirClassementTeam() { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eG) { } setEcran("performances-chevaux"); }

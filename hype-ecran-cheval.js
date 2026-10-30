@@ -635,8 +635,9 @@ function EcranCheval() {
      tous les chevaux en tant qu'admin, pour l'instant on finalisera les details plus
      tard") — `estModerateurHype(moi)` en plus de la propriete, meme principe que
      partout ailleurs dans le fichier ou un statut de moderatrice ouvre un passage. */
-    if (!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi)))) { bientot(); return; }
+    if (!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi) || memeEcurieCh))) { bientot(); return; }   /* 30/10 : + meme ecurie (le lien etait affiche mais repondait « Bientot ») */
     try {
+      window.HYPE_IMPORT_VERROU_AFFICHAGE = !(chevalDyn.ownerId === moi.id || estModerateurHype(moi));   /* 30/10 : seule la proprietaire (ou une moderatrice) regle l affichage */
       window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false;   /* 07/10 (694) : import depuis une fiche cheval = mode cheval */
       window.HYPE_CHEVAL_IMPORT = c.dbId || null;
       window.HYPE_CHEVAL_IMPORT_NOM = (c && c.nom) || null;
