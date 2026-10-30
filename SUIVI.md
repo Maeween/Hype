@@ -15418,3 +15418,15 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - « Les embouchures » (g5n-02) n'y est pas : son cours a une page à part qui ne sait pas encore faire d'aperçu (un non-abonné va directement à la page Premium). À ajouter quand cette page aura son aperçu.
 - À chaque nouveau chapitre du Galop 5 refait : ajouter son identifiant dans G5_SUR_GOOGLE.
 - Publié : outils/seo-galops.cjs + SUIVI.md. index.html inchangé (marqueur toujours 20261030-2045).
+
+## 30/10 21h15 — « Les embouchures » (Galop 5) en aperçu + sur Google (build 20261030-2115) — PUBLIÉ le 30/10 (« Top continue »)
+- index.html :
+  · EcranCoursG5Emb : un non-abonné n'est plus renvoyé tout de suite vers la page Premium ; il lit le début de la 1re partie (« Pourquoi utiliser une embouchure ? », paragraphes coupés au tiers, au moins 2), puis la carte « La suite de ce chapitre est réservée à Premium » intégrée sous le texte. Menu des parties, colonne de droite et parties 2 à 6 non affichés pendant l'aperçu. Abonnés / modératrices : cours complet inchangé.
+  · FinApercuPremium : nouvelle option « integre » (carte dans la page, sans plein écran ni bouton Retour) ; version plein écran inchangée.
+  · Page du Galop 5 : « Les embouchures » s'ouvre aussi en aperçu pour un non-abonné (avant : page Premium).
+  · Adresse publique : la cible « g5n-02 » ouvre l'écran des embouchures.
+  · Marqueur 20261030-2045 → 20261030-2115.
+- outils/seo-galops.cjs : G5_SUR_GOOGLE = « Les robes » + « Les embouchures ». Les embouchures (fichier à part) sont lues dans hype-cours-g5-embouchures.js, 1re partie seulement → page /<langue>/galop-5/les-embouchures/ en 14 langues, début seulement + encadré Premium (75 pages par langue).
+- netlify/edge-functions/cours-route.ts : la cible « g5n-02 » est acceptée.
+- Vérifié (copie du site + navigateur) : /fr/galop-5/les-embouchures/ au téléphone et /en/... sur ordinateur = début + carte Premium ; modératrice = les 6 parties ; « Les robes » G5 toujours en aperçu ; 0 erreur.
+- Publié : index.html + SUIVI.md + outils/seo-galops.cjs + netlify/edge-functions/cours-route.ts. Fichiers inchangés : hype-cours-g5-embouchures.js et tout le reste.

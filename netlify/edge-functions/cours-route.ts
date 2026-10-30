@@ -34,7 +34,7 @@ const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
 const LECTURE_MAX = 2 * 1024 * 1024;
-const FORME_CIBLE = /^(galops|[1-7]|g[1-7]-[a-z0-9-]{1,60})$/;
+const FORME_CIBLE = /^(galops|[1-7]|g[1-7]-[a-z0-9-]{1,60}|g5n-02)$/;   // 30/10 : g5n-02 = « Les embouchures » (écran à part)
 
 function chercher(tas: Uint8Array, motif: Uint8Array): number {
   const n = tas.length - motif.length;

@@ -170,6 +170,23 @@ function chargerCours() {
   for (const k of Object.keys(parGalop)) if (!Array.isArray(parGalop[k])) delete parGalop[k];
   return parGalop;
 }
+/* 30/10 : « Les embouchures » (Galop 5) vit dans son propre fichier (hype-cours-g5-embouchures.js, lu par EcranCoursG5Emb) : on en fait
+   un chapitre au même format que les autres, avec sa 1re partie seulement (titre + paragraphes) — l'aperçu n'en garde que le début. */
+function coursEmbouchures() {
+  try {
+    const ctx = { window: {} };
+    vm.createContext(ctx);
+    vm.runInContext(fs.readFileSync(path.join(RACINE, "hype-cours-g5-embouchures.js"), "utf8"), ctx, { filename: "hype-cours-g5-embouchures.js", timeout: 20000 });
+    const E = ctx.window.HYPE_G5_EMB;
+    if (!E || !E.fr || !E.fr.meta || !E.fr.s1) return null;
+    const parLg = (f) => { const o = {}; for (const lg of Object.keys(E)) { try { const v = f(E[lg]); if (v != null && v !== "") o[lg] = v; } catch (e) { } } return o; };
+    return {
+      id: "g5n-02",
+      titre: parLg((d) => d.meta.titre), duree: parLg((d) => d.meta.duree), type: parLg((d) => d.meta.type),
+      blocs: [{ type: "texte-riche", titre: parLg((d) => d.s1.titre), contenu: parLg((d) => (d.s1.paras || []).map((t) => ({ k: "para", texte: t }))) }],
+    };
+  } catch (e) { log("embouchures illisibles, sautées :", String(e).slice(0, 120)); return null; }
+}
 function infosGalops() {
   try {
     const s = fs.readFileSync(path.join(RACINE, "index.html"), "utf8");
@@ -211,7 +228,7 @@ function imageFichier(src, lg) {
    « mets uniquement ceux refaits en ligne sur Google ») : seuls les chapitres refaits de G5_SUR_GOOGLE ont leur page, et la page
    du Galop 5 ne liste qu'eux. À compléter au fur et à mesure que les nouveaux chapitres du Galop 5 sont prêts. */
 const APERCU_JUSQUA = 5;
-const G5_SUR_GOOGLE = ["g5-robes"];
+const G5_SUR_GOOGLE = ["g5-robes", "g5n-02"];   // g5n-02 = « Les embouchures » (fichier à part, voir coursEmbouchures)
 function couperApercu(a) { if (!Array.isArray(a)) return a; const n = Math.max(2, Math.ceil(a.length / 3)); return a.length > n ? a.slice(0, n) : a; }
 function blocApercu(b) {
   if (!b || typeof b !== "object") return b;
@@ -411,7 +428,11 @@ function principal() {
   const urls = [];   // { chemin, langues }
   const nomGalop = (n, lg) => UI[lg].galop(n);
   const sousTitre = (n, lg) => (lg === "ar" ? SOUS_AR[n] : lg === "zh" ? (lk(infos[n] && infos[n].sousTitre, "zh") || SOUS_ZH[n]) : tr(infos[n] && infos[n].sousTitre, lg)) || "";
-  if (Array.isArray(cours[5])) cours[5] = cours[5].filter((c) => c && G5_SUR_GOOGLE.indexOf(c.id) >= 0);   // 30/10 : Galop 5 = chapitres refaits seulement
+  if (Array.isArray(cours[5])) {
+    cours[5] = cours[5].filter((c) => c && G5_SUR_GOOGLE.indexOf(c.id) >= 0);
+    const emb = coursEmbouchures();
+    if (emb && G5_SUR_GOOGLE.indexOf(emb.id) >= 0) cours[5].unshift(emb);
+  }   // 30/10 : Galop 5 = chapitres refaits seulement
   const galops = [1, 2, 3, 4, 5, 6, 7].filter((n) => cours[n] && cours[n].length);
 
   // slugs des chapitres du Galop 1 (titre français, rendu unique)
