@@ -15558,3 +15558,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Choix B (21h17) : la réponse de l'inscription suffit. SQL PASSÉ : fonction hype_majeurs_declares(uuid[]) (renvoie seulement les comptes déclarés majeurs ; réservée aux comptes connectés). Vérifié : Romy et Nataliya oui, Aurélie non (compte antérieur).
 - Page Résultats (hype-ecran-resultats-ecurie.js v2, ?v=2 dans index.html) : nom complet + photo de profil si majorité cochée par une modératrice OU déclarée à l'inscription ; dans « Gérer », les déclarées affichent « Majeure (déclaré à l'inscription) » (14 langues).
 - Romy reliée sur demande de Blandine (« Oui relie là », 21h17) : cavaliers_ffe « ROMY THAIS CIRBA MENIL » → compte Romy-Thaïs (SEP) ; ses 8 résultats rattachés à son compte (cavalier_id) ; 3 résultats de la saison reliés à l'agenda par la règle (Étrier 20/09 → « CSO l'étrier », Folleville 25/10 ×2 → « CSO équipe club / challenge », lien 'auto').
+
+## 30/10 21h22 — PUBLICATION (« Publié », 21h20) — build 20261030-2240 [publier]
+- En ligne : index.html (?v=2 de la page Résultats), hype-ecran-resultats-ecurie.js v2 (âge déclaré à l'inscription, choix B), SUIVI.md. hype-import-ffe.js inchangé. Repris sur la version en ligne 26745ff (article CSO) : aucune ligne retirée.
+- Base (21h20) : Eva (compte « Eva », SEP) cochée « majorité vérifiée » par Blandine (« Eva est adulte aussi mais pas Ella »). Ella NON cochée.
+- EN ATTENTE de sa réponse : relier « EVA REGUILLET » au compte « Eva » et « ELLA JACOBS » au compte « Ella » (toutes deux SEP, comptes créés les 23/09 et 30/09) — tant que ce n'est pas fait, leurs 2 résultats chacune n'apparaissent pas sur la page.
