@@ -15418,3 +15418,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 30/10 20h10 — Photo léopard en pleine taille (G5, aussi utilisée pour la tachetée du G2) — NON PUBLIÉ
 - images/robes-g5-tachete-leopard.webp remplacée (1942 × 809 px, taches sombres sur fond blanc, de profil, sans cavalier). Plus rien à refaire en grand ; il ne reste que les photos manquantes (voir entrée 20h15).
+
+## 30/10 20h20 — Photo pie bai mise en réserve — NON PUBLIÉ, pas affichée
+- images/robes-g2-pie-bai.webp ajoutée (1944 × 809 px, bai pie : plages brun foncé et blanc, crins blancs à l'encolure, de profil, sans cavalier). Pas encore utilisée dans une page : le Galop 2 montre déjà le pie noir ; pour le Galop 5 il faut savoir de quel type de pie il s'agit (tobiano, ovéro, tovero, balzan, sabino) — à décider par Blandine.
