@@ -15160,3 +15160,17 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Les deux commits des reprises (ff5148a build 1200, c44411c build 1245) sont partis en ligne avec le commit [publier] 54af9f0 de la conversation pansage (deploiement Netlify 6ae46a14, pret a 10h58, production 2hype.fr). Blandine a donne son accord (« Vas y ») juste apres.
 - Verifie sur la version publiee : code des reprises intact, 27/27 tests, conseils ?v=20261030-reprises3, pansage ?v=21 conserve.
 - Reste a faire : test sur vrai iPhone (6 reprises, modes Voir/Tracer/Challenge, conseil de l'arret avant R).
+
+## 30/10 13h15 — Allègement du démarrage, pièce 1 : écrans « Grandes écoles » détachés (build 20261030-1315) — NON PUBLIÉ
+- Les 4 écrans Le Cadre Noir de Saumur, École portugaise, École royale andalouse, École espagnole de Vienne (≈ 0,7 Mo) sont déplacés SANS changement dans le nouveau fichier hype-ecoles.js. index.html passe de 13,67 à 12,99 Mo.
+- index.html garde un petit chargeur (hypeChargerEcoles / hypeEcranEcole) : le fichier ne se télécharge qu'à l'ouverture d'un de ces écrans ; « … » pendant le chargement, bouton ↻ si le réseau échoue. Les noms d'écrans, les liens et le code des écrans sont inchangés.
+- Tests (copie locale) : les 4 écrans s'ouvrent, texte identique avant/après (Cadre Noir complet ; les 3 autres affichent leur écran « Article réservé » aux non-abonnés, identique), 0 erreur, le fichier n'est demandé qu'à l'ouverture. Syntaxe du code d'index.html vérifiée.
+- À tester par Blandine sur iPhone : ouvrir chacun des 4 écrans (compte abonné pour voir les 3 articles réservés), y compris un abonné Premium.
+- Hors ligne : si on n'a jamais ouvert ces écrans avant de perdre le réseau, ils affichent ↻ au lieu du contenu.
+- Prochaine pièce proposée (après validation) : EcranSante (295 Ko), puis fiche cheval, page Cavalier.
+
+## 30/10 13h30 — Allègement du démarrage, pièce 2 : écran Santé détaché (build 20261030-1330) — NON PUBLIÉ
+- L'écran Santé (≈ 295 Ko) est déplacé SANS changement dans le nouveau fichier hype-ecran-sante.js. Le chargeur d'index.html est généralisé (hypeChargerDiffere / hypeEcranDiffere) et sert aussi aux 4 écrans « Grandes écoles » de la pièce 1 : l'ensemble allège index.html de 13,67 à 12,71 Mo (≈ 1 Mo).
+- Tests (copie locale, comparaison avec la version en ligne) : Santé + 4 écoles s'ouvrent avec un texte identique, 0 erreur. Syntaxe du code d'index.html vérifiée.
+- À tester par Blandine sur iPhone : ouvrir la page Santé (et les 4 écrans écoles).
+- Méthode pour détacher un autre écran : copier la fonction EcranXxx dans hype-xxx.js (dans une fonction qui s'exécute seule, puis window.HypeXxx = { Xxx: EcranXxx }), et la remplacer dans index.html par const EcranXxx = hypeEcranDiffere("hype-xxx.js?v=1", "HypeXxx", "Xxx");
