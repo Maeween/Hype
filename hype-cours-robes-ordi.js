@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 28;   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
+var VERSION = 29;   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
+/* v28 :   /* 31/10 00h45 : fin de cours d'après la 3e maquette (composant FinCours) ; autres Galops grisés */
 /* v26 :   /* 31/10 00h15 : menu sur 2 lignes sans « Comprendre », noms des autres Galops */
 /* v25 :   /* 31/10 00h30 : nouvelle page de fin (remplace l'ancienne « Cours terminé ! ») */
 /* v23 :   /* 31/10 00h15 : tour des doublons — « À observer » retiré, défi seulement sur la page de fin */
@@ -376,6 +377,7 @@ var CSS = [
 ".rbo-fc-q .vi{flex:0 0 auto;width:72px;height:50px;border-radius:9px;background-size:260%;background-repeat:no-repeat}",
 ".rbo-fc-q .qt{flex:1 1 auto;min-width:0}.rbo-fc-q i{font-style:normal;color:var(--champ);font-size:20px;flex:0 0 auto}",
 ".rbo-fc-hb .pts{display:none}",
+".rbo-fc-duo.ancien{align-items:start}.rbo-fc-duo.ancien .rbo-card{padding:20px 22px}.rbo-fc-duo.ancien .rbo-card h3{font-size:22px;margin-bottom:10px}.rbo-fc-duo.ancien .rbo-card p{font-size:14px}.rbo-fc-duo.ancien .rbo-defil{font-size:14px}",
 ".rbo-fc-defi .ronds{display:flex;justify-content:space-around;gap:10px;margin-top:20px;padding:16px 8px;border:1px solid rgba(201,166,107,.18);border-radius:14px;background:rgba(7,10,8,.35)}",
 ".rbo-fc-defi .ronds button{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;cursor:pointer;color:var(--ivoire);padding:2px}",
 ".rbo-fc-defi .c{width:48px;height:48px;border-radius:50%;border:1px solid var(--champ);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--champ);transition:background .2s}",
@@ -411,7 +413,7 @@ var CSS = [
 ".rbo .rbo-fc-por{--r:70px;margin-top:18px}.rbo .rbo-fc-por li{gap:0 10px;padding:4px 0}.rbo .rbo-fc-por li:before{inset-inline-start:calc(var(--r) + 16px)}",
 ".rbo .rbo-fc-por .tx b{font-size:20px}.rbo .rbo-fc-por .tx span{font-size:13px}",
 ".rbo .rbo-fc-duo{padding:36px 16px 0;gap:36px}",
-".rbo .rbo-fc-hb,.rbo .rbo-fc-defi{padding:18px 16px}",
+".rbo .rbo-fc-hb,.rbo .rbo-fc-defi,.rbo .rbo-fc-duo.ancien .rbo-card{padding:16px 16px}.rbo .rbo-fc-duo.ancien .rbo-card h3{font-size:20px}",
 ".rbo .rbo-fc h3{font-size:23px}",
 ".rbo .rbo-fc-hbc{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:14px;scroll-behavior:smooth}",
 ".rbo .rbo-fc-hbc::-webkit-scrollbar{display:none}",
@@ -698,6 +700,7 @@ function HypeRobesOrdi(props) {
           note: (z[4].puces[z[4].puces.length - 1] || {}).texte || "",
           hb: hbListe, hbImgs: [{ img: IMG.bai, pos: "100% 4%" }, { img: IMG.alezan, pos: "100% 4%" }, { img: IMG.noir, pos: "100% 4%" }],
           onHey: hey, defiTexte: L("defiG1"), defiN: 3,
+          defiSeg: { titre: nettoyer(z[2].titre), sous: z[2].sous, texte: z[2].texte, puces: z[2].puces },
           quizImg: "images/galops-v2-carte-quiz-hd1.jpg", onQuiz: function () { props.setEcran("quiz"); }, quizScore: props.quizScore,
           suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
           onGalops: props.onRetour, onRetourCours: function () { versCours(null); }
@@ -766,7 +769,13 @@ function FinCours(c) {
             h("span", { className: "tx" }, h("b", null, p.nom), h("span", null, p.desc)));
         })),
         c.note ? h("p", { className: "note" }, c.note) : null)),
-    /* 2 + 3 — Hey Baby, défi */
+    /* 2 + 3 — Hey Baby, défi. 31/10 00h35 (Blandine) : on garde « Demande à Hey Baby » et « Le défi du cavalier » de la version d'avant
+       (cartes, 3 questions en bulles, défi en entier). Le carrousel et les cercles du défi restent dans le code (c.duoMaquette = true). */
+    !c.duoMaquette && c.defiSeg ? h("div", { className: "rbo-fc-duo ancien" },
+      c.hb.length ? h("section", { className: "rbo-card hb" }, h("h3", null, ICO.bulle(20), L("heyBaby")),
+        h("div", { className: "rbo-hbq" }, c.hb.map(function (q, i) { return h("button", { key: i, type: "button", onClick: function () { c.onHey(q); } }, h("span", null, q), h("i", { "aria-hidden": true }, fl)); }))) : null,
+      h("section", { className: "rbo-card defi" }, h("h3", null, ICO.coupe(20), c.defiSeg.titre), c.defiSeg.sous ? h("p", null, c.defiSeg.sous) : null, c.defiSeg.texte ? h("p", null, c.defiSeg.texte) : null,
+        c.defiSeg.puces && c.defiSeg.puces.length ? h("ul", { className: "rbo-defil" }, c.defiSeg.puces.map(function (pp, i) { return h("li", { key: i }, pp.texte); })) : null)) :
     h("div", { className: "rbo-fc-duo" },
       c.hb.length ? h("section", { className: "rbo-fc-hb", "aria-labelledby": "rbo-fc-hbt" },
         h("h3", { id: "rbo-fc-hbt" }, ICO.bulle(22), L("hbTitre")),

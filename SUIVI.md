@@ -15721,3 +15721,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
   · 10 nouveaux libellés traduits en 14 langues (finTitre, finSous, hbTitre, hbSous, defiTitre, defiG1, chevalN, defiBravo, quizSous, quizReussi). Arabe de droite à gauche vérifié.
   · Menu : les vignettes des autres Galops sont un peu grisées (couleur au survol) — Galop 1 et Galops 2/3/5.
   · Galops 2, 3, 5 : gardent pour l'instant la page de fin publiée à 0330 ; FinCours leur sera branché ensuite (portraits et défi à choisir par cours).
+- 31/10 00h40 (v29, NON publié) : dans la nouvelle fin, « Demande à Hey Baby » (3 bulles) et « Le défi du cavalier » (en entier) repris de la version d'avant, à la demande de Blandine ; carrousel et cercles du défi gardés dans le code, désactivés (duoMaquette).
