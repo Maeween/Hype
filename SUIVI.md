@@ -15401,3 +15401,6 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 
 ## 30/10 19h55 — Photo souris (G3) remplacée à la demande de Blandine — NON PUBLIÉ
 - images/robes-g3-souris.webp : gris cendré, crins et membres sombres, en saut avec jeune cavalier (1415 × 1112 px, fournie par Blandine). Poil texturé « pommelé » visible : à surveiller. Zoom rond sur l'encolure. hype-cours-robes-galops-ordi.js v6, build 20261030-1955. Reste à refaire en pleine taille : robes-g2-pie, robes-g5-tachete-leopard.
+
+## 30/10 19h45 — Photo pie noir (G2) en pleine taille — NON PUBLIÉ
+- images/robes-g2-pie.webp remplacée par la photo fournie par Blandine (1672 × 941 px, pie noir, de profil, sans cavalier). Reste à refaire en pleine taille : robes-g5-tachete-leopard. Toujours manquantes : voir l'entrée de 19h35 (liste). À publier avec le prochain groupe.
