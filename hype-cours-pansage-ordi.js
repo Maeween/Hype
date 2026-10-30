@@ -75,6 +75,9 @@ var T = {
   retour: tt("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
   chapitres: tt("Chapitres du Galop 1", "Galop 1 lessons", "Capítulos del Galop 1", "Capitoli del Galop 1", "Galop 1のレッスン", "Kapitel Galop 1", "دروس Galop 1", "Galop 1 的课程", "Lessen Galop 1", "Capítulos do Galop 1", "Lektioner Galop 1", "Уроки Galop 1", "Lekcje Galop 1", "Galop 1 수업"),
   video: tt("Voir une vidéo sur YouTube", "Watch a video on YouTube", "Ver un vídeo en YouTube", "Guarda un video su YouTube", "YouTubeで動画を見る", "Video auf YouTube ansehen", "شاهد فيديو على يوتيوب", "在 YouTube 观看视频", "Bekijk een video op YouTube", "Ver um vídeo no YouTube", "Se en video på YouTube", "Смотреть видео на YouTube", "Obejrzyj film na YouTube", "YouTube에서 영상 보기"),
+  testeToi: tt("Teste-toi en 6 questions", "Test yourself with 6 questions", "Ponte a prueba con 6 preguntas", "Mettiti alla prova con 6 domande", "6問で力試し", "Teste dich mit 6 Fragen", "اختبر نفسك بـ 6 أسئلة", "用 6 个问题测试自己", "Test jezelf met 6 vragen", "Testa-te com 6 perguntas", "Testa dig själv med 6 frågor", "Проверь себя: 6 вопросов", "Sprawdź się w 6 pytaniach", "6문제로 실력을 확인해 봐"),
+  bravo: tt("Bravo !", "Well done!", "¡Bien hecho!", "Bravo!", "正解です！", "Richtig!", "أحسنت!", "答对了！", "Goed zo!", "Muito bem!", "Bra!", "Верно!", "Brawo!", "정답이에요!"),
+  pasTout: tt("Pas tout à fait.", "Not quite.", "No exactamente.", "Non proprio.", "惜しい！", "Nicht ganz.", "ليس تماماً.", "不太对。", "Net niet.", "Quase.", "Inte riktigt.", "Не совсем.", "Nie do końca.", "아쉬워요."),
   temp: tt("Photo provisoire", "Temporary photo", "Foto provisional", "Foto provvisoria", "仮の写真", "Vorläufiges Foto", "صورة مؤقتة", "临时照片", "Tijdelijke foto", "Foto provisória", "Tillfälligt foto", "Временное фото", "Zdjęcie tymczasowe", "임시 사진")
 };
 var NOUVEAUX = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -131,7 +134,7 @@ function ok(cours) {
 
 /* ---------------- styles ---------------- */
 var CSS = [
-".pso{--noir:#070A08;--petrole:#101A1D;--petrole2:#101D22;--ivoire:#F3EEE4;--champ:#C9A66B;--doux:rgba(243,238,228,.74);--ligne:rgba(201,166,107,.28);background:var(--noir);color:var(--ivoire);font-family:'Montserrat','Noto Sans JP','Noto Sans Arabic',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}",
+".pso{padding-bottom:110px;--noir:#070A08;--petrole:#101A1D;--petrole2:#101D22;--ivoire:#F3EEE4;--champ:#C9A66B;--doux:rgba(243,238,228,.74);--ligne:rgba(201,166,107,.28);background:var(--noir);color:var(--ivoire);font-family:'Montserrat','Noto Sans JP','Noto Sans Arabic',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}",
 ".pso *{box-sizing:border-box}",
 ".pso h1,.pso h2,.pso h3{font-family:'Cormorant Garamond','Noto Serif JP',Georgia,serif;font-weight:600;margin:0;color:var(--ivoire)}",
 ".pso p{margin:0}",
@@ -168,11 +171,17 @@ var CSS = [
 ".pso-card h3{font-size:19px;color:var(--ivoire);display:flex;gap:9px;align-items:center;margin-bottom:6px}",
 ".pso-card h3 svg{flex:0 0 auto;color:var(--champ)}",
 ".pso-card p{font-size:12.5px;line-height:1.55;color:var(--doux)}",
-".pso-card.clair{background:var(--ivoire);border-color:var(--ivoire)}.pso-card.clair h3,.pso-card.clair p{color:#1b1a16}.pso-card.clair h3 svg{color:#8a6a2f}",
+".pso-card.clair{border-color:var(--champ)}",
 ".pso-card.lien{width:100%;display:block}",
 ".pso-card.photo{background-size:cover;background-position:center}",
 ".pso-card.lien:hover{border-color:var(--champ)}",
-".pso-vig{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:12px 40px;background:rgba(7,10,8,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(201,166,107,.14)}",
+".pso-vig{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:12px 40px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
+".pso-minih{position:sticky;top:0;z-index:30;height:0}",
+".pso-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:8px 40px;background:#070A08;border-bottom:1px solid rgba(201,166,107,.28);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
+".pso-mini.on{opacity:1;pointer-events:auto;transform:none}",
+".pso-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,26,29,.9);padding:7px 16px;font-size:13px;color:var(--ivoire)}",
+".pso-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
+".pso-mini button[aria-current=true]{border-color:var(--champ);background:rgba(201,166,107,.16)}",
 ".pso-vig button{position:relative;height:150px;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.16);background:var(--petrole) center/cover no-repeat;text-align:start;padding:0}",
 ".pso-vig button:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 30%,rgba(7,10,8,.88) 100%)}",
 ".pso-vig button .big{position:absolute;top:8px;inset-inline-start:14px;z-index:1;font-family:'Cormorant Garamond',serif;font-size:44px;line-height:1;font-weight:500;color:#E9D9B4}",
@@ -181,19 +190,19 @@ var CSS = [
 ".pso-vig button[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
 ".pso-vig .sch{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#2a2217,#0c100e)}",
 ".pso-vig .sch svg{position:absolute;top:10px;inset-inline-end:14px;height:92px;width:auto;opacity:.95}",
-".pso-sec{padding:54px 40px 14px;scroll-margin-top:190px}",
+".pso-sec{padding:58px 40px 22px;scroll-margin-top:64px}",
 ".pso-duo{display:grid;grid-template-columns:minmax(0,1fr);border-top:1px solid rgba(201,166,107,.14)}",
 "@media (min-width:1400px){.pso-duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pso-duo>.pso-sec{border-top:0!important;padding-inline:40px 28px}.pso-duo>.pso-sec+.pso-sec{border-inline-start:1px solid rgba(201,166,107,.14);padding-inline:28px 40px}.pso-duo .pso-grid2{grid-template-columns:minmax(0,1fr)!important;gap:18px}}",
 ".pso-sec+.pso-sec{border-top:1px solid rgba(201,166,107,.14)}",
-".pso-sechead{display:flex;gap:18px;align-items:baseline;margin-bottom:22px}",
+".pso-sechead{display:flex;gap:18px;align-items:baseline;margin-bottom:28px}",
 ".pso-num{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--champ);position:relative;flex:0 0 auto}",
 ".pso-num:after{content:'';display:block;height:1px;width:26px;background:var(--champ);margin-top:4px}",
 ".pso-sec h2{font-size:clamp(28px,2.6vw,38px);line-height:1.12}",
-".pso-grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}",
-"@media (min-width:1200px){.pso-grid2{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px}}",
-".pso-txt{display:flex;flex-direction:column;gap:16px;font-size:15px;line-height:1.75}",
+".pso-grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:34px;align-items:start}",
+"@media (min-width:1200px){.pso-grid2{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:46px}}",
+".pso-txt{display:flex;flex-direction:column;gap:22px;font-size:15px;line-height:1.75}",
 ".pso-txt strong{color:var(--champ);font-weight:600}",
-".pso-box{border:1px solid var(--ligne);border-radius:14px;background:rgba(16,26,29,.78);padding:15px 18px}",
+".pso-box{border:1px solid var(--ligne);border-radius:14px;background:rgba(16,26,29,.78);padding:17px 20px}",
 ".pso-box h3{font-size:20px;margin-bottom:8px;color:var(--champ)}",
 ".pso-box p,.pso-box li{font-size:14px;line-height:1.65;color:var(--ivoire)}",
 ".pso-box ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:6px}",
@@ -209,7 +218,7 @@ var CSS = [
 ".pso-benef{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}",
 ".pso-benef div{border:1px solid var(--ligne);border-radius:12px;padding:12px 12px;background:rgba(16,29,34,.7);font-size:13px;line-height:1.4;display:flex;gap:9px;align-items:center}",
 ".pso-benef svg{flex:0 0 22px;color:var(--champ)}",
-".pso-outrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}",
+".pso-outrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}",
 ".pso-ocard{border:1px solid var(--ligne);border-radius:14px;background:rgba(16,26,29,.78);overflow:hidden;display:flex;flex-direction:column}",
 ".pso-ocard .ph{position:relative;aspect-ratio:1/.85;background:var(--petrole)}",
 ".pso-ocard .ph img{width:100%;height:100%;object-fit:cover;display:block}",
@@ -257,7 +266,7 @@ var CSS = [
 ".pso-step button{width:34px;height:34px;border-radius:50%;border:1px solid var(--champ);background:none;font-size:16px;color:var(--champ)}",
 ".pso-step span{font-size:12.5px;color:var(--doux);min-width:40px;text-align:center}",
 ".pso-sens{margin-top:10px;display:flex;gap:9px;align-items:center;justify-content:center;font-size:12px;color:var(--champ)}",
-".pso-queue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-self:start}",
+".pso-queue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-self:start}",
 ".pso-queue figure{margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--ligne);aspect-ratio:4/3;background:var(--petrole)}",
 ".pso-queue img{width:100%;height:100%;object-fit:cover;display:block}",
 ".pso-queue figcaption{position:absolute;top:8px;inset-inline-start:8px;width:28px;height:28px;border-radius:50%;background:var(--champ);color:var(--noir);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}",
@@ -272,11 +281,18 @@ var CSS = [
 ".pso-exo .msg{margin-top:10px;font-size:13.5px;font-weight:600}",
 ".pso-exo .msg.ok{color:#9ad6a4}.pso-exo .msg.ko{color:#e3a78f}",
 ".pso-exo .rec{margin-top:8px;background:none;border:1px solid var(--champ);color:var(--champ);border-radius:999px;padding:6px 16px;font-size:12.5px}",
-".pso-sec5 .cartes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:6px}",
-".pso-fc{border:1px solid var(--ligne);border-radius:14px;background:rgba(16,26,29,.8);padding:15px 16px;text-align:start;min-height:150px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;line-height:1.55;color:var(--ivoire)}",
-".pso-fc .q{font-weight:600}.pso-fc .voir{margin-top:auto;font-size:12px;color:var(--champ)}",
-".pso-fc .rep{color:var(--champ);font-weight:600}.pso-fc .ex{color:var(--doux);font-size:12.5px}",
-".pso-fc[aria-pressed=true]{border-color:var(--champ);background:rgba(201,166,107,.09)}",
+".pso-sec5 .cartes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:6px;align-items:start}\n@media (max-width:1279px){.pso-sec5 .cartes{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+".pso-qcm{border:1px solid var(--ligne);border-radius:14px;background:rgba(16,26,29,.8);padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}",
+".pso-qcm .q{font-weight:600;font-size:14.5px;line-height:1.5;color:var(--ivoire)}",
+".pso-qcm .opts{display:flex;flex-direction:column;gap:7px}",
+".pso-qcm .opts button{display:flex;gap:10px;align-items:flex-start;text-align:start;border:1px solid rgba(243,238,228,.16);border-radius:10px;background:rgba(7,10,8,.5);padding:9px 12px;font-size:13px;line-height:1.45;color:var(--ivoire)}",
+".pso-qcm .opts button:hover:not(:disabled){border-color:var(--champ)}",
+".pso-qcm .opts .lt{flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--champ);display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--champ)}",
+".pso-qcm .opts button.bon{border-color:#9ad6a4;background:rgba(154,214,164,.1)}.pso-qcm .opts button.bon .lt{background:#9ad6a4;border-color:#9ad6a4;color:#070A08}",
+".pso-qcm .opts button.mauvais{border-color:#e3a78f;background:rgba(227,167,143,.1)}.pso-qcm .opts button.mauvais .lt{background:#e3a78f;border-color:#e3a78f;color:#070A08}",
+".pso-qcm .opts button:disabled{cursor:default}",
+".pso-qcm .res{font-size:12.5px;line-height:1.6;color:var(--doux)}.pso-qcm .res.ok strong{color:#9ad6a4}.pso-qcm .res.ko strong{color:#e3a78f}",
+".pso-qcm .rec{align-self:flex-start;background:none;border:1px solid var(--champ);color:var(--champ);border-radius:999px;padding:5px 14px;font-size:12px}",
 ".pso-cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 44px}",
 ".pso-btn{border-radius:999px;padding:13px 26px;font-size:14px;font-weight:600;border:1px solid var(--champ);background:none;color:var(--champ)}",
 ".pso-btn.plein{background:var(--champ);color:var(--noir)}",
@@ -290,7 +306,7 @@ var CSS = [
 ".pso-defi{display:grid;grid-template-columns:minmax(0,1fr);gap:0}",
 ".pso a:focus-visible,.pso button:focus-visible{outline:2px solid var(--champ);outline-offset:2px}",
 ".pso-tmp{position:absolute;bottom:6px;inset-inline-end:6px;font-size:9.5px;letter-spacing:.4px;background:rgba(7,10,8,.72);border:1px solid var(--ligne);border-radius:999px;padding:2px 8px;color:var(--champ)}",
-"@media (max-width:1279px){.pso-sec{padding-inline:28px}.pso-vig{padding-inline:28px}.pso-hero{padding-inline:28px}.pso-bar{inset-inline:28px}.pso-cards{padding-inline:28px}}"
+"@media (max-width:1279px){.pso-mini{padding-inline:28px}.pso-sec{padding-inline:28px}.pso-vig{padding-inline:28px}.pso-hero{padding-inline:28px}.pso-bar{inset-inline:28px}.pso-cards{padding-inline:28px}}"
 ].join("\n");
 
 /* ---------------- icônes (SVG simples, pas d'emoji) ---------------- */
@@ -372,7 +388,18 @@ function HypePansageOrdi(props) {
   var _c = useState([]), ordre = _c[0], setOrdre = _c[1];
   var _d = useState({}), cartesOuv = _d[0], setCartesOuv = _d[1];
   var _e = useState("s1"), actif = _e[0], setActif = _e[1];
+  var _m = useState(false), mini = _m[0], setMini = _m[1];
+  var _r = useState({}), reps = _r[0], setReps = _r[1];
   var refs = useRef({});
+  useEffect(function () {
+    var on = function () {
+      var el = document.querySelector(".pso-vig");
+      if (el) setMini(el.getBoundingClientRect().bottom < 0);
+    };
+    window.addEventListener("scroll", on, { passive: true });
+    on();
+    return function () { window.removeEventListener("scroll", on); };
+  }, []);
 
   /* section visible -> vignette allumée */
   useEffect(function () {
@@ -496,6 +523,11 @@ function HypePansageOrdi(props) {
               h("b", { className: "big" }, "0" + (i + 1)), h("span", { className: "lab" }, L(v.t)), h("span", { className: "arr", "aria-hidden": true }, rtl ? "←" : "→"));
           })),
 
+        h("div", { className: "pso-minih" },
+          h("div", { className: "pso-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
+            vig.map(function (v, i) {
+              return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); } }, h("b", null, "0" + (i + 1)), L(v.t));
+            }))),
         /* 01 — COMPRENDRE */
         Sec("s1", "01", d.t1,
           h("div", { className: "pso-grid2" },
@@ -577,14 +609,22 @@ function HypePansageOrdi(props) {
         /* 05 — QUIZ ET RÉVISION */
         Sec("s5", "05", L("secQuiz"),
           h("div", null,
-            h("h3", { style: { fontSize: 22, color: "#C9A66B", marginBottom: 10 } }, L("cartes")),
+            h("h3", { style: { fontSize: 22, color: "#C9A66B", marginBottom: 10 } }, L("testeToi")),
             h("div", { className: "cartes" }, d.quiz.map(function (q, i) {
-              var ouv = !!cartesOuv[i];
-              var rep = q.type === "vrai-faux" ? (q.correct ? L("vrai") : L("faux")) : (q.options ? q.options[q.correct] : "");
-              return h("button", { key: i, type: "button", className: "pso-fc", "aria-pressed": ouv, onClick: function () { var n = Object.assign({}, cartesOuv); n[i] = !ouv; setCartesOuv(n); } },
-                h("span", { className: "q" }, (q.image ? q.image + " " : "") + q.question),
-                ouv ? h("span", { className: "rep" }, rep) : null,
-                ouv ? h("span", { className: "ex" }, q.explication) : h("span", { className: "voir" }, L("voirRep") + " ›"));
+              var vf = q.type === "vrai-faux";
+              var choix = vf ? [{ k: true, t: L("vrai") }, { k: false, t: L("faux") }] : (q.options || []).map(function (t, j) { return { k: j, t: t }; });
+              var rep = reps[i];
+              var repondu = rep !== undefined;
+              var juste = repondu && rep === q.correct;
+              return h("div", { key: i, className: "pso-qcm" },
+                h("p", { className: "q" }, (q.image ? q.image + " " : "") + q.question),
+                h("div", { className: "opts" }, choix.map(function (c, j) {
+                  var cls = repondu ? (c.k === q.correct ? "bon" : (c.k === rep ? "mauvais" : "")) : "";
+                  return h("button", { key: j, type: "button", className: cls, disabled: repondu, "aria-pressed": repondu && c.k === rep, onClick: function () { var n = Object.assign({}, reps); n[i] = c.k; setReps(n); } },
+                    h("span", { className: "lt" }, vf ? (c.k ? "✓" : "✕") : String.fromCharCode(65 + j)), h("span", null, c.t));
+                })),
+                repondu ? h("div", { className: "res " + (juste ? "ok" : "ko"), "aria-live": "polite" }, h("strong", null, juste ? L("bravo") : L("pasTout")), " ", q.explication) : null,
+                repondu ? h("button", { type: "button", className: "rec", onClick: function () { var n = Object.assign({}, reps); delete n[i]; setReps(n); } }, L("exoRestart")) : null);
             })),
             h("div", { className: "pso-cta" },
               h("button", { type: "button", className: "pso-btn plein", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),

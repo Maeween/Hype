@@ -15142,3 +15142,16 @@ Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation exp
 - Test ajoute dans outils/test-reprises-traces.cjs (14 langues presentes, plus de « avant ou apres » sur l'arret avant R) : 27/27 OK. 14 langues ouvertes dans l'appli : 0 erreur, arabe en RTL.
 - Relecture de tous les conseils des 114 figures : aucune autre contradiction trouvee (seul « Regarde X des l'entree » cite un repere absent du texte, correct car X est sur la ligne du milieu).
 - Non verifie : vrai iPhone.
+
+
+## 30/10 — Cours g1-c2 ordinateur : carte « Le défi du cavalier » en bleu pétrole + liseré champagne — NON PUBLIÉ
+- Choix de Blandine (option 2) à la place de l'ivoire : fond pétrole comme les deux autres cartes, titre et icône champagne, contour champagne. Script en ?v=18.
+
+## 30/10 — Cours g1-c2 ordinateur : titre « Le défi du cavalier » en ivoire comme les 2 autres titres — NON PUBLIÉ
+- Demande de Blandine : seul le liseré reste champagne ; titre ivoire, icône champagne (comme les autres cartes). Script en ?v=19.
+
+## 30/10 — Cours g1-c2 ordinateur : quiz en QCM, barre fine au défilement, blocs aérés — NON PUBLIÉ
+- Section 05 : les 6 questions d'origine en vrai QCM dans la page (choix A/B/C/D ou Vrai/Faux, bonne réponse en vert, correction du cours affichée après le choix, « Recommencer »). Entraînement seulement : le bouton « Passer le quiz » ouvre toujours le vrai quiz de l'appli, qui enregistre le résultat.
+- Chevauchement corrigé : les 5 vignettes ne sont plus collées en haut (elles restent en tête de page) ; une fine barre « 01 Comprendre … 05 Quiz » apparaît seulement quand on a défilé. Marge de fin de page (le bouton 🔊 ne masque plus la dernière carte). Blocs un peu plus aérés.
+- Nouveaux textes « Teste-toi en 6 questions », « Bravo ! », « Pas tout à fait. » traduits dans les 14 langues. Script en ?v=21.
+- Tests : texte d'origine 69/69, interactions, langues, 0 erreur.
