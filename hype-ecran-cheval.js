@@ -553,9 +553,10 @@ function EcranCheval() {
   });
   var vueRes = _rcl[0], setVueRes = _rcl[1];
   function poserVueRes(v) {
-    try { localStorage.setItem("hype_res_vue", v); } catch (eSc2) { }
+    try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(v); else localStorage.setItem("hype_res_vue", v); } catch (eSc2) { }   /* 30/10 : enregistree sur son compte */
     setVueRes(v);
   }
+  React.useEffect(function () { var vVr = true; try { if (typeof hypeVueResCharger === "function") hypeVueResCharger().then(function (v) { if (vVr && v) setVueRes(v); }); } catch (eVr) { } return function () { vVr = false; }; }, []);   /* 30/10 : sa vue, depuis son compte */
   React.useEffect(function () {
     var vivant = true;
     (async function () {

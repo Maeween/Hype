@@ -112,6 +112,9 @@ function EcranPerformancesCheval(props) {
   var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1];
   var ouvSt = React.useState(null); var ouvertes = ouvSt[0], setOuvertes = ouvSt[1];   /* saisons depliees (plusieurs possibles) ; null = la plus recente */
   var flSt = React.useState({}); var filtres = flSt[0], setFiltres = flSt[1];   /* filtre secondaire, par saison */
+  /* 30/10 (Blandine, choix B) : le filtre de depart de chaque saison = SA vue, enregistree sur son compte (voir hypeVueResCharger) */
+  var vueDfSt = React.useState(function () { try { return (typeof hypeVueResLocale === "function") ? hypeVueResLocale() : "tous"; } catch (eVd) { return "tous"; } }); var vueDefaut = vueDfSt[0], setVueDefaut = vueDfSt[1];
+  React.useEffect(function () { var vVr = true; try { if (typeof hypeVueResCharger === "function") hypeVueResCharger().then(function (v) { if (vVr && v) setVueDefaut(v); }); } catch (eVr) { } return function () { vVr = false; }; }, []);
   var fortsLocSt = React.useState({}); var fortsLocal = fortsLocSt[0], setFortsLocal = fortsLocSt[1];   /* reponse immediate au tap, par id */
   var lignesVues = React.useMemo(function () {
     return (lignes || []).map(function (r) { var loc = r && r.id && fortsLocal[r.id]; return loc ? Object.assign({}, r, { fort_force: loc.ff, fort_exclu: loc.fx }) : r; });
@@ -327,7 +330,7 @@ function EcranPerformancesCheval(props) {
     var dansListe = !!(f.id && tous.some(function (x) { return x.id === f.id; }));
     if (cavEffectif !== "tous" && f.cav !== cavEffectif) setCavChoisi("tous");
     var o = Object.assign({}, ouv); o[cle] = true; setOuvertes(o);
-    if (filtres[cle] && filtres[cle] !== "tous") { var nf = Object.assign({}, filtres); nf[cle] = "tous"; setFiltres(nf); }
+    if ((filtres[cle] || vueDefaut || "tous") !== "tous") { var nf = Object.assign({}, filtres); nf[cle] = "tous"; setFiltres(nf); }   /* 30/10 : tient compte de sa vue par defaut */
     if (dansListe) { setSurligne(f.id); setTimeout(function () { setSurligne(function (c) { return c === f.id ? null : c; }); }, 2400); }
     setTimeout(function () {
       try {
@@ -611,7 +614,7 @@ function EcranPerformancesCheval(props) {
     var fams = Object.keys(parFam).sort(function (a, b) { return (parFam[b] - parFam[a]) || (nbFam[b] - nbFam[a]); });
     var maxF = fams.length ? Math.max.apply(null, fams.map(function (k) { return parFam[k]; })) : 0;
     var sansP = pl.length - avecP;
-    var cleF = filtres[sx.cle] || "tous"; if (cleF === "sf" && !estProprio) cleF = "tous";
+    var cleF = filtres[sx.cle] || vueDefaut || "tous"; if (cleF === "sf" && !estProprio) cleF = "tous";
     var fsAff = montreMasques ? fs : fs.filter(function (f) { return !f.masque; });   /* (g11) liste affichee : sans les lignes masquees */
     var liste = filtrer(fsAff, cleF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
     var nbF = {}; FILTRES_SEC.forEach(function (fx) { nbF[fx[0]] = filtrer(montreMasques ? fs : fs.filter(function (f) { return !f.masque; }), fx[0]).length; });
@@ -645,7 +648,7 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { display: "flex", gap: 6, marginTop: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", paddingBottom: 2 } },
         FILTRES_SEC.map(function (fx) {
           var on = cleF === fx[0];
-          return h("button", { key: "f" + sx.cle + fx[0], type: "button", onClick: function () { var n = Object.assign({}, filtres); n[sx.cle] = fx[0]; setFiltres(n); }, style: { flex: "0 0 auto", minHeight: 32, padding: "0 9px", borderRadius: 10, border: "1px solid " + (on ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: on ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: on ? "#1A1408" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, fx[1] + " (" + nbF[fx[0]] + ")");
+          return h("button", { key: "f" + sx.cle + fx[0], type: "button", onClick: function () { var n = Object.assign({}, filtres); n[sx.cle] = fx[0]; setFiltres(n); try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(fx[0]); } catch (eVp) { } }, style: { flex: "0 0 auto", minHeight: 32, padding: "0 9px", borderRadius: 10, border: "1px solid " + (on ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: on ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: on ? "#1A1408" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, fx[1] + " (" + nbF[fx[0]] + ")");
         })),
       liste.length ? h("div", { "data-perf-liste": sx.cle, style: { marginTop: 6 } }, liste.map(ligneResultat)) : h("div", { style: { padding: "14px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter.", "Ningún resultado con este filtro.", "Nessun risultato per questo filtro.", "この条件の成績はありません。", "Kein Ergebnis für diesen Filter.", "لا توجد نتيجة لهذا الفلتر.", "这个筛选条件下没有成绩。", "Geen resultaat voor dit filter.", "Nenhum resultado para este filtro.", "Inga resultat för det här filtret.", "Нет результатов для этого фильтра.", "Brak wyników dla tego filtra.", "이 필터에 맞는 결과가 없어요.")));
   }

@@ -14,7 +14,8 @@ function EcranResultatsCavaliere() {
   var stM = React.useState(null); var moi = stM[0], setMoi = stM[1];
   var stV = React.useState(function () { try { return localStorage.getItem("hype_res_vue") || "tous"; } catch (e) { return "tous"; } });
   var vueRes = stV[0], setVueRes = stV[1];
-  function poserVueRes(v) { try { localStorage.setItem("hype_res_vue", v); } catch (e) { } setVueRes(v); }
+  function poserVueRes(v) { try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(v); else localStorage.setItem("hype_res_vue", v); } catch (e) { } setVueRes(v); }   /* 30/10 : enregistree sur son compte */
+  React.useEffect(function () { var vVr = true; try { if (typeof hypeVueResCharger === "function") hypeVueResCharger().then(function (v) { if (vVr && v) setVueRes(v); }); } catch (eVr) { } return function () { vVr = false; }; }, []);
   var stSo = React.useState(null); var saisonOuv = stSo[0], setSaisonOuv = stSo[1];
   var stSp = React.useState(null); var saisonPts = stSp[0], setSaisonPts = stSp[1]; var fpSt = React.useState(null); var famPtsOuv = fpSt[0], setFamPtsOuv = fpSt[1]; /* 18/10 : famille de points depliee (detail au toucher) */
   var stCf = React.useState("tous"); var cavFiltre = stCf[0], setCavFiltre = stCf[1];
