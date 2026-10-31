@@ -15771,3 +15771,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Effet aussi sur les robes des Galops 2, 3 et 5 (ils reprennent ces mêmes couleurs). Aucun texte changé.
 - 31/10 01h38 (« Ok c'est ça », sur 4 idées proposées) : « Demande à Hey Baby » prend la photo de l'alezan assombrie en fond de carte, questions en bulles sombres légèrement floutées, bordure dorée. « Le défi du cavalier » reste en noir neutre.
 - Testé : téléphone 390 px et ordinateur 1440 px, aucune erreur.
+
+## 31/10 02h40 — Étoiles du quiz dans les menus des Galops (visuel B choisi par Blandine) — build 20261031-0700
+- index.html seulement. Sous le titre de chaque cours dont le quiz a été fait : 5 étoiles (pleines selon le score, même règle que les flots : 20/40/60/80/100 %) + le pourcentage ; dès 60 %, la médaille de l'appli (bronze, argent, or) remplace le rond / la coche / le numéro. Rien ne change pour un cours sans quiz fait.
+- Partout où les cours d'un Galop sont listés : page Galops (liste et cartes du Galop déroulé), pages des Galops (Galop 1 à 4, 6, 7 : cartes ivoire « Le programme du Galop » sur ordi, liste par thème « Les cours du Galop » sur téléphone) et page du Galop 5.
+- Score lu dans les résultats de quiz déjà enregistrés (quizResultats) ; règles du quiz, scores et progression inchangés. Aucun nouveau texte à traduire (étoiles et « % »). Petites fonctions communes : hypeScoreQuiz, hypeEtoilesQuiz, hypeMedailleQuiz, HQ_ET_CSS.
+- Testé dans l'appli complète (connexion simulée, scores 100/80/60/40) : téléphone 390 px et ordinateur 1440 px, arabe, 0 erreur.
