@@ -15813,3 +15813,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Étiquettes « Premium » / « Nouveau » sur les photos des cartes retirées (déjà cachées sur téléphone).
 - Fichiers : hype-ecran-articles.js (?v=6), index.html, outils/mag/modele.js. hype-article-cso.js inchangé.
 - Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur.
+
+## 31/10 02h45 — Base : lecture des résultats réservée aux personnes connectées (« Ok continue », 02h43) — fait en base, aucun fichier de l'appli modifié
+- Règle « lecture resultats » : passée de « tout le monde » à « personnes connectées » (trace : sql/2026-10-31-resultats-lecture-connectes.sql, retour arrière indiqué dedans).
+- Les visiteurs sans compte voient encore les résultats des chevaux dont la fiche n'est pas privée (pages publiques chevaux / écuries, Google) : 1 993 résultats sur 1 995. Seuls 2 résultats sans cheval leur sont désormais cachés.
+- Testé en base : connecté 1 995, sans compte 1 993.
