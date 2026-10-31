@@ -15765,3 +15765,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Mise en ligne des deux étapes préparées sur la branche travail-mag-refonte (voir les entrées 04h00 et 01h30 ci-dessus), reprises sur la version en ligne 04dd37ec (build 0510) : rien de ce qui était en ligne n'est retiré. Marqueur → 20261031-0600.
 - Photos à remplacer plus tard (liste donnée à Blandine pour ChatGPT) : couverture, thème Galops, thème Culture, bloc Galops 1 à 7, carte Hey Baby ; facultatif : vignettes La Baule, Lamotte, Le Mans.
 - Publié : index.html + SUIVI.md + hype-ecran-articles.js + hype-article-cso.js + outils/mag/ + outils/article-cso/. Aucune nouvelle image. Tout le reste inchangé.
+
+## 31/10 01h10 — Cours « Les robes » : Hey Baby moins pétrole (demande 00h58 : « On peut faire les couleurs de Hey Baby moins pétrole ? ») — PAS ENCORE PUBLIÉ
+- hype-cours-robes-ordi.js v34 (index.html ?v=34) : cartes « Demande à Hey Baby » et « Le défi du cavalier » (page de fin du cours, téléphone + ordinateur) passent du bleu pétrole à des noirs neutres ; les questions en bulles deviennent gris très léger, bordure dorée inchangée.
+- Effet aussi sur les robes des Galops 2, 3 et 5 (ils reprennent ces mêmes couleurs). Aucun texte changé.
+- Testé : téléphone 390 px, aucune erreur.
