@@ -15859,3 +15859,11 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Vérifié (banc local) : 14 langues dont arabe RTL, 375/390/430/768/1100/1440 px sans débordement, toutes les notions remplies, boutons, page de fin ; node --check de tous les scripts de index.html. Version iPhone à reprendre ensuite (réglages de l'ordinateur).
 - Mis de côté pour le cours des robes (non publiés) : alezan clair, pie, chocolat (alezan brûlé), palomino, gris pommelé, alezan crins lavés, bai.
 - Fichiers : hype-cours-editorial.js (nouveau), hype-cours-modele.js, index.html, SUIVI.md, images/securite-g1-*.webp (14). Inchangés : hype-cours-robes-ordi.js, hype-cours-pansage-ordi.js, hype-cours-galop1.js.
+
+## 31/10/2026 — build 20261031-1500 : cours des robes — menu en cartes horizontales + portraits sur fond noir
+- Demande de Blandine (capture iPhone 14h50 : « tu devais avoir fait des onglets horizontaux ») : le menu « Dans ce cours » / « Les autres Galops » des cours des robes (Galop 1, 2, 3, 5) reprend le menu du cours sécurité — cartes rectangulaires photo avec numéro, titre et flèche ronde, filet doré sur la carte en cours ; défilement horizontal au doigt sur téléphone ; titre sur 2 lignes maximum (arabe compris).
+- Photos (portraits sur fond noir faits avec ChatGPT, validés par Blandine « Ok ») : pie (G2), crème (G2), alezan brûlé (G3), palomino (G3), aubère (G5), pommelé (G5, gris pommelé). Fichiers images/robes-portrait-*.webp ; les anciennes photos restent dans images/ (non supprimées).
+- GARDÉS tels quels (Blandine : « elles sont belles ») : noir, alezan et bai du Galop 1, photo des 3 robes.
+- Non utilisés : souris (crins gris, tête pas plus foncée → doute), « crins lavés » (ce n'en était pas), gris très clair et blanc (proposition blanc/gris côte à côte au Galop 2 en attente).
+- Fichiers : hype-cours-robes-ordi.js (?v=35), hype-cours-robes-galops-ordi.js (?v=18), index.html, SUIVI.md, 6 images. Cours sécurité inchangé (l'alezan clair reste en fond du chapitre 02).
+- Vérifié (banc local) : G1/G2/G3/G5 en français, G1 en arabe, 390 et 1536 px ; node --check des scripts.

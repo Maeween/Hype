@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 17;   /* 31/10 : menu du cours modèle B */
+var VERSION = 18;   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
+/* v17 :    /* 31/10 : menu du cours modèle B */
 /* v15 :   /* 31/10 : défi du cavalier ajouté au Galop 2 */
 /* v14 :   /* 31/10 : page de fin = FinCours (maquette), portraits de toutes les robes du cours */
 /* v13 :   /* 31/10 : autres Galops grisés dans le menu */
@@ -75,15 +76,15 @@ var P = {
   cheval: "images/cheval-defaut-alezan.webp", noir: "images/robes-g1-noir.webp", alezan: "images/robes-g1-alezan.webp", bai: "images/robes-g1-bai.webp", trio: "images/robes-g1-trio.webp", quiz: "images/pansage-quiz.webp",
   g5hero: "images/galop5-hero-v2.webp", g5cheval: "images/galop5-theme-cheval.webp",
   /* Galop 2 — à fournir */
-  g2creme: "images/robes-g2-creme.webp", g2piebai: "images/robes-g2-pie-bai.webp", g2piealezan: "images/robes-g2-pie-alezan.webp", g2tachete: "images/robes-g2-tachetee.webp", g2pie: "images/robes-g2-pie.webp", g2gris: "images/robes-g2-gris.webp",
+  g2creme: "images/robes-portrait-creme.webp", g2piebai: "images/robes-g2-pie-bai.webp", g2piealezan: "images/robes-g2-pie-alezan.webp", g2tachete: "images/robes-g2-tachetee.webp", g2pie: "images/robes-portrait-pie.webp", g2gris: "images/robes-g2-gris.webp",
   /* Galop 3 — à fournir */
   g3parties: "images/robes-g3-parties-du-corps.webp", g3tete: "images/robes-g3-marques-tete.webp", g3balzane: "images/robes-g3-balzane.webp", g3epis: "images/robes-g3-epis.webp",
-  g3isabelle: "images/robes-g3-isabelle.webp", g3souris: "images/robes-g3-souris.webp", g3brule: "images/robes-g3-alezan-brule.webp", g3cafe: "images/robes-g3-cafe-au-lait.webp", g3palomino: "images/robes-g3-palomino.webp", g3pangare: "images/robes-g3-noir-pangare.webp",
+  g3isabelle: "images/robes-g3-isabelle.webp", g3souris: "images/robes-g3-souris.webp", g3brule: "images/robes-portrait-alezan-brule.webp", g3cafe: "images/robes-g3-cafe-au-lait.webp", g3palomino: "images/robes-portrait-palomino.webp", g3pangare: "images/robes-g3-noir-pangare.webp",
   /* Galop 5 — à fournir */
   g5tobiano: "images/robes-g5-pie-tobiano.webp", g5overo: "images/robes-g5-pie-overo.webp", g5tovero: "images/robes-g5-pie-tovero.webp", g5balzan: "images/robes-g5-pie-balzan.webp", g5sabino: "images/robes-g5-pie-sabino.webp",
   g5leopard: "images/robes-g5-tachete-leopard.webp", g5tachete: "images/robes-g5-tachete-autres.webp",
-  g5crins: "images/robes-g5-adj-crins-laves.webp", g5raie: "images/robes-g5-adj-raie-de-mulet.webp", g5pommele: "images/robes-g5-adj-pommele.webp", g5scap: "images/robes-g5-adj-bande-scapulaire.webp", g5zebr: "images/robes-g5-adj-zebrures.webp",
-  g5rouan: "images/robes-g5-rouan.webp", g5aubere: "images/robes-g5-aubere.webp", g5gris: "images/robes-g5-gris-comparaison.webp"
+  g5crins: "images/robes-g5-adj-crins-laves.webp", g5raie: "images/robes-g5-adj-raie-de-mulet.webp", g5pommele: "images/robes-portrait-gris-pommele.webp", g5scap: "images/robes-g5-adj-bande-scapulaire.webp", g5zebr: "images/robes-g5-adj-zebrures.webp",
+  g5rouan: "images/robes-g5-rouan.webp", g5aubere: "images/robes-portrait-aubere.webp", g5gris: "images/robes-g5-gris-comparaison.webp"
 };
 
 /* ---------------- styles propres à cette page (s'ajoutent à ceux du Galop 1) ---------------- */
@@ -182,8 +183,8 @@ function okG2(cours) {
 function ok(cours) { return okG2(cours) || okG3(cours) || okG5(cours); }
 
 var AUTRES = [
-  { id: "g1-c7", n: 1, img: "images/robes-g1-bai.webp" }, { id: "g2-robes", n: 2, img: "images/robes-g2-pie.webp" },
-  { id: "g3-c7", n: 3, img: "images/robes-g3-palomino.webp" }, { id: "g5-robes", n: 5, img: "images/robes-g5-aubere.webp" }
+  { id: "g1-c7", n: 1, img: "images/robes-g1-bai.webp" }, { id: "g2-robes", n: 2, img: "images/robes-portrait-pie.webp" },
+  { id: "g3-c7", n: 3, img: "images/robes-portrait-palomino.webp" }, { id: "g5-robes", n: 5, img: "images/robes-portrait-aubere.webp" }
 ];
 var PARC = [{ id: "g1-c7", galop: 1, lab: "Galop 1" }, { id: "g2-robes", galop: 2, lab: "Galop 2" }, { id: "g3-c7", galop: 3, lab: "Galop 3" }, { id: "g5-robes", galop: 5, lab: "Galop 5" }];
 /* ---------------- composant ---------------- */

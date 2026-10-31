@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 33;   /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
+var VERSION = 34;   /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
+/* v33 :    /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
 /* v31 :   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
 /* v30 :   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
 /* v29 :   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
@@ -420,14 +421,20 @@ var CSS = [
 ".rbo-ong .st{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;color:var(--champ);margin:0 0 12px}",
 ".rbo-ong .st:after{content:'';flex:1;height:1px;background:rgba(201,166,107,.25)}",
 ".rbo-ong .g+.st{margin-top:22px}",
+/* 31/10 14h55 (Blandine : « des onglets horizontaux ») : même menu que le cours sécurité — cartes rectangulaires photo, numéro, titre, flèche ronde ; défilement horizontal sur téléphone */
 ".rbo-ong .g{display:grid;gap:14px;grid-template-columns:repeat(var(--n,3),minmax(0,1fr))}",
-".rbo-ong .g.autres{grid-template-columns:repeat(5,minmax(0,1fr))}",
-".rbo-ong .c{display:block;background:none;border:0;padding:0;margin:0;text-align:start;cursor:pointer;color:var(--ivoire);font:inherit;min-width:0}",
-".rbo-ong .ph{display:block;aspect-ratio:4/3;border-radius:12px;background-size:cover;background-repeat:no-repeat;border:1px solid rgba(201,166,107,.25);transition:border-color .2s,box-shadow .2s,filter .2s}",
-".rbo-ong .c:hover .ph,.rbo-ong .c:focus-visible .ph{border-color:rgba(201,166,107,.6)}",
-".rbo-ong .c[aria-current=true] .ph{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
-".rbo-ong .n{display:block;font-family:'Cormorant Garamond',serif;font-size:21px;line-height:1;color:var(--champ);margin-top:8px}",
-".rbo-ong .t{display:block;font-size:13px;line-height:1.3;margin-top:3px}",
+".rbo-ong .g.autres{grid-template-columns:repeat(4,minmax(0,1fr))}",
+".rbo-ong .c{position:relative;display:block;height:112px;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.16);background:#0B0F0E;padding:0;margin:0;text-align:start;cursor:pointer;color:var(--ivoire);font:inherit;min-width:0}",
+".rbo-ong .ph{position:absolute;inset:0 0 0 38%;background-size:cover;background-repeat:no-repeat;opacity:.9}",
+"[dir=rtl] .rbo-ong .ph{inset:0 38% 0 0}",
+".rbo-ong .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0B0F0E 0%,rgba(11,15,14,.55) 45%,rgba(11,15,14,.15) 100%)}",
+"[dir=rtl] .rbo-ong .ph:after{background:linear-gradient(270deg,#0B0F0E 0%,rgba(11,15,14,.55) 45%,rgba(11,15,14,.15) 100%)}",
+".rbo-ong .n{position:absolute;top:8px;inset-inline-start:12px;font-family:'Cormorant Garamond',serif;font-size:32px;line-height:1;font-weight:500;color:var(--champ)}",
+".rbo-ong .t{position:absolute;inset-inline:12px 44px;bottom:11px;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:18px;font-weight:600;line-height:1.08;color:var(--ivoire);text-shadow:0 1px 8px rgba(0,0,0,.6);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}",
+".rbo-ong .ar{position:absolute;bottom:10px;inset-inline-end:10px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(243,238,228,.75);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ivoire)}",
+"[dir=rtl] .rbo-ong .ar{transform:scaleX(-1)}",
+".rbo-ong .c:hover,.rbo-ong .c:focus-visible{border-color:rgba(201,166,107,.7)}",
+".rbo-ong .c[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
 ".rbo-ong .o .ph{filter:grayscale(.85) brightness(.75)}.rbo-ong .o:hover .ph,.rbo-ong .o:focus-visible .ph{filter:none}.rbo-ong .o .t{color:var(--doux)}",
 "@media (max-width:1279px){.rbo-ong{padding-inline:28px}}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
@@ -441,8 +448,10 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
-".rbo .rbo-ong{padding:24px 16px 20px}.rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 9px}",
-".rbo .rbo-ong .g:not(.autres) .ph{aspect-ratio:4/5}.rbo .rbo-ong .n{font-size:18px;margin-top:7px}.rbo .rbo-ong .t{font-size:12px}",
+".rbo .rbo-ong{padding:22px 0 18px}.rbo .rbo-ong .st{margin-inline:16px}",
+".rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;scrollbar-width:none;padding:0 16px}",
+".rbo .rbo-ong .g::-webkit-scrollbar{display:none}",
+".rbo .rbo-ong .c{flex:0 0 42%;height:92px;scroll-snap-align:start}.rbo .rbo-ong .n{font-size:26px}.rbo .rbo-ong .t{font-size:16px;inset-inline:11px 40px}",
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
 ".rbo .rbo-fc-hero .vo,[dir=rtl] .rbo .rbo-fc-hero .vo{background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.72) 50%,rgba(7,10,8,.18) 100%),linear-gradient(180deg,rgba(7,10,8,.4) 0%,rgba(7,10,8,0) 30%,#070A08 100%)}",
 ".rbo .rbo-fc-hero h2{font-size:36px}.rbo .rbo-fc-hero .sous{max-width:none}",
@@ -595,9 +604,9 @@ function HypeRobesOrdi(props) {
   var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
   /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes */
   var autresG = props.onOuvrirRobes ? [
-    { id: "g2-robes", n: 2, img: "images/robes-g2-pie.webp", pos: "60% 40%" },
-    { id: "g3-c7", n: 3, img: "images/robes-g3-palomino.webp", pos: "60% 40%" },
-    { id: "g5-robes", n: 5, img: "images/robes-g5-aubere.webp", pos: "60% 40%" }
+    { id: "g2-robes", n: 2, img: "images/robes-portrait-pie.webp", pos: "60% 40%" },
+    { id: "g3-c7", n: 3, img: "images/robes-portrait-palomino.webp", pos: "60% 40%" },
+    { id: "g5-robes", n: 5, img: "images/robes-portrait-aubere.webp", pos: "60% 40%" }
   ] : [];
   /* page de fin : cours suivant, XP gagnés (seulement si le cours n'était pas déjà terminé à l'ouverture) */
   var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
@@ -747,13 +756,13 @@ function Onglets(c) {
     h("div", { className: "g", role: "tablist", style: { "--n": c.vig.length } }, c.vig.map(function (v, i) {
       return h("button", { key: v.id, type: "button", role: "tab", className: "c", "aria-current": c.actif === v.id ? "true" : undefined, onClick: function () { c.nav(v.id); } },
         h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + v.img + ")", backgroundPosition: v.pos || "center" } }),
-        h("span", { className: "n" }, "0" + (i + 1)), h("span", { className: "t" }, v.lab));
+        h("span", { className: "n" }, "0" + (i + 1)), h("span", { className: "t" }, v.lab), h("span", { className: "ar", "aria-hidden": true }, "→"));
     })),
     c.autres.length ? h("div", { className: "st" }, L("autresGal")) : null,
     c.autres.length ? h("div", { className: "g autres" }, c.autres.map(function (g) {
       return h("button", { key: g.id, type: "button", className: "c o", onClick: function () { c.onAutre(g); } },
         h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos || "60% 40%" } }),
-        h("span", { className: "n" }, "G" + g.n), h("span", { className: "t" }, L("gal" + g.n)));
+        h("span", { className: "n" }, "G" + g.n), h("span", { className: "t" }, L("gal" + g.n)), h("span", { className: "ar", "aria-hidden": true }, "→"));
     })) : null);
 }
 
