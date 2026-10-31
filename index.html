@@ -63916,7 +63916,7 @@ function QuizEclairGalop({ tr }) {
         React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 4, marginBottom: 12 } }, [0, 1, 2].map((h) => React.createElement("span", { key: h, style: { fontSize: 18 } }, h < coeurs ? "❤️" : "🤍"))),
         React.createElement("p", { style: { textAlign: "center", fontSize: 13, fontWeight: 700, color: COLORS.encre, margin: "0 0 12px" } }, question.q),
         React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } },
-            question.options.map((opt, idx) => React.createElement("button", { key: idx, onClick: () => repondre(idx), style: { padding: "11px 14px", borderRadius: 14, textAlign: "left", fontSize: 12.5, fontWeight: 700, color: COLORS.encre, background: feedback && idx === question.correct ? "rgba(143,227,166,0.22)" : feedback === "mauvaise" && idx !== question.correct ? COLORS.nuitElevee : COLORS.nuitElevee, border: `1px solid ${feedback && idx === question.correct ? COLORS.turquoise : COLORS.nuitBordure}` } }, opt))));
+            question.options.map((opt, idx) => React.createElement("button", { key: idx, onClick: () => repondre(idx), style: { padding: "11px 14px", borderRadius: 14, textAlign: "left", fontSize: 12.5, fontWeight: 700, color: COLORS.encre, background: feedback && idx === question.correct ? "rgba(63,165,113,0.22)" : feedback === "mauvaise" && idx !== question.correct ? COLORS.nuitElevee : COLORS.nuitElevee, border: `1px solid ${feedback && idx === question.correct ? "#3FA571" : COLORS.nuitBordure}` } }, opt))));   /* 31/10 : bonne réponse en vert comme les autres quiz */
 }
 function BadgesThemeGalop({ coursListe, coursTermines, tr }) {
     const themes = [
@@ -67628,7 +67628,7 @@ function EcranQuiz() {
             prevExiste: !!prevC,
             suivExiste: !!nextC, suivPret: nextPret, onRetourGalop: function () { setEcran("galop-detail"); },
             onRecommencer: recommencer,
-            theme: (["g1-c2", "g1-c7", "g2-robes", "g3-c7", "g5-robes"].indexOf(coursOuvert) >= 0) ? "or" : undefined   /* 31/10 : couleurs actuelles pour les cours refaits */
+            theme: "or"   /* 31/10 : tous les quiz aux couleurs actuelles (Blandine) */
         });
     }
     if (MODE_PAGE_UNIQUE) {
@@ -67636,11 +67636,14 @@ function EcranQuiz() {
         const L = ["A", "B", "C", "D", "E", "F"];
         const total = questions.length;
         /* 31/10 : cours refaits (pansage, robes) -> quiz aux couleurs actuelles : champagne, Cormorant, boutons à contour (même liste que la page « Cours terminé » en or). Les autres quiz ne changent pas. */
-        const OR_Q = ["g1-c2", "g1-c7", "g2-robes", "g3-c7", "g5-robes"].indexOf(coursOuvert) >= 0;
+        const OR_Q = true;   /* 31/10 11h25 (Blandine : « applique-le dans tous les quiz ») : tous les quiz des cours aux couleurs actuelles */
         const TQ = OR_Q ? "#C9A66B" : "#20D9F5";
         const RGBQ = OR_Q ? "201,166,107" : "" + RGBQ + "", CLQ = OR_Q ? "#E6D2AC" : "" + CLQ + "", INKQ = OR_Q ? "#1A130A" : "" + INKQ + "", SOMBREQ = OR_Q ? "#5E4A2C" : "#0C5763";
         const FQ = OR_Q ? "'Cormorant Garamond',Georgia,serif" : FQ;
-        const KO = "#F05C74";
+        /* 31/10 11h24 (Blandine, « Ok super ») : cours refaits -> bonne réponse en VERT (coche), mauvaise en GRIS barré (croix), pas de rouge */
+        const KO = OR_Q ? "#8A8F8A" : "#F05C74";
+        const RKO = OR_Q ? "150,155,150" : "240,92,116", KOC1 = OR_Q ? "#8A8F8A" : "#ff8ea0", KOC2 = OR_Q ? "#D6D9D4" : "#ff9aab", KOINK = OR_Q ? "#B9BDB8" : "#2a060c";
+        const VQ = OR_Q ? "#3FA571" : TQ, RGBV = OR_Q ? "63,165,113" : RGBQ, CLV = OR_Q ? "#7FD3A6" : CLQ, INKV = OR_Q ? "#06140C" : INKQ;
         const dernier = idx >= total - 1;
         const progPct = (valide ? (idx + 1) : idx) / total * 100;
         const verifier = () => { if (reponse == null || valide) return; setValide(true); if (estCorrect(reponse)) setBonnesReponses((b) => b + 1); };
@@ -67681,23 +67684,23 @@ function EcranQuiz() {
                     (question.type === "vrai-faux" ? [{ opt: t("vrai"), val: true }, { opt: t("faux"), val: false }] : (question.options || []).map(function (o, k) { return { opt: o, val: k }; })).map(function (it, i) {
                         var opt = it.opt, val = it.val;
                         const sel = (reponse === val);
-                        let borderColor = "rgba(255,255,255,0.08)", bg = "linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))", chipBorder = "rgba(255,255,255,0.16)", chipBg = "rgba(255,255,255,0.04)", chipColor = "#aab2bd", opacity = 1;
+                        let borderColor = "rgba(255,255,255,0.08)", bg = "linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))", chipBorder = "rgba(255,255,255,0.16)", chipBg = "rgba(255,255,255,0.04)", chipColor = "#aab2bd", opacity = 1, marque = null, barre = false;
                         if (!valide) {
                             if (sel) { borderColor = "rgba(" + RGBQ + ",0.6)"; bg = "linear-gradient(180deg,rgba(" + RGBQ + ",0.11),rgba(" + RGBQ + ",0.03))"; chipBorder = TQ; chipBg = TQ; chipColor = "" + INKQ + ""; }
                         } else {
-                            if (val === question.correct) { borderColor = TQ; bg = "linear-gradient(180deg,rgba(" + RGBQ + ",0.15),rgba(" + RGBQ + ",0.04))"; chipBorder = TQ; chipBg = TQ; chipColor = "" + INKQ + ""; }
-                            else if (val === reponse) { borderColor = "rgba(240,92,116,0.6)"; bg = "linear-gradient(180deg,rgba(240,92,116,0.12),rgba(240,92,116,0.03))"; chipBorder = KO; chipBg = KO; chipColor = "#2a060c"; }
+                            if (val === question.correct) { borderColor = VQ; bg = "linear-gradient(180deg,rgba(" + RGBV + ",0.16),rgba(" + RGBV + ",0.04))"; chipBorder = VQ; chipBg = VQ; chipColor = INKV; marque = OR_Q ? "\u2713" : null; }
+                            else if (val === reponse) { borderColor = "rgba(" + RKO + ",0.6)"; bg = "linear-gradient(180deg,rgba(" + RKO + ",0.12),rgba(" + RKO + ",0.03))"; chipBorder = KO; chipBg = OR_Q ? "transparent" : KO; chipColor = "" + KOINK + ""; if (OR_Q) { marque = "\u2715"; barre = true; } }
                             else { opacity = 0.35; }
                         }
                         return React.createElement("button", { key: i, onClick: function () { if (!valide) setReponse(val); }, style: { position: "relative", textAlign: "start", padding: OR_Q ? "11px 14px" : "15px 16px", borderRadius: OR_Q ? 12 : 16, cursor: valide ? "default" : "pointer", border: "1px solid " + borderColor, color: "#F4F7FA", fontSize: 15, fontWeight: 500, lineHeight: 1.4, background: bg, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 14, opacity: opacity, boxShadow: "0 8px 22px rgba(0,0,0,0.35)", transition: "border-color .22s, background .22s, opacity .22s" } },
-                            React.createElement("span", { style: { width: 28, height: 28, flex: "none", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FQ, fontSize: 12, color: chipColor, border: "1px solid " + chipBorder, background: chipBg } }, L[i]),
-                            React.createElement("span", null, opt));
+                            React.createElement("span", { style: { width: 28, height: 28, flex: "none", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FQ, fontSize: 12, color: chipColor, border: "1px solid " + chipBorder, background: chipBg } }, marque || L[i]),
+                            React.createElement("span", { style: barre ? { textDecoration: "line-through", textDecorationColor: "#8A8F8A" } : undefined }, opt));
                     }))),
             React.createElement("div", { style: { padding: "12px 22px 18px", flex: "none" } },
                 valide ? React.createElement("div", { style: { position: "relative", borderRadius: 18, padding: "15px 16px 13px 18px", marginBottom: 12, overflow: "hidden", background: "linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))", border: "1px solid rgba(255,255,255,0.16)", backdropFilter: "blur(14px)" } },
-                    React.createElement("div", { style: { position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: estCorrect(reponse) ? ("linear-gradient(180deg," + CLQ + "," + TQ + ")") : "linear-gradient(180deg,#ff8ea0," + KO + ")" } }),
-                    React.createElement("div", { style: { margin: "0 0 5px", fontFamily: FQ, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 9, color: estCorrect(reponse) ? "" + CLQ + "" : "#ff9aab" } },
-                        React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? TQ : KO, color: estCorrect(reponse) ? "" + INKQ + "" : "#2a060c" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
+                    React.createElement("div", { style: { position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: estCorrect(reponse) ? ("linear-gradient(180deg," + CLV + "," + VQ + ")") : "linear-gradient(180deg," + KOC1 + "," + KO + ")" } }),
+                    React.createElement("div", { style: { margin: "0 0 5px", fontFamily: FQ, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 9, color: estCorrect(reponse) ? CLV : "" + KOC2 + "" } },
+                        React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? VQ : (OR_Q ? "transparent" : KO), border: (OR_Q && !estCorrect(reponse)) ? "1px solid #8A8F8A" : undefined, color: estCorrect(reponse) ? INKV : "" + KOINK + "" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
                         estCorrect(reponse) ? T("Bravo !", "Well done!", "\u00a1Bravo!", "Bravo!", "\u6b63\u89e3\uff01", "Bravo!", "\u0623\u062d\u0633\u0646\u062a!", "太棒了！", "Goed gedaan!", "Parabéns!", "Bra jobbat!", "Браво!", "Brawo!", "잘했어요!") : T("Pas tout \u00e0 fait", "Not quite", "Casi", "Non proprio", "\u60dc\u3057\u3044", "Nicht ganz", "\u0644\u064a\u0633 \u062a\u0645\u0627\u0645\u0627", "不太对", "Net niet", "Quase lá", "Inte riktigt", "Не совсем", "Nie do końca", "아쉬워요")),
                     React.createElement("p", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
                 React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: OR_Q ? 12 : 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: OR_Q ? "#C9A66B" : "#032329", background: OR_Q ? "rgba(201,166,107,0.06)" : "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: OR_Q ? "none" : "0 10px 28px rgba(34,218,245,0.3)", border: OR_Q ? "1px solid #C9A66B" : "none", borderRadius: OR_Q ? 999 : 15, opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
