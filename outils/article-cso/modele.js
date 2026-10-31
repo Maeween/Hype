@@ -47,7 +47,7 @@ var CSS = [
   ".acso-fig img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;filter:saturate(.85)}",
   ".acso-fig figcaption{font-size:11.5px;color:#c1c9c0;letter-spacing:.04em;line-height:1.55;padding:14px 0;border-bottom:1px solid #3b504c;background:var(--sbg,transparent)}",
   ".acso-fig figcaption b{color:var(--or);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10.5px}",
-  ".acso-pull{font-family:var(--se);font-weight:500;font-size:27px;line-height:1.25;color:var(--or);padding-inline-start:20px;border-inline-start:2px solid var(--or);margin:34px 0}",
+  ".acso-pull{font-family:var(--se);font-weight:500;font-size:27px;line-height:1.25;color:var(--iv);padding-inline-start:20px;border-inline-start:2px solid var(--or);margin:34px 0}",
   ".acso-mech{margin-top:30px;display:grid;grid-template-columns:1fr;background:#11272b;border-top:1px solid #4e5c50;border-bottom:1px solid #4e5c50}",
   ".acso-mech-in{padding:24px 22px 8px}",
   ".acso h3.acso-k{font-family:var(--sa);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--or);margin:0 0 15px;font-weight:600;line-height:1.5}",
@@ -233,7 +233,8 @@ function Article() {
       h("div", null, chap("s2_num", "s2_cat"), h("h2", null, riche("s2_titre")), P("s2_lead", "acso-lead"), P("s2_p1"), P("s2_p2"), P("s2_p3")),
       h("div", null, fig(IMG.appel, "s2_photo_alt", "s2_legende"),
         h("div", { className: "acso-risk" }, ["s2_r1", "s2_r2", "s2_r3", "s2_r4"].map(function (k, i) { return h("div", { key: k, className: "acso-rk" }, h("b", null, "0" + (i + 1)), h("span", null, t(k))); })))),
-    h("div", { className: "acso-full" }, riche("s2_encadre"))));
+    /* 31/10 02h40 : encadré « La mauvaise longue… » retiré (Blandine : phrase bizarre, redite de la partie 02). */
+    null));
 
   function panneau(bon) {
     var p = bon ? "s3_b_" : "s3_a_";
