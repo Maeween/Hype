@@ -15966,3 +15966,12 @@ Demande de Blandine (00h15) : « tu feras pareil pour l'adaptation des cours sur
 - Galop 3 : 15 cours (robes à part, qui ont leur propre page) branchés sur le modèle commun via AUTO_IM_G3 dans hype-cours-editorial.js (VERSION 11, ?v=11) : photos tirées des images déjà en ligne, aucun texte inventé, citations et contenus conservés.
 - Téléphone : onglets en haut comme sur ordinateur, liste verticale des chapitres façon pansage, un chapitre à la fois.
 - Manques signalés (rien d'inventé) : pas de coach ni de défi dans la source pour g3-c3 et g3-saut ; pas de défi pour g3-c9.
+
+## 01/11 01h30 — g1-c8 « Le matériel de base » : licol, filet et selle en photos interactives + nouveau haut de page (NON publié, build 20261101-0130)
+Demandes de Blandine (00h28 « Pour le cours g1 le matériel », 00h29 « Idem pour la selle », 00h39 « Utilise ce hero là pour le matériel de base g 1 »).
+- Nouveau fichier hype-cours-materiel.js (?v=1) : dans le chapitre « En images », les 3 fiches photos (filet, selle, licol) sont remplacées À L'AFFICHAGE par une photo à 6 numéros cliquables ; un tap sur un numéro ou une ligne surligne la pièce et affiche son nom + une courte explication ; petite vignette zoomée par ligne. Les pièces de la liste d'origine sans numéro sur la photo (plaque nominative, têtière du filet, contre-sanglons, étrier) restent en dessous (« À connaître aussi »). Textes dans les 14 langues. Anciennes images toujours dans les données.
+- Images : images/cours-g1-c8-licol.webp, -filet.webp (photo du brief, points bien placés), -selle.webp, recadrées sans la vague ni le panneau de droite.
+- Licol : numéros 3 et 5 = sous-gorge et montant (inversés par rapport au brief, car sur la photo le 3 est sur la lanière sous la ganache et le 5 au carré du montant) — à confirmer par Blandine.
+- Haut de page : images/cours-g1-c8-hero.webp (cheval noir sellé et bridé, vague retirée), HERO_COURS.
+- hype-cours-editorial.js VERSION 12 (?v=12) : branchement du module + srcFr pour retrouver la fiche dans toutes les langues.
+- Tests : fr/ar 390, fr/ja 1440 : 3 modules, clic OK, 0 erreur, 0 débordement.

@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 11;   /* 01/11 01h10 : Galop 3 (15 cours, robes à part) sur le modèle commun, téléphone compris */
+var VERSION = 12;   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
+/* précédente : VERSION = 11; */   /* 01/11 01h10 : Galop 3 (15 cours, robes à part) sur le modèle commun, téléphone compris */
 /* précédente : VERSION = 10; */   /* 01/11 00h25 : outils prêtés au Galop 4 (HypeCoursEditorial._) + setEcran transmis aux chapitres — rien ne change pour les Galops 1 et 2 */
 /* précédente : VERSION = 9; */   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
 /* précédente : VERSION = 8; */   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
@@ -2031,7 +2032,7 @@ function construireAuto(cours, lg) {
     if (b.type === "photo-liste") {
       if (finDePhotos || !cur) nouveauChap(L("enImages"));
       finDePhotos = false;
-      var o = { photo: { src: r(b.src), titre: r(b.titre), items: Array.isArray(b.items) ? b.items : (b.items && (b.items[lg] || b.items.fr)) || [] }, suite: [] };
+      var o = { photo: { src: r(b.src), srcFr: pickLg(b.src, "fr"), titre: r(b.titre), items: Array.isArray(b.items) ? b.items : (b.items && (b.items[lg] || b.items.fr)) || [] }, suite: [] };
       cur.notions.push(o); derniere = o; return;
     }
     if (b.type === "astuce") {
@@ -2179,7 +2180,10 @@ function renduNotion(o, L, lg, alerte) {
     return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tt); });
   };
   if (o.affiche) out.push(h(Affiche, { key: "af", L: L, src: o.affiche.src, legende: o.affiche.legende, alt: o.affiche.legende }));
-  if (o.photo) {
+  /* 01/11 : cours g1-c8, fiches licol / filet / selle -> photos interactives à 6 numéros (hype-cours-materiel.js) */
+  var HM = window.HypeMateriel && o.photo && (window.HypeMateriel.pour(o.photo.srcFr) || window.HypeMateriel.pour(o.photo.src));
+  if (HM) out.push(h(window.HypeMateriel.Module, { key: "hm", cfg: HM, lg: lg }));
+  else if (o.photo) {
     out.push(h(Affiche, { key: "ph", L: L, src: o.photo.src, alt: o.photo.titre || "" }));   /* fiche photo légendée : image entière, agrandissable */
     out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
   }
@@ -2203,11 +2207,12 @@ function renduNotion(o, L, lg, alerte) {
 }
 function titreNotion(o, L, lg) {
   if (o.titre) return o.titre;
-  if (o.photo) return o.photo.titre;
+  if (o.photo) return (window.HypeMateriel && (window.HypeMateriel.titre(o.photo.srcFr, lg) || window.HypeMateriel.titre(o.photo.src, lg))) || o.photo.titre;
   return titreNet(pickLg(o.seg && o.seg.titre, lg));
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
+  "g1-c8": ["images/cours-g1-c8-hero.webp", "72% 35%"],   /* « Le matériel de base » — cheval noir sellé et bridé (01/11 00h39) */
   "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"]   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
 };
 
