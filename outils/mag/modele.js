@@ -82,7 +82,7 @@ function EcranArticles() {
     var TABS = [
         ["une", @@OLD:14@@, function () { setQ(""); aller("une"); }],
         ["technique", N("tab_technique"), function () { setQ(""); aller("derniers"); }],
-        ["galops", N("rub_galops"), function () { aller("galops"); }],
+        ["galops", N("rub_galops"), function () { setEcran("galops"); }],
         ["culture", N("tab_culture"), function () { aller("ecoles"); }],
         ["soins", N("tab_soins"), function () { aller("sante"); }],
         ["competition", N("tab_competition"), function () { setQ(""); aller("derniers"); }]
@@ -170,17 +170,7 @@ function EcranArticles() {
     /* ---------- 7. Pour aller plus loin : Galops, Lamotte en direct, Santé, Hey Baby, vidéos ---------- */
     var loin = h("section", { ref: refs.loin, className: "mag-s mag-loin" }, h("div", { className: "mag-w" },
         enTete(N("plus_loin")),
-        h("div", { ref: refs.galops, className: "mag-bloc mag-galops" },
-            h("img", { src: "images/galop5-c08-equilibre.webp", alt: "", loading: "lazy", decoding: "async" }),
-            h("span", { className: "mag-th-voile", "aria-hidden": "true" }),
-            h("div", { className: "mag-bloc-tx" },
-                h("div", { className: "mag-cat" }, h("span", { "aria-hidden": "true" }), @@OLD:16@@),
-                h("h3", null, @@OLD:17@@),
-                h("p", null, @@OLD:18@@),
-                h("div", { className: "mag-gal" }, [1, 2, 3, 4, 5, 6, 7].map(function (g) {
-                    return h("button", { key: g, type: "button", onClick: function () { setGalopOuvert(g); setEcran("galop-detail"); } }, @@GALOP@@);
-                })),
-                h("button", { type: "button", className: "mag-btn", onClick: function () { setEcran("galops"); } }, N("rub_galops"), " ", h("span", { "aria-hidden": "true" }, fleche)))),
+        /* 31/10 03h : bloc Galops retiré (Blandine, choix A) — l'onglet Galops ouvre directement l'écran Galops. */
         h("button", { type: "button", className: "mag-live", onClick: function () { setEcran("evenement"); } },
             h("span", { className: "mag-live-d" }, h("i", { "aria-hidden": "true" }), @@OLD:35@@),
             h("span", { className: "mag-live-t" }, h("b", null, "Lamotte-Beuvron"), @@OLD:36@@),
@@ -296,11 +286,12 @@ var CSS = [
 ".mag-bloc-tx h3{font-size:30px;margin-top:10px}.mag-bloc-tx p{font-size:13.5px;line-height:1.55;color:#dde2dd;margin:8px 0 0}",
 ".mag-gal{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}",
 ".mag-gal button{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(243,238,228,.28);font-size:12.5px;color:var(--iv);background:rgba(7,10,8,.45)}",
-".mag-live{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;width:100%;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
-".mag-live-d{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
+".mag-live{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'d r' 't r';align-items:center;gap:8px 16px;text-align:start;width:100%;margin-top:0;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
+".mag-live-d{grid-area:d;justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
 ".mag-live-d i{width:7px;height:7px;border-radius:50%;background:#E8A08C;display:inline-block}",
-".mag-live-t{flex:1 1 180px;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
-".mag-live-t b{display:block;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
+".mag-live-t{grid-area:t;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
+".mag-live>:last-child{grid-area:r}",
+".mag-live-t b{display:block;margin-bottom:2px;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
 ".mag-duo{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}",
 ".mag-duo-c{min-height:190px}.mag-duo-c .mag-th-tx small{display:block}",
 ".mag-cat-s{font-size:9.5px !important;letter-spacing:.18em;text-transform:uppercase;color:var(--or) !important;font-weight:600}",
@@ -321,7 +312,29 @@ var CSS = [
 ".mag-themes{grid-template-columns:repeat(5,1fr);grid-auto-rows:auto}.mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-column:auto;grid-row:auto;aspect-ratio:3/5;height:auto}.mag-th.t2,.mag-th.t4{margin-top:0}.mag-th-tx b{font-size:24px !important}.mag-th-tx{bottom:62px;right:16px;left:16px}.mag[dir=rtl] .mag-th-tx{left:16px;right:16px}.mag-th>.mag-rond{bottom:16px}",
 ".mag-grille{grid-template-columns:repeat(4,1fr);gap:22px}",
 ".mag-bloc{min-height:440px;align-items:center}.mag-bloc .mag-th-voile{background:linear-gradient(90deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 40%,rgba(7,10,8,0) 70%)}.mag-bloc-tx{padding:48px 56px}.mag-bloc-tx h3{font-size:40px}",
-".mag-duo-c{min-height:260px}}"
+".mag-duo-c{min-height:260px}}",
+/* 31/10 03h — Blandine : « pas d'écriture sur les photos ». Les textes passent sous (ou à côté de) chaque photo, plus aucun voile. */
+".mag-hero{display:block;min-height:0}.mag-hero-img{position:relative;inset:auto;display:block;width:100%;height:clamp(230px,64vw,380px);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}",
+".mag-hero-voile,.mag-une-voile,.mag-th-voile{display:none}",
+".mag-hero-tx{padding:8px 22px 56px;max-width:none}",
+".mag-une{display:block;min-height:0;background:#0B1311}.mag-une-img{position:relative;inset:auto;display:block;width:100%;height:auto;aspect-ratio:16/10}",
+".mag-une-tx{width:auto;padding:20px 20px 84px}",
+".mag-themes{grid-auto-rows:auto}",
+".mag-th{display:flex;flex-direction:column;height:auto;min-height:0;background:#0B1311;text-align:start}",
+".mag-th img{position:relative;inset:auto;display:block;width:100%;height:104px;flex:0 0 auto}",
+".mag-th-tx{position:static;padding:12px 52px 14px 14px}.mag[dir=rtl] .mag-th-tx{padding:12px 14px 14px 52px}",
+".mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-row:auto}.mag-th.t1{grid-column:span 2}.mag-th.t1 img{height:170px}",
+".mag-th>.mag-rond{bottom:12px}.mag-th:not(.t1) .mag-th-tx b{font-size:19px}",
+".mag-duo-c{min-height:0}.mag-duo-c img{height:170px}",
+".mag-ca-ph .mag-nouv,.mag-ca-ph .mag-badge{display:none !important}",
+".mag-vid>button>div:first-child{position:relative !important;inset:auto !important;height:150px;background-position:center 30% !important}.mag-vid>button>div:nth-child(2){display:none !important}.mag-vid>button>div:nth-child(3)>div{max-width:none !important}",
+"@container (min-width:640px){.mag-hero-tx{padding:10px 36px 70px}",
+".mag-une{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}.mag-une-img{grid-column:2;grid-row:1;height:100%;min-height:400px;aspect-ratio:auto}.mag-une-tx{grid-column:1;grid-row:1;width:auto;padding:36px 36px 96px}",
+".mag-une-nav{inset-inline-end:calc(50% + 24px)}",
+".mag-themes{grid-template-columns:repeat(6,1fr)}.mag-th.t1,.mag-th.t2,.mag-th.t3{grid-column:span 2}.mag-th.t4,.mag-th.t5{grid-column:span 3}.mag-th img,.mag-th.t1 img{height:150px}.mag-duo-c img{height:190px}}",
+"@container (min-width:1000px){.mag-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center}.mag-hero-img{grid-column:2;grid-row:1;height:540px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28%);mask-image:linear-gradient(90deg,transparent,#000 28%)}.mag[dir=rtl] .mag-hero-img{-webkit-mask-image:linear-gradient(270deg,transparent,#000 28%);mask-image:linear-gradient(270deg,transparent,#000 28%)}.mag-hero-tx{grid-column:1;grid-row:1;padding:60px 24px 90px 64px}.mag[dir=rtl] .mag-hero-tx{padding:60px 64px 90px 24px}",
+".mag-une-img{min-height:460px}.mag-une-tx{padding:60px 64px 110px}.mag-une-nav{inset-inline-end:calc(50% + 40px)}",
+".mag-themes{grid-template-columns:repeat(5,1fr)}.mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-column:auto;aspect-ratio:auto}.mag-th img,.mag-th.t1 img{height:auto;aspect-ratio:4/5}.mag-th-tx{position:static}.mag-th>.mag-rond{bottom:14px}.mag-duo-c img{height:240px}}"
 ].join("");
 
 window.HypeArticles = { Articles: EcranArticles };

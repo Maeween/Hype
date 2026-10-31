@@ -15796,4 +15796,22 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 ## 31/10 02h40 — PUBLICATION (accord de Blandine 02h38 : « Vas y ») — Article CSO allégé (build 20261031-0800)
 - Mis en ligne tout le travail de la branche travail-article-schemas (entrées 02h30 et 02h40 ci-dessus) : dessins de la comparaison retirés, risques 02 et 04 corrigés, encadré retiré, nouvelle citation, citations en ivoire. Repris sur la version en ligne 81eb4f38 (build 0730) : rien de ce qui était en ligne n'est retiré. Marqueur 20261031-0745 → 20261031-0800.
 - Publié : index.html + SUIVI.md + hype-article-cso.js + outils/article-cso/ (modele.js, 14 fichiers de langue). Tout le reste inchangé.
+
+## 31/10/2026 — build 20261031-0900 : article CSO resserré + Mag (bloc Galops retiré)
+- Article (« trop long, trop gros, trop pétrole ») : fonds bleu pétrole remplacés par des noirs neutres ; textes, titres, citations plus petits et plus serrés.
+- Le schéma interactif remonte en partie 01 et remplace le schéma fixe + l'encadré « zoom » ; citation de la partie 01 retirée.
+- Coupes : paragraphe des 2 cartes de comparaison, s4_p2, s5_p2, s6_p3, les 3 étapes « Regarde l'axe / Garde le galop / Laisse venir l'appel », en-tête « 07 Conseil du coach » (la citation est devenue un simple filet doré). « À retenir » : 4 points au lieu de 6.
+- En-tête : surtitre et fil d'Ariane retirés ; ligne unique « Technique équestre · 5 min » (14 langues). Durée 5 min aussi dans la carte du Mag.
+- Fin d'article : encadré Hey Baby (→ assistant) + bouton « Tous les articles du Mag » (14 langues).
+- Mag : bloc Galops retiré (choix A) ; l'onglet Galops ouvre l'écran Galops. Ligne Lamotte-Beuvron rangée (étiquette, titre, texte, flèche à droite).
+- Fichiers : hype-article-cso.js (?v=4), hype-ecran-articles.js (?v=5), index.html, outils/article-cso/*.json + modele.js, outils/mag/modele.js.
+- Vérifié : 320 (arabe RTL), 390, 1440 — aucun débordement, aucune erreur.
+
+## 31/10/2026 — build 20261031-0930 : Le Mag sans texte sur les photos
+- Demande de Blandine : « pas d'écriture sur les photos ». Plus aucun voile sombre ni texte posé sur une image dans Le Mag.
+- Haut de page, article à la une, 5 thèmes, cartes Santé / Hey Baby, Bibliothèque vidéo (dans le Mag uniquement) : photo au-dessus et texte en dessous sur téléphone ; à côté sur ordinateur.
+- Étiquettes « Premium » / « Nouveau » sur les photos des cartes retirées (déjà cachées sur téléphone).
+- Fichiers : hype-ecran-articles.js (?v=6), index.html, outils/mag/modele.js. hype-article-cso.js inchangé.
+- Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur.
 - 31/10 02h50 (build 20261031-0815, NON publié) : médailles retirées des menus (Blandine : « laisse tomber les médailles ») — étoiles et pourcentage gardés ; le rond / la coche / le numéro reviennent. Code des médailles gardé, désactivé (HQ_MEDAILLES = false). Fusionné avec la version en ligne 0800 (article CSO).
+- 31/10 03h00 : PUBLICATION (accord « Ok ») — médailles retirées des menus, étoiles gardées ; fusionné avec Le Mag 0930 → build 20261031-0945.
