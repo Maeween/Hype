@@ -15873,3 +15873,25 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Robes : la carte du Galop 5 s'appelle « Types de pies et adjonctions » (14 langues), pour ne plus être confondue avec « Gris, pie, tacheté » du Galop 2 (accord de Blandine).
 - Fichiers : hype-cours-editorial.js (?v=4), hype-cours-robes-ordi.js (?v=36), index.html, SUIVI.md.
 - Vérifié (banc local) : sécurité fr + ar, robes G1 et G5 à 390 px, ordinateur inchangé ; node --check.
+
+## 31/10/2026 19h15 — PUBLICATION build 20261031-1900, accord de Blandine (« Ok oui vas y ») : les 15 autres cours du Galop 1 sur le modèle éditorial
+Demande de Blandine (15h17) : « fais tous les autres cours du galop 1 sur le même modèle, sans répétition ni omission ; comble avec les images que tu as » + « uniquement ordinateur et tablette pour l'instant ».
+- hype-cours-editorial.js v5 (?v=5) : configuration GÉNÉRÉE pour g1-c3, c4, c5, c6, c20, c8, c9, c10, c11, c12, c13, c16, c17, c18, c19 (g1-c2 pansage, c7 robes, c15 sécurité inchangés ; c14 = grand quiz seul).
+  Aucun texte réécrit : tout est lu dans le cours, 14 langues (structure lue en français : les clés « k » sont traduites dans certaines langues, nl/ru/pt/ko).
+- Règles : 1 chapitre = 1 bloc de texte titré ; fiches photo à la suite = chapitre « En images » ; bloc sans titre (image + encadré) -> chapitre d'avant ;
+  paragraphe/encadré sans titre -> rattaché à la notion d'avant ; texte d'intro sans titre -> notion « L'essentiel ».
+- Affiches du cours (blocs image = infographies pleines de texte) et images des fiches photo : affichées ENTIÈRES (jamais rognées) + agrandissement plein écran (Échap ou clic pour fermer).
+- À un seul endroit : citation d'ouverture + citation de la couverture -> notes des chapitres 1 et 2 ; 1er conseil du coach court -> encart du haut (replié sur 7 lignes + « Lire la suite » s'il dépasse 300 caractères) ;
+  1er défi -> encart du haut (1re phrase) + page de fin (la suite) ; autres conseils/défis -> restent dans leur chapitre ; Hey Baby (toutes les questions) -> page de fin ;
+  synthèse en 10 secondes -> résumé de la page de fin (sinon : plan du cours) ; citation de fin -> page de fin.
+- Retiré (doublon, comme pour la sécurité) : « Objectif(s) du cours » (c3, c4, c19). Phrase d'en-tête « Quelques idées de questions : » (Hey Baby c17) non reprise.
+- Cours à un seul chapitre (c20, c10, c11, c12, c13, c16) : les sections dont chaque puce a un intitulé en gras -> une notion par puce.
+- Images de fond des chapitres (provisoires, à revoir) : photos déjà dans le dépôt (galop5-*, securite-g1-*, couv-g2-heberger, connexion-cheval-oeil-hd) — table AUTO_IM.
+- TÉLÉPHONE : pour ces 15 cours, HypeCoursEditorial.ok() renvoie false sous 700 px -> affichage d'avant, inchangé.
+- Vérifié : 15 cours × 14 langues × 1440 et 820 px (aucune erreur, aucun débordement, aucune notion vide) ; contrôle d'exhaustivité texte source / texte affiché (seuls manquent : numéros des titres, objectifs, titres techniques « Citation… », « Synthèse… »).
+- 18h50 — PARTIES MANQUANTES (table COMPL dans hype-cours-editorial.js, 14 langues), rédigées par ChatGPT à la demande de Blandine : ajoutées SEULEMENT là où le cours n'avait rien.
+  Conseil du coach : c13, c16, c17. Défi : c20, c8, c9, c16. Hey Baby : c5, c6, c20, c8, c9, c10, c11, c12, c13, c16. Synthèse : mêmes cours + c18. Phrase de fin : mêmes cours (sauf c18) + c17.
+  Découpage en chapitres des cours à une seule partie : c20 (3), c10 (2), c11 (2), c12 (2), c13 (2), c16 (3) ; le titre d'origine de la partie reste sous le titre du chapitre 1.
+  Résultat : les 15 cours ont les 3 encarts du haut, Hey Baby, le défi, la synthèse et une phrase de fin (vérifié 14 langues, 1440 et 820 px).
+- index.html : editorial ?v=5, build 20261031-1900.
+- EN ATTENTE (non publié) : patch iPhone du cours sécurité préparé par ChatGPT (appliquer_mobile.py) — à reprendre sur cette version (repère VERSION 5 -> 6).

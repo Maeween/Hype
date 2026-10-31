@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 4;   /* 31/10 15h : menu en liste verticale (comme le pansage) sur téléphone */
+var VERSION = 5;   /* 31/10 : les 15 autres cours du Galop 1 générés sur le même modèle (ordinateur et tablette) + parties manquantes (COMPL, 14 langues) */
+/* v4 : 31/10 15h : menu en liste verticale (comme le pansage) sur téléphone */
 /* v3 :    /* 31/10 14h : brief du 31/10 13h52 — atlas photo, fiches, signaux, parcours, fin unique */
 /* v2 :    /* 31/10 13h45 : doublons retirés (coach, défi, Hey Baby, erreurs, portraits de fin), regroupements */
 
@@ -41,6 +42,12 @@ var T = {
   situationN: tt("Situation {n}", "Situation {n}", "Situación {n}", "Situazione {n}", "状況 {n}", "Situation {n}", "الموقف {n}", "情境 {n}", "Situatie {n}", "Situação {n}", "Situation {n}", "Ситуация {n}", "Sytuacja {n}", "상황 {n}"),
   signesAide: tt("Touche les signes que tu remarques.", "Tap the signs you notice.", "Toca las señales que notes.", "Tocca i segnali che noti.", "気づいたサインをタップしよう。", "Tippe auf die Zeichen, die du bemerkst.", "المس العلامات التي تلاحظها.", "点击你注意到的信号。", "Tik op de signalen die je opmerkt.", "Toca nos sinais que notas.", "Tryck på tecknen du lägger märke till.", "Отметь признаки, которые замечаешь.", "Dotknij sygnałów, które zauważasz.", "알아챈 신호를 눌러 보세요."),
   signesN: tt("Signes repérés : {n}", "Signs spotted: {n}", "Señales detectadas: {n}", "Segnali notati: {n}", "気づいたサイン：{n}", "Bemerkte Zeichen: {n}", "العلامات الملحوظة: {n}", "已注意到的信号：{n}", "Opgemerkte signalen: {n}", "Sinais notados: {n}", "Upptäckta tecken: {n}", "Замечено признаков: {n}", "Zauważone sygnały: {n}", "알아챈 신호: {n}개"),
+  essentiel: tt("L'essentiel", "The essentials", "Lo esencial", "L'essenziale", "ポイント", "Das Wichtigste", "الأساسيات", "要点", "De kern", "O essencial", "Det viktigaste", "Главное", "Najważniejsze", "핵심"),
+  enImages: tt("En images", "In pictures", "En imágenes", "In immagini", "写真で見る", "In Bildern", "بالصور", "图解", "In beeld", "Em imagens", "I bilder", "В картинках", "W obrazach", "사진으로 보기"),
+  astuce: tt("L'astuce", "Tip", "El truco", "Il trucco", "コツ", "Der Tipp", "نصيحة", "小窍门", "De tip", "A dica", "Tipset", "Подсказка", "Wskazówka", "팁"),
+  affiche: tt("L'affiche du cours", "The course poster", "El póster del curso", "Il poster del corso", "コースのポスター", "Das Kursposter", "ملصق الدرس", "课程海报", "De cursusposter", "O pôster do curso", "Kursens affisch", "Плакат урока", "Plakat lekcji", "강의 포스터"),
+  agrandir: tt("Agrandir l'image", "Enlarge the image", "Ampliar la imagen", "Ingrandisci l'immagine", "画像を拡大", "Bild vergrößern", "تكبير الصورة", "放大图片", "Afbeelding vergroten", "Ampliar a imagem", "Förstora bilden", "Увеличить изображение", "Powiększ obraz", "이미지 확대"),
+  fermer: tt("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"),
   defiAide: tt("Coche chaque point avec ton enseignant.", "Tick each point with your instructor.", "Marca cada punto con tu profesor.", "Spunta ogni punto con il tuo istruttore.", "先生と一緒に各項目をチェックしよう。", "Hake jeden Punkt mit deinem Reitlehrer ab.", "ضع علامة على كل نقطة مع مدربك.", "和你的教练一起勾选每一项。", "Vink elk punt af met je instructeur.", "Marca cada ponto com o teu instrutor.", "Bocka av varje punkt med din instruktör.", "Отмечай каждый пункт вместе с тренером.", "Zaznacz każdy punkt z instruktorem.", "선생님과 함께 각 항목을 체크해 보세요.")
 };
 /* libellé : d'abord ce fichier, puis le modèle téléphone (hype-cours-modele.js), puis les robes (hype-cours-robes-ordi.js) */
@@ -174,6 +181,8 @@ var CSS = [
 ".hce-band ul{margin:0;padding-inline-start:16px;display:grid;gap:3px}.hce-band li::marker{color:var(--alerte)}",
 ".hce-band .al h3{color:var(--alerte)}.hce-band .al .ic{color:var(--alerte)}",
 ".hce-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}",
+".hce-clamp7{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:7;overflow:hidden}",
+".hce-card .hce-more{position:relative;z-index:1;align-self:flex-start;margin-top:4px}",
 ".hce-more{background:none;border:0;padding:6px 0 0;font-size:13px;font-weight:600;color:var(--champ);text-decoration:underline;text-underline-offset:4px}",
 /* étapes numérotées (défilent au doigt sur téléphone) */
 ".hce .hce-kicker2{display:flex;align-items:center;gap:14px;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--champ);margin:46px 0 16px}",
@@ -509,7 +518,16 @@ var CSS = [
 ".hce-chp h2{font-size:clamp(46px,3.9cqw,58px)}",
 ".hce-chp .pan{padding:24px 26px 18px;min-height:360px}.hce-chp .pan h3{font-size:27px}.hce-chp .pimg{aspect-ratio:21/9}",
 
-"}"
+"}",
+/* 31/10 (v5) : cours générés (Galop 1) — affiche entière (jamais rognée) + agrandissement plein écran */
+".hce-chp .pimg.aff{aspect-ratio:auto;max-height:46vh;background:#0B0F0E;cursor:zoom-in;border:1px solid rgba(201,166,107,.25);padding:0}",
+".hce-chp .pimg.aff img{height:auto;max-height:46vh;object-fit:contain;margin:0 auto}",
+".hce-chp .pan .lg{font-size:13px;line-height:1.5;color:var(--doux);font-style:italic;margin:0}",
+".hce-zoom{position:fixed;inset:0;z-index:9999;background:rgba(4,6,5,.94);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}",
+".hce-zoom img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6)}",
+".hce-zoom button{position:absolute;top:16px;inset-inline-end:16px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.6);background:rgba(7,10,8,.7);color:#F3EEE4;font-size:22px;cursor:pointer}",
+".hce-chp .pan p.pg{margin:0;font-size:15px;line-height:1.65;color:var(--ivoire)}.hce-chp .pan p.pg strong{color:#D9B98A}",
+".hce-chp .pan .ast{border-inline-start:2px solid var(--champ);padding-inline-start:14px;font-size:15.5px;line-height:1.6;color:var(--ivoire)}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -694,6 +712,15 @@ function Reveler(p) {
   return h("div", { className: "rep" }, p.enfants);
 }
 
+/* texte du conseil du coach dans l'encart du haut : replié sur 7 lignes s'il est long (cours générés), « Lire la suite » */
+function CoachTxt(p) {
+  var _o = useState(false), o = _o[0], setO = _o[1];
+  var long = String(p.texte || "").length > 300;
+  if (!long) return h("p", null, p.texte);
+  return h(React.Fragment, null,
+    h("p", { className: o ? undefined : "hce-clamp7" }, p.texte),
+    h("button", { type: "button", className: "hce-more", "aria-expanded": o ? "true" : "false", onClick: function () { setO(!o); } }, p.L(o ? "reduire" : "lire")));
+}
 /* ---------------- composant principal ---------------- */
 function HypeCoursEditorial(props) {
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";
@@ -778,7 +805,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-enc" },
         enc.coach ? h("aside", { className: "hce-card coach" },
           h("span", { className: "im", "aria-hidden": true, style: { backgroundImage: "url(" + enc.coach.img + ")", backgroundPosition: enc.coach.pos || "center" } }),
-          h("h3", null, enc.coach.titre), h("p", null, enc.coach.texte)) : null,
+          h("h3", null, enc.coach.titre), h(CoachTxt, { texte: enc.coach.texte, L: L })) : null,
         enc.hb ? h("button", { type: "button", className: "hce-card hb", onClick: function () { hey(""); } },
           h("span", { className: "im", "aria-hidden": true, style: { backgroundImage: "url(" + enc.hb.img + ")", backgroundPosition: enc.hb.pos || "center" } }),
           h("h3", null, L("heyBaby")), h("p", null, enc.hb.texte), h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 16))) : null,
@@ -816,6 +843,7 @@ HypeCoursEditorial.config = {};
 HypeCoursEditorial.ok = function (cours) {
   try {
     if (!cours || !HypeCoursEditorial.config[cours.id]) return false;
+    if (HypeCoursEditorial.config[cours.id].auto && (window.innerWidth || 1024) < 700) return false;   /* cours générés : téléphone = affichage d'avant (pour l'instant) */
     var c = HypeCoursEditorial.config[cours.id](cours, "fr", outils());
     return !!(c && c.valide !== false && c.sections && c.sections.length && c.chapitres && c.chapitres.length);
   } catch (e) { return false; }
@@ -1012,6 +1040,587 @@ function FinSecu(props) {
 }
 window.HypeFinsCours = window.HypeFinsCours || {};
 window.HypeFinsCours["g1-c15"] = { ok: finOk, Fin: FinSecu };
+
+
+/* =====================================================================================
+   v5 — 31/10 : LES 15 AUTRES COURS DU GALOP 1, GÉNÉRÉS SUR LE MÊME MODÈLE (ordinateur et tablette ; le téléphone garde
+   l'affichage d'avant pour l'instant). Aucun texte réécrit : tout est lu dans le cours (14 langues).
+   Règles (la structure est lue sur la version française, les autres langues suivent le même ordre) :
+   - un chapitre = un bloc de texte titré ; les fiches photo (photo-liste) qui se suivent = un chapitre « En images » ;
+     un bloc sans titre (image + encadré) rejoint le chapitre d'avant.
+   - les affiches du cours (blocs image, pleines de texte) : une notion « L'affiche du cours », image ENTIÈRE + agrandissement.
+   - à part, chacun à UN seul endroit : citation d'ouverture et citation de la couverture -> notes des chapitres ;
+     1er conseil du coach -> encart du haut ; 1er défi -> encart du haut (1re phrase) + page de fin (la suite) ;
+     Demande à Hey Baby -> page de fin ; synthèse en 10 secondes -> résumé de la page de fin ; citation de fin -> page de fin.
+   - retiré (doublon du cours, comme pour la sécurité) : « Objectif(s) du cours ».
+   - paragraphe ou encadré sans titre -> rattaché à la notion juste avant.
+   ===================================================================================== */
+var AUTO_IM = {
+  "g1-c3": ["images/galop5-th-cheval2.webp", "images/couv-g2-heberger.jpg", "images/securite-g1-observer.webp"],
+  "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
+  "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
+  "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
+  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
+  "g1-c8": ["images/galop5-c01-materiel.webp", "images/galop5-c02-embouchures.webp", "images/securite-g1-rangement.webp"],
+  "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
+  "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
+  "g1-c11": ["images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],
+  "g1-c12": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
+  "g1-c13": ["images/galop5-c12-cross.webp", "images/galop5-c11-saut.webp"],
+  "g1-c16": ["images/galop5-c07-transport.webp", "images/galop5-c05-soins.webp", "images/galop5-th-cheval2.webp"],
+  "g1-c17": ["images/galop5-c01-materiel.webp", "images/galop5-theme-cheval.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c03-apprendre.webp"],
+  "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
+  "g1-c19": ["images/galop5-theme-connaissances.webp", "images/galop5-th-cheval2.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-chute.webp", "images/galop5-theme-cheval.webp", "images/galop5-c07-transport.webp"]
+};
+var AUTO_IDS = Object.keys(AUTO_IM);
+
+/* =====================================================================================
+   v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
+   14 langues. Ajoutées UNIQUEMENT là où le cours n'avait rien : conseil du coach, défi, Hey Baby, synthèse, phrase de fin,
+   et découpage en chapitres des cours à une seule partie (chap : [titre, nombre de notions existantes regroupées], dans l'ordre).
+   Le texte d'origine des cours n'est pas modifié. Ordre des langues : fr en es it ja de ar zh nl pt sv ru pl ko.
+   ===================================================================================== */
+var COMPL = {
+  "g1-c5": {
+    hb: [
+      tt("Pourquoi est-ce que je perds parfois l'équilibre au trot ?", "Why do I sometimes lose my balance at the trot?", "¿Por qué a veces pierdo el equilibrio al trote?", "Perché a volte perdo l'equilibrio al trotto?", "速歩でときどきバランスをくずすのはなぜ？", "Warum verliere ich im Trab manchmal das Gleichgewicht?", "لماذا أفقد توازني أحيانًا في الخبب؟", "为什么我在快步时有时会失去平衡？", "Waarom verlies ik in draf soms mijn evenwicht?", "Por que às vezes perco o equilíbrio no trote?", "Varför tappar jag ibland balansen i trav?", "Почему я иногда теряю равновесие на рыси?", "Dlaczego czasem tracę równowagę w kłusie?", "왜 속보에서 가끔 균형을 잃을까?"),
+      tt("Où dois-je regarder quand je monte à cheval ?", "Where should I look when I ride?", "¿Adónde debo mirar cuando monto?", "Dove devo guardare quando vado a cavallo?", "馬に乗っているとき、どこを見ればいい？", "Wohin soll ich beim Reiten schauen?", "إلى أين يجب أن أنظر عندما أركب؟", "骑马时我应该看哪里？", "Waar moet ik naar kijken als ik rijd?", "Para onde devo olhar quando monto?", "Vart ska jag titta när jag rider?", "Куда мне смотреть, когда я еду верхом?", "Gdzie mam patrzeć, kiedy jeżdżę konno?", "말을 탈 때 어디를 봐야 할까?"),
+      tt("Comment savoir si mes étriers sont bien réglés ?", "How do I know if my stirrups are the right length?", "¿Cómo sé si mis estribos están bien ajustados?", "Come faccio a sapere se le mie staffe sono regolate bene?", "あぶみの長さが合っているかどうやってわかる？", "Woran erkenne ich, ob meine Steigbügel richtig eingestellt sind?", "كيف أعرف أن ركابيّ مضبوطان جيدًا؟", "怎么知道我的马镫调得合不合适？", "Hoe weet ik of mijn stijgbeugels goed afgesteld zijn?", "Como saber se meus estribos estão bem ajustados?", "Hur vet jag om mina stigbyglar är rätt inställda?", "Как понять, правильно ли подогнаны мои стремена?", "Skąd mam wiedzieć, czy strzemiona są dobrze ustawione?", "등자 길이가 잘 맞는지 어떻게 알 수 있을까?"),
+      tt("Pourquoi mes mains doivent-elles rester souples ?", "Why should my hands stay soft?", "¿Por qué mis manos deben permanecer suaves?", "Perché le mie mani devono restare morbide?", "手をやわらかく保つのはなぜ？", "Warum sollen meine Hände weich bleiben?", "لماذا يجب أن تبقى يداي مرنتين؟", "为什么我的手要保持柔和？", "Waarom moeten mijn handen soepel blijven?", "Por que minhas mãos devem continuar leves?", "Varför ska mina händer vara mjuka?", "Почему мои руки должны оставаться мягкими?", "Dlaczego moje ręce mają pozostać miękkie?", "왜 손을 부드럽게 유지해야 할까?"),
+      tt("Comment être plus à l'aise au galop sans me crisper ?", "How can I feel more at ease at the canter without tensing up?", "¿Cómo estar más cómodo al galope sin ponerme rígido?", "Come sentirmi più a mio agio al galoppo senza irrigidirmi?", "かたくならずに駈歩でもっと楽に乗るには？", "Wie fühle ich mich im Galopp wohler, ohne mich zu verkrampfen?", "كيف أكون أكثر راحة في العدو دون أن أتشنج؟", "怎样在跑步时更自在而不紧绷？", "Hoe voel ik me meer op mijn gemak in galop zonder te verkrampen?", "Como ficar mais à vontade no galope sem me contrair?", "Hur känner jag mig tryggare i galopp utan att spänna mig?", "Как чувствовать себя свободнее на галопе и не зажиматься?", "Jak czuć się swobodniej w galopie, nie spinając się?", "몸이 굳지 않고 구보에서 더 편해지려면?")
+    ],
+    synth: [
+      tt("Ton corps accompagne les mouvements du cheval.", "Your body follows the horse's movements.", "Tu cuerpo acompaña los movimientos del caballo.", "Il tuo corpo accompagna i movimenti del cavallo.", "体は馬の動きについていく。", "Dein Körper begleitet die Bewegungen des Pferdes.", "جسمك يرافق حركات الحصان.", "你的身体跟随马的动作。", "Je lichaam volgt de bewegingen van het paard.", "Seu corpo acompanha os movimentos do cavalo.", "Din kropp följer hästens rörelser.", "Твоё тело сопровождает движения лошади.", "Twoje ciało podąża za ruchami konia.", "몸은 말의 움직임을 따라간다."),
+      tt("Ton regard t'aide à garder ta direction.", "Your eyes help you keep your direction.", "Tu mirada te ayuda a mantener la dirección.", "Lo sguardo ti aiuta a mantenere la direzione.", "目線が進む方向を保つ助けになる。", "Dein Blick hilft dir, die Richtung zu halten.", "نظرك يساعدك على الحفاظ على اتجاهك.", "视线帮助你保持方向。", "Je blik helpt je de richting te houden.", "Seu olhar ajuda a manter a direção.", "Blicken hjälper dig att hålla riktningen.", "Взгляд помогает держать направление.", "Wzrok pomaga ci utrzymać kierunek.", "시선은 방향을 유지하도록 돕는다."),
+      tt("Tes mains restent souples et tranquilles.", "Your hands stay soft and quiet.", "Tus manos permanecen suaves y tranquilas.", "Le tue mani restano morbide e tranquille.", "手はやわらかく、静かに。", "Deine Hände bleiben weich und ruhig.", "يداك تبقيان مرنتين وهادئتين.", "双手保持柔和、安静。", "Je handen blijven soepel en rustig.", "Suas mãos ficam leves e tranquilas.", "Dina händer är mjuka och lugna.", "Руки остаются мягкими и спокойными.", "Ręce pozostają miękkie i spokojne.", "손은 부드럽고 차분하게."),
+      tt("Ton équilibre évolue selon l'allure.", "Your balance changes with the gait.", "Tu equilibrio cambia según el aire.", "Il tuo equilibrio cambia secondo l'andatura.", "バランスは歩法によって変わる。", "Dein Gleichgewicht ändert sich je nach Gangart.", "توازنك يتغيّر حسب المشية.", "平衡随步法而变化。", "Je evenwicht verandert met de gang.", "Seu equilíbrio muda conforme o andamento.", "Din balans ändras med gångarten.", "Равновесие меняется в зависимости от аллюра.", "Równowaga zmienia się zależnie od chodu.", "균형은 보법에 따라 달라진다."),
+      tt("Une bonne position reste naturelle, jamais figée.", "A good position stays natural, never stiff.", "Una buena posición es natural, nunca rígida.", "Una buona posizione resta naturale, mai rigida.", "よい姿勢は自然で、かたまらない。", "Ein guter Sitz bleibt natürlich, nie steif.", "الوضعية الجيدة طبيعية، وليست متجمدة أبدًا.", "好的姿势自然，从不僵硬。", "Een goede houding blijft natuurlijk, nooit stijf.", "Uma boa posição é natural, nunca rígida.", "En bra sits är naturlig, aldrig stel.", "Хорошая посадка естественна, а не скована.", "Dobry dosiad jest naturalny, nigdy sztywny.", "좋은 자세는 자연스럽고 굳지 않는다.")
+    ],
+    fin: tt("Être bien à cheval, c'est apprendre à bouger avec lui, sans jamais perdre son équilibre.", "Riding well means learning to move with your horse, without ever losing your balance.", "Estar bien a caballo es aprender a moverse con él, sin perder nunca el equilibrio.", "Stare bene a cavallo significa imparare a muoversi con lui, senza mai perdere l'equilibrio.", "うまく乗るとは、バランスをくずさずに馬といっしょに動けるようになること。", "Gut im Sattel sitzen heißt, sich mit dem Pferd zu bewegen, ohne je das Gleichgewicht zu verlieren.", "أن تكون مرتاحًا على الحصان يعني أن تتعلم التحرك معه دون أن تفقد توازنك أبدًا.", "骑得好，就是学会与马一起移动，始终不失去平衡。", "Goed te paard zitten betekent leren met hem mee te bewegen, zonder ooit je evenwicht te verliezen.", "Estar bem a cavalo é aprender a se mover com ele, sem nunca perder o equilíbrio.", "Att sitta bra på hästen är att lära sig röra sig med den, utan att någonsin tappa balansen.", "Хорошо сидеть на лошади — значит научиться двигаться вместе с ней, не теряя равновесия.", "Dobrze siedzieć na koniu to nauczyć się poruszać razem z nim, nigdy nie tracąc równowagi.", "말을 잘 탄다는 것은 균형을 잃지 않고 말과 함께 움직이는 법을 배우는 것이다.")
+  },
+  "g1-c6": {
+    hb: [
+      tt("Comment savoir si un cheval souhaite rester tranquille ?", "How can I tell if a horse wants to be left alone?", "¿Cómo saber si un caballo quiere estar tranquilo?", "Come capire se un cavallo vuole restare tranquillo?", "馬がそっとしておいてほしいとき、どうやってわかる？", "Woran erkenne ich, dass ein Pferd seine Ruhe haben möchte?", "كيف أعرف أن الحصان يريد أن يبقى هادئًا؟", "怎么知道一匹马想安静待着？", "Hoe weet ik of een paard met rust gelaten wil worden?", "Como saber se um cavalo quer ficar tranquilo?", "Hur vet jag om en häst vill vara i fred?", "Как понять, что лошадь хочет побыть в покое?", "Skąd wiem, że koń chce mieć spokój?", "말이 혼자 조용히 있고 싶어 하는지 어떻게 알까?"),
+      tt("Pourquoi un cheval bouge-t-il ses oreilles sans arrêt ?", "Why does a horse keep moving its ears?", "¿Por qué un caballo mueve las orejas sin parar?", "Perché un cavallo muove continuamente le orecchie?", "馬が耳をずっと動かしているのはなぜ？", "Warum bewegt ein Pferd ständig seine Ohren?", "لماذا يحرّك الحصان أذنيه باستمرار؟", "马为什么不停地动耳朵？", "Waarom beweegt een paard steeds zijn oren?", "Por que um cavalo mexe as orelhas sem parar?", "Varför rör en häst hela tiden på öronen?", "Почему лошадь постоянно двигает ушами?", "Dlaczego koń bez przerwy rusza uszami?", "말은 왜 귀를 계속 움직일까?"),
+      tt("Un cheval peut-il être inquiet sans bouger ?", "Can a horse be worried without moving?", "¿Puede un caballo estar inquieto sin moverse?", "Un cavallo può essere preoccupato senza muoversi?", "馬は動かなくても不安なことがある？", "Kann ein Pferd beunruhigt sein, ohne sich zu bewegen?", "هل يمكن أن يكون الحصان قلقًا دون أن يتحرك؟", "马会不会一动不动却很不安？", "Kan een paard ongerust zijn zonder te bewegen?", "Um cavalo pode estar inquieto sem se mexer?", "Kan en häst vara orolig utan att röra sig?", "Может ли лошадь тревожиться, не двигаясь?", "Czy koń może być niespokojny, choć się nie rusza?", "말이 움직이지 않으면서도 불안할 수 있을까?"),
+      tt("Comment lui montrer que je suis calme et rassurant ?", "How can I show it that I'm calm and reassuring?", "¿Cómo mostrarle que estoy tranquilo y le doy confianza?", "Come mostrargli che sono calmo e rassicurante?", "落ち着いていて安心できる相手だと、どう伝えればいい？", "Wie zeige ich ihm, dass ich ruhig und beruhigend bin?", "كيف أُظهر له أنني هادئ ومطمئن؟", "怎样让它知道我很冷静、让它安心？", "Hoe laat ik zien dat ik rustig en geruststellend ben?", "Como mostrar a ele que estou calmo e passo segurança?", "Hur visar jag att jag är lugn och trygg?", "Как показать ей, что я спокоен и надёжен?", "Jak pokazać mu, że jestem spokojny i budzę zaufanie?", "내가 차분하고 믿을 만하다는 걸 어떻게 보여 줄까?"),
+      tt("Que faire si je ne comprends pas ce qu'il exprime ?", "What should I do if I don't understand what it's showing?", "¿Qué hago si no entiendo lo que expresa?", "Cosa fare se non capisco cosa esprime?", "馬が何を伝えているかわからないときは？", "Was tue ich, wenn ich nicht verstehe, was es ausdrückt?", "ماذا أفعل إذا لم أفهم ما يعبّر عنه؟", "如果我看不懂它在表达什么，该怎么办？", "Wat doe ik als ik niet begrijp wat het uitdrukt?", "O que fazer se eu não entender o que ele expressa?", "Vad gör jag om jag inte förstår vad den uttrycker?", "Что делать, если я не понимаю, что она выражает?", "Co zrobić, jeśli nie rozumiem, co wyraża?", "말이 무엇을 표현하는지 모르겠으면 어떻게 할까?")
+    ],
+    synth: [
+      tt("Le cheval communique sans utiliser de mots.", "Horses communicate without words.", "El caballo se comunica sin palabras.", "Il cavallo comunica senza parole.", "馬はことばを使わずに伝える。", "Das Pferd kommuniziert ohne Worte.", "الحصان يتواصل دون كلمات.", "马不用语言也能交流。", "Het paard communiceert zonder woorden.", "O cavalo se comunica sem palavras.", "Hästen kommunicerar utan ord.", "Лошадь общается без слов.", "Koń komunikuje się bez słów.", "말은 말없이 소통한다."),
+      tt("Chaque attitude peut donner un indice.", "Every posture can give a clue.", "Cada actitud puede dar una pista.", "Ogni atteggiamento può dare un indizio.", "どの姿勢もヒントになる。", "Jede Haltung kann einen Hinweis geben.", "كل وضعية قد تعطي دليلًا.", "每个姿态都可能是线索。", "Elke houding kan een aanwijzing geven.", "Cada atitude pode dar uma pista.", "Varje hållning kan ge en ledtråd.", "Каждая поза может быть подсказкой.", "Każda postawa może być wskazówką.", "모든 자세가 단서가 될 수 있다."),
+      tt("Un seul signe ne suffit pas toujours.", "One sign alone isn't always enough.", "Una sola señal no siempre basta.", "Un solo segnale non sempre basta.", "サインひとつだけでは足りないこともある。", "Ein einzelnes Zeichen reicht nicht immer.", "علامة واحدة لا تكفي دائمًا.", "单一信号并不总是足够。", "Eén teken is niet altijd genoeg.", "Um único sinal nem sempre basta.", "Ett enda tecken räcker inte alltid.", "Одного признака не всегда достаточно.", "Jeden sygnał nie zawsze wystarczy.", "신호 하나로는 늘 충분하지 않다."),
+      tt("Le contexte aide à comprendre ses réactions.", "Context helps you understand its reactions.", "El contexto ayuda a entender sus reacciones.", "Il contesto aiuta a capire le sue reazioni.", "状況が反応を理解する助けになる。", "Der Zusammenhang hilft, seine Reaktionen zu verstehen.", "السياق يساعد على فهم ردود فعله.", "情境有助于理解它的反应。", "De context helpt zijn reacties te begrijpen.", "O contexto ajuda a entender suas reações.", "Sammanhanget hjälper dig förstå reaktionerna.", "Обстановка помогает понять её реакции.", "Kontekst pomaga zrozumieć jego reakcje.", "상황을 보면 반응을 이해하기 쉽다."),
+      tt("Observer attentivement permet de mieux communiquer.", "Watching closely helps you communicate better.", "Observar con atención permite comunicar mejor.", "Osservare con attenzione aiuta a comunicare meglio.", "よく観察すると、もっと通じ合える。", "Aufmerksames Beobachten hilft, besser zu kommunizieren.", "الملاحظة الدقيقة تساعد على تواصل أفضل.", "仔细观察能更好地沟通。", "Goed observeren helpt beter te communiceren.", "Observar com atenção ajuda a se comunicar melhor.", "Att iaktta noga hjälper er att kommunicera bättre.", "Внимательное наблюдение помогает лучше общаться.", "Uważna obserwacja pomaga lepiej się porozumieć.", "주의 깊게 관찰하면 더 잘 소통할 수 있다.")
+    ],
+    fin: tt("Plus tu apprends à écouter ton cheval avec les yeux, plus votre confiance grandit.", "The more you learn to listen to your horse with your eyes, the more your trust grows.", "Cuanto más aprendes a escuchar a tu caballo con los ojos, más crece vuestra confianza.", "Più impari ad ascoltare il tuo cavallo con gli occhi, più cresce la vostra fiducia.", "目で馬の声を聞けるようになるほど、信頼は深まっていく。", "Je mehr du lernst, dein Pferd mit den Augen zu hören, desto mehr wächst euer Vertrauen.", "كلما تعلّمت أن تُصغي إلى حصانك بعينيك، نمت الثقة بينكما.", "你越学会用眼睛倾听你的马，你们的信任就越深。", "Hoe meer je leert met je ogen naar je paard te luisteren, hoe meer jullie vertrouwen groeit.", "Quanto mais você aprende a ouvir seu cavalo com os olhos, mais a confiança entre vocês cresce.", "Ju mer du lär dig lyssna på din häst med ögonen, desto mer växer ert förtroende.", "Чем лучше ты учишься слушать свою лошадь глазами, тем крепче ваше доверие.", "Im lepiej uczysz się słuchać konia oczami, tym bardziej rośnie wasze zaufanie.", "눈으로 말의 이야기를 듣는 법을 배울수록 둘의 신뢰는 깊어진다.")
+  },
+  "g1-c20": {
+    defi: {
+      titre: tt("Explorateur du corps", "Body explorer", "Explorador del cuerpo", "Esploratore del corpo", "からだの探検家", "Körper-Entdecker", "مستكشف الجسم", "身体探索者", "Lichaamsontdekker", "Explorador do corpo", "Kroppsutforskare", "Исследователь тела", "Odkrywca ciała", "몸 탐험가"),
+      accroche: tt("Avec ton enseignant, découvre comment le corps d'un cheval fonctionne, simplement en l'observant au repos.", "With your instructor, find out how a horse's body works, just by watching it at rest.", "Con tu profesor, descubre cómo funciona el cuerpo de un caballo, simplemente observándolo en reposo.", "Con il tuo istruttore, scopri come funziona il corpo di un cavallo, semplicemente osservandolo a riposo.", "先生といっしょに、休んでいる馬を見るだけで、そのからだのしくみを見つけよう。", "Entdecke mit deinem Reitlehrer, wie der Körper eines Pferdes funktioniert – einfach, indem du es in Ruhe beobachtest.", "مع مدرّبك، اكتشف كيف يعمل جسم الحصان بمجرد مراقبته وهو مرتاح.", "和你的教练一起，只需观察休息中的马，就能了解它的身体如何运作。", "Ontdek samen met je instructeur hoe het lichaam van een paard werkt, gewoon door het in rust te observeren.", "Com seu instrutor, descubra como funciona o corpo de um cavalo, só observando-o em repouso.", "Upptäck med din instruktör hur hästens kropp fungerar, bara genom att titta på den i vila.", "Вместе с тренером узнай, как устроено тело лошади, просто наблюдая за ней в покое.", "Z instruktorem odkryj, jak działa ciało konia, po prostu obserwując go w spoczynku.", "선생님과 함께 쉬고 있는 말을 관찰하며 말의 몸이 어떻게 작동하는지 알아보자."),
+      points: [
+        tt("Repère une articulation visible sur un cheval immobile.", "Spot a visible joint on a horse standing still.", "Localiza una articulación visible en un caballo quieto.", "Individua un'articolazione visibile su un cavallo fermo.", "じっとしている馬で、見える関節をひとつ見つけよう。", "Finde ein sichtbares Gelenk an einem stehenden Pferd.", "حدّد مفصلًا ظاهرًا على حصان واقف بلا حركة.", "在静止的马身上找出一个看得见的关节。", "Zoek een zichtbaar gewricht bij een stilstaand paard.", "Encontre uma articulação visível em um cavalo parado.", "Hitta en synlig led på en häst som står still.", "Найди видимый сустав у стоящей лошади.", "Wskaż widoczny staw u stojącego konia.", "가만히 서 있는 말에서 보이는 관절 하나를 찾아보자."),
+        tt("Observe les mouvements de ses flancs quand il respire.", "Watch its flanks move as it breathes.", "Observa el movimiento de sus flancos cuando respira.", "Osserva il movimento dei suoi fianchi quando respira.", "呼吸するときの、わき腹の動きを観察しよう。", "Beobachte, wie sich seine Flanken beim Atmen bewegen.", "راقب حركة خاصرتيه عندما يتنفس.", "观察它呼吸时腹侧的起伏。", "Kijk hoe zijn flanken bewegen als hij ademt.", "Observe o movimento dos flancos quando ele respira.", "Titta på hur flankerna rör sig när den andas.", "Понаблюдай, как двигаются её бока при дыхании.", "Obserwuj ruch jego boków, gdy oddycha.", "숨 쉴 때 옆구리가 어떻게 움직이는지 관찰하자."),
+        tt("Retrouve sur l'affiche trois parties de son corps.", "Find three parts of its body on the poster.", "Encuentra en el póster tres partes de su cuerpo.", "Ritrova sul poster tre parti del suo corpo.", "ポスターで、からだの部位を3つ見つけよう。", "Finde auf dem Poster drei Körperteile.", "اعثر على الملصق على ثلاثة أجزاء من جسمه.", "在海报上找出它身体的三个部位。", "Zoek op de poster drie lichaamsdelen.", "Encontre no pôster três partes do corpo dele.", "Hitta tre kroppsdelar på affischen.", "Найди на плакате три части её тела.", "Odszukaj na plakacie trzy części jego ciała.", "포스터에서 말의 몸 부위 세 곳을 찾아보자.")
+      ]
+    },
+    hb: [
+      tt("Pourquoi les os du cheval sont-ils aussi solides ?", "Why are a horse's bones so strong?", "¿Por qué los huesos del caballo son tan fuertes?", "Perché le ossa del cavallo sono così robuste?", "馬の骨はどうしてそんなにじょうぶなの？", "Warum sind die Knochen des Pferdes so stabil?", "لماذا عظام الحصان قوية إلى هذا الحد؟", "马的骨头为什么这么结实？", "Waarom zijn de botten van een paard zo sterk?", "Por que os ossos do cavalo são tão resistentes?", "Varför är hästens skelett så starkt?", "Почему кости лошади такие крепкие?", "Dlaczego kości konia są tak mocne?", "말의 뼈는 왜 그렇게 튼튼할까?"),
+      tt("À quoi sert le mouvement du pied pour la circulation ?", "How does the movement of the hoof help circulation?", "¿Para qué sirve el movimiento del pie en la circulación?", "A cosa serve il movimento del piede per la circolazione?", "ひづめの動きは血のめぐりにどう役立つの？", "Wozu dient die Bewegung des Hufs für den Kreislauf?", "ما فائدة حركة الحافر في الدورة الدموية؟", "蹄的动作对血液循环有什么作用？", "Waarvoor dient de beweging van de hoef voor de bloedsomloop?", "Para que serve o movimento do casco na circulação?", "Hur hjälper hovens rörelse blodcirkulationen?", "Как движение копыта помогает кровообращению?", "Do czego służy ruch kopyta w krążeniu krwi?", "발굽의 움직임은 혈액 순환에 어떤 도움을 줄까?"),
+      tt("Pourquoi le cheval respire-t-il plus vite après un effort ?", "Why does a horse breathe faster after exercise?", "¿Por qué el caballo respira más rápido después de un esfuerzo?", "Perché il cavallo respira più velocemente dopo uno sforzo?", "運動のあと、馬の呼吸が速くなるのはなぜ？", "Warum atmet das Pferd nach einer Anstrengung schneller?", "لماذا يتنفس الحصان أسرع بعد المجهود؟", "为什么马运动后呼吸会变快？", "Waarom ademt een paard sneller na inspanning?", "Por que o cavalo respira mais rápido depois de um esforço?", "Varför andas hästen snabbare efter ansträngning?", "Почему лошадь дышит чаще после нагрузки?", "Dlaczego koń oddycha szybciej po wysiłku?", "운동 후에 말은 왜 숨을 더 빨리 쉴까?"),
+      tt("Pourquoi doit-il manger de petites quantités régulièrement ?", "Why does it need to eat small amounts often?", "¿Por qué debe comer pequeñas cantidades con regularidad?", "Perché deve mangiare piccole quantità regolarmente?", "どうして少しずつ何度も食べる必要があるの？", "Warum muss es regelmäßig kleine Mengen fressen?", "لماذا يجب أن يأكل كميات صغيرة بانتظام؟", "为什么它需要少量多次地进食？", "Waarom moet hij regelmatig kleine hoeveelheden eten?", "Por que ele precisa comer pequenas quantidades com frequência?", "Varför behöver den äta små mängder ofta?", "Почему ей нужно есть понемногу и регулярно?", "Dlaczego musi jeść małe ilości regularnie?", "왜 조금씩 자주 먹어야 할까?"),
+      tt("Pourquoi ses membres avant supportent-ils autant de poids ?", "Why do its front legs carry so much weight?", "¿Por qué sus extremidades delanteras soportan tanto peso?", "Perché i suoi arti anteriori sostengono così tanto peso?", "前肢が体重の多くを支えているのはなぜ？", "Warum tragen seine Vorderbeine so viel Gewicht?", "لماذا تحمل قوائمه الأمامية هذا القدر من الوزن؟", "为什么它的前肢承受这么多重量？", "Waarom dragen zijn voorbenen zoveel gewicht?", "Por que os membros anteriores suportam tanto peso?", "Varför bär frambenen så mycket av vikten?", "Почему передние ноги несут столько веса?", "Dlaczego przednie kończyny dźwigają tyle ciężaru?", "앞다리는 왜 그렇게 많은 무게를 지탱할까?")
+    ],
+    synth: [
+      tt("Le squelette soutient tout le corps.", "The skeleton supports the whole body.", "El esqueleto sostiene todo el cuerpo.", "Lo scheletro sostiene tutto il corpo.", "骨格がからだ全体を支える。", "Das Skelett trägt den ganzen Körper.", "الهيكل العظمي يدعم الجسم كله.", "骨骼支撑整个身体。", "Het skelet draagt het hele lichaam.", "O esqueleto sustenta todo o corpo.", "Skelettet bär hela kroppen.", "Скелет поддерживает всё тело.", "Szkielet podtrzymuje całe ciało.", "골격이 몸 전체를 지탱한다."),
+      tt("Les pieds participent à la circulation sanguine.", "The hooves help blood circulation.", "Los pies participan en la circulación sanguínea.", "I piedi partecipano alla circolazione sanguigna.", "ひづめは血のめぐりを助ける。", "Die Hufe unterstützen den Blutkreislauf.", "الحوافر تساهم في الدورة الدموية.", "蹄参与血液循环。", "De hoeven helpen de bloedsomloop.", "Os cascos ajudam a circulação sanguínea.", "Hovarna hjälper blodcirkulationen.", "Копыта участвуют в кровообращении.", "Kopyta wspomagają krążenie krwi.", "발굽은 혈액 순환을 돕는다."),
+      tt("La respiration apporte l'oxygène nécessaire.", "Breathing brings the oxygen it needs.", "La respiración aporta el oxígeno necesario.", "La respirazione porta l'ossigeno necessario.", "呼吸が必要な酸素を運ぶ。", "Die Atmung liefert den nötigen Sauerstoff.", "التنفس يمدّ الجسم بالأكسجين اللازم.", "呼吸提供所需的氧气。", "De ademhaling levert de nodige zuurstof.", "A respiração traz o oxigênio necessário.", "Andningen ger syret som behövs.", "Дыхание даёт нужный кислород.", "Oddychanie dostarcza potrzebnego tlenu.", "호흡은 필요한 산소를 공급한다."),
+      tt("La digestion transforme les aliments en énergie.", "Digestion turns food into energy.", "La digestión transforma los alimentos en energía.", "La digestione trasforma il cibo in energia.", "消化は食べ物をエネルギーに変える。", "Die Verdauung macht aus Futter Energie.", "الهضم يحوّل الطعام إلى طاقة.", "消化把食物转化为能量。", "De spijsvertering zet voedsel om in energie.", "A digestão transforma os alimentos em energia.", "Matsmältningen gör maten till energi.", "Пищеварение превращает корм в энергию.", "Trawienie zamienia pokarm w energię.", "소화는 먹이를 에너지로 바꾼다."),
+      tt("Le poids du cheval est inégalement réparti.", "A horse's weight is unevenly distributed.", "El peso del caballo está repartido de forma desigual.", "Il peso del cavallo è distribuito in modo diseguale.", "馬の体重は均等に分かれていない。", "Das Gewicht des Pferdes ist ungleich verteilt.", "وزن الحصان موزّع بشكل غير متساوٍ.", "马的体重分布并不均匀。", "Het gewicht van het paard is ongelijk verdeeld.", "O peso do cavalo é distribuído de forma desigual.", "Hästens vikt är ojämnt fördelad.", "Вес лошади распределён неравномерно.", "Ciężar konia jest rozłożony nierówno.", "말의 체중은 고르게 나뉘어 있지 않다.")
+    ],
+    fin: tt("Comprendre ce qui se passe sous sa peau, c'est déjà apprendre à mieux prendre soin de lui.", "Understanding what happens under its skin is already learning to take better care of it.", "Entender lo que pasa bajo su piel ya es aprender a cuidarlo mejor.", "Capire cosa succede sotto la sua pelle è già imparare a prendersene cura meglio.", "皮ふの下で何が起きているかを知ることは、もっと上手に世話をする第一歩。", "Zu verstehen, was unter seiner Haut passiert, heißt schon, besser für es zu sorgen.", "أن تفهم ما يحدث تحت جلده يعني أنك بدأت تتعلم كيف تعتني به أفضل.", "了解它皮肤之下发生的事，就是学会更好照顾它的开始。", "Begrijpen wat er onder zijn huid gebeurt, is al leren beter voor hem te zorgen.", "Entender o que acontece sob a pele dele já é aprender a cuidar melhor dele.", "Att förstå vad som händer under huden är redan att lära sig ta bättre hand om den.", "Понимать, что происходит у неё под кожей, — значит уже учиться лучше о ней заботиться.", "Zrozumieć, co dzieje się pod jego skórą, to już uczyć się lepiej o niego dbać.", "피부 아래에서 일어나는 일을 이해하는 것이 말을 더 잘 돌보는 첫걸음이다."),
+    chap: [
+      [tt("Découvrir son corps", "Discovering its body", "Descubrir su cuerpo", "Scoprire il suo corpo", "からだを知る", "Seinen Körper entdecken", "اكتشاف جسمه", "认识它的身体", "Zijn lichaam ontdekken", "Descobrir o corpo dele", "Upptäck kroppen", "Знакомство с телом", "Poznaj jego ciało", "말의 몸 알아보기"), 2],
+      [tt("Un organisme en action", "A body in action", "Un organismo en acción", "Un organismo in azione", "はたらくからだ", "Ein Körper in Aktion", "جسم في حركة", "运转中的身体", "Een lichaam in actie", "Um organismo em ação", "En kropp i arbete", "Организм в действии", "Organizm w działaniu", "움직이는 몸"), 3],
+      [tt("Comprendre sa silhouette", "Understanding its build", "Comprender su silueta", "Capire la sua figura", "体形を知る", "Seinen Körperbau verstehen", "فهم قوامه", "了解它的体型", "Zijn bouw begrijpen", "Entender a silhueta dele", "Förstå kroppsformen", "Понять телосложение", "Zrozum jego sylwetkę", "말의 체형 이해하기"), 2]
+    ]
+  },
+  "g1-c8": {
+    defi: {
+      titre: tt("Mission sellerie", "Tack room mission", "Misión guadarnés", "Missione selleria", "馬具室ミッション", "Mission Sattelkammer", "مهمة غرفة السروج", "鞍具房任务", "Missie zadelkamer", "Missão selaria", "Uppdrag sadelkammare", "Миссия: амуничник", "Misja siodlarnia", "마구실 미션"),
+      accroche: tt("Avec ton enseignant, explore la sellerie et découvre comment prendre soin du matériel.", "With your instructor, explore the tack room and find out how to look after the equipment.", "Con tu profesor, explora el guadarnés y descubre cómo cuidar el material.", "Con il tuo istruttore, esplora la selleria e scopri come prenderti cura dell'attrezzatura.", "先生といっしょに馬具室を探検し、道具の手入れのしかたを知ろう。", "Erkunde mit deinem Reitlehrer die Sattelkammer und entdecke, wie man die Ausrüstung pflegt.", "مع مدرّبك، استكشف غرفة السروج واكتشف كيف تعتني بالمعدات.", "和教练一起探索鞍具房，了解如何保养马具。", "Verken met je instructeur de zadelkamer en ontdek hoe je voor het materiaal zorgt.", "Com seu instrutor, explore a selaria e descubra como cuidar do material.", "Utforska sadelkammaren med din instruktör och upptäck hur man sköter utrustningen.", "Вместе с тренером исследуй амуничник и узнай, как ухаживать за снаряжением.", "Z instruktorem zbadaj siodlarnię i dowiedz się, jak dbać o sprzęt.", "선생님과 함께 마구실을 둘러보며 장비 관리법을 알아보자."),
+      points: [
+        tt("Trouve un élément en cuir et un élément en tissu.", "Find one leather item and one fabric item.", "Encuentra una pieza de cuero y una de tela.", "Trova un elemento in cuoio e uno in tessuto.", "革の道具と布の道具をひとつずつ見つけよう。", "Finde ein Teil aus Leder und eines aus Stoff.", "اعثر على قطعة من الجلد وقطعة من القماش.", "找出一件皮制和一件布制的马具。", "Zoek een onderdeel van leer en een van stof.", "Encontre uma peça de couro e uma de tecido.", "Hitta en sak i läder och en i tyg.", "Найди одну вещь из кожи и одну из ткани.", "Znajdź element ze skóry i element z tkaniny.", "가죽으로 된 것 하나와 천으로 된 것 하나를 찾아보자."),
+        tt("Repère une pièce qui doit être adaptée à la taille du cheval.", "Spot a piece that must fit the horse's size.", "Localiza una pieza que debe adaptarse al tamaño del caballo.", "Individua un pezzo che deve essere adatto alla taglia del cavallo.", "馬の大きさに合わせる必要がある道具を見つけよう。", "Finde ein Teil, das zur Größe des Pferdes passen muss.", "حدّد قطعة يجب أن تناسب حجم الحصان.", "找出一件必须适合马体型的装备。", "Zoek een onderdeel dat bij de maat van het paard moet passen.", "Encontre uma peça que precisa ser adequada ao tamanho do cavalo.", "Hitta en del som måste passa hästens storlek.", "Найди деталь, которая должна подходить лошади по размеру.", "Wskaż element, który musi pasować do rozmiaru konia.", "말의 크기에 맞춰야 하는 장비를 찾아보자."),
+        tt("Range correctement un équipement après utilisation.", "Put a piece of equipment away properly after use.", "Guarda correctamente un equipo después de usarlo.", "Riponi correttamente un'attrezzatura dopo l'uso.", "使ったあとの道具を正しく片づけよう。", "Räume ein Ausrüstungsteil nach dem Gebrauch richtig auf.", "رتّب قطعة من المعدات بشكل صحيح بعد استعمالها.", "用完后把一件装备正确收好。", "Ruim een uitrustingsstuk na gebruik goed op.", "Guarde corretamente um equipamento depois de usar.", "Ställ undan en utrustning ordentligt efter användning.", "Правильно убери снаряжение после использования.", "Odłóż prawidłowo sprzęt po użyciu.", "사용한 장비를 제자리에 바르게 정리하자.")
+      ]
+    },
+    hb: [
+      tt("Pourquoi existe-t-il plusieurs tailles de selles ?", "Why are there different saddle sizes?", "¿Por qué hay sillas de varios tamaños?", "Perché esistono selle di diverse misure?", "鞍にいろいろなサイズがあるのはなぜ？", "Warum gibt es verschiedene Sattelgrößen?", "لماذا توجد مقاسات مختلفة للسروج؟", "为什么马鞍有不同尺寸？", "Waarom bestaan er verschillende zadelmaten?", "Por que existem vários tamanhos de sela?", "Varför finns det olika sadelstorlekar?", "Почему бывают сёдла разных размеров?", "Dlaczego istnieją siodła w różnych rozmiarach?", "안장은 왜 여러 크기가 있을까?"),
+      tt("Comment savoir si une pièce de matériel est abîmée ?", "How can I tell if a piece of equipment is damaged?", "¿Cómo saber si una pieza del material está dañada?", "Come capire se un pezzo dell'attrezzatura è rovinato?", "道具が傷んでいるかどうか、どうやってわかる？", "Woran erkenne ich, dass ein Ausrüstungsteil beschädigt ist?", "كيف أعرف أن قطعة من المعدات تالفة؟", "怎么判断一件装备是否损坏？", "Hoe weet ik of een onderdeel beschadigd is?", "Como saber se uma peça do material está danificada?", "Hur ser jag om en utrustning är skadad?", "Как понять, что снаряжение повреждено?", "Jak poznać, że element sprzętu jest uszkodzony?", "장비가 망가졌는지 어떻게 알 수 있을까?"),
+      tt("À quoi servent les étrivières sur une selle ?", "What are the stirrup leathers on a saddle for?", "¿Para qué sirven las aciones de la silla?", "A cosa servono gli staffili sulla sella?", "鞍のあぶみ革は何のためにあるの？", "Wozu dienen die Steigbügelriemen am Sattel?", "ما فائدة سيور الركاب في السرج؟", "马镫皮带在马鞍上有什么用？", "Waarvoor dienen de stijgbeugelriemen aan een zadel?", "Para que servem os loros na sela?", "Vad är stigläderna på sadeln till för?", "Для чего на седле путлища?", "Do czego służą puśliska przy siodle?", "안장의 등자끈은 무엇에 쓰일까?"),
+      tt("Pourquoi faut-il entretenir régulièrement les cuirs ?", "Why should leather be cared for regularly?", "¿Por qué hay que cuidar los cueros con regularidad?", "Perché bisogna curare regolarmente i cuoi?", "革の手入れを定期的にするのはなぜ？", "Warum muss man Leder regelmäßig pflegen?", "لماذا يجب العناية بالجلود بانتظام؟", "为什么要定期保养皮具？", "Waarom moet leer regelmatig onderhouden worden?", "Por que é preciso cuidar dos couros regularmente?", "Varför ska lädret skötas regelbundet?", "Почему за кожей нужно регулярно ухаживать?", "Dlaczego trzeba regularnie konserwować skóry?", "가죽은 왜 정기적으로 관리해야 할까?"),
+      tt("Qui doit vérifier que le matériel convient au cheval ?", "Who should check that the equipment suits the horse?", "¿Quién debe comprobar que el material conviene al caballo?", "Chi deve verificare che l'attrezzatura sia adatta al cavallo?", "道具が馬に合っているか、だれが確かめるの？", "Wer muss prüfen, ob die Ausrüstung zum Pferd passt?", "من يجب أن يتحقق من أن المعدات تناسب الحصان؟", "谁应该检查装备是否适合这匹马？", "Wie moet controleren of het materiaal bij het paard past?", "Quem deve verificar se o material serve para o cavalo?", "Vem ska kontrollera att utrustningen passar hästen?", "Кто должен проверить, что снаряжение подходит лошади?", "Kto powinien sprawdzić, czy sprzęt pasuje do konia?", "장비가 말에게 맞는지 누가 확인해야 할까?")
+    ],
+    synth: [
+      tt("Chaque équipement a une fonction précise.", "Each piece of equipment has a specific job.", "Cada equipo tiene una función precisa.", "Ogni attrezzatura ha una funzione precisa.", "道具にはそれぞれ役目がある。", "Jedes Ausrüstungsteil hat eine genaue Aufgabe.", "لكل قطعة من المعدات وظيفة محددة.", "每件装备都有明确的作用。", "Elk onderdeel heeft een precieze functie.", "Cada equipamento tem uma função precisa.", "Varje utrustning har en tydlig uppgift.", "У каждого снаряжения своя задача.", "Każdy element sprzętu ma określoną funkcję.", "장비마다 정해진 역할이 있다."),
+      tt("Le matériel doit être adapté au cheval.", "Equipment must fit the horse.", "El material debe adaptarse al caballo.", "L'attrezzatura deve essere adatta al cavallo.", "道具は馬に合っていなければならない。", "Die Ausrüstung muss zum Pferd passen.", "يجب أن تناسب المعدات الحصان.", "装备必须适合这匹马。", "Het materiaal moet bij het paard passen.", "O material deve ser adequado ao cavalo.", "Utrustningen måste passa hästen.", "Снаряжение должно подходить лошади.", "Sprzęt musi pasować do konia.", "장비는 말에게 맞아야 한다."),
+      tt("Les différentes pièces travaillent ensemble.", "The different parts work together.", "Las distintas piezas trabajan juntas.", "I diversi pezzi lavorano insieme.", "それぞれの部品がいっしょにはたらく。", "Die einzelnen Teile arbeiten zusammen.", "القطع المختلفة تعمل معًا.", "各个部件协同工作。", "De verschillende onderdelen werken samen.", "As diferentes peças trabalham juntas.", "De olika delarna samverkar.", "Разные детали работают вместе.", "Poszczególne części współpracują ze sobą.", "여러 부품이 함께 작동한다."),
+      tt("Un équipement abîmé peut devenir dangereux.", "Damaged equipment can become dangerous.", "Un equipo dañado puede ser peligroso.", "Un'attrezzatura rovinata può diventare pericolosa.", "傷んだ道具は危険になることがある。", "Beschädigte Ausrüstung kann gefährlich werden.", "المعدات التالفة قد تصبح خطيرة.", "损坏的装备可能变得危险。", "Beschadigd materiaal kan gevaarlijk worden.", "Um equipamento danificado pode ficar perigoso.", "Skadad utrustning kan bli farlig.", "Повреждённое снаряжение может стать опасным.", "Uszkodzony sprzęt może być niebezpieczny.", "망가진 장비는 위험할 수 있다."),
+      tt("Ranger et entretenir fait partie des bons soins.", "Tidying and cleaning are part of good care.", "Ordenar y mantener forma parte de los buenos cuidados.", "Riporre e curare fa parte delle buone cure.", "片づけと手入れも大切な世話のひとつ。", "Aufräumen und Pflegen gehören zur guten Fürsorge.", "الترتيب والعناية جزء من الرعاية الجيدة.", "整理和保养也是良好照料的一部分。", "Opruimen en onderhouden horen bij goede zorg.", "Guardar e conservar faz parte dos bons cuidados.", "Att städa och sköta är en del av god omvårdnad.", "Убирать и ухаживать — часть хорошей заботы.", "Sprzątanie i konserwacja to część dobrej opieki.", "정리와 손질도 좋은 돌봄의 일부다.")
+    ],
+    fin: tt("Un cavalier soigne aussi ce qu'il utilise : le respect du cheval commence bien avant de monter.", "A rider also looks after what they use: respect for the horse starts long before riding.", "Un jinete también cuida lo que usa: el respeto al caballo empieza mucho antes de montar.", "Un cavaliere si prende cura anche di ciò che usa: il rispetto del cavallo inizia molto prima di montare.", "乗り手は使う道具も大切にする。馬への思いやりは、乗るずっと前から始まっている。", "Ein Reiter pflegt auch, was er benutzt: Respekt vor dem Pferd beginnt lange vor dem Aufsteigen.", "الفارس يعتني أيضًا بما يستعمله: احترام الحصان يبدأ قبل الركوب بوقت طويل.", "骑手也会爱护自己使用的东西：对马的尊重早在上马前就开始了。", "Een ruiter zorgt ook voor wat hij gebruikt: respect voor het paard begint lang voor het opstappen.", "Um cavaleiro também cuida do que usa: o respeito ao cavalo começa muito antes de montar.", "En ryttare tar också hand om det hon använder: respekten för hästen börjar långt innan man sitter upp.", "Всадник бережёт и то, чем пользуется: уважение к лошади начинается задолго до посадки.", "Jeździec dba też o to, czego używa: szacunek dla konia zaczyna się długo przed wsiadaniem.", "기수는 자신이 쓰는 장비도 아낀다. 말에 대한 존중은 말에 오르기 훨씬 전부터 시작된다.")
+  },
+  "g1-c9": {
+    defi: {
+      titre: tt("Un message bien compris", "A message well understood", "Un mensaje bien entendido", "Un messaggio ben compreso", "伝わる合図", "Eine gut verstandene Botschaft", "رسالة مفهومة جيدًا", "清楚的讯息", "Een goed begrepen boodschap", "Uma mensagem bem compreendida", "Ett budskap som går fram", "Понятный сигнал", "Dobrze zrozumiany sygnał", "잘 전달된 메시지"),
+      accroche: tt("Avec ton enseignant, découvre comment donner une indication claire à ton cheval, sans multiplier les gestes.", "With your instructor, find out how to give your horse a clear signal without piling up movements.", "Con tu profesor, descubre cómo dar una indicación clara a tu caballo, sin multiplicar los gestos.", "Con il tuo istruttore, scopri come dare un'indicazione chiara al tuo cavallo, senza moltiplicare i gesti.", "先生といっしょに、動きをふやさずに馬へはっきり合図を出す方法を見つけよう。", "Entdecke mit deinem Reitlehrer, wie du deinem Pferd eine klare Hilfe gibst, ohne viele Bewegungen zu machen.", "مع مدرّبك، اكتشف كيف تعطي حصانك إشارة واضحة دون الإكثار من الحركات.", "和教练一起，学习如何不用多余动作就给马清晰的指令。", "Ontdek met je instructeur hoe je je paard een duidelijke hulp geeft, zonder veel bewegingen.", "Com seu instrutor, descubra como dar uma indicação clara ao seu cavalo, sem multiplicar os gestos.", "Upptäck med din instruktör hur du ger hästen en tydlig signal utan onödiga rörelser.", "Вместе с тренером узнай, как дать лошади ясную команду без лишних движений.", "Z instruktorem odkryj, jak dać koniowi jasny sygnał, nie mnożąc ruchów.", "선생님과 함께 동작을 늘리지 않고 말에게 분명한 신호를 주는 법을 알아보자."),
+      points: [
+        tt("Prépare un changement de direction avec ton regard.", "Prepare a change of direction with your eyes.", "Prepara un cambio de dirección con la mirada.", "Prepara un cambio di direzione con lo sguardo.", "目線で方向転換の準備をしよう。", "Bereite einen Richtungswechsel mit deinem Blick vor.", "حضّر لتغيير الاتجاه بنظرك.", "用视线为转向做准备。", "Bereid een richtingsverandering voor met je blik.", "Prepare uma mudança de direção com o olhar.", "Förbered ett riktningsbyte med blicken.", "Подготовь смену направления взглядом.", "Przygotuj zmianę kierunku wzrokiem.", "시선으로 방향 전환을 준비하자."),
+        tt("Demande un virage simple avec des aides coordonnées.", "Ask for a simple turn with coordinated aids.", "Pide un giro sencillo con ayudas coordinadas.", "Chiedi una semplice svolta con aiuti coordinati.", "合図をそろえて、かんたんな曲がりをたのもう。", "Bitte mit abgestimmten Hilfen um eine einfache Wendung.", "اطلب انعطافًا بسيطًا بمساعدات متناسقة.", "用协调的辅助要求一个简单的转弯。", "Vraag een eenvoudige bocht met gecoördineerde hulpen.", "Peça uma curva simples com ajudas coordenadas.", "Be om en enkel vändning med samordnade hjälper.", "Попроси простой поворот согласованными средствами управления.", "Poproś o prosty skręt skoordynowanymi pomocami.", "조화로운 부조로 간단한 회전을 요청하자."),
+        tt("Relâche ta demande dès que le cheval répond.", "Release your request as soon as the horse responds.", "Suelta tu petición en cuanto el caballo responda.", "Allenta la richiesta appena il cavallo risponde.", "馬がこたえたら、すぐに合図をゆるめよう。", "Gib nach, sobald das Pferd reagiert.", "خفّف طلبك فور استجابة الحصان.", "马一回应就放松你的要求。", "Geef mee zodra het paard reageert.", "Solte o pedido assim que o cavalo responder.", "Släpp din begäran så fort hästen svarar.", "Ослабь команду, как только лошадь ответит.", "Odpuść, gdy tylko koń odpowie.", "말이 반응하면 바로 요청을 풀어 주자.")
+      ]
+    },
+    hb: [
+      tt("Pourquoi mon cheval ne comprend-il pas toujours ma demande ?", "Why doesn't my horse always understand what I ask?", "¿Por qué mi caballo no siempre entiende lo que le pido?", "Perché il mio cavallo non capisce sempre la mia richiesta?", "馬がいつも合図をわかってくれないのはなぜ？", "Warum versteht mein Pferd meine Hilfe nicht immer?", "لماذا لا يفهم حصاني طلبي دائمًا؟", "为什么我的马不总能理解我的要求？", "Waarom begrijpt mijn paard mijn vraag niet altijd?", "Por que meu cavalo nem sempre entende meu pedido?", "Varför förstår min häst inte alltid vad jag ber om?", "Почему лошадь не всегда понимает, что я прошу?", "Dlaczego mój koń nie zawsze rozumie moją prośbę?", "왜 말이 내 요청을 항상 이해하지 못할까?"),
+      tt("Est-ce que je peux donner plusieurs indications en même temps ?", "Can I give several signals at once?", "¿Puedo dar varias indicaciones a la vez?", "Posso dare più indicazioni contemporaneamente?", "いくつもの合図を同時に出してもいい？", "Darf ich mehrere Hilfen gleichzeitig geben?", "هل يمكنني إعطاء عدة إشارات في الوقت نفسه؟", "我可以同时给出几个指令吗？", "Mag ik meerdere hulpen tegelijk geven?", "Posso dar várias indicações ao mesmo tempo?", "Kan jag ge flera signaler samtidigt?", "Можно ли давать несколько команд одновременно?", "Czy mogę dawać kilka sygnałów naraz?", "여러 신호를 한꺼번에 줘도 될까?"),
+      tt("Comment savoir si j'agis trop fort avec mes mains ?", "How do I know if I'm using my hands too strongly?", "¿Cómo saber si actúo demasiado fuerte con las manos?", "Come capire se agisco troppo forte con le mani?", "手の合図が強すぎるかどうか、どうやってわかる？", "Woran merke ich, dass ich mit den Händen zu stark einwirke?", "كيف أعرف أنني أستعمل يديّ بقوة زائدة؟", "怎么知道我手上用力太大？", "Hoe weet ik of ik te hard met mijn handen werk?", "Como saber se estou agindo forte demais com as mãos?", "Hur vet jag om jag använder händerna för hårt?", "Как понять, что я действую руками слишком сильно?", "Skąd wiem, że działam rękami zbyt mocno?", "손을 너무 세게 쓰는지 어떻게 알 수 있을까?"),
+      tt("Pourquoi faut-il relâcher une aide après une réponse ?", "Why should I release an aid after a response?", "¿Por qué hay que soltar una ayuda después de una respuesta?", "Perché bisogna allentare un aiuto dopo una risposta?", "馬がこたえたあと、合図をゆるめるのはなぜ？", "Warum muss man nach einer Reaktion nachgeben?", "لماذا يجب تخفيف المساعدة بعد الاستجابة؟", "为什么马回应后要放松辅助？", "Waarom moet je een hulp loslaten na een reactie?", "Por que é preciso soltar uma ajuda depois de uma resposta?", "Varför ska man släppa en hjälp efter ett svar?", "Почему нужно ослабить воздействие после ответа?", "Dlaczego trzeba odpuścić pomoc po odpowiedzi konia?", "말이 반응한 뒤 왜 부조를 풀어야 할까?"),
+      tt("Comment rendre mes demandes plus faciles à comprendre ?", "How can I make my requests easier to understand?", "¿Cómo hacer que mis peticiones sean más fáciles de entender?", "Come rendere le mie richieste più facili da capire?", "合図をもっとわかりやすくするには？", "Wie mache ich meine Hilfen leichter verständlich?", "كيف أجعل طلباتي أسهل في الفهم؟", "怎样让我的要求更容易理解？", "Hoe maak ik mijn vragen makkelijker te begrijpen?", "Como tornar meus pedidos mais fáceis de entender?", "Hur gör jag mina signaler lättare att förstå?", "Как сделать мои команды понятнее?", "Jak sprawić, by moje prośby były łatwiejsze do zrozumienia?", "내 요청을 더 이해하기 쉽게 하려면?")
+    ],
+    synth: [
+      tt("Les aides permettent de communiquer avec le cheval.", "Aids let you communicate with the horse.", "Las ayudas permiten comunicarse con el caballo.", "Gli aiuti permettono di comunicare con il cavallo.", "扶助で馬と話ができる。", "Mit den Hilfen verständigst du dich mit dem Pferd.", "المساعدات تتيح التواصل مع الحصان.", "辅助让你和马沟通。", "Met hulpen communiceer je met het paard.", "As ajudas permitem se comunicar com o cavalo.", "Hjälperna låter dig kommunicera med hästen.", "Средства управления — это язык общения с лошадью.", "Pomoce pozwalają porozumieć się z koniem.", "부조로 말과 소통한다."),
+      tt("Certaines viennent directement de ton corps.", "Some come straight from your body.", "Algunas vienen directamente de tu cuerpo.", "Alcuni vengono direttamente dal tuo corpo.", "からだから直接出す扶助がある。", "Manche kommen direkt von deinem Körper.", "بعضها يأتي مباشرة من جسمك.", "有些直接来自你的身体。", "Sommige komen rechtstreeks van je lichaam.", "Algumas vêm diretamente do seu corpo.", "Vissa kommer direkt från din kropp.", "Некоторые идут прямо от твоего тела.", "Niektóre pochodzą wprost z twojego ciała.", "어떤 부조는 몸에서 바로 나온다."),
+      tt("D'autres utilisent un équipement adapté.", "Others use suitable equipment.", "Otras utilizan un equipo adecuado.", "Altri usano un'attrezzatura adatta.", "道具を使う扶助もある。", "Andere nutzen passende Ausrüstung.", "وأخرى تستعمل معدات مناسبة.", "另一些借助合适的装备。", "Andere gebruiken geschikt materiaal.", "Outras usam um equipamento adequado.", "Andra använder lämplig utrustning.", "Другие используют подходящее снаряжение.", "Inne korzystają z odpowiedniego sprzętu.", "어떤 부조는 알맞은 도구를 쓴다."),
+      tt("Les indications doivent être précises et mesurées.", "Signals must be precise and measured.", "Las indicaciones deben ser precisas y medidas.", "Le indicazioni devono essere precise e misurate.", "合図は正確に、やりすぎない。", "Hilfen müssen genau und maßvoll sein.", "يجب أن تكون الإشارات دقيقة ومعتدلة.", "指令要准确而有分寸。", "Hulpen moeten precies en afgemeten zijn.", "As indicações devem ser precisas e moderadas.", "Signalerna ska vara exakta och avvägda.", "Команды должны быть точными и умеренными.", "Sygnały muszą być precyzyjne i wyważone.", "신호는 정확하고 적당해야 한다."),
+      tt("Une bonne réponse mérite un relâchement immédiat.", "A good response deserves an immediate release.", "Una buena respuesta merece un relajamiento inmediato.", "Una buona risposta merita un rilascio immediato.", "よい反応には、すぐにゆるめてこたえる。", "Eine gute Reaktion verdient sofortiges Nachgeben.", "الاستجابة الجيدة تستحق تخفيفًا فوريًا.", "好的回应值得立即放松。", "Een goede reactie verdient meteen ontspanning.", "Uma boa resposta merece um alívio imediato.", "Ett bra svar förtjänar att du släpper direkt.", "Хороший ответ заслуживает немедленного ослабления.", "Dobra odpowiedź zasługuje na natychmiastowe odpuszczenie.", "좋은 반응에는 바로 풀어 주자.")
+    ],
+    fin: tt("Quand tes demandes deviennent plus claires, ton cheval n'a plus besoin de deviner ce que tu souhaites.", "When your requests become clearer, your horse no longer has to guess what you want.", "Cuando tus peticiones se vuelven más claras, tu caballo ya no necesita adivinar lo que quieres.", "Quando le tue richieste diventano più chiare, il tuo cavallo non deve più indovinare cosa desideri.", "合図がはっきりすれば、馬はきみの望みを当てずっぽうで考えなくてよくなる。", "Wenn deine Hilfen klarer werden, muss dein Pferd nicht mehr raten, was du willst.", "عندما تصبح طلباتك أوضح، لا يحتاج حصانك إلى تخمين ما تريده.", "当你的要求更清楚时，你的马就不必再猜你想要什么。", "Als je vragen duidelijker worden, hoeft je paard niet meer te raden wat je wilt.", "Quando seus pedidos ficam mais claros, seu cavalo não precisa mais adivinhar o que você quer.", "När dina signaler blir tydligare behöver hästen inte längre gissa vad du vill.", "Когда твои команды становятся яснее, лошади больше не нужно угадывать, чего ты хочешь.", "Gdy twoje prośby stają się jaśniejsze, koń nie musi już zgadywać, czego chcesz.", "요청이 분명해질수록 말은 네가 원하는 것을 더 이상 짐작하지 않아도 된다.")
+  },
+  "g1-c10": {
+    hb: [
+      tt("Pourquoi faut-il choisir un endroit adapté pour attacher un cheval ?", "Why should I choose a suitable place to tie up a horse?", "¿Por qué hay que elegir un lugar adecuado para atar un caballo?", "Perché bisogna scegliere un posto adatto per legare un cavallo?", "馬をつなぐ場所を選ぶのはなぜ？", "Warum muss man einen geeigneten Platz zum Anbinden wählen?", "لماذا يجب اختيار مكان مناسب لربط الحصان؟", "为什么拴马要选择合适的地方？", "Waarom moet je een geschikte plek kiezen om een paard vast te zetten?", "Por que é preciso escolher um lugar adequado para amarrar um cavalo?", "Varför ska man välja en lämplig plats att binda upp en häst?", "Почему важно выбрать подходящее место, чтобы привязать лошадь?", "Dlaczego trzeba wybrać odpowiednie miejsce do uwiązania konia?", "말을 묶을 때 왜 알맞은 장소를 골라야 할까?"),
+      tt("Comment reconnaître un nœud qui peut se défaire rapidement ?", "How do I recognise a knot that can be undone quickly?", "¿Cómo reconocer un nudo que se puede deshacer rápido?", "Come riconoscere un nodo che si scioglie rapidamente?", "すぐにほどける結び目はどうやって見分ける？", "Woran erkenne ich einen Knoten, der sich schnell lösen lässt?", "كيف أتعرّف على عقدة يمكن فكّها بسرعة؟", "怎么辨认一个能快速解开的结？", "Hoe herken ik een knoop die snel los kan?", "Como reconhecer um nó que se desfaz rapidamente?", "Hur känner jag igen en knut som snabbt kan lösas upp?", "Как распознать узел, который можно быстро развязать?", "Jak rozpoznać węzeł, który można szybko rozwiązać?", "빨리 풀 수 있는 매듭은 어떻게 알아볼까?"),
+      tt("Que faire si un cheval attaché commence à tirer violemment ?", "What should I do if a tied horse starts pulling back hard?", "¿Qué hacer si un caballo atado empieza a tirar con fuerza?", "Cosa fare se un cavallo legato inizia a tirare con forza?", "つないだ馬が強く引っぱりはじめたらどうする？", "Was tun, wenn ein angebundenes Pferd heftig zu ziehen beginnt?", "ماذا أفعل إذا بدأ حصان مربوط يشدّ بعنف؟", "被拴住的马开始猛烈后拉时该怎么办？", "Wat doe ik als een vastgezet paard hard begint te trekken?", "O que fazer se um cavalo amarrado começar a puxar com força?", "Vad gör jag om en uppbunden häst börjar slita hårt?", "Что делать, если привязанная лошадь начинает сильно тянуть?", "Co zrobić, gdy uwiązany koń zaczyna gwałtownie się szarpać?", "묶인 말이 세게 당기기 시작하면 어떻게 할까?"),
+      tt("Pourquoi une longe ne doit-elle jamais traîner au sol ?", "Why should a lead rope never drag on the ground?", "¿Por qué un ramal nunca debe arrastrar por el suelo?", "Perché una lunghina non deve mai strisciare a terra?", "引き綱を地面に引きずってはいけないのはなぜ？", "Warum darf ein Führstrick nie am Boden schleifen?", "لماذا يجب ألّا يجرّ حبل القيادة على الأرض أبدًا؟", "为什么牵绳绝不能拖在地上？", "Waarom mag een halstertouw nooit over de grond slepen?", "Por que uma guia nunca deve arrastar no chão?", "Varför får grimskaftet aldrig släpa i marken?", "Почему чумбур никогда не должен волочиться по земле?", "Dlaczego uwiąz nigdy nie powinien wlec się po ziemi?", "왜 리드로프가 땅에 끌리면 안 될까?"),
+      tt("Comment puis-je m'entraîner à faire ce nœud sans cheval ?", "How can I practise this knot without a horse?", "¿Cómo puedo practicar este nudo sin caballo?", "Come posso esercitarmi a fare questo nodo senza cavallo?", "馬がいなくても、この結び方を練習するには？", "Wie kann ich diesen Knoten ohne Pferd üben?", "كيف يمكنني التدرّب على هذه العقدة دون حصان؟", "没有马时我怎么练习打这个结？", "Hoe kan ik deze knoop oefenen zonder paard?", "Como posso treinar esse nó sem cavalo?", "Hur kan jag öva på knuten utan häst?", "Как потренироваться завязывать этот узел без лошади?", "Jak mogę ćwiczyć ten węzeł bez konia?", "말 없이 이 매듭을 연습하려면?")
+    ],
+    synth: [
+      tt("Une attache sûre commence par une bonne préparation.", "Safe tying starts with good preparation.", "Un amarre seguro empieza con una buena preparación.", "Un legaccio sicuro inizia con una buona preparazione.", "安全につなぐには、まず準備から。", "Sicheres Anbinden beginnt mit guter Vorbereitung.", "الربط الآمن يبدأ بتحضير جيد.", "安全拴马从做好准备开始。", "Veilig vastzetten begint met goede voorbereiding.", "Amarrar com segurança começa com boa preparação.", "Säker uppbindning börjar med bra förberedelse.", "Безопасная привязь начинается с подготовки.", "Bezpieczne uwiązanie zaczyna się od przygotowania.", "안전한 매기는 준비에서 시작된다."),
+      tt("Le point d'attache doit être adapté.", "The tie point must be suitable.", "El punto de amarre debe ser adecuado.", "Il punto di attacco deve essere adatto.", "つなぐ場所は適したものに。", "Der Anbindepunkt muss geeignet sein.", "يجب أن تكون نقطة الربط مناسبة.", "拴马点必须合适。", "Het vastzetpunt moet geschikt zijn.", "O ponto de amarração deve ser adequado.", "Fästpunkten måste vara lämplig.", "Место привязи должно быть подходящим.", "Punkt uwiązania musi być odpowiedni.", "묶는 지점은 알맞아야 한다."),
+      tt("Le nœud doit pouvoir se libérer rapidement.", "The knot must release quickly.", "El nudo debe poder soltarse rápido.", "Il nodo deve potersi sciogliere rapidamente.", "結び目はすぐにほどけること。", "Der Knoten muss sich schnell lösen lassen.", "يجب أن تُفكّ العقدة بسرعة.", "结必须能迅速解开。", "De knoop moet snel los kunnen.", "O nó deve se soltar rapidamente.", "Knuten måste gå att lösa snabbt.", "Узел должен быстро развязываться.", "Węzeł musi dać się szybko rozwiązać.", "매듭은 빨리 풀려야 한다."),
+      tt("Le cheval attaché reste sous surveillance.", "A tied horse stays supervised.", "El caballo atado sigue vigilado.", "Il cavallo legato resta sorvegliato.", "つないだ馬から目を離さない。", "Ein angebundenes Pferd bleibt beaufsichtigt.", "الحصان المربوط يبقى تحت المراقبة.", "被拴的马要有人看着。", "Een vastgezet paard blijft onder toezicht.", "O cavalo amarrado fica sob vigilância.", "En uppbunden häst ska ha tillsyn.", "Привязанная лошадь остаётся под присмотром.", "Uwiązany koń pozostaje pod nadzorem.", "묶인 말은 계속 지켜본다."),
+      tt("En cas de difficulté, appelle ton enseignant.", "If there's a problem, call your instructor.", "En caso de dificultad, llama a tu profesor.", "In caso di difficoltà, chiama il tuo istruttore.", "困ったら先生を呼ぼう。", "Bei Schwierigkeiten ruf deinen Reitlehrer.", "عند أي صعوبة، نادِ مدرّبك.", "遇到困难，叫你的教练。", "Bij problemen roep je je instructeur.", "Em caso de dificuldade, chame seu instrutor.", "Vid problem, kalla på din instruktör.", "При трудностях позови тренера.", "W razie trudności zawołaj instruktora.", "어려우면 선생님을 부르자.")
+    ],
+    fin: tt("Un bon nœud n'est pas celui qui serre le plus, mais celui qui protège le cheval.", "A good knot isn't the tightest one, but the one that protects the horse.", "Un buen nudo no es el que más aprieta, sino el que protege al caballo.", "Un buon nodo non è quello che stringe di più, ma quello che protegge il cavallo.", "よい結び目とは、いちばんきつい結び目ではなく、馬を守る結び目。", "Ein guter Knoten ist nicht der festeste, sondern der, der das Pferd schützt.", "العقدة الجيدة ليست الأشد إحكامًا، بل التي تحمي الحصان.", "好的结不是系得最紧的，而是能保护马的。", "Een goede knoop is niet de strakste, maar die het paard beschermt.", "Um bom nó não é o que aperta mais, mas o que protege o cavalo.", "En bra knut är inte den hårdaste, utan den som skyddar hästen.", "Хороший узел — не самый тугой, а тот, что защищает лошадь.", "Dobry węzeł to nie ten najciaśniejszy, lecz ten, który chroni konia.", "좋은 매듭은 가장 단단한 매듭이 아니라 말을 지켜 주는 매듭이다."),
+    chap: [
+      [tt("Avant d'attacher", "Before tying up", "Antes de atar", "Prima di legare", "つなぐ前に", "Vor dem Anbinden", "قبل الربط", "拴马之前", "Voor het vastzetten", "Antes de amarrar", "Innan du binder upp", "Перед привязью", "Zanim uwiążesz", "묶기 전에"), 5],
+      [tt("Réaliser le nœud", "Tying the knot", "Hacer el nudo", "Fare il nodo", "結んでみよう", "Den Knoten machen", "صنع العقدة", "打结", "De knoop leggen", "Fazer o nó", "Gör knuten", "Вяжем узел", "Wiązanie węzła", "매듭 묶기"), 6]
+    ]
+  },
+  "g1-c11": {
+    hb: [
+      tt("Comment retrouver mon numéro de licence FFE ?", "How do I find my FFE licence number?", "¿Cómo encuentro mi número de licencia FFE?", "Come ritrovo il mio numero di licenza FFE?", "FFEライセンス番号はどうやって確認する？", "Wie finde ich meine FFE-Lizenznummer?", "كيف أجد رقم رخصتي في FFE؟", "怎么找到我的 FFE 执照号码？", "Hoe vind ik mijn FFE-licentienummer terug?", "Como encontro meu número de licença FFE?", "Hur hittar jag mitt FFE-licensnummer?", "Как найти мой номер лицензии FFE?", "Jak znaleźć mój numer licencji FFE?", "FFE 라이선스 번호는 어떻게 찾을까?"),
+      tt("À quoi me sert ma licence si je ne fais pas de concours ?", "What is my licence for if I don't compete?", "¿Para qué me sirve la licencia si no compito?", "A cosa mi serve la licenza se non faccio gare?", "大会に出なくてもライセンスは何の役に立つの？", "Wozu brauche ich die Lizenz, wenn ich keine Turniere reite?", "ما فائدة رخصتي إذا لم أشارك في المسابقات؟", "如果我不参加比赛，执照有什么用？", "Waarvoor dient mijn licentie als ik geen wedstrijden rijd?", "Para que serve minha licença se não faço competições?", "Vad är licensen till för om jag inte tävlar?", "Зачем мне лицензия, если я не выступаю на соревнованиях?", "Do czego służy licencja, jeśli nie startuję w zawodach?", "대회에 나가지 않아도 라이선스는 어디에 쓰일까?"),
+      tt("Comment consulter mes Galops déjà obtenus ?", "How can I see the Galops I've already passed?", "¿Cómo consulto los Galops que ya he obtenido?", "Come consulto i Galop che ho già ottenuto?", "合格したギャロップはどうやって確認する？", "Wie sehe ich meine bereits bestandenen Galops?", "كيف أطّلع على مستويات الغالوب التي حصلت عليها؟", "怎么查看我已经通过的 Galop 等级？", "Hoe bekijk ik de Galops die ik al gehaald heb?", "Como consulto os Galops que já obtive?", "Hur ser jag mina avklarade Galops?", "Как посмотреть уже сданные Galops?", "Jak sprawdzić zdobyte już Galopy?", "이미 딴 갤럽은 어떻게 확인할까?"),
+      tt("Qui peut m'aider si une information est incorrecte ?", "Who can help me if some information is wrong?", "¿Quién puede ayudarme si una información es incorrecta?", "Chi può aiutarmi se un'informazione è sbagliata?", "情報がまちがっていたら、だれが助けてくれる？", "Wer hilft mir, wenn eine Angabe falsch ist?", "من يمكنه مساعدتي إذا كانت معلومة غير صحيحة؟", "如果信息有误，谁能帮我？", "Wie kan me helpen als een gegeven niet klopt?", "Quem pode me ajudar se uma informação estiver errada?", "Vem kan hjälpa mig om en uppgift är fel?", "Кто поможет, если какие-то данные неверны?", "Kto mi pomoże, jeśli jakaś informacja jest błędna?", "정보가 틀렸으면 누가 도와줄 수 있을까?"),
+      tt("Pourquoi ma licence me suit-elle quand je change de club ?", "Why does my licence follow me when I change clubs?", "¿Por qué mi licencia me sigue cuando cambio de club?", "Perché la mia licenza mi segue quando cambio club?", "クラブを変えてもライセンスがついてくるのはなぜ？", "Warum begleitet mich meine Lizenz, wenn ich den Verein wechsle?", "لماذا ترافقني رخصتي عندما أغيّر النادي؟", "为什么换俱乐部后执照还跟着我？", "Waarom blijft mijn licentie bij me als ik van club verander?", "Por que minha licença me acompanha quando mudo de clube?", "Varför följer licensen med när jag byter klubb?", "Почему лицензия остаётся со мной, когда я меняю клуб?", "Dlaczego licencja zostaje ze mną, gdy zmieniam klub?", "클럽을 옮겨도 라이선스가 따라오는 이유는?")
+    ],
+    synth: [
+      tt("La licence accompagne ton parcours de cavalier.", "Your licence goes with you on your riding journey.", "La licencia acompaña tu trayectoria de jinete.", "La licenza accompagna il tuo percorso di cavaliere.", "ライセンスは乗り手としての歩みに寄りそう。", "Die Lizenz begleitet deinen Weg als Reiter.", "الرخصة ترافق مسيرتك كفارس.", "执照陪伴你的骑手之路。", "De licentie begeleidt je ruiterloopbaan.", "A licença acompanha seu percurso de cavaleiro.", "Licensen följer dig genom din ridresa.", "Лицензия сопровождает твой путь всадника.", "Licencja towarzyszy twojej jeździeckiej drodze.", "라이선스는 기수로서의 여정을 함께한다."),
+      tt("Elle te relie à la Fédération française d'équitation.", "It links you to the French Equestrian Federation.", "Te une a la Federación Francesa de Equitación.", "Ti collega alla Federazione francese di equitazione.", "フランス馬術連盟とつながる。", "Sie verbindet dich mit dem Französischen Reitsportverband.", "تربطك بالاتحاد الفرنسي للفروسية.", "它把你和法国马术联合会联系在一起。", "Ze verbindt je met de Franse ruitersportfederatie.", "Ela liga você à Federação Francesa de Equitação.", "Den knyter dig till Franska ridsportförbundet.", "Она связывает тебя с Федерацией конного спорта Франции.", "Łączy cię z Francuską Federacją Jeździecką.", "프랑스 승마 연맹과 너를 이어 준다."),
+      tt("Elle donne accès à des services fédéraux.", "It gives access to federation services.", "Da acceso a servicios federativos.", "Dà accesso a servizi federali.", "連盟のサービスが使えるようになる。", "Sie öffnet den Zugang zu Verbandsangeboten.", "تتيح الوصول إلى خدمات الاتحاد.", "它让你使用联合会的服务。", "Ze geeft toegang tot diensten van de federatie.", "Dá acesso a serviços da federação.", "Den ger tillgång till förbundets tjänster.", "Она открывает доступ к услугам федерации.", "Daje dostęp do usług federacji.", "연맹 서비스를 이용할 수 있다."),
+      tt("Ton numéro reste le même au fil des années.", "Your number stays the same over the years.", "Tu número sigue siendo el mismo con los años.", "Il tuo numero resta lo stesso negli anni.", "番号は何年たっても変わらない。", "Deine Nummer bleibt über die Jahre gleich.", "رقمك يبقى نفسه على مرّ السنين.", "你的号码多年不变。", "Je nummer blijft door de jaren heen hetzelfde.", "Seu número continua o mesmo ao longo dos anos.", "Ditt nummer är detsamma genom åren.", "Твой номер не меняется с годами.", "Twój numer pozostaje ten sam przez lata.", "번호는 해가 지나도 그대로다."),
+      tt("Ton club peut t'aider dans tes démarches.", "Your club can help you with the paperwork.", "Tu club puede ayudarte con los trámites.", "Il tuo club può aiutarti nelle pratiche.", "手続きはクラブが手伝ってくれる。", "Dein Verein kann dir bei Formalitäten helfen.", "ناديك يمكنه مساعدتك في إجراءاتك.", "你的俱乐部可以帮你办理手续。", "Je club kan je helpen met de formaliteiten.", "Seu clube pode ajudar nos trâmites.", "Din klubb kan hjälpa dig med det praktiska.", "Клуб может помочь с оформлением.", "Klub może pomóc ci w formalnościach.", "절차는 클럽이 도와줄 수 있다.")
+    ],
+    fin: tt("Ton parcours équestre ne se mesure pas seulement en concours : chaque étape compte.", "Your riding journey isn't measured only in competitions: every step counts.", "Tu trayectoria ecuestre no se mide solo en concursos: cada etapa cuenta.", "Il tuo percorso equestre non si misura solo in gare: ogni tappa conta.", "乗馬の歩みは大会だけでは測れない。どの一歩も大切。", "Dein Reiterweg misst sich nicht nur an Turnieren: Jeder Schritt zählt.", "مسيرتك في الفروسية لا تُقاس بالمسابقات فقط: كل مرحلة مهمة.", "你的马术之路不只以比赛衡量：每一步都很重要。", "Je ruiterpad meet je niet alleen in wedstrijden: elke stap telt.", "Seu percurso equestre não se mede só em competições: cada etapa conta.", "Din ridresa mäts inte bara i tävlingar: varje steg räknas.", "Твой путь в конном спорте измеряется не только соревнованиями: важен каждый шаг.", "Twojej jeździeckiej drogi nie mierzy się tylko zawodami: liczy się każdy krok.", "승마의 여정은 대회로만 재지 않는다. 모든 단계가 소중하다."),
+    chap: [
+      [tt("Découvrir ta licence", "Discovering your licence", "Descubrir tu licencia", "Scoprire la tua licenza", "ライセンスを知ろう", "Deine Lizenz entdecken", "اكتشف رخصتك", "认识你的执照", "Je licentie ontdekken", "Descobrir sua licença", "Upptäck din licens", "Знакомство с лицензией", "Poznaj swoją licencję", "라이선스 알아보기"), 5],
+      [tt("Une identité de cavalier", "A rider's identity", "Una identidad de jinete", "Un'identità da cavaliere", "乗り手のしるし", "Eine Reiter-Identität", "هوية فارس", "骑手的身份", "Een ruiteridentiteit", "Uma identidade de cavaleiro", "En ryttaridentitet", "Удостоверение всадника", "Tożsamość jeźdźca", "기수의 신분증"), 2]
+    ]
+  },
+  "g1-c12": {
+    hb: [
+      tt("Pourquoi les cavaliers ont-ils besoin d'une fédération ?", "Why do riders need a federation?", "¿Por qué los jinetes necesitan una federación?", "Perché i cavalieri hanno bisogno di una federazione?", "乗り手に連盟が必要なのはなぜ？", "Warum brauchen Reiter einen Verband?", "لماذا يحتاج الفرسان إلى اتحاد؟", "骑手为什么需要联合会？", "Waarom hebben ruiters een federatie nodig?", "Por que os cavaleiros precisam de uma federação?", "Varför behöver ryttare ett förbund?", "Зачем всадникам федерация?", "Dlaczego jeźdźcy potrzebują federacji?", "기수들에게 왜 연맹이 필요할까?"),
+      tt("Est-ce que la FFE s'occupe aussi des petits clubs ?", "Does the FFE also look after small clubs?", "¿La FFE también se ocupa de los clubes pequeños?", "La FFE si occupa anche dei piccoli club?", "FFEは小さなクラブも支えているの？", "Kümmert sich die FFE auch um kleine Vereine?", "هل يهتم الاتحاد الفرنسي أيضًا بالنوادي الصغيرة؟", "FFE 也照顾小俱乐部吗？", "Zorgt de FFE ook voor kleine clubs?", "A FFE também cuida dos clubes pequenos?", "Tar FFE också hand om små klubbar?", "Занимается ли FFE и небольшими клубами?", "Czy FFE zajmuje się też małymi klubami?", "FFE는 작은 클럽도 돌볼까?"),
+      tt("Qui prépare les programmes des Galops ?", "Who writes the Galop programmes?", "¿Quién prepara los programas de los Galops?", "Chi prepara i programmi dei Galop?", "ギャロップの内容はだれが作っているの？", "Wer erstellt die Galop-Programme?", "من يُعدّ برامج مستويات الغالوب؟", "谁制定 Galop 的考试内容？", "Wie stelt de programma's van de Galops op?", "Quem prepara os programas dos Galops?", "Vem tar fram programmen för Galops?", "Кто составляет программы Galops?", "Kto przygotowuje programy Galopów?", "갤럽 프로그램은 누가 만들까?"),
+      tt("Comment découvrir les disciplines équestres reconnues par la FFE ?", "How can I discover the equestrian disciplines recognised by the FFE?", "¿Cómo descubrir las disciplinas ecuestres reconocidas por la FFE?", "Come scoprire le discipline equestri riconosciute dalla FFE?", "FFEが認めている馬術競技はどうやって知る？", "Wie entdecke ich die von der FFE anerkannten Disziplinen?", "كيف أكتشف تخصصات الفروسية المعترف بها من الاتحاد الفرنسي؟", "怎样了解 FFE 认可的马术项目？", "Hoe ontdek ik de disciplines die de FFE erkent?", "Como conhecer as modalidades equestres reconhecidas pela FFE?", "Hur upptäcker jag grenarna som FFE erkänner?", "Как узнать, какие дисциплины признаёт FFE?", "Jak poznać dyscypliny jeździeckie uznawane przez FFE?", "FFE가 인정하는 승마 종목은 어떻게 알아볼까?"),
+      tt("Où puis-je trouver des informations officielles sur l'équitation ?", "Where can I find official information about riding?", "¿Dónde puedo encontrar información oficial sobre equitación?", "Dove posso trovare informazioni ufficiali sull'equitazione?", "乗馬の公式情報はどこで見つかる？", "Wo finde ich offizielle Informationen zum Reiten?", "أين أجد معلومات رسمية عن الفروسية؟", "在哪里可以找到马术的官方信息？", "Waar vind ik officiële informatie over paardrijden?", "Onde encontro informações oficiais sobre equitação?", "Var hittar jag officiell information om ridning?", "Где найти официальную информацию о верховой езде?", "Gdzie znajdę oficjalne informacje o jeździectwie?", "승마에 관한 공식 정보는 어디서 찾을까?")
+    ],
+    synth: [
+      tt("La FFE rassemble le monde équestre français.", "The FFE brings together French equestrian life.", "La FFE reúne al mundo ecuestre francés.", "La FFE riunisce il mondo equestre francese.", "FFEはフランスの馬の世界をまとめている。", "Die FFE vereint die französische Reitsportwelt.", "الاتحاد الفرنسي يجمع عالم الفروسية في فرنسا.", "FFE 汇聚了法国马术界。", "De FFE brengt de Franse paardenwereld samen.", "A FFE reúne o mundo equestre francês.", "FFE samlar den franska hästvärlden.", "FFE объединяет конный мир Франции.", "FFE skupia francuski świat jeździecki.", "FFE는 프랑스 승마계를 하나로 모은다."),
+      tt("Elle donne un cadre commun aux activités.", "It gives activities a shared framework.", "Da un marco común a las actividades.", "Dà un quadro comune alle attività.", "活動に共通のルールをあたえる。", "Er gibt den Aktivitäten einen gemeinsamen Rahmen.", "يمنح الأنشطة إطارًا مشتركًا.", "它为各项活动提供统一框架。", "Ze geeft de activiteiten een gemeenschappelijk kader.", "Ela dá um quadro comum às atividades.", "Den ger verksamheten en gemensam ram.", "Она задаёт общие рамки занятиям.", "Nadaje działaniom wspólne ramy.", "활동에 공통의 틀을 준다."),
+      tt("Elle accompagne la progression des cavaliers.", "It supports riders' progress.", "Acompaña el progreso de los jinetes.", "Accompagna i progressi dei cavalieri.", "乗り手の上達を支える。", "Er begleitet den Fortschritt der Reiter.", "يرافق تقدّم الفرسان.", "它陪伴骑手进步。", "Ze begeleidt de vooruitgang van ruiters.", "Ela acompanha a evolução dos cavaleiros.", "Den stöttar ryttarnas utveckling.", "Она сопровождает прогресс всадников.", "Wspiera postępy jeźdźców.", "기수들의 성장을 돕는다."),
+      tt("Elle soutient la pratique de l'équitation.", "It supports the practice of riding.", "Apoya la práctica de la equitación.", "Sostiene la pratica dell'equitazione.", "乗馬の普及を応援する。", "Er fördert das Reiten.", "يدعم ممارسة الفروسية.", "它支持马术运动的开展。", "Ze ondersteunt de paardensport.", "Ela apoia a prática da equitação.", "Den stödjer ridsporten.", "Она поддерживает занятия верховой ездой.", "Wspiera uprawianie jeździectwa.", "승마 활동을 지원한다."),
+      tt("Ses ressources sont accessibles aux passionnés.", "Its resources are open to enthusiasts.", "Sus recursos están al alcance de los aficionados.", "Le sue risorse sono accessibili agli appassionati.", "その情報は馬好きのだれでも使える。", "Seine Angebote stehen allen Pferdefreunden offen.", "موارده متاحة لكل المولعين.", "它的资源向爱好者开放。", "Haar bronnen zijn toegankelijk voor liefhebbers.", "Seus recursos estão acessíveis aos apaixonados.", "Dess resurser är öppna för alla hästintresserade.", "Её ресурсы доступны всем увлечённым.", "Jej zasoby są dostępne dla pasjonatów.", "그 자료는 애호가 누구나 이용할 수 있다.")
+    ],
+    fin: tt("Derrière chaque cavalier, il existe tout un monde de passionnés qui font vivre l'équitation.", "Behind every rider, there's a whole world of enthusiasts who keep riding alive.", "Detrás de cada jinete hay todo un mundo de apasionados que dan vida a la equitación.", "Dietro ogni cavaliere c'è tutto un mondo di appassionati che fanno vivere l'equitazione.", "一人ひとりの乗り手の後ろには、乗馬を支える大勢の仲間がいる。", "Hinter jedem Reiter steht eine ganze Welt von Begeisterten, die den Reitsport lebendig halten.", "وراء كل فارس عالم كامل من المولعين الذين يُبقون الفروسية حيّة.", "每位骑手的背后，都有一群让马术生生不息的热爱者。", "Achter elke ruiter staat een hele wereld van liefhebbers die de paardensport laten leven.", "Por trás de cada cavaleiro existe todo um mundo de apaixonados que fazem a equitação viver.", "Bakom varje ryttare finns en hel värld av entusiaster som håller ridsporten levande.", "За каждым всадником стоит целый мир увлечённых людей, благодаря которым живёт конный спорт.", "Za każdym jeźdźcem stoi cały świat pasjonatów, dzięki którym jeździectwo żyje.", "모든 기수 뒤에는 승마를 살아 있게 하는 수많은 애호가가 있다."),
+    chap: [
+      [tt("Découvrir la FFE", "Discovering the FFE", "Descubrir la FFE", "Scoprire la FFE", "FFEを知ろう", "Die FFE entdecken", "اكتشاف الاتحاد الفرنسي", "认识 FFE", "De FFE ontdekken", "Descobrir a FFE", "Upptäck FFE", "Знакомство с FFE", "Poznaj FFE", "FFE 알아보기"), 3],
+      [tt("Une fédération pour tous", "A federation for everyone", "Una federación para todos", "Una federazione per tutti", "みんなの連盟", "Ein Verband für alle", "اتحاد للجميع", "属于所有人的联合会", "Een federatie voor iedereen", "Uma federação para todos", "Ett förbund för alla", "Федерация для всех", "Federacja dla wszystkich", "모두를 위한 연맹"), 3]
+    ]
+  },
+  "g1-c13": {
+    coach: tt("Quand tu regardes un grand championnat, ne suis pas seulement les parcours. Observe aussi les bénévoles et les personnes qui travaillent pour que tout se déroule bien.", "When you watch a big championship, don't just follow the rounds. Also watch the volunteers and the people working to make everything run smoothly.", "Cuando veas un gran campeonato, no sigas solo los recorridos. Observa también a los voluntarios y a las personas que trabajan para que todo salga bien.", "Quando guardi un grande campionato, non seguire solo i percorsi. Osserva anche i volontari e le persone che lavorano perché tutto vada bene.", "大きな選手権を見るときは、競技だけを追わないで。すべてがうまく進むように働くボランティアやスタッフにも目を向けよう。", "Wenn du eine große Meisterschaft anschaust, verfolge nicht nur die Ritte. Beobachte auch die Helfer und alle, die dafür sorgen, dass alles gut läuft.", "عندما تشاهد بطولة كبيرة، لا تتابع المسارات فقط. راقب أيضًا المتطوعين والأشخاص الذين يعملون ليسير كل شيء على ما يرام.", "观看大型锦标赛时，不要只看比赛。也看看那些为了让一切顺利进行而工作的志愿者和工作人员。", "Als je naar een groot kampioenschap kijkt, volg dan niet alleen de parcoursen. Kijk ook naar de vrijwilligers en iedereen die zorgt dat alles goed verloopt.", "Quando assistir a um grande campeonato, não acompanhe só os percursos. Observe também os voluntários e as pessoas que trabalham para tudo correr bem.", "När du tittar på ett stort mästerskap, följ inte bara ritterna. Titta också på volontärerna och alla som jobbar för att allt ska fungera.", "Когда смотришь крупный чемпионат, следи не только за выступлениями. Обрати внимание и на волонтёров, и на людей, благодаря которым всё проходит хорошо.", "Kiedy oglądasz duże mistrzostwa, nie śledź tylko przejazdów. Obserwuj też wolontariuszy i osoby, które pracują, by wszystko przebiegło dobrze.", "큰 선수권 대회를 볼 때는 경기만 보지 말자. 모든 것이 잘 진행되도록 일하는 자원봉사자와 사람들도 살펴보자."),
+    hb: [
+      tt("Peut-on visiter le Parc Équestre Fédéral sans participer à un concours ?", "Can you visit the Parc Équestre Fédéral without competing?", "¿Se puede visitar el Parc Équestre Fédéral sin participar en un concurso?", "Si può visitare il Parc Équestre Fédéral senza partecipare a una gara?", "大会に出なくてもパルク・エケストル・フェデラルを見学できる？", "Kann man den Parc Équestre Fédéral besuchen, ohne an einem Turnier teilzunehmen?", "هل يمكن زيارة المتنزّه الفروسي الاتحادي دون المشاركة في مسابقة؟", "不参加比赛也能参观联邦马术园吗？", "Kun je het Parc Équestre Fédéral bezoeken zonder mee te doen aan een wedstrijd?", "É possível visitar o Parc Équestre Fédéral sem participar de uma competição?", "Kan man besöka Parc Équestre Fédéral utan att tävla?", "Можно ли посетить Федеральный конный парк, не участвуя в соревнованиях?", "Czy można odwiedzić Parc Équestre Fédéral bez udziału w zawodach?", "대회에 나가지 않아도 연맹 승마 공원을 방문할 수 있을까?"),
+      tt("Quelles disciplines équestres peut-on y découvrir ?", "Which equestrian disciplines can you discover there?", "¿Qué disciplinas ecuestres se pueden descubrir allí?", "Quali discipline equestri si possono scoprire lì?", "そこではどんな馬術競技が見られる？", "Welche Reitdisziplinen kann man dort entdecken?", "ما تخصصات الفروسية التي يمكن اكتشافها هناك؟", "在那里能看到哪些马术项目？", "Welke disciplines kun je daar ontdekken?", "Que modalidades equestres se pode conhecer lá?", "Vilka grenar kan man upptäcka där?", "Какие конные дисциплины там можно увидеть?", "Jakie dyscypliny jeździeckie można tam poznać?", "그곳에서는 어떤 승마 종목을 볼 수 있을까?"),
+      tt("Comment se déroule une journée de championnat ?", "What happens during a championship day?", "¿Cómo transcurre un día de campeonato?", "Come si svolge una giornata di campionato?", "選手権の一日はどんなふう？", "Wie läuft ein Meisterschaftstag ab?", "كيف يجري يوم البطولة؟", "锦标赛的一天是怎样的？", "Hoe verloopt een kampioenschapsdag?", "Como é um dia de campeonato?", "Hur går en mästerskapsdag till?", "Как проходит день чемпионата?", "Jak przebiega dzień mistrzostw?", "선수권 대회 하루는 어떻게 진행될까?"),
+      tt("Pourquoi y a-t-il autant de bénévoles lors des compétitions ?", "Why are there so many volunteers at competitions?", "¿Por qué hay tantos voluntarios en las competiciones?", "Perché ci sono così tanti volontari durante le gare?", "大会にボランティアがたくさんいるのはなぜ？", "Warum gibt es bei Turnieren so viele Helfer?", "لماذا يوجد هذا العدد من المتطوعين في المسابقات؟", "比赛中为什么有这么多志愿者？", "Waarom zijn er zoveel vrijwilligers bij wedstrijden?", "Por que há tantos voluntários nas competições?", "Varför finns det så många volontärer på tävlingar?", "Почему на соревнованиях так много волонтёров?", "Dlaczego na zawodach jest tylu wolontariuszy?", "대회에는 왜 자원봉사자가 그렇게 많을까?"),
+      tt("Que faut-il prévoir pour venir assister à un grand événement ?", "What should I plan to attend a big event?", "¿Qué hay que prever para asistir a un gran evento?", "Cosa bisogna prevedere per assistere a un grande evento?", "大きなイベントを見に行くとき、何を準備すればいい？", "Was muss ich planen, um ein großes Event zu besuchen?", "ماذا يجب أن أُحضّر لحضور حدث كبير؟", "去观看大型赛事需要准备什么？", "Wat moet ik regelen om een groot evenement bij te wonen?", "O que é preciso planejar para assistir a um grande evento?", "Vad behöver jag planera för att gå på ett stort evenemang?", "Что нужно предусмотреть, чтобы посетить большое мероприятие?", "Co trzeba zaplanować, by obejrzeć duże wydarzenie?", "큰 행사를 보러 가려면 무엇을 준비해야 할까?")
+    ],
+    synth: [
+      tt("Lamotte-Beuvron accueille un grand site équestre.", "Lamotte-Beuvron is home to a major equestrian site.", "Lamotte-Beuvron acoge un gran recinto ecuestre.", "Lamotte-Beuvron ospita un grande sito equestre.", "ラモット＝ブーヴロンには大きな馬術施設がある。", "Lamotte-Beuvron beherbergt eine große Reitsportanlage.", "تستضيف لاموت-بوفرون موقعًا فروسيًا كبيرًا.", "拉莫特-伯夫龙有一座大型马术场地。", "Lamotte-Beuvron heeft een groot ruitersportterrein.", "Lamotte-Beuvron abriga um grande espaço equestre.", "Lamotte-Beuvron har en stor ridsportanläggning.", "В Ламот-Бёврон находится крупный конный комплекс.", "W Lamotte-Beuvron mieści się duży ośrodek jeździecki.", "라모트뵈브롱에는 큰 승마 시설이 있다."),
+      tt("Ses installations permettent de nombreuses activités.", "Its facilities allow many activities.", "Sus instalaciones permiten muchas actividades.", "Le sue strutture permettono molte attività.", "施設ではさまざまな活動ができる。", "Seine Anlagen ermöglichen viele Aktivitäten.", "منشآته تتيح أنشطة كثيرة.", "它的设施可以开展多种活动。", "Zijn faciliteiten maken veel activiteiten mogelijk.", "Suas instalações permitem muitas atividades.", "Anläggningen rymmer många aktiviteter.", "Его сооружения позволяют проводить много занятий.", "Jego obiekty pozwalają na wiele aktywności.", "시설에서 다양한 활동을 할 수 있다."),
+      tt("Des cavaliers s'y retrouvent pour les championnats.", "Riders gather there for championships.", "Los jinetes se reúnen allí para los campeonatos.", "I cavalieri vi si ritrovano per i campionati.", "選手権のために乗り手が集まる。", "Reiter treffen sich dort zu Meisterschaften.", "يلتقي الفرسان هناك في البطولات.", "骑手们在那里参加锦标赛。", "Ruiters komen er samen voor kampioenschappen.", "Cavaleiros se reúnem lá para os campeonatos.", "Ryttare samlas där för mästerskap.", "Всадники съезжаются туда на чемпионаты.", "Jeźdźcy spotykają się tam na mistrzostwach.", "선수권 대회에 기수들이 모인다."),
+      tt("Les grands événements demandent beaucoup d'organisation.", "Big events take a lot of organisation.", "Los grandes eventos exigen mucha organización.", "I grandi eventi richiedono molta organizzazione.", "大きな大会には、たくさんの準備が必要。", "Große Events erfordern viel Organisation.", "الأحداث الكبيرة تتطلب تنظيمًا كبيرًا.", "大型赛事需要大量组织工作。", "Grote evenementen vragen veel organisatie.", "Grandes eventos exigem muita organização.", "Stora evenemang kräver mycket planering.", "Большие мероприятия требуют серьёзной организации.", "Duże wydarzenia wymagają wiele organizacji.", "큰 행사에는 많은 준비가 필요하다."),
+      tt("Le Parc réunit des passionnés venus de partout.", "The Parc brings together enthusiasts from everywhere.", "El Parque reúne a aficionados de todas partes.", "Il Parco riunisce appassionati da ogni dove.", "パルクには各地から馬好きが集まる。", "Der Park vereint Begeisterte von überall.", "يجمع المتنزّه مولعين من كل مكان.", "这个园区汇聚了各地的爱好者。", "Het Parc brengt liefhebbers van overal samen.", "O Parque reúne apaixonados de todos os lugares.", "Parken samlar entusiaster från hela landet.", "Парк собирает увлечённых людей отовсюду.", "Park gromadzi pasjonatów z całego kraju.", "공원에는 곳곳에서 온 애호가들이 모인다.")
+    ],
+    fin: tt("À Lamotte-Beuvron, chaque parcours raconte aussi une histoire de préparation, de rencontres et de passion.", "At Lamotte-Beuvron, every round also tells a story of preparation, encounters and passion.", "En Lamotte-Beuvron, cada recorrido cuenta también una historia de preparación, encuentros y pasión.", "A Lamotte-Beuvron, ogni percorso racconta anche una storia di preparazione, incontri e passione.", "ラモット＝ブーヴロンでは、どの走行にも準備と出会いと情熱の物語がある。", "In Lamotte-Beuvron erzählt jeder Ritt auch eine Geschichte von Vorbereitung, Begegnungen und Leidenschaft.", "في لاموت-بوفرون، يروي كل مسار أيضًا قصة تحضير ولقاءات وشغف.", "在拉莫特-伯夫龙，每一轮比赛也讲述着准备、相遇与热爱的故事。", "In Lamotte-Beuvron vertelt elk parcours ook een verhaal van voorbereiding, ontmoetingen en passie.", "Em Lamotte-Beuvron, cada percurso também conta uma história de preparação, encontros e paixão.", "I Lamotte-Beuvron berättar varje ritt också en historia om förberedelser, möten och passion.", "В Ламот-Бёврон каждый маршрут — это ещё и история подготовки, встреч и увлечённости.", "W Lamotte-Beuvron każdy przejazd opowiada też historię przygotowań, spotkań i pasji.", "라모트뵈브롱에서는 모든 경기가 준비와 만남, 열정의 이야기를 들려준다."),
+    chap: [
+      [tt("Découvrir le Parc", "Discovering the Parc", "Descubrir el Parque", "Scoprire il Parco", "パルクを知ろう", "Den Park entdecken", "اكتشاف المتنزّه", "认识这座园区", "Het Parc ontdekken", "Descobrir o Parque", "Upptäck parken", "Знакомство с Парком", "Poznaj Park", "공원 알아보기"), 2],
+      [tt("Vivre les championnats", "Experiencing the championships", "Vivir los campeonatos", "Vivere i campionati", "選手権を体験しよう", "Meisterschaften erleben", "عيش أجواء البطولات", "感受锦标赛", "De kampioenschappen beleven", "Viver os campeonatos", "Uppleva mästerskapen", "Атмосфера чемпионатов", "Przeżyj mistrzostwa", "선수권 대회 즐기기"), 2]
+    ]
+  },
+  "g1-c16": {
+    coach: tt("Un cheval peut ressembler beaucoup à un autre. Demande à ton enseignant de te montrer, sur un exemple de livret, comment vérifier qu'une description correspond au bon cheval.", "One horse can look a lot like another. Ask your instructor to show you, on a sample passport, how to check that a description matches the right horse.", "Un caballo puede parecerse mucho a otro. Pide a tu profesor que te muestre, en un ejemplo de libreta, cómo comprobar que una descripción corresponde al caballo correcto.", "Un cavallo può somigliare molto a un altro. Chiedi al tuo istruttore di mostrarti, su un esempio di libretto, come verificare che una descrizione corrisponda al cavallo giusto.", "よく似た馬はたくさんいる。見本の手帳を使って、記載が正しい馬と合っているか確かめる方法を先生に見せてもらおう。", "Ein Pferd kann einem anderen sehr ähnlich sehen. Bitte deinen Reitlehrer, dir an einem Beispielpass zu zeigen, wie man prüft, ob eine Beschreibung zum richtigen Pferd passt.", "قد يشبه حصانٌ حصانًا آخر كثيرًا. اطلب من مدرّبك أن يُريك، على نموذج دفتر، كيف تتحقق من أن الوصف يطابق الحصان الصحيح.", "一匹马可能和另一匹非常像。请教练用一本示例证件告诉你，如何核对描述是否与正确的马相符。", "Een paard kan erg op een ander lijken. Vraag je instructeur je aan de hand van een voorbeeldpaspoort te laten zien hoe je controleert of een beschrijving bij het juiste paard hoort.", "Um cavalo pode se parecer muito com outro. Peça ao seu instrutor para mostrar, num exemplo de passaporte, como verificar se uma descrição corresponde ao cavalo certo.", "En häst kan likna en annan mycket. Be din instruktör visa dig, i ett exempelpass, hur man kontrollerar att en beskrivning stämmer med rätt häst.", "Одна лошадь может быть очень похожа на другую. Попроси тренера показать на примере паспорта, как проверить, что описание соответствует нужной лошади.", "Jeden koń może być bardzo podobny do innego. Poproś instruktora, by na przykładowym paszporcie pokazał ci, jak sprawdzić, czy opis pasuje do właściwego konia.", "어떤 말은 다른 말과 아주 비슷할 수 있다. 선생님께 견본 여권으로 설명이 맞는 말과 일치하는지 확인하는 법을 보여 달라고 하자."),
+    defi: {
+      titre: tt("Détective du passeport", "Passport detective", "Detective del pasaporte", "Detective del passaporto", "パスポート探偵", "Pass-Detektiv", "محقّق جواز السفر", "证件侦探", "Paspoortdetective", "Detetive do passaporte", "Passdetektiv", "Детектив паспорта", "Detektyw paszportu", "여권 탐정"),
+      accroche: tt("Avec ton enseignant, examine une copie de livret pour découvrir comment on identifie un cheval.", "With your instructor, look at a copy of a passport to find out how a horse is identified.", "Con tu profesor, examina una copia de libreta para descubrir cómo se identifica a un caballo.", "Con il tuo istruttore, esamina una copia del libretto per scoprire come si identifica un cavallo.", "先生といっしょに手帳のコピーを調べて、馬をどうやって見分けるのか知ろう。", "Sieh dir mit deinem Reitlehrer eine Passkopie an und entdecke, wie ein Pferd identifiziert wird.", "مع مدرّبك، افحص نسخة من الدفتر لتكتشف كيف يُعرَّف الحصان.", "和教练一起查看一份证件复印件，了解如何识别一匹马。", "Bekijk met je instructeur een kopie van een paspoort en ontdek hoe een paard geïdentificeerd wordt.", "Com seu instrutor, examine uma cópia do passaporte para descobrir como se identifica um cavalo.", "Titta på en kopia av ett hästpass med din instruktör och upptäck hur en häst identifieras.", "Вместе с тренером изучи копию паспорта и узнай, как опознают лошадь.", "Z instruktorem przejrzyj kopię paszportu i odkryj, jak identyfikuje się konia.", "선생님과 함께 여권 사본을 살펴보며 말을 어떻게 식별하는지 알아보자."),
+      points: [
+        tt("Retrouve le numéro d'identification sur le document.", "Find the identification number on the document.", "Encuentra el número de identificación en el documento.", "Ritrova il numero di identificazione sul documento.", "書類の中で識別番号を見つけよう。", "Finde die Identifikationsnummer im Dokument.", "اعثر على رقم التعريف في الوثيقة.", "在证件上找到识别号码。", "Zoek het identificatienummer op het document.", "Encontre o número de identificação no documento.", "Hitta identifieringsnumret i dokumentet.", "Найди в документе идентификационный номер.", "Odszukaj w dokumencie numer identyfikacyjny.", "서류에서 식별 번호를 찾아보자."),
+        tt("Repère une information permettant de décrire le cheval.", "Spot a piece of information that describes the horse.", "Localiza un dato que permita describir al caballo.", "Individua un'informazione che descrive il cavallo.", "馬の特徴を説明する情報をひとつ見つけよう。", "Finde eine Angabe, die das Pferd beschreibt.", "حدّد معلومة تصف الحصان.", "找出一条描述这匹马的信息。", "Zoek een gegeven dat het paard beschrijft.", "Encontre uma informação que descreva o cavalo.", "Hitta en uppgift som beskriver hästen.", "Найди сведения, описывающие лошадь.", "Wskaż informację opisującą konia.", "말을 설명하는 정보 하나를 찾아보자."),
+        tt("Explique à qui demander si une information semble incorrecte.", "Explain who to ask if some information looks wrong.", "Explica a quién preguntar si un dato parece incorrecto.", "Spiega a chi chiedere se un'informazione sembra sbagliata.", "情報がまちがっていそうなとき、だれに聞けばいいか説明しよう。", "Erkläre, wen man fragt, wenn eine Angabe falsch scheint.", "اشرح لمن تتوجه إذا بدت معلومة غير صحيحة.", "说说如果信息看起来有误应该问谁。", "Leg uit aan wie je het vraagt als een gegeven niet lijkt te kloppen.", "Explique a quem perguntar se uma informação parecer errada.", "Förklara vem man frågar om en uppgift verkar fel.", "Объясни, к кому обратиться, если сведения кажутся неверными.", "Wyjaśnij, kogo zapytać, jeśli informacja wydaje się błędna.", "정보가 틀린 것 같으면 누구에게 물어야 하는지 설명하자.")
+      ]
+    },
+    hb: [
+      tt("Quelle différence existe-t-il entre le nom du cheval et son numéro ?", "What's the difference between a horse's name and its number?", "¿Qué diferencia hay entre el nombre del caballo y su número?", "Che differenza c'è tra il nome del cavallo e il suo numero?", "馬の名前と番号にはどんなちがいがあるの？", "Was ist der Unterschied zwischen dem Namen eines Pferdes und seiner Nummer?", "ما الفرق بين اسم الحصان ورقمه؟", "马的名字和号码有什么区别？", "Wat is het verschil tussen de naam van een paard en zijn nummer?", "Qual é a diferença entre o nome do cavalo e o número dele?", "Vad är skillnaden mellan hästens namn och dess nummer?", "Чем отличается кличка лошади от её номера?", "Czym różni się imię konia od jego numeru?", "말의 이름과 번호는 어떻게 다를까?"),
+      tt("Comment distinguer deux chevaux qui se ressemblent beaucoup ?", "How can you tell apart two horses that look very alike?", "¿Cómo distinguir dos caballos que se parecen mucho?", "Come distinguere due cavalli che si somigliano molto?", "よく似た2頭の馬はどうやって見分ける？", "Wie unterscheidet man zwei Pferde, die sich sehr ähneln?", "كيف أميّز بين حصانين متشابهين جدًا؟", "怎么分辨两匹长得很像的马？", "Hoe onderscheid je twee paarden die erg op elkaar lijken?", "Como distinguir dois cavalos muito parecidos?", "Hur skiljer man två hästar som är mycket lika?", "Как различить двух очень похожих лошадей?", "Jak odróżnić dwa bardzo podobne konie?", "아주 닮은 두 말은 어떻게 구별할까?"),
+      tt("Qui peut lire la puce électronique d'un cheval ?", "Who can read a horse's microchip?", "¿Quién puede leer el microchip de un caballo?", "Chi può leggere il microchip di un cavallo?", "馬のマイクロチップはだれが読めるの？", "Wer kann den Mikrochip eines Pferdes auslesen?", "من يمكنه قراءة الشريحة الإلكترونية للحصان؟", "谁能读取马的电子芯片？", "Wie kan de chip van een paard uitlezen?", "Quem pode ler o microchip de um cavalo?", "Vem kan läsa av en hästs chip?", "Кто может считать электронный чип лошади?", "Kto może odczytać chip konia?", "말의 마이크로칩은 누가 읽을 수 있을까?"),
+      tt("Que faire si le livret d'un cheval est perdu ?", "What should you do if a horse's passport is lost?", "¿Qué hacer si se pierde la libreta de un caballo?", "Cosa fare se il libretto di un cavallo è perso?", "馬の手帳をなくしたらどうする？", "Was tun, wenn der Pass eines Pferdes verloren ist?", "ماذا أفعل إذا ضاع دفتر الحصان؟", "如果马的证件丢了怎么办？", "Wat doe je als het paspoort van een paard kwijt is?", "O que fazer se o passaporte de um cavalo for perdido?", "Vad gör man om hästens pass har kommit bort?", "Что делать, если паспорт лошади потерян?", "Co zrobić, jeśli paszport konia zaginął?", "말의 여권을 잃어버리면 어떻게 할까?"),
+      tt("Pourquoi faut-il vérifier ses documents avant certains déplacements ?", "Why should its documents be checked before some trips?", "¿Por qué hay que comprobar sus documentos antes de algunos desplazamientos?", "Perché bisogna verificare i suoi documenti prima di alcuni spostamenti?", "移動の前に書類を確かめるのはなぜ？", "Warum muss man vor manchen Transporten die Papiere prüfen?", "لماذا يجب التحقق من وثائقه قبل بعض التنقلات؟", "为什么某些出行前要检查它的证件？", "Waarom moet je de papieren controleren voor bepaalde verplaatsingen?", "Por que é preciso verificar os documentos antes de certos deslocamentos?", "Varför ska papperen kontrolleras inför vissa resor?", "Почему перед некоторыми поездками нужно проверить документы?", "Dlaczego przed niektórymi podróżami trzeba sprawdzić dokumenty?", "왜 이동하기 전에 서류를 확인해야 할까?")
+    ],
+    synth: [
+      tt("Chaque cheval possède sa propre identification.", "Every horse has its own identification.", "Cada caballo tiene su propia identificación.", "Ogni cavallo ha la propria identificazione.", "どの馬にも自分だけの識別がある。", "Jedes Pferd hat seine eigene Kennzeichnung.", "لكل حصان تعريفه الخاص.", "每匹马都有自己的身份标识。", "Elk paard heeft zijn eigen identificatie.", "Cada cavalo tem sua própria identificação.", "Varje häst har sin egen identitet.", "У каждой лошади своя идентификация.", "Każdy koń ma własną identyfikację.", "말마다 고유한 식별 정보가 있다."),
+      tt("Son livret rassemble des informations importantes.", "Its passport holds important information.", "Su libreta reúne información importante.", "Il suo libretto raccoglie informazioni importanti.", "手帳には大切な情報がまとまっている。", "Sein Pass enthält wichtige Angaben.", "دفتره يجمع معلومات مهمة.", "它的证件汇集了重要信息。", "Zijn paspoort bevat belangrijke gegevens.", "Seu passaporte reúne informações importantes.", "Passet samlar viktig information.", "Паспорт содержит важные сведения.", "Paszport zawiera ważne informacje.", "여권에는 중요한 정보가 담겨 있다."),
+      tt("Son signalement aide à le reconnaître.", "Its markings description helps identify it.", "Su reseña ayuda a reconocerlo.", "Il suo segnalamento aiuta a riconoscerlo.", "特徴の記載が見分ける助けになる。", "Das Signalement hilft, es zu erkennen.", "وصف علاماته يساعد على التعرّف عليه.", "特征描述有助于认出它。", "Het signalement helpt het te herkennen.", "A resenha ajuda a reconhecê-lo.", "Signalementet hjälper att känna igen den.", "Описание примет помогает её узнать.", "Opis pomaga go rozpoznać.", "특징 기록은 말을 알아보는 데 도움이 된다."),
+      tt("Sa puce permet une vérification électronique.", "Its microchip allows electronic checking.", "Su microchip permite una verificación electrónica.", "Il microchip consente una verifica elettronica.", "チップで電子的に確認できる。", "Der Chip erlaubt eine elektronische Prüfung.", "شريحته تتيح تحققًا إلكترونيًا.", "芯片可以进行电子核对。", "De chip maakt een elektronische controle mogelijk.", "O microchip permite uma verificação eletrônica.", "Chipet gör elektronisk kontroll möjlig.", "Чип позволяет проверить её электронно.", "Chip umożliwia kontrolę elektroniczną.", "칩으로 전자 확인을 할 수 있다."),
+      tt("Son identification reste liée à lui toute sa vie.", "Its identification stays with it for life.", "Su identificación lo acompaña toda la vida.", "La sua identificazione resta legata a lui per tutta la vita.", "識別は一生その馬とともにある。", "Die Kennzeichnung bleibt ein Leben lang.", "يبقى تعريفه مرتبطًا به طوال حياته.", "身份标识伴随它一生。", "De identificatie blijft zijn hele leven bij hem.", "A identificação fica ligada a ele a vida toda.", "Identiteten följer hästen hela livet.", "Идентификация остаётся с ней на всю жизнь.", "Identyfikacja pozostaje z nim na całe życie.", "식별 정보는 평생 그 말과 함께한다.")
+    ],
+    fin: tt("Chaque cheval a son histoire, et son passeport permet de ne jamais la confondre avec une autre.", "Every horse has its own story, and its passport makes sure it's never mixed up with another.", "Cada caballo tiene su historia, y su pasaporte permite no confundirla nunca con otra.", "Ogni cavallo ha la sua storia, e il suo passaporto permette di non confonderla mai con un'altra.", "どの馬にも物語があり、パスポートがあればほかの馬と取りちがえることはない。", "Jedes Pferd hat seine Geschichte, und sein Pass sorgt dafür, dass sie nie mit einer anderen verwechselt wird.", "لكل حصان قصته، وجوازه يضمن ألا تختلط بقصة أخرى أبدًا.", "每匹马都有自己的故事，它的证件让这个故事永远不会与别的混淆。", "Elk paard heeft zijn verhaal, en zijn paspoort zorgt dat het nooit met een ander verward wordt.", "Cada cavalo tem sua história, e seu passaporte garante que ela nunca seja confundida com outra.", "Varje häst har sin historia, och passet ser till att den aldrig förväxlas med en annan.", "У каждой лошади своя история, и паспорт не даёт спутать её с другой.", "Każdy koń ma swoją historię, a paszport sprawia, że nigdy nie pomyli się jej z inną.", "말마다 저마다의 이야기가 있고, 여권 덕분에 다른 말과 헷갈리지 않는다."),
+    chap: [
+      [tt("Son livret d'identité", "Its identity booklet", "Su libreta de identidad", "Il suo libretto d'identità", "身分の手帳", "Sein Ausweisheft", "دفتر هويته", "它的身份证件", "Zijn identiteitsboekje", "Seu livreto de identidade", "Dess identitetsbok", "Его удостоверение", "Jego dowód tożsamości", "말의 신분 수첩"), 2],
+      [tt("Un document qui suit", "A document that travels with it", "Un documento que lo acompaña", "Un documento che lo segue", "いつもいっしょの書類", "Ein Dokument, das mitreist", "وثيقة ترافقه", "随行的证件", "Een document dat meegaat", "Um documento que acompanha", "Ett dokument som följer med", "Документ всегда с ней", "Dokument, który mu towarzyszy", "늘 함께하는 서류"), 3],
+      [tt("Reconnaître le bon cheval", "Recognising the right horse", "Reconocer al caballo correcto", "Riconoscere il cavallo giusto", "正しい馬を見分ける", "Das richtige Pferd erkennen", "التعرّف على الحصان الصحيح", "认出正确的马", "Het juiste paard herkennen", "Reconhecer o cavalo certo", "Känna igen rätt häst", "Узнать нужную лошадь", "Rozpoznać właściwego konia", "올바른 말 알아보기"), 4]
+    ]
+  },
+  "g1-c17": {
+    coach: tt("Ne te concentre pas uniquement sur ton matériel : regarde aussi les réactions de ton cheval pendant la préparation. S'il se crispe ou semble gêné, arrête ton geste et demande conseil à ton enseignant.", "Don't focus only on your equipment: also watch your horse's reactions while you tack up. If it tenses or seems uncomfortable, stop and ask your instructor for advice.", "No te centres solo en tu material: observa también las reacciones de tu caballo durante la preparación. Si se tensa o parece incómodo, detén tu gesto y pide consejo a tu profesor.", "Non concentrarti solo sull'attrezzatura: guarda anche le reazioni del tuo cavallo durante la preparazione. Se si irrigidisce o sembra a disagio, fermati e chiedi consiglio al tuo istruttore.", "道具ばかりに集中しないで、準備中の馬の反応も見よう。かたくなったり、いやがったりしたら手を止めて、先生に相談しよう。", "Konzentriere dich nicht nur auf die Ausrüstung: Achte beim Fertigmachen auch auf die Reaktionen deines Pferdes. Wenn es sich verspannt oder unwohl wirkt, hör auf und frag deinen Reitlehrer um Rat.", "لا تركّز على معداتك فقط: راقب أيضًا ردود فعل حصانك أثناء التجهيز. إذا تشنّج أو بدا منزعجًا، توقّف واطلب النصيحة من مدرّبك.", "不要只专注于马具：备马时也要观察马的反应。如果它紧绷或显得不舒服，就停下来，向教练请教。", "Let niet alleen op je materiaal: kijk tijdens het opzadelen ook naar de reacties van je paard. Als het zich spant of ongemakkelijk lijkt, stop dan en vraag je instructeur om raad.", "Não se concentre só no material: observe também as reações do seu cavalo durante a preparação. Se ele ficar tenso ou parecer incomodado, pare e peça conselho ao seu instrutor.", "Fokusera inte bara på utrustningen: titta också på hästens reaktioner medan du gör i ordning den. Om den spänner sig eller verkar obekväm, sluta och fråga din instruktör.", "Не сосредотачивайся только на снаряжении: следи и за реакциями лошади во время подготовки. Если она напрягается или ей неудобно, остановись и спроси совета у тренера.", "Nie skupiaj się tylko na sprzęcie: obserwuj też reakcje konia podczas przygotowania. Jeśli się spina lub wydaje się skrępowany, przerwij i poproś instruktora o radę.", "장비에만 집중하지 말고 준비하는 동안 말의 반응도 살펴보자. 말이 긴장하거나 불편해 보이면 동작을 멈추고 선생님께 조언을 구하자."),
+    fin: tt("Préparer son cheval avec attention, c'est déjà commencer à construire une belle séance ensemble.", "Getting your horse ready with care is already the start of a good session together.", "Preparar a tu caballo con atención ya es empezar a construir una buena sesión juntos.", "Preparare il cavallo con attenzione è già iniziare a costruire una bella sessione insieme.", "ていねいに準備することが、いっしょにすごすよいレッスンの始まり。", "Sein Pferd aufmerksam vorzubereiten heißt schon, gemeinsam eine schöne Reitstunde aufzubauen.", "تجهيز حصانك بعناية هو بداية حصة جميلة معًا.", "用心为马做准备，就是共同打造一堂好课的开始。", "Je paard met aandacht klaarmaken is al het begin van een fijne les samen.", "Preparar o cavalo com atenção já é começar a construir uma bela sessão juntos.", "Att göra i ordning hästen med omsorg är redan början på ett fint pass tillsammans.", "Внимательно подготовить лошадь — значит уже начать строить хорошее занятие вместе.", "Staranne przygotowanie konia to już początek wspólnej, udanej jazdy.", "정성껏 말을 준비하는 것이 함께하는 좋은 수업의 시작이다.")
+  },
+  "g1-c18": {
+    synth: [
+      tt("En main, tu guides sans tirer brusquement.", "In hand, you lead without pulling sharply.", "Del ramal, guías sin tirar bruscamente.", "A mano, guidi senza tirare bruscamente.", "引き馬では、急に引っぱらずに導く。", "An der Hand führst du, ohne ruckartig zu ziehen.", "عند القيادة باليد، توجّه دون شدّ مفاجئ.", "牵马时，引导而不猛拉。", "Aan de hand leid je zonder hard te trekken.", "Na guia, você conduz sem puxar bruscamente.", "Vid hand leder du utan att rycka.", "В поводу ты ведёшь, не дёргая.", "Prowadząc w ręku, nie szarpiesz.", "끌고 갈 때는 갑자기 당기지 않고 이끈다."),
+      tt("Ton attention reste tournée vers le cheval.", "Your attention stays on the horse.", "Tu atención sigue puesta en el caballo.", "La tua attenzione resta rivolta al cavallo.", "注意はいつも馬に向けておく。", "Deine Aufmerksamkeit bleibt beim Pferd.", "انتباهك يبقى موجّهًا نحو الحصان.", "注意力始终放在马身上。", "Je aandacht blijft bij het paard.", "Sua atenção fica voltada para o cavalo.", "Din uppmärksamhet är på hästen.", "Твоё внимание обращено на лошадь.", "Twoja uwaga pozostaje skupiona na koniu.", "주의는 늘 말에게 둔다."),
+      tt("Une distance adaptée protège tes pieds.", "The right distance protects your feet.", "Una distancia adecuada protege tus pies.", "Una distanza adeguata protegge i tuoi piedi.", "ちょうどよい距離が足を守る。", "Der richtige Abstand schützt deine Füße.", "المسافة المناسبة تحمي قدميك.", "合适的距离保护你的脚。", "De juiste afstand beschermt je voeten.", "Uma distância adequada protege seus pés.", "Rätt avstånd skyddar dina fötter.", "Правильная дистанция бережёт твои ноги.", "Odpowiedni dystans chroni twoje stopy.", "알맞은 거리가 발을 지켜 준다."),
+      tt("Les passages délicats demandent calme et anticipation.", "Tricky passages call for calm and anticipation.", "Los pasos delicados piden calma y anticipación.", "I passaggi delicati richiedono calma e anticipo.", "むずかしい場所では落ち着いて先を読む。", "Heikle Stellen verlangen Ruhe und Voraussicht.", "الممرات الصعبة تتطلب هدوءًا واستباقًا.", "难走的地方需要冷静和预判。", "Lastige doorgangen vragen rust en vooruitdenken.", "Passagens delicadas pedem calma e antecipação.", "Knepiga passager kräver lugn och framförhållning.", "Сложные места требуют спокойствия и предвидения.", "Trudne przejścia wymagają spokoju i przewidywania.", "까다로운 곳에서는 침착하게 미리 대비한다."),
+      tt("Si tu hésites, demande l'aide de ton enseignant.", "If you're unsure, ask your instructor for help.", "Si dudas, pide ayuda a tu profesor.", "Se esiti, chiedi aiuto al tuo istruttore.", "迷ったら先生に助けを求めよう。", "Wenn du unsicher bist, bitte deinen Reitlehrer um Hilfe.", "إذا تردّدت، اطلب مساعدة مدرّبك.", "如果犹豫，就请教练帮忙。", "Twijfel je, vraag dan je instructeur om hulp.", "Se hesitar, peça ajuda ao seu instrutor.", "Om du tvekar, be din instruktör om hjälp.", "Если сомневаешься, попроси помощи у тренера.", "Jeśli się wahasz, poproś instruktora o pomoc.", "망설여지면 선생님께 도움을 청하자.")
+    ]
+  }
+};
+
+
+function sansEmojiFin(s) { return String(s || "").replace(/[\s\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{2300}-\u{23FF}️‍]+$/u, "").trim(); }
+function titreNet(s) { return sansEmojiFin(sansNum(nettoyerTitre(s))); }
+/* sorte d'un segment, lue sur le titre français */
+function sorte(seg) {
+  var t = nettoyerTitre(seg.titre || "").toLowerCase();
+  if (seg.k === "citation") return "citation";
+  if (/^citation d.ouverture/.test(t)) return "citOuv";
+  if (/^citation de fin/.test(t)) return "citFin";
+  if (/^(les )?objectifs? du cours/.test(t)) return "objectif";
+  if (/synth[èe]se en 10/.test(t)) return "synthese";
+  if (/hey baby/.test(t)) return "hb";
+  if (/d[ée]fi/.test(t)) return "defi";
+  if (/conseil (du|de ton) coach/.test(t)) return "coach";
+  if (!t) return "suite";
+  return "notion";
+}
+/* agrandissement plein écran d'une affiche */
+function Affiche(p) {
+  var _z = useState(false), z = _z[0], setZ = _z[1];
+  useEffect(function () {
+    if (!z) return;
+    var k = function (e) { if (e.key === "Escape") setZ(false); };
+    window.addEventListener("keydown", k); return function () { window.removeEventListener("keydown", k); };
+  }, [z]);
+  return h(React.Fragment, null,
+    h("button", { type: "button", className: "pimg aff", "aria-label": p.L("agrandir"), onClick: function () { setZ(true); } },
+      h("img", { src: p.src, alt: p.alt || "", loading: "lazy" })),
+    p.legende ? h("p", { className: "lg" }, p.legende) : null,
+    z ? (window.ReactDOM && ReactDOM.createPortal ? ReactDOM.createPortal : function (x) { return x; })(
+      h("div", { className: "hce-zoom", role: "dialog", "aria-modal": "true", "aria-label": p.alt || p.L("affiche"), onClick: function () { setZ(false); } },
+        h("img", { src: p.src, alt: p.alt || "" }),
+        h("button", { type: "button", "aria-label": p.L("fermer"), onClick: function () { setZ(false); } }, "×")), document.body) : null);
+}
+
+function construireAuto(cours, lg) {
+  var L = Lx(lg), r = function (x) { return pickLg(x, lg); };
+  var blocs = cours.blocs || [];
+  var couv = (blocs[0] && blocs[0].type === "couv-affiche") ? blocs[0] : null;
+  var pool = AUTO_IM[cours.id] || [IM.fond02];
+  /* segments : version française (structure) + langue choisie (texte), même position */
+  var lis = function (v) {
+    if (!v) return [];
+    var F = Array.isArray(v) ? v : (v.fr || []), X = Array.isArray(v) ? v : (v[lg] || v.en || F);
+    if (X.length !== F.length) X = F;
+    return F.map(function (f, j) { return { f: f, x: X[j] || f }; });
+  };
+  var legendeUtile = function (b) { return /agrandir/i.test(pickLg(b.legende, "fr") || "") ? "" : (r(b.legende) || ""); };
+
+  var chapitres = [], cur = null, special = { coach: [], defi: [], hb: [], synthese: [], citOuv: [], citFin: [] };
+  var nouveauChap = function (titre, img) { cur = { titre: titre, img: img || null, notions: [] }; chapitres.push(cur); return cur; };
+  var derniere = null;   /* la dernière chose posée (notion ou spécial), pour y rattacher un texte sans titre */
+  var poser = function (it, seg) {
+    var s = sorte(seg.f);
+    if (s === "suite" && derniere) { derniere.suite.push(seg.x); return; }
+    var o = { seg: seg.x, fr: seg.f, suite: [] };
+    if (s === "citation") s = "citFin";
+    if (s === "objectif") { derniere = o; return; }   /* retiré : doublon (rien ne s'y rattache à l'affichage) */
+    if (special[s]) {
+      special[s].push(o); derniere = o;
+      /* coach et défi gardent leur place dans le chapitre ; celui qui part dans l'encart du haut en est retiré ensuite */
+      if ((s === "coach" || s === "defi") && cur) { o.place = true; cur.notions.push(o); }
+      return;
+    }
+    if (s === "suite") { o.titre = L("essentiel"); o.intro = true; }
+    if (!cur) nouveauChap(r(cours.titre));
+    cur.notions.push(o); derniere = o;
+  };
+  var finDePhotos = true;
+  blocs.forEach(function (b, bi) {
+    if (b.type === "couv-affiche" || b.type === "intro") return;
+    if (b.type === "photo-liste") {
+      if (finDePhotos || !cur) nouveauChap(L("enImages"));
+      finDePhotos = false;
+      var o = { photo: { src: r(b.src), titre: r(b.titre), items: Array.isArray(b.items) ? b.items : (b.items && (b.items[lg] || b.items.fr)) || [] }, suite: [] };
+      cur.notions.push(o); derniere = o; return;
+    }
+    if (b.type === "astuce") {
+      var ta = (b.textes || []).map(function (x) { return r(x); }).filter(Boolean);
+      if (!cur) nouveauChap(r(cours.titre));
+      var oa = { astuce: ta, titre: L("astuce"), suite: [] }; cur.notions.push(oa); derniere = oa; return;
+    }
+    finDePhotos = true;
+    if (b.type === "image") {
+      if (!cur) nouveauChap(r(cours.titre));
+      var oi = { affiche: { src: r(b.src), legende: legendeUtile(b) }, titre: L("affiche"), suite: [] };
+      cur.notions.push(oi); derniere = oi; return;
+    }
+    if (b.type !== "texte-riche") return;
+    var segs = lis(b.contenu), apres = lis(b.contenuApres);
+    var tb = r(b.titre), sb = sorte({ titre: pickLg(b.titre, "fr") });
+    /* bloc entier « conseil du coach » fait de paragraphes sans titre -> un seul conseil */
+    if (tb && sb !== "notion" && sb !== "suite" && segs.length && segs.every(function (s) { return !s.f.titre; })) {
+      var tx = segs.map(function (s) { return (s.x.gras ? s.x.gras + " " : "") + (s.x.texte || ""); }).join("\n\n");
+      poser(null, { f: { k: "encadre", titre: pickLg(b.titre, "fr") }, x: { k: "encadre", titre: tb, texte: tx } });
+    } else {
+      if (tb) nouveauChap(titreNet(tb), null);
+      else if (!cur) nouveauChap(r(cours.titre));
+      if (b.src) {   /* image d'un bloc de texte : affiche entière en tête (bloc sans titre) */
+        var ob = { affiche: { src: r(b.src), legende: legendeUtile(b) }, titre: L("affiche"), suite: [] };
+        cur.notions.push(ob); derniere = ob;
+      }
+      if (tb) derniere = null;
+      segs.forEach(function (s) { poser(null, s); });
+    }
+    apres.forEach(function (s) { poser(null, s); });
+  });
+  /* un seul chapitre : les sections dont chaque puce a un intitulé en gras deviennent une notion par puce */
+  if (chapitres.length === 1) {
+    var nn = [];
+    chapitres[0].notions.forEach(function (o) {
+      var pu = o.seg && o.seg.puces, fp = o.fr && o.fr.puces;
+      if (o.fr && o.fr.k === "section" && fp && fp.length >= 3 && fp.every(function (q) { return q.gras; }) && !o.suite.length && !r(o.seg.sous) && !o.seg.texte) {
+        pu.forEach(function (q, k) { nn.push({ titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
+      } else nn.push(o);
+    });
+    chapitres[0].notions = nn;
+  }
+  chapitres = chapitres.filter(function (c) { return c.notions.length; });
+  /* conseil du coach du haut : le premier encadré court ; les autres restent dans le cours */
+  var coach = null;
+  special.coach.forEach(function (o) {
+    var t = [r(o.seg.texte), r(o.seg.sous)].concat(o.suite.map(function (x) { return ((r(x.gras) ? r(x.gras) + " " : "") + (r(x.texte) || "")).trim(); })).filter(Boolean).join("\n\n");
+    var court = !(o.seg.puces && o.seg.puces.length) && t.length < 520;
+    if (!coach && court) { coach = { titre: titreNet(o.seg.titre), texte: t }; o.enHaut = true; return; }
+    if (!o.place) { var ch = chapitres[chapitres.length - 1]; if (ch) ch.notions.push(o); }
+  });
+  var defiO = special.defi[0] || null;
+  if (defiO) defiO.enHaut = true;
+  special.defi.slice(1).forEach(function (o) { if (!o.place) { var ch = chapitres[chapitres.length - 1]; if (ch) ch.notions.push(o); } });
+  chapitres.forEach(function (c) { c.notions = c.notions.filter(function (n) { return !n.enHaut; }); });
+  chapitres = chapitres.filter(function (c) { return c.notions.length; });
+  /* images des chapitres */
+  chapitres.forEach(function (c, i) { c.img = pool[i % pool.length]; c.id = "ch" + (i + 1); });
+  /* citations : ouverture + couverture -> notes des premiers chapitres */
+  var notes = special.citOuv.map(function (o) { return "« " + String(r(o.seg.texte) || "").replace(/^[«"\s]+|[»"\s]+$/g, "") + " »"; });
+  if (couv && couv.couv && r(couv.couv.citation)) notes.push("« " + String(r(couv.couv.citation)).replace(/^[«"\s]+|[»"\s]+$/g, "") + " »" + (r(couv.couv.auteur) ? "  " + r(couv.couv.auteur) : ""));
+  chapitres.forEach(function (c, i) { c.note = notes[i] || null; });
+  var citFin = special.citFin.map(function (o) { return r(o.seg.texte); }).filter(Boolean).join(" ");
+  /* défi : 1re phrase en haut, la suite en page de fin (pas de doublon) */
+  var defi = null;
+  if (defiO) {
+    var dTxt = r(defiO.seg.sous) || r(defiO.seg.texte) || "", ph = phrases(dTxt);
+    var dPu = (defiO.seg.puces || []).map(function (q) { return { texte: (r(q.gras) ? r(q.gras) + " " : "") + r(q.texte) }; });
+    defiO.suite.forEach(function (x) {
+      if (x.texte) dPu.push({ texte: (x.gras ? r(x.gras) + " " : "") + r(x.texte) });
+      (x.puces || []).forEach(function (q) { dPu.push({ texte: (r(q.gras) ? r(q.gras) + " " : "") + r(q.texte) }); });
+    });
+    var reste = ph.slice(1).join(" ");
+    var accroche = (reste || dPu.length) ? ph[0] || "" : "";
+    defi = { titre: titreNet(defiO.seg.titre), haut: accroche, fin: { titre: titreNet(defiO.seg.titre), sous: accroche ? reste : dTxt, puces: dPu } };
+  }
+  /* parties manquantes ajoutées (COMPL) : seulement là où le cours n'a rien */
+  var C = COMPL[cours.id] || {};
+  if (!coach && C.coach) coach = { titre: L("coach"), texte: r(C.coach) };
+  if (!defi && C.defi) defi = { titre: r(C.defi.titre), haut: r(C.defi.accroche), fin: { titre: r(C.defi.titre), sous: "", puces: C.defi.points.map(function (x) { return { texte: r(x) }; }) } };
+  if (C.chap && chapitres.length === 1) {
+    var tot = C.chap.reduce(function (a, x) { return a + x[1]; }, 0), seule = chapitres[0];
+    if (tot === seule.notions.length) {
+      var pos = 0;
+      chapitres = C.chap.map(function (x, i) { var c = { titre: r(x[0]), sous: i === 0 ? seule.titre : null, img: pool[i % pool.length], id: "ch" + (i + 1), note: null, notions: seule.notions.slice(pos, pos + x[1]) }; pos += x[1]; return c; });
+      chapitres.forEach(function (c, i) { c.note = notes[i] || null; });
+    }
+  }
+  var hb = []; special.hb.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = r(q.texte); if (t) hb.push(t); }); });
+  var synth = []; special.synthese.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = ((r(q.gras) ? r(q.gras) + " " : "") + r(q.texte)).trim(); if (t) synth.push(t); }); });
+  if (!hb.length && C.hb) hb = C.hb.map(r);
+  if (!synth.length && C.synth) synth = C.synth.map(r);
+  if (!citFin && C.fin) citFin = r(C.fin);
+  return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, citFin: citFin, couv: couv };
+}
+
+/* rendu d'une notion dans la carte de droite */
+function renduNotion(o, L, lg) {
+  var r = function (x) { return pickLg(x, lg); };
+  var out = [], k = 0;
+  var pu = function (arr) {
+    if (!arr || !arr.length) return null;
+    return h("ul", { key: "u" + (k++) }, arr.map(function (q, i) { var g = r(q.gras); return h("li", { key: i }, g ? h("strong", null, g + " ") : null, r(q.texte)); }));
+  };
+  var para = function (x) {
+    var g = r(x.gras), t = r(x.texte) || "";
+    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tt); });
+  };
+  if (o.affiche) out.push(h(Affiche, { key: "af", L: L, src: o.affiche.src, legende: o.affiche.legende, alt: o.affiche.legende }));
+  if (o.photo) {
+    out.push(h(Affiche, { key: "ph", L: L, src: o.photo.src, alt: o.photo.titre || "" }));   /* fiche photo légendée : image entière, agrandissable */
+    out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
+  }
+  if (o.astuce) o.astuce.forEach(function (t, i) { out.push(h("p", { key: "as" + i, className: "ast" }, t)); });
+  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, o.texte1)); }
+  if (o.seg) {
+    var s = o.seg;
+    if (r(s.sous)) out.push(h("p", { key: "so", className: "s" }, r(s.sous)));
+    if (s.texte || s.gras) out = out.concat(para(s));
+    out.push(pu(s.puces));
+  }
+  o.suite.forEach(function (x) {
+    var c = [];
+    if (r(x.titre)) c.push(h("b", { key: "b" }, r(x.titre) + " "));
+    if (r(x.sous)) c.push(h("span", { key: "s" }, r(x.sous)));
+    if (x.texte || x.gras) out = out.concat(para(x));
+    if (c.length) out.push(h("p", { key: "c" + (k++), className: "ap" }, c));
+    out.push(pu(x.puces));
+  });
+  return out.filter(Boolean);
+}
+function titreNotion(o, L, lg) {
+  if (o.titre) return o.titre;
+  if (o.photo) return o.photo.titre;
+  return titreNet(pickLg(o.seg && o.seg.titre, lg));
+}
+function alerteNotion(o) {
+  var t = o.fr && o.fr.titre ? nettoyerTitre(o.fr.titre).toLowerCase() : "";
+  return /erreur|jamais|ne pas toucher|attention/.test(t);
+}
+
+AUTO_IDS.forEach(function (id) {
+  HypeCoursEditorial.config[id] = function (cours, lg, o) {
+    var L = Lx(lg), r = function (x) { return pickLg(x, lg); };
+    var A = construireAuto(cours, lg);
+    if (!A.chapitres.length || !(cours.quiz || []).length) return { valide: false, sections: [], chapitres: [] };
+    var chapitres = A.chapitres.map(function (c) { return { id: c.id, label: c.titre, img: c.img, pos: "55% 40%" }; });
+    var sections = A.chapitres.map(function (c, i) {
+      var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg); } }; });
+      return { id: c.id, ton: "photo", rendu: function (x) {
+        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: "Galop 1", titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note });
+      } };
+    });
+    sections.push({ id: "suite", ton: "noir", rendu: function (x) {
+      return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
+        h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
+        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15))));
+    } });
+    var cv = A.couv;
+    return {
+      auto: true,
+      hero: { img: (cv && r(cv.src)) || A.chapitres[0].img, pos: (cv && cv.couv && cv.couv.pos) || "50% 40%", titre: r(cours.titre), galop: "Galop 1", duree: r(cours.duree), type: r(cours.type) },
+      encarts: {
+        coach: A.coach ? { titre: A.coach.titre || L("coach"), texte: A.coach.texte, img: IM.coach, pos: "60% 25%" } : null,
+        hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },
+        defi: A.defi ? { titre: A.defi.titre, texte: A.defi.haut, img: IM.defi, pos: "50% 35%" } : null
+      },
+      chapitres: chapitres,
+      revision: { label: L("secQuiz"), sous: L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
+      sections: sections,
+      auto_: A
+    };
+  };
+  HypeCoursEditorial.config[id].auto = true;
+});
+
+/* page de fin des cours générés : même page partagée (FinCours) */
+function FinAuto(props) {
+  var S = window.HypeRobesOrdi.shared;
+  var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";
+  var L = Lx(lg);
+  var cfg = HypeCoursEditorial.config[cours.id](cours, lg, outils()), A = cfg.auto_;
+  var hey = function (q) {
+    try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: cfg.hero.titre, score: null, cheval: null, question: q || "" }; } catch (e) { }
+    if (props.setEcran) props.setEcran("assistant");
+  };
+  var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
+  var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;
+  var ch = cfg.chapitres, por;
+  if (A.synth.length) {   /* résumé = la synthèse du cours, en 5 groupes au plus */
+    var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n); por = [];
+    for (var i = 0; i < A.synth.length; i += taille) {
+      var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length];
+      por.push({ img: c.img, pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") });
+    }
+  } else {   /* pas de synthèse dans le cours : le plan du cours (chapitres et notions) */
+    por = A.chapitres.slice(0, 5).map(function (c) { return { img: c.img, nom: c.titre, desc: c.notions.map(function (n) { return titreNotion(n, L, lg); }).join("  ·  ") }; });
+  }
+  return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
+    h("style", null, S.CSS),
+    h("main", { className: "rbo-main" },
+      h(S.FinCours, {
+        L: L, lg: lg, rtl: rtl, kicker: "Galop 1", titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
+        heroImg: cfg.hero.img, heroPos: cfg.hero.pos,
+        portraits: por, note: A.citFin || null,
+        hb: A.hb, onHey: hey, defiSeg: A.defi ? A.defi.fin : null,
+        quizImg: IM.quiz, onQuiz: function () { if (props.setEcran) props.setEcran("quiz"); }, quizScore: props.quizScore,
+        suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
+        onGalops: props.onRetour, onRetourCours: props.onRetourCours
+      }),
+      (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null));
+}
+AUTO_IDS.forEach(function (id) { window.HypeFinsCours[id] = { ok: finOk, Fin: FinAuto }; });
+HypeCoursEditorial.construireAuto = construireAuto;
+
 
 window.HypeCoursEditorial = HypeCoursEditorial;
 })();
