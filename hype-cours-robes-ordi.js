@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 33;   /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
+var VERSION = 34;   /* 31/10 13h30 : sommaire téléphone en lignes (design du pansage) */
+/* précédente : VERSION = 33; */   /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
 /* v31 :   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
 /* v30 :   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
 /* v29 :   /* 31/10 00h35 : Hey Baby et défi du cavalier de la version d'avant dans la nouvelle fin */
@@ -80,6 +81,9 @@ var T = {
   defiBravo: tt("Bravo, tu as relevé le défi !", "Well done, challenge complete!", "¡Bravo, has superado el reto!", "Bravo, hai superato la sfida!", "やったね、チャレンジ達成！", "Bravo, Challenge geschafft!", "أحسنت، لقد أنجزت التحدي!", "太棒了，挑战完成！", "Bravo, uitdaging gehaald!", "Bravo, cumpriste o desafio!", "Bra jobbat, utmaningen klar!", "Браво, задание выполнено!", "Brawo, wyzwanie zaliczone!", "잘했어요, 도전 완료!"),
   quizSous: tt("Vérifie tes connaissances et valide tes acquis.", "Check your knowledge and confirm what you've learned.", "Comprueba tus conocimientos y valida lo aprendido.", "Verifica le tue conoscenze e convalida ciò che hai imparato.", "知識を確認して、学んだことを確かめよう。", "Prüfe dein Wissen und festige das Gelernte.", "تحقّق من معلوماتك وثبّت ما تعلّمته.", "检验你的知识，巩固所学。", "Test je kennis en bevestig wat je hebt geleerd.", "Verifica os teus conhecimentos e valida o que aprendeste.", "Testa dina kunskaper och bekräfta det du lärt dig.", "Проверь знания и закрепи пройденное.", "Sprawdź wiedzę i potwierdź to, czego się nauczyłeś.", "지식을 확인하고 배운 것을 다져 보세요."),
   quizReussi: tt("Quiz réussi", "Quiz passed", "Quiz superado", "Quiz superato", "クイズ合格", "Quiz bestanden", "نجحت في الاختبار", "测验通过", "Quiz gehaald", "Quiz superado", "Quiz klarat", "Тест пройден", "Quiz zaliczony", "퀴즈 통과"),
+  mProg: {"fr":"Au programme","en":"On the programme","es":"En el programa","it":"In programma","ja":"この講座の内容","de":"Auf dem Programm","ar":"في البرنامج","zh":"课程内容","nl":"Op het programma","pt":"No programa","sv":"På programmet","ru":"В программе","pl":"W programie","ko":"이번 강의 내용"},
+  mTitre: {"fr":"Les chapitres du cours","en":"The chapters of this lesson","es":"Los capítulos de la lección","it":"I capitoli della lezione","ja":"この講座の章","de":"Die Kapitel der Lektion","ar":"فصول الدرس","zh":"本课章节","nl":"De hoofdstukken van de les","pt":"Os capítulos da aula","sv":"Lektionens kapitel","ru":"Главы урока","pl":"Rozdziały lekcji","ko":"강의의 장"},
+  mAide: {"fr":"Touche un chapitre pour y aller directement.","en":"Tap a chapter to go straight to it.","es":"Toca un capítulo para ir directamente.","it":"Tocca un capitolo per andarci direttamente.","ja":"章をタップすると、そこへ移動します。","de":"Tippe auf ein Kapitel, um direkt dorthin zu gelangen.","ar":"المس فصلاً للانتقال إليه مباشرة.","zh":"点击章节即可直接跳转。","nl":"Tik op een hoofdstuk om er meteen naartoe te gaan.","pt":"Toque em um capítulo para ir direto a ele.","sv":"Tryck på ett kapitel för att gå direkt dit.","ru":"Нажми на главу, чтобы сразу к ней перейти.","pl":"Dotknij rozdziału, aby od razu do niego przejść.","ko":"장을 누르면 바로 이동해."},
   dansCours: tt("Dans ce cours", "In this lesson", "En este curso", "In questo corso", "このレッスンでは", "In dieser Lektion", "في هذا الدرس", "本课内容", "In deze les", "Neste curso", "I den här lektionen", "В этом уроке", "W tej lekcji", "이번 수업"),
   autresGal: tt("Les autres Galops", "The other Galops", "Los otros Galops", "Gli altri Galop", "ほかのギャロップ", "Die anderen Galops", "الغالوبات الأخرى", "其他 Galop", "De andere Galops", "Os outros Galops", "De andra Galops", "Другие Galop", "Pozostałe Galopy", "다른 갤럽"),
   coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
@@ -430,6 +434,7 @@ var CSS = [
 ".rbo-ong .t{display:block;font-size:13px;line-height:1.3;margin-top:3px}",
 ".rbo-ong .o .ph{filter:grayscale(.85) brightness(.75)}.rbo-ong .o:hover .ph,.rbo-ong .o:focus-visible .ph{filter:none}.rbo-ong .o .t{color:var(--doux)}",
 "@media (max-width:1279px){.rbo-ong{padding-inline:28px}}",
+".rbo-ongl{display:none}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
 ".rbo-coachfin .rbo-card{max-width:860px;padding:26px 30px}.rbo-coachfin .rbo-card h3{font-size:26px}.rbo-coachfin .rbo-card p{font-size:17px}",
 ".rbo-retcours{background:var(--noir);padding:22px 40px 0}",
@@ -441,6 +446,27 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
+".rbo .rbo-ong{display:none}",
+".rbo .rbo-ongl{display:block;padding:20px 16px 24px;background:var(--noir);border-bottom:1px solid rgba(201,166,107,.14)}",
+".rbo-ongl .kick{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:600;letter-spacing:2.6px;text-transform:uppercase;color:var(--champ)}",
+".rbo-ongl .kick:after{content:'';width:46px;height:1px;background:rgba(201,166,107,.45)}",
+".rbo-ongl h2{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:23px;line-height:1.15;font-weight:500;color:var(--ivoire);margin:8px 0 4px}",
+".rbo-ongl .aide{font-size:12px;color:rgba(243,238,228,.5);margin:0 0 14px}",
+".rbo-ongl .st{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;color:var(--champ);margin:20px 0 12px}",
+".rbo-ongl .st:after{content:'';flex:1;height:1px;background:rgba(201,166,107,.25)}",
+".rbo-ongl ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
+".rbo-lig{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:62px;padding:0;border:1px solid rgba(243,238,228,.1);border-radius:6px;background:#0c1113;overflow:hidden;text-align:start;cursor:pointer;font:inherit;color:inherit}",
+".rbo-lig .ph{position:absolute;top:0;bottom:0;inset-inline-end:0;width:46%;background-size:cover;background-repeat:no-repeat}",
+".rbo-lig .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0c1113 0%,rgba(12,17,19,.55) 45%,rgba(12,17,19,.15) 100%)}",
+"[dir=rtl] .rbo-lig .ph:after{background:linear-gradient(270deg,#0c1113 0%,rgba(12,17,19,.55) 45%,rgba(12,17,19,.15) 100%)}",
+".rbo-lig .n{position:relative;flex:0 0 46px;text-align:center;font-family:'Cormorant Garamond',serif;font-size:27px;line-height:1;color:var(--champ);font-weight:500}",
+".rbo-lig .tx{position:relative;flex:1 1 auto;min-width:0;padding:10px 0}",
+".rbo-lig .tx b{display:block;font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:18px;line-height:1.15;font-weight:600;color:var(--ivoire)}",
+".rbo-lig .tx span{display:block;font-size:11px;color:rgba(243,238,228,.68);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+".rbo-lig .ar{position:relative;flex:0 0 28px;height:28px;margin-inline-end:12px;border-radius:50%;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;color:var(--ivoire)}",
+".rbo-lig[aria-current=true]{border-color:var(--champ)}",
+".rbo-lig:active{transform:scale(.99)}",
+".rbo-lig.o .ph{filter:grayscale(.85) brightness(.75)}",
 ".rbo .rbo-ong{padding:24px 16px 20px}.rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 9px}",
 ".rbo .rbo-ong .g:not(.autres) .ph{aspect-ratio:4/5}.rbo .rbo-ong .n{font-size:18px;margin-top:7px}.rbo .rbo-ong .t{font-size:12px}",
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
@@ -588,8 +614,8 @@ function HypeRobesOrdi(props) {
   var vig = [
     { id: "s1", lab: L("vComprendre"), img: IMG.cheval, pos: "80% 40%" },
     { id: "s2", lab: nomsTrois, img: IMG.noir, pos: "60% 40%" },
-    { id: "s4", lab: L("vPratique"), img: IMG.alezan, pos: "70% 40%" },
-    { id: "s5", lab: L("vQuiz"), img: IMG.quiz, pos: "center" }
+    { id: "s4", lab: L("vPratique"), sous: L("erreurs"), img: IMG.alezan, pos: "70% 40%" },
+    { id: "s5", lab: L("vQuiz"), sous: L("suiteFin"), img: IMG.quiz, pos: "center" }
   ];
   var vigM = vig.slice(1);   /* 31/10 (Blandine) : « Comprendre » n'est plus dans le menu (2 lignes de 3) ; la section reste en haut du cours */
   var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
@@ -679,7 +705,7 @@ function HypeRobesOrdi(props) {
 
         vue !== "cours" ? null : h(React.Fragment, null,
         d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-        h(Onglets, { L: L, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
+        h(Onglets, { L: L, rtl: rtl, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
         h("div", { className: "rbo-minih" },
           h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
             vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
@@ -741,8 +767,24 @@ function HypeRobesOrdi(props) {
 /* 31/10 — MENU DU COURS, modèle B choisi par Blandine : cartes magazine, numéro et titre SOUS la photo ;
    « Dans ce cours » puis « Les autres Galops » (photos grisées). Partagé par les 4 cours de robes. */
 function Onglets(c) {
-  var L = c.L;
-  return h("div", { className: "rbo-ong" },
+  var L = c.L, rtl = !!c.rtl;
+  var ar = h("svg", { width: 14, height: 14, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, style: rtl ? { transform: "scaleX(-1)" } : undefined }, h("path", { d: "M5 12h14M13 6l6 6-6 6" }));
+  var ligne = function (key, n, titre, sous, img, pos, cur, onClick, autre) {
+    return h("li", { key: key }, h("button", { type: "button", className: "rbo-lig" + (autre ? " o" : ""), "aria-current": cur ? "true" : undefined, onClick: onClick },
+      h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + img + ")", backgroundPosition: pos || "center" } }),
+      h("span", { className: "n" }, n),
+      h("span", { className: "tx" }, h("b", null, titre), sous ? h("span", null, sous) : null),
+      h("span", { className: "ar", "aria-hidden": true }, ar)));
+  };
+  /* 31/10 13h25 (Blandine) : sur téléphone, sommaire en lignes horizontales au design exact du cours pansage ; l'ordinateur garde les cartes (modèle B) */
+  var tel = h("nav", { className: "rbo-ongl", "aria-label": L("mTitre") },
+    h("div", { className: "kick" }, L("mProg")),
+    h("h2", null, L("mTitre")),
+    h("p", { className: "aide" }, L("mAide")),
+    h("ol", null, c.vig.map(function (v, i) { return ligne(v.id, "0" + (i + 1), v.lab, v.sous, v.img, v.pos, c.actif === v.id, function () { c.nav(v.id); }); })),
+    c.autres.length ? h("div", { className: "st" }, L("autresGal")) : null,
+    c.autres.length ? h("ol", null, c.autres.map(function (g) { return ligne(g.id, "G" + g.n, L("gal" + g.n), "Galop " + g.n, g.img, g.pos || "60% 40%", false, function () { c.onAutre(g); }, true); })) : null);
+  return h(React.Fragment, null, tel, h("div", { className: "rbo-ong" },
     h("div", { className: "st" }, L("dansCours")),
     h("div", { className: "g", role: "tablist", style: { "--n": c.vig.length } }, c.vig.map(function (v, i) {
       return h("button", { key: v.id, type: "button", role: "tab", className: "c", "aria-current": c.actif === v.id ? "true" : undefined, onClick: function () { c.nav(v.id); } },
@@ -754,7 +796,7 @@ function Onglets(c) {
       return h("button", { key: g.id, type: "button", className: "c o", onClick: function () { c.onAutre(g); } },
         h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + g.img + ")", backgroundPosition: g.pos || "60% 40%" } }),
         h("span", { className: "n" }, "G" + g.n), h("span", { className: "t" }, L("gal" + g.n)));
-    })) : null);
+    })) : null));
 }
 
 /* =====================================================================================

@@ -15845,3 +15845,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Ancien écran « Examen » (raccourci du tableau de bord) : corail et cyan remplacés par le champagne ; juste en vert, faux en gris dans la correction.
 - Fichier : index.html seulement. Vérifié : examen blanc du Galop 1 sur téléphone (question corrigée).
 - 31/10 11h35 : PUBLICATION (accord « Ok ») — build 20261031-1135 : examens aux couleurs des quiz. Fichiers : index.html, SUIVI.md.
+
+## 31/10 13h40 — Cours de robes (Galops 1, 2, 3, 5) : sommaire téléphone en lignes, design exact du cours pansage (NON publié, build 20261031-1340)
+- Demande de Blandine (13h24) : sur téléphone, les cartes verticales du menu sont remplacées par les lignes horizontales du pansage : « Au programme », « Les chapitres du cours », « Touche un chapitre pour y aller directement. », puis une ligne par partie (grand numéro champagne, titre + petite ligne, photo estompée à droite, flèche dans un cercle) ; « Les autres Galops » dans le même style (G2/G3/G5, photo grisée). L'ordinateur garde les cartes (modèle B).
+- Textes repris du cours pansage (déjà traduits en 14 langues). Petites lignes : « Les erreurs à éviter » (En pratique), « Résumé, Hey Baby et quiz » (Quiz), « Galop N » (autres Galops).
+- hype-cours-robes-ordi.js (?v=35), hype-cours-robes-galops-ordi.js (?v=18). Testé téléphone fr/ar, ordinateur : 0 erreur, rien ne dépasse.

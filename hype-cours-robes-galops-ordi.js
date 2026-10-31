@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 17;   /* 31/10 : menu du cours modèle B */
+var VERSION = 18;   /* 31/10 : sommaire téléphone en lignes */
+/* précédente : VERSION = 17; */   /* 31/10 : menu du cours modèle B */
 /* v15 :   /* 31/10 : défi du cavalier ajouté au Galop 2 */
 /* v14 :   /* 31/10 : page de fin = FinCours (maquette), portraits de toutes les robes du cours */
 /* v13 :   /* 31/10 : autres Galops grisés dans le menu */
@@ -283,8 +284,8 @@ function HypeRobesGalopsOrdi(props) {
       { id: "s1", lab: L("vComprendre"), img: P.cheval, pos: "80% 40%" },
       { id: "s2", lab: d.titre, img: P.g2gris, pos: "50% 40%" },
       { id: "s3", lab: X("vPieTach"), img: P.g2pie, pos: "55% 40%" },
-      { id: "s4", lab: L("vPratique"), img: P.g2creme, pos: "60% 40%" },
-      { id: "s5", lab: L("vQuiz"), img: P.quiz, pos: "center" }
+      { id: "s4", lab: L("vPratique"), sous: L("erreurs"), img: P.g2creme, pos: "60% 40%" },
+      { id: "s5", lab: L("vQuiz"), sous: L("suiteFin"), img: P.quiz, pos: "center" }
     ];
     corps = [
       Sec("s1", "", d.blocs[1].titre || L("vComprendre"), "noir", h("div", null,
@@ -319,8 +320,8 @@ function HypeRobesGalopsOrdi(props) {
       { id: "s2", lab: X("vMarques"), img: P.g3tete, pos: "60% 35%" },
       { id: "s3", lab: X("vEpis"), img: P.g3epis, pos: "55% 35%" },
       { id: "s4", lab: X("vDecl"), img: P.g3isabelle, pos: "60% 45%" },
-      { id: "s5", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
-      { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
+      { id: "s5", lab: L("vPratique"), sous: L("erreurs"), img: P.bai, pos: "70% 40%" },
+      { id: "s6", lab: L("vQuiz"), sous: L("suiteFin"), img: P.quiz, pos: "center" }
     ];
     var decl = mm[7], isab = mm[8], sour = mm[9], brul = mm[10], cafe = mm[11], palo = mm[12], pang = mm[13], nuan = mm[14];
     corps = [
@@ -373,7 +374,7 @@ function HypeRobesGalopsOrdi(props) {
       { id: "s3", lab: X("vTaches"), img: P.g5leopard, pos: "55% 40%" },
       { id: "s4", lab: X("vAdj"), img: P.g5pommele, pos: "55% 40%" },
       { id: "s5", lab: X("vMel"), img: P.g5aubere, pos: "55% 40%" },
-      { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
+      { id: "s6", lab: L("vQuiz"), sous: L("suiteFin"), img: P.quiz, pos: "center" }
     ];
     var pies = [[a[5], "g5tobiano"], [a[6], "g5overo"], [a[7], "g5tovero"], [a[8], "g5balzan"], [a[9], "g5sabino"]];
     var adjCles = ["g5crins", "g5raie", "g5pommele", "g5scap", "g5zebr"];
@@ -450,7 +451,7 @@ function HypeRobesGalopsOrdi(props) {
           d.type ? h("span", null, ICO.livre(16), d.type) : null,
           h("span", null, ICO.coupe(16), kicker)))),
     d.citation ? h("div", { className: "rbo-citband" }, h("p", { className: "rbo-cit" }, "«\u00A0" + sansGuillemets(d.citation) + "\u00A0»", d.auteur ? h("small", null, d.auteur) : null)) : null,
-    h(S.Onglets, { L: L, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
+    h(S.Onglets, { L: L, rtl: rtl, vig: vigM, autres: autresG, actif: actif, nav: nav, onAutre: function (g) { props.onOuvrirRobes(g.n, g.id); } }),   /* 31/10 : modèle B */
     h("div", { className: "rbo-minih" },
       h("div", { className: "rbo-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
         vigM.map(function (v, i) { return h("button", { key: v.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === v.id ? "true" : undefined, onClick: function () { nav(v.id); } }, h("b", null, "0" + (i + 1)), v.lab); }),
