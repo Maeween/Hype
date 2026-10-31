@@ -15895,3 +15895,40 @@ Demande de Blandine (15h17) : « fais tous les autres cours du galop 1 sur le m�
   Résultat : les 15 cours ont les 3 encarts du haut, Hey Baby, le défi, la synthèse et une phrase de fin (vérifié 14 langues, 1440 et 820 px).
 - index.html : editorial ?v=5, build 20261031-1900.
 - EN ATTENTE (non publié) : patch iPhone du cours sécurité préparé par ChatGPT (appliquer_mobile.py) — à reprendre sur cette version (repère VERSION 5 -> 6).
+
+## 31/10/2026 — build 20261031-2030 (EN ATTENTE DE VALIDATION, pas publié) : Galop 2 sur le modèle éditorial (ordinateur et tablette)
+Demande de Blandine (19h48) : « prépare la même chose pour tous les cours du galop 2 ».
+- hype-cours-editorial.js v6 (?v=6) : 14 cours du Galop 2 générés (g2-aides, depart, c1, c3, c4, c5, c6, anatomie, sens, vie-sociale, pansage, filet-selle, familles, heberger) ; g2-robes garde sa présentation à part. Téléphone : affichage d'avant.
+- Constructeur rendu commun aux Galops : « Galop 2 » lu dans l'identifiant du cours (haut de page, chapitres, page de fin).
+- Nouvelles règles (sans effet sur le Galop 1, vérifié) : encadré sans titre juste après la synthèse / Hey Baby / le défi = phrase de fin ; encadré court en tête de bloc titré d'un nom propre (« Nuno Oliveira », « François Baucher ») = citation, en note de SON chapitre ; chapitre réduit à la seule affiche (défi et Hey Baby partis en haut et en fin) = rejoint le chapitre d'avant ; paragraphe réduit à un intitulé en gras affiché ; menu de plus de 7 cartes sur 2 rangées.
+- Images de fond des chapitres : provisoires (galop5-*, securite-g1-*, cours-pansage-*, robes-g1-trio, connexion-cheval-oeil-hd).
+- EN ATTENTE : parties manquantes (synthèse, phrase de fin, coach, défi, Hey Baby, découpage des 10 cours à une seule partie) demandées à ChatGPT (PROMPT_G2).
+- Non repris (en-têtes) : « Quelques idées de questions / Tu peux demander à Hey Baby : » au-dessus des questions Hey Baby. À signaler à Blandine : dans g2-c4, « Les aides à l'obstacle » (liste du chapitre 1) est détaillé à nouveau au chapitre 2 (contenu d'origine, non modifié).
+- Vérifié : 14 cours × 14 langues × 1440 et 820 px, aucune erreur ni débordement ni notion vide ; contrôle d'exhaustivité texte source / texte affiché.
+- index.html : editorial ?v=6, build 20261031-2030.
+
+## 31/10/2026 21h — build 20261031-2100 (EN ATTENTE, pas publié) : audit ChatGPT des 15 cours du Galop 1 — lot 1 (« Ok » de Blandine sur l'ordre proposé)
+- Licence (g1-c11, hype-cours-galop1.js, 14 langues) : phrase « Assurance » corrigée d'après la notice FFE (ffe.com/media/16538) — la licence inclut une RC pendant les activités équestres + une individuelle accident ; la RCPE est une option à part, pour les propriétaires. Clé du fichier : g1 ?v=9sv2ru1pl1ko1. Nom de l'appli « FFE Club S » du défi : à vérifier.
+- Modèle commun (cours générés seulement, sécurité ordinateur inchangée au pixel près, vérifié) : « Les erreurs à éviter » en encadré sombre au liseré rouge, liste en ✕ ; un chapitre sur deux en miroir sur ordinateur ; affiches plus grandes (64 % de la hauteur) ; conseil du coach du haut replié sur 5 lignes au-delà de 200 caractères.
+- g1-c19 « Monter et descendre » : 5 chapitres (« Pour finir » rejoint « Descendre », rien supprimé) — COMPL["g1-c19"].fusion.
+- En attente de validation de Blandine : page de fin harmonisée (5 Hey Baby, 5 synthèses, défi en 3 points) pour c3, c4, c5, c17, c18, c19 ; photos ; interactions ; téléphone ; règle des 5 chapitres pour le Galop 2.
+- Vérifié : 30 cours (G1 + G2) × 14 langues × 1440 et 820 px, aucune erreur ni débordement.
+
+## 31/10/2026 21h30 — build 20261031-2130 (EN ATTENTE, pas publié) : Galop 2 complété (textes ChatGPT transmis par Blandine, zip « HYPE_GALOP2_AUDIT_ET_TEXTES »)
+- Table COMPL (14 langues) : synthèse + phrase de fin (g2-aides, g2-depart, g2-c4) ; coach + défi + Hey Baby + synthèse + fin (g2-c1, g2-c6) ; défi + Hey Baby (g2-c5, anatomie, sens, vie-sociale, pansage, filet-selle, familles, heberger).
+- Découpage en chapitres des 10 cours à une seule partie, d'après les groupes proposés (ordre des sujets inchangé) ; titre d'origine sous le chapitre 1.
+- g2-aides : 9 -> 5 chapitres (fusion 2 par 2, PROPOSITION à valider) ; titres des chapitres absorbés affichés sous le titre ; citations gardées.
+- Photo « cavalier en saut » (galop5-c01-materiel) retirée des chapitres matériel / préparation (g1-c8, g1-c17, g2-c1, g2-filet-selle).
+- Non fait, en attente de décision : 5e question Hey Baby (g2-depart, g2-c4) et réduction à 5 (g2-aides 9, g2-c3 7) ; synthèses de 4 phrases (c3, c5, anatomie, sens, heberger) ; téléphone (menu horizontal demandé par ChatGPT ≠ liste verticale publiée le 31/10 à 15h05) ; photos.
+
+## 31/10/2026 22h40 — PUBLICATION build 20261031-2240, accord de Blandine (« Ok ») : corrections de Blandine (22h05) + brief de finalisation Galops 1 et 2 (22h11)
+- g1-c19 : « Pour finir » réparti — le savais-tu (montoir) dans « Le montoir » ; les 15 erreurs à éviter réparties dans les 5 chapitres qu'elles concernent (3 / 4 / 3 / 1 / 4), aucune supprimée ni répétée. Défi en 3 vraies vérifications (avant de monter : environnement, matériel, autorisation ; précautions pour monter ; précautions pour descendre), reprenant les 14 annonces du défi d'origine.
+- g1-c4 : défi « fermer les yeux » remplacé (affichage) par une observation depuis un endroit sécurisé avec l'enseignant (regarder, écouter les sabots, compter les temps). Le texte d'origine reste dans les données du cours mais n'est plus affiché.
+- Licence (g1-c11) : RC du pratiquant + garanties individuelles accident « dans les limites du contrat » + RCPE « assurance complémentaire, en option » (14 langues).
+- Pages de fin harmonisées (COMPL : hbGarder / hbPlus / synthRemplace / synthPlus / defiRemplace, 14 langues) : 5 questions Hey Baby, 5 phrases de synthèse, défi en 3 points dans les 29 cours générés (G1 + G2). Nom de l'appli « FFE Club S » (défi licence) non vérifié → remplacé à l'affichage par « l'application de la FFE indiquée par ton club ».
+- TÉLÉPHONE (décision définitive 22h05) : menu HORIZONTAL de cartes photo (défilement au doigt, arabe compris) ; dans le chapitre, lecture verticale photo → titre → texte complet → interaction (code repris du patch ChatGPT appliquer_mobile.py, sans masquer les 3 encarts du haut) ; un chapitre à la fois ; « Chapitre suivant » conservé. Les cours générés ne retombent plus sur l'ancien affichage au téléphone.
+- Ordinateur (cours générés seulement) : cartes à la taille du contenu (plus de min-height), plus d'air entre les parties, texte 16 px. Sécurité ordinateur identique au pixel (vérifié).
+- Tests : 30 cours × 14 langues × 375 / 390 / 430 / 820 / 1440 px — aucune erreur, aucun débordement, aucune notion vide, 5 chapitres max, 5 questions + défi 3 points partout.
+- Liste des visuels à remplacer : VISUELS_A_REMPLACER.txt (dans le zip).
+
+- Publication groupée (Galop 1 + Galop 2, tout ce qui était en attente depuis 20h30) : hype-cours-editorial.js (?v=6), hype-cours-galop1.js (clé g1 9sv2ru1pl1ko1), index.html (build 20261031-2240), SUIVI.md. Les entrées « EN ATTENTE » de 20h30, 21h et 21h30 ci-dessus font partie de cette publication.
