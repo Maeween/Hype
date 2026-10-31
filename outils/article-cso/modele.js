@@ -213,7 +213,7 @@ function Article() {
   function fig(src, alt, leg, cle) {
     return h("figure", { className: "acso-fig" },
       h("img", { src: src, alt: t(alt), loading: "lazy", decoding: "async" }),
-      h("figcaption", null, cle ? [h("b", { key: "c" }, t(cle)), " — "] : null, t(leg)));
+      leg ? h("figcaption", null, cle ? [h("b", { key: "c" }, t(cle)), " — "] : null, t(leg)) : null);
   }
 
   var hero = h("header", { className: "acso-hero" },
@@ -226,8 +226,8 @@ function Article() {
 
   var s1 = h("section", { className: "acso-s acso-pe" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },
-      h("div", null, chap("s1_num", "s1_cat"), h("h2", null, riche("s1_titre")), P("s1_lead", "acso-lead"), P("s1_p1"), P("s1_p2"), P("s1_p3")),
-      h("div", null, fig(IMG.virage, "s1_photo_alt", "s1_legende", "s1_legende_cle"))),
+      h("div", null, chap("s1_num", "s1_cat"), h("h2", null, riche("s1_titre")), P("s1_lead", "acso-lead"), P("s1_p1")),
+      h("div", null, fig(IMG.virage, "s1_photo_alt"))),
     /* 31/10 03h : le schéma interactif remplace le schéma fixe + l'encadré « zoom » (redites). */
     /* 31/10 — schéma INTERACTIF (pack « Culture équestre ») : même tracé que le schéma validé n° 1 (un seul virage serré, une seule main),
        3 étapes activables (boutons, clavier) : 1 courbe serrée, 2 sortie de courbe, 3 amplitude ensuite. À FAIRE VALIDER par Blandine. */
@@ -256,13 +256,13 @@ function Article() {
             return h("button", { key: n, type: "button", "aria-pressed": etape === n ? "true" : "false", onClick: function () { setEtape(n); } },
               h("b", null, String(n)), h("span", null, h("strong", null, e("e" + n + "_t")), e("e" + n + "_d")));
           }))),
-        h("p", { className: "acso-note", style: { marginTop: 14 } }, e("etapes_note")));
+        null);
     })()));
 
   var s2 = h("section", { className: "acso-s acso-no acso-li" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },
-      h("div", null, chap("s2_num", "s2_cat"), h("h2", null, riche("s2_titre")), P("s2_lead", "acso-lead"), P("s2_p1"), P("s2_p2"), P("s2_p3")),
-      h("div", null, fig(IMG.appel, "s2_photo_alt", "s2_legende"),
+      h("div", null, chap("s2_num", "s2_cat"), h("h2", null, riche("s2_titre")), P("s2_lead", "acso-lead"), P("s2_p3")),
+      h("div", null, fig(IMG.appel, "s2_photo_alt"),
         h("div", { className: "acso-risk" }, ["s2_r1", "s2_r2", "s2_r3", "s2_r4"].map(function (k, i) { return h("div", { key: k, className: "acso-rk" }, h("b", null, "0" + (i + 1)), h("span", null, t(k))); })))),
     /* 31/10 02h40 : encadré « La mauvaise longue… » retiré (Blandine : phrase bizarre, redite de la partie 02). */
     null));
@@ -283,7 +283,7 @@ function Article() {
   var s4 = h("section", { className: "acso-s acso-pe acso-li" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },
       h("div", null, chap("s4_num", "s4_cat"), h("h2", null, riche("s4_titre")), P("s4_p1"), P("s4_p3"), h("div", { className: "acso-pull" }, riche("s4_citation"))),
-      h("div", null, fig(IMG.saut, "s4_photo_alt", "s4_legende")))));
+      h("div", null, fig(IMG.saut, "s4_photo_alt")))));
 
   var bande = h("section", { className: "acso-band" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-sign", "aria-hidden": "true" }, "≠"),
@@ -295,14 +295,8 @@ function Article() {
       h("div", null, chap("s6_num", "s6_cat"), h("h2", null, riche("s6_titre")), P("s6_p1"), P("s6_p2")))));
 
   var s7 = h("section", { className: "acso-s acso-no acso-li" }, h("div", { className: "acso-w" },
-    h("div", { className: "acso-coach" },
-      h("blockquote", null, riche("coach_citation")),
-      h("div", { className: "acso-sig" }, t("coach_sig"))),
-    h("div", { className: "acso-2", style: { marginTop: 56 } },
-      h("div", null, h("h2", null, riche("s7_titre")), P("s7_p1"), P("s7_p2")),
-      h("div", null,
-        h("div", { className: "acso-ch" }, h("span", { className: "acso-num" }, "✓"), h("span", { className: "acso-sep" }), h("span", { className: "acso-cat" }, t("retenir"))),
-        h("div", { className: "acso-take" }, ["r1", "r3", "r4", "r6"].map(function (k) { return h("div", { key: k, className: "acso-tk" }, h("span", { "aria-hidden": "true" }, "✦"), riche(k)); })))),
+    /* 31/10 03h10 — Blandine « on répète en boucle » : conseil du coach et « À retenir » retirés (redites). */
+    h("div", { style: { maxWidth: 760 } }, h("h2", null, riche("s7_titre")), P("s7_p1"), P("s7_p2")),
     /* 31/10 03h : fin d'article — Hey Baby + retour au Mag */
     h("div", { className: "acso-fin" },
       h("button", { type: "button", className: "acso-hb", onClick: function () { app.setEcran("assistant"); } },

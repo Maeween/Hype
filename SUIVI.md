@@ -15821,3 +15821,10 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Article CSO : partie 03 « La lecture du barrage » (2 cartes) retirée ; parties renumérotées 01 → 05 dans les 14 langues.
 - Fichiers : hype-article-cso.js (?v=5), hype-ecran-articles.js (?v=7), index.html, outils/article-cso/*.json + modele.js, outils/mag/modele.js.
 - Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur. Intégré par-dessus la version en ligne 20261031-0945 (menus des Galops), rien de perdu.
+
+## 31/10/2026 — build 20261031-1015 : article CSO sans redites
+- Demande de Blandine (« on répète la même chose en boucle ») : chaque idée n'apparaît plus qu'une fois.
+- Retirés : partie 01 → 2 paragraphes (« s'asseoir », « sortie du tournant ») ; note sous le schéma ; légendes des 3 photos ; partie 02 → 2 paragraphes du milieu ; conseil du coach ; « À retenir ».
+- Restent : 01 virage + schéma, 02 piège + 4 risques, 03 une foulée de plus, bandeau Attention, 04 geste du cavalier, 05 longue naturelle, question à la reconnaissance, Hey Baby + bouton Mag. Aucun nouveau texte (14 langues inchangées).
+- Fichiers : hype-article-cso.js (?v=6), index.html, outils/article-cso/modele.js. Le Mag inchangé.
+- Vérifié : 320 (arabe RTL), 390, 1440 — aucun débordement, aucune erreur.
