@@ -55441,7 +55441,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=27";   /* 30/10 : v26 -> v27, compte rendu du lien avec l agenda. */   /* 30/10 : v25 -> v26, reglage d affichage bloque pour qui n est pas proprietaire. */   /* 07/10 (695) : v20 -> v21, creation de la fiche d un cheval inconnu. 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
+    sc.src = "hype-import-ffe.js?v=28";   /* 30/10 : v26 -> v27, compte rendu du lien avec l agenda. */   /* 30/10 : v25 -> v26, reglage d affichage bloque pour qui n est pas proprietaire. */   /* 07/10 (695) : v20 -> v21, creation de la fiche d un cheval inconnu. 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);

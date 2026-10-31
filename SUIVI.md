@@ -15771,3 +15771,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Effet aussi sur les robes des Galops 2, 3 et 5 (ils reprennent ces mêmes couleurs). Aucun texte changé.
 - 31/10 01h38 (« Ok c'est ça », sur 4 idées proposées) : « Demande à Hey Baby » prend la photo de l'alezan assombrie en fond de carte, questions en bulles sombres légèrement floutées, bordure dorée. « Le défi du cavalier » reste en noir neutre.
 - Testé : téléphone 390 px et ordinateur 1440 px, aucune erreur.
+
+## 31/10 02h30 — Import FFE : la note de dressage ne se colle plus au nom (suite à « Ok continue », 02h15) — PAS ENCORE PUBLIÉ
+- Constat en base (lecture seule) : 83 résultats de dressage, 25 cavaliers, importés entre le 29/08 et le 05/10, ont un nom du type « CLEMENTINE BRANCHU Note/Score 63,08% ». Cause : sur ces PDF, l'en-tête « Note/Score » et la note sont sur la même ligne ; l'importeur ne la reconnaissait pas et la collait au nom.
+- hype-import-ffe.js v28 (index.html ?v=28) : cette ligne est maintenant ignorée, et une sécurité retire « Note/Score xx,xx% » de la fin d'un nom avant l'enregistrement. Aucun nouveau texte.
+- Base : RIEN modifié. Nettoyage proposé (à valider) : retirer « Note/Score … » des 83 noms ; aucun doublon ne serait créé (vérifié : 0 ligne identique avec le nom propre).
