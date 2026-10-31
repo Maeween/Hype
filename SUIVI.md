@@ -15844,3 +15844,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Examen blanc des Galops : même apparence que les quiz des cours — bonne réponse en vert (coche), mauvaise en gris barré (croix), champagne pour le reste, boutons à contour, titres Cormorant, question plus petite ; page de résultat en champagne. Questions, score et parcours inchangés.
 - Ancien écran « Examen » (raccourci du tableau de bord) : corail et cyan remplacés par le champagne ; juste en vert, faux en gris dans la correction.
 - Fichier : index.html seulement. Vérifié : examen blanc du Galop 1 sur téléphone (question corrigée).
+- 31/10 11h35 : PUBLICATION (accord « Ok ») — build 20261031-1135 : examens aux couleurs des quiz. Fichiers : index.html, SUIVI.md.
