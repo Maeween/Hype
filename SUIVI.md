@@ -15769,4 +15769,5 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 ## 31/10 01h10 — Cours « Les robes » : Hey Baby moins pétrole (demande 00h58 : « On peut faire les couleurs de Hey Baby moins pétrole ? ») — PAS ENCORE PUBLIÉ
 - hype-cours-robes-ordi.js v34 (index.html ?v=34) : cartes « Demande à Hey Baby » et « Le défi du cavalier » (page de fin du cours, téléphone + ordinateur) passent du bleu pétrole à des noirs neutres ; les questions en bulles deviennent gris très léger, bordure dorée inchangée.
 - Effet aussi sur les robes des Galops 2, 3 et 5 (ils reprennent ces mêmes couleurs). Aucun texte changé.
-- Testé : téléphone 390 px, aucune erreur.
+- 31/10 01h38 (« Ok c'est ça », sur 4 idées proposées) : « Demande à Hey Baby » prend la photo de l'alezan assombrie en fond de carte, questions en bulles sombres légèrement floutées, bordure dorée. « Le défi du cavalier » reste en noir neutre.
+- Testé : téléphone 390 px et ordinateur 1440 px, aucune erreur.

@@ -387,6 +387,10 @@ var CSS = [
 ".rbo-fc-duo.ancien{align-items:stretch}.rbo-fc-duo.ancien.seul{grid-template-columns:minmax(0,1fr);max-width:760px}",
 ".rbo-fc-duo.ancien .rbo-card{padding:22px 24px;border-radius:18px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,#151715,#0F110F);box-shadow:0 14px 34px rgba(0,0,0,.35)}",
 ".rbo-fc-duo.ancien .rbo-card.defi{background:linear-gradient(180deg,#121412,#0D0F0D)}",
+/* 31/10 01h38 (Blandine, « Ok c'est ça ») : « Demande à Hey Baby » avec la photo de l'alezan assombrie en fond de carte ; questions en bulles sombres floutées */
+".rbo-fc-duo.ancien .rbo-card.hb{background:linear-gradient(180deg,rgba(7,10,8,.55),rgba(7,10,8,.88)),url(images/robes-g1-alezan.webp) center 30%/cover no-repeat;border-color:rgba(201,166,107,.45)}",
+".rbo-fc-duo.ancien .rbo-card.hb .rbo-hbq button{background:rgba(7,10,8,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-color:rgba(201,166,107,.5)}",
+".rbo-fc-duo.ancien .rbo-card.hb .rbo-hbq button:hover{background:rgba(7,10,8,.7);border-color:var(--champ)}",
 ".rbo-fc-duo.ancien .rbo-card h3{font-size:26px;margin-bottom:12px}",
 ".rbo-fc-duo.ancien .rbo-card p{font-size:14px;line-height:1.55;color:var(--doux)}",
 ".rbo-fc-duo.ancien .rbo-hbq{gap:10px;margin-top:4px}",
