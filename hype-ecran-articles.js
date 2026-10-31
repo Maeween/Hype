@@ -82,7 +82,7 @@ function EcranArticles() {
     var TABS = [
         ["une", tr({ fr: "À la une", en: "Featured", es: "Destacado", it: "In evidenza", ja: "注目", de: "Im Fokus", ar: "\u0641\u064a \u0627\u0644\u0648\u0627\u062c\u0647\u0629", zh: "置顶", nl: "Uitgelicht", pt: "Em destaque", sv: "Utvalt", ru: "На главной", pl: "Wyróżnione", ko: "대표" }), function () { setQ(""); aller("une"); }],
         ["technique", N("tab_technique"), function () { setQ(""); aller("derniers"); }],
-        ["galops", N("rub_galops"), function () { aller("galops"); }],
+        ["galops", N("rub_galops"), function () { setEcran("galops"); }],
         ["culture", N("tab_culture"), function () { aller("ecoles"); }],
         ["soins", N("tab_soins"), function () { aller("sante"); }],
         ["competition", N("tab_competition"), function () { setQ(""); aller("derniers"); }]
@@ -170,17 +170,7 @@ function EcranArticles() {
     /* ---------- 7. Pour aller plus loin : Galops, Lamotte en direct, Santé, Hey Baby, vidéos ---------- */
     var loin = h("section", { ref: refs.loin, className: "mag-s mag-loin" }, h("div", { className: "mag-w" },
         enTete(N("plus_loin")),
-        h("div", { ref: refs.galops, className: "mag-bloc mag-galops" },
-            h("img", { src: "images/galop5-c08-equilibre.webp", alt: "", loading: "lazy", decoding: "async" }),
-            h("span", { className: "mag-th-voile", "aria-hidden": "true" }),
-            h("div", { className: "mag-bloc-tx" },
-                h("div", { className: "mag-cat" }, h("span", { "aria-hidden": "true" }), tr({ fr: "La Théorie des Galops", en: "Galop Theory", es: "Teoría de los Galops", it: "Teoria dei Galop", ja: "ガロップ理論", de: "Die Galopp-Theorie", ar: "\u0646\u0638\u0631\u064a\u0629 \u0645\u0633\u062a\u0648\u064a\u0627\u062a \u0627\u0644\u063a\u0627\u0644\u0648\u0628", zh: "Galop 理论", nl: "De theorie van de Galop-niveaus", pt: "A Teoria dos Galops", sv: "Galop-teorin", ru: "Теория Galop", pl: "Teoria Galopów", ko: "Galop 이론" })),
-                h("h3", null, tr({ fr: "Galops 1 à 7", en: "Galops 1 to 7", es: "Galops 1 a 7", it: "Galop da 1 a 7", ja: "ガロップ1〜7", de: "Galopp 1 bis 7", ar: "\u0627\u0644\u063a\u0627\u0644\u0648\u0628 1 \u0625\u0644\u0649 7", zh: "Galop 1 至 7", nl: "Galop 1 tot 7", pt: "Galop 1 a 7", sv: "Galop 1 till 7", ru: "Galop 1–7", pl: "Galop 1–7", ko: "Galop 1~7" })),
-                h("p", null, tr({ fr: "Tout le programme fédéral, chapitre par chapitre", en: "The full federal programme, chapter by chapter", es: "Todo el programa federal", it: "Tutto il programma federale", ja: "連盟プログラムのすべて", de: "Das gesamte Verbandsprogramm, Kapitel für Kapitel", ar: "\u0643\u0644 \u0627\u0644\u0628\u0631\u0646\u0627\u0645\u062c \u0627\u0644\u0631\u0633\u0645\u064a\u060c \u0641\u0635\u0644\u0627 \u0628\u0641\u0635\u0644", zh: "完整的协会大纲，逐章学习", nl: "Het hele federale programma, hoofdstuk voor hoofdstuk", pt: "Todo o programa federal, capítulo por capítulo", sv: "Hela det nationella programmet, kapitel för kapitel", ru: "Вся федеральная программа, глава за главой", pl: "Cały program federalny, rozdział po rozdziale", ko: "연맹 전체 프로그램을 챕터별로" })),
-                h("div", { className: "mag-gal" }, [1, 2, 3, 4, 5, 6, 7].map(function (g) {
-                    return h("button", { key: g, type: "button", onClick: function () { setGalopOuvert(g); setEcran("galop-detail"); } }, tr({ fr: "Galop " + g, en: "Galop " + g, es: "Galop " + g, it: "Galop " + g, ja: "ガロップ " + g, de: "Galopp " + g, ar: "\u0627\u0644\u063a\u0627\u0644\u0648\u0628 " + g, zh: ("Galop " + g), nl: ("Galop " + g), pt: ("Galop " + g), sv: ("Galop " + g), ru: ("Galop " + g), pl: ("Galop " + g), ko: ("Galop " + g) }));
-                })),
-                h("button", { type: "button", className: "mag-btn", onClick: function () { setEcran("galops"); } }, N("rub_galops"), " ", h("span", { "aria-hidden": "true" }, fleche)))),
+        /* 31/10 03h : bloc Galops retiré (Blandine, choix A) — l'onglet Galops ouvre directement l'écran Galops. */
         h("button", { type: "button", className: "mag-live", onClick: function () { setEcran("evenement"); } },
             h("span", { className: "mag-live-d" }, h("i", { "aria-hidden": "true" }), tr({ fr: "En ce moment", en: "Live now", es: "Ahora", it: "In corso", ja: "開催中", de: "Gerade jetzt", ar: "\u062d\u0627\u0644\u064a\u0627", zh: "此刻", nl: "Op dit moment", pt: "Agora", sv: "Just nu", ru: "Прямо сейчас", pl: "Teraz na żywo", ko: "지금 이 순간" })),
             h("span", { className: "mag-live-t" }, h("b", null, "Lamotte-Beuvron"), tr({ fr: "Le Parc équestre fédéral en direct : mur, présents, résultats.", en: "The federal equestrian park live: wall, attendees, results.", es: "El parque ecuestre federal en directo.", it: "Il parco equestre federale in diretta.", ja: "連盟公園をライブで：掲示板・参加者・結果。", de: "Der Bundes-Reitpark live: Pinnwand, Anwesende, Ergebnisse.", ar: "\u0627\u0644\u0645\u0646\u062a\u0632\u0647 \u0627\u0644\u0641\u064a\u062f\u0631\u0627\u0644\u064a \u0644\u0644\u0641\u0631\u0648\u0633\u064a\u0629 \u0645\u0628\u0627\u0634\u0631\u0629: \u0627\u0644\u062c\u062f\u0627\u0631\u060c \u0627\u0644\u062d\u0627\u0636\u0631\u0648\u0646\u060c \u0627\u0644\u0646\u062a\u0627\u0626\u062c.", zh: "联邦马术公园现场直播：留言墙、到场人员、成绩。", nl: "Het federale ruiterpark live: prikbord, aanwezigen, uitslagen.", pt: "O Parque Equestre Federal ao vivo: mural, presentes, resultados.", sv: "Parc équestre fédéral live: vägg, deltagare, resultat.", ru: "Федеральный конный парк в прямом эфире: стена, присутствующие, результаты.", pl: "Federalny Park Jeździecki na żywo: tablica, obecni, wyniki.", ko: "연방 승마 파크 생중계: 월, 참석자, 결과." })),
@@ -296,11 +286,12 @@ var CSS = [
 ".mag-bloc-tx h3{font-size:30px;margin-top:10px}.mag-bloc-tx p{font-size:13.5px;line-height:1.55;color:#dde2dd;margin:8px 0 0}",
 ".mag-gal{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}",
 ".mag-gal button{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(243,238,228,.28);font-size:12.5px;color:var(--iv);background:rgba(7,10,8,.45)}",
-".mag-live{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;width:100%;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
-".mag-live-d{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
+".mag-live{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'d r' 't r';align-items:center;gap:8px 16px;text-align:start;width:100%;margin-top:0;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
+".mag-live-d{grid-area:d;justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
 ".mag-live-d i{width:7px;height:7px;border-radius:50%;background:#E8A08C;display:inline-block}",
-".mag-live-t{flex:1 1 180px;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
-".mag-live-t b{display:block;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
+".mag-live-t{grid-area:t;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
+".mag-live>:last-child{grid-area:r}",
+".mag-live-t b{display:block;margin-bottom:2px;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
 ".mag-duo{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}",
 ".mag-duo-c{min-height:190px}.mag-duo-c .mag-th-tx small{display:block}",
 ".mag-cat-s{font-size:9.5px !important;letter-spacing:.18em;text-transform:uppercase;color:var(--or) !important;font-weight:600}",

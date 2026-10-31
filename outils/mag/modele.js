@@ -82,7 +82,7 @@ function EcranArticles() {
     var TABS = [
         ["une", @@OLD:14@@, function () { setQ(""); aller("une"); }],
         ["technique", N("tab_technique"), function () { setQ(""); aller("derniers"); }],
-        ["galops", N("rub_galops"), function () { aller("galops"); }],
+        ["galops", N("rub_galops"), function () { setEcran("galops"); }],
         ["culture", N("tab_culture"), function () { aller("ecoles"); }],
         ["soins", N("tab_soins"), function () { aller("sante"); }],
         ["competition", N("tab_competition"), function () { setQ(""); aller("derniers"); }]
@@ -170,17 +170,7 @@ function EcranArticles() {
     /* ---------- 7. Pour aller plus loin : Galops, Lamotte en direct, Santé, Hey Baby, vidéos ---------- */
     var loin = h("section", { ref: refs.loin, className: "mag-s mag-loin" }, h("div", { className: "mag-w" },
         enTete(N("plus_loin")),
-        h("div", { ref: refs.galops, className: "mag-bloc mag-galops" },
-            h("img", { src: "images/galop5-c08-equilibre.webp", alt: "", loading: "lazy", decoding: "async" }),
-            h("span", { className: "mag-th-voile", "aria-hidden": "true" }),
-            h("div", { className: "mag-bloc-tx" },
-                h("div", { className: "mag-cat" }, h("span", { "aria-hidden": "true" }), @@OLD:16@@),
-                h("h3", null, @@OLD:17@@),
-                h("p", null, @@OLD:18@@),
-                h("div", { className: "mag-gal" }, [1, 2, 3, 4, 5, 6, 7].map(function (g) {
-                    return h("button", { key: g, type: "button", onClick: function () { setGalopOuvert(g); setEcran("galop-detail"); } }, @@GALOP@@);
-                })),
-                h("button", { type: "button", className: "mag-btn", onClick: function () { setEcran("galops"); } }, N("rub_galops"), " ", h("span", { "aria-hidden": "true" }, fleche)))),
+        /* 31/10 03h : bloc Galops retiré (Blandine, choix A) — l'onglet Galops ouvre directement l'écran Galops. */
         h("button", { type: "button", className: "mag-live", onClick: function () { setEcran("evenement"); } },
             h("span", { className: "mag-live-d" }, h("i", { "aria-hidden": "true" }), @@OLD:35@@),
             h("span", { className: "mag-live-t" }, h("b", null, "Lamotte-Beuvron"), @@OLD:36@@),
@@ -296,11 +286,12 @@ var CSS = [
 ".mag-bloc-tx h3{font-size:30px;margin-top:10px}.mag-bloc-tx p{font-size:13.5px;line-height:1.55;color:#dde2dd;margin:8px 0 0}",
 ".mag-gal{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}",
 ".mag-gal button{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(243,238,228,.28);font-size:12.5px;color:var(--iv);background:rgba(7,10,8,.45)}",
-".mag-live{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;width:100%;margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
-".mag-live-d{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
+".mag-live{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'d r' 't r';align-items:center;gap:8px 16px;text-align:start;width:100%;margin-top:0;padding:16px;border-radius:14px;border:1px solid var(--li);background:#0B1311}",
+".mag-live-d{grid-area:d;justify-self:start;display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#E8A08C;font-weight:600}",
 ".mag-live-d i{width:7px;height:7px;border-radius:50%;background:#E8A08C;display:inline-block}",
-".mag-live-t{flex:1 1 180px;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
-".mag-live-t b{display:block;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
+".mag-live-t{grid-area:t;min-width:0;font-size:12.5px;line-height:1.5;color:var(--mu)}",
+".mag-live>:last-child{grid-area:r}",
+".mag-live-t b{display:block;margin-bottom:2px;font-family:var(--se);font-size:21px;font-weight:500;color:var(--iv)}",
 ".mag-duo{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}",
 ".mag-duo-c{min-height:190px}.mag-duo-c .mag-th-tx small{display:block}",
 ".mag-cat-s{font-size:9.5px !important;letter-spacing:.18em;text-transform:uppercase;color:var(--or) !important;font-weight:600}",
