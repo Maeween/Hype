@@ -28,7 +28,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 1;
+var VERSION = 3;   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
 
 /* ---------------- petits textes de structure (14 langues) ---------------- */
 var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -125,7 +125,38 @@ var T = {
   prec: {"fr":"Précédent","en":"Previous","es":"Anterior","it":"Precedente","ja":"前へ","de":"Zurück","ar":"السابق","zh":"上一步","nl":"Vorige","pt":"Anterior","sv":"Föregående","ru":"Назад","pl":"Poprzedni","ko":"이전"},
   suiv: {"fr":"Suivant","en":"Next","es":"Siguiente","it":"Successivo","ja":"次へ","de":"Weiter","ar":"التالي","zh":"下一步","nl":"Volgende","pt":"Próximo","sv":"Nästa","ru":"Далее","pl":"Następny","ko":"다음"},
   chapitresG: {"fr":"Chapitres du {g}","en":"{g} lessons","es":"Capítulos del {g}","it":"Capitoli del {g}","ja":"{g}のレッスン","de":"Kapitel {g}","ar":"دروس {g}","zh":"{g} 的课程","nl":"Lessen {g}","pt":"Capítulos do {g}","sv":"Lektioner {g}","ru":"Уроки {g}","pl":"Lekcje {g}","ko":"{g} 수업"},
-  retourGalop: {"fr":"Retour au Galop","en":"Back to the Galop","es":"Volver al Galop","it":"Torna al Galop","ja":"Galopに戻る","de":"Zurück zum Galop","ar":"العودة إلى الغالوب","zh":"返回 Galop","nl":"Terug naar de Galop","pt":"Voltar ao Galop","sv":"Tillbaka till Galop","ru":"Назад к Galop","pl":"Wróć do Galopu","ko":"Galop으로 돌아가기"}
+  retourGalop: {"fr":"Retour au Galop","en":"Back to the Galop","es":"Volver al Galop","it":"Torna al Galop","ja":"Galopに戻る","de":"Zurück zum Galop","ar":"العودة إلى الغالوب","zh":"返回 Galop","nl":"Terug naar de Galop","pt":"Voltar ao Galop","sv":"Tillbaka till Galop","ru":"Назад к Galop","pl":"Wróć do Galopu","ko":"Galop으로 돌아가기"},
+  cApproche: {"fr":"Approcher","en":"Approaching","es":"Acercarse","it":"Avvicinarsi","ja":"近づく","de":"Annähern","ar":"الاقتراب","zh":"靠近","nl":"Benaderen","pt":"Aproximar-se","sv":"Närma sig","ru":"Подход","pl":"Podejście","ko":"다가가기"},
+  sApproche: {"fr":"Observer et s'annoncer","en":"Observe and announce yourself","es":"Observar y anunciarse","it":"Osservare e annunciarsi","ja":"観察して、声をかける","de":"Beobachten und sich ankündigen","ar":"الملاحظة والإعلان عن الحضور","zh":"观察并打招呼","nl":"Kijken en jezelf aankondigen","pt":"Observar e anunciar-se","sv":"Iaktta och säga till","ru":"Наблюдать и обозначить себя","pl":"Obserwować i zapowiedzieć się","ko":"관찰하고 알리기"},
+  cAutour: {"fr":"Autour du cheval","en":"Around the horse","es":"Alrededor del caballo","it":"Intorno al cavallo","ja":"馬のまわりで","de":"Rund ums Pferd","ar":"حول الحصان","zh":"在马的周围","nl":"Rond het paard","pt":"À volta do cavalo","sv":"Runt hästen","ru":"Вокруг лошади","pl":"Wokół konia","ko":"말 주변에서"},
+  sAutour: {"fr":"Les zones de vigilance","en":"Areas to watch","es":"Las zonas de vigilancia","it":"Le zone di attenzione","ja":"注意すべき場所","de":"Die Gefahrenzonen","ar":"مناطق الحذر","zh":"需要警惕的区域","nl":"De aandachtszones","pt":"As zonas de atenção","sv":"Zonerna att se upp med","ru":"Зоны внимания","pl":"Strefy uwagi","ko":"주의할 구역"},
+  cBonsGestes: {"fr":"Les bons gestes","en":"The right moves","es":"Los gestos correctos","it":"I gesti giusti","ja":"正しい動作","de":"Die richtigen Handgriffe","ar":"الحركات الصحيحة","zh":"正确的动作","nl":"De juiste handelingen","pt":"Os gestos certos","sv":"Rätt handgrepp","ru":"Правильные действия","pl":"Właściwe gesty","ko":"올바른 동작"},
+  sBonsGestes: {"fr":"Longe, portes et matériel","en":"Lead rope, doors and equipment","es":"Ramal, puertas y material","it":"Lunghina, porte e attrezzatura","ja":"引き手・扉・道具","de":"Führstrick, Türen und Material","ar":"الرسن والأبواب والمعدات","zh":"牵绳、门与用具","nl":"Halstertouw, deuren en materiaal","pt":"Corda, portas e material","sv":"Grimskaft, dörrar och utrustning","ru":"Чембур, двери и снаряжение","pl":"Uwiąz, drzwi i sprzęt","ko":"리드줄, 문, 장비"},
+  cEntre: {"fr":"Entre chevaux","en":"Among horses","es":"Entre caballos","it":"Tra cavalli","ja":"馬どうしの間で","de":"Zwischen Pferden","ar":"بين الخيول","zh":"马与马之间","nl":"Tussen paarden","pt":"Entre cavalos","sv":"Mellan hästar","ru":"Среди лошадей","pl":"Między końmi","ko":"말과 말 사이"},
+  sEntre: {"fr":"Distances et signaux","en":"Distances and signals","es":"Distancias y señales","it":"Distanze e segnali","ja":"距離とサイン","de":"Abstände und Signale","ar":"المسافات والإشارات","zh":"距离与信号","nl":"Afstanden en signalen","pt":"Distâncias e sinais","sv":"Avstånd och signaler","ru":"Дистанция и сигналы","pl":"Odległości i sygnały","ko":"거리와 신호"},
+  cProbleme: {"fr":"En cas de problème","en":"If something goes wrong","es":"En caso de problema","it":"In caso di problema","ja":"困ったときは","de":"Wenn etwas passiert","ar":"عند حدوث مشكلة","zh":"遇到问题时","nl":"Als er iets misgaat","pt":"Em caso de problema","sv":"Om något händer","ru":"Если что-то пошло не так","pl":"Gdy coś pójdzie nie tak","ko":"문제가 생기면"},
+  sProbleme: {"fr":"Les bons réflexes","en":"The right reflexes","es":"Los buenos reflejos","it":"I riflessi giusti","ja":"正しい対応","de":"Die richtigen Reflexe","ar":"ردود الفعل الصحيحة","zh":"正确的反应","nl":"De juiste reflexen","pt":"Os reflexos certos","sv":"Rätt reflexer","ru":"Правильные реакции","pl":"Właściwe odruchy","ko":"올바른 대처"},
+  kAvant: {"fr":"Avant de toucher","en":"Before you touch","es":"Antes de tocar","it":"Prima di toccare","ja":"触れる前に","de":"Bevor du berührst","ar":"قبل اللمس","zh":"触碰之前","nl":"Voordat je aanraakt","pt":"Antes de tocar","sv":"Innan du rör","ru":"Прежде чем коснуться","pl":"Zanim dotkniesz","ko":"만지기 전에"},
+  tAvantA: {"fr":"Regarde d'abord,","en":"Look first,","es":"Mira primero,","it":"Guarda prima,","ja":"まず見て、","de":"Schau zuerst,","ar":"انظر أولاً،","zh":"先看，","nl":"Kijk eerst,","pt":"Olha primeiro,","sv":"Titta först,","ru":"Сначала посмотри,","pl":"Najpierw popatrz,","ko":"먼저 보고,"},
+  tAvantB: {"fr":"agis ensuite.","en":"then act.","es":"actúa después.","it":"poi agisci.","ja":"それから動こう。","de":"handle dann.","ar":"ثم تصرّف.","zh":"再行动。","nl":"handel daarna.","pt":"age depois.","sv":"agera sedan.","ru":"потом действуй.","pl":"potem działaj.","ko":"그다음 움직여요."},
+  kContact: {"fr":"Le premier contact","en":"First contact","es":"El primer contacto","it":"Il primo contatto","ja":"最初のふれあい","de":"Der erste Kontakt","ar":"الاتصال الأول","zh":"第一次接触","nl":"Het eerste contact","pt":"O primeiro contacto","sv":"Första kontakten","ru":"Первый контакт","pl":"Pierwszy kontakt","ko":"첫 만남"},
+  tContactA: {"fr":"Annonce-toi,","en":"Announce yourself,","es":"Anúnciate,","it":"Annunciati,","ja":"声をかけて、","de":"Kündige dich an,","ar":"أعلن عن حضورك،","zh":"先打招呼，","nl":"Kondig je aan,","pt":"Anuncia-te,","sv":"Säg till,","ru":"Обозначь себя,","pl":"Zapowiedz się,","ko":"먼저 알리고,"},
+  tContactB: {"fr":"puis approche.","en":"then approach.","es":"y luego acércate.","it":"poi avvicinati.","ja":"それから近づこう。","de":"dann nähere dich.","ar":"ثم اقترب.","zh":"再靠近。","nl":"en benader dan.","pt":"depois aproxima-te.","sv":"närma dig sedan.","ru":"потом подходи.","pl":"potem podejdź.","ko":"그다음 다가가요."},
+  kZones: {"fr":"Où se placer","en":"Where to stand","es":"Dónde colocarse","it":"Dove mettersi","ja":"どこに立つか","de":"Wo du stehst","ar":"أين تقف","zh":"站在哪里","nl":"Waar je staat","pt":"Onde te colocares","sv":"Var du ska stå","ru":"Где встать","pl":"Gdzie stanąć","ko":"어디에 설까"},
+  tZonesA: {"fr":"Chaque zone","en":"Every area","es":"Cada zona","it":"Ogni zona","ja":"場所ごとに","de":"Jede Zone","ar":"لكل منطقة","zh":"每个区域","nl":"Elke zone","pt":"Cada zona","sv":"Varje zon","ru":"У каждой зоны","pl":"Każda strefa","ko":"구역마다"},
+  tZonesB: {"fr":"a sa règle.","en":"has its rule.","es":"tiene su regla.","it":"ha la sua regola.","ja":"ルールがある。","de":"hat ihre Regel.","ar":"قاعدتها.","zh":"都有规则。","nl":"heeft haar regel.","pt":"tem a sua regra.","sv":"har sin regel.","ru":"своё правило.","pl":"ma swoją zasadę.","ko":"규칙이 있어요."},
+  kQuotidien: {"fr":"Au quotidien","en":"Every day","es":"En el día a día","it":"Ogni giorno","ja":"毎日のこと","de":"Im Alltag","ar":"في الحياة اليومية","zh":"日常之中","nl":"Elke dag","pt":"No dia a dia","sv":"I vardagen","ru":"Каждый день","pl":"Na co dzień","ko":"매일의 습관"},
+  tQuotidienA: {"fr":"Des gestes simples,","en":"Simple moves,","es":"Gestos sencillos,","it":"Gesti semplici,","ja":"シンプルな動作を、","de":"Einfache Handgriffe,","ar":"حركات بسيطة،","zh":"简单的动作，","nl":"Eenvoudige handelingen,","pt":"Gestos simples,","sv":"Enkla handgrepp,","ru":"Простые действия —","pl":"Proste gesty,","ko":"간단한 동작이"},
+  tQuotidienB: {"fr":"de vrais réflexes.","en":"real reflexes.","es":"verdaderos reflejos.","it":"veri riflessi.","ja":"本物の習慣に。","de":"echte Reflexe.","ar":"وردود فعل حقيقية.","zh":"变成真正的习惯。","nl":"echte reflexen.","pt":"verdadeiros reflexos.","sv":"riktiga reflexer.","ru":"настоящие привычки.","pl":"prawdziwe odruchy.","ko":"진짜 습관으로."},
+  kEspace: {"fr":"L'espace de chacun","en":"Everyone's space","es":"El espacio de cada uno","it":"Lo spazio di ognuno","ja":"それぞれの空間","de":"Jedem sein Raum","ar":"مساحة كل واحد","zh":"各自的空间","nl":"Ieders ruimte","pt":"O espaço de cada um","sv":"Allas utrymme","ru":"Пространство каждого","pl":"Przestrzeń każdego","ko":"각자의 공간"},
+  tEspaceA: {"fr":"Laisse de l'espace,","en":"Leave some space,","es":"Deja espacio,","it":"Lascia spazio,","ja":"距離をとって、","de":"Lass Platz,","ar":"اترك مسافة،","zh":"留出空间，","nl":"Laat ruimte,","pt":"Deixa espaço,","sv":"Lämna utrymme,","ru":"Оставляй место,","pl":"Zostaw miejsce,","ko":"공간을 두고,"},
+  tEspaceB: {"fr":"lis les signaux.","en":"read the signals.","es":"lee las señales.","it":"leggi i segnali.","ja":"サインを読もう。","de":"lies die Signale.","ar":"واقرأ الإشارات.","zh":"读懂信号。","nl":"lees de signalen.","pt":"lê os sinais.","sv":"läs signalerna.","ru":"читай сигналы.","pl":"czytaj sygnały.","ko":"신호를 읽어요."},
+  kCalme: {"fr":"Garder son calme","en":"Keep calm","es":"Mantener la calma","it":"Mantenere la calma","ja":"落ち着いて","de":"Ruhe bewahren","ar":"حافظ على هدوئك","zh":"保持冷静","nl":"Kalm blijven","pt":"Manter a calma","sv":"Behåll lugnet","ru":"Сохранять спокойствие","pl":"Zachowaj spokój","ko":"침착하게"},
+  tCalmeA: {"fr":"Dans le doute,","en":"When in doubt,","es":"Ante la duda,","it":"Nel dubbio,","ja":"迷ったら、","de":"Im Zweifel","ar":"عند الشك،","zh":"有疑问时，","nl":"Bij twijfel,","pt":"Na dúvida,","sv":"Vid tvekan,","ru":"Если сомневаешься,","pl":"W razie wątpliwości","ko":"망설여지면"},
+  tCalmeB: {"fr":"appelle l'enseignant.","en":"call your instructor.","es":"llama al profesor.","it":"chiama l'istruttore.","ja":"先生を呼ぼう。","de":"ruf den Reitlehrer.","ar":"نادِ المدرب.","zh":"叫教练。","nl":"roep de instructeur.","pt":"chama o professor.","sv":"kalla på läraren.","ru":"позови инструктора.","pl":"zawołaj instruktora.","ko":"선생님을 불러요."},
+  citBB: {"fr":"Ton cheval est le miroir de ton âme.","en":"Your horse is a mirror to your soul.","es":"Tu caballo es el espejo de tu alma.","it":"Il tuo cavallo è lo specchio della tua anima.","ja":"君の馬は、君の魂を映す鏡。","de":"Dein Pferd ist der Spiegel deiner Seele.","ar":"حصانك مرآة روحك.","zh":"你的马是你灵魂的镜子。","nl":"Je paard is de spiegel van je ziel.","pt":"O teu cavalo é o espelho da tua alma.","sv":"Din häst är din själs spegel.","ru":"Твоя лошадь — зеркало твоей души.","pl":"Twój koń jest lustrem twojej duszy.","ko":"네 말은 네 영혼을 비추는 거울이야."},
+  longeJamais: {"fr":"Il ne doit jamais :","en":"They must never:","es":"Nunca debe:","it":"Non deve mai:","ja":"絶対にしてはいけないこと：","de":"Er darf niemals:","ar":"لا يجب عليه أبداً:","zh":"绝不能：","nl":"Hij mag nooit:","pt":"Nunca deve:","sv":"Han får aldrig:","ru":"Ему нельзя:","pl":"Nigdy nie wolno:","ko":"절대 하면 안 되는 것:"},
+  longeDoigts: {"fr":"enrouler la longe autour de ses doigts","en":"wrap the rope around their fingers","es":"enrollar el ramal alrededor de los dedos","it":"avvolgere la lunghina intorno alle dita","ja":"引き手を指に巻きつける","de":"den Strick um die Finger wickeln","ar":"لفّ الرسن حول أصابعه","zh":"把牵绳缠在手指上","nl":"het touw om de vingers wikkelen","pt":"enrolar a corda à volta dos dedos","sv":"linda grimskaftet runt fingrarna","ru":"наматывать чембур на пальцы","pl":"owijać uwiąz wokół palców","ko":"리드줄을 손가락에 감기"},
 };
 function Lx(lg) { var f = function (k) { var o = T[k]; return (o && (o[lg] || o.en || o.fr)) || ""; }; f.lg = lg; return f; }
 
@@ -248,6 +279,7 @@ var CSS = [
 ".t-noir .hcm-aparte{background:rgba(16,26,29,.55)}",
 ".hcm-aparte h4{font-size:16px;color:var(--champ);margin-bottom:4px;font-weight:600}",
 ".hcm-aparte p{font-size:13px;line-height:1.6;color:var(--doux)}",
+".hcm-aparte p{white-space:pre-line}",
 ".hcm-liste h3{font-size:20px;line-height:1.2;margin-bottom:4px}",
 ".hcm-liste .s{font-size:12.5px;color:var(--pale);margin-bottom:8px}",
 ".hcm-liste ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}",
@@ -256,6 +288,15 @@ var CSS = [
 ".hcm-liste li:before{content:'';position:absolute;inset-inline-start:2px;top:17px;width:6px;height:6px;border-radius:50%;border:1px solid var(--champ)}",
 ".hcm-liste.croix li:before{content:'\\2715';border:0;width:auto;height:auto;top:9px;font-size:10px;color:var(--champ)}",
 ".hcm-liste li strong{color:var(--ivoire);font-weight:600}",
+".hcm-liste .hcm-p+.hcm-p{margin-top:8px}",
+".hcm-liste h3+.hcm-p{margin-top:4px}",
+".hcm-vigil{display:grid;grid-template-columns:1fr;gap:10px}",
+"@media (min-width:640px){.hcm-vigil{grid-template-columns:1fr 1fr}}",
+".hcm-vigil .z{display:flex;gap:12px;align-items:flex-start;border:1px solid rgba(201,166,107,.22);border-radius:4px;padding:13px 14px;background:rgba(7,10,8,.28)}",
+".hcm-vigil .z.alerte{border-color:rgba(201,166,107,.6);background:rgba(201,166,107,.08)}",
+".hcm-vigil .n{flex:0 0 26px;height:26px;border-radius:50%;border:1px solid var(--champ);color:var(--champ);display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:15px}",
+".hcm-vigil h4{font-size:16px;color:var(--ivoire);font-weight:600;margin:1px 0 4px}",
+".hcm-vigil p{font-size:13px;line-height:1.6;color:var(--doux);margin:0}",
 /* outils */
 ".hcm-outils{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}",
 ".hcm-outil{position:relative;display:block;padding:0;border:1px solid rgba(243,238,228,.1);border-radius:3px;overflow:hidden;background:#0c1113;text-align:start;aspect-ratio:1/1}",
@@ -282,6 +323,25 @@ var CSS = [
 ".hcm-ong h3{font-size:20px;line-height:1.2;margin-bottom:4px}",
 ".hcm-ong p{font-size:13.5px;line-height:1.65;color:var(--doux)}",
 ".hcm-ong .nav{display:flex;gap:8px;margin-top:10px}",
+".hcm-ong ul.pu{list-style:none;margin:6px 0 0;padding:0}",
+".hcm-ong ul.pu li{position:relative;padding:5px 0;padding-inline-start:16px;font-size:13.5px;line-height:1.55;color:var(--doux)}",
+".hcm-ong ul.pu li:before{content:'';position:absolute;inset-inline-start:2px;top:13px;width:5px;height:5px;border-radius:50%;border:1px solid var(--champ)}",
+".hcm-past h3{font-size:20px;line-height:1.2;margin-bottom:4px}",
+".hcm-past .s{font-size:12.5px;color:var(--pale);margin-bottom:10px}",
+".hcm-past ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}",
+".hcm-past li{border:1px solid rgba(201,166,107,.35);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ivoire);background:rgba(201,166,107,.06)}",
+".hcm-sit{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}",
+"@media (min-width:700px){.hcm-sit{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}",
+".hcm-sit>li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;border:1px solid rgba(201,166,107,.22);border-radius:4px;padding:14px 14px 14px 12px;background:rgba(16,26,29,.55)}",
+".hcm-sit .nb{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1;color:var(--champ)}",
+".hcm-sit h3{font-size:18px;line-height:1.2;margin-bottom:5px}",
+".hcm-sit p{font-size:13px;line-height:1.6;color:var(--doux);margin:0}",
+".hcm-sit ul{list-style:none;margin:6px 0 0;padding:0}",
+".hcm-sit ul li{position:relative;padding:3px 0;padding-inline-start:14px;font-size:13px;line-height:1.5;color:var(--doux)}",
+".hcm-sit ul li:before{content:'';position:absolute;inset-inline-start:1px;top:10px;width:5px;height:5px;border-radius:50%;border:1px solid var(--champ)}",
+".hcm-liste.coche{border:1px solid rgba(201,166,107,.45);border-radius:4px;padding:16px 16px 10px;background:rgba(201,166,107,.06)}",
+".hcm-liste.coche li{padding-inline-start:24px}",
+".hcm-liste.coche li:before{content:'\\2713';border:0;width:auto;height:auto;top:8px;font-size:13px;color:var(--champ)}",
 ".hcm-rond{width:34px;height:34px;border-radius:50%;border:1px solid var(--ligne);background:none;color:var(--champ);font-size:15px;display:inline-flex;align-items:center;justify-content:center}",
 ".hcm-rond:disabled{opacity:.35;cursor:default}",
 /* vidéos */
@@ -402,7 +462,7 @@ function Vague(p) {
   return h("div", { className: "hcm-vague", "aria-hidden": true, style: { background: vers } },
     h("svg", { viewBox: "0 0 1200 22", preserveAspectRatio: "none" },
       h("path", { d: d, fill: de }),
-      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: 0.28, strokeWidth: 1, vectorEffect: "non-scaling-stroke" })));
+      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: p.fort ? 0.9 : 0.28, strokeWidth: p.fort ? 1.6 : 1, vectorEffect: "non-scaling-stroke" })));
 }
 
 /* ---------------- schéma du sabot (repris du cours ordinateur du 30/10, inchangé) ---------------- */
@@ -477,10 +537,30 @@ function Bloc(p) {
         h("p", null, b.texte));
     case "aparte":
       return h("aside", { className: "hcm-aparte" }, b.titre ? h("h4", null, b.titre) : null, h("p", null, b.texte));
-    case "liste":
-      return h("div", { className: "hcm-liste" + (b.croix ? " croix" : "") },
-        b.titre ? h("h3", null, b.titre) : null, b.sous ? h("p", { className: "s" }, b.sous) : null,
-        h("ul", null, b.puces.map(function (pu, i) { return h("li", { key: i }, pu.gras ? h("strong", null, pu.gras + " ") : null, pu.texte); })));
+    case "liste":   /* 31/10 : texte courant facultatif (b.texte, paragraphes séparés par une ligne vide) et liste facultative (cours sécurité g1-c15) */
+      return h("div", { className: "hcm-liste" + (b.croix ? " croix" : "") + (b.coche ? " coche" : "") },
+        b.titre ? h("h3", null, b.titre) : null,
+        b.texte ? String(b.texte).split(/\n\s*\n/).map(function (t, i) { return h("p", { key: "t" + i, className: "hcm-p" }, t); }) : null,
+        b.sous ? h("p", { className: "s" }, b.sous) : null,
+        (b.puces && b.puces.length) ? h("ul", null, b.puces.map(function (pu, i) { return h("li", { key: i }, pu.gras ? h("strong", null, pu.gras + " ") : null, pu.texte); })) : null,
+        b.apres ? h("p", { className: "hcm-p", style: { marginTop: 8 } }, b.apres) : null);
+    case "pastilles":   /* 31/10 : signes courts en étiquettes (cours sécurité) */
+      return h("div", { className: "hcm-past" }, b.titre ? h("h3", null, b.titre) : null, b.sous ? h("p", { className: "s" }, b.sous) : null,
+        h("ul", null, b.items.map(function (t, i) { return h("li", { key: i }, t); })),
+        b.apres ? h("p", { className: "hcm-p", style: { marginTop: 10 } }, b.apres) : null);
+    case "situations":   /* 31/10 : situations numérotées en cartes (cours sécurité) */
+      return h("ol", { className: "hcm-sit" }, b.items.map(function (x, i) {
+        return h("li", { key: i }, h("span", { className: "nb" }, "0" + (i + 1)),
+          h("div", null, h("h3", null, x.titre),
+            x.texte ? h("p", null, x.texte) : null, x.sous ? h("p", null, x.sous) : null,
+            (x.puces && x.puces.length) ? h("ul", null, x.puces.map(function (pu, k) { return h("li", { key: k }, pu.texte); })) : null,
+            x.apres ? h("p", { style: { marginTop: 6 } }, x.apres) : null));
+      }));
+    case "zones":   /* 31/10 : cartes des zones de vigilance autour du cheval (cours sécurité g1-c15) */
+      return h("div", { className: "hcm-vigil" }, b.items.map(function (z, i) {
+        return h("div", { key: i, className: "z" + (z.alerte ? " alerte" : "") },
+          h("span", { className: "n" }, String(i + 1)), h("div", null, h("h4", null, z.titre), h("p", null, z.texte)));
+      }));
     case "outils":
       return h("div", { className: "hcm-outils" }, b.items.map(function (o, i) {
         return h("button", { key: i, type: "button", className: "hcm-outil", onClick: function () { ctx.allerA(o.cible, true); } },
@@ -533,7 +613,10 @@ function Onglets(p) {
       e.img ? h("figure", { className: "hcm-photo r43" }, h("img", { src: e.img, alt: "", loading: "lazy" })) : null,
       h("div", null,
         h("div", { className: "k", style: { marginBottom: 4 } }, L("etape") + " " + (i + 1) + " / " + b.items.length),
-        h("h3", null, e.titre), h("p", null, maj(e.texte)),
+        h("h3", null, e.titre), e.texte ? h("p", null, maj(e.texte)) : null,
+        e.sous ? h("p", null, e.sous) : null,
+        (e.puces && e.puces.length) ? h("ul", { className: "pu" }, e.puces.map(function (x, k) { return h("li", { key: k }, x.texte); })) : null,
+        e.apres ? h("p", { style: { marginTop: 6 } }, e.apres) : null,
         h("div", { className: "nav" },
           h("button", { type: "button", className: "hcm-rond", disabled: i === 0, "aria-label": L("prec"), onClick: function () { setI(Math.max(0, i - 1)); } }, rtl ? ICO.droite(15) : ICO.gauche(15)),
           h("button", { type: "button", className: "hcm-rond", disabled: i === b.items.length - 1, "aria-label": L("suiv"), onClick: function () { setI(Math.min(b.items.length - 1, i + 1)); } }, rtl ? ICO.gauche(15) : ICO.droite(15))))));
@@ -691,11 +774,11 @@ function HypeCoursModele(props) {
 
   var enfants = [];
   sections.forEach(function (s, i) {
-    if (tons[i] !== s.ton) enfants.push(h(Vague, { key: "v" + i, de: tons[i], vers: s.ton }));
+    if (tons[i] !== s.ton) enfants.push(h(Vague, { key: "v" + i, de: tons[i], vers: s.ton, fort: cfg.vagueOr }));   /* 31/10 : vagueOr = filet doré bien visible (cours sécurité) */
     enfants.push(h(Section, { key: s.id, s: s, L: L, rtl: rtl, ctx: ctx }));
   });
   var dernier = sections.length ? sections[sections.length - 1].ton : "noir";
-  if (dernier !== "noir") enfants.push(h(Vague, { key: "vfin", de: dernier, vers: "noir" }));
+  if (dernier !== "noir") enfants.push(h(Vague, { key: "vfin", de: dernier, vers: "noir", fort: cfg.vagueOr }));
 
   /* ordinateur : la colonne « Chapitres du Galop » (tous les cours du Galop, coche si terminé) reprise de la version du 30/10 */
   var liste = props.coursListe || [];
@@ -875,6 +958,132 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
         blocs: [
           /* 31/10 : « À retenir », le défi et le quiz sont sur la page de fin (quiz de l'appli). L'ancienne révision intégrée est retirée. */
           { t: "versfin" }
+        ] }
+    ]
+  };
+};
+
+/* =====================================================================================
+   31/10 : CONFIGURATION DU COURS Galop 1 — « La sécurité avant tout » (g1-c15)
+   Même modèle et même sommaire illustré que le pansage (validé par Blandine : « on gardera ce visuel à chaque fois »).
+   Tous les textes viennent du cours (14 langues) ; seuls les titres de chapitres/sections sont nouveaux (T ci-dessus).
+   Décisions du 31/10 : citation du bandeau = Buck Brannaman ; la citation de fin du cours est gardée en fin de cours ;
+   5 questions Hey Baby sur 10 (1, 2, 4, 7, 9) ; affiche infographie retirée (illisible sur téléphone) ;
+   objectifs et synthèse retirés (doublons des règles d'or) ;
+   le conseil du coach passe en fin de cours ; le quiz reste celui de l'appli (10 questions, étoiles) via « Passer le quiz ».
+   Photos : PROVISOIRES (photos du cours pansage) en attendant celles de Blandine.
+   ===================================================================================== */
+HypeCoursModele.config["g1-c15"] = function (cours, lg, o) {
+  var L = o.L, r = function (x) { return o.pickLg(x, lg); };
+  var b = cours.blocs || [];
+  var c = [1, 2, 3, 4, 5, 6, 7].map(function (i) { return o.contenuLg(b[i] && b[i].contenu, lg); });
+  var tailles = [5, 5, 8, 8, 6, 6, 6];
+  var valide = c.every(function (x, i) { return x.length === tailles[i]; }) && (cours.quiz || []).length === 10;
+  if (!valide) return { valide: false, sections: [], chapitres: [] };
+  var tit = function (x) { return o.sansNum(o.nettoyerTitre(r(x && x.titre))); };
+  var puces = function (x) { return ((x && x.puces) || []).map(function (p) { return { gras: r(p.gras), texte: r(p.texte) }; }); };
+  var part = function (x, extra) {
+    var bl = { t: "liste", titre: tit(x), texte: r(x && x.texte), sous: r(x && x.sous), puces: puces(x) };
+    for (var k in (extra || {})) bl[k] = extra[k];
+    return bl;
+  };
+  var aparte = function (x) { return { t: "aparte", titre: o.nettoyerTitre(r(x && x.titre)), texte: r(x && x.texte) }; };
+  var carte = function (x, apres) { return { titre: tit(x), texte: r(x && x.texte), sous: r(x && x.sous), puces: puces(x), apres: apres || "" }; };
+
+  /* 11. Tenir une longe : phrase d'origine coupée (« … [SUITE ATTENDUE] ») dans les 14 langues -> 1re phrase + « Il ne doit jamais : »,
+     et la liste commence par « enrouler la longe autour de ses doigts » (validé par Blandine le 31/10) */
+  var lo = c[3][4], loSous = r(lo.sous), loPuces = puces(lo);
+  if (/\[[^\]]*\]\s*$/.test(loSous)) {
+    var m = loSous.match(/^(.*?[.。])\s*/);
+    loSous = (m ? m[1] + " " : "") + L("longeJamais");
+    loPuces = [{ texte: L("longeDoigts") }].concat(loPuces);
+  }
+  /* 20. Les règles d'or : un seul texte -> une phrase par ligne (liste à cocher) */
+  var orTxt = r(c[5][5].texte);
+  var orPuces = orTxt.split(/(?<=[.。!！])\s*/).map(function (t) { return t.trim(); }).filter(Boolean).map(function (t) { return { texte: t }; });
+
+  var hbTout = puces(c[6][3]).map(function (p) { return p.texte; });
+  var hbq = [0, 1, 3, 6, 8].map(function (i) { return hbTout[i]; }).filter(Boolean);
+  var IMG = "images/cours-pansage-", P = "images/pansage-";   /* PHOTOS PROVISOIRES en attendant celles de Blandine */
+
+  return {
+    vagueOr: true,
+    couverture: {
+      img: IMG + "03_observer_approcher.webp", titre: r(cours.titre), kicker: "Galop 1", galop: "Galop 1",
+      citation: L("citBB"), auteur: "Buck Brannaman", duree: r(cours.duree), type: r(cours.type)
+    },
+    chapitres: [
+      { label: L("cApproche"), sous: L("sApproche"), img: IMG + "02_introduction_contact-mini.webp", sections: ["avant", "contact"] },
+      { label: L("cAutour"), sous: L("sAutour"), img: "images/galop5-c04-anatomie.webp", sections: ["zones"] },
+      { label: L("cBonsGestes"), sous: L("sBonsGestes"), img: "images/galop5-c05-soins.webp", sections: ["gestes"] },
+      { label: L("cEntre"), sous: L("sEntre"), img: "images/galop5-c08-equilibre.webp", sections: ["entre"] },
+      { label: L("cProbleme"), sous: L("sProbleme"), img: "images/cheval-defaut-alezan.webp", sections: ["probleme"] },
+      { label: L("vQuiz"), sous: L("sQuiz"), img: IMG + "13_quiz_carnet_crayon-mini.webp", sections: ["fin"] }
+    ],
+    sections: [
+      /* 01 — intro, points 1 et 2 (objectifs retirés : doublon des règles d'or, décision du 31/10) */
+      { id: "avant", ton: "petrole", kicker: "01 — " + L("cApproche"), titreA: L("tAvantA"), titreB: L("tAvantB"),
+        photo: { src: IMG + "03_observer_approcher.webp", ratio: "r43" },
+        blocs: [
+          { t: "para", texte: r(c[0][0].texte), lettrine: true },
+          part(c[0][2]),
+          aparte(c[0][3]),
+          part(c[0][4])
+        ] },
+      /* 01 — points 3 à 5, avec le schéma du champ de vision */
+      { id: "contact", ton: "petrole", kicker: "01 — " + L("cApproche"), titreA: L("tContactA"), titreB: L("tContactB"), inv: true,
+        photo: { src: IMG + "02_introduction_contact.webp", ratio: "r43" },
+        blocs: [
+          part(c[1][0]),
+          aparte(c[1][1]),
+          part(c[1][2]),
+          part(c[1][3], { croix: true }),
+          part(c[1][4])
+        ] },
+      /* 02 — points 6 à 8 : schéma interactif des zones (le conseil du coach passe en fin de cours) */
+      { id: "zones", ton: "noir", kicker: "02 — " + L("cAutour"), titreA: L("tZonesA"), titreB: L("tZonesB"), sous: tit(c[2][0]),
+        photo: { src: "images/galop5-c04-anatomie.webp", ratio: "r43" },
+        blocs: [
+          { t: "zones", items: [1, 2, 3, 4].map(function (i) { return { titre: r(c[2][i].titre), texte: r(c[2][i].texte), alerte: i === 4 }; }) },
+          part(c[2][5]),
+          part(c[2][6])
+        ] },
+      /* 03 — points 9 à 12 en onglets avec photo */
+      { id: "gestes", ton: "petrole", kicker: "03 — " + L("cBonsGestes"), titreA: L("tQuotidienA"), titreB: L("tQuotidienB"),
+        blocs: [
+          { t: "onglets", items: [
+            { titre: tit(c[3][0]), sous: r(c[3][0].sous), puces: puces(c[3][0]), apres: r(c[3][1].texte), img: "images/galop5-c07-transport.webp" },
+            { titre: tit(c[3][2]), sous: r(c[3][2].sous), puces: puces(c[3][2]), apres: r(c[3][3].texte), img: P + "outil-ensemble.webp" },
+            { titre: tit(lo), sous: loSous, puces: loPuces, apres: r(c[3][5].texte), img: "images/galop5-c03-apprendre.webp" },
+            { titre: tit(c[3][7]), texte: r(c[3][7].texte), img: IMG + "12_pieds_sabot_au_sol.webp" }
+          ] },
+          aparte(c[3][6])
+        ] },
+      /* 04 — points 13 à 15 : les signes d'inquiétude en étiquettes */
+      { id: "entre", ton: "noir", kicker: "04 — " + L("cEntre"), titreA: L("tEspaceA"), titreB: L("tEspaceB"), inv: true,
+        photo: { src: "images/galop5-c08-equilibre.webp", ratio: "r43" },
+        blocs: [
+          part(c[4][0], { apres: r(c[4][1].texte) }),
+          part(c[4][2], { apres: r(c[4][3].texte) }),
+          { t: "pastilles", titre: tit(c[4][4]), sous: r(c[4][4].sous), items: puces(c[4][4]).map(function (p) { return p.texte; }), apres: r(c[4][5].texte) }
+        ] },
+      /* 05 — points 16 à 19 en cartes, 20 (règles d'or) en liste à cocher */
+      { id: "probleme", ton: "petrole", kicker: "05 — " + L("cProbleme"), titreA: L("tCalmeA"), titreB: L("tCalmeB"), inv: true,
+        photo: { src: "images/cheval-defaut-alezan.webp", ratio: "r43" },
+        blocs: [
+          { t: "situations", items: [carte(c[5][0], r(c[5][1].texte)), carte(c[5][2]), carte(c[5][3]), carte(c[5][4])] },
+          { t: "liste", titre: o.sansNum(o.nettoyerTitre(r(c[5][5].titre))), puces: orPuces, coche: true }
+        ] },
+      /* 06 — fin du cours (synthèse en 10 secondes retirée : doublon des règles d'or, décision du 31/10) */
+      { id: "fin", ton: "noir", kicker: "06 — " + L("vQuiz"), titreA: L("tQuizA"), titreB: L("tQuizB"),
+        photo: { src: IMG + "13_quiz_carnet_crayon.webp", ratio: "r169" },
+        blocs: [
+          aparte(c[6][0]),
+          part(c[6][1], { croix: true }),
+          { t: "aparte", titre: tit(c[6][2]) || L("defi"), texte: [r(c[6][2].sous)].concat(puces(c[6][2]).map(function (p) { return "— " + p.texte; })).join("\n") },
+          { t: "coach", titre: r(c[2][7].titre), texte: r(c[2][7].texte) },
+          { t: "heybaby", questions: hbq },
+          { t: "citation", texte: r(c[6][5].texte) }
         ] }
     ]
   };

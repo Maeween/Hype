@@ -15845,3 +15845,17 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Ancien écran « Examen » (raccourci du tableau de bord) : corail et cyan remplacés par le champagne ; juste en vert, faux en gris dans la correction.
 - Fichier : index.html seulement. Vérifié : examen blanc du Galop 1 sur téléphone (question corrigée).
 - 31/10 11h35 : PUBLICATION (accord « Ok ») — build 20261031-1135 : examens aux couleurs des quiz. Fichiers : index.html, SUIVI.md.
+
+## 31/10/2026 — build 20261031-1440 : cours Galop 1 « La sécurité avant tout » refait (modèle éditorial commun, pilote)
+- Demande de Blandine (briefs ChatGPT du 31/10 + maquette de référence des robes) : refonte complète du cours sécurité (g1-c15), sur ordinateur, tablette et téléphone. 14:29 : « On met en ligne, on voit ce que ça donne » → PUBLICATION.
+- Nouveau fichier hype-cours-editorial.js (?v=3) : modèle commun piloté par une configuration par cours (pour l'instant seulement g1-c15). Branché dans EcranCoursCorps (index.html) AVANT hype-cours-modele.js ; si le cours n'a pas la structure attendue → affichage d'avant.
+- Haut de page : photo, titre, durée/type/niveau, 3 encarts (conseil du coach en entier, Hey Baby, défi du cavalier). Pas de citation dans le haut de page.
+- Menu : 5 cartes photo (Approcher, Autour du cheval, Les bons gestes, Entre chevaux, En cas de problème) + « Quiz et révision » qui ouvre la page de fin. UN SEUL chapitre affiché à la fois (Blandine : « ça doit tenir en deux ou trois pages ») ; bouton « Chapitre suivant ».
+- Chapitre = grande photo en fond, numéro + titre + liste des notions reliées par un filet à gauche, carte à droite avec la notion choisie (texte complet, photo, interaction) et flèches. 27 notions. Interactions : atlas des 4 zones sur photo de profil, portes à cocher, signes d'inquiétude à toucher, « Que ferais-tu ? » avec réponse à dévoiler.
+- Fin du cours : page de fin partagée (FinCours des robes) — les 10 règles d'or rangées par chapitre, citation de fin, 5 questions Hey Baby, défi, quiz de l'appli (10 questions). Arriver par « Quiz et révision » = cours terminé (+25 XP une fois) ; par l'encart « défi » : non.
+- Doublons retirés (règle de Blandine : aucun doublon dans les cours) : objectifs, synthèse en 10 secondes, les 13 erreurs à éviter, grand bloc coach du chapitre 02. « [SUITE ATTENDUE] » du point 11 (longe) corrigé dans les 14 langues. Citation Buck Brannaman (sourcée) dans le chapitre 01.
+- Photos : 12 photos de Blandine (planche ChatGPT découpée, images/securite-g1-*.webp) + securite-g1-alezan (fond du chapitre 02) + securite-g1-fin-noir (haut de la page de fin). Haut de page : photo d'avant (sante-hero-defaut). À refaire : « s'annoncer » (main près des naseaux), cheval inquiet ; manquent « cheval échappé » et « menace de mordre ».
+- hype-cours-modele.js (?v=3) : libellés du cours sécurité (14 langues) utilisés par le nouveau modèle.
+- Vérifié (banc local) : 14 langues dont arabe RTL, 375/390/430/768/1100/1440 px sans débordement, toutes les notions remplies, boutons, page de fin ; node --check de tous les scripts de index.html. Version iPhone à reprendre ensuite (réglages de l'ordinateur).
+- Mis de côté pour le cours des robes (non publiés) : alezan clair, pie, chocolat (alezan brûlé), palomino, gris pommelé, alezan crins lavés, bai.
+- Fichiers : hype-cours-editorial.js (nouveau), hype-cours-modele.js, index.html, SUIVI.md, images/securite-g1-*.webp (14). Inchangés : hype-cours-robes-ordi.js, hype-cours-pansage-ordi.js, hype-cours-galop1.js.
