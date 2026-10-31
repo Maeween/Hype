@@ -15895,3 +15895,17 @@ Demande de Blandine (15h17) : « fais tous les autres cours du galop 1 sur le m�
   Résultat : les 15 cours ont les 3 encarts du haut, Hey Baby, le défi, la synthèse et une phrase de fin (vérifié 14 langues, 1440 et 820 px).
 - index.html : editorial ?v=5, build 20261031-1900.
 - EN ATTENTE (non publié) : patch iPhone du cours sécurité préparé par ChatGPT (appliquer_mobile.py) — à reprendre sur cette version (repère VERSION 5 -> 6).
+
+## 01/11/2026 — branche travail-galop3 (NON publiée) : 12 cours du Galop 3 sur le modèle éditorial (ordinateur et tablette)
+Demande de Blandine (31/10 22h24) : « Galop 3 : même travail, même design sur ordinateur que les Galops 1 ». Constat signalé : le Galop 2 n'a encore que son cours des robes sur le nouveau modèle.
+- hype-cours-editorial.js v6 (?v=6) : g3-c1, c2, c4, c5, c6, c8, c9, c10, c11, c12, c13, c14, c15 générés comme le Galop 1 (aucun texte de cours réécrit, 14 langues).
+  Pas concernés : g3-c7 (robes, déjà refait) ; g3-c3 « Préparer un bon abord » et g3-saut « Les 6 phases du saut » = ÉTAPE SUIVANTE (cartes avec détails, cartes Premium, compléments et lien vers l'animation des phases : à garder, le générateur ne les sait pas encore afficher).
+- Parties manquantes (table COMPL, textes ChatGPT relus) : synthèse c1, c2, c4, c5, c6, c8, c9 ; défi c9 (titre « Détective des litières », 14 langues) ; c3 et g3-saut : coach, Hey Baby, défi, synthèse, phrase de fin (déjà rangés, inactifs tant que ces 2 cours ne sont pas branchés). Correction : allemand de la synthèse c2 (« Innengalopp »).
+- Phrase de fin des cours du Galop 3 (encadré citation sans titre en fin de cours) -> page de fin ; avant : rattachée par erreur aux questions Hey Baby et perdue. Règle limitée aux Galops 2 et suivants (Galop 1 inchangé).
+- « Galop 1 » écrit en dur sur les cours générés -> numéro lu dans l'identifiant du cours (Galop 3).
+- Menu à plus de 6 cartes (c10, c12, c14) : deux rangées sur ordinateur (avant : numéros sur les titres). Galop 1 inchangé.
+- Photos de fond des chapitres : provisoires, déjà en ligne (galop5-*, cours-pansage-*, couv-g2-heberger, article-cso-saut, securite-g1-longe) — table AUTO_IM.
+- Téléphone : inchangé (affichage d'avant sous 700 px).
+- Manque : g3-c2 n'a pas de phrase de fin (ni dans le cours ni dans les textes ChatGPT).
+- Vérifié (banc local) : 13 cours × 14 langues × 1440 et 820 px, aucune erreur, aucun débordement, aucune notion vide ; contenu du cours entièrement repris (seules les phrases d'introduction des questions Hey Baby ne sont pas reprises, comme au Galop 1) ; 390 px = affichage d'avant.
+- index.html : editorial ?v=6, build 20261101-0000. Fichiers : hype-cours-editorial.js, index.html, SUIVI.md.
