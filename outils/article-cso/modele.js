@@ -280,7 +280,7 @@ function Article() {
     h("p", { className: "acso-lead", style: { maxWidth: 920 } }, riche("s3_lead")),
     h("div", { className: "acso-cmp" }, panneau(false), panneau(true))));
 
-  var s4 = h("section", { className: "acso-s acso-no acso-li" }, h("div", { className: "acso-w" },
+  var s4 = h("section", { className: "acso-s acso-pe acso-li" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },
       h("div", null, chap("s4_num", "s4_cat"), h("h2", null, riche("s4_titre")), P("s4_p1"), P("s4_p3"), h("div", { className: "acso-pull" }, riche("s4_citation"))),
       h("div", null, fig(IMG.saut, "s4_photo_alt", "s4_legende")))));
@@ -311,7 +311,7 @@ function Article() {
 
   return h("div", { className: "acso", dir: rtl ? "rtl" : "ltr", lang: lg },
     h("style", null, CSS),
-    barre, hero, h("div", { className: "acso-wave" }), s1, s2, s3, s4, bande, s56, s7);
+    barre, hero, h("div", { className: "acso-wave" }), s1, s2, s4, bande, s56, s7); /* 31/10 03h06 : partie « La lecture du barrage » (s3) retirée — Blandine. Parties renumérotées 01→05. */
 }
 window.HypeArticleCso = { Article: Article, TXT: TXT };
 })();

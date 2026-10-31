@@ -80,7 +80,7 @@ function EcranArticles() {
 
     /* ---------- 2. Onglets (vrais : filtrent les derniers articles ou mènent à la partie) ---------- */
     var TABS = [
-        ["une", @@OLD:14@@, function () { setQ(""); aller("une"); }],
+        ["une", @@OLD:14@@, function () { setQ(""); aller("derniers"); }],
         ["technique", N("tab_technique"), function () { setQ(""); aller("derniers"); }],
         ["galops", N("rub_galops"), function () { setEcran("galops"); }],
         ["culture", N("tab_culture"), function () { aller("ecoles"); }],
@@ -134,6 +134,8 @@ function EcranArticles() {
     function norm(s) { try { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { return String(s || "").toLowerCase(); } }
     var qn = norm(q.trim());
     var liste = ARTICLES.filter(function (a) { return tab === "technique" ? estTech(a) : tab === "competition" ? !estTech(a) : true; });
+    /* 31/10 03h05 — Blandine : grand bloc « À la une » retiré ; l'article CSO passe en tête des derniers articles. */
+    if (aCso && liste.indexOf(aCso) > 0) { liste = [aCso].concat(liste.filter(function (a) { return a !== aCso; })); }
     var resultatsEcoles = [];
     if (qn) {
         liste = ARTICLES.filter(function (a) { return norm(titreDe(a) + " " + extraitDe(a)).indexOf(qn) >= 0; });
@@ -189,7 +191,7 @@ function EcranArticles() {
 
     return h("div", { className: "mag", dir: rtl ? "rtl" : "ltr", lang: lg },
         h("style", null, CSS),
-        couverture, onglets, une, explorer, derniers, ecoles, loin,
+        couverture, onglets, derniers, explorer, ecoles, loin,
         mtPan ? h(PanneauConseilsHB, { depuis: "articles", onFermer: function () { setMtPan(false); } }) : null);
 }
 

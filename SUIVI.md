@@ -15815,3 +15815,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur.
 - 31/10 02h50 (build 20261031-0815, NON publié) : médailles retirées des menus (Blandine : « laisse tomber les médailles ») — étoiles et pourcentage gardés ; le rond / la coche / le numéro reviennent. Code des médailles gardé, désactivé (HQ_MEDAILLES = false). Fusionné avec la version en ligne 0800 (article CSO).
 - 31/10 03h00 : PUBLICATION (accord « Ok ») — médailles retirées des menus, étoiles gardées ; fusionné avec Le Mag 0930 → build 20261031-0945.
+
+## 31/10/2026 — build 20261031-1000 : grand bloc « À la une » retiré + partie « La lecture du barrage » retirée
+- Le Mag : le grand bloc « À la une » (trop grand) est retiré. L'article CSO passe en tête des « Derniers articles », remontés juste sous les onglets ; l'onglet « À la une » y mène. La Baule reste dans les derniers articles, le Cadre Noir dans les grandes écoles.
+- Article CSO : partie 03 « La lecture du barrage » (2 cartes) retirée ; parties renumérotées 01 → 05 dans les 14 langues.
+- Fichiers : hype-article-cso.js (?v=5), hype-ecran-articles.js (?v=7), index.html, outils/article-cso/*.json + modele.js, outils/mag/modele.js.
+- Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur. Intégré par-dessus la version en ligne 20261031-0945 (menus des Galops), rien de perdu.
