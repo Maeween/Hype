@@ -15828,3 +15828,12 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Restent : 01 virage + schéma, 02 piège + 4 risques, 03 une foulée de plus, bandeau Attention, 04 geste du cavalier, 05 longue naturelle, question à la reconnaissance, Hey Baby + bouton Mag. Aucun nouveau texte (14 langues inchangées).
 - Fichiers : hype-article-cso.js (?v=6), index.html, outils/article-cso/modele.js. Le Mag inchangé.
 - Vérifié : 320 (arabe RTL), 390, 1440 — aucun débordement, aucune erreur.
+
+## 31/10/2026 — branche travail-fin-pansage (NON publiée) : fin du cours « Le pansage » = fin des robes + quiz aux couleurs actuelles
+- Demande (dossier « HYPE fin pansage pour Claude ») : la fin du pansage reprend la page de fin des robes (composant FinCours partagé), sur ordinateur ET téléphone/tablette.
+- Page de fin : « Tu as terminé ce cours ! », 3 gestes essentiels (Les outils / Les pieds / La queue, photos existantes + règle « à retenir »), rappel sécurité, Demande à Hey Baby (3 questions), Le défi du cavalier, Quiz et révision (quiz de l'appli, étoiles), Cours suivant, Retour aux Galops, retour au cours.
+- Cours terminé (+25 XP) une seule fois en arrivant sur la page de fin (vérifié : retour au cours puis re-fin = toujours 25). Plus d'ancienne page « Cours terminé ! » pour ce cours. Si la page partagée manquait : ancienne page (jamais d'écran blanc).
+- Retirés du cours (passés sur la page de fin, pas en double) : ancien quiz intégré (6 cartes ordinateur, révision téléphone), « À retenir », le défi, la liste des questions Hey Baby. Conseils du coach gardés à leur place. La carte Hey Baby du haut (ordinateur) montre la 4e question (queue).
+- Quiz de l'appli : 6 questions, correction, score, étoiles, XP inchangés. Design aux couleurs actuelles (champagne, Cormorant, boutons à contour) seulement pour les cours refaits (pansage, robes G1/G2/G3/G5) ; tous les autres quiz identiques.
+- Fichiers : hype-cours-pansage-ordi.js (?v=22), hype-cours-modele.js (?v=2), index.html (props onValider/quizScore pour g1-c2, quiz + résultat en or pour les cours refaits).
+- Vérifié : 390 (fr, ar RTL), 820, 1440 ; robes G1 sans régression ; quiz pansage joué jusqu'au résultat (score et XP enregistrés).

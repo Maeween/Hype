@@ -127,7 +127,7 @@ var T = {
   chapitresG: {"fr":"Chapitres du {g}","en":"{g} lessons","es":"Capítulos del {g}","it":"Capitoli del {g}","ja":"{g}のレッスン","de":"Kapitel {g}","ar":"دروس {g}","zh":"{g} 的课程","nl":"Lessen {g}","pt":"Capítulos do {g}","sv":"Lektioner {g}","ru":"Уроки {g}","pl":"Lekcje {g}","ko":"{g} 수업"},
   retourGalop: {"fr":"Retour au Galop","en":"Back to the Galop","es":"Volver al Galop","it":"Torna al Galop","ja":"Galopに戻る","de":"Zurück zum Galop","ar":"العودة إلى الغالوب","zh":"返回 Galop","nl":"Terug naar de Galop","pt":"Voltar ao Galop","sv":"Tillbaka till Galop","ru":"Назад к Galop","pl":"Wróć do Galopu","ko":"Galop으로 돌아가기"}
 };
-function Lx(lg) { return function (k) { var o = T[k]; return (o && (o[lg] || o.en || o.fr)) || ""; }; }
+function Lx(lg) { var f = function (k) { var o = T[k]; return (o && (o[lg] || o.en || o.fr)) || ""; }; f.lg = lg; return f; }
 
 /* ---------------- outils de lecture du cours ---------------- */
 function pickLg(o, lg) {
@@ -457,6 +457,8 @@ function SchemaSabot(p) {
 
 /* ---------------- composant principal ---------------- */
 
+/* libellé pris dans les textes partagés de la page de fin (hype-cours-robes-ordi.js), sinon « Terminer le cours » */
+function Lfin(k, L) { try { var S = window.HypeRobesOrdi.shared, o = S.T[k]; return (o && (o[L.lg] || o.en || o.fr)) || L("terminer"); } catch (e) { return L("terminer"); } }
 /* ---------------- blocs ---------------- */
 function Bloc(p) {
   var b = p.b, L = p.L, rtl = p.rtl, ctx = p.ctx;
@@ -510,6 +512,9 @@ function Bloc(p) {
       return h(AtelierSabot, { b: b, L: L, rtl: rtl });
     case "revision":
       return h(Revision, { b: b, L: L, rtl: rtl });
+    case "versfin":   /* 31/10 : bouton vers la page de fin (résumé, Hey Baby, défi, quiz de l'appli) */
+      return h("div", { className: "hcm-btns", style: { justifyContent: "center", marginTop: 8 } },
+        h("button", { type: "button", className: "hcm-btn", onClick: ctx.versFin }, Lfin("suiteFin", L), fleche(rtl, 15)));
     default:
       return null;
   }
@@ -637,13 +642,16 @@ function HypeCoursModele(props) {
   var _a = useState(chapitres[0] ? 0 : -1), actif = _a[0], setActif = _a[1];
   var _b = useState(false), mini = _b[0], setMini = _b[1];
   var _c = useState(null), flash = _c[0], setFlash = _c[1];
+  var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 31/10 : « cours » ou « fin » (page de fin partagée, si le cours en a une) */
   var menuRef = useRef(null);
+  /* 31/10 : page de fin du cours fournie par un autre fichier (ex. pansage : window.HypeFinsCours["g1-c2"], composant FinCours des robes) */
+  var FIN = (window.HypeFinsCours && window.HypeFinsCours[cours.id] && window.HypeFinsCours[cours.id].ok()) ? window.HypeFinsCours[cours.id] : null;
 
   useEffect(function () {
     var on = function () { var el = menuRef.current; if (el) setMini(el.getBoundingClientRect().bottom < 0); };
     window.addEventListener("scroll", on, { passive: true }); on();
     return function () { window.removeEventListener("scroll", on); };
-  }, []);
+  }, [vue]);
   useEffect(function () {
     if (typeof IntersectionObserver === "undefined") return undefined;
     var els = sections.map(function (s) { return document.getElementById("hcm-" + s.id); }).filter(Boolean);
@@ -656,7 +664,7 @@ function HypeCoursModele(props) {
     }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
     els.forEach(function (e) { io.observe(e); });
     return function () { io.disconnect(); };
-  }, [lg]);
+  }, [lg, vue]);
 
   var allerA = function (id, eclairer) {
     var el = document.getElementById("hcm-" + id);
@@ -667,7 +675,14 @@ function HypeCoursModele(props) {
     try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: pickLg(cours.titre, lg), score: null, cheval: null, question: q || "" }; } catch (e) { }
     if (props.setEcran) props.setEcran("assistant");
   };
-  var ctx = { allerA: allerA, hey: hey, flash: flash };
+  var haut = function () { try { window.scrollTo(0, 0); } catch (e) { } };
+  /* fin du cours : la page de fin partagée (cours terminé une seule fois via props.onValider) ; sinon l'ancienne page de l'appli */
+  var versFin = function () {
+    if (!FIN) { if (props.onTerminer) props.onTerminer(); return; }
+    setVue("fin"); setTimeout(haut, 30); if (props.onValider) props.onValider();
+  };
+  var ctx = { allerA: allerA, hey: hey, flash: flash, versFin: versFin };
+  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); } }));
   var Selecteur = props.Selecteur;
   var tit = decouperTitre(couv.titre);
 
@@ -738,8 +753,9 @@ function HypeCoursModele(props) {
     h("footer", { className: "hcm-pied t-noir" },
       h("div", { className: "hcm-in" },
         h("div", { className: "hcm-btns", style: { justifyContent: "center", marginBottom: 18 } },
-          h("button", { type: "button", className: "hcm-btn", onClick: function () { if (props.onQuiz) props.onQuiz(); } }, L("quizBtn"), fleche(rtl, 15)),
-          h("button", { type: "button", className: "hcm-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer"), ICO.coupe(15)),
+          /* 31/10 : avec une page de fin, le bouton « Résumé, Hey Baby et quiz » est dans la dernière section (pas en double ici) */
+          FIN ? null : h("button", { type: "button", className: "hcm-btn", onClick: function () { if (props.onQuiz) props.onQuiz(); } }, L("quizBtn"), fleche(rtl, 15)),
+          FIN ? null : h("button", { type: "button", className: "hcm-btn", onClick: function () { if (props.onTerminer) props.onTerminer(); } }, L("terminer"), ICO.coupe(15)),
           h("button", { type: "button", className: "hcm-btn disc", onClick: props.onRetour }, L("retourGalop"), fleche(rtl, 15))),
         h("div", { className: "m" }, "HYPE")))));
 }
@@ -833,8 +849,8 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
         photo: { src: IMG + "09_gestes_brossage.webp", ratio: "r43" },
         blocs: [
           { t: "etapes", items: outils.map(function (p, i) { return { id: "outil-" + i, titre: o.sansDeuxPoints(p.gras), texte: p.texte }; }) },
-          { t: "liste", titre: L("erreurs"), croix: true, puces: [{ texte: L("err1") }, { texte: L("err2") }, { texte: L("err3") }, { texte: L("err4") }] },
-          { t: "heybaby", questions: hbq }
+          { t: "liste", titre: L("erreurs"), croix: true, puces: [{ texte: L("err1") }, { texte: L("err2") }, { texte: L("err3") }, { texte: L("err4") }] }
+          /* 31/10 : les questions Hey Baby sont sur la page de fin (pas en double) */
         ] },
       { id: "queue", ton: "petrole", kicker: "04 — " + L("kQueue"), titreA: L("tQueueA"), titreB: L("tQueueB"), sous: o.nettoyerTitre(r(b3.titre)),
         blocs: [
@@ -857,9 +873,8 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
       { id: "quiz", ton: "petrole", kicker: "06 — " + L("kQuiz"), titreA: L("tQuizA"), titreB: L("tQuizB"),
         photo: { src: IMG + "13_quiz_carnet_crayon.webp", ratio: "r169" },
         blocs: [
-          { t: "liste", titre: L("retenir"), puces: [{ texte: L("ret1") }, { texte: L("ret2") }, { texte: L("ret3") }, { texte: L("ret4") }] },
-          { t: "revision", questions: quiz },
-          { t: "aparte", titre: L("defi"), texte: L("defiTxt") }
+          /* 31/10 : « À retenir », le défi et le quiz sont sur la page de fin (quiz de l'appli). L'ancienne révision intégrée est retirée. */
+          { t: "versfin" }
         ] }
     ]
   };

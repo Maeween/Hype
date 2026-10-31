@@ -389,7 +389,7 @@ function HypePansageOrdi(props) {
   var _d = useState({}), cartesOuv = _d[0], setCartesOuv = _d[1];
   var _e = useState("s1"), actif = _e[0], setActif = _e[1];
   var _m = useState(false), mini = _m[0], setMini = _m[1];
-  var _r = useState({}), reps = _r[0], setReps = _r[1];
+  var _v = useState("cours"), vue = _v[0], setVue = _v[1];   /* 31/10 : « cours » ou « fin » (page de fin partagée avec les robes) */
   var refs = useRef({});
   useEffect(function () {
     var on = function () {
@@ -399,7 +399,7 @@ function HypePansageOrdi(props) {
     window.addEventListener("scroll", on, { passive: true });
     on();
     return function () { window.removeEventListener("scroll", on); };
-  }, []);
+  }, [vue]);
 
   /* section visible -> vignette allumée */
   useEffect(function () {
@@ -411,7 +411,7 @@ function HypePansageOrdi(props) {
     }, { rootMargin: "-25% 0px -62% 0px", threshold: 0 });
     els.forEach(function (e) { io.observe(e); });
     return function () { io.disconnect(); };
-  }, []);
+  }, [vue]);
 
   var aller = function (id) {
     var el = document.getElementById("pso-" + id);
@@ -457,15 +457,16 @@ function HypePansageOrdi(props) {
   var cliqueEtape = function (i) { if (ordre.indexOf(i) >= 0 || finiOrdre) return; setOrdre(ordre.concat([i])); };
   var sansNum = function (s) { return String(s || "").replace(/^\s*\d+\s*[.)]\s*/, ""); };
 
-  var termineeFn = function () { if (props.onTerminer) props.onTerminer(); };
+  /* 31/10 : fin du cours = page de fin partagée (robes) ; si elle n'est pas chargée, l'ancienne page de l'appli (jamais d'écran blanc) */
+  var haut = function () { try { window.scrollTo(0, 0); } catch (e) { } };
+  var versFin = function () {
+    if (!finDisponible()) { try { console.warn("HYPE pansage : page de fin partagée absente, ancienne page utilisée"); } catch (e) { } if (props.onTerminer) props.onTerminer(); return; }
+    setVue("fin"); setTimeout(haut, 30); if (props.onValider) props.onValider();
+  };
   var Selecteur = props.Selecteur;
 
-  /* questions Hey Baby du chapitre : celles de l'appli (QUESTIONS_HB) ; l'allemand et l'arabe n'y existent pas encore -> les nôtres */
-  var HBQ_DE_AR = {
-    de: ["In welcher Reihenfolge benutze ich die Bürsten beim Putzen?", "Wie kratze ich die Hufe aus, ohne den Strahl zu verletzen?", "Mein Pferd bewegt sich beim Putzen, was tun?"],
-    ar: ["بأي ترتيب أستخدم الفرش أثناء تنظيف الحصان؟", "كيف أنظف الحوافر دون إيذاء الشوكة؟", "حصاني يتحرك أثناء التنظيف، ماذا أفعل؟"]
-  };
-  var hbQuestions = (HBQ_DE_AR[lg] || (props.questionsHB || []).slice(0, 3)).concat([L("hbQ4")]);
+  var hbQuestions = hbPansage(props, lg, L);   /* 31/10 : les 3 premières sont sur la page de fin ; la 4e (queue) sur la carte du haut — aucune en double */
+  var LS = function (k) { var S = window.HypeRobesOrdi && window.HypeRobesOrdi.shared; var o = S && S.T[k]; return (o && (o[lg] || o.en || o.fr)) || L("terminer"); };
 
   function Sec(id, num, titre, enfants) {
     return h("section", { id: "pso-" + id, className: "pso-sec" + (id === "s5" ? " pso-sec5" : "") },
@@ -486,6 +487,9 @@ function HypePansageOrdi(props) {
   var idxCourant = -1;
   (props.coursListe || []).forEach(function (c, i) { if (c && c.id === cours.id) idxCourant = i; });
 
+  if (vue === "fin" && finDisponible()) {
+    return h(FinPansage, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); } }));
+  }
   return h("div", { className: "pso", dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, CSS),
     h("div", { className: "pso-wrap" },
@@ -513,8 +517,8 @@ function HypePansageOrdi(props) {
               h("span", null, ICO.coupe(16), "Galop 1"))),
           h("aside", { className: "pso-cards" },
             h("div", { className: "pso-card photo", style: { backgroundImage: "linear-gradient(90deg,rgba(7,10,8,.94) 40%,rgba(7,10,8,.55)),url(images/pansage-outil-ensemble.webp)" } }, h("h3", null, ICO.coupe(20), L("coach")), h("p", null, d.coach1 ? d.coach1.texte : "")),
-            h("button", { type: "button", className: "pso-card lien", onClick: function () { hey(""); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQuestions[0] || "")),
-            h("button", { type: "button", className: "pso-card lien clair", onClick: function () { aller("s4"); } }, h("h3", null, ICO.coupe(20), L("defi")), h("p", null, L("defiTxt"))))),
+            h("button", { type: "button", className: "pso-card lien", onClick: function () { hey(""); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQuestions[3] || "")),
+            h("button", { type: "button", className: "pso-card lien clair", onClick: versFin }, h("h3", null, ICO.coupe(20), L("defi")), h("p", null, L("defiTxt"))))),
 
         h("div", { className: "pso-vig", role: "tablist" },
           vig.map(function (v, i) {
@@ -552,7 +556,8 @@ function HypePansageOrdi(props) {
             h("div", { className: "pso-grid2" },
               h("div", { className: "pso-box" }, h("h3", null, L("observer")), h("p", null, L("observerTxt"))),
               h("div", { className: "pso-box err" }, h("h3", null, L("erreurs")), h("ul", null, h("li", null, L("err1")), h("li", null, L("err2")), h("li", null, L("err3")), h("li", null, L("err4"))))),
-            h("div", { className: "pso-hb" }, hbQuestions.map(function (q, i) { return h("button", { key: i, type: "button", onClick: function () { hey(q); } }, q); })))),
+            /* 31/10 : les questions Hey Baby sont sur la page de fin (pas en double) */
+            null)),
 
         h("div", { className: "pso-duo" },
         /* 03 — LES PIEDS */
@@ -601,36 +606,77 @@ function HypePansageOrdi(props) {
                 finiOrdre ? h("div", { className: "msg " + (bonOrdre ? "ok" : "ko") }, bonOrdre ? L("exoOk") : L("exoKo")) : null,
                 ordre.length ? h("button", { type: "button", className: "rec", onClick: function () { setOrdre([]); } }, L("exoRestart")) : null),
               h("div", { className: "pso-box" }, h("p", null, d.quiz[5] ? d.quiz[5].explication : ""))),
-            h("div", { className: "pso-grid2" },
-              h("div", { className: "pso-box" }, h("h3", null, L("defi")), h("p", null, L("defiTxt"))),
-              h("div", { className: "pso-box" }, h("h3", null, L("retenir")), h("ul", null, h("li", null, L("ret1")), h("li", null, L("ret2")), h("li", null, L("ret3")), h("li", null, L("ret4"))))))),
+            /* 31/10 : « Le défi du cavalier » et « À retenir » sont sur la page de fin */
+            null)),
 
         ),
         /* 05 — QUIZ ET RÉVISION */
+        /* 05 — 31/10 : l'ancien quiz intégré (6 cartes) est retiré. Le quiz est celui de l'appli, sur la page de fin (étoiles, XP, reprise). */
         Sec("s5", "05", L("secQuiz"),
           h("div", null,
-            h("h3", { style: { fontSize: 22, color: "#C9A66B", marginBottom: 10 } }, L("testeToi")),
-            h("div", { className: "cartes" }, d.quiz.map(function (q, i) {
-              var vf = q.type === "vrai-faux";
-              var choix = vf ? [{ k: true, t: L("vrai") }, { k: false, t: L("faux") }] : (q.options || []).map(function (t, j) { return { k: j, t: t }; });
-              var rep = reps[i];
-              var repondu = rep !== undefined;
-              var juste = repondu && rep === q.correct;
-              return h("div", { key: i, className: "pso-qcm" },
-                h("p", { className: "q" }, (q.image ? q.image + " " : "") + q.question),
-                h("div", { className: "opts" }, choix.map(function (c, j) {
-                  var cls = repondu ? (c.k === q.correct ? "bon" : (c.k === rep ? "mauvais" : "")) : "";
-                  return h("button", { key: j, type: "button", className: cls, disabled: repondu, "aria-pressed": repondu && c.k === rep, onClick: function () { var n = Object.assign({}, reps); n[i] = c.k; setReps(n); } },
-                    h("span", { className: "lt" }, vf ? (c.k ? "✓" : "✕") : String.fromCharCode(65 + j)), h("span", null, c.t));
-                })),
-                repondu ? h("div", { className: "res " + (juste ? "ok" : "ko"), "aria-live": "polite" }, h("strong", null, juste ? L("bravo") : L("pasTout")), " ", q.explication) : null,
-                repondu ? h("button", { type: "button", className: "rec", onClick: function () { var n = Object.assign({}, reps); delete n[i]; setReps(n); } }, L("exoRestart")) : null);
-            })),
+            h("div", { className: "pso-photo" }, h("img", { src: "images/pansage-quiz.webp", alt: "", loading: "lazy", style: { width: "100%", maxHeight: 340, objectFit: "cover", display: "block" } })),
             h("div", { className: "pso-cta" },
-              h("button", { type: "button", className: "pso-btn plein", onClick: function () { props.setEcran("quiz"); } }, L("quizBtn")),
-              h("button", { type: "button", className: "pso-btn", onClick: termineeFn }, L("terminer")))))
+              h("button", { type: "button", className: "pso-btn", onClick: versFin }, LS("suiteFin") + (rtl ? " ←" : " →")))))
       )));
 }
+
+/* =====================================================================================
+   31/10 — PAGE DE FIN DU PANSAGE = la même que « Les robes du cheval » (composant FinCours partagé de
+   hype-cours-robes-ordi.js), avec les photos et textes du pansage. Utilisée par l'ordinateur (ce fichier)
+   ET par le téléphone/tablette (hype-cours-modele.js, via window.HypeFinsCours["g1-c2"]).
+   Arriver sur cette page = cours terminé (+25 XP, une seule fois : props.onValider, protégé dans index.html).
+   Quiz = celui de l'appli (props.setEcran("quiz")), étoiles selon props.quizScore. Aucun texte du cours en dur.
+   ===================================================================================== */
+function finDisponible() { return !!(window.HypeRobesOrdi && window.HypeRobesOrdi.shared && window.HypeRobesOrdi.shared.FinCours); }
+function FinPansage(props) {
+  var S = window.HypeRobesOrdi.shared;
+  var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";
+  var Lp = function (k) { var o = T[k]; return (o && (o[lg] || (NOUVEAUX.indexOf(lg) >= 0 && o.en) || o.fr)) || ""; };
+  var L = function (k) { var o = S.T[k]; return (o && (o[lg] || o.en || o.fr)) || Lp(k); };
+  var d = lireCours(cours, lg);
+  var hey = function (q) {
+    try { window.__hbCoursCtx = { galop: props.galopOuvert, coursId: cours.id, titre: d.titre, score: null, cheval: null, question: q || "" }; } catch (e) { }
+    props.setEcran("assistant");
+  };
+  var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
+  var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;
+  return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
+    h("style", null, S.CSS),
+    h("div", { className: "rbo-wrap" },
+      h("nav", { className: "rbo-chap", "aria-label": L("chapitres") },
+        h("h3", null, L("chapitres")),
+        liste.map(function (c, i) {
+          var fait = (props.coursTermines || []).indexOf(c.id) >= 0;
+          return h("button", { key: c.id, type: "button", "aria-current": c.id === cours.id ? "true" : undefined, onClick: function () { if (c.id !== cours.id && props.onOuvrirCours) props.onOuvrirCours(c.id); } },
+            h("span", { className: "n" + (fait ? " fait" : "") }, fait ? "✓" : String(i + 1)), h("span", null, typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg)));
+        })),
+      h("main", { className: "rbo-main" },
+        h(S.FinCours, {
+          L: L, lg: lg, rtl: rtl, kicker: "Galop 1", titre: d.titre, Selecteur: props.Selecteur, coursId: cours.id,
+          heroImg: "images/pansage-comprendre.webp", heroPos: "60% 45%",
+          /* trois gestes essentiels : titre court (nom de la partie du cours) + la règle « à retenir » qui lui correspond */
+          portraits: [
+            { img: "images/pansage-outil-ensemble.webp", pos: "center", nom: Lp("vOutils"), desc: Lp("ret1") },
+            { img: "images/pansage-pieds.webp", pos: "center", nom: Lp("vPieds"), desc: Lp("ret2") },
+            { img: "images/pansage-queue-large.webp", pos: "center", nom: Lp("vQueue"), desc: Lp("ret4") }
+          ],
+          note: Lp("ret3"),
+          hb: hbPansage(props, lg, Lp).slice(0, 3), onHey: hey,
+          defiSeg: { titre: Lp("defi"), sous: "", texte: Lp("defiTxt"), puces: [] },
+          quizImg: "images/pansage-quiz.webp", onQuiz: function () { props.setEcran("quiz"); }, quizScore: props.quizScore,
+          suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
+          onGalops: props.onRetour, onRetourCours: props.onRetourCours
+        }),
+        (typeof FinPageHype === "function") ? h("div", { className: "rbo-finpage" }, h(FinPageHype, null)) : null)));
+}
+/* questions Hey Baby du pansage : celles de l'appli (QUESTIONS_HB) ; l'allemand et l'arabe n'y existent pas encore -> les nôtres ; + la question sur la queue */
+var HBQ_DE_AR = {
+  de: ["In welcher Reihenfolge benutze ich die Bürsten beim Putzen?", "Wie kratze ich die Hufe aus, ohne den Strahl zu verletzen?", "Mein Pferd bewegt sich beim Putzen, was tun?"],
+  ar: ["بأي ترتيب أستخدم الفرش أثناء تنظيف الحصان؟", "كيف أنظف الحوافر دون إيذاء الشوكة؟", "حصاني يتحرك أثناء التنظيف، ماذا أفعل؟"]
+};
+function hbPansage(props, lg, Lp) { return (HBQ_DE_AR[lg] || (props.questionsHB || []).slice(0, 3)).concat([Lp("hbQ4")]); }
+window.HypeFinsCours = window.HypeFinsCours || {};
+window.HypeFinsCours["g1-c2"] = { ok: finDisponible, Fin: FinPansage };
 HypePansageOrdi.ok = ok;
 HypePansageOrdi.version = VERSION;
 window.HypePansageOrdi = HypePansageOrdi;
