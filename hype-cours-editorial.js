@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 8;   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
+var VERSION = 9;   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
+/* précédente : VERSION = 8; */   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
 /* précédente : VERSION = 7; */   /* 01/11 00h10 : photo de haut de page du cours seller et brider (g1-c17) */
 /* précédente : VERSION = 6; */   /* 31/10 soir : Galop 2 (14 cours, robes à part) sur le même modèle — ordinateur et tablette */
 /* v5 :   /* 31/10 : les 15 autres cours du Galop 1 générés sur le même modèle (ordinateur et tablette) + parties manquantes (COMPL, 14 langues) */
@@ -440,16 +441,15 @@ var CSS = [
 ".hce .hce-mhead .k:after{content:'';width:46px;height:1px;background:rgba(201,166,107,.5)}",
 ".hce-mhead h2{font-size:23px;line-height:1.15;margin:8px 0 4px}",
 ".hce .hce-mhead .aide{font-size:12px;color:var(--doux);margin:0}",
-/* 31/10 22h05 (décision définitive de Blandine) : MENU HORIZONTAL de cartes photo sur téléphone, défilement au doigt (aussi en arabe) */
-".hce-menu ol{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;padding:2px 16px 6px}",
-".hce-menu li{flex:0 0 64%;max-width:260px;scroll-snap-align:start}",
-".hce-chap{height:104px;border-radius:12px;border-color:rgba(243,238,228,.16);background:#0B0F0E}",
-".hce-chap .ph{inset:0 0 0 30%;opacity:.85}[dir=rtl] .hce-chap .ph{inset:0 30% 0 0}",
-".hce-chap .n{top:10px;font-size:28px}",
-".hce-chap .lb{inset-inline:12px 48px;bottom:12px;font-size:17px;line-height:1.12;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}",
-".hce-chap .hce-rond{bottom:12px;inset-inline-end:12px;width:30px;height:30px;background:rgba(7,10,8,.55)}",
-".hce-chap[aria-current=true]{border-color:var(--champ);box-shadow:0 0 0 2px var(--champ) inset}",
-".hce-chap[aria-current=true] .n{color:#E6CC98}",
+/* 01/11 00h15 (Blandine : « les menus avec les chapitres doivent être dans ce design-là partout ») : retour à la LISTE VERTICALE du pansage sur téléphone (le menu horizontal du 31/10 22h05 est retiré) */
+".hce-menu ol{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;overflow:visible;scroll-snap-type:none;padding:0 16px}",
+".hce-menu li{flex:none}",
+".hce-chap{display:flex;align-items:center;gap:12px;height:auto;min-height:62px;border-radius:6px;border-color:rgba(243,238,228,.1);background:#0c1113}",
+".hce-chap .ph{inset:0 0 0 54%}[dir=rtl] .hce-chap .ph{inset:0 54% 0 0}",
+".hce-chap .n{position:relative;top:auto;inset-inline-start:auto;flex:0 0 46px;text-align:center;font-size:27px}",
+".hce-chap .lb{position:relative;inset:auto;flex:1 1 auto;min-width:0;padding:10px 0;font-size:18px;line-height:1.15;text-shadow:none}",
+".hce-chap .lb small{display:block;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:400;color:var(--doux);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+".hce-chap .hce-rond{position:relative;bottom:auto;inset-inline-end:auto;flex:0 0 28px;margin-inline-end:12px;background:rgba(7,10,8,.45)}",
 "}",
 /* 31/10 22h : TÉLÉPHONE — lecture verticale dans le chapitre : photo, titre, texte complet, interaction ; un chapitre à la fois.
    (repris du patch préparé par ChatGPT, sans masquer les 3 encarts du haut) */
@@ -490,9 +490,9 @@ var CSS = [
 ".hce-mobile-unit .qf{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champ);margin-bottom:12px}",
 ".hce-mobile-unit .hce-btn{max-width:100%;white-space:normal;text-align:center}",
 "}",
-".hce-mobile-quote,.hce-mobile-coach{display:none}",
-"@media screen and (max-width:699px){",
-".hce-enc{display:none!important}",
+/* 01/11 00h15 (Blandine : « en haut tu peux laisser les onglets comme sur ordinateur ») : encarts du haut visibles, citation dans le chapitre 01, pas de carte coach en fin — désactivé */
+".hce-mobile-quote,.hce-mobile-coach{display:none!important}",
+"@media screen and (max-width:0px){",
 ".hce-mobile-quote{display:block;margin:4px 16px 22px;padding:19px 20px;border-inline-start:2px solid var(--champ);background:linear-gradient(105deg,#101D22,#070A08);font-family:'Cormorant Garamond','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:21px;line-height:1.4;color:var(--ivoire)}",
 ".hce-sec[data-i=\"0\"] .hce-chp-mobile .note{display:none}",
 ".hce-mobile-coach{display:block;margin:14px 16px 22px;padding:20px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:linear-gradient(120deg,#101D22,#090D0D)}",
