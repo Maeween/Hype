@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 9;   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
+var VERSION = 10;   /* 01/11 00h30 : Galops 3 et 4 sur le modèle éditorial (30 cours) */
+/* précédente : VERSION = 9; */   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
 /* précédente : VERSION = 8; */   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
 /* précédente : VERSION = 7; */   /* 01/11 00h10 : photo de haut de page du cours seller et brider (g1-c17) */
 /* précédente : VERSION = 6; */   /* 31/10 soir : Galop 2 (14 cours, robes à part) sur le même modèle — ordinateur et tablette */
@@ -1223,6 +1224,41 @@ var AUTO_IM = {
   "g2-heberger": ["images/galop5-th-cheval2.webp", "images/securite-g1-alezan.webp", "images/securite-g1-observer.webp"],
   "g1-c19": ["images/galop5-theme-connaissances.webp", "images/galop5-th-cheval2.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-chute.webp", "images/galop5-theme-cheval.webp", "images/galop5-c07-transport.webp"]
 };
+/* 01/11 00h30 (Blandine : « tu feras pareil pour l'adaptation des cours sur tel pour tous les Galops 3 et 4 ») : Galops 3 et 4 sur le même modèle.
+   Photos choisies parmi les photos existantes de l'appli, par thème (aucune nouvelle image). g3-c7 (robes) garde son propre modèle. */
+var AUTO_IM_G34 = {
+  "g3-c1": ["images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
+  "g3-c2": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
+  "g3-c3": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-c08-equilibre.webp"],
+  "g3-saut": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
+  "g3-c4": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-epaule.webp"],
+  "g3-c5": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-theme-soins-pied.webp"],
+  "g3-c6": ["images/securite-g1-observer.webp", "images/securite-g1-inquiet.webp", "images/galop5-th-cheval2.webp"],
+  "g3-c8": ["images/galop5-c04-anatomie.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
+  "g3-c9": ["images/galop5-th-vie.webp", "images/galop5-th-vie2.webp"],
+  "g3-c10": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c07-transport.webp"],
+  "g3-c11": ["images/galop5-theme-soins-pied.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-c05-soins.webp", "images/galop5-c04-anatomie.webp"],
+  "g3-c12": ["images/galop5-theme-pratique-montee.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-tenue.webp", "images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
+  "g3-c13": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c03-apprendre.webp", "images/galop5-theme-connaissances.webp"],
+  "g3-c14": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c03-apprendre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c11-saut.webp"],
+  "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
+  "g4-contact": ["images/galop5-c02-embouchures.webp", "images/galop5-c10-cession.webp"],
+  "g4-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
+  "g4-transitions": ["images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp"],
+  "g4-incurvation": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp"],
+  "g4-vitesse": ["images/galop5-theme-pratique-montee.webp", "images/galop5-c08-equilibre.webp"],
+  "g4-epaules-hanches": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
+  "g4-protections": ["images/galop5-c01-materiel.webp", "images/galop5-c05-soins.webp"],
+  "g4-obstacles-equilibre": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
+  "g4-soins-travail": ["images/galop5-c05-soins.webp", "images/cours-pansage-09_gestes_brossage.webp"],
+  "g4-identite": ["images/galop5-c04-anatomie.webp", "images/galop5-theme-connaissances.webp"],
+  "g4-nourrir": ["images/galop5-th-vie.webp", "images/galop5-th-vie2.webp"],
+  "g4-exterieur": ["images/galop5-c12-cross.webp", "images/galop5-c07-transport.webp"],
+  "g4-biomeca": ["images/galop5-c04-anatomie.webp", "images/galop5-c08-equilibre.webp"],
+  "g4-galop-qualite": ["images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c10-cession.webp"],
+  "g4-c5": ["images/galop5-c05-soins.webp", "images/galop5-theme-soins-pied.webp", "images/galop5-c04-anatomie.webp"]
+};
+Object.keys(AUTO_IM_G34).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G34[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 
 /* =====================================================================================
