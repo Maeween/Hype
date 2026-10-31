@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 3;   /* 31/10 14h : brief du 31/10 13h52 — atlas photo, fiches, signaux, parcours, fin unique */
+var VERSION = 4;   /* 31/10 15h : menu en liste verticale (comme le pansage) sur téléphone */
+/* v3 :    /* 31/10 14h : brief du 31/10 13h52 — atlas photo, fiches, signaux, parcours, fin unique */
 /* v2 :    /* 31/10 13h45 : doublons retirés (coach, défi, Hey Baby, erreurs, portraits de fin), regroupements */
 
 /* ---------------- libellés de structure (14 langues) ---------------- */
@@ -418,6 +419,23 @@ var CSS = [
 ".hce-chp .pimg{aspect-ratio:2/1}",
 ".hce-chp .pan .nav .hce-rond{width:36px;height:36px}",
 "}",
+/* 31/10 15h (Blandine : « fais ça similaire au pansage ») : sur téléphone, le menu devient la liste verticale du cours pansage */
+".hce-mhead{display:none}.hce-chap .lb small{display:none}",
+"@container hce (max-width:699px){",
+".hce-mhead{display:block;padding:0 16px 12px}",
+".hce .hce-mhead .k{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--champ);margin:0}",
+".hce .hce-mhead .k:after{content:'';width:46px;height:1px;background:rgba(201,166,107,.5)}",
+".hce-mhead h2{font-size:23px;line-height:1.15;margin:8px 0 4px}",
+".hce .hce-mhead .aide{font-size:12px;color:var(--doux);margin:0}",
+".hce-menu ol{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;overflow:visible;scroll-snap-type:none;padding:0 16px}",
+".hce-menu li{flex:none}",
+".hce-chap{display:flex;align-items:center;gap:12px;height:auto;min-height:62px;border-radius:6px;border-color:rgba(243,238,228,.1);background:#0c1113}",
+".hce-chap .ph{inset:0 0 0 54%}[dir=rtl] .hce-chap .ph{inset:0 54% 0 0}",
+".hce-chap .n{position:relative;top:auto;inset-inline-start:auto;flex:0 0 46px;text-align:center;font-size:27px}",
+".hce-chap .lb{position:relative;inset:auto;flex:1 1 auto;min-width:0;padding:10px 0;font-size:18px;line-height:1.15;text-shadow:none}",
+".hce-chap .lb small{display:block;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:400;color:var(--doux);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+".hce-chap .hce-rond{position:relative;bottom:auto;inset-inline-end:auto;flex:0 0 28px;margin-inline-end:12px;background:rgba(7,10,8,.45)}",
+"}",
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
 ".hce-hero .ph{height:380px}.hce-hero .txt{padding:0 32px;margin-top:-60px}.hce-hero h1{font-size:52px}",
@@ -770,16 +788,17 @@ function HypeCoursEditorial(props) {
     h(Vague, { de: NOIR, vers: NOIR }),
     /* MENU DES CHAPITRES */
     h("nav", { className: "hce-menu", ref: menuRef, "aria-label": L("mTitre") },
+      h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre")), h("p", { className: "aide" }, L("mAide"))),
       h("ol", { style: { "--n": cfg.chapitres.length + (cfg.revision ? 1 : 0) } }, cfg.chapitres.map(function (c, i) {
         return h("li", { key: c.id }, h("button", { type: "button", className: "hce-chap", "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
           h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + c.img + ")", backgroundPosition: c.pos || "center" } }),
           h("span", { className: "n" }, (i < 9 ? "0" : "") + (i + 1)),
-          h("span", { className: "lb" }, c.label),
+          h("span", { className: "lb" }, c.label, c.sous ? h("small", null, c.sous) : null),
           h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 14))));
       }).concat(cfg.revision ? [h("li", { key: "rev" }, h("button", { type: "button", className: "hce-chap rev", onClick: function () { versFin(true); } },
           h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + cfg.revision.img + ")", backgroundPosition: cfg.revision.pos || "center" } }),
           h("span", { className: "n" }, (cfg.chapitres.length < 9 ? "0" : "") + (cfg.chapitres.length + 1)),
-          h("span", { className: "lb" }, cfg.revision.label),
+          h("span", { className: "lb" }, cfg.revision.label, cfg.revision.sous ? h("small", null, cfg.revision.sous) : null),
           h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 14))))] : []))),
     h("div", { className: "hce-minih" },
       h("div", { className: "hce-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
@@ -865,11 +884,11 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {
   var coach = c[2][7], defi = c[6][2];
 
   var chapitres = [
-    { id: "approcher", label: L("cApproche"), img: IM.approche, pos: "60% 40%" },
-    { id: "autour", label: L("cAutour"), img: IM.fond02, pos: "55% 25%" },
-    { id: "gestes", label: L("cBonsGestes"), img: "images/securite-g1-porte.webp", pos: "50% 50%" },
-    { id: "entre", label: L("cEntre"), img: IM.groupe, pos: "50% 60%" },
-    { id: "probleme", label: L("cProbleme"), img: IM.oeil, pos: "50% 45%" }
+    { id: "approcher", label: L("cApproche"), sous: L("sApproche"), img: IM.approche, pos: "60% 40%" },
+    { id: "autour", label: L("cAutour"), sous: L("sAutour"), img: IM.fond02, pos: "55% 25%" },
+    { id: "gestes", label: L("cBonsGestes"), sous: L("sBonsGestes"), img: "images/securite-g1-porte.webp", pos: "50% 50%" },
+    { id: "entre", label: L("cEntre"), sous: L("sEntre"), img: IM.groupe, pos: "50% 60%" },
+    { id: "probleme", label: L("cProbleme"), sous: L("sProbleme"), img: IM.oeil, pos: "50% 45%" }
   ];
   var num = function (id) { var i = chapitres.findIndex(function (x) { return x.id === id; }); return "0" + (i + 1); };
   var lab = function (id) { return chapitres.find(function (x) { return x.id === id; }).label; };
@@ -947,7 +966,7 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {
       defi: { titre: tit(defi), texte: o.phrases(so(defi))[0] || "", img: IM.defi, pos: "50% 35%" }
     },
     chapitres: chapitres,
-    revision: { label: L("secQuiz"), img: IM.quiz, pos: "50% 60%" },
+    revision: { label: L("secQuiz"), sous: L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
     sections: sections,
     regles: regles, hbq: hbq, defi: { titre: tit(defi), sous: o.phrases(so(defi)).slice(1).join(" "), puces: pu(defi) }, citFin: tx(c[6][5])
   };

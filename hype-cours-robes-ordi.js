@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 34;   /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
+var VERSION = 35;   /* 31/10 15h : menu en liste verticale sur téléphone (comme le pansage) ; Galop 5 renommé « Types de pies et adjonctions » */
+/* v34 :    /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
 /* v33 :    /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
 /* v31 :   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
 /* v30 :   /* 31/10 00h40 : phrase en double retirée, Hey Baby et défi au style de la fin, portraits plus nets */
@@ -70,7 +71,7 @@ var T = {
   gal1: tt("Robes de base", "Base coats", "Capas básicas", "Mantelli di base", "基本の毛色", "Grundfarben", "الألوان الأساسية", "基本毛色", "Basiskleuren", "Pelagens de base", "Grundfärger", "Основные масти", "Maści podstawowe", "기본 모색"),
   gal2: tt("Gris, pie, tacheté", "Grey, pinto, spotted", "Tordo, pío, moteado", "Grigio, pezzato, maculato", "芦毛・ぶち・斑点", "Schimmel, Schecke, getupft", "الرمادي والأبلق والمرقط", "青毛、花斑、斑点", "Schimmel, bont, gevlekt", "Tordilho, pampa, malhado", "Skimmel, skäck, prickig", "Серая, пегая, чубарая", "Siwa, srokata, tarantowata", "회색·얼룩·점박이"),
   gal3: tt("Marques et nuances", "Markings and shades", "Marcas y matices", "Marcature e sfumature", "白斑と色合い", "Abzeichen und Nuancen", "العلامات والدرجات", "白色标记与色调", "Aftekeningen en tinten", "Marcas e nuances", "Tecken och nyanser", "Отметины и оттенки", "Odmiany i odcienie", "흰 반점과 색조"),
-  gal5: tt("Pies et adjonctions", "Pintos and additions", "Píos y adiciones", "Pezzati e aggiunte", "ぶちと付加特徴", "Schecken und Zusätze", "الأبلق والإضافات", "花斑与附加特征", "Bonten en toevoegingen", "Pampas e adições", "Skäckar och tillägg", "Пегие и дополнения", "Srokate i dodatki", "얼룩과 추가 특징"),
+  gal5: tt("Types de pies et adjonctions", "Pinto types and additions", "Tipos de píos y adiciones", "Tipi di pezzati e aggiunte", "ぶちの種類と付加特徴", "Scheckenarten und Zusätze", "أنواع الأبلق والإضافات", "花斑类型与附加特征", "Soorten bonten en toevoegingen", "Tipos de pampas e adições", "Skäcktyper och tillägg", "Типы пегих и дополнения", "Rodzaje srokatych i dodatki", "얼룩 유형과 추가 특징"),   /* 31/10 15h : renommé (Blandine : deux cartes « pie » prêtaient à confusion) */
   finTitre: tt("Tu as terminé ce cours !", "You've finished this lesson!", "¡Has terminado este curso!", "Hai finito questo corso!", "このレッスンを読み終えました！", "Du hast diese Lektion beendet!", "لقد أنهيت هذا الدرس!", "你已读完这节课！", "Je hebt deze les afgerond!", "Terminaste este curso!", "Du har gått igenom lektionen!", "Ты прошёл этот урок!", "Ukończyłeś tę lekcję!", "이 수업을 다 읽었어요!"),
   finSous: tt("Voici l'essentiel à retenir avant de passer au quiz.", "Here's what to remember before the quiz.", "Esto es lo esencial antes del quiz.", "Ecco l'essenziale da ricordare prima del quiz.", "クイズの前に覚えておきたいポイントです。", "Das Wichtigste vor dem Quiz.", "إليك أهم ما يجب تذكّره قبل الاختبار.", "测验前需要记住的要点。", "Dit moet je onthouden voor de quiz.", "O essencial a reter antes do quiz.", "Det viktigaste att komma ihåg före quizet.", "Главное, что нужно запомнить перед тестом.", "Najważniejsze przed quizem.", "퀴즈 전에 기억할 핵심이에요."),
   hbTitre: tt("Hey Baby t'accompagne", "Hey Baby is here to help", "Hey Baby te acompaña", "Hey Baby ti accompagna", "Hey Babyがサポート", "Hey Baby begleitet dich", "Hey Baby يرافقك", "Hey Baby 陪你学习", "Hey Baby helpt je", "A Hey Baby acompanha-te", "Hey Baby hjälper dig", "Hey Baby рядом", "Hey Baby ci pomoże", "Hey Baby가 함께해요"),
@@ -448,10 +449,14 @@ var CSS = [
 "@media (max-width:1279px){.rbo-citband{padding:52px 32px 22px}}",
 /* 30/10 (soir) — VERSION TÉLÉPHONE : même page, mise en page empilée (écran <= 760 px). La barre du bas de l'appli reste visible : marge en bas. */
 "@media (max-width:760px){",
-".rbo .rbo-ong{padding:22px 0 18px}.rbo .rbo-ong .st{margin-inline:16px}",
-".rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;scrollbar-width:none;padding:0 16px}",
-".rbo .rbo-ong .g::-webkit-scrollbar{display:none}",
-".rbo .rbo-ong .c{flex:0 0 42%;height:92px;scroll-snap-align:start}.rbo .rbo-ong .n{font-size:26px}.rbo .rbo-ong .t{font-size:16px;inset-inline:11px 40px}",
+".rbo .rbo-ong{padding:22px 16px 18px}",
+/* 31/10 15h (Blandine : « fais ça similaire au pansage ») : sur téléphone, liste verticale comme le menu du cours pansage */
+".rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
+".rbo .rbo-ong .c{display:flex;align-items:center;gap:12px;height:auto;min-height:62px;border-radius:6px;border-color:rgba(243,238,228,.1);background:#0c1113}",
+".rbo .rbo-ong .ph{inset:0 0 0 54%}[dir=rtl] .rbo .rbo-ong .ph{inset:0 54% 0 0}",
+".rbo .rbo-ong .n{position:relative;top:auto;inset-inline-start:auto;flex:0 0 46px;text-align:center;font-size:27px}",
+".rbo .rbo-ong .t{position:relative;inset:auto;flex:1 1 auto;min-width:0;padding:10px 0;font-size:18px;line-height:1.15;text-shadow:none}",
+".rbo .rbo-ong .ar{position:relative;bottom:auto;inset-inline-end:auto;flex:0 0 28px;margin-inline-end:12px;background:rgba(7,10,8,.45)}",
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
 ".rbo .rbo-fc-hero .vo,[dir=rtl] .rbo .rbo-fc-hero .vo{background:linear-gradient(90deg,rgba(7,10,8,.94) 0%,rgba(7,10,8,.72) 50%,rgba(7,10,8,.18) 100%),linear-gradient(180deg,rgba(7,10,8,.4) 0%,rgba(7,10,8,0) 30%,#070A08 100%)}",
 ".rbo .rbo-fc-hero h2{font-size:36px}.rbo .rbo-fc-hero .sous{max-width:none}",

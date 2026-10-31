@@ -15867,3 +15867,9 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Non utilisés : souris (crins gris, tête pas plus foncée → doute), « crins lavés » (ce n'en était pas), gris très clair et blanc (proposition blanc/gris côte à côte au Galop 2 en attente).
 - Fichiers : hype-cours-robes-ordi.js (?v=35), hype-cours-robes-galops-ordi.js (?v=18), index.html, SUIVI.md, 6 images. Cours sécurité inchangé (l'alezan clair reste en fond du chapitre 02).
 - Vérifié (banc local) : G1/G2/G3/G5 en français, G1 en arabe, 390 et 1536 px ; node --check des scripts.
+
+## 31/10/2026 — build 20261031-1505 : menus des cours en liste verticale sur téléphone (comme le pansage) + Galop 5 renommé
+- Demande de Blandine (capture du menu du pansage, 14h55 : « fais ça similaire au truc de pansage », « sur tel ») : sur téléphone, le menu des chapitres du cours sécurité et des cours des robes devient la liste verticale du pansage — une carte large par chapitre : grand numéro champagne, titre (+ sous-titre pour la sécurité), photo estompée à droite, flèche ronde. Sécurité : en-tête « Au programme / Les chapitres du cours / Touche un chapitre… » comme le pansage. Ordinateur et tablette : cartes inchangées.
+- Robes : la carte du Galop 5 s'appelle « Types de pies et adjonctions » (14 langues), pour ne plus être confondue avec « Gris, pie, tacheté » du Galop 2 (accord de Blandine).
+- Fichiers : hype-cours-editorial.js (?v=4), hype-cours-robes-ordi.js (?v=36), index.html, SUIVI.md.
+- Vérifié (banc local) : sécurité fr + ar, robes G1 et G5 à 390 px, ordinateur inchangé ; node --check.
