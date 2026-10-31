@@ -432,7 +432,7 @@ var CSS = [
 ".rbo-ong .c[aria-current=true] .ph{border-color:var(--champ);box-shadow:0 0 0 1px var(--champ)}",
 ".rbo-ong .n{display:block;font-family:'Cormorant Garamond',serif;font-size:21px;line-height:1;color:var(--champ);margin-top:8px}",
 ".rbo-ong .t{display:block;font-size:13px;line-height:1.3;margin-top:3px}",
-".rbo-ong .o .ph{filter:grayscale(.85) brightness(.75)}.rbo-ong .o:hover .ph,.rbo-ong .o:focus-visible .ph{filter:none}.rbo-ong .o .t{color:var(--doux)}",
+".rbo-ong .o .t{color:var(--doux)}",   /* 31/10 13h30 : plus de grisé (section à part) */
 "@media (max-width:1279px){.rbo-ong{padding-inline:28px}}",
 ".rbo-ongl{display:none}",
 ".rbo-coachfin{background:#0A1116;padding:56px 40px 64px;display:grid;gap:28px;justify-items:center}",
@@ -466,7 +466,6 @@ var CSS = [
 ".rbo-lig .ar{position:relative;flex:0 0 28px;height:28px;margin-inline-end:12px;border-radius:50%;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;color:var(--ivoire)}",
 ".rbo-lig[aria-current=true]{border-color:var(--champ)}",
 ".rbo-lig:active{transform:scale(.99)}",
-".rbo-lig.o .ph{filter:grayscale(.85) brightness(.75)}",
 ".rbo .rbo-ong{padding:24px 16px 20px}.rbo .rbo-ong .g,.rbo .rbo-ong .g.autres{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 9px}",
 ".rbo .rbo-ong .g:not(.autres) .ph{aspect-ratio:4/5}.rbo .rbo-ong .n{font-size:18px;margin-top:7px}.rbo .rbo-ong .t{font-size:12px}",
 ".rbo .rbo-fc-hero{min-height:0}.rbo .rbo-fc-hero .bar{padding:14px 16px 0}.rbo .rbo-fc-hero .in{padding:12px 16px 26px;max-width:none}",
