@@ -317,6 +317,10 @@
       var ligne = lignes[i];
       if (ligne === "+") continue;
       if (ENTETES_COLONNE.test(ligne)) continue; /* 02/09 : en-tete de colonne, jamais une valeur */
+      /* 31/10 : en dressage, le telemat met l en-tete ET la note sur la meme ligne (« Note/Score 63,08% »).
+         Le test du dessus ne la reconnaissait pas, elle se collait au nom (83 lignes « CLEMENTINE BRANCHU Note/Score 63,08% »
+         importees en sept./oct.). On la saute, et on coupe la continuation pour qu elle ne prolonge plus le nom. */
+      if (/^(Note\s*\/\s*Score|Note|Score)\s*:?\s*[\d\s.,]+%?$/i.test(ligne)) { derniere = "points"; continue; }
       var e = etiquetteDe(ligne);
       if (e && e.cle === "date" && /\d{2}\/\d{2}\/\d{4}/.test(e.valeur)) {
         if (cour) fiches.push(cour);
@@ -509,6 +513,8 @@
                     /* 02/09 : ceinture. Meme si un en-tete inconnu se collait au nom,
                        il ne part plus en base. On ne coupe jamais s'il resterait moins
                        de deux mots, pour ne pas amputer un vrai patronyme. */
+                    .replace(/\s+(Note\s*\/\s*Score|Note|Score)\s*:?\s*[\d\s.,]+%?$/i, " ")   /* 31/10 : « … Note/Score 63,08% » */
+                    .replace(/\s+$/, "")
                     .replace(/\s+(Note\s*\/\s*Score|Note|Score|Pts|Points|Gains|Rang|Dossard|Partants|Places?)$/i,
                              function (tout, mot, pos, chaine) {
                                var reste = chaine.slice(0, pos).trim();
