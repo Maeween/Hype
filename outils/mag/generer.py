@@ -11,6 +11,7 @@ ancien = open(os.path.join(ICI, "ancienne-page.js"), encoding="utf-8").read()
 pat = re.compile(r'tr\(\{ ?fr: ?"(?:[^"\\]|\\.)*"[^}]*\}\)|hypeT7\("(?:[^"\\]|\\.)*"[^)]*\)')
 OLD = [m.group(0) for m in pat.finditer(ancien)]
 nv = json.load(open(os.path.join(ICI, "textes.json"), encoding="utf-8"))
+nv.update(json.load(open(os.path.join(ICI, "textes2.json"), encoding="utf-8")))
 for k, v in nv.items():
     manque = [l for l in LG if not v.get(l)]
     if manque: sys.exit("textes.json : " + k + " sans " + ",".join(manque))
@@ -20,6 +21,7 @@ s = s.replace("@@NV@@", json.dumps(nv, ensure_ascii=False))
 s = s.replace("@@LIRE@@", json.dumps(nv["lire"], ensure_ascii=False))
 s = s.replace("@@GALOP@@", OLD[19])
 s = re.sub(r"@@OLD:(\d+)@@", lambda m: OLD[int(m.group(1))], s)
+s = re.sub(r"@@ARTRAW:(\w+)@@", lambda m: json.dumps({l: art[l][m.group(1)] for l in LG}, ensure_ascii=False), s)
 s = re.sub(r"@@ART:(\w+)@@", lambda m: json.dumps({l: art[l][m.group(1)].replace("*", "") for l in LG}, ensure_ascii=False), s)
 if "@@" in s: sys.exit("marque non remplacée")
 open(os.path.join(RAC, "hype-ecran-articles.js"), "w", encoding="utf-8").write(s)
