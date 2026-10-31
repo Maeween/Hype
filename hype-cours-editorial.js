@@ -20,7 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 6;   /* 31/10 soir : Galop 2 (14 cours, robes à part) sur le même modèle — ordinateur et tablette */
+var VERSION = 8;   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
+/* précédente : VERSION = 7; */   /* 01/11 00h10 : photo de haut de page du cours seller et brider (g1-c17) */
+/* précédente : VERSION = 6; */   /* 31/10 soir : Galop 2 (14 cours, robes à part) sur le même modèle — ordinateur et tablette */
 /* v5 :   /* 31/10 : les 15 autres cours du Galop 1 générés sur le même modèle (ordinateur et tablette) + parties manquantes (COMPL, 14 langues) */
 /* v4 : 31/10 15h : menu en liste verticale (comme le pansage) sur téléphone */
 /* v3 :    /* 31/10 14h : brief du 31/10 13h52 — atlas photo, fiches, signaux, parcours, fin unique */
@@ -488,6 +490,15 @@ var CSS = [
 ".hce-mobile-unit .qf{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champ);margin-bottom:12px}",
 ".hce-mobile-unit .hce-btn{max-width:100%;white-space:normal;text-align:center}",
 "}",
+".hce-mobile-quote,.hce-mobile-coach{display:none}",
+"@media screen and (max-width:699px){",
+".hce-enc{display:none!important}",
+".hce-mobile-quote{display:block;margin:4px 16px 22px;padding:19px 20px;border-inline-start:2px solid var(--champ);background:linear-gradient(105deg,#101D22,#070A08);font-family:'Cormorant Garamond','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:21px;line-height:1.4;color:var(--ivoire)}",
+".hce-sec[data-i=\"0\"] .hce-chp-mobile .note{display:none}",
+".hce-mobile-coach{display:block;margin:14px 16px 22px;padding:20px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:linear-gradient(120deg,#101D22,#090D0D)}",
+".hce-mobile-coach h3{font-family:'Cormorant Garamond',serif;color:var(--champ);font-size:26px;margin:0 0 10px}",
+".hce-mobile-coach p{font-size:14px;line-height:1.65;color:var(--ivoire);white-space:pre-line;overflow-wrap:anywhere}",
+"}",
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
 ".hce-hero .ph{height:380px}.hce-hero .txt{padding:0 32px;margin-top:-60px}.hce-hero h1{font-size:52px}",
@@ -903,9 +914,13 @@ function HypeCoursEditorial(props) {
     h("button", { type: "button", className: "hce-btn", onClick: function () { choisir(actif + 1); } },
       L("chapSuiv") + "  ·  " + cfg.chapitres[actif + 1].label, fleche(rtl, 15)),
     h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"))));
-  else autres.forEach(function (s) {
-    corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec t-" + s.ton, style: { paddingTop: 8, paddingBottom: 8 } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
-  });
+  else {
+    /* 01/11 (pack ChatGPT) : sur téléphone, le conseil du coach passe ici, juste avant « Quiz et révision » (les encarts du haut sont masqués) */
+    if (enc && enc.coach) corps.push(h("aside", { key: "coach-mobile-fin", className: "hce-mobile-coach" }, h("h3", null, enc.coach.titre), h("p", null, enc.coach.texte)));
+    autres.forEach(function (s) {
+      corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec t-" + s.ton, style: { paddingTop: 8, paddingBottom: 8 } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
+    });
+  }
 
   return h("div", { className: "hce" + (cfg.auto ? " auto" : ""), dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, CSS),
@@ -937,6 +952,7 @@ function HypeCoursEditorial(props) {
     h(Vague, { de: NOIR, vers: NOIR }),
     /* MENU DES CHAPITRES */
     h("nav", { className: "hce-menu", ref: menuRef, "aria-label": L("mTitre") },
+      chs[0] && chs[0].citation ? h("div", { className: "hce-mobile-quote" }, chs[0].citation) : null,   /* 01/11 (pack ChatGPT) : citation sous le haut de page, téléphone */
       h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre")), h("p", { className: "aide" }, L("mAide"))),
       h("ol", { style: { "--n": (function (t) { return t > 7 ? Math.ceil(t / 2) : t; })(cfg.chapitres.length + (cfg.revision ? 1 : 0)) } }, cfg.chapitres.map(function (c, i) {
         return h("li", { key: c.id }, h("button", { type: "button", className: "hce-chap", "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
@@ -1048,7 +1064,7 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {
   var S = function (t) { return t ? h("p", { className: "s" }, t) : null; };
   var ZPOS = [{ x: 14, y: 30 }, { x: 40, y: 50 }, { x: 43, y: 84 }, { x: 86, y: 66 }];
   var chap = function (id, bg, bgPos, sous, items, note) {
-    return { id: id, ton: "photo", rendu: function (x) {
+    return { id: id, ton: "photo", citation: note, rendu: function (x) {
       return h(Chapitre, { key: id, id: id, L: x.L, rtl: x.rtl, num: num(id), galop: "Galop 1", titre: lab(id), sous: sous, bg: bg, bgPos: bgPos, items: items, note: note });
     } };
   };
@@ -2168,6 +2184,11 @@ function titreNotion(o, L, lg) {
   if (o.photo) return o.photo.titre;
   return titreNet(pickLg(o.seg && o.seg.titre, lg));
 }
+/* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
+var HERO_COURS = {
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"]   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+};
+
 function alerteNotion(o) {
   var t = o.fr && o.fr.titre ? nettoyerTitre(o.fr.titre).toLowerCase() : "";
   return /erreur|jamais|ne pas toucher|attention/.test(t);
@@ -2182,7 +2203,7 @@ AUTO_IDS.forEach(function (id) {
     var chapitres = A.chapitres.map(function (c) { return { id: c.id, label: c.titre, img: c.img, pos: "55% 40%" }; });
     var sections = A.chapitres.map(function (c, i) {
       var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg, alerteNotion(n)); } }; });
-      return { id: c.id, ton: "photo", rendu: function (x) {
+      return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
         return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note });
       } };
     });
@@ -2194,7 +2215,7 @@ AUTO_IDS.forEach(function (id) {
     var cv = A.couv;
     return {
       auto: true,
-      hero: { img: (cv && r(cv.src)) || A.chapitres[0].img, pos: (cv && cv.couv && cv.couv.pos) || "50% 40%", titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
+      hero: { img: (HERO_COURS[cours.id] && HERO_COURS[cours.id][0]) || (cv && r(cv.src)) || A.chapitres[0].img, pos: (HERO_COURS[cours.id] && HERO_COURS[cours.id][1]) || (cv && cv.couv && cv.couv.pos) || "50% 40%", titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
       encarts: {
         coach: A.coach ? { titre: A.coach.titre || L("coach"), texte: A.coach.texte, img: IM.coach, pos: "60% 25%" } : null,
         hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },

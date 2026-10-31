@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 18;   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
+var VERSION = 19;   /* 31/10 19h15 : seulement les Galops précédents */
+/* précédente : VERSION = 18; */   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
 /* v17 :    /* 31/10 : menu du cours modèle B */
 /* v15 :   /* 31/10 : défi du cavalier ajouté au Galop 2 */
 /* v14 :   /* 31/10 : page de fin = FinCours (maquette), portraits de toutes les robes du cours */
@@ -429,7 +430,8 @@ function HypeRobesGalopsOrdi(props) {
   var quizId = vig[vig.length - 1].id;
   var nav = function (id) { if (id === quizId) versFin(); else aller(id); };
   /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes (numérotées à la suite) */
-  var autresG = props.onOuvrirRobes ? AUTRES.filter(function (g) { return g.id !== cours.id; }) : [];
+  var nGal = g5 ? 5 : (g2 ? 2 : 3);
+  var autresG = props.onOuvrirRobes ? AUTRES.filter(function (g) { return g.n < nGal; }) : [];   /* 31/10 19h (Blandine) : seulement les Galops précédents */
   var vigM = vig.slice(1);   /* 31/10 : « Comprendre » n'est plus dans le menu */
   var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
   var nbVig = Math.ceil((vigM.length + autresG.length) / 2);   /* 2 lignes */

@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 35;   /* 31/10 15h : menu en liste verticale sur téléphone (comme le pansage) ; Galop 5 renommé « Types de pies et adjonctions » */
+var VERSION = 36;   /* 31/10 19h15 : seulement les Galops précédents dans le menu */
+/* précédente : VERSION = 35; */   /* 31/10 15h : menu en liste verticale sur téléphone (comme le pansage) ; Galop 5 renommé « Types de pies et adjonctions » */
 /* v34 :    /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
 /* v33 :    /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
 /* v31 :   /* 31/10 00h50 : FinCours accepte des portraits sans photo (teinte), une liste longue et l'absence de défi */
@@ -83,7 +84,7 @@ var T = {
   quizSous: tt("Vérifie tes connaissances et valide tes acquis.", "Check your knowledge and confirm what you've learned.", "Comprueba tus conocimientos y valida lo aprendido.", "Verifica le tue conoscenze e convalida ciò che hai imparato.", "知識を確認して、学んだことを確かめよう。", "Prüfe dein Wissen und festige das Gelernte.", "تحقّق من معلوماتك وثبّت ما تعلّمته.", "检验你的知识，巩固所学。", "Test je kennis en bevestig wat je hebt geleerd.", "Verifica os teus conhecimentos e valida o que aprendeste.", "Testa dina kunskaper och bekräfta det du lärt dig.", "Проверь знания и закрепи пройденное.", "Sprawdź wiedzę i potwierdź to, czego się nauczyłeś.", "지식을 확인하고 배운 것을 다져 보세요."),
   quizReussi: tt("Quiz réussi", "Quiz passed", "Quiz superado", "Quiz superato", "クイズ合格", "Quiz bestanden", "نجحت في الاختبار", "测验通过", "Quiz gehaald", "Quiz superado", "Quiz klarat", "Тест пройден", "Quiz zaliczony", "퀴즈 통과"),
   dansCours: tt("Dans ce cours", "In this lesson", "En este curso", "In questo corso", "このレッスンでは", "In dieser Lektion", "في هذا الدرس", "本课内容", "In deze les", "Neste curso", "I den här lektionen", "В этом уроке", "W tej lekcji", "이번 수업"),
-  autresGal: tt("Les autres Galops", "The other Galops", "Los otros Galops", "Gli altri Galop", "ほかのギャロップ", "Die anderen Galops", "الغالوبات الأخرى", "其他 Galop", "De andere Galops", "Os outros Galops", "De andra Galops", "Другие Galop", "Pozostałe Galopy", "다른 갤럽"),
+  autresGal: tt("Les Galops précédents", "Previous Galops", "Los Galops anteriores", "I Galop precedenti", "前のギャロップ", "Die vorherigen Galops", "الغالوبات السابقة", "之前的 Galop", "De vorige Galops", "Os Galops anteriores", "Tidigare Galops", "Предыдущие Galop", "Poprzednie Galopy", "이전 갤럽"),   /* 31/10 19h : « Les autres Galops » → précédents seulement */
   coursFini: tt("Cours terminé !", "Lesson complete!", "¡Curso terminado!", "Corso completato!", "レッスン完了！", "Lektion abgeschlossen!", "اكتمل الدرس!", "课程完成！", "Les voltooid!", "Curso concluído!", "Lektionen klar!", "Урок пройден!", "Lekcja ukończona!", "수업 완료!"),
   coursSuivant: tt("Cours suivant", "Next lesson", "Siguiente curso", "Corso successivo", "次のレッスン", "Nächste Lektion", "الدرس التالي", "下一课", "Volgende les", "Próximo curso", "Nästa lektion", "Следующий урок", "Następna lekcja", "다음 수업"),
   retourGalops: tt("Retour aux Galops", "Back to the Galops", "Volver a los Galops", "Torna ai Galop", "ギャロップに戻る", "Zurück zu den Galops", "العودة إلى الغالوب", "返回 Galop", "Terug naar de Galops", "Voltar aos Galops", "Tillbaka till Galops", "Назад к Galop", "Powrót do Galopów", "갤럽으로 돌아가기"),
@@ -608,11 +609,9 @@ function HypeRobesOrdi(props) {
   var vigM = vig.slice(1);   /* 31/10 (Blandine) : « Comprendre » n'est plus dans le menu (2 lignes de 3) ; la section reste en haut du cours */
   var galLab = function (n) { return L("gal" + n) + " (G" + n + ")"; };
   /* 31/10 : les robes des autres Galops, dans le même menu que les vignettes */
-  var autresG = props.onOuvrirRobes ? [
-    { id: "g2-robes", n: 2, img: "images/robes-portrait-pie.webp", pos: "60% 40%" },
-    { id: "g3-c7", n: 3, img: "images/robes-portrait-palomino.webp", pos: "60% 40%" },
-    { id: "g5-robes", n: 5, img: "images/robes-portrait-aubere.webp", pos: "60% 40%" }
-  ] : [];
+  /* 31/10 19h (Blandine, choix 1 + « les robes du Galop 1 doivent rester visibles au Galop 3 ») : seulement les Galops PRÉCÉDENTS ;
+     au Galop 1, il n'y en a pas (les Galops suivants restent dans leur propre Galop) */
+  var autresG = [];
   /* page de fin : cours suivant, XP gagnés (seulement si le cours n'était pas déjà terminé à l'ouverture) */
   var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
   var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;

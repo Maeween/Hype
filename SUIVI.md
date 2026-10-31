@@ -15932,3 +15932,10 @@ Demande de Blandine (19h48) : « prépare la même chose pour tous les cours du 
 - Liste des visuels à remplacer : VISUELS_A_REMPLACER.txt (dans le zip).
 
 - Publication groupée (Galop 1 + Galop 2, tout ce qui était en attente depuis 20h30) : hype-cours-editorial.js (?v=6), hype-cours-galop1.js (clé g1 9sv2ru1pl1ko1), index.html (build 20261031-2240), SUIVI.md. Les entrées « EN ATTENTE » de 20h30, 21h et 21h30 ci-dessus font partie de cette publication.
+
+## 01/11 00h20 — Prêt à publier (build 20261101-0020), NON publié
+Repris sur la version en ligne 20261031-2240 (l'autre conversation y a déjà mis, pour les Galops 1 et 2 sur téléphone, le menu horizontal et la lecture verticale du pack ChatGPT : mon essai du 31/10 20h50 sur la sécurité est donc abandonné, il est en ligne autrement).
+1. hype-cours-editorial.js v8 (?v=8) — téléphone, « le reste du pack ChatGPT » (Blandine 01/11 00h06 : « laisse le menu horizontal et prends le reste du cours de ChatGPT ») : citation du chapitre 01 affichée sous le haut de page (et plus dans le chapitre 01) ; les 3 encarts du haut masqués sur téléphone ; « Le conseil du coach » dans une carte après le dernier chapitre, juste avant « Quiz et révision ». Vaut pour tous les cours sur ce modèle (sécurité et cours générés des Galops 1 et 2). Ordinateur et tablette inchangés (encarts visibles, citation dans le chapitre 01).
+2. Même fichier : photo de haut de page du cours « Préparer son poney ou son cheval : seller et brider » (g1-c17) = photo fournie par Blandine (cheval noir sellé et bridé), recadrée sans la vague dessinée en bas : images/cours-g1-c17-hero.webp (1672 × 780, 131 Ko). Elle sert aussi de fond à la page de fin du cours.
+3. hype-cours-robes-ordi.js ?v=37, hype-cours-robes-galops-ordi.js ?v=19 : menu des cours de robes avec seulement « Les Galops précédents » (voir entrée du 31/10 19h15).
+Tests : sécurité fr/ar/ja et g1-c17, g1-c3 en 390 et 1440 px : 0 erreur, 0 débordement ; conseil du coach avant le quiz au dernier chapitre.
