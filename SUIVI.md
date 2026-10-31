@@ -15806,3 +15806,10 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Mag : bloc Galops retiré (choix A) ; l'onglet Galops ouvre l'écran Galops. Ligne Lamotte-Beuvron rangée (étiquette, titre, texte, flèche à droite).
 - Fichiers : hype-article-cso.js (?v=4), hype-ecran-articles.js (?v=5), index.html, outils/article-cso/*.json + modele.js, outils/mag/modele.js.
 - Vérifié : 320 (arabe RTL), 390, 1440 — aucun débordement, aucune erreur.
+
+## 31/10/2026 — build 20261031-0930 : Le Mag sans texte sur les photos
+- Demande de Blandine : « pas d'écriture sur les photos ». Plus aucun voile sombre ni texte posé sur une image dans Le Mag.
+- Haut de page, article à la une, 5 thèmes, cartes Santé / Hey Baby, Bibliothèque vidéo (dans le Mag uniquement) : photo au-dessus et texte en dessous sur téléphone ; à côté sur ordinateur.
+- Étiquettes « Premium » / « Nouveau » sur les photos des cartes retirées (déjà cachées sur téléphone).
+- Fichiers : hype-ecran-articles.js (?v=6), index.html, outils/mag/modele.js. hype-article-cso.js inchangé.
+- Vérifié : 320 (arabe RTL), 390, 800, 1440 — aucun débordement, aucune erreur.

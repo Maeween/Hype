@@ -312,7 +312,29 @@ var CSS = [
 ".mag-themes{grid-template-columns:repeat(5,1fr);grid-auto-rows:auto}.mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-column:auto;grid-row:auto;aspect-ratio:3/5;height:auto}.mag-th.t2,.mag-th.t4{margin-top:0}.mag-th-tx b{font-size:24px !important}.mag-th-tx{bottom:62px;right:16px;left:16px}.mag[dir=rtl] .mag-th-tx{left:16px;right:16px}.mag-th>.mag-rond{bottom:16px}",
 ".mag-grille{grid-template-columns:repeat(4,1fr);gap:22px}",
 ".mag-bloc{min-height:440px;align-items:center}.mag-bloc .mag-th-voile{background:linear-gradient(90deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 40%,rgba(7,10,8,0) 70%)}.mag-bloc-tx{padding:48px 56px}.mag-bloc-tx h3{font-size:40px}",
-".mag-duo-c{min-height:260px}}"
+".mag-duo-c{min-height:260px}}",
+/* 31/10 03h — Blandine : « pas d'écriture sur les photos ». Les textes passent sous (ou à côté de) chaque photo, plus aucun voile. */
+".mag-hero{display:block;min-height:0}.mag-hero-img{position:relative;inset:auto;display:block;width:100%;height:clamp(230px,64vw,380px);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}",
+".mag-hero-voile,.mag-une-voile,.mag-th-voile{display:none}",
+".mag-hero-tx{padding:8px 22px 56px;max-width:none}",
+".mag-une{display:block;min-height:0;background:#0B1311}.mag-une-img{position:relative;inset:auto;display:block;width:100%;height:auto;aspect-ratio:16/10}",
+".mag-une-tx{width:auto;padding:20px 20px 84px}",
+".mag-themes{grid-auto-rows:auto}",
+".mag-th{display:flex;flex-direction:column;height:auto;min-height:0;background:#0B1311;text-align:start}",
+".mag-th img{position:relative;inset:auto;display:block;width:100%;height:104px;flex:0 0 auto}",
+".mag-th-tx{position:static;padding:12px 52px 14px 14px}.mag[dir=rtl] .mag-th-tx{padding:12px 14px 14px 52px}",
+".mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-row:auto}.mag-th.t1{grid-column:span 2}.mag-th.t1 img{height:170px}",
+".mag-th>.mag-rond{bottom:12px}.mag-th:not(.t1) .mag-th-tx b{font-size:19px}",
+".mag-duo-c{min-height:0}.mag-duo-c img{height:170px}",
+".mag-ca-ph .mag-nouv,.mag-ca-ph .mag-badge{display:none !important}",
+".mag-vid>button>div:first-child{position:relative !important;inset:auto !important;height:150px;background-position:center 30% !important}.mag-vid>button>div:nth-child(2){display:none !important}.mag-vid>button>div:nth-child(3)>div{max-width:none !important}",
+"@container (min-width:640px){.mag-hero-tx{padding:10px 36px 70px}",
+".mag-une{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}.mag-une-img{grid-column:2;grid-row:1;height:100%;min-height:400px;aspect-ratio:auto}.mag-une-tx{grid-column:1;grid-row:1;width:auto;padding:36px 36px 96px}",
+".mag-une-nav{inset-inline-end:calc(50% + 24px)}",
+".mag-themes{grid-template-columns:repeat(6,1fr)}.mag-th.t1,.mag-th.t2,.mag-th.t3{grid-column:span 2}.mag-th.t4,.mag-th.t5{grid-column:span 3}.mag-th img,.mag-th.t1 img{height:150px}.mag-duo-c img{height:190px}}",
+"@container (min-width:1000px){.mag-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center}.mag-hero-img{grid-column:2;grid-row:1;height:540px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28%);mask-image:linear-gradient(90deg,transparent,#000 28%)}.mag[dir=rtl] .mag-hero-img{-webkit-mask-image:linear-gradient(270deg,transparent,#000 28%);mask-image:linear-gradient(270deg,transparent,#000 28%)}.mag-hero-tx{grid-column:1;grid-row:1;padding:60px 24px 90px 64px}.mag[dir=rtl] .mag-hero-tx{padding:60px 64px 90px 24px}",
+".mag-une-img{min-height:460px}.mag-une-tx{padding:60px 64px 110px}.mag-une-nav{inset-inline-end:calc(50% + 40px)}",
+".mag-themes{grid-template-columns:repeat(5,1fr)}.mag-th.t1,.mag-th.t2,.mag-th.t3,.mag-th.t4,.mag-th.t5{grid-column:auto;aspect-ratio:auto}.mag-th img,.mag-th.t1 img{height:auto;aspect-ratio:4/5}.mag-th-tx{position:static}.mag-th>.mag-rond{bottom:14px}.mag-duo-c img{height:240px}}"
 ].join("");
 
 window.HypeArticles = { Articles: EcranArticles };
