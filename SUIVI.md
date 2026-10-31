@@ -15790,3 +15790,4 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - index.html : seulement ?v=2 → ?v=3 de l'article + marqueur 20261031-0730 → 20261031-0745. Repris sur la version en ligne 81eb4f38.
 - Vérifié (banc) : fr 390 / 1440, ar 390 : 2 schémas restants, 2 cartes, aucun débordement, 0 erreur.
 - À pousser après accord : index.html + SUIVI.md + hype-article-cso.js + outils/article-cso/modele.js. Tout le reste inchangé.
+- 02h30 (même branche) — Corrections dictées par Blandine, partie 02 (liste des risques), 14 langues : 02 « Il allonge sa foulée au détriment de son équilibre. » (au lieu de « … de son rebond ») ; 04 « Une barre ou un refus deviennent possibles. Ce déséquilibre, ou une foulée ajoutée dans l'urgence, peut même provoquer la chute du cheval. »
