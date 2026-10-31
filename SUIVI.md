@@ -15783,3 +15783,10 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Score lu dans les résultats de quiz déjà enregistrés (quizResultats) ; règles du quiz, scores et progression inchangés. Aucun nouveau texte à traduire (étoiles et « % »). Petites fonctions communes : hypeScoreQuiz, hypeEtoilesQuiz, hypeMedailleQuiz, HQ_ET_CSS.
 - Testé dans l'appli complète (connexion simulée, scores 100/80/60/40) : téléphone 390 px et ordinateur 1440 px, arabe, 0 erreur.
 - 31/10 02h45 : PUBLICATION build 20261031-0730 (étoiles du quiz + médailles), fusionnée avec l'import FFE 0715 — accord « Vas y ».
+
+## 31/10 02h30 — Article CSO : les 2 dessins de la comparaison retirés (build 20261031-0745) — NON PUBLIÉ, branche travail-article-schemas
+- Retour de Blandine (captures iPhone 02h27) : « l'article se répète énormément, surtout avec les schémas » + « il faudrait virer au moins ces deux dessins-là » (comparaison de la partie 03).
+- hype-article-cso.js (?v=2 → ?v=3) : partie 03, les deux cartes « On précipite la transition » / « On préserve les moyens du cheval » gardent leur texte, sans dessin ; la petite note « Schémas de principe : même virage serré… » qui expliquait ces dessins est retirée aussi ; un peu d'air au-dessus du titre de chaque carte. Textes conservés dans les fichiers de langue (rien supprimé des données). Le schéma « Zoom » (partie 01) et le schéma interactif restent pour l'instant.
+- index.html : seulement ?v=2 → ?v=3 de l'article + marqueur 20261031-0730 → 20261031-0745. Repris sur la version en ligne 81eb4f38.
+- Vérifié (banc) : fr 390 / 1440, ar 390 : 2 schémas restants, 2 cartes, aucun débordement, 0 erreur.
+- À pousser après accord : index.html + SUIVI.md + hype-article-cso.js + outils/article-cso/modele.js. Tout le reste inchangé.

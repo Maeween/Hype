@@ -67,6 +67,7 @@ var CSS = [
   ".acso-crs{margin:16px 0 16px;background:#112427;border:1px solid #243936;padding:4px 2px 8px}",
   ".acso h3.acso-pt{font-family:var(--se);font-size:28px;line-height:1.12;font-weight:500;margin:0 0 13px;color:var(--iv)}",
   ".acso-pan p{font-size:14px;line-height:1.8;margin:0}",
+  ".acso-pan h3.acso-pt{margin-top:22px}",
   ".acso-res{margin:18px 0 0;border-top:1px solid #3d4a41;padding-top:15px;color:#c5d0c6;font-size:13px;line-height:1.6}",
   ".acso-band{background:#172c2e;padding:36px 0;border-top:1px solid #354944;border-bottom:1px solid #354944}",
   ".acso-band .acso-w{display:flex;gap:20px;align-items:center}",
@@ -238,7 +239,7 @@ function Article() {
     var p = bon ? "s3_b_" : "s3_a_";
     return h("article", { className: "acso-pan" + (bon ? " acso-ok" : "") },
       h("div", { className: "acso-lab" }, h("span", { className: "acso-dot" }, bon ? "✓" : "×"), t(p + "label")),
-      h("div", { className: "acso-crs acso-svg" }, svgParcours(bon ? "acsoB" : "acsoM", bon)),
+      /* 31/10 02h30 : dessins de la comparaison retirés (Blandine : « virer au moins ces deux dessins ») — même tracé répété. */
       h("h3", { className: "acso-pt" }, t(p + "titre")),
       P(p + "p"),
       h("div", { className: "acso-res" }, riche(p + "res")));
@@ -247,7 +248,6 @@ function Article() {
     chap("s3_num", "s3_cat"), h("h2", null, riche("s3_titre")),
     h("p", { className: "acso-lead", style: { maxWidth: 920 } }, riche("s3_lead")),
     h("div", { className: "acso-cmp" }, panneau(false), panneau(true)),
-    h("p", { className: "acso-note", style: { marginTop: 16 } }, riche("s3_note")),
     /* 31/10 — schéma INTERACTIF (pack « Culture équestre ») : même tracé que le schéma validé n° 1 (un seul virage serré, une seule main),
        3 étapes activables (boutons, clavier) : 1 courbe serrée, 2 sortie de courbe, 3 amplitude ensuite. À FAIRE VALIDER par Blandine. */
     (function () {
