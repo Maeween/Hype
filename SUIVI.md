@@ -15760,3 +15760,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Pas d'auteur, de commentaires, de « j'aime » ni de favoris (la maquette en montrait de faux, ces fonctions n'existent pas pour les articles).
 - Vérifié (appli complète, connexion simulée) : 320 / 360 / 390 / 414 / 430 / 768 / 1440, fr / de / ja / ar (droite à gauche), abonnée et visiteuse : 0 débordement, aucun titre sur une flèche, 0 erreur ; 20 clics testés (À la une, flèche suivante, 5 thèmes, cartes, 3 écoles abonnée/visiteuse, Galop 5, Galops, Lamotte, Santé, Hey Baby, onglets, recherche « baule ») → bonne page / bon filtre. 17 blocs de code valides ; marqueurs de garde inchangés.
 - À pousser après accord : index.html + SUIVI.md + hype-ecran-articles.js + hype-article-cso.js + outils/mag/ + outils/article-cso/. Aucune nouvelle image.
+
+## 31/10 01h30 — PUBLICATION (accord de Blandine 01h24 : « Ok mets en ligne et on les changera après ») — Le Mag (maquette MIX 2+3) + rubrique Technique équestre + schéma interactif de l'article CSO (build 20261031-0600)
+- Mise en ligne des deux étapes préparées sur la branche travail-mag-refonte (voir les entrées 04h00 et 01h30 ci-dessus), reprises sur la version en ligne 04dd37ec (build 0510) : rien de ce qui était en ligne n'est retiré. Marqueur → 20261031-0600.
+- Photos à remplacer plus tard (liste donnée à Blandine pour ChatGPT) : couverture, thème Galops, thème Culture, bloc Galops 1 à 7, carte Hey Baby ; facultatif : vignettes La Baule, Lamotte, Le Mans.
+- Publié : index.html + SUIVI.md + hype-ecran-articles.js + hype-article-cso.js + outils/mag/ + outils/article-cso/. Aucune nouvelle image. Tout le reste inchangé.
