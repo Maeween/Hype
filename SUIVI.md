@@ -15839,3 +15839,8 @@ Feu vert de Blandine (19h55) : « Enchaîne tout tu as carte blanche et dis moi 
 - Vérifié : 390 (fr, ar RTL), 820, 1440 ; robes G1 sans régression ; quiz pansage joué jusqu'au résultat (score et XP enregistrés).
 - 31/10 11h25 (même branche, non publiée) : quiz — bonne réponse en VERT avec coche, réponse fausse en GRIS barré avec croix, plus de rouge (Blandine : « Ok super », vert/gris choisi sur aperçu) ; bouton et barre de progression en champagne. Appliqué à TOUS les quiz des cours (« applique-le dans tous les quiz ») + page de résultat aux couleurs actuelles ; mini-quiz du Galop : bonne réponse en vert. Les écrans d'examen (examen, examen blanc) ne sont pas touchés.
 - 31/10 11h30 : PUBLICATION (accord « Ok continue ») — build 20261031-1130 : fin du cours pansage (page de fin des robes, ordinateur + téléphone) + nouveau quiz (vert/gris, couleurs actuelles) pour tous les cours. Fichiers : hype-cours-pansage-ordi.js (?v=22), hype-cours-modele.js (?v=2), index.html, SUIVI.md.
+
+## 31/10/2026 — branche travail-examens (NON publiée) : examens aux couleurs des quiz
+- Examen blanc des Galops : même apparence que les quiz des cours — bonne réponse en vert (coche), mauvaise en gris barré (croix), champagne pour le reste, boutons à contour, titres Cormorant, question plus petite ; page de résultat en champagne. Questions, score et parcours inchangés.
+- Ancien écran « Examen » (raccourci du tableau de bord) : corail et cyan remplacés par le champagne ; juste en vert, faux en gris dans la correction.
+- Fichier : index.html seulement. Vérifié : examen blanc du Galop 1 sur téléphone (question corrigée).
