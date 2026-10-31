@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 9;   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
+var VERSION = 10;   /* 01/11 00h25 : outils prêtés au Galop 4 (HypeCoursEditorial._) + setEcran transmis aux chapitres — rien ne change pour les Galops 1 et 2 */
+/* précédente : VERSION = 9; */   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
 /* précédente : VERSION = 8; */   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
 /* précédente : VERSION = 7; */   /* 01/11 00h10 : photo de haut de page du cours seller et brider (g1-c17) */
 /* précédente : VERSION = 6; */   /* 31/10 soir : Galop 2 (14 cours, robes à part) sur le même modèle — ordinateur et tablette */
@@ -897,7 +898,7 @@ function HypeCoursEditorial(props) {
   var Selecteur = props.Selecteur, hero = cfg.hero, enc = cfg.encarts, tit = deuxLignes(hero.titre);
   var NOIR = "#070A08", NOIR2 = "#0B1113";
   var fond = function (ton) { return ton === "ombre" ? NOIR2 : NOIR; };
-  var ctx = { L: L, rtl: rtl, hey: hey, versFin: versFin, allerA: allerA, onQuiz: props.onQuiz, onRetour: props.onRetour, coursId: cours.id, coachFlash: coachFlash, FIN: FIN };
+  var ctx = { L: L, rtl: rtl, hey: hey, versFin: versFin, allerA: allerA, onQuiz: props.onQuiz, onRetour: props.onRetour, coursId: cours.id, coachFlash: coachFlash, FIN: FIN, setEcran: props.setEcran };
 
   /* 31/10 14h20 (Blandine : « ça doit tenir en deux ou trois pages ») : UN chapitre affiché à la fois.
      Les cartes du menu changent de chapitre ; en bas, « Chapitre suivant », et après le dernier la transition vers la fin. */
@@ -2268,6 +2269,9 @@ function FinAuto(props) {
 }
 AUTO_IDS.forEach(function (id) { window.HypeFinsCours[id] = { ok: finOk, Fin: FinAuto }; });
 HypeCoursEditorial.construireAuto = construireAuto;
+/* v10 — 01/11 : outils internes prêtés aux fichiers de configuration d'autres Galops (hype-cours-editorial-g4.js) — rien ne change pour les Galops 1 et 2 */
+HypeCoursEditorial._ = { Chapitre: Chapitre, Affiche: Affiche, fleche: fleche, IM: IM, Lx: Lx, tt: tt, pickLg: pickLg, paras: paras, phrases: phrases,
+  titreNet: titreNet, nettoyerTitre: nettoyerTitre, sansEmojiFin: sansEmojiFin, finOk: finOk, outils: outils };
 
 
 window.HypeCoursEditorial = HypeCoursEditorial;
