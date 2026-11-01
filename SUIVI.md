@@ -16221,3 +16221,27 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - hype-cours-modele.js (v5, ?v=7) : téléphone et tablette — citation retirée de la photo de couverture, posée dans un bandeau bleu pétrole semi-transparent ombré juste sous la couverture (même style que les autres cours). Elle était aussi répétée dans le chapitre 01 : retirée là (pas de doublon).
 - hype-cours-pansage-ordi.js (v3, ?v=26) : ordinateur — même chose, bandeau sous les encarts du haut, avant les vignettes des chapitres.
 - Testé : fr, ar, ja — 390, 820, 1440 px ; aucune erreur, aucun débordement.
+
+## 01/11/2026 21h05 — PUBLICATION build 20261101-2110 (accord de Blandine 21h06 « Ok ») : chapitres « style robes + repères » et photos du haut de Blandine
+- Choix de Blandine (20h27-20h37, après comparaison en captures avec la version sauvegarde-aeration-1940 de l'autre conversation) : on garde les fonds bleu nuit / noir alternés et la vague des robes, en bleu nuit et non en bleu pétrole ; on ajoute de l'autre version le surtitre « 01 — GALOP 3 » avec filet doré, le titre en deux temps (2e partie en italique doré, coupure au « : » sinon au milieu), la citation avec trait doré, le petit trait doré au-dessus des titres de notion (rouge pour les alertes), plus d'air sur téléphone (38 px, texte 15,5 / 1,72), les introductions en italique doré, et 26 px sous les zones de l'atlas du cours sécurité.
+  · Téléphone : photo du chapitre ENTIÈRE sous le titre (jamais coupée), notions à la suite.
+  · Tablette : photo entière en haut, puis titre, liste des notions, une notion à la fois.
+  · Ordinateur : une notion à la fois ; photo en grand dans le fond sur une moitié (côté alterné d'un chapitre à l'autre), fondue dans la couleur du chapitre, AUCUN texte dessus ; en arabe, dégradé du bon côté.
+  · Haut de page des cours : non touché (« ne touche pas aux hero »).
+- Photos du haut (demande 20h44 + « Ok et oui remplace tous les hero en provisoire par celles-ci en alternant », « tous ceux aux anciennes couleurs », « et oui recadre ») :
+  · 12 photos de Blandine (chevaux sur fond noir) → images/hero-cours-01.webp à 12.webp (82 à 141 Ko) ; attribuées en alternance aux 48 cours qui avaient une couverture bleu-cyan ou l'image provisoire au cadre blanc : g1-c4, c5, c6, c9, c11, c12, c13, c16, c19 ; tout le Galop 2 sauf « Les robes » ; g3-c2, saut, c4, c5, c8, c9, c10 à c15 ; tout le Galop 4 sauf g4-vitesse. Ses vraies photos (g1-c3, c8, c10, c15, c17, c18, c20, g3-c1, g3-c3, g3-c6, g4-vitesse) sont gardées.
+  · Recadrage téléphone : g1-c20 et g1-c18 centrés (cheval entier) ; g1-c10 25 %, g1-c8 et g1-c17 75 %, g3-c1 50 % (sujet entier ; les côtés restent un peu coupés pour ces photos très larges, la hauteur du haut de page n'a pas été réduite).
+  · Galop 4 : HERO_G4 accepte maintenant [photo, cadrage ordinateur, cadrage téléphone].
+- Photo du chapitre 03 de g1-c20 « Comprendre sa silhouette » : images/cours-g1-c20-silhouette.webp (reprise de la branche travail-robes-ordi de l'autre conversation).
+- Vérifié : 60 cours du modèle × 390 / 820 / 1440 px en français et en arabe + 12 autres langues à 390 px (72 passages) : aucune erreur, rien qui dépasse, tous les chapitres présents ; coach et défi : 44 cours × 14 langues identiques au français ; planches avant / après des photos du haut sur téléphone et ordinateur montrées à Blandine.
+- Reste à faire (prévu) : recadrer les petites photos du menu des chapitres sur téléphone ; remplacer les 20 photos de chapitres trop petites (galop5-*, securite-g1-*) quand Blandine aura choisi ; affiches des Galops 2 et 3.
+- Fichiers : hype-cours-editorial.js (VERSION 36, ?v=36), hype-cours-editorial-g4.js (VERSION 9, ?v=9), images/hero-cours-01.webp à 12.webp, images/cours-g1-c20-silhouette.webp, index.html (build 20261101-2110) — reportée sur la version en ligne c772a2b (pansage de l'autre conversation, rien de retiré), SUIVI.md.
+
+## 01/11/2026 21h20 — PUBLICATION build 20261101-2120 (accord de Blandine 21h07 « Ok ») : « La physiologie du cheval » (g1-c20) — photo des sabots + vidéo dans « La respiration »
+- Demande de Blandine (20h51, capture du chapitre 03 + photo) : « Mets cette photo là dans cet onglet là et j'aimerais ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ».
+- Photo : images/cours-g1-c20-pieds.webp (sabots d'un cheval gris, photo de Blandine, 1672×941, 137 Ko) = photo du chapitre 03 « Un organisme en action » (AUTO_IM["g1-c20"][1]). Remplace galop5-c05-soins.webp ICI SEULEMENT (image toujours utilisée ailleurs).
+- Vidéo : hype-accueil-video-ordi.mp4 (version ordinateur de la vidéo d'accueil : la buée sort des naseaux), image d'attente images/accueil-video-ordi-poster.jpg, muette, en boucle, sous le titre « La respiration ». Nouveau tableau VIDEOS_NOTION (même repérage que PHOTOS_NOTION) ; les notions tirées d'une puce gardent leur titre français (o.frT), ce qui permet aussi d'y poser une photo.
+- Refait par-dessus la build 2105 (« une notion à la fois sur ordinateur ») publiée entre-temps : première tentative de mise en ligne refusée (publication simultanée), rien n'a été perdu ; sur ordinateur la vidéo apparaît quand on choisit « 2 · La respiration ».
+- hype-cours-editorial.js VERSION 37 (?v=37) ; index.html build 20261101-2120 (seuls le ?v= et le numéro de build changent).
+- Vérifié : 390 px (fr, ar) et 1440 px, aucune erreur ni débordement.
+- Fichiers : images/cours-g1-c20-pieds.webp (nouveau), hype-cours-editorial.js, index.html (build 20261101-2120), SUIVI.md.

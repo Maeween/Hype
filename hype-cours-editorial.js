@@ -20,7 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 37;   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */
+var VERSION = 38;   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
+/* précédente : VERSION = 37; */   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */  /* et, côté main : */ /* VERSION = 37 (main) */   /* 01/11 21h20 : g1-c20 — photo des sabots (chapitre 03) + vidéo de l'accueil dans « La respiration » */
+/* précédente : VERSION = 36; */   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
 /* précédente : VERSION = 36; */   /* 01/11 22h : atlas interactif du cheval (hype-cours-atlas.js) dans g1-c20, g2-anatomie, g3-c11 (g3-c7 : dans hype-cours-robes-galops-ordi.js) ; remplace « Explore la tête du cheval » */
 /* précédente : VERSION = 35; */   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
 /* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
@@ -104,6 +106,12 @@ function nettoyerTitre(s) { return String(s || "").replace(/^[\u{1F000}-\u{1FAFF
 function sansNum(s) { return String(s || "").replace(/^\s*\d+\s*[.)．、]\s*/, ""); }
 function paras(s) { return String(s || "").split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean); }
 function phrases(s) { return String(s || "").split(/(?<=[.。!！?？])\s*/).map(function (t) { return t.trim(); }).filter(Boolean); }
+function titreDeux(s) {   /* 01/11 20h35 (Blandine) : titre de chapitre en deux temps, coupé au « : » s'il y en a un, sinon au milieu */
+  s = String(s || "");
+  var m = s.match(/^(.+?\s*[:：])\s*(.+)$/);
+  if (m) return [m[1], m[2]];
+  return deuxLignes(s);
+}
 function deuxLignes(s) {   /* « La sécurité avant tout » -> ["La sécurité", "avant tout"] */
   s = String(s || "");
   var v = s.indexOf(",");
@@ -436,7 +444,6 @@ var CSS = [
 ".hce .hce-chp .pan .k{font-size:11px;font-weight:600;letter-spacing:.24em;color:var(--champ)}",
 ".hce-chp .pan h3{font-size:30px;line-height:1.08}.hce-chp .pan.al h3{color:var(--alerte)}",
 ".hce-chp .pimg{margin:2px 0 4px;border-radius:12px;overflow:hidden;aspect-ratio:2/1;background:#0E1413}.hce-chp .pimg img{display:block;width:100%;height:100%;object-fit:cover}",
-".hce-ogl{margin:18px 0 4px}.hce-ogl .t{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.hce-ogl .t button{border:1px solid rgba(243,238,228,.22);background:transparent;color:#F3EEE4;border-radius:999px;padding:7px 15px;font:inherit;font-size:13px;cursor:pointer}.hce-ogl .t button[aria-selected=true]{border-color:#C9A66B;color:#C9A66B;background:rgba(201,166,107,.08)}.hce-ogl .pimg{margin:0}",
 ".hce .pimg.plein{aspect-ratio:auto!important;height:auto}.hce .pimg.plein img{height:auto!important;object-fit:contain}",   /* photo entière (allures : on voit les quatre membres) */
 ".hce .hce-chp .pan .s{font-size:15px;line-height:1.6;color:var(--doux)}",
 ".hce-chp .pan ul{margin:0;padding-inline-start:20px;display:grid;gap:7px;font-size:15px;line-height:1.5;color:var(--ivoire)}.hce-chp .pan li::marker{color:var(--champ)}",
@@ -730,6 +737,63 @@ var CSS = [
 ".hce .rb-grid.inv .rb-photo{order:2}",
 ".hce .rb-grid .hce-mobile-unit .hce-txt,.hce .rb-grid .hce-mobile-unit .s,.hce .rb-grid .hce-mobile-unit p.pg,.hce .rb-grid .hce-mobile-unit ul{font-size:16px;line-height:1.82}",
 "}",
+/* ===== 01/11 20h35 (Blandine) : repères de l'autre version par-dessus le style robes ===== */
+".hce .hce-chp.rb .rb-kick{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rb .rb-kick:after{content:'';flex:0 0 40px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp.rb h2{font-size:34px;line-height:1.08;margin:0}",
+".hce .hce-chp.rb h2 span,.hce .hce-chp.rb h2 em{display:block}",
+".hce .hce-chp.rb h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp.rb .rb-sous{margin:12px 0 0;font-style:italic;font-size:15px;color:var(--doux)}",
+".hce .hce-chp.rb .rb-note{margin:16px 0 0;padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6);font-size:14px;line-height:1.55}",
+".hce .hce-chp.rbm .rb-photo{margin:24px 0 0}",
+".hce .hce-chp.rbm .rb-photo img{width:100%;height:auto}",   /* photo entière, rien de coupé */
+".hce .hce-chp.rbm .hce-mobile-read{gap:0;margin-top:34px}",
+".hce .hce-chp.rbm .hce-mobile-unit{padding:0 0 38px;margin:0 0 38px;border-bottom:1px solid rgba(201,166,107,.16)}",
+".hce .hce-chp.rbm .hce-mobile-unit:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}",
+".hce .hce-chp.rbm .hce-mobile-unit h3{font-size:27px;line-height:1.12;margin:20px 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit h3:before{content:'';display:block;width:28px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit>h3:first-child{margin-top:0}",
+".hce .hce-chp.rbm .hce-mobile-unit.is-alert{padding:20px 18px 22px}",
+".hce .hce-chp.rbm .hce-mobile-unit.is-alert h3:before{background:#E3A18E}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-txt,.hce .hce-chp.rbm .hce-mobile-unit .ap,.hce .hce-chp.rbm .hce-mobile-unit p.pg{font-size:15.5px;line-height:1.72}",
+".hce .hce-chp.rbm .hce-mobile-unit p.pg{margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .s{font-style:italic;color:#D9B98A;font-size:15px;line-height:1.55;margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .ap{margin:18px 0 0;padding-top:16px}",
+".hce .hce-chp.rbm .hce-mobile-unit ul{margin:12px 0 14px;gap:11px;font-size:15.5px;line-height:1.6}",
+".hce .hce-chp.rbm .hce-mobile-unit .ast{margin:16px 0;padding:4px 0 4px 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-fig{margin-bottom:14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-ztabs{margin:4px 0 26px;gap:9px}",   /* atlas du cours sécurité : de l'air sous les boutons des zones */
+/* tablette et ordinateur : une notion à la fois ; photo en fond d'un côté (aucun texte dessus), texte de l'autre */
+".hce .hce-chp.rbd{display:block;padding:0!important;position:relative}",
+".hce .hce-chp.rbd .rbd-ph{position:relative;background-size:cover;background-repeat:no-repeat}",
+".hce .hce-chp.rbd .rbd-ph img{display:block;width:100%;height:auto}",
+".hce .hce-chp.rbd .rbd-ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 85%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd .rbd-tx{position:relative;padding:8px 32px 62px;max-width:820px;margin:0 auto}",
+".hce .hce-chp.rbd .rb-kick:after{flex-basis:48px}",
+".hce .hce-chp.rbd h2{font-size:44px;line-height:1.04}",
+".hce .hce-chp.rbd .por{margin-top:30px}",
+".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
+".hce .hce-chp.rbd .pan h3{margin:0 0 18px}",
+/* 01/11 21h20 (Blandine) : texte des notions détaché du titre et justifié, sur ordinateur, tablette et téléphone */
+".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:justify;-webkit-hyphens:auto;hyphens:auto}",
+".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
+".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan ul{line-height:1.72}",
+".hce .hce-chp.rbd .pan .s{font-style:italic;color:#D9B98A}",
+".hce .hce-chp.rbd .pan ul{gap:10px}",
+"@container hce (min-width:1040px){",
+".hce .hce-chp.rbd{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:640px}",
+".hce .hce-chp.rbd .rbd-ph{height:auto;min-height:100%;grid-row:1;grid-column:1;background-image:var(--x)}",
+".hce .hce-chp.rbd .rbd-ph img{display:none}",
+".hce .hce-chp.rbd .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd .rbd-tx{grid-row:1;grid-column:2;max-width:640px;margin:0;padding:64px 44px 70px 40px}",
+".hce .hce-chp.rbd.rbinv .rbd-ph{grid-column:2}",
+".hce .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd.rbinv .rbd-tx{grid-column:1;justify-self:end;padding:64px 40px 70px 44px}",
+".hce[dir=rtl] .hce-chp.rbd .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+".hce[dir=rtl] .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+"}",
+
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -953,16 +1017,36 @@ function Chapitre(p) {
     var b = ol.querySelectorAll("button")[i]; if (!b) return;
     try { ol.scrollTo({ left: b.parentNode.offsetLeft - 16, behavior: "smooth" }); } catch (e) { }
   }, [i]);
-  /* 01/11 19h30 (Blandine : « reprends tout partout ») : chapitre dans le style du cours des robes, sur tous les écrans —
-     gros numéro doré + titre, photo entière dans un cadre arrondi, puis toutes les notions à la suite (photo à côté sur ordinateur, un chapitre sur deux de l'autre côté) */
-  return h("div", { className: "hce-chp rb" + (p.cls ? " " + p.cls : "") },
+  /* 01/11 20h35 (Blandine) : style robes (fonds alternés, vague) + repères de l'autre version : surtitre « 01 — Galop 1 » avec filet,
+     titre en deux temps (ivoire / italique doré), citation avec trait doré.
+     Téléphone : photo ENTIÈRE sous le titre, puis les notions à la suite.
+     Tablette et ordinateur : une notion à la fois ; la photo en grand dans le fond d'un côté, sans aucun texte dessus, le texte de l'autre côté. */
+  var titreH = h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre));
+  var kick = h("p", { className: "kick rb-kick" }, p.num + (p.galop ? "  —  " + p.galop : ""));
+  if (mobile) return h("div", { className: "hce-chp rb rbm" + (p.cls ? " " + p.cls : "") },
     h("div", { className: "in" },
-      h("div", { className: "rb-head" }, h("div", { className: "rb-num" }, p.num), h("h2", { id: "hce-t-" + p.id }, p.titre)),
+      kick, titreH,
       p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
-      h("div", { className: "rb-grid" + (p.inv ? " inv" : "") },
-        p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy", style: { objectPosition: p.bgPos || "50% 40%" } })) : null,
-        h(MobileLectureNotions, { items: p.items }))));
+      p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
+      h(MobileLectureNotions, { items: p.items })));
+  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.cls ? " " + p.cls : "") },
+    p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
+    h("div", { className: "rbd-tx" },
+      kick, titreH,
+      p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
+      h("ol", { className: "por", ref: olRef, role: "tablist", "aria-label": p.titre }, p.items.map(function (x, k) {
+        return h("li", { key: k }, h("button", { type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", className: x.alerte ? "al" : undefined, onClick: function () { setI(k); } },
+          h("span", { className: "rond" }, String(k + 1)), h("span", { className: "pt", "aria-hidden": true }), h("span", { className: "tx" }, x.titre)));
+      })),
+      p.note ? h("p", { className: "note rb-note" }, p.note) : null,
+      h("div", { className: "pan" + (it.alerte ? " al" : ""), role: "tabpanel", "aria-live": "polite" },
+        h("p", { className: "k" }, (i + 1) + " / " + n),
+        h("h3", null, it.titre),
+        it.rendu(),
+        h("div", { className: "nav" },
+          h("button", { type: "button", className: "hce-rond", disabled: i === 0, "aria-label": L("prec"), onClick: function () { setI(i - 1); } }, fleche(!rtl, 16)),
+          h("button", { type: "button", className: "hce-rond", disabled: i === n - 1, "aria-label": L("suiv"), onClick: function () { setI(i + 1); } }, fleche(rtl, 16))))));
 }
 /* petit atlas dans la carte : la photo du cheval de profil, le repère de la zone choisie mis en avant */
 function AtlasMini(p) {
@@ -1052,7 +1136,7 @@ function HypeCoursEditorial(props) {
   chs.forEach(function (cur, ci) {
     if (parPage && ci !== ia) return;
     corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? col(ci - 1) : NOIR, vers: col(ci) }));
-    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, style: { background: col(ci) }, "aria-labelledby": "hce-t-" + cur.id },
+    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, style: { background: col(ci), "--fond-sec": col(ci) }, "aria-labelledby": "hce-t-" + cur.id },
       cur.ton === "photo" ? cur.rendu(Object.assign({}, ctx, { inv: ci % 2 === 1 })) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
   });
   var colFin = parPage ? NOIR : col(chs.length);
@@ -1103,7 +1187,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre"))),   /* 01/11 00h44 : « Touche un chapitre… » retiré (Blandine), espace gardé */
       h("ol", { style: { "--n": (function (t) { return t > 7 ? Math.ceil(t / 2) : t; })(cfg.chapitres.length + (cfg.revision ? 1 : 0)) } }, cfg.chapitres.map(function (c, i) {
         return h("li", { key: c.id }, h("button", { type: "button", className: "hce-chap", "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
-          h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + c.img + ")", backgroundPosition: c.pos || "center" } }),
+          h("span", { className: "ph", "aria-hidden": true, style: c.img ? { backgroundImage: "url(" + c.img + ")", backgroundPosition: c.pos || "center" } : undefined }),
           h("span", { className: "n" }, (i < 9 ? "0" : "") + (i + 1)),
           h("span", { className: "lb" }, c.label, c.sous ? h("small", null, c.sous) : null),
           h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 14))));
@@ -1349,7 +1433,7 @@ var AUTO_IM = {
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
-  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
+  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
@@ -1408,9 +1492,12 @@ var MODULES_COURS = {
   "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
   "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
 };
-/* 01/11 21h (Blandine) : onglets de photos sous une notion — « La physiologie du cheval », L'avant-main / L'arrière-main (photos entières) */
-/* repérage par position (chapitre, notion), identique dans toutes les langues : chapitre 3 « Comprendre sa silhouette », notions 3 (L'avant-main) et 4 (L'arrière-main) */
-var ONGLETS_NOTION = { "g1-c20": { chap: 2, apres: 3, onglets: [[2, "images/cours-g1-c20-avant-main.webp"], [3, "images/cours-g1-c20-arriere-main.webp"]] } };
+/* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
+var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };
+/* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
+var CHAP_SANS_PHOTO = {};
+/* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
+var VIDEOS_NOTION = { "g1-c20": { "La respiration": ["hype-accueil-video-ordi.mp4", "images/accueil-video-ordi-poster.jpg"] } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2263,7 +2350,7 @@ function construireAuto(cours, lg) {
     chapitres[0].notions.forEach(function (o) {
       var pu = o.seg && o.seg.puces, fp = o.fr && o.fr.puces;
       if (o.fr && o.fr.k === "section" && fp && fp.length >= 3 && fp.every(function (q) { return q.gras; }) && !o.suite.length && !r(o.seg.sous) && !o.seg.texte) {
-        pu.forEach(function (q, k) { nn.push({ titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
+        pu.forEach(function (q, k) { nn.push({ frT: String((fp[k] && fp[k].gras) || "").replace(/\s*[:：]\s*$/, ""), titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
       } else nn.push(o);
     });
     chapitres[0].notions = nn;
@@ -2311,6 +2398,7 @@ function construireAuto(cours, lg) {
   }
   /* images des chapitres */
   chapitres.forEach(function (c, i) { c.img = pool[i % pool.length]; c.id = "ch" + (i + 1); });
+  (CHAP_SANS_PHOTO[cours.id] || []).forEach(function (i) { if (chapitres[i]) chapitres[i].img = null; });
   /* citations : ouverture + couverture -> notes des premiers chapitres */
   var notes = special.citOuv.map(function (o) { return "« " + String(r(o.seg.texte) || "").replace(/^[«"\s]+|[»"\s]+$/g, "") + " »"; });
   if (couv && couv.couv && r(couv.couv.citation)) notes.push("« " + String(r(couv.couv.citation)).replace(/^[«"\s]+|[»"\s]+$/g, "") + " »" + (r(couv.couv.auteur) ? "  " + r(couv.couv.auteur) : ""));
@@ -2356,28 +2444,19 @@ function construireAuto(cours, lg) {
     defi = { titre: dt, haut: DR.accroche ? r(DR.accroche) : defi.haut, fin: { titre: dt, sous: DR.sous ? r(DR.sous) : "", puces: DR.points.map(function (x) { return { texte: r(x) }; }) } };
   }
   /* 01/11 19h20 : photo en tête d'une notion, repérée par le début de son titre français (PHOTOS_NOTION) */
-  var PN = PHOTOS_NOTION[cours.id];
-  if (PN) chapitres.forEach(function (c) { c.notions.forEach(function (o) {
-    var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : "";
-    Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
+  var PN = PHOTOS_NOTION[cours.id], VN = VIDEOS_NOTION[cours.id];   /* 01/11 21h : + vidéo en tête d'une notion (VIDEOS_NOTION), même repérage */
+  if (PN || VN) chapitres.forEach(function (c) { c.notions.forEach(function (o) {
+    var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : (o.frT || "");   /* o.frT : notion tirée d'une puce (titre en gras, en français) */
+    if (PN) Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
+    if (VN) Object.keys(VN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.video = VN[k]; });
   }); });
-  var ON = ONGLETS_NOTION[cours.id], CN = ON && chapitres[ON.chap];
-  if (CN) {
-    var cible = CN.notions[ON.apres], og = ON.onglets.map(function (x) { return { n: CN.notions[x[0]], img: x[1] }; }).filter(function (x) { return x.n; });
-    if (cible && og.length === ON.onglets.length) cible.onglets = og;
-  }
+  (PHOTOS_NOTION_POS[cours.id] || []).forEach(function (x) { var c = chapitres[x[0]], o = c && c.notions[x[1]]; if (o) o.img = x[2]; });
   return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, citFin: citFin, couv: couv };
-}
-function OngletsPhotos(p) {
-  var _i = React.useState(0), i = _i[0], setI = _i[1], it = p.items[i];
-  return h("div", { className: "hce-ogl" },
-    h("div", { className: "t", role: "tablist" }, p.items.map(function (x, k) {
-      return h("button", { key: k, type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", onClick: function () { setI(k); } }, x.lab);
-    })),
-    h("figure", { className: "pimg plein", role: "tabpanel" }, h("img", { src: it.img, alt: it.lab, loading: "lazy" })));
 }
 
 /* rendu d'une notion dans la carte de droite */
+/* 01/11 21h20 (Blandine : « le texte commence sans majuscule, ça fait bâclé ») : majuscule en début de paragraphe (les textes d'origine suivent souvent un titre en gras « … : ») */
+function maj(t) { return typeof t === "string" ? t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); }).replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t; }   /* + espace insécable avant « : ; ! ? » » (plus de « : » seul en début de ligne) */
 function renduNotion(o, L, lg, alerte) {
   var r = function (x) { return pickLg(x, lg); };
   var out = [], k = 0;
@@ -2388,9 +2467,10 @@ function renduNotion(o, L, lg, alerte) {
   var para = function (x) {
     var g = r(x.gras), t = r(x.texte) || "";
     if (!paras(t).length) return g ? [h("p", { key: "p" + (k++), className: "pg" }, h("strong", null, g))] : [];
-    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tt); });
+    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt)); });
   };
   if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
+  if (o.video) out.push(h("figure", { key: "vd", className: "pimg plein" }, h("video", { src: o.video[0], poster: o.video[1], autoPlay: true, muted: true, loop: true, playsInline: true, preload: "metadata", "aria-hidden": "true", style: { display: "block", width: "100%", height: "auto" } })));
   if (o.affiche) out.push(h(Affiche, { key: "af", L: L, src: o.affiche.src, legende: o.affiche.legende, alt: o.affiche.legende }));
   /* 01/11 : cours g1-c8, fiches licol / filet / selle -> photos interactives à 6 numéros (hype-cours-materiel.js) */
   var HM = window.HypeMateriel && o.photo && (window.HypeMateriel.pour(o.photo.srcFr) || window.HypeMateriel.pour(o.photo.src));
@@ -2400,7 +2480,7 @@ function renduNotion(o, L, lg, alerte) {
     out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
   }
   if (o.astuce) o.astuce.forEach(function (t, i) { out.push(h("p", { key: "as" + i, className: "ast" }, t)); });
-  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, o.texte1)); }
+  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1))); }
   if (o.seg) {
     var s = o.seg;
     if (r(s.sous)) out.push(h("p", { key: "so", className: "s" }, r(s.sous)));
@@ -2415,7 +2495,6 @@ function renduNotion(o, L, lg, alerte) {
     if (c.length) out.push(h("p", { key: "c" + (k++), className: "ap" }, c));
     out.push(pu(x.puces));
   });
-  if (o.onglets) out.push(h(OngletsPhotos, { key: "og", items: o.onglets.map(function (x) { return { lab: titreNotion(x.n, L, lg), img: x.img }; }) }));
   return out.filter(Boolean);
 }
 function titreNotion(o, L, lg) {
@@ -2425,13 +2504,49 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
-  "g1-c20": ["images/cours-g1-c20-hero.webp", "62% 40%", "80% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
+  "g1-c20": ["images/cours-g1-c20-hero.webp", "50% 40%", "50% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
   "g1-c3": ["images/cours-g1-c3-hero.webp", "30% 40%", "25% 40%"],   /* « Le mode de vie du cheval » — cheval gris au galop au pré, photo de Blandine (01/11 18h06) */
-  "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
-  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
-  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],
-  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "72% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
-  "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */
+  "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%", "25% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
+  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "75% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%", "75% 40%"],
+  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%", "50% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */,
+  /* 01/11 21h (Blandine : « remplace tous les hero aux anciennes couleurs par celles-ci en alternant ») : ses 12 photos de chevaux sur fond noir */
+  "g1-c4": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g1-c5": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g1-c6": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g1-c9": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g1-c11": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g1-c12": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g1-c13": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g1-c16": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g1-c19": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g2-aides": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g2-depart": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"],
+  "g2-c1": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g2-c3": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g2-c4": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g2-c5": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g2-c6": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g2-anatomie": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g2-sens": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g2-vie-sociale": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g2-pansage": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g2-filet-selle": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g2-familles": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g2-heberger": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"],
+  "g3-c2": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g3-saut": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g3-c4": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g3-c5": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g3-c8": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g3-c9": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g3-c10": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g3-c11": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g3-c12": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g3-c13": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g3-c14": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g3-c15": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"]
 };
 
 function alerteNotion(o) {
@@ -2494,15 +2609,15 @@ function FinAuto(props) {
   };
   var liste = props.coursListe || [], idxC = liste.findIndex(function (c) { return c && c.id === cours.id; });
   var suivant = (idxC >= 0 && liste[idxC + 1] && props.onOuvrirCours) ? liste[idxC + 1] : null;
-  var ch = cfg.chapitres, por;
+  var ch = cfg.chapitres, por, avecImg = ch.filter(function (x) { return x.img; }), imgDe = function (c, k) { return c.img || (avecImg.length ? avecImg[(k || 0) % avecImg.length].img : null); };   /* chapitre sans photo (CHAP_SANS_PHOTO) : la page de fin prend une autre photo du cours */
   if (A.synth.length) {   /* résumé = la synthèse du cours, en 5 groupes au plus */
     var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n); por = [];
     for (var i = 0; i < A.synth.length; i += taille) {
       var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length];
-      por.push({ img: c.img, pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") });
+      por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") });
     }
   } else {   /* pas de synthèse dans le cours : le plan du cours (chapitres et notions) */
-    por = A.chapitres.slice(0, 5).map(function (c) { return { img: c.img, nom: c.titre, desc: c.notions.map(function (n) { return titreNotion(n, L, lg); }).join("  ·  ") }; });
+    por = A.chapitres.slice(0, 5).map(function (c, k) { return { img: imgDe(c, k), nom: c.titre, desc: c.notions.map(function (n) { return titreNotion(n, L, lg); }).join("  ·  ") }; });
   }
   return h("div", { className: "rbo", dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, S.CSS),
