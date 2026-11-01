@@ -1329,6 +1329,11 @@ var AUTO_IM_G3 = {
   "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
+/* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
+var AUTO_IM_G5 = {
+  "g5n-03": ["images/galop5-c03-apprendre.webp", "images/galop5-th-cheval2.webp", "images/securite-g1-observer.webp", "images/galop5-c08-equilibre.webp"]
+};
+Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
