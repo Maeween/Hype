@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 36;   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
+var VERSION = 37;   /* 01/11 21h20 : g1-c20 — photo des sabots (chapitre 03) + vidéo de l'accueil dans « La respiration » */
+/* précédente : VERSION = 36; */   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
 /* précédente : VERSION = 35; */   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
 /* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
 /* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
@@ -1428,7 +1429,7 @@ var AUTO_IM = {
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
-  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
+  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
@@ -1482,6 +1483,8 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
 /* 01/11 20h : chapitres interactifs ajoutés à un cours (module chargé à part) — apres = nombre de chapitres avant lui */
 var MODULES_COURS = { "g1-c20": { id: "tete", module: "HypeAtlasTete", apres: 1 } };
+/* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
+var VIDEOS_NOTION = { "g1-c20": { "La respiration": ["hype-accueil-video-ordi.mp4", "images/accueil-video-ordi-poster.jpg"] } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2334,7 +2337,7 @@ function construireAuto(cours, lg) {
     chapitres[0].notions.forEach(function (o) {
       var pu = o.seg && o.seg.puces, fp = o.fr && o.fr.puces;
       if (o.fr && o.fr.k === "section" && fp && fp.length >= 3 && fp.every(function (q) { return q.gras; }) && !o.suite.length && !r(o.seg.sous) && !o.seg.texte) {
-        pu.forEach(function (q, k) { nn.push({ titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
+        pu.forEach(function (q, k) { nn.push({ frT: String((fp[k] && fp[k].gras) || "").replace(/\s*[:：]\s*$/, ""), titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
       } else nn.push(o);
     });
     chapitres[0].notions = nn;
@@ -2427,10 +2430,11 @@ function construireAuto(cours, lg) {
     defi = { titre: dt, haut: DR.accroche ? r(DR.accroche) : defi.haut, fin: { titre: dt, sous: DR.sous ? r(DR.sous) : "", puces: DR.points.map(function (x) { return { texte: r(x) }; }) } };
   }
   /* 01/11 19h20 : photo en tête d'une notion, repérée par le début de son titre français (PHOTOS_NOTION) */
-  var PN = PHOTOS_NOTION[cours.id];
-  if (PN) chapitres.forEach(function (c) { c.notions.forEach(function (o) {
-    var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : "";
-    Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
+  var PN = PHOTOS_NOTION[cours.id], VN = VIDEOS_NOTION[cours.id];   /* 01/11 21h : + vidéo en tête d'une notion (VIDEOS_NOTION), même repérage */
+  if (PN || VN) chapitres.forEach(function (c) { c.notions.forEach(function (o) {
+    var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : (o.frT || "");   /* o.frT : notion tirée d'une puce (titre en gras, en français) */
+    if (PN) Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
+    if (VN) Object.keys(VN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.video = VN[k]; });
   }); });
   return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, citFin: citFin, couv: couv };
 }
@@ -2449,6 +2453,7 @@ function renduNotion(o, L, lg, alerte) {
     return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tt); });
   };
   if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
+  if (o.video) out.push(h("figure", { key: "vd", className: "pimg plein" }, h("video", { src: o.video[0], poster: o.video[1], autoPlay: true, muted: true, loop: true, playsInline: true, preload: "metadata", "aria-hidden": "true", style: { display: "block", width: "100%", height: "auto" } })));
   if (o.affiche) out.push(h(Affiche, { key: "af", L: L, src: o.affiche.src, legende: o.affiche.legende, alt: o.affiche.legende }));
   /* 01/11 : cours g1-c8, fiches licol / filet / selle -> photos interactives à 6 numéros (hype-cours-materiel.js) */
   var HM = window.HypeMateriel && o.photo && (window.HypeMateriel.pour(o.photo.srcFr) || window.HypeMateriel.pour(o.photo.src));
