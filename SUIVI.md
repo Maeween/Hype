@@ -16126,3 +16126,26 @@ Demande de Blandine (17h53) : « regarde ce que ça apporte à son chapitre et c
 - Build 20261101-1900.
 - 01/11 19h05 — REPORT sur la version en ligne 339d63b (build 20261101-1815 de l'autre conversation, qui a traité de son côté les affiches de g1-c3 et g1-c17) : ma version du chapitre 01 de g1-c3 (affiche « héritage de la nature » reprise en texte) est ABANDONNÉE, la leur est gardée telle quelle (hype-cours-galop1.js non touché). Reportés seulement : fond noir + cartes pétrole, citation en bandeau, matériel (blocs alternés, ligne choisie lisible), barre du bas. Branche finitions, build 20261101-1900, EN ATTENTE de l'accord de Blandine.
 - 01/11 19h20 : PUBLICATION build 20261101-1920 (accord « Ok » de Blandine 19h17), reportée sur la version en ligne 425d465 (nœud d'attache de l'autre conversation, gardé) : fond noir + cartes pétrole, citation en bandeau, matériel (blocs alternés, ligne choisie lisible), barre du bas sans flou et recalée. Fichiers : index.html, hype-cours-editorial.js (?v=27), hype-cours-editorial-g4.js (?v=7), hype-cours-materiel.js (?v=5), SUIVI.md.
+
+## 01/11/2026 19h25 — build 20261101-1935 (EN ATTENTE) : « Les allures du cheval » (g1-c4) — photos du pas, du trot et du galop
+- Photos de Blandine (19h12) : 1re = trot, 2e = galop, 3e = pas. Mur jaune du fond passé en noir (choix de Blandine 19h14 « un fond noir c'est possible »), le reste de la photo inchangé : images/allures-g1-pas.webp, -trot.webp, -galop.webp.
+- Placées en tête des notions « Le Pas », « Le Trot », « Le Galop » (photo entière, sans recadrage) : nouveau réglage PHOTOS_NOTION dans hype-cours-editorial.js (repère la notion par le début de son titre français).
+- Vérifié : g1-c4 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement.
+
+## 01/11/2026 19h35 — même build 20261101-1935 (EN ATTENTE) : « Comprendre le cheval » (g1-c6) — les 2 affiches reprises en texte puis retirées
+Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en ligne pour pouvoir retirer l'affiche », « idem pour ça dans le même cours ».
+- Affiche « Comprendre votre cheval » (bloc 2) — ajouté au chapitre 01, après « 3. L'attitude au travail », 3 sections, 14 langues :
+  « Du calme à la panique : 4 états à reconnaître » (les 6 états de l'affiche regroupés en 4, signes sans redire les oreilles déjà expliquées) ;
+  « Ce que veulent dire certains comportements » (bâiller, lécher et mâcher, gratter le sol, tourner en rond au box, fixer, se coller au mur, ruer / se cabrer) ;
+  « Les signaux d'alerte à ne jamais ignorer » (+ conduite à tenir : s'éloigner, garder une issue, prévenir l'enseignant).
+  Non repris : « oreilles plaquées » et « coups de queue » (déjà dans le cours), « bonnes pratiques » (déjà dans le cours, trop générales).
+  Corrections par rapport à l'affiche : « fixer du regard » = alerte avant une fuite (et non « défi »), « lécher et mâcher » formulé prudemment, bâillements très fréquents = possible inconfort.
+- Affiche « Les incontournables à connaître pour le Galop 1 » (bloc 4) : presque tout était déjà dans le chapitre 02 (mêmes 5 points, même défi). Ajouté seulement ce qui manquait, 14 langues : oreilles mobiles (une en avant, une sur le côté = méfiant, il écoute) dans « Le langage des oreilles » ; queue serrée ou relevée et raide = peur / stress dans « La posture corporelle ».
+- AFFICHES_RETIREES « g1-c6 » : [2, 4]. hype-cours-galop1.js v13 (?v= +1), hype-cours-editorial.js VERSION 27 (?v=27), index.html build 20261101-1935.
+
+## 01/11/2026 19h40 — PUBLICATION build 20261101-1940 (accord de Blandine 19h25 « Ok », puis « 1 puis 2 »)
+- Étape 1 (« 1 puis 2 ») : la barre des chapitres qui reste collée en haut de l'écran n'avait pas de fond, le texte passait dessous (captures du cours des robes G1, 19h21). Fond noir dégradé sous la barre quand elle apparaît : tous les cours du modèle (hype-cours-editorial.js VERSION 28, ?v=28) et cours des robes (hype-cours-robes-ordi.js VERSION 37, ?v=39). Téléphone, tablette, ordinateur.
+- Publiés en même temps (préparés plus haut) : g1-c4 photos du pas, du trot et du galop (fond noir) ; g1-c6 les 2 affiches reprises en texte (14 langues) puis retirées (hype-cours-galop1.js v13, ?v=14).
+- Reporté sur la version en ligne 83d3f72 (« fond noir + cartes bleu pétrole » de l'autre conversation) : rien de son travail retiré.
+- Vérifié : g1-c4, g1-c6, g1-c10, g1-c15, g2-aides et robes G1 en 14 langues × 390 / 820 / 1440 px — aucune erreur, aucun débordement.
+- Étape 2 à venir : tous les cours (Galops 1 à 5) sur la mise en page et les couleurs exactes du cours des robes du Galop 1.

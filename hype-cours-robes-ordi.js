@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 36;   /* 31/10 19h15 : seulement les Galops précédents dans le menu */
+var VERSION = 37;   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir */
+/* précédente : VERSION = 36; */   /* 31/10 19h15 : seulement les Galops précédents dans le menu */
 /* précédente : VERSION = 35; */   /* 31/10 15h : menu en liste verticale sur téléphone (comme le pansage) ; Galop 5 renommé « Types de pies et adjonctions » */
 /* v34 :    /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
 /* v33 :    /* 31/10 01h15 : menu du cours modèle B (cartes magazine) */
@@ -223,6 +224,7 @@ var CSS = [
 ".rbo-minih{position:sticky;top:0;z-index:30;height:0}",
 ".rbo-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 40px 8px;background:transparent;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".rbo-mini.on{opacity:1;pointer-events:auto;transform:none}",
+".rbo-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}"   /* 01/11 19h30 : fond sous la barre des chapitres */,
 ".rbo-mini{overflow-x:auto;scrollbar-width:none}.rbo-mini::-webkit-scrollbar{display:none}",
 ".rbo-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(16,29,34,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.55);padding:7px 16px;font-size:13px;color:var(--ivoire);white-space:nowrap}",
 ".rbo-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
