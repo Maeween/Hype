@@ -16207,3 +16207,12 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - ERREUR TROUVÉE ET CORRIGÉE avant publication : les cours découpés en chapitres en comptant les notions (g1-c11, c12, c13, c16, c20) comptaient l'affiche ; une fois retirée, tout retombait en un seul chapitre. Comptes refaits : g1-c11 [5, 1], g1-c12 [3, 2], g1-c13 [2, 1], g1-c16 [2, 3, 3], g1-c20 [2, 3, 4]. Contrôle : les 16 cours qui ont un découpage (Galops 1 et 2) gardent tous leurs chapitres.
 - Vérifié : plus aucune affiche au Galop 1 ; 7 cours modifiés en fr, ar, ko, ja, ru, nl à 390 px sans erreur ni débordement ; coach et défi : 44 cours × 14 langues identiques au français ; captures g1-c9 et g1-c20.
 - Fichiers : hype-cours-galop1.js, hype-cours-editorial.js, index.html (build 20261101-2030), SUIVI.md.
+
+## 01/11/2026 20h50 — PUBLICATION build 20261101-2050 : reprise Amateur 3 Grand Prix (test d'entrée DEJEPS) dans « Réviser mes reprises » — PUBLIÉ (accord de Blandine 20h47 « Va s'y mets en ligne »)
+- Demande de Blandine (11h49 / 12h00) : la reprise du test technique de dressage d'entrée en DEJEPS (= Amateur 3 Grand Prix, exigence officielle « Test A1 : Dressage Am 3 GP ») ajoutée là où on déroule toutes les reprises, avec la mention « Test d'entrée DEJEPS ».
+- Source : protocole FFE « Amateur 3 Grand Prix (D1) — Version 02/12/2025 » envoyé par Blandine (captures, 12h07). Le lien FFE en ligne (68.pdf, version du 26/10/2023) était périmé ; la FFE annonce « pas de nouvelle reprise » au 01/09/2026, la version 02/12/2025 est donc celle en vigueur.
+- REPRISES_FFE.amat3gp : 22 figures découpées comme le protocole (14 : PB-B-BR ; 15 : RS-I-S ; 18 : E-ES ; 19 : SR-I-R ; 20 : RMCH-HE ; 21 : EV-VL ; 22 : LI-I), 14 langues ; nouveau champ facultatif `mention` (pastille au-dessus du titre, traduite). « Quitter la piste au pas libre, rênes longues » n'est pas une figure notée : non reprise.
+- ORDRE_REPRISES_FFE : "amat3gp" ajouté en dernier ; boutons « Amateur 3 GP » (page des reprises) et « Am3 GP » (sélecteur court) ; niveau traité comme Club Elite (8) pour le filtre des conseils.
+- Pas de conseils du coach pour cette reprise (aucune entrée dans hype-dressage-conseils.js) : l'encart ne s'affiche simplement pas. À faire si elle le demande.
+- Vérifié : tracé animé construit sans erreur (1 073 points, serpentine par E, cercles de 12 m, changements de pied vers I, arrêt final en I) ; 17 blocs de script passés à node --check.
+- Fichiers : index.html (build 20261101-2050), SUIVI.md.
