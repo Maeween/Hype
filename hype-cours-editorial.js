@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 28;   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
+var VERSION = 29;   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
+/* précédente : VERSION = 28; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
 /* précédente : VERSION = 27; */   /* 01/11 19h : fond noir partout (cartes de notion bleu pétrole semi-transparentes ombrées un chapitre sur deux) + citation du cours en bandeau lisible sous le haut de page (tous écrans) */
 /* précédente : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
@@ -2105,9 +2106,20 @@ function construireAuto(cours, lg) {
   var couv = (blocs[0] && blocs[0].type === "couv-affiche") ? blocs[0] : null;
   var pool = AUTO_IM[cours.id] || [IM.fond02];
   /* segments : version française (structure) + langue choisie (texte), même position */
-  var lis = function (v) {
+  /* 01/11 19h25 (Blandine : « tout doit être traduit partout ») : l'appli passe le cours déjà traduit ; la structure (coach, défi…)
+     se lit donc sur le cours d'origine en français, même bloc, même place — le texte affiché reste celui de la langue choisie */
+  var RAW = (function () {
+    try {
+      var n = (/^g(\d+)-/.exec(cours.id) || [])[1], t = n === "1" ? window.COURS_GALOP1_I18N : window["COURS_GALOP" + n + "_FR"];
+      for (var i = 0; t && i < t.length; i++) if (t[i] && t[i].id === cours.id) return t[i];
+    } catch (e) { }
+    return null;
+  })();
+  var rawB = function (bi) { var rb = RAW && RAW.blocs && RAW.blocs[bi]; return rb && rb.type === (blocs[bi] || {}).type ? rb : null; };
+  var lis = function (v, rv) {
     if (!v) return [];
     var F = Array.isArray(v) ? v : (v.fr || []), X = Array.isArray(v) ? v : (v[lg] || v.en || F);
+    if (Array.isArray(v) && rv && !Array.isArray(rv) && Array.isArray(rv.fr) && rv.fr.length === v.length) F = rv.fr;
     if (X.length !== F.length) X = F;
     return F.map(function (f, j) { return { f: f, x: X[j] || f }; });
   };
@@ -2162,12 +2174,13 @@ function construireAuto(cours, lg) {
       cur.notions.push(oi); derniere = oi; return;
     }
     if (b.type !== "texte-riche") return;
-    var segs = lis(b.contenu), apres = lis(b.contenuApres);
-    var tb = r(b.titre), sb = sorte({ titre: pickLg(b.titre, "fr") });
+    var RB = rawB(bi), titreFr = pickLg(RB ? RB.titre : b.titre, "fr");
+    var segs = lis(b.contenu, RB && RB.contenu), apres = lis(b.contenuApres, RB && RB.contenuApres);
+    var tb = r(b.titre), sb = sorte({ titre: titreFr });
     /* bloc entier « conseil du coach » fait de paragraphes sans titre -> un seul conseil */
     if (tb && sb !== "notion" && sb !== "suite" && segs.length && segs.every(function (s) { return !s.f.titre; })) {
       var tx = segs.map(function (s) { return (s.x.gras ? s.x.gras + " " : "") + (s.x.texte || ""); }).join("\n\n");
-      poser(null, { f: { k: "encadre", titre: pickLg(b.titre, "fr") }, x: { k: "encadre", titre: tb, texte: tx } });
+      poser(null, { f: { k: "encadre", titre: titreFr }, x: { k: "encadre", titre: tb, texte: tx } });
     } else {
       if (tb) nouveauChap(titreNet(tb), null);
       else if (!cur) nouveauChap(r(cours.titre));

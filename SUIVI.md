@@ -16149,3 +16149,10 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Reporté sur la version en ligne 83d3f72 (« fond noir + cartes bleu pétrole » de l'autre conversation) : rien de son travail retiré.
 - Vérifié : g1-c4, g1-c6, g1-c10, g1-c15, g2-aides et robes G1 en 14 langues × 390 / 820 / 1440 px — aucune erreur, aucun débordement.
 - Étape 2 à venir : tous les cours (Galops 1 à 5) sur la mise en page et les couleurs exactes du cours des robes du Galop 1.
+
+## 01/11/2026 19h45 — PUBLICATION build 20261101-1945 (accord de Blandine 19h22 « Oui corrige pour le coach et les défis, tout doit être traduit partout ») : conseil du coach et défi du haut traduits partout
+- Problème (signalé à 18h15, déjà présent en ligne) : dans les cours du modèle (Galops 1 à 3), le conseil du coach et le défi du haut de page n'apparaissaient qu'en français. Cause : l'appli passe le cours déjà traduit, et le modèle reconnaissait le coach et le défi à leur titre français.
+- Correction : hype-cours-editorial.js VERSION 29 (?v=29) — la structure (coach, défi, chapitres) se lit sur le cours d'origine en français (COURS_GALOP1_I18N, COURS_GALOP2_FR, COURS_GALOP3_FR), même bloc, même place ; le texte affiché reste celui de la langue choisie. Le Galop 4 le faisait déjà.
+- Vérifié : 44 cours × 14 langues, même structure qu'en français partout (avant : 39 cours sur 44 différents). Pages g1-c3, g1-c4, g1-c8 (arabe, 390 px), g1-c4 (anglais, 1440 px), 4 cours du Galop 2 (coréen) : coach et défi affichés, aucune erreur, aucun débordement.
+- Fichiers : hype-cours-editorial.js, index.html (build 20261101-1945), SUIVI.md. Rien d'autre.
+- Reporté sur la version en ligne 1b1078a (build 1940 de l'autre conversation : barre des chapitres, photos des allures g1-c4, affiches g1-c6) — rien de leur travail n'est retiré ; contrôle refait après report : 44 cours × 14 langues identiques au français, g1-c6 et g1-c4 en anglais sans erreur.
