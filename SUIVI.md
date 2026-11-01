@@ -16270,3 +16270,8 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Photo envoyée par Blandine (cheval gris monté au trot, lumière dorée) → images/cours-g1-c5-gravite.webp, en tête de la notion « L'essentiel » du chapitre 01 (« Le secret des grands cavaliers » : centre de gravité), via PHOTOS_NOTION_POS (g1-c5 : [0, 0]). Photo entière.
 - Fait sur la version en ligne ; rien d'autre de modifié. Vérifié : g1-c5 à 390 px avec les vraies polices, photo entière au-dessus du texte, aucune erreur.
 - Fichiers : hype-cours-editorial.js, images/cours-g1-c5-gravite.webp, index.html (build 20261101-2150), SUIVI.md.
+
+## 01/11/2026 21h55 — PUBLICATION build 20261101-2155 (Blandine 21h51 : « laisse plus d'espace sous la photo pour le texte ») : 20 px sous les photos des notions
+- hype-cours-editorial.js : marge de 20 px sous la photo d'une notion (téléphone, carte ordinateur), tous les cours du modèle. Vérifié g1-c5 à 390 px avec les vraies polices. Rien d'autre de modifié.
+- Contrôle demandé par Blandine (21h50, « où sont passés les défis du coach, les savais-tu, les lexiques ») sur les 60 cours en ligne : coach + défi présents en haut des 60 cours ; « Le savais-tu ? » : 35 dans les textes, tous affichés (52 avec ceux ajoutés par la mise en page) ; lexiques : seuls les cours du Galop 4, g3-c3, g3-saut et g2-anatomie en ont un — les cours des Galops 1 à 3 n'en ont jamais eu.
+- Fichiers : hype-cours-editorial.js, index.html (build 20261101-2155), SUIVI.md.

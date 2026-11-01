@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 40;   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
+var VERSION = 41;   /* 01/11 21h55 : plus d'espace sous les photos des notions */
+/* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
 /* précédente : VERSION = 37; */   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */  /* et, côté main : */ /* VERSION = 37 (main) */   /* 01/11 21h20 : g1-c20 — photo des sabots (chapitre 03) + vidéo de l'accueil dans « La respiration » */
@@ -795,6 +796,8 @@ var CSS = [
 ".hce[dir=rtl] .hce-chp.rbd .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce[dir=rtl] .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 "}",
+/* 01/11 21h51 (Blandine : « laisse plus d'espace sous la photo pour le texte ») : de l'air entre une photo de notion et son texte, sur tous les écrans */
+".hce .hce-mobile-unit .pimg,.hce .hce-chp .pan .pimg,.hce-lc .corps .pimg{margin-bottom:20px!important}",
 
 ].join("\n");
 
