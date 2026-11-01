@@ -16036,7 +16036,17 @@ Repris sur la version en ligne 20261101-0930 (be99588). La branche travail-galop
 - Photo de Blandine (11h47, cavalière qui ajuste le filet) : images/cours-g1-c17-brider.webp, photo entière ; chapitre 03 « Brider le cheval » (carte du menu et fond du chapitre).
 - hype-cours-editorial.js : VERSION et ?v= augmentés d'un cran ; index.html build 20261101-1155.
 
-## 01/11/2026 16h10 — PUBLICATION build 20261101-1610 (accord de Blandine 16h04 « Ok oui pour 1 et ok ») : Galop 4 (textes manquants, fiches mémo et glossaire, sensations, scènes dorées), bleu pétrole Galops 1 à 4, protections de transport au Galop 5
+## 01/11/2026 16h20 — PUBLICATION build 20261101-1620 (accord de Blandine 16h13 « Ok pour la mise en ligne ») : haut de page (hero) des cours beaucoup plus haut — tous les Galops (1, 2, 3, 4)
+Demande de Blandine (16h07, capture iPhone du nœud d'attache) : « Descends les hero bcp plus que ça […] ça coupe en haut en bas et ça s'écrase avec les titres dedans sur les cours de tous les galops ! »
+- Téléphone : photo du haut beaucoup plus haute (122 % de la largeur de l'écran, 520 px au plus, + la zone de l'heure) ; le titre est SOUS la photo (il ne chevauche plus l'image) ; voile sombre réduit en haut et en bas.
+- Tablette : photo 600 px de haut (au lieu de 380), titre sous la photo. Ordinateur : bandeau 600 px de haut (au lieu de 430).
+- Cadrage téléphone séparé quand il faut (photo plus haute = côtés plus coupés) : sécurité (g1-c15) « 79 % 40 % », matériel (g1-c8) « 88 % 40 % » (3e valeur de HERO_COURS).
+- « Conduire son poney ou son cheval en main en sécurité » (g1-c18) : nouvelle photo de haut de page (cavalière qui mène un cheval gris en main, photo entière de Blandine 16h11) : images/cours-g1-c18-hero.webp, dans HERO_COURS.
+- « Préparer son poney ou son cheval : seller et brider » (g1-c17), chapitre 04 « La vérification finale » : photo de Blandine (16h11, cheval gris sellé et bridé) : images/cours-g1-c17-verif.webp, photo entière.
+- hype-cours-editorial.js VERSION 19 (?v= +1), index.html build 20261101-1620.
+- Vérifié : 60 cours (Galops 1 à 4) en 390 px fr et ar, 820 px ja, 1440 px ar — aucune erreur, aucun débordement ; planche de tous les hauts de page sur iPhone regardée.
+
+## 01/11/2026 16h35 — PUBLICATION build 20261101-1635 (accord de Blandine 16h04 « Ok oui pour 1 et ok ») : Galop 4 (textes manquants, fiches mémo et glossaire, sensations, scènes dorées), bleu pétrole Galops 1 à 4, protections de transport au Galop 5
 (Préparé à 11h30 sur la branche travail-cours-g4, puis reporté sur la version en ligne a6e8e07 — Galop 3 saut, sécurité, pansage, photos seller/brider de l'autre conversation : rien de leur travail retiré.)
 Suite de l'audit des 15 planches (relecture Claude + recommandations ChatGPT, 10h54–10h57) ; accord de Blandine (10h56 « Ok ») pour préparer, publication après validation.
 - Nouveau fichier hype-cours-g4-textes.js (?v=1), 14 langues : pour chaque cours, conseil du coach (13 cours ; g4-vitesse et g4-galop-qualite gardent le leur), défi en 3 points (titre + accroche en haut, 3 points sur la page de fin ; remplace l'ancien défi), synthèse en 5 phrases (page de fin ; g4-galop-qualite n'en avait pas), 5 questions Hey Baby (g4-galop-qualite : vraies questions à la place de « te proposer un quiz… » ; g4-c5 : ses 6 questions d'origine moins « Pourquoi vermifuger ? »), phrase de fin sous la synthèse.
@@ -16052,4 +16062,5 @@ Suite de l'audit des 15 planches (relecture Claude + recommandations ChatGPT, 10
 - Décisions de Blandine 16h00 : SIRE et puce gardés dans la description du livret (g4-identite) ; protections de transport ajoutées au Galop 5.
 - Galop 5, « Longer et embarquer son cheval » (g5-c4) : nouvelle liste « Le protéger pour la route » juste après « Embarquer un cheval » (protections de transport sur les 4 membres, protège-queue, licol + longe jamais le filet, couverture selon la saison), 14 langues — hype-cours-galop5.js (?v=4…).
 - Vérifié : Galop 4 (15 cours × fr/ar/ko × 390 et 1440 px) aucune erreur ni débordement, lexique sur 14 cours ; g3-c3 et g3-saut 390 et 1440 sans erreur ; Galop 5 liste transport affichée dans les 14 langues, 390 et 1440 px, sans débordement.
-- Fichiers : index.html (build 20261101-1610), hype-cours-editorial.js (v19, ?v=19), hype-cours-editorial-g4.js (v5, ?v=5), hype-cours-g4-textes.js (NOUVEAU, ?v=1), hype-cours-galop5.js (?v=4), images/k604-or.webp à k609-or.webp (NOUVEAUX), SUIVI.md.
+- Fichiers : index.html (build 20261101-1635), hype-cours-editorial.js (v20, ?v=20), hype-cours-editorial-g4.js (v5, ?v=5), hype-cours-g4-textes.js (NOUVEAU, ?v=1), hype-cours-galop5.js (?v=4), images/k604-or.webp à k609-or.webp (NOUVEAUX), SUIVI.md.
+- ERREUR signalée à Blandine : une 1re mise en ligne (e582f6a, build 20261101-1610) est partie de la version a6e8e07 alors que l'autre conversation venait de publier eb620d5 (build 1620, hauts de page plus hauts, photos g1-c17-verif et g1-c18-hero) : elle a effacé ce travail pendant quelques minutes. Corrigé par la mise en ligne 20261101-1635, qui reprend eb620d5 en entier + les changements ci-dessus.
