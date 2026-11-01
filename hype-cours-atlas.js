@@ -284,6 +284,18 @@ var CSS =
   ".hat2.vd .ong .th{display:block;width:58px;height:58px;border-radius:50%;border:1px solid rgba(243,238,228,.18);background-color:#101A1D;transition:border-color .2s,box-shadow .2s}" +
   ".hat2.vd .ong.sous .th{width:44px;height:44px}.hat2.vd .ong.sous button{width:64px}" +
   ".hat2.vd .ong button[aria-selected=true]{color:var(--ch);background:none}.hat2.vd .ong button[aria-selected=true] .th{border-color:var(--ch);box-shadow:0 0 0 3px rgba(201,166,107,.18)}" +
+  /* proposition F = frise des Galops (C) + vignettes photo (D) */
+  ".hat2.vf .ong.gal{gap:0;margin:0 0 18px;overflow:visible}.hat2.vf .ong.gal li{position:relative;flex:0 0 auto}" +
+  ".hat2.vf .ong.gal li:not(:last-child)::after{content:'';position:absolute;top:16px;inset-inline-start:34px;width:42px;height:1px;background:rgba(201,166,107,.5)}" +
+  ".hat2.vf .ong.gal button{flex-direction:column;align-items:flex-start;gap:6px;border:0;background:none;padding:0;margin-inline-end:44px;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}" +
+  ".hat2.vf .ong.gal button::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,166,107,.6);font-family:'Cormorant Garamond',serif;font-size:17px;letter-spacing:0;color:var(--ch)}" +
+  ".hat2.vf .ong.gal button[aria-selected=true]{color:var(--ch);background:none}.hat2.vf .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
+  ".hat2.vf .ong.gal .nv{border:0;padding:0;font-size:8px}" +
+  ".hat2.vf .ong.vue,.hat2.vf .ong.sous{gap:16px;margin:0 0 14px}" +
+  ".hat2.vf .ong.vue button,.hat2.vf .ong.sous button{flex-direction:column;gap:7px;border:0;background:none;padding:0;font-size:11.5px;color:rgba(243,238,228,.65);width:78px;white-space:normal;text-align:center;line-height:1.25}" +
+  ".hat2.vf .ong .th{display:block;width:58px;height:58px;border-radius:50%;border:1px solid rgba(243,238,228,.18);background-color:#101A1D;transition:border-color .2s,box-shadow .2s}" +
+  ".hat2.vf .ong.sous .th{width:44px;height:44px}.hat2.vf .ong.sous button{width:64px}" +
+  ".hat2.vf .ong button[aria-selected=true]{color:var(--ch);background:none}.hat2.vf .ong button[aria-selected=true] .th{border-color:var(--ch);box-shadow:0 0 0 3px rgba(201,166,107,.18)}" +
   /* proposition E « segmenté » : Galops = barre pleine largeur en 3 parts égales, vues en onglets soulignés, sous-vues en texte séparé par des points */
   ".hat2.ve .ong.gal{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;padding:4px;border:1px solid rgba(201,166,107,.35);border-radius:14px;background:rgba(16,26,29,.55);margin:0 0 16px;overflow:visible}" +
   ".hat2.ve .ong.gal button{width:100%;justify-content:center;border:0;border-radius:10px;padding:9px 6px;font-size:17px;color:rgba(243,238,228,.7);flex-direction:column;gap:2px}" +
