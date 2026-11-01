@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 25;   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
+var VERSION = 27;   /* 01/11 19h : fond noir partout (cartes de notion bleu pétrole semi-transparentes ombrées un chapitre sur deux) + citation du cours en bandeau lisible sous le haut de page (tous écrans) */
+/* précédente : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
@@ -392,9 +393,13 @@ var CSS = [
 ".hce-chp>.bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;filter:saturate(.85)}",
 ".hce-chp>.bg:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.92) 40%,#070A08 100%)}",
 /* v15 (01/11, Blandine + relecture ChatGPT) : un chapitre sur deux (les chapitres en miroir) sur fond bleu pétrole avec une vague dorée — d'abord fait au Galop 4, étendu à tous les cours du modèle (Galops 1 à 4) */
-".hce .hce-chp.auto.inv{background:#101D22}",
-".hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,.55) 0%,rgba(16,29,34,.92) 40%,#101D22 100%)}",
-"@container hce (min-width:1040px){.hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(270deg,#101D22 0%,rgba(16,29,34,.88) 22%,rgba(16,29,34,.35) 55%,rgba(16,29,34,.25) 100%),linear-gradient(180deg,#101D22 0%,rgba(16,29,34,0) 20%,rgba(16,29,34,0) 78%,#101D22 100%)}}",
+/* 01/11 18h (Blandine : « partout, alterne un coup bleu pétrole semi-transparent ombré sur fond noir, et noir ») */
+/* 01/11 18h (Blandine 17h59 : « fond noir partout et juste quelques encarts bleu pétrole semi-transparents ombrés, pas tout en bleu pétrole ») :
+   les chapitres restent NOIRS ; un chapitre sur deux, sa carte de notion est en bleu pétrole semi-transparent ombré */
+".hce .hce-chp.auto.inv{background:#070A08}",
+".hce .hce-chp.auto.inv .pan{background:rgba(16,29,34,.5);box-shadow:inset 0 0 40px rgba(0,0,0,.55),0 18px 50px rgba(0,0,0,.5)}",
+".hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.92) 40%,#070A08 100%)}",
+"@container hce (min-width:1040px){.hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(270deg,#070A08 0%,rgba(7,10,8,.88) 22%,rgba(7,10,8,.35) 55%,rgba(7,10,8,.25) 100%),linear-gradient(180deg,#070A08 0%,rgba(7,10,8,0) 20%,rgba(7,10,8,0) 78%,#070A08 100%)}}",
 ".hce .hce-chp.auto.inv .pan{background:rgba(9,17,20,.86)}",
 ".hce .hce-chp.auto.inv::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
 ".hce-chp>.in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:30px;max-width:1240px;margin:0 auto}",
@@ -491,7 +496,7 @@ var CSS = [
    téléphone — la photo du chapitre reste sur fond noir, nette ; seul le bloc de texte est en bleu pétrole semi-transparent */
 ".hce .hce-chp-mobile.auto.inv{background:#070A08}",
 ".hce .hce-chp-mobile.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,0) 70%,#070A08 100%)}",
-".hce .hce-chp-mobile.auto.inv>.in{background:rgba(16,29,34,.55);border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18);padding-bottom:22px;margin-top:6px}",
+".hce .hce-chp-mobile.auto.inv>.in{background:transparent}",
 ".hce .hce-chp-mobile>.bg{filter:none}",
 ".hce-chp-mobile>.in{display:block;padding:18px 16px 0}",
 ".hce-chp-mobile h2{text-shadow:none}",
@@ -529,11 +534,16 @@ var CSS = [
 ".hce-mobile-unit .hce-btn{max-width:100%;white-space:normal;text-align:center}",
 "}",
 /* 01/11 00h15 (Blandine : « en haut tu peux laisser les onglets comme sur ordinateur ») : encarts du haut visibles, citation dans le chapitre 01, pas de carte coach en fin — désactivé */
-".hce-mobile-quote,.hce-mobile-coach{display:none!important}",
+".hce-mobile-coach{display:none!important}",
+/* 01/11 18h05 (Blandine : « je vois la citation sur la page du pansage mais pas sur les autres, et on la lit très mal ») — règle du 30/10 :
+   une citation par cours, dans un bandeau aéré ENTRE le haut de page et le menu des chapitres, sur téléphone, tablette et ordinateur ;
+   elle n'est plus répétée sous le titre du chapitre 01 */
+".hce-mobile-quote{display:block!important;margin:26px 16px 30px;padding:22px 22px 22px 24px;border-inline-start:2px solid var(--champ);border-radius:4px 14px 14px 4px;background:rgba(16,29,34,.5);box-shadow:inset 0 0 36px rgba(0,0,0,.5);font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:24px;line-height:1.38;color:var(--ivoire);text-wrap:pretty}",
+"@container hce (min-width:700px){.hce-mobile-quote{margin:34px auto 38px;max-width:760px;font-size:28px;padding:26px 30px 26px 32px}}",
 "@media screen and (max-width:0px){",
-".hce-mobile-quote{display:block;margin:4px 16px 22px;padding:19px 20px;border-inline-start:2px solid var(--champ);background:linear-gradient(105deg,#101D22,#070A08);font-family:'Cormorant Garamond','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:21px;line-height:1.4;color:var(--ivoire)}",
+".hce-mobile-quote-old{display:block;margin:4px 16px 22px;padding:19px 20px;border-inline-start:2px solid var(--champ);background:linear-gradient(105deg,rgba(16,29,34,.5),#070A08);font-family:'Cormorant Garamond','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:21px;line-height:1.4;color:var(--ivoire)}",
 ".hce-sec[data-i=\"0\"] .hce-chp-mobile .note{display:none}",
-".hce-mobile-coach{display:block;margin:14px 16px 22px;padding:20px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:linear-gradient(120deg,#101D22,#090D0D)}",
+".hce-mobile-coach{display:block;margin:14px 16px 22px;padding:20px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:linear-gradient(120deg,rgba(16,29,34,.5),#090D0D)}",
 ".hce-mobile-coach h3{font-family:'Cormorant Garamond',serif;color:var(--champ);font-size:26px;margin:0 0 10px}",
 ".hce-mobile-coach p{font-size:14px;line-height:1.65;color:var(--ivoire);white-space:pre-line;overflow-wrap:anywhere}",
 "}",
@@ -2335,7 +2345,7 @@ AUTO_IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg, alerteNotion(n)); } }; });
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
-        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note });
+        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : c.note });   /* la citation du chapitre 01 est dans le bandeau sous le haut de page */
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {

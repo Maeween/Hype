@@ -5,7 +5,8 @@
    Les pièces de la liste d'origine sans numéro sur la photo (plaque nominative, têtière du filet, contre-sanglons, étrier)
    restent affichées en dessous : rien n'est supprimé. Textes dans les 14 langues. */
 (function () {
-  var VERSION = 2;   /* 01/11 : selle — n° 6 = l étrier ; l étrivière dans « À connaître aussi » */
+  var VERSION = 3;   /* 01/11 18h : téléphone — licol, filet, selle en blocs séparés (bleu pétrole / noir) */
+  /* v2 : */   /* 01/11 : selle — n° 6 = l étrier ; l étrivière dans « À connaître aussi » */
   var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
   function tt() { var o = {}; for (var i = 0; i < LGS.length; i++) o[LGS[i]] = arguments[i]; return o; }
   function pk(o, lg) { return o ? (o[lg] || o.en || o.fr) : ""; }
@@ -102,11 +103,24 @@
     ".hmat .mi{flex:0 0 auto;width:84px;height:56px;border-radius:10px;background-repeat:no-repeat;border:1px solid rgba(214,180,120,.3)}" +
     ".hmat .aus{margin:16px 0 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d6b478}" +
     ".hmat .lig.z{cursor:default;padding:8px 12px}" +
-    "@media (min-width:900px){.hmat .mi{width:96px;height:62px}}";
+    "@media (min-width:900px){.hmat .mi{width:96px;height:62px}}" +
+    ".hce-mobile-unit.hmat-bloc{margin:18px -16px;padding:22px 16px 20px;border-top:1px solid rgba(201,166,107,.22);border-bottom:1px solid rgba(201,166,107,.22)}" +
+    ".hce-mobile-unit.hmat-bloc.pet{background:rgba(16,29,34,.5);box-shadow:inset 0 24px 32px -18px rgba(0,0,0,.75),inset 0 -24px 32px -18px rgba(0,0,0,.75)}" +
+    ".hce-mobile-unit.hmat-bloc.noir{background:#070A08}";
 
   function Module(props) {
     var h = React.createElement, cfg = props.cfg, lg = props.lg || "fr";
     var st = React.useState(1), act = st[0], setAct = st[1];
+    /* 01/11 18h (Blandine : « sépare les parties du licol, de la selle et du filet, une bleue une noire une bleue ») :
+       sur téléphone, chaque fiche (titre compris) est un bloc à part, fonds alternés bleu pétrole semi-transparent / noir */
+    var racine = React.useRef(null);
+    React.useEffect(function () {
+      try {
+        var el = racine.current, bloc = el && el.closest(".hce-mobile-unit"); if (!bloc) return;
+        var tous = Array.prototype.slice.call(document.querySelectorAll(".hmat")), i = tous.indexOf(el);
+        bloc.classList.add("hmat-bloc", i % 2 ? "noir" : "pet");
+      } catch (e) { }
+    });
     var nums = cfg.p.filter(function (q) { return q[0] > 0; }), autres = cfg.p.filter(function (q) { return q[0] === 0; });
     var pc = function (v, t) { return (v / t * 100) + "%"; };
     var mini = function (q) {
@@ -114,7 +128,7 @@
       return { backgroundImage: "url(" + cfg.img + ")", backgroundSize: (cfg.w / Z * 100) + "% auto", backgroundPosition: (x / (cfg.w - Z) * 100) + "% " + (y / (cfg.h - Z * 2 / 3) * 100) + "%" };
     };
     var courant = nums.filter(function (q) { return q[0] === act; })[0];
-    return h("div", { className: "hmat" },
+    return h("div", { className: "hmat", ref: racine },
       h("style", null, CSS),
       h("p", { className: "aide" }, pk(UI.aide, lg)),
       h("div", { className: "ph" },
