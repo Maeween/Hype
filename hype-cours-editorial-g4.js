@@ -107,7 +107,23 @@ var IMG_FIX = { fiches: "galops-v2-carte-exercices-hd1.jpg", glossaire: "galops-
 var IDS = Object.keys(IMG);
 /* 01/11 17h (V4) : photos de haut de page qui remplacent les anciennes couvertures « spectrales » */
 var HERO_G4 = {
-  "g4-vitesse": "images/cours-g4-vitesse-hero.webp"   /* photo de référence de Blandine (cheval gris, lumière dorée) */
+  "g4-vitesse": "images/cours-g4-vitesse-hero.webp"   /* photo de référence de Blandine (cheval gris, lumière dorée) */,
+  /* 01/11 21h (Blandine) : photos de Blandine à la place des anciennes couvertures bleu-cyan — [photo, cadrage ordinateur, cadrage téléphone] */
+  "g4-contact": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g4-aides": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g4-transitions": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g4-incurvation": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g4-epaules-hanches": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g4-protections": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g4-obstacles-equilibre": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g4-soins-travail": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g4-identite": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g4-nourrir": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g4-exterieur": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g4-biomeca": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"],
+  "g4-galop-qualite": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g4-c5": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g3-saut": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"]
 };
 var COACH_G3 = {
   "g3-c3": tt("Un bon abord se prépare dès le virage. Choisis ta trajectoire, conserve un galop régulier et recherche la rectitude à l'approche de l'obstacle. Après un virage très serré, évite de demander brutalement une longue : ton cheval vient de fournir un important effort de rééquilibrage et n'est pas forcément prêt à s'étendre immédiatement.", "A good approach starts in the turn. Choose your line, keep a steady canter and look for straightness as you approach the fence. After a very tight turn, don't suddenly ask for a long stride: your horse has just made a big effort to rebalance and isn't necessarily ready to lengthen straight away.", "Una buena aproximación se prepara desde la curva. Elige tu trayectoria, mantén un galope regular y busca la rectitud al acercarte al obstáculo. Después de una curva muy cerrada, evita pedir bruscamente un tranco largo: tu caballo acaba de hacer un gran esfuerzo para reequilibrarse y no siempre está listo para alargar enseguida.", "Un buon avvicinamento si prepara già dalla curva. Scegli la traiettoria, mantieni un galoppo regolare e cerca la rettitudine avvicinandoti all'ostacolo. Dopo una curva molto stretta, evita di chiedere bruscamente una falcata lunga: il tuo cavallo ha appena fatto un grande sforzo per riequilibrarsi e non è sempre pronto ad allungare subito.", "よいアプローチはカーブから始まる。進路を選び、一定の駈歩を保ち、障害に近づくときはまっすぐ進むことを意識しよう。とても急なカーブのあとで、いきなり歩幅を大きくするよう求めないこと。馬はバランスを立て直すために大きな力を使ったばかりで、すぐには伸びる準備ができていないこともある。", "Ein guter Anritt beginnt schon in der Kurve. Wähle deine Linie, halte einen gleichmäßigen Galopp und achte beim Anreiten auf das Hindernis auf Geradheit. Verlange nach einer sehr engen Kurve nicht abrupt einen langen Sprung: Dein Pferd hat sich gerade mit viel Kraft neu ausbalanciert und ist nicht unbedingt sofort bereit, sich zu strecken.", "يبدأ الاقتراب الجيد منذ المنعطف. اختر مسارك، وحافظ على غالوب منتظم، وابحث عن الاستقامة عند الاقتراب من الحاجز. بعد منعطف ضيق جدا، لا تطلب فجأة خطوة طويلة: لقد بذل حصانك للتو جهدا كبيرا لاستعادة توازنه، وقد لا يكون مستعدا للتمدد مباشرة.", "好的接近从转弯时就开始准备。选好路线，保持稳定的跑步，接近障碍时注意走直。在很急的转弯之后，不要突然要求大步幅：你的马刚刚花了很大力气重新找回平衡，不一定马上就能伸展步幅。", "Een goede aanrijlijn begint al in de bocht. Kies je lijn, houd een regelmatige galop en zoek rechtheid als je de hindernis nadert. Vraag na een heel krappe bocht niet plotseling een lange galopsprong: je paard heeft net veel moeite gedaan om zijn evenwicht te herstellen en is niet altijd meteen klaar om te verlengen.", "Uma boa aproximação prepara-se desde a curva. Escolhe a tua trajetória, mantém um galope regular e procura a retidão ao aproximares-te do obstáculo. Depois de uma curva muito apertada, evita pedir bruscamente uma passada longa: o teu cavalo acabou de fazer um grande esforço para se reequilibrar e nem sempre está pronto para alongar logo.", "En bra anridning börjar redan i svängen. Välj din väg, håll en jämn galopp och sök rakhet när du närmar dig hindret. Be inte plötsligt om ett långt galoppsprång efter en mycket snäv sväng: din häst har just ansträngt sig mycket för att hitta balansen igen och är inte alltid redo att förlänga direkt.", "Хороший подход готовится уже на повороте. Выбери траекторию, сохраняй ровный галоп и стремись к прямолинейности на подходе к препятствию. После очень крутого поворота не проси резко длинный темп: лошадь только что приложила много сил, чтобы восстановить равновесие, и не всегда готова сразу удлиниться.", "Dobry najazd zaczyna się już na zakręcie. Wybierz tor jazdy, utrzymuj równy galop i szukaj prostości przy zbliżaniu się do przeszkody. Po bardzo ciasnym zakręcie nie proś gwałtownie o długą foule: koń właśnie włożył dużo wysiłku w odzyskanie równowagi i nie zawsze jest gotowy, by od razu się wydłużyć.", "좋은 접근은 곡선에서부터 준비해. 경로를 정하고, 일정한 구보를 유지하고, 장애물에 다가갈 때는 똑바로 가도록 해. 아주 급한 곡선을 돈 직후에는 갑자기 긴 보폭을 요구하지 마. 말은 방금 균형을 되찾느라 큰 힘을 썼으니 바로 보폭을 늘릴 준비가 안 되어 있을 수 있어."),
@@ -313,10 +329,11 @@ IDS.forEach(function (id) {
     } });
     var B = brut(cours);
     var cv = A.couv, heroImg = (cv && r(cv.src)) ? r(cv.src) + "#g4" : A.chapitres[0].img;
-    if (HERO_G4[id]) heroImg = HERO_G4[id];   /* 01/11 17h (V4) : vraie photo dorée à la place de l'ancienne couverture */
+    var heroPos = "50% 30%", heroPosTel = null;
+    if (HERO_G4[id]) { var hg = HERO_G4[id]; if (Array.isArray(hg)) { heroImg = hg[0]; heroPos = hg[1] || heroPos; heroPosTel = hg[2] || null; } else heroImg = hg; }   /* 01/11 17h (V4) : vraie photo dorée ; 21h : avec son cadrage */
     return {
       auto: true,
-      hero: { img: heroImg, pos: "50% 30%", titre: r(B.titre), galop: G, duree: r(B.duree), type: r(B.type) },
+      hero: { img: heroImg, pos: heroPos, posTel: heroPosTel, titre: r(B.titre), galop: G, duree: r(B.duree), type: r(B.type) },
       encarts: {
         coach: A.coach ? { titre: A.coach.titre || L("coach"), texte: A.coach.texte, img: IM.coach, pos: "60% 25%" } : null,
         hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },

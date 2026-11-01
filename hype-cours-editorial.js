@@ -2481,13 +2481,49 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
-  "g1-c20": ["images/cours-g1-c20-hero.webp", "62% 40%", "80% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
+  "g1-c20": ["images/cours-g1-c20-hero.webp", "50% 40%", "50% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
   "g1-c3": ["images/cours-g1-c3-hero.webp", "30% 40%", "25% 40%"],   /* « Le mode de vie du cheval » — cheval gris au galop au pré, photo de Blandine (01/11 18h06) */
-  "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
-  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
-  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],
-  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "72% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
-  "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */
+  "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%", "25% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
+  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "75% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%", "75% 40%"],
+  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%", "50% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */,
+  /* 01/11 21h (Blandine : « remplace tous les hero aux anciennes couleurs par celles-ci en alternant ») : ses 12 photos de chevaux sur fond noir */
+  "g1-c4": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g1-c5": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g1-c6": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g1-c9": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g1-c11": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g1-c12": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g1-c13": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g1-c16": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g1-c19": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g2-aides": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g2-depart": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"],
+  "g2-c1": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g2-c3": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g2-c4": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g2-c5": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g2-c6": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g2-anatomie": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g2-sens": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g2-vie-sociale": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g2-pansage": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g2-filet-selle": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g2-familles": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g2-heberger": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"],
+  "g3-c2": ["images/hero-cours-12.webp", "80% 35%", "68% 40%"],
+  "g3-saut": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
+  "g3-c4": ["images/hero-cours-02.webp", "78% 22%", "62% 25%"],
+  "g3-c5": ["images/hero-cours-03.webp", "78% 22%", "62% 25%"],
+  "g3-c8": ["images/hero-cours-04.webp", "80% 35%", "68% 40%"],
+  "g3-c9": ["images/hero-cours-05.webp", "80% 35%", "68% 40%"],
+  "g3-c10": ["images/hero-cours-06.webp", "80% 35%", "68% 40%"],
+  "g3-c11": ["images/hero-cours-07.webp", "80% 35%", "68% 40%"],
+  "g3-c12": ["images/hero-cours-08.webp", "80% 35%", "68% 40%"],
+  "g3-c13": ["images/hero-cours-09.webp", "80% 35%", "68% 40%"],
+  "g3-c14": ["images/hero-cours-10.webp", "78% 22%", "62% 25%"],
+  "g3-c15": ["images/hero-cours-11.webp", "78% 22%", "62% 25%"]
 };
 
 function alerteNotion(o) {
