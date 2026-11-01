@@ -16216,3 +16216,8 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pas de conseils du coach pour cette reprise (aucune entrée dans hype-dressage-conseils.js) : l'encart ne s'affiche simplement pas. À faire si elle le demande.
 - Vérifié : tracé animé construit sans erreur (1 073 points, serpentine par E, cercles de 12 m, changements de pied vers I, arrêt final en I) ; 17 blocs de script passés à node --check.
 - Fichiers : index.html (build 20261101-2050), SUIVI.md.
+## 01/11 20h50 — Pansage : citation sortie de la photo du haut (build 20261101-2105)
+- Demande de Blandine : la citation du pansage doit être lisible et à la même place que dans les autres cours.
+- hype-cours-modele.js (v5, ?v=7) : téléphone et tablette — citation retirée de la photo de couverture, posée dans un bandeau bleu pétrole semi-transparent ombré juste sous la couverture (même style que les autres cours). Elle était aussi répétée dans le chapitre 01 : retirée là (pas de doublon).
+- hype-cours-pansage-ordi.js (v3, ?v=26) : ordinateur — même chose, bandeau sous les encarts du haut, avant les vignettes des chapitres.
+- Testé : fr, ar, ja — 390, 820, 1440 px ; aucune erreur, aucun débordement.

@@ -28,7 +28,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 4;   /* 01/11 20h05 : pansage (téléphone, tablette) dans le style du cours des robes — bleu nuit / noir, vague, gros numéro doré, photos arrondies */
+var VERSION = 5;   /* 01/11 20h50 : citation du haut sortie de la photo, dans un bandeau lisible sous la couverture */
+/* précédente : var VERSION = 4; */   /* 01/11 20h05 : pansage (téléphone, tablette) dans le style du cours des robes — bleu nuit / noir, vague, gros numéro doré, photos arrondies */
 /* précédente : var VERSION = 3; */   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
 
 /* ---------------- petits textes de structure (14 langues) ---------------- */
@@ -213,6 +214,9 @@ var CSS = [
 ".hcm-kick:after{content:'';flex:0 0 28px;height:1px;background:var(--ligne)}",
 ".hcm-couv h1{font-size:34px;line-height:1.04;margin:10px 0 10px;font-weight:500}",
 ".hcm-couv h1 em{display:block}",
+".hcm-quote{display:block;margin:26px 16px 30px;padding:22px 22px 22px 24px;border-inline-start:2px solid var(--champ);border-radius:4px 14px 14px 4px;background:rgba(16,29,34,.5);box-shadow:inset 0 0 36px rgba(0,0,0,.5);font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:24px;line-height:1.38;color:var(--ivoire);text-wrap:pretty}",
+".hcm-quote small{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:11.5px;letter-spacing:.6px;color:var(--champ);margin-top:10px}",
+"@media (min-width:700px){.hcm-quote{margin:34px auto 38px;max-width:760px;font-size:28px;padding:26px 30px 26px 32px}}",
 ".hcm-couv .cit{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-style:italic;font-size:16px;line-height:1.4;color:var(--doux);max-width:420px}",
 ".hcm-couv .cit small{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:10.5px;letter-spacing:.6px;color:var(--champ);margin-top:3px}",
 ".hcm-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:11.5px;color:var(--doux)}",
@@ -815,12 +819,13 @@ function HypeCoursModele(props) {
       h("div", { className: "hcm-in", style: { width: "100%" } }, h("div", { className: "txt" },
         h("div", { className: "hcm-kick" }, couv.kicker),
         h("h1", null, tit[0], tit[1] ? h("em", null, tit[1]) : null),
-        couv.citation ? h("p", { className: "cit" }, "« " + couv.citation.replace(/^[«"“]\s*|\s*[»"”]$/g, "") + " »", couv.auteur ? h("small", null, couv.auteur) : null) : null,
         h("div", { className: "hcm-meta" },
           couv.duree ? h("span", null, ICO.horloge(14), couv.duree) : null,
           h("span", null, ICO.liste(14), L("nChap").replace("{n}", String(chapitres.length))),
           couv.type ? h("span", null, ICO.livre(14), couv.type) : null),
         null))),   /* 01/11 11h05 (Blandine) : bouton « Découvrir le cours » retiré — le sommaire est juste dessous */
+    /* 01/11 20h50 (Blandine) : citation sortie de la photo du haut, dans le même bandeau que les autres cours */
+    couv.citation ? h("blockquote", { className: "hcm-quote" }, "« " + couv.citation.replace(/^[«"“]\s*|\s*[»"”]$/g, "") + " »", couv.auteur ? h("small", null, couv.auteur) : null) : null,
     /* SOMMAIRE ILLUSTRÉ */
     h("nav", { className: "hcm-menu t-noir", ref: menuRef, "aria-label": L("mTitre") },
       h("div", { className: "hcm-in" },
@@ -922,7 +927,7 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
         photo: { src: IMG + "02_introduction_contact.webp", ratio: "r43" },
         blocs: [
           { t: "para", gras: para1.gras, texte: para1.texte, lettrine: true },
-          { t: "citation", texte: r(couvB.citation), auteur: r(couvB.auteur) },
+          /* 01/11 20h50 : citation retirée ici — elle est dans le bandeau sous la couverture (pas de doublon) */
           { t: "benefices", items: [{ ico: "coeur", texte: L("benef1") }, { ico: "loupe", texte: L("benef2") }, { ico: "eclair", texte: L("benef3") }] }
         ] },
       { id: "observer", ton: "noir", kicker: L("kObs"),   /* 01/11 : un seul « 01 » par chapitre */ titreA: L("tObsA"), titreB: L("tObsB"), inv: true,
