@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 17;   /* 01/11 11h45 : défi de g3-c9 (litières), textes P3 validés par Blandine */
+var VERSION = 18;   /* 01/11 11h50 : photos des chapitres 02 « Seller le cheval » et 03 « Brider le cheval » (g1-c17) */
+/* précédente : VERSION = 17; */   /* 01/11 11h45 : défi de g3-c9 (litières), textes P3 validés par Blandine */
 /* précédente : VERSION = 16; */   /* + haut de page du nœud d'attache (g1-c10) ; 01/11 11h20 : + photo cheval blanc au licol (g1-c8, chapitre 01) + photo « Ne pas s'accroupir » (sécurité) */
 /* précédente (main, autre conversation) : VERSION = 15; */   /* 01/11 : vague de séparation — trait champagne à 45 % (au lieu de 28 %), même tracé, même épaisseur */
 /* (ma branche) précédente : VERSION = 15; */   /* 01/11 11h10 : cours sécurité (g1-c15) — une page par chapitre (bouton « Chapitre suivant ») + chapitre 05 « En cas de problème » : réflexes affichés en étapes numérotées, sans bouton à toucher */
@@ -1252,7 +1253,8 @@ var AUTO_IM = {
   "g1-c12": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
   "g1-c13": ["images/galop5-c12-cross.webp", "images/galop5-c11-saut.webp"],
   "g1-c16": ["images/galop5-c07-transport.webp", "images/galop5-c05-soins.webp", "images/galop5-th-cheval2.webp"],
-  "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/galop5-theme-cheval.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c03-apprendre.webp"],
+  "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-g1-c17-seller.webp",   /* 01/11 11h46 : chapitre 02 « Seller le cheval » = photo de Blandine */
+    "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */ "images/galop5-c03-apprendre.webp"],
   "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
   "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
   "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
