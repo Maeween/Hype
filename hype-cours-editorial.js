@@ -796,6 +796,36 @@ var CSS = [
 ".hce .hce-chp.rbd .pan h3{font-size:26px;margin-bottom:10px}",
 /* 01/11 21h25 (Blandine : « descends les hero du haut, ça les coupe en deux ») : sur téléphone, la photo du haut commence sous l'heure et les boutons ; elle garde sa taille entière */
 "@container hce (max-width:699px){.hce-hero .ph{box-sizing:border-box;height:calc(min(var(--hr,72vw),520px) + env(safe-area-inset-top,0px) + 62px);padding-top:calc(env(safe-area-inset-top,0px) + 62px);background-origin:content-box;background-clip:content-box}.hce-hero .ph:after{top:calc(env(safe-area-inset-top,0px) + 62px);background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0) 80%,#070A08 100%)}}",
+/* 01/11 21h25 : lecture des notions comme le chapitre « Explore la tête du cheval » (téléphone) ; même carte sur ordinateur */
+".hce-lc{margin-top:28px;display:grid;gap:18px}",
+".hce-lc .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;margin:0}",
+".hce-lc .tabs::-webkit-scrollbar{display:none}",
+".hce-lc .tabs button{white-space:nowrap;border:1px solid rgba(243,238,228,.2);background:rgba(16,26,29,.55);color:var(--ivoire);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer}",
+".hce-lc .tabs button[aria-selected=true]{border-color:var(--champ);color:var(--champ)}",
+".hce-lc .tabs button.al{border-color:rgba(217,150,124,.45)}.hce-lc .tabs button.al[aria-selected=true]{border-color:#E3A18E;color:#E3A18E}",
+".hce-lc .lect{border-inline-start:1px solid rgba(201,166,107,.45);padding:4px 0 4px 18px;min-height:150px}",
+"[dir=rtl] .hce-lc .lect{padding:4px 18px 4px 0}",
+".hce-lc .lect.al{border-inline-start-color:rgba(217,150,124,.7)}",
+".hce-lc .lect .k{margin:0;font-size:11px;letter-spacing:.24em;color:var(--champ);font-weight:600}",
+".hce-lc .lect h3{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-weight:500;font-size:28px;line-height:1.15;margin:6px 0 12px;color:var(--ivoire)}",
+".hce-lc .lect.al h3{color:#E3A18E}",
+".hce-lc .corps{display:grid;gap:12px;animation:hceLc .35s ease}",
+"@keyframes hceLc{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}",
+".hce-lc .corps p,.hce-lc .corps .hce-txt,.hce-lc .corps li{margin:0;font-size:15px;line-height:1.65;color:rgba(243,238,228,.9);text-align:left;hyphens:manual}",
+"[dir=rtl] .hce-lc .corps p,[dir=rtl] .hce-lc .corps li{text-align:right}",
+".hce-lc .corps .s{font-style:italic;color:#D9B98A}",
+".hce-lc .corps ul{margin:0;padding-inline-start:20px;display:grid;gap:8px}.hce-lc .corps li::marker{color:var(--champ)}",
+".hce-lc .corps .pimg{margin:0;border-radius:14px;overflow:hidden}.hce-lc .corps .pimg img{display:block;width:100%;height:auto}",
+".hce-lc .corps .ap{padding-top:10px;border-top:1px solid rgba(201,166,107,.2)}",
+".hce-lc .nav{display:flex;gap:10px;margin-top:18px}",
+".hce-lc .nav button{border:1px solid rgba(201,166,107,.55);background:transparent;color:var(--ivoire);border-radius:999px;padding:9px 16px;font:inherit;font-size:13px;cursor:pointer}",
+".hce-lc .nav button:disabled{opacity:.35;cursor:default}",
+/* ordinateur : la carte de notion prend le même dessin (trait doré à gauche, plus de cadre) */
+".hce .hce-chp.rbd .pan{background:transparent!important;border:0!important;border-inline-start:1px solid rgba(201,166,107,.45)!important;border-radius:0;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;padding:4px 0 4px 22px}",
+"[dir=rtl] .hce .hce-chp.rbd .pan{padding:4px 22px 4px 0}",
+".hce .hce-chp.rbd .pan h3:before{display:none}",
+".hce .hce-chp.rbd .pan h3{font-weight:500;font-size:30px}",
+".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan li{text-align:left;hyphens:manual}",
 
 ].join("\n");
 
@@ -1009,6 +1039,27 @@ function MobileLectureNotions(p) {
   }
   return h("div", { className: "hce-mobile-read" }, nodes);
 }
+/* 01/11 21h25 (Blandine : « j'aime bien ces parties-là [Explore la tête du cheval] … et pas celle-ci [notions empilées] ») :
+   sur téléphone, les notions d'un chapitre se lisent une à une, comme le chapitre interactif de la tête :
+   pastilles des notions, puis une lecture avec trait doré à gauche, « 1 / 5 », titre, texte, Précédent / Suivant */
+function LectureCarte(p) {
+  var _i = useState(0), i = _i[0], setI = _i[1];
+  var items = p.items, n = items.length, it = items[Math.min(i, n - 1)], L = p.L, rtl = p.rtl;
+  var tabsRef = useRef(null);
+  useEffect(function () { var t = tabsRef.current; if (!t) return; var b = t.querySelectorAll("button")[i]; if (b && t.scrollWidth > t.clientWidth) { try { t.scrollTo({ left: b.offsetLeft - 16, behavior: "smooth" }); } catch (e) { } } }, [i]);
+  var aller = function (k) { setI(k); };
+  return h("div", { className: "hce-lc" },
+    n > 1 ? h("div", { className: "tabs", ref: tabsRef, role: "tablist" }, items.map(function (x, k) {
+      return h("button", { key: k, type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", className: x.alerte ? "al" : undefined, onClick: function () { aller(k); } }, x.titre);
+    })) : null,
+    h("div", { className: "lect" + (it.alerte ? " al" : ""), role: "tabpanel", "aria-live": "polite", key: "l" + i },
+      h("p", { className: "k" }, (i + 1) + " / " + n),
+      h("h3", null, it.titre),
+      h("div", { className: "corps" }, it.rendu()),
+      n > 1 ? h("div", { className: "nav" },
+        h("button", { type: "button", disabled: i === 0, onClick: function () { aller(i - 1); } }, (rtl ? "→ " : "← ") + L("prec")),
+        h("button", { type: "button", disabled: i === n - 1, onClick: function () { aller(i + 1); } }, L("suiv") + (rtl ? " ←" : " →"))) : null));
+}
 function estTelephone() { try { return !!(window.matchMedia && window.matchMedia("(max-width:699px)").matches); } catch (e) { return false; } }
 function Chapitre(p) {
   var _i = useState(0), i = _i[0], setI = _i[1];
@@ -1037,7 +1088,7 @@ function Chapitre(p) {
       p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
       p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
-      h(MobileLectureNotions, { items: p.items })));
+      h(LectureCarte, { items: p.items, L: L, rtl: rtl, id: p.id })));
   return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.cls ? " " + p.cls : "") },
     p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
     h("div", { className: "rbd-tx" },
