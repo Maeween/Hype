@@ -20,9 +20,11 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 13;   /* 01/11 01h50 : téléphone — vague du cours pansage + air, phrase d'aide du menu retirée, photo de chapitre sans titre dessus */
+var VERSION = 14;   /* 01/11 09h30 : fusion — choix C + A2 de l'autre conversation (VERSION 11 de main) + mes v12/v13 (g1-c8 interactif, Galop 3, téléphone : vague pansage, photo de chapitre sans titre, flèche/drapeau sous la barre d'état) */
+/* précédente (branche de travail) : VERSION = 13; */   /* 01/11 01h50 : téléphone — vague du cours pansage + air, phrase d'aide du menu retirée, photo de chapitre sans titre dessus */
 /* précédente : VERSION = 12; */   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
 /* précédente : VERSION = 11; */   /* 01/11 01h10 : Galop 3 (15 cours, robes à part) sur le modèle commun, téléphone compris */
+/* précédente (main) : VERSION = 11; */   /* 01/11 00h45 : choix C (plus de carte Hey Baby en haut) + A2 (chapitres à la suite, le menu y saute ; quiz à part) + photo du cours matériel (g1-c8) */
 /* précédente : VERSION = 10; */   /* 01/11 00h25 : outils prêtés au Galop 4 (HypeCoursEditorial._) + setEcran transmis aux chapitres — rien ne change pour les Galops 1 et 2 */
 /* précédente : VERSION = 9; */   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
 /* précédente : VERSION = 8; */   /* 01/11 : téléphone — citation sous le haut de page, encarts masqués, conseil du coach avant le quiz (reste du pack ChatGPT) */
@@ -509,7 +511,7 @@ var CSS = [
 "@container hce (min-width:700px){",
 ".hce-hero .ph{height:380px}.hce-hero .txt{padding:0 32px;margin-top:-60px}.hce-hero h1{font-size:52px}",
 ".hce-bar{inset-inline:28px;top:calc(20px + env(safe-area-inset-top, 0px))}.hce-crumb{display:inline-flex}",
-".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}",
+".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}.hce-enc.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.hce-enc.n1{grid-template-columns:minmax(0,1fr)}",
 ".hce-card{flex:none;min-height:150px}.hce-card h3{max-width:none}.hce-card p{max-width:78%}",
 ".hce-menu ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:0 28px}",
 ".hce-menu li{flex:none}.hce-chap{height:112px}",
@@ -554,7 +556,7 @@ var CSS = [
 ".hce-hero h1{font-size:clamp(56px,5.2cqw,76px)}",
 ".hce-bar{inset-inline:40px;top:calc(26px + env(safe-area-inset-top, 0px))}",
 ".hce-lang{position:absolute;inset-inline-end:380px}",
-".hce-enc{grid-column:2;grid-row:1;position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:12px;padding:24px 24px 24px 0;align-self:stretch}",
+".hce-enc{grid-column:2;grid-row:1;position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:12px;padding:24px 24px 24px 0;align-self:stretch}.hce-enc.n2{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}.hce-enc.n1{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}",
 "[dir=rtl] .hce-enc{padding:26px 0 24px 24px}",
 ".hce-card{min-height:0;background:rgba(9,12,11,.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
 ".hce-card h3{font-size:23px;max-width:66%}.hce-card p{max-width:66%;font-size:12.5px}",
@@ -879,7 +881,9 @@ function HypeCoursEditorial(props) {
   var FIN = (window.HypeFinsCours && window.HypeFinsCours[cours.id] && window.HypeFinsCours[cours.id].ok()) ? window.HypeFinsCours[cours.id] : null;
 
   useEffect(function () {
-    var on = function () { var el = menuRef.current; if (el) setMini(el.getBoundingClientRect().bottom < 0); };
+    var on = function () { var el = menuRef.current; if (el) setMini(el.getBoundingClientRect().bottom < 0);
+      /* A2 : le chapitre actif suit la lecture */
+      var k = 0; (cfg.chapitres || []).forEach(function (c, i) { var sc = document.getElementById("hce-" + c.id); if (sc && sc.getBoundingClientRect().top < 140) k = i; }); setActif(k); };
     window.addEventListener("scroll", on, { passive: true }); on();
     return function () { window.removeEventListener("scroll", on); };
   }, [vue]);
@@ -889,9 +893,10 @@ function HypeCoursEditorial(props) {
     var li = ol.children[actif]; if (!li) return;
     try { var r1 = li.getBoundingClientRect(), r2 = ol.getBoundingClientRect(); ol.scrollBy({ left: (r1.left - r2.left) - 16, behavior: "smooth" }); } catch (e) { }
   }, [actif]);
+  /* A2 (Blandine, 01/11) : les chapitres sont à la suite ; une carte du menu fait défiler jusqu'au chapitre */
   var choisir = function (i) {
-    setActif(i);
-    setTimeout(function () { var el = menuRef.current; if (el && el.getBoundingClientRect().top < 0 && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30);
+    setActif(i); var c = cfg.chapitres[i]; var el = c && document.getElementById("hce-" + c.id);
+    if (el) { try { window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 56, behavior: "smooth" }); } catch (e) { el.scrollIntoView(); } }
   };
   var allerA = function (id) { var el = document.getElementById(id.indexOf("hce-") === 0 ? id : "hce-" + id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   var hey = function (q) {
@@ -915,18 +920,14 @@ function HypeCoursEditorial(props) {
      Les cartes du menu changent de chapitre ; en bas, « Chapitre suivant », et après le dernier la transition vers la fin. */
   var chs = cfg.sections.filter(function (s) { return cfg.chapitres.some(function (c) { return c.id === s.id; }); });
   var autres = cfg.sections.filter(function (s) { return chs.indexOf(s) < 0; });
-  var cur = chs[Math.min(actif, chs.length - 1)] || chs[0];
-  var dernier = actif >= chs.length - 1;
-  var corps = [
-    h(Vague, { key: "v0", de: NOIR, vers: fond(cur.ton) }),
-    h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": actif, className: "hce-sec t-" + cur.ton, "aria-labelledby": "hce-t-" + cur.id },
-      cur.ton === "photo" ? cur.rendu(ctx) : h("div", { className: "hce-in" }, cur.rendu(ctx)))
-  ];
-  if (!dernier) corps.push(h("div", { key: "suiv", className: "hce-suiv" },
-    h("button", { type: "button", className: "hce-btn", onClick: function () { choisir(actif + 1); } },
-      L("chapSuiv") + "  ·  " + cfg.chapitres[actif + 1].label, fleche(rtl, 15)),
-    h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"))));
-  else {
+  var dernier = true;
+  var corps = [];
+  chs.forEach(function (cur, ci) {
+    corps.push(h(Vague, { key: "v" + ci, de: ci ? fond(chs[ci - 1].ton) : NOIR, vers: fond(cur.ton) }));
+    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, "aria-labelledby": "hce-t-" + cur.id },
+      cur.ton === "photo" ? cur.rendu(ctx) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
+  });
+  {
     /* 01/11 (pack ChatGPT) : sur téléphone, le conseil du coach passe ici, juste avant « Quiz et révision » (les encarts du haut sont masqués) */
     if (enc && enc.coach) corps.push(h("aside", { key: "coach-mobile-fin", className: "hce-mobile-coach" }, h("h3", null, enc.coach.titre), h("p", null, enc.coach.texte)));
     autres.forEach(function (s) {
@@ -951,11 +952,11 @@ function HypeCoursEditorial(props) {
             hero.duree ? h("span", null, ICO.horloge(19), hero.duree) : null,
             hero.type ? h("span", null, ICO.livre(19), hero.type.charAt(0).toUpperCase() + hero.type.slice(1)) : null,
             h("span", null, ICO.toque(19), hero.galop)))),
-      h("div", { className: "hce-enc" },
+      h("div", { className: "hce-enc n" + ((enc.coach ? 1 : 0) + (enc.defi ? 1 : 0)) },
         enc.coach ? h("aside", { className: "hce-card coach" },
           h("span", { className: "im", "aria-hidden": true, style: { backgroundImage: "url(" + enc.coach.img + ")", backgroundPosition: enc.coach.pos || "center" } }),
           h("h3", null, enc.coach.titre), h(CoachTxt, { texte: enc.coach.texte, L: L, seuil: cfg.auto ? 200 : 300 })) : null,
-        enc.hb ? h("button", { type: "button", className: "hce-card hb", onClick: function () { hey(""); } },
+        false && enc.hb ? h("button", { type: "button", className: "hce-card hb", onClick: function () { hey(""); } },
           h("span", { className: "im", "aria-hidden": true, style: { backgroundImage: "url(" + enc.hb.img + ")", backgroundPosition: enc.hb.pos || "center" } }),
           h("h3", null, L("heyBaby")), h("p", null, enc.hb.texte), h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 16))) : null,
         enc.defi ? h("button", { type: "button", className: "hce-card defi", onClick: function () { versFin(false); } },
@@ -2221,8 +2222,9 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
-  "g1-c8": ["images/cours-g1-c8-hero.webp", "72% 35%"],   /* « Le matériel de base » — cheval noir sellé et bridé (01/11 00h39) */
-  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"]   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%"],   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */
 };
 
 function alerteNotion(o) {

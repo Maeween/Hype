@@ -15960,6 +15960,16 @@ Demande de Blandine (22h27) : « Galop 4, fais le même travail pour la refonte 
 - RESTE À FAIRE (attendu de ChatGPT, prompt donné le 31/10 23h57) : textes G4_TEXTES.json (coach pour 13 cours, défis en 3 points, synthèses en 5 phrases, Hey Baby de g4-galop-qualite en vraies questions, phrases de fin) ; photos de chapitres g4-<cours>-ch<n>.webp et de haut de page g4-<cours>-hero.webp.
 
 
+## 01/11/2026 00h45 — PUBLICATION build 20261101-0045, accord de Blandine (00h31 « Ok ») : choix C + A2 + photos de haut de page
+Préparé à 23h15–00h20 sur la version 20261031-2240, puis REPORTÉ sur la version en ligne 20261101-0025 (Galop 4 et menu téléphone en liste de l'autre conversation) : rien de leur travail n'est retiré.
+- Choix C (Blandine : « Hey Baby se retrouve deux fois dans le cours ») : l'encart « Demande à Hey Baby » du haut est retiré dans tous les cours du modèle (Galops 1, 2 et 4) ; les 5 questions Hey Baby restent sur la page de fin. Haut de page : 2 encarts (conseil du coach, défi) — ordinateur : colonne de 2, tablette : 2 colonnes ; 1 seul encart s'il n'y a pas de conseil du coach.
+- Choix A (menu téléphone en liste comme le pansage) : déjà en ligne (VERSION 9), gardé tel quel.
+- Choix A2 (« 2 sauf la dernière page du quizz qu'on laisse à part ») : tous les chapitres s'affichent à la suite sur la page (ordinateur, tablette, téléphone, Galops 1, 2 et 4) ; une carte du menu ou de la barre collante fait descendre jusqu'au chapitre ; le chapitre en cours de lecture est surligné. Plus de bouton « Chapitre suivant ». La page de fin (synthèse, Hey Baby, défi, quiz) reste à part, ouverte par « Quiz et révision ».
+- Photo de haut de page « Le matériel de base » (g1-c8) : images/materiel-g1-hero.webp (photo de Blandine, bas décoratif retiré), dans HERO_COURS.
+- Photo « Le trot enlevé sur le bon diagonal » (g3-c1), envoyée à 00h34 : images/cours-g3-c1-hero.webp, rangée dans HERO_COURS. Le Galop 3 n'est PAS encore sur le modèle éditorial : la photo apparaîtra quand il y passera.
+- Photo du cheval blanc au licol (00h31) : PAS encore placée, cours à confirmer par Blandine.
+- hype-cours-editorial.js VERSION 11 (?v=11), index.html build 20261101-0045.
+- Vérifié : Galops 1 et 2 (30 cours × 14 langues × 375/390/430/820/1440 px = 2 100 pages) et Galop 4 (15 cours × fr/ar/ja × 390/820/1440 px) : aucune erreur, aucun débordement, chaque chapitre une fois dans la page, plus d’encart Hey Baby en haut, pages de fin 5 questions + défi en 3 points.
 ## 01/11 01h10 — Galop 3 sur le modèle de cours commun, téléphone compris (NON publié, build 20261101-0110)
 Demande de Blandine (00h15) : « tu feras pareil pour l'adaptation des cours sur tel pour tous les chapitres 3 et 4 ».
 - Le Galop 4 a été fait en parallèle par une autre conversation (hype-cours-editorial-g4.js, publié à 00h25) : je n'y touche pas.
@@ -15985,3 +15995,10 @@ Demandes de Blandine (00h44 et 00h50, captures du cours « Le matériel de base 
 5. Flèche retour et drapeau trop hauts (sous l'heure de l'iPhone) : ils descendent de la hauteur de la barre d'état, dans tous les cours refaits (modèle commun, pansage, robes, pansage ordinateur).
 - Versions : hype-cours-editorial.js v13, hype-cours-modele.js v4, hype-cours-robes-ordi.js v38, hype-cours-pansage-ordi.js v23.
 - Tests : 60 cours du modèle sur 390 et 1440 px sans erreur ni débordement ; sécurité, seller et brider, Galop 2 inchangés.
+
+## 01/11/2026 09h30 — PUBLICATION build 20261101-0930, accord de Blandine (09h26 « Ok »)
+- Fusion avec la version en ligne (build 20261101-0045 de l'autre conversation : encart Hey Baby du haut retiré, chapitres à la suite, photo du matériel, photo du trot enlevé) : tout gardé.
+- Mis en ligne en plus : Galop 3 sur le modèle commun (15 cours) ; g1-c8 licol / filet / selle interactifs ; téléphone : vague du cours pansage avec de l'air, « Touche un chapitre… » retiré, photo de chapitre sans titre dessus, flèche retour et drapeau sous la barre d'état ; 5e photo pour g2-aides.
+- Photo du haut de g1-c8 : celle de l'autre conversation (images/materiel-g1-hero.webp, même photo) ; images/cours-g1-c8-hero.webp gardée mais plus utilisée.
+- Versions : hype-cours-editorial.js v14, hype-cours-materiel.js v1, hype-cours-modele.js v4, hype-cours-robes-ordi.js v38, hype-cours-pansage-ordi.js v23.
+- Tests après fusion : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement ; matériel fr/ar/ja OK.
