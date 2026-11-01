@@ -283,13 +283,14 @@ var COURS = [
         { gras: "Les vertèbres coccygiennes :", texte: "elles forment la queue." }
       ]),
       S("🐴 Les membres antérieurs", "Ils portent environ 60 % du poids du cheval et amortissent les chocs.", [
-        "De haut en bas : l'omoplate, l'humérus, le radius (et le cubitus, soudé à lui), les os du genou, l'os du canon, les os du boulet, l'os du paturon, l'os de la couronne et l'os du pied.",
+        "De haut en bas : l'omoplate, l'humérus, le radius, puis les os du genou, du canon, du boulet, du paturon, de la couronne et du pied.",
         "Le cheval n'a pas de clavicule : l'antérieur est relié au tronc uniquement par des muscles, sans articulation entre les os."
       ]),
       S("🐎 Les membres postérieurs", "Ils sont le moteur : ce sont eux qui poussent le cheval vers l'avant.", [
-        "De haut en bas : les os du bassin, le fémur, la rotule (au grasset), le tibia, les os du jarret, puis les mêmes os qu'à l'antérieur : canon, boulet, paturon, couronne et pied.",
+        "De haut en bas : les os du bassin, le fémur, le tibia, les os du jarret, puis les mêmes os qu'à l'antérieur : canon, boulet, paturon, couronne et pied.",
         "Le grasset correspond à notre genou, le jarret à notre cheville."
       ]),
+      E("🔭", "Pour aller plus loin", "À l'antérieur, un petit os, le cubitus, est soudé au radius. Au postérieur, la rotule se trouve au grasset, comme notre rotule au genou."),
       E("💡", "Le savais-tu ?", "Ce que l'on appelle « genou » chez le cheval correspond en réalité à notre poignet. Sous le genou et le jarret, il n'y a plus aucun muscle : seulement des os, des tendons et des ligaments. C'est pour cela qu'on protège tant le bas des membres.")
     ]),
 
@@ -686,11 +687,12 @@ var COURS = [
         "Il sert à retrouver le cheval, son propriétaire, ses origines et ses résultats en compétition.",
         "Pour engager un cheval en concours, on utilise son numéro SIRE."
       ]),
-      S("📡 La puce électronique", "Tous les équidés doivent porter une puce électronique, ou transpondeur. Elle est posée par un vétérinaire, par une piqûre dans l'encolure, côté gauche, dans le ligament qui court le long du haut de l'encolure.", [
+      S("📡 La puce électronique", "Tous les équidés doivent porter une puce électronique, ou transpondeur. Elle est posée par un vétérinaire, par une piqûre dans l'encolure, côté gauche.", [
         "Elle contient un numéro à 15 chiffres, lu avec un lecteur spécial.",
         "Ce numéro est inscrit dans le document d'identification : il prouve que le cheval est bien celui du livret.",
         "Elle permet d'identifier un cheval perdu, volé ou vendu. En concours ou lors d'un contrôle, on la lit au lecteur pour vérifier que le cheval correspond à son livret."
-      ])
+      ]),
+      E("🔭", "Pour aller plus loin", "Plus précisément, la puce est placée dans le ligament qui court le long du haut de l'encolure, entre la nuque et le garrot : c'est ce que prévoit le règlement européen.")
     ]),
 
     B("Les erreurs et l'entraînement", [
@@ -742,7 +744,7 @@ var COURS = [
     Q("Pour embarquer, tu regardes…", ["Le cheval dans les yeux", "L'intérieur du van, devant toi", "Le sol", "Derrière toi"], 1, "Regarder devant toi et avancer d'un pas décidé encourage le cheval à suivre."),
     Q("À quoi sert le protège-queue ?", ["À tenir chaud", "À éviter que la queue s'abîme contre la paroi", "À attacher le cheval", "À rien"], 1, "Le cheval peut s'appuyer contre la paroi arrière : le protège-queue évite que la queue s'abîme."),
     Q("Le numéro SIRE est composé de…", ["15 chiffres", "8 chiffres et une lettre", "Le nom du cheval", "Un code-barres"], 1, "Le numéro SIRE compte 8 chiffres et une lettre. Les 15 chiffres sont ceux de la puce."),
-    Q("Où est posée la puce électronique ?", ["Dans l'oreille", "Dans l'encolure, côté gauche", "Dans le sabot", "Sur la croupe"], 1, "Le vétérinaire la pose dans l'encolure, côté gauche, dans le ligament du haut de l'encolure."),
+    Q("Où est posée la puce électronique ?", ["Dans l'oreille", "Dans l'encolure, côté gauche", "Dans le sabot", "Sur la croupe"], 1, "Le vétérinaire la pose dans l'encolure, côté gauche."),
     Q("Quel document doit accompagner le cheval à chaque transport ?", ["Son carnet de notes", "Son document d'identification (livret)", "Sa licence", "Rien"], 1, "Le document d'identification suit le cheval toute sa vie et voyage avec lui."),
     Q("Ton cheval refuse de monter. Que fais-tu ?", ["Je tire plus fort", "Je le frappe", "Je reste calme, je récompense chaque pas et j'appelle mon enseignant", "Je renonce pour toujours"], 2, "La patience, la récompense de chaque progrès et l'aide d'un adulte expérimenté sont la bonne réponse.")
   ]
