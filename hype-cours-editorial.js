@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 41;   /* 01/11 21h55 : plus d'espace sous les photos des notions */
+var VERSION = 43;   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
+/* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
@@ -189,7 +190,10 @@ var CSS = [
 ".hce-minih{position:sticky;top:0;z-index:30;height:0}",
 ".hce-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 14px 8px;overflow-x:auto;scrollbar-width:none;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".hce-mini::-webkit-scrollbar{display:none}.hce-mini.on{opacity:1;pointer-events:auto;transform:none}",
-".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
+".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",
+/* 01/11 22h35 (Blandine) : barre des chapitres pleine (plus de fondu où le texte réapparaît), filet doré en bas ; titre long coupé proprement « … » ; ancre des chapitres sous la barre */
+".hce-mini.on{background:#070A08;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.22)}.hce-mini .lbm{max-width:min(46vw,260px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+".hce-sec{scroll-margin-top:68px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
 ".hce-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(7,10,8,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.5);padding:6px 14px;font-size:13px;white-space:nowrap}",
 ".hce-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".hce-mini button[aria-current=true]{border-color:var(--champ);color:var(--champ)}",
@@ -777,8 +781,8 @@ var CSS = [
 ".hce .hce-chp.rbd .por{margin-top:30px}",
 ".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
 ".hce .hce-chp.rbd .pan h3{margin:0 0 18px}",
-/* 01/11 21h20 (Blandine) : texte des notions détaché du titre et justifié, sur ordinateur, tablette et téléphone */
-".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:justify;-webkit-hyphens:auto;hyphens:auto}",
+/* 01/11 21h20 (Blandine) : texte des notions détaché du titre ; 01/11 22h20 (relecture) : aligné en début de ligne (gauche, ou droite en arabe), sans coupure de mots, partout */
+".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:start;-webkit-hyphens:manual;hyphens:manual}",
 ".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
 ".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
 ".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan ul{line-height:1.72}",
@@ -1205,7 +1209,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
         cfg.chapitres.map(function (c, i) {
           return h("button", { key: c.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
-            h("b", null, (i < 9 ? "0" : "") + (i + 1)), c.label);
+            h("b", null, (i < 9 ? "0" : "") + (i + 1)), h("span", { className: "lbm" }, c.label));
         }))),
     corps,
     dernier ? h("div", { className: "hce-pied" }, h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"), fleche(rtl, 15))) : null);
@@ -2461,7 +2465,11 @@ function construireAuto(cours, lg) {
 
 /* rendu d'une notion dans la carte de droite */
 /* 01/11 21h20 (Blandine : « le texte commence sans majuscule, ça fait bâclé ») : majuscule en début de paragraphe (les textes d'origine suivent souvent un titre en gras « … : ») */
-function maj(t) { return typeof t === "string" ? t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); }).replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t; }   /* + espace insécable avant « : ; ! ? » » (plus de « : » seul en début de ligne) */
+function maj(t, lg) {   /* majuscule en début de paragraphe ; espaces insécables avant « : ; ! ? » et après « en français seulement */
+  if (typeof t !== "string") return t;
+  t = t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); });
+  return lg === "fr" ? t.replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t;
+}
 function renduNotion(o, L, lg, alerte) {
   var r = function (x) { return pickLg(x, lg); };
   var out = [], k = 0;
@@ -2472,7 +2480,7 @@ function renduNotion(o, L, lg, alerte) {
   var para = function (x) {
     var g = r(x.gras), t = r(x.texte) || "";
     if (!paras(t).length) return g ? [h("p", { key: "p" + (k++), className: "pg" }, h("strong", null, g))] : [];
-    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt)); });
+    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt, lg)); });
   };
   if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
   if (o.video) out.push(h("figure", { key: "vd", className: "pimg plein" }, h("video", { src: o.video[0], poster: o.video[1], autoPlay: true, muted: true, loop: true, playsInline: true, preload: "metadata", "aria-hidden": "true", style: { display: "block", width: "100%", height: "auto" } })));
@@ -2485,7 +2493,7 @@ function renduNotion(o, L, lg, alerte) {
     out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
   }
   if (o.astuce) o.astuce.forEach(function (t, i) { out.push(h("p", { key: "as" + i, className: "ast" }, t)); });
-  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1))); }
+  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1, lg))); }
   if (o.seg) {
     var s = o.seg;
     if (r(s.sous)) out.push(h("p", { key: "so", className: "s" }, r(s.sous)));

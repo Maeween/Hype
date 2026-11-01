@@ -16275,3 +16275,18 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - hype-cours-editorial.js : marge de 20 px sous la photo d'une notion (téléphone, carte ordinateur), tous les cours du modèle. Vérifié g1-c5 à 390 px avec les vraies polices. Rien d'autre de modifié.
 - Contrôle demandé par Blandine (21h50, « où sont passés les défis du coach, les savais-tu, les lexiques ») sur les 60 cours en ligne : coach + défi présents en haut des 60 cours ; « Le savais-tu ? » : 35 dans les textes, tous affichés (52 avec ceux ajoutés par la mise en page) ; lexiques : seuls les cours du Galop 4, g3-c3, g3-saut et g2-anatomie en ont un — les cours des Galops 1 à 3 n'en ont jamais eu.
 - Fichiers : hype-cours-editorial.js, index.html (build 20261101-2155), SUIVI.md.
+
+## 01/11/2026 23h20 — PUBLICATION build 20261101-2320 (accord de Blandine 23h16 « Ok vas y c'est bon ») : relecture de l'atlas + onglets « vignettes » + barre des chapitres + types de morceaux traduits
+- Atlas (hype-cours-atlas.js, version 2, ?v=2), relecture ChatGPT appliquée, 14 langues :
+  · épaule (relié au tronc par muscles et tissus de soutien, sans articulation osseuse directe ; l'omoplate est un os), genou = carpe, jarret = tarse, pince (généralement l'une des dernières régions à quitter le sol, variable), talons (forme et hauteur participent à l'équilibre) ;
+  · Galop 3 : « Le pied » (anatomie : face, profil, dessous, derrière) et « Le fer » (découverte) sont deux onglets séparés ;
+  · termes : pl lacunes « Bruzdy przystrzałkowe boczne » / « Bruzda strzałkowa środkowa » (source ZPE), es chanfrein « La cara » ; à confirmer : boulet en arabe (Lane donne حَوشَب), barres en suédois et polonais, glomes en polonais, chanfrein en italien ;
+  · onglets au style « vignettes » choisi par Blandine (23h03) : Galops soulignés, vues et vues du pied en petites photos rondes ; noms courts (Le corps, La tête, Le pied, Le fer) + nom complet en petit doré sous les onglets ;
+  · anneaux plus petits (9 px, 17 px sélectionné), zone tactile inchangée.
+- g1-c20 (hype-cours-galop1.js v16, ?v=16) : « Les pieds (pompe cardiaque) » → « Les pieds et la circulation » + explication du quiz, 14 langues.
+- g3-c11 (hype-cours-galop3.js v13, ?v=13) : phrase des glomes reformulée, 14 langues.
+- Tous les cours du modèle (hype-cours-editorial.js VERSION 43, ?v=43) : texte des notions aligné en début de ligne (droite en arabe), sans coupure de mots ; espaces insécables avant « : ; ! ? » en français seulement ; barre des chapitres pleine avec filet doré, titres longs terminés par « … », chapitre visé non caché sous la barre.
+- Types de morceaux traduits par erreur dans les données (sectie, kader, kort, karta, citaat — nl, sv, pl) reconnus partout : index.html (ancien affichage des cours), hype-cours-modele.js (VERSION 6, ?v=8), hype-cours-robes-ordi.js (VERSION 38, ?v=40), hype-cours-robes-galops-ordi.js (VERSION 21, ?v=21).
+- Ancien atlas de la tête (hype-cours-atlas-tete.js) : plus référencé nulle part, archivable.
+- Vérifié : 4 cours de l'atlas × 14 langues × 390 / 820 / 1280 px (168 affichages), aucune erreur ni débordement ; clic, clavier, onglets ; nl / sv / pl identiques au français en titres, listes, paragraphes ; 10 autres cours du modèle sans erreur.
+- Fichiers : hype-cours-atlas.js, hype-cours-editorial.js, hype-cours-galop1.js, hype-cours-galop3.js, hype-cours-modele.js, hype-cours-robes-ordi.js, hype-cours-robes-galops-ordi.js, index.html (build 20261101-2320), SUIVI.md.
