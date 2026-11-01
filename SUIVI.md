@@ -16156,3 +16156,15 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Vérifié : 44 cours × 14 langues, même structure qu'en français partout (avant : 39 cours sur 44 différents). Pages g1-c3, g1-c4, g1-c8 (arabe, 390 px), g1-c4 (anglais, 1440 px), 4 cours du Galop 2 (coréen) : coach et défi affichés, aucune erreur, aucun débordement.
 - Fichiers : hype-cours-editorial.js, index.html (build 20261101-1945), SUIVI.md. Rien d'autre.
 - Reporté sur la version en ligne 1b1078a (build 1940 de l'autre conversation : barre des chapitres, photos des allures g1-c4, affiches g1-c6) — rien de leur travail n'est retiré ; contrôle refait après report : 44 cours × 14 langues identiques au français, g1-c6 et g1-c4 en anglais sans erreur.
+
+## 01/11/2026 20h00 — PUBLICATION build 20261101-2000 (Blandine 19h21-19h29 : « les alternances visuelles et la petite vague dorée entre chaque partie, c'était ça à appliquer à tous les Galops », « reproduis exactement ces couleurs, ces alternances et cette vague, ainsi que les titres », « Reprends tout partout ») : design du cours des robes dans tous les cours du modèle (Galops 1 à 4)
+- Référence : cours des robes (hype-cours-robes-ordi.js) — noir #070A08 / bleu nuit #0A1116, vague dorée (filet à 35 %) entre CHAQUE partie, gros numéro doré « 01 » avec son petit trait puis le titre, photo dans un cadre arrondi sous le titre.
+- hype-cours-editorial.js VERSION 30 (?v=30) :
+  · les chapitres alternent bleu nuit (01, 03…) / noir (02, 04…) sur toute la largeur, la vague des robes entre chaque partie, y compris avant « Quiz et révision » ;
+  · titre de chapitre = numéro doré + titre (la petite ligne « 02 · GALOP 1 » et le trait sous le titre sont retirés) ;
+  · photo du chapitre entière (pas recadrée — règle de Blandine) dans un cadre arrondi, sous le titre ; sur ordinateur, photo à côté du texte, d'un côté puis de l'autre un chapitre sur deux, comme les robes ;
+  · notions à la suite sur tous les écrans (comme le téléphone et les robes) : sur tablette et ordinateur, la liste de notions à gauche + la carte qui en montre une à la fois sont REMPLACÉES par la lecture continue. Les cartes bleu pétrole semi-transparentes (build 1920) disparaissent donc des chapitres.
+- hype-cours-editorial-g4.js VERSION 8 (?v=8) : Galop 4, même chose (photo d'un côté puis de l'autre).
+- Pas touchés (présentation à part, à faire ensuite) : pansage g1-c2, robes, matériel, embouchures (Galop 5), et les cours des Galops 5 à 7 restés en page par page.
+- Vérifié : tous les cours du Galop 1 (390 px fr, 1440 px en), du Galop 2 (390 px ko), du Galop 4 (390 px ar), g1-c3 et g4-contact en captures 390 / 820 (ar) / 1440 px, g1-c15 (une page par chapitre, ko) : aucune erreur, rien qui dépasse, chapitres présents ; contrôle coach / défi refait : 44 cours × 14 langues identiques au français. Aucun texte modifié ni retiré.
+- Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (build 20261101-2000), SUIVI.md.
