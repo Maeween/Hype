@@ -1331,7 +1331,17 @@ var AUTO_IM_G3 = {
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 /* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
 var AUTO_IM_G5 = {
-  "g5n-03": ["images/galop5-c03-apprendre.webp", "images/galop5-th-cheval2.webp", "images/securite-g1-observer.webp", "images/galop5-c08-equilibre.webp"]
+  "g5n-03": ["images/securite-g1-inquiet.webp", "images/securite-g1-longe.webp", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-reprises-hd1.jpg"]   /* photos dorées (palette) */,
+  "g5n-01": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-videos-hd1.jpg", "images/galops-v2-carte-exercices-hd2.jpg", "images/securite-g1-porte.webp"],
+  "g5n-04": ["images/galops-v2-carte-reprises-provisoire.jpg", "images/galops-v2-carte-videos-provisoire.jpg", "images/securite-g1-alezan.webp", "images/galops-v2-carte-quiz-provisoire.jpg"],
+  "g5n-05": ["images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/securite-g1-bandes.webp", "images/cours-pansage-09_gestes_brossage.webp", "images/securite-g1-rangement.webp"],
+  "g5n-06": ["images/cours-g1-c18-hero.webp", "images/securite-g1-tenue.webp", "images/securite-g1-epaule.webp", "images/securite-g1-distance.webp"],
+  "g5n-07": ["images/securite-g1-rangement.webp", "images/securite-g1-issue.webp", "images/robes-portrait-alezan-brule.webp", "images/securite-g1-observer.webp"],
+  "g5n-08": ["images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-examens-hd1.jpg", "images/galop5-th-vie2.webp"],
+  "g5n-09": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-examens-hd1.jpg"],
+  "g5n-10": ["images/galop5-th-cheval2.webp", "images/galops-v2-carte-reprises-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg"],
+  "g5n-11": ["images/article-cso-saut.webp", "images/galops-v2-carte-videos-hd2.jpg", "images/article-cso-virage.webp", "images/article-cso-appel.webp"],
+  "g5n-12": ["images/FOND_CAVALIERS_ECURIE.webp", "images/mes-chevaux-fond-couchant.webp", "images/galops-v2-carte-videos-hd1.jpg", "images/securite-g1-distance.webp"]
 };
 Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
