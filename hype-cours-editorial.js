@@ -1340,7 +1340,7 @@ var AUTO_IM_G5 = {
   "g5n-08": ["images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-examens-hd1.jpg", "images/galop5-th-vie2.webp"],
   "g5n-09": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-examens-hd1.jpg"],
   "g5n-10": ["images/galop5-th-cheval2.webp", "images/galops-v2-carte-reprises-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg"],
-  "g5n-11": ["images/article-cso-saut.webp", "images/galops-v2-carte-videos-hd2.jpg", "images/article-cso-virage.webp", "images/article-cso-appel.webp"],
+  "g5n-11": ["images/galops-v2-carte-videos-hd2.jpg", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-reprises-hd2.jpg"],
   "g5n-12": ["images/FOND_CAVALIERS_ECURIE.webp", "images/mes-chevaux-fond-couchant.webp", "images/galops-v2-carte-videos-hd1.jpg", "images/securite-g1-distance.webp"]
 };
 Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
