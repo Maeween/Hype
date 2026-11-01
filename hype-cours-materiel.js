@@ -5,7 +5,8 @@
    Les pièces de la liste d'origine sans numéro sur la photo (plaque nominative, têtière du filet, contre-sanglons, étrier)
    restent affichées en dessous : rien n'est supprimé. Textes dans les 14 langues. */
 (function () {
-  var VERSION = 3;   /* 01/11 18h : téléphone — licol, filet, selle en blocs séparés (bleu pétrole / noir) */
+  var VERSION = 4;   /* 01/11 18h55 : ligne choisie plus lisible (fond sombre, titre champagne) */
+  /* v3 : */   /* 01/11 18h : téléphone — licol, filet, selle en blocs séparés (bleu pétrole / noir) */
   /* v2 : */   /* 01/11 : selle — n° 6 = l étrier ; l étrivière dans « À connaître aussi » */
   var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
   function tt() { var o = {}; for (var i = 0; i < LGS.length; i++) o[LGS[i]] = arguments[i]; return o; }
@@ -94,7 +95,9 @@
     ".hmat .lst{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}" +
     ".hmat .lst>li{padding:0!important;margin:0!important;list-style:none!important;background:none!important;border:0!important}.hmat .lst>li::before,.hmat .lst>li::marker{content:none!important;display:none!important}" +
     ".hmat .lig{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:rgba(10,22,24,.72);border:1px solid rgba(214,180,120,.28);border-radius:14px;padding:8px 8px 8px 10px;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
-    ".hmat .lig.on{border-color:#e6c27a;background:rgba(214,180,120,.12);box-shadow:0 0 0 1px rgba(230,194,122,.35)}" +
+    /* 01/11 18h55 (Blandine : « quand tu sélectionnes un des onglets on le lit mal ») : ligne choisie sur fond sombre, titre champagne, explication ivoire pleine */
+    ".hmat .lig.on{border-color:#e6c27a;background:#070A08;box-shadow:0 0 0 1px rgba(230,194,122,.45),0 8px 22px rgba(0,0,0,.45)}" +
+    ".hmat .lig.on .nm{color:#E8C98E}.hmat .lig.on .ex{opacity:1;color:#F3EEE4;font-size:14.5px}" +
     ".hmat .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:16px;color:#1a1408;background:#e8d3a6}" +
     ".hmat .lig.on .num{background:#e6c27a}" +
     ".hmat .tx{flex:1;min-width:0}" +
