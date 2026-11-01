@@ -16091,3 +16091,10 @@ Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, 
 - Vérifié : fr/ar 390 px, fr/ja 1440 px, aucune erreur ni débordement.
 - 01/11 17h51 (« Ok » de Blandine) : erreur à éviter « Penser qu'une séance montée remplace les déplacements quotidiens » (incomprise) reformulée : « Croire qu'une séance montée suffit : ton cheval a aussi besoin de bouger librement chaque jour, au pré ou au paddock. » — 14 langues, hype-cours-galop1.js v10 (?v=11).
 - 01/11 17h55 : PUBLICATION build 20261101-1800 (accord « Ok ») : « Préparer un box », affiche du confort au box retirée, erreur reformulée. Fichiers : hype-cours-galop1.js, hype-cours-editorial.js, index.html, SUIVI.md.
+
+## 01/11/2026 18h10 — branche affiche-ch1 (build 20261101-1810, EN ATTENTE) : g1-c3, affiche du chapitre 1 « Le cheval : un héritage de la nature »
+Demande de Blandine (17h53) : « regarde ce que ça apporte à son chapitre et ce qu'on doit ajouter pour la remplacer ».
+- Déjà dans le texte : introduction, les 3 besoins vitaux, « Pourquoi c'est important en écurie ? », le conseil du coach.
+- Ajouté (seulement dans l'affiche), hype-cours-galop1.js v11 (?v=12), 14 langues : « 3. Une intelligence de survie » (yeux sur les côtés de la tête, sac plastique / oiseau qui s'envole = signal de danger, réflexe hérité) et « 4. Le rassurer quand il se fige » (oreilles radars ; ne pas tirer sur les rênes, relâcher, attirer son attention, « Ce n'est rien » d'une voix calme). Pas appelé « défi » : le cours a déjà son défi.
+- hype-cours-editorial.js v24 (?v=24) : affiche du chapitre 1 retirée de l'affichage (bloc 2 ; image gardée dans le dépôt).
+- Vérifié : fr/ar 390 px, nl/ru/ja 1440 px, aucune erreur ni débordement, plus aucune affiche dans le cours.
