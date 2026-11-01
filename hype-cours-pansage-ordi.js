@@ -551,7 +551,7 @@ function HypePansageOrdi(props) {
                   h("h4", null, nomOutil(p)),
                   h("p", null, p.texte));
               })),
-            h("div", { className: "pso-vids" }, h("a", { href: "https://www.youtube.com/watch?v=4iuXTHiMWGg", target: "_blank", rel: "noopener noreferrer", className: "pso-vid" }, ICO.fleche(16), L("video")), h("a", { href: "https://www.youtube.com/watch?v=gkLOvsndOms", target: "_blank", rel: "noopener noreferrer", className: "pso-vid" }, ICO.fleche(16), L("video"))),
+            h("div", { className: "pso-vids" }, h("a", { href: "https://www.youtube.com/watch?v=4iuXTHiMWGg", target: "_blank", rel: "noopener noreferrer", className: "pso-vid" }, ICO.fleche(16), L("video"))),
             BoiteCoach(d.coach1),
             h("div", { className: "pso-grid2" },
               h("div", { className: "pso-box" }, h("h3", null, L("observer")), h("p", null, L("observerTxt"))),
@@ -596,16 +596,8 @@ function HypePansageOrdi(props) {
                 BoiteCoach(d.coach3)),
               h("div", { className: "pso-queue" },
                 [1, 2, 3, 4].map(function (n) { return h("figure", { key: n }, h("img", { src: "images/pansage-queue-" + n + ".webp", alt: "", loading: "lazy" }), h("figcaption", null, String(n))); }))),
-            h("div", { className: "pso-grid2" },
-              h("div", { className: "pso-exo" },
-                h("h3", null, L("exoTitre")), h("p", { className: "aide" }, L("exoAide")),
-                h("div", { className: "liste" }, PERM.map(function (i) {
-                  var rang = ordre.indexOf(i);
-                  return h("button", { key: i, type: "button", className: rang >= 0 ? "pris" : "", onClick: function () { cliqueEtape(i); } }, h("span", { className: "rg" }, rang >= 0 ? String(rang + 1) : "·"), h("span", null, sansNum(etapes[i].gras)));
-                })),
-                finiOrdre ? h("div", { className: "msg " + (bonOrdre ? "ok" : "ko") }, bonOrdre ? L("exoOk") : L("exoKo")) : null,
-                ordre.length ? h("button", { type: "button", className: "rec", onClick: function () { setOrdre([]); } }, L("exoRestart")) : null),
-              h("div", { className: "pso-box" }, h("p", null, d.quiz[5] ? d.quiz[5].explication : ""))),
+            /* 01/11 (Blandine) : exercice « Remets les étapes dans l'ordre » retiré */
+            h("div", { className: "pso-box" }, h("p", null, d.quiz[5] ? d.quiz[5].explication : "")),
             /* 31/10 : « Le défi du cavalier » et « À retenir » sont sur la page de fin */
             null)),
 
