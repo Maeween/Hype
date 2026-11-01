@@ -821,7 +821,17 @@ var CSS = [
 ".hce .hce-chp.rbm .hce-mobile-unit .s{font-style:normal!important;color:rgba(243,238,228,.62)!important}",
 ".hce .hce-chp.rbm .hce-mobile-unit li::marker{color:rgba(243,238,228,.4)!important}",
 ".hce .hce-chp.rbm .hce-mobile-unit ul{gap:8px!important}",
-"}"
+"}",
+/* ESSAI 01/11 22h12 : texte des notions centré (téléphone) + carte « Petit lexique » dans le style des encarts */
+"@container hce (max-width:699px){html body .hce .hce-chp.rbm .hce-mobile-unit p.pg,html body .hce .hce-chp.rbm .hce-mobile-unit .hce-txt,html body .hce .hce-chp.rbm .hce-mobile-unit .ap,html body .hce .hce-chp.rbm .hce-mobile-unit .s,html body .hce .hce-chp.rbm .hce-mobile-unit h3,html body .hce .hce-chp.rbm .hce-mobile-unit li{text-align:center!important}html body .hce .hce-chp.rbm .hce-mobile-unit ul{list-style:none!important;padding-inline-start:0!important}}",
+".hce-lexique{margin:8px 0 28px;padding:22px 22px 18px;border:1px solid rgba(201,166,107,.35);border-radius:18px;background:rgba(14,18,17,.72)}",
+".hce-lexique h3{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:20px;font-weight:600;line-height:1.05;margin:0 0 14px;color:var(--ivoire);text-align:center}",
+".hce-lexique dl{margin:0;display:grid;gap:12px}",
+".hce-lexique dl>div{padding-top:12px;border-top:1px solid rgba(243,238,228,.08);text-align:center}",
+".hce-lexique dl>div:first-child{border-top:0;padding-top:0}",
+".hce-lexique dt{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ivoire)}",
+".hce-lexique dd{margin:3px 0 0;font-size:13px;line-height:1.45;color:rgba(243,238,228,.75)}",
+"@container hce (min-width:700px){.hce-lexique{max-width:760px;margin:8px auto 32px}}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -847,6 +857,18 @@ function fleche(rtl, w) { return ico(rtl ? ["M19 12H5", "M11 6l-6 6 6 6"] : ["M5
 /* 01/11 17h40 (Blandine : « fais une mise en page intelligente sur tel pour les hero, ils sont tous coupés de partout, dézoome un peu ») :
    sur téléphone, la hauteur de la photo du haut suit la forme de la photo (paysage = moins haute, donc moins coupée sur les côtés),
    entre 72 % et 110 % de la largeur de l'écran. Ordinateur et tablette : inchangés (règles plus loin). */
+/* 01/11 22h12 (Blandine : « ajoute le lexique pour voir ») : petit lexique en fin de cours, avant « Quiz et révision » — ESSAI sur g1-c20, en français */
+var LEXIQUE_COURS = {
+  "g1-c20": { fr: { titre: "Petit lexique", mots: [
+    ["Le garrot", "Le point le plus haut du dos, à la base de l'encolure. On y mesure la taille du cheval."],
+    ["L'avant-main", "L'avant du cheval : la tête, l'encolure, les épaules et les membres antérieurs."],
+    ["L'arrière-main", "L'arrière du cheval : la croupe, la queue et les membres postérieurs."],
+    ["Les antérieurs", "Les deux membres de devant."],
+    ["Les postérieurs", "Les deux membres de derrière."],
+    ["Le jarret", "L'articulation au milieu du membre postérieur, qui plie vers l'arrière."],
+    ["Les naseaux", "Les narines du cheval. Il ne respire que par là."]
+  ] } }
+};
 function HeroPhoto(p) {
   var _r = useState(null), ratio = _r[0], setRatio = _r[1];
   useEffect(function () {
@@ -2603,9 +2625,12 @@ AUTO_IDS.forEach(function (id) {
       sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, Object.assign({ lg: lg }, MC.props || {})); } });
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
-      return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
+      var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
+      return h(React.Fragment, null, lex ? h("aside", { className: "hce-lexique" }, h("h3", null, lex.titre),
+          h("dl", null, lex.mots.map(function (m, k) { return h("div", { key: k }, h("dt", null, m[0]), h("dd", null, m[1])); }))) : null,
+        h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
         h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
-        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15))));
+        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15)))));
     } });
     var cv = A.couv;
     return {
