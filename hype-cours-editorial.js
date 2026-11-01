@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 35;   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
+var VERSION = 36;   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
+/* précédente : VERSION = 35; */   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
 /* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
 /* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
 /* précédente : VERSION = 32; */   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */

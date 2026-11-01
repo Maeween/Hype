@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 8;   /* 01/11 20h : chapitres dans le style du cours des robes (photo d'un côté puis de l'autre, un chapitre sur deux) */
+var VERSION = 9;   /* 01/11 21h05 : photos du haut de Blandine (14 cours du Galop 4 + g3-saut) avec leur cadrage */
+/* précédente : VERSION = 8; */   /* 01/11 20h : chapitres dans le style du cours des robes (photo d'un côté puis de l'autre, un chapitre sur deux) */
 /* précédente : var VERSION = 7; */   /* 01/11 18h05 : citation du chapitre 01 dans le bandeau sous le haut de page (plus en double) */
 /* v6 : */   /* 01/11 17h (V4) : titres sans redite (incurvation, départ au galop), coach + défi empilés sur téléphone, photo dorée de g4-vitesse */
 /* v5 : */   /* 01/11 16h10 : textes manquants du Galop 4 (hype-cours-g4-textes.js, 14 langues), fiches mémo retirées, glossaire en lexique dépliable, encadrés « Les sensations », scènes interactives dorées */
