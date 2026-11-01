@@ -16176,3 +16176,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pas de moi : la barre des chapitres collée en haut (pastilles « 01 Découvrir son corps… ») vient de la build 1940 de l'autre conversation ; non touchée.
 - Note : le marqueur 20261101-1950 est plus petit que 20261101-2000 (la build précédente avait été nommée en avance) ; il est seulement différent, c'est ce qui compte.
 - Fichiers : hype-cours-editorial.js, index.html (build 20261101-1950), SUIVI.md.
+
+## 01/11/2026 20h05 — PUBLICATION build 20261101-2005 (Blandine 19h49 : « Ok continue, et descends juste l'encart des quiz qui est trop collé à la vague ») : encart du quiz descendu + pansage dans le style des robes
+- hype-cours-editorial.js VERSION 32 (?v=32) : « Quiz et révision » a maintenant le même espace sous la vague que les chapitres (40 px téléphone, 56 tablette, 64 ordinateur) — il n'en avait que 8.
+- hype-cours-modele.js VERSION 4 (?v=6) — pansage g1-c2 sur téléphone et tablette : bleu nuit #0A1116 / noir en alternance (au lieu du bleu pétrole), vague des robes, titres = gros numéro doré + titre sur une ligne (la petite ligne « 02 — LES INDISPENSABLES » et le titre en deux lignes avec italique doré sont retirés), photos à coins arrondis. Textes inchangés.
+- hype-cours-pansage-ordi.js VERSION 2 (?v=25) — pansage sur ordinateur : mêmes couleurs en alternance, vague entre chaque partie, « Les pieds » et « La queue » l'une sous l'autre (plus côte à côte), numéros et titres à la taille des robes, photos arrondies.
+- ERREUR évitée avant publication : mon premier remplacement de la vague dans hype-cours-modele.js avait effacé tout le code qui la suivait (schéma du sabot, blocs) → page cassée en test ; fichier remis à l'identique de la version en ligne et changement refait proprement. Rien de cela n'est parti en ligne.
+- Vérifié : g1-c2 390 px (téléphone) et 1440 px (ordinateur), g1-c3 430 px (encart du quiz) : aucune erreur.
+- Fichiers : hype-cours-editorial.js, hype-cours-modele.js, hype-cours-pansage-ordi.js, index.html (build 20261101-2005), SUIVI.md.

@@ -28,7 +28,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 3;   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
+var VERSION = 4;   /* 01/11 20h05 : pansage (téléphone, tablette) dans le style du cours des robes — bleu nuit / noir, vague, gros numéro doré, photos arrondies */
+/* précédente : var VERSION = 3; */   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
 
 /* ---------------- petits textes de structure (14 langues) ---------------- */
 var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -196,7 +197,7 @@ var CSS = [
 ".hcm a:focus-visible,.hcm button:focus-visible{outline:2px solid var(--champ);outline-offset:2px}",
 ".hcm em{font-style:italic;color:var(--champ)}",
 /* tons */
-".hcm .t-noir{background:var(--noir)}.hcm .t-petrole{background:var(--petrole)}",
+".hcm .t-noir{background:var(--noir)}.hcm .t-petrole{background:#0A1116}",
 /* barre du haut */
 ".hcm-bar{position:absolute;top:0;inset-inline:0;z-index:3;display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top, 0px)) var(--pad) 12px}",
 ".hcm-back{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px;line-height:1;color:var(--ivoire)}",
@@ -220,7 +221,7 @@ var CSS = [
 ".hcm-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;min-width:200px;border:1px solid var(--champ);border-radius:4px;background:rgba(7,10,8,.4);padding:11px 16px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ivoire);align-self:flex-start}",
 ".hcm-cta svg{color:var(--champ)}",
 /* vagues */
-".hcm-vague{display:block;width:100%;height:16px;line-height:0}",
+".hcm-vague{display:block;width:100%;height:26px;margin:-1px 0}",
 ".hcm-vague svg{display:block;width:100%;height:100%}",
 /* sommaire illustré */
 ".hcm-menu{padding:20px var(--pad) 24px}",
@@ -256,7 +257,7 @@ var CSS = [
 ".hcm-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}",
 ".hcm-col{display:flex;flex-direction:column;gap:18px;min-width:0}",
 ".hcm-photo-col{order:-1;min-width:0}",
-".hcm-photo{margin:0;border-radius:3px;overflow:hidden;background:#0c1113;position:relative}",
+".hcm-photo{margin:0;border-radius:18px;overflow:hidden;background:#0c1113;position:relative}",
 ".hcm-photo img{display:block;width:100%;height:100%;object-fit:cover}",
 ".hcm-photo.r43{aspect-ratio:4/3}.hcm-photo.r169{aspect-ratio:16/9}.hcm-photo.r32{aspect-ratio:3/2}",
 ".hcm-photo figcaption{font-size:11px;color:var(--pale);padding-top:6px;background:transparent}",
@@ -432,7 +433,17 @@ var CSS = [
 "@media (min-width:700px){.hcm{--pad:34px;font-size:15px}.hcm-couv{height:clamp(460px,62vh,560px)}.hcm-couv h1{font-size:44px}.hcm-sec{padding:40px var(--pad) 44px}.hcm-sec h2{font-size:36px}.hcm-menu ol{grid-template-columns:repeat(2,minmax(0,1fr))}.hcm-outils{grid-template-columns:repeat(3,minmax(0,1fr))}.hcm-outil:last-child:nth-child(odd){grid-column:auto;aspect-ratio:1/1}.hcm-outils .hcm-outil:nth-child(4),.hcm-outils .hcm-outil:nth-child(5){aspect-ratio:3/2}.hcm-outils{grid-template-columns:repeat(6,minmax(0,1fr))}.hcm-outil{grid-column:span 2}.hcm-outils .hcm-outil:nth-child(4),.hcm-outils .hcm-outil:nth-child(5){grid-column:span 3}.hcm-vague{height:22px}.hcm-ong .corps{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}.hcm-exo .l{grid-template-columns:repeat(2,minmax(0,1fr))}.hcm-hoof{max-width:250px}}",
 /* ---------- ordinateur ---------- */
 ".hcm-in{max-width:1180px;margin:0 auto}",
-"@media (min-width:1100px){.hcm{--pad:48px}.hcm-couv{height:clamp(500px,70vh,620px);padding-bottom:44px}.hcm-couv .vo{background:linear-gradient(90deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 36%,rgba(7,10,8,0) 66%),linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,0) 25%,rgba(7,10,8,0) 70%,#070A08 100%)}[dir=rtl] .hcm-couv .vo{background:linear-gradient(270deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 36%,rgba(7,10,8,0) 66%),linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,0) 25%,rgba(7,10,8,0) 70%,#070A08 100%)}.hcm-couv img.bg{object-position:70% 35%}.hcm-couv .txt{max-width:520px}.hcm-couv h1{font-size:56px}.hcm-couv .cit{font-size:19px}.hcm-menu ol{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.hcm-chap{min-height:78px}.hcm-sec{padding:60px var(--pad) 64px}.hcm-sec h2{font-size:42px}.hcm-grid.duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}.hcm-photo-col{position:sticky;top:70px}.hcm-outils{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.hcm-outil,.hcm-outils .hcm-outil:nth-child(4),.hcm-outils .hcm-outil:nth-child(5){grid-column:auto;aspect-ratio:3/4}.hcm-outil .cap b{font-size:20px}.hcm-btns{flex-direction:row;flex-wrap:wrap}.hcm-btn{width:auto;min-width:240px}.hcm-vague{height:28px}.hcm-mini{justify-content:center}.hcm-mini button:not([aria-current=true]) .lb{display:inline}.hcm-hoof{max-width:260px}}"
+"@media (min-width:1100px){.hcm{--pad:48px}.hcm-couv{height:clamp(500px,70vh,620px);padding-bottom:44px}.hcm-couv .vo{background:linear-gradient(90deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 36%,rgba(7,10,8,0) 66%),linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,0) 25%,rgba(7,10,8,0) 70%,#070A08 100%)}[dir=rtl] .hcm-couv .vo{background:linear-gradient(270deg,rgba(7,10,8,.9) 0%,rgba(7,10,8,.6) 36%,rgba(7,10,8,0) 66%),linear-gradient(180deg,rgba(7,10,8,.5) 0%,rgba(7,10,8,0) 25%,rgba(7,10,8,0) 70%,#070A08 100%)}.hcm-couv img.bg{object-position:70% 35%}.hcm-couv .txt{max-width:520px}.hcm-couv h1{font-size:56px}.hcm-couv .cit{font-size:19px}.hcm-menu ol{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.hcm-chap{min-height:78px}.hcm-sec{padding:60px var(--pad) 64px}.hcm-sec h2{font-size:42px}.hcm-grid.duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}.hcm-photo-col{position:sticky;top:70px}.hcm-outils{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.hcm-outil,.hcm-outils .hcm-outil:nth-child(4),.hcm-outils .hcm-outil:nth-child(5){grid-column:auto;aspect-ratio:3/4}.hcm-outil .cap b{font-size:20px}.hcm-btns{flex-direction:row;flex-wrap:wrap}.hcm-btn{width:auto;min-width:240px}.hcm-vague{height:28px}.hcm-mini{justify-content:center}.hcm-mini button:not([aria-current=true]) .lb{display:inline}.hcm-hoof{max-width:260px}}",
+/* 01/11 19h55 : titres et sections comme le cours des robes (téléphone, tablette, ordinateur) */
+".hcm .hcm-rbhead{display:flex;gap:10px;align-items:baseline}",
+".hcm .hcm-rbnum{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1;color:var(--champ);flex:0 0 auto}",
+".hcm .hcm-rbnum:after{content:'';display:block;height:1px;width:20px;background:var(--champ);margin-top:4px}",
+".hcm .hcm-sec .hcm-rbhead h2{font-size:21px;line-height:1.2;margin:0;font-weight:600}",
+".hcm .hcm-head{margin-bottom:18px}",
+".hcm .hcm-sec{padding-top:40px;padding-bottom:46px}",
+"@media (min-width:700px){.hcm .hcm-rbhead{gap:14px}.hcm .hcm-rbnum{font-size:28px}.hcm .hcm-sec .hcm-rbhead h2{font-size:28px}.hcm .hcm-head{margin-bottom:24px}.hcm .hcm-sec{padding-top:56px;padding-bottom:62px}}",
+"@media (min-width:1100px){.hcm .hcm-rbhead{gap:22px}.hcm .hcm-rbnum{font-size:34px}.hcm .hcm-rbnum:after{width:28px}.hcm .hcm-sec .hcm-rbhead h2{font-size:clamp(32px,2.8vw,46px);line-height:1.1}.hcm .hcm-head{margin-bottom:42px}.hcm .hcm-sec{padding-top:64px;padding-bottom:70px}}"
+
 ].join("\n");
 
 /* ---------------- icônes fines ---------------- */
@@ -454,15 +465,12 @@ var ICO = {
 function fleche(rtl, w) { return rtl ? ICO.gauche(w) : ICO.droite(w); }
 
 /* ---------------- vague fine de séparation (ton sur ton + filet champagne très discret) ---------------- */
-var COUL = { noir: "#070A08", petrole: "#101A1D" };
-function Vague(p) {
+var COUL = { noir: "#070A08", petrole: "#0A1116" };   /* 01/11 19h55 : bleu nuit du cours des robes */
+function Vague(p) {   /* 01/11 19h55 (Blandine : « reprends tout partout ») : la vague du cours des robes */
   var de = COUL[p.de] || p.de, vers = COUL[p.vers] || p.vers;
-  var d = "M0,0 L1200,0 L1200,9 C1050,20 900,3 750,10 C600,17 450,2 300,9 C200,14 100,6 0,11 Z";
-  var ligne = "M0,11 C100,6 200,14 300,9 C450,2 600,17 750,10 C900,3 1050,20 1200,9";
-  return h("div", { className: "hcm-vague", "aria-hidden": true, style: { background: vers } },
-    h("svg", { viewBox: "0 0 1200 22", preserveAspectRatio: "none" },
-      h("path", { d: d, fill: de }),
-      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: p.fort ? 0.9 : 0.28, strokeWidth: p.fort ? 1.6 : 1, vectorEffect: "non-scaling-stroke" })));
+  return h("svg", { className: "hcm-vague", viewBox: "0 0 1000 26", preserveAspectRatio: "none", "aria-hidden": true, style: { background: de } },
+    h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9 L1000 26 L0 26Z", fill: vers }),
+    h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9", fill: "none", stroke: "rgba(201,166,107,.35)", strokeWidth: 1, vectorEffect: "non-scaling-stroke" }));
 }
 
 /* ---------------- schéma du sabot (repris du cours ordinateur du 30/10, inchangé) ---------------- */
@@ -697,9 +705,11 @@ function Revision(p) {
 function Section(p) {
   var s = p.s, L = p.L, rtl = p.rtl, ctx = p.ctx;
   var blocs = (s.blocs || []).filter(Boolean);
-  var titre = h("h2", null, s.titreA, s.titreB ? h("em", null, s.titreB) : null);
-  var head = h("header", { className: "hcm-head" },
-    s.kicker ? h("div", { className: "hcm-kick" }, s.kicker) : null, titre,
+  /* 01/11 19h55 : titre comme le cours des robes — gros numéro doré + titre sur une ligne (plus de petite ligne au-dessus) */
+  var num = (/^\s*(\d{1,2})\s*[—–-]/.exec(String(s.kicker || "")) || [])[1];
+  var titre = h("div", { className: "hcm-rbhead" }, num ? h("div", { className: "hcm-rbnum" }, num) : null,
+    h("h2", null, [s.titreA, s.titreB].filter(Boolean).join(" ")));
+  var head = h("header", { className: "hcm-head" }, titre,
     s.sous ? h("p", { className: "hcm-sous" }, s.sous) : null);
   var photo = s.photo ? h("figure", { className: "hcm-photo " + (s.photo.ratio || "r43") }, h("img", { src: s.photo.src, alt: s.photo.alt || "", loading: "lazy" })) : null;
   var corps = blocs.map(function (b, i) { return h(Bloc, { key: i, b: b, L: L, rtl: rtl, ctx: ctx }); });

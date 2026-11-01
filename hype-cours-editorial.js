@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 31;   /* 01/11 19h50 : grand vide au-dessus des titres de chapitre et texte décalé sur téléphone corrigés */
+var VERSION = 32;   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */
+/* précédente : var VERSION = 31; */   /* 01/11 19h50 : grand vide au-dessus des titres de chapitre et texte décalé sur téléphone corrigés */
 /* précédente : var VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
 /* précédente : var VERSION = 29; */   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
 /* précédente : VERSION = 28; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
@@ -706,6 +707,9 @@ var CSS = [
 ".hce-mobile-unit .qf{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champ);margin-bottom:12px}",
 ".hce-mobile-unit .hce-btn{max-width:100%;white-space:normal;text-align:center}",
 ".hce .rb-grid .hce-mobile-unit:last-child{border-bottom:0;padding-bottom:0}",
+".hce .hce-sec.hce-sec-fin{padding-top:40px}",   /* 01/11 19h49 (Blandine) : encart « Quiz et révision » descendu, il était collé à la vague */
+"@container hce (min-width:700px){.hce .hce-sec.hce-sec-fin{padding-top:56px}}",
+"@container hce (min-width:1040px){.hce .hce-sec.hce-sec-fin{padding-top:64px}}",
 "@container hce (min-width:700px){",
 ".hce .hce-chp.rb{padding:56px 32px 62px}",
 ".hce .rb-head{gap:14px;margin-bottom:24px}.hce .rb-num{font-size:28px}.hce .hce-chp.rb h2{font-size:28px}",
@@ -1055,7 +1059,7 @@ function HypeCoursEditorial(props) {
     if (chs.length) corps.push(h(Vague, { key: "vfin", de: parPage ? NOIR : col(chs.length - 1), vers: colFin }));
     if (enc && enc.coach) corps.push(h("aside", { key: "coach-mobile-fin", className: "hce-mobile-coach" }, h("h3", null, enc.coach.titre), h("p", null, enc.coach.texte)));
     autres.forEach(function (s) {
-      corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec t-" + s.ton, style: { paddingTop: 8, paddingBottom: 8, background: colFin } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
+      corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec hce-sec-fin t-" + s.ton, style: { paddingBottom: 8, background: colFin } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
     });
   }
 

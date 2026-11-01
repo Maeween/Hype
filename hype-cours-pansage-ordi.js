@@ -18,7 +18,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 1;
+var VERSION = 2;   /* 01/11 20h05 : pansage (ordinateur) dans le style du cours des robes — bleu nuit / noir, vague entre chaque partie, parties l'une sous l'autre */
+/* précédente : var VERSION = 1; */
 
 /* ---------------- textes NOUVEAUX (14 langues) : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko ---------------- */
 var LGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
@@ -306,7 +307,16 @@ var CSS = [
 ".pso-defi{display:grid;grid-template-columns:minmax(0,1fr);gap:0}",
 ".pso a:focus-visible,.pso button:focus-visible{outline:2px solid var(--champ);outline-offset:2px}",
 ".pso-tmp{position:absolute;bottom:6px;inset-inline-end:6px;font-size:9.5px;letter-spacing:.4px;background:rgba(7,10,8,.72);border:1px solid var(--ligne);border-radius:999px;padding:2px 8px;color:var(--champ)}",
-"@media (max-width:1279px){.pso-mini{padding-inline:28px}.pso-sec{padding-inline:28px}.pso-vig{padding-inline:28px}.pso-hero{padding-inline:28px}.pso-bar{inset-inline:28px}.pso-cards{padding-inline:28px}}"
+"@media (max-width:1279px){.pso-mini{padding-inline:28px}.pso-sec{padding-inline:28px}.pso-vig{padding-inline:28px}.pso-hero{padding-inline:28px}.pso-bar{inset-inline:28px}.pso-cards{padding-inline:28px}}",
+/* 01/11 19h55 : comme le cours des robes (vague entre chaque partie, parties l'une sous l'autre, photos à coins arrondis) */
+".pso-vague{display:block;width:100%;height:26px;margin:-1px 0}",
+".pso-sec{padding:64px 44px 70px!important;border-top:0!important;border-inline-start:0!important}",
+".pso-sec+.pso-sec{border-top:0!important}",
+".pso-duo{display:block!important;border-top:0!important}",
+".pso-sechead{gap:22px;margin-bottom:42px}.pso-num{font-size:34px}.pso-num:after{width:28px}",
+".pso-sec h2{font-size:clamp(32px,2.8vw,46px);line-height:1.1}",
+".pso-photo{border-radius:18px;overflow:hidden}",
+"@media (max-width:1279px){.pso-sec{padding:56px 32px 62px!important}}"
 ].join("\n");
 
 /* ---------------- icônes (SVG simples, pas d'emoji) ---------------- */
@@ -468,10 +478,18 @@ function HypePansageOrdi(props) {
   var hbQuestions = hbPansage(props, lg, L);   /* 31/10 : les 3 premières sont sur la page de fin ; la 4e (queue) sur la carte du haut — aucune en double */
   var LS = function (k) { var S = window.HypeRobesOrdi && window.HypeRobesOrdi.shared; var o = S && S.T[k]; return (o && (o[lg] || o.en || o.fr)) || L("terminer"); };
 
+  /* 01/11 19h55 (Blandine : « reprends tout partout ») : comme le cours des robes — parties bleu nuit / noir en alternance, la vague dorée entre chacune */
+  var NOIR = "#070A08", BLEU = "#0A1116", TON = { s1: BLEU, s2: NOIR, s3: BLEU, s4: NOIR, s5: BLEU }, AVANT = { s1: NOIR, s2: BLEU, s3: NOIR, s4: BLEU, s5: NOIR };
+  function Vague(de, vers) {
+    return h("svg", { className: "pso-vague", viewBox: "0 0 1000 26", preserveAspectRatio: "none", "aria-hidden": true, style: { background: de } },
+      h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9 L1000 26 L0 26Z", fill: vers }),
+      h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9", fill: "none", stroke: "rgba(201,166,107,.35)", strokeWidth: 1, vectorEffect: "non-scaling-stroke" }));
+  }
   function Sec(id, num, titre, enfants) {
-    return h("section", { id: "pso-" + id, className: "pso-sec" + (id === "s5" ? " pso-sec5" : "") },
-      h("div", { className: "pso-sechead" }, h("div", { className: "pso-num" }, num), h("h2", null, titre)),
-      enfants);
+    return h(React.Fragment, { key: id }, Vague(AVANT[id] || NOIR, TON[id] || NOIR),
+      h("section", { id: "pso-" + id, className: "pso-sec" + (id === "s5" ? " pso-sec5" : ""), style: { background: TON[id] || NOIR } },
+        h("div", { className: "pso-sechead" }, h("div", { className: "pso-num" }, num), h("h2", null, titre)),
+        enfants));
   }
   function BoiteCoach(seg) {
     if (!seg) return null;
