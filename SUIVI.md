@@ -16082,3 +16082,10 @@ Repris sur la version en ligne 1c2c9ac (build 20261101-1635, autre conversation 
 - Tests : 15 cours des Galops 1 à 4 × fr/ar/ja × 390 et 1440 px, aucune erreur ni débordement.
 - 01/11 17h44 (Blandine, capture du chapitre 01 de « Conduire son poney ou son cheval en main en sécurité ») : photo du chapitre 01 « Avant de partir et se placer correctement » = photo de Blandine (cavalière qui mène un cheval gris en main), courbes décoratives dorées retirées (recadrage + coin réparé) : images/cours-g1-c18-ch1.webp (NOUVELLE) ; hype-cours-editorial.js v22 (?v=22).
 - 01/11 17h55 : PUBLICATION build 20261101-1755, accord de Blandine (17h44 « Mets tout en ligne ») : les 3 corrections ci-dessus + photo du chapitre 01 de g1-c18. Fichiers : index.html, hype-cours-editorial.js, images/cours-g1-c18-ch1.webp, SUIVI.md.
+
+## 01/11/2026 18h — branche affiche-box (build 20261101-1800, EN ATTENTE de l'accord de Blandine) : g1-c3 « Le mode de vie du cheval », affiche « Le confort au box »
+Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, sans texte dans une image, pour que ce soit traduit.
+- Comparaison affiche / texte : tout était déjà dans le cours SAUF le défi « Deviens un expert de l'entretien » (faire un box, puis validation) et la phrase du bas « Un cheval heureux dans son box est un cheval en bonne santé ! » (non reprise : même idée que la fin du conseil du coach, « Prendre soin de son box, c'est aussi prendre soin de sa santé »).
+- hype-cours-galop1.js v9 (?v=10) : chapitre « Le confort au box » — nouvelle partie « 3. Préparer un box » (demander à son palefrenier ou à son moniteur : trier la paille, où mettre les crottins, vérifier que la litière n'est pas trop humide) + phrase de validation, 14 langues (pas appelée « défi » : le cours a déjà son défi).
+- hype-cours-editorial.js v23 (?v=23) : l'affiche « Le confort au box » n'est plus affichée (repérée par sa place dans le cours, bloc 4 ; image gardée dans le dépôt). L'affiche du chapitre 1 (animal de proie) reste.
+- Vérifié : fr/ar 390 px, fr/ja 1440 px, aucune erreur ni débordement.

@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 22;   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
+var VERSION = 23;   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
+/* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
 /* précédente : VERSION = 21; */   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
 /* précédente : VERSION = 20; */   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
 /* précédente : VERSION = 19; */   /* 01/11 16h10 : haut de page (hero) beaucoup plus haut, titre sous la photo sur téléphone et tablette — tous les Galops */
@@ -1327,6 +1328,8 @@ var AUTO_IM_G3 = {
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
+/* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
+var AFFICHES_RETIREES = { "g1-c3": [4] };   /* g1-c3 : bloc 4 = affiche « Le confort au box » */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
@@ -2132,6 +2135,9 @@ function construireAuto(cours, lg) {
       var oa = { astuce: ta, titre: L("astuce"), suite: [] }; cur.notions.push(oa); derniere = oa; return;
     }
     finDePhotos = true;
+    /* 01/11 17h50 (Blandine : « ajoute ce qui n'était pas déjà dans le cours, sans texte dans une image, pour que ça puisse être traduit ») :
+       affiches retirées de l'affichage quand tout leur contenu est désormais dans le texte du cours (14 langues) */
+    if (b.type === "image" && AFFICHES_RETIREES[cours.id] && AFFICHES_RETIREES[cours.id].indexOf(bi) >= 0) return;   /* repérée par sa place dans le cours (la légende arrive déjà traduite) */
     if (b.type === "image") {
       if (!cur) nouveauChap(r(cours.titre));
       var oi = { affiche: { src: r(b.src), legende: legendeUtile(b) }, titre: L("affiche"), suite: [] };
