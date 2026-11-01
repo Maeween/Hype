@@ -16002,3 +16002,9 @@ Demandes de Blandine (00h44 et 00h50, captures du cours « Le matériel de base 
 - Photo du haut de g1-c8 : celle de l'autre conversation (images/materiel-g1-hero.webp, même photo) ; images/cours-g1-c8-hero.webp gardée mais plus utilisée.
 - Versions : hype-cours-editorial.js v14, hype-cours-materiel.js v1, hype-cours-modele.js v4, hype-cours-robes-ordi.js v38, hype-cours-pansage-ordi.js v23.
 - Tests après fusion : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement ; matériel fr/ar/ja OK.
+
+## 01/11/2026 11h15 — build 20261101-1115 : cours « La sécurité avant tout » (g1-c15), demande de Blandine (11h01)
+- « Une page par chapitre, parce que les chapitres sont assez longs » : seul le cours sécurité affiche UN chapitre à la fois (réglage unParPage dans sa configuration) ; en bas, bouton « Chapitre suivant · <titre> » ; au dernier chapitre, « Quiz et révision ». Une carte du menu ouvre le chapitre et remonte en haut. Les autres cours gardent les chapitres à la suite (choix A2).
+- Chapitre 05 « En cas de problème » : plus de bouton « Voir les bons réflexes » à toucher ni de « Que ferais-tu ? » ; chaque situation montre directement ses réflexes en étapes numérotées (cartes dorées). Situations sans liste (« s'échappe », « menace de mordre ») : la première partie du texte est découpée en étapes, la suite reste en paragraphe. Aucun texte retiré ni ajouté.
+- hype-cours-editorial.js VERSION 15 (?v=15), index.html build 20261101-1115.
+- Vérifié : sécurité fr/ar/ja en 390 et 1440 px — 5 chapitres un par un, bouton suivant, aucune erreur, aucun débordement.
