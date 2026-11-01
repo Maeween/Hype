@@ -262,20 +262,9 @@ var CSS =
   ".hat2 .ong.sous button{font-size:12px;padding:6px 12px;border-color:rgba(243,238,228,.14)}" +
   ".hat2 .ong.gal button{font-family:'Cormorant Garamond',serif;font-size:17px;padding:6px 16px}" +
   ".hat2 .ong .nv{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ch);border:1px solid rgba(201,166,107,.5);border-radius:999px;padding:2px 6px}" +
+  /* 01/11 23h (choix de Blandine, style « vignettes ») : Galops en onglets soulignés ; vues et vues du pied en petites photos rondes avec leur nom */
   ".hat2 .ong .th{display:none}" +
   ".hat2 .leg{margin:-2px 0 12px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,166,107,.85)}" +
-  /* proposition C « frise » : Galops = repères numérotés reliés par un trait doré (comme les notions des chapitres), vues en onglets soulignés, sous-vues en petites pastilles */
-  ".hat2.vc .ong.gal{gap:0;margin:0 0 18px;overflow:visible}.hat2.vc .ong.gal li{position:relative;flex:0 0 auto}" +
-  ".hat2.vc .ong.gal li:not(:last-child)::after{content:'';position:absolute;top:16px;inset-inline-start:34px;width:42px;height:1px;background:rgba(201,166,107,.5)}" +
-  ".hat2.vc .ong.gal button{flex-direction:column;align-items:flex-start;gap:6px;border:0;background:none;padding:0;margin-inline-end:44px;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}" +
-  ".hat2.vc .ong.gal button::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,166,107,.6);font-family:'Cormorant Garamond',serif;font-size:17px;letter-spacing:0;color:var(--ch)}" +
-  ".hat2.vc .ong.gal button[aria-selected=true]{color:var(--ch);background:none}.hat2.vc .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
-  ".hat2.vc .ong.gal .nv{border:0;padding:0;font-size:8px}" +
-  ".hat2.vc .ong.vue{gap:22px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 12px}" +
-  ".hat2.vc .ong.vue button{border:0;border-radius:0;background:none;padding:8px 0 10px;font-size:13px;color:rgba(243,238,228,.6)}" +
-  ".hat2.vc .ong.vue button[aria-selected=true]{color:var(--iv);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
-  ".hat2.vc .ong.sous button{font-size:11.5px;padding:5px 11px;border-color:rgba(243,238,228,.12)}" +
-  /* proposition D « vignettes » : chaque vue et chaque vue du pied = petite photo ronde + nom dessous */
   ".hat2.vd .ong.gal{gap:24px;border-bottom:1px solid rgba(201,166,107,.22);margin:0 0 16px;overflow:visible}" +
   ".hat2.vd .ong.gal button{border:0;background:none;border-radius:0;padding:8px 0 10px;font-size:19px;color:rgba(243,238,228,.6)}" +
   ".hat2.vd .ong.gal button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}.hat2.vd .ong.gal .nv{border:0;padding:0;font-size:8.5px;margin-top:-10px}" +
@@ -284,49 +273,6 @@ var CSS =
   ".hat2.vd .ong .th{display:block;width:58px;height:58px;border-radius:50%;border:1px solid rgba(243,238,228,.18);background-color:#101A1D;transition:border-color .2s,box-shadow .2s}" +
   ".hat2.vd .ong.sous .th{width:44px;height:44px}.hat2.vd .ong.sous button{width:64px}" +
   ".hat2.vd .ong button[aria-selected=true]{color:var(--ch);background:none}.hat2.vd .ong button[aria-selected=true] .th{border-color:var(--ch);box-shadow:0 0 0 3px rgba(201,166,107,.18)}" +
-  /* proposition F = frise des Galops (C) + vignettes photo (D) */
-  ".hat2.vf .ong.gal{gap:0;margin:0 0 18px;overflow:visible}.hat2.vf .ong.gal li{position:relative;flex:0 0 auto}" +
-  ".hat2.vf .ong.gal li:not(:last-child)::after{content:'';position:absolute;top:16px;inset-inline-start:34px;width:42px;height:1px;background:rgba(201,166,107,.5)}" +
-  ".hat2.vf .ong.gal button{flex-direction:column;align-items:flex-start;gap:6px;border:0;background:none;padding:0;margin-inline-end:44px;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}" +
-  ".hat2.vf .ong.gal button::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,166,107,.6);font-family:'Cormorant Garamond',serif;font-size:17px;letter-spacing:0;color:var(--ch)}" +
-  ".hat2.vf .ong.gal button[aria-selected=true]{color:var(--ch);background:none}.hat2.vf .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
-  ".hat2.vf .ong.gal .nv{border:0;padding:0;font-size:8px}" +
-  ".hat2.vf .ong.vue,.hat2.vf .ong.sous{gap:16px;margin:0 0 14px}" +
-  ".hat2.vf .ong.vue button,.hat2.vf .ong.sous button{flex-direction:column;gap:7px;border:0;background:none;padding:0;font-size:11.5px;color:rgba(243,238,228,.65);width:78px;white-space:normal;text-align:center;line-height:1.25}" +
-  ".hat2.vf .ong .th{display:block;width:58px;height:58px;border-radius:50%;border:1px solid rgba(243,238,228,.18);background-color:#101A1D;transition:border-color .2s,box-shadow .2s}" +
-  ".hat2.vf .ong.sous .th{width:44px;height:44px}.hat2.vf .ong.sous button{width:64px}" +
-  ".hat2.vf .ong button[aria-selected=true]{color:var(--ch);background:none}.hat2.vf .ong button[aria-selected=true] .th{border-color:var(--ch);box-shadow:0 0 0 3px rgba(201,166,107,.18)}" +
-  /* proposition E « segmenté » : Galops = barre pleine largeur en 3 parts égales, vues en onglets soulignés, sous-vues en texte séparé par des points */
-  ".hat2.ve .ong.gal{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;padding:4px;border:1px solid rgba(201,166,107,.35);border-radius:14px;background:rgba(16,26,29,.55);margin:0 0 16px;overflow:visible}" +
-  ".hat2.ve .ong.gal button{width:100%;justify-content:center;border:0;border-radius:10px;padding:9px 6px;font-size:17px;color:rgba(243,238,228,.7);flex-direction:column;gap:2px}" +
-  ".hat2.ve .ong.gal button[aria-selected=true]{background:rgba(201,166,107,.16);color:var(--ch)}.hat2.ve .ong.gal .nv{border:0;padding:0;font-size:8px}" +
-  ".hat2.ve .ong.vue{gap:22px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 12px}" +
-  ".hat2.ve .ong.vue button{border:0;border-radius:0;background:none;padding:8px 0 10px;font-size:13px;color:rgba(243,238,228,.6)}" +
-  ".hat2.ve .ong.vue button[aria-selected=true]{color:var(--iv);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
-  ".hat2.ve .ong.sous{gap:0;margin:0 0 14px}.hat2.ve .ong.sous li+li::before{content:'·';color:rgba(201,166,107,.6);padding:0 10px}.hat2.ve .ong.sous li{display:flex;align-items:center}" +
-  ".hat2.ve .ong.sous button{border:0;background:none;padding:4px 0;font-size:12.5px;color:rgba(243,238,228,.6)}.hat2.ve .ong.sous button[aria-selected=true]{color:var(--ch);background:none}" +
-  /* proposition A « magazine » : Galops en onglets soulignés, vues en pastilles fines défilantes, sous-vues en sélecteur segmenté */
-  ".hat2.va .ong.gal{gap:26px;border-bottom:1px solid rgba(201,166,107,.22);margin:0 0 16px;padding:0;overflow:visible}" +
-  ".hat2.va .ong.gal button{border:0;background:none;border-radius:0;padding:10px 0 11px;font-size:20px;color:rgba(243,238,228,.62);box-shadow:none}" +
-  ".hat2.va .ong.gal button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
-  ".hat2.va .ong.gal .nv{border:0;padding:0;font-size:8.5px;margin-top:-10px}" +
-  ".hat2.va .ong.vue{gap:6px;margin:0 0 12px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-inline-end:28px}" +
-  "[dir=rtl] .hat2.va .ong.vue,.hat2.va[dir=rtl] .ong.vue{-webkit-mask-image:linear-gradient(270deg,#000 88%,transparent);mask-image:linear-gradient(270deg,#000 88%,transparent)}" +
-  ".hat2.va .ong.vue button{border-color:transparent;background:rgba(16,26,29,.75);font-size:12.5px;padding:8px 14px}" +
-  ".hat2.va .ong.vue button[aria-selected=true]{border-color:rgba(201,166,107,.7);background:rgba(201,166,107,.1)}" +
-  ".hat2.va .ong.sous{display:inline-flex;max-width:100%;gap:0;padding:3px;border:1px solid rgba(243,238,228,.12);border-radius:999px;background:rgba(16,26,29,.6);margin:0 0 14px}" +
-  ".hat2.va .ong.sous button{border:0;padding:6px 13px;font-size:12px;color:rgba(243,238,228,.75)}" +
-  ".hat2.va .ong.sous button[aria-selected=true]{background:rgba(201,166,107,.16);color:var(--ch)}" +
-  /* proposition B « compacte » : Galops en 3 pastilles numérotées, une seule ligne de vues avec sous-vues en texte souligné */
-  ".hat2.vb .ong.gal{gap:10px;align-items:center;margin:0 0 14px}" +
-  ".hat2.vb .ong.gal button{width:auto;padding:5px 12px 5px 6px;font-size:16px;gap:8px;border-color:rgba(243,238,228,.16)}" +
-  ".hat2.vb .ong.gal button::before{content:attr(data-n);display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid rgba(201,166,107,.55);font-size:13px;color:var(--ch)}" +
-  ".hat2.vb .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
-  ".hat2.vb .ong.gal .nv{border:0;padding:0}.hat2.vb .ong.gal button[aria-selected=false] .gl{display:none}.hat2.vb .ong.gal button[aria-selected=false]{padding:5px}" +
-  ".hat2.vb .ong.vue button{font-size:12.5px;padding:7px 13px;border-color:rgba(243,238,228,.14)}" +
-  ".hat2.vb .ong.sous{gap:18px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 14px}" +
-  ".hat2.vb .ong.sous button{border:0;border-radius:0;background:none;padding:6px 0 8px;font-size:12.5px;color:rgba(243,238,228,.6)}" +
-  ".hat2.vb .ong.sous button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
   ".hat2 .zone{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:8px}" +
   ".hat2 .ph{position:relative;border-radius:14px;overflow:hidden;background:var(--n)}" +
   ".hat2 .ph img{display:block;width:100%;height:auto}" +
@@ -397,7 +343,7 @@ function Module(props) {
     if (e.key === "ArrowRight") { e.preventDefault(); aller(act + (rtl ? -1 : 1)); }
     else if (e.key === "ArrowLeft") { e.preventDefault(); aller(act + (rtl ? 1 : -1)); }
   };
-  return h("div", { className: "hat2" + (props.theme ? " v" + props.theme : (window.HYPE_ATLAS_THEME ? " v" + window.HYPE_ATLAS_THEME : "")), dir: rtl ? "rtl" : undefined, onKeyDown: clavier },
+  return h("div", { className: "hat2 vd", dir: rtl ? "rtl" : undefined, onKeyDown: clavier },
     h("style", null, CSS),
     h("h3", null, pk(UI.titre, lg)),
     h("p", { className: "aide" }, pk(UI.aide, lg)),
