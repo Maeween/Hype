@@ -16064,3 +16064,13 @@ Suite de l'audit des 15 planches (relecture Claude + recommandations ChatGPT, 10
 - Vérifié : Galop 4 (15 cours × fr/ar/ko × 390 et 1440 px) aucune erreur ni débordement, lexique sur 14 cours ; g3-c3 et g3-saut 390 et 1440 sans erreur ; Galop 5 liste transport affichée dans les 14 langues, 390 et 1440 px, sans débordement.
 - Fichiers : index.html (build 20261101-1635), hype-cours-editorial.js (v20, ?v=20), hype-cours-editorial-g4.js (v5, ?v=5), hype-cours-g4-textes.js (NOUVEAU, ?v=1), hype-cours-galop5.js (?v=4), images/k604-or.webp à k609-or.webp (NOUVEAUX), SUIVI.md.
 - ERREUR signalée à Blandine : une 1re mise en ligne (e582f6a, build 20261101-1610) est partie de la version a6e8e07 alors que l'autre conversation venait de publier eb620d5 (build 1620, hauts de page plus hauts, photos g1-c17-verif et g1-c18-hero) : elle a effacé ce travail pendant quelques minutes. Corrigé par la mise en ligne 20261101-1635, qui reprend eb620d5 en entier + les changements ci-dessus.
+
+## 01/11/2026 16h50 — PUBLICATION build 20261101-1650, accord de Blandine (16h46 « Ok ») : Galop 4 V4 (ce qui manquait encore)
+Repris sur la version en ligne 1c2c9ac (build 20261101-1635, autre conversation : textes manquants du Galop 4, fiches mémo retirées, lexique, scènes dorées, bleu pétrole Galops 1 à 4). Leur travail est gardé tel quel ; ma branche galop4-v4 est ABANDONNÉE pour la partie fiches mémo / glossaire (déjà réglée autrement par elles).
+- hype-cours-editorial-g4.js v6 (?v=6) :
+  · Titres sans redite : g4-incurvation, notion « Pour aller plus loin » dans le chapitre du même nom -> « Les ressources » ; g4-galop-qualite, « Installer le galop » (notion = chapitre) -> « Les premières foulées », « L'essentiel » -> « Au-delà du bon pied ». 14 langues. Vérifié : plus aucun titre de notion identique à son chapitre dans les 15 cours.
+  · Téléphone : conseil du coach et défi empilés au lieu de défiler (plus de carte coupée) — cours de ce constructeur seulement (Galop 4 + 2 cours de saut du Galop 3).
+  · Haut de page de « Varier la vitesse sans perdre le rythme » (g4-vitesse) = photo de référence de Blandine (cheval gris, lumière dorée) : images/cours-g4-vitesse-hero.webp (NOUVELLE).
+- hype-cours-galop4.js v4 (?v=4) : quiz de g4-biomeca, « 60 % / 40 % » = ordre de grandeur mesuré sur un cheval à l'arrêt, pas une valeur constante (14 langues).
+- Tests (vrai index.html en local) : 15 cours × 14 langues × 390 et 1440 px = 420 pages, aucune erreur ni débordement ; Galops 1 à 3 (échantillon fr + ar) inchangés.
+- Reste : 14 couvertures du Galop 4 encore « spectrales » (filtre doré) et photos des chapitres à produire.
