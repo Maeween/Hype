@@ -809,7 +809,7 @@ var COURS = [
         "Un cheval qui se défend : tête en l'air, bouche ouverte, hanches de travers."
       ]),
       S("🧩 Bien préparer", "Une transition se prépare quelques foulées avant. Ton cheval doit être attentif, en avant et équilibré.", [
-        "Une demi-parade pour prévenir : une action brève et presque invisible de ton assiette, de tes jambes puis de tes doigts, aussitôt relâchée.",
+        "Préviens ton cheval quelques foulées avant : grandis-toi un instant, en gardant tes jambes au contact et tes doigts fermés, puis relâche aussitôt.",
         "Les aides de la nouvelle allure, claires et légères.",
         "Ta main qui cède dès que le cheval répond."
       ])
@@ -832,7 +832,7 @@ var COURS = [
         "Comment ne plus rebondir au trot assis ?",
         "Combien de temps travailler sans étriers par séance ?",
         "Quelle différence entre cadence et vitesse ?",
-        "Comment faire une bonne demi-parade ?",
+        "Comment prévenir mon cheval avant une transition ?",
         "Pourquoi mon cheval lève-t-il la tête dans les transitions ?"
       ]),
       S("⚡ La synthèse en 10 secondes", null, [
@@ -853,8 +853,7 @@ var COURS = [
     ["Amplitude", "La longueur de la foulée."],
     ["Transition", "Passage d'une allure à une autre, ou changement dans une même allure."],
     ["Transition montante", "Vers une allure plus rapide : pas-trot, trot-galop."],
-    ["Transition descendante", "Vers une allure plus lente : galop-trot, trot-pas."],
-    ["Demi-parade", "Action brève et coordonnée de l'assiette, des jambes puis des doigts, qui rend le cheval attentif et l'équilibre avant une demande."]
+    ["Transition descendante", "Vers une allure plus lente : galop-trot, trot-pas."]
   ] },
   quiz: [
     Q("Quel est le principal bénéfice du travail sans étriers ?", ["Aller plus vite", "Approfondir l'assiette et le liant", "Sauter plus haut", "Fatiguer le cheval"], 1, "Sans étriers, l'assiette s'approfondit et le cavalier gagne en liant et en indépendance des aides."),
@@ -864,7 +863,7 @@ var COURS = [
     Q("Augmenter l'allure en gardant la cadence, c'est…", ["Accélérer les foulées", "Agrandir les foulées sans les presser", "Tirer sur les rênes", "Passer au galop"], 1, "Le cheval agrandit ses foulées en gardant la même cadence."),
     Q("Qu'est-ce qu'une transition descendante ?", ["Le passage vers une allure plus rapide", "Le passage vers une allure plus lente", "Une descente en terrain varié", "Un saut"], 1, "Une transition descendante mène vers une allure plus lente, par exemple du trot au pas."),
     Q("Laquelle est une qualité d'une bonne transition ?", ["Elle arrive bien après la lettre", "Elle est nette, fluide et à l'endroit demandé", "Le cheval lève la tête", "Le cheval tombe sur les épaules"], 1, "Une bonne transition est nette, fluide, à l'endroit demandé, avec un cheval droit et en avant."),
-    Q("À quoi sert la demi-parade avant une transition ?", ["À arrêter le cheval", "À prévenir le cheval et l'équilibrer", "À punir", "À accélérer"], 1, "La demi-parade est une action brève de l'assiette, des jambes puis des doigts, aussitôt relâchée, qui rend le cheval attentif et l'équilibre avant la transition."),
+    Q("Pourquoi prévenir ton cheval quelques foulées avant une transition ?", ["Pour l'arrêter", "Pour qu'il soit attentif et équilibré au moment de la demande", "Pour le punir", "Pour accélérer"], 1, "En te grandissant un instant avant ta demande, tu rends ton cheval attentif : la transition est plus nette et plus fluide."),
     Q("Que fais-tu de tes aides une fois la transition obtenue ?", ["Je les garde pour qu'il continue", "Je les relâche", "Je les augmente", "Je change de main"], 1, "On relâche dès que le cheval répond : c'est ce qui lui dit qu'il a bien fait."),
     Q("Au trot assis, ton bassin…", ["Reste bloqué", "Suit le mouvement du dos du cheval", "Se soulève à chaque foulée", "Penche vers l'avant"], 1, "Le bassin accompagne le dos du cheval, souple, comme sur une balançoire.")
   ]
@@ -991,7 +990,7 @@ var COURS = [
     { type: "couv-affiche", src: "images/galops-v2-carte-examens-hd2.jpg", couv: {} },
 
     B("La cession à la jambe", [
-      P("La cession à la jambe est ton premier vrai travail de deux pistes : ton cheval avance et se déplace de côté en restant droit. Elle t'apprend à coordonner tes aides et rend ton cheval plus attentif à ta jambe. Au Galop 5, tu la réalises au pas, des deux côtés."),
+      P("La cession à la jambe est ton premier vrai travail de côté : ton cheval avance et se déplace latéralement en restant droit. Elle t'apprend à coordonner tes aides et rend ton cheval plus attentif à ta jambe. Au Galop 5, tu la réalises au pas, des deux côtés."),
       S("↗️ Comment se déplace le cheval ?", "Dans la cession à la jambe, le cheval avance et se déplace de côté en restant droit, légèrement plié à l'opposé de la direction du mouvement. Il croise les membres.", [
         "Quand tu vas de la ligne du quart vers la piste, son corps reste presque parallèle au grand côté.",
         "Ses antérieurs et ses postérieurs croisent : les membres du côté du pli passent devant les autres.",
@@ -1025,7 +1024,7 @@ var COURS = [
     B("Les départs au galop", [
       S("🎯 Partir à un endroit précis", "Au Galop 5, tu pars au galop du trot ou du pas, exactement à l'endroit demandé, sur le bon pied. Comme toute transition, le départ se prépare.", [
         "Quelques foulées avant : un trot (ou un pas) actif, régulier et bien droit.",
-        "Une demi-parade pour prévenir le cheval.",
+        "Préviens ton cheval : grandis-toi un instant, puis relâche.",
         "Au point demandé : les aides du galop, nettes et brèves."
       ]),
       S("🦵 Les aides du départ au galop", null, [
@@ -1091,7 +1090,7 @@ var COURS = [
     Q("À quelle allure fait-on la cession à la jambe au Galop 5 ?", ["Au pas", "Au trot", "Au galop", "À l'arrêt"], 0, "Au Galop 5, la cession à la jambe se réalise au pas, des deux côtés."),
     Q("Quel membre donne le premier temps du galop ?", ["L'antérieur intérieur", "Le postérieur extérieur", "Le postérieur intérieur", "L'antérieur extérieur"], 1, "Le premier temps du galop est donné par le postérieur extérieur."),
     Q("Quel est le rôle de la jambe extérieure dans le départ au galop ?", ["Elle ralentit", "Elle indique le pied et engage le postérieur extérieur", "Elle fait tourner la tête", "Elle n'a aucun rôle"], 1, "Placée un peu en arrière, elle indique le pied et engage le postérieur qui part en premier."),
-    Q("Avant un départ au galop à une lettre, tu…", ["Accélères le trot au maximum", "Fais une demi-parade pour prévenir le cheval", "Lâches les rênes", "Te penches en avant"], 1, "On prépare avec un trot actif et droit, puis une demi-parade, avant les aides du galop."),
+    Q("Avant un départ au galop à une lettre, tu…", ["Accélères le trot au maximum", "Le préviens en te grandissant un instant", "Lâches les rênes", "Te penches en avant"], 1, "On prépare avec un trot actif et droit, puis tu le préviens en te grandissant un instant, avant les aides du galop."),
     Q("Ton cheval trotte au lieu de partir au galop du pas. Que fais-tu ?", ["Je pousse jusqu'à ce qu'il galope", "Je repasse au pas, je le rééquilibre et je redemande", "J'abandonne", "Je tire sur les rênes"], 1, "On revient au pas, on réinstalle un pas actif et équilibré, puis on redemande."),
     Q("Pourquoi demander le galop du pas dans un coin ?", ["Parce que tu y incurves plus facilement ton cheval", "Parce qu'il y a plus de place", "Parce que c'est obligatoire", "Pour ralentir"], 0, "Dans le coin, tu incurves plus facilement ton cheval, ce qui l'aide à partir sur le bon pied.")
   ]
@@ -1132,7 +1131,7 @@ var COURS = [
         "Pour un cheval, on compte en général une foulée d'environ 3,50 m ; elle est plus courte pour un poney."
       ]),
       S("⏯️ Les transitions entre les obstacles", "Au Galop 5, tu sais changer d'allure entre deux obstacles : repasser au trot pour changer de pied, ou rééquilibrer le galop avant un virage.", [
-        "Une demi-parade pour rééquilibrer, puis la jambe pour relancer.",
+        "Grandis-toi pour rééquilibrer, puis la jambe pour relancer.",
         "Si ton cheval est sur le mauvais pied dans un virage, une transition par le trot permet de repartir sur le bon pied."
       ]),
       E("💡", "Le savais-tu ?", "Les chefs de piste calculent les distances entre les obstacles d'un parcours en multiples de foulées. C'est pour cela qu'un galop régulier facilite tout : les obstacles « tombent » au bon endroit.")
