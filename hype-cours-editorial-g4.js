@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 4;   /* 01/11 11h31 : conseil du coach de g3-c3 et g3-saut */
+var VERSION = 5;   /* 01/11 (V4 Galop 4) : titres sans redite, fiches mémo et glossaire d'un coup d'œil, encarts du haut empilés sur téléphone */
+/* v4 : */    /* 01/11 11h31 : conseil du coach de g3-c3 et g3-saut */
 /* v3 : */    /* 01/11 : les 2 cours de saut du Galop 3 (g3-c3, g3-saut) passent par ce constructeur, qui sait afficher leurs blocs spéciaux */
 /* v2 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */   /* 01/11 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */
 var h = React.createElement;
@@ -33,6 +34,12 @@ var X = E._, Lx = X.Lx, tt = X.tt, pickLg = X.pickLg, paras = X.paras, phrases =
 var T4 = {
   galop: tt("Galop 4", "Galop 4", "Galope 4", "Galoppo 4", "ギャロップ4", "Galopp 4", "الغالوب 4", "Galop 4 级", "Galop 4", "Galope 4", "Galopp 4", "Галоп 4", "Galop 4", "갤럽 4"),
   fiches: tt("Fiches mémo", "Memo cards", "Fichas de repaso", "Schede promemoria", "メモカード", "Merkkarten", "بطاقات للتذكّر", "记忆卡片", "Geheugenkaarten", "Fichas de memória", "Minneskort", "Карточки-памятки", "Fiszki", "메모 카드"),
+  /* 01/11 (V4) : intitulés précis à la place des titres qui répétaient celui du chapitre */
+  ressources: tt("Les ressources", "Resources", "Los recursos", "Le risorse", "参考資料", "Weiterführende Quellen", "المصادر", "参考资料", "Bronnen", "Os recursos", "Resurser", "Ресурсы", "Materiały", "참고 자료"),
+  motsCours: tt("Les mots du cours", "Key words", "Las palabras del curso", "Le parole del corso", "この講座の用語", "Die Begriffe des Kurses", "مفردات الدرس", "本课词汇", "De woorden van de les", "As palavras do curso", "Kursens ord", "Слова урока", "Słowa z lekcji", "강의 용어"),
+  ficheVue: tt("Les fiches en un coup d'œil", "The cards at a glance", "Las fichas de un vistazo", "Le schede in un colpo d'occhio", "カードをひと目で", "Die Karten auf einen Blick", "البطاقات بنظرة واحدة", "卡片一览", "De kaarten in één oogopslag", "As fichas num relance", "Korten i en överblick", "Карточки с первого взгляда", "Karty w skrócie", "카드 한눈에 보기"),
+  premieres: tt("Les premières foulées", "The first strides", "Los primeros trancos", "Le prime falcate", "最初の数完歩", "Die ersten Galoppsprünge", "الخطوات الأولى", "最初几步", "De eerste galopsprongen", "As primeiras passadas", "De första galoppsprången", "Первые темпы", "Pierwsze foule", "처음 몇 걸음"),
+  auDela: tt("Au-delà du bon pied", "Beyond the correct lead", "Más allá del pie correcto", "Oltre il piede giusto", "正しい手前のその先へ", "Mehr als der richtige Galopp", "أبعد من القائمة الصحيحة", "不只是正确的领先腿", "Meer dan het goede been", "Além da mão certa", "Mer än rätt galopp", "Не только правильная нога", "Więcej niż właściwa noga", "올바른 선행 다리, 그 이상"),
   videos: tt("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"),
   ouvrirVid: tt("Ouvrir la vidéo", "Open the video", "Abrir el vídeo", "Apri il video", "動画を開く", "Video öffnen", "افتح الفيديو", "打开视频", "Video openen", "Abrir o vídeo", "Öppna videon", "Открыть видео", "Otwórz film", "영상 열기"),
   essayer: tt("À toi d'essayer", "Try it yourself", "Pruébalo tú", "Prova tu", "やってみよう", "Probier es aus", "جرّب بنفسك", "自己试试", "Probeer het zelf", "Experimenta", "Testa själv", "Попробуй сам", "Spróbuj sam", "직접 해 보기"),
@@ -96,6 +103,10 @@ var IMG = {   /* 31/10 23h57 (Blandine : rester dans la palette) : photos chaude
 /* chapitres communs : une photo fixe chacun */
 var IMG_FIX = { fiches: "galops-v2-carte-exercices-hd1.jpg", glossaire: "galops-v2-carte-examens-hd1.jpg", plus: "securite-g1-porte.webp" };
 var IDS = Object.keys(IMG);
+/* 01/11 (V4) : photos de haut de page (et de page de fin) qui remplacent les anciennes couvertures « spectrales » */
+var HERO_G4 = {
+  "g4-vitesse": "images/cours-g4-vitesse-hero.webp"   /* photo de référence de Blandine (cheval gris, lumière dorée) — PROPOSITION */
+};
 var COACH_G3 = {
   "g3-c3": tt("Un bon abord se prépare dès le virage. Choisis ta trajectoire, conserve un galop régulier et recherche la rectitude à l'approche de l'obstacle. Après un virage très serré, évite de demander brutalement une longue : ton cheval vient de fournir un important effort de rééquilibrage et n'est pas forcément prêt à s'étendre immédiatement.", "A good approach starts in the turn. Choose your line, keep a steady canter and look for straightness as you approach the fence. After a very tight turn, don't suddenly ask for a long stride: your horse has just made a big effort to rebalance and isn't necessarily ready to lengthen straight away.", "Una buena aproximación se prepara desde la curva. Elige tu trayectoria, mantén un galope regular y busca la rectitud al acercarte al obstáculo. Después de una curva muy cerrada, evita pedir bruscamente un tranco largo: tu caballo acaba de hacer un gran esfuerzo para reequilibrarse y no siempre está listo para alargar enseguida.", "Un buon avvicinamento si prepara già dalla curva. Scegli la traiettoria, mantieni un galoppo regolare e cerca la rettitudine avvicinandoti all'ostacolo. Dopo una curva molto stretta, evita di chiedere bruscamente una falcata lunga: il tuo cavallo ha appena fatto un grande sforzo per riequilibrarsi e non è sempre pronto ad allungare subito.", "よいアプローチはカーブから始まる。進路を選び、一定の駈歩を保ち、障害に近づくときはまっすぐ進むことを意識しよう。とても急なカーブのあとで、いきなり歩幅を大きくするよう求めないこと。馬はバランスを立て直すために大きな力を使ったばかりで、すぐには伸びる準備ができていないこともある。", "Ein guter Anritt beginnt schon in der Kurve. Wähle deine Linie, halte einen gleichmäßigen Galopp und achte beim Anreiten auf das Hindernis auf Geradheit. Verlange nach einer sehr engen Kurve nicht abrupt einen langen Sprung: Dein Pferd hat sich gerade mit viel Kraft neu ausbalanciert und ist nicht unbedingt sofort bereit, sich zu strecken.", "يبدأ الاقتراب الجيد منذ المنعطف. اختر مسارك، وحافظ على غالوب منتظم، وابحث عن الاستقامة عند الاقتراب من الحاجز. بعد منعطف ضيق جدا، لا تطلب فجأة خطوة طويلة: لقد بذل حصانك للتو جهدا كبيرا لاستعادة توازنه، وقد لا يكون مستعدا للتمدد مباشرة.", "好的接近从转弯时就开始准备。选好路线，保持稳定的跑步，接近障碍时注意走直。在很急的转弯之后，不要突然要求大步幅：你的马刚刚花了很大力气重新找回平衡，不一定马上就能伸展步幅。", "Een goede aanrijlijn begint al in de bocht. Kies je lijn, houd een regelmatige galop en zoek rechtheid als je de hindernis nadert. Vraag na een heel krappe bocht niet plotseling een lange galopsprong: je paard heeft net veel moeite gedaan om zijn evenwicht te herstellen en is niet altijd meteen klaar om te verlengen.", "Uma boa aproximação prepara-se desde a curva. Escolhe a tua trajetória, mantém um galope regular e procura a retidão ao aproximares-te do obstáculo. Depois de uma curva muito apertada, evita pedir bruscamente uma passada longa: o teu cavalo acabou de fazer um grande esforço para se reequilibrar e nem sempre está pronto para alongar logo.", "En bra anridning börjar redan i svängen. Välj din väg, håll en jämn galopp och sök rakhet när du närmar dig hindret. Be inte plötsligt om ett långt galoppsprång efter en mycket snäv sväng: din häst har just ansträngt sig mycket för att hitta balansen igen och är inte alltid redo att förlänga direkt.", "Хороший подход готовится уже на повороте. Выбери траекторию, сохраняй ровный галоп и стремись к прямолинейности на подходе к препятствию. После очень крутого поворота не проси резко длинный темп: лошадь только что приложила много сил, чтобы восстановить равновесие, и не всегда готова сразу удлиниться.", "Dobry najazd zaczyna się już na zakręcie. Wybierz tor jazdy, utrzymuj równy galop i szukaj prostości przy zbliżaniu się do przeszkody. Po bardzo ciasnym zakręcie nie proś gwałtownie o długą foule: koń właśnie włożył dużo wysiłku w odzyskanie równowagi i nie zawsze jest gotowy, by od razu się wydłużyć.", "좋은 접근은 곡선에서부터 준비해. 경로를 정하고, 일정한 구보를 유지하고, 장애물에 다가갈 때는 똑바로 가도록 해. 아주 급한 곡선을 돈 직후에는 갑자기 긴 보폭을 요구하지 마. 말은 방금 균형을 되찾느라 큰 힘을 썼으니 바로 보폭을 늘릴 준비가 안 되어 있을 수 있어."),
   "g3-saut": tt("Ne cherche pas à sauter à la place de ton cheval. Laisse-le organiser sa battue, accompagne la montée avec des mains souples, puis retrouve progressivement ton équilibre à la réception. Se jeter en avant trop tôt peut gêner la poussée des postérieurs.", "Don't try to jump for your horse. Let it organise its take-off, follow the upward phase with soft hands, then gradually find your balance again on landing. Throwing yourself forward too early can hinder the push of the hind legs.", "No intentes saltar en lugar de tu caballo. Déjale organizar su batida, acompaña la subida con manos suaves y recupera poco a poco tu equilibrio en la recepción. Echarse hacia delante demasiado pronto puede dificultar el impulso de los posteriores.", "Non cercare di saltare al posto del tuo cavallo. Lascialo organizzare lo stacco, accompagna la salita con mani morbide e ritrova a poco a poco l'equilibrio all'atterraggio. Buttarsi in avanti troppo presto può ostacolare la spinta dei posteriori.", "馬の代わりに跳ぼうとしないこと。踏み切りは馬にまかせ、上昇の動きはやわらかい手でついていき、着地では少しずつバランスを取り戻そう。早すぎるタイミングで前に体を投げ出すと、後肢の押し出しをじゃましてしまうことがある。", "Versuche nicht, für dein Pferd zu springen. Lass es seinen Absprung selbst organisieren, begleite die Aufwärtsbewegung mit weichen Händen und finde bei der Landung nach und nach dein Gleichgewicht wieder. Wirfst du dich zu früh nach vorn, kannst du den Schub der Hinterbeine stören.", "لا تحاول أن تقفز بدلا من حصانك. اتركه ينظم ارتقاءه، ورافق مرحلة الصعود بيدين لينتين، ثم استعد توازنك تدريجيا عند الهبوط. الاندفاع إلى الأمام مبكرا جدا قد يعيق دفع القوائم الخلفية.", "不要试图替你的马跳。让它自己安排起跳，用柔和的手跟随上升阶段，然后在落地时慢慢找回平衡。过早向前扑，可能会妨碍后肢的蹬地发力。", "Probeer niet in de plaats van je paard te springen. Laat het zijn afzet zelf regelen, volg de stijgende fase met zachte handen en vind bij de landing geleidelijk je evenwicht terug. Te vroeg naar voren gooien kan de afzet van de achterbenen hinderen.", "Não tentes saltar no lugar do teu cavalo. Deixa-o organizar a chamada, acompanha a subida com mãos suaves e recupera aos poucos o teu equilíbrio na receção. Atirares-te para a frente cedo demais pode dificultar o impulso dos posteriores.", "Försök inte hoppa i stället för din häst. Låt den själv ordna avsprånget, följ uppåtfasen med mjuka händer och hitta gradvis tillbaka till balansen vid landningen. Att kasta sig framåt för tidigt kan störa bakbenens frånskjut.", "Не пытайся прыгать вместо лошади. Позволь ей самой организовать отталкивание, сопровождай подъём мягкими руками, а при приземлении постепенно восстанавливай равновесие. Если слишком рано бросить корпус вперёд, это может помешать толчку задних ног.", "Nie próbuj skakać za konia. Pozwól mu samemu zorganizować odbicie, podążaj za fazą wznoszenia miękkimi rękami, a przy lądowaniu stopniowo odzyskuj równowagę. Zbyt wczesne rzucenie się do przodu może przeszkodzić w odbiciu tylnych nóg.", "말 대신 네가 뛰려고 하지 마. 도약은 말이 스스로 준비하게 두고, 상승 단계는 부드러운 손으로 따라가고, 착지할 때는 천천히 균형을 되찾아. 너무 일찍 몸을 앞으로 던지면 뒷다리가 밀어 올리는 힘을 방해할 수 있어.")
@@ -119,7 +130,18 @@ var COACH_G3 = {
       + ".hce .g4v button small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--champ);margin-bottom:3px}"
       + ".hce .g4v button:hover{background:rgba(201,166,107,.14)}"
       + ".hce .g4lien{color:var(--champ);text-decoration:underline;text-underline-offset:3px}"
-      + ".hce .g4i{margin-top:4px}";
+      + ".hce .g4i{margin-top:4px}"
+      /* 01/11 (V4) : fiches mémo en grille, glossaire sur 2 colonnes, encarts du haut empilés sur téléphone (Galop 4) */
+      + ".hce .g4fi{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}"
+      + ".hce .g4fi .f{border:1px solid rgba(201,166,107,.32);border-radius:12px;padding:14px 14px 12px;background:rgba(201,166,107,.05);display:flex;flex-direction:column;gap:6px}"
+      + ".hce .g4fi .f b{font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.15;color:#E4C994;font-weight:600}"
+      + ".hce .g4fi .f span{font-size:14px;line-height:1.5;color:var(--ivoire)}"
+      + ".hce .g4gl{margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px 22px}"
+      + ".hce .g4gl>div{border-top:1px solid rgba(201,166,107,.28);padding-top:10px}"
+      + ".hce .g4gl dt{font-family:'Cormorant Garamond',serif;font-size:19px;color:#E4C994;font-weight:600;margin:0 0 4px}"
+      + ".hce .g4gl dd{margin:0;font-size:14px;line-height:1.55;color:var(--ivoire)}"
+      + ".hce .hce-chp.g4un .por,.hce .hce-chp.g4un .pan>.k,.hce .hce-chp.g4un .pan>.nav{display:none}"
+      + "@container hce (max-width:699px){.hce:has(.g4p) .hce-enc{flex-direction:column;overflow:visible;gap:12px}.hce:has(.g4p) .hce-card{flex:0 0 auto;width:100%}}";
     document.head.appendChild(st);
   } catch (e) { }
 })();
@@ -177,7 +199,8 @@ function construire(coursT, lg) {
     if (b.type === "cartes-premium") {
       var d0 = b.donnees || {}, d = (d0.fr && !d0.items) ? (d0[lg] || d0.en || d0.fr) : d0, it = Array.isArray(d.items) ? d.items : (d.items && (d.items[lg] || d.items.fr)) || [];
       if (!it.length) return;
-      var ch = { titre: L4(lg)("fiches"), sous: (d0.fr && /fiches m[ée]mo/i.test(d0.fr.sousTitre || "")) ? null : (d.sousTitre || null), notions: it.map(function (x) { return { titre: x[0], texte1: x[1], suite: [] }; }) };
+      var ch4 = /^g4-/.test(cours.id);
+      var ch = { titre: L4(lg)("fiches"), sous: (d0.fr && /fiches m[ée]mo/i.test(d0.fr.sousTitre || "")) ? null : (d.sousTitre || null), notions: ch4 ? [{ titre: L4(lg)("ficheVue"), fiches: it, suite: [] }] : it.map(function (x) { return { titre: x[0], texte1: x[1], suite: [] }; }) };
       ch.fix = "fiches"; chapitres.push(ch); cur = null; derniere = null;
     }
   });
@@ -205,7 +228,9 @@ function construire(coursT, lg) {
   if (!hb.length) sp.hb.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = sansFin(r(q.texte)); if (t) hb.push(t); }); });
   var synth = (C && C.synItems) ? C.synItems.slice() : [];
   /* glossaire */
-  if (C && C.gloItems && C.gloItems.length) chapitres.push({ fix: "glossaire", titre: titreNet(C.gloTitre), notions: C.gloItems.map(function (g) { return { titre: g[0], texte1: g[1], suite: [] }; }) });
+  if (C && C.gloItems && C.gloItems.length) chapitres.push({ fix: "glossaire", titre: titreNet(C.gloTitre), notions: /^g4-/.test(cours.id)
+    ? [{ titre: L4(lg)("motsCours"), glo: C.gloItems, suite: [] }]   /* 01/11 (V4) : tout le glossaire d'un coup d'œil (2 colonnes) */
+    : C.gloItems.map(function (g) { return { titre: g[0], texte1: g[1], suite: [] }; }) });
   /* pour aller plus loin : le savais-tu, la science, les vidéos reliées, les ressources qui ont un vrai lien */
   var plus = [];
   if (C && C.stTexte) plus.push({ titre: titreNet(C.stTitre), texte1: C.stTexte, suite: [] });
@@ -216,6 +241,15 @@ function construire(coursT, lg) {
   var liens = (C && C.loinCartes || []).filter(function (x) { return x[2]; });
   if (liens.length) plus.push({ titre: titreNet(C.loinTitre), texte1: C.loinIntro || "", liens: liens, suite: [] });
   if (plus.length) chapitres.push({ fix: "plus", titre: titreNet(C && C.loinTitre) || L("plusLoin"), notions: plus });
+  /* 01/11 (V4) : une notion ne répète plus le titre de son chapitre ; « L'essentiel » remplacé là où il n'apporte rien (Galop 4) */
+  if (/^g4-/.test(cours.id)) chapitres.forEach(function (c, ci) {
+    var nt = function (x) { return String(x || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ""); };
+    c.notions.forEach(function (o) {
+      var t = titreN(o, lg);
+      if (nt(t) && nt(t) === nt(c.titre)) o.titre = c.fix === "plus" ? L4(lg)("ressources") : (cours.id === "g4-galop-qualite" ? L4(lg)("premieres") : o.titre);
+      else if (cours.id === "g4-galop-qualite" && ci === 0 && t === L("essentiel")) o.titre = L4(lg)("auDela");
+    });
+  });
   var k = 0;
   chapitres.forEach(function (c, i) { c.img = c.fix ? P(IMG_FIX[c.fix]) : (pool.length ? pool[(k++) % pool.length] : IM.fond02); c.id = "ch" + (i + 1); });
   /* citation de la couverture -> note du chapitre 1 */
@@ -231,6 +265,8 @@ function rendu(o, lg, x) {
   var pu = function (arr) { if (!arr || !arr.length) return null; return h("ul", { key: "u" + (k++) }, arr.map(function (q, i) { var g = r(q.gras); return h("li", { key: i }, g ? h("strong", null, g + " ") : null, r(q.texte)); })); };
   var para = function (t, g) { return paras(t).map(function (tx, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tx); }); };
   if (o.comp) { out.push(h("div", { key: "c", className: "g4i" }, h(o.comp, { onSuivant: function () { } }))); return out; }
+  if (o.fiches) { out.push(h("div", { key: "fi", className: "g4fi" }, o.fiches.map(function (x, i) { return h("div", { key: i, className: "f" }, h("b", null, x[0]), h("span", null, x[1])); }))); return out; }
+  if (o.glo) { out.push(h("dl", { key: "gl", className: "g4gl" }, o.glo.map(function (g, i) { return h("div", { key: i }, h("dt", null, g[0]), h("dd", null, g[1])); }))); return out; }
   if (o.texte1 !== undefined && o.texte1 !== "") out = out.concat(para(o.texte1));
   (o.details || []).forEach(function (d) { out = out.concat(para(d)); });
   if (o.videos) out.push(h("div", { key: "v", className: "g4v" }, o.videos.map(function (v, i) {
@@ -264,7 +300,7 @@ IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
         var items = c.notions.map(function (n) { return { titre: titreN(n, lg), alerte: alerte(n), rendu: function () { return rendu(n, lg, x); } }; });
-        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto" + (i % 2 ? " inv g4p" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note || null });
+        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto" + (i % 2 ? " inv g4p" : "") + (items.length === 1 && /^g4-/.test(id) ? " g4un" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note || null });
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
@@ -274,6 +310,7 @@ IDS.forEach(function (id) {
     } });
     var B = brut(cours);
     var cv = A.couv, heroImg = (cv && r(cv.src)) ? r(cv.src) + "#g4" : A.chapitres[0].img;
+    if (HERO_G4[id]) heroImg = HERO_G4[id];   /* 01/11 (V4) : vraie photo dorée à la place de l'ancienne couverture */
     return {
       auto: true,
       hero: { img: heroImg, pos: "50% 30%", titre: r(B.titre), galop: G, duree: r(B.duree), type: r(B.type) },

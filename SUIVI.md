@@ -16035,3 +16035,16 @@ Repris sur la version en ligne 20261101-0930 (be99588). La branche travail-galop
 - Photo de Blandine (11h46, cavalière qui pose la selle sur le tapis) : images/cours-g1-c17-seller.webp, photo entière ; remplace la photo provisoire du Galop 5 sur la carte du menu et le fond du chapitre 02 (téléphone, tablette, ordinateur).
 - Photo de Blandine (11h47, cavalière qui ajuste le filet) : images/cours-g1-c17-brider.webp, photo entière ; chapitre 03 « Brider le cheval » (carte du menu et fond du chapitre).
 - hype-cours-editorial.js : VERSION et ?v= augmentés d'un cran ; index.html build 20261101-1155.
+
+## 01/11/2026 17h — branche galop4-v4 (NON publiée, build 20261101-1700) : brief « Galop 4 V3 » de Blandine (16h05)
+Repris sur la version en ligne a6e8e07 (build 20261101-1155). Galops 1, 2 et 3 non touchés (changements limités aux cours g4-*, vérifié).
+- hype-cours-editorial-g4.js v5 (?v=5) :
+  · Fiches mémo : une seule notion « Les fiches en un coup d'œil », les 5 fiches en grille (avant : 5 notions à cliquer une par une).
+  · Glossaire : une seule notion « Les mots du cours », tous les termes sur 2 colonnes (avant : 7 ou 8 notions).
+  · Chapitres à une seule notion : la liste à gauche, le « 1 / 1 » et les flèches sont masqués.
+  · Titres sans redite : « Pour aller plus loin » (notion = chapitre, g4-incurvation) -> « Les ressources » ; g4-galop-qualite : « Installer le galop » (notion = chapitre) -> « Les premières foulées », « L'essentiel » -> « Au-delà du bon pied ». Libellés en 14 langues. Aucun texte supprimé.
+  · Téléphone : les encarts du haut (coach + défi) sont empilés au lieu de défiler (plus de carte coupée : g4-vitesse, g4-galop-qualite).
+  · Haut de page de g4-vitesse = la photo de référence de Blandine (cheval gris, lumière dorée) : images/cours-g4-vitesse-hero.webp — PROPOSITION.
+- hype-cours-galop4.js v4 (?v=4) : quiz de g4-biomeca, question « 60 % / 40 % » — l'explication précise que c'est un ordre de grandeur mesuré sur un cheval à l'arrêt, pas une valeur constante (14 langues). La scène biomécanique ne donne aucun chiffre (vérifié).
+- Constats non traités (photos à produire) : 14 couvertures sur 15 sont encore les anciennes images « spectrales » (particules, halos) ; les chapitres de fin utilisent les mêmes 3 photos dans 14 cours (galops-v2-carte-examens-hd1, securite-g1-porte, galops-v2-carte-exercices-hd1).
+- Tests (vrai index.html en local) : 15 cours × 14 langues × 390 et 1440 px = 420 pages, aucune erreur, aucun débordement, aucun chapitre vide ; G1/G2/G3 (5 cours, fr + ar) sans changement.
