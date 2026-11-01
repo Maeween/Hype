@@ -18,7 +18,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 2;   /* 01/11 20h05 : pansage (ordinateur) dans le style du cours des robes — bleu nuit / noir, vague entre chaque partie, parties l'une sous l'autre */
+var VERSION = 3;   /* 01/11 20h50 : citation du haut sortie de la photo, dans un bandeau lisible */
+/* précédente : var VERSION = 2; */   /* 01/11 20h05 : pansage (ordinateur) dans le style du cours des robes — bleu nuit / noir, vague entre chaque partie, parties l'une sous l'autre */
 /* précédente : var VERSION = 1; */
 
 /* ---------------- textes NOUVEAUX (14 langues) : fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko ---------------- */
@@ -162,6 +163,8 @@ var CSS = [
 ".pso-back{width:38px;height:38px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px}",
 ".pso-crumb{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--champ)}",
 ".pso-hero h1{font-size:clamp(36px,3.5vw,54px);line-height:1.04;max-width:430px;margin:10px 0 12px}",
+".pso-quote{display:block;margin:34px auto 38px;max-width:760px;padding:26px 30px 26px 32px;border-inline-start:2px solid var(--champ);border-radius:4px 14px 14px 4px;background:rgba(16,29,34,.5);box-shadow:inset 0 0 36px rgba(0,0,0,.5);font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',Georgia,serif;font-style:italic;font-size:28px;line-height:1.38;color:var(--ivoire);text-wrap:pretty}",
+".pso-quote small{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:11.5px;letter-spacing:.6px;color:var(--champ);margin-top:10px}",
 ".pso-cit{font-family:'Cormorant Garamond','Noto Serif JP',Georgia,serif;font-style:italic;font-size:20px;line-height:1.4;max-width:470px;color:var(--ivoire)}",
 ".pso-cit small{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:11.5px;letter-spacing:.6px;color:var(--champ);margin-top:6px}",
 ".pso-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--doux)}",
@@ -528,7 +531,6 @@ function HypePansageOrdi(props) {
               h("span", { className: "pso-crumb" }, "Galop 1  ›  " + d.titre),
               h("span", { style: { marginInlineStart: "auto" } }, Selecteur ? h(Selecteur, { compact: true }) : null)),
             h("h1", null, d.titre),
-            d.couv.citation ? h("p", { className: "pso-cit" }, "« " + d.couv.citation.replace(/^[«"“]\s*|\s*[»"”]$/g, "") + " »", d.couv.auteur ? h("small", null, d.couv.auteur) : null) : null,
             h("div", { className: "pso-meta" },
               d.duree ? h("span", null, ICO.horloge(16), d.duree) : null,
               d.type ? h("span", null, ICO.livre(16), d.type) : null,
@@ -538,6 +540,8 @@ function HypePansageOrdi(props) {
             h("button", { type: "button", className: "pso-card lien", onClick: function () { hey(""); } }, h("h3", null, ICO.bulle(20), L("heyBaby")), h("p", null, hbQuestions[3] || "")),
             h("button", { type: "button", className: "pso-card lien clair", onClick: versFin }, h("h3", null, ICO.coupe(20), L("defi")), h("p", null, L("defiTxt"))))),
 
+        /* 01/11 20h50 (Blandine) : citation sortie de la photo du haut, même bandeau que les autres cours */
+        d.couv.citation ? h("blockquote", { className: "pso-quote" }, "« " + d.couv.citation.replace(/^[«"“]\s*|\s*[»"”]$/g, "") + " »", d.couv.auteur ? h("small", null, d.couv.auteur) : null) : null,
         h("div", { className: "pso-vig", role: "tablist" },
           vig.map(function (v, i) {
             return h("button", { key: v.id, type: "button", role: "tab", "aria-current": actif === v.id ? "true" : undefined, onClick: function () { aller(v.id); }, className: v.sch ? "sch" : undefined, style: v.img ? { backgroundImage: "url(" + v.img + ")" } : undefined },
