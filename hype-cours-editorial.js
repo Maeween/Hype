@@ -1182,7 +1182,8 @@ function HypeCoursEditorial(props) {
   var dernier = parPage ? ia >= chs.length - 1 : true;
   var corps = [];
   /* 01/11 19h30 (Blandine) : comme le cours des robes — les parties alternent bleu nuit / noir, une vague dorée entre chacune */
-  var BLEU = "#0A1116", col = function (ci) { return ci % 2 ? NOIR : BLEU; };
+  /* 01/11 22h20 (Blandine : « plus de noir que de pétrole, que le pétrole reste subtil ») : on commence par le noir, pétrole plus sombre (#0A1116 → #080E11) */
+  var BLEU = "#080E11", col = function (ci) { return ci % 2 ? BLEU : NOIR; };
   chs.forEach(function (cur, ci) {
     if (parPage && ci !== ia) return;
     corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? col(ci - 1) : NOIR, vers: col(ci) }));
