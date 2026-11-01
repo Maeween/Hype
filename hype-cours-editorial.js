@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 41;   /* 01/11 21h55 : plus d'espace sous les photos des notions */
+var VERSION = 42;   /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
+/* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
@@ -777,8 +778,8 @@ var CSS = [
 ".hce .hce-chp.rbd .por{margin-top:30px}",
 ".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
 ".hce .hce-chp.rbd .pan h3{margin:0 0 18px}",
-/* 01/11 21h20 (Blandine) : texte des notions détaché du titre et justifié, sur ordinateur, tablette et téléphone */
-".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:justify;-webkit-hyphens:auto;hyphens:auto}",
+/* 01/11 21h20 (Blandine) : texte des notions détaché du titre ; 01/11 22h20 (relecture) : aligné en début de ligne (gauche, ou droite en arabe), sans coupure de mots, partout */
+".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:start;-webkit-hyphens:manual;hyphens:manual}",
 ".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
 ".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
 ".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan ul{line-height:1.72}",
@@ -2461,7 +2462,11 @@ function construireAuto(cours, lg) {
 
 /* rendu d'une notion dans la carte de droite */
 /* 01/11 21h20 (Blandine : « le texte commence sans majuscule, ça fait bâclé ») : majuscule en début de paragraphe (les textes d'origine suivent souvent un titre en gras « … : ») */
-function maj(t) { return typeof t === "string" ? t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); }).replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t; }   /* + espace insécable avant « : ; ! ? » » (plus de « : » seul en début de ligne) */
+function maj(t, lg) {   /* majuscule en début de paragraphe ; espaces insécables avant « : ; ! ? » et après « en français seulement */
+  if (typeof t !== "string") return t;
+  t = t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); });
+  return lg === "fr" ? t.replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t;
+}
 function renduNotion(o, L, lg, alerte) {
   var r = function (x) { return pickLg(x, lg); };
   var out = [], k = 0;
@@ -2472,7 +2477,7 @@ function renduNotion(o, L, lg, alerte) {
   var para = function (x) {
     var g = r(x.gras), t = r(x.texte) || "";
     if (!paras(t).length) return g ? [h("p", { key: "p" + (k++), className: "pg" }, h("strong", null, g))] : [];
-    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt)); });
+    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt, lg)); });
   };
   if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
   if (o.video) out.push(h("figure", { key: "vd", className: "pimg plein" }, h("video", { src: o.video[0], poster: o.video[1], autoPlay: true, muted: true, loop: true, playsInline: true, preload: "metadata", "aria-hidden": "true", style: { display: "block", width: "100%", height: "auto" } })));
@@ -2485,7 +2490,7 @@ function renduNotion(o, L, lg, alerte) {
     out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
   }
   if (o.astuce) o.astuce.forEach(function (t, i) { out.push(h("p", { key: "as" + i, className: "ast" }, t)); });
-  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1))); }
+  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1, lg))); }
   if (o.seg) {
     var s = o.seg;
     if (r(s.sous)) out.push(h("p", { key: "so", className: "s" }, r(s.sous)));
