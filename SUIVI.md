@@ -16290,3 +16290,16 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Ancien atlas de la tête (hype-cours-atlas-tete.js) : plus référencé nulle part, archivable.
 - Vérifié : 4 cours de l'atlas × 14 langues × 390 / 820 / 1280 px (168 affichages), aucune erreur ni débordement ; clic, clavier, onglets ; nl / sv / pl identiques au français en titres, listes, paragraphes ; 10 autres cours du modèle sans erreur.
 - Fichiers : hype-cours-atlas.js, hype-cours-editorial.js, hype-cours-galop1.js, hype-cours-galop3.js, hype-cours-modele.js, hype-cours-robes-ordi.js, hype-cours-robes-galops-ordi.js, index.html (build 20261101-2320), SUIVI.md.
+
+## 01/11/2026 23h45 — PUBLICATION build 20261101-2350 (accord de Blandine 23h39 « Neutre et ok ») : atlas, corrections ciblées de la seconde relecture
+- hype-cours-atlas.js (version 3, ?v=3), 14 langues :
+  · canon (région entre genou/jarret et boulet : os, tendons, ligaments, vaisseaux, nerfs, pas de muscle) ; sabot (enveloppe de corne qui protège l'intérieur du pied ; paroi visible, sole et fourchette dessous ; conseil de curage gardé) ; étampures (trous du fer qui logent la tête des clous ; clous dans la paroi, corne insensible, à l'extérieur de la ligne blanche) ;
+  · vue de derrière du pied RETIRÉE (Blandine : « elle n'est pas possible, c'est pas une chèvre » — sabot qui paraissait fendu) ; données gardées dans le fichier avec masque: true, image images/atlas-pied-arriere.webp non affichée ; glomes toujours expliqués dans le texte de g3-c11 ; demande de remplacement rédigée (vue de derrière, glomes, talons, sabot continu) ;
+  · repères revérifiés sur toutes les photos : poitrail (972,425) et bras (922,474) déplacés, le reste exact ;
+  · arabe : barres du sabot « منعطفا الجدار » (distinct des barres de la bouche) ; formulation NEUTRE choisie par Blandine (plus de féminin « حدّدي ») : « نحدّد … », « لنستكشف الحصان », « يكفي لمس نقطة… », tournures impersonnelles ;
+  · téléphone : toucher un point (comme un nom) fait remonter doucement l'explication si elle est hors de l'écran ; pas de défilement sur ordinateur ;
+  · rangées d'onglets qui dépassent : fondu discret au bord (seulement quand il y a encore des onglets à voir, sens inversé en arabe) ;
+  · accessibilité : rôles des onglets corrects (li en presentation), animations coupées si « réduire les animations ».
+- À confirmer par des personnes de la langue : boulet (ar), barres (ar, sv, pl), glomes (pl), chanfrein (it).
+- Vérifié : 4 cours × 14 langues × 390/820/1280 px (168) sans erreur ni image manquante ni débordement ; Galop du cours ouvert en premier ; toucher sur téléphone, clic et clavier sur ordinateur ; mouvement réduit ; 8 autres cours du modèle sans erreur.
+- Fichiers : hype-cours-atlas.js, index.html (build 20261101-2350), SUIVI.md.
