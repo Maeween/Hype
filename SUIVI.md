@@ -16100,3 +16100,11 @@ Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, 
 - Vérifié : g1-c3 et g1-c17 en fr, ar, ko, nl, ru, en × 390 et 1440 px : aucune erreur, aucun débordement, plus d'affiche, nouveaux textes affichés.
 - PROBLÈME TROUVÉ (déjà présent en ligne, NON corrigé, à valider par Blandine) : dans les cours générés du Galop 1, les encarts du haut (conseil du coach, défi) n'apparaissent qu'en français. Exemples : g1-c3 et g1-c4 sans coach ni défi en anglais et en arabe, g1-c8 sans coach. Cause : le modèle reconnaît ces blocs par leur titre français, mais il reçoit le cours déjà traduit.
 
+
+## 01/11/2026 19h10 — PUBLICATION build 20261101-1910 (accord de Blandine 19h09 « Ok ») : « Le nœud d'attache » (g1-c10) — affiche « Le nœud avec chaînette » reprise en texte puis retirée
+Demande de Blandine (18h03, capture de l'affiche) : « regarde ce que cette page apporte en plus au cours du nœud d'attache et ajoute-le en la retirant si besoin ».
+- Ce que l'affiche apportait en plus : la technique de la « chaînette » (boucles successives, 3 ou 4 conseillées, serrer chaque boucle, verrouiller, défaire) et le fait qu'elle bloque le desserrage. Le reste était déjà dans le cours (verrouillage, « test du stress », ficelle de sécurité) ou trop général (« la règle d'or ») : non repris.
+- Ajouté au chapitre 02, après « La méthode pas à pas » : « Pour aller plus loin : la chaînette » (1 phrase + 5 étapes), 14 langues — hype-cours-galop1.js v12 (?v=13).
+- Correction : l'affiche disait à la fois « verrouiller en passant le bout dans la dernière boucle » et « se défait en tirant sur le bout final ». Le texte dit : sortir d'abord le bout de la dernière boucle, puis tirer.
+- Affiche retirée de l'affichage (AFFICHES_RETIREES « g1-c10 » : [2]) — hype-cours-editorial.js VERSION 25 (?v=25). Reporté sur la version en ligne 339d63b (affiches g1-c3, g1-c17 de l'autre conversation gardées).
+- Vérifié : g1-c10 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement, nouvelle section présente, affiche absente. index.html build 20261101-1910.
