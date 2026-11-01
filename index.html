@@ -23064,7 +23064,7 @@ for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_I
     };
   } catch (eTF) { }
 })();
-</script><script src="hype-cours-sommaire.js"></script><script src="hype-cours-pansage-ordi.js?v=26"></script><script src="hype-cours-robes-ordi.js?v=39"></script><script src="hype-cours-robes-galops-ordi.js?v=20"></script><script src="hype-cours-modele.js?v=7"></script><script src="hype-cours-editorial.js?v=41"></script><script src="hype-cours-materiel.js?v=5"></script><script src="hype-cours-atlas.js?v=1"></script><script src="hype-cours-g4-textes.js?v=1"></script><script src="hype-cours-editorial-g4.js?v=9"></script><!-- 21/10 : les fichiers de cours ne se chargent plus au démarrage, seulement la liste des chapitres : voir hypeChargerGalop --><script src="hype-memory-poney.js?v=8sv1ru1pl1ko1"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20cksv1ru1pl1ko1"></script><script src="hype-resultats.js?v=6sv1ru1pl1ko1"></script><script>
+</script><script src="hype-cours-sommaire.js"></script><script src="hype-cours-pansage-ordi.js?v=26"></script><script src="hype-cours-robes-ordi.js?v=39"></script><script src="hype-cours-robes-galops-ordi.js?v=20"></script><script src="hype-cours-modele.js?v=7"></script><script src="hype-cours-editorial.js?v=41"></script><script src="hype-cours-galop5-v2.js?v=test"></script><script src="hype-cours-materiel.js?v=5"></script><script src="hype-cours-atlas.js?v=1"></script><script src="hype-cours-g4-textes.js?v=1"></script><script src="hype-cours-editorial-g4.js?v=9"></script><!-- 21/10 : les fichiers de cours ne se chargent plus au démarrage, seulement la liste des chapitres : voir hypeChargerGalop --><script src="hype-memory-poney.js?v=8sv1ru1pl1ko1"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20cksv1ru1pl1ko1"></script><script src="hype-resultats.js?v=6sv1ru1pl1ko1"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -29162,7 +29162,7 @@ function obtenirCoursParGalop(galopId, langue) {
     if (galopId === 5)   /* 30/10 : les chapitres du Galop 5 (textes en { fr, en, … }) plantaient à l'ouverture sur téléphone (erreur React #31,
                             et « contenu.map » pour « Les robes ») : ils passent par la même traduction que les Galops 2 à 4. Le quiz bonus, que cette
                             traduction ne recopie pas, est remis tel quel (la page ordinateur des robes s'en sert). */
-        return COURS_GALOP5_FR.map(function (c) { if (!c || !c.titre || typeof c.titre !== "object" || !Array.isArray(c.blocs) || !Array.isArray(c.quiz)) return c; var x = convertirCoursI18nVersInterne([c], langue)[0]; if (c.quizBonus) x.quizBonus = c.quizBonus; return x; });
+        return COURS_GALOP5_FR.concat(window.COURS_GALOP5_V2 || []).map(function (c) { if (!c || !c.titre || typeof c.titre !== "object" || !Array.isArray(c.blocs) || !Array.isArray(c.quiz)) return c; var x = convertirCoursI18nVersInterne([c], langue)[0]; if (c.quizBonus) x.quizBonus = c.quizBonus; return x; });
     if (galopId === 6)
         return convertirCoursI18nVersInterne(COURS_GALOP6_FR, langue);
     if (galopId === 7)

@@ -1487,6 +1487,21 @@ var AUTO_IM_G3 = {
   "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
+/* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
+var AUTO_IM_G5 = {
+  "g5n-03": ["images/securite-g1-inquiet.webp", "images/securite-g1-longe.webp", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-reprises-hd1.jpg"]   /* photos dorées (palette) */,
+  "g5n-01": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-videos-hd1.jpg", "images/galops-v2-carte-exercices-hd2.jpg", "images/securite-g1-porte.webp"],
+  "g5n-04": ["images/galops-v2-carte-reprises-provisoire.jpg", "images/galops-v2-carte-videos-provisoire.jpg", "images/securite-g1-alezan.webp", "images/galops-v2-carte-quiz-provisoire.jpg"],
+  "g5n-05": ["images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/securite-g1-bandes.webp", "images/cours-pansage-09_gestes_brossage.webp", "images/securite-g1-rangement.webp"],
+  "g5n-06": ["images/cours-g1-c18-hero.webp", "images/securite-g1-tenue.webp", "images/securite-g1-epaule.webp", "images/securite-g1-distance.webp"],
+  "g5n-07": ["images/securite-g1-rangement.webp", "images/securite-g1-issue.webp", "images/robes-portrait-alezan-brule.webp", "images/securite-g1-observer.webp"],
+  "g5n-08": ["images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-examens-hd1.jpg", "images/galop5-th-vie2.webp"],
+  "g5n-09": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-examens-hd1.jpg"],
+  "g5n-10": ["images/galop5-th-cheval2.webp", "images/galops-v2-carte-reprises-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg"],
+  "g5n-11": ["images/galops-v2-carte-videos-hd2.jpg", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-reprises-hd2.jpg"],
+  "g5n-12": ["images/FOND_CAVALIERS_ECURIE.webp", "images/mes-chevaux-fond-couchant.webp", "images/galops-v2-carte-videos-hd1.jpg", "images/securite-g1-distance.webp"]
+};
+Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
@@ -2579,10 +2594,16 @@ AUTO_IDS.forEach(function (id) {
       chapitres.splice(pos, 0, { id: "mod-" + MC.id, label: M.titre(lg), img: MC.img || M.img, pos: "70% 45%" });
       sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, Object.assign({ lg: lg }, MC.props || {})); } });
     }
+    var lexG5 = (function () { try { var c0 = (window.COURS_GALOP5_V2 || []).find(function (z) { return z.id === cours.id; }); var l0 = c0 && c0.lexique; return l0 ? (l0[lg] || l0.fr) : (cours.lexique ? (cours.lexique[lg] || cours.lexique.fr || cours.lexique) : null); } catch (eL) { return null; } })();
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
-      return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
+      var lexBloc = (lexG5 && lexG5.length) ? h("details", { className: "hce-lexg5", style: { background: "#050608", border: "1px solid rgba(201,169,110,.28)", borderRadius: 16, padding: "18px 20px", margin: "0 auto 28px", maxWidth: 720, textAlign: "center", color: "#efe6d4" } },
+        h("summary", { style: { cursor: "pointer", fontFamily: "'Cinzel',serif", letterSpacing: ".14em", fontSize: 13, color: "#c9a96e", listStyle: "none" } }, "LEXIQUE DU COURS · " + lexG5.length),
+        h("dl", { style: { margin: "14px 0 0" } }, lexG5.map(function (g, j) { return h("div", { key: j, style: { padding: "12px 0", borderTop: j ? "1px solid rgba(201,169,110,.14)" : "none" } },
+          h("dt", { style: { fontFamily: "'Cormorant Garamond',serif", fontSize: 21, fontWeight: 600, color: "#f3ead8" } }, g[0]),
+          h("dd", { style: { margin: "4px 0 0", fontFamily: "'Montserrat',sans-serif", fontSize: 14, lineHeight: 1.55, color: "rgba(239,230,212,.78)" } }, g[1])); }))) : null;
+      return h("div", null, lexBloc, h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
         h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
-        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15))));
+        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15)))));
     } });
     var cv = A.couv;
     return {
