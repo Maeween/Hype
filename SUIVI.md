@@ -16003,8 +16003,11 @@ Demandes de Blandine (00h44 et 00h50, captures du cours « Le matériel de base 
 - Versions : hype-cours-editorial.js v14, hype-cours-materiel.js v1, hype-cours-modele.js v4, hype-cours-robes-ordi.js v38, hype-cours-pansage-ordi.js v23.
 - Tests après fusion : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement ; matériel fr/ar/ja OK.
 
-## 01/11/2026 11h15 — build 20261101-1115 : cours « La sécurité avant tout » (g1-c15), demande de Blandine (11h01)
+## 01/11/2026 11h15 → 11h25 — build 20261101-1125 : cours sécurité (une page par chapitre, réflexes visibles), pansage allégé, 2 photos — demandes de Blandine 11h01–11h08
 - « Une page par chapitre, parce que les chapitres sont assez longs » : seul le cours sécurité affiche UN chapitre à la fois (réglage unParPage dans sa configuration) ; en bas, bouton « Chapitre suivant · <titre> » ; au dernier chapitre, « Quiz et révision ». Une carte du menu ouvre le chapitre et remonte en haut. Les autres cours gardent les chapitres à la suite (choix A2).
 - Chapitre 05 « En cas de problème » : plus de bouton « Voir les bons réflexes » à toucher ni de « Que ferais-tu ? » ; chaque situation montre directement ses réflexes en étapes numérotées (cartes dorées). Situations sans liste (« s'échappe », « menace de mordre ») : la première partie du texte est découpée en étapes, la suite reste en paragraphe. Aucun texte retiré ni ajouté.
-- hype-cours-editorial.js VERSION 15 (?v=15), index.html build 20261101-1115.
-- Vérifié : sécurité fr/ar/ja en 390 et 1440 px — 5 chapitres un par un, bouton suivant, aucune erreur, aucun débordement.
+- Cours sécurité, « Ne pas s'accroupir dans une zone dangereuse » : nouvelle photo de Blandine (cavalière qui pose des bandes) : images/securite-g1-bandes.webp (bas décoratif retiré).
+- « Le matériel de base » (g1-c8), chapitre 01 « Le Matériel : ton équipement de partenaire » : photo du cheval blanc au licol (Blandine) : images/materiel-g1-licol.webp (bas décoratif retiré).
+- Pansage (g1-c2), téléphone et ordinateur (hype-cours-modele.js ?v=5, hype-cours-pansage-ordi.js ?v=24) : exercice « Remets les étapes dans l'ordre » retiré ; bouton « Découvrir le cours » du haut retiré (téléphone) ; une seule vidéo YouTube dans « Le matériel » (la 1re gardée : youtube 4iuXTHiMWGg ; retirée : gkLOvsndOms — pas pu les comparer d'ici, à vérifier par Blandine) ; « Avant de commencer » n'a plus de « 01 » (un seul 01 par chapitre).
+- hype-cours-editorial.js VERSION 16 (?v=16), index.html build 20261101-1125.
+- Vérifié : sécurité fr/ar/ja en 390 et 1440 px — 5 chapitres un par un, bouton suivant, aucune erreur, aucun débordement ; pansage fr/ar/ja téléphone et ordinateur sans erreur ni débordement, plus d'exercice, 1 vidéo par endroit ; photos vues en capture iPhone.

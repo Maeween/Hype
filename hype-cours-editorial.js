@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 15;   /* 01/11 11h10 : cours sécurité (g1-c15) — une page par chapitre (bouton « Chapitre suivant ») + chapitre 05 « En cas de problème » : réflexes affichés en étapes numérotées, sans bouton à toucher */
+var VERSION = 16;   /* 01/11 11h20 : + photo cheval blanc au licol (g1-c8, chapitre 01) + photo « Ne pas s'accroupir » (sécurité) */
+/* précédente : VERSION = 15; */   /* 01/11 11h10 : cours sécurité (g1-c15) — une page par chapitre (bouton « Chapitre suivant ») + chapitre 05 « En cas de problème » : réflexes affichés en étapes numérotées, sans bouton à toucher */
 /* précédente : VERSION = 14; */   /* 01/11 09h30 : fusion — choix C + A2 de l'autre conversation (VERSION 11 de main) + mes v12/v13 (g1-c8 interactif, Galop 3, téléphone : vague pansage, photo de chapitre sans titre, flèche/drapeau sous la barre d'état) */
 /* précédente (branche de travail) : VERSION = 13; */   /* 01/11 01h50 : téléphone — vague du cours pansage + air, phrase d'aide du menu retirée, photo de chapitre sans titre dessus */
 /* précédente : VERSION = 12; */   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
@@ -1122,7 +1123,7 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {   /* unParPage :
       { titre: tit(c[3][2]), rendu: function () { return [P(IM2.rangement, "50% 50%"), S(so(c[3][2])), liste(pt(c[3][2])), ap(tx(c[3][3]))]; } },
       { titre: tit(lo), alerte: false, rendu: function () { return [P(IM2.longe, "40% 50%"), S(loSous), liste(loPuces.map(function (q) { return q.texte; }), true), ap(tx(c[3][5])),
           h("p", { key: "r", className: "ret" }, h("b", null, tit(c[3][6])), tx(c[3][6]))]; } },
-      { titre: tit(c[3][7]), rendu: function () { return [P(IM.membres, "50% 65%"), h(Txt, { key: "t", texte: tx(c[3][7]) })]; } }
+      { titre: tit(c[3][7]), rendu: function () { return [P("images/securite-g1-bandes.webp", "60% 45%"),   /* 01/11 11h08 : photo de Blandine */ h(Txt, { key: "t", texte: tx(c[3][7]) })]; } }
     ]),
     /* 04 — ENTRE CHEVAUX */
     chap("entre", IM.groupe, "60% 60%", L("sEntre"), [
@@ -1230,7 +1231,7 @@ var AUTO_IM = {
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
-  "g1-c8": ["images/galop5-c02-embouchures.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],
+  "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
   "g1-c11": ["images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],

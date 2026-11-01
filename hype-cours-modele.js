@@ -810,7 +810,7 @@ function HypeCoursModele(props) {
           couv.duree ? h("span", null, ICO.horloge(14), couv.duree) : null,
           h("span", null, ICO.liste(14), L("nChap").replace("{n}", String(chapitres.length))),
           couv.type ? h("span", null, ICO.livre(14), couv.type) : null),
-        h("button", { type: "button", className: "hcm-cta", onClick: function () { var el = menuRef.current; if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); } }, L("decouvrir"), ICO.bas(15))))),
+        null))),   /* 01/11 11h05 (Blandine) : bouton « Découvrir le cours » retiré — le sommaire est juste dessous */
     /* SOMMAIRE ILLUSTRÉ */
     h("nav", { className: "hcm-menu t-noir", ref: menuRef, "aria-label": L("mTitre") },
       h("div", { className: "hcm-in" },
@@ -915,7 +915,7 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
           { t: "citation", texte: r(couvB.citation), auteur: r(couvB.auteur) },
           { t: "benefices", items: [{ ico: "coeur", texte: L("benef1") }, { ico: "loupe", texte: L("benef2") }, { ico: "eclair", texte: L("benef3") }] }
         ] },
-      { id: "observer", ton: "noir", kicker: "01 — " + L("kObs"), titreA: L("tObsA"), titreB: L("tObsB"), inv: true,
+      { id: "observer", ton: "noir", kicker: L("kObs"),   /* 01/11 : un seul « 01 » par chapitre */ titreA: L("tObsA"), titreB: L("tObsB"), inv: true,
         photo: { src: IMG + "03_observer_approcher.webp", ratio: "r43" },
         blocs: [
           { t: "para", texte: L("observerTxt") },
@@ -926,7 +926,7 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
         blocs: [
           { t: "para", texte: L("matLead") },
           { t: "outils", items: outils.map(function (p, i) { return { nom: o.sansDeuxPoints(p.gras), img: IMG + IMGS_OUTILS[i] + "-mini.webp", cible: "outil-" + i }; }) },
-          { t: "videos", items: [{ href: "https://www.youtube.com/watch?v=4iuXTHiMWGg", label: video }, { href: "https://www.youtube.com/watch?v=gkLOvsndOms", label: video }] }
+          { t: "videos", items: [{ href: "https://www.youtube.com/watch?v=4iuXTHiMWGg", label: video }] }   /* 01/11 (Blandine : « une suffit ») : une seule vidéo gardée */
         ] },
       { id: "gestes", ton: "noir", kicker: "03 — " + L("kGestes"), titreA: L("tGestA"), titreB: L("tGestB"),
         photo: { src: IMG + "09_gestes_brossage.webp", ratio: "r43" },
@@ -940,8 +940,8 @@ HypeCoursModele.config["g1-c2"] = function (cours, lg, o) {
           { t: "para", texte: para3 ? para3.texte : "" },
           { t: "onglets", titre: etapesQ.titre, items: etapesQ.puces.map(function (p, i) { return { titre: o.sansNum(p.gras), texte: p.texte, img: "images/pansage-queue-" + (i + 1) + ".webp" }; }) },   /* les 4 photos d'étapes fournies par Blandine le 30/10 (mains seules, sur le côté) */
           { t: "aparte", titre: L("secu"), texte: quiz[5] ? quiz[5].explication : "" },
-          { t: "coach", titre: coach3 && coach3.titre, texte: coach3 && coach3.texte },
-          { t: "ordre", items: etapesQ.puces.map(function (p) { return o.sansNum(p.gras); }), perm: [2, 0, 3, 1] }
+          { t: "coach", titre: coach3 && coach3.titre, texte: coach3 && coach3.texte }
+          /* 01/11 (Blandine) : exercice « Remets les étapes dans l'ordre » retiré */
         ] },
       { id: "pieds", ton: "noir", kicker: "05 — " + L("kPieds"), titreA: L("tPiedsA"), titreB: L("tPiedsB"), sous: o.nettoyerTitre(r(b2.titre)), inv: true,
         photo: { src: IMG + "12_pieds_sabot_au_sol.webp", ratio: "r43" },
