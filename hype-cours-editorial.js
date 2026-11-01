@@ -1256,7 +1256,8 @@ var AUTO_IM = {
   "g1-c13": ["images/galop5-c12-cross.webp", "images/galop5-c11-saut.webp"],
   "g1-c16": ["images/galop5-c07-transport.webp", "images/galop5-c05-soins.webp", "images/galop5-th-cheval2.webp"],
   "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-g1-c17-seller.webp",   /* 01/11 11h46 : chapitre 02 « Seller le cheval » = photo de Blandine */
-    "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */ "images/galop5-c03-apprendre.webp"],
+    "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */
+    "images/cours-g1-c17-verif.webp"   /* 01/11 16h11 : chapitre 04 « La vérification finale » = photo de Blandine */],
   "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
   "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
   "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
@@ -2273,7 +2274,8 @@ function titreNotion(o, L, lg) {
 var HERO_COURS = {
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
-  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],
+  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "72% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
   "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */
 };
 

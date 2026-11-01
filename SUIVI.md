@@ -16041,5 +16041,7 @@ Demande de Blandine (16h07, capture iPhone du nœud d'attache) : « Descends les
 - Téléphone : photo du haut beaucoup plus haute (122 % de la largeur de l'écran, 520 px au plus, + la zone de l'heure) ; le titre est SOUS la photo (il ne chevauche plus l'image) ; voile sombre réduit en haut et en bas.
 - Tablette : photo 600 px de haut (au lieu de 380), titre sous la photo. Ordinateur : bandeau 600 px de haut (au lieu de 430).
 - Cadrage téléphone séparé quand il faut (photo plus haute = côtés plus coupés) : sécurité (g1-c15) « 79 % 40 % », matériel (g1-c8) « 88 % 40 % » (3e valeur de HERO_COURS).
+- « Conduire son poney ou son cheval en main en sécurité » (g1-c18) : nouvelle photo de haut de page (cavalière qui mène un cheval gris en main, photo entière de Blandine 16h11) : images/cours-g1-c18-hero.webp, dans HERO_COURS.
+- « Préparer son poney ou son cheval : seller et brider » (g1-c17), chapitre 04 « La vérification finale » : photo de Blandine (16h11, cheval gris sellé et bridé) : images/cours-g1-c17-verif.webp, photo entière.
 - hype-cours-editorial.js VERSION 19 (?v= +1), index.html build 20261101-1620.
 - Vérifié : 60 cours (Galops 1 à 4) en 390 px fr et ar, 820 px ja, 1440 px ar — aucune erreur, aucun débordement ; planche de tous les hauts de page sur iPhone regardée.
