@@ -2629,7 +2629,7 @@ AUTO_IDS.forEach(function (id) {
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       /* ESSAI 01/11 23h15 (Blandine) : la carte « Quiz et révision » n'est plus en bas du cours (elle reste sur la page de fin) — un bouton mène à « Pour réviser » */
-      return h("div", { className: "hce-btns hce-vers-rev", style: { display: "flex", justifyContent: "center", padding: "8px 0 8px" } }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, LREV(lg).pourReviser, fleche(x.rtl, 15)));
+      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: LREV(lg).pourReviser, sous: LREV(lg).sousMenu, img: LEX_PHOTO[cours.id] || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
     } });
     var cv = A.couv;
     return {
@@ -2650,18 +2650,19 @@ AUTO_IDS.forEach(function (id) {
 });
 
 /* page de fin des cours générés : même page partagée (FinCours) */
-/* ESSAI 01/11 23h15 (Blandine) : page « Pour réviser » entre le cours et la page de fin — À retenir (le résumé, déplacé de la page de fin),
-   le petit lexique, un petit « Le savais-tu » en italique discret, puis le bouton vers la page de fin (Hey Baby, défi, quiz). Textes en français pour l'essai. */
+/* ESSAI 01/11 23h20 (Blandine : « une page avec le lexique et le savais-tu en dessous, le résumé reste sur la dernière page ») :
+   page entre le cours et la page de fin — le petit lexique, un petit « Le savais-tu » en italique discret, puis le bouton vers la page de fin (Hey Baby, défi, quiz). Textes en français pour l'essai. */
 var SAVAIS_COURS = {
   "g1-c20": { fr: "Le sabot pousse d'environ un centimètre par mois : il lui faut près d'un an pour se renouveler entièrement." }
 };
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 var LREV = function (lg) { return {
-  pourReviser: "Pour réviser", sousMenu: "À retenir, lexique", titre: "Pour réviser", aRetenir: "À retenir",
+  pourReviser: "Lexique", sousMenu: "Le savais-tu", titre: "Lexique", aRetenir: "",
   savais: "Le savais-tu ?", suite: "Hey Baby, défi et quiz", finSous: "Teste-toi avec Hey Baby, relève le défi, puis valide le cours avec le quiz."
 }; };
 var CSS_REV = [
 ".hce-rev .hce-rev-bas{max-width:860px;margin:0 auto;padding:12px 16px 56px}",
+".hce-rev .rbo-fc-hero{min-height:0!important;height:auto!important}",
 ".hce-rev .hce-lexique{display:grid;grid-template-columns:minmax(0,1fr) 42%;column-gap:16px;align-items:start;border:1px solid rgba(243,238,228,.12);border-radius:18px;background:#070A08;padding:26px 0 22px 20px;overflow:hidden;margin:8px 0 22px}",
 ".hce-rev .hce-lexique h3{grid-column:1;text-align:center!important;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:26px;font-weight:500;line-height:1.05;margin:0 0 14px;color:#F3EEE4}",
 ".hce-rev .hce-lexique dl{grid-column:1;margin:0}",
@@ -2675,8 +2676,20 @@ var CSS_REV = [
 ".hce-rev .hce-savais span{font-style:normal;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,166,107,.75);display:block;margin-bottom:6px}",
 ".hce-rev .hce-btns{display:flex;justify-content:center}",
 ".hce-rev .hce-btn,.hce .hce-vers-rev .hce-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;border-radius:999px;padding:13px 22px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;cursor:pointer}",
-".hce .hce-vers-rev{display:flex;justify-content:center;padding:8px 0 24px}"
+".hce .hce-vers-rev{display:flex;justify-content:center;padding:8px 0 24px}",
+".hce-suite{position:relative;display:flex;align-items:center;gap:14px;width:100%;max-width:560px;min-height:78px;margin:0 auto;padding:16px 18px 16px 22px;border:1px solid rgba(201,166,107,.45);border-radius:14px;background:#0B0F0E;color:#F3EEE4;overflow:hidden;cursor:pointer;text-align:start;font:inherit}",
+".hce-suite .ph{position:absolute;inset:0 0 0 auto;width:55%;background-size:cover;-webkit-mask-image:linear-gradient(90deg,transparent,#000 70%);mask-image:linear-gradient(90deg,transparent,#000 70%);opacity:.75}",
+".hce-suite .lb{position:relative;flex:1;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:21px;font-weight:500;line-height:1.1}",
+".hce-suite .lb small{display:block;margin-top:4px;font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:400;color:rgba(243,238,228,.7)}",
+".hce-suite .rd{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;border-radius:50%;border:1px solid rgba(243,238,228,.75);background:rgba(7,10,8,.55)}"
 ].join("\n");
+/* carte-bouton dans le style des cartes « Les chapitres du cours » (photo à droite, titre, rond avec flèche) */
+function CarteSuite(p) {
+  return h("button", { type: "button", className: "hce-suite", onClick: p.onClick },
+    p.img ? h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }) : null,
+    h("span", { className: "lb" }, p.label, p.sous ? h("small", null, p.sous) : null),
+    h("span", { className: "rd", "aria-hidden": true }, fleche(p.rtl, 14)));
+}
 function RevAuto(props) {
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar", R = LREV(lg);
   var cfg = HypeCoursEditorial.config[cours.id](cours, lg, outils()), A = cfg.auto_;
@@ -2698,19 +2711,13 @@ function RevAuto(props) {
           h("div", { className: "bar" }, h("button", { type: "button", className: "rbo-back", onClick: props.onRetourCours }, rtl ? "›" : "‹")),
           h("div", { className: "in" },
             h("p", { className: "kick" }, cfg.hero.galop + "  ·  " + cfg.hero.titre),
-            h("h2", null, R.titre),
-            h("span", { className: "trait", "aria-hidden": true }),
-            h("p", { className: "sous" }, R.aRetenir),
-            h("ul", { className: "rbo-fc-por" + (por.length > 4 ? " nb" : "") }, por.map(function (p, i) {
-              return h("li", { key: i }, h("span", { className: "rond", style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }), h("span", { className: "pt", "aria-hidden": true }), h("span", { className: "tx" }, h("b", null, p.nom), p.desc ? h("span", null, p.desc) : null));
-            })),
-            A.citFin ? h("p", { className: "note" }, A.citFin) : null)),
+            null)),
         h("div", { className: "hce-rev-bas" },
           lex ? h("aside", { className: "hce-lexique" }, h("h3", { style: { textAlign: "center", justifyContent: "center", alignSelf: "stretch", width: "100%" } }, lex.titre),
             h("dl", null, lex.mots.map(function (m, k) { return h("div", { key: k }, h("dt", null, m[0]), h("dd", null, m[1])); })),
             LEX_PHOTO[cours.id] ? h("figure", { className: "lx-ph" }, h("img", { src: LEX_PHOTO[cours.id], alt: "" })) : null) : null,
           sav ? h("p", { className: "hce-savais" }, h("span", null, R.savais), sav) : null,
-          h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: props.onSuite }, R.suite, fleche(rtl, 15)))))));
+          h(CarteSuite, { label: R.suite, img: IM.quiz, pos: "50% 60%", rtl: rtl, onClick: props.onSuite })))));
 }
 function FinAuto(props) {
   var S = window.HypeRobesOrdi.shared;
@@ -2737,9 +2744,9 @@ function FinAuto(props) {
     h("style", null, S.CSS),
     h("main", { className: "rbo-main" },
       h(S.FinCours, {
-        L: function (k) { return k === "finSous" ? LREV(lg).finSous : L(k); }, lg: lg, rtl: rtl, kicker: cfg.hero.galop, titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
+        L: L, lg: lg, rtl: rtl, kicker: cfg.hero.galop, titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
         heroImg: cfg.hero.img, heroPos: cfg.hero.pos,
-        portraits: [], note: null,
+        portraits: por, note: A.citFin || null,
         hb: A.hb, onHey: hey, defiSeg: A.defi ? A.defi.fin : null,
         quizImg: IM.quiz, onQuiz: function () { if (props.setEcran) props.setEcran("quiz"); }, quizScore: props.quizScore,
         suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
