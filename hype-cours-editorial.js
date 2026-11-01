@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 20;   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
+var VERSION = 21;   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
+/* précédente : VERSION = 20; */   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
 /* précédente : VERSION = 19; */   /* 01/11 16h10 : haut de page (hero) beaucoup plus haut, titre sous la photo sur téléphone et tablette — tous les Galops */
 /* précédente : VERSION = 18; */   /* 01/11 11h50 : photos des chapitres 02 « Seller le cheval » et 03 « Brider le cheval » (g1-c17) */
 /* précédente : VERSION = 17; */   /* 01/11 11h45 : défi de g3-c9 (litières), textes P3 validés par Blandine */
@@ -112,7 +113,7 @@ var CSS = [
 ".hce-top{position:relative;display:grid;grid-template-columns:minmax(0,1fr)}",
 ".hce-hero{position:relative;overflow:hidden;min-height:0;padding:0 0 22px}",
 /* 01/11 16h (Blandine : « descends les hero beaucoup plus […] ça coupe en haut en bas et ça s'écrase avec les titres ») : photo beaucoup plus haute, titre sous la photo */
-".hce-hero .ph{position:relative;height:calc(min(122vw,520px) + env(safe-area-inset-top, 0px));background:#070A08 center 30%/cover no-repeat;background-position:var(--pos-tel,center 30%);filter:saturate(.82)}",
+".hce-hero .ph{position:relative;height:calc(min(var(--hr,72vw),520px) + env(safe-area-inset-top, 0px));background:#070A08 center 30%/cover no-repeat;background-position:var(--pos-tel,center 30%);filter:saturate(.82)}",
 ".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}",
 ".hce-bar{position:absolute;top:calc(14px + env(safe-area-inset-top, 0px));inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
 ".hce-back{width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
@@ -481,6 +482,13 @@ var CSS = [
 ".hce-chp-mobile{padding:0 0 28px}",
 ".hce-chp-mobile>.bg{position:relative;inset:auto;height:auto;aspect-ratio:16/10;bottom:auto}",   /* 01/11 00h44 : la photo du chapitre seule, sans titre dessus (Blandine) */
 ".hce-chp-mobile>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,0) 70%,#070A08 100%)}",
+/* 01/11 17h40 (Blandine : « pas de filtre sur les photos, on ne les voit même plus ») : téléphone — chapitre bleu pétrole = photo nette, fondu pétrole seulement tout en bas */
+/* 17h45 (Blandine : « laisse les encarts bleu pétrole en semi-transparent avec le fond noir derrière, et ne prends pas les photos dedans ») :
+   téléphone — la photo du chapitre reste sur fond noir, nette ; seul le bloc de texte est en bleu pétrole semi-transparent */
+".hce .hce-chp-mobile.auto.inv{background:#070A08}",
+".hce .hce-chp-mobile.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,0) 70%,#070A08 100%)}",
+".hce .hce-chp-mobile.auto.inv>.in{background:rgba(16,29,34,.55);border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18);padding-bottom:22px;margin-top:6px}",
+".hce .hce-chp-mobile>.bg{filter:none}",
 ".hce-chp-mobile>.in{display:block;padding:18px 16px 0}",
 ".hce-chp-mobile h2{text-shadow:none}",
 ".hce-chp-mobile h2{font-size:32px}",
@@ -653,6 +661,20 @@ function fleche(rtl, w) { return ico(rtl ? ["M19 12H5", "M11 6l-6 6 6 6"] : ["M5
 /* 01/11 00h44 (Blandine : « applique celle qu'on a dans le cours g1 […] et laisse bien de l'espace au-dessus et en dessous ») :
    même tracé que la vague du cours pansage (hype-cours-modele.js), avec de l'air de chaque côté.
    Ancienne version : chemin "M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14", trait #C9A66B à 0.55. */
+/* 01/11 17h40 (Blandine : « fais une mise en page intelligente sur tel pour les hero, ils sont tous coupés de partout, dézoome un peu ») :
+   sur téléphone, la hauteur de la photo du haut suit la forme de la photo (paysage = moins haute, donc moins coupée sur les côtés),
+   entre 72 % et 110 % de la largeur de l'écran. Ordinateur et tablette : inchangés (règles plus loin). */
+function HeroPhoto(p) {
+  var _r = useState(null), ratio = _r[0], setRatio = _r[1];
+  useEffect(function () {
+    var ok = true, im = new Image();
+    im.onload = function () { if (ok && im.naturalWidth && im.naturalHeight) setRatio(im.naturalWidth / im.naturalHeight); };
+    im.src = String(p.img || "").split("#")[0];
+    return function () { ok = false; };
+  }, [p.img]);
+  var hr = ratio ? Math.max(72, Math.min(110, 100 / ratio)) : 72;
+  return h("div", { className: "ph", style: Object.assign({ "--hr": hr.toFixed(1) + "vw" }, p.style) });
+}
 function Vague(p) {
   var d = "M0,0 L1200,0 L1200,9 C1050,20 900,3 750,10 C600,17 450,2 300,9 C200,14 100,6 0,11 Z";
   var ligne = "M0,11 C100,6 200,14 300,9 C450,2 600,17 750,10 C900,3 1050,20 1200,9";
@@ -980,7 +1002,7 @@ function HypeCoursEditorial(props) {
     /* HAUT DE PAGE + 3 ENCARTS */
     h("div", { className: "hce-top" },
       h("header", { className: "hce-hero" },
-        h("div", { className: "ph", style: Object.assign({ backgroundImage: "url(" + hero.img + ")" }, hero.pos ? { "--pos": hero.pos } : {}, (hero.posTel || hero.pos) ? { "--pos-tel": hero.posTel || hero.pos } : {}) }),
+        h(HeroPhoto, { img: hero.img, style: Object.assign({ backgroundImage: "url(" + hero.img + ")" }, hero.pos ? { "--pos": hero.pos } : {}, (hero.posTel || hero.pos) ? { "--pos-tel": hero.posTel || hero.pos } : {}) }),
         h("div", { className: "hce-bar" },
           h("button", { type: "button", className: "hce-back", "aria-label": L("retour"), onClick: props.onRetour }, fleche(!rtl, 18)),
           h("nav", { className: "hce-crumb", "aria-label": "Fil d'Ariane" }, h("span", null, hero.galop), h("i", { "aria-hidden": true }, rtl ? "‹" : "›"), h("span", null, hero.titre)),
