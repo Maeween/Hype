@@ -16317,3 +16317,9 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Rappels de Blandine retenus : en position d'équilibre le poids descend dans les talons (jamais « se tenir sur ses étriers ») ; s'appuyer sur les références FFE avant d'écrire un cours.
 - Vérifié : g1-c5 en 14 langues à 390 px, arabe et français à 1440 px, aucune erreur ni débordement ; g1-c20 (atlas) et g1-c15 sans erreur. Fait sur la version en ligne 220bbc1 (atlas v3 de l'autre conversation conservé) : seuls le ?v= de hype-cours-galop1.js et de hype-cours-editorial.js, la balise de hype-cours-position.js et le numéro de build changent dans index.html.
 - Fichiers : hype-cours-galop1.js (v17, ?v=17), hype-cours-editorial.js (VERSION 44, ?v=44), hype-cours-position.js (nouveau, ?v=1), images/position-assise-g1.webp (nouvelle), images/cours-g1-c5-equilibre.webp (nouvelle), index.html (build 20261101-2355), SUIVI.md.
+
+## 02/11/2026 00h00 — PUBLICATION build 20261102-0000 (accord de Blandine 23h56 « Ok ») : atlas, termes vérifiés après relecture Gemini
+- hype-cours-atlas.js (version 4, ?v=4) : barres du sabot en suédois « Hörnstöden » (source : SLU, « Fysiologisk skoning », terme « hörnstöd » ; Gemini proposait « Stöttorna », non retenu) ; chanfrein en italien « Il naso » (source : Università di Teramo, régions de la tête ; Gemini proposait « La canna del naso », non retenu).
+- Gardés sur avis de Gemini, sans source citée (probables, non vérifiés) : boulet ar « مفصل الرمّانة », barres pl « Wsporniki », glomes pl « Opuszki piętowe ».
+- Relecture Gemini : canon, sabot, étampures et arabe neutre validés sans correction ; défilement instantané si « réduire les animations » déjà en place.
+- Fichiers : hype-cours-atlas.js, index.html (build 20261102-0000), SUIVI.md.
