@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 34;   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
+var VERSION = 35;   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
+/* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
 /* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
 /* précédente : VERSION = 32; */   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */
 /* précédente : var VERSION = 31; */   /* 01/11 19h50 : grand vide au-dessus des titres de chapitre et texte décalé sur téléphone corrigés */
@@ -1400,7 +1401,7 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 /* 01/11 20h : chapitres interactifs ajoutés à un cours (module chargé à part) — apres = nombre de chapitres avant lui */
 var MODULES_COURS = { "g1-c20": { id: "tete", module: "HypeAtlasTete", apres: 1 } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
-var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
@@ -1461,7 +1462,7 @@ var COMPL = {
       points: [
         tt("Repère une articulation visible sur un cheval immobile.", "Spot a visible joint on a horse standing still.", "Localiza una articulación visible en un caballo quieto.", "Individua un'articolazione visibile su un cavallo fermo.", "じっとしている馬で、見える関節をひとつ見つけよう。", "Finde ein sichtbares Gelenk an einem stehenden Pferd.", "حدّد مفصلًا ظاهرًا على حصان واقف بلا حركة.", "在静止的马身上找出一个看得见的关节。", "Zoek een zichtbaar gewricht bij een stilstaand paard.", "Encontre uma articulação visível em um cavalo parado.", "Hitta en synlig led på en häst som står still.", "Найди видимый сустав у стоящей лошади.", "Wskaż widoczny staw u stojącego konia.", "가만히 서 있는 말에서 보이는 관절 하나를 찾아보자."),
         tt("Observe les mouvements de ses flancs quand il respire.", "Watch its flanks move as it breathes.", "Observa el movimiento de sus flancos cuando respira.", "Osserva il movimento dei suoi fianchi quando respira.", "呼吸するときの、わき腹の動きを観察しよう。", "Beobachte, wie sich seine Flanken beim Atmen bewegen.", "راقب حركة خاصرتيه عندما يتنفس.", "观察它呼吸时腹侧的起伏。", "Kijk hoe zijn flanken bewegen als hij ademt.", "Observe o movimento dos flancos quando ele respira.", "Titta på hur flankerna rör sig när den andas.", "Понаблюдай, как двигаются её бока при дыхании.", "Obserwuj ruch jego boków, gdy oddycha.", "숨 쉴 때 옆구리가 어떻게 움직이는지 관찰하자."),
-        tt("Retrouve sur l'affiche trois parties de son corps.", "Find three parts of its body on the poster.", "Encuentra en el póster tres partes de su cuerpo.", "Ritrova sul poster tre parti del suo corpo.", "ポスターで、からだの部位を3つ見つけよう。", "Finde auf dem Poster drei Körperteile.", "اعثر على الملصق على ثلاثة أجزاء من جسمه.", "在海报上找出它身体的三个部位。", "Zoek op de poster drie lichaamsdelen.", "Encontre no pôster três partes do corpo dele.", "Hitta tre kroppsdelar på affischen.", "Найди на плакате три части её тела.", "Odszukaj na plakacie trzy części jego ciała.", "포스터에서 말의 몸 부위 세 곳을 찾아보자.")
+        tt("Montre sur le cheval trois parties de son corps et nomme-les.", "Point to three parts of the horse's body and name them.", "Señala en el caballo tres partes de su cuerpo y nómbralas.", "Indica sul cavallo tre parti del suo corpo e chiamale per nome.", "馬のからだの部位を3つ指さして、名前を言おう。", "Zeig am Pferd drei Körperteile und nenne sie.", "أشِر على الحصان إلى ثلاثة أجزاء من جسمه وسمِّها.", "在马身上指出它身体的三个部位，并说出名称。", "Wijs op het paard drie lichaamsdelen aan en noem ze.", "Mostra no cavalo três partes do corpo dele e diz os nomes.", "Visa tre kroppsdelar på hästen och säg vad de heter.", "Покажи на лошади три части её тела и назови их.", "Pokaż na koniu trzy części jego ciała i nazwij je.", "말의 몸에서 부위 세 곳을 가리키고 이름을 말해 보자.")
       ]
     },
     hb: [
@@ -1482,7 +1483,7 @@ var COMPL = {
     chap: [
       [tt("Découvrir son corps", "Discovering its body", "Descubrir su cuerpo", "Scoprire il suo corpo", "からだを知る", "Seinen Körper entdecken", "اكتشاف جسمه", "认识它的身体", "Zijn lichaam ontdekken", "Descobrir o corpo dele", "Upptäck kroppen", "Знакомство с телом", "Poznaj jego ciało", "말의 몸 알아보기"), 2],
       [tt("Un organisme en action", "A body in action", "Un organismo en acción", "Un organismo in azione", "はたらくからだ", "Ein Körper in Aktion", "جسم في حركة", "运转中的身体", "Een lichaam in actie", "Um organismo em ação", "En kropp i arbete", "Организм в действии", "Organizm w działaniu", "움직이는 몸"), 3],
-      [tt("Comprendre sa silhouette", "Understanding its build", "Comprender su silueta", "Capire la sua figura", "体形を知る", "Seinen Körperbau verstehen", "فهم قوامه", "了解它的体型", "Zijn bouw begrijpen", "Entender a silhueta dele", "Förstå kroppsformen", "Понять телосложение", "Zrozum jego sylwetkę", "말의 체형 이해하기"), 2]
+      [tt("Comprendre sa silhouette", "Understanding its build", "Comprender su silueta", "Capire la sua figura", "体形を知る", "Seinen Körperbau verstehen", "فهم قوامه", "了解它的体型", "Zijn bouw begrijpen", "Entender a silhueta dele", "Förstå kroppsformen", "Понять телосложение", "Zrozum jego sylwetkę", "말의 체형 이해하기"), 4]
     ]
   },
   "g1-c8": {
@@ -1576,7 +1577,7 @@ var COMPL = {
     fin: tt("Ton parcours équestre ne se mesure pas seulement en concours : chaque étape compte.", "Your riding journey isn't measured only in competitions: every step counts.", "Tu trayectoria ecuestre no se mide solo en concursos: cada etapa cuenta.", "Il tuo percorso equestre non si misura solo in gare: ogni tappa conta.", "乗馬の歩みは大会だけでは測れない。どの一歩も大切。", "Dein Reiterweg misst sich nicht nur an Turnieren: Jeder Schritt zählt.", "مسيرتك في الفروسية لا تُقاس بالمسابقات فقط: كل مرحلة مهمة.", "你的马术之路不只以比赛衡量：每一步都很重要。", "Je ruiterpad meet je niet alleen in wedstrijden: elke stap telt.", "Seu percurso equestre não se mede só em competições: cada etapa conta.", "Din ridresa mäts inte bara i tävlingar: varje steg räknas.", "Твой путь в конном спорте измеряется не только соревнованиями: важен каждый шаг.", "Twojej jeździeckiej drogi nie mierzy się tylko zawodami: liczy się każdy krok.", "승마의 여정은 대회로만 재지 않는다. 모든 단계가 소중하다."),
     chap: [
       [tt("Découvrir ta licence", "Discovering your licence", "Descubrir tu licencia", "Scoprire la tua licenza", "ライセンスを知ろう", "Deine Lizenz entdecken", "اكتشف رخصتك", "认识你的执照", "Je licentie ontdekken", "Descobrir sua licença", "Upptäck din licens", "Знакомство с лицензией", "Poznaj swoją licencję", "라이선스 알아보기"), 5],
-      [tt("Une identité de cavalier", "A rider's identity", "Una identidad de jinete", "Un'identità da cavaliere", "乗り手のしるし", "Eine Reiter-Identität", "هوية فارس", "骑手的身份", "Een ruiteridentiteit", "Uma identidade de cavaleiro", "En ryttaridentitet", "Удостоверение всадника", "Tożsamość jeźdźca", "기수의 신분증"), 2]
+      [tt("Une identité de cavalier", "A rider's identity", "Una identidad de jinete", "Un'identità da cavaliere", "乗り手のしるし", "Eine Reiter-Identität", "هوية فارس", "骑手的身份", "Een ruiteridentiteit", "Uma identidade de cavaleiro", "En ryttaridentitet", "Удостоверение всадника", "Tożsamość jeźdźca", "기수의 신분증"), 1]
     ]
   },
   "g1-c12": {
@@ -1597,7 +1598,7 @@ var COMPL = {
     fin: tt("Derrière chaque cavalier, il existe tout un monde de passionnés qui font vivre l'équitation.", "Behind every rider, there's a whole world of enthusiasts who keep riding alive.", "Detrás de cada jinete hay todo un mundo de apasionados que dan vida a la equitación.", "Dietro ogni cavaliere c'è tutto un mondo di appassionati che fanno vivere l'equitazione.", "一人ひとりの乗り手の後ろには、乗馬を支える大勢の仲間がいる。", "Hinter jedem Reiter steht eine ganze Welt von Begeisterten, die den Reitsport lebendig halten.", "وراء كل فارس عالم كامل من المولعين الذين يُبقون الفروسية حيّة.", "每位骑手的背后，都有一群让马术生生不息的热爱者。", "Achter elke ruiter staat een hele wereld van liefhebbers die de paardensport laten leven.", "Por trás de cada cavaleiro existe todo um mundo de apaixonados que fazem a equitação viver.", "Bakom varje ryttare finns en hel värld av entusiaster som håller ridsporten levande.", "За каждым всадником стоит целый мир увлечённых людей, благодаря которым живёт конный спорт.", "Za każdym jeźdźcem stoi cały świat pasjonatów, dzięki którym jeździectwo żyje.", "모든 기수 뒤에는 승마를 살아 있게 하는 수많은 애호가가 있다."),
     chap: [
       [tt("Découvrir la FFE", "Discovering the FFE", "Descubrir la FFE", "Scoprire la FFE", "FFEを知ろう", "Die FFE entdecken", "اكتشاف الاتحاد الفرنسي", "认识 FFE", "De FFE ontdekken", "Descobrir a FFE", "Upptäck FFE", "Знакомство с FFE", "Poznaj FFE", "FFE 알아보기"), 3],
-      [tt("Une fédération pour tous", "A federation for everyone", "Una federación para todos", "Una federazione per tutti", "みんなの連盟", "Ein Verband für alle", "اتحاد للجميع", "属于所有人的联合会", "Een federatie voor iedereen", "Uma federação para todos", "Ett förbund för alla", "Федерация для всех", "Federacja dla wszystkich", "모두를 위한 연맹"), 3]
+      [tt("Une fédération pour tous", "A federation for everyone", "Una federación para todos", "Una federazione per tutti", "みんなの連盟", "Ein Verband für alle", "اتحاد للجميع", "属于所有人的联合会", "Een federatie voor iedereen", "Uma federação para todos", "Ett förbund för alla", "Федерация для всех", "Federacja dla wszystkich", "모두를 위한 연맹"), 2]
     ]
   },
   "g1-c13": {
@@ -1619,7 +1620,7 @@ var COMPL = {
     fin: tt("À Lamotte-Beuvron, chaque parcours raconte aussi une histoire de préparation, de rencontres et de passion.", "At Lamotte-Beuvron, every round also tells a story of preparation, encounters and passion.", "En Lamotte-Beuvron, cada recorrido cuenta también una historia de preparación, encuentros y pasión.", "A Lamotte-Beuvron, ogni percorso racconta anche una storia di preparazione, incontri e passione.", "ラモット＝ブーヴロンでは、どの走行にも準備と出会いと情熱の物語がある。", "In Lamotte-Beuvron erzählt jeder Ritt auch eine Geschichte von Vorbereitung, Begegnungen und Leidenschaft.", "في لاموت-بوفرون، يروي كل مسار أيضًا قصة تحضير ولقاءات وشغف.", "在拉莫特-伯夫龙，每一轮比赛也讲述着准备、相遇与热爱的故事。", "In Lamotte-Beuvron vertelt elk parcours ook een verhaal van voorbereiding, ontmoetingen en passie.", "Em Lamotte-Beuvron, cada percurso também conta uma história de preparação, encontros e paixão.", "I Lamotte-Beuvron berättar varje ritt också en historia om förberedelser, möten och passion.", "В Ламот-Бёврон каждый маршрут — это ещё и история подготовки, встреч и увлечённости.", "W Lamotte-Beuvron każdy przejazd opowiada też historię przygotowań, spotkań i pasji.", "라모트뵈브롱에서는 모든 경기가 준비와 만남, 열정의 이야기를 들려준다."),
     chap: [
       [tt("Découvrir le Parc", "Discovering the Parc", "Descubrir el Parque", "Scoprire il Parco", "パルクを知ろう", "Den Park entdecken", "اكتشاف المتنزّه", "认识这座园区", "Het Parc ontdekken", "Descobrir o Parque", "Upptäck parken", "Знакомство с Парком", "Poznaj Park", "공원 알아보기"), 2],
-      [tt("Vivre les championnats", "Experiencing the championships", "Vivir los campeonatos", "Vivere i campionati", "選手権を体験しよう", "Meisterschaften erleben", "عيش أجواء البطولات", "感受锦标赛", "De kampioenschappen beleven", "Viver os campeonatos", "Uppleva mästerskapen", "Атмосфера чемпионатов", "Przeżyj mistrzostwa", "선수권 대회 즐기기"), 2]
+      [tt("Vivre les championnats", "Experiencing the championships", "Vivir los campeonatos", "Vivere i campionati", "選手権を体験しよう", "Meisterschaften erleben", "عيش أجواء البطولات", "感受锦标赛", "De kampioenschappen beleven", "Viver os campeonatos", "Uppleva mästerskapen", "Атмосфера чемпионатов", "Przeżyj mistrzostwa", "선수권 대회 즐기기"), 1]
     ]
   },
   "g1-c16": {
@@ -1651,7 +1652,7 @@ var COMPL = {
     chap: [
       [tt("Son livret d'identité", "Its identity booklet", "Su libreta de identidad", "Il suo libretto d'identità", "身分の手帳", "Sein Ausweisheft", "دفتر هويته", "它的身份证件", "Zijn identiteitsboekje", "Seu livreto de identidade", "Dess identitetsbok", "Его удостоверение", "Jego dowód tożsamości", "말의 신분 수첩"), 2],
       [tt("Un document qui suit", "A document that travels with it", "Un documento que lo acompaña", "Un documento che lo segue", "いつもいっしょの書類", "Ein Dokument, das mitreist", "وثيقة ترافقه", "随行的证件", "Een document dat meegaat", "Um documento que acompanha", "Ett dokument som följer med", "Документ всегда с ней", "Dokument, który mu towarzyszy", "늘 함께하는 서류"), 3],
-      [tt("Reconnaître le bon cheval", "Recognising the right horse", "Reconocer al caballo correcto", "Riconoscere il cavallo giusto", "正しい馬を見分ける", "Das richtige Pferd erkennen", "التعرّف على الحصان الصحيح", "认出正确的马", "Het juiste paard herkennen", "Reconhecer o cavalo certo", "Känna igen rätt häst", "Узнать нужную лошадь", "Rozpoznać właściwego konia", "올바른 말 알아보기"), 4]
+      [tt("Reconnaître le bon cheval", "Recognising the right horse", "Reconocer al caballo correcto", "Riconoscere il cavallo giusto", "正しい馬を見分ける", "Das richtige Pferd erkennen", "التعرّف على الحصان الصحيح", "认出正确的马", "Het juiste paard herkennen", "Reconhecer o cavalo certo", "Känna igen rätt häst", "Узнать нужную лошадь", "Rozpoznać właściwego konia", "올바른 말 알아보기"), 3]
     ]
   },
   "g1-c17": {
@@ -2236,7 +2237,7 @@ function construireAuto(cours, lg) {
     } else {
       if (tb) nouveauChap(titreNet(tb), null);
       else if (!cur) nouveauChap(r(cours.titre));
-      if (b.src) {   /* image d'un bloc de texte : affiche entière en tête (bloc sans titre) */
+      if (b.src && !(AFFICHES_RETIREES[cours.id] && AFFICHES_RETIREES[cours.id].indexOf(bi) >= 0)) {   /* image d'un bloc de texte : affiche entière en tête (bloc sans titre) ; 01/11 20h : retirée aussi quand son contenu est repris en texte */
         var ob = { affiche: { src: r(b.src), legende: legendeUtile(b) }, titre: L("affiche"), suite: [] };
         cur.notions.push(ob); derniere = ob;
       }
