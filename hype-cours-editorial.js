@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 24;   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
+var VERSION = 25;   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage (titre en deux temps, trait doré avant chaque notion) */
+/* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
 /* précédente : VERSION = 21; */   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
@@ -92,6 +93,13 @@ function nettoyerTitre(s) { return String(s || "").replace(/^[\u{1F000}-\u{1FAFF
 function sansNum(s) { return String(s || "").replace(/^\s*\d+\s*[.)．、]\s*/, ""); }
 function paras(s) { return String(s || "").split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean); }
 function phrases(s) { return String(s || "").split(/(?<=[.。!！?？])\s*/).map(function (t) { return t.trim(); }).filter(Boolean); }
+/* titre de chapitre : « Le Matériel : ton équipement » -> ["Le Matériel :", "ton équipement"] ; sinon coupe en deux moitiés (3 mots et plus) */
+function titreDeux(s) {
+  s = String(s || "");
+  var m = s.match(/^(.+?\s*[:：])\s*(.+)$/);
+  if (m) return [m[1], m[2]];
+  return deuxLignes(s);
+}
 function deuxLignes(s) {   /* « La sécurité avant tout » -> ["La sécurité", "avant tout"] */
   s = String(s || "");
   var v = s.indexOf(",");
@@ -641,6 +649,36 @@ var CSS = [
 "[dir=rtl] .hce-chap .lb{padding:14px 52px 16px 46px}",
 ".hce-chap .lb small{display:none}",
 ".hce-chap .hce-rond{bottom:14px;inset-inline-end:12px}",
+"}",
+/* 01/11 19h00 (Blandine : « tout est un peu entassé […] aérer […] on ne sait plus trop ce qui est titre ou pas ») — TÉLÉPHONE :
+   hiérarchie du cours pansage : numéro + filet doré, titre en deux temps, plus d'air entre les notions, chaque titre de notion annoncé par un petit trait doré. */
+"@media screen and (max-width:699px){",
+".hce-chp-mobile>.in{padding:26px 20px 0}",
+".hce .hce-chp-mobile .kick{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.28em;margin:0 0 14px}",
+".hce .hce-chp-mobile .kick:after{content:'';flex:0 0 40px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp-mobile h2{font-size:34px;line-height:1.08;margin:0}",
+".hce .hce-chp-mobile h2 span,.hce .hce-chp-mobile h2 em{display:block}",
+".hce .hce-chp-mobile h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp-mobile .sous{margin:12px 0 0;font-style:italic;font-size:15px;color:var(--doux)}",
+".hce .hce-chp-mobile .note{margin:16px 0 0;padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6);font-size:14px;line-height:1.55}",
+".hce-mobile-read{gap:0;margin-top:34px}",
+".hce-mobile-unit{padding:0 0 38px;margin:0 0 38px;border-bottom:1px solid rgba(201,166,107,.16)}",
+".hce-mobile-unit:last-child{border-bottom:0;margin-bottom:0}",
+".hce-mobile-unit h3{font-size:27px;line-height:1.12;margin:20px 0 14px}",
+".hce-mobile-unit h3:before{content:'';display:block;width:28px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce-mobile-unit>h3:first-child{margin-top:0}",
+".hce-mobile-unit.is-alert{padding:20px 18px 22px}",
+".hce-mobile-unit.is-alert h3:before{background:#E3A18E}",
+".hce-mobile-unit .pimg{margin:0 0 4px;border-radius:14px}",
+".hce-mobile-unit .hce-txt,.hce-mobile-unit .ap,.hce-mobile-unit p.pg{font-size:15.5px;line-height:1.72}",
+".hce-mobile-unit p.pg{margin:0 0 14px}",
+".hce-mobile-unit .s{font-style:italic;color:#D9B98A;font-size:15px;line-height:1.55;margin:0 0 14px}",
+".hce-mobile-unit .ap{margin:18px 0 0;padding-top:16px}",
+".hce-mobile-unit ul{margin:12px 0 14px;gap:11px;font-size:15.5px;line-height:1.6}",
+".hce-mobile-unit li strong{color:#E3CBA0}",
+".hce-mobile-unit .ast{margin:16px 0;padding:4px 0 4px 14px}",
+".hce-mobile-unit .hce-fig{margin-bottom:14px}",
+".hce-mobile-unit .hce-ztabs{margin:4px 0 26px;gap:9px}",
 "}"
 ].join("\n");
 
@@ -872,9 +910,9 @@ function Chapitre(p) {
     h("div", { className: "bg", "aria-hidden": true, style: { backgroundImage: "url(" + p.bg + ")", backgroundPosition: p.bgPos || "70% 40%" } }),
     h("div", { className: "in" },
       h("div", { className: "g" },
-        h("p", { className: "kick" }, p.num + "  ·  " + p.galop),
-        h("h2", { id: "hce-t-" + p.id }, p.titre),
-        h("span", { className: "trait", "aria-hidden": true }),
+        h("p", { className: "kick" }, p.num + "  —  " + p.galop),
+        /* 01/11 19h (Blandine : « on ne sait plus trop ce qui est titre ») : titre en deux temps comme le pansage, 2e partie en italique doré */
+        h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre)),
         p.sous ? h("p", { className: "sous" }, p.sous) : null,
         p.note ? h("p", { className: "note" }, p.note) : null),
       h(MobileLectureNotions, { items: p.items })));

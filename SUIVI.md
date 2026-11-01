@@ -16100,3 +16100,12 @@ Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, 
 - Vérifié : g1-c3 et g1-c17 en fr, ar, ko, nl, ru, en × 390 et 1440 px : aucune erreur, aucun débordement, plus d'affiche, nouveaux textes affichés.
 - PROBLÈME TROUVÉ (déjà présent en ligne, NON corrigé, à valider par Blandine) : dans les cours générés du Galop 1, les encarts du haut (conseil du coach, défi) n'apparaissent qu'en français. Exemples : g1-c3 et g1-c4 sans coach ni défi en anglais et en arabe, g1-c8 sans coach. Cause : le modèle reconnaît ces blocs par leur titre français, mais il reçoit le cours déjà traduit.
 
+
+## 01/11 19h20 — Cours sur téléphone : plus d'air et titres plus clairs (NON publié, build 20261101-1920)
+Demandes de Blandine (18h56 « T'as pas suivi le visuel des premiers cours […] en couleurs », 18h58 « Tout est un peu entassé […] aérer […] on ne sait plus trop ce qui est titre ou pas »).
+- Couleurs : déjà fait par une autre conversation à 16h10 (un chapitre sur deux en bleu pétrole, Galops 1 à 4) ; les captures envoyées le matin étaient antérieures. Rien ajouté.
+- hype-cours-editorial.js VERSION 25 (?v=25), téléphone uniquement, tous les cours du modèle commun (Galops 1 à 4) :
+  · en-tête de chapitre façon pansage : « 01 — GALOP 3 » suivi d'un filet doré, titre en deux temps (2e partie en italique doré ; coupe au « : » sinon au milieu), citation avec un trait doré à gauche ;
+  · chaque titre de notion annoncé par un petit trait doré au-dessus, titres plus grands ;
+  · plus d'air : 38 px avant et après chaque notion, texte plus grand et plus espacé, phrases d'introduction en italique doré, plus d'espace sous les onglets de l'atlas.
+- Tests : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement.
