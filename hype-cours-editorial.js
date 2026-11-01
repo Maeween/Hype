@@ -20,8 +20,12 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 26;   /* 01/11 19h25 : même hiérarchie et plus d'air sur tablette et ordinateur */
-/* précédente : VERSION = 25; */   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage (titre en deux temps, trait doré avant chaque notion) */
+var VERSION = 29;   /* 01/11 19h40 : une seule vague entre deux chapitres (noir -> pétrole), plus de 2e vague en bas des chapitres pétrole */
+/* précédente : VERSION = 28; */   /* 01/11 19h35 : photo du chapitre « Comprendre sa silhouette » (g1-c20) */
+/* précédente : VERSION = 27; */   /* 01/11 19h30 : fusion — g1-c10 chaînette (VERSION 25 de main) + téléphone/ordinateur aérés (mes 25-26) */
+/* précédente (branche) : VERSION = 26; */   /* 01/11 19h25 : même hiérarchie et plus d'air sur tablette et ordinateur */
+/* précédente (branche) : VERSION = 25; */   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage */
+/* précédente (main) : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
@@ -404,7 +408,7 @@ var CSS = [
 ".hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,.55) 0%,rgba(16,29,34,.92) 40%,#101D22 100%)}",
 "@container hce (min-width:1040px){.hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(270deg,#101D22 0%,rgba(16,29,34,.88) 22%,rgba(16,29,34,.35) 55%,rgba(16,29,34,.25) 100%),linear-gradient(180deg,#101D22 0%,rgba(16,29,34,0) 20%,rgba(16,29,34,0) 78%,#101D22 100%)}}",
 ".hce .hce-chp.auto.inv .pan{background:rgba(9,17,20,.86)}",
-".hce .hce-chp.auto.inv::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
+".hce .hce-chp.auto.inv::after{display:none!important;content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
 ".hce-chp>.in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:30px;max-width:1240px;margin:0 auto}",
 ".hce-chp .kick{font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--champ);margin:0 0 12px}",
 ".hce-chp h2{font-size:44px;line-height:1.02}",
@@ -498,7 +502,7 @@ var CSS = [
 /* 17h45 (Blandine : « laisse les encarts bleu pétrole en semi-transparent avec le fond noir derrière, et ne prends pas les photos dedans ») :
    téléphone — la photo du chapitre reste sur fond noir, nette ; seul le bloc de texte est en bleu pétrole semi-transparent */
 ".hce .hce-chp-mobile.auto.inv{background:#070A08}",
-".hce .hce-chp-mobile.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,0) 70%,#070A08 100%)}",
+".hce .hce-chp-mobile.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,0) 70%,#101D22 100%)}",   /* 01/11 19h40 : fondu vers le pétrole (avant : vers le noir #070A08) */
 ".hce .hce-chp-mobile.auto.inv>.in{background:rgba(16,29,34,.55);border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18);padding-bottom:22px;margin-top:6px}",
 ".hce .hce-chp-mobile>.bg{filter:none}",
 ".hce-chp-mobile>.in{display:block;padding:18px 16px 0}",
@@ -1040,10 +1044,13 @@ function HypeCoursEditorial(props) {
   var corps = [];
   chs.forEach(function (cur, ci) {
     if (parPage && ci !== ia) return;
-    corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? fond(chs[ci - 1].ton) : NOIR, vers: fond(cur.ton) }));
+    /* 01/11 19h40 : la vague entre deux chapitres passe du noir au bleu pétrole (chapitres en miroir des cours auto), au lieu d'une 2e vague dessinée en bas du chapitre pétrole */
+    var fondC = function (k) { return (cfg.auto && k % 2) ? "#101D22" : fond(chs[k].ton); };
+    corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? fondC(ci - 1) : NOIR, vers: fondC(ci) }));
     corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, "aria-labelledby": "hce-t-" + cur.id },
       cur.ton === "photo" ? cur.rendu(ctx) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
   });
+  (function () { var k = parPage ? ia : chs.length - 1; if (cfg.auto && k % 2) corps.push(h(Vague, { key: "vfin", de: "#101D22", vers: NOIR })); })();   /* 01/11 19h40 : retour au noir après un dernier chapitre pétrole */
   if (!dernier) corps.push(h("div", { key: "suiv", className: "hce-suiv" },
     h("button", { type: "button", className: "hce-btn", onClick: function () { choisir(ia + 1); } },
       L("chapSuiv") + "  ·  " + cfg.chapitres[ia + 1].label, fleche(rtl, 15)),
@@ -1336,7 +1343,7 @@ var AUTO_IM = {
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
-  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
+  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 19h28 : photo de Blandine pour « Comprendre sa silhouette » (avant : galop5-theme-cheval.webp) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
@@ -1387,7 +1394,7 @@ var AUTO_IM_G3 = {
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
-var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),

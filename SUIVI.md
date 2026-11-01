@@ -16101,6 +16101,13 @@ Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, 
 - PROBLÈME TROUVÉ (déjà présent en ligne, NON corrigé, à valider par Blandine) : dans les cours générés du Galop 1, les encarts du haut (conseil du coach, défi) n'apparaissent qu'en français. Exemples : g1-c3 et g1-c4 sans coach ni défi en anglais et en arabe, g1-c8 sans coach. Cause : le modèle reconnaît ces blocs par leur titre français, mais il reçoit le cours déjà traduit.
 
 
+## 01/11/2026 19h10 — PUBLICATION build 20261101-1910 (accord de Blandine 19h09 « Ok ») : « Le nœud d'attache » (g1-c10) — affiche « Le nœud avec chaînette » reprise en texte puis retirée
+Demande de Blandine (18h03, capture de l'affiche) : « regarde ce que cette page apporte en plus au cours du nœud d'attache et ajoute-le en la retirant si besoin ».
+- Ce que l'affiche apportait en plus : la technique de la « chaînette » (boucles successives, 3 ou 4 conseillées, serrer chaque boucle, verrouiller, défaire) et le fait qu'elle bloque le desserrage. Le reste était déjà dans le cours (verrouillage, « test du stress », ficelle de sécurité) ou trop général (« la règle d'or ») : non repris.
+- Ajouté au chapitre 02, après « La méthode pas à pas » : « Pour aller plus loin : la chaînette » (1 phrase + 5 étapes), 14 langues — hype-cours-galop1.js v12 (?v=13).
+- Correction : l'affiche disait à la fois « verrouiller en passant le bout dans la dernière boucle » et « se défait en tirant sur le bout final ». Le texte dit : sortir d'abord le bout de la dernière boucle, puis tirer.
+- Affiche retirée de l'affichage (AFFICHES_RETIREES « g1-c10 » : [2]) — hype-cours-editorial.js VERSION 25 (?v=25). Reporté sur la version en ligne 339d63b (affiches g1-c3, g1-c17 de l'autre conversation gardées).
+- Vérifié : g1-c10 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement, nouvelle section présente, affiche absente. index.html build 20261101-1910.
 ## 01/11 19h20 — Cours sur téléphone : plus d'air et titres plus clairs (NON publié, build 20261101-1920)
 Demandes de Blandine (18h56 « T'as pas suivi le visuel des premiers cours […] en couleurs », 18h58 « Tout est un peu entassé […] aérer […] on ne sait plus trop ce qui est titre ou pas »).
 - Couleurs : déjà fait par une autre conversation à 16h10 (un chapitre sur deux en bleu pétrole, Galops 1 à 4) ; les captures envoyées le matin étaient antérieures. Rien ajouté.
@@ -16110,6 +16117,9 @@ Demandes de Blandine (18h56 « T'as pas suivi le visuel des premiers cours […]
   · plus d'air : 38 px avant et après chaque notion, texte plus grand et plus espacé, phrases d'introduction en italique doré, plus d'espace sous les onglets de l'atlas.
 - Tests : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement.
 
-## 01/11/2026 19h30 — PUBLICATION build 20261101-1930, accord de Blandine (19h18 « Ok »)
-- Mis en ligne : la version téléphone aérée (entrée 19h20) + la même hiérarchie sur tablette et ordinateur (hype-cours-editorial.js VERSION 26, ?v=26) : « 01 — GALOP 3 » suivi d'un filet doré, titre du chapitre en deux temps (2e partie en italique doré), citation avec un trait doré, trait doré au-dessus du titre de la carte, plus d'air et phrases d'introduction en italique doré dans la carte.
+## 01/11/2026 19h45 — PUBLICATION build 20261101-1940 (fusion avec la build 1910 de l'autre conversation, g1-c10 chaînette gardée), accord de Blandine (19h18 « Ok »)
+- Mis en ligne : la version téléphone aérée (entrée 19h20) + la même hiérarchie sur tablette et ordinateur (hype-cours-editorial.js VERSION 27, ?v=27) : « 01 — GALOP 3 » suivi d'un filet doré, titre du chapitre en deux temps (2e partie en italique doré), citation avec un trait doré, trait doré au-dessus du titre de la carte, plus d'air et phrases d'introduction en italique doré dans la carte.
 - Tests : 60 cours du modèle (390 et 1440 px) + tablette 820 px sans erreur ni débordement.
+- Ajouté à la même publication :
+  · g1-c20 « La physiologie » : photo envoyée par Blandine (19h28) pour le chapitre « Comprendre sa silhouette » — images/cours-g1-c20-silhouette.webp (avant : galop5-theme-cheval.webp, gardée dans images/) ; VERSION 28.
+  · Deux vagues l'une sous l'autre entre deux chapitres (vue sur la capture de Blandine) : la vague dessinée en bas des chapitres pétrole est masquée, la vague de passage va maintenant du noir au bleu pétrole (et retour au noir après un dernier chapitre pétrole) ; fondu de la photo des chapitres pétrole vers le pétrole sur téléphone ; VERSION 29 (?v=29).
