@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 21;   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
+var VERSION = 22;   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
+/* précédente : VERSION = 21; */   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
 /* précédente : VERSION = 20; */   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
 /* précédente : VERSION = 19; */   /* 01/11 16h10 : haut de page (hero) beaucoup plus haut, titre sous la photo sur téléphone et tablette — tous les Galops */
 /* précédente : VERSION = 18; */   /* 01/11 11h50 : photos des chapitres 02 « Seller le cheval » et 03 « Brider le cheval » (g1-c17) */
@@ -1287,7 +1288,8 @@ var AUTO_IM = {
   "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-g1-c17-seller.webp",   /* 01/11 11h46 : chapitre 02 « Seller le cheval » = photo de Blandine */
     "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */
     "images/cours-g1-c17-verif.webp"   /* 01/11 16h11 : chapitre 04 « La vérification finale » = photo de Blandine */],
-  "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
+  "g1-c18": ["images/cours-g1-c18-ch1.webp",   /* 01/11 17h44 : chapitre 01 « Avant de partir et se placer correctement » = photo de Blandine (cavalière qui mène un cheval gris en main, courbes décoratives retirées) */
+    "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
   "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
   "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
   "g2-c1": ["images/cours-pansage-09_gestes_brossage.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c05-soins.webp"],
