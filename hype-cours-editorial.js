@@ -20,12 +20,19 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 31;   /* 01/11 20h05 : photo du chapitre « Comprendre sa silhouette » (g1-c20) */
-/* précédente : VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
-/* précédente : var VERSION = 29; */   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
+var VERSION = 32;   /* 01/11 19h50 : version de Claude choisie par Blandine (« je préfère la tienne ») — chapitres aérés (titre en deux temps, traits dorés, plus d'air) au lieu du style robes de la VERSION 30 ; photo de « Comprendre sa silhouette » */
+/* précédente (main) : VERSION = 31; */   /* 01/11 20h05 : photo du chapitre « Comprendre sa silhouette » (g1-c20) */
+/* précédente (main) : VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes (autre conversation) — remplacé ici, rien de leur contenu perdu */
+var VERSION = 29;   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
 /* précédente : VERSION = 28; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
 /* précédente : VERSION = 27; */   /* 01/11 19h : fond noir partout (cartes de notion bleu pétrole semi-transparentes ombrées un chapitre sur deux) + citation du cours en bandeau lisible sous le haut de page (tous écrans) */
 /* précédente : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
+/* (branche de Claude) VERSION 29 : une seule vague entre deux chapitres ; 28 : photo silhouette ; 25-26 : chapitres aérés téléphone et ordinateur */
+/* précédente : VERSION = 28; */   /* 01/11 19h35 : photo du chapitre « Comprendre sa silhouette » (g1-c20) */
+/* précédente : VERSION = 27; */   /* 01/11 19h30 : fusion — g1-c10 chaînette (VERSION 25 de main) + téléphone/ordinateur aérés (mes 25-26) */
+/* précédente (branche) : VERSION = 26; */   /* 01/11 19h25 : même hiérarchie et plus d'air sur tablette et ordinateur */
+/* précédente (branche) : VERSION = 25; */   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage */
+/* précédente (main) : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
@@ -98,6 +105,13 @@ function nettoyerTitre(s) { return String(s || "").replace(/^[\u{1F000}-\u{1FAFF
 function sansNum(s) { return String(s || "").replace(/^\s*\d+\s*[.)．、]\s*/, ""); }
 function paras(s) { return String(s || "").split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean); }
 function phrases(s) { return String(s || "").split(/(?<=[.。!！?？])\s*/).map(function (t) { return t.trim(); }).filter(Boolean); }
+/* titre de chapitre : « Le Matériel : ton équipement » -> ["Le Matériel :", "ton équipement"] ; sinon coupe en deux moitiés (3 mots et plus) */
+function titreDeux(s) {
+  s = String(s || "");
+  var m = s.match(/^(.+?\s*[:：])\s*(.+)$/);
+  if (m) return [m[1], m[2]];
+  return deuxLignes(s);
+}
 function deuxLignes(s) {   /* « La sécurité avant tout » -> ["La sécurité", "avant tout"] */
   s = String(s || "");
   var v = s.indexOf(",");
@@ -406,7 +420,7 @@ var CSS = [
 ".hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.92) 40%,#070A08 100%)}",
 "@container hce (min-width:1040px){.hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(270deg,#070A08 0%,rgba(7,10,8,.88) 22%,rgba(7,10,8,.35) 55%,rgba(7,10,8,.25) 100%),linear-gradient(180deg,#070A08 0%,rgba(7,10,8,0) 20%,rgba(7,10,8,0) 78%,#070A08 100%)}}",
 ".hce .hce-chp.auto.inv .pan{background:rgba(9,17,20,.86)}",
-".hce .hce-chp.auto.inv::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
+".hce .hce-chp.auto.inv::after{display:none!important;content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
 ".hce-chp>.in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:30px;max-width:1240px;margin:0 auto}",
 ".hce-chp .kick{font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--champ);margin:0 0 12px}",
 ".hce-chp h2{font-size:44px;line-height:1.02}",
@@ -659,67 +673,53 @@ var CSS = [
 ".hce-chap .lb small{display:none}",
 ".hce-chap .hce-rond{bottom:14px;inset-inline-end:12px}",
 "}",
-/* ===== 01/11 19h30 (Blandine : « reproduis exactement ces couleurs, ces alternances et cette vague, ainsi que les titres », « reprends tout partout ») :
-   chapitres dans le style du cours des robes, sur téléphone, tablette et ordinateur ===== */
-".hce-vague{display:block;width:100%;height:26px;margin:-1px 0;padding:0}",
-".hce .hce-chp.rb{background:transparent!important;padding:40px 20px 46px;overflow:visible}",
-".hce .hce-chp.rb::after,.hce .hce-chp.rb>.bg{display:none!important}",
-".hce .hce-chp.rb>.in{display:block;max-width:1240px;margin:0 auto}",
-".hce .rb-head{display:flex;gap:10px;align-items:baseline;margin-bottom:18px}",
-".hce .rb-num{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1;color:var(--champ);flex:0 0 auto}",
-".hce .rb-num:after{content:'';display:block;height:1px;width:20px;background:var(--champ);margin-top:4px}",
-".hce .hce-chp.rb h2{font-size:21px;line-height:1.2;text-shadow:none;margin:0;color:var(--ivoire)}",
-".hce .hce-chp.rb .rb-sous{margin:-6px 0 16px;max-width:none}.hce .hce-chp.rb .rb-note{margin:-4px 0 18px}",
-".hce .rb-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}",
-".hce .rb-photo{margin:0;border-radius:18px;overflow:hidden;background:#101A1D}",
-".hce .rb-photo img{display:block;width:100%;height:auto}",   /* photo entière (règle de Blandine : on ne coupe pas les photos, la vague reste) */
-".hce .rb-grid .hce-mobile-unit h3{font-size:21px;line-height:1.2}",
-".hce .rb-grid .hce-mobile-read{margin-top:0}",
-".hce-mobile-read{display:grid;gap:22px;min-width:0;margin-top:22px}",
-".hce-mobile-unit{min-width:0;padding:0 0 22px;border-bottom:1px solid rgba(201,166,107,.24)}",
-".hce-mobile-unit h3{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:25px;line-height:1.1;margin:12px 0 12px;color:var(--ivoire)}",
-".hce-mobile-unit.is-alert{padding:15px 14px 18px;border:1px solid rgba(217,150,124,.7);border-radius:12px;background:linear-gradient(180deg,rgba(58,22,19,.45),rgba(9,12,11,.9) 70%)}",
-".hce-mobile-unit.is-alert h3{color:#E3A18E;margin-top:0}",
-".hce-mobile-unit .pimg{width:100%;aspect-ratio:2.2/1;margin:0 0 6px;border-radius:10px;overflow:hidden}",
-".hce-mobile-unit .pimg img{display:block;width:100%;height:100%;object-fit:cover}",
-".hce-mobile-unit .pimg.aff{aspect-ratio:auto;max-height:none;margin:0 0 8px}.hce-mobile-unit .pimg.aff img{max-height:70vh;object-fit:contain}",
-".hce-mobile-unit .hce-txt,.hce-mobile-unit .s,.hce-mobile-unit .ap,.hce-mobile-unit p.pg{font-size:15px;line-height:1.62;color:var(--doux);overflow-wrap:anywhere}",
-".hce-mobile-unit p.pg{color:var(--ivoire);margin:0 0 8px}",
-".hce-mobile-unit .s{margin:0 0 10px}",
-".hce-mobile-unit .ap{margin:12px 0 0;padding-top:10px;border-top:1px solid rgba(201,166,107,.22)}",
-".hce-mobile-unit ul{margin:8px 0;padding-inline-start:20px;display:grid;gap:7px;font-size:15px;line-height:1.55;color:var(--ivoire);overflow-wrap:anywhere}",
-".hce-mobile-unit li::marker{color:var(--champ)}",
-".hce-mobile-unit ul.x{list-style:none;padding-inline-start:0}",
-".hce-mobile-unit ul.x li{position:relative;padding-inline-start:24px}",
-".hce-mobile-unit ul.x li:before{content:'✕';position:absolute;inset-inline-start:0;color:#E3A18E;font-weight:700}",
-".hce-mobile-unit .ast{border-inline-start:2px solid var(--champ);padding-inline-start:12px;font-size:15px;line-height:1.6;color:var(--ivoire)}",
-".hce-mobile-unit .hce-coches{margin-top:10px}.hce-mobile-unit .hce-coches ul{padding:0}",
-".hce-mobile-unit .hce-coches button{font-size:13px;line-height:1.45;padding:10px 11px}",
-".hce-mobile-unit .hce-chips{display:flex;flex-wrap:wrap;gap:7px}.hce-mobile-unit .hce-chips button{max-width:100%;white-space:normal;overflow-wrap:anywhere}",
-".hce-mobile-unit .hce-fig{width:100%;margin-bottom:10px}.hce-mobile-unit .hce-fig img{width:100%;height:100%;object-fit:contain}",
-".hce-mobile-unit .hce-hot{width:30px;height:30px;font-size:15px}",
-".hce-mobile-unit .hce-ztabs{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 12px}",
-".hce-mobile-unit .hce-ztabs button{border:1px solid rgba(201,166,107,.45);border-radius:8px;background:rgba(7,10,8,.55);padding:7px 10px;min-width:0;max-width:100%;font-size:12px;text-align:start;overflow-wrap:anywhere;color:var(--ivoire)}",
-".hce-mobile-unit .hce-ztabs button[aria-selected=true]{border-color:var(--champ);color:var(--champ)}",
-".hce-mobile-unit .ret{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;line-height:1.35}",
-".hce-mobile-unit .ret b{display:block;font-family:'Montserrat',sans-serif;font-style:normal;font-size:11px;color:var(--champ);margin-bottom:5px}",
-".hce-mobile-unit .qf{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--champ);margin-bottom:12px}",
-".hce-mobile-unit .hce-btn{max-width:100%;white-space:normal;text-align:center}",
-".hce .rb-grid .hce-mobile-unit:last-child{border-bottom:0;padding-bottom:0}",
-"@container hce (min-width:700px){",
-".hce .hce-chp.rb{padding:56px 32px 62px}",
-".hce .rb-head{gap:14px;margin-bottom:24px}.hce .rb-num{font-size:28px}.hce .hce-chp.rb h2{font-size:28px}",
-".hce .rb-grid{gap:30px}.hce .rb-grid .hce-mobile-unit h3{font-size:28px}",
-".hce .rb-grid .hce-mobile-unit .hce-txt,.hce .rb-grid .hce-mobile-unit .s,.hce .rb-grid .hce-mobile-unit p.pg,.hce .rb-grid .hce-mobile-unit ul{font-size:15.5px;line-height:1.75}",
+/* 01/11 19h00 (Blandine : « tout est un peu entassé […] aérer […] on ne sait plus trop ce qui est titre ou pas ») — TÉLÉPHONE :
+   hiérarchie du cours pansage : numéro + filet doré, titre en deux temps, plus d'air entre les notions, chaque titre de notion annoncé par un petit trait doré. */
+"@media screen and (max-width:699px){",
+".hce-chp-mobile>.in{padding:26px 20px 0}",
+".hce .hce-chp-mobile .kick{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.28em;margin:0 0 14px}",
+".hce .hce-chp-mobile .kick:after{content:'';flex:0 0 40px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp-mobile h2{font-size:34px;line-height:1.08;margin:0}",
+".hce .hce-chp-mobile h2 span,.hce .hce-chp-mobile h2 em{display:block}",
+".hce .hce-chp-mobile h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp-mobile .sous{margin:12px 0 0;font-style:italic;font-size:15px;color:var(--doux)}",
+".hce .hce-chp-mobile .note{margin:16px 0 0;padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6);font-size:14px;line-height:1.55}",
+".hce-mobile-read{gap:0;margin-top:34px}",
+".hce-mobile-unit{padding:0 0 38px;margin:0 0 38px;border-bottom:1px solid rgba(201,166,107,.16)}",
+".hce-mobile-unit:last-child{border-bottom:0;margin-bottom:0}",
+".hce-mobile-unit h3{font-size:27px;line-height:1.12;margin:20px 0 14px}",
+".hce-mobile-unit h3:before{content:'';display:block;width:28px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce-mobile-unit>h3:first-child{margin-top:0}",
+".hce-mobile-unit.is-alert{padding:20px 18px 22px}",
+".hce-mobile-unit.is-alert h3:before{background:#E3A18E}",
+".hce-mobile-unit .pimg{margin:0 0 4px;border-radius:14px}",
+".hce-mobile-unit .hce-txt,.hce-mobile-unit .ap,.hce-mobile-unit p.pg{font-size:15.5px;line-height:1.72}",
+".hce-mobile-unit p.pg{margin:0 0 14px}",
+".hce-mobile-unit .s{font-style:italic;color:#D9B98A;font-size:15px;line-height:1.55;margin:0 0 14px}",
+".hce-mobile-unit .ap{margin:18px 0 0;padding-top:16px}",
+".hce-mobile-unit ul{margin:12px 0 14px;gap:11px;font-size:15.5px;line-height:1.6}",
+".hce-mobile-unit li strong{color:#E3CBA0}",
+".hce-mobile-unit .ast{margin:16px 0;padding:4px 0 4px 14px}",
+".hce-mobile-unit .hce-fig{margin-bottom:14px}",
+".hce-mobile-unit .hce-ztabs{margin:4px 0 26px;gap:9px}",
 "}",
-"@container hce (min-width:1040px){",
-".hce .hce-chp.rb{padding:64px 44px 70px}",
-".hce .rb-head{gap:22px;margin-bottom:42px}.hce .rb-num{font-size:34px}.hce .rb-num:after{width:28px}.hce .hce-chp.rb h2{font-size:clamp(32px,2.8vw,46px);line-height:1.1}",
-".hce .rb-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:64px}",
-".hce .rb-grid .rb-photo{position:sticky;top:90px}",
-".hce .rb-grid.inv .rb-photo{order:2}",
-".hce .rb-grid .hce-mobile-unit .hce-txt,.hce .rb-grid .hce-mobile-unit .s,.hce .rb-grid .hce-mobile-unit p.pg,.hce .rb-grid .hce-mobile-unit ul{font-size:16px;line-height:1.82}",
-"}",
+/* 01/11 19h20 — TABLETTE ET ORDINATEUR : même hiérarchie que le téléphone (filet après le numéro, titre en deux temps, trait doré avant le titre de la carte, plus d'air dans la carte) */
+"@media screen and (min-width:700px){",
+".hce .hce-chp .kick{display:flex;align-items:center;gap:14px}",
+".hce .hce-chp .kick:after{content:'';flex:0 0 48px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp h2 span,.hce .hce-chp h2 em{display:block}",
+".hce .hce-chp h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp .sous{margin-top:14px;font-style:italic}",
+".hce .hce-chp .por{margin-top:30px}",
+".hce .hce-chp .note{padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6)}",
+".hce .hce-chp .pan{gap:16px;padding:28px 30px 22px}",
+".hce .hce-chp .pan h3{margin:0 0 4px}",
+".hce .hce-chp .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp .pan.al h3:before{background:var(--alerte)}",
+".hce .hce-chp .pan p.pg,.hce .hce-chp .pan .hce-txt,.hce .hce-chp .pan ul{line-height:1.72}",
+".hce .hce-chp .pan .s{font-style:italic;color:#D9B98A}",
+".hce .hce-chp .pan ul{gap:10px}",
+"}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -756,10 +756,13 @@ function HeroPhoto(p) {
   var hr = ratio ? Math.max(72, Math.min(110, 100 / ratio)) : 72;
   return h("div", { className: "ph", style: Object.assign({ "--hr": hr.toFixed(1) + "vw" }, p.style) });
 }
-function Vague(p) {   /* 01/11 19h30 (Blandine : « reproduis exactement ces couleurs, ces alternances et cette vague ») : la vague du cours des robes */
-  return h("svg", { className: "hce-vague", viewBox: "0 0 1000 26", preserveAspectRatio: "none", "aria-hidden": true, style: { background: p.de } },
-    h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9 L1000 26 L0 26Z", fill: p.vers }),
-    h("path", { d: "M0 9 Q160 26 360 12 Q560 -2 770 13 Q890 21 1000 9", fill: "none", stroke: "rgba(201,166,107,.35)", strokeWidth: 1, vectorEffect: "non-scaling-stroke" }));
+function Vague(p) {
+  var d = "M0,0 L1200,0 L1200,9 C1050,20 900,3 750,10 C600,17 450,2 300,9 C200,14 100,6 0,11 Z";
+  var ligne = "M0,11 C100,6 200,14 300,9 C450,2 600,17 750,10 C900,3 1050,20 1200,9";
+  return h("div", { className: "hce-vague", "aria-hidden": true, style: { background: "linear-gradient(180deg," + p.de + " 50%," + p.vers + " 50%)" } },
+    h("svg", { viewBox: "0 0 1200 22", preserveAspectRatio: "none" },
+      h("path", { d: d, fill: p.de }),
+      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: 0.45, strokeWidth: 1, vectorEffect: "non-scaling-stroke" })));
 }
 function Visuel(p) {
   return h("div", { className: "hce-vis " + (p.ratio || "r43"), role: "img", "aria-label": p.L("visuel") }, ICO.image(26), p.L("visuel"));
@@ -943,16 +946,36 @@ function Chapitre(p) {
     var b = ol.querySelectorAll("button")[i]; if (!b) return;
     try { ol.scrollTo({ left: b.parentNode.offsetLeft - 16, behavior: "smooth" }); } catch (e) { }
   }, [i]);
-  /* 01/11 19h30 (Blandine : « reprends tout partout ») : chapitre dans le style du cours des robes, sur tous les écrans —
-     gros numéro doré + titre, photo entière dans un cadre arrondi, puis toutes les notions à la suite (photo à côté sur ordinateur, un chapitre sur deux de l'autre côté) */
-  return h("div", { className: "hce-chp rb" + (p.cls ? " " + p.cls : "") },
+  if (mobile) return h("div", { className: "hce-chp hce-chp-mobile" + (p.cls ? " " + p.cls : "") },
+    h("div", { className: "bg", "aria-hidden": true, style: { backgroundImage: "url(" + p.bg + ")", backgroundPosition: p.bgPos || "70% 40%" } }),
     h("div", { className: "in" },
-      h("div", { className: "rb-head" }, h("div", { className: "rb-num" }, p.num), h("h2", { id: "hce-t-" + p.id }, p.titre)),
-      p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
-      p.note ? h("p", { className: "note rb-note" }, p.note) : null,
-      h("div", { className: "rb-grid" + (p.inv ? " inv" : "") },
-        p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy", style: { objectPosition: p.bgPos || "50% 40%" } })) : null,
-        h(MobileLectureNotions, { items: p.items }))));
+      h("div", { className: "g" },
+        h("p", { className: "kick" }, p.num + "  —  " + p.galop),
+        /* 01/11 19h (Blandine : « on ne sait plus trop ce qui est titre ») : titre en deux temps comme le pansage, 2e partie en italique doré */
+        h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre)),
+        p.sous ? h("p", { className: "sous" }, p.sous) : null,
+        p.note ? h("p", { className: "note" }, p.note) : null),
+      h(MobileLectureNotions, { items: p.items })));
+  return h("div", { className: "hce-chp" + (p.cls ? " " + p.cls : "") },
+    h("div", { className: "bg", "aria-hidden": true, style: { backgroundImage: "url(" + p.bg + ")", backgroundPosition: p.bgPos || "70% 40%" } }),
+    h("div", { className: "in" },
+      h("div", { className: "g" },
+        h("p", { className: "kick" }, p.num + "  —  " + p.galop),
+        /* 01/11 19h20 : même hiérarchie que sur téléphone (titre en deux temps, 2e partie en italique doré) */
+        h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre)),
+        p.sous ? h("p", { className: "sous" }, p.sous) : null,
+        h("ol", { className: "por", ref: olRef, role: "tablist", "aria-label": p.titre }, p.items.map(function (x, k) {
+          return h("li", { key: k }, h("button", { type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", className: x.alerte ? "al" : undefined, onClick: function () { setI(k); } },
+            h("span", { className: "rond" }, String(k + 1)), h("span", { className: "pt", "aria-hidden": true }), h("span", { className: "tx" }, x.titre)));
+        })),
+        p.note ? h("p", { className: "note" }, p.note) : null),
+      h("div", { className: "pan" + (it.alerte ? " al" : ""), role: "tabpanel", "aria-live": "polite" },
+        h("p", { className: "k" }, (i + 1) + " / " + n),
+        h("h3", null, it.titre),
+        it.rendu(),
+        h("div", { className: "nav" },
+          h("button", { type: "button", className: "hce-rond", disabled: i === 0, "aria-label": L("prec"), onClick: function () { setI(i - 1); } }, fleche(!rtl, 16)),
+          h("button", { type: "button", className: "hce-rond", disabled: i === n - 1, "aria-label": L("suiv"), onClick: function () { setI(i + 1); } }, fleche(rtl, 16))))));
 }
 /* petit atlas dans la carte : la photo du cheval de profil, le repère de la zone choisie mis en avant */
 function AtlasMini(p) {
@@ -1037,25 +1060,23 @@ function HypeCoursEditorial(props) {
   var parPage = !!cfg.unParPage, ia = Math.min(actif, chs.length - 1);
   var dernier = parPage ? ia >= chs.length - 1 : true;
   var corps = [];
-  /* 01/11 19h30 (Blandine) : comme le cours des robes — les parties alternent bleu nuit / noir, une vague dorée entre chacune */
-  var BLEU = "#0A1116", col = function (ci) { return ci % 2 ? NOIR : BLEU; };
   chs.forEach(function (cur, ci) {
     if (parPage && ci !== ia) return;
-    corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? col(ci - 1) : NOIR, vers: col(ci) }));
-    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, style: { background: col(ci) }, "aria-labelledby": "hce-t-" + cur.id },
-      cur.ton === "photo" ? cur.rendu(Object.assign({}, ctx, { inv: ci % 2 === 1 })) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
+    /* 01/11 19h40 : la vague entre deux chapitres passe du noir au bleu pétrole (chapitres en miroir des cours auto), au lieu d'une 2e vague dessinée en bas du chapitre pétrole */
+    var fondC = function (k) { return fond(chs[k].ton); };   /* fond noir partout (choix du 01/11 19h) */
+    corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? fondC(ci - 1) : NOIR, vers: fondC(ci) }));
+    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, "aria-labelledby": "hce-t-" + cur.id },
+      cur.ton === "photo" ? cur.rendu(ctx) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
   });
-  var colFin = parPage ? NOIR : col(chs.length);
   if (!dernier) corps.push(h("div", { key: "suiv", className: "hce-suiv" },
     h("button", { type: "button", className: "hce-btn", onClick: function () { choisir(ia + 1); } },
       L("chapSuiv") + "  ·  " + cfg.chapitres[ia + 1].label, fleche(rtl, 15)),
     h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"))));
   else {
     /* 01/11 (pack ChatGPT) : sur téléphone, le conseil du coach passe ici, juste avant « Quiz et révision » (les encarts du haut sont masqués) */
-    if (chs.length) corps.push(h(Vague, { key: "vfin", de: parPage ? NOIR : col(chs.length - 1), vers: colFin }));
     if (enc && enc.coach) corps.push(h("aside", { key: "coach-mobile-fin", className: "hce-mobile-coach" }, h("h3", null, enc.coach.titre), h("p", null, enc.coach.texte)));
     autres.forEach(function (s) {
-      corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec t-" + s.ton, style: { paddingTop: 8, paddingBottom: 8, background: colFin } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
+      corps.push(h("section", { key: s.id, id: "hce-" + s.id, className: "hce-sec t-" + s.ton, style: { paddingTop: 8, paddingBottom: 8 } }, h("div", { className: "hce-in" }, s.rendu(ctx))));
     });
   }
 
@@ -1202,7 +1223,7 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {   /* unParPage :
   var ZPOS = [{ x: 14, y: 30 }, { x: 40, y: 50 }, { x: 43, y: 84 }, { x: 86, y: 66 }];
   var chap = function (id, bg, bgPos, sous, items, note) {
     return { id: id, ton: "photo", citation: note, rendu: function (x) {
-      return h(Chapitre, { key: id, id: id, L: x.L, rtl: x.rtl, inv: x.inv, num: num(id), galop: "Galop 1", titre: lab(id), sous: sous, bg: bg, bgPos: bgPos, items: items, note: note });
+      return h(Chapitre, { key: id, id: id, L: x.L, rtl: x.rtl, num: num(id), galop: "Galop 1", titre: lab(id), sous: sous, bg: bg, bgPos: bgPos, items: items, note: note });
     } };
   };
   var sections = [
@@ -2414,7 +2435,7 @@ AUTO_IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg, alerteNotion(n)); } }; });
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
-        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, inv: x.inv, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : c.note });   /* la citation du chapitre 01 est dans le bandeau sous le haut de page */
+        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : c.note });   /* la citation du chapitre 01 est dans le bandeau sous le haut de page */
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
