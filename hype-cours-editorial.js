@@ -788,6 +788,14 @@ var CSS = [
 ".hce[dir=rtl] .hce-chp.rbd .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce[dir=rtl] .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 "}",
+/* 01/11 21h20 (Blandine : « tout est collé au titre assez gros, rien n'est justifié, ça fait cahier d'école ») : titres de notion moins gros, de l'air sous le titre, texte justifié */
+".hce .hce-chp.rbm .hce-mobile-unit h3{font-size:23px;line-height:1.15;margin:18px 0 18px}",
+".hce .hce-chp.rbm .hce-mobile-unit>h3:first-child{margin-top:0}",
+".hce .hce-chp.rbm .hce-mobile-unit .pimg{margin:0 0 16px}",
+".hce .hce-chp .hce-mobile-unit .hce-txt,.hce .hce-chp .hce-mobile-unit p.pg,.hce .hce-chp .hce-mobile-unit .ap,.hce .hce-chp .hce-mobile-unit li,.hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan li,.hce .hce-chp.rbd .pan .ap{text-align:justify;-webkit-hyphens:auto;hyphens:auto}",
+".hce .hce-chp.rbd .pan h3{font-size:26px;margin-bottom:10px}",
+/* 01/11 21h25 (Blandine : « descends les hero du haut, ça les coupe en deux ») : sur téléphone, la photo du haut commence sous l'heure et les boutons ; elle garde sa taille entière */
+"@container hce (max-width:699px){.hce-hero .ph{box-sizing:border-box;height:calc(min(var(--hr,72vw),520px) + env(safe-area-inset-top,0px) + 62px);padding-top:calc(env(safe-area-inset-top,0px) + 62px);background-origin:content-box;background-clip:content-box}.hce-hero .ph:after{top:calc(env(safe-area-inset-top,0px) + 62px);background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0) 80%,#070A08 100%)}}",
 
 ].join("\n");
 
@@ -814,6 +822,11 @@ function fleche(rtl, w) { return ico(rtl ? ["M19 12H5", "M11 6l-6 6 6 6"] : ["M5
 /* 01/11 17h40 (Blandine : « fais une mise en page intelligente sur tel pour les hero, ils sont tous coupés de partout, dézoome un peu ») :
    sur téléphone, la hauteur de la photo du haut suit la forme de la photo (paysage = moins haute, donc moins coupée sur les côtés),
    entre 72 % et 110 % de la largeur de l'écran. Ordinateur et tablette : inchangés (règles plus loin). */
+/* 01/11 21h15 (Blandine : « recadre ») : cadrage des petites photos du menu des chapitres, photo par photo, pour que le sujet se voie (tête du cheval, cavalier, pieds…) */
+var CADRAGE_CARTE = {"FOND_CAVALIERS_ECURIE.webp": "50% 70%", "atlas-tete-cheval.webp": "50% 40%", "connexion-cheval-oeil-hd.jpg": "50% 45%", "cours-g1-c17-brider.webp": "50% 30%", "cours-g1-c17-seller.webp": "50% 25%", "cours-g1-c17-verif.webp": "50% 30%", "cours-g1-c18-ch1.webp": "50% 35%", "cours-g1-c20-silhouette.webp": "50% 60%", "cours-g1-c3-box.webp": "50% 40%", "cours-pansage-03_observer_approcher.webp": "50% 40%", "cours-pansage-09_gestes_brossage.webp": "50% 50%", "cours-pansage-12_pieds_sabot_au_sol.webp": "50% 80%", "galop5-c02-embouchures.webp": "50% 55%", "galop5-c03-apprendre.webp": "50% 45%", "galop5-c04-anatomie.webp": "50% 45%", "galop5-c05-soins.webp": "50% 75%", "galop5-c06-travail-pied.webp": "50% 55%", "galop5-c07-transport.webp": "50% 30%", "galop5-c08-equilibre.webp": "50% 65%", "galop5-c09-incurvation.webp": "50% 50%", "galop5-c10-cession.webp": "50% 50%", "galop5-c11-saut.webp": "50% 40%", "galop5-c12-cross.webp": "50% 55%", "galop5-hero-v2.webp": "50% 65%", "galop5-th-cheval2.webp": "50% 40%", "galop5-th-vie.webp": "50% 50%", "galop5-th-vie2.webp": "50% 55%", "galop5-theme-cheval.webp": "50% 70%", "galop5-theme-connaissances.webp": "50% 40%", "galop5-theme-pratique-montee.webp": "50% 50%", "galop5-theme-soins-pied.webp": "50% 50%", "galops-v2-carte-cours-hd1.jpg": "50% 30%", "galops-v2-carte-cours-hd2.jpg": "50% 35%", "galops-v2-carte-examens-hd1.jpg": "50% 55%", "galops-v2-carte-examens-hd2.jpg": "50% 55%", "materiel-g1-licol.webp": "50% 45%", "robes-g1-trio.webp": "50% 50%", "robes-portrait-aubere.webp": "50% 45%", "robes-portrait-creme.webp": "50% 45%", "securite-g1-alezan.webp": "50% 30%", "securite-g1-annoncer.webp": "50% 40%", "securite-g1-chute.webp": "50% 65%", "securite-g1-distance.webp": "50% 50%", "securite-g1-epaule.webp": "50% 45%", "securite-g1-inquiet.webp": "50% 45%", "securite-g1-longe.webp": "50% 50%", "securite-g1-observer.webp": "50% 55%", "securite-g1-porte.webp": "50% 55%", "securite-g1-rangement.webp": "50% 50%", "securite-g1-tenue.webp": "50% 45%"};
+function cadrageCarte(img) { var n = String(img || "").split("#")[0].split("/").pop(); return CADRAGE_CARTE[n] || null; }
+/* 01/11 21h20 (Blandine : « pas de majuscule en début de ligne ») : quand une puce « Gras : texte » devient une notion, le texte commence par une majuscule */
+function majInitiale(t) { t = String(t || ""); var m = t.match(/^(\s*[«"“(]?\s*)(\p{Ll})/u); return m ? m[1] + m[2].toLocaleUpperCase() + t.slice(m[0].length) : t; }
 function HeroPhoto(p) {
   var _r = useState(null), ratio = _r[0], setRatio = _r[1];
   useEffect(function () {
@@ -1182,7 +1195,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre"))),   /* 01/11 00h44 : « Touche un chapitre… » retiré (Blandine), espace gardé */
       h("ol", { style: { "--n": (function (t) { return t > 7 ? Math.ceil(t / 2) : t; })(cfg.chapitres.length + (cfg.revision ? 1 : 0)) } }, cfg.chapitres.map(function (c, i) {
         return h("li", { key: c.id }, h("button", { type: "button", className: "hce-chap", "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
-          h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + c.img + ")", backgroundPosition: c.pos || "center" } }),
+          h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + c.img + ")", backgroundPosition: cadrageCarte(c.img) || c.pos || "center" } }),
           h("span", { className: "n" }, (i < 9 ? "0" : "") + (i + 1)),
           h("span", { className: "lb" }, c.label, c.sous ? h("small", null, c.sous) : null),
           h("span", { className: "hce-rond", "aria-hidden": true }, fleche(rtl, 14))));
@@ -1483,7 +1496,7 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 /* 01/11 20h : chapitres interactifs ajoutés à un cours (module chargé à part) — apres = nombre de chapitres avant lui */
 var MODULES_COURS = { "g1-c20": { id: "tete", module: "HypeAtlasTete", apres: 1 } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
-var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2], "g2-aides": [5], "g2-depart": [5], "g2-c3": [4], "g2-c4": [5], "g2-c6": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
@@ -1871,7 +1884,7 @@ Object.assign(COMPL, {
     chap: [
       [tt("Découvrir ses particularités", "Discovering its traits", "Descubrir sus particularidades", "Scoprire le sue particolarità", "馬の特徴を知る", "Seine Besonderheiten entdecken", "اكتشاف خصائصه", "了解它的特点", "Zijn eigenschappen ontdekken", "Descobrir suas particularidades", "Upptäck dess särdrag", "Узнать её особенности", "Poznaj jego cechy", "말의 특징 알아보기"), 2],
       [tt("Se nourrir et se repérer", "Feeding and finding your way", "Alimentarse y orientarse", "Nutrirsi e orientarsi", "食べものと体のしくみ", "Fressen und sich zurechtfinden", "التغذية والتعرّف", "饮食与认识身体", "Voeding en je weg vinden", "Alimentar-se e localizar-se", "Foder och benets delar", "Питание и ориентиры", "Pokarm i orientacja", "먹이와 몸 알아보기"), 2],
-      [tt("Reconnaître les robes", "Recognising coat colours", "Reconocer las capas", "Riconoscere i mantelli", "毛色を見分ける", "Fellfarben erkennen", "التعرّف على الألوان", "认识毛色", "Vachtkleuren herkennen", "Reconhecer as pelagens", "Känna igen färgerna", "Различать масти", "Rozpoznawać maści", "털색 알아보기"), 2]
+      [tt("Reconnaître les robes", "Recognising coat colours", "Reconocer las capas", "Riconoscere i mantelli", "毛色を見分ける", "Fellfarben erkennen", "التعرّف على الألوان", "认识毛色", "Vachtkleuren herkennen", "Reconhecer as pelagens", "Känna igen färgerna", "Различать масти", "Rozpoznawać maści", "털색 알아보기"), 5]
     ]
   },
   "g2-anatomie": {
@@ -2334,7 +2347,7 @@ function construireAuto(cours, lg) {
     chapitres[0].notions.forEach(function (o) {
       var pu = o.seg && o.seg.puces, fp = o.fr && o.fr.puces;
       if (o.fr && o.fr.k === "section" && fp && fp.length >= 3 && fp.every(function (q) { return q.gras; }) && !o.suite.length && !r(o.seg.sous) && !o.seg.texte) {
-        pu.forEach(function (q, k) { nn.push({ titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: r(q.texte), suite: [] }); });
+        pu.forEach(function (q, k) { nn.push({ titre: sansEmojiFin(String(r(q.gras) || "").replace(/\s*[:：]\s*$/, "")), groupe: k === 0 ? titreNet(o.seg.titre) : null, texte1: majInitiale(r(q.texte)), suite: [] }); });
       } else nn.push(o);
     });
     chapitres[0].notions = nn;
