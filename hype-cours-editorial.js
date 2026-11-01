@@ -20,7 +20,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 19;   /* 01/11 16h10 : haut de page (hero) beaucoup plus haut, titre sous la photo sur téléphone et tablette — tous les Galops */
+var VERSION = 19;   /* 01/11 16h10 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
 /* précédente : VERSION = 18; */   /* 01/11 11h50 : photos des chapitres 02 « Seller le cheval » et 03 « Brider le cheval » (g1-c17) */
 /* précédente : VERSION = 17; */   /* 01/11 11h45 : défi de g3-c9 (litières), textes P3 validés par Blandine */
 /* précédente : VERSION = 16; */   /* + haut de page du nœud d'attache (g1-c10) ; 01/11 11h20 : + photo cheval blanc au licol (g1-c8, chapitre 01) + photo « Ne pas s'accroupir » (sécurité) */
@@ -110,14 +110,13 @@ var CSS = [
 /* ===== HAUT DE PAGE ===== */
 ".hce-top{position:relative;display:grid;grid-template-columns:minmax(0,1fr)}",
 ".hce-hero{position:relative;overflow:hidden;min-height:0;padding:0 0 22px}",
-/* 01/11 16h (Blandine : « descends les hero beaucoup plus […] ça coupe en haut en bas et ça s'écrase avec les titres ») : photo beaucoup plus haute, titre sous la photo */
-".hce-hero .ph{position:relative;height:calc(min(122vw,520px) + env(safe-area-inset-top, 0px));background:#070A08 center 30%/cover no-repeat;background-position:var(--pos-tel,center 30%);filter:saturate(.82)}",
-".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}",
+".hce-hero .ph{position:relative;height:230px;background:#070A08 center 30%/cover no-repeat;filter:saturate(.82)}",
+".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 30%,rgba(7,10,8,0) 55%,#070A08 100%)}",
 ".hce-bar{position:absolute;top:calc(14px + env(safe-area-inset-top, 0px));inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
 ".hce-back{width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
 ".hce-crumb{display:none;align-items:center;gap:10px;font-size:14px;color:var(--ivoire)}.hce-crumb i{font-style:normal;color:var(--doux)}",
 ".hce-lang{margin-inline-start:auto}",
-".hce-hero .txt{position:relative;z-index:2;padding:0 18px;margin-top:-6px}",
+".hce-hero .txt{position:relative;z-index:2;padding:0 18px;margin-top:-30px}",
 ".hce .hce-kick{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--champ);margin:0 0 10px}",
 ".hce-hero h1{font-size:34px;line-height:1.02;letter-spacing:-.005em}",
 ".hce-hero h1 span{display:block}.hce-hero h1 span+span{color:#D9B98A}",
@@ -385,6 +384,12 @@ var CSS = [
 ".hce-chp{position:relative;overflow:hidden;padding:56px 20px 64px;background:#070A08}",
 ".hce-chp>.bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;filter:saturate(.85)}",
 ".hce-chp>.bg:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.92) 40%,#070A08 100%)}",
+/* v15 (01/11, Blandine + relecture ChatGPT) : un chapitre sur deux (les chapitres en miroir) sur fond bleu pétrole avec une vague dorée — d'abord fait au Galop 4, étendu à tous les cours du modèle (Galops 1 à 4) */
+".hce .hce-chp.auto.inv{background:#101D22}",
+".hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,.55) 0%,rgba(16,29,34,.92) 40%,#101D22 100%)}",
+"@container hce (min-width:1040px){.hce .hce-chp.auto.inv>.bg:after{background:linear-gradient(270deg,#101D22 0%,rgba(16,29,34,.88) 22%,rgba(16,29,34,.35) 55%,rgba(16,29,34,.25) 100%),linear-gradient(180deg,#101D22 0%,rgba(16,29,34,0) 20%,rgba(16,29,34,0) 78%,#101D22 100%)}}",
+".hce .hce-chp.auto.inv .pan{background:rgba(9,17,20,.86)}",
+".hce .hce-chp.auto.inv::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}",
 ".hce-chp>.in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);gap:30px;max-width:1240px;margin:0 auto}",
 ".hce-chp .kick{font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--champ);margin:0 0 12px}",
 ".hce-chp h2{font-size:44px;line-height:1.02}",
@@ -520,7 +525,7 @@ var CSS = [
 "}",
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
-".hce-hero .ph{height:600px;background-position:var(--pos,center 30%)}.hce-hero .txt{padding:0 32px;margin-top:-10px}.hce-hero h1{font-size:52px}",
+".hce-hero .ph{height:380px}.hce-hero .txt{padding:0 32px;margin-top:-60px}.hce-hero h1{font-size:52px}",
 ".hce-bar{inset-inline:28px;top:calc(20px + env(safe-area-inset-top, 0px))}.hce-crumb{display:inline-flex}",
 ".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}.hce-enc.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.hce-enc.n1{grid-template-columns:minmax(0,1fr)}",
 ".hce-card{flex:none;min-height:150px}.hce-card h3{max-width:none}.hce-card p{max-width:78%}",
@@ -557,8 +562,8 @@ var CSS = [
 /* ===== ORDINATEUR (conteneur >= 1080 px) : encarts à droite du haut de page, section 01 en 3 colonnes ===== */
 "@container hce (min-width:1040px){",
 ".hce-top{grid-template-columns:minmax(0,1fr) 340px;min-height:430px}",
-".hce-hero{padding:0;display:flex;align-items:flex-end;min-height:600px;grid-column:1/-1;grid-row:1}",
-".hce-hero .ph{position:absolute;inset:0;inset-inline-end:340px;height:auto;background-position:var(--pos,70% 30%)}",
+".hce-hero{padding:0;display:flex;align-items:flex-end;min-height:430px;grid-column:1/-1;grid-row:1}",
+".hce-hero .ph{position:absolute;inset:0;inset-inline-end:340px;height:auto;background-position:70% 30%}",
 ".hce-hero:before{content:'';position:absolute;inset:0;inset-inline-start:auto;width:340px;background:#070A08}",
 ".hce-hero .ph:after{background:linear-gradient(270deg,rgba(7,10,8,0) 66%,#070A08 100%),linear-gradient(90deg,#070A08 0%,rgba(7,10,8,.92) 26%,rgba(7,10,8,.35) 52%,rgba(7,10,8,.08) 72%),linear-gradient(180deg,rgba(7,10,8,.35) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
 "[dir=rtl] .hce-hero .ph:after{background:linear-gradient(90deg,rgba(7,10,8,0) 66%,#070A08 100%),linear-gradient(270deg,#070A08 0%,rgba(7,10,8,.92) 26%,rgba(7,10,8,.35) 52%,rgba(7,10,8,.08) 72%),linear-gradient(180deg,rgba(7,10,8,.35) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
@@ -973,7 +978,7 @@ function HypeCoursEditorial(props) {
     /* HAUT DE PAGE + 3 ENCARTS */
     h("div", { className: "hce-top" },
       h("header", { className: "hce-hero" },
-        h("div", { className: "ph", style: Object.assign({ backgroundImage: "url(" + hero.img + ")" }, hero.pos ? { "--pos": hero.pos } : {}, (hero.posTel || hero.pos) ? { "--pos-tel": hero.posTel || hero.pos } : {}) }),
+        h("div", { className: "ph", style: { backgroundImage: "url(" + hero.img + ")", backgroundPosition: hero.pos || undefined } }),
         h("div", { className: "hce-bar" },
           h("button", { type: "button", className: "hce-back", "aria-label": L("retour"), onClick: props.onRetour }, fleche(!rtl, 18)),
           h("nav", { className: "hce-crumb", "aria-label": "Fil d'Ariane" }, h("span", null, hero.galop), h("i", { "aria-hidden": true }, rtl ? "‹" : "›"), h("span", null, hero.titre)),
@@ -1173,7 +1178,7 @@ HypeCoursEditorial.config["g1-c15"] = function (cours, lg, o) {   /* unParPage :
   ];
 
   return {
-    hero: { img: IM.hero, pos: "100% 35%", posTel: "79% 40%", titre: r(cours.titre), galop: "Galop 1", duree: r(cours.duree), type: r(cours.type) },
+    hero: { img: IM.hero, pos: "100% 35%", titre: r(cours.titre), galop: "Galop 1", duree: r(cours.duree), type: r(cours.type) },
     encarts: {
       coach: { titre: L("coach"), texte: tx(coach), img: IM.coach, pos: "60% 25%" },
       hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },
@@ -1256,8 +1261,7 @@ var AUTO_IM = {
   "g1-c13": ["images/galop5-c12-cross.webp", "images/galop5-c11-saut.webp"],
   "g1-c16": ["images/galop5-c07-transport.webp", "images/galop5-c05-soins.webp", "images/galop5-th-cheval2.webp"],
   "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-g1-c17-seller.webp",   /* 01/11 11h46 : chapitre 02 « Seller le cheval » = photo de Blandine */
-    "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */
-    "images/cours-g1-c17-verif.webp"   /* 01/11 16h11 : chapitre 04 « La vérification finale » = photo de Blandine */],
+    "images/cours-g1-c17-brider.webp",   /* 01/11 11h47 : chapitre 03 « Brider le cheval » = photo de Blandine */ "images/galop5-c03-apprendre.webp"],
   "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
   "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
   "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
@@ -2273,9 +2277,8 @@ function titreNotion(o, L, lg) {
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
-  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
-  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],
-  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "72% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%"],   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
+  "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
   "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */
 };
 
@@ -2305,7 +2308,7 @@ AUTO_IDS.forEach(function (id) {
     var cv = A.couv;
     return {
       auto: true,
-      hero: { img: (HERO_COURS[cours.id] && HERO_COURS[cours.id][0]) || (cv && r(cv.src)) || A.chapitres[0].img, pos: (HERO_COURS[cours.id] && HERO_COURS[cours.id][1]) || (cv && cv.couv && cv.couv.pos) || "50% 40%", posTel: (HERO_COURS[cours.id] && HERO_COURS[cours.id][2]) || null, titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
+      hero: { img: (HERO_COURS[cours.id] && HERO_COURS[cours.id][0]) || (cv && r(cv.src)) || A.chapitres[0].img, pos: (HERO_COURS[cours.id] && HERO_COURS[cours.id][1]) || (cv && cv.couv && cv.couv.pos) || "50% 40%", titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
       encarts: {
         coach: A.coach ? { titre: A.coach.titre || L("coach"), texte: A.coach.texte, img: IM.coach, pos: "60% 25%" } : null,
         hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },

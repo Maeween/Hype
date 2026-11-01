@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 4;   /* 01/11 11h31 : conseil du coach de g3-c3 et g3-saut */
+var VERSION = 5;   /* 01/11 16h10 : textes manquants du Galop 4 (hype-cours-g4-textes.js, 14 langues), fiches mémo retirées, glossaire en lexique dépliable, encadrés « Les sensations », scènes interactives dorées */
+/* v4 : */   /* 01/11 11h31 : conseil du coach de g3-c3 et g3-saut */
 /* v3 : */    /* 01/11 : les 2 cours de saut du Galop 3 (g3-c3, g3-saut) passent par ce constructeur, qui sait afficher leurs blocs spéciaux */
 /* v2 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */   /* 01/11 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */
 var h = React.createElement;
@@ -32,6 +33,7 @@ var X = E._, Lx = X.Lx, tt = X.tt, pickLg = X.pickLg, paras = X.paras, phrases =
 
 var T4 = {
   galop: tt("Galop 4", "Galop 4", "Galope 4", "Galoppo 4", "ギャロップ4", "Galopp 4", "الغالوب 4", "Galop 4 级", "Galop 4", "Galope 4", "Galopp 4", "Галоп 4", "Galop 4", "갤럽 4"),
+  lexique: tt("Lexique du cours", "Course glossary", "Glosario del curso", "Glossario del corso", "この講座の用語集", "Fachbegriffe des Kurses", "مسرد الدرس", "本课词汇表", "Woordenlijst van de les", "Glossário do curso", "Ordlista för kursen", "Словарик урока", "Słowniczek lekcji", "강의 용어집"),
   fiches: tt("Fiches mémo", "Memo cards", "Fichas de repaso", "Schede promemoria", "メモカード", "Merkkarten", "بطاقات للتذكّر", "记忆卡片", "Geheugenkaarten", "Fichas de memória", "Minneskort", "Карточки-памятки", "Fiszki", "메모 카드"),
   videos: tt("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"),
   ouvrirVid: tt("Ouvrir la vidéo", "Open the video", "Abrir el vídeo", "Apri il video", "動画を開く", "Video öffnen", "افتح الفيديو", "打开视频", "Video openen", "Abrir o vídeo", "Öppna videon", "Открыть видео", "Otwórz film", "영상 열기"),
@@ -107,19 +109,23 @@ var COACH_G3 = {
     if (document.getElementById("hce-g4-css")) return;
     var st = document.createElement("style"); st.id = "hce-g4-css";
     st.textContent = '.hce-hero .ph[style*="#g4"],.rbo-fc-hero .ph[style*="#g4"]{filter:hue-rotate(205deg) saturate(.55) sepia(.25) brightness(.95)}'
-      + ".hce .g4i{filter:hue-rotate(205deg) saturate(.45) sepia(.3)}"
-      + ".hce .hce-chp.g4p{background:#101D22}"
-      + ".hce .hce-chp.g4p>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,.55) 0%,rgba(16,29,34,.92) 40%,#101D22 100%)}"
-      + "@container hce (min-width:1040px){.hce .hce-chp.g4p>.bg:after{background:linear-gradient(270deg,#101D22 0%,rgba(16,29,34,.88) 22%,rgba(16,29,34,.35) 55%,rgba(16,29,34,.25) 100%),linear-gradient(180deg,#101D22 0%,rgba(16,29,34,0) 20%,rgba(16,29,34,0) 78%,#101D22 100%)}}"
-      + ".hce .hce-chp.g4p .pan{background:rgba(9,17,20,.86)}"
-      + ".hce .hce-chp.g4p::after{content:'';position:absolute;left:0;right:0;height:28px;z-index:2;pointer-events:none;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 28' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14' fill='none' stroke='%23C9A66B' stroke-opacity='.55' stroke-width='1.1'/%3E%3C/svg%3E\") center/100% 100% no-repeat}"
-      + ".hce .hce-chp.g4p::after{bottom:0}"
+      + ".hce .sens4{margin:14px 0 4px;padding:12px 14px 12px 16px;border-inline-start:2px solid #C9A66B;border-radius:4px 12px 12px 4px;background:rgba(201,166,107,.08)}"
+      + ".hce .sens4 b{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champ);margin-bottom:5px;font-weight:600}"
+      + ".hce .sens4 p{margin:0;font-style:italic;color:var(--ivoire)}"
+      + ".hce .lex4{max-width:1240px;margin:0 auto 26px;border:1px solid rgba(201,166,107,.35);border-radius:16px;background:rgba(16,29,34,.55);color:var(--ivoire)}"
+      + ".hce .lex4>summary{cursor:pointer;list-style:none;padding:16px 20px;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;display:flex;justify-content:space-between;align-items:center;gap:12px}"
+      + ".hce .lex4>summary::-webkit-details-marker{display:none}.hce .lex4>summary:after{content:'+';color:var(--champ);font-size:24px;line-height:1}.hce .lex4[open]>summary:after{content:'–'}"
+      + ".hce .lex4 dl{margin:0;padding:0 20px 18px;display:grid;gap:12px}.hce .lex4 dt{color:var(--champ);font-weight:600}.hce .lex4 dd{margin:2px 0 0;line-height:1.55;opacity:.92}"
+      + "@media (min-width:900px){.hce .lex4 dl{grid-template-columns:1fr 1fr;column-gap:32px}}"
       + ".hce .g4v{display:grid;gap:12px}.hce .g4v button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:start;"
       + "padding:12px 14px;border:1px solid rgba(201,166,107,.42);border-radius:12px;background:rgba(201,166,107,.06);color:var(--ivoire);font:inherit;font-size:15px;line-height:1.4;cursor:pointer}"
       + ".hce .g4v button small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--champ);margin-bottom:3px}"
       + ".hce .g4v button:hover{background:rgba(201,166,107,.14)}"
       + ".hce .g4lien{color:var(--champ);text-decoration:underline;text-underline-offset:3px}"
-      + ".hce .g4i{margin-top:4px}";
+      + ".hce .g4i{margin-top:4px}"
+      + ".hce .g4i .cavResume{background:linear-gradient(115deg,rgba(201,166,107,.15) 0%,rgba(201,166,107,.9) 18%,rgba(243,238,228,.85) 30%,rgba(201,166,107,.25) 45%,rgba(201,166,107,.1) 65%,rgba(201,166,107,.85) 88%,rgba(201,166,107,.15) 100%);box-shadow:0 0 26px rgba(201,166,107,.14)}"
+      + ".hce .g4i .cavResumeInner{background:linear-gradient(160deg,rgba(16,29,34,.96) 0%,rgba(7,10,8,.98) 55%,rgba(16,29,34,.96) 100%)}"
+      + ".hce .g4i .cavResumeLabel,.hce .g4i .cavResumeTxt b{color:#C9A66B}";
     document.head.appendChild(st);
   } catch (e) { }
 })();
@@ -151,7 +157,8 @@ function construire(coursT, lg) {
   var L = Lx(lg), r = function (x) { return pickLg(x, lg); }, cours = brut(coursT);
   var D = dico(cours.id), C = D ? (D[lg] || D.en || D.fr) : null;
   var pool = (IMG[cours.id] || []).map(P);
-  var couv = null, chapitres = [], cur = null, derniere = null, sp = { coach: [], defi: [], hb: [] };
+  var couv = null, chapitres = [], cur = null, derniere = null, cle = null, sp = { coach: [], defi: [], hb: [] };
+  var T = (window.HYPE_G4_TEXTES || {})[cours.id] || null, t4 = function (o) { return o ? (o[lg] || o.en || o.fr || "") : ""; };
   var nouveau = function (titre) { cur = { titre: titre, notions: [] }; chapitres.push(cur); derniere = null; return cur; };
   (cours.blocs || []).forEach(function (b) {
     if (b.type === "couv-affiche") { couv = b; return; }
@@ -159,7 +166,7 @@ function construire(coursT, lg) {
       nouveau(titreNet(r(b.titre)) || r(cours.titre));
       lis(b.contenu, lg).forEach(function (s) {
         var so = sorte4(s.f);
-        if (so === "suite" && derniere) { derniere.suite.push(s.x); return; }
+        if (so === "suite" && derniere) { var sx = s.x; if (/sensation/i.test(String(pickLg(s.f && s.f.titre, "fr") || ""))) sx = { sens: true, seg: s.x }; derniere.suite.push(sx); return; }
         var o = { seg: s.x, fr: s.f, suite: [] };
         if (sp[so]) { sp[so].push(o); derniere = o; return; }
         if (so === "suite") o.titre = L("essentiel");
@@ -177,8 +184,9 @@ function construire(coursT, lg) {
     if (b.type === "cartes-premium") {
       var d0 = b.donnees || {}, d = (d0.fr && !d0.items) ? (d0[lg] || d0.en || d0.fr) : d0, it = Array.isArray(d.items) ? d.items : (d.items && (d.items[lg] || d.items.fr)) || [];
       if (!it.length) return;
-      var ch = { titre: L4(lg)("fiches"), sous: (d0.fr && /fiches m[ée]mo/i.test(d0.fr.sousTitre || "")) ? null : (d.sousTitre || null), notions: it.map(function (x) { return { titre: x[0], texte1: x[1], suite: [] }; }) };
-      ch.fix = "fiches"; chapitres.push(ch); cur = null; derniere = null;
+      /* 01/11 (Blandine + relecture ChatGPT) : plus de chapitre « Fiches mémo » (il redisait les chapitres) ; seule « La phrase clé » est gardée, pour la page de fin */
+      var itFr = (d0.fr && Array.isArray(d0.fr.items)) ? d0.fr.items : it;
+      itFr.forEach(function (x, j) { if (x && /phrase cl/i.test(String(x[0])) && it[j]) cle = it[j][1]; });
     }
   });
   chapitres = chapitres.filter(function (c) { return c.notions.length; });
@@ -191,6 +199,7 @@ function construire(coursT, lg) {
   });
   /* 01/11 11h31 (« Ok oui » de Blandine) : conseil du coach écrit pour les 2 cours de saut du Galop 3, qui n'en avaient pas (14 langues) */
   if (!coach && COACH_G3[cours.id]) coach = { titre: "", texte: r(COACH_G3[cours.id]) };
+  if (!coach && T && T.coach) coach = { titre: "", texte: t4(T.coach) };
   /* défi : celui du cours, sinon celui des compléments */
   var defi = null;
   if (sp.defi.length) {
@@ -200,12 +209,17 @@ function construire(coursT, lg) {
     var ph2 = phrases(C.defiIntro || "");
     defi = { titre: titreNet(C.defiTitre), haut: ph2[0] || "", fin: { titre: titreNet(C.defiTitre), sous: ph2.slice(1).join(" "), texte: C.defiFin || "", puces: (C.defiItems || []).map(function (t) { return { texte: t }; }) } };
   }
+  if (T && T.defi) {
+    /* 01/11 : défi en 3 points (remplace l'ancien défi à 5 questions, même idée) : titre + accroche en haut, les 3 points sur la page de fin */
+    defi = { titre: t4(T.defi.titre), haut: t4(T.defi.accroche), fin: { titre: t4(T.defi.titre), sous: "", puces: (T.defi.points || []).map(function (q) { return { texte: t4(q) }; }) } };
+  }
   /* Hey Baby : questions des compléments, sinon les demandes listées dans le cours */
-  var hb = (C && C.hbQuestions) ? C.hbQuestions.slice(0, 5) : [];
+  var hb = (T && T.hb) ? T.hb.map(t4) : (C && C.hbQuestions) ? C.hbQuestions.filter(function (q, j) { return !(cours.id === "g4-c5" && j === 3); }).slice(0, 5) : [];   /* g4-c5 : 5 sur 6, « Pourquoi vermifuger ? » retirée */
   if (!hb.length) sp.hb.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = sansFin(r(q.texte)); if (t) hb.push(t); }); });
-  var synth = (C && C.synItems) ? C.synItems.slice() : [];
+  var synth = (T && T.synth) ? T.synth.map(t4) : (C && C.synItems) ? C.synItems.slice() : [];
+  var fin = (T && T.fin) ? t4(T.fin) : (cle || null);
   /* glossaire */
-  if (C && C.gloItems && C.gloItems.length) chapitres.push({ fix: "glossaire", titre: titreNet(C.gloTitre), notions: C.gloItems.map(function (g) { return { titre: g[0], texte1: g[1], suite: [] }; }) });
+  var lexique = (C && C.gloItems && C.gloItems.length) ? C.gloItems.map(function (g) { return { mot: g[0], def: g[1] }; }) : [];   /* 01/11 : plus un chapitre, un lexique dépliable avant le quiz */
   /* pour aller plus loin : le savais-tu, la science, les vidéos reliées, les ressources qui ont un vrai lien */
   var plus = [];
   if (C && C.stTexte) plus.push({ titre: titreNet(C.stTitre), texte1: C.stTexte, suite: [] });
@@ -222,7 +236,7 @@ function construire(coursT, lg) {
   if (couv && couv.couv && r(couv.couv.citation) && chapitres[0]) {
     chapitres[0].note = "« " + String(r(couv.couv.citation)).replace(/^[«"“\s]+|[»"”\s]+$/g, "") + " »" + (r(couv.couv.auteur) ? "  " + r(couv.couv.auteur) : "");
   }
-  return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, couv: couv };
+  return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, fin: fin, lexique: lexique, couv: couv };
 }
 
 function txtVid(o, lg) { return (o && (o[lg] || o.en || o.fr)) || ""; }
@@ -230,7 +244,7 @@ function rendu(o, lg, x) {
   var r = function (v) { return pickLg(v, lg); }, out = [], k = 0;
   var pu = function (arr) { if (!arr || !arr.length) return null; return h("ul", { key: "u" + (k++) }, arr.map(function (q, i) { var g = r(q.gras); return h("li", { key: i }, g ? h("strong", null, g + " ") : null, r(q.texte)); })); };
   var para = function (t, g) { return paras(t).map(function (tx, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tx); }); };
-  if (o.comp) { out.push(h("div", { key: "c", className: "g4i" }, h(o.comp, { onSuivant: function () { } }))); return out; }
+  if (o.comp) { out.push(h("div", { key: "c", className: "g4i" }, h(o.comp, { onSuivant: function () { }, or: true }))); return out; }
   if (o.texte1 !== undefined && o.texte1 !== "") out = out.concat(para(o.texte1));
   (o.details || []).forEach(function (d) { out = out.concat(para(d)); });
   if (o.videos) out.push(h("div", { key: "v", className: "g4v" }, o.videos.map(function (v, i) {
@@ -246,6 +260,7 @@ function rendu(o, lg, x) {
     out.push(pu(s.puces));
   }
   o.suite.forEach(function (y) {
+    if (y && y.sens) { var z = y.seg; out.push(h("div", { key: "s" + (k++), className: "sens4" }, h("b", null, titreNet(r(z.titre))), paras(r(z.texte) || r(z.sous) || "").map(function (tx, j) { return h("p", { key: j }, tx); }))); out.push(pu(z.puces)); return; }
     if (r(y.titre)) out.push(h("p", { key: "c" + (k++), className: "ap" }, h("b", null, titreNet(r(y.titre)) + "  "), r(y.texte) || r(y.sous) || ""));
     else if (r(y.texte)) out = out.concat(para(r(y.texte), r(y.gras)));
     out.push(pu(y.puces));
@@ -264,13 +279,15 @@ IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
         var items = c.notions.map(function (n) { return { titre: titreN(n, lg), alerte: alerte(n), rendu: function () { return rendu(n, lg, x); } }; });
-        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto" + (i % 2 ? " inv g4p" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note || null });
+        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note || null });
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
-      return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
+      var lex = A.lexique.length ? h("details", { className: "lex4" }, h("summary", null, L4(lg)("lexique") + " · " + A.lexique.length),
+        h("dl", null, A.lexique.map(function (g, j) { return h("div", { key: j }, h("dt", null, g.mot), h("dd", null, g.def)); }))) : null;
+      return h(React.Fragment, null, lex, h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
         h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
-        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), X.fleche(x.rtl, 15))));
+        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), X.fleche(x.rtl, 15)))));
     } });
     var B = brut(cours);
     var cv = A.couv, heroImg = (cv && r(cv.src)) ? r(cv.src) + "#g4" : A.chapitres[0].img;
@@ -319,7 +336,7 @@ function FinG4(props) {
       h(S.FinCours, {
         L: L, lg: lg, rtl: rtl, kicker: cfg.hero.galop, titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
         heroImg: cfg.hero.img, heroPos: cfg.hero.pos,
-        portraits: por, note: null,
+        portraits: por, note: A.fin || null,
         hb: A.hb, onHey: hey, defiSeg: A.defi ? A.defi.fin : null,
         quizImg: IM.quiz, onQuiz: function () { if (props.setEcran) props.setEcran("quiz"); }, quizScore: props.quizScore,
         suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
