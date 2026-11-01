@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 38;   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
+var VERSION = 39;   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
+/* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
 /* précédente : VERSION = 37; */   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */  /* et, côté main : */ /* VERSION = 37 (main) */   /* 01/11 21h20 : g1-c20 — photo des sabots (chapitre 03) + vidéo de l'accueil dans « La respiration » */
 /* précédente : VERSION = 36; */   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
 /* précédente : VERSION = 36; */   /* 01/11 22h : atlas interactif du cheval (hype-cours-atlas.js) dans g1-c20, g2-anatomie, g3-c11 (g3-c7 : dans hype-cours-robes-galops-ordi.js) ; remplace « Explore la tête du cheval » */
@@ -1433,7 +1434,7 @@ var AUTO_IM = {
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
-  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
+  "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
@@ -1497,7 +1498,7 @@ var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
 var CHAP_SANS_PHOTO = {};
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
-var VIDEOS_NOTION = { "g1-c20": { "La respiration": ["hype-accueil-video-ordi.mp4", "images/accueil-video-ordi-poster.jpg"] } };
+var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2504,7 +2505,7 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
-  "g1-c20": ["images/cours-g1-c20-hero.webp", "50% 40%", "50% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
+  "g1-c20": ["images/cours-g1-c20-hero2.webp", "60% 35%", "72% 40%"],   /* 01/11 21h30 (Blandine) : nouvelle photo du haut, cheval bai sur fond noir, tête baissée */   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
   "g1-c3": ["images/cours-g1-c3-hero.webp", "30% 40%", "25% 40%"],   /* « Le mode de vie du cheval » — cheval gris au galop au pré, photo de Blandine (01/11 18h06) */
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%", "25% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "75% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */

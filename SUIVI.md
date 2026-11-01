@@ -16257,3 +16257,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Tous les cours du modèle : texte des notions avec majuscule en début de paragraphe, espace sous le titre, texte justifié (coupures de mots), espace insécable avant « : ; ! ? » (demande de Blandine 21h15 « ça fait bâclé »).
 - Vérifié : g1-c20, g2-anatomie, g3-c7, g3-c11 en 14 langues, 390 / 820 / 1280 px, aucune erreur ; contenu des cours conservé ; fusion avec les publications 2105 et 2120 de l'autre conversation sans perte.
 - Fichiers : hype-cours-atlas.js (nouveau), hype-cours-editorial.js (VERSION 38, ?v=38), hype-cours-robes-galops-ordi.js (VERSION 20, ?v=20), hype-cours-galop3.js (v12, ?v=12), images/atlas-*.webp (9 nouvelles), images/cours-g1-c20-avant-main.webp et -arriere-main.webp (nouvelles), index.html (build 20261101-2130), SUIVI.md.
+
+## 01/11/2026 21h35 — PUBLICATION build 20261101-2135 (demandes de Blandine 21h30) : « La physiologie du cheval » (g1-c20)
+- Photo du haut remplacée par la photo envoyée par Blandine (cheval bai, tête baissée, fond noir) → images/cours-g1-c20-hero2.webp ; cadrage ordinateur 60 % 35 %, téléphone 72 % 40 %.
+- L'ancienne photo du haut (images/cours-g1-c20-hero.webp, cheval bai entier) devient la photo du chapitre 01 « Découvrir son corps » (à la place de galop5-c04-anatomie.webp, petite et coupée).
+- Vidéo de l'accueil retirée de la notion « La respiration » (« ça ne va pas avec le reste ») : VIDEOS_NOTION vidé.
+- Fait sur la version en ligne d905671 (atlas de l'autre conversation) ; rien d'autre de modifié. Mes changements en attente (branche style-robes-reperes : affiches du Galop 2, photo du haut sous l'heure, lecture des notions une à une) NE partent PAS avec cette publication.
+- Vérifié : g1-c20 à 390 px, aucune erreur, plus de vidéo.
+- Fichiers : hype-cours-editorial.js (VERSION 39, ?v=39), images/cours-g1-c20-hero2.webp, index.html (build 20261101-2135), SUIVI.md.
