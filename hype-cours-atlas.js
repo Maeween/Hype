@@ -318,7 +318,7 @@ function Module(props) {
       cur ? h("div", { className: "det", "aria-live": "polite", ref: detRef },
         h("div", { className: "zm", role: "img", "aria-label": pk(UI.zoom, lg).replace("{nom}", nom(cur)), style: zoomStyle(V.img, cur[1], cur[2]) }),
         h("div", null,
-          h("span", { className: "n" }, (act + 1) + " / " + pts.length),
+          h("span", { className: "n", dir: "ltr", style: { display: "inline-block" } }, (act + 1) + " / " + pts.length),
           h("h4", null, nom(cur)),
           h("p", { key: cle + act + lg }, txt(cur))),
         h("div", { className: "nav" },
