@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 36;   /* 01/11 22h : atlas interactif du cheval (hype-cours-atlas.js) dans g1-c20, g2-anatomie, g3-c11 (g3-c7 : dans hype-cours-robes-galops-ordi.js) ; remplace « Explore la tête du cheval » */
+var VERSION = 37;   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */
+/* précédente : VERSION = 36; */   /* 01/11 22h : atlas interactif du cheval (hype-cours-atlas.js) dans g1-c20, g2-anatomie, g3-c11 (g3-c7 : dans hype-cours-robes-galops-ordi.js) ; remplace « Explore la tête du cheval » */
 /* précédente : VERSION = 35; */   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
 /* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
 /* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
@@ -435,6 +436,7 @@ var CSS = [
 ".hce .hce-chp .pan .k{font-size:11px;font-weight:600;letter-spacing:.24em;color:var(--champ)}",
 ".hce-chp .pan h3{font-size:30px;line-height:1.08}.hce-chp .pan.al h3{color:var(--alerte)}",
 ".hce-chp .pimg{margin:2px 0 4px;border-radius:12px;overflow:hidden;aspect-ratio:2/1;background:#0E1413}.hce-chp .pimg img{display:block;width:100%;height:100%;object-fit:cover}",
+".hce-ogl{margin:18px 0 4px}.hce-ogl .t{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.hce-ogl .t button{border:1px solid rgba(243,238,228,.22);background:transparent;color:#F3EEE4;border-radius:999px;padding:7px 15px;font:inherit;font-size:13px;cursor:pointer}.hce-ogl .t button[aria-selected=true]{border-color:#C9A66B;color:#C9A66B;background:rgba(201,166,107,.08)}.hce-ogl .pimg{margin:0}",
 ".hce .pimg.plein{aspect-ratio:auto!important;height:auto}.hce .pimg.plein img{height:auto!important;object-fit:contain}",   /* photo entière (allures : on voit les quatre membres) */
 ".hce .hce-chp .pan .s{font-size:15px;line-height:1.6;color:var(--doux)}",
 ".hce-chp .pan ul{margin:0;padding-inline-start:20px;display:grid;gap:7px;font-size:15px;line-height:1.5;color:var(--ivoire)}.hce-chp .pan li::marker{color:var(--champ)}",
@@ -1406,6 +1408,9 @@ var MODULES_COURS = {
   "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
   "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
 };
+/* 01/11 21h (Blandine) : onglets de photos sous une notion — « La physiologie du cheval », L'avant-main / L'arrière-main (photos entières) */
+/* repérage par position (chapitre, notion), identique dans toutes les langues : chapitre 3 « Comprendre sa silhouette », notions 3 (L'avant-main) et 4 (L'arrière-main) */
+var ONGLETS_NOTION = { "g1-c20": { chap: 2, apres: 3, onglets: [[2, "images/cours-g1-c20-avant-main.webp"], [3, "images/cours-g1-c20-arriere-main.webp"]] } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2356,7 +2361,20 @@ function construireAuto(cours, lg) {
     var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : "";
     Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
   }); });
+  var ON = ONGLETS_NOTION[cours.id], CN = ON && chapitres[ON.chap];
+  if (CN) {
+    var cible = CN.notions[ON.apres], og = ON.onglets.map(function (x) { return { n: CN.notions[x[0]], img: x[1] }; }).filter(function (x) { return x.n; });
+    if (cible && og.length === ON.onglets.length) cible.onglets = og;
+  }
   return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, citFin: citFin, couv: couv };
+}
+function OngletsPhotos(p) {
+  var _i = React.useState(0), i = _i[0], setI = _i[1], it = p.items[i];
+  return h("div", { className: "hce-ogl" },
+    h("div", { className: "t", role: "tablist" }, p.items.map(function (x, k) {
+      return h("button", { key: k, type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", onClick: function () { setI(k); } }, x.lab);
+    })),
+    h("figure", { className: "pimg plein", role: "tabpanel" }, h("img", { src: it.img, alt: it.lab, loading: "lazy" })));
 }
 
 /* rendu d'une notion dans la carte de droite */
@@ -2397,6 +2415,7 @@ function renduNotion(o, L, lg, alerte) {
     if (c.length) out.push(h("p", { key: "c" + (k++), className: "ap" }, c));
     out.push(pu(x.puces));
   });
+  if (o.onglets) out.push(h(OngletsPhotos, { key: "og", items: o.onglets.map(function (x) { return { lab: titreNotion(x.n, L, lg), img: x.img }; }) }));
   return out.filter(Boolean);
 }
 function titreNotion(o, L, lg) {
