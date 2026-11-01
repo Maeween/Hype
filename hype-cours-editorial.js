@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 25;   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage (titre en deux temps, trait doré avant chaque notion) */
+var VERSION = 26;   /* 01/11 19h25 : même hiérarchie et plus d'air sur tablette et ordinateur */
+/* précédente : VERSION = 25; */   /* 01/11 19h20 : téléphone — cours aérés, titres hiérarchisés comme le pansage (titre en deux temps, trait doré avant chaque notion) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
@@ -679,6 +680,23 @@ var CSS = [
 ".hce-mobile-unit .ast{margin:16px 0;padding:4px 0 4px 14px}",
 ".hce-mobile-unit .hce-fig{margin-bottom:14px}",
 ".hce-mobile-unit .hce-ztabs{margin:4px 0 26px;gap:9px}",
+"}",
+/* 01/11 19h20 — TABLETTE ET ORDINATEUR : même hiérarchie que le téléphone (filet après le numéro, titre en deux temps, trait doré avant le titre de la carte, plus d'air dans la carte) */
+"@media screen and (min-width:700px){",
+".hce .hce-chp .kick{display:flex;align-items:center;gap:14px}",
+".hce .hce-chp .kick:after{content:'';flex:0 0 48px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp h2 span,.hce .hce-chp h2 em{display:block}",
+".hce .hce-chp h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp .sous{margin-top:14px;font-style:italic}",
+".hce .hce-chp .por{margin-top:30px}",
+".hce .hce-chp .note{padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6)}",
+".hce .hce-chp .pan{gap:16px;padding:28px 30px 22px}",
+".hce .hce-chp .pan h3{margin:0 0 4px}",
+".hce .hce-chp .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp .pan.al h3:before{background:var(--alerte)}",
+".hce .hce-chp .pan p.pg,.hce .hce-chp .pan .hce-txt,.hce .hce-chp .pan ul{line-height:1.72}",
+".hce .hce-chp .pan .s{font-style:italic;color:#D9B98A}",
+".hce .hce-chp .pan ul{gap:10px}",
 "}"
 ].join("\n");
 
@@ -920,9 +938,9 @@ function Chapitre(p) {
     h("div", { className: "bg", "aria-hidden": true, style: { backgroundImage: "url(" + p.bg + ")", backgroundPosition: p.bgPos || "70% 40%" } }),
     h("div", { className: "in" },
       h("div", { className: "g" },
-        h("p", { className: "kick" }, p.num + "  ·  " + p.galop),
-        h("h2", { id: "hce-t-" + p.id }, p.titre),
-        h("span", { className: "trait", "aria-hidden": true }),
+        h("p", { className: "kick" }, p.num + "  —  " + p.galop),
+        /* 01/11 19h20 : même hiérarchie que sur téléphone (titre en deux temps, 2e partie en italique doré) */
+        h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre)),
         p.sous ? h("p", { className: "sous" }, p.sous) : null,
         h("ol", { className: "por", ref: olRef, role: "tablist", "aria-label": p.titre }, p.items.map(function (x, k) {
           return h("li", { key: k }, h("button", { type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", className: x.alerte ? "al" : undefined, onClick: function () { setI(k); } },

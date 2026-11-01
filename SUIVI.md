@@ -16109,3 +16109,7 @@ Demandes de Blandine (18h56 « T'as pas suivi le visuel des premiers cours […]
   · chaque titre de notion annoncé par un petit trait doré au-dessus, titres plus grands ;
   · plus d'air : 38 px avant et après chaque notion, texte plus grand et plus espacé, phrases d'introduction en italique doré, plus d'espace sous les onglets de l'atlas.
 - Tests : 60 cours du modèle (390 et 1440 px) sans erreur ni débordement.
+
+## 01/11/2026 19h30 — PUBLICATION build 20261101-1930, accord de Blandine (19h18 « Ok »)
+- Mis en ligne : la version téléphone aérée (entrée 19h20) + la même hiérarchie sur tablette et ordinateur (hype-cours-editorial.js VERSION 26, ?v=26) : « 01 — GALOP 3 » suivi d'un filet doré, titre du chapitre en deux temps (2e partie en italique doré), citation avec un trait doré, trait doré au-dessus du titre de la carte, plus d'air et phrases d'introduction en italique doré dans la carte.
+- Tests : 60 cours du modèle (390 et 1440 px) + tablette 820 px sans erreur ni débordement.
