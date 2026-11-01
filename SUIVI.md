@@ -16030,3 +16030,7 @@ Repris sur la version en ligne 20261101-0930 (be99588). La branche travail-galop
 - g3-c9 « Les différentes litières » : « Le défi du cavalier » ajouté (comparer deux litières, puis repérer les parties humides d'un box) — COMPL dans hype-cours-editorial.js v16 (?v=17), 14 langues.
 - Vérifié : 15 cours du Galop 3 × fr/ar/ja/en × 390 et 1440 px, aucune erreur ni débordement ; encarts du haut contrôlés en fr, ar, ko.
 - Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (build 20261101-1150), SUIVI.md.
+
+## 01/11/2026 11h55 — build 20261101-1155 : photo du chapitre 02 « Seller le cheval » (Galop 1, « Préparer son poney ou son cheval : seller et brider », g1-c17)
+- Photo de Blandine (11h46, cavalière qui pose la selle sur le tapis) : images/cours-g1-c17-seller.webp, photo entière ; remplace la photo provisoire du Galop 5 sur la carte du menu et le fond du chapitre 02 (téléphone, tablette, ordinateur).
+- hype-cours-editorial.js : VERSION et ?v= augmentés d'un cran ; index.html build 20261101-1155.
