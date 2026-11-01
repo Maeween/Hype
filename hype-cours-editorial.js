@@ -102,6 +102,12 @@ function nettoyerTitre(s) { return String(s || "").replace(/^[\u{1F000}-\u{1FAFF
 function sansNum(s) { return String(s || "").replace(/^\s*\d+\s*[.)．、]\s*/, ""); }
 function paras(s) { return String(s || "").split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean); }
 function phrases(s) { return String(s || "").split(/(?<=[.。!！?？])\s*/).map(function (t) { return t.trim(); }).filter(Boolean); }
+function titreDeux(s) {   /* 01/11 20h35 (Blandine) : titre de chapitre en deux temps, coupé au « : » s'il y en a un, sinon au milieu */
+  s = String(s || "");
+  var m = s.match(/^(.+?\s*[:：])\s*(.+)$/);
+  if (m) return [m[1], m[2]];
+  return deuxLignes(s);
+}
 function deuxLignes(s) {   /* « La sécurité avant tout » -> ["La sécurité", "avant tout"] */
   s = String(s || "");
   var v = s.indexOf(",");
@@ -727,6 +733,61 @@ var CSS = [
 ".hce .rb-grid.inv .rb-photo{order:2}",
 ".hce .rb-grid .hce-mobile-unit .hce-txt,.hce .rb-grid .hce-mobile-unit .s,.hce .rb-grid .hce-mobile-unit p.pg,.hce .rb-grid .hce-mobile-unit ul{font-size:16px;line-height:1.82}",
 "}",
+/* ===== 01/11 20h35 (Blandine) : repères de l'autre version par-dessus le style robes ===== */
+".hce .hce-chp.rb .rb-kick{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rb .rb-kick:after{content:'';flex:0 0 40px;height:1px;background:rgba(201,166,107,.55)}",
+".hce .hce-chp.rb h2{font-size:34px;line-height:1.08;margin:0}",
+".hce .hce-chp.rb h2 span,.hce .hce-chp.rb h2 em{display:block}",
+".hce .hce-chp.rb h2 em{font-style:italic;font-weight:500;color:#D9B98A}",
+".hce .hce-chp.rb .rb-sous{margin:12px 0 0;font-style:italic;font-size:15px;color:var(--doux)}",
+".hce .hce-chp.rb .rb-note{margin:16px 0 0;padding-inline-start:14px;border-inline-start:2px solid rgba(201,166,107,.6);font-size:14px;line-height:1.55}",
+".hce .hce-chp.rbm .rb-photo{margin:24px 0 0}",
+".hce .hce-chp.rbm .rb-photo img{width:100%;height:auto}",   /* photo entière, rien de coupé */
+".hce .hce-chp.rbm .hce-mobile-read{gap:0;margin-top:34px}",
+".hce .hce-chp.rbm .hce-mobile-unit{padding:0 0 38px;margin:0 0 38px;border-bottom:1px solid rgba(201,166,107,.16)}",
+".hce .hce-chp.rbm .hce-mobile-unit:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}",
+".hce .hce-chp.rbm .hce-mobile-unit h3{font-size:27px;line-height:1.12;margin:20px 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit h3:before{content:'';display:block;width:28px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit>h3:first-child{margin-top:0}",
+".hce .hce-chp.rbm .hce-mobile-unit.is-alert{padding:20px 18px 22px}",
+".hce .hce-chp.rbm .hce-mobile-unit.is-alert h3:before{background:#E3A18E}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-txt,.hce .hce-chp.rbm .hce-mobile-unit .ap,.hce .hce-chp.rbm .hce-mobile-unit p.pg{font-size:15.5px;line-height:1.72}",
+".hce .hce-chp.rbm .hce-mobile-unit p.pg{margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .s{font-style:italic;color:#D9B98A;font-size:15px;line-height:1.55;margin:0 0 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .ap{margin:18px 0 0;padding-top:16px}",
+".hce .hce-chp.rbm .hce-mobile-unit ul{margin:12px 0 14px;gap:11px;font-size:15.5px;line-height:1.6}",
+".hce .hce-chp.rbm .hce-mobile-unit .ast{margin:16px 0;padding:4px 0 4px 14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-fig{margin-bottom:14px}",
+".hce .hce-chp.rbm .hce-mobile-unit .hce-ztabs{margin:4px 0 26px;gap:9px}",   /* atlas du cours sécurité : de l'air sous les boutons des zones */
+/* tablette et ordinateur : une notion à la fois ; photo en fond d'un côté (aucun texte dessus), texte de l'autre */
+".hce .hce-chp.rbd{display:block;padding:0!important;position:relative}",
+".hce .hce-chp.rbd .rbd-ph{position:relative;background-size:cover;background-repeat:no-repeat}",
+".hce .hce-chp.rbd .rbd-ph img{display:block;width:100%;height:auto}",
+".hce .hce-chp.rbd .rbd-ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 85%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd .rbd-tx{position:relative;padding:8px 32px 62px;max-width:820px;margin:0 auto}",
+".hce .hce-chp.rbd .rb-kick:after{flex-basis:48px}",
+".hce .hce-chp.rbd h2{font-size:44px;line-height:1.04}",
+".hce .hce-chp.rbd .por{margin-top:30px}",
+".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
+".hce .hce-chp.rbd .pan h3{margin:0 0 4px}",
+".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
+".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
+".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan ul{line-height:1.72}",
+".hce .hce-chp.rbd .pan .s{font-style:italic;color:#D9B98A}",
+".hce .hce-chp.rbd .pan ul{gap:10px}",
+"@container hce (min-width:1040px){",
+".hce .hce-chp.rbd{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:640px}",
+".hce .hce-chp.rbd .rbd-ph{height:auto;min-height:100%;grid-row:1;grid-column:1;background-image:var(--x)}",
+".hce .hce-chp.rbd .rbd-ph img{display:none}",
+".hce .hce-chp.rbd .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd .rbd-tx{grid-row:1;grid-column:2;max-width:640px;margin:0;padding:64px 44px 70px 40px}",
+".hce .hce-chp.rbd.rbinv .rbd-ph{grid-column:2}",
+".hce .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+".hce .hce-chp.rbd.rbinv .rbd-tx{grid-column:1;justify-self:end;padding:64px 40px 70px 44px}",
+"[dir=rtl] .hce .hce-chp.rbd .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+"[dir=rtl] .hce .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
+"}",
+
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -950,16 +1011,36 @@ function Chapitre(p) {
     var b = ol.querySelectorAll("button")[i]; if (!b) return;
     try { ol.scrollTo({ left: b.parentNode.offsetLeft - 16, behavior: "smooth" }); } catch (e) { }
   }, [i]);
-  /* 01/11 19h30 (Blandine : « reprends tout partout ») : chapitre dans le style du cours des robes, sur tous les écrans —
-     gros numéro doré + titre, photo entière dans un cadre arrondi, puis toutes les notions à la suite (photo à côté sur ordinateur, un chapitre sur deux de l'autre côté) */
-  return h("div", { className: "hce-chp rb" + (p.cls ? " " + p.cls : "") },
+  /* 01/11 20h35 (Blandine) : style robes (fonds alternés, vague) + repères de l'autre version : surtitre « 01 — Galop 1 » avec filet,
+     titre en deux temps (ivoire / italique doré), citation avec trait doré.
+     Téléphone : photo ENTIÈRE sous le titre, puis les notions à la suite.
+     Tablette et ordinateur : une notion à la fois ; la photo en grand dans le fond d'un côté, sans aucun texte dessus, le texte de l'autre côté. */
+  var titreH = h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre));
+  var kick = h("p", { className: "kick rb-kick" }, p.num + (p.galop ? "  —  " + p.galop : ""));
+  if (mobile) return h("div", { className: "hce-chp rb rbm" + (p.cls ? " " + p.cls : "") },
     h("div", { className: "in" },
-      h("div", { className: "rb-head" }, h("div", { className: "rb-num" }, p.num), h("h2", { id: "hce-t-" + p.id }, p.titre)),
+      kick, titreH,
       p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
-      h("div", { className: "rb-grid" + (p.inv ? " inv" : "") },
-        p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy", style: { objectPosition: p.bgPos || "50% 40%" } })) : null,
-        h(MobileLectureNotions, { items: p.items }))));
+      p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
+      h(MobileLectureNotions, { items: p.items })));
+  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.cls ? " " + p.cls : "") },
+    p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
+    h("div", { className: "rbd-tx" },
+      kick, titreH,
+      p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
+      h("ol", { className: "por", ref: olRef, role: "tablist", "aria-label": p.titre }, p.items.map(function (x, k) {
+        return h("li", { key: k }, h("button", { type: "button", role: "tab", "aria-selected": k === i ? "true" : "false", className: x.alerte ? "al" : undefined, onClick: function () { setI(k); } },
+          h("span", { className: "rond" }, String(k + 1)), h("span", { className: "pt", "aria-hidden": true }), h("span", { className: "tx" }, x.titre)));
+      })),
+      p.note ? h("p", { className: "note rb-note" }, p.note) : null,
+      h("div", { className: "pan" + (it.alerte ? " al" : ""), role: "tabpanel", "aria-live": "polite" },
+        h("p", { className: "k" }, (i + 1) + " / " + n),
+        h("h3", null, it.titre),
+        it.rendu(),
+        h("div", { className: "nav" },
+          h("button", { type: "button", className: "hce-rond", disabled: i === 0, "aria-label": L("prec"), onClick: function () { setI(i - 1); } }, fleche(!rtl, 16)),
+          h("button", { type: "button", className: "hce-rond", disabled: i === n - 1, "aria-label": L("suiv"), onClick: function () { setI(i + 1); } }, fleche(rtl, 16))))));
 }
 /* petit atlas dans la carte : la photo du cheval de profil, le repère de la zone choisie mis en avant */
 function AtlasMini(p) {
@@ -1049,7 +1130,7 @@ function HypeCoursEditorial(props) {
   chs.forEach(function (cur, ci) {
     if (parPage && ci !== ia) return;
     corps.push(h(Vague, { key: "v" + ci, de: (ci && !parPage) ? col(ci - 1) : NOIR, vers: col(ci) }));
-    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, style: { background: col(ci) }, "aria-labelledby": "hce-t-" + cur.id },
+    corps.push(h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": ci, className: "hce-sec t-" + cur.ton, style: { background: col(ci), "--fond-sec": col(ci) }, "aria-labelledby": "hce-t-" + cur.id },
       cur.ton === "photo" ? cur.rendu(Object.assign({}, ctx, { inv: ci % 2 === 1 })) : h("div", { className: "hce-in" }, cur.rendu(ctx))));
   });
   var colFin = parPage ? NOIR : col(chs.length);
