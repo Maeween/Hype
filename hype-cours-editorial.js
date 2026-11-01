@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 23;   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
+var VERSION = 24;   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
+/* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
 /* précédente : VERSION = 21; */   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
 /* précédente : VERSION = 20; */   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
@@ -1274,7 +1275,8 @@ window.HypeFinsCours["g1-c15"] = { ok: finOk, Fin: FinSecu };
    - paragraphe ou encadré sans titre -> rattaché à la notion juste avant.
    ===================================================================================== */
 var AUTO_IM = {
-  "g1-c3": ["images/galop5-th-cheval2.webp", "images/couv-g2-heberger.jpg", "images/securite-g1-observer.webp"],
+  "g1-c3": ["images/galop5-th-cheval2.webp", "images/cours-g1-c3-box.webp",   /* 01/11 18h05 : chapitre 02 « Le confort au box » = photo de Blandine (cheval gris au box) */
+    "images/securite-g1-observer.webp"],
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
@@ -1329,7 +1331,7 @@ var AUTO_IM_G3 = {
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
-var AFFICHES_RETIREES = { "g1-c3": [4] };   /* g1-c3 : bloc 4 = affiche « Le confort au box » */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
@@ -2309,6 +2311,7 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
+  "g1-c3": ["images/cours-g1-c3-hero.webp", "30% 40%", "25% 40%"],   /* « Le mode de vie du cheval » — cheval gris au galop au pré, photo de Blandine (01/11 18h06) */
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
   "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%"],
