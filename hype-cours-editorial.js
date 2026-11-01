@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 35;   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
+var VERSION = 36;   /* 01/11 22h : atlas interactif du cheval (hype-cours-atlas.js) dans g1-c20, g2-anatomie, g3-c11 (g3-c7 : dans hype-cours-robes-galops-ordi.js) ; remplace « Explore la tête du cheval » */
+/* précédente : VERSION = 35; */   /* 01/11 20h25 : Galop 1 — affiches retirées après reprise de leur contenu (g1-c4, c9, c11, c12, c13, c16, c20) ; affiches liées à un bloc de texte retirables ; découpage des chapitres recompté */
 /* précédente : VERSION = 34; */   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
 /* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
 /* précédente : VERSION = 32; */   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */
@@ -1399,7 +1400,12 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
 /* 01/11 20h : chapitres interactifs ajoutés à un cours (module chargé à part) — apres = nombre de chapitres avant lui */
-var MODULES_COURS = { "g1-c20": { id: "tete", module: "HypeAtlasTete", apres: 1 } };
+/* Atlas interactif du cheval (hype-cours-atlas.js) : niveau = Galop du cours, vue = vue ouverte d'emblée. 01/11 : remplace « Explore la tête du cheval » (HypeAtlasTete) dans g1-c20. */
+var MODULES_COURS = {
+  "g1-c20": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 1 } },
+  "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
+  "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
+};
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2432,7 +2438,7 @@ AUTO_IDS.forEach(function (id) {
     if (MC && window[MC.module]) {
       var M = window[MC.module], pos = Math.min(MC.apres, chapitres.length);
       chapitres.splice(pos, 0, { id: "mod-" + MC.id, label: M.titre(lg), img: MC.img || M.img, pos: "70% 45%" });
-      sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, { lg: lg }); } });
+      sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, Object.assign({ lg: lg }, MC.props || {})); } });
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
