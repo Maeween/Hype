@@ -16036,7 +16036,7 @@ Repris sur la version en ligne 20261101-0930 (be99588). La branche travail-galop
 - Photo de Blandine (11h47, cavalière qui ajuste le filet) : images/cours-g1-c17-brider.webp, photo entière ; chapitre 03 « Brider le cheval » (carte du menu et fond du chapitre).
 - hype-cours-editorial.js : VERSION et ?v= augmentés d'un cran ; index.html build 20261101-1155.
 
-## 01/11/2026 16h20 — build 20261101-1620 (EN ATTENTE de l'accord de Blandine) : haut de page (hero) des cours beaucoup plus haut — tous les Galops (1, 2, 3, 4)
+## 01/11/2026 16h20 — PUBLICATION build 20261101-1620 (accord de Blandine 16h13 « Ok pour la mise en ligne ») : haut de page (hero) des cours beaucoup plus haut — tous les Galops (1, 2, 3, 4)
 Demande de Blandine (16h07, capture iPhone du nœud d'attache) : « Descends les hero bcp plus que ça […] ça coupe en haut en bas et ça s'écrase avec les titres dedans sur les cours de tous les galops ! »
 - Téléphone : photo du haut beaucoup plus haute (122 % de la largeur de l'écran, 520 px au plus, + la zone de l'heure) ; le titre est SOUS la photo (il ne chevauche plus l'image) ; voile sombre réduit en haut et en bas.
 - Tablette : photo 600 px de haut (au lieu de 380), titre sous la photo. Ordinateur : bandeau 600 px de haut (au lieu de 430).
