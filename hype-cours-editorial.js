@@ -2657,7 +2657,7 @@ var SAVAIS_COURS = {
 };
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 var LREV = function (lg) { return {
-  pourReviser: "Lexique", sousMenu: "Le savais-tu", titre: "Lexique", aRetenir: "",
+  pourReviser: "Révise en 2 minutes", sousMenu: "Les mots clés avant le quiz", titre: "Lexique", aRetenir: "",
   savais: "Le savais-tu ?", suite: "Hey Baby, défi et quiz", finSous: "Teste-toi avec Hey Baby, relève le défi, puis valide le cours avec le quiz."
 }; };
 var CSS_REV = [
