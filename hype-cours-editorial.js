@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 30;   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
+var VERSION = 31;   /* 01/11 19h50 : grand vide au-dessus des titres de chapitre et texte décalé sur téléphone corrigés */
+/* précédente : var VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
 /* précédente : var VERSION = 29; */   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
 /* précédente : VERSION = 28; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
 /* précédente : VERSION = 27; */   /* 01/11 19h : fond noir partout (cartes de notion bleu pétrole semi-transparentes ombrées un chapitre sur deux) + citation du cours en bandeau lisible sous le haut de page (tous écrans) */
@@ -663,7 +664,7 @@ var CSS = [
 ".hce-vague{display:block;width:100%;height:26px;margin:-1px 0;padding:0}",
 ".hce .hce-chp.rb{background:transparent!important;padding:40px 20px 46px;overflow:visible}",
 ".hce .hce-chp.rb::after,.hce .hce-chp.rb>.bg{display:none!important}",
-".hce .hce-chp.rb>.in{display:block;max-width:1240px;margin:0 auto}",
+".hce .hce-chp.rb>.in{display:block!important;max-width:1240px;margin:0 auto;padding:0!important;gap:0}",   /* 01/11 19h45 : l'ancienne règle téléphone (112 px en haut + 16 px sur les côtés) creusait un grand vide au-dessus des titres et décalait le texte */
 ".hce .rb-head{display:flex;gap:10px;align-items:baseline;margin-bottom:18px}",
 ".hce .rb-num{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1;color:var(--champ);flex:0 0 auto}",
 ".hce .rb-num:after{content:'';display:block;height:1px;width:20px;background:var(--champ);margin-top:4px}",

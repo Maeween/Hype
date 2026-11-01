@@ -16168,3 +16168,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pas touchés (présentation à part, à faire ensuite) : pansage g1-c2, robes, matériel, embouchures (Galop 5), et les cours des Galops 5 à 7 restés en page par page.
 - Vérifié : tous les cours du Galop 1 (390 px fr, 1440 px en), du Galop 2 (390 px ko), du Galop 4 (390 px ar), g1-c3 et g4-contact en captures 390 / 820 (ar) / 1440 px, g1-c15 (une page par chapitre, ko) : aucune erreur, rien qui dépasse, chapitres présents ; contrôle coach / défi refait : 44 cours × 14 langues identiques au français. Aucun texte modifié ni retiré.
 - Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (build 20261101-2000), SUIVI.md.
+
+## 01/11/2026 19h50 — PUBLICATION build 20261101-1950 : ERREUR de la build 2000 corrigée (signalée par Blandine 19h42, captures g1-c20 : « qui a fait ce carnage avec les titres et le décalage ? »)
+- ERREUR (la mienne, build 20261101-2000 publiée à 19h38) : sur téléphone, une ancienne règle de l'ancienne présentation des chapitres (.hce-chp>.in : 112 px en haut, 16 px sur les côtés) restait active : grand vide au-dessus de chaque titre de chapitre et texte décalé vers l'intérieur. Mes tests vérifiaient les erreurs et la largeur, pas cet espace.
+- Correction : hype-cours-editorial.js VERSION 31 (?v=31) — l'intérieur des chapitres n'a plus de marge propre (titre à 40 px sous la vague, texte aligné sur la photo, comme les robes).
+- Contrôle ajouté : espace entre le haut de chaque chapitre et son titre mesuré sur tous les cours du Galop 1 (fr) et du Galop 4 (ar) à 390 px : 40 px partout, rien ne dépasse, aucune erreur. Capture g1-c20 à 430 px vérifiée.
+- Pas de moi : la barre des chapitres collée en haut (pastilles « 01 Découvrir son corps… ») vient de la build 1940 de l'autre conversation ; non touchée.
+- Note : le marqueur 20261101-1950 est plus petit que 20261101-2000 (la build précédente avait été nommée en avance) ; il est seulement différent, c'est ce qui compte.
+- Fichiers : hype-cours-editorial.js, index.html (build 20261101-1950), SUIVI.md.
