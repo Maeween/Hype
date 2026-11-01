@@ -20,8 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 43;   /* 01/11 22h10 : chapitres sur téléphone dans le style du haut de page */
-/* précédente : VERSION = 42; */   /* 01/11 22h10 (Blandine : avant-main / arrière-main « même pas les mêmes écritures ») : texte des notions aligné à gauche, plus justifié (le justifié étirait les lignes) */
+var VERSION = 45;   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
+/* précédente : VERSION = 44; */   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
+/* précédente : VERSION = 43; */   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
@@ -192,7 +193,10 @@ var CSS = [
 ".hce-minih{position:sticky;top:0;z-index:30;height:0}",
 ".hce-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 14px 8px;overflow-x:auto;scrollbar-width:none;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".hce-mini::-webkit-scrollbar{display:none}.hce-mini.on{opacity:1;pointer-events:auto;transform:none}",
-".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
+".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",
+/* 01/11 22h35 (Blandine) : barre des chapitres pleine (plus de fondu où le texte réapparaît), filet doré en bas ; titre long coupé proprement « … » ; ancre des chapitres sous la barre */
+".hce-mini.on{background:#070A08;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.22)}.hce-mini .lbm{max-width:min(46vw,260px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+".hce-sec{scroll-margin-top:68px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
 ".hce-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(7,10,8,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.5);padding:6px 14px;font-size:13px;white-space:nowrap}",
 ".hce-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".hce-mini button[aria-current=true]{border-color:var(--champ);color:var(--champ)}",
@@ -781,7 +785,7 @@ var CSS = [
 ".hce .hce-chp.rbd .por{margin-top:30px}",
 ".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
 ".hce .hce-chp.rbd .pan h3{margin:0 0 18px}",
-/* 01/11 21h20 (Blandine) : texte des notions détaché du titre et justifié, sur ordinateur, tablette et téléphone */
+/* 01/11 21h20 (Blandine) : texte des notions détaché du titre ; 01/11 22h20 (relecture) : aligné en début de ligne (gauche, ou droite en arabe), sans coupure de mots, partout */
 ".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:start;-webkit-hyphens:manual;hyphens:manual}",
 ".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
 ".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
@@ -794,6 +798,7 @@ var CSS = [
 ".hce .hce-chp.rbd .rbd-ph img{display:none}",
 ".hce .hce-chp.rbd .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce .hce-chp.rbd .rbd-tx{grid-row:1;grid-column:2;max-width:640px;margin:0;padding:64px 44px 70px 40px}",
+".hce .hce-chp.rbd.rbd-sans{min-height:0}.hce .hce-chp.rbd.rbd-sans .rbd-tx{grid-column:1/-1;justify-self:center;width:100%;max-width:760px;padding:64px 40px 70px}",
 ".hce .hce-chp.rbd.rbinv .rbd-ph{grid-column:2}",
 ".hce .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce .hce-chp.rbd.rbinv .rbd-tx{grid-column:1;justify-self:end;padding:64px 40px 70px 44px}",
@@ -1103,7 +1108,7 @@ function Chapitre(p) {
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
       p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
       h(MobileLectureNotions, { items: p.items })));
-  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.cls ? " " + p.cls : "") },
+  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.bg ? "" : " rbd-sans") + (p.cls ? " " + p.cls : "") },   /* 01/11 23h50 : rbd-sans = chapitre sans photo, texte centré sur toute la largeur */
     p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
     h("div", { className: "rbd-tx" },
       kick, titreH,
@@ -1275,7 +1280,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
         cfg.chapitres.map(function (c, i) {
           return h("button", { key: c.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
-            h("b", null, (i < 9 ? "0" : "") + (i + 1)), c.label);
+            h("b", null, (i < 9 ? "0" : "") + (i + 1)), h("span", { className: "lbm" }, c.label));
         }))),
     corps,
     dernier ? h("div", { className: "hce-pied" }, h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"), fleche(rtl, 15))) : null);
@@ -1506,7 +1511,7 @@ var AUTO_IM = {
   "g1-c3": ["images/galop5-th-cheval2.webp", "images/cours-g1-c3-box.webp",   /* 01/11 18h05 : chapitre 02 « Le confort au box » = photo de Blandine (cheval gris au box) */
     "images/securite-g1-observer.webp"],
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
-  "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
+  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/galop5-c09-incurvation.webp", "images/cours-g1-c5-equilibre.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
@@ -1565,12 +1570,13 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 var MODULES_COURS = {
   "g1-c20": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 1 } },
   "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
-  "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
+  "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } },
+  "g1-c5": { id: "position", module: "HypePositionAssise", apres: 1 }   /* 01/11 : schéma interactif « La bonne position assise » (hype-cours-position.js), après « Les allures assises » */
 };
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
-var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]], "g1-c5": [[0, 0, "images/cours-g1-c5-gravite.webp"]] };   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
+var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };   /* 01/11 23h44 : g1-c5 retiré d'ici, la photo dorée est devenue la photo du chapitre 01 */   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
-var CHAP_SANS_PHOTO = {};
+var CHAP_SANS_PHOTO = { "g1-c5": [1] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
 var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
@@ -2531,7 +2537,11 @@ function construireAuto(cours, lg) {
 
 /* rendu d'une notion dans la carte de droite */
 /* 01/11 21h20 (Blandine : « le texte commence sans majuscule, ça fait bâclé ») : majuscule en début de paragraphe (les textes d'origine suivent souvent un titre en gras « … : ») */
-function maj(t) { return typeof t === "string" ? t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); }).replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t; }   /* + espace insécable avant « : ; ! ? » » (plus de « : » seul en début de ligne) */
+function maj(t, lg) {   /* majuscule en début de paragraphe ; espaces insécables avant « : ; ! ? » et après « en français seulement */
+  if (typeof t !== "string") return t;
+  t = t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); });
+  return lg === "fr" ? t.replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t;
+}
 function renduNotion(o, L, lg, alerte) {
   var r = function (x) { return pickLg(x, lg); };
   var out = [], k = 0;
@@ -2542,7 +2552,7 @@ function renduNotion(o, L, lg, alerte) {
   var para = function (x) {
     var g = r(x.gras), t = r(x.texte) || "";
     if (!paras(t).length) return g ? [h("p", { key: "p" + (k++), className: "pg" }, h("strong", null, g))] : [];
-    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt)); });
+    return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, i === 0 && g ? tt : maj(tt, lg)); });
   };
   if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
   if (o.video) out.push(h("figure", { key: "vd", className: "pimg plein" }, h("video", { src: o.video[0], poster: o.video[1], autoPlay: true, muted: true, loop: true, playsInline: true, preload: "metadata", "aria-hidden": "true", style: { display: "block", width: "100%", height: "auto" } })));
@@ -2555,7 +2565,7 @@ function renduNotion(o, L, lg, alerte) {
     out.push(h("ul", { key: "pl" }, o.photo.items.map(function (t, i) { return h("li", { key: i }, t); })));
   }
   if (o.astuce) o.astuce.forEach(function (t, i) { out.push(h("p", { key: "as" + i, className: "ast" }, t)); });
-  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1))); }
+  if (o.texte1 !== undefined) { if (o.groupe) out.push(h("p", { key: "gr", className: "s" }, o.groupe)); out.push(h("p", { key: "t1", className: "pg" }, maj(o.texte1, lg))); }
   if (o.seg) {
     var s = o.seg;
     if (r(s.sous)) out.push(h("p", { key: "so", className: "s" }, r(s.sous)));

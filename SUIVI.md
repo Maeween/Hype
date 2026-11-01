@@ -16275,3 +16275,51 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - hype-cours-editorial.js : marge de 20 px sous la photo d'une notion (téléphone, carte ordinateur), tous les cours du modèle. Vérifié g1-c5 à 390 px avec les vraies polices. Rien d'autre de modifié.
 - Contrôle demandé par Blandine (21h50, « où sont passés les défis du coach, les savais-tu, les lexiques ») sur les 60 cours en ligne : coach + défi présents en haut des 60 cours ; « Le savais-tu ? » : 35 dans les textes, tous affichés (52 avec ceux ajoutés par la mise en page) ; lexiques : seuls les cours du Galop 4, g3-c3, g3-saut et g2-anatomie en ont un — les cours des Galops 1 à 3 n'en ont jamais eu.
 - Fichiers : hype-cours-editorial.js, index.html (build 20261101-2155), SUIVI.md.
+
+## 01/11/2026 23h20 — PUBLICATION build 20261101-2320 (accord de Blandine 23h16 « Ok vas y c'est bon ») : relecture de l'atlas + onglets « vignettes » + barre des chapitres + types de morceaux traduits
+- Atlas (hype-cours-atlas.js, version 2, ?v=2), relecture ChatGPT appliquée, 14 langues :
+  · épaule (relié au tronc par muscles et tissus de soutien, sans articulation osseuse directe ; l'omoplate est un os), genou = carpe, jarret = tarse, pince (généralement l'une des dernières régions à quitter le sol, variable), talons (forme et hauteur participent à l'équilibre) ;
+  · Galop 3 : « Le pied » (anatomie : face, profil, dessous, derrière) et « Le fer » (découverte) sont deux onglets séparés ;
+  · termes : pl lacunes « Bruzdy przystrzałkowe boczne » / « Bruzda strzałkowa środkowa » (source ZPE), es chanfrein « La cara » ; à confirmer : boulet en arabe (Lane donne حَوشَب), barres en suédois et polonais, glomes en polonais, chanfrein en italien ;
+  · onglets au style « vignettes » choisi par Blandine (23h03) : Galops soulignés, vues et vues du pied en petites photos rondes ; noms courts (Le corps, La tête, Le pied, Le fer) + nom complet en petit doré sous les onglets ;
+  · anneaux plus petits (9 px, 17 px sélectionné), zone tactile inchangée.
+- g1-c20 (hype-cours-galop1.js v16, ?v=16) : « Les pieds (pompe cardiaque) » → « Les pieds et la circulation » + explication du quiz, 14 langues.
+- g3-c11 (hype-cours-galop3.js v13, ?v=13) : phrase des glomes reformulée, 14 langues.
+- Tous les cours du modèle (hype-cours-editorial.js VERSION 43, ?v=43) : texte des notions aligné en début de ligne (droite en arabe), sans coupure de mots ; espaces insécables avant « : ; ! ? » en français seulement ; barre des chapitres pleine avec filet doré, titres longs terminés par « … », chapitre visé non caché sous la barre.
+- Types de morceaux traduits par erreur dans les données (sectie, kader, kort, karta, citaat — nl, sv, pl) reconnus partout : index.html (ancien affichage des cours), hype-cours-modele.js (VERSION 6, ?v=8), hype-cours-robes-ordi.js (VERSION 38, ?v=40), hype-cours-robes-galops-ordi.js (VERSION 21, ?v=21).
+- Ancien atlas de la tête (hype-cours-atlas-tete.js) : plus référencé nulle part, archivable.
+- Vérifié : 4 cours de l'atlas × 14 langues × 390 / 820 / 1280 px (168 affichages), aucune erreur ni débordement ; clic, clavier, onglets ; nl / sv / pl identiques au français en titres, listes, paragraphes ; 10 autres cours du modèle sans erreur.
+- Fichiers : hype-cours-atlas.js, hype-cours-editorial.js, hype-cours-galop1.js, hype-cours-galop3.js, hype-cours-modele.js, hype-cours-robes-ordi.js, hype-cours-robes-galops-ordi.js, index.html (build 20261101-2320), SUIVI.md.
+
+## 01/11/2026 23h45 — PUBLICATION build 20261101-2350 (accord de Blandine 23h39 « Neutre et ok ») : atlas, corrections ciblées de la seconde relecture
+- hype-cours-atlas.js (version 3, ?v=3), 14 langues :
+  · canon (région entre genou/jarret et boulet : os, tendons, ligaments, vaisseaux, nerfs, pas de muscle) ; sabot (enveloppe de corne qui protège l'intérieur du pied ; paroi visible, sole et fourchette dessous ; conseil de curage gardé) ; étampures (trous du fer qui logent la tête des clous ; clous dans la paroi, corne insensible, à l'extérieur de la ligne blanche) ;
+  · vue de derrière du pied RETIRÉE (Blandine : « elle n'est pas possible, c'est pas une chèvre » — sabot qui paraissait fendu) ; données gardées dans le fichier avec masque: true, image images/atlas-pied-arriere.webp non affichée ; glomes toujours expliqués dans le texte de g3-c11 ; demande de remplacement rédigée (vue de derrière, glomes, talons, sabot continu) ;
+  · repères revérifiés sur toutes les photos : poitrail (972,425) et bras (922,474) déplacés, le reste exact ;
+  · arabe : barres du sabot « منعطفا الجدار » (distinct des barres de la bouche) ; formulation NEUTRE choisie par Blandine (plus de féminin « حدّدي ») : « نحدّد … », « لنستكشف الحصان », « يكفي لمس نقطة… », tournures impersonnelles ;
+  · téléphone : toucher un point (comme un nom) fait remonter doucement l'explication si elle est hors de l'écran ; pas de défilement sur ordinateur ;
+  · rangées d'onglets qui dépassent : fondu discret au bord (seulement quand il y a encore des onglets à voir, sens inversé en arabe) ;
+  · accessibilité : rôles des onglets corrects (li en presentation), animations coupées si « réduire les animations ».
+- À confirmer par des personnes de la langue : boulet (ar), barres (ar, sv, pl), glomes (pl), chanfrein (it).
+- Vérifié : 4 cours × 14 langues × 390/820/1280 px (168) sans erreur ni image manquante ni débordement ; Galop du cours ouvert en premier ; toucher sur téléphone, clic et clavier sur ordinateur ; mouvement réduit ; 8 autres cours du modèle sans erreur.
+- Fichiers : hype-cours-atlas.js, index.html (build 20261101-2350), SUIVI.md.
+
+## 01/11/2026 23h55 — PUBLICATION build 20261101-2355 (accord de Blandine 23h48 « Ok ») : « La position du cavalier » (g1-c5) réorganisé + schéma interactif « La bonne position assise »
+- Brief de Blandine « Nouvelle maquette interactive : la bonne position du cavalier » + décisions de la soirée (22h26-23h48).
+- Chapitres (contenu vérifié sur les fiches pédagogiques FFE du Galop 1 : position assise, trot enlevé, équilibre sur les étriers, galop quelques foulées) :
+  · 01 Les allures assises : secret des grands cavaliers, alignement (repris tels quels), « Dans toutes les allures » (talons, jambes, regard), Au pas (ischions, bassin, buste, mains et coudes qui suivent le balancier de l'encolure), Au trot assis (position FFE, contact, respiration), Au galop quelques foulées (départ jambe extérieure reculée, régularité, bassin, buste, mains et coudes, collier, retour au trot).
+  · 02 La bonne position assise : schéma interactif (nouveau fichier hype-cours-position.js, branché par MODULES_COURS comme l'atlas). La photo garde ses 5 médaillons dessinés ; zones de toucher INVISIBLES posées dessus (aucun bouton ajouté, demande de Blandine 22h32) ; repère choisi éclairé d'un halo champagne, les autres atténués ; détail (numéro, nom, explication, conseil, Précédent / Suivant, onglets Regard · Buste · Mains · Assiette · Jambes) à droite sur ordinateur, sous la photo sur téléphone ; 14 langues, arabe de droite à gauche. Titre « La bonne position assise » (la photo montre un trot assis : choix de Blandine 22h50). Éperon gardé (« pas grave »).
+  · 03 Le trot enlevé : mouvement, buste incliné en avant (FFE), poids dans les talons, mains, articulations ; l'astuce « assis-debout ». Sans photo (photo du manège retirée, 23h45) ; sur ordinateur, un chapitre sans photo a désormais son texte centré (classe rbd-sans).
+  · 04 La position d'équilibre (NOUVEAU, au programme du Galop 1 et absent jusqu'ici) : poids dans les talons qui décolle les fesses de quelques centimètres, même position aux trois allures, talons / assiette / jambes / buste / articulations / mains (coudes qui accompagnent au pas et au galop) ; entraînement au trot : alterner trot assis, trot enlevé et équilibre. Photo de Blandine (cheval gris au galop en concours) : images/cours-g1-c5-equilibre.webp.
+- Les 3 affiches (pas, trot, galop : texte dans l'image) sont retirées ; leur contenu est repris en texte (phases du trot enlevé, mains et coudes au galop…). Les temps et la suspension du galop ne sont PAS ajoutés ici : déjà dans « Les allures du cheval » (g1-c4) et hors programme Galop 1.
+- Photo du chapitre 01 = la photo dorée de Liam (images/cours-g1-c5-gravite.webp), qui n'apparaît plus en double dans « L'essentiel » (PHOTOS_NOTION_POS g1-c5 retiré).
+- Conservé tel quel : conseil du coach (test de l'ascenseur) et défi dans les encarts du haut, l'astuce, les quiz.
+- Rappels de Blandine retenus : en position d'équilibre le poids descend dans les talons (jamais « se tenir sur ses étriers ») ; s'appuyer sur les références FFE avant d'écrire un cours.
+- Vérifié : g1-c5 en 14 langues à 390 px, arabe et français à 1440 px, aucune erreur ni débordement ; g1-c20 (atlas) et g1-c15 sans erreur. Fait sur la version en ligne 220bbc1 (atlas v3 de l'autre conversation conservé) : seuls le ?v= de hype-cours-galop1.js et de hype-cours-editorial.js, la balise de hype-cours-position.js et le numéro de build changent dans index.html.
+- Fichiers : hype-cours-galop1.js (v17, ?v=17), hype-cours-editorial.js (VERSION 44, ?v=44), hype-cours-position.js (nouveau, ?v=1), images/position-assise-g1.webp (nouvelle), images/cours-g1-c5-equilibre.webp (nouvelle), index.html (build 20261101-2355), SUIVI.md.
+
+## 02/11/2026 00h00 — PUBLICATION build 20261102-0000 (accord de Blandine 23h56 « Ok ») : atlas, termes vérifiés après relecture Gemini
+- hype-cours-atlas.js (version 4, ?v=4) : barres du sabot en suédois « Hörnstöden » (source : SLU, « Fysiologisk skoning », terme « hörnstöd » ; Gemini proposait « Stöttorna », non retenu) ; chanfrein en italien « Il naso » (source : Università di Teramo, régions de la tête ; Gemini proposait « La canna del naso », non retenu).
+- Gardés sur avis de Gemini, sans source citée (probables, non vérifiés) : boulet ar « مفصل الرمّانة », barres pl « Wsporniki », glomes pl « Opuszki piętowe ».
+- Relecture Gemini : canon, sabot, étampures et arabe neutre validés sans correction ; défilement instantané si « réduire les animations » déjà en place.
+- Fichiers : hype-cours-atlas.js, index.html (build 20261102-0000), SUIVI.md.
