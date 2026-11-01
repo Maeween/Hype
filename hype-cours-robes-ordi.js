@@ -21,7 +21,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 37;   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir */
+var VERSION = 38;   /* 01/11 22h40 : types de morceaux traduits par erreur (nl, sv, pl) reconnus */
+/* précédente : VERSION = 37; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir */
 /* précédente : VERSION = 36; */   /* 31/10 19h15 : seulement les Galops précédents dans le menu */
 /* précédente : VERSION = 35; */   /* 31/10 15h : menu en liste verticale sur téléphone (comme le pansage) ; Galop 5 renommé « Types de pies et adjonctions » */
 /* v34 :    /* 31/10 14h55 : menu « Dans ce cours » en cartes horizontales (comme le cours sécurité) */
@@ -575,6 +576,7 @@ function HypeRobesOrdi(props) {
 
   function M(s, key) {   /* rendu d'un morceau du cours */
     if (!s) return null;
+    var KA = { sectie: "section", kader: "encadre", kort: "carte", karta: "carte", citaat: "citation" }; if (KA[s.k]) s = Object.assign({}, s, { k: KA[s.k] });   /* 01/11 : types de morceaux traduits par erreur (nl, sv, pl) */
     var puces = s.puces.length ? h("ul", null, s.puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); })) : null;
     if (s.k === "para") return h("p", { key: key }, s.gras ? h("strong", null, s.gras + " ") : null, s.texte);
     if (s.k === "encadre") return h("aside", { key: key, className: "rbo-call" }, h("h3", null, nettoyer(s.titre)), s.texte ? h("p", null, s.texte) : null, puces);

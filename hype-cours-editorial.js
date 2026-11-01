@@ -20,7 +20,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 42;   /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
+var VERSION = 43;   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
@@ -190,7 +190,10 @@ var CSS = [
 ".hce-minih{position:sticky;top:0;z-index:30;height:0}",
 ".hce-mini{position:absolute;top:0;inset-inline:0;display:flex;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 14px 8px;overflow-x:auto;scrollbar-width:none;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s,transform .2s}",
 ".hce-mini::-webkit-scrollbar{display:none}.hce-mini.on{opacity:1;pointer-events:auto;transform:none}",
-".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
+".hce-mini.on{background:linear-gradient(180deg,#070A08 0%,#070A08 78%,rgba(7,10,8,0) 100%);padding-bottom:14px}",
+/* 01/11 22h35 (Blandine) : barre des chapitres pleine (plus de fondu où le texte réapparaît), filet doré en bas ; titre long coupé proprement « … » ; ancre des chapitres sous la barre */
+".hce-mini.on{background:#070A08;padding-bottom:10px;border-bottom:1px solid rgba(201,166,107,.22)}.hce-mini .lbm{max-width:min(46vw,260px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+".hce-sec{scroll-margin-top:68px}",   /* 01/11 19h30 (Blandine) : la barre des chapitres a un fond : le texte ne passe plus dessous */
 ".hce-mini button{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(243,238,228,.18);border-radius:999px;background:rgba(7,10,8,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.5);padding:6px 14px;font-size:13px;white-space:nowrap}",
 ".hce-mini button b{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--champ);font-weight:600}",
 ".hce-mini button[aria-current=true]{border-color:var(--champ);color:var(--champ)}",
@@ -1206,7 +1209,7 @@ function HypeCoursEditorial(props) {
       h("div", { className: "hce-mini" + (mini ? " on" : ""), "aria-hidden": mini ? undefined : true },
         cfg.chapitres.map(function (c, i) {
           return h("button", { key: c.id, type: "button", tabIndex: mini ? 0 : -1, "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
-            h("b", null, (i < 9 ? "0" : "") + (i + 1)), c.label);
+            h("b", null, (i < 9 ? "0" : "") + (i + 1)), h("span", { className: "lbm" }, c.label));
         }))),
     corps,
     dernier ? h("div", { className: "hce-pied" }, h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"), fleche(rtl, 15))) : null);

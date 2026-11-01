@@ -28,7 +28,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 5;   /* 01/11 20h50 : citation du haut sortie de la photo, dans un bandeau lisible sous la couverture */
+var VERSION = 6;   /* 01/11 22h40 : alias kort, karta, citaat */
+/* précédente : VERSION = 5; */   /* 01/11 20h50 : citation du haut sortie de la photo, dans un bandeau lisible sous la couverture */
 /* précédente : var VERSION = 4; */   /* 01/11 20h05 : pansage (téléphone, tablette) dans le style du cours des robes — bleu nuit / noir, vague, gros numéro doré, photos arrondies */
 /* précédente : var VERSION = 3; */   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
 
@@ -173,7 +174,7 @@ function nettoyerTitre(s) {   /* retire l'emoji de tête (🧽, 👣, 🐴…) *
   return String(s || "").replace(/^[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}️‍\u{1F1E6}-\u{1F1FF}\s]+/u, "").trim();
 }
 /* certaines langues ont reçu des étiquettes traduites par erreur dans les données (nl : sectie/kader, ru : инструктор) : on les reconnaît */
-var K_ALIAS = { sectie: "section", kader: "encadre", "инструктор": "encadre" };
+var K_ALIAS = { sectie: "section", kader: "encadre", "инструктор": "encadre", kort: "carte", karta: "carte", citaat: "citation" };   /* 01/11 : + sv/pl/nl */
 function segs(arr, k) { return (Array.isArray(arr) ? arr : []).filter(function (s) { return s && (s.k === k || K_ALIAS[s.k] === k); }); }
 function contenuLg(x, lg) { if (Array.isArray(x)) return x; if (x && typeof x === "object") return x[lg] || x.en || x.fr || []; return []; }
 function sansDeuxPoints(s) { return String(s || "").replace(/\s*[:：]\s*$/, ""); }

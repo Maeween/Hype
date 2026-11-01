@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 20;   /* 01/11 22h : g3-c7 — atlas interactif du cheval après la photo des parties du corps */
+var VERSION = 21;   /* 01/11 22h40 : types de morceaux traduits par erreur (nl, sv, pl) reconnus */
+/* précédente : VERSION = 20; */   /* 01/11 22h : g3-c7 — atlas interactif du cheval après la photo des parties du corps */
 /* précédente : VERSION = 19; */   /* 31/10 19h15 : seulement les Galops précédents */
 /* précédente : VERSION = 18; */   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
 /* v17 :    /* 31/10 : menu du cours modèle B */
@@ -232,6 +233,7 @@ function HypeRobesGalopsOrdi(props) {
   /* --- briques --- */
   function M(s, key) {
     if (!s) return null;
+    var KA = { sectie: "section", kader: "encadre", kort: "carte", karta: "carte", citaat: "citation" }; if (KA[s.k]) s = Object.assign({}, s, { k: KA[s.k] });   /* 01/11 : types de morceaux traduits par erreur (nl, sv, pl) */
     var puces = s.puces.length ? h("ul", null, s.puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); })) : null;
     if (s.k === "para") return h("p", { key: key }, s.gras ? h("strong", null, s.gras + " ") : null, s.texte);
     if (s.k === "encadre") return h("aside", { key: key, className: "rbo-call" }, s.titre ? h("h3", null, nettoyer(s.titre)) : null, s.texte ? h("p", null, s.texte) : null, puces);

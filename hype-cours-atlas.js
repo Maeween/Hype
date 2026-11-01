@@ -74,7 +74,7 @@ var NIVEAUX = [
         tt("Les membres postérieurs", "The hind legs", "Las extremidades posteriores", "Gli arti posteriori", "Die Hinterbeine", "後肢", "القائمتان الخلفيتان", "后肢", "De achterbenen", "Os membros posteriores", "Bakbenen", "Задние ноги", "Kończyny tylne", "뒷다리"),
         tt("Les deux membres de derrière. Ils poussent le cheval vers l'avant : c'est son moteur.", "The two legs at the back. They push the horse forward: they are his engine.", "Las dos extremidades de atrás. Empujan al caballo hacia delante: son su motor.", "I due arti dietro. Spingono il cavallo in avanti: sono il suo motore.", "Die beiden hinteren Beine. Sie schieben das Pferd nach vorn: Sie sind sein Motor.", "うしろの2本の脚。馬を前へ押し出す、エンジンです。", "القائمتان من الخلف. تدفعان الحصان إلى الأمام: إنهما محرّكه.", "后面的两条腿，把马向前推：它们是马的发动机。", "De twee achterste benen. Ze duwen het paard vooruit: ze zijn de motor.", "Os dois membros de trás. Empurram o cavalo para a frente: são o seu motor.", "De två bakre benen. De skjuter hästen framåt: de är dess motor.", "Две задние ноги. Они толкают лошадь вперёд — это её мотор.", "Dwie tylne nogi. Pchają konia do przodu: to jego silnik.", "뒤쪽의 두 다리예요. 말을 앞으로 밀어 주는 엔진이에요.")]
     ] },
-    { id: "tete", titre: tt("La tête : premiers repères", "The head: first landmarks", "La cabeza: primeras referencias", "La testa: primi punti", "Der Kopf: erste Orientierung", "頭：はじめの目じるし", "الرأس: معالم أولى", "头部：初步认识", "Het hoofd: eerste herkenningspunten", "A cabeça: primeiras referências", "Huvudet: första riktmärken", "Голова: первые ориентиры", "Głowa: pierwsze punkty", "머리: 첫 기준점"), img: IMG_TETE, pts: [
+    { id: "tete", court: UI.vTete, titre: tt("La tête : premiers repères", "The head: first landmarks", "La cabeza: primeras referencias", "La testa: primi punti", "Der Kopf: erste Orientierung", "頭：はじめの目じるし", "الرأس: معالم أولى", "头部：初步认识", "Het hoofd: eerste herkenningspunten", "A cabeça: primeiras referências", "Huvudet: första riktmärken", "Голова: первые ориентиры", "Głowa: pierwsze punkty", "머리: 첫 기준점"), img: IMG_TETE, pts: [
       ["oreilles", 750, 160,
         tt("Les oreilles", "The ears", "Las orejas", "Le orecchie", "Die Ohren", "耳", "الأذنان", "耳朵", "De oren", "As orelhas", "Öronen", "Уши", "Uszy", "귀"),
         tt("Elles bougent dans tous les sens pour écouter. En avant : il est attentif. Couchées en arrière : attention, il n'est pas content.", "They move in every direction to listen. Forward: he is paying attention. Pinned back: careful, he is not happy.", "Se mueven en todas direcciones para escuchar. Hacia delante: está atento. Pegadas hacia atrás: cuidado, no está contento.", "Si muovono in tutte le direzioni per ascoltare. In avanti: è attento. Schiacciate indietro: attenzione, non è contento.", "Sie drehen sich in alle Richtungen, um zu lauschen. Nach vorn: aufmerksam. Angelegt: Vorsicht, es ist unzufrieden.", "いろいろな方向に動いて音を聞きます。前向きなら注意している。後ろに伏せていたら、機嫌が悪いので気をつけて。", "تتحرّكان في كل الاتجاهات للإصغاء. إلى الأمام: هو منتبه. مطويّتان إلى الخلف: انتبهي، هو غير راضٍ.", "耳朵会转向各个方向去听。朝前：它很专注。向后贴平：小心，它不高兴。", "Ze draaien alle kanten op om te luisteren. Naar voren: het let op. Plat naar achteren: pas op, het is niet blij.", "Mexem-se em todas as direções para ouvir. Para a frente: está atento. Deitadas para trás: cuidado, não está contente.", "De rör sig åt alla håll för att lyssna. Framåt: hästen är uppmärksam. Bakåtstrukna: akta dig, den är inte nöjd.", "Они поворачиваются во все стороны, чтобы слушать. Вперёд — лошадь внимательна. Прижаты назад — осторожно, она недовольна.", "Ruszają się na wszystkie strony, żeby słuchać. Do przodu: koń uważa. Położone do tyłu: uwaga, jest niezadowolony.", "소리를 듣느라 이리저리 움직여요. 앞으로 향하면 집중, 뒤로 눕히면 기분이 나쁘니 조심해요.")],
@@ -133,7 +133,7 @@ var GALOPS_SUIVANTS = [
         tt("Le sabot", "The hoof", "El casco", "Lo zoccolo", "Der Huf", "ひづめ", "الحافر", "蹄", "De hoef", "O casco", "Hoven", "Копыто", "Kopyto", "발굽"),
         tt("Le pied du cheval, en corne. On le cure à chaque pansage.", "The horse's foot, made of horn. You pick it out every time you groom.", "El pie del caballo, de cuerno. Se limpia en cada aseo.", "Il piede del cavallo, fatto di corno. Si pulisce a ogni governo.", "Der Fuß des Pferdes, aus Horn. Du kratzt ihn bei jedem Putzen aus.", "角質でできた馬の足。手入れのたびにお掃除します。", "قدم الحصان، من القرن. تنظّفينه في كل مرة تعتنين به.", "马的脚，由角质构成。每次刷马都要清理它。", "De voet van het paard, van hoorn. Je krabt hem uit bij elke poetsbeurt.", "O pé do cavalo, feito de corno. Limpa-se a cada limpeza.", "Hästens fot, gjord av horn. Du kratsar den varje gång du ryktar.", "Нога лошади из рога. Её расчищают при каждой чистке.", "Stopa konia z rogu. Czyścisz je przy każdym czyszczeniu konia.", "뿔질로 된 말의 발이에요. 손질할 때마다 파 줘요.")]
     ] },
-    { id: "tete2", titre: tt("La tête en détail", "The head in detail", "La cabeza en detalle", "La testa nei dettagli", "Der Kopf im Detail", "頭のくわしい部分", "الرأس بالتفصيل", "头部细节", "Het hoofd in detail", "A cabeça em detalhe", "Huvudet i detalj", "Голова подробно", "Głowa w szczegółach", "머리 자세히"), img: IMG_TETE, pts: [
+    { id: "tete2", court: UI.vTete, titre: tt("La tête en détail", "The head in detail", "La cabeza en detalle", "La testa nei dettagli", "Der Kopf im Detail", "頭のくわしい部分", "الرأس بالتفصيل", "头部细节", "Het hoofd in detail", "A cabeça em detalhe", "Huvudet i detalj", "Голова подробно", "Głowa w szczegółach", "머리 자세히"), img: IMG_TETE, pts: [
       ["front", 670, 390,
         tt("Le front", "The forehead", "La frente", "La fronte", "Die Stirn", "額", "الجبهة", "额头", "Het voorhoofd", "A testa", "Pannan", "Лоб", "Czoło", "이마"),
         tt("Au-dessus des yeux, sous le toupet.", "Above the eyes, under the forelock.", "Encima de los ojos, bajo el copete.", "Sopra gli occhi, sotto il ciuffo.", "Über den Augen, unter dem Schopf.", "目の上、前髪の下にあります。", "فوق العينين، تحت الناصية.", "在眼睛上方、额发下面。", "Boven de ogen, onder de kuif.", "Acima dos olhos, por baixo do topete.", "Ovanför ögonen, under pannluggen.", "Над глазами, под чёлкой.", "Nad oczami, pod grzywką.", "눈 위, 앞머리 갈기 아래에 있어요.")],
@@ -149,7 +149,7 @@ var GALOPS_SUIVANTS = [
     ] }
   ] },
   { n: 3, vues: [
-    { id: "corps3", titre: tt("Le corps : nouveaux repères", "The body: new landmarks", "El cuerpo: nuevas referencias", "Il corpo: nuovi punti", "Der Körper: neue Orientierungspunkte", "体：新しい目じるし", "الجسم: معالم جديدة", "身体：新的部位", "Het lichaam: nieuwe herkenningspunten", "O corpo: novas referências", "Kroppen: nya riktmärken", "Тело: новые ориентиры", "Ciało: nowe punkty", "몸: 새로운 기준점"), img: IMG_CORPS, pts: [
+    { id: "corps3", court: UI.vCorps, titre: tt("Le corps : nouveaux repères", "The body: new landmarks", "El cuerpo: nuevas referencias", "Il corpo: nuovi punti", "Der Körper: neue Orientierungspunkte", "体：新しい目じるし", "الجسم: معالم جديدة", "身体：新的部位", "Het lichaam: nieuwe herkenningspunten", "O corpo: novas referências", "Kroppen: nya riktmärken", "Тело: новые ориентиры", "Ciało: nowe punkty", "몸: 새로운 기준점"), img: IMG_CORPS, pts: [
         ["reins", 430, 205,
           tt("Les reins", "The loins", "Los riñones", "I reni", "Die Lende", "腰", "القَطَن", "腰部", "De lendenen", "Os rins", "Länden", "Поясница", "Lędźwie", "허리"),
           tt("Entre le dos et la croupe. Il n'y a pas de côtes en dessous : c'est une zone fragile.", "Between the back and the croup. There are no ribs underneath: it is a fragile area.", "Entre el dorso y la grupa. No hay costillas debajo: es una zona frágil.", "Tra il dorso e la groppa. Sotto non ci sono costole: è una zona delicata.", "Zwischen Rücken und Kruppe. Darunter sind keine Rippen: eine empfindliche Stelle.", "背と尻のあいだ。下にあばら骨がないので、弱いところです。", "بين الظهر والكَفَل. لا توجد أضلاع تحته: إنها منطقة حسّاسة.", "在背部和臀部之间。下面没有肋骨，是比较脆弱的部位。", "Tussen de rug en het kruis. Er zitten geen ribben onder: een kwetsbare plek.", "Entre o dorso e a garupa. Não há costelas por baixo: é uma zona frágil.", "Mellan ryggen och korset. Där under finns inga revben: ett känsligt område.", "Между спиной и крупом. Под ней нет рёбер — это уязвимое место.", "Między grzbietem a zadem. Pod spodem nie ma żeber: to delikatne miejsce.", "등과 엉덩이 사이예요. 아래에 갈비뼈가 없어서 약한 부분이에요.")],
@@ -160,12 +160,12 @@ var GALOPS_SUIVANTS = [
           tt("Le grasset", "The stifle", "La babilla", "La grassella", "Das Knie (Kniegelenk)", "後膝", "الرَّضفة (مفصل الركبة الخلفي)", "后膝", "De knieschijf (het kniegewricht)", "O soldra", "Knäleden", "Коленная чашка (коленный сустав)", "Staw kolanowy", "뒷무릎"),
           tt("L'articulation à l'avant de la cuisse, près du ventre. Elle correspond à notre genou.", "The joint at the front of the thigh, near the belly. It matches our knee.", "La articulación en la parte delantera del muslo, cerca del vientre. Corresponde a nuestra rodilla.", "L'articolazione davanti alla coscia, vicino al ventre. Corrisponde al nostro ginocchio.", "Das Gelenk vorne am Oberschenkel, nahe am Bauch. Es entspricht unserem Knie.", "ももの前、おなかの近くにある関節で、人のひざにあたります。", "المفصل في مقدّمة الفخذ قرب البطن. يقابل ركبتنا.", "大腿前方、靠近腹部的关节，相当于我们的膝盖。", "Het gewricht aan de voorkant van de dij, vlak bij de buik. Het komt overeen met onze knie.", "A articulação à frente da coxa, perto da barriga. Corresponde ao nosso joelho.", "Leden framtill på låret, nära magen. Den motsvarar vårt knä.", "Сустав спереди бедра, у живота. Он соответствует нашему колену.", "Staw z przodu uda, przy brzuchu. Odpowiada naszemu kolanu.", "넓적다리 앞쪽, 배 가까이에 있는 관절로 사람의 무릎에 해당해요.")]
     ] },
-    { id: "tete3", titre: tt("La tête : nouveaux repères", "The head: new landmarks", "La cabeza: nuevas referencias", "La testa: nuovi punti", "Der Kopf: neue Orientierungspunkte", "頭：新しい目じるし", "الرأس: معالم جديدة", "头部：新的部位", "Het hoofd: nieuwe herkenningspunten", "A cabeça: novas referências", "Huvudet: nya riktmärken", "Голова: новые ориентиры", "Głowa: nowe punkty", "머리: 새로운 기준점"), img: IMG_TETE, pts: [
+    { id: "tete3", court: UI.vTete, titre: tt("La tête : nouveaux repères", "The head: new landmarks", "La cabeza: nuevas referencias", "La testa: nuovi punti", "Der Kopf: neue Orientierungspunkte", "頭：新しい目じるし", "الرأس: معالم جديدة", "头部：新的部位", "Het hoofd: nieuwe herkenningspunten", "A cabeça: novas referências", "Huvudet: nya riktmärken", "Голова: новые ориентиры", "Głowa: nowe punkty", "머리: 새로운 기준점"), img: IMG_TETE, pts: [
         ["auge", 520, 690,
           tt("L'auge", "The space between the jaws", "El canal exterior", "Il canale delle ganasce", "Der Kehlgang", "下あごのくぼみ", "المِعلَف (ما بين الفكّين)", "下颌间隙", "De ganasholte", "A gamela", "Käkvinkeln (mellan underkäkarna)", "Межчелюстное пространство", "Przestrzeń międzyszczękowa", "아래턱 사이 공간"),
           tt("Le creux sous la tête, entre les deux ganaches. Tu peux y passer la main à plat.", "The hollow under the head, between the two jaw bones. You can slide your flat hand there.", "El hueco bajo la cabeza, entre las dos quijadas. Puedes pasar la mano plana por ahí.", "L'incavo sotto la testa, tra le due ganasce. Ci puoi passare la mano aperta.", "Die Mulde unter dem Kopf, zwischen den beiden Ganaschen. Du kannst die flache Hand hineinlegen.", "頭の下、左右のあごのあいだのくぼみ。手のひらを入れることができます。", "التجويف تحت الرأس بين الفكّين. يمكنك أن تمرّري يدك المبسوطة فيه.", "头下方、两侧下颌之间的凹处，可以把手掌平放进去。", "De holte onder het hoofd, tussen de twee ganassen. Je kunt er je vlakke hand in leggen.", "A cavidade por baixo da cabeça, entre as duas ganachas. Podes passar lá a mão aberta.", "Gropen under huvudet, mellan de två käkarna. Du kan lägga din platta hand där.", "Углубление под головой, между двумя ганашами. Туда можно положить ладонь.", "Zagłębienie pod głową, między żuchwami. Możesz tam włożyć płasko dłoń.", "머리 아래, 양쪽 턱 사이의 오목한 곳이에요. 손바닥을 펴서 넣어 볼 수 있어요.")]
     ] },
-    { id: "pied", titre: tt("Anatomie du pied", "Anatomy of the foot", "Anatomía del pie", "Anatomia del piede", "Anatomie des Hufs", "ひづめのつくり", "تشريح القدم", "马蹄的结构", "Anatomie van de voet", "Anatomia do pé", "Hovens anatomi", "Строение копыта", "Budowa kopyta", "발굽의 구조"), sous: [
+    { id: "pied", court: tt("Le pied", "The foot", "El pie", "Il piede", "Der Huf", "ひづめ", "القدم", "马蹄", "De voet", "O pé", "Hoven", "Копыто", "Kopyto", "발굽"), titre: tt("Anatomie du pied", "Anatomy of the foot", "Anatomía del pie", "Anatomia del piede", "Anatomie des Hufs", "ひづめのつくり", "تشريح القدم", "马蹄的结构", "Anatomie van de voet", "Anatomia do pé", "Hovens anatomi", "Строение копыта", "Budowa kopyta", "발굽의 구조"), sous: [
       { id: "face", titre: tt("De face", "Front view", "De frente", "Di fronte", "Von vorn", "正面", "من الأمام", "正面", "Van voren", "De frente", "Framifrån", "Спереди", "Z przodu", "앞에서"), img: { src: "images/atlas-pied-face.webp", w: 766, h: 482, alt: tt("Sabot vu de face", "Hoof seen from the front", "Casco visto de frente", "Zoccolo visto di fronte", "Huf von vorn gesehen", "正面から見たひづめ", "حافر من الأمام", "正面看到的马蹄", "Hoef van voren gezien", "Casco visto de frente", "Hov sedd framifrån", "Копыто спереди", "Kopyto widziane z przodu", "앞에서 본 발굽") }, pts: [
         ["couronne", 375, 190,
           tt("La couronne", "The coronet", "La corona", "La corona", "Der Kronrand", "蹄冠", "التاج", "蹄冠", "De kroonrand", "A coroa", "Kronranden", "Венчик", "Koronka", "관대"),
@@ -235,7 +235,7 @@ var GALOPS_SUIVANTS = [
           tt("Repère la corne à l'arrière du sabot, sous les glomes.", "Find the horn at the back of the hoof, below the heel bulbs.", "Localiza el casco en la parte trasera, bajo los glomos.", "Trova il corno dietro lo zoccolo, sotto i glomi.", "Finde das Horn hinten am Huf, unter den Ballen.", "蹄球の下、ひづめのうしろの角質をさがそう。", "حدّدي القرن في مؤخّرة الحافر، تحت الكُرتين.", "找到蹄球下方、蹄子后部的角质。", "Zoek de hoorn aan de achterkant van de hoef, onder de ballen.", "Encontra o casco na parte de trás, por baixo dos glomos.", "Hitta hornet baktill på hoven, under ballarna.", "Найди рог в задней части копыта, под мякишами.", "Znajdź róg z tyłu kopyta, pod opuszkami.", "구근 아래, 발굽 뒤쪽의 각질을 찾아봐요.")]
       ] }
     ] },
-    { id: "fer", titre: tt("Découverte du fer", "Discovering the horseshoe", "Descubrir la herradura", "Scoprire il ferro", "Das Hufeisen entdecken", "蹄鉄を知ろう", "التعرّف على الحدوة", "认识蹄铁", "Het hoefijzer ontdekken", "Descobrir a ferradura", "Upptäck hästskon", "Знакомство с подковой", "Poznaj podkowę", "편자 알아보기"), img: { src: "images/atlas-pied-fer.webp", w: 512, h: 760, alt: tt("Sabot ferré vu de dessous, la pince en bas", "Shod hoof seen from underneath, toe at the bottom", "Casco herrado visto desde abajo, la lumbre abajo", "Zoccolo ferrato visto da sotto, la punta in basso", "Beschlagener Huf von unten, Zehe unten", "蹄鉄をつけたひづめを裏から見たところ（蹄尖が下）", "حافر منعول من الأسفل، المقدّمة في الأسفل", "钉了蹄铁的马蹄底面，蹄尖朝下", "Beslagen hoef van onderen, toon onderaan", "Casco ferrado visto por baixo, pinça em baixo", "Skodd hov underifrån, tån nedåt", "Кованое копыто снизу, зацеп внизу", "Kute kopyto od spodu, przód na dole", "편자를 단 발굽을 아래에서 본 모습(앞끝이 아래)") }, pts: [
+    { id: "fer", court: tt("Le fer", "The shoe", "La herradura", "Il ferro", "Das Hufeisen", "蹄鉄", "الحدوة", "蹄铁", "Het hoefijzer", "A ferradura", "Skon", "Подкова", "Podkowa", "편자"), titre: tt("Découverte du fer", "Discovering the horseshoe", "Descubrir la herradura", "Scoprire il ferro", "Das Hufeisen entdecken", "蹄鉄を知ろう", "التعرّف على الحدوة", "认识蹄铁", "Het hoefijzer ontdekken", "Descobrir a ferradura", "Upptäck hästskon", "Знакомство с подковой", "Poznaj podkowę", "편자 알아보기"), img: { src: "images/atlas-pied-fer.webp", w: 512, h: 760, alt: tt("Sabot ferré vu de dessous, la pince en bas", "Shod hoof seen from underneath, toe at the bottom", "Casco herrado visto desde abajo, la lumbre abajo", "Zoccolo ferrato visto da sotto, la punta in basso", "Beschlagener Huf von unten, Zehe unten", "蹄鉄をつけたひづめを裏から見たところ（蹄尖が下）", "حافر منعول من الأسفل، المقدّمة في الأسفل", "钉了蹄铁的马蹄底面，蹄尖朝下", "Beslagen hoef van onderen, toon onderaan", "Casco ferrado visto por baixo, pinça em baixo", "Skodd hov underifrån, tån nedåt", "Кованое копыто снизу, зацеп внизу", "Kute kopyto od spodu, przód na dole", "편자를 단 발굽을 아래에서 본 모습(앞끝이 아래)") }, pts: [
       ["pincef", 263, 628,
         tt("La pince du fer", "The toe of the shoe", "La lumbre de la herradura", "La punta del ferro", "Die Zehe des Eisens", "蹄鉄の前部", "مقدّمة الحدوة", "蹄铁前部", "De toon van het ijzer", "A pinça da ferradura", "Skons tå", "Зацеп подковы", "Przód podkowy", "편자 앞부분"),
         tt("Repère l'avant du fer, sous la pince du sabot.", "Find the front of the shoe, under the toe of the hoof.", "Localiza la parte delantera de la herradura, bajo la lumbre del casco.", "Trova la parte davanti del ferro, sotto la punta dello zoccolo.", "Finde die Vorderseite des Eisens, unter der Zehe des Hufs.", "ひづめの蹄尖の下にある、蹄鉄の前の部分をさがそう。", "حدّدي مقدّمة الحدوة، تحت مقدّمة الحافر.", "找到蹄铁前部，在蹄尖下面。", "Zoek de voorkant van het ijzer, onder de toon van de hoef.", "Encontra a frente da ferradura, debaixo da pinça do casco.", "Hitta skons framsida, under hovens tå.", "Найди переднюю часть подковы, под зацепом копыта.", "Znajdź przód podkowy, pod przodem kopyta.", "발굽 앞끝 아래에 있는 편자의 앞부분을 찾아봐요.")],
@@ -262,6 +262,59 @@ var CSS =
   ".hat2 .ong.sous button{font-size:12px;padding:6px 12px;border-color:rgba(243,238,228,.14)}" +
   ".hat2 .ong.gal button{font-family:'Cormorant Garamond',serif;font-size:17px;padding:6px 16px}" +
   ".hat2 .ong .nv{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ch);border:1px solid rgba(201,166,107,.5);border-radius:999px;padding:2px 6px}" +
+  ".hat2 .ong .th{display:none}" +
+  ".hat2 .leg{margin:-2px 0 12px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,166,107,.85)}" +
+  /* proposition C « frise » : Galops = repères numérotés reliés par un trait doré (comme les notions des chapitres), vues en onglets soulignés, sous-vues en petites pastilles */
+  ".hat2.vc .ong.gal{gap:0;margin:0 0 18px;overflow:visible}.hat2.vc .ong.gal li{position:relative;flex:0 0 auto}" +
+  ".hat2.vc .ong.gal li:not(:last-child)::after{content:'';position:absolute;top:16px;inset-inline-start:34px;width:42px;height:1px;background:rgba(201,166,107,.5)}" +
+  ".hat2.vc .ong.gal button{flex-direction:column;align-items:flex-start;gap:6px;border:0;background:none;padding:0;margin-inline-end:44px;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}" +
+  ".hat2.vc .ong.gal button::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,166,107,.6);font-family:'Cormorant Garamond',serif;font-size:17px;letter-spacing:0;color:var(--ch)}" +
+  ".hat2.vc .ong.gal button[aria-selected=true]{color:var(--ch);background:none}.hat2.vc .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
+  ".hat2.vc .ong.gal .nv{border:0;padding:0;font-size:8px}" +
+  ".hat2.vc .ong.vue{gap:22px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 12px}" +
+  ".hat2.vc .ong.vue button{border:0;border-radius:0;background:none;padding:8px 0 10px;font-size:13px;color:rgba(243,238,228,.6)}" +
+  ".hat2.vc .ong.vue button[aria-selected=true]{color:var(--iv);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
+  ".hat2.vc .ong.sous button{font-size:11.5px;padding:5px 11px;border-color:rgba(243,238,228,.12)}" +
+  /* proposition D « vignettes » : chaque vue et chaque vue du pied = petite photo ronde + nom dessous */
+  ".hat2.vd .ong.gal{gap:24px;border-bottom:1px solid rgba(201,166,107,.22);margin:0 0 16px;overflow:visible}" +
+  ".hat2.vd .ong.gal button{border:0;background:none;border-radius:0;padding:8px 0 10px;font-size:19px;color:rgba(243,238,228,.6)}" +
+  ".hat2.vd .ong.gal button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}.hat2.vd .ong.gal .nv{border:0;padding:0;font-size:8.5px;margin-top:-10px}" +
+  ".hat2.vd .ong.vue,.hat2.vd .ong.sous{gap:16px;margin:0 0 14px}" +
+  ".hat2.vd .ong.vue button,.hat2.vd .ong.sous button{flex-direction:column;gap:7px;border:0;background:none;padding:0;font-size:11.5px;color:rgba(243,238,228,.65);width:78px;white-space:normal;text-align:center;line-height:1.25}" +
+  ".hat2.vd .ong .th{display:block;width:58px;height:58px;border-radius:50%;border:1px solid rgba(243,238,228,.18);background-color:#101A1D;transition:border-color .2s,box-shadow .2s}" +
+  ".hat2.vd .ong.sous .th{width:44px;height:44px}.hat2.vd .ong.sous button{width:64px}" +
+  ".hat2.vd .ong button[aria-selected=true]{color:var(--ch);background:none}.hat2.vd .ong button[aria-selected=true] .th{border-color:var(--ch);box-shadow:0 0 0 3px rgba(201,166,107,.18)}" +
+  /* proposition E « segmenté » : Galops = barre pleine largeur en 3 parts égales, vues en onglets soulignés, sous-vues en texte séparé par des points */
+  ".hat2.ve .ong.gal{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;padding:4px;border:1px solid rgba(201,166,107,.35);border-radius:14px;background:rgba(16,26,29,.55);margin:0 0 16px;overflow:visible}" +
+  ".hat2.ve .ong.gal button{width:100%;justify-content:center;border:0;border-radius:10px;padding:9px 6px;font-size:17px;color:rgba(243,238,228,.7);flex-direction:column;gap:2px}" +
+  ".hat2.ve .ong.gal button[aria-selected=true]{background:rgba(201,166,107,.16);color:var(--ch)}.hat2.ve .ong.gal .nv{border:0;padding:0;font-size:8px}" +
+  ".hat2.ve .ong.vue{gap:22px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 12px}" +
+  ".hat2.ve .ong.vue button{border:0;border-radius:0;background:none;padding:8px 0 10px;font-size:13px;color:rgba(243,238,228,.6)}" +
+  ".hat2.ve .ong.vue button[aria-selected=true]{color:var(--iv);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
+  ".hat2.ve .ong.sous{gap:0;margin:0 0 14px}.hat2.ve .ong.sous li+li::before{content:'·';color:rgba(201,166,107,.6);padding:0 10px}.hat2.ve .ong.sous li{display:flex;align-items:center}" +
+  ".hat2.ve .ong.sous button{border:0;background:none;padding:4px 0;font-size:12.5px;color:rgba(243,238,228,.6)}.hat2.ve .ong.sous button[aria-selected=true]{color:var(--ch);background:none}" +
+  /* proposition A « magazine » : Galops en onglets soulignés, vues en pastilles fines défilantes, sous-vues en sélecteur segmenté */
+  ".hat2.va .ong.gal{gap:26px;border-bottom:1px solid rgba(201,166,107,.22);margin:0 0 16px;padding:0;overflow:visible}" +
+  ".hat2.va .ong.gal button{border:0;background:none;border-radius:0;padding:10px 0 11px;font-size:20px;color:rgba(243,238,228,.62);box-shadow:none}" +
+  ".hat2.va .ong.gal button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
+  ".hat2.va .ong.gal .nv{border:0;padding:0;font-size:8.5px;margin-top:-10px}" +
+  ".hat2.va .ong.vue{gap:6px;margin:0 0 12px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-inline-end:28px}" +
+  "[dir=rtl] .hat2.va .ong.vue,.hat2.va[dir=rtl] .ong.vue{-webkit-mask-image:linear-gradient(270deg,#000 88%,transparent);mask-image:linear-gradient(270deg,#000 88%,transparent)}" +
+  ".hat2.va .ong.vue button{border-color:transparent;background:rgba(16,26,29,.75);font-size:12.5px;padding:8px 14px}" +
+  ".hat2.va .ong.vue button[aria-selected=true]{border-color:rgba(201,166,107,.7);background:rgba(201,166,107,.1)}" +
+  ".hat2.va .ong.sous{display:inline-flex;max-width:100%;gap:0;padding:3px;border:1px solid rgba(243,238,228,.12);border-radius:999px;background:rgba(16,26,29,.6);margin:0 0 14px}" +
+  ".hat2.va .ong.sous button{border:0;padding:6px 13px;font-size:12px;color:rgba(243,238,228,.75)}" +
+  ".hat2.va .ong.sous button[aria-selected=true]{background:rgba(201,166,107,.16);color:var(--ch)}" +
+  /* proposition B « compacte » : Galops en 3 pastilles numérotées, une seule ligne de vues avec sous-vues en texte souligné */
+  ".hat2.vb .ong.gal{gap:10px;align-items:center;margin:0 0 14px}" +
+  ".hat2.vb .ong.gal button{width:auto;padding:5px 12px 5px 6px;font-size:16px;gap:8px;border-color:rgba(243,238,228,.16)}" +
+  ".hat2.vb .ong.gal button::before{content:attr(data-n);display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid rgba(201,166,107,.55);font-size:13px;color:var(--ch)}" +
+  ".hat2.vb .ong.gal button[aria-selected=true]::before{background:var(--ch);color:#070A08}" +
+  ".hat2.vb .ong.gal .nv{border:0;padding:0}.hat2.vb .ong.gal button[aria-selected=false] .gl{display:none}.hat2.vb .ong.gal button[aria-selected=false]{padding:5px}" +
+  ".hat2.vb .ong.vue button{font-size:12.5px;padding:7px 13px;border-color:rgba(243,238,228,.14)}" +
+  ".hat2.vb .ong.sous{gap:18px;border-bottom:1px solid rgba(243,238,228,.1);margin:0 0 14px}" +
+  ".hat2.vb .ong.sous button{border:0;border-radius:0;background:none;padding:6px 0 8px;font-size:12.5px;color:rgba(243,238,228,.6)}" +
+  ".hat2.vb .ong.sous button[aria-selected=true]{color:var(--ch);background:none;box-shadow:inset 0 -2px 0 var(--ch)}" +
   ".hat2 .zone{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:8px}" +
   ".hat2 .ph{position:relative;border-radius:14px;overflow:hidden;background:var(--n)}" +
   ".hat2 .ph img{display:block;width:100%;height:auto}" +
@@ -299,6 +352,13 @@ function zoomStyle(img, x, y) {
     backgroundPosition: (bx / (img.w - R) * 100) + "% " + (by / (img.h - R) * 100) + "%" };
 }
 
+/* vignette ronde d'une vue (style « vignettes ») : centrée sur le milieu des repères de la vue */
+function vignette(img, pts) {
+  if (!img) return undefined;
+  var cx = img.w / 2, cy = img.h / 2;
+  if (pts && pts.length) { cx = 0; cy = 0; pts.forEach(function (q) { cx += q[1]; cy += q[2]; }); cx /= pts.length; cy /= pts.length; }
+  return { backgroundImage: "url(" + img.src + ")", backgroundSize: "cover", backgroundPosition: (cx / img.w * 100) + "% " + (cy / img.h * 100) + "%" };
+}
 function Module(props) {
   var lg = props.lg || "fr", rtl = lg === "ar";
   var data = NIVEAUX.concat(GALOPS_SUIVANTS).filter(function (g) { return g.n <= (props.niveau || 1); });
@@ -325,19 +385,20 @@ function Module(props) {
     if (e.key === "ArrowRight") { e.preventDefault(); aller(act + (rtl ? -1 : 1)); }
     else if (e.key === "ArrowLeft") { e.preventDefault(); aller(act + (rtl ? 1 : -1)); }
   };
-  return h("div", { className: "hat2", dir: rtl ? "rtl" : undefined, onKeyDown: clavier },
+  return h("div", { className: "hat2" + (props.theme ? " v" + props.theme : (window.HYPE_ATLAS_THEME ? " v" + window.HYPE_ATLAS_THEME : "")), dir: rtl ? "rtl" : undefined, onKeyDown: clavier },
     h("style", null, CSS),
     h("h3", null, pk(UI.titre, lg)),
     h("p", { className: "aide" }, pk(UI.aide, lg)),
     data.length > 1 ? h("ul", { className: "ong gal", role: "tablist", "aria-label": pk(UI.niveaux, lg) }, data.map(function (g, i) {
-      return h("li", { key: g.n }, h("button", { type: "button", role: "tab", "aria-selected": i === gi ? "true" : "false", onClick: function () { setGi(i); } },
-        pk(UI.galop, lg).replace("{n}", g.n), i === data.length - 1 ? h("span", { className: "nv" }, pk(UI.nouveau, lg)) : null));
+      return h("li", { key: g.n }, h("button", { type: "button", role: "tab", "data-n": g.n, "aria-selected": i === gi ? "true" : "false", onClick: function () { setGi(i); } },
+        h("span", { className: "gl" }, pk(UI.galop, lg).replace("{n}", g.n)), i === data.length - 1 ? h("span", { className: "nv" }, pk(UI.nouveau, lg)) : null));
     })) : null,
-    h("ul", { className: "ong", role: "tablist", "aria-label": pk(UI.vues, lg) }, G.vues.map(function (v, i) {
-      return h("li", { key: v.id }, h("button", { type: "button", role: "tab", "aria-selected": i === vi ? "true" : "false", onClick: function () { var o = {}; o[gi] = i; setVueM(Object.assign({}, vueM, o)); } }, pk(v.titre, lg)));
+    h("ul", { className: "ong vue", role: "tablist", "aria-label": pk(UI.vues, lg) }, G.vues.map(function (v, i) {
+      return h("li", { key: v.id }, h("button", { type: "button", role: "tab", "aria-selected": i === vi ? "true" : "false", onClick: function () { var o = {}; o[gi] = i; setVueM(Object.assign({}, vueM, o)); } }, h("span", { className: "th", "aria-hidden": true, style: vignette(v.img || (v.sous && v.sous[0].img), v.pts || (v.sous && v.sous[0].pts)) }), h("span", { className: "lb" }, pk(v.court || v.titre, lg))));
     })),
+    V0.court ? h("p", { className: "leg" }, pk(V0.titre, lg)) : null,
     V0.sous ? h("ul", { className: "ong sous", role: "tablist", "aria-label": pk(V0.titre, lg) }, V0.sous.map(function (v, i) {
-      return h("li", { key: v.id }, h("button", { type: "button", role: "tab", "aria-selected": i === si ? "true" : "false", onClick: function () { var o = {}; o[ks] = i; setSousM(Object.assign({}, sousM, o)); } }, pk(v.titre, lg)));
+      return h("li", { key: v.id }, h("button", { type: "button", role: "tab", "aria-selected": i === si ? "true" : "false", onClick: function () { var o = {}; o[ks] = i; setSousM(Object.assign({}, sousM, o)); } }, h("span", { className: "th", "aria-hidden": true, style: vignette(v.img, v.pts) }), h("span", { className: "lb" }, pk(v.titre, lg))));
     })) : null,
     V.img ? h("div", { className: "zone", key: cle },
       h("div", { className: "ph", dir: "ltr", style: V.img.h > V.img.w * 0.9 ? { maxWidth: Math.round(V.img.w / V.img.h * 620) + "px", justifySelf: "center", width: "100%" } : undefined },
