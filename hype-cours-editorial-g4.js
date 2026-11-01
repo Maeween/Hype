@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 6;   /* 01/11 17h (V4) : titres sans redite (incurvation, départ au galop), coach + défi empilés sur téléphone, photo dorée de g4-vitesse */
+var VERSION = 7;   /* 01/11 18h05 : citation du chapitre 01 dans le bandeau sous le haut de page (plus en double) */
+/* v6 : */   /* 01/11 17h (V4) : titres sans redite (incurvation, départ au galop), coach + défi empilés sur téléphone, photo dorée de g4-vitesse */
 /* v5 : */   /* 01/11 16h10 : textes manquants du Galop 4 (hype-cours-g4-textes.js, 14 langues), fiches mémo retirées, glossaire en lexique dépliable, encadrés « Les sensations », scènes interactives dorées */
 /* v4 : */   /* 01/11 11h31 : conseil du coach de g3-c3 et g3-saut */
 /* v3 : */    /* 01/11 : les 2 cours de saut du Galop 3 (g3-c3, g3-saut) passent par ce constructeur, qui sait afficher leurs blocs spéciaux */
@@ -299,7 +300,7 @@ IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
         var items = c.notions.map(function (n) { return { titre: titreN(n, lg), alerte: alerte(n), rendu: function () { return rendu(n, lg, x); } }; });
-        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto g4c" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note || null });
+        return h(X.Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: G, cls: "auto g4c" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : (c.note || null) });
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
