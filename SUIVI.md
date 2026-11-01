@@ -16168,3 +16168,7 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pas touchés (présentation à part, à faire ensuite) : pansage g1-c2, robes, matériel, embouchures (Galop 5), et les cours des Galops 5 à 7 restés en page par page.
 - Vérifié : tous les cours du Galop 1 (390 px fr, 1440 px en), du Galop 2 (390 px ko), du Galop 4 (390 px ar), g1-c3 et g4-contact en captures 390 / 820 (ar) / 1440 px, g1-c15 (une page par chapitre, ko) : aucune erreur, rien qui dépasse, chapitres présents ; contrôle coach / défi refait : 44 cours × 14 langues identiques au français. Aucun texte modifié ni retiré.
 - Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (build 20261101-2000), SUIVI.md.
+
+## 01/11 20h05 — g1-c20 : photo de « Comprendre sa silhouette » (NON publié, build 20261101-2005)
+- Photo envoyée par Blandine (19h28) pour le chapitre 03 « Comprendre sa silhouette » de « La physiologie du cheval » : images/cours-g1-c20-silhouette.webp (avant : galop5-theme-cheval.webp, gardée dans images/). hype-cours-editorial.js VERSION 31 (?v=31).
+- Abandonné, pas publié : ma version « aérée » des chapitres (19h20-19h45, mise de côté sur la branche sauvegarde-aeration-1940). Pendant ce temps une autre conversation a refait les chapitres dans le style du cours des robes (build 20261101-2000, demande de Blandine « reproduis exactement ces couleurs, ces alternances et cette vague, ainsi que les titres ») : les deux se contredisaient, j'ai gardé la sienne.

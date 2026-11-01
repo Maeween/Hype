@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 30;   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
+var VERSION = 31;   /* 01/11 20h05 : photo du chapitre « Comprendre sa silhouette » (g1-c20) */
+/* précédente : VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
 /* précédente : var VERSION = 29; */   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
 /* précédente : VERSION = 28; */   /* 01/11 19h35 : barre des chapitres collée en haut avec un fond noir + g1-c6 (affiches reprises en texte) + g1-c4 (photos des allures) */
 /* précédente : VERSION = 27; */   /* 01/11 19h : fond noir partout (cartes de notion bleu pétrole semi-transparentes ombrées un chapitre sur deux) + citation du cours en bandeau lisible sous le haut de page (tous écrans) */
@@ -1338,7 +1339,7 @@ var AUTO_IM = {
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
   "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
-  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
+  "g1-c20": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 19h28 : photo de Blandine pour « Comprendre sa silhouette » (avant : galop5-theme-cheval.webp) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
   "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
