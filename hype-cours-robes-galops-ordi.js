@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 19;   /* 31/10 19h15 : seulement les Galops précédents */
+var VERSION = 20;   /* 01/11 22h : g3-c7 — atlas interactif du cheval après la photo des parties du corps */
+/* précédente : VERSION = 19; */   /* 31/10 19h15 : seulement les Galops précédents */
 /* précédente : VERSION = 18; */   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
 /* v17 :    /* 31/10 : menu du cours modèle B */
 /* v15 :   /* 31/10 : défi du cavalier ajouté au Galop 2 */
@@ -333,6 +334,8 @@ function HypeRobesGalopsOrdi(props) {
           h("div", { className: "rbo-txt rbo-methode" }, h("h3", { style: { marginTop: 0 } }, nettoyer(sansNum(a[2].titre))),
             h("ol", { className: "rbo-ordre" }, a[2].puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, String(p.texte).replace(/^\s*✅\s*/, ""))); })))),
         h("div", { style: { marginTop: 64 } }, Photo("g3parties", "pano")),
+        /* 01/11 : atlas interactif du cheval (hype-cours-atlas.js), ouvert sur les nouveaux repères du Galop 3 ; marques et robes inchangées */
+        window.HypeAtlas ? h("div", { style: { marginTop: 64 } }, h(window.HypeAtlas.Module, { lg: lg, niveau: 3, vue: "corps3" })) : null,
         h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[3], "a3"), M(a[4], "a4")))),
       Vague(NOIR, PET),
       /* 02 MARQUES ET ÉPIS : m[0..6] */
