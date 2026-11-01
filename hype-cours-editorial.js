@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 25;   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
+var VERSION = 26;   /* 01/11 19h20 : g1-c4 — photos du pas, du trot et du galop en tête de chaque notion (fond noir) */
+/* précédente : VERSION = 25; */   /* 01/11 19h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
 /* précédente : VERSION = 24; */   /* 01/11 18h10 : g1-c3 et g1-c17 — affiches retirées (contenu repris en texte), photo du haut et du chapitre 02 de g1-c3 */
 /* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
@@ -420,6 +421,7 @@ var CSS = [
 ".hce .hce-chp .pan .k{font-size:11px;font-weight:600;letter-spacing:.24em;color:var(--champ)}",
 ".hce-chp .pan h3{font-size:30px;line-height:1.08}.hce-chp .pan.al h3{color:var(--alerte)}",
 ".hce-chp .pimg{margin:2px 0 4px;border-radius:12px;overflow:hidden;aspect-ratio:2/1;background:#0E1413}.hce-chp .pimg img{display:block;width:100%;height:100%;object-fit:cover}",
+".hce .pimg.plein{aspect-ratio:auto!important;height:auto}.hce .pimg.plein img{height:auto!important;object-fit:contain}",   /* photo entière (allures : on voit les quatre membres) */
 ".hce .hce-chp .pan .s{font-size:15px;line-height:1.6;color:var(--doux)}",
 ".hce-chp .pan ul{margin:0;padding-inline-start:20px;display:grid;gap:7px;font-size:15px;line-height:1.5;color:var(--ivoire)}.hce-chp .pan li::marker{color:var(--champ)}",
 ".hce-chp .pan ul.x{list-style:none;padding-inline-start:0}.hce-chp .pan ul.x li{position:relative;padding-inline-start:26px}",
@@ -1332,6 +1334,8 @@ var AUTO_IM_G3 = {
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
+/* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
+var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
@@ -2263,6 +2267,12 @@ function construireAuto(cours, lg) {
     var DR = C.defiRemplace, dt = DR.titre ? r(DR.titre) : defi.titre;
     defi = { titre: dt, haut: DR.accroche ? r(DR.accroche) : defi.haut, fin: { titre: dt, sous: DR.sous ? r(DR.sous) : "", puces: DR.points.map(function (x) { return { texte: r(x) }; }) } };
   }
+  /* 01/11 19h20 : photo en tête d'une notion, repérée par le début de son titre français (PHOTOS_NOTION) */
+  var PN = PHOTOS_NOTION[cours.id];
+  if (PN) chapitres.forEach(function (c) { c.notions.forEach(function (o) {
+    var t = (o.fr && o.fr.titre) ? nettoyerTitre(o.fr.titre).replace(/^\d+\.\s*/, "") : "";
+    Object.keys(PN).forEach(function (k) { if (t && t.indexOf(k) === 0) o.img = PN[k]; });
+  }); });
   return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, citFin: citFin, couv: couv };
 }
 
@@ -2279,6 +2289,7 @@ function renduNotion(o, L, lg, alerte) {
     if (!paras(t).length) return g ? [h("p", { key: "p" + (k++), className: "pg" }, h("strong", null, g))] : [];
     return paras(t).map(function (tt, i) { return h("p", { key: "p" + (k++), className: "pg" }, i === 0 && g ? h("strong", null, g + " ") : null, tt); });
   };
+  if (o.img) out.push(h("figure", { key: "im", className: "pimg plein" }, h("img", { src: o.img, alt: "", loading: "lazy" })));
   if (o.affiche) out.push(h(Affiche, { key: "af", L: L, src: o.affiche.src, legende: o.affiche.legende, alt: o.affiche.legende }));
   /* 01/11 : cours g1-c8, fiches licol / filet / selle -> photos interactives à 6 numéros (hype-cours-materiel.js) */
   var HM = window.HypeMateriel && o.photo && (window.HypeMateriel.pour(o.photo.srcFr) || window.HypeMateriel.pour(o.photo.src));

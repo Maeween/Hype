@@ -16108,3 +16108,8 @@ Demande de Blandine (18h03, capture de l'affiche) : « regarde ce que cette page
 - Correction : l'affiche disait à la fois « verrouiller en passant le bout dans la dernière boucle » et « se défait en tirant sur le bout final ». Le texte dit : sortir d'abord le bout de la dernière boucle, puis tirer.
 - Affiche retirée de l'affichage (AFFICHES_RETIREES « g1-c10 » : [2]) — hype-cours-editorial.js VERSION 25 (?v=25). Reporté sur la version en ligne 339d63b (affiches g1-c3, g1-c17 de l'autre conversation gardées).
 - Vérifié : g1-c10 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement, nouvelle section présente, affiche absente. index.html build 20261101-1910.
+
+## 01/11/2026 19h25 — build 20261101-1925 (EN ATTENTE) : « Les allures du cheval » (g1-c4) — photos du pas, du trot et du galop
+- Photos de Blandine (19h12) : 1re = trot, 2e = galop, 3e = pas. Mur jaune du fond passé en noir (choix de Blandine 19h14 « un fond noir c'est possible »), le reste de la photo inchangé : images/allures-g1-pas.webp, -trot.webp, -galop.webp.
+- Placées en tête des notions « Le Pas », « Le Trot », « Le Galop » (photo entière, sans recadrage) : nouveau réglage PHOTOS_NOTION dans hype-cours-editorial.js (repère la notion par le début de son titre français).
+- Vérifié : g1-c4 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement.
