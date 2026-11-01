@@ -198,7 +198,7 @@ var CSS = [
 /* tons */
 ".hcm .t-noir{background:var(--noir)}.hcm .t-petrole{background:var(--petrole)}",
 /* barre du haut */
-".hcm-bar{position:absolute;top:0;inset-inline:0;z-index:3;display:flex;align-items:center;gap:10px;padding:12px var(--pad)}",
+".hcm-bar{position:absolute;top:0;inset-inline:0;z-index:3;display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top, 0px)) var(--pad) 12px}",
 ".hcm-back{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px;line-height:1;color:var(--ivoire)}",
 ".hcm-marque{font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:4px;font-weight:600;color:var(--ivoire)}",
 ".hcm-pill{margin-inline-start:auto;border:1px solid var(--ligne);border-radius:999px;padding:3px 11px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--champ);background:rgba(7,10,8,.45);white-space:nowrap}",

@@ -157,7 +157,7 @@ var CSS = [
 "[dir=rtl] .pso-hero .vo{background:linear-gradient(270deg,rgba(7,10,8,.92) 0%,rgba(7,10,8,.72) 34%,rgba(7,10,8,.12) 66%,rgba(7,10,8,0) 100%),linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 28%,rgba(7,10,8,.55) 100%)}",
 "[dir=rtl] .pso-hero .bg{background-position:30% 22%;transform:scaleX(-1)}",
 ".pso-hero>*:not(.bg):not(.vo){position:relative}",
-".pso-bar{display:flex;align-items:center;gap:12px;position:absolute;top:18px;inset-inline:40px;z-index:2}",
+".pso-bar{display:flex;align-items:center;gap:12px;position:absolute;top:calc(18px + env(safe-area-inset-top, 0px));inset-inline:40px;z-index:2}",
 ".pso-back{width:38px;height:38px;border-radius:50%;border:1px solid var(--ligne);background:rgba(7,10,8,.55);display:inline-flex;align-items:center;justify-content:center;font-size:18px}",
 ".pso-crumb{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--champ)}",
 ".pso-hero h1{font-size:clamp(36px,3.5vw,54px);line-height:1.04;max-width:430px;margin:10px 0 12px}",

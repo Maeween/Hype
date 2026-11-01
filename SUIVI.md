@@ -15975,3 +15975,13 @@ Demandes de Blandine (00h28 « Pour le cours g1 le matériel », 00h29 « Idem p
 - Haut de page : images/cours-g1-c8-hero.webp (cheval noir sellé et bridé, vague retirée), HERO_COURS.
 - hype-cours-editorial.js VERSION 12 (?v=12) : branchement du module + srcFr pour retrouver la fiche dans toutes les langues.
 - Tests : fr/ar 390, fr/ja 1440 : 3 modules, clic OK, 0 erreur, 0 débordement.
+
+## 01/11 01h50 — Cours sur téléphone : vague, menu, photo des chapitres, flèche et drapeau (NON publié, build 20261101-0150)
+Demandes de Blandine (00h44 et 00h50, captures du cours « Le matériel de base » et « Le nœud d'attache ») :
+1. Vague dorée de séparation : même tracé que dans le cours pansage (Galop 1), avec de l'air au-dessus et en dessous (30 px de chaque côté) — hype-cours-editorial.js, tous les cours du modèle commun (Galops 1 à 4).
+2. « Touche un chapitre pour y aller directement. » retiré sous « Les chapitres du cours », espace gardé.
+3. Téléphone : la photo du chapitre est montrée en entier, le titre du chapitre passe en dessous (plus de titre sur la photo).
+4. Une photo par chapitre minimum : vérifié sur les 60 cours du modèle (chaque chapitre a sa photo) ; g2-aides avait la même photo aux chapitres 1 et 5 → 5e photo ajoutée (galop5-c03-apprendre.webp, provisoire).
+5. Flèche retour et drapeau trop hauts (sous l'heure de l'iPhone) : ils descendent de la hauteur de la barre d'état, dans tous les cours refaits (modèle commun, pansage, robes, pansage ordinateur).
+- Versions : hype-cours-editorial.js v13, hype-cours-modele.js v4, hype-cours-robes-ordi.js v38, hype-cours-pansage-ordi.js v23.
+- Tests : 60 cours du modèle sur 390 et 1440 px sans erreur ni débordement ; sécurité, seller et brider, Galop 2 inchangés.

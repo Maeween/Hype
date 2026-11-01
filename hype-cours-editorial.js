@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 12;   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
+var VERSION = 13;   /* 01/11 01h50 : téléphone — vague du cours pansage + air, phrase d'aide du menu retirée, photo de chapitre sans titre dessus */
+/* précédente : VERSION = 12; */   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
 /* précédente : VERSION = 11; */   /* 01/11 01h10 : Galop 3 (15 cours, robes à part) sur le modèle commun, téléphone compris */
 /* précédente : VERSION = 10; */   /* 01/11 00h25 : outils prêtés au Galop 4 (HypeCoursEditorial._) + setEcran transmis aux chapitres — rien ne change pour les Galops 1 et 2 */
 /* précédente : VERSION = 9; */   /* 01/11 00h15 : téléphone — menu des chapitres en liste verticale (pansage), haut de page comme sur ordinateur */
@@ -103,7 +104,7 @@ var CSS = [
 ".hce-hero{position:relative;overflow:hidden;min-height:0;padding:0 0 22px}",
 ".hce-hero .ph{position:relative;height:230px;background:#070A08 center 30%/cover no-repeat;filter:saturate(.82)}",
 ".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 30%,rgba(7,10,8,0) 55%,#070A08 100%)}",
-".hce-bar{position:absolute;top:14px;inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
+".hce-bar{position:absolute;top:calc(14px + env(safe-area-inset-top, 0px));inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
 ".hce-back{width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
 ".hce-crumb{display:none;align-items:center;gap:10px;font-size:14px;color:var(--ivoire)}.hce-crumb i{font-style:normal;color:var(--doux)}",
 ".hce-lang{margin-inline-start:auto}",
@@ -132,7 +133,7 @@ var CSS = [
 ".hce-card .hce-rond{position:absolute;bottom:12px;inset-inline-end:12px}",
 ".hce-card:hover{border-color:var(--champ)}",
 /* vague */
-".hce-vague{display:block;width:100%;height:28px;margin:-1px 0}",
+".hce-vague{display:block;width:100%;padding:30px 0;margin:-1px 0;line-height:0}.hce-vague svg{display:block;width:100%;height:16px}",
 /* menu des chapitres : cartes photo rectangulaires */
 ".hce-menu{position:relative;padding:8px 0 22px}",
 ".hce-menu ol{list-style:none;margin:0;padding:0 16px;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;scrollbar-width:none}.hce-menu ol::-webkit-scrollbar{display:none}",
@@ -442,7 +443,7 @@ var CSS = [
 ".hce-mhead{display:block;padding:0 16px 12px}",
 ".hce .hce-mhead .k{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--champ);margin:0}",
 ".hce .hce-mhead .k:after{content:'';width:46px;height:1px;background:rgba(201,166,107,.5)}",
-".hce-mhead h2{font-size:23px;line-height:1.15;margin:8px 0 4px}",
+".hce-mhead h2{font-size:23px;line-height:1.15;margin:8px 0 14px}",
 ".hce .hce-mhead .aide{font-size:12px;color:var(--doux);margin:0}",
 /* 01/11 00h15 (Blandine : « les menus avec les chapitres doivent être dans ce design-là partout ») : retour à la LISTE VERTICALE du pansage sur téléphone (le menu horizontal du 31/10 22h05 est retiré) */
 ".hce-menu ol{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;overflow:visible;scroll-snap-type:none;padding:0 16px}",
@@ -458,8 +459,10 @@ var CSS = [
    (repris du patch préparé par ChatGPT, sans masquer les 3 encarts du haut) */
 "@media screen and (max-width:699px){",
 ".hce-chp-mobile{padding:0 0 28px}",
-".hce-chp-mobile>.bg{height:214px;bottom:auto}",
-".hce-chp-mobile>.in{display:block;padding:104px 16px 0}",
+".hce-chp-mobile>.bg{position:relative;inset:auto;height:auto;aspect-ratio:16/10;bottom:auto}",   /* 01/11 00h44 : la photo du chapitre seule, sans titre dessus (Blandine) */
+".hce-chp-mobile>.bg:after{background:linear-gradient(180deg,rgba(7,10,8,0) 70%,#070A08 100%)}",
+".hce-chp-mobile>.in{display:block;padding:18px 16px 0}",
+".hce-chp-mobile h2{text-shadow:none}",
 ".hce-chp-mobile h2{font-size:32px}",
 ".hce-chp-mobile .note{margin:10px 0 0}",
 ".hce-mobile-read{display:grid;gap:22px;min-width:0;margin-top:22px}",
@@ -505,7 +508,7 @@ var CSS = [
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
 ".hce-hero .ph{height:380px}.hce-hero .txt{padding:0 32px;margin-top:-60px}.hce-hero h1{font-size:52px}",
-".hce-bar{inset-inline:28px;top:20px}.hce-crumb{display:inline-flex}",
+".hce-bar{inset-inline:28px;top:calc(20px + env(safe-area-inset-top, 0px))}.hce-crumb{display:inline-flex}",
 ".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}",
 ".hce-card{flex:none;min-height:150px}.hce-card h3{max-width:none}.hce-card p{max-width:78%}",
 ".hce-menu ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:0 28px}",
@@ -549,7 +552,7 @@ var CSS = [
 "[dir=rtl] .hce-hero .ph{transform:scaleX(-1)}",
 ".hce-hero .txt{margin:0;padding:0 40px 54px;max-width:640px}",
 ".hce-hero h1{font-size:clamp(56px,5.2cqw,76px)}",
-".hce-bar{inset-inline:40px;top:26px}",
+".hce-bar{inset-inline:40px;top:calc(26px + env(safe-area-inset-top, 0px))}",
 ".hce-lang{position:absolute;inset-inline-end:380px}",
 ".hce-enc{grid-column:2;grid-row:1;position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:12px;padding:24px 24px 24px 0;align-self:stretch}",
 "[dir=rtl] .hce-enc{padding:26px 0 24px 24px}",
@@ -615,10 +618,16 @@ var ICO = {
 };
 function fleche(rtl, w) { return ico(rtl ? ["M19 12H5", "M11 6l-6 6 6 6"] : ["M5 12h14", "M13 6l6 6-6 6"], w || 16); }
 
+/* 01/11 00h44 (Blandine : « applique celle qu'on a dans le cours g1 […] et laisse bien de l'espace au-dessus et en dessous ») :
+   même tracé que la vague du cours pansage (hype-cours-modele.js), avec de l'air de chaque côté.
+   Ancienne version : chemin "M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14", trait #C9A66B à 0.55. */
 function Vague(p) {
-  return h("svg", { className: "hce-vague", viewBox: "0 0 1440 28", preserveAspectRatio: "none", "aria-hidden": true, style: { background: p.de } },
-    h("path", { d: "M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14 L1440 28 L0 28 Z", fill: p.vers }),
-    h("path", { d: "M0 14 C 240 2, 480 26, 720 14 S 1200 2, 1440 14", fill: "none", stroke: "#C9A66B", strokeOpacity: 0.55, strokeWidth: 1.1 }));
+  var d = "M0,0 L1200,0 L1200,9 C1050,20 900,3 750,10 C600,17 450,2 300,9 C200,14 100,6 0,11 Z";
+  var ligne = "M0,11 C100,6 200,14 300,9 C450,2 600,17 750,10 C900,3 1050,20 1200,9";
+  return h("div", { className: "hce-vague", "aria-hidden": true, style: { background: "linear-gradient(180deg," + p.de + " 50%," + p.vers + " 50%)" } },
+    h("svg", { viewBox: "0 0 1200 22", preserveAspectRatio: "none" },
+      h("path", { d: d, fill: p.de }),
+      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: 0.28, strokeWidth: 1, vectorEffect: "non-scaling-stroke" })));
 }
 function Visuel(p) {
   return h("div", { className: "hce-vis " + (p.ratio || "r43"), role: "img", "aria-label": p.L("visuel") }, ICO.image(26), p.L("visuel"));
@@ -956,7 +965,7 @@ function HypeCoursEditorial(props) {
     /* MENU DES CHAPITRES */
     h("nav", { className: "hce-menu", ref: menuRef, "aria-label": L("mTitre") },
       chs[0] && chs[0].citation ? h("div", { className: "hce-mobile-quote" }, chs[0].citation) : null,   /* 01/11 (pack ChatGPT) : citation sous le haut de page, téléphone */
-      h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre")), h("p", { className: "aide" }, L("mAide"))),
+      h("div", { className: "hce-mhead" }, h("p", { className: "k" }, L("mProg")), h("h2", null, L("mTitre"))),   /* 01/11 00h44 : « Touche un chapitre… » retiré (Blandine), espace gardé */
       h("ol", { style: { "--n": (function (t) { return t > 7 ? Math.ceil(t / 2) : t; })(cfg.chapitres.length + (cfg.revision ? 1 : 0)) } }, cfg.chapitres.map(function (c, i) {
         return h("li", { key: c.id }, h("button", { type: "button", className: "hce-chap", "aria-current": actif === i ? "true" : undefined, onClick: function () { choisir(i); } },
           h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + c.img + ")", backgroundPosition: c.pos || "center" } }),
@@ -1210,7 +1219,7 @@ var AUTO_IM = {
   "g1-c16": ["images/galop5-c07-transport.webp", "images/galop5-c05-soins.webp", "images/galop5-th-cheval2.webp"],
   "g1-c17": ["images/cours-pansage-09_gestes_brossage.webp", "images/galop5-theme-cheval.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c03-apprendre.webp"],
   "g1-c18": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
-  "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp"],
+  "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
   "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
   "g2-c1": ["images/cours-pansage-09_gestes_brossage.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c05-soins.webp"],
   "g2-c3": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
