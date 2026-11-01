@@ -501,7 +501,8 @@ var CSS = [
 ".hce-mhead h2{font-size:23px;line-height:1.15;margin:8px 0 14px}",
 ".hce .hce-mhead .aide{font-size:12px;color:var(--doux);margin:0}",
 /* 01/11 00h15 (Blandine : « les menus avec les chapitres doivent être dans ce design-là partout ») : retour à la LISTE VERTICALE du pansage sur téléphone (le menu horizontal du 31/10 22h05 est retiré) */
-".hce-menu ol{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;overflow:visible;scroll-snap-type:none;padding:0 16px}",
+/* 01/11 22h22 (Blandine : « laisse un peu plus d'espace entre les différentes parties ») : 8 → 14 px entre les cartes des chapitres */
+".hce-menu ol{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;overflow:visible;scroll-snap-type:none;padding:0 16px}",
 ".hce-menu li{flex:none}",
 ".hce-chap{display:flex;align-items:center;gap:12px;height:auto;min-height:62px;border-radius:6px;border-color:rgba(243,238,228,.1);background:#0c1113}",
 ".hce-chap .ph{inset:0 0 0 54%}[dir=rtl] .hce-chap .ph{inset:0 54% 0 0}",
