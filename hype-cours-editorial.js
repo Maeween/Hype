@@ -20,7 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 32;   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */
+var VERSION = 34;   /* 01/11 20h15 : g1-c20 — chapitre interactif « Explore la tête du cheval » + photo du haut */
+/* précédente : VERSION = 33; */   /* 01/11 20h : photo du haut de « La physiologie du cheval » (g1-c20) */
+/* précédente : VERSION = 32; */   /* 01/11 20h05 : encart « Quiz et révision » descendu (il était collé à la vague) */
 /* précédente : var VERSION = 31; */   /* 01/11 19h50 : grand vide au-dessus des titres de chapitre et texte décalé sur téléphone corrigés */
 /* précédente : var VERSION = 30; */   /* 01/11 20h : chapitres dans le style du cours des robes partout (bleu nuit / noir alternés, vague dorée entre chaque partie, gros numéro doré, photo entière en cadre arrondi, notions à la suite) */
 /* précédente : var VERSION = 29; */   /* 01/11 19h45 : conseil du coach et défi du haut présents dans toutes les langues (la structure se lit sur le cours d'origine en français) */
@@ -1395,6 +1397,8 @@ Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUT
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
+/* 01/11 20h : chapitres interactifs ajoutés à un cours (module chargé à part) — apres = nombre de chapitres avant lui */
+var MODULES_COURS = { "g1-c20": { id: "tete", module: "HypeAtlasTete", apres: 1 } };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4] };   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
@@ -2395,6 +2399,7 @@ function titreNotion(o, L, lg) {
 }
 /* 01/11 : photos de haut de page fournies par Blandine (remplacent la couverture d'origine) — [image, position] */
 var HERO_COURS = {
+  "g1-c20": ["images/cours-g1-c20-hero.webp", "62% 40%", "80% 40%"],   /* « La physiologie du cheval » — cheval bai foncé sur fond noir, photo de Blandine (01/11 19h56) */
   "g1-c3": ["images/cours-g1-c3-hero.webp", "30% 40%", "25% 40%"],   /* « Le mode de vie du cheval » — cheval gris au galop au pré, photo de Blandine (01/11 18h06) */
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "88% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
@@ -2418,9 +2423,16 @@ AUTO_IDS.forEach(function (id) {
     var sections = A.chapitres.map(function (c, i) {
       var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg, alerteNotion(n)); } }; });
       return { id: c.id, ton: "photo", citation: c.note || null, rendu: function (x) {
-        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, inv: x.inv, num: (i < 9 ? "0" : "") + (i + 1), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : c.note });   /* la citation du chapitre 01 est dans le bandeau sous le haut de page */
+        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, inv: x.inv, num: (function (k) { return (k < 9 ? "0" : "") + (k + 1); })(i + ((MODULES_COURS[cours.id] && window[MODULES_COURS[cours.id].module] && i >= MODULES_COURS[cours.id].apres) ? 1 : 0)), galop: galopLab, cls: "auto" + (i % 2 ? " inv" : ""), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: i === 0 ? null : c.note });   /* la citation du chapitre 01 est dans le bandeau sous le haut de page */
       } };
     });
+    /* 01/11 20h (brief Blandine) : chapitre interactif « Explore la tête du cheval » (hype-cours-atlas-tete.js), inséré après le chapitre indiqué */
+    var MC = MODULES_COURS[cours.id];
+    if (MC && window[MC.module]) {
+      var M = window[MC.module], pos = Math.min(MC.apres, chapitres.length);
+      chapitres.splice(pos, 0, { id: "mod-" + MC.id, label: M.titre(lg), img: MC.img || M.img, pos: "70% 45%" });
+      sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, { lg: lg }); } });
+    }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       return h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
         h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),

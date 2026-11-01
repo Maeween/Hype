@@ -16184,3 +16184,13 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - ERREUR évitée avant publication : mon premier remplacement de la vague dans hype-cours-modele.js avait effacé tout le code qui la suivait (schéma du sabot, blocs) → page cassée en test ; fichier remis à l'identique de la version en ligne et changement refait proprement. Rien de cela n'est parti en ligne.
 - Vérifié : g1-c2 390 px (téléphone) et 1440 px (ordinateur), g1-c3 430 px (encart du quiz) : aucune erreur.
 - Fichiers : hype-cours-editorial.js, hype-cours-modele.js, hype-cours-pansage-ordi.js, index.html (build 20261101-2005), SUIVI.md.
+
+## 01/11/2026 20h00 → 20h15 — build 20261101-2015 (EN ATTENTE) : photo du haut de « La physiologie du cheval » (g1-c20)
+- Photo de Blandine (19h56, cheval bai foncé sur fond noir) : images/cours-g1-c20-hero.webp, dans HERO_COURS (cadrage téléphone à part pour garder la tête).
+- hype-cours-editorial.js VERSION +1 (?v= +1), index.html build 20261101-2000.
+- 20h15 (même build, brief de Blandine 19h56) : g1-c20 — nouveau chapitre 02 interactif « Explore la tête du cheval » (nouveau fichier hype-cours-atlas-tete.js ?v=1, chargé après hype-cours-materiel.js ; image images/atlas-tete-cheval.webp, sans texte incrusté).
+  10 repères = vrais boutons HTML posés sur la photo : oreilles, toupet, yeux, chanfrein, naseaux, lèvres et bout du nez, ganaches, gorge, encolure, crinière. 8 ont un médaillon sur la photo (il s'allume en champagne) ; toupet et gorge n'en ont pas sur l'image : repère seul.
+  Contrôle des repères : tous correspondent à la bonne zone. Le médaillon du chanfrein montre un reflet clair (ce n'est pas une marque blanche ; le texte ne parle pas de marque).
+  Ordinateur : photo sur deux tiers, nom + explication à droite, noms en dessous. Téléphone : photo pleine largeur, noms en menu horizontal, une explication à la fois. Précédent / Suivant (flèches du clavier aussi), arabe de droite à gauche. 14 langues.
+  Branchement : MODULES_COURS dans hype-cours-editorial.js (chapitre inséré après le chapitre 01, numéros des chapitres suivants décalés). Contenu existant du cours inchangé. hype-cours-editorial.js VERSION 34 (?v=34), index.html build 20261101-2015.
+  Vérifié : g1-c20 en 14 langues × 390 / 820 / 1440 px, aucune erreur, aucun débordement, 10 repères partout.
