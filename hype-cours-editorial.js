@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 41;   /* 01/11 21h55 : plus d'espace sous les photos des notions */
+var VERSION = 42;   /* 01/11 22h : une seule échelle de tailles de texte dans tous les cours du modèle */
+/* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
@@ -798,6 +799,27 @@ var CSS = [
 "}",
 /* 01/11 21h51 (Blandine : « laisse plus d'espace sous la photo pour le texte ») : de l'air entre une photo de notion et son texte, sur tous les écrans */
 ".hce .hce-mobile-unit .pimg,.hce .hce-chp .pan .pimg,.hce-lc .corps .pimg{margin-bottom:20px!important}",
+/* ===== 01/11 22h (Blandine : « conserve un style unique, même en taille de police ça part dans tous les sens ») : UNE seule échelle, tous écrans =====
+   texte courant : Montserrat 14,5 px / 1,7, aligné à gauche, même taille pour les paragraphes, les puces, les introductions et les encarts ;
+   titres en Cormorant : chapitre 34 px, notion 26 px, encart 22 px ; petits libellés (surtitres, 1 / 5) : 11 px espacé */
+".hce .hce-mobile-unit p.pg,.hce .hce-mobile-unit .hce-txt,.hce .hce-mobile-unit .hce-txt p,.hce .hce-mobile-unit li,.hce .hce-mobile-unit .ap,.hce .hce-mobile-unit .s,.hce .hce-chp .pan p.pg,.hce .hce-chp .pan .hce-txt,.hce .hce-chp .pan .hce-txt p,.hce .hce-chp .pan li,.hce .hce-chp .pan .ap,.hce .hce-chp .pan .s,.hce .rb-sous{font-size:14.5px!important;line-height:1.7!important;text-align:start!important;-webkit-hyphens:manual!important;hyphens:manual!important;letter-spacing:0!important}",
+".hce .hce-mobile-unit p.pg,.hce .hce-mobile-unit .hce-txt,.hce .hce-mobile-unit li,.hce .hce-chp .pan p.pg,.hce .hce-chp .pan li{color:rgba(243,238,228,.88)!important}",
+".hce .hce-mobile-unit li strong,.hce .hce-mobile-unit p.pg strong,.hce .hce-chp .pan li strong,.hce .hce-chp .pan p.pg strong{font-weight:600!important;color:var(--ivoire)!important}",
+".hce .hce-mobile-unit .s,.hce .hce-chp .pan .s,.hce .rb-sous{font-style:italic!important;color:rgba(243,238,228,.62)!important}",
+/* 01/11 22h (Blandine : « ne surcharge pas en doré, il y en a trop ») : le doré reste sur le surtitre « 01 — Galop 1 », la 2e partie du titre de chapitre et le chapitre choisi ; le reste en ivoire */
+".hce .hce-mobile-unit h3:before,.hce .hce-chp .pan h3:before{display:none!important}",
+".hce .hce-mobile-unit li::marker,.hce .hce-chp .pan li::marker{color:rgba(243,238,228,.4)!important}",
+".hce .hce-mobile-unit .ast,.hce .rb-note,.hce .hce-mobile-quote{border-inline-start-color:rgba(201,166,107,.35)!important}",
+".hce .hce-chp .pan .k,.hce-lc .lect .k{color:rgba(243,238,228,.5)!important}",
+".hce .hce-mini button b{color:rgba(243,238,228,.55)!important}",
+".hce .hce-chap .n{color:rgba(243,238,228,.55)!important}.hce .hce-chap[aria-current=true] .n{color:var(--champ)!important}",
+".hce .hce-mobile-unit ul,.hce .hce-chp .pan ul{font-size:14.5px!important;gap:10px!important}",
+".hce .hce-chp.rb h2{font-size:34px!important;line-height:1.08!important;font-weight:500!important}",
+".hce .hce-mobile-unit h3,.hce .hce-chp .pan h3{font-size:26px!important;line-height:1.15!important;font-weight:500!important}",
+/* haut de page (photo, titre, encarts du coach et du défi) : inchangé, à la demande de Blandine (01/11 21h57) */
+".hce .hce-chap .lb{font-size:20px!important;font-weight:500!important}",
+".hce .hce-mini button{font-size:13px!important}",
+".hce .hce-mini button span{max-width:58vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
 
 ].join("\n");
 
