@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 2;   /* 01/11 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */
+var VERSION = 3;   /* 01/11 : les 2 cours de saut du Galop 3 (g3-c3, g3-saut) passent par ce constructeur, qui sait afficher leurs blocs spéciaux */
+/* v2 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */   /* 01/11 : palette (photos dorées, couvertures et scènes au doré, chapitres pairs en bleu pétrole + vague dorée) */
 var h = React.createElement;
 var X = E._, Lx = X.Lx, tt = X.tt, pickLg = X.pickLg, paras = X.paras, phrases = X.phrases, titreNet = X.titreNet, IM = X.IM;
 
@@ -55,6 +56,9 @@ function dico(id) {
   try { m["g4-nourrir"] = COMPL_NOURRIR_I18N; } catch (e) { }
   try { m["g4-exterieur"] = COMPL_EXTERIEUR_I18N; } catch (e) { }
   try { m["g4-c5"] = COMPL_SANTE_I18N; } catch (e) { }
+  /* 01/11 : Galop 3 — les 2 cours de saut (compléments existants : défi, Hey Baby, synthèse, glossaire, savais-tu, science, ressources) */
+  try { m["g3-c3"] = COMPL_ABORD_I18N; } catch (e) { }
+  try { m["g3-saut"] = COMPL_SAUT_I18N; } catch (e) { }
   return m[id] || null;
 }
 function composant(nom) {
@@ -83,7 +87,10 @@ var IMG = {   /* 31/10 23h57 (Blandine : rester dans la palette) : photos chaude
   "g4-exterieur": ["FOND_CAVALIERS_ECURIE.webp", "securite-g1-distance.webp", "mes-chevaux-fond-couchant.webp"],
   "g4-biomeca": ["galop5-th-cheval2.webp", "galop5-hero-v2.webp", "robes-portrait-alezan-brule.webp"],
   "g4-galop-qualite": ["galop5-th-cheval2.webp", "galop5-hero-v2.webp", "galop5-th-vie2.webp"],
-  "g4-c5": ["securite-g1-epaule.webp", "securite-g1-observer.webp", "securite-g1-inquiet.webp"]
+  "g4-c5": ["securite-g1-epaule.webp", "securite-g1-observer.webp", "securite-g1-inquiet.webp"],
+  /* 01/11 : Galop 3, cours de saut (photos provisoires, mêmes que la version d'avant) */
+  "g3-c3": ["galop5-c11-saut.webp", "galop5-c12-cross.webp", "galop5-c08-equilibre.webp"],
+  "g3-saut": ["galop5-c11-saut.webp", "galop5-c12-cross.webp", "article-cso-saut.webp"]
 };
 /* chapitres communs : une photo fixe chacun */
 var IMG_FIX = { fiches: "galops-v2-carte-exercices-hd1.jpg", glossaire: "galops-v2-carte-examens-hd1.jpg", plus: "securite-g1-porte.webp" };
@@ -132,7 +139,7 @@ function sansFin(s) { return String(s || "").replace(/\s*[;；]\s*$/, "").replac
 
 /* le cours tel qu'il est écrit (textes en { fr, en, … }) : l'appli le passe déjà traduit, or la structure se lit en français */
 function brut(cours) {
-  try { var t = window.COURS_GALOP4_FR || []; for (var i = 0; i < t.length; i++) if (t[i] && t[i].id === cours.id) return t[i]; } catch (e) { }
+  try { var t = (/^g3-/.test(cours.id) ? window.COURS_GALOP3_FR : window.COURS_GALOP4_FR) || []; for (var i = 0; i < t.length; i++) if (t[i] && t[i].id === cours.id) return t[i]; } catch (e) { }
   return cours;
 }
 function construire(coursT, lg) {
@@ -243,7 +250,7 @@ function alerte(o) { var t = o.fr && o.fr.titre ? String(pickLg(o.fr.titre, "fr"
 
 IDS.forEach(function (id) {
   E.config[id] = function (cours, lg) {
-    var L = Lx(lg), r = function (x) { return pickLg(x, lg); }, G = L4(lg)("galop");
+    var L = Lx(lg), r = function (x) { return pickLg(x, lg); }, G = /^g3-/.test(id) ? String(L4(lg)("galop")).replace(/4/, "3") : L4(lg)("galop");
     var A = construire(cours, lg);
     if (!A.chapitres.length || !(cours.quiz || []).length) return { valide: false, sections: [], chapitres: [] };
     var chapitres = A.chapitres.map(function (c) { return { id: c.id, label: c.titre, img: c.img, pos: "55% 40%" }; });
