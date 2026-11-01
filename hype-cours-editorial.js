@@ -76,6 +76,7 @@ var T = {
   plusLoin: tt("Pour aller plus loin", "To go further", "Para ir más lejos", "Per approfondire", "もっと知りたい", "Mehr erfahren", "للتعمق أكثر", "深入了解", "Verder verdiepen", "Para saber mais", "Fördjupning", "Подробнее", "Więcej informacji", "더 알아보기"),
   reussis: tt("{n} / {t} validés", "{n} / {t} done", "{n} / {t} hechos", "{n} / {t} fatti", "{n} / {t} 達成", "{n} / {t} geschafft", "{n} / {t} منجزة", "已完成 {n} / {t}", "{n} / {t} gedaan", "{n} / {t} feitos", "{n} / {t} klara", "{n} / {t} выполнено", "{n} / {t} zrobione", "{n} / {t} 완료"),
   zoneAide: tt("Touche une zone pour la découvrir.", "Tap an area to discover it.", "Toca una zona para descubrirla.", "Tocca una zona per scoprirla.", "エリアをタップして確認しよう。", "Tippe auf eine Zone, um sie zu entdecken.", "المس منطقة لاكتشافها.", "点击一个区域了解详情。", "Tik op een zone om meer te ontdekken.", "Toca numa zona para a descobrir.", "Tryck på en zon för att upptäcka den.", "Нажми на зону, чтобы узнать больше.", "Dotknij strefy, aby ją poznać.", "구역을 눌러 알아보세요."),
+  chapN: tt("Chapitre {n}", "Chapter {n}", "Capítulo {n}", "Capitolo {n}", "第{n}章", "Kapitel {n}", "الفصل {n}", "第{n}章", "Hoofdstuk {n}", "Capítulo {n}", "Kapitel {n}", "Глава {n}", "Rozdział {n}", "{n}장"),
   chapSuiv: tt("Chapitre suivant", "Next chapter", "Capítulo siguiente", "Capitolo successivo", "次の章", "Nächstes Kapitel", "الفصل التالي", "下一章", "Volgend hoofdstuk", "Capítulo seguinte", "Nästa kapitel", "Следующая глава", "Następny rozdział", "다음 장"),
   queFerais: tt("Que ferais-tu ?", "What would you do?", "¿Qué harías?", "Cosa faresti?", "どうする？", "Was würdest du tun?", "ماذا كنت ستفعل؟", "你会怎么做？", "Wat zou jij doen?", "O que farias?", "Vad skulle du göra?", "Что бы ты сделал?", "Co byś zrobił?", "너라면 어떻게 할까?"),
   voirReflexes: tt("Voir les bons réflexes", "See the right reflexes", "Ver los buenos reflejos", "Vedi i riflessi giusti", "正しい対応を見る", "Die richtigen Reflexe ansehen", "اعرض ردود الفعل الصحيحة", "查看正确反应", "Bekijk de juiste reflexen", "Ver os reflexos certos", "Se rätt reflexer", "Посмотреть правильные действия", "Zobacz właściwe odruchy", "올바른 대처 보기"),
@@ -823,16 +824,22 @@ var CSS = [
 ".hce .hce-chp.rbm .hce-mobile-unit li::marker{color:rgba(243,238,228,.4)!important}",
 ".hce .hce-chp.rbm .hce-mobile-unit ul{gap:8px!important}",
 "}",
-/* ESSAI 01/11 22h12 : texte des notions centré (téléphone) + carte « Petit lexique » dans le style des encarts */
+/* 01/11 (Blandine) : texte des notions centré sur téléphone */
 "@container hce (max-width:699px){html body .hce .hce-chp.rbm .hce-mobile-unit p.pg,html body .hce .hce-chp.rbm .hce-mobile-unit .hce-txt,html body .hce .hce-chp.rbm .hce-mobile-unit .ap,html body .hce .hce-chp.rbm .hce-mobile-unit .s,html body .hce .hce-chp.rbm .hce-mobile-unit h3,html body .hce .hce-chp.rbm .hce-mobile-unit li{text-align:center!important}html body .hce .hce-chp.rbm .hce-mobile-unit ul{list-style:none!important;padding-inline-start:0!important}}",
-".hce-lexique{margin:8px 0 28px;padding:22px 22px 18px;border:1px solid rgba(201,166,107,.35);border-radius:18px;background:rgba(14,18,17,.72)}",
-".hce-lexique h3{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:20px;font-weight:600;line-height:1.05;margin:0 0 14px;color:var(--ivoire);text-align:center}",
-".hce-lexique dl{margin:0;display:grid;gap:12px}",
-".hce-lexique dl>div{padding-top:12px;border-top:1px solid rgba(243,238,228,.08);text-align:center}",
-".hce-lexique dl>div:first-child{border-top:0;padding-top:0}",
-".hce-lexique dt{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ivoire)}",
-".hce-lexique dd{margin:3px 0 0;font-size:13px;line-height:1.45;color:rgba(243,238,228,.75)}",
-"@container hce (min-width:700px){.hce-lexique{max-width:760px;margin:8px auto 32px}}"
+/* 01/11 23h40 (Blandine, validé sur visuels) : titres de chapitre « style 1 » — « CHAPITRE 01 » doré discret, titre centré tout en ivoire, petit trait doré dessous, sous-titre en italique ;
+   espaces « un peu d'air » sous les vagues, autour de la citation et sous le menu */
+"html body .hce .hce-chp.rb .rb-kick,html body .hce .hce-chp.rb h2,html body .hce .hce-chp.rb .rb-sous{text-align:center!important}",
+"html body .hce .hce-chp.rb .rb-kick{display:block!important;width:auto!important;font-size:11px!important;letter-spacing:.38em!important;text-transform:uppercase;color:rgba(201,166,107,.85)!important;margin-bottom:14px!important}",
+"html body .hce .hce-chp.rb .rb-kick:after{display:none!important}",
+"html body .hce .hce-chp.rb h2{font-size:30px!important;font-weight:500!important;line-height:1.1!important}",
+"html body .hce .hce-chp.rb h2 em{color:inherit!important;font-weight:500!important;font-style:normal!important}",
+"html body .hce .hce-chp.rb h2 span:after{content:' '}",
+"html body .hce .hce-chp.rb h2:after{content:'';display:block;width:32px;height:1px;background:rgba(201,166,107,.55);margin:18px auto 0}",
+"html body .hce .hce-chp.rb .rb-sous{font-family:'Cormorant Garamond',serif!important;font-style:italic!important;font-size:17px!important;margin-top:14px!important}",
+"html body .hce .hce-sec[data-i]{padding-top:32px!important;padding-bottom:16px!important}",
+"html body .hce .hce-mobile-quote{margin-top:40px!important;margin-bottom:44px!important}",
+"html body .hce .hce-menu{padding-bottom:36px!important}",
+"html body .hce .hce-top{padding-bottom:16px!important}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -1073,7 +1080,7 @@ function Chapitre(p) {
      Téléphone : photo ENTIÈRE sous le titre, puis les notions à la suite.
      Tablette et ordinateur : une notion à la fois ; la photo en grand dans le fond d'un côté, sans aucun texte dessus, le texte de l'autre côté. */
   var titreH = h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre));
-  var kick = h("p", { className: "kick rb-kick" }, p.num + (p.galop ? "  —  " + p.galop : ""));
+  var kick = h("p", { className: "kick rb-kick" }, p.L ? p.L("chapN").replace("{n}", p.num) : p.num);   /* 01/11 23h40 : « CHAPITRE 01 » (style 1 validé) */
   if (mobile) return h("div", { className: "hce-chp rb rbm" + (p.cls ? " " + p.cls : "") },
     h("div", { className: "in" },
       kick, titreH,
@@ -1166,10 +1173,10 @@ function HypeCoursEditorial(props) {
   /* valider = false : on ouvre la page de fin sans compter le cours comme terminé (raccourci « Le défi du cavalier » du haut) */
   var versFin = function (valider) {
     if (!FIN) { if (valider !== false && props.onTerminer) props.onTerminer(); return; }
-    setVue(cfg.auto_ ? "rev" : "fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
+    setVue(cfg.auto_ && aRev(cours.id) ? "rev" : "fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
   };
   if (vue === "rev" && FIN) return h(RevAuto, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); }, onSuite: function () { setVue("fin"); setTimeout(haut, 30); } }));
-  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue(cfg.auto_ ? "rev" : "cours"); setTimeout(haut, 60); } }));
+  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue(cfg.auto_ && aRev(cours.id) ? "rev" : "cours"); setTimeout(haut, 60); } }));
 
   var Selecteur = props.Selecteur, hero = cfg.hero, enc = cfg.encarts, tit = deuxLignes(hero.titre);
   var NOIR = "#070A08", NOIR2 = "#0B1113";
@@ -2629,7 +2636,7 @@ AUTO_IDS.forEach(function (id) {
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       /* ESSAI 01/11 23h15 (Blandine) : la carte « Quiz et révision » n'est plus en bas du cours (elle reste sur la page de fin) — un bouton mène à « Pour réviser » */
-      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: LREV(lg).pourReviser, sous: LREV(lg).sousMenu, img: LEX_PHOTO[cours.id] || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
+      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: aRev(cours.id) ? LREV(lg).pourReviser : L("secQuiz"), sous: aRev(cours.id) ? LREV(lg).sousMenu : L("sQuiz"), img: LEX_PHOTO[cours.id] || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
     } });
     var cv = A.couv;
     return {
@@ -2641,7 +2648,7 @@ AUTO_IDS.forEach(function (id) {
         defi: A.defi ? { titre: A.defi.titre, texte: A.defi.haut, img: IM.defi, pos: "50% 35%" } : null
       },
       chapitres: chapitres,
-      revision: { label: LREV(lg).pourReviser, sous: LREV(lg).sousMenu, img: IM.quiz, pos: "50% 60%" },
+      revision: { label: aRev(cours.id) ? LREV(lg).pourReviser : L("secQuiz"), sous: aRev(cours.id) ? LREV(lg).sousMenu : L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
       sections: sections,
       auto_: A
     };
@@ -2655,11 +2662,16 @@ AUTO_IDS.forEach(function (id) {
 var SAVAIS_COURS = {
   "g1-c20": { fr: "Le sabot pousse d'environ un centimètre par mois : il lui faut près d'un an pour se renouveler entièrement." }
 };
+/* un cours sans lexique ni savais-tu (pas encore écrits) va directement à la page de fin */
+function aRev(id) { return !!(LEXIQUE_COURS[id] || SAVAIS_COURS[id]); }
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
-var LREV = function (lg) { return {
-  pourReviser: "Révise en 2 minutes", sousMenu: "Les mots clés avant le quiz", titre: "Lexique", aRetenir: "",
-  savais: "Le savais-tu ?", suite: "Hey Baby, défi et quiz", finSous: "Teste-toi avec Hey Baby, relève le défi, puis valide le cours avec le quiz."
-}; };
+var LREV_T = {
+  pourReviser: tt("Révise en 2 minutes", "Review in 2 minutes", "Repasa en 2 minutos", "Ripassa in 2 minuti", "2分で復習", "In 2 Minuten wiederholen", "راجع في دقيقتين", "2分钟复习", "Herhaal in 2 minuten", "Revê em 2 minutos", "Repetera på 2 minuter", "Повтори за 2 минуты", "Powtórz w 2 minuty", "2분 복습"),
+  sousMenu: tt("Les mots clés avant le quiz", "Key words before the quiz", "Las palabras clave antes del quiz", "Le parole chiave prima del quiz", "クイズの前にキーワード", "Die Schlüsselwörter vor dem Quiz", "الكلمات الأساسية قبل الاختبار", "测验前的关键词", "De sleutelwoorden voor de quiz", "As palavras-chave antes do quiz", "Nyckelorden före quizet", "Ключевые слова перед тестом", "Kluczowe słowa przed quizem", "퀴즈 전 핵심 단어"),
+  savais: tt("Le savais-tu ?", "Did you know?", "¿Sabías que…?", "Lo sapevi?", "知ってた？", "Wusstest du schon?", "هل كنت تعلم؟", "你知道吗？", "Wist je dat?", "Sabias que…?", "Visste du att…?", "А ты знал?", "Czy wiesz, że…?", "알고 있었니?"),
+  suite: tt("Hey Baby, défi et quiz", "Hey Baby, challenge and quiz", "Hey Baby, reto y quiz", "Hey Baby, sfida e quiz", "Hey Baby・チャレンジ・クイズ", "Hey Baby, Challenge und Quiz", "Hey Baby والتحدي والاختبار", "Hey Baby、挑战和测验", "Hey Baby, uitdaging en quiz", "Hey Baby, desafio e quiz", "Hey Baby, utmaning och quiz", "Hey Baby, задание и тест", "Hey Baby, wyzwanie i quiz", "Hey Baby, 도전과 퀴즈")
+};
+var LREV = function (lg) { var o = {}; Object.keys(LREV_T).forEach(function (k) { o[k] = pickLg(LREV_T[k], lg); }); return o; };
 var CSS_REV = [
 ".hce-rev .hce-rev-bas{max-width:860px;margin:0 auto;padding:12px 16px 56px}",
 ".hce-rev .rbo-fc-hero{min-height:0!important;height:auto!important}",
