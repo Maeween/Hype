@@ -16216,3 +16216,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pas de conseils du coach pour cette reprise (aucune entrée dans hype-dressage-conseils.js) : l'encart ne s'affiche simplement pas. À faire si elle le demande.
 - Vérifié : tracé animé construit sans erreur (1 073 points, serpentine par E, cercles de 12 m, changements de pied vers I, arrêt final en I) ; 17 blocs de script passés à node --check.
 - Fichiers : index.html (build 20261101-2050), SUIVI.md.
+
+## 01/11/2026 21h00 — build 20261101-2100 : « La physiologie du cheval » (g1-c20) — photo des sabots + vidéo dans « La respiration » — PRÊT, EN ATTENTE DE SON ACCORD POUR PUBLIER
+- Demande de Blandine (20h51, capture du chapitre 03 + photo) : « Mets cette photo là dans cet onglet là et j'aimerais ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ».
+- Photo : images/cours-g1-c20-pieds.webp (sabots d'un cheval gris, photo de Blandine, 1672×941, 137 Ko) = photo du chapitre 03 « Un organisme en action » (AUTO_IM["g1-c20"][1]). Remplace galop5-c05-soins.webp ICI SEULEMENT (cette image reste utilisée par g1-c16 et d'autres cours).
+- Vidéo : hype-accueil-video-ordi.mp4 (version ordinateur de la vidéo d'accueil : la buée sort des naseaux), image d'attente images/accueil-video-ordi-poster.jpg, muette, en boucle, sous le titre « La respiration », téléphone et ordinateur. Nouveau tableau VIDEOS_NOTION (même repérage que PHOTOS_NOTION, par le début du titre français) ; les notions tirées d'une puce gardent maintenant leur titre français (o.frT), ce qui permet aussi d'y poser une photo par PHOTOS_NOTION.
+- hype-cours-editorial.js VERSION 36 (?v=36) ; index.html build 20261101-2100 (seuls le ?v= et le numéro de build changent).
+- Vérifié : rendu du cours en 390 px (fr, ar) et 1440 px — aucune erreur, aucun débordement, photo et vidéo à leur place.
+- Fichiers : images/cours-g1-c20-pieds.webp (nouveau), hype-cours-editorial.js, index.html (build 20261101-2100), SUIVI.md.
