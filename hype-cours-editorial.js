@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 14;   /* 01/11 09h30 : fusion — choix C + A2 de l'autre conversation (VERSION 11 de main) + mes v12/v13 (g1-c8 interactif, Galop 3, téléphone : vague pansage, photo de chapitre sans titre, flèche/drapeau sous la barre d'état) */
+var VERSION = 15;   /* 01/11 : vague de séparation — trait champagne à 45 % (au lieu de 28 %), même tracé, même épaisseur */
+/* précédente : VERSION = 14; */   /* 01/11 09h30 : fusion — choix C + A2 de l'autre conversation (VERSION 11 de main) + mes v12/v13 (g1-c8 interactif, Galop 3, téléphone : vague pansage, photo de chapitre sans titre, flèche/drapeau sous la barre d'état) */
 /* précédente (branche de travail) : VERSION = 13; */   /* 01/11 01h50 : téléphone — vague du cours pansage + air, phrase d'aide du menu retirée, photo de chapitre sans titre dessus */
 /* précédente : VERSION = 12; */   /* 01/11 01h30 : g1-c8 photos interactives (licol, filet, selle) + hero */
 /* précédente : VERSION = 11; */   /* 01/11 01h10 : Galop 3 (15 cours, robes à part) sur le modèle commun, téléphone compris */
@@ -600,7 +601,19 @@ var CSS = [
 ".hce-zoom img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6)}",
 ".hce-zoom button{position:absolute;top:16px;inset-inline-end:16px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.6);background:rgba(7,10,8,.7);color:#F3EEE4;font-size:22px;cursor:pointer}",
 ".hce-chp .pan p.pg{margin:0;font-size:15px;line-height:1.65;color:var(--ivoire)}.hce-chp .pan p.pg strong{color:#D9B98A}",
-".hce-chp .pan .ast{border-inline-start:2px solid var(--champ);padding-inline-start:14px;font-size:15.5px;line-height:1.6;color:var(--ivoire)}"
+".hce-chp .pan .ast{border-inline-start:2px solid var(--champ);padding-inline-start:14px;font-size:15.5px;line-height:1.6;color:var(--ivoire)}",
+/* 01/11 (brief ChatGPT, P5) : menu des chapitres sur tablette et ordinateur = photo seule (sans texte dessus), titre lisible SOUS la photo */
+"@container hce (min-width:700px){",
+".hce-menu ol{gap:18px;align-items:stretch}.hce-menu li{display:flex}.hce-menu li>.hce-chap{flex:1 1 auto}",
+".hce-chap{height:auto;display:flex;flex-direction:column;background:#0c1113;border-color:rgba(243,238,228,.12);border-radius:12px}",
+".hce-chap .ph,[dir=rtl] .hce-chap .ph{position:relative;inset:auto;display:block;width:100%;aspect-ratio:16/10;opacity:1}",
+".hce-chap .ph:after,[dir=rtl] .hce-chap .ph:after{display:none}",
+".hce-chap .n{position:absolute;top:auto;bottom:16px;inset-inline-start:14px;font-size:26px}",
+".hce-chap .lb{position:relative;inset:auto;display:block;padding:14px 46px 16px 52px;font-size:18px;line-height:1.18;text-shadow:none;min-height:3.6em}",
+"[dir=rtl] .hce-chap .lb{padding:14px 52px 16px 46px}",
+".hce-chap .lb small{display:none}",
+".hce-chap .hce-rond{bottom:14px;inset-inline-end:12px}",
+"}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
@@ -629,7 +642,7 @@ function Vague(p) {
   return h("div", { className: "hce-vague", "aria-hidden": true, style: { background: "linear-gradient(180deg," + p.de + " 50%," + p.vers + " 50%)" } },
     h("svg", { viewBox: "0 0 1200 22", preserveAspectRatio: "none" },
       h("path", { d: d, fill: p.de }),
-      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: 0.28, strokeWidth: 1, vectorEffect: "non-scaling-stroke" })));
+      h("path", { d: ligne, fill: "none", stroke: "#C9A66B", strokeOpacity: 0.45, strokeWidth: 1, vectorEffect: "non-scaling-stroke" })));
 }
 function Visuel(p) {
   return h("div", { className: "hce-vis " + (p.ratio || "r43"), role: "img", "aria-label": p.L("visuel") }, ICO.image(26), p.L("visuel"));
