@@ -7,6 +7,8 @@
    Format = celui des Galops 1 à 3 (blocs « texte-riche ») : le modèle commun (hype-cours-editorial.js, construireAuto)
    en tire les chapitres, le conseil du coach, le défi, les questions Hey Baby, la synthèse et la phrase de fin.
    Brouillons d'origine (g5-c1 … g5-c6, hype-cours-galop5.js) : leur contenu est repris ici, rien n'est perdu.
+   01/11 22h30 : lexique du Galop 5 ajouté à chaque cours (champ « lexique », programme FFE « connaître le vocabulaire du Galop 5 ») ;
+   à afficher en lexique dépliable avant le quiz, comme au Galop 4 (à brancher au moment de l'intégration).
    ÉTAT : FRANÇAIS SEUL, EN RELECTURE (Blandine + ChatGPT). Traduction des 14 langues après validation.
    ===================================================================================== */
 (function () {
@@ -115,6 +117,16 @@ var COURS = [
       E("", "", "Un cheval n'obéit jamais aussi bien que lorsqu'il a compris ce qu'on attendait de lui.")
     ])
   ],
+  lexique: { fr: [
+    ["Proie", "Animal chassé dans la nature ; son premier réflexe face au danger est la fuite."],
+    ["Association", "Lien que fait le cheval entre son geste et ce qui se passe juste après."],
+    ["Habituation", "Le cheval cesse de réagir à quelque chose qui se répète sans danger."],
+    ["Sensibilisation", "Le cheval devient plus réactif à un signal."],
+    ["Renforcement négatif", "On retire une pression dès que le cheval donne la bonne réponse."],
+    ["Renforcement positif", "On ajoute quelque chose d'agréable (voix, caresse) après la bonne réponse."],
+    ["Punition", "Réponse désagréable après un comportement ; mal employée, elle crée peur et confusion."],
+    ["Céder", "Relâcher l'aide dès que le cheval a répondu."]
+  ] },
   quiz: [
     Q("Céder la pression de la jambe dès que le cheval avance, c'est…", ["De la punition", "Du renforcement négatif", "De l'habituation", "De la sensibilisation"], 1, "Retirer une pression dès la bonne réponse est un renforcement négatif : le relâchement récompense le cheval."),
     Q("Habituer progressivement un cheval à une bâche qui ne le menace pas, c'est…", ["La sensibilisation", "L'habituation", "La punition", "Le renforcement positif"], 1, "L'habituation : face à un stimulus répété et sans danger, le cheval cesse peu à peu d'y réagir."),
@@ -227,6 +239,17 @@ var COURS = [
       E("", "", "Un parcours bien appris, c'est un cavalier libre de regarder où il va.")
     ])
   ],
+  lexique: { fr: [
+    ["Carrière de dressage", "Rectangle de 20 m sur 40 m (ou 60 m) bordé de lettres, où l'on présente une reprise."],
+    ["Reprise", "Enchaînement de figures imposées, présenté devant un juge et noté."],
+    ["Pourtour", "Le tour de la carrière ; ses lettres se lisent A, K, E, H, C, M, B, F."],
+    ["Serpentine", "Figure faite de demi-cercles qui changent de main, d'un petit côté à l'autre."],
+    ["Vertical", "Obstacle droit, fait de barres les unes au-dessus des autres."],
+    ["Oxer", "Obstacle large, fait de deux plans de barres."],
+    ["Combinaison", "Deux ou trois obstacles proches, sous un seul numéro suivi d'une lettre (5A, 5B)."],
+    ["Reconnaissance", "Le parcours marché à pied avant l'épreuve, pour retenir l'ordre et les trajectoires."],
+    ["Engagement", "L'inscription d'un cavalier et de son cheval à une épreuve de compétition."]
+  ] },
   quiz: [
     Q("Quelle lettre se trouve au centre de la carrière de dressage ?", ["A", "C", "X", "B"], 2, "X marque le centre de la carrière. A et C sont au milieu des petits côtés, B et E au milieu des grands côtés."),
     Q("Dans l'ordre du pourtour, quelle lettre suit K ?", ["H", "E", "M", "F"], 1, "Le pourtour se lit A, K, E, H, C, M, B, F."),
@@ -343,6 +366,17 @@ var COURS = [
       E("", "", "Connaître le corps de son cheval, c'est savoir ce qu'on peut lui demander, et quand s'arrêter.")
     ])
   ],
+  lexique: { fr: [
+    ["Squelette", "Ensemble des os qui soutiennent le corps et protègent les organes."],
+    ["Colonne vertébrale", "Suite de vertèbres de la nuque à la queue ; elle porte le dos et le cavalier."],
+    ["Articulation", "Jonction mobile entre deux os : épaule, genou, jarret, boulet…"],
+    ["Tendon", "Cordon qui relie un muscle à un os et transmet sa force."],
+    ["Ligne du dessus", "Les muscles de l'encolure, du dos et de la croupe, qui se développent avec un travail correct."],
+    ["Locomotion", "La façon dont le cheval se déplace, grâce aux os, aux muscles et aux articulations."],
+    ["Estomac", "Petit chez le cheval ; il ne peut pas vomir, d'où ses repas en petites quantités."],
+    ["Colique", "Douleur du ventre, souvent digestive ; c'est une urgence."],
+    ["Fibres", "Foin et herbe : la base de l'alimentation du cheval."]
+  ] },
   quiz: [
     Q("Combien le cheval a-t-il de vertèbres cervicales ?", ["5", "7", "12", "18"], 1, "Comme presque tous les mammifères, le cheval a 7 vertèbres cervicales, qui forment l'encolure."),
     Q("Quel os relie l'antérieur au tronc ?", ["La clavicule", "Aucun : ce sont des muscles et des tendons", "Le sternum", "Le bassin"], 1, "Le cheval n'a pas de clavicule : son antérieur tient au tronc par des muscles et des tendons."),
@@ -443,6 +477,16 @@ var COURS = [
       E("", "", "Une bande bien posée ne se voit pas : on ne remarque que celle qui est mal posée.")
     ])
   ],
+  lexique: { fr: [
+    ["Bande de repos", "Bande large et un peu élastique, posée sur une sous-bande, au box ou pour le transport, pour soutenir et protéger le bas du membre."],
+    ["Sous-bande", "Épaisseur en ouate ou en mousse, posée sous la bande de repos pour répartir la pression."],
+    ["Tendon", "Cordon à l'arrière du canon, fragile ; une bande mal serrée peut le marquer."],
+    ["Canon", "Partie du membre entre le genou (ou le jarret) et le boulet."],
+    ["Boulet", "Articulation au-dessus du paturon."],
+    ["Guêtre", "Protection du membre pendant le travail."],
+    ["Cloche", "Protection en forme de cloche qui couvre le sabot et la couronne."],
+    ["Couronne", "Bord du haut du sabot, à la limite avec la peau."]
+  ] },
   quiz: [
     Q("Pourquoi faut-il bien protéger le bas des membres ?", ["Parce qu'il est très musclé", "Parce qu'il n'y a ni muscle ni graisse pour protéger os et tendons", "Pour décorer", "Parce que c'est obligatoire en carrière"], 1, "Sous le genou et le jarret, on ne trouve que des os, des tendons et des ligaments, très exposés aux chocs."),
     Q("À quoi servent les cloches ?", ["À protéger la couronne et les talons des antérieurs", "À protéger le dos", "À tenir chaud aux oreilles", "À protéger la queue"], 0, "Les cloches protègent la couronne et les talons des antérieurs, qu'un postérieur peut atteindre."),
@@ -459,7 +503,7 @@ var COURS = [
 
 /* ---------------------------------------------------------------------------------
    g5n-06 — TRAVAIL À PIED : LONGE ET LONGUES RÊNES   (programme FFE Galop 5 : mener seul en main au pas et au trot,
-   longer un cheval détendu au pas, au trot et à l'arrêt, travailler aux longues rênes sur le cercle au pas)
+   longer un cheval détendu aux trois allures et à l'arrêt (galop ajouté le 01/11, demande de Blandine), travailler aux longues rênes sur le cercle au pas)
    — reprend le brouillon g5-c4 (partie longe)
    --------------------------------------------------------------------------------- */
 { id: "g5n-06", icone: "🎯", type: { fr: "à pied" }, duree: { fr: "11 min" }, titre: { fr: "Travail à pied : longe et longues rênes" },
@@ -467,7 +511,7 @@ var COURS = [
     { type: "couv-affiche", src: "images/securite-g1-longe.webp", couv: {} },
 
     B("Mener en main au pas et au trot", [
-      P("Travailler à pied, c'est apprendre à se faire comprendre sans être sur le dos du cheval. Au Galop 5, tu mènes seul ton cheval au pas et au trot, tu le longes au pas, au trot et à l'arrêt, et tu découvres les longues rênes. Ce travail sert à détendre, à éduquer et à présenter un cheval, par exemple à un vétérinaire."),
+      P("Travailler à pied, c'est apprendre à se faire comprendre sans être sur le dos du cheval. Au Galop 5, tu mènes seul ton cheval au pas et au trot, tu le longes aux trois allures et à l'arrêt, et tu découvres les longues rênes. Ce travail sert à détendre, à éduquer et à présenter un cheval, par exemple à un vétérinaire."),
       S("🚶 Mener au pas", null, [
         "Place-toi à gauche du cheval, à hauteur de son épaule, en regardant devant toi.",
         "La main droite tient la longe à une vingtaine de centimètres du licol, la main gauche tient le reste plié en boucles, jamais enroulé autour de la main.",
@@ -499,6 +543,13 @@ var COURS = [
         "Pour ralentir ou s'arrêter : une voix grave et longue, la chambrière baissée, toi qui te places un peu plus vers la tête.",
         "Pour rester sur le cercle : la chambrière dirigée vers l'épaule si le cheval rentre vers toi."
       ]),
+      S("🐎 Longer au galop", "Au Galop 5, tu longes aussi au galop. Le cheval va plus vite et tire davantage : on ne galope qu'un cheval déjà détendu au pas et au trot.", [
+        "Prépare le départ au trot : un trot actif et régulier, sur un cercle bien rond.",
+        "Demande le galop avec un mot différent de celui du trot, la chambrière qui se lève vers les hanches.",
+        "Agrandis le cercle au galop : au moins 15 à 20 mètres, pour ménager ses articulations.",
+        "Vérifie qu'il galope sur le bon pied : le membre antérieur intérieur avance plus loin que l'extérieur. Sinon, repasse au trot et redemande.",
+        "Quelques tours suffisent : le galop en cercle est fatigant pour le cheval."
+      ]),
       E("👨‍🏫", "Le conseil du coach", "À la longe, ton corps parle plus fort que ta voix. Si ton cheval n'avance pas, recule d'un pas vers ses hanches avant de lever la chambrière. Si tu te places devant lui, il s'arrêtera, quoi que tu dises.")
     ]),
 
@@ -528,7 +579,7 @@ var COURS = [
       ]),
       S("🏇 Le défi du cavalier", "Montre à ton enseignant que tu maîtrises le travail à pied.", [
         "Mène ton cheval au trot en ligne droite sur 20 mètres, puis fais-le tourner vers la droite au pas.",
-        "Longe-le au pas, au trot et à l'arrêt sur les deux mains, en gardant un cercle régulier.",
+        "Longe-le au pas, au trot, au galop et à l'arrêt sur les deux mains, en gardant un cercle régulier.",
         "Change de main à la longe sans laisser la longe toucher le sol."
       ]),
       S("🤖 Demande à Hey Baby", null, [
@@ -548,6 +599,17 @@ var COURS = [
       E("", "", "Un cheval qui t'écoute à pied t'écoutera mieux en selle.")
     ])
   ],
+  lexique: { fr: [
+    ["Mener en main", "Conduire un cheval à pied, à côté de lui, au licol ou au filet."],
+    ["Longe", "Corde longue de 7 à 8 m pour faire travailler le cheval sur un cercle."],
+    ["Lovée", "Tenue en boucles dans la main, prête à filer, jamais enroulée."],
+    ["Chambrière", "Long fouet de longe ; il prolonge le bras pour demander l'avant."],
+    ["Caveçon", "Têtière munie d'une muserolle renforcée et d'un anneau pour accrocher la longe."],
+    ["Triangle de longe", "La main de longe, la main de chambrière et le cheval forment un triangle."],
+    ["Longues rênes", "Travail avec deux longes, le meneur derrière le cheval."],
+    ["Surfaix", "Sangle autour du ventre, avec des anneaux pour passer les rênes."],
+    ["Bon pied", "Au galop à main gauche, l'antérieur gauche avance plus loin, et inversement."]
+  ] },
   quiz: [
     Q("De quel côté mène-t-on habituellement un cheval ?", ["À droite, devant sa tête", "À gauche, à hauteur de son épaule", "Derrière lui", "Devant lui"], 1, "On mène à gauche, à hauteur de l'épaule, en regardant devant soi."),
     Q("Pour faire demi-tour en menant, on tourne le cheval…", ["Vers soi", "Vers la droite, loin de soi", "En reculant", "En le tirant"], 1, "En le poussant vers la droite, loin de toi, tu évites qu'il te marche sur les pieds."),
@@ -662,6 +724,17 @@ var COURS = [
       E("", "", "Un cheval qui monte calmement dans un van a surtout appris à faire confiance à celui qui le mène.")
     ])
   ],
+  lexique: { fr: [
+    ["Van", "Remorque pour transporter un ou deux chevaux, tirée par une voiture."],
+    ["Camion", "Véhicule à moteur aménagé pour transporter des chevaux."],
+    ["Pont", "Rampe par laquelle le cheval monte dans le van ou le camion."],
+    ["Barre arrière", "Barre fermée derrière le cheval dans le van ; on attache le cheval seulement après."],
+    ["Protège-queue", "Protection de la queue pendant le voyage."],
+    ["Protections de transport", "Protections longues des quatre membres, qui couvrent couronnes et talons."],
+    ["Numéro SIRE", "Numéro d'identification du cheval : 8 chiffres et une lettre."],
+    ["Puce électronique", "Petite puce posée sous la peau de l'encolure, lue par un lecteur : 15 chiffres."],
+    ["Document d'identification", "Le livret du cheval : il voyage toujours avec lui."]
+  ] },
   quiz: [
     Q("Avec quoi transporte-t-on un cheval ?", ["Son filet", "Un licol solide et une longe", "Rien sur la tête", "Un caveçon"], 1, "On voyage toujours avec un licol solide et une longe, jamais avec le filet."),
     Q("Quand attache-t-on le cheval dans le van ?", ["Avant qu'il entre", "Dès qu'il pose un pied sur le pont", "Une fois la barre arrière fermée", "On ne l'attache jamais"], 2, "On attache seulement quand la barre arrière est fermée : s'il recule attaché sans barre, il peut paniquer et se blesser."),
@@ -772,6 +845,17 @@ var COURS = [
       E("", "", "Les transitions sont des conversations : plus elles sont fines, mieux on se comprend.")
     ])
   ],
+  lexique: { fr: [
+    ["Assiette", "La façon dont le cavalier est assis et suit le mouvement du cheval."],
+    ["Indépendance des aides", "Les mains, les jambes et le bassin agissent séparément, sans se gêner."],
+    ["Cadence", "Rythme régulier des foulées, qui ne change pas."],
+    ["Foulée", "Un cycle complet d'une allure."],
+    ["Amplitude", "La longueur de la foulée."],
+    ["Transition", "Passage d'une allure à une autre, ou changement dans une même allure."],
+    ["Transition montante", "Vers une allure plus rapide : pas-trot, trot-galop."],
+    ["Transition descendante", "Vers une allure plus lente : galop-trot, trot-pas."],
+    ["Demi-arrêt", "Action brève qui rééquilibre le cheval et le prépare à une demande."]
+  ] },
   quiz: [
     Q("Quel est le principal bénéfice du travail sans étriers ?", ["Aller plus vite", "Approfondir l'assiette et le liant", "Sauter plus haut", "Fatiguer le cheval"], 1, "Sans étriers, l'assiette s'approfondit et le cavalier gagne en liant et en indépendance des aides."),
     Q("Sans étriers, qu'est-ce qui stabilise tes jambes ?", ["Le fait de serrer fort", "Leur poids, jambes longues et relâchées", "Les rênes", "Rien"], 1, "Ce sont des jambes longues et décontractées qui tiennent par leur poids. Serrer fait remonter et rebondir."),
@@ -874,6 +958,16 @@ var COURS = [
       E("", "", "Une belle courbe ne se dessine pas avec les mains : elle se dessine avec tout le corps du cheval.")
     ])
   ],
+  lexique: { fr: [
+    ["Incurvation", "Le cheval se courbe régulièrement de la nuque à la queue pour suivre la courbe."],
+    ["Pli", "L'encolure et la nuque tournées du côté de la courbe."],
+    ["Jambe intérieure", "La jambe du côté de la courbe ; elle maintient l'incurvation et l'avant."],
+    ["Rêne extérieure", "Elle contrôle la vitesse et empêche l'épaule extérieure de partir."],
+    ["Cercle (ou volte)", "Figure ronde ; une volte est un petit cercle."],
+    ["Serpentine", "Demi-cercles qui changent de main d'un bout à l'autre de la carrière."],
+    ["Changement de main", "Passer d'un sens de rotation à l'autre."],
+    ["S'échapper", "Le cheval sort de la courbe par l'épaule ou les hanches."]
+  ] },
   quiz: [
     Q("Qu'est-ce que l'incurvation ?", ["Tourner seulement la tête", "Courber tout le corps le long de la ligne", "Accélérer dans la courbe", "Lever l'encolure"], 1, "L'incurvation engage tout le corps du cheval, de la nuque à la queue, pour épouser la courbe."),
     Q("Autour de quelle aide le cheval s'incurve-t-il ?", ["La jambe extérieure", "La jambe intérieure, à la sangle", "La rêne extérieure", "La voix"], 1, "Le cheval s'incurve autour de la jambe intérieure placée à la sangle."),
@@ -978,6 +1072,17 @@ var COURS = [
       E("", "", "Un pas de côté bien fait, c'est un cheval qui a écouté une seule jambe.")
     ])
   ],
+  lexique: { fr: [
+    ["Cession à la jambe", "Le cheval avance et se déplace de côté, presque droit, légèrement plié à l'opposé du mouvement."],
+    ["Croiser", "Les membres du côté de la jambe active passent devant ceux de l'autre côté."],
+    ["Pli opposé", "Léger pli de la nuque, à l'opposé du côté où va le cheval."],
+    ["Jambe active", "La jambe qui demande le déplacement de côté."],
+    ["Départ au galop", "Transition vers le galop, depuis le pas ou le trot."],
+    ["Bon pied", "Au galop à main droite, l'antérieur droit avance plus loin, et inversement."],
+    ["Aides du galop", "Jambe intérieure à la sangle, jambe extérieure un peu en arrière, rêne extérieure qui encadre."],
+    ["Juste", "Galop sur le bon pied, dans le sens du cercle."],
+    ["Faux", "Galop sur le mauvais pied, dans le sens du cercle."]
+  ] },
   quiz: [
     Q("Dans la cession à la jambe, le cheval…", ["Recule", "Avance et se déplace de côté en croisant les membres", "Tourne sur place", "Galope de côté"], 1, "Le cheval avance et se déplace latéralement en croisant les membres, légèrement plié à l'opposé du mouvement."),
     Q("De quel côté est le léger pli dans une cession à la jambe ?", ["Du côté du déplacement", "Du côté opposé au déplacement", "Il n'y a pas de pli", "Vers le haut"], 1, "Le cheval est légèrement plié à l'opposé de la direction du mouvement."),
@@ -1078,6 +1183,17 @@ var COURS = [
       E("", "", "Un parcours réussi ne se gagne pas au-dessus des barres, mais dans les foulées entre elles.")
     ])
   ],
+  lexique: { fr: [
+    ["En équilibre sur les étriers", "Entre les obstacles, le cavalier galope juste au-dessus de la selle, le buste un peu incliné."],
+    ["Galop de parcours", "Galop régulier, assez actif, qui reste le même tout le parcours."],
+    ["Abord", "Les dernières foulées avant l'obstacle ; il doit être droit et centré."],
+    ["Appel", "Le moment où le cheval décolle pour sauter."],
+    ["Réception", "Le moment où le cheval se pose après l'obstacle."],
+    ["Ligne de gymnastique", "Plusieurs obstacles séparés par une ou deux foulées."],
+    ["Tracé", "Le chemin choisi entre les obstacles, avec ses virages."],
+    ["Refus", "Le cheval s'arrête devant l'obstacle."],
+    ["Dérobé", "Le cheval évite l'obstacle par le côté."]
+  ] },
   quiz: [
     Q("Entre les obstacles, tu galopes…", ["Assis au fond de la selle", "En équilibre sur tes étriers, juste au-dessus de la selle", "Debout, jambes tendues", "Couché sur l'encolure"], 1, "En position d'équilibre, tu es juste au-dessus de la selle, talons bas, genoux souples."),
     Q("Au moment où le cheval décolle, ton buste…", ["Se jette vers l'avant avant lui", "S'incline quand il décolle, sans te jeter", "Reste bien droit", "Part en arrière"], 1, "Tu laisses le cheval te fermer : ton buste suit le mouvement, sans anticiper."),
@@ -1179,6 +1295,16 @@ var COURS = [
       E("", "", "En extérieur, le meilleur cavalier est celui qui lit le terrain avant que son cheval ne le découvre.")
     ])
   ],
+  lexique: { fr: [
+    ["Terrain varié", "Sol en pente, inégal ou changeant : herbe, sable, terre, eau."],
+    ["Cross", "Parcours d'obstacles naturels en extérieur ; une des trois épreuves du concours complet."],
+    ["Concours complet", "Discipline qui réunit dressage, saut d'obstacles et cross."],
+    ["Contre-haut", "Obstacle qui fait monter sur une marche."],
+    ["Contre-bas", "Obstacle qui fait descendre une marche."],
+    ["Gué", "Passage dans l'eau."],
+    ["Gilet de protection", "Gilet obligatoire en cross, qui protège le dos et le torse."],
+    ["En équilibre sur les étriers", "Position juste au-dessus de la selle, stable aux trois allures, en extérieur et en terrain varié."]
+  ] },
   quiz: [
     Q("Dans une montée, ton buste…", ["Part en arrière", "S'avance pour laisser le cheval porter l'effort", "Reste bloqué droit", "Se penche sur le côté"], 1, "Tu avances le buste et laisses l'encolure libre : c'est le cheval qui porte l'effort."),
     Q("Comment descend-on une pente ?", ["En travers", "Bien droit dans la pente", "Au galop", "En zigzag rapide"], 1, "On descend droit dans la pente : en travers, le cheval risque de glisser."),
