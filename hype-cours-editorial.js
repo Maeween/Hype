@@ -820,6 +820,16 @@ var CSS = [
 ".hce .hce-chap .lb{font-size:20px!important;font-weight:500!important}",
 ".hce .hce-mini button{font-size:13px!important}",
 ".hce .hce-mini button span{max-width:58vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+/* 01/11 22h05 (Blandine : « mon haut de page, c'est lui la référence ») : le reste de la page reprend exactement les styles du haut de page —
+   surtitre = « GALOP 1 » (12 px, très espacé, doré) ; titre de chapitre = titre du cours (34 px, 600, 2e ligne dorée non italique) ;
+   titre de notion = titre d'encart (Cormorant 600) ; texte = texte d'encart (Montserrat 13 px, ivoire) */
+".hce .hce-chp.rb .rb-kick{font-size:12px!important;letter-spacing:.42em!important}",
+".hce .hce-chp.rb .rb-kick:after{display:none!important}",
+".hce .hce-chp.rb h2{font-size:34px!important;line-height:1.02!important;font-weight:600!important;letter-spacing:-.005em!important}",
+".hce .hce-chp.rb h2 em{font-style:normal!important;font-weight:600!important;color:#D9B98A!important}",
+".hce .hce-mobile-unit h3,.hce .hce-chp .pan h3{font-size:22px!important;line-height:1.1!important;font-weight:600!important}",
+".hce .hce-chap .lb{font-weight:600!important;font-size:19px!important}",
+".hce .hce-mobile-unit p.pg,.hce .hce-mobile-unit .hce-txt,.hce .hce-mobile-unit .hce-txt p,.hce .hce-mobile-unit li,.hce .hce-mobile-unit .ap,.hce .hce-mobile-unit .s,.hce .hce-chp .pan p.pg,.hce .hce-chp .pan .hce-txt,.hce .hce-chp .pan .hce-txt p,.hce .hce-chp .pan li,.hce .hce-chp .pan .ap,.hce .hce-chp .pan .s,.hce .rb-sous,.hce .hce-mobile-unit ul,.hce .hce-chp .pan ul{font-size:13px!important;line-height:1.6!important}",
 
 ].join("\n");
 
