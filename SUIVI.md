@@ -16091,3 +16091,11 @@ Demande de Blandine (17h46) : ajouter ce qui n'était pas déjà dans le cours, 
 - Vérifié : fr/ar 390 px, fr/ja 1440 px, aucune erreur ni débordement.
 - 01/11 17h51 (« Ok » de Blandine) : erreur à éviter « Penser qu'une séance montée remplace les déplacements quotidiens » (incomprise) reformulée : « Croire qu'une séance montée suffit : ton cheval a aussi besoin de bouger librement chaque jour, au pré ou au paddock. » — 14 langues, hype-cours-galop1.js v10 (?v=11).
 - 01/11 17h55 : PUBLICATION build 20261101-1800 (accord « Ok ») : « Préparer un box », affiche du confort au box retirée, erreur reformulée. Fichiers : hype-cours-galop1.js, hype-cours-editorial.js, index.html, SUIVI.md.
+
+## 01/11/2026 18h15 — build 20261101-1815 (EN ATTENTE de l'accord de Blandine) : « Le nœud d'attache » (g1-c10) — affiche « Le nœud avec chaînette » reprise en texte puis retirée
+Demande de Blandine (18h03, capture de l'affiche) : « regarde ce que cette page apporte en plus au cours du nœud d'attache et ajoute-le en la retirant si besoin ».
+- Ce que l'affiche apportait en plus du cours : la technique de la « chaînette » (boucles successives, 3 ou 4 conseillées, serrer chaque boucle, verrouiller, défaire), et le fait qu'elle bloque le desserrage pour quelques secondes de plus. Le reste était déjà dans le cours (verrouillage, vérifier la solidité = « test du stress », point d'attache solide = ficelle de sécurité et anneau) ou trop général (« la règle d'or ») : non repris, pour éviter les doublons.
+- Ajouté au chapitre 02, juste après « La méthode pas à pas » : section « Pour aller plus loin : la chaînette » (1 phrase d'explication + 5 étapes), 14 langues — hype-cours-galop1.js v11 (?v= +1).
+- Correction au passage : l'affiche disait à la fois « verrouiller en passant le bout dans la dernière boucle » et « se défait en tirant sur le bout final ». Une fois verrouillé, il faut d'abord sortir le bout de la dernière boucle ; c'est ce que dit le texte.
+- Affiche retirée de l'affichage (AFFICHES_RETIREES « g1-c10 » : bloc 2) — hype-cours-editorial.js VERSION 24 (?v= +1). Le fichier de l'affiche n'est pas supprimé.
+- Vérifié : g1-c10 en 14 langues × 390 / 820 / 1440 px, aucune erreur ni débordement, nouvelle section présente, affiche absente. index.html build 20261101-1815.

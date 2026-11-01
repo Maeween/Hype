@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 23;   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
+var VERSION = 24;   /* 01/11 18h10 : g1-c10 — affiche « Le nœud avec chaînette » retirée (contenu repris en texte) */
+/* précédente : VERSION = 23; */   /* 01/11 17h50 : g1-c3 — affiche « Le confort au box » retirée (contenu repris en texte) */
 /* précédente : VERSION = 22; */   /* 01/11 17h50 : photo du chapitre 01 de g1-c18 (conduire en main) */
 /* précédente : VERSION = 21; */   /* 01/11 17h40 : téléphone — photo du haut à la forme de la photo (moins coupée), photos des chapitres bleu pétrole sans voile */
 /* précédente : VERSION = 20; */   /* 01/11 16h35 : bleu pétrole + vague dorée un chapitre sur deux dans tous les cours du modèle (Galops 1 à 4) */
@@ -1329,7 +1330,7 @@ var AUTO_IM_G3 = {
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
-var AFFICHES_RETIREES = { "g1-c3": [4] };   /* g1-c3 : bloc 4 = affiche « Le confort au box » */
+var AFFICHES_RETIREES = { "g1-c3": [4], "g1-c10": [2] };   /* g1-c10 : bloc 2 = affiche « Le nœud avec chaînette » (reprise en texte le 01/11 18h) */   /* g1-c3 : bloc 4 = affiche « Le confort au box » */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
