@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 43;   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
+var VERSION = 44;   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
+/* précédente : VERSION = 43; */   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
@@ -794,6 +795,7 @@ var CSS = [
 ".hce .hce-chp.rbd .rbd-ph img{display:none}",
 ".hce .hce-chp.rbd .rbd-ph:after{background:linear-gradient(90deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce .hce-chp.rbd .rbd-tx{grid-row:1;grid-column:2;max-width:640px;margin:0;padding:64px 44px 70px 40px}",
+".hce .hce-chp.rbd.rbd-sans{min-height:0}.hce .hce-chp.rbd.rbd-sans .rbd-tx{grid-column:1/-1;justify-self:center;width:100%;max-width:760px;padding:64px 40px 70px}",
 ".hce .hce-chp.rbd.rbinv .rbd-ph{grid-column:2}",
 ".hce .hce-chp.rbd.rbinv .rbd-ph:after{background:linear-gradient(270deg,rgba(0,0,0,0) 45%,var(--fond-sec,#070A08) 100%),linear-gradient(180deg,var(--fond-sec,#070A08) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 88%,var(--fond-sec,#070A08) 100%)}",
 ".hce .hce-chp.rbd.rbinv .rbd-tx{grid-column:1;justify-self:end;padding:64px 40px 70px 44px}",
@@ -1039,7 +1041,7 @@ function Chapitre(p) {
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
       p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
       h(MobileLectureNotions, { items: p.items })));
-  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.cls ? " " + p.cls : "") },
+  return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.bg ? "" : " rbd-sans") + (p.cls ? " " + p.cls : "") },   /* 01/11 23h50 : rbd-sans = chapitre sans photo, texte centré sur toute la largeur */
     p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
     h("div", { className: "rbd-tx" },
       kick, titreH,
@@ -1440,7 +1442,7 @@ var AUTO_IM = {
   "g1-c3": ["images/galop5-th-cheval2.webp", "images/cours-g1-c3-box.webp",   /* 01/11 18h05 : chapitre 02 « Le confort au box » = photo de Blandine (cheval gris au box) */
     "images/securite-g1-observer.webp"],
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
-  "g1-c5": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-theme-connaissances.webp"],
+  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/galop5-c09-incurvation.webp", "images/cours-g1-c5-equilibre.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
@@ -1499,12 +1501,13 @@ var AUTO_IDS = Object.keys(AUTO_IM);
 var MODULES_COURS = {
   "g1-c20": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 1 } },
   "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
-  "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
+  "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } },
+  "g1-c5": { id: "position", module: "HypePositionAssise", apres: 1 }   /* 01/11 : schéma interactif « La bonne position assise » (hype-cours-position.js), après « Les allures assises » */
 };
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
-var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]], "g1-c5": [[0, 0, "images/cours-g1-c5-gravite.webp"]] };   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
+var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };   /* 01/11 23h44 : g1-c5 retiré d'ici, la photo dorée est devenue la photo du chapitre 01 */   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
-var CHAP_SANS_PHOTO = {};
+var CHAP_SANS_PHOTO = { "g1-c5": [1] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
 var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
