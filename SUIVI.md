@@ -16025,3 +16025,8 @@ Repris sur la version en ligne 20261101-0930 (be99588). La branche travail-galop
 - Photos : Blandine a choisi de garder les photos ENTIÈRES (avec la vague dorée) — 11h30 « laisse la vague ».
 - hype-cours-editorial.js VERSION 16 (?v=16), index.html build 20261101-1140 ; hype-cours-materiel.js ?v=3. Reporté sur la version en ligne 64d4814 (Galop 3 saut, selle, vague 45 % de l'autre conversation) : rien de leur travail retiré.
 - Vérifié : sécurité fr/ar/ja en 390 et 1440 px — 5 chapitres un par un, bouton suivant, aucune erreur, aucun débordement ; pansage fr/ar/ja téléphone et ordinateur sans erreur ni débordement, plus d'exercice, 1 vidéo par endroit ; photos vues en capture iPhone.
+## 01/11/2026 11h40 — PUBLICATION build 20261101-1150, accord de Blandine (« Ok oui ») : textes P3 du brief ChatGPT
+- g3-c3 et g3-saut : « Le conseil du coach » ajouté (ils n'en avaient pas) — table COACH_G3 dans hype-cours-editorial-g4.js v4 (?v=4), 14 langues. Leurs défis d'origine sont gardés (pas de doublon).
+- g3-c9 « Les différentes litières » : « Le défi du cavalier » ajouté (comparer deux litières, puis repérer les parties humides d'un box) — COMPL dans hype-cours-editorial.js v16 (?v=17), 14 langues.
+- Vérifié : 15 cours du Galop 3 × fr/ar/ja/en × 390 et 1440 px, aucune erreur ni débordement ; encarts du haut contrôlés en fr, ar, ko.
+- Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (build 20261101-1150), SUIVI.md.
