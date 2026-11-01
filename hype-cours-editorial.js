@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 42;   /* 01/11 22h10 (Blandine : avant-main / arrière-main « même pas les mêmes écritures ») : texte des notions aligné à gauche, plus justifié (le justifié étirait les lignes) */
+var VERSION = 43;   /* 01/11 22h10 : chapitres sur téléphone dans le style du haut de page */
+/* précédente : VERSION = 42; */   /* 01/11 22h10 (Blandine : avant-main / arrière-main « même pas les mêmes écritures ») : texte des notions aligné à gauche, plus justifié (le justifié étirait les lignes) */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
@@ -799,7 +800,28 @@ var CSS = [
 "}",
 /* 01/11 21h51 (Blandine : « laisse plus d'espace sous la photo pour le texte ») : de l'air entre une photo de notion et son texte, sur tous les écrans */
 ".hce .hce-mobile-unit .pimg,.hce .hce-chp .pan .pimg,.hce-lc .corps .pimg{margin-bottom:20px!important}",
-
+/* 01/11 22h10 (Blandine « Ok vas-y ») : chapitres sur téléphone dans le style du haut de page — surtitre comme « GALOP 1 », titre comme le titre du cours, chaque notion dans une carte comme l'encart du coach, texte 13 px aligné à gauche, doré limité au surtitre, à la 2e ligne du titre et au contour des cartes */
+"@container hce (max-width:699px){",
+".hce .hce-chp.rbm{padding:0 0 40px!important}",
+".hce .hce-chp.rbm .rb-photo{margin:24px 0 0!important;border-radius:0!important;position:relative;-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}",
+".hce .hce-chp.rbm .rb-photo img{width:100%;height:auto;display:block}",
+".hce .hce-chp.rbm .rb-kick,.hce .hce-chp.rbm h2,.hce .hce-chp.rbm .rb-sous,.hce .hce-chp.rbm .rb-note,.hce .hce-chp.rbm .hce-mobile-read{margin-inline:16px!important;position:relative}",
+".hce .hce-chp.rbm .rb-kick{font-size:12px!important;letter-spacing:.42em!important;margin-top:0!important;margin-bottom:10px!important}",
+".hce .hce-chp.rbm .rb-kick:after{display:none!important}",
+".hce .hce-chp.rbm h2{font-size:34px!important;line-height:1.02!important;font-weight:600!important}",
+".hce .hce-chp.rbm h2 em{font-style:normal!important;font-weight:600!important;color:#D9B98A!important}",
+".hce .hce-chp.rbm .rb-sous{font-family:'Montserrat',sans-serif!important;font-style:normal!important;font-size:13px!important;color:rgba(243,238,228,.75)!important;margin-top:12px!important}",
+".hce .hce-chp.rbm .hce-mobile-read{margin-top:28px!important;display:grid!important;gap:14px!important}",
+".hce .hce-chp.rbm .hce-mobile-unit{margin:0!important;padding:22px 22px 20px!important;border:1px solid rgba(201,166,107,.35)!important;border-radius:18px!important;background:rgba(14,18,17,.72)!important}",
+".hce .hce-chp.rbm .hce-mobile-unit:last-child{border-bottom:1px solid rgba(201,166,107,.35)!important;padding-bottom:20px!important}",
+".hce .hce-chp.rbm .hce-mobile-unit h3{font-size:20px!important;line-height:1.05!important;font-weight:600!important;margin:0 0 12px!important}",
+".hce .hce-chp.rbm .hce-mobile-unit h3:before{display:none!important}",
+".hce .hce-chp.rbm .hce-mobile-unit .pimg{margin:0 0 16px!important;border-radius:12px!important}",
+".hce .hce-chp.rbm .hce-mobile-unit p.pg,.hce .hce-chp.rbm .hce-mobile-unit .hce-txt,.hce .hce-chp.rbm .hce-mobile-unit li,.hce .hce-chp.rbm .hce-mobile-unit .ap,.hce .hce-chp.rbm .hce-mobile-unit .s{font-size:13px!important;line-height:1.45!important;text-align:left!important;color:rgba(243,238,228,.86)!important}",
+".hce .hce-chp.rbm .hce-mobile-unit .s{font-style:normal!important;color:rgba(243,238,228,.62)!important}",
+".hce .hce-chp.rbm .hce-mobile-unit li::marker{color:rgba(243,238,228,.4)!important}",
+".hce .hce-chp.rbm .hce-mobile-unit ul{gap:8px!important}",
+"}"
 ].join("\n");
 
 /* ---------------- icônes ---------------- */
