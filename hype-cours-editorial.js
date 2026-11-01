@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 41;   /* 01/11 21h55 : plus d'espace sous les photos des notions */
+var VERSION = 42;   /* 01/11 22h10 (Blandine : avant-main / arrière-main « même pas les mêmes écritures ») : texte des notions aligné à gauche, plus justifié (le justifié étirait les lignes) */
+/* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
 /* précédente : VERSION = 40; */   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
 /* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
@@ -778,7 +779,7 @@ var CSS = [
 ".hce .hce-chp.rbd .pan{margin-top:30px;gap:16px;padding:28px 30px 22px}",
 ".hce .hce-chp.rbd .pan h3{margin:0 0 18px}",
 /* 01/11 21h20 (Blandine) : texte des notions détaché du titre et justifié, sur ordinateur, tablette et téléphone */
-".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:justify;-webkit-hyphens:auto;hyphens:auto}",
+".hce .hce-chp.rbm .hce-mobile-unit h3{margin-bottom:18px}.hce p.pg{text-align:start;-webkit-hyphens:manual;hyphens:manual}",
 ".hce .hce-chp.rbd .pan h3:before{content:'';display:block;width:30px;height:2px;background:var(--champ);margin:0 0 14px}",
 ".hce .hce-chp.rbd .pan.al h3:before{background:var(--alerte)}",
 ".hce .hce-chp.rbd .pan p.pg,.hce .hce-chp.rbd .pan .hce-txt,.hce .hce-chp.rbd .pan ul{line-height:1.72}",
