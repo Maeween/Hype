@@ -16265,3 +16265,8 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Fait sur la version en ligne d905671 (atlas de l'autre conversation) ; rien d'autre de modifié. Mes changements en attente (branche style-robes-reperes : affiches du Galop 2, photo du haut sous l'heure, lecture des notions une à une) NE partent PAS avec cette publication.
 - Vérifié : g1-c20 à 390 px, aucune erreur, plus de vidéo.
 - Fichiers : hype-cours-editorial.js (VERSION 39, ?v=39), images/cours-g1-c20-hero2.webp, index.html (build 20261101-2135), SUIVI.md.
+
+## 01/11/2026 21h50 — PUBLICATION build 20261101-2150 (demande de Blandine 21h47) : photo du centre de gravité dans « La position du cavalier » (g1-c5)
+- Photo envoyée par Blandine (cheval gris monté au trot, lumière dorée) → images/cours-g1-c5-gravite.webp, en tête de la notion « L'essentiel » du chapitre 01 (« Le secret des grands cavaliers » : centre de gravité), via PHOTOS_NOTION_POS (g1-c5 : [0, 0]). Photo entière.
+- Fait sur la version en ligne ; rien d'autre de modifié. Vérifié : g1-c5 à 390 px avec les vraies polices, photo entière au-dessus du texte, aucune erreur.
+- Fichiers : hype-cours-editorial.js, images/cours-g1-c5-gravite.webp, index.html (build 20261101-2150), SUIVI.md.

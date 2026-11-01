@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 39;   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
+var VERSION = 40;   /* 01/11 21h50 : g1-c5 — photo du centre de gravité dans « Le secret des grands cavaliers » */
+/* précédente : VERSION = 39; */   /* 01/11 21h30 : g1-c20 — nouvelle photo du haut ; l'ancienne passe au chapitre 01 ; vidéo retirée de « La respiration » */
 /* précédente : VERSION = 38; */   /* 01/11 21h25 : textes des notions avec majuscule, détachés du titre et justifiés ; fusion — atlas du cheval + photos de l'avant-main et de l'arrière-main dans leurs parties (g1-c20) avec la photo des sabots et la vidéo « La respiration » de l'autre conversation */
 /* précédente : VERSION = 37; */   /* 01/11 21h15 : g1-c20 — onglets photos L'avant-main / L'arrière-main */  /* et, côté main : */ /* VERSION = 37 (main) */   /* 01/11 21h20 : g1-c20 — photo des sabots (chapitre 03) + vidéo de l'accueil dans « La respiration » */
 /* précédente : VERSION = 36; */   /* 01/11 21h05 : chapitres = style robes + repères (surtitre, titre en deux temps, trait doré des notions, introductions dorées, plus d'air) ; téléphone photo entière ; ordinateur une notion à la fois, photo en fond sans texte dessus ; photos du haut de Blandine sur les 48 cours aux anciennes couleurs + recadrages */
@@ -1494,7 +1495,7 @@ var MODULES_COURS = {
   "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } }
 };
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
-var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };
+var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]], "g1-c5": [[0, 0, "images/cours-g1-c5-gravite.webp"]] };   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
 var CHAP_SANS_PHOTO = {};
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
