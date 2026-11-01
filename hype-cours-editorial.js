@@ -365,6 +365,11 @@ var CSS = [
 ".hce-scene .nav{display:flex;gap:10px;margin-top:22px}.hce-btn:disabled{opacity:.35;cursor:default}",
 /* chapitre immersif */
 ".hce-sec.t-photo{padding:0;background:var(--noir)}",
+/* 01/11 (Blandine : « où est le bleu pétrole ») : un chapitre sur deux en bleu pétrole (Galop 2 et suivants) */
+".hce-chp.pet{background:#101D22}",
+".hce-chp.pet>.bg:after{background:linear-gradient(180deg,rgba(16,29,34,.5) 0%,rgba(16,29,34,.9) 40%,#101D22 100%)}",
+".hce-chp.pet .pan{background:rgba(13,26,31,.86)}",
+".hce-suiv.pet{background:#101D22;padding-bottom:22px}",
 ".hce-chp{position:relative;overflow:hidden;padding:56px 20px 64px;background:#070A08}",
 ".hce-chp>.bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;filter:saturate(.85)}",
 ".hce-chp>.bg:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.92) 40%,#070A08 100%)}",
@@ -677,7 +682,7 @@ function Chapitre(p) {
     var b = ol.querySelectorAll("button")[i]; if (!b) return;
     try { ol.scrollTo({ left: b.parentNode.offsetLeft - 16, behavior: "smooth" }); } catch (e) { }
   }, [i]);
-  return h("div", { className: "hce-chp" },
+  return h("div", { className: "hce-chp" + (p.petrole ? " pet" : "") },
     h("div", { className: "bg", "aria-hidden": true, style: { backgroundImage: "url(" + p.bg + ")", backgroundPosition: p.bgPos || "70% 40%" } }),
     h("div", { className: "in" },
       h("div", { className: "g" },
@@ -774,11 +779,11 @@ function HypeCoursEditorial(props) {
   var cur = chs[Math.min(actif, chs.length - 1)] || chs[0];
   var dernier = actif >= chs.length - 1;
   var corps = [
-    h(Vague, { key: "v0", de: NOIR, vers: fond(cur.ton) }),
+    h(Vague, { key: "v0", de: NOIR, vers: cur.pet ? "#101D22" : fond(cur.ton) }),
     h("section", { key: cur.id, id: "hce-" + cur.id, "data-i": actif, className: "hce-sec t-" + cur.ton, "aria-labelledby": "hce-t-" + cur.id },
       cur.ton === "photo" ? cur.rendu(ctx) : h("div", { className: "hce-in" }, cur.rendu(ctx)))
   ];
-  if (!dernier) corps.push(h("div", { key: "suiv", className: "hce-suiv" },
+  if (!dernier) corps.push(h("div", { key: "suiv", className: "hce-suiv" + (cur.pet ? " pet" : "") },
     h("button", { type: "button", className: "hce-btn", onClick: function () { choisir(actif + 1); } },
       L("chapSuiv") + "  ·  " + cfg.chapitres[actif + 1].label, fleche(rtl, 15)),
     h("button", { type: "button", className: "hce-btn disc", onClick: props.onRetour }, L("retourGalop"))));
@@ -1688,8 +1693,9 @@ AUTO_IDS.forEach(function (id) {
     var chapitres = A.chapitres.map(function (c) { return { id: c.id, label: c.titre, img: c.img, pos: "55% 40%" }; });
     var sections = A.chapitres.map(function (c, i) {
       var items = c.notions.map(function (n) { return { titre: titreNotion(n, L, lg), alerte: alerteNotion(n), rendu: function () { return renduNotion(n, L, lg); } }; });
-      return { id: c.id, ton: "photo", rendu: function (x) {
-        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopDe(cours), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note });
+      var pet = (i % 2 === 1) && !/^g1-/.test(cours.id);
+      return { id: c.id, ton: "photo", pet: pet, rendu: function (x) {
+        return h(Chapitre, { key: c.id, id: c.id, L: x.L, rtl: x.rtl, num: (i < 9 ? "0" : "") + (i + 1), galop: galopDe(cours), titre: c.titre, sous: c.sous || null, bg: c.img, bgPos: "55% 40%", items: items, note: c.note, petrole: pet });
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {

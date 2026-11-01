@@ -15909,3 +15909,5 @@ Demande de Blandine (31/10 22h24) : « Galop 3 : même travail, même design sur
 - Manque : g3-c2 n'a pas de phrase de fin (ni dans le cours ni dans les textes ChatGPT).
 - Vérifié (banc local) : 13 cours × 14 langues × 1440 et 820 px, aucune erreur, aucun débordement, aucune notion vide ; contenu du cours entièrement repris (seules les phrases d'introduction des questions Hey Baby ne sont pas reprises, comme au Galop 1) ; 390 px = affichage d'avant.
 - index.html : editorial ?v=6, build 20261101-0000. Fichiers : hype-cours-editorial.js, index.html, SUIVI.md.
+- 01/11 9h30 (Blandine : « où est le bleu pétrole, c'est très triste ») : un chapitre sur deux en bleu pétrole (02, 04…) avec la vague dorée, zone « Chapitre suivant » de la même couleur. Galops 2 et suivants seulement ; Galop 1 (publié) inchangé pour l'instant.
+- Constaté sur les captures : le haut de page et la page de fin reprennent l'ANCIENNE couverture du cours (dessin turquoise, cyan interdit par la charte) ; les affiches des cours sont aussi les anciennes infographies turquoise. Photos à refaire.
