@@ -1166,9 +1166,10 @@ function HypeCoursEditorial(props) {
   /* valider = false : on ouvre la page de fin sans compter le cours comme terminé (raccourci « Le défi du cavalier » du haut) */
   var versFin = function (valider) {
     if (!FIN) { if (valider !== false && props.onTerminer) props.onTerminer(); return; }
-    setVue("fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
+    setVue(cfg.auto_ ? "rev" : "fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
   };
-  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); } }));
+  if (vue === "rev" && FIN) return h(RevAuto, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); }, onSuite: function () { setVue("fin"); setTimeout(haut, 30); } }));
+  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue(cfg.auto_ ? "rev" : "cours"); setTimeout(haut, 60); } }));
 
   var Selecteur = props.Selecteur, hero = cfg.hero, enc = cfg.encarts, tit = deuxLignes(hero.titre);
   var NOIR = "#070A08", NOIR2 = "#0B1113";
@@ -2627,12 +2628,8 @@ AUTO_IDS.forEach(function (id) {
       sections.splice(pos, 0, { id: "mod-" + MC.id, ton: "noir", rendu: function () { return h(M.Module, Object.assign({ lg: lg }, MC.props || {})); } });
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
-      var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
-      return h(React.Fragment, null, lex ? h("aside", { className: "hce-lexique" }, h("h3", null, lex.titre),
-          h("dl", null, lex.mots.map(function (m, k) { return h("div", { key: k }, h("dt", null, m[0]), h("dd", null, m[1])); }))) : null,
-        h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
-        h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
-        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), fleche(x.rtl, 15)))));
+      /* ESSAI 01/11 23h15 (Blandine) : la carte « Quiz et révision » n'est plus en bas du cours (elle reste sur la page de fin) — un bouton mène à « Pour réviser » */
+      return h("div", { className: "hce-btns hce-vers-rev", style: { display: "flex", justifyContent: "center", padding: "8px 0 8px" } }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, LREV(lg).pourReviser, fleche(x.rtl, 15)));
     } });
     var cv = A.couv;
     return {
@@ -2644,7 +2641,7 @@ AUTO_IDS.forEach(function (id) {
         defi: A.defi ? { titre: A.defi.titre, texte: A.defi.haut, img: IM.defi, pos: "50% 35%" } : null
       },
       chapitres: chapitres,
-      revision: { label: L("secQuiz"), sous: L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
+      revision: { label: LREV(lg).pourReviser, sous: LREV(lg).sousMenu, img: IM.quiz, pos: "50% 60%" },
       sections: sections,
       auto_: A
     };
@@ -2653,6 +2650,68 @@ AUTO_IDS.forEach(function (id) {
 });
 
 /* page de fin des cours générés : même page partagée (FinCours) */
+/* ESSAI 01/11 23h15 (Blandine) : page « Pour réviser » entre le cours et la page de fin — À retenir (le résumé, déplacé de la page de fin),
+   le petit lexique, un petit « Le savais-tu » en italique discret, puis le bouton vers la page de fin (Hey Baby, défi, quiz). Textes en français pour l'essai. */
+var SAVAIS_COURS = {
+  "g1-c20": { fr: "Le sabot pousse d'environ un centimètre par mois : il lui faut près d'un an pour se renouveler entièrement." }
+};
+var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
+var LREV = function (lg) { return {
+  pourReviser: "Pour réviser", sousMenu: "À retenir, lexique", titre: "Pour réviser", aRetenir: "À retenir",
+  savais: "Le savais-tu ?", suite: "Hey Baby, défi et quiz", finSous: "Teste-toi avec Hey Baby, relève le défi, puis valide le cours avec le quiz."
+}; };
+var CSS_REV = [
+".hce-rev .hce-rev-bas{max-width:860px;margin:0 auto;padding:12px 16px 56px}",
+".hce-rev .hce-lexique{display:grid;grid-template-columns:minmax(0,1fr) 42%;column-gap:16px;align-items:start;border:1px solid rgba(243,238,228,.12);border-radius:18px;background:#070A08;padding:26px 0 22px 20px;overflow:hidden;margin:8px 0 22px}",
+".hce-rev .hce-lexique h3{grid-column:1;text-align:center!important;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:26px;font-weight:500;line-height:1.05;margin:0 0 14px;color:#F3EEE4}",
+".hce-rev .hce-lexique dl{grid-column:1;margin:0}",
+".hce-rev .hce-lexique dl>div{text-align:center;padding:11px 0;border-top:1px solid rgba(243,238,228,.1)}",
+".hce-rev .hce-lexique dt{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#F3EEE4}",
+".hce-rev .hce-lexique dd{margin:3px 0 0;font-family:'Montserrat',sans-serif;font-size:12px;line-height:1.4;color:rgba(243,238,228,.75)}",
+".hce-rev .hce-lexique .lx-ph{grid-column:2;grid-row:1/span 2;position:relative;align-self:stretch;margin:-26px 0 -22px;overflow:hidden}",
+".hce-rev .hce-lexique .lx-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% center;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 35%);mask-image:linear-gradient(90deg,transparent 0%,#000 35%)}",
+"@media (max-width:699px){.hce-rev .hce-lexique{display:flex;flex-direction:column;align-items:stretch;padding:0 20px 22px}.hce-rev .hce-lexique .lx-ph{order:-1;position:relative;margin:0 -20px 4px;align-self:auto}.hce-rev .hce-lexique .lx-ph img{position:static;width:100%;height:auto;object-fit:initial;-webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 100%);mask-image:linear-gradient(180deg,#000 70%,transparent 100%)}.hce-rev .hce-lexique h3{margin-top:-6px}}",
+".hce-rev .hce-savais{margin:6px 8px 34px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;line-height:1.4;color:rgba(243,238,228,.62)}",
+".hce-rev .hce-savais span{font-style:normal;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,166,107,.75);display:block;margin-bottom:6px}",
+".hce-rev .hce-btns{display:flex;justify-content:center}",
+".hce-rev .hce-btn,.hce .hce-vers-rev .hce-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;border-radius:999px;padding:13px 22px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;cursor:pointer}",
+".hce .hce-vers-rev{display:flex;justify-content:center;padding:8px 0 24px}"
+].join("\n");
+function RevAuto(props) {
+  var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar", R = LREV(lg);
+  var cfg = HypeCoursEditorial.config[cours.id](cours, lg, outils()), A = cfg.auto_;
+  var ch = cfg.chapitres, avecImg = ch.filter(function (x) { return x.img; }), imgDe = function (c, k) { return c.img || (avecImg.length ? avecImg[(k || 0) % avecImg.length].img : null); };
+  var por = [];
+  if (A.synth.length) {
+    var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n);
+    for (var i = 0; i < A.synth.length; i += taille) { var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length]; por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") }); }
+  }
+  var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
+  var SV = SAVAIS_COURS[cours.id], sav = SV ? (SV[lg] || SV.fr) : null;
+  var S = window.HypeRobesOrdi.shared;
+  return h("div", { className: "rbo hce-rev", dir: rtl ? "rtl" : undefined, lang: lg },
+    h("style", null, S.CSS), h("style", null, CSS_REV),
+    h("main", { className: "rbo-main" },
+      h("div", { className: "rbo-fc" },
+        h("section", { className: "rbo-fc-hero" },
+          /* pas de grande photo ici : le lexique a déjà la sienne (sinon le même cheval deux fois) */
+          h("div", { className: "bar" }, h("button", { type: "button", className: "rbo-back", onClick: props.onRetourCours }, rtl ? "›" : "‹")),
+          h("div", { className: "in" },
+            h("p", { className: "kick" }, cfg.hero.galop + "  ·  " + cfg.hero.titre),
+            h("h2", null, R.titre),
+            h("span", { className: "trait", "aria-hidden": true }),
+            h("p", { className: "sous" }, R.aRetenir),
+            h("ul", { className: "rbo-fc-por" + (por.length > 4 ? " nb" : "") }, por.map(function (p, i) {
+              return h("li", { key: i }, h("span", { className: "rond", style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }), h("span", { className: "pt", "aria-hidden": true }), h("span", { className: "tx" }, h("b", null, p.nom), p.desc ? h("span", null, p.desc) : null));
+            })),
+            A.citFin ? h("p", { className: "note" }, A.citFin) : null)),
+        h("div", { className: "hce-rev-bas" },
+          lex ? h("aside", { className: "hce-lexique" }, h("h3", { style: { textAlign: "center", justifyContent: "center", alignSelf: "stretch", width: "100%" } }, lex.titre),
+            h("dl", null, lex.mots.map(function (m, k) { return h("div", { key: k }, h("dt", null, m[0]), h("dd", null, m[1])); })),
+            LEX_PHOTO[cours.id] ? h("figure", { className: "lx-ph" }, h("img", { src: LEX_PHOTO[cours.id], alt: "" })) : null) : null,
+          sav ? h("p", { className: "hce-savais" }, h("span", null, R.savais), sav) : null,
+          h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: props.onSuite }, R.suite, fleche(rtl, 15)))))));
+}
 function FinAuto(props) {
   var S = window.HypeRobesOrdi.shared;
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";
@@ -2678,9 +2737,9 @@ function FinAuto(props) {
     h("style", null, S.CSS),
     h("main", { className: "rbo-main" },
       h(S.FinCours, {
-        L: L, lg: lg, rtl: rtl, kicker: cfg.hero.galop, titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
+        L: function (k) { return k === "finSous" ? LREV(lg).finSous : L(k); }, lg: lg, rtl: rtl, kicker: cfg.hero.galop, titre: cfg.hero.titre, Selecteur: props.Selecteur, coursId: cours.id,
         heroImg: cfg.hero.img, heroPos: cfg.hero.pos,
-        portraits: por, note: A.citFin || null,
+        portraits: [], note: null,
         hb: A.hb, onHey: hey, defiSeg: A.defi ? A.defi.fin : null,
         quizImg: IM.quiz, onQuiz: function () { if (props.setEcran) props.setEcran("quiz"); }, quizScore: props.quizScore,
         suivant: suivant ? { titre: (typeof suivant.titre === "string" ? suivant.titre : pickLg(suivant.titre, lg)), onClick: function () { props.onOuvrirCours(suivant.id); } } : null,
