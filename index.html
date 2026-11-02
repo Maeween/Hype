@@ -59702,6 +59702,13 @@ var G5_CSS = ""
   + ".g5-th-ph:after{background:linear-gradient(0deg,#0D1415 0%,rgba(13,20,21,0.5) 28%,rgba(13,20,21,0) 55%)}"
   + ".g5-cl-liste{padding:8px 18px 14px}"
   + "@media (min-width:768px){.g5-themes{gap:36px 28px}.g5-th-ph{height:300px}}"
+  /* 20h45 (Blandine : « la dézoomer un peu et laisser un peu d'espace avant le titre en dessous ») : photo entière au format 3/2 en haut de la carte,
+     puis une bande de 72 px sous la photo où se pose le titre (le titre ne recouvre plus la photo). Téléphone, tablette et ordinateur. */
+  + ".g5-th-ph,.g5-th .g5-th-ph{height:auto;padding-top:calc(66.667% + 72px)}"
+  + ".g5-th-ph img{top:0;bottom:auto;height:calc(100% - 72px)}"
+  + ".g5-th-ph:after{display:none}"
+  + ".g5-th-ph img{-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}"
+  + ".g5-th-tete{bottom:12px}"
   /* 02/11 19h51 (Blandine, capture de la page du Galop 7) : « un vrai fond noir profond et les onglets semi-transparents ombrés » — toutes les pages Galop */
   + ".g5.g5{--g5-fond:#000;background:#000}"
   + ".g5 .g5-onglets.g5-onglets{background:rgba(0,0,0,0.38);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid rgba(201,166,107,0.14);box-shadow:0 10px 26px rgba(0,0,0,0.6)}"
