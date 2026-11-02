@@ -16619,3 +16619,11 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Bouton « Voir les N cours » : 6 propositions visuelles envoyées à Blandine (vraies captures), rien d'appliqué.
 - Vérifié : 390 px et 1440 px (espacements calculés, dépliant du Galop 1 ouvert avec les objectifs) ; 0 erreur ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2235), SUIVI.md.
+
+## 02/11/2026 22h40 — PUBLICATION build 20261102-2240 (question de Blandine 22h25 « le lexique est bien dans tous les Galops et ajouté au lexique général ? ») : grand lexique complété avec les Galops 5 et 7
+- Constat (test local) : le grand lexique ne montrait que les Galops 1 à 4 (335 mots) — les lexiques des Galops 5 et 7 n'y entraient que si leur Galop avait été ouvert avant, et le chargement d'un Galop pouvait effacer les lexiques de l'autre (HYPE_LEXIQUE_EXTRA remplacé par le fichier de langue).
+- Correctifs : (1) hype-cours-editorial.js VERSION 60 (?v=60) : le grand lexique lit aussi le champ « lexique » écrit dans les cours des Galops 5 à 9 ; (2) index.html, EcranGrandLexique : charge les Galops 5, 6 et 7 à l'ouverture puis se redessine ; (3) outils/cours-langues.cjs : HYPE_LEXIQUE_EXTRA d'un Galop s'ajoute à celui déjà chargé au lieu de l'écraser (pages « Révise en 2 minutes » des Galops 5 et 7).
+- Vérifié (modératrice, sans ouvrir de Galop avant) : filtres Galop 1, 2, 3, 4, 5, 7 ; 476 mots ; Gourmette, Panard, Rationnement, Bande de polo, Contre-galop, Épaule en dedans présents.
+- État des lexiques : Galops 1 à 4 : dans le modèle des cours ; Galop 5 : 12 cours sur 19 ; Galop 6 : aucun (anciens brouillons) ; Galop 7 : 16 sur 16 (mots visibles des seules modératrices tant que le Galop 7 est en relecture).
+- Vidéos (question de Blandine) : vidéothèque = 23 vidéos, rangées Galop 1 (7), Galop 2 (2), Galop 4 (14) ; aucune pour les Galops 3, 5, 6, 7, 8, 9 (la rubrique Vidéos de leur page ne s'affiche pas).
+- Fichiers : hype-cours-editorial.js (?v=60), outils/cours-langues.cjs, index.html (build 20261102-2240), SUIVI.md.
