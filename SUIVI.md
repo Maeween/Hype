@@ -16647,3 +16647,9 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Vérifié (appli locale avec les fichiers par langue) : 12 cours × 14 langues s'ouvrent, page Révise partout, savais-tu déplacé dans les 8 cours qui en ont ; captures en, ar, ja, ru.
 - Points relevés par les traducteurs (à décider plus tard) : italien « Galop 5 » (nouveaux cours) / « Livello 5 » (embouchures) ; portugais « você » (comme la plupart des textes pt) ; quelques titres de page et textes n'emploient pas exactement le même mot (de : Takt/Tempo ; pt : ligaduras/bandagens ; zh : 侧弯/弯曲) ; anciennes coquilles hors Galop 5 (zh « 马车 » pour van, ja « 牴馬 », ko « 포인 » au Galop 4).
 - Les cours restent visibles des seules modératrices (HYPE_COURS_PRETS inchangé).
+
+## 02/11/2026 22h45 — PUBLICATION build 20261102-2245 (Blandine 22h31 « B ») : bouton photo « Voir les N cours » sous le titre du Galop
+- Page Galops, dépliant d'un Galop (courbe ou onglets 1-9) : le bouton « Voir les N cours » devient une bande photo (proposition 3 des maquettes de 22h20), titre en Cormorant ivoire, flèche dans un rond doré ; photo = photo du haut de la page de ce Galop (GV3_HERO : bai pour le 1, palomino pour le 7, gris pour le 6…) ; placé juste sous « Galop N / sous-titre » (emplacement B), avant la progression et la présentation. Téléphone, tablette et ordinateur (ordinateur : largeur max 560 px). Arabe : dégradé inversé.
+- Objectifs officiels toujours ouverts d'office (22h35).
+- Vérifié : captures 390 px (Galops 1 et 7) et 1440 px (Galop 6) ; le bouton ouvre bien la page des cours ; 0 erreur ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2245), SUIVI.md.
