@@ -16586,3 +16586,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Exercices pratiques (toujours « Prochainement », assombrie) = cavalier au saut sur cheval bai, fond noir (images/galops-carte-exercices-saut.webp).
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2200), SUIVI.md, images/galops-carte-exercices-saut.webp.
+
+## 02/11/2026 22h05 — PUBLICATION build 20261102-2205 (Blandine 21h59) : photo de la carte Vidéothèque
+- Page Galops, « Tout pour progresser » : carte Vidéothèque = bai tressé au filet, lumière dorée (images/galops-carte-videos-bai.webp, cadrage 60 % 35 %).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2205), SUIVI.md, images/galops-carte-videos-bai.webp.
