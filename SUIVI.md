@@ -16551,3 +16551,7 @@ Blandine : « plus de place pour les photos dans les onglets, aère plus les ong
 - index.html, pages Galop tablette et ordinateur (.g1o) : même règle (fond #000, onglets semi-transparents ombrés).
 - Vérifié : captures réelles 390 px et 1440 px de la page du Galop 7, aucune erreur ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-1955), SUIVI.md.
+## 02/11/2026 20h00 — PRÊT, PAS PUBLIÉ (branche savais-c) : « Le savais-tu ? » lisible (choix « C » de Blandine, 19h54)
+- Page « Révise en 2 minutes » (tous les Galops) : le savais-tu passe d'un petit italique gris à une carte bleu pétrole → noir, petit trait doré, « Le savais-tu ? » en titre Cormorant 26 px ivoire, texte droit en Montserrat 14,5 px (15,5 px sur tablette/ordinateur, largeur de lecture limitée à 620 px), centré.
+- hype-cours-editorial.js VERSION 59 (?v=59). Vérifié en 390 px et 1280 px : aucune erreur, aucun débordement.
+- Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
