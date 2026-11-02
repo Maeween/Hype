@@ -16581,3 +16581,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Cours théoriques = bai au filet (images/galops-carte-cours-bai.webp) ; carte Quiz = carnet et stylo doré (images/galops-carte-quiz-carnet.webp). Mise en forme des cartes inchangée (maquettes A/B/C du menu en lignes : en attente du choix de Blandine, rien d'appliqué).
 - Vérifié : captures réelles téléphone 390 px et ordinateur 1440 px des Galops 1, 2, 6, 7, 8, 9 et des cartes ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2155), SUIVI.md, 8 images (images/galop1-hero-bai.webp, galop2-hero-bai-entier.webp, galop6-hero-gris.webp, galop7-hero-palomino.webp, galop8-hero-bai.webp, galop9-hero-alezan.webp, galops-carte-cours-bai.webp, galops-carte-quiz-carnet.webp).
+
+## 02/11/2026 22h00 — PUBLICATION build 20261102-2200 (Blandine 21h55) : photo de la carte Exercices pratiques
+- Page Galops, « Tout pour progresser » : carte Exercices pratiques (toujours « Prochainement », assombrie) = cavalier au saut sur cheval bai, fond noir (images/galops-carte-exercices-saut.webp).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2200), SUIVI.md, images/galops-carte-exercices-saut.webp.
