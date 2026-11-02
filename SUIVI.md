@@ -16554,5 +16554,5 @@ Blandine : « plus de place pour les photos dans les onglets, aère plus les ong
 
 ## 02/11/2026 20h40 — PAGES GALOP : nouvelle photo « I Vie équestre » (prêt, NON PUBLIÉ)
 Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au bonnet noir et or, cavalière casquée qui l'embrasse ; photo verticale).
-- Nouveau fichier images/galops-th-vie3.webp (1000 × 1512) ; carte « I Vie équestre » de toutes les pages Galop (GV3) et du Galop 5 (G5_THEMES), cadrage 50 % 36 % (du bonnet au casque).
+- Nouveau fichier images/galops-th-vie3.webp : version HORIZONTALE envoyée ensuite par Blandine (1400 × 933, remplace la verticale) ; carte « I Vie équestre » de toutes les pages Galop (GV3) et du Galop 5 (G5_THEMES), cadrage 50 % 40 % (oreilles, casque et selle visibles).
 - L'ancienne photo galop5-th-vie2.webp est gardée : elle sert encore dans des cours (g3-c9, Galop 4).
