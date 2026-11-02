@@ -16591,3 +16591,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Vidéothèque = bai tressé au filet, lumière dorée (images/galops-carte-videos-bai.webp, cadrage 60 % 35 %).
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2205), SUIVI.md, images/galops-carte-videos-bai.webp.
+
+## 02/11/2026 22h10 — PUBLICATION build 20261102-2210 (Blandine 21h59) : photo de la carte Examens
+- Page Galops, « Tout pour progresser » : carte Examens = flot noir et doré sur un tapis (images/galops-carte-examens-flot.webp, cadrage 66 % 40 %).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2210), SUIVI.md, images/galops-carte-examens-flot.webp.
