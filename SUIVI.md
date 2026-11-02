@@ -16401,3 +16401,31 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Vérifié (appli locale, modératrice, 390 px) : les 12 cours s'ouvrent et leur page « Révise en 2 minutes » affiche le lexique, 0 erreur ; 17 blocs de code d'index.html valides.
 - Décisions de Blandine (10h29) : départ au galop — « la jambe extérieure se recule pour tenir les hanches et appeler le postérieur externe » (cours, synthèse, quiz n°7) ; validés tels quels : montée en cross « au-dessus de tes pieds, ton poids descend dans tes talons, buste légèrement incliné » ; listes de compétition non ajoutées (seulement l'enregistrement FFE du cheval) ; format du numéro SIRE retiré ; « poids sur la fesse intérieure » retiré ; passage dans l'eau gardé.
 - Pas de traduction tant que le français n'est pas validé.
+
+## 02/11/2026 10h45 — PUBLICATION build 20261102-1045 (accord de Blandine 10h34 « Ok fais pareil sur les autres galops ») : photos de manège remplacées PROVISOIREMENT par ses photos, Galops 1, 2 et 3
+- Demande (10h20) : « toutes les photos de manège, remplace-les par celles-là en alternance et on avisera plus tard pour remettre les bonnes photos ». Photos de manège visées : galop5-c08-equilibre, galop5-c10-cession, galop5-theme-pratique-montee, galop5-c04-anatomie, galop5-c09-incurvation (fichiers gardés dans images/, le Galop 5 et les autres pages qui les utilisent ne sont pas touchés).
+- 16 photos de Blandine ajoutées : images/portrait-cheval-1.webp à 16.webp (portraits sur fond noir, photos montées du cheval gris ; 14 = saut obstacle bleu, 15 = saut obstacle jaune, réservées aux cours de saut).
+- hype-cours-editorial.js VERSION 52 (?v=52) : AUTO_IM (g1-c4, g1-c5, g1-c9, g2-aides, g2-depart, g2-c3, g2-c6, g2-anatomie, g2-familles) et AUTO_IM_G3, en alternance.
+- hype-cours-editorial-g4.js VERSION 10 (?v=10) : g3-c3 chapitre « Faire confiance » → portrait-cheval-14 (saut).
+- hype-cours-modele.js VERSION 7 (?v=9) : g1-c15, chapitres 02 et 04 (vignette + photo du chapitre identiques).
+- Pas encore traité (Blandine n'a pas tranché) : les photos du cheval gris sous le manège couvert restées dans g3-c4 (chap. 01), g3-c5 (chap. 03), g3-c9 (chap. 01), g3-c11 (chap. 01).
+- LISTE DES COURS À REPRENDRE quand les bonnes photos arriveront (demandée par Blandine 10h34 « garde la liste des cours concernés qu'on remodifie ensuite ») — photo provisoire entre parenthèses :
+- **g1-c4 — Les allures du cheval** : chap. 01 « Les Allures du Cheval : ton guide de voyage » (portrait-cheval-13.webp) ; chap. 02 « Le rythme des trois allures » (portrait-cheval-4.webp)
+- **g1-c9 — Les aides naturelles et artificielles** : chap. 02 « Les aides artificielles » (portrait-cheval-5.webp)
+- **g1-c15 — La sécurité avant tout** : chap. 02 « Autour du cheval » (portrait-cheval-11.webp) ; chap. 04 « Entre chevaux » (portrait-cheval-16.webp)
+- **g2-aides — Les aides naturelles et artificielles** : chap. 01 « Communiquer avec le cheval » (portrait-cheval-6.webp) ; chap. 02 « Coordonner les aides » (portrait-cheval-9.webp) ; chap. 03 « Les aides artificielles » (portrait-cheval-7.webp)
+- **g2-depart — Le départ au galop** : chap. 01 « Préparer le départ » (portrait-cheval-1.webp) ; chap. 02 « L'équilibre et les aides » (portrait-cheval-8.webp)
+- **g2-c3 — Diriger sur un tracé** : chap. 01 « Diriger sur un tracé » (portrait-cheval-10.webp) ; chap. 02 « Les figures et les aides » (portrait-cheval-2.webp) ; chap. 03 « S'entraîner » (portrait-cheval-3.webp)
+- **g2-c6 — Connaître le cheval : sens, robes, aliments** : chap. 02 « Se nourrir et se repérer » (portrait-cheval-13.webp)
+- **g2-anatomie — L'anatomie du cheval** : chap. 01 « Les repères du corps » (portrait-cheval-4.webp)
+- **g3-c2 — Le départ sur le bon pied** : chap. 01 « Le bon pied » (portrait-cheval-12.webp) ; chap. 02 « Reconnaître et préparer » (portrait-cheval-10.webp) ; chap. 03 « Les erreurs et l'entraînement » (portrait-cheval-13.webp)
+- **g3-c3 — Préparer un bon abord à l'obstacle** : chap. 03 « Faire confiance » (portrait-cheval-14.webp)
+- **g3-c8 — Le mécanisme du pas et du trot** : chap. 01 « Le pas, une allure marchée » (portrait-cheval-16.webp) ; chap. 02 « Le trot et ses diagonaux » (portrait-cheval-3.webp) ; chap. 03 « Comparer les deux allures » (portrait-cheval-4.webp) ; chap. 04 « À toi de jouer » (portrait-cheval-5.webp)
+- **g3-c10 — Les principales disciplines équestres** : chap. 03 « Endurance et TREC » (portrait-cheval-6.webp) ; chap. 04 « Voltige et attelage » (portrait-cheval-7.webp) ; chap. 05 « Horse-ball et pony-games » (portrait-cheval-8.webp) ; chap. 06 « Reconnaître une discipline » (portrait-cheval-9.webp)
+- **g3-c11 — Le sabot, l'entretien des pieds et la ferrure** : chap. 05 « Pieds nus et signaux d'alerte » (portrait-cheval-11.webp)
+- **g3-c12 — L'assiette et la posture assise** : chap. 01 « Qu'est-ce que l'assiette ? » (portrait-cheval-1.webp) ; chap. 02 « Regard, épaules et dos » (portrait-cheval-12.webp) ; chap. 03 « Bassin, jambes et talons » (portrait-cheval-10.webp) ; chap. 04 « Bras, mains et respiration » (portrait-cheval-13.webp)
+- **g3-c13 — Agir, résister et céder** : chap. 01 « Les aides du cavalier » (portrait-cheval-2.webp) ; chap. 02 « Agir » (portrait-cheval-16.webp) ; chap. 03 « Résister » (portrait-cheval-3.webp) ; chap. 05 « Enchaîner les trois actions » (portrait-cheval-4.webp)
+- **g3-c14 — Les aides pour tourner** : chap. 01 « Coordonner et préparer » (portrait-cheval-5.webp) ; chap. 02 « Le regard, le buste et l'assiette » (portrait-cheval-6.webp) ; chap. 03 « La rêne intérieure et la rêne d'ouverture » (portrait-cheval-7.webp) ; chap. 04 « La rêne extérieure et les jambes » (portrait-cheval-8.webp)
+- **g3-c15 — La demi-volte et la demi-volte renversée** : chap. 01 « Comprendre les deux figures » (portrait-cheval-9.webp) ; chap. 02 « Préparer et réaliser la figure » (portrait-cheval-11.webp) ; chap. 03 « Ne pas confondre, et bien reconnaître » (portrait-cheval-1.webp)
+- Vérifié : plus aucune des 5 photos de manège dans les chapitres des Galops 1, 2 et 3 (appli locale) ; Galop 3 en 14 langues à 390 px et 1440 px sans erreur ; capture g1-c15. Fait sur la version en ligne 5bfd965.
+- Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, hype-cours-modele.js, images/portrait-cheval-1 à 16.webp, index.html (build 20261102-1045), SUIVI.md.

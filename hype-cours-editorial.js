@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 51;   /* 02/11 10h25 (Blandine) : Galop 3 — photos de manège des chapitres remplacées, en alternance, par 10 photos de Blandine (8 portraits sur fond noir + 2 photos montées, images/portrait-cheval-1 à 10.webp), en attendant les bonnes photos */
+var VERSION = 52;   /* 02/11 10h40 (Blandine : « fais pareil sur les autres galops ») : idem pour les Galops 1 et 2 (g1-c4, g1-c5, g1-c9, g2-aides, g2-depart, g2-c3, g2-c6, g2-anatomie, g2-familles) ; 16 photos de Blandine (portrait-cheval-1 à 16) */
+/* précédente : VERSION = 51; */   /* 02/11 10h25 (Blandine) : Galop 3 — photos de manège des chapitres remplacées, en alternance, par 10 photos de Blandine (8 portraits sur fond noir + 2 photos montées, images/portrait-cheval-1 à 10.webp), en attendant les bonnes photos */
 /* précédente : VERSION = 50; */   /* 02/11 10h17 : g1-c9 chapitre 01 « La position : la base de toutes tes aides » — photo de Blandine (cours-g1-c9-position.webp) à la place de la photo de manège */
 /* précédente : VERSION = 49; */   /* 02/11 10h16 : g1-c5 « La position d'équilibre » — nouvelle photo de Blandine (cours-g1-c5-equilibre-2.webp) */
 /* précédente : VERSION = 48; */   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
@@ -2166,12 +2167,12 @@ window.HypeFinsCours["g1-c15"] = { ok: finOk, Fin: FinSecu };
 var AUTO_IM = {
   "g1-c3": ["images/galop5-th-cheval2.webp", "images/cours-g1-c3-box.webp",   /* 01/11 18h05 : chapitre 02 « Le confort au box » = photo de Blandine (cheval gris au box) */
     "images/securite-g1-observer.webp"],
-  "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
-  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/galop5-c09-incurvation.webp", "images/cours-g1-c5-equilibre-2.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
+  "g1-c4": ["images/portrait-cheval-13.webp", "images/portrait-cheval-4.webp", "images/portrait-cheval-11.webp"],
+  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/portrait-cheval-16.webp", "images/cours-g1-c5-equilibre-2.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
-  "g1-c9": ["images/cours-g1-c9-position.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
+  "g1-c9": ["images/cours-g1-c9-position.webp", "images/portrait-cheval-5.webp", "images/portrait-cheval-12.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
   "g1-c11": ["images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],
   "g1-c12": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
@@ -2182,19 +2183,19 @@ var AUTO_IM = {
     "images/cours-g1-c17-verif.webp"   /* 01/11 16h11 : chapitre 04 « La vérification finale » = photo de Blandine */],
   "g1-c18": ["images/cours-g1-c18-ch1.webp",   /* 01/11 17h44 : chapitre 01 « Avant de partir et se placer correctement » = photo de Blandine (cavalière qui mène un cheval gris en main, courbes décoratives retirées) */
     "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
-  "g2-aides": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
-  "g2-depart": ["images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-th-cheval2.webp"],
+  "g2-aides": ["images/portrait-cheval-6.webp", "images/portrait-cheval-9.webp", "images/portrait-cheval-7.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],   /* 01/11 : 5e photo (5 chapitres, plus de photo en double) */
+  "g2-depart": ["images/portrait-cheval-1.webp", "images/portrait-cheval-8.webp", "images/galop5-th-cheval2.webp"],
   "g2-c1": ["images/cours-pansage-09_gestes_brossage.webp", "images/galop5-c02-embouchures.webp", "images/galop5-c05-soins.webp"],
-  "g2-c3": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
+  "g2-c3": ["images/portrait-cheval-10.webp", "images/portrait-cheval-2.webp", "images/portrait-cheval-3.webp"],
   "g2-c4": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-th-cheval2.webp"],
   "g2-c5": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-porte.webp"],
-  "g2-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/galop5-c04-anatomie.webp", "images/robes-g1-trio.webp"],
-  "g2-anatomie": ["images/galop5-c04-anatomie.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
+  "g2-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/portrait-cheval-13.webp", "images/robes-g1-trio.webp"],
+  "g2-anatomie": ["images/portrait-cheval-4.webp", "images/galop5-c05-soins.webp", "images/galop5-theme-cheval.webp"],
   "g2-sens": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g2-vie-sociale": ["images/securite-g1-distance.webp", "images/galop5-th-cheval2.webp", "images/securite-g1-alezan.webp"],
   "g2-pansage": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-pansage-03_observer_approcher.webp", "images/galop5-c05-soins.webp"],
   "g2-filet-selle": ["images/galop5-c02-embouchures.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],
-  "g2-familles": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-c10-cession.webp"],
+  "g2-familles": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/portrait-cheval-15.webp"],
   "g2-heberger": ["images/galop5-th-cheval2.webp", "images/securite-g1-alezan.webp", "images/securite-g1-observer.webp"],
   "g1-c19": ["images/galop5-theme-connaissances.webp", "images/galop5-th-cheval2.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-chute.webp", "images/galop5-theme-cheval.webp", "images/galop5-c07-transport.webp"]
 };

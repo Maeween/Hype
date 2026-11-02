@@ -28,7 +28,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 6;   /* 01/11 22h40 : alias kort, karta, citaat */
+var VERSION = 7;   /* 02/11 10h40 (Blandine) : g1-c15 — photos de manège remplacées par ses photos (provisoire) */
+/* précédente : var VERSION = 6; */   /* 01/11 22h40 : alias kort, karta, citaat */
 /* précédente : VERSION = 5; */   /* 01/11 20h50 : citation du haut sortie de la photo, dans un bandeau lisible sous la couverture */
 /* précédente : var VERSION = 4; */   /* 01/11 20h05 : pansage (téléphone, tablette) dans le style du cours des robes — bleu nuit / noir, vague, gros numéro doré, photos arrondies */
 /* précédente : var VERSION = 3; */   /* 31/10 : libellés du cours sécurité utilisés par hype-cours-editorial.js */
@@ -1030,9 +1031,9 @@ HypeCoursModele.config["g1-c15"] = function (cours, lg, o) {
     },
     chapitres: [
       { label: L("cApproche"), sous: L("sApproche"), img: IMG + "02_introduction_contact-mini.webp", sections: ["avant", "contact"] },
-      { label: L("cAutour"), sous: L("sAutour"), img: "images/galop5-c04-anatomie.webp", sections: ["zones"] },
+      { label: L("cAutour"), sous: L("sAutour"), img: "images/portrait-cheval-11.webp", sections: ["zones"] },
       { label: L("cBonsGestes"), sous: L("sBonsGestes"), img: "images/galop5-c05-soins.webp", sections: ["gestes"] },
-      { label: L("cEntre"), sous: L("sEntre"), img: "images/galop5-c08-equilibre.webp", sections: ["entre"] },
+      { label: L("cEntre"), sous: L("sEntre"), img: "images/portrait-cheval-16.webp", sections: ["entre"] },
       { label: L("cProbleme"), sous: L("sProbleme"), img: "images/cheval-defaut-alezan.webp", sections: ["probleme"] },
       { label: L("vQuiz"), sous: L("sQuiz"), img: IMG + "13_quiz_carnet_crayon-mini.webp", sections: ["fin"] }
     ],
@@ -1058,7 +1059,7 @@ HypeCoursModele.config["g1-c15"] = function (cours, lg, o) {
         ] },
       /* 02 — points 6 à 8 : schéma interactif des zones (le conseil du coach passe en fin de cours) */
       { id: "zones", ton: "noir", kicker: "02 — " + L("cAutour"), titreA: L("tZonesA"), titreB: L("tZonesB"), sous: tit(c[2][0]),
-        photo: { src: "images/galop5-c04-anatomie.webp", ratio: "r43" },
+        photo: { src: "images/portrait-cheval-11.webp", ratio: "r43" },
         blocs: [
           { t: "zones", items: [1, 2, 3, 4].map(function (i) { return { titre: r(c[2][i].titre), texte: r(c[2][i].texte), alerte: i === 4 }; }) },
           part(c[2][5]),
@@ -1077,7 +1078,7 @@ HypeCoursModele.config["g1-c15"] = function (cours, lg, o) {
         ] },
       /* 04 — points 13 à 15 : les signes d'inquiétude en étiquettes */
       { id: "entre", ton: "noir", kicker: "04 — " + L("cEntre"), titreA: L("tEspaceA"), titreB: L("tEspaceB"), inv: true,
-        photo: { src: "images/galop5-c08-equilibre.webp", ratio: "r43" },
+        photo: { src: "images/portrait-cheval-16.webp", ratio: "r43" },
         blocs: [
           part(c[4][0], { apres: r(c[4][1].texte) }),
           part(c[4][2], { apres: r(c[4][3].texte) }),
