@@ -16596,3 +16596,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Examens = flot noir et doré sur un tapis (images/galops-carte-examens-flot.webp, cadrage 66 % 40 %).
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2210), SUIVI.md, images/galops-carte-examens-flot.webp.
+
+## 02/11/2026 22h15 — PUBLICATION build 20261102-2215 (Blandine 22h04) : photo de la carte Reprises de dressage
+- Page Galops, « Tout pour progresser » : carte Reprises de dressage = cavalière sur cheval gris au trot, fond sombre doré (images/galops-carte-reprises-gris.webp, cadrage 52 % 45 %). Les 7 cartes ont maintenant les photos de Blandine (sauf Le grand lexique, inchangée).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2215), SUIVI.md, images/galops-carte-reprises-gris.webp.
