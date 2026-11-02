@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 49;   /* 02/11 10h16 : g1-c5 « La position d'équilibre » — nouvelle photo de Blandine (cours-g1-c5-equilibre-2.webp) */
+var VERSION = 50;   /* 02/11 10h17 : g1-c9 chapitre 01 « La position : la base de toutes tes aides » — photo de Blandine (cours-g1-c9-position.webp) à la place de la photo de manège */
+/* précédente : VERSION = 49; */   /* 02/11 10h16 : g1-c5 « La position d'équilibre » — nouvelle photo de Blandine (cours-g1-c5-equilibre-2.webp) */
 /* précédente : VERSION = 48; */   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
 /* précédente : VERSION = 47; */   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
 /* précédente : VERSION = 46; */   /* 02/11 : lexiques du Galop 5 (HYPE_LEXIQUE_EXTRA) sur la page « Révise en 2 minutes » */
@@ -2169,7 +2170,7 @@ var AUTO_IM = {
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
-  "g1-c9": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
+  "g1-c9": ["images/cours-g1-c9-position.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp"],
   "g1-c10": ["images/securite-g1-longe.webp", "images/securite-g1-rangement.webp"],
   "g1-c11": ["images/galop5-theme-connaissances.webp", "images/galop5-c03-apprendre.webp"],
   "g1-c12": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
