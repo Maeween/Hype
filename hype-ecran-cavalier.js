@@ -1018,7 +1018,7 @@ function EcranMonCavalier() {
       ? h(window.PastilleMusiquePage, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null, proprio: !__visitePub, sansBoutonChoix: !__visitePub, ouvrirChoix: demandeMusique })
       : null,
     /* 28/07 : alerte « ta photo n est pas visible par les autres » (page profil, non visite). */
-    !__estVisite ? h(EncartPhotoInvisible, { T: T, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
+    !__estVisite ? h(EncartPhotoInvisible, { T: T, aPhoto: !!(profil && profil.avatar) /* 02/11 (Blandine) : pas d'alerte si on n'a jamais mis de photo */, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
     /* 22/09 (349) - LES RACCOURCIS DE LA PAGE CAVALIER, DESSIN DES PAGES CHEVAL ET ECURIE.
        Sa demande : « il faudrait les onglets des chevaux et de l écurie sur la page cavalier :
        photos, vidéos, performances, progression qui l emmène vers son carnet de bord, théorie

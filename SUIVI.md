@@ -16429,3 +16429,9 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - **g3-c15 — La demi-volte et la demi-volte renversée** : chap. 01 « Comprendre les deux figures » (portrait-cheval-9.webp) ; chap. 02 « Préparer et réaliser la figure » (portrait-cheval-11.webp) ; chap. 03 « Ne pas confondre, et bien reconnaître » (portrait-cheval-1.webp)
 - Vérifié : plus aucune des 5 photos de manège dans les chapitres des Galops 1, 2 et 3 (appli locale) ; Galop 3 en 14 langues à 390 px et 1440 px sans erreur ; capture g1-c15. Fait sur la version en ligne 5bfd965.
 - Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, hype-cours-modele.js, images/portrait-cheval-1 à 16.webp, index.html (build 20261102-1045), SUIVI.md.
+
+## 02/11/2026 14h40 — PUBLICATION build 20261102-1200 (accord de Blandine 14h38 « ok pour la correction ») : plus d'alerte « Ta photo reste invisible » pour qui n'a jamais mis de photo
+- Signalé par Blandine (11h54) : une nouvelle cavalière qui crée son compte voit « Ta photo reste invisible » alors qu'elle n'a mis aucune photo.
+- Cause : l'encart (EncartPhotoInvisible, index.html, 28/07) s'affichait dès que la photo était vide EN BASE, sans regarder s'il y avait une photo sur le téléphone. Tout nouveau compte le voyait donc.
+- Correction : l'encart ne s'affiche plus que si une photo existe sur le téléphone mais pas en base (son vrai but). hype-ecran-cavalier.js (?v=2) lui passe aPhoto ; index.html : une ligne dans EncartPhotoInvisible.
+- Fichiers : index.html (build 20261102-1200), hype-ecran-cavalier.js, SUIVI.md.
