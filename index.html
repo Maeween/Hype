@@ -408,7 +408,7 @@ function EcranDatesPhotos() {
       etatDP !== "scan" ? h("div", null,
         chevauxDP.length ? chevauxDP.map(function (c) {
           return h("button", { key: "dp" + c.id, onClick: function () { lancer(c); }, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 56, marginBottom: 9, padding: "10px 12px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "#EDF2F5", cursor: "pointer", textAlign: "left" } },
-            h("img", { src: c.photo_url || CHEVAL_DEFAUT, alt: "", loading: "lazy", style: { width: 40, height: 40, borderRadius: 10, objectFit: "cover", flex: "0 0 auto" } }),
+            h("img", { src: c.photo_url || chevalDefaut(c), alt: "", loading: "lazy", style: { width: 40, height: 40, borderRadius: 10, objectFit: "cover", flex: "0 0 auto" } }),
             h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 14, fontWeight: 700 } }, c.nom),
             h("span", { style: { marginLeft: "auto", fontSize: 11, color: "#7FA3AD", fontWeight: 800 } }, "Examiner"));
         }) : h("div", { style: { fontSize: 12.5, color: "#9AA5AC" } }, "Aucun cheval trouvé sur ce compte.")) : null,
@@ -23072,6 +23072,30 @@ const CELEB_M = HYPE_IMGS["k1"];
 const LOGO_DATA = HYPE_IMGS["k2"];
 const REVISE_PHOTO = HYPE_IMGS["k3"];
 const CHEVAL_DEFAUT = "images/mes-chevaux-fond-couchant.webp";   /* 12/10 (1063) Blandine : « utilise la photo de Mes chevaux pour les chevaux qui n ont pas de couverture » (avant : HYPE_IMGS["k4"], images/k4.jpg, toujours dans le dossier) */
+/* 02/11 (Blandine : « pour les photos de cheval par défaut utilise ces photos-là dans les pages cheval », choix A « selon la robe », « et par défaut alternance ») :
+   un cheval sans photo reçoit le portrait de SA robe (noir/bai brun, bai, isabelle/palomino, alezan, gris, blanc/gris très clair) ;
+   robe inconnue -> une des 6 en alternance, toujours la même pour le même cheval (calculée sur son id, sinon son nom).
+   CHEVAL_DEFAUT (fond couchant) reste pour ce qui n'est pas un cheval précis (club sans bannière, démo). */
+var CHEVAUX_DEFAUT_ROBES = ["images/portrait-defaut-noir.webp", "images/portrait-defaut-bai.webp", "images/portrait-defaut-isabelle.webp", "images/portrait-defaut-alezan.webp", "images/portrait-defaut-gris.webp", "images/portrait-defaut-blanc.webp"];
+function chevalDefaut(c, robeConnue) {
+  try {
+    var o = (c && c.origines) || null;
+    if (typeof o === "string") { try { o = JSON.parse(o); } catch (eJ) { o = null; } }
+    var r = String(robeConnue || (c && c.robe) || (o && o.robe) || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    var L = CHEVAUX_DEFAUT_ROBES;
+    if (r) {
+      if (/noir|bai[ -]?brun|bai[ -]?fonce/.test(r)) return L[0];
+      if (/alezan/.test(r)) return L[3];
+      if (/isabelle|palomino|cremello/.test(r)) return L[2];
+      if (/blanc|gris[ -]?(tres[ -]?)?clair/.test(r)) return L[5];
+      if (/gris/.test(r)) return L[4];
+      if (/bai/.test(r)) return L[1];
+    }
+    var k = String((c && (c.id || c.nom)) || ""), hsh = 0;
+    for (var i = 0; i < k.length; i++) hsh = (hsh * 31 + k.charCodeAt(i)) >>> 0;
+    return k ? L[hsh % L.length] : CHEVAL_DEFAUT;
+  } catch (e) { return CHEVAL_DEFAUT; }
+}
 const GALOP2_PHOTO = HYPE_IMGS["k5"];
 const GALOP3_PHOTO = HYPE_IMGS["k6"];
 const GALOP4_PHOTO = HYPE_IMGS["k7"];
@@ -24595,7 +24619,7 @@ function EcranChevalCommun() {
         /* — 1 · HERO (structure v2 conservee) — */
         H("div", { className: "hycc-hero" },
             (function () { /* 25/08 : PAR DEFAUT, la tete du cheval concerne en haut — photo de fiche d'abord, sinon 1re photo publique du mur, sinon portrait Hype ; le hero n'est plus jamais noir (demande Blandine) */
-                var pH = ch.photo_url || ((st.photos && st.photos[0] && st.photos[0].u) || "") || ((typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || "");
+                var pH = ch.photo_url || ((st.photos && st.photos[0] && st.photos[0].u) || "") || chevalDefaut(ch);
                 return pH ? [H("img", { key: "hp", className: "hycc-hphoto", src: pH, alt: ch.nom || "" }), H("div", { key: "hg", className: "hycc-hgrad" })] : null;
             })(),
             H("div", { className: "hycc-hfade" }),
@@ -35389,7 +35413,7 @@ function ChevauxDeplacementEV(props) {
     var on = !!sel[c.id];
     return h("button", { key: "dc" + c.id, type: "button", onClick: function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); },
       style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 48, padding: "6px 12px", marginBottom: 6, borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.10)" : "rgba(6,7,9,0.35)", color: IV, fontFamily: M } },
-      h("span", { style: { flex: "0 0 36px", width: 36, height: 36, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: c.photo_url || CHEVAL_DEFAUT, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center" : "65% 28%", display: "block" } })),   /* (1063) */
+      h("span", { style: { flex: "0 0 36px", width: 36, height: 36, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: c.photo_url || chevalDefaut(c), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center" : "65% 28%", display: "block" } })),   /* (1063) */
       h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
       h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), background: on ? CH : "transparent", color: "#060709", fontSize: 14, lineHeight: "22px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""));
   }
@@ -55731,7 +55755,7 @@ async function hypeEnregistrerCapturePalmares(ctx) {
   }
 
 function hypePortailBody(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP) { } return el; }   /* 18/10 : feuilles du bas sorties du panneau (elles s affichaient trop bas, sous la barre du bas) */
-const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=3", "HypeCheval", "Cheval");
+const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=4", "HypeCheval", "Cheval");
 
 
 /* ==================== (735) FICHE CHEVAL V2 — EcranChevalV2 ====================
@@ -56335,7 +56359,7 @@ function EcranChevalV3() {
   var annee = (function () { var m = String(og.naissance || "").match(/^(\d{4})(-|$)/); return m ? m[1] : ""; })();
   var sousTitre = [String(ligne.race || "").trim(), SEXES[String(og.sexe || "").toLowerCase().trim()] || "", annee].filter(Boolean).join("  ·  ");
   var phLoc = (function () { try { return localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (eL) { return ""; } })();
-  var photoBrute = phLoc || ligne.photo_url || secours.photo || (typeof CHEVAL_DEFAUT !== "undefined" ? CHEVAL_DEFAUT : "");
+  var photoBrute = phLoc || ligne.photo_url || secours.photo || chevalDefaut(ligne, og && og.robe);
   var photo = (typeof grandeImageHype === "function" && photoBrute) ? grandeImageHype(photoBrute, 1600) : photoBrute;
   function retour() { if (ctx && ctx.peutReculer && typeof ctx.retourEcran === "function") ctx.retourEcran(); else setEcran("moncavalier"); }
   function rien() { }   /* maquette : rien n est branche */
@@ -56787,7 +56811,7 @@ function CreationPiquetEH(props) {
           var on = !!sel[c.id];
           return h("button", { key: "c" + c.id, type: "button", onClick: function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); },
             style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "6px 12px", borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.10)" : "rgba(6,7,9,0.35)", color: IV, fontFamily: M } },
-            h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: c.photo_url || CHEVAL_DEFAUT, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center" : "65% 28%", display: "block" } })),   /* (1063) */
+            h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: c.photo_url || chevalDefaut(c), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center" : "65% 28%", display: "block" } })),   /* (1063) */
             h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
             h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), background: on ? CH : "transparent", color: "#060709", fontSize: 14, lineHeight: "22px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""));
         }) : h("div", { style: { fontSize: 13, color: IV2, fontStyle: "italic" } }, T("Aucun cheval sur cette page pour l'instant.", "No horses on this page yet.", "Aún no hay caballos en esta página.", "Ancora nessun cavallo in questa pagina.", "このページにはまだ馬がいません。", "Noch keine Pferde auf dieser Seite.", "لا توجد خيول في هذه الصفحة بعد.", "这个页面上暂时还没有马。", "Er staan nog geen paarden op deze pagina.", "Ainda não há cavalos nesta página.", "Inga hästar på den här sidan ännu.", "Пока на этой странице нет ни одной лошади.", "Na razie nie ma tu żadnego konia.", "아직 이 페이지에 말이 없어요."))),
@@ -56908,7 +56932,7 @@ function GestionPiquetEH(props) {
       h("div", { style: { marginTop: 12, display: "flex", flexDirection: "column", gap: 6 } },
         chevaux.map(function (c) {
           var on = !!sel[c.id];
-          return ligneChoix("g" + c.id, on, c.photo_url || CHEVAL_DEFAUT, c.photo_url ? "center" : "65% 28%", false, c.nom || "?", function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); });   /* (1063) */
+          return ligneChoix("g" + c.id, on, c.photo_url || chevalDefaut(c), c.photo_url ? "center" : "65% 28%", false, c.nom || "?", function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); });   /* (1063) */
         })),
       err ? h("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null,
       h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
@@ -57089,7 +57113,7 @@ function EcranMesChevaux() {
   };
   /* photo a droite (a gauche en arabe), fondue dans le noir ; sans photo : image sombre neutre */
   function photoFondue(c, hauteurPhoto, largeurPct) {
-    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 520, 300) : c.photo_url) : CHEVAL_DEFAUT;   /* (1063) photo par defaut de Mes chevaux */
+    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 520, 300) : c.photo_url) : chevalDefaut(c);   /* (1063) photo par defaut de Mes chevaux */
     return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: largeurPct || "64%" } },
       h("img", { src: src, alt: "", loading: "lazy", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center 30%" : "65% 28%", display: "block", opacity: c.photo_url ? 0.95 : 0.8 } }),
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", " + FD + " 0%, rgba(7,11,14,0.86) 22%, rgba(7,11,14,0.35) 58%, rgba(7,11,14,0.15) 100%)" } }));
@@ -57109,7 +57133,7 @@ function EcranMesChevaux() {
   /* un seul cheval : grande carte couverture */
   function couverture(c) {
     var lien = !!c.__lien, info = infoDe(c);
-    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 800, 500) : c.photo_url) : CHEVAL_DEFAUT;   /* (1063) photo par defaut de Mes chevaux */
+    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 800, 500) : c.photo_url) : chevalDefaut(c);   /* (1063) photo par defaut de Mes chevaux */
     return h("button", { type: "button", onClick: function () { ouvrir(c.id); }, style: { position: "relative", display: "block", width: "100%", height: tablette ? 300 : 240, padding: 0, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,0.35)", background: FD, cursor: "pointer", textAlign: "start" } },
       h("img", { src: src, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center 30%" : "65% 28%", opacity: c.photo_url ? 1 : 0.85 } }),
       h("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(5,8,11,0.95) 0%, rgba(5,8,11,0.55) 45%, rgba(5,8,11,0.05) 100%)" } }),
@@ -57224,7 +57248,7 @@ function EcranMesChevaux() {
       : h("div", { style: { display: "flex", flexDirection: "column", gap: 8, maxHeight: 340, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
           chevEcVisibles.map(function (c) {
             var et = etatsAjout[c.id];
-            var srcV = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 120, 120) : c.photo_url) : CHEVAL_DEFAUT;
+            var srcV = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 120, 120) : c.photo_url) : chevalDefaut(c);
             var sousV = [c.race, c.__prop].filter(function (x) { return x && String(x).trim(); }).join(" · ");
             return h("div", { key: "pe" + c.id, style: { display: "flex", alignItems: "center", gap: 12, minHeight: 58, padding: "6px 8px 6px 6px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.18)", background: "rgba(5,8,11,0.45)" } },
               h("button", { type: "button", onClick: function () { ouvrir(c.id); }, style: { display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0, padding: 0, border: "none", background: "transparent", cursor: "pointer", textAlign: "start", color: IV } },

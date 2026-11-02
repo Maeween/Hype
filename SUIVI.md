@@ -16502,3 +16502,12 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Santé (question de Blandine 16h14) : vérifié, rien à changer — un abonné Premium qui a créé la fiche de son cheval peut déjà remplir la santé et charger des documents (base : hype_peut_remplir_sante = créateur de la fiche + Premium, ou modératrice ; appli : même règle). Les cavalières seulement rattachées au cheval restent en lecture : à décider par Blandine si elle veut l'ouvrir.
 - Vérifié : 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-1620), SUIVI.md, images/cheval-golden-des-brouets-provisoire.webp, images/galop7-tmp-*.webp.
+
+## 02/11/2026 16h30 — PUBLICATION (accord de Blandine 16h25 « Publié ») : PHOTOS DE CHEVAL PAR DÉFAUT selon la robe
+- Demande de Blandine (16h07) : « Pour les photos de cheval par défaut utilise ces photos-là dans les pages cheval » ; choix A « selon la robe » (16h12) ; « et par défaut alternance ».
+- 6 portraits fournis par Blandine → images/portrait-defaut-{noir,bai,isabelle,alezan,gris,blanc}.webp (1400 px, 60 à 95 Ko). L'ancienne images/cheval-defaut-alezan.webp n'est PAS touchée (elle sert aussi aux cours des robes et au Mag).
+- index.html : nouvelle fonction chevalDefaut(cheval, robe) juste sous CHEVAL_DEFAUT. Robe lue dans robe ou origines.robe : noir / bai brun / bai foncé → noir ; alezan → alezan ; isabelle / palomino / cremello → isabelle ; blanc / gris (très) clair → blanc ; gris → gris ; bai → bai. Robe inconnue → un des 6 en alternance, toujours le même pour le même cheval (calcul sur son id, sinon son nom).
+- Branché partout où un cheval précis n'a pas de photo : listes et vignettes (Mes chevaux, choix de chevaux, cartes), haut de la page commune du cheval, fiche cheval (lecture des origines), et haut de la nouvelle page Cheval (hype-ecran-cheval.js, ?v=3 → ?v=4).
+- INCHANGÉ : CHEVAL_DEFAUT (fond couchant) reste pour ce qui n'est pas un cheval précis (club sans bannière, démo, encart sans cheval) ; la page Actualité du cheval garde l'alezan au couchant (secours inchangé).
+- En base (lecture 02/11) : 7 chevaux sans photo, robe non renseignée pour les 7 → ils auront l'alternance.
+- Vérifié : 17 blocs JS d'index.html + hype-ecran-cheval.js passent node --check ; test de la fonction sur 10 cas (Bai foncé → noir, Alezan Brule → alezan, Gris très clair → blanc, etc.). Captures dans l'appli : non faites (aperçu local bloqué par le réseau de la session).
