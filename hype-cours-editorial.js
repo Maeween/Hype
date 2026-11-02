@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 54;   /* 02/11 15h : Galop 4 — lexique et savais-tu sur la page à part « Révise en 2 minutes » (photo en haut), comme aux Galops 1 à 3 */
+var VERSION = 55;   /* 02/11 15h25 : TOUTES les photos du haut descendues sous la barre retour / drapeau sur téléphone ; 14h45 : g1-c18 (HERO_COURS 4e valeur) */
+/* précédente : VERSION = 54;   /* 02/11 15h : Galop 4 — lexique et savais-tu sur la page à part « Révise en 2 minutes » (photo en haut), comme aux Galops 1 à 3 */
 /* précédente : VERSION = 53; */   /* 02/11 14h55 : photo des sabots (g1-c20, chapitre « Un organisme en action ») cadrée en bas sur ordinateur — choix « D » de Blandine */
 /* précédente : VERSION = 52; */   /* 02/11 10h40 (Blandine : « fais pareil sur les autres galops ») : idem pour les Galops 1 et 2 (g1-c4, g1-c5, g1-c9, g2-aides, g2-depart, g2-c3, g2-c6, g2-anatomie, g2-familles) ; 16 photos de Blandine (portrait-cheval-1 à 16) */
 /* précédente : VERSION = 51; */   /* 02/11 10h25 (Blandine) : Galop 3 — photos de manège des chapitres remplacées, en alternance, par 10 photos de Blandine (8 portraits sur fond noir + 2 photos montées, images/portrait-cheval-1 à 10.webp), en attendant les bonnes photos */
@@ -154,6 +155,9 @@ var CSS = [
 /* 01/11 16h (Blandine : « descends les hero beaucoup plus […] ça coupe en haut en bas et ça s'écrase avec les titres ») : photo beaucoup plus haute, titre sous la photo */
 ".hce-hero .ph{position:relative;height:calc(min(var(--hr,72vw),520px) + env(safe-area-inset-top, 0px));background:#070A08 center 30%/cover no-repeat;background-position:var(--pos-tel,center 30%);filter:saturate(.82)}",
 ".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}",
+/* 02/11 14h45 : photo du haut DESCENDUE sur téléphone (HERO_COURS, 4e valeur en px) — la photo garde toute sa largeur, posée en bas, et la bande du haut reste sombre sous la barre retour / drapeau */
+".hce-hero .ph.decal{height:calc(min(66.7vw,520px) + var(--decal-tel,0px) + env(safe-area-inset-top, 0px));background-size:100% auto;background-position:center bottom}",
+".hce-hero .ph.decal:after{background:linear-gradient(180deg,#070A08 0%,#070A08 calc(var(--decal-tel,0px) + env(safe-area-inset-top, 0px)),rgba(7,10,8,0) calc(var(--decal-tel,0px) + env(safe-area-inset-top, 0px) + 46px),rgba(7,10,8,0) 78%,#070A08 100%)}",
 ".hce-bar{position:absolute;top:calc(14px + env(safe-area-inset-top, 0px));inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
 ".hce-back{width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
 ".hce-crumb{display:none;align-items:center;gap:10px;font-size:14px;color:var(--ivoire)}.hce-crumb i{font-style:normal;color:var(--doux)}",
@@ -589,7 +593,7 @@ var CSS = [
 "}",
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
-".hce-hero .ph{height:600px;background-position:var(--pos,center 30%)}.hce-hero .txt{padding:0 32px;margin-top:-10px}.hce-hero h1{font-size:52px}",
+".hce-hero .ph,.hce-hero .ph.decal{height:600px;background-size:cover;background-position:var(--pos,center 30%)}.hce-hero .ph.decal:after{background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}.hce-hero .txt{padding:0 32px;margin-top:-10px}.hce-hero h1{font-size:52px}",
 ".hce-bar{inset-inline:28px;top:calc(20px + env(safe-area-inset-top, 0px))}.hce-crumb{display:inline-flex}",
 ".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}.hce-enc.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.hce-enc.n1{grid-template-columns:minmax(0,1fr)}",
 ".hce-card{flex:none;min-height:150px}.hce-card h3{max-width:none}.hce-card p{max-width:78%}",
@@ -627,9 +631,9 @@ var CSS = [
 "@container hce (min-width:1040px){",
 ".hce-top{grid-template-columns:minmax(0,1fr) 340px;min-height:430px}",
 ".hce-hero{padding:0;display:flex;align-items:flex-end;min-height:600px;grid-column:1/-1;grid-row:1}",
-".hce-hero .ph{position:absolute;inset:0;inset-inline-end:340px;height:auto;background-position:var(--pos,70% 30%)}",
+".hce-hero .ph,.hce-hero .ph.decal{position:absolute;inset:0;inset-inline-end:340px;height:auto;background-size:cover;background-position:var(--pos,70% 30%)}",
 ".hce-hero:before{content:'';position:absolute;inset:0;inset-inline-start:auto;width:340px;background:#070A08}",
-".hce-hero .ph:after{background:linear-gradient(270deg,rgba(7,10,8,0) 66%,#070A08 100%),linear-gradient(90deg,#070A08 0%,rgba(7,10,8,.92) 26%,rgba(7,10,8,.35) 52%,rgba(7,10,8,.08) 72%),linear-gradient(180deg,rgba(7,10,8,.35) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
+".hce-hero .ph:after,.hce-hero .ph.decal:after{background:linear-gradient(270deg,rgba(7,10,8,0) 66%,#070A08 100%),linear-gradient(90deg,#070A08 0%,rgba(7,10,8,.92) 26%,rgba(7,10,8,.35) 52%,rgba(7,10,8,.08) 72%),linear-gradient(180deg,rgba(7,10,8,.35) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
 "[dir=rtl] .hce-hero .ph:after{background:linear-gradient(90deg,rgba(7,10,8,0) 66%,#070A08 100%),linear-gradient(270deg,#070A08 0%,rgba(7,10,8,.92) 26%,rgba(7,10,8,.35) 52%,rgba(7,10,8,.08) 72%),linear-gradient(180deg,rgba(7,10,8,.35) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 72%,#070A08 100%)}",
 "[dir=rtl] .hce-hero .ph{transform:scaleX(-1)}",
 ".hce-hero .txt{margin:0;padding:0 40px 54px;max-width:640px}",
@@ -1565,7 +1569,7 @@ function HeroPhoto(p) {
     return function () { ok = false; };
   }, [p.img]);
   var hr = ratio ? Math.max(72, Math.min(110, 100 / ratio)) : 72;
-  return h("div", { className: "ph", style: Object.assign({ "--hr": hr.toFixed(1) + "vw" }, p.style) });
+  return h("div", { className: "ph" + (p.decal ? " decal" : ""), style: Object.assign({ "--hr": hr.toFixed(1) + "vw" }, p.decal ? { "--decal-tel": p.decal + "px" } : {}, p.style) });
 }
 function Vague(p) {   /* 01/11 19h30 (Blandine : « reproduis exactement ces couleurs, ces alternances et cette vague ») : la vague du cours des robes */
   return h("svg", { className: "hce-vague", viewBox: "0 0 1000 26", preserveAspectRatio: "none", "aria-hidden": true, style: { background: p.de } },
@@ -1897,7 +1901,7 @@ function HypeCoursEditorial(props) {
     /* HAUT DE PAGE + 3 ENCARTS */
     h("div", { className: "hce-top" },
       h("header", { className: "hce-hero" },
-        h(HeroPhoto, { img: hero.img, style: Object.assign({ backgroundImage: "url(" + hero.img + ")" }, hero.pos ? { "--pos": hero.pos } : {}, (hero.posTel || hero.pos) ? { "--pos-tel": hero.posTel || hero.pos } : {}) }),
+        h(HeroPhoto, { img: hero.img, decal: hero.decalTel || 0, style: Object.assign({ backgroundImage: "url(" + hero.img + ")" }, hero.pos ? { "--pos": hero.pos } : {}, (hero.posTel || hero.pos) ? { "--pos-tel": hero.posTel || hero.pos } : {}) }),
         h("div", { className: "hce-bar" },
           h("button", { type: "button", className: "hce-back", "aria-label": L("retour"), onClick: props.onRetour }, fleche(!rtl, 18)),
           h("nav", { className: "hce-crumb", "aria-label": "Fil d'Ariane" }, h("span", null, hero.galop), h("i", { "aria-hidden": true }, rtl ? "‹" : "›"), h("span", null, hero.titre)),
@@ -3283,7 +3287,7 @@ var HERO_COURS = {
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%", "25% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "75% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
   "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%", "75% 40%"],
-  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%"],   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%", 64],   /* 02/11 14h45 (Blandine : la photo est prise dans le drapeau) : 4e valeur = sur téléphone, photo entière descendue de 64 px sous la barre (retour / drapeau) */   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
   "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%", "50% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */,
   /* 01/11 21h (Blandine : « remplace tous les hero aux anciennes couleurs par celles-ci en alternant ») : ses 12 photos de chevaux sur fond noir */
   "g1-c4": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
@@ -3363,7 +3367,7 @@ function enregistrerAuto(id) {
     var cv = A.couv;
     return {
       auto: true,
-      hero: { img: (HERO_COURS[cours.id] && HERO_COURS[cours.id][0]) || (cv && r(cv.src)) || A.chapitres[0].img, pos: (HERO_COURS[cours.id] && HERO_COURS[cours.id][1]) || (cv && cv.couv && cv.couv.pos) || "50% 40%", posTel: (HERO_COURS[cours.id] && HERO_COURS[cours.id][2]) || null, titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
+      hero: { img: (HERO_COURS[cours.id] && HERO_COURS[cours.id][0]) || (cv && r(cv.src)) || A.chapitres[0].img, pos: (HERO_COURS[cours.id] && HERO_COURS[cours.id][1]) || (cv && cv.couv && cv.couv.pos) || "50% 40%", posTel: (HERO_COURS[cours.id] && HERO_COURS[cours.id][2]) || null, decalTel: (HERO_COURS[cours.id] && HERO_COURS[cours.id][3]) || 0, titre: r(cours.titre), galop: galopLab, duree: r(cours.duree), type: r(cours.type) },
       encarts: {
         coach: A.coach ? { titre: A.coach.titre || L("coach"), texte: A.coach.texte, img: IM.coach, pos: "60% 25%" } : null,
         hb: { texte: L("hbSous"), img: IM.hb, pos: "50% 25%" },
