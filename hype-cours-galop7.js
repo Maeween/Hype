@@ -411,7 +411,7 @@ var COURS = [
         "Détente d'abord, sans enrênement ou avec un enrênement très lâche : quelques minutes au pas, puis au trot et au galop, sur les deux mains.",
         "Arrête le cheval sur le cercle et va vers lui pour accrocher l'enrênement. Règle-le d'abord long ; on ne le raccourcit que petit à petit, d'une séance à l'autre, selon les consignes de ton enseignant.",
         "Remets ton cheval franchement en avant, avec ta voix et ta chambrière, et demande des transitions pour entretenir son activité.",
-        "Change de main régulièrement. La séance reste courte : 20 à 30 minutes au maximum, détente comprise, avec des pauses au pas.",
+        "Change de main régulièrement. La séance reste courte : 30 à 40 minutes au maximum, détente comprise, avec des pauses au pas.",
         "Pour finir, décroche l'enrênement et laisse le cheval marcher, encolure étendue, pour récupérer."
       ]),
       E("👨‍🏫", "Le conseil du coach", "Regarde ton cheval, pas l'enrênement. Si son chanfrein passe derrière la verticale, s'il ralentit, s'enroule ou se défend, l'enrênement est trop court ou ton cheval manque d'activité. Arrête-le, rallonge l'enrênement et demande l'avis de ton enseignant.")
