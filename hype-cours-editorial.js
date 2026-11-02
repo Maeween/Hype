@@ -3026,8 +3026,8 @@ function construireAuto(cours, lg) {
     if (s === "suite" && derniere) { derniere.suite.push(seg.x); return; }
     /* 02/11 (Blandine : « un petit Le savais-tu sous le lexique à chaque fois », pas de doublon) : le « Le savais-tu ? » d'origine du cours
        quitte son chapitre et s'affiche sur la page « Révise en 2 minutes » (rien n'est perdu, il n'apparaît qu'une fois) */
-    if (seg.f.k === "encadre" && /savais/i.test(String(seg.f.titre || ""))) { var sv = { seg: seg.x, suite: [] }; savaisCours.push(sv); derniere = sv; return; }
     var o = { seg: seg.x, fr: seg.f, suite: [] };
+    if (seg.f.k === "encadre" && /savais/i.test(String(seg.f.titre || ""))) { o.savaisDeplace = true; savaisCours.push(o); }   /* retiré du chapitre après le découpage en chapitres (les comptes du découpage l'incluent) */
     if (s === "citation") s = "citFin";
     if (s === "objectif") { derniere = o; return; }   /* retiré : doublon (rien ne s'y rattache à l'affichage) */
     if (special[s]) {
@@ -3168,6 +3168,8 @@ function construireAuto(cours, lg) {
       chapitres.forEach(function (c, i) { c.note = notes[i] || null; });
     }
   }
+  chapitres.forEach(function (c) { c.notions = c.notions.filter(function (n) { return !n.savaisDeplace; }); });
+  chapitres = chapitres.filter(function (c) { return c.notions.length; });
   var hb = []; special.hb.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = r(q.texte); if (t) hb.push(t); }); });
   var synth = []; special.synthese.forEach(function (o) { (o.seg.puces || []).forEach(function (q) { var t = ((r(q.gras) ? r(q.gras) + " " : "") + r(q.texte)).trim(); if (t) synth.push(t); }); });
   if (!hb.length && C.hb) hb = C.hb.map(r);
@@ -3440,7 +3442,9 @@ function RevAuto(props) {
     for (var i = 0; i < A.synth.length; i += taille) { var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length]; por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") }); }
   }
   var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
-  var SV = SAVAIS_COURS[cours.id], savL = (A.savais && A.savais.length) ? A.savais : (SV ? [SV[lg] || SV.fr] : []);   /* celui d'origine du cours en priorité */
+  /* 02/11 : « Le savais-tu ? » d'origine remplacé quand il sort du programme (g3-c2 : changements de pied) ou répète une notion déjà vue (g3-c6, g3-c13, g3-c15) */
+  var SAVAIS_REMPLACE = ["g3-c2", "g3-c6", "g3-c13", "g3-c15"];
+  var SV = SAVAIS_COURS[cours.id], savL = (A.savais && A.savais.length && SAVAIS_REMPLACE.indexOf(cours.id) < 0) ? A.savais : (SV ? [SV[lg] || SV.fr] : []);   /* celui d'origine du cours en priorité */
   var S = window.HypeRobesOrdi.shared;
   return h("div", { className: "rbo hce-rev", dir: rtl ? "rtl" : undefined, lang: lg },
     h("style", null, S.CSS), h("style", null, CSS_REV),
