@@ -24,7 +24,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 10;   /* 01/11 21h05 : photos du haut de Blandine (14 cours du Galop 4 + g3-saut) avec leur cadrage */
+var VERSION = 11;   /* 02/11 15h : lexique dépliable et savais-tu retirés du cours, ils sont sur la page « Révise en 2 minutes » */
+/* précédente : VERSION = 10; */   /* 01/11 21h05 : photos du haut de Blandine (14 cours du Galop 4 + g3-saut) avec leur cadrage */
 /* précédente : VERSION = 8; */   /* 01/11 20h : chapitres dans le style du cours des robes (photo d'un côté puis de l'autre, un chapitre sur deux) */
 /* précédente : var VERSION = 7; */   /* 01/11 18h05 : citation du chapitre 01 dans le bandeau sous le haut de page (plus en double) */
 /* v6 : */   /* 01/11 17h (V4) : titres sans redite (incurvation, départ au galop), coach + défi empilés sur téléphone, photo dorée de g4-vitesse */
@@ -252,7 +253,8 @@ function construire(coursT, lg) {
   var lexique = (C && C.gloItems && C.gloItems.length) ? C.gloItems.map(function (g) { return { mot: g[0], def: g[1] }; }) : [];   /* 01/11 : plus un chapitre, un lexique dépliable avant le quiz */
   /* pour aller plus loin : le savais-tu, la science, les vidéos reliées, les ressources qui ont un vrai lien */
   var plus = [];
-  if (C && C.stTexte) plus.push({ titre: titreNet(C.stTitre), texte1: C.stTexte, suite: [] });
+  /* 02/11 (Blandine : « le lexique et le savais-tu sont sur une page à part avec l'image en haut ») : le savais-tu passe sur la page « Révise en 2 minutes » */
+  var savais = (C && C.stTexte) ? [C.stTexte] : [];
   if (C && C.sciTexte) plus.push({ titre: titreNet(C.sciTitre), texte1: C.sciTexte, details: C.sciDetail || [], suite: [] });
   var vids = [];
   try { if (window.HYPE_VIDEO && window.HYPE_VIDEO.parCours) vids = window.HYPE_VIDEO.parCours(cours.id) || []; } catch (e) { vids = []; }
@@ -275,7 +277,7 @@ function construire(coursT, lg) {
   if (couv && couv.couv && r(couv.couv.citation) && chapitres[0]) {
     chapitres[0].note = "« " + String(r(couv.couv.citation)).replace(/^[«"“\s]+|[»"”\s]+$/g, "") + " »" + (r(couv.couv.auteur) ? "  " + r(couv.couv.auteur) : "");
   }
-  return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, fin: fin, lexique: lexique, couv: couv };
+  return { chapitres: chapitres, coach: coach, defi: defi, hb: hb, synth: synth, fin: fin, lexique: lexique, savais: savais, couv: couv };
 }
 
 function txtVid(o, lg) { return (o && (o[lg] || o.en || o.fr)) || ""; }
@@ -322,11 +324,10 @@ IDS.forEach(function (id) {
       } };
     });
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
-      var lex = A.lexique.length ? h("details", { className: "lex4" }, h("summary", null, L4(lg)("lexique") + " · " + A.lexique.length),
-        h("dl", null, A.lexique.map(function (g, j) { return h("div", { key: j }, h("dt", null, g.mot), h("dd", null, g.def)); }))) : null;
-      return h(React.Fragment, null, lex, h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
+      /* 02/11 : plus de lexique dépliable ici — une carte mène à la page « Révise en 2 minutes » (lexique avec la photo en haut + le savais-tu), comme aux Galops 1 à 3 */
+      return X.versRev ? X.versRev(cours.id, lg, x, A) : h("div", { className: "hce-quiz", style: { "--img": "url(" + IM.quiz + ")", marginTop: 0 } },
         h("h3", null, L("secQuiz")), h("p", null, L("quizSous")),
-        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), X.fleche(x.rtl, 15)))));
+        h("div", { className: "hce-btns" }, h("button", { type: "button", className: "hce-btn", onClick: function () { x.versFin(true); } }, L("suiteFin"), X.fleche(x.rtl, 15))));
     } });
     var B = brut(cours);
     var cv = A.couv, heroImg = (cv && r(cv.src)) ? r(cv.src) + "#g4" : A.chapitres[0].img;
@@ -341,7 +342,7 @@ IDS.forEach(function (id) {
         defi: A.defi ? { titre: A.defi.titre, texte: A.defi.haut, img: IM.defi, pos: "50% 35%" } : null
       },
       chapitres: chapitres,
-      revision: { label: L("secQuiz"), sous: L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
+      revision: (X.aRev && X.aRev(id, A)) ? { label: X.LREV(lg).pourReviser, sous: X.LREV(lg).sousMenu, img: IM.quiz, pos: "50% 60%" } : { label: L("secQuiz"), sous: L("sQuiz"), img: IM.quiz, pos: "50% 60%" },
       sections: sections,
       auto_: A
     };

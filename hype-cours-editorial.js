@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 53;   /* 02/11 14h55 : photo des sabots (g1-c20, chapitre « Un organisme en action ») cadrée en bas sur ordinateur — choix « D » de Blandine */
+var VERSION = 54;   /* 02/11 15h : Galop 4 — lexique et savais-tu sur la page à part « Révise en 2 minutes » (photo en haut), comme aux Galops 1 à 3 */
+/* précédente : VERSION = 53; */   /* 02/11 14h55 : photo des sabots (g1-c20, chapitre « Un organisme en action ») cadrée en bas sur ordinateur — choix « D » de Blandine */
 /* précédente : VERSION = 52; */   /* 02/11 10h40 (Blandine : « fais pareil sur les autres galops ») : idem pour les Galops 1 et 2 (g1-c4, g1-c5, g1-c9, g2-aides, g2-depart, g2-c3, g2-c6, g2-anatomie, g2-familles) ; 16 photos de Blandine (portrait-cheval-1 à 16) */
 /* précédente : VERSION = 51; */   /* 02/11 10h25 (Blandine) : Galop 3 — photos de manège des chapitres remplacées, en alternance, par 10 photos de Blandine (8 portraits sur fond noir + 2 photos montées, images/portrait-cheval-1 à 10.webp), en attendant les bonnes photos */
 /* précédente : VERSION = 50; */   /* 02/11 10h17 : g1-c9 chapitre 01 « La position : la base de toutes tes aides » — photo de Blandine (cours-g1-c9-position.webp) à la place de la photo de manège */
@@ -1851,10 +1852,10 @@ function HypeCoursEditorial(props) {
   /* valider = false : on ouvre la page de fin sans compter le cours comme terminé (raccourci « Le défi du cavalier » du haut) */
   var versFin = function (valider) {
     if (!FIN) { if (valider !== false && props.onTerminer) props.onTerminer(); return; }
-    setVue(cfg.auto_ && aRev(cours.id) ? "rev" : "fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
+    setVue(cfg.auto_ && aRev(cours.id, cfg.auto_) ? "rev" : "fin"); setTimeout(haut, 30); if (valider !== false && props.onValider) props.onValider();
   };
   if (vue === "rev" && FIN) return h(RevAuto, Object.assign({}, props, { onRetourCours: function () { setVue("cours"); setTimeout(haut, 60); }, onSuite: function () { setVue("fin"); setTimeout(haut, 30); } }));
-  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue(cfg.auto_ && aRev(cours.id) ? "rev" : "cours"); setTimeout(haut, 60); } }));
+  if (vue === "fin" && FIN) return h(FIN.Fin, Object.assign({}, props, { onRetourCours: function () { setVue(cfg.auto_ && aRev(cours.id, cfg.auto_) ? "rev" : "cours"); setTimeout(haut, 60); } }));
 
   var Selecteur = props.Selecteur, hero = cfg.hero, enc = cfg.encarts, tit = deuxLignes(hero.titre);
   var NOIR = "#070A08", NOIR2 = "#0B1113";
@@ -3418,7 +3419,11 @@ var SAVAIS_COURS = {
 /* un cours sans lexique ni savais-tu (pas encore écrits) va directement à la page de fin */
 /* 02/11 : lexiques d'autres fichiers de cours (Galop 5 : hype-cours-galop5.js) */
 function lexDe(id) { return LEXIQUE_COURS[id] || ((typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {})[id] || null; }
-function aRev(id) { return !!(lexDe(id) || SAVAIS_COURS[id]); }
+function aRev(id, A) { return !!(lexDe(id) || SAVAIS_COURS[id] || (A && ((A.lexique && A.lexique.length) || (A.savais && A.savais.length)))); }   /* A : le contenu du cours (Galop 4 : lexique et savais-tu des compléments) */
+/* titre « Petit lexique » dans la langue, repris des lexiques existants */
+function titreLex(lg) { var t = null; Object.keys(LEXIQUE_COURS).some(function (k) { var o = LEXIQUE_COURS[k][lg]; if (o && o.titre) { t = o.titre; return true; } return false; }); return t || "Petit lexique"; }
+/* carte en bas d'un cours qui mène à « Révise en 2 minutes » (prêtée au Galop 4) */
+function versRev(id, lg, x, A) { var ok = aRev(id, A); return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: ok ? LREV(lg).pourReviser : Lx(lg)("secQuiz"), sous: ok ? LREV(lg).sousMenu : Lx(lg)("sQuiz"), img: lexPhoto(id) || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } })); }
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 /* 02/11 (Blandine : « il manquait la photo de cheval en haut des lexiques ») : la même photo de tête de cheval sur tous les lexiques, sauf photo propre au cours */
 function lexPhoto(id) { return LEX_PHOTO[id] || "images/cours-g1-c20-lexique.webp"; }
@@ -3469,7 +3474,7 @@ function RevAuto(props) {
     var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n);
     for (var i = 0; i < A.synth.length; i += taille) { var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length]; por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") }); }
   }
-  var LX = lexDe(cours.id), lex = LX ? (LX[lg] || LX.fr) : null;
+  var LX = lexDe(cours.id), lex = LX ? (LX[lg] || LX.fr) : ((A.lexique && A.lexique.length) ? { titre: titreLex(lg), mots: A.lexique.map(function (g) { return [g.mot, g.def]; }) } : null);
   /* 02/11 : « Le savais-tu ? » d'origine remplacé quand il sort du programme (g3-c2 : changements de pied) ou répète une notion déjà vue (g3-c6, g3-c13, g3-c15) */
   var SAVAIS_REMPLACE = ["g3-c2", "g3-c6", "g3-c13", "g3-c15"];
   var SV = SAVAIS_COURS[cours.id], savL = (A.savais && A.savais.length && SAVAIS_REMPLACE.indexOf(cours.id) < 0) ? A.savais : (SV ? [SV[lg] || SV.fr] : []);   /* celui d'origine du cours en priorité */
@@ -3635,7 +3640,7 @@ AUTO_IDS.forEach(function (id) { window.HypeFinsCours[id] = { ok: finOk, Fin: Fi
 HypeCoursEditorial.construireAuto = construireAuto;
 /* v10 — 01/11 : outils internes prêtés aux fichiers de configuration d'autres Galops (hype-cours-editorial-g4.js) — rien ne change pour les Galops 1 et 2 */
 HypeCoursEditorial._ = { Chapitre: Chapitre, Affiche: Affiche, fleche: fleche, IM: IM, Lx: Lx, tt: tt, pickLg: pickLg, paras: paras, phrases: phrases,
-  titreNet: titreNet, nettoyerTitre: nettoyerTitre, sansEmojiFin: sansEmojiFin, finOk: finOk, outils: outils };
+  titreNet: titreNet, nettoyerTitre: nettoyerTitre, sansEmojiFin: sansEmojiFin, finOk: finOk, outils: outils, aRev: aRev, versRev: versRev, LREV: LREV };
 
 
 window.HypeCoursEditorial = HypeCoursEditorial;

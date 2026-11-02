@@ -16449,3 +16449,10 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - hype-cours-galop5.js (?v=7) : robes du Galop 5 en espagnol, bande scapulaire « sobre el hombro » (au lieu de « sobre la espalda »).
 - Vérifié (appli locale, 390 px) : 9 cours du Galop 4 ouverts sans erreur ; les nouveaux textes s'affichent et aucune des anciennes erreurs ne reste ; 17 blocs de code valides ; marqueurs de garde inchangés.
 - Laissé tel quel (à décider) : glossaire « Pivot » et l'exemple « le cheval a reculé au lieu de pivoter » dans les encadrés épaules-hanches.
+## 02/11/2026 15h10 — PRÊT, PAS PUBLIÉ (branche g4-revise, attend l'accord de Blandine) : Galop 4, page « Révise en 2 minutes »
+- Demande de Blandine (14h50, capture du « Lexique du cours · 7 ») : « le lexique et le savais tu sont supposés être sur une page à part avec l'image en haut ».
+- Galop 4 (hype-cours-editorial-g4.js VERSION 11, ?v=11) : le lexique dépliable (details.lex4) est retiré du bas du cours ; le « Le savais-tu ? » sort de « Pour aller plus loin ». Les deux passent sur la page à part « Révise en 2 minutes » (photo de tête de cheval en haut, lexique, savais-tu, puis « Hey Baby, défi et quiz »), la même qu'aux Galops 1 à 3. En bas du cours : la carte « Révise en 2 minutes » ; le menu des chapitres pointe aussi dessus.
+- hype-cours-editorial.js VERSION 54 (?v=54) : aRev(id, A) accepte aussi le lexique / savais-tu tirés du cours (A.lexique, A.savais) ; RevAuto les affiche quand le cours n'a pas d'entrée dans LEXIQUE_COURS ; titre « Petit lexique » dans la langue (titreLex) ; versRev, aRev, LREV prêtés au Galop 4 (HypeCoursEditorial._). Galops 1 à 3 inchangés.
+- g4-galop-qualite (ni lexique ni savais-tu) : va directement à la page de fin, comme les autres cours sans lexique.
+- Vérifié (appli locale, 390 px) : g4-incurvation, bas du cours + page Révise, aucune erreur ; 17 blocs valides ; marqueurs de garde identiques à main.
+- Fichiers : hype-cours-editorial.js, hype-cours-editorial-g4.js, index.html (?v= seulement), SUIVI.md.
