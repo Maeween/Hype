@@ -16551,7 +16551,22 @@ Blandine : « plus de place pour les photos dans les onglets, aère plus les ong
 - index.html, pages Galop tablette et ordinateur (.g1o) : même règle (fond #000, onglets semi-transparents ombrés).
 - Vérifié : captures réelles 390 px et 1440 px de la page du Galop 7, aucune erreur ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-1955), SUIVI.md.
-## 02/11/2026 20h00 — PRÊT, PAS PUBLIÉ (branche savais-c) : « Le savais-tu ? » lisible (choix « C » de Blandine, 19h54)
+
+## 02/11/2026 20h40 — PAGES GALOP : nouvelle photo « I Vie équestre » (prêt, NON PUBLIÉ)
+Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au bonnet noir et or, cavalière casquée qui l'embrasse ; photo verticale).
+- Nouveau fichier images/galops-th-vie3.webp : version HORIZONTALE envoyée ensuite par Blandine (1400 × 933, remplace la verticale) ; carte « I Vie équestre » de toutes les pages Galop (GV3) et du Galop 5 (G5_THEMES), cadrage 50 % 40 % (oreilles, casque et selle visibles).
+- L'ancienne photo galop5-th-vie2.webp est gardée : elle sert encore dans des cours (g3-c9, Galop 4).
+
+## 02/11/2026 20h50 — PAGES GALOP : deux propositions pour les cartes (prêt, NON PUBLIÉ, en attente du choix A / B)
+- A (dans le code) : photo de chaque carte entière au format 3/2, fondue vers le bas, titre posé dessous dans une bande de 72 px (ne recouvre plus la photo) — toutes les cartes, téléphone, tablette, ordinateur.
+- B (aperçu seulement, pas dans le code) : photo verticale images/galops-th-vie3v.webp en fond de toute la carte « Vie équestre », cours en onglets noir bleuté semi-transparents. Fichier image ajouté pour pouvoir l'appliquer si Blandine choisit B.
+- 20h50 : Blandine choisit A avec les onglets de B → chaque cours = onglet arrondi noir bleuté semi-transparent (toutes les cartes des pages Galop). Toujours non publié.
+- 20h55 : fondu photo → fond plus progressif et semi-transparent (la photo descend sous le titre et s'efface lentement ; ombre légère sous le titre). Toujours non publié.
+- 20h50 : Blandine choisit la proposition 2 (photo jusqu'à 40 px du bas de la zone, fondu progressif semi-transparent). Toujours non publié.
+- 20h55 : effet « verre dépoli » des onglets (Blandine : « vraiment le côté verre glacé ») — la photo de chaque partie, très floutée et assombrie, passe derrière toute la carte (variable --th-img posée sur chaque carte, GV3 + Galop 5) ; onglets en verre clair très léger, liseré lumineux, flou + saturation. Toujours non publié.
+- 20h56 : Blandine « léger et subtil, que ça ne déborde pas des onglets » → photo floutée derrière la carte retirée ; verre dépoli seulement dans chaque onglet (reflet clair très léger + liseré fin). La variable --th-img reste posée sur les cartes (sans effet). Toujours non publié.
+- 20h58 : Blandine « je veux à gauche ce que je vois à droite » → onglets EXACTEMENT comme B (fond rgba(16,26,29,0.55), liseré champagne, flou), sans reflet blanc. Toujours non publié.
+## 02/11/2026 21h00 — PUBLICATION build 20261102-2100 (accord de Blandine 20h43 « Ok vas y » ; 20h59 « Vas y on changera la photo après ») : « Le savais-tu ? » lisible (choix « C »), part avec la photo « Vie équestre » de l'autre session (commits 9058cfe et 831abbd, prêts non publiés)
 - Page « Révise en 2 minutes » (tous les Galops) : le savais-tu passe d'un petit italique gris à une carte bleu pétrole → noir, petit trait doré, « Le savais-tu ? » en titre Cormorant 26 px ivoire, texte droit en Montserrat 14,5 px (15,5 px sur tablette/ordinateur, largeur de lecture limitée à 620 px), centré.
 - hype-cours-editorial.js VERSION 59 (?v=59). Vérifié en 390 px et 1280 px : aucune erreur, aucun débordement.
 - Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
