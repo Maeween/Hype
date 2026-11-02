@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 57;   /* 02/11 16h : corrections FFE des petits lexiques (garrot ; aides naturelles = 4 ; galop en équilibre ; circulation en manège au lieu de la route) et du défi du saut (mains sur la crinière) */
+var VERSION = 58;   /* 02/11 16h40 : photos provisoires des chapitres des 16 nouveaux cours du Galop 7 (AUTO_IM_G7, non branchés) */
+/* précédente : VERSION = 57; */   /* 02/11 16h : corrections FFE des petits lexiques (garrot ; aides naturelles = 4 ; galop en équilibre ; circulation en manège au lieu de la route) et du défi du saut (mains sur la crinière) */
 /* précédente : VERSION = 56; */   /* 02/11 15h45 : lecteur audio — surtitres « CHAPITRE 01 », « GALOP 1 », durée et numéros marqués « à ne pas lire » (data-nolecture) */
 /* précédente : VERSION = 55; */   /* 02/11 15h25 : TOUTES les photos du haut descendues sous la barre retour / drapeau sur téléphone ; 14h45 : g1-c18 (HERO_COURS 4e valeur) */
 /* précédente : VERSION = 54;   /* 02/11 15h : Galop 4 — lexique et savais-tu sur la page à part « Révise en 2 minutes » (photo en haut), comme aux Galops 1 à 3 */
@@ -2245,6 +2246,26 @@ var AUTO_IM_G5 = {
   "g5-identite": ["images/robes-portrait-aubere.webp", "images/robes-portrait-gris-pommele.webp", "images/robes-portrait-creme.webp", "images/robes-portrait-alezan-brule.webp"]
 };
 Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
+/* 02/11 (16h) : Galop 7, 16 nouveaux cours g7n-01 … g7n-16 (hype-cours-galop7.js, NON BRANCHÉS) — photos des chapitres PROVISOIRES fournies par Blandine (images/galop7-tmp-…) */
+var AUTO_IM_G7 = {
+  "g7n-01": ["images/galop7-tmp-13-noir-rond.webp", "images/galop7-tmp-04-blanc-filet.webp", "images/galop7-tmp-07-cremello-rond.webp", "images/galop7-tmp-16-bai-brun-rond.webp"],
+  "g7n-02": ["images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-09-gris-fonce.webp", "images/galop7-tmp-08-rouan-rond.webp", "images/galop7-tmp-11-gris-pommele-rond.webp"],
+  "g7n-03": ["images/galop7-tmp-10-palomino-rond.webp", "images/galop7-tmp-06-alezan-rond.webp", "images/galop7-tmp-05-gris-rond.webp", "images/galop7-tmp-13-noir-rond.webp"],
+  "g7n-04": ["images/galop7-tmp-11-gris-pommele-rond.webp", "images/galop7-tmp-08-rouan-rond.webp", "images/galop7-tmp-04-blanc-filet.webp", "images/galop7-tmp-19-ecurie-couchant.webp"],
+  "g7n-05": ["images/galop7-tmp-03-bai-aplombs.webp", "images/galop7-tmp-12-bai-portrait.webp", "images/galop7-tmp-15-alezan-portrait.webp", "images/galop7-tmp-14-bai-brun-portrait.webp"],
+  "g7n-06": ["images/galop7-tmp-17-pie-portrait.webp", "images/galop7-tmp-15-alezan-portrait.webp", "images/galop7-tmp-14-bai-brun-portrait.webp", "images/galop7-tmp-12-bai-portrait.webp"],
+  "g7n-07": ["images/galop7-tmp-19-ecurie-couchant.webp", "images/galop7-tmp-12-bai-portrait.webp", "images/galop7-tmp-09-gris-fonce.webp", "images/galop7-tmp-17-pie-portrait.webp"],
+  "g7n-08": ["images/galop7-tmp-14-bai-brun-portrait.webp", "images/galop7-tmp-19-ecurie-couchant.webp", "images/galop7-tmp-15-alezan-portrait.webp", "images/galop7-tmp-07-cremello-rond.webp"],
+  "g7n-09": ["images/galop7-tmp-06-alezan-rond.webp", "images/galop7-tmp-05-gris-rond.webp", "images/galop7-tmp-10-palomino-rond.webp", "images/galop7-tmp-01-gris-galop.webp"],
+  "g7n-10": ["images/galop7-tmp-02-detente-couvre-reins.webp", "images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-08-rouan-rond.webp", "images/galop7-tmp-16-bai-brun-rond.webp"],
+  "g7n-11": ["images/galop7-tmp-09-gris-fonce.webp", "images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-02-detente-couvre-reins.webp", "images/galop7-tmp-05-gris-rond.webp"],
+  "g7n-12": ["images/galop7-tmp-05-gris-rond.webp", "images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-11-gris-pommele-rond.webp", "images/galop7-tmp-02-detente-couvre-reins.webp"],
+  "g7n-13": ["images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-02-detente-couvre-reins.webp", "images/galop7-tmp-09-gris-fonce.webp", "images/galop7-tmp-13-noir-rond.webp"],
+  "g7n-14": ["images/galop7-tmp-18-saut-couchant.webp", "images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-16-bai-brun-rond.webp", "images/galop7-tmp-03-bai-aplombs.webp"],
+  "g7n-15": ["images/galop7-tmp-18-saut-couchant.webp", "images/galop7-tmp-01-gris-galop.webp", "images/galop7-tmp-19-ecurie-couchant.webp", "images/galop7-tmp-12-bai-portrait.webp"],
+  "g7n-16": ["images/galop7-tmp-07-cremello-rond.webp", "images/galop7-tmp-18-saut-couchant.webp", "images/galop7-tmp-02-detente-couvre-reins.webp", "images/galop7-tmp-01-gris-galop.webp"]
+};
+Object.keys(AUTO_IM_G7).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G7[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
