@@ -16551,3 +16551,8 @@ Blandine : « plus de place pour les photos dans les onglets, aère plus les ong
 - index.html, pages Galop tablette et ordinateur (.g1o) : même règle (fond #000, onglets semi-transparents ombrés).
 - Vérifié : captures réelles 390 px et 1440 px de la page du Galop 7, aucune erreur ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-1955), SUIVI.md.
+
+## 02/11/2026 20h40 — PAGES GALOP : nouvelle photo « I Vie équestre » (prêt, NON PUBLIÉ)
+Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au bonnet noir et or, cavalière casquée qui l'embrasse ; photo verticale).
+- Nouveau fichier images/galops-th-vie3.webp (1000 × 1512) ; carte « I Vie équestre » de toutes les pages Galop (GV3) et du Galop 5 (G5_THEMES), cadrage 50 % 36 % (du bonnet au casque).
+- L'ancienne photo galop5-th-vie2.webp est gardée : elle sert encore dans des cours (g3-c9, Galop 4).
