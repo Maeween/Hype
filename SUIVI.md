@@ -16601,3 +16601,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Reprises de dressage = cavalière sur cheval gris au trot, fond sombre doré (images/galops-carte-reprises-gris.webp, cadrage 52 % 45 %). Les 7 cartes ont maintenant les photos de Blandine (sauf Le grand lexique, inchangée).
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2215), SUIVI.md, images/galops-carte-reprises-gris.webp.
+
+## 02/11/2026 22h20 — PUBLICATION build 20261102-2220 (Blandine 22h09) : nouvelle photo de la carte Vidéothèque
+- Page Galops, « Tout pour progresser » : carte Vidéothèque = bai au filet avec un bouton lecture dans la photo (images/galops-carte-videos-lecture.webp, cadrage 50 % 48 %) ; remplace la photo de 21h59. Le bouton lecture étant dans la photo, la petite icône de la carte est retirée pour celle-ci seulement (sansIc), pour ne pas avoir deux boutons lecture.
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2220), SUIVI.md, images/galops-carte-videos-lecture.webp.
