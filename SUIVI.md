@@ -16611,3 +16611,11 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Demande : « retire les petits logos dorés sur chaque onglet, on a déjà les titres ». index.html : l'icône (gv2-carte-ic) n'est plus affichée sur aucune des 7 cartes (téléphone, tablette, ordinateur) ; titres, flèches et badge « Prochainement » inchangés.
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2225), SUIVI.md.
+
+## 02/11/2026 22h35 — PUBLICATION build 20261102-2235 (Blandine 22h14-22h18) : page Galops plus aérée, grand lexique décalé, objectifs officiels affichés d'office
+- « On peut décaler un peu le grand lexique des autres » (22h14) : carte Le grand lexique décalée des 6 cartes (22 px ordinateur/tablette, 30 px téléphone), hauteur gardée.
+- « Trop collé, laisse plus aéré, fais-moi 6 propositions » (22h15) → choix « 1 pour la page des Galops » (22h18) : téléphone, 88 px entre la photo « Une progression à ton rythme » et « Tout pour progresser », 26 px sous l'intro, 18 px entre les cartes (règles préfixées .gv2 pour passer devant la règle téléphone existante).
+- « Laisse les objectifs officiels affichés quand on clique sur un Galop » (22h18) : sur téléphone, le dépliant d'un Galop (courbe) montre « Objectifs officiels » ouvert d'office ; on peut toujours le refermer (état ffe-ferme). Ordinateur inchangé.
+- Bouton « Voir les N cours » : 6 propositions visuelles envoyées à Blandine (vraies captures), rien d'appliqué.
+- Vérifié : 390 px et 1440 px (espacements calculés, dépliant du Galop 1 ouvert avec les objectifs) ; 0 erreur ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2235), SUIVI.md.
