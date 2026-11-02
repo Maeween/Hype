@@ -1118,7 +1118,7 @@ var COURS = [
         "Juste avant le point, place tes aides ; au point, déclenche le galop, net et bref."
       ]),
       S("🦵 Les aides du départ au galop", null, [
-        { gras: "Place ta jambe extérieure, un peu en arrière de la sangle :", texte: "elle garde les hanches légèrement à l'intérieur, indique le pied et engage le postérieur extérieur, qui donne le premier temps du galop." },
+        { gras: "Recule ta jambe extérieure, un peu en arrière de la sangle :", texte: "elle tient les hanches et appelle le postérieur extérieur, qui donne le premier temps du galop." },
         { gras: "Ta main intérieure soutient l'épaule intérieure :", texte: "elle garde un léger pli, sans tirer ni reculer ; le cheval reste droit et ne tombe pas vers l'intérieur." },
         { gras: "Ta main extérieure :", texte: "elle garde le contact et règle l'allure, sans bloquer le départ." },
         { gras: "Puis ferme tes jambes :", texte: "ta jambe intérieure, à la sangle, donne le signal du départ ; ta jambe extérieure reste en place." },
@@ -1155,7 +1155,7 @@ var COURS = [
         "Cession : le cheval avance, se déplace de côté et croise.",
         "Corps presque droit, léger pli opposé au mouvement.",
         "Les épaules un peu devant les hanches.",
-        "Galop : jambe extérieure reculée, épaule intérieure soutenue, jambes qui se ferment.",
+        "Galop : jambe extérieure reculée qui tient les hanches et appelle le postérieur extérieur, épaule intérieure soutenue, jambes qui se ferment.",
         "Préparer, demander net, puis accompagner le galop."
       ]),
       E("", "", "Un pas de côté bien fait, c'est un cheval qui a écouté toutes tes aides à la fois.")
@@ -1180,7 +1180,7 @@ var COURS = [
     Q("Pour une cession vers la droite, quelle jambe pousse ?", ["La jambe droite, à la sangle", "La jambe gauche, un peu en arrière de la sangle", "Les deux jambes, avec la même force", "La jambe droite, un peu en arrière de la sangle"], 1, "C'est la jambe gauche, un peu en arrière de la sangle, qui pousse le cheval vers la droite ; la jambe droite, à la sangle, le garde en avant."),
     Q("À quelle allure fait-on la cession à la jambe au Galop 5 ?", ["Au pas", "Au trot", "Au galop", "À l'arrêt"], 0, "Au Galop 5, la cession à la jambe se réalise au pas, des deux côtés."),
     Q("Quel membre donne le premier temps du galop ?", ["L'antérieur intérieur", "Le postérieur extérieur", "Le postérieur intérieur", "L'antérieur extérieur"], 1, "Le premier temps du galop est donné par le postérieur extérieur."),
-    Q("Au départ au galop, où places-tu ta jambe extérieure ?", ["À la sangle, comme la jambe intérieure", "Un peu en arrière de la sangle, pour indiquer le pied et garder les hanches légèrement à l'intérieur", "Loin en arrière, en donnant un coup de talon", "Décollée du cheval, pour lui laisser de la place"], 1, "La jambe extérieure se place un peu en arrière de la sangle et reste en place : elle indique le pied et garde les hanches légèrement à l'intérieur."),
+    Q("Au départ au galop, où places-tu ta jambe extérieure ?", ["À la sangle, comme la jambe intérieure", "Un peu en arrière de la sangle, pour tenir les hanches et appeler le postérieur extérieur", "Loin en arrière, en donnant un coup de talon", "Décollée du cheval, pour lui laisser de la place"], 1, "La jambe extérieure se recule un peu en arrière de la sangle : elle tient les hanches et appelle le postérieur extérieur, qui donne le premier temps du galop."),
     Q("Comment prépares-tu un départ au galop à une lettre ?", ["Je pousse le trot au maximum pour qu'il tombe au galop", "Allure active et régulière, je place mes aides juste avant la lettre, puis je ferme mes jambes à la lettre", "Je me penche en avant à la lettre pour l'entraîner", "Je donne un petit coup de rênes à la lettre"], 1, "Le départ se prépare : allure active et régulière, cheval équilibré, aides placées juste avant le point (jambe extérieure, main intérieure), puis les jambes se ferment au point demandé."),
     Q("Ton cheval trotte au lieu de partir au galop du pas. Que fais-tu ?", ["Je pousse jusqu'à ce qu'il galope", "Je repasse au pas, je le rééquilibre et je redemande", "Je le laisse trotter et j'attends qu'il galope seul", "Je tire sur les rênes"], 1, "On revient au pas, on réinstalle un pas actif et équilibré, puis on redemande."),
     Q("Pourquoi t'entraîner à partir au galop à la fin d'un cercle ou à la sortie d'un coin ?", ["Parce que ton cheval y est déjà incurvé, ce qui l'aide à partir sur le bon pied", "Parce qu'il y a plus de place", "Parce que c'est le seul endroit autorisé", "Pour qu'il parte plus vite"], 0, "Sur la courbe, ton cheval est déjà incurvé : c'est un bon exercice pour partir sur le bon pied, avant de partir en n'importe quel point demandé.")
