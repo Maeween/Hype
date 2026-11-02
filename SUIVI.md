@@ -16561,3 +16561,4 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - A (dans le code) : photo de chaque carte entière au format 3/2, fondue vers le bas, titre posé dessous dans une bande de 72 px (ne recouvre plus la photo) — toutes les cartes, téléphone, tablette, ordinateur.
 - B (aperçu seulement, pas dans le code) : photo verticale images/galops-th-vie3v.webp en fond de toute la carte « Vie équestre », cours en onglets noir bleuté semi-transparents. Fichier image ajouté pour pouvoir l'appliquer si Blandine choisit B.
 - 20h50 : Blandine choisit A avec les onglets de B → chaque cours = onglet arrondi noir bleuté semi-transparent (toutes les cartes des pages Galop). Toujours non publié.
+- 20h55 : fondu photo → fond plus progressif et semi-transparent (la photo descend sous le titre et s'efface lentement ; ombre légère sous le titre). Toujours non publié.
