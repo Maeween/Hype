@@ -560,7 +560,7 @@ var COURS = [
       ]),
       S("🤖 Demande à Hey Baby", null, [
         "Pourquoi enrouler les bandes de l'avant vers l'arrière ?",
-        "Quelle différence entre une guêtre ouverte et une guêtre fermée ?",
+        "Que faire si mon cheval se gratte ou tire sur sa bande ?",
         "Quand utiliser des bandes de repos plutôt que rien ?",
         "Comment reconnaître une bande trop serrée ?",
         "Comment laver et entretenir mes bandes ?"
@@ -587,7 +587,7 @@ var COURS = [
   ] },
   quiz: [
     Q("Tu as posé une bande de repos sur l'antérieur gauche. Que fais-tu ensuite ?", ["Rien, une seule bande suffit", "Je pose aussi une bande sur l'antérieur droit", "Je bande le postérieur gauche", "Je bande les quatre membres, c'est obligatoire"], 1, "On bande toujours les deux membres d'une même paire : les deux antérieurs, ou les deux postérieurs."),
-    Q("À quoi servent les cloches ?", ["À protéger la couronne et les talons des antérieurs", "À protéger le tendon et le canon des antérieurs", "À protéger l'intérieur du boulet des postérieurs", "À protéger le jarret pendant le transport"], 0, "Les cloches protègent la couronne et les talons des antérieurs, qu'un postérieur peut atteindre."),
+    Q("Tu vois un gonflement au-dessus de la bande de repos. Que fais-tu ?", ["Rien, il partira quand on enlèvera la bande", "Je resserre la bande par-dessus", "J'enlève la bande et je préviens mon enseignant", "Je pose une deuxième bande par-dessus"], 2, "Un gonflement au-dessus ou en dessous de la bande, une bande qui a glissé ou un cheval qui se gratte : tu enlèves la bande et tu préviens ton enseignant."),
     Q("Que place-t-on sous une bande de repos ?", ["Rien, la bande se pose directement sur la peau", "Une sous-bande propre et sans pli", "Une deuxième bande de repos", "Une guêtre"], 1, "La sous-bande répartit la pression et protège le tendon : elle est indispensable."),
     Q("Dans quel sens enroule-t-on la bande ?", ["De l'avant vers l'arrière, par l'intérieur", "De l'avant vers l'arrière, par l'extérieur", "Peu importe le sens, si la tension est égale", "De haut en bas, sans jamais remonter"], 1, "On enroule de l'avant vers l'arrière en passant par l'extérieur, dans le même sens que la sous-bande."),
     Q("Où ferme-t-on la bande ?", ["Sur le tendon", "Sur l'avant du canon", "À l'extérieur du membre", "Sous le boulet"], 2, "La fermeture se place à l'extérieur, jamais sur le tendon ni sur l'os du devant."),
@@ -595,7 +595,7 @@ var COURS = [
     Q("Comment enlève-t-on une bande de repos ?", ["En tirant d'un coup", "En la déroulant d'une main à l'autre, sans tirer", "En la faisant glisser vers le bas sans la dérouler", "En la roulant sur le membre au fur et à mesure"], 1, "On la déroule en la passant d'une main à l'autre, près du membre, sans tirer."),
     Q("Que fais-tu après avoir enlevé une bande ?", ["Je la laisse en tas et je la roulerai plus tard", "Je vérifie le membre puis je roule la bande", "Je remets la même tout de suite sans vérifier", "Je roule la bande, et je regarde le membre seulement s'il boite"], 1, "On vérifie l'absence de chaleur, de gonflement ou de marque, puis on roule la bande correctement."),
     Q("Comment te places-tu pour poser une bande ?", ["À genoux", "Assis par terre", "Accroupi sur tes pieds, prêt à te relever", "Un genou au sol, pour être plus stable"], 2, "Accroupi sur tes pieds, tu peux te relever vite si le cheval bouge. À genoux ou assis, c'est impossible."),
-    Q("Une guêtre ouverte, utilisée à l'obstacle…", ["Couvre tout le canon", "Laisse le devant du canon libre", "Se met sur les postérieurs uniquement", "Protège la couronne"], 1, "Elle protège le tendon mais laisse le devant du canon libre, pour que le cheval sente la barre.")
+    Q("Ta bande de repos est sale ou mouillée. Que fais-tu ?", ["Je la roule et je la range telle quelle", "Je la lave avant de la réutiliser", "Je la repose tout de suite, elle séchera sur le membre", "Je la fais sécher sur le cheval"], 1, "Une bande se range propre et sèche : sale ou mouillée, on la lave avant de la réutiliser.")
   ]
 },
 
@@ -658,10 +658,12 @@ var COURS = [
       ]),
       S("🪢 Les longues rênes", "On utilise deux longes, accrochées au mors ou au caveçon et passées dans les anneaux d'un surfaix. Le meneur se tient derrière et à l'intérieur du cercle.", [
         "Au Galop 5, on travaille au pas sur le cercle, sur un cheval calme et habitué.",
-        "La rêne extérieure passe dans l'anneau du surfaix puis contourne l'arrière-main en haut de la cuisse, sous la pointe de la fesse, bien au-dessus des jarrets : elle encadre le cheval et l'empêche de s'échapper vers l'extérieur. Garde-la ajustée, sans la laisser pendre : elle ne doit jamais descendre vers les jarrets ni passer sous la queue. La rêne intérieure va de l'anneau du surfaix à ta main et donne la direction.",
+        "C'est ton enseignant qui installe les rênes. La rêne intérieure va du mors à ta main en passant par l'anneau du surfaix : elle donne la direction. La rêne extérieure passe aussi par le surfaix, puis contourne l'arrière-main : elle encadre le cheval et l'empêche de s'échapper vers l'extérieur.",
+        "Surveille la rêne extérieure : si elle descend vers les jarrets ou passe sous la queue, arrête ton cheval à la voix et appelle ton enseignant.",
         "Les mains restent douces et suivent le mouvement, comme à cheval.",
         "Garde une distance suffisante pour rester hors de portée d'un coup de pied."
       ]),
+      E("🔭", "Pour aller plus loin", "La rêne extérieure contourne l'arrière-main sous la pointe de la fesse, bien au-dessus des jarrets, et reste ajustée, sans pendre. Installer et régler les longues rênes s'apprend au Galop 6, quand on travaille aussi au trot et qu'on change de main."),
       E("⚠️", "Toujours encadré", "Les longues rênes se découvrent avec ton enseignant, sur un cheval qui connaît l'exercice et dans un endroit clos. Si une rêne s'emmêle, arrête le cheval à la voix avant de la démêler.")
     ]),
 
@@ -1053,9 +1055,8 @@ var COURS = [
     ["Pli", "L'encolure et la nuque tournées du côté de la courbe."],
     ["Jambe intérieure", "La jambe du côté de l'intérieur de la courbe."],
     ["Rêne extérieure", "La rêne du côté de l'extérieur de la courbe."],
-    ["Volte", "Petit cercle, de 10 m de diamètre au plus. Les cercles du Galop 5 sont plus grands."],
-    ["Serpentine", "Boucles (demi-cercles) qui se suivent, reliées par une courte ligne droite ; tu changes de main à chaque passage sur la ligne du milieu."],
-    ["Changement de main", "Passer d'un sens de rotation à l'autre."],
+    ["Cercle", "Courbe régulière ; au Galop 5, 12 m au pas, 15 m au trot, 20 m au galop."],
+    ["Serpentine", "Suite de boucles de même taille ; sur la ligne du milieu, le cheval passe droit, puis change d'incurvation."],
     ["S'échapper", "Le cheval sort de la courbe par l'épaule ou les hanches."]
   ] },
   quiz: [
@@ -1332,7 +1333,7 @@ var COURS = [
         { gras: "Le contre-haut et le contre-bas :", texte: "sur une marche qui monte, reste en équilibre ; sur une marche qui descend, laisse descendre ton cheval en regardant loin devant." },
         { gras: "L'eau :", texte: "entre à une allure calme et contrôlée, au pas ou au trot, cheval droit et en avant." }
       ]),
-      E("🔭", "Pour aller plus loin", "Nommer et reconnaître les principaux obstacles de cross, et sauter leurs différents profils (droits, larges, en montée, en descente, dans l'eau), fait partie du programme du Galop 6. Au Galop 5, l'essentiel est de savoir aborder chacun en équilibre, à une vitesse stable et contrôlée."),
+      E("🔭", "Pour aller plus loin", "Au Galop 6, tu apprendras à reconnaître tous les principaux obstacles de cross et à sauter leurs différents profils. Au Galop 5, l'essentiel est d'aborder ces quelques obstacles simples en équilibre, à une vitesse stable et contrôlée."),
       S("🏁 Le parcours Club 3", "Au Galop 5, le programme fédéral vise un parcours de cross de niveau Club 3, à 60 cm.", [
         "Comme en CSO : drapeau rouge à droite, drapeau blanc à gauche.",
         "Le parcours se reconnaît à pied, en regardant les abords et les réceptions."
