@@ -23,7 +23,8 @@
 if (typeof window === "undefined" || typeof React === "undefined" || !window.HypeRobesOrdi || !window.HypeRobesOrdi.shared) return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect;
-var VERSION = 21;   /* 01/11 22h40 : types de morceaux traduits par erreur (nl, sv, pl) reconnus */
+var VERSION = 22;   /* 02/11 : g3-c7 — les doublons « Les marques blanches » sont retirés du cours (hype-cours-galop3.js v17) : contrôle de structure et indices des morceaux mis à jour */
+/* précédente : VERSION = 21; */   /* 01/11 22h40 : types de morceaux traduits par erreur (nl, sv, pl) reconnus */
 /* précédente : VERSION = 20; */   /* 01/11 22h : g3-c7 — atlas interactif du cheval après la photo des parties du corps */
 /* précédente : VERSION = 19; */   /* 31/10 19h15 : seulement les Galops précédents */
 /* précédente : VERSION = 18; */   /* 31/10 14h55 : portraits sur fond noir de Blandine (pie, crème, alezan brûlé, palomino, aubère, pommelé) */
@@ -166,7 +167,7 @@ function okG3(cours) {
   try {
     if (!cours || cours.id !== "g3-c7" || !cours.blocs || cours.blocs.length !== 4 || !quizOk(cours.quiz, 12) || !quizOk(cours.quizBonus, 2)) return false;
     return kinds(cours, 1) === "para,encadre,section,section,para"
-      && kinds(cours, 2) === "section,section,section,para,para,encadre,section,section,section,section,section,section,section,section,section"
+      && kinds(cours, 2) === "section,para,encadre,section,section,section,section,section,section,section,section,section"
       && kinds(cours, 3) === "encadre,section,encadre,encadre,section,section,section,encadre";
   } catch (e) { return false; }
 }
@@ -327,7 +328,7 @@ function HypeRobesGalopsOrdi(props) {
       { id: "s5", lab: L("vPratique"), img: P.bai, pos: "70% 40%" },
       { id: "s6", lab: L("vQuiz"), img: P.quiz, pos: "center" }
     ];
-    var decl = mm[7], isab = mm[8], sour = mm[9], brul = mm[10], cafe = mm[11], palo = mm[12], pang = mm[13], nuan = mm[14];
+    var decl = mm[4], isab = mm[5], sour = mm[6], brul = mm[7], cafe = mm[8], palo = mm[9], pang = mm[10], nuan = mm[11];   /* 02/11 : 3 morceaux retirés du cours (doublons des marques blanches) : indices décalés de 3 */
     corps = [
       /* 01 COMPRENDRE : a[0..4] */
       Sec("s1", "", d.blocs[1].titre, "noir", h("div", null,
@@ -340,21 +341,21 @@ function HypeRobesGalopsOrdi(props) {
         window.HypeAtlas ? h("div", { style: { marginTop: 64 } }, h(window.HypeAtlas.Module, { lg: lg, niveau: 3, vue: "corps3" })) : null,
         h("div", { className: "rbo-grid2 rbo-txt", style: { marginTop: 48 } }, M(a[3], "a3"), M(a[4], "a4")))),
       Vague(NOIR, PET),
-      /* 02 MARQUES ET ÉPIS : m[0..6] */
+      /* 02 MARQUES ET ÉPIS : m[0..3] (02/11 : avant m[0..6]) */
       Sec("s2", "01", nettoyer(sansNum(mm[0].titre)), "noir2", h("div", null,
         h("div", { className: "rbo-grid2" },
-          h("div", { className: "rbo-txt" }, mm[0].sous ? h("p", null, mm[0].sous) : null, h("ul", null, mm[0].puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); }))),   /* 31/10 : sans le titre répété ; mm[1] (même titre, même idée) retiré */
+          h("div", { className: "rbo-txt" }, mm[0].sous ? h("p", null, mm[0].sous) : null, h("ul", null, mm[0].puces.map(function (p, i) { return h("li", { key: i }, p.gras ? h("strong", null, p.gras + " ") : null, p.texte); }))),   /* 31/10 : sans le titre répété ; 02/11 : l'ancien mm[1] (même titre, même idée) est retiré du cours lui-même */
           Photo("g3tete", "grand", "62% 38%")),
         h("div", { className: "rbo-duo" },
           h("div", { className: "rbo-txt" }, Photo("g3balzane", "", "50% 80%")),
-          h("div", { className: "rbo-txt" }, M(mm[4], "m4"), M(mm[5], "m5"))),   /* 31/10 : mm[2] et mm[3] retirés — redisent la liste au-dessus */
+          h("div", { className: "rbo-txt" }, M(mm[1], "m4"), M(mm[2], "m5"))),   /* 31/10 : anciens mm[2] et mm[3] retirés — redisent la liste au-dessus ; 02/11 : retirés du cours lui-même */
       )),
       Vague(PET, NOIR),
-      Sec("s3", "02", nettoyer(sansNum(mm[6].titre)), "noir", h("div", null,
-        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "62% 44%"), h("div", { className: "rbo-txt" }, mm[6].sous ? h("p", null, mm[6].sous) : null,
-          h("ul", null, mm[6].puces.map(function (p, i) { return h("li", { key: i }, p.texte); })))))),
+      Sec("s3", "02", nettoyer(sansNum(mm[3].titre)), "noir", h("div", null,
+        h("div", { className: "rbo-robe" }, Photo("g3epis", "", "62% 44%"), h("div", { className: "rbo-txt" }, mm[3].sous ? h("p", null, mm[3].sous) : null,
+          h("ul", null, mm[3].puces.map(function (p, i) { return h("li", { key: i }, p.texte); })))))),
       Vague(PET, NOIR),
-      /* 03 DÉCLINAISONS : m[7..14] */
+      /* 03 DÉCLINAISONS : m[4..11] (02/11 : avant m[7..14]) */
       Sec("s4", "03", nettoyer(sansNum(decl.titre)), "noir2", h("div", null,
         h("div", { className: "rbo-grid2" }, h("div", { className: "rbo-txt" }, decl.sous ? h("p", null, decl.sous) : null),
           h("div", { className: "rbo-txt rbo-methode" }, h("ul", { className: "rbo-ordre" }, decl.puces.map(function (p, i) { return h("li", { key: i }, h("span", { className: "nn" }, "0" + (i + 1)), h("span", null, h("strong", null, p.gras + " "), p.texte)); })))),
@@ -488,7 +489,7 @@ function HypeRobesGalopsOrdi(props) {
       por(P.g2tachete, a[6].titre, maj(phrase1(a[6].texte)))
     ];
   } else if (!g5) {
-    portraits = [[P.g3isabelle, mm[8], "18% 40%"], [P.g3souris, mm[9], "18% 40%"], [P.g3brule, mm[10]], [P.g3cafe, mm[11]], [P.g3palomino, mm[12]]].map(function (x) { return por(x[0], x[1].titre, maj(phrase1(x[1].texte)), x[2]); });
+    portraits = [[P.g3isabelle, mm[5], "18% 40%"], [P.g3souris, mm[6], "18% 40%"], [P.g3brule, mm[7]], [P.g3cafe, mm[8]], [P.g3palomino, mm[9]]].map(function (x) { return por(x[0], x[1].titre, maj(phrase1(x[1].texte)), x[2]); });
   } else {
     var leo = coupe(a[11].puces[0] && ((a[11].puces[0].gras || "") + (a[11].puces[0].texte || "")), /\s*[:：]\s*/);
     portraits = [[P.g5tobiano, a[5]], [P.g5overo, a[6]], [P.g5tovero, a[7]], [P.g5balzan, a[8]], [P.g5sabino, a[9]]].map(function (x) { return por(x[0], x[1].titre, maj(phrase1(x[1].texte))); })
