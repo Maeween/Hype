@@ -16544,3 +16544,10 @@ Blandine : « plus de place pour les photos dans les onglets, aère plus les ong
 - Accès : le Galop 7 reste « Prochainement » (HYPE_GALOP_PROCHAIN_DES = 6) : les cavalières voient la liste des 16 titres, seules les modératrices ouvrent les cours. À ouvrir à tous (et à traduire) sur décision de Blandine après relecture.
 - Vérifié : syntaxe, 17 blocs de script OK.
 - Fichiers : hype-cours-galop7.js (?v=5), hype-cours-sommaire.js, index.html (build 20261102-1715), SUIVI.md.
+
+## 02/11/2026 19h55 — PUBLICATION build 20261102-1955 (demande de Blandine 19h51) : pages Galop, fond noir profond et onglets semi-transparents ombrés
+- Blandine (capture de la page du Galop 7 sur iPhone) : « Sur ces pages-là je voudrais un vrai fond noir profond et les onglets semi-transparents ombrés ».
+- index.html, pages Galop téléphone (G5_CSS, après le bloc 16h40 de l'autre conversation) : .g5 fond #000 (était #070A08, le dégradé du haut suit) ; barre d'onglets Présentation / Programme / Cours… : fond noir à 38 %, flou 14 px, ombre portée dessous.
+- index.html, pages Galop tablette et ordinateur (.g1o) : même règle (fond #000, onglets semi-transparents ombrés).
+- Vérifié : captures réelles 390 px et 1440 px de la page du Galop 7, aucune erreur ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-1955), SUIVI.md.
