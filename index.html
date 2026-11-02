@@ -59720,10 +59720,9 @@ var G5_CSS = ""
   /* 20h52 (Blandine : « vraiment le côté verre glacé de ces onglets ») : la photo de la partie, très floutée et assombrie, passe derrière toute la carte ;
      les onglets deviennent du verre dépoli (fond clair très léger, liseré lumineux en haut, flou + saturation de ce qui est derrière) */
   + ".g5-th{position:relative;isolation:isolate}"
-  + ".g5-th:before{content:'';position:absolute;inset:-30px;z-index:-1;background:var(--th-img) 50% 100%/cover no-repeat;filter:blur(26px) brightness(0.55) saturate(1.2);opacity:0.85;pointer-events:none}"
-  + ".g5-th:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0.25) 45%,rgba(7,10,8,0.55) 100%);pointer-events:none}"
-  + ".g5-cl{background:linear-gradient(135deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.05) 100%),rgba(16,26,29,0.32);border:1px solid rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 6px 18px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%)}"
-  + ".g5-cl-liste li+li .g5-cl{border-top:1px solid rgba(255,255,255,0.12)}"
+  /* 20h55 (Blandine : « léger et subtil, et que ça ne déborde pas en dehors des onglets eux-mêmes ») : plus de photo floutée derrière la carte ; l'effet verre reste DANS chaque onglet */
+  + ".g5-cl{background:linear-gradient(160deg,rgba(255,255,255,0.07) 0%,rgba(255,255,255,0.015) 55%,rgba(255,255,255,0.035) 100%),rgba(16,26,29,0.45);border:1px solid rgba(255,255,255,0.09);box-shadow:inset 0 1px 0 rgba(255,255,255,0.09);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}"
+  + ".g5-cl-liste li+li .g5-cl{border-top:1px solid rgba(255,255,255,0.09)}"
   /* 02/11 19h51 (Blandine, capture de la page du Galop 7) : « un vrai fond noir profond et les onglets semi-transparents ombrés » — toutes les pages Galop */
   + ".g5.g5{--g5-fond:#000;background:#000}"
   + ".g5 .g5-onglets.g5-onglets{background:rgba(0,0,0,0.38);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid rgba(201,166,107,0.14);box-shadow:0 10px 26px rgba(0,0,0,0.6)}"
