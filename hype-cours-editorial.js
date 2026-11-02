@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 45;   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
+var VERSION = 46;   /* 02/11 : lexiques du Galop 5 (HYPE_LEXIQUE_EXTRA) sur la page « Révise en 2 minutes » */
+/* précédente : VERSION = 45; */   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
 /* précédente : VERSION = 44; */   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
 /* précédente : VERSION = 43; */   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
@@ -1779,6 +1780,22 @@ var AUTO_IM_G3 = {
   "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
+/* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
+var AUTO_IM_G5 = {
+  "g5n-03": ["images/securite-g1-inquiet.webp", "images/securite-g1-longe.webp", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-reprises-hd1.jpg"]   /* photos dorées (palette) */,
+  "g5n-01": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-videos-hd1.jpg", "images/galops-v2-carte-exercices-hd2.jpg", "images/securite-g1-porte.webp"],
+  "g5n-04": ["images/galops-v2-carte-reprises-provisoire.jpg", "images/galops-v2-carte-videos-provisoire.jpg", "images/securite-g1-alezan.webp", "images/galops-v2-carte-quiz-provisoire.jpg"],
+  "g5n-05": ["images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/securite-g1-bandes.webp", "images/cours-pansage-09_gestes_brossage.webp", "images/securite-g1-rangement.webp"],
+  "g5n-06": ["images/cours-g1-c18-hero.webp", "images/securite-g1-tenue.webp", "images/securite-g1-epaule.webp", "images/securite-g1-distance.webp"],
+  "g5n-07": ["images/securite-g1-rangement.webp", "images/securite-g1-issue.webp", "images/robes-portrait-alezan-brule.webp", "images/securite-g1-observer.webp"],
+  "g5n-08": ["images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-examens-hd1.jpg", "images/galop5-th-vie2.webp"],
+  "g5n-09": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-examens-hd1.jpg"],
+  "g5n-10": ["images/galop5-th-cheval2.webp", "images/galops-v2-carte-reprises-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg"],
+  "g5n-11": ["images/galops-v2-carte-videos-hd2.jpg", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-reprises-hd2.jpg"],
+  "g5n-12": ["images/FOND_CAVALIERS_ECURIE.webp", "images/mes-chevaux-fond-couchant.webp", "images/galops-v2-carte-videos-hd1.jpg", "images/securite-g1-distance.webp"],
+  "g5-identite": ["images/robes-portrait-aubere.webp", "images/robes-portrait-gris-pommele.webp", "images/robes-portrait-creme.webp", "images/robes-portrait-alezan-brule.webp"]
+};
+Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
@@ -2919,7 +2936,9 @@ var SAVAIS_COURS = {
   "g1-c20": { fr: "Le sabot pousse d'environ un centimètre par mois : il lui faut près d'un an pour se renouveler entièrement.", en: "The hoof grows about one centimetre a month: it takes nearly a year to grow out completely.", es: "El casco crece alrededor de un centímetro al mes: necesita casi un año para renovarse por completo.", it: "Lo zoccolo cresce di circa un centimetro al mese: gli serve quasi un anno per rinnovarsi completamente.", ja: "蹄は1か月に約1センチ伸びます。全部生え変わるのに1年近くかかります。", de: "Der Huf wächst etwa einen Zentimeter pro Monat: Er braucht fast ein Jahr, um sich ganz zu erneuern.", ar: "ينمو الحافر نحو سنتيمتر واحد في الشهر: ويحتاج إلى قرابة سنة ليتجدد بالكامل.", zh: "马蹄每月大约长一厘米：完全更新一次需要将近一年。", nl: "De hoef groeit ongeveer een centimeter per maand: het duurt bijna een jaar voordat hij helemaal vernieuwd is.", pt: "O casco cresce cerca de um centímetro por mês: precisa de quase um ano para se renovar por completo.", sv: "Hoven växer ungefär en centimeter i månaden: det tar nästan ett år för den att förnyas helt.", ru: "Копыто отрастает примерно на сантиметр в месяц: чтобы полностью обновиться, ему нужен почти год.", pl: "Kopyto rośnie około centymetra na miesiąc: potrzebuje prawie roku, żeby całkowicie się odnowić.", ko: "발굽은 한 달에 약 1센티미터 자라요. 완전히 새로 자라는 데 1년 가까이 걸려요." }
 };
 /* un cours sans lexique ni savais-tu (pas encore écrits) va directement à la page de fin */
-function aRev(id) { return !!(LEXIQUE_COURS[id] || SAVAIS_COURS[id]); }
+/* 02/11 : lexiques d'autres fichiers de cours (Galop 5 : hype-cours-galop5.js) */
+function lexDe(id) { return LEXIQUE_COURS[id] || ((typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {})[id] || null; }
+function aRev(id) { return !!(lexDe(id) || SAVAIS_COURS[id]); }
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 var LREV_T = {
   pourReviser: tt("Révise en 2 minutes", "Review in 2 minutes", "Repasa en 2 minutos", "Ripassa in 2 minuti", "2分で復習", "In 2 Minuten wiederholen", "راجع في دقيقتين", "2分钟复习", "Herhaal in 2 minuten", "Revê em 2 minutos", "Repetera på 2 minuter", "Повтори за 2 минуты", "Powtórz w 2 minuty", "2분 복습"),
@@ -2968,7 +2987,7 @@ function RevAuto(props) {
     var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n);
     for (var i = 0; i < A.synth.length; i += taille) { var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length]; por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") }); }
   }
-  var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
+  var LX = lexDe(cours.id), lex = LX ? (LX[lg] || LX.fr) : null;
   var SV = SAVAIS_COURS[cours.id], sav = SV ? (SV[lg] || SV.fr) : null;
   var S = window.HypeRobesOrdi.shared;
   return h("div", { className: "rbo hce-rev", dir: rtl ? "rtl" : undefined, lang: lg },
