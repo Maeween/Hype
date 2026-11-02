@@ -16493,3 +16493,12 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Gardés tels quels (décision) : règle de croisement « main gauche contre main gauche » ; « Pivot » au Galop 4.
 - Vérifié : Galops 1 à 3 dans les 14 langues (630 rendus, aucune erreur) ; Galops 1 à 5 s'ouvrent.
 - Fichiers : hype-cours-galop1.js, hype-cours-galop2.js, hype-cours-galop3.js, index.html (?v=21/13/18 + build à la publication), SUIVI.md.
+
+## 02/11/2026 16h20 — PUBLICATION build 20261102-1620 (Blandine 16h16 « Mets déjà le reste en ligne ») : page Mes chevaux + photo provisoire de Golden des Brouets
+- Demande de Blandine (16h14, capture de « Mes chevaux » sur iPhone) : « Descends le titre dans le hero et réduis un peu la profondeur des onglets ».
+- index.html (EcranMesChevaux) : bloc titre du haut (CHEVAUX / Mes chevaux / phrase) descendu vers le bas de la photo — décalage du bas 18 → 4 (téléphone) et 26 → 10 (tablette et ordinateur) ; onglets Toutes / écuries : hauteur 42 → 36 (tous les écrans).
+- Golden des Brouets (16h13, « en attendant que la propriétaire mette sa photo ») : fiche sans photo → photo provisoire images/cheval-golden-des-brouets-provisoire.webp (palomino envoyé par Blandine), posée en base sur chevaux.photo_url après la mise en ligne. La propriétaire pourra la remplacer normalement.
+- Ajout sans effet visible : 19 photos provisoires des futurs cours du Galop 7 (images/galop7-tmp-01 … 19), pas encore utilisées.
+- Santé (question de Blandine 16h14) : vérifié, rien à changer — un abonné Premium qui a créé la fiche de son cheval peut déjà remplir la santé et charger des documents (base : hype_peut_remplir_sante = créateur de la fiche + Premium, ou modératrice ; appli : même règle). Les cavalières seulement rattachées au cheval restent en lecture : à décider par Blandine si elle veut l'ouvrir.
+- Vérifié : 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-1620), SUIVI.md, images/cheval-golden-des-brouets-provisoire.webp, images/galop7-tmp-*.webp.
