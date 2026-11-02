@@ -16570,3 +16570,4 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page « Révise en 2 minutes » (tous les Galops) : le savais-tu passe d'un petit italique gris à une carte bleu pétrole → noir, petit trait doré, « Le savais-tu ? » en titre Cormorant 26 px ivoire, texte droit en Montserrat 14,5 px (15,5 px sur tablette/ordinateur, largeur de lecture limitée à 620 px), centré.
 - hype-cours-editorial.js VERSION 59 (?v=59). Vérifié en 390 px et 1280 px : aucune erreur, aucun débordement.
 - Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
+- 21h : « à gauche ça reste pétrole » → carte rgba(9,12,12,0.72) et onglets rgba(18,21,21,0.62), plus noirs (pages Galop, non publié).
