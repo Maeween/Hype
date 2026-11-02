@@ -16571,3 +16571,4 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - hype-cours-editorial.js VERSION 59 (?v=59). Vérifié en 390 px et 1280 px : aucune erreur, aucun débordement.
 - Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
 - 21h : « à gauche ça reste pétrole » → carte rgba(9,12,12,0.72) et onglets rgba(18,21,21,0.62), plus noirs (pages Galop, non publié).
+- 21h03 : onglets semi-transparents sur la version « moins pétrole » (fond ivoire à 3,5 %, liseré champagne). Non publié.
