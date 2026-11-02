@@ -16386,3 +16386,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Vérifié : les 6 cours (g3-c1, c2, c4, c5, c6, c9) en 14 langues à 390 px + fr/ar à 1440 px, aucune erreur ni débordement ; plus aucune affiche avec texte au Galop 3 (g3-c8 garde sa photo sans texte) ; captures g3-c1, g3-c2 (fr, ar). Fait sur la version en ligne fd26acc (Galop 2 « pansage complet » de l'autre conversation conservé) : dans index.html, seuls les ?v= de galop3 et editorial et le numéro de build changent.
 - À SAVOIR : une seule conversation doit désormais garder le Galop 3 (message proposé à Blandine pour l'autre conversation).
 - Fichiers : hype-cours-galop3.js, hype-cours-editorial.js, index.html (build 20261102-1005), SUIVI.md.
+
+## 02/11/2026 10h25 — PUBLICATION build 20261102-1025 (accord de Blandine 10h20 « Ok ») : douche remise au Galop 3 + deux photos du Galop 1
+- CORRECTION D'UNE ERREUR (signalée à Blandine 10h14) : hype-cours-galop3.js v16 (?v=16), g3-c5 « Le pansage complet » — « doucher les membres » et « sécher les plis du pâturon si le cheval a été douché » REMIS dans « Les soins après le travail » (14 langues, textes de la build 0905). Le programme officiel du Galop 3 dit « réaliser un pansage complet et doucher les membres » ; je les avais retirés à tort en v15 en me fiant à un résumé incomplet du programme. Leçon : lire le programme complet avant d'affirmer qu'un point est hors programme.
+- hype-cours-editorial.js VERSION 50 (?v=50) :
+  · g1-c5, chapitre 04 « La position d'équilibre » : nouvelle photo de Blandine (cheval gris au galop, lumière dorée) → images/cours-g1-c5-equilibre-2.webp (l'ancienne cours-g1-c5-equilibre.webp reste dans le dépôt, plus utilisée) ;
+  · g1-c9 « Les aides naturelles et artificielles », chapitre 01 « La position : la base de toutes tes aides » : photo de Blandine (cheval gris avec couverture, bras écartés) → images/cours-g1-c9-position.webp, à la place de la photo de manège (galop5-c10-cession.webp, toujours utilisée ailleurs).
+- Vérifié : Galop 3 en 14 langues (390 px) et fr/ar (1440 px) sans erreur ; captures g1-c5 (chapitre 04) et g1-c9 (chapitre 01). Fait sur la version en ligne 25310da.
+- Fichiers : hype-cours-galop3.js, hype-cours-editorial.js, images/cours-g1-c5-equilibre-2.webp, images/cours-g1-c9-position.webp, index.html (build 20261102-1025), SUIVI.md.
