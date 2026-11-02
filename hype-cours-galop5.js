@@ -705,7 +705,7 @@ var COURS = [
     ["Surfaix", "Sangle autour du ventre, avec des anneaux pour passer les rênes."]
   ] },
   quiz: [
-    Q("De quel côté mène-t-on habituellement un cheval ?", ["À droite, devant sa tête", "À gauche, à hauteur de son épaule", "À gauche, devant sa tête, la longe tendue", "À droite, à hauteur de sa hanche"], 1, "On mène à gauche, à hauteur de l'épaule, en regardant devant soi."),
+    Q("De quel côté mène-t-on habituellement un cheval ?", ["À droite, devant sa tête", "À gauche, entre sa tête et son épaule", "À gauche, devant sa tête, la longe tendue", "À droite, à hauteur de sa hanche"], 1, "On mène à gauche, entre sa tête et son épaule, en regardant devant soi."),
     Q("Pour faire demi-tour en menant, on tourne le cheval…", ["Vers soi, vers la gauche", "Vers la droite, loin de soi", "En le faisant reculer avant de repartir", "En passant derrière lui pour changer de côté"], 1, "En le poussant vers la droite, loin de toi, tu évites qu'il te marche sur les pieds."),
     Q("Comment tiens-tu le reste de la longe dans ta main ?", ["Enroulé autour de la main, pour mieux tenir", "En boucles dans la main, prêt à filer", "Laissé traîner au sol derrière toi", "Passé dans ta ceinture, pour avoir les mains libres"], 1, "On tient la longe lovée, en boucles, prête à filer. Enroulée autour de la main, elle peut blesser gravement si le cheval tire."),
     Q("Que forment la longe, la chambrière et le cheval, avec toi au centre ?", ["Un carré", "Un triangle", "Une ligne droite", "Un cercle fermé"], 1, "La longe et la chambrière forment deux côtés du triangle, le cheval le troisième, et toi tu es au sommet."),
