@@ -16563,3 +16563,4 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - 20h50 : Blandine choisit A avec les onglets de B → chaque cours = onglet arrondi noir bleuté semi-transparent (toutes les cartes des pages Galop). Toujours non publié.
 - 20h55 : fondu photo → fond plus progressif et semi-transparent (la photo descend sous le titre et s'efface lentement ; ombre légère sous le titre). Toujours non publié.
 - 20h50 : Blandine choisit la proposition 2 (photo jusqu'à 40 px du bas de la zone, fondu progressif semi-transparent). Toujours non publié.
+- 20h55 : effet « verre dépoli » des onglets (Blandine : « vraiment le côté verre glacé ») — la photo de chaque partie, très floutée et assombrie, passe derrière toute la carte (variable --th-img posée sur chaque carte, GV3 + Galop 5) ; onglets en verre clair très léger, liseré lumineux, flou + saturation. Toujours non publié.

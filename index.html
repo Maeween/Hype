@@ -59717,6 +59717,13 @@ var G5_CSS = ""
   + ".g5-cl-liste li{margin-top:8px}"
   + ".g5-cl-liste li+li .g5-cl{border-top:1px solid rgba(201,166,107,0.16)}"
   + ".g5-cl{padding:10px 14px;border-radius:14px;background:rgba(16,26,29,0.55);border:1px solid rgba(201,166,107,0.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}"
+  /* 20h52 (Blandine : « vraiment le côté verre glacé de ces onglets ») : la photo de la partie, très floutée et assombrie, passe derrière toute la carte ;
+     les onglets deviennent du verre dépoli (fond clair très léger, liseré lumineux en haut, flou + saturation de ce qui est derrière) */
+  + ".g5-th{position:relative;isolation:isolate}"
+  + ".g5-th:before{content:'';position:absolute;inset:-30px;z-index:-1;background:var(--th-img) 50% 100%/cover no-repeat;filter:blur(26px) brightness(0.55) saturate(1.2);opacity:0.85;pointer-events:none}"
+  + ".g5-th:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0.25) 45%,rgba(7,10,8,0.55) 100%);pointer-events:none}"
+  + ".g5-cl{background:linear-gradient(135deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.05) 100%),rgba(16,26,29,0.32);border:1px solid rgba(255,255,255,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 6px 18px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%)}"
+  + ".g5-cl-liste li+li .g5-cl{border-top:1px solid rgba(255,255,255,0.12)}"
   /* 02/11 19h51 (Blandine, capture de la page du Galop 7) : « un vrai fond noir profond et les onglets semi-transparents ombrés » — toutes les pages Galop */
   + ".g5.g5{--g5-fond:#000;background:#000}"
   + ".g5 .g5-onglets.g5-onglets{background:rgba(0,0,0,0.38);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid rgba(201,166,107,0.14);box-shadow:0 10px 26px rgba(0,0,0,0.6)}"
@@ -59877,7 +59884,7 @@ function EcranGalop5() {
         ? h("button", { type: "button", className: "g5-cl", onClick: function () { ouvrirCours(c.id); }, "aria-label": n + ". " + tr(c.t) + (etat ? " — " + etat : "") + " — " + tr(G5_T.ouvrirC) }, corps)
         : h("div", { className: "g5-cl g5-cl-prepa", "aria-label": n + ". " + tr(c.t) + " — " + tr(G5_T.prepa) }, corps));
     });
-    return h("div", { key: th.k, className: "g5-th g5-th-" + th.k },
+    return h("div", { key: th.k, className: "g5-th g5-th-" + th.k, style: { "--th-img": "url(" + th.img + ")" } },   /* 02/11 : photo floutée derrière les onglets (verre dépoli) */
       h("div", { className: "g5-th-ph" },
         h("img", { src: th.img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: th.pos } }),
         h("h3", { className: "g5-th-tete" },
@@ -60494,7 +60501,7 @@ function EcranGalopV3() {
         ? h("button", { type: "button", className: "g5-cl", onClick: function () { ouvrirCours(c); }, "aria-label": n + ". " + titreC(c) + (etat ? " — " + etat : "") + (sc !== null ? " — quiz " + Math.round(sc) + " %" : "") + " — " + tr(G5_T.ouvrirC) }, corps)
         : h("div", { className: "g5-cl g5-cl-prepa" }, corps));
     });
-    return h("div", { key: x.p.cle, className: "g5-th g5-th-" + x.p.cle },
+    return h("div", { key: x.p.cle, className: "g5-th g5-th-" + x.p.cle, style: { "--th-img": "url(" + x.p.img + ")" } },   /* 02/11 : photo floutée derrière les onglets (verre dépoli) */
       h("div", { className: "g5-th-ph" },
         h("img", { src: x.p.img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: x.p.pos } }),
         h("h3", { className: "g5-th-tete" },
