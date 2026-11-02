@@ -1950,6 +1950,7 @@ function outils() { return { pickLg: pickLg, contenuLg: contenuLg, nettoyerTitre
 HypeCoursEditorial.config = {};
 HypeCoursEditorial.ok = function (cours) {
   try {
+    if (cours && !HypeCoursEditorial.config[cours.id] && nouveauFormat(cours)) enregistrerAuto(cours.id);
     if (!cours || !HypeCoursEditorial.config[cours.id]) return false;
     var c = HypeCoursEditorial.config[cours.id](cours, "fr", outils());
     return !!(c && c.valide !== false && c.sections && c.sections.length && c.chapitres && c.chapitres.length);
@@ -3018,7 +3019,7 @@ function construireAuto(cours, lg) {
   var L = Lx(lg), r = function (x) { return pickLg(x, lg); };
   var blocs = cours.blocs || [];
   var couv = (blocs[0] && blocs[0].type === "couv-affiche") ? blocs[0] : null;
-  var pool = AUTO_IM[cours.id] || [IM.fond02];
+  var pool = AUTO_IM[cours.id] || (nouveauFormat(cours) ? IM_DEFAUT : [IM.fond02]);
   /* segments : version française (structure) + langue choisie (texte), même position */
   /* 01/11 19h25 (Blandine : « tout doit être traduit partout ») : l'appli passe le cours déjà traduit ; la structure (coach, défi…)
      se lit donc sur le cours d'origine en français, même bloc, même place — le texte affiché reste celui de la langue choisie */
@@ -3327,10 +3328,18 @@ function alerteNotion(o) {
   return /erreur|jamais|ne pas toucher|attention/.test(t);
 }
 
-AUTO_IDS.forEach(function (id) {
+/* 02/11 15h (Blandine : « prépare-le aussi pour les Galops suivants… que ce soit prêt à recevoir ») : la mise en page est une fonction,
+   appelée pour les cours listés (AUTO_IM) et, à l'ouverture, pour tout NOUVEAU cours des Galops 6 à 9 (id « g6n-… » à « g9n-… », comme les « g5n-… »,
+   ou cours marqué editorial: true). Les anciens brouillons (g6-c1…, g7-c1…, g8-…, g9-…) ne changent pas. */
+var IM_DEFAUT = ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-videos-hd1.jpg"];
+function nouveauFormat(cours) { return !!(cours && cours.id && (/^g[6-9]n-/.test(cours.id) || cours.editorial === true)); }
+AUTO_IDS.forEach(enregistrerAuto);
+function enregistrerAuto(id) {
   HypeCoursEditorial.config[id] = function (cours, lg, o) {
     var L = Lx(lg), r = function (x) { return pickLg(x, lg); };
     var A = construireAuto(cours, lg);
+    /* lexique écrit dans le cours lui-même (champ lexique: { fr: [[mot, définition], …], en: … }) -> page « Révise en 2 minutes » */
+    if (cours.lexique && !lexDe(cours.id)) { var lxc = cours.lexique[lg] || cours.lexique.fr; if (lxc && lxc.length) A.lexique = lxc.map(function (m) { return { mot: m[0], def: m[1] }; }); }
     var galopLab = "Galop " + ((/^g(\d+)/.exec(cours.id) || [0, 1])[1]);
     if (!A.chapitres.length || !(cours.quiz || []).length) return { valide: false, sections: [], chapitres: [] };
     var chapitres = A.chapitres.map(function (c) { return { id: c.id, label: c.titre, img: c.img, pos: "55% 40%" }; });
@@ -3367,7 +3376,8 @@ AUTO_IDS.forEach(function (id) {
     };
   };
   HypeCoursEditorial.config[id].auto = true;
-});
+  if (typeof window !== "undefined" && window.HypeFinsCours && AUTO_IDS.indexOf(id) < 0) window.HypeFinsCours[id] = { ok: finOk, Fin: FinAuto };
+}
 
 /* page de fin des cours générés : même page partagée (FinCours) */
 /* 01/11 23h20 (Blandine : « une page avec le lexique et le savais-tu en dessous, le résumé reste sur la dernière page ») :
@@ -3510,12 +3520,14 @@ var GLEX_T = {
 };
 var GLEX_ART = /^(le |la |les |l'|l’|un |une |des |the |a |an |der |die |das |den |dem |ein |eine |el |los |las |il |lo |gli |i |de |het |een |o |os |as |um |uma |en |ett |det )/i;
 function glexCle(m) { return String(m || "").replace(GLEX_ART, "").replace(/^[«"“(]\s*/, "").trim(); }
-function glexEntrees(lg) {
+function glexEntrees(lg, pret) {
+  try { if (HypeCoursEditorial.g4 && HypeCoursEditorial.g4.remplirLexiques) HypeCoursEditorial.g4.remplirLexiques(); } catch (e) { }
   var map = {}, liste = [];
   var EXTRA = (typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {};
   Object.keys(LEXIQUE_COURS).concat(Object.keys(EXTRA).filter(function (k) { return !LEXIQUE_COURS[k]; })).forEach(function (id) {
     var LX = lexDe(id), lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
-    var g = +((/^g(\d+)-/.exec(id) || [])[1] || 0);
+    var g = +((/^g(\d+)/.exec(id) || [])[1] || 0);   /* 02/11 : « g5n-01 » compte bien pour le Galop 5 */
+    if (typeof pret === "function" && !pret(id, g)) return;   /* 02/11 : seulement les cours ouverts à la personne (les cours en relecture restent visibles des modérateurs) */
     lex.mots.forEach(function (m) {
       var k = glexCle(m[0]).toLocaleLowerCase(lg);
       if (!map[k]) { map[k] = { mot: m[0], def: m[1], cle: glexCle(m[0]), cours: [] }; liste.push(map[k]); }
@@ -3537,7 +3549,7 @@ function GrandLexique(props) {
   var T = function (k) { return pickLg(GLEX_T[k], lg); };
   var _q = useState(""), q = _q[0], setQ = _q[1];
   var _g = useState(0), gf = _g[0], setGf = _g[1];
-  var tout = glexEntrees(lg);
+  var tout = glexEntrees(lg, props.pret);
   var galops = []; tout.forEach(function (e) { e.cours.forEach(function (c) { if (galops.indexOf(c.g) < 0) galops.push(c.g); }); }); galops.sort();
   var norm = function (s) { return String(s || "").toLocaleLowerCase(lg).normalize("NFD").replace(/[̀-ͯ]/g, ""); };
   var nq = norm(q.trim());
@@ -3640,7 +3652,7 @@ AUTO_IDS.forEach(function (id) { window.HypeFinsCours[id] = { ok: finOk, Fin: Fi
 HypeCoursEditorial.construireAuto = construireAuto;
 /* v10 — 01/11 : outils internes prêtés aux fichiers de configuration d'autres Galops (hype-cours-editorial-g4.js) — rien ne change pour les Galops 1 et 2 */
 HypeCoursEditorial._ = { Chapitre: Chapitre, Affiche: Affiche, fleche: fleche, IM: IM, Lx: Lx, tt: tt, pickLg: pickLg, paras: paras, phrases: phrases,
-  titreNet: titreNet, nettoyerTitre: nettoyerTitre, sansEmojiFin: sansEmojiFin, finOk: finOk, outils: outils, aRev: aRev, versRev: versRev, LREV: LREV };
+  titreNet: titreNet, nettoyerTitre: nettoyerTitre, sansEmojiFin: sansEmojiFin, finOk: finOk, outils: outils, aRev: aRev, versRev: versRev, LREV: LREV, titreLex: titreLex };
 
 
 window.HypeCoursEditorial = HypeCoursEditorial;

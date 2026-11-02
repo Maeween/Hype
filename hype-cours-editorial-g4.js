@@ -389,4 +389,16 @@ function FinG4(props) {
 window.HypeFinsCours = window.HypeFinsCours || {};
 IDS.forEach(function (id) { window.HypeFinsCours[id] = { ok: X.finOk, Fin: FinG4 }; });
 E.g4 = { version: VERSION, construire: construire };
+/* 02/11 15h : les lexiques du Galop 4 rejoignent le grand lexique (mêmes mots que la page « Révise en 2 minutes », 14 langues) ;
+   appelé par le grand lexique à l'ouverture (les textes du Galop 4 sont définis après ce fichier) */
+E.g4.remplirLexiques = (function () {
+  var EX = window.HYPE_LEXIQUE_EXTRA = window.HYPE_LEXIQUE_EXTRA || {};
+  IDS.forEach(function (id) {
+    if (EX[id]) return;
+    var D = dico(id); if (!D) return;
+    var o = {};
+    Object.keys(D).forEach(function (lg) { var C = D[lg]; if (C && C.gloItems && C.gloItems.length) o[lg] = { titre: X.titreLex ? X.titreLex(lg) : "Petit lexique", mots: C.gloItems.map(function (g) { return [g[0], g[1]]; }) }; });
+    if (o.fr) EX[id] = o;
+  });
+});
 })();
