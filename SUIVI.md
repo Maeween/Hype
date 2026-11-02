@@ -16435,3 +16435,10 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Cause : l'encart (EncartPhotoInvisible, index.html, 28/07) s'affichait dès que la photo était vide EN BASE, sans regarder s'il y avait une photo sur le téléphone. Tout nouveau compte le voyait donc.
 - Correction : l'encart ne s'affiche plus que si une photo existe sur le téléphone mais pas en base (son vrai but). hype-ecran-cavalier.js (?v=2) lui passe aPhoto ; index.html : une ligne dans EncartPhotoInvisible.
 - Fichiers : index.html (build 20261102-1200), hype-ecran-cavalier.js, SUIVI.md.
+
+## 02/11/2026 14h55 — PUBLICATION build 20261102-1455 (choix de Blandine 14h51 « D ») : cadrage de la photo des sabots sur ordinateur
+- « La physiologie du cheval » (g1-c20), chapitre « Un organisme en action » : sur tablette et ordinateur la photo images/cours-g1-c20-pieds.webp est en fond d'une colonne haute (on n'en voit qu'une partie) ; 4 cadrages montrés en vraies captures (A actuel, B sabot droit, C sabot gauche, D bas des deux jambes) — Blandine a choisi D.
+- Nouveau tableau POS_PHOTO_CHAP (cadrage par fichier photo, repli sur « 55% 40% » pour toutes les autres) : "images/cours-g1-c20-pieds.webp" → "50% 85%". Téléphone inchangé (photo entière).
+- hype-cours-editorial.js VERSION 53 (?v=53) ; index.html build 20261102-1455 (seuls le ?v= et le numéro de build changent).
+- Vérifié : rendu 1440 px et 390 px, aucune erreur, aucun débordement.
+- Fichiers : hype-cours-editorial.js, index.html (build 20261102-1455), SUIVI.md.
