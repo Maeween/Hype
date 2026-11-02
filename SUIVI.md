@@ -16394,3 +16394,10 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
   · g1-c9 « Les aides naturelles et artificielles », chapitre 01 « La position : la base de toutes tes aides » : photo de Blandine (cheval gris avec couverture, bras écartés) → images/cours-g1-c9-position.webp, à la place de la photo de manège (galop5-c10-cession.webp, toujours utilisée ailleurs).
 - Vérifié : Galop 3 en 14 langues (390 px) et fr/ar (1440 px) sans erreur ; captures g1-c5 (chapitre 04) et g1-c9 (chapitre 01). Fait sur la version en ligne 25310da.
 - Fichiers : hype-cours-galop3.js, hype-cours-editorial.js, images/cours-g1-c5-equilibre-2.webp, images/cours-g1-c9-position.webp, index.html (build 20261102-1025), SUIVI.md.
+
+## 02/11/2026 11h00 — Galop 5 : relecture ChatGPT appliquée aux 12 nouveaux cours (français) — NON PUBLIÉ, branche g5-corrections-v2
+- Brief de corrections fourni par Blandine (10h12, relecture ChatGPT). 233 corrections appliquées après vérification sur les sources officielles (programme Galop 5 et 6, fiches FFE G3-G4, règlements général, CSO et CCE applicables au 01/09/2026, FAQ FFE engagements, IFCE identification et alimentation, règlement UE 2021/963) ; 26 points conservés ou à arbitrer (non appliqués).
+- hype-cours-galop5.js (?v=6) : 12 cours toujours 4 chapitres, lexique 7 à 10 mots, 10 questions à 4 réponses chacune ; aucun « demi-arrêt », « demi-parade » ni « tu te tiens sur tes étriers ».
+- Vérifié (appli locale, modératrice, 390 px) : les 12 cours s'ouvrent et leur page « Révise en 2 minutes » affiche le lexique, 0 erreur ; 17 blocs de code d'index.html valides.
+- À arbitrer par Blandine : montée en cross (fiche G4 n°22 « mettre du poids dans ses étriers pour s'alléger » / règle « ton poids descend dans tes talons ») ; listes de compétition (« liste Club », « chevaux de sport » : aucune source officielle trouvée) ; format du numéro SIRE (retiré) ; poids sur la fesse intérieure (retiré) ; signal du départ au galop ; passage dans l'eau ; cote CSO Club 3 dans le règlement.
+- Pas de traduction tant que le français n'est pas validé.
