@@ -58329,7 +58329,7 @@ var GALOPS_V2_ACTIF = true;
 var GV2_IMG_ORDI = "images/galops-v2-hero-ordi-hd2.jpg";   /* 26/10 21h50 (Blandine) : nouveau hero — cavalier de dos, contre-jour doré */
 var GV2_IMG_FIN = "images/galops-v2-hero-ordi-hd1.jpg";   /* la conclusion garde l'ancienne photo (tête du cheval gris) */   /* 25/10 soir : vraie photo du hero (1920 × 819) fournie par Blandine */
 var GV2_IMG_TEL = "images/galops-v2-hero-tel-hd3.jpg";   /* 26/10 22h : version verticale de la même scène, fournie par Blandine */   /* 25/10 soir : vraie photo (1030 × 1526) */
-var HQ_ET_CSS = ".hq-et{display:flex;align-items:center;gap:1px;margin-top:4px;font-size:11px;letter-spacing:1px;line-height:1}.hq-et i{font-style:normal;color:#C9A66B}.hq-et u{text-decoration:none;color:rgba(243,238,228,.22)}.hq-et em{font-style:normal;letter-spacing:0;font-size:10.5px;white-space:nowrap;color:rgba(243,238,228,.62);margin-inline-start:7px}.hq-et i,.hq-et u{white-space:nowrap}";   /* 31/10 : étoiles du quiz (visuel B), utilisées par la page Galops et les pages des Galops */
+var HQ_ET_CSS = ".hq-et{display:flex;align-items:center;gap:1px;margin-top:4px;font-size:11px;letter-spacing:1px;line-height:1}.hq-et i{font-style:normal;color:#C9A66B}.hq-et u{text-decoration:none;color:rgba(243,238,228,.22)}.hq-et em{font-style:normal;letter-spacing:0;font-size:10.5px;white-space:nowrap;color:rgba(243,238,228,.62);margin-inline-start:7px}.hq-et i,.hq-et u{white-space:nowrap}.hq-et-vide u{color:rgba(243,238,228,.14)}";   /* 31/10 : étoiles du quiz (visuel B), utilisées par la page Galops et les pages des Galops */
 var GV2_CSS = ""
   + ".gv2{--gv2-fond:#070A08;--gv2-fond2:#101A1D;--gv2-ivoire:#F3EEE4;--gv2-texte2:rgba(243,238,228,0.74);--gv2-texte3:rgba(243,238,228,0.52);--gv2-champ:#C9A66B;--gv2-champ-doux:rgba(201,166,107,0.42);--gv2-filet:rgba(201,166,107,0.30);--gv2-pastille:#0B110F;--gv2-voile:7,10,8;"
   + "position:relative;background:var(--gv2-fond);color:var(--gv2-ivoire);font-family:'Montserrat',sans-serif;overflow:hidden}"
@@ -58801,6 +58801,8 @@ function hypeEtoilesQuiz(sc) {
   var h = React.createElement;
   return h("span", { className: "hq-et", "aria-hidden": "true" }, h("i", null, "★★★★★".slice(0, n)), h("u", null, "★★★★★".slice(0, 5 - n)), h("em", null, Math.round(sc) + " %"));
 }
+/* 02/11 21h05 (Blandine : « ça sert à rien de laisser écrit Terminé, laisse plutôt les étoiles vides transparentes ») : cours sans quiz fait → 5 étoiles vides très légères */
+function hypeEtoilesVides() { return React.createElement("span", { className: "hq-et hq-et-vide", "aria-hidden": "true" }, React.createElement("u", null, "★★★★★")); }
 var HQ_MEDAILLES = false;   /* 31/10 02h43 (Blandine : « laisse tomber les médailles ») : étoiles seules, le rond / la coche / le numéro restent */
 function hypeMedailleQuiz(sc, taille) {
   if (!HQ_MEDAILLES) return null;
@@ -59879,7 +59881,7 @@ function EcranGalop5() {
       var sc = reel ? hypeScoreQuiz(app.quizResultats, c.id) : null, med = hypeMedailleQuiz(sc, 30);   /* 31/10 : étoiles du quiz + médaille (visuel B) */
       var corps = [
         med ? h("span", { key: "n", className: "g5-cl-n g5-cl-med" }, med) : h("span", { key: "n", className: "g5-cl-n" }, n),
-        h("span", { key: "t", className: "g5-cl-t" }, tr(c.t), etat ? h("small", null, etat) : null, hypeEtoilesQuiz(sc)),
+        h("span", { key: "t", className: "g5-cl-t" }, tr(c.t), hypeEtoilesQuiz(sc) || (reel ? hypeEtoilesVides() : null)),   /* 21h05 : plus de « Terminé » écrit (il reste dans l'aria-label) */
         reel ? h("span", { key: "go", className: "g5-cl-go", "aria-hidden": "true" }, rtl ? "\u2039" : "\u203A") : null
       ];
       return h("li", { key: c.id }, reel
@@ -60496,7 +60498,7 @@ function EcranGalopV3() {
       var sc = ok ? hypeScoreQuiz(quizResultats, c.id) : null, med = hypeMedailleQuiz(sc, 30);   /* 31/10 : étoiles du quiz + médaille (visuel B) */
       var corps = [
         med ? h("span", { key: "n", className: "g5-cl-n g5-cl-med" }, med) : h("span", { key: "n", className: "g5-cl-n" + (fini ? " g5-cl-fini" : "") }, fini ? icCoche : n),
-        h("span", { key: "t", className: "g5-cl-t" }, titreC(c), etat ? h("small", null, etat) : null, hypeEtoilesQuiz(sc)),
+        h("span", { key: "t", className: "g5-cl-t" }, titreC(c), (etat && !fini) ? h("small", null, etat) : null, hypeEtoilesQuiz(sc) || (ok ? hypeEtoilesVides() : null)),   /* 21h05 : « Terminé » n'est plus écrit (la coche reste) ; étoiles vides si pas de quiz */
         ok ? h("span", { key: "go", className: "g5-cl-go", "aria-hidden": "true" }, verrouG ? icCadenas : (rtl ? "‹" : "›")) : null
       ];
       return h("li", { key: c.id }, ok

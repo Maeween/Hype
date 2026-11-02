@@ -16572,3 +16572,4 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
 - 21h : « à gauche ça reste pétrole » → carte rgba(9,12,12,0.72) et onglets rgba(18,21,21,0.62), plus noirs (pages Galop, non publié).
 - 21h03 : onglets semi-transparents sur la version « moins pétrole » (fond ivoire à 3,5 %, liseré champagne). Non publié.
+- 21h05 : « Terminé » n'est plus écrit sous les cours (la coche reste, et le mot reste lu par la synthèse vocale) ; cours sans quiz fait = 5 étoiles vides très légères (hypeEtoilesVides). Pages Galop (GV3) et Galop 5. Validé visuellement par Blandine. Non publié.
