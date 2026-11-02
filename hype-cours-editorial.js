@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 45;   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
+var VERSION = 46;   /* 02/11 : Galop 3 — affiches retirées (g3-c1, c2, c4, c5, c6 [clé d'image vide], c9), contenu repris en texte et relu par Blandine ; g3-c1 sans photos de manège */
+/* précédente : VERSION = 45; */   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
 /* précédente : VERSION = 44; */   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
 /* précédente : VERSION = 43; */   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
@@ -1793,11 +1794,11 @@ var MODULES_COURS = {
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
 var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };   /* 01/11 23h44 : g1-c5 retiré d'ici, la photo dorée est devenue la photo du chapitre 01 */   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
-var CHAP_SANS_PHOTO = { "g1-c5": [1] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
+var CHAP_SANS_PHOTO = { "g1-c5": [1], "g3-c1": [0, 1, 2] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
 var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
-var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2], "g3-c1": [4], "g3-c2": [1], "g3-c4": [4], "g3-c5": [4], "g3-c6": [4], "g3-c9": [3] };   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
