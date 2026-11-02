@@ -20,7 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 45;   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
+var VERSION = 47;   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
+/* précédente : VERSION = 46; */   /* 02/11 : lexiques du Galop 5 (HYPE_LEXIQUE_EXTRA) sur la page « Révise en 2 minutes » */
+/* précédente : VERSION = 45; */   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
 /* précédente : VERSION = 44; */   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
 /* précédente : VERSION = 43; */   /* 01/11 22h35 : barre des chapitres pleine + titres longs « … » + ancre sous la barre ; */ /* 01/11 22h20 : relecture atlas — textes des notions alignés en début de ligne sans coupure de mots, espaces insécables en français seulement */
 /* précédente : VERSION = 41; */   /* 01/11 21h55 : plus d'espace sous les photos des notions */
@@ -2212,6 +2214,22 @@ var AUTO_IM_G3 = {
   "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
+/* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
+var AUTO_IM_G5 = {
+  "g5n-03": ["images/securite-g1-inquiet.webp", "images/securite-g1-longe.webp", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-reprises-hd1.jpg"]   /* photos dorées (palette) */,
+  "g5n-01": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-videos-hd1.jpg", "images/galops-v2-carte-exercices-hd2.jpg", "images/securite-g1-porte.webp"],
+  "g5n-04": ["images/galops-v2-carte-reprises-provisoire.jpg", "images/galops-v2-carte-videos-provisoire.jpg", "images/securite-g1-alezan.webp", "images/galops-v2-carte-quiz-provisoire.jpg"],
+  "g5n-05": ["images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/securite-g1-bandes.webp", "images/cours-pansage-09_gestes_brossage.webp", "images/securite-g1-rangement.webp"],
+  "g5n-06": ["images/cours-g1-c18-hero.webp", "images/securite-g1-tenue.webp", "images/securite-g1-epaule.webp", "images/securite-g1-distance.webp"],
+  "g5n-07": ["images/securite-g1-rangement.webp", "images/securite-g1-issue.webp", "images/robes-portrait-alezan-brule.webp", "images/securite-g1-observer.webp"],
+  "g5n-08": ["images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-examens-hd1.jpg", "images/galop5-th-vie2.webp"],
+  "g5n-09": ["images/galops-v2-carte-reprises-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-examens-hd1.jpg"],
+  "g5n-10": ["images/galop5-th-cheval2.webp", "images/galops-v2-carte-reprises-hd2.jpg", "images/galop5-hero-v2.webp", "images/galops-v2-carte-cours-hd2.jpg"],
+  "g5n-11": ["images/galops-v2-carte-videos-hd2.jpg", "images/galops-v2-carte-exercices-hd1.jpg", "images/galops-v2-carte-cours-hd2.jpg", "images/galops-v2-carte-reprises-hd2.jpg"],
+  "g5n-12": ["images/FOND_CAVALIERS_ECURIE.webp", "images/mes-chevaux-fond-couchant.webp", "images/galops-v2-carte-videos-hd1.jpg", "images/securite-g1-distance.webp"],
+  "g5-identite": ["images/robes-portrait-aubere.webp", "images/robes-portrait-gris-pommele.webp", "images/robes-portrait-creme.webp", "images/robes-portrait-alezan-brule.webp"]
+};
+Object.keys(AUTO_IM_G5).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G5[k]; });
 var AUTO_IDS = Object.keys(AUTO_IM);
 /* affiches entièrement reprises dans le texte (rien d'autre ne s'y trouvait) */
 /* 01/11 19h20 (Blandine) : photos d'une notion précise — « Les allures du cheval » : pas, trot, galop (mur du fond passé en noir) */
@@ -3390,7 +3408,9 @@ var SAVAIS_COURS = {
   "g3-c15": { fr: "Le mot « volte » vient de l'italien « volta », qui veut dire « tour ». Ce terme de manège est arrivé en France au XVIe siècle, avec les maîtres d'équitation italiens.", en: "The word \"volte\" comes from the Italian \"volta\", meaning \"turn\". This riding-school term reached France in the 16th century, with the Italian riding masters.", es: "La palabra «volte» viene del italiano «volta», que significa «vuelta». Este término de picadero llegó a Francia en el siglo XVI, con los maestros de equitación italianos.", it: "La parola francese «volte» viene dall'italiano «volta», cioè «giro». Questo termine di maneggio è arrivato in Francia nel XVI secolo, con i maestri di equitazione italiani.", ja: "フランス語の「volte（巻乗り）」は、「回転」を意味するイタリア語の「volta」から来ています。この馬場の用語は、16世紀にイタリアの馬術教師たちとともにフランスに伝わりました。", de: "Das Wort „Volte“ kommt vom italienischen „volta“, das „Drehung“ bedeutet. Dieser Reitbahnbegriff kam im 16. Jahrhundert mit den italienischen Reitmeistern nach Frankreich.", ar: "كلمة «فولت» مأخوذة من الكلمة الإيطالية «volta» التي تعني «دورة». وقد وصل هذا المصطلح من مصطلحات الفروسية إلى فرنسا في القرن السادس عشر مع أساتذة الفروسية الإيطاليين.", zh: "法语“volte”（小圈）一词来自意大利语“volta”，意思是“转圈”。这个马术术语在 16 世纪随意大利马术大师传入法国。", nl: "Het woord „volte” komt van het Italiaanse „volta”, dat „draai” betekent. Deze rijbaanterm kwam in de zestiende eeuw naar Frankrijk, met de Italiaanse rijmeesters.", pt: "A palavra francesa «volte» vem do italiano «volta», que quer dizer «giro». Este termo de picadeiro chegou a França no século XVI, com os mestres de equitação italianos.", sv: "Ordet ”volt” kommer från italienskans ”volta”, som betyder ”varv” eller ”vändning”. Ridhustermen kom till Frankrike på 1500-talet med de italienska ridmästarna.", ru: "Слово «вольт» происходит от итальянского «volta» — «поворот». Этот манежный термин пришёл во Францию в XVI веке вместе с итальянскими мастерами верховой езды.", pl: "Słowo „wolta” pochodzi od włoskiego „volta”, czyli „obrót”. Ten termin jeździecki trafił do Francji w XVI wieku razem z włoskimi mistrzami jeździectwa.", ko: "'volte(볼트)'라는 말은 '회전'을 뜻하는 이탈리아어 'volta'에서 왔어요. 이 마장 용어는 16세기에 이탈리아 마술 교사들과 함께 프랑스에 들어왔어요." }
 };
 /* un cours sans lexique ni savais-tu (pas encore écrits) va directement à la page de fin */
-function aRev(id) { return !!(LEXIQUE_COURS[id] || SAVAIS_COURS[id]); }
+/* 02/11 : lexiques d'autres fichiers de cours (Galop 5 : hype-cours-galop5.js) */
+function lexDe(id) { return LEXIQUE_COURS[id] || ((typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {})[id] || null; }
+function aRev(id) { return !!(lexDe(id) || SAVAIS_COURS[id]); }
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 /* 02/11 (Blandine : « il manquait la photo de cheval en haut des lexiques ») : la même photo de tête de cheval sur tous les lexiques, sauf photo propre au cours */
 function lexPhoto(id) { return LEX_PHOTO[id] || "images/cours-g1-c20-lexique.webp"; }
@@ -3441,7 +3461,7 @@ function RevAuto(props) {
     var n = Math.min(5, A.synth.length), taille = Math.ceil(A.synth.length / n);
     for (var i = 0; i < A.synth.length; i += taille) { var g = A.synth.slice(i, i + taille), c = ch[por.length % ch.length]; por.push({ img: imgDe(c, por.length), pos: c.pos, nom: g[0], desc: g.slice(1).join(" ") }); }
   }
-  var LX = LEXIQUE_COURS[cours.id], lex = LX ? (LX[lg] || LX.fr) : null;
+  var LX = lexDe(cours.id), lex = LX ? (LX[lg] || LX.fr) : null;
   /* 02/11 : « Le savais-tu ? » d'origine remplacé quand il sort du programme (g3-c2 : changements de pied) ou répète une notion déjà vue (g3-c6, g3-c13, g3-c15) */
   var SAVAIS_REMPLACE = ["g3-c2", "g3-c6", "g3-c13", "g3-c15"];
   var SV = SAVAIS_COURS[cours.id], savL = (A.savais && A.savais.length && SAVAIS_REMPLACE.indexOf(cours.id) < 0) ? A.savais : (SV ? [SV[lg] || SV.fr] : []);   /* celui d'origine du cours en priorité */
@@ -3479,8 +3499,9 @@ var GLEX_ART = /^(le |la |les |l'|l’|un |une |des |the |a |an |der |die |das |
 function glexCle(m) { return String(m || "").replace(GLEX_ART, "").replace(/^[«"“(]\s*/, "").trim(); }
 function glexEntrees(lg) {
   var map = {}, liste = [];
-  Object.keys(LEXIQUE_COURS).forEach(function (id) {
-    var LX = LEXIQUE_COURS[id], lex = LX[lg] || LX.fr; if (!lex || !lex.mots) return;
+  var EXTRA = (typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {};
+  Object.keys(LEXIQUE_COURS).concat(Object.keys(EXTRA).filter(function (k) { return !LEXIQUE_COURS[k]; })).forEach(function (id) {
+    var LX = lexDe(id), lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
     var g = +((/^g(\d+)-/.exec(id) || [])[1] || 0);
     lex.mots.forEach(function (m) {
       var k = glexCle(m[0]).toLocaleLowerCase(lg);
