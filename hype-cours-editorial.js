@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 58;   /* 02/11 16h40 : photos provisoires des chapitres des 16 nouveaux cours du Galop 7 (AUTO_IM_G7, non branchés) */
+var VERSION = 59;   /* 02/11 19h55 : « Le savais-tu ? » de la page « Révise en 2 minutes » en carte lisible (choix C de Blandine) */
+/* précédente : VERSION = 58; */   /* 02/11 16h40 : photos provisoires des chapitres des 16 nouveaux cours du Galop 7 (AUTO_IM_G7, non branchés) */
 /* précédente : VERSION = 57; */   /* 02/11 16h : corrections FFE des petits lexiques (garrot ; aides naturelles = 4 ; galop en équilibre ; circulation en manège au lieu de la route) et du défi du saut (mains sur la crinière) */
 /* précédente : VERSION = 56; */   /* 02/11 15h45 : lecteur audio — surtitres « CHAPITRE 01 », « GALOP 1 », durée et numéros marqués « à ne pas lire » (data-nolecture) */
 /* précédente : VERSION = 55; */   /* 02/11 15h25 : TOUTES les photos du haut descendues sous la barre retour / drapeau sur téléphone ; 14h45 : g1-c18 (HERO_COURS 4e valeur) */
@@ -3485,8 +3486,11 @@ var CSS_REV = [
 ".hce-rev .hce-lexique .lx-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% center;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 35%);mask-image:linear-gradient(90deg,transparent 0%,#000 35%)}",
 "@media (max-width:699px){.hce-rev .hce-lexique{display:flex;flex-direction:column;align-items:stretch;padding:0 20px 22px}.hce-rev .hce-lexique .lx-ph{order:-1;position:relative;margin:0 -20px 4px;align-self:auto}.hce-rev .hce-lexique .lx-ph img{position:static;width:100%;height:auto;object-fit:initial;-webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 100%);mask-image:linear-gradient(180deg,#000 70%,transparent 100%)}.hce-rev .hce-lexique h3{margin-top:-6px}}",
 ".hce-rev .hce-lexique.sans-ph{display:block!important;padding:26px 20px 18px!important}.hce-rev .hce-lexique.sans-ph h3{margin-top:0!important}.hce-rev .hce-lexique.sans-ph dl{max-width:620px;margin:0 auto}",
-".hce-rev .hce-savais{margin:6px 8px 34px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;line-height:1.4;color:rgba(243,238,228,.62)}",
-".hce-rev .hce-savais span{font-style:normal;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,166,107,.75);display:block;margin-bottom:6px}",
+/* 02/11 19h55 (Blandine, choix « C ») : « Le savais-tu ? » plus lisible — carte, titre serif, texte droit en Montserrat */
+".hce-rev .hce-savais{background:linear-gradient(180deg,#101A1D,#070A08);border:1px solid rgba(243,238,228,.12);border-radius:18px;padding:26px 22px;margin:6px 0 30px;text-align:center;font-family:'Montserrat','Noto Sans JP','Noto Naskh Arabic',sans-serif;font-style:normal;font-size:14.5px;line-height:1.65;color:rgba(243,238,228,.9)}",
+".hce-rev .hce-savais span{display:block;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:26px;font-weight:500;line-height:1.1;color:#F3EEE4;margin-bottom:12px}",
+".hce-rev .hce-savais span::before{content:'';display:block;width:34px;height:1px;background:#C9A66B;margin:0 auto 14px}",
+"@media (min-width:700px){.hce-rev .hce-savais{padding:30px 40px;font-size:15.5px}.hce-rev .hce-savais p{max-width:620px;margin-left:auto!important;margin-right:auto!important}}",
 ".hce-rev .hce-btns{display:flex;justify-content:center}",
 ".hce-rev .hce-btn,.hce .hce-vers-rev .hce-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;border-radius:999px;padding:13px 22px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;cursor:pointer}",
 ".hce .hce-vers-rev{display:flex;justify-content:center;padding:8px 0 24px}",

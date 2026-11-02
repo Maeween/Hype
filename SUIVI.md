@@ -16528,6 +16528,52 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pour brancher (sur accord de Blandine) : concaténer COURS_GALOP7_NOUVEAUX à COURS_GALOP7_FR (comme le Galop 5) + liste des cours de la page du Galop 7 (visible des modératrices seules d'abord).
 - Vérifié : syntaxe des 3 fichiers, 17 blocs de script OK ; structure des 16 cours contrôlée par script.
 - Fichiers : hype-cours-galop7.js (?v=3), hype-cours-editorial.js (?v=58), index.html (build 20261102-1640 : ?v=), SUIVI.md.
+
+## 02/11/2026 17h00 — PUBLICATION build 20261102-1700 (Blandine 16h56 « Ok mets la en ligne ») : Galop 7, longe avec enrênement
+- Blandine (16h41) : « Longe enrênée plutôt 30 à 40 » → g7n-03 : séance de 30 à 40 minutes au maximum, détente comprise (la relecture avait mis 20 à 30).
+- Fichiers : hype-cours-galop7.js (?v=4, toujours non branché), index.html (build 20261102-1700 : ?v=), SUIVI.md.
+
+## 02/11/2026 16h45 — PAGES GALOP : cartes des parties (prêt, NON PUBLIÉ)
+Blandine : « plus de place pour les photos dans les onglets, aère plus les onglets entre eux, même couleur que les cours : fond noir et onglets noir bleuté semi-transparents ».
+- index.html, fin de G5_CSS (toutes les pages Galop + Galop 5) : fond #070A08 ; cartes rgba(16,26,29,0.58) + flou ; photo 250 px (téléphone, au lieu de 190) et 300 px (tablette/ordinateur, au lieu de 240) ; 36 px entre les cartes (au lieu de 22).
+- PUBLIÉ le 02/11 à 17h (Blandine : « Publié »).
+## 02/11/2026 17h15 — PUBLICATION build 20261102-1715 (Blandine 16h56 « Branche les ») : les 16 cours du Galop 7 BRANCHÉS
+- hype-cours-galop7.js (?v=5) : les 16 cours g7n-01 … g7n-16 remplacent les 6 brouillons dans la liste du Galop 7 (window.COURS_GALOP7_FR) ; brouillons g7-c1 … g7-c6 gardés dans window.COURS_GALOP7_BROUILLONS (rien de perdu ; le Galop 7 étant « Prochainement », personne n'avait de progression dessus). Titres des 16 cours traduits en 14 langues (liste de la page) ; contenu en français seul jusqu'à validation. Lexiques rangés dans HYPE_LEXIQUE_EXTRA (page « Révise en 2 minutes », grand lexique côté modératrices).
+- index.html : obtenirCoursParGalop(7) passe par la même traduction que le Galop 5 (sinon erreur React #31 sur les titres { fr, en, … }) ; HYPE_CATEGORIE_PAR_COURS : 01-04 Vie équestre, 05-08 Connaissance du cheval, 09-15 Pratique équestre, 16 Culture équestre.
+- hype-cours-sommaire.js refait (outils/sommaire-cours.cjs) : Galop 7 = les 16 nouveaux titres (les autres Galops : mêmes cours, titres en 14 langues comme le refait Netlify à chaque publication).
+- Accès : le Galop 7 reste « Prochainement » (HYPE_GALOP_PROCHAIN_DES = 6) : les cavalières voient la liste des 16 titres, seules les modératrices ouvrent les cours. À ouvrir à tous (et à traduire) sur décision de Blandine après relecture.
+- Vérifié : syntaxe, 17 blocs de script OK.
+- Fichiers : hype-cours-galop7.js (?v=5), hype-cours-sommaire.js, index.html (build 20261102-1715), SUIVI.md.
+
+## 02/11/2026 19h55 — PUBLICATION build 20261102-1955 (demande de Blandine 19h51) : pages Galop, fond noir profond et onglets semi-transparents ombrés
+- Blandine (capture de la page du Galop 7 sur iPhone) : « Sur ces pages-là je voudrais un vrai fond noir profond et les onglets semi-transparents ombrés ».
+- index.html, pages Galop téléphone (G5_CSS, après le bloc 16h40 de l'autre conversation) : .g5 fond #000 (était #070A08, le dégradé du haut suit) ; barre d'onglets Présentation / Programme / Cours… : fond noir à 38 %, flou 14 px, ombre portée dessous.
+- index.html, pages Galop tablette et ordinateur (.g1o) : même règle (fond #000, onglets semi-transparents ombrés).
+- Vérifié : captures réelles 390 px et 1440 px de la page du Galop 7, aucune erreur ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-1955), SUIVI.md.
+
+## 02/11/2026 20h40 — PAGES GALOP : nouvelle photo « I Vie équestre » (prêt, NON PUBLIÉ)
+Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au bonnet noir et or, cavalière casquée qui l'embrasse ; photo verticale).
+- Nouveau fichier images/galops-th-vie3.webp : version HORIZONTALE envoyée ensuite par Blandine (1400 × 933, remplace la verticale) ; carte « I Vie équestre » de toutes les pages Galop (GV3) et du Galop 5 (G5_THEMES), cadrage 50 % 40 % (oreilles, casque et selle visibles).
+- L'ancienne photo galop5-th-vie2.webp est gardée : elle sert encore dans des cours (g3-c9, Galop 4).
+
+## 02/11/2026 20h50 — PAGES GALOP : deux propositions pour les cartes (prêt, NON PUBLIÉ, en attente du choix A / B)
+- A (dans le code) : photo de chaque carte entière au format 3/2, fondue vers le bas, titre posé dessous dans une bande de 72 px (ne recouvre plus la photo) — toutes les cartes, téléphone, tablette, ordinateur.
+- B (aperçu seulement, pas dans le code) : photo verticale images/galops-th-vie3v.webp en fond de toute la carte « Vie équestre », cours en onglets noir bleuté semi-transparents. Fichier image ajouté pour pouvoir l'appliquer si Blandine choisit B.
+- 20h50 : Blandine choisit A avec les onglets de B → chaque cours = onglet arrondi noir bleuté semi-transparent (toutes les cartes des pages Galop). Toujours non publié.
+- 20h55 : fondu photo → fond plus progressif et semi-transparent (la photo descend sous le titre et s'efface lentement ; ombre légère sous le titre). Toujours non publié.
+- 20h50 : Blandine choisit la proposition 2 (photo jusqu'à 40 px du bas de la zone, fondu progressif semi-transparent). Toujours non publié.
+- 20h55 : effet « verre dépoli » des onglets (Blandine : « vraiment le côté verre glacé ») — la photo de chaque partie, très floutée et assombrie, passe derrière toute la carte (variable --th-img posée sur chaque carte, GV3 + Galop 5) ; onglets en verre clair très léger, liseré lumineux, flou + saturation. Toujours non publié.
+- 20h56 : Blandine « léger et subtil, que ça ne déborde pas des onglets » → photo floutée derrière la carte retirée ; verre dépoli seulement dans chaque onglet (reflet clair très léger + liseré fin). La variable --th-img reste posée sur les cartes (sans effet). Toujours non publié.
+- 20h58 : Blandine « je veux à gauche ce que je vois à droite » → onglets EXACTEMENT comme B (fond rgba(16,26,29,0.55), liseré champagne, flou), sans reflet blanc. Toujours non publié.
+## 02/11/2026 21h00 — PUBLICATION build 20261102-2100 (accord de Blandine 20h43 « Ok vas y » ; 20h59 « Vas y on changera la photo après ») : « Le savais-tu ? » lisible (choix « C »), part avec la photo « Vie équestre » de l'autre session (commits 9058cfe et 831abbd, prêts non publiés)
+- Page « Révise en 2 minutes » (tous les Galops) : le savais-tu passe d'un petit italique gris à une carte bleu pétrole → noir, petit trait doré, « Le savais-tu ? » en titre Cormorant 26 px ivoire, texte droit en Montserrat 14,5 px (15,5 px sur tablette/ordinateur, largeur de lecture limitée à 620 px), centré.
+- hype-cours-editorial.js VERSION 59 (?v=59). Vérifié en 390 px et 1280 px : aucune erreur, aucun débordement.
+- Fichiers : hype-cours-editorial.js, index.html (?v= + build à la publication), SUIVI.md.
+- 21h : « à gauche ça reste pétrole » → carte rgba(9,12,12,0.72) et onglets rgba(18,21,21,0.62), plus noirs (pages Galop, non publié).
+- 21h03 : onglets semi-transparents sur la version « moins pétrole » (fond ivoire à 3,5 %, liseré champagne). Non publié.
+- 21h05 : « Terminé » n'est plus écrit sous les cours (la coche reste, et le mot reste lu par la synthèse vocale) ; cours sans quiz fait = 5 étoiles vides très légères (hypeEtoilesVides). Pages Galop (GV3) et Galop 5. Validé visuellement par Blandine. Non publié.
+- 21h08 : PUBLIÉ (Blandine : « Ok vas-y ») — cartes des pages Galop : photo Vie équestre, fondu 2, onglets semi-transparents moins pétrole, plus de « Terminé », étoiles vides.
 ## 02/11/2026 17h05 — PRÊT, PAS PUBLIÉ (branche g5-final) : Galop 5, contrôle final avant traduction (brief ChatGPT 16h42)
 - Corrections confirmées : mener « entre sa tête et son épaule » (longe) ; plus de « en équilibre sur les étriers » (lexiques saut et cross → « La position d'équilibre », intro du cross) ; 5e question Hey Baby du transport. Quiz n°3 de la longe : déjà à 4 réponses.
 - Contrôle exhaustif par un relecteur indépendant, corrections certaines appliquées : cession « à main gauche » (exemple impossible à main droite) ; bandes de repos (sous-bande jusque sous le boulet ; toujours les deux membres d'une paire ; défi, synthèse, quiz n°1 et lexique « tendon ») ; transitions quiz n°8 (défaut de transition) ; hauteurs Club 3 appuyées sur le programme (saut Q9, cross ch. 2 et Q6) ; cross Q9 sans l'eau au galop ; identification + 2 questions Hey Baby, synthèse, Q9 ; éditorial (Q7 « Lui apprend », renforcement positif, transport Q10, encadré sécurité saut, lexique et synthèse du cross).

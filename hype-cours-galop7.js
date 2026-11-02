@@ -6,7 +6,7 @@
    ===================================================================================== */
 (function () {
 "use strict";
-var COURS_GALOP7_VERSION = 3; /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
+var COURS_GALOP7_VERSION = 5; /* 02/11 16h56 : branchés */ /* 02/11 16h41 : g7n-03 longe enrênée 30 à 40 min */ /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
 var HYPE_IMGS = (typeof window !== "undefined" && window.HYPE_IMGS) || {};
 const COURS_GALOP7_FR = [
     {
@@ -98,8 +98,7 @@ window.COURS_GALOP7_VERSION = COURS_GALOP7_VERSION;
    officielle… fais les différentes répartitions des cours puis écris-les en suivant le même modèle et design que les galop 1 à 3 ».
    Répartition validée (15h41 « Ok vas y ») : I. Vie équestre 01-04 · II. Connaissance du cheval 05-08 · III. Pratique équestre 09-15 · IV. Culture équestre 16.
    15h45 : « prépare et écris tout, mets en ligne et en design SANS BRANCHER pour l'instant ; utilise en attendant les photos temporaires ».
-   NON BRANCHÉ : ces cours sont rangés dans window.COURS_GALOP7_NOUVEAUX, PAS dans COURS_GALOP7_FR : la page du Galop 7, la progression,
-   le grand lexique et les quiz ne les voient pas. Pour brancher : concaténer à COURS_GALOP7_FR (comme le Galop 5) + liste de la page du Galop 7.
+   16h56 « Branche les » : BRANCHÉS (voir la fin du bloc) ; le Galop 7 reste « Prochainement » : cours ouverts aux seules modératrices.
    Brouillons d'origine g7-c1 … g7-c6 (au-dessus) gardés tels quels ; leur contenu est repris, vérifié et enrichi ici.
    ÉTAT : FRANÇAIS SEUL, EN RELECTURE (Blandine + ChatGPT). Traductions après validation.
    ===================================================================================== */
@@ -2026,7 +2025,34 @@ var COURS = [
 }
 ];
 
-/* NON BRANCHÉ (02/11) : rangés à part. Parties de la page du Galop 7 (pour le futur branchement) : */
+/* titres des 16 cours en 14 langues (liste de la page du Galop 7, sommaire) ; le contenu reste en français jusqu'à validation */
+var TITRES = {
+"g7n-01": {"fr":"La bride","en":"The double bridle","es":"La brida","it":"Il morso e filetto","ja":"ダブルブライドル","de":"Die Kandare","ar":"اللجام المزدوج","zh":"双缰勒","nl":"Het stangbit","pt":"A brida","sv":"Kandaret","ru":"Мундштучное оголовье","pl":"Munsztuk","ko":"더블 브라이들"},
+"g7n-02": {"fr":"Les bandes de polo","en":"Polo bandages","es":"Las vendas de polo","it":"Le fasce da lavoro","ja":"ポロバンデージ","de":"Fleecebandagen","ar":"أربطة البولو","zh":"运动绷带","nl":"Fleecebandages","pt":"As ligaduras de polo","sv":"Fleecelindor","ru":"Флисовые бинты","pl":"Bandaże polarowe","ko":"폴로 붕대"},
+"g7n-03": {"fr":"La longe avec enrênement","en":"Lunging with training aids","es":"La cuerda con riendas auxiliares","it":"La corda con redini ausiliarie","ja":"補助手綱をつけた調馬索","de":"Longieren mit Hilfszügeln","ar":"العمل بالحبل مع الأعنّة المساعدة","zh":"使用辅助缰的打圈","nl":"Longeren met hulpteugels","pt":"A guia com rédeas auxiliares","sv":"Longering med hjälptyglar","ru":"Работа на корде с вспомогательным поводом","pl":"Lonżowanie z wypinaczami","ko":"보조 고삐를 단 조마삭 운동"},
+"g7n-04": {"fr":"Longues rênes et travail en main","en":"Long-reining and in-hand work","es":"Riendas largas y trabajo a la mano","it":"Redini lunghe e lavoro alla mano","ja":"長手綱とハンドワーク","de":"Doppellonge und Handarbeit","ar":"الأعنّة الطويلة والعمل باليد","zh":"长缰与牵手调教","nl":"Lange teugels en werk aan de hand","pt":"Rédeas longas e trabalho à mão","sv":"Långtömmar och handarbete","ru":"Длинные вожжи и работа в руках","pl":"Długie wodze i praca z ręki","ko":"긴 고삐와 핸드 워크"},
+"g7n-05": {"fr":"Les défauts d'aplombs","en":"Conformation faults of the limbs","es":"Los defectos de aplomos","it":"I difetti di appiombo","ja":"肢勢の欠点","de":"Stellungsfehler der Gliedmaßen","ar":"عيوب استقامة الأطراف","zh":"肢势缺陷","nl":"Afwijkingen in de beenstand","pt":"Os defeitos de aprumos","sv":"Benställningsfel","ru":"Пороки постановки конечностей","pl":"Wady postawy kończyn","ko":"지세 결점"},
+"g7n-06": {"fr":"Identifier un cheval","en":"Identifying a horse","es":"Identificar un caballo","it":"Identificare un cavallo","ja":"馬を識別する","de":"Ein Pferd identifizieren","ar":"التعرّف على هوية الحصان","zh":"识别一匹马","nl":"Een paard identificeren","pt":"Identificar um cavalo","sv":"Identifiera en häst","ru":"Идентификация лошади","pl":"Identyfikacja konia","ko":"말 식별하기"},
+"g7n-07": {"fr":"Le transport et le bien-être","en":"Transport and welfare","es":"El transporte y el bienestar","it":"Il trasporto e il benessere","ja":"輸送とウェルフェア","de":"Transport und Wohlbefinden","ar":"النقل والرفاهية","zh":"运输与福利","nl":"Vervoer en welzijn","pt":"O transporte e o bem-estar","sv":"Transport och välbefinnande","ru":"Перевозка и благополучие","pl":"Transport i dobrostan","ko":"수송과 복지"},
+"g7n-08": {"fr":"Le rationnement et les aliments","en":"Rationing and feedstuffs","es":"El racionamiento y los alimentos","it":"Il razionamento e gli alimenti","ja":"飼料設計と飼料","de":"Rationsgestaltung und Futtermittel","ar":"تقنين العلف والأغذية","zh":"日粮配给与饲料","nl":"Rantsoenering en voeders","pt":"O racionamento e os alimentos","sv":"Utfodring och fodermedel","ru":"Рацион и корма","pl":"Dawkowanie paszy i pasze","ko":"사료 배합과 사료"},
+"g7n-09": {"fr":"Le cheval sur la main","en":"The horse on the bit","es":"El caballo en la mano","it":"Il cavallo in mano","ja":"ハミ受け","de":"Das Pferd an den Hilfen","ar":"الحصان على اليد","zh":"上手","nl":"Het paard aan het bit","pt":"O cavalo na mão","sv":"Hästen på handen","ru":"Лошадь на поводу","pl":"Koń na wędzidle","ko":"말을 손에 올리기"},
+"g7n-10": {"fr":"La détente et la position","en":"Warming up and position","es":"El calentamiento y la posición","it":"Il riscaldamento e la posizione","ja":"準備運動と騎座","de":"Die Lösungsphase und der Sitz","ar":"الإحماء ووضعية الفارس","zh":"热身与骑姿","nl":"Het losrijden en de zit","pt":"O aquecimento e a posição","sv":"Uppvärmning och sits","ru":"Разминка и посадка","pl":"Rozprężenie i dosiad","ko":"워밍업과 자세"},
+"g7n-11": {"fr":"Incurvation et rectitude","en":"Bend and straightness","es":"Incurvación y rectitud","it":"Incurvamento e dirittura","ja":"湾曲と真直性","de":"Biegung und Geraderichtung","ar":"التقوّس والاستقامة","zh":"弯曲与端正性","nl":"Buiging en rechtgerichtheid","pt":"Incurvação e retidão","sv":"Böjning och rakriktning","ru":"Сгибание и прямолинейность","pl":"Zgięcie i prostość","ko":"휨과 직진성"},
+"g7n-12": {"fr":"L'épaule en dedans","en":"Shoulder-in","es":"La espalda adentro","it":"La spalla in dentro","ja":"肩を内へ","de":"Das Schulterherein","ar":"الكتف إلى الداخل","zh":"肩向内","nl":"Schouderbinnenwaarts","pt":"A espádua a dentro","sv":"Öppna","ru":"Плечо внутрь","pl":"Łopatka do wewnątrz","ko":"숄더인"},
+"g7n-13": {"fr":"Le travail au galop","en":"Work at the canter","es":"El trabajo al galope","it":"Il lavoro al galoppo","ja":"駈歩の運動","de":"Die Arbeit im Galopp","ar":"العمل في العدو","zh":"跑步练习","nl":"Het werk in galop","pt":"O trabalho a galope","sv":"Arbete i galopp","ru":"Работа галопом","pl":"Praca w galopie","ko":"구보 운동"},
+"g7n-14": {"fr":"Le CSO : enchaîner et diriger","en":"Show jumping: linking and steering","es":"Salto de obstáculos: encadenar y dirigir","it":"Salto ostacoli: concatenare e dirigere","ja":"障害飛越：連続飛越とライン取り","de":"Springen: verbinden und lenken","ar":"قفز الحواجز: الربط والتوجيه","zh":"场地障碍：连续跳跃与控线","nl":"Springen: aaneenschakelen en sturen","pt":"Saltos: encadear e dirigir","sv":"Hoppning: koppla ihop och styra","ru":"Конкур: связки и управление","pl":"Skoki: łączenie i prowadzenie","ko":"장애물 비월: 연결과 방향 잡기"},
+"g7n-15": {"fr":"Le cross : terrain, vitesse et précision","en":"Cross-country: terrain, speed and accuracy","es":"El cross: terreno, velocidad y precisión","it":"Il cross: terreno, velocità e precisione","ja":"クロスカントリー：地形、スピード、正確さ","de":"Gelände: Terrain, Tempo und Präzision","ar":"الكروس: التضاريس والسرعة والدقة","zh":"越野：地形、速度与精准","nl":"Cross: terrein, snelheid en precisie","pt":"O cross: terreno, velocidade e precisão","sv":"Terräng: underlag, fart och precision","ru":"Кросс: рельеф, скорость и точность","pl":"Cross: teren, tempo i precyzja","ko":"크로스컨트리: 지형, 속도, 정확성"},
+"g7n-16": {"fr":"L'examen du Galop 7","en":"The Galop 7 exam","es":"El examen del Galop 7","it":"L'esame del Galop 7","ja":"Galop 7の試験","de":"Die Prüfung zum Galopp 7","ar":"امتحان الغالوب 7","zh":"Galop 7 考试","nl":"Het examen van Galop 7","pt":"O exame do Galop 7","sv":"Examen för Galop 7","ru":"Экзамен Galop 7","pl":"Egzamin Galop 7","ko":"Galop 7 시험"}
+};
+COURS.forEach(function (c) { if (TITRES[c.id]) c.titre = TITRES[c.id]; });
 window.COURS_GALOP7_NOUVEAUX = COURS;
+/* 02/11 16h56 (Blandine « Branche les ») : BRANCHÉS — les 16 cours remplacent les 6 brouillons dans la liste du Galop 7.
+   Brouillons g7-c1 … g7-c6 gardés dans window.COURS_GALOP7_BROUILLONS (rien de perdu). Galop 7 = « Prochainement » :
+   seules les modératrices ouvrent les cours (HYPE_GALOP_PROCHAIN_DES dans index.html). */
+window.COURS_GALOP7_BROUILLONS = window.COURS_GALOP7_BROUILLONS || (window.COURS_GALOP7_FR || []).filter(function (c) { return c && !/^g7n-/.test(c.id); });
+window.COURS_GALOP7_FR = COURS;
+/* petit lexique de chaque cours, montré sur la page « Révise en 2 minutes » (comme le Galop 5) */
+window.HYPE_LEXIQUE_EXTRA = window.HYPE_LEXIQUE_EXTRA || {};
+COURS.forEach(function (c) { if (c.lexique && c.lexique.fr) window.HYPE_LEXIQUE_EXTRA[c.id] = { fr: { titre: "Petit lexique", mots: c.lexique.fr } }; });
 window.COURS_GALOP7_NOUVEAUX_PARTIES = { vie: ["g7n-01", "g7n-02", "g7n-03", "g7n-04"], connaissance: ["g7n-05", "g7n-06", "g7n-07", "g7n-08"], technique: ["g7n-09", "g7n-10", "g7n-11", "g7n-12", "g7n-13", "g7n-14", "g7n-15"], culture: ["g7n-16"] };
 })();
