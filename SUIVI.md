@@ -16586,3 +16586,11 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - C5 (lexique de l'incurvation) : « Volte » et « Changement de main » retirés, « Cercle » ajouté ; « Serpentine » alignée sur le cours 1.
 - Vérifié : quiz à 10 questions, 4 réponses chacune ; Galops 1 à 5 s'ouvrent sans erreur. hype-cours-galop5.js ?v=10.
 - Reste avant traduction : validation explicite du français par Blandine.
+## 02/11/2026 22h10 — PRÊT, PAS PUBLIÉ (branche g5-final) : Galop 5, les 12 cours traduits en 13 langues (validation du français : Blandine 21h15 « Ok »)
+- 1 888 textes × 13 langues (en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko), un traducteur par langue, vocabulaire repris des cours déjà en ligne ; vérifiés : mêmes clés, aucun vide, rien resté en français, titres = ceux de la page du Galop 5, règles de Blandine respectées.
+- hype-cours-galop5.js (?v=11) : bloc TR_G5N à la fin des nouveaux cours. Chaque entrée garde le texte français d'origine : une traduction ne s'applique que si le français n'a pas changé (sinon la phrase reste en français, jamais une traduction périmée). Lexiques de la page « Révise » dans les 14 langues (titre « Petit lexique » traduit).
+- outils/cours-langues.cjs : HYPE_LEXIQUE_EXTRA (partagé par les Galops 5 et 7) est complété au lieu d'être remplacé quand on charge un Galop après l'autre (avant : ouvrir le Galop 7 effaçait les lexiques du Galop 5, et inversement).
+- hype-cours-editorial.js v60 (?v=60) : cours « g5n-… » — le texte français de référence est retrouvé (/^g(\d+)/), sinon le « Le savais-tu ? » restait dans le chapitre dans les autres langues au lieu d'aller sur la page « Révise ».
+- Vérifié (appli locale avec les fichiers par langue) : 12 cours × 14 langues s'ouvrent, page Révise partout, savais-tu déplacé dans les 8 cours qui en ont ; captures en, ar, ja, ru.
+- Points relevés par les traducteurs (à décider plus tard) : italien « Galop 5 » (nouveaux cours) / « Livello 5 » (embouchures) ; portugais « você » (comme la plupart des textes pt) ; quelques titres de page et textes n'emploient pas exactement le même mot (de : Takt/Tempo ; pt : ligaduras/bandagens ; zh : 侧弯/弯曲) ; anciennes coquilles hors Galop 5 (zh « 马车 » pour van, ja « 牴馬 », ko « 포인 » au Galop 4).
+- Les cours restent visibles des seules modératrices (HYPE_COURS_PRETS inchangé).

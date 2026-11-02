@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 59;   /* 02/11 19h55 : « Le savais-tu ? » de la page « Révise en 2 minutes » en carte lisible (choix C de Blandine) */
+var VERSION = 60;   /* 02/11 22h : cours « g5n-… » — le texte français de référence est retrouvé (repère du « Le savais-tu ? » dans les autres langues) */
+/* précédente : VERSION = 59; */   /* 02/11 19h55 : « Le savais-tu ? » de la page « Révise en 2 minutes » en carte lisible (choix C de Blandine) */
 /* précédente : VERSION = 58; */   /* 02/11 16h40 : photos provisoires des chapitres des 16 nouveaux cours du Galop 7 (AUTO_IM_G7, non branchés) */
 /* précédente : VERSION = 57; */   /* 02/11 16h : corrections FFE des petits lexiques (garrot ; aides naturelles = 4 ; galop en équilibre ; circulation en manège au lieu de la route) et du défi du saut (mains sur la crinière) */
 /* précédente : VERSION = 56; */   /* 02/11 15h45 : lecteur audio — surtitres « CHAPITRE 01 », « GALOP 1 », durée et numéros marqués « à ne pas lire » (data-nolecture) */
@@ -3054,7 +3055,7 @@ function construireAuto(cours, lg) {
      se lit donc sur le cours d'origine en français, même bloc, même place — le texte affiché reste celui de la langue choisie */
   var RAW = (function () {
     try {
-      var n = (/^g(\d+)-/.exec(cours.id) || [])[1], t = n === "1" ? window.COURS_GALOP1_I18N : window["COURS_GALOP" + n + "_FR"];
+      var n = (/^g(\d+)/.exec(cours.id) || [])[1], t = n === "1" ? window.COURS_GALOP1_I18N : window["COURS_GALOP" + n + "_FR"];
       for (var i = 0; t && i < t.length; i++) if (t[i] && t[i].id === cours.id) return t[i];
     } catch (e) { }
     return null;

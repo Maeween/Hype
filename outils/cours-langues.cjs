@@ -58,7 +58,8 @@ try {
         js += "d." + k + " = " + txt.replace(/"@@IMG:([^@"]+)@@"/g, function (_, c) { return "HYPE_IMGS[" + JSON.stringify(c) + "]"; }) + ";\n";
       }
       /* l'appli range chaque langue à part (window.__hypeCoursStock) : deux langues chargées l'une après l'autre ne se mélangent jamais */
-      js += "for (var k in d) window[k] = d[k];\n(window.__hypeCoursStock = window.__hypeCoursStock || {})[" + JSON.stringify(f + "|" + lg) + "] = d;\n})();\n";
+      /* 02/11 : HYPE_LEXIQUE_EXTRA est partagé par plusieurs Galops (5, 7…) : on le complète au lieu de le remplacer */
+      js += "for (var k in d) { if (k === \"HYPE_LEXIQUE_EXTRA\" && window[k] && typeof window[k] === \"object\") { for (var j in d[k]) window[k][j] = d[k][j]; } else window[k] = d[k]; }\n(window.__hypeCoursStock = window.__hypeCoursStock || {})[" + JSON.stringify(f + "|" + lg) + "] = d;\n})();\n";
       fs.writeFileSync(path.join(SORTIE, f.replace(/\.js$/, "." + lg + ".js")), js);
       n++; poids += js.length;
     }
