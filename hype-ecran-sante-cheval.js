@@ -1403,6 +1403,7 @@ function EcranSanteCheval() {
       /* 11/10 (980) Blandine : « mets plutot les deux onglets cote a cote, Ajouter un soin et des consignes ». Quand le cheval n a
          encore AUCUNE consigne, les deux cartes en pointilles se partagent la ligne (2 colonnes). Des qu il a des consignes, le bandeau
          « Consignes du cheval » (depliable) reprend toute la largeur sous « Ajouter un soin », comme avant. */
+      h((typeof HypeVoileSantePremium === "function") ? HypeVoileSantePremium : React.Fragment, null,   /* 02/11 (Blandine) : sans Premium, tout ce qui suit le haut de page est flouté */
       (function () {
         var consVides = consignes !== null && !RUB_CONS.some(function (r) { return String((consignes || {})[r.k] || "").trim(); });
         var pad = largeS ? "18px 32px 0" : "18px 16px 0";   /* (1062) 12 -> 18 */
@@ -1435,7 +1436,7 @@ function EcranSanteCheval() {
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
       T("Les soins n\u2019ont pas pu \u00eatre lus : ", "Care records could not load: ", "No se pudieron cargar los cuidados: ", "Impossibile caricare le cure: ", "\u8a18\u9332\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Eintr\u00e4ge nicht geladen: ", "\u062a\u0639\u0630\u0631\u062a \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u0639\u0646\u0627\u064a\u0627\u062a: ", "护理记录无法读取：", "De verzorging kon niet worden geladen: ", "Não foi possível ler os cuidados: ", "Vården kunde inte läsas: ", "Не удалось прочитать записи об уходе: ", "Nie udało się wczytać zabiegów: ", "케어 기록을 불러오지 못했어요: ") + err) : null,
       corps,
-      finPageSante()),   /* (938) */
+      finPageSante())),   /* (938) ; 02/11 : fin du voile Premium */
     panneauFamille(),
     panneauEpingle(),
     feuillePro ? h(FeuillePro, {

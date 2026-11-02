@@ -16459,3 +16459,11 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Grand lexique : les 14 lexiques du Galop 4 y entrent (14 langues, mêmes mots que la page Révise) ; les mots du Galop 5 sont rangés sous « Galop 5 » (avant : galop 0, l'id « g5n- » n'était pas reconnu) ; les mots des cours pas encore ouverts à tous (Galop 5 en relecture) ne sont visibles que des modérateurs (index.html, EcranGrandLexique : prop pret). Vérifié : modératrice 387 mots, Galops 1-5 ; non-modérateur 336 mots, Galops 1-4.
 - Vérifié aussi : Galops 1 à 5, tous les cours s'ouvrent comme avant (G1 16, G2 14, G3 15, G4 15, G5 12) ; page Révise du Galop 4 en 390 px et 1280 px ; aucune erreur.
 - Fichiers : hype-cours-editorial.js (?v=54), hype-cours-editorial-g4.js (?v=11), index.html (build 20261102-1516 : ?v=, numéro de build, grand lexique), SUIVI.md.
+## 02/11/2026 14h50 — build 20261102-1445 (EN ATTENTE de l'accord de Blandine) : la santé réservée à Premium
+- Demande de Blandine (11h57 puis 14h38) : « Réserve la santé à premium » ; « voir juste le début du haut et la suite en flou, genre opaque » ; « B » = page Santé & soins du cheval ET page Santé de l'écurie ; « que premium a accès » (les cavalières rattachées non abonnées n'ont plus accès non plus).
+- Remplace la règle du 11/10 (« tout le monde peut consulter, seuls les abonnés remplissent »).
+- index.html : nouveau composant HypeVoileSantePremium (juste avant EcranSanteClub). Sans abonnement : le haut de la page reste net, tout le reste est flouté, non cliquable, coupé en hauteur, avec la carte « La santé est réservée à Premium » + « Me connecter » si on n'est pas connecté (BandeauDejaAbonne) + « Débloquer avec Premium ». Abonnés (dont Duo, Evan, Liam) et modératrices : page inchangée. 14 langues.
+- Page Santé de l'écurie (EcranSanteClub, index.html) : voile après le bandeau « Clinique vétérinaire ».
+- Page Santé & soins du cheval (hype-ecran-sante-cheval.js ?v=2) : voile après le titre, les onglets et « Prendre soin, c'est déjà aimer. ».
+- Vérifié : captures téléphone et ordinateur, sans abonnement et avec abonnement, aucune erreur.
+- Fichiers : index.html (build 20261102-1445), hype-ecran-sante-cheval.js, SUIVI.md.

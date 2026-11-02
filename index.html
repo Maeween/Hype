@@ -44887,6 +44887,50 @@ function ImportSoinsClub(props) {
   /* au-dessus de la barre du bas : rendu dans document.body (meme remede que les autres feuilles plein ecran) */
   return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(feuilleImport, document.body) : feuilleImport;
 }
+/* 02/11/2026 14h40 — SANTÉ RÉSERVÉE À PREMIUM (Blandine : « Réserve la santé à premium », « voir juste le début du haut et la suite
+   en flou, genre opaque », « B » = page Santé du cheval ET page Santé de l'écurie, « que premium a accès » : les cavalières rattachées
+   non abonnées n'ont plus accès non plus). Sans abonnement : le haut de la page reste net, tout le reste est flouté, non cliquable,
+   coupé en hauteur, avec par-dessus la carte « Réservé à Premium » (+ « Me connecter » si on n'est pas connecté, via BandeauDejaAbonne).
+   Abonnés (y compris Duo, Evan, Liam : app.premium) et modératrices : page normale, rien ne change. */
+function HypeVoileSantePremium(props) {
+  var h = React.createElement;
+  var app = useApp();
+  var tr = app.tr || function (o) { return (o && o.fr) || ""; };
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
+  var stM = React.useState(undefined); var moi = stM[0], setMoi = stM[1];
+  React.useEffect(function () { var actif = true; (async function () { try { var u = await utilisateurActuel(); if (actif) setMoi(u || null); } catch (e) { if (actif) setMoi(null); } })(); return function () { actif = false; }; }, []);
+  var estMod = (typeof estModerateurHype === "function") && moi && estModerateurHype(moi);
+  if (app.premium || estMod) return h(React.Fragment, null, props.children);
+  var M = "'Montserrat',sans-serif", CG = "'Cormorant Garamond',Georgia,serif";
+  return h("div", { "data-sante-premium": "1", style: { position: "relative", minHeight: 660 } },
+    h("div", { "aria-hidden": "true", inert: "", style: { maxHeight: 720, overflow: "hidden", filter: "blur(7px)", opacity: 0.85, pointerEvents: "none", userSelect: "none", WebkitUserSelect: "none",
+      WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 70%, transparent 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 70%, transparent 100%)" } }, props.children),
+    h("div", { style: { position: "absolute", left: 0, right: 0, top: 150, display: "flex", justifyContent: "center", padding: "0 16px", boxSizing: "border-box" } },
+      h("div", { style: { width: "100%", maxWidth: 380, borderRadius: 20, border: "1px solid rgba(201,166,107,0.4)", background: "linear-gradient(165deg, rgba(14,20,24,0.94) 0%, rgba(6,8,10,0.96) 100%)", boxShadow: "0 18px 50px rgba(0,0,0,0.6)", padding: "26px 22px 22px", textAlign: "center", color: "#F3EEE4", boxSizing: "border-box" } },
+        h("div", { "aria-hidden": "true", style: { width: 56, height: 56, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" } },
+          h("svg", { viewBox: "0 0 24 24", width: 24, height: 24, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
+            h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
+        h("div", { style: { fontFamily: CG, fontSize: 24, fontWeight: 600, lineHeight: 1.18, marginBottom: 10 } },
+          T("La santé est réservée à Premium", "Health is for Premium", "La salud es para Premium", "La salute è riservata a Premium", "健康管理はPremium限定です", "Gesundheit ist für Premium", "قسم الصحة مخصّص لـ Premium", "健康页面仅限 Premium", "Gezondheid is voor Premium", "A saúde é reservada ao Premium", "Hälsa är för Premium", "Раздел «Здоровье» доступен с Premium", "Zdrowie jest dostępne w Premium", "건강 페이지는 Premium 전용이에요")),
+        h("div", { style: { fontFamily: M, fontSize: 13, lineHeight: 1.6, color: "rgba(243,238,228,0.72)", marginBottom: 18 } },
+          T("Vaccins, vermifuges, maréchal, dentiste, consignes et équipe de soins : débloque le suivi santé de tes chevaux avec Hype Premium.",
+            "Vaccines, deworming, farrier, dentist, instructions and care team: unlock your horses' health records with Hype Premium.",
+            "Vacunas, desparasitaciones, herrador, dentista, consignas y equipo de cuidados: desbloquea el seguimiento de salud de tus caballos con Hype Premium.",
+            "Vaccini, vermifughi, maniscalco, dentista, istruzioni e squadra di cura: sblocca la salute dei tuoi cavalli con Hype Premium.",
+            "ワクチン、駆虫、装蹄、歯科、注意事項、ケアチーム。Hype Premiumで馬の健康記録を利用できます。",
+            "Impfungen, Entwurmungen, Hufschmied, Zahnarzt, Hinweise und Pflegeteam: Schalte die Gesundheitsakte deiner Pferde mit Hype Premium frei.",
+            "اللقاحات، طارد الديدان، البيطار، طبيب الأسنان، التعليمات وفريق الرعاية: افتح متابعة صحة خيولك مع Hype Premium.",
+            "疫苗、驱虫、钉蹄、牙医、注意事项和护理团队：开通 Hype Premium，查看你的马的健康记录。",
+            "Vaccinaties, ontwormingen, hoefsmid, tandarts, instructies en verzorgingsteam: ontgrendel de gezondheid van je paarden met Hype Premium.",
+            "Vacinas, vermífugos, ferrador, dentista, instruções e equipe de cuidados: desbloqueie a saúde dos seus cavalos com o Hype Premium.",
+            "Vaccinationer, avmaskning, hovslagare, tandläkare, instruktioner och vårdteam: lås upp dina hästars hälsa med Hype Premium.",
+            "Прививки, дегельминтизация, коваль, дантист, указания и команда ухода: открой здоровье своих лошадей с Hype Premium.",
+            "Szczepienia, odrobaczanie, kowal, dentysta, wskazówki i zespół opieki: odblokuj zdrowie swoich koni z Hype Premium.",
+            "백신, 구충, 장제, 치과, 관리 지침과 케어 팀: Hype Premium으로 말의 건강 기록을 열어 보세요.")),
+        h(BandeauDejaAbonne, { marge: "0 0 12px" }),
+        h("button", { type: "button", "data-sante-premium-btn": "1", onClick: function () { app.setEcran("premium"); }, style: { width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid #C9A66B", background: "rgba(201,166,107,0.1)", color: "#D8BA82", fontFamily: M, fontSize: 14.5, fontWeight: 600, cursor: "pointer" } },
+          T("Débloquer avec Premium", "Unlock with Premium", "Desbloquear con Premium", "Sblocca con Premium", "Premiumで利用する", "Mit Premium freischalten", "افتح مع Premium", "开通 Premium", "Ontgrendelen met Premium", "Desbloquear com Premium", "Lås upp med Premium", "Открыть с Premium", "Odblokuj z Premium", "Premium으로 열기")))));
+}
 function EcranSanteClub() {
   var h = React.createElement;
   var ctx = (typeof useApp === "function") ? useApp() : {};
@@ -45046,6 +45090,7 @@ function EcranSanteClub() {
         h("div", { style: { margin: "6px 0 0", fontSize: 12.5, fontWeight: 500, color: "rgba(243,238,228,0.85)", fontFamily: M, textShadow: "0 1px 10px rgba(0,0,0,0.95)" } },
           T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u30a2\u30c9\u30d0\u30a4\u30b9", "Pflege & Rat", "\u0627\u0644\u0639\u0646\u0627\u064a\u0629 \u0648\u0627\u0644\u0646\u0635\u0627\u0626\u062d", "护理与建议", "Zorg & advies", "Cuidados e conselhos", "Vård & råd", "Уход и советы", "Opieka i porady", "케어 & 조언")),
         clubS ? h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(243,238,228,0.62)", marginTop: 8, letterSpacing: 0.4 } }, clubS) : null)),
+    h(HypeVoileSantePremium, null,   /* 02/11 : santé réservée à Premium */
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
       /* 16/09 (183) : le libelle venait de la page Sante d UN cheval et n avait aucun sens
          ici - cet ecran lit des CHEVAUX, pas des soins. Le message technique brut est CONSERVE
@@ -45058,7 +45103,7 @@ function EcranSanteClub() {
     (lignes && lignes.length) ? h("div", { style: { padding: "0 16px 12px" } },
       h("button", { onClick: function () { setImportOuvert(true); }, style: { width: "100%", minHeight: 46, borderRadius: 13, border: "1px solid rgba(201,166,107,0.45)", background: "rgba(201,166,107,0.06)", color: "#F3EEE4", fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
         "\ud83d\udccb " + T("Importer des soins", "Import care records", "Importar cuidados", "Importa cure", "\u30b1\u30a2\u8a18\u9332\u306e\u53d6\u308a\u8fbc\u307f", "Pflege importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0627\u0644\u0639\u0646\u0627\u064a\u0629", "导入护理记录", "Verzorging importeren", "Importar cuidados", "Importera vård", "Импортировать записи об уходе", "Zaimportuj zabiegi", "케어 기록 가져오기"))) : null,
-    corps,
+    corps),
     importOuvert ? h(ImportSoinsClub, { T: T, chevaux: (lignes || []).map(function (li) { return li.cheval; }), onFermer: function () { setImportOuvert(false); }, onEnregistre: function () { setRecharge(function (n) { return n + 1; }); } }) : null);
 }
 
@@ -45844,7 +45889,7 @@ function FenetreProChevaux(props) {
   return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
 }
 
-const EcranSanteCheval = hypeEcranDiffere("hype-ecran-sante-cheval.js?v=1", "HypeSanteCheval", "SanteCheval");
+const EcranSanteCheval = hypeEcranDiffere("hype-ecran-sante-cheval.js?v=2", "HypeSanteCheval", "SanteCheval");
 
 function EcranCliniqueEquine() {
   var h = React.createElement;
