@@ -16606,3 +16606,8 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Page Galops, « Tout pour progresser » : carte Vidéothèque = bai au filet avec un bouton lecture dans la photo (images/galops-carte-videos-lecture.webp, cadrage 50 % 48 %) ; remplace la photo de 21h59. Le bouton lecture étant dans la photo, la petite icône de la carte est retirée pour celle-ci seulement (sansIc), pour ne pas avoir deux boutons lecture.
 - Vérifié : capture réelle 390 px ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2220), SUIVI.md, images/galops-carte-videos-lecture.webp.
+
+## 02/11/2026 22h25 — PUBLICATION build 20261102-2225 (Blandine 22h10) : plus de petites icônes dorées sur les cartes « Tout pour progresser »
+- Demande : « retire les petits logos dorés sur chaque onglet, on a déjà les titres ». index.html : l'icône (gv2-carte-ic) n'est plus affichée sur aucune des 7 cartes (téléphone, tablette, ordinateur) ; titres, flèches et badge « Prochainement » inchangés.
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2225), SUIVI.md.
