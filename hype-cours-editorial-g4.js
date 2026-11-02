@@ -24,7 +24,7 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var E = window.HypeCoursEditorial;
 if (!E || !E._ || !E.config) return;
-var VERSION = 9;   /* 01/11 21h05 : photos du haut de Blandine (14 cours du Galop 4 + g3-saut) avec leur cadrage */
+var VERSION = 10;   /* 01/11 21h05 : photos du haut de Blandine (14 cours du Galop 4 + g3-saut) avec leur cadrage */
 /* précédente : VERSION = 8; */   /* 01/11 20h : chapitres dans le style du cours des robes (photo d'un côté puis de l'autre, un chapitre sur deux) */
 /* précédente : var VERSION = 7; */   /* 01/11 18h05 : citation du chapitre 01 dans le bandeau sous le haut de page (plus en double) */
 /* v6 : */   /* 01/11 17h (V4) : titres sans redite (incurvation, départ au galop), coach + défi empilés sur téléphone, photo dorée de g4-vitesse */
@@ -100,7 +100,7 @@ var IMG = {   /* 31/10 23h57 (Blandine : rester dans la palette) : photos chaude
   "g4-galop-qualite": ["galop5-th-cheval2.webp", "galop5-hero-v2.webp", "galop5-th-vie2.webp"],
   "g4-c5": ["securite-g1-epaule.webp", "securite-g1-observer.webp", "securite-g1-inquiet.webp"],
   /* 01/11 : Galop 3, cours de saut (photos provisoires, mêmes que la version d'avant) */
-  "g3-c3": ["galop5-c11-saut.webp", "galop5-c12-cross.webp", "galop5-c08-equilibre.webp"],
+  "g3-c3": ["galop5-c11-saut.webp", "galop5-c12-cross.webp", "portrait-cheval-14.webp"],   /* 02/11 10h25 (Blandine) : photo de manège remplacée */
   "g3-saut": ["galop5-c11-saut.webp", "galop5-c12-cross.webp", "article-cso-saut.webp"]
 };
 /* chapitres communs : une photo fixe chacun */

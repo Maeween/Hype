@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 50;   /* 02/11 10h17 : g1-c9 chapitre 01 « La position : la base de toutes tes aides » — photo de Blandine (cours-g1-c9-position.webp) à la place de la photo de manège */
+var VERSION = 51;   /* 02/11 10h25 (Blandine) : Galop 3 — photos de manège des chapitres remplacées, en alternance, par 10 photos de Blandine (8 portraits sur fond noir + 2 photos montées, images/portrait-cheval-1 à 10.webp), en attendant les bonnes photos */
+/* précédente : VERSION = 50; */   /* 02/11 10h17 : g1-c9 chapitre 01 « La position : la base de toutes tes aides » — photo de Blandine (cours-g1-c9-position.webp) à la place de la photo de manège */
 /* précédente : VERSION = 49; */   /* 02/11 10h16 : g1-c5 « La position d'équilibre » — nouvelle photo de Blandine (cours-g1-c5-equilibre-2.webp) */
 /* précédente : VERSION = 48; */   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
 /* précédente : VERSION = 47; */   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
@@ -2200,21 +2201,21 @@ var AUTO_IM = {
 /* 01/11 00h30 (Blandine : « tu feras pareil pour l'adaptation des cours sur tel pour tous les Galops 3 et 4 ») : Galop 3 sur le même modèle (le Galop 4 a son propre fichier, hype-cours-editorial-g4.js).
    Photos choisies parmi les photos existantes de l'appli, par thème (aucune nouvelle image). g3-c7 (robes) garde son propre modèle. */
 var AUTO_IM_G3 = {
-  "g3-c1": ["images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
-  "g3-c2": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
-  "g3-c3": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-c08-equilibre.webp"],
+  "g3-c1": ["images/portrait-cheval-9.webp", "images/portrait-cheval-11.webp", "images/portrait-cheval-1.webp"],
+  "g3-c2": ["images/portrait-cheval-12.webp", "images/portrait-cheval-10.webp", "images/portrait-cheval-13.webp", "images/portrait-cheval-2.webp"],
+  "g3-c3": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/portrait-cheval-14.webp"],
   "g3-saut": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
   "g3-c4": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-epaule.webp"],
   "g3-c5": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-theme-soins-pied.webp"],
   "g3-c6": ["images/securite-g1-observer.webp", "images/securite-g1-inquiet.webp", "images/galop5-th-cheval2.webp"],
-  "g3-c8": ["images/galop5-c04-anatomie.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp"],
+  "g3-c8": ["images/portrait-cheval-16.webp", "images/portrait-cheval-3.webp", "images/portrait-cheval-4.webp", "images/portrait-cheval-5.webp"],
   "g3-c9": ["images/galop5-th-vie.webp", "images/galop5-th-vie2.webp"],
-  "g3-c10": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c07-transport.webp"],
-  "g3-c11": ["images/galop5-theme-soins-pied.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-c05-soins.webp", "images/galop5-c04-anatomie.webp"],
-  "g3-c12": ["images/galop5-theme-pratique-montee.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-tenue.webp", "images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
-  "g3-c13": ["images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp", "images/galop5-c08-equilibre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c03-apprendre.webp", "images/galop5-theme-connaissances.webp"],
-  "g3-c14": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp", "images/galop5-theme-pratique-montee.webp", "images/galop5-c03-apprendre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c11-saut.webp"],
-  "g3-c15": ["images/galop5-c09-incurvation.webp", "images/galop5-c10-cession.webp", "images/galop5-c08-equilibre.webp"],
+  "g3-c10": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/portrait-cheval-6.webp", "images/portrait-cheval-7.webp", "images/portrait-cheval-8.webp", "images/portrait-cheval-9.webp", "images/galop5-c07-transport.webp"],
+  "g3-c11": ["images/galop5-theme-soins-pied.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-c05-soins.webp", "images/portrait-cheval-11.webp"],
+  "g3-c12": ["images/portrait-cheval-1.webp", "images/portrait-cheval-12.webp", "images/portrait-cheval-10.webp", "images/portrait-cheval-13.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-tenue.webp", "images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
+  "g3-c13": ["images/portrait-cheval-2.webp", "images/portrait-cheval-16.webp", "images/portrait-cheval-3.webp", "images/galop5-c02-embouchures.webp", "images/portrait-cheval-4.webp", "images/galop5-c03-apprendre.webp", "images/galop5-theme-connaissances.webp"],
+  "g3-c14": ["images/portrait-cheval-5.webp", "images/portrait-cheval-6.webp", "images/portrait-cheval-7.webp", "images/portrait-cheval-8.webp", "images/galop5-c03-apprendre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c11-saut.webp"],
+  "g3-c15": ["images/portrait-cheval-9.webp", "images/portrait-cheval-11.webp", "images/portrait-cheval-1.webp"],
 };
 Object.keys(AUTO_IM_G3).forEach(function (k) { if (!AUTO_IM[k]) AUTO_IM[k] = AUTO_IM_G3[k]; });
 /* 01/11 : Galop 5, nouveaux cours (hype-cours-galop5-v2.js) — photos des chapitres (provisoires, photos déjà dans le dépôt) */
