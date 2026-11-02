@@ -1802,7 +1802,7 @@ var CADRAGE_CARTE = {"FOND_CAVALIERS_ECURIE.webp": "50% 70%", "atlas-tete-cheval
 function cadrageCarte(img) { var n = String(img || "").split("#")[0].split("/").pop(); return CADRAGE_CARTE[n] || null; }
 /* 01/11 21h20 (Blandine : « pas de majuscule en début de ligne ») : quand une puce « Gras : texte » devient une notion, le texte commence par une majuscule */
 function majInitiale(t) { t = String(t || ""); var m = t.match(/^(\s*[«"“(]?\s*)(\p{Ll})/u); return m ? m[1] + m[2].toLocaleUpperCase() + t.slice(m[0].length) : t; }
-var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] , "g2-aides": [5], "g2-depart": [5], "g2-c3": [4], "g2-c4": [5], "g2-c6": [2]};   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
+var AFFICHES_RETIREES = { "g1-c3": [2, 4], "g1-c17": [5], "g1-c10": [2], "g1-c6": [2, 4], "g1-c4": [2], "g1-c20": [2], "g1-c11": [2], "g1-c9": [2, 4], "g1-c12": [2], "g1-c13": [2], "g1-c16": [2] , "g2-aides": [5], "g2-depart": [5], "g2-c3": [4], "g2-c4": [5], "g2-c6": [2], "g3-c1": [4], "g3-c2": [1], "g3-c4": [4], "g3-c5": [4], "g3-c6": [4], "g3-c9": [3]};   /* 01/11 20h15 (Blandine : « dans chacun des cours, vérifie le contenu de l'affiche, ajoute ce qui pourrait manquer, et retire l'affiche ») */   /* g1-c3 : bloc 4 = affiche « Le confort au box », bloc 2 = affiche « Le cheval : un héritage de la nature » (01/11 18h10) ; g1-c17 : bloc 5 = affiche « Seller et brider » (01/11 18h10) */
 
 /* =====================================================================================
    v6 — 31/10 18h50 : PARTIES MANQUANTES des cours générés (rédigées par ChatGPT à la demande de Blandine, validées par elle),
@@ -2997,6 +2997,110 @@ function RevAuto(props) {
           savL.length ? h("div", { className: "hce-savais" }, h("span", null, R.savais), savL.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); })) : null,
           h(CarteSuite, { label: R.suite, img: IM.quiz, pos: "50% 60%", rtl: rtl, onClick: props.onSuite })))));
 }
+/* ══ 02/11 (Blandine : « un grand lexique de toutes les notions, comme un dictionnaire, à un endroit » ; Hype, entrée sur la page des Galops) ══
+   Rassemble les lexiques de tous les cours (LEXIQUE_COURS) : un mot présent dans plusieurs cours n'apparaît qu'une fois (même définition partout),
+   avec le lien vers chaque cours où on l'apprend. Recherche, filtre par Galop, ordre alphabétique. 14 langues. */
+var GLEX_T = {
+  titre: tt("Le grand lexique", "The big glossary", "El gran glosario", "Il grande glossario", "大きな用語集", "Das große Lexikon", "المعجم الكبير", "大词汇表", "De grote woordenlijst", "O grande glossário", "Den stora ordlistan", "Большой словарь", "Wielki słowniczek", "큰 용어집"),
+  sous: tt("Tous les mots des cours, de A à Z.", "All the words from the lessons, from A to Z.", "Todas las palabras de los cursos, de la A a la Z.", "Tutte le parole dei corsi, dalla A alla Z.", "レッスンに出てくる言葉をすべて集めました。", "Alle Wörter aus den Kursen, von A bis Z.", "كل كلمات الدروس، من الألف إلى الياء.", "课程里的所有词汇，从A到Z。", "Alle woorden uit de lessen, van A tot Z.", "Todas as palavras das aulas, de A a Z.", "Alla ord från lektionerna, från A till Ö.", "Все слова из уроков, от А до Я.", "Wszystkie słowa z lekcji, od A do Z.", "레슨에 나오는 모든 단어를 모았어요."),
+  chercher: tt("Chercher un mot", "Search for a word", "Buscar una palabra", "Cerca una parola", "言葉を探す", "Wort suchen", "ابحث عن كلمة", "搜索词语", "Zoek een woord", "Procurar uma palavra", "Sök ett ord", "Найти слово", "Szukaj słowa", "단어 찾기"),
+  tous: tt("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alle", "Todos", "Alla", "Все", "Wszystkie", "전체"),
+  galop: tt("Galop {n}", "Galop {n}", "Galop {n}", "Galop {n}", "ギャロップ{n}", "Galop {n}", "الغالوب {n}", "Galop {n}", "Galop {n}", "Galop {n}", "Galop {n}", "Galop {n}", "Galop {n}", "Galop {n}"),
+  aucun: tt("Aucun mot trouvé.", "No word found.", "No se encontró ninguna palabra.", "Nessuna parola trovata.", "見つかりませんでした。", "Kein Wort gefunden.", "لم يتم العثور على أي كلمة.", "没有找到词语。", "Geen woord gevonden.", "Nenhuma palavra encontrada.", "Inga ord hittades.", "Ничего не найдено.", "Nie znaleziono słowa.", "찾는 단어가 없어요."),
+  mots: tt("{n} mots", "{n} words", "{n} palabras", "{n} parole", "{n}語", "{n} Wörter", "{n} كلمة", "{n}个词", "{n} woorden", "{n} palavras", "{n} ord", "Слов: {n}", "Słów: {n}", "단어 {n}개")
+};
+var GLEX_ART = /^(le |la |les |l'|l’|un |une |des |the |a |an |der |die |das |den |dem |ein |eine |el |los |las |il |lo |gli |i |de |het |een |o |os |as |um |uma |en |ett |det )/i;
+function glexCle(m) { return String(m || "").replace(GLEX_ART, "").replace(/^[«"“(]\s*/, "").trim(); }
+function glexEntrees(lg) {
+  var map = {}, liste = [];
+  Object.keys(LEXIQUE_COURS).forEach(function (id) {
+    var LX = LEXIQUE_COURS[id], lex = LX[lg] || LX.fr; if (!lex || !lex.mots) return;
+    var g = +((/^g(\d+)-/.exec(id) || [])[1] || 0);
+    lex.mots.forEach(function (m) {
+      var k = glexCle(m[0]).toLocaleLowerCase(lg);
+      if (!map[k]) { map[k] = { mot: m[0], def: m[1], cle: glexCle(m[0]), cours: [] }; liste.push(map[k]); }
+      if (!map[k].cours.some(function (c) { return c.id === id; })) map[k].cours.push({ id: id, g: g });
+    });
+  });
+  var coll; try { coll = new Intl.Collator(lg, { sensitivity: "base" }); } catch (e) { coll = null; }
+  liste.sort(function (a, b) { return coll ? coll.compare(a.cle, b.cle) : (a.cle < b.cle ? -1 : 1); });
+  return liste;
+}
+function glexTitre(id, g, lg, f) {
+  var t = ""; try { t = f ? f(id, g) : ""; } catch (e) { t = ""; }
+  if (t) return t;
+  try { var L = g === 1 ? window.COURS_GALOP1_I18N : window["COURS_GALOP" + g + "_FR"]; var c = L && L.find(function (x) { return x && x.id === id; }); if (c) t = typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg); } catch (e) { }
+  return String(t || "").replace(/\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\uFE0F?\s*/gu, " ").trim();
+}
+function GrandLexique(props) {
+  var lg = props.langue || "fr", rtl = lg === "ar";
+  var T = function (k) { return pickLg(GLEX_T[k], lg); };
+  var _q = useState(""), q = _q[0], setQ = _q[1];
+  var _g = useState(0), gf = _g[0], setGf = _g[1];
+  var tout = glexEntrees(lg);
+  var galops = []; tout.forEach(function (e) { e.cours.forEach(function (c) { if (galops.indexOf(c.g) < 0) galops.push(c.g); }); }); galops.sort();
+  var norm = function (s) { return String(s || "").toLocaleLowerCase(lg).normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+  var nq = norm(q.trim());
+  var vus = tout.filter(function (e) {
+    if (gf && !e.cours.some(function (c) { return c.g === gf; })) return false;
+    return !nq || norm(e.mot).indexOf(nq) >= 0 || norm(e.def).indexOf(nq) >= 0;
+  });
+  var lettres = !/^(ja|zh|ko)$/.test(lg);
+  var blocs = [], cur = null;
+  vus.forEach(function (e) {
+    var l = lettres ? e.cle.charAt(0).toLocaleUpperCase(lg).normalize("NFD").replace(/[̀-ͯ]/g, "") : "";
+    if (!cur || cur.l !== l) { cur = { l: l, e: [] }; blocs.push(cur); }
+    cur.e.push(e);
+  });
+  var S = window.HypeRobesOrdi && window.HypeRobesOrdi.shared;
+  return h("div", { className: "rbo hce-rev hce-glex", dir: rtl ? "rtl" : undefined, lang: lg },
+    S ? h("style", null, S.CSS) : null, h("style", null, CSS_REV + "\n" + CSS_GLEX),
+    h("main", { className: "rbo-main" },
+      h("div", { className: "glex-in" },
+        h("button", { type: "button", className: "rbo-back", onClick: props.onRetour }, rtl ? "›" : "‹"),
+        h("p", { className: "glex-k" }, "GALOPS"),
+        h("h1", null, T("titre")),
+        h("p", { className: "glex-s" }, T("sous")),
+        h("input", { type: "search", className: "glex-q", value: q, placeholder: T("chercher"), onChange: function (ev) { setQ(ev.target.value); }, "aria-label": T("chercher") }),
+        galops.length > 1 ? h("div", { className: "glex-f", role: "tablist" },
+          [0].concat(galops).map(function (g) { return h("button", { key: g, type: "button", role: "tab", "aria-selected": gf === g ? "true" : "false", onClick: function () { setGf(g); } }, g ? T("galop").replace("{n}", g) : T("tous")); })) : null,
+        h("p", { className: "glex-n" }, T("mots").replace("{n}", vus.length)),
+        vus.length ? blocs.map(function (b, bi) {
+          return h("section", { key: bi, className: "glex-b" },
+            b.l ? h("h2", null, b.l) : null,
+            h("dl", null, b.e.map(function (e, k) {
+              return h("div", { key: k },
+                h("dt", null, e.mot), h("dd", null, e.def),
+                h("p", { className: "glex-c" }, e.cours.map(function (c, j) {
+                  return h("button", { key: j, type: "button", onClick: function () { if (props.onOuvrirCours) props.onOuvrirCours(c.id, c.g); } },
+                    (function () { var t = glexTitre(c.id, c.g, lg, props.titreCours); return T("galop").replace("{n}", c.g) + (t ? " · " + t : ""); })(), fleche(rtl, 12));
+                })));
+            })));
+        }) : h("p", { className: "glex-0" }, T("aucun")))));
+}
+var CSS_GLEX = [
+".hce-glex .glex-in{max-width:760px;margin:0 auto;padding:16px 16px 80px}",
+".hce-glex .rbo-back{margin:0 0 18px}",
+".hce-glex .glex-k{margin:0 0 10px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:.38em;color:rgba(201,166,107,.85)}",
+".hce-glex h1{margin:0;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-weight:500;font-size:36px;line-height:1.05;color:#F3EEE4}",
+".hce-glex .glex-s{margin:10px 0 22px;font-family:'Montserrat',sans-serif;font-size:13px;color:rgba(243,238,228,.7)}",
+".hce-glex .glex-q{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:999px;border:1px solid rgba(243,238,228,.2);background:rgba(243,238,228,.04);color:#F3EEE4;font:400 15px 'Montserrat',sans-serif;outline:none}",
+".hce-glex .glex-q:focus{border-color:rgba(201,166,107,.7)}",
+".hce-glex .glex-f{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}",
+".hce-glex .glex-f button{border:1px solid rgba(243,238,228,.22);background:transparent;color:#F3EEE4;border-radius:999px;padding:8px 15px;font:400 13px 'Montserrat',sans-serif;cursor:pointer}",
+".hce-glex .glex-f button[aria-selected=true]{border-color:rgba(201,166,107,.8);color:#D9B98A}",
+".hce-glex .glex-n{margin:16px 0 6px;font:400 12px 'Montserrat',sans-serif;color:rgba(243,238,228,.5)}",
+".hce-glex .glex-b h2{margin:26px 0 6px;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;color:rgba(201,166,107,.75)}",
+".hce-glex dl{margin:0}",
+".hce-glex dl>div{padding:14px 0;border-top:1px solid rgba(243,238,228,.1)}",
+".hce-glex dt{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:19px;font-weight:600;color:#F3EEE4}",
+".hce-glex dd{margin:4px 0 0;font:400 13px/1.5 'Montserrat',sans-serif;color:rgba(243,238,228,.78)}",
+".hce-glex .glex-c{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px}",
+".hce-glex .glex-c button{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(243,238,228,.05);color:rgba(217,185,138,.9);border-radius:999px;padding:5px 11px;font:400 11.5px 'Montserrat',sans-serif;cursor:pointer}",
+".hce-glex .glex-0{margin:30px 0;text-align:center;font:400 14px 'Montserrat',sans-serif;color:rgba(243,238,228,.6)}"
+].join("\n");
+window.HypeGrandLexique = GrandLexique;
+
 function FinAuto(props) {
   var S = window.HypeRobesOrdi.shared;
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar";

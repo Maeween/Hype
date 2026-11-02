@@ -28671,6 +28671,7 @@ function Router() {
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
                 ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
+                ecran === "lexique" && React.createElement(EcranGrandLexique, null),   /* 02/11 : grand lexique (entrée sur la page des Galops) */
                 ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetailAiguille, null))),   /* 27/10 15h : Galops 1-4 et 6-9 sur tablette/ordinateur (≥ 768 px) → EcranGalopOrdi, sinon EcranGalopChoix (inchangé) */   /* 27/10 14h38 (Blandine : « mets en ligne ») : Galops 1-4, 6, 7 au design du Galop 5 ; Baby et Galop 5 inchangés ; GALOPS_V3_ACTIF = false ramène l'ancienne page */   /* 09/10 (764) : verrou Premium a l arrivee */
                 ecran === "galop5" && React.createElement(EcranGalop5, null),
                 ecran === "cours-g5-emb" && React.createElement(EcranCoursG5Emb, null),
@@ -58307,6 +58308,7 @@ var GV2_CSS = ""
   + ".gv2-tpp-titre em{font-style:italic;color:var(--gv2-champ)}"
   + ".gv2-tpp-intro{margin:0;max-width:520px;font-size:13.5px;line-height:1.7;color:var(--gv2-texte2)}"
   + ".gv2-grille{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}"
+  + ".gv2-carte.gv2-carte-lexique{grid-column:1/-1;aspect-ratio:auto;min-height:150px}"   /* 02/11 : entrée du grand lexique, sur toute la largeur sous les 6 cartes */
   + ".gv2-carte{position:relative;display:flex;flex-direction:column;justify-content:flex-end;aspect-ratio:4/5.4;min-height:220px;padding:16px 14px 14px;border-radius:14px;overflow:hidden;border:1px solid var(--gv2-filet);background:var(--gv2-fond2);color:var(--gv2-ivoire);text-align:start;font:inherit;cursor:pointer;transition:border-color .2s,transform .2s}"
   + ".gv2-carte:hover{border-color:var(--gv2-champ);transform:translateY(-2px)}"
   + ".gv2-carte-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}"
@@ -58891,6 +58893,12 @@ function GalopsV2Haut(props) {
       s: { fr: "Prépare-toi sereinement à ton prochain Galop.", en: "Prepare calmly for your next level.", es: "Prepárate con calma para tu próximo nivel.", it: "Preparati con serenità al tuo prossimo livello.", de: "Bereite dich gelassen auf deinen nächsten Galopp vor.", ja: "次のギャロップに落ち着いて備えよう。", ar: "استعدي بهدوء للغالوب القادم.", zh: "从容准备你的下一个 Galop。", nl: "Bereid je rustig voor op je volgende Galop.", pt: "Prepare-se com calma para o seu próximo Galop.", sv: "Förbered dig lugnt inför din nästa Galop.", ru: "Спокойно готовься к следующему уровню.", pl: "Przygotuj się spokojnie do kolejnego Galopu.", ko: "다음 단계를 차분히 준비해요." },
       a: { fr: "Me préparer", en: "Get ready", es: "Prepararme", it: "Prepararmi", de: "Mich vorbereiten", ja: "準備する", ar: "أستعد", zh: "开始准备", nl: "Me voorbereiden", pt: "Me preparar", sv: "Förbered mig", ru: "Подготовиться", pl: "Przygotuj się", ko: "준비하기" },
       go: function () { ouvrir(gAct); } }
+    /* 02/11 (Blandine) : entrée du grand lexique */
+    , { k: "lexique", img: "images/cours-g1-c20-lexique.webp", pos: "78% 28%", ic: [h("path", { key: 1, d: "M7 5h14a3 3 0 0 1 3 3v19H10a3 3 0 0 1-3-3z" }), h("path", { key: 2, d: "M7 24a3 3 0 0 1 3-3h14" }), h("path", { key: 3, d: "M12 10h7M12 14h5" })],
+      t: { fr: "Le grand lexique", en: "The big glossary", es: "El gran glosario", it: "Il grande glossario", de: "Das große Lexikon", ja: "大きな用語集", ar: "المعجم الكبير", zh: "大词汇表", nl: "De grote woordenlijst", pt: "O grande glossário", sv: "Den stora ordlistan", ru: "Большой словарь", pl: "Wielki słowniczek", ko: "큰 용어집" },
+      s: { fr: "Tous les mots des cours, de A à Z.", en: "All the words from the lessons, from A to Z.", es: "Todas las palabras de los cursos, de la A a la Z.", it: "Tutte le parole dei corsi, dalla A alla Z.", de: "Alle Wörter aus den Kursen, von A bis Z.", ja: "レッスンに出てくる言葉をすべて集めました。", ar: "كل كلمات الدروس، من الألف إلى الياء.", zh: "课程里的所有词汇，从A到Z。", nl: "Alle woorden uit de lessen, van A tot Z.", pt: "Todas as palavras das aulas, de A a Z.", sv: "Alla ord från lektionerna, från A till Ö.", ru: "Все слова из уроков, от А до Я.", pl: "Wszystkie słowa z lekcji, od A do Z.", ko: "레슨에 나오는 모든 단어를 모았어요." },
+      a: { fr: "Ouvrir le lexique", en: "Open the glossary", es: "Abrir el glosario", it: "Apri il glossario", de: "Lexikon öffnen", ja: "用語集を開く", ar: "افتح المعجم", zh: "打开词汇表", nl: "Open de woordenlijst", pt: "Abrir o glossário", sv: "Öppna ordlistan", ru: "Открыть словарь", pl: "Otwórz słowniczek", ko: "용어집 열기" },
+      go: function () { setEcran("lexique"); } }
   ];
   var cartes = CARTES.map(function (c) {
     var titre = tr(c.t), sous = tr(c.s);
@@ -58905,7 +58913,7 @@ function GalopsV2Haut(props) {
     ];
     return c.off
       ? h("div", { key: c.k, className: "gv2-carte gv2-carte-off", role: "group", "aria-label": titre + " — " + tr(TP.bientot) + ". " + sous }, corps)
-      : h("button", { key: c.k, type: "button", className: "gv2-carte", onClick: c.go, "aria-label": titre + ". " + sous }, corps);
+      : h("button", { key: c.k, type: "button", className: "gv2-carte" + (c.k === "lexique" ? " gv2-carte-lexique" : ""), onClick: c.go, "aria-label": titre + ". " + sous }, corps);
   });
 
   /* ── ÉTAPES 3-4 : textes (14 langues) ── */
@@ -61042,6 +61050,23 @@ function EcranGalopDetailAiguille() {
   return React.createElement((typeof EcranGalopChoix === "function") ? EcranGalopChoix : EcranGalopDetail, null);
 }
 
+/* 02/11 (Blandine) : grand lexique — tous les mots des lexiques des cours, recherche, filtre par Galop, lien vers le cours (composant dans hype-cours-editorial.js) */
+function EcranGrandLexique() {
+    const { setEcran, setGalopOuvert, setCoursOuvert, langue } = useApp();
+    useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, []);
+    if (!window.HypeGrandLexique) { return React.createElement("div", { style: { background: "#070A08", minHeight: "100vh" } }); }
+    var titres = {};
+    var titreCours = function (id, g) {
+        if (!titres[g]) { try { titres[g] = obtenirSommaireGalop(g, langue) || []; } catch (e) { titres[g] = []; } }
+        var c = titres[g].find(function (x) { return x && x.id === id; });
+        return c ? (typeof c.titre === "string" ? c.titre : ((c.titre || {})[langue] || (c.titre || {}).fr || "")) : "";
+    };
+    return React.createElement(window.HypeGrandLexique, {
+        langue: langue, titreCours: titreCours,
+        onRetour: function () { setEcran("galops"); },
+        onOuvrirCours: function (id, g) { setGalopOuvert(g); setCoursOuvert(id); setEcran("cours"); }
+    });
+}
 function EcranBibliothequeGalops() {
     const { setEcran, setGalopOuvert, premium, coursTermines, quizResultats, profil, t, tr, langue } = useApp();
     const [msgAVenir, setMsgAVenir] = useState(null);
