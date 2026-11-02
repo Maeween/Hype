@@ -1,4 +1,4 @@
-/* HYPE ▸ 02/11/2026 — Page « Préparer un diplôme d'enseignant » (EcranPrepaDiplomes) : Prépa AE, Prépa BPJEPS, Prépa DEJEPS.
+/* HYPE ▸ 02/11/2026 — Page « Préparer un diplôme d'enseignant » (EcranPrepaDiplomes) : Prépa AE, BPJEPS, DEJEPS et DESJEPS (02/11 15h12 : onglets courts AE · BP · DE · DES, DESJEPS ajouté à la demande de Blandine).
    Demande de Blandine (02/11 14h47-14h52) : onglet sur la page des Galops, après le Galop 7, vers trois parties ; AE = Animateur
    d'Équitation ; réservé au Premium. Chargé seulement à l'ouverture (hypeEcranDiffere dans index.html).
    CONTENU = textes officiels uniquement, vérifiés le 02/11 :
@@ -56,7 +56,7 @@ var DIPLOMES = [
     sources: [["Fiche officielle RNCP42622 (France Compétences)", "https://www.francecompetences.fr/recherche/rncp/42622"]]
   },
   {
-    k: "bpjeps", court: "BPJEPS", nom: "BPJEPS mention Équitation",
+    k: "bpjeps", court: "BP", nom: "BPJEPS mention Équitation",
     role: "Diplôme d'État de moniteur d'équitation (spécialité « éducateur sportif »). Il permet d'enseigner l'équitation contre rémunération.",
     entree: {
       titre: "Les tests d'entrée",
@@ -97,7 +97,7 @@ var DIPLOMES = [
     sources: [["Arrêté du 18 novembre 2024 (Légifrance)", "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000050675315"]]
   },
   {
-    k: "dejeps", court: "DEJEPS", nom: "DEJEPS mention Sports équestres",
+    k: "dejeps", court: "DE", nom: "DEJEPS mention Sports équestres",
     role: "Diplôme d'État d'entraîneur (spécialité « perfectionnement sportif »). Tu entraînes des cavaliers en compétition dans ta discipline.",
     entree: {
       titre: "Les tests d'entrée",
@@ -132,6 +132,42 @@ var DIPLOMES = [
       "Mon inscription aux tests d'entrée est faite"
     ],
     sources: [["Fiche officielle RNCP39573 (France Compétences)", "https://www.francecompetences.fr/recherche/rncp/39573"], ["Arrêté du 21 septembre 2018 modifié, annexe III (Légifrance)", "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000049772315"]]
+  }
+  ,{
+    k: "desjeps", court: "DES", nom: "DESJEPS mention Équitation",
+    role: "Diplôme d'État supérieur (spécialité « performance sportive », niveau 6), couramment appelé « instructeur ». Tu peux être responsable pédagogique ou formateur référent, notamment dans les formations BPJEPS et DEJEPS.",
+    entree: {
+      titre: "Les tests d'entrée",
+      intro: "Deux tests techniques, dans l'ordre que tu veux :",
+      puces: [
+        "Dressage : une reprise de niveau Amateur 2 Grand Prix (ou équivalent).",
+        "Saut d'obstacles : un parcours de niveau Amateur 1 (ou équivalent)."
+      ],
+      note: "Puis un test pédagogique : une séance d'entraînement sur le plat, de 20 minutes maximum, pour trois cavaliers de Galop 5 ou plus, suivie d'un entretien de 10 minutes maximum. Si tu réussis une épreuve et pas l'autre, tu gardes celle que tu as réussie."
+    },
+    tests: {
+      titre: "Avant de partir en stage",
+      puces: [
+        "Une séance collective de 20 minutes maximum avec trois cavaliers de Galop 7 au minimum.",
+        "Puis un entretien de 10 minutes maximum, notamment sur la sécurité, avec ton organisme de formation."
+      ]
+    },
+    dispenses: {
+      titre: "Les dispenses",
+      puces: [
+        "Degré 4 ou Degré 5 de la FFE.",
+        "DEJEPS mention Sports équestres ou BEES 2 option Équitation, avec 300 heures d'encadrement sur les cinq dernières années.",
+        "Sportif de haut niveau, certains diplômes d'enseignement et certains classements en compétition donnent aussi des dispenses."
+      ],
+      note: "Le détail exact est dans l'annexe III de l'arrêté : vérifie ton cas avec ton organisme de formation."
+    },
+    prepa: [
+      "Je présente une reprise Amateur 2 Grand Prix avec régularité",
+      "Je saute un parcours Amateur 1 avec régularité",
+      "J'ai préparé une séance d'entraînement de 20 minutes sur le plat pour trois cavaliers",
+      "Mon inscription aux tests d'entrée est faite"
+    ],
+    sources: [["Fiche officielle RNCP39572 (France Compétences)", "https://www.francecompetences.fr/recherche/rncp/39572"], ["Arrêté du 27 mai 2024 (FFE)", "https://metiers.ffe.com/wp-content/uploads/2024/09/Arrete-du-27-mai-2024-portant-creation-de-la-mention-equitation-du-DESJEPS-performance-sportive-.pdf"]]
   }
 ];
 
@@ -235,7 +271,7 @@ function EcranPrepaDiplomes() {
       h("div", { className: "hpd-filet", "aria-hidden": true }),
       h("p", { className: "hpd-phrase" }, "Les exigences officielles pour entrer en formation, et ta liste pour t'y préparer pas à pas."),
       h("div", { className: "hpd-onglets", role: "tablist", "aria-label": "Diplômes" },
-        DIPLOMES.map(function (x) { return h("button", { key: x.k, type: "button", role: "tab", "aria-selected": x.k === d.k ? "true" : "false", className: "hpd-onglet", onClick: function () { setK(x.k); } }, "Prépa " + x.court); })),
+        DIPLOMES.map(function (x) { return h("button", { key: x.k, type: "button", role: "tab", "aria-selected": x.k === d.k ? "true" : "false", className: "hpd-onglet", onClick: function () { setK(x.k); } }, x.court); })),
       h("div", { role: "tabpanel" },
         h("h2", { className: "hpd-nom" }, d.nom),
         h("p", { className: "hpd-role" }, d.role),
