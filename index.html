@@ -59693,6 +59693,15 @@ var G5_CSS = ""
   + "#g5-rep .g5-mini-t{font-size:30px}"
   + "#g5-rep .g5-mini-s{font-size:14px}"
   + "}"
+  /* 02/11 16h40 (Blandine : « plus de place pour les photos dans les onglets, aère plus les onglets entre eux, même couleur que les cours :
+     un fond noir et des onglets noir bleuté semi-transparents ») — cartes des parties (I Vie équestre…) de toutes les pages Galop */
+  + ".g5{--g5-fond:#070A08;background:#070A08}"
+  + ".g5-themes{gap:36px;margin-top:22px}"
+  + ".g5-th{background:rgba(16,26,29,0.58);border:1px solid rgba(201,166,107,0.14);box-shadow:0 14px 34px rgba(0,0,0,0.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}"
+  + ".g5-th-ph{height:250px}"
+  + ".g5-th-ph:after{background:linear-gradient(0deg,#0D1415 0%,rgba(13,20,21,0.5) 28%,rgba(13,20,21,0) 55%)}"
+  + ".g5-cl-liste{padding:8px 18px 14px}"
+  + "@media (min-width:768px){.g5-themes{gap:36px 28px}.g5-th-ph{height:300px}}"
   + "@media (prefers-reduced-motion:reduce){.g5-chev{transition:none}.g5-onglets-rang{scroll-behavior:auto}}";
 
 function g5Svg(enfants, vb) { return React.createElement("svg", { viewBox: vb || "0 0 32 32", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, enfants); }

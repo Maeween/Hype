@@ -16532,3 +16532,8 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 ## 02/11/2026 17h00 — PUBLICATION build 20261102-1700 (Blandine 16h56 « Ok mets la en ligne ») : Galop 7, longe avec enrênement
 - Blandine (16h41) : « Longe enrênée plutôt 30 à 40 » → g7n-03 : séance de 30 à 40 minutes au maximum, détente comprise (la relecture avait mis 20 à 30).
 - Fichiers : hype-cours-galop7.js (?v=4, toujours non branché), index.html (build 20261102-1700 : ?v=), SUIVI.md.
+
+## 02/11/2026 16h45 — PAGES GALOP : cartes des parties (prêt, NON PUBLIÉ)
+Blandine : « plus de place pour les photos dans les onglets, aère plus les onglets entre eux, même couleur que les cours : fond noir et onglets noir bleuté semi-transparents ».
+- index.html, fin de G5_CSS (toutes les pages Galop + Galop 5) : fond #070A08 ; cartes rgba(16,26,29,0.58) + flou ; photo 250 px (téléphone, au lieu de 190) et 300 px (tablette/ordinateur, au lieu de 240) ; 36 px entre les cartes (au lieu de 22).
+- À publier seulement quand Blandine dit « publie ».
