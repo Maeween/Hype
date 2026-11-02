@@ -611,7 +611,7 @@ var COURS = [
     B("Mener en main au pas et au trot", [
       P("Travailler à pied, c'est apprendre à se faire comprendre sans être sur le dos du cheval. Au Galop 5, tu mènes seul ton cheval au pas et au trot, tu le longes au pas, au trot et à l'arrêt, et tu découvres les longues rênes. Ce travail sert à détendre, à éduquer et à présenter un cheval, par exemple à un vétérinaire."),
       S("🚶 Mener au pas", null, [
-        "Place-toi à gauche du cheval, à hauteur de son épaule, en regardant devant toi.",
+        "Place-toi à gauche du cheval, entre sa tête et son épaule, en regardant devant toi.",
         "La main droite tient la longe à une vingtaine de centimètres du licol, la main gauche tient le reste plié en boucles, jamais enroulé autour de la main : si le cheval tire, tu ne pourrais plus le lâcher.",
         "Marche d'un pas décidé : c'est ton corps qui donne l'allure, pas la longe."
       ]),
@@ -792,7 +792,8 @@ var COURS = [
         "Que faire si mon cheval refuse de monter dans le van ?",
         "Pourquoi détacher le cheval avant d'ouvrir l'arrière ?",
         "Comment préparer mon cheval pour un long trajet ?",
-        "Comment savoir si mon cheval supporte bien le transport ?"
+        "Comment savoir si mon cheval supporte bien le transport ?",
+        "Pourquoi mon cheval voyage-t-il en licol et jamais avec son filet ?"
       ]),
       S("⚡ La synthèse en 10 secondes", null, [
         "Protections, protège-queue, licol : jamais le filet.",
@@ -1273,7 +1274,7 @@ var COURS = [
     ])
   ],
   lexique: { fr: [
-    ["En équilibre sur les étriers", "Le cavalier reste au-dessus de ses pieds, le poids dans les talons, le buste un peu incliné, les fesses juste au-dessus de la selle."],
+    ["La position d'équilibre", "Le cavalier reste au-dessus de ses pieds, le poids dans les talons, le buste un peu incliné, les fesses juste au-dessus de la selle."],
     ["Galop de parcours", "Galop régulier, assez actif, qui reste le même tout le parcours."],
     ["Abord", "Les dernières foulées avant l'obstacle ; il doit être droit et centré."],
     ["Appel", "Le moment où le cheval décolle pour sauter."],
@@ -1306,7 +1307,7 @@ var COURS = [
     { type: "couv-affiche", src: "images/galops-v2-carte-videos-hd2.jpg", couv: {} },
 
     B("L'équilibre en terrain varié", [
-      P("Sortir de la carrière, c'est retrouver ce que le cheval aime le plus : l'espace. Mais le terrain change sans arrêt : montées, descentes, sol dur ou glissant. Au Galop 5, tu restes en équilibre sur tes étriers aux trois allures, en extérieur, et tu enchaînes un parcours de cross de niveau Club 3."),
+      P("Sortir de la carrière, c'est retrouver ce que le cheval aime le plus : l'espace. Mais le terrain change sans arrêt : montées, descentes, sol dur ou glissant. Au Galop 5, tu restes en équilibre, au-dessus de tes pieds, aux trois allures, en extérieur, et tu enchaînes un parcours de cross de niveau Club 3."),
       S("⛰️ Dans les montées", null, [
         "Regarde loin, reste au-dessus de tes pieds, ton poids descend dans tes talons, et incline légèrement ton buste vers l'avant : ton assiette s'allège. Place tes mains devant toi pour que ton cheval puisse allonger l'encolure.",
         "Si besoin, attrape une mèche de crinière plutôt que de te tenir aux rênes.",
@@ -1392,7 +1393,7 @@ var COURS = [
     ["Contre-bas", "Obstacle qui fait descendre une marche."],
     ["Gué", "Passage dans l'eau."],
     ["Gilet de protection", "Gilet obligatoire en cross, qui protège le dos et le torse."],
-    ["En équilibre sur les étriers", "Position où tu restes au-dessus de tes pieds, ton poids descendant dans tes talons, les fesses juste au-dessus de la selle."]
+    ["La position d'équilibre", "Position où tu restes au-dessus de tes pieds, ton poids descendant dans tes talons, les fesses juste au-dessus de la selle."]
   ] },
   quiz: [
     Q("Dans une montée, quelle position prends-tu ?", ["Le buste en arrière, assis au fond de la selle", "Au-dessus de tes pieds, le poids dans les talons, le buste un peu en avant, les mains devant toi", "Debout sur tes étriers, les jambes tendues", "Le buste droit, les mains près du ventre"], 1, "En montée, tu restes au-dessus de tes pieds, ton poids descend dans tes talons et ton buste s'incline légèrement vers l'avant ; tes mains devant toi laissent l'encolure libre."),
