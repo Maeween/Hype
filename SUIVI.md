@@ -16574,23 +16574,76 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - 21h03 : onglets semi-transparents sur la version « moins pétrole » (fond ivoire à 3,5 %, liseré champagne). Non publié.
 - 21h05 : « Terminé » n'est plus écrit sous les cours (la coche reste, et le mot reste lu par la synthèse vocale) ; cours sans quiz fait = 5 étoiles vides très légères (hypeEtoilesVides). Pages Galop (GV3) et Galop 5. Validé visuellement par Blandine. Non publié.
 - 21h08 : PUBLIÉ (Blandine : « Ok vas-y ») — cartes des pages Galop : photo Vie équestre, fondu 2, onglets semi-transparents moins pétrole, plus de « Terminé », étoiles vides.
-## 02/11/2026 17h05 — PRÊT, PAS PUBLIÉ (branche g5-final) : Galop 5, contrôle final avant traduction (brief ChatGPT 16h42)
+
+## 02/11/2026 21h55 — PUBLICATION build 20261102-2155 : correctif « caillou » sur les cours pas encore écrits + photos des Galops (Blandine 21h34-21h49)
+- BUG (capture de Blandine 21h42, « Erreur sur cours », écran cours : « undefined is not an object (evaluating 'cours.blocs.length') ») : reproduit en local — toucher un cours des Galops 8 ou 9 (titres seuls, pas encore écrits ; ouvrables par les modératrices) faisait planter l'écran. Les Galops 1 à 7 s'ouvrent normalement (18 cours du Galop 1 testés un par un). Correctif (index.html, EcranCoursCorps) : un cours sans contenu affiche son titre, « Ce cours est en préparation. » et un bouton Retour (14 langues) au lieu de planter. Vérifié sur les Galops 8 et 9.
+- Photos du haut des pages Galop (téléphone : GV3_HERO ; tablette/ordinateur : G1O_HERO_PAR_GALOP et heroImg du Galop 1), photos de Blandine sur fond noir : Galop 1 bai tête basse (images/galop1-hero-bai.webp), Galop 2 bai en entier (galop2-hero-bai-entier.webp, recadré 80 % 35 % sur téléphone pour garder la tête), Galop 6 gris au filet (galop6-hero-gris.webp), Galop 7 palomino (galop7-hero-palomino.webp), Galop 8 bai (galop8-hero-bai.webp), Galop 9 alezan (galop9-hero-alezan.webp). Galops 3, 4, 5 inchangés.
+- Page Galops, « Tout pour progresser » : carte Cours théoriques = bai au filet (images/galops-carte-cours-bai.webp) ; carte Quiz = carnet et stylo doré (images/galops-carte-quiz-carnet.webp). Mise en forme des cartes inchangée (maquettes A/B/C du menu en lignes : en attente du choix de Blandine, rien d'appliqué).
+- Vérifié : captures réelles téléphone 390 px et ordinateur 1440 px des Galops 1, 2, 6, 7, 8, 9 et des cartes ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2155), SUIVI.md, 8 images (images/galop1-hero-bai.webp, galop2-hero-bai-entier.webp, galop6-hero-gris.webp, galop7-hero-palomino.webp, galop8-hero-bai.webp, galop9-hero-alezan.webp, galops-carte-cours-bai.webp, galops-carte-quiz-carnet.webp).
+
+## 02/11/2026 22h00 — PUBLICATION build 20261102-2200 (Blandine 21h55) : photo de la carte Exercices pratiques
+- Page Galops, « Tout pour progresser » : carte Exercices pratiques (toujours « Prochainement », assombrie) = cavalier au saut sur cheval bai, fond noir (images/galops-carte-exercices-saut.webp).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2200), SUIVI.md, images/galops-carte-exercices-saut.webp.
+
+## 02/11/2026 22h05 — PUBLICATION build 20261102-2205 (Blandine 21h59) : photo de la carte Vidéothèque
+- Page Galops, « Tout pour progresser » : carte Vidéothèque = bai tressé au filet, lumière dorée (images/galops-carte-videos-bai.webp, cadrage 60 % 35 %).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2205), SUIVI.md, images/galops-carte-videos-bai.webp.
+
+## 02/11/2026 22h10 — PUBLICATION build 20261102-2210 (Blandine 21h59) : photo de la carte Examens
+- Page Galops, « Tout pour progresser » : carte Examens = flot noir et doré sur un tapis (images/galops-carte-examens-flot.webp, cadrage 66 % 40 %).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2210), SUIVI.md, images/galops-carte-examens-flot.webp.
+
+## 02/11/2026 22h15 — PUBLICATION build 20261102-2215 (Blandine 22h04) : photo de la carte Reprises de dressage
+- Page Galops, « Tout pour progresser » : carte Reprises de dressage = cavalière sur cheval gris au trot, fond sombre doré (images/galops-carte-reprises-gris.webp, cadrage 52 % 45 %). Les 7 cartes ont maintenant les photos de Blandine (sauf Le grand lexique, inchangée).
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2215), SUIVI.md, images/galops-carte-reprises-gris.webp.
+
+## 02/11/2026 22h20 — PUBLICATION build 20261102-2220 (Blandine 22h09) : nouvelle photo de la carte Vidéothèque
+- Page Galops, « Tout pour progresser » : carte Vidéothèque = bai au filet avec un bouton lecture dans la photo (images/galops-carte-videos-lecture.webp, cadrage 50 % 48 %) ; remplace la photo de 21h59. Le bouton lecture étant dans la photo, la petite icône de la carte est retirée pour celle-ci seulement (sansIc), pour ne pas avoir deux boutons lecture.
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2220), SUIVI.md, images/galops-carte-videos-lecture.webp.
+
+## 02/11/2026 22h25 — PUBLICATION build 20261102-2225 (Blandine 22h10) : plus de petites icônes dorées sur les cartes « Tout pour progresser »
+- Demande : « retire les petits logos dorés sur chaque onglet, on a déjà les titres ». index.html : l'icône (gv2-carte-ic) n'est plus affichée sur aucune des 7 cartes (téléphone, tablette, ordinateur) ; titres, flèches et badge « Prochainement » inchangés.
+- Vérifié : capture réelle 390 px ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2225), SUIVI.md.
+
+## 02/11/2026 22h35 — PUBLICATION build 20261102-2235 (Blandine 22h14-22h18) : page Galops plus aérée, grand lexique décalé, objectifs officiels affichés d'office
+- « On peut décaler un peu le grand lexique des autres » (22h14) : carte Le grand lexique décalée des 6 cartes (22 px ordinateur/tablette, 30 px téléphone), hauteur gardée.
+- « Trop collé, laisse plus aéré, fais-moi 6 propositions » (22h15) → choix « 1 pour la page des Galops » (22h18) : téléphone, 88 px entre la photo « Une progression à ton rythme » et « Tout pour progresser », 26 px sous l'intro, 18 px entre les cartes (règles préfixées .gv2 pour passer devant la règle téléphone existante).
+- « Laisse les objectifs officiels affichés quand on clique sur un Galop » (22h18) : sur téléphone, le dépliant d'un Galop (courbe) montre « Objectifs officiels » ouvert d'office ; on peut toujours le refermer (état ffe-ferme). Ordinateur inchangé.
+- Bouton « Voir les N cours » : 6 propositions visuelles envoyées à Blandine (vraies captures), rien d'appliqué.
+- Vérifié : 390 px et 1440 px (espacements calculés, dépliant du Galop 1 ouvert avec les objectifs) ; 0 erreur ; 17 blocs de script OK.
+- Fichiers : index.html (build 20261102-2235), SUIVI.md.
+
+## 02/11/2026 22h40 — PUBLICATION build 20261102-2240 (question de Blandine 22h25 « le lexique est bien dans tous les Galops et ajouté au lexique général ? ») : grand lexique complété avec les Galops 5 et 7
+- Constat (test local) : le grand lexique ne montrait que les Galops 1 à 4 (335 mots) — les lexiques des Galops 5 et 7 n'y entraient que si leur Galop avait été ouvert avant, et le chargement d'un Galop pouvait effacer les lexiques de l'autre (HYPE_LEXIQUE_EXTRA remplacé par le fichier de langue).
+- Correctifs : (1) hype-cours-editorial.js VERSION 60 (?v=60) : le grand lexique lit aussi le champ « lexique » écrit dans les cours des Galops 5 à 9 ; (2) index.html, EcranGrandLexique : charge les Galops 5, 6 et 7 à l'ouverture puis se redessine ; (3) outils/cours-langues.cjs : HYPE_LEXIQUE_EXTRA d'un Galop s'ajoute à celui déjà chargé au lieu de l'écraser (pages « Révise en 2 minutes » des Galops 5 et 7).
+- Vérifié (modératrice, sans ouvrir de Galop avant) : filtres Galop 1, 2, 3, 4, 5, 7 ; 476 mots ; Gourmette, Panard, Rationnement, Bande de polo, Contre-galop, Épaule en dedans présents.
+- État des lexiques : Galops 1 à 4 : dans le modèle des cours ; Galop 5 : 12 cours sur 19 ; Galop 6 : aucun (anciens brouillons) ; Galop 7 : 16 sur 16 (mots visibles des seules modératrices tant que le Galop 7 est en relecture).
+- Vidéos (question de Blandine) : vidéothèque = 23 vidéos, rangées Galop 1 (7), Galop 2 (2), Galop 4 (14) ; aucune pour les Galops 3, 5, 6, 7, 8, 9 (la rubrique Vidéos de leur page ne s'affiche pas).
+- Fichiers : hype-cours-editorial.js (?v=60), outils/cours-langues.cjs, index.html (build 20261102-2240), SUIVI.md.
+## 02/11/2026 17h05 — PUBLIÉ avec le build 20261102-2232 : Galop 5, contrôle final avant traduction (brief ChatGPT 16h42)
 - Corrections confirmées : mener « entre sa tête et son épaule » (longe) ; plus de « en équilibre sur les étriers » (lexiques saut et cross → « La position d'équilibre », intro du cross) ; 5e question Hey Baby du transport. Quiz n°3 de la longe : déjà à 4 réponses.
 - Contrôle exhaustif par un relecteur indépendant, corrections certaines appliquées : cession « à main gauche » (exemple impossible à main droite) ; bandes de repos (sous-bande jusque sous le boulet ; toujours les deux membres d'une paire ; défi, synthèse, quiz n°1 et lexique « tendon ») ; transitions quiz n°8 (défaut de transition) ; hauteurs Club 3 appuyées sur le programme (saut Q9, cross ch. 2 et Q6) ; cross Q9 sans l'eau au galop ; identification + 2 questions Hey Baby, synthèse, Q9 ; éditorial (Q7 « Lui apprend », renforcement positif, transport Q10, encadré sécurité saut, lexique et synthèse du cross).
 - Décisions en attente : C1 longues rênes, C2 rappel Galop 4 dans les soins, C3 noms d'obstacles de cross, C4 galop à faux, C5 volte / changement de main / serpentine (lexique incurvation), C6 cadence, C7 serpentine du défi, C8 départ de la bande. Compte rendu : Galop5-compte-rendu-controle-final.txt.
 - Fichiers : hype-cours-galop5.js, index.html (?v=9 + build à la publication), SUIVI.md.
-## 02/11/2026 21h20 — PRÊT, PAS PUBLIÉ (branche g5-final) : Galop 5, décisions de Blandine 21h10 (C1, C2 b, C3, C5)
+## 02/11/2026 21h20 — PUBLIÉ avec le build 20261102-2232 : Galop 5, décisions de Blandine 21h10 (C1, C2 b, C3, C5)
 - C1 « Pour aller plus loin » (longe et longues rênes) : le cours dit « C'est ton enseignant qui installe les rênes » ; rêne intérieure « du mors à ta main en passant par l'anneau du surfaix » ; consigne de surveillance de la rêne extérieure gardée ; le réglage précis (sous la pointe de la fesse, au-dessus des jarrets) passe dans un encadré « Pour aller plus loin » (Galop 6).
 - C2 b (soins et bandes) : rappel du Galop 4 gardé ; quiz « cloches » → « gonflement au-dessus de la bande » ; quiz « guêtre ouverte » → « bande sale ou mouillée » ; Hey Baby « guêtre ouverte / fermée » → « Que faire si mon cheval se gratte ou tire sur sa bande ? ».
 - C3 (cross) : les 5 obstacles gardés ; encadré « Pour aller plus loin » corrigé (« Au Galop 6, tu apprendras à reconnaître tous les principaux obstacles de cross… »). Réponse de Blandine notée « C4=1 », lue comme C3 option 1 (garder les noms) ; C4 (galop à faux) inchangé.
 - C5 (lexique de l'incurvation) : « Volte » et « Changement de main » retirés, « Cercle » ajouté ; « Serpentine » alignée sur le cours 1.
 - Vérifié : quiz à 10 questions, 4 réponses chacune ; Galops 1 à 5 s'ouvrent sans erreur. hype-cours-galop5.js ?v=10.
 - Reste avant traduction : validation explicite du français par Blandine.
-## 02/11/2026 22h10 — PRÊT, PAS PUBLIÉ (branche g5-final) : Galop 5, les 12 cours traduits en 13 langues (validation du français : Blandine 21h15 « Ok »)
+## 02/11/2026 22h35 — PUBLICATION build 20261102-2232 (accord de Blandine 22h28 « Ok ») : Galop 5, les 12 cours traduits en 13 langues (validation du français : Blandine 21h15 « Ok »)
 - 1 888 textes × 13 langues (en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko), un traducteur par langue, vocabulaire repris des cours déjà en ligne ; vérifiés : mêmes clés, aucun vide, rien resté en français, titres = ceux de la page du Galop 5, règles de Blandine respectées.
 - hype-cours-galop5.js (?v=11) : bloc TR_G5N à la fin des nouveaux cours. Chaque entrée garde le texte français d'origine : une traduction ne s'applique que si le français n'a pas changé (sinon la phrase reste en français, jamais une traduction périmée). Lexiques de la page « Révise » dans les 14 langues (titre « Petit lexique » traduit).
-- outils/cours-langues.cjs : HYPE_LEXIQUE_EXTRA (partagé par les Galops 5 et 7) est complété au lieu d'être remplacé quand on charge un Galop après l'autre (avant : ouvrir le Galop 7 effaçait les lexiques du Galop 5, et inversement).
-- hype-cours-editorial.js v60 (?v=60) : cours « g5n-… » — le texte français de référence est retrouvé (/^g(\d+)/), sinon le « Le savais-tu ? » restait dans le chapitre dans les autres langues au lieu d'aller sur la page « Révise ».
+- outils/cours-langues.cjs : même correction faite en parallèle par l'autre session (build 2240), sa version gardée — HYPE_LEXIQUE_EXTRA (partagé par les Galops 5 et 7) est complété au lieu d'être remplacé quand on charge un Galop après l'autre (avant : ouvrir le Galop 7 effaçait les lexiques du Galop 5, et inversement).
+- hype-cours-editorial.js v61 (?v=61, fusion avec la v60 de l'autre session) : cours « g5n-… » — le texte français de référence est retrouvé (/^g(\d+)/), sinon le « Le savais-tu ? » restait dans le chapitre dans les autres langues au lieu d'aller sur la page « Révise ».
 - Vérifié (appli locale avec les fichiers par langue) : 12 cours × 14 langues s'ouvrent, page Révise partout, savais-tu déplacé dans les 8 cours qui en ont ; captures en, ar, ja, ru.
 - Points relevés par les traducteurs (à décider plus tard) : italien « Galop 5 » (nouveaux cours) / « Livello 5 » (embouchures) ; portugais « você » (comme la plupart des textes pt) ; quelques titres de page et textes n'emploient pas exactement le même mot (de : Takt/Tempo ; pt : ligaduras/bandagens ; zh : 侧弯/弯曲) ; anciennes coquilles hors Galop 5 (zh « 马车 » pour van, ja « 牴馬 », ko « 포인 » au Galop 4).
 - Les cours restent visibles des seules modératrices (HYPE_COURS_PRETS inchangé).

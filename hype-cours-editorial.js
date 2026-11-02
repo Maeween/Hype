@@ -20,7 +20,9 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 60;   /* 02/11 22h : cours « g5n-… » — le texte français de référence est retrouvé (repère du « Le savais-tu ? » dans les autres langues) */
+var VERSION = 61;   /* 02/11 22h30 : fusion des deux sessions (v60 + v60) */
+/* précédente : VERSION = 60; */   /* 02/11 22h30 : grand lexique — mots des Galops 5 à 9 lus aussi dans les cours */
+/* aussi : */   /* 02/11 22h : cours « g5n-… » — le texte français de référence est retrouvé (repère du « Le savais-tu ? » dans les autres langues) */
 /* précédente : VERSION = 59; */   /* 02/11 19h55 : « Le savais-tu ? » de la page « Révise en 2 minutes » en carte lisible (choix C de Blandine) */
 /* précédente : VERSION = 58; */   /* 02/11 16h40 : photos provisoires des chapitres des 16 nouveaux cours du Galop 7 (AUTO_IM_G7, non branchés) */
 /* précédente : VERSION = 57; */   /* 02/11 16h : corrections FFE des petits lexiques (garrot ; aides naturelles = 4 ; galop en équilibre ; circulation en manège au lieu de la route) et du défi du saut (mains sur la crinière) */
@@ -3557,8 +3559,13 @@ function glexEntrees(lg, pret) {
   try { if (HypeCoursEditorial.g4 && HypeCoursEditorial.g4.remplirLexiques) HypeCoursEditorial.g4.remplirLexiques(); } catch (e) { }
   var map = {}, liste = [];
   var EXTRA = (typeof window !== "undefined" && window.HYPE_LEXIQUE_EXTRA) || {};
-  Object.keys(LEXIQUE_COURS).concat(Object.keys(EXTRA).filter(function (k) { return !LEXIQUE_COURS[k]; })).forEach(function (id) {
-    var LX = lexDe(id), lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
+  /* 02/11 22h30 (Blandine : « le lexique est bien dans tous les Galops et ajouté au lexique général ? ») : on lit aussi le champ « lexique »
+     écrit dans les cours eux-mêmes (Galops 5 à 9 : g5n-…, g7n-…), même si HYPE_LEXIQUE_EXTRA a été remplacé entre-temps */
+  var DANS = {};
+  try { [5, 6, 7, 8, 9].forEach(function (g) { (window["COURS_GALOP" + g + "_FR"] || []).forEach(function (c) { if (c && c.id && c.lexique && c.lexique.fr && c.lexique.fr.length) DANS[c.id] = { fr: { titre: "Petit lexique", mots: c.lexique.fr } }; }); }); } catch (eD) { }
+  var ids = Object.keys(LEXIQUE_COURS); Object.keys(EXTRA).concat(Object.keys(DANS)).forEach(function (k) { if (ids.indexOf(k) < 0) ids.push(k); });
+  ids.forEach(function (id) {
+    var LX = lexDe(id) || DANS[id], lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
     var g = +((/^g(\d+)/.exec(id) || [])[1] || 0);   /* 02/11 : « g5n-01 » compte bien pour le Galop 5 */
     if (typeof pret === "function" && !pret(id, g)) return;   /* 02/11 : seulement les cours ouverts à la personne (les cours en relecture restent visibles des modérateurs) */
     lex.mots.forEach(function (m) {
