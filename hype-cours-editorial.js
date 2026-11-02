@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 48;   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
+var VERSION = 49;   /* 02/11 10h16 : g1-c5 « La position d'équilibre » — nouvelle photo de Blandine (cours-g1-c5-equilibre-2.webp) */
+/* précédente : VERSION = 48; */   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
 /* précédente : VERSION = 47; */   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
 /* précédente : VERSION = 46; */   /* 02/11 : lexiques du Galop 5 (HYPE_LEXIQUE_EXTRA) sur la page « Révise en 2 minutes » */
 /* précédente : VERSION = 45; */   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
@@ -2164,7 +2165,7 @@ var AUTO_IM = {
   "g1-c3": ["images/galop5-th-cheval2.webp", "images/cours-g1-c3-box.webp",   /* 01/11 18h05 : chapitre 02 « Le confort au box » = photo de Blandine (cheval gris au box) */
     "images/securite-g1-observer.webp"],
   "g1-c4": ["images/galop5-c08-equilibre.webp", "images/galop5-c10-cession.webp", "images/galop5-c09-incurvation.webp"],
-  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/galop5-c09-incurvation.webp", "images/cours-g1-c5-equilibre.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
+  "g1-c5": ["images/cours-g1-c5-gravite.webp", "images/galop5-c09-incurvation.webp", "images/cours-g1-c5-equilibre-2.webp"],   /* 01/11 23h44 (Blandine) : la photo dorée de Liam REMPLACE celle du chapitre 01 (plus en doublon dans « L'essentiel ») ; 23h26 : photo de « La position d'équilibre » */
   "g1-c6": ["images/connexion-cheval-oeil-hd.jpg", "images/securite-g1-inquiet.webp", "images/securite-g1-observer.webp"],
   "g1-c20": ["images/cours-g1-c20-hero.webp",   /* 01/11 21h30 (Blandine) : l'ancienne photo du haut passe au chapitre 01 « Découvrir son corps » */ "images/cours-g1-c20-pieds.webp", "images/cours-g1-c20-silhouette.webp"],   /* 01/11 21h : chapitre 03 « Un organisme en action » = sabots d'un cheval gris (photo de Blandine, 20h51) */   /* 01/11 : photo de Blandine pour « Comprendre sa silhouette » (reprise de la branche travail-robes-ordi) */
   "g1-c8": ["images/materiel-g1-licol.webp", "images/securite-g1-rangement.webp", "images/galop5-theme-cheval.webp"],   /* 01/11 11h07 : chapitre 01 = cheval blanc au licol (photo de Blandine) */
