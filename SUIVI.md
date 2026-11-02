@@ -16537,3 +16537,10 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 Blandine : « plus de place pour les photos dans les onglets, aère plus les onglets entre eux, même couleur que les cours : fond noir et onglets noir bleuté semi-transparents ».
 - index.html, fin de G5_CSS (toutes les pages Galop + Galop 5) : fond #070A08 ; cartes rgba(16,26,29,0.58) + flou ; photo 250 px (téléphone, au lieu de 190) et 300 px (tablette/ordinateur, au lieu de 240) ; 36 px entre les cartes (au lieu de 22).
 - PUBLIÉ le 02/11 à 17h (Blandine : « Publié »).
+## 02/11/2026 17h15 — PUBLICATION build 20261102-1715 (Blandine 16h56 « Branche les ») : les 16 cours du Galop 7 BRANCHÉS
+- hype-cours-galop7.js (?v=5) : les 16 cours g7n-01 … g7n-16 remplacent les 6 brouillons dans la liste du Galop 7 (window.COURS_GALOP7_FR) ; brouillons g7-c1 … g7-c6 gardés dans window.COURS_GALOP7_BROUILLONS (rien de perdu ; le Galop 7 étant « Prochainement », personne n'avait de progression dessus). Titres des 16 cours traduits en 14 langues (liste de la page) ; contenu en français seul jusqu'à validation. Lexiques rangés dans HYPE_LEXIQUE_EXTRA (page « Révise en 2 minutes », grand lexique côté modératrices).
+- index.html : obtenirCoursParGalop(7) passe par la même traduction que le Galop 5 (sinon erreur React #31 sur les titres { fr, en, … }) ; HYPE_CATEGORIE_PAR_COURS : 01-04 Vie équestre, 05-08 Connaissance du cheval, 09-15 Pratique équestre, 16 Culture équestre.
+- hype-cours-sommaire.js refait (outils/sommaire-cours.cjs) : Galop 7 = les 16 nouveaux titres (les autres Galops : mêmes cours, titres en 14 langues comme le refait Netlify à chaque publication).
+- Accès : le Galop 7 reste « Prochainement » (HYPE_GALOP_PROCHAIN_DES = 6) : les cavalières voient la liste des 16 titres, seules les modératrices ouvrent les cours. À ouvrir à tous (et à traduire) sur décision de Blandine après relecture.
+- Vérifié : syntaxe, 17 blocs de script OK.
+- Fichiers : hype-cours-galop7.js (?v=5), hype-cours-sommaire.js, index.html (build 20261102-1715), SUIVI.md.
