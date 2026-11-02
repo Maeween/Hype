@@ -16449,3 +16449,14 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - hype-cours-galop5.js (?v=7) : robes du Galop 5 en espagnol, bande scapulaire « sobre el hombro » (au lieu de « sobre la espalda »).
 - Vérifié (appli locale, 390 px) : 9 cours du Galop 4 ouverts sans erreur ; les nouveaux textes s'affichent et aucune des anciennes erreurs ne reste ; 17 blocs de code valides ; marqueurs de garde inchangés.
 - Laissé tel quel (à décider) : glossaire « Pivot » et l'exemple « le cheval a reculé au lieu de pivoter » dans les encadrés épaules-hanches.
+
+## 02/11/2026 16h00 — build 20261102-1600 : « Préparer un diplôme d'enseignant » (Prépa AE, BPJEPS, DEJEPS) — BRANCHE prepa-diplomes, NON PUBLIÉE (relecture du français par Blandine d'abord)
+- Demande de Blandine (02/11 14h47-14h52) : onglet sur la page des Galops vers trois parties ; AE = Animateur d'Équitation ; placé « après » le Galop 7 ; Premium.
+- Page à part chargée à la demande : hype-ecran-prepa.js (v1), écran "prepa-diplomes" (aiguillage + liste des écrans larges sur ordinateur). Trois onglets ; pour chaque diplôme : entrée en formation / tests, étape suivante, dispenses, « Ma préparation » (cases gardées sur l'appareil), sources officielles.
+- Entrée : grande carte « Préparer un diplôme d'enseignant » juste après l'espace du Galop choisi, avant « Tout pour progresser » ; photo provisoire images/TEAM_COMPETITION.webp.
+- Premium : sans abonnement, le premier bloc est lisible, la suite floutée avec « Découvrir Premium » ; modératrices et abonnées voient tout.
+- Contenu UNIQUEMENT tiré des textes officiels (vérifiés en ligne le 02/11) : AE = fiche RNCP42622 (FFE, niveau 3, active depuis le 17/07/2026, remplace RNCP37414) ; BPJEPS = arrêté du 18/11/2024 (mention « équitation », TEP en 3 épreuves de 10 min, 54/90, EPMSP 15 min + entretien, tests du bloc 4, dispenses annexe V) ; DEJEPS = arrêté du 21/09/2018 modifié le 27/05/2024 (Am 3 GP + CSO Am 2 1,05-1,10 m ; test pédagogique 20 min max, 3 cavaliers Galop 5+, entretien 10 min — et NON 30 min comme l'indique une plaquette de centre). Le bouton « Voir la reprise Amateur 3 Grand Prix » ouvre directement la reprise.
+- Volontairement NON mis (non trouvés dans les textes en vigueur) : âge minimum AE (16 ans dans l'ancienne fiche seulement) ; âge et Galop 6 pour le BPJEPS (page FFE Île-de-France, pas dans l'arrêté de 2024) ; détail case par case des tableaux de dispenses (renvoi vers l'organisme de formation).
+- Textes en FRANÇAIS seulement (règle du 02/11 : traduire après relecture) — les autres langues affichent le français en attendant.
+- Vérifié (appli complète, connexion simulée) : téléphone 390 (abonnée, visiteuse), ordinateur 1440 ; 0 erreur, 0 débordement ; lien vers la reprise testé.
+- Fichiers : hype-ecran-prepa.js (nouveau), index.html (build 20261102-1600), SUIVI.md.
