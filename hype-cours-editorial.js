@@ -2887,7 +2887,7 @@ AUTO_IDS.forEach(function (id) {
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       /* 01/11 23h15 (Blandine) : la carte « Quiz et révision » n'est plus en bas du cours (elle reste sur la page de fin) — un bouton mène à « Pour réviser » */
-      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: aRev(cours.id) ? LREV(lg).pourReviser : L("secQuiz"), sous: aRev(cours.id) ? LREV(lg).sousMenu : L("sQuiz"), img: LEX_PHOTO[cours.id] || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
+      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: aRev(cours.id) ? LREV(lg).pourReviser : L("secQuiz"), sous: aRev(cours.id) ? LREV(lg).sousMenu : L("sQuiz"), img: lexPhoto(cours.id) || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
     } });
     var cv = A.couv;
     return {
@@ -2930,6 +2930,8 @@ var SAVAIS_COURS = {
 /* un cours sans lexique ni savais-tu (pas encore écrits) va directement à la page de fin */
 function aRev(id) { return !!(LEXIQUE_COURS[id] || SAVAIS_COURS[id]); }
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
+/* 02/11 (Blandine : « il manquait la photo de cheval en haut des lexiques ») : la même photo de tête de cheval sur tous les lexiques, sauf photo propre au cours */
+function lexPhoto(id) { return LEX_PHOTO[id] || "images/cours-g1-c20-lexique.webp"; }
 var LREV_T = {
   pourReviser: tt("Révise en 2 minutes", "Review in 2 minutes", "Repasa en 2 minutos", "Ripassa in 2 minuti", "2分で復習", "In 2 Minuten wiederholen", "راجع في دقيقتين", "2分钟复习", "Herhaal in 2 minuten", "Revê em 2 minutos", "Repetera på 2 minuter", "Повтори за 2 минуты", "Powtórz w 2 minuty", "2분 복습"),
   sousMenu: tt("Les mots clés avant le quiz", "Key words before the quiz", "Las palabras clave antes del quiz", "Le parole chiave prima del quiz", "クイズの前にキーワード", "Die Schlüsselwörter vor dem Quiz", "الكلمات الأساسية قبل الاختبار", "测验前的关键词", "De sleutelwoorden voor de quiz", "As palavras-chave antes do quiz", "Nyckelorden före quizet", "Ключевые слова перед тестом", "Kluczowe słowa przed quizem", "퀴즈 전 핵심 단어"),
@@ -2991,9 +2993,9 @@ function RevAuto(props) {
             h("p", { className: "kick" }, cfg.hero.galop + "  ·  " + cfg.hero.titre),
             null)),
         h("div", { className: "hce-rev-bas" },
-          lex ? h("aside", { className: "hce-lexique" + (LEX_PHOTO[cours.id] ? "" : " sans-ph") }, h("h3", { style: { textAlign: "center", justifyContent: "center", alignSelf: "stretch", width: "100%" } }, lex.titre),
+          lex ? h("aside", { className: "hce-lexique" + (lexPhoto(cours.id) ? "" : " sans-ph") }, h("h3", { style: { textAlign: "center", justifyContent: "center", alignSelf: "stretch", width: "100%" } }, lex.titre),
             h("dl", null, lex.mots.map(function (m, k) { return h("div", { key: k }, h("dt", null, m[0]), h("dd", null, m[1])); })),
-            LEX_PHOTO[cours.id] ? h("figure", { className: "lx-ph" }, h("img", { src: LEX_PHOTO[cours.id], alt: "" })) : null) : null,
+            lexPhoto(cours.id) ? h("figure", { className: "lx-ph" }, h("img", { src: lexPhoto(cours.id), alt: "" })) : null) : null,
           savL.length ? h("div", { className: "hce-savais" }, h("span", null, R.savais), savL.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); })) : null,
           h(CarteSuite, { label: R.suite, img: IM.quiz, pos: "50% 60%", rtl: rtl, onClick: props.onSuite })))));
 }
