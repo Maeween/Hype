@@ -16528,3 +16528,7 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Pour brancher (sur accord de Blandine) : concaténer COURS_GALOP7_NOUVEAUX à COURS_GALOP7_FR (comme le Galop 5) + liste des cours de la page du Galop 7 (visible des modératrices seules d'abord).
 - Vérifié : syntaxe des 3 fichiers, 17 blocs de script OK ; structure des 16 cours contrôlée par script.
 - Fichiers : hype-cours-galop7.js (?v=3), hype-cours-editorial.js (?v=58), index.html (build 20261102-1640 : ?v=), SUIVI.md.
+
+## 02/11/2026 17h00 — PUBLICATION build 20261102-1700 (Blandine 16h56 « Ok mets la en ligne ») : Galop 7, longe avec enrênement
+- Blandine (16h41) : « Longe enrênée plutôt 30 à 40 » → g7n-03 : séance de 30 à 40 minutes au maximum, détente comprise (la relecture avait mis 20 à 30).
+- Fichiers : hype-cours-galop7.js (?v=4, toujours non branché), index.html (build 20261102-1700 : ?v=), SUIVI.md.

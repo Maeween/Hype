@@ -6,7 +6,7 @@
    ===================================================================================== */
 (function () {
 "use strict";
-var COURS_GALOP7_VERSION = 3; /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
+var COURS_GALOP7_VERSION = 4; /* 02/11 16h41 : g7n-03 longe enrênée 30 à 40 min */ /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
 var HYPE_IMGS = (typeof window !== "undefined" && window.HYPE_IMGS) || {};
 const COURS_GALOP7_FR = [
     {
