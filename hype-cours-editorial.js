@@ -154,10 +154,10 @@ var CSS = [
 ".hce-hero{position:relative;overflow:hidden;min-height:0;padding:0 0 22px}",
 /* 01/11 16h (Blandine : « descends les hero beaucoup plus […] ça coupe en haut en bas et ça s'écrase avec les titres ») : photo beaucoup plus haute, titre sous la photo */
 ".hce-hero .ph{position:relative;height:calc(min(var(--hr,72vw),520px) + env(safe-area-inset-top, 0px));background:#070A08 center 30%/cover no-repeat;background-position:var(--pos-tel,center 30%);filter:saturate(.82)}",
-".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}",
-/* 02/11 14h45 : photo du haut DESCENDUE sur téléphone (HERO_COURS, 4e valeur en px) — la photo garde toute sa largeur, posée en bas, et la bande du haut reste sombre sous la barre retour / drapeau */
-".hce-hero .ph.decal{height:calc(min(66.7vw,520px) + var(--decal-tel,0px) + env(safe-area-inset-top, 0px));background-size:100% auto;background-position:center bottom}",
-".hce-hero .ph.decal:after{background:linear-gradient(180deg,#070A08 0%,#070A08 calc(var(--decal-tel,0px) + env(safe-area-inset-top, 0px)),rgba(7,10,8,0) calc(var(--decal-tel,0px) + env(safe-area-inset-top, 0px) + 46px),rgba(7,10,8,0) 78%,#070A08 100%)}",
+/* 02/11 15h25 (Blandine : « c'est pareil pour tous les hero j'imagine ») : sur TÉLÉPHONE, toutes les photos du haut sont descendues sous la barre
+   retour / drapeau — la photo entière, sur toute la largeur, posée en bas ; la bande du haut reste sombre. 60 px par défaut, HERO_COURS 4e valeur pour un autre réglage. */
+".hce-hero .ph{height:calc(min(var(--hrx,66.7vw),560px) + var(--decal-tel,60px) + env(safe-area-inset-top, 0px));background-size:auto calc(100% - var(--decal-tel,60px) - env(safe-area-inset-top, 0px));background-position:center bottom}",
+".hce-hero .ph:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#070A08 0%,#070A08 calc(var(--decal-tel,60px) + env(safe-area-inset-top, 0px)),rgba(7,10,8,0) calc(var(--decal-tel,60px) + env(safe-area-inset-top, 0px) + 46px),rgba(7,10,8,0) 78%,#070A08 100%)}",
 ".hce-bar{position:absolute;top:calc(14px + env(safe-area-inset-top, 0px));inset-inline:16px;z-index:3;display:flex;align-items:center;gap:12px}",
 ".hce-back{width:40px;height:40px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:inline-flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}",
 ".hce-crumb{display:none;align-items:center;gap:10px;font-size:14px;color:var(--ivoire)}.hce-crumb i{font-style:normal;color:var(--doux)}",
@@ -593,7 +593,7 @@ var CSS = [
 "}",
 /* ===== TABLETTE (conteneur >= 700 px) ===== */
 "@container hce (min-width:700px){",
-".hce-hero .ph,.hce-hero .ph.decal{height:600px;background-size:cover;background-position:var(--pos,center 30%)}.hce-hero .ph.decal:after{background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}.hce-hero .txt{padding:0 32px;margin-top:-10px}.hce-hero h1{font-size:52px}",
+".hce-hero .ph,.hce-hero .ph.decal{height:600px;background-size:cover;background-position:var(--pos,center 30%)}.hce-hero .ph:after,.hce-hero .ph.decal:after{background:linear-gradient(180deg,rgba(7,10,8,.45) 0%,rgba(7,10,8,0) 16%,rgba(7,10,8,0) 78%,#070A08 100%)}.hce-hero .txt{padding:0 32px;margin-top:-10px}.hce-hero h1{font-size:52px}",
 ".hce-bar{inset-inline:28px;top:calc(20px + env(safe-area-inset-top, 0px))}.hce-crumb{display:inline-flex}",
 ".hce-enc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;padding:6px 28px 20px}.hce-enc.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.hce-enc.n1{grid-template-columns:minmax(0,1fr)}",
 ".hce-card{flex:none;min-height:150px}.hce-card h3{max-width:none}.hce-card p{max-width:78%}",
@@ -1569,7 +1569,8 @@ function HeroPhoto(p) {
     return function () { ok = false; };
   }, [p.img]);
   var hr = ratio ? Math.max(72, Math.min(110, 100 / ratio)) : 72;
-  return h("div", { className: "ph" + (p.decal ? " decal" : ""), style: Object.assign({ "--hr": hr.toFixed(1) + "vw" }, p.decal ? { "--decal-tel": p.decal + "px" } : {}, p.style) });
+  var hrx = ratio ? Math.max(56, Math.min(125, 100 / ratio)) : 66.7;   /* 02/11 : hauteur exacte de la photo sur toute la largeur (téléphone) */
+  return h("div", { className: "ph" + (p.decal ? " decal" : ""), style: Object.assign({ "--hr": hr.toFixed(1) + "vw", "--hrx": hrx.toFixed(1) + "vw" }, p.decal ? { "--decal-tel": p.decal + "px" } : {}, p.style) });
 }
 function Vague(p) {   /* 01/11 19h30 (Blandine : « reproduis exactement ces couleurs, ces alternances et cette vague ») : la vague du cours des robes */
   return h("svg", { className: "hce-vague", viewBox: "0 0 1000 26", preserveAspectRatio: "none", "aria-hidden": true, style: { background: p.de } },
@@ -3287,7 +3288,7 @@ var HERO_COURS = {
   "g1-c10": ["images/cours-g1-c10-hero.webp", "42% 35%", "25% 35%"],   /* « Le nœud d'attache » — cheval blanc au licol et à la longe, photo de Blandine (01/11 11h30) */
   "g1-c8": ["images/materiel-g1-hero.webp", "35% 30%", "75% 40%"],   /* 3e valeur = cadrage sur téléphone (photo haute) */   /* « Le matériel » — photo envoyée par Blandine le 01/11 */
   "g1-c17": ["images/cours-g1-c17-hero.webp", "78% 40%", "75% 40%"],
-  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%", 64],   /* 02/11 14h45 (Blandine : la photo est prise dans le drapeau) : 4e valeur = sur téléphone, photo entière descendue de 64 px sous la barre (retour / drapeau) */   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
+  "g1-c18": ["images/cours-g1-c18-hero.webp", "60% 35%", "50% 35%", 64],   /* 02/11 14h45 (Blandine : la photo est prise dans le drapeau) : 4e valeur = sur téléphone, décalage sous la barre (60 px par défaut pour tous depuis 15h25) */   /* « Conduire son poney ou son cheval en main en sécurité » — photo de Blandine (01/11 16h11) */   /* « Préparer son poney ou son cheval : seller et brider » — cheval noir sellé et bridé */
   "g3-c1": ["images/cours-g3-c1-hero.webp", "62% 45%", "50% 45%"]   /* « Le trot enlevé sur le bon diagonal » — photo envoyée par Blandine le 01/11 ; servira quand le Galop 3 passera au modèle */,
   /* 01/11 21h (Blandine : « remplace tous les hero aux anciennes couleurs par celles-ci en alternant ») : ses 12 photos de chevaux sur fond noir */
   "g1-c4": ["images/hero-cours-01.webp", "80% 35%", "68% 40%"],
