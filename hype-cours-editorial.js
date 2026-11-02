@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 47;   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
+var VERSION = 48;   /* 02/11 : g3-c1 sans photos de manège (accord de Blandine) */
+/* précédente : VERSION = 47; */   /* 02/11 09h : Galops 2 et 3 — lexiques et savais-tu (14 langues), « Le savais-tu ? » d'origine déplacé sous le lexique, photo de cheval sur tous les lexiques, grand lexique, affiches du Galop 3 retirées */
 /* précédente : VERSION = 46; */   /* 02/11 : lexiques du Galop 5 (HYPE_LEXIQUE_EXTRA) sur la page « Révise en 2 minutes » */
 /* précédente : VERSION = 45; */   /* 02/11 00h10 : style des cours validé par Blandine (chapitres en cartes sur téléphone, texte centré, moins de pétrole, titres « Chapitre 01 », espaces) + page « Révise en 2 minutes » (lexique, Le savais-tu) avant la page de fin */
 /* précédente : VERSION = 44; */   /* 01/11 23h40 : g1-c5 — schéma interactif « La bonne position assise » (MODULES_COURS) + photo de « La position d'équilibre » */
@@ -2244,7 +2245,7 @@ var MODULES_COURS = {
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
 var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };   /* 01/11 23h44 : g1-c5 retiré d'ici, la photo dorée est devenue la photo du chapitre 01 */   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
 /* chapitres affichés sans photo (index), si besoin un jour — vide (01/11 21h15 : Blandine garde la photo de « Comprendre sa silhouette ») */
-var CHAP_SANS_PHOTO = { "g1-c5": [1] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
+var CHAP_SANS_PHOTO = { "g1-c5": [1], "g3-c1": [0, 1, 2] };   /* 01/11 23h45 (Blandine) : « Le trot enlevé » sans photo (photo du manège retirée) */
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
 var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
