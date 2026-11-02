@@ -16536,4 +16536,4 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 ## 02/11/2026 16h45 — PAGES GALOP : cartes des parties (prêt, NON PUBLIÉ)
 Blandine : « plus de place pour les photos dans les onglets, aère plus les onglets entre eux, même couleur que les cours : fond noir et onglets noir bleuté semi-transparents ».
 - index.html, fin de G5_CSS (toutes les pages Galop + Galop 5) : fond #070A08 ; cartes rgba(16,26,29,0.58) + flou ; photo 250 px (téléphone, au lieu de 190) et 300 px (tablette/ordinateur, au lieu de 240) ; 36 px entre les cartes (au lieu de 22).
-- À publier seulement quand Blandine dit « publie ».
+- PUBLIÉ le 02/11 à 17h (Blandine : « Publié »).
