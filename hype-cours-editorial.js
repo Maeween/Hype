@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 55;   /* 02/11 15h25 : TOUTES les photos du haut descendues sous la barre retour / drapeau sur téléphone ; 14h45 : g1-c18 (HERO_COURS 4e valeur) */
+var VERSION = 56;   /* 02/11 15h45 : lecteur audio — surtitres « CHAPITRE 01 », « GALOP 1 », durée et numéros marqués « à ne pas lire » (data-nolecture) */
+/* précédente : VERSION = 55; */   /* 02/11 15h25 : TOUTES les photos du haut descendues sous la barre retour / drapeau sur téléphone ; 14h45 : g1-c18 (HERO_COURS 4e valeur) */
 /* précédente : VERSION = 54;   /* 02/11 15h : Galop 4 — lexique et savais-tu sur la page à part « Révise en 2 minutes » (photo en haut), comme aux Galops 1 à 3 */
 /* précédente : VERSION = 53; */   /* 02/11 14h55 : photo des sabots (g1-c20, chapitre « Un organisme en action ») cadrée en bas sur ordinateur — choix « D » de Blandine */
 /* précédente : VERSION = 52; */   /* 02/11 10h40 (Blandine : « fais pareil sur les autres galops ») : idem pour les Galops 1 et 2 (g1-c4, g1-c5, g1-c9, g2-aides, g2-depart, g2-c3, g2-c6, g2-anatomie, g2-familles) ; 16 photos de Blandine (portrait-cheval-1 à 16) */
@@ -1602,7 +1603,7 @@ function Liste(p) {
 }
 function Head(p) {
   return h("header", null,
-    h("div", { className: "hce-head" }, h("span", { className: "hce-num" }, p.num), h("h2", null, p.titre)),
+    h("div", { className: "hce-head" }, h("span", { className: "hce-num", "data-nolecture": "1" }, p.num), h("h2", null, p.titre)),
     p.sous ? h("p", { className: "hce-sous" }, p.sous) : null);
 }
 
@@ -1764,7 +1765,7 @@ function Chapitre(p) {
      Téléphone : photo ENTIÈRE sous le titre, puis les notions à la suite.
      Tablette et ordinateur : une notion à la fois ; la photo en grand dans le fond d'un côté, sans aucun texte dessus, le texte de l'autre côté. */
   var titreH = h("h2", { id: "hce-t-" + p.id }, (function (t) { var d = titreDeux(t); return d[1] ? [h("span", { key: "a" }, d[0]), h("em", { key: "b" }, d[1])] : t; })(p.titre));
-  var kick = h("p", { className: "kick rb-kick" }, p.L ? p.L("chapN").replace("{n}", p.num) : p.num);   /* 01/11 23h40 : « CHAPITRE 01 » (style 1 validé) */
+  var kick = h("p", { className: "kick rb-kick", "data-nolecture": "1" }, p.L ? p.L("chapN").replace("{n}", p.num) : p.num);   /* 01/11 23h40 : « CHAPITRE 01 » (style 1 validé) */
   if (mobile) return h("div", { className: "hce-chp rb rbm" + (p.cls ? " " + p.cls : "") },
     h("div", { className: "in" },
       kick, titreH,
@@ -1908,9 +1909,9 @@ function HypeCoursEditorial(props) {
           h("nav", { className: "hce-crumb", "aria-label": "Fil d'Ariane" }, h("span", null, hero.galop), h("i", { "aria-hidden": true }, rtl ? "‹" : "›"), h("span", null, hero.titre)),
           Selecteur ? h("span", { className: "hce-lang" }, h(Selecteur, { compact: true })) : null),
         h("div", { className: "txt" },
-          h("p", { className: "hce-kick" }, hero.galop),
+          h("p", { className: "hce-kick", "data-nolecture": "1" }, hero.galop),
           h("h1", { id: "hce-titre" }, h("span", null, tit[0]), tit[1] ? h("span", null, tit[1]) : null),
-          h("div", { className: "hce-meta" },
+          h("div", { className: "hce-meta", "data-nolecture": "1" },
             hero.duree ? h("span", null, ICO.horloge(19), hero.duree) : null,
             hero.type ? h("span", null, ICO.livre(19), hero.type.charAt(0).toUpperCase() + hero.type.slice(1)) : null,
             h("span", null, ICO.toque(19), hero.galop)))),

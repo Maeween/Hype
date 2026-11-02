@@ -16468,3 +16468,12 @@ Demandes de Blandine (19h17 et 19h20) : « regarde ce qu'il faut rajouter en lig
 - Vérifié : captures téléphone et ordinateur, sans abonnement et avec abonnement, aucune erreur.
 - PHOTOS DU HAUT DES COURS (Blandine 14h45 : sur « Conduire son poney… », la photo est prise dans le drapeau ; 15h23 : « c'est pareil pour tous les hero j'imagine ») : hype-cours-editorial.js VERSION 55 (?v=55, après la 54 de l'autre conversation). Sur TÉLÉPHONE uniquement, toutes les photos du haut des cours au modèle commun (Galops 1, 2, 3) commencent 60 px sous la barre retour / drapeau : photo entière sur toute la largeur, posée en bas, bande du haut sombre. g1-c18 : 64 px (HERO_COURS, 4e valeur = réglage par cours). Tablette et ordinateur inchangés. Vérifié : 45 cours capturés à 430 px, plus aucune tête sous la barre ; tablette et ordinateur identiques. Non concernés (autres modèles) : g1-c2 pansage, g1-c7 robes, Galops 4 et plus.
 - Fichiers : index.html (build 20261102-1530), hype-ecran-sante-cheval.js, hype-cours-editorial.js, SUIVI.md.
+
+## 02/11/2026 15h50 — PUBLICATION build 20261102-1545 (accord de Blandine 15h32 « Ok continue ») : lecteur audio des cours, étape A
+- Demande de Blandine (14h45) : « le lecteur audio lit tous les numéros de chapitre, il prononce Pony au lieu de poney » ; choix « C » (15h24) = A tout de suite (corriger la lecture avec la voix du téléphone), B plus tard (vraie voix enregistrée, en commençant par le français).
+- hype-cours-editorial.js VERSION 56 (?v=56) : « CHAPITRE 01 », « GALOP 1 », la ligne durée / type / Galop et les numéros marqués « à ne pas lire » (data-nolecture).
+- index.html (hbVoixTexteDe) : un titre sur deux lignes est lu d'une traite avec une pause après ; lignes décoratives restantes retirées (numéros seuls, « Chapitre 02 », « 9 min »).
+- index.html (hbVoixLire) : prononciation corrigée pour l'oreille, texte affiché inchangé (HB_VOIX_PRONONCE, français : poney → ponè, poneys, FFE, SHF, FEI, CSO, CCE, TREC, Hey Baby) ; choix de la meilleure voix installée de la langue (voix « améliorée / premium » d'abord), liste des voix lue dès l'ouverture (sur iPhone elle arrive en retard).
+- Vaut pour les cours, les articles et Hey Baby (même lecteur).
+- Vérifié : texte lu sur g1-c18 sans numéros ni surtitres, titres entiers ; « poney » → « ponè ».
+- Fichiers : index.html (build 20261102-1545), hype-cours-editorial.js, SUIVI.md.
