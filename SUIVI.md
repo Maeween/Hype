@@ -16653,7 +16653,7 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Objectifs officiels toujours ouverts d'office (22h35).
 - Vérifié : captures 390 px (Galops 1 et 7) et 1440 px (Galop 6) ; le bouton ouvre bien la page des cours ; 0 erreur ; 17 blocs de script OK.
 - Fichiers : index.html (build 20261102-2245), SUIVI.md.
-## 02/11/2026 22h50 — PRÊT, PAS PUBLIÉ (branche trad-fix) : petites décisions de traduction et anciennes coquilles (Blandine 22h34 « Ok gère les »)
+## 03/11/2026 09h15 — PUBLICATION build 20261103-0913 (accord de Blandine 03/11 09h13 « Ok ») : petites décisions de traduction et anciennes coquilles (Blandine 02/11 22h34 « Ok gère les »)
 - Italien : « Galop 5 » partout dans le contenu des cours (comme Galops 1 à 4 et les 12 nouveaux cours) ; le cours des embouchures disait « Livello 5 / Livello 7 » → « Galop 5 / Galop 7 » (hype-cours-g5-embouchures.js ?v=4, GE_SRC). Les en-têtes de l'appli (« Livello ») ne changent pas.
 - Titres de page du Galop 5 alignés sur le vocabulaire des cours (index.html G5_THEMES + titres des cours dans hype-cours-galop5.js) : de « Gleichgewicht, Tempo und Übergänge » ; pt « Cuidados, proteções e bandagens de repouso » ; zh « 平衡、步频与转换 », « 弯曲与弧线练习 », « 腿让与跑步起步 » ; ko « 균형, 케이던스, 이행 » ; ru « Равновесие, темп и переходы » ; it « Lavoro da terra: longia e redini lunghe ».
 - Anciennes coquilles : ja « 牴馬 » → « 牝馬 » (jument, Galop 4 + galops-sup, 10 fois) ; ko « 포인 » → « 관골 » (canon, Galop 4, 4 fois) ; zh type « soins » « 条 » → « 护理 » (Galops 2, 3, 4, 6, 7 et galops-sup, 11 fois). Le « 马车 » relevé en chinois désigne l'attelage (sens juste) : rien à corriger pour le van.
