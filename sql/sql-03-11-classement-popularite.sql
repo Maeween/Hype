@@ -50,6 +50,9 @@ sc_ch as (
 pr as (
   select p.id, p.pseudo, coalesce(p.avatar_url, p.avatar) as avatar, p.handle
   from profiles p where coalesce(p.compte_supprime, false) = false
+    -- 03/11 (Blandine : « retire-moi ainsi que chat et Claude ») : ses deux comptes Blandine, son compte modératrice malicia2008, les comptes de test chatgpt et Claude
+    and p.id not in ('bc7c52ee-7a42-4162-97dd-50ff5885941e', 'b5aa18b3-9333-4fff-8a94-dbd594eed6e8', 'ce61bbbe-baa1-43c9-be1f-1038bcb6e64f',
+                     'cad07fa1-07b7-49e8-a554-63fe99a0e5ab', 'dc6720bd-946d-4b5f-88eb-90278403355f')
 ),
 sc_cav as (
   select pr.id, pr.pseudo, pr.avatar, pr.handle,
