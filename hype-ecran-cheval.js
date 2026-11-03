@@ -177,6 +177,11 @@ function EcranCheval() {
   /* 03/09 : mon surnom a moi pour ce cheval. Perso, jamais visible chez les autres. */
   var snSt = React.useState(""); var surnomPerso = snSt[0], setSurnomPerso = snSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
+  /* 03/11 (Blandine : classement des chevaux les plus populaires, « nombre de visites ») : une visite = une personne connectée qui ouvre la fiche
+     d'un cheval qui n'est pas le sien ; comptée une fois par personne (table hype_vues, type « cheval », date mise à jour à chaque passage). */
+  React.useEffect(function () {
+    try { if (chevalDyn && chevalDyn.id && moi && moi.id && chevalDyn.user_id && chevalDyn.user_id !== moi.id && typeof hypeMarquerVue === "function") hypeMarquerVue("cheval", chevalDyn.id); } catch (eVu) { }
+  }, [chevalDyn && chevalDyn.id, moi && moi.id]);
   /* 10/10 (860) Blandine : « je veux que n importe qui puisse ajouter les resultats de n importe quel cheval de son ecurie ».
      Mes ecuries (principale + deuxieme), comparees a l ecurie du cheval (son club, sinon l ecurie de sa proprietaire). */
   var mcfSt = React.useState([]); var mesClubsFiche = mcfSt[0], setMesClubsFiche = mcfSt[1];
