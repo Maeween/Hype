@@ -50,22 +50,23 @@ function descSeo(tete, texte) {
   if (d.length > 158) { d = d.slice(0, 155); const k = d.lastIndexOf(" "); if (k > 100) d = d.slice(0, k); d = d.replace(/[\s,;:.\-—]+$/, "") + "…"; }
   return d;
 }
-/* Galops 6 et 7 (« Prochainement » dans l'appli) : fin de l'aperçu */
-const BIENTOT = {
-  fr: { t: "Ce chapitre arrive bientôt dans l'appli", p: "Tu viens de lire le début. Le chapitre complet, ses images et son quiz arrivent bientôt dans l'appli Hype." },
-  en: { t: "This chapter is coming soon to the app", p: "You've just read the beginning. The full chapter, its pictures and its quiz are coming soon to the Hype app." },
-  es: { t: "Este capítulo llega pronto a la app", p: "Acabas de leer el principio. El capítulo completo, sus imágenes y su quiz llegan pronto a la app Hype." },
-  it: { t: "Questo capitolo arriva presto nell'app", p: "Hai appena letto l'inizio. Il capitolo completo, le immagini e il quiz arrivano presto nell'app Hype." },
-  de: { t: "Dieses Kapitel kommt bald in die App", p: "Du hast gerade den Anfang gelesen. Das ganze Kapitel mit Bildern und Quiz kommt bald in die Hype-App." },
-  ja: { t: "この章はまもなくアプリに登場します", p: "ここまでは冒頭部分です。章の全文、画像、クイズはまもなくHypeアプリに登場します。" },
-  ar: { t: "هذا الفصل قادم قريبًا إلى التطبيق", p: "لقد قرأت البداية للتو. الفصل الكامل وصوره واختباره قادمة قريبًا إلى تطبيق Hype." },
-  zh: { t: "本章即将上线应用", p: "你刚读完开头部分。完整章节、图片和测验即将在 Hype 应用中上线。" },
-  nl: { t: "Dit hoofdstuk komt binnenkort in de app", p: "Je hebt net het begin gelezen. Het volledige hoofdstuk, de afbeeldingen en de quiz komen binnenkort in de Hype-app." },
-  pt: { t: "Este capítulo chega em breve ao app", p: "Você acabou de ler o começo. O capítulo completo, as imagens e o quiz chegam em breve ao app Hype." },
-  sv: { t: "Det här kapitlet kommer snart i appen", p: "Du har just läst början. Hela kapitlet, bilderna och quizet kommer snart i Hype-appen." },
-  ru: { t: "Эта глава скоро появится в приложении", p: "Ты прочитал(а) начало. Полная глава, иллюстрации и тест скоро появятся в приложении Hype." },
-  pl: { t: "Ten rozdział wkrótce pojawi się w aplikacji", p: "Właśnie przeczytałeś(-aś) początek. Cały rozdział, ilustracje i quiz wkrótce pojawią się w aplikacji Hype." },
-  ko: { t: "이 챕터는 곧 앱에 공개됩니다", p: "방금 도입부를 읽었어요. 전체 챕터와 이미지, 퀴즈가 곧 Hype 앱에 공개됩니다." },
+/* 04/11 00h49 (Blandine : « à la fin de l'aperçu, la page devrait dire : lis la suite du cours et progresse sur Hype… en proposant de s'abonner ») :
+   fin de l'aperçu de TOUS les chapitres en aperçu (Galops 2 à 7), avec le bouton vers l'abonnement. */
+const SUITE = {
+  fr: { t: "Lis la suite du cours et progresse avec Hype", p: "Tu viens de lire le début. Abonne-toi à Hype Premium pour lire le cours en entier, faire le quiz et progresser dans tous les Galops, à ton rythme.", b: "Je m'abonne à Hype Premium" },
+  en: { t: "Read the rest of the lesson and progress with Hype", p: "You've just read the beginning. Subscribe to Hype Premium to read the whole lesson, take the quiz and progress through every Galop, at your own pace.", b: "Subscribe to Hype Premium" },
+  es: { t: "Lee el resto del curso y progresa con Hype", p: "Acabas de leer el principio. Suscríbete a Hype Premium para leer el curso completo, hacer el quiz y progresar en todos los Galops, a tu ritmo.", b: "Suscribirme a Hype Premium" },
+  it: { t: "Leggi il resto della lezione e progredisci con Hype", p: "Hai appena letto l'inizio. Abbonati a Hype Premium per leggere tutta la lezione, fare il quiz e progredire in tutti i Galop, al tuo ritmo.", b: "Mi abbono a Hype Premium" },
+  de: { t: "Lies den Rest der Lektion und mach Fortschritte mit Hype", p: "Du hast gerade den Anfang gelesen. Abonniere Hype Premium, um die ganze Lektion zu lesen, das Quiz zu machen und in allen Galopps in deinem Tempo voranzukommen.", b: "Hype Premium abonnieren" },
+  ja: { t: "続きを読んで、Hypeで上達しよう", p: "ここまでは冒頭部分です。Hype Premiumに登録すると、レッスン全文を読み、クイズに挑戦し、すべてのギャロップを自分のペースで学べます。", b: "Hype Premiumに登録する" },
+  ar: { t: "اقرأ بقية الدرس وتقدّم مع Hype", p: "لقد قرأت البداية للتو. اشترك في Hype Premium لقراءة الدرس كاملًا وحلّ الاختبار والتقدّم في جميع مستويات الغالوب حسب وتيرتك.", b: "أشترك في Hype Premium" },
+  zh: { t: "阅读课程的其余内容，和 Hype 一起进步", p: "你刚读完开头部分。订阅 Hype Premium，即可阅读完整课程、完成测验，并按自己的节奏学习所有 Galop 级别。", b: "订阅 Hype Premium" },
+  nl: { t: "Lees de rest van de les en boek vooruitgang met Hype", p: "Je hebt net het begin gelezen. Neem Hype Premium om de hele les te lezen, de quiz te doen en in je eigen tempo vooruit te gaan in alle Galops.", b: "Ik neem Hype Premium" },
+  pt: { t: "Leia o resto da aula e evolua com o Hype", p: "Você acabou de ler o começo. Assine o Hype Premium para ler a aula inteira, fazer o quiz e evoluir em todos os Galops, no seu ritmo.", b: "Assinar o Hype Premium" },
+  sv: { t: "Läs resten av lektionen och utvecklas med Hype", p: "Du har just läst början. Prenumerera på Hype Premium för att läsa hela lektionen, göra quizet och utvecklas genom alla Galop-nivåer i din egen takt.", b: "Prenumerera på Hype Premium" },
+  ru: { t: "Читай урок дальше и прогрессируй с Hype", p: "Ты прочитал(а) начало. Оформи подписку Hype Premium, чтобы прочитать урок полностью, пройти тест и проходить все уровни Galop в своём темпе.", b: "Оформить Hype Premium" },
+  pl: { t: "Czytaj dalej i rób postępy z Hype", p: "Właśnie przeczytałeś(-aś) początek. Wykup Hype Premium, aby przeczytać całą lekcję, rozwiązać quiz i przechodzić wszystkie Galopy we własnym tempie.", b: "Wykupuję Hype Premium" },
+  ko: { t: "수업의 나머지를 읽고 Hype와 함께 실력을 키우세요", p: "방금 도입부를 읽었어요. Hype Premium을 구독하면 수업 전체를 읽고, 퀴즈를 풀고, 모든 Galop 단계를 내 속도로 배울 수 있어요.", b: "Hype Premium 구독하기" },
 };
 
 /* ---------- Textes de l'interface ---------- */
@@ -563,9 +564,7 @@ function principal() {
           const langues = LANGS.filter((x) => dispo(ch, x));
           let cc = `<p class="meta">${e(nomGalop(n, lg))} · ${e(tr(ch.type, lg))} · ${e(tr(ch.duree, lg))}</p>`;
           for (const b of blocsApercu(ch.blocs)) cc += bloc(b, lg);
-          cc += n >= GALOP_PROCHAIN_DES
-            ? `<div class="appel"><p class="encadre-t">⏳ ${e(BIENTOT[lg].t)}</p><p>${e(BIENTOT[lg].p)}</p><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></div><p class="nav">`
-            : `<div class="appel"><p class="encadre-t">🔒 ${e(ui.suiteT)}</p><p>${e(ui.suiteP)}</p><a class="btn" href="${DOM}/#premium">${e(ui.debloquer)}</a></div><p class="nav">`;
+          cc += `<div class="appel"><p class="encadre-t">🔒 ${e(SUITE[lg].t)}</p><p>${e(SUITE[lg].p)}</p><a class="btn" href="${DOM}/#premium">${e(SUITE[lg].b)}</a></div><p class="nav">`;
           const pos = pub.indexOf(i);
           cc += pos > 0 ? `<a class="btn second" href="${DOM}/${lg}/galop-${n}/${sg[pub[pos - 1]]}/">‹ ${e(ui.precedent)}</a>` : "<span></span>";
           cc += pos < pub.length - 1 ? `<a class="btn second" href="${DOM}/${lg}/galop-${n}/${sg[pub[pos + 1]]}/">${e(ui.suivant)} ›</a>` : `<a class="btn second" href="${DOM}/${lg}/galop-${n}/">${e(ui.sommaire)}</a>`;
