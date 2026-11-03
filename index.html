@@ -26906,7 +26906,8 @@ var COM2_CSS = ".com2{min-height:100vh;background:#05080B;color:#F3EEE4;position
      la page reprend le defilement. Plus de glissement horizontal. */
   + ".com2 .com2-fil-car{display:block;height:clamp(300px,52svh,480px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;padding:18px 20px 0;scrollbar-width:none}"
   + ".com2 .com2-fil-car::-webkit-scrollbar{display:none}"
-  + ".com2 .com2-fil-cell{min-height:100%;box-sizing:border-box;padding-bottom:12px;scroll-snap-align:start;scroll-snap-stop:always}"
+  /* 03/11 (Blandine : « réduis l'espace dans le fil ») : une publication courte ne remplit plus toute la fenêtre — la suivante arrive juste en dessous */
+  + ".com2 .com2-fil-cell{box-sizing:border-box;padding-bottom:12px;scroll-snap-align:start;scroll-snap-stop:always}"
   + ".com2 .com2-fil-cell .com2-fil-lignes{padding:0}"
   + ".com2 .com2-fil-pos{display:flex;align-items:center;gap:12px;padding:12px 20px 0}"
   + ".com2 .com2-fil-barre{flex:1;height:2px;border-radius:2px;background:rgba(243,238,228,0.12);overflow:hidden}"
