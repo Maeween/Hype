@@ -1,3 +1,4 @@
+/* 04/11/2026 : refonte de l accueil (en-tete photo, Mes videos + recherche, onglets des Galops, cartes photo des themes). Page de lecture inchangee. */
 /* 27/09/2026 : arabe ajouté (7e langue) — catalogue, chapitres, collections et textes de l écran ; T() accepte ar. */
 /* ============================================================
    HYPE ▸ BIBLIOTHÈQUE VIDÉO  (fichier séparé, chargé par index.html)
@@ -1150,7 +1151,168 @@
   }
 
   /* ============================================================
-     ÉCRAN : BIBLIOTHÈQUE VIDÉO
+     04/11/2026 — REFONTE DE L'ACCUEIL (brief Blandine « HYPE — REFONTE DE
+     L'ACCUEIL VIDÉOTHÈQUE » + maquette, onglets de Galops à la place de la
+     liste verticale). Ordre : en-tête photo · Mes vidéos + recherche ·
+     onglets des Galops · cartes photo des thèmes · fin de page (index.html).
+     Retirés de l'accueil (règle : pas de doublon, pas de filtres empilés) :
+     statistiques, suggestions, puces d'univers, feuille de filtres,
+     « Continuer à regarder », « À la une », « Explorer par Galop »,
+     collections. Les données (COLLS, etc.) restent dans le fichier.
+     ============================================================ */
+
+  /* ---- PHOTOS : configuration centrale (Blandine choisit les photos) ----
+     Une photo par thème, la même quel que soit le Galop choisi. Pour
+     changer une photo : remplacer img (fichier dans images/), ajuster pos
+     (cadrage, comme object-position) et l'alt. Cette même association
+     servira d'en-tête à la future page de chaque thème
+     (window.HYPE_VIDEO.photosThemes). Photos PROVISOIRES au 04/11 : prises
+     parmi les images déjà dans le dépôt, en attendant son choix. */
+  var THEMES_ORDRE = ["dressage", "obstacle", "pied", "soins", "position", "cheval", "securite"];
+  var PHOTOS_THEMES = {
+    dressage: { img: "images/galop5-video-dressage.webp", pos: "50% 55%",
+      alt: { fr: "Cavalière au trot sur un cheval gris, dans un manège", en: "Rider trotting on a grey horse in an indoor arena", es: "Amazona al trote sobre un caballo tordo, en un picadero", it: "Amazzone al trotto su un cavallo grigio, in un maneggio", ja: "屋内馬場で芦毛の馬に乗り速歩するライダー", de: "Reiterin im Trab auf einem Schimmel in der Halle", ar: "فارسة تخبّ على حصان رمادي داخل الحلبة", zh: "骑手在室内马场骑着灰马快步", nl: "Ruiter in draf op een schimmel in een binnenbak", pt: "Amazona trotando em um cavalo tordilho, no picadeiro", sv: "Ryttare i trav på en skimmel i ridhuset", ru: "Всадница на серой лошади рысью в манеже", pl: "Amazonka kłusem na siwym koniu w hali", ko: "실내 마장에서 회색 말을 타고 속보하는 기수" } },
+    obstacle: { img: "images/galop5-video-saut.webp", pos: "50% 45%",
+      alt: { fr: "Cheval gris franchissant un obstacle de couleur", en: "Grey horse jumping a coloured fence", es: "Caballo tordo saltando un obstáculo de colores", it: "Cavallo grigio che salta un ostacolo colorato", ja: "色付きの障害を飛ぶ芦毛の馬", de: "Schimmel springt über ein buntes Hindernis", ar: "حصان رمادي يقفز فوق حاجز ملوّن", zh: "灰马跨越彩色障碍", nl: "Schimmel springt over een gekleurde hindernis", pt: "Cavalo tordilho saltando um obstáculo colorido", sv: "Skimmel som hoppar över ett färgat hinder", ru: "Серая лошадь прыгает через цветное препятствие", pl: "Siwy koń skaczący przez kolorową przeszkodę", ko: "색깔 있는 장애물을 넘는 회색 말" } },
+    pied: { img: "images/securite-g1-longe.webp", pos: "50% 50%",
+      alt: { fr: "Mains tenant une longe près de la tête d'un cheval bai", en: "Hands holding a lead rope near a bay horse's head", es: "Manos sujetando un ramal junto a la cabeza de un caballo castaño", it: "Mani che tengono una longhina vicino alla testa di un cavallo baio", ja: "鹿毛の馬の頭の近くで引き綱を持つ手", de: "Hände halten einen Strick neben dem Kopf eines braunen Pferdes", ar: "يدان تمسكان الرسن قرب رأس حصان كميت", zh: "在枣骝马头旁握着牵绳的双手", nl: "Handen met een halstertouw bij het hoofd van een bruin paard", pt: "Mãos segurando uma guia perto da cabeça de um cavalo castanho", sv: "Händer som håller ett grimskaft nära huvudet på en brun häst", ru: "Руки держат чомбур у головы гнедой лошади", pl: "Dłonie trzymające uwiąz przy głowie gniadego konia", ko: "갈색 말의 머리 옆에서 리드로프를 잡은 손" } },
+    soins: { img: "images/pansage-hero.webp", pos: "62% 40%",
+      alt: { fr: "Jeune cavalier brossant un cheval bai", en: "Young rider grooming a bay horse", es: "Joven jinete cepillando un caballo castaño", it: "Giovane cavaliere che spazzola un cavallo baio", ja: "鹿毛の馬にブラシをかける若いライダー", de: "Junger Reiter putzt ein braunes Pferd", ar: "فارس شاب ينظف حصانا كميتا بالفرشاة", zh: "年轻骑手为枣骝马刷毛", nl: "Jonge ruiter borstelt een bruin paard", pt: "Jovem cavaleiro escovando um cavalo castanho", sv: "Ung ryttare som borstar en brun häst", ru: "Юный всадник чистит гнедую лошадь", pl: "Młody jeździec czyszczący gniadego konia", ko: "갈색 말을 솔질하는 어린 기수" } },
+    position: { img: "images/galop5-theme-cheval.webp", pos: "55% 40%",
+      alt: { fr: "Jambe et assiette d'une cavalière en selle sur un cheval gris", en: "Leg and seat of a rider in the saddle on a grey horse", es: "Pierna y asiento de una amazona en la silla sobre un caballo tordo", it: "Gamba e assetto di un'amazzone in sella a un cavallo grigio", ja: "芦毛の馬に乗るライダーの脚と騎座", de: "Bein und Sitz einer Reiterin im Sattel auf einem Schimmel", ar: "ساق وجلسة فارسة على السرج فوق حصان رمادي", zh: "骑在灰马鞍上的骑手的腿与骑座", nl: "Been en zit van een ruiter in het zadel op een schimmel", pt: "Perna e assento de uma amazona na sela, em um cavalo tordilho", sv: "Ben och sits hos en ryttare i sadeln på en skimmel", ru: "Нога и посадка всадницы в седле на серой лошади", pl: "Łydka i dosiad amazonki w siodle na siwym koniu", ko: "회색 말 안장 위 기수의 다리와 자세" } },
+    cheval: { img: "images/securite-g1-inquiet.webp", pos: "45% 40%",
+      alt: { fr: "Tête d'un cheval alezan en gros plan, regard attentif", en: "Close-up of a chestnut horse's head, watchful look", es: "Primer plano de la cabeza de un caballo alazán, mirada atenta", it: "Primo piano della testa di un cavallo sauro, sguardo attento", ja: "栗毛の馬の頭部のアップ、注意深いまなざし", de: "Nahaufnahme eines Fuchskopfes, aufmerksamer Blick", ar: "رأس حصان أشقر عن قرب، بنظرة منتبهة", zh: "栗色马头部特写，目光警觉", nl: "Close-up van het hoofd van een vos, alerte blik", pt: "Close da cabeça de um cavalo alazão, olhar atento", sv: "Närbild på en fux huvud, vaksam blick", ru: "Голова рыжей лошади крупным планом, внимательный взгляд", pl: "Zbliżenie głowy kasztanowatego konia, czujne spojrzenie", ko: "주의 깊은 눈빛의 밤색 말 머리 클로즈업" } },
+    securite: { img: "images/securite-g1-tenue.webp", pos: "40% 45%",
+      alt: { fr: "Cavalière casquée en tenue, à côté de son cheval bai", en: "Rider in a helmet and riding gear next to her bay horse", es: "Amazona con casco y equipación, junto a su caballo castaño", it: "Amazzone con casco e abbigliamento da equitazione, accanto al suo cavallo baio", ja: "ヘルメットと装備を身につけ、鹿毛の馬の横に立つライダー", de: "Reiterin mit Helm und Reitkleidung neben ihrem braunen Pferd", ar: "فارسة بخوذة وزيّ ركوب بجانب حصانها الكميت", zh: "戴头盔、穿骑乘装备的骑手站在她的枣骝马旁", nl: "Ruiter met cap en rijkleding naast haar bruine paard", pt: "Amazona de capacete e roupa de montaria ao lado do seu cavalo castanho", sv: "Ryttare med hjälm och ridkläder bredvid sin bruna häst", ru: "Всадница в шлеме и экипировке рядом со своей гнедой лошадью", pl: "Amazonka w kasku i stroju jeździeckim obok gniadego konia", ko: "헬멧과 승마복을 갖춘 기수와 그녀의 갈색 말" } }
+  };
+  /* En-tête : cheval bai tressé, sans texte ni bouton cuits dans l'image.
+     Trois cadrages (téléphone / tablette / ordinateur). Pour la remplacer :
+     changer img et ajuster les trois pos. */
+  var PHOTO_HERO = { img: "images/galops-carte-cours-bai.webp", posTel: "66% 22%", posTab: "64% 36%", posOrdi: "60% 34%" };
+  /* Pas de vidéo d'introduction réelle au 04/11 : pas de bouton lecture
+     dans l'en-tête. Le jour où elle existe, mettre ici son identifiant
+     (catalogue) et le bouton apparaît. */
+  var VIDEO_INTRO = null;
+
+  /* TRAITEMENT D'AFFICHAGE DES PHOTOS (demande du brief) : réversible et
+     réglable ici seulement. Le fichier n'est jamais modifié. actif:false
+     rend les photos telles quelles. Ne s'applique pas aux lecteurs YouTube. */
+  var TRAITEMENT_PHOTO = { actif: true, filtre: "saturate(.92) contrast(1.05) brightness(.95) sepia(.07)", bords: .5 };
+
+  /* Onglets des Galops. « 7+ » regroupe les Galops 7, 8 et 9. */
+  var ONGLETS_GALOPS = ["tous", 1, 2, 3, 4, 5, 6, "7+"];
+  function galopOk(v, k) {
+    if (k === "tous") return true;
+    if (k === "7+") return (v.galop || 0) >= 7;
+    return v.galop === k;
+  }
+
+  var CSS2_ID = "hype-video-css-2";
+  var CSS2 = [
+    ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-p2:rgba(16,29,34,.82);--hv-iv:#F3EEE4;--hv-iv2:rgba(243,238,228,.64);--hv-iv3:rgba(243,238,228,.40);--hv-ch:#C9A66B;--hv-ch2:rgba(201,166,107,.55);",
+    "background:var(--hv-noir);color:var(--hv-iv);font-family:'Montserrat',system-ui,sans-serif;min-height:100vh;padding-bottom:24px;overflow-x:clip}",
+    ".hv2 *{box-sizing:border-box}",
+    ".hv2 button{font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}",
+    ".hv2-in{max-width:1240px;margin:0 auto;padding:0 18px}",
+    /* traitement photo réversible */
+    ".hv2-traite{position:relative;overflow:hidden;background:#0B0F0E}",
+    ".hv2-traite img{display:block;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}",
+    ".hv2-traite:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 70px rgba(7,10,8,var(--hv-bords,0))}",
+    /* en-tête */
+    ".hv2-hero{position:relative;padding-top:calc(env(safe-area-inset-top) + 14px)}",
+    ".hv2-marque{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;letter-spacing:.62em;padding-inline-start:.62em;color:var(--hv-iv);position:relative;z-index:2}",
+    ".hv2-photo{position:relative;height:clamp(300px,92vw,430px);margin-top:-6px}",
+    ".hv2-photo img{object-position:var(--hv-pos-tel,center)}",
+    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 62%,transparent 100%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 62%,transparent 100%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);mask-composite:intersect}",
+    ".hv2-photo.hv2-traite:after{box-shadow:none}",
+    ".hv2-courbe{position:absolute;left:0;right:0;width:100%;height:70px;pointer-events:none;z-index:2}",
+    ".hv2-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
+    ".hv2-courbe.c2{position:relative;display:block;height:64px;margin-top:-74px}",
+    "[dir=rtl] .hv2-courbe{transform:scaleX(-1)}",
+    ".hv2-titre{text-align:end;margin-top:-12px;position:relative;z-index:3}",
+    ".hv2-titre h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0;color:var(--hv-iv);letter-spacing:.005em}",
+    ".hv2-titre p{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(17px,4.6vw,21px);margin:8px 0 0;color:var(--hv-iv);opacity:.88}",
+    ".hv2-intro{position:absolute;inset-inline-end:12%;top:52%;width:58px;height:58px;border-radius:50%;border:1px solid var(--hv-ch);background:rgba(7,10,8,.35);display:flex;align-items:center;justify-content:center;z-index:3}",
+    /* ligne Mes vidéos + recherche */
+    ".hv2-ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding:4px 0 10px;position:relative}",
+    ".hv2-ligne:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.15),var(--hv-ch) 55%,rgba(201,166,107,.15))}",
+    ".hv2-mes{display:flex;align-items:center;gap:14px;background:none;border:none;padding:10px 6px;min-height:44px;font-size:15px;letter-spacing:.03em;color:var(--hv-iv)}",
+    ".hv2-mes svg,.hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+    ".hv2-mes svg{color:var(--hv-ch)}",
+    ".hv2-loupe{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--hv-iv)}",
+    ".hv2-rech{display:flex;align-items:center;gap:10px;margin-top:14px;padding:4px 6px 4px 14px;padding-inline-start:14px;padding-inline-end:6px;border-radius:14px;border:1px solid var(--hv-ch2);background:var(--hv-p1);box-shadow:0 10px 28px -16px rgba(0,0,0,.9)}",
+    ".hv2-rech svg{width:18px;height:18px;stroke:var(--hv-ch);fill:none;stroke-width:1.6;flex:0 0 18px}",
+    ".hv2-rech:focus-within{border-color:var(--hv-ch)}",
+    ".hv2-rech input:focus,.hv2-rech input:focus-visible{outline:none}",
+    ".hv2-rech input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--hv-iv);font-family:inherit;font-size:16px;padding:10px 0}",
+    ".hv2-rech input::placeholder{color:var(--hv-iv3)}",
+    ".hv2-rech input::-webkit-search-cancel-button{display:none}",
+    ".hv2-x{width:40px;height:40px;border:none;background:none;color:var(--hv-iv2);font-size:22px;line-height:1}",
+    /* onglets des Galops */
+    ".hv2-onglets{display:flex;gap:8px;overflow-x:auto;margin:22px -18px 0;padding:2px 18px 8px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}",
+    ".hv2-onglets::-webkit-scrollbar{display:none}",
+    ".hv2-og{flex:0 0 auto;scroll-snap-align:start;min-height:46px;padding:9px 17px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:rgba(16,26,29,.45);",
+    "color:var(--hv-iv);font-size:14px;letter-spacing:.02em;white-space:nowrap;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;transition:border-color .2s,background .2s}",
+    ".hv2-og.on{border-color:var(--hv-ch);background:linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95));box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.35)}",
+    ".hv2-og:disabled{opacity:.42;cursor:default}",
+    ".hv2-og small{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--hv-iv2);margin-top:3px}",
+    /* thèmes */
+    ".hv2-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.4vw,36px);margin:22px 0 14px;color:var(--hv-iv);line-height:1.1}",
+    ".hv2-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}",
+    ".hv2-theme{display:flex;flex-direction:column;text-align:center;padding:0;border-radius:16px;overflow:hidden;border:1px solid rgba(243,238,228,.09);background:var(--hv-p2);box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
+    ".hv2-theme .hv2-traite{aspect-ratio:4/3;width:100%}",
+    ".hv2-theme img{object-position:var(--hv-pos,center)}",
+    ".hv2-pan{flex:1;display:flex;flex-direction:column;justify-content:center;padding:11px 8px 13px;background:linear-gradient(180deg,rgba(16,29,34,.96),rgba(12,21,25,.98))}",
+    ".hv2-pan b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19px;line-height:1.15;color:var(--hv-iv);overflow-wrap:anywhere}",
+    ".hv2-pan span{display:block;font-size:12px;letter-spacing:.04em;color:var(--hv-iv2);margin-top:4px}",
+    ".hv2-theme:active{transform:scale(.985)}",
+    "@media (max-width:699px){.hv2-theme.seul2{grid-column:1/-1}.hv2-theme.seul2 .hv2-traite{aspect-ratio:21/9}}",
+    /* listes (thème ouvert, recherche, Mes vidéos) : en attendant la refonte
+       de la page du thème, on garde les lignes existantes, recolorées */
+    ".hv2-retour{display:flex;align-items:center;gap:10px;background:none;border:none;padding:12px 2px;min-height:44px;font-size:14px;color:var(--hv-iv);letter-spacing:.02em}",
+    ".hv2-retour i{font-style:normal;color:var(--hv-ch);font-size:22px;line-height:1}",
+    "[dir=rtl] .hv2-retour i{transform:scaleX(-1)}",
+    ".hv2-sous{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:18px;color:var(--hv-iv2);margin:-6px 0 16px}",
+    ".hv2-liste{border-radius:16px;border:1px solid rgba(243,238,228,.08);background:var(--hv-p1);padding:2px 14px;box-shadow:0 14px 30px -20px rgba(0,0,0,.95)}",
+    ".hv2 .hv-ligne{padding:12px 0}",
+    ".hv2 .hv-ligne h4{color:var(--hv-iv);font-size:14px}",
+    ".hv2 .hv-ligne .hv-meta{color:var(--hv-iv2);font-size:11px}",
+    ".hv2 .hv-ligne .hv-cov{border-color:rgba(243,238,228,.1);width:96px;flex-basis:96px}",
+    ".hv2 .hv-ligne .hv-arc{display:none}",
+    ".hv2 .hv-fav{width:44px;height:44px;font-size:18px;color:var(--hv-iv3)}",
+    ".hv2 .hv-fav.on{color:var(--hv-ch)}",
+    ".hv2-liste>div:last-child{border-bottom:none!important}",
+    ".hv2-vide{text-align:center;padding:26px 10px}",
+    ".hv2-vide p{margin:0;font-size:14px;color:var(--hv-iv2);line-height:1.6}",
+    ".hv2-vide p+p{font-size:12px;color:var(--hv-iv3);margin-top:6px}",
+    ".hv2-mini-ong{display:flex;gap:8px;margin:22px 0 14px}",
+    ".hv2-mini-ong button{min-height:44px;padding:9px 18px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:rgba(16,26,29,.45);font-size:14px}",
+    ".hv2-mini-ong button.on{border-color:var(--hv-ch);background:rgba(16,29,34,.95)}",
+    ".hv2-k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hv-ch);margin:22px 0 10px}",
+    ".hv2-modo{display:block;margin:34px auto 0;background:none;border:none;font-size:11px;letter-spacing:.12em;color:var(--hv-iv3);padding:12px}",
+    /* tablette */
+    "@media (min-width:700px){.hv2-in{padding:0 32px}.hv2-onglets{margin:26px -32px 0;padding:2px 32px 8px}",
+    ".hv2-grille{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.hv2-theme.seul3{grid-column:2}",
+    ".hv2-photo{height:clamp(360px,52vw,460px)}.hv2-photo img{object-position:var(--hv-pos-tab,center)}",
+    ".hv2-titre{margin-top:-16px}.hv2-marque{font-size:22px}}",
+    /* ordinateur : panoramique de hauteur maîtrisée, contenu 1240 px */
+    "@media (min-width:1100px){.hv2-photo{height:460px;width:min(66%,820px);margin-inline-start:auto;margin-inline-end:max(0px,calc((100% - 1240px) / 2))}.hv2-photo img{object-position:var(--hv-pos-ordi,center)}",
+    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 66%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 66%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%)}",
+    ".hv2-courbe{max-width:1240px;margin:0 auto}",
+    ".hv2-onglets{overflow:visible;flex-wrap:nowrap;justify-content:flex-start;margin:28px 0 0;padding:2px 0 8px}",
+    ".hv2-grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hv2-theme.seul3{grid-column:auto}",
+    ".hv2-liste{max-width:860px}}"
+  ].join("");
+  function injecterCss2() {
+    if (typeof document === "undefined") return;
+    if (document.getElementById(CSS2_ID)) return;
+    var st = document.createElement("style");
+    st.id = CSS2_ID; st.textContent = CSS2;
+    document.head.appendChild(st);
+  }
+
+  /* ============================================================
+     ÉCRAN : BIBLIOTHÈQUE VIDÉO — accueil
      ============================================================ */
   window.EcranVideos = function EcranVideos() {
     var h = React.createElement;
@@ -1158,518 +1320,317 @@
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue, premium = app.premium;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
 
-    /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
     function resumeDe(v) { return L(v.i18nResume, langue); }
     function observerDe(v) { return v.i18nObserver ? (L(v.i18nObserver, langue) || []) : []; }
     function chapitreDe(v) { return L(CHAPITRES[v.coursId], langue) || v.coursId; }
-    function dureeDe(v) { return v.dureeTranche ? L(TRANCHES[v.dureeTranche], langue) : ""; }
 
     injecterCss();
+    injecterCss2();
     var dispo = catalogue();
+
+    /* Retour depuis la page de lecture : on revient là où l'on était
+       (thème ouvert, recherche, Mes vidéos), une seule fois. */
+    var retour0 = null;
+    try { retour0 = window.__hvRetour || null; window.__hvRetour = null; } catch (eR0) { }
+    retour0 = retour0 || {};
 
     var st = React.useState(lireLocal());
     var etat = st[0], setEtat = st[1];
-    var q = React.useState("");
-    var rq = q[0], setRq = q[1];
-    var u = React.useState("tous"); var univ = u[0], setUniv = u[1];
-    var g = React.useState(null); var galop = g[0], setGalop = g[1];
-    var o = React.useState("fav"); var onglet = o[0], setOnglet = o[1];
-    var f = React.useState({ duree: [], etat: [] }); var filtres = f[0], setFiltres = f[1];
-    var fo = React.useState(false); var feuille = fo[0], setFeuille = fo[1];
+    var sv = React.useState(retour0.vue || "accueil"); var vue = sv[0], setVue = sv[1];         /* accueil | theme | mes | reserve */
+    var sg = React.useState(retour0.galop || "tous"); var galop = sg[0], setGalop = sg[1];
+    var sth = React.useState(retour0.theme || null); var theme = sth[0], setTheme = sth[1];
+    var sr = React.useState(retour0.rq || ""); var rq = sr[0], setRq = sr[1];
+    var so = React.useState(!!retour0.rq); var rechOuverte = so[0], setRechOuverte = so[1];
+    var sm = React.useState(retour0.onglet || "fav"); var onglet = sm[0], setOnglet = sm[1];
     var mo = React.useState(false); var estModo = mo[0], setEstModo = mo[1];
+    var refRech = React.useRef(null);
 
-    /* Réserve d'animations : réservée aux comptes de HYPE_MODERATEURS. */
     React.useEffect(function () {
       var vivant = true;
       try {
         if (typeof utilisateurActuel === "function" && typeof estModerateurHype === "function") {
-          utilisateurActuel().then(function (u) {
-            if (vivant) setEstModo(estModerateurHype(u));
-          }).catch(function () { });
+          utilisateurActuel().then(function (u) { if (vivant) setEstModo(estModerateurHype(u)); }).catch(function () { });
         }
       } catch (e) { }
       return function () { vivant = false; };
     }, []);
 
-    /* fusion de l'état distant au montage */
     React.useEffect(function () {
       var vivant = true;
       chargerDistant(function (dist) {
         if (!vivant || !dist) return;
         var l = lireLocal();
-        var fus = {
-          prog: Object.assign({}, l.prog || {}, dist.prog || {}),
-          fav: Object.assign({}, l.fav || {}, dist.fav || {})
-        };
+        var fus = { prog: Object.assign({}, l.prog || {}, dist.prog || {}), fav: Object.assign({}, l.fav || {}, dist.fav || {}), ecart: l.ecart };
         ecrireLocal(fus);
         setEtat(fus);
       });
       return function () { vivant = false; };
     }, []);
 
+    /* règle Hype : chaque nouvel écran qui défile repart en haut */
+    React.useEffect(function () {
+      try { window.scrollTo(0, 0); } catch (e) { }
+      try { if (document.scrollingElement) document.scrollingElement.scrollTop = 0; } catch (e2) { }
+    }, [vue, theme]);
+
+    React.useEffect(function () {
+      if (rechOuverte && refRech.current) { try { refRech.current.focus(); } catch (e) { } }
+    }, [rechOuverte]);
+
     function prog(id) { return (etat.prog && etat.prog[id]) || null; }
     function estFav(id) { return !!(etat.fav && etat.fav[id]); }
     function verrou(v) { return !!v.premium && !premium; }
-
-    function basculerFav(id) {
-      var actif = !estFav(id);
-      enregistrerFavori(id, actif);
-      setEtat(lireLocal());
-    }
+    function basculerFav(id) { enregistrerFavori(id, !estFav(id)); setEtat(lireLocal()); }
 
     function ouvrir(v) {
       if (verrou(v)) { setEcran("premium"); return; }
       if (v.src) { enregistrerEtat(v.id, true, !!(prog(v.id) && prog(v.id).vue), 0); }
       try { window.__hypeVideoOuverte = v.id; } catch (e) { }
+      try { window.__hvRetour = { vue: vue, galop: galop, theme: theme, rq: rq, onglet: onglet }; } catch (e2) { }
       setEcran("video-lecture");
     }
 
-    var nbFiltres = filtres.duree.length + filtres.etat.length;
-    var actif = !!(rq || univ !== "tous" || galop !== null || nbFiltres);
-
-    function correspond(v) {
-      if (!disponible(v)) return false;
-      if (univ !== "tous" && v.theme !== univ) return false;
-      if (galop !== null && v.galop !== galop) return false;
-      if (filtres.duree.length) {
-        var okD = filtres.duree.some(function (d) {
-          return v.dureeTranche === d;
-        });
-        if (!okD) return false;
-      }
-      if (filtres.etat.length) {
-        var p = prog(v.id);
-        var okE = filtres.etat.some(function (s) {
-          if (s === "nonvue") return !(p && p.vue);
-          if (s === "vue") return !!(p && p.vue);
-          if (s === "encours") return !!(p && p.ouverte && !p.vue);
-          return estFav(v.id);
-        });
-        if (!okE) return false;
-      }
-      if (rq) {
-        var champ = (titreDe(v) + " " + chapitreDe(v) + " " + resumeDe(v) + " "
-          + (v.titreSource || "") + " " + (v.intervenant || "") + " " + observerDe(v).join(" ")).toLowerCase();
-        if (champ.indexOf(rq.toLowerCase()) < 0) return false;
-      }
-      return true;
+    var TXT_GALOP = T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ");
+    function nbVideos(n) {
+      return n + " " + (n > 1
+        ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상")
+        : T("vidéo", "video", "vídeo", "video", "本", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상"));
+    }
+    function nomOnglet(k) {
+      if (k === "tous") return T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alles", "Todos", "Alla", "Все", "Wszystkie", "전체");
+      if (k === "7+") return T("Galop 7 et +", "Level 7+", "Galop 7 y +", "Galop 7 e +", "ガロー 7以上", "Galopp 7+", "الغالوب 7 وما فوق", "Galop 7 及以上", "Galop 7 en hoger", "Galop 7 e +", "Galop 7 och uppåt", "Galop 7 и выше", "Galop 7 i wyżej", "Galop 7 이상");
+      return TXT_GALOP + k;
+    }
+    function nomGalopSel() {
+      if (galop === "tous") return T("Tous les Galops", "All levels", "Todos los Galops", "Tutti i Galop", "すべてのガロー", "Alle Galopps", "كل مستويات الغالوب", "所有 Galop", "Alle Galops", "Todos os Galops", "Alla Galop", "Все уровни Galop", "Wszystkie poziomy Galop", "모든 Galop");
+      return nomOnglet(galop);
+    }
+    function nomTheme(k) {
+      for (var i = 0; i < UNIVERS.length; i++) { if (UNIVERS[i].k === k) return L(UNIVERS[i].nom, langue); }
+      return k;
+    }
+    function styleTraitement() {
+      return TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre, "--hv-bords": TRAITEMENT_PHOTO.bords } : {};
     }
 
-    /* ---------- briques de rendu ---------- */
-    function couv(v, opts) {
-      opts = opts || {};
-      var p = prog(v.id);
-      var th = THEMES[v.theme] || { teinte: 198 };
-      var h2 = (th.teinte + 26) % 360;
+    /* ---------- briques ---------- */
+    function couv(v) {
       var mini = vignette(v);
-      var enfants = [
-        h("div", { key: "f", style: { position: "absolute", inset: 0, background: fondCouv(v) } }),
-        (mini && !opts.sansMini) ? h("img", {
-          key: "m", src: mini, alt: "", loading: "lazy",
-          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
-        }) : null,
-        h("svg", { key: "a", className: "hv-arc", viewBox: "0 0 200 200", preserveAspectRatio: "none" },
-          h("path", { d: "M-20 150 C 60 150 70 40 210 55", fill: "none", stroke: "hsla(" + h2 + ",95%,72%,.5)", strokeWidth: 1 }),
-          h("path", { d: "M-20 178 C 80 178 100 80 210 92", fill: "none", stroke: "hsla(" + h2 + ",95%,80%,.22)", strokeWidth: .7 })),
-        opts.sansVoile ? null : h("div", { key: "v", className: "hv-voile" })
-      ];
-      /* 06/08 : PLUS AUCUN TEXTE INCRUSTE SUR LA MINIATURE (demande Blandine).
-         Les vignettes des webconferences IFCE sont des diapos : elles portent
-         deja leur propre titre cuit dans l'image, souvent sur plusieurs lignes.
-         Poser « Galop 4 » et « format long » par-dessus rendait les deux
-         illisibles, et cela contredisait la regle 18 de la Bible (jamais de
-         texte incruste dans une image). Ces informations descendent sous
-         l'image, dans le texte de la carte, ou elles se lisent vraiment.
-         Seul le cadenas premium reste sur l'image : c'est un glyphe, pas un
-         titre, et il doit se voir avant le clic. Les options opts.galop et
-         opts.duree restent acceptees pour ne pas casser les appels existants,
-         elles n'ont simplement plus d'effet. */
-      if (verrou(v)) enfants.push(h("div", { key: "l", className: "hv-lock" }, "◈"));
-      /* Aucune barre de progression : voir la note sur enregistrerEtat. */
-      return h("div", { className: "hv-cov" }, enfants);
+      return h("div", { className: "hv-cov" },
+        h("div", { key: "f", style: { position: "absolute", inset: 0, background: "linear-gradient(155deg,#101D22,#070A08)" } }),
+        mini ? h("img", { key: "m", src: mini, alt: "", loading: "lazy", onError: function (e) { try { e.target.style.display = "none"; } catch (x) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }) : null,
+        verrou(v) ? h("div", { key: "l", className: "hv-lock" }, "◈") : null);
     }
-
-    /* 06/08 : l'etat d'une video en un mot, pour la ligne de meta sous
-       l'image. Rend "" quand il n'y a rien de notable a dire. */
-    function etatDe(v) {
-      var pv = prog(v.id);
-      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium", "بريميوم", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium", "Premium");
-      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개");
-      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함");
-      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상");
-      return "";
-    }
-    /* Galop · duree · etat, sous l'image, separes par des points medians.
-       Les elements vides sont ecartes : jamais de « · · » orphelin. */
-    function metaDe(v) {
-      return [
-        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop,
-        dureeDe(v),
-        etatDe(v)
-      ].filter(function (x) { return !!x; }).join(" · ");
-    }
-    function carteAffiche(v) {
-      return h("button", { key: v.id, className: "hv-carte", onClick: function () { ouvrir(v); } },
-        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)),
-        h("p", { className: "hv-sous" }, metaDe(v)));
-    }
-    function carteLarge(v) {
-      return h("button", { key: v.id, className: "hv-large", onClick: function () { ouvrir(v); } },
-        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)),
-        h("p", { className: "hv-sous" }, metaDe(v)));
-    }
-    function carteLigne(v, n) {
+    function etatTxt(v) {
       var p = prog(v.id);
-      var etatTxt = !v.src ? T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")
-        : (p && p.vue) ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
-        : (p && p.ouverte) ? T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")
-        : (v.intervenant || dureeDe(v) || "");
-      return h("div", { key: v.id, style: { display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,.05)" } },
+      if (p && p.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함");
+      if (p && p.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상");
+      return v.intervenant || "";
+    }
+    function ligne(v) {
+      var meta = [TXT_GALOP + v.galop, etatTxt(v)].filter(Boolean).join(" · ");
+      return h("div", { key: v.id, style: { display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(243,238,228,.07)" } },
         h("button", { className: "hv-ligne", style: { borderBottom: "none", flex: 1, minWidth: 0 }, onClick: function () { ouvrir(v); } },
-          n ? h("span", { className: "hv-num" }, n < 10 ? "0" + n : "" + n) : null,
-          couv(v, { galop: false }),
+          couv(v),
           h("span", { style: { flex: 1, minWidth: 0 } },
             h("h4", null, titreDe(v)),
-            h("span", { className: "hv-meta", style: { display: "block" } },
-              v.estAnim ? (v.source + " · " + v.titreSource)
-                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop + " · " + etatTxt)))),
+            h("span", { className: "hv-meta", style: { display: "block" } }, chapitreDe(v)),
+            h("span", { className: "hv-meta", style: { display: "block", marginTop: 3 } }, meta))),
         h("button", {
-          className: "hv-fav" + (estFav(v.id) ? " on" : ""),
+          className: "hv-fav" + (estFav(v.id) ? " on" : ""), "aria-pressed": estFav(v.id),
           "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기"),
           onClick: function () { basculerFav(v.id); }
         }, estFav(v.id) ? "★" : "☆"));
     }
+    function boutonRetour(txt, fn) {
+      return h("button", { className: "hv2-retour", onClick: fn }, h("i", { "aria-hidden": "true" }, "‹"), txt);
+    }
+    var TXT_RETOUR_VT = T("Retour à la Vidéothèque", "Back to the video library", "Volver a la videoteca", "Torna alla videoteca", "動画ライブラリに戻る", "Zurück zur Videothek", "العودة إلى مكتبة الفيديو", "返回视频库", "Terug naar de videotheek", "Voltar à videoteca", "Tillbaka till videobiblioteket", "Назад в видеотеку", "Wróć do wideoteki", "비디오 라이브러리로 돌아가기");
+    var TXT_MES = T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي", "我的视频", "Mijn video's", "Meus vídeos", "Mina videor", "Мои видео", "Moje filmy", "내 영상");
+    var svgFav = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M6.5 3.5h11v17l-5.5-4.2-5.5 4.2z" }));
+    var svgLoupe = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" }));
 
     /* ---------- en-tête ---------- */
-    var coursSet = {}, expertSet = {};
-    dispo.forEach(function (v) {
-      (v.coursTous || []).forEach(function (c) { coursSet[c] = 1; });
-      if (v.intervenant) expertSet[v.intervenant] = 1;
-    });
-
-    /* Animation des portes en fond d'en-tête (provisoire, à peaufiner).
-       Lue UNE SEULE FOIS, sans boucle : les portes s'ouvrent à l'arrivée
-       et restent ouvertes. Des portes qui claquent en boucle seraient
-       agitées. Muette, sinon iOS refuse la lecture automatique.
-       ⚠️ Cette animation finit sur le logo HYPE suivi d'un slogan fauté
-       (« ÉQUESTIEE ») incrusté dans l'image : fin à couper vers 4,3 s,
-       ou à réexporter sans texte.
-       Replis en cascade : affiche JPG, puis dégradés. Rien ne casse si les
-       fichiers ne sont pas encore poussés dans images/. */
-    var animOk = true;
-    try {
-      animOk = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    } catch (eAn) { }
-
-    var hero = h("div", { className: "hv-hero" },
-      animOk ? h("video", {
-        key: "anim", className: "hv-hero-anim",
-        autoPlay: true, muted: true, loop: false, playsInline: true,
-        preload: "metadata", poster: "images/hype-anim-rideaux-poster.jpg",
-        "aria-hidden": "true", tabIndex: -1,
-        ref: function (el) { if (el) { el.muted = true; } }
+    function courbe(cls, d) {
+      return h("svg", { className: "hv2-courbe " + cls, viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+        h("defs", null, h("linearGradient", { id: "hv2g-" + cls, x1: "0", x2: "1", y1: "0", y2: "0" },
+          h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }),
+          h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }),
+          h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+        h("path", { d: d, fill: "none", stroke: "url(#hv2g-" + cls + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
+    }
+    var vIntro = VIDEO_INTRO ? vidDe(VIDEO_INTRO) : null;
+    var hero = h("div", { className: "hv2-hero" },
+      h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
+      courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
+      h("div", {
+        className: "hv2-photo hv2-traite",
+        style: Object.assign({ "--hv-pos-tel": PHOTO_HERO.posTel, "--hv-pos-tab": PHOTO_HERO.posTab, "--hv-pos-ordi": PHOTO_HERO.posOrdi }, styleTraitement())
       },
-        h("source", { key: "w", src: "images/hype-anim-rideaux.webm", type: "video/webm" }),
-        h("source", { key: "m", src: "images/hype-anim-rideaux.mp4", type: "video/mp4" })
-      ) : h("img", {
-        /* 26/08 : le repli etait un div en background-image. Sorti du
-           positionnement absolu, un div n'a plus de hauteur propre et
-           s'ecraserait a zero : il faut une vraie image, qui porte son
-           format naturel comme la video. */
-        key: "anim", className: "hv-hero-anim",
-        src: "images/hype-anim-rideaux-poster.jpg", alt: "", "aria-hidden": "true"
-      }),
-      h("div", { key: "voile", className: "hv-hero-voile" }),
-      h("div", { key: "txt", className: "hv-hero-in" },
-        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie", "Hype · الأكاديمية", "Hype · 学院", "Hype · Academie", "Hype · Academia", "Hype · Akademi", "Hype · Академия", "Hype · Akademia", "Hype · 아카데미")),
-        h("h1", null,
-          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video", "مكتبة", "书架", "Bibliotheek", "Biblioteca", "Bibliotek", "Библиотека", "Biblioteka", "서재"),
-          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상"))),
-        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen", "لاحظي، افهمي، تقدمي", "观察、理解、进步", "Kijk, begrijp, groei", "Observe, entenda, evolua", "Titta, förstå, utvecklas", "Смотри, понимай, развивайся", "Obserwuj, rozumiej, rób postępy", "관찰하고, 이해하고, 성장해요")),
-        h("div", { className: "hv-stats" },
-          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상"))),
-          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten", "متحدثين", "位讲者", "sprekers", "palestrantes", "medverkande", "выступающие", "prelegenci", "강연자"))),
-          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel", "فصول", "个章节", "hoofdstukken", "capítulos", "kapitel", "глав", "rozdziałów", "개 챕터"))))));
+        h("img", { src: PHOTO_HERO.img, alt: "", "aria-hidden": "true", fetchpriority: "high" }),
+        vIntro ? h("button", { className: "hv2-intro", "aria-label": titreDe(vIntro), onClick: function () { ouvrir(vIntro); } },
+          h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "none", stroke: "#F3EEE4", strokeWidth: 1.5 }))) : null),
+      courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
+      h("div", { className: "hv2-in" },
+        h("div", { className: "hv2-titre" },
+          h("h1", null, T("Vidéothèque", "Video library", "Videoteca", "Videoteca", "動画ライブラリ", "Videothek", "مكتبة الفيديو", "视频库", "Videotheek", "Videoteca", "Videobibliotek", "Видеотека", "Wideoteka", "비디오 라이브러리")),
+          h("p", null, T("Observe le geste. Trouve ta sensation.", "Watch the movement. Find your feel.", "Observa el gesto. Encuentra tu sensación.", "Osserva il gesto. Trova la tua sensazione.", "動きを見て、自分の感覚をつかもう。", "Beobachte die Bewegung. Finde dein Gefühl.", "لاحظي الحركة. جدي إحساسك.", "观察动作，找到你的感觉。", "Kijk naar het gebaar. Vind je gevoel.", "Observe o gesto. Encontre sua sensação.", "Titta på rörelsen. Hitta din känsla.", "Смотри на движение. Найди своё ощущение.", "Obserwuj ruch. Znajdź swoje czucie.", "동작을 관찰하고, 나만의 감각을 찾아요.")))));
 
-    var recherche = h("div", { className: "hv-rech" },
-      h("span", { style: { opacity: .5, fontSize: 14 } }, "⌕"),
+    /* ---------- bibliothèque vide : annonce franche ---------- */
+    if (!dispo.length) {
+      return h("div", { className: "hv2", style: styleTraitement() }, hero,
+        h("div", { className: "hv2-in" }, h("div", { className: "hv2-vide" },
+          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.", "首批视频马上就来。", "De eerste video's komen eraan.", "Os primeiros vídeos estão chegando.", "De första videorna är på väg.", "Первые видео скоро появятся.", "Pierwsze filmy już wkrótce.", "첫 영상들이 곧 올라와요.")))));
+    }
+
+    /* ---------- recherche (une seule icône, un champ) ---------- */
+    function correspondRech(v) {
+      if (!rq) return true;
+      var champ = (titreDe(v) + " " + chapitreDe(v) + " " + resumeDe(v) + " " + (v.titreSource || "") + " " + (v.intervenant || "") + " " + observerDe(v).join(" ") + " " + nomTheme(v.theme)).toLowerCase();
+      return champ.indexOf(rq.toLowerCase().trim()) >= 0;
+    }
+    var ligneAcces = h("div", { className: "hv2-ligne" },
+      h("button", { className: "hv2-mes", onClick: function () { setVue("mes"); } }, svgFav, TXT_MES),
+      h("button", {
+        className: "hv2-loupe", "aria-expanded": rechOuverte, "aria-controls": "hv2-rech",
+        "aria-label": T("Rechercher", "Search", "Buscar", "Cerca", "検索", "Suchen", "بحث", "搜索", "Zoeken", "Pesquisar", "Sök", "Поиск", "Szukaj", "검색"),
+        onClick: function () { if (rechOuverte) { setRq(""); } setRechOuverte(!rechOuverte); }
+      }, svgLoupe));
+    var champRech = rechOuverte ? h("div", { className: "hv2-rech", id: "hv2-rech", role: "search" },
+      svgLoupe,
       h("input", {
-        type: "search", value: rq, autoComplete: "off",
+        ref: refRech, type: "search", value: rq, autoComplete: "off", enterKeyHint: "search",
+        "aria-label": T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen", "ابحثي عن فيديو أو تمرين أو مفهوم", "搜索视频、练习或知识点", "Zoek een video, een oefening of een begrip", "Procure um vídeo, um exercício ou uma noção", "Sök efter en video, en övning eller ett begrepp", "Найти видео, упражнение или понятие", "Szukaj wideo, ćwiczenia lub pojęcia", "영상, 운동, 개념 검색"),
         placeholder: T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen", "ابحثي عن فيديو أو تمرين أو مفهوم", "搜索视频、练习或知识点", "Zoek een video, een oefening of een begrip", "Procure um vídeo, um exercício ou uma noção", "Sök efter en video, en övning eller ett begrepp", "Найти видео, упражнение или понятие", "Szukaj wideo, ćwiczenia lub pojęcia", "영상, 운동, 개념 검색"),
         onChange: function (e) { setRq(e.target.value); }
       }),
-      rq ? h("button", { className: "hv-fav", onClick: function () { setRq(""); } }, "×") : null);
+      h("button", {
+        className: "hv2-x",
+        "aria-label": T("Fermer la recherche", "Close search", "Cerrar la búsqueda", "Chiudi la ricerca", "検索を閉じる", "Suche schließen", "إغلاق البحث", "关闭搜索", "Zoeken sluiten", "Fechar a pesquisa", "Stäng sökningen", "Закрыть поиск", "Zamknij wyszukiwanie", "검색 닫기"),
+        onClick: function () { setRq(""); setRechOuverte(false); }
+      }, "×")) : null;
 
-    var sugs = h("div", { className: "hv-sugs" }, SUGGESTS.map(function (s) {
-      return h("button", { key: s, className: "hv-sug", onClick: function () { setRq(s); } }, s);
-    }));
-
-    var chips = h("div", { className: "hv-chips" },
-      UNIVERS.map(function (x) {
-        return h("button", {
-          key: x.k, className: "hv-chip" + (univ === x.k ? " on" : ""),
-          onClick: function () { setUniv(x.k); setGalop(null); }
-        }, L(x.nom, langue));
-      }).concat([
-        h("button", { key: "__f", className: "hv-filtres", onClick: function () { setFeuille(true); } },
-          "⚟ " + T("Filtres", "Filters", "Filtros", "Filtri", "絞り込み", "Filter", "عوامل التصفية", "筛选", "Filters", "Filtros", "Filter", "Фильтры", "Filtry", "필터") + (nbFiltres ? " · " + nbFiltres : ""))
-      ]));
-
-    /* ---------- bibliothèque encore vide ----------
-       Aucune vidéo n'a de source réelle : on l'annonce franchement au lieu
-       d'afficher une page de cartes qui ne mènent nulle part. */
-    if (!dispo.length) {
-      return h("div", { className: "hv-wrap" }, hero,
-        h("div", { className: "hv-vide", style: { paddingTop: 34 } },
-          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.", "首批视频马上就来。", "De eerste video's komen eraan.", "Os primeiros vídeos estão chegando.", "De första videorna är på väg.", "Первые видео скоро появятся.", "Pierwsze filmy już wkrótce.", "첫 영상들이 곧 올라와요.")),
-          h("p", { className: "hv-s2" }, T("La bibliothèque s'ouvrira ici, chapitre par chapitre.", "The library will open here, chapter by chapter.", "La biblioteca se abrirá aquí, capítulo a capítulo.", "La videoteca si aprirà qui, capitolo per capitolo.", "章ごとに、ここに開いていきます。", "Die Bibliothek öffnet hier, Kapitel für Kapitel.", "ستفتح المكتبة هنا، فصلا بعد فصل.", "视频库将在这里按章节逐步开放。", "De bibliotheek gaat hier open, hoofdstuk per hoofdstuk.", "A biblioteca vai abrir aqui, capítulo por capítulo.", "Biblioteket öppnar här, kapitel för kapitel.", "Библиотека откроется здесь, глава за главой.", "Biblioteka otworzy się tutaj, rozdział po rozdziale.", "라이브러리가 여기에서 챕터별로 열려요."))),
-        h("div", { className: "hv-sec" },
-          h("button", { className: "hv-btn hv-btn-p", style: { width: "100%" }, onClick: function () { setEcran("galops"); } },
-            T("Retour aux Galops", "Back to levels", "Volver a los Galops", "Torna ai Galop", "ガロー一覧に戻る", "Zurück zu den Galopps", "العودة إلى مستويات الغالوب", "返回 Galop 等级", "Terug naar de Galop-niveaus", "Voltar aos Galops", "Tillbaka till Galop-nivåerna", "Назад к уровням Galop", "Wróć do poziomów Galop", "Galop 단계로 돌아가기"))));
+    /* ---------- VUE : thème ouvert (Galop sélectionné ET thème) ---------- */
+    if (vue === "theme" && theme) {
+      var vsT = dispo.filter(function (v) { return v.theme === theme && galopOk(v, galop); });
+      return h("div", { className: "hv2", style: styleTraitement() },
+        h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
+          h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
+          boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); }),
+          h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, nomTheme(theme)),
+          h("p", { className: "hv2-sous" }, nomGalopSel() + " · " + nbVideos(vsT.length)),
+          h("div", { className: "hv2-liste" }, vsT.map(ligne))));
     }
 
-    /* ---------- continuer à regarder ---------- */
-    var reprise = null;
-    var meilleur = null;
-    dispo.forEach(function (v) {
-      var p = prog(v.id);
-      if (p && p.ouverte && !p.vue) {
-        if (!meilleur || (p.ouverte || "") > (meilleur.p.ouverte || "")) meilleur = { v: v, p: p };
-      }
-    });
-    if (meilleur) {
-      var mv = meilleur.v;
-      reprise = h("button", { className: "hv-repr", onClick: function () { ouvrir(mv); } },
-        couv(mv, { galop: false }),
-        h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
-          h("h4", null, titreDe(mv)),
-          h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ", "الفصل: ", "章节：", "Hoofdstuk: ", "Capítulo: ", "Kapitel: ", "Глава: ", "Rozdział: ", "챕터: ") + chapitreDe(mv)),
-          /* 06/08 : la duree quittait la miniature, elle se lit ici. */
-          dureeDe(mv) ? h("span", { className: "hv-lie", style: { display: "block", marginTop: 2 } }, dureeDe(mv)) : null,
-          h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 9, letterSpacing: ".1em", textTransform: "uppercase" } },
-            T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen", "متابعة", "继续", "Hervatten", "Retomar", "Fortsätt", "Продолжить", "Wznów", "이어하기"))));
+    /* ---------- VUE : Mes vidéos ---------- */
+    if (vue === "mes") {
+      var derniere = null;
+      dispo.forEach(function (v) {
+        var p = prog(v.id);
+        if (p && p.ouverte && !p.vue && (!derniere || (p.ouverte || "") > (prog(derniere.id).ouverte || ""))) derniere = v;
+      });
+      var favs = dispo.filter(function (v) { return estFav(v.id); });
+      var hist = dispo.filter(function (v) { var p = prog(v.id); return p && (p.ouverte || p.vue); })
+        .sort(function (a, b) { var pa = prog(a.id), pb = prog(b.id); return String(pb.quand || pb.ouverte || "") > String(pa.quand || pa.ouverte || "") ? 1 : -1; });
+      var liste = onglet === "hist" ? hist : favs;
+      var vide = onglet === "hist"
+        ? [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer.", "سجلك فارغ.", "你的历史记录是空的。", "Je geschiedenis is leeg.", "Seu histórico está vazio.", "Din historik är tom.", "Твоя история пуста.", "Twoja historia jest pusta.", "기록이 비어 있어요."),
+           T("Les vidéos que tu ouvres viendront se ranger ici.", "Videos you open will be filed here.", "Los vídeos que abras se guardarán aquí.", "I video che apri si raccoglieranno qui.", "開いた動画がここに並びます。", "Videos, die du öffnest, werden hier abgelegt.", "ستصنف هنا الفيديوهات التي تفتحينها.", "你打开过的视频会收纳在这里。", "Video's die je opent komen hier te staan.", "Os vídeos que você abrir serão guardados aqui.", "Videor du öppnar hamnar här.", "Открытые тобой видео будут складываться здесь.", "Otwarte filmy trafią tutaj.", "열어 본 영상이 여기에 정리돼요.")]
+        : [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych.", "아직 즐겨찾기가 없어요."),
+           T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.", "영상의 별을 터치하면 여기서 다시 볼 수 있어요.")];
+      return h("div", { className: "hv2", style: styleTraitement() },
+        h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
+          h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
+          boutonRetour(TXT_RETOUR_VT, function () { setVue("accueil"); }),
+          h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, TXT_MES),
+          /* seul l'état « ouverte » est connu (lecteur YouTube) : jamais de « reprendre à 3 min 12 » */
+          derniere ? h("div", null,
+            h("p", { className: "hv2-k" }, T("Dernière vidéo ouverte", "Last video opened", "Último vídeo abierto", "Ultimo video aperto", "最後に開いた動画", "Zuletzt geöffnetes Video", "آخر فيديو فتحته", "最近打开的视频", "Laatst geopende video", "Último vídeo aberto", "Senast öppnade video", "Последнее открытое видео", "Ostatnio otwarty film", "마지막으로 연 영상")),
+            h("div", { className: "hv2-liste" }, ligne(derniere)),
+            h("p", { className: "hv2-sous", style: { margin: "8px 0 0", fontSize: 16 } }, T("Pas encore marquée vue.", "Not marked as watched yet.", "Aún no marcado como visto.", "Non ancora segnato come visto.", "まだ視聴済みにしていません。", "Noch nicht als gesehen markiert.", "لم تحدديه بعد كفيديو تمت مشاهدته.", "还没有标记为已看。", "Nog niet als bekeken gemarkeerd.", "Ainda não marcado como visto.", "Inte markerad som sedd än.", "Ещё не отмечено как просмотренное.", "Jeszcze nieoznaczony jako obejrzany.", "아직 시청함으로 표시하지 않았어요."))) : null,
+          h("div", { className: "hv2-mini-ong", role: "tablist" },
+            [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione", "즐겨찾기")],
+             ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")]].map(function (x) {
+              return h("button", { key: x[0], role: "tab", "aria-selected": onglet === x[0], className: onglet === x[0] ? "on" : "", onClick: function () { setOnglet(x[0]); } }, x[1]);
+            })),
+          liste.length ? h("div", { className: "hv2-liste" }, liste.map(ligne))
+            : h("div", { className: "hv2-vide" }, h("p", null, vide[0]), h("p", null, vide[1]))));
     }
 
-    /* ---------- à la une ---------- */
-    var une = dispo[0];
-    for (var iu = 0; iu < dispo.length; iu++) { var pu = prog(dispo[iu].id); if (!pu && !verrou(dispo[iu])) { une = dispo[iu]; break; } }
-    var blocUne = h("div", { className: "hv-une" },
-      /* 06/08 : la carte « A la une » n'affiche plus la vignette YouTube.
-         En 16/9 pleine largeur, une diapo de webconference IFCE devient un
-         mur de texte cuit dans l'image, juste sous le titre de la carte.
-         Le fond procedural de fondCouv() tient le role : sobre, dans la
-         palette, et il n'entre jamais en concurrence avec le texte. Les
-         vignettes restent en place dans les petites cartes, ou elles sont
-         decoratives et sans enjeu de lecture. */
-      couv(une, { galop: false, sansVoile: true, sansMini: true }),
-      h("div", { className: "hv-une-txt" },
-        h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen", "موصى به لك", "为你推荐", "Aanbevolen voor jou", "Recomendado para você", "Rekommenderad för dig", "Рекомендуем тебе", "Polecane dla ciebie", "추천 영상")),
-        h("h3", null, titreDe(une)),
-        h("p", { className: "hv-desc" }, resumeDe(une)),
-        h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + une.galop),
-          dureeDe(une) ? h("span", { className: "hv-mini" }, dureeDe(une)) : null,
-          h("span", { className: "hv-mini" }, chapitreDe(une)),
-          une.source ? h("span", { className: "hv-mini" }, une.source) : null,
-          etatDe(une) ? h("span", { className: "hv-mini" }, etatDe(une)) : null),
-        h("div", { className: "hv-act" },
-          h("button", { className: "hv-btn hv-btn-p", onClick: function () { ouvrir(une); } },
-            T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen", "مشاهدة", "观看", "Kijken", "Assistir", "Titta", "Смотреть", "Oglądaj", "시청하기")),
-          h("button", {
-            className: "hv-btn hv-btn-s" + (estFav(une.id) ? " on" : ""),
-            "aria-label": T("Ajouter à mes favoris", "Add to favourites", "Añadir a favoritos", "Aggiungi ai preferiti", "お気に入りに追加", "Zu Favoriten", "إضافة إلى مفضلاتي", "加入我的收藏", "Aan mijn favorieten toevoegen", "Adicionar aos meus favoritos", "Lägg till i mina favoriter", "Добавить в избранное", "Dodaj do ulubionych", "즐겨찾기에 추가"),
-            onClick: function () { basculerFav(une.id); }
-          }, estFav(une.id) ? "★" : "☆"))));
-
-    /* ---------- explorer par galop ---------- */
-    var niveaux = [1, 2, 3, 4, 5, 6, 7];
-    var blocGalops = h("div", { className: "hv-galops" },
-      h("div", { className: "hv-sec", style: { marginTop: 0 } },
-        h("h2", null, T("Explorer par Galop", "Explore by level", "Explorar por Galop", "Esplora per Galop", "ガロー別に見る", "Nach Galopp entdecken", "استكشفي حسب الغالوب", "按 Galop 浏览", "Verkennen per Galop", "Explorar por Galop", "Utforska per Galop", "Выбрать по уровню Galop", "Przeglądaj według poziomu Galop", "Galop별로 둘러보기")),
-        h("p", null, T("Le fil de ta progression fédérale", "The thread of your federal progression", "El hilo de tu progresión federal", "Il filo della tua progressione federale", "連盟級位に沿った道すじ", "Der Faden deiner Ausbildung", "مسار تقدمك في مستويات الاتحاد", "你在法国马术协会等级上的进步脉络", "De rode draad van je federale voortgang", "O fio da sua progressão federal", "Tråden i din förbundsprogression", "Нить твоего федерального прогресса", "Twoja ścieżka w poziomach federalnych", "연맹 단계를 따라가는 나의 성장"))),
-      h("div", { className: "hv-gscroll" }, niveaux.map(function (n) {
-        var nb = dispo.filter(function (v) { return v.galop === n; }).length;
-        return h("button", {
-          key: n, className: "hv-gnode" + (galop === n ? " on" : ""),
-          onClick: function () { setGalop(galop === n ? null : n); setUniv("tous"); }
-        },
-          h("span", { className: "hv-cristal" }, h("b", null, n)),
-          h("small", null, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + n),
-          h("em", null, nb + " " + (nb > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상"))));
-      })));
-
-    /* ---------- collections ---------- */
-    var blocColls = COLLS.map(function (c) {
-      var vs = c.ids.map(vidDe).filter(Boolean).filter(disponible);
-      if (!vs.length) return null;
-      var corps;
-      if (c.format === "liste") {
-        corps = h("div", { style: { padding: "0 18px" } }, vs.map(function (v, i) { return carteLigne(v, i + 1); }));
-      } else {
-        corps = h("div", { className: "hv-rail" + (c.format === "large" ? " hv-rail-l" : "") }, vs.map(c.format === "large" ? carteLarge : carteAffiche));
-      }
-      return h("div", { key: c.id, className: "hv-coll" },
-        h("div", { className: "hv-coll-tete" },
-          h("span", { className: "hv-sceau" }, c.sceau),
-          h("span", null,
-            h("h3", null, L(c.nom, langue)),
-            h("p", null, L(c.sous, langue) + " · " + vs.length))),
-        h("div", { className: "hv-fil" }),
-        corps);
-    });
-
-    /* ---------- mes vidéos ---------- */
-    var mesVs = [];
-    if (onglet === "fav") mesVs = dispo.filter(function (v) { return estFav(v.id); });
-    if (onglet === "cours") mesVs = dispo.filter(function (v) { var p = prog(v.id); return p && p.ouverte && !p.vue; });
-    if (onglet === "hist") mesVs = dispo.filter(function (v) { var p = prog(v.id); return p && p.vue; });
-
-    var videTxt = {
-      fav: [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych.", "아직 즐겨찾기가 없어요."),
-            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.", "영상의 별을 터치하면 여기서 다시 볼 수 있어요.")],
-      cours: [T("Aucune vidéo en cours.", "No video in progress.", "Ningún vídeo en curso.", "Nessun video in corso.", "視聴中の動画はありません。", "Kein Video läuft.", "لا يوجد فيديو قيد المشاهدة.", "没有正在看的视频。", "Geen video bezig.", "Nenhum vídeo em andamento.", "Ingen video pågår.", "Нет видео в процессе.", "Żaden film nie jest w toku.", "보고 있는 영상이 없어요."),
-              T("Les vidéos commencées apparaîtront ici avec leur progression.", "Videos you start will appear here with their progress.", "Los vídeos empezados aparecerán aquí con su progreso.", "I video iniziati appariranno qui con il loro avanzamento.", "見はじめた動画が進捗つきで並びます。", "Begonnene Videos erscheinen hier mit ihrem Fortschritt.", "ستظهر هنا الفيديوهات التي بدأتها مع مدى تقدمك فيها.", "你开始看的视频会连同进度一起显示在这里。", "Video's die je begonnen bent verschijnen hier met je voortgang.", "Os vídeos que você começar aparecerão aqui com o seu progresso.", "Videor du har börjat titta på visas här med din framgång.", "Начатые видео появятся здесь вместе с твоим прогрессом.", "Rozpoczęte filmy pojawią się tutaj wraz z postępem.", "보기 시작한 영상이 진행 상황과 함께 여기에 나타나요.")],
-      hist: [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer.", "سجلك فارغ.", "你的历史记录是空的。", "Je geschiedenis is leeg.", "Seu histórico está vazio.", "Din historik är tom.", "Твоя история пуста.", "Twoja historia jest pusta.", "기록이 비어 있어요."),
-             T("Les vidéos terminées viendront se ranger ici.", "Finished videos will be filed here.", "Los vídeos terminados se guardarán aquí.", "I video completati si raccoglieranno qui.", "見終わった動画がここに並びます。", "Fertige Videos werden hier abgelegt.", "ستصنف هنا الفيديوهات التي أنهيتها.", "看完的视频会收纳在这里。", "Video's die je hebt afgekeken komen hier te staan.", "Os vídeos concluídos serão guardados aqui.", "Avslutade videor hamnar här.", "Просмотренные видео будут складываться здесь.", "Obejrzane filmy trafią tutaj.", "끝까지 본 영상이 여기에 정리돼요.")]
-    }[onglet];
-
-    var blocMes = h("div", null,
-      h("div", { className: "hv-sec", style: { marginTop: 36 } },
-        h("h2", null, T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي", "我的视频", "Mijn video's", "Meus vídeos", "Mina videor", "Мои видео", "Moje filmy", "내 영상")),
-        h("p", null, T("Ce que tu as gardé, commencé ou terminé", "What you saved, started or finished", "Lo que has guardado, empezado o terminado", "Ciò che hai salvato, iniziato o finito", "保存・視聴中・視聴済みのもの", "Gespeichert, begonnen oder beendet", "ما حفظته أو بدأته أو أنهيته", "你收藏、开始看或看完的内容", "Wat je bewaard, begonnen of afgekeken hebt", "O que você guardou, começou ou terminou", "Det du har sparat, påbörjat eller avslutat", "То, что ты сохранила, начала или закончила", "Zapisane, rozpoczęte lub ukończone", "담아 둔 영상, 보기 시작한 영상, 끝까지 본 영상"))),
-      h("div", { className: "hv-ongl", style: { marginTop: 14 } },
-        [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione", "즐겨찾기")],
-         ["cours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")],
-         ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")]].map(function (x) {
-          return h("button", { key: x[0], className: onglet === x[0] ? "on" : "", onClick: function () { setOnglet(x[0]); } }, x[1]);
-        })),
-      mesVs.length
-        ? h("div", { style: { padding: "0 18px" } }, mesVs.map(function (v) { return carteLigne(v); }))
-        : h("div", { className: "hv-vide" }, h("p", null, videTxt[0]), h("p", { className: "hv-s2" }, videTxt[1])));
-
-    /* ---------- résultats ---------- */
-    var blocResultats = null;
-    if (actif) {
-      var res = dispo.filter(correspond);
-      var lib = [];
-      if (rq) lib.push("« " + rq + " »");
-      if (univ !== "tous") { for (var iv = 0; iv < UNIVERS.length; iv++) { if (UNIVERS[iv].k === univ) lib.push(L(UNIVERS[iv].nom, langue)); } }
-      if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + galop);
-      if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter", "عوامل تصفية", "筛选", "filters", "filtros", "filter", "фильтры", "filtry", "필터"));
-      blocResultats = h("div", { style: { marginTop: 18 } },
-        h("button", {
-          className: "hv-retourmenu",
-          onClick: function () { setRq(""); setUniv("tous"); setGalop(null); setFiltres({ duree: [], etat: [] }); }
-        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü", "العودة إلى القائمة", "返回菜单", "Terug naar het menu", "Voltar ao menu", "Tillbaka till menyn", "Назад в меню", "Wróć do menu", "메뉴로 돌아가기")),
-        h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상")) + " · " + lib.join(" · ")),
-        res.length
-          ? h("div", { className: "hv-grille" }, res.map(carteAffiche))
-          : h("div", { className: "hv-vide" },
-              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.", "조건에 맞는 영상이 아직 없어요.")),
-              h("p", { className: "hv-s2" }, T("Essaie un autre mot, ou élargis le niveau et la durée.", "Try another word, or widen level and duration.", "Prueba otra palabra, o amplía nivel y duración.", "Prova un'altra parola, o allarga livello e durata.", "別の言葉を試すか、級位と長さを広げてみて。", "Versuche ein anderes Wort oder erweitere Galopp und Dauer.", "جربي كلمة أخرى، أو وسعي المستوى والمدة.", "换个词试试，或者放宽等级和时长。", "Probeer een ander woord, of verruim het niveau en de duur.", "Tente outra palavra, ou amplie o nível e a duração.", "Prova ett annat ord, eller bredda nivå och längd.", "Попробуй другое слово или расширь уровень и длительность.", "Spróbuj innego słowa albo poszerz poziom i długość.", "다른 단어로 검색하거나 레벨과 길이 범위를 넓혀 보세요."))));
-    }
-
-    /* ---------- feuille de filtres ---------- */
-    var GROUPES = [
-      { cle: "duree", nom: T("Durée", "Duration", "Duración", "Durata", "長さ", "Dauer", "المدة", "时长", "Duur", "Duração", "Längd", "Длительность", "Czas trwania", "길이"), opts: [
-        ["court", T("Moins de 3 min", "Under 3 min", "Menos de 3 min", "Meno di 3 min", "3分未満", "Unter 3 Min", "أقل من 3 د", "不到3分钟", "Minder dan 3 min", "Menos de 3 min", "Under 3 min", "Меньше 3 мин", "Mniej niż 3 min", "3분 미만")],
-        ["moyen", T("3 à 8 min", "3 to 8 min", "3 a 8 min", "Da 3 a 8 min", "3〜8分", "3 bis 8 Min", "من 3 إلى 8 د", "3到8分钟", "3 tot 8 min", "3 a 8 min", "3 till 8 min", "от 3 до 8 мин", "3 do 8 min", "3~8분")],
-        ["long", T("Plus de 8 min", "Over 8 min", "Más de 8 min", "Più di 8 min", "8分以上", "Über 8 Min", "أكثر من 8 د", "超过8分钟", "Meer dan 8 min", "Mais de 8 min", "Över 8 min", "Больше 8 мин", "Ponad 8 min", "8분 초과")]] },
-      { cle: "etat", nom: T("Où tu en es", "Where you are", "Dónde estás", "Dove sei arrivato", "進み具合", "Wo du stehst", "أين وصلت", "你的进度", "Waar je staat", "Onde você está", "Där du är", "На каком ты этапе", "Twój postęp", "진행 상황"), opts: [
-        ["nonvue", T("Pas encore vues", "Not watched yet", "Aún sin ver", "Non ancora viste", "未視聴", "Noch nicht gesehen", "لم تشاهد بعد", "还没看过", "Nog niet bekeken", "Ainda não vistos", "Inte sedda än", "Ещё не просмотрено", "Jeszcze nieobejrzane", "아직 안 봤어요")],
-        ["encours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة", "待重看", "Opnieuw bekijken", "Para rever", "Att se igen", "Пересмотреть", "Do powtórki", "다시 볼 영상")],
-        ["vue", T("Déjà vues", "Already watched", "Ya vistas", "Già viste", "視聴済み", "Schon gesehen", "تمت مشاهدتها", "已经看过", "Al bekeken", "Já vistos", "Redan sedda", "Уже просмотрено", "Już obejrzane", "이미 봤어요")],
-        ["fav", T("Mes favoris", "My favourites", "Mis favoritos", "I miei preferiti", "お気に入り", "Meine Favoriten", "مفضلاتي", "我的收藏", "Mijn favorieten", "Meus favoritos", "Mina favoriter", "Моё избранное", "Moje ulubione", "내 즐겨찾기")]] }
-    ];
-    var blocFeuille = feuille ? h(React.Fragment, null,
-      h("div", { className: "hv-voile-m", onClick: function () { setFeuille(false); } }),
-      h("div", { className: "hv-feuille" },
-        h("div", { className: "hv-poignee" }),
-        GROUPES.map(function (gr) {
-          return h("div", { key: gr.cle, className: "hv-fg" },
-            h("h5", null, gr.nom),
-            h("div", { className: "hv-fo" }, gr.opts.map(function (op) {
-              var on = filtres[gr.cle].indexOf(op[0]) >= 0;
-              return h("button", {
-                key: op[0], className: on ? "on" : "",
-                onClick: function () {
-                  var copie = { duree: filtres.duree.slice(), etat: filtres.etat.slice() };
-                  var arr = copie[gr.cle], i = arr.indexOf(op[0]);
-                  if (i >= 0) { arr.splice(i, 1); } else { arr.push(op[0]); }
-                  setFiltres(copie);
-                }
-              }, op[1]);
-            })));
-        }),
-        h("div", { style: { display: "flex", gap: 10, marginTop: 6 } },
-          h("button", { className: "hv-btn hv-btn-s", style: { width: "auto", flex: 1 }, onClick: function () { setFiltres({ duree: [], etat: [] }); } },
-            T("Tout effacer", "Clear all", "Borrar todo", "Cancella tutto", "すべて解除", "Alles löschen", "مسح الكل", "全部清除", "Alles wissen", "Apagar tudo", "Radera allt", "Стереть всё", "Wyczyść wszystko", "모두 지우기")),
-          h("button", { className: "hv-btn hv-btn-p", style: { flex: 1.4 }, onClick: function () { setFeuille(false); } },
-            T("Voir les vidéos", "Show videos", "Ver los vídeos", "Vedi i video", "動画を見る", "Videos anzeigen", "عرض الفيديوهات", "查看视频", "Video's bekijken", "Ver os vídeos", "Visa videor", "Показать видео", "Pokaż filmy", "영상 보기"))))) : null;
-
-    return h("div", { className: "hv-wrap" },
-      hero, recherche, sugs, chips,
-      actif ? blocResultats : h("div", null,
-        reprise ? h("div", null,
-          h("div", { className: "hv-sec", style: { marginTop: 22 } },
-            h("h2", null, T("Continuer à regarder", "Keep watching", "Seguir viendo", "Continua a guardare", "つづきを見る", "Weiterschauen", "متابعة المشاهدة", "继续观看", "Verder kijken", "Continuar assistindo", "Fortsätt titta", "Продолжить просмотр", "Oglądaj dalej", "이어서 보기"))),
-          h("div", { style: { marginTop: 14 } }, reprise)) : null,
-        h("div", { className: "hv-sec" },
-          h("h2", null, T("À la une", "Featured", "Destacado", "In primo piano", "注目", "Im Fokus", "مميز", "置顶", "Uitgelicht", "Em destaque", "Utvalt", "На главной", "Wyróżnione", "대표")),
-          h("p", null, T("Choisie pour ton niveau et ton dernier chapitre", "Picked for your level and latest chapter", "Elegida para tu nivel y tu último capítulo", "Scelta per il tuo livello e il tuo ultimo capitolo", "あなたの級位と最新の章に合わせて", "Für dein Niveau und dein letztes Kapitel", "مختار لمستواك ولآخر فصل وصلت إليه", "根据你的等级和最近学的章节挑选", "Gekozen voor jouw niveau en je laatste hoofdstuk", "Escolhido para o seu nível e o seu último capítulo", "Vald efter din nivå och ditt senaste kapitel", "Подобрано под твой уровень и последнюю главу", "Wybrane dla twojego poziomu i ostatniego rozdziału", "내 레벨과 마지막 챕터에 맞춰 골랐어요"))),
-        h("div", { style: { marginTop: 14 } }, blocUne),
-        blocGalops,
-        blocColls,
-        blocMes,
-        /* Réserve d'animations — modérateurs uniquement. Sert à rassembler
-           les animations produites et à savoir où elles en sont. */
-        estModo ? h("div", { key: "reserve" },
-          h("div", { className: "hv-sec", style: { marginTop: 42 } },
-            h("h2", null, "Réserve d'animations"),
-            h("p", null, (function () {
-              var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
-              return "Visible par toi seule. " + (ANIMS.length - ec) + " animations sur " + ANIMS.length
-                + (ec ? (" · " + ec + " écartée" + (ec > 1 ? "s" : "")) : "") + ".";
-            })()),
-            (function () {
-              var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
-              return ec ? h("button", {
-                onClick: function () { ANIMS.forEach(function (x) { ecarter(x.id, false); }); setEtat(lireLocal()); },
-                style: { marginTop: 8, fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", background: "none", border: "1px solid rgba(32,217,245,.35)", borderRadius: 8, padding: "7px 12px", fontFamily: "inherit" }
-              }, "Réafficher tout") : null;
-            })()),
-          h("div", { className: "hv-fil", style: { margin: "12px 18px 4px" } }),
-          h("div", { style: { padding: "0 18px" } }, ANIMS.filter(function (a4) { return !ecartees()[a4.id]; }).map(function (a3) {
-            return h("div", { key: a3.id, style: { padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,.06)" } },
-              h("button", {
-                style: { display: "flex", gap: 12, alignItems: "center", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, color: "inherit" },
-                onClick: function () { if (a3.src) { ouvrir(a3); } }
-              },
-                h("span", {
-                  className: "hv-cov",
-                  style: {
-                    width: 86, flex: "0 0 86px", aspectRatio: "16/9", borderRadius: 10, border: "1px solid #2A323D",
-                    backgroundImage: a3.vignetteUrl ? ("url(" + a3.vignetteUrl + ")") : "none",
-                    backgroundSize: "cover", backgroundPosition: "center",
-                    background: a3.vignetteUrl ? undefined : fondCouv(a3)
-                  }
-                }),
+    /* ---------- VUE : réserve d'animations (modératrices seulement, en français) ---------- */
+    if (vue === "reserve" && estModo) {
+      var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
+      var chBtn = { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#C9A66B", background: "none", border: "1px solid rgba(201,166,107,.45)", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", textDecoration: "none", fontWeight: 600 };
+      return h("div", { className: "hv2" },
+        h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
+          boutonRetour("Retour à la Vidéothèque", function () { setVue("accueil"); }),
+          h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, "Réserve d'animations"),
+          h("p", { className: "hv2-sous" }, "Visible par toi seule. " + (ANIMS.length - ec) + " animations sur " + ANIMS.length + (ec ? (" · " + ec + " écartée" + (ec > 1 ? "s" : "")) : "") + "."),
+          ec ? h("button", { style: chBtn, onClick: function () { ANIMS.forEach(function (x) { ecarter(x.id, false); }); setEtat(lireLocal()); } }, "Réafficher tout") : null,
+          h("div", { className: "hv2-liste", style: { marginTop: 14 } }, ANIMS.filter(function (a4) { return !ecartees()[a4.id]; }).map(function (a3) {
+            return h("div", { key: a3.id, style: { padding: "12px 0", borderBottom: "1px solid rgba(243,238,228,.07)" } },
+              h("button", { style: { display: "flex", gap: 12, alignItems: "center", width: "100%", textAlign: "start", background: "none", border: "none", padding: 0 }, onClick: function () { if (a3.src) { ouvrir(a3); } } },
+                h("span", { className: "hv-cov", style: { width: 86, flex: "0 0 86px", aspectRatio: "16/9", borderRadius: 10, border: "1px solid rgba(243,238,228,.1)", backgroundImage: a3.vignetteUrl ? ("url(" + a3.vignetteUrl + ")") : "none", backgroundSize: "cover", backgroundPosition: "center" } }),
                 h("span", { style: { flex: 1, minWidth: 0 } },
-                  h("span", { style: { display: "block", fontSize: 12.5, fontWeight: 500, color: "#F4F6F7", lineHeight: 1.35 } }, L(a3.i18nTitre, "fr")),
-                  h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 4, letterSpacing: ".08em", textTransform: "uppercase" } }, a3.source + " · " + a3.titreSource),
-                  h("span", { style: { display: "block", fontSize: 11, color: "#8A95A1", marginTop: 6, lineHeight: 1.5 } }, L(a3.i18nResume, "fr")))),
+                  h("span", { style: { display: "block", fontSize: 13, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.35 } }, L(a3.i18nTitre, "fr")),
+                  h("span", { style: { display: "block", fontSize: 10, color: "#C9A66B", marginTop: 4, letterSpacing: ".08em", textTransform: "uppercase" } }, a3.source + " · " + a3.titreSource),
+                  h("span", { style: { display: "block", fontSize: 11.5, color: "rgba(243,238,228,.64)", marginTop: 6, lineHeight: 1.5 } }, L(a3.i18nResume, "fr")))),
               h("span", { style: { display: "flex", gap: 8, marginTop: 10 } },
-                a3.src ? h("a", {
-                  href: a3.src.ref + ".mp4", download: "",
-                  style: { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", textDecoration: "none", fontWeight: 600, border: "1px solid rgba(32,217,245,.35)", borderRadius: 8, padding: "7px 12px" }
-                }, "Télécharger") : null,
-                h("button", {
-                  onClick: function () { ecarter(a3.id, true); setEtat(lireLocal()); },
-                  style: { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#8A95A1", fontWeight: 600, background: "none", border: "1px solid #2A323D", borderRadius: 8, padding: "7px 12px", fontFamily: "inherit" }
-                }, "Écarter")));
-          }))) : null),
-      blocFeuille);
+                a3.src ? h("a", { href: a3.src.ref + ".mp4", download: "", style: chBtn }, "Télécharger") : null,
+                h("button", { style: Object.assign({}, chBtn, { color: "rgba(243,238,228,.6)", borderColor: "rgba(243,238,228,.2)" }), onClick: function () { ecarter(a3.id, true); setEtat(lireLocal()); } }, "Écarter")));
+          }))));
+    }
+
+    /* ---------- ACCUEIL ---------- */
+    var corps;
+    if (rechOuverte && rq.trim()) {
+      var res = dispo.filter(correspondRech);
+      corps = h("div", { style: { marginTop: 18 } },
+        h("p", { className: "hv2-sous", style: { margin: "0 0 12px" } }, nbVideos(res.length) + " · « " + rq.trim() + " »"),
+        res.length ? h("div", { className: "hv2-liste" }, res.map(ligne))
+          : h("div", { className: "hv2-vide" },
+              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.", "조건에 맞는 영상이 아직 없어요.")),
+              h("p", null, T("Essaie un autre mot.", "Try another word.", "Prueba otra palabra.", "Prova un'altra parola.", "別の言葉で試してみて。", "Versuche ein anderes Wort.", "جربي كلمة أخرى.", "换个词试试。", "Probeer een ander woord.", "Tente outra palavra.", "Prova ett annat ord.", "Попробуй другое слово.", "Spróbuj innego słowa.", "다른 단어로 검색해 보세요."))));
+    } else {
+      /* onglets des Galops : disponibilités calculées sur le catalogue réel */
+      var onglets = h("div", {
+        className: "hv2-onglets", role: "tablist",
+        "aria-label": T("Choisis un Galop", "Choose a level", "Elige un Galop", "Scegli un Galop", "ガローを選ぶ", "Wähle einen Galopp", "اختاري مستوى الغالوب", "选择 Galop", "Kies een Galop", "Escolha um Galop", "Välj en Galop", "Выбери уровень Galop", "Wybierz poziom Galop", "Galop 선택")
+      }, ONGLETS_GALOPS.map(function (k) {
+        var n = dispo.filter(function (v) { return galopOk(v, k); }).length;
+        var on = galop === k;
+        return h("button", {
+          key: String(k), role: "tab", "aria-selected": on, disabled: !n, "aria-disabled": !n,
+          className: "hv2-og" + (on ? " on" : ""),
+          onClick: function () { if (n) setGalop(k); }
+        }, nomOnglet(k), !n ? h("small", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : null);
+      }));
+      /* thèmes : compteurs pour le Galop choisi, thèmes vides masqués */
+      var themesVis = THEMES_ORDRE.map(function (k) {
+        return { k: k, n: dispo.filter(function (v) { return v.theme === k && galopOk(v, galop); }).length };
+      }).filter(function (x) { return x.n > 0; });
+      var nT = themesVis.length;
+      var grille = h("div", { className: "hv2-grille" }, themesVis.map(function (x, i) {
+        var ph = PHOTOS_THEMES[x.k] || {};
+        var dernier = i === nT - 1;
+        var cls = "hv2-theme" + (dernier && nT % 2 === 1 ? " seul2" : "") + (dernier && nT % 3 === 1 ? " seul3" : "");
+        return h("button", { key: x.k, className: cls, onClick: function () { setTheme(x.k); setVue("theme"); } },
+          h("span", { className: "hv2-traite", style: { display: "block", "--hv-pos": ph.pos || "center" } },
+            ph.img ? h("img", { src: ph.img, alt: L(ph.alt, langue), loading: "lazy" }) : null),
+          h("span", { className: "hv2-pan" }, h("b", null, nomTheme(x.k)), h("span", null, nbVideos(x.n))));
+      }));
+      corps = h("div", null, onglets,
+        h("h2", { className: "hv2-h2" }, T("Explore les thèmes", "Explore the topics", "Explora los temas", "Esplora i temi", "テーマから探す", "Entdecke die Themen", "استكشفي المواضيع", "探索主题", "Ontdek de thema's", "Explore os temas", "Utforska teman", "Изучай темы", "Odkrywaj tematy", "주제별로 둘러보기")),
+        grille);
+    }
+
+    return h("div", { className: "hv2", style: styleTraitement() },
+      hero,
+      h("div", { className: "hv2-in" },
+        ligneAcces, champRech, corps,
+        /* accès discret à la réserve : invisible pour tout autre compte */
+        estModo ? h("button", { className: "hv2-modo", onClick: function () { setVue("reserve"); } }, "Réserve d'animations · modératrice") : null));
   };
 
   /* ============================================================
@@ -1817,7 +1778,7 @@
   };
 
   /* expose le catalogue pour d'éventuels usages ailleurs (cours, Hey Baby) */
-  window.HYPE_VIDEO = { videos: VIDS, collections: COLLS, themes: THEMES, parCours: function (coursId) {
+  window.HYPE_VIDEO = { videos: VIDS, collections: COLLS, themes: THEMES, photosThemes: PHOTOS_THEMES /* 04/11 : photo de chaque thème, pour la future page du thème */, parCours: function (coursId) {
       /* un chapitre secondaire peut partager une vidéo : on lit toute la
          liste cours[], pas seulement le premier (v-contact-03 sert aussi
          à g4-biomeca). L'ordre porte l'information : la 1re est la principale. */
