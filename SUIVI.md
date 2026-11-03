@@ -16693,3 +16693,10 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - hype-cours-editorial.js VERSION 62 (?v=62) : reconnaissance du défi sur le mot entier (« défi », « défis ») ; vaut pour tous les Galops.
 - Vérifié : page de fin de g7n-12 = « Le défi du cavalier » (3 points) ; 16 cours du Galop 7 + g1-c2, g2-aides, g3-c9, g4-contact, g5n-03, g5n-08 s'ouvrent sans erreur ; 17 blocs de script OK.
 - Fichiers : hype-cours-editorial.js (?v=62), index.html (build 20261103-1110), SUIVI.md.
+
+## 03/11/2026 13h30 — BRANCHE travail-g7-discordance (NON PUBLIÉ, attend le « OK » de Blandine) : 2e liste de corrections ChatGPT du Galop 7
+- Blandine (13h24) : nouvelle liste « CORRECTIONS DES 16 NOUVEAUX COURS DU GALOP 7 » (même contenu que celle de 09h44, « si une correction est déjà faite, conserve-la »).
+- Contrôle point par point de la version en ligne (build 20261103-1110) : toutes les corrections étaient déjà appliquées (publiées à 10h05), sauf une nouveauté : g7n-06 « toute discordance doit être signalée ».
+- hype-cours-galop7.js (COURS_GALOP7_VERSION 8, ?v=8) : g7n-06, lecteur de puce — « Si un seul élément ne concorde pas, tu ne conclus pas toi-même : tu signales la discordance au responsable (ton enseignant, le propriétaire ou l'organisateur). »
+- Contrôles : 16 cours, 160 QCM, structure conservée, lexiques sans doublon, syntaxe OK, aucun marqueur de conflit. Traductions non lancées.
+- Fichiers (branche) : hype-cours-galop7.js, index.html (?v=8), SUIVI.md.
