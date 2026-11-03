@@ -16660,3 +16660,26 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Portugais « você » : gardé (c'est la forme de la majorité des textes portugais de l'appli).
 - Versions : galop2 ?v=14, galop3 ?v=19, galop4 ?v=6, galop5 ?v=12, galop6 ?v=2, galop7 ?v=6, embouchures ?v=4.
 - Vérifié : Galops 1 à 5 s'ouvrent ; Galops 1 à 3 dans les 14 langues (630 rendus) ; Galop 5 : 12 cours × 14 langues.
+
+## 03/11/2026 — BRANCHE travail-g7-corrections (NON PUBLIÉ, pas de [publier]) : corrections ciblées des 16 cours du Galop 7 (relecture ChatGPT fournie par Blandine)
+- Demande de Blandine (09h44) : fichier « HYPE — CORRECTIONS CIBLÉES DES 16 COURS DU GALOP 7 » (relecture ChatGPT) ; corriger seulement g7n-01 … g7n-16 (texte, lexiques, QCM), sans réécriture générale, sur une branche, sans publier.
+- Référentiel : plus de présentation « programme FFE janvier 2026 sur 40 points » (fiche de révision non officielle) ; on distingue compétences du programme des Galops, cotes des compétitions Club et modalités d'évaluation.
+- 01 Bride : tenue « à l'allemande » (Q8) ; gourmette 30 à 45° rênes tendues (Q6 corrigé : moins de 45° ≠ trop serré) ; serrage de la muserolle contrôlé sur le dessus du chanfrein.
+- 02 Bandes de polo : une paire protège deux membres ; « quatre tours de main » supprimé.
+- 03 Longe enrênée : réglage adapté par l'enseignant à la réponse du cheval (synthèse, Q8) ; chambon au pas et au trot = cadre de ce cours, pas une règle FFE (Q4) ; 30 à 40 min au maximum gardé (choix de Blandine) ; mâchonnement nuancé.
+- 04 Longues rênes / travail en main : mâchonner ≠ preuve de mise en main ; prise des rênes et du stick = méthode montrée par l'enseignant ; question Hey Baby sur la vérification d'un cheval habitué.
+- 05 Aplombs : conséquences → risques ; « jarrets clos » préféré ; brassicourt / arqué gardé.
+- 06 Identification : signalement littéral supprimé des nouvelles identifications SIRE depuis 2024 (communiqué IFCE) ; contrôle de concordance puce / document / sexe / robe / signalement (lexique, synthèse, Q5).
+- 07 Transport : cheval malade → avis vétérinaire préalable sur l'aptitude au voyage.
+- 08 Rationnement : aliment complet, complémentaire de fourrages, complémentaire de céréales ; granulés/floconnés = présentation ; « AMV, couramment appelé CMV » selon les déficits ; repère IFCE 2 kg bruts ou 4 litres au plus par repas, mesure pesée (Q5).
+- 09 Sur la main : « cadence régulière adaptée à la nouvelle allure » ; reculer = réponse apprise, cession dès la réponse.
+- 10 Détente : ébrouement / mâchonnement nuancés (Q4).
+- 11 Incurvation : cercles de 10 à 15 m au galop (Q2) ; jambe extérieure reculée seule = pousse les hanches vers l'intérieur ; replacer les épaules devant les hanches (Q4).
+- 12 Épaule en dedans : « les hanches quittent leur ligne : l'épaule en dedans est déformée » (Q6) ; contre-épaule en dedans inchangée.
+- 13 Galop : cause du passage par le trot nuancée (équilibre, préparation, coordination) ; Q2 sur la préparation.
+- 14 CSO : sauts rapprochés d'environ 1,10 m et enchaînements à 1 m ; foulées de trot = étape pédagogique, non garantie pour l'examen ; défi sur tracé choisi par l'enseignant ; biais retiré (doublon avec le cross).
+- 15 Cross : contre-haut (bassin, buste redressé, encolure libre) ; vitesse préparée tôt, pas de changement brusque (Q5) ; le biais est expliqué ici.
+- 16 Examen : plus de « 26 points sur 40 » ; 3 modules à valider ; examinateur licencié avec code actif G7 ; moins de 18 ans : G6 complet d'abord ; enchaînement type Préliminaire Club 1 ; repères du programme (CSO 1 m, sauts rapprochés ~1,10 m, cross 90 cm) distincts des cotes Club 1 (renvoi au règlement de la saison) ; cross jugé sur stabilité, équilibre, conduite et vitesse ; Club 1 Grand Prix = exemple.
+- NON CONFIRMÉ par une source officielle lisible (FFE bloquée depuis l'outil) : gourmette 30-45° ; nom « tenue à l'allemande » ; sigle AMV ; définition réglementaire de l'aliment complet ; règle vétérinaire du transport ; ambiguïté de « crochus » ; cercles 10-15 m (confirmé par un programme pédagogique de club qui reprend le texte FFE) ; enchaînements à 1 m, cross 90 cm, Préliminaire Club 1 ; examinateur avec code actif, G6 avant 18 ans ; cotes Club 1 en compétition (non données) ; coefficient de la note de disponibilité (Club 1 GP).
+- Contrôles : 16 cours, 160 QCM (une bonne réponse valide chacun), structure conservée (coach 1, savais-tu 1, défi 3, Hey Baby 5, synthèse 5), lexiques 6 à 8 mots sans doublon entre cours, formule imposée du départ au galop présente, aucun demi-arrêt/demi-parade/vouvoiement, aucun marqueur de conflit, syntaxe OK (17 blocs) ; les 16 cours s'ouvrent dans l'appli (390 px) sans erreur.
+- Fichiers (branche) : hype-cours-galop7.js (COURS_GALOP7_VERSION 7), index.html (?v=7 pour g7 ; l'autre conversation avait déjà mis ?v=6 dans index pour la coquille zh d'un brouillon), SUIVI.md.
