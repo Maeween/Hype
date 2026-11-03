@@ -16693,6 +16693,13 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - hype-cours-editorial.js VERSION 62 (?v=62) : reconnaissance du défi sur le mot entier (« défi », « défis ») ; vaut pour tous les Galops.
 - Vérifié : page de fin de g7n-12 = « Le défi du cavalier » (3 points) ; 16 cours du Galop 7 + g1-c2, g2-aides, g3-c9, g4-contact, g5n-03, g5n-08 s'ouvrent sans erreur ; 17 blocs de script OK.
 - Fichiers : hype-cours-editorial.js (?v=62), index.html (build 20261103-1110), SUIVI.md.
+
+## 03/11/2026 13h30 — BRANCHE travail-g7-discordance (NON PUBLIÉ, attend le « OK » de Blandine) : 2e liste de corrections ChatGPT du Galop 7
+- Blandine (13h24) : nouvelle liste « CORRECTIONS DES 16 NOUVEAUX COURS DU GALOP 7 » (même contenu que celle de 09h44, « si une correction est déjà faite, conserve-la »).
+- Contrôle point par point de la version en ligne (build 20261103-1110) : toutes les corrections étaient déjà appliquées (publiées à 10h05), sauf une nouveauté : g7n-06 « toute discordance doit être signalée ».
+- hype-cours-galop7.js (COURS_GALOP7_VERSION 8, ?v=8) : g7n-06, lecteur de puce — « Si un seul élément ne concorde pas, tu ne conclus pas toi-même : tu signales la discordance au responsable (ton enseignant, le propriétaire ou l'organisateur). »
+- Contrôles : 16 cours, 160 QCM, structure conservée, lexiques sans doublon, syntaxe OK, aucun marqueur de conflit. Traductions non lancées.
+- Fichiers (branche) : hype-cours-galop7.js, index.html (?v=8), SUIVI.md.
 ## 03/11/2026 13h25 — PUBLICATION build 20261103-1325 (accord de Blandine 13h24 « Ok ») : Communauté — fil resserré + classements
 - Fil (Blandine « réduis l'espace dans le fil ») : la carte d'un post court ne prend plus toute la hauteur du carrousel (min-height:100% retiré).
 - Visites des fiches cheval (« Oui ok ») : hype-ecran-cheval.js ?v=5 enregistre une visite (hype_vues, type « cheval », une par personne et par cheval) quand quelqu'un d'autre que le propriétaire ouvre la fiche. Compte à partir de la publication.
@@ -16709,6 +16716,12 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - outils/seo-galops.cjs : TOUS les chapitres des Galops 2 à 7 ont leur page d'aperçu sur Google (avant : Galops 2 à 4 + 2 chapitres du Galop 5). Galop 5 = les 14 chapitres actuels (g5n-01 … g5n-12, g5-identite, g5-robes) ; les 6 anciens brouillons g5-c1 … g5-c6 restent hors de Google (contenu repris ailleurs, pas de doublon). Galops 6 (7 chapitres) et 7 (16 chapitres) : aperçu du début, puis « Ce chapitre arrive bientôt dans l'appli » (14 langues) ; le lien de ces pages ouvre la page du Galop (ils sont « Prochainement »).
 - Une page n'existe dans une langue que si le TITRE ET LE TEXTE y sont traduits : Galop 7 = français seulement pour l'instant (aucune page de texte français sous un titre étranger).
 - Référencement : titre « <chapitre> — Théorie Galop N | Hype » (en 14 langues, ex. « The arena… — Galop 5 riding theory | Hype ») ; description « Théorie Galop N · <chapitre>. <début du chapitre> » coupée proprement vers 155 signes. Essai sur une copie : 110 pages par langue, 1 332 adresses dans sitemap-galops.xml.
+- 04/11 00h49 (Blandine : « à la fin de l'aperçu, la page devrait dire lis la suite du cours et progresse sur Hype… en proposant de s'abonner ») : fin de l'aperçu de TOUS les chapitres en aperçu (Galops 2 à 7) = « Lis la suite du cours et progresse avec Hype » + « Abonne-toi à Hype Premium pour lire le cours en entier, faire le quiz et progresser dans tous les Galops, à ton rythme » + bouton « Je m'abonne à Hype Premium » (vers l'abonnement), en 14 langues.
 - Conséquence signalée : le début des cours du Galop 7 (encore en relecture) et des brouillons du Galop 6 devient lisible sur Google.
 - Vérifié : captures 390, 820 et 1440 px (bouton à côté du drapeau, sans le toucher) ; #g=g7n-01, g1-c2, g5n-03, g5n-02 ouvrent le bon cours, 0 erreur ; 17 blocs de script OK.
 - Fichiers : index.html, netlify/edge-functions/cours-route.ts, outils/seo-galops.cjs, SUIVI.md.
+
+## 04/11/2026 00h55 — PUBLICATION build 20261104-0055 (Blandine 00h50 « Ok ») : bouton Partager + tous les cours sur Google + correction g7n-06
+- Branches travail-partage-cours et travail-g7-discordance fusionnées dans main (détail : leurs entrées ci-dessus).
+- Attention (signalé à Blandine) : les pages Google des Galops 6 et 7 proposent aussi l'abonnement, alors que ces Galops sont encore « Prochainement » dans l'appli (un abonné ne peut pas encore les lire).
+- Fichiers : index.html (build 20261104-0055), hype-cours-galop7.js (?v=8), netlify/edge-functions/cours-route.ts, outils/seo-galops.cjs, SUIVI.md.

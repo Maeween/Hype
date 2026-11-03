@@ -6,7 +6,7 @@
    ===================================================================================== */
 (function () {
 "use strict";
-var COURS_GALOP7_VERSION = 7; /* 03/11 : corrections ciblées (relecture ChatGPT) des 16 cours g7n */ /* 02/11 16h56 : branchés */ /* 02/11 16h41 : g7n-03 longe enrênée 30 à 40 min */ /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
+var COURS_GALOP7_VERSION = 8; /* 03/11 13h30 : g7n-06, signaler toute discordance */ /* 03/11 : corrections ciblées (relecture ChatGPT) des 16 cours g7n */ /* 02/11 16h56 : branchés */ /* 02/11 16h41 : g7n-03 longe enrênée 30 à 40 min */ /* 02/11 : 16 nouveaux cours g7n-01 … g7n-16 ajoutés à la fin (non branchés) */ /* précédente : 2 — 21/10 : suédois (11e langue) */
 var HYPE_IMGS = (typeof window !== "undefined" && window.HYPE_IMGS) || {};
 const COURS_GALOP7_FR = [
     {
@@ -757,7 +757,7 @@ var COURS = [
         "Passe aux membres un par un, en les nommant : antérieur gauche, antérieur droit, postérieur gauche, postérieur droit.",
         "Termine par les épis du corps (encolure, poitrail, flancs) et les cicatrices dessinées."
       ]),
-      S("📡 Utiliser le lecteur de puce", "Quand l'œil ne suffit pas (cheval sans marques, deux chevaux qui se ressemblent, doute), on lit la puce. Le numéro seul ne suffit pas : il doit concorder avec le document, et le sexe, la robe et le signalement doivent concorder avec le cheval.", [
+      S("📡 Utiliser le lecteur de puce", "Quand l'œil ne suffit pas (cheval sans marques, deux chevaux qui se ressemblent, doute), on lit la puce. Le numéro seul ne suffit pas : il doit concorder avec le document, et le sexe, la robe et le signalement doivent concorder avec le cheval. Si un seul élément ne concorde pas, tu ne conclus pas toi-même : tu signales la discordance au responsable (ton enseignant, le propriétaire ou l'organisateur).", [
         "Allume le lecteur et approche-le calmement : certains chevaux se méfient de l'appareil ou de son bip.",
         "Passe-le lentement, en balayant, sur le côté gauche de l'encolure, à mi-chemin entre la nuque et le garrot, juste sous la crinière.",
         "Compare chiffre par chiffre le numéro affiché avec celui inscrit dans le livret.",
