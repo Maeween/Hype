@@ -36,6 +36,38 @@ const HL = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar
 function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg] != null) return o[lg]; return (lg === "zh" || lg === "nl" || lg === "pt" || lg === "sv" || lg === "ru" || lg === "pl" || lg === "ko") ? o.en : undefined; }
 function log() { console.log.apply(console, ["[seo-galops]"].concat([].slice.call(arguments))); }
 
+/* ---------- 04/11/2026 : mots-clés Google du titre de chaque chapitre (« La bride — Théorie Galop 7 | Hype ») ---------- */
+const THEO = {
+  fr: (n) => "Théorie Galop " + n, en: (n) => "Galop " + n + " riding theory", es: (n) => "Teoría Galop " + n + " de equitación",
+  it: (n) => "Teoria Galop " + n + " di equitazione", de: (n) => "Reitlehre Galop " + n, ja: (n) => "ギャロップ" + n + " 乗馬理論",
+  ar: (n) => "نظرية الفروسية غالوب " + n, zh: (n) => "Galop " + n + " 马术理论", nl: (n) => "Rijtheorie Galop " + n,
+  pt: (n) => "Teoria de equitação Galop " + n, sv: (n) => "Ridteori Galop " + n, ru: (n) => "Теория верховой езды Galop " + n,
+  pl: (n) => "Teoria jazdy konnej Galop " + n, ko: (n) => "Galop " + n + " 승마 이론",
+};
+/* description Google : « Théorie Galop 7 · La bride. » + début du chapitre, coupé proprement vers 155 signes */
+function descSeo(tete, texte) {
+  let d = String(tete || "").trim() + (texte ? ". " + String(texte).replace(/\s+/g, " ").trim() : "");
+  if (d.length > 158) { d = d.slice(0, 155); const k = d.lastIndexOf(" "); if (k > 100) d = d.slice(0, k); d = d.replace(/[\s,;:.\-—]+$/, "") + "…"; }
+  return d;
+}
+/* Galops 6 et 7 (« Prochainement » dans l'appli) : fin de l'aperçu */
+const BIENTOT = {
+  fr: { t: "Ce chapitre arrive bientôt dans l'appli", p: "Tu viens de lire le début. Le chapitre complet, ses images et son quiz arrivent bientôt dans l'appli Hype." },
+  en: { t: "This chapter is coming soon to the app", p: "You've just read the beginning. The full chapter, its pictures and its quiz are coming soon to the Hype app." },
+  es: { t: "Este capítulo llega pronto a la app", p: "Acabas de leer el principio. El capítulo completo, sus imágenes y su quiz llegan pronto a la app Hype." },
+  it: { t: "Questo capitolo arriva presto nell'app", p: "Hai appena letto l'inizio. Il capitolo completo, le immagini e il quiz arrivano presto nell'app Hype." },
+  de: { t: "Dieses Kapitel kommt bald in die App", p: "Du hast gerade den Anfang gelesen. Das ganze Kapitel mit Bildern und Quiz kommt bald in die Hype-App." },
+  ja: { t: "この章はまもなくアプリに登場します", p: "ここまでは冒頭部分です。章の全文、画像、クイズはまもなくHypeアプリに登場します。" },
+  ar: { t: "هذا الفصل قادم قريبًا إلى التطبيق", p: "لقد قرأت البداية للتو. الفصل الكامل وصوره واختباره قادمة قريبًا إلى تطبيق Hype." },
+  zh: { t: "本章即将上线应用", p: "你刚读完开头部分。完整章节、图片和测验即将在 Hype 应用中上线。" },
+  nl: { t: "Dit hoofdstuk komt binnenkort in de app", p: "Je hebt net het begin gelezen. Het volledige hoofdstuk, de afbeeldingen en de quiz komen binnenkort in de Hype-app." },
+  pt: { t: "Este capítulo chega em breve ao app", p: "Você acabou de ler o começo. O capítulo completo, as imagens e o quiz chegam em breve ao app Hype." },
+  sv: { t: "Det här kapitlet kommer snart i appen", p: "Du har just läst början. Hela kapitlet, bilderna och quizet kommer snart i Hype-appen." },
+  ru: { t: "Эта глава скоро появится в приложении", p: "Ты прочитал(а) начало. Полная глава, иллюстрации и тест скоро появятся в приложении Hype." },
+  pl: { t: "Ten rozdział wkrótce pojawi się w aplikacji", p: "Właśnie przeczytałeś(-aś) początek. Cały rozdział, ilustracje i quiz wkrótce pojawią się w aplikacji Hype." },
+  ko: { t: "이 챕터는 곧 앱에 공개됩니다", p: "방금 도입부를 읽었어요. 전체 챕터와 이미지, 퀴즈가 곧 Hype 앱에 공개됩니다." },
+};
+
 /* ---------- Textes de l'interface ---------- */
 const UI = {
   fr: { theorie: "Théorie des Galops", galop: (n) => "Galop " + n, chap: "chapitres", ouvrir: "Ouvrir Hype", accueil: "Accueil",
@@ -227,8 +259,13 @@ function imageFichier(src, lg) {
    Galops 6 et 7 : « Prochainement » dans l'appli → pas de page de chapitre. Galop 5 (décision de Blandine, 30/10 19h32 :
    « mets uniquement ceux refaits en ligne sur Google ») : seuls les chapitres refaits de G5_SUR_GOOGLE ont leur page, et la page
    du Galop 5 ne liste qu'eux. À compléter au fur et à mesure que les nouveaux chapitres du Galop 5 sont prêts. */
-const APERCU_JUSQUA = 5;
-const G5_SUR_GOOGLE = ["g5-robes", "g5n-02"];   // g5n-02 = « Les embouchures » (fichier à part, voir coursEmbouchures)
+/* 04/11/2026 (Blandine : « il faut ajouter tout le monde avec les bons termes de référencement sur Google ») :
+   TOUS les chapitres des Galops 2 à 7 ont leur page d'aperçu. Galop 5 : les chapitres de la page du Galop 5 (g5n-01 … g5n-12,
+   g5-identite) + g5-robes ; les 6 anciens brouillons g5-c1 … g5-c6 restent hors de Google (leur contenu est repris dans les
+   nouveaux chapitres : pas de doublon). Galops 6 et 7 (« Prochainement » dans l'appli) : la page mène à la page du Galop. */
+const APERCU_JUSQUA = 7;
+const G5_HORS_GOOGLE = ["g5-c1", "g5-c2", "g5-c3", "g5-c4", "g5-c5", "g5-c6"];
+const GALOP_PROCHAIN_DES = 6;   // même valeur que HYPE_GALOP_PROCHAIN_DES dans index.html
 function couperApercu(a) { if (!Array.isArray(a)) return a; const n = Math.max(2, Math.ceil(a.length / 3)); return a.length > n ? a.slice(0, n) : a; }
 function blocApercu(b) {
   if (!b || typeof b !== "object") return b;
@@ -250,7 +287,18 @@ function blocsApercu(blocs) {
   return out;
 }
 /* un chapitre existe dans une langue si son titre y est traduit (un titre en simple texte = cours en français seulement) */
-function dispo(ch, lg) { return typeof (ch && ch.titre) === "string" ? lg === "fr" && ch.titre.trim() !== "" : aLaLangue(ch && ch.titre, lg); }
+function dispoTitre(ch, lg) { return typeof (ch && ch.titre) === "string" ? lg === "fr" && ch.titre.trim() !== "" : aLaLangue(ch && ch.titre, lg); }
+/* 04/11 : il faut AUSSI que le texte du chapitre existe dans la langue (Galop 7 : titres en 14 langues, texte en français seulement)
+   — jamais de texte français sous un titre étranger. On regarde le premier bloc de texte après la couverture. */
+function dispoContenu(ch, lg) {
+  const b = (ch.blocs || []).find((x) => x && !/^couv/.test(String(x.type || "")));
+  if (!b) return false;
+  const v = b.type === "intro" ? b.texte : (b.contenu != null ? b.contenu : b.items);
+  if (v == null) return true;
+  if (typeof v === "string" || Array.isArray(v)) return lg === "fr";
+  return aLaLangue(v, lg);
+}
+function dispo(ch, lg) { return dispoTitre(ch, lg) && dispoContenu(ch, lg); }
 
 /* ---------- Rendu d'un bloc de cours ---------- */
 function contenuRiche(liste, lg) {
@@ -429,10 +477,10 @@ function principal() {
   const nomGalop = (n, lg) => UI[lg].galop(n);
   const sousTitre = (n, lg) => (lg === "ar" ? SOUS_AR[n] : lg === "zh" ? (lk(infos[n] && infos[n].sousTitre, "zh") || SOUS_ZH[n]) : tr(infos[n] && infos[n].sousTitre, lg)) || "";
   if (Array.isArray(cours[5])) {
-    cours[5] = cours[5].filter((c) => c && G5_SUR_GOOGLE.indexOf(c.id) >= 0);
+    cours[5] = cours[5].filter((c) => c && G5_HORS_GOOGLE.indexOf(c.id) < 0 && c.id !== "g5n-02");
     const emb = coursEmbouchures();
-    if (emb && G5_SUR_GOOGLE.indexOf(emb.id) >= 0) cours[5].unshift(emb);
-  }   // 30/10 : Galop 5 = chapitres refaits seulement
+    if (emb) { const i = cours[5].findIndex((c) => c.id === "g5n-03"); cours[5].splice(i >= 0 ? i : 0, 0, emb); }
+  }   // 04/11 : Galop 5 = tous les chapitres actuels (anciens brouillons exclus)
   const galops = [1, 2, 3, 4, 5, 6, 7].filter((n) => cours[n] && cours[n].length);
 
   // slugs des chapitres du Galop 1 (titre français, rendu unique)
@@ -472,7 +520,7 @@ function principal() {
         const pub = liste.map((ch, i) => (aLaLangue(ch.titre, lg) ? i : -1)).filter((i) => i >= 0);
         liste.forEach((ch, i) => { if (pub.indexOf(i) < 0) return; c += `<li><a href="${DOM}/${lg}/galop-1/${slugs[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`; });
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
-        ecrire(`${lg}/galop-1`, page({ lg, cible: "1", chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${nomGalop(1, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-1`, page({ lg, cible: "1", chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${THEO[lg](1)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(1, lg), description: sousTitre(1, lg), inLanguage: HL[lg], isAccessibleForFree: true, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: "galop-1/" });
 
@@ -489,8 +537,8 @@ function principal() {
           cc += pos < pub.length - 1 ? `<a class="btn second" href="${DOM}/${lg}/galop-1/${slugs[pub[pos + 1]]}/">${e(ui.suivant)} ›</a>` : `<a class="btn second" href="${DOM}/${lg}/galop-1/">${e(ui.sommaire)}</a>`;
           cc += `</p>`;
           const premierTexte = ((ch.blocs || []).map((b) => b.type === "texte-riche" && b.contenu && (lk(b.contenu, lg) || []).find((x) => x && x.k === "para")).find(Boolean) || {}).texte || "";
-          const desc = (premierTexte || `${tr(ch.titre, lg)} — ${nomGalop(1, lg)}`).slice(0, 155);
-          ecrire(`${lg}/galop-1/${slugs[i]}`, page({ lg, cible: String(ch.id || ""), chemin: `galop-1/${slugs[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${nomGalop(1, lg)} | Hype`, desc,
+          const desc = descSeo(`${THEO[lg](1)} · ${tr(ch.titre, lg)}`, premierTexte);
+          ecrire(`${lg}/galop-1/${slugs[i]}`, page({ lg, cible: String(ch.id || ""), chemin: `galop-1/${slugs[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${THEO[lg](1)} | Hype`, desc,
             h1: tr(ch.titre, lg), fil: `${filG} › <a href="${DOM}/${lg}/galop-1/">${e(nomGalop(1, lg))}</a>`, corps: cc,
             jsonld: { "@context": "https://schema.org", "@type": "LearningResource", name: tr(ch.titre, lg), inLanguage: HL[lg], learningResourceType: "lesson",
               isAccessibleForFree: true, educationalLevel: nomGalop(1, lg), timeRequired: undefined, url: `${DOM}/${lg}/galop-1/${slugs[i]}/`,
@@ -506,7 +554,7 @@ function principal() {
           ? `<li><a href="${DOM}/${lg}/galop-${n}/${sg[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`
           : `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`; });
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
-        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${nomGalop(n, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
 
@@ -515,14 +563,16 @@ function principal() {
           const langues = LANGS.filter((x) => dispo(ch, x));
           let cc = `<p class="meta">${e(nomGalop(n, lg))} · ${e(tr(ch.type, lg))} · ${e(tr(ch.duree, lg))}</p>`;
           for (const b of blocsApercu(ch.blocs)) cc += bloc(b, lg);
-          cc += `<div class="appel"><p class="encadre-t">🔒 ${e(ui.suiteT)}</p><p>${e(ui.suiteP)}</p><a class="btn" href="${DOM}/#premium">${e(ui.debloquer)}</a></div><p class="nav">`;
+          cc += n >= GALOP_PROCHAIN_DES
+            ? `<div class="appel"><p class="encadre-t">⏳ ${e(BIENTOT[lg].t)}</p><p>${e(BIENTOT[lg].p)}</p><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></div><p class="nav">`
+            : `<div class="appel"><p class="encadre-t">🔒 ${e(ui.suiteT)}</p><p>${e(ui.suiteP)}</p><a class="btn" href="${DOM}/#premium">${e(ui.debloquer)}</a></div><p class="nav">`;
           const pos = pub.indexOf(i);
           cc += pos > 0 ? `<a class="btn second" href="${DOM}/${lg}/galop-${n}/${sg[pub[pos - 1]]}/">‹ ${e(ui.precedent)}</a>` : "<span></span>";
           cc += pos < pub.length - 1 ? `<a class="btn second" href="${DOM}/${lg}/galop-${n}/${sg[pub[pos + 1]]}/">${e(ui.suivant)} ›</a>` : `<a class="btn second" href="${DOM}/${lg}/galop-${n}/">${e(ui.sommaire)}</a>`;
           cc += `</p>`;
-          const premierTexte = ((ch.blocs || []).map((b) => b.type === "texte-riche" && b.contenu && (Array.isArray(b.contenu) ? b.contenu : (lk(b.contenu, lg) || [])).find((x) => x && x.k === "para")).find(Boolean) || {}).texte || "";
-          const desc = (premierTexte || `${tr(ch.titre, lg)} — ${nomGalop(n, lg)}`).slice(0, 155);
-          ecrire(`${lg}/galop-${n}/${sg[i]}`, page({ lg, cible: String(ch.id || ""), chemin: `galop-${n}/${sg[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${nomGalop(n, lg)} | Hype`, desc,
+          const premierTexte = ((ch.blocs || []).map((b) => (b.type === "intro" && b.texte) ? { texte: typeof b.texte === "string" ? b.texte : lk(b.texte, lg) } : (b.type === "texte-riche" && b.contenu && (Array.isArray(b.contenu) ? b.contenu : (lk(b.contenu, lg) || [])).find((x) => x && x.k === "para"))).find((x) => x && x.texte) || {}).texte || "";
+          const desc = descSeo(`${THEO[lg](n)} · ${tr(ch.titre, lg)}`, premierTexte);
+          ecrire(`${lg}/galop-${n}/${sg[i]}`, page({ lg, cible: n >= GALOP_PROCHAIN_DES ? String(n) : String(ch.id || ""), chemin: `galop-${n}/${sg[i]}/`, langues, titre: `${tr(ch.titre, lg)} — ${THEO[lg](n)} | Hype`, desc,
             h1: tr(ch.titre, lg), fil: `${filG} › <a href="${DOM}/${lg}/galop-${n}/">${e(nomGalop(n, lg))}</a>`, corps: cc,
             jsonld: { "@context": "https://schema.org", "@type": "LearningResource", name: tr(ch.titre, lg), inLanguage: HL[lg], learningResourceType: "lesson",
               isAccessibleForFree: false, educationalLevel: nomGalop(n, lg), url: `${DOM}/${lg}/galop-${n}/${sg[i]}/`,
@@ -533,7 +583,7 @@ function principal() {
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;
         for (const ch of liste) c += `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`;
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
-        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${nomGalop(n, lg)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
       }

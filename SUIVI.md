@@ -16700,3 +16700,15 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Trois onglets sous le fil (« garde C … et on montre les deux ») : Populaires (visites ×3, personnes qui aiment/commentent ×3, écuries ×5, cœurs ×5), Actifs (tout compté tel quel : + photos, vidéos ×2, infos, résultats), Cavaliers (photos, vidéos ×2, résultats, stories ×2, commentaires ×2, j'aime, cours ×3, infos). Top 5, « Voir tout » jusqu'à 20 ; textes en 14 langues. hype-ecran-communaute-v2.js ?v=2.
 - Ordinateur : titre et liste alignés sur « Le fil », liste limitée à 760 px.
 - Vérifié : captures 390 et 1280 px des 3 onglets, 0 erreur.
+
+## 04/11/2026 — BRANCHE travail-partage-cours (NON PUBLIÉ, pas de [publier]) : bouton « Partager » sur chaque cours + tous les cours sur Google
+Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec les bons termes de référencement sur Google »).
+- Bouton rond « Partager » en haut de CHAQUE page de cours (tous les Galops, Baby, et l'écran à part « Les embouchures »), à gauche du drapeau. Téléphone : right 78 / top 14 ; tablette et ordinateur (≥ 768 px) : right 90 / top 20, aligné sur le drapeau (mesuré). Téléphone : feuille de partage du téléphone ; ordinateur : lien copié.
+- Le lien partagé = 2hype.fr/#g=<identifiant du cours> : marche aussi pour les nouveaux cours g5n-… et g7n-… (route #g= et __HYPE_ROUTE_COURS élargies à g\dn?-) ; g5n-02 ouvre l'écran « Les embouchures ». Titre du partage dans la langue choisie. Les règles d'accès ne changent pas (Premium, « Prochainement »).
+- netlify/edge-functions/cours-route.ts : les adresses publiques des chapitres acceptent g5n-…, g7n-….
+- outils/seo-galops.cjs : TOUS les chapitres des Galops 2 à 7 ont leur page d'aperçu sur Google (avant : Galops 2 à 4 + 2 chapitres du Galop 5). Galop 5 = les 14 chapitres actuels (g5n-01 … g5n-12, g5-identite, g5-robes) ; les 6 anciens brouillons g5-c1 … g5-c6 restent hors de Google (contenu repris ailleurs, pas de doublon). Galops 6 (7 chapitres) et 7 (16 chapitres) : aperçu du début, puis « Ce chapitre arrive bientôt dans l'appli » (14 langues) ; le lien de ces pages ouvre la page du Galop (ils sont « Prochainement »).
+- Une page n'existe dans une langue que si le TITRE ET LE TEXTE y sont traduits : Galop 7 = français seulement pour l'instant (aucune page de texte français sous un titre étranger).
+- Référencement : titre « <chapitre> — Théorie Galop N | Hype » (en 14 langues, ex. « The arena… — Galop 5 riding theory | Hype ») ; description « Théorie Galop N · <chapitre>. <début du chapitre> » coupée proprement vers 155 signes. Essai sur une copie : 110 pages par langue, 1 332 adresses dans sitemap-galops.xml.
+- Conséquence signalée : le début des cours du Galop 7 (encore en relecture) et des brouillons du Galop 6 devient lisible sur Google.
+- Vérifié : captures 390, 820 et 1440 px (bouton à côté du drapeau, sans le toucher) ; #g=g7n-01, g1-c2, g5n-03, g5n-02 ouvrent le bon cours, 0 erreur ; 17 blocs de script OK.
+- Fichiers : index.html, netlify/edge-functions/cours-route.ts, outils/seo-galops.cjs, SUIVI.md.

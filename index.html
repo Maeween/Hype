@@ -24173,7 +24173,7 @@ const CIBLE_DIRECTE = (function () {
            « galops » (/<langue>/galops/), « 1 » a « 7 » (/<langue>/galop-N/) ou l identifiant d un chapitre (g1-c15).
            On ouvre alors le VRAI ecran, exactement comme les liens #g= ; le verrou Premium des Galops 2 a 7 reste celui
            de l appli. Seulement sans hash. Hors de ces pages, la variable n existe pas : ligne inerte. */
-        if (!h) { try { var rteCo = (typeof window !== "undefined") ? window.__HYPE_ROUTE_COURS : null; if (typeof rteCo === "string") { if (rteCo === "galops") return { ecran: "galops" }; if (rteCo === "g5n-02") return { ecran: "cours-g5-emb" }; if (/^[1-7]$/.test(rteCo)) return { ecran: "galop-detail", galop: parseInt(rteCo, 10) }; var mCo = rteCo.match(/^g([1-7])-[a-z0-9-]{1,60}$/); if (mCo) return { galop: parseInt(mCo[1], 10), cours: rteCo, page: 0 }; } } catch (eRco) { } }
+        if (!h) { try { var rteCo = (typeof window !== "undefined") ? window.__HYPE_ROUTE_COURS : null; if (typeof rteCo === "string") { if (rteCo === "galops") return { ecran: "galops" }; if (rteCo === "g5n-02") return { ecran: "cours-g5-emb" }; if (/^[1-7]$/.test(rteCo)) return { ecran: "galop-detail", galop: parseInt(rteCo, 10) }; var mCo = rteCo.match(/^g([1-7])n?-[a-z0-9-]{1,60}$/);   /* 04/11 : g5n-…, g7n-… */ if (mCo) return { galop: parseInt(mCo[1], 10), cours: rteCo, page: 0 }; } } catch (eRco) { } }
         if (!h) { try { var rteEv = (typeof window !== "undefined") ? window.__HYPE_ROUTE_EVENEMENT : null; if (rteEv && typeof rteEv.id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rteEv.id)) { if (typeof rteEv.club === "string" && rteEv.club.trim() && rteEv.club.length < 200) { window.__guildeEcurie = rteEv.club.trim(); window.__hypeEcurieVisite = rteEv.club.trim(); } window.__agendaFiche = rteEv.id; try { hypeMemoriserRetourAuth(rteEv.id); } catch (eMrE) { } return { ecran: "guilde" }; } } catch (eRev) { } }
         if (!h) { try { var rteEc = (typeof window !== "undefined") ? window.__HYPE_ROUTE_ECURIE : null; if (typeof rteEc === "string" && rteEc.trim() && rteEc.length < 200) { window.__guildeEcurie = rteEc.trim(); window.__hypeEcurieVisite = rteEc.trim(); return { ecran: "guilde" }; } } catch (eRe) { } }
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
@@ -24198,7 +24198,8 @@ const CIBLE_DIRECTE = (function () {
             if (val) {
                 /* Galop : soit un chapitre (g3-c2), soit un numero de galop (3). */
                 if (fam === "g") {
-                    var mg = val.match(/^g(\d)-/);
+                    if (val === "g5n-02") return { ecran: "cours-g5-emb" };   /* 04/11 : « Les embouchures » a son écran à part */
+                    var mg = val.match(/^g(\d)n?-/);   /* 04/11 : aussi les nouveaux cours g5n-…, g7n-… (liens partagés) */
                     if (mg) return { galop: parseInt(mg[1], 10), cours: val, page: 0 };
                     if (/^[1-9]$/.test(val)) return { ecran: "galop-detail", galop: parseInt(val, 10) };   /* 27/10 15h : liens #g=8 et #g=9 aussi */
                 }
@@ -28714,7 +28715,7 @@ function Router() {
                 ecran === "lexique" && React.createElement(EcranGrandLexique, null),   /* 02/11 : grand lexique (entrée sur la page des Galops) */
                 ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetailAiguille, null))),   /* 27/10 15h : Galops 1-4 et 6-9 sur tablette/ordinateur (≥ 768 px) → EcranGalopOrdi, sinon EcranGalopChoix (inchangé) */   /* 27/10 14h38 (Blandine : « mets en ligne ») : Galops 1-4, 6, 7 au design du Galop 5 ; Baby et Galop 5 inchangés ; GALOPS_V3_ACTIF = false ramène l'ancienne page */   /* 09/10 (764) : verrou Premium a l arrivee */
                 ecran === "galop5" && React.createElement(EcranGalop5, null),
-                ecran === "cours-g5-emb" && React.createElement(EcranCoursG5Emb, null),
+                ecran === "cours-g5-emb" && React.createElement("div", { style: { position: "relative" } }, React.createElement(EcranCoursG5Emb, null), (typeof HypeBoutonPartagerPage === "function") ? React.createElement(HypeBoutonPartagerPage, { right: 78, obtenir: function () { var tE = "Les embouchures"; try { var E = window.HYPE_G5_EMB || {}, lgE = (typeof hypeLangueCours === "function" && hypeLangueCours()) || "fr"; tE = ((E[lgE] || E.fr || {}).meta || {}).titre || tE; } catch (eE) { } return { fam: "g", val: "g5n-02", titre: tE }; } }) : null),   /* 04/11 : partage du cours */
                 ecran === "galop-v3" && React.createElement(EcranGalopV3, null),   /* 27/10 : APERÇU de la page de chaque Galop au design du Galop 5 (modératrices seules) */   /* 27/10 : cours du Galop 5 « Les embouchures » (modératrices seules) */   /* 27/10 : page du Galop 5 (maquette validée) — modératrices seules tant que le Galop 5 est « Bientôt » */
                 ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours", apercu: true }, React.createElement(GardeGalopProchain, { mode: "cours" }, React.createElement(EcranCours, null)))),   /* 27/10 : Galops 6+ « Prochainement » */
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
@@ -62496,7 +62497,19 @@ function PageReglesOr({ bloc, onNext, onPrev, langue }) {
             regles.map((r, i) => React.createElement(React.Fragment, { key: "r" + i }, carteRegle(r, i))),
             schema));
 }
-function EcranCours() { return React.createElement(AvecLecture, null, React.createElement(EcranCoursCorps, null)); }
+function EcranCours() {
+    /* 04/11 (Blandine « Ok ») : chaque cours se partage depuis sa page — bouton rond en haut, à gauche du drapeau (téléphone, tablette, ordinateur).
+       Le lien ouvre ce cours (#g=<identifiant>) ; les règles d'accès (Premium, « Prochainement ») restent celles de l'appli. */
+    const { coursOuvert, galopOuvert, langue } = useApp();
+    /* tablette et ordinateur : le drapeau est plus bas et plus à gauche (mesuré le 04/11) → le bouton s'aligne dessus sans le toucher */
+    var largeP = false; try { largeP = window.matchMedia("(min-width: 768px)").matches; } catch (eM) { }
+    var partage = (coursOuvert && typeof HypeBoutonPartagerPage === "function") ? React.createElement(HypeBoutonPartagerPage, { right: largeP ? 90 : 78, top: largeP ? 20 : 14, obtenir: function () {
+        var t = "";
+        try { var l = obtenirSommaireGalop(galopOuvert, langue) || []; var c = l.find(function (x) { return x && x.id === coursOuvert; }); if (c) t = typeof c.titre === "string" ? c.titre : ((c.titre || {})[langue] || (c.titre || {}).fr || ""); } catch (eT) { }
+        return { fam: galopOuvert === "baby" ? "b" : "g", val: coursOuvert, titre: t || "Hype" };
+    } }) : null;
+    return React.createElement("div", { style: { position: "relative" } }, React.createElement(AvecLecture, null, React.createElement(EcranCoursCorps, null)), partage);
+}
 function EcranCoursCorps() {
     const { coursOuvert, galopOuvert, setGalopOuvert, setEcran, setCoursOuvert, coursTermines, setCoursTermines, setXp, t, tr, langue, quizResultats, chevaux, profil } = useApp();
     const ordiPansage = useHypeLargeur(1100);   /* 30/10 : cours g1-c2 en version ordinateur (hype-cours-pansage-ordi.js) ; téléphone et tablette étroite inchangés */
