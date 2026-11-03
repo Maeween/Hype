@@ -16660,3 +16660,10 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - Portugais « você » : gardé (c'est la forme de la majorité des textes portugais de l'appli).
 - Versions : galop2 ?v=14, galop3 ?v=19, galop4 ?v=6, galop5 ?v=12, galop6 ?v=2, galop7 ?v=6, embouchures ?v=4.
 - Vérifié : Galops 1 à 5 s'ouvrent ; Galops 1 à 3 dans les 14 langues (630 rendus) ; Galop 5 : 12 cours × 14 langues.
+## 03/11/2026 — PRÊT, NON PUBLIÉ (branche communaute-classement) : Communauté — fil resserré + classements
+- Fil (Blandine « réduis l'espace dans le fil ») : la carte d'un post court ne prend plus toute la hauteur du carrousel (min-height:100% retiré).
+- Visites des fiches cheval (« Oui ok ») : hype-ecran-cheval.js ?v=5 enregistre une visite (hype_vues, type « cheval », une par personne et par cheval) quand quelqu'un d'autre que le propriétaire ouvre la fiche. Compte à partir de la publication.
+- Base (accord « Oui ok ») : fonction classement_popularite(nb) APPLIQUÉE dans Supabase (migration classement_popularite_03_11, fichier sql/sql-03-11-classement-popularite.sql), lecture seule, totaux depuis le début (« Depuis le début »). Exclus (« retire moi ainsi que chat et Claude ») : 2 comptes Blandine, malicia2008, chatgpt, Claude.
+- Trois onglets sous le fil (« garde C … et on montre les deux ») : Populaires (visites ×3, personnes qui aiment/commentent ×3, écuries ×5, cœurs ×5), Actifs (tout compté tel quel : + photos, vidéos ×2, infos, résultats), Cavaliers (photos, vidéos ×2, résultats, stories ×2, commentaires ×2, j'aime, cours ×3, infos). Top 5, « Voir tout » jusqu'à 20 ; textes en 14 langues. hype-ecran-communaute-v2.js ?v=2.
+- Ordinateur : titre et liste alignés sur « Le fil », liste limitée à 760 px.
+- Vérifié : captures 390 et 1280 px des 3 onglets, 0 erreur.

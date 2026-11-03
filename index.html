@@ -26910,6 +26910,20 @@ var COM2_CSS = ".com2{min-height:100vh;background:#05080B;color:#F3EEE4;position
   + ".com2 .com2-fil-cell{box-sizing:border-box;padding-bottom:12px;scroll-snap-align:start;scroll-snap-stop:always}"
   + ".com2 .com2-fil-cell .com2-fil-lignes{padding:0}"
   + ".com2 .com2-fil-pos{display:flex;align-items:center;gap:12px;padding:12px 20px 0}"
+  /* 03/11 (Blandine) : les classements sous le fil — lignes rang · photo · nom · points, les 3 premiers en champagne */
+  + ".com2 .com2-cl-sous{margin:12px 20px 0;font-family:'Montserrat',sans-serif;font-size:12px;line-height:1.45;color:rgba(243,238,228,0.6)}"
+  + ".com2 .com2-cl-liste{list-style:none;margin:12px 20px 0;padding:0;display:flex;flex-direction:column;gap:8px}"
+  + ".com2 .com2-cl-ligne{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:8px 14px 8px 10px;border-radius:16px;border:1px solid rgba(197,170,120,0.18);background:linear-gradient(150deg,rgba(37,79,96,0.26) 0%,rgba(15,30,37,0.5) 60%,rgba(5,8,11,0.78) 100%);color:#F3EEE4;text-align:start;cursor:pointer}"
+  + ".com2 .com2-cl-ligne.podium{border-color:rgba(197,170,120,0.42)}"
+  + ".com2 .com2-cl-rang{flex:0 0 26px;text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:rgba(243,238,228,0.55)}"
+  + ".com2 .com2-cl-ligne.podium .com2-cl-rang{color:#D8BC86}"
+  + ".com2 .com2-cl-av{flex:0 0 42px;width:42px;height:42px;border-radius:12px;overflow:hidden;background:#0F2029;border:1px solid rgba(197,170,120,0.25)}"
+  + ".com2 .com2-cl-av.rond{border-radius:50%}"
+  + ".com2 .com2-cl-av img{width:100%;height:100%;object-fit:cover;display:block}"
+  + ".com2 .com2-cl-nom{flex:1;min-width:0;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+  + ".com2 .com2-cl-pts{flex:0 0 auto;font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(243,238,228,0.6)}"
+  + ".com2 .com2-cl-pts b{font-size:15px;font-weight:700;color:#D8BC86}"
+  + ".com2 [data-com2=classements]{margin-top:30px}"
   + ".com2 .com2-fil-barre{flex:1;height:2px;border-radius:2px;background:rgba(243,238,228,0.12);overflow:hidden}"
   + ".com2 .com2-fil-barre i{display:block;height:100%;border-radius:2px;background:#C5AA78;transition:width .25s}"
   + ".com2 .com2-fil-pos b{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:rgba(243,238,228,0.7);white-space:nowrap}"
@@ -27228,6 +27242,7 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + ".com2.com2b .com2b-rubriques .com2b-car-prec{inset-inline-start:12px}.com2.com2b .com2b-rubriques .com2b-car-suiv{inset-inline-end:12px}"
   + ".com2.com2b .com2b-rubriques .com2-dec-ext{grid-column:1 / -1}"
   + ".com2.com2b [data-com2=fil] .com2-sec-t{padding-inline:0}"
+  + ".com2.com2b [data-com2=classements] .com2-sec-t{padding-inline:0}.com2.com2b [data-com2=classements] .com2-cl-sous{margin-inline:0}.com2.com2b [data-com2=classements] .com2-cl-liste{margin-inline:0;max-width:760px}.com2.com2b [data-com2=classements] .com2-fil-plus{margin-inline:0}"   /* 03/11 classements : alignes sur « Le fil » a l ordinateur, liste limitee en largeur */
   + ".com2.com2b .com2-onglets{justify-content:flex-start;gap:28px;margin:0}"
   + ".com2.com2b .com2-onglet{flex:0 0 auto}"
   + ".com2.com2b .com2b-fil-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;margin-top:18px}"
@@ -27238,7 +27253,7 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + "@media (min-width:1280px){.com2.com2b .com2b-rubriques{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:22px}.com2.com2b .com2b-rubriques > .com2-sec:first-child{grid-column:auto}.com2.com2b .com2b-rubriques .com2b-car > .com2-dec-c{aspect-ratio:1.65}}"
   + "@media (min-width:1440px){.com2.com2b .com2b-fil-grille{grid-template-columns:repeat(3,minmax(0,1fr))}}"   /* (1000) brief responsive : rubriques et fil selon la largeur */
   + "@media (min-width:768px){[dir=rtl] .com2.com2b .com2b-assombri{background:linear-gradient(270deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)} [dir=rtl] .com2.com2b .com2b-fond{background-position:0 0,right top}}";
-const EcranCommunauteV2 = hypeEcranDiffere("hype-ecran-communaute-v2.js?v=1", "HypeCommunauteV2", "CommunauteV2");
+const EcranCommunauteV2 = hypeEcranDiffere("hype-ecran-communaute-v2.js?v=2", "HypeCommunauteV2", "CommunauteV2");
 
 
 /* ===== HYPE - Synchronisation de la progression avec Supabase =====

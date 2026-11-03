@@ -70,13 +70,19 @@ sc_cav as (
   from pr
 )
 select json_build_object(
+  -- 03/11 (Blandine : « garde C pour l'instant et au besoin fais un deuxième classement parallèle et on montre les deux ») :
+  -- « chevaux » = tout compté tel quel (option C) ; « chevaux_pop » = seulement les personnes (visites, interactions, écuries, cœurs).
   'chevaux', coalesce((select json_agg(t) from (
       select id, nom, photo_url, visiteurs, interactions, ecuries, coeurs, photos, videos, resultats, infos,
-        (visiteurs * 3 + interactions * 3 + ecuries * 5 + coeurs * 5 + photos + videos * 2 + infos + round(resultats * 0.5))::int as score
+        (visiteurs * 3 + interactions * 3 + ecuries * 5 + coeurs * 5 + photos + videos * 2 + infos + resultats)::int as score
       from sc_ch order by score desc, nom limit greatest(1, least(nb, 50))) t), '[]'::json),
+  'chevaux_pop', coalesce((select json_agg(t) from (
+      select id, nom, photo_url, visiteurs, interactions, ecuries, coeurs,
+        (visiteurs * 3 + interactions * 3 + ecuries * 5 + coeurs * 5)::int as score
+      from sc_ch where (visiteurs + interactions + ecuries + coeurs) > 0 order by score desc, nom limit greatest(1, least(nb, 50))) t), '[]'::json),
   'cavaliers', coalesce((select json_agg(t) from (
       select id, pseudo, avatar, handle, photos, videos, resultats, stories, commentaires, jaime, cours, infos,
-        (photos + videos * 2 + round(resultats * 0.5) + stories * 2 + commentaires * 2 + jaime + cours * 3 + infos)::int as score
+        (photos + videos * 2 + resultats + stories * 2 + commentaires * 2 + jaime + cours * 3 + infos)::int as score
       from sc_cav order by score desc, pseudo limit greatest(1, least(nb, 50))) t), '[]'::json)
 );
 $$;
