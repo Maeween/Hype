@@ -42,6 +42,17 @@ function EcranCommunauteV2() {
     pubN: { fr: "publications", en: "posts", es: "publicaciones", it: "pubblicazioni", ja: "\u4ef6\u306e\u6295\u7a3f", de: "Beitr\u00e4ge", ar: "\u0645\u0646\u0634\u0648\u0631\u0627\u062a", zh: "条发布", nl: "berichten", pt: "publicações", sv: "inlägg", ru: "публикаций", pl: "publikacje", ko: "게시물" },
     ph1: { fr: "photo", en: "photo", es: "foto", it: "foto", ja: "\u679a\u306e\u5199\u771f", de: "Foto", ar: "\u0635\u0648\u0631\u0629", zh: "张照片", nl: "foto", pt: "foto", sv: "foto", ru: "фото", pl: "zdjęcie", ko: "사진" },
     phN: { fr: "photos", en: "photos", es: "fotos", it: "foto", ja: "\u679a\u306e\u5199\u771f", de: "Fotos", ar: "\u0635\u0648\u0631", zh: "张照片", nl: "foto's", pt: "fotos", sv: "foton", ru: "фото", pl: "zdjęcia", ko: "사진" },
+    /* 03/11 (Blandine) : les classements sous le fil */
+    clT: { fr: "Les classements", en: "Rankings", es: "Las clasificaciones", it: "Le classifiche", ja: "ランキング", de: "Die Ranglisten", ar: "الترتيب", zh: "排行榜", nl: "De ranglijsten", pt: "Os rankings", sv: "Topplistorna", ru: "Рейтинги", pl: "Rankingi", ko: "순위" },
+    clPop: { fr: "Populaires", en: "Popular", es: "Populares", it: "Popolari", ja: "人気", de: "Beliebt", ar: "الأكثر شعبية", zh: "人气", nl: "Populair", pt: "Populares", sv: "Populära", ru: "Популярные", pl: "Popularne", ko: "인기" },
+    clAct: { fr: "Actifs", en: "Active", es: "Activos", it: "Attivi", ja: "活発", de: "Aktiv", ar: "الأكثر نشاطًا", zh: "活跃", nl: "Actief", pt: "Ativos", sv: "Aktiva", ru: "Активные", pl: "Aktywne", ko: "활발" },
+    clCav: { fr: "Cavaliers", en: "Riders", es: "Jinetes", it: "Cavalieri", ja: "ライダー", de: "Reiter", ar: "الفرسان", zh: "骑手", nl: "Ruiters", pt: "Cavaleiros", sv: "Ryttare", ru: "Всадники", pl: "Jeźdźcy", ko: "기수" },
+    clPopS: { fr: "Les chevaux que l'on regarde le plus : visites, personnes qui aiment ou commentent, écuries et cœurs", en: "The horses people look at most: visits, people who like or comment, stables and hearts", es: "Los caballos más vistos: visitas, personas que dan me gusta o comentan, cuadras y corazones", it: "I cavalli più guardati: visite, persone che mettono mi piace o commentano, scuderie e cuori", ja: "いちばん見られている馬：訪問数、いいねやコメントをした人、厩舎、ハート", de: "Die meistbeachteten Pferde: Besuche, Menschen, die liken oder kommentieren, Ställe und Herzen", ar: "الخيول الأكثر مشاهدة: الزيارات، ومن يُعجب أو يعلّق، والإسطبلات، والقلوب", zh: "最受关注的马：访问、点赞或评论的人、马房和爱心", nl: "De paarden die het meest bekeken worden: bezoeken, mensen die liken of reageren, stallen en hartjes", pt: "Os cavalos mais vistos: visitas, pessoas que curtem ou comentam, cocheiras e corações", sv: "Hästarna som tittas på mest: besök, personer som gillar eller kommenterar, stall och hjärtan", ru: "Лошади, на которых смотрят чаще всего: посещения, лайки и комментарии, конюшни и сердечки", pl: "Konie, które najczęściej się ogląda: odwiedziny, polubienia i komentarze, stajnie i serca", ko: "가장 많이 보는 말: 방문, 좋아요나 댓글을 남긴 사람, 마구간, 하트" },
+    clActS: { fr: "Les chevaux qui vivent le plus dans Hype : tout compte, photos, vidéos, résultats et informations aussi", en: "The horses most alive in Hype: everything counts, photos, videos, results and information too", es: "Los caballos con más vida en Hype: todo cuenta, también fotos, vídeos, resultados e información", it: "I cavalli più vivi su Hype: conta tutto, anche foto, video, risultati e informazioni", ja: "Hypeでいちばん活発な馬：写真、動画、成績、情報もすべて数えます", de: "Die Pferde mit dem meisten Leben in Hype: alles zählt, auch Fotos, Videos, Ergebnisse und Angaben", ar: "الخيول الأكثر حضورًا في Hype: كل شيء يُحتسب، الصور والفيديوهات والنتائج والمعلومات أيضًا", zh: "在 Hype 中最活跃的马：全部计入，照片、视频、成绩和信息也算", nl: "De paarden die het meest leven in Hype: alles telt, ook foto's, video's, resultaten en gegevens", pt: "Os cavalos mais presentes no Hype: tudo conta, fotos, vídeos, resultados e informações também", sv: "Hästarna som lever mest i Hype: allt räknas, även foton, videor, resultat och uppgifter", ru: "Самые заметные лошади в Hype: учитывается всё — фото, видео, результаты и сведения", pl: "Konie najbardziej obecne w Hype: liczy się wszystko, także zdjęcia, filmy, wyniki i informacje", ko: "Hype에서 가장 활발한 말: 사진, 영상, 성적, 정보까지 모두 셉니다" },
+    clCavS: { fr: "Photos, vidéos, résultats, stories, commentaires, j'aime et cours", en: "Photos, videos, results, stories, comments, likes and lessons", es: "Fotos, vídeos, resultados, stories, comentarios, me gusta y cursos", it: "Foto, video, risultati, storie, commenti, mi piace e corsi", ja: "写真、動画、成績、ストーリー、コメント、いいね、講座", de: "Fotos, Videos, Ergebnisse, Storys, Kommentare, Likes und Kurse", ar: "الصور والفيديوهات والنتائج والقصص والتعليقات والإعجابات والدروس", zh: "照片、视频、成绩、快拍、评论、点赞和课程", nl: "Foto's, video's, resultaten, verhalen, reacties, likes en lessen", pt: "Fotos, vídeos, resultados, stories, comentários, curtidas e aulas", sv: "Foton, videor, resultat, stories, kommentarer, gillningar och lektioner", ru: "Фото, видео, результаты, истории, комментарии, лайки и уроки", pl: "Zdjęcia, filmy, wyniki, relacje, komentarze, polubienia i lekcje", ko: "사진, 영상, 성적, 스토리, 댓글, 좋아요, 강좌" },
+    clPts: { fr: "pts", en: "pts", es: "pts", it: "pt", ja: "pt", de: "Pkt.", ar: "نقطة", zh: "分", nl: "ptn", pt: "pts", sv: "p", ru: "очк.", pl: "pkt", ko: "점" },
+    clVide: { fr: "Pas encore assez d'activité pour ce classement.", en: "Not enough activity yet for this ranking.", es: "Todavía no hay suficiente actividad para esta clasificación.", it: "Non c'è ancora abbastanza attività per questa classifica.", ja: "このランキングにはまだ十分な活動がありません。", de: "Noch nicht genug Aktivität für diese Rangliste.", ar: "لا يوجد نشاط كافٍ بعد لهذا الترتيب.", zh: "该排行榜暂时还没有足够的活动。", nl: "Nog niet genoeg activiteit voor deze ranglijst.", pt: "Ainda não há atividade suficiente para este ranking.", sv: "Inte tillräckligt med aktivitet ännu för den här listan.", ru: "Для этого рейтинга пока недостаточно активности.", pl: "Na razie za mało aktywności do tego rankingu.", ko: "아직 이 순위를 만들 만큼 활동이 없어요." },
+    clErr: { fr: "Impossible de charger les classements.", en: "Could not load the rankings.", es: "No se pudieron cargar las clasificaciones.", it: "Impossibile caricare le classifiche.", ja: "ランキングを読み込めませんでした。", de: "Die Ranglisten konnten nicht geladen werden.", ar: "تعذّر تحميل الترتيب.", zh: "无法加载排行榜。", nl: "De ranglijsten konden niet worden geladen.", pt: "Não foi possível carregar os rankings.", sv: "Det gick inte att ladda topplistorna.", ru: "Не удалось загрузить рейтинги.", pl: "Nie udało się wczytać rankingów.", ko: "순위를 불러올 수 없어요." },
     /* (605) Le fil */
     fil: { fr: "Le fil", en: "The feed", es: "El feed", it: "Il feed", ja: "\u30d5\u30a3\u30fc\u30c9", de: "Der Feed", ar: "\u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0627\u062a", zh: "动态", nl: "De tijdlijn", pt: "O feed", sv: "Flödet", ru: "Лента", pl: "Tablica", ko: "피드" },
     oTous: { fr: "Tous", en: "All", es: "Todos", it: "Tutti", ja: "\u3059\u3079\u3066", de: "Alle", ar: "\u0627\u0644\u0643\u0644", zh: "全部", nl: "Alles", pt: "Todos", sv: "Alla", ru: "Все", pl: "Wszystkie", ko: "전체" },
@@ -421,6 +432,53 @@ function EcranCommunauteV2() {
     })();
   }
   function ouvrirCheval(id) { try { window.__chevalOuvert = id; window.__ouvrirPalmares = true; } catch (e) { } setEcran("cheval"); }
+  /* ═══ 03/11 (Blandine : « ajoute en dessous [du fil] le classement des chevaux les plus populaires et des cavaliers en fonction de leur activité »,
+     « depuis le début », puis « garde C pour l'instant et au besoin fais un deuxième classement parallèle et on montre les deux ») :
+     fonction en base classement_popularite (sql/sql-03-11-classement-popularite.sql). Trois onglets : Chevaux populaires (seulement les
+     personnes : visites, interactions, écuries, cœurs), Chevaux actifs (tout compté tel quel), Cavaliers actifs. Top 5, puis « Voir tout » (20). */
+  var _clD = React.useState(null); var classements = _clD[0], setClassements = _clD[1];
+  var _clO = React.useState("pop"); var ongletCl = _clO[0], setOngletCl = _clO[1];
+  var _clT = React.useState(false); var clTout = _clT[0], setClTout = _clT[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) { if (vif) setClassements({ erreur: true }); return; }
+        var r = await supa.rpc("classement_popularite", { nb: 20 });
+        if (!vif) return;
+        if (r && !r.error && r.data) setClassements(r.data); else setClassements({ erreur: true });
+      } catch (eCl) { if (vif) setClassements({ erreur: true }); }
+    })();
+    return function () { vif = false; };
+  }, []);
+  function ouvrirChevalSimple(id) { try { window.__chevalOuvert = id; window.__ouvrirPalmares = false; } catch (e) { } setEcran("cheval"); }
+  function blocClassements() {
+    var ONG = [["pop", TXT.clPop, TXT.clPopS, "chevaux_pop"], ["act", TXT.clAct, TXT.clActS, "chevaux"], ["cav", TXT.clCav, TXT.clCavS, "cavaliers"]];
+    var o = ONG.filter(function (x) { return x[0] === ongletCl; })[0] || ONG[0];
+    var liste = (classements && !classements.erreur && Array.isArray(classements[o[3]])) ? classements[o[3]].filter(function (x) { return x && (x.score || 0) > 0; }) : [];
+    var vis = clTout ? liste : liste.slice(0, 5);
+    var corps;
+    if (classements === null) corps = h("div", { className: "com2-fil-vide" }, T2(TXT.filChargement));
+    else if (classements.erreur) corps = h("div", { className: "com2-fil-vide" }, T2(TXT.clErr));
+    else if (!liste.length) corps = h("div", { className: "com2-fil-vide" }, T2(TXT.clVide));
+    else corps = h("ol", { className: "com2-cl-liste", "data-com2": "classement-" + o[0] }, vis.map(function (x, i) {
+      var estCav = o[0] === "cav", nom = estCav ? (x.pseudo || "") : (x.nom || ""), img = estCav ? x.avatar : x.photo_url;
+      var clic = function () { if (estCav) ouvrirProfilPublic({ id: x.id, pseudo: x.pseudo, avatar_url: x.avatar || null, handle: x.handle || null }); else ouvrirChevalSimple(x.id); };
+      return h("li", { key: o[0] + x.id },
+        h("button", { type: "button", className: "com2-cl-ligne" + (i < 3 ? " podium" : ""), onClick: clic },
+          h("span", { className: "com2-cl-rang" }, String(i + 1)),
+          h("span", { className: "com2-cl-av" + (estCav ? " rond" : "") }, img ? h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e2) { } } }) : null),
+          h("span", { className: "com2-cl-nom" }, nom),
+          h("span", { className: "com2-cl-pts" }, h("b", null, String(x.score)), " " + T2(TXT.clPts))));
+    }));
+    return h("section", { className: "com2-sec", "data-com2": "classements" },
+      h("div", { className: "com2-sec-t" }, h("h2", { className: "com2-h2" }, T2(TXT.clT))),
+      h("div", { className: "com2-onglets", role: "tablist", "data-lg": lg },
+        ONG.map(function (x) { var actif = (ongletCl === x[0]); return h("button", { key: "cl" + x[0], type: "button", role: "tab", "aria-selected": actif ? "true" : "false", className: "com2-onglet" + (actif ? " actif" : ""), "data-onglet": "cl-" + x[0], onClick: function () { setOngletCl(x[0]); setClTout(false); } }, T2(x[1])); })),
+      h("p", { className: "com2-cl-sous" }, T2(o[2])),
+      corps,
+      (liste.length > 5) ? h("button", { type: "button", className: "com2-fil-plus", onClick: function () { setClTout(!clTout); } }, clTout ? T2(TXT.reduire) : T2(TXT.voirTout)) : null);
+  }
   var icCoeur = function (plein) { return h("svg", { viewBox: "0 0 24 24", fill: plein ? "currentColor" : "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20.5s-7.5-4.6-9.3-9.3C1.5 8 3.5 4.5 7 4.5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.5 0 5.5 3.5 4.3 6.7-1.8 4.7-9.3 9.3-9.3 9.3Z" })); };
   var icBulle = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 5h16v11H9l-5 4V5Z" }));
   function cartePost(post) {
@@ -833,6 +891,7 @@ function EcranCommunauteV2() {
       h("div", { className: "com2-onglets", role: "tablist", "data-lg": lg },
         ONGLETS_FIL.map(function (oF) { var actif = (ongletFil === oF[0]); return h("button", { key: "of" + oF[0], type: "button", role: "tab", "aria-selected": actif ? "true" : "false", className: "com2-onglet" + (actif ? " actif" : ""), "data-onglet": oF[0], onClick: function () { setOngletFil(oF[0]); } }, T2(oF[1])); })),
       afficherFil()),
+    blocClassements(),
     /* (670) la signature de fin de page, comme l Accueil et l Ecurie : paysage fondu (images/accueil_v2_fin_de_page_v1.webp, deja
        dans le depot) puis le trait et « HYPE » ; une cale garde la signature au-dessus de la barre du bas. */
     h("div", { className: "com2-fin", "data-com2": "fin", "aria-hidden": "true" },

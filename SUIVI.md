@@ -16693,3 +16693,10 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 - hype-cours-editorial.js VERSION 62 (?v=62) : reconnaissance du défi sur le mot entier (« défi », « défis ») ; vaut pour tous les Galops.
 - Vérifié : page de fin de g7n-12 = « Le défi du cavalier » (3 points) ; 16 cours du Galop 7 + g1-c2, g2-aides, g3-c9, g4-contact, g5n-03, g5n-08 s'ouvrent sans erreur ; 17 blocs de script OK.
 - Fichiers : hype-cours-editorial.js (?v=62), index.html (build 20261103-1110), SUIVI.md.
+## 03/11/2026 13h25 — PUBLICATION build 20261103-1325 (accord de Blandine 13h24 « Ok ») : Communauté — fil resserré + classements
+- Fil (Blandine « réduis l'espace dans le fil ») : la carte d'un post court ne prend plus toute la hauteur du carrousel (min-height:100% retiré).
+- Visites des fiches cheval (« Oui ok ») : hype-ecran-cheval.js ?v=5 enregistre une visite (hype_vues, type « cheval », une par personne et par cheval) quand quelqu'un d'autre que le propriétaire ouvre la fiche. Compte à partir de la publication.
+- Base (accord « Oui ok ») : fonction classement_popularite(nb) APPLIQUÉE dans Supabase (migration classement_popularite_03_11, fichier sql/sql-03-11-classement-popularite.sql), lecture seule, totaux depuis le début (« Depuis le début »). Exclus (« retire moi ainsi que chat et Claude ») : 2 comptes Blandine, malicia2008, chatgpt, Claude.
+- Trois onglets sous le fil (« garde C … et on montre les deux ») : Populaires (visites ×3, personnes qui aiment/commentent ×3, écuries ×5, cœurs ×5), Actifs (tout compté tel quel : + photos, vidéos ×2, infos, résultats), Cavaliers (photos, vidéos ×2, résultats, stories ×2, commentaires ×2, j'aime, cours ×3, infos). Top 5, « Voir tout » jusqu'à 20 ; textes en 14 langues. hype-ecran-communaute-v2.js ?v=2.
+- Ordinateur : titre et liste alignés sur « Le fil », liste limitée à 760 px.
+- Vérifié : captures 390 et 1280 px des 3 onglets, 0 erreur.
