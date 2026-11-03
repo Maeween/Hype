@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 61;   /* 02/11 22h30 : fusion des deux sessions (v60 + v60) */
+var VERSION = 62;   /* 03/11 11h10 : une section « La définition… » n'est plus prise pour « Le défi du cavalier » (page de fin) */
+/* précédente : VERSION = 61; */   /* 02/11 22h30 : fusion des deux sessions (v60 + v60) */
 /* précédente : VERSION = 60; */   /* 02/11 22h30 : grand lexique — mots des Galops 5 à 9 lus aussi dans les cours */
 /* aussi : */   /* 02/11 22h : cours « g5n-… » — le texte français de référence est retrouvé (repère du « Le savais-tu ? » dans les autres langues) */
 /* précédente : VERSION = 59; */   /* 02/11 19h55 : « Le savais-tu ? » de la page « Révise en 2 minutes » en carte lisible (choix C de Blandine) */
@@ -3024,7 +3025,7 @@ function sorte(seg) {
   if (/^(les )?objectifs? du cours/.test(t)) return "objectif";
   if (/synth[èe]se en 10/.test(t)) return "synthese";
   if (/hey baby/.test(t)) return "hb";
-  if (/d[ée]fi/.test(t)) return "defi";
+  if (/d[ée]fis?(?![a-zà-ÿ])/.test(t)) return "defi";   /* 03/11 : « La définition » (Galop 7) était prise pour le défi */
   if (/conseil (du|de ton) coach/.test(t)) return "coach";
   if (!t) return "suite";
   return "notion";

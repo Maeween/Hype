@@ -16687,3 +16687,9 @@ Blandine : « Remplace l'image de vie équestre par celle-ci » (cheval gris au 
 ## 03/11/2026 10h05 — PUBLICATION build 20261103-1005 (Blandine 09h59 « Ok oui vas-y ») : corrections ciblées des 16 cours du Galop 7
 - Branche travail-g7-corrections fusionnée dans main (détail des corrections : entrée « BRANCHE travail-g7-corrections » ci-dessus). Les cours restent en français et ouverts aux seules modératrices (Galop 7 « Prochainement »).
 - Fichiers : hype-cours-galop7.js (?v=7), index.html (build 20261103-1005), SUIVI.md.
+
+## 03/11/2026 11h10 — PUBLICATION build 20261103-1110 (question de Blandine 11h05 « tout est fini pour le G7 ? Le savais-tu etc. inclus ? ») : défi du cavalier mal reconnu
+- Contrôle en vraie appli de la page « Révise en 2 minutes » (petit lexique + Le savais-tu ?) et de la page de fin des cours du Galop 7 : tout est présent, SAUF un bug — dans les cours qui ont une section « La définition… » (g7n-09, g7n-11, g7n-12), cette section était prise pour « Le défi du cavalier » (le modèle cherchait « défi » dans le titre, et « définition » commence par « défi ») : la page de fin montrait « La définition » au lieu du vrai défi, et la définition disparaissait du chapitre.
+- hype-cours-editorial.js VERSION 62 (?v=62) : reconnaissance du défi sur le mot entier (« défi », « défis ») ; vaut pour tous les Galops.
+- Vérifié : page de fin de g7n-12 = « Le défi du cavalier » (3 points) ; 16 cours du Galop 7 + g1-c2, g2-aides, g3-c9, g4-contact, g5n-03, g5n-08 s'ouvrent sans erreur ; 17 blocs de script OK.
+- Fichiers : hype-cours-editorial.js (?v=62), index.html (build 20261103-1110), SUIVI.md.
