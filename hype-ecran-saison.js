@@ -202,7 +202,7 @@ function EcranMaSaison() {
   var _tm = React.useState(null); var team = _tm[0], setTeam = _tm[1];   /* 04/11 22h55 : { id, nom, membre } */
   var _rs = React.useState(""); var reserve = _rs[0], setReserve = _rs[1];
 
-  React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
   function isoDe(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   var auj = new Date(); auj.setHours(0, 0, 0, 0);
@@ -330,14 +330,24 @@ function EcranMaSaison() {
     var etiquette = nb ? (nb + (nb > 1 ? F(" cavalières") : F(" cavalière"))) : (String(ev.date_jour || "").slice(0, 10) > isoAuj ? F("À engager") : "");
     var clubCourt = clubs.length > 1 ? (clubs.filter(function (n) { return clefDe(n) === ev.club_clef; })[0] || "") : "";
     var lieu = ev.lieu || clubCourt;
-    return h("button", { type: "button", key: ev.id, className: "hs-cd", onClick: function () { ouvrir(ev); } },
+    var carteEl = h("button", { type: "button", key: ev.id, className: "hs-cd", onClick: function () { ouvrir(ev); } },
       h("div", { className: "hs-im", style: { backgroundImage: "url(" + ph.img + ")", backgroundPosition: ph.pos } },
         h("span", { className: "hs-bd" }, badge(ev))),
       h("div", { className: "hs-tx" },
         h("span", { className: "hs-t" }, ev.titre || (ev.type === "stage" ? F("Stage") : F("Concours"))),
         h("span", { className: "hs-s" }, plage(ev)),
         (etiquette || lieu) ? h("span", { className: "hs-s" }, etiquette ? h("span", { className: "hs-gp" }, etiquette) : null, lieu) : null,
-        moiDedans ? h("span", { className: "hs-mini" }, F("Tu es inscrite")) : null));
+        moiDedans ? h("span", { className: "hs-mini" }, F("Tu es inscrite")) : null),
+      h("span", { "aria-hidden": "true", style: { alignSelf: "center", padding: "0 12px", color: "#C9A66B", fontSize: 22 } }, rtl ? "\u2039" : "\u203a"));
+    /* 04/11 23h30 (Blandine : « je suis sur la page de ma saison, je vois pas où continuer ») : sous chaque concours à venir,
+       deux boutons visibles qui mènent directement aux outils. */
+    var fini = String(ev.date_fin || ev.date_jour || "").slice(0, 10) < isoAuj;
+    if (fini || ev.type === "stage") return carteEl;
+    function aller(ecran) { try { window.__concoursId = ev.id; window.__engagementsId = ev.id; window.__concoursPhoto = photoDe[ev.id] || null; localStorage.setItem("hype_concours_ouvert", String(ev.id)); } catch (e) { } setEcran(ecran); }
+    return h("div", { key: ev.id, style: { marginBottom: 14 } }, carteEl,
+      h("div", { className: "hs-duo", style: { marginTop: 6 } },
+        h("button", { type: "button", className: "hs-btn plein", style: { minHeight: 40, fontSize: 12.5 }, onClick: function () { aller("engagements"); } }, F("Engagements")),
+        h("button", { type: "button", className: "hs-btn", style: { minHeight: 40, fontSize: 12.5 }, onClick: function () { aller("concours"); } }, F("Ouvrir la fiche"))));
   }
 
   var pills = [

@@ -17086,3 +17086,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
   · Icônes des cavaliers sans photo : la même image que le haut de leur page Cavalier (images/mes-chevaux-fond-couchant.webp, cheval au couchant) au lieu de la rotation d'images bleu « spectral » (avatarHypeDefaut, index.html ; une ligne à retirer pour revenir en arrière). Partout où l'appli montre un cavalier sans photo (Communauté, fil, Team, agenda…).
   · Tests (appli réelle en local, base simulée) : Ma saison et liste du van en en / ar / ja / de (titres, onglets, dates, listes, aucun texte français restant hors noms propres) ; notion du lexique sans filtre ; avatar par défaut = cheval au couchant ; 0 erreur ; 17 blocs OK.
   · Fichiers : hype-ecran-saison.js, hype-cours-editorial.js, hype-cours-galop7.js, index.html (build 20261105-0100), SUIVI.md.
+
+## 04/11/2026 23h35 — PUBLICATION build 20261105-0050 (Blandine 23h20 « je suis sur la page de ma saison, je vois pas où continuer » ; 23h21 « il y a deux pages Versailles : celle qui se crée quand on crée l'évènement et celle sur laquelle on peut faire les engagements, compliqué »)
+- Ma saison : chaque concours à venir a maintenant une flèche › sur sa carte et, dessous, deux boutons visibles : « Engagements » (ouvre directement la page Engagements) et « Ouvrir la fiche ». Les styles de boutons sont chargés dès Ma saison.
+- Rappel (build 0045) : la page du rendez-vous créée avec l'évènement porte une carte « Centre de compétition » qui mène à la fiche du concours. À TERME : ne garder qu'UNE page par concours (fusionner la page du rendez-vous et la fiche du Centre) — à décider avec Blandine.
+- Fichiers : hype-ecran-saison.js (v21), index.html (build 20261105-0050), SUIVI.md.
