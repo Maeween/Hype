@@ -461,7 +461,8 @@ function EcranTeamCompetition() {
       setErrPanneau(""); setRecherche(""); setClubRdv(null); setPanneau("rdv"); chargerRdvClub();   /* (526) ouvre le panneau des rendez-vous */
     }, style: { flex: "0 0 auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(214,182,118,0.7)", background: "transparent", color: OR, fontSize: 18, lineHeight: "28px", fontWeight: 400, padding: 0, cursor: "pointer", fontFamily: M } }, "+") : null;   /* 01/10 (527) : un simple « + » entoure, a droite du titre (Blandine : « le bouton prend beaucoup de place ») */
   /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : lien vers la page « Ma saison » (hype-ecran-saison.js), sous l agenda. */
-  var lienSaison = h("button", { type: "button", onClick: function () { setEcran("ma-saison"); },
+  /* 04/11 23h20 (Blandine : « pour l'instant, toute cette série-là, tu la laisses accessible à personne à part moi ») : bouton visible par la modératrice seulement */
+  var lienSaison = !((typeof estModerateurHype === "function") && estModerateurHype(moi)) ? null : h("button", { type: "button", onClick: function () { setEcran("ma-saison"); },
       style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 14, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
     h("span", null, tr({ fr: "Ma saison : tous les concours" })), h("span", { style: { fontSize: 16 } }, CHEV));
   var blocAg = section(h("div", null,

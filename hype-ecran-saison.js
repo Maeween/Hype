@@ -427,7 +427,7 @@ function EcranConcours() {
   var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
   function F(fr) { return tr({ fr: fr }); }
   var rtl = (lg === "ar");
-  var idEv = null; try { idEv = window.__concoursId || null; } catch (e0) { }
+  var idEv = hsIdConcours();
 
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
@@ -696,7 +696,7 @@ function EcranEngagements() {
   var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
   function F(fr) { return tr({ fr: fr }); }
   var rtl = (lg === "ar");
-  var idEv = null; try { idEv = window.__engagementsId || window.__concoursId || null; } catch (e0) { }
+  var idEv = hsIdConcours();
 
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
@@ -1178,7 +1178,7 @@ function hsTemps(t) { t = Math.max(0, Math.round(Number(t) || 0)); return Math.f
    toucher un commentaire ramène la vidéo à ce moment-là. Lecture : la cavalière, la coach du club, l'auteur. */
 function EcranVideoParcours() {
   var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
-  var V = null; try { V = window.__videoParcours || null; } catch (e0) { }
+  var V = null; try { V = window.__videoParcours || null; if (V) localStorage.setItem("hype_video_parcours", JSON.stringify(V)); else V = JSON.parse(localStorage.getItem("hype_video_parcours") || "null"); } catch (e0) { }
   var refV = React.useRef(null);
   var _no = React.useState(null); var notes = _no[0], setNotes = _no[1];
   var _tx = React.useState(""); var texte = _tx[0], setTexte = _tx[1];
@@ -1257,7 +1257,18 @@ function hsCtx() {
   return { app: app, setEcran: app.setEcran || function () { }, F: function (fr) { return tr({ fr: fr }); }, rtl: lg === "ar" };
 }
 function hsRetour(app, setEcran, defaut) { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran(defaut); }
-function hsIdConcours() { try { return window.__concoursId || window.__engagementsId || null; } catch (e) { return null; } }
+/* 04/11 23h20 (Blandine : en revenant dans l'appli, « Impossible d'ouvrir ce concours : concours introuvable ») : quand l'iPhone
+   relance Hype, les repères gardés en mémoire vive sont perdus. Le concours ouvert est donc aussi noté sur le téléphone
+   (localStorage) et relu s'il manque. Rien en base. */
+function hsIdConcours() {
+  var id = null;
+  try { id = window.__concoursId || window.__engagementsId || null; } catch (e) { }
+  try {
+    if (id) localStorage.setItem("hype_concours_ouvert", String(id));
+    else { id = localStorage.getItem("hype_concours_ouvert") || null; if (id) { window.__concoursId = id; window.__engagementsId = id; } }
+  } catch (e2) { }
+  return id;
+}
 
 /* ── la liste par défaut, la toute première fois (modifiable ligne par ligne) ── */
 /* 04/11 22h45 (Blandine) : + ses ajouts du 04/11 (retouches validées : « Guêtres ou bandes de polo », « Enrênement », « Gants » seul) */
@@ -1816,5 +1827,35 @@ function hsPdfListe(titre, sousTitre, lignes) {
   return o;
 }
 
-window.HypeSaison = { Saison: EcranMaSaison, Concours: EcranConcours, Engagements: EcranEngagements, ListeVan: EcranListeVan, JourJ: EcranJourJ, Dossier: EcranDossierConcours, VideoParcours: EcranVideoParcours };
+
+/* 04/11 23h20 — Blandine : « pour l'instant, toute cette série-là, tu la laisses pas accessible à qui que ce soit à part moi ».
+   Tous les écrans du Centre de compétition passent par cette garde : seule la modératrice (ses comptes) y entre ;
+   les autres voient « Bientôt disponible ». Pour ouvrir à tout le monde plus tard : HS_OUVERT_A_TOUS = true. */
+var HS_OUVERT_A_TOUS = false;
+function hsGarde(Comp) {
+  return function EcranGarde(props) {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var _ok = React.useState(HS_OUVERT_A_TOUS ? true : null); var ok = _ok[0], setOk = _ok[1];
+    React.useEffect(function () {
+      if (HS_OUVERT_A_TOUS) return;
+      var vif = true;
+      (async function () {
+        var u = null; try { u = await utilisateurActuel(); } catch (e) { }
+        var m = false; try { m = (typeof estModerateurHype === "function") && estModerateurHype(u); } catch (e2) { }
+        if (!m && u) { try { var r = await supa.rpc("hype_est_moderatrice"); m = r && r.data === true; } catch (e3) { } }
+        if (vif) setOk(!!m);
+      })();
+      return function () { vif = false; };
+    }, []);
+    if (ok === true) return h(Comp, props);
+    try { injecterCss(); } catch (e4) { }
+    return h("div", { className: "hs" },
+      h("div", { className: "hs-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 18px)" } },
+        h("button", { type: "button", className: "hs-retour", onClick: function () { try { if (app.retourEcran && app.histLen > 0) { app.retourEcran(); return; } } catch (e5) { } if (app.setEcran) app.setEcran("guilde"); } }, h("i", null, "‹"), "Retour"),
+        ok === null ? h("div", { className: "hs-attente" }, "…") :
+        h("div", { className: "hs-titre", style: { textAlign: "start", marginTop: 40 } }, h("h1", { style: { fontSize: 40 } }, "Bientôt disponible"), h("p", null, "Le Centre de compétition arrive très vite."))));
+  };
+}
+window.HypeSaison = { Saison: hsGarde(EcranMaSaison), Concours: hsGarde(EcranConcours), Engagements: hsGarde(EcranEngagements), ListeVan: hsGarde(EcranListeVan), JourJ: hsGarde(EcranJourJ), Dossier: hsGarde(EcranDossierConcours), VideoParcours: hsGarde(EcranVideoParcours) };
 })();
