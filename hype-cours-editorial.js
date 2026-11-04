@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 65;   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
+var VERSION = 66;   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
+/* précédente : VERSION = 65; */   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
 /* précédente : VERSION = 64; */   /* 04/11 : photos provisoires des 15 nouveaux cours du Galop 6 (g6n) */
 /* précédente : VERSION = 63; */   /* 04/11 : g5n-04 — atlas Galop 5 (grands groupes musculaires) */
 /* précédente : VERSION = 62; */   /* 03/11 11h10 : une section « La définition… » n'est plus prise pour « Le défi du cavalier » (page de fin) */
@@ -1746,6 +1747,7 @@ function MobileLectureNotions(p) {
       nodes.push(h(MobileAtlasCommun, { key: "atlas-" + i, entrees: group }));
       i = j; continue;
     }
+    if (d.corps.length === 1 && d.corps[0] && d.corps[0].type === Attitudes) { nodes.push(React.cloneElement(d.corps[0], { key: "notion-" + i, titre: items[i].titre })); i++; continue; }   /* 04/11 : le titre va dans l'encart, comme la maquette */
     nodes.push(h("article", { key: "notion-" + i, className: "hce-mobile-unit" + (items[i].alerte ? " is-alert" : "") },
       d.images.length ? d.images : null,
       h("h3", null, items[i].titre),
@@ -3287,7 +3289,96 @@ function maj(t, lg) {   /* majuscule en début de paragraphe ; espaces insécabl
   t = t.replace(/^(\s*[«"“(]?\s*)(\p{Ll})/u, function (m, a, b) { return a + b.toUpperCase(); });
   return lg === "fr" ? t.replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0") : t;
 }
+/* 04/11 (Blandine, maquette validée) : g1-c6 — « 6 attitudes à reconnaître » : une ligne par attitude (photo à gauche, pictogramme,
+   titre, signes, phrase de sens dans une bande dorée). Section du cours marquée attitudes:true ; photos images/cours-g1-c6-<nom>.webp
+   (carte) et -hd.webp (agrandie), dans l'ordre des puces. Au toucher : photo seule en grand sur fond noir, croix, glissement du doigt
+   ou flèches du clavier pour passer à la suivante, Échap pour fermer ; la page ne bouge pas. Photo absente : cadre sombre, jamais de lien cassé. */
+var ATT_PHOTOS = [["detendu", "60% 50%", "lotus"], ["serein", "62% 45%", "soleil"], ["attentif", "45% 40%", "jumelles"], ["inquiet", "62% 45%", "nuage"], ["effraye", "64% 45%", "eclair"], ["contrarie", "64% 50%", "tension"]];
+var ATT_ICONES = {
+  lotus: "M12 19c-3.5 0-7-2.5-8-6 2.5-.4 5 .6 6.4 2.4M12 19c3.5 0 7-2.5 8-6-2.5-.4-5 .6-6.4 2.4M12 19c-2-2-2.8-5-1.8-8.6.6-2 1.8-3.4 1.8-3.4s1.2 1.4 1.8 3.4C14.8 14 14 17 12 19z",
+  soleil: "M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4",
+  jumelles: "M7 11.4a3.6 3.6 0 1 0 0 7.2a3.6 3.6 0 1 0 0-7.2M17 11.4a3.6 3.6 0 1 0 0 7.2a3.6 3.6 0 1 0 0-7.2M10.6 15h2.8M5 11.6l2-5h2.5l.8 5M19 11.6l-2-5h-2.5l-.8 5",
+  nuage: "M7 18h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 9.2 4.4 4.4 0 0 0 7 18z",
+  eclair: "M13 3L5 13.5h6L10 21l8-10.5h-6z",
+  tension: "M3 9c2-2 4 2 6 0s4 2 6 0 4 2 6 0M3 15c2-2 4 2 6 0s4 2 6 0 4 2 6 0"
+};
+var CSS_ATT = [
+".hce-att{container-type:inline-size;margin:4px 0 6px;color:var(--ivoire,#F3EEE4)}",
+".hce-att .tete{border:1px solid rgba(201,166,107,.6);border-radius:14px;padding:13px 14px;background:linear-gradient(180deg,rgba(16,26,29,.35),rgba(7,10,8,.15));margin:0 0 12px}",
+".hce-att .tete h3{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-weight:500;font-size:22px;line-height:1.12;margin:0 0 6px;color:#F3EEE4}",
+".hce-att .tete p{margin:0;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.85)}",
+".hce-att ul{list-style:none;margin:0!important;padding:0!important}",
+".hce-att li{position:relative;display:grid;grid-template-columns:50% minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;margin:0}",
+".hce-att li:before{display:none}",
+"@container (min-width:440px){.hce-att .tx p{font-size:13.5px}.hce-att .pill{font-size:13px;padding:7px 12px}.hce-att .tx h4{font-size:25px}.hce-att .tete p{font-size:13.5px}}",
+".hce-att li+li:after{content:'';position:absolute;top:0;inset-inline-start:52%;inset-inline-end:0;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.28),rgba(201,166,107,.06))}",
+".hce-att .ph{position:relative;display:block;width:100%;aspect-ratio:1.42/1;border-radius:14px;overflow:hidden;border:1px solid rgba(201,166,107,.12);border-inline-end:0;background:#0B0F0E;padding:0;margin:0;cursor:zoom-in;-webkit-mask-image:linear-gradient(90deg,#000 80%,rgba(0,0,0,.25));mask-image:linear-gradient(90deg,#000 80%,rgba(0,0,0,.25))}",
+".hce-att[dir=rtl] .ph{-webkit-mask-image:linear-gradient(270deg,#000 80%,rgba(0,0,0,.25));mask-image:linear-gradient(270deg,#000 80%,rgba(0,0,0,.25))}",
+".hce-att .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}",
+".hce-att .ph .n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:26px;color:rgba(201,166,107,.45)}",
+".hce-att .tx{padding-top:10px;min-width:0}",
+".hce-att .tx h4{display:flex;align-items:center;gap:7px;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-weight:500;font-size:22px;line-height:1.05;margin:0 0 5px;color:#F3EEE4}",
+".hce-att .tx h4 svg{flex:0 0 auto;width:20px;height:20px;stroke:#C9A66B;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+".hce-att .tx p{margin:0 0 8px;font-size:12px;line-height:1.42;color:rgba(243,238,228,.92);overflow-wrap:anywhere}",
+".hce-att .pill{position:relative;border-radius:11px;padding:6px 10px;font-size:11.5px;line-height:1.38;color:#F3EEE4;background:linear-gradient(90deg,rgba(201,166,107,.32),rgba(201,166,107,.10) 65%,rgba(201,166,107,0))}",
+".hce-att[dir=rtl] .pill{background:linear-gradient(270deg,rgba(201,166,107,.32),rgba(201,166,107,.10) 65%,rgba(201,166,107,0))}",
+".hce-att .pill:before{content:'';position:absolute;inset:0;border-radius:11px;padding:1px;background:linear-gradient(90deg,rgba(201,166,107,.75),rgba(201,166,107,.25) 70%,rgba(201,166,107,0));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}",
+".hce-att[dir=rtl] .pill:before{background:linear-gradient(270deg,rgba(201,166,107,.75),rgba(201,166,107,.25) 70%,rgba(201,166,107,0))}",
+"@container (min-width:560px){.hce-att .tete{padding:18px 22px}.hce-att .tete h3{font-size:30px}.hce-att .tete p{font-size:14.5px}.hce-att li{gap:22px;padding:12px 0;align-items:center}.hce-att .tx{padding-top:0}.hce-att .tx h4{font-size:30px;gap:10px}.hce-att .tx h4 svg{width:26px;height:26px}.hce-att .tx p{font-size:15px}.hce-att .pill{font-size:14px;padding:9px 14px}}",
+".hce-attv{position:fixed;inset:0;z-index:9999;background:#000;overflow:hidden;touch-action:none;overscroll-behavior:contain}",
+".hce-attv .piste{display:flex;height:100%;transition:transform .32s ease}",
+".hce-attv figure{flex:0 0 100%;height:100%;margin:0;display:flex;align-items:center;justify-content:center;padding:calc(56px + env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom))}",
+".hce-attv figure img{max-width:100%;max-height:100%;object-fit:contain;display:block}",
+".hce-attv .x{position:absolute;top:calc(12px + env(safe-area-inset-top));inset-inline-end:12px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.6);background:rgba(7,10,8,.7);color:#F3EEE4;font-size:24px;line-height:1;cursor:pointer;z-index:2}"
+].join("");
+function AttPhoto(p) {
+  var _e = useState(false), err = _e[0], setErr = _e[1];
+  return h("button", { type: "button", className: "ph", "aria-label": p.label, onClick: p.onClick },
+    err ? h("span", { className: "n", "aria-hidden": true }, p.num) : h("img", { src: p.src, alt: p.alt, loading: "lazy", style: { objectPosition: p.pos }, onError: function () { setErr(true); } }));
+}
+function Attitudes(p) {
+  var lg = p.lg, r = function (x) { return pickLg(x, lg); }, L = p.L || Lx(lg), rtl = lg === "ar";
+  var puces = (p.seg && p.seg.puces) || [];
+  var _o = useState(-1), ouv = _o[0], setOuv = _o[1];
+  var _hs = useState({}), hdKo = _hs[0], setHdKo = _hs[1];
+  var dernier = useRef(null), x0 = useRef(null), btnX = useRef(null);
+  var n = puces.length;
+  var aller = function (i) { setOuv(Math.max(0, Math.min(n - 1, i))); };
+  var fermer = function () { setOuv(-1); var d = dernier.current; if (d && d.focus) { try { d.focus({ preventScroll: true }); } catch (e) { } } };
+  useEffect(function () {
+    if (ouv < 0) return;
+    if (btnX.current) { try { btnX.current.focus({ preventScroll: true }); } catch (e) { } }
+    var k = function (e) { if (e.key === "Escape") fermer(); else if (e.key === "ArrowRight") aller(ouv + (rtl ? -1 : 1)); else if (e.key === "ArrowLeft") aller(ouv + (rtl ? 1 : -1)); };
+    document.addEventListener("keydown", k);
+    return function () { document.removeEventListener("keydown", k); };
+  }, [ouv]);
+  var src = function (i, hd) { var a = ATT_PHOTOS[i]; return a ? "images/cours-g1-c6-" + a[0] + (hd ? "-hd" : "") + ".webp" : ""; };
+  var alt = function (q) { return (r(q.gras) || "") + " — " + (r(q.texte) || ""); };
+  var portail = (window.ReactDOM && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
+  var vis = ouv < 0 ? null : portail(h("div", { className: "hce-attv", role: "dialog", "aria-modal": "true", "aria-label": r(puces[ouv].gras), dir: rtl ? "rtl" : "ltr",
+      onTouchStart: function (e) { x0.current = e.touches[0].clientX; },
+      onTouchEnd: function (e) { if (x0.current === null) return; var d = e.changedTouches[0].clientX - x0.current; x0.current = null; if (Math.abs(d) > 40) aller(ouv + ((d < 0) !== rtl ? 1 : -1)); } },
+    h("div", { className: "piste", style: { transform: "translateX(" + (rtl ? 100 : -100) * ouv + "%)" } },
+      puces.map(function (q, i) {
+        return h("figure", { key: i, "aria-hidden": i === ouv ? undefined : "true" },
+          Math.abs(i - ouv) <= 1 ? h("img", { src: hdKo[i] ? src(i, false) : src(i, true), alt: alt(q), onError: function () { if (!hdKo[i]) { var c = Object.assign({}, hdKo); c[i] = true; setHdKo(c); } } }) : null);
+      })),
+    h("button", { type: "button", className: "x", ref: btnX, "aria-label": L("fermer"), onClick: fermer }, "×")), document.body);
+  return h("div", { className: "hce-att", dir: rtl ? "rtl" : "ltr" }, h("style", null, CSS_ATT),
+    (p.titre || r(p.seg.sous)) ? h("div", { className: "tete" }, p.titre ? h("h3", null, p.titre) : null, r(p.seg.sous) ? h("p", null, r(p.seg.sous)) : null) : null,
+    h("ul", null, puces.map(function (q, i) {
+      var a = ATT_PHOTOS[i] || ["", "50% 50%", "lotus"];
+      return h("li", { key: i },
+        h(AttPhoto, { src: src(i, false), pos: a[1], alt: alt(q), label: r(q.gras), num: (i < 9 ? "0" : "") + (i + 1), onClick: function (e) { dernier.current = e.currentTarget; aller(i); } }),
+        h("div", { className: "tx" },
+          h("h4", null, h("svg", { viewBox: "0 0 24 24", "aria-hidden": true }, h("path", { d: ATT_ICONES[a[2]] })), r(q.gras)),
+          r(q.texte) ? h("p", null, r(q.texte)) : null,
+          r(q.sens) ? h("div", { className: "pill" }, r(q.sens)) : null));
+    })),
+    vis);
+}
 function renduNotion(o, L, lg, alerte) {
+  if (o.seg && o.seg.attitudes && Array.isArray(o.seg.puces)) return [h(Attitudes, { key: "att", seg: o.seg, lg: lg, L: L })];   /* 04/11 : g1-c6, 6 attitudes */
   var r = function (x) { return pickLg(x, lg); };
   var out = [], k = 0;
   var pu = function (arr) {
