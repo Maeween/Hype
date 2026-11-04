@@ -436,6 +436,35 @@ var CSS2 = [
   ".hs-recap td{padding:8px 8px;border-bottom:1px solid rgba(243,238,228,.06);vertical-align:top}",
   ".hs-recap tr.vide td{color:var(--hs-iv3)}",
   /* 04/11 23h31 (Blandine : « fais moins visuel pour ce que tu proposes ») : propositions en simples mots, sans bulles */
+  /* Engagements allégés (23h47 : « pas blindé de verre pétrole plein les yeux ») : champs soulignés, pas de cadres */
+  ".hs-eng input,.hs-eng select{background-color:transparent;border:none;border-bottom:1px solid rgba(243,238,228,.18);border-radius:0;padding-inline-start:2px}",
+  ".hs-eng input:focus,.hs-eng select:focus{border-bottom-color:var(--hs-ch)}",
+  ".hs-eng .hs-carte{background:none;border:none;border-radius:0}",
+  ".hs-eng .hs-couple{padding:16px 0;border-top:1px solid rgba(243,238,228,.08)}",
+  ".hs-eng .hs-btn.plein{background:transparent;box-shadow:none}",
+  ".hs-onglets{display:flex;gap:18px;margin:34px 0 0;border-bottom:1px solid rgba(243,238,228,.12);overflow-x:auto}",
+  ".hs-onglets button{background:none;border:none;border-bottom:1.5px solid transparent;color:var(--hs-iv2);font-family:inherit;font-size:12.5px;letter-spacing:.04em;padding:10px 0;margin-bottom:-1px;white-space:nowrap}",
+  ".hs-onglets button.on{color:var(--hs-iv);border-bottom-color:var(--hs-ch)}",
+  ".hs-fch{padding:12px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
+  ".hs-fch-t{display:flex;align-items:center;gap:10px}",
+  ".hs-fch-t b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:18px;flex:1;min-width:0}",
+  ".hs-pts{display:flex;gap:4px}.hs-pts i{width:8px;height:8px;border-radius:50%;border:1px solid var(--hs-ch);display:block}.hs-pts i.p{background:var(--hs-ch)}.hs-pts i.trop{background:var(--hs-iv);border-color:var(--hs-iv)}",
+  ".hs-reste{font-size:11px;color:var(--hs-iv2);min-width:58px;text-align:end}.hs-reste.trop{color:var(--hs-iv);font-weight:600;text-decoration:underline}",
+  ".hs-fch-r{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--hs-iv2);margin-top:5px}.hs-fch-r em,.hs-grille em{font-style:normal;color:var(--hs-iv3)}",
+  ".hs-pep{margin-top:22px}",
+  ".hs-pep-t{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--hs-ch);padding-bottom:6px;border-bottom:1px solid rgba(201,166,107,.45)}",
+  ".hs-pep-l{display:flex;gap:10px;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid rgba(243,238,228,.06)}.hs-pep-l span:last-child{color:var(--hs-iv2);text-align:end;min-width:0}",
+  ".hs-pep-l sup{color:var(--hs-ch);font-size:10px}",
+  ".hs-pep-tot{font-size:11.5px;color:var(--hs-iv2);margin-top:14px;text-align:end}",
+  ".hs-grille-w{overflow-x:auto;max-width:100%}",
+  ".hs-grille{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}",
+  ".hs-grille th{font-weight:500;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--hs-iv3);text-align:start;padding:0 4px 8px;border-bottom:1px solid rgba(243,238,228,.12)}",
+  ".hs-grille th.ch{width:34%}",
+  ".hs-grille td{padding:9px 4px;border-bottom:1px solid rgba(243,238,228,.06);vertical-align:top;line-height:1.35;overflow-wrap:anywhere}",
+  ".hs-grille td.ch{font-family:'Cormorant Garamond',Georgia,serif;font-size:15px}",
+  ".hs-grille td em{display:block;font-size:10px}",
+  ".hs-grille td.libre{color:var(--hs-iv3);font-style:italic}",
+  ".hs-grille td.trop{text-decoration:underline}",
   ".hs-puce-cav{background:none;border:none;border-radius:0;color:var(--hs-iv2);font-family:inherit;font-size:13px;min-height:30px;padding:0 10px 0 0;margin:0}",
   ".hs-puce-cav.fait{opacity:.35}",
   ".hs-puce button{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--hs-iv2);font-size:16px;line-height:1;padding:0}",
@@ -836,6 +865,7 @@ function EcranEngagements() {
   var _vf = React.useState(false); var voirFeuille = _vf[0], setVoirFeuille = _vf[1];
   var _lb = React.useState({}); var libres = _lb[0], setLibres = _lb[1];   /* « Autre cheval » : saisie libre */
   var _tm = React.useState(function () { try { return Number(localStorage.getItem("hype_tours_max")) || 3; } catch (e) { return 3; } }); var toursMax = _tm[0], setToursMax = _tm[1];
+  var _vu = React.useState("couples"); var vue = _vu[0], setVue = _vu[1];   /* onglets : couples (cavalières + chevaux) / épreuves / grille */
   var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
   var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
@@ -1118,31 +1148,73 @@ function EcranEngagements() {
     var trop = montes[c].length > toursMax;
     return h("span", { className: "hs-tour" + (trop ? " trop" : "") }, c + " (" + k + ")");
   }
-  /* récapitulatif par cheval et par cavalière */
-  function recap() {
-    var noms = []; chevauxConc.forEach(function (c) { if (noms.indexOf(c.nom) === -1) noms.push(c.nom); });
-    Object.keys(montes).forEach(function (c) { if (noms.indexOf(c) === -1) noms.push(c); });
-    var cav = lignes.filter(function (l) { return String(l.nom || "").trim(); });
-    if (!noms.length && !cav.length) return null;
+  /* 04/11 23h47 (Blandine : « avoir direct en visu la fiche cavalier et la fiche cheval ; puis des onglets pour voir par épreuve
+     et la grille des tours ») — et moins de « verre pétrole » : traits fins sur fond noir, pas de cadres. */
+  var nomsCh = []; chevauxConc.forEach(function (c) { if (nomsCh.indexOf(c.nom) === -1) nomsCh.push(c.nom); });
+  Object.keys(montes).forEach(function (c) { if (nomsCh.indexOf(c) === -1) nomsCh.push(c); });
+  nomsCh.sort(function (a, b) { return a.localeCompare(b, "fr"); });
+  var nbTours = 0; Object.keys(montes).forEach(function (c) { nbTours += montes[c].length; });
+  var libresTot = 0; nomsCh.forEach(function (c) { libresTot += Math.max(0, toursMax - (montes[c] || []).length); });
+  function epDe(x) { return lignes[x.i] ? (lignes[x.i]["epreuve" + x.n] || "") : ""; }
+  function choixMax() {
+    return h("select", { className: "hs-mini", value: String(toursMax), "aria-label": F("Tours par cheval"), onChange: function (e) { var v = Number(e.target.value) || 3; setToursMax(v); try { localStorage.setItem("hype_tours_max", String(v)); } catch (eL) { } } },
+      [1, 2, 3, 4, 5].map(function (v) { return h("option", { key: v, value: String(v) }, v + F(" tours max")); }));
+  }
+  /* fiches chevaux : ronds = tours prévus, puis qui le monte */
+  function vueChevaux() {
+    if (!nomsCh.length) return null;
     return h("div", null,
-      h("div", { className: "hs-sec" }, h("b", null, F("Récapitulatif")),
-        h("span", null, h("select", { className: "hs-mini", value: String(toursMax), "aria-label": F("Tours par cheval"), onChange: function (e) { var v = Number(e.target.value) || 3; setToursMax(v); try { localStorage.setItem("hype_tours_max", String(v)); } catch (eL) { } } },
-          [1, 2, 3, 4, 5].map(function (v) { return h("option", { key: v, value: String(v) }, v + F(" tours max / cheval")); })))),
-      noms.length ? h("table", { className: "hs-recap" },
-        h("thead", null, h("tr", null, h("th", null, F("Cheval")), h("th", null, F("Tours")), h("th", null, F("Places")), h("th", null, F("Cavalières")))),
-        h("tbody", null, noms.map(function (c) {
-          var m = montes[c] || [], reste = toursMax - m.length;
-          return h("tr", { key: c, className: m.length ? "" : "vide" }, h("td", null, c), h("td", null, String(m.length)),
-            h("td", { className: reste < 0 ? "trop" : "" }, reste < 0 ? F("trop (") + (-reste) + ")" : String(reste)),
-            h("td", null, m.map(function (x) { return x.qui + (lignes[x.i]["epreuve" + x.n] ? " · " + lignes[x.i]["epreuve" + x.n] : ""); }).join(", ") || "—"));
-        }))) : null,
-      cav.length ? h("table", { className: "hs-recap", style: { marginTop: 10 } },
-        h("thead", null, h("tr", null, h("th", null, "#"), h("th", null, F("Cavalière")), h("th", null, F("Tours")), h("th", null, F("Chevaux")))),
-        h("tbody", null, cav.map(function (l, j) {
-          var t = [1, 2].filter(function (n) { return l["epreuve" + n] || l["cheval" + n + "_nom"]; });
-          return h("tr", { key: j }, h("td", null, String(j + 1)), h("td", null, l.nom), h("td", null, String(t.length)),
-            h("td", null, t.map(function (n) { return (l["cheval" + n + "_nom"] || "?") + (l["epreuve" + n] ? " · " + l["epreuve" + n] : ""); }).join(", ") || "—"));
-        }))) : null);
+      h("div", { className: "hs-sec" }, h("b", null, F("Les chevaux")), h("span", null, choixMax())),
+      nomsCh.map(function (c) {
+        var m = montes[c] || [], reste = toursMax - m.length, pts = [];
+        for (var j = 0; j < Math.max(toursMax, m.length); j++) pts.push(h("i", { key: j, className: j < m.length ? (j < toursMax ? "p" : "p trop") : "" }));
+        return h("div", { key: c, className: "hs-fch" },
+          h("div", { className: "hs-fch-t" }, h("b", null, c), h("span", { className: "hs-pts", "aria-label": m.length + F(" tours") }, pts),
+            h("span", { className: "hs-reste" + (reste < 0 ? " trop" : "") }, reste > 0 ? reste + (reste > 1 ? F(" libres") : F(" libre")) : (reste === 0 ? F("complet") : F("trop de ") + (-reste)))),
+          m.length ? h("div", { className: "hs-fch-r" }, m.map(function (x, j) { return h("span", { key: j }, (j + 1) + ". " + x.qui, h("em", null, epDe(x) ? " " + epDe(x) : "")); })) : null);
+      }));
+  }
+  /* par épreuve */
+  function vueEpreuves() {
+    var parEp = {}, ordre = [];
+    lignes.forEach(function (l, i) { [1, 2].forEach(function (n) {
+      var e = String(l["epreuve" + n] || "").trim(), c = String(l["cheval" + n + "_nom"] || "").trim(); if (!e && !c) return;
+      var k = e || F("Épreuve à choisir"); if (!parEp[k]) { parEp[k] = []; ordre.push(k); } parEp[k].push({ qui: String(l.nom || "").trim() || "?", ch: c, i: i, n: n });
+    }); });
+    ordre.sort(function (a, b) { return (eps.indexOf(a) === -1 ? 99 : eps.indexOf(a)) - (eps.indexOf(b) === -1 ? 99 : eps.indexOf(b)) || a.localeCompare(b, "fr"); });
+    if (!ordre.length) return h("div", { className: "hs-vide" }, F("Aucun tour pour l’instant."));
+    return h("div", null, ordre.map(function (e) {
+      return h("div", { key: e, className: "hs-pep" },
+        h("div", { className: "hs-pep-t" }, h("span", null, e), h("span", null, parEp[e].length + (parEp[e].length > 1 ? F(" tours") : F(" tour")))),
+        parEp[e].map(function (x, j) {
+          var k = 0; (montes[x.ch] || []).forEach(function (y, jj) { if (y.i === x.i && y.n === x.n) k = jj + 1; });
+          return h("div", { key: j, className: "hs-pep-l" }, h("span", null, x.qui), h("span", null, x.ch ? h(React.Fragment, null, x.ch, k ? h("sup", null, " " + k) : null) : "—"));
+        }));
+    }), h("div", { className: "hs-pep-tot" }, nbTours + F(" tours au total")));
+  }
+  /* grille des tours : tour 1, 2, 3… de chaque cheval ; les cases vides sont les places libres */
+  function vueGrille() {
+    if (!nomsCh.length) return h("div", { className: "hs-vide" }, F("Aucun cheval pour l’instant."));
+    var nb = toursMax; nomsCh.forEach(function (c) { nb = Math.max(nb, (montes[c] || []).length); });
+    var cols = []; for (var j = 0; j < nb; j++) cols.push(j);
+    return h("div", null,
+      h("div", { className: "hs-sec", style: { marginTop: 0 } }, h("b", null, F("Grille des tours")), h("span", null, choixMax())),
+      h("div", { className: "hs-grille-w" }, h("table", { className: "hs-grille" },
+        h("thead", null, h("tr", null, h("th", { className: "ch" }, F("Cheval")), cols.map(function (j) { return h("th", { key: j }, F("Tour ") + (j + 1)); }))),
+        h("tbody", null, nomsCh.map(function (c) {
+          var m = montes[c] || [];
+          return h("tr", { key: c }, h("td", { className: "ch" }, c), cols.map(function (j) {
+            var x = m[j]; if (!x) return h("td", { key: j, className: j < toursMax ? "libre" : "" }, j < toursMax ? F("libre") : "");
+            return h("td", { key: j, className: j >= toursMax ? "trop" : "" }, x.qui, h("em", null, epDe(x)));
+          }));
+        })))),
+      h("div", { className: "hs-pep-tot" }, nbTours + F(" tours · ") + libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre"))));
+  }
+  function onglets() {
+    var o = [["couples", F("Cavalières et chevaux")], ["epreuves", F("Par épreuve")], ["grille", F("Grille des tours")]];
+    return h("div", { className: "hs-onglets", role: "tablist" }, o.map(function (x) {
+      return h("button", { key: x[0], type: "button", role: "tab", "aria-selected": vue === x[0], className: vue === x[0] ? "on" : "", onClick: function () { setVue(x[0]); } }, x[1]);
+    }));
   }
   function puceCav(c) {
     var la = !!dejaLa[c.id];
@@ -1150,7 +1222,7 @@ function EcranEngagements() {
       (la ? "✓ " : "+ ") + (c.nom || c.pseudo || "?"));
   }
 
-  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" },
+  return h("div", { className: "hs hs-eng", dir: rtl ? "rtl" : "ltr" },
     hero,
     h("div", { className: "hs-in" },
       /* 1. le concours */
@@ -1170,8 +1242,12 @@ function EcranEngagements() {
       h("div", { className: "hs-ajout" },
         h("input", { type: "text", value: nouvelleEp, placeholder: F("Nom de l’épreuve"), onChange: function (e) { setNouvelleEp(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); ajouterEpreuve(); } } }),
         h("button", { type: "button", className: "hs-btn", onClick: ajouterEpreuve }, F("Ajouter"))),
-      /* 3. les couples */
-      h("div", { className: "hs-sec" }, h("b", null, F("Les couples")), h("span", null, lignes.length ? String(lignes.length) : "")),
+      /* 3. les engagements, en onglets */
+      onglets(),
+      vue === "epreuves" ? vueEpreuves() : null,
+      vue === "grille" ? vueGrille() : null,
+      vue !== "couples" ? null : h(React.Fragment, null,
+      h("div", { className: "hs-sec", style: { marginTop: 22 } }, h("b", null, F("Les cavalières")), h("span", null, lignes.length ? lignes.length + (lignes.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")) : "")),
       lignes.length ? h("div", { className: "hs-carte" }, lignes.map(function (l, i) {
         return h("div", { key: l.id || ("n" + i), className: "hs-couple" },
           h("div", { className: "hs-couple-t" }, h("b", null, h("span", { className: "hs-num" }, (i + 1) + (i === 0 ? "re" : "e")), l.nom || F("Nouvelle cavalière")),
@@ -1194,7 +1270,7 @@ function EcranEngagements() {
       q.length >= 2 ? h("div", { className: "hs-puces" },
         resultats.map(puceCav),
         h("button", { type: "button", className: "hs-puce hs-puce-cav", onClick: function () { ajouterCavaliere({ libre: String(recherche).trim() }); } }, F("+ « ") + String(recherche).trim() + F(" » sans compte Hype"))) : null,
-      recap(),
+      vueChevaux()),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seules toi et la cavalière concernée les voient. Chaque cavalière voit son engagement sur la fiche du concours.")),
       /* actions */
       h("div", { className: "hs-coll" },
