@@ -1197,12 +1197,19 @@ function hsRetour(app, setEcran, defaut) { try { if (app.histLen && app.histLen 
 function hsIdConcours() { try { return window.__concoursId || window.__engagementsId || null; } catch (e) { return null; } }
 
 /* ── la liste par défaut, la toute première fois (modifiable ligne par ligne) ── */
+/* 04/11 22h45 (Blandine) : + ses ajouts du 04/11 (retouches validées : « Guêtres ou bandes de polo », « Enrênement », « Gants » seul) */
 var HS_LISTE_DEFAUT = [
-  { r: "cheval", t: "Selle et tapis" }, { r: "cheval", t: "Filet ou bride" }, { r: "cheval", t: "Guêtres et protège-boulets" },
+  { r: "cheval", t: "Selle et tapis" }, { r: "cheval", t: "Filet ou bride" }, { r: "cheval", t: "Sangle bavette" },
+  { r: "cheval", t: "Guêtres ou bandes de polo, protège-boulets" }, { r: "cheval", t: "Enrênement si le cheval en a" }, { r: "cheval", t: "Amortisseur pour le dos" },
   { r: "cheval", t: "Protections de transport" }, { r: "cheval", t: "Licol et longe" }, { r: "cheval", t: "Couverture" },
-  { r: "cheval", t: "Seau, foin et eau" }, { r: "cheval", t: "Trousse de pansage" }, { r: "cheval", t: "Livret du cheval (vaccins)" },
+  { r: "cheval", t: "Seau, foin et eau" }, { r: "cheval", t: "Nourriture si concours prolongé à l’extérieur" }, { r: "cheval", t: "Trousse de pansage" },
+  { r: "cheval", t: "Élastiques pour natter et ciseaux" }, { r: "cheval", t: "Tendonyl ou équivalent post compétition à mettre sur les membres" },
+  { r: "cheval", t: "Stable boots pour le repos après compétition" }, { r: "cheval", t: "Livret du cheval (vaccins)" },
   { r: "moi", t: "Casque" }, { r: "moi", t: "Veste de concours" }, { r: "moi", t: "Culotte claire" }, { r: "moi", t: "Bottes" },
-  { r: "moi", t: "Gants et cravache" }, { r: "moi", t: "Licence sur le téléphone" }, { r: "moi", t: "Eau et goûter" }
+  { r: "moi", t: "Gants" }, { r: "moi", t: "Cravache" }, { r: "moi", t: "Éperons" }, { r: "moi", t: "Airbag" },
+  { r: "moi", t: "Cartouche de recharge et / ou protection dorsale" }, { r: "moi", t: "Matériel pour changer la cartouche" },
+  { r: "moi", t: "Manteau ou veste imperméable" }, { r: "moi", t: "Affaires de rechange en cas de pluie" },
+  { r: "moi", t: "Licence sur le téléphone" }, { r: "moi", t: "Eau et goûter" }
 ];
 
 /* ════════════════════ LISTE DU VAN ════════════════════ */
@@ -1216,6 +1223,10 @@ function EcranListeVan() {
   var _nv = React.useState({ cheval: "", moi: "" }); var nouv = _nv[0], setNouv = _nv[1];
   var _ch = React.useState(""); var nomCheval = _ch[0], setNomCheval = _ch[1];
   var _mt = React.useState(""); var materiel = _mt[0], setMateriel = _mt[1];
+  var _en = React.useState(""); var enrenement = _en[0], setEnrenement = _en[1];
+  var _ed = React.useState(false); var edition = _ed[0], setEdition = _ed[1];
+  var _ou = React.useState(null); var ouvert = _ou[0], setOuvert = _ou[1];
+  var _pc = React.useState(""); var photoCheval = _pc[0], setPhotoCheval = _pc[1];
   var _moi = React.useState(null); var moi = _moi[0], setMoi = _moi[1];
   var minuteur = React.useRef(null);
 
@@ -1236,7 +1247,7 @@ function EcranListeVan() {
           /* gardée d'un concours à l'autre : on repart de sa dernière liste, cases décochées */
           var rp = await supa.from("listes_van").select("items").eq("user_id", u.id).neq("agenda_id", idEv).order("maj_le", { ascending: false }).limit(1);
           var der = rp && rp.data && rp.data[0] && Array.isArray(rp.data[0].items) ? rp.data[0].items : null;
-          L = (der && der.length ? der : HS_LISTE_DEFAUT).map(function (x) { return { r: x.r === "moi" ? "moi" : "cheval", t: String(x.t || ""), f: false }; });
+          L = (der && der.length ? der : HS_LISTE_DEFAUT).filter(function (x) { return x.r !== "propre"; }).map(function (x) { return { r: x.r === "moi" ? "moi" : "cheval", t: String(x.t || ""), f: false }; });   /* le matériel propre au cheval vient de SA fiche, à chaque concours */
         }
         if (vif) setItems(L);
         /* le cheval engagé et ses consignes de matériel (page Santé) */
@@ -1245,8 +1256,10 @@ function EcranListeVan() {
           var e = re && re.data && re.data[0];
           if (e && vif) setNomCheval(e.cheval1_nom || "");
           if (e && e.cheval1_id) {
-            var rc = await supa.from("cheval_consignes").select("materiel").eq("cheval_id", e.cheval1_id).maybeSingle();
+            var rc = await supa.from("cheval_consignes").select("materiel, enrenement").eq("cheval_id", e.cheval1_id).maybeSingle();
             if (vif && rc && rc.data && rc.data.materiel) setMateriel(rc.data.materiel);
+            if (vif && rc && rc.data && rc.data.enrenement) setEnrenement(rc.data.enrenement);
+            try { var rph = await supa.from("chevaux").select("photo_url").eq("id", e.cheval1_id).maybeSingle(); if (vif && rph && rph.data && rph.data.photo_url) setPhotoCheval(rph.data.photo_url); } catch (ePh) { }
           }
         } catch (eE) { }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setItems(function (x) { return x || []; }); } }
@@ -1266,34 +1279,73 @@ function EcranListeVan() {
       } catch (eS) { setEtat(F("Pas enregistré : ") + String((eS && eS.message) || eS)); }
     }, 600);
   }
-  function cocher(i) { var L = items.slice(); L[i] = Object.assign({}, L[i], { f: !L[i].f }); sauver(L); }
+  function cocher(i) { if (typeof i === "string") { sauver(items.concat([{ r: "propre", t: i, f: true }])); return; } var L = items.slice(); L[i] = Object.assign({}, L[i], { f: !L[i].f }); sauver(L); }
   function retirer(i) { sauver(items.filter(function (x, j) { return j !== i; })); }
   function ajouter(r) { var t = String(nouv[r] || "").trim(); if (!t) return; sauver(items.concat([{ r: r, t: t, f: false }])); var n = Object.assign({}, nouv); n[r] = ""; setNouv(n); }
   function toutDecocher() { sauver(items.map(function (x) { return Object.assign({}, x, { f: false }); })); }
 
+  /* la liste propre au cheval engagé : ses consignes (matériel, enrênement) de sa fiche, en lignes à cocher */
+  var propres = [];
+  [materiel, enrenement].forEach(function (t) { String(t || "").split(/[\n,;]+/).forEach(function (z) { z = z.trim(); if (z) propres.push(z); }); });
+  var lignesPropres = propres.map(function (t) { var i = -1; (items || []).forEach(function (x, j) { if (x.r === "propre" && x.t === t) i = j; }); return { x: i >= 0 ? (items || [])[i] : { t: t, f: false }, i: i, t: t }; });
   var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Liste du van"),
-    sous: items && items.length ? (items.filter(function (x) { return x.f; }).length + F(" sur ") + items.length + F(" cochés.")) : "" });
+    sous: items && items.length ? (function () { var vus = items.filter(function (x) { return x.r !== "propre"; }); var n = vus.filter(function (x) { return x.f; }).length + lignesPropres.filter(function (o) { return o.x.f; }).length; return n + F(" sur ") + (vus.length + lignesPropres.length) + F(" cochés."); })() : "" });
   if (items === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-attente" }, "…")));
   if (!moi) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Connecte-toi pour avoir ta liste."))));
 
-  function rubrique(r, titre) {
-    return h("div", null,
-      h("div", { className: "hs-sec" }, h("b", null, titre)),
-      (r === "cheval" && materiel) ? h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Ses consignes de matériel : ") + materiel) : null,
-      h("div", { className: "hs-carte" },
-        items.map(function (x, i) {
-          if (x.r !== r) return null;
-          return h("div", { key: i, className: "hs-row", style: { gap: 10 } },
-            h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 28, height: 28, borderRadius: 8, border: "1px solid rgba(201,166,107,.75)", background: x.f ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 15, padding: 0 } }, x.f ? "✓" : ""),
-            h("button", { type: "button", onClick: function () { cocher(i); }, style: { flex: 1, minWidth: 0, textAlign: "start", background: "none", border: "none", padding: "6px 0", fontSize: 14, color: x.f ? "rgba(243,238,228,.5)" : "#F3EEE4", textDecoration: x.f ? "line-through" : "none" } }, x.t),
-            h("button", { type: "button", "aria-label": F("Retirer ") + x.t, onClick: function () { retirer(i); }, style: { flex: "0 0 auto", width: 32, height: 32, background: "none", border: "none", color: "rgba(243,238,228,.45)", fontSize: 18, padding: 0 } }, "×"));
-        }),
-        h("div", { className: "hs-row" }, h("div", { className: "hs-ajout", style: { width: "100%" } },
-          h("input", { type: "text", value: nouv[r], placeholder: F("Ajouter une ligne"), onChange: function (e) { var n = Object.assign({}, nouv); n[r] = e.target.value; setNouv(n); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); ajouter(r); } } }),
-          h("button", { type: "button", className: "hs-btn", onClick: function () { ajouter(r); } }, "+")))));
+  /* 04/11 22h45 (Blandine : « j’aime bien la troisième ») — LISTE DU VAN AU STYLE DE LA VIDÉOTHÈQUE : une carte par partie (photo à gauche,
+     titre, étiquette dorée, barre de progression), une seule dépliée à la fois ; les × et « Ajouter une ligne » seulement en mode « Modifier ». */
+  function croix(x, i) { return edition ? h("button", { type: "button", "aria-label": F("Retirer ") + x.t, onClick: function () { retirer(i); }, style: { flex: "0 0 auto", width: 26, height: 26, background: "none", border: "none", color: "rgba(243,238,228,.45)", fontSize: 16, padding: 0 } }, "×") : null; }
+  function ajoutLigne(r) {
+    return edition ? h("div", { style: { padding: "8px 10px" } }, h("div", { className: "hs-ajout", style: { width: "100%" } },
+      h("input", { type: "text", value: nouv[r], placeholder: F("Ajouter une ligne"), onChange: function (e) { var n = Object.assign({}, nouv); n[r] = e.target.value; setNouv(n); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); ajouter(r); } } }),
+      h("button", { type: "button", className: "hs-btn", onClick: function () { ajouter(r); } }, "+"))) : null;
+  }
+  var PH = { propre: photoCheval || "images/concours-hero-bai-tresse.webp", cheval: "images/cours-g1-c17-seller.webp", moi: "images/securite-g1-tenue.webp" };
+  var POS = { propre: "60% 30%", cheval: "60% 40%", moi: "40% 30%" };
+  function rondCoche(x, i) {
+    return h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (x.f ? "#C9A66B" : "rgba(201,166,107,.6)"), background: x.f ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 12, padding: 0, lineHeight: 1 } }, x.f ? "✓" : "");
+  }
+  function ligneFine(o, k) {
+    var x = o.x; return h("div", { key: o.i, style: { display: "flex", alignItems: "center", gap: 12, padding: "7px 2px", minHeight: 40, borderTop: k ? "1px solid rgba(243,238,228,.07)" : "0" } },
+      rondCoche(x, o.i), h("button", { type: "button", onClick: function () { cocher(o.i); }, style: { flex: 1, minWidth: 0, textAlign: "start", background: "none", border: "none", padding: 0, fontSize: 13, lineHeight: 1.35, color: x.f ? "rgba(243,238,228,.45)" : "#F3EEE4", textDecoration: x.f ? "line-through" : "none" } }, x.t), (typeof o.i === "number" && x.r !== "propre") ? croix(x, o.i) : null);   /* le matériel du cheval se change sur SA fiche */
+  }
+  function groupes() {
+    var G = [];
+    if (lignesPropres.length) G.push({ r: "propre", t: F("Son matériel à lui"), s: nomCheval || F("ton cheval"), L: lignesPropres.map(function (o) { return { x: o.x, i: o.i >= 0 ? o.i : o.t }; }) });
+    G.push({ r: "cheval", t: F("Pour le cheval"), s: nomCheval || "", L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "cheval"; }) });
+    G.push({ r: "moi", t: F("Pour toi"), s: F("ta tenue, ta sécurité"), L: items.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return o.x.r === "moi"; }) });
+    G.forEach(function (g) { g.n = g.L.filter(function (o) { return o.x.f; }).length; });
+    return G;
+  }
+  function vueHype() {
+    /* style de la Vidéothèque : pastilles dorées « Toutes (9) », titres au trait doré, cartes photo à gauche + barre de progression */
+    var G = groupes(), tot = 0, fait = 0; G.forEach(function (g) { tot += g.L.length; fait += g.n; });
+    var CG = "'Cormorant Garamond',Georgia,serif";
+    var titreSec = function (t, droite) { return h("div", { className: "hs-sec" }, h("b", null, t), droite ? h("span", null, droite) : null); };
+    var modif = h("button", { type: "button", onClick: function () { setEdition(!edition); }, style: { background: "none", border: "none", color: "#C9A66B", fontSize: 12, padding: "6px 0" } }, edition ? F("Terminé") : F("Modifier"));
+    var barre = function (n, t) { return h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 10 } },
+      h("div", { style: { flex: 1, height: 2, background: "rgba(243,238,228,.12)", borderRadius: 2 } }, h("div", { style: { height: 2, width: (t ? Math.round(n / t * 100) : 0) + "%", background: "#C9A66B", borderRadius: 2 } })),
+      h("span", { style: { fontSize: 11.5, color: n === t && t ? "#C9A66B" : "rgba(243,238,228,.7)" } }, n === t && t ? "✓ " + F("Prêt") : n + " / " + t)); };
+    var tag = function (t) { return h("span", { style: { display: "inline-block", border: "1px solid rgba(201,166,107,.7)", color: "#C9A66B", borderRadius: 999, padding: "2px 10px", fontSize: 11 } }, t); };
+    /* P3 : cartes comme les vidéos (photo à gauche, titre, étiquette, barre), qui se déplient */
+    var ouv = ouvert || (G.filter(function (g) { return g.n < g.L.length; })[0] || G[0]).r;
+    return h("div", null, titreSec(F("Ta liste"), fait + " / " + tot), G.map(function (g) {
+      var on = g.r === ouv;
+      return h("div", { key: g.r, style: { marginTop: 10, border: "1px solid " + (on ? "rgba(201,166,107,.45)" : "rgba(243,238,228,.1)"), borderRadius: 14, overflow: "hidden", background: "linear-gradient(135deg,#0d1416,#070A08 70%)" } },
+        h("button", { type: "button", onClick: function () { setOuvert(on ? "aucun" : g.r); }, style: { display: "flex", width: "100%", padding: 0, border: "none", background: "none", textAlign: "start", color: "#F3EEE4" } },
+          h("div", { style: { position: "relative", flex: "0 0 38%", minHeight: 108 } }, h("img", { src: PH[g.r], alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: POS[g.r] } }), h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg,transparent 55%,#0b1112)" } })),
+          h("div", { style: { flex: 1, minWidth: 0, padding: "12px 14px" } },
+            h("div", { style: { display: "flex", justifyContent: "space-between", gap: 8 } }, h("span", { style: { fontFamily: CG, fontSize: 21, lineHeight: 1.1 } }, g.t), h("span", { style: { color: "#C9A66B", fontSize: 14 } }, on ? "⌃" : "⌄")),
+            h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.6)", marginTop: 3 } }, g.s),
+            h("div", { style: { marginTop: 7 } }, tag(g.r === "propre" ? F("de sa fiche") : (g.L.length + " " + F("objets")))),
+            barre(g.n, g.L.length))),
+        on ? h("div", { style: { padding: "2px 14px 10px", borderTop: "1px solid rgba(243,238,228,.07)" } }, g.L.map(ligneFine), g.r !== "propre" ? ajoutLigne(g.r) : null) : null);
+    }), h("div", { style: { display: "flex", justifyContent: "flex-end" } }, modif));
   }
   function pdf() {
     var lignes = [];
+    if (lignesPropres.length) { lignes.push({ titre: F("Son matériel à lui") + (nomCheval ? " · " + nomCheval : "") }); lignesPropres.forEach(function (o) { lignes.push({ t: o.t, f: !!o.x.f }); }); }
     [["cheval", F("Pour ") + (nomCheval || F("le cheval"))], ["moi", F("Pour moi")]].forEach(function (g) {
       lignes.push({ titre: g[1] });
       items.forEach(function (x) { if (x.r === g[0]) lignes.push({ t: x.t, f: x.f }); });
@@ -1302,8 +1354,7 @@ function EcranListeVan() {
   }
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
     h("div", { className: "hs-in" },
-      rubrique("cheval", F("Pour ") + (nomCheval || F("ton cheval"))),
-      rubrique("moi", F("Pour toi")),
+      vueHype(),
       h("div", { className: "hs-duo", style: { marginTop: 18 } },
         h("button", { type: "button", className: "hs-btn plein", onClick: pdf }, F("Télécharger")),
         h("button", { type: "button", className: "hs-btn doux", onClick: toutDecocher }, F("Tout décocher"))),
