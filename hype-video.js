@@ -1462,8 +1462,8 @@
      parmi les images déjà dans le dépôt, en attendant son choix. */
   var THEMES_ORDRE = ["dressage", "obstacle", "pied", "soins", "sante", "position", "cheval", "securite"]; /* 04/11 16h45 : + Santé (Blandine) */
   var PHOTOS_THEMES = {
-    dressage: { img: "images/galop7-tmp-16-bai-brun-rond.webp" /* 04/11 15h20 (Blandine : « tu peux changer l'image de dressage, ce n'est pas définitif ») ; avant : images/galop5-video-dressage.webp */, pos: "62% 40%",
-      alt: {"fr": "Cheval bai brun avec sa bride, l'encolure arrondie", "en": "Dark bay horse in a bridle, neck rounded", "es": "Caballo castaño oscuro con brida, el cuello redondeado", "it": "Cavallo baio scuro con la briglia, l'incollatura arrotondata", "ja": "ダブルブライドルをつけ、首を丸めた黒鹿毛の馬", "de": "Dunkelbraunes Pferd mit Kandare und gerundetem Hals", "ar": "حصان كميت داكن بلجام مزدوج ورقبة مقوسة", "zh": "戴着双缰勒、颈部弯曲的深骝毛马", "nl": "Donkerbruin paard met stang, de hals gerond", "pt": "Cavalo castanho escuro com bridão, o pescoço arredondado", "sv": "Mörkbrun häst med kandar och rundad hals", "ru": "Тёмно-гнедая лошадь в мундштуке с округлённой шеей", "pl": "Ciemnogniady koń w munsztuku z zaokrągloną szyją", "ko": "더블 브라이들을 착용하고 목을 둥글게 만든 흑갈색 말"} },
+    dressage: { img: "images/theme-dressage-bai-trot.webp" /* 04/11 18h08 : sa photo (bai au trot, fond noir) ; avant : galop7-tmp-16-bai-brun-rond.webp, gardée pour le bandeau « Ajoute tes vidéos préférées » */, pos: "55% 45%",
+      alt: {"fr": "Cavalière au trot sur un cheval bai brun, fond noir", "en": "Rider trotting on a dark bay horse, black background", "es": "Amazona al trote sobre un caballo castaño oscuro, fondo negro", "it": "Amazzone al trotto su un cavallo baio scuro, sfondo nero", "ja": "黒鹿毛の馬に乗って速歩をするライダー、黒い背景", "de": "Reiterin im Trab auf einem dunkelbraunen Pferd, schwarzer Hintergrund", "ar": "فارسة تخبّ على حصان كميت داكن، خلفية سوداء", "zh": "骑手骑着深骝毛马快步，黑色背景", "nl": "Amazone in draf op een donkerbruin paard, zwarte achtergrond", "pt": "Amazona ao trote num cavalo castanho escuro, fundo preto", "sv": "Ryttare i trav på en mörkbrun häst, svart bakgrund", "ru": "Всадница на рыси на тёмно-гнедой лошади, чёрный фон", "pl": "Amazonka kłusem na ciemnogniadym koniu, czarne tło", "ko": "흑갈색 말을 타고 속보하는 라이더, 검은 배경"} },
     obstacle: { img: "images/theme-obstacle-saut-noir-cadre.webp" /* 04/11 15h45 (Blandine : « utilise-la pour obstacle ») ; 15h55 recadrée serré sur le cheval (« agrandir le cheval, éviter le vide en haut ») — original : images/theme-obstacle-saut-noir.webp ; avant : images/galop5-video-saut.webp */, pos: "50% 42%",
       alt: {"fr": "Cavalière et cheval bai brun en plein saut, sur fond noir", "en": "Rider and dark bay horse mid-jump, on a black background", "es": "Amazona y caballo castaño oscuro en pleno salto, sobre fondo negro", "it": "Amazzone e cavallo baio scuro in pieno salto, su sfondo nero", "ja": "黒い背景で跳躍する騎手と黒鹿毛の馬", "de": "Reiterin und dunkelbraunes Pferd im Sprung vor schwarzem Hintergrund", "ar": "فارسة وحصان كميت داكن في منتصف القفزة على خلفية سوداء", "zh": "黑色背景下腾空跳跃的骑手和深骝毛马", "nl": "Ruiter en donkerbruin paard midden in de sprong, op een zwarte achtergrond", "pt": "Amazona e cavalo castanho escuro em pleno salto, sobre fundo preto", "sv": "Ryttare och mörkbrun häst mitt i språnget mot svart bakgrund", "ru": "Всадница и тёмно-гнедая лошадь в прыжке на чёрном фоне", "pl": "Amazonka i ciemnogniady koń w locie nad przeszkodą, na czarnym tle", "ko": "검은 배경에서 점프하는 기수와 흑갈색 말"} },
     pied: { img: "images/securite-g1-longe.webp", pos: "50% 50%",
@@ -1607,6 +1607,8 @@
     ".hv2-pan span{display:block;font-size:12px;letter-spacing:.04em;color:var(--hv-iv2);margin-top:4px}",
     ".hv2-theme:active{transform:scale(.985)}",
     "@media (max-width:699px){.hv2-theme.seul2{grid-column:1/-1}.hv2-theme.seul2 .hv2-traite{aspect-ratio:21/9}}",
+    ".hv2-theme.large{grid-column:1/-1}.hv2-theme.large .hv2-traite{aspect-ratio:21/9}",
+    "@media (min-width:700px){.hv2-theme.large .hv2-traite{aspect-ratio:3/1}}",
     /* listes (thème ouvert, recherche, Mes vidéos) : en attendant la refonte
        de la page du thème, on garde les lignes existantes, recolorées */
     ".hv2-retour{display:flex;align-items:center;gap:10px;background:none;border:none;padding:12px 2px;min-height:44px;font-size:14px;color:var(--hv-iv);letter-spacing:.02em}",
@@ -1732,9 +1734,9 @@
     ".hv3-pils::-webkit-scrollbar{display:none}",
     ".hv3-pil{flex:0 0 auto;scroll-snap-align:start;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -12px rgba(0,0,0,.95);color:var(--hv-iv);font-family:inherit;font-size:15px;white-space:nowrap}",
     ".hv3-pil.on{border-color:var(--hv-ch);background:var(--hv-og-on);box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.4)}",
-    ".hv3-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.6vw,34px);line-height:1.05;color:var(--hv-iv);margin:28px 0 14px;padding-inline-start:16px;border-inline-start:2px solid var(--hv-ch)}",
+    ".hv3-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.6vw,34px);line-height:1.05;color:var(--hv-iv);margin:36px 0 24px;padding-inline-start:16px;border-inline-start:2px solid var(--hv-ch)}",
     ".hv3-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}",
-    ".hv3-tete .hv3-h2{margin-bottom:14px}",
+    ".hv3-tete .hv3-h2{margin-bottom:24px}",
     ".hv3-voir{flex:0 0 auto;background:none;border:none;color:var(--hv-iv);font-family:inherit;font-size:14px;padding:10px 0 18px;white-space:nowrap}",
     ".hv3-voir i{font-style:normal;font-size:18px}",
     ".hv3-cartes{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}",
@@ -1773,7 +1775,7 @@
     ".hv3-photo-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre-vig)}",
     ".hv3-photo b{display:block;margin-top:8px;font-weight:500;font-size:13px;line-height:1.3;color:var(--hv-iv);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}",
     ".hv3-photo small{display:block;margin-top:3px;font-size:11px;color:var(--hv-iv2)}",
-    ".hv3-ajout-zone{display:flex;justify-content:center;margin:26px 0 8px}",
+    ".hv3-ajout-zone{display:flex;justify-content:center;margin:40px 0 8px}",
     ".hv3-plus-zone{display:flex;justify-content:center;margin:14px 0 0}",
     ".hv3-plus{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid rgba(243,238,228,.16);background:var(--hv-og);color:var(--hv-iv);font-family:inherit;font-size:14px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}",
     ".hv3-plus i{font-style:normal;color:var(--hv-ch);font-size:16px}",
@@ -2131,9 +2133,10 @@
     function blocAjout(themeK) {
       if (!vc.pret) return null;
       /* 04/11 17h40 (Blandine) : bandeau photo sur toute la largeur, au lieu d'un simple bouton */
-      var phB = (themeK && PHOTOS_THEMES[themeK]) || PHOTO_HERO;
+      /* 04/11 18h08 : toujours la même photo (tête de bai brun), pour ne jamais répéter la photo du thème */
+      var phB = { img: "images/galop7-tmp-16-bai-brun-rond.webp", pos: "62% 6%" };
       var bouton = h("button", { className: "hv3-ban", onClick: function () { ouvrirForm(themeK); } },
-        h("img", { className: "hv3-ban-img", src: phB.img, alt: "", loading: "lazy", style: { objectPosition: (phB.pos ? phB.pos.split(" ")[0] : "50%") + " 6%" } }),
+        h("img", { className: "hv3-ban-img", src: phB.img, alt: "", loading: "lazy", style: { objectPosition: phB.pos } }),
         h("span", { className: "hv3-ban-voile", "aria-hidden": "true" }),
         h("span", { className: "hv3-ban-txt" },
           h("span", { className: "hv3-ban-t" }, VX("banTitre")),
@@ -2506,8 +2509,10 @@
       var nT = themesVis.length;
       var grille = h("div", { className: "hv2-grille" }, themesVis.map(function (x, i) {
         var ph = x.k === "tous" ? { img: PHOTO_HERO.img, pos: PHOTO_HERO.posTel, alt: PHOTO_HERO.alt } : (PHOTOS_THEMES[x.k] || {});
-        var dernier = i === nT - 1;
-        var cls = "hv2-theme" + (dernier && nT % 2 === 1 ? " seul2" : "") + (dernier && nT % 3 === 1 ? " seul3" : "");
+        /* 04/11 18h10 : « Toutes les vidéos » prend toute la largeur en haut ; les thèmes se rangent par deux en dessous
+           (sinon le dernier thème se retrouvait seul, en bandeau) */
+        var nTh = nT - 1, j = i - 1, dernier = i === nT - 1;
+        var cls = "hv2-theme" + (x.k === "tous" ? " large" : "") + (x.k !== "tous" && dernier && nTh % 2 === 1 ? " seul2" : "") + (x.k !== "tous" && dernier && nTh % 3 === 1 ? " seul3" : "");
         return h("button", { key: x.k, className: cls, disabled: !x.n, onClick: function () { if (x.n) { setTheme(x.k); setVue("theme"); } } },
           h("span", { className: "hv2-traite", style: { display: "block", "--hv-pos": ph.pos || "center" } },
             ph.img ? h("img", { src: ph.img, alt: L(ph.alt, langue), loading: "lazy" }) : null),
