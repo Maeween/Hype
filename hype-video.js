@@ -1223,13 +1223,13 @@
     ".hv2-marque{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;letter-spacing:.62em;padding-inline-start:.62em;color:var(--hv-iv);position:relative;z-index:2}",
     ".hv2-photo{position:relative;height:clamp(300px,92vw,430px);margin-top:-6px}",
     ".hv2-photo img{object-position:var(--hv-pos-tel,center)}",
-    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 62%,transparent 100%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 62%,transparent 100%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);mask-composite:intersect}",
+    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);mask-composite:intersect}",
     ".hv2-photo.hv2-traite:after{box-shadow:none}",
     ".hv2-courbe{position:absolute;left:0;right:0;width:100%;height:70px;pointer-events:none;z-index:2}",
     ".hv2-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
     ".hv2-hero-retour{position:relative;z-index:4;margin-top:2px}",
     ".hv2-hero-r .hv2-photo{margin-top:-30px}",
-    ".hv2-courbe.c2{position:relative;display:block;height:64px;margin-top:-74px}",
+    ".hv2-courbe.c2{position:relative;display:block;height:64px;margin-top:-64px}",
     "[dir=rtl] .hv2-courbe{transform:scaleX(-1)}",
     ".hv2-titre{text-align:end;margin-top:-12px;position:relative;z-index:3}",
     ".hv2-titre h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0;color:var(--hv-iv);letter-spacing:.005em}",
@@ -1299,7 +1299,7 @@
     ".hv2-titre{margin-top:-16px}.hv2-marque{font-size:22px}}",
     /* ordinateur : panoramique de hauteur maîtrisée, contenu 1240 px */
     "@media (min-width:1100px){.hv2-photo{height:460px;width:min(66%,820px);margin-inline-start:auto;margin-inline-end:max(0px,calc((100% - 1240px) / 2))}.hv2-photo img{object-position:var(--hv-pos-ordi,center)}",
-    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 66%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 66%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%)}",
+    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%)}",
     ".hv2-courbe{max-width:1240px;margin:0 auto}",
     ".hv2-onglets{overflow:visible;flex-wrap:nowrap;justify-content:flex-start;margin:28px 0 0;padding:2px 0 8px}",
     ".hv2-grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hv2-theme.seul3{grid-column:auto}",
@@ -1460,6 +1460,9 @@
           h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }),
           h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }),
           h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+        /* 04/11 (Blandine : « reprends vraiment le design exact, en dessous du trait y a plus de photo ») :
+           sous la courbe du bas, tout est noir — la photo s'arrête sur le trait, quelle que soit la photo. */
+        cls === "c2" ? h("path", { d: d + " L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }) : null,
         h("path", { d: d, fill: "none", stroke: "url(#hv2g-" + cls + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
     }
     /* En-tête commun (04/11, Blandine : « le haut des pages des onglets doit avoir
