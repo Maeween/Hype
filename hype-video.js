@@ -1198,9 +1198,13 @@
      réglable ici seulement. Le fichier n'est jamais modifié. actif:false
      rend les photos telles quelles. Ne s'applique pas aux lecteurs YouTube. */
   /* Composition ordinateur : "A" ou "B" (voir CSS). Le banc d'essai peut la forcer par window.__hvDesignOrdi. */
-  var DESIGN_ORDI = "B";
+  var DESIGN_ORDI = "E";   /* 04/11 09h26 : version E choisie par Blandine */
   /* Style des onglets de Galops : "1" à "4" (propositions du 04/11, toujours semi-transparents, dégradé, ombre). */
-  var STYLE_ONGLETS = "1";
+  var STYLE_ONGLETS = "1";   /* 04/11 09h25 : style 1 choisi par Blandine */
+  /* Onglets « serrés » (04/11 09h26, Blandine : « tous horizontaux serrés comme c'était prévu au début ») :
+     les 8 onglets tiennent sur une seule ligne, sans défilement ; « Galop » en petit au-dessus du numéro,
+     « Prochainement » remplacé par un onglet atténué. Proposition, en attente de validation. */
+  var ONGLETS_SERRES = false;
   var TRAITEMENT_PHOTO = { actif: true, filtre: "saturate(.92) contrast(1.05) brightness(.95) sepia(.07)", bords: .5 };
 
   /* Onglets des Galops. « 7+ » regroupe les Galops 7, 8 et 9. */
@@ -1270,6 +1274,17 @@
     /* 4 — givré ivoire */
     ".hv2-o4 .hv2-og{border-radius:14px;background:linear-gradient(160deg,rgba(243,238,228,.12),rgba(243,238,228,.025));border-color:rgba(243,238,228,.16);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 22px -14px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07)}",
     ".hv2-o4 .hv2-og.on{background:linear-gradient(160deg,rgba(243,238,228,.24),rgba(201,166,107,.10));border-color:rgba(243,238,228,.55);box-shadow:0 12px 24px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.14)}",
+    ".hv2-og-court{display:none}",
+    ".hv2-serre .hv2-onglets{overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0;gap:5px}",
+    ".hv2-serre .hv2-og{flex:1 1 0;min-width:0;padding:6px 2px;min-height:52px;border-radius:11px}",
+    ".hv2-serre .hv2-og-long,.hv2-serre .hv2-og small{display:none}",
+    ".hv2-serre .hv2-og-court{display:flex;flex-direction:column;align-items:center;line-height:1}",
+    ".hv2-serre .hv2-og-court i{font-style:normal;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--hv-iv2);margin-bottom:4px}",
+    ".hv2-serre .hv2-og-court b{font-family:'Montserrat',sans-serif;font-weight:500;font-size:16px;color:var(--hv-iv);font-variant-numeric:lining-nums}",
+    ".hv2-serre .hv2-og:first-child{flex-grow:1.35}",
+    ".hv2-serre .hv2-og:first-child .hv2-og-court b{font-family:'Montserrat',sans-serif;font-weight:500;font-size:12.5px}",
+    ".hv2-serre .hv2-og:disabled{opacity:.32}",
+    ".hv2-serre .hv2-og.on .hv2-og-court i{color:var(--hv-ch)}",
     ".hv2-og small{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--hv-iv2);margin-top:3px}",
     /* thèmes */
     ".hv2-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.4vw,36px);margin:22px 0 14px;color:var(--hv-iv);line-height:1.1}",
@@ -1452,7 +1467,9 @@
       try { if (window.__hvDesignOrdi) d = window.__hvDesignOrdi; } catch (e) { }
       var o = STYLE_ONGLETS;
       try { if (window.__hvOnglets) o = window.__hvOnglets; } catch (e2) { }
-      return "hv2 hv2-d" + d + " hv2-o" + o;
+      var s = ONGLETS_SERRES;
+      try { if (window.__hvSerre !== undefined) s = !!window.__hvSerre; } catch (e3) { }
+      return "hv2 hv2-d" + d + " hv2-o" + o + (s ? " hv2-serre" : "");
     }
     function styleTraitement() {
       return TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre, "--hv-bords": TRAITEMENT_PHOTO.bords } : {};
@@ -1570,6 +1587,7 @@
 
     /* onglets des Galops : disponibilités calculées sur le catalogue réel ; dans une page de thème,
        seulement les vidéos de ce thème (04/11, Blandine : « ajoute les onglets dans les pages à thème ») */
+    var TXT_BIENTOT = T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개");
     function ongletsGalops(themeK) {
       return h("div", {
         className: "hv2-onglets", role: "tablist",
@@ -1589,8 +1607,14 @@
               pr.scrollLeft += (re.left + re.width / 2) - (rp.left + rp.width / 2);
             } catch (e) { }
           } : undefined,
+          title: !n ? nomOnglet(k) + " · " + TXT_BIENTOT : undefined,
           onClick: function () { if (n) setGalop(k); }
-        }, nomOnglet(k), !n ? h("small", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : null);
+        },
+          /* forme courte (onglets serrés) : « Galop » en petit au-dessus du numéro */
+          h("span", { className: "hv2-og-court", "aria-hidden": "true" },
+            k === "tous" ? h("b", null, nomOnglet(k)) : [h("i", { key: "i" }, TXT_GALOP.trim()), h("b", { key: "b" }, String(k))]),
+          h("span", { className: "hv2-og-long" }, nomOnglet(k)),
+          !n ? h("small", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : null);
       }));
     }
 
