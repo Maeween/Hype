@@ -465,6 +465,8 @@ var CSS2 = [
   ".hs-grille td em{display:block;font-size:10px}",
   ".hs-grille td.libre{color:var(--hs-iv3);font-style:italic}",
   ".hs-grille td.trop{text-decoration:underline}",
+  ".hs-lus{margin-top:14px}.hs-lu{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(243,238,228,.06);font-size:13px}",
+  ".hs-lu b{font-weight:500;display:block}.hs-lu em{font-style:normal;font-size:11px;color:var(--hs-iv2)}",
   ".hs-puce-cav{background:none;border:none;border-radius:0;color:var(--hs-iv2);font-family:inherit;font-size:13px;min-height:30px;padding:0 10px 0 0;margin:0}",
   ".hs-puce-cav.fait{opacity:.35}",
   ".hs-puce button{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--hs-iv2);font-size:16px;line-height:1;padding:0}",
@@ -844,6 +846,48 @@ function EcranConcours() {
    Sources, dans l'ordre : ce que la coach a déjà corrigé (cavaliers_licences, si ce n'est pas juste le pseudo),
    puis le nom FFE rattaché au compte (cavaliers_ffe, « MAELYS MASURE » → « MASURE Maelys »), puis noms_ffe ;
    licence : cavaliers_licences, puis noms_ffe, puis la demande de résultats. */
+/* 05/11 00h16 (Blandine : « les trois tout de suite ») — LIRE UNE FICHE D'ENGAGEMENT (photo, capture ou PDF) :
+   même chemin que la lecture d'un carnet de vaccins (hey-baby-vision, mode « perception » en différé). L'IA rend une
+   liste ; rien n'est ajouté sans que la coach coche et touche « Ajouter ». */
+async function hsLireFiche(images) {
+  var sess = await supa.auth.getSession();
+  var sv = sess && sess.data && sess.data.session;
+  if (!sv || !sv.access_token) throw new Error("session");
+  var system = "Tu lis une feuille d'engagement de concours d'equitation (tableau CAVALIERS / Licence / Ep. / CHEVAL / Ep. / CHEVAL), en photo, capture ou PDF. "
+    + "Reponds UNIQUEMENT en JSON : {\"cavaliers\":[{\"nom\":\"NOM Prenom recopie tel quel\",\"licence\":\"numero recopie tel quel ou vide\",\"epreuve1\":\"\",\"cheval1\":\"\",\"epreuve2\":\"\",\"cheval2\":\"\"}]}. "
+    + "Une ligne par cavalier ecrit sur la feuille, dans l'ordre. Recopie les accents. N'invente RIEN : case vide ou illisible = chaine vide. Ignore le chef d'equipe et le tableau des montants.";
+  var blocs = (Array.isArray(images) ? images : [images]).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
+  blocs.push({ type: "text", text: "Liste les cavaliers de cette feuille." });
+  var corps = { mode: "perception", stream: false, differe: true, system: system, messages: [{ role: "user", content: blocs }] };
+  var rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify(corps) });
+  var data = null; try { data = await rep.json(); } catch (e) { }
+  var texte = "";
+  if (rep.ok && data && data.ok && data.differe && data.jobId) {
+    var t0 = Date.now(), fini = null;
+    while (!fini && Date.now() - t0 < 300000) {
+      await new Promise(function (r) { setTimeout(r, 3000); });
+      try { var rj = await supa.from("heybaby_analyses").select("statut, resultat, erreur_code, erreur_message").eq("id", data.jobId).single(); if (rj && !rj.error && rj.data && rj.data.statut !== "en_cours") fini = rj.data; } catch (eJ) { }
+    }
+    if (!fini) throw new Error("délai dépassé");
+    if (fini.statut !== "termine") throw new Error((fini.erreur_code || "erreur") + " " + (fini.erreur_message || ""));
+    texte = String(fini.resultat || "");
+  } else if (rep.ok && data && data.ok && data.content) {
+    texte = (data.content || []).map(function (b) { return (b && b.text) || ""; }).join("");
+  } else {
+    if (data && data.code === "PREMIUM_REQUIRED") throw new Error("lecture réservée aux abonnés Premium");
+    throw new Error("HTTP " + rep.status + " " + ((data && (data.code || data.message)) || ""));
+  }
+  var m = texte.match(/\{[\s\S]*\}/);
+  var o = JSON.parse(m ? m[0] : texte);
+  return (o && Array.isArray(o.cavaliers)) ? o.cavaliers : [];
+}
+/* même personne ? (mots sans accents ni ordre : « MASURE Maelys » = « Maelys MASURE » ; « Aurélie » seul = « BUSSONNAIS Aurélie ») */
+function hsMemePers(a, b) {
+  function mots(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ").filter(function (w) { return w.length > 1; }); }
+  var A = mots(a), B = mots(b); if (!A.length || !B.length) return false;
+  var court = A.length <= B.length ? A : B, long = A.length <= B.length ? B : A;
+  return court.length >= 2 ? court.every(function (w) { return long.indexOf(w) !== -1; }) : (court[0].length >= 4 && long.indexOf(court[0]) !== -1 && long.length <= 2);
+}
 function hsNomSep(ffe) {
   var m = String(ffe || "").trim().split(/\s+/).filter(Boolean); if (!m.length) return "";
   if (m.length === 1) return m[0].toUpperCase();
@@ -899,6 +943,8 @@ function EcranEngagements() {
   var _rn = React.useState(null); var rechNum = _rn[0], setRechNum = _rn[1];   /* 04/11 23h57 : recherche du n° de concours { etat, liste, msg } */
   var _lb = React.useState({}); var libres = _lb[0], setLibres = _lb[1];   /* « Autre cheval » : saisie libre */
   var _tm = React.useState(function () { try { return Number(localStorage.getItem("hype_tours_max")) || 3; } catch (e) { return 3; } }); var toursMax = _tm[0], setToursMax = _tm[1];
+  var _lf = React.useState(null); var lus = _lf[0], setLus = _lf[1];        /* fiche lue : [{nom, licence, …, compte, coche}] */
+  var _lfe = React.useState(""); var lecture = _lfe[0], setLecture = _lfe[1]; /* "" | "en_cours" | message */
   var _vu = React.useState("couples"); var vue = _vu[0], setVue = _vu[1];   /* onglets : couples (cavalières + chevaux) / épreuves / grille */
   var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
@@ -1115,6 +1161,39 @@ function EcranEngagements() {
       n.push({ __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
     }
     setLignes(n); setModifie(true); setMsg(""); setRecherche(""); setTrouves([]);
+  }
+  async function lireFiche(e) {
+    var f = e && e.target && e.target.files && e.target.files[0];
+    try { e.target.value = ""; } catch (eV) { }
+    if (!f) return;
+    setLus(null); setLecture("en_cours");
+    try {
+      var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
+      if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error("envoie une photo, une capture d'écran ou un PDF (pour un fichier Word : fais une capture de la fiche)");
+      var imgs = estPdf ? (await hypePdfEnImages(f, 2, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
+      var l = await hsLireFiche(imgs);
+      var tous = candidates.slice();
+      var res = l.filter(function (x) { return x && String(x.nom || "").trim(); }).map(function (x) {
+        var c = tous.filter(function (p) { return hsMemePers(x.nom, p.nom) || hsMemePers(x.nom, p.pseudo); })[0] || null;
+        var deja = lignes.some(function (li) { return (c && li.cavalier_id === c.id) || hsMemePers(li.nom, x.nom); });
+        return { nom: String(x.nom || "").trim(), licence: String(x.licence || "").trim(), epreuve1: hsNomEpreuve(x.epreuve1 || ""), cheval1: String(x.cheval1 || "").trim(), epreuve2: hsNomEpreuve(x.epreuve2 || ""), cheval2: String(x.cheval2 || "").trim(), compte: c, deja: deja, coche: true };
+      });
+      setLus(res); setLecture(res.length ? "" : "Aucune cavalière trouvée sur cette fiche.");
+    } catch (eL) { setLecture("Lecture impossible : " + String((eL && eL.message) || eL)); }
+  }
+  /* ajoute les cavalières cochées ; celles déjà sur la feuille reçoivent juste le nom et la licence lus */
+  function ajouterLus() {
+    if (!lus) return;
+    var n = lignes.slice(), eAjout = (feuille.epreuves || []).slice();
+    lus.forEach(function (x) {
+      if (!x.coche) return;
+      [x.epreuve1, x.epreuve2].forEach(function (ep) { if (ep && !eAjout.some(function (y) { return y.toLowerCase() === ep.toLowerCase(); })) eAjout.push(ep); });
+      var j = -1; n.forEach(function (li, k) { if (j === -1 && ((x.compte && li.cavalier_id === x.compte.id) || hsMemePers(li.nom, x.nom))) j = k; });
+      if (j !== -1) { n[j] = Object.assign({}, n[j], { nom: x.nom || n[j].nom, licence: x.licence || n[j].licence }); return; }
+      n.push({ __n: true, cavalier_id: x.compte ? x.compte.id : null, nom: x.nom, licence: x.licence, epreuve1: x.epreuve1, cheval1_nom: x.cheval1, epreuve2: x.epreuve2, cheval2_nom: x.cheval2, ordre: n.length });
+    });
+    if (eAjout.length !== (feuille.epreuves || []).length) setFeuille(Object.assign({}, feuille, { epreuves: eAjout }));
+    setLignes(n); setModifie(true); setLus(null); setMsg("Fiche ajoutée : vérifie, puis touche « Enregistrer ».");
   }
   function retirerLigne(i) {
     var l = lignes[i]; if (l && l.id) setSupprimees(supprimees.concat([l.id]));
@@ -1357,6 +1436,22 @@ function EcranEngagements() {
       q.length >= 2 ? h("div", { className: "hs-puces" },
         resultats.map(puceCav),
         h("button", { type: "button", className: "hs-puce hs-puce-cav", onClick: function () { ajouterCavaliere({ libre: String(recherche).trim() }); } }, F("+ « ") + String(recherche).trim() + F(" » sans compte Hype"))) : null,
+      /* lire une fiche existante */
+      h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Ou lire une fiche déjà remplie")),
+        h("label", { className: "hs-btn", style: { minHeight: 42, fontSize: 12.5, cursor: "pointer", opacity: lecture === "en_cours" ? 0.6 : 1 } },
+          lecture === "en_cours" ? F("Lecture de la fiche… (1 à 2 min)") : F("Photo, capture ou PDF de la fiche"),
+          h("input", { type: "file", accept: "image/*,application/pdf", disabled: lecture === "en_cours", onChange: lireFiche, style: { display: "none" } }))),
+      lecture && lecture !== "en_cours" ? h("div", { className: "hs-note", style: { marginTop: 4 } }, lecture) : null,
+      lus && lus.length ? h("div", { className: "hs-lus" },
+        h("div", { className: "hs-pep-t" }, h("span", null, F("Lu sur la fiche")), h("span", null, lus.length + F(" cavalières"))),
+        lus.map(function (x, k) {
+          return h("label", { key: k, className: "hs-lu" },
+            h("input", { type: "checkbox", checked: !!x.coche, onChange: function () { var c = lus.slice(); c[k] = Object.assign({}, x, { coche: !x.coche }); setLus(c); } }),
+            h("span", null, h("b", null, x.nom), h("em", null, [x.licence, x.compte ? F("compte Hype : ") + (x.compte.pseudo || x.compte.nom) : F("sans compte Hype"), x.deja ? F("déjà sur la feuille : nom et licence mis à jour") : ""].filter(Boolean).join(" · "))));
+        }),
+        h("div", { className: "hs-duo", style: { marginTop: 12 } },
+          h("button", { type: "button", className: "hs-btn", onClick: ajouterLus }, F("Ajouter à la feuille")),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { setLus(null); } }, F("Annuler")))) : null,
       vueChevaux()),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seules toi et la cavalière concernée les voient. Chaque cavalière voit son engagement sur la fiche du concours.")),
       /* actions */
