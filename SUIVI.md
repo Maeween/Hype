@@ -16759,3 +16759,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - ERREUR TROUVÉE (publiée le 04/11 00h55) : le bouton de ces pages menait à 2hype.fr/#premium, adresse que l'appli ne reconnaissait pas → ouvrait l'accueil. Corrigé : index.html, la table des raccourcis reconnaît « premium » et ouvre la page des abonnements.
 - Galops 6 et 7 ouverts aux Premium par l'autre conversation (HYPE_GALOP_PROCHAIN_DES = 8) : leurs pages Google ouvrent maintenant directement le cours (comme les Galops 2 à 5), plus la page du Galop.
 - Fichiers : index.html, outils/seo-galops.cjs, SUIVI.md.
+
+## 04/11/2026 01h25 — PUBLICATION build 20261104-0125 (Blandine 01h22 « Ok ») : fin des aperçus Google « Abonne-toi… » + lien vers les abonnements
+- Branche travail-fin-apercu fusionnée dans main (détail : entrée « BRANCHE travail-fin-apercu » ci-dessus) : texte en 14 langues, bouton « Voir les abonnements » qui ouvre la page des abonnements, pages Google des Galops 6 et 7 qui ouvrent directement le cours.
+- Non vérifié : ce que voit en premier un visiteur sans compte qui suit le lien des abonnements.
+- Fichiers : index.html (build 20261104-0125), outils/seo-galops.cjs, SUIVI.md.
