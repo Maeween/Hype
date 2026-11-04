@@ -476,6 +476,7 @@ function principal() {
   const cours = chargerCours();
   const infos = infosGalops();
   const urls = [];   // { chemin, langues }
+  const ADRESSES = {};   // 04/11 (Blandine : « il me faut les liens pour partager ») : identifiant du chapitre → { g: Galop, s: adresse, l: langues } → /cours-adresses.json
   const nomGalop = (n, lg) => UI[lg].galop(n);
   const sousTitre = (n, lg) => (lg === "ar" ? SOUS_AR[n] : lg === "zh" ? (lk(infos[n] && infos[n].sousTitre, "zh") || SOUS_ZH[n]) : tr(infos[n] && infos[n].sousTitre, lg)) || "";
   if (Array.isArray(cours[5])) {
@@ -546,6 +547,7 @@ function principal() {
               isAccessibleForFree: true, educationalLevel: nomGalop(1, lg), timeRequired: undefined, url: `${DOM}/${lg}/galop-1/${slugs[i]}/`,
               isPartOf: { "@type": "Course", name: nomGalop(1, lg), url: `${DOM}/${lg}/galop-1/` }, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
           if (lg === LANGS[0]) urls.push({ chemin: `galop-1/${slugs[i]}/`, langues });
+          if (lg === LANGS[0] && ch.id) ADRESSES[ch.id] = { g: 1, s: slugs[i], l: langues };   /* 04/11 : partage d'un cours par son adresse publique */
         });
       } else if (n <= APERCU_JUSQUA && slugsG[n]) {
         // 30/10 : Galops 2 à 5 — chaque chapitre a sa page, avec le DÉBUT seulement (aperçu), comme dans l'appli
@@ -578,6 +580,7 @@ function principal() {
               isAccessibleForFree: false, educationalLevel: nomGalop(n, lg), url: `${DOM}/${lg}/galop-${n}/${sg[i]}/`,
               isPartOf: { "@type": "Course", name: nomGalop(n, lg), url: `${DOM}/${lg}/galop-${n}/` }, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
           if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/${sg[i]}/`, langues });
+          if (lg === LANGS[0] && ch.id) ADRESSES[ch.id] = { g: n, s: sg[i], l: langues };
         });
       } else {
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;
@@ -599,6 +602,8 @@ function principal() {
   }
   x += "</urlset>\n";
   fs.writeFileSync(path.join(RACINE, "sitemap-galops.xml"), x);
+  /* 04/11 : la liste des adresses publiques des chapitres, lue par l'appli pour le bouton « Partager ce cours » (lien vers la page du cours, pas vers l'appli) */
+  fs.writeFileSync(path.join(RACINE, "cours-adresses.json"), JSON.stringify(ADRESSES));
   log(`${urls.length} pages par langue, ${galops.length} Galops, plan du site écrit`);
 }
 
