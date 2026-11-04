@@ -8,7 +8,7 @@ create table if not exists public.videos_cavaliers (
   titre text not null check (char_length(titre) between 1 and 120),
   note text check (note is null or char_length(note) <= 300),
   galop int check (galop is null or galop between 1 and 9),
-  theme text not null check (theme in ('cheval','position','dressage','obstacle','pied','soins','securite')),
+  theme text not null check (theme in ('cheval','position','dressage','obstacle','pied','soins','sante','securite')),
   statut text not null default 'perso' check (statut in ('perso','attente','acceptee','refusee')),
   auteur_nom text check (auteur_nom is null or char_length(auteur_nom) <= 40),
   created_at timestamptz not null default now(),
