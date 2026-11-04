@@ -17105,3 +17105,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Récapitulatif en bas : tableau par cheval (tours, places restantes, qui et quelle épreuve) et par cavalière (tours, chevaux). Le nombre de tours max par cheval se règle (3 par défaut, gardé sur le téléphone) ; au-delà, « trop » est souligné.
 - Rien de changé en base ni sur la feuille SEP.
 - Fichiers : hype-ecran-saison.js (v23), index.html (build 20261105-0110), SUIVI.md.
+
+## 04/11/2026 23h59 — PUBLICATION build 20261105-0115 (Blandine 23h31 : « impose un espace entre l'épreuve et l'indice : Club 3, Club 2, Amat 3 ; si on oublie de le mettre, mets-le toi »)
+- Engagements : chaque nom d'épreuve est remis au même format en l'ajoutant (« Club3 » → « Club 3 », « AMAT2 » → « AMAT 2 », « Club1GP » → « Club 1 GP », espaces en trop retirés) ; pas de doublon si la même épreuve est retapée autrement en majuscules/minuscules.
+- Les épreuves déjà enregistrées (en-tête et lignes des couples) sont remises au même format à l'ouverture de la page ; enregistrées ainsi au prochain « Enregistrer ».
+- Fichiers : hype-ecran-saison.js (v24), index.html (build 20261105-0115), SUIVI.md.

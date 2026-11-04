@@ -806,6 +806,10 @@ function EcranConcours() {
 }
 
 /* ════════════════════ LA PAGE ENGAGEMENTS (coach) ════════════════════ */
+/* 04/11 23h31 (Blandine : « impose un espace entre l'épreuve et l'indice : Club 3, Amat 2 ; si on l'oublie, mets-le toi ») */
+function hsNomEpreuve(t) {
+  return String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim();
+}
 function EcranEngagements() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -879,11 +883,13 @@ function EcranEngagements() {
           }
           Fe.__nouvelle = true;
         }
+        Fe.epreuves = (Fe.epreuves || []).map(hsNomEpreuve).filter(function (x, j, a) { return x && a.indexOf(x) === j; });
         if (vif) setFeuille(Fe);
         /* les lignes déjà enregistrées */
         var rl = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
         if (rl && rl.error) throw new Error(F("engagements : ") + (rl.error.message || rl.error));
         var L = (rl && rl.data) || [];
+        L.forEach(function (l) { if (l.epreuve1) l.epreuve1 = hsNomEpreuve(l.epreuve1); if (l.epreuve2) l.epreuve2 = hsNomEpreuve(l.epreuve2); });
         /* cavalières possibles : inscrites, membres de la Team (SEP), membres du club */
         var parId = {};
         function ajouterP(p, src) { if (!p || !p.id) return; if (!parId[p.id]) parId[p.id] = { id: p.id, pseudo: p.pseudo || "", avatar_url: p.avatar_url || null, src: src }; }
@@ -978,8 +984,8 @@ function EcranEngagements() {
   function poserF(k, v) { setFeuille(Object.assign({}, feuille, (function () { var o = {}; o[k] = v; return o; })())); setModifie(true); setMsg(""); }
   function poserL(i, k, v) { var n = lignes.slice(); n[i] = Object.assign({}, n[i]); n[i][k] = v; setLignes(n); setModifie(true); setMsg(""); }
   function ajouterEpreuve() {
-    var t = String(nouvelleEp || "").trim(); if (!t) return;
-    var l = (feuille.epreuves || []).slice(); if (l.indexOf(t) === -1) l.push(t);
+    var t = hsNomEpreuve(nouvelleEp); if (!t) return;
+    var l = (feuille.epreuves || []).slice(); if (!l.some(function (x) { return x.toLowerCase() === t.toLowerCase(); })) l.push(t);
     poserF("epreuves", l); setNouvelleEp("");
   }
   function retirerEpreuve(t) { poserF("epreuves", (feuille.epreuves || []).filter(function (x) { return x !== t; })); }
