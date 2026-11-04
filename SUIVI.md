@@ -23,7 +23,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 ## 3 — Quand on aura le temps
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
-- [04/11] Recherche de concours (numéro FFE) : étape 1 prête, NON publiée (netlify/functions/recherche-concours.js). Étape 2 = bouton « Trouver le numéro » sur les Engagements et à la création d'un concours, avec repli « chercher sur le calendrier FFE ». Étape 3 = recherche par dates, région, discipline (attend : Claude)
+- [05/11] Recherche de concours (numéro FFE) : en ligne sur la page Engagements (build 0210), à essayer sur iPhone. Reste : bouton « Trouver le numéro » sur les Engagements et à la création d'un concours, avec repli « chercher sur le calendrier FFE ». Étape 3 = recherche par dates, région, discipline (attend : Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
 - [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
 - [04/11] Vidéothèque : un lien vers une vidéo précise (#v=…) ouvre l'accueil de la Vidéothèque au lieu de la vidéo (attend : Claude)
@@ -17157,3 +17157,11 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Les couples déjà enregistrés avec le pseudo (CSO Versailles) sont corrigés à l'ouverture de la page ; le bouton passe à « Enregistrer » pour garder la correction (et la feuille SEP les montre déjà corrigés).
 - Limites : le nom FFE est en majuscules sans accents (Maelys, pas Maëlys) : la coach peut corriger dans « Nom Prénom », ce sera gardé. Clémence n'a pas de nom FFE rattaché à son compte : elle reste « clemence » tant qu'on ne le corrige pas. Aucune des 7 cavalières de Versailles n'a de licence enregistrée sur son compte : la case Licence reste vide jusqu'à la première saisie (gardée ensuite).
 - Fichiers : hype-ecran-saison.js (v30), index.html (build 20261105-0205), SUIVI.md.
+
+## 05/11/2026 00h05 — PUBLICATION build 20261105-0210 — RECHERCHE DE CONCOURS, ÉTAPE 2 (première partie : page Engagements)
+- Blandine 23h43-23h57 : « commence par la recherche » ; « on peut proposer quand on ajoute un concours, et surtout sur la page des engagements » ; « Tu peux y aller » (l'autre conversation mise en pause).
+- Engagements : sous « Discipline / N° concours », un lien « Trouver le numéro › ». Il envoie la date, le lieu et la discipline du concours au serveur (recherche-concours, publiée avec ce build). Résultats en boutons (n° · discipline · lieu · clôture) : on touche le bon, la case N° concours se remplit (il reste à Enregistrer). Rien trouvé ou erreur → message + « Chercher sur le calendrier FFE › » (ffecompet.ffe.com) pour chercher à la main.
+- Textes en français seulement, comme le reste de la page Engagements (traduction quand le français sera relu).
+- Pas encore fait : le même bouton quand on AJOUTE un concours dans l'agenda (prochaine étape, après son essai).
+- Vérifié : node --check ; la fonction serveur testée avec des réponses simulées. Premier vrai essai = celui de Blandine sur iPhone (Versailles 15/11 → attendu 2723966).
+- Fichiers : hype-ecran-saison.js (v31), index.html (build 20261105-0210), netlify/functions/recherche-concours.js (déjà sur le dépôt, publiée par ce build), SUIVI.md.

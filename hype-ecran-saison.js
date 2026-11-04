@@ -889,6 +889,7 @@ function EcranEngagements() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _mod = React.useState(false); var modifie = _mod[0], setModifie = _mod[1];
   var _vf = React.useState(false); var voirFeuille = _vf[0], setVoirFeuille = _vf[1];
+  var _rn = React.useState(null); var rechNum = _rn[0], setRechNum = _rn[1];   /* 04/11 23h57 : recherche du n° de concours { etat, liste, msg } */
   var _lb = React.useState({}); var libres = _lb[0], setLibres = _lb[1];   /* « Autre cheval » : saisie libre */
   var _tm = React.useState(function () { try { return Number(localStorage.getItem("hype_tours_max")) || 3; } catch (e) { return 3; } }); var toursMax = _tm[0], setToursMax = _tm[1];
   var _vu = React.useState("couples"); var vue = _vu[0], setVue = _vu[1];   /* onglets : couples (cavalières + chevaux) / épreuves / grille */
@@ -1056,6 +1057,40 @@ function EcranEngagements() {
   }, [idEv]);
 
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("concours"); }
+  /* 04/11 23h57 (Blandine : « que l'appli trouve le numéro elle-même quand on rentre la date et le lieu ; commence par la recherche,
+     et si ça marche pas, on va chercher à la main ») : recherche sur internet par le serveur (netlify/functions/recherche-concours.js,
+     réservée aux coachs) ; on touche un résultat pour remplir la case ; sinon lien vers le calendrier FFE. */
+  async function chercherNumero() {
+    if (!ev || !ev.date_jour) { setRechNum({ etat: "erreur", liste: [], msg: F("Ce concours n’a pas de date.") }); return; }
+    setRechNum({ etat: "cherche", liste: [], msg: "" });
+    try {
+      var hd = { "Content-Type": "application/json" };
+      try { var se = await supa.auth.getSession(); var jt = se && se.data && se.data.session && se.data.session.access_token; if (jt) hd.Authorization = "Bearer " + jt; } catch (eS) { }
+      var r = await fetch("/.netlify/functions/recherche-concours", { method: "POST", headers: hd,
+        body: JSON.stringify({ date: String(ev.date_jour).slice(0, 10), lieu: ev.lieu || "", discipline: (feuille && feuille.discipline) || "", clef: ev.club_clef || "" }) });
+      var d = await r.json().catch(function () { return null; });
+      if (!d || !d.ok) { setRechNum({ etat: "erreur", liste: [], msg: (d && d.message) || F("La recherche n’a pas abouti.") }); return; }
+      setRechNum({ etat: "fini", liste: d.concours || [], msg: d.remarque || "" });
+    } catch (eR) { setRechNum({ etat: "erreur", liste: [], msg: F("La recherche n’a pas abouti.") }); }
+  }
+  function blocNumero() {
+    function jjmm(x) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(x || "")); return m ? m[3] + "/" + m[2] : ""; }
+    var lienFfe = h("a", { href: "https://ffecompet.ffe.com/", target: "_blank", rel: "noopener", className: "hs-lien" }, F("Chercher sur le calendrier FFE ›"));
+    if (!rechNum) return h("div", { style: { display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", margin: "-4px 0 10px" } },
+      h("button", { type: "button", className: "hs-lien", onClick: chercherNumero }, F("Trouver le numéro ›")));
+    if (rechNum.etat === "cherche") return h("div", { className: "hs-note", style: { margin: "-4px 0 10px" } }, F("Recherche du concours sur internet… (jusqu’à une minute)"));
+    var l = rechNum.liste || [];
+    return h("div", { style: { margin: "-4px 0 12px" } },
+      l.length ? h("div", { className: "hs-note", style: { marginTop: 0, marginBottom: 6 } }, l.length > 1 ? F("Touche le bon concours :") : F("Touche-le pour remplir la case :")) : null,
+      l.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 6 } }, l.map(function (c) {
+        return h("button", { key: c.numero, type: "button", className: "hs-btn", style: { textAlign: "left", minHeight: 40, fontSize: 12.5, lineHeight: 1.35, padding: "8px 12px" },
+          onClick: function () { poserF("numero", c.numero); setRechNum(null); } },
+          h("b", null, c.numero), " · " + [c.discipline, c.lieu, c.departement ? "(" + c.departement + ")" : "", c.cloture ? F("clôture le ") + jjmm(c.cloture) : ""].filter(Boolean).join(" · "));
+      })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, rechNum.etat === "erreur" ? rechNum.msg : F("Rien trouvé sur internet pour ce jour et ce lieu.")),
+      l.length && rechNum.msg ? h("div", { className: "hs-note", style: { marginTop: 6 } }, rechNum.msg) : null,
+      h("div", { style: { display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", marginTop: 4 } },
+        lienFfe, h("button", { type: "button", className: "hs-lien", onClick: function () { setRechNum(null); } }, F("Fermer"))));
+  }
   function poserF(k, v) { setFeuille(Object.assign({}, feuille, (function () { var o = {}; o[k] = v; return o; })())); setModifie(true); setMsg(""); }
   function poserL(i, k, v) { var n = lignes.slice(); n[i] = Object.assign({}, n[i]); n[i][k] = v; setLignes(n); setModifie(true); setMsg(""); }
   function ajouterEpreuve() {
@@ -1272,6 +1307,7 @@ function EcranEngagements() {
       /* 1. le concours */
       h("div", { className: "hs-sec" }, h("b", null, F("Le concours"))),
       h("div", { className: "hs-g2" }, champ(F("Discipline"), "discipline", "CSO"), champ(F("N° concours"), "numero", "")),
+      blocNumero(),
       h("div", { className: "hs-g2" }, champ(F("Prix engagement"), "prix", ""),
         h("div", { className: "hs-champ" }, h("label", null, F("Transport")),
           h("select", { value: feuille.transport || "", onChange: function (e) { poserF("transport", e.target.value); } },
