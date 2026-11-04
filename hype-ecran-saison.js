@@ -193,7 +193,6 @@ function EcranMaSaison() {
   /* ── navigation ── */
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
   function ouvrir(ev) {
-    if (team && !team.membre) { setReserve(F("Réservé à l’équipe ") + team.nom + "."); setTimeout(function () { setReserve(""); }, 2600); return; }
     var fin = String(ev.date_fin || ev.date_jour || "").slice(0, 10);
     if (fin < isoAuj) { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e1) { } setEcran("evenement-passe"); return; }
     /* 04/11 (étape 2) : un concours à venir ou en cours ouvre la NOUVELLE fiche concours (même design) */
@@ -405,6 +404,22 @@ function hsPhotoProfil(p) {
 }
 
 /* ════════════════════ LA FICHE CONCOURS ════════════════════ */
+/* 04/11 22h57 (Blandine : « une cavalière qui n’est pas dans l’équipe … voir la liste et ce qu’elle prépare : on peut limiter ; elle a le
+   droit de voir quand même les concours qui sont prévus ») — l’équipe et l’appartenance de la personne (membre du groupe, ou modératrice = la coach) */
+var HS_EQUIPE = null;
+async function hsEquipe() {
+  if (HS_EQUIPE) return HS_EQUIPE;
+  try {
+    var rg = (typeof hypeRequeteTeam === "function") ? await hypeRequeteTeam("id, nom") : null;
+    var G = rg && !rg.error && rg.data; if (!G || !G.id) return null;
+    var u = null; try { u = await utilisateurActuel(); } catch (eU) { }
+    var membre = false;
+    try { membre = !!u && (typeof estModerateurHype === "function") && estModerateurHype(u); } catch (eM) { }
+    if (!membre && u && u.id) { var rm = await supa.from("groupes_membres").select("user_id").eq("groupe_id", G.id).eq("user_id", u.id).maybeSingle(); membre = !!(rm && rm.data); }
+    HS_EQUIPE = { id: G.id, nom: G.nom || ((typeof TEAM_NOM_GROUPE !== "undefined") ? TEAM_NOM_GROUPE : "l’équipe"), membre: membre };
+    return HS_EQUIPE;
+  } catch (e) { return null; }
+}
 function EcranConcours() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -428,6 +443,13 @@ function EcranConcours() {
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
+  var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
+  var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
+  React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
+  function prep(ecran) {
+    if (equipe && !equipe.membre) { setMsgPrep("🔒 " + F("Réservé à l’équipe ") + equipe.nom + "."); setTimeout(function () { setMsgPrep(""); }, 3000); return; }
+    ouvrir(ecran);
+  }
   var _dv = React.useState(null); var enDirect = _dv[0], setEnDirect = _dv[1];
   var _vp = React.useState([]); var videos = _vp[0], setVideos = _vp[1];
   var _dvo = React.useState(false); var dvOcc = _dvo[0], setDvOcc = _dvo[1];
@@ -618,10 +640,11 @@ function EcranConcours() {
       !fini ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ma préparation"))),
         h("div", { className: "hs-carte" },
-          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { ouvrir("liste-van"); } },
+          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { prep("liste-van"); } },
             h("div", { className: "g" }, h("b", null, F("Ma liste du van")), h("span", null, F("à cocher, gardée d’un concours à l’autre"))), h("span", { className: "hs-lien" }, rtl ? "‹" : "›")),
-          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { ouvrir("dossier-concours"); } },
-            h("div", { className: "g" }, h("b", null, F("Le dossier")), h("span", null, F("licence, vaccins du cheval, papiers"))), h("span", { className: "hs-lien" }, rtl ? "‹" : "›")))) : null,
+          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { prep("dossier-concours"); } },
+            h("div", { className: "g" }, h("b", null, F("Le dossier")), h("span", null, F("licence, vaccins du cheval, papiers"))), h("span", { className: "hs-lien" }, rtl ? "‹" : "›"))),
+        msgPrep ? h("div", { className: "hs-msg" }, msgPrep) : null) : null,
       /* résultats en direct (lien posé par la coach) */
       ev.lien_direct ? h("div", { style: { marginTop: 14 } },
         h("a", { className: "hs-btn plein", href: ev.lien_direct, target: "_blank", rel: "noopener", style: { textDecoration: "none" } }, F("Résultats en direct"))) : null,
