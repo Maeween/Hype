@@ -17110,3 +17110,7 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Engagements : chaque nom d'épreuve est remis au même format en l'ajoutant (« Club3 » → « Club 3 », « AMAT2 » → « AMAT 2 », « Club1GP » → « Club 1 GP », espaces en trop retirés) ; pas de doublon si la même épreuve est retapée autrement en majuscules/minuscules.
 - Les épreuves déjà enregistrées (en-tête et lignes des couples) sont remises au même format à l'ouverture de la page ; enregistrées ainsi au prochain « Enregistrer ».
 - Fichiers : hype-ecran-saison.js (v24), index.html (build 20261105-0115), SUIVI.md.
+
+## 05/11/2026 00h05 — PUBLICATION build 20261105-0120 (Blandine 23h31 : « fais moins visuel pour ce que tu proposes »)
+- Engagements : les cavalières et chevaux proposés (et les résultats de la recherche) ne sont plus des bulles encadrées mais de simples mots discrets ; « + » pour ajouter, ✓ et grisé une fois engagés.
+- Fichiers : hype-ecran-saison.js (v25), index.html (build 20261105-0120), SUIVI.md.

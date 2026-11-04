@@ -435,8 +435,9 @@ var CSS2 = [
   ".hs-recap th{text-align:left;font-weight:500;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--hs-iv3);padding:8px 8px;border-bottom:1px solid rgba(243,238,228,.12)}",
   ".hs-recap td{padding:8px 8px;border-bottom:1px solid rgba(243,238,228,.06);vertical-align:top}",
   ".hs-recap tr.vide td{color:var(--hs-iv3)}",
-  ".hs-puce-cav{background:none;color:var(--hs-iv);font-family:inherit;padding:0 12px;margin:0}",
-  ".hs-puce-cav.fait{opacity:.38;border-color:rgba(243,238,228,.25)}",
+  /* 04/11 23h31 (Blandine : « fais moins visuel pour ce que tu proposes ») : propositions en simples mots, sans bulles */
+  ".hs-puce-cav{background:none;border:none;border-radius:0;color:var(--hs-iv2);font-family:inherit;font-size:13px;min-height:30px;padding:0 10px 0 0;margin:0}",
+  ".hs-puce-cav.fait{opacity:.35}",
   ".hs-puce button{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--hs-iv2);font-size:16px;line-height:1;padding:0}",
   ".hs-ajout{display:flex;gap:8px}.hs-ajout input{flex:1}.hs-ajout button{flex:0 0 auto;width:auto;padding:0 16px}",
   ".hs-couple{padding:14px;border-top:1px solid rgba(243,238,228,.08)}.hs-couple:first-child{border-top:0}",
