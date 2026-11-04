@@ -607,5 +607,9 @@ function principal() {
   log(`${urls.length} pages par langue, ${galops.length} Galops, plan du site écrit`);
 }
 
-try { principal(); } catch (err) { log("erreur, publication inchangée pour la suite :", String(err && err.stack || err).slice(0, 300)); }
-process.exitCode = 0;
+/* 04/11 : le modèle de page est prêté à outils/seo-lexique.cjs (page publique du lexique) ; lancé seul, ce script fait tout comme avant */
+module.exports = { page: page, ecrire: ecrire, e: e, descSeo: descSeo, LANGS: LANGS, HL: HL, DOM: DOM, UI: UI };
+if (require.main === module) {
+  try { principal(); } catch (err) { log("erreur, publication inchangée pour la suite :", String(err && err.stack || err).slice(0, 300)); }
+  process.exitCode = 0;
+}
