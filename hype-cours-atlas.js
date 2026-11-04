@@ -39,6 +39,7 @@ var IMG_CORPS = { src: "images/atlas-cheval-corps.webp", w: 1536, h: 1024, alt: 
 var IMG_MEMBRE = { src: "images/atlas-cheval-membre.webp", w: 560, h: 860, alt: tt("Gros plan sur un membre antérieur du cheval bai foncé, du genou au sabot", "Close-up of the dark bay horse's front leg, from knee to hoof", "Primer plano de la extremidad anterior del caballo castaño oscuro, de la rodilla al casco", "Primo piano dell'arto anteriore del cavallo baio scuro, dal ginocchio allo zoccolo", "Nahaufnahme des Vorderbeins des dunkelbraunen Pferdes, vom Vorderfußwurzelgelenk bis zum Huf", "黒鹿毛の馬の前肢のアップ（ひざからひづめまで）", "صورة مقرّبة للقائمة الأمامية للحصان الكميت الداكن، من الركبة إلى الحافر", "深枣色马前肢特写，从膝到蹄", "Close-up van het voorbeen van het donkerbruine paard, van knie tot hoef", "Grande plano do membro anterior do cavalo castanho-escuro, do joelho ao casco", "Närbild av den mörkbruna hästens framben, från knät till hoven", "Крупный план передней ноги тёмно-гнедой лошади, от запястья до копыта", "Zbliżenie przedniej nogi ciemnogniadego konia, od nadgarstka do kopyta", "짙은 갈색 말 앞다리의 클로즈업(무릎부터 발굽까지)") };
 var IMG_TETE = { src: "images/atlas-cheval-tete.webp", w: 920, h: 960, alt: UI.altTete };
 var IMG_ANAT = { src: "images/atlas-cheval-anatomie.webp", w: 1305, h: 689, alt: tt("Illustration d'un cheval gris graphite de profil, muscles apparents, sur fond noir", "Illustration of a graphite grey horse in profile, with visible muscles, on a black background", "Ilustración de un caballo gris grafito de perfil, con los músculos visibles, sobre fondo negro", "Illustrazione di un cavallo grigio grafite di profilo, con i muscoli in vista, su sfondo nero", "Illustration eines graphitgrauen Pferdes im Profil mit sichtbaren Muskeln auf schwarzem Hintergrund", "黒い背景に、筋肉が見えるグラファイトグレーの馬の横向きのイラスト", "رسم لحصان رمادي داكن من الجانب، تظهر عضلاته، على خلفية سوداء", "黑色背景上一匹石墨灰色马的侧面插图，可见肌肉", "Illustratie van een grafietgrijs paard van opzij, met zichtbare spieren, op een zwarte achtergrond", "Ilustração de um cavalo cinza grafite de perfil, com os músculos à mostra, em fundo preto", "Illustration av en grafitgrå häst från sidan, med synliga muskler, mot svart bakgrund", "Иллюстрация графитово-серой лошади в профиль с видимыми мышцами на чёрном фоне", "Ilustracja grafitowoszarego konia z profilu, z widocznymi mięśniami, na czarnym tle", "검은 배경 위, 근육이 드러난 그라파이트 회색 말의 옆모습 그림") };   /* 04/11 : Galop 5 */
+var IMG_SQUEL = { src: "images/atlas-cheval-squelette.webp", w: 1340, h: 1010, alt: tt("Illustration d'un cheval gris foncé de profil, squelette apparent, sur fond noir") };   /* 04/11 : Galop 5, image ChatGPT de Blandine (illustration, pas un modèle anatomique exact) */
 
 /* point = [id, x, y, nom, explication] */
 var NIVEAUX = [
@@ -268,6 +269,26 @@ var GALOPS_SUIVANTS = [
       ["m-croupe", 928, 238, tt("Les muscles de la croupe et de la cuisse", "The croup and thigh muscles", "Los músculos de la grupa y del muslo", "I muscoli della groppa e della coscia", "Die Kruppen- und Oberschenkelmuskeln", "尻と大腿の筋肉", "عضلات الكَفَل والفخذ", "臀部和大腿肌肉", "De kruis- en dijspieren", "Os músculos da garupa e da coxa", "Kors- och lårmusklerna", "Мышцы крупа и бедра", "Mięśnie zadu i uda", "엉덩이와 넓적다리 근육"),
         tt("Sur la croupe et autour de la cuisse, jusqu'au grasset.", "On the croup and around the thigh, down to the stifle.", "Sobre la grupa y alrededor del muslo, hasta la babilla.", "Sulla groppa e intorno alla coscia, fino alla grassella.", "Auf der Kruppe und um den Oberschenkel, bis zum Knie (Kniegelenk des Pferdes).", "尻の上と大腿のまわり、膝関節（スタイフル）まで。", "على الكَفَل وحول الفخذ، حتى مفصل الركبة الخلفية.", "位于臀部和大腿周围，一直到膝关节。", "Op het kruis en rond de dij, tot aan de knie.", "Sobre a garupa e em volta da coxa, até a soldra.", "På korset och runt låret, ner till knäleden.", "На крупе и вокруг бедра, до коленного сустава.", "Na zadzie i wokół uda, aż do stawu kolanowego.", "엉덩이 위와 넓적다리 주변, 무릎관절까지.")]
     ] }
+    ,
+    /* 04/11 : Galop 5 — les principales parties du squelette (mêmes os que le cours g5n-04 ; fiches = emplacement seulement, pas de doublon). FRANÇAIS SEUL en attendant sa relecture. */
+    { id: "squelette5", court: tt("Le squelette"), titre: tt("Les principales parties du squelette"), img: IMG_SQUEL, pts: [
+      ["s-cerv", 300, 200, tt("Les vertèbres cervicales"), tt("Dans l'encolure, de la tête jusqu'au garrot.")],
+      ["s-dors", 620, 255, tt("Les vertèbres dorsales"), tt("Du garrot jusqu'au rein, sous la selle.")],
+      ["s-cotes", 640, 430, tt("Les côtes"), tt("Autour de la poitrine, rattachées aux vertèbres dorsales.")],
+      ["s-lomb", 855, 280, tt("Les vertèbres lombaires"), tt("Au rein, entre la dernière côte et le bassin.")],
+      ["s-sacr", 940, 250, tt("Le sacrum"), tt("En haut de la croupe, au-dessus du bassin.")],
+      ["s-cocc", 1258, 450, tt("Les vertèbres coccygiennes"), tt("Dans la queue, jusqu'à son extrémité.")],
+      ["s-omo", 500, 330, tt("L'omoplate"), tt("En haut de l'épaule, à plat contre les côtes.")],
+      ["s-hum", 425, 470, tt("L'humérus"), tt("Entre la pointe de l'épaule et le coude.")],
+      ["s-rad", 440, 615, tt("Le radius"), tt("Dans l'avant-bras, entre le coude et le genou.")],
+      ["s-gen", 437, 715, tt("Les os du genou"), tt("Au milieu de l'antérieur, entre l'avant-bras et le canon.")],
+      ["s-bas", 440, 860, tt("Canon, boulet, paturon, couronne et pied"), tt("Du genou jusqu'au sabot.")],
+      ["s-bass", 1060, 345, tt("Le bassin"), tt("Sous la croupe, de la hanche jusqu'à la pointe de la fesse.")],
+      ["s-fem", 1025, 420, tt("Le fémur"), tt("Dans la cuisse, de la hanche jusqu'au grasset.")],
+      ["s-gras", 975, 515, tt("Le grasset"), tt("À l'avant du postérieur, entre le fémur et le tibia.")],
+      ["s-tib", 1060, 600, tt("Le tibia"), tt("Dans la jambe, entre le grasset et le jarret.")],
+      ["s-jar", 1152, 688, tt("Les os du jarret"), tt("Au milieu du postérieur, entre le tibia et le canon.")]
+    ] }
   ] }
 ];
 
@@ -421,5 +442,5 @@ function Module(props) {
       }))) : h("div", { className: "att" }, V.attente || ""));
 }
 
-window.HypeAtlas = { Module: Module, titre: function (lg) { return pk(UI.titre, lg); }, img: IMG_CORPS.src, version: 6, maquette: function () { } };
+window.HypeAtlas = { Module: Module, titre: function (lg) { return pk(UI.titre, lg); }, img: IMG_CORPS.src, version: 7, maquette: function () { } };
 })();
