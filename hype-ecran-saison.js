@@ -414,6 +414,8 @@ function EcranConcours() {
   var _pm = React.useState(""); var pushMsg = _pm[0], setPushMsg = _pm[1];
   var _ge = React.useState(false); var gestion = _ge[0], setGestion = _ge[1];
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
+  var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
+  var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
@@ -446,8 +448,23 @@ function EcranConcours() {
         hsPeutGerer(r.data.club_clef).then(function (g) { if (vif) setGestion(g); });
         if (u && u.id) {
           try {
-            var re = await supa.from("concours_engagements").select("epreuve1, cheval1_nom, epreuve2, cheval2_nom").eq("agenda_id", idEv).eq("cavalier_id", u.id);
-            if (vif && re && !re.error) setMesEng(re.data || []);
+            var re = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).eq("cavalier_id", u.id);
+            var mes = (re && !re.error && re.data) || [];
+            if (vif) setMesEng(mes);
+            /* 04/11 (étape 3) : consignes de ses chevaux engagés (cheval_consignes, mêmes droits que Santé)
+               et l'historique du couple (resultats : elle + ce cheval). Une lecture refusée = section absente. */
+            var idsCh = [];
+            mes.forEach(function (e) { [e.cheval1_id, e.cheval2_id].forEach(function (c) { if (c && idsCh.indexOf(c) === -1) idsCh.push(c); }); });
+            if (idsCh.length) {
+              try {
+                var rcs = await supa.from("cheval_consignes").select("cheval_id, enrenement, materiel, soins").in("cheval_id", idsCh);
+                if (vif && rcs && !rcs.error) setConsignes(rcs.data || []);
+              } catch (eCs) { }
+              try {
+                var rh = await supa.from("resultats").select("id, concours, epreuve, date_epreuve, classement, place, partants, cheval_id").eq("cavalier_id", u.id).in("cheval_id", idsCh).order("date_epreuve", { ascending: false }).limit(12);
+                if (vif && rh && !rh.error) setHisto(rh.data || []);
+              } catch (eH) { }
+            }
           } catch (eE) { }
         }
       } catch (eL) { if (vif) setErreur(String((eL && eL.message) || eL)); }
@@ -486,6 +503,7 @@ function EcranConcours() {
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("ma-saison"); }
   function ficheComplete() { try { window.__agendaFiche = idEv; window.__agendaFicheRetour = "concours"; } catch (e) { } setEcran("guilde"); }
   function ouvrirEngagements() { try { window.__engagementsId = idEv; } catch (e) { } setEcran("engagements"); }
+  function ouvrir(ecran) { try { window.__concoursId = idEv; window.__engagementsId = idEv; } catch (e) { } setEcran(ecran); }
 
   var photo = hsPhotoDe(idEv);
   var hero = hsHero(h, { photo: photo, retour: retour, retourTxt: F("Ma saison"), titre: (ev && ev.titre) || F("Concours"), sous: ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "", petit: !!(ev && String(ev.titre || "").length > 14) });
@@ -516,13 +534,51 @@ function EcranConcours() {
           return h("div", { key: i, className: "hs-row" }, h("div", { className: "g" }, h("b", null, x.k), x.alerte ? h("span", null, F("alerte 15 min avant")) : null), h("span", { className: "d" }, x.v));
         }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Les horaires ne sont pas encore indiqués."))))),
       /* mon engagement */
+      /* 04/11 (étape 3) MA JOURNÉE : ses épreuves, son cheval, son heure de passage et sa piste (saisies par la coach) */
       mesEng.length ? h("div", null,
-        h("div", { className: "hs-sec" }, h("b", null, F("Ton engagement"))),
+        h("div", { className: "hs-sec" }, h("b", null, F("Ma journée"))),
         h("div", { className: "hs-carte" }, mesEng.reduce(function (acc, e) {
-          if (e.epreuve1 || e.cheval1_nom) acc.push({ ep: e.epreuve1, ch: e.cheval1_nom });
-          if (e.epreuve2 || e.cheval2_nom) acc.push({ ep: e.epreuve2, ch: e.cheval2_nom });
+          if (e.epreuve1 || e.cheval1_nom) acc.push({ ep: e.epreuve1, ch: e.cheval1_nom, hp: e.passage1, pi: e.piste1, maj: e.passage_maj_le });
+          if (e.epreuve2 || e.cheval2_nom) acc.push({ ep: e.epreuve2, ch: e.cheval2_nom, hp: e.passage2, pi: e.piste2, maj: e.passage_maj_le });
           return acc;
-        }, []).map(function (x, i) { return h("div", { key: i, className: "hs-row" }, h("div", { className: "g" }, h("b", null, x.ep || F("Épreuve à venir")), x.ch ? h("span", null, F("avec ") + x.ch) : null)); }))) : null,
+        }, []).sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); }).map(function (x, i) {
+          var recent = x.maj && (Date.now() - new Date(x.maj).getTime() < 36 * 3600 * 1000);
+          return h("div", { key: i, className: "hs-row" },
+            h("div", { className: "g" }, h("b", null, x.ep || F("Épreuve à venir")),
+              h("span", null, [x.ch ? F("avec ") + x.ch : "", x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
+              (x.hp && recent) ? h("span", { style: { color: "#C9A66B" } }, F("heure mise à jour par ta coach")) : null),
+            h("span", { className: "d" }, x.hp || F("heure à venir")));
+        }))) : null,
+      /* consignes de son cheval (page Santé du cheval) */
+      consignes.filter(function (c) { return c.enrenement || c.materiel || c.soins; }).map(function (c) {
+        var nomC = ""; mesEng.forEach(function (e) { if (e.cheval1_id === c.cheval_id) nomC = e.cheval1_nom || nomC; if (e.cheval2_id === c.cheval_id) nomC = e.cheval2_nom || nomC; });
+        return h("div", { key: "cs" + c.cheval_id },
+          h("div", { className: "hs-sec" }, h("b", null, F("Consignes pour ") + (nomC || F("ton cheval")))),
+          h("div", { className: "hs-carte" },
+            c.materiel ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Matériel")), h("b", { style: { whiteSpace: "pre-wrap" } }, c.materiel))) : null,
+            c.enrenement ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Enrênement")), h("b", { style: { whiteSpace: "pre-wrap" } }, c.enrenement))) : null,
+            c.soins ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Soins")), h("b", { style: { whiteSpace: "pre-wrap" } }, c.soins))) : null));
+      }),
+      /* sa préparation */
+      !fini ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Ma préparation"))),
+        h("div", { className: "hs-carte" },
+          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { ouvrir("liste-van"); } },
+            h("div", { className: "g" }, h("b", null, F("Ma liste du van")), h("span", null, F("à cocher, gardée d’un concours à l’autre"))), h("span", { className: "hs-lien" }, rtl ? "‹" : "›")),
+          h("button", { type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { ouvrir("dossier-concours"); } },
+            h("div", { className: "g" }, h("b", null, F("Le dossier")), h("span", null, F("licence, vaccins du cheval, papiers"))), h("span", { className: "hs-lien" }, rtl ? "‹" : "›")))) : null,
+      /* résultats en direct (lien posé par la coach) */
+      ev.lien_direct ? h("div", { style: { marginTop: 14 } },
+        h("a", { className: "hs-btn plein", href: ev.lien_direct, target: "_blank", rel: "noopener", style: { textDecoration: "none" } }, F("Résultats en direct"))) : null,
+      /* historique du couple */
+      histo.length ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Ton historique avec ce cheval"))),
+        h("div", { className: "hs-carte" }, histo.map(function (r) {
+          var pl = r.place ? (r.place + (r.place === 1 ? "re" : "e") + (r.partants ? " / " + r.partants : "")) : (r.classement || "");
+          return h("div", { key: r.id, className: "hs-row" },
+            h("div", { className: "g" }, h("b", null, r.concours || F("Concours")), h("span", null, [r.epreuve, hsFmt(r.date_epreuve, { day: "numeric", month: "short", year: "numeric" })].filter(Boolean).join(" · "))),
+            pl ? h("span", { className: "d", style: { fontSize: 13 } }, pl) : null);
+        }))) : null,
       /* je participe + alertes */
       h("div", { className: "hs-sec" }, h("b", null, F("Je participe"))),
       fini ? h("div", { className: "hs-vide" }, F("Ce concours est terminé.")) : h("div", null,
@@ -545,6 +601,9 @@ function EcranConcours() {
       gestion ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Pour la coach"))),
         h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, F("Engagements et feuille SEP")),
+        h("div", { className: "hs-duo" },
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier"))),
         h("div", { style: { height: 8 } })) : null,
       h("div", { style: { marginTop: gestion ? 0 : 22 } },
         h("button", { type: "button", className: "hs-btn doux", onClick: ficheComplete }, gestion ? F("Fiche complète : fil, photos, modifier") : F("Fiche complète : fil et photos"))),
@@ -978,5 +1037,459 @@ function hsPdfFeuille(o) {
 /* les opérations sont déjà en octets 0-255 (texte converti par hsPdfTexte) : rien à faire */
 function hsPdfTexteBrut(x) { return x; }
 
-window.HypeSaison = { Saison: EcranMaSaison, Concours: EcranConcours, Engagements: EcranEngagements };
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   04/11/2026 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 (Blandine 21h20 : « mets tout en ligne, t'as carte blanche
+   et on refera au fur et à mesure ensemble »). Trois écrans de plus, même design :
+     · LISTE DU VAN (écran « liste-van ») : la liste de la cavalière pour ce concours, à cocher, recopiée de
+       son dernier concours (cases décochées), téléchargeable en PDF. Table listes_van (elle seule).
+     · JOUR J (écran « jour-j », coach) : heures de passage et pistes de chaque couple, décalage groupé d'une
+       épreuve (+/- minutes), alerte quand deux passages tombent en même temps sur deux pistes différentes,
+       lien des résultats en direct (club_agenda.lien_direct, collé par la coach : la recherche automatique
+       viendra plus tard). Colonnes passage1/piste1/passage2/piste2 de concours_engagements.
+     · LE DOSSIER (écran « dossier-concours ») : papiers du van (coach seulement, fichiers privés), vaccins des
+       chevaux engagés (page Santé, mêmes droits), licences (chacune la sienne, la coach toutes).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+function hsMinutes(v) {
+  var m = String(v || "").trim().toLowerCase().match(/^(\d{1,2})\s*[h:.]\s*(\d{0,2})$/);
+  if (!m) return 99999;
+  return Number(m[1]) * 60 + Number(m[2] || 0);
+}
+function hsHeure(min) {
+  if (!(min >= 0 && min < 24 * 60)) return "";
+  var hh = Math.floor(min / 60), mm = min % 60;
+  return hh + "h" + (mm < 10 ? "0" : "") + mm;
+}
+function hsHeurePropre(v) {
+  try { if (typeof hypeHeurePropre === "function") return hypeHeurePropre(v); } catch (e) { }
+  return String(v || "").trim();
+}
+function hsCtx() {
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var lg = app.langue || "fr";
+  var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
+  return { app: app, setEcran: app.setEcran || function () { }, F: function (fr) { return tr({ fr: fr }); }, rtl: lg === "ar" };
+}
+function hsRetour(app, setEcran, defaut) { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran(defaut); }
+function hsIdConcours() { try { return window.__concoursId || window.__engagementsId || null; } catch (e) { return null; } }
+
+/* ── la liste par défaut, la toute première fois (modifiable ligne par ligne) ── */
+var HS_LISTE_DEFAUT = [
+  { r: "cheval", t: "Selle et tapis" }, { r: "cheval", t: "Filet ou bride" }, { r: "cheval", t: "Guêtres et protège-boulets" },
+  { r: "cheval", t: "Protections de transport" }, { r: "cheval", t: "Licol et longe" }, { r: "cheval", t: "Couverture" },
+  { r: "cheval", t: "Seau, foin et eau" }, { r: "cheval", t: "Trousse de pansage" }, { r: "cheval", t: "Livret du cheval (vaccins)" },
+  { r: "moi", t: "Casque" }, { r: "moi", t: "Veste de concours" }, { r: "moi", t: "Culotte claire" }, { r: "moi", t: "Bottes" },
+  { r: "moi", t: "Gants et cravache" }, { r: "moi", t: "Licence sur le téléphone" }, { r: "moi", t: "Eau et goûter" }
+];
+
+/* ════════════════════ LISTE DU VAN ════════════════════ */
+function EcranListeVan() {
+  var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var idEv = hsIdConcours();
+  var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
+  var _it = React.useState(null); var items = _it[0], setItems = _it[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  var _st = React.useState(""); var etat = _st[0], setEtat = _st[1];
+  var _nv = React.useState({ cheval: "", moi: "" }); var nouv = _nv[0], setNouv = _nv[1];
+  var _ch = React.useState(""); var nomCheval = _ch[0], setNomCheval = _ch[1];
+  var _mt = React.useState(""); var materiel = _mt[0], setMateriel = _mt[1];
+  var _moi = React.useState(null); var moi = _moi[0], setMoi = _moi[1];
+  var minuteur = React.useRef(null);
+
+  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        if (!idEv) throw new Error(F("concours introuvable"));
+        var u = null; try { u = await utilisateurActuel(); } catch (eU) { }
+        if (!u || !u.id) { if (vif) { setMoi(null); setItems([]); } return; }
+        if (vif) setMoi(u);
+        var r = await chargerAgendaEvenement(idEv); if (vif && r && r.data) setEv(r.data);
+        var rl = await supa.from("listes_van").select("items").eq("agenda_id", idEv).eq("user_id", u.id).maybeSingle();
+        if (rl && rl.error) throw new Error(rl.error.message || String(rl.error));
+        var L = rl && rl.data && Array.isArray(rl.data.items) ? rl.data.items : null;
+        if (!L) {
+          /* gardée d'un concours à l'autre : on repart de sa dernière liste, cases décochées */
+          var rp = await supa.from("listes_van").select("items").eq("user_id", u.id).neq("agenda_id", idEv).order("maj_le", { ascending: false }).limit(1);
+          var der = rp && rp.data && rp.data[0] && Array.isArray(rp.data[0].items) ? rp.data[0].items : null;
+          L = (der && der.length ? der : HS_LISTE_DEFAUT).map(function (x) { return { r: x.r === "moi" ? "moi" : "cheval", t: String(x.t || ""), f: false }; });
+        }
+        if (vif) setItems(L);
+        /* le cheval engagé et ses consignes de matériel (page Santé) */
+        try {
+          var re = await supa.from("concours_engagements").select("cheval1_id, cheval1_nom").eq("agenda_id", idEv).eq("cavalier_id", u.id).limit(1);
+          var e = re && re.data && re.data[0];
+          if (e && vif) setNomCheval(e.cheval1_nom || "");
+          if (e && e.cheval1_id) {
+            var rc = await supa.from("cheval_consignes").select("materiel").eq("cheval_id", e.cheval1_id).maybeSingle();
+            if (vif && rc && rc.data && rc.data.materiel) setMateriel(rc.data.materiel);
+          }
+        } catch (eE) { }
+      } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setItems(function (x) { return x || []; }); } }
+    })();
+    return function () { vif = false; };
+  }, [idEv]);
+
+  function sauver(L) {
+    setItems(L); setEtat("…");
+    if (minuteur.current) clearTimeout(minuteur.current);
+    minuteur.current = setTimeout(async function () {
+      try {
+        var r = await supa.from("listes_van").upsert({ user_id: moi.id, agenda_id: idEv, items: L, maj_le: new Date().toISOString() }, { onConflict: "user_id,agenda_id" }).select("agenda_id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error(F("refusé par la base"));
+        setEtat("✓");
+      } catch (eS) { setEtat(F("Pas enregistré : ") + String((eS && eS.message) || eS)); }
+    }, 600);
+  }
+  function cocher(i) { var L = items.slice(); L[i] = Object.assign({}, L[i], { f: !L[i].f }); sauver(L); }
+  function retirer(i) { sauver(items.filter(function (x, j) { return j !== i; })); }
+  function ajouter(r) { var t = String(nouv[r] || "").trim(); if (!t) return; sauver(items.concat([{ r: r, t: t, f: false }])); var n = Object.assign({}, nouv); n[r] = ""; setNouv(n); }
+  function toutDecocher() { sauver(items.map(function (x) { return Object.assign({}, x, { f: false }); })); }
+
+  var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Liste du van"),
+    sous: items && items.length ? (items.filter(function (x) { return x.f; }).length + F(" sur ") + items.length + F(" cochés.")) : "" });
+  if (items === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-attente" }, "…")));
+  if (!moi) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Connecte-toi pour avoir ta liste."))));
+
+  function rubrique(r, titre) {
+    return h("div", null,
+      h("div", { className: "hs-sec" }, h("b", null, titre)),
+      (r === "cheval" && materiel) ? h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Ses consignes de matériel : ") + materiel) : null,
+      h("div", { className: "hs-carte" },
+        items.map(function (x, i) {
+          if (x.r !== r) return null;
+          return h("div", { key: i, className: "hs-row", style: { gap: 10 } },
+            h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 28, height: 28, borderRadius: 8, border: "1px solid rgba(201,166,107,.75)", background: x.f ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 15, padding: 0 } }, x.f ? "✓" : ""),
+            h("button", { type: "button", onClick: function () { cocher(i); }, style: { flex: 1, minWidth: 0, textAlign: "start", background: "none", border: "none", padding: "6px 0", fontSize: 14, color: x.f ? "rgba(243,238,228,.5)" : "#F3EEE4", textDecoration: x.f ? "line-through" : "none" } }, x.t),
+            h("button", { type: "button", "aria-label": F("Retirer ") + x.t, onClick: function () { retirer(i); }, style: { flex: "0 0 auto", width: 32, height: 32, background: "none", border: "none", color: "rgba(243,238,228,.45)", fontSize: 18, padding: 0 } }, "×"));
+        }),
+        h("div", { className: "hs-row" }, h("div", { className: "hs-ajout", style: { width: "100%" } },
+          h("input", { type: "text", value: nouv[r], placeholder: F("Ajouter une ligne"), onChange: function (e) { var n = Object.assign({}, nouv); n[r] = e.target.value; setNouv(n); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); ajouter(r); } } }),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ajouter(r); } }, "+")))));
+  }
+  function pdf() {
+    var lignes = [];
+    [["cheval", F("Pour ") + (nomCheval || F("le cheval"))], ["moi", F("Pour moi")]].forEach(function (g) {
+      lignes.push({ titre: g[1] });
+      items.forEach(function (x) { if (x.r === g[0]) lignes.push({ t: x.t, f: x.f }); });
+    });
+    hsPartagerPdf(hsPdfListe(F("Liste du van") + " · " + ((ev && ev.titre) || ""), ev ? hsPlage(ev) : "", lignes), "liste-du-van-" + String((ev && ev.titre) || "concours"));
+  }
+  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
+    h("div", { className: "hs-in" },
+      rubrique("cheval", F("Pour ") + (nomCheval || F("ton cheval"))),
+      rubrique("moi", F("Pour toi")),
+      h("div", { className: "hs-duo", style: { marginTop: 18 } },
+        h("button", { type: "button", className: "hs-btn plein", onClick: pdf }, F("Télécharger")),
+        h("button", { type: "button", className: "hs-btn doux", onClick: toutDecocher }, F("Tout décocher"))),
+      h("div", { className: "hs-note" }, F("Ta liste n’est visible que par toi. Au prochain concours, elle repart de celle-ci, cases décochées.")),
+      etat && etat !== "✓" && etat !== "…" ? h("div", { className: "hs-msg" }, etat) : null,
+      erreur ? h("div", { className: "hs-err" }, erreur) : null));
+}
+
+/* ════════════════════ JOUR J (coach) ════════════════════ */
+function EcranJourJ() {
+  var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var idEv = hsIdConcours();
+  var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
+  var _li = React.useState(null); var lignes = _li[0], setLignes = _li[1];
+  var _ge = React.useState(null); var gestion = _ge[0], setGestion = _ge[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  var _mod = React.useState({}); var modif = _mod[0], setModif = _mod[1];
+  var _bz = React.useState(false); var occupe = _bz[0], setOccupe = _bz[1];
+  var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
+  var _dc = React.useState({ ep: "", min: "10" }); var dec = _dc[0], setDec = _dc[1];
+  var _ld = React.useState(""); var lien = _ld[0], setLien = _ld[1];
+
+  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        if (!idEv) throw new Error(F("concours introuvable"));
+        var r = await chargerAgendaEvenement(idEv);
+        if (!r || !r.data) throw new Error(F("ce concours n’existe plus"));
+        if (vif) { setEv(r.data); setLien(r.data.lien_direct || ""); }
+        var g = await hsPeutGerer(r.data.club_clef); if (vif) setGestion(g);
+        if (!g) return;
+        var rl = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
+        if (rl && rl.error) throw new Error(rl.error.message || String(rl.error));
+        if (vif) setLignes(rl.data || []);
+      } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
+    })();
+    return function () { vif = false; };
+  }, [idEv]);
+
+  function poser(i, k, v) { var n = lignes.slice(); n[i] = Object.assign({}, n[i]); n[i][k] = v; setLignes(n); var m = Object.assign({}, modif); m[n[i].id] = true; setModif(m); setMsg(""); }
+  /* toutes les passes de la journée, dans l'ordre de l'heure */
+  var passes = [];
+  (lignes || []).forEach(function (l, i) {
+    if (l.epreuve1 || l.cheval1_nom) passes.push({ i: i, n: 1, nom: l.nom, ep: l.epreuve1, ch: l.cheval1_nom, hp: l.passage1, pi: l.piste1 });
+    if (l.epreuve2 || l.cheval2_nom) passes.push({ i: i, n: 2, nom: l.nom, ep: l.epreuve2, ch: l.cheval2_nom, hp: l.passage2, pi: l.piste2 });
+  });
+  passes.sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
+  /* alerte : deux passages à moins de 10 minutes sur deux pistes différentes (la coach ne peut pas être aux deux) */
+  var conflits = {};
+  for (var a = 0; a < passes.length; a++) for (var b = a + 1; b < passes.length; b++) {
+    var pa = passes[a], pb = passes[b], ma = hsMinutes(pa.hp), mb = hsMinutes(pb.hp);
+    if (ma > 9999 || mb > 9999) continue;
+    if (Math.abs(ma - mb) < 10 && String(pa.pi || "").trim().toLowerCase() !== String(pb.pi || "").trim().toLowerCase()) {
+      conflits[pa.i + "-" + pa.n] = pb.nom; conflits[pb.i + "-" + pb.n] = pa.nom;
+    }
+  }
+  var nbConflits = Object.keys(conflits).length;
+  var epreuves = []; passes.forEach(function (p) { if (p.ep && epreuves.indexOf(p.ep) === -1) epreuves.push(p.ep); });
+
+  function decaler() {
+    var d = parseInt(dec.min, 10); if (!dec.ep || !d) { setMsg(F("Choisis une épreuve et un nombre de minutes.")); return; }
+    var n = lignes.slice(), m = Object.assign({}, modif), nb = 0;
+    n.forEach(function (l, i) {
+      [1, 2].forEach(function (k) {
+        if (l["epreuve" + k] !== dec.ep) return;
+        var mi = hsMinutes(l["passage" + k]); if (mi > 9999) return;
+        n[i] = Object.assign({}, n[i]); n[i]["passage" + k] = hsHeure(mi + d); m[l.id] = true; nb++;
+      });
+    });
+    setLignes(n); setModif(m);
+    setMsg(nb ? (nb + F(" passage(s) décalé(s) de ") + (d > 0 ? "+" : "") + d + F(" min. Pense à enregistrer.")) : F("Aucune heure à décaler dans cette épreuve."));
+  }
+  async function enregistrer() {
+    if (occupe) return; setOccupe(true); setMsg("");
+    try {
+      var ids = Object.keys(modif), maint = new Date().toISOString();
+      for (var k = 0; k < ids.length; k++) {
+        var l = lignes.filter(function (x) { return x.id === ids[k]; })[0]; if (!l) continue;
+        var row = { passage1: hsHeurePropre(l.passage1) || null, piste1: String(l.piste1 || "").trim() || null, passage2: hsHeurePropre(l.passage2) || null, piste2: String(l.piste2 || "").trim() || null, passage_maj_le: maint };
+        var r = await supa.from("concours_engagements").update(row).eq("id", l.id).select("id");
+        if (r && r.error) throw new Error(l.nom + " : " + (r.error.message || r.error));
+        if (!r || !r.data || !r.data.length) throw new Error(l.nom + F(" : refusé par la base"));
+      }
+      if (ev && String(lien || "").trim() !== String(ev.lien_direct || "")) {
+        var t = String(lien || "").trim();
+        if (t && !/^https?:\/\//i.test(t)) throw new Error(F("le lien du direct doit commencer par https://"));
+        var rd = await supa.from("club_agenda").update({ lien_direct: t || null }).eq("id", ev.id).select("id");
+        if (rd && rd.error) throw new Error(F("lien du direct : ") + (rd.error.message || rd.error));
+        if (!rd || !rd.data || !rd.data.length) throw new Error(F("lien du direct : refusé par la base"));
+        setEv(Object.assign({}, ev, { lien_direct: t || null }));
+      }
+      setModif({}); setMsg(F("✓ Enregistré. Les cavalières voient leur nouvelle heure sur la fiche du concours."));
+    } catch (eS) { setMsg(F("Pas enregistré : ") + String((eS && eS.message) || eS)); }
+    setOccupe(false);
+  }
+
+  var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Jour J"), sous: ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "" });
+  if (gestion === false) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Cette page est réservée à la coach du club."))));
+  if (lignes === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, erreur) : h("div", { className: "hs-attente" }, "…")));
+  var aModif = Object.keys(modif).length > 0 || (ev && String(lien || "").trim() !== String(ev.lien_direct || ""));
+
+  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
+    h("div", { className: "hs-in" },
+      nbConflits ? h("div", { className: "hs-carte", style: { borderColor: "rgba(201,166,107,.7)", padding: "12px 14px", marginTop: 18, fontSize: 13, lineHeight: 1.5 } },
+        h("b", { style: { color: "#C9A66B" } }, F("Attention : ")), F("deux cavalières passent en même temps sur deux pistes différentes. Regarde les lignes marquées.")) : null,
+      h("div", { className: "hs-sec" }, h("b", null, F("Les passages"))),
+      !passes.length ? h("div", { className: "hs-vide" }, F("Aucun couple engagé. Commence par la page Engagements.")) :
+      h("div", { className: "hs-carte" }, passes.map(function (p) {
+        var cle = p.i + "-" + p.n, conf = conflits[cle];
+        return h("div", { key: cle, className: "hs-couple", style: conf ? { background: "rgba(201,166,107,.08)" } : null },
+          h("div", { className: "hs-couple-t", style: { marginBottom: 6 } }, h("b", { style: { fontSize: 17 } }, p.nom), h("span", { style: { fontSize: 11.5, color: "rgba(243,238,228,.64)" } }, [p.ep, p.ch].filter(Boolean).join(" · "))),
+          conf ? h("div", { style: { fontSize: 11.5, color: "#C9A66B", marginBottom: 6 } }, F("En même temps que ") + conf + F(", sur une autre piste")) : null,
+          h("div", { className: "hs-g2" },
+            h("div", { className: "hs-champ" }, h("label", null, F("Heure de passage")), h("input", { type: "text", inputMode: "numeric", value: p.hp || "", placeholder: "11h40", onChange: function (e) { poser(p.i, "passage" + p.n, e.target.value); } })),
+            h("div", { className: "hs-champ" }, h("label", null, F("Piste")), h("input", { type: "text", value: p.pi || "", placeholder: F("ex. 1, Bleue"), onChange: function (e) { poser(p.i, "piste" + p.n, e.target.value); } }))));
+      })),
+      epreuves.length ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Décaler une épreuve"))),
+        h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Le concours a du retard ou de l’avance : décale d’un coup toutes les heures d’une épreuve.")),
+        h("div", { className: "hs-ep" },
+          h("select", { value: dec.ep, onChange: function (e) { setDec(Object.assign({}, dec, { ep: e.target.value })); } }, h("option", { value: "" }, F("Épreuve…")), epreuves.map(function (x) { return h("option", { key: x, value: x }, x); })),
+          h("select", { value: dec.min, onChange: function (e) { setDec(Object.assign({}, dec, { min: e.target.value })); } }, ["-30", "-15", "-10", "-5", "5", "10", "15", "20", "30", "45", "60"].map(function (x) { return h("option", { key: x, value: x }, (Number(x) > 0 ? "+" : "") + x + " min"); }))),
+        h("button", { type: "button", className: "hs-btn", onClick: decaler }, F("Décaler"))) : null,
+      h("div", { className: "hs-sec" }, h("b", null, F("Résultats en direct"))),
+      h("div", { className: "hs-champ" }, h("label", null, F("Lien du direct (chronométreur)")), h("input", { type: "url", value: lien, placeholder: "https://…", onChange: function (e) { setLien(e.target.value); setMsg(""); } })),
+      h("div", { className: "hs-note", style: { marginTop: -4 } }, F("Colle ici la page des résultats en direct : les cavalières auront un bouton « Résultats en direct » sur la fiche du concours.")),
+      h("div", { className: "hs-coll" },
+        msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
+        h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré")))),
+      erreur ? h("div", { className: "hs-err" }, erreur) : null));
+}
+
+/* ════════════════════ LE DOSSIER ════════════════════ */
+function EcranDossierConcours() {
+  var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var idEv = hsIdConcours();
+  var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
+  var _ge = React.useState(false); var gestion = _ge[0], setGestion = _ge[1];
+  var _vd = React.useState([]); var van = _vd[0], setVan = _vd[1];
+  var _cv = React.useState(null); var chevaux = _cv[0], setChevaux = _cv[1];
+  var _lc = React.useState([]); var licences = _lc[0], setLicences = _lc[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
+  var _bz = React.useState(false); var occupe = _bz[0], setOccupe = _bz[1];
+  var _nd = React.useState({ nom: "", valable: "" }); var nd = _nd[0], setNd = _nd[1];
+  var refFic = React.useRef(null);
+
+  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  function chargerVan(clef) {
+    supa.from("dossier_van").select("*").eq("club_clef", clef).order("ajoute_le", { ascending: false }).then(function (r) { if (r && !r.error) setVan(r.data || []); });
+  }
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        if (!idEv) throw new Error(F("concours introuvable"));
+        var u = null; try { u = await utilisateurActuel(); } catch (eU) { }
+        var r = await chargerAgendaEvenement(idEv);
+        if (!r || !r.data) throw new Error(F("ce concours n’existe plus"));
+        var E = r.data; if (vif) setEv(E);
+        var g = await hsPeutGerer(E.club_clef); if (vif) setGestion(g);
+        if (g) chargerVan(E.club_clef);
+        /* engagements lisibles : tous pour la coach, sa seule ligne pour une cavalière (droits de la base) */
+        var re = await supa.from("concours_engagements").select("nom, licence, cavalier_id, cheval1_id, cheval1_nom, cheval2_id, cheval2_nom").eq("agenda_id", idEv);
+        var L = (re && !re.error && re.data) || [];
+        if (vif) setLicences(L.map(function (l) { return { nom: l.nom, licence: l.licence, moi: !!(u && l.cavalier_id === u.id) }; }));
+        var ch = {};
+        L.forEach(function (l) { if (l.cheval1_id) ch[l.cheval1_id] = l.cheval1_nom; if (l.cheval2_id) ch[l.cheval2_id] = l.cheval2_nom; });
+        var ids = Object.keys(ch), res = [];
+        if (ids.length) {
+          var rs = await supa.from("soins_cheval").select("cheval_id, titre, date_intervention, date_prochaine").eq("type", "vaccin").in("cheval_id", ids).order("date_intervention", { ascending: false });
+          var der = {}; ((rs && !rs.error && rs.data) || []).forEach(function (s) { if (!der[s.cheval_id]) der[s.cheval_id] = s; });
+          ids.forEach(function (id) { res.push({ id: id, nom: ch[id], vaccin: der[id] || null, lisible: !!(rs && !rs.error) }); });
+        }
+        if (vif) setChevaux(res);
+      } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setChevaux(function (x) { return x || []; }); } }
+    })();
+    return function () { vif = false; };
+  }, [idEv]);
+
+  async function deposer(e) {
+    var f = e && e.target && e.target.files && e.target.files[0];
+    if (!f || !ev) return;
+    var nom = String(nd.nom || "").trim() || f.name;
+    setOccupe(true); setMsg("");
+    try {
+      var u = await utilisateurActuel();
+      var ext = (String(f.name).match(/\.[a-z0-9]{1,5}$/i) || [""])[0].toLowerCase();
+      var chemin = "van/" + u.id + "/" + Date.now() + ext;
+      var up = await supa.storage.from("dossier").upload(chemin, f, { contentType: f.type || "application/octet-stream", upsert: false });
+      if (up && up.error) throw new Error(up.error.message || String(up.error));
+      var ri = await supa.from("dossier_van").insert({ club_clef: ev.club_clef, nom: nom, chemin: chemin, valable_jusqu: nd.valable || null }).select("id");
+      if (ri && ri.error) { try { await supa.storage.from("dossier").remove([chemin]); } catch (eR) { } throw new Error(ri.error.message || String(ri.error)); }
+      setNd({ nom: "", valable: "" }); setMsg(F("✓ Document ajouté.")); chargerVan(ev.club_clef);
+    } catch (eD) { setMsg(F("Pas ajouté : ") + String((eD && eD.message) || eD)); }
+    setOccupe(false);
+    try { e.target.value = ""; } catch (eV) { }
+  }
+  async function ouvrirDoc(d) {
+    try {
+      var r = await supa.storage.from("dossier").createSignedUrl(d.chemin, 300);
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      window.open(r.data.signedUrl, "_blank");
+    } catch (eO) { setMsg(F("Impossible d’ouvrir : ") + String((eO && eO.message) || eO)); }
+  }
+  async function retirerDoc(d) {
+    try {
+      var r = await supa.from("dossier_van").delete().eq("id", d.id).select("id");
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      try { await supa.storage.from("dossier").remove([d.chemin]); } catch (eR) { }
+      chargerVan(ev.club_clef);
+    } catch (eX) { setMsg(F("Pas retiré : ") + String((eX && eX.message) || eX)); }
+  }
+  function ouvrirSante(ch) { try { window.__santeCheval = { id: ch.id, nom: ch.nom || "" }; } catch (e) { } c.setEcran("sante-cheval"); }
+  function etatVaccin(v) {
+    if (!v) return { t: F("aucun vaccin noté"), s: F("À vérifier"), alerte: true };
+    var p = v.date_prochaine ? hsDateLoc(v.date_prochaine) : null;
+    var dateC = ev ? hsDateLoc(ev.date_jour) : null;
+    if (p && dateC && p < dateC) return { t: F("rappel à faire avant le ") + hsFmt(v.date_prochaine, { day: "numeric", month: "long" }), s: F("À refaire"), alerte: true };
+    return { t: F("dernier vaccin le ") + hsFmt(v.date_intervention, { day: "numeric", month: "long", year: "numeric" }), s: "✓", alerte: false };
+  }
+
+  var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Le dossier"), sous: F("Ce qu’on peut te demander sur place.") });
+  if (chevaux === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, erreur) : h("div", { className: "hs-attente" }, "…")));
+  var aujISO = new Date().toISOString().slice(0, 10);
+
+  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
+    h("div", { className: "hs-in" },
+      /* van : coach seulement */
+      gestion ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Le van")), h("span", null, "🔒 " + F("toi seule"))),
+        h("div", { className: "hs-carte" },
+          van.length ? van.map(function (d) {
+            var perime = d.valable_jusqu && String(d.valable_jusqu) < aujISO;
+            return h("div", { key: d.id, className: "hs-row" },
+              h("div", { className: "g" }, h("b", null, d.nom), h("span", { style: perime ? { color: "#C9A66B" } : null }, d.valable_jusqu ? ((perime ? F("expiré depuis le ") : F("valable jusqu’au ")) + hsFmt(d.valable_jusqu, { day: "numeric", month: "long", year: "numeric" })) : F("ajouté le ") + hsFmt(String(d.ajoute_le).slice(0, 10), { day: "numeric", month: "long" }))),
+              h("button", { type: "button", className: "hs-lien", onClick: function () { ouvrirDoc(d); } }, F("Ouvrir")),
+              h("button", { type: "button", className: "hs-lien", style: { color: "rgba(243,238,228,.45)" }, onClick: function () { retirerDoc(d); } }, "×"));
+          }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Aucun papier pour l’instant (carte grise, assurance, contrôle technique…)."))))),
+        h("div", { className: "hs-g2", style: { marginTop: 12 } },
+          h("div", { className: "hs-champ" }, h("label", null, F("Nom du papier")), h("input", { type: "text", value: nd.nom, placeholder: F("Carte grise"), onChange: function (e) { setNd(Object.assign({}, nd, { nom: e.target.value })); } })),
+          h("div", { className: "hs-champ" }, h("label", null, F("Valable jusqu’au")), h("input", { type: "date", value: nd.valable, onChange: function (e) { setNd(Object.assign({}, nd, { valable: e.target.value })); } }))),
+        h("input", { ref: refFic, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: deposer }),
+        h("button", { type: "button", className: "hs-btn", disabled: occupe, onClick: function () { try { refFic.current.click(); } catch (e) { } } }, occupe ? F("Envoi…") : F("+ Ajouter un papier (photo ou PDF)")),
+        msg ? h("div", { className: "hs-msg" }, msg) : null) : null,
+      /* chevaux */
+      h("div", { className: "hs-sec" }, h("b", null, F("Les chevaux")), h("span", null, "🔒 " + (gestion ? F("toi et les propriétaires") : F("comme la page Santé")))),
+      chevaux.length ? h("div", { className: "hs-carte" }, chevaux.map(function (ch) {
+        var e = etatVaccin(ch.vaccin);
+        return h("button", { type: "button", key: ch.id, className: "hs-row", style: { width: "100%", background: "none", border: "none", textAlign: "start" }, onClick: function () { ouvrirSante(ch); } },
+          h("div", { className: "g" }, h("b", null, ch.nom || F("Cheval")), h("span", null, e.t)),
+          h("span", { className: "d", style: { fontSize: 12.5, color: e.alerte ? "#C9A66B" : "#F3EEE4" } }, e.s));
+      })) : h("div", { className: "hs-vide" }, F("Les chevaux apparaîtront quand les couples seront choisis (page Engagements).")),
+      h("div", { className: "hs-note" }, F("Touche un cheval pour ouvrir sa page Santé : livret, vaccins et documents.")),
+      /* licences */
+      h("div", { className: "hs-sec" }, h("b", null, F("Les licences")), h("span", null, "🔒 " + F("chacune la sienne"))),
+      licences.length ? h("div", { className: "hs-carte" }, licences.map(function (l, i) {
+        return h("div", { key: i, className: "hs-row" },
+          h("div", { className: "g" }, h("b", null, l.nom), h("span", null, l.licence ? F("licence ") + l.licence : F("pas encore ajoutée"))),
+          h("span", { className: "d", style: { fontSize: 12.5, color: l.licence ? "#F3EEE4" : "#C9A66B" } }, l.licence ? "✓" : F("Manquante")));
+      })) : h("div", { className: "hs-vide" }, F("Les licences apparaîtront quand les couples seront choisis.")),
+      erreur ? h("div", { className: "hs-err" }, erreur) : null));
+}
+
+/* ── PDF : partage (iPhone) ou téléchargement, et la liste du van ── */
+function hsPartagerPdf(octets, base) {
+  try {
+    var nom = String(base || "document").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase().replace(/^-+|-+$/g, "") + ".pdf";
+    var fic = null; try { fic = new File([octets], nom, { type: "application/pdf" }); } catch (eF) { fic = null; }
+    if (fic && navigator.canShare && navigator.canShare({ files: [fic] }) && navigator.share) { navigator.share({ files: [fic] }).catch(function () { }); return; }
+    var url = URL.createObjectURL(new Blob([octets], { type: "application/pdf" }));
+    var a = document.createElement("a"); a.href = url; a.download = nom; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { try { URL.revokeObjectURL(url); } catch (eR) { } }, 60000);
+  } catch (eP) { try { console.error(eP); } catch (e2) { } }
+}
+function hsPdfListe(titre, sousTitre, lignes) {
+  var W = 595.28, H = 841.89, ops = [], y = 70;
+  function Y(v) { return (H - v).toFixed(2); }
+  function txt(x, yy, t, pol, tl, coul) { ops.push((coul || "0 0 0") + " rg BT /" + pol + " " + tl + " Tf " + x.toFixed(2) + " " + Y(yy) + " Td (" + hsPdfTexte(t) + ") Tj ET"); }
+  txt(50, y, titre, "F3", 22, "0.11 0.16 0.54"); y += 22;
+  if (sousTitre) { txt(50, y, sousTitre, "F1", 11); y += 14; }
+  y += 10;
+  lignes.forEach(function (l) {
+    if (y > H - 50) return;
+    if (l.titre) { y += 12; txt(50, y, l.titre, "F2", 12.5); y += 8; ops.push("0.6 w 0.6 0.6 0.6 RG 50 " + Y(y) + " m 545 " + Y(y) + " l S"); y += 16; return; }
+    ops.push("0.8 w 0 0 0 RG 52 " + Y(y + 1) + " 10 10 re S");
+    if (l.f) txt(53.5, y - 0.5, "X", "F2", 9);
+    txt(70, y + 0.5, hsCouper(l.t, "F1", 11, 470), "F1", 11); y += 18;
+  });
+  var flux = ops.join("\n");
+  var objs = [
+    "<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R >>",
+    "<< /Length " + flux.length + " >>\nstream\n" + flux + "\nendstream",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>"
+  ];
+  var out = "%PDF-1.4\n%âãÏÓ\n", pos = [];
+  objs.forEach(function (ob, i) { pos.push(out.length); out += (i + 1) + " 0 obj\n" + ob + "\nendobj\n"; });
+  var xref = out.length;
+  out += "xref\n0 " + (objs.length + 1) + "\n0000000000 65535 f \n";
+  pos.forEach(function (p) { out += String(p).padStart(10, "0") + " 00000 n \n"; });
+  out += "trailer\n<< /Size " + (objs.length + 1) + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF";
+  var o = new Uint8Array(out.length); for (var k = 0; k < out.length; k++) o[k] = out.charCodeAt(k) & 0xFF;
+  return o;
+}
+
+window.HypeSaison = { Saison: EcranMaSaison, Concours: EcranConcours, Engagements: EcranEngagements, ListeVan: EcranListeVan, JourJ: EcranJourJ, Dossier: EcranDossierConcours };
 })();
