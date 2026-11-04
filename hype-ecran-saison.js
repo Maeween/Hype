@@ -848,8 +848,8 @@ function hsNomSep(ffe) {
   var m = String(ffe || "").trim().split(/\s+/).filter(Boolean); if (!m.length) return "";
   if (m.length === 1) return m[0].toUpperCase();
   function cap(w) { return w.toLowerCase().replace(/(^|[-'’])(\S)/g, function (x, a, b) { return a + b.toUpperCase(); }); }
-  /* 05/11 00h04 (Blandine : « remets son ordre ») : l'ordre de la FFE, prénom puis NOM — « Maelys MASURE » */
-  return cap(m[0]) + " " + m.slice(1).join(" ").toUpperCase();
+  /* 05/11 00h07 : comme sur la fiche SEP de Blandine : NOM Prénom — « MASURE Maelys » (le build 0215 avait inversé à tort) */
+  return m.slice(1).join(" ").toUpperCase() + " " + cap(m[0]);
 }
 async function hsInfosReelles(ids) {
   var out = {}; ids = (ids || []).filter(Boolean); if (!ids.length || typeof supa === "undefined" || !supa) return out;
@@ -1340,7 +1340,7 @@ function EcranEngagements() {
           h("div", { className: "hs-couple-t" }, h("b", null, h("span", { className: "hs-num" }, (i + 1) + (i === 0 ? "re" : "e")), l.nom || F("Nouvelle cavalière")),
             h("button", { type: "button", className: "hs-lien", onClick: function () { retirerLigne(i); } }, F("Retirer"))),
           h("div", { className: "hs-g2" },
-            h("div", { className: "hs-champ" }, h("label", null, F("Nom Prénom")), h("input", { type: "text", value: l.nom || "", placeholder: "Prénom NOM", onChange: function (e) { poserL(i, "nom", e.target.value); } })),
+            h("div", { className: "hs-champ" }, h("label", null, F("Nom Prénom")), h("input", { type: "text", value: l.nom || "", placeholder: "NOM Prénom", onChange: function (e) { poserL(i, "nom", e.target.value); } })),
             h("div", { className: "hs-champ" }, h("label", null, F("Licence")), h("input", { type: "text", value: l.licence || "", autoCapitalize: "characters", onChange: function (e) { poserL(i, "licence", e.target.value); } }))),
           h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"))),
           h("div", { className: "hs-ep" }, selEp(i, "epreuve1"), selCh(i, 1)),
@@ -1394,8 +1394,8 @@ function feuilleSep(h, ev, fe, lignes, fermer, nonEnregistre) {
   var date = d ? (df && df.getTime() !== d.getTime() ? "du " + jj(d) + " au " + jj(df) : jj(d)) : "";
   var disc = String(fe.discipline || "").trim();
   var titre = "Engagements Concours " + ((!disc || /^cso$/i.test(disc)) ? "CSO" : disc) + " Club";
-  /* 05/11 00h04 (Blandine : « remets son ordre ») : la feuille suit l'ordre des couples de l'appli (1re, 2e…), plus l'ordre alphabétique */
-  var tri = lignes.slice();
+  /* comme sur la fiche SEP de Blandine : ordre alphabétique des NOMS (le build 0215 avait mis l'ordre des couples à tort) */
+  var tri = lignes.slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
   var vides = Math.max(1, 9 - tri.length);
   function partagerPdf() {
     try {
