@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 69;   /* 04/11 soir (Blandine : maquette du grand lexique validée) : grand lexique — nouvelle présentation (photo en fond, recherche à côté du filtre, alphabet en reflet, fiche d'une notion avec flèches, partage, mémoire des filtres et du défilement) */
+var VERSION = 70;   /* 04/11 22h30 (Blandine) : grand lexique — photo de fond dézoomée (« Dézoome 2 »), recherche : les noms d'abord puis « Le mot apparaît aussi dans ces définitions » (S2), « Tu veux découvrir cette notion dans une autre langue ? » (C), moins de vide en bas */
+/* précédente : VERSION = 69; */   /* 04/11 soir (Blandine : maquette du grand lexique validée) : grand lexique — nouvelle présentation (photo en fond, recherche à côté du filtre, alphabet en reflet, fiche d'une notion avec flèches, partage, mémoire des filtres et du défilement) */
 /* précédente : VERSION = 68; */   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
 /* précédente : VERSION = 67; */   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
 /* précédente : VERSION = 66; */   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
@@ -3753,6 +3754,8 @@ var GLEX_N = {
   suiv: tt("Notion suivante", "Next term", "Término siguiente", "Termine successivo", "次の用語", "Nächster Begriff", "المفهوم التالي", "下一个词条", "Volgend begrip", "Próximo termo", "Nästa begrepp", "Следующее понятие", "Następne pojęcie", "다음 용어"),
   partagerLex: tt("Partager le lexique", "Share the glossary", "Compartir el glosario", "Condividi il glossario", "用語集をシェア", "Lexikon teilen", "شارك المعجم", "分享词汇表", "Deel de woordenlijst", "Compartilhar o glossário", "Dela ordlistan", "Поделиться словарём", "Udostępnij słowniczek", "용어집 공유하기"),
   partagerNotion: tt("Partager cette notion", "Share this term", "Compartir este término", "Condividi questo termine", "この用語をシェア", "Diesen Begriff teilen", "شارك هذا المفهوم", "分享这个词条", "Deel dit begrip", "Compartilhar este termo", "Dela begreppet", "Поделиться понятием", "Udostępnij to pojęcie", "이 용어 공유하기"),
+  autreLangue: tt("Tu veux découvrir cette notion dans une autre langue ?", "Want to discover this term in another language?", "¿Quieres descubrir este término en otro idioma?", "Vuoi scoprire questo termine in un’altra lingua?", "この用語をほかの言語でも見てみる？", "Willst du diesen Begriff in einer anderen Sprache entdecken?", "هل تريد اكتشاف هذا المفهوم بلغة أخرى؟", "想看看这个词条在其他语言里怎么说吗？", "Wil je dit begrip in een andere taal ontdekken?", "Quer descobrir este termo em outro idioma?", "Vill du upptäcka begreppet på ett annat språk?", "Хочешь узнать это понятие на другом языке?", "Chcesz poznać to pojęcie w innym języku?", "이 용어를 다른 언어로도 알아볼래?"),
+  aussiDef: tt("Le mot apparaît aussi dans ces définitions", "The word also appears in these definitions", "La palabra también aparece en estas definiciones", "La parola compare anche in queste definizioni", "この言葉は次の説明にも出てきます", "Das Wort kommt auch in diesen Erklärungen vor", "تظهر الكلمة أيضا في هذه التعريفات", "这个词也出现在以下释义中", "Het woord komt ook voor in deze uitleg", "A palavra também aparece nestas definições", "Ordet finns också i de här förklaringarna", "Слово встречается и в этих определениях", "Słowo pojawia się też w tych definicjach", "이 단어는 다음 설명에도 나와요"),
   copie: tt("Lien copié", "Link copied", "Enlace copiado", "Link copiato", "リンクをコピーしました", "Link kopiert", "تم نسخ الرابط", "链接已复制", "Link gekopieerd", "Link copiado", "Länk kopierad", "Ссылка скопирована", "Link skopiowany", "링크를 복사했어요")
 };
 var GLEX_PHOTO = "images/galops-carte-videos-bai.webp";
@@ -3822,6 +3825,25 @@ var GLEX_IC = {
   loupe: ["M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z", "M21 21l-4.35-4.35"],
   partage: ["M18 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M6 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M18 15.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M8.6 13.5l6.8 4", "M15.4 6.5l-6.8 4"]
 };
+/* 04/11 22h16 (Blandine « 3c ») — en bas de chaque notion : « Tu veux découvrir cette notion dans une autre langue ? », qui se déplie
+   sur le nom de la notion dans les 13 autres langues (même notion retrouvée par son cours et son rang) */
+var GLEX_NOMS_LG = { fr: "Français", en: "English", es: "Español", it: "Italiano", ja: "日本語", de: "Deutsch", ar: "العربية", zh: "中文", nl: "Nederlands", pt: "Português", sv: "Svenska", ru: "Русский", pl: "Polski", ko: "한국어" };
+var GLEX_DRAP = { fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸", it: "🇮🇹", ja: "🇯🇵", de: "🇩🇪", ar: "🇸🇦", zh: "🇨🇳", nl: "🇳🇱", pt: "🇵🇹", sv: "🇸🇪", ru: "🇷🇺", pl: "🇵🇱", ko: "🇰🇷" };
+var GLEX_ORDRE_LG = ["fr", "en", "es", "it", "de", "nl", "pt", "sv", "pl", "ru", "ar", "ja", "zh", "ko"];
+var GLEX_CACHE_LG = {};
+function glexDansLangue(id, lg2, pret, charge) {
+  var k = lg2 + "|" + charge; if (!GLEX_CACHE_LG[k]) GLEX_CACHE_LG[k] = glexEntrees(lg2, pret);
+  var L = GLEX_CACHE_LG[k], i = glexTrouver(L, id); return i >= 0 ? L[i] : null;
+}
+function GlexAutresLangues(props) {
+  var _o = useState(false), ouvert = _o[0], setOuvert = _o[1];
+  var autres = !ouvert ? [] : GLEX_ORDRE_LG.filter(function (x) { return x !== props.lg; }).map(function (x) { return { lg: x, e: glexDansLangue(props.notion.id, x, props.pret, props.charge) }; }).filter(function (x) { return x.e; });
+  return h("section", { className: "hglx-lg" },
+    h("button", { type: "button", className: "hglx-lg-ouvrir", "aria-expanded": ouvert ? "true" : "false", onClick: function () { setOuvert(!ouvert); } }, h("span", null, pickLg(GLEX_N.autreLangue, props.lg)), glexIc(ouvert ? ["M18 15l-6-6-6 6"] : GLEX_IC.bas, 14)),
+    ouvert ? h("div", { className: "hglx-lg-liste" }, autres.map(function (x) {
+      return h("div", { key: x.lg, className: "hglx-lg-ligne" }, h("span", { className: "hglx-lg-nom" }, GLEX_DRAP[x.lg] + "  " + GLEX_NOMS_LG[x.lg]), h("span", { className: "hglx-lg-mot", dir: x.lg === "ar" ? "rtl" : undefined, lang: x.lg }, x.e.mot));
+    })) : null);
+}
 function GrandLexique(props) {
   var lg = props.langue || "fr", rtl = lg === "ar";
   var T = function (k) { return pickLg(GLEX_N[k] || GLEX_T[k], lg); };
@@ -3873,6 +3895,10 @@ function GrandLexique(props) {
     if (nq) return norm(e.mot).indexOf(nq) >= 0 || norm(e.def).indexOf(nq) >= 0;
     return !A || e.ini === l;
   });
+  /* 04/11 22h15 (Blandine « S2 ») — recherche : d'abord les notions dont le NOM correspond (celles qui commencent par le texte cherché,
+     puis celles qui le contiennent), ensuite, sous la ligne « Le mot apparaît aussi dans ces définitions », celles où il n'est que dans la définition */
+  var rang = function (e) { var k = norm(e.cle), m = norm(e.mot); return k.indexOf(nq) === 0 || m.indexOf(nq) === 0 ? 0 : (m.indexOf(nq) >= 0 ? 1 : 2); };
+  if (nq) { vus = vus.map(function (e, i) { return { e: e, r: rang(e), i: i }; }).sort(function (a, b) { return a.r - b.r || a.i - b.i; }).map(function (x) { x.e.rang = x.r; return x.e; }); }
   /* notion ouverte (par son identifiant) */
   var iMot = mot ? glexTrouver(tout, mot) : -1, notion = iMot >= 0 ? tout[iMot] : null;
   React.useEffect(function () {   /* lien partagé : notion introuvable une fois tout chargé → la liste */
@@ -3968,7 +3994,8 @@ function GrandLexique(props) {
             var t = glexTitre(c.id, c.g, lg, props.titreCours);
             return h("button", { key: j, type: "button", onClick: function () { scrollRef.current.notion = window.scrollY || 0; sauver({ sNotion: scrollRef.current.notion, vue: "notion" }); if (props.onOuvrirCours) props.onOuvrirCours(c.id, c.g); } },
               h("span", null, T("galop").replace("{n}", c.g)), h("span", null, t || c.id));
-          })) : null)));
+          })) : null,
+        h(GlexAutresLangues, { key: notion.id, notion: notion, lg: lg, pret: props.pret, charge: props.charge }))));
   }
   /* ---------- la liste ---------- */
   return racine(h("section", { className: "hglx-list", "aria-label": titreBrut },
@@ -4001,15 +4028,16 @@ function GrandLexique(props) {
       })) : null,
       h("div", { className: "hglx-letter-heading" }, h("h2", null, nq ? T("recherche") : (A ? glexEtiquette(l) : T("leLexique"))), A || nq ? h("span", null, T("leLexique")) : null),
       h("div", { className: "hglx-results", "aria-live": "polite" },
-        vus.length ? vus.map(function (e) {
-          return h("button", { key: e.id, type: "button", className: "hglx-word", "aria-current": mot === e.id ? "true" : "false",
+        vus.length ? vus.map(function (e, iV) {
+          var sep = nq && e.rang === 2 && (iV === 0 || vus[iV - 1].rang !== 2);
+          return h(React.Fragment, { key: e.id }, sep ? h("p", { className: "hglx-sep" }, T("aussiDef")) : null, h("button", { key: e.id, type: "button", className: "hglx-word", "aria-current": mot === e.id ? "true" : "false",
             onClick: function () { ouvrirNotion(e, vus.map(function (x) { return x.id; })); } },
-            h("span", null, e.mot), (function () { var n = niveaux(e); return h("span", { className: n.length > 13 ? "hglx-g4" : undefined }, n); })());
+            h("span", null, e.mot), (function () { var n = niveaux(e); return h("span", { className: n.length > 13 ? "hglx-g4" : undefined }, n); })()));
         }) : h("p", { className: "hglx-empty" }, T("aucun"))))));
 }
 var CSS_GLEX = [
 /* 04/11 : valeurs reprises telles quelles de la maquette validée (téléphone) */
-".hglx{--hx-bg:#070a08;--hx-text:#f3eee4;--hx-muted:#b7b8ad;--hx-champagne:#bcab8e;--hx-line:rgba(236,229,211,.14);position:relative;isolation:isolate;width:100%;min-height:100vh;overflow:hidden;overflow:clip;background:var(--hx-bg);color:var(--hx-text);font:400 13px/1.7 'Montserrat',sans-serif;padding-bottom:calc(86px + env(safe-area-inset-bottom))}",
+".hglx{--hx-bg:#070a08;--hx-text:#f3eee4;--hx-muted:#b7b8ad;--hx-champagne:#bcab8e;--hx-line:rgba(236,229,211,.14);position:relative;isolation:isolate;width:100%;min-height:100vh;overflow:hidden;overflow:clip;background:var(--hx-bg);color:var(--hx-text);font:400 13px/1.7 'Montserrat',sans-serif;padding-bottom:12px}",   /* 04/11 22h20 (Blandine : « gros vide en fin de page ») : l'appli garde déjà la place du menu du bas */
 ".hglx *{box-sizing:border-box}",
 ".hglx h1,.hglx h2,.hglx p,.hglx figure{margin:0}",
 ".hglx button,.hglx input,.hglx select{font:inherit}",
@@ -4037,8 +4065,8 @@ var CSS_GLEX = [
 ".hglx-course-links button>span:last-child{font-size:12px;line-height:1.7;text-decoration:underline;text-decoration-color:rgba(188,171,142,.35);text-underline-offset:4px}",
 /* liste */
 ".hglx-list{position:relative;isolation:isolate}",
-".hglx-wallpaper{position:absolute;top:0;left:0;right:0;height:1020px;overflow:hidden;z-index:-1}",
-".hglx-wallpaper img{display:block;width:100%;height:100%;object-fit:cover;object-position:76% 35%;filter:saturate(.62) brightness(.95)}",
+".hglx-wallpaper{position:absolute;top:0;left:0;right:0;height:720px;overflow:hidden;z-index:-1}",   /* 04/11 22h15 (Blandine « Dézoome 2 ») : 1020 → 720 px, toute la tête du cheval dans l'écran */
+".hglx-wallpaper img{display:block;width:100%;height:100%;object-fit:cover;object-position:100% 30%;filter:saturate(.62) brightness(.95)}",
 ".hglx-wallpaper:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(90deg,rgba(7,10,8,.2),transparent 80%)}",
 ".hglx-rtl .hglx-wallpaper img{transform:scaleX(-1)}",
 ".hglx-rtl .hglx-wallpaper:after{background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(270deg,rgba(7,10,8,.2),transparent 80%)}",
@@ -4083,6 +4111,13 @@ var CSS_GLEX = [
 ".hglx-word>span.hglx-g4{max-width:118px;white-space:nowrap}",
 ".hglx-word[aria-current=true]>span:first-child{color:var(--hx-champagne)}",
 ".hglx-empty{padding:24px 0;color:var(--hx-muted);font-size:12px}",
+".hglx-lg{margin-top:26px;padding-top:6px;border-top:1px solid var(--hx-line)}",
+".hglx-lg-ouvrir{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;min-height:48px;color:var(--hx-champagne);font-size:12px;text-align:start}",
+".hglx-lg-liste{display:flex;flex-direction:column;padding-bottom:4px}",
+".hglx-lg-ligne{display:flex;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px solid rgba(236,229,211,.07)}",
+".hglx-lg-nom{flex:0 0 112px;font-size:11px;color:var(--hx-muted)}",
+".hglx-lg-mot{min-width:0;font:400 21px/1.2 'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;color:var(--hx-text);overflow-wrap:anywhere}",
+".hglx-sep{padding:22px 0 6px;color:var(--hx-champagne);font-size:11px;letter-spacing:1px;border-bottom:1px solid var(--hx-line)}",
 "@media(max-width:370px){.hglx-bar{padding-left:17px;padding-right:17px}.hglx-detail-content{padding-left:20px;padding-right:20px}.hglx-list-content{padding-left:17px;padding-right:17px}.hglx-detail-title{font-size:45px}.hglx-word>span:first-child{font-size:24px}}",
 /* tablette et ordinateur : la même page, élargie (pas de cadre de téléphone) ; la colonne reste du côté du titre, la tête du cheval à l'autre bout */
 "@media(min-width:768px){.hglx-bar{padding-left:32px;padding-right:32px}.hglx-list-content{max-width:620px;padding:0 32px 36px}.hglx-heading{padding-top:56px}",
