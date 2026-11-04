@@ -1,3 +1,98 @@
+# ⭐ CE QUI RESTE À FAIRE, PAR URGENCE (liste tenue à jour — créée le 04/11/2026)
+
+RÈGLE (Blandine, 04/11) : à chaque chose terminée, la retirer de cette liste, et lui dire quel est le point suivant le plus prioritaire. Les nouvelles tâches s'ajoutent ici, au bon niveau. Le détail de chaque point reste dans le journal plus bas.
+
+## 1. Urgent : ce qui bloque ou qui est cassé
+- **Les mails d'inscription et de « mot de passe oublié ».** Ils passent encore par le petit service d'envoi de base. Il n'envoie que quelques mails par heure, donc certains nouveaux inscrits ne reçoivent rien. Il faut brancher un vrai service d'envoi de mails.
+- **Une clé d'accès très puissante est encore active.** Il faudra la supprimer une fois les mails réglés. C'est toi qui le fais, je te guiderai.
+- **Les 23 vidéos ajoutées aujourd'hui dans la Vidéothèque.** Elles sont ouvertes à tous sans avoir été testées sur iPhone. Il faut vérifier qu'elles se lisent bien.
+
+## 2. Important : à faire bientôt
+- **Choisir un médiateur de la consommation pour l'association**, puis compléter les conditions de vente. C'est obligatoire pour vendre des abonnements aux particuliers.
+- **Récupérer l'argent bloqué sur l'ancien compte Stripe « Feinn ».** Il faut y mettre le RIB de l'association et refaire la vérification d'identité dans Safari. Demander aussi à un comptable pour la TVA.
+- **Un lien partagé vers une vidéo ouvre l'accueil de la Vidéothèque** au lieu de la vidéo.
+- **Vérifier ce que voit quelqu'un sans compte** qui arrive par le bouton « Voir les abonnements » depuis Google.
+- **Galop 7 :** quelques repères du cours ne sont pas encore confirmés par une source officielle (angle de la gourmette, transport…).
+- **Les résultats de concours sont visibles par tout le monde, même sans compte**, et on ne sait pas qui est mineur. Tu dois décider ce qu'on montre.
+- **Choisir « Enseignant » ou « Professionnel » à l'inscription donne tout de suite le statut Pro**, sans contrôle. C'est à vérifier.
+- **Les dates sous les photos restent en français**, même quand l'appli est dans une autre langue.
+
+## 3. Quand on aura le temps
+**Photos provisoires à remplacer**
+- Galop 6 (il a les photos du Galop 7) et 19 photos du Galop 7.
+- Les cours avec des photos de manège provisoires, dont les 4 du Galop 3 d'aujourd'hui.
+- Galop 5 : longe, embarquement, cross.
+- 20 photos de chapitres trop petites, et les petites photos du menu des chapitres à recadrer sur téléphone.
+- La Vidéothèque et la Sellerie.
+
+**Cours**
+- Cours sécurité (Galop 1) : photos à refaire et photos manquantes.
+- Robes : définitions et noms de photos à faire valider par toi.
+- Pansage : le schéma du sabot et la photo des pieds sont à valider.
+- Robes, pansage, sécurité et quelques cours du Galop 3 : à mettre au même style que les autres cours.
+- Galop 5 : il manque le lexique dans 7 cours.
+
+**Traductions à faire relire par quelqu'un qui parle la langue**
+- Galop 6.
+- Quelques mots du Galop 7.
+
+**Vidéos**
+- Trouver des vidéos pour les cours qui n'en ont pas encore.
+- Tester la petite fenêtre flottante YouTube sur iPhone.
+- Faire analyser les vidéos par Hey Baby.
+
+**Le reste**
+- Page Galops : le choix du menu des cours (A, B ou C) t'attend.
+- Challenge CSO de la SEP : les catégories, les dates et les résultats en brouillon.
+- Photos et albums : afficher plus vite, éviter l'écran noir des vidéos sur iPhone, dater plusieurs photos d'un coup, resserrer qui peut identifier ou dater une photo.
+- Une notification d'identification sur une photo ouvre la mauvaise page.
+- Pages Performances sur ordinateur : des retouches, et 3 points qui t'attendent.
+- Qualifications aux championnats (Critérium, Championnat) : rien n'est fait.
+- Groupes : les afficher sur la page Cavalier et depuis la page Écurie.
+- Envies choisies à l'inscription : pouvoir les modifier ensuite et s'en servir dans l'appli.
+- Garder une preuve en ligne quand un abonné renonce au délai de 14 jours.
+- Surveiller le premier vrai achat Premium Famille.
+- Version App Store : les paiements Apple, les notifications et l'icône.
+- Envoyer un mail de vérification quand quelqu'un réclame la page d'une écurie (il faut d'abord le service d'envoi de mails).
+- Un bouton pour partager la fiche d'un cheval.
+- La quête « Ajoute ton premier ami » ne donne jamais ses points.
+- Petits nettoyages dans la base.
+- Relancer Google pour les associations et l'aide de Mux pour les vidéos.
+
+## 4. Plus tard / idées
+- **Paiement par PayPal.** L'association n'a pas de compte PayPal, et la carte et Apple Pay suffisent pour l'instant.
+- **Cours des Galops 8 et 9.**
+- **Contenu à créer :**
+  - les « Exercices pratiques » ;
+  - une page d'équipe que chaque écurie peut remplir ;
+  - les conseils du coach pour la reprise Amateur 3 Grand Prix.
+- **Une vraie voix enregistrée** pour la lecture des cours.
+- **Photos à changer plus tard :** Vie équestre, le Mag, l'œil de la page d'entrée, le haut de la page Galops, l'association FEINN, la couverture de la page Écurie.
+- **Dons et abonnements :**
+  - un don qui donne un Premium ;
+  - une abonnée Premium qui achète en plus Hype IA ;
+  - tester les paiements en retard et les litiges.
+- **Petites idées de présentation :** médailles, photos du cheval, écuries avec une apostrophe dans le nom, un doublon dans le cours g2-c4.
+- **Réglages techniques :** renvoyer l'ancienne adresse vers 2hype.fr, ranger les anciens fichiers Lingo, renommer un fichier d'images mal nommé par l'iPhone.
+- **Divers :**
+  - le nom complet de Delphine ;
+  - l'album de Natacha Esquerre ;
+  - des textes Instagram pour présenter Hype ;
+  - les dates de saison à changer en 2027.
+
+## Je ne suis pas sûr que ce soit encore à faire
+- La copie des anciennes vidéos.
+- Le lien « L'association » dans Mon compte.
+- De vieux points de sécurité de septembre.
+- La page trop large après avoir tourné le téléphone.
+- Le Challenge Dressage SEP.
+- L'abonnement Horse Lingo.
+- Où en sont l'App Store et Google Play.
+
+(à vérifier un par un et à reclasser ou retirer)
+
+────────────────────────────────────────────────────────────
+
 PASSATION — HYPE (PWA équestre) · état au 16/09/2026, 21 h 30
 
 Ce document remplace la passation du 15/09 et consolide les 27 livraisons
