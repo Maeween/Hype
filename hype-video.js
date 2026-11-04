@@ -63,6 +63,18 @@
 
   /* Libellé du chapitre auquel une vidéo est reliée. */
   var CHAPITRES = {
+    /* 04/11 : chapitres des Galops 3, 5, 6, 7 reliés aux nouvelles vidéos (titres repris des cours). */
+    "g3-c2": {"fr": "Le départ sur le bon pied", "en": "Departing on the correct lead", "es": "La partida al pie correcto", "it": "La partenza sul piede giusto", "ja": "正しい手前での発進", "de": "Der Angalopp auf dem richtigen Bein", "ar": "الانطلاق بالرجل الصحيحة", "zh": "用正确的领先腿起跑", "nl": "Aangaloperen op het juiste been", "pt": "A partida no pé certo", "sv": "Galoppfattning på rätt hand", "ru": "Старт на нужную ногу", "pl": "Zagalopowanie na właściwą nogę", "ko": "올바른 발로 출발하기"},
+    "g3-c3": {"fr": "Préparer un bon abord à l'obstacle", "en": "Preparing a good approach to a fence", "es": "Preparar un buen abordaje al obstáculo", "it": "Preparare un buon avvicinamento all'ostacolo", "ja": "障害への良いアプローチを作る", "de": "Ein gutes Anreiten vorbereiten", "ar": "تجهيز اقتراب جيد من الحاجز", "zh": "为障碍做好良好的接近", "nl": "Een goede nadering van de hindernis voorbereiden", "pt": "Preparar uma boa aproximação do obstáculo", "sv": "Förbereda en bra inridning mot hindret", "ru": "Как правильно подготовить подход к препятствию", "pl": "Przygotowanie dobrego najazdu na przeszkodę", "ko": "장애물 접근 잘 준비하기"},
+    "g3-saut": {"fr": "Les 6 phases du saut", "en": "The 6 phases of the jump", "es": "Las 6 fases del salto", "it": "Le 6 fasi del salto", "ja": "跳躍の六つの局面", "de": "Die 6 Phasen des Sprungs", "ar": "مراحل القفزة الست", "zh": "跳跃的 6 个阶段", "nl": "De 6 fasen van de sprong", "pt": "As 6 fases do salto", "sv": "Hoppets 6 faser", "ru": "6 фаз прыжка", "pl": "6 faz skoku", "ko": "점프의 6단계"},
+    "g3-c5": {"fr": "Le pansage complet et le soin des pieds", "en": "Full grooming and hoof care", "es": "El acicalado completo y el cuidado de los cascos", "it": "La pulizia completa e la cura degli zoccoli", "ja": "完全な手入れと足のケア", "de": "Das vollständige Putzen und die Hufpflege", "ar": "التنظيف الكامل والعناية بالأقدام", "zh": "完整的刷拭与蹄部护理", "nl": "Volledig verzorgen en hoefzorg", "pt": "A escovação completa e o cuidado com os cascos", "sv": "Fullständig ryktning och hovvård", "ru": "Полная чистка и уход за копытами", "pl": "Pełna pielęgnacja i dbanie o kopyta", "ko": "꼼꼼한 손질과 발굽 관리"},
+    "g3-c6": {"fr": "Le comportement naturel du cheval", "en": "The horse's natural behavior", "es": "El comportamiento natural del caballo", "it": "Il comportamento naturale del cavallo", "ja": "馬の自然な行動", "de": "Das natürliche Verhalten des Pferdes", "ar": "السلوك الطبيعي للحصان", "zh": "马的天性行为", "nl": "Het natuurlijke gedrag van het paard", "pt": "O comportamento natural do cavalo", "sv": "Hästens naturliga beteende", "ru": "Естественное поведение лошади", "pl": "Naturalne zachowanie konia", "ko": "말의 타고난 행동"},
+    "g3-c12": {"fr": "L'assiette et la posture assise", "en": "The seat and sitting posture", "es": "El asiento y la postura sentada", "it": "L'assetto e la postura seduta", "ja": "騎座と座った姿勢", "de": "Der Sitz und die sitzende Haltung", "ar": "المقعد والوضعية الجالسة", "zh": "骑坐与坐姿", "nl": "De zit en de houding in zit", "pt": "O assento e a postura sentada", "sv": "Sitsen och den sittande hållningen", "ru": "Посадка и положение в седле сидя", "pl": "Dosiad i pozycja w siedzeniu", "ko": "좌골과 앉은 자세"},
+    "g3-c14": {"fr": "Les aides pour tourner", "de": "Die Hilfen zum Wenden", "en": "The aids for turning", "es": "Las ayudas para girar", "it": "Gli aiuti per girare", "ja": "向きを変えるための扶助", "ar": "مساعدات الانعطاف", "zh": "转弯的扶助", "nl": "De hulpen om te draaien", "pt": "As ajudas para virar", "sv": "Hjälperna för att svänga", "ru": "Помощи для поворота", "pl": "Pomoce przy skręcaniu", "ko": "방향 돌기를 위한 부조"},
+    "g3-c15": {"fr": "La demi-volte et la demi-volte renversée", "en": "The half-volt and the reverse half-volt", "es": "La media volta y la media volta invertida", "it": "La mezza volta e la mezza volta invertita", "ja": "ハーフボルトと逆ハーフボルト", "de": "Die halbe Volte und die Gegenhalbe Volte", "ar": "نصف الدويرة ونصف الدويرة المعكوسة", "zh": "半圈转和反半圈转", "nl": "De halve volte en de omgekeerde halve volte", "pt": "A meia-volta e a meia-volta invertida", "sv": "Halv volt och omvänd halv volt", "ru": "Полувольт и обратный полувольт", "pl": "Półwolta i odwrócona półwolta", "ko": "반 볼트와 역반 볼트"},
+    "g5n-10": {"fr": "Cession à la jambe et départs au galop", "en": "Leg-yielding and canter departs", "es": "Cesión a la pierna y salidas al galope", "it": "Cessione alla gamba e partenze al galoppo", "ja": "脚への譲歩と駈歩発進", "de": "Schenkelweichen und Angaloppieren", "ar": "الإزاحة بالساق والانطلاق في العدو", "zh": "腿让与跑步起步", "nl": "Wijken voor de kuit en galopaanspringen", "pt": "Cedência à perna e partidas a galope", "sv": "Skänkelvikning och galoppfattningar", "ru": "Уступка шенкелю и подъёмы в галоп", "pl": "Ustępowanie od łydki i zagalopowania", "ko": "레그일딩과 구보 발진"},
+    "g6-c1": {"fr": "Incurvation aux trois allures et galop à faux", "en": "Bend at all three gaits and counter-canter", "es": "Incurvación en los tres aires y galope en trocado", "it": "Incurvamento alle tre andature e galoppo rovescio", "ja": "3種の歩法での湾曲と反対駈歩", "de": "Biegung in allen drei Grundgangarten und Außengalopp", "ar": "الانثناء في المشيات الثلاث والعدو المعاكس", "zh": "三种步法中的弯曲与反跑步", "nl": "Buiging in alle drie de gangen en tegengalop", "pt": "Flexão nos três andamentos e galope falso", "sv": "Böjning i alla tre gångarterna och kontragalopp", "ru": "Изгиб на трёх аллюрах и ложный галоп", "pl": "Zgięcie we wszystkich trzech chodach i galop kontra", "ko": "세 가지 걸음에서의 만곡과 반대 구보"},
+    "g7n-14": {"fr": "Le CSO : enchaîner et diriger", "en": "Show jumping: linking and steering", "es": "Salto de obstáculos: encadenar y dirigir", "it": "Salto ostacoli: concatenare e dirigere", "ja": "障害飛越：連続飛越とライン取り", "de": "Springen: verbinden und lenken", "ar": "قفز الحواجز: الربط والتوجيه", "zh": "场地障碍：连续跳跃与控线", "nl": "Springen: aaneenschakelen en sturen", "pt": "Saltos: encadear e dirigir", "sv": "Hoppning: koppla ihop och styra", "ru": "Конкур: связки и управление", "pl": "Skoki: łączenie i prowadzenie", "ko": "장애물 비월: 연결과 방향 잡기"},
     /* 06/08 : premieres cles du Galop 1. Jusqu'ici CHAPITRES ne connaissait
        que des chapitres de Galop 3 et 4 : rien ne pouvait se rattacher a un
        cours du Galop 1, faute de libelle. Les intitules reprennent exactement
@@ -418,7 +430,7 @@
     {
       id: "v-g1-pansage", yt: "UpUmD2Ht4fc",
       source: "FFE", titreSource: "Objectif Galop® 3 : Le pansage",
-      langueVideo: "fr", cours: ["g1-c2"], galop: 1, theme: "soins-et-materiel",
+      langueVideo: "fr", cours: ["g1-c2", "g3-c5"] /* 04/11 : film du Galop 3, relié aussi au cours G3 du pansage */, galop: 1, theme: "soins-et-materiel",
       rang: "approfondir", dureeTranche: "moyen", verifie: "2026-08-06",
       titre: {
         fr: "Le pansage, geste par geste",
@@ -713,14 +725,100 @@
         ja: "\u30ac\u30ed\u30fc2\u3067\u6c42\u3081\u3089\u308c\u308b\u30b3\u30fc\u30b9\u306e\u5168\u4f53\u50cf\u3002\u6700\u521d\u306e\u30e9\u30a4\u30f3\u304b\u3089\u6700\u5f8c\u306e\u505c\u6b62\u307e\u3067\u3002",
         de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten.", ar: "كيف يبدو المسار المطلوب في الغالوب 2، من أول خط إلى آخر توقف.", zh: "Galop 2 要求的路线实际是什么样子，从第一条路线到最后的停止。", nl: "Hoe het parcours eruitziet dat bij Galop 2 verwacht wordt, van de eerste lijn tot de laatste stop.", pt: "Como é o percurso esperado no Galop 2, do primeiro traçado até a última parada.", sv: "Hur banan som krävs i Galop 2 ser ut, från första linjen till sista stoppet.", ru: "Как выглядит трасса, которую ждут на Galop 2, от первого рисунка до последней остановки.", pl: "Jak wygląda parkur wymagany na Galop 2, od pierwszej linii do ostatniego zatrzymania.", ko: "Galop 2에서 요구하는 코스가 첫 경로부터 마지막 정지까지 어떻게 이루어지는지 보여 줘요."
       }
+    },
+    /* ============================================================
+       04/11/2026 · AJOUTS GALOPS 3, 5, 6, 7 (sélection de Blandine, liens trouvés par ChatGPT).
+       verifie VIDE + aVerifier : invisibles pour les cavaliers (règle du 06/08 : aucun lien
+       affiché sans avoir été ouvert), visibles par les seules modératrices avec la mention
+       « À vérifier », pour être testés sur iPhone. Quand Blandine confirme qu'une vidéo se lit
+       dans Hype, on inscrit la date dans verifie et elle devient publique.
+       Pas de durée ni de points à observer : non vérifiés (règle : rien d'inventé).
+       ============================================================ */
+    {
+      id: "v-g3-bien-etre", yt: "h9CO45RNXFY", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Veiller au bien-être de son cheval",
+      langueVideo: "fr", cours: ["g3-c6"], galop: 3, theme: "comprendre-le-cheval",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Veiller au bien-être de son cheval", "en": "Looking after your horse's welfare", "es": "Velar por el bienestar de tu caballo", "it": "Prendersi cura del benessere del proprio cavallo", "ja": "馬のウェルフェアに気を配る", "de": "Auf das Wohlergehen deines Pferdes achten", "ar": "السهر على راحة حصانك", "zh": "关注马匹的福利", "nl": "Zorgen voor het welzijn van je paard", "pt": "Cuidar do bem-estar do seu cavalo", "sv": "Se till din hästs välbefinnande", "ru": "Забота о благополучии лошади", "pl": "Dbanie o dobrostan konia", "ko": "말의 복지 챙기기"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g3-figures", yt: "5Yn62KEXgdE", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Les figures de manège",
+      langueVideo: "fr", cours: ["g3-c15", "g3-c14"], galop: 3, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Les figures de manège", "en": "Arena figures", "es": "Las figuras de picadero", "it": "Le figure di maneggio", "ja": "馬場の図形運動", "de": "Hufschlagfiguren", "ar": "أشكال الحلبة", "zh": "场地图形", "nl": "Rijbaanfiguren", "pt": "As figuras de picadeiro", "sv": "Ridbanefigurer", "ru": "Фигуры манежной езды", "pl": "Figury na ujeżdżalni", "ko": "마장 도형"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g3-equilibre", yt: "FVdJQ01aq8I", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Varier son équilibre",
+      langueVideo: "fr", cours: ["g3-c12"], galop: 3, theme: "position-du-cavalier",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Varier son équilibre", "en": "Varying your balance", "es": "Variar tu equilibrio", "it": "Variare il proprio equilibrio", "ja": "バランスを切り替える", "de": "Das Gleichgewicht variieren", "ar": "تنويع توازنك", "zh": "改变你的平衡", "nl": "Je evenwicht variëren", "pt": "Variar seu equilíbrio", "sv": "Variera din balans", "ru": "Менять своё равновесие", "pl": "Zmieniać swoją równowagę", "ko": "균형 바꾸기"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g3-galop", yt: "pheF-U0ZR30", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Partir au galop",
+      langueVideo: "fr", cours: ["g3-c2"], galop: 3, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Partir au galop", "en": "Striking off into canter", "es": "Salir al galope", "it": "Partire al galoppo", "ja": "駈歩発進", "de": "Angaloppieren", "ar": "الانطلاق في الغالوب", "zh": "起跑跑步", "nl": "Aangaloperen", "pt": "Partir a galope", "sv": "Fatta galopp", "ru": "Подъём в галоп", "pl": "Zagalopowanie", "ko": "구보 출발"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g3-cavaletti", yt: "qd5aCsg-nYw", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Sauter des lignes de cavaletti",
+      langueVideo: "fr", cours: ["g3-c3", "g3-saut"], galop: 3, theme: "obstacle",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Sauter des lignes de cavaletti", "en": "Jumping cavaletti lines", "es": "Saltar líneas de cavaletti", "it": "Saltare linee di cavalletti", "ja": "キャバレッティの列を跳ぶ", "de": "Cavaletti-Reihen springen", "ar": "قفز صفوف الكافاليتي", "zh": "跳横木组合", "nl": "Cavaletti-lijnen springen", "pt": "Saltar linhas de cavaletti", "sv": "Hoppa cavalettiserier", "ru": "Прыжки через линии кавалетти", "pl": "Skoki przez szeregi cavaletti", "ko": "카발레티 라인 넘기"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g3-terrain", yt: "t94pK-H8F3U", aVerifier: true,
+      source: "FFE", titreSource: "Objectif Galop® 3 : Adapter son équilibre en terrain varié",
+      langueVideo: "fr", cours: [], galop: 3, theme: "position-du-cavalier",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Adapter son équilibre en terrain varié", "en": "Adapting your balance on varied terrain", "es": "Adaptar tu equilibrio en terreno variado", "it": "Adattare l'equilibrio su terreno vario", "ja": "変化のある地形でバランスを合わせる", "de": "Das Gleichgewicht im Gelände anpassen", "ar": "تكييف توازنك في أرض متنوعة", "zh": "在多变地形中调整平衡", "nl": "Je evenwicht aanpassen op wisselend terrein", "pt": "Adaptar seu equilíbrio em terreno variado", "sv": "Anpassa balansen i varierad terräng", "ru": "Равновесие на пересечённой местности", "pl": "Dostosowanie równowagi w zróżnicowanym terenie", "ko": "다양한 지형에서 균형 맞추기"},
+      resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
+    },
+    {
+      id: "v-g5-cession", yt: "9mzHJxCgtx0", aVerifier: true,
+      source: "IFCE", intervenant: "Benoît Pierre", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "Les déplacements latéraux, la cession à la jambe au pas", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/les-deplacements-lateraux-la-cession-a-la-jambe-au-pas/",
+      langueVideo: "fr", cours: ["g5n-10"], galop: 5, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "La cession à la jambe au pas", "en": "Leg-yielding at the walk", "es": "La cesión a la pierna al paso", "it": "La cessione alla gamba al passo", "ja": "常歩での脚への譲歩", "de": "Schenkelweichen im Schritt", "ar": "التنحي للساق في الخطوة", "zh": "慢步中的让腿", "nl": "Wijken voor de kuit in stap", "pt": "A cessão à perna ao passo", "sv": "Skänkelvikning i skritt", "ru": "Уступка шенкелю шагом", "pl": "Ustępowanie od łydki w stępie", "ko": "평보에서 다리 양보"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    {
+      id: "v-g6-cercle", yt: "o5PTQOFSpOE", aVerifier: true,
+      source: "IFCE", intervenant: "Patrick Galloux", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "Les aides du cercle", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/les-aides-du-cercle/",
+      langueVideo: "fr", cours: ["g6-c1"], galop: 6, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Les aides du cercle", "en": "The aids for a circle", "es": "Las ayudas del círculo", "it": "Gli aiuti del circolo", "ja": "輪乗りの扶助", "de": "Die Hilfen auf dem Zirkel", "ar": "مساعدات الدائرة", "zh": "圈乘的扶助", "nl": "De hulpen voor de volte", "pt": "As ajudas do círculo", "sv": "Hjälperna på volten", "ru": "Средства управления на вольте", "pl": "Pomoce na kole", "ko": "원 그리기의 보조"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    {
+      id: "v-g6-allures", yt: "MBJEoKIJPNM", aVerifier: true,
+      source: "IFCE", intervenant: "Bernard Maurel", intervenantRole: { fr: "Juge international de dressage", en: "International dressage judge", es: "Juez internacional de doma", it: "Giudice internazionale di dressage", ja: "国際馬場馬術審判員", de: "Internationaler Dressurrichter", ar: "حكم دولي في الترويض", zh: "国际盛装舞步裁判", nl: "Internationaal dressuurjury", pt: "Juiz internacional de adestramento", sv: "Internationell dressyrdomare", ru: "Международный судья по выездке", pl: "Międzynarodowy sędzia ujeżdżenia", ko: "국제 마장마술 심판" }, titreSource: "Suivre le rythme des allures : exercices sur le plat", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/suivre-le-rythme-des-allures-exercices-sur-le-plat/",
+      langueVideo: "fr", cours: [], galop: 6, theme: "position-du-cavalier",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Suivre le rythme des allures", "en": "Following the rhythm of the gaits", "es": "Seguir el ritmo de los aires", "it": "Seguire il ritmo delle andature", "ja": "歩様のリズムについていく", "de": "Dem Rhythmus der Gangarten folgen", "ar": "مجاراة إيقاع المشيات", "zh": "跟随步法的节奏", "nl": "Het ritme van de gangen volgen", "pt": "Acompanhar o ritmo dos andamentos", "sv": "Följa gångarternas rytm", "ru": "Следовать ритму аллюров", "pl": "Podążać za rytmem chodów", "ko": "보법의 리듬 따라가기"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    {
+      id: "v-g7-foulees", yt: "6pi4Kxil06Q", aVerifier: true,
+      source: "IFCE", intervenant: "Nicolas Perez", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "Adapter l'amplitude des foulées à l'enchaînement des sauts", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/adapter-l-amplitude-des-foulees-a-l-enchainement-des-sauts/",
+      langueVideo: "fr", cours: ["g7n-14"], galop: 7, theme: "obstacle",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Adapter l'amplitude des foulées", "en": "Adjusting stride length", "es": "Adaptar la amplitud de los trancos", "it": "Adattare l'ampiezza delle falcate", "ja": "完歩の幅を調整する", "de": "Die Galoppsprünge anpassen", "ar": "تكييف طول الخطوات", "zh": "调整步幅", "nl": "De paslengte aanpassen", "pt": "Adaptar a amplitude das passadas", "sv": "Anpassa språngens längd", "ru": "Регулировать длину темпа", "pl": "Dostosowanie długości fule", "ko": "보폭 조절하기"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
     }
   ];
 
   /* Forme interne utilisée par les écrans. On ne recopie pas les données :
      on les dérive, pour que HYPE_VIDEOS reste la seule source de vérité. */
-  var VIDS = HYPE_VIDEOS
-    .filter(function (v) { return INCLURE_NON_VERIFIEES || !!v.verifie; })
-    .map(function (v) {
+  function versInterne(v) {
       return {
         id: v.id,
         src: v.yt ? { type: "youtube", ref: v.yt } : null,
@@ -741,7 +839,11 @@
         verifie: v.verifie || "",
         i18nTitre: v.titre, i18nResume: v.resume, i18nObserver: v.observer || null
       };
-    });
+  }
+  var VIDS = HYPE_VIDEOS.filter(function (v) { return INCLURE_NON_VERIFIEES || !!v.verifie; }).map(versInterne);
+  /* 04/11 : vidéos pas encore vérifiées — visibles par les seules modératrices, marquées « À vérifier » */
+  var VIDS_AV = HYPE_VIDEOS.filter(function (v) { return !v.verifie && v.aVerifier && !INCLURE_NON_VERIFIEES; })
+    .map(function (v) { var x = versInterne(v); x.aVerifier = true; return x; });
 
   /* ---------------- RÉSERVE D'ANIMATIONS (MODÉRATEURS UNIQUEMENT) ----------------
      Les animations produites pour Hype, rangées ici pour qu'on sache où elles
@@ -934,6 +1036,7 @@
   /* ---------------- OUTILS ---------------- */
   function vidDe(id) {
     for (var i = 0; i < VIDS.length; i++) { if (VIDS[i].id === id) return VIDS[i]; }
+    for (var k = 0; k < VIDS_AV.length; k++) { if (VIDS_AV[k].id === id) return VIDS_AV[k]; }
     for (var j = 0; j < ANIMS.length; j++) { if (ANIMS[j].id === id) return ANIMS[j]; }
     return null;
   }
@@ -1342,8 +1445,17 @@
     ".hv2-k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hv-ch);margin:22px 0 10px}",
     ".hv2-modo{display:block;margin:34px auto 0;background:none;border:none;font-size:11px;letter-spacing:.12em;color:var(--hv-iv3);padding:12px}",
     /* page vidéo (04/11) */
-    ".hv2-l-in{padding-top:calc(env(safe-area-inset-top) + 10px)}",
-    ".hv2-lecteur{position:relative;aspect-ratio:16/9;margin-top:6px;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 18px 40px -22px rgba(0,0,0,.95)}",
+    ".hv2-l-in{padding-top:6px}",
+    ".hv2-l-hero .hv2-titre h1{font-size:clamp(30px,8.4vw,44px);line-height:1.08}",
+    ".hv2-l-hero .hv2-titre p{font-style:normal;font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.03em;color:var(--hv-iv2)}",
+    ".hv2-dC .hv2-l-hero .hv2-titre h1,.hv2-dD .hv2-l-hero .hv2-titre h1,.hv2-dE .hv2-l-hero .hv2-titre h1{font-size:52px}",
+    ".hv2-l-averifier{margin:8px 0 4px;padding:10px 12px;border-radius:10px;border:1px dashed var(--hv-ch2);font-size:12.5px;color:var(--hv-ch)}",
+    ".hv2-l-cours-l{display:block;width:100%;text-align:start;background:none;border:0;padding:6px 0 4px;border-top:1px solid rgba(243,238,228,.07)}",
+    ".hv2-l-cours-l:first-of-type{border-top:0;padding-top:0}",
+    ".hv2-l-sc.seule{grid-column:1/-1;flex-direction:row;align-items:stretch}",
+    ".hv2-l-sc.seule .hv2-l-sc-img{flex:0 0 46%}",
+    ".hv2-l-sc.seule .hv2-l-sc-t{display:flex;align-items:center}",
+    ".hv2-lecteur{position:relative;aspect-ratio:16/9;margin-top:22px;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 18px 40px -22px rgba(0,0,0,.95)}",
     ".hv2-l2 .hv2-lecteur{margin-left:-18px;margin-right:-18px;border-radius:0}",
     ".hv2-lecteur iframe,.hv2-lecteur video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}",
     ".hv2-lect-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#0B0F0E;display:block}",
@@ -1466,6 +1578,8 @@
     var sm = React.useState(retour0.onglet || "fav"); var onglet = sm[0], setOnglet = sm[1];
     var mo = React.useState(false); var estModo = mo[0], setEstModo = mo[1];
     var spl = React.useState(false); var plusOuvert = spl[0], setPlusOuvert = spl[1];
+    /* 04/11 : les modératrices voient aussi les vidéos « À vérifier », pour les tester avant publication */
+    if (estModo && VIDS_AV.length) dispo = dispo.concat(VIDS_AV);
     var refRech = React.useRef(null);
 
     React.useEffect(function () {
@@ -1509,7 +1623,7 @@
       if (verrou(v)) { setEcran("premium"); return; }
       if (v.src) { enregistrerEtat(v.id, true, !!(prog(v.id) && prog(v.id).vue), 0); }
       try { window.__hypeVideoOuverte = v.id; } catch (e) { }
-      try { window.__hvRetour = { vue: vue, galop: galop, theme: theme, rq: rq, onglet: onglet }; } catch (e2) { }
+      try { window.__hvRetour = { vue: vue, galop: galop, theme: theme, rq: rq, onglet: onglet }; window.__hvCoursOrigine = null; } catch (e2) { }
       setEcran("video-lecture");
     }
 
@@ -1552,7 +1666,7 @@
       return v.intervenant || "";
     }
     function ligne(v) {
-      var meta = [TXT_GALOP + v.galop, etatTxt(v)].filter(Boolean).join(" · ");
+      var meta = [TXT_GALOP + v.galop, v.aVerifier ? "À vérifier" : etatTxt(v)].filter(Boolean).join(" · ");
       return h("div", { key: v.id, style: { display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(243,238,228,.07)" } },
         h("button", { className: "hv-ligne", style: { borderBottom: "none", flex: 1, minWidth: 0 }, onClick: function () { ouvrir(v); } },
           couv(v),
@@ -1859,9 +1973,14 @@
     }, [cur]);
 
     var drapeau = (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null;
-    var retour = h("button", { className: "hv2-retour", onClick: function () { setEcran("videos"); } },
+    var depuisVT = false;
+    try { depuisVT = !!window.__hvRetour; } catch (eD) { }
+    function revenir() { if (app.retourEcran && app.histLen > 0) { app.retourEcran(); } else { setEcran("videos"); } }
+    var retour = h("button", { className: "hv2-retour", onClick: revenir },
       h("i", { "aria-hidden": "true" }, "‹"),
-      T("Retour aux vidéos", "Back to videos", "Volver a los vídeos", "Torna ai video", "動画一覧に戻る", "Zurück zu den Videos", "العودة إلى الفيديوهات", "返回视频", "Terug naar de video's", "Voltar aos vídeos", "Tillbaka till videorna", "Назад к видео", "Wróć do filmów", "영상으로 돌아가기"));
+      depuisVT || !(app.histLen > 0)
+        ? T("Retour aux vidéos", "Back to videos", "Volver a los vídeos", "Torna ai video", "動画一覧に戻る", "Zurück zu den Videos", "العودة إلى الفيديوهات", "返回视频", "Terug naar de video's", "Voltar aos vídeos", "Tillbaka till videorna", "Назад к видео", "Wróć do filmów", "영상으로 돌아가기")
+        : T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로"));
 
     if (!v) {
       return h("div", { className: classeHv2() }, drapeau,
@@ -1874,13 +1993,18 @@
     var vue = !!(p && p.vue);
     function basculerVue() { enregistrerEtat(v.id, false, !vue, 0); setEtat(lireLocal()); }
     function basculerFav() { enregistrerFavori(v.id, !fav); setEtat(lireLocal()); }
-    function versLeCours() {
-      var m = /^g(\d)-/.exec(v.coursId || "");
+    function versLeCours(cid) {
+      var m = /^g(\d)/.exec(cid || "");
       var niveauChapitre = m ? parseInt(m[1], 10) : v.galop;
       if (app.setGalopOuvert) app.setGalopOuvert(niveauChapitre);
-      if (app.setCoursOuvert) app.setCoursOuvert(v.coursId);
+      if (app.setCoursOuvert) app.setCoursOuvert(cid);
       setEcran("cours");
     }
+    /* tous les cours reliés, le cours d'où l'on vient en premier */
+    var origine = null;
+    try { origine = window.__hvCoursOrigine || null; } catch (eO) { }
+    var coursLies = (v.coursTous || []).slice();
+    if (origine && coursLies.indexOf(origine) > 0) { coursLies.splice(coursLies.indexOf(origine), 1); coursLies.unshift(origine); }
     function ouvrirAutre(x) {
       enregistrerEtat(x.id, true, !!(etat.prog && etat.prog[x.id] && etat.prog[x.id].vue), 0);
       try { window.__hypeVideoOuverte = x.id; } catch (e) { }
@@ -1919,15 +2043,26 @@
         h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: ".1" }), h("stop", { offset: ".55", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: "0" }))),
       h("path", { d: "M0 36 C 120 34, 240 20, 400 4", fill: "none", stroke: "url(#hv2gl)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
 
+    var phT = PHOTOS_THEMES[v.theme] || {};
     var obs = observerDe(v);
     var suiv = VIDS.filter(disponible).filter(function (x) { return x.id !== v.id && (x.coursId === v.coursId || x.theme === v.theme); }).slice(0, 4);
-    if (suiv.length === 3) suiv = suiv.slice(0, 2);   /* deux colonnes : jamais une carte seule sur sa ligne */
+    /* 04/11 09h55 (Blandine) : une carte seule sur sa ligne passe en carte horizontale pleine largeur */
 
     return h("div", { className: classeHv2(), style: TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre } : null }, drapeau,
+      /* 04/11 09h57 (Blandine : « la page des vidéos elles-mêmes avec un haut similaire à toutes, par exemple le hero
+         de leur thème ») : même en-tête que les pages de thème — photo du thème, courbe, titre de la vidéo dessous. */
+      h("div", { className: "hv2-hero hv2-hero-r hv2-l-hero" },
+        h("div", { className: "hv2-in hv2-hero-retour" }, retour),
+        courbeHv2(h, "c1", "M250 4 C 330 8, 385 40, 400 96"),
+        h("div", { className: "hv2-photo hv2-traite", style: Object.assign({ "--hv-pos-tel": phT.posHeroTel || phT.pos || "center", "--hv-pos-tab": phT.posHeroTab || phT.pos || "center", "--hv-pos-ordi": phT.posHeroOrdi || phT.pos || "center" }, TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre, "--hv-bords": TRAITEMENT_PHOTO.bords } : {}) },
+          h("img", { src: phT.img || PHOTO_HERO.img, alt: "", "aria-hidden": "true", fetchpriority: "high" })),
+        courbeHv2(h, "c2", "M0 92 C 130 90, 240 62, 400 8"),
+        h("div", { className: "hv2-in" }, h("div", { className: "hv2-titre" },
+          h("h1", null, titreDe(v)),
+          h("p", null, [TXT_GALOP_LECT(T) + v.galop, etatTxt].join(" · "))))),
       h("div", { className: "hv2-in hv2-l-in" },
-        retour, lecteur, courbe,
-        h("p", { className: "hv2-l-meta" }, [TXT_GALOP_LECT(T) + v.galop, etatTxt].join(" · ")),
-        h("h1", { className: "hv2-l-titre" }, titreDe(v)),
+        v.aVerifier ? h("p", { className: "hv2-l-averifier" }, "À vérifier — visible par toi seule tant que tu n'as pas confirmé que la vidéo se lit bien dans Hype.") : null,
+        lecteur,
         resumeDe(v) ? h("p", { className: "hv2-l-resume" }, resumeDe(v)) : null,
         h("p", { className: "hv2-l-langue" }, T("Vidéo en français", "Video in French", "Vídeo en francés", "Video in francese", "フランス語の動画", "Video auf Französisch", "فيديو باللغة الفرنسية", "法语视频", "Video in het Frans", "Vídeo em francês", "Video på franska", "Видео на французском", "Film po francusku", "프랑스어 영상")),
         h("div", { className: "hv2-l-actions" },
@@ -1943,10 +2078,13 @@
           h("p", { className: "hv2-l-k" }, T("À observer", "What to watch for", "Qué observar", "Da osservare", "注目ポイント", "Worauf du achtest", "ما يجب ملاحظته", "观察要点", "Om op te letten", "O que observar", "Att lägga märke till", "На что смотреть", "Na co zwrócić uwagę", "관찰 포인트")),
           h("ul", { className: "hv2-l-obs" }, obs.map(function (x, i) { return h("li", { key: i }, x); }))) : null,
 
-        v.coursId ? h("button", { className: "hv2-l-carte hv2-l-cours", onClick: versLeCours },
-          h("p", { className: "hv2-l-k" }, T("Ton cours", "Your lesson", "Tu lección", "La tua lezione", "あなたのレッスン", "Deine Lektion", "درسك", "你的课程", "Jouw les", "Sua aula", "Din lektion", "Твой урок", "Twoja lekcja", "나의 수업")),
-          h("b", null, chapitreDe(v)),
-          h("span", { className: "hv2-l-lien" }, T("Voir le cours", "See the lesson", "Ver la lección", "Vedi la lezione", "レッスンを見る", "Zur Lektion", "عرض الدرس", "查看课程", "Bekijk de les", "Ver a aula", "Se lektionen", "Открыть урок", "Zobacz lekcję", "수업 보기"), h("i", { "aria-hidden": "true" }, " →"))) : null,
+        coursLies.length ? h("div", { className: "hv2-l-carte hv2-l-cours" },
+          h("p", { className: "hv2-l-k" }, coursLies.length > 1
+            ? T("Tes cours", "Your lessons", "Tus lecciones", "Le tue lezioni", "あなたのレッスン", "Deine Lektionen", "دروسك", "你的课程", "Jouw lessen", "Suas aulas", "Dina lektioner", "Твои уроки", "Twoje lekcje", "나의 수업")
+            : T("Ton cours", "Your lesson", "Tu lección", "La tua lezione", "あなたのレッスン", "Deine Lektion", "درسك", "你的课程", "Jouw les", "Sua aula", "Din lektion", "Твой урок", "Twoja lekcja", "나의 수업")),
+          coursLies.map(function (cid) { return h("button", { key: cid, className: "hv2-l-cours-l", onClick: function () { versLeCours(cid); } },
+          h("b", null, L(CHAPITRES[cid], langue) || cid),
+          h("span", { className: "hv2-l-lien" }, T("Voir le cours", "See the lesson", "Ver la lección", "Vedi la lezione", "レッスンを見る", "Zur Lektion", "عرض الدرس", "查看课程", "Bekijk de les", "Ver a aula", "Se lektionen", "Открыть урок", "Zobacz lekcję", "수업 보기"), h("i", { "aria-hidden": "true" }, " →"))); })) : null,
 
         v.intervenant ? h("div", { className: "hv2-l-carte" },
           h("p", { className: "hv2-l-k" }, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث", "讲者", "De spreker", "O palestrante", "Medverkande", "Выступающий", "Prelegent", "강연자")),
@@ -1958,11 +2096,21 @@
         suiv.length ? h("div", null,
           h("h2", { className: "hv2-h2", style: { marginTop: 30 } }, T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا", "接下来观看", "Hierna kijken", "Para assistir em seguida", "Titta härnäst", "Смотреть дальше", "Do obejrzenia dalej", "다음에 볼 영상")),
           h("div", { className: "hv2-l-suiv" }, suiv.map(function (x) {
-            return h("button", { key: x.id, className: "hv2-l-sc", onClick: function () { ouvrirAutre(x); } },
+            var seule = suiv.length % 2 === 1 && x === suiv[suiv.length - 1];
+            return h("button", { key: x.id, className: "hv2-l-sc" + (seule ? " seule" : ""), onClick: function () { ouvrirAutre(x); } },
               h("span", { className: "hv2-l-sc-img" }, image(x), h("span", { className: "hv2-play petit" }, svgPlay)),
               h("span", { className: "hv2-l-sc-t" }, titreDe(x)));
           }))) : null));
   };
+  function courbeHv2(h, cls, d) {
+    return h("svg", { className: "hv2-courbe " + cls, viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+      h("defs", null, h("linearGradient", { id: "hv2gl-" + cls, x1: "0", x2: "1", y1: "0", y2: "0" },
+        h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }),
+        h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }),
+        h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+      cls === "c2" ? h("path", { d: d + " L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }) : null,
+      h("path", { d: d, fill: "none", stroke: "url(#hv2gl-" + cls + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
+  }
   function TXT_GALOP_LECT(T) { return T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop "); }
 
 

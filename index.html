@@ -63223,7 +63223,7 @@ function ComplementsBiomeca(props) {
             if (window.HYPE_VIDEO && typeof window.HYPE_VIDEO.parCours === "function")
                 vids = window.HYPE_VIDEO.parCours(coursId) || [];
         } catch (eV) { vids = []; }
-        const lire = (v) => { try { window.__hypeVideoOuverte = v.id; } catch (e) { } if (typeof setEcran === "function") setEcran("video-lecture"); };
+        const lire = (v) => { try { window.__hypeVideoOuverte = v.id; window.__hvCoursOrigine = coursId; window.__hvRetour = null; } catch (e) { } if (typeof setEcran === "function") setEcran("video-lecture"); };   /* 04/11 : la page vidéo met ce cours en premier et revient ici */
         const txt = (o) => (o && (o[langue] || ((langue === "zh" || langue === "nl" || langue === "pt" || langue === "sv" || langue === "ru" || langue === "pl" || langue === "ko") && o.en) || o.fr)) || "";
         const carteVid = (v, principale) => carte(React.createElement("div", null,
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 9, flexWrap: "wrap" } },
