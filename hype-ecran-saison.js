@@ -1212,6 +1212,8 @@ function EcranEngagements() {
    personne qui reçoit les engagements ») : récapitulatif par cheval (tours 1, 2, 3… dans l'ordre de la feuille) et par épreuve. */
 function hsRecapFeuille(lignes) {
   var parCh = {}, ordreCh = [], parEp = {}, ordreEp = [];
+  /* 04/11 23h45 : « tri » n'existait pas ici (la page plantait) — même ordre que la feuille, par nom */
+  var tri = (lignes || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
   tri.forEach(function (l) { [1, 2].forEach(function (n) {
     var c = String(l["cheval" + n + "_nom"] || "").trim(), e = String(l["epreuve" + n] || "").trim();
     if (c) { if (!parCh[c]) { parCh[c] = []; ordreCh.push(c); } parCh[c].push({ qui: String(l.nom || "").trim(), ep: e }); }
