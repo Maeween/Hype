@@ -416,6 +416,19 @@ function EcranConcours() {
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
+  var _dv = React.useState(null); var enDirect = _dv[0], setEnDirect = _dv[1];
+  var _dvo = React.useState(false); var dvOcc = _dvo[0], setDvOcc = _dvo[1];
+  /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
+  function lireEnDirect() {
+    setDvOcc(true);
+    supa.functions.invoke("direct-concours", { body: { action: "lire", agenda_id: idEv } }).then(function (r) {
+      setDvOcc(false);
+      if (r && !r.error && r.data && !r.data.erreur) setEnDirect(r.data);
+    }).catch(function () { setDvOcc(false); });
+  }
+  React.useEffect(function () {
+    if (ev && mesEng.length && /^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String(ev.lien_direct || ""))) lireEnDirect();
+  }, [ev && ev.lien_direct, mesEng.length]);
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
@@ -549,6 +562,17 @@ function EcranConcours() {
               (x.hp && recent) ? h("span", { style: { color: "#C9A66B" } }, F("heure mise à jour par ta coach")) : null),
             h("span", { className: "d" }, x.hp || F("heure à venir")));
         }))) : null,
+      /* le direct (Winjump) : son numéro, son heure estimée, son résultat */
+      (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("En direct")),
+          h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
+        h("div", { className: "hs-carte" }, enDirect.lignes.map(function (d, i) {
+          var res = d.clt ? (d.clt + (d.clt === "1" ? "re" : "e") + (d.points !== "" ? " · " + d.points + " pt" : "") + (d.temps ? " · " + d.temps + " s" : "")) : "";
+          return h("div", { key: i, className: "hs-row" },
+            h("div", { className: "g" }, h("b", null, d.epreuve), h("span", null, [d.cheval, F("n° ") + d.ordre + F(" sur ") + d.engages, d.heure_estimee ? F("vers ") + d.heure_estimee : ""].filter(Boolean).join(" · "))),
+            h("span", { className: "d", style: { fontSize: 13 } }, res || F("à venir")));
+        })),
+        h("div", { className: "hs-note" }, F("Lu par Hype chez le chronométreur. Heure estimée, résultats provisoires pendant le concours."))) : null,
       /* consignes de son cheval (page Santé du cheval) */
       consignes.filter(function (c) { return c.enrenement || c.materiel || c.soins; }).map(function (c) {
         var nomC = ""; mesEng.forEach(function (e) { if (e.cheval1_id === c.cheval_id) nomC = e.cheval1_nom || nomC; if (e.cheval2_id === c.cheval_id) nomC = e.cheval2_nom || nomC; });
@@ -1202,6 +1226,9 @@ function EcranJourJ() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _dc = React.useState({ ep: "", min: "10" }); var dec = _dc[0], setDec = _dc[1];
   var _ld = React.useState(""); var lien = _ld[0], setLien = _ld[1];
+  var _cd = React.useState(null); var cands = _cd[0], setCands = _cd[1];
+  var _dl = React.useState(null); var direct = _dl[0], setDirect = _dl[1];
+  var _db = React.useState(""); var dirOcc = _db[0], setDirOcc = _db[1];
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
   React.useEffect(function () {
@@ -1279,6 +1306,54 @@ function EcranJourJ() {
     setOccupe(false);
   }
 
+  /* 04/11 22h — le direct trouvé par Hype (fonction serveur direct-concours, sites Winjump) */
+  async function chercherDirect() {
+    setDirOcc("chercher"); setCands(null); setMsg("");
+    try {
+      var r = await supa.functions.invoke("direct-concours", { body: { action: "chercher", agenda_id: idEv } });
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      setCands((r.data && r.data.candidats) || []);
+    } catch (eC) { setMsg(F("Recherche impossible : ") + String((eC && eC.message) || eC)); }
+    setDirOcc("");
+  }
+  async function confirmerDirect(url) {
+    setDirOcc("confirmer"); setMsg("");
+    try {
+      var rd = await supa.from("club_agenda").update({ lien_direct: url }).eq("id", ev.id).select("id");
+      if (rd && rd.error) throw new Error(rd.error.message || String(rd.error));
+      if (!rd || !rd.data || !rd.data.length) throw new Error(F("refusé par la base"));
+      setEv(Object.assign({}, ev, { lien_direct: url })); setLien(url); setCands(null);
+      setDirOcc(""); lireDirect(true);
+      return;
+    } catch (eF) { setMsg(F("Pas enregistré : ") + String((eF && eF.message) || eF)); }
+    setDirOcc("");
+  }
+  async function lireDirect(forcer) {
+    setDirOcc("lire"); setMsg("");
+    try {
+      var r = await supa.functions.invoke("direct-concours", { body: { action: "lire", agenda_id: idEv, forcer: !!forcer } });
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      if (r.data && r.data.erreur) throw new Error(r.data.erreur);
+      setDirect(r.data || { lignes: [] });
+    } catch (eL) { setMsg(F("Lecture du direct impossible : ") + String((eL && eL.message) || eL)); }
+    setDirOcc("");
+  }
+  function prendreHeures() {
+    if (!direct || !direct.lignes) return;
+    var n = lignes.slice(), m = Object.assign({}, modif), nb = 0;
+    function proche(a, b) { a = String(a || "").toLowerCase(); b = String(b || "").toLowerCase(); return !!a && !!b && (a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
+    direct.lignes.forEach(function (d) {
+      if (!d.heure_estimee) return;
+      var i = -1; n.forEach(function (l, j) { if (l.id === d.engagement) i = j; }); if (i < 0) return;
+      var l = Object.assign({}, n[i]);
+      var k = proche(l.epreuve2, d.epreuve) ? 2 : (proche(l.epreuve1, d.epreuve) || !l.passage1 ? 1 : 2);
+      l["passage" + k] = d.heure_estimee; n[i] = l; m[l.id] = true; nb++;
+    });
+    setLignes(n); setModif(m);
+    setMsg(nb ? (nb + F(" heure(s) estimée(s) reprise(s). Vérifie, puis enregistre.")) : F("Aucune heure à reprendre."));
+  }
+  var estWinjump = /^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String((ev && ev.lien_direct) || ""));
+
   var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Jour J"), sous: ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "" });
   if (gestion === false) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Cette page est réservée à la coach du club."))));
   if (lignes === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, erreur) : h("div", { className: "hs-attente" }, "…")));
@@ -1307,7 +1382,28 @@ function EcranJourJ() {
           h("select", { value: dec.min, onChange: function (e) { setDec(Object.assign({}, dec, { min: e.target.value })); } }, ["-30", "-15", "-10", "-5", "5", "10", "15", "20", "30", "45", "60"].map(function (x) { return h("option", { key: x, value: x }, (Number(x) > 0 ? "+" : "") + x + " min"); }))),
         h("button", { type: "button", className: "hs-btn", onClick: decaler }, F("Décaler"))) : null,
       h("div", { className: "hs-sec" }, h("b", null, F("Résultats en direct"))),
-      h("div", { className: "hs-champ" }, h("label", null, F("Lien du direct (chronométreur)")), h("input", { type: "url", value: lien, placeholder: "https://…", onChange: function (e) { setLien(e.target.value); setMsg(""); } })),
+      h("button", { type: "button", className: "hs-btn", disabled: !!dirOcc, onClick: chercherDirect }, dirOcc === "chercher" ? F("Recherche sur Winjump…") : F("Trouver le direct sur Winjump")),
+      cands ? (cands.length ? h("div", { className: "hs-carte", style: { marginTop: 10 } },
+        h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Concours Winjump à la même date. Lequel est le tien ?")))),
+        cands.map(function (k) {
+          return h("div", { key: k.url, className: "hs-row" },
+            h("div", { className: "g" }, h("b", null, k.nom), h("span", null, hsFmt(k.debut, { day: "numeric", month: "short" }) + (k.fin && k.fin !== k.debut ? " → " + hsFmt(k.fin, { day: "numeric", month: "short" }) : "") + " · " + k.site + ".winjump.fr")),
+            h("button", { type: "button", className: "hs-lien", disabled: !!dirOcc, onClick: function () { confirmerDirect(k.url); } }, F("C’est lui")));
+        })) : h("div", { className: "hs-vide", style: { marginTop: 10 } }, F("Aucun concours Winjump à cette date. Il est peut-être chronométré par un autre site : colle son lien ci-dessous."))) : null,
+      estWinjump ? h("div", { style: { marginTop: 10 } },
+        h("button", { type: "button", className: "hs-btn plein", disabled: !!dirOcc, onClick: function () { lireDirect(true); } }, dirOcc === "lire" ? F("Lecture du direct…") : F("Lire les départs et les résultats")),
+        direct ? (direct.lignes && direct.lignes.length ? h("div", null,
+          h("div", { className: "hs-carte", style: { marginTop: 10 } }, direct.lignes.map(function (d, i) {
+            var res = d.clt ? (d.clt + (d.clt === "1" ? "re" : "e") + (d.points !== "" ? " · " + d.points + " pt" : "") + (d.temps ? " · " + d.temps + " s" : "")) : "";
+            return h("div", { key: i, className: "hs-row" },
+              h("div", { className: "g" }, h("b", null, d.nom + " · " + d.epreuve),
+                h("span", null, [d.cheval, F("n° ") + d.ordre + F(" sur ") + d.engages, d.heure_estimee ? F("vers ") + d.heure_estimee : ""].filter(Boolean).join(" · "))),
+              h("span", { className: "d", style: { fontSize: 13 } }, res || F("à venir")));
+          })),
+          h("button", { type: "button", className: "hs-btn", style: { marginTop: 10 }, onClick: prendreHeures }, F("Reprendre ces heures dans les passages")),
+          h("div", { className: "hs-note" }, F("Heures estimées par Hype : début de l’épreuve + environ 1 min 45 par couple avant le sien. Les résultats sont ceux du chronométreur, encore provisoires pendant le concours."))) :
+          h("div", { className: "hs-vide", style: { marginTop: 10 } }, F("Aucune de tes cavalières trouvée dans les listes de départ pour l’instant (les listes sont souvent publiées la veille)."))) : null) : null,
+      h("div", { className: "hs-champ", style: { marginTop: 14 } }, h("label", null, F("Lien du direct (chronométreur)")), h("input", { type: "url", value: lien, placeholder: "https://…", onChange: function (e) { setLien(e.target.value); setMsg(""); } })),
       h("div", { className: "hs-note", style: { marginTop: -4 } }, F("Colle ici la page des résultats en direct : les cavalières auront un bouton « Résultats en direct » sur la fiche du concours.")),
       h("div", { className: "hs-coll" },
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
