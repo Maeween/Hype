@@ -16752,3 +16752,10 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - index.html : uniquement hype-video.js?v=20261104-vt1 et hype-build 20261104-0100 (posé sur la version en ligne 20261104-0055, publiée entre-temps par une autre conversation ; hype-video.js n'avait pas bougé).
 - Vérifié (faux client Supabase, vraies polices Montserrat / Cormorant) : 390, 820, 1440 px ; fr, de, ar ; filtres Galop×thème ; recherche « contact » (5) ; Mes vidéos ; ouverture d'une vidéo puis retour sur « Dressage · Galop 4 · 3 vidéos » ; lien réserve visible pour malicia2008 et absent pour un compte normal ; aucun débordement horizontal ; 0 erreur ; 17 blocs de script OK ; marqueurs identiques à main. Vignettes YouTube non vérifiables ici (domaine bloqué dans le banc d'essai).
 - Constaté, non touché : les liens #v=<id> posent window.__videoOuverte, que la Vidéothèque ne lit pas (ils ouvrent l'accueil, pas la vidéo) — c'était déjà le cas avant.
+
+## 04/11/2026 01h05 — BRANCHE travail-fin-apercu (NON PUBLIÉ, pas de [publier]) : fin des aperçus Google + lien vers les abonnements
+- Demande de Blandine (01h03) : « abonne-toi pour lire la suite du cours et progresser avec Hype, et mets un lien vers les abonnements ».
+- outils/seo-galops.cjs : fin de l'aperçu de tous les chapitres des Galops 2 à 7 = « 🔒 Abonne-toi pour lire la suite du cours et progresser avec Hype » + bouton « Voir les abonnements » (14 langues). Le paragraphe précédent est retiré (il redisait la même chose).
+- ERREUR TROUVÉE (publiée le 04/11 00h55) : le bouton de ces pages menait à 2hype.fr/#premium, adresse que l'appli ne reconnaissait pas → ouvrait l'accueil. Corrigé : index.html, la table des raccourcis reconnaît « premium » et ouvre la page des abonnements.
+- Galops 6 et 7 ouverts aux Premium par l'autre conversation (HYPE_GALOP_PROCHAIN_DES = 8) : leurs pages Google ouvrent maintenant directement le cours (comme les Galops 2 à 5), plus la page du Galop.
+- Fichiers : index.html, outils/seo-galops.cjs, SUIVI.md.
