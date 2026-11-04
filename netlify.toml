@@ -41,10 +41,11 @@
   # /evenement/. Il ne fait jamais échouer la publication. 12/10 : seo-galops.cjs fabrique ensuite les pages publiques de la
   # théorie des Galops (/<langue>/galops/…) et sitemap-galops.xml, à partir des fichiers de cours ; jamais bloquant non plus. POUR ANNULER : remettre la ligne sans « ; node outils/seo-accueil.cjs ».
   # 04/11/2026 : seo-lexique.cjs fabrique /<langue>/lexique/ (tous les mots du grand lexique et leurs définitions, 14 langues) et sitemap-lexique.xml ; jamais bloquant.
+  # 04/11/2026 : indexnow.cjs prévient en dernier Bing, Yandex, Naver… (IndexNow) des pages publiques à relire ; 15 s au plus, jamais bloquant.
   # 12/10/2026 : seo-departements.cjs fabrique /fr/centres-equestres/… (écuries par département) et sitemap-departements.xml ; jamais bloquant.
   # 21/10/2026 : sommaire-cours.cjs refait d'abord hype-cours-sommaire.js (liste des chapitres des Galops) à partir des fichiers de cours ; jamais bloquant.
   # 21/10/2026 : cours-langues.cjs fabrique ensuite cours-l/ (chaque fichier de cours dans chaque langue seule, + secours) ; jamais bloquant.
-  command = "node outils/sommaire-cours.cjs; node outils/cours-langues.cjs; node outils/alleger-index.cjs; node outils/seo-accueil.cjs; node outils/seo-galops.cjs; node outils/seo-lexique.cjs; node outils/seo-departements.cjs"
+  command = "node outils/sommaire-cours.cjs; node outils/cours-langues.cjs; node outils/alleger-index.cjs; node outils/seo-accueil.cjs; node outils/seo-galops.cjs; node outils/seo-lexique.cjs; node outils/seo-departements.cjs; node outils/indexnow.cjs"
 
 # ---------- 12/10/2026 : la copie de l'appli pour les pages publiques (référencement) ----------
 # Jamais rangée par Google (c'est l'accueil sans son texte), toujours fraîche.
