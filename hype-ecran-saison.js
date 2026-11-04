@@ -836,6 +836,32 @@ function EcranConcours() {
 }
 
 /* ════════════════════ LA PAGE ENGAGEMENTS (coach) ════════════════════ */
+/* 04/11 23h54 (Blandine : « ça a rempli la feuille SEP avec les pseudos ; elles sont liées à leur compte avec leur nom,
+   prénom réels et parfois leur licence : quand j'ajoute Masure, que ça remplisse Maëlys Masure, sa licence… »).
+   Sources, dans l'ordre : ce que la coach a déjà corrigé (cavaliers_licences, si ce n'est pas juste le pseudo),
+   puis le nom FFE rattaché au compte (cavaliers_ffe, « MAELYS MASURE » → « MASURE Maelys »), puis noms_ffe ;
+   licence : cavaliers_licences, puis noms_ffe, puis la demande de résultats. */
+function hsNomSep(ffe) {
+  var m = String(ffe || "").trim().split(/\s+/).filter(Boolean); if (!m.length) return "";
+  if (m.length === 1) return m[0].toUpperCase();
+  function cap(w) { return w.toLowerCase().replace(/(^|[-'’])(\S)/g, function (x, a, b) { return a + b.toUpperCase(); }); }
+  return m.slice(1).join(" ").toUpperCase() + " " + cap(m[0]);
+}
+async function hsInfosReelles(ids) {
+  var out = {}; ids = (ids || []).filter(Boolean); if (!ids.length || typeof supa === "undefined" || !supa) return out;
+  ids = ids.slice(0, 400);
+  function pose(id, k, v) { if (!v) return; out[id] = out[id] || {}; if (!out[id][k]) out[id][k] = v; }
+  try { var r1 = await supa.from("cavaliers_ffe").select("user_id, nom").in("user_id", ids); ((r1 && r1.data) || []).forEach(function (x) { pose(x.user_id, "nom", hsNomSep(x.nom)); }); } catch (e1) { }
+  try { var r2 = await supa.from("noms_ffe").select("user_id, nom_ffe, licence").in("user_id", ids); ((r2 && r2.data) || []).forEach(function (x) { pose(x.user_id, "nom", hsNomSep(x.nom_ffe)); pose(x.user_id, "licence", String(x.licence || "").trim()); }); } catch (e2) { }
+  try { var r3 = await supa.from("demandes_resultats").select("user_id, nom_ffe, licence").in("user_id", ids); ((r3 && r3.data) || []).forEach(function (x) { pose(x.user_id, "nom", hsNomSep(x.nom_ffe)); pose(x.user_id, "licence", String(x.licence || "").trim()); }); } catch (e3) { }
+  return out;
+}
+/* le nom gardé par la coach compte seulement s'il n'est pas juste le pseudo */
+function hsNomChoisi(garde, pseudo, reel) {
+  var g = String(garde || "").trim();
+  if (g && g.toLowerCase() !== String(pseudo || "").trim().toLowerCase()) return g;
+  return reel || g || String(pseudo || "").trim();
+}
 /* 04/11 23h31 (Blandine : « impose un espace entre l'épreuve et l'indice : Club 3, Amat 2 ; si on l'oublie, mets-le toi ») */
 function hsNomEpreuve(t) {
   return String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim();
@@ -879,7 +905,11 @@ function EcranEngagements() {
         var r = await supa.from("profiles").select("id, pseudo, avatar_url").ilike("pseudo", "%" + t.replace(/[%_]/g, "") + "%").limit(12);
         var l = ((r && r.data) || []).map(function (p) { return { id: p.id, pseudo: p.pseudo || "", avatar_url: p.avatar_url || null, src: "hype", nom: "", licence: "" }; });
         var ids = l.map(function (p) { return p.id; });
-        if (ids.length) { var rl = await supa.from("cavaliers_licences").select("user_id, nom, licence").in("user_id", ids); ((rl && rl.data) || []).forEach(function (x) { l.forEach(function (p) { if (p.id === x.user_id) { p.nom = x.nom || ""; p.licence = x.licence || ""; } }); }); }
+        if (ids.length) {
+          var rl = await supa.from("cavaliers_licences").select("user_id, nom, licence").in("user_id", ids), gl = {}; ((rl && rl.data) || []).forEach(function (x) { gl[x.user_id] = x; });
+          var re = await hsInfosReelles(ids);
+          l.forEach(function (p) { var g = gl[p.id] || {}, r = re[p.id] || {}; p.nom = hsNomChoisi(g.nom, p.pseudo, r.nom); p.licence = g.licence || r.licence || ""; });
+        }
         if (vif) setTrouves(l);
       } catch (e) { if (vif) setTrouves([]); }
     }, 300);
@@ -979,7 +1009,21 @@ function EcranEngagements() {
           var idsC = cand.map(function (p) { return p.id; });
           if (idsC.length) { var rlc = await supa.from("cavaliers_licences").select("user_id, nom, licence").in("user_id", idsC.slice(0, 400)); ((rlc && rlc.data) || []).forEach(function (x) { lic[x.user_id] = x; }); }
         } catch (eLc) { }
-        cand.forEach(function (p) { p.nom = (lic[p.id] && lic[p.id].nom) || ""; p.licence = (lic[p.id] && lic[p.id].licence) || ""; });
+        var reel = {};
+        try { reel = await hsInfosReelles(cand.map(function (p) { return p.id; }).concat(L.map(function (l) { return l.cavalier_id; }))); } catch (eRe) { reel = {}; }
+        cand.forEach(function (p) { var r = reel[p.id] || {}; p.nom = hsNomChoisi(lic[p.id] && lic[p.id].nom, p.pseudo, r.nom); p.licence = (lic[p.id] && lic[p.id].licence) || r.licence || ""; });
+        /* lignes déjà enregistrées avec le pseudo : on met le vrai nom (et la licence connue), à enregistrer */
+        var pseudoDe = {}; cand.forEach(function (p) { pseudoDe[p.id] = p.pseudo; });
+        var corrige = false;
+        L.forEach(function (l) {
+          if (!l.cavalier_id) return; var r = reel[l.cavalier_id] || {};
+          var ps = pseudoDe[l.cavalier_id] || "", n = hsNomChoisi(l.nom, ps, r.nom);
+          if (ps && String(l.nom || "").trim().toLowerCase() === ps.trim().toLowerCase() && (lic[l.cavalier_id] && lic[l.cavalier_id].nom && lic[l.cavalier_id].nom.toLowerCase() !== ps.toLowerCase())) n = lic[l.cavalier_id].nom;
+          if (n && n !== l.nom) { l.nom = n; corrige = true; }
+          var li = (lic[l.cavalier_id] && lic[l.cavalier_id].licence) || r.licence || "";
+          if (!l.licence && li) { l.licence = li; corrige = true; }
+        });
+        if (corrige && vif) setModifie(true);
         cand.sort(function (a, b) { var o = { inscrite: 0, compet: 1, team: 2, club: 3 }; return (o[a.src] - o[b.src]) || String(a.nom || a.pseudo).localeCompare(String(b.nom || b.pseudo), "fr"); });
         if (vif) setCandidates(cand);
         /* première ouverture : on part des cavalières inscrites */

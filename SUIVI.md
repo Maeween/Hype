@@ -17150,3 +17150,10 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Nouveau fichier netlify/functions/recherche-concours.js : compte Hype vérifié ; réservé à la modératrice, aux créatrices de groupe et aux responsables du club ; 40 recherches par jour et par compte ; ne garde que des numéros bien formés trouvés dans une source (jamais inventés).
 - Vérifié avec des réponses simulées : Versailles 15/11 → 2723966, numéro mal formé écarté, non-coach refusé, date manquante refusée. Le vrai essai demande la mise en ligne (la clé n'est que sur le serveur) : il partira avec l'étape 2.
 - Correction : Hey Baby passe par OpenAI (ChatGPT), pas par Claude comme je l'avais dit.
+
+## 05/11/2026 01h05 — PUBLICATION build 20261105-0205 (Blandine 23h54 : « ça a rempli la feuille SEP avec les pseudos ; elles sont liées à leur compte avec leur nom, prénom réels et parfois leur licence ; quand j'ajoute Masure, que ça remplisse Maëlys Masure, sa licence… »)
+- Engagements : le nom d'une cavalière vient maintenant de son compte : d'abord ce que la coach a déjà corrigé à la main (s'il ne s'agit pas juste du pseudo), sinon le nom FFE rattaché au compte (cavaliers_ffe, puis noms_ffe, puis sa demande de résultats), écrit comme sur la feuille : « MAELYS MASURE » → « MASURE Maelys ». Licence : celle gardée par la coach, sinon celle connue du compte (noms_ffe / demande de résultats).
+- Pareil dans les propositions et dans « Chercher une autre cavalière ».
+- Les couples déjà enregistrés avec le pseudo (CSO Versailles) sont corrigés à l'ouverture de la page ; le bouton passe à « Enregistrer » pour garder la correction (et la feuille SEP les montre déjà corrigés).
+- Limites : le nom FFE est en majuscules sans accents (Maelys, pas Maëlys) : la coach peut corriger dans « Nom Prénom », ce sera gardé. Clémence n'a pas de nom FFE rattaché à son compte : elle reste « clemence » tant qu'on ne le corrige pas. Aucune des 7 cavalières de Versailles n'a de licence enregistrée sur son compte : la case Licence reste vide jusqu'à la première saisie (gardée ensuite).
+- Fichiers : hype-ecran-saison.js (v30), index.html (build 20261105-0205), SUIVI.md.
