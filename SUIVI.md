@@ -16787,3 +16787,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - index.html : ?v= de hype-video.js, hype-build 20261104-1003, "video-lecture" dans ECRANS_FIN_PAGE (fin de page Hype sur la page vidéo), page de cours → page vidéo : mémorise le cours d'origine.
 - Vérifié (faux client Supabase, vraies polices) : 360 / 390 / 820 / 1440 px ; fr, de, ar ; Galop×thème, recherche, Mes vidéos, ouverture/retour, vidéo suivante, vue modératrice ; 0 erreur ; 17 blocs OK ; marqueurs identiques à la version en ligne. Non vérifiable ici : lecture YouTube réelle et miniatures (domaine bloqué dans le banc d'essai).
 
+
+## 04/11/2026 10h25 — PUBLICATION build 20261104-1025 (accord de Blandine 10h15 « Ok vas-y ») : atlas du Galop 5 traduit en 14 langues
+- hype-cours-atlas.js (version 6, ?v=6) : onglet « Les muscles », titre « Les grands groupes musculaires », les 5 noms et les 5 emplacements, texte de l'image — traduits (en, es, it, de, ja, ar, zh, nl, pt, sv, ru, pl, ko). Rien d'autre touché.
+- À SAVOIR : le cours g5n-04 qui contient l'atlas reste visible des seules modératrices tant que le Galop 5 n'est pas ouvert (GALOPS_I18N id 5 disponible:false ; g5n-01…12 absents de HYPE_COURS_PRETS). Blandine a demandé (10h15) « mets-le en ligne pour tous » : question posée sur l'ouverture du Galop 5 entier.
+- Fichiers : hype-cours-atlas.js, index.html (build 20261104-1025), SUIVI.md.
