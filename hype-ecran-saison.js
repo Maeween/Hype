@@ -900,7 +900,9 @@ function EcranEngagements() {
         if (vif) setCandidates(cand);
         /* première ouverture : on part des cavalières inscrites */
         if (!L.length) {
-          L = cand.filter(function (p) { return p.src === "inscrite"; }).map(function (p, i) { return { __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: i }; });
+          /* 04/11 23h25 (Blandine : « ne me fais pas apparaître en cavalière, en tant que coach ; par défaut ne me mets pas en premier couple ») :
+             la coach qui ouvre la page n'est jamais pré-remplie comme couple (elle reste chef d'équipe ; elle peut s'ajouter elle-même si besoin). */
+          L = cand.filter(function (p) { return p.src === "inscrite" && !(u && p.id === u.id); }).map(function (p, i) { return { __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: i }; });
           if (L.length && vif) setModifie(true);
         }
         if (vif) setLignes(L);

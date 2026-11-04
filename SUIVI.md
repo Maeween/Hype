@@ -17091,3 +17091,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Ma saison : chaque concours à venir a maintenant une flèche › sur sa carte et, dessous, deux boutons visibles : « Engagements » (ouvre directement la page Engagements) et « Ouvrir la fiche ». Les styles de boutons sont chargés dès Ma saison.
 - Rappel (build 0045) : la page du rendez-vous créée avec l'évènement porte une carte « Centre de compétition » qui mène à la fiche du concours. À TERME : ne garder qu'UNE page par concours (fusionner la page du rendez-vous et la fiche du Centre) — à décider avec Blandine.
 - Fichiers : hype-ecran-saison.js (v21), index.html (build 20261105-0050), SUIVI.md.
+
+## 04/11/2026 23h30 — PUBLICATION build 20261105-0055 (Blandine 23h24 : « il ne faut pas me faire apparaître en cavalière, en tant que coach ; la mention de coach est obligatoire pour les mineurs, tu peux la laisser ; je me rajouterai en cavalière si besoin ; par défaut ne me mets pas en premier couple »)
+- Engagements : au premier remplissage, la coach qui ouvre la page n'est plus ajoutée comme couple (même si elle a touché « Je participe ») ; elle reste « Chef d'équipe » en haut de la feuille, et peut toujours s'ajouter via « Ajouter une cavalière ».
+- Base : sa ligne vide « Blandine » (sans épreuve ni cheval) sur le CSO Versailles a été retirée de concours_engagements à sa demande. La ligne d'Aurélie (Club 3, Orchid's yellow) est intacte.
+- Fichiers : hype-ecran-saison.js (v22), index.html (build 20261105-0055), SUIVI.md.
