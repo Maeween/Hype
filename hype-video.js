@@ -1227,6 +1227,8 @@
     ".hv2-photo.hv2-traite:after{box-shadow:none}",
     ".hv2-courbe{position:absolute;left:0;right:0;width:100%;height:70px;pointer-events:none;z-index:2}",
     ".hv2-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
+    ".hv2-hero-retour{position:relative;z-index:4;margin-top:2px}",
+    ".hv2-hero-r .hv2-photo{margin-top:-30px}",
     ".hv2-courbe.c2{position:relative;display:block;height:64px;margin-top:-74px}",
     "[dir=rtl] .hv2-courbe{transform:scaleX(-1)}",
     ".hv2-titre{text-align:end;margin-top:-12px;position:relative;z-index:3}",
@@ -1460,22 +1462,32 @@
           h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
         h("path", { d: d, fill: "none", stroke: "url(#hv2g-" + cls + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
     }
+    /* En-tête commun (04/11, Blandine : « le haut des pages des onglets doit avoir
+       la même présentation que celle de la Vidéothèque ») : HYPE, grande photo,
+       courbe champagne, titre et sous-titre en vrai texte sous la photo.
+       Sert à l'accueil (PHOTO_HERO) et à chaque thème (PHOTOS_THEMES). */
+    function heroDe(o) {
+      return h("div", { className: "hv2-hero" + (o.retour ? " hv2-hero-r" : "") },
+        h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
+        o.retour ? h("div", { className: "hv2-in hv2-hero-retour" }, o.retour) : null,
+        courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
+        h("div", {
+          className: "hv2-photo hv2-traite",
+          style: Object.assign({ "--hv-pos-tel": o.posTel || "center", "--hv-pos-tab": o.posTab || o.posTel || "center", "--hv-pos-ordi": o.posOrdi || o.posTab || o.posTel || "center" }, styleTraitement())
+        },
+          h("img", { src: o.img, alt: o.alt || "", "aria-hidden": o.alt ? undefined : "true", fetchpriority: "high" }),
+          o.intro ? h("button", { className: "hv2-intro", "aria-label": titreDe(o.intro), onClick: function () { ouvrir(o.intro); } },
+            h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "none", stroke: "#F3EEE4", strokeWidth: 1.5 }))) : null),
+        courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
+        h("div", { className: "hv2-in" },
+          h("div", { className: "hv2-titre" }, h("h1", null, o.titre), o.sous ? h("p", null, o.sous) : null)));
+    }
     var vIntro = VIDEO_INTRO ? vidDe(VIDEO_INTRO) : null;
-    var hero = h("div", { className: "hv2-hero" },
-      h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
-      courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
-      h("div", {
-        className: "hv2-photo hv2-traite",
-        style: Object.assign({ "--hv-pos-tel": PHOTO_HERO.posTel, "--hv-pos-tab": PHOTO_HERO.posTab, "--hv-pos-ordi": PHOTO_HERO.posOrdi }, styleTraitement())
-      },
-        h("img", { src: PHOTO_HERO.img, alt: "", "aria-hidden": "true", fetchpriority: "high" }),
-        vIntro ? h("button", { className: "hv2-intro", "aria-label": titreDe(vIntro), onClick: function () { ouvrir(vIntro); } },
-          h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "none", stroke: "#F3EEE4", strokeWidth: 1.5 }))) : null),
-      courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
-      h("div", { className: "hv2-in" },
-        h("div", { className: "hv2-titre" },
-          h("h1", null, T("Vidéothèque", "Video library", "Videoteca", "Videoteca", "動画ライブラリ", "Videothek", "مكتبة الفيديو", "视频库", "Videotheek", "Videoteca", "Videobibliotek", "Видеотека", "Wideoteka", "비디오 라이브러리")),
-          h("p", null, T("Observe le geste. Trouve ta sensation.", "Watch the movement. Find your feel.", "Observa el gesto. Encuentra tu sensación.", "Osserva il gesto. Trova la tua sensazione.", "動きを見て、自分の感覚をつかもう。", "Beobachte die Bewegung. Finde dein Gefühl.", "لاحظي الحركة. جدي إحساسك.", "观察动作，找到你的感觉。", "Kijk naar het gebaar. Vind je gevoel.", "Observe o gesto. Encontre sua sensação.", "Titta på rörelsen. Hitta din känsla.", "Смотри на движение. Найди своё ощущение.", "Obserwuj ruch. Znajdź swoje czucie.", "동작을 관찰하고, 나만의 감각을 찾아요.")))));
+    var hero = heroDe({
+      img: PHOTO_HERO.img, posTel: PHOTO_HERO.posTel, posTab: PHOTO_HERO.posTab, posOrdi: PHOTO_HERO.posOrdi, intro: vIntro,
+      titre: T("Vidéothèque", "Video library", "Videoteca", "Videoteca", "動画ライブラリ", "Videothek", "مكتبة الفيديو", "视频库", "Videotheek", "Videoteca", "Videobibliotek", "Видеотека", "Wideoteka", "비디오 라이브러리"),
+      sous: T("Observe le geste. Trouve ta sensation.", "Watch the movement. Find your feel.", "Observa el gesto. Encuentra tu sensación.", "Osserva il gesto. Trova la tua sensazione.", "動きを見て、自分の感覚をつかもう。", "Beobachte die Bewegung. Finde dein Gefühl.", "لاحظي الحركة. جدي إحساسك.", "观察动作，找到你的感觉。", "Kijk naar het gebaar. Vind je gevoel.", "Observe o gesto. Encontre sua sensação.", "Titta på rörelsen. Hitta din känsla.", "Смотри на движение. Найди своё ощущение.", "Obserwuj ruch. Znajdź swoje czucie.", "동작을 관찰하고, 나만의 감각을 찾아요.")
+    });
 
     /* ---------- bibliothèque vide : annonce franche ---------- */
     if (!dispo.length) {
@@ -1514,12 +1526,14 @@
     /* ---------- VUE : thème ouvert (Galop sélectionné ET thème) ---------- */
     if (vue === "theme" && theme) {
       var vsT = dispo.filter(function (v) { return v.theme === theme && galopOk(v, galop); });
+      var phT = PHOTOS_THEMES[theme] || {};
       return h("div", { className: "hv2", style: styleTraitement() },
-        h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
-          h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
-          boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); }),
-          h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, nomTheme(theme)),
-          h("p", { className: "hv2-sous" }, nomGalopSel() + " · " + nbVideos(vsT.length)),
+        heroDe({
+          img: phT.img || PHOTO_HERO.img, posTel: phT.posHeroTel || phT.pos, posTab: phT.posHeroTab || phT.pos, posOrdi: phT.posHeroOrdi || phT.pos,
+          alt: L(phT.alt, langue), titre: nomTheme(theme), sous: nomGalopSel() + " · " + nbVideos(vsT.length),
+          retour: boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); })
+        }),
+        h("div", { className: "hv2-in", style: { marginTop: 26 } },
           h("div", { className: "hv2-liste" }, vsT.map(ligne))));
     }
 

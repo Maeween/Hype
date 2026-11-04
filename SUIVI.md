@@ -16741,3 +16741,10 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - index.html : uniquement hype-video.js?v=20261104-vt1 et hype-build 20261104-0100 (posé sur la version en ligne 20261104-0055, publiée entre-temps par une autre conversation ; hype-video.js n'avait pas bougé).
 - Vérifié (faux client Supabase, vraies polices Montserrat / Cormorant) : 390, 820, 1440 px ; fr, de, ar ; filtres Galop×thème ; recherche « contact » (5) ; Mes vidéos ; ouverture d'une vidéo puis retour sur « Dressage · Galop 4 · 3 vidéos » ; lien réserve visible pour malicia2008 et absent pour un compte normal ; aucun débordement horizontal ; 0 erreur ; 17 blocs de script OK ; marqueurs identiques à main. Vignettes YouTube non vérifiables ici (domaine bloqué dans le banc d'essai).
 - Constaté, non touché : les liens #v=<id> posent window.__videoOuverte, que la Vidéothèque ne lit pas (ils ouvrent l'accueil, pas la vidéo) — c'était déjà le cas avant.
+
+## 04/11/2026 01h35 — BRANCHE travail-videotheque-themes (NON PUBLIÉE, en attente de l'accord de Blandine) : grand en-tête sur les pages de thème
+- Demande de Blandine 01h26 : « le haut des pages des onglets (dressage, saut…) doit avoir la même présentation que celle de la Vidéothèque, le grand hero, le trait courbe en dessous ».
+- hype-video.js : l'en-tête de l'accueil devient une brique commune (heroDe) ; chaque page de thème l'utilise avec SA photo (PHOTOS_THEMES, même photo que la carte) : HYPE, « ‹ Retour aux thèmes » sous HYPE, grande photo en fondu, courbe champagne, nom du thème en grand titre, « Galop 4 · 3 vidéos » (ou « Tous les Galops · … ») en sous-titre italique, puis la liste. Cadrage propre au grand en-tête possible par thème (posHeroTel / posHeroTab / posHeroOrdi), sinon celui de la carte. Aucun nouveau texte à traduire.
+- Vérifié : 390 / 820 / 1440 px, fr et ar (miroir), Dressage·Galop 4, Sécurité·Tous, Obstacle, Position, Soins ; 0 erreur, pas de débordement.
+- Limite : les photos provisoires des thèmes sont petites (Sécurité 469 px de large, Dressage/Obstacle 640 px) : un peu floues en grand en-tête ; les photos choisies par Blandine devront faire au moins 1600 px de large.
+
