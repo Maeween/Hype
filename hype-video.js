@@ -1229,6 +1229,7 @@
     ".hv2-traite img{display:block;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}",
     ".hv2-traite:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 70px rgba(7,10,8,var(--hv-bords,0))}",
     /* en-tête */
+    ".hv2{position:relative}.hv2-langue{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:14px}",
     ".hv2-hero{position:relative;padding-top:calc(env(safe-area-inset-top) + 14px)}",
     ".hv2-marque{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;letter-spacing:.62em;padding-inline-start:.62em;color:var(--hv-iv);position:relative;z-index:2}",
     ".hv2-photo{position:relative;height:clamp(300px,92vw,430px);margin-top:-6px}",
@@ -1546,7 +1547,9 @@
        Sert à l'accueil (PHOTO_HERO) et à chaque thème (PHOTOS_THEMES). */
     function heroDe(o) {
       return h("div", { className: "hv2-hero" + (o.retour ? " hv2-hero-r" : "") },
-        h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
+        /* 04/11 09h43 (Blandine) : plus de petit « HYPE » en haut de page ; drapeau des langues en haut à droite
+           (même sélecteur et même place que la page Galops) */
+        (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null,
         o.retour ? h("div", { className: "hv2-in hv2-hero-retour" }, o.retour) : null,
         courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
         h("div", {
@@ -1697,8 +1700,8 @@
         : [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych.", "아직 즐겨찾기가 없어요."),
            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.", "영상의 별을 터치하면 여기서 다시 볼 수 있어요.")];
       return h("div", { className: classeRacine(), style: styleTraitement() },
+        (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null,
         h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
-          h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
           boutonRetour(TXT_RETOUR_VT, function () { setVue("accueil"); }),
           h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, TXT_MES),
           /* seul l'état « ouverte » est connu (lecteur YouTube) : jamais de « reprendre à 3 min 12 » */
@@ -1720,6 +1723,7 @@
       var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
       var chBtn = { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#C9A66B", background: "none", border: "1px solid rgba(201,166,107,.45)", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", textDecoration: "none", fontWeight: 600 };
       return h("div", { className: classeRacine() },
+        (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null,
         h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
           boutonRetour("Retour à la Vidéothèque", function () { setVue("accueil"); }),
           h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, "Réserve d'animations"),
