@@ -64,6 +64,8 @@
   /* Libellé du chapitre auquel une vidéo est reliée. */
   var CHAPITRES = {
     /* 04/11 : chapitres des Galops 3, 5, 6, 7 reliés aux nouvelles vidéos (titres repris des cours). */
+    "g3-c1": {"fr": "Le trot enlevé sur le bon diagonal", "en": "Rising trot on the correct diagonal", "ja": "正しい手前での軽速歩", "it": "Il trotto sollevato sul diagonale corretto", "de": "Leichttraben auf der richtigen Diagonale", "es": "El trote levantado sobre el diagonal correcto", "ar": "الخبب المرتفع على القطري الصحيح", "zh": "在正确的对角上起坐快步", "nl": "Lichtrijden op de juiste diagonaal", "pt": "O trote levantado no diagonal correto", "sv": "Lättridning på rätt diagonal", "ru": "Облегчённая рысь на правильной диагонали", "pl": "Kłus ćwiczebny na właściwej diagonali", "ko": "올바른 대각으로 하는 경속보"},
+    "g3-c9": {"fr": "Les différentes litières", "en": "The different types of bedding", "es": "Los diferentes tipos de cama", "it": "Le diverse lettiere", "ja": "さまざまな敷料", "de": "Die verschiedenen Einstreuarten", "ar": "أنواع الفرشة المختلفة", "zh": "不同的垫料", "nl": "De verschillende strooiselsoorten", "pt": "As diferentes camas de baia", "sv": "De olika typerna av underlag i boxen", "ru": "Разные виды подстилки", "pl": "Rodzaje ściółki", "ko": "여러 가지 깔짚"},
     "g3-c2": {"fr": "Le départ sur le bon pied", "en": "Departing on the correct lead", "es": "La partida al pie correcto", "it": "La partenza sul piede giusto", "ja": "正しい手前での発進", "de": "Der Angalopp auf dem richtigen Bein", "ar": "الانطلاق بالرجل الصحيحة", "zh": "用正确的领先腿起跑", "nl": "Aangaloperen op het juiste been", "pt": "A partida no pé certo", "sv": "Galoppfattning på rätt hand", "ru": "Старт на нужную ногу", "pl": "Zagalopowanie na właściwą nogę", "ko": "올바른 발로 출발하기"},
     "g3-c3": {"fr": "Préparer un bon abord à l'obstacle", "en": "Preparing a good approach to a fence", "es": "Preparar un buen abordaje al obstáculo", "it": "Preparare un buon avvicinamento all'ostacolo", "ja": "障害への良いアプローチを作る", "de": "Ein gutes Anreiten vorbereiten", "ar": "تجهيز اقتراب جيد من الحاجز", "zh": "为障碍做好良好的接近", "nl": "Een goede nadering van de hindernis voorbereiden", "pt": "Preparar uma boa aproximação do obstáculo", "sv": "Förbereda en bra inridning mot hindret", "ru": "Как правильно подготовить подход к препятствию", "pl": "Przygotowanie dobrego najazdu na przeszkodę", "ko": "장애물 접근 잘 준비하기"},
     "g3-saut": {"fr": "Les 6 phases du saut", "en": "The 6 phases of the jump", "es": "Las 6 fases del salto", "it": "Le 6 fasi del salto", "ja": "跳躍の六つの局面", "de": "Die 6 Phasen des Sprungs", "ar": "مراحل القفزة الست", "zh": "跳跃的 6 个阶段", "nl": "De 6 fasen van de sprong", "pt": "As 6 fases do salto", "sv": "Hoppets 6 faser", "ru": "6 фаз прыжка", "pl": "6 faz skoku", "ko": "점프의 6단계"},
@@ -737,7 +739,7 @@
     {
       id: "v-g3-bien-etre", yt: "h9CO45RNXFY", aVerifier: true,
       source: "FFE", titreSource: "Objectif Galop® 3 : Veiller au bien-être de son cheval",
-      langueVideo: "fr", cours: ["g3-c6"], galop: 3, theme: "comprendre-le-cheval",
+      langueVideo: "fr", cours: ["g3-c6", "g3-c9"], galop: 3, theme: "comprendre-le-cheval",
       rang: "approfondir", dureeTranche: "", verifie: "",
       titre: {"fr": "Veiller au bien-être de son cheval", "en": "Looking after your horse's welfare", "es": "Velar por el bienestar de tu caballo", "it": "Prendersi cura del benessere del proprio cavallo", "ja": "馬のウェルフェアに気を配る", "de": "Auf das Wohlergehen deines Pferdes achten", "ar": "السهر على راحة حصانك", "zh": "关注马匹的福利", "nl": "Zorgen voor het welzijn van je paard", "pt": "Cuidar do bem-estar do seu cavalo", "sv": "Se till din hästs välbefinnande", "ru": "Забота о благополучии лошади", "pl": "Dbanie o dobrostan konia", "ko": "말의 복지 챙기기"},
       resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
@@ -753,7 +755,7 @@
     {
       id: "v-g3-equilibre", yt: "FVdJQ01aq8I", aVerifier: true,
       source: "FFE", titreSource: "Objectif Galop® 3 : Varier son équilibre",
-      langueVideo: "fr", cours: ["g3-c12"], galop: 3, theme: "position-du-cavalier",
+      langueVideo: "fr", cours: ["g3-c12", "g3-c1"], galop: 3, theme: "position-du-cavalier",
       rang: "approfondir", dureeTranche: "", verifie: "",
       titre: {"fr": "Varier son équilibre", "en": "Varying your balance", "es": "Variar tu equilibrio", "it": "Variare il proprio equilibrio", "ja": "バランスを切り替える", "de": "Das Gleichgewicht variieren", "ar": "تنويع توازنك", "zh": "改变你的平衡", "nl": "Je evenwicht variëren", "pt": "Variar seu equilíbrio", "sv": "Variera din balans", "ru": "Менять своё равновесие", "pl": "Zmieniać swoją równowagę", "ko": "균형 바꾸기"},
       resume: {"fr": "Film officiel de la FFE, série « Objectif Galop® 3 ».", "en": "Official FFE film from the “Objectif Galop® 3” series.", "es": "Película oficial de la FFE, serie «Objectif Galop® 3».", "it": "Filmato ufficiale della FFE, serie «Objectif Galop® 3».", "ja": "FFE公式映像「Objectif Galop® 3」シリーズ。", "de": "Offizieller FFE-Film aus der Reihe „Objectif Galop® 3“.", "ar": "فيلم رسمي من الاتحاد الفرنسي للفروسية، سلسلة «Objectif Galop® 3».", "zh": "法国马术协会官方影片，“Objectif Galop® 3”系列。", "nl": "Officiële FFE-film uit de reeks ‘Objectif Galop® 3’.", "pt": "Filme oficial da FFE, série «Objectif Galop® 3».", "sv": "Officiell FFE-film i serien ”Objectif Galop® 3”.", "ru": "Официальный фильм FFE из серии «Objectif Galop® 3».", "pl": "Oficjalny film FFE z serii „Objectif Galop® 3”.", "ko": "FFE 공식 영상, ‘Objectif Galop® 3’ 시리즈."}
@@ -813,6 +815,36 @@
       rang: "approfondir", dureeTranche: "", verifie: "",
       titre: {"fr": "Adapter l'amplitude des foulées", "en": "Adjusting stride length", "es": "Adaptar la amplitud de los trancos", "it": "Adattare l'ampiezza delle falcate", "ja": "完歩の幅を調整する", "de": "Die Galoppsprünge anpassen", "ar": "تكييف طول الخطوات", "zh": "调整步幅", "nl": "De paslengte aanpassen", "pt": "Adaptar a amplitude das passadas", "sv": "Anpassa språngens längd", "ru": "Регулировать длину темпа", "pl": "Dostosowanie długości fule", "ko": "보폭 조절하기"},
       resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    /* 04/11 10h14 (Blandine : « garde-les quand même et ajoute-les déjà à la liste de vidéos des G8 et 9 ») :
+       webconférences IFCE avancées, rangées en Galop 8 et 9 (onglet « Galop 7+ ») ; pas de cours relié (les
+       Galops 8 et 9 n'ont pas encore de cours dans Hype). Même règle « À vérifier » que les autres. */
+    {
+      id: "v-g8-appuyer", yt: "VcmDrm0tX_M", aVerifier: true,
+      source: "IFCE", intervenant: "Pauline Van Landeghem", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "L'appuyer", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/l-appuyer/",
+      langueVideo: "fr", cours: [], galop: 8, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "L'appuyer", "en": "Half-pass", "es": "El apoyo", "it": "L'appoggiata", "ja": "ハーフパス", "de": "Die Traversale", "ar": "الأبويه (المشي الجانبي المائل)", "zh": "斜横步", "nl": "De appuyement", "pt": "O apoiar", "sv": "Travers på diagonal (appuyer)", "ru": "Принимание", "pl": "Ciąg", "ko": "하프 패스"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    {
+      id: "v-g9-contre-changement", yt: "p4tjNSA797I", aVerifier: true,
+      source: "IFCE", intervenant: "Pauline Van Landeghem", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "Le contre changement de main au galop", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/le-contre-changement-de-main-au-galop/",
+      langueVideo: "fr", cours: [], galop: 9, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Le contre-changement de main au galop", "en": "Counter change of hand at canter", "es": "El contracambio de mano al galope", "it": "Il controcambiamento di mano al galoppo", "ja": "駈歩でのカウンターチェンジ", "de": "Der Konterwechsel im Galopp", "ar": "تغيير اليد المعاكس في الغالوب", "zh": "跑步中的反向换手", "nl": "De contrawissel in galop", "pt": "A contramudança de mão a galope", "sv": "Kontraväxling i galopp", "ru": "Контрперемена направления галопом", "pl": "Kontrzmiana kierunku w galopie", "ko": "구보에서 카운터 체인지"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    /* « Les manipulations dans le travail à pied » (Frédérique Defrémont, IFCE, Galop 5, cours g5n-06) : GARDÉE
+       sur demande de Blandine, mais SANS lien tant que le bon identifiant YouTube n'est pas connu (celui reçu,
+       « –KfWHkJKuI », est abîmé). Une fiche sans lien n'apparaît nulle part : aucune carte morte. */
+    {
+      id: "v-g5-manipulations", yt: "", aVerifier: true,
+      source: "IFCE", intervenant: "Frédérique Defrémont", intervenantRole: {"fr": "Formatrice et longeuse de l'équipe de France", "en": "Trainer and lunger for the French team", "es": "Formadora y lonjeadora del equipo de Francia", "it": "Formatrice e longeuse della squadra francese", "ja": "フランス代表チームのトレーナー兼ランジャー", "de": "Ausbilderin und Longenführerin der französischen Mannschaft", "ar": "مدربة ومسؤولة الحبل الطويل في المنتخب الفرنسي", "zh": "法国队教练兼调教索操作员", "nl": "Trainer en longeerder van het Franse team", "pt": "Formadora e guia de guia da equipe da França", "sv": "Utbildare och longerare i franska landslaget", "ru": "Тренер и корда-мастер сборной Франции", "pl": "Trenerka i lonżerka reprezentacji Francji", "ko": "프랑스 대표팀 트레이너 겸 런지 담당"}, titreSource: "Les manipulations dans le travail à pied", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/equitation/les-manipulations-dans-le-travail-a-pied/",
+      langueVideo: "fr", cours: ["g5n-06"], galop: 5, theme: "travail-a-pied",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Les manipulations dans le travail à pied", "en": "Handling in groundwork", "es": "Las manipulaciones en el trabajo pie a tierra", "it": "Le manipolazioni nel lavoro da terra", "ja": "地上作業での扱い方", "de": "Der Umgang bei der Bodenarbeit", "ar": "التعامل في العمل على الأرض", "zh": "地面工作中的操作", "nl": "Het hanteren bij grondwerk", "pt": "As manipulações no trabalho a pé", "sv": "Hantering i markarbete", "ru": "Обращение с лошадью в работе с земли", "pl": "Obsługa konia w pracy z ziemi", "ko": "지상 작업에서의 다루기"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
     }
   ];
 
@@ -840,9 +872,13 @@
         i18nTitre: v.titre, i18nResume: v.resume, i18nObserver: v.observer || null
       };
   }
-  var VIDS = HYPE_VIDEOS.filter(function (v) { return INCLURE_NON_VERIFIEES || !!v.verifie; }).map(versInterne);
+  /* 04/11 10h22 (Blandine : « laisse les vidéos accessibles partout, je n'ai pas le temps de vérifier ») :
+     les vidéos « À vérifier » qui ont un lien sont ouvertes à tous les cavaliers. verifie reste vide (personne ne
+     les a encore ouvertes) ; remettre false pour les cacher de nouveau aux cavaliers. */
+  var OUVRIR_A_VERIFIER = true;
+  var VIDS = HYPE_VIDEOS.filter(function (v) { return INCLURE_NON_VERIFIEES || !!v.verifie || (OUVRIR_A_VERIFIER && v.aVerifier && !!v.yt); }).map(versInterne);
   /* 04/11 : vidéos pas encore vérifiées — visibles par les seules modératrices, marquées « À vérifier » */
-  var VIDS_AV = HYPE_VIDEOS.filter(function (v) { return !v.verifie && v.aVerifier && !INCLURE_NON_VERIFIEES; })
+  var VIDS_AV = HYPE_VIDEOS.filter(function (v) { return !v.verifie && v.aVerifier && v.yt && !INCLURE_NON_VERIFIEES && !OUVRIR_A_VERIFIER; })
     .map(function (v) { var x = versInterne(v); x.aVerifier = true; return x; });
 
   /* ---------------- RÉSERVE D'ANIMATIONS (MODÉRATEURS UNIQUEMENT) ----------------
