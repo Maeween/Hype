@@ -16957,3 +16957,11 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - À FAIRE PLUS TARD (Blandine 22h03, « quand tout sera finalisé ») : contacter FFE COMPET pour un partenariat ou un accès (listes d'engagés, horaires, résultats). Leur site bloque les robots (vérification anti-robot vue le 04/11) : pas de lecture automatique possible sans accord.
 - Autres chronométreurs que Winjump : World Sport Timing regardé, il fait surtout les gros concours (Grand National, CSI) → pas ajouté. En attente : les liens des résultats des concours club de l'équipe, pour savoir quels chronométreurs lire ensuite.
 - Fichiers : hype-ecran-saison.js (v5), index.html (build 20261104-2245), supabase/functions/notifier-passage/index.ts, sql-04-11-inscriptions-connectes.sql, SUIVI.md.
+
+## 04/11/2026 23h00 — PUBLICATION build 20261104-2300 (Blandine 22h09 « Ok continue », carte blanche) : vidéos de parcours commentées
+- FICHE CONCOURS : section « Vidéos de parcours » = les vidéos publiées sur le fil du concours (commentaires, cible « agenda:<id> », publications privées des autres écartées), en vignettes ; « + Ajouter » ouvre la fiche complète (envoi vidéo existant, inchangé).
+- NOUVEL ÉCRAN « video-parcours » (hype-ecran-saison.js v6) : la vidéo (Mux, lecture HLS) + des commentaires posés à un instant précis. La coach du club (ou la cavalière sur sa propre vidéo) met en pause et écrit « Commentaire à 0:42 » ; toucher l'heure d'un commentaire ramène la vidéo à ce moment. Chacun peut retirer ses propres commentaires.
+- SQL sql-04-11-video-notes.sql PASSÉ EN BASE : table video_notes (lecture : auteur, propriétaire de la vidéo, coach du club, modératrice ; écriture : la propriétaire ou la coach).
+- Info FFE Compet (cherchée à la demande de Blandine, 22h10) : pas d'abonnement en vente libre ; les fichiers des engagés ne sont donnés qu'aux officiels de compétition, nominativement, après un engagement de confidentialité ; webservices réservés aux logiciels partenaires des organisateurs → demande de partenariat à faire plus tard (officiels.competition@ffe.com, FFE Compétition, Parc Équestre, 41600 Lamotte-Beuvron).
+- Testé sur banc (données d'exemple). Pas encore essayé avec une vraie vidéo.
+- Fichiers : hype-ecran-saison.js (v6), index.html (build 20261104-2300), sql-04-11-video-notes.sql, SUIVI.md.

@@ -418,6 +418,7 @@ function EcranConcours() {
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
   var _dv = React.useState(null); var enDirect = _dv[0], setEnDirect = _dv[1];
+  var _vp = React.useState([]); var videos = _vp[0], setVideos = _vp[1];
   var _dvo = React.useState(false); var dvOcc = _dvo[0], setDvOcc = _dvo[1];
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
@@ -460,6 +461,18 @@ function EcranConcours() {
         if (vif) setEv(r.data);
         chargerInscrits(u);
         hsPeutGerer(r.data.club_clef).then(function (g) { if (vif) setGestion(g); });
+        /* 04/11 22h15 — vidéos de parcours : celles publiées sur le fil du concours (cible « agenda:<id> ») */
+        try {
+          var rv = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(200);
+          var vids = [];
+          ((rv && !rv.error && rv.data) || []).forEach(function (po) {
+            if (po.prive && !(u && po.user_id === u.id)) return;
+            [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (hsEstVideo(m)) vids.push({ media: String(m), proprio: po.user_id, le: po.created_at }); });
+          });
+          var idsA = []; vids.forEach(function (v) { if (v.proprio && idsA.indexOf(v.proprio) === -1) idsA.push(v.proprio); });
+          if (idsA.length) { var rpa = await supa.from("profiles").select("id, pseudo").in("id", idsA); var pa = {}; ((rpa && rpa.data) || []).forEach(function (x) { pa[x.id] = x.pseudo; }); vids.forEach(function (v) { v.pseudo = pa[v.proprio] || ""; }); }
+          if (vif) setVideos(vids);
+        } catch (eV) { }
         if (u && u.id) {
           try {
             var re = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).eq("cavalier_id", u.id);
@@ -584,6 +597,12 @@ function EcranConcours() {
             c.enrenement ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Enrênement")), h("b", { style: { whiteSpace: "pre-wrap" } }, c.enrenement))) : null,
             c.soins ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Soins")), h("b", { style: { whiteSpace: "pre-wrap" } }, c.soins))) : null));
       }),
+      /* vidéos de parcours, à commenter */
+      h("div", { className: "hs-sec" }, h("b", null, F("Vidéos de parcours")), h("button", { type: "button", className: "hs-lien", onClick: ficheComplete }, F("+ Ajouter"))),
+      videos.length ? h("div", { className: "hs-tiles" }, videos.slice(0, 9).map(function (v, i) {
+        return h("button", { type: "button", key: i, className: "hs-tile", style: { height: 96, backgroundImage: hsVignetteVideo(v.media) ? "url(" + hsVignetteVideo(v.media) + ")" : "none" }, onClick: function () { try { window.__videoParcours = { media: v.media, proprio: v.proprio, pseudo: v.pseudo, agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); } },
+          h("span", null, "▶ " + (v.pseudo || "")));
+      })) : h("div", { className: "hs-vide" }, F("Pas encore de vidéo. Ajoute-la sur le fil du concours : ta coach pourra la commenter seconde par seconde.")),
       /* sa préparation */
       !fini ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ma préparation"))),
@@ -1085,6 +1104,82 @@ function hsHeure(min) {
   var hh = Math.floor(min / 60), mm = min % 60;
   return hh + "h" + (mm < 10 ? "0" : "") + mm;
 }
+function hsEstVideo(m) { var s = String(m || ""); return /^mux:/.test(s) || /\.(mp4|mov|m4v|webm|m3u8)(\?|$)/i.test(s); }
+function hsUrlVideo(m) { var s = String(m || ""); if (/^mux:/.test(s)) { try { return (typeof hypeMuxLecture === "function") ? hypeMuxLecture(s) : "https://stream.mux.com/" + s.slice(4) + ".m3u8"; } catch (e) { return ""; } } return s; }
+function hsVignetteVideo(m) { var s = String(m || ""); if (/^mux:/.test(s)) return "https://image.mux.com/" + s.slice(4) + "/thumbnail.jpg?width=480&fit_mode=preserve"; return ""; }
+function hsTemps(t) { t = Math.max(0, Math.round(Number(t) || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); }
+
+/* ════════════════════ VIDÉO DE PARCOURS COMMENTÉE ════════════════════
+   04/11 22h15 (carte blanche). La vidéo publiée sur le fil du concours, et des commentaires posés à un instant
+   précis (table video_notes) : la coach (ou la cavalière sur sa propre vidéo) met la vidéo en pause et écrit ;
+   toucher un commentaire ramène la vidéo à ce moment-là. Lecture : la cavalière, la coach du club, l'auteur. */
+function EcranVideoParcours() {
+  var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var V = null; try { V = window.__videoParcours || null; } catch (e0) { }
+  var refV = React.useRef(null);
+  var _no = React.useState(null); var notes = _no[0], setNotes = _no[1];
+  var _tx = React.useState(""); var texte = _tx[0], setTexte = _tx[1];
+  var _t = React.useState(0); var tps = _t[0], setTps = _t[1];
+  var _ge = React.useState(false); var peutEcrire = _ge[0], setPeutEcrire = _ge[1];
+  var _moi = React.useState(null); var moi = _moi[0], setMoi = _moi[1];
+  var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
+  var _bz = React.useState(false); var occupe = _bz[0], setOccupe = _bz[1];
+  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  function charger() {
+    if (!V) return;
+    supa.from("video_notes").select("*").eq("media", V.media).order("t", { ascending: true }).then(function (r) { setNotes((r && !r.error && r.data) || []); });
+  }
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      if (!V) return;
+      var u = null; try { u = await utilisateurActuel(); } catch (eU) { }
+      if (vif) setMoi(u);
+      var g = false;
+      if (u && V.proprio === u.id) g = true;
+      else if (V.agenda) { try { var r = await chargerAgendaEvenement(V.agenda); if (r && r.data) g = await hsPeutGerer(r.data.club_clef); } catch (eG) { } }
+      if (vif) setPeutEcrire(g);
+      charger();
+    })();
+    return function () { vif = false; };
+  }, []);
+  function aller(t) { try { var v = refV.current; v.currentTime = Number(t) || 0; v.play(); } catch (e) { } }
+  async function ajouter() {
+    var t = String(texte || "").trim(); if (!t || occupe) return;
+    setOccupe(true); setMsg("");
+    try {
+      var r = await supa.from("video_notes").insert({ agenda_id: V.agenda || null, media: V.media, proprio: V.proprio || null, t: Math.round(tps * 10) / 10, texte: t }).select("id");
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      if (!r || !r.data || !r.data.length) throw new Error(F("refusé par la base"));
+      setTexte(""); charger();
+    } catch (eA) { setMsg(F("Pas enregistré : ") + String((eA && eA.message) || eA)); }
+    setOccupe(false);
+  }
+  async function retirer(n) {
+    try { var r = await supa.from("video_notes").delete().eq("id", n.id).select("id"); if (r && r.error) throw new Error(r.error.message); charger(); } catch (eR) { setMsg(String((eR && eR.message) || eR)); }
+  }
+  var retour = h("div", { className: "hs-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 10px)" } },
+    h("button", { type: "button", className: "hs-retour", onClick: function () { hsRetour(c.app, c.setEcran, "concours"); } }, h("i", null, "‹"), (V && V.titre) || F("Concours")));
+  if (!V) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, retour, h("div", { className: "hs-in" }, h("div", { className: "hs-vide" }, F("Vidéo introuvable."))));
+  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, retour,
+    h("div", { className: "hs-in" },
+      h("div", { className: "hs-titre", style: { marginTop: 4, marginBottom: 14 } }, h("h1", { style: { fontSize: "clamp(32px,9vw,46px)" } }, F("Le parcours")), V.pseudo ? h("p", null, V.pseudo) : null),
+      h("video", { ref: refV, src: hsUrlVideo(V.media), poster: hsVignetteVideo(V.media) || undefined, controls: true, playsInline: true, preload: "metadata", onTimeUpdate: function (e) { setTps(e.target.currentTime || 0); }, style: { width: "100%", maxHeight: "62vh", borderRadius: 14, background: "#000", display: "block" } }),
+      h("div", { className: "hs-sec" }, h("b", null, F("Les commentaires")), h("span", null, notes ? String(notes.length) : "")),
+      notes === null ? h("div", { className: "hs-attente" }, "…") : (notes.length ? h("div", { className: "hs-carte" }, notes.map(function (n) {
+        return h("div", { key: n.id, className: "hs-row", style: { alignItems: "flex-start" } },
+          h("button", { type: "button", onClick: function () { aller(n.t); }, style: { flex: "0 0 auto", minWidth: 52, minHeight: 32, borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: "#C9A66B", fontSize: 12.5, fontVariantNumeric: "tabular-nums" } }, hsTemps(n.t)),
+          h("div", { className: "g" }, h("b", { style: { whiteSpace: "pre-wrap", lineHeight: 1.4 } }, n.texte)),
+          (moi && n.auteur === moi.id) ? h("button", { type: "button", "aria-label": F("Retirer"), onClick: function () { retirer(n); }, style: { flex: "0 0 auto", width: 30, height: 30, background: "none", border: "none", color: "rgba(243,238,228,.45)", fontSize: 17, padding: 0 } }, "×") : null);
+      })) : h("div", { className: "hs-vide" }, peutEcrire ? F("Mets la vidéo en pause au bon moment et écris ton commentaire.") : F("Pas encore de commentaire de ta coach."))),
+      peutEcrire ? h("div", { style: { marginTop: 14 } },
+        h("div", { className: "hs-champ" }, h("label", null, F("Commentaire à ") + hsTemps(tps)),
+          h("textarea", { value: texte, rows: 3, placeholder: F("ex. Abord trop rapide, reprends le galop avant le virage"), onFocus: function () { try { refV.current.pause(); } catch (e) { } }, onChange: function (e) { setTexte(e.target.value); }, style: { width: "100%", borderRadius: 10, border: "1px solid rgba(243,238,228,.16)", background: "rgba(16,26,29,.6)", color: "#F3EEE4", fontFamily: "inherit", fontSize: 16, padding: "10px 12px", resize: "vertical" } })),
+        h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !String(texte).trim(), onClick: ajouter }, occupe ? "…" : F("Ajouter à ") + hsTemps(tps))) : null,
+      msg ? h("div", { className: "hs-msg" }, msg) : null,
+      h("div", { className: "hs-note" }, F("Touche une heure pour revoir ce moment. Commentaires visibles par la cavalière, sa coach et leur auteur."))));
+}
+
 function hsOrdreBase(L) {
   var o = {}; (L || []).forEach(function (l, i) { o[i + "-1"] = hsMinutes(l.passage1); o[i + "-2"] = hsMinutes(l.passage2); }); return o;
 }
@@ -1607,5 +1702,5 @@ function hsPdfListe(titre, sousTitre, lignes) {
   return o;
 }
 
-window.HypeSaison = { Saison: EcranMaSaison, Concours: EcranConcours, Engagements: EcranEngagements, ListeVan: EcranListeVan, JourJ: EcranJourJ, Dossier: EcranDossierConcours };
+window.HypeSaison = { Saison: EcranMaSaison, Concours: EcranConcours, Engagements: EcranEngagements, ListeVan: EcranListeVan, JourJ: EcranJourJ, Dossier: EcranDossierConcours, VideoParcours: EcranVideoParcours };
 })();
