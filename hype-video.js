@@ -1549,6 +1549,7 @@
     ".hv2-l-titre{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(32px,8.6vw,46px);line-height:1.08;margin:6px 0 0;color:var(--hv-iv)}",
     ".hv2-l-resume{margin:10px 0 0;font-size:15px;line-height:1.55;color:var(--hv-iv)}",
     ".hv2-l-langue{margin:8px 0 0;font-size:13px;font-style:italic;color:var(--hv-iv2)}",
+    ".hv2-l-yt{float:inline-end;margin:8px 0 0 12px;font-size:13px;color:var(--hv-iv2);text-decoration:underline;text-underline-offset:3px}",
     ".hv2-l-actions{display:grid;grid-template-columns:1.45fr 1fr;gap:12px;margin-top:20px}",
     ".hv2-l-btn{min-height:50px;display:flex;align-items:center;justify-content:center;gap:12px;border-radius:12px;border:1px solid rgba(243,238,228,.16);background:var(--hv-og);font-size:14.5px;color:var(--hv-iv);box-shadow:0 10px 22px -14px rgba(0,0,0,.95)}",
     ".hv2-l-btn span{font-size:18px;color:var(--hv-iv)}",
@@ -2195,6 +2196,12 @@
         v.aVerifier ? h("p", { className: "hv2-l-averifier" }, "À vérifier — visible par toi seule tant que tu n'as pas confirmé que la vidéo se lit bien dans Hype.") : null,
         lecteur,
         resumeDe(v) ? h("p", { className: "hv2-l-resume" }, resumeDe(v)) : null,
+        (v.src && v.src.type === "youtube") ? h("a", { className: "hv2-l-yt", href: "https://www.youtube.com/watch?v=" + v.src.ref, target: "_blank", rel: "noopener",
+          onClick: function (e) { /* 04/11 (Blandine) : ouvrir dans l'appli YouTube, au point où on en est (écoute en arrière-plan pour les abonnés YouTube Premium) */
+            var s = refLect.current, t = 0; try { t = Math.floor((s.player && s.player.getCurrentTime) ? s.player.getCurrentTime() : (s.pos || reprise || 0)); } catch (x) { t = Math.floor(s.pos || 0); }
+            try { if (s.player && s.player.pauseVideo) s.player.pauseVideo(); } catch (x) { }
+            if (t > 5) { noter(t, s.duree, false); e.currentTarget.href = "https://www.youtube.com/watch?v=" + v.src.ref + "&t=" + t + "s"; } } },
+          T("Ouvrir dans YouTube", "Open in YouTube", "Abrir en YouTube", "Apri su YouTube", "YouTubeで開く", "In YouTube öffnen", "افتح في YouTube", "在 YouTube 中打开", "Openen in YouTube", "Abrir no YouTube", "Öppna i YouTube", "Открыть в YouTube", "Otwórz w YouTube", "YouTube에서 열기"), h("span", { "aria-hidden": "true" }, " ↗")) : null,
         h("p", { className: "hv2-l-langue" }, T("Vidéo en français", "Video in French", "Vídeo en francés", "Video in francese", "フランス語の動画", "Video auf Französisch", "فيديو باللغة الفرنسية", "法语视频", "Video in het Frans", "Vídeo em francês", "Video på franska", "Видео на французском", "Film po francusku", "프랑스어 영상")),
         h("div", { className: "hv2-l-actions" },
           h("button", { className: "hv2-l-btn" + (vue ? " on" : ""), "aria-pressed": vue, onClick: basculerVue },
