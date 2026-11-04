@@ -263,11 +263,9 @@ function EcranMaSaison() {
       h("div", { className: "hs-sep" }),
       h("div", { className: "hs-sec" }, h("b", null, F("Le carnet")),
         h("button", { type: "button", onClick: function () { setVue("finis"); try { window.scrollTo(0, 0); } catch (e) { } }, style: { background: "none", border: "none", padding: "8px 0", fontSize: 11.5, color: "rgba(243,238,228,.64)" } }, F("Tout voir") + (rtl ? " ‹" : " ›"))),
-      h("div", { className: "hs-tiles" }, finis.slice(0, 3).map(function (ev) {
-        var ph = photoDe[ev.id] || PHOTOS_SAISON[1];
-        return h("button", { type: "button", key: ev.id, className: "hs-tile", style: { backgroundImage: "url(" + ph.img + ")", backgroundPosition: ph.pos }, onClick: function () { ouvrir(ev); } },
-          h("span", null, (ev.titre || "") + " · " + fmt(ev.date_jour, { day: "numeric", month: "short" })));
-      }))) : null);
+      /* 04/11 23h15 (Blandine : « les parties du carnet sont toutes petites et trop décalées, on voit même pas ce que c'est ») :
+         les 3 derniers rendez-vous terminés reprennent la même carte que la liste du haut (titre, date, lieu lisibles). */
+      h("div", { className: "hs-liste" }, finis.slice(0, 3).map(carte))) : null);
 
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" },
     hero,
