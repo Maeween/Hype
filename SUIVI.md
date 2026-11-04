@@ -17119,3 +17119,9 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Engagements : le n° de tour du cheval n'apparaît plus qu'une fois, dans la case du cheval choisi : « Apache du Lys (1) » chez la première cavalière, « Apache du Lys (2) » chez la suivante. Le petit rappel doré à droite des titres d'épreuve est retiré (doublon).
 - Dans la liste déroulante, les autres chevaux indiquent « — déjà 2 tours » (au lieu de « · 2 tours », lu comme une erreur quand il s'affichait dans chaque case).
 - Fichiers : hype-ecran-saison.js (v26), index.html (build 20261105-0125), SUIVI.md.
+
+## 05/11/2026 00h20 — PUBLICATION build 20261105-0135 (Blandine 23h36 : « Elle m'a dit circee, le nom est trop long, ça empêche de voir les chiffres : adapte-toi ; et que le résumé apparaisse sur une deuxième feuille jointe, pour que ce soit clair aussi pour la personne qui reçoit les engagements »)
+- Engagements : le n° de tour s'affiche DEVANT le nom du cheval dans sa case : « (2) Elle m'a dit circee » — il reste visible même si le nom est coupé.
+- Feuille SEP : une 2e page « Récapitulatif des engagements » s'ajoute, à l'écran et dans le PDF partagé : tableau par cheval (nombre de tours, puis 1er / 2e / 3e tour avec cavalière et épreuve, dans l'ordre des couples de l'appli) et tableau par épreuve (tours par épreuve, total). La 1re page reste identique à la fiche papier.
+- Propositions de mise en page (couples A/B/C, récapitulatif 1/2/3) montrées sur une page à part, en attente de son choix ; rien de changé pour ça dans l'appli.
+- Fichiers : hype-ecran-saison.js (v27), index.html (build 20261105-0135), SUIVI.md.

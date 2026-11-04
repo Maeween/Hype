@@ -1076,7 +1076,7 @@ function EcranEngagements() {
       /* 04/11 23h33 (Blandine : « je vois Apache avec deux écrit à plusieurs endroits ») : le cheval choisi dans cette case
          affiche SON n° de tour (Apache du Lys (1) chez l'une, (2) chez l'autre) ; dans la liste, les autres chevaux
          affichent combien de tours ils ont déjà. */
-      if (c.nom === v) { var k = 0; (montes[c.nom] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return h("option", { key: c.id, value: c.nom }, c.nom + (k ? " (" + k + ")" : "")); }
+      if (c.nom === v) { var k = 0; (montes[c.nom] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return h("option", { key: c.id, value: c.nom }, (k ? "(" + k + ") " : "") + c.nom); }   /* 23h36 : le n° devant, pour qu'un nom long (« Elle m'a dit circee ») ne le cache pas */
       var nb = (montes[c.nom] || []).length;
       return h("option", { key: c.id, value: c.nom }, c.nom + (nb ? F(" — déjà ") + nb + (nb > 1 ? F(" tours") : F(" tour")) : ""));
     }
@@ -1208,6 +1208,20 @@ function EcranEngagements() {
 
 /* La feuille « Engagements Concours CSO Club », à l'identique de la fiche papier de la SEP.
    Le bas (Dû, montants, bénéficiaires) reste VIDE : ce n'est pas la coach qui le remplit. */
+/* 04/11 23h36 (Blandine : « que le résumé apparaisse sur une deuxième feuille jointe, pour que ce soit clair aussi pour la
+   personne qui reçoit les engagements ») : récapitulatif par cheval (tours 1, 2, 3… dans l'ordre de la feuille) et par épreuve. */
+function hsRecapFeuille(lignes) {
+  var parCh = {}, ordreCh = [], parEp = {}, ordreEp = [];
+  tri.forEach(function (l) { [1, 2].forEach(function (n) {
+    var c = String(l["cheval" + n + "_nom"] || "").trim(), e = String(l["epreuve" + n] || "").trim();
+    if (c) { if (!parCh[c]) { parCh[c] = []; ordreCh.push(c); } parCh[c].push({ qui: String(l.nom || "").trim(), ep: e }); }
+    if (e || c) { var ke = e || "—"; if (!parEp[ke]) { parEp[ke] = 0; ordreEp.push(ke); } parEp[ke]++; }
+  }); });
+  ordreCh.sort(function (a, b) { return a.localeCompare(b, "fr"); });
+  var nbCol = 3; ordreCh.forEach(function (c) { nbCol = Math.max(nbCol, parCh[c].length); });
+  var total = 0; ordreEp.forEach(function (e) { total += parEp[e]; });
+  return { chevaux: ordreCh, parCh: parCh, epreuves: ordreEp, parEp: parEp, nbCol: Math.min(nbCol, 5), total: total };
+}
 function feuilleSep(h, ev, fe, lignes, fermer, nonEnregistre) {
   var d = hsDateLoc(ev && ev.date_jour), df = hsDateLoc(ev && ev.date_fin);
   function jj(x) { return String(x.getDate()).padStart(2, "0") + "/" + String(x.getMonth() + 1).padStart(2, "0") + "/" + x.getFullYear(); }
@@ -1218,7 +1232,7 @@ function feuilleSep(h, ev, fe, lignes, fermer, nonEnregistre) {
   var vides = Math.max(1, 9 - tri.length);
   function partagerPdf() {
     try {
-      var octets = hsPdfFeuille({ titre: titre, date: date, lieu: (ev && ev.lieu) || "", fe: fe, tri: tri });
+      var octets = hsPdfFeuille({ titre: titre, date: date, lieu: (ev && ev.lieu) || "", fe: fe, tri: tri, recap: hsRecapFeuille(lignes) });
       var nom = "engagements-" + String((ev && ev.titre) || "concours").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase().replace(/^-+|-+$/g, "") + ".pdf";
       var fic = null; try { fic = new File([octets], nom, { type: "application/pdf" }); } catch (eF) { fic = null; }
       if (fic && navigator.canShare && navigator.canShare({ files: [fic] }) && navigator.share) { navigator.share({ files: [fic], title: titre }).catch(function () { }); return; }
@@ -1257,7 +1271,26 @@ function feuilleSep(h, ev, fe, lignes, fermer, nonEnregistre) {
         h("thead", null, h("tr", null, h("th", { style: { border: "none" } }), h("th", null, "Montant"), h("th", null, "Bénéficiaires"))),
         h("tbody", null, ["Engagements", "Location chevaux", "Coaching", "Transport"].map(function (k) { return h("tr", { key: k }, h("td", null, k), h("td", null), h("td", null)); }),
           h("tr", null, h("td", { style: { textAlign: "right", fontWeight: 700, border: "none" } }, "TOTAL"), h("td", null), h("td", null)))),
-      h("div", { className: "fait" }, "Engagements faits le ", h("span", { style: { display: "inline-block", minWidth: 170, borderBottom: "1px dotted #888", fontWeight: 700 } }, fe.faits_le || ""))));
+      h("div", { className: "fait" }, "Engagements faits le ", h("span", { style: { display: "inline-block", minWidth: 170, borderBottom: "1px dotted #888", fontWeight: 700 } }, fe.faits_le || ""))),
+    (function () {
+      var R = hsRecapFeuille(lignes); if (!R.chevaux.length) return null;
+      var cols = []; for (var j = 0; j < R.nbCol; j++) cols.push(j);
+      return h("div", { className: "page", style: { marginTop: 18 } },
+        h("h2", null, "Récapitulatif des engagements"),
+        h("div", { style: { textAlign: "center", fontSize: 12.5, marginBottom: 14 } }, [date, ev && ev.lieu].filter(Boolean).join(" · ") + " — " + tri.length + " cavaliers, " + R.total + " tours"),
+        h("table", { className: "grille" },
+          h("thead", null, h("tr", null, h("th", { style: { width: "24%" } }, "CHEVAL"), h("th", { className: "c", style: { width: "8%" } }, "Tours"),
+            cols.map(function (j) { return h("th", { key: j }, (j + 1) + (j === 0 ? "er" : "e") + " tour"); }))),
+          h("tbody", null, R.chevaux.map(function (c) {
+            var m = R.parCh[c];
+            return h("tr", { key: c }, h("td", null, c), h("td", { className: "c" }, String(m.length)),
+              cols.map(function (j) { var x = m[j]; return h("td", { key: j }, x ? (x.qui + (x.ep ? " · " + x.ep : "")) : ""); }));
+          }))),
+        h("table", { className: "grille", style: { marginTop: 16, width: "50%" } },
+          h("thead", null, h("tr", null, h("th", null, "ÉPREUVE"), h("th", { className: "c" }, "Tours"))),
+          h("tbody", null, R.epreuves.map(function (e) { return h("tr", { key: e }, h("td", null, e), h("td", { className: "c" }, String(R.parEp[e]))); }),
+            h("tr", null, h("td", { style: { fontWeight: 700 } }, "Total"), h("td", { className: "c", style: { fontWeight: 700 } }, String(R.total))))));
+    })());
 }
 
 /* ── Le PDF de la feuille, écrit directement (aucune bibliothèque à charger) : polices standard des PDF
@@ -1350,17 +1383,48 @@ function hsPdfFeuille(o) {
   var yF = yTot + hB * 2 + 30; txt(60, yF, "Engagements faits le", "F1", 9.5);
   var xF = 60 + hsLargeur("Engagements faits le", "F1", 9.5) + 6; pointilles(xF, xF + 140, yF + 2);
   if (fe.faits_le) txt(xF + 2, yF - 1, fe.faits_le, "F2", 9.5);
-  /* assemblage du fichier */
   var flux = ops.map(hsPdfTexteBrut).join("\n");
+  /* page 2 : récapitulatif (par cheval, puis par épreuve) */
+  var flux2 = "", R = o.recap;
+  if (R && R.chevaux && R.chevaux.length) {
+    ops = [];
+    txt((W - hsLargeur("Récapitulatif des engagements", "F3", 22)) / 2, 66, "Récapitulatif des engagements", "F3", 22, "0.11 0.16 0.54");
+    var sous = [o.date, o.lieu].filter(Boolean).join(" · ") + " — " + (o.tri || []).length + " cavaliers, " + R.total + " tours";
+    txt((W - hsLargeur(sous, "F1", 10)) / 2, 88, sous, "F1", 10);
+    var px = [40, 40 + 515 * 0.24, 40 + 515 * 0.32], reste = 515 * 0.68 / R.nbCol;
+    for (var j = 1; j <= R.nbCol; j++) px.push(px[2] + reste * j);
+    var y2 = 112, hh2 = 22, hl2 = Math.max(16, Math.min(28, (560 - y2 - hh2) / R.chevaux.length)), yf2 = y2 + hh2 + R.chevaux.length * hl2;
+    cadre(40, y2, 515, yf2 - y2); trait(40, y2 + hh2, 555, y2 + hh2);
+    for (var r2 = 1; r2 < R.chevaux.length; r2++) trait(40, y2 + hh2 + r2 * hl2, 555, y2 + hh2 + r2 * hl2, 0.6);
+    for (var c2 = 1; c2 < px.length - 1; c2++) trait(px[c2], y2, px[c2], yf2, 0.6);
+    txtG(px[0], px[1], y2 + 15, "CHEVAL", "F2", 9.5); txtC(px[1], px[2], y2 + 15, "Tours", "F2", 9.5);
+    for (var j2 = 0; j2 < R.nbCol; j2++) txtG(px[3 + j2 - 1], px[3 + j2], y2 + 15, (j2 + 1) + (j2 === 0 ? "er" : "e") + " tour", "F2", 9.5);
+    var tl2 = hl2 < 20 ? 8 : 9;
+    R.chevaux.forEach(function (c, i) {
+      var yy = y2 + hh2 + i * hl2 + hl2 / 2 + 3.2, m = R.parCh[c];
+      txtG(px[0], px[1], yy, c, "F2", tl2); txtC(px[1], px[2], yy, String(m.length), "F2", tl2);
+      for (var j3 = 0; j3 < R.nbCol; j3++) { var x = m[j3]; if (x) txtG(px[2 + j3], px[3 + j3], yy, x.qui + (x.ep ? " · " + x.ep : ""), "F1", tl2); }
+    });
+    /* par épreuve */
+    var ye = yf2 + 30, he = 18, xe = [40, 230, 300];
+    cadre(40, ye, 260, he * (R.epreuves.length + 2)); trait(230, ye, 230, ye + he * (R.epreuves.length + 2), 0.6);
+    txtG(xe[0], xe[1], ye + 12.5, "ÉPREUVE", "F2", 9.5); txtC(xe[1], xe[2], ye + 12.5, "Tours", "F2", 9.5);
+    R.epreuves.forEach(function (e, i) { var yy = ye + he * (i + 1); trait(40, yy, 300, yy, 0.6); txtG(xe[0], xe[1], yy + 12.5, e, "F1", 9); txtC(xe[1], xe[2], yy + 12.5, String(R.parEp[e]), "F1", 9); });
+    var yt = ye + he * (R.epreuves.length + 1); trait(40, yt, 300, yt, 0.8); txtG(xe[0], xe[1], yt + 12.5, "Total", "F2", 9.5); txtC(xe[1], xe[2], yt + 12.5, String(R.total), "F2", 9.5);
+    flux2 = ops.map(hsPdfTexteBrut).join("\n");
+  }
+  /* assemblage du fichier */
+  var res = "<< /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >>";
   var objs = [
     "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R" + (flux2 ? " 8 0 R" : "") + "] /Count " + (flux2 ? 2 : 1) + " >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources " + res + " /Contents 4 0 R >>",
     "<< /Length " + flux.length + " >>\nstream\n" + flux + "\nendstream",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>"
   ];
+  if (flux2) objs.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources " + res + " /Contents 9 0 R >>", "<< /Length " + flux2.length + " >>\nstream\n" + flux2 + "\nendstream");
   var out = "%PDF-1.4\n%âãÏÓ\n", pos = [];
   objs.forEach(function (ob, i) { pos.push(out.length); out += (i + 1) + " 0 obj\n" + ob + "\nendobj\n"; });
   var xref = out.length;
