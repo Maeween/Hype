@@ -1152,6 +1152,65 @@
      serait une page vide déguisée.
      Passer MONTRER_A_VENIR à true pour les voir en relecture. */
   var MONTRER_A_VENIR = false;
+  /* ============================================================
+     04/11 (Blandine : « laisser un espace où les cavaliers puissent ajouter des vidéos qui leur plaisent
+     dans chaque partie » ; « il la voit tout de suite et ça reste en ligne, et il peut nous la soumettre
+     pour la proposer à d'autres cavaliers ») — VIDÉOS AJOUTÉES PAR LES CAVALIERS.
+     Table Supabase videos_cavaliers. statut : perso (visible par son auteur seul) · attente (proposée aux
+     autres, en attente de la modératrice) · acceptee (visible par tous, rangée « Proposées par les
+     cavaliers ») · refusee (reste visible par son auteur). Liens YouTube seulement.
+     ============================================================ */
+  var VC_CACHE = "hype_vc_cache_v1";
+  var VC_TXT = {"ajouter": {"fr": "Ajouter une vidéo", "en": "Add a video", "es": "Añadir un vídeo", "it": "Aggiungi un video", "ja": "動画を追加", "de": "Video hinzufügen", "ar": "إضافة فيديو", "zh": "添加视频", "nl": "Video toevoegen", "pt": "Adicionar um vídeo", "sv": "Lägg till en video", "ru": "Добавить видео", "pl": "Dodaj film", "ko": "영상 추가"}, "intro": {"fr": "Une vidéo YouTube t'a aidé ? Garde-la ici, et propose-la aux autres si tu veux.", "en": "Did a YouTube video help you? Keep it here, and share it with others if you like.", "es": "¿Te ha ayudado un vídeo de YouTube? Guárdalo aquí y compártelo con los demás si quieres.", "it": "Un video di YouTube ti ha aiutato? Tienilo qui e proponilo agli altri, se vuoi.", "ja": "役に立ったYouTube動画をここに保存して、よければみんなにも紹介しよう。", "de": "Hat dir ein YouTube-Video geholfen? Bewahre es hier auf und schlage es den anderen vor, wenn du magst.", "ar": "هل ساعدك فيديو على YouTube؟ احتفظ به هنا، واقترحه على الآخرين إن أردت.", "zh": "有 YouTube 视频帮到你了吗？把它存在这里，愿意的话也可以推荐给其他人。", "nl": "Heeft een YouTube-video je geholpen? Bewaar hem hier en stel hem voor aan anderen als je wilt.", "pt": "Um vídeo do YouTube te ajudou? Guarde-o aqui e, se quiser, proponha aos outros.", "sv": "Har en YouTube-video hjälpt dig? Spara den här och tipsa andra om du vill.", "ru": "Тебе помогло видео на YouTube? Сохрани его здесь и, если хочешь, предложи другим.", "pl": "Pomógł ci film z YouTube? Zachowaj go tutaj i, jeśli chcesz, poleć innym.", "ko": "도움이 된 YouTube 영상이 있나요? 여기에 저장하고, 원하면 다른 사람에게도 추천해 보세요."}, "lien": {"fr": "Lien YouTube", "en": "YouTube link", "es": "Enlace de YouTube", "it": "Link di YouTube", "ja": "YouTubeのリンク", "de": "YouTube-Link", "ar": "رابط YouTube", "zh": "YouTube 链接", "nl": "YouTube-link", "pt": "Link do YouTube", "sv": "YouTube-länk", "ru": "Ссылка на YouTube", "pl": "Link do YouTube", "ko": "YouTube 링크"}, "titre": {"fr": "Titre", "en": "Title", "es": "Título", "it": "Titolo", "ja": "タイトル", "de": "Titel", "ar": "العنوان", "zh": "标题", "nl": "Titel", "pt": "Título", "sv": "Titel", "ru": "Название", "pl": "Tytuł", "ko": "제목"}, "note": {"fr": "Pourquoi tu l'aimes (facultatif)", "en": "Why you like it (optional)", "es": "Por qué te gusta (opcional)", "it": "Perché ti piace (facoltativo)", "ja": "気に入った理由（任意）", "de": "Warum du es magst (optional)", "ar": "لماذا يعجبك (اختياري)", "zh": "你喜欢它的原因（选填）", "nl": "Waarom je hem goed vindt (optioneel)", "pt": "Por que você gosta (opcional)", "sv": "Varför du gillar den (valfritt)", "ru": "Чем оно тебе нравится (необязательно)", "pl": "Dlaczego ci się podoba (opcjonalnie)", "ko": "좋아하는 이유 (선택)"}, "theme": {"fr": "Thème", "en": "Topic", "es": "Tema", "it": "Tema", "ja": "テーマ", "de": "Thema", "ar": "الموضوع", "zh": "主题", "nl": "Thema", "pt": "Tema", "sv": "Tema", "ru": "Тема", "pl": "Temat", "ko": "주제"}, "galop": {"fr": "Galop", "en": "Level", "es": "Galop", "it": "Galop", "ja": "ガロー", "de": "Galopp", "ar": "الغالوب", "zh": "Galop", "nl": "Galop", "pt": "Galop", "sv": "Galop", "ru": "Galop", "pl": "Galop", "ko": "Galop"}, "tousG": {"fr": "Tous les Galops", "en": "All levels", "es": "Todos los Galops", "it": "Tutti i Galop", "ja": "すべてのガロー", "de": "Alle Galopps", "ar": "كل مستويات الغالوب", "zh": "所有 Galop", "nl": "Alle Galops", "pt": "Todos os Galops", "sv": "Alla Galop", "ru": "Все уровни Galop", "pl": "Wszystkie poziomy Galop", "ko": "모든 Galop"}, "proposer": {"fr": "Proposer aussi aux autres cavaliers", "en": "Also suggest it to other riders", "es": "Proponerlo también a otros jinetes", "it": "Proponilo anche agli altri cavalieri", "ja": "ほかのライダーにも紹介する", "de": "Auch anderen Reitern vorschlagen", "ar": "اقتراحه أيضًا على الفرسان الآخرين", "zh": "也推荐给其他骑手", "nl": "Ook voorstellen aan andere ruiters", "pt": "Propor também aos outros cavaleiros", "sv": "Tipsa även andra ryttare", "ru": "Предложить и другим всадникам", "pl": "Poleć też innym jeźdźcom", "ko": "다른 라이더에게도 추천하기"}, "proposerInfo": {"fr": "Tu la vois tout de suite. Les autres la verront quand la modératrice l'aura acceptée.", "en": "You see it straight away. Others will see it once the moderator has approved it.", "es": "La ves enseguida. Los demás la verán cuando la moderadora la haya aceptado.", "it": "Lo vedi subito. Gli altri lo vedranno quando la moderatrice l'avrà accettato.", "ja": "あなたにはすぐ表示されます。ほかの人には、モデレーターが承認したあとに表示されます。", "de": "Du siehst es sofort. Die anderen sehen es, sobald die Moderatorin es angenommen hat.", "ar": "تراه فورًا. وسيراه الآخرون بعد أن توافق عليه المشرفة.", "zh": "你马上就能看到。管理员通过后，其他人也能看到。", "nl": "Jij ziet hem meteen. De anderen zien hem zodra de moderator hem heeft goedgekeurd.", "pt": "Você vê na hora. Os outros verão quando a moderadora aprovar.", "sv": "Du ser den direkt. Andra ser den när moderatorn har godkänt den.", "ru": "Ты увидишь его сразу. Остальные — после одобрения модератора.", "pl": "Widzisz go od razu. Inni zobaczą go, gdy moderatorka go zaakceptuje.", "ko": "나는 바로 볼 수 있어요. 다른 사람은 운영자가 승인한 뒤에 볼 수 있어요."}, "valider": {"fr": "Ajouter", "en": "Add", "es": "Añadir", "it": "Aggiungi", "ja": "追加", "de": "Hinzufügen", "ar": "إضافة", "zh": "添加", "nl": "Toevoegen", "pt": "Adicionar", "sv": "Lägg till", "ru": "Добавить", "pl": "Dodaj", "ko": "추가"}, "annuler": {"fr": "Annuler", "en": "Cancel", "es": "Cancelar", "it": "Annulla", "ja": "キャンセル", "de": "Abbrechen", "ar": "إلغاء", "zh": "取消", "nl": "Annuleren", "pt": "Cancelar", "sv": "Avbryt", "ru": "Отмена", "pl": "Anuluj", "ko": "취소"}, "errLien": {"fr": "Ce lien n'est pas une vidéo YouTube.", "en": "This link is not a YouTube video.", "es": "Este enlace no es un vídeo de YouTube.", "it": "Questo link non è un video di YouTube.", "ja": "このリンクはYouTube動画ではありません。", "de": "Dieser Link ist kein YouTube-Video.", "ar": "هذا الرابط ليس فيديو على YouTube.", "zh": "这个链接不是 YouTube 视频。", "nl": "Deze link is geen YouTube-video.", "pt": "Este link não é um vídeo do YouTube.", "sv": "Länken är inte en YouTube-video.", "ru": "Эта ссылка — не видео YouTube.", "pl": "Ten link nie jest filmem z YouTube.", "ko": "이 링크는 YouTube 영상이 아니에요."}, "errTitre": {"fr": "Donne-lui un titre.", "en": "Give it a title.", "es": "Ponle un título.", "it": "Dagli un titolo.", "ja": "タイトルを付けてね。", "de": "Gib ihm einen Titel.", "ar": "أعطه عنوانًا.", "zh": "给它起个标题。", "nl": "Geef hem een titel.", "pt": "Dê um título.", "sv": "Ge den en titel.", "ru": "Дай ему название.", "pl": "Nadaj mu tytuł.", "ko": "제목을 붙여 주세요."}, "errDeja": {"fr": "Tu as déjà ajouté cette vidéo.", "en": "You've already added this video.", "es": "Ya has añadido este vídeo.", "it": "Hai già aggiunto questo video.", "ja": "この動画はもう追加済みです。", "de": "Du hast dieses Video schon hinzugefügt.", "ar": "لقد أضفت هذا الفيديو من قبل.", "zh": "你已经添加过这个视频了。", "nl": "Je hebt deze video al toegevoegd.", "pt": "Você já adicionou este vídeo.", "sv": "Du har redan lagt till den här videon.", "ru": "Ты уже добавил это видео.", "pl": "Ten film już dodałeś.", "ko": "이미 추가한 영상이에요."}, "errCo": {"fr": "Connecte-toi pour ajouter une vidéo.", "en": "Sign in to add a video.", "es": "Inicia sesión para añadir un vídeo.", "it": "Accedi per aggiungere un video.", "ja": "動画を追加するにはログインしてね。", "de": "Melde dich an, um ein Video hinzuzufügen.", "ar": "سجّل الدخول لإضافة فيديو.", "zh": "登录后才能添加视频。", "nl": "Log in om een video toe te voegen.", "pt": "Entre na sua conta para adicionar um vídeo.", "sv": "Logga in för att lägga till en video.", "ru": "Войди, чтобы добавить видео.", "pl": "Zaloguj się, aby dodać film.", "ko": "영상을 추가하려면 로그인하세요."}, "errAutre": {"fr": "Ça n'a pas marché. Réessaie dans un instant.", "en": "That didn't work. Try again in a moment.", "es": "No ha funcionado. Inténtalo de nuevo en un momento.", "it": "Non ha funzionato. Riprova tra poco.", "ja": "うまくいきませんでした。少ししてからもう一度試してね。", "de": "Das hat nicht geklappt. Versuch es gleich noch einmal.", "ar": "لم ينجح ذلك. أعد المحاولة بعد قليل.", "zh": "没有成功，请稍后再试。", "nl": "Dat lukte niet. Probeer het zo opnieuw.", "pt": "Não funcionou. Tente de novo daqui a pouco.", "sv": "Det fungerade inte. Försök igen om en stund.", "ru": "Не получилось. Попробуй ещё раз чуть позже.", "pl": "Nie udało się. Spróbuj za chwilę.", "ko": "잘 되지 않았어요. 잠시 후 다시 시도해 주세요."}, "ok": {"fr": "C'est ajouté ! Tu la retrouves aussi dans Mes vidéos.", "en": "Added! You'll also find it in My videos.", "es": "¡Añadido! También lo encontrarás en Mis vídeos.", "it": "Aggiunto! Lo ritrovi anche in I miei video.", "ja": "追加しました！マイ動画にも入っています。", "de": "Hinzugefügt! Du findest es auch unter Meine Videos.", "ar": "تمت الإضافة! ستجده أيضًا في فيديوهاتي.", "zh": "已添加！你也可以在“我的视频”里找到它。", "nl": "Toegevoegd! Je vindt hem ook in Mijn video's.", "pt": "Adicionado! Você também o encontra em Meus vídeos.", "sv": "Tillagd! Du hittar den även under Mina videor.", "ru": "Добавлено! Оно есть и в разделе «Мои видео».", "pl": "Dodano! Znajdziesz go też w Moich filmach.", "ko": "추가했어요! 내 영상에서도 볼 수 있어요."}, "proposees": {"fr": "Proposées par les cavaliers", "en": "Suggested by riders", "es": "Propuestos por los jinetes", "it": "Proposti dai cavalieri", "ja": "ライダーのおすすめ", "de": "Von Reitern vorgeschlagen", "ar": "مقترحة من الفرسان", "zh": "骑手推荐", "nl": "Voorgesteld door ruiters", "pt": "Propostos pelos cavaleiros", "sv": "Tipsade av ryttare", "ru": "Предложено всадниками", "pl": "Polecane przez jeźdźców", "ko": "라이더 추천 영상"}, "tiennes": {"fr": "Tes vidéos ajoutées", "en": "Videos you added", "es": "Tus vídeos añadidos", "it": "I video che hai aggiunto", "ja": "あなたが追加した動画", "de": "Deine hinzugefügten Videos", "ar": "الفيديوهات التي أضفتها", "zh": "你添加的视频", "nl": "Jouw toegevoegde video's", "pt": "Seus vídeos adicionados", "sv": "Videor du har lagt till", "ru": "Добавленные тобой видео", "pl": "Dodane przez ciebie filmy", "ko": "내가 추가한 영상"}, "par": {"fr": "Proposée par ", "en": "Suggested by ", "es": "Propuesto por ", "it": "Proposto da ", "ja": "おすすめ：", "de": "Vorgeschlagen von ", "ar": "اقترحه ", "zh": "推荐人：", "nl": "Voorgesteld door ", "pt": "Proposto por ", "sv": "Tipsad av ", "ru": "Предложил(а) ", "pl": "Poleca: ", "ko": "추천: "}, "parAnon": {"fr": "Proposée par un cavalier", "en": "Suggested by a rider", "es": "Propuesto por un jinete", "it": "Proposto da un cavaliere", "ja": "ライダーのおすすめ", "de": "Von einem Reiter vorgeschlagen", "ar": "مقترح من أحد الفرسان", "zh": "骑手推荐", "nl": "Voorgesteld door een ruiter", "pt": "Proposto por um cavaleiro", "sv": "Tipsad av en ryttare", "ru": "Предложено всадником", "pl": "Polecane przez jeźdźca", "ko": "라이더 추천"}, "sPerso": {"fr": "Visible par toi seul", "en": "Only you can see it", "es": "Solo lo ves tú", "it": "Lo vedi solo tu", "ja": "あなただけに表示", "de": "Nur für dich sichtbar", "ar": "مرئي لك وحدك", "zh": "仅你可见", "nl": "Alleen zichtbaar voor jou", "pt": "Só você vê", "sv": "Bara du ser den", "ru": "Видно только тебе", "pl": "Widoczny tylko dla ciebie", "ko": "나만 볼 수 있음"}, "sAttente": {"fr": "Proposée · en attente", "en": "Suggested · pending", "es": "Propuesto · en espera", "it": "Proposto · in attesa", "ja": "紹介済み・承認待ち", "de": "Vorgeschlagen · ausstehend", "ar": "مقترح · قيد الانتظار", "zh": "已推荐 · 待审核", "nl": "Voorgesteld · in afwachting", "pt": "Proposto · aguardando", "sv": "Tipsad · väntar", "ru": "Предложено · на проверке", "pl": "Polecony · oczekuje", "ko": "추천함 · 검토 중"}, "sAcceptee": {"fr": "Visible par tous", "en": "Visible to everyone", "es": "Visible para todos", "it": "Visibile a tutti", "ja": "全員に表示", "de": "Für alle sichtbar", "ar": "مرئي للجميع", "zh": "所有人可见", "nl": "Zichtbaar voor iedereen", "pt": "Visível para todos", "sv": "Synlig för alla", "ru": "Видно всем", "pl": "Widoczny dla wszystkich", "ko": "모두에게 공개"}, "sRefusee": {"fr": "Gardée pour toi", "en": "Kept for you", "es": "Guardado para ti", "it": "Tenuto per te", "ja": "あなた用に保存", "de": "Für dich behalten", "ar": "محفوظ لك", "zh": "仅为你保留", "nl": "Voor jou bewaard", "pt": "Guardado para você", "sv": "Sparad åt dig", "ru": "Сохранено для тебя", "pl": "Zachowany dla ciebie", "ko": "나만 보기로 보관"}, "btnProposer": {"fr": "Proposer aux autres", "en": "Suggest to others", "es": "Proponer a los demás", "it": "Proponi agli altri", "ja": "みんなに紹介", "de": "Anderen vorschlagen", "ar": "اقتراح على الآخرين", "zh": "推荐给别人", "nl": "Voorstellen aan anderen", "pt": "Propor aos outros", "sv": "Tipsa andra", "ru": "Предложить другим", "pl": "Poleć innym", "ko": "다른 사람에게 추천"}, "btnRetirer": {"fr": "Retirer la proposition", "en": "Withdraw suggestion", "es": "Retirar la propuesta", "it": "Ritira la proposta", "ja": "紹介を取り消す", "de": "Vorschlag zurückziehen", "ar": "سحب الاقتراح", "zh": "撤回推荐", "nl": "Voorstel intrekken", "pt": "Retirar a proposta", "sv": "Dra tillbaka tipset", "ru": "Отозвать предложение", "pl": "Wycofaj polecenie", "ko": "추천 취소"}, "btnSuppr": {"fr": "Supprimer", "en": "Delete", "es": "Eliminar", "it": "Elimina", "ja": "削除", "de": "Löschen", "ar": "حذف", "zh": "删除", "nl": "Verwijderen", "pt": "Excluir", "sv": "Ta bort", "ru": "Удалить", "pl": "Usuń", "ko": "삭제"}, "ongAjout": {"fr": "Ajoutées", "en": "Added", "es": "Añadidos", "it": "Aggiunti", "ja": "追加した動画", "de": "Hinzugefügt", "ar": "المضافة", "zh": "已添加", "nl": "Toegevoegd", "pt": "Adicionados", "sv": "Tillagda", "ru": "Добавленные", "pl": "Dodane", "ko": "추가한 영상"}, "videAjout1": {"fr": "Tu n'as pas encore ajouté de vidéo.", "en": "You haven't added a video yet.", "es": "Aún no has añadido ningún vídeo.", "it": "Non hai ancora aggiunto video.", "ja": "まだ動画を追加していません。", "de": "Du hast noch kein Video hinzugefügt.", "ar": "لم تضف أي فيديو بعد.", "zh": "你还没有添加视频。", "nl": "Je hebt nog geen video toegevoegd.", "pt": "Você ainda não adicionou nenhum vídeo.", "sv": "Du har inte lagt till någon video än.", "ru": "Ты ещё не добавил ни одного видео.", "pl": "Nie dodałeś jeszcze żadnego filmu.", "ko": "아직 추가한 영상이 없어요."}, "videAjout2": {"fr": "Touche « Ajouter une vidéo » pour garder celles qui t'aident.", "en": "Tap “Add a video” to keep the ones that help you.", "es": "Toca «Añadir un vídeo» para guardar los que te ayudan.", "it": "Tocca «Aggiungi un video» per tenere quelli che ti aiutano.", "ja": "「動画を追加」に触れて、役立つ動画を保存しよう。", "de": "Tippe auf „Video hinzufügen“, um die Videos zu behalten, die dir helfen.", "ar": "المس «إضافة فيديو» لتحتفظ بالفيديوهات التي تساعدك.", "zh": "点“添加视频”，保存对你有帮助的视频。", "nl": "Tik op ‘Video toevoegen’ om de video's te bewaren die je helpen.", "pt": "Toque em «Adicionar um vídeo» para guardar os que te ajudam.", "sv": "Tryck på ”Lägg till en video” för att spara de som hjälper dig.", "ru": "Нажми «Добавить видео», чтобы сохранить полезные ролики.", "pl": "Dotknij „Dodaj film”, aby zachować te, które ci pomagają.", "ko": "‘영상 추가’를 눌러 도움이 되는 영상을 저장하세요."}, "confirmSuppr": {"fr": "Supprimer cette vidéo de ta liste ?", "en": "Remove this video from your list?", "es": "¿Quitar este vídeo de tu lista?", "it": "Togliere questo video dalla tua lista?", "ja": "この動画をリストから削除しますか？", "de": "Dieses Video aus deiner Liste entfernen?", "ar": "هل تريد حذف هذا الفيديو من قائمتك؟", "zh": "要把这个视频从列表中删除吗？", "nl": "Deze video uit je lijst verwijderen?", "pt": "Remover este vídeo da sua lista?", "sv": "Ta bort videon från din lista?", "ru": "Удалить это видео из списка?", "pl": "Usunąć ten film z listy?", "ko": "이 영상을 목록에서 삭제할까요?"}};
+  function vcIdYouTube(lien) {
+    var s = String(lien || "").trim();
+    if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+    var m = s.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : "";
+  }
+  function vcVersVideo(r) {
+    return {
+      id: "vc-" + r.id, vcId: r.id, vcStatut: r.statut, vcAuteur: r.user_id, parCavalier: r.auteur_nom || "",
+      src: { type: "youtube", ref: r.yt }, vignetteUrl: "https://i.ytimg.com/vi/" + r.yt + "/hqdefault.jpg",
+      coursId: "", coursTous: [], galop: r.galop || 0, theme: r.theme || "dressage", rang: "approfondir",
+      dureeTranche: "", premium: false, langueVideo: "", source: "", intervenant: "", intervenantRole: null, doc: "",
+      i18nTitre: { fr: r.titre }, i18nResume: r.note ? { fr: r.note } : null, i18nObserver: null
+    };
+  }
+  /* mémoire des vidéos des cavaliers déjà vues : la page de lecture les retrouve même après un rechargement */
+  function vcMemoriser(liste) {
+    try {
+      var m = JSON.parse(localStorage.getItem(VC_CACHE) || "{}") || {};
+      liste.forEach(function (v) { m[v.id] = v; });
+      var ks = Object.keys(m); if (ks.length > 300) ks.slice(0, ks.length - 300).forEach(function (k) { delete m[k]; });
+      localStorage.setItem(VC_CACHE, JSON.stringify(m));
+    } catch (e) { }
+  }
+  function vcDe(id) {
+    try { var m = JSON.parse(localStorage.getItem(VC_CACHE) || "{}") || {}; return m[id] || null; } catch (e) { return null; }
+  }
+  function vcCharger(cb) {
+    if (typeof supa === "undefined" || typeof utilisateurActuel !== "function") { cb(null, []); return; }
+    utilisateurActuel().then(function (u) {
+      if (!u) { cb(null, []); return; }
+      supa.from("videos_cavaliers").select("id,user_id,yt,titre,note,galop,theme,statut,auteur_nom,created_at").order("created_at", { ascending: false }).limit(500)
+        .then(function (r) {
+          var l = ((r && r.data) || []).map(vcVersVideo);
+          vcMemoriser(l); cb(u, l);
+        }).catch(function () { cb(u, []); });
+    }).catch(function () { cb(null, []); });
+  }
+  function vcAjouter(o) {
+    return supa.from("videos_cavaliers").insert(o).select("id").then(function (r) { if (r && r.error) throw r.error; return r; });
+  }
+  function vcStatut(id, statut) {
+    var maj = { statut: statut }; if (statut === "acceptee" || statut === "refusee") maj.repondu_le = new Date().toISOString();
+    return supa.from("videos_cavaliers").update(maj).eq("id", id).then(function (r) { if (r && r.error) throw r.error; return r; });
+  }
+  function vcSupprimer(id) {
+    return supa.from("videos_cavaliers").delete().eq("id", id).then(function (r) { if (r && r.error) throw r.error; return r; });
+  }
+
   function disponible(v) { return !!(v && v.src) || MONTRER_A_VENIR; }
   function catalogue() { return VIDS.filter(disponible); }
 
@@ -1160,6 +1219,7 @@
     for (var i = 0; i < VIDS.length; i++) { if (VIDS[i].id === id) return VIDS[i]; }
     for (var k = 0; k < VIDS_AV.length; k++) { if (VIDS_AV[k].id === id) return VIDS_AV[k]; }
     for (var j = 0; j < ANIMS.length; j++) { if (ANIMS[j].id === id) return ANIMS[j]; }
+    if (String(id || "").indexOf("vc-") === 0) return vcDe(id);
     return null;
   }
   function L(obj, langue) { if (!obj) return ""; return obj[langue] || obj.fr || ""; }
@@ -1566,6 +1626,13 @@
     ".hv2-pC{--hv-p1:rgba(12,16,17,.84);--hv-p2:rgba(13,18,19,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));--hv-og-on:linear-gradient(180deg,rgba(16,29,34,.95),rgba(10,17,19,.95));--hv-pan:linear-gradient(180deg,rgba(15,20,21,.97),rgba(9,12,12,.98))}",
     ".hv2-k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hv-ch);margin:22px 0 10px}",
     ".hv2-modo{display:block;margin:34px auto 0;background:none;border:none;font-size:11px;letter-spacing:.12em;color:var(--hv-iv3);padding:12px}",
+    ".hv2-vc-ajout{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;border:1px dashed rgba(201,166,107,.5);background:rgba(201,166,107,.05);color:#C9A66B;font-family:inherit;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}",
+    ".hv2-vc-ajout span{font-size:20px;line-height:1;font-weight:400}",
+    ".hv2-vc-form{padding:18px 16px;border-radius:16px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(160deg,rgba(16,26,29,.7),rgba(7,10,8,.7));box-shadow:0 12px 30px rgba(0,0,0,.35)}",
+    ".hv2-vc-form select{appearance:auto}",
+    ".hv2-vc-ok{flex:1;padding:13px;border-radius:12px;border:1px solid rgba(201,166,107,.6);background:rgba(201,166,107,.14);color:#F3EEE4;font-family:inherit;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}",
+    ".hv2-vc-ok:disabled{opacity:.45}",
+    ".hv2-vc-non{padding:13px 16px;border-radius:12px;border:1px solid rgba(243,238,228,.18);background:none;color:rgba(243,238,228,.7);font-family:inherit;font-size:12px;letter-spacing:.1em;text-transform:uppercase}",
     /* page vidéo (04/11) */
     ".hv2-l-in{padding-top:6px}",
     ".hv2-l-hero .hv2-titre h1{font-size:clamp(30px,8.4vw,44px);line-height:1.08}",
@@ -1808,6 +1875,104 @@
     function boutonRetour(txt, fn) {
       return h("button", { className: "hv2-retour", onClick: fn }, h("i", { "aria-hidden": "true" }, "‹"), txt);
     }
+    /* ---------- 04/11 : vidéos ajoutées par les cavaliers ---------- */
+    function VX(k) { return L(VC_TXT[k], langue); }
+    var svc = React.useState({ u: null, l: [], pret: false }); var vc = svc[0], setVc = svc[1];
+    var sf = React.useState(null); var form = sf[0], setForm = sf[1];      /* null = fermé ; sinon {lien,titre,note,galop,theme,prop,err,envoi,ok} */
+    var ssup = React.useState(null); var aSuppr = ssup[0], setASuppr = ssup[1];
+    function vcRecharger() { vcCharger(function (u, l) { setVc({ u: u, l: l, pret: true }); }); }
+    React.useEffect(function () { vcRecharger(); }, []);
+    var vcMiennes = vc.u ? vc.l.filter(function (v) { return v.vcAuteur === vc.u.id; }) : [];
+    var vcPubliques = vc.l.filter(function (v) { return v.vcStatut === "acceptee"; });
+    var vcAttente = vc.l.filter(function (v) { return v.vcStatut === "attente"; });
+    function vcStatutTxt(v) {
+      return v.vcStatut === "attente" ? VX("sAttente") : v.vcStatut === "acceptee" ? VX("sAcceptee") : v.vcStatut === "refusee" ? VX("sRefusee") : VX("sPerso");
+    }
+    function ouvrirForm(themeK) {
+      var g = (galop === "tous") ? 0 : (galop === "7+" ? 7 : galop);
+      setForm({ lien: "", titre: "", note: "", galop: g, theme: themeK || theme || "dressage", prop: false, err: "", envoi: false, ok: "" });
+    }
+    function majForm(o) { setForm(function (f) { return Object.assign({}, f, o); }); }
+    function titreAuto(id) {
+      try {
+        fetch("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent("https://www.youtube.com/watch?v=" + id))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) { if (j && j.title) setForm(function (f) { return f && !f.titre ? Object.assign({}, f, { titre: String(j.title).slice(0, 120) }) : f; }); })
+          .catch(function () { });
+      } catch (e) { }
+    }
+    function envoyerForm() {
+      if (!form || form.envoi) return;
+      if (!vc.u) { majForm({ err: VX("errCo") }); return; }
+      var id = vcIdYouTube(form.lien);
+      if (!id) { majForm({ err: VX("errLien") }); return; }
+      if (!String(form.titre || "").trim()) { majForm({ err: VX("errTitre") }); return; }
+      if (vcMiennes.some(function (v) { return v.src.ref === id; })) { majForm({ err: VX("errDeja") }); return; }
+      majForm({ envoi: true, err: "" });
+      var prenom = ""; try { prenom = String((app.profil && (app.profil.prenom || app.profil.pseudo)) || "").slice(0, 40); } catch (e) { }
+      vcAjouter({ user_id: vc.u.id, yt: id, titre: String(form.titre).trim().slice(0, 120), note: String(form.note || "").trim().slice(0, 300) || null,
+        galop: form.galop || null, theme: form.theme, statut: form.prop ? "attente" : "perso", auteur_nom: prenom || null })
+        .then(function () { setForm({ ok: VX("ok") }); vcRecharger(); })
+        .catch(function () { majForm({ envoi: false, err: VX("errAutre") }); });
+    }
+    function changerStatut(v, s) { vcStatut(v.vcId, s).then(vcRecharger).catch(function () { }); }
+    function supprimer(v) {
+      if (aSuppr !== v.id) { setASuppr(v.id); return; }
+      setASuppr(null); vcSupprimer(v.vcId).then(vcRecharger).catch(function () { });
+    }
+    var stBtnVc = { fontSize: 11, letterSpacing: ".06em", color: "#C9A66B", background: "none", border: "1px solid rgba(201,166,107,.4)", borderRadius: 8, padding: "7px 10px", fontFamily: "inherit" };
+    function ligneVc(v, avecActions) {
+      var meta = [v.galop ? TXT_GALOP + v.galop : "", avecActions ? vcStatutTxt(v) : (v.parCavalier ? VX("par") + v.parCavalier : VX("parAnon"))].filter(Boolean).join(" · ");
+      return h("div", { key: v.id, style: { borderBottom: "1px solid rgba(243,238,228,.07)", paddingBottom: avecActions ? 10 : 0 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+          h("button", { className: "hv-ligne", style: { borderBottom: "none", flex: 1, minWidth: 0 }, onClick: function () { vcMemoriser([v]); ouvrir(v); } },
+            couv(v),
+            h("span", { style: { flex: 1, minWidth: 0 } },
+              h("h4", null, titreDe(v)),
+              h("span", { className: "hv-meta", style: { display: "block" } }, nomTheme(v.theme)),
+              h("span", { className: "hv-meta", style: { display: "block", marginTop: 3 } }, meta))),
+          h("button", { className: "hv-fav" + (estFav(v.id) ? " on" : ""), "aria-pressed": estFav(v.id), "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기"),
+            onClick: function () { vcMemoriser([v]); basculerFav(v.id); } }, estFav(v.id) ? "★" : "☆")),
+        avecActions ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 } },
+          (v.vcStatut === "perso" || v.vcStatut === "refusee") ? h("button", { style: stBtnVc, onClick: function () { changerStatut(v, "attente"); } }, VX("btnProposer")) : null,
+          v.vcStatut === "attente" ? h("button", { style: stBtnVc, onClick: function () { changerStatut(v, "perso"); } }, VX("btnRetirer")) : null,
+          h("button", { style: Object.assign({}, stBtnVc, { color: "rgba(243,238,228,.62)", borderColor: "rgba(243,238,228,.2)" }), onClick: function () { supprimer(v); } }, aSuppr === v.id ? VX("confirmSuppr") : VX("btnSuppr"))) : null);
+    }
+    var stChamp = { width: "100%", boxSizing: "border-box", background: "rgba(243,238,228,.04)", border: "1px solid rgba(243,238,228,.16)", borderRadius: 10, color: "#F3EEE4", padding: "11px 12px", fontSize: 16, fontFamily: "inherit", marginTop: 6 };
+    var stLab = { display: "block", fontSize: 10.5, letterSpacing: ".14em", textTransform: "uppercase", color: "var(--hv-iv2)", marginTop: 14 };
+    function blocAjout(themeK) {
+      if (!vc.pret) return null;
+      if (!form) return h("button", { className: "hv2-vc-ajout", onClick: function () { ouvrirForm(themeK); } }, h("span", { "aria-hidden": "true" }, "+"), VX("ajouter"));
+      if (form.ok) return h("div", { className: "hv2-vc-form" },
+        h("p", { style: { margin: 0, color: "#F3EEE4", fontSize: 14 } }, form.ok),
+        h("button", { className: "hv2-vc-ajout", style: { marginTop: 12 }, onClick: function () { ouvrirForm(themeK); } }, h("span", { "aria-hidden": "true" }, "+"), VX("ajouter")));
+      var galops = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      return h("div", { className: "hv2-vc-form" },
+        h("p", { style: { margin: 0, fontFamily: "'Cormorant Garamond',serif", fontSize: 22, color: "#F3EEE4" } }, VX("ajouter")),
+        h("p", { className: "hv2-sous", style: { margin: "6px 0 0", fontSize: 13.5 } }, VX("intro")),
+        !vc.u ? h("p", { style: { color: "#C9A66B", fontSize: 13, marginTop: 12 } }, VX("errCo")) : null,
+        h("label", { style: stLab }, VX("lien"),
+          h("input", { type: "url", inputMode: "url", value: form.lien, placeholder: "https://youtu.be/…", style: stChamp, autoComplete: "off",
+            onChange: function (e) { var val = e.target.value; majForm({ lien: val, err: "" }); var id = vcIdYouTube(val); if (id && !form.titre) titreAuto(id); } })),
+        h("label", { style: stLab }, VX("titre"),
+          h("input", { type: "text", value: form.titre, maxLength: 120, style: stChamp, onChange: function (e) { majForm({ titre: e.target.value, err: "" }); } })),
+        h("label", { style: stLab }, VX("note"),
+          h("textarea", { value: form.note, maxLength: 300, rows: 2, style: Object.assign({}, stChamp, { resize: "vertical" }), onChange: function (e) { majForm({ note: e.target.value }); } })),
+        h("div", { style: { display: "flex", gap: 10 } },
+          h("label", { style: Object.assign({}, stLab, { flex: 1 }) }, VX("theme"),
+            h("select", { value: form.theme, style: stChamp, onChange: function (e) { majForm({ theme: e.target.value }); } },
+              THEMES_ORDRE.map(function (k) { return h("option", { key: k, value: k }, nomTheme(k)); }))),
+          h("label", { style: Object.assign({}, stLab, { flex: 1 }) }, VX("galop"),
+            h("select", { value: String(form.galop || 0), style: stChamp, onChange: function (e) { majForm({ galop: parseInt(e.target.value, 10) || 0 }); } },
+              galops.map(function (g) { return h("option", { key: g, value: String(g) }, g ? TXT_GALOP + g : VX("tousG")); })))),
+        h("label", { style: { display: "flex", gap: 10, alignItems: "flex-start", marginTop: 16, color: "#F3EEE4", fontSize: 14, lineHeight: 1.4 } },
+          h("input", { type: "checkbox", checked: !!form.prop, style: { marginTop: 3, accentColor: "#C9A66B", width: 18, height: 18 }, onChange: function (e) { majForm({ prop: e.target.checked }); } }),
+          h("span", null, VX("proposer"), h("span", { style: { display: "block", fontSize: 12, color: "var(--hv-iv2)", marginTop: 3 } }, VX("proposerInfo")))),
+        form.err ? h("p", { role: "alert", style: { color: "#E8B4A0", fontSize: 13, margin: "12px 0 0" } }, form.err) : null,
+        h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+          h("button", { className: "hv2-vc-ok", disabled: form.envoi || !vc.u, onClick: envoyerForm }, VX("valider")),
+          h("button", { className: "hv2-vc-non", onClick: function () { setForm(null); } }, VX("annuler"))));
+    }
     var TXT_RETOUR_VT = T("Retour à la Vidéothèque", "Back to the video library", "Volver a la videoteca", "Torna alla videoteca", "動画ライブラリに戻る", "Zurück zur Videothek", "العودة إلى مكتبة الفيديو", "返回视频库", "Terug naar de videotheek", "Voltar à videoteca", "Tillbaka till videobiblioteket", "Назад в видеотеку", "Wróć do wideoteki", "비디오 라이브러리로 돌아가기");
     var TXT_MES = T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي", "我的视频", "Mijn video's", "Meus vídeos", "Mina videor", "Мои видео", "Moje filmy", "내 영상");
     var svgFav = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M6.5 3.5h11v17l-5.5-4.2-5.5 4.2z" }));
@@ -1964,7 +2129,16 @@
           retour: boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); })
         }),
         h("div", { className: "hv2-in" }, CHOIX_GALOP_MAQUETTE ? null : ongletsGalops(theme),
-          h("div", { className: "hv2-liste", style: { marginTop: 20 } }, vsT.map(ligne))));
+          h("div", { className: "hv2-liste", style: { marginTop: 20 } }, vsT.map(ligne)),
+          /* 04/11 : vidéos des cavaliers — acceptées (tout le monde), puis les miennes, puis le bouton d'ajout */
+          (function () {
+            var pub = vcPubliques.filter(function (v) { return v.theme === theme && (!v.galop || galopOk(v, galop)); });
+            var mie = vcMiennes.filter(function (v) { return v.theme === theme && v.vcStatut !== "acceptee" && (!v.galop || galopOk(v, galop)); });
+            return h("div", { style: { marginTop: 30 } },
+              pub.length ? h("div", null, h("h2", { className: "hv2-h2" }, VX("proposees")), h("div", { className: "hv2-liste" }, pub.map(function (v) { return ligneVc(v, false); }))) : null,
+              mie.length ? h("div", { style: { marginTop: pub.length ? 26 : 0 } }, h("h2", { className: "hv2-h2" }, VX("tiennes")), h("div", { className: "hv2-liste" }, mie.map(function (v) { return ligneVc(v, true); }))) : null,
+              h("div", { style: { marginTop: 18 } }, blocAjout(theme)));
+          })()));
     }
 
     /* ---------- VUE : Mes vidéos ---------- */
@@ -1976,6 +2150,11 @@
       });
       var favs = dispo.filter(function (v) { return estFav(v.id); });
       var hist = dispo.filter(function (v) { var p = prog(v.id); return p && (p.ouverte || p.vue); })
+        .sort(function (a, b) { var pa = prog(a.id), pb = prog(b.id); return String(pb.quand || pb.ouverte || "") > String(pa.quand || pa.ouverte || "") ? 1 : -1; });
+      /* 04/11 : les vidéos des cavaliers comptent aussi dans les favoris et l'historique */
+      var vcConnues = vc.l;
+      favs = favs.concat(vcConnues.filter(function (v) { return estFav(v.id); }));
+      hist = hist.concat(vcConnues.filter(function (v) { var p = prog(v.id); return p && (p.ouverte || p.vue); }))
         .sort(function (a, b) { var pa = prog(a.id), pb = prog(b.id); return String(pb.quand || pb.ouverte || "") > String(pa.quand || pa.ouverte || "") ? 1 : -1; });
       var liste = onglet === "hist" ? hist : favs;
       var vide = onglet === "hist"
@@ -1995,11 +2174,41 @@
             h("p", { className: "hv2-sous", style: { margin: "8px 0 0", fontSize: 16 } }, hvReprise(prog(derniere.id)) ? T("Arrêtée à ", "Stopped at ", "Detenido en ", "Interrotto a ", "停止位置 ", "Angehalten bei ", "توقفت عند ", "停在 ", "Gestopt op ", "Parado em ", "Stoppad vid ", "Остановлено на ", "Zatrzymano na ", "멈춘 위치 ") + hvTemps(hvReprise(prog(derniere.id))) : T("Pas encore marquée vue.", "Not marked as watched yet.", "Aún no marcado como visto.", "Non ancora segnato come visto.", "まだ視聴済みにしていません。", "Noch nicht als gesehen markiert.", "لم تحدديه بعد كفيديو تمت مشاهدته.", "还没有标记为已看。", "Nog niet als bekeken gemarkeerd.", "Ainda não marcado como visto.", "Inte markerad som sedd än.", "Ещё не отмечено как просмотренное.", "Jeszcze nieoznaczony jako obejrzany.", "아직 시청함으로 표시하지 않았어요."))) : null,
           h("div", { className: "hv2-mini-ong", role: "tablist" },
             [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione", "즐겨찾기")],
-             ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")]].map(function (x) {
+             ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")],
+             ["ajout", VX("ongAjout")]].map(function (x) {
               return h("button", { key: x[0], role: "tab", "aria-selected": onglet === x[0], className: onglet === x[0] ? "on" : "", onClick: function () { setOnglet(x[0]); } }, x[1]);
             })),
-          liste.length ? h("div", { className: "hv2-liste" }, liste.map(ligne))
+          onglet === "ajout"
+            ? h("div", null,
+                vcMiennes.length ? h("div", { className: "hv2-liste" }, vcMiennes.map(function (v) { return ligneVc(v, true); }))
+                  : h("div", { className: "hv2-vide" }, h("p", null, VX("videAjout1")), h("p", null, VX("videAjout2"))),
+                h("div", { style: { marginTop: 18 } }, blocAjout(null)))
+          : liste.length ? h("div", { className: "hv2-liste" }, liste.map(function (v) { return v.vcId ? ligneVc(v, false) : ligne(v); }))
             : h("div", { className: "hv2-vide" }, h("p", null, vide[0]), h("p", null, vide[1]))));
+    }
+
+    /* ---------- VUE : propositions des cavaliers (modératrice, en français) ---------- */
+    if (vue === "propos" && estModo) {
+      var chB = { fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#C9A66B", background: "none", border: "1px solid rgba(201,166,107,.45)", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontWeight: 600 };
+      return h("div", { className: classeRacine() },
+        h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
+          boutonRetour("Retour à la Vidéothèque", function () { setVue("accueil"); }),
+          h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, "Propositions des cavaliers"),
+          h("p", { className: "hv2-sous" }, "Visible par toi seule. Accepter = visible par tous dans « Proposées par les cavaliers », dans son thème. Refuser = la vidéo reste dans la liste de son auteur."),
+          vcAttente.length ? h("div", { className: "hv2-liste", style: { marginTop: 14 } }, vcAttente.map(function (v) {
+            return h("div", { key: v.id, style: { paddingBottom: 12, borderBottom: "1px solid rgba(243,238,228,.07)" } },
+              ligneVc(v, false),
+              v.i18nResume ? h("p", { style: { margin: "6px 0 0", fontSize: 12.5, color: "rgba(243,238,228,.7)", fontStyle: "italic" } }, "« " + L(v.i18nResume, "fr") + " »") : null,
+              h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+                h("button", { style: chB, onClick: function () { changerStatut(v, "acceptee"); } }, "Accepter"),
+                h("button", { style: Object.assign({}, chB, { color: "rgba(243,238,228,.6)", borderColor: "rgba(243,238,228,.2)" }), onClick: function () { changerStatut(v, "refusee"); } }, "Refuser")));
+          })) : h("div", { className: "hv2-vide" }, h("p", null, "Aucune proposition en attente.")),
+          vcPubliques.length ? h("div", { style: { marginTop: 26 } },
+            h("h2", { className: "hv2-h2" }, "Déjà acceptées (" + vcPubliques.length + ")"),
+            h("div", { className: "hv2-liste" }, vcPubliques.map(function (v) {
+              return h("div", { key: v.id }, ligneVc(v, false),
+                h("button", { style: Object.assign({}, chB, { marginTop: 6, color: "rgba(243,238,228,.6)", borderColor: "rgba(243,238,228,.2)" }), onClick: function () { changerStatut(v, "refusee"); } }, "Retirer de la liste publique"));
+            }))) : null));
     }
 
     /* ---------- VUE : réserve d'animations (modératrices seulement, en français) ---------- */
@@ -2063,7 +2272,8 @@
       h("div", { className: "hv2-in" },
         ligneAcces, champRech, corps,
         /* accès discret à la réserve : invisible pour tout autre compte */
-        estModo ? h("button", { className: "hv2-modo", onClick: function () { setVue("reserve"); } }, "Réserve d'animations · modératrice") : null));
+        estModo ? h("button", { className: "hv2-modo", style: vcAttente.length ? { color: "#C9A66B" } : undefined, onClick: function () { setVue("propos"); } }, "Propositions des cavaliers" + (vcAttente.length ? " (" + vcAttente.length + ")" : "") + " · modératrice") : null,
+        estModo ? h("button", { className: "hv2-modo", style: { marginTop: 0 }, onClick: function () { setVue("reserve"); } }, "Réserve d'animations · modératrice") : null));
   };
 
   /* ============================================================
@@ -2246,7 +2456,8 @@
             try { if (s.player && s.player.pauseVideo) s.player.pauseVideo(); } catch (x) { }
             if (t > 5) { noter(t, s.duree, false); e.currentTarget.href = "https://www.youtube.com/watch?v=" + v.src.ref + "&t=" + t + "s"; } } },
           T("Ouvrir dans YouTube", "Open in YouTube", "Abrir en YouTube", "Apri su YouTube", "YouTubeで開く", "In YouTube öffnen", "افتح في YouTube", "在 YouTube 中打开", "Openen in YouTube", "Abrir no YouTube", "Öppna i YouTube", "Открыть в YouTube", "Otwórz w YouTube", "YouTube에서 열기"), h("span", { "aria-hidden": "true" }, " ↗")) : null,
-        h("p", { className: "hv2-l-langue" }, T("Vidéo en français", "Video in French", "Vídeo en francés", "Video in francese", "フランス語の動画", "Video auf Französisch", "فيديو باللغة الفرنسية", "法语视频", "Video in het Frans", "Vídeo em francês", "Video på franska", "Видео на французском", "Film po francusku", "프랑스어 영상")),
+        v.vcId ? h("p", { className: "hv2-l-langue" }, v.parCavalier ? L(VC_TXT.par, langue) + v.parCavalier : L(VC_TXT.parAnon, langue)) : null,
+        v.langueVideo === "fr" ? h("p", { className: "hv2-l-langue" }, T("Vidéo en français", "Video in French", "Vídeo en francés", "Video in francese", "フランス語の動画", "Video auf Französisch", "فيديو باللغة الفرنسية", "法语视频", "Video in het Frans", "Vídeo em francês", "Video på franska", "Видео на французском", "Film po francusku", "프랑스어 영상")) : null,
         h("div", { className: "hv2-l-actions" },
           h("button", { className: "hv2-l-btn" + (vue ? " on" : ""), "aria-pressed": vue, onClick: basculerVue },
             h("span", { "aria-hidden": "true" }, "✓"),
