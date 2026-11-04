@@ -297,7 +297,8 @@ var CSS2 = [
   ".hs-row a,.hs-lien{color:var(--hs-ch);font-size:12.5px;text-decoration:none;background:none;border:none;padding:6px 0;white-space:nowrap}",
   ".hs-texte{padding:14px;font-size:13.5px;line-height:1.55;color:rgba(243,238,228,.86);white-space:pre-wrap;overflow-wrap:anywhere}",
   ".hs-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;border-radius:999px;border:1px solid rgba(201,166,107,.8);background:transparent;color:var(--hs-ch);font-size:13.5px;letter-spacing:.02em}",
-  ".hs-btn.plein{background:var(--hs-ch);color:#070A08;font-weight:600}",
+  /* 04/11 23h20 (Blandine : « évite les boutons pleins dorés ») : le bouton principal est détouré champagne sur verre sombre, jamais rempli d'or */
+  ".hs-btn.plein{background:linear-gradient(180deg,rgba(28,34,38,.92),rgba(12,16,18,.92));border-color:#C9A66B;color:#F3EEE4;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.35)}",
   ".hs-btn.doux{border-color:rgba(243,238,228,.2);color:var(--hs-iv)}",
   ".hs-btn[disabled]{opacity:.5}",
   ".hs-duo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}",
@@ -710,6 +711,7 @@ function EcranEngagements() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _mod = React.useState(false); var modifie = _mod[0], setModifie = _mod[1];
   var _vf = React.useState(false); var voirFeuille = _vf[0], setVoirFeuille = _vf[1];
+  var _lb = React.useState({}); var libres = _lb[0], setLibres = _lb[1];   /* « Autre cheval » : saisie libre */
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
@@ -754,11 +756,18 @@ function EcranEngagements() {
           if (idsI.length) { var rpi = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsI); ((rpi && rpi.data) || []).forEach(function (p) { ajouterP(p, "inscrite"); }); }
         } catch (eI) { }
         var nomClub = E.club_clef;
+        var chevauxTeam = [];
         try {
           if (typeof TEAM_CLE !== "undefined" && E.club_clef === TEAM_CLE) {
             nomClub = TEAM_CLUB;
             var rg = await hypeRequeteTeam("id");
             if (rg && rg.data && rg.data.id) {
+              /* 04/11 23h20 : les chevaux de la Team, proposés en premier */
+              try {
+                var rgc = await supa.from("groupes_chevaux").select("cheval_id").eq("groupe_id", rg.data.id);
+                var idsGc = ((rgc && rgc.data) || []).map(function (x) { return x.cheval_id; }).filter(Boolean);
+                if (idsGc.length) { var rcg = await supa.from("chevaux").select("id, nom").in("id", idsGc).is("supprime_le", null); chevauxTeam = ((rcg && rcg.data) || []).map(function (c) { return { id: c.id, nom: c.nom, src: "team" }; }); }
+              } catch (eGc) { }
               var rm = await supa.from("groupes_membres").select("user_id").eq("groupe_id", rg.data.id);
               var idsT = ((rm && rm.data) || []).map(function (x) { return x.user_id; });
               if (idsT.length) { var rpt = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsT); ((rpt && rpt.data) || []).forEach(function (p) { ajouterP(p, "team"); }); }
@@ -792,12 +801,15 @@ function EcranEngagements() {
           var idsCl = (membres || []).map(function (p) { return p.id; }).concat(cand.map(function (p) { return p.id; }));
           if (idsCl.length) {
             var rc = await supa.from("chevaux").select("id, user_id, nom, club").in("user_id", idsCl.slice(0, 400)).is("supprime_le", null).limit(800);
-            var lc = (rc && rc.data) || [];
-            try { lc = hypeChevauxDuClub(lc, nomClub); } catch (eF) { }
-            lc.sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
-            if (vif) setChevaux(lc);
-          }
-        } catch (eCh) { }
+            var lc0 = (rc && rc.data) || [], lc = lc0;
+            try { lc = hypeChevauxDuClub(lc0, nomClub); } catch (eF) { }
+            if (!lc || !lc.length) lc = lc0;   /* filtre du club vide : on garde tous les chevaux des cavalières */
+            var vusC = {}; chevauxTeam.forEach(function (c) { vusC[c.id] = 1; });
+            var tout = chevauxTeam.concat((lc || []).filter(function (c) { return c && c.nom && !vusC[c.id]; }).map(function (c) { return { id: c.id, nom: c.nom, src: "club" }; }));
+            tout.sort(function (a, b) { return (a.src === b.src ? 0 : (a.src === "team" ? -1 : 1)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+            if (vif) setChevaux(tout);
+          } else if (chevauxTeam.length && vif) setChevaux(chevauxTeam);
+        } catch (eCh) { if (chevauxTeam.length && vif) setChevaux(chevauxTeam); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
     })();
     return function () { vif = false; };
@@ -887,6 +899,26 @@ function EcranEngagements() {
     return h("select", { value: v, "aria-label": F("Épreuve"), onChange: function (e) { poserL(i, k, e.target.value); } },
       h("option", { value: "" }, "—"), opts.map(function (o) { return h("option", { key: o, value: o }, o); }));
   }
+  /* 04/11 23h20 (Blandine : « on peut choisir une cavalière mais pas un cheval ? ») : vrai menu de chevaux,
+     ceux de la Team d'abord puis ceux du club ; « Autre cheval » ouvre une saisie libre. */
+  function selCh(i, n) {
+    var k = "cheval" + n + "_nom", v = lignes[i][k] || "", cle = i + "-" + n;
+    var connu = chevaux.some(function (c) { return c.nom === v; });
+    var libre = libres[cle] || (v && !connu);
+    var team = chevaux.filter(function (c) { return c.src === "team"; }), club = chevaux.filter(function (c) { return c.src !== "team"; });
+    if (libre) return h("div", { style: { display: "flex", gap: 6, minWidth: 0 } },
+      h("input", { type: "text", value: v, placeholder: F("Nom du cheval"), autoFocus: !!libres[cle] && !v, onChange: function (e) { poserL(i, k, e.target.value); }, style: { flex: 1, minWidth: 0 } }),
+      chevaux.length ? h("button", { type: "button", "aria-label": F("Revenir à la liste"), onClick: function () { var o = Object.assign({}, libres); delete o[cle]; setLibres(o); poserL(i, k, ""); }, style: { flex: "0 0 auto", width: 36, background: "none", border: "none", color: "#C9A66B", fontSize: 18, padding: 0 } }, "☰") : null);
+    return h("select", { value: v, "aria-label": F("Cheval"), onChange: function (e) {
+        var x = e.target.value;
+        if (x === "__autre") { var o = Object.assign({}, libres); o[cle] = true; setLibres(o); poserL(i, k, ""); return; }
+        poserL(i, k, x);
+      } },
+      h("option", { value: "" }, F("Cheval…")),
+      team.length ? h("optgroup", { label: F("Chevaux de l’équipe") }, team.map(function (c) { return h("option", { key: c.id, value: c.nom }, c.nom); })) : null,
+      club.length ? h("optgroup", { label: F("Chevaux du club") }, club.map(function (c) { return h("option", { key: c.id, value: c.nom }, c.nom); })) : null,
+      h("option", { value: "__autre" }, F("Autre cheval (taper son nom)")));
+  }
   var dejaLa = {}; lignes.forEach(function (l) { if (l.cavalier_id) dejaLa[l.cavalier_id] = true; });
   var restantes = candidates.filter(function (c) { return !dejaLa[c.id]; });
   var groupes = [{ k: "inscrite", l: F("Inscrites au concours") }, { k: "team", l: F("Team") }, { k: "club", l: F("Club") }];
@@ -913,7 +945,6 @@ function EcranEngagements() {
         h("button", { type: "button", className: "hs-btn", onClick: ajouterEpreuve }, F("Ajouter"))),
       /* 3. les couples */
       h("div", { className: "hs-sec" }, h("b", null, F("Les couples")), h("span", null, lignes.length ? String(lignes.length) : "")),
-      h("datalist", { id: "hs-chevaux" }, chevaux.map(function (c) { return h("option", { key: c.id, value: c.nom }); })),
       lignes.length ? h("div", { className: "hs-carte" }, lignes.map(function (l, i) {
         return h("div", { key: l.id || ("n" + i), className: "hs-couple" },
           h("div", { className: "hs-couple-t" }, h("b", null, l.nom || F("Nouvelle cavalière")),
@@ -922,9 +953,9 @@ function EcranEngagements() {
             h("div", { className: "hs-champ" }, h("label", null, F("Nom Prénom")), h("input", { type: "text", value: l.nom || "", placeholder: "NOM Prénom", onChange: function (e) { poserL(i, "nom", e.target.value); } })),
             h("div", { className: "hs-champ" }, h("label", null, F("Licence")), h("input", { type: "text", value: l.licence || "", autoCapitalize: "characters", onChange: function (e) { poserL(i, "licence", e.target.value); } }))),
           h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"))),
-          h("div", { className: "hs-ep" }, selEp(i, "epreuve1"), h("input", { type: "text", list: "hs-chevaux", value: l.cheval1_nom || "", placeholder: F("Cheval"), onChange: function (e) { poserL(i, "cheval1_nom", e.target.value); } })),
+          h("div", { className: "hs-ep" }, selEp(i, "epreuve1"), selCh(i, 1)),
           h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("2e épreuve et cheval (facultatif)"))),
-          h("div", { className: "hs-ep", style: { marginBottom: 0 } }, selEp(i, "epreuve2"), h("input", { type: "text", list: "hs-chevaux", value: l.cheval2_nom || "", placeholder: F("Cheval"), onChange: function (e) { poserL(i, "cheval2_nom", e.target.value); } })));
+          h("div", { className: "hs-ep", style: { marginBottom: 0 } }, selEp(i, "epreuve2"), selCh(i, 2)));
       })) : h("div", { className: "hs-vide" }, F("Aucune cavalière pour l’instant. Ajoute-les ci-dessous.")),
       h("div", { className: "hs-champ", style: { marginTop: 12 } }, h("label", null, F("Ajouter une cavalière")),
         h("select", { value: "", onChange: function (e) { ajouterCavaliere(e.target.value); } },
@@ -1336,7 +1367,7 @@ function EcranListeVan() {
   var PH = { propre: photoCheval || "images/concours-hero-bai-tresse.webp", cheval: "images/cours-g1-c17-seller.webp", moi: "images/securite-g1-tenue.webp" };
   var POS = { propre: "60% 30%", cheval: "60% 40%", moi: "40% 30%" };
   function rondCoche(x, i) {
-    return h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (x.f ? "#C9A66B" : "rgba(201,166,107,.6)"), background: x.f ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 12, padding: 0, lineHeight: 1 } }, x.f ? "✓" : "");
+    return h("button", { type: "button", "aria-pressed": x.f ? "true" : "false", onClick: function () { cocher(i); }, style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (x.f ? "#C9A66B" : "rgba(201,166,107,.6)"), background: "transparent", color: "#C9A66B", fontSize: 13, padding: 0, lineHeight: 1 } }, x.f ? "✓" : "");
   }
   function ligneFine(o, k) {
     var x = o.x; return h("div", { key: o.i, style: { display: "flex", alignItems: "center", gap: 12, padding: "7px 2px", minHeight: 40, borderTop: k ? "1px solid rgba(243,238,228,.07)" : "0" } },
