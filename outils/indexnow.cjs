@@ -11,7 +11,7 @@ const path = require("path");
 const RACINE = path.join(__dirname, "..");
 const HOTE = "2hype.fr";
 const CLE = "ea43c988173bea098e50f51776f66f50";
-const PLANS = ["sitemap-pages.xml", "sitemap-galops.xml", "sitemap-lexique.xml", "sitemap-departements.xml"];
+const PLANS = ["sitemap-pages.xml", "sitemap-galops.xml", "sitemap-lexique.xml", "sitemap-departements.xml", "sitemap-ecuries.xml" /* 04/11 20h : les 3 060 pages d'écuries */];
 function log() { console.log.apply(console, ["[indexnow]"].concat([].slice.call(arguments))); }
 
 function adresses() {

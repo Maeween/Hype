@@ -68,7 +68,7 @@ const TX: Record<Lg, Record<string, any>> = {
   fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
     descTel: "Téléphone, itinéraire, chevaux, résultats et agenda de l’écurie sur Hype.", desc: "Chevaux, résultats et agenda de l’écurie sur Hype.",
     descInvite: "Ton cheval est ici ? Crée sa fiche sur Hype : photos, origines, résultats en concours.",
-    adresse: "Adresse", tel: "Téléphone", email: "E-mail", site: "Site", horaires: "Horaires",
+    adresse: "Adresse", tel: "Téléphone", email: "E-mail", site: "Site", itin: "Itinéraire", horaires: "Horaires",
     nbCh: (n: number) => n + (n > 1 ? " chevaux" : " cheval"), nbRdv: (n: number) => n + " rendez-vous à venir", surHype: (t: string) => t + " sur Hype.", sep: " · ",
     sesChevaux: "Ses chevaux sur Hype", rdv: "Prochains rendez-vous", compte: "Crée ton compte Hype pour découvrir ses chevaux, ses résultats et son agenda.", contacter: "Contacter l’écurie",
     boxT: "Un box virtuel chez Hype ?", boxP: "Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.",
@@ -76,7 +76,7 @@ const TX: Record<Lg, Record<string, any>> = {
   en: { ecA: (v: string) => "Stable in " + v, ec: "Stable", ecAd: (v: string) => "stable in " + v, ecd: "stable",
     descTel: "Phone, directions, horses, results and calendar of the stable on Hype.", desc: "Horses, results and calendar of the stable on Hype.",
     descInvite: "Is your horse here? Create its profile on Hype: photos, pedigree, competition results.",
-    adresse: "Address", tel: "Phone", email: "Email", site: "Website", horaires: "Opening hours",
+    adresse: "Address", tel: "Phone", email: "Email", site: "Website", itin: "Directions", horaires: "Opening hours",
     nbCh: (n: number) => n + (n > 1 ? " horses" : " horse"), nbRdv: (n: number) => n + (n > 1 ? " upcoming events" : " upcoming event"), surHype: (t: string) => t + " on Hype.", sep: " · ",
     sesChevaux: "Its horses on Hype", rdv: "Upcoming events", compte: "Create your Hype account to discover its horses, results and calendar.", contacter: "Contact the stable",
     boxT: "A virtual stall at Hype?", boxP: "No straw to muck out here: just your horse’s profile, photos, competitions, memories and care… and other riders to share them with. Theory, tips and a virtual coach also support your progress.",
@@ -84,7 +84,7 @@ const TX: Record<Lg, Record<string, any>> = {
   es: { ecA: (v: string) => "Cuadra en " + v, ec: "Cuadra", ecAd: (v: string) => "cuadra en " + v, ecd: "cuadra",
     descTel: "Teléfono, cómo llegar, caballos, resultados y agenda de la cuadra en Hype.", desc: "Caballos, resultados y agenda de la cuadra en Hype.",
     descInvite: "¿Tu caballo está aquí? Crea su ficha en Hype: fotos, orígenes, resultados en concursos.",
-    adresse: "Dirección", tel: "Teléfono", email: "Correo", site: "Sitio web", horaires: "Horario",
+    adresse: "Dirección", tel: "Teléfono", email: "Correo", site: "Sitio web", itin: "Cómo llegar", horaires: "Horario",
     nbCh: (n: number) => n + (n > 1 ? " caballos" : " caballo"), nbRdv: (n: number) => n + (n > 1 ? " próximas citas" : " próxima cita"), surHype: (t: string) => t + " en Hype.", sep: " · ",
     sesChevaux: "Sus caballos en Hype", rdv: "Próximas citas", compte: "Crea tu cuenta Hype para descubrir sus caballos, sus resultados y su agenda.", contacter: "Contactar con la cuadra",
     boxT: "¿Un box virtual en Hype?", boxP: "Aquí no hay paja que sacar: solo la ficha de tu caballo, sus fotos, sus concursos, sus recuerdos y su seguimiento… y otros jinetes con quienes compartirlos. Teoría, consejos y un coach virtual también te acompañan en tu progreso.",
@@ -92,7 +92,7 @@ const TX: Record<Lg, Record<string, any>> = {
   it: { ecA: (v: string) => "Scuderia a " + v, ec: "Scuderia", ecAd: (v: string) => "scuderia a " + v, ecd: "scuderia",
     descTel: "Telefono, indicazioni, cavalli, risultati e agenda della scuderia su Hype.", desc: "Cavalli, risultati e agenda della scuderia su Hype.",
     descInvite: "Il tuo cavallo è qui? Crea la sua scheda su Hype: foto, origini, risultati in concorso.",
-    adresse: "Indirizzo", tel: "Telefono", email: "E-mail", site: "Sito", horaires: "Orari",
+    adresse: "Indirizzo", tel: "Telefono", email: "E-mail", site: "Sito", itin: "Indicazioni", horaires: "Orari",
     nbCh: (n: number) => n + (n > 1 ? " cavalli" : " cavallo"), nbRdv: (n: number) => n + (n > 1 ? " appuntamenti in arrivo" : " appuntamento in arrivo"), surHype: (t: string) => t + " su Hype.", sep: " · ",
     sesChevaux: "I suoi cavalli su Hype", rdv: "Prossimi appuntamenti", compte: "Crea il tuo account Hype per scoprire i suoi cavalli, i risultati e l’agenda.", contacter: "Contattare la scuderia",
     boxT: "Un box virtuale su Hype?", boxP: "Niente paglia da cambiare qui: solo la scheda del tuo cavallo, le sue foto, i concorsi, i ricordi e il suo monitoraggio… e altri cavalieri con cui condividerli. Teoria, consigli e coach virtuale ti accompagnano anche nei tuoi progressi.",
@@ -100,7 +100,7 @@ const TX: Record<Lg, Record<string, any>> = {
   de: { ecA: (v: string) => "Stall in " + v, ec: "Stall", ecAd: (v: string) => "Stall in " + v, ecd: "Stall",
     descTel: "Telefon, Anfahrt, Pferde, Ergebnisse und Termine des Stalls auf Hype.", desc: "Pferde, Ergebnisse und Termine des Stalls auf Hype.",
     descInvite: "Steht dein Pferd hier? Erstelle sein Profil auf Hype: Fotos, Abstammung, Turnierergebnisse.",
-    adresse: "Adresse", tel: "Telefon", email: "E-Mail", site: "Website", horaires: "Öffnungszeiten",
+    adresse: "Adresse", tel: "Telefon", email: "E-Mail", site: "Website", itin: "Route", horaires: "Öffnungszeiten",
     nbCh: (n: number) => n + (n > 1 ? " Pferde" : " Pferd"), nbRdv: (n: number) => n + (n > 1 ? " kommende Termine" : " kommender Termin"), surHype: (t: string) => t + " auf Hype.", sep: " · ",
     sesChevaux: "Seine Pferde auf Hype", rdv: "Nächste Termine", compte: "Erstelle dein Hype-Konto, um seine Pferde, Ergebnisse und Termine zu entdecken.", contacter: "Stall kontaktieren",
     boxT: "Eine virtuelle Box bei Hype?", boxP: "Hier muss kein Stroh gemistet werden: nur das Profil deines Pferdes, seine Fotos, Turniere, Erinnerungen und seine Betreuung… und andere Reiter, mit denen du sie teilst. Theorie, Tipps und ein virtueller Coach begleiten dich außerdem bei deinen Fortschritten.",
@@ -108,7 +108,7 @@ const TX: Record<Lg, Record<string, any>> = {
   ja: { ecA: (v: string) => v + "の厩舎", ec: "厩舎", ecAd: (v: string) => v + "の厩舎", ecd: "厩舎",
     descTel: "電話、アクセス、馬、成績、予定をHypeで。", desc: "馬、成績、予定をHypeで。",
     descInvite: "あなたの馬はここにいますか？ Hypeでプロフィールを作りましょう：写真、血統、競技成績。",
-    adresse: "住所", tel: "電話", email: "メール", site: "ウェブサイト", horaires: "営業時間",
+    adresse: "住所", tel: "電話", email: "メール", site: "ウェブサイト", itin: "ルート", horaires: "営業時間",
     nbCh: (n: number) => "馬" + n + "頭", nbRdv: (n: number) => "今後の予定" + n + "件", surHype: (t: string) => t + "（Hype）", sep: "・",
     sesChevaux: "Hypeに登録された馬", rdv: "今後の予定", compte: "Hypeのアカウントを作成すると、この厩舎の馬、成績、予定が見られます。", contacter: "厩舎への連絡",
     boxT: "Hypeにバーチャル馬房を？", boxP: "ここでは寝わらの掃除はいりません。愛馬のプロフィール、写真、大会、思い出、日々のケア…そしてそれを分かち合う仲間のライダーたち。理論、アドバイス、バーチャルコーチがあなたの上達もサポートします。",
@@ -116,7 +116,7 @@ const TX: Record<Lg, Record<string, any>> = {
   ar: { ecA: (v: string) => "إسطبل في " + v, ec: "إسطبل", ecAd: (v: string) => "إسطبل في " + v, ecd: "إسطبل",
     descTel: "الهاتف والاتجاهات والخيول والنتائج وأجندة الإسطبل على Hype.", desc: "الخيول والنتائج وأجندة الإسطبل على Hype.",
     descInvite: "هل حصانك هنا؟ أنشئ ملفه على Hype: الصور، النسب، نتائج المسابقات.",
-    adresse: "العنوان", tel: "الهاتف", email: "البريد الإلكتروني", site: "الموقع", horaires: "المواعيد",
+    adresse: "العنوان", tel: "الهاتف", email: "البريد الإلكتروني", site: "الموقع", itin: "الاتجاهات", horaires: "المواعيد",
     nbCh: (n: number) => "الخيول: " + n, nbRdv: (n: number) => "المواعيد القادمة: " + n, surHype: (t: string) => t + " على Hype.", sep: " · ",
     sesChevaux: "خيوله على Hype", rdv: "المواعيد القادمة", compte: "أنشئ حسابك على Hype لتكتشف خيوله ونتائجه وأجندته.", contacter: "التواصل مع الإسطبل",
     boxT: "مربط افتراضي في Hype؟", boxP: "لا قش لتنظيفه هنا: فقط ملف حصانك وصوره ومسابقاته وذكرياته ومتابعته… وفرسان آخرون تشاركهم إياها. وترافقك أيضًا النظرية والنصائح والمدرب الافتراضي في تقدّمك.",
@@ -124,7 +124,7 @@ const TX: Record<Lg, Record<string, any>> = {
   zh: { ecA: (v: string) => v + "的马厩", ec: "马厩", ecAd: (v: string) => v + "的马厩", ecd: "马厩",
     descTel: "电话、路线、马匹、比赛成绩和日程，尽在Hype。", desc: "马匹、比赛成绩和日程，尽在Hype。",
     descInvite: "你的马在这里吗？在Hype上为它建立档案：照片、血统、比赛成绩。",
-    adresse: "地址", tel: "电话", email: "邮箱", site: "网站", horaires: "营业时间",
+    adresse: "地址", tel: "电话", email: "邮箱", site: "网站", itin: "路线", horaires: "营业时间",
     nbCh: (n: number) => "马匹" + n + "匹", nbRdv: (n: number) => "即将举行的活动" + n + "场", surHype: (t: string) => t + "（Hype）", sep: "，",
     sesChevaux: "他在Hype上的马匹", rdv: "近期活动", compte: "创建你的Hype账户，查看这家马厩的马匹、成绩和日程。", contacter: "联系马厩",
     boxT: "在Hype上拥有一间虚拟马房？", boxP: "这里不用铲马粪：只有你爱马的档案、照片、比赛、回忆和日常照料……还有可以一起分享的其他骑手。理论课程、小贴士和虚拟教练也会陪你一路进步。",
@@ -132,7 +132,7 @@ const TX: Record<Lg, Record<string, any>> = {
   nl: { ecA: (v: string) => "Stal in " + v, ec: "Stal", ecAd: (v: string) => "stal in " + v, ecd: "stal",
     descTel: "Telefoon, route, paarden, resultaten en agenda van de stal op Hype.", desc: "Paarden, resultaten en agenda van de stal op Hype.",
     descInvite: "Staat jouw paard hier? Maak zijn profiel aan op Hype: foto's, afstamming, wedstrijdresultaten.",
-    adresse: "Adres", tel: "Telefoon", email: "E-mail", site: "Website", horaires: "Openingstijden",
+    adresse: "Adres", tel: "Telefoon", email: "E-mail", site: "Website", itin: "Route", horaires: "Openingstijden",
     nbCh: (n: number) => n + (n > 1 ? " paarden" : " paard"), nbRdv: (n: number) => n + (n > 1 ? " komende afspraken" : " komende afspraak"), surHype: (t: string) => t + " op Hype.", sep: " · ",
     sesChevaux: "Zijn paarden op Hype", rdv: "Komende afspraken", compte: "Maak je Hype-account aan om de paarden, resultaten en agenda van deze stal te ontdekken.", contacter: "Contact opnemen met de stal",
     boxT: "Een virtuele box op Hype?", boxP: "Hier hoef je niet uit te mesten: alleen het profiel van je paard, zijn foto's, wedstrijden, herinneringen en verzorging… en andere ruiters met wie je het deelt. Theorie, tips en een virtuele coach helpen je bovendien vooruit.",
@@ -140,7 +140,7 @@ const TX: Record<Lg, Record<string, any>> = {
   pt: { ecA: (v: string) => "Cocheira em " + v, ec: "Cocheira", ecAd: (v: string) => "cocheira em " + v, ecd: "cocheira",
     descTel: "Telefone, rota, cavalos, resultados e agenda da cocheira no Hype.", desc: "Cavalos, resultados e agenda da cocheira no Hype.",
     descInvite: "Seu cavalo está aqui? Crie o perfil dele no Hype: fotos, genealogia, resultados de provas.",
-    adresse: "Endereço", tel: "Telefone", email: "E-mail", site: "Site", horaires: "Horários",
+    adresse: "Endereço", tel: "Telefone", email: "E-mail", site: "Site", itin: "Rota", horaires: "Horários",
     nbCh: (n: number) => n + (n > 1 ? " cavalos" : " cavalo"), nbRdv: (n: number) => n + (n > 1 ? " compromissos futuros" : " compromisso futuro"), surHype: (t: string) => t + " no Hype.", sep: " · ",
     sesChevaux: "Os cavalos dela no Hype", rdv: "Próximos compromissos", compte: "Crie sua conta no Hype para descobrir os cavalos, os resultados e a agenda desta cocheira.", contacter: "Entrar em contato com a cocheira",
     boxT: "Uma baia virtual no Hype?", boxP: "Aqui não precisa limpar baia: só o perfil do seu cavalo, as fotos, as provas, as lembranças e os cuidados… e outros cavaleiros para compartilhar tudo isso. Teoria, dicas e um treinador virtual ainda ajudam você a evoluir.",
@@ -148,7 +148,7 @@ const TX: Record<Lg, Record<string, any>> = {
   sv: { ecA: (v: string) => "Stall i " + v, ec: "Stall", ecAd: (v: string) => "stall i " + v, ecd: "stall",
     descTel: "Telefon, vägbeskrivning, hästar, resultat och agenda för stallet på Hype.", desc: "Hästar, resultat och agenda för stallet på Hype.",
     descInvite: "Står din häst här? Skapa dess profil på Hype: foton, härstamning, tävlingsresultat.",
-    adresse: "Adress", tel: "Telefon", email: "E-post", site: "Webbplats", horaires: "Öppettider",
+    adresse: "Adress", tel: "Telefon", email: "E-post", site: "Webbplats", itin: "Vägbeskrivning", horaires: "Öppettider",
     nbCh: (n: number) => n + (n > 1 ? " hästar" : " häst"), nbRdv: (n: number) => n + " kommande evenemang", surHype: (t: string) => t + " på Hype.", sep: " · ",
     sesChevaux: "Stallets hästar på Hype", rdv: "Kommande evenemang", compte: "Skapa ditt Hype-konto för att upptäcka stallets hästar, resultat och agenda.", contacter: "Kontakta stallet",
     boxT: "En virtuell box på Hype?", boxP: "Här behöver du inte mocka: bara din hästs profil, foton, tävlingar, minnen och uppföljning … och andra ryttare att dela dem med. Teori, tips och en virtuell coach hjälper dig också att utvecklas.",
@@ -156,7 +156,7 @@ const TX: Record<Lg, Record<string, any>> = {
   ru: { ecA: (v: string) => "Конюшня: " + v, ec: "Конюшня", ecAd: (v: string) => "конюшня: " + v, ecd: "конюшня",
     descTel: "Телефон, маршрут, лошади, результаты и афиша конюшни на Hype.", desc: "Лошади, результаты и афиша конюшни на Hype.",
     descInvite: "Твоя лошадь здесь? Создай её профиль на Hype: фото, родословная, результаты соревнований.",
-    adresse: "Адрес", tel: "Телефон", email: "E-mail", site: "Сайт", horaires: "Часы работы",
+    adresse: "Адрес", tel: "Телефон", email: "E-mail", site: "Сайт", itin: "Маршрут", horaires: "Часы работы",
     nbCh: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "лошадь" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "лошади" : "лошадей"), nbRdv: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "предстоящее событие" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "предстоящих события" : "предстоящих событий"), surHype: (t: string) => t + " на Hype.", sep: " · ",
     sesChevaux: "Лошади конюшни на Hype", rdv: "Ближайшие события", compte: "Создай аккаунт Hype, чтобы увидеть лошадей этой конюшни, их результаты и афишу.", contacter: "Связаться с конюшней",
     boxT: "Виртуальный денник в Hype?", boxP: "Убирать денник здесь не нужно: только профиль твоей лошади, её фото, соревнования, воспоминания и уход… и другие всадники, с которыми всем этим можно поделиться. Теория, советы и виртуальный тренер тоже помогут тебе прогрессировать.",
@@ -164,7 +164,7 @@ const TX: Record<Lg, Record<string, any>> = {
   pl: { ecA: (v: string) => "Stajnia: " + v, ec: "Stajnia", ecAd: (v: string) => "stajnia: " + v, ecd: "stajnia",
     descTel: "Telefon, dojazd, konie, wyniki i terminarz stajni w Hype.", desc: "Konie, wyniki i terminarz stajni w Hype.",
     descInvite: "Twój koń jest tutaj? Załóż jego profil w Hype: zdjęcia, rodowód, wyniki zawodów.",
-    adresse: "Adres", tel: "Telefon", email: "E-mail", site: "Strona internetowa", horaires: "Godziny otwarcia",
+    adresse: "Adres", tel: "Telefon", email: "E-mail", site: "Strona internetowa", itin: "Dojazd", horaires: "Godziny otwarcia",
     nbCh: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "koń" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "konie" : "koni"), nbRdv: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "nadchodzące wydarzenie" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "nadchodzące wydarzenia" : "nadchodzących wydarzeń"), surHype: (t: string) => t + " w Hype.", sep: " · ",
     sesChevaux: "Konie ze stajni w Hype", rdv: "Najbliższe wydarzenia", compte: "Załóż konto w Hype, aby zobaczyć konie tej stajni, ich wyniki i terminarz.", contacter: "Skontaktuj się ze stajnią",
     boxT: "Wirtualny boks w Hype?", boxP: "Nie musisz tu sprzątać boksu: jest tylko profil twojego konia, jego zdjęcia, zawody, wspomnienia i opieka… oraz inni jeźdźcy, z którymi możesz się tym dzielić. Teoria, wskazówki i wirtualny trener też pomogą ci robić postępy.",
@@ -172,7 +172,7 @@ const TX: Record<Lg, Record<string, any>> = {
   ko: { ecA: (v: string) => v + " 마구간", ec: "마구간", ecAd: (v: string) => v + " 마구간", ecd: "마구간",
     descTel: "마구간의 전화번호, 찾아가는 길, 말, 성적, 일정을 Hype에서 확인해요.", desc: "마구간의 말, 성적, 일정을 Hype에서 확인해요.",
     descInvite: "내 말이 여기 있나요? Hype에서 프로필을 만들어 보세요: 사진, 혈통, 대회 성적.",
-    adresse: "주소", tel: "전화", email: "이메일", site: "웹사이트", horaires: "운영 시간",
+    adresse: "주소", tel: "전화", email: "이메일", site: "웹사이트", itin: "길찾기", horaires: "운영 시간",
     nbCh: (n: number) => n + "마리", nbRdv: (n: number) => "예정된 일정 " + n + "건", surHype: (t: string) => t + " (Hype)", sep: " · ",
     sesChevaux: "이 마구간의 말", rdv: "다가오는 일정", compte: "Hype 계정을 만들면 이 마구간의 말, 성적, 일정을 볼 수 있어요.", contacter: "마구간에 문의하기",
     boxT: "Hype에 가상 마방이 있다면?", boxP: "여기서는 마방을 치울 필요가 없어요. 내 말의 프로필, 사진, 대회, 추억, 관리 기록만 있으면 돼요. 그리고 함께 나눌 다른 기수들도 있고요. 이론, 조언, 가상 코치도 실력이 늘도록 도와줘요.",
@@ -405,6 +405,11 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     if (propre(ec.t)) contact.push(t.tel + t.dp + texte(ec.t));
     if (propre(ec.s)) contact.push(`${t.site}${t.dp}<a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
   }
+  /* 04/11 (Blandine « ok ») : itinéraire vers l'écurie, comme le bouton « Itinéraire » de la page Écurie de l'appli (mêmes règles) */
+  let itin = "";
+  if (cs && propre(cs.adresse)) itin = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(nom + " " + propre(cs.adresse));
+  else if (typeof ec.la === "number" && typeof ec.lo === "number") itin = "https://www.google.com/maps/dir/?api=1&destination=" + ec.la + "," + ec.lo;
+  if (itin && ec.x !== 1) contact.push(`<a href="${echapper(itin)}" rel="nofollow noopener">${t.itin}</a>`);
   const contactLiens = contact;   /* (861) affichées plus bas, sous « Contacter l’écurie » (comme dans l'appli) */
 
   /* 10/10 (861) VITRINE : Google lit EXACTEMENT ce que voit un visiteur sans compte (sinon il y voit une tromperie) :
@@ -448,6 +453,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     if (ville) adr.addressLocality = ville.replace(/\s*\([^)]*\)\s*$/, "");   // « Itteville (91) » → « Itteville »
     lieu.address = adr;
     if (typeof ec.la === "number" && typeof ec.lo === "number") lieu.geo = { "@type": "GeoCoordinates", latitude: ec.la, longitude: ec.lo };
+    if (itin) lieu.hasMap = itin;   /* 04/11 : le lien vers la carte (itinéraire) */
     const tel = cs ? propre(cs.tel) : propre(ec.t);
     if (tel) lieu.telephone = tel;
     const site = cs ? propre(cs.site) : propre(ec.s);
