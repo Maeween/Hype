@@ -3,11 +3,17 @@
 RÈGLE (Blandine, 04/11) : à chaque chose terminée, la retirer de cette liste, et lui dire quel est le point suivant le plus prioritaire. Les nouvelles tâches s'ajoutent ici, au bon niveau. Le détail de chaque point reste dans le journal plus bas.
 
 ## 1. Urgent : ce qui bloque ou qui est cassé
+- **La comptabilité de l'association** (demandé par Blandine le 04/11, en tête des urgences) : faire le bilan depuis 2020 avec la banque Qonto, savoir ce qui peut être demandé en cas de contrôle, puis mettre les choses en ordre. Une autre conversation y avait commencé à travailler.
 - **Les mails d'inscription et de « mot de passe oublié ».** Ils passent encore par le petit service d'envoi de base. Il n'envoie que quelques mails par heure, donc certains nouveaux inscrits ne reçoivent rien. Il faut brancher un vrai service d'envoi de mails.
 - **Une clé d'accès très puissante est encore active.** Il faudra la supprimer une fois les mails réglés. C'est toi qui le fais, je te guiderai.
 - **Les 23 vidéos ajoutées aujourd'hui dans la Vidéothèque.** Elles sont ouvertes à tous sans avoir été testées sur iPhone. Il faut vérifier qu'elles se lisent bien.
 
 ## 2. Important : à faire bientôt
+- **Finaliser la page Vidéothèque.**
+- **Finaliser la page Compétition.**
+- **Les résultats de concours en direct :** un outil pour les mettre en ligne tout de suite, pendant le concours.
+- **La feuille des engagements**, à remplir depuis toutes les pages de groupe.
+- **Une page de groupe toute prête**, la même pour tout le monde, que chaque écurie peut ensuite adapter si elle le souhaite.
 - **Choisir un médiateur de la consommation pour l'association**, puis compléter les conditions de vente. C'est obligatoire pour vendre des abonnements aux particuliers.
 - **Récupérer l'argent bloqué sur l'ancien compte Stripe « Feinn ».** Il faut y mettre le RIB de l'association et refaire la vérification d'identité dans Safari. Demander aussi à un comptable pour la TVA.
 - **Un lien partagé vers une vidéo ouvre l'accueil de la Vidéothèque** au lieu de la vidéo.
@@ -64,7 +70,6 @@ RÈGLE (Blandine, 04/11) : à chaque chose terminée, la retirer de cette liste,
 - **Cours des Galops 8 et 9.**
 - **Contenu à créer :**
   - les « Exercices pratiques » ;
-  - une page d'équipe que chaque écurie peut remplir ;
   - les conseils du coach pour la reprise Amateur 3 Grand Prix.
 - **Une vraie voix enregistrée** pour la lecture des cours.
 - **Photos à changer plus tard :** Vie équestre, le Mag, l'œil de la page d'entrée, le haut de la page Galops, l'association FEINN, la couverture de la page Écurie.
