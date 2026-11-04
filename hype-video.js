@@ -1204,7 +1204,9 @@
   /* Onglets « serrés » (04/11 09h26, Blandine : « tous horizontaux serrés comme c'était prévu au début ») :
      les 8 onglets tiennent sur une seule ligne, sans défilement ; « Galop » en petit au-dessus du numéro,
      « Prochainement » remplacé par un onglet atténué. Proposition, en attente de validation. */
-  var ONGLETS_SERRES = false;
+  var ONGLETS_SERRES = false;   /* 04/11 09h30 : refusé par Blandine (« moche ») */
+  /* Bloc « Choisis ton Galop » de la maquette (seuls les Galops qui ont des vidéos, sur une ligne). */
+  var CHOIX_GALOP_MAQUETTE = true;
   var TRAITEMENT_PHOTO = { actif: true, filtre: "saturate(.92) contrast(1.05) brightness(.95) sepia(.07)", bords: .5 };
 
   /* Onglets des Galops. « 7+ » regroupe les Galops 7, 8 et 9. */
@@ -1275,6 +1277,19 @@
     ".hv2-o4 .hv2-og{border-radius:14px;background:linear-gradient(160deg,rgba(243,238,228,.12),rgba(243,238,228,.025));border-color:rgba(243,238,228,.16);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 22px -14px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07)}",
     ".hv2-o4 .hv2-og.on{background:linear-gradient(160deg,rgba(243,238,228,.24),rgba(201,166,107,.10));border-color:rgba(243,238,228,.55);box-shadow:0 12px 24px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.14)}",
     ".hv2-og-court{display:none}",
+    ".hv2-choix{margin-top:22px}",
+    ".hv2-choix-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}",
+    ".hv2-tous{min-height:40px;padding:7px 20px;border-radius:999px;border:1px solid rgba(243,238,228,.18);background:linear-gradient(180deg,rgba(16,29,34,.7),rgba(7,10,8,.5));color:var(--hv-iv);font-size:14px;box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}",
+    ".hv2-tous.on{border-color:var(--hv-ch)}",
+    ".hv2-choix-rang{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}",
+    ".hv2-choix-plus{margin-top:7px;animation:hv2Deroule .25s ease-out}",
+    "@keyframes hv2Deroule{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}",
+    ".hv2-cg:disabled{opacity:.42}",
+    ".hv2-cg-plus span{color:var(--hv-ch)}.hv2-cg-plus.ouvert{border-color:rgba(201,166,107,.45)}",
+    ".hv2-cg{width:100%;min-width:0;min-height:62px;padding:9px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center}",
+    ".hv2-cg b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:17px;line-height:1.1;color:var(--hv-iv);white-space:nowrap}",
+    ".hv2-cg span{font-size:10px;letter-spacing:.03em;color:var(--hv-iv2);margin-top:4px;white-space:nowrap}",
+    "@media (min-width:700px){.hv2-choix-rang{gap:12px}.hv2-choix-plus{margin-top:12px}.hv2-cg b{font-size:22px}}",
     ".hv2-serre .hv2-onglets{overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0;gap:5px}",
     ".hv2-serre .hv2-og{flex:1 1 0;min-width:0;padding:6px 2px;min-height:52px;border-radius:11px}",
     ".hv2-serre .hv2-og-long,.hv2-serre .hv2-og small{display:none}",
@@ -1396,6 +1411,7 @@
     var so = React.useState(!!retour0.rq); var rechOuverte = so[0], setRechOuverte = so[1];
     var sm = React.useState(retour0.onglet || "fav"); var onglet = sm[0], setOnglet = sm[1];
     var mo = React.useState(false); var estModo = mo[0], setEstModo = mo[1];
+    var spl = React.useState(false); var plusOuvert = spl[0], setPlusOuvert = spl[1];
     var refRech = React.useRef(null);
 
     React.useEffect(function () {
@@ -1588,6 +1604,38 @@
     /* onglets des Galops : disponibilités calculées sur le catalogue réel ; dans une page de thème,
        seulement les vidéos de ce thème (04/11, Blandine : « ajoute les onglets dans les pages à thème ») */
     var TXT_BIENTOT = T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개");
+    /* 04/11 09h31 (Blandine, maquette d'origine à l'appui) : « Choisis ton Galop » avec la pastille
+       « Tous » à droite, puis les SEULS Galops qui ont des vidéos, côte à côte sur une ligne (Galop 1 ·
+       7 vidéos…), sans onglets « Prochainement » ; uniquement sur la première page. Un Galop qui reçoit
+       des vidéos apparaît tout seul. */
+    function choixGalop() {
+      /* 04/11 09h32 (Blandine) : 4 cases sur une ligne — Galop 1, 2, 3, puis « Galop 4 et + » qui
+         déroule une 2e ligne (Galop 4, 5, 6, 7 et +) quand on la touche. Galop sans vidéo : atténué,
+         « Prochainement », non activable. */
+      function caseGalop(k) {
+        var n = dispo.filter(function (v) { return galopOk(v, k); }).length;
+        var on = galop === k;
+        return h("button", { key: String(k), className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, disabled: !n, "aria-disabled": !n,
+          onClick: function () { if (n) setGalop(on ? "tous" : k); } },
+          h("b", null, k === "7+" ? T("Galop 7+", "Level 7+", "Galop 7+", "Galop 7+", "ガロー 7+", "Galopp 7+", "الغالوب +7", "Galop 7+", "Galop 7+", "Galop 7+", "Galop 7+", "Galop 7+", "Galop 7+", "Galop 7+") : nomOnglet(k)),
+          h("span", null, n ? nbVideos(n) : T("Bientôt", "Soon", "Pronto", "Presto", "近日", "Bald", "قريبا", "即将", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧")));
+      }
+      var haut = ONGLETS_GALOPS.filter(function (k) { return k !== "tous" && (k === "7+" || k >= 4); });
+      var deroule = plusOuvert || haut.indexOf(galop) >= 0;
+      var nHaut = dispo.filter(function (v) { return (v.galop || 0) >= 4; }).length;
+      var btnPlus = h("button", {
+        key: "plus", className: "hv2-og hv2-cg hv2-cg-plus" + (deroule ? " ouvert" : ""), "aria-expanded": deroule, "aria-controls": "hv2-choix-plus",
+        onClick: function () { setPlusOuvert(!deroule); if (deroule && haut.indexOf(galop) >= 0) setGalop("tous"); }
+      },
+        h("b", null, deroule ? T("Moins", "Less", "Menos", "Meno", "閉じる", "Weniger", "أقل", "收起", "Minder", "Menos", "Mindre", "Свернуть", "Mniej", "접기") : T("Galop 4+", "Level 4+", "Galop 4+", "Galop 4+", "ガロー 4+", "Galopp 4+", "الغالوب +4", "Galop 4+", "Galop 4+", "Galop 4+", "Galop 4+", "Galop 4+", "Galop 4+", "Galop 4+")),
+        h("span", null, deroule ? "\u25B4" : (T("Voir plus", "See more", "Ver más", "Vedi altro", "もっと見る", "Mehr", "المزيد", "更多", "Meer", "Ver mais", "Visa mer", "Ещё", "Więcej", "더 보기") + " \u25BE")));
+      return h("div", { className: "hv2-choix" },
+        h("div", { className: "hv2-choix-tete" },
+          h("h2", { className: "hv2-h2", style: { margin: 0 } }, T("Choisis ton Galop", "Choose your level", "Elige tu Galop", "Scegli il tuo Galop", "ガローを選ぼう", "Wähle deinen Galopp", "اختاري مستواك في الغالوب", "选择你的 Galop", "Kies je Galop", "Escolha seu Galop", "Välj din Galop", "Выбери свой уровень Galop", "Wybierz swój poziom Galop", "나의 Galop 선택")),
+          h("button", { className: "hv2-tous" + (galop === "tous" ? " on" : ""), "aria-pressed": galop === "tous", onClick: function () { setGalop("tous"); } }, nomOnglet("tous"))),
+        h("div", { className: "hv2-choix-rang" }, [1, 2, 3].map(caseGalop).concat([btnPlus])),
+        deroule ? h("div", { className: "hv2-choix-rang hv2-choix-plus", id: "hv2-choix-plus" }, haut.map(caseGalop)) : null);
+    }
     function ongletsGalops(themeK) {
       return h("div", {
         className: "hv2-onglets", role: "tablist",
@@ -1628,7 +1676,7 @@
           alt: L(phT.alt, langue), titre: nomTheme(theme), sous: nomGalopSel() + " · " + nbVideos(vsT.length),
           retour: boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); })
         }),
-        h("div", { className: "hv2-in" }, ongletsGalops(theme),
+        h("div", { className: "hv2-in" }, CHOIX_GALOP_MAQUETTE ? null : ongletsGalops(theme),
           h("div", { className: "hv2-liste", style: { marginTop: 20 } }, vsT.map(ligne))));
     }
 
@@ -1702,7 +1750,7 @@
               h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.", "조건에 맞는 영상이 아직 없어요.")),
               h("p", null, T("Essaie un autre mot.", "Try another word.", "Prueba otra palabra.", "Prova un'altra parola.", "別の言葉で試してみて。", "Versuche ein anderes Wort.", "جربي كلمة أخرى.", "换个词试试。", "Probeer een ander woord.", "Tente outra palavra.", "Prova ett annat ord.", "Попробуй другое слово.", "Spróbuj innego słowa.", "다른 단어로 검색해 보세요."))));
     } else {
-      var onglets = ongletsGalops(null);
+      var onglets = CHOIX_GALOP_MAQUETTE ? choixGalop() : ongletsGalops(null);
       /* thèmes : compteurs pour le Galop choisi, thèmes vides masqués */
       var themesVis = THEMES_ORDRE.map(function (k) {
         return { k: k, n: dispo.filter(function (v) { return v.theme === k && galopOk(v, galop); }).length };
