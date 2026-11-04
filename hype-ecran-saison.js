@@ -583,6 +583,13 @@ function EcranConcours() {
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" },
     hero,
     h("div", { className: "hs-in" },
+      /* 04/11 23h25 (Blandine : « pas intuitif, 4 fois que je m'y reprends ») : les outils de la coach EN HAUT de la fiche */
+      gestion ? h("div", null,
+        h("div", { className: "hs-sec" }, h("b", null, F("Pour la coach"))),
+        h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, F("Engagements et feuille SEP")),
+        h("div", { className: "hs-duo" },
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier")))) : null,
       /* infos pratiques */
       h("div", { className: "hs-sec" }, h("b", null, F("Infos pratiques"))),
       h("div", { className: "hs-carte" },
@@ -674,15 +681,7 @@ function EcranConcours() {
       ev.description ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ce qu’il faut savoir"))),
         h("div", { className: "hs-carte" }, h("div", { className: "hs-texte" }, ev.description))) : null,
-      /* coach */
-      gestion ? h("div", null,
-        h("div", { className: "hs-sec" }, h("b", null, F("Pour la coach"))),
-        h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, F("Engagements et feuille SEP")),
-        h("div", { className: "hs-duo" },
-          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
-          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier"))),
-        h("div", { style: { height: 8 } })) : null,
-      h("div", { style: { marginTop: gestion ? 0 : 22 } },
+      h("div", { style: { marginTop: 22 } },
         h("button", { type: "button", className: "hs-btn doux", onClick: ficheComplete }, gestion ? F("Fiche complète : fil, photos, modifier") : F("Fiche complète : fil et photos"))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }

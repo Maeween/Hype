@@ -779,6 +779,17 @@ function EcranEvenementPasse() {
           rc ? h("div", { className: "med" }, rc) : null);
       })) : null,
 
+    /* 04/11 23h25 (Blandine : « ça fait 4 fois que je m'y reprends pour passer les engagements sur le concours de Versailles,
+       je tombe sur cette page et j'arrive pas à retrouver la bonne page ») : sur un CONCOURS, porte directe vers le Centre de
+       compétition (engagements, feuille SEP, jour J, liste du van, dossier). Visible par la modératrice seulement, comme le Centre. */
+    (ev && String(ev.type || "") === "concours" && moiEv && (typeof estModerateurHype === "function") && estModerateurHype(moiEv)) ? h("div", { style: { padding: "18px 18px 0" } },
+      h("button", { type: "button", onClick: function () { try { window.__concoursId = ev.id; window.__engagementsId = ev.id; window.__concoursPhoto = null; localStorage.setItem("hype_concours_ouvert", String(ev.id)); } catch (eC) { } setEcran("concours"); },
+        style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, width: "100%", minHeight: 64, padding: "12px 16px", borderRadius: 16, border: "1px solid #C9A66B", background: "linear-gradient(180deg,rgba(28,34,38,.92),rgba(12,16,18,.92))", color: "#F3EEE4", textAlign: "left", cursor: "pointer" } },
+        h("span", { style: { display: "flex", flexDirection: "column", gap: 3 } },
+          h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, lineHeight: 1.1 } }, "Centre de compétition"),
+          h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(243,238,228,.7)" } }, "Engagements et feuille SEP, jour J, liste du van, dossier")),
+        h("span", { style: { color: "#C9A66B", fontSize: 22 } }, "\u203a"))) : null,
+
     /* Le fil du rendez-vous : commentaires et publication, comme dans la carte. */
     h("div", { style: { padding: "26px 0 0" } },
       /* 18/09 (234) - « PUBLICATIONS & COMMENTAIRES ». Sa maquette prevoyait DEUX sections ;

@@ -17005,3 +17005,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
   ⚠ Conséquence : les notifications « heure de passage » envoyées depuis Jour J mènent les cavalières vers « Bientôt disponible » tant que c'est fermé.
 - « CONCOURS INTROUVABLE » EN REVENANT : quand l'iPhone relance Hype, le concours ouvert (gardé en mémoire vive) était perdu. Il est maintenant aussi noté sur le téléphone (localStorage « hype_concours_ouvert », et la vidéo ouverte « hype_video_parcours ») et relu s'il manque.
 - Fichiers : hype-ecran-saison.js (v12), hype-ecran-team.js (v4), index.html (build 20261105-0035), SUIVI.md.
+
+## 04/11/2026 23h30 — PUBLICATION build 20261105-0045 (Blandine 23h20 : « c'est pas intuitif, ça fait 4 fois que je m'y reprends pour passer les engagements sur le concours de Versailles ; je tombe sur cette page et j'arrive même pas à retrouver la bonne page », capture de la page souvenirs du CSO Versailles)
+- Page du rendez-vous (hype-ecran-evenement-passe.js, celle de la capture) : sur un CONCOURS, grande carte « Centre de compétition — Engagements et feuille SEP, jour J, liste du van, dossier » sous l'en-tête, qui ouvre la fiche du concours. Visible par la modératrice seulement (comme le Centre).
+- Fiche concours : le bloc « Pour la coach » (Engagements et feuille SEP, Jour J, Le dossier) passe TOUT EN HAUT, avant les infos pratiques, au lieu du bas de page.
+- Fichiers : hype-ecran-saison.js, hype-ecran-evenement-passe.js, index.html (build 20261105-0045), SUIVI.md.
