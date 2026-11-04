@@ -333,7 +333,7 @@
         de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt.", ar: "أن يراك، ثم أن يسمعك، ثم أن تلمسيه: ترتيب الحركات الذي يمنع الحصان من الفزع.", zh: "让它看见你，让它听见你，然后再触摸：这一连串动作的顺序，能让马不被吓到。", nl: "Je laten zien, je laten horen en dan pas aanraken: de volgorde van handelingen waardoor een paard niet schrikt.", pt: "Fazer-se ver, fazer-se ouvir e só então tocar: a ordem dos gestos que evita que o cavalo se assuste.", sv: "Bli sedd, bli hörd, rör sedan vid hästen: ordningen på rörelserna som gör att en häst inte rycker till.", ru: "Дать себя увидеть, дать себя услышать, а потом коснуться: порядок действий, при котором лошадь не вздрагивает.", pl: "Pokaż się, odezwij się, potem dotknij: kolejność gestów, dzięki której koń się nie płoszy.", ko: "모습을 보이고, 소리를 들려주고, 그다음에 만지기. 말이 깜짝 놀라지 않게 하는 동작의 순서예요."
       },
       observer: {
-        fr: ["La position du cavalier par rapport a l'œil du cheval", "La voix avant la main", "Le premier point de contact sur l'encolure", "Le changement de cote"],
+        fr: ["La position du cavalier par rapport à l'œil du cheval", "La voix avant la main", "Le premier point de contact sur l'encolure", "Le changement de côté"],
         en: ["Where the rider stands in relation to the horse's eye", "Voice before hand", "The first point of contact on the neck", "Changing sides"],
         es: ["La posición del jinete respecto al ojo del caballo", "La voz antes que la mano", "El primer punto de contacto en el cuello", "El cambio de lado"],
         it: ["La posizione del cavaliere rispetto all'occhio del cavallo", "La voce prima della mano", "Il primo punto di contatto sull'incollatura", "Il cambio di lato"],
@@ -355,7 +355,7 @@
         de: "Das Halfter anlegen", ar: "وضع الرسن", zh: "戴上笼头", nl: "De halster aandoen", pt: "Colocar o cabresto", sv: "Att sätta på grimman", ru: "Как надеть недоуздок", pl: "Zakładanie kantara", ko: "홀터 씌우기"
       },
       resume: {
-        fr: "Chaque partie du licol a un nom et une place. Le film montre le geste complet, sans precipitation.",
+        fr: "Chaque partie du licol a un nom et une place. Le film montre le geste complet, sans précipitation.",
         en: "Every part of the halter has a name and a place. The film shows the whole sequence, unhurried.",
         es: "Cada parte del cabestro tiene un nombre y un lugar. El vídeo muestra el gesto completo, sin prisa.",
         it: "Ogni parte della testiera ha un nome e un posto. Il film mostra il gesto completo, senza fretta.",
@@ -377,7 +377,7 @@
         de: "Das Pferd an der Hand führen", ar: "قيادة الحصان باليد", zh: "牵着你的马走", nl: "Je paard aan de hand leiden", pt: "Conduzir seu cavalo a pé", sv: "Att leda sin häst i hand", ru: "Как водить лошадь в поводу", pl: "Prowadzenie konia z ziemi", ko: "말 끌기"
       },
       resume: {
-        fr: "A la hauteur de l'épaule, jamais devant, jamais derriere. Ou se placer, comment tenir la longe, comment tourner.",
+        fr: "À la hauteur de l'épaule, jamais devant, jamais derrière. Où se placer, comment tenir la longe, comment tourner.",
         en: "Level with the shoulder, never in front, never behind. Where to stand, how to hold the rope, how to turn.",
         es: "A la altura del hombro, nunca delante, nunca detrás. Dónde colocarse, cómo sujetar la cuerda, cómo girar.",
         it: "All'altezza della spalla, mai davanti, mai dietro. Dove mettersi, come tenere la longhina, come girare.",
@@ -385,7 +385,7 @@
         de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet.", ar: "بمحاذاة الكتف، لا أمامه أبدا ولا خلفه أبدا. أين نقف، وكيف نمسك حبل القيادة، وكيف ندور.", zh: "与肩膀齐平，不在前面，也不在后面。站在哪里，怎么拿牵引绳，怎么转弯。", nl: "Ter hoogte van de schouder, nooit ervoor, nooit erachter. Waar je moet lopen, hoe je de longeerlijn vasthoudt, hoe je draait.", pt: "Na altura do ombro, nunca à frente, nunca atrás. Onde se posicionar, como segurar a guia, como virar.", sv: "I höjd med bogen, aldrig framför, aldrig bakom. Var du ska stå, hur du håller longerlinan, hur du svänger.", ru: "На уровне плеча, никогда не впереди и никогда не позади. Где встать, как держать корду, как поворачивать.", pl: "Na wysokości łopatki, nigdy z przodu, nigdy z tyłu. Gdzie stanąć, jak trzymać lonżę, jak skręcać.", ko: "어깨 높이에서, 앞도 뒤도 안 돼요. 어디에 서는지, 론지를 어떻게 잡는지, 어떻게 돌아가는지 알려 줘요."
       },
       observer: {
-        fr: ["La place du cavalier a hauteur d'epaule", "La main qui ne tire pas", "Le regard porte la ou l'on va", "Le tour effectue en poussant, pas en tirant"],
+        fr: ["La place du cavalier à hauteur d'épaule", "La main qui ne tire pas", "Le regard porté là où l'on va", "Le tour effectué en poussant, pas en tirant"],
         en: ["The handler level with the shoulder", "The hand that does not pull", "Eyes on where you are going", "Turning by pushing, not pulling"],
         es: ["El sitio del jinete a la altura del hombro", "La mano que no tira", "La mirada puesta donde se va", "El giro empujando, no tirando"],
         it: ["Il posto del cavaliere all'altezza della spalla", "La mano che non tira", "Lo sguardo dove si va", "La girata spingendo, non tirando"],
@@ -407,7 +407,7 @@
         de: "Aufsteigen und Absteigen", ar: "الركوب والنزول", zh: "上马和下马", nl: "Opstappen en afstappen", pt: "Montar e desmontar", sv: "Att sitta upp och av", ru: "Как садиться и спешиваться", pl: "Wsiadanie i zsiadanie", ko: "오르고 내리기"
       },
       resume: {
-        fr: "Le montoir, les renes tenues, le pied qui ne pousse pas dans le flanc, et une descente qui ne surprend personne.",
+        fr: "Le montoir, les rênes tenues, le pied qui ne pousse pas dans le flanc, et une descente qui ne surprend personne.",
         en: "The mounting block, reins in hand, a foot that does not dig into the flank, and a dismount that surprises no one.",
         es: "El montador, las riendas en la mano, el pie que no empuja el flanco, y una bajada que no sorprende a nadie.",
         it: "Il montatoio, le redini in mano, il piede che non spinge nel fianco, e una discesa che non sorprende nessuno.",
@@ -429,7 +429,7 @@
         de: "Die Fellpflege, Schritt für Schritt", ar: "العناية بالشعر، حركة بحركة", zh: "刷拭，一步一步来", nl: "Het verzorgen, handeling voor handeling", pt: "A escovação, gesto por gesto", sv: "Ryktning, steg för steg", ru: "Чистка шаг за шагом", pl: "Czyszczenie, krok po kroku", ko: "손질, 동작 하나하나"
       },
       resume: {
-        fr: "Film tourne pour le Galop 3, donc il va plus loin que le programme du Galop 1 : l'ordre des brosses y est montre en entier.",
+        fr: "Film tourné pour le Galop 3, donc il va plus loin que le programme du Galop 1 : l'ordre des brosses y est montré en entier.",
         en: "Filmed for Level 3, so it goes beyond the Level 1 syllabus: the full order of the brushes is shown.",
         es: "Vídeo rodado para el Galop 3, por lo que va más allá del programa del Galop 1: se muestra el orden completo de los cepillos.",
         it: "Girato per il Galoppo 3, quindi va oltre il programma del Galoppo 1: l'ordine delle spazzole è mostrato per intero.",
@@ -451,7 +451,7 @@
         de: "Im Schritt lenken", ar: "التوجيه في المشي", zh: "慢步时的控制", nl: "In stap rijden", pt: "Conduzir ao passo", sv: "Att styra i skritt", ru: "Управление на шагу", pl: "Prowadzenie w stępie", ko: "평보로 이끌기"
       },
       resume: {
-        fr: "Tourner, s'arreter, repartir : la premiere conversation entre la main, la jambe et le cheval.",
+        fr: "Tourner, s'arrêter, repartir : la première conversation entre la main, la jambe et le cheval.",
         en: "Turning, halting, moving off: the first conversation between hand, leg and horse.",
         es: "Girar, parar, volver a andar: la primera conversaci\u00f3n entre la mano, la pierna y el caballo.",
         it: "Girare, fermarsi, ripartire: la prima conversazione tra mano, gamba e cavallo.",
@@ -459,7 +459,7 @@
         de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd.", ar: "الدوران، والتوقف، والانطلاق من جديد: أول حوار بين اليد والساق والحصان.", zh: "转弯、停下、再出发：手、腿和马之间的第一次对话。", nl: "Draaien, stoppen, weer vertrekken: het eerste gesprek tussen de hand, het been en het paard.", pt: "Virar, parar, partir de novo: a primeira conversa entre a mão, a perna e o cavalo.", sv: "Svänga, stanna, starta igen: det första samtalet mellan hand, ben och häst.", ru: "Повернуть, остановиться, снова тронуться: первый разговор между рукой, ногой и лошадью.", pl: "Skręcać, zatrzymywać się, ruszać: pierwsza rozmowa między ręką, łydką i koniem.", ko: "돌고, 멈추고, 다시 출발하기. 손, 다리, 말 사이의 첫 번째 대화예요."
       },
       observer: {
-        fr: ["La main basse et le poignet souple", "Le regard porte dans la direction voulue", "La jambe qui demande avant que la main tourne", "L'arret obtenu sans tirer"],
+        fr: ["La main basse et le poignet souple", "Le regard porté dans la direction voulue", "La jambe qui demande avant que la main tourne", "L'arrêt obtenu sans tirer"],
         en: ["Low hand, supple wrist", "Eyes carried in the chosen direction", "The leg asking before the hand turns", "A halt obtained without pulling"],
         es: ["La mano baja y la mu\u00f1eca flexible", "La mirada puesta en la direcci\u00f3n elegida", "La pierna que pide antes de que la mano gire", "La parada obtenida sin tirar"],
         it: ["La mano bassa e il polso morbido", "Lo sguardo nella direzione scelta", "La gamba che chiede prima che la mano giri", "L'arresto ottenuto senza tirare"],
@@ -489,7 +489,7 @@
         de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df.", ar: "الكعب ينزل، والركبة تنثني، والوزن كله يجد أخيرا طريقه إلى القدم.", zh: "脚跟下沉，膝盖弯曲，整个身体的重量终于顺着路径落到脚上。", nl: "De hiel die zakt, de knie die buigt, en al het gewicht dat eindelijk zijn weg naar de voet vindt.", pt: "O calcanhar que desce, o joelho que dobra e todo o peso encontrando, enfim, o caminho até o pé.", sv: "Hälen ner, knät som böjer sig och hela vikten som äntligen hittar vägen ner till foten.", ru: "Пятка вниз, колено сгибается, и весь вес наконец находит свой путь к ступне.", pl: "Pięta w dół, kolano się zgina, a cały ciężar w końcu znajduje drogę do stopy.", ko: "뒤꿈치는 내려가고, 무릎은 굽고, 몸무게 전체가 마침내 발까지 제 길을 찾아요."
       },
       observer: {
-        fr: ["Le talon plus bas que la pointe du pied", "Le genou qui absorbe le mouvement", "Le buste qui avance sans s'effondrer", "Les mains qui restent independantes de l'equilibre"],
+        fr: ["Le talon plus bas que la pointe du pied", "Le genou qui absorbe le mouvement", "Le buste qui avance sans s'effondrer", "Les mains qui restent indépendantes de l'équilibre"],
         en: ["Heel lower than the toe", "The knee absorbing the movement", "The upper body coming forward without collapsing", "Hands staying independent of the balance"],
         es: ["El tal\u00f3n m\u00e1s bajo que la punta del pie", "La rodilla que absorbe el movimiento", "El busto que avanza sin hundirse", "Las manos que siguen independientes del equilibrio"],
         it: ["Il tallone pi\u00f9 basso della punta del piede", "Il ginocchio che assorbe il movimento", "Il busto che avanza senza cedere", "Le mani che restano indipendenti dall'equilibrio"],
@@ -518,7 +518,7 @@
         de: "Im Sitz ins Gleichgewicht kommen", ar: "التوازن في الجلسة", zh: "坐姿中的平衡", nl: "In balans zitten", pt: "Equilíbrio sentado", sv: "Balans i sitsen", ru: "Равновесие в седле", pl: "Równowaga w dosiadzie", ko: "앉아서 균형 잡기"
       },
       resume: {
-        fr: "L'assiette n'est pas une position, c'est une aide. Le film montre ce que le bassin dit au cheval quand il cesse de resister.",
+        fr: "L'assiette n'est pas une position, c'est une aide. Le film montre ce que le bassin dit au cheval quand il cesse de résister.",
         en: "The seat is not a position, it is an aid. The film shows what the pelvis tells the horse once it stops resisting.",
         es: "El asiento no es una posici\u00f3n, es una ayuda. El v\u00eddeo muestra lo que la pelvis dice al caballo cuando deja de resistir.",
         it: "L'assetto non \u00e8 una posizione, \u00e8 un aiuto. Il film mostra cosa dice il bacino al cavallo quando smette di resistere.",
@@ -526,7 +526,7 @@
         de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen.", ar: "الجلسة ليست وضعية، بل هي مساعدة. يعرض الفيلم ما يقوله الحوض للحصان عندما يتوقف عن المقاومة.", zh: "骑坐不是一个姿势，而是一种扶助。视频展示了骨盆不再抗拒之后，它向马传达了什么。", nl: "De zit is geen houding, het is een hulp. De film laat zien wat het bekken tegen het paard zegt als het ophoudt weerstand te bieden.", pt: "O assento não é uma posição, é uma ajuda. O filme mostra o que a bacia diz ao cavalo quando para de resistir.", sv: "Sitsen är ingen position, den är en hjälp. Filmen visar vad bäckenet säger till hästen när det slutar spänna sig.", ru: "Посадка — это не поза, а помощь. На видео показано, что таз говорит лошади, когда перестаёт сопротивляться.", pl: "Dosiad to nie pozycja, to pomoc. Film pokazuje, co miednica mówi koniowi, gdy przestaje się opierać.", ko: "좌골은 자세가 아니라 부조예요. 골반이 저항을 멈출 때 말에게 무엇을 말해 주는지 영상에서 보여 줘요."
       },
       observer: {
-        fr: ["Le bassin qui suit le mouvement sans le forcer", "Les epaules qui restent au-dessus des hanches", "La jambe qui pend au lieu de serrer", "Le moment ou le cheval se detend sous l'assiette"],
+        fr: ["Le bassin qui suit le mouvement sans le forcer", "Les épaules qui restent au-dessus des hanches", "La jambe qui pend au lieu de serrer", "Le moment où le cheval se détend sous l'assiette"],
         en: ["The pelvis following the movement without forcing it", "Shoulders staying above the hips", "The leg hanging instead of gripping", "The moment the horse relaxes under the seat"],
         es: ["La pelvis que sigue el movimiento sin forzarlo", "Los hombros que se mantienen sobre las caderas", "La pierna que cuelga en vez de apretar", "El momento en que el caballo se relaja bajo el asiento"],
         it: ["Il bacino che segue il movimento senza forzarlo", "Le spalle che restano sopra le anche", "La gamba che pende invece di stringere", "Il momento in cui il cavallo si distende sotto l'assetto"],
@@ -548,7 +548,7 @@
         de: "Eine Dressuraufgabe", ar: "عرض ترويض", zh: "一套盛装舞步套路", nl: "Een dressuurproef", pt: "Uma reprise de adestramento", sv: "Ett dressyrprogram", ru: "Программа выездки", pl: "Program ujeżdżeniowy", ko: "마장마술 프로그램"
       },
       resume: {
-        fr: "La reprise attendue au Galop 4, montee en entier. Tout ce que les chapitres expliquent separement, enchaine sans coupure.",
+        fr: "La reprise attendue au Galop 4, montée en entier. Tout ce que les chapitres expliquent séparément, enchaîné sans coupure.",
         en: "The test expected at Level 4, ridden in full. Everything the chapters explain separately, linked without a break.",
         es: "La reprise esperada en el Galop 4, montada por completo. Todo lo que los cap\u00edtulos explican por separado, encadenado sin cortes.",
         it: "La ripresa richiesta al Galoppo 4, montata per intero. Tutto ci\u00f2 che i capitoli spiegano separatamente, legato senza interruzioni.",
@@ -570,7 +570,7 @@
         de: "Anlehnung in der Praxis", ar: "الاتصال، عمليا", zh: "接触的实际应用", nl: "Het contact, in de praktijk", pt: "O contato, na prática", sv: "Kontakt i praktiken", ru: "Контакт на практике", pl: "Kontakt w praktyce", ko: "실전에서의 접촉"
       },
       resume: {
-        fr: "Apres les trois interventions IFCE sur la theorie du contact, voici le meme sujet monte, filme, en trois minutes.",
+        fr: "Après les trois interventions IFCE sur la théorie du contact, voici le même sujet monté, filmé, en trois minutes.",
         en: "After the three IFCE talks on the theory of contact, here is the same subject ridden, filmed, in three minutes.",
         es: "Despu\u00e9s de las tres intervenciones del IFCE sobre la teor\u00eda del contacto, aqu\u00ed est\u00e1 el mismo tema montado, filmado, en tres minutos.",
         it: "Dopo i tre interventi IFCE sulla teoria del contatto, ecco lo stesso tema a cavallo, filmato, in tre minuti.",
@@ -592,7 +592,7 @@
         de: "Die Hanken versetzen", ar: "تحريك الوركين", zh: "移动后躯", nl: "De achterhand verplaatsen", pt: "Deslocar as ancas", sv: "Flytta bakdelen", ru: "Смещение крупа", pl: "Przesuwanie zadu", ko: "엉덩이 움직이기"
       },
       resume: {
-        fr: "La jambe reculee demande, la main accompagne, et l'arriere-main se deplace d'un pas. Pas deux.",
+        fr: "La jambe reculée demande, la main accompagne, et l'arrière-main se déplace d'un pas. Pas deux.",
         en: "The leg drawn back asks, the hand follows, and the hindquarters move over by one step. Not two.",
         es: "La pierna atrasada pide, la mano acompa\u00f1a, y los cuartos traseros se desplazan un paso. No dos.",
         it: "La gamba arretrata chiede, la mano accompagna, e le anche si spostano di un passo. Non due.",
@@ -614,7 +614,7 @@
         de: "Die Schultern versetzen", ar: "تحريك الكتفين", zh: "移动肩膀", nl: "De schouders verplaatsen", pt: "Deslocar os ombros", sv: "Flytta skuldrorna", ru: "Смещать плечи", pl: "Przesuwanie łopatek", ko: "어깨 움직이기"
       },
       resume: {
-        fr: "Le pendant du precedent, par l'avant-main. Regarder les deux a la suite rend la difference evidente.",
+        fr: "Le pendant du précédent, par l'avant-main. Regarder les deux à la suite rend la différence évidente.",
         en: "The counterpart of the previous film, through the forehand. Watching both in a row makes the difference obvious.",
         es: "La contraparte del anterior, por el tercio delantero. Verlos seguidos hace la diferencia evidente.",
         it: "Il corrispondente del precedente, dall'avantreno. Guardarli di seguito rende la differenza evidente.",
@@ -636,7 +636,7 @@
         de: "Der erste Parcours", ar: "المسار الأول", zh: "第一次跑场地", nl: "Je eerste parcours", pt: "O primeiro percurso", sv: "Den första banan", ru: "Первая трасса", pl: "Pierwszy parkur", ko: "첫 코스"
       },
       resume: {
-        fr: "Reconnaitre, compter ses foulees, garder le meme galop du premier au dernier obstacle.",
+        fr: "Reconnaître, compter ses foulées, garder le même galop du premier au dernier obstacle.",
         en: "Walking the course, counting strides, keeping the same canter from the first fence to the last.",
         es: "Reconocer el recorrido, contar las zancadas, mantener el mismo galope del primer al \u00faltimo obst\u00e1culo.",
         it: "Ricognizione, conteggio delle falcate, e lo stesso galoppo dal primo all'ultimo ostacolo.",
@@ -658,7 +658,7 @@
         de: "Im Gel\u00e4nde unterwegs", ar: "الركوب في الخارج", zh: "户外骑行", nl: "Buiten rijden", pt: "Passear fora do picadeiro", sv: "Att rida ute i terrängen", ru: "Выезд на прогулку", pl: "Jazda w terenie", ko: "야외에서 이동하기"
       },
       resume: {
-        fr: "Le groupe, les distances, la route, et ce qu'on fait quand un cheval derriere n'est plus d'accord.",
+        fr: "Le groupe, les distances, la route, et ce qu'on fait quand un cheval derrière n'est plus d'accord.",
         en: "The group, the distances, the road, and what to do when a horse behind stops agreeing.",
         es: "El grupo, las distancias, la carretera, y qu\u00e9 hacer cuando un caballo de atr\u00e1s deja de estar de acuerdo.",
         it: "Il gruppo, le distanze, la strada, e cosa fare quando un cavallo dietro non \u00e8 pi\u00f9 d'accordo.",
@@ -684,7 +684,7 @@
         de: "Die ersten Spr\u00fcnge", ar: "القفزات الأولى", zh: "第一次跳跃", nl: "De eerste sprongen", pt: "Os primeiros saltos", sv: "De första hoppen", ru: "Первые прыжки", pl: "Pierwsze skoki", ko: "첫 점프"
       },
       resume: {
-        fr: "Franchir un premier obstacle sans rien brusquer : l'abord, l'equilibre sur les etriers, et le regard qui passe par-dessus.",
+        fr: "Franchir un premier obstacle sans rien brusquer : l'abord, l'équilibre sur les étriers, et le regard qui passe par-dessus.",
         en: "Taking a first fence without rushing anything: the approach, balance on the stirrups, and eyes looking beyond.",
         es: "Franquear un primer obst\u00e1culo sin brusquedad: la aproximaci\u00f3n, el equilibrio sobre los estribos y la mirada m\u00e1s all\u00e1.",
         it: "Superare il primo ostacolo senza forzare nulla: l'avvicinamento, l'equilibrio sulle staffe e lo sguardo oltre.",
@@ -1219,7 +1219,7 @@
 
   var CSS2_ID = "hype-video-css-2";
   var CSS2 = [
-    ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-p2:rgba(16,29,34,.82);--hv-iv:#F3EEE4;--hv-iv2:rgba(243,238,228,.64);--hv-iv3:rgba(243,238,228,.40);--hv-ch:#C9A66B;--hv-ch2:rgba(201,166,107,.55);",
+    ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-p2:rgba(16,29,34,.82);--hv-og:rgba(16,26,29,.45);--hv-og-on:linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95));--hv-pan:linear-gradient(180deg,rgba(16,29,34,.96),rgba(12,21,25,.98));--hv-iv:#F3EEE4;--hv-iv2:rgba(243,238,228,.64);--hv-iv3:rgba(243,238,228,.40);--hv-ch:#C9A66B;--hv-ch2:rgba(201,166,107,.55);",
     "background:var(--hv-noir);color:var(--hv-iv);font-family:'Montserrat',system-ui,sans-serif;min-height:100vh;padding-bottom:24px;overflow-x:clip}",
     ".hv2 *{box-sizing:border-box}",
     ".hv2 button{font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}",
@@ -1264,9 +1264,9 @@
     /* onglets des Galops */
     ".hv2-onglets{display:flex;gap:8px;overflow-x:auto;margin:22px -18px 0;padding:2px 18px 8px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}",
     ".hv2-onglets::-webkit-scrollbar{display:none}",
-    ".hv2-og{flex:0 0 auto;scroll-snap-align:start;min-height:46px;padding:9px 17px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:rgba(16,26,29,.45);",
+    ".hv2-og{flex:0 0 auto;scroll-snap-align:start;min-height:46px;padding:9px 17px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);",
     "color:var(--hv-iv);font-size:14px;letter-spacing:.02em;white-space:nowrap;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;transition:border-color .2s,background .2s}",
-    ".hv2-og.on{border-color:var(--hv-ch);background:linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95));box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.35)}",
+    ".hv2-og.on{border-color:var(--hv-ch);background:var(--hv-og-on);box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.35)}",
     ".hv2-og:disabled{opacity:.42;cursor:default}",
     /* 2 — pilule champagne */
     ".hv2-o2 .hv2-og{border-radius:999px;padding:9px 20px;background:linear-gradient(180deg,rgba(28,40,44,.62),rgba(7,10,8,.55));border-color:rgba(201,166,107,.22);box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}",
@@ -1280,7 +1280,7 @@
     ".hv2-og-court{display:none}",
     ".hv2-choix{margin-top:22px}",
     ".hv2-choix-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}",
-    ".hv2-tous{min-height:40px;padding:7px 20px;border-radius:999px;border:1px solid rgba(243,238,228,.18);background:linear-gradient(180deg,rgba(16,29,34,.7),rgba(7,10,8,.5));color:var(--hv-iv);font-size:14px;box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}",
+    ".hv2-tous{min-height:40px;padding:7px 20px;border-radius:999px;border:1px solid rgba(243,238,228,.18);background:var(--hv-og);color:var(--hv-iv);font-size:14px;box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}",
     ".hv2-tous.on{border-color:var(--hv-ch)}",
     ".hv2-choix-rang{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}",
     ".hv2-choix-plus{margin-top:7px;animation:hv2Deroule .25s ease-out}",
@@ -1308,7 +1308,7 @@
     ".hv2-theme{display:flex;flex-direction:column;text-align:center;padding:0;border-radius:16px;overflow:hidden;border:1px solid rgba(243,238,228,.09);background:var(--hv-p2);box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
     ".hv2-theme .hv2-traite{aspect-ratio:4/3;width:100%}",
     ".hv2-theme img{object-position:var(--hv-pos,center)}",
-    ".hv2-pan{flex:1;display:flex;flex-direction:column;justify-content:center;padding:11px 8px 13px;background:linear-gradient(180deg,rgba(16,29,34,.96),rgba(12,21,25,.98))}",
+    ".hv2-pan{flex:1;display:flex;flex-direction:column;justify-content:center;padding:11px 8px 13px;background:var(--hv-pan)}",
     ".hv2-pan b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19px;line-height:1.15;color:var(--hv-iv);overflow-wrap:anywhere}",
     ".hv2-pan span{display:block;font-size:12px;letter-spacing:.04em;color:var(--hv-iv2);margin-top:4px}",
     ".hv2-theme:active{transform:scale(.985)}",
@@ -1332,10 +1332,53 @@
     ".hv2-vide p{margin:0;font-size:14px;color:var(--hv-iv2);line-height:1.6}",
     ".hv2-vide p+p{font-size:12px;color:var(--hv-iv3);margin-top:6px}",
     ".hv2-mini-ong{display:flex;gap:8px;margin:22px 0 14px}",
-    ".hv2-mini-ong button{min-height:44px;padding:9px 18px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:rgba(16,26,29,.45);font-size:14px}",
-    ".hv2-mini-ong button.on{border-color:var(--hv-ch);background:rgba(16,29,34,.95)}",
+    ".hv2-mini-ong button{min-height:44px;padding:9px 18px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);font-size:14px}",
+    ".hv2-mini-ong button.on{border-color:var(--hv-ch);background:var(--hv-og-on)}",
+    /* 04/11 09h45 (Blandine : « la première page est très bleu pétrole, on peut la faire tirer plus sur le noir ? ») :
+       palettes à comparer. A = pétrole (actuelle) ; B = noir graphite (comme sa maquette de la page vidéo) ;
+       C = noir, le pétrole seulement sur ce qui est choisi. Toujours semi-transparent, dégradé, ombré. */
+    ".hv2-pB{--hv-p1:rgba(21,22,22,.84);--hv-p2:rgba(23,24,24,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));--hv-og-on:linear-gradient(180deg,rgba(38,39,39,.95),rgba(24,25,25,.95));--hv-pan:linear-gradient(180deg,rgba(26,27,27,.97),rgba(17,18,18,.98))}",
+    ".hv2-pC{--hv-p1:rgba(12,16,17,.84);--hv-p2:rgba(13,18,19,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));--hv-og-on:linear-gradient(180deg,rgba(16,29,34,.95),rgba(10,17,19,.95));--hv-pan:linear-gradient(180deg,rgba(15,20,21,.97),rgba(9,12,12,.98))}",
     ".hv2-k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hv-ch);margin:22px 0 10px}",
     ".hv2-modo{display:block;margin:34px auto 0;background:none;border:none;font-size:11px;letter-spacing:.12em;color:var(--hv-iv3);padding:12px}",
+    /* page vidéo (04/11) */
+    ".hv2-l-in{padding-top:calc(env(safe-area-inset-top) + 10px)}",
+    ".hv2-lecteur{position:relative;aspect-ratio:16/9;margin-top:6px;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 18px 40px -22px rgba(0,0,0,.95)}",
+    ".hv2-l2 .hv2-lecteur{margin-left:-18px;margin-right:-18px;border-radius:0}",
+    ".hv2-lecteur iframe,.hv2-lecteur video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}",
+    ".hv2-lect-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#0B0F0E;display:block}",
+    ".hv2-lect-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}",
+    ".hv2-play{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:rgba(7,10,8,.55);border:1px solid rgba(243,238,228,.75);display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}",
+    ".hv2-play svg{width:24px;height:24px;fill:#F3EEE4;margin-left:3px}",
+    ".hv2-play.petit{left:auto;top:auto;right:10px;bottom:10px;margin:0;width:34px;height:34px}.hv2-play.petit svg{width:15px;height:15px;margin-left:2px}",
+    "[dir=rtl] .hv2-play.petit{right:auto;left:10px}",
+    ".hv2-lect-bientot{position:absolute;inset:auto 0 14px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--hv-iv)}",
+    ".hv2-l-courbe{display:block;width:100%;height:30px;margin:6px 0 4px}",
+    "[dir=rtl] .hv2-l-courbe{transform:scaleX(-1)}",
+    ".hv2-l-meta{margin:6px 0 0;font-size:13px;letter-spacing:.03em;color:var(--hv-iv2)}",
+    ".hv2-l-titre{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(32px,8.6vw,46px);line-height:1.08;margin:6px 0 0;color:var(--hv-iv)}",
+    ".hv2-l-resume{margin:10px 0 0;font-size:15px;line-height:1.55;color:var(--hv-iv)}",
+    ".hv2-l-langue{margin:8px 0 0;font-size:13px;font-style:italic;color:var(--hv-iv2)}",
+    ".hv2-l-actions{display:grid;grid-template-columns:1.45fr 1fr;gap:12px;margin-top:20px}",
+    ".hv2-l-btn{min-height:50px;display:flex;align-items:center;justify-content:center;gap:12px;border-radius:12px;border:1px solid rgba(243,238,228,.16);background:var(--hv-og);font-size:14.5px;color:var(--hv-iv);box-shadow:0 10px 22px -14px rgba(0,0,0,.95)}",
+    ".hv2-l-btn span{font-size:18px;color:var(--hv-iv)}",
+    ".hv2-l-btn.on{border-color:var(--hv-ch);background:var(--hv-og-on)}.hv2-l-btn.on span{color:var(--hv-ch)}",
+    ".hv2-l-carte{display:block;width:100%;text-align:start;margin-top:16px;padding:16px 18px;border-radius:14px;border:1px solid rgba(243,238,228,.09);background:var(--hv-p1);box-shadow:0 14px 30px -20px rgba(0,0,0,.95)}",
+    ".hv2-l-k{margin:0 0 6px;font-size:13px;font-style:italic;color:var(--hv-ch)}",
+    ".hv2-l-carte b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;line-height:1.15;color:var(--hv-iv)}",
+    ".hv2-l-lien{display:inline-block;margin-top:10px;font-size:14px;color:var(--hv-ch);text-decoration:none}",
+    ".hv2-l-petit{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:var(--hv-iv2)}",
+    ".hv2-l-obs{list-style:none;margin:0;padding:0}",
+    ".hv2-l-obs li{position:relative;padding:7px 0;padding-inline-start:18px;font-size:14px;line-height:1.45;color:var(--hv-iv);border-bottom:1px solid rgba(243,238,228,.06)}",
+    ".hv2-l-obs li:last-child{border-bottom:0}",
+    ".hv2-l-obs li:before{content:'';position:absolute;inset-inline-start:2px;top:15px;width:5px;height:5px;border-radius:50%;background:var(--hv-ch)}",
+    ".hv2-l-suiv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}",
+    ".hv2-l-sc{display:flex;flex-direction:column;padding:0;text-align:start;border-radius:14px;overflow:hidden;border:1px solid rgba(243,238,228,.09);background:var(--hv-p2);box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
+    ".hv2-l-sc-img{position:relative;display:block;aspect-ratio:16/10;background:#0B0F0E}",
+    ".hv2-l-sc-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}",
+    ".hv2-l-sc-t{display:block;padding:11px 13px 13px;font-size:14px;line-height:1.35;color:var(--hv-iv);background:var(--hv-pan);flex:1}",
+    "@media (min-width:700px){.hv2-l2 .hv2-lecteur{margin-left:-32px;margin-right:-32px}.hv2-l-suiv{grid-template-columns:repeat(3,minmax(0,1fr))}}",
+    "@media (min-width:1100px){.hv2-l-in{max-width:960px}.hv2-l2 .hv2-lecteur{margin-left:0;margin-right:0;border-radius:14px}.hv2-l-suiv{grid-template-columns:repeat(4,minmax(0,1fr))}}",
     /* tablette */
     "@media (min-width:700px){.hv2-in{padding:0 32px}.hv2-onglets{margin:26px -32px 0;padding:2px 32px 8px}",
     ".hv2-grille{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.hv2-theme.seul3{grid-column:2}",
@@ -1371,6 +1414,16 @@
     ".hv2-dB .hv2-titre{text-align:start;margin:0}.hv2-dB .hv2-titre h1{font-size:68px}.hv2-dB .hv2-titre p{font-size:22px}",
     ".hv2-dB .hv2-courbe.c2{grid-area:c;margin:-64px 0 0;max-width:none}}"
   ].join("");
+  /* Palette des pages de la Vidéothèque : "A", "B" ou "C" (voir CSS2). */
+  var PALETTE = "A";
+  /* Haut de la page vidéo : "1" lecteur encadré (arrondi, marges), "2" lecteur bord à bord. */
+  var HAUT_LECTURE = "1";
+  function reglage(nom, defaut) { try { if (window[nom] !== undefined) return window[nom]; } catch (e) { } return defaut; }
+  function classeHv2() {
+    return "hv2 hv2-d" + reglage("__hvDesignOrdi", DESIGN_ORDI) + " hv2-o" + reglage("__hvOnglets", STYLE_ONGLETS)
+      + (reglage("__hvSerre", ONGLETS_SERRES) ? " hv2-serre" : "") + " hv2-p" + reglage("__hvPalette", PALETTE)
+      + " hv2-l" + reglage("__hvHautLecture", HAUT_LECTURE);
+  }
   function injecterCss2() {
     if (typeof document === "undefined") return;
     if (document.getElementById(CSS2_ID)) return;
@@ -1479,15 +1532,7 @@
       for (var i = 0; i < UNIVERS.length; i++) { if (UNIVERS[i].k === k) return L(UNIVERS[i].nom, langue); }
       return k;
     }
-    function classeRacine() {
-      var d = DESIGN_ORDI;
-      try { if (window.__hvDesignOrdi) d = window.__hvDesignOrdi; } catch (e) { }
-      var o = STYLE_ONGLETS;
-      try { if (window.__hvOnglets) o = window.__hvOnglets; } catch (e2) { }
-      var s = ONGLETS_SERRES;
-      try { if (window.__hvSerre !== undefined) s = !!window.__hvSerre; } catch (e3) { }
-      return "hv2 hv2-d" + d + " hv2-o" + o + (s ? " hv2-serre" : "");
-    }
+    function classeRacine() { return classeHv2(); }
     function styleTraitement() {
       return TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre, "--hv-bords": TRAITEMENT_PHOTO.bords } : {};
     }
@@ -1786,145 +1831,140 @@
      ÉCRAN : PAGE DE LECTURE
      ============================================================ */
   window.EcranVideoLecture = function EcranVideoLecture() {
+    /* 04/11/2026 (Blandine, maquette « Déplacer les hanches » + « avec la courbe en haut comme on avait dit ») :
+       page vidéo refaite dans le design de la Vidéothèque. Ordre : retour + drapeau · lecteur (vignette +
+       bouton lecture, la vidéo se charge au toucher) · courbe champagne · Galop · état · titre · résumé ·
+       langue de la vidéo · Marquer comme vue / Favori · À observer · Ton cours · L'intervenant · À regarder
+       ensuite. Rien du contenu d'avant n'est perdu. */
     var h = React.createElement;
     var app = useApp();
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
-
-    /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
     function resumeDe(v) { return L(v.i18nResume, langue); }
     function observerDe(v) { return v.i18nObserver ? (L(v.i18nObserver, langue) || []) : []; }
     function chapitreDe(v) { return L(CHAPITRES[v.coursId], langue) || v.coursId; }
-    function dureeDe(v) { return v.dureeTranche ? L(TRANCHES[v.dureeTranche], langue) : ""; }
-    injecterCss();
+    injecterCss(); injecterCss2();
 
-    var id = null;
-    try { id = window.__hypeVideoOuverte || null; } catch (e) { }
-    var v = vidDe(id);
+    var id0 = null;
+    try { id0 = window.__hypeVideoOuverte || null; } catch (e) { }
+    var sc = React.useState(id0); var cur = sc[0], setCur = sc[1];
+    var v = vidDe(cur);
+    var st = React.useState(lireLocal()); var etat = st[0], setEtat = st[1];
+    var sj = React.useState(false); var joue = sj[0], setJoue = sj[1];
+    React.useEffect(function () {
+      setJoue(false);
+      try { window.scrollTo(0, 0); } catch (e) { }
+      try { if (document.scrollingElement) document.scrollingElement.scrollTop = 0; } catch (e2) { }
+    }, [cur]);
 
-    var st = React.useState(lireLocal());
-    var etat = st[0], setEtat = st[1];
+    var drapeau = (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null;
+    var retour = h("button", { className: "hv2-retour", onClick: function () { setEcran("videos"); } },
+      h("i", { "aria-hidden": "true" }, "‹"),
+      T("Retour aux vidéos", "Back to videos", "Volver a los vídeos", "Torna ai video", "動画一覧に戻る", "Zurück zu den Videos", "العودة إلى الفيديوهات", "返回视频", "Terug naar de video's", "Voltar aos vídeos", "Tillbaka till videorna", "Назад к видео", "Wróć do filmów", "영상으로 돌아가기"));
 
     if (!v) {
-      return h("div", { className: "hv-lect" }, h("div", { className: "hv-corps" },
-        h("p", { className: "hv-d" }, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.", "هذا الفيديو لم يعد متاحا.", "这个视频已经不可用了。", "Deze video is niet meer beschikbaar.", "Este vídeo não está mais disponível.", "Den här videon är inte längre tillgänglig.", "Это видео больше недоступно.", "Ten film nie jest już dostępny.", "이 영상은 더 이상 볼 수 없어요.")),
-        h("button", { className: "hv-btn hv-btn-p", style: { marginTop: 18 }, onClick: function () { setEcran("videos"); } },
-          T("Retour à la bibliothèque", "Back to library", "Volver a la biblioteca", "Torna alla videoteca", "ライブラリに戻る", "Zurück zur Bibliothek", "العودة إلى المكتبة", "返回视频库", "Terug naar de bibliotheek", "Voltar à biblioteca", "Tillbaka till biblioteket", "Назад в библиотеку", "Wróć do biblioteki", "라이브러리로 돌아가기"))));
+      return h("div", { className: classeHv2() }, drapeau,
+        h("div", { className: "hv2-in hv2-l-in" }, retour,
+          h("div", { className: "hv2-vide" }, h("p", null, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.", "هذا الفيديو لم يعد متاحا.", "该视频已不可用。", "Deze video is niet meer beschikbaar.", "Este vídeo não está mais disponível.", "Den här videon finns inte längre.", "Это видео больше недоступно.", "Ten film nie jest już dostępny.", "이 영상은 더 이상 볼 수 없어요.")))));
     }
 
     var p = (etat.prog && etat.prog[v.id]) || null;
     var fav = !!(etat.fav && etat.fav[v.id]);
     var vue = !!(p && p.vue);
-
-    function basculerVue() {
-      enregistrerEtat(v.id, false, !vue, 0);
-      setEtat(lireLocal());
-    }
-    function basculerFav() {
-      enregistrerFavori(v.id, !fav);
-      setEtat(lireLocal());
-    }
+    function basculerVue() { enregistrerEtat(v.id, false, !vue, 0); setEtat(lireLocal()); }
+    function basculerFav() { enregistrerFavori(v.id, !fav); setEtat(lireLocal()); }
     function versLeCours() {
-      /* le niveau du chapitre se lit dans son identifiant : g4-contact -> 4 */
       var m = /^g(\d)-/.exec(v.coursId || "");
       var niveauChapitre = m ? parseInt(m[1], 10) : v.galop;
       if (app.setGalopOuvert) app.setGalopOuvert(niveauChapitre);
       if (app.setCoursOuvert) app.setCoursOuvert(v.coursId);
       setEcran("cours");
     }
+    function ouvrirAutre(x) {
+      enregistrerEtat(x.id, true, !!(etat.prog && etat.prog[x.id] && etat.prog[x.id].vue), 0);
+      try { window.__hypeVideoOuverte = x.id; } catch (e) { }
+      setEtat(lireLocal()); setCur(x.id);
+    }
+    /* vignette : celle de la vidéo ; si elle ne charge pas, la photo du thème (jamais un cadre vide) */
+    function image(x, cls) {
+      var ph = (PHOTOS_THEMES[x.theme] || {}).img || PHOTO_HERO.img;
+      return h("img", { className: cls, src: vignette(x) || ph, alt: "", loading: "lazy",
+        onError: function (e) { try { if (e.target.src.indexOf(ph) < 0) e.target.src = ph; } catch (er) { } } });
+    }
+    var svgPlay = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M9 6.5v11l9-5.5z" }));
 
-    var lecteur = h("div", { className: "hv-lecteur" },
-      h("div", { style: { position: "absolute", inset: 0, background: fondCouv(v) } }),
-      h("button", { className: "hv-retour", onClick: function () { setEcran("videos"); } }, "‹"),
-      (v.src && v.src.type === "fichier")
-        ? h("video", {
-            controls: true, playsInline: true, preload: "metadata",
-            poster: v.vignetteUrl || undefined,
-            style: { position: "absolute", inset: 0, width: "100%", height: "100%", background: "#000" }
-          },
+    var etatTxt = vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
+      : T("À regarder", "To watch", "Por ver", "Da guardare", "未視聴", "Noch anzusehen", "للمشاهدة", "待观看", "Nog te bekijken", "Para assistir", "Att se", "Посмотреть", "Do obejrzenia", "볼 영상");
+
+    /* lecteur : la vidéo (YouTube, Vimeo ou fichier) ne se charge qu'au toucher ; avant, la vignette */
+    var src = null;
+    if (v.src && v.src.type === "youtube") src = "https://www.youtube-nocookie.com/embed/" + v.src.ref + "?autoplay=1&rel=0&playsinline=1";
+    if (v.src && v.src.type === "vimeo") src = "https://player.vimeo.com/video/" + v.src.ref + "?autoplay=1";
+    var lecteur = h("div", { className: "hv2-lecteur" },
+      joue && v.src && v.src.type === "fichier"
+        ? h("video", { controls: true, autoPlay: true, playsInline: true, preload: "metadata", poster: v.vignetteUrl || undefined },
             h("source", { key: "w", src: v.src.ref + ".webm", type: "video/webm" }),
             h("source", { key: "m", src: v.src.ref + ".mp4", type: "video/mp4" }))
-      : v.src
-        ? h("iframe", {
-            title: titreDe(v), src: (v.src.type === "vimeo" ? "https://player.vimeo.com/video/" : "https://www.youtube-nocookie.com/embed/") + v.src.ref,
-            style: { position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" },
-            allow: "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen",
-            allowFullScreen: true
-          })
-        : h("div", { className: "hv-soon" },
-            h("b", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")),
-            h("span", null, T("Cette vidéo n'est pas encore tournée. Tout le reste de la fiche est déjà là : garde-la en favori, tu seras prévenue.",
-              "This video has not been filmed yet. Everything else is already here: save it and you will be notified.",
-              "Este vídeo aún no está grabado. Todo lo demás ya está aquí: guárdalo y te avisaremos.",
-              "Questo video non è ancora girato. Tutto il resto è già qui: salvalo e ti avviseremo.",
-              "この動画はまだ撮影されていません。ほかの内容はすでにあります。お気に入りに入れておいてください。",
-              "Dieses Video ist noch nicht gedreht. Alles andere ist schon da: speichere es, du wirst informiert.", "لم يصور هذا الفيديو بعد. كل ما تبقى من البطاقة موجود بالفعل: احفظيه في المفضلة وسيصلك إشعار.", "这个视频还没有拍摄。页面上其他内容都已经准备好了：收藏它，上线时你会收到通知。", "Deze video is nog niet opgenomen. De rest van de pagina staat er al: bewaar hem als favoriet, dan krijg je een melding.", "Este vídeo ainda não foi gravado. Todo o resto da ficha já está aqui: guarde nos favoritos e você será avisada.", "Den här videon är inte filmad ännu. Allt annat på sidan finns redan här: spara den som favorit så får du besked.", "Это видео ещё не снято. Всё остальное в карточке уже готово: добавь его в избранное, и тебе придёт уведомление.", "Ten film nie został jeszcze nagrany. Cała reszta karty jest już gotowa: dodaj go do ulubionych, a dostaniesz powiadomienie.", "이 영상은 아직 촬영되지 않았어요. 나머지 내용은 모두 준비돼 있어요. 즐겨찾기에 담아 두면 알려 줄게요."))));
+      : joue && src
+        ? h("iframe", { title: titreDe(v), src: src, allow: "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen", allowFullScreen: true })
+      : h("button", { className: "hv2-lect-poster", disabled: !v.src, onClick: function () { if (v.src) setJoue(true); },
+          "aria-label": T("Lire la vidéo", "Play the video", "Reproducir el vídeo", "Riproduci il video", "動画を再生", "Video abspielen", "تشغيل الفيديو", "播放视频", "Video afspelen", "Reproduzir o vídeo", "Spela upp videon", "Воспроизвести видео", "Odtwórz film", "영상 재생") + " · " + titreDe(v) },
+          image(v, "hv2-lect-img"),
+          v.src ? h("span", { className: "hv2-play" }, svgPlay)
+            : h("span", { className: "hv2-lect-bientot" }, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))));
 
-    return h("div", { className: "hv-lect" }, lecteur,
-      h("div", { className: "hv-corps" },
-        h("span", { className: "hv-kick" }, chapitreDe(v)),
-        h("h2", null, titreDe(v)),
-        h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ") + v.galop),
-          dureeDe(v) ? h("span", { className: "hv-mini" }, dureeDe(v)) : null,
-          h("span", { className: "hv-mini" }, vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함") : T("À regarder", "To watch", "Por ver", "Da guardare", "これから見る", "Anzusehen", "للمشاهدة", "值得一看", "Om te kijken", "Para assistir", "Att titta på", "Что посмотреть", "Do obejrzenia", "볼거리"))),
-        h("p", { className: "hv-d" }, resumeDe(v)),
+    var courbe = h("svg", { className: "hv2-l-courbe", viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" },
+      h("defs", null, h("linearGradient", { id: "hv2gl", x1: "0", x2: "1", y1: "0", y2: "0" },
+        h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: ".1" }), h("stop", { offset: ".55", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: "0" }))),
+      h("path", { d: "M0 36 C 120 34, 240 20, 400 4", fill: "none", stroke: "url(#hv2gl)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
 
-        h("button", { className: "hv-lien", onClick: versLeCours },
-          h("span", { style: { minWidth: 0 } },
-            h("span", { className: "hv-k" }, T("Liée au chapitre", "Linked to chapter", "Vinculada al capítulo", "Collegata al capitolo", "関連する章", "Zum Kapitel", "مرتبط بالفصل", "关联章节", "Gekoppeld aan het hoofdstuk", "Ligado ao capítulo", "Kopplad till kapitlet", "Связано с главой", "Powiązane z rozdziałem", "연결된 챕터")),
-            h("span", { className: "hv-t" }, chapitreDe(v))),
-          h("span", { style: { color: "#20D9F5", fontSize: 14, flex: "0 0 auto" } },
-            T("Voir le cours ›", "See the lesson ›", "Ver el curso ›", "Vedi il corso ›", "コースを見る ›", "Zum Kurs ›", "عرض الدرس ›", "查看课程 ›", "Bekijk de les ›", "Ver a aula ›", "Se lektionen ›", "Смотреть урок ›", "Zobacz lekcję ›", "레슨 보기 ›"))),
+    var obs = observerDe(v);
+    var suiv = VIDS.filter(disponible).filter(function (x) { return x.id !== v.id && (x.coursId === v.coursId || x.theme === v.theme); }).slice(0, 4);
+    if (suiv.length === 3) suiv = suiv.slice(0, 2);   /* deux colonnes : jamais une carte seule sur sa ligne */
 
-        /* Points à observer : seulement pour les vidéos principales, qui en ont. */
-        observerDe(v).length ? h("div", { className: "hv-bloc obs" },
-          h("h5", null, T("Pendant la vidéo, observe particulièrement…", "While watching, look especially at…", "Durante el vídeo, observa sobre todo…", "Durante il video, osserva soprattutto…", "動画では、とくにここを見て…", "Achte im Video besonders auf…", "أثناء الفيديو، لاحظي بشكل خاص…", "观看视频时，请特别留意……", "Let tijdens de video vooral op…", "Durante o vídeo, observe principalmente…", "Titta särskilt på det här medan du ser videon…", "Во время просмотра обрати особое внимание на…", "Podczas filmu zwróć szczególną uwagę na…", "영상을 보는 동안 특히 이런 점을 살펴보세요…")),
-          h("ul", { className: "hv-li" }, observerDe(v).map(function (x, i) { return h("li", { key: i }, x); }))) : null,
+    return h("div", { className: classeHv2(), style: TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre } : null }, drapeau,
+      h("div", { className: "hv2-in hv2-l-in" },
+        retour, lecteur, courbe,
+        h("p", { className: "hv2-l-meta" }, [TXT_GALOP_LECT(T) + v.galop, etatTxt].join(" · ")),
+        h("h1", { className: "hv2-l-titre" }, titreDe(v)),
+        resumeDe(v) ? h("p", { className: "hv2-l-resume" }, resumeDe(v)) : null,
+        h("p", { className: "hv2-l-langue" }, T("Vidéo en français", "Video in French", "Vídeo en francés", "Video in francese", "フランス語の動画", "Video auf Französisch", "فيديو باللغة الفرنسية", "法语视频", "Video in het Frans", "Vídeo em francês", "Video på franska", "Видео на французском", "Film po francusku", "프랑스어 영상")),
+        h("div", { className: "hv2-l-actions" },
+          h("button", { className: "hv2-l-btn" + (vue ? " on" : ""), "aria-pressed": vue, onClick: basculerVue },
+            h("span", { "aria-hidden": "true" }, "✓"),
+            vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
+                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren", "تحديد كفيديو تمت مشاهدته", "标记为已看", "Markeren als bekeken", "Marcar como vista", "Markera som sedd", "Отметить как просмотренное", "Oznacz jako obejrzane", "시청함으로 표시")),
+          h("button", { className: "hv2-l-btn hv2-l-fav" + (fav ? " on" : ""), "aria-pressed": fav, onClick: basculerFav },
+            h("span", { "aria-hidden": "true" }, fav ? "★" : "☆"),
+            T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "收藏", "Favoriet", "Favorito", "Favorit", "Избранное", "Ulubiony", "즐겨찾기"))),
 
-        /* Qui parle. C'est l'angle « académie » : on nomme l'intervenant. */
-        v.intervenant ? h("div", { className: "hv-bloc" },
-          h("h5", null, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث", "讲者", "De spreker", "O palestrante", "Medverkande", "Выступающий", "Prelegent", "강연자")),
-          h("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 500, color: "#F4F6F7" } }, v.intervenant),
-          v.intervenantRole ? h("p", { style: { margin: "4px 0 0", fontSize: 11.5, color: "#8A95A1" } }, L(v.intervenantRole, langue)) : null,
-          v.titreSource ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55, fontStyle: "italic" } }, "« " + v.titreSource + " »") : null,
-          v.doc ? h("a", {
-            href: v.doc, target: "_blank", rel: "noopener",
-            style: { display: "inline-block", marginTop: 12, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", textDecoration: "none", fontWeight: 600 }
-          }, T("Le document de l'intervention ›", "The talk's handout ›", "El documento de la intervención ›", "Il documento dell'intervento ›", "講演資料 ›", "Das Dokument zum Vortrag ›", "وثيقة المداخلة ›", "讲座资料 ›", "Het document van de lezing ›", "O material da palestra ›", "Föredragets dokument ›", "Материал выступления ›", "Materiały z wystąpienia ›", "강연 자료 ›")) : null) : null,
+        obs.length ? h("div", { className: "hv2-l-carte" },
+          h("p", { className: "hv2-l-k" }, T("À observer", "What to watch for", "Qué observar", "Da osservare", "注目ポイント", "Worauf du achtest", "ما يجب ملاحظته", "观察要点", "Om op te letten", "O que observar", "Att lägga märke till", "На что смотреть", "Na co zwrócić uwagę", "관찰 포인트")),
+          h("ul", { className: "hv2-l-obs" }, obs.map(function (x, i) { return h("li", { key: i }, x); }))) : null,
 
-        /* Avertissement honnête : les cartes sont traduites, la vidéo non. */
-        (v.langueVideo && langue !== v.langueVideo) ? h("div", { className: "hv-bloc" },
-          h("p", { style: { margin: 0, fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55 } },
-            T("Cette vidéo est en français.", "This video is in French.", "Este vídeo está en francés.", "Questo video è in francese.", "この動画はフランス語です。", "Dieses Video ist auf Französisch.", "هذا الفيديو باللغة الفرنسية.", "这个视频是法语的。", "Deze video is in het Frans.", "Este vídeo é em francês.", "Den här videon är på franska.", "Это видео на французском языке.", "Ten film jest po francusku.", "이 영상은 프랑스어예요."))) : null,
+        v.coursId ? h("button", { className: "hv2-l-carte hv2-l-cours", onClick: versLeCours },
+          h("p", { className: "hv2-l-k" }, T("Ton cours", "Your lesson", "Tu lección", "La tua lezione", "あなたのレッスン", "Deine Lektion", "درسك", "你的课程", "Jouw les", "Sua aula", "Din lektion", "Твой урок", "Twoja lekcja", "나의 수업")),
+          h("b", null, chapitreDe(v)),
+          h("span", { className: "hv2-l-lien" }, T("Voir le cours", "See the lesson", "Ver la lección", "Vedi la lezione", "レッスンを見る", "Zur Lektion", "عرض الدرس", "查看课程", "Bekijk de les", "Ver a aula", "Se lektionen", "Открыть урок", "Zobacz lekcję", "수업 보기"), h("i", { "aria-hidden": "true" }, " →"))) : null,
 
-        h("div", { className: "hv-act" },
-          h("button", { className: "hv-vue" + (vue ? " on" : ""), onClick: basculerVue },
-            vue ? "✓ " + T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
-                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren", "تحديد كفيديو تمت مشاهدته", "标记为已看", "Markeren als bekeken", "Marcar como visto", "Markera som sedd", "Отметить как просмотренное", "Oznacz jako obejrzane", "시청함으로 표시")),
-          h("button", { className: "hv-btn hv-btn-s" + (fav ? " on" : ""), onClick: basculerFav, "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기") },
-            fav ? "★" : "☆")),
+        v.intervenant ? h("div", { className: "hv2-l-carte" },
+          h("p", { className: "hv2-l-k" }, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث", "讲者", "De spreker", "O palestrante", "Medverkande", "Выступающий", "Prelegent", "강연자")),
+          h("b", null, v.intervenant),
+          v.intervenantRole ? h("p", { className: "hv2-l-petit" }, L(v.intervenantRole, langue)) : null,
+          v.titreSource ? h("p", { className: "hv2-l-petit", style: { fontStyle: "italic" } }, "« " + v.titreSource + " »") : null,
+          v.doc ? h("a", { className: "hv2-l-lien", href: v.doc, target: "_blank", rel: "noopener" }, T("Le document de l'intervention", "The talk's handout", "El documento de la intervención", "Il documento dell'intervento", "講演資料", "Das Dokument zum Vortrag", "وثيقة المداخلة", "讲座资料", "Het document van de lezing", "O documento da palestra", "Dokumentet från föredraget", "Материалы выступления", "Materiały z wystąpienia", "강연 자료"), h("i", { "aria-hidden": "true" }, " ↗")) : null) : null,
 
-        (function () {
-          var suiv = VIDS.filter(disponible).filter(function (x) { return x.id !== v.id && (x.coursId === v.coursId || x.theme === v.theme); }).slice(0, 5);
-          if (!suiv.length) return null;
-          return h("div", { style: { marginTop: 28 } },
-            h("h5", { style: { fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 500, letterSpacing: ".1em", textTransform: "uppercase", margin: 0, color: "#F4F6F7" } },
-              T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا", "接下来观看", "Hierna kijken", "Para assistir em seguida", "Titta på härnäst", "Что смотреть дальше", "Do obejrzenia dalej", "다음에 볼 영상")),
-            h("div", { className: "hv-fil", style: { margin: "12px 0" } }),
-            suiv.map(function (x) {
-              return h("button", {
-                key: x.id, className: "hv-ligne",
-                onClick: function () { try { window.__hypeVideoOuverte = x.id; } catch (e) { } setEcran("videos"); setTimeout(function () { setEcran("video-lecture"); }, 0); }
-              },
-                h("span", { className: "hv-cov", style: { width: 78, flex: "0 0 78px", aspectRatio: "16/10", borderRadius: 10, border: "1px solid #2A323D", background: fondCouv(x) } }),
-                h("span", { style: { flex: 1, minWidth: 0 } },
-                  h("h4", null, titreDe(x)),
-                  h("span", { className: "hv-meta", style: { display: "block" } }, chapitreDe(x))));
-            }));
-        })()));
+        suiv.length ? h("div", null,
+          h("h2", { className: "hv2-h2", style: { marginTop: 30 } }, T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا", "接下来观看", "Hierna kijken", "Para assistir em seguida", "Titta härnäst", "Смотреть дальше", "Do obejrzenia dalej", "다음에 볼 영상")),
+          h("div", { className: "hv2-l-suiv" }, suiv.map(function (x) {
+            return h("button", { key: x.id, className: "hv2-l-sc", onClick: function () { ouvrirAutre(x); } },
+              h("span", { className: "hv2-l-sc-img" }, image(x), h("span", { className: "hv2-play petit" }, svgPlay)),
+              h("span", { className: "hv2-l-sc-t" }, titreDe(x)));
+          }))) : null));
   };
+  function TXT_GALOP_LECT(T) { return T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop ", "Galop "); }
+
 
   /* expose le catalogue pour d'éventuels usages ailleurs (cours, Hey Baby) */
   window.HYPE_VIDEO = { videos: VIDS, collections: COLLS, themes: THEMES, photosThemes: PHOTOS_THEMES /* 04/11 : photo de chaque thème, pour la future page du thème */, parCours: function (coursId) {
