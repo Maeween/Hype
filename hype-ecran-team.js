@@ -460,6 +460,10 @@ function EcranTeamCompetition() {
   var btnAjoutRdv = (gestion && groupe) ? h("button", { type: "button", "aria-label": T("Ajouter un rendez-vous", "Add an event", "Añadir una cita", "Aggiungi un evento", "予定を追加", "Termin hinzufügen", "إضافة موعد", "添加日程", "Afspraak toevoegen", "Adicionar um compromisso", "Lägg till en händelse", "Добавить событие", "Dodaj wydarzenie", "일정 추가"), onClick: function () {
       setErrPanneau(""); setRecherche(""); setClubRdv(null); setPanneau("rdv"); chargerRdvClub();   /* (526) ouvre le panneau des rendez-vous */
     }, style: { flex: "0 0 auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(214,182,118,0.7)", background: "transparent", color: OR, fontSize: 18, lineHeight: "28px", fontWeight: 400, padding: 0, cursor: "pointer", fontFamily: M } }, "+") : null;   /* 01/10 (527) : un simple « + » entoure, a droite du titre (Blandine : « le bouton prend beaucoup de place ») */
+  /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : lien vers la page « Ma saison » (hype-ecran-saison.js), sous l agenda. */
+  var lienSaison = h("button", { type: "button", onClick: function () { setEcran("ma-saison"); },
+      style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 14, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
+    h("span", null, tr({ fr: "Ma saison : tous les concours" })), h("span", { style: { fontSize: 16 } }, CHEV));
   var blocAg = section(h("div", null,
     enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
       h("svg", { width: 18, height: 18, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("rect", { x: 1.5, y: 3, width: 15, height: 13.5, rx: 2, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M1.5 7h15M5.5 1v4M12.5 1v4", stroke: OR, strokeWidth: 1.2, fill: "none" })),
@@ -471,7 +475,8 @@ function EcranTeamCompetition() {
           /* (526) les rendez-vous PASSES : dans « Voir tout », ouverts sur leur page souvenirs (photos) */
           (ouvert.ag && (agendaPasse || []).length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous pass\u00e9s", "Past events", "Citas pasadas", "Appuntamenti passati", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangene Termine", "\u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
-            h("div", { style: { marginTop: 6 } }, agendaPasse.map(function (ev) { return carteRdvE(ev, true); }))) : null)));
+            h("div", { style: { marginTop: 6 } }, agendaPasse.map(function (ev) { return carteRdvE(ev, true); }))) : null),
+    lienSaison));
 
   /* ── résultats récents ── */
   function placeDe(r) { if (r.place != null && !isNaN(Number(r.place))) return Number(r.place); var m = String(r.classement || "").match(/^\s*(\d+)/); return m ? Number(m[1]) : null; }
