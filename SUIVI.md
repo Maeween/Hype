@@ -16806,3 +16806,7 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - ⚠️ Risque assumé par Blandine : si une de ces vidéos ne se lit pas dans Hype (lien faux, lecture intégrée refusée par le propriétaire), les cavaliers verront une carte qui ne joue pas — à surveiller.
 - index.html : ?v= de hype-video.js et hype-build seulement.
 
+## 04/11/2026 10h45 — BRANCHE travail-videotheque-liens (NON PUBLIÉE, à grouper avec la prochaine mise en ligne)
+- Blandine 10h36 (« je te laisse gérer ») : « Adapter son équilibre en terrain varié » (G3) relié à g3-c12 L'assiette et la posture assise (aucun cours G3 sur le terrain varié) ; « Suivre le rythme des allures » (G6) relié à g6-c2 L'impulsion (le cours parle du rythme et de la cadence). Libellé g6-c2 ajouté aux chapitres.
+- Prompt ChatGPT fourni à Blandine pour chercher les vidéos des cours encore sans vidéo (G3 : 6 cours, G5 : 11, G6 : 5, G7 : 15).
+
