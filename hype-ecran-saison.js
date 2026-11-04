@@ -304,6 +304,7 @@ var CSS2 = [
   ".hs input,.hs select{width:100%;min-height:44px;border-radius:10px;border:1px solid rgba(243,238,228,.16);background:rgba(16,26,29,.6);color:var(--hs-iv);font-family:inherit;font-size:16px;padding:0 12px;-webkit-appearance:none;appearance:none}",
   ".hs select{background-image:linear-gradient(45deg,transparent 50%,#C9A66B 50%),linear-gradient(135deg,#C9A66B 50%,transparent 50%);background-position:calc(100% - 18px) 19px,calc(100% - 13px) 19px;background-size:5px 5px;background-repeat:no-repeat;padding-inline-end:30px}",
   ".hs input:focus,.hs select:focus{outline:none;border-color:rgba(201,166,107,.7)}",
+  ".hs input[type=checkbox]{-webkit-appearance:checkbox;appearance:auto;width:20px;min-height:20px;height:20px;padding:0;flex:0 0 auto}",
   ".hs-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}",
   ".hs-g2 .hs-champ{margin-bottom:8px}",
   ".hs-puces{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}",
@@ -314,7 +315,7 @@ var CSS2 = [
   ".hs-couple-t{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}",
   ".hs-couple-t b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19px}",
   ".hs-ep{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;margin-bottom:8px}",
-  ".hs-coll{position:sticky;bottom:0;z-index:5;padding:12px 0 calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(180deg,rgba(7,10,8,0),#070A08 30%)}",
+  ".hs-coll{position:sticky;bottom:0;z-index:5;padding:14px 0 calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(180deg,rgba(7,10,8,0),#070A08 14px)}",
   /* LA FEUILLE SEP — page blanche à imprimer, copie de la fiche papier */
   "#zone-impression.hs-feuille{position:fixed;inset:0;z-index:400;background:#fff;color:#111;overflow:auto;font-family:Calibri,'Segoe UI',Arial,sans-serif}",
   ".hs-feuille .bar{position:sticky;top:0;display:flex;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;background:#f3f3f3;border-bottom:1px solid #ddd}",
@@ -1084,6 +1085,9 @@ function hsHeure(min) {
   var hh = Math.floor(min / 60), mm = min % 60;
   return hh + "h" + (mm < 10 ? "0" : "") + mm;
 }
+function hsOrdreBase(L) {
+  var o = {}; (L || []).forEach(function (l, i) { o[i + "-1"] = hsMinutes(l.passage1); o[i + "-2"] = hsMinutes(l.passage2); }); return o;
+}
 function hsHeurePropre(v) {
   try { if (typeof hypeHeurePropre === "function") return hypeHeurePropre(v); } catch (e) { }
   return String(v || "").trim();
@@ -1227,6 +1231,8 @@ function EcranJourJ() {
   var _dc = React.useState({ ep: "", min: "10" }); var dec = _dc[0], setDec = _dc[1];
   var _ld = React.useState(""); var lien = _ld[0], setLien = _ld[1];
   var _cd = React.useState(null); var cands = _cd[0], setCands = _cd[1];
+  var _pv = React.useState(true); var prevenir = _pv[0], setPrevenir = _pv[1];
+  var _bs = React.useState({}); var base = _bs[0], setBase = _bs[1];   /* ordre d'affichage figé pendant la saisie */
   var _dl = React.useState(null); var direct = _dl[0], setDirect = _dl[1];
   var _db = React.useState(""); var dirOcc = _db[0], setDirOcc = _db[1];
 
@@ -1243,7 +1249,7 @@ function EcranJourJ() {
         if (!g) return;
         var rl = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
         if (rl && rl.error) throw new Error(rl.error.message || String(rl.error));
-        if (vif) setLignes(rl.data || []);
+        if (vif) { setLignes(rl.data || []); setBase(hsOrdreBase(rl.data || [])); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
     })();
     return function () { vif = false; };
@@ -1256,7 +1262,7 @@ function EcranJourJ() {
     if (l.epreuve1 || l.cheval1_nom) passes.push({ i: i, n: 1, nom: l.nom, ep: l.epreuve1, ch: l.cheval1_nom, hp: l.passage1, pi: l.piste1 });
     if (l.epreuve2 || l.cheval2_nom) passes.push({ i: i, n: 2, nom: l.nom, ep: l.epreuve2, ch: l.cheval2_nom, hp: l.passage2, pi: l.piste2 });
   });
-  passes.sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
+  passes.sort(function (a, b) { var ka = base[a.i + "-" + a.n], kb = base[b.i + "-" + b.n]; return (ka == null ? 99999 : ka) - (kb == null ? 99999 : kb) || a.i - b.i; });
   /* alerte : deux passages à moins de 10 minutes sur deux pistes différentes (la coach ne peut pas être aux deux) */
   var conflits = {};
   for (var a = 0; a < passes.length; a++) for (var b = a + 1; b < passes.length; b++) {
@@ -1301,7 +1307,18 @@ function EcranJourJ() {
         if (!rd || !rd.data || !rd.data.length) throw new Error(F("lien du direct : refusé par la base"));
         setEv(Object.assign({}, ev, { lien_direct: t || null }));
       }
-      setModif({}); setMsg(F("✓ Enregistré. Les cavalières voient leur nouvelle heure sur la fiche du concours."));
+      setModif({}); setBase(hsOrdreBase(lignes));
+      /* 04/11 22h : prévenir chaque cavalière concernée sur son téléphone (fonction serveur notifier-passage) */
+      var faitMsg = F("✓ Enregistré. Les cavalières voient leur nouvelle heure sur la fiche du concours.");
+      if (prevenir && ids.length) {
+        try {
+          var rn = await supa.functions.invoke("notifier-passage", { body: { agenda_id: idEv, engagements: ids } });
+          var dn = rn && rn.data;
+          if (rn && rn.error) faitMsg += " " + F("Notification impossible : ") + (rn.error.message || rn.error);
+          else if (dn && dn.ok) faitMsg += " " + (dn.envois ? F("Notification envoyée") + " (" + dn.envois + ")." : "") + (dn.sans_alertes ? " " + dn.sans_alertes + F(" cavalière(s) sans alertes activées.") : "");
+        } catch (eN) { faitMsg += " " + F("Notification impossible."); }
+      }
+      setMsg(faitMsg);
     } catch (eS) { setMsg(F("Pas enregistré : ") + String((eS && eS.message) || eS)); }
     setOccupe(false);
   }
@@ -1407,6 +1424,9 @@ function EcranJourJ() {
       h("div", { className: "hs-note", style: { marginTop: -4 } }, F("Colle ici la page des résultats en direct : les cavalières auront un bouton « Résultats en direct » sur la fiche du concours.")),
       h("div", { className: "hs-coll" },
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
+        h("label", { style: { display: "flex", alignItems: "center", gap: 10, fontSize: 12.5, color: "rgba(243,238,228,.8)", marginBottom: 10 } },
+          h("input", { type: "checkbox", checked: prevenir, onChange: function (e) { setPrevenir(e.target.checked); }, style: { width: 20, minHeight: 20, height: 20, accentColor: "#C9A66B" } }),
+          F("Prévenir les cavalières sur leur téléphone")),
         h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
