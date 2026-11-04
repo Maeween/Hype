@@ -17125,3 +17125,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Feuille SEP : une 2e page « Récapitulatif des engagements » s'ajoute, à l'écran et dans le PDF partagé : tableau par cheval (nombre de tours, puis 1er / 2e / 3e tour avec cavalière et épreuve, dans l'ordre des couples de l'appli) et tableau par épreuve (tours par épreuve, total). La 1re page reste identique à la fiche papier.
 - Propositions de mise en page (couples A/B/C, récapitulatif 1/2/3) montrées sur une page à part, en attente de son choix ; rien de changé pour ça dans l'appli.
 - Fichiers : hype-ecran-saison.js (v27), index.html (build 20261105-0135), SUIVI.md.
+
+## 04/11/2026 23h50 — CORRECTIF build 20261105-0140 (capture de Blandine 23h45 : « Un caillou dans le sabot », écran engagements, « Can't find variable: tri »)
+- Engagements : la page plantait dès qu'elle dessinait la feuille SEP. Le récapitulatif ajouté au build 0135 (hsRecapFeuille) utilisait la liste « tri », qui n'existait que dans feuilleSep. Correction : hsRecapFeuille refait la même liste triée par nom. Rien d'autre de changé.
+- Vérifié : node --check, et le récapitulatif essayé sur des lignes d'exemple (2 cavalières, 2 chevaux : totaux justes).
+- Fichiers : hype-ecran-saison.js (v28), index.html (build 20261105-0140, ?v=28 sur les 7 écrans du Centre de compétition), SUIVI.md.
