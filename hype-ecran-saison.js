@@ -50,11 +50,11 @@ var CSS = [
   ".hs-titre h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0;color:var(--hs-iv);letter-spacing:.005em}",
   ".hs-titre p{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(17px,4.6vw,21px);margin:8px 0 0;color:var(--hs-iv);opacity:.88}",
   /* pastilles en verre fumé */
-  ".hs-pills{display:flex;gap:8px;margin-top:22px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.hs-pills::-webkit-scrollbar{display:none}",
+  ".hs-pills{display:flex;gap:8px;margin-top:34px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.hs-pills::-webkit-scrollbar{display:none}",
   ".hs-pl{flex:0 0 auto;min-height:36px;padding:0 15px;border-radius:999px;font-size:12px;letter-spacing:.02em;white-space:nowrap;background:linear-gradient(180deg,rgba(28,34,38,.85),rgba(12,16,18,.85));border:1px solid rgba(243,238,228,.08);box-shadow:0 2px 6px rgba(0,0,0,.35);color:var(--hs-iv2)}",
   ".hs-pl.on{border-color:rgba(201,166,107,.7);color:var(--hs-iv)}",
   /* rubriques */
-  ".hs-sec{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px}",
+  ".hs-sec{display:flex;align-items:center;justify-content:space-between;margin:42px 0 16px}",   /* 04/11 22h51 (Blandine : « aéré entre les titres ») : 26/12 → 42/16 */
   ".hs-sec b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:21px;border-inline-start:1.5px solid var(--hs-ch);padding-inline-start:10px;line-height:1.05}",
   ".hs-sec span{font-size:11.5px;color:var(--hs-iv2)}",
   /* cartes concours */
@@ -101,6 +101,8 @@ function EcranMaSaison() {
   var _cl = React.useState([]); var clubs = _cl[0], setClubs = _cl[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
   var _vu = React.useState(null); var vue = _vu[0], setVue = _vu[1];
+  var _tm = React.useState(null); var team = _tm[0], setTeam = _tm[1];   /* 04/11 22h55 : { id, nom, membre } */
+  var _rs = React.useState(""); var reserve = _rs[0], setReserve = _rs[1];
 
   React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
@@ -119,21 +121,28 @@ function EcranMaSaison() {
         if (typeof supa === "undefined" || !supa) { setErreur(F("Pas de connexion.")); setEvs([]); return; }
         var u = null; try { u = await utilisateurActuel(); } catch (eU) { u = null; }
         if (vif) setMoi(u);
-        var noms = [];
-        var p = app.profil || null;
+        /* 04/11 22h55 (Blandine : « l’équipe compétition ne participe pas forcément à la totalité des événements de la SEP », « ça mélange
+           la SEP et Feinn », « concours et stages propres à l’équipe uniquement ») — la saison = les concours et stages RATTACHÉS À L’ÉQUIPE
+           (agenda_groupes, comme la page Team), passés et à venir, depuis le 1er septembre. Une cavalière hors de l’équipe voit la page,
+           mais en touchant un rendez-vous : « Réservé à l’équipe … ». Les modératrices (la coach) ont l’accès de l’équipe. */
+        var rg = (typeof hypeRequeteTeam === "function") ? await hypeRequeteTeam("id, nom") : null;
+        var G = rg && !rg.error && rg.data;
+        if (!G || !G.id) { if (vif) { setTeam(false); setEvs([]); } return; }
+        var membre = false;
         if (u && u.id) {
-          try {
-            var rp = await supa.from("profiles").select("ecurie, ecurie2").eq("id", u.id).maybeSingle();
-            if (rp && rp.data) p = rp.data;
-          } catch (eP) { }
+          try { membre = (typeof estModerateurHype === "function") && estModerateurHype(u); } catch (eM) { }
+          if (!membre) { try { var rmb = await supa.from("groupes_membres").select("user_id").eq("groupe_id", G.id).eq("user_id", u.id).maybeSingle(); membre = !!(rmb && rmb.data); } catch (eMb) { } }
         }
-        [p && p.ecurie, p && p.ecurie2].forEach(function (n) { if (n && n !== "__perso__" && noms.indexOf(n) === -1) noms.push(n); });
-        var cles = []; noms.forEach(function (n) { var k = clefDe(n); if (k && cles.indexOf(k) === -1) cles.push(k); });
-        if (vif) setClubs(noms);
-        if (!cles.length) { if (vif) setEvs([]); return; }
-        var r = await supa.from("club_agenda").select("*").in("club_clef", cles).eq("type", "concours").gte("date_jour", isoDebutSaison).order("date_jour", { ascending: true }).limit(200);
-        if (r && r.error) throw new Error(r.error.message || String(r.error));
-        var liste = (r && r.data) || [];
+        if (vif) setTeam({ id: G.id, nom: G.nom || ((typeof TEAM_NOM_GROUPE !== "undefined") ? TEAM_NOM_GROUPE : F("l’équipe")), membre: membre });
+        var ra = await supa.from("agenda_groupes").select("agenda_id").eq("groupe_id", G.id);
+        if (ra && ra.error) throw new Error(ra.error.message || String(ra.error));
+        var idsT = ((ra && ra.data) || []).map(function (x) { return x.agenda_id; });
+        var liste = [];
+        if (idsT.length) {
+          var r = await supa.from("club_agenda").select("*").in("id", idsT.slice(0, 300)).in("type", ["concours", "stage"]).gte("date_jour", isoDebutSaison).order("date_jour", { ascending: true }).limit(300);
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          liste = (r && r.data) || [];
+        }
         if (vif) setEvs(liste);
         var ids = liste.map(function (x) { return x.id; });
         if (ids.length) {
@@ -184,6 +193,7 @@ function EcranMaSaison() {
   /* ── navigation ── */
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
   function ouvrir(ev) {
+    if (team && !team.membre) { setReserve(F("Réservé à l’équipe ") + team.nom + "."); setTimeout(function () { setReserve(""); }, 2600); return; }
     var fin = String(ev.date_fin || ev.date_jour || "").slice(0, 10);
     if (fin < isoAuj) { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e1) { } setEcran("evenement-passe"); return; }
     /* 04/11 (étape 2) : un concours à venir ou en cours ouvre la NOUVELLE fiche concours (même design) */
@@ -211,7 +221,7 @@ function EcranMaSaison() {
     courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
     h("div", { className: "hs-in" },
       h("div", { className: "hs-titre" }, h("h1", null, F("Ma saison")),
-        h("p", null, F("Tes concours, saison ") + anDebut + "-" + (anDebut + 1) + "."))));
+        h("p", null, (team && team.nom ? team.nom : F("L’équipe")) + F(", saison ") + anDebut + "-" + (anDebut + 1) + "."))));
 
   /* ── une carte concours ── */
   function carte(ev) {
@@ -226,7 +236,7 @@ function EcranMaSaison() {
       h("div", { className: "hs-im", style: { backgroundImage: "url(" + ph.img + ")", backgroundPosition: ph.pos } },
         h("span", { className: "hs-bd" }, badge(ev))),
       h("div", { className: "hs-tx" },
-        h("span", { className: "hs-t" }, ev.titre || F("Concours")),
+        h("span", { className: "hs-t" }, ev.titre || (ev.type === "stage" ? F("Stage") : F("Concours"))),
         h("span", { className: "hs-s" }, plage(ev)),
         (etiquette || lieu) ? h("span", { className: "hs-s" }, etiquette ? h("span", { className: "hs-gp" }, etiquette) : null, lieu) : null,
         moiDedans ? h("span", { className: "hs-mini" }, F("Tu es inscrite")) : null));
@@ -238,12 +248,12 @@ function EcranMaSaison() {
     { k: "finis", l: F("Terminés"), n: finis.length }
   ];
   var listeVue = vueEff === "avenir" ? avenir : (vueEff === "encours" ? encours : finis);
-  var titreVue = vueEff === "avenir" ? F("Prochains concours") : (vueEff === "encours" ? F("En ce moment") : F("Concours terminés"));
-  var videVue = vueEff === "avenir" ? F("Aucun concours à venir pour l’instant.") : (vueEff === "encours" ? F("Aucun concours en ce moment.") : F("Aucun concours terminé cette saison."));
+  var titreVue = vueEff === "avenir" ? F("Prochains rendez-vous") : (vueEff === "encours" ? F("En ce moment") : F("Rendez-vous terminés"));
+  var videVue = vueEff === "avenir" ? F("Rien de prévu pour l’équipe pour l’instant.") : (vueEff === "encours" ? F("Rien en ce moment.") : F("Rien de terminé cette saison."));
 
   var corps;
   if (evs === null) corps = h("div", { className: "hs-attente", "aria-busy": "true" }, "…");
-  else if (!clubs.length) corps = h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Indique ton écurie dans ton profil : tes concours s’afficheront ici."));
+  else if (team === false) corps = h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Aucune équipe compétition pour l’instant."));
   else corps = h("div", null,
     h("div", { className: "hs-pills", role: "tablist" }, pills.map(function (p) {
       return h("button", { type: "button", key: p.k, role: "tab", "aria-selected": vueEff === p.k ? "true" : "false", className: "hs-pl" + (vueEff === p.k ? " on" : ""), onClick: function () { setVue(p.k); } }, p.l + " (" + p.n + ")");
@@ -264,7 +274,8 @@ function EcranMaSaison() {
     hero,
     h("div", { className: "hs-in" },
       corps,
-      erreur ? h("div", { className: "hs-err" }, F("Une partie n’a pas pu se charger : ") + erreur) : null));
+      erreur ? h("div", { className: "hs-err" }, F("Une partie n’a pas pu se charger : ") + erreur) : null),
+    reserve ? h("div", { role: "status", style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 60, maxWidth: "86%", padding: "12px 18px", borderRadius: 999, background: "rgba(12,16,18,.96)", border: "1px solid rgba(201,166,107,.7)", color: "#F3EEE4", fontSize: 13, textAlign: "center", boxShadow: "0 10px 30px rgba(0,0,0,.5)" } }, "🔒 " + reserve) : null);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
