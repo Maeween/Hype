@@ -16792,3 +16792,10 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - hype-cours-atlas.js (version 6, ?v=6) : onglet « Les muscles », titre « Les grands groupes musculaires », les 5 noms et les 5 emplacements, texte de l'image — traduits (en, es, it, de, ja, ar, zh, nl, pt, sv, ru, pl, ko). Rien d'autre touché.
 - À SAVOIR : le cours g5n-04 qui contient l'atlas reste visible des seules modératrices tant que le Galop 5 n'est pas ouvert (GALOPS_I18N id 5 disponible:false ; g5n-01…12 absents de HYPE_COURS_PRETS). Blandine a demandé (10h15) « mets-le en ligne pour tous » : question posée sur l'ouverture du Galop 5 entier.
 - Fichiers : hype-cours-atlas.js, index.html (build 20261104-1025), SUIVI.md.
+
+## 04/11/2026 10h35 — PUBLICATION build 20261104-1035 (accord de Blandine 10h19 « tous les cours qu'on a travaillés et mis en ligne, on peut tous les ouvrir ») : ouverture du Galop 5
+- Le Galop 5 était le seul Galop avec des cours écrits encore fermé (visible des seules modératrices). Galops 8 et 9 : aucun cours, restent « Prochainement ».
+- index.html : GALOPS_I18N id 5 → disponible:true ; HYPE_COURS_PRETS : g5n-01 … g5n-12 ajoutés au 04/11 (badge « NEW » 7 jours). Règles Premium inchangées (debloque:false → aperçu du début de chaque chapitre pour les non-abonnés, comme aux Galops 2 à 7).
+- Vérifié : les 11 cours g5n (01, 03 à 12) ont leur contenu dans les 13 autres langues (aucun bloc resté en français) ; « Les embouchures » (g5n-02) déjà ouvert depuis le 27/10 ; page du Galop 5 ouverte en non-modératrice : plus aucun « En préparation », aucune erreur.
+- L'atlas du Galop 5 (cours g5n-04) devient donc visible de tous.
+- Fichiers : index.html (build 20261104-1035), SUIVI.md.
