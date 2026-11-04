@@ -1073,8 +1073,12 @@ function EcranEngagements() {
     var libre = libres[cle] || (v && !connu);
     var conc = chevaux.filter(function (c) { return c.src === "concours"; }), team = chevaux.filter(function (c) { return c.src === "team"; }), club = chevaux.filter(function (c) { return c.src === "club"; });
     function opt(c) {
+      /* 04/11 23h33 (Blandine : « je vois Apache avec deux écrit à plusieurs endroits ») : le cheval choisi dans cette case
+         affiche SON n° de tour (Apache du Lys (1) chez l'une, (2) chez l'autre) ; dans la liste, les autres chevaux
+         affichent combien de tours ils ont déjà. */
+      if (c.nom === v) { var k = 0; (montes[c.nom] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return h("option", { key: c.id, value: c.nom }, c.nom + (k ? " (" + k + ")" : "")); }
       var nb = (montes[c.nom] || []).length;
-      return h("option", { key: c.id, value: c.nom }, c.nom + (nb ? " · " + nb + (nb > 1 ? F(" tours") : F(" tour")) : ""));
+      return h("option", { key: c.id, value: c.nom }, c.nom + (nb ? F(" — déjà ") + nb + (nb > 1 ? F(" tours") : F(" tour")) : ""));
     }
     if (libre) return h("div", { style: { display: "flex", gap: 6, minWidth: 0 } },
       h("input", { type: "text", value: v, placeholder: F("Nom du cheval"), autoFocus: !!libres[cle] && !v, onChange: function (e) { poserL(i, k, e.target.value); }, style: { flex: 1, minWidth: 0 } }),
@@ -1175,9 +1179,9 @@ function EcranEngagements() {
           h("div", { className: "hs-g2" },
             h("div", { className: "hs-champ" }, h("label", null, F("Nom Prénom")), h("input", { type: "text", value: l.nom || "", placeholder: "NOM Prénom", onChange: function (e) { poserL(i, "nom", e.target.value); } })),
             h("div", { className: "hs-champ" }, h("label", null, F("Licence")), h("input", { type: "text", value: l.licence || "", autoCapitalize: "characters", onChange: function (e) { poserL(i, "licence", e.target.value); } }))),
-          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"), tourDe(i, 1))),
+          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"))),
           h("div", { className: "hs-ep" }, selEp(i, "epreuve1"), selCh(i, 1)),
-          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("2e épreuve et cheval (facultatif)"), tourDe(i, 2))),
+          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("2e épreuve et cheval (facultatif)"))),
           h("div", { className: "hs-ep", style: { marginBottom: 0 } }, selEp(i, "epreuve2"), selCh(i, 2)));
       })) : h("div", { className: "hs-vide" }, F("Aucune cavalière pour l’instant. Ajoute-les ci-dessous.")),
       /* où on en est : cavalières et chevaux prévus, grisés une fois engagés */

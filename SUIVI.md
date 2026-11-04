@@ -17114,3 +17114,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 ## 05/11/2026 00h05 — PUBLICATION build 20261105-0120 (Blandine 23h31 : « fais moins visuel pour ce que tu proposes »)
 - Engagements : les cavalières et chevaux proposés (et les résultats de la recherche) ne sont plus des bulles encadrées mais de simples mots discrets ; « + » pour ajouter, ✓ et grisé une fois engagés.
 - Fichiers : hype-ecran-saison.js (v25), index.html (build 20261105-0120), SUIVI.md.
+
+## 05/11/2026 00h10 — PUBLICATION build 20261105-0125 (Blandine 23h33 : « je vois Apache avec deux écrit à plusieurs endroits, c'est pas normal »)
+- Engagements : le n° de tour du cheval n'apparaît plus qu'une fois, dans la case du cheval choisi : « Apache du Lys (1) » chez la première cavalière, « Apache du Lys (2) » chez la suivante. Le petit rappel doré à droite des titres d'épreuve est retiré (doublon).
+- Dans la liste déroulante, les autres chevaux indiquent « — déjà 2 tours » (au lieu de « · 2 tours », lu comme une erreur quand il s'affichait dans chaque case).
+- Fichiers : hype-ecran-saison.js (v26), index.html (build 20261105-0125), SUIVI.md.
