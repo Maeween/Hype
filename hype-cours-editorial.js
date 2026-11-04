@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 66;   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
+var VERSION = 67;   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
+/* précédente : VERSION = 66; */   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
 /* précédente : VERSION = 65; */   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
 /* précédente : VERSION = 64; */   /* 04/11 : photos provisoires des 15 nouveaux cours du Galop 6 (g6n) */
 /* précédente : VERSION = 63; */   /* 04/11 : g5n-04 — atlas Galop 5 (grands groupes musculaires) */
@@ -1783,7 +1784,7 @@ function Chapitre(p) {
       kick, titreH,
       p.sous ? h("p", { className: "sous rb-sous" }, p.sous) : null,
       p.note ? h("p", { className: "note rb-note" }, p.note) : null,
-      p.bg ? h("figure", { className: "rb-photo" }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,
+      p.bg ? h("figure", { className: "rb-photo", style: HAUTEUR_PHOTO_CHAP_TEL[p.bg] ? { background: "transparent" } : undefined }, h("img", { src: p.bg, alt: "", loading: "lazy", style: HAUTEUR_PHOTO_CHAP_TEL[p.bg] ? { maxHeight: HAUTEUR_PHOTO_CHAP_TEL[p.bg], width: "auto", maxWidth: "100%", margin: "0 auto" } : undefined })) : null,
       h(MobileLectureNotions, { items: p.items })));
   return h("div", { className: "hce-chp rb rbd" + (p.inv ? " rbinv" : "") + (p.bg ? "" : " rbd-sans") + (p.cls ? " " + p.cls : "") },   /* 01/11 23h50 : rbd-sans = chapitre sans photo, texte centré sur toute la largeur */
     p.bg ? h("div", { className: "rbd-ph", "aria-hidden": true, style: { "--x": "url(" + p.bg + ")", backgroundPosition: p.bgPos || "50% 40%" } }, h("img", { src: p.bg, alt: "", loading: "lazy" })) : null,   /* tablette : la photo entière (img) ; ordinateur : la même en fond */
@@ -2314,6 +2315,8 @@ var CHAP_SANS_PHOTO = { "g1-c5": [1], "g3-c1": [0, 1, 2] };   /* 01/11 23h45 (Bl
 /* 01/11 21h (Blandine : « ajouter une vidéo dans le chapitre respiration, celle qu'on utilise à l'accueil ») : [vidéo, image d'attente] */
 var VIDEOS_NOTION = {};   /* 01/11 21h30 (Blandine : « retire la vidéo de la partie respiration, ça ne va pas avec le reste ») — avant : g1-c20 « La respiration » = vidéo de l'accueil */
 /* 02/11 14h51 (Blandine : cadrage « D ») : cadrage d'une photo de chapitre sur tablette et ordinateur (photo en fond d'une colonne haute), par fichier */
+/* 04/11 17h55 (Blandine : « réduis de fou la taille de cette image ») : photo de chapitre trop haute sur téléphone — gardée entière, mais limitée en hauteur (fond noir de la photo = bords invisibles) */
+var HAUTEUR_PHOTO_CHAP_TEL = { "images/connexion-cheval-oeil-hd.jpg": "34vh" };
 var POS_PHOTO_CHAP = { "images/cours-g1-c20-pieds.webp": "50% 85%" };
 var PHOTOS_NOTION = { "g1-c4": { "Le Pas": "images/allures-g1-pas.webp", "Le Trot": "images/allures-g1-trot.webp", "Le Galop": "images/allures-g1-galop.webp" } };
 /* 01/11 21h15 (Blandine : « recadre ») : cadrage des petites photos du menu des chapitres, photo par photo, pour que le sujet se voie (tête du cheval, cavalier, pieds…) */
