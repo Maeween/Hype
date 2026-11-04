@@ -17130,3 +17130,14 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Engagements : la page plantait dès qu'elle dessinait la feuille SEP. Le récapitulatif ajouté au build 0135 (hsRecapFeuille) utilisait la liste « tri », qui n'existait que dans feuilleSep. Correction : hsRecapFeuille refait la même liste triée par nom. Rien d'autre de changé.
 - Vérifié : node --check, et le récapitulatif essayé sur des lignes d'exemple (2 cavalières, 2 chevaux : totaux justes).
 - Fichiers : hype-ecran-saison.js (v28), index.html (build 20261105-0140, ?v=28 sur les 7 écrans du Centre de compétition), SUIVI.md.
+
+## 05/11/2026 00h50 — PUBLICATION builds 20261105-0150 et 0155 (Blandine 23h47 : « avoir direct en visu la fiche cavalier et la fiche cheval pour les engagements, puis des onglets pour voir par épreuve et la grille des tours » + « adapte le visuel, qu'on ne soit pas blindé de verre pétrole plein les yeux partout »)
+- Engagements, trois onglets sous « Les épreuves » :
+  · « Cavalières et chevaux » (ouvert d'office) : fiches des cavalières (modifiables, numérotées), propositions et recherche, puis « Les chevaux » : une fiche par cheval avec des ronds (tours prévus), « 1 libre / complet / trop de 1 », et qui le monte (1. Masure Club 3, 2. Ella Club 3…). Réglage « 3 tours max » à côté.
+  · « Par épreuve » : chaque épreuve avec son nombre de tours, puis cavalière et cheval (petit n° de tour du cheval).
+  · « Grille des tours » : Tour 1 / 2 / 3 de chaque cheval, « libre » dans les cases restantes, total des tours et des places libres. Tient dans la largeur du téléphone (le tableau d'avant dépassait).
+- L'ancien « Récapitulatif » (colonne « Places » pas claire) est remplacé par ces vues.
+- Style allégé sur cette page : champs soulignés au lieu de cases pleines, plus de cadres « verre pétrole » autour des couples, bouton Enregistrer transparent.
+- ERREUR DE MA PART (build 0135), signalée : en renommant la liste du récapitulatif de la feuille SEP, j'avais cassé hsRecapFeuille (« Can't find variable: tri ») — la page Engagements plantait ; corrigé par l'autre session au build 0140 (merci). Ici, le récap de la feuille reprend l'ordre des couples de l'appli (et non l'ordre alphabétique) pour que 1er/2e/3e tour = (1)(2)(3) à l'écran. Feuille SEP testée : 2 pages, aucune erreur.
+- Le premier envoi (0150) réutilisait ?v=28, déjà pris par le build 0140 : corrigé en ?v=29. L'entrée de suivi de 0150 s'était perdue à la fusion : rajoutée ici, avec le build 0155 (aucun autre changement).
+- Fichiers : hype-ecran-saison.js (v29), index.html (build 20261105-0155), SUIVI.md.
