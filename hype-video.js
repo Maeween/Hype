@@ -1321,6 +1321,16 @@
     ".hv2-dA .hv2-photo{height:480px;width:100%;max-width:1240px;margin:0 auto;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%)}",
     ".hv2-dA .hv2-courbe.c2{max-width:1240px;margin:-64px auto 0}.hv2-dA .hv2-hero-retour{margin-bottom:6px}",
     ".hv2-dA .hv2-titre h1{font-size:68px}",
+    /* C, D, E (04/11 09h17, Blandine : « j'aurais aimé A mais avec photos plus dézoomées et entières ») :
+       la photo est montrée ENTIÈRE (rien de coupé), à sa forme naturelle, fondue sur ses bords vers le noir ;
+       C = 520 px, titre à droite sous le trait ; D = 440 px, titre centré ; E = 580 px, photo calée à droite. */
+    ".hv2-dC .hv2-photo,.hv2-dD .hv2-photo,.hv2-dE .hv2-photo{width:100%;max-width:1240px;margin:0 auto;display:flex;justify-content:center;-webkit-mask-image:none;mask-image:none;background:transparent}",
+    ".hv2-dC .hv2-photo{height:520px}.hv2-dD .hv2-photo{height:440px}.hv2-dE .hv2-photo{height:580px;justify-content:flex-end;padding-inline-end:32px}",
+    ".hv2-dC .hv2-photo img,.hv2-dD .hv2-photo img,.hv2-dE .hv2-photo img{width:auto;max-width:100%;height:100%;object-fit:contain;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 62%,transparent 94%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 62%,transparent 94%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-composite:intersect}",
+    ".hv2-dC .hv2-photo.hv2-traite:after,.hv2-dD .hv2-photo.hv2-traite:after,.hv2-dE .hv2-photo.hv2-traite:after{display:none}",
+    ".hv2-dC .hv2-courbe.c2,.hv2-dD .hv2-courbe.c2,.hv2-dE .hv2-courbe.c2{max-width:1240px;margin:-64px auto 0}",
+    ".hv2-dC .hv2-titre h1,.hv2-dD .hv2-titre h1,.hv2-dE .hv2-titre h1{font-size:68px}",
+    ".hv2-dD .hv2-titre{text-align:center}",
     /* B */
     ".hv2-dB .hv2-hero{display:grid;grid-template-columns:minmax(0,40fr) minmax(0,60fr);grid-template-rows:auto auto 1fr auto;grid-template-areas:'m m' 'r p' 't p' 'c c';max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;column-gap:24px}",
     ".hv2-dB .hv2-marque{grid-area:m}.hv2-dB .hv2-hero-retour{grid-area:r;padding:0;margin:26px 0 0;max-width:none}",
