@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 70;   /* 04/11 22h30 (Blandine) : grand lexique — photo de fond dézoomée (« Dézoome 2 »), recherche : les noms d'abord puis « Le mot apparaît aussi dans ces définitions » (S2), « Tu veux découvrir cette notion dans une autre langue ? » (C), moins de vide en bas */
+var VERSION = 71;   /* 04/11 23h10 : photo de la fiche d'une notion en couleurs naturelles */
+/* précédente : VERSION = 70; */   /* 04/11 22h30 (Blandine) : grand lexique — photo de fond dézoomée (« Dézoome 2 »), recherche : les noms d'abord puis « Le mot apparaît aussi dans ces définitions » (S2), « Tu veux découvrir cette notion dans une autre langue ? » (C), moins de vide en bas */
 /* précédente : VERSION = 69; */   /* 04/11 soir (Blandine : maquette du grand lexique validée) : grand lexique — nouvelle présentation (photo en fond, recherche à côté du filtre, alphabet en reflet, fiche d'une notion avec flèches, partage, mémoire des filtres et du défilement) */
 /* précédente : VERSION = 68; */   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
 /* précédente : VERSION = 67; */   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
@@ -4049,7 +4050,7 @@ var CSS_GLEX = [
 ".hglx-flag{display:inline-flex;align-items:center;justify-content:center;min-width:34px;min-height:44px}",
 /* fiche */
 ".hglx-photo{width:100%;aspect-ratio:1.45;background:var(--hx-bg);overflow:hidden}",
-".hglx-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:saturate(.58) brightness(.98)}",
+".hglx-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%}",   /* 04/11 23h10 (Blandine « 2 ok ») : couleurs naturelles, plus de filtre terne */
 ".hglx-detail-content{padding:0 24px 25px}",
 ".hglx-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:55px}",
 ".hglx-meta-label{color:var(--hx-champagne);font-size:11px;letter-spacing:1px}",

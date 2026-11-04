@@ -1,3 +1,70 @@
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 05/11/2026 00h15)
+Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
+pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
+
+## 1 — Urgent
+- [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
+- [26/10] Sécurité : supprimer la clé d'accès Supabase créée pour régler les mails (supabase.com/dashboard/account/tokens) et le secret HYPE_CLE_MAILS. Ils ne servent plus et sont toujours actifs (attend : Blandine)
+- [19/10] Sécurité des photos : deux règles en base sont trop ouvertes. L'auteur d'une identification peut la passer « acceptée » lui-même (on peut taguer quelqu'un sans son accord, y compris des mineures), et n'importe quel compte peut dater une photo qui n'est pas à lui. Le correctif en base attend ton accord (attend : Blandine)
+- [04/11] Pages Google des cours : personne n'a encore vérifié ce que voit un visiteur sans compte qui touche « Voir les abonnements ». C'est le chemin vers le paiement (attend : Claude)
+
+## 2 — Important
+- [15/10] Médiateur de la consommation, obligatoire pour vendre aux particuliers : choisir un médiateur agréé et y adhérer au nom de l'association. Claude complète ensuite l'article 11 des CGV dans toutes les langues (attend : Blandine)
+- [26/10] L'argent reste bloqué sur l'ancien compte Stripe « Feinn » (virements réglés en manuel). Il faut y ajouter le RIB de l'association. La vérification d'identité est à refaire en ouvrant le lien du mail dans Safari, pas dans Outlook (attend : Blandine)
+- [26/10] Demander au comptable si l'association doit facturer la TVA. Les prix sont aujourd'hui sans TVA, et il y a eu environ 278 € d'encaissements sur l'ancien compte (attend : Blandine)
+- [18/10] Décider ce qui se passe quand un abonné Premium achète aussi Hype IA, et quand quelqu'un change de formule dans Stripe. Aujourd'hui l'appli envoie seulement une alerte et ne change rien (attend : Blandine)
+- [21/10] Choisir « Enseignant » ou « Professionnel » dans les questions d'accueil donne tout de suite le statut Pro, sans aucun contrôle. Claude doit dire ce que ce statut débloque, puis il faut décider s'il faut une validation (attend : Claude)
+- [04/11] Vidéothèque : environ 35 vidéos ont été ouvertes à tous sans vérifier qu'elles se lisent. Il faut les essayer une par une sur iPhone (attend : Blandine)
+- [04/11] Centre de compétition : tout a été testé seulement avec des données d'exemple. À essayer avec les vrais comptes de l'équipe : Ma saison, fiche du concours, engagements et feuille SEP en PDF, liste du van, Jour J, notification des heures de passage, vidéo de parcours commentée (attend : Blandine)
+- [04/11] Ma saison ne montre que les rendez-vous rattachés à la Team (3 aujourd'hui). Les autres concours et stages de l'équipe n'apparaîtront que s'ils sont partagés avec elle depuis la page Team (« Pour qui ? ») (attend : Blandine)
+- [04/11] Tests sur iPhone en attente pour les dernières mises en ligne : grand lexique (lettre, notion, cours, retour, « Partager cette notion », autres langues), liste du van (cartes photo, matériel du cheval), Ma saison (réservé à l'équipe), icônes des cavaliers sans photo, photos agrandies de « Comprendre le cheval », compléments en bas des cours du Galop 4, reprise de lecture et « Ouvrir dans YouTube » (attend : Blandine)
+- [04/11] Vidéos ajoutées par les cavaliers : à tester en vrai. Ajouter une vidéo YouTube, la proposer, puis l'accepter avec le compte modératrice (attend : Blandine)
+
+## 3 — Quand on aura le temps
+- [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
+- [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
+- [04/11] Vidéothèque : un lien vers une vidéo précise (#v=…) ouvre l'accueil de la Vidéothèque au lieu de la vidéo (attend : Claude)
+- [04/11] Vidéothèque : essayer sur iPhone la petite fenêtre flottante en plein écran. YouTube peut la refuser (attend : Blandine)
+- [04/11] Photos des thèmes de la Vidéothèque encore provisoires, sauf Dressage, Obstacle, Position du cavalier et Santé : choisir les photos définitives (attend : Blandine)
+- [04/11] Galop 6 : les photos des chapitres sont provisoires (ce sont celles du Galop 7) (attend : Blandine)
+- [02/11] Photos de manège provisoires dans les Galops 1 à 3 : les remplacer quand les bonnes photos arrivent (dont g3-c4, g3-c5, g3-c9, g3-c11) (attend : Blandine)
+- [26/10] Ma Sellerie : les photos des cartes sont des découpes provisoires, et les images « v4-doré » de Demi Volte n'ont pas été reçues (attend : Blandine)
+- [31/10] Le Mag : photos à remplacer (couverture, thèmes Galops et Culture, bloc Galops 1 à 7, carte Hey Baby). Les vignettes La Baule, Lamotte et Le Mans sont facultatives (attend : Blandine)
+- [25/10] Page d'entrée : refaire la photo de l'œil en vraie haute définition, une version verticale et une version paysage (attend : Blandine)
+- [02/11] Galop 5 : quatre choix de contenu restent ouverts. C4 galop à faux, C6 cadence, C7 serpentine du défi, C8 départ de la bande (attend : Blandine)
+- [04/11] Galops 6 et 7 : termes de traduction à faire relire par quelqu'un qui parle la langue. Suédois « épaule en dedans » (« Bogen in »), arabe « filet de bride », polonais « mise en main », plus quelques termes en japonais, coréen, allemand, russe, portugais et espagnol (attend : Blandine)
+- [04/11] Centre de compétition : seules « Ma saison » et la « Liste du van » sont traduites (05/11). Fiche du concours, engagements, Jour J, dossier, vidéo de parcours : en français seulement, à traduire quand tu donnes le feu vert (attend : Blandine)
+- [04/11] Résultats en direct : envoyer les liens des résultats des concours club de l'équipe, pour savoir quels chronométreurs lire après Winjump (attend : Blandine)
+- [04/11] Le direct Winjump n'a pas encore été essayé sur un vrai concours de l'équipe. L'Open SEP du 8/11 n'est pas sur Winjump (attend : Blandine)
+- [20/10] Challenge SEP : il reste à donner les catégories CSO (le « P4 »), le barème CSO définitif et les dates de l'Equifun (attend : Blandine)
+- [20/10] Challenge SEP : un membre connecté peut lire en base les résultats en brouillon s'il contourne la page. Correctif à valider (attend : Blandine)
+- [22/10] Groupes : décider si l'accès aux groupes depuis la page Écurie est visible par tous ou par les membres seulement, et si les groupes apparaissent sur la page Cavalier (attend : Blandine)
+- [18/10] Les fonctions Premium (Galops 2 à 7, santé, import FFE, nombre de chevaux) ne sont verrouillées que dans l'appli : la base ne revérifie pas. C'est un chantier à part, à proposer avant d'y toucher (attend : Claude)
+- [18/10] Qualifications aux championnats : rien n'est codé. La requête de lecture pour comparer cheval par cheval est prête (attend : Blandine)
+- [15/10] Hey Baby : faire analyser les vidéos par le serveur, comme les photos, pour que la réponse ne se perde pas si on quitte l'appli. Environ 1 à 2 h (attend : Claude)
+- [15/10] Surveiller le premier vrai achat Premium Famille : famille ouverte, invitation, renouvellement (attend : Claude)
+- [15/10] Repérer les vouvoiements qui restent dans les autres pages et te les proposer avant de les corriger (attend : Claude)
+- [19/10] Finir de passer les anciennes vidéos stockées hors Mux. Environ 22 restent, plus les autres réglages photos/vidéos proposés : tailles réelles dans les albums, cache plus long (attend : Claude)
+
+## 4 — Plus tard / idées
+- [04/11] PayPal sur le compte Stripe de l'association : créer un compte PayPal pro de l'association avec un nouvel alias e-mail (l'ancien compte est bloqué par un vieux numéro fixe), puis activer les paiements récurrents (attend : Blandine)
+- [04/11] Contacter FFE Compétition pour un partenariat ou un accès aux engagés, horaires et résultats (officiels.competition@ffe.com), quand le Centre de compétition sera finalisé (attend : Blandine)
+- [04/11] Centre de compétition, suite : page publique Hype Live, annuaire des concours en direct, autres chronométreurs que Winjump (Time'In…). Avant toute page publique, il faut un accord écrit des chronométreurs (attend : Blandine)
+- [04/11] Partage d'un cours : si un jour on met une limite au nombre de partages, il faudra des liens uniques enregistrés en base. Le code actuel peut être fabriqué par quelqu'un de débrouillard (attend : Claude)
+- [04/11] Atlas animé du cheval (modèle 3D, Laboratoire du mouvement) : mis de côté au profit de l'atlas simple (attend : Blandine)
+- [02/11] Lecture à voix haute : une vraie voix enregistrée à la place de celle du téléphone, en commençant par le français (attend : Blandine)
+- [27/10] Galops 8 et 9 : aucun cours écrit, ils restent « Prochainement » (attend : Blandine)
+- [25/10] Carte « Exercices pratiques » de la page Galops : contenu à créer (des exercices à travailler ou à faire travailler pour chaque niveau) (attend : Blandine)
+- [25/10] Version claire de la page Galops, peut-être avec un bouton clair/sombre en haut : « on en reparle » (attend : Blandine)
+- [25/10] Se servir des envies, du niveau et de l'âge saisis à l'inscription (ligne « Pour toi » sur l'Accueil, page Galops ouverte sur le prochain Galop, Hey Baby adapté, protections pour les moins de 18 ans, endroit pour modifier ses envies). Aucune idée choisie (attend : Blandine)
+- [20/10] Page d'équipe par défaut que chaque écurie pourrait créer et remplir elle-même, sur le modèle de la Team Compétition SEP, puis rebrancher « Créer une équipe » (attend : Blandine)
+- [01/11] Reprise Amateur 3 Grand Prix : ajouter des conseils du coach si tu le demandes (attend : Blandine)
+- [19/10] Regrouper en une seule carte du fil les photos sans texte publiées à la suite par la même personne le même jour (attend : Blandine)
+- [21/10] Petit ménage en base : réponses Hey Baby qui s'accumulent, et ligne de progression du compte de test Claude à nettoyer (attend : Claude)
+- [16/09] Vieux petits nettoyages de base, à revérifier : Liam a deux comptes (@gmail.com et @gmail.fr), un profil a la SEP en double, une épingle Hey Baby porte un faux cheval « idao », et la colonne resultats.format_large manque (attend : Claude)
+
+────────────────────────────────────────────────────────────
+
 PASSATION — HYPE (PWA équestre) · état au 16/09/2026, 21 h 30
 
 Ce document remplace la passation du 15/09 et consolide les 27 livraisons
@@ -16988,25 +17055,34 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
   · Constaté en base : 3 rendez-vous rattachés à la Team (2 concours, 1 stage) depuis le 20/09 — les autres concours de la SEP n’apparaîtront que s’ils sont partagés avec l’équipe (page Team, « Pour qui ? »).
   · Tests (appli réelle en local, base simulée) : membre → 1 à venir / 2 terminés (dont le stage), la carte ouvre la fiche ; hors équipe → mêmes onglets, « Réservé à l’équipe Team CSO Club. » ; 0 erreur ; 17 blocs OK.
   · Fichiers : hype-ecran-saison.js (?v=8), index.html (build 20261104-2359), SUIVI.md.
-- 05/11 00h05 PUBLICATION (Blandine : « elle peut voir les onglets comme n’importe qui … une cavalière qui n’est pas dans l’équipe, si elle pouvait voir la liste et ce qu’elle prépare : on peut limiter ; elle a le droit de voir quand même les concours qui sont prévus ») — CORRIGE l’entrée de 23h00 : une cavalière hors de l’équipe voit Ma saison comme tout le monde (onglets, cartes) et OUVRE la fiche du concours ; seule « Ma préparation » (Ma liste du van, Le dossier) lui répond « 🔒 Réservé à l’équipe Team CSO Club. » (sous la carte, 3 s). Membres du groupe et modératrices : inchangé. hsEquipe() (groupe Team + appartenance), gardé pour la session. Tests (base simulée) : membre → la liste du van s’ouvre ; hors équipe → fiche ouverte, liste du van réservée ; 0 erreur ; 17 blocs OK. Fichiers : hype-ecran-saison.js (?v=9), index.html (build 20261105-0005), SUIVI.md.
+- 05/11 00h05 PUBLICATION (Blandine : « elle peut voir les onglets comme n’importe qui … une cavalière qui n’est pas dans l’équipe, si elle pouvait voir la liste et ce qu’elle prépare : on peut limiter ; elle a le droit de voir quand même les concours qui sont prévus ») — CORRIGE l’entrée de 23h00 : une cavalière hors de l’équipe voit Ma saison comme tout le monde (onglets, cartes) et OUVRE la fiche du concours ; seule « Ma préparation » (Ma liste du van, Le dossier) lui répond « 🔒 Réservé à l’équipe Team CSO Club. » (sous la carte, 3 s). Membres du groupe et modératrices : inchangé. hsEquipe() (groupe Team + appartenance), gardé pour la session. Tests (base simulée) : membre → la liste du van s’ouvre ; hors équipe → fiche ouverte, liste du van réservée ; 0 erreur ; 17 blocs OK. Fichiers : hype-ecran-saison.js (?v=9), index.html (build 20261105-0100), SUIVI.md.
 
 ## 04/11/2026 23h15 — PUBLICATION build 20261105-0015 (Blandine 23h13, capture : « en dessous les parties du carnet sont toutes petites et trop décalées, on voit même pas ce que c'est »)
 - Ma saison, bloc « Le carnet » : les 3 vignettes photo (texte minuscule coupé, photos sans rapport) sont remplacées par les MÊMES cartes que la liste du haut (photo, titre, date, lieu lisibles). hype-ecran-saison.js v10. Rien d'autre touché.
 - À FAIRE PLUS TARD (Blandine 22h11-22h14, quand le Centre de compétition sera finalisé) : demandes de PARTENARIAT pour les résultats en direct auprès d'Innov'Data / Winjump (contact@winjump.com), World Sport Timing et FFE Compet (officiels.competition@ffe.com). Recherche du 04/11 : aucun prix public d'accès aux données pour une autre appli, tout se fait sur devis ; seul prix public trouvé : WS Data (secrétariat de concours Winjump) 480 € TTC par événement.
-- Fichiers : hype-ecran-saison.js, index.html (build 20261105-0015), SUIVI.md.
+- Fichiers : hype-ecran-saison.js, index.html (build 20261105-0100), SUIVI.md.
 
 ## 04/11/2026 23h25 — PUBLICATION build 20261105-0025 (Blandine 23h15 « on peut choisir une cavalière mais pas un cheval ? », 23h16 « évite les boutons pleins dorés, je l'ai dit au moins 50 fois »)
 - Engagements : le cheval se choisit maintenant dans un VRAI MENU (comme l'épreuve) : « Chevaux de l'équipe » (groupe Team, groupes_chevaux) en premier, puis « Chevaux du club » ; si le filtre du club ne trouve rien, tous les chevaux des cavalières sont proposés ; « Autre cheval (taper son nom) » ouvre une saisie libre (☰ pour revenir à la liste). Avant : simple case de texte avec suggestions iPhone, on ne voyait pas qu'on pouvait choisir.
 - RÈGLE RAPPELÉE PAR BLANDINE : PLUS JAMAIS DE BOUTON REMPLI D'OR. Tous les boutons principaux du Centre de compétition (.hs-btn.plein : Je participe, Engagements et feuille SEP, Enregistrer, Télécharger, Résultats en direct, Lire le direct…) deviennent détourés champagne sur verre sombre, texte ivoire. Cases cochées de la liste du van : coche champagne sans fond doré.
-- Fichiers : hype-ecran-saison.js (v11), index.html (build 20261105-0025), SUIVI.md.
+- Fichiers : hype-ecran-saison.js (v11), index.html (build 20261105-0100), SUIVI.md.
 
 ## 04/11/2026 23h35 — PUBLICATION build 20261105-0035 (Blandine 23h16-23h17 : capture « Impossible d'ouvrir ce concours : Concours introuvable » en revenant dans l'appli ; « pour l'instant, toute cette série-là, tu la laisses pas accessible à qui que ce soit à part moi »)
 - CENTRE DE COMPÉTITION RÉSERVÉ À BLANDINE : les 7 écrans (Ma saison, fiche concours, Engagements, liste du van, Jour J, dossier, vidéo de parcours) passent par une garde (hsGarde) : seule la modératrice (estModerateurHype / hype_est_moderatrice) y entre, les autres voient « Bientôt disponible ». Le bouton « Ma saison » de la page Team n'est visible que par elle (hype-ecran-team.js v4). Pour ouvrir à tous plus tard : HS_OUVERT_A_TOUS = true dans hype-ecran-saison.js. Rien n'est supprimé, aucune donnée touchée.
   ⚠ Conséquence : les notifications « heure de passage » envoyées depuis Jour J mènent les cavalières vers « Bientôt disponible » tant que c'est fermé.
 - « CONCOURS INTROUVABLE » EN REVENANT : quand l'iPhone relance Hype, le concours ouvert (gardé en mémoire vive) était perdu. Il est maintenant aussi noté sur le téléphone (localStorage « hype_concours_ouvert », et la vidéo ouverte « hype_video_parcours ») et relu s'il manque.
-- Fichiers : hype-ecran-saison.js (v12), hype-ecran-team.js (v4), index.html (build 20261105-0035), SUIVI.md.
+- Fichiers : hype-ecran-saison.js (v12), hype-ecran-team.js (v4), index.html (build 20261105-0100), SUIVI.md.
 
 ## 04/11/2026 23h30 — PUBLICATION build 20261105-0045 (Blandine 23h20 : « c'est pas intuitif, ça fait 4 fois que je m'y reprends pour passer les engagements sur le concours de Versailles ; je tombe sur cette page et j'arrive même pas à retrouver la bonne page », capture de la page souvenirs du CSO Versailles)
 - Page du rendez-vous (hype-ecran-evenement-passe.js, celle de la capture) : sur un CONCOURS, grande carte « Centre de compétition — Engagements et feuille SEP, jour J, liste du van, dossier » sous l'en-tête, qui ouvre la fiche du concours. Visible par la modératrice seulement (comme le Centre).
 - Fiche concours : le bloc « Pour la coach » (Engagements et feuille SEP, Jour J, Le dossier) passe TOUT EN HAUT, avant les infos pratiques, au lieu du bas de page.
-- Fichiers : hype-ecran-saison.js, hype-ecran-evenement-passe.js, index.html (build 20261105-0045), SUIVI.md.
+- Fichiers : hype-ecran-saison.js, hype-ecran-evenement-passe.js, index.html (build 20261105-0100), SUIVI.md.
+- Fichiers : hype-ecran-saison.js (v12), hype-ecran-team.js (v4), index.html (build 20261105-0100), SUIVI.md.
+- 05/11 00h15 PUBLICATION (Blandine : « 1 ok 2 ok 3 oui ok », « 4 ok », et « adapter le visuel des icônes des cavaliers à leur page de couverture ») :
+  · (1) Quiz de l'épaule en dedans (g7n-12, question 1) : « Selon la FFE, … » retiré dans les 14 langues (« L'épaule en dedans, c'est… ») — hype-cours-galop7.js COURS_GALOP7_VERSION 10, ?v=11sv1ru1pl1ko1.
+  · (2) Grand lexique : photo en haut d'une notion en couleurs naturelles (filtre terne retiré) — hype-cours-editorial.js VERSION 71, ?v=71.
+  · (3) « Ma saison » et « Liste du van » traduites dans les 13 autres langues (56 textes + les 30 lignes de la liste de départ, écrites dans la langue de la cavalière à la création de sa liste ; dates dans la langue de l'appli). Les autres écrans du Centre de compétition restent en français. hype-ecran-saison.js ?v=20 (HS_TR, hsT).
+  · (4) Liste « À FAIRE — PAR ORDRE D'URGENCE » ajoutée EN TÊTE de ce suivi (4 niveaux, à tenir à jour).
+  · Icônes des cavaliers sans photo : la même image que le haut de leur page Cavalier (images/mes-chevaux-fond-couchant.webp, cheval au couchant) au lieu de la rotation d'images bleu « spectral » (avatarHypeDefaut, index.html ; une ligne à retirer pour revenir en arrière). Partout où l'appli montre un cavalier sans photo (Communauté, fil, Team, agenda…).
+  · Tests (appli réelle en local, base simulée) : Ma saison et liste du van en en / ar / ja / de (titres, onglets, dates, listes, aucun texte français restant hors noms propres) ; notion du lexique sans filtre ; avatar par défaut = cheval au couchant ; 0 erreur ; 17 blocs OK.
+  · Fichiers : hype-ecran-saison.js, hype-cours-editorial.js, hype-cours-galop7.js, index.html (build 20261105-0100), SUIVI.md.

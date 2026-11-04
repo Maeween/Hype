@@ -16,6 +16,104 @@
    Textes en français seulement : traduction quand le français sera relu (règle de Blandine).
    Accès : 2hype.fr/#saison, et le lien « Ma saison » sous l'agenda de la page Team. */
 (function () {
+/* 04/11 23h10 (Blandine « 3 oui ok ») — TRADUCTIONS de « Ma saison » et de la « Liste du van » (13 langues ; le français reste la clé).
+   Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
+var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
+var HS_TR_BRUT = {
+  "Pas de connexion.": ["No connection.", "Sin conexión.", "Nessuna connessione.", "接続できません。", "Keine Verbindung.", "لا يوجد اتصال.", "没有网络连接。", "Geen verbinding.", "Sem conexão.", "Ingen anslutning.", "Нет соединения.", "Brak połączenia.", "연결이 안 돼요."],
+  "l’équipe": ["the team", "el equipo", "la squadra", "チーム", "das Team", "الفريق", "团队", "het team", "a equipe", "laget", "команда", "drużyna", "팀"],
+  "demain": ["tomorrow", "mañana", "domani", "明日", "morgen", "غدا", "明天", "morgen", "amanhã", "i morgon", "завтра", "jutro", "내일"],
+  "dans ": ["in ", "en ", "tra ", "あと", "in ", "بعد ", "还有", "over ", "em ", "om ", "через ", "za ", ""],
+  "en cours": ["ongoing", "en curso", "in corso", "開催中", "läuft", "جار", "进行中", "bezig", "em andamento", "pågår", "идёт", "trwa", "진행 중"],
+  "Retour": ["Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"],
+  "Ma saison": ["My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"],
+  "L’équipe": ["The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipe", "Laget", "Команда", "Drużyna", "팀"],
+  ", saison ": [", season ", ", temporada ", ", stagione ", "・シーズン ", ", Saison ", "، موسم ", "，赛季 ", ", seizoen ", ", temporada ", ", säsong ", ", сезон ", ", sezon ", ", 시즌 "],
+  " cavalières": [" riders", " jinetes", " cavaliere", "人のライダー", " Reiterinnen", " فارسات", " 位骑手", " ruiters", " cavaleiras", " ryttare", " всадницы", " amazonki", "명의 라이더"],
+  " cavalière": [" rider", " jinete", " cavaliera", "人のライダー", " Reiterin", " فارسة", " 位骑手", " ruiter", " cavaleira", " ryttare", " всадница", " amazonka", "명의 라이더"],
+  "À engager": ["To enter", "Por inscribir", "Da iscrivere", "エントリー前", "Zu nennen", "للتسجيل", "待报名", "In te schrijven", "A inscrever", "Att anmäla", "Записать", "Do zgłoszenia", "출전 신청 전"],
+  "Stage": ["Clinic", "Cursillo", "Stage", "講習会", "Lehrgang", "تدريب", "集训", "Clinic", "Estágio", "Kurs", "Сбор", "Obóz", "캠프"],
+  "Concours": ["Show", "Concurso", "Concorso", "競技会", "Turnier", "مسابقة", "比赛", "Wedstrijd", "Concurso", "Tävling", "Соревнования", "Zawody", "대회"],
+  "Tu es inscrite": ["You’re entered", "Estás inscrita", "Sei iscritta", "エントリー済み", "Du bist dabei", "أنت مسجلة", "你已报名", "Je bent ingeschreven", "Você está inscrita", "Du är anmäld", "Ты записана", "Jesteś zapisana", "신청 완료"],
+  "À venir": ["Upcoming", "Próximos", "In arrivo", "これから", "Demnächst", "قادمة", "即将到来", "Komend", "Próximos", "Kommande", "Скоро", "Nadchodzące", "예정"],
+  "En cours": ["Ongoing", "En curso", "In corso", "開催中", "Laufend", "جارية", "进行中", "Bezig", "Em andamento", "Pågår", "Идут", "Trwają", "진행 중"],
+  "Terminés": ["Finished", "Terminados", "Conclusi", "終了", "Beendet", "منتهية", "已结束", "Afgelopen", "Encerrados", "Avslutade", "Завершены", "Zakończone", "종료"],
+  "Prochains rendez-vous": ["Next events", "Próximas citas", "Prossimi appuntamenti", "次の予定", "Nächste Termine", "المواعيد القادمة", "接下来的活动", "Volgende afspraken", "Próximos encontros", "Kommande händelser", "Ближайшие события", "Najbliższe wydarzenia", "다가오는 일정"],
+  "En ce moment": ["Right now", "Ahora mismo", "In questo momento", "いま", "Gerade jetzt", "الآن", "此刻", "Op dit moment", "Agora", "Just nu", "Сейчас", "Teraz", "지금"],
+  "Rendez-vous terminés": ["Past events", "Citas terminadas", "Appuntamenti conclusi", "終わった予定", "Vergangene Termine", "مواعيد منتهية", "已结束的活动", "Afgelopen afspraken", "Encontros encerrados", "Avslutade händelser", "Прошедшие события", "Zakończone wydarzenia", "지난 일정"],
+  "Rien de prévu pour l’équipe pour l’instant.": ["Nothing planned for the team yet.", "Nada previsto para el equipo por ahora.", "Niente in programma per la squadra per ora.", "チームの予定はまだありません。", "Für das Team ist noch nichts geplant.", "لا شيء مخطط للفريق حاليا.", "团队暂时没有安排。", "Nog niets gepland voor het team.", "Nada previsto para a equipe por enquanto.", "Inget planerat för laget än.", "Для команды пока ничего не запланировано.", "Na razie nic nie zaplanowano dla drużyny.", "아직 팀 일정이 없어요."],
+  "Rien en ce moment.": ["Nothing right now.", "Nada ahora mismo.", "Niente in questo momento.", "いまは何もありません。", "Gerade nichts.", "لا شيء الآن.", "此刻没有活动。", "Op dit moment niets.", "Nada agora.", "Inget just nu.", "Сейчас ничего нет.", "Teraz nic.", "지금은 없어요."],
+  "Rien de terminé cette saison.": ["Nothing finished this season.", "Nada terminado esta temporada.", "Niente di concluso in questa stagione.", "今シーズン終わった予定はありません。", "Diese Saison ist noch nichts beendet.", "لا شيء منتهيا هذا الموسم.", "本赛季还没有结束的活动。", "Dit seizoen nog niets afgelopen.", "Nada encerrado nesta temporada.", "Inget avslutat den här säsongen.", "В этом сезоне ещё ничего не завершено.", "W tym sezonie nic się jeszcze nie zakończyło.", "이번 시즌에 끝난 일정이 없어요."],
+  "Aucune équipe compétition pour l’instant.": ["No competition team yet.", "Todavía no hay equipo de competición.", "Ancora nessuna squadra agonistica.", "競技チームはまだありません。", "Noch kein Turnierteam.", "لا يوجد فريق منافسات حاليا.", "暂时没有比赛团队。", "Nog geen wedstrijdteam.", "Ainda não há equipe de competição.", "Inget tävlingslag än.", "Пока нет соревновательной команды.", "Na razie brak drużyny zawodniczej.", "아직 대회 팀이 없어요."],
+  "Le carnet": ["The logbook", "El cuaderno", "Il diario", "記録帳", "Das Tagebuch", "الدفتر", "记录本", "Het logboek", "O caderno", "Loggboken", "Дневник", "Dziennik", "기록장"],
+  "Tout voir": ["See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles zien", "Ver tudo", "Visa alla", "Смотреть всё", "Zobacz wszystko", "전체 보기"],
+  "Une partie n’a pas pu se charger : ": ["Part of the page couldn’t load: ", "Una parte no se pudo cargar: ", "Una parte non si è caricata: ", "一部を読み込めませんでした：", "Ein Teil konnte nicht geladen werden: ", "تعذر تحميل جزء: ", "部分内容无法加载：", "Een deel kon niet laden: ", "Uma parte não carregou: ", "En del kunde inte laddas: ", "Часть не загрузилась: ", "Część nie została wczytana: ", "일부를 불러오지 못했어요: "],
+  "concours introuvable": ["show not found", "concurso no encontrado", "concorso non trovato", "競技会が見つかりません", "Turnier nicht gefunden", "المسابقة غير موجودة", "找不到比赛", "wedstrijd niet gevonden", "concurso não encontrado", "tävlingen hittades inte", "соревнования не найдены", "nie znaleziono zawodów", "대회를 찾을 수 없어요"],
+  "refusé par la base": ["refused by the database", "rechazado por la base", "rifiutato dal database", "データベースに拒否されました", "von der Datenbank abgelehnt", "رفضته قاعدة البيانات", "被数据库拒绝", "geweigerd door de database", "recusado pelo banco de dados", "nekad av databasen", "отклонено базой", "odrzucone przez bazę", "데이터베이스가 거부했어요"],
+  "Pas enregistré : ": ["Not saved: ", "No guardado: ", "Non salvato: ", "保存できませんでした：", "Nicht gespeichert: ", "لم يتم الحفظ: ", "未保存：", "Niet opgeslagen: ", "Não salvo: ", "Inte sparat: ", "Не сохранено: ", "Nie zapisano: ", "저장 안 됨: "],
+  "Liste du van": ["Trailer checklist", "Lista del camión", "Lista del van", "馬運車リスト", "Hängerliste", "قائمة الشاحنة", "马车清单", "Trailerlijst", "Lista do caminhão", "Transportlista", "Список в коневоз", "Lista do przyczepy", "트레일러 체크리스트"],
+  " sur ": [" of ", " de ", " su ", " / ", " von ", " من ", " / ", " van ", " de ", " av ", " из ", " z ", " / "],
+  " cochés.": [" ticked.", " marcados.", " spuntati.", " チェック済み。", " abgehakt.", " محددة.", " 已勾选。", " aangevinkt.", " marcados.", " avbockade.", " отмечено.", " zaznaczonych.", " 체크했어요."],
+  "Connecte-toi pour avoir ta liste.": ["Log in to get your list.", "Inicia sesión para tener tu lista.", "Accedi per avere la tua lista.", "ログインするとリストが使えます。", "Melde dich an, um deine Liste zu haben.", "سجل الدخول لتحصل على قائمتك.", "登录后即可使用你的清单。", "Log in om je lijst te krijgen.", "Entre para ter sua lista.", "Logga in för att få din lista.", "Войди, чтобы получить свой список.", "Zaloguj się, aby mieć swoją listę.", "로그인하면 리스트를 쓸 수 있어요."],
+  "Retirer ": ["Remove ", "Quitar ", "Togli ", "削除：", "Entfernen: ", "إزالة ", "移除 ", "Verwijder ", "Remover ", "Ta bort ", "Убрать ", "Usuń ", "삭제: "],
+  "Ajouter une ligne": ["Add a line", "Añadir una línea", "Aggiungi una riga", "項目を追加", "Zeile hinzufügen", "أضف سطرا", "添加一行", "Regel toevoegen", "Adicionar uma linha", "Lägg till en rad", "Добавить строку", "Dodaj pozycję", "항목 추가"],
+  "Son matériel à lui": ["His own gear", "Su propio material", "La sua attrezzatura", "この馬専用の馬具", "Seine eigene Ausrüstung", "معداته الخاصة", "它的专属装备", "Zijn eigen spullen", "O material dele", "Hans egen utrustning", "Его снаряжение", "Jego własny sprzęt", "이 말만의 장비"],
+  "ton cheval": ["your horse", "tu caballo", "il tuo cavallo", "あなたの馬", "dein Pferd", "حصانك", "你的马", "je paard", "seu cavalo", "din häst", "твоя лошадь", "twój koń", "너의 말"],
+  "Pour le cheval": ["For the horse", "Para el caballo", "Per il cavallo", "馬のために", "Für das Pferd", "للحصان", "给马的", "Voor het paard", "Para o cavalo", "För hästen", "Для лошади", "Dla konia", "말을 위해"],
+  "Pour toi": ["For you", "Para ti", "Per te", "あなたのために", "Für dich", "لك", "给你的", "Voor jou", "Para você", "För dig", "Для тебя", "Dla ciebie", "너를 위해"],
+  "ta tenue, ta sécurité": ["your outfit, your safety", "tu ropa, tu seguridad", "il tuo abbigliamento, la tua sicurezza", "服装と安全装備", "deine Kleidung, deine Sicherheit", "لباسك وسلامتك", "你的着装和安全", "je kleding, je veiligheid", "sua roupa, sua segurança", "din klädsel, din säkerhet", "твоя одежда, твоя безопасность", "twój strój, twoje bezpieczeństwo", "복장과 안전"],
+  "Terminé": ["Done", "Listo", "Fatto", "完了", "Fertig", "تم", "完成", "Klaar", "Pronto", "Klar", "Готово", "Gotowe", "완료"],
+  "Modifier": ["Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "编辑", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정"],
+  "Prêt": ["Ready", "Listo", "Pronto", "準備完了", "Bereit", "جاهز", "准备好了", "Klaar", "Pronto", "Redo", "Готово", "Gotowe", "준비 완료"],
+  "Ta liste": ["Your list", "Tu lista", "La tua lista", "あなたのリスト", "Deine Liste", "قائمتك", "你的清单", "Jouw lijst", "Sua lista", "Din lista", "Твой список", "Twoja lista", "너의 리스트"],
+  "de sa fiche": ["from his profile", "de su ficha", "dalla sua scheda", "馬のページから", "aus seinem Steckbrief", "من بطاقته", "来自它的档案", "van zijn fiche", "da ficha dele", "från hans sida", "из его карточки", "z jego karty", "말 페이지에서"],
+  "objets": ["items", "objetos", "oggetti", "点", "Dinge", "أغراض", "件", "spullen", "itens", "saker", "вещей", "rzeczy", "개"],
+  "Pour ": ["For ", "Para ", "Per ", "", "Für ", "لـ ", "给", "Voor ", "Para ", "För ", "Для ", "Dla ", ""],
+  "le cheval": ["the horse", "el caballo", "il cavallo", "馬", "das Pferd", "الحصان", "马", "het paard", "o cavalo", "hästen", "лошади", "konia", "말"],
+  "Pour moi": ["For me", "Para mí", "Per me", "わたし用", "Für mich", "لي", "给我的", "Voor mij", "Para mim", "För mig", "Для меня", "Dla mnie", "나를 위해"],
+  "Télécharger": ["Download", "Descargar", "Scarica", "ダウンロード", "Herunterladen", "تنزيل", "下载", "Downloaden", "Baixar", "Ladda ner", "Скачать", "Pobierz", "다운로드"],
+  "Tout décocher": ["Untick all", "Desmarcar todo", "Togli tutte le spunte", "すべて外す", "Alle abwählen", "إلغاء تحديد الكل", "全部取消勾选", "Alles uitvinken", "Desmarcar tudo", "Avmarkera alla", "Снять все отметки", "Odznacz wszystko", "모두 해제"],
+  "Ta liste n’est visible que par toi. Au prochain concours, elle repart de celle-ci, cases décochées.": ["Only you can see your list. At the next show, it starts again from this one, with the boxes unticked.", "Solo tú ves tu lista. En el próximo concurso, empieza de nuevo desde esta, sin marcar.", "La tua lista la vedi solo tu. Al prossimo concorso riparte da questa, senza spunte.", "リストはあなただけに見えます。次の競技会では、このリストがチェックなしで引き継がれます。", "Nur du siehst deine Liste. Beim nächsten Turnier startet sie wieder von dieser, ohne Haken.", "قائمتك لا يراها غيرك. في المسابقة القادمة تبدأ من هذه القائمة دون تحديد.", "你的清单只有你能看到。下一场比赛时，它会从这份清单重新开始，勾选全部清空。", "Alleen jij ziet je lijst. Bij de volgende wedstrijd begint hij opnieuw vanaf deze, zonder vinkjes.", "Só você vê sua lista. No próximo concurso, ela recomeça desta, sem marcações.", "Bara du ser din lista. Vid nästa tävling börjar den om från den här, utan bockar.", "Твой список видишь только ты. На следующих соревнованиях он начнётся с этого, без отметок.", "Twoją listę widzisz tylko ty. Na kolejnych zawodach zacznie się od tej, bez zaznaczeń.", "리스트는 너만 볼 수 있어요. 다음 대회에서는 이 리스트가 체크 없이 다시 시작돼요."],
+  " j": [" d", " d", " g", "日", " T.", " يوم", "天", " d", " d", " d", " дн.", " dni", "일"],
+  "Du ": ["From ", "Del ", "Dal ", "", "Vom ", "من ", "", "Van ", "De ", "Från ", "С ", "Od ", ""],
+  " au ": [" to ", " al ", " al ", "〜", " bis ", " إلى ", "至", " tot ", " a ", " till ", " по ", " do ", "~"],
+  /* la liste de départ (écrite dans la langue de la cavalière à la création de sa liste) */
+  "Selle et tapis": ["Saddle and pad", "Silla y sudadero", "Sella e sottosella", "鞍とゼッケン", "Sattel und Schabracke", "السرج واللباد", "马鞍和鞍垫", "Zadel en dekje", "Sela e manta", "Sadel och schabrak", "Седло и вальтрап", "Siodło i czaprak", "안장과 패드"],
+  "Filet ou bride": ["Snaffle bridle or double bridle", "Filete o brida", "Filetto o briglia", "水勒または大勒", "Trense oder Kandare", "اللجام البسيط أو المزدوج", "水勒或大勒", "Trens of stang", "Bridão ou freio", "Träns eller kandar", "Трензель или мундштук", "Ogłowie wędzidłowe lub munsztuk", "스내플 또는 더블 브라이들"],
+  "Sangle bavette": ["Stud girth", "Cincha con protector", "Sottopancia con pettorina", "腹帯（フロントガード付き）", "Stollengurt", "حزام بواقي البطن", "护腹肚带", "Stollensingel", "Cilha com protetor", "Stollgjord", "Подпруга с защитой", "Popręg z osłoną", "보호대 달린 복대"],
+  "Guêtres ou bandes de polo, protège-boulets": ["Boots or polo wraps, fetlock boots", "Protectores o vendas, protectores de menudillo", "Stinchiere o fasce, paranocche", "ブーツまたはバンテージ、球節ブーツ", "Gamaschen oder Bandagen, Streichkappen", "واقيات أو أربطة، واقيات الرمانة", "护腿或绷带、球节护具", "Beenbeschermers of bandages, kogelbeschermers", "Caneleiras ou ligas, protetores de boleto", "Benskydd eller lindor, kotskydd", "Ногавки или бинты, накопытники", "Ochraniacze lub bandaże, ochraniacze pęcinowe", "부츠 또는 폴로 랩, 구절 부츠"],
+  "Enrênement si le cheval en a": ["Training aid if the horse uses one", "Riendas auxiliares si el caballo las lleva", "Redini ausiliarie se il cavallo le usa", "補助手綱（使う馬なら）", "Hilfszügel, falls das Pferd welche hat", "الأعنة المساعدة إن كان الحصان يستعملها", "辅助缰（如果马使用）", "Hulpteugels als het paard die heeft", "Rédeas auxiliares se o cavalo usa", "Hjälptyglar om hästen har", "Вспомогательный повод, если есть", "Wypinacze, jeśli koń ich używa", "보조 고삐(사용하는 말이면)"],
+  "Amortisseur pour le dos": ["Back pad (shock absorber)", "Amortiguador para el dorso", "Ammortizzatore per il dorso", "背中のショック吸収パッド", "Rückenpad (Dämpfer)", "واقي امتصاص للظهر", "背部减震垫", "Rugpad (schokdemper)", "Amortecedor para o dorso", "Ryggskydd (stötdämpare)", "Амортизатор для спины", "Podkładka amortyzująca", "등 쿠션 패드"],
+  "Protections de transport": ["Travel boots", "Protectores de transporte", "Protezioni da trasporto", "輸送用プロテクター", "Transportgamaschen", "واقيات النقل", "运输护具", "Transportbeschermers", "Protetores de transporte", "Transportskydd", "Транспортировочные ногавки", "Ochraniacze transportowe", "운송용 보호대"],
+  "Licol et longe": ["Headcollar and lead rope", "Cabezada de cuadra y ramal", "Capezza e lunghina", "無口と引き手", "Halfter und Strick", "الرسن والحبل", "笼头和牵绳", "Halster en touw", "Cabresto e guia", "Grimma och grimskaft", "Недоуздок и чумбур", "Kantar i uwiąz", "굴레와 리드줄"],
+  "Couverture": ["Rug", "Manta", "Coperta", "馬着", "Decke", "الغطاء", "马衣", "Deken", "Capa", "Täcke", "Попона", "Derka", "담요"],
+  "Seau, foin et eau": ["Bucket, hay and water", "Cubo, heno y agua", "Secchio, fieno e acqua", "バケツ、干し草、水", "Eimer, Heu und Wasser", "دلو وتبن وماء", "水桶、干草和水", "Emmer, hooi en water", "Balde, feno e água", "Hink, hö och vatten", "Ведро, сено и вода", "Wiadro, siano i woda", "양동이, 건초, 물"],
+  "Nourriture si concours prolongé à l’extérieur": ["Feed if the show runs long away from home", "Comida si el concurso se alarga fuera", "Cibo se il concorso dura a lungo fuori", "遠征が長引くときの飼料", "Futter, falls das Turnier auswärts länger dauert", "علف إذا طالت المسابقة خارجا", "比赛在外时间长时带上饲料", "Voer als de wedstrijd buiten lang duurt", "Comida se o concurso fora se prolongar", "Foder om tävlingen borta drar ut", "Корм, если соревнования на выезде затянутся", "Pasza, jeśli zawody wyjazdowe się przedłużą", "원정 대회가 길어질 때 사료"],
+  "Trousse de pansage": ["Grooming kit", "Kit de limpieza", "Kit di grooming", "手入れ道具", "Putzzeug", "عدة التنظيف", "刷拭工具包", "Poetsdoos", "Kit de limpeza", "Ryktlåda", "Набор для чистки", "Zestaw do czyszczenia", "그루밍 키트"],
+  "Élastiques pour natter et ciseaux": ["Plaiting bands and scissors", "Gomas para trenzar y tijeras", "Elastici per intrecciare e forbici", "編み込み用ゴムとハサミ", "Einflechtgummis und Schere", "أربطة الضفائر ومقص", "编辫皮筋和剪刀", "Vlechtelastiekjes en schaar", "Elásticos para trançar e tesoura", "Flätsnoddar och sax", "Резинки для косичек и ножницы", "Gumki do zaplatania i nożyczki", "땋기용 고무줄과 가위"],
+  "Tendonyl ou équivalent post compétition à mettre sur les membres": ["Tendonyl or a similar post-competition leg product", "Tendonyl o equivalente post competición para las extremidades", "Tendonyl o equivalente post gara da mettere sugli arti", "競技後に脚に使うテンドニルなど", "Tendonyl oder Ähnliches für die Beine nach dem Turnier", "تندونيل أو ما يعادله للأطراف بعد المسابقة", "赛后腿部护理用品（如 Tendonyl）", "Tendonyl of iets dergelijks voor de benen na de wedstrijd", "Tendonyl ou equivalente pós-competição para os membros", "Tendonyl eller liknande för benen efter tävlingen", "Тендонил или аналог для ног после старта", "Tendonyl lub podobny preparat na nogi po zawodach", "대회 후 다리에 바르는 텐도닐 등"],
+  "Stable boots pour le repos après compétition": ["Stable boots for resting after the show", "Protectores de cuadra para el descanso tras el concurso", "Stable boots per il riposo dopo la gara", "競技後の休息用ステーブルブーツ", "Stallgamaschen für die Ruhe nach dem Turnier", "واقيات الإسطبل للراحة بعد المسابقة", "赛后休息用的马厩护腿", "Stalbeschermers voor de rust na de wedstrijd", "Protetores de baia para o descanso após o concurso", "Stallskydd för vila efter tävlingen", "Денниковые ногавки для отдыха после старта", "Ochraniacze stajenne na odpoczynek po zawodach", "대회 후 휴식용 마구간 부츠"],
+  "Livret du cheval (vaccins)": ["Horse passport (vaccinations)", "Libro del caballo (vacunas)", "Libretto del cavallo (vaccini)", "馬のパスポート（ワクチン）", "Pferdepass (Impfungen)", "جواز الحصان (اللقاحات)", "马匹护照（疫苗）", "Paardenpaspoort (vaccinaties)", "Passaporte do cavalo (vacinas)", "Hästpass (vaccinationer)", "Паспорт лошади (прививки)", "Paszport konia (szczepienia)", "말 여권(백신)"],
+  "Casque": ["Helmet", "Casco", "Casco", "ヘルメット", "Helm", "الخوذة", "头盔", "Cap", "Capacete", "Hjälm", "Шлем", "Kask", "헬멧"],
+  "Veste de concours": ["Show jacket", "Chaqueta de concurso", "Giacca da concorso", "競技用ジャケット", "Turnierjacket", "سترة المسابقة", "比赛外套", "Wedstrijdjasje", "Casaca de concurso", "Tävlingskavaj", "Соревновательный пиджак", "Frak konkursowy", "대회 재킷"],
+  "Culotte claire": ["Light-coloured breeches", "Pantalón claro", "Pantaloni chiari", "白っぽいキュロット", "Helle Reithose", "سروال فاتح", "浅色马裤", "Lichte rijbroek", "Culote claro", "Ljusa ridbyxor", "Светлые бриджи", "Jasne bryczesy", "밝은 승마 바지"],
+  "Bottes": ["Boots", "Botas", "Stivali", "ブーツ", "Stiefel", "الأحذية", "马靴", "Laarzen", "Botas", "Stövlar", "Сапоги", "Oficerki", "부츠"],
+  "Gants": ["Gloves", "Guantes", "Guanti", "手袋", "Handschuhe", "القفازات", "手套", "Handschoenen", "Luvas", "Handskar", "Перчатки", "Rękawiczki", "장갑"],
+  "Cravache": ["Whip", "Fusta", "Frustino", "鞭", "Gerte", "السوط", "马鞭", "Zweep", "Chicote", "Spö", "Хлыст", "Palcat", "채찍"],
+  "Éperons": ["Spurs", "Espuelas", "Speroni", "拍車", "Sporen", "المهاميز", "马刺", "Sporen", "Esporas", "Sporrar", "Шпоры", "Ostrogi", "박차"],
+  "Airbag": ["Air vest", "Chaleco airbag", "Gilet airbag", "エアバッグベスト", "Airbagweste", "سترة الوسادة الهوائية", "气囊背心", "Airbagvest", "Colete airbag", "Airbagväst", "Подушка безопасности", "Kamizelka airbag", "에어백 조끼"],
+  "Cartouche de recharge et / ou protection dorsale": ["Spare cartridge and/or back protector", "Cartucho de recarga y/o protector dorsal", "Cartuccia di ricarica e/o paraschiena", "予備カートリッジ／背中プロテクター", "Ersatzkartusche und/oder Rückenprotektor", "خرطوشة احتياطية و/أو واقي الظهر", "备用气瓶和/或护背", "Reservepatroon en/of rugbeschermer", "Cartucho de recarga e/ou protetor de costas", "Reservpatron och/eller ryggskydd", "Запасной баллон и/или защита спины", "Zapasowy nabój i/lub ochraniacz pleców", "예비 카트리지 및/또는 등 보호대"],
+  "Matériel pour changer la cartouche": ["Tools to change the cartridge", "Material para cambiar el cartucho", "Attrezzo per cambiare la cartuccia", "カートリッジ交換用の道具", "Werkzeug zum Kartuschenwechsel", "أدوات تغيير الخرطوشة", "更换气瓶的工具", "Materiaal om de patroon te vervangen", "Material para trocar o cartucho", "Verktyg för att byta patron", "Инструмент для замены баллона", "Narzędzia do wymiany naboju", "카트리지 교체 도구"],
+  "Manteau ou veste imperméable": ["Raincoat or waterproof jacket", "Abrigo o chaqueta impermeable", "Cappotto o giacca impermeabile", "レインコートか防水ジャケット", "Regenmantel oder wasserdichte Jacke", "معطف أو سترة واقية من المطر", "雨衣或防水外套", "Regenjas of waterdichte jas", "Casaco ou jaqueta impermeável", "Regnrock eller vattentät jacka", "Плащ или непромокаемая куртка", "Płaszcz lub kurtka przeciwdeszczowa", "우비 또는 방수 재킷"],
+  "Affaires de rechange en cas de pluie": ["Spare clothes in case of rain", "Ropa de recambio por si llueve", "Cambio di vestiti in caso di pioggia", "雨の日の着替え", "Wechselkleidung bei Regen", "ملابس احتياطية في حال المطر", "下雨时的替换衣物", "Reservekleren voor als het regent", "Roupas extras em caso de chuva", "Ombyte ifall det regnar", "Сменная одежда на случай дождя", "Ubrania na zmianę na wypadek deszczu", "비 올 때 갈아입을 옷"],
+  "Licence sur le téléphone": ["Licence on your phone", "Licencia en el móvil", "Patente sul telefono", "スマホにライセンス", "Lizenz auf dem Handy", "الرخصة على الهاتف", "手机里的执照", "Licentie op je telefoon", "Licença no celular", "Licens i mobilen", "Лицензия в телефоне", "Licencja w telefonie", "휴대폰 속 라이선스"],
+  "Eau et goûter": ["Water and a snack", "Agua y merienda", "Acqua e merenda", "水とおやつ", "Wasser und Snack", "ماء ووجبة خفيفة", "水和点心", "Water en een tussendoortje", "Água e lanche", "Vatten och mellanmål", "Вода и перекус", "Woda i przekąska", "물과 간식"]
+};
+var HS_TR = {};
+Object.keys(HS_TR_BRUT).forEach(function (fr) { var o = {}; HS_LG.forEach(function (l, i) { o[l] = HS_TR_BRUT[fr][i]; }); HS_TR[fr] = o; });
+/* F(fr) des écrans : le texte dans la langue de l'appli quand on l'a, sinon le français (« || o.en » de tr ne doit pas jouer : on ne met que fr + les langues connues) */
+function hsT(tr, fr, lg) { var t = HS_TR[fr]; if (!t) return tr({ fr: fr }); if (lg && t[lg] === "") return ""; return tr(Object.assign({ fr: fr }, t)); }   /* "" = rien à écrire dans cette langue (ex. « Du » en japonais) */
+
 var PHOTOS_SAISON = [
   { img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%" },
   { img: "images/galop1-hero-bai.webp", pos: "60% 35%" },
@@ -92,7 +190,7 @@ function EcranMaSaison() {
   var setEcran = app.setEcran || function () { };
   var lg = app.langue || "fr";
   var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
-  function F(fr) { return tr({ fr: fr }); }   /* français seulement pour l'instant (traduction après relecture) */
+  function F(fr) { return hsT(tr, fr, lg); }   /* 04/11 23h10 : traduite (HS_TR, 14 langues) */
   var rtl = (lg === "ar");
 
   var _ev = React.useState(null); var evs = _ev[0], setEvs = _ev[1];
@@ -172,20 +270,21 @@ function EcranMaSaison() {
 
   /* ── dates ── */
   function dateLoc(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }
-  function fmt(iso, o) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat("fr-FR", o).format(d); } catch (e) { return String(iso).slice(0, 10); } }
+  var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" }[lg] || "fr-FR";
+  function fmt(iso, o) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, o).format(d); } catch (e) { return String(iso).slice(0, 10); } }
   function plage(ev) {
     var deb = String(ev.date_jour || "").slice(0, 10), fin = String(ev.date_fin || "").slice(0, 10);
     if (!fin || fin === deb) { var t = fmt(deb, { weekday: "long", day: "numeric", month: "long" }); return t.charAt(0).toUpperCase() + t.slice(1); }
     var d1 = dateLoc(deb), d2 = dateLoc(fin);
-    if (d1 && d2 && d1.getMonth() === d2.getMonth()) return "Du " + d1.getDate() + " au " + fmt(fin, { day: "numeric", month: "long" });
-    return "Du " + fmt(deb, { day: "numeric", month: "long" }) + " au " + fmt(fin, { day: "numeric", month: "long" });
+    if (d1 && d2 && d1.getMonth() === d2.getMonth() && lg === "fr") return "Du " + d1.getDate() + " au " + fmt(fin, { day: "numeric", month: "long" });
+    return F("Du ") + fmt(deb, { day: "numeric", month: "long" }) + F(" au ") + fmt(fin, { day: "numeric", month: "long" });
   }
   function badge(ev) {
     var deb = String(ev.date_jour || "").slice(0, 10);
     var d = dateLoc(deb); if (!d) return "";
     var n = Math.round((d - auj) / 86400000);
     if (n === 1) return F("demain");
-    if (n > 1 && n <= 7) return F("dans ") + n + " j";
+    if (n > 1 && n <= 7) return F("dans ") + n + F(" j");
     if (n <= 0 && String(ev.date_fin || deb).slice(0, 10) >= isoAuj) return F("en cours");
     return fmt(deb, { day: "numeric", month: "short" });
   }
@@ -1253,7 +1352,7 @@ function hsCtx() {
   var app = (typeof useApp === "function") ? useApp() : {};
   var lg = app.langue || "fr";
   var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
-  return { app: app, setEcran: app.setEcran || function () { }, F: function (fr) { return tr({ fr: fr }); }, rtl: lg === "ar" };
+  return { app: app, setEcran: app.setEcran || function () { }, F: function (fr) { return tr({ fr: fr }); }, T: function (fr) { return hsT(tr, fr, lg); }, rtl: lg === "ar" };   /* T : traduit (liste du van) */
 }
 function hsRetour(app, setEcran, defaut) { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran(defaut); }
 /* 04/11 23h20 (Blandine : en revenant dans l'appli, « Impossible d'ouvrir ce concours : concours introuvable ») : quand l'iPhone
@@ -1287,7 +1386,7 @@ var HS_LISTE_DEFAUT = [
 
 /* ════════════════════ LISTE DU VAN ════════════════════ */
 function EcranListeVan() {
-  var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var h = React.createElement, c = hsCtx(), F = c.T, rtl = c.rtl;   /* 04/11 23h10 : traduite */
   var idEv = hsIdConcours();
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _it = React.useState(null); var items = _it[0], setItems = _it[1];
@@ -1320,7 +1419,7 @@ function EcranListeVan() {
           /* gardée d'un concours à l'autre : on repart de sa dernière liste, cases décochées */
           var rp = await supa.from("listes_van").select("items").eq("user_id", u.id).neq("agenda_id", idEv).order("maj_le", { ascending: false }).limit(1);
           var der = rp && rp.data && rp.data[0] && Array.isArray(rp.data[0].items) ? rp.data[0].items : null;
-          L = (der && der.length ? der : HS_LISTE_DEFAUT).filter(function (x) { return x.r !== "propre"; }).map(function (x) { return { r: x.r === "moi" ? "moi" : "cheval", t: String(x.t || ""), f: false }; });   /* le matériel propre au cheval vient de SA fiche, à chaque concours */
+          L = (der && der.length ? der : HS_LISTE_DEFAUT).filter(function (x) { return x.r !== "propre"; }).map(function (x) { return { r: x.r === "moi" ? "moi" : "cheval", t: der && der.length ? String(x.t || "") : F(String(x.t || "")), f: false }; });   /* la liste de départ, dans la langue de la cavalière */   /* le matériel propre au cheval vient de SA fiche, à chaque concours */
         }
         if (vif) setItems(L);
         /* le cheval engagé et ses consignes de matériel (page Santé) */
