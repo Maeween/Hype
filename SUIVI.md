@@ -16813,3 +16813,13 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - 04/11 11h35 : bouton « Ouvrir dans YouTube ↗ » sous la vidéo (14 langues, arabe vérifié) : ouvre la vidéo dans l'appli YouTube au point où on en est (met en pause le lecteur de Hype et enregistre la position). Seul moyen d'écouter écran verrouillé : YouTube coupe ses vidéos intégrées en arrière-plan, sauf dans son appli pour les abonnés Premium. Fenêtre flottante : le lecteur l'autorise déjà (picture-in-picture) ; reste à essayer sur iPhone en plein écran, YouTube peut la refuser.
 - 04/11 11h35 PUBLICATION (Blandine « oui mets tout en ligne ») : liens g3-c12 / g6-c2 + reprise de lecture + bouton YouTube. hype-video.js?v=20261104-vt4, build 20261104-1135. Index : seuls ?v= et le build changent.
 
+
+## 04/11/2026 11h50 — PUBLICATION build 20261104-1150 (Blandine 11h34 « Je te fais confiance, gère jusqu'au bout ») : GALOP 6 V3.3, les 15 nouveaux cours en 14 langues
+- hype-cours-galop6.js (version 3) : les 15 cours g6n-01 … g6n-15 (français V3.3 validé) remplacent la liste. Même modèle que les cours g7n. Traduits en 13 langues (en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) : 2155 textes, aucun resté en français. 10 questions de quiz par cours, bonnes réponses vérifiées.
+- Rien de perdu : les 7 anciens cours g6-c1 … g6-c7 sont conservés dans window.COURS_GALOP6_BROUILLONS.
+- hype-cours-editorial.js (v64) : photos de chapitres des g6n. ⚠️ PROVISOIRES (les mêmes photos que le Galop 7), pas de vraies photos Galop 6.
+- hype-video.js : vidéos reliées aux g6-c1 / g6-c2 rebranchées sur g6n-01 / g6n-09. index.html : HYPE_COURS_PRETS (badge NEW), catégories, ?v= et build. Règles Premium inchangées (Galops 6 et 7 ouverts aux Premium).
+- ⚠️ À SAVOIR : les anciens ids g6-c1 … c7 disparaissent de la liste ; une progression enregistrée sous ces ids ne se retrouve pas sur les nouveaux. L'écran spécial du cours « L'impulsion » (cartes premium, compléments) est remplacé par des sections classiques.
+- Correction du français : la consigne de mise en page « Intro (italique doré) : » était restée dans le texte du cours 15 (chapitre sur juger une reprise) ; retirée. Elle est aussi dans les fichiers V3.3 déjà livrés à Blandine.
+- Termes choisis par les traducteurs sans équivalent dans le dépôt (à relire par un locuteur) : pt (Portugal), pl, es (ambladura, puesta en mano), de (Konterstellung), ja/zh/ko/ru techniques.
+- Fichiers : hype-cours-galop6.js, hype-cours-editorial.js, hype-video.js, index.html (build 20261104-1150), SUIVI.md.
