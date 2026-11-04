@@ -16764,3 +16764,13 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Branche travail-fin-apercu fusionnée dans main (détail : entrée « BRANCHE travail-fin-apercu » ci-dessus) : texte en 14 langues, bouton « Voir les abonnements » qui ouvre la page des abonnements, pages Google des Galops 6 et 7 qui ouvrent directement le cours.
 - Non vérifié : ce que voit en premier un visiteur sans compte qui suit le lien des abonnements.
 - Fichiers : index.html (build 20261104-0125), outils/seo-galops.cjs, SUIVI.md.
+
+## 04/11/2026 01h40 — PUBLICATION build 20261104-0140 (accord de Blandine 01h35 « Ok ») : atlas simple du Galop 5, les grands groupes musculaires
+- Contexte : le projet d'atlas animé (modèle 3D, animation, Laboratoire) est mis de côté (« ça devient trop compliqué, quelque chose de plus simple »). Choix A : réutiliser l'atlas existant (hype-cours-atlas.js).
+- hype-cours-atlas.js (version 5, ?v=5) : nouvel onglet « Galop 5 », vue « Les grands groupes musculaires », 5 points : encolure, épaule et bras, dos, abdominaux, croupe et cuisse (mêmes groupes que le cours). Galops 1 à 3 inchangés.
+- Image : images/atlas-cheval-anatomie.webp = cheval graphite de la maquette ChatGPT de Blandine (recadré, agrandi, les 3 ronds dessinés effacés). C'est une illustration, pas un modèle anatomique exact.
+- Choix 2 de Blandine (01h04) : les fiches ne donnent que l'emplacement du groupe ; son rôle reste dans la liste « Les grands groupes musculaires » du cours (pas de doublon).
+- hype-cours-editorial.js VERSION 63 (?v=63) : MODULES_COURS « g5n-04 » → l'atlas s'ouvre dans « Anatomie, locomotion et digestion », après « Les muscles et le mouvement ».
+- Textes en français seulement (les autres langues affichent le français) : traductions après relecture de Blandine.
+- Vérifié : cours g5n-04 ouvert à 390 px et 1440 px, atlas présent, fiche qui s'ouvre, aucune erreur.
+- Fichiers : hype-cours-atlas.js, hype-cours-editorial.js, images/atlas-cheval-anatomie.webp, index.html (build 20261104-0140), SUIVI.md.
