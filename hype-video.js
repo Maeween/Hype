@@ -813,6 +813,36 @@
       rang: "approfondir", dureeTranche: "", verifie: "",
       titre: {"fr": "Adapter l'amplitude des foulées", "en": "Adjusting stride length", "es": "Adaptar la amplitud de los trancos", "it": "Adattare l'ampiezza delle falcate", "ja": "完歩の幅を調整する", "de": "Die Galoppsprünge anpassen", "ar": "تكييف طول الخطوات", "zh": "调整步幅", "nl": "De paslengte aanpassen", "pt": "Adaptar a amplitude das passadas", "sv": "Anpassa språngens längd", "ru": "Регулировать длину темпа", "pl": "Dostosowanie długości fule", "ko": "보폭 조절하기"},
       resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    /* 04/11 10h14 (Blandine : « garde-les quand même et ajoute-les déjà à la liste de vidéos des G8 et 9 ») :
+       webconférences IFCE avancées, rangées en Galop 8 et 9 (onglet « Galop 7+ ») ; pas de cours relié (les
+       Galops 8 et 9 n'ont pas encore de cours dans Hype). Même règle « À vérifier » que les autres. */
+    {
+      id: "v-g8-appuyer", yt: "VcmDrm0tX_M", aVerifier: true,
+      source: "IFCE", intervenant: "Pauline Van Landeghem", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "L'appuyer", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/l-appuyer/",
+      langueVideo: "fr", cours: [], galop: 8, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "L'appuyer", "en": "Half-pass", "es": "El apoyo", "it": "L'appoggiata", "ja": "ハーフパス", "de": "Die Traversale", "ar": "الأبويه (المشي الجانبي المائل)", "zh": "斜横步", "nl": "De appuyement", "pt": "O apoiar", "sv": "Travers på diagonal (appuyer)", "ru": "Принимание", "pl": "Ciąg", "ko": "하프 패스"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    {
+      id: "v-g9-contre-changement", yt: "p4tjNSA797I", aVerifier: true,
+      source: "IFCE", intervenant: "Pauline Van Landeghem", intervenantRole: {"fr": "Écuyer du Cadre noir", "en": "Écuyer of the Cadre Noir", "es": "Écuyer del Cadre Noir", "it": "Écuyer del Cadre Noir", "ja": "カードル・ノワールのエキュイエ", "de": "Écuyer des Cadre Noir", "ar": "مدرب فروسية في الكادر نوار", "zh": "黑骑士团骑术教官", "nl": "Écuyer van de Cadre Noir", "pt": "Écuyer do Cadre Noir", "sv": "Écuyer vid Cadre Noir", "ru": "Экюйе Кадр Нуар", "pl": "Écuyer Cadre Noir", "ko": "카드르 누아르의 에퀴예"}, titreSource: "Le contre changement de main au galop", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/enseignement-equestre/le-contre-changement-de-main-au-galop/",
+      langueVideo: "fr", cours: [], galop: 9, theme: "dressage",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Le contre-changement de main au galop", "en": "Counter change of hand at canter", "es": "El contracambio de mano al galope", "it": "Il controcambiamento di mano al galoppo", "ja": "駈歩でのカウンターチェンジ", "de": "Der Konterwechsel im Galopp", "ar": "تغيير اليد المعاكس في الغالوب", "zh": "跑步中的反向换手", "nl": "De contrawissel in galop", "pt": "A contramudança de mão a galope", "sv": "Kontraväxling i galopp", "ru": "Контрперемена направления галопом", "pl": "Kontrzmiana kierunku w galopie", "ko": "구보에서 카운터 체인지"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
+    },
+    /* « Les manipulations dans le travail à pied » (Frédérique Defrémont, IFCE, Galop 5, cours g5n-06) : GARDÉE
+       sur demande de Blandine, mais SANS lien tant que le bon identifiant YouTube n'est pas connu (celui reçu,
+       « –KfWHkJKuI », est abîmé). Une fiche sans lien n'apparaît nulle part : aucune carte morte. */
+    {
+      id: "v-g5-manipulations", yt: "", aVerifier: true,
+      source: "IFCE", intervenant: "Frédérique Defrémont", intervenantRole: {"fr": "Formatrice et longeuse de l'équipe de France", "en": "Trainer and lunger for the French team", "es": "Formadora y lonjeadora del equipo de Francia", "it": "Formatrice e longeuse della squadra francese", "ja": "フランス代表チームのトレーナー兼ランジャー", "de": "Ausbilderin und Longenführerin der französischen Mannschaft", "ar": "مدربة ومسؤولة الحبل الطويل في المنتخب الفرنسي", "zh": "法国队教练兼调教索操作员", "nl": "Trainer en longeerder van het Franse team", "pt": "Formadora e guia de guia da equipe da França", "sv": "Utbildare och longerare i franska landslaget", "ru": "Тренер и корда-мастер сборной Франции", "pl": "Trenerka i lonżerka reprezentacji Francji", "ko": "프랑스 대표팀 트레이너 겸 런지 담당"}, titreSource: "Les manipulations dans le travail à pied", doc: "https://www.ifce.fr/ifce/connaissances/webconferences/equitation/les-manipulations-dans-le-travail-a-pied/",
+      langueVideo: "fr", cours: ["g5n-06"], galop: 5, theme: "travail-a-pied",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {"fr": "Les manipulations dans le travail à pied", "en": "Handling in groundwork", "es": "Las manipulaciones en el trabajo pie a tierra", "it": "Le manipolazioni nel lavoro da terra", "ja": "地上作業での扱い方", "de": "Der Umgang bei der Bodenarbeit", "ar": "التعامل في العمل على الأرض", "zh": "地面工作中的操作", "nl": "Het hanteren bij grondwerk", "pt": "As manipulações no trabalho a pé", "sv": "Hantering i markarbete", "ru": "Обращение с лошадью в работе с земли", "pl": "Obsługa konia w pracy z ziemi", "ko": "지상 작업에서의 다루기"},
+      resume: {"fr": "Webconférence de l'IFCE.", "en": "IFCE webinar.", "es": "Webconferencia del IFCE.", "it": "Webconferenza dell'IFCE.", "ja": "IFCEのウェブ講演。", "de": "Webkonferenz des IFCE.", "ar": "محاضرة عبر الإنترنت من IFCE.", "zh": "IFCE 网络讲座。", "nl": "Webconferentie van het IFCE.", "pt": "Webconferência do IFCE.", "sv": "Webbkonferens från IFCE.", "ru": "Веб-конференция IFCE.", "pl": "Webinarium IFCE.", "ko": "IFCE 웹 강연."}
     }
   ];
 
@@ -842,7 +872,7 @@
   }
   var VIDS = HYPE_VIDEOS.filter(function (v) { return INCLURE_NON_VERIFIEES || !!v.verifie; }).map(versInterne);
   /* 04/11 : vidéos pas encore vérifiées — visibles par les seules modératrices, marquées « À vérifier » */
-  var VIDS_AV = HYPE_VIDEOS.filter(function (v) { return !v.verifie && v.aVerifier && !INCLURE_NON_VERIFIEES; })
+  var VIDS_AV = HYPE_VIDEOS.filter(function (v) { return !v.verifie && v.aVerifier && v.yt && !INCLURE_NON_VERIFIEES; })
     .map(function (v) { var x = versInterne(v); x.aVerifier = true; return x; });
 
   /* ---------------- RÉSERVE D'ANIMATIONS (MODÉRATEURS UNIQUEMENT) ----------------
