@@ -1197,6 +1197,10 @@
   /* TRAITEMENT D'AFFICHAGE DES PHOTOS (demande du brief) : réversible et
      réglable ici seulement. Le fichier n'est jamais modifié. actif:false
      rend les photos telles quelles. Ne s'applique pas aux lecteurs YouTube. */
+  /* Composition ordinateur : "A" ou "B" (voir CSS). Le banc d'essai peut la forcer par window.__hvDesignOrdi. */
+  var DESIGN_ORDI = "B";
+  /* Style des onglets de Galops : "1" à "4" (propositions du 04/11, toujours semi-transparents, dégradé, ombre). */
+  var STYLE_ONGLETS = "1";
   var TRAITEMENT_PHOTO = { actif: true, filtre: "saturate(.92) contrast(1.05) brightness(.95) sepia(.07)", bords: .5 };
 
   /* Onglets des Galops. « 7+ » regroupe les Galops 7, 8 et 9. */
@@ -1257,6 +1261,15 @@
     "color:var(--hv-iv);font-size:14px;letter-spacing:.02em;white-space:nowrap;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;transition:border-color .2s,background .2s}",
     ".hv2-og.on{border-color:var(--hv-ch);background:linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95));box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.35)}",
     ".hv2-og:disabled{opacity:.42;cursor:default}",
+    /* 2 — pilule champagne */
+    ".hv2-o2 .hv2-og{border-radius:999px;padding:9px 20px;background:linear-gradient(180deg,rgba(28,40,44,.62),rgba(7,10,8,.55));border-color:rgba(201,166,107,.22);box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}",
+    ".hv2-o2 .hv2-og.on{background:linear-gradient(180deg,rgba(201,166,107,.30),rgba(201,166,107,.08));border-color:rgba(201,166,107,.85);color:#F7E9CF;box-shadow:0 10px 22px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.08)}",
+    /* 3 — onglet souligné (verre fumé, trait champagne sous l'onglet choisi) */
+    ".hv2-o3 .hv2-og{border-radius:10px 10px 4px 4px;border:none;border-bottom:1px solid rgba(243,238,228,.14);background:linear-gradient(180deg,rgba(243,238,228,.07),rgba(243,238,228,.015));box-shadow:0 10px 20px -14px rgba(0,0,0,.95)}",
+    ".hv2-o3 .hv2-og.on{background:linear-gradient(180deg,rgba(16,29,34,.85),rgba(16,29,34,.35));border-bottom:2px solid #C9A66B;box-shadow:0 12px 24px -12px rgba(0,0,0,.95)}",
+    /* 4 — givré ivoire */
+    ".hv2-o4 .hv2-og{border-radius:14px;background:linear-gradient(160deg,rgba(243,238,228,.12),rgba(243,238,228,.025));border-color:rgba(243,238,228,.16);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 22px -14px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07)}",
+    ".hv2-o4 .hv2-og.on{background:linear-gradient(160deg,rgba(243,238,228,.24),rgba(201,166,107,.10));border-color:rgba(243,238,228,.55);box-shadow:0 12px 24px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.14)}",
     ".hv2-og small{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--hv-iv2);margin-top:3px}",
     /* thèmes */
     ".hv2-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.4vw,36px);margin:22px 0 14px;color:var(--hv-iv);line-height:1.1}",
@@ -1297,13 +1310,25 @@
     ".hv2-grille{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.hv2-theme.seul3{grid-column:2}",
     ".hv2-photo{height:clamp(360px,52vw,460px)}.hv2-photo img{object-position:var(--hv-pos-tab,center)}",
     ".hv2-titre{margin-top:-16px}.hv2-marque{font-size:22px}}",
-    /* ordinateur : panoramique de hauteur maîtrisée, contenu 1240 px */
-    "@media (min-width:1100px){.hv2-photo{height:460px;width:min(66%,820px);margin-inline-start:auto;margin-inline-end:max(0px,calc((100% - 1240px) / 2))}.hv2-photo img{object-position:var(--hv-pos-ordi,center)}",
-    ".hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 30%,#000 88%,transparent 100%)}",
-    ".hv2-courbe{max-width:1240px;margin:0 auto}",
+    /* ordinateur (04/11 01h37, Blandine : version ordi « bof ») : deux compositions à comparer,
+       DESIGN_ORDI = "A" (photo panoramique pleine largeur, titre sous le trait) ou "B" (photo à
+       droite, titre à gauche sur le noir, trait sous l'ensemble). Listes en 2 colonnes. */
+    "@media (min-width:1100px){.hv2-photo img{object-position:var(--hv-pos-ordi,center)}",
     ".hv2-onglets{overflow:visible;flex-wrap:nowrap;justify-content:flex-start;margin:28px 0 0;padding:2px 0 8px}",
     ".hv2-grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hv2-theme.seul3{grid-column:auto}",
-    ".hv2-liste{max-width:860px}}"
+    ".hv2-liste{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:36px}.hv2-liste>div{border-bottom:1px solid rgba(243,238,228,.07)!important}",
+    /* A */
+    ".hv2-dA .hv2-photo{height:480px;width:100%;max-width:1240px;margin:0 auto;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%)}",
+    ".hv2-dA .hv2-courbe.c2{max-width:1240px;margin:-64px auto 0}.hv2-dA .hv2-hero-retour{margin-bottom:6px}",
+    ".hv2-dA .hv2-titre h1{font-size:68px}",
+    /* B */
+    ".hv2-dB .hv2-hero{display:grid;grid-template-columns:minmax(0,40fr) minmax(0,60fr);grid-template-rows:auto auto 1fr auto;grid-template-areas:'m m' 'r p' 't p' 'c c';max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;column-gap:24px}",
+    ".hv2-dB .hv2-marque{grid-area:m}.hv2-dB .hv2-hero-retour{grid-area:r;padding:0;margin:26px 0 0;max-width:none}",
+    ".hv2-dB .hv2-photo{grid-area:p;width:100%;height:480px;margin:0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(90deg,transparent 0,#000 30%,#000 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(90deg,transparent 0,#000 30%,#000 100%)}",
+    "[dir=rtl] .hv2-dB .hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(270deg,transparent 0,#000 30%,#000 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(270deg,transparent 0,#000 30%,#000 100%)}",
+    ".hv2-dB .hv2-hero>.hv2-in:not(.hv2-hero-retour){grid-area:t;align-self:end;padding:0 0 70px;margin:0;max-width:none;position:relative;z-index:3}",
+    ".hv2-dB .hv2-titre{text-align:start;margin:0}.hv2-dB .hv2-titre h1{font-size:68px}.hv2-dB .hv2-titre p{font-size:22px}",
+    ".hv2-dB .hv2-courbe.c2{grid-area:c;margin:-64px 0 0;max-width:none}}"
   ].join("");
   function injecterCss2() {
     if (typeof document === "undefined") return;
@@ -1412,6 +1437,13 @@
       for (var i = 0; i < UNIVERS.length; i++) { if (UNIVERS[i].k === k) return L(UNIVERS[i].nom, langue); }
       return k;
     }
+    function classeRacine() {
+      var d = DESIGN_ORDI;
+      try { if (window.__hvDesignOrdi) d = window.__hvDesignOrdi; } catch (e) { }
+      var o = STYLE_ONGLETS;
+      try { if (window.__hvOnglets) o = window.__hvOnglets; } catch (e2) { }
+      return "hv2 hv2-d" + d + " hv2-o" + o;
+    }
     function styleTraitement() {
       return TRAITEMENT_PHOTO.actif ? { "--hv-filtre": TRAITEMENT_PHOTO.filtre, "--hv-bords": TRAITEMENT_PHOTO.bords } : {};
     }
@@ -1494,7 +1526,7 @@
 
     /* ---------- bibliothèque vide : annonce franche ---------- */
     if (!dispo.length) {
-      return h("div", { className: "hv2", style: styleTraitement() }, hero,
+      return h("div", { className: classeRacine(), style: styleTraitement() }, hero,
         h("div", { className: "hv2-in" }, h("div", { className: "hv2-vide" },
           h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.", "首批视频马上就来。", "De eerste video's komen eraan.", "Os primeiros vídeos estão chegando.", "De första videorna är på väg.", "Первые видео скоро появятся.", "Pierwsze filmy już wkrótce.", "첫 영상들이 곧 올라와요.")))));
     }
@@ -1526,18 +1558,44 @@
         onClick: function () { setRq(""); setRechOuverte(false); }
       }, "×")) : null;
 
+    /* onglets des Galops : disponibilités calculées sur le catalogue réel ; dans une page de thème,
+       seulement les vidéos de ce thème (04/11, Blandine : « ajoute les onglets dans les pages à thème ») */
+    function ongletsGalops(themeK) {
+      return h("div", {
+        className: "hv2-onglets", role: "tablist",
+        "aria-label": T("Choisis un Galop", "Choose a level", "Elige un Galop", "Scegli un Galop", "ガローを選ぶ", "Wähle einen Galopp", "اختاري مستوى الغالوب", "选择 Galop", "Kies een Galop", "Escolha um Galop", "Välj en Galop", "Выбери уровень Galop", "Wybierz poziom Galop", "Galop 선택")
+      }, ONGLETS_GALOPS.map(function (k) {
+        var n = dispo.filter(function (v) { return galopOk(v, k) && (!themeK || v.theme === themeK); }).length;
+        var on = galop === k;
+        return h("button", {
+          key: String(k), role: "tab", "aria-selected": on, disabled: !n, "aria-disabled": !n,
+          className: "hv2-og" + (on ? " on" : ""),
+          /* l'onglet choisi est toujours visible dans la rangée qui défile (sans faire bouger la page) */
+          ref: on ? function (el) {
+            if (!el || el.__hvVu) return; el.__hvVu = true;
+            try {
+              var pr = el.parentNode; if (pr.scrollWidth <= pr.clientWidth) return;
+              var re = el.getBoundingClientRect(), rp = pr.getBoundingClientRect();
+              pr.scrollLeft += (re.left + re.width / 2) - (rp.left + rp.width / 2);
+            } catch (e) { }
+          } : undefined,
+          onClick: function () { if (n) setGalop(k); }
+        }, nomOnglet(k), !n ? h("small", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : null);
+      }));
+    }
+
     /* ---------- VUE : thème ouvert (Galop sélectionné ET thème) ---------- */
     if (vue === "theme" && theme) {
       var vsT = dispo.filter(function (v) { return v.theme === theme && galopOk(v, galop); });
       var phT = PHOTOS_THEMES[theme] || {};
-      return h("div", { className: "hv2", style: styleTraitement() },
+      return h("div", { className: classeRacine(), style: styleTraitement() },
         heroDe({
           img: phT.img || PHOTO_HERO.img, posTel: phT.posHeroTel || phT.pos, posTab: phT.posHeroTab || phT.pos, posOrdi: phT.posHeroOrdi || phT.pos,
           alt: L(phT.alt, langue), titre: nomTheme(theme), sous: nomGalopSel() + " · " + nbVideos(vsT.length),
           retour: boutonRetour(T("Retour aux thèmes", "Back to topics", "Volver a los temas", "Torna ai temi", "テーマに戻る", "Zurück zu den Themen", "العودة إلى المواضيع", "返回主题", "Terug naar de thema's", "Voltar aos temas", "Tillbaka till teman", "Назад к темам", "Wróć do tematów", "주제로 돌아가기"), function () { setVue("accueil"); setTheme(null); })
         }),
-        h("div", { className: "hv2-in", style: { marginTop: 26 } },
-          h("div", { className: "hv2-liste" }, vsT.map(ligne))));
+        h("div", { className: "hv2-in" }, ongletsGalops(theme),
+          h("div", { className: "hv2-liste", style: { marginTop: 20 } }, vsT.map(ligne))));
     }
 
     /* ---------- VUE : Mes vidéos ---------- */
@@ -1556,7 +1614,7 @@
            T("Les vidéos que tu ouvres viendront se ranger ici.", "Videos you open will be filed here.", "Los vídeos que abras se guardarán aquí.", "I video che apri si raccoglieranno qui.", "開いた動画がここに並びます。", "Videos, die du öffnest, werden hier abgelegt.", "ستصنف هنا الفيديوهات التي تفتحينها.", "你打开过的视频会收纳在这里。", "Video's die je opent komen hier te staan.", "Os vídeos que você abrir serão guardados aqui.", "Videor du öppnar hamnar här.", "Открытые тобой видео будут складываться здесь.", "Otwarte filmy trafią tutaj.", "열어 본 영상이 여기에 정리돼요.")]
         : [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا.", "暂时还没有收藏。", "Nog geen favorieten.", "Nenhum favorito por enquanto.", "Inga favoriter ännu.", "Пока нет избранного.", "Na razie brak ulubionych.", "아직 즐겨찾기가 없어요."),
            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.", "点视频上的星标，就能在这里找到它。", "Tik op de ster bij een video om hem hier terug te vinden.", "Toque na estrela de um vídeo para encontrá-lo aqui.", "Tryck på stjärnan på en video för att hitta den här.", "Коснись звёздочки на видео, чтобы найти его здесь.", "Dotknij gwiazdki przy filmie, aby go tu znaleźć.", "영상의 별을 터치하면 여기서 다시 볼 수 있어요.")];
-      return h("div", { className: "hv2", style: styleTraitement() },
+      return h("div", { className: classeRacine(), style: styleTraitement() },
         h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
           h("div", { className: "hv2-marque", "aria-hidden": "true" }, "HYPE"),
           boutonRetour(TXT_RETOUR_VT, function () { setVue("accueil"); }),
@@ -1579,7 +1637,7 @@
     if (vue === "reserve" && estModo) {
       var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
       var chBtn = { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#C9A66B", background: "none", border: "1px solid rgba(201,166,107,.45)", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", textDecoration: "none", fontWeight: 600 };
-      return h("div", { className: "hv2" },
+      return h("div", { className: classeRacine() },
         h("div", { className: "hv2-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 14px)" } },
           boutonRetour("Retour à la Vidéothèque", function () { setVue("accueil"); }),
           h("h2", { className: "hv2-h2", style: { marginTop: 8 } }, "Réserve d'animations"),
@@ -1610,19 +1668,7 @@
               h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.", "暂时没有符合的视频。", "Er is nog geen video die past.", "Nenhum vídeo corresponde ainda.", "Ingen video matchar ännu.", "Пока нет подходящих видео.", "Żaden film jeszcze nie pasuje.", "조건에 맞는 영상이 아직 없어요.")),
               h("p", null, T("Essaie un autre mot.", "Try another word.", "Prueba otra palabra.", "Prova un'altra parola.", "別の言葉で試してみて。", "Versuche ein anderes Wort.", "جربي كلمة أخرى.", "换个词试试。", "Probeer een ander woord.", "Tente outra palavra.", "Prova ett annat ord.", "Попробуй другое слово.", "Spróbuj innego słowa.", "다른 단어로 검색해 보세요."))));
     } else {
-      /* onglets des Galops : disponibilités calculées sur le catalogue réel */
-      var onglets = h("div", {
-        className: "hv2-onglets", role: "tablist",
-        "aria-label": T("Choisis un Galop", "Choose a level", "Elige un Galop", "Scegli un Galop", "ガローを選ぶ", "Wähle einen Galopp", "اختاري مستوى الغالوب", "选择 Galop", "Kies een Galop", "Escolha um Galop", "Välj en Galop", "Выбери уровень Galop", "Wybierz poziom Galop", "Galop 선택")
-      }, ONGLETS_GALOPS.map(function (k) {
-        var n = dispo.filter(function (v) { return galopOk(v, k); }).length;
-        var on = galop === k;
-        return h("button", {
-          key: String(k), role: "tab", "aria-selected": on, disabled: !n, "aria-disabled": !n,
-          className: "hv2-og" + (on ? " on" : ""),
-          onClick: function () { if (n) setGalop(k); }
-        }, nomOnglet(k), !n ? h("small", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : null);
-      }));
+      var onglets = ongletsGalops(null);
       /* thèmes : compteurs pour le Galop choisi, thèmes vides masqués */
       var themesVis = THEMES_ORDRE.map(function (k) {
         return { k: k, n: dispo.filter(function (v) { return v.theme === k && galopOk(v, galop); }).length };
@@ -1642,7 +1688,7 @@
         grille);
     }
 
-    return h("div", { className: "hv2", style: styleTraitement() },
+    return h("div", { className: classeRacine(), style: styleTraitement() },
       hero,
       h("div", { className: "hv2-in" },
         ligneAcces, champRech, corps,
