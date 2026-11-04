@@ -38,6 +38,7 @@ var UI = {
 var IMG_CORPS = { src: "images/atlas-cheval-corps.webp", w: 1536, h: 1024, alt: UI.altCorps };
 var IMG_MEMBRE = { src: "images/atlas-cheval-membre.webp", w: 560, h: 860, alt: tt("Gros plan sur un membre antérieur du cheval bai foncé, du genou au sabot", "Close-up of the dark bay horse's front leg, from knee to hoof", "Primer plano de la extremidad anterior del caballo castaño oscuro, de la rodilla al casco", "Primo piano dell'arto anteriore del cavallo baio scuro, dal ginocchio allo zoccolo", "Nahaufnahme des Vorderbeins des dunkelbraunen Pferdes, vom Vorderfußwurzelgelenk bis zum Huf", "黒鹿毛の馬の前肢のアップ（ひざからひづめまで）", "صورة مقرّبة للقائمة الأمامية للحصان الكميت الداكن، من الركبة إلى الحافر", "深枣色马前肢特写，从膝到蹄", "Close-up van het voorbeen van het donkerbruine paard, van knie tot hoef", "Grande plano do membro anterior do cavalo castanho-escuro, do joelho ao casco", "Närbild av den mörkbruna hästens framben, från knät till hoven", "Крупный план передней ноги тёмно-гнедой лошади, от запястья до копыта", "Zbliżenie przedniej nogi ciemnogniadego konia, od nadgarstka do kopyta", "짙은 갈색 말 앞다리의 클로즈업(무릎부터 발굽까지)") };
 var IMG_TETE = { src: "images/atlas-cheval-tete.webp", w: 920, h: 960, alt: UI.altTete };
+var IMG_ANAT = { src: "images/atlas-cheval-anatomie.webp", w: 1305, h: 689, alt: { fr: "Illustration d'un cheval gris graphite de profil, muscles apparents, sur fond noir" } };   /* 04/11 : Galop 5 */
 
 /* point = [id, x, y, nom, explication] */
 var NIVEAUX = [
@@ -251,6 +252,24 @@ var GALOPS_SUIVANTS = [
         tt("Repère les étampures : les trous du fer, creusés pour loger la tête des clous. Les clous passent ensuite dans la paroi, dans la corne qui ne sent rien, à l'extérieur de la ligne blanche.", "Find the nail holes: holes in the shoe, shaped to hold the nail heads. The nails then go through the wall, in the horn that has no feeling, outside the white line.", "Localiza las claveras: los agujeros de la herradura, hechos para alojar la cabeza de los clavos. Luego los clavos pasan por la tapa, en el casco que no siente, por fuera de la línea blanca.", "Trova le stampe: i fori del ferro, fatti per accogliere la testa dei chiodi. I chiodi passano poi nella parete, nel corno insensibile, all'esterno della linea bianca.", "Finde die Nagellöcher: Löcher im Eisen, die den Nagelkopf aufnehmen. Die Nägel gehen dann durch die Hufwand, im unempfindlichen Horn, außerhalb der weißen Linie.", "釘穴をさがそう。蹄鉄にあけた穴で、釘の頭がおさまる形になっています。釘はそのあと、感覚のない角質の蹄壁を、白線の外側で通ります。", "نحدّد ثقوب المسامير: فتحات في الحدوة مُشكَّلة لتستقرّ فيها رؤوس المسامير. ثم تمرّ المسامير في الجدار، في القرن الذي لا يُحسّ، خارج الخط الأبيض.", "找到钉孔：蹄铁上的孔，形状正好容纳钉头。钉子随后穿过蹄壁上没有感觉的角质部分，在白线外侧。", "Zoek de nagelgaten: gaten in het ijzer, gevormd om de nagelkop op te vangen. De nagels gaan daarna door de wand, in de hoorn die niets voelt, buiten de witte lijn.", "Encontra as cravadouras: os furos da ferradura, feitos para alojar a cabeça dos cravos. Depois os cravos passam pela muralha, no casco que não sente, por fora da linha branca.", "Hitta sömhålen: hål i skon som är formade för sömmens huvud. Sömmen går sedan genom hovväggen, i hornet som inte känner något, utanför vita linjen.", "Найди гвоздевые отверстия: дырки в подкове, сделанные под шляпки гвоздей. Затем гвозди проходят через стенку, в нечувствительном роге, снаружи белой линии.", "Znajdź otwory na hufnale: dziury w podkowie ukształtowane tak, by mieściły łeb hufnala. Hufnale przechodzą potem przez ścianę, w nieczułym rogu, na zewnątrz linii białej.", "못 구멍을 찾아봐요. 편자에 뚫린 구멍으로, 못 머리가 들어가도록 만들어져 있어요. 못은 그다음 감각이 없는 발굽 벽의 각질을 지나며, 백선 바깥쪽에 박혀요.")]
     ] }
   ] }
+  ,
+  /* 04/11 (Blandine : « avec quelque chose de plus simple ») : Galop 5 — les grands groupes musculaires, sur l'illustration graphite
+     de la maquette (image ChatGPT de Blandine, retouchée : illustration, pas un modèle anatomique exact). Textes en français seulement
+     tant qu'ils ne sont pas validés (les autres langues affichent le français). Mêmes groupes que le cours g5n-04. */
+  { n: 5, vues: [
+    { id: "muscles5", court: { fr: "Les muscles" }, titre: { fr: "Les grands groupes musculaires" }, img: IMG_ANAT, pts: [
+      ["m-encolure", 287, 182, { fr: "Les muscles de l'encolure" },
+        { fr: "Le long de l'encolure, de la tête jusqu'au garrot et à l'épaule. Ils portent la tête et participent au mouvement des antérieurs." }],
+      ["m-epaule", 405, 212, { fr: "Les muscles de l'épaule et du bras" },
+        { fr: "Sur l'omoplate et le bras, en haut de l'antérieur. Ils portent l'avant-main et lancent les antérieurs. L'antérieur n'est relié au tronc que par des muscles." }],
+      ["m-dos", 679, 150, { fr: "Les muscles du dos" },
+        { fr: "Le long de la ligne du dessus, du garrot à la croupe, de chaque côté de la colonne. Ils transmettent la poussée des postérieurs vers l'avant et portent le cavalier." }],
+      ["m-abdo", 600, 350, { fr: "Les muscles abdominaux" },
+        { fr: "Sous le ventre, du sternum jusqu'au bassin. Ils soutiennent le dos par en dessous : dos et abdominaux travaillent ensemble." }],
+      ["m-croupe", 928, 238, { fr: "Les muscles de la croupe et de la cuisse" },
+        { fr: "Sur la croupe et autour de la cuisse, jusqu'au grasset. Ils propulsent le cheval, à toutes les allures et au saut." }]
+    ] }
+  ] }
 ];
 
 /* vues masquées (masque: true) : gardées dans le fichier, pas affichées */
@@ -403,5 +422,5 @@ function Module(props) {
       }))) : h("div", { className: "att" }, V.attente || ""));
 }
 
-window.HypeAtlas = { Module: Module, titre: function (lg) { return pk(UI.titre, lg); }, img: IMG_CORPS.src, version: 4, maquette: function () { } };
+window.HypeAtlas = { Module: Module, titre: function (lg) { return pk(UI.titre, lg); }, img: IMG_CORPS.src, version: 5, maquette: function () { } };
 })();

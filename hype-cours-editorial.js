@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 62;   /* 03/11 11h10 : une section « La définition… » n'est plus prise pour « Le défi du cavalier » (page de fin) */
+var VERSION = 63;   /* 04/11 : g5n-04 — atlas Galop 5 (grands groupes musculaires) */
+/* précédente : VERSION = 62; */   /* 03/11 11h10 : une section « La définition… » n'est plus prise pour « Le défi du cavalier » (page de fin) */
 /* précédente : VERSION = 61; */   /* 02/11 22h30 : fusion des deux sessions (v60 + v60) */
 /* précédente : VERSION = 60; */   /* 02/11 22h30 : grand lexique — mots des Galops 5 à 9 lus aussi dans les cours */
 /* aussi : */   /* 02/11 22h : cours « g5n-… » — le texte français de référence est retrouvé (repère du « Le savais-tu ? » dans les autres langues) */
@@ -2280,7 +2281,8 @@ var MODULES_COURS = {
   "g1-c20": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 1 } },
   "g2-anatomie": { id: "atlas", module: "HypeAtlas", apres: 1, props: { niveau: 2 } },
   "g3-c11": { id: "atlas", module: "HypeAtlas", apres: 1, img: "images/atlas-pied-profil.webp", props: { niveau: 3, vue: "pied" } },
-  "g1-c5": { id: "position", module: "HypePositionAssise", apres: 1 }   /* 01/11 : schéma interactif « La bonne position assise » (hype-cours-position.js), après « Les allures assises » */
+  "g1-c5": { id: "position", module: "HypePositionAssise", apres: 1 },
+  "g5n-04": { id: "atlas", module: "HypeAtlas", apres: 2, img: "images/atlas-cheval-anatomie.webp", props: { niveau: 5, vue: "muscles5" } }   /* 04/11 (Blandine) : atlas simple, grands groupes musculaires, après « Les muscles et le mouvement » */   /* 01/11 : schéma interactif « La bonne position assise » (hype-cours-position.js), après « Les allures assises » */
 };
 /* 01/11 21h15 (Blandine) : photo entière en tête d'une notion, repérée par position [chapitre, notion] (identique dans toutes les langues) — « La physiologie du cheval » : L'avant-main = l'avant du cheval, L'arrière-main = l'arrière */
 var PHOTOS_NOTION_POS = { "g1-c20": [[2, 2, "images/cours-g1-c20-avant-main.webp"], [2, 3, "images/cours-g1-c20-arriere-main.webp"]] };   /* 01/11 23h44 : g1-c5 retiré d'ici, la photo dorée est devenue la photo du chapitre 01 */   /* 01/11 21h47 (Blandine) : g1-c5 « Le secret des grands cavaliers » (centre de gravité) = cheval gris monté dans la lumière dorée */
