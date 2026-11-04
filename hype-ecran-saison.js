@@ -475,7 +475,7 @@ var CSS2 = [
   ".hs-ep{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;margin-bottom:8px}",
   ".hs-coll{position:sticky;bottom:0;z-index:5;padding:14px 0 calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(180deg,rgba(7,10,8,0),#070A08 14px)}",
   /* LA FEUILLE SEP — page blanche à imprimer, copie de la fiche papier */
-  "#zone-impression.hs-feuille{position:fixed;inset:0;z-index:400;background:#fff;color:#111;overflow:auto;font-family:Calibri,'Segoe UI',Arial,sans-serif}",
+  "#zone-impression.hs-feuille{position:fixed;inset:0;z-index:10050;background:#fff;color:#111;overflow:auto;font-family:Calibri,'Segoe UI',Arial,sans-serif}",
   ".hs-feuille .bar{position:sticky;top:0;display:flex;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;background:#f3f3f3;border-bottom:1px solid #ddd}",
   ".hs-feuille .bar button{flex:1;min-height:44px;border-radius:10px;border:none;font-size:14px;font-weight:600}",
   ".hs-feuille .bar .p{background:#111;color:#fff}.hs-feuille .bar .f{flex:0 0 auto;padding:0 18px;background:#e2e2e2;color:#111}",
@@ -489,6 +489,9 @@ var CSS2 = [
   ".hs-feuille .grille th,.hs-feuille .grille td{border:1px solid #333;font-size:12px;padding:6px 5px;text-align:left;vertical-align:middle}",
   ".hs-feuille .grille th{font-weight:700;font-size:12.5px}",
   ".hs-feuille .grille td{height:40px;font-weight:700}",
+  /* 05/11 00h05 (capture : colonnes CHEVAL coupées à droite sur iPhone, barre du bas par-dessus) : la grille tient dans la largeur */
+  ".hs-feuille .grille{table-layout:fixed}.hs-feuille .grille td,.hs-feuille .grille th{overflow-wrap:anywhere}",
+  "@media (max-width:520px){.hs-feuille .grille th,.hs-feuille .grille td{font-size:10.5px;padding:5px 3px}.hs-feuille .grille th{font-size:10px}.hs-feuille .page{padding:18px 8px 40px}}",
   ".hs-feuille .grille .c{text-align:center}",
   ".hs-feuille .bas{margin:26px 0 0 auto;width:62%;font-size:12px}",
   ".hs-feuille .bas td,.hs-feuille .bas th{border:1px solid #333;padding:3px 6px;font-weight:400}",

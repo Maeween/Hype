@@ -17171,3 +17171,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Feuille SEP (et sa 2e page) : les cavalières suivent l'ordre des couples de l'appli (1re, 2e…), plus l'ordre alphabétique.
 - Licences : vérifié en base — aucune licence n'est enregistrée sur les comptes des 7 cavalières de Versailles (ni nom FFE avec licence, ni demande de résultats) ; question posée à Blandine sur l'endroit où elle les avait mises.
 - Fichiers : hype-ecran-saison.js (v32), index.html (build 20261105-0215), SUIVI.md.
+
+## 05/11/2026 01h20 — PUBLICATION build 20261105-0220 (capture de Blandine 00h05, aperçu de la feuille SEP sur iPhone)
+- Aperçu de la feuille SEP : passe devant la barre du bas de l'appli (elle recouvrait le tableau du bas) ; la grille des engagements tient dans la largeur du téléphone (les colonnes CHEVAL étaient coupées à droite) : colonnes fixes, texte qui passe à la ligne, police un peu plus petite sous 520 px. PDF inchangé.
+- En attente de Blandine : ordre des noms (NOM Prénom comme sur sa capture et sa ligne « Pronost Blandine », ou Prénom NOM mis au build 0215) et ordre des lignes (alphabétique ou ordre des couples).
+- Fichiers : hype-ecran-saison.js (v33), index.html (build 20261105-0220), SUIVI.md.
