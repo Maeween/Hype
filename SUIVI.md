@@ -17165,3 +17165,9 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Pas encore fait : le même bouton quand on AJOUTE un concours dans l'agenda (prochaine étape, après son essai).
 - Vérifié : node --check ; la fonction serveur testée avec des réponses simulées. Premier vrai essai = celui de Blandine sur iPhone (Versailles 15/11 → attendu 2723966).
 - Fichiers : hype-ecran-saison.js (v31), index.html (build 20261105-0210), netlify/functions/recherche-concours.js (déjà sur le dépôt, publiée par ce build), SUIVI.md.
+
+## 05/11/2026 01h15 — PUBLICATION build 20261105-0215 (Blandine 00h04, feuille d'engagements SEP : « ce n'est pas le bon nom de famille et prénom… remets son ordre »)
+- Noms : remis dans l'ordre de la FFE, prénom puis NOM (« Maelys MASURE », « Aurelie BUSSONNAIS ») — au lieu de « MASURE Maelys » du build 0205. Les lignes déjà enregistrées dans l'ancien ordre sont remises à l'ouverture (même nom dans l'autre ordre = pas une correction de la coach) ; « Enregistrer » pour garder. Champ « Nom Prénom » : exemple « Prénom NOM ».
+- Feuille SEP (et sa 2e page) : les cavalières suivent l'ordre des couples de l'appli (1re, 2e…), plus l'ordre alphabétique.
+- Licences : vérifié en base — aucune licence n'est enregistrée sur les comptes des 7 cavalières de Versailles (ni nom FFE avec licence, ni demande de résultats) ; question posée à Blandine sur l'endroit où elle les avait mises.
+- Fichiers : hype-ecran-saison.js (v32), index.html (build 20261105-0215), SUIVI.md.
