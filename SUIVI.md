@@ -21,6 +21,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Vidéos ajoutées par les cavaliers : à tester en vrai. Ajouter une vidéo YouTube, la proposer, puis l'accepter avec le compte modératrice (attend : Blandine)
 
 ## 3 — Quand on aura le temps
+- [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
+- [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
+- [04/11] Recherche de concours (numéro FFE) : étape 1 prête, NON publiée (netlify/functions/recherche-concours.js). Étape 2 = bouton « Trouver le numéro » sur les Engagements et à la création d'un concours, avec repli « chercher sur le calendrier FFE ». Étape 3 = recherche par dates, région, discipline (attend : Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
 - [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
 - [04/11] Vidéothèque : un lien vers une vidéo précise (#v=…) ouvre l'accueil de la Vidéothèque au lieu de la vidéo (attend : Claude)
@@ -17141,3 +17144,9 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - ERREUR DE MA PART (build 0135), signalée : en renommant la liste du récapitulatif de la feuille SEP, j'avais cassé hsRecapFeuille (« Can't find variable: tri ») — la page Engagements plantait ; corrigé par l'autre session au build 0140 (merci). Ici, le récap de la feuille reprend l'ordre des couples de l'appli (et non l'ordre alphabétique) pour que 1er/2e/3e tour = (1)(2)(3) à l'écran. Feuille SEP testée : 2 pages, aucune erreur.
 - Le premier envoi (0150) réutilisait ?v=28, déjà pris par le build 0140 : corrigé en ?v=29. L'entrée de suivi de 0150 s'était perdue à la fusion : rajoutée ici, avec le build 0155 (aucun autre changement).
 - Fichiers : hype-ecran-saison.js (v29), index.html (build 20261105-0155), SUIVI.md.
+
+## 04/11/2026 23h55 — RECHERCHE DE CONCOURS, ÉTAPE 1 (préparée, pas encore en ligne)
+- Demande de Blandine : retrouver le numéro FFE d'un concours à partir de la date et du lieu, ou la liste des concours d'une date. Les sites FFE refusent les lectures automatiques : on passe par la recherche web d'OpenAI (même clé que Hey Baby). Choix validé : ChatGPT (« Ok »), réservé aux coachs.
+- Nouveau fichier netlify/functions/recherche-concours.js : compte Hype vérifié ; réservé à la modératrice, aux créatrices de groupe et aux responsables du club ; 40 recherches par jour et par compte ; ne garde que des numéros bien formés trouvés dans une source (jamais inventés).
+- Vérifié avec des réponses simulées : Versailles 15/11 → 2723966, numéro mal formé écarté, non-coach refusé, date manquante refusée. Le vrai essai demande la mise en ligne (la clé n'est que sur le serveur) : il partira avec l'étape 2.
+- Correction : Hey Baby passe par OpenAI (ChatGPT), pas par Claude comme je l'avais dit.
