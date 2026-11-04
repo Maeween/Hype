@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 67;   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
+var VERSION = 68;   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
+/* précédente : VERSION = 67; */   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
 /* précédente : VERSION = 66; */   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
 /* précédente : VERSION = 65; */   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
 /* précédente : VERSION = 64; */   /* 04/11 : photos provisoires des 15 nouveaux cours du Galop 6 (g6n) */
@@ -3508,7 +3509,7 @@ function enregistrerAuto(id) {
     }
     sections.push({ id: "suite", ton: "noir", rendu: function (x) {
       /* 01/11 23h15 (Blandine) : la carte « Quiz et révision » n'est plus en bas du cours (elle reste sur la page de fin) — un bouton mène à « Pour réviser » */
-      return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: aRev(cours.id) ? LREV(lg).pourReviser : L("secQuiz"), sous: aRev(cours.id) ? LREV(lg).sousMenu : L("sQuiz"), img: lexPhoto(cours.id) || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }));
+      return versRev(cours.id, lg, x);   /* 04/11 20h30 : même carte que les autres Galops, + carte « Partager ce cours » dessous */
     } });
     var cv = A.couv;
     return {
@@ -3583,13 +3584,26 @@ function aRev(id, A) { return !!(lexDe(id) || SAVAIS_COURS[id] || (A && ((A.lexi
 /* titre « Petit lexique » dans la langue, repris des lexiques existants */
 function titreLex(lg) { var t = null; Object.keys(LEXIQUE_COURS).some(function (k) { var o = LEXIQUE_COURS[k][lg]; if (o && o.titre) { t = o.titre; return true; } return false; }); return t || "Petit lexique"; }
 /* carte en bas d'un cours qui mène à « Révise en 2 minutes » (prêtée au Galop 4) */
-function versRev(id, lg, x, A) { var ok = aRev(id, A); return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV), h(CarteSuite, { label: ok ? LREV(lg).pourReviser : Lx(lg)("secQuiz"), sous: ok ? LREV(lg).sousMenu : Lx(lg)("sQuiz"), img: lexPhoto(id) || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } })); }
+/* 04/11 20h30 (Blandine : « un onglet en dessous de Révise, similaire, proposant de partager ce cours ») : carte « Partager ce cours » sous la carte de révision,
+   même dessin ; l'action vient de l'écran du cours (index.html, window.__hypePartageCours), affichée seulement pour qui peut partager ce cours */
+function versRev(id, lg, x, A) {
+  var ok = aRev(id, A), P = null;
+  try { P = window.__hypePartageCours; } catch (e) { }
+  var partage = (P && P.peut && P.id === id && typeof P.partager === "function")
+    ? h(CarteSuite, { cls: "hce-suite-partage", label: P.msg || LREV(lg).partager, sous: LREV(lg).partagerSous, img: "images/FOND_CAVALIERS_ECURIE.webp", pos: "60% 40%", rtl: x.rtl, icone: "partage", onClick: function () { P.partager(); } })
+    : null;
+  return h("div", { className: "hce-vers-rev", style: { padding: "8px 0 8px" } }, h("style", null, CSS_REV),
+    h(CarteSuite, { label: ok ? LREV(lg).pourReviser : Lx(lg)("secQuiz"), sous: ok ? LREV(lg).sousMenu : Lx(lg)("sQuiz"), img: lexPhoto(id) || IM.quiz, pos: "70% 30%", rtl: x.rtl, onClick: function () { x.versFin(true); } }),
+    partage);
+}
 var LEX_PHOTO = { "g1-c20": "images/cours-g1-c20-lexique.webp" };
 /* 02/11 (Blandine : « il manquait la photo de cheval en haut des lexiques ») : la même photo de tête de cheval sur tous les lexiques, sauf photo propre au cours */
 function lexPhoto(id) { return LEX_PHOTO[id] || "images/cours-g1-c20-lexique.webp"; }
 var LREV_T = {
-  pourReviser: tt("Révise en 2 minutes", "Review in 2 minutes", "Repasa en 2 minutos", "Ripassa in 2 minuti", "2分で復習", "In 2 Minuten wiederholen", "راجع في دقيقتين", "2分钟复习", "Herhaal in 2 minuten", "Revê em 2 minutos", "Repetera på 2 minuter", "Повтори за 2 минуты", "Powtórz w 2 minuty", "2분 복습"),
-  sousMenu: tt("Les mots clés avant le quiz", "Key words before the quiz", "Las palabras clave antes del quiz", "Le parole chiave prima del quiz", "クイズの前にキーワード", "Die Schlüsselwörter vor dem Quiz", "الكلمات الأساسية قبل الاختبار", "测验前的关键词", "De sleutelwoorden voor de quiz", "As palavras-chave antes do quiz", "Nyckelorden före quizet", "Ключевые слова перед тестом", "Kluczowe słowa przed quizem", "퀴즈 전 핵심 단어"),
+  partager: tt("Partager ce cours", "Share this lesson", "Compartir este curso", "Condividi questa lezione", "この講座をシェア", "Diesen Kurs teilen", "شارك هذا الدرس", "分享这节课", "Deel deze les", "Partilhar esta aula", "Dela den här lektionen", "Поделиться уроком", "Udostępnij tę lekcję", "이 수업 공유하기"),
+  partagerSous: tt("Envoie-le à un ami cavalier", "Send it to a riding friend", "Envíalo a un amigo jinete", "Mandala a un amico cavaliere", "乗馬仲間に送ろう", "Schick ihn einem Reitfreund", "أرسله إلى صديق فارس", "发给一位骑马的朋友", "Stuur hem naar een ruitervriend", "Envia-a a um amigo cavaleiro", "Skicka den till en ridkompis", "Отправь другу-всаднику", "Wyślij ją znajomemu jeźdźcowi", "승마 친구에게 보내 보세요"),
+  pourReviser: tt("Révise, puis teste-toi", "Review, then test yourself", "Repasa y luego ponte a prueba", "Ripassa, poi mettiti alla prova", "復習して、力試し", "Wiederholen, dann testen", "راجع، ثم اختبر نفسك", "先复习，再自测", "Herhaal, test jezelf daarna", "Revê e depois testa-te", "Repetera, testa dig sedan", "Повтори, потом проверь себя", "Powtórz, potem sprawdź się", "복습하고, 스스로 테스트하기"),
+  sousMenu: tt("Mots clés et savais-tu, puis Hey Baby, défi et quiz", "Key words and did you know?, then Hey Baby, challenge and quiz", "Palabras clave y ¿sabías que…?, luego Hey Baby, reto y quiz", "Parole chiave e lo sapevi?, poi Hey Baby, sfida e quiz", "キーワードと「知ってた？」、それからHey Baby・チャレンジ・クイズ", "Schlüsselwörter und Wusstest du schon?, dann Hey Baby, Challenge und Quiz", "الكلمات الأساسية و«هل كنت تعلم؟»، ثم Hey Baby والتحدي والاختبار", "关键词和“你知道吗？”，然后是 Hey Baby、挑战和测验", "Sleutelwoorden en wist je dat?, daarna Hey Baby, uitdaging en quiz", "Palavras-chave e sabias que…?, depois Hey Baby, desafio e quiz", "Nyckelord och visste du att…?, sedan Hey Baby, utmaning och quiz", "Ключевые слова и «А ты знал?», потом Hey Baby, задание и тест", "Słowa kluczowe i czy wiesz, że…?, potem Hey Baby, wyzwanie i quiz", "핵심 단어와 '알고 있었니?', 그다음 Hey Baby, 도전, 퀴즈"),
   savais: tt("Le savais-tu ?", "Did you know?", "¿Sabías que…?", "Lo sapevi?", "知ってた？", "Wusstest du schon?", "هل كنت تعلم؟", "你知道吗？", "Wist je dat?", "Sabias que…?", "Visste du att…?", "А ты знал?", "Czy wiesz, że…?", "알고 있었니?"),
   suite: tt("Hey Baby, défi et quiz", "Hey Baby, challenge and quiz", "Hey Baby, reto y quiz", "Hey Baby, sfida e quiz", "Hey Baby・チャレンジ・クイズ", "Hey Baby, Challenge und Quiz", "Hey Baby والتحدي والاختبار", "Hey Baby、挑战和测验", "Hey Baby, uitdaging en quiz", "Hey Baby, desafio e quiz", "Hey Baby, utmaning och quiz", "Hey Baby, задание и тест", "Hey Baby, wyzwanie i quiz", "Hey Baby, 도전과 퀴즈")
 };
@@ -3616,6 +3630,8 @@ var CSS_REV = [
 ".hce-rev .hce-btn,.hce .hce-vers-rev .hce-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;border-radius:999px;padding:13px 22px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;cursor:pointer}",
 ".hce .hce-vers-rev{display:flex;justify-content:center;padding:8px 0 24px}",
 ".hce-suite{position:relative;display:flex;align-items:center;gap:14px;width:100%;max-width:560px;min-height:78px;margin:0 auto;padding:16px 18px 16px 22px;border:1px solid rgba(201,166,107,.45);border-radius:14px;background:#0B0F0E;color:#F3EEE4;overflow:hidden;cursor:pointer;text-align:start;font:inherit}",
+".hce-vers-rev{display:flex!important;flex-direction:column!important;align-items:center}",
+".hce-vers-rev .hce-suite+.hce-suite{margin-top:12px}",
 ".hce-suite .ph{position:absolute;inset:0 0 0 auto;width:55%;background-size:cover;-webkit-mask-image:linear-gradient(90deg,transparent,#000 70%);mask-image:linear-gradient(90deg,transparent,#000 70%);opacity:.75}",
 ".hce-suite .lb{position:relative;flex:1;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:21px;font-weight:500;line-height:1.1}",
 ".hce-suite .lb small{display:block;margin-top:4px;font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:400;color:rgba(243,238,228,.7)}",
@@ -3623,10 +3639,13 @@ var CSS_REV = [
 ].join("\n");
 /* carte-bouton dans le style des cartes « Les chapitres du cours » (photo à droite, titre, rond avec flèche) */
 function CarteSuite(p) {
-  return h("button", { type: "button", className: "hce-suite", onClick: p.onClick },
+  return h("button", { type: "button", className: "hce-suite" + (p.cls ? " " + p.cls : ""), onClick: p.onClick },
     p.img ? h("span", { className: "ph", "aria-hidden": true, style: { backgroundImage: "url(" + p.img + ")", backgroundPosition: p.pos || "center" } }) : null,
     h("span", { className: "lb" }, p.label, p.sous ? h("small", null, p.sous) : null),
-    h("span", { className: "rd", "aria-hidden": true }, fleche(p.rtl, 14)));
+    h("span", { className: "rd", "aria-hidden": true }, p.icone === "partage"
+      ? h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" },
+          h("circle", { cx: 18, cy: 5, r: 2.6 }), h("circle", { cx: 6, cy: 12, r: 2.6 }), h("circle", { cx: 18, cy: 19, r: 2.6 }), h("path", { d: "M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3" }))
+      : fleche(p.rtl, 14)));
 }
 function RevAuto(props) {
   var cours = props.cours, lg = props.langue || "fr", rtl = lg === "ar", R = LREV(lg);
