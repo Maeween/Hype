@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 68;   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
+var VERSION = 69;   /* 04/11 soir (Blandine : maquette du grand lexique validée) : grand lexique — nouvelle présentation (photo en fond, recherche à côté du filtre, alphabet en reflet, fiche d'une notion avec flèches, partage, mémoire des filtres et du défilement) */
+/* précédente : VERSION = 68; */   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
 /* précédente : VERSION = 67; */   /* 04/11 17h55 : g1-c6 — photo de l'œil du chapitre 01 beaucoup moins haute sur téléphone (entière) */
 /* précédente : VERSION = 66; */   /* 04/11 17h40 (Blandine « mets en ligne ») : g1-c6 — « 6 attitudes à reconnaître » (maquette ChatGPT, photos de Blandine, visionneuse photo seule) */
 /* précédente : VERSION = 65; */   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
@@ -3705,9 +3706,10 @@ function glexEntrees(lg, pret) {
     var LX = lexDe(id) || DANS[id], lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
     var g = +((/^g(\d+)/.exec(id) || [])[1] || 0);   /* 02/11 : « g5n-01 » compte bien pour le Galop 5 */
     if (typeof pret === "function" && !pret(id, g)) return;   /* 02/11 : seulement les cours ouverts à la personne (les cours en relecture restent visibles des modérateurs) */
-    lex.mots.forEach(function (m) {
+    lex.mots.forEach(function (m, iM) {
       var k = glexCle(m[0]).toLocaleLowerCase(lg);
-      if (!map[k]) { map[k] = { mot: m[0], def: m[1], cle: glexCle(m[0]), cours: [] }; liste.push(map[k]); }
+      if (!map[k]) { map[k] = { mot: m[0], def: m[1], cle: glexCle(m[0]), cours: [], refs: [] }; liste.push(map[k]); }
+      map[k].refs.push(id + "." + iM);   /* 04/11 soir : « <cours>.<rang> » — identifiant stable d'une notion (liens partagés), le même dans toutes les langues */
       if (!map[k].cours.some(function (c) { return c.id === id; })) map[k].cours.push({ id: id, g: g });
     });
   });
@@ -3721,74 +3723,381 @@ function glexTitre(id, g, lg, f) {
   try { var L = g === 1 ? window.COURS_GALOP1_I18N : window["COURS_GALOP" + g + "_FR"]; var c = L && L.find(function (x) { return x && x.id === id; }); if (c) t = typeof c.titre === "string" ? c.titre : pickLg(c.titre, lg); } catch (e) { }
   return String(t || "").replace(/\s*[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\uFE0F?\s*/gu, " ").trim();
 }
+/* ══ 04/11 soir (Blandine : « intègre la maquette HTML jointe… cette présentation est notre référence ») ══
+   GRAND LEXIQUE — présentation de la maquette validée (HYPE-grand-lexique-maquette-validee.html), branchée sur le VRAI lexique.
+   · photo en fond immersif sous les commandes (images/galops-carte-videos-bai.webp : la photo de la maquette, déjà dans le dépôt) ;
+   · titre « Le grand / lexique. » sur deux lignes, 60 px d'air au-dessus du sous-titre ; plus de compteur de mots ;
+   · recherche à gauche de « Tous les galops », sur la même ligne (filtre 100 px, 10 px d'écart) : l'œil du cheval reste dégagé ;
+   · navigation alphabétique (groupes + cases) en reflet presque invisible : noir de la page #070A08 à 10 %, reflet ivoire 1,8 % → 0,
+     flou 3 px, contours ivoire 13 % ; grille asymétrique (1re lettre sur 2 colonnes × 2 rangées, avec la photo) ;
+   · lignes de notions, liens de cours et partage sobres ; fiche d'une notion : définition entière, cours associés (liens vers les
+     vrais cours), flèches précédente / suivante dans le contexte de la liste, « Retour au lexique » ;
+   · tout est mémorisé (recherche, Galop, groupe, lettre, notion ouverte, défilement) : lexique → notion → cours → retour retrouve
+     la même notion et sa position, puis la même liste ; le retour du téléphone / navigateur ferme d'abord la notion ;
+   · « Partager le lexique » / « Partager cette notion » : 2hype.fr/<langue>/lexique/ (?m=<notion>) — partage natif, sinon lien copié.
+   Alphabets : latin A–Z (4 groupes de la maquette), cyrillique et arabe (4 groupes + « A–Z » pour les sigles latins), coréen
+   (consonnes initiales) ; japonais et chinois : pas de lettres (recherche + filtre, comme avant). 14 langues, droite-gauche. */
+var GLEX_N = {
+  kicker: tt("Les mots de l’équitation", "The words of riding", "Las palabras de la equitación", "Le parole dell’equitazione", "乗馬のことば", "Die Wörter des Reitens", "كلمات الفروسية", "马术词汇", "De woorden van de paardensport", "As palavras da equitação", "Ridsportens ord", "Слова верховой езды", "Słowa jeździectwa", "승마 용어"),
+  chercher: tt("Chercher une notion", "Search for a term", "Buscar un término", "Cerca un termine", "用語を探す", "Begriff suchen", "ابحث عن مفهوم", "搜索词条", "Zoek een begrip", "Procurar um termo", "Sök ett begrepp", "Найти понятие", "Szukaj pojęcia", "용어 찾기"),
+  tousGalops: tt("Tous les galops", "All Galops", "Todos los Galops", "Tutti i Galop", "全ギャロップ", "Alle Galops", "كل الغالوبات", "全部 Galop", "Alle Galops", "Todos os Galops", "Alla Galop", "Все Galop", "Wszystkie Galopy", "모든 Galop"),
+  filtrer: tt("Filtrer par Galop", "Filter by Galop", "Filtrar por Galop", "Filtra per Galop", "ギャロップで絞り込む", "Nach Galop filtern", "تصفية حسب الغالوب", "按 Galop 筛选", "Filter op Galop", "Filtrar por Galop", "Filtrera på Galop", "Фильтр по Galop", "Filtruj według Galopu", "Galop별로 보기"),
+  groupes: tt("Groupes de lettres", "Letter groups", "Grupos de letras", "Gruppi di lettere", "文字のグループ", "Buchstabengruppen", "مجموعات الحروف", "字母分组", "Lettergroepen", "Grupos de letras", "Bokstavsgrupper", "Группы букв", "Grupy liter", "글자 묶음"),
+  lettre: tt("Choisir une lettre", "Choose a letter", "Elige una letra", "Scegli una lettera", "文字を選ぶ", "Buchstaben wählen", "اختر حرفا", "选择字母", "Kies een letter", "Escolha uma letra", "Välj en bokstav", "Выбери букву", "Wybierz literę", "글자 고르기"),
+  recherche: tt("Recherche", "Search", "Búsqueda", "Ricerca", "検索", "Suche", "بحث", "搜索", "Zoeken", "Pesquisa", "Sökning", "Поиск", "Wyszukiwanie", "검색"),
+  leLexique: tt("Le lexique", "The glossary", "El glosario", "Il glossario", "用語集", "Das Lexikon", "المعجم", "词汇表", "De woordenlijst", "O glossário", "Ordlistan", "Словарь", "Słowniczek", "용어집"),
+  aucun: tt("Aucune notion trouvée. Essaie une autre lettre ou un autre filtre.", "No term found. Try another letter or another filter.", "No se encontró ningún término. Prueba otra letra u otro filtro.", "Nessun termine trovato. Prova un’altra lettera o un altro filtro.", "見つかりませんでした。別の言葉や絞り込みを試してね。", "Kein Begriff gefunden. Versuch einen anderen Buchstaben oder einen anderen Filter.", "لم يتم العثور على أي مفهوم. جرب حرفا آخر أو تصفية أخرى.", "没有找到词条。换个词或筛选条件试试。", "Geen begrip gevonden. Probeer een andere letter of een ander filter.", "Nenhum termo encontrado. Tente outra letra ou outro filtro.", "Inget begrepp hittades. Prova en annan bokstav eller ett annat filter.", "Ничего не найдено. Попробуй другую букву или другой фильтр.", "Nie znaleziono pojęcia. Spróbuj innej litery lub innego filtra.", "찾는 용어가 없어요. 다른 글자나 필터를 골라 봐."),
+  retourLexique: tt("Retour au lexique", "Back to the glossary", "Volver al glosario", "Torna al glossario", "用語集に戻る", "Zurück zum Lexikon", "العودة إلى المعجم", "返回词汇表", "Terug naar de woordenlijst", "Voltar ao glossário", "Tillbaka till ordlistan", "Назад к словарю", "Wróć do słowniczka", "용어집으로 돌아가기"),
+  dansCours: tt("Retrouver cette notion dans les cours", "Find this term in the lessons", "Encuentra este término en los cursos", "Ritrova questo termine nelle lezioni", "この用語が出てくる講座", "Diesen Begriff in den Kursen wiederfinden", "تجد هذا المفهوم في الدروس", "在课程中找到这个词条", "Vind dit begrip terug in de lessen", "Encontre este termo nas aulas", "Hitta begreppet i lektionerna", "Это понятие в уроках", "Znajdź to pojęcie w lekcjach", "이 용어가 나오는 수업"),
+  prec: tt("Notion précédente", "Previous term", "Término anterior", "Termine precedente", "前の用語", "Vorheriger Begriff", "المفهوم السابق", "上一个词条", "Vorig begrip", "Termo anterior", "Föregående begrepp", "Предыдущее понятие", "Poprzednie pojęcie", "이전 용어"),
+  suiv: tt("Notion suivante", "Next term", "Término siguiente", "Termine successivo", "次の用語", "Nächster Begriff", "المفهوم التالي", "下一个词条", "Volgend begrip", "Próximo termo", "Nästa begrepp", "Следующее понятие", "Następne pojęcie", "다음 용어"),
+  partagerLex: tt("Partager le lexique", "Share the glossary", "Compartir el glosario", "Condividi il glossario", "用語集をシェア", "Lexikon teilen", "شارك المعجم", "分享词汇表", "Deel de woordenlijst", "Compartilhar o glossário", "Dela ordlistan", "Поделиться словарём", "Udostępnij słowniczek", "용어집 공유하기"),
+  partagerNotion: tt("Partager cette notion", "Share this term", "Compartir este término", "Condividi questo termine", "この用語をシェア", "Diesen Begriff teilen", "شارك هذا المفهوم", "分享这个词条", "Deel dit begrip", "Compartilhar este termo", "Dela begreppet", "Поделиться понятием", "Udostępnij to pojęcie", "이 용어 공유하기"),
+  copie: tt("Lien copié", "Link copied", "Enlace copiado", "Link copiato", "リンクをコピーしました", "Link kopiert", "تم نسخ الرابط", "链接已复制", "Link gekopieerd", "Link copiado", "Länk kopierad", "Ссылка скопирована", "Link skopiowany", "링크를 복사했어요")
+};
+var GLEX_PHOTO = "images/galops-carte-videos-bai.webp";
+var GLEX_CLE_ETAT = "hype_glex_etat";
+var GLEX_ETAT = null;   /* mémoire de la session (et sessionStorage : survit au rechargement de l'onglet) */
+function glexLireEtat() {
+  if (GLEX_ETAT) return GLEX_ETAT;
+  try { var v = JSON.parse(sessionStorage.getItem(GLEX_CLE_ETAT) || "null"); if (v && typeof v === "object") GLEX_ETAT = v; } catch (e) { }
+  return GLEX_ETAT || {};
+}
+function glexEcrireEtat(o) { GLEX_ETAT = o; try { sessionStorage.setItem(GLEX_CLE_ETAT, JSON.stringify(o)); } catch (e) { } }
+/* ---- alphabets ---- */
+var GLEX_LAT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+var GLEX_ALPHA = {
+  lat: { l: GLEX_LAT, g: [6, 6, 6, 8] },
+  ru: { l: "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ".split(""), g: [7, 7, 7, 8], latin: true },
+  ar: { l: "ابتثجحخدذرزسشصضطظعغفقكلمنهوي".split(""), g: [7, 7, 7, 7], latin: true },
+  ko: { l: "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ".split(""), g: [4, 4, 3, 3], latin: true }
+};
+function glexAlpha(lg) { if (lg === "ja" || lg === "zh") return null; return GLEX_ALPHA[lg] || GLEX_ALPHA.lat; }
+var GLEX_KO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", GLEX_KO_BASE = "ㄱㄱㄴㄷㄷㄹㅁㅂㅂㅅㅅㅇㅈㅈㅊㅋㅌㅍㅎ";
+function glexSansAl(s) { return String(s || "").replace(/^ال(?=\S{2})/, ""); }   /* arabe : l'article « ال » ne compte pas pour la lettre */
+/* première lettre d'une notion dans l'alphabet de la langue ; « LAT » = sigle latin dans une autre écriture ; « # » sinon */
+function glexIni(cle, lg) {
+  var A = glexAlpha(lg); if (!A) return "";
+  var s = String(cle || "").trim(); if (lg === "ar") s = glexSansAl(s);
+  for (var i = 0; i < s.length && i < 40; i++) {
+    var c = s.charAt(i), u = c.toLocaleUpperCase(lg);
+    if (lg === "ru") { if (u === "Ё") u = "Е"; if (A.l.indexOf(u) >= 0) return u; }
+    else if (lg === "ar") { u = u.replace(/[أإآٱ]/, "ا").replace("ة", "ه").replace("ى", "ي").replace("ؤ", "و").replace("ئ", "ي"); if (A.l.indexOf(u) >= 0) return u; }
+    else if (lg === "ko") { var k = c.charCodeAt(0) - 0xAC00; if (k >= 0 && k < 11172) return GLEX_KO_BASE.charAt(GLEX_KO.indexOf(GLEX_KO.charAt(Math.floor(k / 588)))); }
+    var l = u.normalize("NFD").replace(/[̀-ͯ]/g, "").replace("Ł", "L").replace("Ø", "O").replace("Æ", "A").replace("Œ", "O").replace("SS", "S");
+    if (/^[A-Z]/.test(l)) return A.latin ? "LAT" : l.charAt(0);
+  }
+  return "#";
+}
+function glexGroupes(lg, presents) {
+  var A = glexAlpha(lg); if (!A) return [];
+  var out = [], k = 0;
+  A.g.forEach(function (n, i) { out.push(A.l.slice(k, k + n)); k += n; });
+  if (A.latin) out[out.length - 1] = out[out.length - 1].concat(["LAT"]);
+  if (presents && presents["#"]) out[out.length - 1] = out[out.length - 1].concat(["#"]);
+  return out;
+}
+function glexEtiquette(l) { return l === "LAT" ? "A–Z" : l; }
+function glexSlug(s) { var t = String(s || ""); try { t = t.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { } return t.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "").slice(0, 40); }
+function glexIdNotion(e) { return e && e.refs && e.refs.length ? e.refs[0] + "." + glexSlug(e.cle) : ""; }
+/* une notion partagée : « <cours>.<rang>.<mot> » — on la retrouve par son cours et son rang (même notion dans toutes les langues),
+   et si le lexique du cours a changé d'ordre, par le mot */
+function glexTrouver(liste, id) {
+  id = String(id || ""); if (!id) return -1;
+  var p = id.split("."), ref = p.length >= 2 ? p[0] + "." + p[1] : "", slug = p.slice(2).join(".");
+  var parRef = -1, parSlug = -1;
+  for (var i = 0; i < liste.length; i++) {
+    var e = liste[i];
+    if (parRef < 0 && ref && e.refs && e.refs.indexOf(ref) >= 0) parRef = i;
+    if (parSlug < 0 && slug && glexSlug(e.cle) === slug) parSlug = i;
+  }
+  if (parRef >= 0 && (!slug || glexSlug(liste[parRef].cle) === slug || parSlug < 0)) return parRef;
+  return parSlug >= 0 ? parSlug : parRef;
+}
+function glexLien(lg, id) { return "https://2hype.fr/" + lg + "/lexique/" + (id ? "?m=" + encodeURIComponent(id) : ""); }
+function glexIc(d, w) { return h("svg", { width: w || 18, height: w || 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.35, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, d.map(function (x, i) { return h("path", { key: i, d: x }); })); }
+var GLEX_IC = {
+  chevG: ["M15 18l-6-6 6-6"], chevD: ["M9 18l6-6-6-6"], bas: ["M6 9l6 6 6-6"],
+  flG: ["M19 12H5", "M12 19l-7-7 7-7"], flD: ["M5 12h14", "M12 5l7 7-7 7"],
+  loupe: ["M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z", "M21 21l-4.35-4.35"],
+  partage: ["M18 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M6 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M18 15.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z", "M8.6 13.5l6.8 4", "M15.4 6.5l-6.8 4"]
+};
 function GrandLexique(props) {
   var lg = props.langue || "fr", rtl = lg === "ar";
-  var T = function (k) { return pickLg(GLEX_T[k], lg); };
-  var _q = useState(""), q = _q[0], setQ = _q[1];
-  var _g = useState(0), gf = _g[0], setGf = _g[1];
-  var tout = glexEntrees(lg, props.pret);
-  var galops = []; tout.forEach(function (e) { e.cours.forEach(function (c) { if (galops.indexOf(c.g) < 0) galops.push(c.g); }); }); galops.sort();
+  var T = function (k) { return pickLg(GLEX_N[k] || GLEX_T[k], lg); };
+  var A = glexAlpha(lg);
+  /* les notions (même calcul qu'avant) + leur lettre ; en arabe, rangées sans l'article */
+  var tout = React.useMemo(function () {
+    var L = glexEntrees(lg, props.pret);
+    L.forEach(function (e) { e.ini = glexIni(e.cle, lg); e.id = glexIdNotion(e); });
+    if (lg === "ar") { var co; try { co = new Intl.Collator("ar", { sensitivity: "base" }); } catch (eC) { co = null; } L.sort(function (a, b) { var x = glexSansAl(a.cle), y = glexSansAl(b.cle); return co ? co.compare(x, y) : (x < y ? -1 : 1); }); }
+    return L;
+  }, [lg, props.charge, props.estMod]);
+  var galops = []; tout.forEach(function (e) { e.cours.forEach(function (c) { if (galops.indexOf(c.g) < 0) galops.push(c.g); }); }); galops.sort(function (a, b) { return a - b; });
+  var presents = {}; tout.forEach(function (e) { presents[e.ini] = 1; });
+  var groupes = glexGroupes(lg, presents);
+  /* état : repris de la mémoire (filtres toujours ; notion ouverte et défilement seulement au RETOUR) */
+  var init = React.useRef(null);
+  if (!init.current) {
+    var m = glexLireEtat(), lien = null;
+    try { lien = window.__glexNotion || null; window.__glexNotion = null; } catch (eL) { }
+    if (lien) init.current = { q: "", g: 0, grp: -1, l: "", vue: "notion", mot: String(lien), lien: true, sListe: 0, sNotion: 0, scope: null };
+    else init.current = { q: m.q || "", g: m.g || 0, grp: typeof m.grp === "number" ? m.grp : -1, l: m.l || "", vue: (props.retour && m.vue === "notion" && m.mot) ? "notion" : "liste", mot: m.mot || "",
+      sListe: props.retour ? (m.sListe || 0) : 0, sNotion: props.retour ? (m.sNotion || 0) : 0, scope: m.scope || null };
+  }
+  var I = init.current;
+  var _q = useState(I.q), q = _q[0], setQ = _q[1];
+  var _g = useState(I.g), gf = _g[0], setGf = _g[1];
+  var _grp = useState(I.grp), grpS = _grp[0], setGrp = _grp[1];
+  var _l = useState(I.l), lS = _l[0], setL = _l[1];
+  var _v = useState(I.vue), vue = _v[0], setVue = _v[1];
+  var _m = useState(I.mot), mot = _m[0], setMot = _m[1];
+  var _sc = useState(I.scope), scope = _sc[0], setScope = _sc[1];
+  var _t = useState(""), toast = _t[0], setToast = _t[1];
+  var scrollRef = React.useRef({ liste: I.sListe, notion: I.sNotion, aFaire: I.vue === "notion" ? I.sNotion : I.sListe });
   var norm = function (s) { return String(s || "").toLocaleLowerCase(lg).normalize("NFD").replace(/[̀-ͯ]/g, ""); };
   var nq = norm(q.trim());
+  var dansGalop = function (e) { return !gf || e.cours.some(function (c) { return c.g === gf; }); };
+  /* lettre courante : celle mémorisée si elle existe dans cette langue, sinon la 1re lettre qui a des notions */
+  var avecMots = {}; tout.forEach(function (e) { if (dansGalop(e)) avecMots[e.ini] = 1; });
+  var grp = grpS, l = lS;
+  if (A) {
+    if (grp < 0 || grp >= groupes.length || groupes[grp].indexOf(l) < 0) {
+      grp = -1; for (var gi = 0; gi < groupes.length && grp < 0; gi++) if (groupes[gi].indexOf(l) >= 0) grp = gi;
+      if (grp < 0) { grp = 0; l = ""; }
+    }
+    if (!l) { l = groupes[grp].filter(function (x) { return avecMots[x] || presents[x]; })[0] || groupes[grp][0]; }
+  }
   var vus = tout.filter(function (e) {
-    if (gf && !e.cours.some(function (c) { return c.g === gf; })) return false;
-    return !nq || norm(e.mot).indexOf(nq) >= 0 || norm(e.def).indexOf(nq) >= 0;
+    if (!dansGalop(e)) return false;
+    if (nq) return norm(e.mot).indexOf(nq) >= 0 || norm(e.def).indexOf(nq) >= 0;
+    return !A || e.ini === l;
   });
-  var lettres = !/^(ja|zh|ko)$/.test(lg);
-  var blocs = [], cur = null;
-  vus.forEach(function (e) {
-    var l = lettres ? e.cle.charAt(0).toLocaleUpperCase(lg).normalize("NFD").replace(/[̀-ͯ]/g, "") : "";
-    if (!cur || cur.l !== l) { cur = { l: l, e: [] }; blocs.push(cur); }
-    cur.e.push(e);
+  /* notion ouverte (par son identifiant) */
+  var iMot = mot ? glexTrouver(tout, mot) : -1, notion = iMot >= 0 ? tout[iMot] : null;
+  React.useEffect(function () {   /* lien partagé : notion introuvable une fois tout chargé → la liste */
+    if (vue === "notion" && !notion && (props.charge || tout.length)) { if (props.charge) { setVue("liste"); setMot(""); } }
   });
+  var portee = (scope && notion && scope.indexOf(notion.id) >= 0) ? scope : (notion ?tout.filter(function (e) { return dansGalop(e) && (!A || e.ini === notion.ini); }).map(function (e) { return e.id; }) : []);
+  var pos = notion ? portee.indexOf(notion.id) : -1;
+  var precId = pos > 0 ? portee[pos - 1] : null, suivId = (pos >= 0 && pos < portee.length - 1) ? portee[pos + 1] : null;
+  /* mémoire : à chaque changement */
+  var sauver = function (extra) {
+    var o = { q: q, g: gf, grp: grp, l: l, vue: vue, mot: mot, scope: scope, sListe: scrollRef.current.liste, sNotion: scrollRef.current.notion };
+    for (var k in (extra || {})) o[k] = extra[k];
+    glexEcrireEtat(o);
+  };
+  React.useEffect(function () { sauver(); });
+  /* défilement : après chaque changement de vue (et au retour), on remet la position notée */
+  React.useEffect(function () {
+    var y = scrollRef.current.aFaire; if (y == null) return; scrollRef.current.aFaire = null;
+    var go = function () { try { window.scrollTo(0, y); } catch (e) { } };
+    go(); try { requestAnimationFrame(function () { requestAnimationFrame(go); }); } catch (e) { } var t = setTimeout(go, 120);
+    return function () { clearTimeout(t); };
+  }, [vue, mot]);
+  /* le défilement de la vue en cours est noté en continu (pour un départ vers un cours ou un retour) */
+  /* (la vue est lue dans la page elle-même : quand la liste fait place à une notion plus courte, le navigateur ramène le défilement
+     AVANT que React ne change d'écouteur — cette position ne doit pas écraser celle de la liste) */
+  var sauverRef = React.useRef(sauver); sauverRef.current = sauver;
+  React.useEffect(function () {
+    var f = function () { var y = window.scrollY || 0; if (document.querySelector(".hglx-detail")) scrollRef.current.notion = y; else if (document.querySelector(".hglx-list")) scrollRef.current.liste = y; };
+    window.addEventListener("scroll", f, { passive: true });
+    return function () { window.removeEventListener("scroll", f); try { sauverRef.current(); } catch (e) { } };
+  }, []);
+  var ouvrirNotion = function (e, scopeIds) {
+    scrollRef.current.liste = window.scrollY || 0;
+    scrollRef.current.notion = 0; scrollRef.current.aFaire = 0;
+    setScope(scopeIds); setMot(e.id); setVue("notion");
+  };
+  var allerA = function (id) { if (!id) return; scrollRef.current.notion = 0; scrollRef.current.aFaire = 0; setMot(id); };
+  var retourListe = function () {
+    if (notion && !nq && A && notion.ini !== l) {   /* notion venue d'un lien : on ouvre sa lettre */
+      for (var gi = 0; gi < groupes.length; gi++) if (groupes[gi].indexOf(notion.ini) >= 0) { setGrp(gi); setL(notion.ini); break; }
+    }
+    scrollRef.current.aFaire = I.lien && !scope ? 0 : scrollRef.current.liste; setVue("liste");
+  };
+  /* retour du téléphone / du navigateur : ferme d'abord la notion (index.html appelle window.__glexRetour) */
+  var vueRef = React.useRef(vue); vueRef.current = vue;
+  var retRef = React.useRef(retourListe); retRef.current = retourListe;
+  React.useEffect(function () {
+    window.__glexRetour = function () { if (vueRef.current === "notion") { window.__glexRetourTs = Date.now(); vueRef.current = "liste"; retRef.current(); return true; } return false; };
+    return function () { window.__glexRetour = null; };
+  }, []);
+  var partager = function () {
+    var id = vue === "notion" && notion ? notion.id : "";
+    var titre = id ? notion.mot : T("titre");
+    var f = window.hypePartager;
+    var fini = function () { setToast(T("copie")); setTimeout(function () { setToast(""); }, 2200); };
+    if (typeof f === "function") { f("c", "lexique", titre, { url: glexLien(lg, id), legende: id ? notion.def : "", onCopie: fini }); return; }
+    try { navigator.clipboard.writeText(glexLien(lg, id)).then(fini, function () { }); } catch (e) { }
+  };
+  var Drap = props.Drapeau;
+  var barre = function (lib, onClick, simple) {   /* simple : la barre de la liste (« Galops », sans chevron, comme la maquette) */
+    return h("div", { className: "hglx-bar" },
+      h("button", { type: "button", className: simple ? "hglx-back hglx-back-simple" : "hglx-back", onClick: onClick }, simple ? null : glexIc(rtl ? GLEX_IC.chevD : GLEX_IC.chevG, 16), h("span", null, lib)),
+      Drap ? h("div", { className: "hglx-flag" }, h(Drap, { inline: true, taille: 34 })) : null);
+  };
+  var titreBrut = T("titre"), sp = titreBrut.lastIndexOf(" "), fin = (lg === "ja" || lg === "zh") ? "" : ".";
+  var titreH1 = sp > 0 ? h("h1", { className: "hglx-title" }, titreBrut.slice(0, sp), h("br"), h("em", null, titreBrut.slice(sp + 1) + fin)) : h("h1", { className: "hglx-title hglx-title-1" }, titreBrut);
+  var longMot = titreBrut.split(" ").reduce(function (n, w) { return Math.max(n, w.length); }, 0);
+  var niveaux = function (e) { var gs = []; e.cours.forEach(function (c) { if (gs.indexOf(c.g) < 0) gs.push(c.g); }); gs.sort(function (a, b) { return a - b; }); return gs.map(function (g) { return "G" + g; }).join(" · "); };
   var S = window.HypeRobesOrdi && window.HypeRobesOrdi.shared;
-  return h("div", { className: "rbo hce-rev hce-glex", dir: rtl ? "rtl" : undefined, lang: lg },
-    S ? h("style", null, S.CSS) : null, h("style", null, CSS_REV + "\n" + CSS_GLEX),
-    h("main", { className: "rbo-main" },
-      h("div", { className: "glex-in" },
-        h("button", { type: "button", className: "rbo-back", onClick: props.onRetour }, rtl ? "›" : "‹"),
-        h("p", { className: "glex-k" }, "GALOPS"),
-        h("h1", null, T("titre")),
-        h("p", { className: "glex-s" }, T("sous")),
-        h("input", { type: "search", className: "glex-q", value: q, placeholder: T("chercher"), onChange: function (ev) { setQ(ev.target.value); }, "aria-label": T("chercher") }),
-        galops.length > 1 ? h("div", { className: "glex-f", role: "tablist" },
-          [0].concat(galops).map(function (g) { return h("button", { key: g, type: "button", role: "tab", "aria-selected": gf === g ? "true" : "false", onClick: function () { setGf(g); } }, g ? T("galop").replace("{n}", g) : T("tous")); })) : null,
-        h("p", { className: "glex-n" }, T("mots").replace("{n}", vus.length)),
-        vus.length ? blocs.map(function (b, bi) {
-          return h("section", { key: bi, className: "glex-b" },
-            b.l ? h("h2", null, b.l) : null,
-            h("dl", null, b.e.map(function (e, k) {
-              return h("div", { key: k },
-                h("dt", null, e.mot), h("dd", null, e.def),
-                h("p", { className: "glex-c" }, e.cours.map(function (c, j) {
-                  return h("button", { key: j, type: "button", onClick: function () { if (props.onOuvrirCours) props.onOuvrirCours(c.id, c.g); } },
-                    (function () { var t = glexTitre(c.id, c.g, lg, props.titreCours); return T("galop").replace("{n}", c.g) + (t ? " · " + t : ""); })(), fleche(rtl, 12));
-                })));
-            })));
-        }) : h("p", { className: "glex-0" }, T("aucun")))));
+  var racine = function (enfants) {
+    return h("div", { className: "hglx" + (rtl ? " hglx-rtl" : ""), dir: rtl ? "rtl" : undefined, lang: lg },
+      h("style", null, CSS_GLEX), enfants,
+      h("div", { className: "hglx-share" + (vue === "notion" ? " hglx-share-notion" : "") }, h("button", { type: "button", className: "hglx-share-button", onClick: partager }, glexIc(GLEX_IC.partage, 15), h("span", null, T(vue === "notion" && notion ? "partagerNotion" : "partagerLex")))),
+      toast ? h("div", { className: "hglx-toast", role: "status" }, toast) : null);
+  };
+  /* ---------- fiche d'une notion ---------- */
+  if (vue === "notion") {
+    if (!notion) return racine(h("section", { className: "hglx-detail" }, barre(T("retourLexique"), retourListe), h("p", { className: "hglx-empty", style: { padding: "24px" } }, "…")));
+    return racine(h("section", { className: "hglx-detail", "aria-label": notion.mot },
+      barre(T("retourLexique"), retourListe),
+      h("figure", { className: "hglx-photo" }, h("img", { src: GLEX_PHOTO, alt: "" })),
+      h("div", { className: "hglx-detail-content" },
+        h("div", { className: "hglx-meta" },
+          h("span", { className: "hglx-meta-label" }, (notion.ini && notion.ini !== "#" ? glexEtiquette(notion.ini) + " · " : "") + (pos >= 0 ? (pos + 1) + " / " + portee.length : "")),
+          h("div", { className: "hglx-paging" },
+            h("button", { type: "button", disabled: !precId, "aria-label": T("prec"), onClick: function () { allerA(precId); } }, glexIc(rtl ? GLEX_IC.flD : GLEX_IC.flG)),
+            h("button", { type: "button", disabled: !suivId, "aria-label": T("suiv"), onClick: function () { allerA(suivId); } }, glexIc(rtl ? GLEX_IC.flG : GLEX_IC.flD)))),
+        h("h1", { className: "hglx-detail-title", "aria-live": "polite" }, notion.mot),
+        h("p", { className: "hglx-definition" }, notion.def),
+        notion.cours.length ? h("section", { className: "hglx-course-links" },
+          h("h2", null, T("dansCours")),
+          notion.cours.slice().sort(function (a, b) { return a.g - b.g; }).map(function (c, j) {
+            var t = glexTitre(c.id, c.g, lg, props.titreCours);
+            return h("button", { key: j, type: "button", onClick: function () { scrollRef.current.notion = window.scrollY || 0; sauver({ sNotion: scrollRef.current.notion, vue: "notion" }); if (props.onOuvrirCours) props.onOuvrirCours(c.id, c.g); } },
+              h("span", null, T("galop").replace("{n}", c.g)), h("span", null, t || c.id));
+          })) : null)));
+  }
+  /* ---------- la liste ---------- */
+  return racine(h("section", { className: "hglx-list", "aria-label": titreBrut },
+    h("div", { className: "hglx-wallpaper" }, h("img", { src: GLEX_PHOTO, alt: "" })),
+    barre(props.labelGalops || "Galops", props.onRetour, true),
+    h("div", { className: "hglx-list-content" },
+      h("header", { className: "hglx-heading" },
+        h("span", { className: "hglx-kicker" }, T("kicker")),
+        h("div", { className: "hglx-title-wrap" + (longMot > 10 ? " hglx-long" : "") }, titreH1),
+        h("p", { className: "hglx-sub" }, T("sous"))),
+      h("div", { className: "hglx-filters" },
+        h("label", { className: "hglx-search" }, glexIc(GLEX_IC.loupe, 16),
+          h("input", { type: "search", value: q, placeholder: T("chercher"), "aria-label": T("chercher"), enterKeyHint: "search",
+            onChange: function (ev) { setQ(ev.target.value); }, onKeyDown: function (ev) { if (ev.key === "Enter") { try { ev.target.blur(); } catch (e) { } } } })),
+        /* le filtre : le libellé en 11 px (maquette) ; la vraie liste déroulante, invisible par-dessus, garde 16 px (sinon l'iPhone zoome) */
+        h("label", { className: "hglx-galop" },
+          h("span", { "aria-hidden": "true" }, gf ? T("galop").replace("{n}", gf) : T("tousGalops")), glexIc(GLEX_IC.bas, 12),
+          h("select", { value: String(gf), "aria-label": T("filtrer"), onChange: function (ev) { setGf(+ev.target.value || 0); } },
+            [0].concat(galops).map(function (g) { return h("option", { key: g, value: String(g) }, g ? T("galop").replace("{n}", g) : T("tousGalops")); })))),
+      A ? h("div", { className: "hglx-groups", "aria-label": T("groupes") }, groupes.map(function (G, i) {
+        var reels = G.filter(function (x) { return x !== "LAT" && x !== "#"; });
+        return h("button", { key: i, type: "button", "aria-pressed": grp === i ? "true" : "false", onClick: function () {
+          setGrp(i); setQ(""); var p = G.filter(function (x) { return avecMots[x]; })[0] || G[0]; setL(p); } },
+          glexEtiquette(reels[0]) + "–" + glexEtiquette(reels[reels.length - 1]));
+      })) : null,
+      A ? h("div", { className: "hglx-letter-grid", "aria-label": T("lettre") }, groupes[grp].map(function (x, i) {
+        var vide = !avecMots[x];
+        return h("button", { key: x, type: "button", className: (i === 0 ? "hglx-first" : "") + (vide ? " hglx-vide" : ""), "aria-pressed": (!nq && l === x) ? "true" : "false", disabled: vide && !(l === x),
+          onClick: function () { setL(x); setQ(""); } }, i === 0 ? h("img", { src: GLEX_PHOTO, alt: "" }) : null, h("span", null, glexEtiquette(x)));
+      })) : null,
+      h("div", { className: "hglx-letter-heading" }, h("h2", null, nq ? T("recherche") : (A ? glexEtiquette(l) : T("leLexique"))), A || nq ? h("span", null, T("leLexique")) : null),
+      h("div", { className: "hglx-results", "aria-live": "polite" },
+        vus.length ? vus.map(function (e) {
+          return h("button", { key: e.id, type: "button", className: "hglx-word", "aria-current": mot === e.id ? "true" : "false",
+            onClick: function () { ouvrirNotion(e, vus.map(function (x) { return x.id; })); } },
+            h("span", null, e.mot), (function () { var n = niveaux(e); return h("span", { className: n.length > 13 ? "hglx-g4" : undefined }, n); })());
+        }) : h("p", { className: "hglx-empty" }, T("aucun"))))));
 }
 var CSS_GLEX = [
-".hce-glex .glex-in{max-width:760px;margin:0 auto;padding:16px 16px 80px}",
-".hce-glex .rbo-back{margin:0 0 18px}",
-".hce-glex .glex-k{margin:0 0 10px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:.38em;color:rgba(201,166,107,.85)}",
-".hce-glex h1{margin:0;font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-weight:500;font-size:36px;line-height:1.05;color:#F3EEE4}",
-".hce-glex .glex-s{margin:10px 0 22px;font-family:'Montserrat',sans-serif;font-size:13px;color:rgba(243,238,228,.7)}",
-".hce-glex .glex-q{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:999px;border:1px solid rgba(243,238,228,.2);background:rgba(243,238,228,.04);color:#F3EEE4;font:400 15px 'Montserrat',sans-serif;outline:none}",
-".hce-glex .glex-q:focus{border-color:rgba(201,166,107,.7)}",
-".hce-glex .glex-f{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}",
-".hce-glex .glex-f button{border:1px solid rgba(243,238,228,.22);background:transparent;color:#F3EEE4;border-radius:999px;padding:8px 15px;font:400 13px 'Montserrat',sans-serif;cursor:pointer}",
-".hce-glex .glex-f button[aria-selected=true]{border-color:rgba(201,166,107,.8);color:#D9B98A}",
-".hce-glex .glex-n{margin:16px 0 6px;font:400 12px 'Montserrat',sans-serif;color:rgba(243,238,228,.5)}",
-".hce-glex .glex-b h2{margin:26px 0 6px;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;color:rgba(201,166,107,.75)}",
-".hce-glex dl{margin:0}",
-".hce-glex dl>div{padding:14px 0;border-top:1px solid rgba(243,238,228,.1)}",
-".hce-glex dt{font-family:'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;font-size:19px;font-weight:600;color:#F3EEE4}",
-".hce-glex dd{margin:4px 0 0;font:400 13px/1.5 'Montserrat',sans-serif;color:rgba(243,238,228,.78)}",
-".hce-glex .glex-c{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px}",
-".hce-glex .glex-c button{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(243,238,228,.05);color:rgba(217,185,138,.9);border-radius:999px;padding:5px 11px;font:400 11.5px 'Montserrat',sans-serif;cursor:pointer}",
-".hce-glex .glex-0{margin:30px 0;text-align:center;font:400 14px 'Montserrat',sans-serif;color:rgba(243,238,228,.6)}"
+/* 04/11 : valeurs reprises telles quelles de la maquette validée (téléphone) */
+".hglx{--hx-bg:#070a08;--hx-text:#f3eee4;--hx-muted:#b7b8ad;--hx-champagne:#bcab8e;--hx-line:rgba(236,229,211,.14);position:relative;isolation:isolate;width:100%;min-height:100vh;overflow:hidden;overflow:clip;background:var(--hx-bg);color:var(--hx-text);font:400 13px/1.7 'Montserrat',sans-serif;padding-bottom:calc(86px + env(safe-area-inset-bottom))}",
+".hglx *{box-sizing:border-box}",
+".hglx h1,.hglx h2,.hglx p,.hglx figure{margin:0}",
+".hglx button,.hglx input,.hglx select{font:inherit}",
+".hglx button{padding:0;border:0;background:transparent;color:inherit;font-weight:400;cursor:pointer;-webkit-tap-highlight-color:transparent}",
+".hglx svg{flex-shrink:0}",
+".hglx-bar{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:env(safe-area-inset-top) 20px 0;background:var(--hx-bg)}",
+".hglx-back{display:inline-flex;align-items:center;gap:7px;min-height:44px;text-align:start;font-size:11px!important;color:var(--hx-text)}",
+".hglx-back-simple{font-size:13px!important}",
+".hglx-flag{display:inline-flex;align-items:center;justify-content:center;min-width:34px;min-height:44px}",
+/* fiche */
+".hglx-photo{width:100%;aspect-ratio:1.45;background:var(--hx-bg);overflow:hidden}",
+".hglx-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:saturate(.58) brightness(.98)}",
+".hglx-detail-content{padding:0 24px 25px}",
+".hglx-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:55px}",
+".hglx-meta-label{color:var(--hx-champagne);font-size:11px;letter-spacing:1px}",
+".hglx-paging{display:flex;gap:2px}",
+".hglx-paging button{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;color:#d8d6c9}",
+".hglx-paging button:disabled{opacity:.25;cursor:default}",
+".hglx-detail-title{font:400 49px/1.05 'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;letter-spacing:-.5px;margin:0 0 17px!important;overflow-wrap:anywhere}",
+".hglx-definition{color:#d0d1c6;font-size:14px;line-height:1.9}",
+".hglx-course-links{margin-top:23px;padding-top:16px;border-top:1px solid var(--hx-line)}",
+".hglx-course-links h2{font:400 11px/1.5 'Montserrat',sans-serif;color:var(--hx-muted);margin-bottom:4px!important}",
+".hglx-course-links button{display:flex;width:100%;gap:12px;align-items:baseline;padding:10px 0;min-height:44px;color:var(--hx-champagne);text-align:start}",
+".hglx-course-links button>span:first-child{flex-shrink:0;font-size:11px;color:var(--hx-muted)}",
+".hglx-course-links button>span:last-child{font-size:12px;line-height:1.7;text-decoration:underline;text-decoration-color:rgba(188,171,142,.35);text-underline-offset:4px}",
+/* liste */
+".hglx-list{position:relative;isolation:isolate}",
+".hglx-wallpaper{position:absolute;top:0;left:0;right:0;height:1020px;overflow:hidden;z-index:-1}",
+".hglx-wallpaper img{display:block;width:100%;height:100%;object-fit:cover;object-position:76% 35%;filter:saturate(.62) brightness(.95)}",
+".hglx-wallpaper:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(90deg,rgba(7,10,8,.2),transparent 80%)}",
+".hglx-rtl .hglx-wallpaper img{transform:scaleX(-1)}",
+".hglx-rtl .hglx-wallpaper:after{background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(270deg,rgba(7,10,8,.2),transparent 80%)}",
+".hglx-list .hglx-bar{min-height:51px;background:transparent;text-shadow:0 1px 6px rgba(0,0,0,.8)}",
+".hglx-list-content{position:relative;padding:0 20px 28px}",
+".hglx-heading{min-height:205px;padding:34px 1px 26px}",
+".hglx-kicker{display:block;color:var(--hx-champagne);font-size:11px;letter-spacing:2px;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.8)}",
+".hglx-title{max-width:270px;font:400 51px/.98 'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;letter-spacing:-.8px;margin:10px 0 0!important;text-shadow:0 2px 12px rgba(0,0,0,.65)}",
+".hglx-title em{font-weight:400}",
+".hglx-long .hglx-title{font-size:44px}",
+".hglx-title-1{max-width:none;font-size:46px;letter-spacing:0}",
+".hglx-sub{margin-top:60px!important;color:var(--hx-muted);font-size:11px;text-shadow:0 1px 6px rgba(0,0,0,.8)}",
+".hglx-share{padding:2px 24px 22px}",
+".hglx-share-button{display:inline-flex;align-items:center;gap:9px;min-height:44px;color:var(--hx-muted)!important;font-size:11px!important}",
+".hglx-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;padding:10px 16px;border-radius:8px;background:#0b100d;border:1px solid rgba(188,171,142,.25);color:var(--hx-text);font-size:12px}",
+".hglx-search{display:flex;align-items:center;flex:1 1 0;width:auto;min-width:0;min-height:44px;gap:8px;padding:0 10px;border:1px solid rgba(255,255,255,.2);border-radius:7px;color:var(--hx-muted);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.012)),rgba(10,10,10,.35);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}",
+".hglx-search input{width:100%;min-width:0;padding:12px 0;font-size:16px;border:0;outline:none;background:transparent;color:var(--hx-text);-webkit-appearance:none;appearance:none}",
+".hglx-search input::placeholder{font-size:11.5px;color:var(--hx-muted);opacity:1}",
+".hglx-filters{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:48px;min-height:53px;padding-bottom:5px;border-bottom:1px solid var(--hx-line);font-size:11px;color:var(--hx-muted)}",
+".hglx-galop{position:relative;flex:0 0 auto;width:auto;min-width:100px;max-width:132px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:4px;color:var(--hx-text);font-size:11px;cursor:pointer}",
+".hglx-galop>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+".hglx-galop select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;-webkit-appearance:none;appearance:none;border:0;background:transparent;color:var(--hx-text)}",
+".hglx-filters option{background:var(--hx-bg);color:var(--hx-text)}",
+".hglx-filters,.hglx-groups,.hglx-letter-heading,.hglx-word{text-shadow:0 1px 6px rgba(0,0,0,.85)}",
+".hglx-groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:8px 0}",
+".hglx-groups button{min-height:44px;color:#f3eee4;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.8);border:1px solid rgba(243,238,228,.13);border-radius:5px;background:linear-gradient(145deg,rgba(243,238,228,.018),rgba(243,238,228,0)),rgba(7,10,8,.10);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:inset 0 1px 0 rgba(243,238,228,.018)}",
+".hglx-groups button[aria-pressed=true]{color:var(--hx-text);border-bottom:1px solid var(--hx-champagne)}",
+".hglx-letter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:49px;gap:7px}",
+".hglx-letter-grid button{position:relative;isolation:isolate;overflow:hidden;border-radius:5px;border:1px solid rgba(243,238,228,.13);background:linear-gradient(145deg,rgba(243,238,228,.018),rgba(243,238,228,0)),rgba(7,10,8,.10);color:#f3eee4;font:400 28px/1 'Cormorant Garamond','Noto Naskh Arabic',serif;text-shadow:0 1px 4px rgba(0,0,0,.75);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:inset 0 1px 0 rgba(243,238,228,.018)}",
+".hglx-letter-grid button.hglx-first{grid-column:span 2;grid-row:span 2;text-align:start;padding-inline-start:19px;font-size:83px;background:transparent}",
+".hglx-letter-grid button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 36%;z-index:-2;filter:saturate(.5) brightness(.82)}",
+".hglx-letter-grid button.hglx-first:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(8,8,8,.28),rgba(8,8,8,.06))}",
+".hglx-letter-grid button[aria-pressed=true]{border-color:rgba(188,171,142,.7)}",
+".hglx-letter-grid button.hglx-vide>span{opacity:.38}",
+".hglx-letter-grid button:disabled{cursor:default}",
+".hglx-letter-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:22px;padding-bottom:8px}",
+".hglx-letter-heading h2{font:400 36px/1.1 'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;color:var(--hx-champagne)}",
+".hglx-letter-heading span{color:var(--hx-muted);font-size:11px}",
+".hglx-word{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;min-height:53px;padding:10px 0!important;border-bottom:1px solid var(--hx-line)!important;text-align:start;color:var(--hx-text)}",
+".hglx-word>span:first-child{font:400 25px/1.12 'Cormorant Garamond','Noto Serif JP','Noto Naskh Arabic',serif;min-width:0;overflow-wrap:anywhere}",
+".hglx-word>span:last-child{flex-shrink:0;max-width:82px;color:var(--hx-muted);font-size:11px;text-align:end}",
+".hglx-word>span.hglx-g4{max-width:118px;white-space:nowrap}",
+".hglx-word[aria-current=true]>span:first-child{color:var(--hx-champagne)}",
+".hglx-empty{padding:24px 0;color:var(--hx-muted);font-size:12px}",
+"@media(max-width:370px){.hglx-bar{padding-left:17px;padding-right:17px}.hglx-detail-content{padding-left:20px;padding-right:20px}.hglx-list-content{padding-left:17px;padding-right:17px}.hglx-detail-title{font-size:45px}.hglx-word>span:first-child{font-size:24px}}",
+/* tablette et ordinateur : la même page, élargie (pas de cadre de téléphone) ; la colonne reste du côté du titre, la tête du cheval à l'autre bout */
+"@media(min-width:768px){.hglx-bar{padding-left:32px;padding-right:32px}.hglx-list-content{max-width:620px;padding:0 32px 36px}.hglx-heading{padding-top:56px}",
+".hglx-wallpaper{height:1100px}.hglx-wallpaper img{object-position:100% 30%}",
+".hglx-wallpaper:after{background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(90deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.25) 45%,transparent 75%)}",
+".hglx-rtl .hglx-wallpaper:after{background:linear-gradient(180deg,rgba(7,10,8,.2) 0%,rgba(7,10,8,.04) 35%,rgba(7,10,8,.1) 67%,#070a08 100%),linear-gradient(270deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,.25) 45%,transparent 75%)}",
+".hglx-letter-grid{grid-auto-rows:58px}.hglx-letter-grid button.hglx-first{font-size:96px}",
+".hglx-share{padding:2px 32px 26px}",
+".hglx-detail-content{max-width:720px;margin:0 auto;padding:0 32px 32px}.hglx-photo{aspect-ratio:auto;height:min(46vw,440px)}.hglx-photo img{object-position:60% 22%}",
+".hglx-share-notion{max-width:720px;margin:0 auto}}",
+/* tablette : photo un peu moins haute, colonne un peu plus étroite → l'œil du cheval reste hors du texte */
+"@media(min-width:768px) and (max-width:1100px){.hglx-wallpaper{height:900px}.hglx-list-content{max-width:560px}}"
 ].join("\n");
 window.HypeGrandLexique = GrandLexique;
+GrandLexique.entrees = glexEntrees; GrandLexique.lettre = glexIni;   /* 04/11 soir : pour les vérifications (banc d'essai) */
 
 function FinAuto(props) {
   var S = window.HypeRobesOrdi.shared;
