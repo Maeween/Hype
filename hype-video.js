@@ -2323,12 +2323,14 @@
 
     /* ---------- VUE : thème ouvert (Galop sélectionné ET thème) ---------- */
     if (vue === "theme" && theme) {
-      var vsT = dispo.filter(function (v) { return v.theme === theme && galopOk(v, galop); });
-      var phT = PHOTOS_THEMES[theme] || {};
+      /* 04/11 16h55 (Blandine : « dans les thèmes, propose un onglet Tous avec toutes les vidéos ») : theme === "tous" */
+      var dansT = function (v) { return theme === "tous" || v.theme === theme; };
+      var vsT = dispo.filter(function (v) { return dansT(v) && galopOk(v, galop); });
+      var phT = theme === "tous" ? PHOTO_HERO : (PHOTOS_THEMES[theme] || {});
       return h("div", { className: classeRacine(), style: styleTraitement() },
         heroDe({
           img: phT.img || PHOTO_HERO.img, posTel: phT.posHeroTel || phT.pos, posTab: phT.posHeroTab || phT.pos, posOrdi: phT.posHeroOrdi || phT.pos,
-          alt: L(phT.alt, langue), titre: nomTheme(theme), sous: nomGalopSel() + " · " + nbVideos(vsT.length),
+          alt: L(phT.alt, langue), titre: theme === "tous" ? T("Toutes les vidéos", "All videos", "Todos los vídeos", "Tutti i video", "すべての動画", "Alle Videos", "كل الفيديوهات", "全部视频", "Alle video's", "Todos os vídeos", "Alla videor", "Все видео", "Wszystkie filmy", "모든 영상") : nomTheme(theme), sous: nomGalopSel() + " · " + nbVideos(vsT.length),
           /* 04/11 16h45 (Blandine : « suis les mêmes réglages et mise en page du hero et de la courbe sur les autres pages,
              reproduis ce que tu as sur la page principale ») : même en-tête que l'accueil de la Vidéothèque */
           maquette: false, kicker: T("Thème", "Topic", "Tema", "Tema", "テーマ", "Thema", "الموضوع", "主题", "Thema", "Tema", "Tema", "Тема", "Temat", "주제"),
@@ -2337,7 +2339,7 @@
         h("div", { className: "hv2-in" },
           /* 04/11 15h (maquette validée) : filtres par Galop en pilules semi-transparentes, avec le nombre de vidéos */
           (function () {
-            var tousT = dispo.filter(function (v) { return v.theme === theme; });
+            var tousT = dispo.filter(dansT);
             var gs = []; tousT.forEach(function (v) { if (v.galop && gs.indexOf(v.galop) < 0) gs.push(v.galop); }); gs.sort(function (a, b) { return a - b; });
             function pil(k, lib, n) {
               var on = galop === k || (k !== "tous" && galop === "7+" && k >= 7 && false);
@@ -2353,8 +2355,8 @@
             : h("div", { className: "hv2-vide" }, h("p", null, T("Pas encore de vidéo pour ce Galop.", "No video for this level yet.", "Aún no hay vídeo para este Galop.", "Ancora nessun video per questo Galop.", "このガローの動画はまだありません。", "Noch kein Video für diesen Galopp.", "لا يوجد فيديو لهذا المستوى بعد.", "这个 Galop 还没有视频。", "Nog geen video voor deze Galop.", "Ainda não há vídeo para este Galop.", "Ingen video för denna nivå än.", "Пока нет видео для этого уровня.", "Brak jeszcze filmu dla tego poziomu.", "이 Galop에는 아직 영상이 없어요."))),
           /* vidéos des cavaliers : acceptées (tout le monde), puis les miennes, puis « Ajouter une vidéo » */
           VIDEOS_CAVALIERS ? (function () {
-            var pub = vcPubliques.filter(function (v) { return v.theme === theme && (!v.galop || galopOk(v, galop)); });
-            var mie = vcMiennes.filter(function (v) { return v.theme === theme && v.vcStatut !== "acceptee" && (!v.galop || galopOk(v, galop)); });
+            var pub = vcPubliques.filter(function (v) { return dansT(v) && (!v.galop || galopOk(v, galop)); });
+            var mie = vcMiennes.filter(function (v) { return dansT(v) && v.vcStatut !== "acceptee" && (!v.galop || galopOk(v, galop)); });
             function tete(txt, liste) {
               return h("div", { className: "hv3-tete" }, h("h2", { className: "hv3-h2" }, txt),
                 liste.length > 3 ? h("button", { className: "hv3-voir", onClick: function () { setVcTout(vcTout === txt ? null : txt); } }, vcTout === txt ? VX("moins") : VX("voirTout"), h("i", { "aria-hidden": "true" }, " \u203A")) : null);
@@ -2362,7 +2364,7 @@
             return h("div", { className: "hv3-vc" },
               pub.length ? h("div", null, tete(VX("proposees"), pub), vcTout === VX("proposees") ? h("div", { className: "hv3-cartes" }, pub.map(function (v) { return ligneVc(v, false); })) : rangeePhotos(pub)) : null,
               mie.length ? h("div", null, tete(VX("tiennes"), mie), h("div", { className: "hv3-cartes" }, mie.map(function (v) { return ligneVc(v, true); }))) : null,
-              h("div", { className: "hv3-ajout-zone" }, blocAjout(theme)));
+              h("div", { className: "hv3-ajout-zone" }, blocAjout(theme === "tous" ? null : theme)));
           })() : null,
           h("div", { className: "hv3-page-bas", "aria-hidden": "true" })));
     }
@@ -2479,15 +2481,16 @@
       var themesVis = THEMES_ORDRE.map(function (k) {
         return { k: k, n: dispo.filter(function (v) { return v.theme === k && galopOk(v, galop); }).length };
       }).filter(function (x) { return x.n > 0 || (x.k === "sante" && galop === "tous"); });
+      themesVis.unshift({ k: "tous", n: dispo.filter(function (v) { return galopOk(v, galop); }).length });
       var nT = themesVis.length;
       var grille = h("div", { className: "hv2-grille" }, themesVis.map(function (x, i) {
-        var ph = PHOTOS_THEMES[x.k] || {};
+        var ph = x.k === "tous" ? { img: PHOTO_HERO.img, pos: PHOTO_HERO.posTel, alt: PHOTO_HERO.alt } : (PHOTOS_THEMES[x.k] || {});
         var dernier = i === nT - 1;
         var cls = "hv2-theme" + (dernier && nT % 2 === 1 ? " seul2" : "") + (dernier && nT % 3 === 1 ? " seul3" : "");
         return h("button", { key: x.k, className: cls, disabled: !x.n, onClick: function () { if (x.n) { setTheme(x.k); setVue("theme"); } } },
           h("span", { className: "hv2-traite", style: { display: "block", "--hv-pos": ph.pos || "center" } },
             ph.img ? h("img", { src: ph.img, alt: L(ph.alt, langue), loading: "lazy" }) : null),
-          h("span", { className: "hv2-pan" }, h("b", null, nomTheme(x.k)), h("span", null, x.n ? nbVideos(x.n) : T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))));
+          h("span", { className: "hv2-pan" }, h("b", null, x.k === "tous" ? T("Toutes les vidéos", "All videos", "Todos los vídeos", "Tutti i video", "すべての動画", "Alle Videos", "كل الفيديوهات", "全部视频", "Alle video's", "Todos os vídeos", "Alla videor", "Все видео", "Wszystkie filmy", "모든 영상") : nomTheme(x.k)), h("span", null, x.n ? nbVideos(x.n) : T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))));
       }));
       /* 04/11 15h : « Reprendre » — les vidéos commencées et pas finies (3 au plus), en cartes */
       var enCours = dispo.filter(function (v) { var p = prog(v.id); return p && !p.vue && hvReprise(p); })
