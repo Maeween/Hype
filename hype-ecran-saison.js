@@ -427,6 +427,16 @@ var CSS2 = [
   ".hs-g2 .hs-champ{margin-bottom:8px}",
   ".hs-puces{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}",
   ".hs-puce{display:inline-flex;align-items:center;gap:8px;min-height:34px;border-radius:999px;border:1px solid rgba(201,166,107,.6);padding:0 6px 0 12px;font-size:12.5px}",
+  ".hs-num{font-family:'Montserrat',system-ui,sans-serif;font-size:11px;letter-spacing:.12em;color:var(--hs-ch);margin-right:10px;vertical-align:3px}",
+  ".hs-tour{float:right;text-transform:none;letter-spacing:0;color:var(--hs-ch);font-size:11.5px}",
+  ".hs-tour.trop,.hs-recap td.trop{color:var(--hs-iv);font-weight:600;text-decoration:underline}",
+  ".hs-mini{min-height:30px;padding:0 8px;font-size:11.5px;border-radius:10px;width:auto}",
+  ".hs-recap{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid rgba(243,238,228,.12);border-radius:12px;overflow:hidden}",
+  ".hs-recap th{text-align:left;font-weight:500;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--hs-iv3);padding:8px 8px;border-bottom:1px solid rgba(243,238,228,.12)}",
+  ".hs-recap td{padding:8px 8px;border-bottom:1px solid rgba(243,238,228,.06);vertical-align:top}",
+  ".hs-recap tr.vide td{color:var(--hs-iv3)}",
+  ".hs-puce-cav{background:none;color:var(--hs-iv);font-family:inherit;padding:0 12px;margin:0}",
+  ".hs-puce-cav.fait{opacity:.38;border-color:rgba(243,238,228,.25)}",
   ".hs-puce button{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--hs-iv2);font-size:16px;line-height:1;padding:0}",
   ".hs-ajout{display:flex;gap:8px}.hs-ajout input{flex:1}.hs-ajout button{flex:0 0 auto;width:auto;padding:0 16px}",
   ".hs-couple{padding:14px;border-top:1px solid rgba(243,238,228,.08)}.hs-couple:first-child{border-top:0}",
@@ -820,8 +830,26 @@ function EcranEngagements() {
   var _mod = React.useState(false); var modifie = _mod[0], setModifie = _mod[1];
   var _vf = React.useState(false); var voirFeuille = _vf[0], setVoirFeuille = _vf[1];
   var _lb = React.useState({}); var libres = _lb[0], setLibres = _lb[1];   /* « Autre cheval » : saisie libre */
+  var _tm = React.useState(function () { try { return Number(localStorage.getItem("hype_tours_max")) || 3; } catch (e) { return 3; } }); var toursMax = _tm[0], setToursMax = _tm[1];
+  var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
+  var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
+  var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  /* recherche d'une autre cavalière : dans les listes déjà chargées, puis parmi tous les comptes Hype */
+  React.useEffect(function () {
+    var t = String(recherche || "").trim(); if (t.length < 2 || typeof supa === "undefined" || !supa) { setTrouves([]); return; }
+    var vif = true, minu = setTimeout(async function () {
+      try {
+        var r = await supa.from("profiles").select("id, pseudo, avatar_url").ilike("pseudo", "%" + t.replace(/[%_]/g, "") + "%").limit(12);
+        var l = ((r && r.data) || []).map(function (p) { return { id: p.id, pseudo: p.pseudo || "", avatar_url: p.avatar_url || null, src: "hype", nom: "", licence: "" }; });
+        var ids = l.map(function (p) { return p.id; });
+        if (ids.length) { var rl = await supa.from("cavaliers_licences").select("user_id, nom, licence").in("user_id", ids); ((rl && rl.data) || []).forEach(function (x) { l.forEach(function (p) { if (p.id === x.user_id) { p.nom = x.nom || ""; p.licence = x.licence || ""; } }); }); }
+        if (vif) setTrouves(l);
+      } catch (e) { if (vif) setTrouves([]); }
+    }, 300);
+    return function () { vif = false; clearTimeout(minu); };
+  }, [recherche]);
 
   function clefDe(n) { try { return (typeof clefClubG === "function") ? clefClubG(n) : String(n || "").toLowerCase().trim(); } catch (e) { return String(n || "").toLowerCase().trim(); } }
   function nomFfeDe(pseudo) { return String(pseudo || "").trim(); }
@@ -838,6 +866,7 @@ function EcranEngagements() {
         var E = r.data; if (vif) setEv(E);
         var g = await hsPeutGerer(E.club_clef);
         if (vif) setGestion(g);
+        if (vif && u && u.id) setMoiId(u.id);
         if (!g) return;
         /* l'en-tête de la feuille (ou des valeurs de départ) */
         var rf = await supa.from("concours_feuille").select("*").eq("agenda_id", idEv).maybeSingle();
@@ -863,6 +892,24 @@ function EcranEngagements() {
           var idsI = ((ri && ri.data) || []).map(function (x) { return x.user_id; });
           if (idsI.length) { var rpi = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsI); ((rpi && rpi.data) || []).forEach(function (p) { ajouterP(p, "inscrite"); }); }
         } catch (eI) { }
+        /* 04/11 23h35 (Blandine : « on a une liste de cavaliers et de chevaux de compétition, et on renseigne avant quels chevaux
+           on amène au concours ; que ça propose ces gens-là et ces chevaux-là, en grisé une fois engagés ») :
+           cavalières des groupes rattachés au rendez-vous (Team CSO Club…) et chevaux choisis dans « Chevaux du déplacement ». */
+        var chevauxConcours = [];
+        try {
+          var rag = await supa.from("agenda_groupes").select("groupe_id").eq("agenda_id", idEv);
+          var gidsA = ((rag && rag.data) || []).map(function (x) { return x.groupe_id; }).filter(Boolean);
+          if (gidsA.length) {
+            var rgm = await supa.from("groupes_membres").select("user_id").in("groupe_id", gidsA);
+            var idsG = ((rgm && rgm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
+            if (idsG.length) { var rpg = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsG); ((rpg && rpg.data) || []).forEach(function (p) { ajouterP(p, "compet"); }); }
+          }
+        } catch (eG) { }
+        try {
+          var rac = await supa.from("agenda_chevaux").select("cheval_id").eq("agenda_id", idEv);
+          var idsAc = ((rac && rac.data) || []).map(function (x) { return x.cheval_id; }).filter(Boolean);
+          if (idsAc.length) { var rca = await supa.from("chevaux").select("id, nom").in("id", idsAc); chevauxConcours = ((rca && rca.data) || []).filter(function (c) { return c && c.nom; }).map(function (c) { return { id: c.id, nom: c.nom, src: "concours" }; }); }
+        } catch (eAc) { }
         var nomClub = E.club_clef;
         var chevauxTeam = [];
         try {
@@ -896,7 +943,7 @@ function EcranEngagements() {
           if (idsC.length) { var rlc = await supa.from("cavaliers_licences").select("user_id, nom, licence").in("user_id", idsC.slice(0, 400)); ((rlc && rlc.data) || []).forEach(function (x) { lic[x.user_id] = x; }); }
         } catch (eLc) { }
         cand.forEach(function (p) { p.nom = (lic[p.id] && lic[p.id].nom) || ""; p.licence = (lic[p.id] && lic[p.id].licence) || ""; });
-        cand.sort(function (a, b) { var o = { inscrite: 0, team: 1, club: 2 }; return (o[a.src] - o[b.src]) || String(a.nom || a.pseudo).localeCompare(String(b.nom || b.pseudo), "fr"); });
+        cand.sort(function (a, b) { var o = { inscrite: 0, compet: 1, team: 2, club: 3 }; return (o[a.src] - o[b.src]) || String(a.nom || a.pseudo).localeCompare(String(b.nom || b.pseudo), "fr"); });
         if (vif) setCandidates(cand);
         /* première ouverture : on part des cavalières inscrites */
         if (!L.length) {
@@ -914,12 +961,14 @@ function EcranEngagements() {
             var lc0 = (rc && rc.data) || [], lc = lc0;
             try { lc = hypeChevauxDuClub(lc0, nomClub); } catch (eF) { }
             if (!lc || !lc.length) lc = lc0;   /* filtre du club vide : on garde tous les chevaux des cavalières */
-            var vusC = {}; chevauxTeam.forEach(function (c) { vusC[c.id] = 1; });
-            var tout = chevauxTeam.concat((lc || []).filter(function (c) { return c && c.nom && !vusC[c.id]; }).map(function (c) { return { id: c.id, nom: c.nom, src: "club" }; }));
-            tout.sort(function (a, b) { return (a.src === b.src ? 0 : (a.src === "team" ? -1 : 1)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+            var vusC = {}; chevauxConcours.forEach(function (c) { vusC[c.id] = 1; });
+            chevauxTeam = chevauxTeam.filter(function (c) { return !vusC[c.id]; }); chevauxTeam.forEach(function (c) { vusC[c.id] = 1; });
+            var tout = chevauxConcours.concat(chevauxTeam).concat((lc || []).filter(function (c) { return c && c.nom && !vusC[c.id]; }).map(function (c) { return { id: c.id, nom: c.nom, src: "club" }; }));
+            var rgS = { concours: 0, team: 1, club: 2 };
+            tout.sort(function (a, b) { return (rgS[a.src] - rgS[b.src]) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
             if (vif) setChevaux(tout);
-          } else if (chevauxTeam.length && vif) setChevaux(chevauxTeam);
-        } catch (eCh) { if (chevauxTeam.length && vif) setChevaux(chevauxTeam); }
+          } else if (vif) setChevaux(chevauxConcours.concat(chevauxTeam));
+        } catch (eCh) { if (vif) setChevaux(chevauxConcours.concat(chevauxTeam)); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
     })();
     return function () { vif = false; };
@@ -937,12 +986,12 @@ function EcranEngagements() {
   function ajouterCavaliere(val) {
     if (!val) return;
     var n = lignes.slice();
-    if (val === "__autre") n.push({ __n: true, cavalier_id: null, nom: "", licence: "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
+    if (val === "__autre" || (val && val.libre !== undefined)) n.push({ __n: true, cavalier_id: null, nom: (val && val.libre) || "", licence: "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
     else {
-      var p = candidates.filter(function (c) { return c.id === val; })[0]; if (!p) return;
+      var p = (typeof val === "object") ? val : candidates.filter(function (c) { return c.id === val; })[0]; if (!p) return;
       n.push({ __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
     }
-    setLignes(n); setModifie(true); setMsg("");
+    setLignes(n); setModifie(true); setMsg(""); setRecherche(""); setTrouves([]);
   }
   function retirerLigne(i) {
     var l = lignes[i]; if (l && l.id) setSupprimees(supprimees.concat([l.id]));
@@ -1015,7 +1064,11 @@ function EcranEngagements() {
     var k = "cheval" + n + "_nom", v = lignes[i][k] || "", cle = i + "-" + n;
     var connu = chevaux.some(function (c) { return c.nom === v; });
     var libre = libres[cle] || (v && !connu);
-    var team = chevaux.filter(function (c) { return c.src === "team"; }), club = chevaux.filter(function (c) { return c.src !== "team"; });
+    var conc = chevaux.filter(function (c) { return c.src === "concours"; }), team = chevaux.filter(function (c) { return c.src === "team"; }), club = chevaux.filter(function (c) { return c.src === "club"; });
+    function opt(c) {
+      var nb = (montes[c.nom] || []).length;
+      return h("option", { key: c.id, value: c.nom }, c.nom + (nb ? " · " + nb + (nb > 1 ? F(" tours") : F(" tour")) : ""));
+    }
     if (libre) return h("div", { style: { display: "flex", gap: 6, minWidth: 0 } },
       h("input", { type: "text", value: v, placeholder: F("Nom du cheval"), autoFocus: !!libres[cle] && !v, onChange: function (e) { poserL(i, k, e.target.value); }, style: { flex: 1, minWidth: 0 } }),
       chevaux.length ? h("button", { type: "button", "aria-label": F("Revenir à la liste"), onClick: function () { var o = Object.assign({}, libres); delete o[cle]; setLibres(o); poserL(i, k, ""); }, style: { flex: "0 0 auto", width: 36, background: "none", border: "none", color: "#C9A66B", fontSize: 18, padding: 0 } }, "☰") : null);
@@ -1025,13 +1078,66 @@ function EcranEngagements() {
         poserL(i, k, x);
       } },
       h("option", { value: "" }, F("Cheval…")),
-      team.length ? h("optgroup", { label: F("Chevaux de l’équipe") }, team.map(function (c) { return h("option", { key: c.id, value: c.nom }, c.nom); })) : null,
-      club.length ? h("optgroup", { label: F("Chevaux du club") }, club.map(function (c) { return h("option", { key: c.id, value: c.nom }, c.nom); })) : null,
+      conc.length ? h("optgroup", { label: F("Chevaux du concours") }, conc.map(opt)) : null,
+      team.length ? h("optgroup", { label: F("Chevaux de l’équipe") }, team.map(opt)) : null,
+      club.length ? h("optgroup", { label: F("Chevaux du club") }, club.map(opt)) : null,
       h("option", { value: "__autre" }, F("Autre cheval (taper son nom)")));
   }
   var dejaLa = {}; lignes.forEach(function (l) { if (l.cavalier_id) dejaLa[l.cavalier_id] = true; });
-  var restantes = candidates.filter(function (c) { return !dejaLa[c.id]; });
-  var groupes = [{ k: "inscrite", l: F("Inscrites au concours") }, { k: "team", l: F("Team") }, { k: "club", l: F("Club") }];
+  /* « SOJFER Lauren » → « Lauren » (le mot qui n'est pas tout en majuscules) */
+  function prenomDe(nom) { var m = String(nom || "").trim().split(/\s+/).filter(Boolean); var p = m.filter(function (x) { return x !== x.toUpperCase(); }); return (p.length ? p.join(" ") : m[0]) || "?"; }
+  var montes = {};   /* cheval → qui le monte déjà sur la feuille */
+  lignes.forEach(function (l, i) { [1, 2].forEach(function (n) { var c = String(l["cheval" + n + "_nom"] || "").trim(); if (!c) return; (montes[c] = montes[c] || []).push({ i: i, n: n, qui: prenomDe(l.nom) }); }); });
+  var proposees = candidates.filter(function (c) { return (c.src === "inscrite" || c.src === "compet") && c.id !== moiId; });
+  var chevauxConc = chevaux.filter(function (c) { return c.src === "concours"; });
+  var q = String(recherche || "").trim().toLowerCase();
+  var resultats = [];
+  if (q.length >= 2) {
+    var vusR = {};
+    candidates.concat(trouves).forEach(function (c) {
+      if (vusR[c.id]) return; var t = (String(c.nom || "") + " " + String(c.pseudo || "")).toLowerCase();
+      if (t.indexOf(q) === -1) return; vusR[c.id] = 1; resultats.push(c);
+    });
+    resultats = resultats.slice(0, 12);
+  }
+  /* n° du tour du cheval choisi dans cette case (1 = son premier tour sur la feuille) */
+  function tourDe(i, n) {
+    var c = String(lignes[i]["cheval" + n + "_nom"] || "").trim(); if (!c || !montes[c]) return null;
+    var k = 0; montes[c].forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; });
+    var trop = montes[c].length > toursMax;
+    return h("span", { className: "hs-tour" + (trop ? " trop" : "") }, c + " (" + k + ")");
+  }
+  /* récapitulatif par cheval et par cavalière */
+  function recap() {
+    var noms = []; chevauxConc.forEach(function (c) { if (noms.indexOf(c.nom) === -1) noms.push(c.nom); });
+    Object.keys(montes).forEach(function (c) { if (noms.indexOf(c) === -1) noms.push(c); });
+    var cav = lignes.filter(function (l) { return String(l.nom || "").trim(); });
+    if (!noms.length && !cav.length) return null;
+    return h("div", null,
+      h("div", { className: "hs-sec" }, h("b", null, F("Récapitulatif")),
+        h("span", null, h("select", { className: "hs-mini", value: String(toursMax), "aria-label": F("Tours par cheval"), onChange: function (e) { var v = Number(e.target.value) || 3; setToursMax(v); try { localStorage.setItem("hype_tours_max", String(v)); } catch (eL) { } } },
+          [1, 2, 3, 4, 5].map(function (v) { return h("option", { key: v, value: String(v) }, v + F(" tours max / cheval")); })))),
+      noms.length ? h("table", { className: "hs-recap" },
+        h("thead", null, h("tr", null, h("th", null, F("Cheval")), h("th", null, F("Tours")), h("th", null, F("Places")), h("th", null, F("Cavalières")))),
+        h("tbody", null, noms.map(function (c) {
+          var m = montes[c] || [], reste = toursMax - m.length;
+          return h("tr", { key: c, className: m.length ? "" : "vide" }, h("td", null, c), h("td", null, String(m.length)),
+            h("td", { className: reste < 0 ? "trop" : "" }, reste < 0 ? F("trop (") + (-reste) + ")" : String(reste)),
+            h("td", null, m.map(function (x) { return x.qui + (lignes[x.i]["epreuve" + x.n] ? " · " + lignes[x.i]["epreuve" + x.n] : ""); }).join(", ") || "—"));
+        }))) : null,
+      cav.length ? h("table", { className: "hs-recap", style: { marginTop: 10 } },
+        h("thead", null, h("tr", null, h("th", null, "#"), h("th", null, F("Cavalière")), h("th", null, F("Tours")), h("th", null, F("Chevaux")))),
+        h("tbody", null, cav.map(function (l, j) {
+          var t = [1, 2].filter(function (n) { return l["epreuve" + n] || l["cheval" + n + "_nom"]; });
+          return h("tr", { key: j }, h("td", null, String(j + 1)), h("td", null, l.nom), h("td", null, String(t.length)),
+            h("td", null, t.map(function (n) { return (l["cheval" + n + "_nom"] || "?") + (l["epreuve" + n] ? " · " + l["epreuve" + n] : ""); }).join(", ") || "—"));
+        }))) : null);
+  }
+  function puceCav(c) {
+    var la = !!dejaLa[c.id];
+    return h("button", { key: c.id, type: "button", disabled: la, className: "hs-puce hs-puce-cav" + (la ? " fait" : ""), onClick: function () { ajouterCavaliere(c); } },
+      (la ? "✓ " : "+ ") + (c.nom || c.pseudo || "?"));
+  }
 
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" },
     hero,
@@ -1057,24 +1163,27 @@ function EcranEngagements() {
       h("div", { className: "hs-sec" }, h("b", null, F("Les couples")), h("span", null, lignes.length ? String(lignes.length) : "")),
       lignes.length ? h("div", { className: "hs-carte" }, lignes.map(function (l, i) {
         return h("div", { key: l.id || ("n" + i), className: "hs-couple" },
-          h("div", { className: "hs-couple-t" }, h("b", null, l.nom || F("Nouvelle cavalière")),
+          h("div", { className: "hs-couple-t" }, h("b", null, h("span", { className: "hs-num" }, (i + 1) + (i === 0 ? "re" : "e")), l.nom || F("Nouvelle cavalière")),
             h("button", { type: "button", className: "hs-lien", onClick: function () { retirerLigne(i); } }, F("Retirer"))),
           h("div", { className: "hs-g2" },
             h("div", { className: "hs-champ" }, h("label", null, F("Nom Prénom")), h("input", { type: "text", value: l.nom || "", placeholder: "NOM Prénom", onChange: function (e) { poserL(i, "nom", e.target.value); } })),
             h("div", { className: "hs-champ" }, h("label", null, F("Licence")), h("input", { type: "text", value: l.licence || "", autoCapitalize: "characters", onChange: function (e) { poserL(i, "licence", e.target.value); } }))),
-          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"))),
+          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("1re épreuve et cheval"), tourDe(i, 1))),
           h("div", { className: "hs-ep" }, selEp(i, "epreuve1"), selCh(i, 1)),
-          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("2e épreuve et cheval (facultatif)"))),
+          h("div", { className: "hs-champ", style: { marginBottom: 4 } }, h("label", null, F("2e épreuve et cheval (facultatif)"), tourDe(i, 2))),
           h("div", { className: "hs-ep", style: { marginBottom: 0 } }, selEp(i, "epreuve2"), selCh(i, 2)));
       })) : h("div", { className: "hs-vide" }, F("Aucune cavalière pour l’instant. Ajoute-les ci-dessous.")),
-      h("div", { className: "hs-champ", style: { marginTop: 12 } }, h("label", null, F("Ajouter une cavalière")),
-        h("select", { value: "", onChange: function (e) { ajouterCavaliere(e.target.value); } },
-          h("option", { value: "" }, F("Choisir…")),
-          groupes.map(function (g) {
-            var l = restantes.filter(function (c) { return c.src === g.k; });
-            return l.length ? h("optgroup", { key: g.k, label: g.l }, l.map(function (c) { return h("option", { key: c.id, value: c.id }, (c.nom || c.pseudo || "?") + (c.nom && c.pseudo ? " (" + c.pseudo + ")" : "")); })) : null;
-          }),
-          h("option", { value: "__autre" }, F("Une cavalière sans compte Hype")))),
+      /* où on en est : cavalières et chevaux prévus, grisés une fois engagés */
+      proposees.length ? h("div", { className: "hs-champ", style: { marginTop: 14 } }, h("label", null, F("Cavalières de compétition") + " · " + proposees.filter(function (c) { return dejaLa[c.id]; }).length + "/" + proposees.length),
+        h("div", { className: "hs-puces" }, proposees.map(puceCav))) : null,
+      chevauxConc.length ? h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Chevaux du concours") + " · " + chevauxConc.filter(function (c) { return montes[c.nom]; }).length + "/" + chevauxConc.length),
+        h("div", { className: "hs-puces" }, chevauxConc.map(function (c) { var m = montes[c.nom]; return h("span", { key: c.id, className: "hs-puce hs-puce-cav" + (m ? " fait" : "") }, (m ? "✓ " : "") + c.nom); }))) : null,
+      h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Chercher une autre cavalière")),
+        h("input", { type: "search", value: recherche, placeholder: F("Nom ou pseudo"), onChange: function (e) { setRecherche(e.target.value); } })),
+      q.length >= 2 ? h("div", { className: "hs-puces" },
+        resultats.map(puceCav),
+        h("button", { type: "button", className: "hs-puce hs-puce-cav", onClick: function () { ajouterCavaliere({ libre: String(recherche).trim() }); } }, F("+ « ") + String(recherche).trim() + F(" » sans compte Hype"))) : null,
+      recap(),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seules toi et la cavalière concernée les voient. Chaque cavalière voit son engagement sur la fiche du concours.")),
       /* actions */
       h("div", { className: "hs-coll" },

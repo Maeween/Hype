@@ -17096,3 +17096,12 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Engagements : au premier remplissage, la coach qui ouvre la page n'est plus ajoutée comme couple (même si elle a touché « Je participe ») ; elle reste « Chef d'équipe » en haut de la feuille, et peut toujours s'ajouter via « Ajouter une cavalière ».
 - Base : sa ligne vide « Blandine » (sans épreuve ni cheval) sur le CSO Versailles a été retirée de concours_engagements à sa demande. La ligne d'Aurélie (Club 3, Orchid's yellow) est intacte.
 - Fichiers : hype-ecran-saison.js (v22), index.html (build 20261105-0055), SUIVI.md.
+
+## 04/11/2026 23h55 — PUBLICATION build 20261105-0110 (Blandine 23h27-23h28 : « par défaut on a une liste de cavaliers et de chevaux de compétition, et on renseigne avant quels chevaux on amène ; que ça propose ces gens-là et ces chevaux-là, en grisé une fois engagés ; une recherche pour ajouter d'autres cavaliers » + « décompte des cavaliers (1er, 2e…), un petit (1), (2), (3) à chaque tour d'un cheval, et un tableau récapitulatif par cheval et par cavalier avec les places qui restent »)
+- Engagements, propositions : « Cavalières de compétition » = membres des groupes rattachés au rendez-vous (Team CSO Club…), sans la coach ; une touche ajoute la cavalière ; grisées avec ✓ une fois sur la feuille, compteur x/y.
+- « Chevaux du concours » = chevaux cochés dans « Chevaux du déplacement » du rendez-vous (agenda_chevaux) ; grisés avec ✓ dès qu'ils ont un tour ; ils sont aussi en tête du menu des chevaux (puis équipe, puis club), chaque cheval indiquant son nombre de tours déjà prévus.
+- « Chercher une autre cavalière » : remplace l'ancien menu « Ajouter une cavalière » ; cherche dans le club et parmi tous les comptes Hype (pseudo) ; propose aussi « sans compte Hype » avec le nom tapé.
+- Couples numérotés (1re, 2e…) ; à côté de chaque épreuve, le cheval choisi avec le n° de son tour sur la feuille : Cirrus (1), Cirrus (2)…
+- Récapitulatif en bas : tableau par cheval (tours, places restantes, qui et quelle épreuve) et par cavalière (tours, chevaux). Le nombre de tours max par cheval se règle (3 par défaut, gardé sur le téléphone) ; au-delà, « trop » est souligné.
+- Rien de changé en base ni sur la feuille SEP.
+- Fichiers : hype-ecran-saison.js (v23), index.html (build 20261105-0110), SUIVI.md.
