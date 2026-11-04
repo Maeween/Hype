@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 64;   /* 04/11 : photos provisoires des 15 nouveaux cours du Galop 6 (g6n) */
+var VERSION = 65;   /* 04/11 13h30 (Blandine « oui ») : 4 dernières photos du cheval gris sous le manège couvert du Galop 3 remplacées par ses photos (g3-c4, g3-c5, g3-c9, g3-c11) */
+/* précédente : VERSION = 64; */   /* 04/11 : photos provisoires des 15 nouveaux cours du Galop 6 (g6n) */
 /* précédente : VERSION = 63; */   /* 04/11 : g5n-04 — atlas Galop 5 (grands groupes musculaires) */
 /* précédente : VERSION = 62; */   /* 03/11 11h10 : une section « La définition… » n'est plus prise pour « Le défi du cavalier » (page de fin) */
 /* précédente : VERSION = 61; */   /* 02/11 22h30 : fusion des deux sessions (v60 + v60) */
@@ -2224,13 +2225,13 @@ var AUTO_IM_G3 = {
   "g3-c2": ["images/portrait-cheval-12.webp", "images/portrait-cheval-10.webp", "images/portrait-cheval-13.webp", "images/portrait-cheval-2.webp"],
   "g3-c3": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/portrait-cheval-14.webp"],
   "g3-saut": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
-  "g3-c4": ["images/galop5-c06-travail-pied.webp", "images/securite-g1-longe.webp", "images/securite-g1-epaule.webp"],
-  "g3-c5": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-theme-soins-pied.webp"],
+  "g3-c4": ["images/portrait-cheval-13.webp", "images/securite-g1-longe.webp", "images/securite-g1-epaule.webp"],
+  "g3-c5": ["images/cours-pansage-09_gestes_brossage.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/portrait-cheval-8.webp"],
   "g3-c6": ["images/securite-g1-observer.webp", "images/securite-g1-inquiet.webp", "images/galop5-th-cheval2.webp"],
   "g3-c8": ["images/portrait-cheval-16.webp", "images/portrait-cheval-3.webp", "images/portrait-cheval-4.webp", "images/portrait-cheval-5.webp"],
-  "g3-c9": ["images/galop5-th-vie.webp", "images/galop5-th-vie2.webp"],
+  "g3-c9": ["images/portrait-cheval-12.webp", "images/galop5-th-vie2.webp"],
   "g3-c10": ["images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp", "images/portrait-cheval-6.webp", "images/portrait-cheval-7.webp", "images/portrait-cheval-8.webp", "images/portrait-cheval-9.webp", "images/galop5-c07-transport.webp"],
-  "g3-c11": ["images/galop5-theme-soins-pied.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-c05-soins.webp", "images/portrait-cheval-11.webp"],
+  "g3-c11": ["images/portrait-cheval-10.webp", "images/cours-pansage-12_pieds_sabot_au_sol.webp", "images/galop5-c05-soins.webp", "images/portrait-cheval-11.webp"],
   "g3-c12": ["images/portrait-cheval-1.webp", "images/portrait-cheval-12.webp", "images/portrait-cheval-10.webp", "images/portrait-cheval-13.webp", "images/galop5-c03-apprendre.webp", "images/securite-g1-tenue.webp", "images/galop5-c11-saut.webp", "images/galop5-c12-cross.webp"],
   "g3-c13": ["images/portrait-cheval-2.webp", "images/portrait-cheval-16.webp", "images/portrait-cheval-3.webp", "images/galop5-c02-embouchures.webp", "images/portrait-cheval-4.webp", "images/galop5-c03-apprendre.webp", "images/galop5-theme-connaissances.webp"],
   "g3-c14": ["images/portrait-cheval-5.webp", "images/portrait-cheval-6.webp", "images/portrait-cheval-7.webp", "images/portrait-cheval-8.webp", "images/galop5-c03-apprendre.webp", "images/galop5-c02-embouchures.webp", "images/galop5-theme-connaissances.webp", "images/galop5-c11-saut.webp"],

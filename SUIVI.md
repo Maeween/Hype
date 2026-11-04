@@ -16830,3 +16830,13 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Quiz du cours 15 : les 4 questions sur les pénalités et le total (2e erreur de tracé, erreur d'exécution, total max, aide extérieure) remplacées par 4 questions du programme (coefficient 2, remarque répétée, transition, points faciles) ; explication du salut sans montant de pénalité. 27 nouveaux textes traduits en 13 langues.
 - Anciens cours g6-c1 … g6-c7 RETIRÉS de hype-cours-galop6.js (window.COURS_GALOP6_BROUILLONS supprimé ; fichier alléger d'environ 240 Ko). Vérifié avant : tout leur vocabulaire français se retrouve dans les nouveaux cours (seul « L'impulsion » avait quelques formulations en moins). Ils restent dans l'historique git (commit 4083ede) ; copies anciennes non touchées dans hype-galops.js et hype-cours-galops-sup.js.
 - Fichiers : hype-cours-galop6.js (version 4), index.html (?v=4 et build 20261104-1300), SUIVI.md.
+
+## 04/11/2026 13h35 — PUBLICATION build 20261104-1335 (accord de Blandine 13h26 « oui ») : 4 dernières photos de manège du Galop 3 remplacées (provisoire)
+- Les photos du cheval gris sous le manège couvert restées le 02/11 : hype-cours-editorial.js VERSION 65 (?v=65), AUTO_IM_G3.
+- À AJOUTER À LA LISTE DES COURS À REPRENDRE (entrée du 02/11 10h45) quand les bonnes photos arriveront :
+  · g3-c4 — Le travail à pied : chap. 01 « Pourquoi travailler à pied » (portrait-cheval-13.webp, avant galop5-c06-travail-pied.webp)
+  · g3-c5 — Le pansage complet : chap. 03 « À ressentir et à retenir » (portrait-cheval-8.webp, avant galop5-theme-soins-pied.webp)
+  · g3-c9 — Les différentes litières : chap. 01 « À quoi sert la litière ? » (portrait-cheval-12.webp, avant galop5-th-vie.webp)
+  · g3-c11 — Le sabot : chap. 01 « Observer le pied » (portrait-cheval-10.webp, avant galop5-theme-soins-pied.webp)
+- Vérifié : photos des chapitres des 4 cours dans l'appli locale.
+- Fichiers : hype-cours-editorial.js, index.html (build 20261104-1335), SUIVI.md.
