@@ -989,13 +989,13 @@
     utilisateurActuel().then(function (u) {
       if (!u) { cb(null); return; }
       Promise.all([
-        supa.from("video_progression").select("video_id,position_sec,terminee,vue_le,maj_le").eq("user_id", u.id),
+        supa.from("video_progression").select("video_id,position_sec,duree_sec,terminee,vue_le,maj_le").eq("user_id", u.id),
         supa.from("video_favoris").select("video_id").eq("user_id", u.id)
       ]).then(function (r) {
         var etat = { prog: {}, fav: {} };
         var lp = (r[0] && r[0].data) || [];
         var lf = (r[1] && r[1].data) || [];
-        lp.forEach(function (x) { etat.prog[x.video_id] = { ouverte: x.maj_le || null, vue: !!x.terminee, quand: x.vue_le || x.maj_le }; });
+        lp.forEach(function (x) { etat.prog[x.video_id] = { ouverte: x.maj_le || null, vue: !!x.terminee, quand: x.vue_le || x.maj_le, pos: x.position_sec || 0, duree: x.duree_sec || 0 }; });
         lf.forEach(function (x) { etat.fav[x.video_id] = true; });
         cb(etat);
       }).catch(function () { cb(null); });
@@ -1010,22 +1010,63 @@
      « Continuer à regarder » = la dernière ouverte qui n'est pas marquée vue.
      Si un jour Blandine tourne ses propres vidéos, on pourra brancher un vrai
      suivi de lecture : la colonne position_sec existe déjà en base. */
-  function enregistrerEtat(id, ouverte, terminee, duree) {
+  /* 04/11 (Blandine « Ok » à la reprise de lecture) : on enregistre aussi OÙ l'on s'est arrêté (position, en secondes)
+     et la durée, lues dans le lecteur YouTube. position / duree non fournies = on garde celles déjà connues.
+     distant:false = seulement sur le téléphone (enregistrements fréquents pendant la lecture). */
+  function enregistrerEtat(id, ouverte, terminee, duree, position, distant) {
     var l = lireLocal();
     l.prog = l.prog || {};
     var ex = l.prog[id] || {};
+    var pos = (typeof position === "number" && isFinite(position)) ? Math.max(0, Math.round(position)) : (ex.pos || 0);
+    var dur = (typeof duree === "number" && isFinite(duree) && duree > 0) ? Math.round(duree) : (ex.duree || 0);
     l.prog[id] = {
       ouverte: ouverte ? new Date().toISOString() : (ex.ouverte || null),
       vue: !!terminee,
-      quand: new Date().toISOString()
+      quand: new Date().toISOString(),
+      pos: pos, duree: dur
     };
     ecrireLocal(l);
-    if (typeof supa === "undefined") return;
+    if (distant === false || typeof supa === "undefined") return;
     try {
       supa.rpc("video_enregistrer_progression", {
-        p_video_id: id, p_position_sec: 0,
-        p_duree_sec: Math.round(duree || 0), p_terminee: !!terminee
+        p_video_id: id, p_position_sec: pos,
+        p_duree_sec: dur || null, p_terminee: !!terminee
       }).then(function () { }, function () { });
+    } catch (e) { }
+  }
+  /* « 3:12 » ou « 1:04:09 » */
+  function hvTemps(s) {
+    s = Math.max(0, Math.round(s || 0));
+    var hh = Math.floor(s / 3600), mm = Math.floor((s % 3600) / 60), ss = s % 60;
+    return (hh ? hh + ":" + (mm < 10 ? "0" : "") : "") + mm + ":" + (ss < 10 ? "0" : "") + ss;
+  }
+  /* position utile pour reprendre : ni le tout début, ni les dernières secondes */
+  function hvReprise(p) {
+    if (!p || p.vue || !(p.pos > 5)) return 0;
+    if (p.duree && p.pos > p.duree - 10) return 0;
+    return p.pos;
+  }
+  /* Une vidéo lue jusqu'au bout se marque « Vue » toute seule (réglage, false pour garder seulement le bouton). */
+  var MARQUER_VUE_FIN = true;
+  /* Le lecteur YouTube officiel (chargé une seule fois, seulement quand on lance une vidéo) */
+  var hvYtAttente = null;
+  function hvChargerYT(cb) {
+    try {
+      if (window.YT && window.YT.Player) { cb(window.YT); return; }
+      if (!hvYtAttente) {
+        hvYtAttente = [];
+        var avant = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () {
+          try { if (typeof avant === "function") avant(); } catch (e0) { }
+          var l = hvYtAttente || []; hvYtAttente = null;
+          l.forEach(function (f) { try { f(window.YT); } catch (e1) { } });
+        };
+        var s = document.createElement("script");
+        s.src = "https://www.youtube.com/iframe_api"; s.async = true;
+        s.onerror = function () { hvYtAttente = null; };
+        document.head.appendChild(s);
+      }
+      if (hvYtAttente) hvYtAttente.push(cb);
     } catch (e) { }
   }
 
@@ -1634,7 +1675,9 @@
       chargerDistant(function (dist) {
         if (!vivant || !dist) return;
         var l = lireLocal();
-        var fus = { prog: Object.assign({}, l.prog || {}, dist.prog || {}), fav: Object.assign({}, l.fav || {}, dist.fav || {}), ecart: l.ecart };
+        var progF = Object.assign({}, l.prog || {});
+        Object.keys(dist.prog || {}).forEach(function (k) { var a = progF[k], b = dist.prog[k]; if (!a || String(b.quand || "") >= String(a.quand || "")) progF[k] = b; });
+        var fus = { prog: progF, fav: Object.assign({}, l.fav || {}, dist.fav || {}), ecart: l.ecart };
         ecrireLocal(fus);
         setEtat(fus);
       });
@@ -1904,7 +1947,7 @@
           derniere ? h("div", null,
             h("p", { className: "hv2-k" }, T("Dernière vidéo ouverte", "Last video opened", "Último vídeo abierto", "Ultimo video aperto", "最後に開いた動画", "Zuletzt geöffnetes Video", "آخر فيديو فتحته", "最近打开的视频", "Laatst geopende video", "Último vídeo aberto", "Senast öppnade video", "Последнее открытое видео", "Ostatnio otwarty film", "마지막으로 연 영상")),
             h("div", { className: "hv2-liste" }, ligne(derniere)),
-            h("p", { className: "hv2-sous", style: { margin: "8px 0 0", fontSize: 16 } }, T("Pas encore marquée vue.", "Not marked as watched yet.", "Aún no marcado como visto.", "Non ancora segnato come visto.", "まだ視聴済みにしていません。", "Noch nicht als gesehen markiert.", "لم تحدديه بعد كفيديو تمت مشاهدته.", "还没有标记为已看。", "Nog niet als bekeken gemarkeerd.", "Ainda não marcado como visto.", "Inte markerad som sedd än.", "Ещё не отмечено как просмотренное.", "Jeszcze nieoznaczony jako obejrzany.", "아직 시청함으로 표시하지 않았어요."))) : null,
+            h("p", { className: "hv2-sous", style: { margin: "8px 0 0", fontSize: 16 } }, hvReprise(prog(derniere.id)) ? T("Arrêtée à ", "Stopped at ", "Detenido en ", "Interrotto a ", "停止位置 ", "Angehalten bei ", "توقفت عند ", "停在 ", "Gestopt op ", "Parado em ", "Stoppad vid ", "Остановлено на ", "Zatrzymano na ", "멈춘 위치 ") + hvTemps(hvReprise(prog(derniere.id))) : T("Pas encore marquée vue.", "Not marked as watched yet.", "Aún no marcado como visto.", "Non ancora segnato come visto.", "まだ視聴済みにしていません。", "Noch nicht als gesehen markiert.", "لم تحدديه بعد كفيديو تمت مشاهدته.", "还没有标记为已看。", "Nog niet als bekeken gemarkeerd.", "Ainda não marcado como visto.", "Inte markerad som sedd än.", "Ещё не отмечено как просмотренное.", "Jeszcze nieoznaczony jako obejrzany.", "아직 시청함으로 표시하지 않았어요."))) : null,
           h("div", { className: "hv2-mini-ong", role: "tablist" },
             [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة", "收藏", "Favorieten", "Favoritos", "Favoriter", "Избранное", "Ulubione", "즐겨찾기")],
              ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل", "历史记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")]].map(function (x) {
@@ -2028,7 +2071,51 @@
     var p = (etat.prog && etat.prog[v.id]) || null;
     var fav = !!(etat.fav && etat.fav[v.id]);
     var vue = !!(p && p.vue);
-    function basculerVue() { enregistrerEtat(v.id, false, !vue, 0); setEtat(lireLocal()); }
+    var reprise = hvReprise(p);
+    /* ---- suivi de la position pendant la lecture ---- */
+    var refLect = React.useRef({ pos: 0, duree: 0, timer: null, player: null, dernierDistant: 0 });
+    function noter(pos, duree, fin) {
+      var s = refLect.current; if (typeof pos === "number") s.pos = pos; if (duree) s.duree = duree;
+      var maintenant = Date.now();
+      var distant = fin || (maintenant - s.dernierDistant > 30000);
+      if (distant) s.dernierDistant = maintenant;
+      var dejaVue = !!(lireLocal().prog || {})[v.id] && !!lireLocal().prog[v.id].vue;
+      if (fin && MARQUER_VUE_FIN) { enregistrerEtat(v.id, false, true, s.duree, 0, true); setEtat(lireLocal()); return; }
+      enregistrerEtat(v.id, false, dejaVue, s.duree, s.pos, distant);
+    }
+    function arreterSuivi(final) {
+      var s = refLect.current;
+      if (s.timer) { clearInterval(s.timer); s.timer = null; }
+      if (final && s.player) { try { var pf = s.player.getCurrentTime ? s.player.getCurrentTime() : s.pos; if (pf > 0) { s.dernierDistant = 0; noter(pf, s.duree, false); } } catch (e) { } }
+    }
+    function brancherYT(el) {
+      if (!el || el.__hvBranche) return; el.__hvBranche = true;
+      hvChargerYT(function (YT) {
+        try {
+          var pl = new YT.Player(el, { events: {
+            onStateChange: function (ev) {
+              var s = refLect.current;
+              try { s.duree = pl.getDuration() || s.duree; } catch (e0) { }
+              if (ev.data === 1) {   /* lecture */
+                if (!s.timer) s.timer = setInterval(function () { try { noter(pl.getCurrentTime(), pl.getDuration(), false); } catch (e1) { } }, 5000);
+              } else if (ev.data === 2) {   /* pause */
+                if (s.timer) { clearInterval(s.timer); s.timer = null; }
+                try { s.dernierDistant = 0; noter(pl.getCurrentTime(), pl.getDuration(), false); } catch (e2) { }
+              } else if (ev.data === 0) {   /* fin */
+                if (s.timer) { clearInterval(s.timer); s.timer = null; }
+                noter(0, s.duree, true);
+              }
+            } } });
+          refLect.current.player = pl;
+        } catch (e) { }
+      });
+    }
+    React.useEffect(function () {
+      function cache() { if (document.visibilityState === "hidden") { var s = refLect.current; try { if (s.player && s.player.getCurrentTime) { s.dernierDistant = 0; noter(s.player.getCurrentTime(), s.duree, false); } } catch (e) { } } }
+      document.addEventListener("visibilitychange", cache);
+      return function () { document.removeEventListener("visibilitychange", cache); arreterSuivi(true); refLect.current.player = null; };
+    }, [cur]);
+    function basculerVue() { enregistrerEtat(v.id, false, !vue); setEtat(lireLocal()); }
     function basculerFav() { enregistrerFavori(v.id, !fav); setEtat(lireLocal()); }
     function versLeCours(cid) {
       var m = /^g(\d)/.exec(cid || "");
@@ -2056,19 +2143,26 @@
     var svgPlay = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M9 6.5v11l9-5.5z" }));
 
     var etatTxt = vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة", "已看", "Bekeken", "Vista", "Sedd", "Просмотрено", "Obejrzane", "시청함")
+      : reprise ? T("Reprendre à ", "Resume at ", "Reanudar en ", "Riprendi da ", "続きから ", "Weiter ab ", "المتابعة من ", "从 ", "Hervatten vanaf ", "Retomar em ", "Fortsätt från ", "Продолжить с ", "Wznów od ", "이어보기 ") + hvTemps(reprise)
       : T("À regarder", "To watch", "Por ver", "Da guardare", "未視聴", "Noch anzusehen", "للمشاهدة", "待观看", "Nog te bekijken", "Para assistir", "Att se", "Посмотреть", "Do obejrzenia", "볼 영상");
 
     /* lecteur : la vidéo (YouTube, Vimeo ou fichier) ne se charge qu'au toucher ; avant, la vignette */
     var src = null;
-    if (v.src && v.src.type === "youtube") src = "https://www.youtube-nocookie.com/embed/" + v.src.ref + "?autoplay=1&rel=0&playsinline=1";
+    var origine = ""; try { origine = window.location.origin; } catch (eOr) { }
+    if (v.src && v.src.type === "youtube") src = "https://www.youtube-nocookie.com/embed/" + v.src.ref + "?autoplay=1&rel=0&playsinline=1&enablejsapi=1"
+      + (origine && origine.indexOf("http") === 0 ? "&origin=" + encodeURIComponent(origine) : "") + (reprise ? "&start=" + reprise : "");
     if (v.src && v.src.type === "vimeo") src = "https://player.vimeo.com/video/" + v.src.ref + "?autoplay=1";
     var lecteur = h("div", { className: "hv2-lecteur" },
       joue && v.src && v.src.type === "fichier"
-        ? h("video", { controls: true, autoPlay: true, playsInline: true, preload: "metadata", poster: v.vignetteUrl || undefined },
+        ? h("video", { controls: true, autoPlay: true, playsInline: true, preload: "metadata", poster: v.vignetteUrl || undefined,
+            onLoadedMetadata: function (e) { try { if (reprise) e.target.currentTime = reprise; } catch (er) { } },
+            onTimeUpdate: function (e) { var s = refLect.current, n = Date.now(); if (!s.tv || n - s.tv > 5000) { s.tv = n; noter(e.target.currentTime, e.target.duration, false); } },
+            onPause: function (e) { refLect.current.dernierDistant = 0; noter(e.target.currentTime, e.target.duration, false); },
+            onEnded: function (e) { noter(0, e.target.duration, true); } },
             h("source", { key: "w", src: v.src.ref + ".webm", type: "video/webm" }),
             h("source", { key: "m", src: v.src.ref + ".mp4", type: "video/mp4" }))
       : joue && src
-        ? h("iframe", { title: titreDe(v), src: src, allow: "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen", allowFullScreen: true })
+        ? h("iframe", { key: "yt-" + v.id, ref: brancherYT, title: titreDe(v), src: src, allow: "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen", allowFullScreen: true })
       : h("button", { className: "hv2-lect-poster", disabled: !v.src, onClick: function () { if (v.src) setJoue(true); },
           "aria-label": T("Lire la vidéo", "Play the video", "Reproducir el vídeo", "Riproduci il video", "動画を再生", "Video abspielen", "تشغيل الفيديو", "播放视频", "Video afspelen", "Reproduzir o vídeo", "Spela upp videon", "Воспроизвести видео", "Odtwórz film", "영상 재생") + " · " + titreDe(v) },
           image(v, "hv2-lect-img"),
