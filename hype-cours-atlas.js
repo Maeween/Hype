@@ -255,19 +255,19 @@ var GALOPS_SUIVANTS = [
   ,
   /* 04/11 (Blandine : « avec quelque chose de plus simple ») : Galop 5 — les grands groupes musculaires, sur l'illustration graphite
      de la maquette (image ChatGPT de Blandine, retouchée : illustration, pas un modèle anatomique exact). Textes en français seulement
-     tant qu'ils ne sont pas validés (les autres langues affichent le français). Mêmes groupes que le cours g5n-04. */
+     tant qu'ils ne sont pas validés (les autres langues affichent le français). Mêmes groupes que le cours g5n-04 ; 04/11 (choix 2 de Blandine) : les fiches ne donnent que l'emplacement, le rôle reste dans la liste du cours (pas de doublon). */
   { n: 5, vues: [
     { id: "muscles5", court: { fr: "Les muscles" }, titre: { fr: "Les grands groupes musculaires" }, img: IMG_ANAT, pts: [
       ["m-encolure", 287, 182, { fr: "Les muscles de l'encolure" },
-        { fr: "Le long de l'encolure, de la tête jusqu'au garrot et à l'épaule. Ils portent la tête et participent au mouvement des antérieurs." }],
+        { fr: "Le long de l'encolure, de la tête jusqu'au garrot et à l'épaule." }],
       ["m-epaule", 405, 212, { fr: "Les muscles de l'épaule et du bras" },
-        { fr: "Sur l'omoplate et le bras, en haut de l'antérieur. Ils portent l'avant-main et lancent les antérieurs. L'antérieur n'est relié au tronc que par des muscles." }],
+        { fr: "Sur l'omoplate et le bras, en haut du membre antérieur." }],
       ["m-dos", 679, 150, { fr: "Les muscles du dos" },
-        { fr: "Le long de la ligne du dessus, du garrot à la croupe, de chaque côté de la colonne. Ils transmettent la poussée des postérieurs vers l'avant et portent le cavalier." }],
+        { fr: "Le long de la ligne du dessus, du garrot à la croupe, de chaque côté de la colonne vertébrale." }],
       ["m-abdo", 600, 350, { fr: "Les muscles abdominaux" },
-        { fr: "Sous le ventre, du sternum jusqu'au bassin. Ils soutiennent le dos par en dessous : dos et abdominaux travaillent ensemble." }],
+        { fr: "Sous le ventre, du sternum jusqu'au bassin." }],
       ["m-croupe", 928, 238, { fr: "Les muscles de la croupe et de la cuisse" },
-        { fr: "Sur la croupe et autour de la cuisse, jusqu'au grasset. Ils propulsent le cheval, à toutes les allures et au saut." }]
+        { fr: "Sur la croupe et autour de la cuisse, jusqu'au grasset." }]
     ] }
   ] }
 ];
