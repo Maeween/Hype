@@ -17587,3 +17587,11 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Champs à 16 px (pas de zoom iPhone au toucher). Vérifié : rendu réel iPhone 390, tablette 1024, ordinateur 1440, 0 erreur, pas de défilement de côté.
 - Page toujours en français seulement (comme le Centre de compétition).
 - Fichiers : hype-ecran-saison.js (v36), index.html (build 20261105-1220), SUIVI.md.
+
+## 05/11/2026 20h50 — PUBLICATION build 20261105-2050 — PHOTOS : l'écran de recadrage ne reste plus bloqué sur « … »
+- Signalé par Lore (Samsung, Android) via Blandine : en changeant la photo de sa jument Golden des Brouets, l'écran « Recadrer » restait indéfiniment sur « … », quelle que soit la photo. Vérifié en base : aucune photo de jument n'était jamais arrivée sur le serveur, le blocage avait lieu sur le téléphone, avant l'envoi.
+- Cause : le recadreur (RecadrageHype) lisait la photo sans prévoir l'échec. Si le téléphone ne savait pas la décoder (photos HEIF « haute efficacité » des Samsung, ou très lourdes), rien ne se passait, sans message.
+- Correctif (Blandine : « faut débloquer si ça fait ça à d'autres personnes », puis « Oui vas-y ») : 3 essais à la suite, avec une garde de temps à chaque fois : (1) lecture normale, inchangée, donc les photos qui marchaient passent par là comme avant ; (2) relecture par adresse temporaire, réduite à 2560 px ; (3) conversion HEIF → JPEG (bibliothèque heic2any 0.0.4 chargée depuis cdnjs seulement dans ce cas). Si rien ne marche, l'écran se ferme et un message dit quoi faire (capture d'écran de la photo), traduit dans les 14 langues.
+- Concerne toutes les photos qui passent par le recadreur (cheval, profil, écurie…), uniquement quand une photo ne s'ouvre pas.
+- Testé dans Chrome sur le code exact : photo normale → s'ouvre comme avant ; photo HEIF → convertie et ouverte ; fichier illisible → écran fermé + message. La vraie bibliothèque HEIF n'a pas pu être téléchargée dans l'environnement de test (remplacée par une simulation) : à confirmer avec Lore sur son téléphone.
+- Fichiers : index.html (recadreur + build 20261105-2050), SUIVI.md.
