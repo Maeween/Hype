@@ -363,6 +363,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   existants confirmés, déclencheur soins_confirmation en place) et
   PUBLICATION build 20261105-1140 (hype-ecran-gestion.js ?v=4,
   hype-ecran-sante-cheval.js ?v=4, index.html, SUIVI.md).
+· 05/11 ~11 h 50 — PAGE « LES SOINS » DU REGISTRE (#registre-soins, partie
+  VI) CODÉE, NON PUBLIÉE (aucun SQL) : tous les soins des chevaux du club,
+  groupés par mois, filtres Cheval / Année / type (dont « Avec
+  ordonnance »), « ajouté par », « Non confirmé » / « Refusé », documents
+  joints ouvrables (lien privé 10 min, compartiment sante) ; les documents
+  rattachés à aucun soin apparaissent à leur date ; le nom du cheval ouvre
+  sa page Santé. hype-ecran-gestion.js ?v=5. Banc : 23 éléments, filtre
+  Hey Baby Please (4, dont l'ordonnance), « Avec ordonnance » (1) ; 0 erreur.
+  ⇒ la demande « retrouver par date et par cheval » est couverte :
+  PUBLIÉE le 05/11 à 11 h 50 (Blandine « Ok »), build 20261105-1150.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

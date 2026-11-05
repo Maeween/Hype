@@ -105,7 +105,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var vif = true;
       setD(null);
       (async function () {
-        var res = { club: club, chevaux: [], soins: [], vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, peutGerer: false, erreur: "" };
+        var res = { club: club, chevaux: [], soins: [], docs: [], vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, peutGerer: false, erreur: "" };
         try {
           if (typeof supa === "undefined" || !supa) { res.erreur = "Pas de connexion."; if (vif) setD(res); return; }
           if (!club) { if (vif) setD(res); return; }
@@ -118,6 +118,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           if (ids.length) {
             var rs = await supa.from("soins_cheval").select("*").in("cheval_id", ids.slice(0, 300)).limit(2000);
             if (rs && rs.error) res.erreur = String(rs.error.message || rs.error); else res.soins = (rs && rs.data) || [];
+            try { var rdoc = await supa.from("cheval_documents").select("*").in("cheval_id", ids.slice(0, 300)).limit(2000); if (rdoc && !rdoc.error) res.docs = rdoc.data || []; } catch (eDoc) { }
             try {
               var rl = await supa.from("cheval_professionnels").select("*").in("cheval_id", ids.slice(0, 300)).limit(1000);
               var pids = []; ((rl && !rl.error && rl.data) || []).forEach(function (x) { if (x.professionnel_id && pids.indexOf(x.professionnel_id) < 0) pids.push(x.professionnel_id); });
@@ -300,7 +301,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { cle: "III", ok: r.vetOk, photo: PHOTOS.veto, titre: "Les vétérinaires", sous: r.vetOk ? "Traitant et sanitaire notés" : ("Il manque : " + r.manqueIII.join(", ")), pill: "Partie III", qui: (!r.vetOk && v.length) ? (v.length + " dans l'équipe de soins") : "", etat: r.vetOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
         { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: r.chevauxOk ? "SIRE, puce et entrée notés" : ((r.nCh - r.nComplets) + " fiche" + ((r.nCh - r.nComplets) > 1 ? "s" : "") + " à compléter"), pill: "Partie IV", qui: r.nCh + " cheva" + (r.nCh > 1 ? "ux" : "l"), etat: r.chevauxOk ? "\u2713 À jour" : (r.nComplets + " / " + r.nCh), on: function () { ouvrir("registre-chevaux"); } },
         { cle: "V", ok: false, bientot: true, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Concours, saillies, départs", pill: "Partie V", etat: "Bientôt" },
-        { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : ""), etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("sante-club"); } },
+        { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : ""), etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("registre-soins"); } },
         { cle: "VII", ok: false, bientot: true, photo: PHOTOS.controles, titre: "Les contrôles", sous: "La page à montrer lors d'une visite", pill: "Partie VII", etat: "Bientôt" }
       ];
       var aFaire = parties.filter(function (p) { return !p.ok; }), ajour = parties.filter(function (p) { return p.ok; });
@@ -656,5 +657,116 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+
+  /* ═════════════════════════ PAGE « LES SOINS » DU REGISTRE (partie VI, 05/11) ═════════════════════════
+     Demande de Blandine : « retrouver par date et par cheval les soins enregistrés et les ordonnances ».
+     Tous les soins des chevaux de l'écurie, du plus récent au plus ancien, groupés par mois ; filtres par cheval, par
+     année et par type (dont « Avec ordonnance ») ; pour chaque soin : qui l'a ajouté, s'il est confirmé, et ses documents
+     (ouverts en lien privé de 10 minutes, comme sur la page Santé du cheval). Les documents rattachés à aucun soin sont
+     listés aussi, à leur date. Lecture seule : on modifie un soin depuis la page Santé du cheval (nom du cheval en doré). */
+  var TYPES_DOCS = { ordonnance: "Ordonnance", compte_rendu: "Compte rendu", certificat_vaccin: "Certificat de vaccination", carnet_vaccin: "Carnet de vaccination", protocole: "Protocole", facture: "Facture", autre: "Document" };
+  var MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+  function EcranRegistreSoins() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    React.useEffect(function () {
+      injecterCss();
+      try { if (!document.getElementById(CSS_ID + "-form")) { var s = document.createElement("style"); s.id = CSS_ID + "-form"; s.textContent = CSS_FORM; document.head.appendChild(s); } } catch (e) { }
+      try { window.scrollTo(0, 0); } catch (e) { }
+    }, []);
+    var c = useClub();
+    var d = useDonneesEcurie(c.club);
+    var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
+    var _ty = React.useState("tous"); var fTy = _ty[0], setFTy = _ty[1];
+    var _an = React.useState("tous"); var fAn = _an[0], setFAn = _an[1];
+    var _ps = React.useState({}); var ps = _ps[0], setPs = _ps[1];
+    var _er = React.useState(""); var errDoc = _er[0], setErrDoc = _er[1];
+    React.useEffect(function () {
+      var vif = true;
+      if (d && (d.soins || []).length) pseudosDe((d.soins || []).map(function (s) { return s.created_by; })).then(function (p) { if (vif) setPs(Object.assign({}, p)); });
+      return function () { vif = false; };
+    }, [d]);
+
+    async function ouvrirDoc(doc) {
+      setErrDoc("");
+      try {
+        var r = await supa.storage.from("sante").createSignedUrl(doc.chemin, 600);
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        var u = r && r.data && (r.data.signedUrl || r.data.signedURL);
+        if (!u) throw new Error("lien indisponible");
+        try { window.open(u, "_blank"); } catch (eW) { window.location.href = u; }
+      } catch (e) { setErrDoc("Impossible d'ouvrir le document : " + String((e && e.message) || e)); }
+    }
+    function ouvrirCheval(id) {
+      var ch = (d.chevaux || []).filter(function (x) { return x.id === id; })[0] || {};
+      try { window.__santeCheval = { id: id, nom: ch.nom || "" }; } catch (e) { }
+      setEcran("sante-cheval");
+    }
+
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else {
+      var M = "'Montserrat',sans-serif";
+      var nomDe = {}; (d.chevaux || []).forEach(function (x) { nomDe[x.id] = x.nom || ""; });
+      var docsParSoin = {}, docsSeuls = [];
+      (d.docs || []).forEach(function (x) { if (x.soin_id) (docsParSoin[x.soin_id] = docsParSoin[x.soin_id] || []).push(x); else docsSeuls.push(x); });
+      var items = (d.soins || []).map(function (s) { return { k: "s" + s.id, date: String(s.date_intervention || s.date_prochaine || "").slice(0, 10), ch: s.cheval_id, type: s.type, soin: s, docs: docsParSoin[s.id] || [] }; })
+        .concat(docsSeuls.map(function (x) { return { k: "d" + x.id, date: String(x.date_doc || x.created_at || "").slice(0, 10), ch: x.cheval_id, type: "_doc", doc: x, docs: [x] }; }));
+      var annees = []; items.forEach(function (it) { var a = it.date.slice(0, 4); if (a && annees.indexOf(a) < 0) annees.push(a); }); annees.sort().reverse();
+      var typesPres = []; items.forEach(function (it) { if (it.type !== "_doc" && it.type && typesPres.indexOf(it.type) < 0) typesPres.push(it.type); });
+      var vis = items.filter(function (it) {
+        return (fCh === "tous" || it.ch === fCh) && (fAn === "tous" || it.date.slice(0, 4) === fAn)
+          && (fTy === "tous" || (fTy === "_ordo" ? it.docs.length > 0 : it.type === fTy));
+      }).sort(function (a, b) { return b.date.localeCompare(a.date); });
+      var groupes = [], cle = null;
+      vis.forEach(function (it) { var m = it.date.slice(0, 7); if (m !== cle) { cle = m; groupes.push({ m: m, l: [] }); } groupes[groupes.length - 1].l.push(it); });
+      function titreMois(m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; }
+      function selecteur(val, set, options, lab) {
+        return h("label", { style: { display: "flex", flexDirection: "column", gap: 5, flex: 1, minWidth: 0 } },
+          h("span", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(243,238,228,.6)", fontFamily: M } }, lab),
+          h("select", { value: val, onChange: function (e) { set(e.target.value); }, style: { width: "100%", minHeight: 44, borderRadius: 12, border: "1px solid rgba(243,238,228,.16)", background: "rgba(16,26,29,.6)", color: "#F3EEE4", fontFamily: M, fontSize: 15, padding: "0 10px" } },
+            options.map(function (o) { return h("option", { key: o[0], value: o[0] }, o[1]); })));
+      }
+      var chevauxOpt = [["tous", "Tous les chevaux"]].concat((d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }).map(function (x) { return [x.id, x.nom || "?"]; }));
+      corps = h("div", null,
+        pilsClubs(h, c),
+        h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
+          selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
+          selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
+        h("div", { className: "hv3-pils", role: "tablist" },
+          [["tous", "Tout"], ["_ordo", "Avec ordonnance"]].concat(typesPres.map(function (k) { return [k, TYPES[k] || k]; })).map(function (x) {
+            return h("button", { key: x[0], type: "button", className: "hv3-pil" + (fTy === x[0] ? " on" : ""), "aria-pressed": fTy === x[0], onClick: function () { setFTy(x[0]); } }, x[1]);
+          })),
+        h("div", { className: "hg-aide", style: { marginTop: 6 } }, vis.length + " élément" + (vis.length > 1 ? "s" : "") + ". Les ordonnances et factures se gardent 5 ans avec le registre."),
+        errDoc ? h("div", { className: "hg-err" }, errDoc) : null,
+        groupes.length ? groupes.map(function (g) {
+          return h("div", { key: g.m },
+            h("h2", { className: "hv3-h2" }, titreMois(g.m)),
+            g.l.map(function (it) {
+              var s = it.soin;
+              var titre = it.doc ? (TYPES_DOCS[it.doc.type] || "Document") + (it.doc.titre ? " · " + it.doc.titre : "") : ((TYPES[s.type] || s.type || "Soin") + (s.titre ? " · " + s.titre : ""));
+              var etatConf = s ? (s.refuse ? "Refusé" : (s.confirme_le === null ? "Non confirmé" : "")) : "";
+              var auteur = (s && s.created_by && ps[s.created_by]) ? ("ajouté par " + ps[s.created_by]) : "";
+              return h("div", { key: it.k, style: { padding: "12px 14px", marginBottom: 8, borderRadius: 14, border: "1px solid rgba(243,238,228,.1)", background: "linear-gradient(135deg,rgba(16,26,29,.42),rgba(7,10,8,.96) 58%)" } },
+                h("div", { style: { display: "flex", alignItems: "baseline", gap: 10 } },
+                  h("div", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, color: "#F3EEE4", lineHeight: 1.2 } }, titre),
+                  h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 12, color: "rgba(243,238,228,.75)" } }, it.date ? dateCourte(it.date) : "")),
+                h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,.65)", marginTop: 3 } },
+                  h("button", { type: "button", onClick: function () { ouvrirCheval(it.ch); }, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", fontFamily: M, fontSize: 12 } }, nomDe[it.ch] || "Cheval"),
+                  auteur ? " · " + auteur : "", etatConf ? h("span", { style: { color: "#C9A66B" } }, " · " + etatConf) : null),
+                it.docs.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 } }, it.docs.map(function (x) {
+                  return h("button", { key: x.id, type: "button", onClick: function () { ouvrirDoc(x); }, style: { border: "1px solid rgba(201,166,107,.6)", background: "transparent", color: "#C9A66B", borderRadius: 999, padding: "5px 12px", fontFamily: M, fontSize: 12 } }, "▤ " + (TYPES_DOCS[x.type] || "Document"));
+                })) : null);
+            }));
+        }) : h("div", { className: "hg-vide" }, "Aucun soin pour ce choix."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.soins, titre: "Les soins", sous: "Partie VI de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
