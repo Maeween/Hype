@@ -373,6 +373,23 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   Hey Baby Please (4, dont l'ordonnance), « Avec ordonnance » (1) ; 0 erreur.
   ⇒ la demande « retrouver par date et par cheval » est couverte :
   PUBLIÉE le 05/11 à 11 h 50 (Blandine « Ok »), build 20261105-1150.
+· 05/11 ~12 h — NOTIFICATION « SOIN À CONFIRMER » PRÉPARÉE, RIEN EN LIGNE
+  (attend son accord pour 3 choses) :
+  1. sql-05-11-notif-soin-a-confirmer.sql : déclencheur après ajout d'un
+     soin « non confirmé » → notification personnelle (type
+     soin_a_confirmer, cible soin:<id>, contexte = nom du club, extrait = nom
+     du cheval) vers le propriétaire revendiqué de la page de l'écurie et ses
+     gestionnaires ; à défaut feinn@live.fr ; jamais vers l'auteur. Une
+     erreur de notification n'empêche jamais l'enregistrement du soin.
+  2. supabase/functions/notifier-notif/index.ts : type ajouté à la liste,
+     phrase « X a ajouté un soin, à confirmer », lien /#soins-a-confirmer.
+     À REDÉPLOYER (« Verify JWT » doit rester éteint).
+  3. index.html : la cloche affiche « X a ajouté un soin sur <cheval> — à
+     confirmer » et ouvre la page À confirmer de la bonne écurie.
+  ⇒ 05/11 12 h 01 Blandine « Ok » : déclencheur soins_notif_a_confirmer
+     PASSÉ, notifier-notif REDÉPLOYÉE à la main (version 10, « Verify JWT »
+     éteint, 3 lignes changées seulement), appli PUBLIÉE build 20261105-1205.
+     Envoi sans [fonctions] : le déploiement automatique n'est pas relancé.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
