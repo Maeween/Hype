@@ -680,7 +680,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       try { window.scrollTo(0, 0); } catch (e) { }
     }, []);
     var c = useClub();
-    var d = useDonneesEcurie(c.club);
+    var _rg = React.useState(0); var rechargeG = _rg[0], setRechargeG = _rg[1];
+    var _og = React.useState(false); var groupeOuvert = _og[0], setGroupeOuvert = _og[1];
+    var _af = React.useState(false); var aRelire = _af[0], setARelire = _af[1];   /* on relit la liste en refermant le formulaire, pour ne pas effacer son message */
+    var d = useDonneesEcurie(c.club, rechargeG);
     var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
     var _ty = React.useState("tous"); var fTy = _ty[0], setFTy = _ty[1];
     var _an = React.useState("tous"); var fAn = _an[0], setFAn = _an[1];
@@ -739,6 +742,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
           selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
           selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
+        d.peutGerer ? h("button", { type: "button", className: "hg-btn", onClick: function () { if (groupeOuvert && aRelire) { setARelire(false); setRechargeG(function (n) { return n + 1; }); } setGroupeOuvert(!groupeOuvert); } }, groupeOuvert ? "Fermer" : "+ Un soin pour plusieurs chevaux") : null,
+        (d.peutGerer && groupeOuvert) ? h(SoinGroupe, { donnees: d, onFait: function () { setARelire(true); } }) : null,
         h("div", { className: "hv3-pils", role: "tablist" },
           [["tous", "Tout"], ["_ordo", "Avec ordonnance"]].concat(typesPres.map(function (k) { return [k, TYPES[k] || k]; })).map(function (x) {
             return h("button", { key: x[0], type: "button", className: "hv3-pil" + (fTy === x[0] ? " on" : ""), "aria-pressed": fTy === x[0], onClick: function () { setFTy(x[0]); } }, x[1]);
@@ -920,6 +925,89 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     return h("div", { className: RACINE, style: FILTRE },
       hero(h, { photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
+  }
+
+
+  /* ═════════════════════════ UN SOIN POUR PLUSIEURS CHEVAUX (05/11) ═════════════════════════
+     Demande de Blandine : « c'est une seule fois pour les vermifuges de tous, et que ça se mette à jour partout ».
+     Une ligne soins_cheval par cheval coché, au même endroit que tous les soins : elle apparaît donc sur la fiche santé
+     de chaque cheval, dans le registre et dans les échéances. La base décide seule de la confirmation (soin de l'écurie
+     = confirmé). Droits d'écriture inchangés (propriétaire du cheval ou modératrice) : si un cheval est refusé par la
+     base, on le dit nommément au lieu d'afficher « enregistré ». */
+  var TYPES_GROUPE = ["vermifuge", "vaccin", "ferrure", "parage", "dentiste", "osteopathe", "veterinaire", "traitement"];
+  function ajoutMoisIso(iso, n) {
+    var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return "";
+    var d = new Date(+m[1], +m[2] - 1, +m[3]); var j = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + n);
+    var der = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); d.setDate(Math.min(j, der));
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function SoinGroupe(props) {
+    var h = React.createElement, M = "'Montserrat',sans-serif";
+    var d = props.donnees;
+    var chevaux = (d.chevaux || []).filter(function (x) { var r = (d.regch || {})[String(x.id)]; return !(r && r.date_sortie); })
+      .slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+    var _t = React.useState("vermifuge"); var type = _t[0], setType = _t[1];
+    var _p = React.useState(""); var produit = _p[0], setProduit = _p[1];
+    var _d = React.useState(isoAuj()); var dInt = _d[0], setDInt = _d[1];
+    var _x = React.useState(""); var dProch = _x[0], setDProch = _x[1];
+    var _n = React.useState(""); var notes = _n[0], setNotes = _n[1];
+    var _c = React.useState({}); var coches = _c[0], setCoches = _c[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var nCoches = chevaux.filter(function (x) { return coches[x.id]; }).length;
+    var tous = nCoches === chevaux.length && chevaux.length > 0;
+    function basculerTous() { var n = {}; if (!tous) chevaux.forEach(function (x) { n[x.id] = true; }); setCoches(n); setMsg(""); }
+    async function enregistrer() {
+      var ids = chevaux.filter(function (x) { return coches[x.id]; }).map(function (x) { return x.id; });
+      if (!ids.length) { setMsg("Coche au moins un cheval."); return; }
+      if (!dInt) { setMsg("Indique la date."); return; }
+      setEnvoi(true); setMsg("");
+      try {
+        var lignes = ids.map(function (id) { return { cheval_id: id, type: type, titre: String(produit || "").trim() || null, date_intervention: dInt, date_prochaine: dProch || null, notes: String(notes || "").trim() || null }; });
+        var r = await supa.from("soins_cheval").insert(lignes).select("id, cheval_id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        var ok = {}; ((r && r.data) || []).forEach(function (x) { ok[x.cheval_id] = 1; });
+        var rates = chevaux.filter(function (x) { return coches[x.id] && !ok[x.id]; }).map(function (x) { return x.nom; });
+        if (rates.length) setMsg("Enregistré pour " + Object.keys(ok).length + " cheva" + (Object.keys(ok).length > 1 ? "ux" : "l") + ". Refusé par la base pour : " + rates.join(", ") + ".");
+        else { setMsg("✓ Enregistré pour " + ids.length + " cheva" + (ids.length > 1 ? "ux" : "l")); setCoches({}); setProduit(""); setNotes(""); }
+        if (props.onFait) props.onFait();
+      } catch (e) {
+        setMsg("Pas enregistré : " + String((e && e.message) || e));
+      }
+      setEnvoi(false);
+    }
+    function pastille(lab, on, clic, cle) {
+      return h("button", { key: cle, type: "button", onClick: clic, style: { border: "1px solid " + (on ? "#C9A66B" : "rgba(243,238,228,.18)"), background: on ? "#C9A66B" : "transparent", color: on ? "#070A08" : "#F3EEE4", borderRadius: 999, padding: "7px 13px", fontFamily: M, fontSize: 12.5 } }, lab);
+    }
+    return h("div", { className: "hg-f", style: { padding: "4px 4px 16px", marginTop: 10, borderRadius: 16, border: "1px solid rgba(201,166,107,.4)", background: "rgba(7,10,8,.35)" } },
+      h("div", { style: { padding: "0 10px" } },
+        h("label", null, "Type de soin"),
+        h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, TYPES_GROUPE.map(function (k) { return pastille(TYPES[k] || k, type === k, function () { setType(k); setMsg(""); }, k); })),
+        h("label", { htmlFor: "hgg-produit" }, "Produit ou intitulé"),
+        h("input", { id: "hgg-produit", value: produit, placeholder: type === "vermifuge" ? "ex. Equest Pramox" : (type === "vaccin" ? "ex. Proteqflu-Te" : ""), onChange: function (e) { setProduit(e.target.value); setMsg(""); } }),
+        h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } },
+          h("div", null, h("label", { htmlFor: "hgg-date" }, "Fait le"), h("input", { id: "hgg-date", type: "date", value: dInt, onChange: function (e) { setDInt(e.target.value); setMsg(""); } })),
+          h("div", null, h("label", { htmlFor: "hgg-proch" }, "Prochain"), h("input", { id: "hgg-proch", type: "date", value: dProch, onChange: function (e) { setDProch(e.target.value); } }))),
+        h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 8 } },
+          pastille("Dans 3 mois", dProch === ajoutMoisIso(dInt, 3), function () { setDProch(ajoutMoisIso(dInt, 3)); }, "p3"),
+          pastille("6 mois", dProch === ajoutMoisIso(dInt, 6), function () { setDProch(ajoutMoisIso(dInt, 6)); }, "p6"),
+          pastille("1 an", dProch === ajoutMoisIso(dInt, 12), function () { setDProch(ajoutMoisIso(dInt, 12)); }, "p12"),
+          pastille("Aucun", !dProch, function () { setDProch(""); }, "p0")),
+        h("div", { className: "hg-aide" }, "Ces boutons ne sont qu'un raccourci : la date reste la tienne."),
+        h("label", { htmlFor: "hgg-notes" }, "Note (facultatif)"),
+        h("input", { id: "hgg-notes", value: notes, placeholder: "ex. dose selon le poids", onChange: function (e) { setNotes(e.target.value); } }),
+        h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 18 } },
+          h("label", { style: { margin: 0 } }, "Chevaux (" + nCoches + "/" + chevaux.length + ")"),
+          h("button", { type: "button", onClick: basculerTous, style: { background: "none", border: "none", color: "#C9A66B", fontFamily: M, fontSize: 13 } }, tous ? "Tout décocher" : "Tous")),
+        h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 8 } }, chevaux.map(function (x) {
+          var on = !!coches[x.id];
+          return h("button", { key: x.id, type: "button", onClick: function () { setMsg(""); setCoches(function (o) { var n = Object.assign({}, o); n[x.id] = !on; return n; }); },
+            style: { display: "flex", alignItems: "center", gap: 8, minHeight: 42, padding: "6px 10px", borderRadius: 12, border: "1px solid " + (on ? "rgba(201,166,107,.8)" : "rgba(243,238,228,.12)"), background: on ? "rgba(201,166,107,.12)" : "transparent", color: "#F3EEE4", fontFamily: M, fontSize: 12.5, textAlign: "start" } },
+            h("span", { style: { flex: "0 0 18px", width: 18, height: 18, borderRadius: 5, border: "1px solid #C9A66B", background: on ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 12, lineHeight: "18px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""),
+            h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, x.nom || "?"));
+        })),
+        h("button", { type: "button", className: "hg-btn", disabled: envoi || !nCoches, onClick: enregistrer }, envoi ? "Enregistrement…" : ("Enregistrer pour " + nCoches + " cheva" + (nCoches > 1 ? "ux" : "l"))),
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null));
   }
 
   window.HypeGestion = { RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };

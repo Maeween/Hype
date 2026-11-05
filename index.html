@@ -39042,13 +39042,13 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=4", "HypeTea
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
 const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=36", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
-const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "MonEcurie");
-const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "Registre");
-const EcranDetenteur = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "Detenteur");   /* 05/11 étape 2 */
-const EcranRegistreChevaux = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "RegistreChevaux");   /* 05/11 étape 3 */
-const EcranSoinsAConfirmer = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "SoinsAConfirmer");
-const EcranRegistreSoins = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "RegistreSoins");   /* 05/11 partie VI */
-const EcranRegistreMouvements = hypeEcranDiffere("hype-ecran-gestion.js?v=6", "HypeGestion", "RegistreMouvements");   /* 05/11 partie V */   /* 05/11 confirmation des soins (option B) */
+const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "MonEcurie");
+const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "Registre");
+const EcranDetenteur = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "Detenteur");   /* 05/11 étape 2 */
+const EcranRegistreChevaux = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "RegistreChevaux");   /* 05/11 étape 3 */
+const EcranSoinsAConfirmer = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "SoinsAConfirmer");
+const EcranRegistreSoins = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "RegistreSoins");   /* 05/11 partie VI */
+const EcranRegistreMouvements = hypeEcranDiffere("hype-ecran-gestion.js?v=7", "HypeGestion", "RegistreMouvements");   /* 05/11 partie V */   /* 05/11 confirmation des soins (option B) */
 /* 05/11 — bloc « Ajouté par / Confirmé par » dans le détail d'un soin : chargé à la demande, n'affiche RIEN pendant le chargement
    (pas le grand écran d'attente de hypeEcranDiffere, qui n'a pas sa place dans une feuille). */
 function EcranTraceSoin(props) {
@@ -39056,7 +39056,7 @@ function EcranTraceSoin(props) {
     React.useEffect(function () {
         if (window.HypeGestion) return undefined;
         var vif = true;
-        try { hypeChargerDiffere("hype-ecran-gestion.js?v=6", "HypeGestion").then(function (ok) { if (vif) setEtat(ok ? 1 : -1); }); } catch (e) { }
+        try { hypeChargerDiffere("hype-ecran-gestion.js?v=7", "HypeGestion").then(function (ok) { if (vif) setEtat(ok ? 1 : -1); }); } catch (e) { }
         return function () { vif = false; };
     }, []);
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;

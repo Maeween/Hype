@@ -415,6 +415,15 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   club_clef = hype_clef_club(chevaux.club) DU CHEVAL ; utiliser l'index
   unique (agenda_id, cheval_id) pour un upsert (on conflict) ; si un cheval
   est retiré du concours, supprimer SA ligne (agenda_id + cheval_id).
+· 05/11 ~12 h 20 — « UN SOIN POUR PLUSIEURS CHEVAUX » CODÉ, NON PUBLIÉ (aucun
+  SQL) : dans la page « Les soins » du registre, bouton réservé à l'écurie ;
+  type, produit, date, prochaine échéance (+3 mois / 6 mois / 1 an / aucun),
+  note, chevaux à cocher (« Tous » ; les chevaux sortis du registre sont
+  exclus) ; une ligne soins_cheval par cheval → visible sur chaque fiche
+  santé, le registre et les échéances. Si la base refuse un cheval (droits
+  d'écriture : propriétaire ou modératrice), il est nommé. La liste se relit
+  en refermant le formulaire. hype-ecran-gestion.js ?v=7. Banc : vermifuge
+  pour 25 chevaux, 25 lignes créées ; 0 erreur.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
