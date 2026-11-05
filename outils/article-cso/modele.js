@@ -278,7 +278,9 @@ function Article() {
   var s3 = h("section", { className: "acso-s acso-pe acso-li" }, h("div", { className: "acso-w" },
     chap("s3_num", "s3_cat"), h("h2", null, riche("s3_titre")),
     h("p", { className: "acso-lead", style: { maxWidth: 920 } }, riche("s3_lead")),
-    h("div", { className: "acso-cmp" }, panneau(false), panneau(true))));
+    h("div", { className: "acso-cmp" }, panneau(false), panneau(true)),
+    /* 05/11 09h55 (Blandine) : les fondamentaux du tracé, sous la comparaison */
+    h("div", { style: { maxWidth: 760, marginTop: 28 } }, P("s3_tr_p1"), P("s3_tr_p2"), P("s3_tr_p3"))));
 
   var s4 = h("section", { className: "acso-s acso-pe acso-li" }, h("div", { className: "acso-w" },
     h("div", { className: "acso-2" },
