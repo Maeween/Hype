@@ -41,6 +41,45 @@ function EcranTeamCompetition() {
   var _ri = React.useState({ ch: {}, cav: {} }); var resInfos = _ri[0], setResInfos = _ri[1];   /* (528) chevaux et cavalieres des resultats */
   var _ro = React.useState(null); var resOuvert = _ro[0], setResOuvert = _ro[1];   /* (528) la carte resultat depliee */   /* 01/10 (522) : lieu de chaque concours (table concours_lieux) */
   var _sv = React.useState(null); var souvenirs = _sv[0], setSouvenirs = _sv[1];
+  /* 05/11 CHAPITRE « Médias » (proposition 4 de Blandine) : 2 vidéos les plus aimées + 2 derniers partages. Lecture seule ici,
+     la page Médias complète est hype-ecran-team-medias.js (route team-medias). */
+  var _md = React.useState(null); var mediasTop = _md[0], setMediasTop = _md[1];
+  var _mp = React.useState(null); var mediasPartages = _mp[0], setMediasPartages = _mp[1];
+  React.useEffect(function () {
+    if (!groupe || !groupe.id || typeof supa === "undefined" || !supa) return;
+    var vifM = true;
+    (async function () {
+      try {
+        var rv = await supa.from("team_videos").select("id, vignette, duree, titre, concours, date_video, cree_le").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(200);
+        var vids = (rv && !rv.error && rv.data) || [];
+        /* 05/11 soir : pas de titre saisi → on affiche le nom du cheval sous la vignette */
+        if (vids.length) {
+          try {
+            var rhc = await supa.from("team_videos_chevaux").select("video_id, cheval_id").in("video_id", vids.map(function (x) { return x.id; }));
+            var lh = (rhc && rhc.data) || [], idsH = [];
+            lh.forEach(function (x) { if (idsH.indexOf(x.cheval_id) === -1) idsH.push(x.cheval_id); });
+            var nh = {}; if (idsH.length) { var rnc = await supa.from("chevaux").select("id, nom, alias").in("id", idsH); ((rnc && rnc.data) || []).forEach(function (c) { nh[c.id] = c.alias || c.nom; }); }
+            vids.forEach(function (x) { x.nomsChevaux = lh.filter(function (l) { return l.video_id === x.id; }).map(function (l) { return nh[l.cheval_id]; }).filter(Boolean).join(", "); });
+          } catch (eH) { }
+        }
+        var nb = {};
+        if (vids.length) { var rj = await supa.rpc("team_videos_jaime", { p_groupe: groupe.id }); ((rj && !rj.error && rj.data) || []).forEach(function (x) { nb[x.video_id] = x.jaime || 0; }); }
+        vids.forEach(function (x) { x.jaime = nb[x.id] || 0; });
+        /* les plus aimées ; à égalité (ou aucune aimée), les plus récentes — vids est déjà du plus récent au plus ancien */
+        var top = vids.map(function (x, i) { return [x, i]; }).sort(function (a, b) { return (b[0].jaime - a[0].jaime) || (a[1] - b[1]); }).slice(0, 2).map(function (x) { return x[0]; });
+        var rp = await supa.from("team_partages").select("id, type, url, titre, image, commentaire, auteur_id, cree_le").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(2);
+        var parts = (rp && !rp.error && rp.data) || [];
+        if (parts.length) {
+          var idsA = parts.map(function (x) { return x.auteur_id; }).filter(Boolean);
+          var ra = idsA.length ? await supa.from("profiles").select("id, pseudo").in("id", idsA) : null;
+          var pa = {}; ((ra && ra.data) || []).forEach(function (x) { pa[x.id] = x.pseudo; });
+          parts.forEach(function (x) { x.auteur_nom = pa[x.auteur_id] || ""; });
+        }
+        if (vifM) { setMediasTop(top); setMediasPartages(parts); }
+      } catch (eM) { if (vifM) { setMediasTop([]); setMediasPartages([]); } }
+    })();
+    return function () { vifM = false; };
+  }, [groupe && groupe.id]);
   var _rm = React.useState({}); var resMasques = _rm[0], setResMasques = _rm[1];   /* (529) resultats retires de la page Team (groupes_resultats_masques) */
   var _rv = React.useState(false); var voirRetires = _rv[0], setVoirRetires = _rv[1];
   var _rdo = React.useState(null); var rdvOuvert = _rdo[0], setRdvOuvert = _rdo[1];   /* (530) la carte rendez-vous depliee */
@@ -639,6 +678,51 @@ function EcranTeamCompetition() {
         h("span", { style: { width: 26, height: 26, borderRadius: "50%", background: "rgba(6,7,9,0.6)", border: "1px solid rgba(244,241,234,0.5)", display: "flex", alignItems: "center", justifyContent: "center" } },
           h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 0.8v8.4L8.2 5Z", fill: IV })))) : null);
   }
+  /* 05/11 CHAPITRE « Médias » — proposition 4 : bandeau photo comme « Performances » / « Conseils du coach »,
+     puis « Les plus aimées » (2 vidéos côte à côte, une seule = pleine largeur) et « Derniers partages » (idem ; absents si vides). */
+  function ouvrirMedias(onglet, idVideo) {
+    try { window.__teamMediasGroupe = groupe && groupe.id; window.__teamMediasOnglet = onglet || "videos"; window.__teamMediasOuvrir = idVideo || null; } catch (eO) { }
+    setEcran("team-medias");
+  }
+  function dureeM(s) { var n = Math.round(Number(s) || 0); return n ? Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0") : ""; }
+  function tuileMedia(v, seule) {
+    var src = v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, seule ? 640 : 320, seule ? 400 : 200) : v.vignette) : "";
+    return h("button", { key: "mv" + v.id, type: "button", onClick: function () { ouvrirMedias("videos", v.id); }, style: { background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0, gridColumn: seule ? "1 / -1" : "auto" } },
+      h("div", { style: { position: "relative", aspectRatio: "16 / 10", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.08)", background: "#11171C" } },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
+        h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
+          h("span", { style: { width: 30, height: 30, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(244,241,234,0.5)", display: "flex", alignItems: "center", justifyContent: "center" } },
+            h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
+        v.jaime ? h("span", { style: { position: "absolute", insetInlineStart: 6, top: 6, fontFamily: M, fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "rgba(6,7,9,0.66)" } }, "\u2661 " + v.jaime) : null,
+        dureeM(v.duree) ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(6,7,9,0.72)", fontVariantNumeric: "tabular-nums" } }, dureeM(v.duree)) : null),
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, marginTop: 7, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, v.titre || v.nomsChevaux || T("Vidéo", "Video")));
+  }
+  var LIB_PARTAGE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
+  function tuilePartage(p, seule) {
+    return h("button", { key: "mp" + p.id, type: "button", onClick: function () { ouvrirMedias("theorie"); }, style: { display: "flex", flexDirection: "column", gap: 5, padding: 12, borderRadius: 12, border: "1px solid rgba(214,182,118,0.22)", background: "transparent", color: IV, textAlign: "start", cursor: "pointer", minWidth: 0, gridColumn: seule ? "1 / -1" : "auto" } },
+      h("span", { style: { fontFamily: M, fontSize: 9, letterSpacing: 1.6, textTransform: "uppercase", color: OR } }, LIB_PARTAGE[p.type] || ""),
+      h("span", { dir: "auto", style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.15, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" } }, p.titre || p.url),
+      p.auteur_nom ? h("span", { style: { fontFamily: M, fontSize: 10.5, color: GR } }, T("Partagé par ", "Shared by ") + p.auteur_nom) : null);
+  }
+  function sousTitreM(txt) { return h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.2, textTransform: "uppercase", color: "rgba(244,241,234,0.45)", margin: "16px 0 8px" } }, txt); }
+  var blocMedias = section(h("div", null,
+    enTete(T("Médias", "Media"), "md", 0, 0),
+    h("button", { type: "button", "data-team-medias": "1", onClick: function () { ouvrirMedias("videos"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
+      h("img", { src: "images/piquet-cso.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 42%, rgba(11,15,19,0.78) 58%, rgba(11,15,19,0) 85%)" } }),
+      h("svg", { width: 26, height: 22, viewBox: "0 0 18 16", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
+        h("rect", { x: 1, y: 2, width: 12, height: 12, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }),
+        h("path", { d: "M13 6.5l4-2.5v8l-4-2.5", fill: "none", stroke: OR, strokeWidth: 1.2, strokeLinejoin: "round" })),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", margin: "16px 0", background: "rgba(214,182,118,0.28)" } }),
+      h("div", { style: { flex: 1, minWidth: 0, position: "relative" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 20, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Vidéothèque de l’équipe", "Team video library")),
+        h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Théorie · Vidéos · Épingles HB", "Theory · Videos · HB pins"))),
+      h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1 } }, CHEV)),
+    (mediasTop && mediasTop.length) ? h("div", null, sousTitreM(T("Les plus aimées", "Most liked")),
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, mediasTop.map(function (v) { return tuileMedia(v, mediasTop.length === 1); }))) : null,
+    (mediasPartages && mediasPartages.length) ? h("div", null, sousTitreM(T("Derniers partages", "Latest shares")),
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, mediasPartages.map(function (p) { return tuilePartage(p, mediasPartages.length === 1); }))) : null));
+
   /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
   var blocCoach = section(h("div", null,
@@ -797,7 +881,7 @@ function EcranTeamCompetition() {
     hero,
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
-    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, blocSv, trait(), blocCoach, trait(), blocReg,
+    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, blocSv, trait(), blocMedias, trait(), blocCoach, trait(), blocReg,
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
