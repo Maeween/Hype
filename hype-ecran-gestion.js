@@ -94,6 +94,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   /* ───────────── lecture des données (partagée par les deux pages) ───────────── */
   function clefDe(n) { try { return (typeof clefClubG === "function") ? clefClubG(n) : String(n || "").toLowerCase().trim(); } catch (e) { return String(n || "").toLowerCase().trim(); } }
   function isoAuj() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function sireReg(d, ch) { var x = (d && d.regch || {})[String(ch && ch.id)]; return sireDe(ch) || (x && x.sire ? String(x.sire).trim() : ""); }
   function sireDe(ch) {
     try { var o = ch && ch.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object" && o.sire) ? String(o.sire).trim() : ""; } catch (e) { return ""; }
   }
@@ -104,7 +105,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var vif = true;
       setD(null);
       (async function () {
-        var res = { club: club, chevaux: [], soins: [], vetos: [], fiche: null, ficheAbsente: false, peutGerer: false, erreur: "" };
+        var res = { club: club, chevaux: [], soins: [], vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, peutGerer: false, erreur: "" };
         try {
           if (typeof supa === "undefined" || !supa) { res.erreur = "Pas de connexion."; if (vif) setD(res); return; }
           if (!club) { if (vif) setD(res); return; }
@@ -133,6 +134,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             var rf = await supa.from("ecurie_registre").select("*").eq("club_clef", clef).maybeSingle();
             if (rf && rf.error) { var m = String(rf.error.message || rf.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m)) res.ficheAbsente = true; }
             else res.fiche = (rf && rf.data) || null;
+            /* 05/11 étape 3 — registre des chevaux (partie IV), une ligne par cheval tenue par l'écurie */
+            var rr = await supa.from("registre_chevaux").select("*").eq("club_clef", clef).limit(1000);
+            if (rr && rr.error) { var m2 = String(rr.error.message || rr.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m2)) res.regchAbsent = true; }
+            else ((rr && rr.data) || []).forEach(function (x) { res.regch[String(x.cheval_id)] = x; });
             try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
             if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
           } catch (eF) { }
@@ -167,15 +172,18 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   function etatRegistre(d) {
     var nCh = (d.chevaux || []).length;
-    var nSire = (d.chevaux || []).filter(function (c) { return !!sireDe(c); }).length;
+    var presents = (d.chevaux || []).filter(function (c) { var x = (d.regch || {})[String(c.id)]; return !(x && x.date_sortie); });
+    var nSire = presents.filter(function (c) { return !!sireReg(d, c); }).length;
+    var nComplets = presents.filter(function (c) { var x = (d.regch || {})[String(c.id)] || {}; return !!sireReg(d, c) && !!x.puce && !!x.date_entree; }).length;
     var so = analyserSoins(d);
-    var chevauxOk = nCh > 0 && nSire === nCh;
+    nCh = presents.length;
+    var chevauxOk = nCh > 0 && nComplets === nCh;
     var soinsOk = so.retards.length === 0 && (d.soins || []).length > 0;
     var f = d.fiche || {};
     var manqueI = [!f.numero_detenteur && "n° de détenteur", !f.siret && "SIRET", !f.adresse_lieu && "adresse"].filter(Boolean);
     var manqueIII = [!f.veto_traitant && "traitant", !f.veto_sanitaire && "sanitaire"].filter(Boolean);
     var detOk = manqueI.length === 0, vetOk = manqueIII.length === 0;
-    return { nCh: nCh, nSire: nSire, so: so, chevauxOk: chevauxOk, soinsOk: soinsOk, detOk: detOk, vetOk: vetOk, manqueI: manqueI, manqueIII: manqueIII,
+    return { nCh: nCh, nSire: nSire, nComplets: nComplets, so: so, chevauxOk: chevauxOk, soinsOk: soinsOk, detOk: detOk, vetOk: vetOk, manqueI: manqueI, manqueIII: manqueIII,
       complets: (chevauxOk ? 1 : 0) + (soinsOk ? 1 : 0) + (detOk ? 1 : 0) + (vetOk ? 1 : 0) };
   }
 
@@ -287,7 +295,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { cle: "I", ok: r.detOk, photo: PHOTOS.detenteur, titre: "Le détenteur", sous: r.detOk ? "N° de détenteur, SIRET et adresse notés" : ("Il manque : " + r.manqueI.join(", ")), pill: "Partie I", etat: r.detOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
         { cle: "II", ok: false, photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Bâtiments et pâtures", pill: "Partie II", etat: "À compléter" },
         { cle: "III", ok: r.vetOk, photo: PHOTOS.veto, titre: "Les vétérinaires", sous: r.vetOk ? "Traitant et sanitaire notés" : ("Il manque : " + r.manqueIII.join(", ")), pill: "Partie III", qui: (!r.vetOk && v.length) ? (v.length + " dans l'équipe de soins") : "", etat: r.vetOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
-        { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: (r.nCh - r.nSire) ? ((r.nCh - r.nSire) + " SIRE manquant" + ((r.nCh - r.nSire) > 1 ? "s" : "")) : "Tous les SIRE sont notés", pill: "Partie IV", qui: String(r.nCh), etat: r.chevauxOk ? "✓ À jour" : (r.nSire + " / " + r.nCh), on: function () { ouvrir("sante-club"); } },
+        { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: r.chevauxOk ? "SIRE, puce et entrée notés" : ((r.nCh - r.nComplets) + " fiche" + ((r.nCh - r.nComplets) > 1 ? "s" : "") + " à compléter"), pill: "Partie IV", qui: r.nCh + " cheva" + (r.nCh > 1 ? "ux" : "l"), etat: r.chevauxOk ? "\u2713 À jour" : (r.nComplets + " / " + r.nCh), on: function () { ouvrir("registre-chevaux"); } },
         { cle: "V", ok: false, bientot: true, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Concours, saillies, départs", pill: "Partie V", etat: "Bientôt" },
         { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : "", etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("sante-club"); } },
         { cle: "VII", ok: false, bientot: true, photo: PHOTOS.controles, titre: "Les contrôles", sous: "La page à montrer lors d'une visite", pill: "Partie VII", etat: "Bientôt" }
@@ -419,5 +427,117 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur };
+
+  /* ═════════════════════════ PAGE « LES CHEVAUX PRÉSENTS » (partie IV) ═════════════════════════
+     05/11 étape 3 : une ligne par cheval dans registre_chevaux, tenue par l'écurie (la fiche du cheval n'est pas touchée).
+     Le n° SIRE de la fiche du cheval est repris tel quel ; on ne le demande que s'il manque.
+     Un cheval qui part reçoit une date de sortie : il reste dans le registre (gardé 5 ans), rangé dans « Sortis ». */
+  var CHAMPS_CH = [
+    { k: "sire", lab: "N° SIRE", ex: "8 chiffres et une lettre", aide: "Sur le document d'identification ou la carte d'immatriculation." },
+    { k: "puce", lab: "N° de puce", ex: "15 chiffres", num: true },
+    { k: "proprietaire", lab: "Propriétaire", ex: "Nom du propriétaire" },
+    { k: "date_entree", lab: "Arrivé à l'écurie le", date: true },
+    { k: "provenance", lab: "Venant de", ex: "Adresse ou élevage d'origine" },
+    { k: "date_sortie", lab: "Parti le", date: true, aide: "À remplir seulement s'il a quitté l'écurie." },
+    { k: "motif_sortie", lab: "Motif du départ", ex: "Vente, retour propriétaire, retraite…" },
+    { k: "destination", lab: "Parti vers", ex: "Adresse de destination" }
+  ];
+  function EcranRegistreChevaux() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    React.useEffect(function () {
+      injecterCss();
+      try { if (!document.getElementById(CSS_ID + "-form")) { var s = document.createElement("style"); s.id = CSS_ID + "-form"; s.textContent = CSS_FORM; document.head.appendChild(s); } } catch (e) { }
+      try { window.scrollTo(0, 0); } catch (e) { }
+    }, []);
+    var c = useClub();
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var d = useDonneesEcurie(c.club, recharge);
+    var _f = React.useState("afaire"); var filtre = _f[0], setFiltre = _f[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+
+    function ouvrirCheval(ch) {
+      if (ouvert === ch.id) { setOuvert(null); return; }
+      var x = (d.regch || {})[String(ch.id)] || {};
+      var v = {}; CHAMPS_CH.forEach(function (f) { v[f.k] = x[f.k] || ""; });
+      setVal(v); setMsg(""); setOuvert(ch.id);
+    }
+    async function enregistrer(ch) {
+      setEnvoi(true); setMsg("");
+      try {
+        var clef = clefDe(c.club);
+        var ligne = { club_clef: clef, cheval_id: ch.id, maj_le: new Date().toISOString() };
+        CHAMPS_CH.forEach(function (f) { var v = String(val[f.k] || "").trim(); ligne[f.k] = v || null; });
+        if (sireDe(ch)) ligne.sire = null;   /* déjà sur la fiche du cheval : on ne le recopie pas */
+        if (ligne.puce) ligne.puce = ligne.puce.replace(/\s+/g, "");
+        var r = await supa.from("registre_chevaux").upsert(ligne, { onConflict: "club_clef,cheval_id" }).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        var relue = await supa.from("registre_chevaux").select("*").eq("club_clef", clef).eq("cheval_id", ch.id).maybeSingle();
+        if (!relue || relue.error || !relue.data) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setMsg("✓ Enregistré"); setOuvert(null); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+
+    function formulaire(ch) {
+      var sireFiche = sireDe(ch);
+      return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+        CHAMPS_CH.map(function (f) {
+          if (f.k === "sire" && sireFiche) return h("div", { key: f.k }, h("label", null, f.lab), h("input", { value: sireFiche, readOnly: true }), h("div", { className: "hg-aide" }, "Repris de la fiche du cheval."));
+          return h("div", { key: f.k },
+            h("label", { htmlFor: "hg-" + f.k + "-" + ch.id }, f.lab),
+            h("input", { id: "hg-" + f.k + "-" + ch.id, type: f.date ? "date" : "text", value: val[f.k] || "", placeholder: f.ex || "", autoComplete: "off", inputMode: f.num ? "numeric" : undefined,
+              onChange: function (e) { var v = e.target.value; setMsg(""); setVal(function (o) { var n = Object.assign({}, o); n[f.k] = v; return n; }); } }),
+            f.aide ? h("div", { className: "hg-aide" }, f.aide) : null);
+        }),
+        h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(ch); } }, envoi ? "Enregistrement…" : "Enregistrer " + (ch.nom || "")),
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
+    }
+
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else if (d.regchAbsent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie du registre arrive très vite : elle n'est pas encore activée.");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie du registre.");
+    else {
+      var lignes = (d.chevaux || []).map(function (ch) {
+        var x = (d.regch || {})[String(ch.id)] || {};
+        var manque = [!sireReg(d, ch) && "SIRE", !x.puce && "puce", !x.date_entree && "entrée"].filter(Boolean);
+        return { ch: ch, x: x, manque: manque, sorti: !!x.date_sortie };
+      }).sort(function (a, b) { return String(a.ch.nom || "").localeCompare(String(b.ch.nom || ""), "fr"); });
+      var nAF = lignes.filter(function (l) { return !l.sorti && l.manque.length; }).length;
+      var nOK = lignes.filter(function (l) { return !l.sorti && !l.manque.length; }).length;
+      var nS = lignes.filter(function (l) { return l.sorti; }).length;
+      var vis = lignes.filter(function (l) { return filtre === "sortis" ? l.sorti : filtre === "ajour" ? (!l.sorti && !l.manque.length) : (!l.sorti && l.manque.length); });
+      corps = h("div", null,
+        pilsClubs(h, c),
+        h("div", { className: "hv3-pils", role: "tablist" },
+          [["afaire", "À compléter (" + nAF + ")"], ["ajour", "À jour (" + nOK + ")"], ["sortis", "Sortis (" + nS + ")"]].map(function (x) {
+            return h("button", { key: x[0], type: "button", className: "hv3-pil" + (filtre === x[0] ? " on" : ""), "aria-pressed": filtre === x[0], onClick: function () { setFiltre(x[0]); setOuvert(null); } }, x[1]);
+          })),
+        h("div", { className: "hg-aide", style: { marginTop: 4 } }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
+        msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (l) {
+          var ph = l.ch.photo_url ? { img: l.ch.photo_url, pos: "50% 35%" } : PHOTOS.chevaux;
+          var sire = sireReg(d, l.ch);
+          return h("div", { key: l.ch.id },
+            carte(h, { cle: l.ch.id, photo: ph, titre: l.ch.nom || "",
+              sous: l.sorti ? ("Parti le " + dateCourte(l.x.date_sortie)) : (l.manque.length ? l.manque.join(" · ") : ("Entré le " + dateCourte(l.x.date_entree))),
+              pill: sire ? ("SIRE " + sire) : "", qui: "",
+              etat: l.sorti ? (l.x.motif_sortie || "Sorti") : (l.manque.length ? "À compléter" : "✓ À jour"),
+              alerte: !l.sorti && l.manque.length > 0, onClick: function () { ouvrirCheval(l.ch); } }),
+            ouvert === l.ch.id ? formulaire(l.ch) : null);
+        })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.chevaux, titre: "Les chevaux", sous: "Partie IV de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux };
 })();

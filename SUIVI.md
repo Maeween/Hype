@@ -314,6 +314,23 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   pas : la page affiche des champs vides). PUBLICATION build 20261105-1045 :
   hype-ecran-gestion.js ?v=2, index.html, SUIVI.md. À essayer par elle :
   2hype.fr/#registre → « Le détenteur » → remplir → Enregistrer.
+· 05/11 ~11 h — ÉTAPE 3 CODÉE, NON PUBLIÉE, SQL NON PASSÉ (attend son
+  accord) : page « Les chevaux » (#registre-chevaux, ouverte depuis la
+  partie IV du registre). Liste des chevaux du club (À compléter / À jour /
+  Sortis) ; toucher un cheval déplie SA ligne du registre sur place : n°
+  SIRE (repris de la fiche du cheval s'il y est, sinon à saisir), n° de
+  puce, propriétaire, date d'arrivée, provenance, date et motif de départ,
+  destination. NOUVELLE table registre_chevaux (sql-05-11-registre-
+  chevaux.sql) : une ligne par cheval et par écurie, tenue par l'écurie ;
+  la fiche du cheval (propriétaire) n'est JAMAIS modifiée. Mêmes droits que
+  ecurie_registre. Partie IV « À jour » quand chaque cheval présent a
+  SIRE + puce + date d'arrivée. hype-ecran-gestion.js ?v=3. Banc : saisie
+  et enregistrement de Hey Baby Please, onglet À jour, registre « 1 / 25 » ;
+  0 erreur.
+· 05/11 11 h 25 — Blandine « Ok » : TABLE registre_chevaux CRÉÉE (3 règles
+  vérifiées) et PUBLICATION build 20261105-1130 (hype-ecran-gestion.js ?v=3,
+  index.html, SUIVI.md, sql-05-11-registre-chevaux.sql). À essayer par elle :
+  #registre → « Les chevaux présents » → toucher un cheval → remplir.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
