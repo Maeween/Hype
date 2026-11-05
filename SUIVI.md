@@ -17528,3 +17528,13 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Partie 03 « La lecture du barrage », sous la comparaison des deux approches : 3 paragraphes de Blandine (09h17), passés au tutoiement comme le reste de l'article, fautes de frappe corrigées (« l'avant-main », « la place »), accord validé « Quels que soient le tracé ou l'option choisis ». Réponse « Ok » (09h55) à mes 3 questions, lue ainsi : (1) tutoiement ; (2) doublon avec la citation de la partie 04 : on GARDE la citation, le 3e paragraphe ne reprend que ce qu'elle ne dit pas (amplitude modifiable **dans** la courbe, pas **en sortie**, toujours régulièrement, cheval droit, équilibré et tendu) ; (3) parties renumérotées 01 à 06 (il y avait deux 03).
 - Traduit dans les 14 langues (nouvelles clés s3_tr_p1 à s3_tr_p3) ; générateur : 117 textes × 14 langues, gras contrôlé. Pas de capture d'écran faite ici (navigateur de test sans accès aux polices) : à regarder sur iPhone.
 - Fichiers : outils/article-cso/modele.js + 14 .json, hype-article-cso.js (?v=8), index.html (build 20261105-1000), SUIVI.md.
+
+## 05/11/2026 12h20 — PUBLICATION build 20261105-1220 — ENGAGEMENTS, VISUEL 1 (style Vidéothèque)
+- Blandine : six visuels proposés (captures réelles) → « 1 » ; puis « Ok » pour publier. Fonctions inchangées, seule la présentation change.
+- Carte « Le concours » : n° (petit, + « Trouver le numéro »), date et lieu (repris du rendez-vous, non modifiables ici), tarif engagement, « Déplacement en camion » Oui/Non (champ transport), chef d'équipe pré-rempli (nom + licence de la coach, aussi sur une feuille existante dont le chef est vide ; « Modifier »), épreuves en pastilles (+ pour ajouter).
+- Retirés de l'écran (données gardées, toujours imprimées sur la feuille SEP) : Discipline, À facturer le, Engagements faits le.
+- Trois onglets : Cavalières (une carte par cavalière : photo de profil ou initiales, nom/licence modifiables, deux tours avec photo du cheval, menu cheval et menu épreuve ; propositions, recherche et lecture de fiche inchangées dessous), Chevaux (tuiles photo, ronds, places libres, qui monte quel tour ; « 3 tours max » réglable), Épreuves (bandeau photo par épreuve, ordre des tours). L'ancienne « Grille des tours » est remplacée par l'onglet Chevaux (même information).
+- Photos des chevaux : photo_url de la fiche (chargée en plus) ; sans photo → photo Hype par défaut.
+- Champs à 16 px (pas de zoom iPhone au toucher). Vérifié : rendu réel iPhone 390, tablette 1024, ordinateur 1440, 0 erreur, pas de défilement de côté.
+- Page toujours en français seulement (comme le Centre de compétition).
+- Fichiers : hype-ecran-saison.js (v36), index.html (build 20261105-1220), SUIVI.md.
