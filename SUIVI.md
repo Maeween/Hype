@@ -331,6 +331,40 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   vérifiées) et PUBLICATION build 20261105-1130 (hype-ecran-gestion.js ?v=3,
   index.html, SUIVI.md, sql-05-11-registre-chevaux.sql). À essayer par elle :
   #registre → « Les chevaux présents » → toucher un cheval → remplir.
+· 05/11 11 h 28 — CONFIRMATION DES SOINS, OPTION B choisie par Blandine :
+  un soin ajouté par une cavalière compte tout de suite partout, marqué
+  « Non confirmé » ; la coach confirme ou refuse après avoir vérifié avec la
+  propriétaire ; « Ajouté par … le … » reste affiché POUR TOUJOURS, même
+  confirmé (« si un jour il y a un problème, on se rappelle qui a mis quoi,
+  ce soir-là, sur ce cheval-là »). Le détail s'ouvre en touchant le soin.
+  Elle rappelle : ordonnances et factures à garder 5 ans avec le registre.
+  CODÉ, NON PUBLIÉ, SQL NON PASSÉ (attend son « ok ») :
+  · sql-05-11-soins-confirmation.sql : 3 colonnes ajoutées à soins_cheval
+    (confirme_le, confirme_par, refuse) ; l'existant confirmé d'office ;
+    règle automatique (soin d'une modératrice ou d'un gestionnaire de
+    l'écurie du cheval = confirmé ; sinon non confirmé ; une modification
+    par un non-gestionnaire d'un soin confirmé le repasse « non confirmé » ;
+    seuls les gestionnaires touchent aux colonnes de confirmation) ;
+    fonctions hype_gere_ecurie_du_cheval et hype_confirmer_soin. Aucune
+    règle d'accès existante modifiée, rien de supprimé.
+  · hype-ecran-gestion.js ?v=4 : bloc « Traçabilité » (TraceSoin) dans le
+    détail d'un soin, avec Confirmer / Refuser pour l'écurie ; page
+    « À confirmer » (#soins-a-confirmer) ; la ligne d'alertes de Mon écurie
+    y mène ; registre partie VI « n à confirmer » ; un soin refusé ne compte
+    plus dans le registre ni les échéances (il reste visible, « Refusé »).
+  · hype-ecran-sante-cheval.js ?v=4 : « Non confirmé · » / « Refusé · » en
+    doré dans la liste des soins du cheval.
+  · index.html : FeuilleSoin affiche le bloc (EcranTraceSoin, chargé à la
+    demande, n'affiche rien pendant le chargement ni sans les colonnes).
+  Banc : alerte « À confirmer · 1 », page, confirmation, la liste se vide ;
+  0 erreur. PAS ENCORE FAIT : notification sur le téléphone de la coach
+  (il faut ajouter le type à la fonction notifier-notif et la redéployer).
+· 05/11 11 h 33 — Blandine « Ok » : SQL de confirmation PASSÉ (41 soins
+  existants confirmés, déclencheur soins_confirmation en place) et
+  PUBLICATION build 20261105-1140 (hype-ecran-gestion.js ?v=4,
+  hype-ecran-sante-cheval.js ?v=4, index.html, SUIVI.md).
+· À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
+  ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).

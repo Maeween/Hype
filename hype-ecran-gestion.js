@@ -150,9 +150,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   }
 
   /* le dernier soin de chaque type pour chaque cheval ; en retard si sa date prochaine est passée */
+  function nonConfirme(s) { return s && s.confirme_le === null && !s.refuse; }   /* null = colonne présente et vide ; undefined = pas encore en base */
   function analyserSoins(d) {
     var auj = isoAuj(), dernier = {};
-    (d.soins || []).forEach(function (s) {
+    (d.soins || []).filter(function (s) { return !s.refuse; }).forEach(function (s) {
       var k = String(s.cheval_id) + "|" + String(s.type || "");
       var di = String(s.date_intervention || "");
       if (!dernier[k] || di > String(dernier[k].date_intervention || "")) dernier[k] = s;
@@ -164,7 +165,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       if (dp < auj) retards.push(s); else prochains.push(s);
     });
     prochains.sort(function (a, b) { return String(a.date_prochaine).localeCompare(String(b.date_prochaine)); });
-    return { retards: retards, prochains: prochains };
+    return { retards: retards, prochains: prochains, aConfirmer: (d.soins || []).filter(nonConfirme) };
   }
   function nomCheval(d, id) { var c = (d.chevaux || []).filter(function (x) { return x.id === id; })[0]; return c ? (c.nom || "") : ""; }
   var TYPES = { vaccin: "Vaccin", vermifuge: "Vermifuge", ferrure: "Ferrure", parage: "Parage", veterinaire: "Vétérinaire", dentiste: "Dentiste", osteopathe: "Ostéopathe", traitement: "Traitement" };
@@ -244,7 +245,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       ];
       corps = h("div", null,
         h("div", { className: "hv2-ligne" },
-          h("button", { type: "button", className: "hv2-mes", onClick: function () { ouvrir("sante-club"); } }, SVG_CLOCHE(h), nRet ? ("Mes alertes · " + nRet) : "Aucune alerte"),
+          (r.so.aConfirmer.length
+            ? h("button", { type: "button", className: "hv2-mes", onClick: function () { ouvrir("soins-a-confirmer"); } }, SVG_CLOCHE(h), "À confirmer · " + r.so.aConfirmer.length + (nRet ? " · " + nRet + " en retard" : ""))
+            : h("button", { type: "button", className: "hv2-mes", onClick: function () { ouvrir("sante-club"); } }, SVG_CLOCHE(h), nRet ? ("Mes alertes · " + nRet) : "Aucune alerte")),
           h("span", null)),
         pilsClubs(h, c),
         h("div", { className: "hv2-choix" },
@@ -297,7 +300,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { cle: "III", ok: r.vetOk, photo: PHOTOS.veto, titre: "Les vétérinaires", sous: r.vetOk ? "Traitant et sanitaire notés" : ("Il manque : " + r.manqueIII.join(", ")), pill: "Partie III", qui: (!r.vetOk && v.length) ? (v.length + " dans l'équipe de soins") : "", etat: r.vetOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
         { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: r.chevauxOk ? "SIRE, puce et entrée notés" : ((r.nCh - r.nComplets) + " fiche" + ((r.nCh - r.nComplets) > 1 ? "s" : "") + " à compléter"), pill: "Partie IV", qui: r.nCh + " cheva" + (r.nCh > 1 ? "ux" : "l"), etat: r.chevauxOk ? "\u2713 À jour" : (r.nComplets + " / " + r.nCh), on: function () { ouvrir("registre-chevaux"); } },
         { cle: "V", ok: false, bientot: true, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Concours, saillies, départs", pill: "Partie V", etat: "Bientôt" },
-        { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : "", etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("sante-club"); } },
+        { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : ""), etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("sante-club"); } },
         { cle: "VII", ok: false, bientot: true, photo: PHOTOS.controles, titre: "Les contrôles", sous: "La page à montrer lors d'une visite", pill: "Partie VII", etat: "Bientôt" }
       ];
       var aFaire = parties.filter(function (p) { return !p.ok; }), ajour = parties.filter(function (p) { return p.ok; });
@@ -539,5 +542,119 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux };
+
+  /* ═════════════════════════ CONFIRMATION DES SOINS (option B, 05/11) ═════════════════════════
+     Un soin ajouté par quelqu'un qui ne gère pas l'écurie compte tout de suite partout, marqué « non confirmé ».
+     La coach le confirme ou le refuse après avoir vérifié. « Ajouté par » reste affiché pour toujours.
+     Les règles sont dans la base (sql-05-11-soins-confirmation.sql) : l'appli ne fait qu'afficher et appeler
+     hype_confirmer_soin, qui revérifie les droits. */
+  var _pseudos = {};
+  async function pseudosDe(ids) {
+    var manque = ids.filter(function (x) { return x && !(x in _pseudos); });
+    if (manque.length) {
+      try {
+        var r = await supa.from("profiles").select("id, pseudo").in("id", manque.slice(0, 200));
+        ((r && r.data) || []).forEach(function (p) { _pseudos[p.id] = p.pseudo || ""; });
+      } catch (e) { }
+      manque.forEach(function (x) { if (!(x in _pseudos)) _pseudos[x] = ""; });
+    }
+    return _pseudos;
+  }
+  function quandLong(iso) {
+    try { var d = new Date(iso); if (isNaN(d)) return ""; return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(d).replace(":", " h "); } catch (e) { return ""; }
+  }
+  async function confirmerSoin(id, ok) {
+    var r = await supa.rpc("hype_confirmer_soin", { p_soin: id, p_ok: ok });
+    if (r && r.error) throw new Error(r.error.message || String(r.error));
+    if (!(r && r.data === true)) throw new Error("Seule la personne qui gère l'écurie peut confirmer ce soin.");
+    return true;
+  }
+
+  /* Bloc affiché dans le détail d'un soin (FeuilleSoin, index.html) */
+  function TraceSoin(props) {
+    var h = React.createElement;
+    var s = props.soin || {};
+    var actif = ("confirme_le" in s) || ("refuse" in s);
+    var _p = React.useState({}); var ps = _p[0], setPs = _p[1];
+    var _g = React.useState(false); var gere = _g[0], setGere = _g[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    React.useEffect(function () {
+      if (!actif) return undefined;
+      var vif = true;
+      (async function () {
+        var p = await pseudosDe([s.created_by, s.confirme_par]);
+        if (vif) setPs(Object.assign({}, p));
+        try { var rg = await supa.rpc("hype_gere_ecurie_du_cheval", { p_cheval: s.cheval_id }); if (vif) setGere(!!(rg && rg.data === true)); } catch (e) { }
+      })();
+      return function () { vif = false; };
+    }, [s.id]);
+    if (!actif) return null;
+    var M = "'Montserrat',sans-serif";
+    var auteur = (s.created_by && ps[s.created_by]) || (s.created_by ? "un membre" : "");
+    var conf = (s.confirme_par && ps[s.confirme_par]) || "";
+    var lignes = [];
+    if (s.created_by || s.created_at) lignes.push("Ajouté" + (auteur ? " par " + auteur : "") + (s.created_at ? " le " + quandLong(s.created_at) : ""));
+    if (s.refuse) lignes.push("Refusé" + (conf ? " par " + conf : "") + " : ne compte pas dans le registre");
+    else if (s.confirme_le) lignes.push("Confirmé" + (conf ? " par " + conf : "") + " le " + quandLong(s.confirme_le));
+    else lignes.push("Non confirmé par l'écurie");
+    async function agir(ok) {
+      setEnvoi(true); setMsg("");
+      try { await confirmerSoin(s.id, ok); setMsg(ok ? "✓ Confirmé" : "Refusé"); if (props.onChange) setTimeout(props.onChange, 500); }
+      catch (e) { setMsg(String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    var nonConf = !s.confirme_le && !s.refuse;
+    return h("div", { style: { marginTop: 18, padding: "12px 14px", borderRadius: 14, border: "1px solid " + (nonConf ? "rgba(201,166,107,0.6)" : "rgba(243,238,228,0.14)"), background: "rgba(7,10,8,0.35)" } },
+      h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 1.6, textTransform: "uppercase", color: "#C9A66B", marginBottom: 6 } }, "Traçabilité"),
+      lignes.map(function (l, i) { return h("div", { key: i, style: { fontFamily: M, fontSize: 12.5, lineHeight: 1.5, color: (i === lignes.length - 1 && nonConf) ? "#C9A66B" : "rgba(243,238,228,0.82)" } }, l); }),
+      (gere && (nonConf || s.refuse)) ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+        s.refuse ? null : h("button", { type: "button", disabled: envoi, onClick: function () { agir(false); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.25)", background: "transparent", color: "#F3EEE4", fontFamily: M, fontSize: 13 } }, "Refuser"),
+        h("button", { type: "button", disabled: envoi, onClick: function () { agir(true); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid #C9A66B", background: "#C9A66B", color: "#070A08", fontFamily: M, fontSize: 13, fontWeight: 600 } }, "Confirmer")) : null,
+      msg ? h("div", { style: { fontFamily: M, fontSize: 12, color: "#C9A66B", marginTop: 8, textAlign: "center" } }, msg) : null);
+  }
+
+  /* Page « À confirmer » : tous les soins non confirmés des chevaux de l'écurie */
+  function EcranSoinsAConfirmer() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+    var c = useClub();
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var d = useDonneesEcurie(c.club, recharge);
+    var _p = React.useState({}); var ps = _p[0], setPs = _p[1];
+    var _m = React.useState({}); var msgs = _m[0], setMsgs = _m[1];
+    React.useEffect(function () { try { if (!document.getElementById(CSS_ID + "-form")) { var st = document.createElement("style"); st.id = CSS_ID + "-form"; st.textContent = CSS_FORM; document.head.appendChild(st); } } catch (e) { } }, []);
+    var liste = d ? (d.soins || []).filter(nonConfirme).sort(function (a, b) { return String(b.created_at || "").localeCompare(String(a.created_at || "")); }) : [];
+    React.useEffect(function () { var vif = true; if (liste.length) pseudosDe(liste.map(function (s) { return s.created_by; })).then(function (p) { if (vif) setPs(Object.assign({}, p)); }); return function () { vif = false; }; }, [d]);
+    async function agir(s, ok) {
+      try { await confirmerSoin(s.id, ok); setRecharge(function (n) { return n + 1; }); }
+      catch (e) { var m = {}; m[s.id] = String((e && e.message) || e); setMsgs(function (o) { return Object.assign({}, o, m); }); }
+    }
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-vide" }, "Seule la personne qui gère l'écurie peut confirmer les soins.");
+    else if (!liste.length) corps = h("div", { className: "hg-vide" }, "Aucun soin à confirmer. Tout est vérifié.");
+    else corps = h("div", null,
+      pilsClubs(h, c),
+      h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Ces soins ont été ajoutés par des cavaliers. Ils comptent déjà partout ; confirme-les après avoir vérifié avec le propriétaire. Leur auteur reste noté."),
+      h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, liste.map(function (s) {
+        var ch = (d.chevaux || []).filter(function (x) { return x.id === s.cheval_id; })[0] || {};
+        var ph = ch.photo_url ? { img: ch.photo_url, pos: "50% 35%" } : PHOTOS.soins;
+        return h("div", { key: s.id },
+          carte(h, { cle: s.id, photo: ph, titre: ch.nom || "", sous: (TYPES[s.type] || s.type || "Soin") + (s.titre ? " · " + s.titre : "") + (s.date_intervention ? " · " + dateCourte(s.date_intervention) : ""),
+            pill: "Non confirmé", qui: (s.created_by && ps[s.created_by]) ? ("par " + ps[s.created_by]) : "", etat: "" }),
+          h("div", { style: { display: "flex", gap: 8, margin: "8px 2px 4px" } },
+            h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { agir(s, false); } }, "Refuser"),
+            h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, onClick: function () { agir(s, true); } }, "Confirmer")),
+          msgs[s.id] ? h("div", { className: "hg-ok" }, msgs[s.id]) : null);
+      })),
+      LEGAL(h));
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.soins, titre: "À confirmer", sous: "Les soins ajoutés par les cavaliers.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();

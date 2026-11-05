@@ -921,6 +921,9 @@ function EcranSanteCheval() {
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 16.5, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, titre),
         h("div", { style: { fontFamily: M, fontSize: 11.5, color: retard ? "#FF6B6B" : "rgba(243,238,228,0.6)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } },
+          /* 05/11 (Blandine, option B) : soin ajouté par un cavalier, pas encore vérifié par l'écurie */
+          (s.confirme_le === null && !s.refuse) ? h("span", { style: { color: "#C9A66B" } }, "Non confirmé · ") : null,
+          s.refuse ? h("span", { style: { color: "#C9A66B" } }, "Refusé · ") : null,
           (s.titre ? libelle(s.type) + (detail ? " · " : "") : "") + detail + (retard ? " · " + T("en retard", "overdue", "atrasado", "in ritardo", "期限切れ", "überfällig", "متأخر", "已逾期", "te laat", "atrasado", "försenade", "просрочено", "spóźnione", "지남") : ""))),
       h("span", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.75)", fontVariantNumeric: "tabular-nums" } }, s.date_intervention ? dateCourte(s.date_intervention, "jour") : (s.date_prochaine ? dateCourte(s.date_prochaine, s.precision_prochaine) : "")),
       peutEcrire ? h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: TQ, fontSize: 18, lineHeight: 1 } }, rtlL ? "‹" : "›") : null);
