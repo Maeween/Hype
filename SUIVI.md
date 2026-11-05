@@ -479,7 +479,14 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   Les soins (Tout / Vaccins / Vermifuges / Ordonnances ; loupe = cheval ; + =
   un soin pour plusieurs chevaux), Les contrôles (icônes imprimer et +), Le
   registre imprimé (Tout / années), À confirmer. L'écurie se change en
-  touchant son nom (⇄). Non publié.
+  touchant son nom (⇄).
+  ⇒ 05/11 22 h 04 Blandine « Ok » : SQL sql-05-11-registre-plan-controles.sql
+  PASSÉ par Claude (description_lieu ; registre_documents 4 règles ;
+  registre_controles 4 règles ; compartiment « registre » + 3 règles de
+  stockage, tout vérifié) ; PUBLIÉ avec les parties II, VII, le registre
+  imprimable, la trame Vidéothèque et la fin des boutons pleins dorés ;
+  hype-ecran-gestion.js ?v=10. À tester sur iPhone : envoi d'une photo de
+  plan, « Imprimer » → enregistrer en PDF.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

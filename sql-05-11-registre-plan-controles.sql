@@ -1,5 +1,5 @@
 -- HYPE ▸ 05/11/2026 — REGISTRE D'ÉLEVAGE, PARTIES II (PLAN DES LIEUX) ET VII (CONTRÔLES).
--- À PASSER EN BASE SEULEMENT APRÈS L'ACCORD DE BLANDINE.
+-- Accord de Blandine le 05/11 (« Ok », 22 h 04). Passé en base par Claude le 05/11.
 -- Guide IFCE : partie II = « recenser l'ensemble des bâtiments et des pâtures » où les chevaux vivent, même
 -- occasionnellement (plan de masse, plan cadastral ou vue satellite) + description précise du lieu.
 -- Partie VII = remplie par les agents habilités (DDPP, IFCE) ; le vétérinaire peut aussi viser le registre ;
