@@ -172,6 +172,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     prochains.sort(function (a, b) { return String(a.date_prochaine).localeCompare(String(b.date_prochaine)); });
     return { retards: retards, prochains: prochains, aConfirmer: (d.soins || []).filter(nonConfirme) };
   }
+  function photoCheval(d, id) { var c = (d.chevaux || []).filter(function (x) { return x.id === id; })[0]; return (c && c.photo_url) ? { img: c.photo_url, pos: "50% 35%" } : PHOTOS.chevaux; }
   function nomCheval(d, id) { var c = (d.chevaux || []).filter(function (x) { return x.id === id; })[0]; return c ? (c.nom || "") : ""; }
   var TYPES = { vaccin: "Vaccin", vermifuge: "Vermifuge", ferrure: "Ferrure", parage: "Parage", veterinaire: "Vétérinaire", dentiste: "Dentiste", osteopathe: "Ostéopathe", traitement: "Traitement" };
   function dateCourte(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var dd = new Date(+m[1], +m[2] - 1, +m[3]); var o = { day: "numeric", month: "short" }; if (dd.getFullYear() !== new Date().getFullYear()) o.year = "numeric"; return new Intl.DateTimeFormat("fr-FR", o).format(dd); } catch (e) { return m[3] + "/" + m[2]; } }
@@ -753,22 +754,20 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         groupes.length ? groupes.map(function (g) {
           return h("div", { key: g.m },
             h("h2", { className: "hv3-h2" }, titreMois(g.m)),
-            g.l.map(function (it) {
+            h("div", { className: "hv3-cartes" }, g.l.map(function (it) {
               var s = it.soin;
               var titre = it.doc ? (TYPES_DOCS[it.doc.type] || "Document") + (it.doc.titre ? " · " + it.doc.titre : "") : ((TYPES[s.type] || s.type || "Soin") + (s.titre ? " · " + s.titre : ""));
               var etatConf = s ? (s.refuse ? "Refusé" : (s.confirme_le === null ? "Non confirmé" : "")) : "";
               var auteur = (s && s.created_by && ps[s.created_by]) ? ("ajouté par " + ps[s.created_by]) : "";
-              return h("div", { key: it.k, style: { padding: "12px 14px", marginBottom: 8, borderRadius: 14, border: "1px solid rgba(243,238,228,.1)", background: "linear-gradient(135deg,rgba(16,26,29,.42),rgba(7,10,8,.96) 58%)" } },
-                h("div", { style: { display: "flex", alignItems: "baseline", gap: 10 } },
-                  h("div", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, color: "#F3EEE4", lineHeight: 1.2 } }, titre),
-                  h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 12, color: "rgba(243,238,228,.75)" } }, it.date ? dateCourte(it.date) : "")),
-                h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,.65)", marginTop: 3 } },
-                  h("button", { type: "button", onClick: function () { ouvrirCheval(it.ch); }, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", fontFamily: M, fontSize: 12 } }, nomDe[it.ch] || "Cheval"),
-                  auteur ? " · " + auteur : "", etatConf ? h("span", { style: { color: "#C9A66B" } }, " · " + etatConf) : null),
-                it.docs.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 } }, it.docs.map(function (x) {
-                  return h("button", { key: x.id, type: "button", onClick: function () { ouvrirDoc(x); }, style: { border: "1px solid rgba(201,166,107,.6)", background: "transparent", color: "#C9A66B", borderRadius: 999, padding: "5px 12px", fontFamily: M, fontSize: 12 } }, "▤ " + (TYPES_DOCS[x.type] || "Document"));
+              return h("div", { key: it.k, style: { marginBottom: 12 } },
+                carte(h, { cle: it.k, photo: photoCheval(d, it.ch), titre: titre,
+                  sous: (nomDe[it.ch] || "Cheval") + (it.date ? " · " + dateCourte(it.date) : ""),
+                  pill: it.docs.length ? "Ordonnance" : "", qui: auteur,
+                  etat: etatConf, alerte: !!etatConf, onClick: function () { ouvrirCheval(it.ch); } }),
+                it.docs.length ? h("div", { className: "hv3-pils", style: { marginTop: 6 } }, it.docs.map(function (x) {
+                  return h("button", { key: x.id, type: "button", className: "hv3-pil", onClick: function () { ouvrirDoc(x); } }, "▤ Ouvrir " + (TYPES_DOCS[x.type] || "le document").toLowerCase());
                 })) : null);
-            }));
+            })));
         }) : h("div", { className: "hg-vide" }, "Aucun soin pour ce choix."),
         LEGAL(h));
     }
@@ -908,17 +907,16 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         ouvert === "nouveau" ? formulaire(null) : null,
         msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
         h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
-        vis.length ? h("div", { style: { marginTop: 14 } }, vis.map(function (l) {
+        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (l) {
           var dates = dateCourte(l.date_sortie) + (l.date_retour && l.date_retour !== l.date_sortie ? " → " + dateCourte(l.date_retour) : "");
-          var ouvre = ouvert === l.id;
-          return h("div", { key: l.id, style: { marginBottom: 8, borderRadius: 14, border: "1px solid " + (ouvre ? "rgba(201,166,107,.55)" : "rgba(243,238,228,.1)"), background: "linear-gradient(135deg,rgba(16,26,29,.42),rgba(7,10,8,.96) 58%)" } },
-            h("button", { type: "button", onClick: function () { ouvrirLigne(l); }, style: { display: "block", width: "100%", textAlign: "start", background: "none", border: "none", padding: "12px 14px", color: "inherit", fontFamily: M } },
-              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10 } },
-                h("div", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, color: "#F3EEE4", lineHeight: 1.2 } }, nomDe[l.cheval_id] || "Cheval"),
-                h("div", { style: { flex: "0 0 auto", fontSize: 12, color: "rgba(243,238,228,.75)" } }, dates)),
-              h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.7)", marginTop: 3 } }, [l.motif, l.destination].filter(Boolean).join(" · ") || "Motif et destination à compléter"),
-              l.source === "concours" ? h("div", { style: { fontSize: 11.5, color: "#C9A66B", marginTop: 3 } }, "Depuis le concours de l'agenda") : null),
-            ouvre ? formulaire(l) : null);
+          var quoi = [l.motif, l.destination].filter(Boolean).join(" · ");
+          return h("div", { key: l.id },
+            carte(h, { cle: l.id, photo: photoCheval(d, l.cheval_id), titre: nomDe[l.cheval_id] || "Cheval",
+              sous: quoi || "Motif et destination à compléter", pill: dates,
+              qui: l.source === "concours" ? "Via l'agenda" : (l.camion === true ? "Camion" : ""),
+              etat: !l.date_retour ? "Pas encore rentré" : (quoi ? "" : "À compléter"), alerte: !l.date_retour || !quoi,
+              onClick: function () { ouvrirLigne(l); } }),
+            ouvert === l.id ? formulaire(l) : null);
         })) : h("div", { className: "hg-vide" }, "Aucun mouvement pour ce choix."),
         LEGAL(h));
     }
