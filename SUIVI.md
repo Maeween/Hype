@@ -17595,3 +17595,16 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Concerne toutes les photos qui passent par le recadreur (cheval, profil, écurie…), uniquement quand une photo ne s'ouvre pas.
 - Testé dans Chrome sur le code exact : photo normale → s'ouvre comme avant ; photo HEIF → convertie et ouverte ; fichier illisible → écran fermé + message. La vraie bibliothèque HEIF n'a pas pu être téléchargée dans l'environnement de test (remplacée par une simulation) : à confirmer avec Lore sur son téléphone.
 - Fichiers : index.html (recadreur + build 20261105-2050), SUIVI.md.
+
+## 05/11/2026 21h15 — PRÊT, NON PUBLIÉ (build 20261105-2115) — PHOTOS : conversion par le serveur, plus jamais de capture d'écran
+- Blandine (20h53-20h54) : demander une capture d'écran « c'est tendu » sur une appli qui stocke les photos, « inenvisageable ». Puis « Oui fais ça ».
+- Le recadreur fait maintenant 4 essais avant d'abandonner, avec « Préparation de ta photo… » affiché pendant l'attente (14 langues) :
+  1. lecture normale (inchangée) ;
+  2. relecture réduite à 2560 px ;
+  3. si c'est une photo HEIF : conversion sur le téléphone, avec la bibliothèque heic2any 0.0.4, désormais gardée DANS le dépôt (vendor/heic2any-0.0.4/, en cache un an). Plus de site extérieur ;
+  4. sinon, ou si l'essai 3 échoue : la photo part telle quelle vers la nouvelle fonction serveur **hype-convertir-photo** (ImageMagick en WebAssembly). Elle la redresse, la réduit à 2560 px et la renvoie en JPEG. Rien n'est stocké sur le serveur, et c'est ensuite le circuit normal de Hype qui enregistre la photo.
+- Message final (seulement si tout échoue, par exemple sans réseau) : « Cette photo n'a pas pu être préparée. Vérifie ta connexion internet et réessaie. » (14 langues). Le message « capture d'écran » de 20h50 est supprimé.
+- Fonction serveur DÉJÀ DÉPLOYÉE (v2), jeton de session obligatoire. Elle ne sert à rien tant que index.html n'est pas publié. Testée depuis la base avec de vraies photos : HEIC 1280×854 ✓, HEIC 1280×720 multi-images ✓, HEIC 1596×1064 ✓, AVIF ✓, photo à pivoter (orientation 6) remise droite ✓.
+- Limites connues : une photo RAW (.NEF testé) ne donne que sa petite vignette intégrée (160×120). Une photo HEIF de 50 Mpx pourrait dépasser la mémoire du serveur (plafond de 40 Mo par photo).
+- Testé dans Chrome sur le code exact : photo normale ✓ ; vraie photo HEIF convertie par la vraie bibliothèque ✓ ; photo illisible → serveur → ouverte ✓ ; serveur qui refuse → message de connexion ✓ ; fausse HEIF → serveur ✓.
+- Fichiers : index.html (recadreur + build 20261105-2115), vendor/heic2any-0.0.4/heic2any.min.js (nouveau), _headers (cache de vendor/heic2any), supabase/functions/hype-convertir-photo/index.ts (nouveau), .github/workflows/deploy-fonctions.yml (ligne de déploiement ajoutée), SUIVI.md.

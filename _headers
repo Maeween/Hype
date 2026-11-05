@@ -325,6 +325,12 @@
   Cache-Control: public, max-age=31536000, immutable
   X-Robots-Tag: noindex
 
+# 05/11 : heic2any (conversion des photos HEIF), charge seulement quand le telephone ne sait pas ouvrir une photo.
+/vendor/heic2any-0.0.4/*
+  Content-Type: text/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: noindex
+
 # 10/10 (851) : annuaire des écuries lu par la fonction ecurie-route.ts, et son
 # générateur. Utiles au site, pas à montrer dans Google. Toujours frais (il change
 # quand la base des clubs change).
