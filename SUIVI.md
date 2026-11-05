@@ -470,6 +470,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   Mon écurie corrigé (hype-ecran-gestion.js) : boutons à contour champagne
   sans fond, pastilles choisies en fond champagne très léger, cases à cocher
   sans fond. Règle ajoutée en tête du suivi et dans les règles de travail.
+· 05/11 21 h 38 → 21 h 57 : 6 propositions visuelles montrées (cartes, frise,
+  affiches, carnet, par cheval, registre) ; Blandine choisit la 1 (cartes).
+  Appliquée à TOUTES les pages de Mon écurie : Mon écurie (cloche avec point
+  doré en icône), Le registre (cases 7 parties / À faire / À jour / Imprimer),
+  Le détenteur, Le plan des lieux, Les chevaux (Présents / À faire / À jour /
+  Sortis), Mouvements temporaires (Toutes / En cours / année / année d'avant),
+  Les soins (Tout / Vaccins / Vermifuges / Ordonnances ; loupe = cheval ; + =
+  un soin pour plusieurs chevaux), Les contrôles (icônes imprimer et +), Le
+  registre imprimé (Tout / années), À confirmer. L'écurie se change en
+  touchant son nom (⇄). Non publié.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
@@ -542,6 +552,13 @@ capture : elle a souvent un écran en cache plus ancien que le code livré.
   fond champagne très léger (rgba(201,166,107,.14)), contour champagne,
   texte ivoire. JAMAIS de fond #C9A66B plein avec texte noir. À VÉRIFIER
   SUR CHAQUE CAPTURE AVANT DE LA MONTRER.
+· 🟥 DESIGN — CHAQUE PAGE = HÉROS À LIGNE COURBE + TRAME VIDÉOTHÈQUE (Blandine,
+  05/11 21 h 38 : « pas un cumul de plein de choses entassées sans aucun
+  design ») ; trame choisie le 05/11 21 h 57 (proposition 1 sur 6 « Cartes ») :
+  sous le héros, une ligne d'accès (écurie à gauche, actions en icônes à
+  droite, filet champagne), puis 4 cases (hv2-cg), puis les cartes avec photo
+  rangées par mois ; les textes d'explication en petit tout en bas. Pas de
+  rangées de pastilles, menus déroulants ni gros boutons empilés en haut.
 · 1 action → 1 modification atomique → test iPhone → validation → suite.
   Aucune refonte simultanée, aucun nettoyage opportuniste, rien hors
   périmètre.

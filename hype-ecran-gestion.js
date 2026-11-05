@@ -234,8 +234,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      actions en icônes à droite, filet champagne dessous), puis une rangée de 4 cases, puis les cartes par mois. */
   var SVG_ECURIE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M3.5 10.5 12 4l8.5 6.5" }), h("path", { d: "M5.5 9.5v10h13v-10" }), h("path", { d: "M10 19.5v-5h4v5" })); };
   var SVG_LOUPE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" })); };
+  var SVG_IMPRIMER = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 9V3.5h10V9" }), h("path", { d: "M7 17.5H4.5v-8h15v8H17" }), h("path", { d: "M7 14h10v6.5H7z" })); };
   var SVG_PLUS = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" })); };
-  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}";
+  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}";
   function ligneEcurie(h, c, icones) {
     var plusieurs = c.clubs && c.clubs.length > 1;
     return h("div", { className: "hv2-ligne" },
@@ -243,14 +244,14 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         onClick: plusieurs ? function () { var i = c.clubs.indexOf(c.club); c.choisir(c.clubs[(i + 1) % c.clubs.length]); } : undefined },
         SVG_ECURIE(h), c.club || "", plusieurs ? h("i", null, "\u21C4") : null),
       h("div", { className: "hg-icos" }, (icones || []).filter(Boolean).map(function (x, k) {
-        return h("button", { key: k, type: "button", className: "hv2-loupe" + (x.on ? " on" : ""), "aria-label": x.lab, "aria-expanded": x.on === undefined ? undefined : !!x.on, onClick: x.clic }, x.svg(h));
+        return h("button", { key: k, type: "button", className: "hv2-loupe" + (x.on ? " on" : ""), "aria-label": x.lab, "aria-expanded": x.on === undefined ? undefined : !!x.on, onClick: x.clic }, x.svg(h), x.point ? h("i", { className: "hg-point", "aria-hidden": "true" }) : null);
       })));
   }
   function tuiles(h, liste, val, set) {
     return h("div", { className: "hv2-choix" }, h("div", { className: "hv2-choix-rang" }, liste.slice(0, 4).map(function (t) {
       var on = val === t.k;
       return h("button", { key: t.k, type: "button", className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, disabled: !t.n && t.k !== "tous", onClick: function () { set(on ? "tous" : t.k); } },
-        h("b", null, t.b), h("span", null, t.s));
+        h("b", { style: String(t.b).length > 8 ? { fontSize: 14.5, letterSpacing: "-.01em" } : null }, t.b), h("span", null, t.s));
     })));
   }
   function champCheval(h, d, val, set, fermer) {
@@ -287,17 +288,13 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var prochain = r.so.prochains[0];
       var cases = [
         { b: "Registre", s: r.complets + " sur 7", on: function () { ouvrir("registre"); } },
-        { b: "Soins", s: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "À jour" : "Aucun noté"), alerte: nRet > 0, on: function () { ouvrir("sante-club"); } },
+        { b: "Soins", s: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? (nRet + " en retard") : ((d.soins || []).length ? "À jour" : "Aucun noté")), alerte: nRet > 0 || r.so.aConfirmer.length > 0, on: function () { ouvrir(r.so.aConfirmer.length ? "soins-a-confirmer" : "sante-club"); } },
         { b: "Camion", s: "Bientôt" },
         { b: "Compta", s: "Bientôt" }
       ];
       corps = h("div", null,
-        h("div", { className: "hv2-ligne" },
-          (r.so.aConfirmer.length
-            ? h("button", { type: "button", className: "hv2-mes", onClick: function () { ouvrir("soins-a-confirmer"); } }, SVG_CLOCHE(h), "À confirmer · " + r.so.aConfirmer.length + (nRet ? " · " + nRet + " en retard" : ""))
-            : h("button", { type: "button", className: "hv2-mes", onClick: function () { ouvrir("sante-club"); } }, SVG_CLOCHE(h), nRet ? ("Mes alertes · " + nRet) : "Aucune alerte")),
-          h("span", null)),
-        pilsClubs(h, c),
+        ligneEcurie(h, c, [{ svg: SVG_CLOCHE, lab: r.so.aConfirmer.length ? ("Soins à confirmer : " + r.so.aConfirmer.length) : "Mes alertes", point: r.so.aConfirmer.length > 0 || nRet > 0,
+          clic: function () { ouvrir(r.so.aConfirmer.length ? "soins-a-confirmer" : "sante-club"); } }]),
         h("div", { className: "hv2-choix" },
           h("div", { className: "hv2-choix-tete" }, h("h2", { className: "hv2-h2", style: { margin: 0 } }, "Ce qui t'attend")),
           h("div", { className: "hv2-choix-rang" }, cases.map(function (x) {
@@ -354,14 +351,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var aFaire = parties.filter(function (p) { return !p.ok; }), ajour = parties.filter(function (p) { return p.ok; });
       var vis = filtre === "afaire" ? { a: aFaire, j: [] } : filtre === "ajour" ? { a: [], j: ajour } : { a: aFaire, j: ajour };
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { className: "hv3-pils", role: "tablist" },
-          [["tout", "Les 7 parties"], ["afaire", "À compléter (" + aFaire.length + ")"], ["ajour", "À jour (" + ajour.length + ")"]].map(function (x) {
-            return h("button", { key: x[0], type: "button", className: "hv3-pil" + (filtre === x[0] ? " on" : ""), "aria-pressed": filtre === x[0], onClick: function () { setFiltre(x[0]); } }, x[1]);
-          })),
+        ligneEcurie(h, c, [d.peutGerer ? { svg: SVG_IMPRIMER, lab: "Imprimer le registre", clic: function () { ouvrir("registre-imprimer"); } } : null]),
+        tuiles(h, [{ k: "tous", b: "7 parties", s: "Tout voir", n: 7 }, { k: "afaire", b: "À faire", s: String(aFaire.length), n: aFaire.length }, { k: "ajour", b: "À jour", s: String(ajour.length), n: ajour.length },
+          { k: "impr", b: "Imprimer", s: "PDF", n: d.peutGerer ? 1 : 0 }], filtre === "tout" ? "tous" : filtre, function (v) { if (v === "impr") ouvrir("registre-imprimer"); else setFiltre(v === "tous" ? "tout" : v); }),
         vis.a.length ? h("div", null, h("h2", { className: "hv3-h2" }, "À compléter"), h("div", { className: "hv3-cartes" }, vis.a.map(function (p) { return carte(h, { cle: p.cle, photo: p.photo, titre: p.titre, sous: p.sous, pill: p.pill, qui: p.qui, etat: p.etat, alerte: p.alerte, onClick: p.on }); }))) : null,
         vis.j.length ? h("div", null, h("h2", { className: "hv3-h2" }, "À jour"), h("div", { className: "hv3-cartes" }, vis.j.map(function (p) { return carte(h, { cle: p.cle, photo: p.photo, titre: p.titre, sous: p.sous, pill: p.pill, qui: p.qui, etat: p.etat, onClick: p.on }); }))) : null,
-        d.peutGerer ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir("registre-imprimer"); } }, "Imprimer le registre") : null,
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
@@ -458,9 +452,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     else {
       var vets = (d.vetos || []).map(function (p) { return [p.nom, p.structure, p.tel].filter(Boolean).join(" · "); }).filter(Boolean);
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { className: "hg-encart" }, h("b", null, "Pourquoi c'est important"),
-          "La personne qui s'occupe du lieu où vivent les chevaux doit se déclarer à l'IFCE. Ces informations ouvrent ton registre d'élevage."),
+        ligneEcurie(h, c, []),
         h("h2", { className: "hv3-h2" }, "Le détenteur"),
         h("div", { className: "hg-f" }, CHAMPS_I.map(function (x) { return champ(x); })),
         h("h2", { className: "hv3-h2" }, "Les vétérinaires"),
@@ -472,6 +464,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         })),
         h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrer }, envoi ? "Enregistrement…" : "Enregistrer"),
         msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        h("div", { className: "hg-sous" }, "La personne qui s'occupe du lieu où vivent les chevaux doit se déclarer à l'IFCE. Ces informations ouvrent ton registre d'élevage."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
@@ -564,16 +557,13 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var nAF = lignes.filter(function (l) { return !l.sorti && l.manque.length; }).length;
       var nOK = lignes.filter(function (l) { return !l.sorti && !l.manque.length; }).length;
       var nS = lignes.filter(function (l) { return l.sorti; }).length;
-      var vis = lignes.filter(function (l) { return filtre === "sortis" ? l.sorti : filtre === "ajour" ? (!l.sorti && !l.manque.length) : (!l.sorti && l.manque.length); });
+      var vis = lignes.filter(function (l) { return filtre === "tous" ? !l.sorti : filtre === "sortis" ? l.sorti : filtre === "ajour" ? (!l.sorti && !l.manque.length) : (!l.sorti && l.manque.length); });
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { className: "hv3-pils", role: "tablist" },
-          [["afaire", "À compléter (" + nAF + ")"], ["ajour", "À jour (" + nOK + ")"], ["sortis", "Sortis (" + nS + ")"]].map(function (x) {
-            return h("button", { key: x[0], type: "button", className: "hv3-pil" + (filtre === x[0] ? " on" : ""), "aria-pressed": filtre === x[0], onClick: function () { setFiltre(x[0]); setOuvert(null); } }, x[1]);
-          })),
-        h("div", { className: "hg-aide", style: { marginTop: 4 } }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
+        ligneEcurie(h, c, []),
+        tuiles(h, [{ k: "tous", b: "Présents", s: String(nAF + nOK), n: nAF + nOK }, { k: "afaire", b: "À faire", s: String(nAF), n: nAF }, { k: "ajour", b: "À jour", s: String(nOK), n: nOK }, { k: "sortis", b: "Sortis", s: String(nS), n: nS }],
+          filtre, function (v) { setFiltre(v); setOuvert(null); }),
         msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
-        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (l) {
+        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 22 } }, vis.map(function (l) {
           var ph = l.ch.photo_url ? { img: l.ch.photo_url, pos: "50% 35%" } : PHOTOS.chevaux;
           var sire = sireReg(d, l.ch);
           return h("div", { key: l.ch.id },
@@ -584,6 +574,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               alerte: !l.sorti && l.manque.length > 0, onClick: function () { ouvrirCheval(l.ch); } }),
             ouvert === l.ch.id ? formulaire(l.ch) : null);
         })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
+        h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
@@ -686,8 +677,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     else if (!d.peutGerer) corps = h("div", { className: "hg-vide" }, "Seule la personne qui gère l'écurie peut confirmer les soins.");
     else if (!liste.length) corps = h("div", { className: "hg-vide" }, "Aucun soin à confirmer. Tout est vérifié.");
     else corps = h("div", null,
-      pilsClubs(h, c),
-      h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Ces soins ont été ajoutés par des cavaliers. Ils comptent déjà partout ; confirme-les après avoir vérifié avec le propriétaire. Leur auteur reste noté."),
+      ligneEcurie(h, c, []),
       h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, liste.map(function (s) {
         var ch = (d.chevaux || []).filter(function (x) { return x.id === s.cheval_id; })[0] || {};
         var ph = ch.photo_url ? { img: ch.photo_url, pos: "50% 35%" } : PHOTOS.soins;
@@ -699,6 +689,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, onClick: function () { agir(s, true); } }, "Confirmer")),
           msgs[s.id] ? h("div", { className: "hg-ok" }, msgs[s.id]) : null);
       })),
+      h("div", { className: "hg-sous" }, "Ces soins ont été ajoutés par des cavaliers. Ils comptent déjà partout ; confirme-les après avoir vérifié avec le propriétaire. Leur auteur reste noté."),
       LEGAL(h));
     return h("div", { className: RACINE, style: FILTRE },
       hero(h, { photo: PHOTOS.soins, titre: "À confirmer", sous: "Les soins ajoutés par les cavaliers.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
@@ -726,6 +717,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var c = useClub();
     var _rg = React.useState(0); var rechargeG = _rg[0], setRechargeG = _rg[1];
     var _og = React.useState(false); var groupeOuvert = _og[0], setGroupeOuvert = _og[1];
+    var _rc = React.useState(false); var rechCh = _rc[0], setRechCh = _rc[1];
     var _af = React.useState(false); var aRelire = _af[0], setARelire = _af[1];   /* on relit la liste en refermant le formulaire, pour ne pas effacer son message */
     var d = useDonneesEcurie(c.club, rechargeG);
     var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
@@ -781,18 +773,15 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             options.map(function (o) { return h("option", { key: o[0], value: o[0] }, o[1]); })));
       }
       var chevauxOpt = [["tous", "Tous les chevaux"]].concat((d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }).map(function (x) { return [x.id, x.nom || "?"]; }));
+      var nTy = function (t) { return items.filter(function (it) { return (fCh === "tous" || it.ch === fCh) && (t === "tous" || (t === "_ordo" ? it.docs.length > 0 : it.type === t)); }).length; };
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
-          selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
-          selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
-        d.peutGerer ? h("button", { type: "button", className: "hg-btn", onClick: function () { if (groupeOuvert && aRelire) { setARelire(false); setRechargeG(function (n) { return n + 1; }); } setGroupeOuvert(!groupeOuvert); } }, groupeOuvert ? "Fermer" : "+ Un soin pour plusieurs chevaux") : null,
-        (d.peutGerer && groupeOuvert) ? h(SoinGroupe, { donnees: d, onFait: function () { setARelire(true); } }) : null,
-        h("div", { className: "hv3-pils", role: "tablist" },
-          [["tous", "Tout"], ["_ordo", "Avec ordonnance"]].concat(typesPres.map(function (k) { return [k, TYPES[k] || k]; })).map(function (x) {
-            return h("button", { key: x[0], type: "button", className: "hv3-pil" + (fTy === x[0] ? " on" : ""), "aria-pressed": fTy === x[0], onClick: function () { setFTy(x[0]); } }, x[1]);
-          })),
-        h("div", { className: "hg-aide", style: { marginTop: 6 } }, vis.length + " élément" + (vis.length > 1 ? "s" : "") + ". Les ordonnances et factures se gardent 5 ans avec le registre."),
+        ligneEcurie(h, c, [
+          { svg: SVG_LOUPE, lab: "Chercher un cheval", on: rechCh, clic: function () { if (rechCh) setFCh("tous"); setRechCh(!rechCh); } },
+          d.peutGerer ? { svg: SVG_PLUS, lab: "Un soin pour plusieurs chevaux", on: groupeOuvert, clic: function () { if (groupeOuvert && aRelire) { setARelire(false); setRechargeG(function (n) { return n + 1; }); } setGroupeOuvert(!groupeOuvert); } } : null]),
+        rechCh ? champCheval(h, d, fCh, setFCh, function () { setRechCh(false); }) : null,
+        (d.peutGerer && groupeOuvert) ? h("div", null, h("h2", { className: "hv3-h2" }, "Un soin pour plusieurs chevaux"), h(SoinGroupe, { donnees: d, onFait: function () { setARelire(true); } })) : null,
+        tuiles(h, [{ k: "tous", b: "Tout", s: String(nTy("tous")), n: 1 }, { k: "vaccin", b: "Vaccins", s: String(nTy("vaccin")), n: nTy("vaccin") }, { k: "vermifuge", b: "Vermifuges", s: String(nTy("vermifuge")), n: nTy("vermifuge") }, { k: "_ordo", b: "Ordonnances", s: String(nTy("_ordo")), n: nTy("_ordo") }],
+          fTy, setFTy),
         errDoc ? h("div", { className: "hg-err" }, errDoc) : null,
         groupes.length ? groupes.map(function (g) {
           return h("div", { key: g.m },
@@ -812,6 +801,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
                 })) : null);
             })));
         }) : h("div", { className: "hg-vide" }, "Aucun soin pour ce choix."),
+        h("div", { className: "hg-sous" }, "Les ordonnances et factures se gardent 5 ans avec le registre."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
@@ -1188,15 +1178,15 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     else if (d.docRegAbsent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie du registre arrive très vite : elle n'est pas encore activée.");
     else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie du registre.");
     else corps = h("div", { className: "hg-f" },
-      pilsClubs(h, c),
+      ligneEcurie(h, c, []),
       h("h2", { className: "hv3-h2" }, "Le plan"),
-      h("div", { className: "hg-aide" }, "Tous les bâtiments et toutes les pâtures où vivent les chevaux, même de temps en temps. Un plan dessiné, un plan du cadastre ou une vue satellite conviennent. Photo ou PDF."),
       h(DocsRegistre, { donnees: d, club: c.club, type: "plan", titreDefaut: "Plan des lieux", photo: PHOTOS.plan, bouton: "+ Ajouter un plan", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
       h("h2", { className: "hv3-h2" }, "La description"),
       h("label", { htmlFor: "hgp-desc" }, "Décris le lieu"),
       h("textarea", { id: "hgp-desc", value: texte || "", placeholder: "ex. Écurie de 20 boxes, 2 stabulations, 6 paddocks, 4 ha de pâtures, carrière, manège, fumière…", onChange: function (e) { setTexte(e.target.value); setMsg(""); } }),
       h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrer }, envoi ? "Enregistrement…" : "Enregistrer la description"),
       msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+      h("div", { className: "hg-sous" }, "Le plan montre tous les bâtiments et toutes les pâtures où vivent les chevaux, même de temps en temps. Un plan dessiné, un plan du cadastre ou une vue satellite conviennent."),
       LEGAL(h));
     return h("div", { className: RACINE, style: FILTRE },
       hero(h, { photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Partie II de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
@@ -1275,13 +1265,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     else if (d.ctlAbsent || d.docRegAbsent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie du registre arrive très vite : elle n'est pas encore activée.");
     else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie du registre.");
     else corps = h("div", null,
-      pilsClubs(h, c),
-      h("div", { className: "hg-encart" }, h("b", null, "Lors d'une visite"),
-        "Cette partie est remplie et signée par l'agent de la DDPP ou de l'IFCE, ou visée par ton vétérinaire. Imprime le registre : les pages à signer, numérotées, sont à la fin. Ensuite, note la visite ici et ajoute la photo de la page signée."),
-      h("button", { type: "button", className: "hg-btn", onClick: function () { try { window.__gestionClub = c.club; } catch (e) { } setEcran("registre-imprimer"); } }, "Imprimer le registre"),
+      ligneEcurie(h, c, [
+        { svg: SVG_IMPRIMER, lab: "Imprimer le registre", clic: function () { try { window.__gestionClub = c.club; } catch (e) { } setEcran("registre-imprimer"); } },
+        { svg: SVG_PLUS, lab: "Noter une visite", on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
+      ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, "Nouvelle visite"), formulaire(null)) : null,
       h("h2", { className: "hv3-h2" }, "Les visites"),
-      h("button", { type: "button", className: "hg-btn", style: { marginTop: 4, background: "transparent", color: "#C9A66B" }, onClick: function () { ouvrirLigne(null); } }, ouvert === "nouveau" ? "Fermer" : "+ Noter une visite"),
-      ouvert === "nouveau" ? formulaire(null) : null,
       msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
       (d.controles || []).length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, d.controles.map(function (l) {
         return h("div", { key: l.id },
@@ -1290,6 +1278,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })) : h("div", { className: "hg-vide" }, "Aucune visite notée pour l'instant."),
       h("h2", { className: "hv3-h2" }, "Pages signées"),
       h(DocsRegistre, { donnees: d, club: c.club, type: "controle", titreDefaut: "Page de contrôle signée", photo: PHOTOS.controles, bouton: "+ Ajouter une page signée", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
+      h("div", { className: "hg-sous" }, "Cette partie est remplie et signée par l'agent de la DDPP ou de l'IFCE, ou visée par ton vétérinaire. Imprime le registre : les pages à signer, numérotées, sont à la fin. Note ensuite la visite ici et ajoute la photo de la page signée."),
       LEGAL(h));
     return h("div", { className: RACINE, style: FILTRE },
       hero(h, { photo: PHOTOS.controles, titre: "Les contrôles", sous: "Partie VII de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
@@ -1409,14 +1398,12 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             h("div", { className: "hgi-pied" }, "Partie VII — page " + (i + 1) + " / " + NB_PAGES_VII));
         }));
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { className: "hv3-pils", role: "tablist" }, [["tout", "Tout le registre"]].concat(annees.map(function (a) { return [a, a]; })).map(function (x) {
-          return h("button", { key: x[0], type: "button", className: "hv3-pil" + (annee === x[0] ? " on" : ""), "aria-pressed": annee === x[0], onClick: function () { setAnnee(x[0]); } }, x[1]);
-        })),
-        h("div", { className: "hg-aide", style: { marginTop: 6 } }, "Registre tenu sur l'appli : imprime-le chaque trimestre, après chaque visite du vétérinaire et si un contrôleur te le demande. « Imprimer » te propose aussi d'enregistrer un PDF."),
+        ligneEcurie(h, c, [{ svg: SVG_IMPRIMER, lab: "Imprimer ou enregistrer en PDF", clic: imprimer }]),
+        tuiles(h, [{ k: "tous", b: "Tout", s: "le registre", n: 1 }].concat(annees.slice(0, 3).map(function (a) { return { k: a, b: a, s: "Parties V et VI", n: 1 }; })), annee === "tout" ? "tous" : annee, function (v) { setAnnee(v === "tous" ? "tout" : v); }),
         h("button", { type: "button", className: "hg-btn", onClick: imprimer }, "Imprimer ou enregistrer en PDF"),
         msg ? h("div", { className: "hg-err" }, msg) : null,
         doc,
+        h("div", { className: "hg-sous" }, "Registre tenu sur l'appli : imprime-le chaque trimestre, après chaque visite du vétérinaire et si un contrôleur te le demande. « Imprimer » te propose aussi d'enregistrer un PDF."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
