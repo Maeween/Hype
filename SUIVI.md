@@ -443,6 +443,27 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   plusieurs chevaux, hype-ecran-gestion.js ?v=8.
   ⚠️ Traductions des nouveaux textes du registre : à faire quand Blandine
   aura relu le français.
+· 05/11 20 h 46 Blandine « Ok continue » → PARTIES II, VII ET REGISTRE
+  IMPRIMABLE CODÉS, NON PUBLIÉS, SQL NON PASSÉ
+  (sql-05-11-registre-plan-controles.sql : colonne description_lieu dans
+  ecurie_registre ; tables registre_documents (plan, pages de contrôle
+  signées) et registre_controles (visites) ; compartiment privé « registre »,
+  fichiers rangés sous l'id de leur ligne, règle via
+  hype_club_du_doc_registre ; droits = modératrices + gestionnaires).
+  Guide IFCE vérifié : II = plan de TOUS les bâtiments et pâtures (plan de
+  masse, cadastre ou vue satellite) + description ; VII = remplie par la
+  DDPP / l'IFCE ou visée par le vétérinaire, obligatoirement paginée ;
+  registre sur informatique = l'imprimer chaque trimestre, à chaque visite
+  du vétérinaire et à la demande des agents.
+  Pages : #registre-plan (plan photo/PDF + description), #registre-controles
+  (visites notées, pages signées, bouton imprimer), #registre-imprimer
+  (aperçu papier des 7 parties, filtre par année pour V et VI, bouton
+  « Imprimer ou enregistrer en PDF », 2 pages VII numérotées à faire signer,
+  numéros de page en bas quand le navigateur le permet). Bouton « Imprimer le
+  registre » en bas de la page Le registre. Les 7 parties comptent dans
+  « x sur 7 ». hype-ecran-gestion.js ?v=9. Piège trouvé : index.html a déjà
+  une règle d'impression (« body * » masqué sauf #zone-impression) → la zone
+  du registre est rendue visible à part. Banc : PDF A4 de 7 pages OK.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
