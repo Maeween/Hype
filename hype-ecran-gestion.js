@@ -52,6 +52,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         var sv = document.createElement("style"); sv.id = CSS_ID + "-video"; sv.textContent = GESTION_CSS_VIDEO; document.head.appendChild(sv);
       }
       if (!document.getElementById(CSS_ID)) { var st = document.createElement("style"); st.id = CSS_ID; st.textContent = CSS_PROPRE; document.head.appendChild(st); }
+      if (!document.getElementById(CSS_ID + "-ligne")) { var sl = document.createElement("style"); sl.id = CSS_ID + "-ligne"; sl.textContent = CSS_LIGNE; document.head.appendChild(sl); }
     } catch (e) { }
   }
 
@@ -227,6 +228,37 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     }, []);
     function choisir(n) { try { window.__gestionClub = n; window.__santeClub = { nom: n }; } catch (e) { } setClub(n); }
     return { club: club, clubs: clubs, choisir: choisir };
+  }
+  /* 05/11 21 h 38 (Blandine) : « un héros avec la ligne courbe comme sur Vidéothèque », pas « un cumul de choses
+     entassées ». Sous le héros, même trame que la Vidéothèque : une ligne d'accès (l'écurie à gauche, les
+     actions en icônes à droite, filet champagne dessous), puis une rangée de 4 cases, puis les cartes par mois. */
+  var SVG_ECURIE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M3.5 10.5 12 4l8.5 6.5" }), h("path", { d: "M5.5 9.5v10h13v-10" }), h("path", { d: "M10 19.5v-5h4v5" })); };
+  var SVG_LOUPE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" })); };
+  var SVG_PLUS = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" })); };
+  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}";
+  function ligneEcurie(h, c, icones) {
+    var plusieurs = c.clubs && c.clubs.length > 1;
+    return h("div", { className: "hv2-ligne" },
+      h("button", { type: "button", className: "hv2-mes", "aria-label": plusieurs ? "Changer d'écurie" : undefined,
+        onClick: plusieurs ? function () { var i = c.clubs.indexOf(c.club); c.choisir(c.clubs[(i + 1) % c.clubs.length]); } : undefined },
+        SVG_ECURIE(h), c.club || "", plusieurs ? h("i", null, "\u21C4") : null),
+      h("div", { className: "hg-icos" }, (icones || []).filter(Boolean).map(function (x, k) {
+        return h("button", { key: k, type: "button", className: "hv2-loupe" + (x.on ? " on" : ""), "aria-label": x.lab, "aria-expanded": x.on === undefined ? undefined : !!x.on, onClick: x.clic }, x.svg(h));
+      })));
+  }
+  function tuiles(h, liste, val, set) {
+    return h("div", { className: "hv2-choix" }, h("div", { className: "hv2-choix-rang" }, liste.slice(0, 4).map(function (t) {
+      var on = val === t.k;
+      return h("button", { key: t.k, type: "button", className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, disabled: !t.n && t.k !== "tous", onClick: function () { set(on ? "tous" : t.k); } },
+        h("b", null, t.b), h("span", null, t.s));
+    })));
+  }
+  function champCheval(h, d, val, set, fermer) {
+    var tries = (d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+    return h("div", { className: "hv2-rech", role: "search" }, SVG_LOUPE(h),
+      h("select", { value: val, "aria-label": "Choisir un cheval", onChange: function (e) { set(e.target.value); }, style: { flex: 1, minWidth: 0, background: "transparent", border: "none", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 16, outline: "none" } },
+        [h("option", { key: "tous", value: "tous" }, "Tous les chevaux")].concat(tries.map(function (x) { return h("option", { key: x.id, value: x.id }, x.nom || "?"); }))),
+      h("button", { type: "button", className: "hv2-x", "aria-label": "Fermer", onClick: function () { set("tous"); fermer(); } }, "\u00D7"));
   }
   function pilsClubs(h, c) {
     if (!c.clubs || c.clubs.length < 2) return null;
@@ -810,6 +842,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
     var _an = React.useState("tous"); var fAn = _an[0], setFAn = _an[1];
     var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];      /* id de la ligne ouverte, ou "nouveau" */
+    var _rc = React.useState(false); var rechCh = _rc[0], setRechCh = _rc[1];
     var _v = React.useState({}); var val = _v[0], setVal = _v[1];
     var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
@@ -909,26 +942,43 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             options.map(function (o) { return h("option", { key: o[0], value: o[0] }, o[1]); })));
       }
       var chevauxOpt = [["tous", "Tous les chevaux"]].concat((d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }).map(function (x) { return [x.id, x.nom || "?"]; }));
+      var auj = isoAuj(), an = auj.slice(0, 4), anP = String(+an - 1);
+      var parCh = liste.filter(function (l) { return fCh === "tous" || l.cheval_id === fCh; });
+      var estEnCours = function (l) { return !l.date_retour || l.date_retour >= auj; };
+      var cases = [
+        { k: "tous", b: "Toutes", s: parCh.length + " sortie" + (parCh.length > 1 ? "s" : ""), n: parCh.length },
+        { k: "encours", b: "En cours", s: String(parCh.filter(estEnCours).length), n: parCh.filter(estEnCours).length },
+        { k: an, b: an, s: String(parCh.filter(function (l) { return String(l.date_sortie).slice(0, 4) === an; }).length), n: parCh.filter(function (l) { return String(l.date_sortie).slice(0, 4) === an; }).length },
+        { k: anP, b: anP, s: String(parCh.filter(function (l) { return String(l.date_sortie).slice(0, 4) === anP; }).length), n: parCh.filter(function (l) { return String(l.date_sortie).slice(0, 4) === anP; }).length }
+      ];
+      var vis2 = parCh.filter(function (l) { return fAn === "tous" || (fAn === "encours" ? estEnCours(l) : String(l.date_sortie || "").slice(0, 4) === fAn); })
+        .sort(function (a, b) { return String(b.date_sortie || "").localeCompare(String(a.date_sortie || "")); });
+      var groupesMv = [], cleMv = null;
+      vis2.forEach(function (l) { var m = String(l.date_sortie || "").slice(0, 7); if (m !== cleMv) { cleMv = m; groupesMv.push({ m: m, l: [] }); } groupesMv[groupesMv.length - 1].l.push(l); });
+      var titreMoisMv = function (m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; };
+      var carteMv = function (l) {
+        var dates = dateCourte(l.date_sortie) + (l.date_retour && l.date_retour !== l.date_sortie ? " → " + dateCourte(l.date_retour) : "");
+        var quoi = [l.motif, l.destination].filter(Boolean).join(" · ");
+        return h("div", { key: l.id },
+          carte(h, { cle: l.id, photo: photoCheval(d, l.cheval_id), titre: nomDe[l.cheval_id] || "Cheval",
+            sous: quoi || "Motif et destination à compléter", pill: dates,
+            qui: l.source === "concours" ? "Via l'agenda" : (l.camion === true ? "Camion" : ""),
+            etat: !l.date_retour ? "Pas encore rentré" : (quoi ? "" : "À compléter"), alerte: !l.date_retour || !quoi,
+            onClick: function () { ouvrirLigne(l); } }),
+          ouvert === l.id ? formulaire(l) : null);
+      };
       corps = h("div", null,
-        pilsClubs(h, c),
-        h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
-          selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
-          selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
-        h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrirLigne(null); } }, ouvert === "nouveau" ? "Fermer" : "+ Ajouter une sortie"),
-        ouvert === "nouveau" ? formulaire(null) : null,
+        ligneEcurie(h, c, [
+          { svg: SVG_LOUPE, lab: "Chercher un cheval", on: rechCh, clic: function () { if (rechCh) setFCh("tous"); setRechCh(!rechCh); } },
+          { svg: SVG_PLUS, lab: "Ajouter une sortie", on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
+        rechCh ? champCheval(h, d, fCh, function (v) { setFCh(v); setOuvert(null); }, function () { setRechCh(false); }) : null,
+        ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, "Nouvelle sortie"), formulaire(null)) : null,
         msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
-        h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
-        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (l) {
-          var dates = dateCourte(l.date_sortie) + (l.date_retour && l.date_retour !== l.date_sortie ? " → " + dateCourte(l.date_retour) : "");
-          var quoi = [l.motif, l.destination].filter(Boolean).join(" · ");
-          return h("div", { key: l.id },
-            carte(h, { cle: l.id, photo: photoCheval(d, l.cheval_id), titre: nomDe[l.cheval_id] || "Cheval",
-              sous: quoi || "Motif et destination à compléter", pill: dates,
-              qui: l.source === "concours" ? "Via l'agenda" : (l.camion === true ? "Camion" : ""),
-              etat: !l.date_retour ? "Pas encore rentré" : (quoi ? "" : "À compléter"), alerte: !l.date_retour || !quoi,
-              onClick: function () { ouvrirLigne(l); } }),
-            ouvert === l.id ? formulaire(l) : null);
-        })) : h("div", { className: "hg-vide" }, "Aucune sortie pour ce choix."),
+        tuiles(h, cases, fAn, function (v) { setFAn(v); setOuvert(null); }),
+        groupesMv.length ? groupesMv.map(function (g) {
+          return h("div", { key: g.m }, h("h2", { className: "hv3-h2" }, titreMoisMv(g.m)), h("div", { className: "hv3-cartes" }, g.l.map(carteMv)));
+        }) : h("div", { className: "hg-vide" }, liste.length ? "Aucune sortie pour ce choix." : "Aucune sortie notée. Touche + pour la première."),
+        h("div", { className: "hg-sous" }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
