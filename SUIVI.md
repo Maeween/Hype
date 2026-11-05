@@ -17629,3 +17629,11 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - NON VU À L'ÉCRAN : rien n'a été essayé avec la vraie base ni un vrai envoi Mux depuis l'appli ; copie de la vignette (si elle échoue, la vidéo est ajoutée sans image) ; textes en français seulement (traductions après relecture).
 - OUVERT : limite de vidéos par compte pour les vidéos d'équipe (voir la liste en tête, section 1).
 - Fichiers : hype-ecran-team-medias.js (NOUVEAU, v1), hype-ecran-team.js (v5), index.html (build 20261105-2140), SUIVI.md.
+
+## 05/11/2026 22h15 — PUBLICATION build 20261105-2215 — Médias : partages Théorie, « Mettre en public », épingles Hey Baby partagées
+- THÉORIE : bouton « + Partager » (membres du groupe). On colle une adresse → carte d'aperçu (titre, image, résumé, site) lue par la nouvelle fonction netlify/functions/apercu-lien.js (compte connecté obligatoire, adresses internes refusées, 6 s / 600 Ko max, 60 aperçus par jour et par compte ; carte de secours avec le nom du site si la page ne répond pas). Les articles Hype (2hype.fr/#a=N) s'affichent avec leur vraie tuile et s'ouvrent dans l'appli. Types : Article / Vidéo / Ressource, « Un mot ? » facultatif.
+- VIDÉOS : pastille « Équipe » / « Public » sur chaque vidéo. Seules la cavalière de la vidéo ou la personne qui l'a postée peuvent la mettre en public ; la coach peut la remettre en équipe. Confirmation avant changement (fonction team_video_publique).
+- ÉPINGLES HEY BABY : sous « Visible par mon écurie », « Partager avec… » une Team (puce) ou n'importe quel compte Hype (recherche par pseudo). Liste des partages avec « Retirer ». Notification « a partagé un conseil Hey Baby avec l'équipe / avec toi » : l'équipe ouvre Médias › Épingles HB, une personne ouvre la nouvelle page « Un conseil pour toi » (lecture seule).
+- Fichiers : netlify/functions/apercu-lien.js (NOUVEAU), hype-ecran-team-medias.js (v2), index.html (build 20261105-2215, Médias en ?v=2, route epingle-partagee), SUIVI.md.
+- VÉRIFIÉ : node --check des fichiers et du bloc de l'index ; rendu sur banc d'essai iPhone 390 (Théorie + aperçus, pastilles et confirmation, page conseil partagé).
+- NON VU À L'ÉCRAN : aperçus de liens réels (testés avec une réponse simulée), notifications réelles, partage d'épingle avec la vraie base.

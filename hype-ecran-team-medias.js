@@ -10,7 +10,7 @@
    Étape 2 : lecture seule (l'ajout de vidéo arrive à l'étape 4, le partage Théorie à l'étape 5, les épingles à l'étape 6).
    Textes en français d'abord : traductions après relecture (règle du 02/11). */
 (function () {
-var TM_VERSION = 1;
+var TM_VERSION = 2;
 
 function EcranTeamMedias() {
   var h = React.createElement;
@@ -39,6 +39,19 @@ function EcranTeamMedias() {
   var _re = React.useState(false); var reserve = _re[0], setReserve = _re[1];
   var _oc = React.useState(""); var occupe = _oc[0], setOccupe = _oc[1];
   var _rv = React.useState(0); var rev = _rv[0], setRev = _rv[1];            /* recharge après un ajout */
+  var _cp = React.useState(""); var changePub = _cp[0], setChangePub = _cp[1];
+  var _qp = React.useState(null); var questionPub = _qp[0], setQuestionPub = _qp[1];   /* vidéo dont on confirme le passage public / équipe */
+  function demanderPublique(v) { setQuestionPub(v); }
+  async function confirmerPublique() {
+    var v = questionPub; if (!v) return;
+    setQuestionPub(null); setChangePub(v.id);
+    try {
+      var r = await supa.rpc("team_video_publique", { p_id: v.id, p_publique: !v.publique });
+      if (r && !r.error && r.data === true) setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { publique: !v.publique }) : x; }); });
+      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+    } catch (e) { setErreur(String((e && e.message) || e)); }
+    setChangePub("");
+  }
   var _ec = React.useState([]); var chevauxEquipe = _ec[0], setChevauxEquipe = _ec[1];
   var _aj = React.useState(null); var ajout = _aj[0], setAjout = _aj[1];       /* formulaire « Ajouter une vidéo » ouvert : { cav: [...], ch: [...] } */
 
@@ -201,8 +214,27 @@ function EcranTeamMedias() {
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
     var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video");
     var meta = [dateCourte(v.date_video || v.cree_le), v.description || v.concours || ""].filter(Boolean).join(" · ");
-    return h("button", { key: cle, type: "button", onClick: function () { lire(v); }, disabled: occupe === v.id,
-      style: { gridColumn: etendue ? "span " + etendue : "auto", flex: enGrille ? "initial" : "0 0 clamp(148px, 21vw, 210px)", width: enGrille ? "100%" : "auto", background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0 } },
+    /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
+       sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
+    var moiId = moi && moi.id;
+    var estModo = !!((typeof estModerateurHype === "function") && moi && estModerateurHype(moi));
+    var peutPublier = !!moiId && (v.auteur_id === moiId || (v.cavaliers || []).indexOf(moiId) !== -1 || estModo);
+    var peutPrivatiser = peutPublier || !!(moiId && groupe && groupe.cree_par === moiId);
+    var montrerPastille = v.publique ? true : peutPublier;
+    var pastille = !montrerPastille ? null : h("button", { type: "button", disabled: changePub === v.id || !(v.publique ? peutPrivatiser : peutPublier),
+      onClick: function (e) { e.stopPropagation(); demanderPublique(v); },
+      "aria-label": v.publique ? T("Vidéo publique", "Public video") : T("Mettre en public", "Make public"),
+      style: { position: "absolute", top: 6, insetInlineStart: 6, zIndex: 2, display: "flex", alignItems: "center", gap: 5, minHeight: 26, padding: "0 9px", borderRadius: 999,
+        border: "1px solid " + (v.publique ? CH2 : "rgba(243,238,228,0.25)"), background: "rgba(7,10,8,0.72)", color: v.publique ? CH : IV2, fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".04em",
+        cursor: (v.publique ? peutPrivatiser : peutPublier) ? "pointer" : "default" } },
+      h("svg", { width: 10, height: 10, viewBox: "0 0 10 10", "aria-hidden": "true" },
+        v.publique ? [h("circle", { key: "c", cx: 5, cy: 5, r: 4, fill: "none", stroke: CH, strokeWidth: 0.9 }), h("path", { key: "p", d: "M1 5h8M5 1c1.6 1.4 1.6 6.6 0 8M5 1c-1.6 1.4-1.6 6.6 0 8", fill: "none", stroke: CH, strokeWidth: 0.9 })]
+          : [h("rect", { key: "r", x: 1.6, y: 4.4, width: 6.8, height: 4.6, rx: 1, fill: "none", stroke: IV2, strokeWidth: 0.9 }), h("path", { key: "a", d: "M3.2 4.4V3.1a1.8 1.8 0 0 1 3.6 0v1.3", fill: "none", stroke: IV2, strokeWidth: 0.9 })]),
+      changePub === v.id ? "…" : (v.publique ? T("Public", "Public") : T("Équipe", "Team")));
+    return h("div", { key: cle, style: { position: "relative", gridColumn: etendue ? "span " + etendue : "auto", flex: enGrille ? "initial" : "0 0 clamp(148px, 21vw, 210px)", width: enGrille ? "100%" : "auto", minWidth: 0 } },
+      pastille,
+      h("button", { type: "button", onClick: function () { lire(v); }, disabled: occupe === v.id,
+      style: { width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0 } },
       h("div", { style: { position: "relative", aspectRatio: "16 / 10", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(243,238,228,0.08)", background: PAN } },
         src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
         h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
@@ -212,7 +244,7 @@ function EcranTeamMedias() {
               : h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff),
-      meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null);
+      meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null));
   }
   /* « + Ajouter une vidéo » : visible pour le groupe ; l'ajout lui-même arrive à l'étape 4 */
   function tuileAjout(cle, etendue, seuleSurSaLigne, pre) {
@@ -382,11 +414,19 @@ function EcranTeamMedias() {
 
   /* ───────── THÉORIE : partages (lecture seule à cette étape) ───────── */
   var LIB_TYPE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
+  /* article Hype : on ouvre la page d'origine DANS Hype (on ne copie jamais le contenu) ; sinon le lien externe */
+  function articleHypeDe(url) {
+    var u = String(url || "").trim();
+    if (!/^https?:\/\/(www\.)?2hype\.(fr|netlify\.app)\b/i.test(u) && !/^#a=/.test(u)) return null;
+    var m = u.match(/[#?&]a=(\d+)/); if (!m) return null;
+    var liste = []; try { liste = (typeof ARTICLES !== "undefined" && ARTICLES) || []; } catch (e) { liste = []; }
+    var a = liste.filter(function (x) { return String(x.id) === m[1]; })[0];
+    return a ? { id: m[1], art: a } : null;
+  }
   function ouvrirPartage(p) {
-    var u = String(p.url || "");
-    var m = u.match(/[#?&](?:ecran|page)=([a-z0-9-]+)/i) || u.match(/2hype\.(?:fr|netlify\.app)\/(?:[a-z]{2}\/)?#?([a-z0-9-]+)$/i);
-    if (p.type === "article_hype" && m) { setEcran(m[1]); return; }
-    try { window.open(u, "_blank", "noopener"); } catch (e) { }
+    var ah = p.type === "article_hype" ? articleHypeDe(p.url) : null;
+    if (ah) { try { window.__articleOuvert = ah.art.id; } catch (e) { } setEcran(ah.art.ecran || "article-detail"); return; }
+    try { window.open(String(p.url || ""), "_blank", "noopener"); } catch (e) { }
   }
   function cartePartage(p) {
     var qui = profilsParId[p.auteur_id];
@@ -402,8 +442,106 @@ function EcranTeamMedias() {
   }
   function ongletTheorie() {
     if (partages === null) return chargement();
-    if (!partages.length) return vide(T("Aucun partage pour l'instant.", "No shares yet."));
-    return h("div", { style: { marginTop: 10 } }, partages.map(cartePartage));
+    var bouton = estDuGroupe ? h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 16 } },
+      h("button", { type: "button", onClick: ouvrirPartager, style: { minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Partager", "Share"))) : null;
+    if (!partages.length) return h("div", null, bouton, vide(T("Aucun partage pour l'instant. Partage un article, un lien ou une ressource utile à l'équipe.", "No shares yet.")));
+    return h("div", null, bouton, h("div", { style: { marginTop: 6 } }, partages.map(cartePartage)));
+  }
+
+  /* ═════════ « + PARTAGER » (onglet Théorie, 05/11 soir) ═════════
+     On colle une adresse : article Hype (2hype.fr/#a=…) → titre, image, résumé et catégorie lus dans l'appli, on garde
+     l'adresse et la page s'ouvre dans Hype ; lien externe → aperçu lu par le serveur (netlify/functions/apercu-lien.js),
+     carte de secours (nom du site) si le site ne donne rien. Un commentaire facultatif ; le nom de qui partage est gardé. */
+  var _pa = React.useState(false); var partageOuvert = _pa[0], setPartageOuvert = _pa[1];
+  var _pu = React.useState(""); var pUrl = _pu[0], setPUrl = _pu[1];
+  var _pt = React.useState("lien"); var pType = _pt[0], setPType = _pt[1];
+  var _pc = React.useState(""); var pCom = _pc[0], setPCom = _pc[1];
+  var _pv = React.useState(null); var pApercu = _pv[0], setPApercu = _pv[1];      /* { titre, image, resume, categorie, site, secours } */
+  var _pe = React.useState(""); var pEtat = _pe[0], setPEtat = _pe[1];            /* "" | "lecture" | "envoi" | "fini" | message d'erreur */
+  function ouvrirPartager() { setPUrl(""); setPType("lien"); setPCom(""); setPApercu(null); setPEtat(""); setPartageOuvert(true); }
+  function urlPropre(u) { u = String(u || "").trim(); if (u && !/^https?:\/\//i.test(u) && /^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(u)) u = "https://" + u; return u; }
+  function estVideoExterne(u) { return /(youtube\.com|youtu\.be|vimeo\.com|tiktok\.com|instagram\.com\/reel)/i.test(u); }
+  async function lireApercu(brut) {
+    var u = urlPropre(brut);
+    if (!/^https?:\/\/[^\s]+\.[^\s]+/i.test(u)) { setPApercu(null); return; }
+    var ah = articleHypeDe(u);
+    if (ah) {
+      var a = ah.art, img = (typeof a.tuile === "string" && /^(images\/|https?:)/.test(a.tuile)) ? a.tuile : "";
+      setPType("article_hype");
+      setPApercu({ titre: tr(a.titre) || "", image: img, resume: tr(a.extrait) || "", categorie: a.categorie || "", site: "Hype" });
+      return;
+    }
+    setPType(estVideoExterne(u) ? "video" : (pType === "article_hype" ? "lien" : pType));
+    setPEtat("lecture");
+    try {
+      var hd = { "Content-Type": "application/json" };
+      try { var se = await supa.auth.getSession(); var jt = se && se.data && se.data.session && se.data.session.access_token; if (jt) hd.Authorization = "Bearer " + jt; } catch (eS) { }
+      var r = await fetch("/.netlify/functions/apercu-lien", { method: "POST", headers: hd, body: JSON.stringify({ url: u }) });
+      var d = await r.json().catch(function () { return null; });
+      var site = ""; try { site = new URL(u).hostname.replace(/^www\./, ""); } catch (e) { }
+      setPApercu(d && d.ok ? { titre: d.titre || "", image: d.image || "", resume: d.resume || "", site: d.site || site, secours: !!d.secours } : { titre: "", image: "", resume: "", site: site, secours: true });
+    } catch (eA) {
+      var s2 = ""; try { s2 = new URL(u).hostname.replace(/^www\./, ""); } catch (e) { }
+      setPApercu({ titre: "", image: "", resume: "", site: s2, secours: true });
+    }
+    setPEtat("");
+  }
+  React.useEffect(function () {
+    if (!partageOuvert) return;
+    var t = setTimeout(function () { lireApercu(pUrl); }, 500);
+    return function () { clearTimeout(t); };
+  }, [pUrl, partageOuvert]);
+  async function publierPartage() {
+    var u = urlPropre(pUrl);
+    if (!u || !groupe || !moi) return;
+    setPEtat("envoi");
+    var ap = pApercu || {};
+    var r = await supa.from("team_partages").insert({ groupe_id: groupe.id, type: pType, url: u, titre: ap.titre || null, image: ap.image || null, resume: ap.resume || null, categorie: ap.categorie || null, commentaire: pCom.trim() || null, auteur_id: moi.id });
+    if (r && r.error) { setPEtat(T("Le partage n'a pas pu être enregistré : ", "Could not share: ") + (r.error.message || r.error)); return; }
+    setPEtat("fini"); setRev(function (n) { return n + 1; });
+  }
+  var fenetrePartage = null;
+  if (partageOuvert) {
+    var ap = pApercu, envoi = pEtat === "envoi";
+    var pret = !!urlPropre(pUrl) && /^https?:\/\/[^\s]+\.[^\s]+/i.test(urlPropre(pUrl)) && pEtat !== "lecture";
+    var TYPES = [["lien", T("Article", "Article")], ["video", T("Vidéo", "Video")], ["ressource", T("Ressource", "Resource")]];
+    fenetrePartage = h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 9000, background: NOIR, fontFamily: M, color: IV, overflowY: "auto" } },
+      h("div", { style: { maxWidth: 620, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 28px)" } },
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
+          h("div", null,
+            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, (groupe && groupe.nom) || ""),
+            h("div", { style: { fontFamily: SERIF, fontSize: 24, marginTop: 2 } }, T("Partager avec l'équipe", "Share with the team"))),
+          h("button", { type: "button", disabled: envoi, onClick: function () { setPartageOuvert(false); }, "aria-label": T("Fermer", "Close"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IV, fontSize: 15, cursor: "pointer" } }, "\u2715")),
+        h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, margin: "6px 0 10px", transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
+        pEtat === "fini" ? h("div", { style: { textAlign: "center", padding: "30px 0" } },
+            h("div", { style: { fontFamily: SERIF, fontSize: 22 } }, T("Partagé avec l'équipe.", "Shared with the team.")),
+            h("button", { type: "button", onClick: function () { setPartageOuvert(false); }, style: { marginTop: 20, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close")))
+        : h("div", null,
+          h("label", { htmlFor: "tp-url", style: { display: "block", fontSize: 12.5, color: IV3, marginBottom: 6 } }, T("Colle l'adresse de l'article, de la vidéo ou de la page", "Paste the address of the article, video or page")),
+          h("input", { id: "tp-url", type: "url", inputMode: "url", autoCapitalize: "off", autoCorrect: "off", value: pUrl, disabled: envoi, onChange: function (e) { setPUrl(e.target.value); }, placeholder: "https://…",
+            style: { width: "100%", boxSizing: "border-box", minHeight: 46, padding: "0 2px", border: "none", borderBottom: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 16, outline: "none" } }),
+          /* aperçu */
+          pEtat === "lecture" ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 16 } }, T("Lecture de l'aperçu…", "Reading preview…"))
+          : ap ? h("div", { style: { display: "flex", gap: 12, marginTop: 18, padding: 12, borderRadius: 14, border: "1px solid " + CH3 } },
+              h("div", { style: { width: 96, flex: "0 0 96px", aspectRatio: "16 / 11", borderRadius: 10, overflow: "hidden", background: PAN, display: "flex", alignItems: "center", justifyContent: "center", color: CH, fontFamily: SERIF, fontSize: 24 } },
+                ap.image ? h("img", { src: ap.image, alt: "", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } }) : "\u2726"),
+              h("div", { style: { minWidth: 0, flex: 1 } },
+                h("div", { style: { fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, pType === "article_hype" ? (T("Article Hype", "Hype article") + (ap.categorie ? " · " + ap.categorie : "")) : (ap.site || "")),
+                h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, ap.titre || (ap.site ? T("Lien vers ", "Link to ") + ap.site : urlPropre(pUrl))),
+                ap.resume ? h("div", { dir: "auto", style: { fontSize: 11.5, color: IV2, marginTop: 4, lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" } }, ap.resume)
+                  : ap.secours ? h("div", { style: { fontSize: 11, color: IV3, marginTop: 4 } }, T("Ce site ne donne pas d'aperçu : le lien sera partagé tel quel.", "No preview from this site: the link will be shared as is.")) : null))
+          : null,
+          /* type (sauf article Hype, reconnu tout seul) */
+          pType === "article_hype" ? null : h("div", { style: { display: "flex", gap: 8, marginTop: 18 } }, TYPES.map(function (t) {
+            var on = pType === t[0];
+            return h("button", { key: t[0], type: "button", disabled: envoi, onClick: function () { setPType(t[0]); }, style: { flex: 1, minHeight: 40, borderRadius: 12, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.12)"), background: on ? "linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95))" : "rgba(16,26,29,.45)", color: on ? IV : IV2, fontFamily: M, fontSize: 12.5, cursor: "pointer" } }, t[1]);
+          })),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, borderBottom: "1px solid " + CH3, marginTop: 14 } },
+            h("label", { htmlFor: "tp-com", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?")),
+            h("input", { id: "tp-com", value: pCom, disabled: envoi, onChange: function (e) { setPCom(e.target.value); }, placeholder: T("Facultatif", "Optional"), style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
+          (pEtat && pEtat !== "lecture" && pEtat !== "envoi") ? h("div", { role: "alert", style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12.5 } }, pEtat) : null,
+          h("button", { type: "button", disabled: !pret || envoi, onClick: publierPartage, style: { width: "100%", marginTop: 22, minHeight: 48, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(243,238,228,0.14)"), background: "transparent", color: pret ? IV : IV3, fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret && !envoi ? "pointer" : "default" } },
+            envoi ? "…" : T("Partager avec l'équipe", "Share with the team")))));
   }
 
   /* ───────── ÉPINGLES HB : épingles Hey Baby partagées avec le groupe ───────── */
@@ -706,8 +844,65 @@ function EcranTeamMedias() {
         onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles())),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
+    questionPub ? h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setQuestionPub(null); },
+      style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(7,10,8,0.82)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 max(24px, env(safe-area-inset-left))" } },
+      h("div", { dir: rtl ? "rtl" : "ltr", style: { maxWidth: 340, width: "100%", background: PAN, border: "1px solid " + CH3, borderRadius: 18, padding: "24px 22px 18px", textAlign: "center" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IV, lineHeight: 1.25 } },
+          questionPub.publique ? T("Réserver cette vidéo à l'équipe ?", "Keep this video for the team only?") : T("Mettre cette vidéo en public ?", "Make this video public?")),
+        h("div", { style: { fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5, marginTop: 8 } },
+          questionPub.publique ? T("Seuls les cavaliers du groupe et la coach pourront la regarder.", "Only the group's riders and the coach will be able to watch it.")
+            : T("Tous les comptes Hype pourront la regarder, pas seulement l'équipe.", "Every Hype account will be able to watch it.")),
+        h("div", { style: { display: "flex", gap: 10, marginTop: 18 } },
+          h("button", { type: "button", onClick: function () { setQuestionPub(null); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Annuler", "Cancel")),
+          h("button", { type: "button", onClick: confirmerPublique, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, questionPub.publique ? T("Réserver", "Keep private") : T("Mettre en public", "Make public"))))) : null,
     formulaireAjout,
+    fenetrePartage,
     (visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
-window.HypeTeamMedias = { Medias: EcranTeamMedias, version: TM_VERSION };
+/* 05/11 soir — page « conseil Hey Baby partagé avec toi » (route epingle-partagee), ouverte depuis la notification.
+   La base ne laisse lire l'épingle qu'à qui elle a été partagée (ou à son autrice). Lecture seule. */
+function EcranEpinglePartagee() {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var setEcran = app.setEcran || function () { };
+  var NOIR = "#070A08", PAN = "#101214", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.70)", IV3 = "rgba(243,238,228,0.42)", CH = "#C9A66B", CH3 = "rgba(201,166,107,0.22)";
+  var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',system-ui,sans-serif";
+  var _e = React.useState(null); var ep = _e[0], setEp = _e[1];
+  var _q = React.useState(""); var qui = _q[0], setQui = _q[1];
+  var _r = React.useState(""); var err = _r[0], setErr = _r[1];
+  React.useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        var id = null; try { id = window.__epinglePartagee || null; } catch (e) { }
+        if (!id || typeof supa === "undefined") { setErr("Ce conseil n'est plus disponible."); return; }
+        var r = await supa.from("echanges_heybaby_epingles").select("id, question, reponse, cheval_nom, created_at, user_id").eq("id", id).maybeSingle();
+        if (!vif) return;
+        if (!r || r.error || !r.data) { setErr("Ce conseil n'est plus partagé avec toi."); return; }
+        setEp(r.data);
+        var rp = await supa.from("profiles").select("pseudo").eq("id", r.data.user_id).maybeSingle();
+        if (vif && rp && rp.data) setQui(rp.data.pseudo || "");
+      } catch (eL) { if (vif) setErr(String((eL && eL.message) || eL)); }
+    })();
+    return function () { vif = false; };
+  }, []);
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (e) { } setEcran("dashboard"); }
+  return h("div", { style: { minHeight: "100vh", background: NOIR, color: IV, fontFamily: M } },
+    h("div", { style: { maxWidth: 720, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 14px) 20px 40px" } },
+      h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { width: 40, height: 40, borderRadius: "50%", background: "transparent", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, "‹"),
+      h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase", color: CH, marginTop: 22 } }, "Hey Baby" + (ep && ep.cheval_nom ? " · " + ep.cheval_nom : "")),
+      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(34px, 9vw, 48px)", lineHeight: 1.05, margin: "6px 0 0" } }, "Un conseil pour toi"),
+      h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 34, margin: "8px 0 4px" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
+      err ? h("div", { style: { fontSize: 13, color: IV3, fontStyle: "italic", marginTop: 20 } }, err)
+      : !ep ? h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", marginTop: 20 } }, "Chargement…")
+      : h("div", null,
+          qui ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 6 } }, "Partagé par " + qui) : null,
+          ep.question ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, lineHeight: 1.35, marginTop: 22, color: IV } }, "« " + ep.question + " »") : null,
+          h("div", { style: { marginTop: 18, padding: "18px 17px", borderRadius: 16, border: "1px solid " + CH3, background: PAN } },
+            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 10 } }, "Réponse de Hey Baby"),
+            h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, ep.reponse || "")))),
+    (typeof caleBarreHype === "function") ? caleBarreHype() : null);
+}
+window.HypeTeamMedias = { Medias: EcranTeamMedias, Epingle: EcranEpinglePartagee, version: TM_VERSION };
 })();
