@@ -390,6 +390,31 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
      PASSÉ, notifier-notif REDÉPLOYÉE à la main (version 10, « Verify JWT »
      éteint, 3 lignes changées seulement), appli PUBLIÉE build 20261105-1205.
      Envoi sans [fonctions] : le déploiement automatique n'est pas relancé.
+· 05/11 12 h 03 — DEMANDE de Blandine : partie V « Les mouvements »
+  (déplacements provisoires) selon l'IFCE (arrêté du 5 juin 2000) : date de
+  sortie et de retour, cheval, motif, adresse de destination ; facultatif
+  camion oui/non et chef d'équipe ; registre du LIEU OÙ VIT LE CHEVAL (SEP →
+  registre SEP) ; lien automatique avec les concours (agenda_chevaux) CODÉ
+  ENSUITE par l'autre conversation (page Engagements) : une ligne par cheval,
+  sortie = date du concours, retour = date de fin, motif = « Concours » +
+  titre + n°, destination = lieu ; la ligne suit les changements, affiche
+  « depuis le concours », reste modifiable ; colonne agenda_id + cheval_id
+  sans doublon. SQL à faire valider avant de le passer.
+  CODÉ, NON PUBLIÉ, SQL NON PASSÉ : sql-05-11-registre-mouvements.sql
+  (table registre_mouvements : club_clef, cheval_id, date_sortie,
+  date_retour, motif, destination, camion, chef_equipe, agenda_id → club_agenda
+  on delete set null, source 'manuel'|'concours' ; index UNIQUE (agenda_id,
+  cheval_id) quand agenda_id est rempli ; 4 règles dont suppression, toutes
+  réservées modératrices + gestionnaires). Page « Les mouvements »
+  (#registre-mouvements) : filtres cheval / année, « + Ajouter un
+  mouvement », ligne dépliable sur place pour corriger ou supprimer (avec
+  confirmation), mention « Depuis le concours de l'agenda » ;
+  hype-ecran-gestion.js ?v=6. Banc : ajout, liste, suppression ; 0 erreur.
+  ⚠️ POUR L'AUTRE CONVERSATION (Engagements) : écrire dans
+  registre_mouvements avec source='concours', agenda_id, cheval_id,
+  club_clef = hype_clef_club(chevaux.club) DU CHEVAL ; utiliser l'index
+  unique (agenda_id, cheval_id) pour un upsert (on conflict) ; si un cheval
+  est retiré du concours, supprimer SA ligne (agenda_id + cheval_id).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

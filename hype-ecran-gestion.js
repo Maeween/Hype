@@ -105,7 +105,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var vif = true;
       setD(null);
       (async function () {
-        var res = { club: club, chevaux: [], soins: [], docs: [], vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, peutGerer: false, erreur: "" };
+        var res = { club: club, chevaux: [], soins: [], docs: [], mouvements: [], mvAbsent: false, vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, peutGerer: false, erreur: "" };
         try {
           if (typeof supa === "undefined" || !supa) { res.erreur = "Pas de connexion."; if (vif) setD(res); return; }
           if (!club) { if (vif) setD(res); return; }
@@ -136,6 +136,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             if (rf && rf.error) { var m = String(rf.error.message || rf.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m)) res.ficheAbsente = true; }
             else res.fiche = (rf && rf.data) || null;
             /* 05/11 étape 3 — registre des chevaux (partie IV), une ligne par cheval tenue par l'écurie */
+            /* 05/11 partie V — mouvements des chevaux de cette écurie */
+            var rmv = await supa.from("registre_mouvements").select("*").eq("club_clef", clef).order("date_sortie", { ascending: false }).limit(3000);
+            if (rmv && rmv.error) { var m3 = String(rmv.error.message || rmv.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m3)) res.mvAbsent = true; }
+            else res.mouvements = (rmv && rmv.data) || [];
             var rr = await supa.from("registre_chevaux").select("*").eq("club_clef", clef).limit(1000);
             if (rr && rr.error) { var m2 = String(rr.error.message || rr.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m2)) res.regchAbsent = true; }
             else ((rr && rr.data) || []).forEach(function (x) { res.regch[String(x.cheval_id)] = x; });
@@ -300,7 +304,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { cle: "II", ok: false, photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Bâtiments et pâtures", pill: "Partie II", etat: "À compléter" },
         { cle: "III", ok: r.vetOk, photo: PHOTOS.veto, titre: "Les vétérinaires", sous: r.vetOk ? "Traitant et sanitaire notés" : ("Il manque : " + r.manqueIII.join(", ")), pill: "Partie III", qui: (!r.vetOk && v.length) ? (v.length + " dans l'équipe de soins") : "", etat: r.vetOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
         { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: r.chevauxOk ? "SIRE, puce et entrée notés" : ((r.nCh - r.nComplets) + " fiche" + ((r.nCh - r.nComplets) > 1 ? "s" : "") + " à compléter"), pill: "Partie IV", qui: r.nCh + " cheva" + (r.nCh > 1 ? "ux" : "l"), etat: r.chevauxOk ? "\u2713 À jour" : (r.nComplets + " / " + r.nCh), on: function () { ouvrir("registre-chevaux"); } },
-        { cle: "V", ok: false, bientot: true, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Concours, saillies, départs", pill: "Partie V", etat: "Bientôt" },
+        { cle: "V", ok: !d.mvAbsent && (d.mouvements || []).length > 0, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: d.mvAbsent ? "Concours, stages, vétérinaire" : ((d.mouvements || []).length + " déplacement" + ((d.mouvements || []).length > 1 ? "s" : "") + " noté" + ((d.mouvements || []).length > 1 ? "s" : "")), pill: "Partie V", etat: d.mvAbsent ? "Bientôt" : ((d.mouvements || []).length ? "\u2713 Tenu" : "À commencer"), on: d.mvAbsent ? null : function () { ouvrir("registre-mouvements"); } },
         { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : ""), etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("registre-soins"); } },
         { cle: "VII", ok: false, bientot: true, photo: PHOTOS.controles, titre: "Les contrôles", sous: "La page à montrer lors d'une visite", pill: "Partie VII", etat: "Bientôt" }
       ];
@@ -768,5 +772,155 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+
+  /* ═════════════════════════ PAGE « LES MOUVEMENTS » (partie V, 05/11) ═════════════════════════
+     Déplacements provisoires (concours, stage, randonnée, vétérinaire…) : date de sortie, date de retour, cheval, motif,
+     adresse de destination (exigés par l'IFCE) ; en facultatif : camion oui/non, chef d'équipe. Table registre_mouvements
+     (sql-05-11-registre-mouvements.sql), une ligne par cheval et par déplacement, registre du lieu où vit le cheval.
+     Les lignes venues d'un concours (source « concours », agenda_id) le disent et restent modifiables à la main.
+     Ajout, modification et suppression : modératrices et gestionnaires de l'écurie seulement (la base revérifie). */
+  var MOTIFS = ["Concours", "Stage", "Randonnée", "Vétérinaire", "Clinique", "Saillie", "Autre"];
+  function EcranRegistreMouvements() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    React.useEffect(function () {
+      injecterCss();
+      try { if (!document.getElementById(CSS_ID + "-form")) { var s = document.createElement("style"); s.id = CSS_ID + "-form"; s.textContent = CSS_FORM; document.head.appendChild(s); } } catch (e) { }
+      try { window.scrollTo(0, 0); } catch (e) { }
+    }, []);
+    var c = useClub();
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var d = useDonneesEcurie(c.club, recharge);
+    var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
+    var _an = React.useState("tous"); var fAn = _an[0], setFAn = _an[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];      /* id de la ligne ouverte, ou "nouveau" */
+    var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var _s = React.useState(false); var confSuppr = _s[0], setConfSuppr = _s[1];
+    var M = "'Montserrat',sans-serif";
+
+    function ouvrirLigne(l) {
+      if (ouvert === (l ? l.id : "nouveau")) { setOuvert(null); return; }
+      setMsg(""); setConfSuppr(false);
+      if (l) setVal({ cheval_id: l.cheval_id, date_sortie: l.date_sortie || "", date_retour: l.date_retour || "", motif: l.motif || "", destination: l.destination || "", camion: l.camion === true ? "oui" : (l.camion === false ? "non" : ""), chef_equipe: l.chef_equipe || "" });
+      else setVal({ cheval_id: (fCh !== "tous" ? fCh : ""), date_sortie: isoAuj(), date_retour: isoAuj(), motif: "", destination: "", camion: "", chef_equipe: "" });
+      setOuvert(l ? l.id : "nouveau");
+    }
+    function maj(k, v) { setMsg(""); setVal(function (o) { var n = Object.assign({}, o); n[k] = v; return n; }); }
+    async function enregistrer(l) {
+      if (!val.cheval_id) { setMsg("Choisis le cheval."); return; }
+      if (!val.date_sortie) { setMsg("Indique la date de sortie."); return; }
+      if (val.date_retour && val.date_retour < val.date_sortie) { setMsg("Le retour ne peut pas être avant la sortie."); return; }
+      setEnvoi(true); setMsg("");
+      try {
+        var ch = (d.chevaux || []).filter(function (x) { return x.id === val.cheval_id; })[0] || {};
+        var ligne = { club_clef: clefDe(ch.club || c.club), cheval_id: val.cheval_id, date_sortie: val.date_sortie, date_retour: val.date_retour || null,
+          motif: String(val.motif || "").trim() || null, destination: String(val.destination || "").trim() || null,
+          camion: val.camion === "oui" ? true : (val.camion === "non" ? false : null), chef_equipe: String(val.chef_equipe || "").trim() || null, maj_le: new Date().toISOString() };
+        var r = l ? await supa.from("registre_mouvements").update(ligne).eq("id", l.id).select("*")
+                  : await supa.from("registre_mouvements").insert(Object.assign({ source: "manuel" }, ligne)).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("✓ Enregistré"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    async function supprimer(l) {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("registre_mouvements").delete().eq("id", l.id).select("id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("Mouvement supprimé."); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas supprimé : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+
+    function champ(k, lab, opts) {
+      opts = opts || {};
+      return h("div", { key: k },
+        h("label", { htmlFor: "hgm-" + k }, lab),
+        h("input", { id: "hgm-" + k, type: opts.date ? "date" : "text", value: val[k] || "", placeholder: opts.ex || "", autoComplete: "off", onChange: function (e) { maj(k, e.target.value); } }),
+        opts.aide ? h("div", { className: "hg-aide" }, opts.aide) : null);
+    }
+    function pastilles(k, choix) {
+      return h("div", { className: "hg-sugg" }, choix.map(function (x) {
+        var on = x[0] === val[k];
+        return h("button", { key: x[0], type: "button", onClick: function () { maj(k, on ? "" : x[0]); }, style: on ? { background: "#C9A66B", color: "#070A08" } : null }, x[1]);
+      }));
+    }
+    function formulaire(l) {
+      var chevauxTries = (d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+      return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+        l && l.source === "concours" ? h("div", { className: "hg-aide", style: { marginTop: 10, color: "#C9A66B" } }, "Ligne venue d'un concours de l'agenda. Tu peux la corriger à la main.") : null,
+        h("label", { htmlFor: "hgm-cheval" }, "Cheval"),
+        h("select", { id: "hgm-cheval", value: val.cheval_id || "", onChange: function (e) { maj("cheval_id", e.target.value); },
+          style: { width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid rgba(243,238,228,.14)", background: "rgba(16,26,29,.55)", color: "#F3EEE4", fontFamily: M, fontSize: 16, padding: "0 10px" } },
+          [h("option", { key: "", value: "" }, "Choisir…")].concat(chevauxTries.map(function (x) { return h("option", { key: x.id, value: x.id }, x.nom || "?"); }))),
+        h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, champ("date_sortie", "Sortie le", { date: true }), champ("date_retour", "Retour le", { date: true })),
+        h("label", null, "Motif"),
+        pastilles("motif", MOTIFS.map(function (x) { return [x, x]; })),
+        h("input", { value: val.motif || "", placeholder: "Ou écris le motif (ex. Concours CSO Club Itteville)", onChange: function (e) { maj("motif", e.target.value); }, style: { marginTop: 8 } }),
+        champ("destination", "Adresse de destination", { ex: "Lieu où va le cheval" }),
+        h("label", null, "En camion (facultatif)"),
+        pastilles("camion", [["oui", "Oui"], ["non", "Non"]]),
+        champ("chef_equipe", "Chef d'équipe (facultatif)", { ex: "Qui accompagne" }),
+        h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
+        l ? (confSuppr
+          ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setConfSuppr(false); } }, "Garder"),
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(l); } }, "Supprimer vraiment"))
+          : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: M, fontSize: 12.5, textDecoration: "underline" } }, "Supprimer ce mouvement")) : null,
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
+    }
+
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else if (d.mvAbsent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie du registre arrive très vite : elle n'est pas encore activée.");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie du registre.");
+    else {
+      var nomDe = {}; (d.chevaux || []).forEach(function (x) { nomDe[x.id] = x.nom || ""; });
+      var liste = (d.mouvements || []).slice();
+      var annees = []; liste.forEach(function (l) { var a = String(l.date_sortie || "").slice(0, 4); if (a && annees.indexOf(a) < 0) annees.push(a); }); annees.sort().reverse();
+      var vis = liste.filter(function (l) { return (fCh === "tous" || l.cheval_id === fCh) && (fAn === "tous" || String(l.date_sortie || "").slice(0, 4) === fAn); })
+        .sort(function (a, b) { return String(b.date_sortie || "").localeCompare(String(a.date_sortie || "")); });
+      function selecteur(v, set, options, lab) {
+        return h("label", { style: { display: "flex", flexDirection: "column", gap: 5, flex: 1, minWidth: 0 } },
+          h("span", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(243,238,228,.6)", fontFamily: M } }, lab),
+          h("select", { value: v, onChange: function (e) { set(e.target.value); setOuvert(null); }, style: { width: "100%", minHeight: 44, borderRadius: 12, border: "1px solid rgba(243,238,228,.16)", background: "rgba(16,26,29,.6)", color: "#F3EEE4", fontFamily: M, fontSize: 15, padding: "0 10px" } },
+            options.map(function (o) { return h("option", { key: o[0], value: o[0] }, o[1]); })));
+      }
+      var chevauxOpt = [["tous", "Tous les chevaux"]].concat((d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }).map(function (x) { return [x.id, x.nom || "?"]; }));
+      corps = h("div", null,
+        pilsClubs(h, c),
+        h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
+          selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
+          selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
+        h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrirLigne(null); } }, ouvert === "nouveau" ? "Fermer" : "+ Ajouter un mouvement"),
+        ouvert === "nouveau" ? formulaire(null) : null,
+        msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
+        vis.length ? h("div", { style: { marginTop: 14 } }, vis.map(function (l) {
+          var dates = dateCourte(l.date_sortie) + (l.date_retour && l.date_retour !== l.date_sortie ? " → " + dateCourte(l.date_retour) : "");
+          var ouvre = ouvert === l.id;
+          return h("div", { key: l.id, style: { marginBottom: 8, borderRadius: 14, border: "1px solid " + (ouvre ? "rgba(201,166,107,.55)" : "rgba(243,238,228,.1)"), background: "linear-gradient(135deg,rgba(16,26,29,.42),rgba(7,10,8,.96) 58%)" } },
+            h("button", { type: "button", onClick: function () { ouvrirLigne(l); }, style: { display: "block", width: "100%", textAlign: "start", background: "none", border: "none", padding: "12px 14px", color: "inherit", fontFamily: M } },
+              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10 } },
+                h("div", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, color: "#F3EEE4", lineHeight: 1.2 } }, nomDe[l.cheval_id] || "Cheval"),
+                h("div", { style: { flex: "0 0 auto", fontSize: 12, color: "rgba(243,238,228,.75)" } }, dates)),
+              h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.7)", marginTop: 3 } }, [l.motif, l.destination].filter(Boolean).join(" · ") || "Motif et destination à compléter"),
+              l.source === "concours" ? h("div", { style: { fontSize: 11.5, color: "#C9A66B", marginTop: 3 } }, "Depuis le concours de l'agenda") : null),
+            ouvre ? formulaire(l) : null);
+        })) : h("div", { className: "hg-vide" }, "Aucun mouvement pour ce choix."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
