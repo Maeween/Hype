@@ -293,6 +293,27 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   (n° de détenteur SIRE, SIRET, adresse du lieu, code APE). Première
   écriture en base du chantier : il faut une petite table par écurie,
   à montrer à Blandine AVANT de la créer.
+· 05/11 ~10 h 45 — ÉTAPE 2 CODÉE, NON PUBLIÉE, SQL NON PASSÉ (attend son
+  accord) : page « Le détenteur » (#detenteur, ouverte depuis les parties
+  I et III du registre) : structure, responsable, adresse du lieu, SIRET,
+  n° de détenteur SIRE, code APE, vétérinaire traitant et sanitaire
+  (boutons « Reprendre » depuis l'équipe de soins). Une ligne par écurie
+  dans la NOUVELLE table ecurie_registre (sql-05-11-ecurie-registre.sql) :
+  lecture et écriture par les modératrices et les gestionnaires de
+  l'écurie seulement (hype_peut_gerer_club), pas de suppression. Après
+  « Enregistrer », la ligne est relue : « Enregistré » seulement si elle
+  est revenue. Sans la table : la page affiche « Bientôt », rien ne casse.
+  Le registre compte maintenant les parties I et III. hype-ecran-gestion.js
+  passe en ?v=2. Banc : remplissage, enregistrement, registre mis à jour
+  (I « À jour », III « il manque : sanitaire »), cas sans table ; 0 erreur.
+· 05/11 10 h 35-10 h 45 — Blandine « Super continue » : TABLE ecurie_registre
+  CRÉÉE en base (3 règles vérifiées). Fiche Écurie Feinn pré-remplie puis,
+  à sa demande (« je le ferai, comme ça je verrai comment ça marche »),
+  VIDÉE : il reste une ligne « ecurie feinn » aux champs vides (la
+  suppression a été bloquée par une confirmation, la ligne vide ne gêne
+  pas : la page affiche des champs vides). PUBLICATION build 20261105-1045 :
+  hype-ecran-gestion.js ?v=2, index.html, SUIVI.md. À essayer par elle :
+  2hype.fr/#registre → « Le détenteur » → remplir → Enregistrer.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
