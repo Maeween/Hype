@@ -2,6 +2,9 @@
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
+## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
+- [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
+
 ## 1 — Urgent
 - [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
 - [26/10] Sécurité : supprimer la clé d'accès Supabase créée pour régler les mails (supabase.com/dashboard/account/tokens) et le secret HYPE_CLE_MAILS. Ils ne servent plus et sont toujours actifs (attend : Blandine)
@@ -68,6 +71,233 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [16/09] Vieux petits nettoyages de base, à revérifier : Liam a deux comptes (@gmail.com et @gmail.fr), un profil a la SEP en double, une épingle Hey Baby porte un faux cheval « idao », et la colonne resultats.format_large manque (attend : Claude)
 
 ────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+🟥🟥 PRIORITÉ ABSOLUE — ESPACE « GESTION D'ÉCURIE » AVANT LE SALON DU CHEVAL
+Décidé par Blandine le 04/11/2026 à 21 h 40 : « rajoute tout ça au suivi,
+un truc vraiment important… tu vas décaler tout le reste de l'application,
+qu'on conserve évidemment, mais de façon à ce qu'on puisse développer tout
+ça avant le salon du cheval ».
+════════════════════════════════════════════════════════════
+
+ÉCHÉANCE : Salon du Cheval de Paris, annoncé du 4 au 6/12/2026 (lieu à
+vérifier : Porte de Versailles ou Villepinte). Il reste 4 semaines.
+
+CE QUI CHANGE POUR LE RESTE DE L'APPLI
+· Ce chantier passe AVANT tout le reste. Rien n'est supprimé ni abandonné :
+  les autres chantiers (Centre de compétition, cours des Galops, Communauté,
+  Vidéothèque, atlas animé, etc.) passent simplement après.
+· Proposé, à confirmer par Blandine : une panne qui bloque les utilisateurs
+  reste traitée en premier, même pendant ce chantier.
+· Règles habituelles inchangées : 1 action → 1 modification → test iPhone →
+  accord ; rien publié sans son accord ; traductions seulement une fois le
+  français relu ; tutoiement partout.
+· La liste complète « reste à faire en 4 niveaux » promise le 04/11 reste à
+  écrire ; ce chantier en sera le niveau 1.
+
+L'IDÉE (Blandine, 04/11)
+Un espace de Hype pour les écuries, petites (comme la sienne) ou grosses
+(comme la SEP), qui les libère du poids des obligations légales,
+administratives et sanitaires : à tout moment, on part avec le camion et
+tout est là (papiers, chevaux, vaccins, licences, registre d'élevage).
+Plus une aide à la compta (connexion à la banque, préparation), et une
+orientation vers des partenaires (création de société, banque, assurance,
+logiciel de compta), éventuellement avec commission.
+
+LE CADRE LÉGAL — À RESPECTER DANS TOUS LES TEXTES DE L'APPLI
+· Hype est UN OUTIL qui aide la structure à faire elle-même sa compta et
+  ses démarches. Jamais « on fait ta compta pour toi » : tenir la compta
+  d'autrui contre paiement est réservé aux experts-comptables, le conseil
+  juridique payant aux avocats. Une mention « c'est ta responsabilité » ne
+  protège pas si c'est Hype qui fait le travail.
+· La responsabilité des comptes et des obligations reste au dirigeant :
+  Hype aide à ne rien oublier, sans le garantir.
+· Commissions possibles avec les PLATEFORMES (banque, création de société
+  en ligne, logiciels de compta) ; PAS avec un comptable ou un avocat en
+  direct (très encadré, voire interdit) — avec eux, négocier plutôt un
+  tarif réduit pour les membres Hype.
+· Deux cibles : (1) associations sans TVA et sans grosses subventions,
+  pour qui Hype peut tout préparer de bout en bout (pas d'obligation
+  d'expert-comptable, comptes approuvés en assemblée générale) ;
+  (2) sociétés et grosses structures : Hype prépare, puis leur comptable
+  ou un logiciel partenaire finalise.
+
+À AVOIR EN MAIN AVANT LE SALON (validé dans le principe le 04/11)
+1. REGISTRE D'ÉLEVAGE COMPLET ET CONFORME, imprimable pour un contrôle.
+   Les 7 parties exigées par l'IFCE : le détenteur (n° SIRE de détenteur,
+   SIRET) ; un plan des lieux ; l'encadrement sanitaire (vétérinaire
+   traitant, vétérinaire sanitaire) ; les chevaux présents (nom, n° SIRE,
+   puce, propriétaire, entrées et sorties avec motif) ; les mouvements
+   temporaires (concours, saillies) ; les soins (date, nature dont vaccins
+   et vermifuges, intervenant, médicament, dose, durée ou ordonnance, délai
+   d'attente) ; une partie pour les contrôles. Gardé 5 ans ; un registre
+   informatique est accepté s'il est imprimé ou sauvegardé chaque
+   trimestre. Absent = amende jusqu'à 750 €.
+   → Partir de la page Santé de l'écurie (sert déjà de registre) :
+   relever ce qui manque, puis combler.
+2. ALERTES D'ÉCHÉANCES : vaccins (grippe, et rhinopneumonie obligatoire en
+   compétition Amateur depuis le 01/01/2026 ; rappel annuel ; aucun vaccin
+   dans les 7 jours avant un concours FFE), licences, cartes pro des
+   moniteurs (tous les 5 ans), assurances, contrôle technique du camion.
+3. COFFRE-FORT DE PAPIERS, accessible depuis le camion : s'appuie sur
+   « Le dossier » du Centre de compétition (papiers du van, vaccins des
+   chevaux engagés, licences), déjà en ligne depuis le build 20261104-2200.
+   Ajouter les papiers propres au transport : autorisation de
+   transporteur, certificat du conducteur (CAPTAV), registre de transport
+   (gardé 3 ans).
+4. DÉMONSTRATION DE PRÉPARATION COMPTA sur les vrais chiffres de
+   l'association FEINN (Qonto), sans rien développer : pour montrer le
+   résultat concret.
+Les points 1 à 3 réutilisent ce qui existe déjà. La compta connectée à la
+banque pour toutes les écuries est un vrai chantier (intermédiaire agréé
+par la Banque de France, payant ; sécurité ; plan comptable associatif ;
+coût de l'IA) : APRÈS le salon, ou via un logiciel partenaire.
+
+PLANNING PROPOSÉ (à valider par Blandine)
+· Semaine du 5 au 11/11 : état des lieux de la page Santé de l'écurie
+  face au registre officiel ; maquette du registre complet.
+· Semaine du 12 au 18/11 : registre d'élevage complet + impression.
+· Semaine du 19 au 25/11 : alertes d'échéances + papiers du transport.
+· Semaine du 26/11 au 02/12 : démonstration compta, tests sur son
+  écurie, présentation d'une ou deux pages pour la SEP (vraies captures).
+· 4 au 6/12 : Salon du Cheval (démo sur iPhone). Un stand exposant se
+  réserve en général longtemps à l'avance : à vérifier, sinon y aller en
+  visiteuse avec la démo.
+
+LA SEP COMME PREMIÈRE STRUCTURE TEST
+· Idée de Blandine : présenter l'outil à la directrice de la SEP, même
+  sans rien facturer, une fois qu'elle a « un vrai truc en main » testé
+  chez elle.
+· Ce qui leur parle : registre d'élevage, alertes (vaccins, licences,
+  cartes pro, assurances, camion), dossier du concours, préparation de la
+  compta finalisée par leur comptable (moins d'heures facturées), aides
+  et subventions, préparation de l'assemblée générale.
+· Proposé : test gratuit sur une durée fixée (ex. une saison) contre des
+  retours réguliers, le droit de citer la SEP, un témoignage si satisfaits.
+
+CONTACTS À PRENDRE (recherche du 04/11), PAR ORDRE
+1. GHN (syndicat des dirigeants d'établissements équestres) —
+   infos@ghn.com.fr, 02 54 83 02 02. ⚠️ Fait déjà registres et affichages
+   obligatoires, modèles de contrats, juridique, paie, compta via
+   partenaire (cotisation 120 €/an). N'a pas d'appli mobile avec rappels.
+   → Se présenter en partenaire, pas en concurrent (le logiciel Kavalog
+   s'affiche « partenaire GHN » : c'est possible).
+2. Conseil du cheval d'Île-de-France — conseilduchevalidf@gmail.com,
+   56 rue des Renaudes, 75017 Paris. Son avis est obligatoire pour le
+   Fonds Éperon (jusqu'à 50 % d'un projet, pour des associations : FEINN
+   pourrait y prétendre ; à tester pour du numérique).
+3. FFE, Service Développement — developpement@ffe.com. Pas de label pour
+   les applis : proposer un partenariat ou une parution dans La Ref.
+4. Pôle Hippolia (innovation de la filière) — contact@hippolia.org,
+   02 31 94 94 20. Village des start-up à Equita Lyon (octobre 2027).
+5. CREIF (01 47 66 10 03) puis Comité de l'Essonne (Ballancourt) : relais
+   vers les clubs, en dernier.
+⚠️ Doublon possible aussi : EquiPass, appli gratuite des Conseils des
+chevaux (auto-évaluation réglementaire) — encore active ? à vérifier.
+
+PARTENAIRES À COMMISSION POSSIBLES
+Qonto (programme d'affiliation : qonto.com/fr/affiliate), Legalstart
+(affiliation : legalstart.fr/corp/partenaires/affiliation/), logiciels de
+compta (Pennylane, Indy, Tiime… à vérifier), assureurs équins (à
+chercher).
+
+POINTS À VÉRIFIER AVANT DE LES AFFICHER DANS HYPE
+Délai exact d'identification du poulain ; vaccins exigés en Club et Poney
+(règlement FFE 2026) ; TVA de la pension et des saillies ; classement ERP
+d'un centre équestre ; extension de la grille de salaires 2026 ;
+distances de stockage du fumier dans le règlement de l'Essonne.
+
+À NOTER POUR BLANDINE (hors appli)
+· Association FEINN : sans TVA ni impôt tant que les recettes Hype restent
+  sous un plafond annuel d'environ 80 000 € (chiffre exact à vérifier) ;
+  Claude surveille le total à chaque point compta.
+· Loyers de l'antenne : l'opérateur a refusé de payer l'association, ils
+  restent sur ses revenus personnels.
+· TVA de l'enseignement à 5,5 % depuis 2024 : une structure qui l'a
+  facturée à 20 % peut réclamer jusqu'au 31/12/2026 (à vérifier pour la
+  société FEINN si elle a facturé des cours avec TVA).
+
+SOURCES PRINCIPALES
+IFCE registre d'élevage : ifce.fr/wp-content/uploads/2022/04/SIRE-Guide-elaboration-registre-delevageNN.pdf
+IFCE détenteur : ifce.fr/wp-content/uploads/2021/04/SIRE-Fiche-demarche-Detenteur.pdf
+Vaccins 2026 : venerie.org/wp-content/uploads/2026/01/La_reglementation_vaccinale_en_France.pdf
+Transport : ifce.fr/wp-content/uploads/2020/05/Transport_des_Equides_-_Webconf_du_14052020.pdf
+Éducateurs : sports.gouv.fr/educateurs-sportifs
+TVA 5,5 % : legifiscal.fr/actualites-fiscales/3783-taux-reduit-tva-55-etablissements-equestres.html
+GHN : ghn.com.fr/pourquoi-adherer
+FFE mémento clubs : ffe.com/system/files/la-ffe/la-ref/ref-memento-2027.pdf
+Conseil du cheval IDF : conseil-cheval-iledefrance.com
+Fonds Éperon : federationconseilchevaux.fr/page/193-le-fonds-eperon
+Hippolia : pole-hippolia.org
+
+AVANCÉE DU 04/11 AU SOIR (Blandine 21 h 59 : « continue en boucle…
+carte blanche… préviens-moi quand tout est fini avec plusieurs
+propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
+· ÉTAT DES LIEUX (lecture seule) de la Santé face au registre IFCE :
+  détenteur ABSENT ; plan des lieux ABSENT ; vétérinaires PARTIEL (par
+  cheval, pas de traitant/sanitaire) ; chevaux PARTIEL (SIRE dans
+  chevaux.origines.sire, 6 chevaux sur 25 à l'Écurie Feinn ; pas de puce,
+  propriétaire en clair, entrée/sortie) ; mouvements ABSENTS ; soins
+  PARTIEL (pas d'intervenant — soins_cheval.professionnel_id existe mais
+  n'est jamais rempli —, ni dose, voie, durée, délai d'attente) ; partie
+  contrôles ABSENTE ; AUCUNE impression du registre. Rappels = pastilles
+  de couleur + fichier agenda (.ics) seulement, aucune notification.
+· ⚠️ ÉCART : EcranSanteClub (index.html, function EcranSanteClub) ne
+  vérifie pas le Premium alors que la règle du 02/11 réserve la Santé de
+  l'écurie aux abonnés. Question posée à Blandine, rien touché.
+· TROUVÉ DANS QONTO (lecture seule) : SIRET de l'association
+  898 028 980 00016, code APE 9312Z. 893 opérations en 2026 au 04/11 ;
+  601 dépenses sur 633 sans justificatif ; 307 opérations sans catégorie ;
+  22 versements de Blandine (9 935 €) à classer (apport, prêt ou don).
+  ⚠️ L'association paie DÉJÀ le GHN (prélèvements « G H N », 672 € en
+  2026) : elle est adhérente — à rappeler avant de « contacter » le GHN.
+  Elle paie aussi Comptalib (logiciel de compta).
+· 17 MAQUETTES faites (vraie police, photos du dépôt, données réelles de
+  l'Écurie Feinn ; gardées HORS du dépôt car elles contiennent des
+  chiffres de l'association) : registre en 3 versions (A tableau de bord,
+  B livret en 7 chapitres, C « prêt pour un contrôle »), détenteur,
+  chevaux, nouveau soin, accueil « Mon écurie », échéances en 2 versions
+  (A par urgence, B fil des mois), camion en 2 versions (A « Prêt à
+  partir », B « La boîte à gants »), registre imprimé (A4), compta en
+  3 écrans (tableau de bord, tri, « trouvé dans ta banque »), présentation
+  SEP en 2 versions (A ivoire « ce que vous gagnez », B noire « un
+  contrôle demain ? »). En attente de ses choix.
+· 04/11 22 h 18 — Blandine : « j'aime dans l'idée mais plus proche du
+  design habituel » (capture de la Vidéothèque à l'appui). VERSION 2
+  refaite avec les classes EXACTES de hype-video.js (hv2-hero, hv2-ligne,
+  « Choisis ton Galop » → cases hv2-cg, grille hv2-theme, cartes hv3-carte,
+  bandeau hv3-ban, pastilles hv3-pil) + barre du bas, « Écurie » allumé :
+  Mon écurie, Le registre, Les échéances, Prêt à partir, Ma compta.
+  C'est CE design qui sert de base pour la suite. 23 h 06 : « Ok ».
+· 04/11 ~23 h 40 — ÉTAPE 1 CODÉE, PAS ENCORE PUBLIÉE (attend son accord) :
+  nouveau fichier hype-ecran-gestion.js (window.HypeGestion : MonEcurie,
+  Registre ; copie de la feuille de style de la Vidéothèque incluse,
+  injectée seulement si la Vidéothèque ne l'a pas mise) ; index.html :
+  3 ajouts (raccourcis #mon-ecurie et #registre, 2 écrans différés
+  ?v=1, 2 lignes d'affichage). LECTURE SEULE, aucune table, aucun SQL.
+  Accès par le lien caché 2hype.fr/#mon-ecurie uniquement (aucun bouton).
+  Club = celui choisi depuis la page Écurie, sinon ecurie/ecurie2 du
+  profil (pastilles si deux clubs). Registre honnête : ce qui n'existe pas
+  encore = « À compléter » ou « Bientôt ». Banc (appli réelle, données
+  réelles de l'Écurie Feinn copiées) : accueil, registre, filtre, passage
+  Feinn → SEP, « Les soins » ouvre bien Santé du club ; 0 erreur.
+  ⚠️ Correction des maquettes : 5 chevaux sur 25 ont leur SIRE (pas 6).
+  Rappel : 1 seul vétérinaire relié aux chevaux de l'Écurie Feinn.
+· 05/11 10 h 30 — PUBLICATION de l'étape 1 (Blandine 10 h 26 : « Super
+  continue ») : build 20261105-1030, repartie de la version en ligne
+  (build 1000, rien perdu). Fichiers : hype-ecran-gestion.js (nouveau),
+  index.html (3 ajouts + n° de build), SUIVI.md. À essayer sur iPhone :
+  2hype.fr/#mon-ecurie, puis « Le registre d'élevage », puis le passage
+  Feinn / SEP. Rien d'autre n'a changé dans l'appli.
+· ÉTAPE 2 PROPOSÉE (pas commencée en base) : remplir « Le détenteur »
+  (n° de détenteur SIRE, SIRET, adresse du lieu, code APE). Première
+  écriture en base du chantier : il faut une petite table par écurie,
+  à montrer à Blandine AVANT de la créer.
+· Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
+  17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
+  ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
 
 PASSATION — HYPE (PWA équestre) · état au 16/09/2026, 21 h 30
 
