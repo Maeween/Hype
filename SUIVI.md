@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 05/11/2026 00h15)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 05/11/2026 09h15)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -18,6 +18,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Centre de compétition : tout a été testé seulement avec des données d'exemple. À essayer avec les vrais comptes de l'équipe : Ma saison, fiche du concours, engagements et feuille SEP en PDF, liste du van, Jour J, notification des heures de passage, vidéo de parcours commentée (attend : Blandine)
 - [04/11] Ma saison ne montre que les rendez-vous rattachés à la Team (3 aujourd'hui). Les autres concours et stages de l'équipe n'apparaîtront que s'ils sont partagés avec elle depuis la page Team (« Pour qui ? ») (attend : Blandine)
 - [04/11] Tests sur iPhone en attente pour les dernières mises en ligne : grand lexique (lettre, notion, cours, retour, « Partager cette notion », autres langues), liste du van (cartes photo, matériel du cheval), Ma saison (réservé à l'équipe), icônes des cavaliers sans photo, photos agrandies de « Comprendre le cheval », compléments en bas des cours du Galop 4, reprise de lecture et « Ouvrir dans YouTube » (attend : Blandine)
+- [05/11] Vidéothèque : vérifier sur iPhone que les photos des thèmes arrivent maintenant vite (build 20261105-0915). Si elles tardent encore, chercher ce qui encombre l'appli à l'ouverture (attend : Blandine)
 - [04/11] Vidéos ajoutées par les cavaliers : à tester en vrai. Ajouter une vidéo YouTube, la proposer, puis l'accepter avec le compte modératrice (attend : Blandine)
 
 ## 3 — Quand on aura le temps
@@ -17188,3 +17189,8 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - 3 — Engagements, onglet « Cavalières et chevaux » : « Ou lire une fiche déjà remplie » (photo, capture ou PDF ; pour un Word, faire une capture). Lecture par la même fonction que le carnet de vaccins (hey-baby-vision, 1 à 2 min ; réservée aux abonnés Premium et à la modératrice, comme les autres lectures payantes). Liste « Lu sur la fiche » à cocher : compte Hype reconnu ou non, « déjà sur la feuille » (alors seuls le nom et la licence sont mis à jour). « Ajouter à la feuille » ajoute aussi les épreuves lues ; rien n'est gardé avant « Enregistrer ».
 - Textes en français seulement (traductions après relecture).
 - Fichiers : index.html (bloc licence + build 20261105-0240 + ?v=35), hype-ecran-saison.js (v35), SUIVI.md.
+
+## 05/11/2026 09h15 — PUBLICATION build 20261105-0915 — Article CSO (corrections de Blandine) + photos de la Vidéothèque
+- Vidéothèque (Blandine 08h52 : « les images mettent beaucoup de temps à s'afficher, presque 20 secondes ») : constat, les photos des thèmes sont légères (20 à 125 Ko) et en cache un an ; la cause probable est le chargement différé (« lazy ») des 9 cartes, que l'iPhone repousse quand l'appli charge autre chose. Correctif : les cartes de thèmes de la première page demandent leur photo dès l'ouverture (loading eager, decoding async, fetchpriority high). Rien d'autre touché. Non mesuré depuis ici : à vérifier sur iPhone.
+- Article Le Mag « Pourquoi éviter la longue après un virage serré ? » (Blandine 09h04–09h07) : « conserve une activité régulière en le gardant tendu » ; « sans le mettre en difficulté » (« inutilement » retiré) ; encadré Attention : « Le cheval doit rester tendu, actif, devant les jambes, équilibré et disponible, sans se précipiter » ; citation remplacée par « Utilise le dessin de ta trajectoire dans ta courbe pour régler ta place de départ, mais ne modifie pas soudainement l'équilibre de ton cheval ou l'amplitude de ses foulées. » Traduit dans les 13 autres langues (« tendu » rendu par l'équivalent cavalier : connected / an den Hilfen / en tensión hacia la mano…). Contrôle : seuls ces 4 textes changent, 114 textes × 14 langues présents.
+- Fichiers : hype-video.js (?v=20261105-vt12), hype-article-cso.js (?v=7), outils/article-cso/*.json (14 langues), index.html (build 20261105-0915 + les deux numéros de version), SUIVI.md.

@@ -2515,7 +2515,8 @@
         var cls = "hv2-theme" + (x.k === "tous" ? " large" : "") + (x.k !== "tous" && dernier && nTh % 2 === 1 ? " seul2" : "") + (x.k !== "tous" && dernier && nTh % 3 === 1 ? " seul3" : "");
         return h("button", { key: x.k, className: cls, disabled: !x.n, onClick: function () { if (x.n) { setTheme(x.k); setVue("theme"); } } },
           h("span", { className: "hv2-traite", style: { display: "block", "--hv-pos": ph.pos || "center" } },
-            ph.img ? h("img", { src: ph.img, alt: L(ph.alt, langue), loading: "lazy" }) : null),
+            /* 05/11 (Blandine : photos des thèmes ~20 s à apparaître) : plus de chargement différé, demandées dès l'ouverture */
+            ph.img ? h("img", { src: ph.img, alt: L(ph.alt, langue), loading: "eager", decoding: "async", fetchpriority: "high" }) : null),
           h("span", { className: "hv2-pan" }, h("b", null, x.k === "tous" ? T("Toutes les vidéos", "All videos", "Todos los vídeos", "Tutti i video", "すべての動画", "Alle Videos", "كل الفيديوهات", "全部视频", "Alle video's", "Todos os vídeos", "Alla videor", "Все видео", "Wszystkie filmy", "모든 영상") : nomTheme(x.k)), h("span", null, x.n ? nbVideos(x.n) : T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))));
       }));
       /* 04/11 15h : « Reprendre » — les vidéos commencées et pas finies (3 au plus), en cartes */
