@@ -424,6 +424,21 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   d'écriture : propriétaire ou modératrice), il est nommé. La liste se relit
   en refermant le formulaire. hype-ecran-gestion.js ?v=7. Banc : vermifuge
   pour 25 chevaux, 25 lignes créées ; 0 erreur.
+· 05/11 après-midi — Blandine : « garde le visuel Vidéothèque » et « les
+  mouvements, c'est pas le terme exact ». Vérifié dans le guide IFCE du
+  registre d'élevage : la partie V s'appelle « MOUVEMENTS TEMPORAIRES DES
+  ANIMAUX » (le « registre des mouvements » SIRE, lui, = entrées/sorties
+  définitives = notre partie IV). Pages « Mouvements temporaires » et
+  « Les soins » remises au style Vidéothèque (cartes hv3-carte avec la
+  photo du cheval, ordonnances en pastilles sous la carte du soin).
+  Textes : « Mouvements temporaires », « + Ajouter une sortie »,
+  « Supprimer cette sortie ». Nom de table inchangé (registre_mouvements,
+  invisible pour l'utilisatrice et déjà donné à la conversation Engagements).
+  ⇒ 05/11 20 h 25 Blandine « Ok » : SQL registre_mouvements PASSÉ par
+  Claude (4 règles, RLS active, 3 index vérifiés) ; PUBLIÉ avec le soin pour
+  plusieurs chevaux, hype-ecran-gestion.js ?v=8.
+  ⚠️ Traductions des nouveaux textes du registre : à faire quand Blandine
+  aura relu le français.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

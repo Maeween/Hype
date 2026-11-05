@@ -305,7 +305,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { cle: "II", ok: false, photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Bâtiments et pâtures", pill: "Partie II", etat: "À compléter" },
         { cle: "III", ok: r.vetOk, photo: PHOTOS.veto, titre: "Les vétérinaires", sous: r.vetOk ? "Traitant et sanitaire notés" : ("Il manque : " + r.manqueIII.join(", ")), pill: "Partie III", qui: (!r.vetOk && v.length) ? (v.length + " dans l'équipe de soins") : "", etat: r.vetOk ? "\u2713 À jour" : "À compléter", on: function () { ouvrir("detenteur"); } },
         { cle: "IV", ok: r.chevauxOk, photo: PHOTOS.chevaux, titre: "Les chevaux présents", sous: r.chevauxOk ? "SIRE, puce et entrée notés" : ((r.nCh - r.nComplets) + " fiche" + ((r.nCh - r.nComplets) > 1 ? "s" : "") + " à compléter"), pill: "Partie IV", qui: r.nCh + " cheva" + (r.nCh > 1 ? "ux" : "l"), etat: r.chevauxOk ? "\u2713 À jour" : (r.nComplets + " / " + r.nCh), on: function () { ouvrir("registre-chevaux"); } },
-        { cle: "V", ok: !d.mvAbsent && (d.mouvements || []).length > 0, photo: PHOTOS.mouvements, titre: "Les mouvements", sous: d.mvAbsent ? "Concours, stages, vétérinaire" : ((d.mouvements || []).length + " déplacement" + ((d.mouvements || []).length > 1 ? "s" : "") + " noté" + ((d.mouvements || []).length > 1 ? "s" : "")), pill: "Partie V", etat: d.mvAbsent ? "Bientôt" : ((d.mouvements || []).length ? "\u2713 Tenu" : "À commencer"), on: d.mvAbsent ? null : function () { ouvrir("registre-mouvements"); } },
+        { cle: "V", ok: !d.mvAbsent && (d.mouvements || []).length > 0, photo: PHOTOS.mouvements, titre: "Mouvements temporaires", sous: d.mvAbsent ? "Concours, stages, vétérinaire" : ((d.mouvements || []).length + " déplacement" + ((d.mouvements || []).length > 1 ? "s" : "") + " noté" + ((d.mouvements || []).length > 1 ? "s" : "")), pill: "Partie V", etat: d.mvAbsent ? "Bientôt" : ((d.mouvements || []).length ? "\u2713 Tenu" : "À commencer"), on: d.mvAbsent ? null : function () { ouvrir("registre-mouvements"); } },
         { cle: "VI", ok: r.soinsOk, photo: PHOTOS.soins, titre: "Les soins", sous: (d.soins || []).length + " soin" + ((d.soins || []).length > 1 ? "s" : "") + " noté" + ((d.soins || []).length > 1 ? "s" : ""), pill: "Partie VI", qui: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? r.so.retards.slice(0, 2).map(function (s) { return nomCheval(d, s.cheval_id); }).join(", ") : ""), etat: nRet ? (nRet + " en retard") : ((d.soins || []).length ? "✓ À jour" : "Aucun soin"), alerte: nRet > 0, on: function () { ouvrir("registre-soins"); } },
         { cle: "VII", ok: false, bientot: true, photo: PHOTOS.controles, titre: "Les contrôles", sous: "La page à montrer lors d'une visite", pill: "Partie VII", etat: "Bientôt" }
       ];
@@ -837,7 +837,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         var r = await supa.from("registre_mouvements").delete().eq("id", l.id).select("id");
         if (r && r.error) throw new Error(r.error.message || String(r.error));
         if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé (droits de l'écurie à vérifier).");
-        setOuvert(null); setMsg("Mouvement supprimé."); setRecharge(function (n) { return n + 1; });
+        setOuvert(null); setMsg("Sortie supprimée."); setRecharge(function (n) { return n + 1; });
       } catch (e) { setMsg("Pas supprimé : " + String((e && e.message) || e)); }
       setEnvoi(false);
     }
@@ -876,7 +876,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
               h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setConfSuppr(false); } }, "Garder"),
               h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(l); } }, "Supprimer vraiment"))
-          : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: M, fontSize: 12.5, textDecoration: "underline" } }, "Supprimer ce mouvement")) : null,
+          : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: M, fontSize: 12.5, textDecoration: "underline" } }, "Supprimer cette sortie")) : null,
         msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
     }
 
@@ -903,7 +903,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { style: { display: "flex", gap: 8, marginTop: 18 } },
           selecteur(fCh, setFCh, chevauxOpt, "Cheval"),
           selecteur(fAn, setFAn, [["tous", "Toutes"]].concat(annees.map(function (a) { return [a, a]; })), "Année")),
-        h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrirLigne(null); } }, ouvert === "nouveau" ? "Fermer" : "+ Ajouter un mouvement"),
+        h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrirLigne(null); } }, ouvert === "nouveau" ? "Fermer" : "+ Ajouter une sortie"),
         ouvert === "nouveau" ? formulaire(null) : null,
         msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
         h("div", { className: "hg-aide", style: { marginTop: 14 } }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
@@ -917,11 +917,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               etat: !l.date_retour ? "Pas encore rentré" : (quoi ? "" : "À compléter"), alerte: !l.date_retour || !quoi,
               onClick: function () { ouvrirLigne(l); } }),
             ouvert === l.id ? formulaire(l) : null);
-        })) : h("div", { className: "hg-vide" }, "Aucun mouvement pour ce choix."),
+        })) : h("div", { className: "hg-vide" }, "Aucune sortie pour ce choix."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
-      hero(h, { photo: PHOTOS.mouvements, titre: "Les mouvements", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
+      hero(h, { photo: PHOTOS.mouvements, titre: "Mouvements temporaires", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
 

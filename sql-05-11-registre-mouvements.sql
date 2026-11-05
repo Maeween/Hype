@@ -1,5 +1,5 @@
--- HYPE ▸ 05/11/2026 — REGISTRE D'ÉLEVAGE, PARTIE V : « LES MOUVEMENTS » (déplacements provisoires des chevaux).
--- À PASSER EN BASE SEULEMENT APRÈS L'ACCORD DE BLANDINE.
+-- HYPE ▸ 05/11/2026 — REGISTRE D'ÉLEVAGE, PARTIE V : « MOUVEMENTS TEMPORAIRES DES ANIMAUX » (terme IFCE ; sorties provisoires des chevaux).
+-- Accord de Blandine le 05/11 (« Ok », 20 h 25). Passé en base par Claude le 05/11.
 -- Ce que demande l'IFCE (guide du registre d'élevage, arrêté du 5 juin 2000) pour un déplacement provisoire (concours,
 -- stage, randonnée, vétérinaire) : date de sortie, date de retour, nom du cheval, motif, adresse du lieu de destination.
 -- Tableau dans l'ordre des dates, gardé au moins 5 ans. Facultatif : déplacement en camion (oui/non), chef d'équipe.
