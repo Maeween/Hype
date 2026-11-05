@@ -495,6 +495,21 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   retard / 30 jours / 3 mois / Tout ; loupe = un cheval ; cartes par mois,
   « En retard de x jours » / « Dans x jours ». Les papiers du camion
   viendront s'y ajouter. hype-ecran-gestion.js ?v=11.
+· 05/11 22 h 42 Blandine « Ok » (grouper avec le camion) → PAGE « LE CAMION »
+  CODÉE, NON PUBLIÉE, SQL NON PASSÉ (sql-05-11-camion.sql : table
+  ecurie_vehicules (nom, genre camion/van/remorque/autre, immatriculation,
+  PTAC, prochain contrôle technique, fin d'assurance, assureur, note ; 4 règles
+  modératrices + gestionnaires) ; colonnes autorisation_transport et
+  autorisation_transport_fin dans ecurie_registre ; type « camion » ajouté aux
+  documents du registre + colonne vehicule_id). Page #camion : + = véhicule ;
+  cases Véhicules / À surveiller / Autorisation / Papiers ; aide selon le
+  PTAC (≤ 3,5 t : CT à 4 ans puis tous les 2 ans ; > 3,5 t : chaque année) ;
+  papiers (carte grise, assurance, autorisation, CAPTAV) dans le compartiment
+  « registre ». Les dates du CT, de l'assurance et de l'autorisation
+  remontent dans « Les échéances ». Règles : guide transport FNCH 2024 + CE
+  1/2005 (> 65 km : autorisation type 1, type 2 > 8 h ; CAPTAV ; registre
+  de transport 3 ans). Photo du héros provisoire (pas de photo de camion dans
+  images/). hype-ecran-gestion.js ?v=12.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

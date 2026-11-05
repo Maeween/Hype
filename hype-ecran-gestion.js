@@ -106,7 +106,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var vif = true;
       setD(null);
       (async function () {
-        var res = { club: club, chevaux: [], soins: [], docs: [], mouvements: [], mvAbsent: false, vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, docsReg: [], docRegAbsent: false, controles: [], ctlAbsent: false, peutGerer: false, erreur: "" };
+        var res = { club: club, chevaux: [], soins: [], docs: [], mouvements: [], mvAbsent: false, vetos: [], fiche: null, ficheAbsente: false, regch: {}, regchAbsent: false, docsReg: [], docRegAbsent: false, controles: [], ctlAbsent: false, vehicules: [], vhAbsent: false, peutGerer: false, erreur: "" };
         try {
           if (typeof supa === "undefined" || !supa) { res.erreur = "Pas de connexion."; if (vif) setD(res); return; }
           if (!club) { if (vif) setD(res); return; }
@@ -144,6 +144,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             var rr = await supa.from("registre_chevaux").select("*").eq("club_clef", clef).limit(1000);
             if (rr && rr.error) { var m2 = String(rr.error.message || rr.error.code || ""); if (/does not exist|relation|42P01|schema cache/i.test(m2)) res.regchAbsent = true; }
             else ((rr && rr.data) || []).forEach(function (x) { res.regch[String(x.cheval_id)] = x; });
+            /* 05/11 le camion — véhicules de l'écurie */
+            var rvh = await supa.from("ecurie_vehicules").select("*").eq("club_clef", clef).order("nom").limit(50);
+            if (rvh && rvh.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rvh.error.message || rvh.error.code || ""))) res.vhAbsent = true; }
+            else res.vehicules = (rvh && rvh.data) || [];
             /* 05/11 parties II et VII — documents du registre (plan, pages de contrôle) et visites de contrôle */
             var rdr = await supa.from("registre_documents").select("*").eq("club_clef", clef).order("date_doc", { ascending: false }).limit(200);
             if (rdr && rdr.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rdr.error.message || rdr.error.code || ""))) res.docRegAbsent = true; }
@@ -289,7 +293,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var cases = [
         { b: "Registre", s: r.complets + " sur 7", on: function () { ouvrir("registre"); } },
         { b: "Soins", s: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? (nRet + " en retard") : ((d.soins || []).length ? "À jour" : "Aucun noté")), alerte: nRet > 0 || r.so.aConfirmer.length > 0, on: function () { ouvrir(r.so.aConfirmer.length ? "soins-a-confirmer" : "sante-club"); } },
-        { b: "Camion", s: "Bientôt" },
+        { b: "Camion", s: d.vhAbsent ? "Bientôt" : ((d.vehicules || []).length ? ((d.vehicules || []).length + " véhicule" + ((d.vehicules || []).length > 1 ? "s" : "")) : "À remplir"), on: d.vhAbsent ? null : function () { ouvrir("camion"); } },
         { b: "Compta", s: "Bientôt" }
       ];
       corps = h("div", null,
@@ -306,7 +310,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "large", PHOTOS.registre, "Le registre d'élevage", "7 parties · " + r.complets + " complète" + (r.complets > 1 ? "s" : ""), function () { ouvrir("registre"); }),
           theme(h, "", PHOTOS.soins, "Les soins", (d.soins || []).length ? ((d.soins || []).length + " noté" + ((d.soins || []).length > 1 ? "s" : "") + (nRet ? " · " + nRet + " en retard" : "")) : "Aucun soin noté", function () { ouvrir("sante-club"); }),
           theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
-          theme(h, "", PHOTOS.camion, "Le camion", "Bientôt", null),
+          theme(h, "", PHOTOS.camion, "Le camion", d.vhAbsent ? "Bientôt" : "Papiers et dates à surveiller", d.vhAbsent ? null : function () { ouvrir("camion"); }),
           theme(h, "", PHOTOS.compta, "Ma compta", "Bientôt", null)),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
@@ -1451,6 +1455,12 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         return { k: "s" + s.id, date: String(s.date_prochaine).slice(0, 10), ch: s.cheval_id, titre: (TYPES[s.type] || s.type || "Soin") + (s.titre ? " · " + s.titre : ""),
           sous: (nomDe[s.cheval_id] || "Cheval"), photo: photoCheval(d, s.cheval_id), clic: function () { ouvrirCheval(s.cheval_id, nomDe[s.cheval_id]); } };
       });
+      (d.vehicules || []).forEach(function (v) {
+        var ouvrirCam = function () { ouvrir("camion"); };
+        if (v.ct_prochain) items.push({ k: "ct" + v.id, date: String(v.ct_prochain).slice(0, 10), ch: null, titre: "Contrôle technique", sous: v.nom + (v.immatriculation ? " · " + v.immatriculation : ""), photo: PHOTOS.camion, clic: ouvrirCam });
+        if (v.assurance_fin) items.push({ k: "as" + v.id, date: String(v.assurance_fin).slice(0, 10), ch: null, titre: "Assurance du véhicule", sous: v.nom + (v.assureur ? " · " + v.assureur : ""), photo: PHOTOS.camion, clic: ouvrirCam });
+      });
+      if (d.fiche && d.fiche.autorisation_transport_fin) items.push({ k: "aut", date: String(d.fiche.autorisation_transport_fin).slice(0, 10), ch: null, titre: "Autorisation de transport", sous: "Fin de validité · à renouveler auprès de la DDPP", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } });
       if (d.peutGerer) {
         var ft = finTrimestre(auj);
         items.push({ k: "reg" + ft, date: ft, ch: null, titre: "Imprimer le registre", sous: "Fin du trimestre · registre tenu sur l'appli", photo: PHOTOS.registre, clic: function () { ouvrir("registre-imprimer"); } });
@@ -1473,7 +1483,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             return carte(h, { cle: it.k, photo: it.photo, titre: it.titre, sous: it.sous, pill: dateCourte(it.date), etat: etatDe(it.j), alerte: it.j <= 7, onClick: it.clic });
           })));
         }) : h("div", { className: "hg-vide" }, "Rien à prévoir pour ce choix."),
-        h("div", { className: "hg-sous" }, "Les rappels viennent des soins notés (date du prochain soin). Les papiers du camion viendront s'ajouter ici."),
+        h("div", { className: "hg-sous" }, "Les rappels viennent des soins notés (date du prochain soin) et des dates du camion."),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE },
@@ -1481,5 +1491,150 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « LE CAMION » (05/11 22 h 42) ═════════════════════════
+     Les véhicules de l'écurie et leurs dates (contrôle technique, assurance), l'autorisation de transporteur et les
+     papiers (carte grise, assurance, autorisation, CAPTAV). Tables : sql-05-11-camion.sql. Règles retenues (guide
+     transport FNCH 2024, règlement CE 1/2005) : au-delà de 65 km, autorisation type 1 (type 2 au-delà de 8 h) +
+     CAPTAV du conducteur + registre de transport gardé 3 ans ; contrôle technique ≤ 3,5 t à 4 ans puis tous les
+     2 ans, > 3,5 t chaque année. Les dates remontent dans « Les échéances ». */
+  var GENRES = [["camion", "Camion"], ["van", "Van"], ["remorque", "Remorque"], ["autre", "Autre"]];
+  function EcranCamion() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var c = useClub();
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var d = useDonneesEcurie(c.club, recharge);
+    var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var _s = React.useState(false); var confSuppr = _s[0], setConfSuppr = _s[1];
+    var _a = React.useState(null); var aut = _a[0], setAut = _a[1];
+    React.useEffect(function () { if (d) setAut({ autorisation_transport: (d.fiche && d.fiche.autorisation_transport) || "", autorisation_transport_fin: (d.fiche && d.fiche.autorisation_transport_fin) || "" }); }, [d]);
+    function ouvrirV(v) {
+      if (ouvert === (v ? v.id : "nouveau")) { setOuvert(null); return; }
+      setMsg(""); setConfSuppr(false);
+      setVal(v ? { nom: v.nom || "", genre: v.genre || "camion", immatriculation: v.immatriculation || "", ptac_kg: v.ptac_kg ? String(v.ptac_kg) : "", ct_prochain: v.ct_prochain || "", assurance_fin: v.assurance_fin || "", assureur: v.assureur || "", notes: v.notes || "" }
+        : { nom: "", genre: "camion", immatriculation: "", ptac_kg: "", ct_prochain: "", assurance_fin: "", assureur: "", notes: "" });
+      setOuvert(v ? v.id : "nouveau");
+    }
+    function maj(k, x) { setMsg(""); setVal(function (o) { var n = Object.assign({}, o); n[k] = x; return n; }); }
+    async function enregistrerV(v) {
+      if (!String(val.nom || "").trim()) { setMsg("Donne un nom au véhicule."); return; }
+      setEnvoi(true); setMsg("");
+      try {
+        var p = parseInt(String(val.ptac_kg || "").replace(/\D/g, ""), 10);
+        var ligne = { club_clef: clefDe(c.club), nom: String(val.nom).trim(), genre: val.genre || "camion", immatriculation: String(val.immatriculation || "").trim().toUpperCase() || null,
+          ptac_kg: isNaN(p) ? null : p, ct_prochain: val.ct_prochain || null, assurance_fin: val.assurance_fin || null, assureur: String(val.assureur || "").trim() || null, notes: String(val.notes || "").trim() || null, maj_le: new Date().toISOString() };
+        var r = v ? await supa.from("ecurie_vehicules").update(ligne).eq("id", v.id).select("*") : await supa.from("ecurie_vehicules").insert(ligne).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("✓ Enregistré"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    async function supprimerV(v) {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("ecurie_vehicules").delete().eq("id", v.id).select("id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("Véhicule retiré."); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas retiré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    async function enregistrerAut() {
+      setEnvoi(true); setMsg("");
+      try {
+        var clef = clefDe(c.club);
+        var r = await supa.from("ecurie_registre").upsert({ club_clef: clef, club_nom: c.club, autorisation_transport: String(aut.autorisation_transport || "").trim() || null, autorisation_transport_fin: aut.autorisation_transport_fin || null, maj_le: new Date().toISOString() }, { onConflict: "club_clef" }).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        var relue = await supa.from("ecurie_registre").select("*").eq("club_clef", clef).maybeSingle();
+        if (!relue || relue.error || !relue.data) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setMsg("✓ Autorisation enregistrée"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    function champ(k, lab, o) {
+      o = o || {};
+      return h("div", { key: k }, h("label", { htmlFor: "hgv-" + k }, lab),
+        h("input", { id: "hgv-" + k, type: o.date ? "date" : "text", inputMode: o.num ? "numeric" : undefined, value: val[k] || "", placeholder: o.ex || "", autoComplete: "off", onChange: function (e) { maj(k, e.target.value); } }),
+        o.aide ? h("div", { className: "hg-aide" }, o.aide) : null);
+    }
+    function formV(v) {
+      var p = parseInt(String(val.ptac_kg || "").replace(/\D/g, ""), 10);
+      var aideCt = isNaN(p) ? "Le poids total (PTAC) est sur la carte grise, case F.2." : (p > 3500 ? "Plus de 3,5 t : contrôle technique chaque année, temps de conduite et de repos à respecter." : "3,5 t ou moins : contrôle technique à 4 ans, puis tous les 2 ans.");
+      return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+        champ("nom", "Nom", { ex: "ex. Camion 2 places" }),
+        h("label", null, "Genre"),
+        h("div", { className: "hg-sugg" }, GENRES.map(function (x) { var on = val.genre === x[0]; return h("button", { key: x[0], type: "button", onClick: function () { maj("genre", x[0]); }, style: on ? { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" } : null }, x[1]); })),
+        h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, champ("immatriculation", "Immatriculation", { ex: "AB-123-CD" }), champ("ptac_kg", "PTAC (kg)", { num: true, ex: "3500" })),
+        h("div", { className: "hg-aide" }, aideCt),
+        h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, champ("ct_prochain", "Prochain contrôle", { date: true }), champ("assurance_fin", "Fin d'assurance", { date: true })),
+        champ("assureur", "Assureur", { ex: "Facultatif" }),
+        champ("notes", "Note", { ex: "Facultatif" }),
+        h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrerV(v); } }, envoi ? "Enregistrement…" : "Enregistrer"),
+        v ? (confSuppr
+          ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setConfSuppr(false); } }, "Garder"),
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, disabled: envoi, onClick: function () { supprimerV(v); } }, "Retirer vraiment"))
+          : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, textDecoration: "underline" } }, "Retirer ce véhicule")) : null,
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
+    }
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else if (d.vhAbsent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie.");
+    else {
+      var auj = isoAuj();
+      var alerteDe = function (iso) { if (!iso) return null; var j = ecartJours(iso, auj); return j < 0 ? ("dépassé de " + (-j) + " j") : (j <= 60 ? ("dans " + j + " j") : null); };
+      var vh = d.vehicules || [];
+      var aSurv = vh.filter(function (v) { return alerteDe(v.ct_prochain) || alerteDe(v.assurance_fin) || !v.ct_prochain || !v.assurance_fin; });
+      var autFin = d.fiche && d.fiche.autorisation_transport_fin;
+      var papiers = (d.docsReg || []).filter(function (x) { return x.type === "camion" && x.chemin; });
+      var montrer = function (k) { return f === "tous" || f === k; };
+      var etatV = function (v) {
+        var ct = alerteDe(v.ct_prochain), as = alerteDe(v.assurance_fin);
+        if (!v.ct_prochain || !v.assurance_fin) return { t: "Dates à noter", a: true };
+        if (ct) return { t: "Contrôle " + ct, a: true };
+        if (as) return { t: "Assurance " + as, a: true };
+        return { t: "✓ À jour", a: false };
+      };
+      corps = h("div", null,
+        ligneEcurie(h, c, [{ svg: SVG_PLUS, lab: "Ajouter un véhicule", on: ouvert === "nouveau", clic: function () { ouvrirV(null); } }]),
+        ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, "Nouveau véhicule"), formV(null)) : null,
+        msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        tuiles(h, [{ k: "vehicules", b: "Véhicules", s: String(vh.length), n: 1 }, { k: "alerte", b: "À surveiller", s: String(aSurv.length), n: aSurv.length },
+          { k: "autorisation", b: "Autorisation", s: autFin ? ("jusqu'au " + dateCourte(autFin)) : "à noter", n: 1 }, { k: "papiers", b: "Papiers", s: String(papiers.length), n: 1 }], f, setF),
+        (montrer("vehicules") || montrer("alerte")) ? h("div", null, h("h2", { className: "hv3-h2" }, f === "alerte" ? "À surveiller" : "Les véhicules"),
+          (f === "alerte" ? aSurv : vh).length ? h("div", { className: "hv3-cartes" }, (f === "alerte" ? aSurv : vh).map(function (v) {
+            var e = etatV(v);
+            return h("div", { key: v.id },
+              carte(h, { cle: v.id, photo: PHOTOS.camion, titre: v.nom, sous: [v.immatriculation, v.ptac_kg ? (String(v.ptac_kg).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " kg") : ""].filter(Boolean).join(" · ") || "Immatriculation à noter",
+                pill: (GENRES.filter(function (x) { return x[0] === v.genre; })[0] || ["", "Véhicule"])[1], qui: v.ct_prochain ? ("CT " + dateCourte(v.ct_prochain)) : "", etat: e.t, alerte: e.a, onClick: function () { ouvrirV(v); } }),
+              ouvert === v.id ? formV(v) : null);
+          })) : h("div", { className: "hg-vide" }, f === "alerte" ? "Rien à surveiller." : "Aucun véhicule noté. Touche + pour ajouter ton camion ou ton van.")) : null,
+        montrer("autorisation") && aut ? h("div", { className: "hg-f" }, h("h2", { className: "hv3-h2" }, "L'autorisation de transport"),
+          h("label", { htmlFor: "hgv-aut" }, "Numéro et type"),
+          h("input", { id: "hgv-aut", value: aut.autorisation_transport, placeholder: "ex. Type 1 n° FR-91-T1-…", onChange: function (e) { setMsg(""); setAut(Object.assign({}, aut, { autorisation_transport: e.target.value })); } }),
+          h("label", { htmlFor: "hgv-autfin" }, "Valable jusqu'au"),
+          h("input", { id: "hgv-autfin", type: "date", value: aut.autorisation_transport_fin || "", onChange: function (e) { setMsg(""); setAut(Object.assign({}, aut, { autorisation_transport_fin: e.target.value })); } }),
+          h("div", { className: "hg-aide" }, "Pour transporter des chevaux à plus de 65 km dans le cadre de ton activité : autorisation type 1 (type 2 au-delà de 8 h), délivrée par la DDPP et valable 5 ans."),
+          h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrerAut }, envoi ? "Enregistrement…" : "Enregistrer l'autorisation")) : null,
+        montrer("papiers") ? h("div", null, h("h2", { className: "hv3-h2" }, "Les papiers"),
+          h(DocsRegistre, { donnees: d, club: c.club, type: "camion", titreDefaut: "Papier du camion", photo: PHOTOS.camion, bouton: "+ Ajouter un papier", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
+          h("div", { className: "hg-aide" }, "Carte grise, attestation d'assurance, autorisation de transport, certificat CAPTAV de chaque conducteur.")) : null,
+        h("div", { className: "hg-sous" }, "Au-delà de 65 km : autorisation de transport, certificat de compétence (CAPTAV) du conducteur et registre de transport gardé 3 ans. À toute distance : le document d'accompagnement de chaque cheval. Les dates du contrôle technique, de l'assurance et de l'autorisation remontent dans « Les échéances »."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.camion, titre: "Le camion", sous: "Papiers et dates à surveiller.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
