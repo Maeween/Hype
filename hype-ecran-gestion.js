@@ -366,7 +366,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     ".hg-aide{font-size:11px;line-height:1.45;color:rgba(243,238,228,.5);margin-top:6px;font-family:'Montserrat',sans-serif}",
     ".hg-sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}",
     ".hg-sugg button{border:1px solid rgba(201,166,107,.6);background:transparent;color:#C9A66B;border-radius:999px;padding:5px 12px;font-size:12px;font-family:'Montserrat',sans-serif}",
-    ".hg-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:22px;border-radius:999px;border:1px solid #C9A66B;background:#C9A66B;color:#070A08;font-weight:600;font-size:14.5px;font-family:'Montserrat',sans-serif}",
+    ".hg-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:22px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#C9A66B;font-weight:500;font-size:14.5px;font-family:'Montserrat',sans-serif}",
     ".hg-btn[disabled]{opacity:.5}",
     ".hg-ok{margin-top:12px;text-align:center;font-size:13px;color:#C9A66B;font-family:'Montserrat',sans-serif}",
     ".hg-encart{margin-top:18px;border:1px solid rgba(201,166,107,.4);border-radius:14px;padding:14px;background:linear-gradient(135deg,rgba(201,166,107,.08),rgba(7,10,8,0) 70%);font-family:'Montserrat',sans-serif;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.8)}",
@@ -627,7 +627,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       lignes.map(function (l, i) { return h("div", { key: i, style: { fontFamily: M, fontSize: 12.5, lineHeight: 1.5, color: (i === lignes.length - 1 && nonConf) ? "#C9A66B" : "rgba(243,238,228,0.82)" } }, l); }),
       (gere && (nonConf || s.refuse)) ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
         s.refuse ? null : h("button", { type: "button", disabled: envoi, onClick: function () { agir(false); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.25)", background: "transparent", color: "#F3EEE4", fontFamily: M, fontSize: 13 } }, "Refuser"),
-        h("button", { type: "button", disabled: envoi, onClick: function () { agir(true); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid #C9A66B", background: "#C9A66B", color: "#070A08", fontFamily: M, fontSize: 13, fontWeight: 600 } }, "Confirmer")) : null,
+        h("button", { type: "button", disabled: envoi, onClick: function () { agir(true); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(201,166,107,.6)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 13, fontWeight: 600 } }, "Confirmer")) : null,
       msg ? h("div", { style: { fontFamily: M, fontSize: 12, color: "#C9A66B", marginTop: 8, textAlign: "center" } }, msg) : null);
   }
 
@@ -863,7 +863,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     function pastilles(k, choix) {
       return h("div", { className: "hg-sugg" }, choix.map(function (x) {
         var on = x[0] === val[k];
-        return h("button", { key: x[0], type: "button", onClick: function () { maj(k, on ? "" : x[0]); }, style: on ? { background: "#C9A66B", color: "#070A08" } : null }, x[1]);
+        return h("button", { key: x[0], type: "button", onClick: function () { maj(k, on ? "" : x[0]); }, style: on ? { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" } : null }, x[1]);
       }));
     }
     function formulaire(l) {
@@ -986,7 +986,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       setEnvoi(false);
     }
     function pastille(lab, on, clic, cle) {
-      return h("button", { key: cle, type: "button", onClick: clic, style: { border: "1px solid " + (on ? "#C9A66B" : "rgba(243,238,228,.18)"), background: on ? "#C9A66B" : "transparent", color: on ? "#070A08" : "#F3EEE4", borderRadius: 999, padding: "7px 13px", fontFamily: M, fontSize: 12.5 } }, lab);
+      return h("button", { key: cle, type: "button", onClick: clic, style: { border: "1px solid " + (on ? "#C9A66B" : "rgba(243,238,228,.18)"), background: on ? "rgba(201,166,107,.14)" : "transparent", color: "#F3EEE4", borderRadius: 999, padding: "7px 13px", fontFamily: M, fontSize: 12.5 } }, lab);
     }
     return h("div", { className: "hg-f", style: { padding: "4px 4px 16px", marginTop: 10, borderRadius: 16, border: "1px solid rgba(201,166,107,.4)", background: "rgba(7,10,8,.35)" } },
       h("div", { style: { padding: "0 10px" } },
@@ -1012,7 +1012,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           var on = !!coches[x.id];
           return h("button", { key: x.id, type: "button", onClick: function () { setMsg(""); setCoches(function (o) { var n = Object.assign({}, o); n[x.id] = !on; return n; }); },
             style: { display: "flex", alignItems: "center", gap: 8, minHeight: 42, padding: "6px 10px", borderRadius: 12, border: "1px solid " + (on ? "rgba(201,166,107,.8)" : "rgba(243,238,228,.12)"), background: on ? "rgba(201,166,107,.12)" : "transparent", color: "#F3EEE4", fontFamily: M, fontSize: 12.5, textAlign: "start" } },
-            h("span", { style: { flex: "0 0 18px", width: 18, height: 18, borderRadius: 5, border: "1px solid #C9A66B", background: on ? "#C9A66B" : "transparent", color: "#070A08", fontSize: 12, lineHeight: "18px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""),
+            h("span", { style: { flex: "0 0 18px", width: 18, height: 18, borderRadius: 5, border: "1px solid #C9A66B", background: "transparent", color: "#C9A66B", fontSize: 12, lineHeight: "18px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""),
             h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, x.nom || "?"));
         })),
         h("button", { type: "button", className: "hg-btn", disabled: envoi || !nCoches, onClick: enregistrer }, envoi ? "Enregistrement…" : ("Enregistrer pour " + nCoches + " cheva" + (nCoches > 1 ? "ux" : "l"))),
@@ -1205,7 +1205,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("label", null, "Qui est venu"),
         h("div", { className: "hg-sugg" }, ORGANISMES.map(function (x) {
           var on = x === val.organisme;
-          return h("button", { key: x, type: "button", onClick: function () { maj("organisme", on ? "" : x); }, style: on ? { background: "#C9A66B", color: "#070A08" } : null }, x);
+          return h("button", { key: x, type: "button", onClick: function () { maj("organisme", on ? "" : x); }, style: on ? { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" } : null }, x);
         })),
         h("label", { htmlFor: "hgc-nom" }, "Nom de la personne"),
         h("input", { id: "hgc-nom", value: val.controleur || "", placeholder: "Facultatif", onChange: function (e) { maj("controleur", e.target.value); } }),

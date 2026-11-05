@@ -2,6 +2,8 @@
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
+> 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
+
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
@@ -464,6 +466,10 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   « x sur 7 ». hype-ecran-gestion.js ?v=9. Piège trouvé : index.html a déjà
   une règle d'impression (« body * » masqué sauf #zone-impression) → la zone
   du registre est rendue visible à part. Banc : PDF A4 de 7 pages OK.
+· 05/11 21 h 32 Blandine : « pas de boutons plein doré ». Tout l'espace
+  Mon écurie corrigé (hype-ecran-gestion.js) : boutons à contour champagne
+  sans fond, pastilles choisies en fond champagne très léger, cases à cocher
+  sans fond. Règle ajoutée en tête du suivi et dans les règles de travail.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
@@ -528,6 +534,14 @@ capture : elle a souvent un écran en cache plus ancien que le code livré.
 ────────────────────────────────────────────────────────────
 2. RÈGLES DE TRAVAIL — NON NÉGOCIABLES
 ────────────────────────────────────────────────────────────
+· 🟥 DESIGN — PAS DE BOUTON PLEIN DORÉ, NULLE PART (Blandine, redit au moins
+  6 fois, dernière fois le 05/11 21 h 32 : « pas de boutons plein doré. Ça
+  fait 6 fois que je te demande de le noter dans le suivi »). Boutons :
+  fond transparent (ou dégradé pétrole → noir), contour champagne fin
+  (rgba(201,166,107,.6)), texte ivoire ou champagne. Pastilles et cases choisies :
+  fond champagne très léger (rgba(201,166,107,.14)), contour champagne,
+  texte ivoire. JAMAIS de fond #C9A66B plein avec texte noir. À VÉRIFIER
+  SUR CHAQUE CAPTURE AVANT DE LA MONTRER.
 · 1 action → 1 modification atomique → test iPhone → validation → suite.
   Aucune refonte simultanée, aucun nettoyage opportuniste, rien hors
   périmètre.
