@@ -487,6 +487,14 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   imprimable, la trame Vidéothèque et la fin des boutons pleins dorés ;
   hype-ecran-gestion.js ?v=10. À tester sur iPhone : envoi d'une photo de
   plan, « Imprimer » → enregistrer en PDF.
+· 05/11 22 h 12 Blandine « Ok » → PAGE « LES ÉCHÉANCES » CODÉE, NON PUBLIÉE
+  (aucun SQL, lecture seule) : #echeances, ouverte depuis la carte « Les
+  échéances » de Mon écurie (avant : page santé du club). Rappels de soins
+  (dernier soin de chaque type par cheval, chevaux sortis exclus) + rappel
+  « Imprimer le registre » à chaque fin de trimestre (guide IFCE) ; cases En
+  retard / 30 jours / 3 mois / Tout ; loupe = un cheval ; cartes par mois,
+  « En retard de x jours » / « Dans x jours ». Les papiers du camion
+  viendront s'y ajouter. hype-ecran-gestion.js ?v=11.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

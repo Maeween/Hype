@@ -305,7 +305,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hv2-grille" },
           theme(h, "large", PHOTOS.registre, "Le registre d'élevage", "7 parties · " + r.complets + " complète" + (r.complets > 1 ? "s" : ""), function () { ouvrir("registre"); }),
           theme(h, "", PHOTOS.soins, "Les soins", (d.soins || []).length ? ((d.soins || []).length + " noté" + ((d.soins || []).length > 1 ? "s" : "") + (nRet ? " · " + nRet + " en retard" : "")) : "Aucun soin noté", function () { ouvrir("sante-club"); }),
-          theme(h, "", PHOTOS.controles, "Les échéances", prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir", function () { ouvrir("sante-club"); }),
+          theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
           theme(h, "", PHOTOS.camion, "Le camion", "Bientôt", null),
           theme(h, "", PHOTOS.compta, "Ma compta", "Bientôt", null)),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
@@ -1411,5 +1411,75 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « LES ÉCHÉANCES » (05/11 22 h 12) ═════════════════════════
+     Tout ce qui a une date à venir, au même endroit : les rappels de soins (vaccins, vermifuges, ferrure…,
+     calculés sur le dernier soin de chaque type pour chaque cheval) et l'impression trimestrielle du registre
+     (registre tenu sur informatique : à imprimer chaque trimestre, guide IFCE). Les papiers du camion viendront
+     s'ajouter ici. Rien n'est écrit : la page ne fait que lire. */
+  function finTrimestre(iso) {
+    var m = String(iso).match(/^(\d{4})-(\d{2})/); if (!m) return "";
+    var a = +m[1], t = Math.floor((+m[2] - 1) / 3), mm = [3, 6, 9, 12][t];
+    var j = new Date(a, mm, 0).getDate();
+    return a + "-" + String(mm).padStart(2, "0") + "-" + String(j).padStart(2, "0");
+  }
+  function ecartJours(iso, auj) {
+    var a = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/), b = String(auj).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!a || !b) return 0;
+    return Math.round((new Date(+a[1], +a[2] - 1, +a[3]) - new Date(+b[1], +b[2] - 1, +b[3])) / 86400000);
+  }
+  function EcranEcheances() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var c = useClub();
+    var d = useDonneesEcurie(c.club);
+    var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+    var _rc = React.useState(false); var rechCh = _rc[0], setRechCh = _rc[1];
+    var _ch = React.useState("tous"); var fCh = _ch[0], setFCh = _ch[1];
+    function ouvrirCheval(id, nom) { try { window.__santeCheval = { id: id, nom: nom || "" }; } catch (e) { } setEcran("sante-cheval"); }
+    function ouvrir(ecran) { try { window.__santeClub = { nom: c.club }; window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else {
+      var auj = isoAuj();
+      var so = analyserSoins(d);
+      var nomDe = {}; (d.chevaux || []).forEach(function (x) { nomDe[x.id] = x.nom || ""; });
+      var sortis = {}; Object.keys(d.regch || {}).forEach(function (k) { if ((d.regch[k] || {}).date_sortie) sortis[k] = 1; });
+      var items = so.retards.concat(so.prochains).filter(function (s) { return !sortis[String(s.cheval_id)]; }).map(function (s) {
+        return { k: "s" + s.id, date: String(s.date_prochaine).slice(0, 10), ch: s.cheval_id, titre: (TYPES[s.type] || s.type || "Soin") + (s.titre ? " · " + s.titre : ""),
+          sous: (nomDe[s.cheval_id] || "Cheval"), photo: photoCheval(d, s.cheval_id), clic: function () { ouvrirCheval(s.cheval_id, nomDe[s.cheval_id]); } };
+      });
+      if (d.peutGerer) {
+        var ft = finTrimestre(auj);
+        items.push({ k: "reg" + ft, date: ft, ch: null, titre: "Imprimer le registre", sous: "Fin du trimestre · registre tenu sur l'appli", photo: PHOTOS.registre, clic: function () { ouvrir("registre-imprimer"); } });
+      }
+      items.forEach(function (it) { it.j = ecartJours(it.date, auj); });
+      var parCh = items.filter(function (it) { return fCh === "tous" || it.ch === fCh; });
+      var n = function (k) { return parCh.filter(function (it) { return k === "retard" ? it.j < 0 : k === "30" ? (it.j >= 0 && it.j <= 30) : k === "90" ? (it.j >= 0 && it.j <= 90) : true; }).length; };
+      var vis = parCh.filter(function (it) { return f === "tous" || (f === "retard" ? it.j < 0 : f === "30" ? (it.j >= 0 && it.j <= 30) : (it.j >= 0 && it.j <= 90)); })
+        .sort(function (a, b) { return a.date.localeCompare(b.date); });
+      var groupes = [], cle = null;
+      vis.forEach(function (it) { var g = it.j < 0 ? "retard" : it.date.slice(0, 7); if (g !== cle) { cle = g; groupes.push({ g: g, l: [] }); } groupes[groupes.length - 1].l.push(it); });
+      var titreG = function (g) { if (g === "retard") return "En retard"; var p = g.split("-"); return (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }); };
+      var etatDe = function (j) { return j < 0 ? ("En retard de " + (-j) + " jour" + (-j > 1 ? "s" : "")) : j === 0 ? "Aujourd'hui" : ("Dans " + j + " jour" + (j > 1 ? "s" : "")); };
+      corps = h("div", null,
+        ligneEcurie(h, c, [{ svg: SVG_LOUPE, lab: "Chercher un cheval", on: rechCh, clic: function () { if (rechCh) setFCh("tous"); setRechCh(!rechCh); } }]),
+        rechCh ? champCheval(h, d, fCh, setFCh, function () { setRechCh(false); }) : null,
+        tuiles(h, [{ k: "retard", b: "En retard", s: String(n("retard")), n: n("retard") }, { k: "30", b: "30 jours", s: String(n("30")), n: n("30") }, { k: "90", b: "3 mois", s: String(n("90")), n: n("90") }, { k: "tous", b: "Tout", s: String(n("tous")), n: 1 }], f, setF),
+        groupes.length ? groupes.map(function (g) {
+          return h("div", { key: g.g }, h("h2", { className: "hv3-h2" }, titreG(g.g)), h("div", { className: "hv3-cartes" }, g.l.map(function (it) {
+            return carte(h, { cle: it.k, photo: it.photo, titre: it.titre, sous: it.sous, pill: dateCourte(it.date), etat: etatDe(it.j), alerte: it.j <= 7, onClick: it.clic });
+          })));
+        }) : h("div", { className: "hg-vide" }, "Rien à prévoir pour ce choix."),
+        h("div", { className: "hg-sous" }, "Les rappels viennent des soins notés (date du prochain soin). Les papiers du camion viendront s'ajouter ici."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.controles, titre: "Les échéances", sous: "Ce qui arrive, au bon moment.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
