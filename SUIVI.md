@@ -17596,7 +17596,7 @@ Demande de Blandine (04/11 00h23, « Ok et il faut ajouter tout le monde avec le
 - Testé dans Chrome sur le code exact : photo normale → s'ouvre comme avant ; photo HEIF → convertie et ouverte ; fichier illisible → écran fermé + message. La vraie bibliothèque HEIF n'a pas pu être téléchargée dans l'environnement de test (remplacée par une simulation) : à confirmer avec Lore sur son téléphone.
 - Fichiers : index.html (recadreur + build 20261105-2050), SUIVI.md.
 
-## 05/11/2026 21h15 — PRÊT, NON PUBLIÉ (build 20261105-2115) — PHOTOS : conversion par le serveur, plus jamais de capture d'écran
+## 05/11/2026 21h15 — PUBLIÉ le 05/11 à 21h35 (build 20261105-2115) — PHOTOS : conversion par le serveur, plus jamais de capture d'écran
 - Blandine (20h53-20h54) : demander une capture d'écran « c'est tendu » sur une appli qui stocke les photos, « inenvisageable ». Puis « Oui fais ça ».
 - Le recadreur fait maintenant 4 essais avant d'abandonner, avec « Préparation de ta photo… » affiché pendant l'attente (14 langues) :
   1. lecture normale (inchangée) ;
