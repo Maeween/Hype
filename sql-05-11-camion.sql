@@ -1,5 +1,5 @@
 -- HYPE ▸ 05/11/2026 — MON ÉCURIE : « LE CAMION » (véhicules, papiers, dates à surveiller).
--- À PASSER EN BASE SEULEMENT APRÈS L'ACCORD DE BLANDINE.
+-- Accord de Blandine le 05/11 (« Ok », 23 h 59). Passé en base par Claude le 06/11.
 -- Règles retenues (guide transport FNCH 2024, règlement CE 1/2005) : au-delà de 65 km, transport par un professionnel =
 -- autorisation de transporteur type 1 (type 2 au-delà de 8 h) + certificat de compétence CAPTAV du conducteur +
 -- registre de transport gardé 3 ans ; document d'accompagnement de chaque cheval à toute distance.

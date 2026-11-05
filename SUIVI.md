@@ -510,6 +510,11 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   1/2005 (> 65 km : autorisation type 1, type 2 > 8 h ; CAPTAV ; registre
   de transport 3 ans). Photo du héros provisoire (pas de photo de camion dans
   images/). hype-ecran-gestion.js ?v=12.
+  ⇒ 05/11 23 h 59 Blandine « Ok » : SQL camion PASSÉ par Claude (4 règles,
+  RLS active, 2 colonnes autorisation, type « camion » et vehicule_id
+  vérifiés) ; PUBLIÉ avec « Les échéances » — build 20261106-0005.
+  À tester sur iPhone : ajouter le camion, une date, un papier ; voir la date
+  remonter dans Les échéances. Photo de camion à fournir par Blandine.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
