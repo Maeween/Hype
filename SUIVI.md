@@ -842,6 +842,27 @@ d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
 
 ════════════════════════════════════════════════════════════
 
+🐴 07/11/2026 (1 h) — TITI « VIDÉO SACCADÉE » — build 20261107-0100
+Blandine 0 h 27 : « Ok continue » sur le texte proposé : « Oh là là, ta
+vidéo fait des petits sauts ! 🐴💨 Ton téléphone a filmé avec trop peu
+d'images, souvent parce qu'il manquait de lumière. » / « La prochaine
+fois, filme dans un endroit bien éclairé : ton souvenir sera tout
+fluide ! ✨ » / bouton « Compris ! » — traduit dans les 14 langues
+(HYPE_TITI_SACCADE_TXT).
+· hypeTitiSiSaccadee(diag) appelée dans hypeMuxAttendrePret (passage
+  commun à TOUS les envois vidéo : souvenirs, commentaires/fil, albums,
+  carnet, Team) quand Mux a fini : si moins de 20 VRAIES images/s (mesure
+  premium, diag de mux-upload v29), Titi apparaît chez la personne qui a
+  envoyé. Vidéo publiée quand même, un seul bouton qui ferme. Rien si Titi
+  vient de parler (« Garder quand même » < 2 min).
+· hypeAfficherTitiQualite(estVideo, perso) : mode « conseil seul ».
+VÉRIFIÉ (Chromium) : 14,5 img/s → Titi + 1 bouton qui ferme, aucun
+sélecteur ; 30 img/s → rien ; allemand OK ; Titi qualité photo inchangé
+(2 boutons, « Garder » rend le fichier). Syntaxe des 17 blocs OK.
+NON VU : sur iPhone avec une vraie vidéo saccadée.
+
+════════════════════════════════════════════════════════════
+
 🧹 07/11/2026 (0 h 25) — 23 COPIES MUX DE SEPTEMBRE SUPPRIMÉES
 Blandine 0 h 14 : « Ok continue ».
 · Revérifié juste avant : aucune des 23 (asset ni lecture) citée dans la
