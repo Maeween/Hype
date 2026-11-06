@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h00)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h15)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -41,6 +41,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : traduire les textes de la page Médias et du chapitre dans toutes les langues, une fois le français relu (attend : Blandine pour la relecture, puis Claude)
 
 ## 3 — Quand on aura le temps
+- [07/11] Vidéos de la Team : nouvelles pages « envoi » et « lecture » (visuels A/B/C envoyés) + zone de commentaires dans la lecture (attend : choix de Blandine)
 - [06/11] Vidéos de la Team rattachées à un concours (build 2335) : les montrer sur la page du concours et de ses résultats (attend : test iPhone de Blandine)
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
@@ -606,6 +607,35 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🏁 07/11/2026 (01 h 15) — VIDÉOS DE LA TEAM : ONGLET « PAR CONCOURS » + J'AIME — build 20261107-0115
+Demandes de Blandine (06/11 23 h 50) : « ajoute l'onglet par concours en haut
+de la page vidéo » ; « tu peux ajouter des j'aime ou commentaires sur les
+vidéos de la team aussi ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261107-0115 ; ?v=5 → ?v=6 (fichier Team) ; notifications « a aimé / a commenté ta vidéo » ; cœur compact |
+| hype-ecran-team-medias.js | racine | onglet « Par concours » (en premier) ; cœur sous chaque vidéo |
+BASE (passée le 07/11 vers 01 h, migration textes_jaime_teamvideo) : les
+j'aime acceptent « teamvideo:<id> » (seulement si on peut voir la vidéo) et
+préviennent la personne qui l'a postée, une seule fois par personne ; les
+« vidéos les plus aimées » de la page Team comptent aussi ces j'aime.
+CE QUI A ÉTÉ FAIT
+· « Par concours » : une section par concours (lieu en titre, nom du
+  concours dessous, date à droite), les plus récents d'abord, « Sans
+  concours » à la fin ; une vidéo seule prend toute la largeur. Sur
+  téléphone, les 3 intitulés tiennent sur une ligne (espacement réduit).
+· Cœur + nombre sous chaque vidéo (pas sur une vidéo verrouillée).
+· Commentaires : l'envoi d'un commentaire sur « teamvideo:<id> » prévient
+  déjà l'auteur ; la ZONE de commentaires sera posée dans la nouvelle page
+  de lecture (proposition B), en attente du choix de Blandine.
+VÉRIFIÉ (Chromium, base simulée) : onglet « Par concours » → section
+« Lamotte-Beuvron / CSO Club Lamotte / 1 nov. », cœur « 3 » ; aucune erreur.
+NON VU : sur iPhone.
+EN ATTENTE : choix des visuels « envoi » (A/B/C) et « lecture » (A/B/C)
+envoyés le 06/11 à 23 h 50.
 
 ════════════════════════════════════════════════════════════
 

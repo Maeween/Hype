@@ -331,6 +331,8 @@ function EcranTeamMedias() {
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff),
       meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
+      /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
+      (typeof HypeJaimeTexte === "function" && !verrou) ? h(HypeJaimeTexte, { cible: "teamvideo:" + v.id, petit: true, marge: 2 }) : null,
       /* 06/11 soir — l'auteur corrige le concours / la date / le lieu */
       estAuteur ? h("button", { type: "button", disabled: changeConc === v.id, onClick: function (e) { e.stopPropagation(); ouvrirFeuilleConc(v, v); },
         "aria-label": T("Modifier le concours", "Edit competition", "Editar el concurso", "Modifica il concorso", "競技会を変更", "Turnier ändern", "تعديل المسابقة", "修改比赛", "Wedstrijd wijzigen", "Alterar o concurso", "Ändra tävling", "Изменить соревнование", "Zmień zawody", "대회 수정"),
@@ -480,9 +482,9 @@ function EcranTeamMedias() {
     function lien(cle, txt) {
       var on = vue === cle;
       return h("button", { key: cle, type: "button", onClick: function () { setVue(cle); setCavOuverte(null); setChOuvert(null); },
-        style: { background: "none", border: "none", borderBottom: "1px solid " + (on ? CH : "transparent"), padding: "8px 0 6px", minHeight: 36, color: on ? IV : IV3, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" } }, txt);
+        style: { background: "none", border: "none", borderBottom: "1px solid " + (on ? CH : "transparent"), padding: "8px 0 6px", minHeight: 36, color: on ? IV : IV3, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: largeur < 420 ? "0.12em" : "0.2em", whiteSpace: "nowrap", flex: "0 0 auto", textTransform: "uppercase", cursor: "pointer" } }, txt);
     }
-    return h("div", { style: { display: "flex", gap: 22, marginTop: 18 } }, lien("cavaliere", T("Par cavalière", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiterin", "حسب الفارسة", "按骑手", "Per ruiter", "Por cavaleira", "Per ryttare", "По всадницам", "Według jeźdźczyni", "라이더별")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별")));
+    return h("div", { "data-hscroll": "1", style: { display: "flex", gap: largeur < 420 ? 16 : 22, marginTop: 18, overflowX: "auto", scrollbarWidth: "none" } }, lien("concours", T("Par concours", "By competition", "Por concurso", "Per concorso", "競技会別", "Nach Turnier", "حسب المسابقة", "按比赛", "Per wedstrijd", "Por concurso", "Per tävling", "По соревнованиям", "Według zawodów", "대회별")), lien("cavaliere", T("Par cavalière", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiterin", "حسب الفارسة", "按骑手", "Per ruiter", "Por cavaleira", "Per ryttare", "По всадницам", "Według jeźdźczyni", "라이더별")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별")));
   }
 
   function ongletVideos() {
@@ -492,7 +494,28 @@ function EcranTeamMedias() {
       if (ouverte) return pageCavaliere(ouverte);
     } else if (chOuvert) return pageCheval(chOuvert);
     var corps;
-    if (vue === "cavaliere") {
+    if (vue === "concours") {   /* 06/11 soir (Blandine : « ajoute l'onglet par concours en haut de la page vidéo ») */
+      var grp = {}, ordre = [];
+      (videos || []).forEach(function (v) {
+        var cle = v.agenda_id ? "a:" + v.agenda_id : ((v.lieu || v.concours) ? "x:" + (v.lieu || v.concours) + "|" + (v.date_video || "") : "_sans");
+        if (!grp[cle]) { grp[cle] = { cle: cle, titre: cle === "_sans" ? "" : (v.lieu || v.concours || ""), sous: (v.lieu && v.concours && v.concours !== v.lieu) ? v.concours : "", date: v.date_video || "", liste: [] }; ordre.push(cle); }
+        grp[cle].liste.push(v);
+      });
+      ordre.sort(function (a, b) { if (a === "_sans") return 1; if (b === "_sans") return -1; return String(grp[b].date).localeCompare(String(grp[a].date)); });
+      var colsQ = largeur >= 700 ? 3 : 2;
+      corps = ordre.map(function (cle, i) {
+            var g = grp[cle], n = g.liste.length, resteQ = n % colsQ;
+            return h("section", { key: "sq" + cle, style: { padding: "18px 0 20px", borderTop: i ? "1px solid " + CH3 : "none" } },
+              h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 } },
+                h("div", { style: { minWidth: 0 } },
+                  h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.1, color: cle === "_sans" ? IV2 : IV } }, cle === "_sans" ? T("Sans concours", "No competition", "Sin concurso", "Senza concorso", "競技会なし", "Ohne Turnier", "بدون مسابقة", "未关联比赛", "Zonder wedstrijd", "Sem concurso", "Utan tävling", "Без соревнования", "Bez zawodów", "대회 없음") : g.titre),
+                  g.sous ? h("div", { dir: "auto", style: { fontSize: 11, color: IV3, marginTop: 3 } }, g.sous) : null),
+                g.date && cle !== "_sans" ? h("div", { style: { flex: "0 0 auto", fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: CH } }, dateCourte(g.date)) : null),
+              h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + colsQ + ", minmax(0, 1fr))", gap: "14px 10px" } },
+                g.liste.map(function (v, k) { var derniere = k === n - 1 && resteQ; return tuileVideo(v, "q" + cle + v.id, true, derniere ? colsQ - resteQ + 1 : 0); })));
+          });
+      if (!(videos || []).length) corps = vide(T("Les concours apparaîtront ici dès qu'une vidéo y sera rattachée.", "Competitions will appear here as soon as a video is linked to one.", "Los concursos aparecerán aquí en cuanto se vincule un vídeo.", "I concorsi appariranno qui appena un video sarà collegato.", "動画が紐づけられると、ここに競技会が表示されます。", "Turniere erscheinen hier, sobald ein Video damit verknüpft ist.", "ستظهر المسابقات هنا بمجرد ربط فيديو بها.", "一旦有视频关联比赛，比赛就会显示在这里。", "Wedstrijden verschijnen hier zodra er een video aan gekoppeld is.", "Os concursos aparecerão aqui assim que um vídeo for ligado a eles.", "Tävlingar visas här så snart en video kopplas till dem.", "Соревнования появятся здесь, как только к ним привяжут видео.", "Zawody pojawią się tu, gdy tylko zostanie do nich przypisane wideo.", "영상이 연결되면 여기에 대회가 표시돼요."));
+    } else if (vue === "cavaliere") {
       /* les cavalières qui ont des vidéos d'abord, puis les autres par ordre alphabétique */
       var liste = (membres || []).slice().sort(function (a, b) { var d = videosDe(b).length - videosDe(a).length; return d || nomProfil(a).localeCompare(nomProfil(b)); });
       corps = !liste.length ? vide(T("Aucune cavalière dans l'équipe pour l'instant.", "No riders in the team yet.", "Aún no hay jinetes en el equipo.", "Ancora nessun cavaliere nella squadra.", "チームにはまだライダーがいません。", "Noch keine Reiterin im Team.", "لا توجد فارسات في الفريق بعد.", "团队中还没有骑手。", "Nog geen ruiters in het team.", "Ainda não há cavaleiras na equipa.", "Inga ryttare i laget än.", "В команде пока нет всадниц.", "W drużynie nie ma jeszcze jeźdźczyń.", "아직 팀에 라이더가 없어요.")) : h("div", null, liste.map(sectionCavaliere));
