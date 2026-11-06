@@ -628,7 +628,9 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   07/11 00 h 10 Blandine : « des onglets pour choisir entre Amat, Club,
   Poney » → onglets Club / Amateur / Poney / Autres au-dessus des tuiles de
   discipline (3 tuiles par onglet ; Autres = Hunter, Voltige, Equifun,
-  Equifeel, Shetland). Non publié.
+  Equifeel, Shetland). ⇒ 00 h 13 « Ok continue » : PUBLIÉ — build
+  20261107-0145 (emporte aussi le build 0140 « vidéos de la Team » d'une
+  autre conversation, poussé sans [publier] et noté « à tester sur iPhone »).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
