@@ -1099,6 +1099,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
     var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
     var refFichier = React.useRef(null);
+    var _vj = React.useState(""); var valable = _vj[0], setValable = _vj[1];   /* 07/11 : date de validité (papiers du camion) */
     var docs = (d.docsReg || []).filter(function (x) { return x.type === type && x.chemin; });
     async function envoyer(f) {
       if (!f) return;
@@ -1107,7 +1108,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var id = null;
       try {
         var titre = String(f.name || "").replace(/\.[a-z0-9]+$/i, "") || props.titreDefaut;
-        var r = await supa.from("registre_documents").insert({ club_clef: clefDe(props.club), type: type, titre: titre, date_doc: isoAuj() }).select("*");
+        var ligneD = { club_clef: clefDe(props.club), type: type, titre: titre, date_doc: isoAuj() };
+        if (props.avecDate && valable) ligneD.valable_jusqu = valable;
+        var r = await supa.from("registre_documents").insert(ligneD).select("*");
         if (r && r.error) throw new Error(r.error.message || String(r.error));
         if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
         id = r.data[0].id;
@@ -1116,7 +1119,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         if (up && up.error) throw new Error(up.error.message || String(up.error));
         var r2 = await supa.from("registre_documents").update({ chemin: chemin }).eq("id", id).select("id");
         if (r2 && r2.error) throw new Error(r2.error.message || String(r2.error));
-        setMsg("✓ Ajouté"); if (props.onChange) props.onChange();
+        setMsg("✓ Ajouté"); setValable(""); if (props.onChange) props.onChange();
       } catch (e) {
         if (id) { try { await supa.from("registre_documents").delete().eq("id", id); } catch (eD) { } }
         setMsg("Pas ajouté : " + String((e && e.message) || e));
@@ -1137,7 +1140,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     return h("div", null,
       docs.length ? h("div", { className: "hv3-cartes", style: { marginTop: 14 } }, docs.map(function (x) {
         return h("div", { key: x.id },
-          carte(h, { cle: x.id, photo: props.photo, titre: x.titre || props.titreDefaut, sous: "Ajouté le " + dateCourte(x.date_doc || x.created_at),
+          carte(h, { cle: x.id, photo: props.photo, titre: x.titre || props.titreDefaut, sous: x.valable_jusqu ? ((String(x.valable_jusqu) < isoAuj() ? "Expiré depuis le " : "Valable jusqu'au ") + dateCourte(x.valable_jusqu)) : ("Ajouté le " + dateCourte(x.date_doc || x.created_at)),
             pill: /\.pdf$/i.test(x.chemin) ? "PDF" : "Image", etat: "Ouvrir",
             onClick: function () { setMsg(""); ouvrirDocRegistre(x).catch(function (e) { setMsg("Impossible d'ouvrir : " + String((e && e.message) || e)); }); } }),
           aSuppr === x.id
@@ -1146,6 +1149,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
                 h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(x); } }, "Retirer vraiment"))
             : h("button", { type: "button", onClick: function () { setASuppr(x.id); }, style: { display: "block", margin: "6px 0 0 auto", background: "none", border: "none", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer"));
       })) : null,
+      props.avecDate ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-val-" + type }, "Valable jusqu'au (facultatif)"),
+        h("input", { id: "hgd-val-" + type, type: "date", value: valable, onChange: function (e) { setValable(e.target.value); } })) : null,
       h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : props.bouton),
       h("input", { ref: refFichier, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ""; envoyer(f); } }),
       msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
@@ -1461,6 +1466,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         if (v.ct_prochain) items.push({ k: "ct" + v.id, date: String(v.ct_prochain).slice(0, 10), ch: null, titre: "Contrôle technique", sous: v.nom + (v.immatriculation ? " · " + v.immatriculation : ""), photo: PHOTOS.camion, clic: ouvrirCam });
         if (v.assurance_fin) items.push({ k: "as" + v.id, date: String(v.assurance_fin).slice(0, 10), ch: null, titre: "Assurance du véhicule", sous: v.nom + (v.assureur ? " · " + v.assureur : ""), photo: PHOTOS.camion, clic: ouvrirCam });
       });
+      (d.docsReg || []).forEach(function (x) { if (x.type === "camion" && x.valable_jusqu) items.push({ k: "dv" + x.id, date: String(x.valable_jusqu).slice(0, 10), ch: null, titre: x.titre || "Papier du camion", sous: "Fin de validité · papier du camion", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } }); });
       if (d.fiche && d.fiche.autorisation_transport_fin) items.push({ k: "aut", date: String(d.fiche.autorisation_transport_fin).slice(0, 10), ch: null, titre: "Autorisation de transport", sous: "Fin de validité · à renouveler auprès de la DDPP", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } });
       if (d.peutGerer) {
         var ft = finTrimestre(auj);
@@ -1627,7 +1633,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           h("div", { className: "hg-aide" }, "Pour transporter des chevaux à plus de 65 km dans le cadre de ton activité : autorisation type 1 (type 2 au-delà de 8 h), délivrée par la DDPP et valable 5 ans."),
           h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrerAut }, envoi ? "Enregistrement…" : "Enregistrer l'autorisation")) : null,
         montrer("papiers") ? h("div", null, h("h2", { className: "hv3-h2" }, "Les papiers"),
-          h(DocsRegistre, { donnees: d, club: c.club, type: "camion", titreDefaut: "Papier du camion", photo: PHOTOS.camion, bouton: "+ Ajouter un papier", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
+          h(DocsRegistre, { donnees: d, club: c.club, type: "camion", avecDate: true, titreDefaut: "Papier du camion", photo: PHOTOS.camion, bouton: "+ Ajouter un papier", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
           h("div", { className: "hg-aide" }, "Carte grise, attestation d'assurance, autorisation de transport, certificat CAPTAV de chaque conducteur.")) : null,
         h("div", { className: "hg-sous" }, "Au-delà de 65 km : autorisation de transport, certificat de compétence (CAPTAV) du conducteur et registre de transport gardé 3 ans. À toute distance : le document d'accompagnement de chaque cheval. Les dates du contrôle technique, de l'assurance et de l'autorisation remontent dans « Les échéances »."),
         LEGAL(h));

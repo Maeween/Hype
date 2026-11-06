@@ -631,6 +631,15 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   Equifeel, Shetland). ⇒ 00 h 13 « Ok continue » : PUBLIÉ — build
   20261107-0145 (emporte aussi le build 0140 « vidéos de la Team » d'une
   autre conversation, poussé sans [publier] et noté « à tester sur iPhone »).
+· 07/11 00 h 27 Blandine « Ok continue » (option 2) → PAPIERS DU VAN ET DU
+  CAMION RÉUNIS, CODÉ, NON PUBLIÉ, SQL NON PASSÉ
+  (sql-07-11-papiers-camion-unifies.sql : colonne valable_jusqu dans
+  registre_documents). dossier_van et registre_documents « camion » étaient
+  VIDES : rien à déplacer. Un seul endroit = registre_documents type
+  « camion » (rangement privé « registre »). Dossier du concours
+  (hype-ecran-saison.js ?v=38) lit / ajoute / retire là ; « Le camion »
+  propose « Valable jusqu'au » à l'ajout et l'affiche ; ces dates remontent
+  dans « Les échéances » (gestion ?v=16). dossier_van gardée, plus utilisée.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
