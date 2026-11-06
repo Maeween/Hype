@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h15)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h40)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -39,7 +39,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : à essayer sur iPhone avec une vraie vidéo — chapitre Médias sur la page Team, page Médias (Par cavalière / Par cheval, « Voir tout »), ajout d'une vidéo depuis le téléphone ET depuis « mes vidéos Hype », vérifier que la vignette s'affiche (si la copie de l'image échoue, la vidéo apparaît sans image), et le message « réservée aux cavaliers du groupe » avec un compte hors équipe (attend : Blandine)
 
 ## 3 — Quand on aura le temps
-- [07/11] Vidéos de la Team : nouvelles pages « envoi » et « lecture » (visuels A/B/C envoyés) + zone de commentaires dans la lecture (attend : choix de Blandine)
+- [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
 - [06/11] Vidéos de la Team rattachées à un concours (build 2335) : les montrer sur la page du concours et de ses résultats (attend : test iPhone de Blandine)
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
@@ -630,6 +630,45 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🎬 07/11/2026 (01 h 40) — VIDÉOS DE LA TEAM : ENVOI « C », LECTURE « B », ÉPREUVE, PETIT MOT VISIBLE — build 20261107-0140
+Demandes de Blandine (06/11 23 h 48 → 07/11 00 h 06) : bas de page caché
+pendant l'envoi, vidéo « tout là-haut » une fois chargée, propositions
+visuelles (A/B/C envoyées) → « comme tu sens » (choix de Claude : envoi C,
+lecture B) ; « ajoute aussi le choix de l'épreuve en plus de celle du
+concours » ; « je vois pas s'afficher ce que je note en texte ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261107-0140 ; ?v=7 → ?v=8 (fichier Team) — rien d'autre |
+| hype-ecran-team-medias.js | racine | envoi C, lecture B, épreuve, petit mot, place pour le menu |
+BASE (passée le 07/11 vers 00 h 05, migration team_videos_epreuve) :
+team_videos.epreuve (droits colonne ouverts) ; team_epreuves_concours
+(épreuves des résultats du jour du concours, d'abord celles des chevaux
+choisis) ; team_video_epreuve (correction, auteur seulement).
+CE QUI A ÉTÉ FAIT
+· ENVOI (C) : pendant l'envoi, la vidéo en grand avec le % dans un cercle
+  champagne, puis « cavalière sur cheval », concours · épreuve · date, le
+  petit mot, « garde cette page ouverte ». L'aperçu montre enfin la 1re
+  image de la vidéo (avant : noir sur iPhone). Plus de place en bas du
+  formulaire et des feuilles de choix : le menu ne cache plus rien.
+· LECTURE (B) : la vidéo, la courbe, la fiche (avatars, « Masure sur
+  Dakota ca », concours · épreuve · date, le petit mot), ♡ j'aime, Son /
+  Son coupé (l'auteur bascule), les commentaires (« teamvideo:<id> »,
+  couleurs champagne), vidéo précédente / suivante.
+· ÉPREUVE : après le concours, « Quelle épreuve ? » (liste + « Autre
+  épreuve » + Passer) ; aussi dans « Autre (date et lieu) » ; la vignette
+  affiche date · lieu · épreuve.
+· PETIT MOT : sur sa propre ligne sous la vignette (il était coupé au bout
+  de la ligne date · lieu).
+VÉRIFIÉ (Chromium, base simulée, vraies photos de chevaux tirées des
+captures de Blandine) : épreuves proposées, envoi à 35 % affiché en grand,
+page de lecture complète ; aucune erreur. En base réelle : pour le concours
+du 25/10, épreuves trouvées « Club 2 Vitesse » et « Club 3 Vitesse ».
+NON VU : sur iPhone ; lecteur Mux (bloqué ici).
+NOTE : fichier Team modifié en parallèle par une autre session (équipes pour
+toutes les écuries, ?v=7) : fusion sans conflit, vérifiée.
 
 ════════════════════════════════════════════════════════════
 

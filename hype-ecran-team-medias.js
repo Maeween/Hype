@@ -54,6 +54,7 @@ function EcranTeamMedias() {
   }
   /* 06/11 — VIDÉO SANS LE SON (décision de Blandine : seule la personne qui a mis la vidéo en ligne choisit, à l'envoi
      puis plus tard si elle change d'avis). La base vérifie de toute façon (team_video_sans_son : auteur seulement). */
+  var _vv = React.useState(null); var visuV = _vv[0], setVisuV = _vv[1];   /* 07/11 : id de la vidéo ouverte (page de lecture « B ») */
   var _vm = React.useState(false); var visuMuet = _vm[0], setVisuMuet = _vm[1];
   var _cs = React.useState(""); var changeSon = _cs[0], setChangeSon = _cs[1];
   var T_SANS_SON = function () { return T("Sans le son", "Without sound", "Sin sonido", "Senza audio", "音声なし", "Ohne Ton", "بدون صوت", "静音", "Zonder geluid", "Sem som", "Utan ljud", "Без звука", "Bez dźwięku", "소리 없이"); };
@@ -76,6 +77,11 @@ function EcranTeamMedias() {
   var _qd = React.useState(""); var concDate = _qd[0], setConcDate = _qd[1];
   var _ql = React.useState(""); var concLieu = _ql[0], setConcLieu = _ql[1];
   var _qe = React.useState(""); var changeConc = _qe[0], setChangeConc = _qe[1];
+  /* 07/11 (Blandine : « ajoute aussi le choix de l'épreuve en plus de celle du concours ») : après le concours, 2e étape « Quelle épreuve ? »
+     — les épreuves des résultats de ce jour-là (d'abord celles des chevaux choisis), sinon on l'écrit ; on peut passer. */
+  var _qv = React.useState(null); var concEv = _qv[0], setConcEv = _qv[1];          /* concours choisi, en attente de l'épreuve */
+  var _qp = React.useState(null); var epreuvesConc = _qp[0], setEpreuvesConc = _qp[1];
+  var _qx = React.useState(""); var concEpreuve = _qx[0], setConcEpreuve = _qx[1];
   React.useEffect(function () {
     if (!groupe) return;
     var vifQ = true;
@@ -93,27 +99,40 @@ function EcranTeamMedias() {
   }, [groupe && groupe.id]);
   function libelleConc(c) {   /* « Lamotte · sam. 1 nov. » */
     if (!c) return "";
-    return [c.lieu || c.titre || "", dateCourte(c.date_jour || c.date || "")].filter(Boolean).join(" · ");
+    return [c.lieu || c.titre || "", c.epreuve || "", dateCourte(c.date_jour || c.date || "")].filter(Boolean).join(" · ");
   }
   function ouvrirFeuilleConc(pour, actuel) {
     var autre = !!(actuel && !actuel.agenda_id && (actuel.lieu || actuel.autre));
     setConcAutre(autre); setConcDate((actuel && (actuel.date || actuel.date_video)) || aujourdhui()); setConcLieu(autre ? (actuel.lieu || "") : "");
+    setConcEv(null); setEpreuvesConc(null); setConcEpreuve((actuel && actuel.epreuve) || "");
     setFeuilleConc({ pour: pour });
+  }
+  async function allerEpreuve(ev) {
+    setConcEv(ev); setEpreuvesConc(null);
+    var pour = feuilleConc && feuilleConc.pour;
+    var chs = pour === "form" ? fCh.slice() : ((pour && pour.chevaux) || []);
+    try {
+      var r = await supa.rpc("team_epreuves_concours", { p_agenda: ev.id, p_chevaux: chs.length ? chs : null });
+      setEpreuvesConc(((r && !r.error && r.data) || []).map(function (x) { return x.epreuve; }).filter(Boolean));
+    } catch (eEp) { setEpreuvesConc([]); }
   }
   async function choisirConc(choix) {   /* choix : { ev } | { aucun: true } | { autre: true, date, lieu } */
     var pour = feuilleConc && feuilleConc.pour; setFeuilleConc(null);
     if (pour === "form") {
-      setFConc(choix.aucun ? null : choix.ev ? { agenda_id: choix.ev.id, titre: choix.ev.titre, lieu: choix.ev.lieu, date: choix.ev.date_jour } : { autre: true, date: choix.date, lieu: choix.lieu });
+      setFConc(choix.aucun ? null : choix.ev ? { agenda_id: choix.ev.id, titre: choix.ev.titre, lieu: choix.ev.lieu, date: choix.ev.date_jour, epreuve: (choix.epreuve || "").trim() || null } : { autre: true, date: choix.date, lieu: choix.lieu, epreuve: (choix.epreuve || "").trim() || null });
       return;
     }
     var v = pour; if (!v || !moi || v.auteur_id !== moi.id) return;
     setChangeConc(v.id);
     try {
       var r = await supa.rpc("team_video_concours", { p_id: v.id, p_agenda_id: choix.ev ? choix.ev.id : null, p_date: choix.autre ? (choix.date || null) : null, p_lieu: choix.autre ? (choix.lieu || "") : "" });
+      var epV = choix.aucun ? null : ((choix.epreuve || "").trim() || null);
+      if (r && !r.error && r.data === true) { try { await supa.rpc("team_video_epreuve", { p_id: v.id, p_epreuve: epV || "" }); } catch (eEv) { } }
       if (r && !r.error && r.data === true) {
         var maj = choix.ev ? { agenda_id: choix.ev.id, concours: choix.ev.titre, lieu: choix.ev.lieu, date_video: choix.ev.date_jour || v.date_video }
           : choix.autre ? { agenda_id: null, concours: null, lieu: (choix.lieu || "").trim() || null, date_video: choix.date || v.date_video }
           : { agenda_id: null, concours: null, lieu: null };
+        maj.epreuve = epV;
         setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, maj) : x; }); });
       } else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video.", "No puedes cambiar este vídeo.", "Non puoi modificare questo video.", "この動画は変更できません。", "Du kannst dieses Video nicht ändern.", "لا يمكنك تغيير هذا الفيديو.", "你无法更改此视频。", "Je kunt deze video niet wijzigen.", "Não podes alterar este vídeo.", "Du kan inte ändra den här videon.", "Ты не можешь изменить это видео.", "Nie możesz zmienić tego filmu.", "이 동영상은 변경할 수 없어요."));
     } catch (eC) { setErreur(String((eC && eC.message) || eC)); }
@@ -146,7 +165,7 @@ function EcranTeamMedias() {
         var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", G.id);
         var idsM = ((rm && rm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
 
-        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, agenda_id, lieu, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
+        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, agenda_id, lieu, epreuve, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
         if (rv && rv.error) throw new Error(rv.error.message || String(rv.error));
         var vids = (rv && rv.data) || [];
         var idsV = vids.map(function (x) { return x.id; });
@@ -234,7 +253,7 @@ function EcranTeamMedias() {
       var r = await supa.rpc("team_video_lecture", { p_id: v.id });
       var adr = r && !r.error ? r.data : null;
       if (!adr) { setReserve(true); return; }
-      setVisuMuet(!!v.sans_son);
+      setVisuMuet(!!v.sans_son); setVisuV(v.id);
       setVisu(((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(adr) && typeof hypeMuxLecture === "function") ? hypeMuxLecture(adr) : adr);
     } catch (eR) { setReserve(true); }
     finally { setOccupe(""); }
@@ -281,7 +300,7 @@ function EcranTeamMedias() {
     var src = vignetteDe(v), d = duree(v.duree), verrou = !peutLire(v);
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
     var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
-    var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.description || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu */
+    var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.epreuve || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu ; 07/11 : + épreuve, le petit mot a sa propre ligne */
     /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
        sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
     var moiId = moi && moi.id;
@@ -331,6 +350,7 @@ function EcranTeamMedias() {
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff),
       meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
+      v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 14, lineHeight: 1.3, color: IV2, marginTop: 4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null,
       /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
       (typeof HypeJaimeTexte === "function" && !verrou) ? h(HypeJaimeTexte, { cible: "teamvideo:" + v.id, petit: true, marge: 2 }) : null,
       /* 06/11 soir — l'auteur corrige le concours / la date / le lieu */
@@ -729,7 +749,7 @@ function EcranTeamMedias() {
     var media = (typeof hypeMuxUrlLecture === "function") ? hypeMuxUrlLecture(playbackId) : ("https://stream.mux.com/" + playbackId + ".m3u8");
     var vign = await copierVignette(playbackId);
     var r = await supa.from("team_videos").insert({ groupe_id: meta.groupe, media: media, video_mux_id: videoMuxId || null, vignette: vign, duree: duree || null,
-      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, auteur_id: moi.id }).select("id").single();
+      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, epreuve: meta.epreuve || null, auteur_id: moi.id }).select("id").single();
     if (r && r.error) {
       var msg = String(r.error.message || r.error);
       if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library.", "Este vídeo ya está en la videoteca del equipo.", "Questo video è già nella videoteca della squadra.", "この動画はすでにチームのライブラリにあります。", "Dieses Video ist bereits in der Videothek des Teams.", "هذا الفيديو موجود بالفعل في مكتبة الفريق.", "该视频已在团队视频库中。", "Deze video staat al in de videotheek van het team.", "Este vídeo já está na videoteca da equipa.", "Den här videon finns redan i lagets videobibliotek.", "Это видео уже есть в видеотеке команды.", "Ten film jest już w wideotece drużyny.", "이 동영상은 이미 팀 라이브러리에 있어요."));
@@ -774,7 +794,7 @@ function EcranTeamMedias() {
   var fPret = (fSource === "fichier" ? !!fFichier : !!fHype) && fCav.length > 0 && fCh.length > 0;
   async function publier() {
     if (!fPret || !groupe || !moi) return;
-    var meta = { groupe: groupe.id, titre: null, concours: (fConc && fConc.titre) || null, date: (fConc && fConc.date) || aujourdhui(), lieu: (fConc && fConc.lieu && String(fConc.lieu).trim()) || null, agenda: (fConc && fConc.agenda_id) || null,
+    var meta = { groupe: groupe.id, titre: null, concours: (fConc && fConc.titre) || null, date: (fConc && fConc.date) || aujourdhui(), lieu: (fConc && fConc.lieu && String(fConc.lieu).trim()) || null, agenda: (fConc && fConc.agenda_id) || null, epreuve: (fConc && fConc.epreuve) || null,
       description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
     try {
       if (fSource === "hype") {
@@ -841,7 +861,7 @@ function EcranTeamMedias() {
     var haut = aVideo
       ? h("div", { style: { position: "relative", height: "clamp(210px, 56vw, 320px)", background: PAN } },
           fSource === "fichier"
-            ? h("video", { src: fApercu || undefined, muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+            ? h("video", { src: fApercu ? fApercu + "#t=0.1" : undefined, muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
             : h("img", { src: "https://image.mux.com/" + fHype.playback_id + "/thumbnail.jpg?width=900&fit_mode=preserve&time=2", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
           h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,.35), rgba(7,10,8,.05) 40%, " + NOIR + " 98%)" } }),
           h("div", { style: { position: "absolute", insetInlineStart: 20, insetInlineEnd: 20, bottom: 14, display: "flex", justifyContent: "space-between", alignItems: "flex-end" } },
@@ -880,7 +900,7 @@ function EcranTeamMedias() {
     /* feuille « Qui monte ? » */
     var feuille = !feuilleCav ? null : h("div", { style: { position: "absolute", inset: 0, zIndex: 3 } },
       h("div", { onClick: function () { setFeuilleCav(false); }, style: { position: "absolute", inset: 0, background: "rgba(7,10,8,0.7)" } }),
-      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "72%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)" } },
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "72%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 96px)" } },
         h("div", { style: { width: 40, height: 4, borderRadius: 2, background: "rgba(243,238,228,0.2)", margin: "0 auto 14px" } }),
         h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
           h("div", { style: { fontFamily: SERIF, fontSize: 26 } }, T("Qui monte ?", "Who's riding?", "¿Quién monta?", "Chi monta?", "誰が乗る？", "Wer reitet?", "من يركب؟", "谁来骑？", "Wie rijdt er?", "Quem monta?", "Vem rider?", "Кто едет?", "Kto jedzie?", "누가 타나요?")),
@@ -908,11 +928,33 @@ function EcranTeamMedias() {
             ? h("div", { style: { padding: "calc(env(safe-area-inset-top) + 110px) 24px 40px", textAlign: "center" } },
                 h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.25 } }, fEtat.texte),
                 h("button", { type: "button", onClick: function () { setAjout(null); }, style: { marginTop: 22, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))
+            : envoiEnCours ? (function () {   /* 07/11 — ENVOI « C » (choix laissé à Claude par Blandine) : la vidéo en grand, le % dans un cercle */
+                var pct = Math.max(0, Math.min(100, Math.round(fEtat.pct || 0))), RC = 44, LC = 2 * Math.PI * RC;
+                return h("div", null,
+                  h("div", { style: { position: "relative", height: "clamp(260px, 70vw, 380px)", background: PAN, overflow: "hidden" } },
+                    fSource === "fichier" ? h("video", { src: fApercu ? fApercu + "#t=0.1" : undefined, muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                      : (fHype ? h("img", { src: "https://image.mux.com/" + fHype.playback_id + "/thumbnail.jpg?width=900&fit_mode=preserve&time=2", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+                    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "rgba(7,10,8,0.45)" } }),
+                    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 55%, " + NOIR + ")" } }),
+                    h("div", { role: "status", "aria-live": "polite", style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, paddingTop: 30 } },
+                      h("svg", { width: 104, height: 104, viewBox: "0 0 104 104", "aria-hidden": "true" },
+                        h("circle", { cx: 52, cy: 52, r: RC, fill: "rgba(7,10,8,0.55)", stroke: "rgba(243,238,228,0.18)", strokeWidth: 3 }),
+                        h("circle", { cx: 52, cy: 52, r: RC, fill: "none", stroke: CH, strokeWidth: 3, strokeLinecap: "round", strokeDasharray: LC.toFixed(1), strokeDashoffset: (LC * (1 - pct / 100)).toFixed(1), transform: "rotate(-90 52 52)", style: { transition: "stroke-dashoffset .3s" } }),
+                        h("text", { x: 52, y: 60, textAnchor: "middle", fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 24, fill: IV }, pct + " %")),
+                      h("div", { style: { fontSize: 12, color: IV, textShadow: "0 1px 6px rgba(0,0,0,.8)", padding: "0 24px", textAlign: "center" } }, fEtat.texte || ""))),
+                  h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 36, marginTop: -8, position: "relative", transform: rtl ? "scaleX(-1)" : "none" } },
+                    h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
+                  h("div", { style: { padding: "0 20px calc(env(safe-area-inset-bottom) + 120px)" } },
+                    h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 22, lineHeight: 1.25 } }, resume),
+                    fConc ? h("div", { dir: "auto", style: { fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: IV3, marginTop: 5 } }, libelleConc(fConc)) : null,
+                    fDesc.trim() ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 15, color: IV2, marginTop: 6 } }, "« " + fDesc.trim() + " »") : null,
+                    h("div", { style: { fontSize: 12, color: IV2, lineHeight: 1.6, marginTop: 20 } }, T("Garde cette page ouverte : la vidéo apparaîtra dans la vidéothèque de l'équipe dès qu'elle sera prête.", "Keep this page open: the video will appear in the team library as soon as it is ready.", "Mantén esta página abierta: el vídeo aparecerá en la videoteca del equipo en cuanto esté listo.", "Tieni aperta questa pagina: il video apparirà nella videoteca della squadra appena sarà pronto.", "このページを開いたままにしてね。準備ができ次第、チームのライブラリに動画が表示されます。", "Lass diese Seite offen: Das Video erscheint in der Team-Mediathek, sobald es fertig ist.", "أبقِ هذه الصفحة مفتوحة: سيظهر الفيديو في مكتبة الفريق فور جاهزيته.", "请保持此页面打开：视频准备好后会出现在团队视频库中。", "Laat deze pagina open: de video verschijnt in de teambibliotheek zodra hij klaar is.", "Mantenha esta página aberta: o vídeo aparecerá na videoteca da equipa assim que estiver pronto.", "Håll sidan öppen: videon visas i lagets bibliotek så snart den är klar.", "Не закрывай эту страницу: видео появится в видеотеке команды, как только будет готово.", "Nie zamykaj tej strony: wideo pojawi się w wideotece drużyny, gdy tylko będzie gotowe.", "이 페이지를 열어 두세요. 준비되는 대로 팀 영상함에 표시돼요."))));
+              })()
             : h("div", null,
                 haut,
                 h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 36, marginTop: -8, position: "relative", transform: rtl ? "scaleX(-1)" : "none" } },
                   h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
-                h("div", { style: { padding: "0 20px calc(env(safe-area-inset-bottom) + 28px)" } },
+                h("div", { style: { padding: "0 20px calc(env(safe-area-inset-bottom) + 120px)" } },   /* 06/11 : + place pour le menu du bas (« on voit pas le bas de page ») */
                   /* cavalière */
                   h("button", { type: "button", disabled: envoiEnCours, onClick: function () { setFeuilleCav(true); }, style: Object.assign({}, LIGNE, { width: "100%", background: "none", borderTop: "none", borderInlineStart: "none", borderInlineEnd: "none", padding: 0, color: IV, fontFamily: M, cursor: "pointer" }) },
                     h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cavalière", "Rider", "Jinete", "Cavaliere", "ライダー", "Reiterin", "الفارسة", "骑手", "Ruiter", "Cavaleira", "Ryttare", "Всадница", "Jeźdźczyni", "라이더")),
@@ -974,12 +1016,24 @@ function EcranTeamMedias() {
     var CHAMP = { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end", colorScheme: "dark" };
     return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 9100 } },
       h("div", { onClick: function () { setFeuilleConc(null); }, style: { position: "absolute", inset: 0, background: "rgba(7,10,8,0.7)" } }),
-      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxWidth: 620, margin: "0 auto", maxHeight: "78%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)", fontFamily: M, color: IV } },
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxWidth: 620, margin: "0 auto", maxHeight: "78%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 96px)", fontFamily: M, color: IV } },
         h("div", { style: { width: 40, height: 4, borderRadius: 2, background: "rgba(243,238,228,0.2)", margin: "0 auto 14px" } }),
-        h("div", { style: { fontFamily: SERIF, fontSize: 26, marginBottom: 6 } }, T("Quel concours ?", "Which competition?", "¿Qué concurso?", "Quale concorso?", "どの競技会？", "Welches Turnier?", "أي مسابقة؟", "哪场比赛？", "Welke wedstrijd?", "Qual concurso?", "Vilken tävling?", "Какое соревнование?", "Które zawody?", "어떤 대회인가요?")),
+        concEv ? h("button", { type: "button", onClick: function () { setConcEv(null); }, style: { alignSelf: "flex-start", background: "none", border: "none", padding: "2px 0 6px", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Concours", "Competition", "Concurso", "Concorso", "競技会", "Turnier", "المسابقة", "比赛", "Wedstrijd", "Concurso", "Tävling", "Соревнование", "Zawody", "대회")) : null,
+        h("div", { style: { fontFamily: SERIF, fontSize: 26, marginBottom: concEv ? 2 : 6 } }, concEv ? T("Quelle épreuve ?", "Which class?", "¿Qué prueba?", "Quale prova?", "どの競技？", "Welche Prüfung?", "أي فئة؟", "哪个项目？", "Welke rubriek?", "Qual prova?", "Vilken klass?", "Какой маршрут?", "Który konkurs?", "어떤 종목인가요?") : T("Quel concours ?", "Which competition?", "¿Qué concurso?", "Quale concorso?", "どの競技会？", "Welches Turnier?", "أي مسابقة؟", "哪场比赛？", "Welke wedstrijd?", "Qual concurso?", "Vilken tävling?", "Какое соревнование?", "Które zawody?", "어떤 대회인가요?")),
+        concEv ? h("div", { dir: "auto", style: { fontSize: 11.5, color: IV3, marginBottom: 8 } }, libelleConc(concEv)) : null,
+        concEv ? h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+          epreuvesConc === null ? h("div", { style: { fontSize: 12, color: IV3, padding: "10px 0" } }, "…")
+            : epreuvesConc.length ? epreuvesConc.map(function (ep) { return ligne("ep" + ep, ep, null, concEpreuve === ep, function () { choisirConc({ ev: concEv, epreuve: ep }); }); })
+            : h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", padding: "10px 0" } }, T("Aucune épreuve trouvée pour ce concours : écris-la ci-dessous.", "No class found for this competition: type it below.", "No se encontró ninguna prueba para este concurso: escríbela abajo.", "Nessuna prova trovata per questo concorso: scrivila qui sotto.", "この競技会の競技が見つかりません。下に入力してください。", "Keine Prüfung für dieses Turnier gefunden: trag sie unten ein.", "لم يتم العثور على أي فئة لهذه المسابقة: اكتبها أدناه.", "未找到该比赛的项目：请在下方填写。", "Geen rubriek gevonden voor deze wedstrijd: typ hem hieronder.", "Nenhuma prova encontrada para este concurso: escreva-a abaixo.", "Ingen klass hittades för tävlingen: skriv den nedan.", "Маршруты этого соревнования не найдены: впиши ниже.", "Nie znaleziono konkursu dla tych zawodów: wpisz go poniżej.", "이 대회의 종목을 찾지 못했어요. 아래에 입력해 주세요.")),
+          h("div", { style: LIGNE },
+            h("label", { htmlFor: "tq-ep", style: { fontSize: 12.5, color: IV3 } }, T("Autre épreuve", "Other class", "Otra prueba", "Altra prova", "その他の競技", "Andere Prüfung", "فئة أخرى", "其他项目", "Andere rubriek", "Outra prova", "Annan klass", "Другой маршрут", "Inny konkurs", "다른 종목")),
+            h("input", { id: "tq-ep", value: epreuvesConc && epreuvesConc.indexOf(concEpreuve) !== -1 ? "" : concEpreuve, maxLength: 120, onChange: function (e) { setConcEpreuve(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택"), style: CHAMP })),
+          h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
+            h("button", { type: "button", onClick: function () { choisirConc({ ev: concEv, epreuve: "" }); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Passer", "Skip", "Omitir", "Salta", "スキップ", "Überspringen", "تخطٍّ", "跳过", "Overslaan", "Pular", "Hoppa över", "Пропустить", "Pomiń", "건너뛰기")),
+            h("button", { type: "button", onClick: function () { choisirConc({ ev: concEv, epreuve: concEpreuve }); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: "pointer" } }, T("Valider", "Confirm", "Confirmar", "Conferma", "決定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Готово", "Zatwierdź", "확인")))) :
         h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch" } },
           concoursEquipe.length ? concoursEquipe.map(function (c) {
-            return ligne("cq" + c.id, c.lieu || c.titre || "—", [c.lieu && c.titre && c.titre !== c.lieu ? c.titre : "", dateCourte(c.date_jour)].filter(Boolean).join(" · "), actuelId === c.id && !concAutre, function () { choisirConc({ ev: c }); });
+            return ligne("cq" + c.id, c.lieu || c.titre || "—", [c.lieu && c.titre && c.titre !== c.lieu ? c.titre : "", dateCourte(c.date_jour)].filter(Boolean).join(" · "), actuelId === c.id && !concAutre, function () { allerEpreuve(c); });
           }) : h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", padding: "10px 0" } }, T("Aucun concours dans l'agenda de l'équipe.", "No competitions in the team agenda.", "No hay concursos en la agenda del equipo.", "Nessun concorso nell'agenda della squadra.", "チームの予定に競技会はありません。", "Keine Turniere im Team-Kalender.", "لا توجد مسابقات في جدول الفريق.", "团队日程中没有比赛。", "Geen wedstrijden in de teamagenda.", "Não há concursos na agenda da equipa.", "Inga tävlingar i lagets kalender.", "В календаре команды нет соревнований.", "Brak zawodów w kalendarzu drużyny.", "팀 일정에 대회가 없어요.")),
           ligne("cq-autre", T("Autre (date et lieu)", "Other (date and place)", "Otro (fecha y lugar)", "Altro (data e luogo)", "その他（日付と場所）", "Andere (Datum und Ort)", "أخرى (التاريخ والمكان)", "其他（日期和地点）", "Anders (datum en plaats)", "Outro (data e local)", "Annat (datum och plats)", "Другое (дата и место)", "Inne (data i miejsce)", "기타 (날짜와 장소)"), null, concAutre, function () { setConcAutre(!concAutre); }),
           concAutre ? h("div", { style: { padding: "4px 0 6px" } },
@@ -989,9 +1043,58 @@ function EcranTeamMedias() {
             h("div", { style: LIGNE },
               h("label", { htmlFor: "tq-lieu", style: { fontSize: 12.5, color: IV3 } }, T("Lieu", "Place", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소")),
               h("input", { id: "tq-lieu", value: concLieu, maxLength: 80, onChange: function (e) { setConcLieu(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택"), style: CHAMP })),
-            h("button", { type: "button", onClick: function () { choisirConc({ autre: true, date: concDate || aujourdhui(), lieu: concLieu }); },
+            h("div", { style: LIGNE },
+              h("label", { htmlFor: "tq-ep2", style: { fontSize: 12.5, color: IV3 } }, T("Épreuve", "Class", "Prueba", "Prova", "競技", "Prüfung", "الفئة", "项目", "Rubriek", "Prova", "Klass", "Маршрут", "Konkurs", "종목")),
+              h("input", { id: "tq-ep2", value: concEpreuve, maxLength: 120, onChange: function (e) { setConcEpreuve(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택"), style: CHAMP })),
+            h("button", { type: "button", onClick: function () { choisirConc({ autre: true, date: concDate || aujourdhui(), lieu: concLieu, epreuve: concEpreuve }); },
               style: { width: "100%", marginTop: 14, minHeight: 44, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: "pointer" } }, T("Valider", "Confirm", "Confirmar", "Conferma", "決定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Готово", "Zatwierdź", "확인"))) : null,
           ligne("cq-aucun", T("Pas de concours", "No competition", "Sin concurso", "Nessun concorso", "競技会なし", "Kein Turnier", "بدون مسابقة", "不关联比赛", "Geen wedstrijd", "Sem concurso", "Ingen tävling", "Без соревнования", "Bez zawodów", "대회 없음"), null, false, function () { choisirConc({ aucun: true }); }))));
+  }
+
+  /* 07/11 — PAGE DE LECTURE « B » (choix laissé à Claude par Blandine : « la vidéo est tout là-haut » avec du noir dessous) :
+     la vidéo, puis sa fiche (cavalière(s) sur cheval(aux), concours · épreuve · date, le petit mot), le j'aime, le son pour
+     l'auteur, les commentaires, et vidéo précédente / suivante dans la liste de l'équipe. */
+  function lecteurTeam() {
+    if (!visu || !visuV) return null;
+    var v = (videos || []).filter(function (x) { return x.id === visuV; })[0];
+    if (!v) return null;
+    var liste = videos || [], idx = liste.indexOf(v);
+    var prec = idx > 0 ? liste[idx - 1] : null, suiv = idx >= 0 && idx < liste.length - 1 ? liste[idx + 1] : null;
+    var estMux = /stream\.mux\.com\/[A-Za-z0-9]+\.m3u8/.test(String(visu));
+    var lecteur = (estMux && typeof HypeLecteurMuxTest === "function")
+      ? h(HypeLecteurMuxTest, { key: "tv-" + visu, src: visu, sansSon: !!v.sans_son, repli: h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } }) })
+      : h("video", { key: "tv-" + visu, src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, onVolumeChange: v.sans_son ? function (e) { try { if (!e.target.muted) e.target.muted = true; } catch (e0) { } } : undefined, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } });
+    var cavs = (v.cavaliers || []).map(function (u) { return profilsParId[u]; }).filter(Boolean);
+    var titre = cavs.map(nomProfil).join(", ") + (v.chevaux && v.chevaux.length ? (cavs.length ? " " + T("sur", "on", "con", "su", "／", "auf", "على", "骑", "op", "com", "på", "на", "na", "—") + " " : "") + v.chevaux.map(nomCheval).join(", ") : "");
+    var lieuLigne = [v.lieu || v.concours || "", v.epreuve || "", dateCourte(v.date_video || v.cree_le)].filter(Boolean).join(" · ");
+    var estAuteurV = !!(moi && v.auteur_id === moi.id);
+    function fermer() { setVisu(null); setVisuV(null); }
+    function navBtn(cible, txt, fin) {
+      return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) lire(cible); }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.18)", fontFamily: M, fontSize: 11.5, cursor: cible ? "pointer" : "default", textAlign: fin ? "end" : "start" } }, txt);
+    }
+    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", "data-hscroll": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8800, background: NOIR, color: IV, fontFamily: M } },
+      h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}.sc-theme-team .sc-texte{color:" + IV2 + " !important}.sc-theme-team .sc-champ{color:" + IV + " !important;font-size:16px !important}.sc-theme-team .sc-media{border-color:" + CH3 + " !important}"),
+      h("button", { type: "button", onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 12px)", insetInlineEnd: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.62)", border: "1px solid rgba(255,255,255,0.22)", color: IV, fontSize: 18, cursor: "pointer" } }, "\u2715"),
+      h("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+        h("div", { style: { maxWidth: 820, margin: "0 auto", paddingTop: "calc(env(safe-area-inset-top) + 64px)" } },
+          h("div", { style: { background: "#000" } }, lecteur),
+          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 32, transform: rtl ? "scaleX(-1)" : "none" } },
+            h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
+          h("div", { style: { padding: "0 18px calc(env(safe-area-inset-bottom) + 120px)" } },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
+              cavs.length ? h("div", { style: { display: "flex" } }, cavs.slice(0, 3).map(function (p, k) { return h("div", { key: "av" + p.id, style: { marginInlineStart: k ? -10 : 0 } }, avatar(p, 38)); })) : null,
+              h("div", { style: { minWidth: 0 } },
+                h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 22, lineHeight: 1.2 } }, titre || T("Vidéo", "Video")),
+                lieuLigne ? h("div", { dir: "auto", style: { fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: IV3, marginTop: 4 } }, lieuLigne) : null)),
+            v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.4, color: IV2, marginTop: 14 } }, "« " + v.description + " »") : null,
+            h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 16 } },
+              (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
+              (estAuteurV || v.sans_son) ? h("button", { type: "button", disabled: !estAuteurV || changeSon === v.id, onClick: function () { basculerSon(v); },
+                style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 36, padding: "0 13px", borderRadius: 999, border: "1px solid " + (v.sans_son ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.22)"), background: "transparent", color: v.sans_son ? CH : IV2, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: estAuteurV ? "pointer" : "default" } },
+                changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") : "\uD83D\uDD0A " + T("Son", "Sound", "Sonido", "Audio", "音声", "Ton", "صوت", "有声", "Geluid", "Som", "Ljud", "Звук", "Dźwięk", "소리"))) : null),
+            (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
+            h("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 18, borderTop: "1px solid " + CH3 } },
+              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true))))));
   }
 
   /* ───────── message « réservée au groupe » ───────── */
@@ -1026,7 +1129,7 @@ function EcranTeamMedias() {
     formulaireAjout,
     feuilleConcours(),
     fenetrePartage,
-    (visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null);
+    visuV ? lecteurTeam() : ((visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null));
 }
 /* 05/11 soir — page « conseil Hey Baby partagé avec toi » (route epingle-partagee), ouverte depuis la notification.
    La base ne laisse lire l'épingle qu'à qui elle a été partagée (ou à son autrice). Lecture seule. */
