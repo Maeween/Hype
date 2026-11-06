@@ -66,7 +66,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [18/10] Qualifications aux championnats : rien n'est codé. La requête de lecture pour comparer cheval par cheval est prête (attend : Blandine)
 - [15/10] Hey Baby : faire analyser les vidéos par le serveur, comme les photos, pour que la réponse ne se perde pas si on quitte l'appli. Environ 1 à 2 h (attend : Claude)
 - [15/10] Surveiller le premier vrai achat Premium Famille : famille ouverte, invitation, renouvellement (attend : Claude)
-- [07/11 00h25] Vouvoiements : les 6 phrases vues par les cavaliers sont passées au tutoiement (FR + allemand, espagnol, italien, chinois, arabe qui vouvoyaient), PRÊT, NON PUBLIÉ (build 20261107-0200, part avec la prochaine mise en ligne). Restent À DÉCIDER : conditions générales (fr/cgv) au « vous » ; page publique de l'association « Votre soutien… » (donateurs) ; ancienne page Premium (plus montrée qu'aux modératrices), proposé de ne pas y toucher (attend : Blandine)
+- [07/11 02h00] Vouvoiements : les 6 phrases vues par les cavaliers sont en ligne (build 0045). 8 autres passées au tutoiement, PRÊT, NON PUBLIÉ (build 20261107-0200, avec le lien #v=) : « Ton club », « Ton coach toujours à tes côtés », page mécénat/Premium (« Tu fais avancer Hype… », « Ton coach personnel intelligent »), « Fais vivre ton écurie », « Tu gères ce club ? Revendique sa page officielle », « Ta légende », « Entre en piste… ». Restent À DÉCIDER : conditions générales (fr/cgv) au « vous » ; page publique de l'association « Votre soutien… » (donateurs).
 - [19/10] Finir de passer les anciennes vidéos stockées hors Mux. Environ 22 restent, plus les autres réglages photos/vidéos proposés : tailles réelles dans les albums, cache plus long (attend : Claude)
 
 ## 4 — Plus tard / idées
@@ -18351,3 +18351,10 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Rien ne fabrique encore de lien #v= dans l'appli (pas de bouton « Partager » sur une vidéo) : le correctif sert aux liens tapés ou envoyés à la main.
 - Fichiers : hype-video.js (?v=20261107-vt13), index.html (build 20261107-0200), SUIVI.md. Inchangés : hype-ecran-team-medias.js, hype-ecran-team.js.
 - VÉRIFIÉ : node --check. NON VU À L'ÉCRAN : à essayer sur iPhone avec une adresse #v=<id> d'une vidéo de la Vidéothèque.
+
+## 07/11/2026 02h00 — PRÊT, NON PUBLIÉ (build 20261107-0200) — TUTOIEMENT : 8 phrases de plus
+- Blandine : « Ok continue » sur la liste de 13 du 07/11 00h27. 5 avaient déjà été corrigées par une autre conversation (build 0045) ; restaient 8, faites ici.
+- Corrigé (français) : « Ton club » ; « Ton coach toujours à tes côtés » ; page Premium/mécénat : « Tu fais avancer Hype. », « Tu accompagnes son développement. », « Ton soutien est précieux. », « Tu entres dans le cercle des fondateurs. », « Ton nom restera dans l'histoire. », « Ton coach personnel intelligent, 24h/24. » ; « Fais vivre ton écurie » ; « Tu gères ce club ? Revendique sa page officielle » ; « Ta légende » (aperçu story) ; « Entre en piste comme si vous étiez seuls au monde. » (le « vous » = toi et ton cheval, gardé).
+- Autres langues qui vouvoyaient : « Fais vivre ton écurie » (italien, allemand, néerlandais, suédois) ; « Tu gères ce club ? » (allemand, coréen).
+- Gardé au « vous » exprès : « Vos plus belles photos » (album de la COMMUNAUTÉ, on parle à tout le monde ; les traductions sont au pluriel aussi), « Avec vous… », « ce que vous avez construit ensemble », « votre confiance » (toi et ton cheval), cours Baby (l'enseignante parle au groupe), phrases du Lingo (on parle à un inconnu), « Mais vous en avez mis combien ?! ».
+- Fichiers : index.html, hype-ecran-ecurie-v2.js (?v=6), hype-ecran-guilde.js (?v=2), hype-stories.js (?v=…ko2), SUIVI.md.

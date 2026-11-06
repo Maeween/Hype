@@ -5845,7 +5845,7 @@ function ReglagesStyleLegende(props) {
     normal: { fr: "Normal", en: "Normal", es: "Normal", it: "Normale", de: "Normal", ja: "\u4e2d", zh: "正常", ar: "عادي", nl: "Normaal", pt: "Normal", sv: "Normal", ru: "Обычный", pl: "Normalny", ko: "보통" },
     grand: { fr: "Grand", en: "Large", es: "Grande", it: "Grande", de: "Gro\u00df", ja: "\u5927", zh: "大", ar: "كبير", nl: "Groot", pt: "Grande", sv: "Stor", ru: "Большое", pl: "Duże", ko: "크게" },
     libre: { fr: "Autre couleur", en: "Other colour", es: "Otro color", it: "Altro colore", de: "Andere Farbe", ja: "\u4ed6\u306e\u8272", zh: "其他颜色", ar: "لون آخر", nl: "Andere kleur", pt: "Outra cor", sv: "Annan färg", ru: "Другой цвет", pl: "Inny kolor", ko: "다른 색" },
-    apercu: { fr: "Votre l\u00e9gende", en: "Your caption", es: "Tu pie de foto", it: "La tua didascalia", de: "Deine Bildunterschrift", ja: "\u30ad\u30e3\u30d7\u30b7\u30e7\u30f3", zh: "你的说明", ar: "تعليقك", nl: "Jouw bijschrift", pt: "Sua legenda", sv: "Din bildtext", ru: "Твоя подпись", pl: "Twój podpis", ko: "나만의 캡션" }
+    apercu: { fr: "Ta l\u00e9gende", en: "Your caption", es: "Tu pie de foto", it: "La tua didascalia", de: "Deine Bildunterschrift", ja: "\u30ad\u30e3\u30d7\u30b7\u30e7\u30f3", zh: "你的说明", ar: "تعليقك", nl: "Jouw bijschrift", pt: "Sua legenda", sv: "Din bildtext", ru: "Твоя подпись", pl: "Twój podpis", ko: "나만의 캡션" }
   };
   function t(k) { return (T[k] && (T[k][lg] || T[k].fr)) || ""; }
   var apercu = Object.assign(
