@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 23h35)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h00)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -42,7 +42,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 3 — Quand on aura le temps
 - [06/11] Vidéos de la Team rattachées à un concours (build 2335) : les montrer sur la page du concours et de ses résultats (attend : test iPhone de Blandine)
-- [06/11] J'aime sur les TEXTES (histoire du cheval, présentation du cavalier) : juste un cœur + le nombre (pas de commentaires pour l'instant) ; le propriétaire du cheval ou le cavalier reçoit une notification (attend : Claude, après « sans le son »)
+- [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
@@ -606,6 +606,51 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+❤️ 07/11/2026 (01 h 00) — J'AIME SUR LES TEXTES (HISTOIRE DU CHEVAL, PRÉSENTATION DU CAVALIER) — build 20261107-0100
+Demande de Blandine (06/11 17 h 40) : « pouvoir liker les textes, genre
+l'histoire du cheval ou la présentation du cavalier » ; « 1 pour l'instant »
+= juste un cœur + le nombre, pas de commentaires ; « Oui » = le propriétaire
+est notifié ; « Ok continue » (23 h 39).
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261107-0100 ; composant HypeJaimeTexte ; notification « a aimé » ; ?v : cavalier 2 → 3, cheval 7 → 8 |
+| hype-ecran-cheval.js | racine | cœur sous « Son histoire » (ordinateur et téléphone) |
+| hype-ecran-cavalier.js | racine | cœur sous la présentation (Cavalier V2 et ancienne présentation) |
+BASE (passée le 06/11 23 h 45, migration textes_jaime) :
+· textes_jaime (cible « cheval:<id> » ou « cavalier:<id> », personne, date),
+  verrouillée : on n'y touche que par les deux fonctions.
+· textes_jaime_etat(cibles) : nombre + « j'aime déjà » (lisible par tous).
+· textes_jaime_basculer(cible) : aimer / ne plus aimer (connectée) ;
+  notifie le propriétaire du cheval ou la cavalière, UNE SEULE FOIS par
+  personne (pas de rafale si on clique plusieurs fois), jamais soi-même.
+CE QUI A ÉTÉ FAIT
+· Cœur à contour (rempli champagne quand on aime) + nombre, sous le texte,
+  seulement s'il y a un texte. Non connecté : on voit le nombre, sans pouvoir
+  cliquer.
+· Notification : « X a aimé l'histoire de <cheval> » (ouvre la page Histoire
+  du cheval) / « X a aimé ta présentation » (ouvre ta page Cavalier),
+  14 langues. Pas de notification sur le téléphone pour l'instant (il
+  faudrait modifier la fonction d'envoi : à décider).
+VÉRIFIÉ : navigateur (base simulée) — 3 → 4 au clic, retour à 3 au 2e clic,
+le cavalier connecté est bien reconnu ; en base réelle (transaction annulée,
+rien gardé) — un j'aime crée bien la notification avec le nom du cheval.
+NON VU : sur iPhone, sur les vraies pages.
+
+════════════════════════════════════════════════════════════
+
+🟥 06/11/2026 (23 h 45) — INCIDENT : ENVOI D'UNE VIDÉO DE LA TEAM DEPUIS LE TÉLÉPHONE REFUSÉ
+Capture de Blandine (23 h 40) : « Suivi de l'envoi impossible, rien n'a été
+envoyé. » CAUSE : la table videos_mux n'acceptait que les destinations
+album / commentaire / souvenir / seance ; « team » (vidéothèque de la Team,
+05/11) était refusée → l'envoi depuis le téléphone n'a JAMAIS marché pour la
+Team (seul « choisir parmi mes vidéos Hype » marchait). Sans lien avec le son
+ni le concours. CORRIGÉ en base (migration videos_mux_destination_team) ;
+vérifié par un essai annulé. Rien n'était parti chez Mux.
+LEÇON : un nouveau type de destination vidéo = vérifier la règle de la table
+videos_mux.
 
 ════════════════════════════════════════════════════════════
 
