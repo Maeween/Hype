@@ -550,8 +550,21 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   ⚠️ Si Blandine ajoute un jour un gestionnaire à Feinn, il verra la compta.
   Puis « prépare la page pour que quelqu'un voie sa compta mais pas la
   mienne » → une écurie sans résumé voit un EXEMPLE aux chiffres inventés,
-  signalé « Exemple » en haut et sous le titre (PUBLIÉ 06/11 18 h, build 20261106-1800, ?v=13
+  signalé « Exemple » en haut et sous le titre (PUBLIÉ 06/11 18 h, build 20261106-1800, ?v=14
   → ?v=14).
+· 06/11 17 h 53 Blandine « Ok continue » (question SEP 1 ou 2 restée sans
+  réponse → présentation SEP NON commencée, aides faites d'abord) → PAGE
+  « AIDES ET CONTACTS » CODÉE, NON PUBLIÉE (aucun SQL) : #aides-ecurie
+  (⚠️ #aides ouvre le cours Galop 1 « Les aides » : ne pas réutiliser).
+  Grande carte « Aides et bons contacts » en bas de Mon écurie. Aides
+  VÉRIFIÉES le 06/11 avec source : apprenti (décret 2026-168 : 5 000 €
+  niveaux 3-4, 4 500 € niveau 5, 2 000 € niveaux 6-7, contrats avant le
+  01/01/2027, < 250 salariés) ; Pass'Sport (décret 2026-830 : 50 €, demande
+  avant le 31/12/2026) ; FDVA 2 Essonne (campagne 2026 close le 11/03/2026,
+  comptes approuvés en AG exigés → lien vers Ma compta). Bons contacts :
+  GHN, IFCE·SIRE, Conseil des chevaux d'Île-de-France — présentés comme
+  adresses utiles, AUCUN partenariat annoncé (aucun n'est signé). Fonds
+  Éperon et PSF/ANS laissés de côté : pas vérifiés pour 2026. ?v=15.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

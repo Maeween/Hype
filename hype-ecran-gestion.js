@@ -311,7 +311,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.soins, "Les soins", (d.soins || []).length ? ((d.soins || []).length + " noté" + ((d.soins || []).length > 1 ? "s" : "") + (nRet ? " · " + nRet + " en retard" : "")) : "Aucun soin noté", function () { ouvrir("sante-club"); }),
           theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
           theme(h, "", PHOTOS.camion, "Le camion", d.vhAbsent ? "Bientôt" : "Papiers et dates à surveiller", d.vhAbsent ? null : function () { ouvrir("camion"); }),
-          theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); })),
+          theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
+          theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
@@ -1722,5 +1723,70 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « AIDES ET BONS CONTACTS » (06/11 soir) ═════════════════════════
+     Seulement des aides VÉRIFIÉES le 06/11/2026, avec leur source ; pas de partenariat annoncé (aucun n'est signé) :
+     des adresses utiles, pas des « partenaires ». À relire chaque année (montants et dates changent).
+     Aide apprentis : décret 2026-168, contrats commencés avant le 01/01/2027. Pass'Sport : décret 2026-830, 50 €,
+     demande jusqu'au 31/12/2026. FDVA 2 Essonne : campagne 2026 close le 11/03/2026. */
+  var AIDES = [
+    { k: "apprenti", cat: "emploi", photo: "mouvements", titre: "Un apprenti", sous: "Aide de l'État, 1re année", pill: "Jusqu'à 5 000 €", etat: "Avant 2027",
+      texte: ["Pour une structure de moins de 250 salariés, la première année du contrat : 5 000 € pour un diplôme de niveau 3 ou 4 (CAP, bac pro, BPJEPS…), 4 500 € pour un niveau 5, 2 000 € pour un niveau 6 ou 7.",
+        "Versée chaque mois par l'ASP, une fois la paie de l'apprenti déclarée (DSN). Le contrat doit commencer avant le 1er janvier 2027."],
+      source: "https://www.filiz.io/blog/aides-apprentissage-2026-decret-mars", sourceNom: "Le décret du 6 mars 2026 expliqué" },
+    { k: "passsport", cat: "cavaliers", photo: "chevaux", titre: "Pass'Sport", sous: "Licence ou adhésion", pill: "50 € par jeune", etat: "Avant le 31/12",
+      texte: ["Pour les jeunes de 6 à 17 ans sous condition de ressources, les étudiants boursiers et les jeunes en situation de handicap jusqu'à 30 ans.",
+        "Les 50 € servent à payer l'adhésion ou la licence dans une structure sportive. Saison 2026-2027 : demande possible jusqu'au 31 décembre 2026."],
+      source: "https://www.associatheque.fr/fr/2026/septembre/actualite/prolongations-pass-sport-saison-2026-2027.html", sourceNom: "Associathèque, septembre 2026" },
+    { k: "fdva", cat: "association", photo: "registre", titre: "FDVA 2", sous: "Vie associative", pill: "Jusqu'à 50 %", etat: "Début 2027",
+      texte: ["Pour les associations loi 1901 d'Île-de-France (sport compris) : aide au fonctionnement (communication, petit matériel…) ou à un projet nouveau. Dans l'Essonne, priorité aux petites associations (moins de 2 salariés) et au sud du département.",
+        "Conditions : au moins un an d'existence, un compte bancaire à son nom, le contrat d'engagement républicain signé, et des comptes approuvés en assemblée générale — c'est ce que « Ma compta » aide à préparer.",
+        "La campagne 2026 de l'Essonne a fermé le 11 mars 2026 : la suivante ouvre en général en janvier."],
+      source: "https://www.ac-versailles.fr/sites/ac_versailles/files/2026-02/91-sdjes-fdva-2-60372.pdf", sourceNom: "SDJES de l'Essonne, appel 2026", lienInterne: "compta" }
+  ];
+  var CONTACTS = [
+    { k: "ghn", photo: "detenteur", titre: "GHN", sous: "Syndicat des écuries", pill: "Contrats, paie, juridique", url: "https://www.ghn.com.fr", texte: "Modèles de contrats et d'affichages obligatoires, questions de droit du travail et de paie pour les établissements équestres." },
+    { k: "ifce", photo: "soins", titre: "IFCE · SIRE", sous: "Identification", pill: "Registre", url: "https://www.ifce.fr", texte: "Déclaration de détenteur, identification des chevaux, guide du registre d'élevage." },
+    { k: "cheval-idf", photo: "controles", titre: "Conseil des chevaux", sous: "Île-de-France", pill: "Projets", url: "https://www.conseil-cheval-iledefrance.com", texte: "Accompagne les projets de la filière équine en Île-de-France et donne son avis sur certains financements." }
+  ];
+  function EcranAides() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var c = useClub();
+    var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    function ouvrir(ecran) { try { window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
+    function lien(url, txt) { return h("a", { href: url, target: "_blank", rel: "noopener noreferrer", className: "hg-btn", style: { display: "block", textAlign: "center", textDecoration: "none", marginTop: 12 } }, txt); }
+    function detail(lignes, extra) {
+      return h("div", { style: { padding: "12px 6px 16px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,.82)" } },
+        lignes.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); }), extra);
+    }
+    var n = function (cat) { return AIDES.filter(function (a) { return cat === "tous" || a.cat === cat; }).length; };
+    var vis = AIDES.filter(function (a) { return f === "tous" || a.cat === f; });
+    var corps = h("div", null,
+      ligneEcurie(h, c, []),
+      tuiles(h, [{ k: "tous", b: "Toutes", s: String(n("tous")), n: 1 }, { k: "emploi", b: "Emploi", s: String(n("emploi")), n: n("emploi") }, { k: "cavaliers", b: "Cavaliers", s: String(n("cavaliers")), n: n("cavaliers") }, { k: "association", b: "Association", s: String(n("association")), n: n("association") }], f, function (v) { setF(v); setOuvert(null); }),
+      h("h2", { className: "hv3-h2" }, "Les aides"),
+      h("div", { className: "hv3-cartes" }, vis.map(function (a) {
+        return h("div", { key: a.k },
+          carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
+          ouvert === a.k ? detail(a.texte, [
+            a.lienInterne ? h("button", { key: "i", type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, "Ouvrir Ma compta") : null,
+            h("div", { key: "s" }, lien(a.source, "Lire la source"))]) : null);
+      })),
+      h("h2", { className: "hv3-h2" }, "Les bons contacts"),
+      h("div", { className: "hv3-cartes" }, CONTACTS.map(function (x) {
+        return h("div", { key: x.k },
+          carte(h, { cle: x.k, photo: PHOTOS[x.photo], titre: x.titre, sous: x.sous, pill: x.pill, onClick: function () { setOuvert(ouvert === x.k ? null : x.k); } }),
+          ouvert === x.k ? detail([x.texte], lien(x.url, "Ouvrir le site")) : null);
+      })),
+      h("div", { className: "hg-sous" }, "Montants et dates vérifiés le 6 novembre 2026 : ils changent souvent, vérifie toujours la source avant de faire ta demande. Hype n'a aucun accord commercial avec ces organismes."),
+      LEGAL(h));
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.aides, titre: "Aides et contacts", sous: "Ce à quoi ton écurie a droit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
