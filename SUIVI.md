@@ -571,6 +571,8 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   site officiel. + TÂCHE PLANIFIÉE « Veille des aides pour les écuries »
   (chaque lundi 10 h 43, notification sur son téléphone) : cherche du nouveau
   sur les 5 aides et la prévient ; ne modifie rien, ne publie rien.
+  ⇒ 06/11 23 h 03 Blandine « Oui vas-y » : page Aides et contacts PUBLIÉE —
+  build 20261106-2310.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
