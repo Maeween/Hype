@@ -18330,7 +18330,7 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Photos des cours : provisoires (photos déjà en ligne : Galop 5, santé, Galop 7). Texte pour en créer 20 donné à Blandine le 05/11.
 - Fichiers : hype-cours-galop8.js (nouveau, v1), index.html (build 20261107-0150), hype-cours-sommaire.js, outils/sommaire-cours.cjs, outils/cours-langues.cjs, SUIVI.md.
 
-## 07/11/2026 00h25 — PRÊT, NON PUBLIÉ (build 20261107-0200) — TUTOIEMENT : 6 phrases corrigées
+## 07/11/2026 00h25 — PRÊT, NON PUBLIÉ (build 20261107-0155, publié avec le build 20261107-0045) — TUTOIEMENT : 6 phrases corrigées
 - Blandine : « Ok » sur la liste du 07/11 (6 vouvoiements vus par les cavaliers).
 - Corrigé : « Raconte ton expérience avec ce cheval… » (avis sur un cheval) ; « Ajoute tes plus belles photos… » (mur de souvenirs vide) ; « Tu gères cette écurie ? Réclame la page » (page Écurie) ; « Découvre les cavaliers qui montent ces chevaux… » (vitrine d'écurie) ; « Ta sécurité, notre priorité. » et « On te souhaite un excellent championnat ! 🏆 » (annonces du Parc de Lamotte).
 - Autres langues : mêmes phrases passées au tutoiement là où elles vouvoyaient (allemand Ihre/Ihnen → dein/dir, espagnol Su/Les → Tu/Te, italien vostra/Vi → tua/Ti, chinois 您 → 你, arabe pluriel → singulier, japonais « 皆さま » → « あなた »). Les autres langues tutoyaient déjà.
