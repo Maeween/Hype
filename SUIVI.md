@@ -522,6 +522,17 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   vérifiés) ; PUBLIÉ avec « Les échéances » — build 20261106-0005.
   À tester sur iPhone : ajouter le camion, une date, un papier ; voir la date
   remonter dans Les échéances. Photo de camion à fournir par Blandine.
+· 06/11 11 h 52 Blandine « Ok continue » → POINT 4 « MA COMPTA » CODÉ, NON
+  PUBLIÉ, SQL NON PASSÉ (sql-06-11-compta-apercu.sql : table compta_apercus,
+  une ligne par écurie et par année, lecture responsables + modératrices,
+  écriture modératrices seulement). Page #compta d'après la maquette validée
+  v2-5-compta : cases entrées / sorties / opérations / sans ticket ; « À faire
+  avant l'AG » (tickets, à classer, versements à décider) ; « Où va l'argent »
+  (6 plus gros postes) ; « Trouvé pour ton registre » (ex. vétérinaire →
+  ouvre Le détenteur). Démonstration : le résumé est préparé par Claude à
+  partir de Qonto et écrit directement en base — LES CHIFFRES NE SONT JAMAIS
+  DANS LE DÉPÔT. Pas de connexion bancaire dans l'appli avant le salon.
+  Phrase légale en bas (Hype aide, la structure valide). ?v=13.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

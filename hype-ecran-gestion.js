@@ -294,7 +294,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { b: "Registre", s: r.complets + " sur 7", on: function () { ouvrir("registre"); } },
         { b: "Soins", s: r.so.aConfirmer.length ? (r.so.aConfirmer.length + " à confirmer") : (nRet ? (nRet + " en retard") : ((d.soins || []).length ? "À jour" : "Aucun noté")), alerte: nRet > 0 || r.so.aConfirmer.length > 0, on: function () { ouvrir(r.so.aConfirmer.length ? "soins-a-confirmer" : "sante-club"); } },
         { b: "Camion", s: d.vhAbsent ? "Bientôt" : ((d.vehicules || []).length ? ((d.vehicules || []).length + " véhicule" + ((d.vehicules || []).length > 1 ? "s" : "")) : "À remplir"), on: d.vhAbsent ? null : function () { ouvrir("camion"); } },
-        { b: "Compta", s: "Bientôt" }
+        { b: "Compta", s: "Préparer", on: function () { ouvrir("compta"); } }
       ];
       corps = h("div", null,
         ligneEcurie(h, c, [{ svg: SVG_CLOCHE, lab: r.so.aConfirmer.length ? ("Soins à confirmer : " + r.so.aConfirmer.length) : "Mes alertes", point: r.so.aConfirmer.length > 0 || nRet > 0,
@@ -311,7 +311,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.soins, "Les soins", (d.soins || []).length ? ((d.soins || []).length + " noté" + ((d.soins || []).length > 1 ? "s" : "") + (nRet ? " · " + nRet + " en retard" : "")) : "Aucun soin noté", function () { ouvrir("sante-club"); }),
           theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
           theme(h, "", PHOTOS.camion, "Le camion", d.vhAbsent ? "Bientôt" : "Papiers et dates à surveiller", d.vhAbsent ? null : function () { ouvrir("camion"); }),
-          theme(h, "", PHOTOS.compta, "Ma compta", "Bientôt", null)),
+          theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
@@ -1636,5 +1636,85 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « MA COMPTA » (06/11) — démonstration de préparation compta ═════════════════════════
+     Point 4 du chantier : montrer le résultat concret sur les vrais chiffres de l'écurie, sans brancher la banque dans
+     l'appli (ça viendra après le salon : intermédiaire agréé, sécurité). Le résumé est préparé à partir de la banque et
+     rangé dans compta_apercus (une ligne par écurie et par année, lisible par les seuls responsables) ; les chiffres ne
+     sont jamais dans le dépôt. Maquette validée le 04/11 (v2-5-compta). Cadre légal : Hype aide à préparer, c'est la
+     structure qui valide ; jamais « on fait ta compta ». */
+  function euros(n) { var x = Math.round(+n || 0); return String(Math.abs(x)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u202F") + "\u00A0€"; }
+  function EcranCompta() {
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var c = useClub();
+    var d = useDonneesEcurie(c.club);
+    var _x = React.useState(null); var ap = _x[0], setAp = _x[1];
+    var _an = React.useState(null); var annee = _an[0], setAnnee = _an[1];
+    React.useEffect(function () {
+      var vif = true; setAp(null);
+      if (!c.club) return;
+      (async function () {
+        var r = await supa.from("compta_apercus").select("*").eq("club_clef", clefDe(c.club)).order("annee", { ascending: false }).limit(10);
+        if (!vif) return;
+        if (r && r.error) setAp({ absent: /does not exist|relation|42P01|schema cache/i.test(String(r.error.message || r.error.code || "")), liste: [], err: r.error.message });
+        else setAp({ liste: (r && r.data) || [] });
+      })();
+      return function () { vif = false; };
+    }, [c.club]);
+    function ouvrir(ecran) { try { window.__santeClub = { nom: c.club }; window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
+    var corps, sousHero = "Préparée depuis ta banque.";
+    if (!d || !ap) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else if (ap.absent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir la compta.");
+    else if (!ap.liste.length) corps = h("div", null, ligneEcurie(h, c, []),
+      h("div", { className: "hg-encart", style: { marginTop: 22 } }, h("b", null, "Pas encore préparée"), "Pour l'instant, la préparation se fait avec Hype à partir de l'accès à ta banque en ligne. La connexion directe dans l'appli arrive ensuite."),
+      h("div", { className: "hg-sous" }, "Hype t'aide à préparer ta comptabilité : c'est toi qui la valides. Les comptes restent sous ta responsabilité."), LEGAL(h));
+    else {
+      var cur = ap.liste.filter(function (x) { return x.annee === annee; })[0] || ap.liste[0];
+      var D = cur.donnees || {};
+      sousHero = (D.structure || c.club) + " · " + cur.annee;
+      var st = D.sans_ticket || {}, ac = D.a_classer || {}, vs = D.versements || {};
+      var nAfaire = (st.n ? 1 : 0) + (ac.n ? 1 : 0) + (vs.n ? 1 : 0);
+      var postes = (D.postes || []).slice(0, 6), maxP = postes.reduce(function (m, p) { return Math.max(m, +p.montant || 0); }, 1);
+      var pct = function (a, b) { return b ? Math.round(100 * a / b) + " %" : ""; };
+      var aFaire = [
+        st.n ? { k: "st", photo: PHOTOS.compta, titre: st.n + " tickets", sous: euros(st.montant) + " sans justificatif", pill: "Tickets", etat: pct(st.n, D.nb_depenses), alerte: true } : null,
+        ac.n ? { k: "ac", photo: PHOTOS.registre, titre: ac.n + " à classer", sous: euros(ac.montant) + " · tu valides", pill: "Tri", etat: pct(ac.n, D.operations), alerte: true } : null,
+        vs.n ? { k: "vs", photo: PHOTOS.mouvements, titre: vs.n + " versements", sous: euros(vs.montant) + " · apport ou don ?", pill: "À décider", etat: "À décider", alerte: false } : null
+      ].filter(Boolean);
+      corps = h("div", null,
+        ligneEcurie(h, c, []),
+        ap.liste.length > 1 ? h("div", { className: "hv3-pils", style: { marginTop: 14 } }, ap.liste.map(function (x) {
+          return h("button", { key: x.annee, type: "button", className: "hv3-pil" + (x.annee === cur.annee ? " on" : ""), "aria-pressed": x.annee === cur.annee, onClick: function () { setAnnee(x.annee); } }, String(x.annee));
+        })) : null,
+        h("div", { className: "hv2-choix" }, h("div", { className: "hv2-choix-rang" },
+          [[euros(D.entrees), "entrées"], [euros(D.sorties), "sorties"], [String(D.operations || 0), "opérations"], [String(st.n || 0), "sans ticket"]].map(function (t, k) {
+            return h("div", { key: k, className: "hv2-og hv2-cg", style: { cursor: "default" } }, h("b", { style: String(t[0]).length > 8 ? { fontSize: 14.5 } : null }, t[0]), h("span", null, t[1]));
+          }))),
+        aFaire.length ? h("div", null, h("h2", { className: "hv3-h2" }, "À faire avant l'AG"),
+          h("div", { className: "hv3-cartes" }, aFaire.map(function (x) { return carte(h, { cle: x.k, photo: x.photo, titre: x.titre, sous: x.sous, pill: x.pill, etat: x.etat, alerte: x.alerte }); }))) : null,
+        postes.length ? h("div", null, h("h2", { className: "hv3-h2" }, "Où va l'argent"),
+          postes.map(function (p, k) {
+            return h("div", { key: k, style: { padding: "11px 2px", borderBottom: "1px solid rgba(243,238,228,.08)" } },
+              h("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, fontFamily: "'Montserrat',sans-serif", fontSize: 13, color: "#F3EEE4" } }, h("span", null, p.nom), h("span", { style: { color: "#C9A66B" } }, euros(p.montant))),
+              h("div", { style: { marginTop: 7, height: 2, borderRadius: 2, background: "rgba(243,238,228,.08)" } },
+                h("div", { style: { width: Math.max(3, Math.round(100 * (+p.montant || 0) / maxP)) + "%", height: "100%", borderRadius: 2, background: "linear-gradient(90deg,rgba(201,166,107,.35),#C9A66B)" } })));
+          })) : null,
+        (D.trouves || []).length ? h("div", null, h("h2", { className: "hv3-h2" }, "Trouvé pour ton registre"),
+          h("div", { className: "hv3-cartes" }, D.trouves.map(function (t, k) {
+            var cible = t.cible === "detenteur" ? "detenteur" : (t.cible === "camion" ? "camion" : null);
+            return carte(h, { cle: "t" + k, photo: k % 2 ? PHOTOS.controles : PHOTOS.soins, titre: t.titre, sous: t.question, pill: t.pill || "Registre", qui: t.montant ? euros(t.montant) : "", etat: cible ? "Compléter" : "À noter", onClick: cible ? function () { ouvrir(cible); } : undefined });
+          }))) : null,
+        h("div", { className: "hg-sous" }, (cur.source ? "Préparé à partir de " + cur.source + ". " : "") + "Hype t'aide à préparer ta comptabilité : c'est toi qui la valides. Les comptes restent sous la responsabilité de " + (D.forme === "association" ? "l'association et sont approuvés en assemblée générale." : "ta structure, et ton comptable les finalise.")),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE },
+      hero(h, { photo: PHOTOS.compta, titre: "Ma compta", sous: sousHero, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
