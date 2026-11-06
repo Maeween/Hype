@@ -32,33 +32,33 @@ jobs:
 
       - name: mux-upload
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:mux-upload]') }}
-        run: supabase functions deploy mux-upload --project-ref $PROJECT_ID
+        run: supabase functions deploy mux-upload --yes --project-ref $PROJECT_ID
 
       # 20/10/2026 : copie des anciennes vidéos stockées dans Supabase vers Mux (réservée au compte de Blandine)
       - name: mux-import
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:mux-import]') }}
-        run: supabase functions deploy mux-import --project-ref $PROJECT_ID
+        run: supabase functions deploy mux-import --yes --project-ref $PROJECT_ID
 
       # 26/09 : analyse photo de Hey Baby (limite de temps de Netlify trop courte)
       - name: hey-baby-vision
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:hey-baby-vision]') }}
-        run: supabase functions deploy hey-baby-vision --project-ref $PROJECT_ID
+        run: supabase functions deploy hey-baby-vision --yes --project-ref $PROJECT_ID
 
       # 05/11 : conversion des photos que le telephone ne sait pas ouvrir (HEIF, AVIF, RAW, tres grandes photos).
       # Appelee par le recadreur avec le jeton de la cavaliere : controle du jeton garde.
       - name: hype-convertir-photo
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:hype-convertir-photo]') }}
-        run: supabase functions deploy hype-convertir-photo --project-ref $PROJECT_ID
+        run: supabase functions deploy hype-convertir-photo --yes --project-ref $PROJECT_ID
 
       # 09/10 : notification « Nouvel abonnement » sur l'iPhone de Blandine.
       # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton
       # (sans ce drapeau, la ligne de commande remet le contrôle et tout appel est refusé).
       - name: notifier-abonnement
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:notifier-abonnement]') }}
-        run: supabase functions deploy notifier-abonnement --no-verify-jwt --project-ref $PROJECT_ID
+        run: supabase functions deploy notifier-abonnement --no-verify-jwt --yes --project-ref $PROJECT_ID
 
       # 20/10 : notifications personnelles (mention, commentaire) envoyées sur le téléphone.
       # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton (comme notifier-abonnement).
       - name: notifier-notif
         if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:notifier-notif]') }}
-        run: supabase functions deploy notifier-notif --no-verify-jwt --project-ref $PROJECT_ID
+        run: supabase functions deploy notifier-notif --no-verify-jwt --yes --project-ref $PROJECT_ID
