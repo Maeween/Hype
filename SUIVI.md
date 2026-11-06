@@ -84,8 +84,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [20/10] Page d'équipe par défaut que chaque écurie pourrait créer et remplir elle-même, sur le modèle de la Team Compétition SEP, puis rebrancher « Créer une équipe » (attend : Blandine)
 - [01/11] Reprise Amateur 3 Grand Prix : ajouter des conseils du coach si tu le demandes (attend : Blandine)
 - [19/10] Regrouper en une seule carte du fil les photos sans texte publiées à la suite par la même personne le même jour (attend : Blandine)
-- [21/10] Petit ménage en base : réponses Hey Baby qui s'accumulent, et ligne de progression du compte de test Claude à nettoyer (attend : Claude)
-- [16/09] Vieux petits nettoyages de base, à revérifier : Liam a deux comptes (@gmail.com et @gmail.fr), un profil a la SEP en double, une épingle Hey Baby porte un faux cheval « idao », et la colonne resultats.format_large manque (attend : Claude)
+- [21/10] Petit ménage en base : réponses Hey Baby gardées (décision du 25/10). Ligne de progression du compte de test « Claude » (claude@hitpail.fr, contient une copie de la présentation de Blandine) : suppression demandée le 07/11, la base a demandé une confirmation restée sans réponse → rien supprimé (attend : Blandine)
+- [16/09 → 07/11] Vieux nettoyages de base : FAITS le 07/11 (colonne resultats.format_large ajoutée ; épingle « idao » rattachée à la vraie fiche Boréalis de Feinn ; Liam n'a plus qu'un compte). Reste : « Elle m'a dit » et « Elle m'a dit circee » = même cheval en double à la SEP, à fusionner seulement avec Blandine (attend : Blandine)
 
 ────────────────────────────────────────────────────────────
 
@@ -18466,3 +18466,10 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Reste à trancher (attend : Blandine) : « tableau des distances » (Galop 9 cours 14) absent des compétences CSO du programme → le garder ou le passer en « Pour aller plus loin » ; partie commune du Galop 9 non retrouvée dans le programme ; autres points listés plus haut (trois doigts, labels, etc.).
 - Traductions NON lancées : règle de Blandine du 02/11 (traduire seulement après sa relecture en français).
 - Fichiers : hype-cours-galop8.js (v2), hype-cours-galop9.js (v2), index.html (build 20261107-0230, clés ?v=2), SUIVI.md.
+
+## 07/11/2026 01h20 — SUIVI + base — ménage et vérifications (« carte blanche » de Blandine, 00h49)
+- Hey Baby, analyse des vidéos : DÉJÀ FAIT depuis le 21/10 (vérifié dans le code) : la réponse à une vidéo est écrite en base (heybaby_analyses) par le serveur, même si le téléphone part, et l'appli la relit au retour (jusqu'à 24 h). Point retiré de la liste.
+- Base : colonne resultats.format_large AJOUTÉE (booléen, vide = règle automatique). La fiche cheval (hype-ecran-cheval.js) l'utilisait déjà pour « afficher ce résultat en grand » : le choix ne s'enregistrait pas.
+- Base : épingle Hey Baby n°57 (« Boréalis de Feinn », compte de Blandine) rattachée à la vraie fiche du cheval (avant : faux identifiant de démo « idao », sans photo).
+- Vérifié : Liam n'a plus qu'un compte (liamroux0@gmail.com).
+- PAS FAIT : suppression de la ligne de progression du compte de test « Claude » (la base demande une confirmation à Blandine, restée sans réponse) ; passage des anciennes vidéos hors Mux sur Mux (une autre conversation travaille sur les vidéos Mux cette nuit : à reprendre avec elle pour éviter de se croiser) ; doublon « Elle m'a dit » (fusion seulement avec Blandine).
