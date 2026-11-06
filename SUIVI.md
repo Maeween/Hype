@@ -573,6 +573,17 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   sur les 5 aides et la prévient ; ne modifie rien, ne publie rien.
   ⇒ 06/11 23 h 03 Blandine « Oui vas-y » : page Aides et contacts PUBLIÉE —
   build 20261106-2310.
+· 06/11 23 h 09 Blandine « Ok continue » (sans choisir 1 ou 2 pour la SEP) →
+  PRÉSENTATION SEP PRÉPARÉE, RIEN ENVOYÉ : PDF A4 de 2 pages au style Hype
+  (noir, champagne, Cormorant/Montserrat), vraies captures de l'appli (Mon
+  écurie, Le registre, Les échéances, Ma compta en EXEMPLE — jamais les
+  chiffres de l'association —, page 1 du registre imprimé), vouvoiement.
+  Uniquement ce qui existe vraiment dans l'appli (retirés de la maquette du
+  04/11 : licences, cartes pro, rhinopneumonie, dossier du concours — pas
+  faits ou pas vérifiés). Proposition : essai gratuit d'une saison contre
+  retours, droit de citer la SEP, témoignage si satisfaits. Fichier gardé
+  hors du dépôt. C'est Blandine qui décide quand et si l'envoyer
+  (entretien du 12/11).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
