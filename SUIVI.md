@@ -3567,9 +3567,12 @@ Règles de travail, non négociables
   immédiatement.
 - À chaque livraison : dis-moi précisément quels fichiers pousser et où,
   et ne liste que ce qui est nouveau.
-- Mets SUIVI.md à jour à CHAQUE livraison, et rends-le-moi complété,
-  groupé avec index.html. Jamais SUIVI.md tout seul (ça fait buguer
-  l'appli).
+- Mets SUIVI.md à jour à CHAQUE livraison. Corrigé le 06/11 par
+  Blandine : c'est Claude qui le publie en ligne lui-même, et il PEUT
+  partir seul en ligne (« envoie-le »). L'ancienne règle « jamais seul »
+  venait de l'époque où Claude l'envoyait comme fichier dans la
+  conversation, ce qui faisait sauter la conversation : ne pas lui
+  renvoyer SUIVI.md en fichier dans la conversation.
 - Diagnostic en base : UNE seule requête SELECT courte à la fois. Je
   l'exécute, je donne le résultat, tu n'interprètes que ce qu'il prouve.
 
