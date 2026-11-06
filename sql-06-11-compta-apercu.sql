@@ -1,5 +1,5 @@
 -- HYPE ▸ 06/11/2026 — MON ÉCURIE : « MA COMPTA » (démonstration de préparation compta).
--- À PASSER EN BASE SEULEMENT APRÈS L'ACCORD DE BLANDINE.
+-- Accord de Blandine le 06/11 (« Ok », 13 h 07). Passé en base par Claude le 06/11.
 -- Une ligne par écurie et par année : un résumé préparé à partir de la banque (entrées, sorties, ce qui reste à trier,
 -- ce qui a été trouvé pour le registre). Les CHIFFRES ne sont pas dans ce fichier ni dans le dépôt : ils sont écrits
 -- directement en base, lisibles seulement par les responsables de l'écurie (et les modératrices).

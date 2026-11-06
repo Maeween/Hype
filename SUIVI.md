@@ -533,6 +533,10 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   partir de Qonto et écrit directement en base — LES CHIFFRES NE SONT JAMAIS
   DANS LE DÉPÔT. Pas de connexion bancaire dans l'appli avant le salon.
   Phrase légale en bas (Hype aide, la structure valide). ?v=13.
+  ⇒ 06/11 13 h 07 Blandine « Ok » : table compta_apercus PASSÉE (2 règles,
+  RLS active) ; résumé 2026 de l'Écurie Feinn (Qonto au 04/11) écrit en base
+  par Claude ; PUBLIÉ — build 20261106-1315. Rafraîchir le résumé depuis
+  Qonto avant le salon.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
