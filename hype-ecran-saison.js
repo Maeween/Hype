@@ -492,6 +492,18 @@ var CSS2 = [
   ".rc-tx{position:absolute;left:10px;right:10px;bottom:8px}",
   ".rc-tx b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:16px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".rc-tx em{font-style:normal;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--hs-iv2)}",
+  ".rc-hl{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(243,238,228,.07)}",
+  ".rc-hl .n{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:24px;color:var(--hs-ch);width:18px;text-align:center}",
+  ".rc-hl .c{flex:1;min-width:0}",
+  ".rc-hl .c b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19px;line-height:1.1}",
+  ".rc-hl .c span{display:block;font-size:11px;color:var(--hs-iv2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".rc-duo2{position:relative;width:76px;height:46px;flex:0 0 76px}",
+  ".rc-duo2.seul{width:46px;flex-basis:46px}",
+  ".rc-duo2 img,.rc-duo2 .rc-vide{position:absolute;top:0;left:0;width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--hs-noir);box-shadow:0 0 0 1px rgba(201,166,107,.42)}",
+  ".rc-duo2 .rc-vide{border-style:dashed;background:transparent}",
+  ".rc-duo2 img+img{left:30px}",
+  ".rc-duo2 i{position:absolute;bottom:-4px;font-style:normal;font-size:9px;color:var(--hs-ch);background:var(--hs-noir);border:1px solid rgba(201,166,107,.42);border-radius:999px;padding:0 5px;line-height:15px}",
+  ".rc-duo2 i.a{left:2px}.rc-duo2 i.b{left:44px}",
   ".rc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}",
   ".rc-rail::-webkit-scrollbar{display:none}",
   ".rc-ch{flex:0 0 72%;max-width:300px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(16,26,29,.6),rgba(7,10,8,.4))}",
@@ -1579,21 +1591,20 @@ function EcranEngagements() {
         h("div", { className: "rc-eb" }, F("Récapitulatif")),
         h("h2", null, F("La journée en un coup d’œil")),
         h("p", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
-      /* les cavalières : ses deux couples */
-      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, String(cav.length))),
-      cav.map(function (x) {
-        var np = nomPrenom(x.l.nom);
-        return h("div", { key: "rc" + x.i, className: "rc-cav" },
-          h("div", { className: "rc-cav-t" }, h("b", null, np[0], np[1] ? h("span", null, " " + np[1]) : null), x.l.licence ? h("small", null, x.l.licence) : null),
-          h("div", { className: "rc-duo" }, [1, 2].map(function (n) {
-            var c = String(x.l["cheval" + n + "_nom"] || "").trim(), e = String(x.l["epreuve" + n] || "").trim();
-            if (!c && !e) return h("div", { key: n, className: "rc-v vide" }, h("span", null, n === 2 ? F("Pas de 2e épreuve") : F("Cheval à choisir")));
-            var k = c ? kTour(x.i, n) : 0;
-            return h("div", { key: n, className: "rc-v" },
-              c ? h("img", { src: photoCh(c), alt: "" }) : null, h("div", { className: "voile" }),
-              k ? h("span", { className: "rc-no" }, k + (k === 1 ? F("er tour") : F("e tour"))) : null,
-              h("div", { className: "rc-tx" }, h("b", null, c || F("Cheval à choisir")), h("em", null, e || F("épreuve à choisir"))));
-          })));
+      /* les cavalières : liste et médaillons (choix de Blandine 07/11 00h45, au lieu de « ses deux couples ») */
+      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
+      cav.map(function (x, r) {
+        var np = nomPrenom(x.l.nom), c1 = String(x.l.cheval1_nom || "").trim(), c2 = String(x.l.cheval2_nom || "").trim();
+        function court(e) { return String(e || "").replace(/^Club\s*/i, "C").replace(/^Amateur\s*/i, "A").replace(/^Poney\s*/i, "P").replace(/\s+/g, ""); }
+        return h("div", { key: "rc" + x.i, className: "rc-hl" },
+          h("div", { className: "n" }, String(r + 1)),
+          h("div", { className: "c" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
+            h("span", null, [c1, c2].filter(Boolean).map(function (c, k) { var kt = kTour(x.i, k === 0 && c1 ? 1 : 2); return c + (kt ? " (" + kt + ")" : ""); }).join(" · ") || F("chevaux à choisir"))),
+          h("div", { className: "rc-duo2" + (c2 ? "" : " seul") },
+            c1 ? h("img", { src: photoCh(c1), alt: "" }) : h("span", { className: "rc-vide" }),
+            c2 ? h("img", { src: photoCh(c2), alt: "" }) : null,
+            x.l.epreuve1 ? h("i", { className: "a" }, court(x.l.epreuve1)) : null,
+            (c2 && x.l.epreuve2) ? h("i", { className: "b" }, court(x.l.epreuve2)) : null));
       }),
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
       nomsCh.length ? h(React.Fragment, null,
