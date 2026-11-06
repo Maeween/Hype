@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 11h35)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 12h00)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -15,6 +15,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team — limite de vidéos : décider si les vidéos ajoutées à la vidéothèque de l'équipe comptent dans la limite de chaque compte (3 gratuit, 15 Premium). Choix : 1 elles comptent / 2 elles ne comptent pas / 3 limite à part (ex. 10 par cavalière). Tant que rien n'est décidé, c'est le 2 qui s'applique : une vidéo d'équipe ne compte plus une fois prête (attend : Blandine)
 
 ## 2 — Important
+- [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
+- [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
 - [06/11] Petit mot « Cette photo est déjà réduite… » (s'affiche quand une photo arrive déjà petite, ex. WhatsApp) : à relire en français, puis traduire dans toutes les langues. En attendant il ne s'affiche qu'en français (attend : Blandine, puis Claude)
 - [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
@@ -524,6 +526,31 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🎞 06/11/2026 (12 h) — VIDÉO D'EVA : DIAGNOSTIC + LECTURE DIRECTE — build 20261106-1200
+Blandine 11 h 48-11 h 52 (enregistrement) : « T'as push déjà ? Car aucun
+changement » (en fait en ligne : vidéo en grand + plein écran auto, mais sans
+le son) ; « pas fluide dans Safari non plus, mieux en qualité » ; « j'ai
+jamais vu une vidéo aussi mauvaise… surtout quelque part qui fait payer » ;
+« Ok » à : toucher une vidéo dans la mosaïque = plein écran direct avec son.
+DIAGNOSTIC (fonction mux-upload v29 : la réponse d'état donne maintenant
+cadence, résolution, qualité ; appelée par Claude via pg_net) :
+· Les 4 dernières vidéos sont stockées à 30 images/s, qualité « basic ».
+· Vidéo 1 d'Eva (tWkgu1…) : 1080 × 1920. Vidéo 2 (NVT6o3…) : 464 × 832
+  seulement → arrivée déjà réduite (WhatsApp ?).
+· Images Mux à 1/30 s d'écart (vidéo 1) : tailles identiques deux par deux
+  → chaque image est en double : la vidéo n'a que 15 vraies images/s
+  (téléphone qui baisse la cadence quand la lumière baisse, fin de journée).
+  Confirmé par Blandine : saccadée aussi dans le lecteur officiel Mux.
+  → Ni Hype ni Mux n'en sont la cause ; on ne peut pas recréer les images.
+CE QUI A ÉTÉ FAIT
+· hypeLancerVideoGrand(u) : lecteur natif créé DANS le toucher (MP4 Mux puis
+  HLS), plein écran natif sur iPhone, plein écran navigateur ailleurs, croix ;
+  détruit à la fermeture. Branché sur les cases vidéo de la mosaïque
+  (hypeMosaiqueActu) ; la publication (HypeCalqueMoment) s'ouvre derrière.
+  Essayé dans Chromium : lecture immédiate, son actif, fermeture propre.
 
 ════════════════════════════════════════════════════════════
 
