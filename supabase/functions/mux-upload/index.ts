@@ -236,7 +236,12 @@ Deno.serve(async (req) => {
         cors_origin: ALLOWED_ORIGIN,
         new_asset_settings: {
           playback_policy: ["public"],
-          video_quality: "basic",
+          /* 06/11 — QUALITE MAXIMALE (Blandine : « Mux prends la meilleure qualite possible »). Avant : "basic", le niveau le plus bas
+             de Mux ; sur un cheval qui saute, l image se decomposait en carres en plein ecran (enregistrement du 06/11 10:27).
+             "premium" = meme technique que "plus", reglee pour le sport rapide, plus de paliers de qualite. Cout en 1080p : environ
+             0,047 $ par minute a l encodage (une fois), stockage 0,0045 $/min/mois, lecture 0,0015 $/min. Ne vaut que pour les
+             NOUVEAUX envois. Resolution maxi laissee a 1080p (defaut Mux) : la 4K coute environ 3 fois plus, sur decision de Blandine. */
+          video_quality: "premium",
           /* 05/09 — EN PLUS DU FLUX HLS, UN MP4 CLASSIQUE.
              Constaté par Blandine (enregistrement 11h37) : en app installée sur
              iPhone, le plein écran natif d'une vidéo HLS est NOIR — commandes

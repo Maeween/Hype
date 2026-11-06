@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
         const r = await fetch("https://api.mux.com/video/v1/assets", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: authMux },
-          body: JSON.stringify({ input: [{ url: urlT }], playback_policy: ["public"], video_quality: "basic", mp4_support: "capped-1080p", passthrough: "import-hype:" + urlT.slice(prefixeT.length) }),
+          body: JSON.stringify({ input: [{ url: urlT }], playback_policy: ["public"], video_quality: "premium" /* 06/11 : qualite maxi, comme mux-upload */, mp4_support: "capped-1080p", passthrough: "import-hype:" + urlT.slice(prefixeT.length) }),
         });
         const d = await r.json().catch(() => null);
         if (!r.ok) { refusees++; await table("PATCH", `hype_import_mux?source_url=eq.${encodeURIComponent(urlT)}`, { statut: "errored", maj_le: new Date().toISOString() }); continue; }
@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         input: [{ url }],
         playback_policy: ["public"],
-        video_quality: "basic",
+        video_quality: "premium" /* 06/11 : qualite maxi, comme mux-upload */,
         mp4_support: "capped-1080p",
         passthrough: "import-hype:" + url.slice(prefixe.length),
       }),

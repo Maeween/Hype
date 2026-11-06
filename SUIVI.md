@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 05/11/2026 21h40)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 11h05)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -15,6 +15,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team — limite de vidéos : décider si les vidéos ajoutées à la vidéothèque de l'équipe comptent dans la limite de chaque compte (3 gratuit, 15 Premium). Choix : 1 elles comptent / 2 elles ne comptent pas / 3 limite à part (ex. 10 par cavalière). Tant que rien n'est décidé, c'est le 2 qui s'applique : une vidéo d'équipe ne compte plus une fois prête (attend : Blandine)
 
 ## 2 — Important
+- [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
+- [06/11] Vidéos : la lecture saute (environ 15 images par seconde au lieu de 30 sur l'enregistrement du 06/11). Chercher si ça vient de la vidéo ou du lecteur, après le test ci-dessus. Ensuite : décider si on ré-encode les anciennes vidéos importantes en premium (attend : Claude, puis Blandine)
 - [15/10] Médiateur de la consommation, obligatoire pour vendre aux particuliers : choisir un médiateur agréé et y adhérer au nom de l'association. Claude complète ensuite l'article 11 des CGV dans toutes les langues (attend : Blandine)
 - [26/10] L'argent reste bloqué sur l'ancien compte Stripe « Feinn » (virements réglés en manuel). Il faut y ajouter le RIB de l'association. La vérification d'identité est à refaire en ouvrant le lien du mail dans Safari, pas dans Outlook (attend : Blandine)
 - [26/10] Demander au comptable si l'association doit facturer la TVA. Les prix sont aujourd'hui sans TVA, et il y a eu environ 278 € d'encaissements sur l'ancien compte (attend : Blandine)
@@ -520,6 +522,40 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🎬 06/11/2026 (11 h) — VIDÉOS : TAILLE ET QUALITÉ — build 20261106-1100
+Blandine (enregistrement 10:27, une vidéo de saut ouverte depuis l'Écurie) :
+« je fais la guerre à mes cavalières pour qu'elles mettent leurs vidéos, et
+regarde dans quelle sale qualité elle sort » ; « en petit format elle peut
+prendre bien plus de place, là c'est ridicule » ; « en plein écran elle saute
+de partout, elle est complètement floue ». Puis « Vas y » et « Mux prends la
+meilleure qualité possible ».
+CONSTATÉ SUR L'ENREGISTREMENT : vidéo en hauteur affichée sur ~95 × 170 pt
+(boîte 16/9 fixe, noir tout autour) ; en plein écran, image en carrés sur le
+mouvement (cheval derrière le drapeau rouge) ; ~15 images/s affichées.
+CE QUI A ÉTÉ FAIT
+· index.html — HypeLecteurMuxTest (le lecteur de TOUTES les vidéos Mux :
+  visionneuses, fils, albums) : la boîte prend la forme réelle de la vidéo
+  (lue à l'arrivée de ses informations) et la plus grande taille possible :
+  toute la largeur, hauteur = écran moins 230 px (croix + menu). Mesuré :
+  iPhone 390×844 → 345 × 614 ; tablette 820×1180 → 534 × 950 ; ordi
+  1440×900 → 377 × 670. Tant que la forme n'est pas connue : 16/9 comme avant.
+· Fonction Supabase mux-upload — version 27 déployée par Claude à 10 h 58 :
+  video_quality "basic" → "premium" (la meilleure de Mux). Coût en 1080p :
+  ~0,047 $/min à l'encodage (une fois), stockage 0,0045 $/min/mois, lecture
+  0,0015 $/min. Seulement pour les NOUVEAUX envois. Résolution maxi laissée à
+  1080p (la 4K coûte ~3 fois plus : à sa demande seulement).
+· mux-import (copie des anciennes vidéos vers Mux, compte de Blandine) :
+  mis en « premium » dans le dépôt, PAS ENCORE DÉPLOYÉ (sera pris au prochain
+  déploiement des fonctions).
+⚠️ Le déploiement automatique des fonctions ([fonctions]) redéploierait aussi
+hype-convertir-photo et notifier-notif, aujourd'hui en ligne dans des versions
+déployées hors GitHub : vérifier qu'elles sont identiques au dépôt avant.
+NON VU À L'ÉCRAN : le vrai lecteur Mux (bloqué depuis l'atelier de Claude) ;
+la taille a été vérifiée avec une boîte de même réglage.
+RESTE : la lecture qui saute (15 images/s) ; ré-encodage éventuel des anciennes.
 
 ════════════════════════════════════════════════════════════
 
