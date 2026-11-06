@@ -11,7 +11,7 @@
 (function () {
 "use strict";
 if (typeof window === "undefined") return;
-var COURS_GALOP8_VERSION = 1; /* 07/11 (Blandine « Ok continue ») : les 20 cours g8n-01 … g8n-20 en français, branchés sur la page du Galop 8 (« Prochainement » : seules les modératrices les ouvrent), à relire avant traduction */
+var COURS_GALOP8_VERSION = 2; /* 07/11 : cours 15, « de ferme à ferme » précisé d'après le programme FFE */ /* v1 : */ /* 07/11 (Blandine « Ok continue ») : les 20 cours g8n-01 … g8n-20 en français, branchés sur la page du Galop 8 (« Prochainement » : seules les modératrices les ouvrent), à relire avant traduction */
 var S = function (titre, sous, puces) { var o = { k: "section", titre: titre }; if (sous) o.sous = sous; if (puces) o.puces = puces.map(function (p) { return typeof p === "string" ? { texte: p } : p; }); return o; };
 var P = function (texte) { return { k: "para", texte: texte }; };
 var E = function (emoji, titre, texte) { var o = { k: "encadre", emoji: emoji, texte: texte }; if (titre) o.titre = titre; return o; };
@@ -1526,17 +1526,17 @@ var COURS = [
    changer de pied au galop d'une phase de galop « ferme » à une autre ; changer de pied en l'air ;
    contrôler la rectitude en ligne droite, sur les courbes et dans les transitions ; présenter une reprise Amateur 2 GP)
    — remplace l'ancien titre « Dressage Amateur 2 » (g8-c14 du sommaire)
-   — À VÉRIFIER par Blandine : sens exact de « d'une phase de galop ferme à une autre »
+   — 07/11 : programme FFE vérifié, mot pour mot « Changer de pied au galop de ferme à ferme » = galop, transition directe au pas, 3 à 5 foulées de pas, galop sur l'autre pied
    --------------------------------------------------------------------------------- */
 { id: "g8n-15", icone: "🎩", type: { fr: "pratique" }, duree: { fr: "11 min" }, titre: { fr: "Dressage : changements de pied et reprise Amateur 2" },
   blocs: [
     { type: "couv-affiche", src: "images/galop5-video-dressage.webp", couv: {} },
 
     B("Changer de pied de ferme à ferme", [
-      P("Au Galop 8, tu apprends à changer de pied au galop, d'abord en repassant par une allure plus lente, puis en l'air. Le programme demande de passer d'une phase de galop bien établi, « ferme », à une autre."),
+      P("Au Galop 8, tu apprends à changer de pied au galop, d'abord en repassant par une allure plus lente, puis en l'air. Le programme parle de changer de pied « de ferme à ferme » : on passe d'un galop bien établi au pas, puis du pas à un nouveau galop bien établi, sans jamais trotter."),
       S("🔁 Le changement de pied simple", null, [
         "Ton cheval galope sur un pied, dans un galop régulier et équilibré.",
-        "Tu reviens au pas, quelques foulées, nettement, sans passer par le trot.",
+        "Tu reviens au pas directement, sans passer par le trot, et tu marches trois à cinq foulées.",
         "Tu repars aussitôt au galop sur l'autre pied, dans un départ franc.",
         "Le cheval reste droit et dans le contact pendant tout le changement."
       ]),

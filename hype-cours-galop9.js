@@ -11,7 +11,7 @@
 (function () {
 "use strict";
 if (typeof window === "undefined") return;
-var COURS_GALOP9_VERSION = 1; /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
+var COURS_GALOP9_VERSION = 2; /* 07/11 : vaccins (calendrier) et niveaux de l'examen précisés d'après le programme FFE */ /* v1 : */ /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
 var S = function (titre, sous, puces) { var o = { k: "section", titre: titre }; if (sous) o.sous = sous; if (puces) o.puces = puces.map(function (p) { return typeof p === "string" ? { texte: p } : p; }); return o; };
 var P = function (texte) { return { k: "para", texte: texte }; };
 var E = function (emoji, titre, texte) { var o = { k: "encadre", emoji: emoji, texte: texte }; if (titre) o.titre = titre; return o; };
@@ -140,7 +140,7 @@ var COURS = [
         { gras: "Le tétanos :", texte: "pas obligatoire en compétition, mais vivement conseillé pour tous les chevaux." }
       ]),
       S("📅 Le calendrier", null, [
-        "La primo-vaccination se fait en plusieurs injections, à des intervalles précis.",
+        "La primo-vaccination : deux injections à 21 à 92 jours d'intervalle, puis un premier rappel 4 à 6 mois plus tard (120 à 180 jours ; protocole 2026).",
         "Ensuite, un rappel chaque année, sans jamais dépasser le délai : sinon, tout est à recommencer.",
         "Aucune injection dans les 7 jours qui précèdent une compétition.",
         "Chaque vaccin est noté par le vétérinaire dans le livret du cheval et enregistré en ligne."
@@ -1857,14 +1857,14 @@ var COURS = [
 
 /* ---------------------------------------------------------------------------------
    g9n-19 — L'EXAMEN DU GALOP 9   (comme g7n-16 et g8n-20)
-   — À VÉRIFIER par Blandine : organisation en modules et choix d'une partie spécifique
+   — 07/11 : niveaux vérifiés dans le programme FFE (dressage Amateur 1 GP, CSO « niveau Amateur », CCE Amateur 1) ; À VÉRIFIER : partie commune
    --------------------------------------------------------------------------------- */
 { id: "g9n-19", icone: "🏆", type: { fr: "culture" }, duree: { fr: "8 min" }, titre: { fr: "L'examen du Galop 9" },
   blocs: [
     { type: "couv-affiche", src: "images/galop9-hero-alezan.webp", couv: {} },
 
     B("Comment se passe l'examen", [
-      P("Le Galop 9 est le dernier Galop. Il vérifie que tu es un cavalier accompli : tu connais l'histoire et les institutions de l'équitation, tu sais entretenir la santé et la forme de ton cheval, tu le travailles finement à pied, et tu montes au niveau Amateur 1 dans la discipline de ton choix."),
+      P("Le Galop 9 est le dernier Galop. Il vérifie que tu es un cavalier accompli : tu connais l'histoire et les institutions de l'équitation, tu sais entretenir la santé et la forme de ton cheval, tu le travailles finement à pied, et tu montes au niveau Amateur dans la discipline de ton choix : reprise Amateur 1 Grand Prix en dressage, parcours Amateur en CSO, ou CCE Amateur 1."),
       S("👩‍🏫 Qui le fait passer ?", null, [
         "Un enseignant diplômé, licencié à la FFE pour l'année en cours, avec un code examinateur qui l'autorise à valider le Galop 9.",
         "Il peut t'évaluer pendant une session d'examen, ou petit à petit, pendant tes cours et tes stages.",
