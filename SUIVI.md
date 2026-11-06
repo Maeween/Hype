@@ -47,7 +47,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Recherche de concours (numéro FFE) : « Trouver le numéro » est sur la page Engagements (build 0210) ET, depuis le build 20261106-2350, à la création d'un concours (agenda), avec « Calendrier FFE › » en secours ; à essayer sur iPhone. Reste : étape 3 = recherche par dates, région, discipline (attend : Blandine pour le test, puis Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
 - [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
-- [04/11] Vidéothèque : un lien vers une vidéo précise (#v=…) ouvre l'accueil de la Vidéothèque au lieu de la vidéo (attend : Claude)
 - [04/11] Vidéothèque : essayer sur iPhone la petite fenêtre flottante en plein écran. YouTube peut la refuser (attend : Blandine)
 - [04/11] Photos des thèmes de la Vidéothèque encore provisoires, sauf Dressage, Obstacle, Position du cavalier et Santé : choisir les photos définitives (attend : Blandine)
 - [04/11] Galop 6 : les photos des chapitres sont provisoires (ce sont celles du Galop 7) (attend : Blandine)
@@ -67,7 +66,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [18/10] Qualifications aux championnats : rien n'est codé. La requête de lecture pour comparer cheval par cheval est prête (attend : Blandine)
 - [15/10] Hey Baby : faire analyser les vidéos par le serveur, comme les photos, pour que la réponse ne se perde pas si on quitte l'appli. Environ 1 à 2 h (attend : Claude)
 - [15/10] Surveiller le premier vrai achat Premium Famille : famille ouverte, invitation, renouvellement (attend : Claude)
-- [07/11 00h25] Vouvoiements : les 6 phrases vues par les cavaliers sont passées au tutoiement (FR + allemand, espagnol, italien, chinois, arabe qui vouvoyaient), PRÊT, NON PUBLIÉ (build 20261107-0155, part avec la prochaine mise en ligne). Restent À DÉCIDER : conditions générales (fr/cgv) au « vous » ; page publique de l'association « Votre soutien… » (donateurs) ; ancienne page Premium (plus montrée qu'aux modératrices), proposé de ne pas y toucher (attend : Blandine)
+- [07/11 00h25] Vouvoiements : les 6 phrases vues par les cavaliers sont passées au tutoiement (FR + allemand, espagnol, italien, chinois, arabe qui vouvoyaient), PRÊT, NON PUBLIÉ (build 20261107-0200, part avec la prochaine mise en ligne). Restent À DÉCIDER : conditions générales (fr/cgv) au « vous » ; page publique de l'association « Votre soutien… » (donateurs) ; ancienne page Premium (plus montrée qu'aux modératrices), proposé de ne pas y toucher (attend : Blandine)
 - [19/10] Finir de passer les anciennes vidéos stockées hors Mux. Environ 22 restent, plus les autres réglages photos/vidéos proposés : tailles réelles dans les albums, cache plus long (attend : Claude)
 
 ## 4 — Plus tard / idées
@@ -18331,7 +18330,7 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Photos des cours : provisoires (photos déjà en ligne : Galop 5, santé, Galop 7). Texte pour en créer 20 donné à Blandine le 05/11.
 - Fichiers : hype-cours-galop8.js (nouveau, v1), index.html (build 20261107-0150), hype-cours-sommaire.js, outils/sommaire-cours.cjs, outils/cours-langues.cjs, SUIVI.md.
 
-## 07/11/2026 00h25 — PRÊT, NON PUBLIÉ (build 20261107-0155) — TUTOIEMENT : 6 phrases corrigées
+## 07/11/2026 00h25 — PRÊT, NON PUBLIÉ (build 20261107-0200) — TUTOIEMENT : 6 phrases corrigées
 - Blandine : « Ok » sur la liste du 07/11 (6 vouvoiements vus par les cavaliers).
 - Corrigé : « Raconte ton expérience avec ce cheval… » (avis sur un cheval) ; « Ajoute tes plus belles photos… » (mur de souvenirs vide) ; « Tu gères cette écurie ? Réclame la page » (page Écurie) ; « Découvre les cavaliers qui montent ces chevaux… » (vitrine d'écurie) ; « Ta sécurité, notre priorité. » et « On te souhaite un excellent championnat ! 🏆 » (annonces du Parc de Lamotte).
 - Autres langues : mêmes phrases passées au tutoiement là où elles vouvoyaient (allemand Ihre/Ihnen → dein/dir, espagnol Su/Les → Tu/Te, italien vostra/Vi → tua/Ti, chinois 您 → 你, arabe pluriel → singulier, japonais « 皆さま » → « あなた »). Les autres langues tutoyaient déjà.
@@ -18346,3 +18345,9 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Rien de supprimé : la page du rendez-vous existe toujours (pour les autres comptes, pour les stages, et intégrée dans la fiche).
 - À tester sur iPhone (attend : Blandine) : toucher Versailles dans l'agenda → fiche du Centre ; un concours passé → même fiche avec résultats et photos ; « Modifier le rendez-vous » puis retour.
 - Fichiers : index.html (build 20261107-0045 ; saison v37, evenement-passe v3, team v8, agenda v2, ecurie-v2 v5, resultats-ecurie v7), hype-ecran-saison.js, hype-ecran-evenement-passe.js, hype-ecran-team.js, hype-ecran-agenda.js, hype-ecran-ecurie-v2.js, hype-ecran-resultats-ecurie.js, SUIVI.md.
+## 07/11/2026 01h55 — build 20261107-0200 — Vidéothèque : un lien #v= ouvre LA vidéo
+- CORRIGÉ : une adresse 2hype.fr/#v=<id> ouvrait l'accueil de la Vidéothèque (l'appli retenait la vidéo demandée, mais la Vidéothèque ne la lisait jamais). Elle ouvre maintenant directement la page de la vidéo ; « Retour aux vidéos » ramène à la Vidéothèque. Identifiant inconnu → « Cette vidéo n'est plus disponible. » comme avant.
+- Vidéo ajoutée par un cavalier (vc-…) ouverte à froid : la page la lit en base (« Chargement… » le temps de la lecture) au lieu de dire qu'elle n'existe plus.
+- Rien ne fabrique encore de lien #v= dans l'appli (pas de bouton « Partager » sur une vidéo) : le correctif sert aux liens tapés ou envoyés à la main.
+- Fichiers : hype-video.js (?v=20261107-vt13), index.html (build 20261107-0200), SUIVI.md. Inchangés : hype-ecran-team-medias.js, hype-ecran-team.js.
+- VÉRIFIÉ : node --check. NON VU À L'ÉCRAN : à essayer sur iPhone avec une adresse #v=<id> d'une vidéo de la Vidéothèque.
