@@ -2567,6 +2567,15 @@
       try { window.scrollTo(0, 0); } catch (e) { }
       try { if (document.scrollingElement) document.scrollingElement.scrollTop = 0; } catch (e2) { }
     }, [cur]);
+    /* 07/11 : lien vers UNE vidéo (#v=<id>) ouvert à froid. Une vidéo ajoutée par un cavalier (vc-…)
+       n'est connue que si la Vidéothèque a déjà été visitée sur ce téléphone : sinon on la lit en base. */
+    var svl = React.useState(!v && String(cur || "").indexOf("vc-") === 0); var vcLecture = svl[0], setVcLecture = svl[1];
+    React.useEffect(function () {
+      if (v || String(cur || "").indexOf("vc-") !== 0) return;
+      var vif = true; setVcLecture(true);
+      vcCharger(function () { if (vif) { setVcLecture(false); setEtat(lireLocal()); } });
+      return function () { vif = false; };
+    }, [cur]);
 
     var drapeau = (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null;
     var depuisVT = false;
@@ -2578,6 +2587,11 @@
         ? T("Retour aux vidéos", "Back to videos", "Volver a los vídeos", "Torna ai video", "動画一覧に戻る", "Zurück zu den Videos", "العودة إلى الفيديوهات", "返回视频", "Terug naar de video's", "Voltar aos vídeos", "Tillbaka till videorna", "Назад к видео", "Wróć do filmów", "영상으로 돌아가기")
         : T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로"));
 
+    if (!v && vcLecture) {
+      return h("div", { className: classeHv2() }, drapeau,
+        h("div", { className: "hv2-in hv2-l-in" }, retour,
+          h("div", { className: "hv2-vide" }, h("p", null, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…")))));
+    }
     if (!v) {
       return h("div", { className: classeHv2() }, drapeau,
         h("div", { className: "hv2-in hv2-l-in" }, retour,
