@@ -52,6 +52,21 @@ function EcranTeamMedias() {
     } catch (e) { setErreur(String((e && e.message) || e)); }
     setChangePub("");
   }
+  /* 06/11 — VIDÉO SANS LE SON (décision de Blandine : seule la personne qui a mis la vidéo en ligne choisit, à l'envoi
+     puis plus tard si elle change d'avis). La base vérifie de toute façon (team_video_sans_son : auteur seulement). */
+  var _vm = React.useState(false); var visuMuet = _vm[0], setVisuMuet = _vm[1];
+  var _cs = React.useState(""); var changeSon = _cs[0], setChangeSon = _cs[1];
+  var T_SANS_SON = function () { return T("Sans le son", "Without sound", "Sin sonido", "Senza audio", "音声なし", "Ohne Ton", "بدون صوت", "静音", "Zonder geluid", "Sem som", "Utan ljud", "Без звука", "Bez dźwięku", "소리 없이"); };
+  async function basculerSon(v) {
+    if (!v || !moi || v.auteur_id !== moi.id || changeSon) return;
+    setChangeSon(v.id);
+    try {
+      var r = await supa.rpc("team_video_sans_son", { p_id: v.id, p_sans_son: !v.sans_son });
+      if (r && !r.error && r.data === true) setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { sans_son: !v.sans_son }) : x; }); });
+      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+    } catch (e) { setErreur(String((e && e.message) || e)); }
+    setChangeSon("");
+  }
   var _ec = React.useState([]); var chevauxEquipe = _ec[0], setChevauxEquipe = _ec[1];
   var _aj = React.useState(null); var ajout = _aj[0], setAjout = _aj[1];       /* formulaire « Ajouter une vidéo » ouvert : { cav: [...], ch: [...] } */
 
@@ -79,7 +94,7 @@ function EcranTeamMedias() {
         var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", G.id);
         var idsM = ((rm && rm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
 
-        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
+        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
         if (rv && rv.error) throw new Error(rv.error.message || String(rv.error));
         var vids = (rv && rv.data) || [];
         var idsV = vids.map(function (x) { return x.id; });
@@ -167,6 +182,7 @@ function EcranTeamMedias() {
       var r = await supa.rpc("team_video_lecture", { p_id: v.id });
       var adr = r && !r.error ? r.data : null;
       if (!adr) { setReserve(true); return; }
+      setVisuMuet(!!v.sans_son);
       setVisu(((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(adr) && typeof hypeMuxLecture === "function") ? hypeMuxLecture(adr) : adr);
     } catch (eR) { setReserve(true); }
     finally { setOccupe(""); }
@@ -231,8 +247,26 @@ function EcranTeamMedias() {
         v.publique ? [h("circle", { key: "c", cx: 5, cy: 5, r: 4, fill: "none", stroke: CH, strokeWidth: 0.9 }), h("path", { key: "p", d: "M1 5h8M5 1c1.6 1.4 1.6 6.6 0 8M5 1c-1.6 1.4-1.6 6.6 0 8", fill: "none", stroke: CH, strokeWidth: 0.9 })]
           : [h("rect", { key: "r", x: 1.6, y: 4.4, width: 6.8, height: 4.6, rx: 1, fill: "none", stroke: IV2, strokeWidth: 0.9 }), h("path", { key: "a", d: "M3.2 4.4V3.1a1.8 1.8 0 0 1 3.6 0v1.3", fill: "none", stroke: IV2, strokeWidth: 0.9 })]),
       changePub === v.id ? "…" : (v.publique ? T("Public", "Public") : T("Équipe", "Team")));
+    /* 06/11 — pastille du son, en haut à droite : l'auteur la touche pour couper / remettre le son ; les autres ne voient
+       que l'indication « Son coupé » quand la vidéo est sans le son */
+    var estAuteur = !!moiId && v.auteur_id === moiId;
+    var pastilleSon = !(estAuteur || v.sans_son) ? null : h("button", { type: "button", disabled: !estAuteur || changeSon === v.id,
+      onClick: function (e) { e.stopPropagation(); basculerSon(v); },
+      "aria-label": !estAuteur ? T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거")
+        : v.sans_son ? T("Remettre le son", "Turn sound back on", "Volver a poner el sonido", "Rimetti l'audio", "音声を戻す", "Ton wieder einschalten", "إعادة الصوت", "恢复声音", "Geluid weer aan", "Voltar a pôr o som", "Slå på ljudet igen", "Включить звук", "Włącz dźwięk", "소리 다시 켜기")
+        : T("Couper le son", "Mute", "Quitar el sonido", "Togli l'audio", "音声を消す", "Ton ausschalten", "كتم الصوت", "关闭声音", "Geluid uit", "Tirar o som", "Stäng av ljudet", "Выключить звук", "Wyłącz dźwięk", "소리 끄기"),
+      style: { position: "absolute", top: 6, insetInlineEnd: 6, zIndex: 2, display: "flex", alignItems: "center", gap: 5, minHeight: 26, padding: "0 9px", borderRadius: 999,
+        border: "1px solid " + (v.sans_son ? CH2 : "rgba(243,238,228,0.25)"), background: "rgba(7,10,8,0.72)", color: v.sans_son ? CH : IV2, fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".04em",
+        cursor: estAuteur ? "pointer" : "default" } },
+      h("svg", { width: 11, height: 10, viewBox: "0 0 11 10", "aria-hidden": "true" },
+        h("path", { d: "M1 3.6h2L5.6 1.4v7.2L3 6.4H1Z", fill: "none", stroke: v.sans_son ? CH : IV2, strokeWidth: 0.9, strokeLinejoin: "round" }),
+        v.sans_son ? h("path", { d: "M7.4 3.4l2.6 3.2M10 3.4L7.4 6.6", fill: "none", stroke: CH, strokeWidth: 0.9 })
+          : h("path", { d: "M7.3 3.2c.8.9.8 2.7 0 3.6M8.7 2c1.5 1.6 1.5 4.4 0 6", fill: "none", stroke: IV2, strokeWidth: 0.9 })),
+      changeSon === v.id ? "…" : (v.sans_son ? T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거")
+        : T("Son", "Sound", "Sonido", "Audio", "音声", "Ton", "صوت", "有声", "Geluid", "Som", "Ljud", "Звук", "Dźwięk", "소리")));
     return h("div", { key: cle, style: { position: "relative", gridColumn: etendue ? "span " + etendue : "auto", flex: enGrille ? "initial" : "0 0 clamp(148px, 21vw, 210px)", width: enGrille ? "100%" : "auto", minWidth: 0 } },
       pastille,
+      pastilleSon,
       h("button", { type: "button", onClick: function () { lire(v); }, disabled: occupe === v.id,
       style: { width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0 } },
       h("div", { style: { position: "relative", aspectRatio: "16 / 10", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(243,238,228,0.08)", background: PAN } },
@@ -577,10 +611,11 @@ function EcranTeamMedias() {
   var _fk = React.useState(""); var fConcours = _fk[0], setFConcours = _fk[1];
   var _fd = React.useState(""); var fDate = _fd[0], setFDate = _fd[1];
   var _fe = React.useState(""); var fDesc = _fe[0], setFDesc = _fe[1];
+  var _fm = React.useState(false); var fSansSon = _fm[0], setFSansSon = _fm[1];   /* 06/11 : case « Sans le son » */
   var _fp = React.useState(null); var fEtat = _fp[0], setFEtat = _fp[1];   /* null | { etape, pct, texte, erreur } */
   function aujourdhui() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function ouvrirAjout(pre) {
-    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null);
+    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null); setFSansSon(false);
     setFCav((pre && pre.cav) ? pre.cav.slice() : []); setFCh((pre && pre.ch) ? pre.ch.slice() : []);
     setFeuilleCav(false);
     setAjout(pre || {});
@@ -612,7 +647,7 @@ function EcranTeamMedias() {
     var media = (typeof hypeMuxUrlLecture === "function") ? hypeMuxUrlLecture(playbackId) : ("https://stream.mux.com/" + playbackId + ".m3u8");
     var vign = await copierVignette(playbackId);
     var r = await supa.from("team_videos").insert({ groupe_id: meta.groupe, media: media, video_mux_id: videoMuxId || null, vignette: vign, duree: duree || null,
-      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, auteur_id: moi.id }).select("id").single();
+      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, auteur_id: moi.id }).select("id").single();
     if (r && r.error) {
       var msg = String(r.error.message || r.error);
       if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library."));
@@ -657,7 +692,7 @@ function EcranTeamMedias() {
   var fPret = (fSource === "fichier" ? !!fFichier : !!fHype) && fCav.length > 0 && fCh.length > 0;
   async function publier() {
     if (!fPret || !groupe || !moi) return;
-    var meta = { groupe: groupe.id, titre: null, concours: null, date: aujourdhui(), description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice() };
+    var meta = { groupe: groupe.id, titre: null, concours: null, date: aujourdhui(), description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
     try {
       if (fSource === "hype") {
         setFEtat({ etape: "envoi", pct: 100, texte: T("Ajout à la vidéothèque…", "Adding…") });
@@ -812,6 +847,14 @@ function EcranTeamMedias() {
                     h("label", { htmlFor: "tv-desc", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?")),
                     h("input", { id: "tv-desc", value: fDesc, disabled: envoiEnCours, onChange: function (e) { setFDesc(e.target.value); }, placeholder: T("Facultatif", "Optional"),
                       style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
+                  /* 06/11 — sans le son (la personne qui publie choisit ; elle pourra changer d'avis sur la vignette) */
+                  h("button", { type: "button", role: "switch", "aria-checked": fSansSon, disabled: envoiEnCours, onClick: function () { setFSansSon(!fSansSon); },
+                    style: Object.assign({}, LIGNE, { width: "100%", background: "none", borderTop: "none", borderInlineStart: "none", borderInlineEnd: "none", padding: 0, color: IV, fontFamily: M, cursor: "pointer", textAlign: "start" }) },
+                    h("span", { style: { display: "flex", flexDirection: "column", gap: 2 } },
+                      h("span", { style: { fontSize: 12.5, color: fSansSon ? IV : IV3 } }, T_SANS_SON()),
+                      h("span", { style: { fontSize: 10.5, color: IV3 } }, T("Tu pourras le remettre plus tard.", "You can turn it back on later.", "Podrás volver a activarlo más tarde.", "Potrai riattivarlo più tardi.", "あとで元に戻せます。", "Du kannst ihn später wieder einschalten.", "يمكنك إعادة تشغيله لاحقًا.", "之后可以重新开启。", "Je kunt het later weer aanzetten.", "Dá para voltar a ativar depois.", "Du kan slå på det igen senare.", "Позже можно снова включить.", "Możesz go później włączyć.", "나중에 다시 켤 수 있어요."))),
+                    h("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 42px", width: 42, height: 24, borderRadius: 999, border: "1px solid " + (fSansSon ? CH : "rgba(243,238,228,0.25)"), background: "transparent", transition: "border-color .2s" } },
+                      h("span", { style: { position: "absolute", top: 3, insetInlineStart: fSansSon ? 21 : 3, width: 16, height: 16, borderRadius: "50%", background: fSansSon ? CH : "rgba(243,238,228,0.35)", transition: "inset-inline-start .2s" } }))),
                   /* vérification et publication */
                   h("div", { style: { fontFamily: SERIF, fontSize: 20, lineHeight: 1.3, margin: "20px 0 12px", color: resume ? IV : IV3 } },
                     resume || (!aVideo ? T("Choisis ta vidéo, la cavalière et le cheval.", "Pick your video, the rider and the horse.") : T("Choisis la cavalière et le cheval.", "Pick the rider and the horse."))),
@@ -857,7 +900,7 @@ function EcranTeamMedias() {
           h("button", { type: "button", onClick: confirmerPublique, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, questionPub.publique ? T("Réserver", "Keep private") : T("Mettre en public", "Make public"))))) : null,
     formulaireAjout,
     fenetrePartage,
-    (visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
+    (visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null);
 }
 /* 05/11 soir — page « conseil Hey Baby partagé avec toi » (route epingle-partagee), ouverte depuis la notification.
    La base ne laisse lire l'épingle qu'à qui elle a été partagée (ou à son autrice). Lecture seule. */

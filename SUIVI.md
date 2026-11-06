@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 12h30)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 18h15)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -38,6 +38,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : traduire les textes de la page Médias et du chapitre dans toutes les langues, une fois le français relu (attend : Blandine pour la relecture, puis Claude)
 
 ## 3 — Quand on aura le temps
+- [06/11] J'aime sur les TEXTES (histoire du cheval, présentation du cavalier) : juste un cœur + le nombre (pas de commentaires pour l'instant) ; le propriétaire du cheval ou le cavalier reçoit une notification (attend : Claude, après « sans le son »)
+- [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
 - [05/11] Recherche de concours (numéro FFE) : en ligne sur la page Engagements (build 0210), à essayer sur iPhone. Reste : bouton « Trouver le numéro » sur les Engagements et à la création d'un concours, avec repli « chercher sur le calendrier FFE ». Étape 3 = recherche par dates, région, discipline (attend : Claude)
@@ -554,6 +556,44 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🔇 06/11/2026 (18 h 15) — VIDÉOS DE LA TEAM : « SANS LE SON » — build 20261106-1815
+Demande de Blandine (17 h 25) : « quand on met une vidéo en ligne, pouvoir
+retirer le son ». Choix : option A (vidéo lue muette dans Hype ; le son reste
+dans le fichier chez Mux, on ne le fait jamais entendre), à l'envoi ET après
+coup. En priorité sur les vidéos de la Team. Droits (17 h 57) : « laisse la
+personne qui la met en ligne choisir, c'est tout » → l'auteur seulement.
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261106-1815 ; visionneuse muette ; ?v=3 → ?v=4 pour le fichier Team |
+| hype-ecran-team-medias.js | racine | case « Sans le son » + pastille du son |
+BASE (passée le 06/11 18 h 05, migration team_videos_sans_son) :
+· team_videos.sans_son (oui/non, « non » par défaut : rien ne change pour
+  les vidéos déjà en ligne).
+· team_video_sans_son(id, oui/non) : seul l'AUTEUR de la vidéo peut changer.
+CE QUI A ÉTÉ FAIT
+· Formulaire « Ajouter une vidéo » : interrupteur « Sans le son » + « Tu
+  pourras le remettre plus tard. » (vaut aussi pour « Depuis mes vidéos » et
+  pour les envois repris plus tard).
+· Vignette : pastille en haut à droite. L'auteur voit « Son » / « Son coupé »
+  et la touche pour basculer ; les autres ne voient que « Son coupé » quand
+  la vidéo est muette.
+· Visionneuse (hypeCalquePhoto → PhotoZoomHype → lecteur Mux) : 3e argument
+  facultatif { sansSon }. Vidéo muette, boutons de volume du lecteur Mux
+  masqués, et si le son est remis (lecteur plein écran d'Apple sur iPhone,
+  qui garde son bouton), il est recoupé aussitôt. Sans ce 3e argument, rien
+  ne change pour les autres visionneuses de l'appli.
+· Textes nouveaux traduits dans les 14 langues.
+VÉRIFIÉ (Chromium) : vidéo sans son → part muette, et reste muette quand on
+remet le son ; vidéo normale → inchangée (comparé à la version en ligne) ;
+aucun nouveau plantage au démarrage ; syntaxe des 17 blocs de l'index et du
+fichier Team.
+NON VU : lecteur Mux (chargé depuis Internet, bloqué ici) et plein écran
+iPhone ; formulaire et pastille sur les vrais écrans (connexion requise).
+RESTE : étendre « sans le son » aux autres vidéos (albums, fil, souvenirs
+d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
 
 ════════════════════════════════════════════════════════════
 
