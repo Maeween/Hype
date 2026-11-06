@@ -45,17 +45,22 @@
 # que hype-cours-baby.js : jamais en cache, et une adresse neuve (?v=N) a
 # chaque livraison — c'est le ?v= qui compte pour l'app installee.
 # 21/10/2026 : Galops 4 à 7, un fichier chacun (mêmes règles que les autres cours).
+# 07/11/2026 (Blandine « Ok ») : Galops 2 à 7 = contenu payant → « noindex » pour que Google ne range pas ces fichiers dans ses résultats.
 /hype-cours-galop4.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 /hype-cours-galop5.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 /hype-cours-galop6.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 /hype-cours-galop7.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 /hype-cours-galops-sup.js
   Cache-Control: public, max-age=0, must-revalidate
@@ -63,10 +68,12 @@
 # Galop 3, sorti de l'index le 06/09 (nuit) — meme regle.
 /hype-cours-galop3.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 # Galop 2, sorti de l'index le 06/09 (nuit) — meme regle.
 /hype-cours-galop2.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
 
 # Galop 1, sorti de l'index le 07/09 — meme regle.
 /hype-cours-galop1.js
