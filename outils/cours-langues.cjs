@@ -11,7 +11,7 @@ const fs = require("fs"), path = require("path"), vm = require("vm");
 const RACINE = path.join(__dirname, "..");
 const SORTIE = path.join(RACINE, "cours-l");
 const log = (...a) => console.log("[cours-langues]", ...a);
-const FICHIERS = ["hype-cours-baby.js", "hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galop4.js", "hype-cours-galop5.js", "hype-cours-galop6.js", "hype-cours-galop7.js", "hype-cours-galop8.js"];
+const FICHIERS = ["hype-cours-baby.js", "hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galop4.js", "hype-cours-galop5.js", "hype-cours-galop6.js", "hype-cours-galop7.js", "hype-cours-galop8.js", "hype-cours-galop9.js"];
 function langues() {
   const s = fs.readFileSync(path.join(RACINE, "index.html"), "utf8");
   const i = s.indexOf("const LANGUES = ["); if (i < 0) throw new Error("liste LANGUES introuvable");
