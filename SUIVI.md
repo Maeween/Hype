@@ -586,6 +586,20 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   retours, droit de citer la SEP, témoignage si satisfaits. Fichier gardé
   hors du dépôt. C'est Blandine qui décide quand et si l'envoyer
   (entretien du 12/11).
+· 06/11 23 h 31 Blandine « Ok continue » → LIEN CONCOURS → MOUVEMENTS
+  TEMPORAIRES PRÉPARÉ EN BASE, SQL NON PASSÉ (sql-06-11-concours-vers-
+  mouvements.sql). Constat : la page Engagements ne l'avait pas fait. Choix :
+  le faire EN BASE (déclencheurs), pour que ça marche quel que soit l'écran
+  qui ajoute le cheval au concours (agenda_chevaux, type « concours ») :
+  ajout → ligne « Concours » (date, fin, lieu) ; retrait → ligne supprimée ;
+  date/lieu du concours changés → recopiés SAUF si la ligne a été corrigée à
+  la main ; concours supprimé → sorties à venir supprimées, passées gardées.
+  Rattrapage des 14 chevaux déjà engagés (25/10 → 15/11, tous de la SEP :
+  Haras de Folleville, Versailles). Essai à blanc en base (annulé) : 14
+  lignes, clé « societe d'equitation de paris (sep) » = celle de l'appli.
+  → Prévenir la conversation Engagements : NE PLUS coder ce lien côté page.
+  ⚠️ Doublon repéré : table dossier_van (papiers du van, faite par une autre
+  conversation) ≈ papiers de « Le camion » → à réunir plus tard.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
