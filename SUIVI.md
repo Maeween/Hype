@@ -547,7 +547,7 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   ⚠️ Si Blandine ajoute un jour un gestionnaire à Feinn, il verra la compta.
   Puis « prépare la page pour que quelqu'un voie sa compta mais pas la
   mienne » → une écurie sans résumé voit un EXEMPLE aux chiffres inventés,
-  signalé « Exemple » en haut et sous le titre (codé, non publié, ?v=13
+  signalé « Exemple » en haut et sous le titre (PUBLIÉ 06/11 18 h, build 20261106-1800, ?v=13
   → ?v=14).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
