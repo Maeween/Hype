@@ -1191,8 +1191,11 @@ function hypeRecompense(place, partants) {
 
     /* --- UNE SEULE navigation, la meme qu avant, pour la carte ET le bouton --- */
     function ouvrirFiche() {
-      try { window.__evPasse = { ev: ev, medias: meds, resultats: listeRes, documents: docsJourJ }; } catch (eEp) { }
-      setEcran("evenement-passe");
+      /* 07/11 : un concours s'ouvre sur la fiche du Centre (hypeOuvrirRdv, index.html) */ 
+      hypeOuvrirRdv(ev, setEcran, function () {
+        try { window.__evPasse = { ev: ev, medias: meds, resultats: listeRes, documents: docsJourJ }; } catch (eEp) { }
+        setEcran("evenement-passe");
+      });
     }
 
     /* 12/10 (1055) - LA CARTE « SOUVENIR » DE LA PAGE EVENEMENTS PASSES. Memes donnees, meme

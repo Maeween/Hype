@@ -408,7 +408,7 @@ function EcranResultatsEcurie() {
   function photoCav(pr, verifiee) { if (!verifiee) return null; var v = pr && pr.avatar_url; if (!v || String(v).charAt(0) === "@" || !/^https?:/i.test(String(v))) return null; return String(v); }
   function photoCh(ch) { if (!ch || ch.supprime_le || ch.visibilite === "prive" || !ch.photo_url) return null; return String(ch.photo_url); }
   function vign(u, w, hh) { try { return (typeof vignetteHype === "function") ? vignetteHype(u, w, hh) : u; } catch (e) { return u; } }
-  function ouvrirRdv(id) { try { window.__evPasse = null; window.__evPasseId = id; } catch (e) { } setEcran("evenement-passe"); }
+  function ouvrirRdv(id) { /* 07/11 : un concours s'ouvre sur la fiche du Centre (hypeOuvrirRdv, index.html) */ hypeOuvrirRdv(id, setEcran, function () { try { window.__evPasse = null; window.__evPasseId = id; } catch (e) { } setEcran("evenement-passe"); }); }
   function ouvrirCavaliere(l) {
     if (l.uid) { try { window.__resCavaliereId = l.uid; } catch (e) { } setEcran("resultats-cavalier"); return; }
     /* cavalier SANS compte Hype : la liste de SES résultats, sur cette page (pas de fiche à ouvrir, rien d inventé) */

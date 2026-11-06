@@ -333,7 +333,7 @@ function EcranTeamCompetition() {
   function ouvrirCheval(id) { try { window.__chevalOuvert = id; } catch (e) { } setEcran("cheval"); }
   function ouvrirRdv(ev) { try { window.__agendaFiche = ev.id; } catch (e) { } setEcran("guilde"); }
   /* (526) un rendez-vous PASSE s ouvre sur sa page souvenirs (photos, fil), meme porte que l agenda du club */
-  function ouvrirRdvPasse(ev) { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e) { } setEcran("evenement-passe"); }
+  function ouvrirRdvPasse(ev) { /* 07/11 : un concours s'ouvre sur la fiche du Centre (hypeOuvrirRdv, index.html) */ hypeOuvrirRdv(ev, setEcran, function () { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e) { } setEcran("evenement-passe"); }); }
   function ouvrirResultat(r) {
     if (r.cavalier_id) { try { window.__resCavaliereId = r.cavalier_id; } catch (e) { } setEcran("resultats-cavalier"); return; }
     if (r.cheval_id) ouvrirCheval(r.cheval_id);

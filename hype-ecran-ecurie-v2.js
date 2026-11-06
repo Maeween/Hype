@@ -352,7 +352,7 @@ function EcranEcurieV2(props) {
     var an = String(ev.date_jour || "").slice(0, 4);
     var typ = TYPE_EV[ev.type] || "";
     return h("button", { key: (passe ? "evp" : "evh") + ev.id, type: "button", onClick: function () {
-        if (passe) { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (eP) { } setEcran("evenement-passe"); return; }   /* 26/10 : un événement passé ouvre son souvenir */
+        if (passe) { /* 07/11 : un concours s'ouvre sur la fiche du Centre (hypeOuvrirRdv, index.html) */ hypeOuvrirRdv(ev, setEcran, function () { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (eP) { } setEcran("evenement-passe"); }); return; }   /* 26/10 : un événement passé ouvre son souvenir */
         try { if (pont.current) pont.current.ouvrir(ev); } catch (e) { } }, style: { display: "flex", alignItems: "stretch", width: "100%", height: 108 /* (589) Blandine : « moins hauts » — 132 avant */, padding: 0, textAlign: "start", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(135deg, #0C0F11 0%, " + NOIR_EV + " 60%, #050708 100%)" /* (592) Blandine : cartes evenements sur fond NOIR (maquette B) — avant : degrade vert #10201D / SURF / #0A1513 */, cursor: "pointer", color: IV } },
       /* date */
       h("div", { style: { flex: "0 0 52px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, background: "rgba(0,0,0,0.28)", borderInlineEnd: "1px solid " + BORD2 } },

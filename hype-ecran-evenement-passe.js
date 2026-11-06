@@ -2,8 +2,12 @@
    Chargé seulement à l'ouverture de l'écran (voir hypeEcranDiffere dans index.html). Code d'origine déplacé SANS changement :
    il utilise les mêmes outils partagés que le reste de l'appli (useApp, useState, T, etc.), disponibles à l'exécution. */
 (function () {
-function EcranEvenementPasse() {
+function EcranEvenementPasse(props) {
   var h = React.createElement;
+  /* 07/11 (Blandine : « ajoute à la page Versailles les fonctionnalités de la page rendez-vous ») : props.integre = la page
+     s'affiche DANS la fiche du Centre de compétition, sans son bandeau, ses horaires, sa description ni la carte « Centre »
+     (déjà sur la fiche) : seulement photos et vidéos, résultats, publications et commentaires, partage, suppression. */
+  var integre = !!(props && props.integre);
   var ctx = (typeof useApp === "function") ? useApp() : {};
   var tr = ctx.tr || function (o) { return (o && (o.fr || "")) || ""; };
   var setEcran = ctx.setEcran || function () { };
@@ -172,6 +176,7 @@ function EcranEvenementPasse() {
     }
   } catch (eQ) { quand = (ev && ev.date_jour) || ""; }
 
+  if (!ev && integre) return null;   /* 07/11 : intégrée au Centre, rien tant que le rendez-vous n'est pas lu */
   if (!ev && idLien && !errLien) {
     return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#8A929C", padding: "calc(env(safe-area-inset-top) + 90px) 20px 40px", textAlign: "center", fontFamily: M, fontSize: 13 } },
       T("Ouverture du souvenir…", "Opening the memory…", "Abriendo el recuerdo…", "Apertura del ricordo…", "思い出を開いています…", "Erinnerung wird geöffnet…", "\u062c\u0627\u0631 \u0641\u062a\u062d \u0627\u0644\u0630\u0643\u0631\u0649\u2026", "正在打开回忆…", "Herinnering openen…", "Abrindo a lembrança…", "Öppnar minnet…", "Открываем воспоминание…", "Otwieranie wspomnienia…", "추억 여는 중…"));
@@ -576,13 +581,17 @@ function EcranEvenementPasse() {
       style: { width: "100%", height: "auto", display: "block" } });
   }
 
-  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
+  return h("div", { style: integre ? { color: "#EDF2F5", marginInline: -18 } : { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
+    /* 07/11 : intégrée au Centre — le partage (story / publication) garde sa place, en simple lien */
+    integre ? h("div", { style: { padding: "0 18px", textAlign: "end" } },
+      h("button", { type: "button", onClick: function () { if (String(ev.type || "").toLowerCase() === "concours" && photosEv && photosEv.length) setChoixPart(true); else partagerSouvenir(); },
+        style: { background: "none", border: "none", color: "#C9A66B", fontFamily: M, fontSize: 12.5, padding: "6px 0", cursor: "pointer" } }, "Partager ce concours ›")) : null,
     /* Le bandeau : l affiche du rendez-vous si elle existe, sinon sa premiere photo. */
     /* 18/09 (229) : HERO plus compact (210 -> 176) et degrade qui finit franchement en noir,
        pour que les resultats montent dans l ecran. Le texte reste du VRAI TEXTE, jamais dans
        l image. ⚠️ IL Y A DEUX HEROS IDENTIQUES DANS LE FICHIER : l autre appartient a
        EcranEvenement (grands evenements nationaux). Seul celui-ci est touche. */
-    h("div", { style: { position: "relative", minHeight: 176, overflow: "hidden" } },
+    integre ? null : h("div", { style: { position: "relative", minHeight: 176, overflow: "hidden" } },
       couv ? h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype(couv, 1400) : couv, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.62) 0%, rgba(6,7,9,0.26) 34%, rgba(6,7,9,0.88) 76%, #060709 100%)" } }),
       h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 3 } }, "\u2039"),
@@ -601,7 +610,7 @@ function EcranEvenementPasse() {
     /* 20/09 (276) : LA MEME LIGNE FINE D HORAIRES que sur la fiche a venir, pour que les deux
        pages se ressemblent. Une heure vide n apparait pas ; sans aucune heure, rien ne
        s affiche. Aucune donnee touchee. */
-    (ev.heure_embarquement || ev.heure_depart || ev.heure_reco || ev.heure_epreuve) ? h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "14px 18px 0" } },
+    (!integre && (ev.heure_embarquement || ev.heure_depart || ev.heure_reco || ev.heure_epreuve)) ? h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "14px 18px 0" } },
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0) 0%, " + OR + "55 100%)" } }),
       h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(244,247,250,0.8)", textAlign: "center", whiteSpace: "nowrap" } },
         [
@@ -612,7 +621,7 @@ function EcranEvenementPasse() {
         ].filter(function (o) { return String(o.v || "").trim(); }).map(function (o) { return o.k + " " + String(o.v).trim(); }).join("   \u2022   ")),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + OR + "55 0%, rgba(255,255,255,0) 100%)" } })) : null,
 
-    ev.description ? h("div", { style: { padding: "16px 18px 0", fontFamily: M, fontSize: 13, color: "rgba(220,227,232,0.78)", lineHeight: 1.6, whiteSpace: "pre-wrap" } }, ev.description) : null,
+    (ev.description && !integre) ? h("div", { style: { padding: "16px 18px 0", fontFamily: M, fontSize: 13, color: "rgba(220,227,232,0.78)", lineHeight: 1.6, whiteSpace: "pre-wrap" } }, ev.description) : null,
 
     /* 18/09 (229) - LES RESULTATS, REFAITS. Sa maquette et son brief : epreuve en petites
        capitales or, CHEVAL en turquoise (l information la plus visible), cavalier en gris,
@@ -782,7 +791,7 @@ function EcranEvenementPasse() {
     /* 04/11 23h25 (Blandine : « ça fait 4 fois que je m'y reprends pour passer les engagements sur le concours de Versailles,
        je tombe sur cette page et j'arrive pas à retrouver la bonne page ») : sur un CONCOURS, porte directe vers le Centre de
        compétition (engagements, feuille SEP, jour J, liste du van, dossier). Visible par la modératrice seulement, comme le Centre. */
-    (ev && String(ev.type || "") === "concours" && moiEv && (typeof estModerateurHype === "function") && estModerateurHype(moiEv)) ? h("div", { style: { padding: "18px 18px 0" } },
+    (!integre && ev && String(ev.type || "") === "concours" && moiEv && (typeof estModerateurHype === "function") && estModerateurHype(moiEv)) ? h("div", { style: { padding: "18px 18px 0" } },
       h("button", { type: "button", onClick: function () { try { window.__concoursId = ev.id; window.__engagementsId = ev.id; window.__concoursPhoto = null; localStorage.setItem("hype_concours_ouvert", String(ev.id)); } catch (eC) { } setEcran("concours"); },
         style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, width: "100%", minHeight: 64, padding: "12px 16px", borderRadius: 16, border: "1px solid #C9A66B", background: "linear-gradient(180deg,rgba(28,34,38,.92),rgba(12,16,18,.92))", color: "#F3EEE4", textAlign: "left", cursor: "pointer" } },
         h("span", { style: { display: "flex", flexDirection: "column", gap: 3 } },
@@ -791,7 +800,7 @@ function EcranEvenementPasse() {
         h("span", { style: { color: "#C9A66B", fontSize: 22 } }, "\u203a"))) : null,
 
     /* Le fil du rendez-vous : commentaires et publication, comme dans la carte. */
-    h("div", { style: { padding: "26px 0 0" } },
+    h("div", { id: integre ? "hs-fil" : undefined, style: { padding: "26px 0 0" } },
       /* 18/09 (234) - « PUBLICATIONS & COMMENTAIRES ». Sa maquette prevoyait DEUX sections ;
          le releve a montre qu elles n existent pas separement dans le code : UN SEUL appel a
          MurHype affiche a la fois les publications rattachees au rendez-vous

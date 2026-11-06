@@ -293,7 +293,8 @@ function EcranMaSaison() {
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
   function ouvrir(ev) {
     var fin = String(ev.date_fin || ev.date_jour || "").slice(0, 10);
-    if (fin < isoAuj) { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e1) { } setEcran("evenement-passe"); return; }
+    /* 07/11 : passé ou à venir, un concours s'ouvre sur la fiche du Centre (qui contient maintenant le fil, les photos et les résultats) */
+    if (fin < isoAuj && String(ev.type || "").toLowerCase() !== "concours") { try { window.__evPasse = null; window.__evPasseId = ev.id; } catch (e1) { } setEcran("evenement-passe"); return; }
     /* 04/11 (étape 2) : un concours à venir ou en cours ouvre la NOUVELLE fiche concours (même design) */
     try { window.__concoursId = ev.id; window.__concoursPhoto = photoDe[ev.id] || null; } catch (e2) { }
     setEcran("concours");
@@ -773,7 +774,9 @@ function EcranConcours() {
   }
 
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("ma-saison"); }
-  function ficheComplete() { try { window.__agendaFiche = idEv; window.__agendaFicheRetour = "concours"; } catch (e) { } setEcran("guilde"); }
+  /* 07/11 : le fil, les photos et les résultats sont maintenant SUR cette fiche (page du rendez-vous intégrée en bas) */
+  function ficheComplete() { try { var el = document.getElementById("hs-fil"); if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); return; } } catch (e) { } }
+  function modifierRdv() { try { window.__agendaFiche = idEv; window.__agendaFicheDirect = true; window.__agendaFicheRetour = "concours"; } catch (e) { } setEcran("guilde"); }
   function ouvrirEngagements() { try { window.__engagementsId = idEv; } catch (e) { } setEcran("engagements"); }
   function ouvrir(ecran) { try { window.__concoursId = idEv; window.__engagementsId = idEv; } catch (e) { } setEcran(ecran); }
 
@@ -802,7 +805,8 @@ function EcranConcours() {
         h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, F("Engagements et feuille SEP")),
         h("div", { className: "hs-duo" },
           h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
-          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier")))) : null,
+          h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier"))),
+        h("button", { type: "button", className: "hs-lien", style: { marginTop: 10 }, onClick: modifierRdv }, F("Modifier le rendez-vous (titre, date, horaires, affiche) ›"))) : null,
       /* infos pratiques */
       h("div", { className: "hs-sec" }, h("b", null, F("Infos pratiques"))),
       h("div", { className: "hs-carte" },
@@ -894,8 +898,11 @@ function EcranConcours() {
       ev.description ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ce qu’il faut savoir"))),
         h("div", { className: "hs-carte" }, h("div", { className: "hs-texte" }, ev.description))) : null,
-      h("div", { style: { marginTop: 22 } },
-        h("button", { type: "button", className: "hs-btn doux", onClick: ficheComplete }, gestion ? F("Fiche complète : fil, photos, modifier") : F("Fiche complète : fil et photos"))),
+      /* 07/11 (Blandine : « ajoute à la page Versailles les fonctionnalités de la page rendez-vous ») : photos et vidéos,
+         résultats, publications et commentaires, partage et suppression — la page du rendez-vous, intégrée ici */
+      h("div", { className: "hs-sec" }, h("b", null, fini ? F("Photos, résultats et commentaires") : F("Photos et commentaires"))),
+      (function () { try { window.__evPasse = null; window.__evPasseId = idEv; } catch (eW) { } return null; })(),
+      (typeof EcranEvenementPasse !== "undefined") ? h(EcranEvenementPasse, { key: "ep" + idEv, integre: true }) : null,
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
