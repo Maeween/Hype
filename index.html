@@ -57554,6 +57554,7 @@ function CreationEquipeEH(props) {
   var h = React.createElement;
   var CH = "#C9A66B", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.62)", M = "'Montserrat',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   var _c = React.useState(null), choix = _c[0], setChoix = _c[1];
+  var _ni = React.useState("club"), niv = _ni[0], setNiv = _ni[1];   /* 07/11 00 h 10 : onglets Club / Amateur / Poney / Autres */
   var _n = React.useState(""), nom = _n[0], setNom = _n[1];
   var _m = React.useState(null), cav = _m[0], setCav = _m[1];
   var _sm = React.useState({}), selM = _sm[0], setSelM = _sm[1];
@@ -57642,7 +57643,14 @@ function CreationEquipeEH(props) {
           h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, "Ton équipe de compétition"))),
       h("div", { style: { padding: "4px 18px calc(110px + env(safe-area-inset-bottom))" } },
         titre("La discipline"),
-        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } }, propos.map(tuileDisc)),
+        h("div", { role: "tablist", style: { display: "flex", gap: 6, marginTop: 12, padding: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.25)" } },
+          [["club", "Club"], ["amateur", "Amateur"], ["poney", "Poney"], ["autre", "Autres"]].map(function (o) {
+            var on = niv === o[0];
+            return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setNiv(o[0]); },
+              style: { flex: 1, minHeight: 36, borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 13, letterSpacing: 0.3, border: "1px solid " + (on ? CH : "transparent"), background: on ? "rgba(201,166,107,0.12)" : "transparent", color: on ? CH : "rgba(243,238,228,0.75)" } }, o[1]);
+          })),
+        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } },
+          propos.filter(function (p) { return niv === "autre" ? !p.n : p.n === niv; }).map(tuileDisc)),
         titre("Son nom"),
         h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setErr(""); }, placeholder: "ex. Team CSO Poney",
           style: { width: "100%", boxSizing: "border-box", minHeight: 48, marginTop: 12, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.35)", background: "rgba(243,238,228,0.03)", color: IV, fontFamily: SERIF, fontSize: 20 } }),
