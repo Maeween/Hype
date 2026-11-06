@@ -1669,13 +1669,18 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
     else if (ap.absent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
     else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir la compta.");
-    else if (!ap.liste.length) corps = h("div", null, ligneEcurie(h, c, []),
-      h("div", { className: "hg-encart", style: { marginTop: 22 } }, h("b", null, "Pas encore préparée"), "Pour l'instant, la préparation se fait avec Hype à partir de l'accès à ta banque en ligne. La connexion directe dans l'appli arrive ensuite."),
-      h("div", { className: "hg-sous" }, "Hype t'aide à préparer ta comptabilité : c'est toi qui la valides. Les comptes restent sous ta responsabilité."), LEGAL(h));
     else {
-      var cur = ap.liste.filter(function (x) { return x.annee === annee; })[0] || ap.liste[0];
+      /* 06/11 13 h 09 (Blandine) : « que quelqu'un puisse voir sa compta mais pas la mienne ». Chaque écurie ne lit que
+         SA ligne (règle en base, vérifiée). Une écurie sans résumé voit un EXEMPLE aux chiffres inventés, signalé comme
+         tel, jamais les chiffres d'une autre écurie. */
+      var exemple = !ap.liste.length;
+      var EXEMPLE = { annee: new Date().getFullYear(), source: "", donnees: { structure: "Exemple", forme: "association", entrees: 38400, sorties: 36950, operations: 612, nb_depenses: 540,
+        sans_ticket: { n: 214, montant: 9800 }, a_classer: { n: 96, montant: 7250 }, versements: { n: 6, montant: 3000 },
+        postes: [{ nom: "Foin et aliments", montant: 12600 }, { nom: "Maréchalerie", montant: 6400 }, { nom: "Vétérinaire", montant: 4900 }, { nom: "Carburant et péages", montant: 3700 }, { nom: "Assurances", montant: 2600 }, { nom: "Engagements en concours", montant: 2100 }],
+        trouves: [{ titre: "Une clinique vétérinaire", question: "Ton vétérinaire traitant ?", pill: "Registre", montant: 1450 }, { titre: "Une assurance du camion", question: "Date de renouvellement ?", pill: "Échéance", montant: 690 }] } };
+      var cur = exemple ? EXEMPLE : (ap.liste.filter(function (x) { return x.annee === annee; })[0] || ap.liste[0]);
       var D = cur.donnees || {};
-      sousHero = (D.structure || c.club) + " · " + cur.annee;
+      sousHero = exemple ? "Exemple aux chiffres inventés." : ((D.structure || c.club) + " · " + cur.annee);
       var st = D.sans_ticket || {}, ac = D.a_classer || {}, vs = D.versements || {};
       var nAfaire = (st.n ? 1 : 0) + (ac.n ? 1 : 0) + (vs.n ? 1 : 0);
       var postes = (D.postes || []).slice(0, 6), maxP = postes.reduce(function (m, p) { return Math.max(m, +p.montant || 0); }, 1);
@@ -1687,6 +1692,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       ].filter(Boolean);
       corps = h("div", null,
         ligneEcurie(h, c, []),
+        exemple ? h("div", { className: "hg-encart", style: { marginTop: 22 } }, h("b", null, "Exemple"), "Ces chiffres sont inventés, pour te montrer ce que Hype prépare. Les tiens apparaîtront ici une fois ta banque préparée avec Hype : tu seras seul(e) à les voir, avec les gestionnaires de ton écurie.") : null,
         ap.liste.length > 1 ? h("div", { className: "hv3-pils", style: { marginTop: 14 } }, ap.liste.map(function (x) {
           return h("button", { key: x.annee, type: "button", className: "hv3-pil" + (x.annee === cur.annee ? " on" : ""), "aria-pressed": x.annee === cur.annee, onClick: function () { setAnnee(x.annee); } }, String(x.annee));
         })) : null,

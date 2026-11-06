@@ -538,6 +538,17 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   RLS active) ; résumé 2026 de l'Écurie Feinn (Qonto au 04/11) écrit en base
   par Claude ; PUBLIÉ — build 20261106-1315. Rafraîchir le résumé depuis
   Qonto avant le salon.
+  06/11 13 h 09 — Blandine : « vérifie à 100 % que personne d'autre ne voit ma
+  compta » → VÉRIFIÉ EN BASE en se mettant à la place de chacun : visiteur
+  non connecté 0 ligne ; autre membre connecté 0 ligne ; Blandine 1 ligne.
+  Écriture réservée aux deux comptes modératrice. L'écurie Feinn est
+  revendiquée par feinn@live.fr seule, aucun gestionnaire ajouté ; une
+  écurie déjà revendiquée ne peut pas l'être par quelqu'un d'autre.
+  ⚠️ Si Blandine ajoute un jour un gestionnaire à Feinn, il verra la compta.
+  Puis « prépare la page pour que quelqu'un voie sa compta mais pas la
+  mienne » → une écurie sans résumé voit un EXEMPLE aux chiffres inventés,
+  signalé « Exemple » en haut et sous le titre (codé, non publié, ?v=13
+  → ?v=14).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
