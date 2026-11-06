@@ -13,7 +13,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [26/10] Sécurité : supprimer la clé d'accès Supabase créée pour régler les mails (supabase.com/dashboard/account/tokens) et le secret HYPE_CLE_MAILS. Ils ne servent plus et sont toujours actifs (attend : Blandine)
 - [19/10] Sécurité des photos : deux règles en base sont trop ouvertes. L'auteur d'une identification peut la passer « acceptée » lui-même (on peut taguer quelqu'un sans son accord, y compris des mineures), et n'importe quel compte peut dater une photo qui n'est pas à lui. Le correctif en base attend ton accord (attend : Blandine)
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
-- [05/11] Médias de la Team — limite de vidéos : décider si les vidéos ajoutées à la vidéothèque de l'équipe comptent dans la limite de chaque compte (3 gratuit, 15 Premium). Choix : 1 elles comptent / 2 elles ne comptent pas / 3 limite à part (ex. 10 par cavalière). Tant que rien n'est décidé, c'est le 2 qui s'applique : une vidéo d'équipe ne compte plus une fois prête (attend : Blandine)
 
 ## 2 — Important
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
@@ -38,7 +37,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Vidéothèque : vérifier sur iPhone que les photos des thèmes arrivent maintenant vite (build 20261105-0915). Si elles tardent encore, chercher ce qui encombre l'appli à l'ouverture (attend : Blandine)
 - [04/11] Vidéos ajoutées par les cavaliers : à tester en vrai. Ajouter une vidéo YouTube, la proposer, puis l'accepter avec le compte modératrice (attend : Blandine)
 - [05/11] Médias de la Team : à essayer sur iPhone avec une vraie vidéo — chapitre Médias sur la page Team, page Médias (Par cavalière / Par cheval, « Voir tout »), ajout d'une vidéo depuis le téléphone ET depuis « mes vidéos Hype », vérifier que la vignette s'affiche (si la copie de l'image échoue, la vidéo apparaît sans image), et le message « réservée aux cavaliers du groupe » avec un compte hors équipe (attend : Blandine)
-- [05/11] Médias de la Team : traduire les textes de la page Médias et du chapitre dans toutes les langues, une fois le français relu (attend : Blandine pour la relecture, puis Claude)
 
 ## 3 — Quand on aura le temps
 - [07/11] Vidéos de la Team : nouvelles pages « envoi » et « lecture » (visuels A/B/C envoyés) + zone de commentaires dans la lecture (attend : choix de Blandine)
@@ -71,7 +69,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [15/10] Surveiller le premier vrai achat Premium Famille : famille ouverte, invitation, renouvellement (attend : Claude)
 - [15/10] Repérer les vouvoiements qui restent dans les autres pages et te les proposer avant de les corriger (attend : Claude)
 - [19/10] Finir de passer les anciennes vidéos stockées hors Mux. Environ 22 restent, plus les autres réglages photos/vidéos proposés : tailles réelles dans les albums, cache plus long (attend : Claude)
-- [05/11] Médias de la Team, suite : partage dans l'onglet Théorie (« + Partager » : article Hype par son adresse, lien externe avec aperçu), partage des épingles Hey Baby (avec l'équipe ou une personne, notification déjà prête en base), bouton « Mettre en public » sur une vidéo (attend : Claude)
 
 ## 4 — Plus tard / idées
 - [04/11] PayPal sur le compte Stripe de l'association : créer un compte PayPal pro de l'association avec un nouvel alias e-mail (l'ancien compte est bloqué par un vieux numéro fixe), puis activer les paiements récurrents (attend : Blandine)
@@ -18214,3 +18211,7 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Français seulement pour les nouveaux mots (« Coach », « Échec », « refusé par la base »).
 - Retiré de la liste « 3 — Quand on aura le temps » : la ligne « Droits de coach dans un groupe ». À tester sur iPhone : nommer une coach, puis se connecter avec son compte et vérifier qu'elle peut ajouter un membre ou un cheval (attend : Blandine).
 - Fichiers : sql-07-11-coachs-groupe.sql (passé en base), hype-ecran-team.js (v6), index.html (build 20261107-0025), SUIVI.md.
+
+## 07/11/2026 00h15 — SUIVI seul — liste d'urgence : Médias de la Team
+- Retirés de la liste en tête (faits) : limite de vidéos (choix 2 : les vidéos d'équipe ne comptent pas, confirmé par Blandine le 05/11), traductions de la page Médias en 14 langues (build 20261107-0010), suite Médias (« + Partager » en Théorie, « Mettre en public », partage des épingles Hey Baby : build 20261105-2215).
+- Reste dans la liste : le test iPhone des Médias de la Team avec une vraie vidéo (section 2).
