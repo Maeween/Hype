@@ -39374,7 +39374,7 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=8", "HypeTea
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=16", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=16", "HypeGestion", "Registre");
@@ -39403,13 +39403,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=38", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=39", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
@@ -47341,6 +47341,50 @@ function HypeJaimeTexte(props) {
     h("svg", { viewBox: "0 0 24 24", width: props.petit ? 14 : 16, height: props.petit ? 14 : 16, "aria-hidden": "true", style: { transition: "transform .2s", transform: moi ? "scale(1.08)" : "none" } },
       h("path", { d: "M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z", fill: moi ? CH : "none", stroke: moi ? CH : "rgba(243,238,228,0.75)", strokeWidth: 1.6, strokeLinejoin: "round" })),
     nb > 0 ? String(nb) : null);
+}
+/* 07/11 — LES VIDÉOS DE L'ÉQUIPE SUR LA FICHE DU CONCOURS (Blandine : la date et le lieu des vidéos « permettraient de faire le
+   lien avec les dates de concours »). Les vidéos de la Team rattachées à ce rendez-vous (team_videos.agenda_id), avec l'épreuve
+   et le petit mot ; un toucher ouvre la vidéo dans la page Médias de son équipe (mêmes droits de lecture qu'ailleurs).
+   Rien ne s'affiche s'il n'y en a aucune. */
+function HypeVideosEquipeConcours(props) {
+  var h = React.createElement;
+  var ctx = (typeof useApp === "function") ? (useApp() || {}) : {};
+  var st = React.useState(null), vids = st[0], setVids = st[1];
+  React.useEffect(function () {
+    var vif = true;
+    if (!props.agendaId || typeof supa === "undefined" || !supa) return;
+    (async function () {
+      try {
+        var r = await supa.from("team_videos").select("id, groupe_id, vignette, duree, lieu, epreuve, description, date_video, cree_le").eq("agenda_id", String(props.agendaId)).order("cree_le", { ascending: false }).limit(30);
+        if (vif) setVids((r && !r.error && r.data) || []);
+      } catch (e) { if (vif) setVids([]); }
+    })();
+    return function () { vif = false; };
+  }, [props.agendaId]);
+  if (!vids || !vids.length) return null;
+  function ouvrir(v) {
+    try { window.__teamMediasGroupe = v.groupe_id; window.__teamMediasOnglet = "videos"; window.__teamMediasOuvrir = v.id; } catch (e) { }
+    if (typeof ctx.setEcran === "function") ctx.setEcran("team-medias");
+  }
+  function duree(sec) { var n = Math.round(Number(sec) || 0); return n ? Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0") : ""; }
+  var CH = "#C9A66B", IV = "#F3EEE4";
+  var seule = vids.length === 1;
+  return h("div", null,
+    h("div", { className: "hs-sec" }, h("b", null, hypeT7("Vidéos de l'équipe", "Team videos", "Vídeos del equipo", "Video della squadra", "チームの動画", "Videos des Teams", "فيديوهات الفريق", "团队视频", "Teamvideo's", "Vídeos da equipa", "Lagets videor", "Видео команды", "Wideo drużyny", "팀 영상"))),
+    h("div", { style: { display: "grid", gridTemplateColumns: seule ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: "14px 10px", margin: "0 0 18px" } },
+      vids.map(function (v, k) {
+        var src = v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, 600, 380) : v.vignette) : "";
+        var derniere = !seule && vids.length % 2 === 1 && k === vids.length - 1;
+        return h("button", { key: "vc" + v.id, type: "button", onClick: function () { ouvrir(v); }, style: { gridColumn: derniere ? "span 2" : "auto", background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0 } },
+          h("div", { style: { position: "relative", aspectRatio: "16 / 10", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(243,238,228,0.08)", background: "#101214" } },
+            src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
+            h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
+              h("span", { style: { width: 30, height: 30, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(243,238,228,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
+                h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
+            duree(v.duree) ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: "'Montserrat',sans-serif", fontSize: 10, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)" } }, duree(v.duree)) : null),
+          v.epreuve ? h("div", { dir: "auto", style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: ".1em", textTransform: "uppercase", color: CH, marginTop: 6 } }, v.epreuve) : null,
+          v.description ? h("div", { dir: "auto", style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 14, lineHeight: 1.3, color: "rgba(243,238,228,0.64)", marginTop: 3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null);
+      })));
 }
 function hypeVideoLecteur(u, videoAvant) {
   try {

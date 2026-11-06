@@ -898,6 +898,7 @@ function EcranConcours() {
       ev.description ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ce qu’il faut savoir"))),
         h("div", { className: "hs-carte" }, h("div", { className: "hs-texte" }, ev.description))) : null,
+      (typeof HypeVideosEquipeConcours === "function" && idEv) ? h(HypeVideosEquipeConcours, { key: "vq" + idEv, agendaId: idEv }) : null,   /* 07/11 nuit : vidéos de l'équipe rattachées à ce concours (index.html) */
       /* 07/11 (Blandine : « ajoute à la page Versailles les fonctionnalités de la page rendez-vous ») : photos et vidéos,
          résultats, publications et commentaires, partage et suppression — la page du rendez-vous, intégrée ici */
       h("div", { className: "hs-sec" }, h("b", null, fini ? F("Photos, résultats et commentaires") : F("Photos et commentaires"))),

@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 01h40)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 02h20)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -41,7 +41,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 3 — Quand on aura le temps
 - [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
-- [06/11] Vidéos de la Team rattachées à un concours (build 2335) : les montrer sur la page du concours et de ses résultats (attend : test iPhone de Blandine)
+- [07/11] Vidéos de la Team sur la fiche du concours : fait (build 0220, à tester sur iPhone)
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
@@ -646,6 +646,33 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🔗 07/11/2026 (02 h 20) — LES VIDÉOS DE L'ÉQUIPE SUR LA FICHE DU CONCOURS — build 20261107-0220
+Carte blanche de Blandine (00 h 49 : « continue sur tout ce que tu peux jusqu'au
+bout »). Suite logique de « faire le lien avec les dates de concours ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261107-0220 ; composant HypeVideosEquipeConcours ; ?v saison 38 → 39 |
+| hype-ecran-saison.js | racine | une ligne : la section « Vidéos de l'équipe » sur la fiche du concours |
+CE QUI A ÉTÉ FAIT
+· Sur la fiche d'un concours (Centre de compétition), juste avant « Photos,
+  résultats et commentaires » : « Vidéos de l'équipe » = les vidéos de la
+  Team rattachées à ce rendez-vous, avec l'épreuve et le petit mot. Un
+  toucher ouvre la vidéo dans la page Médias de son équipe (mêmes droits de
+  lecture : réservée au groupe sauf si la vidéo est publique). Rien ne
+  s'affiche s'il n'y en a aucune.
+VÉRIFIÉ (Chromium, base simulée) : la vignette, « CLUB 3 VITESSE », le
+petit mot ; le toucher ouvre bien la page Médias sur la bonne vidéo.
+NON VU : sur iPhone, dans la vraie fiche du concours.
+LAISSÉ VOLONTAIREMENT DE CÔTÉ cette nuit :
+· « Sans le son » sur les autres vidéos (albums, fil, souvenirs, fiche
+  cheval) : touche au circuit vidéo principal, sur lequel une autre session
+  travaille en même temps (vidéos Mux refaites, Titi « vidéo saccadée ») →
+  à faire de jour, après le test de la Team.
+· Notifications des j'aime sur le téléphone : règle du 20/10 gardée (pas
+  les j'aime) tant que Blandine ne dit pas clairement l'inverse.
 
 ════════════════════════════════════════════════════════════
 
