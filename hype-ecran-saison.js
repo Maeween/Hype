@@ -2372,8 +2372,12 @@ function EcranDossierConcours() {
   var refFic = React.useRef(null);
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  /* 07/11 : papiers du van = ceux de « Le camion » (Mon écurie), un seul endroit : registre_documents type « camion »,
+     rangement privé « registre » (fichier sous l'id de sa ligne). Avant : table dossier_van (restée vide). */
   function chargerVan(clef) {
-    supa.from("dossier_van").select("*").eq("club_clef", clef).order("ajoute_le", { ascending: false }).then(function (r) { if (r && !r.error) setVan(r.data || []); });
+    supa.from("registre_documents").select("*").eq("club_clef", clef).eq("type", "camion").order("created_at", { ascending: false }).then(function (r) {
+      if (r && !r.error) setVan((r.data || []).filter(function (x) { return x.chemin; }).map(function (x) { return { id: x.id, nom: x.titre || F("Papier"), chemin: x.chemin, valable_jusqu: x.valable_jusqu || null }; }));
+    });
   }
   React.useEffect(function () {
     var vif = true;
@@ -2410,13 +2414,15 @@ function EcranDossierConcours() {
     var nom = String(nd.nom || "").trim() || f.name;
     setOccupe(true); setMsg("");
     try {
-      var u = await utilisateurActuel();
       var ext = (String(f.name).match(/\.[a-z0-9]{1,5}$/i) || [""])[0].toLowerCase();
-      var chemin = "van/" + u.id + "/" + Date.now() + ext;
-      var up = await supa.storage.from("dossier").upload(chemin, f, { contentType: f.type || "application/octet-stream", upsert: false });
-      if (up && up.error) throw new Error(up.error.message || String(up.error));
-      var ri = await supa.from("dossier_van").insert({ club_clef: ev.club_clef, nom: nom, chemin: chemin, valable_jusqu: nd.valable || null }).select("id");
-      if (ri && ri.error) { try { await supa.storage.from("dossier").remove([chemin]); } catch (eR) { } throw new Error(ri.error.message || String(ri.error)); }
+      var ri = await supa.from("registre_documents").insert({ club_clef: ev.club_clef, type: "camion", titre: nom, valable_jusqu: nd.valable || null }).select("id");
+      if (ri && ri.error) throw new Error(ri.error.message || String(ri.error));
+      var idD = ri && ri.data && ri.data[0] && ri.data[0].id; if (!idD) throw new Error(F("refusé par la base"));
+      var chemin = idD + "/papier-" + Date.now() + ext;
+      var up = await supa.storage.from("registre").upload(chemin, f, { contentType: f.type || "application/octet-stream", upsert: false });
+      if (up && up.error) { try { await supa.from("registre_documents").delete().eq("id", idD); } catch (eR) { } throw new Error(up.error.message || String(up.error)); }
+      var rc = await supa.from("registre_documents").update({ chemin: chemin }).eq("id", idD).select("id");
+      if (rc && rc.error) throw new Error(rc.error.message || String(rc.error));
       setNd({ nom: "", valable: "" }); setMsg(F("✓ Document ajouté.")); chargerVan(ev.club_clef);
     } catch (eD) { setMsg(F("Pas ajouté : ") + String((eD && eD.message) || eD)); }
     setOccupe(false);
@@ -2424,16 +2430,16 @@ function EcranDossierConcours() {
   }
   async function ouvrirDoc(d) {
     try {
-      var r = await supa.storage.from("dossier").createSignedUrl(d.chemin, 300);
+      var r = await supa.storage.from("registre").createSignedUrl(d.chemin, 300);
       if (r && r.error) throw new Error(r.error.message || String(r.error));
       window.open(r.data.signedUrl, "_blank");
     } catch (eO) { setMsg(F("Impossible d’ouvrir : ") + String((eO && eO.message) || eO)); }
   }
   async function retirerDoc(d) {
     try {
-      var r = await supa.from("dossier_van").delete().eq("id", d.id).select("id");
+      var r = await supa.from("registre_documents").delete().eq("id", d.id).select("id");
       if (r && r.error) throw new Error(r.error.message || String(r.error));
-      try { await supa.storage.from("dossier").remove([d.chemin]); } catch (eR) { }
+      try { await supa.storage.from("registre").remove([d.chemin]); } catch (eR) { }
       chargerVan(ev.club_clef);
     } catch (eX) { setMsg(F("Pas retiré : ") + String((eX && eX.message) || eX)); }
   }
