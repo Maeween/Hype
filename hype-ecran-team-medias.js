@@ -735,7 +735,7 @@ function EcranTeamMedias() {
                 h("span", { style: { color: CH, fontSize: 30, lineHeight: 1 } }, "+"),
                 h("span", { style: { fontSize: 13, color: IV } }, T("Choisir une vidéo", "Choose a video")),
                 h("span", { style: { fontSize: 11, color: IV3 } }, T("3 minutes au plus", "3 minutes max")),
-                h("input", { type: "file", accept: "video/*", onChange: function (e) { var f = e.target.files && e.target.files[0]; setFFichier(f || null); }, style: { display: "none" } }))
+                h("input", { type: "file", accept: "video/*", onChange: async function (e) { var f = e.target.files && e.target.files[0]; try { if (typeof hypeVerifierQualiteMedia === "function") f = await hypeVerifierQualiteMedia(f); } catch (eTq) { }   /* 06/11 : Titi, jamais bloquant */ setFFichier(f || null); }, style: { display: "none" } }))
             : (mesVideos === null ? vide(T("Chargement…", "Loading…"))
               : !mesVideos.length ? vide(T("Tu n'as pas encore de vidéo dans Hype.", "No Hype videos yet."))
               : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } }, mesVideos.slice(0, 12).map(function (mv) {

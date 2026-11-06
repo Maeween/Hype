@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 12h00)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 12h30)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -18,7 +18,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
-- [06/11] Petit mot « Cette photo est déjà réduite… » (s'affiche quand une photo arrive déjà petite, ex. WhatsApp) : à relire en français, puis traduire dans toutes les langues. En attendant il ne s'affiche qu'en français (attend : Blandine, puis Claude)
+- [06/11] Titi « qualité insuffisante » (build 20261106-1230) : à tester sur iPhone avec une photo et une vidéo passées par WhatsApp → Titi doit apparaître ; avec une photo/vidéo d'origine → rien ne s'affiche. « Garder quand même » doit envoyer normalement (attend : Blandine)
+- [06/11] AVANT de refaire les 37 anciennes vidéos : vérifier qu'une NOUVELLE vidéo filmée à l'iPhone sort nette et fluide (demande de Blandine 12 h 02) (attend : Blandine)
 - [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
 - [06/11] Vidéos : la lecture saute (environ 15 images par seconde au lieu de 30 sur l'enregistrement du 06/11). Chercher si ça vient de la vidéo ou du lecteur, après le test ci-dessus. Ensuite : décider si on ré-encode les anciennes vidéos importantes en premium (attend : Claude, puis Blandine)
 - [15/10] Médiateur de la consommation, obligatoire pour vendre aux particuliers : choisir un médiateur agréé et y adhérer au nom de l'association. Claude complète ensuite l'article 11 des CGV dans toutes les langues (attend : Blandine)
@@ -526,6 +527,40 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🐴 06/11/2026 (12 h 30) — TITI « QUALITÉ INSUFFISANTE » — build 20261106-1230
+Cahier des charges de Blandine (12 h 09) + illustration fournie
+(images/titi-qualite.webp, 560 px, fond transparent, NON régénérée).
+Textes de Blandine : « Je plisse les yeux, je plisse les yeux… mais je ne
+vois toujours pas bien ! 😵‍💫 Je crois qu'on a perdu quelques pixels en
+route ! » / « Tu aurais une version originale en meilleure qualité ? Ton
+souvenir mérite de briller ! ✨ » / « Choisir une meilleure version » /
+« Garder quand même » — traduits dans les 14 langues (HYPE_TITI_TXT).
+CE QUI A ÉTÉ FAIT
+· hypeVerifierQualiteMedia(fichier) : ne contrôle QUE les fichiers choisis
+  par la personne (écouteur global sur les sélecteurs de fichiers, WeakSet),
+  une seule fois chacun ; jamais les images fabriquées par Hype. Seuils :
+  photo grand côté < 1200 px, ou JPEG < 2400 px ET < 0,02 octet/pixel ;
+  PNG/GIF/SVG jamais ; vidéo petit côté < 720 px ou débit < 1,2 Mbit/s
+  (> 2 s). Flou non mesuré (fausses alertes). Mesure impossible = rien.
+· Fenêtre : voile léger flouté, carte en bas, Titi qui dépasse et balance
+  doucement la tête, deux boutons à contour (champagne / gris), aucun rouge.
+  « Garder » : continue avec le fichier d'origine + plus de Titi pendant
+  2 min (un album entier = un seul message). « Choisir une meilleure
+  version » : sélecteur ; le nouveau fichier est contrôlé à son tour.
+· Branché : envoyerPhoto (toutes les photos), hypeRecadrer (fiche cheval,
+  avatar…), vidéos des souvenirs, commentaires/fil, albums, carnet
+  (hype-ecran-carnet-detail.js ?v=2), Team (hype-ecran-team-medias.js ?v=3).
+· Ancien petit mot « Cette photo est déjà réduite » RETIRÉ (remplacé).
+VÉRIFIÉ (Chromium) : photo 800 px → Titi ; photo 4000 px → rien ; photo
+2000 px → rien ; vidéo 480 × 854 → Titi ; vidéo 1080 × 1920 → rien ;
+« Garder quand même » rend bien le fichier d'origine ; fr / ar (droite à
+gauche) / ja. Police de la capture : remplacement (Montserrat bloquée ici).
+NON VU : sur iPhone, dans les vrais écrans d'envoi.
+Outil de ré-encodage des anciennes vidéos : écrit puis RETIRÉ avant tout
+déploiement (Blandine 12 h 02 : régler d'abord les nouvelles vidéos).
 
 ════════════════════════════════════════════════════════════
 

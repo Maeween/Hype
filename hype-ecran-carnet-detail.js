@@ -220,6 +220,7 @@ function EcranCarnetDetail() {
     return envoyerVideoCarnetFichier(f, idSe);
   }
   async function envoyerVideoCarnetFichier(f, idSe) {
+    try { if (typeof hypeVerifierQualiteMedia === "function") f = await hypeVerifierQualiteMedia(f); } catch (eTq) { }   /* 06/11 : Titi, jamais bloquant */
     if (!f || !idSe) return;
     var vif = function () { return refVifHJ.current; };
     var dire = function (txt) { if (vif()) setErr(txt); };
