@@ -615,8 +615,13 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
      piquet … »), puis ouvre la page de l'équipe. Aucun SQL (règles déjà là).
      Textes en français seulement (traductions après relecture).
   Banc : feuille de création OK ; page Team d'une autre écurie NON testable
-  sur le banc → à tester sur iPhone. ?v : team 6, team-medias 7, cavalier 3,
-  ecurie-v2 3, ecurie-hype 2.
+  sur le banc → à tester sur iPhone. ?v : team 6, team-medias 7, cavalier 4
+  (la 3 était déjà prise en ligne), ecurie-v2 3, ecurie-hype 2.
+  07/11 00 h 07 Blandine « Ok continue » + « un visuel plus sympa et moins de
+  vert pétrole » + « dans l'idée de la page Vidéothèque » → fenêtre de
+  création refaite : fond noir #070A08, héros photo + ligne courbe champagne,
+  disciplines en tuiles photo (3 par ligne), cavaliers en portraits ronds,
+  chevaux en vignettes photo, boutons à contour champagne sans fond.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

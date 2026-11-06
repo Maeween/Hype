@@ -34946,7 +34946,7 @@ function FondBanniereClub(props) {
 /* 28/09 (499) : fond de l encart « Mon recit » (tete de cheval noir a droite), fourni par Blandine,
    embarque ici (webp 1230 x 500, ~19 Ko) : aucun fichier a pousser. */
 var HYPE_FOND_RECIT = "images/fond-recit.webp";   /* (500) nouvelle image VERTICALE (Hey Baby), 640 x 800 */
-const EcranMonCavalier = hypeEcranDiffere("hype-ecran-cavalier.js?v=3", "HypeCavalier", "Cavalier");
+const EcranMonCavalier = hypeEcranDiffere("hype-ecran-cavalier.js?v=4", "HypeCavalier", "Cavalier");
 function TableauxSpectralHype(props) {
   var h = React.createElement;
   var TEzT = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
@@ -57575,16 +57575,35 @@ function CreationEquipeEH(props) {
   var nbM = Object.keys(selM).length, nbC = Object.keys(selC).length;
   var nomFinal = String(nom || "").trim();
   var pret = !!choix && !!nomFinal && !busy;
-  function puce(lib, actif, onClick, cle) {
-    return h("button", { key: cle, type: "button", onClick: onClick, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 13, whiteSpace: "nowrap",
-      border: "1px solid " + (actif ? CH : "rgba(201,166,107,0.28)"), background: actif ? "rgba(201,166,107,0.14)" : "transparent", color: IV, fontWeight: 500 } }, lib);
+  /* 07/11 00 h 07 (Blandine : « un visuel plus sympa et moins de vert pétrole ») : fond noir, photos des disciplines,
+     portraits ronds des cavaliers, vignettes photo des chevaux, ligne courbe champagne sous le héros. */
+  function tuileDisc(p) {
+    var on = choix === p;
+    var img = (typeof hypePhotoPiquet === "function") ? hypePhotoPiquet({ discipline: p.d, niveau: p.n }) : "";
+    return h("button", { key: "e" + p.nom, type: "button", onClick: function () { setChoix(p); setNom("Team " + p.nom); setErr(""); },
+      style: { position: "relative", height: 74, borderRadius: 14, overflow: "hidden", padding: 0, cursor: "pointer", border: "1px solid " + (on ? CH : "rgba(243,238,228,0.12)"), background: "#0A0C0B", boxShadow: on ? "0 0 0 1px " + CH + " inset" : "none" } },
+      img ? h("img", { src: img, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: on ? 0.75 : 0.45 } }) : null,
+      h("span", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0) 20%, rgba(7,10,8,0.88) 100%)" } }),
+      h("span", { style: { position: "absolute", insetInlineStart: 10, insetInlineEnd: 10, bottom: 8, fontFamily: SERIF, fontSize: 16.5, color: IV, textAlign: "start", lineHeight: 1.1 } }, p.nom),
+      on ? h("span", { style: { position: "absolute", top: 7, insetInlineEnd: 7, width: 20, height: 20, borderRadius: "50%", border: "1px solid " + CH, background: "rgba(7,10,8,0.7)", color: CH, fontSize: 12, lineHeight: "18px", textAlign: "center" } }, "\u2713") : null);
   }
-  function ligne(cle, img, texte, on, basculer, rond) {
-    return h("button", { key: cle, type: "button", onClick: basculer,
-      style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "6px 12px", borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.08)" : "rgba(255,255,255,0.02)", color: IV, fontFamily: M } },
-      h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: rond ? "50%" : 10, overflow: "hidden", background: "#0F1B19" } }, img ? h("img", { src: img, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } }) : null),
-      h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, texte),
-      h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), color: CH, fontSize: 14, lineHeight: "22px", textAlign: "center" } }, on ? "\u2713" : ""));
+  function portrait(u) {
+    var on = !!selM[u.id];
+    return h("button", { key: "m" + u.id, type: "button", onClick: function () { bascule(setSelM, selM, u.id); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "center", color: IV, fontFamily: M, minWidth: 0 } },
+      h("span", { style: { position: "relative", display: "block", width: 62, height: 62, margin: "0 auto", borderRadius: "50%", overflow: "hidden", border: "1.5px solid " + (on ? CH : "rgba(243,238,228,0.16)"), background: "#121513" } },
+        u.avatar_url ? h("img", { src: u.avatar_url, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", opacity: on ? 1 : 0.7 } })
+          : h("span", { style: { display: "block", lineHeight: "60px", fontFamily: SERIF, fontSize: 24, color: "rgba(243,238,228,0.7)" } }, String(u.pseudo || "?").charAt(0).toUpperCase())),
+      h("span", { style: { display: "block", marginTop: 6, fontSize: 11.5, color: on ? CH : "rgba(243,238,228,0.78)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (on ? "\u2713 " : "") + (u.pseudo || "?")));
+  }
+  function vignette(c) {
+    var on = !!selC[c.id];
+    var img = c.photo_url || (typeof chevalDefaut === "function" ? chevalDefaut(c) : "");
+    return h("button", { key: "c" + c.id, type: "button", onClick: function () { bascule(setSelC, selC, c.id); },
+      style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 14, overflow: "hidden", padding: 0, cursor: "pointer", border: "1px solid " + (on ? CH : "rgba(243,238,228,0.1)"), background: "#0A0C0B" } },
+      img ? h("img", { src: img, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: on ? 0.95 : 0.55 } }) : null,
+      h("span", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0) 45%, rgba(7,10,8,0.9) 100%)" } }),
+      h("span", { style: { position: "absolute", insetInlineStart: 8, insetInlineEnd: 8, bottom: 7, fontFamily: M, fontSize: 11.5, color: IV, textAlign: "start", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
+      on ? h("span", { style: { position: "absolute", top: 6, insetInlineEnd: 6, width: 20, height: 20, borderRadius: "50%", border: "1px solid " + CH, background: "rgba(7,10,8,0.7)", color: CH, fontSize: 12, lineHeight: "18px", textAlign: "center" } }, "\u2713") : null);
   }
   function bascule(set, obj, id) { var n = Object.assign({}, obj); if (n[id]) delete n[id]; else n[id] = true; set(n); }
   async function creer() {
@@ -57607,35 +57626,42 @@ function CreationEquipeEH(props) {
       setErr("L'équipe n'a pas pu être créée : " + String((e && e.message) || e));
     }
   }
-  var titre = function (t) { return h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 22 } }, t); };
-  var aide = function (t) { return h("div", { style: { fontSize: 12, color: IV2, marginTop: 4, fontFamily: M } }, t); };
+  var titre = function (t) { return h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 26 } }, h("span", { style: { width: 2, alignSelf: "stretch", background: CH, borderRadius: 2 } }), h("span", { style: { fontFamily: SERIF, fontSize: 23, color: IV } }, t)); };
+  var aide = function (t) { return h("div", { style: { fontSize: 12, color: IV2, marginTop: 6, fontFamily: M, lineHeight: 1.45 } }, t); };
+  var piquetsPleins = (props.piquets || []).filter(function (pq) { return pq.ids && pq.ids.length; });
   return h("div", { "data-noswipe": "1", onClick: function (e) { if (e.target === e.currentTarget && !busy && props.onFermer) props.onFermer(); },
-    style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(3,5,6,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
-    h("div", { style: { width: "100%", maxWidth: 520, maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: "linear-gradient(180deg,#101A1D 0%,#0B1215 100%)", borderTop: "1px solid rgba(201,166,107,0.35)", borderRadius: "22px 22px 0 0", padding: "22px 18px calc(96px + env(safe-area-inset-bottom))", color: IV, fontFamily: M } },
-      h("div", { style: { fontSize: 10, letterSpacing: 2.6, textTransform: "uppercase", color: CH, fontWeight: 600 } }, "Nouvelle équipe de compétition"),
-      h("div", { style: { fontFamily: SERIF, fontSize: 26, marginTop: 6, lineHeight: 1.15 } }, "Quelle discipline ?"),
-      h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 } },
-        propos.map(function (p) { return puce(p.nom, choix === p, function () { setChoix(p); setNom("Team " + p.nom); setErr(""); }, "e" + p.nom); })),
-      titre("Son nom"),
-      h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setErr(""); }, placeholder: "ex. Team CSO Poney",
-        style: { width: "100%", boxSizing: "border-box", minHeight: 44, marginTop: 10, padding: "0 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.3)", background: "rgba(6,7,9,0.5)", color: IV, fontFamily: M, fontSize: 16 } }),
-      aide("Tu en deviens la coach. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page de l'équipe."),
-      titre("Ses cavaliers" + (nbM ? " (" + nbM + ")" : "")),
-      h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 6 } },
-        cav === null ? aide("Chargement…") : (cav.length ? cav.map(function (u) { return ligne("m" + u.id, u.avatar_url, u.pseudo || "?", !!selM[u.id], function () { bascule(setSelM, selM, u.id); }, true); })
-          : aide("Aucun cavalier rattaché à l'écurie pour l'instant."))),
-      titre("Ses chevaux" + (nbC ? " (" + nbC + ")" : "")),
-      (props.piquets || []).filter(function (pq) { return pq.ids && pq.ids.length; }).length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
-        (props.piquets || []).filter(function (pq) { return pq.ids && pq.ids.length; }).map(function (pq) {
-          return puce("+ Chevaux du piquet " + (typeof hypeLibPiquet === "function" ? hypeLibPiquet(pq.nom) : pq.nom), false, function () { var n = Object.assign({}, selC); pq.ids.forEach(function (id) { n[id] = true; }); setSelC(n); }, "pq" + pq.id);
+    style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.78)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+    h("div", { style: { width: "100%", maxWidth: 560, maxHeight: "92vh", overflowY: "auto", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: "#070A08", border: "1px solid rgba(201,166,107,0.28)", borderBottom: "none", borderRadius: "24px 24px 0 0", color: IV, fontFamily: M } },
+      h("div", { style: { position: "relative", height: 170, overflow: "hidden", borderRadius: "24px 24px 0 0" } },
+        h("img", { src: "images/TEAM_COMPETITION.webp", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 35%", opacity: 0.8 } }),
+        h("span", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0.15) 0%, rgba(7,10,8,0.55) 55%, #070A08 100%)" } }),
+        h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: 2, width: "100%", height: 34 } },
+          h("path", { d: "M0 34 C110 6 230 6 300 18 S380 32 400 12", fill: "none", stroke: CH, strokeWidth: 1.2, opacity: 0.9 })),
+        h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 30 } },
+          h("div", { style: { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: CH, fontWeight: 600 } }, "Nouvelle équipe"),
+          h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, "Ton équipe de compétition"))),
+      h("div", { style: { padding: "4px 18px calc(110px + env(safe-area-inset-bottom))" } },
+        titre("La discipline"),
+        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } }, propos.map(tuileDisc)),
+        titre("Son nom"),
+        h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setErr(""); }, placeholder: "ex. Team CSO Poney",
+          style: { width: "100%", boxSizing: "border-box", minHeight: 48, marginTop: 12, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.35)", background: "rgba(243,238,228,0.03)", color: IV, fontFamily: SERIF, fontSize: 20 } }),
+        aide("Tu en deviens la coach. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page de l'équipe."),
+        titre("Ses cavaliers" + (nbM ? " · " + nbM : "")),
+        cav === null ? aide("Chargement…") : (cav.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: "14px 8px", marginTop: 14 } }, cav.map(portrait))
+          : aide("Aucun cavalier rattaché à l'écurie pour l'instant.")),
+        titre("Ses chevaux" + (nbC ? " · " + nbC : "")),
+        piquetsPleins.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 } }, piquetsPleins.map(function (pq) {
+          return h("button", { key: "pq" + pq.id, type: "button", onClick: function () { var n = Object.assign({}, selC); pq.ids.forEach(function (id) { n[id] = true; }); setSelC(n); },
+            style: { minHeight: 34, padding: "0 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12.5, border: "1px solid rgba(201,166,107,0.45)", background: "transparent", color: CH } },
+            "+ " + (typeof hypeLibPiquet === "function" ? hypeLibPiquet(pq.nom) : pq.nom));
         })) : null,
-      h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 6 } },
-        chevaux.length ? chevaux.map(function (c) { return ligne("c" + c.id, c.photo_url || (typeof chevalDefaut === "function" ? chevalDefaut(c) : ""), c.nom || "?", !!selC[c.id], function () { bascule(setSelC, selC, c.id); }, false); })
-          : aide("Aucun cheval sur cette page pour l'instant.")),
-      err ? h("div", { role: "alert", style: { marginTop: 14, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null,
-      h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
-        h("button", { type: "button", disabled: busy, onClick: function () { if (props.onFermer) props.onFermer(); }, style: { flex: 1, minHeight: 48, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } }, "Annuler"),
-        h("button", { type: "button", disabled: !pret, onClick: creer, style: { flex: 1.4, minHeight: 48, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(201,166,107,0.25)"), background: "transparent", color: pret ? CH : "rgba(201,166,107,0.45)", fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret ? "pointer" : "default" } },
+        chevaux.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } }, chevaux.map(vignette))
+          : aide("Aucun cheval sur cette page pour l'instant."),
+        err ? h("div", { role: "alert", style: { marginTop: 16, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null),
+      h("div", { style: { position: "sticky", bottom: 0, display: "flex", gap: 10, padding: "14px 18px calc(84px + env(safe-area-inset-bottom))", background: "linear-gradient(180deg, rgba(7,10,8,0) 0%, #070A08 30%)" } },
+        h("button", { type: "button", disabled: busy, onClick: function () { if (props.onFermer) props.onFermer(); }, style: { flex: 1, minHeight: 50, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "#070A08", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } }, "Annuler"),
+        h("button", { type: "button", disabled: !pret, onClick: creer, style: { flex: 1.5, minHeight: 50, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(201,166,107,0.25)"), background: "#070A08", color: pret ? CH : "rgba(201,166,107,0.45)", fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret ? "pointer" : "default" } },
           busy ? "Création…" : "Créer l'équipe"))));
 }
 function CreationPiquetEH(props) {
