@@ -46,7 +46,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
-- [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
 - [05/11] Recherche de concours (numéro FFE) : « Trouver le numéro » est sur la page Engagements (build 0210) ET, depuis le build 20261106-2350, à la création d'un concours (agenda), avec « Calendrier FFE › » en secours ; à essayer sur iPhone. Reste : étape 3 = recherche par dates, région, discipline (attend : Blandine pour le test, puis Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
 - [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
@@ -18206,3 +18205,12 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - _headers : « X-Robots-Tag: noindex » ajouté à hype-cours-galop2.js … galop7.js. Ça ne change rien dans l'appli, ça demande seulement à Google de ne pas ranger ces fichiers dans ses résultats. La vraie protection (B : la suite des chapitres servie par le serveur aux seuls abonnés et liens de partage) est gardée pour après le Salon.
 - NON PUBLIÉ exprès : le dépôt contient aussi du travail Team de l'autre conversation (build 20261107-0115) pas encore publié ; une mise en ligne maintenant l'aurait mis en ligne sans validation. Part avec la prochaine publication, comme le correctif du badge Pro (build 20261107-0105).
 - Fichiers : _headers, SUIVI.md.
+
+
+## 07/11/2026 00h25 — PUBLICATION build 20261107-0025 (Blandine 06/11 23h38 et 07/11 00h07 : « Ok continue » sur la proposition « droits de coach dans un groupe, comme les admins WhatsApp »)
+- Base (migration coachs_groupe_0711, fichier sql-07-11-coachs-groupe.sql) : colonne groupes_membres.role (« membre » par défaut, ou « coach » ; tous les membres existants restent « membre ») ; fonction hype_coach_groupe(groupe) = propriétaire ou gestionnaire du club, créatrice du groupe, ou coach nommée dans le groupe. Règles élargies (rien de supprimé) : ajout / retrait de membres, nouveau droit de changer le rôle, chevaux du groupe, rendez-vous rattachés au groupe. La fiche du groupe (nom, photo, club) reste aux gestionnaires du club. Créer un NOUVEAU rendez-vous dans l'agenda du club reste aux gestionnaires du club (une coach de groupe rattache les rendez-vous existants).
+- Page Team : « Gérer les membres » s'affiche aussi pour une coach du groupe ; à côté de chaque membre, bouton « Coach » (contour, sans fond doré) → « Coach ✓ » ; un nouveau toucher retire le droit. Dans « Nos cavalières », la mention « · Coach » suit le pseudo.
+- Centre de compétition : inchangé (toujours réservé à Blandine tant qu'il n'est pas ouvert).
+- Français seulement pour les nouveaux mots (« Coach », « Échec », « refusé par la base »).
+- Retiré de la liste « 3 — Quand on aura le temps » : la ligne « Droits de coach dans un groupe ». À tester sur iPhone : nommer une coach, puis se connecter avec son compte et vérifier qu'elle peut ajouter un membre ou un cheval (attend : Blandine).
+- Fichiers : sql-07-11-coachs-groupe.sql (passé en base), hype-ecran-team.js (v6), index.html (build 20261107-0025), SUIVI.md.

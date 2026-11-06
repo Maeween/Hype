@@ -121,13 +121,15 @@ function EcranTeamCompetition() {
 
   /* ── les membres du groupe (relu après chaque ajout / retrait) ── */
   async function chargerMembres(idG) {
-    var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", idG).order("ajoute_le", { ascending: true });
+    /* 07/11 : + rôle (« coach » ou « membre ») — droits de coach dans le groupe, comme les admins WhatsApp */
+    var rm = await supa.from("groupes_membres").select("user_id, ajoute_le, role").eq("groupe_id", idG).order("ajoute_le", { ascending: true });
     if (rm && rm.error) throw new Error("membres : " + (rm.error.message || rm.error));
     var ids = ((rm && rm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
     if (!ids.length) return [];
     var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie, ville").in("id", ids);
     var parId = {}; ((rp && rp.data) || []).forEach(function (p) { parId[p.id] = p; });
-    return ids.map(function (i) { return parId[i]; }).filter(Boolean);
+    var roleDe = {}; ((rm && rm.data) || []).forEach(function (x) { roleDe[x.user_id] = x.role || "membre"; });
+    return ids.map(function (i) { return parId[i] ? Object.assign({}, parId[i], { role: roleDe[i] }) : null; }).filter(Boolean);
   }
 
   /* (523) les chevaux du groupe, dans l'ordre d'ajout */
@@ -200,6 +202,8 @@ function EcranTeamCompetition() {
         var G = rg && rg.data;
         if (!G) throw new Error("groupe « " + TEAM_NOM_GROUPE + " » introuvable");
         if (vif) setGroupe(G);
+        /* 07/11 : une coach du groupe (nommée, ou créatrice du groupe) gère aussi la Team — la base reste seule juge */
+        try { if (u && u.id) { var rcg = await supa.rpc("hype_coach_groupe", { p_groupe: G.id }); if (vif && rcg && rcg.data === true) setGestion(true); } } catch (eCg) { }
         var mb = await chargerMembres(G.id);
         if (vif) setMembres(mb);
         var idsCav = mb.map(function (p) { return p.id; });
@@ -383,7 +387,7 @@ function EcranTeamCompetition() {
         h("div", null, T("des objectifs communs.", "shared goals.", "objetivos comunes.", "obiettivi comuni.", "そして共通の目標。", "gemeinsame Ziele.", "وأهداف مشتركة.", "共同的目标。", "gedeelde doelen.", "objetivos em comum.", "gemensamma mål.", "общие цели.", "wspólne cele.", "모두 함께하는 목표.")))));
 
   /* ── nos cavalières ── */
-  var itemsCav = (membres || []).map(function (p) { return portrait("cv" + p.id, photoProfil(p), p.pseudo, function () { ouvrirCavaliere(p); }, (p.pseudo || "?").charAt(0)); });
+  var itemsCav = (membres || []).map(function (p) { return portrait("cv" + p.id, photoProfil(p), (p.pseudo || "") + (p.role === "coach" ? " · Coach" : ""), function () { ouvrirCavaliere(p); }, (p.pseudo || "?").charAt(0)); });
   var blocCav = section(h("div", null,
     enTete(T("Nos cavalières", "Our riders", "Nuestras jinetes", "Le nostre amazzoni", "私たちのライダー", "Unsere Reiterinnen", "فارساتنا", "我们的骑手", "Onze ruiters", "Nossas amazonas", "Våra ryttare", "Наши всадницы", "Nasze amazonki", "우리 기수들"), "cav", itemsCav.length, 8),
     membres === null ? chargement()
@@ -773,6 +777,19 @@ function EcranTeamCompetition() {
     } catch (eA) { setErrPanneau(T("Échec : ", "Failed: ", "Error: ", "Errore: ", "失敗：", "Fehler: ", "فشل: ", "失败：", "Mislukt: ", "Falha: ", "Misslyckades: ", "Ошибка: ", "Błąd: ", "실패: ") + String((eA && eA.message) || eA)); }
     setOccupe(function (o1) { var o2 = Object.assign({}, o1); delete o2[p.id]; return o2; });
   }
+  /* 07/11 : nommer / retirer une coach du groupe (comme « Nommer admin » sur WhatsApp) */
+  async function basculerCoach(p) {
+    if (!groupe || !p || !p.id) return;
+    var nv = p.role === "coach" ? "membre" : "coach";
+    setErrPanneau(""); setOccupe(function (o0) { var o = Object.assign({}, o0); o["c" + p.id] = true; return o; });
+    try {
+      var r = await supa.from("groupes_membres").update({ role: nv }).eq("groupe_id", groupe.id).eq("user_id", p.id).select("user_id, role");
+      if (r && r.error) throw new Error(r.error.message || String(r.error));
+      if (!r || !r.data || !r.data.length) throw new Error("refusé par la base");
+      setMembres(await chargerMembres(groupe.id));
+    } catch (eC) { setErrPanneau("Échec : " + String((eC && eC.message) || eC)); }
+    setOccupe(function (o1) { var o2 = Object.assign({}, o1); delete o2["c" + p.id]; return o2; });
+  }
   async function retirerMembre(p) {
     if (!groupe || !p || !p.id) return;
     setErrPanneau(""); setOccupe(function (o0) { var o = Object.assign({}, o0); o[p.id] = true; return o; });
@@ -823,6 +840,12 @@ function EcranTeamCompetition() {
             h("div", { style: { width: 40, height: 40, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", border: est ? "1px solid " + OR : "1px solid rgba(244,241,234,0.12)", background: "#11171C" } },
               (modeCh ? (p.photo_url ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(p.photo_url, 120, 120) : p.photo_url, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null) : h("img", { src: photoProfil(p), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }))),
             h("div", { dir: "auto", style: { flex: 1, minWidth: 0, fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, nomDe(p) || "—"),
+            (!modeCh && est) ? (function () {
+              var m0 = (membres || []).filter(function (x) { return x.id === p.id; })[0] || {}, co = m0.role === "coach", bz = !!occupe["c" + p.id];
+              return h("button", { type: "button", disabled: bz, "aria-pressed": co, onClick: function () { basculerCoach(m0); },
+                style: { flex: "0 0 auto", minHeight: 34, padding: "0 12px", borderRadius: 999, border: "1px solid " + (co ? OR : "rgba(244,241,234,0.25)"), background: "transparent", color: co ? OR : "rgba(244,241,234,0.7)", fontFamily: M, fontSize: 12, cursor: "pointer" } },
+                bz ? "…" : (co ? "Coach ✓" : "Coach"));
+            })() : null,
             h("button", { type: "button", disabled: busy, onClick: function () { if (modeCh) basculerCheval(p, est); else if (est) retirerMembre(p); else ajouterMembre(p); },
               style: { flex: "0 0 auto", minHeight: 34, minWidth: 84, padding: "0 12px", borderRadius: 999, border: "1px solid " + (est ? "rgba(244,241,234,0.25)" : "rgba(214,182,118,0.6)"), background: est ? "transparent" : "rgba(214,182,118,0.10)", color: est ? "rgba(244,241,234,0.8)" : OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1 } },
               busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가"))));
