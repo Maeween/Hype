@@ -240,7 +240,7 @@ function EcranTeamMedias() {
     finally { setOccupe(""); }
   }
 
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { if (typeof hypeTeamCourante === "function" && hypeTeamCourante()) window.__teamArmee = true; } catch (eA) { } setEcran("team-competition"); }
 
   function duree(s) { var n = Math.round(Number(s) || 0); if (!n) return ""; return Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0"); }
   function dateCourte(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { return new Intl.DateTimeFormat(lg, { day: "numeric", month: "short" }).format(new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))); } catch (e) { return m[3] + "/" + m[2]; } }

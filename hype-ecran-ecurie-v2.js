@@ -230,7 +230,7 @@ function EcranEcurieV2(props) {
   var ombreGr = "0 1px 10px rgba(0,0,0,0.8)";
   var cartesEquipes = equipesEc.length ? h("div", { "data-equipes-ecurie": "1", style: { display: "grid", gridTemplateColumns: (large && equipesEc.length > 1) ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: 10 } },
     equipesEc.map(function (g) {
-      var sansPageG = !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
+      var sansPageG = false;   /* 06/11 : toutes les équipes ont leur page (hypeOuvrirEquipe) */
       var photoG = g.photo_url || "images/TEAM_COMPETITION.webp";
       var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
       var sigleG = (String(g.__club || "").match(/\(([^()]{2,12})\)\s*$/) || [])[1] || "";
@@ -238,7 +238,7 @@ function EcranEcurieV2(props) {
       var meta = [saisonG, niv].filter(Boolean);
       var mG = "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", transparent 0%, #000 55%)";
       return h("div", { key: "eqe" + g.id, role: "button", "data-groupe-ecurie": g.id, "aria-disabled": sansPageG ? "true" : undefined,
-          onClick: function () { if (sansPageG) return; try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eT) { } setEcran("team-competition"); },
+          onClick: function () { if (sansPageG) return; hypeOuvrirEquipe(g, setEcran); },
           style: { position: "relative", isolation: "isolate", minWidth: 0, borderRadius: 16, overflow: "hidden", cursor: sansPageG ? "default" : "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", padding: large ? "16px 70px 16px 18px" : "14px 60px 14px 15px" } },
         h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "52%", zIndex: -1, pointerEvents: "none", backgroundImage: "url(" + ((typeof HYPE_FOND_RECIT !== "undefined") ? HYPE_FOND_RECIT : "images/fond-recit.webp") + ")", backgroundSize: "cover", backgroundPosition: "center 40%", WebkitMaskImage: mG, maskImage: mG, opacity: 0.9 } }),
         h("div", { style: { fontFamily: SERIF, fontSize: large ? 24 : 21, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.1, textShadow: ombreGr } }, T("Groupe", "Group", "Grupo", "Gruppo", "グループ", "Gruppe", "المجموعة", "小组", "Groep", "Grupo", "Grupp", "Группа", "Grupa", "그룹")),
@@ -258,13 +258,13 @@ function EcranEcurieV2(props) {
       h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtl ? "to left" : "to right") + ", rgba(201,166,107,0.45), rgba(201,166,107,0))" } })),
     h("div", { "data-noswipe": "1", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollbarWidth: "none", paddingBottom: 4, flexWrap: large ? "wrap" : "nowrap" } },
       piquetsEc.map(function (g) {
-        var sansPage = g.nature === "equipe" && !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
+        var sansPage = false;   /* 06/11 */
         var photo = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : ((typeof hypePhotoPiquet === "function") ? hypePhotoPiquet(g) : (g.photo_url || ""));
         var nomG = (g.nature !== "equipe" && typeof hypeLibPiquet === "function") ? hypeLibPiquet(g.nom) : g.nom;
         return h("button", { key: "gre" + g.id, type: "button", "data-groupe-ecurie": g.id, disabled: sansPage, "aria-disabled": sansPage ? "true" : undefined,
           onClick: function () {
             if (sansPage) return;
-            if (g.nature === "equipe") { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eT) { } setEcran("team-competition"); return; }
+            if (g.nature === "equipe") { hypeOuvrirEquipe(g, setEcran); return; }
             try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eP) { }
             setEcran("ecurie-hype");
           },

@@ -28140,6 +28140,9 @@ function HypeApp() {
         try { requestAnimationFrame(() => { requestAnimationFrame(() => { window.scrollTo(0, p); }); }); } catch (e) { }
     }, [ecran]);
     const naviguer = (cible) => {
+        /* 06/11 (Blandine : page Compétition pour Feinn) : une équipe AUTRE que la Team CSO Club SEP s'ouvre par
+           hypeOuvrirEquipe(), qui « arme » le choix ; tout autre chemin vers la page Team revient à l'équipe par défaut. */
+        if (cible === "team-competition") { try { if (window.__teamArmee) window.__teamArmee = false; else window.__teamCourante = null; } catch (eTm) { } }
         /* 20/10 : un rendez-vous passe qui est une etape de challenge s ouvre dans le challenge (une seule page par manche) */
         if (cible === "evenement-passe") {
             try {
@@ -39285,7 +39288,23 @@ var TEAM_NOM_GROUPE = "Team CSO Club";   /* 10/10 (784) E3 : nouveau nom (libell
    identiques existaient, la plus ancienne est prise (limit 1, jamais d'erreur « plusieurs lignes »).
    TEAM_NOM_GROUPE ne sert plus qu'au libellé de secours si la fiche n'est pas encore chargée. */
 var TEAM_DISCIPLINE = "cso", TEAM_NIVEAU = "club";
+/* 06/11 : ouvrir la page d'UNE équipe (n'importe quelle écurie). L'équipe par défaut (Team CSO Club SEP) garde
+   l'ancien chemin ; les autres passent par window.__teamCourante { id, club_clef, club } lu par la page Team. */
+function hypeEstTeamDefaut(g) {
+  try { return !!(g && typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU); } catch (e) { return false; }
+}
+function hypeOuvrirEquipe(g, setEcran) {
+  try {
+    window.__perfGroupe = null; window.__perfGroupeCourant = null;
+    window.__teamCourante = hypeEstTeamDefaut(g) ? null : { id: g.id, club_clef: g.club_clef, club: g.__club || g.club || "" };
+    window.__teamArmee = true;
+  } catch (e) { }
+  setEcran("team-competition");
+}
+function hypeTeamCourante() { try { return (window.__teamCourante && window.__teamCourante.id) ? window.__teamCourante : null; } catch (e) { return null; } }
 function hypeRequeteTeam(colonnes, clef) {
+  var tcR = (!clef && typeof hypeTeamCourante === "function") ? hypeTeamCourante() : null;   /* 06/11 : l'équipe ouverte */
+  if (tcR) return supa.from("groupes").select(colonnes || "id").eq("id", tcR.id).maybeSingle();
   return supa.from("groupes").select(colonnes || "id").eq("club_clef", clef || TEAM_CLE)
     .eq("nature", "equipe").eq("discipline", TEAM_DISCIPLINE).eq("niveau", TEAM_NIVEAU)
     .order("cree_le", { ascending: true }).limit(1).maybeSingle();
@@ -39295,8 +39314,8 @@ function hypeRequeteTeam(colonnes, clef) {
 
 const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=6", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
-const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=6", "HypeTeamMedias", "Medias");
-const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=6", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
+const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=7", "HypeTeamMedias", "Medias");
+const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=7", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
 const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=36", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
@@ -39617,7 +39636,7 @@ function CarteChallengesEcurie(props) {
     }));
   return props.enveloppe ? props.enveloppe(grille) : grille;   /* 20/10 : la page Ecurie l habille de son titre de section */
 }
-const EcranEcurieV2 = hypeEcranDiffere("hype-ecran-ecurie-v2.js?v=2", "HypeEcurieV2", "EcurieV2");
+const EcranEcurieV2 = hypeEcranDiffere("hype-ecran-ecurie-v2.js?v=3", "HypeEcurieV2", "EcurieV2");
 
 const EcranGuilde = hypeEcranDiffere("hype-ecran-guilde.js?v=1", "HypeGuilde", "Guilde");
 const CLUBS_LISTE = [{n:"Societe d'Equitation de Paris (SEP)",v:"Paris (Bois de Boulogne)"},{n:"Club Hippique du Touring",v:"Paris (Bois de Boulogne)"},{n:"Ecurie Feinn",v:"Itteville (91)"},{n:"Parc Equestre Federal (FFE)",v:"Lamotte-Beuvron"},{n:"Centre Equestre de la Villette",v:"Paris"},{n:"Societe Equestre L'Etrier de Paris",v:"Paris (Bois de Boulogne)"},{n:"UCPA Bayard Vincennes",v:"Paris (Bois de Vincennes)"},{n:"Centre Equestre de la Cartoucherie",v:"Paris (Bois de Vincennes)"},{n:"Jardy Equitation (Haras de Jardy)",v:"Marnes-la-Coquette"},{n:"Poney Club du Haras de Jardy",v:"Marnes-la-Coquette"},{n:"Les Haras de la Porte de Saint-Leu",v:"Chatenay-Malabry"},{n:"Centre Equestre & Poney Club de Suresnes",v:"Suresnes"},{n:"Poney Club de l'Ile Saint-Germain",v:"Issy-les-Moulineaux"},{n:"Club Hippique des Etangs de Meudon",v:"Meudon"},{n:"Poney Club de Brimborion",v:"Sevres"},{n:"UCPA Chanteraines",v:"Villeneuve-la-Garenne"},{n:"Epona Club Nature",v:"Saint-Germain-en-Laye"},{n:"Centre Equestre de Vaumartin",v:"Cravent"},{n:"Les Poneys de la Milliere",v:"Les Mesnuls"},{n:"Domaine du Cepy",v:"Le Perray-en-Yvelines"},{n:"ACN Ecurie",v:"Saint-Leger-en-Yvelines"},{n:"Ecuries d'Eloge",v:"Les Loges-en-Josas"},{n:"Centre Equestre de la Foret de Rambouillet",v:"La Boissiere-Ecole"},{n:"Horse Holidays France",v:"Maisons-Laffitte"},{n:"Riderland - Ecurie des Chartreux",v:"Saulx-les-Chartreux"},{n:"L'Etrier Chiroquois",v:"Chilly-Mazarin"},{n:"Les Ecuries de l'Orme des Mazieres",v:"Draveil"},{n:"Les Ecuries du Marais (Hopps Family)",v:"Le Val-Saint-Germain"},{n:"Club Equestre des Joncs Marine",v:"Bretigny-sur-Orge"},{n:"Ecurie des Bergeries",v:"Draveil"},{n:"Centre Equestre de la Juine",v:"Janville-sur-Juine"},{n:"Les Ecuries de la Vallee de Chanvre (Evadec)",v:"Boutigny-sur-Essonne"},{n:"Haras de la Foret",v:"Seine-Port"},{n:"Epona Croissy-Beaubourg Equitation",v:"Croissy-Beaubourg"},{n:"Cercle Hippique de la Breche aux Loups",v:"Ozoir-la-Ferriere"},{n:"Haras de Calma",v:"Chaumes-en-Brie"},{n:"Haras de Maison Blanche",v:"Lesigny"},{n:"Les Ecuries des Coudriers",v:"Marles-en-Brie"},{n:"Centre Equestre Bois Fleuri",v:"Claye-Souilly"},{n:"Haras Boreal - Ecuries Laura Saine",v:"Fontenay-Tresigny"},{n:"Les Ecuries de Meriel",v:"Meriel"},{n:"L'Epinette de Boisemont",v:"Boisemont"},{n:"Les Ecuries du Val Fleuri",v:"Nesles-la-Vallee"},{n:"Club Equestre l'Oree de la Foret",v:"L'Isle-Adam"},{n:"La Ferme des Tilleuls",v:"Saint-Ouen-l'Aumone"},{n:"Haras du Val",v:"Saint-Prix"},{n:"Centre Equestre Oudinot",v:"Joinville-le-Pont"},{n:"Sheva (Ecole Veterinaire d'Alfort)",v:"Creteil"},{n:"UCPA Centre Equestre de Saint-Maur",v:"Marolles-en-Brie"},{n:"Cercle Hippique du Bois de Vincennes",v:"Nogent-sur-Marne"},{n:"Poneyland de Thiais",v:"Thiais"},{n:"Ecurie du Parc des Lyons",v:"Santeny"},{n:"Centre Equestre et Poney Club de La Courneuve",v:"La Courneuve"},{n:"Centre Equestre du Parc de la Poudrerie",v:"Vaujours"},{n:"Centre Equestre de Montfermeil",v:"Montfermeil"},{n:"Espace Equestre Henson",v:"Chantilly"},{n:"Grandes Ecuries du Chateau de Chantilly",v:"Chantilly"},{n:"Ecole d'Equitation de Lamorlaye",v:"Lamorlaye"},{n:"Polo Club du Domaine de Chantilly",v:"Apremont"},{n:"Ecurie de Cantino",v:"Gouvieux"},{n:"Centre Equestre du Vieux Chateau",v:"Nouan-le-Fuzelier"},{n:"Elevage des Blanchins",v:"Vouzon"},{n:"Pole International du Cheval",v:"Saint-Arnoult (Deauville)"},{n:"Horse Area de l'Atlas",v:"Glanville"},{n:"Centre Equestre de Blonville-sur-Mer",v:"Blonville-sur-Mer"},{n:"La Mangeoire",v:"Deauville"},{n:"Haras du Manoir",v:"Saint-Pierre-Azif"},{n:"Haras de la Chesnaye",v:"Tourgeville"},{n:"Centre Equestre de Deauville Saint-Gatien",v:"Saint-Gatien-des-Bois"},{n:"Club Hippique du Mans",v:"Change"},{n:"Centre Equestre Fontay",v:"Sarge-les-le-Mans"},{n:"Etrier Sarthois",v:"Le Mans"},{n:"Allonnes Equitation",v:"Allonnes"},{n:"Centre Equestre du Touquet Paris-Plage",v:"Le Touquet-Paris-Plage"},{n:"Pole Jumping du Touquet",v:"Le Touquet-Paris-Plage"},{n:"Poney Club de Bois-Guillaume",v:"Bois-Guillaume"},{n:"Poney Club Poney-Nature",v:"Darnetal"},{n:"Centre Equestre Poney Club Mont-Saint-Aignan",v:"Mont-Saint-Aignan"},{n:"La Chevalerie de la Breteque",v:"Bois-Guillaume"},{n:"Equi-Normandie",v:"Canteleu"},{n:"Centre Equestre Alisa",v:"Franqueville-Saint-Pierre"},{n:"Centre Equestre de La Baule",v:"La Baule-Escoublac"},{n:"Ecurie des Rosieres",v:"Guerande"},{n:"Carrousel des Platanes",v:"La Baule-Escoublac"},{n:"Les Chevaux de Congor",v:"Guerande"},{n:"Les Ecuries du Niro",v:"Guerande"},{n:"Les Ecuries des Parcs",v:"La Baule-Escoublac"},{n:"Centre Equestre Marseille Pastre",v:"Marseille"},{n:"Centre Equestre Orloff 3",v:"Marseille"},{n:"Les Ecuries de Palama",v:"Marseille"},{n:"Ranch du Garlaban",v:"Allauch"},{n:"Club Equestre Aix-Marseille",v:"Aix-en-Provence"},{n:"Les Ecuries du Serre",v:"Aix-en-Provence"},{n:"Club Equestre des Pinchinats",v:"Aix-en-Provence"},{n:"Ecurie Finca Santa Victoria",v:"Meyreuil"},{n:"Centre Equestre Lyon Parilly",v:"Venissieux"},{n:"La Clairiere du Findez",v:"Francheville"},{n:"UCPA Carre de Soie",v:"Vaulx-en-Velin"},{n:"Poney Club du Findez",v:"Francheville"},{n:"Les Ecuries de la Soie",v:"Villeurbanne"},{n:"Club Equestre de Bordeaux-Lac",v:"Blanquefort"},{n:"Bordeaux Cheval Club",v:"Fargues-Saint-Hilaire"},{n:"Centre Equestre Les Hauts de Bordeaux",v:"Latresne"},{n:"Centre Equestre de la Burthe",v:"Floirac"},{n:"Poney Club Bon Air",v:"Merignac"},{n:"Haras de l'Artolie",v:"Merignac"},{n:"Poney Club Merignacais",v:"Merignac"},{n:"Garonne Cheval",v:"Toulouse"},{n:"Club Eperon Pin-Balma",v:"Pin-Balma"},{n:"Club Equestre de Pech David",v:"Toulouse"},{n:"Poney Club de Fenouillet",v:"Fenouillet"},{n:"Ecurie Fruchet",v:"Sainte-Luce-sur-Loire"},{n:"Haras de la Vaillantiere",v:"La Chapelle-sur-Erdre"},{n:"Espace Equestre de la Fleuriaye",v:"Carquefou"},{n:"Club des Iles",v:"Saint-Sebastien-sur-Loire"},{n:"Centre Equestre des Deux Rives",v:"Strasbourg"},{n:"Centre Equestre du Waldhof",v:"La Wantzenau"},{n:"Ecole d'Equitation Scheidstein",v:"Illkirch-Graffenstaden"},{n:"Fun Jump Equigeiss",v:"Geispolsheim"},{n:"Riding Montpellier (Haras de Whynehn)",v:"Grabels"},{n:"Area Equestre de la Castelle",v:"Lattes"},{n:"Centre Equestre Saint Pierre",v:"Lattes"},{n:"Club Hippique du Portail Vert",v:"Laverune"},{n:"Les Ecuries des Muriers",v:"Marquette-lez-Lille"},{n:"Centre Equestre Regional Rene Dujardin",v:"Marcq-en-Baroeul"},{n:"Haras du Melantois",v:"Sainghin-en-Melantois"},{n:"Ecurie Magne",v:"Verlinghem"},{n:"Club Hippique de Nice",v:"Nice"},{n:"Sun Equitation",v:"Nice"},{n:"Les Ecuries de Candy",v:"Nice"},{n:"Avant-Garde Ecole d'Equitation",v:"Nice"}];
@@ -57526,6 +57545,99 @@ function hypePhotoPiquet(p) {
 function hypeBadgePiquet(niveau) {
   return { club: "Club", amateur: "Amateur", poney: hypeT7("Poney", "Pony", "Poni", "Pony", "ポニー", "Pony", "مهر", "小马", "Pony", "Pônei", "Ponny", "Пони", "Kucyk", "포니") }[String(niveau || "")] || "";
 }
+/* 06/11 (Blandine : « un bouton pour que les gérants de la page de l'écurie puissent créer des groupes ») :
+   CRÉER UNE ÉQUIPE DE COMPÉTITION (groupe nature « equipe ») depuis « Les chevaux de l'écurie ». Remplace le
+   « Prochainement » du 21/10. La base autorisait déjà les gérants (règles groupes / groupes_membres / groupes_chevaux).
+   Discipline + niveau, nom (proposé « Team … »), cavaliers de l'écurie, chevaux (raccourci : reprendre un piquet).
+   À la fin, la page Team de la nouvelle équipe s'ouvre. Textes en français : traduits après relecture. */
+function CreationEquipeEH(props) {
+  var h = React.createElement;
+  var CH = "#C9A66B", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.62)", M = "'Montserrat',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
+  var _c = React.useState(null), choix = _c[0], setChoix = _c[1];
+  var _n = React.useState(""), nom = _n[0], setNom = _n[1];
+  var _m = React.useState(null), cav = _m[0], setCav = _m[1];
+  var _sm = React.useState({}), selM = _sm[0], setSelM = _sm[1];
+  var _sc = React.useState({}), selC = _sc[0], setSelC = _sc[1];
+  var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
+  var _e = React.useState(""), err = _e[0], setErr = _e[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      var l = [];
+      try { l = await hypeCavaliersDuClub(props.club, "id, pseudo, avatar_url") || []; } catch (eC) { l = []; }
+      l = l.slice().sort(function (a, b) { return String(a.pseudo || "").localeCompare(String(b.pseudo || ""), "fr"); });
+      if (vif) setCav(l);
+    })();
+    return function () { vif = false; };
+  }, [props.club]);
+  var propos = HYPE_PIQUETS_PROPOSES.filter(function (p) { return p.t !== "loisir"; });
+  var chevaux = (props.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+  var nbM = Object.keys(selM).length, nbC = Object.keys(selC).length;
+  var nomFinal = String(nom || "").trim();
+  var pret = !!choix && !!nomFinal && !busy;
+  function puce(lib, actif, onClick, cle) {
+    return h("button", { key: cle, type: "button", onClick: onClick, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 13, whiteSpace: "nowrap",
+      border: "1px solid " + (actif ? CH : "rgba(201,166,107,0.28)"), background: actif ? "rgba(201,166,107,0.14)" : "transparent", color: IV, fontWeight: 500 } }, lib);
+  }
+  function ligne(cle, img, texte, on, basculer, rond) {
+    return h("button", { key: cle, type: "button", onClick: basculer,
+      style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "6px 12px", borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.08)" : "rgba(255,255,255,0.02)", color: IV, fontFamily: M } },
+      h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: rond ? "50%" : 10, overflow: "hidden", background: "#0F1B19" } }, img ? h("img", { src: img, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } }) : null),
+      h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, texte),
+      h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), color: CH, fontSize: 14, lineHeight: "22px", textAlign: "center" } }, on ? "\u2713" : ""));
+  }
+  function bascule(set, obj, id) { var n = Object.assign({}, obj); if (n[id]) delete n[id]; else n[id] = true; set(n); }
+  async function creer() {
+    if (!pret) return;
+    setBusy(true); setErr("");
+    var idG = null;
+    try {
+      var rg = await supa.from("groupes").insert({ club_clef: props.clef, nom: nomFinal, nature: "equipe", discipline: choix.d || null, niveau: choix.n || null, type: "competition" }).select("id, club_clef, nom, discipline, niveau").single();
+      if (rg && rg.error) throw new Error(rg.error.message || String(rg.error));
+      idG = rg && rg.data && rg.data.id; if (!idG) throw new Error("équipe non créée");
+      var lm = Object.keys(selM).map(function (u) { return { groupe_id: idG, user_id: u }; });
+      if (lm.length) { var r1 = await supa.from("groupes_membres").insert(lm); if (r1 && r1.error) throw new Error(r1.error.message || String(r1.error)); }
+      var lc = Object.keys(selC).map(function (c) { return { groupe_id: idG, cheval_id: c }; });
+      if (lc.length) { var r2 = await supa.from("groupes_chevaux").insert(lc); if (r2 && r2.error) throw new Error(r2.error.message || String(r2.error)); }
+      setBusy(false);
+      if (props.onFini) props.onFini(Object.assign({}, rg.data, { __club: props.club }));
+    } catch (e) {
+      if (idG) { try { await supa.from("groupes").delete().eq("id", idG); } catch (eD) { } }
+      setBusy(false);
+      setErr("L'équipe n'a pas pu être créée : " + String((e && e.message) || e));
+    }
+  }
+  var titre = function (t) { return h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 22 } }, t); };
+  var aide = function (t) { return h("div", { style: { fontSize: 12, color: IV2, marginTop: 4, fontFamily: M } }, t); };
+  return h("div", { "data-noswipe": "1", onClick: function (e) { if (e.target === e.currentTarget && !busy && props.onFermer) props.onFermer(); },
+    style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(3,5,6,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+    h("div", { style: { width: "100%", maxWidth: 520, maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: "linear-gradient(180deg,#101A1D 0%,#0B1215 100%)", borderTop: "1px solid rgba(201,166,107,0.35)", borderRadius: "22px 22px 0 0", padding: "22px 18px calc(96px + env(safe-area-inset-bottom))", color: IV, fontFamily: M } },
+      h("div", { style: { fontSize: 10, letterSpacing: 2.6, textTransform: "uppercase", color: CH, fontWeight: 600 } }, "Nouvelle équipe de compétition"),
+      h("div", { style: { fontFamily: SERIF, fontSize: 26, marginTop: 6, lineHeight: 1.15 } }, "Quelle discipline ?"),
+      h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 } },
+        propos.map(function (p) { return puce(p.nom, choix === p, function () { setChoix(p); setNom("Team " + p.nom); setErr(""); }, "e" + p.nom); })),
+      titre("Son nom"),
+      h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setErr(""); }, placeholder: "ex. Team CSO Poney",
+        style: { width: "100%", boxSizing: "border-box", minHeight: 44, marginTop: 10, padding: "0 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.3)", background: "rgba(6,7,9,0.5)", color: IV, fontFamily: M, fontSize: 16 } }),
+      aide("Tu en deviens la coach. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page de l'équipe."),
+      titre("Ses cavaliers" + (nbM ? " (" + nbM + ")" : "")),
+      h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 6 } },
+        cav === null ? aide("Chargement…") : (cav.length ? cav.map(function (u) { return ligne("m" + u.id, u.avatar_url, u.pseudo || "?", !!selM[u.id], function () { bascule(setSelM, selM, u.id); }, true); })
+          : aide("Aucun cavalier rattaché à l'écurie pour l'instant."))),
+      titre("Ses chevaux" + (nbC ? " (" + nbC + ")" : "")),
+      (props.piquets || []).filter(function (pq) { return pq.ids && pq.ids.length; }).length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
+        (props.piquets || []).filter(function (pq) { return pq.ids && pq.ids.length; }).map(function (pq) {
+          return puce("+ Chevaux du piquet " + (typeof hypeLibPiquet === "function" ? hypeLibPiquet(pq.nom) : pq.nom), false, function () { var n = Object.assign({}, selC); pq.ids.forEach(function (id) { n[id] = true; }); setSelC(n); }, "pq" + pq.id);
+        })) : null,
+      h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 6 } },
+        chevaux.length ? chevaux.map(function (c) { return ligne("c" + c.id, c.photo_url || (typeof chevalDefaut === "function" ? chevalDefaut(c) : ""), c.nom || "?", !!selC[c.id], function () { bascule(setSelC, selC, c.id); }, false); })
+          : aide("Aucun cheval sur cette page pour l'instant.")),
+      err ? h("div", { role: "alert", style: { marginTop: 14, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null,
+      h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
+        h("button", { type: "button", disabled: busy, onClick: function () { if (props.onFermer) props.onFermer(); }, style: { flex: 1, minHeight: 48, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } }, "Annuler"),
+        h("button", { type: "button", disabled: !pret, onClick: creer, style: { flex: 1.4, minHeight: 48, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(201,166,107,0.25)"), background: "transparent", color: pret ? CH : "rgba(201,166,107,0.45)", fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret ? "pointer" : "default" } },
+          busy ? "Création…" : "Créer l'équipe"))));
+}
 function CreationPiquetEH(props) {
   var h = React.createElement;
   var T = hypeT7;
@@ -57577,11 +57689,11 @@ function CreationPiquetEH(props) {
         puce(T("Personnalisé", "Custom", "Personalizado", "Personalizzato", "カスタム", "Eigene", "مخصص", "自定义", "Eigen keuze", "Personalizado", "Anpassad", "Своя", "Własna", "직접 설정"), choix === "perso", function () { setChoix("perso"); }, "perso")),
       /* 21/10 (Blandine) : créer une ÉQUIPE (Team) n'est pas encore possible : il faudra d'abord une page d'équipe par défaut,
          que chaque écurie remplira (voir SUIVI). En attendant, l'option est visible mais marquée « Prochainement ». */
-      h("div", { "data-equipe-prochainement": "1", "aria-disabled": "true", style: { display: "flex", alignItems: "center", gap: 10, marginTop: 14, padding: "10px 12px", borderRadius: 14, border: "1px dashed rgba(201,166,107,0.35)", color: IV2, fontFamily: M } },
+      h("div", { "data-equipe-prochainement": props.onEquipe ? undefined : "1", role: props.onEquipe ? "button" : undefined, "aria-disabled": props.onEquipe ? undefined : "true", onClick: props.onEquipe ? function () { if (!busy) props.onEquipe(); } : undefined, style: { display: "flex", alignItems: "center", gap: 10, marginTop: 14, padding: "10px 12px", borderRadius: 14, border: "1px " + (props.onEquipe ? "solid rgba(201,166,107,0.55)" : "dashed rgba(201,166,107,0.35)"), color: IV2, fontFamily: M, cursor: props.onEquipe ? "pointer" : "default" } },   /* 06/11 : cliquable quand la page fournit onEquipe */
         h("span", { style: { flex: 1, minWidth: 0 } },
           h("span", { style: { display: "block", fontSize: 14, color: IV } }, T("Créer une équipe de compétition", "Create a competition team", "Crear un equipo de competición", "Crea una squadra agonistica", "競技チームを作成", "Wettkampfteam erstellen", "إنشاء فريق منافسات", "创建比赛队伍", "Wedstrijdteam aanmaken", "Criar uma equipe de competição", "Skapa ett tävlingslag", "Создать команду для соревнований", "Utwórz drużynę zawodniczą", "경기 팀 만들기")),
-          h("span", { style: { display: "block", fontSize: 12, marginTop: 3 } }, T("Bientôt : une page d'équipe à remplir (cavaliers, chevaux, résultats).", "Soon: a team page to fill in (riders, horses, results).", "Pronto: una página de equipo para completar (jinetes, caballos, resultados).", "Presto: una pagina della squadra da compilare (cavalieri, cavalli, risultati).", "近日公開：チームページ（騎乗者・馬・成績）を作成できます。", "Bald: eine Teamseite zum Ausfüllen (Reiter, Pferde, Ergebnisse).", "قريبًا: صفحة فريق تملؤها (الفرسان، الخيول، النتائج).", "即将推出：可填写的队伍页面（骑手、马匹、成绩）。", "Binnenkort: een teampagina om in te vullen (ruiters, paarden, resultaten).", "Em breve: uma página de equipe para preencher (cavaleiros, cavalos, resultados).", "Snart: en lagsida att fylla i (ryttare, hästar, resultat).", "Скоро: страница команды, которую можно заполнить (всадники, лошади, результаты).", "Wkrótce: strona drużyny do uzupełnienia (jeźdźcy, konie, wyniki).", "곧 만나요: 직접 채우는 팀 페이지 (기수, 말, 결과)."))),
-        h("span", { style: { flex: "0 0 auto", fontSize: 10, letterSpacing: 1.6, textTransform: "uppercase", color: CH, border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "4px 9px", whiteSpace: "nowrap" } }, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبًا", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개"))),
+          h("span", { style: { display: "block", fontSize: 12, marginTop: 3 } }, (props.onEquipe ? "Une page d'équipe : cavaliers, chevaux, agenda, résultats." : T("Bientôt : une page d'équipe à remplir (cavaliers, chevaux, résultats).", "Soon: a team page to fill in (riders, horses, results).", "Pronto: una página de equipo para completar (jinetes, caballos, resultados).", "Presto: una pagina della squadra da compilare (cavalieri, cavalli, risultati).", "近日公開：チームページ（騎乗者・馬・成績）を作成できます。", "Bald: eine Teamseite zum Ausfüllen (Reiter, Pferde, Ergebnisse).", "قريبًا: صفحة فريق تملؤها (الفرسان، الخيول، النتائج).", "即将推出：可填写的队伍页面（骑手、马匹、成绩）。", "Binnenkort: een teampagina om in te vullen (ruiters, paarden, resultaten).", "Em breve: uma página de equipe para preencher (cavaleiros, cavalos, resultados).", "Snart: en lagsida att fylla i (ryttare, hästar, resultat).", "Скоро: страница команды, которую можно заполнить (всадники, лошади, результаты).", "Wkrótce: strona drużyny do uzupełnienia (jeźdźcy, konie, wyniki).", "곧 만나요: 직접 채우는 팀 페이지 (기수, 말, 결과).")))),
+        h("span", { style: { flex: "0 0 auto", fontSize: 10, letterSpacing: 1.6, textTransform: "uppercase", color: CH, border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "4px 9px", whiteSpace: "nowrap" } }, (props.onEquipe ? "Créer" : T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبًا", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")))),
       choix === "perso" ? h("div", { style: { marginTop: 14 } },
         h("input", { value: nomPerso, maxLength: 40, onChange: function (e) { setNomPerso(e.target.value); }, placeholder: T("Nom du piquet (ex. Jeunes chevaux)", "Group name (e.g. Young horses)", "Nombre del grupo (ej. Caballos jóvenes)", "Nome del gruppo (es. Cavalli giovani)", "グループ名（例：若馬）", "Name der Gruppe (z. B. Jungpferde)", "اسم المجموعة (مثل: خيول صغيرة)", "马组名称（例如 青年马）", "Naam van de groep (bijv. Jonge paarden)", "Nome do grupo (ex.: Cavalos jovens)", "Gruppens namn (t.ex. Unghästar)", "Название группы (напр. Молодые лошади)", "Nazwa grupy (np. Młode konie)", "그룹 이름 (예: 어린 말들)"),
           style: { width: "100%", boxSizing: "border-box", minHeight: 44, padding: "0 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.3)", background: "rgba(6,7,9,0.5)", color: IV, fontFamily: M, fontSize: 15 } }),
@@ -58109,7 +58221,7 @@ function EcranMesChevaux() {
     hero,
     h("div", { style: { maxWidth: largeurMax, margin: "0 auto", padding: (tablette ? "22px 18px 34px" : "18px 16px 30px") } }, corps));
 }
-const EcranEcurieHype = hypeEcranDiffere("hype-ecran-ecurie-hype.js?v=1", "HypeEcurieHype", "EcurieHype");
+const EcranEcurieHype = hypeEcranDiffere("hype-ecran-ecurie-hype.js?v=2", "HypeEcurieHype", "EcurieHype");
 /* ==================== FIN L'ÉCURIE HYPE ==================== */
 
 

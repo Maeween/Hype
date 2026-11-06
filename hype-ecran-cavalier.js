@@ -1235,7 +1235,7 @@ function EcranMonCavalier() {
            Mêmes ouvertures qu avant (page de l équipe ou piquet de l écurie) ; « Prochainement » si pas de page. */
         var lignesG = groupesCavE.map(function (g) {
           var photoG = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : hypePhotoPiquet(g);
-          var sansPageG = g.nature === "equipe" && !(typeof TEAM_CLUB !== "undefined" && g.club_clef === hypeClefClubPiquets(TEAM_CLUB) && g.discipline === TEAM_DISCIPLINE && g.niveau === TEAM_NIVEAU);
+          var sansPageG = false;   /* 06/11 : toutes les équipes ont leur page (hypeOuvrirEquipe) */
           var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
           var sigleG = (String(g.__club || "").match(/\(([^()]{2,12})\)\s*$/) || [])[1] || "";
           var saisonG = g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + String(g.saison).replace(/\s*[-\u2013]\s*/, " \u2013 ")) : "";
@@ -1245,7 +1245,7 @@ function EcranMonCavalier() {
           return h("div", { key: "grp" + g.id, role: "button", "data-groupe-cavalier": g.id, "aria-disabled": sansPageG ? "true" : undefined,
               onClick: function () {
                 if (sansPageG) return;
-                if (g.nature === "equipe") { setEcran("team-competition"); return; }
+                if (g.nature === "equipe") { if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); else setEcran("team-competition"); return; }
                 try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eGo) { }
                 setEcran("ecurie-hype");
               },

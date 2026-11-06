@@ -53,6 +53,7 @@ function EcranEcurieHype() {
   /* 10/10 (787) PIQUETS : écurie de la page (clé exacte + droit de gestion), piquets et leurs chevaux, onglet actif, feuille de création. */
   var _pqC = React.useState(null), piqClub = _pqC[0], setPiqClub = _pqC[1];
   var _pqL = React.useState([]), piquets = _pqL[0], setPiquets = _pqL[1];
+  var _eqF = React.useState(false), equipeFeuille = _eqF[0], setEquipeFeuille = _eqF[1];   /* 06/11 : créer une équipe */
   var _pqE = React.useState([]), equipesEc = _pqE[0], setEquipesEc = _pqE[1];   /* (796) Teams de l'écurie + leurs chevaux, pour la passerelle « Découvrir la Team » */
   var _pqA = React.useState(function () { try { var pI = window.__ecurieHypePiquet || null; window.__ecurieHypePiquet = null; if (pI) return pI; var mP = hypeMemEc("piquet"); return (mP && mP.club && clubCtxEH && String(mP.club).toLowerCase().trim() === String(clubCtxEH).toLowerCase().trim()) ? (mP.id || null) : null; } catch (ePi) { return null; } }), piqActif = _pqA[0], setPiqActif = _pqA[1];
   React.useEffect(function () { hypeMemEc("piquet", piqActif ? { club: clubCtxEH || "", id: piqActif } : null); }, [piqActif]);   /* (836) le piquet ouvert est garde (meme ecurie seulement) */   /* (795) piquet ouvert depuis une fiche cheval */
@@ -433,7 +434,10 @@ function EcranEcurieHype() {
       (piqGestion && piqActifObj && piqClub) ? h(GestionPiquetEH, { groupeId: piqActifObj.id, nom: piqActifObj.nom, ids: piqActifObj.ids, chevaux: commList || [], club: piqClub.nom, membres: piqActifObj.membres || [], saison: piqActifObj.saison || "", photo: piqActifObj.photo_url || "", photoAuto: hypePhotoPiquet(Object.assign({}, piqActifObj, { photo_url: null })),
         onFermer: function () { setPiqGestion(false); },
         onFini: function () { setPiqGestion(false); setPiqVersion(piqVersion + 1); flashEH(T("Piquet mis à jour ✓", "Group updated ✓", "Grupo actualizado ✓", "Gruppo aggiornato ✓", "グループを更新しました ✓", "Gruppe aktualisiert ✓", "تم تحديث المجموعة ✓", "分组已更新 ✓", "Groep bijgewerkt ✓", "Piquete atualizado ✓", "Gruppen uppdaterad ✓", "Группа обновлена ✓", "Grupa zaktualizowana ✓", "그룹을 업데이트했어요 ✓")); } }) : null,
-      piqFeuille && piqClub ? h(CreationPiquetEH, { clef: piqClub.clef, chevaux: commList || [], existants: piquets.map(function (pE) { return pE.nom; }),
+      equipeFeuille && piqClub && typeof CreationEquipeEH === "function" ? h(CreationEquipeEH, { clef: piqClub.clef, club: piqClub.nom, chevaux: commList || [], piquets: piquets,
+        onFermer: function () { setEquipeFeuille(false); },
+        onFini: function (g) { setEquipeFeuille(false); if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); } }) : null,
+      piqFeuille && piqClub ? h(CreationPiquetEH, { clef: piqClub.clef, chevaux: commList || [], existants: piquets.map(function (pE) { return pE.nom; }), onEquipe: (typeof CreationEquipeEH === "function") ? function () { setPiqFeuille(false); setEquipeFeuille(true); } : undefined,
         onFermer: function () { setPiqFeuille(false); },
         onFini: function (idN) { setPiqFeuille(false); setPiqActif(idN); setPiqVersion(piqVersion + 1); flashEH(T("Piquet créé ✓", "Group created ✓", "Grupo creado ✓", "Gruppo creato ✓", "グループを作成しました ✓", "Gruppe erstellt ✓", "تم إنشاء المجموعة ✓", "分组已创建 ✓", "Groep gemaakt ✓", "Piquete criado ✓", "Gruppen skapad ✓", "Группа создана ✓", "Grupa utworzona ✓", "그룹을 만들었어요 ✓")); } }) : null,
       /* (788) ÉTAPE C : présentation du piquet choisi (photo de sa discipline, nom, badge Club / Amateur / Poney discret,

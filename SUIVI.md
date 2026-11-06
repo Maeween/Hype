@@ -598,6 +598,25 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   → Prévenir la conversation Engagements : NE PLUS coder ce lien côté page.
   ⚠️ Doublon repéré : table dossier_van (papiers du van, faite par une autre
   conversation) ≈ papiers de « Le camion » → à réunir plus tard.
+· 06/11 23 h 37-42 Blandine : SQL concours → mouvements « Ok » → PASSÉ (3
+  déclencheurs, 14 sorties SEP). Puis « la page compet pour Feinn » + « un
+  bouton pour que les gérants créent des groupes » → CODÉ, NON PUBLIÉ :
+  1) page Team valable pour TOUTES les équipes : hypeOuvrirEquipe(g) pose
+     window.__teamCourante {id, club_clef, club} (+ __teamArmee) ; tout autre
+     chemin vers « team-competition » revient à la Team CSO Club SEP ;
+     hypeRequeteTeam() sans clé suit l'équipe ouverte (Performances chevaux,
+     médias…) ; dans hype-ecran-team.js TEAM_CLE / TEAM_CLUB redéfinis pour
+     l'équipe ouverte ; textes « de la SEP » → « de l'écurie » pour les autres.
+     Cartes « Groupe » de la page Écurie et de la page Cavalier : plus de
+     « Prochainement », toutes les équipes s'ouvrent.
+  2) « Créer une équipe de compétition » (feuille « Nouveau piquet » de « Les
+     chevaux de l'écurie ») devient cliquable → CreationEquipeEH : discipline,
+     nom « Team … », cavaliers de l'écurie, chevaux (+ raccourci « chevaux du
+     piquet … »), puis ouvre la page de l'équipe. Aucun SQL (règles déjà là).
+     Textes en français seulement (traductions après relecture).
+  Banc : feuille de création OK ; page Team d'une autre écurie NON testable
+  sur le banc → à tester sur iPhone. ?v : team 6, team-medias 7, cavalier 3,
+  ecurie-v2 3, ecurie-hype 2.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
