@@ -1741,7 +1741,16 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       texte: ["Pour les associations loi 1901 d'Île-de-France (sport compris) : aide au fonctionnement (communication, petit matériel…) ou à un projet nouveau. Dans l'Essonne, priorité aux petites associations (moins de 2 salariés) et au sud du département.",
         "Conditions : au moins un an d'existence, un compte bancaire à son nom, le contrat d'engagement républicain signé, et des comptes approuvés en assemblée générale — c'est ce que « Ma compta » aide à préparer.",
         "La campagne 2026 de l'Essonne a fermé le 11 mars 2026 : la suivante ouvre en général en janvier."],
-      source: "https://www.ac-versailles.fr/sites/ac_versailles/files/2026-02/91-sdjes-fdva-2-60372.pdf", sourceNom: "SDJES de l'Essonne, appel 2026", lienInterne: "compta" }
+      source: "https://www.ac-versailles.fr/sites/ac_versailles/files/2026-02/91-sdjes-fdva-2-60372.pdf", sourceNom: "SDJES de l'Essonne, appel 2026", lienInterne: "compta" },
+    /* 06/11 23 h (Blandine) : « mentionne-les quand même avec les infos que tu as pu avoir » — marquées « À vérifier ». */
+    { k: "psf", cat: "association", photo: "controles", titre: "Projet sportif fédéral", sous: "Subvention de l'Agence du Sport", pill: "À vérifier", etat: "Printemps", aVerifier: true,
+      texte: ["Subventions de l'Agence nationale du Sport versées aux clubs affiliés, par l'intermédiaire de leur fédération (pour nous, la FFE), sur un projet : accueil de nouveaux publics, santé, encadrement…",
+        "En 2026, la plupart des fédérations ont ouvert leur campagne entre mars et avril. Les conditions de la FFE pour l'équitation n'ont pas été trouvées en ligne : à vérifier auprès de la FFE ou du comité régional avant le printemps."],
+      source: "https://www.ffe.com", sourceNom: "FFE" },
+    { k: "eperon", cat: "association", photo: "camion", titre: "Fonds Éperon", sous: "Projets de la filière cheval", pill: "À vérifier", etat: "Dates inconnues", aVerifier: true,
+      texte: ["Fonds de la filière équine qui soutient des projets d'investissement et de développement (équipements, structures, projets collectifs).",
+        "Les conditions et le calendrier 2026 n'ont pas été trouvés en ligne : à vérifier sur le site du Fonds Éperon ou auprès du Conseil des chevaux d'Île-de-France."],
+      source: "https://www.fonds-eperon.fr", sourceNom: "Fonds Éperon" }
   ];
   var CONTACTS = [
     { k: "ghn", photo: "detenteur", titre: "GHN", sous: "Syndicat des écuries", pill: "Contrats, paie, juridique", url: "https://www.ghn.com.fr", texte: "Modèles de contrats et d'affichages obligatoires, questions de droit du travail et de paie pour les établissements équestres." },
@@ -1757,7 +1766,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
     var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
     function ouvrir(ecran) { try { window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
-    function lien(url, txt) { return h("a", { href: url, target: "_blank", rel: "noopener noreferrer", className: "hg-btn", style: { display: "block", textAlign: "center", textDecoration: "none", marginTop: 12 } }, txt); }
+    function lien(url, txt) { return h("a", { href: url, target: "_blank", rel: "noopener noreferrer", className: "hg-btn", style: { display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", textDecoration: "none", marginTop: 12 } }, txt); }
     function detail(lignes, extra) {
       return h("div", { style: { padding: "12px 6px 16px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,.82)" } },
         lignes.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); }), extra);
@@ -1770,10 +1779,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("h2", { className: "hv3-h2" }, "Les aides"),
       h("div", { className: "hv3-cartes" }, vis.map(function (a) {
         return h("div", { key: a.k },
-          carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
+          carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, alerte: !!a.aVerifier, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
           ouvert === a.k ? detail(a.texte, [
             a.lienInterne ? h("button", { key: "i", type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, "Ouvrir Ma compta") : null,
-            h("div", { key: "s" }, lien(a.source, "Lire la source"))]) : null);
+            h("div", { key: "s" }, lien(a.source, a.aVerifier ? "Ouvrir le site" : "Lire la source"))]) : null);
       })),
       h("h2", { className: "hv3-h2" }, "Les bons contacts"),
       h("div", { className: "hv3-cartes" }, CONTACTS.map(function (x) {
@@ -1781,7 +1790,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           carte(h, { cle: x.k, photo: PHOTOS[x.photo], titre: x.titre, sous: x.sous, pill: x.pill, onClick: function () { setOuvert(ouvert === x.k ? null : x.k); } }),
           ouvert === x.k ? detail([x.texte], lien(x.url, "Ouvrir le site")) : null);
       })),
-      h("div", { className: "hg-sous" }, "Montants et dates vérifiés le 6 novembre 2026 : ils changent souvent, vérifie toujours la source avant de faire ta demande. Hype n'a aucun accord commercial avec ces organismes."),
+      h("div", { className: "hg-sous" }, "Montants et dates vérifiés le 6 novembre 2026, sauf les aides marquées « À vérifier ». Ils changent souvent : vérifie toujours la source avant de faire ta demande. Hype n'a aucun accord commercial avec ces organismes."),
       LEGAL(h));
     return h("div", { className: RACINE, style: FILTRE },
       hero(h, { photo: PHOTOS.aides, titre: "Aides et contacts", sous: "Ce à quoi ton écurie a droit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),

@@ -565,6 +565,12 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   GHN, IFCE·SIRE, Conseil des chevaux d'Île-de-France — présentés comme
   adresses utiles, AUCUN partenariat annoncé (aucun n'est signé). Fonds
   Éperon et PSF/ANS laissés de côté : pas vérifiés pour 2026. ?v=15.
+  06/11 23 h — Blandine : « mentionne-les quand même avec les infos que tu as
+  pu avoir » → cartes PSF (Agence du Sport via la FFE) et Fonds Éperon
+  ajoutées, marquées « À vérifier » (pastille + état doré), lien vers le
+  site officiel. + TÂCHE PLANIFIÉE « Veille des aides pour les écuries »
+  (chaque lundi 10 h 43, notification sur son téléphone) : cherche du nouveau
+  sur les 5 aides et la prévient ; ne modifie rien, ne publie rien.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
