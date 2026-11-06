@@ -504,6 +504,18 @@ var CSS2 = [
   ".rc-duo2 img+img{left:30px}",
   ".rc-duo2 i{position:absolute;bottom:-4px;font-style:normal;font-size:9px;color:var(--hs-ch);background:var(--hs-noir);border:1px solid rgba(201,166,107,.42);border-radius:999px;padding:0 5px;line-height:15px}",
   ".rc-duo2 i.a{left:2px}.rc-duo2 i.b{left:44px}",
+  ".rc-gc{flex:0 0 76%;max-width:310px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:24px;padding:18px 16px 12px;background:linear-gradient(180deg,rgba(16,26,29,.65),rgba(7,10,8,.3))}",
+  ".rc-gc .haut{display:flex;align-items:center;gap:12px;margin-bottom:12px}",
+  ".rc-gc .mono{width:54px;height:54px;flex:0 0 54px;border-radius:50%;border:1px solid rgba(201,166,107,.42);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:var(--hs-ch);object-fit:cover;background:radial-gradient(circle at 30% 25%,rgba(201,166,107,.16),transparent 60%)}",
+  ".rc-gc h4{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:21px;line-height:1.05;overflow:hidden;text-overflow:ellipsis}",
+  ".rc-gc h4 span{display:block;font-style:italic;color:var(--hs-iv2);font-size:17px}",
+  ".rc-gc small{display:block;font-size:10px;letter-spacing:.12em;color:var(--hs-iv3);margin-top:4px}",
+  ".rc-gt{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;padding:8px 0;border-top:1px solid rgba(243,238,228,.07)}",
+  ".rc-gt img,.rc-vide2{width:48px;height:48px;border-radius:14px;object-fit:cover;display:block}",
+  ".rc-vide2{border:1px dashed rgba(201,166,107,.42)}",
+  ".rc-gt b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:17px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".rc-gt em{font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--hs-iv3)}",
+  ".rc-gt.vide{display:block;color:var(--hs-iv3);font-style:italic;font-size:12px}",
   ".rc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}",
   ".rc-rail::-webkit-scrollbar{display:none}",
   ".rc-ch{flex:0 0 72%;max-width:300px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(16,26,29,.6),rgba(7,10,8,.4))}",
@@ -534,7 +546,7 @@ var CSS2 = [
   ".rc-q{min-width:0}",
   ".rc-q b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:18px;line-height:1.15}",
   ".rc-q p{margin:2px 0 0;font-size:12px;color:var(--hs-iv2)}",
-  ".rc-q .sup{color:var(--hs-ch);font-size:10px;vertical-align:4px;margin-inline-start:2px}",
+  ".rc .sup{color:var(--hs-ch);font-size:10px;vertical-align:4px;margin-inline-start:3px;font-family:'Montserrat',sans-serif}",
   ".hs-puce-cav{background:none;border:none;border-radius:0;color:var(--hs-iv2);font-family:inherit;font-size:13px;min-height:30px;padding:0 10px 0 0;margin:0}",
   ".hs-puce-cav.fait{opacity:.35}",
   ".hs-puce button{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--hs-iv2);font-size:16px;line-height:1;padding:0}",
@@ -1591,21 +1603,25 @@ function EcranEngagements() {
         h("div", { className: "rc-eb" }, F("Récapitulatif")),
         h("h2", null, F("La journée en un coup d’œil")),
         h("p", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
-      /* les cavalières : liste et médaillons (choix de Blandine 07/11 00h45, au lieu de « ses deux couples ») */
-      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
-      cav.map(function (x, r) {
-        var np = nomPrenom(x.l.nom), c1 = String(x.l.cheval1_nom || "").trim(), c2 = String(x.l.cheval2_nom || "").trim();
-        function court(e) { return String(e || "").replace(/^Club\s*/i, "C").replace(/^Amateur\s*/i, "A").replace(/^Poney\s*/i, "P").replace(/\s+/g, ""); }
-        return h("div", { key: "rc" + x.i, className: "rc-hl" },
-          h("div", { className: "n" }, String(r + 1)),
-          h("div", { className: "c" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
-            h("span", null, [c1, c2].filter(Boolean).map(function (c, k) { var kt = kTour(x.i, k === 0 && c1 ? 1 : 2); return c + (kt ? " (" + kt + ")" : ""); }).join(" · ") || F("chevaux à choisir"))),
-          h("div", { className: "rc-duo2" + (c2 ? "" : " seul") },
-            c1 ? h("img", { src: photoCh(c1), alt: "" }) : h("span", { className: "rc-vide" }),
-            c2 ? h("img", { src: photoCh(c2), alt: "" }) : null,
-            x.l.epreuve1 ? h("i", { className: "a" }, court(x.l.epreuve1)) : null,
-            (c2 && x.l.epreuve2) ? h("i", { className: "b" }, court(x.l.epreuve2)) : null));
-      }),
+      /* les cavalières : cartes à faire glisser, comme les chevaux (essai G demandé par Blandine 07/11 00h49) */
+      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" · fais glisser") : ""))),
+      h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, cav.map(function (x, r) {
+        var np = nomPrenom(x.l.nom), p0 = cavDe(x.l), ph = p0 && hsPhotoProfil(p0);
+        var ini = ((np[1] || "").charAt(0) + (np[0] || "").charAt(0)).toUpperCase() || "?";
+        return h("div", { key: "rc" + x.i, className: "rc-gc" },
+          h("div", { className: "haut" },
+            ph ? h("img", { className: "mono", src: ph, alt: "" }) : h("div", { className: "mono" }, ini),
+            h("div", { style: { minWidth: 0 } }, h("h4", null, np[0], np[1] ? h("span", null, np[1]) : null),
+              h("small", null, (r + 1) + (r ? F("e") : F("re")) + (x.l.licence ? F(" · lic. ") + x.l.licence : "")))),
+          [1, 2].map(function (n) {
+            var c = String(x.l["cheval" + n + "_nom"] || "").trim(), e = String(x.l["epreuve" + n] || "").trim();
+            if (!c && !e) return n === 2 ? null : h("div", { key: n, className: "rc-gt vide" }, F("Cheval à choisir"));
+            var k = c ? kTour(x.i, n) : 0;
+            return h("div", { key: n, className: "rc-gt" },
+              c ? h("img", { src: photoCh(c), alt: "" }) : h("span", { className: "rc-vide2" }),
+              h("div", { style: { minWidth: 0 } }, h("b", null, c || F("Cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null), h("em", null, e || F("épreuve à choisir"))));
+          }));
+      })),
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
       nomsCh.length ? h(React.Fragment, null,
         h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")) + (nomsCh.length > 1 ? F(" · fais glisser") : ""))),
