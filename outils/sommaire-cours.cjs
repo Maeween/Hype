@@ -11,10 +11,10 @@ try {
   const ctx = { window: {}, console: { log() {}, warn() {}, error() {} } };
   ctx.HYPE_IMGS = ctx.window.HYPE_IMGS = new Proxy({}, { get: () => undefined });
   vm.createContext(ctx);
-  const fichiers = ["hype-cours-baby.js", "hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galop4.js", "hype-cours-galop5.js", "hype-cours-galop6.js", "hype-cours-galop7.js"];
+  const fichiers = ["hype-cours-baby.js", "hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galop4.js", "hype-cours-galop5.js", "hype-cours-galop6.js", "hype-cours-galop7.js", "hype-cours-galop8.js"];
   for (const f of fichiers) vm.runInContext(fs.readFileSync(path.join(RACINE, f), "utf8"), ctx, { filename: f, timeout: 20000 });
   const w = ctx.window;
-  const tables = { baby: w.COURS_BABY_I18N, 1: w.COURS_GALOP1_I18N, 2: w.COURS_GALOP2_FR, 3: w.COURS_GALOP3_FR, 4: w.COURS_GALOP4_FR, 5: w.COURS_GALOP5_FR, 6: w.COURS_GALOP6_FR, 7: w.COURS_GALOP7_FR };
+  const tables = { baby: w.COURS_BABY_I18N, 1: w.COURS_GALOP1_I18N, 2: w.COURS_GALOP2_FR, 3: w.COURS_GALOP3_FR, 4: w.COURS_GALOP4_FR, 5: w.COURS_GALOP5_FR, 6: w.COURS_GALOP6_FR, 7: w.COURS_GALOP7_FR, 8: w.COURS_GALOP8_FR };
   const som = {};
   let n = 0;
   for (const k of Object.keys(tables)) {
