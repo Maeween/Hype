@@ -18390,6 +18390,7 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Rien ne fabrique encore de lien #v= dans l'appli (pas de bouton « Partager » sur une vidéo) : le correctif sert aux liens tapés ou envoyés à la main.
 - Fichiers : hype-video.js (?v=20261107-vt13), index.html (build 20261107-0200), SUIVI.md. Inchangés : hype-ecran-team-medias.js, hype-ecran-team.js.
 - VÉRIFIÉ : node --check. NON VU À L'ÉCRAN : à essayer sur iPhone avec une adresse #v=<id> d'une vidéo de la Vidéothèque.
+- ⚠️ À SAVOIR (vérifié le 07/11 par l'autre conversation) : le lien ouvre directement la page de lecture, qui ne revérifie PAS l'abonnement. Aujourd'hui aucune vidéo de la Vidéothèque n'est marquée Premium (premium: false partout), donc rien à protéger. Le jour où une vidéo devient Premium, il faudra ajouter le contrôle dans la page de lecture (afficher le cadenas tant que la personne n'est pas abonnée).
 
 ## 07/11/2026 02h00 — PUBLIÉ (build 20261107-0200) — TUTOIEMENT : 8 phrases de plus
 - Blandine : « Ok continue » sur la liste de 13 du 07/11 00h27. 5 avaient déjà été corrigées par une autre conversation (build 0045) ; restaient 8, faites ici.
