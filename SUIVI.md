@@ -21,7 +21,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
 - [06/11] Titi « qualité insuffisante » (build 20261106-1230) : à tester sur iPhone avec une photo et une vidéo passées par WhatsApp → Titi doit apparaître ; avec une photo/vidéo d'origine → rien ne s'affiche. « Garder quand même » doit envoyer normalement (attend : Blandine)
-- [06/11 23 h 35] Essai de remise à neuf sur 1 vidéo (Eva n°1) FAIT : à comparer par Blandine dans Safari — ancienne https://player.mux.com/tWkgu1BKwJ7ZQMiqNVAc5Fe4psXTH01RlJQ7Uu9Jbs200 / nouvelle https://player.mux.com/dflDs3rtzMZUfvqKVHfw54RTDx01JroMzudACunbiKt8 . Si mieux : refaire les 36 autres + remplacer les adresses en base (attend : Blandine)
+- [06/11 23 h 50] Les 37 vidéos Mux sont refaites en qualité maximale et Hype affiche les nouvelles versions. À vérifier par Blandine : ouvrir quelques vidéos (fil, albums, carnet) → elles doivent se lire. Si tout va bien : supprimer chez Mux les 37 anciennes versions (stockage payé en double en attendant) (attend : Blandine)
+- [06/11] 24 vidéos plus anciennes (copiées vers Mux en septembre, table hype_import_mux) encore en qualité « basic » : même remise à neuf possible (~1,50 $) (attend : Blandine)
 - [06/11] AVANT de refaire les 37 anciennes vidéos : vérifier qu'une NOUVELLE vidéo filmée à l'iPhone sort nette et fluide (demande de Blandine 12 h 02) (attend : Blandine)
 - [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
 - [06/11] Vidéos : la lecture saute (environ 15 images par seconde au lieu de 30 sur l'enregistrement du 06/11). Chercher si ça vient de la vidéo ou du lecteur, après le test ci-dessus. Ensuite : décider si on ré-encode les anciennes vidéos importantes en premium (attend : Claude, puis Blandine)
@@ -695,6 +696,30 @@ NON VU : lecteur Mux (chargé depuis Internet, bloqué ici) et plein écran
 iPhone ; formulaire et pastille sur les vrais écrans (connexion requise).
 RESTE : étendre « sans le son » aux autres vidéos (albums, fil, souvenirs
 d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
+
+════════════════════════════════════════════════════════════
+
+🎬 06/11/2026 (23 h 50) — 37 VIDÉOS REFAITES EN QUALITÉ MAXIMALE + ADRESSES REMPLACÉES
+Blandine 23 h 38 et 23 h 42 : « Ok continue ».
+· 36 vidéos refaites (en plus de l'essai d'Eva) via mux-essai-reencodage ;
+  Mux a limité le débit (429) → relancées par 3 puis une par une ; 37/37
+  créées, 37/37 lisibles (flux HLS vérifié) AVANT tout changement en base.
+· Remplacement en UNE transaction (bloc SQL, table de correspondance de
+  37 lignes contrôlée) : commentaires.photo_url, albums_cheval.photos,
+  photo_likes, identifications, carnet_seances.medias, photo_comments,
+  souvenirs_vedette.urls, collections_videos.videos, video_couvertures,
+  album_photo_formats + videos_mux.playback_id (37). Déclencheurs vérifiés
+  avant : albums = journal + sauvegarde automatiques (gardent l'avant) ;
+  commentaires = garde des témoignages (non concernée) ; aucune
+  notification.
+· Contrôle après : plus AUCUNE ancienne adresse hors albums_cheval_journal
+  et albums_cheval_sauvegarde (historique, gardé exprès).
+· Anciennes versions laissées chez Mux pour retour arrière possible ; à
+  supprimer après vérification de Blandine. Correspondance ancien → nouveau
+  gardée par Claude (fichier de travail) ; elle se retrouve aussi dans
+  albums_cheval_journal pour les albums.
+· Restent en qualité basse : 24 vidéos importées en septembre
+  (hype_import_mux).
 
 ════════════════════════════════════════════════════════════
 
