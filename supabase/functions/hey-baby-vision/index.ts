@@ -200,6 +200,7 @@ Deno.serve(async (req: Request) => {
   // 07/11 (Blandine : « carte blanche ») : la VIDÉO aussi (mode standard, plusieurs images, sans flux). L'appli l'envoyait
   // déjà avec differe: true depuis le 04/10, mais la fonction n'acceptait le différé qu'en perception : elle répondait en
   // direct et la réponse se perdait si l'appli était quittée pendant l'analyse. Même circuit, même table, rien d'autre ne change.
+  // (déployée le 07/11 vers 01h00, v25)
   const differeVideo = mode === "standard" && corps.differe === true && nbImages > 1 && !streaming;
   if ((mode === "perception" && corps.differe === true) || differeVideo) {
     const jeton = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
