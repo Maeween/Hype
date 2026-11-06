@@ -852,7 +852,7 @@ d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
 
 ════════════════════════════════════════════════════════════
 
-🔎 07/11/2026 (1 h 30) — RECETTE PHOTOS & VIDÉOS + CORRECTIONS — build 20261107-0130
+🔎 07/11/2026 (1 h 30) — RECETTE PHOTOS & VIDÉOS + CORRECTIONS — build 20261107-0220 (d abord publiée par erreur sous 20261107-0130, numéro plus petit que la version précédente 0210 : corrigé aussitôt)
 Blandine 0 h 46 : cahier de recette ChatGPT ; 0 h 48 : « Ok continue sur tout ce que tu peux jusqu'au bout tu as carte blanche ».
 RECETTE (lecture seule, sur build 20261107-0110) : conforme sur tout ce qui se vérifie hors iPhone ; rendus Mux : HLS 360→1080 (deux 1080) +
 MP4 1080 présents ; service d'images Supabase : 960 px = 215 Ko, 2500 px = 1,4 Mo (2600 px répond aussi 200 : la limite 2500 de la doc
