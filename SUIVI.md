@@ -592,6 +592,19 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 
 ════════════════════════════════════════════════════════════
 
+🟥 06/11/2026 (19 h 15) — INCIDENT : PAGE MÉDIAS DE LA TEAM VIDE (« permission denied for table team_videos »)
+Signalé par Blandine à 19 h 12 (capture), après la mise en ligne du build 1815.
+CAUSE (mon erreur) : la table team_videos donne ses droits COLONNE PAR
+COLONNE. La colonne sans_son ajoutée à 18 h 05 n'était pas ouverte en
+lecture, donc toute la liste était refusée.
+CORRIGÉ en base à 19 h 15 : grant select (sans_son), insert (sans_son) à
+« authenticated » (migration team_videos_sans_son_droits). Aucun fichier à
+republier. Vérifié : la lecture de la colonne ne renvoie plus d'erreur.
+LEÇON : avant d'ajouter une colonne, vérifier si la table a des droits
+colonne par colonne (information_schema.column_privileges).
+
+════════════════════════════════════════════════════════════
+
 🔇 06/11/2026 (18 h 15) — VIDÉOS DE LA TEAM : « SANS LE SON » — build 20261106-1815
 Demande de Blandine (17 h 25) : « quand on met une vidéo en ligne, pouvoir
 retirer le son ». Choix : option A (vidéo lue muette dans Hype ; le son reste
