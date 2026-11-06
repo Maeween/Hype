@@ -16,6 +16,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team — limite de vidéos : décider si les vidéos ajoutées à la vidéothèque de l'équipe comptent dans la limite de chaque compte (3 gratuit, 15 Premium). Choix : 1 elles comptent / 2 elles ne comptent pas / 3 limite à part (ex. 10 par cavalière). Tant que rien n'est décidé, c'est le 2 qui s'applique : une vidéo d'équipe ne compte plus une fois prête (attend : Blandine)
 
 ## 2 — Important
+- [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
@@ -17937,3 +17938,13 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Fichiers : netlify/functions/apercu-lien.js (NOUVEAU), hype-ecran-team-medias.js (v2), index.html (build 20261105-2215, Médias en ?v=2, route epingle-partagee), SUIVI.md.
 - VÉRIFIÉ : node --check des fichiers et du bloc de l'index ; rendu sur banc d'essai iPhone 390 (Théorie + aperçus, pastilles et confirmation, page conseil partagé).
 - NON VU À L'ÉCRAN : aperçus de liens réels (testés avec une réponse simulée), notifications réelles, partage d'épingle avec la vraie base.
+
+- 06/11 19h PUBLICATION (Blandine : « Continue… tu as carte blanche ») — RÉFÉRENCEMENT, PAGES « CE QUE FAIT HYPE » :
+  · Constat : santé, résultats et points, photos et souvenirs, Hey Baby, gestion d'écurie avaient déjà leur page publique dans les 14 langues, reliée depuis 2hype.fr/<langue>/. Pas de doublon (Google ferait descendre les deux) : seules les pages manquantes sont créées.
+  · NOUVEAU, 14 langues : /<langue>/fiche-cheval/ (origines sur 3 générations, infos officielles de l'import FFE, surnom, une fiche pour tous ses cavaliers, fiche publique ou privée ; gratuit 2 chevaux) et /<langue>/reprises-dressage/ (tracé animé, Galop 3 à 7, Club Élite, Amateur 3 GP / test d'entrée DEJEPS, conseils par figure ; gratuit, vérifié : aucun verrou sur l'écran). Même modèle exact que /photos-souvenirs/ (en-tête, langues, pied de page, questions fréquentes lisibles par Google). Arabe sans voyelles.
+  · Accueil public des 14 langues : la carte « Origines et généalogie » mène à la fiche cheval ; nouvelle carte « Réviser tes reprises » dans « Progresser et apprendre ».
+  · Titres français : santé → « Registre d'élevage et carnet de santé du cheval… » (+ description : « la partie soins de ton registre d'élevage ») ; photos → ajoute « stories Instagram » (la page à part stories aurait fait doublon).
+  · sitemap-pages.xml : 28 adresses ajoutées (131 au total) → Google, et Bing/Yandex… via IndexNow à la mise en ligne.
+  · Non créées : prépa AE/BP/DE (n'existe pas encore dans l'appli). Document de travail (textes FR et recherches visées) : Claude Docs « Hype — pages Ce que fait Hype ».
+  · Vérifié : 29 pages (données Google lisibles, 15 liens de langue, aucun bouton plein doré), plan du site valide, captures réelles iPhone + ordinateur + arabe.
+  · Reste à Blandine : inscrire 2hype.fr dans Bing Webmaster Tools (voir niveau 1).
