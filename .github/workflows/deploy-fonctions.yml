@@ -14,6 +14,8 @@ jobs:
     # déployait AUSSITÔT les fonctions Supabase, sans le marqueur [publier] exigé pour le site.
     # Désormais : déploiement seulement si le message de l'envoi contient [fonctions],
     # ou à la main (onglet Actions › « Run workflow »).
+    # 07/11/2026 : ajouter [seulement:nom-de-la-fonction] dans le message pour ne déployer QUE cette fonction
+    # (ex. « [fonctions] [seulement:hey-baby-vision] ») — les autres ne sont pas renvoyées. Sans ce marqueur : toutes, comme avant.
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[fonctions]')
     runs-on: ubuntu-latest
 
@@ -28,23 +30,35 @@ jobs:
         with:
           version: latest
 
-      - run: supabase functions deploy mux-upload --project-ref $PROJECT_ID
+      - name: mux-upload
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:mux-upload]') }}
+        run: supabase functions deploy mux-upload --project-ref $PROJECT_ID
 
       # 20/10/2026 : copie des anciennes vidéos stockées dans Supabase vers Mux (réservée au compte de Blandine)
-      - run: supabase functions deploy mux-import --project-ref $PROJECT_ID
+      - name: mux-import
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:mux-import]') }}
+        run: supabase functions deploy mux-import --project-ref $PROJECT_ID
 
       # 26/09 : analyse photo de Hey Baby (limite de temps de Netlify trop courte)
-      - run: supabase functions deploy hey-baby-vision --project-ref $PROJECT_ID
+      - name: hey-baby-vision
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:hey-baby-vision]') }}
+        run: supabase functions deploy hey-baby-vision --project-ref $PROJECT_ID
 
       # 05/11 : conversion des photos que le telephone ne sait pas ouvrir (HEIF, AVIF, RAW, tres grandes photos).
       # Appelee par le recadreur avec le jeton de la cavaliere : controle du jeton garde.
-      - run: supabase functions deploy hype-convertir-photo --project-ref $PROJECT_ID
+      - name: hype-convertir-photo
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:hype-convertir-photo]') }}
+        run: supabase functions deploy hype-convertir-photo --project-ref $PROJECT_ID
 
       # 09/10 : notification « Nouvel abonnement » sur l'iPhone de Blandine.
       # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton
       # (sans ce drapeau, la ligne de commande remet le contrôle et tout appel est refusé).
-      - run: supabase functions deploy notifier-abonnement --no-verify-jwt --project-ref $PROJECT_ID
+      - name: notifier-abonnement
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:notifier-abonnement]') }}
+        run: supabase functions deploy notifier-abonnement --no-verify-jwt --project-ref $PROJECT_ID
 
       # 20/10 : notifications personnelles (mention, commentaire) envoyées sur le téléphone.
       # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton (comme notifier-abonnement).
-      - run: supabase functions deploy notifier-notif --no-verify-jwt --project-ref $PROJECT_ID
+      - name: notifier-notif
+        if: ${{ !contains(github.event.head_commit.message, '[seulement:') || contains(github.event.head_commit.message, '[seulement:notifier-notif]') }}
+        run: supabase functions deploy notifier-notif --no-verify-jwt --project-ref $PROJECT_ID

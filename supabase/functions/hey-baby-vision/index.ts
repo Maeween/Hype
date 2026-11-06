@@ -197,7 +197,11 @@ Deno.serve(async (req: Request) => {
   });
 
   // ----- Perception en différé -----
-  if (mode === "perception" && corps.differe === true) {
+  // 07/11 (Blandine : « carte blanche ») : la VIDÉO aussi (mode standard, plusieurs images, sans flux). L'appli l'envoyait
+  // déjà avec differe: true depuis le 04/10, mais la fonction n'acceptait le différé qu'en perception : elle répondait en
+  // direct et la réponse se perdait si l'appli était quittée pendant l'analyse. Même circuit, même table, rien d'autre ne change.
+  const differeVideo = mode === "standard" && corps.differe === true && nbImages > 1 && !streaming;
+  if ((mode === "perception" && corps.differe === true) || differeVideo) {
     const jeton = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
     const urlSb = Deno.env.get("SUPABASE_URL") || "";
     const cleService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -233,7 +237,7 @@ Deno.serve(async (req: Request) => {
         const u = data?.usage || {};
         const reflexion = u?.completion_tokens_details?.reasoning_tokens;
         log(reqId, "réponse complète (différé) en", Date.now() - t0, "ms —", texte.length, "caractères — fin :", raison, "— jetons sortie", u.completion_tokens, "dont réflexion", reflexion, "— job", jobId);
-        if (!texte) { await ecrire({ statut: "erreur", erreur_code: "INVALID_RESPONSE", erreur_message: "Observation vide (fin : " + raison + ", réflexion " + reflexion + " jetons)." }); return; }
+        if (!texte) { await ecrire({ statut: "erreur", erreur_code: "INVALID_RESPONSE", erreur_message: (differeVideo ? "Réponse vidéo vide" : "Observation vide") + " (fin : " + raison + ", réflexion " + reflexion + " jetons)." }); return; }
         await ecrire({ statut: "termine", resultat: texte });
       } catch (e) {
         const d = Date.now() - t0;
@@ -246,7 +250,7 @@ Deno.serve(async (req: Request) => {
       const er = (globalThis as any).EdgeRuntime;
       if (er && typeof er.waitUntil === "function") er.waitUntil(travail);
     } catch (_e) { /* rien */ }
-    log(reqId, "différé : job", jobId, "lancé pour", userId);
+    log(reqId, "différé : job", jobId, "lancé pour", userId, differeVideo ? "(vidéo)" : "(perception)");
     return json({ ok: true, differe: true, jobId, reqId });
   }
 
