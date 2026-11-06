@@ -45,7 +45,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [04/11] Droits de coach dans un groupe, « comme les admins WhatsApp » : la personne qui crée le groupe peut donner les droits de coach à une ou plusieurs autres personnes (colonne de rôle dans la base + « Gérer les membres »). En attendant, la coach = celle qui a créé le groupe (attend : Claude, à proposer)
-- [05/11] Recherche de concours (numéro FFE) : en ligne sur la page Engagements (build 0210), à essayer sur iPhone. Reste : bouton « Trouver le numéro » sur les Engagements et à la création d'un concours, avec repli « chercher sur le calendrier FFE ». Étape 3 = recherche par dates, région, discipline (attend : Claude)
+- [05/11] Recherche de concours (numéro FFE) : « Trouver le numéro » est sur la page Engagements (build 0210) ET, depuis le build 20261106-2350, à la création d'un concours (agenda), avec « Calendrier FFE › » en secours ; à essayer sur iPhone. Reste : étape 3 = recherche par dates, région, discipline (attend : Blandine pour le test, puis Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
 - [04/11] Beaucoup de cours n'ont encore aucune vidéo : 6 au Galop 3, 11 au Galop 5, 5 au Galop 6 et 15 au Galop 7. Le prompt pour ChatGPT t'a été donné (attend : Blandine)
 - [04/11] Vidéothèque : un lien vers une vidéo précise (#v=…) ouvre l'accueil de la Vidéothèque au lieu de la vidéo (attend : Claude)
@@ -18056,3 +18056,10 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 
 ## 06/11/2026 — CONFIRMÉ : Lore a pu changer la photo de Golden des Brouets
 - Vérifié en base : nouvelle photo envoyée par Lore le 05/11 à 22h40 (heure de Paris), 5 minutes après la mise en ligne du build 20261105-2115, et posée comme photo principale de la jument. Le blocage sur « … » est réglé sur son Samsung.
+
+
+## 06/11/2026 23h50 — PUBLICATION build 20261106-2350 (Blandine 23h31 « Ok continue » sur le choix 1 : « Trouver le numéro » à la création d'un concours)
+- Agenda du club → nouveau rendez-vous de type Concours : nouveau champ « N° de concours FFE (facultatif) » sous le lieu, avec « Trouver le numéro › » (recherche par date et lieu, même service que la page Engagements, réservé aux coachs du club et à la modératrice ; il faut d'abord mettre la date) et « Calendrier FFE › » en secours. Toucher un concours trouvé remplit la case.
+- À la création, le numéro est enregistré dans la feuille d'engagement du concours (concours_feuille.numero) : on le retrouve directement dans Engagements. Si la base refuse, le rendez-vous reste créé et le message le dit.
+- Textes en français seulement (traductions après relecture). Boutons sans fond doré (texte champagne / contour fin).
+- Fichiers : index.html (build 20261106-2350), SUIVI.md.
