@@ -18033,3 +18033,6 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
   · Non créées : prépa AE/BP/DE (n'existe pas encore dans l'appli). Document de travail (textes FR et recherches visées) : Claude Docs « Hype — pages Ce que fait Hype ».
   · Vérifié : 29 pages (données Google lisibles, 15 liens de langue, aucun bouton plein doré), plan du site valide, captures réelles iPhone + ordinateur + arabe.
   · Reste à Blandine : inscrire 2hype.fr dans Bing Webmaster Tools (voir niveau 1).
+
+## 06/11/2026 — CONFIRMÉ : Lore a pu changer la photo de Golden des Brouets
+- Vérifié en base : nouvelle photo envoyée par Lore le 05/11 à 22h40 (heure de Paris), 5 minutes après la mise en ligne du build 20261105-2115, et posée comme photo principale de la jument. Le blocage sur « … » est réglé sur son Samsung.
