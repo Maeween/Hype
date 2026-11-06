@@ -67,6 +67,58 @@ function EcranTeamMedias() {
     } catch (e) { setErreur(String((e && e.message) || e)); }
     setChangeSon("");
   }
+  /* 06/11 soir — CONCOURS ET LIEU D'UNE VIDÉO (Blandine : « ajouter le lieu et la date quand on met une vidéo en ligne, pour
+     faire le lien avec les dates de concours », en option ; choix A puis B : on touche un concours de l'agenda de la Team, sinon
+     « Autre » = date et lieu écrits ; la personne qui a posté peut corriger ensuite). La base vérifie (team_video_concours). */
+  var _cq = React.useState([]); var concoursEquipe = _cq[0], setConcoursEquipe = _cq[1];
+  var _fq = React.useState(null); var feuilleConc = _fq[0], setFeuilleConc = _fq[1];   /* null | { pour: "form" } | { pour: <vidéo> } */
+  var _qa = React.useState(false); var concAutre = _qa[0], setConcAutre = _qa[1];
+  var _qd = React.useState(""); var concDate = _qd[0], setConcDate = _qd[1];
+  var _ql = React.useState(""); var concLieu = _ql[0], setConcLieu = _ql[1];
+  var _qe = React.useState(""); var changeConc = _qe[0], setChangeConc = _qe[1];
+  React.useEffect(function () {
+    if (!groupe) return;
+    var vifQ = true;
+    (async function () {
+      try {
+        var ra = await supa.from("agenda_groupes").select("agenda_id").eq("groupe_id", groupe.id);
+        var ids = ((ra && ra.data) || []).map(function (x) { return x.agenda_id; }).filter(Boolean);
+        if (!ids.length) { if (vifQ) setConcoursEquipe([]); return; }
+        var auj = new Date(); var lim = auj.getFullYear() + "-" + String(auj.getMonth() + 1).padStart(2, "0") + "-" + String(auj.getDate()).padStart(2, "0");
+        var re = await supa.from("club_agenda").select("id, titre, date_jour, lieu, type").in("id", ids.slice(0, 300)).eq("type", "concours").lte("date_jour", lim).order("date_jour", { ascending: false }).limit(15);
+        if (vifQ) setConcoursEquipe((re && re.data) || []);
+      } catch (eQ) { if (vifQ) setConcoursEquipe([]); }
+    })();
+    return function () { vifQ = false; };
+  }, [groupe && groupe.id]);
+  function libelleConc(c) {   /* « Lamotte · sam. 1 nov. » */
+    if (!c) return "";
+    return [c.lieu || c.titre || "", dateCourte(c.date_jour || c.date || "")].filter(Boolean).join(" · ");
+  }
+  function ouvrirFeuilleConc(pour, actuel) {
+    var autre = !!(actuel && !actuel.agenda_id && (actuel.lieu || actuel.autre));
+    setConcAutre(autre); setConcDate((actuel && (actuel.date || actuel.date_video)) || aujourdhui()); setConcLieu(autre ? (actuel.lieu || "") : "");
+    setFeuilleConc({ pour: pour });
+  }
+  async function choisirConc(choix) {   /* choix : { ev } | { aucun: true } | { autre: true, date, lieu } */
+    var pour = feuilleConc && feuilleConc.pour; setFeuilleConc(null);
+    if (pour === "form") {
+      setFConc(choix.aucun ? null : choix.ev ? { agenda_id: choix.ev.id, titre: choix.ev.titre, lieu: choix.ev.lieu, date: choix.ev.date_jour } : { autre: true, date: choix.date, lieu: choix.lieu });
+      return;
+    }
+    var v = pour; if (!v || !moi || v.auteur_id !== moi.id) return;
+    setChangeConc(v.id);
+    try {
+      var r = await supa.rpc("team_video_concours", { p_id: v.id, p_agenda_id: choix.ev ? choix.ev.id : null, p_date: choix.autre ? (choix.date || null) : null, p_lieu: choix.autre ? (choix.lieu || "") : "" });
+      if (r && !r.error && r.data === true) {
+        var maj = choix.ev ? { agenda_id: choix.ev.id, concours: choix.ev.titre, lieu: choix.ev.lieu, date_video: choix.ev.date_jour || v.date_video }
+          : choix.autre ? { agenda_id: null, concours: null, lieu: (choix.lieu || "").trim() || null, date_video: choix.date || v.date_video }
+          : { agenda_id: null, concours: null, lieu: null };
+        setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, maj) : x; }); });
+      } else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+    } catch (eC) { setErreur(String((eC && eC.message) || eC)); }
+    setChangeConc("");
+  }
   var _ec = React.useState([]); var chevauxEquipe = _ec[0], setChevauxEquipe = _ec[1];
   var _aj = React.useState(null); var ajout = _aj[0], setAjout = _aj[1];       /* formulaire « Ajouter une vidéo » ouvert : { cav: [...], ch: [...] } */
 
@@ -94,7 +146,7 @@ function EcranTeamMedias() {
         var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", G.id);
         var idsM = ((rm && rm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
 
-        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
+        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, agenda_id, lieu, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
         if (rv && rv.error) throw new Error(rv.error.message || String(rv.error));
         var vids = (rv && rv.data) || [];
         var idsV = vids.map(function (x) { return x.id; });
@@ -229,7 +281,7 @@ function EcranTeamMedias() {
     var src = vignetteDe(v), d = duree(v.duree), verrou = !peutLire(v);
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
     var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video");
-    var meta = [dateCourte(v.date_video || v.cree_le), v.description || v.concours || ""].filter(Boolean).join(" · ");
+    var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.description || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu */
     /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
        sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
     var moiId = moi && moi.id;
@@ -278,7 +330,13 @@ function EcranTeamMedias() {
               : h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff),
-      meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null));
+      meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
+      /* 06/11 soir — l'auteur corrige le concours / la date / le lieu */
+      estAuteur ? h("button", { type: "button", disabled: changeConc === v.id, onClick: function (e) { e.stopPropagation(); ouvrirFeuilleConc(v, v); },
+        "aria-label": T("Modifier le concours", "Edit competition", "Editar el concurso", "Modifica il concorso", "競技会を変更", "Turnier ändern", "تعديل المسابقة", "修改比赛", "Wedstrijd wijzigen", "Alterar o concurso", "Ändra tävling", "Изменить соревнование", "Zmień zawody", "대회 수정"),
+        style: { position: "absolute", insetInlineEnd: -4, bottom: -6, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", padding: 0, color: CH, cursor: "pointer" } },
+        changeConc === v.id ? h("span", { style: { fontSize: 11 } }, "…")
+          : h("svg", { width: 12, height: 12, viewBox: "0 0 12 12", "aria-hidden": "true" }, h("path", { d: "M2 10l.6-2.4L8.4 1.8l1.8 1.8L4.4 9.4Z M7.4 2.8l1.8 1.8", fill: "none", stroke: CH, strokeWidth: 0.9, strokeLinejoin: "round" }))) : null);
   }
   /* « + Ajouter une vidéo » : visible pour le groupe ; l'ajout lui-même arrive à l'étape 4 */
   function tuileAjout(cle, etendue, seuleSurSaLigne, pre) {
@@ -611,11 +669,12 @@ function EcranTeamMedias() {
   var _fk = React.useState(""); var fConcours = _fk[0], setFConcours = _fk[1];
   var _fd = React.useState(""); var fDate = _fd[0], setFDate = _fd[1];
   var _fe = React.useState(""); var fDesc = _fe[0], setFDesc = _fe[1];
+  var _fcq = React.useState(null); var fConc = _fcq[0], setFConc = _fcq[1];   /* 06/11 soir : concours (facultatif) */
   var _fm = React.useState(false); var fSansSon = _fm[0], setFSansSon = _fm[1];   /* 06/11 : case « Sans le son » */
   var _fp = React.useState(null); var fEtat = _fp[0], setFEtat = _fp[1];   /* null | { etape, pct, texte, erreur } */
   function aujourdhui() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function ouvrirAjout(pre) {
-    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null); setFSansSon(false);
+    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null); setFSansSon(false); setFConc(null);
     setFCav((pre && pre.cav) ? pre.cav.slice() : []); setFCh((pre && pre.ch) ? pre.ch.slice() : []);
     setFeuilleCav(false);
     setAjout(pre || {});
@@ -647,7 +706,7 @@ function EcranTeamMedias() {
     var media = (typeof hypeMuxUrlLecture === "function") ? hypeMuxUrlLecture(playbackId) : ("https://stream.mux.com/" + playbackId + ".m3u8");
     var vign = await copierVignette(playbackId);
     var r = await supa.from("team_videos").insert({ groupe_id: meta.groupe, media: media, video_mux_id: videoMuxId || null, vignette: vign, duree: duree || null,
-      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, auteur_id: moi.id }).select("id").single();
+      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, auteur_id: moi.id }).select("id").single();
     if (r && r.error) {
       var msg = String(r.error.message || r.error);
       if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library."));
@@ -692,7 +751,8 @@ function EcranTeamMedias() {
   var fPret = (fSource === "fichier" ? !!fFichier : !!fHype) && fCav.length > 0 && fCh.length > 0;
   async function publier() {
     if (!fPret || !groupe || !moi) return;
-    var meta = { groupe: groupe.id, titre: null, concours: null, date: aujourdhui(), description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
+    var meta = { groupe: groupe.id, titre: null, concours: (fConc && fConc.titre) || null, date: (fConc && fConc.date) || aujourdhui(), lieu: (fConc && fConc.lieu && String(fConc.lieu).trim()) || null, agenda: (fConc && fConc.agenda_id) || null,
+      description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
     try {
       if (fSource === "hype") {
         setFEtat({ etape: "envoi", pct: 100, texte: T("Ajout à la vidéothèque…", "Adding…") });
@@ -842,8 +902,14 @@ function EcranTeamMedias() {
                     h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cheval", "Horse")),
                     h("span", { style: { fontSize: 10.5, color: IV3 } }, T("un ou plusieurs", "one or more"))),
                   tuilesChevaux,
+                  /* 06/11 soir — concours (facultatif) */
+                  h("button", { type: "button", disabled: envoiEnCours, onClick: function () { ouvrirFeuilleConc("form", fConc); }, style: Object.assign({}, LIGNE, { marginTop: 14, width: "100%", background: "none", borderTop: "none", borderInlineStart: "none", borderInlineEnd: "none", padding: 0, color: IV, fontFamily: M, cursor: "pointer" }) },
+                    h("span", { style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Concours", "Competition", "Concurso", "Concorso", "競技会", "Turnier", "المسابقة", "比赛", "Wedstrijd", "Concurso", "Tävling", "Соревнование", "Zawody", "대회")),
+                    h("span", { dir: "auto", style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0, fontSize: fConc ? 14 : 12.5, color: fConc ? IV : IV3 } },
+                      h("span", { style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, fConc ? libelleConc(fConc) : T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택")),
+                      h("span", { style: { color: CH, fontSize: 12 } }, rtl ? "‹" : "›"))),
                   /* un mot */
-                  h("div", { style: Object.assign({}, LIGNE, { marginTop: 14 }) },
+                  h("div", { style: Object.assign({}, LIGNE, { marginTop: 0 }) },
                     h("label", { htmlFor: "tv-desc", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?")),
                     h("input", { id: "tv-desc", value: fDesc, disabled: envoiEnCours, onChange: function (e) { setFDesc(e.target.value); }, placeholder: T("Facultatif", "Optional"),
                       style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
@@ -867,6 +933,42 @@ function EcranTeamMedias() {
                     style: { width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid " + (fPret ? CH : "rgba(243,238,228,0.14)"), background: "transparent", color: fPret ? IV : IV3, fontFamily: M, fontSize: 14, fontWeight: 600, letterSpacing: ".02em", cursor: fPret && !envoiEnCours ? "pointer" : "default" } },
                     envoiEnCours ? "…" : T("Publier dans la vidéothèque", "Publish to the library")))))),
       feuille);
+  }
+
+  /* 06/11 soir — feuille « Quel concours ? » : les concours passés de l'agenda de la Team (les plus récents d'abord),
+     « Pas de concours », et « Autre » pour écrire la date et le lieu. Sert au formulaire ET à la correction après coup. */
+  function feuilleConcours() {
+    if (!feuilleConc) return null;
+    var actuelId = feuilleConc.pour === "form" ? (fConc && fConc.agenda_id) : (feuilleConc.pour && feuilleConc.pour.agenda_id);
+    function ligne(cle, haut, bas, on, onClick) {
+      return h("button", { key: cle, type: "button", "aria-pressed": !!on, onClick: onClick,
+        style: { width: "100%", display: "flex", alignItems: "center", gap: 12, minHeight: 54, background: "none", border: "none", borderBottom: "1px solid rgba(243,238,228,0.06)", padding: "6px 0", color: IV, fontFamily: M, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { flex: 1, minWidth: 0 } },
+          h("span", { dir: "auto", style: { display: "block", fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, haut),
+          bas ? h("span", { dir: "auto", style: { display: "block", fontSize: 11, color: IV3, marginTop: 2 } }, bas) : null),
+        h("span", { style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (on ? CH : "rgba(243,238,228,0.2)"), background: on ? "radial-gradient(circle, " + CH + " 0 4px, transparent 5px)" : "transparent" } }));
+    }
+    var CHAMP = { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end", colorScheme: "dark" };
+    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 9100 } },
+      h("div", { onClick: function () { setFeuilleConc(null); }, style: { position: "absolute", inset: 0, background: "rgba(7,10,8,0.7)" } }),
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxWidth: 620, margin: "0 auto", maxHeight: "78%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)", fontFamily: M, color: IV } },
+        h("div", { style: { width: 40, height: 4, borderRadius: 2, background: "rgba(243,238,228,0.2)", margin: "0 auto 14px" } }),
+        h("div", { style: { fontFamily: SERIF, fontSize: 26, marginBottom: 6 } }, T("Quel concours ?", "Which competition?", "¿Qué concurso?", "Quale concorso?", "どの競技会？", "Welches Turnier?", "أي مسابقة؟", "哪场比赛？", "Welke wedstrijd?", "Qual concurso?", "Vilken tävling?", "Какое соревнование?", "Które zawody?", "어떤 대회인가요?")),
+        h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+          concoursEquipe.length ? concoursEquipe.map(function (c) {
+            return ligne("cq" + c.id, c.lieu || c.titre || "—", [c.lieu && c.titre && c.titre !== c.lieu ? c.titre : "", dateCourte(c.date_jour)].filter(Boolean).join(" · "), actuelId === c.id && !concAutre, function () { choisirConc({ ev: c }); });
+          }) : h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", padding: "10px 0" } }, T("Aucun concours dans l'agenda de l'équipe.", "No competitions in the team agenda.", "No hay concursos en la agenda del equipo.", "Nessun concorso nell'agenda della squadra.", "チームの予定に競技会はありません。", "Keine Turniere im Team-Kalender.", "لا توجد مسابقات في جدول الفريق.", "团队日程中没有比赛。", "Geen wedstrijden in de teamagenda.", "Não há concursos na agenda da equipa.", "Inga tävlingar i lagets kalender.", "В календаре команды нет соревнований.", "Brak zawodów w kalendarzu drużyny.", "팀 일정에 대회가 없어요.")),
+          ligne("cq-autre", T("Autre (date et lieu)", "Other (date and place)", "Otro (fecha y lugar)", "Altro (data e luogo)", "その他（日付と場所）", "Andere (Datum und Ort)", "أخرى (التاريخ والمكان)", "其他（日期和地点）", "Anders (datum en plaats)", "Outro (data e local)", "Annat (datum och plats)", "Другое (дата и место)", "Inne (data i miejsce)", "기타 (날짜와 장소)"), null, concAutre, function () { setConcAutre(!concAutre); }),
+          concAutre ? h("div", { style: { padding: "4px 0 6px" } },
+            h("div", { style: LIGNE },
+              h("label", { htmlFor: "tq-date", style: { fontSize: 12.5, color: IV3 } }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜")),
+              h("input", { id: "tq-date", type: "date", value: concDate, max: aujourdhui(), onChange: function (e) { setConcDate(e.target.value); }, style: CHAMP })),
+            h("div", { style: LIGNE },
+              h("label", { htmlFor: "tq-lieu", style: { fontSize: 12.5, color: IV3 } }, T("Lieu", "Place", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소")),
+              h("input", { id: "tq-lieu", value: concLieu, maxLength: 80, onChange: function (e) { setConcLieu(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택"), style: CHAMP })),
+            h("button", { type: "button", onClick: function () { choisirConc({ autre: true, date: concDate || aujourdhui(), lieu: concLieu }); },
+              style: { width: "100%", marginTop: 14, minHeight: 44, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: "pointer" } }, T("Valider", "Confirm", "Confirmar", "Conferma", "決定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Готово", "Zatwierdź", "확인"))) : null,
+          ligne("cq-aucun", T("Pas de concours", "No competition", "Sin concurso", "Nessun concorso", "競技会なし", "Kein Turnier", "بدون مسابقة", "不关联比赛", "Geen wedstrijd", "Sem concurso", "Ingen tävling", "Без соревнования", "Bez zawodów", "대회 없음"), null, false, function () { choisirConc({ aucun: true }); }))));
   }
 
   /* ───────── message « réservée au groupe » ───────── */
@@ -899,6 +1001,7 @@ function EcranTeamMedias() {
           h("button", { type: "button", onClick: function () { setQuestionPub(null); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Annuler", "Cancel")),
           h("button", { type: "button", onClick: confirmerPublique, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, questionPub.publique ? T("Réserver", "Keep private") : T("Mettre en public", "Make public"))))) : null,
     formulaireAjout,
+    feuilleConcours(),
     fenetrePartage,
     (visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null);
 }

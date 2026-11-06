@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 18h15)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 23h35)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -39,6 +39,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : traduire les textes de la page Médias et du chapitre dans toutes les langues, une fois le français relu (attend : Blandine pour la relecture, puis Claude)
 
 ## 3 — Quand on aura le temps
+- [06/11] Vidéos de la Team rattachées à un concours (build 2335) : les montrer sur la page du concours et de ses résultats (attend : test iPhone de Blandine)
 - [06/11] J'aime sur les TEXTES (histoire du cheval, présentation du cavalier) : juste un cœur + le nombre (pas de commentaires pour l'instant) ; le propriétaire du cheval ou le cavalier reçoit une notification (attend : Claude, après « sans le son »)
 - [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
@@ -589,6 +590,45 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+📍 06/11/2026 (23 h 35) — VIDÉOS DE LA TEAM : CONCOURS, DATE ET LIEU — build 20261106-2335
+Demande de Blandine (23 h 20) : « ajouter le lieu et la date quand on met une
+vidéo en ligne, ça permettrait de faire le lien avec les dates de concours »,
+EN OPTION. Choix (23 h 22) : « A puis B » = on touche un concours de l'agenda
+de la Team, sinon « Autre » (date et lieu écrits) ; « oui » à la correction
+après coup en cas d'erreur.
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261106-2335 ; ?v=4 → ?v=5 pour le fichier Team (rien d'autre) |
+| hype-ecran-team-medias.js | racine | ligne « Concours », feuille « Quel concours ? », crayon de correction, lieu affiché |
+BASE (passée le 06/11 23 h 25, migration team_videos_concours_lieu) :
+· team_videos.agenda_id (lien vers le rendez-vous de l'agenda, vidé si le
+  rendez-vous est supprimé) et team_videos.lieu. date_video et concours
+  existaient déjà.
+· Droits colonne par colonne OUVERTS pour les deux nouvelles colonnes
+  (leçon de l'incident de 19 h 15) ; vérifié : la lecture complète de la
+  page Médias ne renvoie pas d'erreur.
+· team_video_concours(id, agenda, date, lieu) : seul l'AUTEUR corrige ; un
+  concours choisi doit être rattaché au groupe ; date, lieu et nom sont
+  repris de l'agenda.
+CE QUI A ÉTÉ FAIT
+· Formulaire « Ajouter une vidéo » : ligne « Concours · Facultatif ». Sans
+  choix, rien ne change (date du jour, comme avant).
+· Feuille « Quel concours ? » : les 15 derniers concours passés de l'agenda
+  de la Team (lieu en gros, nom · date dessous), « Autre (date et lieu) »
+  avec Valider, « Pas de concours ».
+· Vignette : « date · lieu » sous le cheval ; petit crayon pour l'auteur, qui
+  rouvre la même feuille pour corriger.
+· Textes nouveaux traduits dans les 14 langues.
+VÉRIFIÉ (Chromium, base simulée) : la feuille liste les concours ; choisir
+Grosbois sur une vidéo envoie la bonne correction et la vignette passe à
+« 19 oct. · Grosbois » ; « Autre » + « Fontainebleau » s'affiche sur la
+ligne du formulaire ; aucune erreur. Police de la capture : remplacement.
+NON VU : sur iPhone ; envoi réel d'une vidéo avec concours.
+ENSUITE (non fait) : montrer les vidéos sur la page du concours / ses
+résultats grâce à ce lien.
 
 ════════════════════════════════════════════════════════════
 
