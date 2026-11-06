@@ -676,7 +676,7 @@ LAISSÉ VOLONTAIREMENT DE CÔTÉ cette nuit :
 
 ════════════════════════════════════════════════════════════
 
-🎬 07/11/2026 (01 h 40) — VIDÉOS DE LA TEAM : ENVOI « C », LECTURE « B », ÉPREUVE, PETIT MOT VISIBLE — build 20261107-0140
+🎬 07/11/2026 (01 h 40) — VIDÉOS DE LA TEAM : ENVOI « C », LECTURE « B », ÉPREUVE, PETIT MOT VISIBLE — build 20261107-0230
 Demandes de Blandine (06/11 23 h 48 → 07/11 00 h 06) : bas de page caché
 pendant l'envoi, vidéo « tout là-haut » une fois chargée, propositions
 visuelles (A/B/C envoyées) → « comme tu sens » (choix de Claude : envoi C,
@@ -684,7 +684,7 @@ lecture B) ; « ajoute aussi le choix de l'épreuve en plus de celle du
 concours » ; « je vois pas s'afficher ce que je note en texte ».
 | Fichier | Où | Quoi |
 |---|---|---|
-| index.html | racine | build 20261107-0140 ; ?v=7 → ?v=8 (fichier Team) — rien d'autre |
+| index.html | racine | build 20261107-0230 ; ?v=7 → ?v=8 (fichier Team) — rien d'autre |
 | hype-ecran-team-medias.js | racine | envoi C, lecture B, épreuve, petit mot, place pour le menu |
 BASE (passée le 07/11 vers 00 h 05, migration team_videos_epreuve) :
 team_videos.epreuve (droits colonne ouverts) ; team_epreuves_concours
@@ -18458,3 +18458,11 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - NON TESTÉ en vrai : il faut une vraie vidéo envoyée à Hey Baby depuis le compte de Blandine, puis quitter l'appli pendant l'analyse et revenir.
 - 1er essai de déploiement (00h51) : ÉCHEC sans rien changer en ligne — la version « latest » de l'outil Supabase exige désormais « --yes » quand il n'y a pas d'écran (« Confirmation required… Re-run with --yes »). Tous les déploiements automatiques auraient échoué. Corrigé : --yes ajouté aux 6 lignes du fichier de déploiement. Le tri [seulement:…] a bien fonctionné (5 fonctions ignorées).
 - Fichiers : supabase/functions/hey-baby-vision/index.ts, .github/workflows/deploy-fonctions.yml, SUIVI.md. Site non republié (rien ne change dans l'appli).
+
+## 07/11/2026 02h30 — PUBLICATION build 20261107-0230 (Blandine 07/11 00h49 : « Ok continue sur tout ce que tu peux jusqu'au bout, tu as carte blanche ») — GALOPS 8 ET 9 : quiz à 10 questions et précisions du programme
+- Quiz : 10 questions dans chaque cours des Galops 8 et 9, comme au Galop 7 (80 questions ajoutées, toutes tirées du texte des cours, bonnes réponses mélangées). Vérifié : une bonne réponse valide par question, aucun doublon.
+- Programme FFE relu (REF n°237) : Galop 8 cours 15 « de ferme à ferme » = galop, pas direct, 3 à 5 foulées de pas, galop sur l'autre pied (texte précisé) ; Galop 9 cours 2 : calendrier vaccins 2026 (V1-V2 21 à 92 jours, rappel 120 à 180 jours, puis annuel ; rien dans les 7 jours avant un concours) ; Galop 9 cours 19 : niveaux exacts (dressage Amateur 1 GP, CSO « niveau Amateur », CCE Amateur 1).
+- Relecture : Galop 8 cours 8, « Le savais-tu » sur l'origine du mot débourrer retiré (étymologie non vérifiée), remplacé par la mémoire du cheval ; Galop 9 cours 3, « vous savez » reformulé (tutoiement).
+- Reste à trancher (attend : Blandine) : « tableau des distances » (Galop 9 cours 14) absent des compétences CSO du programme → le garder ou le passer en « Pour aller plus loin » ; partie commune du Galop 9 non retrouvée dans le programme ; autres points listés plus haut (trois doigts, labels, etc.).
+- Traductions NON lancées : règle de Blandine du 02/11 (traduire seulement après sa relecture en français).
+- Fichiers : hype-cours-galop8.js (v2), hype-cours-galop9.js (v2), index.html (build 20261107-0230, clés ?v=2), SUIVI.md.

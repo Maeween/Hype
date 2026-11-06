@@ -11,7 +11,7 @@
 (function () {
 "use strict";
 if (typeof window === "undefined") return;
-var COURS_GALOP9_VERSION = 1; /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
+var COURS_GALOP9_VERSION = 2; /* 07/11 : quiz à 10 questions partout (comme le Galop 7), relecture ; vaccins (calendrier) et niveaux de l'examen précisés d'après le programme FFE */ /* v1 : */ /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
 var S = function (titre, sous, puces) { var o = { k: "section", titre: titre }; if (sous) o.sous = sous; if (puces) o.puces = puces.map(function (p) { return typeof p === "string" ? { texte: p } : p; }); return o; };
 var P = function (texte) { return { k: "para", texte: texte }; };
 var E = function (emoji, titre, texte) { var o = { k: "encadre", emoji: emoji, texte: texte }; if (titre) o.titre = titre; return o; };
@@ -117,9 +117,11 @@ var COURS = [
     Q("Où commences-tu la bande ?", ["Au sabot", "Au boulet", "En haut du canon, sous le genou ou le jarret", "Au milieu du tendon"], 2, "On commence en haut du canon, on descend jusqu'au boulet, puis on remonte."),
     Q("De combien chaque tour recouvre-t-il le précédent ?", ["D'un quart", "De la moitié", "Pas du tout", "Entièrement"], 1, "Chaque tour recouvre la moitié du précédent, pour une tension régulière."),
     Q("Jusqu'où descend la bande ?", ["Jusqu'au sabot", "Jusqu'au boulet, sans le bloquer", "Jusqu'au milieu du canon", "Sous le paturon"], 1, "Elle s'arrête au boulet sans gêner sa flexion."),
+    Q("Une bande se défait pendant la séance. Que fais-tu ?", ["Je continue", "Je la serre un peu", "Je la coupe", "Je m'arrête et je la repose entièrement"], 3, "Une bande qui pend peut faire tomber le cheval : on la repose entièrement."),
     Q("Où places-tu la fermeture ?", ["Sur la face extérieure du membre", "Sur le tendon", "À l'avant du canon", "À l'intérieur du membre"], 0, "On ferme sur la face extérieure, jamais sur le tendon."),
     Q("Comment vérifies-tu le serrage ?", ["Je ne dois rien pouvoir glisser dessous", "Je glisse toute la main", "Je glisse un doigt sous la bande, sans plus", "Je regarde si la bande pend"], 2, "Un doigt doit passer sous la bande, sans plus : c'est le signe d'une tension juste."),
-    Q("Que fais-tu des bandes après la séance ?", ["Je les laisse pour la nuit", "Je les retire le lendemain", "Je les mouille sur le cheval", "Je les retire tout de suite et je vérifie les tendons"], 3, "On les retire dès la fin du travail, puis on vérifie que les tendons sont froids et sans gonflement.")
+    Q("Que fais-tu des bandes après la séance ?", ["Je les laisse pour la nuit", "Je les retire le lendemain", "Je les mouille sur le cheval", "Je les retire tout de suite et je vérifie les tendons"], 3, "On les retire dès la fin du travail, puis on vérifie que les tendons sont froids et sans gonflement."),
+    Q("À quoi sert la sous-bande ?", ["À décorer", "À répartir la pression sur le tendon", "À tenir chaud", "À remplacer la bande"], 1, "La sous-bande protège le tendon de la pression de la bande.")
   ]
 },
 
@@ -140,7 +142,7 @@ var COURS = [
         { gras: "Le tétanos :", texte: "pas obligatoire en compétition, mais vivement conseillé pour tous les chevaux." }
       ]),
       S("📅 Le calendrier", null, [
-        "La primo-vaccination se fait en plusieurs injections, à des intervalles précis.",
+        "La primo-vaccination : deux injections à 21 à 92 jours d'intervalle, puis un premier rappel 4 à 6 mois plus tard (120 à 180 jours ; protocole 2026).",
         "Ensuite, un rappel chaque année, sans jamais dépasser le délai : sinon, tout est à recommencer.",
         "Aucune injection dans les 7 jours qui précèdent une compétition.",
         "Chaque vaccin est noté par le vétérinaire dans le livret du cheval et enregistré en ligne."
@@ -233,7 +235,9 @@ var COURS = [
     Q("Combien de jours avant un concours ne doit-on plus vacciner ?", ["7 jours", "1 jour", "3 jours", "30 jours"], 0, "Aucune injection dans les 7 jours qui précèdent une compétition."),
     Q("Qu'est-ce qu'une coproscopie ?", ["Une prise de sang", "Une radio des pieds", "Un contrôle des dents", "Une analyse des crottins"], 3, "La coproscopie compte les œufs de vers dans les crottins, pour savoir s'il faut vermifuger."),
     Q("Pourquoi ne vermifuge-t-on plus systématiquement ?", ["Parce que c'est interdit", "Parce que les vers deviennent résistants aux produits", "Parce que les vermifuges sont trop chers", "Parce que les chevaux n'ont plus de vers"], 1, "Les traitements répétés sans analyse rendent les vers résistants."),
+    Q("Quel signe peut indiquer un problème de dents ?", ["Le cheval perd du grain et mâche de travers", "Le cheval hennit", "Le poil brille", "Le cheval galope vite"], 0, "Perte de grain, mastication de travers, amaigrissement ou défenses contre le mors doivent alerter."),
     Q("À quelle fréquence contrôle-t-on les dents ?", ["Tous les mois", "Tous les 5 ans", "Jamais si le cheval mange", "Au moins une fois par an"], 3, "Les dents poussent toute la vie : un contrôle au moins une fois par an."),
+    Q("Que fait le vétérinaire lors du bilan sanitaire d'élevage ?", ["Il fait le point sur la santé, le logement, l'alimentation et les traitements", "Il ferre les chevaux", "Il délivre les Galops", "Il juge les reprises"], 0, "C'est une visite annuelle qui débouche sur un plan de prévention."),
     Q("Tous les combien parer ou ferrer un cheval ?", ["Toutes les 2 semaines", "Tous les 6 mois", "Une fois par an", "Environ toutes les 6 à 8 semaines"], 3, "Environ toutes les 6 à 8 semaines, selon la pousse de la corne."),
     Q("Au box, que contrôles-tu chaque matin ?", ["La couleur de la porte", "L'eau, la ration finie, les crottins et la litière", "Seulement la litière", "Rien si le cheval hennit"], 1, "Eau, ration, crottins et litière disent beaucoup de la santé du cheval.")
   ]
@@ -296,7 +300,7 @@ var COURS = [
         "Une fiche avec les valeurs normales de chaque cheval au repos : température, pouls, respiration.",
         "Un cure-pied et un couteau à usages multiples."
       ]),
-      E("👨‍🏫", "Le conseil du coach", "Fais l'inventaire de la pharmacie avec quelqu'un d'autre de l'écurie : à deux, vous savez tous les deux où est chaque chose le jour où il faut faire vite.")
+      E("👨‍🏫", "Le conseil du coach", "Fais l'inventaire de la pharmacie avec quelqu'un d'autre de l'écurie : le jour où il faut faire vite, chacun saura où est chaque chose.")
     ]),
 
     B("Les erreurs et l'entraînement", [
@@ -338,11 +342,13 @@ var COURS = [
   quiz: [
     Q("Quel instrument sert à écouter le cœur ?", ["Le thermomètre", "Le stéthoscope", "La seringue", "La lampe"], 1, "Le stéthoscope permet d'écouter le cœur et de compter le pouls."),
     Q("Avec quoi rinces-tu une plaie ?", ["De l'alcool", "Du sérum physiologique", "De l'eau oxygénée pure", "Du vinaigre"], 1, "Le sérum physiologique est doux et stérile, idéal pour rincer une plaie."),
+    Q("Avant un concours, que demandes-tu au vétérinaire si ton cheval est traité ?", ["Le prix du traitement", "La couleur du flacon", "Rien", "Si le traitement est compatible avec la compétition"], 3, "Certains médicaments sont interdits en compétition : on vérifie toujours avant de partir."),
     Q("Peux-tu donner à ton cheval le médicament prescrit pour un autre ?", ["Non, jamais", "Oui, s'il a les mêmes symptômes", "Oui, à moitié dose", "Oui, si c'est le même âge"], 0, "Un médicament est prescrit pour un cheval donné : on ne le donne jamais à un autre."),
     Q("Où note-t-on chaque traitement ?", ["Dans le registre d'élevage, avec l'ordonnance", "Sur le tableau des leçons", "Nulle part", "Sur la porte du box"], 0, "Le registre d'élevage est obligatoire et garde la trace de chaque traitement."),
     Q("Un flacon est entamé. Que fais-tu ?", ["Rien", "Je note la date d'ouverture dessus", "Je le jette tout de suite", "Je le mélange avec un autre"], 1, "On date les flacons entamés pour savoir combien de temps ils restent utilisables."),
     Q("Que fais-tu des médicaments périmés ?", ["Je les rapporte au vétérinaire ou à la pharmacie", "Je les utilise quand même", "Je les jette à la poubelle", "Je les donne au pré"], 0, "Les médicaments périmés se rapportent au vétérinaire ou en pharmacie."),
     Q("À quelle fréquence fais-tu l'inventaire ?", ["Une fois par an", "Jamais", "Seulement avant un concours", "Une fois par mois, et après chaque utilisation"], 3, "On remplace après chaque utilisation et on fait l'inventaire une fois par mois."),
+    Q("Où gardes-tu une petite trousse pour les concours ?", ["Dans le camion", "À la maison", "Au club-house", "Nulle part"], 0, "Une petite trousse dans le camion sert pour les déplacements et les concours."),
     Q("Que garder affiché près de la pharmacie ?", ["Le numéro du vétérinaire", "Le planning des cours", "Le prix des aliments", "Les résultats de concours"], 0, "Le numéro du vétérinaire (et celui de garde) doit être visible de tous.")
   ]
 },
@@ -441,7 +447,9 @@ var COURS = [
   ] },
   quiz: [
     Q("Comment demandes-tu d'abord une transition aux longues rênes ?", ["En tirant sur les rênes", "Avec la chambrière uniquement", "À la voix", "En t'arrêtant"], 2, "On demande d'abord à la voix, puis on ajoute un contact léger et progressif."),
+    Q("Quel est un repère courant de distance entre cavaletti au pas pour un cheval ?", ["Environ 0,80 à 1 m", "Environ 3 m", "Environ 0,30 m", "Environ 2 m"], 0, "Environ 0,80 à 1 m au pas, à ajuster au cheval."),
     Q("Dans une transition descendante, que doit garder le cheval ?", ["Sa vitesse", "Son impulsion et sa trajectoire", "La tête haute", "Le contre-galop"], 1, "Il continue à pousser avec ses postérieurs et reste sur sa ligne."),
+    Q("Par combien de barres commences-tu ?", ["Six d'un coup", "Une seule", "Dix", "Aucune"], 1, "On commence par une barre, puis trois, puis quatre à six."),
     Q("Quand le cheval allonge, la cadence…", ["Accélère", "Reste la même", "Ralentit beaucoup", "Disparaît"], 1, "La foulée s'allonge, la cadence reste la même."),
     Q("Quel est un repère courant de distance entre cavaletti au trot pour un cheval ?", ["Environ 0,50 m", "Environ 3 m", "Environ 5 m", "Environ 1,30 à 1,50 m"], 3, "Environ 1,30 à 1,50 m au trot, à ajuster au cheval avec ton enseignant."),
     Q("Pendant le passage des cavaletti, que demandes-tu en plus ?", ["Rien : une seule information à la fois", "Une transition", "Un changement de direction", "Un arrêt"], 0, "Sur les barres, on ne demande rien d'autre : une seule information à la fois."),
@@ -548,7 +556,9 @@ var COURS = [
     Q("Dans la demi-pirouette au pas, qu'est-ce qui tourne autour de quoi ?", ["Les épaules autour des hanches", "Les hanches autour des épaules", "La tête autour de la queue", "Rien ne tourne"], 0, "Les épaules tournent autour des hanches ; le postérieur intérieur marque le pas presque sur place."),
     Q("Quel rôle a la rêne extérieure dans la demi-pirouette ?", ["Elle tire la tête vers l'extérieur", "Elle empêche les hanches de s'échapper", "Elle fait reculer", "Aucun"], 1, "Contre le flanc, elle empêche les hanches de s'échapper."),
     Q("Quel angle demandes-tu dans l'appuyer aux longues rênes ?", ["Peu prononcé", "Le plus fort possible", "90 degrés", "Aucun, le cheval reste droit"], 0, "Un angle peu prononcé, pour garder la cadence et l'activité des postérieurs."),
+    Q("Quand demandes-tu la demi-pirouette au pas ?", ["Quand le cheval accepte bien la rêne extérieure contre son flanc", "Dès la première séance", "Au galop d'abord", "Jamais aux longues rênes"], 0, "Elle vient quand le cheval accepte bien la rêne extérieure contre son flanc."),
     Q("Par quelle allure commences-tu les latéraux ?", ["Le galop", "Le trot", "L'arrêt", "Le pas"], 3, "On commence au pas, puis au trot ; le galop vient en dernier."),
+    Q("Que fais-tu à la fin d'une demi-pirouette ?", ["Je m'arrête", "Je recule", "Je repars aussitôt droit, en avant", "Je fais une autre demi-pirouette"], 2, "On repart tout de suite droit, en avant, pour garder l'impulsion."),
     Q("Ton cheval recule dans un latéral. Que fais-tu ?", ["Je repars en avant et je redemande un angle plus faible", "J'insiste", "J'augmente l'angle", "Je passe au galop"], 0, "L'impulsion passe avant l'angle : on repart en avant et on simplifie."),
     Q("Quelle est la règle de sécurité principale ?", ["Travailler sans casque", "Enrouler les rênes autour des mains", "Se placer juste derrière le cheval", "Rester hors de portée des postérieurs"], 3, "Les postérieurs passent près de toi : reste toujours hors de leur portée.")
   ]
@@ -645,7 +655,9 @@ var COURS = [
     Q("Combien de mesures compte la Charte nationale pour le bien-être équin ?", ["4", "6", "12", "8"], 3, "La charte compte 8 mesures."),
     Q("Qui a écrit la charte ?", ["Une seule écurie", "Toute la filière cheval", "Les cavaliers olympiques", "L'Union européenne"], 1, "Éleveurs, vétérinaires, FFE et courses l'ont élaborée ensemble."),
     Q("La première mesure demande de respecter…", ["Le caractère grégaire du cheval", "Son pedigree", "Ses résultats", "Ses horaires"], 0, "Le cheval vit en groupe : il a besoin de contacts sociaux positifs."),
+    Q("Que garantit la sixième mesure ?", ["Assez d'eau et d'aliments, adaptés aux besoins du cheval", "Un concours par mois", "Un box individuel", "Une couverture"], 0, "Elle demande de garantir eau et aliments, adaptés aux besoins physiques et au comportement."),
     Q("Que dit la charte sur la douleur ?", ["Qu'elle est normale au travail", "Qu'il faut la prévenir ou la soulager", "Qu'il ne faut pas en parler", "Rien"], 1, "Une mesure entière est consacrée à prévenir ou soulager la douleur."),
+    Q("En quelle année la charte a-t-elle été écrite ?", ["1921", "2016", "1987", "2024"], 1, "La Charte nationale pour le bien-être équin a été écrite en 2016 par la filière cheval."),
     Q("Quelle mesure concerne la relation avec l'homme ?", ["Monter tous les jours", "Ne jamais toucher le cheval", "Le récompenser avec du sucre", "Établir une relation de confiance"], 3, "La charte demande d'établir une relation de confiance dans les manipulations."),
     Q("Un cheval mord sans cesse le bord de sa mangeoire. C'est souvent…", ["Un tic, signe possible de mal-être", "Un jeu sans importance", "Un signe de bonne santé", "De la gourmandise"], 0, "Les tics traduisent souvent un mal-être : ennui, isolement, manque de fourrage."),
     Q("Quelle situation respecte le mieux le bien-être ?", ["Un cheval qui sort chaque jour et voit d'autres chevaux", "Un cheval seul au box toute la journée", "Un cheval nourri deux fois par jour sans foin", "Un cheval toujours attaché"], 0, "Mouvement et contacts sociaux font partie des besoins essentiels du cheval."),
@@ -746,9 +758,11 @@ var COURS = [
   ] },
   quiz: [
     Q("Pendant l'effort, pourquoi le cœur bat-il plus vite ?", ["Pour refroidir le cheval", "Pour apporter plus d'oxygène aux muscles", "Parce que le cheval a peur", "Pour digérer"], 1, "Le cœur et le souffle s'accélèrent pour apporter plus d'oxygène aux muscles."),
+    Q("Qu'est-ce qu'un effort court et intense ?", ["Un effort où le muscle manque d'oxygène et se fatigue vite", "Un travail de fond", "Une promenade au pas", "Un étirement"], 0, "C'est l'effort d'un parcours ou d'un galop rapide : il fatigue vite le muscle."),
     Q("Quel effort le cheval peut-il tenir longtemps ?", ["L'effort court et intense", "L'effort long et modéré", "Un sprint", "Un saut très haut"], 1, "L'effort long et modéré utilise l'oxygène : c'est le travail de fond."),
     Q("Pourquoi alterner les types de travail ?", ["Pour aller plus vite", "Parce que c'est obligatoire", "Pour ne pas fatiguer toujours les mêmes structures", "Pour éviter de seller"], 2, "Chaque travail sollicite différemment le corps : alterner le ménage et garde le moral du cheval."),
     Q("Quand fait-on de préférence les étirements ?", ["Après le travail, sur des muscles chauds", "Avant le travail, à froid", "Pendant le galop", "Jamais"], 0, "Sur des muscles chauds, après le travail, lentement et sans forcer."),
+    Q("Que fais-tu si le cheval se crispe pendant un étirement ?", ["Je force un peu", "Je recommence plus vite", "J'arrête", "Je l'attache"], 2, "Un étirement se fait sans forcer : on arrête dès que le cheval se crispe."),
     Q("Quel est l'effet de l'abaissement de l'encolure ?", ["Il étire la ligne du dessus et soulève le dos", "Il creuse le dos", "Il bloque les épaules", "Il fatigue les postérieurs"], 0, "L'encolure qui s'étend vers l'avant et le bas étire la ligne du dessus et soulève le dos."),
     Q("Quelle est une limite de l'abaissement de l'encolure ?", ["Il n'en a aucune", "Trop longtemps, le cheval tombe sur ses épaules", "Il rend le cheval trop rapide", "Il empêche de tourner"], 1, "Trop long ou trop bas, il surcharge l'avant-main."),
     Q("Après une séance intense, la suivante est…", ["Plus légère", "Encore plus intense", "Supprimée pour un mois", "Identique"], 0, "Le cheval progresse pendant la récupération : on alterne effort et séance légère."),
@@ -855,8 +869,10 @@ var COURS = [
     Q("Quel est un repère courant du pouls d'un cheval adulte au repos ?", ["Environ 10 à 15", "Environ 80 à 100", "Environ 150", "Environ 28 à 44"], 3, "Environ 28 à 44 battements par minute au repos, à comparer aux valeurs habituelles du cheval."),
     Q("Quelle est la fréquence respiratoire au repos indiquée par le programme ?", ["8 à 14", "2 à 4", "30 à 40", "60 à 80"], 0, "Le programme indique 8 à 14 respirations par minute au repos."),
     Q("Qu'est-ce qui compte pour une respiration ?", ["Une inspiration seule", "Un hennissement", "Un mouvement d'oreille", "Une inspiration et une expiration"], 3, "Un cycle complet, inspiration et expiration, compte pour une respiration."),
+    Q("Quelle température indique une fièvre chez le cheval adulte ?", ["36 °C", "37,5 °C", "38 °C", "Au-dessus de 38,5 °C"], 3, "Au-dessus d'environ 38,5 °C au repos, on parle de fièvre : appelle le vétérinaire."),
     Q("Pourquoi éviter de prendre le pouls avec le pouce ?", ["Il est trop gros", "Il a son propre pouls", "Il chatouille le cheval", "Ce n'est pas autorisé"], 1, "Le pouce a son propre pouls, qui fausse le comptage."),
     Q("Quand prends-tu les valeurs de référence de ton cheval ?", ["Le matin, au calme, avant le travail", "Juste après le galop", "Pendant le repas", "Après la douche"], 0, "Au calme, le matin, avant le pansage et le travail."),
+    Q("Où peux-tu sentir le pouls avec les doigts ?", ["Sur la croupe", "Au garrot", "Sur le sabot", "Sur l'artère qui passe sous la mâchoire inférieure"], 3, "L'artère sous le bord de la mâchoire inférieure permet de sentir la pulsation."),
     Q("Après l'effort, qu'est-ce qui renseigne sur la forme ?", ["La hauteur des oreilles", "La vitesse à laquelle pouls et respiration redescendent", "La couleur de la robe", "La longueur de la crinière"], 1, "Une récupération rapide est le signe d'un cheval en forme.")
   ]
 },
@@ -955,11 +971,13 @@ var COURS = [
     Q("Qu'est-ce qu'une tare dure ?", ["Une poche de liquide", "Une déformation osseuse", "Une plaie", "Une chute de poils"], 1, "Les tares dures sont osseuses et ne se déforment pas sous le doigt."),
     Q("Où se trouve un suros ?", ["Sur le canon", "À la pointe du coude", "Sur l'encolure", "Au garrot"], 0, "Le suros est une grosseur osseuse sur le canon."),
     Q("Quelle tare se trouve à la face intérieure du jarret ?", ["L'éparvin", "La molette", "L'éponge", "Le suros"], 0, "L'éparvin est une tare dure à la face intérieure du jarret."),
+    Q("Comment repères-tu le mieux une tare ?", ["En regardant un seul membre", "En faisant galoper le cheval", "En comparant les deux membres d'une même paire", "En prenant sa température"], 2, "Ce qui n'existe que d'un côté attire l'attention."),
     Q("Où se trouvent les molettes ?", ["Sur le garrot", "Au genou", "Au-dessus du boulet", "Dans la bouche"], 2, "Les molettes sont des poches souples juste au-dessus du boulet."),
     Q("Qu'est-ce qu'une éponge ?", ["Un outil de pansage seulement", "Une poche à la pointe du coude", "Une tare du jarret", "Un défaut du sabot"], 1, "L'éponge est une poche à la pointe du coude, souvent due au fer quand le cheval est couché."),
     Q("Une tare ancienne et froide…", ["Empêche toujours de monter", "Doit être crevée", "Ne gêne souvent pas le cheval", "Est contagieuse"], 2, "Beaucoup de tares anciennes et froides ne gênent pas le cheval."),
     Q("Quel est un moyen de prévention des tares ?", ["Parage et ferrure réguliers", "Travailler sur sol très dur", "Faire grossir le cheval", "Sauter haut tous les jours"], 0, "Pieds bien entretenus, poids juste, sols adaptés et progressivité préviennent les tares."),
-    Q("Une grosseur apparaît et chauffe. Que fais-tu ?", ["Je la montre au vétérinaire", "Je la crève", "J'attends six mois", "Je monte plus fort"], 0, "Toute tare nouvelle, chaude ou douloureuse se montre au vétérinaire.")
+    Q("Une grosseur apparaît et chauffe. Que fais-tu ?", ["Je la montre au vétérinaire", "Je la crève", "J'attends six mois", "Je monte plus fort"], 0, "Toute tare nouvelle, chaude ou douloureuse se montre au vétérinaire."),
+    Q("Où se trouve le capelet ?", ["Au boulet", "Au garrot", "Au genou", "À la pointe du jarret"], 3, "Le capelet est une poche à la pointe du jarret.")
   ]
 }
 ,
@@ -1059,7 +1077,9 @@ var COURS = [
     Q("Dans le rassembler, les foulées sont…", ["Plus courtes et plus élevées, avec la même énergie", "Plus longues et plus basses", "Plus rapides", "Irrégulières"], 0, "Plus courtes et plus élevées, sans perdre d'énergie ni changer de cadence."),
     Q("D'où vient le rassembler ?", ["De la main qui relève la tête", "Des éperons seuls", "De l'arrière, des postérieurs qui s'engagent", "De la vitesse"], 2, "Le rassembler vient de l'arrière ; l'encolure se relève d'elle-même."),
     Q("Quel est l'outil principal pour aller vers le rassembler ?", ["Les transitions", "Le galop rapide", "Les rênes fixes", "Le saut"], 0, "Les transitions, entre allures et dans l'allure, engagent les postérieurs."),
+    Q("Quel exercice engage le postérieur intérieur sous la masse ?", ["L'épaule en dedans", "Le galop allongé en ligne droite", "Le pas rênes longues", "L'arrêt"], 0, "L'épaule en dedans, comme les cercles et les voltes, engage le postérieur intérieur."),
     Q("Un cheval tête haute, dos creux, qui ralentit est…", ["Rassemblé", "Rectiligne", "Seulement freiné", "Décontracté"], 2, "Il n'est pas rassemblé : il est freiné, le dos creux."),
+    Q("Qu'est-ce que la propulsion ?", ["La poussée des postérieurs qui porte le cheval en avant", "La vitesse maximale", "Le saut", "La décontraction"], 0, "La propulsion vient des postérieurs ; l'énergie passe par un dos souple jusqu'à la main."),
     Q("Combien de temps demandes-tu le rassembler au début ?", ["Quelques foulées, puis en avant", "Toute la séance", "Une heure", "Jamais"], 0, "Quelques foulées à la fois, puis on repart en avant pour éviter fatigue et crispation.")
   ]
 },
@@ -1164,6 +1184,8 @@ var COURS = [
     Q("Au galop, inverser un déplacement latéral demande aussi…", ["Un arrêt", "Un changement de pied", "Un reculer", "Un trot"], 1, "Au galop, chaque changement de sens du latéral demande un changement de pied."),
     Q("Dans une transition au cours d'un appuyer, le cheval…", ["Garde l'angle et le pli", "Se redresse", "Change de direction", "S'arrête"], 0, "Il garde l'angle et le pli : c'est un test de son équilibre."),
     Q("Tourner sur les hanches au galop prépare…", ["Le changement de pied simple", "Le contre-galop", "Le reculer", "La pirouette"], 3, "C'est la préparation de la pirouette, rencontrée aux niveaux plus élevés."),
+    Q("Que demande le programme dans les déplacements latéraux ?", ["Des sauts", "Des arrêts prolongés", "Des reculers", "Des transitions dans les déplacements latéraux"], 3, "Le programme demande d'obtenir des transitions dans les déplacements latéraux, aux trois allures."),
+    Q("Comment ralentis-tu le mouvement avec ton bassin ?", ["En le bloquant brutalement", "En le suivant moins", "En le suivant davantage", "En te levant"], 1, "En suivant moins le mouvement, ton bassin ralentit le cheval, sans à-coup."),
     Q("Le galop s'éteint pendant le tournant. Que fais-tu ?", ["Je serre encore plus", "Je passe au trot et j'arrête la séance", "Je repars aussitôt plus grand, en avant", "Je recule"], 2, "On repart plus grand pour retrouver un galop vivant.")
   ]
 },
@@ -1259,7 +1281,9 @@ var COURS = [
     Q("Dans l'allongé, la cadence…", ["Reste la même", "Accélère", "Ralentit", "Disparaît"], 0, "La foulée s'allonge, la cadence reste la même."),
     Q("Au retour au rassemblé après l'allongé, le cheval doit…", ["Tomber sur les épaules", "S'arrêter", "Changer de pied", "Se raccourcir en gardant son énergie"], 3, "Il se raccourcit sans perdre d'énergie ni tomber sur les épaules."),
     Q("Avant un changement de pied en l'air, le cheval est…", ["Droit sur la ligne", "De travers, hanches dedans", "À l'arrêt", "Au trot"], 0, "Un cheval droit change de pied proprement, sans se décaler."),
+    Q("Où travailler le changement de pied pour vérifier la rectitude ?", ["Dans un coin", "Sur une volte de 6 m", "Sur une ligne droite, le long du mur ou sur la ligne du milieu", "Au trot"], 2, "Sur une ligne droite, on voit tout de suite si le cheval se décale."),
     Q("Qu'est-ce que le « zigzag » au galop ?", ["Une serpentine au trot", "Des appuyers dans les deux sens, séparés par des changements de pied", "Un parcours de CSO", "Un reculer en courbe"], 1, "Appuyer, changement de pied, appuyer dans l'autre sens."),
+    Q("Dans un allongé réussi, comment se posent les antérieurs ?", ["Très haut", "À l'endroit qu'ils montrent, sans revenir en arrière", "En croisant", "Au hasard"], 1, "Les juges regardent les antérieurs : ils se posent là où ils montrent."),
     Q("Entre l'appuyer et le changement de pied, que fais-tu ?", ["Je m'arrête", "Je redresse le cheval sur une ou deux foulées", "J'accélère", "Rien"], 1, "On redresse avant de changer de pied."),
     Q("Sur quel rectangle se monte la reprise Amateur 1 Grand Prix ?", ["40 m sur 20 m", "20 m sur 20 m", "100 m sur 40 m", "60 m sur 20 m"], 3, "Elle se monte sur un rectangle de 60 m sur 20 m."),
     Q("Quelle est une note d'ensemble des juges ?", ["La couleur du tapis", "Le prix du cheval", "La soumission", "Le temps"], 2, "Allures, impulsion, soumission, position et emploi des aides sont notés en ensemble."),
@@ -1359,6 +1383,8 @@ var COURS = [
     Q("Comment aides-tu ton cheval à se raccourcir avant un vertical ?", ["En redressant un peu le buste, plus près de la selle", "En me couchant sur l'encolure", "En lâchant les rênes", "En levant les talons"], 0, "Un buste plus redressé aide le cheval à se raccourcir et à porter sur ses postérieurs."),
     Q("Avec quel galop abordes-tu un oxer ?", ["Très court", "Au trot", "Plus ample et énergique", "Désuni"], 2, "L'oxer est haut et large : il demande un galop ample et énergique."),
     Q("Pour tourner sur l'obstacle, quand regardes-tu la direction suivante ?", ["Après la réception", "Jamais", "Avant le saut", "Au milieu du tournant"], 2, "Le regard se tourne vers la direction suivante avant le saut."),
+    Q("Qu'est-ce qu'une triple barre ?", ["Trois verticaux en ligne", "Un mur", "Une rivière", "Un obstacle large de trois plans de barres de plus en plus hauts"], 3, "La triple barre se saute avec un galop ample."),
+    Q("Pour t'entraîner à tourner sur l'obstacle, quel exercice ?", ["Une barre au sol en courbe après un petit vertical", "Un grand oxer en ligne droite", "Du pas rênes longues", "Un parcours complet tout de suite"], 0, "La barre au sol en courbe apprend au cheval à se recevoir sur le bon pied."),
     Q("Au-dessus de l'obstacle, comment prépares-tu le tournant ?", ["Un peu plus de poids dans l'étrier du côté du tournant, rêne intérieure légèrement ouverte", "Je me penche", "Je tire fort sur la rêne", "Je lâche tout"], 0, "Le poids et une rêne qui s'ouvre légèrement préparent une réception sur le bon pied."),
     Q("Le cheval doit-il tourner avant de sauter ?", ["Non, il franchit droit", "Oui", "Seulement sur un oxer", "Seulement au barrage"], 0, "Le cheval franchit l'obstacle droit ; le tournant se prépare pendant le saut."),
     Q("Quand choisis-tu ton tracé ?", ["À la reconnaissance à pied", "Pendant le parcours", "Après le parcours", "Jamais"], 0, "Le tracé se choisit à la reconnaissance, avec des points de passage."),
@@ -1464,7 +1490,9 @@ var COURS = [
     Q("En manège, les foulées sont…", ["Plus courtes", "Plus longues", "Identiques", "Irrégulières"], 0, "En manège, les chevaux ont des foulées plus courtes qu'en extérieur."),
     Q("Dans une montée, la foulée…", ["S'allonge", "Ne change pas", "Disparaît", "Se raccourcit"], 3, "Une montée raccourcit la foulée ; une descente l'allonge."),
     Q("Ton cheval a une petite foulée et la distance est longue. Que fais-tu ?", ["Je raccourcis", "J'allonge tôt", "Je ne fais rien", "Je m'arrête"], 1, "Un cheval à petite foulée doit être allongé tôt sur une distance longue."),
+    Q("Pour les poneys, les distances sont…", ["Les mêmes que pour les chevaux", "Plus courtes, selon leur taille", "Plus longues", "Libres"], 1, "Les distances des poneys sont plus courtes, selon leur taille."),
     Q("Qui fixe les cotes d'un parcours Amateur ?", ["Le règlement CSO de la saison", "Le cavalier", "Le propriétaire", "Le public"], 0, "Les cotes sont fixées par le règlement CSO, qui peut changer chaque saison."),
+    Q("Vers la sortie ou l'écurie, beaucoup de chevaux…", ["Raccourcissent", "S'arrêtent", "Allongent leurs foulées", "Changent d'allure"], 2, "Le sens du parcours compte : vers la sortie, beaucoup de chevaux allongent."),
     Q("Qu'est-ce qu'une combinaison ?", ["Un seul obstacle large", "Un tour d'honneur", "Une barre au sol", "Deux ou trois obstacles rapprochés, sautés comme un ensemble"], 3, "Deux ou trois obstacles séparés d'une ou deux foulées, qui forment un ensemble.")
   ]
 },
@@ -1562,8 +1590,10 @@ var COURS = [
     Q("Quand interviens-tu sur l'abord ?", ["À la dernière foulée", "Après le saut", "Tôt, plusieurs foulées avant l'obstacle", "Jamais"], 2, "Une intervention précoce donne un abord calme."),
     Q("Dans une combinaison, qu'est-ce qui décide de tout ?", ["Le dernier élément", "L'abord du premier élément", "La couleur des obstacles", "Le public"], 1, "Une amplitude juste et un cheval droit au premier élément conditionnent la suite."),
     Q("Sur un contrebas, l'amplitude…", ["S'ouvre", "Ne compte pas", "Se raccourcit", "Est maximale"], 2, "Sur les contrebas et dans l'eau, l'amplitude se raccourcit."),
+    Q("Que fais-tu juste après un obstacle technique ?", ["Je marche", "Je m'arrête", "Je reste au trot", "Je relance tout de suite"], 3, "Ralentir avant, relancer tout de suite après : c'est ce qui fait gagner du temps."),
     Q("Qu'est-ce qu'une option en cross ?", ["Un obstacle obligatoire", "Un passage plus long et plus facile", "Une pénalité", "Un raccourci interdit"], 1, "L'option est un passage plus long et plus facile, proposé sur certains obstacles."),
     Q("Que sont les temps intermédiaires ?", ["Des pauses", "Les temps de détente", "Les temps prévus pour passer à certains points du parcours", "Les temps des autres cavaliers"], 2, "Ils te permettent de vérifier ta vitesse pendant le parcours."),
+    Q("À partir de quand comptent les pénalités de temps ?", ["Après 10 minutes", "Jamais en Amateur", "Seulement au barrage", "Dès que tu dépasses le temps accordé"], 3, "Les pénalités de temps commencent dès que le temps accordé est dépassé."),
     Q("Comment gagner du temps sans risque ?", ["Tracé court, vitesse régulière, relancer après les obstacles", "Galoper au maximum partout", "Couper tous les tournants", "Sauter en biais partout"], 0, "Un tracé court et une vitesse régulière font gagner plus de temps que des accélérations brusques."),
     Q("Ton cheval s'essouffle. Que fais-tu ?", ["Je ralentis, quitte à prendre des pénalités de temps", "J'accélère pour finir", "Je saute plus haut", "Je ne change rien"], 0, "Le contrôle et la santé du cheval passent avant le chronomètre.")
   ]
@@ -1655,7 +1685,9 @@ var COURS = [
   quiz: [
     Q("Qui est considéré comme le premier maître de l'École française ?", ["Baucher", "Antoine de Pluvinel", "Caprilli", "Xénophon"], 1, "Pluvinel, au XVIIe siècle, est considéré comme le premier maître de l'École française."),
     Q("Qui a écrit « École de cavalerie » ?", ["L'Hotte", "D'Aure", "La Guérinière", "Pluvinel"], 2, "La Guérinière, au XVIIIe siècle."),
+    Q("Quelle école étrangère partage avec l'École française une même source classique ?", ["L'école western", "Le polo argentin", "L'École espagnole de Vienne", "Le horse-ball"], 2, "L'École espagnole de Vienne et l'École portugaise d'art équestre viennent aussi de l'équitation classique de la Renaissance."),
     Q("Quelle équitation défendait le comte d'Aure ?", ["Uniquement la haute école", "Une équitation d'extérieur, en avant et pratique", "L'équitation western", "Le saut d'obstacles moderne"], 1, "Le comte d'Aure défendait une équitation d'extérieur, pratique."),
+    Q("Qu'est-ce que la légèreté ?", ["Un cheval maigre", "Un cheval rapide", "Un cheval sans selle", "Un cheval qui répond à des aides très discrètes"], 3, "La légèreté est au cœur de l'École française."),
     Q("Que cherchait Baucher ?", ["La légèreté par l'assouplissement", "La vitesse", "La force", "Le saut"], 0, "Baucher cherchait la légèreté par l'assouplissement du cheval."),
     Q("Qui a réuni les apports de d'Aure et de Baucher ?", ["Pluvinel", "Le général L'Hotte", "La Guérinière", "Caprilli"], 1, "L'Hotte, élève des deux, a réuni leurs apports."),
     Q("En quelle année l'équitation de tradition française est-elle inscrite à l'UNESCO ?", ["2011", "1921", "1987", "2024"], 0, "En 2011, au patrimoine culturel immatériel de l'humanité."),
@@ -1750,10 +1782,12 @@ var COURS = [
   ] },
   quiz: [
     Q("En quelle année naissent la FNSE et la FEI ?", ["1912", "1987", "2010", "1921"], 3, "Les deux naissent en 1921, en juin et en novembre."),
+    Q("Combien de pays ont créé la FEI ?", ["Deux", "Cinquante", "Cent", "Huit"], 3, "La FEI a été créée par huit pays ; elle en réunit aujourd'hui plus de 130."),
     Q("Qui est à l'origine de la FEI ?", ["La Guérinière", "Le baron du Teil", "Le comte d'Aure", "Pierre de Coubertin"], 1, "La FEI a été créée à l'initiative du Français baron du Teil."),
     Q("En quelle année naît la FFE ?", ["1921", "1952", "2010", "1987"], 3, "La FFE naît en 1987 de la réunion du sport, du tourisme équestre et des poney-clubs."),
     Q("Où se trouve le siège de la FFE ?", ["À Saumur", "À Paris, place de la Concorde", "Au Parc équestre fédéral de Lamotte-Beuvron", "À Lausanne"], 2, "La FFE a son siège au Parc équestre fédéral, à Lamotte-Beuvron."),
     Q("De quelle réunion est né l'IFCE ?", ["Des Haras nationaux et de l'École nationale d'équitation", "De la FFE et de la FEI", "De France Galop et LeTrot", "Des clubs parisiens"], 0, "L'IFCE est né en 2010 de la réunion des Haras nationaux et de l'École nationale d'équitation."),
+    Q("Quel ministère encadre l'élevage et l'identification des chevaux ?", ["Le ministère de la Culture", "Le ministère des Transports", "Le ministère de la Justice", "Le ministère de l'Agriculture"], 3, "Le ministère de l'Agriculture encadre l'élevage, la santé et l'identification."),
     Q("Quel organisme tient le fichier SIRE ?", ["La FFE", "La FEI", "L'IFCE", "La SHF"], 2, "Le fichier central des équidés, le SIRE, est tenu par l'IFCE."),
     Q("Qui organise les courses au trot ?", ["France Galop", "La FFE", "LeTrot", "La SHF"], 2, "LeTrot organise les courses au trot ; France Galop, les courses au galop."),
     Q("Que fait la SHF ?", ["Elle délivre les Galops", "Elle organise les épreuves des jeunes chevaux de sport", "Elle organise les Jeux olympiques", "Elle tient les stud-books de toutes les races"], 1, "La Société hippique française organise les épreuves des jeunes chevaux.")
@@ -1845,11 +1879,13 @@ var COURS = [
   ] },
   quiz: [
     Q("Qui reconnaît le statut de sportif de haut niveau ?", ["Le club", "La FEI seule", "Le propriétaire du cheval", "Le ministère des Sports, sur proposition de la FFE"], 3, "Le statut est reconnu par le ministère des Sports, sur proposition de la fédération."),
+    Q("Quels droits peut donner le statut de sportif de haut niveau ?", ["Un cheval gratuit", "Aménagement des études ou du travail, aides, suivi médical", "Aucun", "Le droit de ne pas faire de concours"], 1, "Le statut donne notamment des aménagements, des aides et un suivi médical."),
     Q("Qu'est-ce qu'une olympiade ?", ["Une épreuve des Jeux", "Un championnat d'Europe", "La période de quatre ans entre deux Jeux olympiques", "Une équipe"], 2, "Les critères de haut niveau sont fixés pour une olympiade."),
     Q("Que contient le document « Saison sportive » ?", ["Les prix des chevaux", "Les objectifs, échéances et critères de sélection", "Les résultats du club", "Le règlement intérieur"], 1, "La FFE y présente ses objectifs, ses échéances et ses critères de sélection."),
     Q("À quoi servent les groupes cibles ?", ["À organiser l'accompagnement fédéral des couples", "À classer les chevaux par robe", "À choisir les juges", "À fixer le prix des licences"], 0, "Ils déterminent stages, entraînement et sélections."),
     Q("Pourquoi dit-on que le haut niveau se joue en couple ?", ["Parce qu'on monte à deux", "Parce que c'est une règle olympique", "Parce que le cavalier dépend de son cheval", "Parce qu'il faut un entraîneur"], 2, "Un cavalier peut perdre sa place si son cheval se blesse ou est vendu."),
     Q("Quelles disciplines équestres sont aux Jeux olympiques ?", ["Saut d'obstacles, dressage, concours complet", "Polo, endurance, voltige", "Attelage, reining, horse-ball", "Courses au galop"], 0, "Le saut d'obstacles, le dressage et le concours complet sont olympiques."),
+    Q("Quelle discipline paralympique existe en équitation ?", ["Le para-polo", "Le para-dressage", "Le para-cross", "Aucune"], 1, "Le para-dressage fait partie du haut niveau, avec ses propres championnats."),
     Q("Qu'est-ce qu'une Coupe des nations ?", ["Une compétition par équipes de pays", "Un trophée de club", "Un concours d'élevage", "Une course hippique"], 0, "Chaque pays y présente une équipe."),
     Q("Qu'est-ce qui compte le plus pour les sélectionneurs ?", ["Un seul exploit", "La couleur du cheval", "Le prix du cheval", "La régularité des résultats"], 3, "Des résultats réguliers au même niveau comptent plus qu'un seul exploit.")
   ]
@@ -1857,14 +1893,14 @@ var COURS = [
 
 /* ---------------------------------------------------------------------------------
    g9n-19 — L'EXAMEN DU GALOP 9   (comme g7n-16 et g8n-20)
-   — À VÉRIFIER par Blandine : organisation en modules et choix d'une partie spécifique
+   — 07/11 : niveaux vérifiés dans le programme FFE (dressage Amateur 1 GP, CSO « niveau Amateur », CCE Amateur 1) ; À VÉRIFIER : partie commune
    --------------------------------------------------------------------------------- */
 { id: "g9n-19", icone: "🏆", type: { fr: "culture" }, duree: { fr: "8 min" }, titre: { fr: "L'examen du Galop 9" },
   blocs: [
     { type: "couv-affiche", src: "images/galop9-hero-alezan.webp", couv: {} },
 
     B("Comment se passe l'examen", [
-      P("Le Galop 9 est le dernier Galop. Il vérifie que tu es un cavalier accompli : tu connais l'histoire et les institutions de l'équitation, tu sais entretenir la santé et la forme de ton cheval, tu le travailles finement à pied, et tu montes au niveau Amateur 1 dans la discipline de ton choix."),
+      P("Le Galop 9 est le dernier Galop. Il vérifie que tu es un cavalier accompli : tu connais l'histoire et les institutions de l'équitation, tu sais entretenir la santé et la forme de ton cheval, tu le travailles finement à pied, et tu montes au niveau Amateur dans la discipline de ton choix : reprise Amateur 1 Grand Prix en dressage, parcours Amateur en CSO, ou CCE Amateur 1."),
       S("👩‍🏫 Qui le fait passer ?", null, [
         "Un enseignant diplômé, licencié à la FFE pour l'année en cours, avec un code examinateur qui l'autorise à valider le Galop 9.",
         "Il peut t'évaluer pendant une session d'examen, ou petit à petit, pendant tes cours et tes stages.",
@@ -1917,10 +1953,14 @@ var COURS = [
   quiz: [
     Q("Le Galop 9 est…", ["Le premier Galop", "Un Galop poney", "Un diplôme d'enseignant", "Le dernier Galop"], 3, "Le Galop 9 est le dernier Galop du cursus fédéral."),
     Q("Quel Galop doit être validé avant le Galop 9 ?", ["Le Galop 6", "Le Galop 8", "Le Galop 7", "Aucun"], 1, "Le Galop 8 doit être validé avant le Galop 9."),
+    Q("Quel niveau de reprise présentes-tu en dressage ?", ["Amateur 1 Grand Prix", "Club 2", "Pro Élite", "Poney 1"], 0, "Le programme demande une reprise de niveau Amateur 1 Grand Prix."),
     Q("Qui peut faire passer le Galop 9 ?", ["N'importe quel cavalier confirmé", "Un juge de CSO", "Le propriétaire du cheval", "Un enseignant diplômé, licencié FFE, avec un code examinateur"], 3, "Seul un enseignant diplômé, licencié et autorisé peut valider le Galop 9."),
+    Q("Comment se prépare le Galop 9 ?", ["En une semaine", "Sur une saison, avec un calendrier fixé avec ton enseignant", "Seul, sans enseignant", "Sans cheval"], 1, "Connaissances au fil des semaines, travail à pied l'hiver, partie à cheval avec les concours."),
+    Q("En concours complet, quel est le niveau demandé ?", ["CCE Club 3", "CCE Pro 1", "Aucun", "CCE Amateur 1"], 3, "Le programme demande un test de dressage, un parcours d'obstacles et un cross de niveau CCE Amateur 1."),
     Q("Pour la pratique à cheval, que présentes-tu ?", ["Les trois disciplines", "La partie commune et une partie spécifique au choix", "Seulement du dressage", "Seulement du cross"], 1, "La partie commune pour tous, puis une partie spécifique : dressage, CSO ou complet."),
     Q("Que t'ouvre le Galop 9 ?", ["Seulement les compétitions Club", "Le permis de conduire un van", "Les compétitions Amateur et Pro, selon le règlement des épreuves", "Rien de plus"], 2, "Il ouvre l'accès aux compétitions Amateur et Pro, selon le règlement des épreuves."),
-    Q("Où retrouves-tu ton Galop une fois validé ?", ["Sur le livret de ton cheval", "Nulle part", "Au secrétariat de la mairie", "Dans ton espace cavalier sur le site de la FFE"], 3, "Ton enseignant l'enregistre en ligne ; tu le retrouves dans ton espace cavalier FFE.")
+    Q("Où retrouves-tu ton Galop une fois validé ?", ["Sur le livret de ton cheval", "Nulle part", "Au secrétariat de la mairie", "Dans ton espace cavalier sur le site de la FFE"], 3, "Ton enseignant l'enregistre en ligne ; tu le retrouves dans ton espace cavalier FFE."),
+    Q("Que peux-tu faire après le Galop 9, si tu veux transmettre ta passion ?", ["Rien", "Passer les tests d'entrée des diplômes d'enseignant", "Repasser le Galop 1", "Devenir juge immédiatement"], 1, "Le Galop 9 ouvre la voie aux tests d'entrée des diplômes d'enseignant et d'entraîneur.")
   ]
 }
 

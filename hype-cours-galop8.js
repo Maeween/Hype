@@ -11,7 +11,7 @@
 (function () {
 "use strict";
 if (typeof window === "undefined") return;
-var COURS_GALOP8_VERSION = 1; /* 07/11 (Blandine « Ok continue ») : les 20 cours g8n-01 … g8n-20 en français, branchés sur la page du Galop 8 (« Prochainement » : seules les modératrices les ouvrent), à relire avant traduction */
+var COURS_GALOP8_VERSION = 2; /* 07/11 : quiz à 10 questions partout (comme le Galop 7), relecture (débourrage : « Le savais-tu » remplacé) ; cours 15, « de ferme à ferme » précisé d'après le programme FFE */ /* v1 : */ /* 07/11 (Blandine « Ok continue ») : les 20 cours g8n-01 … g8n-20 en français, branchés sur la page du Galop 8 (« Prochainement » : seules les modératrices les ouvrent), à relire avant traduction */
 var S = function (titre, sous, puces) { var o = { k: "section", titre: titre }; if (sous) o.sous = sous; if (puces) o.puces = puces.map(function (p) { return typeof p === "string" ? { texte: p } : p; }); return o; };
 var P = function (texte) { return { k: "para", texte: texte }; };
 var E = function (emoji, titre, texte) { var o = { k: "encadre", emoji: emoji, texte: texte }; if (titre) o.titre = titre; return o; };
@@ -237,6 +237,8 @@ var COURS = [
   quiz: [
     Q("Quand on améliore la condition physique, que fait-on augmenter en premier ?", ["L'intensité", "La hauteur des obstacles", "Le nombre de concours", "La durée"], 3, "On augmente d'abord la durée, puis l'intensité, jamais les deux en même temps."),
     Q("Quelle partie du corps se renforce le plus lentement ?", ["Les tendons", "Le souffle", "Les muscles", "Le moral"], 0, "Les tendons ont besoin de plusieurs mois pour se renforcer, bien plus que le souffle et les muscles."),
+    Q("Que faut-il prévoir au moins une fois par semaine ?", ["Un concours", "Une séance de saut", "Un jour léger, et du temps au paddock ou au pré", "Une tonte"], 2, "Le repos fait partie de la condition physique : au moins un jour léger par semaine, et du temps dehors."),
+    Q("Comment se termine chaque séance ?", ["Par un galop rapide", "Par un saut", "Par un retour au calme au pas, jusqu'à un souffle calme", "Directement au box"], 2, "Le retour au calme au pas aide le cheval à récupérer avant de rentrer."),
     Q("Qu'appelle-t-on le travail de fond ?", ["Des sauts répétés", "Du galop rapide sur la piste", "Le travail du fond de la carrière", "De longues périodes au pas et au trot, sur des terrains variés"], 3, "Le travail de fond, au pas et au trot, souvent en extérieur, est la base de la condition physique."),
     Q("Pourquoi les montées sont-elles intéressantes ?", ["Elles fatiguent le cheval plus vite", "Elles remplacent la détente", "Elles évitent de ferrer", "Elles musclent l'arrière-main et le dos sans choc pour les membres"], 3, "Au pas puis au trot, les montées musclent l'arrière-main et le dos, en ménageant les membres."),
     Q("Un cheval en forme…", ["Reste essoufflé longtemps après l'effort", "Transpire beaucoup même au pas", "Est raide le lendemain", "Récupère vite au pas après l'effort"], 3, "Un cheval en forme retrouve vite un souffle calme au pas, après l'effort."),
@@ -344,10 +346,12 @@ var COURS = [
   quiz: [
     Q("Pourquoi tond-on un cheval en hiver ?", ["Pour qu'il ait plus chaud au pré", "Pour qu'il soit plus beau en photo", "Pour éviter les parasites", "Pour qu'il transpire moins au travail et sèche plus vite"], 3, "Avec un poil d'hiver épais, le cheval qui travaille transpire beaucoup et sèche lentement. La tonte l'aide à travailler et à sécher vite."),
     Q("Quelle tonte garde le poil sur les membres et à la place de la selle ?", ["La tonte de chasse", "La tonte complète", "La tonte irlandaise", "La tonte de couverture"], 0, "La tonte de chasse tond le corps mais garde le poil sur les membres et sous la selle."),
+    Q("Avec quoi traces-tu les limites de la tonte ?", ["Un feutre", "Une craie ou un morceau de savon sec", "De la peinture", "Rien, à l'œil"], 1, "La craie ou le savon sec permettent de tracer des limites symétriques des deux côtés."),
     Q("Quelle tonte convient à un cheval qui vit dehors et travaille peu ?", ["La tonte complète", "La tonte de chasse", "Aucune tonte n'est possible", "La tonte irlandaise"], 3, "La tonte irlandaise retire seulement le poil du bas de l'encolure, du poitrail et du ventre."),
     Q("Dans quel état doit être le cheval avant la tonte ?", ["Mouillé, pour que le poil soit plus souple", "Propre et parfaitement sec", "Juste après le travail", "Couvert"], 1, "Un poil sale ou humide bloque la tondeuse et donne une tonte irrégulière."),
     Q("Dans quel sens tonds-tu ?", ["À rebrousse-poil", "Dans le sens du poil", "En travers du poil", "Peu importe"], 0, "On tond à rebrousse-poil, par longs passages qui se chevauchent un peu."),
     Q("Les lames de ta tondeuse deviennent chaudes. Que fais-tu ?", ["Je continue plus vite", "Je les mouille", "Je fais une pause, je les nettoie et je les graisse", "J'appuie moins fort"], 2, "Des lames chaudes brûlent la peau : on s'arrête, on nettoie, on graisse et on laisse refroidir."),
+    Q("Par quelle zone commences-tu la tonte ?", ["La tête", "Entre les postérieurs", "Une zone peu sensible, comme l'épaule", "Les oreilles"], 2, "On commence par une zone peu sensible ; les zones délicates viennent à la fin."),
     Q("Que ne faut-il jamais tondre ?", ["L'épaule", "Le ventre", "Le poitrail", "L'intérieur des oreilles et les vibrisses"], 3, "Les poils des oreilles protègent des insectes et de la poussière ; les vibrisses servent au toucher."),
     Q("Que fais-tu juste après la tonte ?", ["Je mets le cheval au pré sans couverture", "Je le douche", "Je le monte pour l'échauffer", "Je le brosse et je le couvre aussitôt"], 3, "On retire les poils coupés et on couvre tout de suite le cheval, qui a perdu sa protection.")
   ]
@@ -449,7 +453,9 @@ var COURS = [
     Q("Que doit permettre l'enrênement au moment du saut ?", ["Laisser le cheval étendre librement son encolure", "Tenir la tête haute", "Bloquer l'encolure", "Empêcher le cheval de baisser la tête"], 0, "Au saut, le cheval a besoin de son encolure : un enrênement fixe se détache ou se règle assez long avant de sauter."),
     Q("Où places-tu l'obstacle ?", ["Au centre de la carrière", "En dehors du cercle", "Sur le cercle de longe, le long du mur ou de la lice", "Dans un coin"], 2, "Le long du mur, le cheval n'est pas tenté de contourner l'obstacle par l'extérieur."),
     Q("À quoi sert la barre posée en biais sur le chandelier intérieur ?", ["À faire glisser la longe sans qu'elle s'accroche", "À rendre l'obstacle plus haut", "À guider le cheval vers l'extérieur", "À rien, c'est décoratif"], 0, "Posée en biais, la barre fait glisser la longe par-dessus le chandelier au moment du saut."),
+    Q("Que fais-tu avant de faire sauter ton cheval à la longe ?", ["Je le fais sauter tout de suite", "Je le monte d'abord", "Je le détends à la longe aux trois allures, aux deux mains", "Rien"], 2, "Un cheval non détendu risque de se blesser ou de mal sauter."),
     Q("Que fais-tu de la longe au moment du saut ?", ["Je rends de la longe pour ne pas tirer sur le caveçon", "Je la tends pour tenir le cheval", "Je la lâche complètement", "Je la raccourcis"], 0, "La longe ne doit jamais tirer sur le caveçon pendant le saut : on rend, puis on reprend doucement à la réception."),
+    Q("Comment termines-tu la séance ?", ["Par un saut facile et un retour au calme au pas", "Par le saut le plus haut", "Par un galop rapide", "Par un refus"], 0, "On termine sur une réussite facile, puis on revient au calme au pas."),
     Q("Pendant l'abord, où te places-tu ?", ["Immobile au centre du cercle", "Derrière le cheval", "De l'autre côté de l'obstacle", "Tu te déplaces parallèlement à la ligne du cheval"], 3, "En accompagnant l'abord, tu gardes ton cheval droit face à l'obstacle."),
     Q("Par quoi commences-tu la progression ?", ["Un oxer", "Un vertical", "Un mur", "Une barre au sol"], 3, "On commence par une barre au sol, puis un croisillon, puis un petit vertical."),
     Q("Pourquoi faire sauter un jeune cheval à la longe ?", ["Pour lui faire découvrir l'obstacle sans la gêne du cavalier", "Pour le fatiguer", "Pour monter haut rapidement", "Pour remplacer le travail monté"], 0, "Sans cavalier, le jeune cheval découvre l'obstacle et cherche son équilibre librement.")
@@ -547,8 +553,10 @@ var COURS = [
   ] },
   quiz: [
     Q("Où passe la rêne extérieure, sur une courbe ?", ["Par l'anneau extérieur du surfaix, puis autour de l'arrière-main, au-dessus des jarrets", "Directement de la bouche à la main", "Sous le ventre", "Entre les antérieurs"], 0, "Elle passe par l'anneau extérieur du surfaix puis contourne l'arrière-main, au-dessus des jarrets."),
+    Q("Que fais-tu de l'excédent de rêne ?", ["Je l'enroule autour de ma main", "Je le plie dans ma main, sans boucle qui pend", "Je le laisse traîner", "Je le noue au surfaix"], 1, "L'excédent est plié dans la main : jamais de boucle qui pend ni de rêne enroulée autour de la main."),
     Q("Où te places-tu sur un cercle ?", ["Juste derrière le cheval", "Devant la tête du cheval", "À hauteur de la hanche, côté intérieur, sur un cercle plus petit", "À l'extérieur du cercle"], 2, "Tu marches côté intérieur, à hauteur de la hanche, sur un cercle plus petit que celui du cheval."),
     Q("Quel est le rôle de la rêne extérieure ?", ["Demander l'incurvation", "Limiter l'incurvation et garder les hanches sur la courbe", "Freiner uniquement", "Aucun"], 1, "La rêne intérieure incurve ; l'extérieure limite l'incurvation et contrôle les hanches."),
+    Q("Sur un cercle, où marches-tu ?", ["Sur le même cercle que le cheval", "À l'extérieur du cercle", "En ligne droite", "Sur un cercle plus petit, à l'intérieur du sien"], 3, "Tu marches sur un cercle plus petit, à l'intérieur de celui du cheval."),
     Q("Avant de changer de courbe, que fais-tu ?", ["Je redresse le cheval sur quelques foulées", "Je tire sur la nouvelle rêne intérieure", "Je m'arrête", "Je passe devant le cheval"], 0, "On redresse d'abord le cheval, puis on l'incurve de l'autre côté."),
     Q("Au galop, comment s'organise le travail ?", ["Le cheval sur un petit cercle, toi qui cours à côté", "En ligne droite uniquement", "Le galop est interdit aux longues rênes", "Le cheval sur un grand cercle, toi sur un petit cercle au centre"], 3, "Le cheval galope sur un grand cercle ; tu marches sur un petit cercle au centre."),
     Q("Pourquoi éviter que la rêne extérieure descende sous les jarrets ?", ["Elle s'use plus vite", "Le cheval peut se prendre dedans", "Elle ne sert plus à rien", "Elle fait avancer trop vite"], 1, "Trop basse, la rêne risque de se coincer entre les postérieurs."),
@@ -650,8 +658,10 @@ var COURS = [
   ] },
   quiz: [
     Q("Pour faire avancer un cheval en liberté, où te places-tu ?", ["En arrière de son épaule, vers ses hanches", "Devant son épaule", "Devant sa tête", "N'importe où"], 0, "Placé en arrière de l'épaule, vers les hanches, tu pousses le cheval vers l'avant."),
+    Q("Pour changer de main en liberté, que fais-tu ?", ["Je cours derrière lui", "Je lui lance la chambrière", "Je coupe sa route en me plaçant devant lui, à bonne distance", "J'attends qu'il change seul"], 2, "En te plaçant devant lui à bonne distance, tu l'invites à se retourner."),
     Q("Pour le ralentir, que fais-tu ?", ["Je cours derrière lui", "Je lève la chambrière", "Je crie", "Je m'avance vers l'avant de son épaule et je baisse la chambrière"], 3, "Devant l'épaule, chambrière basse et voix calme, le cheval ralentit."),
     Q("Où se trouve le couloir d'obstacles ?", ["Au centre du manège, ouvert des deux côtés", "Le long du mur, fermé de l'autre côté sur toute sa longueur", "En diagonale", "Dans un coin"], 1, "Le couloir longe le mur et est fermé de l'autre côté : le cheval n'a qu'un chemin."),
+    Q("Que porte le cheval pendant le travail en liberté ?", ["Une selle avec les étriers qui pendent", "Un enrênement court", "Une longe", "Des protections, sans rênes ni étriers qui pendent"], 3, "Le cheval porte des protections, mais rien qui puisse pendre ou s'accrocher."),
     Q("Où ne doit jamais se tenir une aide ?", ["Sur le côté du couloir", "Dans le couloir ou à la sortie d'un obstacle quand le cheval y est engagé", "À l'entrée, sur le côté", "Près des chandeliers, hors du couloir"], 1, "Personne ne reste dans la trajectoire du cheval quand il est engagé dans le couloir."),
     Q("Le cheval se précipite dans le couloir. Que fais-tu ?", ["Je monte les obstacles", "J'ajoute des obstacles", "Je le fais passer plus souvent", "Je baisse les obstacles et je ralentis l'entrée"], 3, "On facilite : obstacles plus bas, entrée plus calme, séance plus courte."),
     Q("Que demande le programme du Galop 8, en plus de travailler le cheval en liberté ?", ["Monter le cheval sans selle", "Faire sauter plus haut qu'à la longe", "Travailler deux chevaux à la fois", "Donner les consignes techniques à ses aides"], 3, "Tu dois organiser le travail et expliquer à chaque aide son rôle."),
@@ -763,10 +773,12 @@ var COURS = [
   quiz: [
     Q("Qu'est-ce qu'un stud-book ?", ["Un carnet de vaccination", "Un règlement de concours", "Un manuel d'équitation", "Le livre généalogique d'une race"], 3, "Le stud-book est le livre où sont inscrits les animaux d'une race, avec ses règles d'inscription."),
     Q("Quelles sont les deux grandes races de chevaux de sang ?", ["Le Selle Français et le KWPN", "Le Pur-sang et l'Arabe", "Le Percheron et le Boulonnais", "Le Welsh et le Connemara"], 1, "Le Pur-sang et l'Arabe sont les deux grandes races de chevaux de sang."),
+    Q("Quel fichier enregistre en France les chevaux inscrits dans une race ?", ["Le SIRE, géré par l'IFCE", "La licence FFE", "Le registre du club", "Le carnet de vaccination"], 0, "Les inscriptions sont enregistrées dans le fichier central des équidés, le SIRE."),
     Q("L'Anglo-arabe est un croisement de…", ["Arabe et Trotteur", "Pur-sang et Arabe", "Selle Français et Pur-sang", "Arabe et Percheron"], 1, "L'Anglo-arabe, race française, est issu du Pur-sang et de l'Arabe."),
     Q("Quelle est la grande race de sport française, réputée pour le saut ?", ["Le Selle Français", "Le Trotteur Français", "Le Camargue", "Le Comtois"], 0, "Le Selle Français est la grande race de sport française, réputée en CSO."),
     Q("Laquelle de ces races est une race de trait ?", ["Le Lusitanien", "Le Connemara", "Le Percheron", "L'Appaloosa"], 2, "Le Percheron fait partie des neuf races de trait françaises."),
     Q("Quelle race est un poney de sport français ?", ["Le Shetland", "Le Fjord", "Le Poney Français de Selle", "Le Haflinger"], 2, "Le Poney Français de Selle est sélectionné pour le sport des jeunes cavaliers."),
+    Q("Combien de races de chevaux de trait compte la France ?", ["Trois", "Quinze", "Une seule", "Neuf"], 3, "La France compte neuf races de chevaux de trait."),
     Q("Un mulet naît…", ["D'un cheval et d'une ânesse", "De deux ânes", "D'un poney et d'une jument", "D'un âne et d'une jument"], 3, "Le mulet naît d'un âne et d'une jument ; le bardot, d'un cheval et d'une ânesse."),
     Q("Un cheval est pie. Que peux-tu en conclure sur sa race ?", ["C'est un Paint Horse", "Rien : la robe ne suffit pas à connaître la race", "C'est un Appaloosa", "C'est un poney"], 1, "Beaucoup de races ont des chevaux pie : la race se vérifie sur le livret.")
   ]
@@ -793,7 +805,7 @@ var COURS = [
         { gras: "La récompense :", texte: "la voix, une caresse, l'arrêt de la demande, dès que le cheval fait ce qu'on attend." },
         { gras: "La patience et le calme :", texte: "on ne brusque jamais, on ne punit pas une peur." }
       ]),
-      E("💡", "Le savais-tu ?", "Le mot débourrer vient de la « bourre », le poil laineux du jeune animal. Débourrer, c'était à l'origine retirer cette bourre, puis, peu à peu, dégrossir un jeune cheval.")
+      E("💡", "Le savais-tu ?", "Le cheval a une excellente mémoire : une bonne expérience au débourrage le rend confiant pour longtemps, et une mauvaise peut le marquer pendant des années.")
     ]),
 
     B("Les étapes du débourrage", [
@@ -863,8 +875,10 @@ var COURS = [
   quiz: [
     Q("Qu'est-ce que débourrer un cheval ?", ["Le tondre pour la première fois", "Le sevrer", "Lui apprendre à accepter le harnachement puis le cavalier", "Le ferrer"], 2, "Débourrer, c'est apprendre au jeune cheval à accepter le harnachement, puis le cavalier."),
     Q("À quel âge débourre-t-on le plus souvent un cheval ?", ["À 1 an", "Vers 3 ans", "À 7 ans", "Juste après le sevrage"], 1, "Le plus souvent vers trois ans, quand le cheval est assez développé."),
+    Q("Que fait-on avec le poulain bien avant le débourrage ?", ["Rien, on attend ses trois ans", "On le fait sauter", "On le monte doucement", "On le manipule : licol, menée en main, pieds, pansage"], 3, "Un poulain bien manipulé jeune se débourre bien plus facilement."),
     Q("Quel principe est essentiel au débourrage ?", ["Aller vite", "Des séances très longues", "Une seule nouveauté à la fois", "Punir chaque erreur"], 2, "On avance pas à pas : une nouveauté à la fois, et on passe à la suite quand l'étape est acquise."),
     Q("Que fait-on avant de poser la selle ?", ["On monte directement", "On saute un obstacle", "On fait découvrir le surfaix, sanglé progressivement", "On part en promenade"], 2, "Le surfaix habitue le cheval à la sangle avant la selle."),
+    Q("Comment récompenses-tu un jeune cheval ?", ["Par du sucre à chaque pas", "En le laissant partir au galop", "Par la voix, une caresse ou l'arrêt de la demande", "On ne récompense pas un jeune cheval"], 2, "La récompense vient tout de suite : voix, caresse, arrêt de la demande."),
     Q("Pourquoi des séances courtes ?", ["Parce qu'un jeune cheval se concentre peu de temps", "Pour gagner du temps", "Pour l'épuiser plus vite", "Parce que c'est le règlement"], 0, "Le jeune cheval se fatigue et perd son attention vite : peu, mais souvent."),
     Q("Pour la première fois qu'un cavalier monte, combien de personnes faut-il ?", ["Une seule, le cavalier", "Au moins deux : une à la tête et le cavalier", "Aucune, le cheval est en liberté", "Toute l'écurie"], 1, "On est toujours au moins deux : une personne à la tête, le cavalier léger et expérimenté."),
     Q("Un jeune cheval a peur d'un sac plastique. Que fais-tu ?", ["Je le punis", "Je l'éloigne pour toujours du sac", "Je l'habitue progressivement, dans le calme", "Je le monte pour le forcer"], 2, "On ne punit pas une peur : on désensibilise pas à pas, en récompensant le calme."),
@@ -972,8 +986,10 @@ var COURS = [
   ] },
   quiz: [
     Q("Lequel de ces signes évoque des coliques ?", ["Le cheval regarde son flanc et gratte le sol", "Le cheval mange plus vite", "Le cheval hennit", "Le cheval a les oreilles en avant"], 0, "Regarder son flanc, gratter, se coucher et se relever sont des signes typiques de coliques."),
+    Q("Quel signe peut accompagner un coup de sang ?", ["Un appétit très fort", "Des urines foncées, brun-rouge", "Un poil plus brillant", "Des oreilles en avant"], 1, "Des urines foncées peuvent apparaître, car les muscles se détruisent."),
     Q("Ton cheval a des coliques. Que retires-tu du box ?", ["L'eau", "La litière", "La nourriture", "Rien"], 2, "On retire la nourriture et on laisse l'eau, en attendant le vétérinaire."),
     Q("Un cheval en coliques cherche à se rouler violemment. Que fais-tu ?", ["Je le laisse faire", "Je le fais trotter longtemps", "Je le fais marcher calmement au pas, en main", "Je l'attache très court"], 2, "On le fait marcher calmement, sans l'épuiser, en restant en sécurité."),
+    Q("Ton cheval a des coliques. Que fais-tu en attendant le vétérinaire ?", ["Je note l'heure des premiers signes, ce qu'il a mangé et ses crottins", "Je lui donne un médicament", "Je le monte pour le distraire", "Je lui donne à manger"], 0, "Ces observations aident le vétérinaire ; aucun médicament sans son avis."),
     Q("Quand survient le plus souvent un coup de chaleur ?", ["Au box, en hiver", "Pendant un effort par temps chaud et humide", "Après la tonte", "Au pré, la nuit"], 1, "Le coup de chaleur survient surtout pendant un effort par temps chaud et humide."),
     Q("Comment refroidir un cheval en coup de chaleur ?", ["Une seule douche, puis on le couvre", "On le fait galoper pour qu'il transpire", "Des douches fraîches répétées, en raclant l'eau entre chaque", "On le met au soleil"], 2, "On douche abondamment, on racle l'eau qui chauffe sur lui, et on recommence."),
     Q("Quels muscles touche surtout le coup de sang ?", ["Ceux de la croupe et du dos", "Ceux de l'encolure", "Ceux des membres antérieurs", "Ceux de la tête"], 0, "Le coup de sang touche surtout les muscles de la croupe et du dos."),
@@ -1072,7 +1088,9 @@ var COURS = [
     Q("Pourquoi le dopage est-il interdit ?", ["Parce qu'il coûte cher", "Parce qu'il fatigue le cheval", "Il n'est interdit qu'en international", "Parce qu'il met la santé en danger et fausse la compétition"], 3, "Le dopage met en danger la santé du cheval et du cavalier et fausse l'équité sportive."),
     Q("Pourquoi les antidouleurs sont-ils interdits en compétition ?", ["Ils rendent le cheval trop calme", "Ils changent la couleur de la robe", "Un cheval qui ne sent plus sa douleur peut se blesser gravement", "Ils ne sont pas interdits"], 2, "En masquant la douleur, ils exposent le cheval à une blessure grave."),
     Q("Qui décide des contrôles antidopage en France ?", ["Le chef de piste", "Le propriétaire", "Le moniteur", "L'AFLD"], 3, "L'Agence française de lutte contre le dopage décide et suit les contrôles."),
+    Q("Pourquoi se méfier des compléments alimentaires ?", ["Ils sont toujours interdits", "Ils font grossir", "Leur composition peut contenir une substance interdite", "Ils coûtent cher"], 2, "Un complément mal connu peut contenir une substance interdite et entraîner un contrôle positif."),
     Q("Ton cheval est soigné avec une substance interdite. Que fais-tu ?", ["Je concours avec l'ordonnance", "Il ne concourt pas tant que la substance n'est pas éliminée", "Je change de concours", "Rien"], 1, "Une ordonnance ne permet pas de concourir : il faut attendre l'élimination de la substance."),
+    Q("Que dois-tu garder avec toi en concours si ton cheval a été soigné ?", ["L'ordonnance", "La facture du foin", "Son pedigree", "Rien"], 0, "En cas de contrôle, l'ordonnance se présente au vétérinaire préleveur."),
     Q("Qui est sanctionné en cas de contrôle positif du cheval ?", ["Personne si c'était sans le vouloir", "Le vétérinaire", "L'organisateur", "La personne responsable du cheval"], 3, "La personne responsable est sanctionnée, même si la substance a été donnée sans le vouloir."),
     Q("Pour le cavalier, quelle liste s'applique ?", ["Celle de l'Agence mondiale antidopage", "Celle de la FEI pour les chevaux", "Aucune", "Celle du club"], 0, "Le cavalier est soumis à la liste de l'AMA, comme tous les sportifs."),
     Q("Le cannabis est-il autorisé pour le cavalier ?", ["Oui, en dehors des concours internationaux", "Non, c'est un stupéfiant et il est interdit en compétition", "Oui, en petite quantité", "Seulement le soir"], 1, "Le cannabis est un stupéfiant en France et une substance interdite en compétition."),
@@ -1184,13 +1202,15 @@ var COURS = [
   ] },
   quiz: [
     Q("Combien de points compte l'échelle de progression ?", ["Trois", "Six", "Quatre", "Dix"], 1, "L'échelle compte six points, de la correction de l'allure au rassembler."),
+    Q("Quelle est la différence entre rythme et cadence ?", ["Aucune", "Le rythme est la vitesse", "Le rythme est la répartition des temps de l'allure, la cadence la fréquence des foulées", "La cadence est la longueur de la foulée"], 2, "Le rythme, c'est le nombre et la régularité des temps ; la cadence, la fréquence des foulées."),
     Q("Quel est le premier point de l'échelle ?", ["La rectitude", "La correction de l'allure", "Le contact", "La propulsion"], 1, "On commence par la correction de l'allure : rythme, vitesse et cadence."),
     Q("Combien de temps compte le trot ?", ["Trois", "Quatre", "Deux", "Un"], 2, "Le trot est une allure à deux temps ; le pas en a quatre, le galop trois."),
     Q("Qu'est-ce que la décontraction ?", ["L'état d'esprit calme du cheval", "L'état physique, sans raideur", "La vitesse du cheval", "Le placer de la tête"], 0, "La décontraction est mentale ; la souplesse, physique."),
     Q("Comment tester la souplesse et la décontraction ?", ["En laissant filer les rênes : le cheval s'étend vers l'avant et le bas sans changer d'allure", "En galopant vite", "En tirant sur les rênes", "En sautant un obstacle"], 0, "Le cheval souple et décontracté étend son encolure vers l'avant et le bas quand on laisse filer les rênes."),
     Q("D'où vient un bon contact ?", ["De la main qui tire", "D'une muserolle serrée", "D'un enrênement", "De l'énergie des postérieurs transmise par un dos souple"], 3, "C'est le cheval qui vient chercher la main, grâce à l'énergie de ses postérieurs."),
     Q("Quel est l'un des intérêts des transitions ?", ["Fatiguer le cheval", "Remplacer la détente", "Faire travailler les postérieurs", "Éviter le contact"], 2, "Les transitions engagent les postérieurs, rendent le cheval attentif et améliorent son équilibre."),
-    Q("Dans une transition descendante, le cheval doit…", ["Tomber sur les épaules", "Garder l'activité de ses postérieurs", "Lever la tête", "Ralentir sa cadence au maximum"], 1, "Dans une transition descendante, il continue à pousser avec ses postérieurs.")
+    Q("Dans une transition descendante, le cheval doit…", ["Tomber sur les épaules", "Garder l'activité de ses postérieurs", "Lever la tête", "Ralentir sa cadence au maximum"], 1, "Dans une transition descendante, il continue à pousser avec ses postérieurs."),
+    Q("Combien de temps compte le pas ?", ["Deux", "Quatre", "Trois", "Un"], 1, "Le pas est une allure à quatre temps égaux.")
   ]
 },
 
@@ -1301,9 +1321,11 @@ var COURS = [
     Q("Ton cheval est chaud et excité. Que privilégies-tu pendant la détente ?", ["Du galop pour le fatiguer", "Un travail calme et régulier sur des courbes", "Des sauts", "Aucune détente"], 1, "Un travail calme et régulier, qui l'occupe, l'aide à se poser."),
     Q("Dans l'attitude rond et bas, où se trouve le chanfrein ?", ["Derrière la verticale", "À l'horizontale", "Peu importe", "En avant de la verticale"], 3, "Le chanfrein reste en avant de la verticale : le cheval ne s'encapuchonne pas."),
     Q("Comment obtiens-tu un cheval rond et bas ?", ["En tirant les rênes vers le bas", "En raccourcissant les rênes", "En ralentissant au maximum", "À partir d'un cheval en avant, en avançant doucement les mains avec le contact"], 3, "Le cheval en avant suit la main qui avance doucement ; les jambes gardent l'impulsion."),
+    Q("Pour une séance en extérieur ou de cross, comment adaptes-tu la détente ?", ["Plus courte", "Un peu plus longue au galop, pour préparer le souffle", "Sans pas", "Uniquement au trot assis"], 1, "On prépare le souffle par une détente un peu plus longue au galop."),
     Q("Ton cheval baisse la tête en tombant sur les épaules. Que fais-tu ?", ["Je le laisse faire", "Je tire sur les rênes", "Je m'arrête", "Je le remets en avant et je recommence"], 3, "Un cheval qui tombe sur les épaules ne travaille plus avec son dos : on le remet en avant."),
     Q("Que demande le programme du Galop 8 sur la demande faite au cheval ?", ["De toujours demander la même chose", "De demander plus fort", "De ne rien demander", "De l'adapter au fonctionnement du cheval pour l'améliorer"], 3, "On observe les qualités et difficultés du cheval, puis on adapte."),
-    Q("Ton cheval vient de bien réussir un exercice difficile. Que fais-tu ?", ["Je le récompense et je passe à autre chose", "Je le refais dix fois", "Je rends l'exercice encore plus difficile", "J'arrête la séance sans le récompenser"], 0, "On s'arrête sur une réussite : le cheval retient ce qui a été récompensé.")
+    Q("Ton cheval vient de bien réussir un exercice difficile. Que fais-tu ?", ["Je le récompense et je passe à autre chose", "Je le refais dix fois", "Je rends l'exercice encore plus difficile", "J'arrête la séance sans le récompenser"], 0, "On s'arrête sur une réussite : le cheval retient ce qui a été récompensé."),
+    Q("Combien de temps prend en général une bonne détente ?", ["Deux minutes", "Une heure et demie", "Aucune détente", "Au moins un quart d'heure"], 3, "Une bonne détente prend en général au moins un quart d'heure.")
   ]
 },
 
@@ -1409,7 +1431,9 @@ var COURS = [
     Q("Quand le cheval allonge, que doit faire la cadence ?", ["Rester la même", "Accélérer", "Ralentir beaucoup", "Peu importe"], 0, "La foulée s'allonge, la cadence reste la même : sinon, le cheval court."),
     Q("Dans l'épaule en dedans, où sont les antérieurs ?", ["Sur une piste intérieure, parallèle à celle des postérieurs", "Sur la même piste que les postérieurs", "Croisés devant les postérieurs", "À l'extérieur de la piste"], 0, "Les antérieurs sont sur une piste intérieure, parallèle à celle des postérieurs : le cheval se déplace sur trois pistes."),
     Q("Dans un déplacement latéral, comment restes-tu ?", ["Assis au milieu, buste droit, épaules parallèles à celles du cheval", "Penché du côté du déplacement", "En équilibre en suspension", "Penché en arrière"], 0, "Tu restes assis au milieu, sans te pencher, le poids un peu plus dans l'étrier du côté du déplacement."),
+    Q("Qu'est-ce que l'amplitude ?", ["La vitesse", "La hauteur de la tête", "La longueur de la foulée", "Le nombre de temps"], 2, "L'amplitude est la longueur de la foulée."),
     Q("Ton cheval ralentit dans une cession à la jambe. Que fais-tu ?", ["Je l'arrête", "Je raccourcis les rênes", "J'active avec mes jambes pour garder la cadence", "Je continue sans rien faire"], 2, "La cadence doit rester celle de la ligne droite : les jambes l'entretiennent."),
+    Q("Dans un déplacement latéral, où descend un peu plus ton poids ?", ["Dans l'étrier opposé", "Sur l'encolure", "Nulle part", "Dans l'étrier du côté du déplacement"], 3, "Ton poids descend un peu plus dans l'étrier du côté où le cheval se déplace, sans casser ta hanche."),
     Q("Pourquoi éviter d'incurver seulement l'encolure ?", ["Parce que c'est trop facile", "Parce que le cheval tombe alors sur l'épaule extérieure", "Parce que c'est interdit en concours", "Parce qu'il accélère"], 1, "Tout le corps s'incurve ; une encolure trop pliée fait tomber le cheval sur l'épaule extérieure.")
   ]
 },
@@ -1514,10 +1538,12 @@ var COURS = [
     Q("Quelle est la différence entre appuyer et cession à la jambe ?", ["Aucune", "Dans la cession, le cheval est plié à l'opposé du déplacement ; dans l'appuyer, vers le déplacement", "L'appuyer se fait uniquement au pas", "La cession se fait en reculant"], 1, "C'est le sens du pli qui les distingue."),
     Q("Dans un appuyer à droite, quelle jambe pousse le cheval de côté ?", ["La jambe gauche, en arrière", "La jambe droite, à la sangle", "Les deux jambes ensemble", "Aucune"], 0, "La jambe extérieure, en arrière, pousse ; la jambe intérieure garde l'incurvation et l'impulsion."),
     Q("Quel exercice prépare bien l'appuyer ?", ["Le reculer", "L'épaule en dedans", "Le contre-galop", "Le saut"], 1, "L'épaule en dedans met le cheval incurvé, les épaules en avant : il ne reste qu'à l'emmener de côté."),
+    Q("Dans l'appuyer, quels membres croisent devant les autres ?", ["Les intérieurs devant les extérieurs", "Aucun", "Les membres extérieurs devant les intérieurs", "Seulement les postérieurs"], 2, "Les membres extérieurs croisent devant les membres intérieurs."),
     Q("Dans la cession à la jambe au galop, comment est le cheval ?", ["Droit, sans incurvation", "Très incurvé", "Plié vers l'extérieur", "Au pas"], 0, "Le programme demande une cession sans incurvation au galop."),
     Q("Qu'est-ce que le contre-galop ?", ["Un galop très lent", "Un galop à faux volontaire", "Un galop désuni", "Un galop en arrière"], 1, "C'est un galop volontaire sur le pied extérieur de la courbe."),
     Q("Au contre-galop, de quel côté est plié le cheval ?", ["Du côté de la courbe", "Il n'est pas plié", "Du côté du pied sur lequel il galope", "Vers le mur"], 2, "Le cheval reste légèrement plié vers le pied du galop."),
-    Q("Pour commencer le contre-galop, quelle courbe choisis-tu ?", ["Une volte de 6 m", "Un coin serré", "Une serpentine de 5 boucles", "Un grand cercle ou un demi-cercle de 20 m"], 3, "On commence sur une courbe large ; on la resserre plus tard, quand l'équilibre est acquis.")
+    Q("Pour commencer le contre-galop, quelle courbe choisis-tu ?", ["Une volte de 6 m", "Un coin serré", "Une serpentine de 5 boucles", "Un grand cercle ou un demi-cercle de 20 m"], 3, "On commence sur une courbe large ; on la resserre plus tard, quand l'équilibre est acquis."),
+    Q("Au galop, vers quel côté le cheval se déplace-t-il le plus facilement en cession ?", ["Vers le côté opposé", "Vers le côté du pied sur lequel il galope", "Il ne peut pas se déplacer", "Vers l'arrière"], 1, "C'est pour ça qu'on demande d'abord la cession vers le côté du galop.")
   ]
 },
 
@@ -1526,17 +1552,17 @@ var COURS = [
    changer de pied au galop d'une phase de galop « ferme » à une autre ; changer de pied en l'air ;
    contrôler la rectitude en ligne droite, sur les courbes et dans les transitions ; présenter une reprise Amateur 2 GP)
    — remplace l'ancien titre « Dressage Amateur 2 » (g8-c14 du sommaire)
-   — À VÉRIFIER par Blandine : sens exact de « d'une phase de galop ferme à une autre »
+   — 07/11 : programme FFE vérifié, mot pour mot « Changer de pied au galop de ferme à ferme » = galop, transition directe au pas, 3 à 5 foulées de pas, galop sur l'autre pied
    --------------------------------------------------------------------------------- */
 { id: "g8n-15", icone: "🎩", type: { fr: "pratique" }, duree: { fr: "11 min" }, titre: { fr: "Dressage : changements de pied et reprise Amateur 2" },
   blocs: [
     { type: "couv-affiche", src: "images/galop5-video-dressage.webp", couv: {} },
 
     B("Changer de pied de ferme à ferme", [
-      P("Au Galop 8, tu apprends à changer de pied au galop, d'abord en repassant par une allure plus lente, puis en l'air. Le programme demande de passer d'une phase de galop bien établi, « ferme », à une autre."),
+      P("Au Galop 8, tu apprends à changer de pied au galop, d'abord en repassant par une allure plus lente, puis en l'air. Le programme parle de changer de pied « de ferme à ferme » : on passe d'un galop bien établi au pas, puis du pas à un nouveau galop bien établi, sans jamais trotter."),
       S("🔁 Le changement de pied simple", null, [
         "Ton cheval galope sur un pied, dans un galop régulier et équilibré.",
-        "Tu reviens au pas, quelques foulées, nettement, sans passer par le trot.",
+        "Tu reviens au pas directement, sans passer par le trot, et tu marches trois à cinq foulées.",
         "Tu repars aussitôt au galop sur l'autre pied, dans un départ franc.",
         "Le cheval reste droit et dans le contact pendant tout le changement."
       ]),
@@ -1624,7 +1650,9 @@ var COURS = [
     Q("Du galop à gauche au galop à droite, quelle jambe se recule ?", ["La jambe droite", "Aucune", "La jambe gauche", "Les deux"], 2, "La jambe gauche devient extérieure : elle se recule pour tenir les hanches et appeler le nouveau postérieur externe."),
     Q("Qu'est-ce qui prépare le mieux le changement en l'air ?", ["Un galop rapide", "Des sauts d'obstacles", "Un galop équilibré et droit, des départs francs sur les deux pieds", "Un cheval fatigué"], 2, "Un galop sauteur, un cheval droit et des départs francs : le changement se prépare avant la demande."),
     Q("Au galop, quelle faute de rectitude est fréquente ?", ["La tête trop basse", "Le cheval trop lent", "Les hanches qui rentrent vers l'intérieur", "Les oreilles en arrière"], 2, "Au galop, les hanches ont tendance à rentrer vers l'intérieur."),
+    Q("Qu'est-ce que la rectitude ?", ["Une tête bien haute", "Le cheval droit : ses postérieurs suivent la trace de ses antérieurs", "Un galop rapide", "Une reprise sans faute"], 1, "Un cheval droit a ses postérieurs dans la trace de ses antérieurs, en ligne droite et sur les courbes."),
     Q("Sur quel rectangle se monte la reprise Amateur 2 Grand Prix ?", ["60 m sur 20 m", "40 m sur 20 m", "20 m sur 20 m", "80 m sur 40 m"], 0, "Elle se monte sur un rectangle de 60 m sur 20 m."),
+    Q("Que veut dire changer de pied « de ferme à ferme » ?", ["Changer de pied en l'air", "Changer de pied au trot", "S'arrêter et reculer", "Galop, pas directement, quelques foulées de pas, galop sur l'autre pied"], 3, "On passe directement du galop au pas, on marche trois à cinq foulées, puis on repart sur l'autre pied, sans trotter."),
     Q("Où trouves-tu la version à jour de la reprise ?", ["Dans un vieux livre", "Chez le maréchal-ferrant", "Nulle part", "Sur le site de la FFE"], 3, "Les reprises changent régulièrement : on prend toujours la version en vigueur sur le site de la FFE."),
     Q("Ton cheval accélère à chaque changement de pied en l'air. Que fais-tu ?", ["Je le lance encore plus", "Je reviens aux changements simples et au galop équilibré", "J'arrête le dressage", "Je change de cheval"], 1, "On revient aux bases : galop équilibré, changements simples, puis on redemande.")
   ]
@@ -1731,6 +1759,8 @@ var COURS = [
     Q("Qu'est-ce qu'un contrat de foulées ?", ["Un document signé avec l'organisateur", "Le nombre de foulées prévu entre deux obstacles", "Le temps accordé", "La hauteur des obstacles"], 1, "C'est le nombre de foulées que tu décides entre deux obstacles, à la reconnaissance."),
     Q("Quelle est la longueur moyenne d'une foulée de galop de parcours d'un cheval ?", ["1 m", "Environ 3,50 m à 3,70 m", "6 m", "10 m"], 1, "C'est le repère habituel, à adapter à chaque cheval."),
     Q("Pour faire une foulée de plus dans une ligne, que fais-tu ?", ["J'allonge", "J'attends le dernier moment", "Je raccourcis le galop dès la réception", "Rien"], 2, "On raccourcit dès la réception, pour arriver avec une foulée de plus sans à-coup."),
+    Q("Où regardes-tu pendant le saut ?", ["La barre", "L'obstacle suivant, plus loin", "Mes mains", "Le sol"], 1, "Regarder plus loin prépare la trajectoire ; fixer la barre fait partie des erreurs."),
+    Q("Que fais-tu pendant la reconnaissance ?", ["Je marche le parcours : ordre, lignes, foulées, tournants, changements de pied", "Je regarde le public", "Je détends mon cheval", "Rien"], 0, "La reconnaissance à pied sert à préparer ton plan."),
     Q("Un oxer se saute plutôt avec…", ["Un galop très court", "Au trot", "Un galop désuni", "Un galop plus ample"], 3, "Plus large, l'oxer demande un galop plus ample ; le vertical, un galop plus équilibré."),
     Q("Sur un tracé serré, quand prépares-tu le tournant ?", ["Juste avant l'obstacle suivant", "Au milieu du tournant", "Après le tournant", "Dès la réception du saut"], 3, "On regarde l'obstacle suivant et on prépare le tournant dès la réception."),
     Q("Qui fixe la hauteur des obstacles d'une épreuve Amateur 2 ?", ["Le règlement CSO de la saison", "Le cavalier", "Le propriétaire du cheval", "Personne"], 0, "Les cotes sont fixées par le règlement CSO, qui peut changer à chaque saison.")
@@ -1831,9 +1861,11 @@ var COURS = [
     Q("Sur un fossé, où regardes-tu ?", ["Au fond du fossé", "Loin devant", "Mes mains", "Le sol devant le cheval"], 1, "On regarde loin devant, jamais au fond du fossé."),
     Q("Comment abordes-tu un contrebas ?", ["Vite, pour sauter loin", "En accélérant à la dernière foulée", "Au pas allongé", "Plus lentement, buste redressé"], 3, "Un contrebas s'aborde plus lentement, buste redressé, rênes qui glissent si besoin."),
     Q("Pourquoi aborder l'eau à vitesse réduite ?", ["Pour que le cheval boive", "Pour éviter les éclaboussures", "Ce n'est pas nécessaire", "Parce que l'eau freine le cheval à l'entrée"], 3, "L'eau freine brusquement le cheval : un abord rapide déséquilibre le couple."),
+    Q("Comment sautes-tu un angle ?", ["Sur sa partie la plus large", "En biais au hasard", "Sur une trajectoire très précise, cheval bien encadré", "Au trot, rênes longues"], 2, "Un angle demande une trajectoire précise, le cheval encadré entre les jambes et les mains."),
     Q("Dans un enchaînement en courbe, quand règles-tu la vitesse ?", ["Pendant l'enchaînement", "Avant l'enchaînement", "Après", "Jamais"], 1, "On règle la vitesse avant, puis on garde la trajectoire choisie."),
     Q("Qu'est-ce qui est obligatoire en cross ?", ["Des éperons", "Une cravache longue", "Des bandes de polo", "Un gilet de protection et un casque aux normes"], 3, "Gilet de protection et casque aux normes sont obligatoires en cross."),
-    Q("Tu ne contrôles plus ta vitesse en cross. Que fais-tu ?", ["Je m'arrête avant l'obstacle suivant", "Je continue", "J'accélère pour finir plus vite", "Je saute quand même"], 0, "Sans contrôle de la vitesse, on s'arrête : c'est un réflexe de sécurité.")
+    Q("Tu ne contrôles plus ta vitesse en cross. Que fais-tu ?", ["Je m'arrête avant l'obstacle suivant", "Je continue", "J'accélère pour finir plus vite", "Je saute quand même"], 0, "Sans contrôle de la vitesse, on s'arrête : c'est un réflexe de sécurité."),
+    Q("Pourquoi raccourcit-on souvent ses étriers en cross ?", ["Pour la photo", "Pour une position en équilibre plus stable au galop soutenu", "Pour monter plus vite", "C'est obligatoire"], 1, "Des étriers un peu plus courts donnent un équilibre plus stable sur le terrain.")
   ]
 }
 ,
@@ -1939,9 +1971,11 @@ var COURS = [
     Q("Quelle est la devise du général L'Hotte ?", ["En avant toute", "Calme, en avant et droit", "Légèreté avant tout", "Toujours plus haut"], 1, "« Calme, en avant et droit » résume l'équitation selon L'Hotte."),
     Q("Qui a inventé l'équitation en avant à l'obstacle ?", ["Xénophon", "Baucher", "Pluvinel", "Federico Caprilli"], 3, "L'Italien Caprilli, au début du XXe siècle."),
     Q("Qu'est-ce que la basse école ?", ["Le dressage de base du cheval", "L'équitation des enfants", "Le travail à pied seulement", "Le saut d'obstacles"], 0, "La basse école est le dressage de base, sur lequel s'appuie la haute école."),
+    Q("Qui a inventé le travail entre les piliers ?", ["Pluvinel", "Caprilli", "Baucher", "L'Hotte"], 0, "Antoine de Pluvinel, écuyer de Louis XIII."),
     Q("Quel air est un trot presque sur place ?", ["Le passage", "La pirouette", "La cabriole", "Le piaffer"], 3, "Le piaffer est un trot rassemblé presque sur place ; le passage avance."),
     Q("Quels sont les trois sauts d'école du Cadre Noir ?", ["Piaffer, passage, pirouette", "Pesade, levade, mézair", "Appuyer, cession, épaule en dedans", "Courbette, croupade, cabriole"], 3, "Le Cadre Noir pratique la courbette, la croupade et la cabriole."),
-    Q("Quel est le plus haut des sauts d'école ?", ["La courbette", "La croupade", "La cabriole", "La pesade"], 2, "La cabriole : le cheval s'élève et détache une ruade, postérieurs à l'horizontale.")
+    Q("Quel est le plus haut des sauts d'école ?", ["La courbette", "La croupade", "La cabriole", "La pesade"], 2, "La cabriole : le cheval s'élève et détache une ruade, postérieurs à l'horizontale."),
+    Q("Qu'est-ce que la pirouette ?", ["Un saut d'école", "Un trot sur place", "Un reculer", "Un tour du cheval au galop autour de ses hanches"], 3, "Dans la pirouette, le cheval tourne au galop autour de ses hanches, sur un très petit cercle.")
   ]
 },
 
@@ -2038,9 +2072,11 @@ var COURS = [
     Q("En quelle année l'équitation entre-t-elle aux Jeux olympiques ?", ["1896", "1912", "1952", "1987"], 1, "En 1912, aux Jeux de Stockholm, avec le dressage, le saut d'obstacles et le complet."),
     Q("Qui montait aux Jeux olympiques au début ?", ["Des officiers", "Des enfants", "Des jockeys", "Tout le monde"], 0, "Au début, les cavaliers olympiques étaient des officiers."),
     Q("Quand l'équitation devient-elle un loisir ouvert à tous ?", ["Au Moyen Âge", "Dans les années 1960-1970", "En 2000", "Au XVIIIe siècle"], 1, "Les centres équestres, les poney-clubs et le tourisme équestre se développent dans les années 1960-1970."),
+    Q("Où se déroulent chaque été de grands championnats de France ?", ["À Saumur, au Cadre Noir", "À Paris", "À Lausanne", "À Lamotte-Beuvron, au Parc équestre fédéral"], 3, "Le Parc équestre fédéral de Lamotte-Beuvron accueille de grands championnats."),
     Q("En quelle année naît la FFE ?", ["1987", "1912", "1952", "2001"], 0, "La Fédération française d'équitation naît en 1987."),
     Q("Dans quel circuit se trouve le niveau Amateur 2 ?", ["Club", "Poney", "Pro", "Amateur"], 3, "Le niveau Amateur 2 fait partie du circuit Amateur."),
     Q("Qu'est-ce qu'un label ?", ["Une garantie de qualité vérifiée par la FFE", "Un niveau de compétition", "Un prix", "Un diplôme de cavalier"], 0, "Un label garantit un niveau de qualité d'une structure ou d'un concours."),
+    Q("Dans quel circuit concourent les cavaliers professionnels ?", ["Pro", "Club", "Poney", "Amateur"], 0, "Le circuit Pro réunit les cavaliers professionnels et les meilleurs amateurs."),
     Q("Qui organise les épreuves des jeunes chevaux ?", ["La SHF", "La FEI", "Les clubs", "L'IFCE"], 0, "La Société hippique française organise les épreuves des jeunes chevaux.")
   ]
 },
@@ -2114,10 +2150,14 @@ var COURS = [
   quiz: [
     Q("Qui peut faire passer le Galop 8 ?", ["N'importe quel cavalier confirmé", "Un enseignant diplômé, licencié FFE, avec un code examinateur", "Un juge de dressage", "Le propriétaire du cheval"], 1, "Seul un enseignant diplômé, licencié et autorisé par un code examinateur peut valider le Galop 8."),
     Q("Quel Galop doit être validé avant le Galop 8 ?", ["Le Galop 7", "Le Galop 5", "Le Galop 6", "Aucun"], 0, "Le Galop 7 doit être validé avant le Galop 8."),
+    Q("Peux-tu être évalué petit à petit, pendant tes cours ?", ["Non, seulement en session d'examen", "Seulement en concours", "Oui, pendant tes cours et tes stages", "Seulement par un juge"], 2, "L'enseignant peut t'évaluer en session ou au fil des cours et des stages."),
     Q("Pour la pratique à cheval, que présentes-tu ?", ["La partie commune et une partie spécifique au choix", "Les trois disciplines", "Seulement du dressage", "Seulement du CSO"], 0, "Tout le monde présente la partie commune, puis une partie spécifique : dressage, CSO ou complet."),
     Q("Quel niveau de compétition correspond au Galop 8 ?", ["Club 1", "Pro 1", "Amateur 2", "Poney Élite"], 2, "Les parties spécifiques du Galop 8 sont de niveau Amateur 2."),
     Q("Comment choisir ta partie spécifique ?", ["Au hasard", "Toujours le dressage", "La plus facile", "Selon la discipline que tu pratiques le plus, avec ton enseignant"], 3, "On choisit la discipline qu'on pratique le plus, avec un cheval qui en a le niveau, en accord avec l'enseignant."),
-    Q("Où retrouves-tu ton Galop une fois validé ?", ["Dans ton espace cavalier sur le site de la FFE", "Sur ton livret de cheval", "Nulle part", "Sur ta licence papier uniquement"], 0, "Ton enseignant l'enregistre en ligne ; tu le retrouves dans ton espace cavalier FFE.")
+    Q("Où retrouves-tu ton Galop une fois validé ?", ["Dans ton espace cavalier sur le site de la FFE", "Sur ton livret de cheval", "Nulle part", "Sur ta licence papier uniquement"], 0, "Ton enseignant l'enregistre en ligne ; tu le retrouves dans ton espace cavalier FFE."),
+    Q("Combien de parties spécifiques peux-tu choisir ?", ["Les trois obligatoirement", "Une, parmi dressage, CSO ou concours complet", "Aucune", "Deux"], 1, "Tu choisis une partie spécifique, en plus de la partie commune."),
+    Q("Que fais-tu en priorité dans les dernières semaines ?", ["Je travaille ce qui me manque encore", "Je travaille ce que je sais déjà faire", "Je ne fais rien", "Je change de cheval"], 0, "On fait le point avec l'enseignant et on travaille en priorité ce qui manque."),
+    Q("Comment réviser les connaissances ?", ["Quelques minutes par jour, avec les quiz", "Tout la veille", "Pas besoin de réviser", "En regardant des concours"], 0, "Un peu chaque jour, avec les quiz de Hype, jusqu'à toutes les étoiles.")
   ]
 }
 
