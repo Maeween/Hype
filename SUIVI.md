@@ -21,7 +21,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
 - [06/11] Titi « qualité insuffisante » (build 20261106-1230) : à tester sur iPhone avec une photo et une vidéo passées par WhatsApp → Titi doit apparaître ; avec une photo/vidéo d'origine → rien ne s'affiche. « Garder quand même » doit envoyer normalement (attend : Blandine)
 - [07/11 0 h 15] Vidéos Mux : TOUTES en qualité maximale (37 refaites + 1 de septembre), anciennes versions supprimées chez Mux. Les 5 vidéos envoyées le 06/11 au soir sont arrivées en premium, 1920 × 1080, 30 vraies images/s. À vérifier par Blandine : quelques vidéos dans Hype se lisent bien (attend : Blandine)
-- [07/11] 23 copies Mux de septembre (hype_import_mux) jamais utilisées par Hype (l'appli lit encore les fichiers d'origine) : à supprimer chez Mux pour ne plus payer leur stockage, si Blandine est d'accord (attend : Blandine)
 - [06/11] AVANT de refaire les 37 anciennes vidéos : vérifier qu'une NOUVELLE vidéo filmée à l'iPhone sort nette et fluide (demande de Blandine 12 h 02) (attend : Blandine)
 - [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
 - [06/11] Vidéos : la lecture saute (environ 15 images par seconde au lieu de 30 sur l'enregistrement du 06/11). Chercher si ça vient de la vidéo ou du lecteur, après le test ci-dessus. Ensuite : décider si on ré-encode les anciennes vidéos importantes en premium (attend : Claude, puis Blandine)
@@ -839,6 +838,18 @@ NON VU : lecteur Mux (chargé depuis Internet, bloqué ici) et plein écran
 iPhone ; formulaire et pastille sur les vrais écrans (connexion requise).
 RESTE : étendre « sans le son » aux autres vidéos (albums, fil, souvenirs
 d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
+
+════════════════════════════════════════════════════════════
+
+🧹 07/11/2026 (0 h 25) — 23 COPIES MUX DE SEPTEMBRE SUPPRIMÉES
+Blandine 0 h 14 : « Ok continue ».
+· Revérifié juste avant : aucune des 23 (asset ni lecture) citée dans la
+  base (toutes colonnes texte/json de public, hors hype_import_mux) ni dans
+  le code (js, html, json).
+· mux-essai-reencodage réactivée (v4, action « supprimer » seule), 23/23
+  supprimées chez Mux, puis DÉSACTIVÉE (v5, répond 410).
+· hype_import_mux garde ses 24 lignes (historique) : les adresses de ces
+  23 lignes ne mènent plus à rien chez Mux, c'est voulu.
 
 ════════════════════════════════════════════════════════════
 
