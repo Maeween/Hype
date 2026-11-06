@@ -852,6 +852,25 @@ d'écurie, onglet Vidéos de la fiche cheval) — après validation de la Team.
 
 ════════════════════════════════════════════════════════════
 
+🔎 07/11/2026 (1 h 30) — RECETTE PHOTOS & VIDÉOS + CORRECTIONS — build 20261107-0130
+Blandine 0 h 46 : cahier de recette ChatGPT ; 0 h 48 : « Ok continue sur tout ce que tu peux jusqu'au bout tu as carte blanche ».
+RECETTE (lecture seule, sur build 20261107-0110) : conforme sur tout ce qui se vérifie hors iPhone ; rendus Mux : HLS 360→1080 (deux 1080) +
+MP4 1080 présents ; service d'images Supabase : 960 px = 215 Ko, 2500 px = 1,4 Mo (2600 px répond aussi 200 : la limite 2500 de la doc
+n'est pas un refus strict, plafond gardé par prudence) ; 14 langues = toutes celles de l'appli. 1 P1 + 4 P2 trouvés, CORRIGÉS ici :
+· P1 hypeLancerVideoGrand (mosaïque) : le MP4 premium pèse 8-12 Mbit/s (57,7 Mo / 55 s ; 120 Mo / 82 s) et ne s'adapte pas au réseau.
+  Désormais HLS ADAPTATIF D'ABORD si le navigateur sait le lire (iPhone/Safari ; Chromium répond oui aussi), MP4 en repli (source
+  suivante si erreur). Le défaut « plein écran HLS noir » du 05/09 semble résolu (enregistrement 06/11 11:48) : À CONFIRMER SUR IPHONE.
+· P2-a HypeLecteurMuxTest : réserve de hauteur min(230 px, 30vh) au lieu de 230 px → paysage iPhone 154×273 au lieu de ~90×160 ;
+  portrait et ordinateur inchangés (345×614, 377×670).
+· P2-b : si iOS refuse le son au démarrage automatique → bouton « Activer le son » (contour champagne, 14 langues) sous la vidéo.
+· P2-c vignetteHype / vignetteHypeContain : densité 3 → 2,25 (320 → 720 px au lieu de 960, ~45 % de données en moins) ; visionneuse
+  (grandeImageHype) toujours à 3 / 2500 px.
+· P2-d : forme de la vidéo lue tout de suite sur sa petite vignette Mux (thumbnail.webp?width=48) → plus de boîte 16/9 qui saute.
+VÉRIFIÉ : syntaxe des 17 blocs ; Chromium : ordre des sources, tailles portrait/paysage/ordi, adresses des vignettes. WebKit indisponible
+ici. NON VU : iPhone (protocole de 9 tests donné à Blandine le 07/11 0 h 50).
+
+════════════════════════════════════════════════════════════
+
 🐴 07/11/2026 (1 h) — TITI « VIDÉO SACCADÉE » — build 20261107-0100
 Blandine 0 h 27 : « Ok continue » sur le texte proposé : « Oh là là, ta
 vidéo fait des petits sauts ! 🐴💨 Ton téléphone a filmé avec trop peu
