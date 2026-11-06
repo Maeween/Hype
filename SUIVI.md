@@ -622,6 +622,9 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   création refaite : fond noir #070A08, héros photo + ligne courbe champagne,
   disciplines en tuiles photo (3 par ligne), cavaliers en portraits ronds,
   chevaux en vignettes photo, boutons à contour champagne sans fond.
+  ⇒ 07/11 00 h 09 Blandine « Ok continue » : PUBLIÉ — build 20261107-0030
+  (team ?v=7 : la 6 venait d'être prise par « droits de coach », publiés
+  entre-temps par une autre conversation et conservés).
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
