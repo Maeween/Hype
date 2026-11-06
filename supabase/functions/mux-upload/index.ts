@@ -179,10 +179,21 @@ Deno.serve(async (req) => {
         return new Response(JSON.stringify({ status }), { headers: jsonHeaders });
       }
 
+      /* 06/11 — DIAGNOSTIC (Blandine : la video « saute de partout » ; l enregistrement montre 15 images/s tres regulieres).
+         En plus, en lecture seule : la cadence et la resolution que Mux a REELLEMENT recues pour cette video. L app n en fait rien. */
+      const pisteVideo = (assetData.tracks || []).find((t: { type?: string }) => t && t.type === "video") || {};
       return new Response(JSON.stringify({
         status,
         playback_id: playbackId,
         duration: assetData.duration,
+        diag: {
+          images_par_seconde: assetData.max_stored_frame_rate ?? pisteVideo.max_frame_rate ?? null,
+          resolution: assetData.max_stored_resolution ?? null,
+          largeur: pisteVideo.max_width ?? null,
+          hauteur: pisteVideo.max_height ?? null,
+          qualite: assetData.video_quality ?? assetData.encoding_tier ?? null,
+          palier: assetData.resolution_tier ?? null,
+        },
       }), { headers: jsonHeaders });
     }
 
