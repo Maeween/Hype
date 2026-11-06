@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261106-1100"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261106-1130"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}/* 30/10 (Blandine) - vignettes des videos des Galops : image assombrie, voile semi-transparent, titre ivoire ecrit dessus */.vidv{position:relative;display:block;overflow:hidden;background:#030405}.vidv img{opacity:.4!important;filter:none!important}.vidv:after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(3,4,5,.18),rgba(3,4,5,.78))!important}.vidv .gv3-play,.vidv .g1o-vid-play,.vidv .g5-vid-bientot{z-index:2}.vidv .g1o-vid-play,[dir=rtl] .vidv .g1o-vid-play{left:50%;right:auto;top:28%;bottom:auto;width:34px;height:34px;transform:translate(-50%,-50%)}.vidv .gv3-play{top:28%;width:34px;height:34px}.vidv .gv3-play svg{width:16px;height:16px}.vidv .g5-vid-bientot{top:28%}.vidv-t{position:absolute;left:10px;right:10px;top:64%;transform:translateY(-50%);text-align:center;z-index:3;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16px;line-height:1.15;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.9);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}@media (min-width:1024px){.vidv-t{left:14px;right:14px;font-size:18px}}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -1148,6 +1148,27 @@ function hypeExtensionFichier(fichier) {
   try { var e = String((fichier && fichier.name) || "").split(".").pop(); return e ? e.toLowerCase() : "jpg"; }
   catch (eEx) { return "jpg"; }
 }
+/* 06/11 (Blandine : « ameliore tout au max », photos « de qualite mediocre pour beaucoup ») : en base, la plupart des photos font
+   400 a 500 Ko alors qu une photo d iPhone d origine en fait 2 a 4 : elles arrivent deja reduites (WhatsApp, Instagram, photographe).
+   Hype ne peut pas rendre le detail perdu. Quand une photo de moins de 1500 px arrive, un petit mot s affiche une fois par session.
+   ⚠️ TEXTE EN FRANCAIS SEULEMENT pour l instant (regle du 02/11 : traductions apres relecture du francais par Blandine) : le mot
+   ne s affiche donc qu en francais ; dans les autres langues, rien ne s affiche tant que la traduction n est pas faite. */
+function hypeConseilPhotoReduite() {
+  try {
+    var lg = (window.__hypeLangue || "fr"); if (String(lg).slice(0, 2) !== "fr") return;
+    try { if (sessionStorage.getItem("hype_conseil_photo_reduite") === "1") return; sessionStorage.setItem("hype_conseil_photo_reduite", "1"); } catch (eS) { }
+    var d = document.createElement("div");
+    d.setAttribute("role", "status");
+    d.style.cssText = "position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 92px);z-index:9500;max-width:460px;margin:0 auto;"
+      + "background:rgba(8,10,13,0.96);border:1px solid rgba(214,196,161,0.55);border-radius:16px;padding:14px 16px;color:#F3EEE4;"
+      + "font-family:'Montserrat',sans-serif;font-size:13px;line-height:1.45;box-shadow:0 12px 40px rgba(0,0,0,0.55);transition:opacity .3s";
+    d.innerHTML = "<div style=\"font-weight:700;color:#D6C4A1;margin-bottom:4px\">Cette photo est d\u00e9j\u00e0 r\u00e9duite</div>"
+      + "Elle a sans doute pass\u00e9 par WhatsApp ou Instagram. Pour une photo bien nette, choisis l\u2019originale dans ta galerie.";
+    d.addEventListener("click", function () { try { d.remove(); } catch (eR) { } });
+    document.body.appendChild(d);
+    setTimeout(function () { try { d.style.opacity = "0"; setTimeout(function () { try { d.remove(); } catch (eR2) { } }, 400); } catch (eT) { } }, 7000);
+  } catch (e) { }
+}
 async function preparerPhotoMaster(fichier) {
   var brut = { fichier: fichier, extension: hypeExtensionFichier(fichier), transformee: false, largeur: null, hauteur: null, poidsAvantKo: (fichier && fichier.size) ? Math.round(fichier.size / 1024) : null };
   try {
@@ -1159,6 +1180,8 @@ async function preparerPhotoMaster(fichier) {
     /* CAS 2 — déjà assez petite : ni redimensionnée, ni réencodée, ni upscalée. */
     if (grand <= PHOTO_MASTER_MAX_EDGE) {
       try { bitmap.close(); } catch (e3) { }
+      /* 06/11 : photo arrivee DEJA reduite (WhatsApp, Instagram, capture...) : petit conseil, une fois par session */
+      try { if (grand < 1500 && !/image\/png/i.test((fichier && fichier.type) || "")) hypeConseilPhotoReduite(); } catch (eCo) { }
       return Object.assign({}, brut, { largeur: lo, hauteur: ho });
     }
     /* CAS 1 — réduction proportionnelle, une seule passe. echelle est ici < 1 : jamais d'agrandissement. */
@@ -1593,14 +1616,14 @@ function vignetteHype(u, largeur, hauteur) {
        tenait jamais compte de la densite de l'ecran -- correcte sur iPhone, insuffisante des
        qu'une case s'affiche plus grande (moniteur, ecran haute densite). Plafonnee a 1600px pour
        ne pas alourdir inutilement un petit ecran. */
-    var dprH = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 2);
+    var dprH = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 3); /* 06/11 (Blandine : « ameliore tout au max ») : densite 3 = vraie densite de l iPhone (2 avant : un tiers de detail en moins) */
     /* 19/10 nuit (audit qualite, Blandine « Ok continue ») : les tailles passees a vignetteHype ont ete choisies pour l iPhone ; sur
        tablette et ordinateur les memes cases s affichent plus grandes -> on demande 1,3x (tablette) / 1,6x (ordinateur) de plus,
        toujours plafonne a 1600 px. iPhone : strictement inchange. */
     var grandEcH = 1; try { var wEH = window.innerWidth || 0; grandEcH = wEH >= 1024 ? 1.6 : (wEH >= 768 ? 1.3 : 1); } catch (eEH) { }
-    var lF = Math.min(Math.round((largeur || 320) * dprH * grandEcH), 1600);
-    var hF = Math.min(Math.round((hauteur || 320) * dprH * grandEcH), 1600);
-    return base + "?width=" + lF + "&height=" + hF + "&resize=cover&quality=72";
+    var lF = Math.min(Math.round((largeur || 320) * dprH * grandEcH), 2000);
+    var hF = Math.min(Math.round((hauteur || 320) * dprH * grandEcH), 2000);
+    return base + "?width=" + lF + "&height=" + hF + "&resize=cover&quality=86"; /* 06/11 : 72 -> 86 */
   } catch (eV0) { return u; }
 }
 /* 11/09 — jumelle de vignetteHype, resize=contain au lieu de cover : celle-ci ne recadre JAMAIS,
@@ -1616,11 +1639,11 @@ function vignetteHypeContain(u, largeur, hauteur) {
     if (s0.indexOf("/storage/v1/object/public/") < 0) return u;
     if (typeof estUrlVideo === "function" && estUrlVideo(s0)) return u;
     var base = s0.split("?")[0].replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
-    var dprHc = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 2);
+    var dprHc = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 3); /* 06/11 (Blandine : « ameliore tout au max ») : densite 3 = vraie densite de l iPhone (2 avant : un tiers de detail en moins) */
     var grandEcC = 1; try { var wEC = window.innerWidth || 0; grandEcC = wEC >= 1024 ? 1.6 : (wEC >= 768 ? 1.3 : 1); } catch (eEC) { }   /* 19/10 nuit : comme vignetteHype */
-    var lFc = Math.min(Math.round((largeur || 320) * dprHc * grandEcC), 1600);
-    var hFc = Math.min(Math.round((hauteur || 320) * dprHc * grandEcC), 1600);
-    return base + "?width=" + lFc + "&height=" + hFc + "&resize=contain&quality=72";
+    var lFc = Math.min(Math.round((largeur || 320) * dprHc * grandEcC), 2000);
+    var hFc = Math.min(Math.round((hauteur || 320) * dprHc * grandEcC), 2000);
+    return base + "?width=" + lFc + "&height=" + hFc + "&resize=contain&quality=86"; /* 06/11 : 72 -> 86 */
   } catch (eV0c) { return u; }
 }
 /* \ud83d\udfe5 05/09 (Blandine : « quand on veut passer d une photo a une autre, ca plante »).
@@ -1692,10 +1715,12 @@ function grandeImageHype(u, cote) {
        pipeline, plus un deuxieme chiffre ecrit a la main ici) -- l'ancien 2560 fige separement
        aurait rendu inutile toute future augmentation du plafond d'envoi pour l'endroit ou ca
        compte le plus. Inutile de demander plus que ce que la source peut de toute facon fournir. */
-    var dprG = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 2);
+    var dprG = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 3); /* 06/11 (Blandine : « ameliore tout au max ») : densite 3 = vraie densite de l iPhone (2 avant : un tiers de detail en moins) */
     var plafondG = (typeof PHOTO_MASTER_MAX_EDGE === "number") ? PHOTO_MASTER_MAX_EDGE : 2560;
-    var c = Math.min(Math.round((cote || 1600) * dprG), plafondG);
-    return base + "?width=" + c + "&height=" + c + "&resize=contain&quality=82";
+    /* 06/11 : le service d images de Supabase refuse toute taille > 2500 (doc : 1 a 2500) -> au-dela, erreur puis ORIGINAL charge en
+       entier (risque memoire du 05/09). Plafond reel : 2500. */
+    var c = Math.min(Math.round((cote || 1600) * dprG), plafondG, 2500);
+    return base + "?width=" + c + "&height=" + c + "&resize=contain&quality=92"; /* 06/11 : 82 -> 92 (visionneuse plein ecran) */
   } catch (eG0) { return u; }
 }
 /* Repli : si la vignette transformee echoue (plan Free, format non gere, coupure), on repose
@@ -1752,8 +1777,8 @@ function hypeMuxVignetteUrl(url, largeur) {
   var id = hypeMuxPlaybackId(url); if (!id) return null;
   /* 09/09 (soir) : meme correctif que vignetteHype -- densite d'ecran prise en compte,
      plafonnee, pour rester net sur un moniteur sans alourdir inutilement un telephone. */
-  var dprM = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 2);
-  var w = Math.max(160, Math.min(1280, Math.round((largeur || 400) * dprM)));
+  var dprM = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 3); /* 06/11 (Blandine : « ameliore tout au max ») : densite 3 = vraie densite de l iPhone (2 avant : un tiers de detail en moins) */
+  var w = Math.max(160, Math.min(1920, Math.round((largeur || 400) * dprM)));
   return "https://image.mux.com/" + id + "/thumbnail.jpg?width=" + w + "&fit_mode=preserve";
 }
 /* 09/09 — CONVERGENCE VIDÉO LEGACY VERS MUX : placeholder partagé pour toute ligne
@@ -1802,6 +1827,10 @@ function HypeVideoPosterLazy(props) {
 function HypeMiniatureVideoC(props) {
   var _t = React.useState(0), setT = _t[1];
   React.useEffect(function () { function fC() { setT(function (n) { return n + 1; }); } document.addEventListener("hype-couvertures", fC); return function () { document.removeEventListener("hype-couvertures", fC); }; }, []);
+  /* 06/11 (Blandine : « quand on clique sur la video on s attend a la voir directement, se lancer en grand ») : des qu une
+     vignette Mux est a l ecran, le lecteur Mux est charge en avance (une seule fois pour toute l appli, apres 1,5 s). Au toucher,
+     il est deja la : la video part tout de suite, sans attente. */
+  React.useEffect(function () { if (!/stream\.mux\.com\//.test(String(props.url || ""))) return; var tP = setTimeout(function () { try { hypeChargerMuxPlayer().catch(function () { }); } catch (eP) { } }, 1500); return function () { clearTimeout(tP); }; }, [props.url]);
   var couv = null; try { couv = (typeof hypeCouvertureVideo === "function") ? hypeCouvertureVideo(props.url) : null; } catch (eCv) { couv = null; }
   return hypeMiniatureVideoBrute(props.url, props.opts, couv);
 }
@@ -46856,6 +46885,17 @@ function HypeLecteurMuxTest(props) {
     }
     ["loadedmetadata", "resize", "loadeddata"].forEach(function (ev) { try { mp.addEventListener(ev, lire); } catch (eA) { } });
     var t1 = setTimeout(lire, 1200), t2 = setTimeout(lire, 3500);
+    /* 06/11 (« on s attend a la voir directement, se lancer en grand ») : dans une visionneuse (autoplay), la video part tout de
+       suite et passe en plein ecran d elle-meme. Si le telephone refuse le son sans geste, elle part sans le son (1 toucher sur
+       le haut-parleur). Si le plein ecran automatique est refuse, elle reste en grand dans la visionneuse (bouton Plein ecran). */
+    if (props.autoplay !== false) {
+      try {
+        var pr = mp.play && mp.play();
+        var fsAuto = function () { if (vif) pleinEcran(null); };
+        if (pr && pr.then) pr.then(fsAuto, function () { try { mp.muted = true; var p2 = mp.play(); if (p2 && p2.then) p2.then(fsAuto, function () { }); } catch (eM) { } });
+        else fsAuto();
+      } catch (eAp) { }
+    }
     return function () { vif = false; clearTimeout(t1); clearTimeout(t2); ["loadedmetadata", "resize", "loadeddata"].forEach(function (ev) { try { mp.removeEventListener(ev, lire); } catch (eA) { } }); };
   }, [etat]);
   var m = /stream\.mux\.com\/([A-Za-z0-9]+)\.m3u8/.exec(String(props.src || ""));
@@ -46878,7 +46918,9 @@ function HypeLecteurMuxTest(props) {
   var lgZ = "fr"; try { lgZ = window.__hypeLangue || "fr"; } catch (eL) { }
   var libPE = ({ fr: "Plein \u00e9cran", en: "Full screen", es: "Pantalla completa", it: "Schermo intero", ja: "\u5168\u753b\u9762", de: "Vollbild", ar: "\u0645\u0644\u0621 \u0627\u0644\u0634\u0627\u0634\u0629", zh: "全屏", nl: "Volledig scherm", pt: "Tela cheia", sv: "Helskärm", ru: "Во весь экран", pl: "Pełny ekran", ko: "전체 화면" })[lgZ] || "Plein \u00e9cran";
   return h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } }, style: { position: "relative", width: "100%", maxHeight: "90%", alignSelf: "stretch" } },
-    h("mux-player", { ref: refMp, "playback-id": m[1], "stream-type": "on-demand", "accent-color": "#C9A66B", "primary-color": "#F3EEE4", "secondary-color": "#05080B", autoplay: props.autoplay === false ? undefined : "true", preload: props.preload || undefined, playsinline: "true", "default-hidden-captions": "true", style: ratio > 0
+    h("mux-player", { ref: refMp, "playback-id": m[1], "stream-type": "on-demand", "accent-color": "#C9A66B", "primary-color": "#F3EEE4", "secondary-color": "#05080B", autoplay: props.autoplay === false ? undefined : "any", preload: props.preload || undefined,
+      /* 06/11 : la video demarre sur la MEILLEURE qualite disponible au lieu de monter petit a petit depuis la plus basse */
+      "rendition-order": "desc", playsinline: "true", "default-hidden-captions": "true", style: ratio > 0
       ? { display: "block", width: "100%", maxWidth: "calc((100vh - 230px) * " + ratio.toFixed(4) + ")", aspectRatio: String(ratio.toFixed(4)), margin: "0 auto", background: "#000" }
       : { display: "block", width: "100%", maxHeight: "80vh", aspectRatio: "16 / 9", background: "#000" } }),
     h("div", { style: { display: "flex", justifyContent: "center", padding: "10px 0 2px" } },
@@ -47638,8 +47680,13 @@ function RecadrageHype() {
   function valider() {
     if (!img) return;
     var OW, OH, kOut, vx0, vy0;
+    /* 06/11 (Blandine : « ameliore tout au max ») : la sortie etait plafonnee a 1200 px (Photo entiere) et ~1360 px (Remplir :
+       4 x la largeur du cadre a l ecran), quelle que soit la photo -> photos de fiche cheval molles. Desormais : autant de pixels
+       que la photo en a VRAIMENT dans la zone gardee (pixels source par point d ecran = img.w / dw), jamais d agrandissement,
+       plafond 2560 (comme le master photo de l atelier). */
+    var pxSrc = (img && dw > 0) ? (img.w / dw) : 4;
     if (modeCadre === "entier") {
-      OW = 1200; OH = Math.round(OW / aspC); kOut = OW / FW;
+      OW = Math.max(600, Math.min(2560, Math.round(FW * pxSrc))); OH = Math.round(OW / aspC); kOut = OW / FW;
     } else {
       var rrV = rot * Math.PI / 180;
       var cV = Math.abs(Math.cos(rrV)), sV = Math.abs(Math.sin(rrV));
@@ -47647,7 +47694,7 @@ function RecadrageHype() {
       vx0 = Math.max(0, FW / 2 + pos.x - bwV / 2); vy0 = Math.max(0, FH / 2 + pos.y - bhV / 2);
       var vx1 = Math.min(FW, FW / 2 + pos.x + bwV / 2), vy1 = Math.min(FH, FH / 2 + pos.y + bhV / 2);
       var VW = Math.max(40, vx1 - vx0), VH = Math.max(40, vy1 - vy0);
-      OW = Math.min(1800, Math.round(VW * 4)); OH = Math.max(40, Math.round(OW * VH / VW));
+      OW = Math.max(Math.min(600, Math.round(VW * 4)), Math.min(2560, Math.round(VW * pxSrc))); OH = Math.max(40, Math.round(OW * VH / VW));
       kOut = OW / VW;
     }
     var out = document.createElement("canvas");
@@ -49644,7 +49691,7 @@ function hypeSrcsetPhoto(u) {
     if (s0.indexOf("/storage/v1/object/public/") < 0) return null;
     if (typeof estUrlVideo === "function" && estUrlVideo(s0)) return null;
     var base = s0.split("?")[0].replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
-    return [320, 480, 640, 800, 1024, 1280, 1600, 2048].map(function (w) { return base + "?width=" + w + "&quality=80 " + w + "w"; }).join(", ");
+    return [320, 480, 640, 800, 1024, 1280, 1600, 2048, 2500].map(function (w) { return base + "?width=" + w + "&quality=88 " + w + "w"; }) /* 06/11 : 80 -> 88, +2500 */.join(", ");
   } catch (e) { return null; }
 }
 function hypeSaisonActu(d) {
@@ -56162,7 +56209,7 @@ async function hypeEnregistrerCapturePalmares(ctx) {
   }
 
 function hypePortailBody(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP) { } return el; }   /* 18/10 : feuilles du bas sorties du panneau (elles s affichaient trop bas, sous la barre du bas) */
-const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=6", "HypeCheval", "Cheval");
+const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=7", "HypeCheval", "Cheval");
 
 
 /* ==================== (735) FICHE CHEVAL V2 — EcranChevalV2 ====================
@@ -72644,7 +72691,7 @@ if (__boot)
 (function () {
   var PUB = "/storage/v1/object/public/";
   var REN = "/storage/v1/render/image/public/";
-  var LARGEUR = 900, QUALITE = 70;
+  var LARGEUR = 900, QUALITE = 86; /* 06/11 : 70 -> 86 (compression moins forte) */
 
   function estVideoV(u) { return /\.(mp4|mov|m4v|webm|avi|mkv)(\?|#|$)/i.test(u); }
 
@@ -72669,8 +72716,8 @@ if (__boot)
       /* 09/09 (soir) : meme correctif de densite d'ecran que vignetteHype -- 900 etait pense
          pour un iPhone, insuffisant des qu'une image s'affiche plus grande (moniteur). Plafonne
          a 1800px pour ne pas alourdir inutilement un petit ecran. */
-      var dprO = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 2);
-      var lO = Math.min(Math.round(LARGEUR * dprO), 1800);
+      var dprO = Math.min((typeof window !== "undefined" && window.devicePixelRatio) || 1, 3); /* 06/11 (Blandine : « ameliore tout au max ») : densite 3 = vraie densite de l iPhone (2 avant : un tiers de detail en moins) */
+      var lO = Math.min(Math.round(LARGEUR * dprO), 2400);
       el.setAttribute("src", base + "?width=" + lO + "&resize=contain&quality=" + QUALITE);
     } catch (e) { }
   }

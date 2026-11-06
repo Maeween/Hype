@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 11h05)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 06/11/2026 11h35)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -15,6 +15,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team — limite de vidéos : décider si les vidéos ajoutées à la vidéothèque de l'équipe comptent dans la limite de chaque compte (3 gratuit, 15 Premium). Choix : 1 elles comptent / 2 elles ne comptent pas / 3 limite à part (ex. 10 par cavalière). Tant que rien n'est décidé, c'est le 2 qui s'applique : une vidéo d'équipe ne compte plus une fois prête (attend : Blandine)
 
 ## 2 — Important
+- [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
+- [06/11] Petit mot « Cette photo est déjà réduite… » (s'affiche quand une photo arrive déjà petite, ex. WhatsApp) : à relire en français, puis traduire dans toutes les langues. En attendant il ne s'affiche qu'en français (attend : Blandine, puis Claude)
 - [06/11] Vidéos : à tester sur iPhone (build 20261106-1100). (1) Une vidéo filmée en hauteur doit maintenant remplir l'écran dans la visionneuse et dans le fil. (2) Envoyer une NOUVELLE vidéo de saut et la regarder en plein écran : plus de carrés (Mux en qualité « premium » depuis 10 h 58). Les anciennes vidéos ne changent pas (attend : Blandine)
 - [06/11] Vidéos : la lecture saute (environ 15 images par seconde au lieu de 30 sur l'enregistrement du 06/11). Chercher si ça vient de la vidéo ou du lecteur, après le test ci-dessus. Ensuite : décider si on ré-encode les anciennes vidéos importantes en premium (attend : Claude, puis Blandine)
 - [15/10] Médiateur de la consommation, obligatoire pour vendre aux particuliers : choisir un médiateur agréé et y adhérer au nom de l'association. Claude complète ensuite l'article 11 des CGV dans toutes les langues (attend : Blandine)
@@ -522,6 +524,49 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+📸 06/11/2026 (11 h 35) — PHOTOS ET VIDÉOS « AU MAX » — build 20261106-1130
+Blandine 11 h 13 : « je pense que 4k serait mieux quand même » ; « pour les
+photos on peut améliorer aussi qqch ? elles sont tjs de qualité médiocre pour
+bcp » ; 11 h 15 « améliore tout au max pour les deux » ; 11 h 17 (capture de
+la carte d'Eva) « quand on clique sur la vidéo on s'attend à la voir
+directement, se lancer en grand ».
+CE QUI A ÉTÉ FAIT
+· Fonction mux-upload v28 (déployée par Claude 11 h 14, dépôt à jour) :
+  max_resolution_tier "2160p" → une vidéo filmée en 4K reste en 4K (jamais
+  d'agrandissement). Coût d'une vidéo 4K premium : ~0,15 $/min à l'encodage,
+  0,0144 $/min/mois de stockage, 0,0048 $/min de lecture.
+· Lecteur (HypeLecteurMuxTest) : dans une visionneuse, la vidéo part tout de
+  suite (autoplay « any » : sans le son si iOS le refuse) puis passe en plein
+  écran d'elle-même ; démarre sur la meilleure qualité (rendition-order desc) ;
+  le lecteur Mux est chargé en avance dès qu'une vignette vidéo est à l'écran
+  (1,5 s après). Fil (lecteurs intégrés) : inchangé, pas de lecture auto.
+· Photos à l'affichage : densité d'écran 3 (vraie densité iPhone ; 2 avant =
+  un tiers de détail en moins) dans vignetteHype, vignetteHypeContain,
+  grandeImageHype, vignettes Mux et l'observateur global ; compression :
+  vignettes 72 → 86, observateur 70 → 86, visionneuse 82 → 92, srcset 80 → 88
+  (+ taille 2500). Plafonds : vignettes 2000, observateur 2400, visionneuse
+  2500 (LIMITE DU SERVICE D'IMAGES SUPABASE : 1 à 2500 ; au-delà erreur puis
+  original chargé en entier). Pages ~30 à 50 % plus lourdes en données.
+· Recadreur (fiche cheval, avatar…) : sortie plafonnée avant à 1200 px
+  (Photo entière) et ~1360 px (Remplir) → maintenant autant de pixels que la
+  photo en a dans la zone gardée, jusqu'à 2560. Fiche cheval
+  (hype-ecran-cheval.js ?v=7) : envoi jusqu'à 2560 px q0,92 (1400 q0,9
+  avant) ; la copie gardée dans le téléphone reste à 900 px.
+· Constat en base (60 derniers jours) : médiane des photos ~400-500 Ko, un
+  seul compte envoie des originaux (~2,7 Mo). Petit mot « Cette photo est
+  déjà réduite » (hypeConseilPhotoReduite, dans preparerPhotoMaster) quand une
+  photo < 1500 px arrive (hors PNG), une fois par session, FRANÇAIS SEULEMENT
+  en attendant la relecture.
+VÉRIFIÉ : syntaxe des 17 blocs de script de l'index + hype-ecran-cheval.js.
+NON VU À L'ÉCRAN : rien n'a pu être essayé en vrai depuis l'atelier de
+Claude (lecteur Mux, photos Supabase et polices bloqués) : test iPhone
+indispensable. Plein écran automatique : iOS peut le refuser hors geste →
+la vidéo reste alors en grand dans la visionneuse.
+RESTE : lecture qui saute (~15 images/s) à revérifier sur une vidéo envoyée
+après 10 h 58 ; ré-encodage éventuel des anciennes vidéos.
 
 ════════════════════════════════════════════════════════════
 

@@ -1507,12 +1507,19 @@ function EcranCheval() {
       var im2 = new Image();
       im2.onload = function () {
         var cv = document.createElement("canvas");
-        var w2 = Math.min(1400, im2.width); var h2 = Math.round(w2 * im2.height / im2.width);
+        /* 06/11 (Blandine : « ameliore tout au max ») : la photo envoyee etait rabotee a 1400 px qualite 0,9. Desormais jusqu a
+           2560 px (le maximum du recadreur, jamais d agrandissement), qualite 0,92. La copie gardee dans le telephone (localStorage,
+           limite a environ 5 Mo pour TOUTE l appli) reste petite : 900 px, pour ne pas le remplir. */
+        var w2 = Math.min(2560, im2.width); var h2 = Math.round(w2 * im2.height / im2.width);
         cv.width = w2; cv.height = h2;
         cv.getContext("2d").drawImage(im2, 0, 0, w2, h2);
-        var d2 = cv.toDataURL("image/jpeg", 0.9);
+        var d2 = cv.toDataURL("image/jpeg", 0.92);
         setPhotoPerso(d2);
-        try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
+        try {
+          var wL = Math.min(900, w2), hL = Math.round(wL * h2 / w2), cvL = document.createElement("canvas");
+          cvL.width = wL; cvL.height = hL; cvL.getContext("2d").drawImage(cv, 0, 0, wL, hL);
+          localStorage.setItem("hype_cheval_photo_" + id, cvL.toDataURL("image/jpeg", 0.85));
+        } catch (eq) { }
         try { if (res.original) localStorage.setItem("hype_cheval_photo_orig_" + id, res.original); if (res.dataUrl) localStorage.setItem("hype_cheval_photo_orig_pour_" + id, String(res.dataUrl).slice(0, 100)); } catch (eqO) { }
         try {
           if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId !== moi.id) {
