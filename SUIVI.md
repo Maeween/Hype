@@ -18077,3 +18077,9 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - À la création, le numéro est enregistré dans la feuille d'engagement du concours (concours_feuille.numero) : on le retrouve directement dans Engagements. Si la base refuse, le rendez-vous reste créé et le message le dit.
 - Textes en français seulement (traductions après relecture). Boutons sans fond doré (texte champagne / contour fin).
 - Fichiers : index.html (build 20261106-2350), SUIVI.md.
+## 07/11/2026 00h05 — build 20261107-0010 — Médias traduit dans les 14 langues
+- TRADUCTIONS : tous les textes de l'espace Médias (onglets, vidéos, ajout d'une vidéo, Équipe / Public, Théorie, Épingles HB, page « Un conseil pour toi ») passent de 2 langues (fr, en) à 14 (fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko). Quelques phrases anglaises trop courtes ont été complétées.
+- INDEX : bloc « Partager ce conseil » des épingles Hey Baby et notification « a partagé un conseil Hey Baby avec l'équipe / avec toi » traduits en 14 langues ; la couleur rouge des erreurs ne dépend plus du texte français. Médias chargé en ?v=6.
+- DÉCIDÉ : vidéos d'équipe hors limite de vidéos par compte (choix 2, confirmé le 05/11). Textes français relus et validés tels quels par Blandine le 06/11 (formulation « cavaliers du groupe » gardée).
+- Fichiers : hype-ecran-team-medias.js, index.html (build 20261107-0010), SUIVI.md. Inchangés : hype-ecran-team.js, netlify/functions/apercu-lien.js.
+- VÉRIFIÉ : node --check ; rendu banc d'essai iPhone 390 en japonais, arabe (sens droite-gauche) et allemand, sans erreur.

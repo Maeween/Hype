@@ -10,7 +10,7 @@
    Étape 2 : lecture seule (l'ajout de vidéo arrive à l'étape 4, le partage Théorie à l'étape 5, les épingles à l'étape 6).
    Textes en français d'abord : traductions après relecture (règle du 02/11). */
 (function () {
-var TM_VERSION = 2;
+var TM_VERSION = 6;
 
 function EcranTeamMedias() {
   var h = React.createElement;
@@ -48,7 +48,7 @@ function EcranTeamMedias() {
     try {
       var r = await supa.rpc("team_video_publique", { p_id: v.id, p_publique: !v.publique });
       if (r && !r.error && r.data === true) setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { publique: !v.publique }) : x; }); });
-      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video.", "No puedes cambiar este vídeo.", "Non puoi modificare questo video.", "この動画は変更できません。", "Du kannst dieses Video nicht ändern.", "لا يمكنك تغيير هذا الفيديو.", "你无法更改此视频。", "Je kunt deze video niet wijzigen.", "Não podes alterar este vídeo.", "Du kan inte ändra den här videon.", "Ты не можешь изменить это видео.", "Nie możesz zmienić tego filmu.", "이 동영상은 변경할 수 없어요."));
     } catch (e) { setErreur(String((e && e.message) || e)); }
     setChangePub("");
   }
@@ -63,7 +63,7 @@ function EcranTeamMedias() {
     try {
       var r = await supa.rpc("team_video_sans_son", { p_id: v.id, p_sans_son: !v.sans_son });
       if (r && !r.error && r.data === true) setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { sans_son: !v.sans_son }) : x; }); });
-      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+      else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video.", "No puedes cambiar este vídeo.", "Non puoi modificare questo video.", "この動画は変更できません。", "Du kannst dieses Video nicht ändern.", "لا يمكنك تغيير هذا الفيديو.", "你无法更改此视频。", "Je kunt deze video niet wijzigen.", "Não podes alterar este vídeo.", "Du kan inte ändra den här videon.", "Ты не можешь изменить это видео.", "Nie możesz zmienić tego filmu.", "이 동영상은 변경할 수 없어요."));
     } catch (e) { setErreur(String((e && e.message) || e)); }
     setChangeSon("");
   }
@@ -115,7 +115,7 @@ function EcranTeamMedias() {
           : choix.autre ? { agenda_id: null, concours: null, lieu: (choix.lieu || "").trim() || null, date_video: choix.date || v.date_video }
           : { agenda_id: null, concours: null, lieu: null };
         setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, maj) : x; }); });
-      } else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video."));
+      } else setErreur(T("Tu ne peux pas changer cette vidéo.", "You can't change this video.", "No puedes cambiar este vídeo.", "Non puoi modificare questo video.", "この動画は変更できません。", "Du kannst dieses Video nicht ändern.", "لا يمكنك تغيير هذا الفيديو.", "你无法更改此视频。", "Je kunt deze video niet wijzigen.", "Não podes alterar este vídeo.", "Du kan inte ändra den här videon.", "Ты не можешь изменить это видео.", "Nie możesz zmienić tego filmu.", "이 동영상은 변경할 수 없어요."));
     } catch (eC) { setErreur(String((eC && eC.message) || eC)); }
     setChangeConc("");
   }
@@ -132,7 +132,7 @@ function EcranTeamMedias() {
     var vif = true;
     (async function () {
       try {
-        if (typeof supa === "undefined" || !supa) { setErreur(T("Hors ligne", "Offline")); return; }
+        if (typeof supa === "undefined" || !supa) { setErreur(T("Hors ligne", "Offline", "Sin conexión", "Offline", "オフライン", "Offline", "غير متصل", "离线", "Offline", "Offline", "Offline", "Нет сети", "Offline", "오프라인")); return; }
         var u = null; try { u = await utilisateurActuel(); } catch (eU) { u = null; }
         if (vif) setMoi(u);
         /* le groupe : celui de la page Team qui a ouvert cette page, sinon la Team par défaut */
@@ -140,7 +140,7 @@ function EcranTeamMedias() {
         var rg = idG ? await supa.from("groupes").select("id, nom, cree_par, club_clef").eq("id", idG).maybeSingle()
           : ((typeof hypeRequeteTeam === "function") ? await hypeRequeteTeam("id, nom, cree_par, club_clef") : null);
         var G = rg && rg.data;
-        if (!G) throw new Error(T("équipe introuvable", "team not found"));
+        if (!G) throw new Error(T("équipe introuvable", "team not found", "equipo no encontrado", "squadra non trovata", "チームが見つかりません", "Team nicht gefunden", "الفريق غير موجود", "找不到团队", "team niet gevonden", "equipa não encontrada", "laget hittades inte", "команда не найдена", "nie znaleziono drużyny", "팀을 찾을 수 없어요"));
         if (vif) setGroupe(G);
 
         var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", G.id);
@@ -252,13 +252,13 @@ function EcranTeamMedias() {
       h("img", { src: "images/TEAM_COMPETITION.webp", alt: "", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" } })),
     h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 64, marginTop: -64, position: "relative", transform: rtl ? "scaleX(-1)" : "none" } },
       h("path", { d: "M0 22 C 120 30, 230 52, 400 18", fill: "none", stroke: CH, strokeWidth: 1.2 })),
-    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back"),
+    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtl ? "›" : "‹"),
     h("div", { style: { textAlign: "end", padding: "0 18px", marginTop: -14, position: "relative" } },
-      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 64px)", lineHeight: 1, margin: 0, color: IV } }, T("Médias", "Media")),
+      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 64px)", lineHeight: 1, margin: 0, color: IV } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Média", "Media", "Медиа", "Media", "미디어")),
       h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(17px, 4.6vw, 21px)", margin: "8px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "")));
 
-  var ONGLETS = [["theorie", T("Théorie", "Theory")], ["videos", T("Vidéos", "Videos")], ["epingles", T("Épingles HB", "HB pins")]];
+  var ONGLETS = [["theorie", T("Théorie", "Theory", "Teoría", "Teoria", "理論", "Theorie", "النظرية", "理论", "Theorie", "Teoria", "Teori", "Теория", "Teoria", "이론")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상")], ["epingles", T("Épingles HB", "HB pins", "Pines HB", "Pin HB", "HBピン", "HB-Pins", "تثبيتات HB", "HB 收藏", "HB-pins", "Pins HB", "HB-nålar", "Закладки HB", "Przypięte HB", "HB 핀")]];
   var barreOnglets = h("div", { role: "tablist", style: { display: "flex", gap: 8, margin: "22px 0 0" } },
     ONGLETS.map(function (o) {
       var on = onglet === o[0];
@@ -270,7 +270,7 @@ function EcranTeamMedias() {
     }));
 
   function vide(txt) { return h("div", { style: { fontFamily: M, fontSize: 12, color: IV3, fontStyle: "italic", padding: "18px 0" } }, txt); }
-  function chargement() { return vide(T("Chargement…", "Loading…")); }
+  function chargement() { return vide(T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…")); }
   function filet() { return h("div", { "aria-hidden": "true", style: { height: 1, background: "linear-gradient(90deg, rgba(201,166,107,.1), " + CH2 + " 50%, rgba(201,166,107,.1))" } }); }
 
   /* ───────── VIDÉOS : par cavalière, une sous-ligne par cheval ───────── */
@@ -280,7 +280,7 @@ function EcranTeamMedias() {
   function tuileVideo(v, cle, enGrille, etendue) {
     var src = vignetteDe(v), d = duree(v.duree), verrou = !peutLire(v);
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
-    var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video");
+    var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
     var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.description || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu */
     /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
        sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
@@ -291,14 +291,14 @@ function EcranTeamMedias() {
     var montrerPastille = v.publique ? true : peutPublier;
     var pastille = !montrerPastille ? null : h("button", { type: "button", disabled: changePub === v.id || !(v.publique ? peutPrivatiser : peutPublier),
       onClick: function (e) { e.stopPropagation(); demanderPublique(v); },
-      "aria-label": v.publique ? T("Vidéo publique", "Public video") : T("Mettre en public", "Make public"),
+      "aria-label": v.publique ? T("Vidéo publique", "Public video", "Vídeo público", "Video pubblico", "公開動画", "Öffentliches Video", "فيديو عام", "公开视频", "Openbare video", "Vídeo público", "Offentlig video", "Публичное видео", "Film publiczny", "공개 동영상") : T("Mettre en public", "Make public", "Hacer público", "Rendi pubblico", "公開する", "Öffentlich machen", "جعله عامًا", "设为公开", "Openbaar maken", "Tornar público", "Gör offentlig", "Сделать публичным", "Upublicznij", "공개하기"),
       style: { position: "absolute", top: 6, insetInlineStart: 6, zIndex: 2, display: "flex", alignItems: "center", gap: 5, minHeight: 26, padding: "0 9px", borderRadius: 999,
         border: "1px solid " + (v.publique ? CH2 : "rgba(243,238,228,0.25)"), background: "rgba(7,10,8,0.72)", color: v.publique ? CH : IV2, fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: ".04em",
         cursor: (v.publique ? peutPrivatiser : peutPublier) ? "pointer" : "default" } },
       h("svg", { width: 10, height: 10, viewBox: "0 0 10 10", "aria-hidden": "true" },
         v.publique ? [h("circle", { key: "c", cx: 5, cy: 5, r: 4, fill: "none", stroke: CH, strokeWidth: 0.9 }), h("path", { key: "p", d: "M1 5h8M5 1c1.6 1.4 1.6 6.6 0 8M5 1c-1.6 1.4-1.6 6.6 0 8", fill: "none", stroke: CH, strokeWidth: 0.9 })]
           : [h("rect", { key: "r", x: 1.6, y: 4.4, width: 6.8, height: 4.6, rx: 1, fill: "none", stroke: IV2, strokeWidth: 0.9 }), h("path", { key: "a", d: "M3.2 4.4V3.1a1.8 1.8 0 0 1 3.6 0v1.3", fill: "none", stroke: IV2, strokeWidth: 0.9 })]),
-      changePub === v.id ? "…" : (v.publique ? T("Public", "Public") : T("Équipe", "Team")));
+      changePub === v.id ? "…" : (v.publique ? T("Public", "Public", "Público", "Pubblico", "公開", "Öffentlich", "عام", "公开", "Openbaar", "Público", "Offentlig", "Публичное", "Publiczny", "공개") : T("Équipe", "Team", "Equipo", "Squadra", "チーム", "Team", "الفريق", "团队", "Team", "Equipa", "Lag", "Команда", "Drużyna", "팀")));
     /* 06/11 — pastille du son, en haut à droite : l'auteur la touche pour couper / remettre le son ; les autres ne voient
        que l'indication « Son coupé » quand la vidéo est sans le son */
     var estAuteur = !!moiId && v.auteur_id === moiId;
@@ -341,9 +341,9 @@ function EcranTeamMedias() {
   /* « + Ajouter une vidéo » : visible pour le groupe ; l'ajout lui-même arrive à l'étape 4 */
   function tuileAjout(cle, etendue, seuleSurSaLigne, pre) {
     if (!estDuGroupe) return null;
-    return h("button", { key: cle, type: "button", onClick: function () { ouvrirAjout(pre); }, "aria-label": T("Ajouter une vidéo", "Add a video"),
+    return h("button", { key: cle, type: "button", onClick: function () { ouvrirAjout(pre); }, "aria-label": T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"),
       style: { cursor: "pointer", gridColumn: etendue ? "span " + etendue : "auto", width: "100%", aspectRatio: seuleSurSaLigne ? "auto" : "16 / 10", minHeight: seuleSurSaLigne ? 58 : 0, borderRadius: 12, border: "1px dashed " + CH2, background: "none", color: IV2, fontFamily: M, fontSize: 11, lineHeight: 1.25, display: "flex", flexDirection: seuleSurSaLigne ? "row" : "column", alignItems: "center", justifyContent: "center", gap: seuleSurSaLigne ? 10 : 4 } },
-      h("span", { style: { color: CH, fontSize: 20, lineHeight: 1 } }, "+"), T("Ajouter une vidéo", "Add a video"));
+      h("span", { style: { color: CH, fontSize: 20, lineHeight: 1 } }, "+"), T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"));
   }
   /* 05/11 (Blandine) : jamais de ligne à moitié vide. Grille de N colonnes : la dernière case s'étale sur la place restante
      (une vidéo seule passe en pleine largeur ; la case « Ajouter » seule sur sa ligne devient une bande compacte). */
@@ -360,7 +360,7 @@ function EcranTeamMedias() {
   var _lw = React.useState((typeof window !== "undefined" && window.innerWidth) || 390); var largeur = _lw[0], setLargeur = _lw[1];
   React.useEffect(function () { function f() { try { setLargeur(window.innerWidth); } catch (e) { } } window.addEventListener("resize", f); return function () { window.removeEventListener("resize", f); }; }, []);
   var COLS = largeur >= 900 ? 4 : largeur >= 620 ? 3 : 2;
-  function nomCheval(id) { var c = chevauxParId[id]; return (c && (c.alias || c.nom)) || T("Cheval", "Horse"); }
+  function nomCheval(id) { var c = chevauxParId[id]; return (c && (c.alias || c.nom)) || T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "الحصان", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말"); }
   function videosDe(p) { return (videos || []).filter(function (v) { return v.cavaliers.indexOf(p.id) !== -1; }); }
   function chevauxDe(liste) { var o = []; liste.forEach(function (v) { (v.chevaux.length ? v.chevaux : ["_sans"]).forEach(function (c) { if (o.indexOf(c) === -1) o.push(c); }); }); return o; }
   function compte(n, un, plusieurs) { return n + " " + (n > 1 ? plusieurs : un); }
@@ -377,8 +377,8 @@ function EcranTeamMedias() {
 
   function sectionCavaliere(p, i) {
     var siennes = videosDe(p), nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
-    var sousTitre = siennes.length ? compte(siennes.length, T("vidéo", "video"), T("vidéos", "videos")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse"), T("chevaux", "horses")) : "")
-      : (estDuGroupe ? "" : T("Pas encore de vidéo", "No video yet"));
+    var sousTitre = siennes.length ? compte(siennes.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상")) + (nbCh ? " · " + compte(nbCh, T("cheval", "horse", "caballo", "cavallo", "頭の馬", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리 말"), T("chevaux", "horses", "caballos", "cavalli", "頭の馬", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошади", "konie", "마리 말")) : "")
+      : (estDuGroupe ? "" : T("Pas encore de vidéo", "No video yet", "Aún no hay vídeos", "Ancora nessun video", "まだ動画はありません", "Noch kein Video", "لا يوجد فيديو بعد", "还没有视频", "Nog geen video", "Ainda sem vídeos", "Ingen video än", "Пока нет видео", "Jeszcze brak filmów", "아직 동영상이 없어요"));
     var deux = siennes.slice(0, 2);
     return h("div", { key: "cav" + p.id },
       i > 0 ? filet() : null,
@@ -389,12 +389,12 @@ function EcranTeamMedias() {
             h("div", { style: { minWidth: 0 } },
               h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 22, lineHeight: 1.1 } }, nomProfil(p)),
               sousTitre ? h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, sousTitre) : null)),
-          siennes.length ? h("button", { type: "button", onClick: function () { ouvrirCavaliere(p); }, style: { flex: "0 0 auto", minHeight: 34, background: "none", border: "none", padding: "0 2px", color: CH, fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Voir tout", "See all") + " " + (rtl ? "‹" : "›")) : null),
+          siennes.length ? h("button", { type: "button", onClick: function () { ouvrirCavaliere(p); }, style: { flex: "0 0 auto", minHeight: 34, background: "none", border: "none", padding: "0 2px", color: CH, fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "모두 보기") + " " + (rtl ? "‹" : "›")) : null),
         /* sans vidéo : une petite case « + » et une petite écriture, rien de plus */
         !siennes.length ? (estDuGroupe ? h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 12, paddingInlineStart: 58 } },
-            h("button", { type: "button", onClick: function () { ouvrirAjout({ cav: [p.id] }); }, "aria-label": T("Ajouter une vidéo", "Add a video"),
+            h("button", { type: "button", onClick: function () { ouvrirAjout({ cav: [p.id] }); }, "aria-label": T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"),
               style: { flex: "0 0 auto", width: 58, height: 40, borderRadius: 10, border: "1px dashed " + CH2, background: "transparent", color: CH, fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" } }, "+"),
-            h("div", { style: { fontFamily: M, fontSize: 11, fontStyle: "italic", color: IV3, lineHeight: 1.4 } }, T("Ajoute les vidéos de concours ici", "Add competition videos here"))) : null)
+            h("div", { style: { fontFamily: M, fontSize: 11, fontStyle: "italic", color: IV3, lineHeight: 1.4 } }, T("Ajoute les vidéos de concours ici", "Add your competition videos here", "Añade aquí los vídeos de concurso", "Aggiungi qui i video dei concorsi", "大会の動画をここに追加しよう", "Füge hier die Turniervideos hinzu", "أضف فيديوهات المسابقات هنا", "在这里添加比赛视频", "Voeg hier je wedstrijdvideo's toe", "Adiciona aqui os vídeos de concurso", "Lägg till tävlingsvideor här", "Добавляй сюда видео с соревнований", "Dodaj tu filmy z zawodów", "대회 동영상을 여기에 추가하세요"))) : null)
           : h("div", { style: { marginTop: 12, maxWidth: 560 } },
               deux.length === 2 ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, deux.map(function (v) { return tuileVideo(v, "v" + p.id + v.id, true); }))
                 : grilleEquilibree(deux, "l" + p.id, 2, { cav: [p.id] }))));
@@ -412,14 +412,14 @@ function EcranTeamMedias() {
         libelle);
     }
     return h("div", { style: { marginTop: 14 } },
-      h("button", { type: "button", onClick: function () { setCavOuverte(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Toute l'équipe", "Whole team")),
+      h("button", { type: "button", onClick: function () { setCavOuverte(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Toute l'équipe", "Whole team", "Todo el equipo", "Tutta la squadra", "チーム全員", "Ganzes Team", "الفريق بأكمله", "整个团队", "Hele team", "Toda a equipa", "Hela laget", "Вся команда", "Cała drużyna", "팀 전체")),
       h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginTop: 6 } },
         avatar(p, 58),
         h("div", { style: { minWidth: 0 } },
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 28, lineHeight: 1.05 } }, nomProfil(p)),
-          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(siennes.length, T("vidéo", "video"), T("vidéos", "videos"))))),
+          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(siennes.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상"))))),
       h("div", { "data-hscroll": "1", "data-noswipe": "1", role: "tablist", style: { display: "flex", gap: 8, overflowX: "auto", margin: "18px -18px 0", padding: "0 18px 4px", scrollbarWidth: "none" } },
-        [pastille("tous", T("Tous", "All"), null)].concat(chs.map(function (c) { var ch = chevauxParId[c]; return pastille(c, c === "_sans" ? T("Sans cheval", "No horse") : nomCheval(c), ch && ch.photo_url); }))),
+        [pastille("tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alle", "Todos", "Alla", "Все", "Wszystkie", "전체"), null)].concat(chs.map(function (c) { var ch = chevauxParId[c]; return pastille(c, c === "_sans" ? T("Sans cheval", "No horse", "Sin caballo", "Senza cavallo", "馬なし", "Ohne Pferd", "بدون حصان", "无马", "Zonder paard", "Sem cavalo", "Utan häst", "Без лошади", "Bez konia", "말 없음") : nomCheval(c), ch && ch.photo_url); }))),
       h("div", { style: { height: 1, margin: "14px 0 16px", background: "linear-gradient(90deg, rgba(201,166,107,.1), " + CH2 + " 50%, rgba(201,166,107,.1))" } }),
       grilleEquilibree(visibles, "pv" + p.id, COLS, { cav: [p.id], ch: (ongletCheval !== "tous" && ongletCheval !== "_sans") ? [ongletCheval] : [] }));
   }
@@ -447,8 +447,8 @@ function EcranTeamMedias() {
             photoCheval(c, 46),
             h("div", { style: { minWidth: 0 } },
               h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 22, lineHeight: 1.1 } }, nomCheval(c)),
-              h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, compte(siens.length, T("vidéo", "video"), T("vidéos", "videos")) + " · " + compte(nbCav, T("cavalière", "rider"), T("cavalières", "riders"))))),
-          h("button", { type: "button", onClick: function () { ouvrirCheval(c); }, style: { flex: "0 0 auto", minHeight: 34, background: "none", border: "none", padding: "0 2px", color: CH, fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Voir tout", "See all") + " " + (rtl ? "‹" : "›"))),
+              h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, compte(siens.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상")) + " · " + compte(nbCav, T("cavalière", "rider", "jinete", "cavaliere", "人のライダー", "Reiterin", "فارسة", "位骑手", "ruiter", "cavaleira", "ryttare", "всадница", "jeźdźczyni", "명의 라이더"), T("cavalières", "riders", "jinetes", "cavalieri", "人のライダー", "Reiterinnen", "فارسات", "位骑手", "ruiters", "cavaleiras", "ryttare", "всадницы", "jeźdźczynie", "명의 라이더"))))),
+          h("button", { type: "button", onClick: function () { ouvrirCheval(c); }, style: { flex: "0 0 auto", minHeight: 34, background: "none", border: "none", padding: "0 2px", color: CH, fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "모두 보기") + " " + (rtl ? "‹" : "›"))),
         h("div", { style: { marginTop: 12, maxWidth: 560 } },
           deux.length === 2 ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, deux.map(function (v) { return tuileVideo(v, "cv" + c + v.id, true); }))
             : grilleEquilibree(deux, "lc" + c, 2, { ch: [c] }))));
@@ -463,14 +463,14 @@ function EcranTeamMedias() {
         prof ? avatar(prof, 30) : null, libelle);
     }
     return h("div", { style: { marginTop: 14 } },
-      h("button", { type: "button", onClick: function () { setChOuvert(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Tous les chevaux", "All horses")),
+      h("button", { type: "button", onClick: function () { setChOuvert(null); }, style: { background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Tous les chevaux", "All horses", "Todos los caballos", "Tutti i cavalli", "すべての馬", "Alle Pferde", "كل الخيول", "所有马匹", "Alle paarden", "Todos os cavalos", "Alla hästar", "Все лошади", "Wszystkie konie", "모든 말")),
       h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginTop: 6 } },
         photoCheval(c, 58),
         h("div", { style: { minWidth: 0 } },
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 28, lineHeight: 1.05 } }, nomCheval(c)),
-          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(siens.length, T("vidéo", "video"), T("vidéos", "videos"))))),
+          h("div", { style: { fontFamily: M, fontSize: 11.5, color: IV3, marginTop: 3 } }, compte(siens.length, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상"))))),
       h("div", { "data-hscroll": "1", "data-noswipe": "1", role: "tablist", style: { display: "flex", gap: 8, overflowX: "auto", margin: "18px -18px 0", padding: "0 18px 4px", scrollbarWidth: "none" } },
-        [pastille("tous", T("Tous", "All"), null)].concat(cavs.map(function (u) { var pr = profilsParId[u]; return pastille(u, nomProfil(pr), pr || { pseudo: "?" }); }))),
+        [pastille("tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alle", "Todos", "Alla", "Все", "Wszystkie", "전체"), null)].concat(cavs.map(function (u) { var pr = profilsParId[u]; return pastille(u, nomProfil(pr), pr || { pseudo: "?" }); }))),
       h("div", { style: { height: 1, margin: "14px 0 16px", background: "linear-gradient(90deg, rgba(201,166,107,.1), " + CH2 + " 50%, rgba(201,166,107,.1))" } }),
       grilleEquilibree(visibles, "ph" + c, COLS, { ch: [c], cav: ongletCav !== "tous" ? [ongletCav] : [] }));
   }
@@ -482,7 +482,7 @@ function EcranTeamMedias() {
       return h("button", { key: cle, type: "button", onClick: function () { setVue(cle); setCavOuverte(null); setChOuvert(null); },
         style: { background: "none", border: "none", borderBottom: "1px solid " + (on ? CH : "transparent"), padding: "8px 0 6px", minHeight: 36, color: on ? IV : IV3, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" } }, txt);
     }
-    return h("div", { style: { display: "flex", gap: 22, marginTop: 18 } }, lien("cavaliere", T("Par cavalière", "By rider")), lien("cheval", T("Par cheval", "By horse")));
+    return h("div", { style: { display: "flex", gap: 22, marginTop: 18 } }, lien("cavaliere", T("Par cavalière", "By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiterin", "حسب الفارسة", "按骑手", "Per ruiter", "Por cavaleira", "Per ryttare", "По всадницам", "Według jeźdźczyni", "라이더별")), lien("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별")));
   }
 
   function ongletVideos() {
@@ -495,17 +495,17 @@ function EcranTeamMedias() {
     if (vue === "cavaliere") {
       /* les cavalières qui ont des vidéos d'abord, puis les autres par ordre alphabétique */
       var liste = (membres || []).slice().sort(function (a, b) { var d = videosDe(b).length - videosDe(a).length; return d || nomProfil(a).localeCompare(nomProfil(b)); });
-      corps = !liste.length ? vide(T("Aucune cavalière dans l'équipe pour l'instant.", "No riders in the team yet.")) : h("div", null, liste.map(sectionCavaliere));
+      corps = !liste.length ? vide(T("Aucune cavalière dans l'équipe pour l'instant.", "No riders in the team yet.", "Aún no hay jinetes en el equipo.", "Ancora nessun cavaliere nella squadra.", "チームにはまだライダーがいません。", "Noch keine Reiterin im Team.", "لا توجد فارسات في الفريق بعد.", "团队中还没有骑手。", "Nog geen ruiters in het team.", "Ainda não há cavaleiras na equipa.", "Inga ryttare i laget än.", "В команде пока нет всадниц.", "W drużynie nie ma jeszcze jeźdźczyń.", "아직 팀에 라이더가 없어요.")) : h("div", null, liste.map(sectionCavaliere));
     } else {
       var chs = []; (videos || []).forEach(function (v) { v.chevaux.forEach(function (c) { if (chs.indexOf(c) === -1) chs.push(c); }); });
       chs.sort(function (a, b) { var d = videosDuCheval(b).length - videosDuCheval(a).length; return d || nomCheval(a).localeCompare(nomCheval(b)); });
-      corps = !chs.length ? vide(T("Les chevaux apparaîtront ici dès qu'une vidéo leur sera rattachée.", "Horses will appear here once a video is linked to them.")) : h("div", null, chs.map(sectionCheval));
+      corps = !chs.length ? vide(T("Les chevaux apparaîtront ici dès qu'une vidéo leur sera rattachée.", "Horses will appear here as soon as a video is linked to them.", "Los caballos aparecerán aquí en cuanto se les vincule un vídeo.", "I cavalli appariranno qui non appena gli verrà collegato un video.", "動画が紐づけられると、ここに馬が表示されます。", "Die Pferde erscheinen hier, sobald ihnen ein Video zugeordnet ist.", "ستظهر الخيول هنا بمجرد ربط فيديو بها.", "一旦有视频关联，马匹就会显示在这里。", "Paarden verschijnen hier zodra er een video aan gekoppeld is.", "Os cavalos aparecerão aqui assim que lhes for associado um vídeo.", "Hästarna visas här så snart en video kopplas till dem.", "Лошади появятся здесь, как только к ним привяжут видео.", "Konie pojawią się tutaj, gdy tylko zostanie do nich przypisany film.", "동영상이 연결되면 여기에 말이 표시돼요.")) : h("div", null, chs.map(sectionCheval));
     }
     return h("div", null, selecteurVue(), h("div", { style: { marginTop: 4 } }, corps));
   }
 
   /* ───────── THÉORIE : partages (lecture seule à cette étape) ───────── */
-  var LIB_TYPE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
+  var LIB_TYPE = { article_hype: T("Article Hype", "Hype article", "Artículo Hype", "Articolo Hype", "Hype記事", "Hype-Artikel", "مقال Hype", "Hype 文章", "Hype-artikel", "Artigo Hype", "Hype-artikel", "Статья Hype", "Artykuł Hype", "Hype 기사"), lien: T("Lien", "Link", "Enlace", "Link", "リンク", "Link", "رابط", "链接", "Link", "Link", "Länk", "Ссылка", "Link", "링크"), video: T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상"), ressource: T("Ressource", "Resource", "Recurso", "Risorsa", "資料", "Ressource", "مورد", "资源", "Bron", "Recurso", "Resurs", "Ресурс", "Materiał", "자료") };
   /* article Hype : on ouvre la page d'origine DANS Hype (on ne copie jamais le contenu) ; sinon le lien externe */
   function articleHypeDe(url) {
     var u = String(url || "").trim();
@@ -530,13 +530,13 @@ function EcranTeamMedias() {
         h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, LIB_TYPE[p.type] || ""),
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.15, marginTop: 3 } }, p.titre || p.url),
         p.commentaire ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, color: IV2, marginTop: 4, lineHeight: 1.45 } }, "« " + p.commentaire + " »") : null,
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 4 } }, T("Partagé par ", "Shared by ") + nomProfil(qui))));
+        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 4 } }, T("Partagé par ", "Shared by ", "Compartido por ", "Condiviso da ", "共有者：", "Geteilt von ", "شاركه ", "分享者：", "Gedeeld door ", "Partilhado por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui))));
   }
   function ongletTheorie() {
     if (partages === null) return chargement();
     var bouton = estDuGroupe ? h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 16 } },
-      h("button", { type: "button", onClick: ouvrirPartager, style: { minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Partager", "Share"))) : null;
-    if (!partages.length) return h("div", null, bouton, vide(T("Aucun partage pour l'instant. Partage un article, un lien ou une ressource utile à l'équipe.", "No shares yet.")));
+      h("button", { type: "button", onClick: ouvrirPartager, style: { minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Partager", "Share", "Compartir", "Condividi", "共有", "Teilen", "مشاركة", "分享", "Delen", "Partilhar", "Dela", "Поделиться", "Udostępnij", "공유"))) : null;
+    if (!partages.length) return h("div", null, bouton, vide(T("Aucun partage pour l'instant. Partage un article, un lien ou une ressource utile à l'équipe.", "Nothing shared yet. Share an article, a link or a resource useful to the team.", "Aún no hay nada compartido. Comparte un artículo, un enlace o un recurso útil para el equipo.", "Ancora nessuna condivisione. Condividi un articolo, un link o una risorsa utile alla squadra.", "まだ共有はありません。チームに役立つ記事、リンク、資料を共有しよう。", "Noch nichts geteilt. Teile einen Artikel, einen Link oder eine Ressource, die dem Team hilft.", "لا توجد مشاركات بعد. شارك مقالًا أو رابطًا أو موردًا مفيدًا للفريق.", "还没有分享。分享一篇文章、一个链接或对团队有用的资源吧。", "Nog niets gedeeld. Deel een artikel, een link of een bron die nuttig is voor het team.", "Ainda nada partilhado. Partilha um artigo, um link ou um recurso útil para a equipa.", "Inget delat än. Dela en artikel, en länk eller en resurs som hjälper laget.", "Пока ничего не опубликовано. Поделись статьёй, ссылкой или полезным для команды материалом.", "Na razie nic nie udostępniono. Udostępnij artykuł, link lub materiał przydatny dla drużyny.", "아직 공유된 것이 없어요. 팀에 도움이 되는 기사, 링크, 자료를 공유해 보세요.")));
     return h("div", null, bouton, h("div", { style: { marginTop: 6 } }, partages.map(cartePartage)));
   }
 
@@ -589,39 +589,39 @@ function EcranTeamMedias() {
     setPEtat("envoi");
     var ap = pApercu || {};
     var r = await supa.from("team_partages").insert({ groupe_id: groupe.id, type: pType, url: u, titre: ap.titre || null, image: ap.image || null, resume: ap.resume || null, categorie: ap.categorie || null, commentaire: pCom.trim() || null, auteur_id: moi.id });
-    if (r && r.error) { setPEtat(T("Le partage n'a pas pu être enregistré : ", "Could not share: ") + (r.error.message || r.error)); return; }
+    if (r && r.error) { setPEtat(T("Le partage n'a pas pu être enregistré : ", "The share could not be saved: ", "No se pudo guardar lo compartido: ", "Impossibile salvare la condivisione: ", "共有を保存できませんでした：", "Das Teilen konnte nicht gespeichert werden: ", "تعذّر حفظ المشاركة: ", "无法保存分享：", "Het delen kon niet worden opgeslagen: ", "Não foi possível guardar a partilha: ", "Delningen kunde inte sparas: ", "Не удалось сохранить: ", "Nie udało się zapisać udostępnienia: ", "공유를 저장하지 못했어요: ") + (r.error.message || r.error)); return; }
     setPEtat("fini"); setRev(function (n) { return n + 1; });
   }
   var fenetrePartage = null;
   if (partageOuvert) {
     var ap = pApercu, envoi = pEtat === "envoi";
     var pret = !!urlPropre(pUrl) && /^https?:\/\/[^\s]+\.[^\s]+/i.test(urlPropre(pUrl)) && pEtat !== "lecture";
-    var TYPES = [["lien", T("Article", "Article")], ["video", T("Vidéo", "Video")], ["ressource", T("Ressource", "Resource")]];
+    var TYPES = [["lien", T("Article", "Article", "Artículo", "Articolo", "記事", "Artikel", "مقال", "文章", "Artikel", "Artigo", "Artikel", "Статья", "Artykuł", "기사")], ["video", T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상")], ["ressource", T("Ressource", "Resource", "Recurso", "Risorsa", "資料", "Ressource", "مورد", "资源", "Bron", "Recurso", "Resurs", "Ресурс", "Materiał", "자료")]];
     fenetrePartage = h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 9000, background: NOIR, fontFamily: M, color: IV, overflowY: "auto" } },
       h("div", { style: { maxWidth: 620, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 28px)" } },
         h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
           h("div", null,
             h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, (groupe && groupe.nom) || ""),
-            h("div", { style: { fontFamily: SERIF, fontSize: 24, marginTop: 2 } }, T("Partager avec l'équipe", "Share with the team"))),
-          h("button", { type: "button", disabled: envoi, onClick: function () { setPartageOuvert(false); }, "aria-label": T("Fermer", "Close"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IV, fontSize: 15, cursor: "pointer" } }, "\u2715")),
+            h("div", { style: { fontFamily: SERIF, fontSize: 24, marginTop: 2 } }, T("Partager avec l'équipe", "Share with the team", "Compartir con el equipo", "Condividi con la squadra", "チームと共有", "Mit dem Team teilen", "مشاركة مع الفريق", "与团队分享", "Delen met het team", "Partilhar com a equipa", "Dela med laget", "Поделиться с командой", "Udostępnij drużynie", "팀과 공유"))),
+          h("button", { type: "button", disabled: envoi, onClick: function () { setPartageOuvert(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IV, fontSize: 15, cursor: "pointer" } }, "\u2715")),
         h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, margin: "6px 0 10px", transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
         pEtat === "fini" ? h("div", { style: { textAlign: "center", padding: "30px 0" } },
-            h("div", { style: { fontFamily: SERIF, fontSize: 22 } }, T("Partagé avec l'équipe.", "Shared with the team.")),
-            h("button", { type: "button", onClick: function () { setPartageOuvert(false); }, style: { marginTop: 20, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close")))
+            h("div", { style: { fontFamily: SERIF, fontSize: 22 } }, T("Partagé avec l'équipe.", "Shared with the team.", "Compartido con el equipo.", "Condiviso con la squadra.", "チームと共有しました。", "Mit dem Team geteilt.", "تمت المشاركة مع الفريق.", "已与团队分享。", "Gedeeld met het team.", "Partilhado com a equipa.", "Delat med laget.", "Отправлено команде.", "Udostępniono drużynie.", "팀과 공유했어요.")),
+            h("button", { type: "button", onClick: function () { setPartageOuvert(false); }, style: { marginTop: 20, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))
         : h("div", null,
-          h("label", { htmlFor: "tp-url", style: { display: "block", fontSize: 12.5, color: IV3, marginBottom: 6 } }, T("Colle l'adresse de l'article, de la vidéo ou de la page", "Paste the address of the article, video or page")),
+          h("label", { htmlFor: "tp-url", style: { display: "block", fontSize: 12.5, color: IV3, marginBottom: 6 } }, T("Colle l'adresse de l'article, de la vidéo ou de la page", "Paste the address of the article, video or page", "Pega la dirección del artículo, del vídeo o de la página", "Incolla l'indirizzo dell'articolo, del video o della pagina", "記事・動画・ページのアドレスを貼り付けて", "Füge die Adresse des Artikels, Videos oder der Seite ein", "الصق عنوان المقال أو الفيديو أو الصفحة", "粘贴文章、视频或网页的地址", "Plak het adres van het artikel, de video of de pagina", "Cola o endereço do artigo, do vídeo ou da página", "Klistra in adressen till artikeln, videon eller sidan", "Вставь адрес статьи, видео или страницы", "Wklej adres artykułu, filmu lub strony", "기사, 동영상 또는 페이지 주소를 붙여 넣으세요")),
           h("input", { id: "tp-url", type: "url", inputMode: "url", autoCapitalize: "off", autoCorrect: "off", value: pUrl, disabled: envoi, onChange: function (e) { setPUrl(e.target.value); }, placeholder: "https://…",
             style: { width: "100%", boxSizing: "border-box", minHeight: 46, padding: "0 2px", border: "none", borderBottom: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 16, outline: "none" } }),
           /* aperçu */
-          pEtat === "lecture" ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 16 } }, T("Lecture de l'aperçu…", "Reading preview…"))
+          pEtat === "lecture" ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 16 } }, T("Lecture de l'aperçu…", "Loading preview…", "Cargando vista previa…", "Caricamento anteprima…", "プレビューを読み込み中…", "Vorschau wird geladen…", "جارٍ تحميل المعاينة…", "正在读取预览…", "Voorbeeld laden…", "A carregar a pré-visualização…", "Läser förhandsvisning…", "Загрузка превью…", "Wczytywanie podglądu…", "미리보기 불러오는 중…"))
           : ap ? h("div", { style: { display: "flex", gap: 12, marginTop: 18, padding: 12, borderRadius: 14, border: "1px solid " + CH3 } },
               h("div", { style: { width: 96, flex: "0 0 96px", aspectRatio: "16 / 11", borderRadius: 10, overflow: "hidden", background: PAN, display: "flex", alignItems: "center", justifyContent: "center", color: CH, fontFamily: SERIF, fontSize: 24 } },
                 ap.image ? h("img", { src: ap.image, alt: "", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } }) : "\u2726"),
               h("div", { style: { minWidth: 0, flex: 1 } },
-                h("div", { style: { fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, pType === "article_hype" ? (T("Article Hype", "Hype article") + (ap.categorie ? " · " + ap.categorie : "")) : (ap.site || "")),
-                h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, ap.titre || (ap.site ? T("Lien vers ", "Link to ") + ap.site : urlPropre(pUrl))),
+                h("div", { style: { fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, pType === "article_hype" ? (T("Article Hype", "Hype article", "Artículo Hype", "Articolo Hype", "Hype記事", "Hype-Artikel", "مقال Hype", "Hype 文章", "Hype-artikel", "Artigo Hype", "Hype-artikel", "Статья Hype", "Artykuł Hype", "Hype 기사") + (ap.categorie ? " · " + ap.categorie : "")) : (ap.site || "")),
+                h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, ap.titre || (ap.site ? T("Lien vers ", "Link to ", "Enlace a ", "Link a ", "リンク先：", "Link zu ", "رابط إلى ", "链接至 ", "Link naar ", "Link para ", "Länk till ", "Ссылка на ", "Link do ", "링크: ") + ap.site : urlPropre(pUrl))),
                 ap.resume ? h("div", { dir: "auto", style: { fontSize: 11.5, color: IV2, marginTop: 4, lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" } }, ap.resume)
-                  : ap.secours ? h("div", { style: { fontSize: 11, color: IV3, marginTop: 4 } }, T("Ce site ne donne pas d'aperçu : le lien sera partagé tel quel.", "No preview from this site: the link will be shared as is.")) : null))
+                  : ap.secours ? h("div", { style: { fontSize: 11, color: IV3, marginTop: 4 } }, T("Ce site ne donne pas d'aperçu : le lien sera partagé tel quel.", "This site gives no preview: the link will be shared as it is.", "Este sitio no ofrece vista previa: el enlace se compartirá tal cual.", "Questo sito non fornisce un'anteprima: il link sarà condiviso così com'è.", "このサイトはプレビューを出しません。リンクはそのまま共有されます。", "Diese Seite liefert keine Vorschau: Der Link wird so geteilt, wie er ist.", "هذا الموقع لا يقدّم معاينة: سيُشارك الرابط كما هو.", "该网站不提供预览：链接将按原样分享。", "Deze site geeft geen voorbeeld: de link wordt gedeeld zoals hij is.", "Este site não dá pré-visualização: o link será partilhado tal como está.", "Den här sidan ger ingen förhandsvisning: länken delas som den är.", "Этот сайт не даёт превью: ссылка будет отправлена как есть.", "Ta strona nie udostępnia podglądu: link zostanie udostępniony bez zmian.", "이 사이트는 미리보기를 제공하지 않아요. 링크가 그대로 공유돼요.")) : null))
           : null,
           /* type (sauf article Hype, reconnu tout seul) */
           pType === "article_hype" ? null : h("div", { style: { display: "flex", gap: 8, marginTop: 18 } }, TYPES.map(function (t) {
@@ -629,11 +629,11 @@ function EcranTeamMedias() {
             return h("button", { key: t[0], type: "button", disabled: envoi, onClick: function () { setPType(t[0]); }, style: { flex: 1, minHeight: 40, borderRadius: 12, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.12)"), background: on ? "linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95))" : "rgba(16,26,29,.45)", color: on ? IV : IV2, fontFamily: M, fontSize: 12.5, cursor: "pointer" } }, t[1]);
           })),
           h("div", { style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, borderBottom: "1px solid " + CH3, marginTop: 14 } },
-            h("label", { htmlFor: "tp-com", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?")),
-            h("input", { id: "tp-com", value: pCom, disabled: envoi, onChange: function (e) { setPCom(e.target.value); }, placeholder: T("Facultatif", "Optional"), style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
+            h("label", { htmlFor: "tp-com", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?", "¿Unas palabras?", "Una parola?", "ひとこと", "Ein Wort?", "كلمة؟", "说点什么？", "Een woordje?", "Uma palavra?", "Ett ord?", "Пара слов?", "Kilka słów?", "한마디?")),
+            h("input", { id: "tp-com", value: pCom, disabled: envoi, onChange: function (e) { setPCom(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택 사항"), style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
           (pEtat && pEtat !== "lecture" && pEtat !== "envoi") ? h("div", { role: "alert", style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12.5 } }, pEtat) : null,
           h("button", { type: "button", disabled: !pret || envoi, onClick: publierPartage, style: { width: "100%", marginTop: 22, minHeight: 48, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(243,238,228,0.14)"), background: "transparent", color: pret ? IV : IV3, fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret && !envoi ? "pointer" : "default" } },
-            envoi ? "…" : T("Partager avec l'équipe", "Share with the team")))));
+            envoi ? "…" : T("Partager avec l'équipe", "Share with the team", "Compartir con el equipo", "Condividi con la squadra", "チームと共有", "Mit dem Team teilen", "مشاركة مع الفريق", "与团队分享", "Delen met het team", "Partilhar com a equipa", "Dela med laget", "Поделиться с командой", "Udostępnij drużynie", "팀과 공유")))));
   }
 
   /* ───────── ÉPINGLES HB : épingles Hey Baby partagées avec le groupe ───────── */
@@ -642,14 +642,14 @@ function EcranTeamMedias() {
     var ouv = epOuverte === e.id, qui = profilsParId[e.partage_par];
     return h("div", { key: "ep" + e.id, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
       h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : e.id); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
-        h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, e.cheval_nom ? T("Hey Baby · ", "Hey Baby · ") + e.cheval_nom : "Hey Baby"),
+        h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, e.cheval_nom ? T("Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ") + e.cheval_nom : "Hey Baby"),
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, e.question || ""),
         h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, color: IV2, marginTop: 6, lineHeight: 1.55, whiteSpace: "pre-wrap", overflow: ouv ? "visible" : "hidden", display: ouv ? "block" : "-webkit-box", WebkitLineClamp: ouv ? "none" : 3, WebkitBoxOrient: "vertical" } }, e.reponse || ""),
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ") + nomProfil(qui) + (ouv ? "" : " · " + T("Lire tout", "Read all")))));
+        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui) + (ouv ? "" : " · " + T("Lire tout", "Read all", "Leer todo", "Leggi tutto", "全文を読む", "Alles lesen", "قراءة الكل", "阅读全部", "Alles lezen", "Ler tudo", "Läs allt", "Читать полностью", "Czytaj całość", "전체 읽기")))));
   }
   function ongletEpingles() {
     if (epingles === null) return chargement();
-    if (!epingles.length) return vide(T("Aucune épingle partagée avec l'équipe pour l'instant.", "No pins shared with the team yet."));
+    if (!epingles.length) return vide(T("Aucune épingle partagée avec l'équipe pour l'instant.", "No pins shared with the team yet.", "Aún no hay pines compartidos con el equipo.", "Ancora nessun pin condiviso con la squadra.", "チームと共有されたピンはまだありません。", "Noch keine Pins mit dem Team geteilt.", "لا توجد تثبيتات مشتركة مع الفريق بعد.", "还没有与团队分享的收藏。", "Nog geen pins gedeeld met het team.", "Ainda não há pins partilhados com a equipa.", "Inga nålar delade med laget än.", "Пока нет закладок, отправленных команде.", "Brak przypiętych wpisów udostępnionych drużynie.", "아직 팀과 공유한 핀이 없어요."));
     return h("div", { style: { marginTop: 10 } }, epingles.map(carteEpingle));
   }
 
@@ -709,16 +709,16 @@ function EcranTeamMedias() {
       titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, auteur_id: moi.id }).select("id").single();
     if (r && r.error) {
       var msg = String(r.error.message || r.error);
-      if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library."));
+      if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library.", "Este vídeo ya está en la videoteca del equipo.", "Questo video è già nella videoteca della squadra.", "この動画はすでにチームのライブラリにあります。", "Dieses Video ist bereits in der Videothek des Teams.", "هذا الفيديو موجود بالفعل في مكتبة الفريق.", "该视频已在团队视频库中。", "Deze video staat al in de videotheek van het team.", "Este vídeo já está na videoteca da equipa.", "Den här videon finns redan i lagets videobibliotek.", "Это видео уже есть в видеотеке команды.", "Ten film jest już w wideotece drużyny.", "이 동영상은 이미 팀 라이브러리에 있어요."));
       throw new Error(msg);
     }
     var id = r && r.data && r.data.id;
-    if (!id) throw new Error(T("la base n'a pas confirmé l'ajout", "not confirmed"));
+    if (!id) throw new Error(T("la base n'a pas confirmé l'ajout", "the addition was not confirmed", "no se confirmó el añadido", "l'aggiunta non è stata confermata", "追加が確認されませんでした", "das Hinzufügen wurde nicht bestätigt", "لم يتم تأكيد الإضافة", "未确认添加", "de toevoeging is niet bevestigd", "a adição não foi confirmada", "tillägget bekräftades inte", "добавление не подтверждено", "dodanie nie zostało potwierdzone", "추가가 확인되지 않았어요"));
     var rc = await supa.from("team_videos_cavaliers").insert(meta.cav.map(function (u) { return { video_id: id, user_id: u }; }));
     var rh = await supa.from("team_videos_chevaux").insert(meta.ch.map(function (c) { return { video_id: id, cheval_id: c }; }));
     if ((rc && rc.error) || (rh && rh.error)) {
       try { await supa.from("team_videos").delete().eq("id", id); } catch (eD) { }
-      throw new Error(String(((rc && rc.error) || (rh && rh.error)).message || T("rattachement refusé", "link refused")));
+      throw new Error(String(((rc && rc.error) || (rh && rh.error)).message || T("rattachement refusé", "link refused", "vinculación rechazada", "collegamento rifiutato", "紐づけが拒否されました", "Zuordnung abgelehnt", "تم رفض الربط", "关联被拒绝", "koppeling geweigerd", "associação recusada", "kopplingen nekades", "привязка отклонена", "przypisanie odrzucone", "연결이 거부됐어요")));
     }
     return id;
   }
@@ -755,37 +755,37 @@ function EcranTeamMedias() {
       description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
     try {
       if (fSource === "hype") {
-        setFEtat({ etape: "envoi", pct: 100, texte: T("Ajout à la vidéothèque…", "Adding…") });
+        setFEtat({ etape: "envoi", pct: 100, texte: T("Ajout à la vidéothèque…", "Adding to the library…", "Añadiendo a la videoteca…", "Aggiunta alla videoteca…", "ライブラリに追加中…", "Wird zur Videothek hinzugefügt…", "جارٍ الإضافة إلى المكتبة…", "正在添加到视频库…", "Toevoegen aan de videotheek…", "A adicionar à videoteca…", "Lägger till i biblioteket…", "Добавление в видеотеку…", "Dodawanie do wideoteki…", "라이브러리에 추가하는 중…") });
         await creerFiche(fHype.playback_id, fHype.duree, fHype.id, meta);
       } else {
-        setFEtat({ etape: "envoi", pct: 0, texte: T("Préparation de l'envoi…", "Preparing…") });
+        setFEtat({ etape: "envoi", pct: 0, texte: T("Préparation de l'envoi…", "Preparing upload…", "Preparando el envío…", "Preparazione dell'invio…", "アップロードを準備中…", "Upload wird vorbereitet…", "جارٍ تحضير الإرسال…", "正在准备上传…", "Upload voorbereiden…", "A preparar o envio…", "Förbereder uppladdning…", "Подготовка к отправке…", "Przygotowywanie wysyłki…", "업로드 준비 중…") });
         var rCr = await hypeMuxAppel({ cible: "team:" + groupe.id }, 25);
         if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
           var refus = String((rCr && rCr.error) || "");
-          throw new Error(/plafond|autoris|quota/i.test(refus) ? T("Tu as atteint ton nombre maximum de vidéos.", "Video limit reached.") : (T("Envoi refusé : ", "Upload refused: ") + (refus || "?")));
+          throw new Error(/plafond|autoris|quota/i.test(refus) ? T("Tu as atteint ton nombre maximum de vidéos.", "You've reached your maximum number of videos.", "Has alcanzado tu número máximo de vídeos.", "Hai raggiunto il numero massimo di video.", "動画の上限数に達しました。", "Du hast deine maximale Anzahl an Videos erreicht.", "لقد بلغت الحد الأقصى لعدد الفيديوهات.", "你的视频数量已达上限。", "Je hebt je maximale aantal video's bereikt.", "Atingiste o teu número máximo de vídeos.", "Du har nått ditt maxantal videor.", "Ты достиг(ла) максимального числа видео.", "Osiągnięto maksymalną liczbę filmów.", "동영상 최대 개수에 도달했어요.") : (T("Envoi refusé : ", "Upload refused: ", "Envío rechazado: ", "Invio rifiutato: ", "アップロードが拒否されました：", "Upload abgelehnt: ", "تم رفض الإرسال: ", "上传被拒绝：", "Upload geweigerd: ", "Envio recusado: ", "Uppladdningen nekades: ", "Отправка отклонена: ", "Wysyłka odrzucona: ", "업로드가 거부됐어요: ") + (refus || "?")));
         }
         var upId = String(rCr.data.upload_id);
         var rTr = await hypeVideoTraceMaj(upId, { destination_type: "team", destination_id: String(groupe.id), nom: fFichier.name }, null);
-        if (!rTr || rTr.error) throw new Error(T("Suivi de l'envoi impossible, rien n'a été envoyé.", "Tracking failed, nothing was sent."));
-        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fFichier, function (pct) { setFEtat({ etape: "envoi", pct: pct, texte: T("Envoi de la vidéo… ", "Uploading… ") + pct + " %" }); });
-        if (rUp && rUp.error) { try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { } throw new Error(T("Envoi interrompu : ", "Upload stopped: ") + rUp.error); }
+        if (!rTr || rTr.error) throw new Error(T("Suivi de l'envoi impossible, rien n'a été envoyé.", "The upload couldn't be tracked; nothing was sent.", "No se pudo seguir el envío; no se ha enviado nada.", "Impossibile seguire l'invio, non è stato inviato nulla.", "アップロードを追跡できず、何も送信されませんでした。", "Der Upload konnte nicht verfolgt werden, es wurde nichts gesendet.", "تعذّر تتبع الإرسال، لم يُرسل أي شيء.", "无法跟踪上传，未发送任何内容。", "Upload kon niet gevolgd worden, er is niets verstuurd.", "Não foi possível acompanhar o envio, nada foi enviado.", "Uppladdningen kunde inte följas, inget skickades.", "Не удалось отследить отправку, ничего не отправлено.", "Nie można śledzić wysyłki, nic nie zostało wysłane.", "업로드를 추적할 수 없어 아무것도 보내지 않았어요."));
+        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fFichier, function (pct) { setFEtat({ etape: "envoi", pct: pct, texte: T("Envoi de la vidéo… ", "Uploading video… ", "Enviando el vídeo… ", "Invio del video… ", "動画をアップロード中… ", "Video wird hochgeladen… ", "جارٍ إرسال الفيديو… ", "正在上传视频… ", "Video uploaden… ", "A enviar o vídeo… ", "Laddar upp videon… ", "Отправка видео… ", "Wysyłanie filmu… ", "동영상 업로드 중… ") + pct + " %" }); });
+        if (rUp && rUp.error) { try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { } throw new Error(T("Envoi interrompu : ", "Upload interrupted: ", "Envío interrumpido: ", "Invio interrotto: ", "アップロードが中断されました：", "Upload unterbrochen: ", "توقف الإرسال: ", "上传中断：", "Upload onderbroken: ", "Envio interrompido: ", "Uppladdningen avbröts: ", "Отправка прервана: ", "Wysyłka przerwana: ", "업로드가 중단됐어요: ") + rUp.error); }
         try { await hypeVideoTraceMaj(upId, { statut: "processing" }, "pasReady"); } catch (e3) { }
         var muxId = null; try { var rm = await supa.from("videos_mux").select("id").eq("upload_id", upId).maybeSingle(); muxId = rm && rm.data && rm.data.id; } catch (e4) { }
-        setFEtat({ etape: "envoi", pct: 100, texte: T("Vidéo reçue, Mux la prépare…", "Received, processing…") });
+        setFEtat({ etape: "envoi", pct: 100, texte: T("Vidéo reçue, Mux la prépare…", "Video received, Mux is preparing it…", "Vídeo recibido, Mux lo está preparando…", "Video ricevuto, Mux lo sta preparando…", "動画を受信しました。Muxが準備中…", "Video empfangen, Mux bereitet es vor…", "تم استلام الفيديو، Mux يجهّزه…", "已收到视频，Mux 正在处理…", "Video ontvangen, Mux bereidt hem voor…", "Vídeo recebido, a Mux está a prepará-lo…", "Videon mottagen, Mux förbereder den…", "Видео получено, Mux его обрабатывает…", "Film odebrany, Mux go przygotowuje…", "동영상을 받았어요. Mux가 준비 중…") });
         var rSt = await hypeMuxAttendrePret(upId);
         if (rSt && rSt.playback_id) {
           await creerFiche(rSt.playback_id, rSt.duree, muxId, meta);
           try { await hypeVideoTraceMaj(upId, { statut: "ready", playback_id: rSt.playback_id, duree: rSt.duree || null }, "pasReady"); } catch (e5) { }
         } else if (rSt && rSt.errored) {
           try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: String(rSt.error || "Mux") }, "pasReady"); } catch (e6) { }
-          throw new Error(T("Mux n'a pas pu préparer cette vidéo.", "Mux could not process this video."));
+          throw new Error(T("Mux n'a pas pu préparer cette vidéo.", "Mux could not prepare this video.", "Mux no pudo preparar este vídeo.", "Mux non è riuscito a preparare questo video.", "Muxがこの動画を準備できませんでした。", "Mux konnte dieses Video nicht vorbereiten.", "تعذّر على Mux تجهيز هذا الفيديو.", "Mux 无法处理此视频。", "Mux kon deze video niet voorbereiden.", "A Mux não conseguiu preparar este vídeo.", "Mux kunde inte förbereda den här videon.", "Mux не смог обработать это видео.", "Mux nie mógł przygotować tego filmu.", "Mux가 이 동영상을 준비하지 못했어요."));
         } else {
           ecrireAttente(lireAttente().concat([{ user: moi.id, upload: upId, muxId: muxId, meta: meta }]));
-          setFEtat({ etape: "fini", texte: T("La vidéo est bien envoyée. Elle est encore en préparation : elle apparaîtra ici dans quelques minutes.", "Uploaded. Still processing: it will appear in a few minutes.") });
+          setFEtat({ etape: "fini", texte: T("La vidéo est bien envoyée. Elle est encore en préparation : elle apparaîtra ici dans quelques minutes.", "Your video has been sent. It's still being prepared and will appear here in a few minutes.", "El vídeo se ha enviado. Aún se está preparando: aparecerá aquí en unos minutos.", "Il video è stato inviato. È ancora in preparazione: apparirà qui tra qualche minuto.", "動画は送信されました。まだ準備中で、数分後にここに表示されます。", "Das Video wurde gesendet. Es wird noch vorbereitet und erscheint in ein paar Minuten hier.", "تم إرسال الفيديو. لا يزال قيد التجهيز وسيظهر هنا خلال بضع دقائق.", "视频已发送，仍在处理中，几分钟后会显示在这里。", "De video is verstuurd. Hij wordt nog voorbereid en verschijnt hier over een paar minuten.", "O vídeo foi enviado. Ainda está em preparação: vai aparecer aqui dentro de alguns minutos.", "Videon är skickad. Den förbereds fortfarande och visas här om några minuter.", "Видео отправлено. Оно ещё обрабатывается и появится здесь через несколько минут.", "Film został wysłany. Wciąż jest przygotowywany i pojawi się tu za kilka minut.", "동영상을 보냈어요. 아직 준비 중이라 몇 분 뒤 여기에 나타나요.") });
           return;
         }
       }
-      setFEtat({ etape: "fini", texte: T("Vidéo ajoutée à la vidéothèque de l'équipe.", "Video added to the team library.") });
+      setFEtat({ etape: "fini", texte: T("Vidéo ajoutée à la vidéothèque de l'équipe.", "Video added to the team library.", "Vídeo añadido a la videoteca del equipo.", "Video aggiunto alla videoteca della squadra.", "チームのライブラリに動画を追加しました。", "Video zur Videothek des Teams hinzugefügt.", "تمت إضافة الفيديو إلى مكتبة الفريق.", "视频已添加到团队视频库。", "Video toegevoegd aan de videotheek van het team.", "Vídeo adicionado à videoteca da equipa.", "Videon har lagts till i lagets bibliotek.", "Видео добавлено в видеотеку команды.", "Film dodany do wideoteki drużyny.", "팀 라이브러리에 동영상을 추가했어요.") });
       setRev(function (n) { return n + 1; });
     } catch (eP) {
       setFEtat({ etape: "erreur", texte: String((eP && eP.message) || eP) });
@@ -811,7 +811,7 @@ function EcranTeamMedias() {
     var idsCh = chevauxEquipe.slice(); fCh.forEach(function (c) { if (idsCh.indexOf(c) === -1) idsCh.push(c); });
     idsCh.sort(function (a, b) { var d = (fCh.indexOf(b) !== -1) - (fCh.indexOf(a) !== -1); return d || nomCheval(a).localeCompare(nomCheval(b)); });
     var aVideo = fSource === "fichier" ? !!fFichier : !!fHype;
-    var resume = (fCav.length && fCh.length) ? fCav.map(function (u) { return nomProfil(profilsParId[u]); }).join(", ") + " " + T("sur", "on") + " " + fCh.map(nomCheval).join(", ") : "";
+    var resume = (fCav.length && fCh.length) ? fCav.map(function (u) { return nomProfil(profilsParId[u]); }).join(", ") + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "/") + " " + fCh.map(nomCheval).join(", ") : "";
     var dureeChoisie = fSource === "hype" && fHype ? duree(fHype.duree) : "";
 
     /* haut : la vidéo choisie en grand, ou une grande zone pour la choisir */
@@ -822,17 +822,17 @@ function EcranTeamMedias() {
             : h("img", { src: "https://image.mux.com/" + fHype.playback_id + "/thumbnail.jpg?width=900&fit_mode=preserve&time=2", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
           h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,.35), rgba(7,10,8,.05) 40%, " + NOIR + " 98%)" } }),
           h("div", { style: { position: "absolute", insetInlineStart: 20, insetInlineEnd: 20, bottom: 14, display: "flex", justifyContent: "space-between", alignItems: "flex-end" } },
-            h("span", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, T("Ta vidéo", "Your video") + (dureeChoisie ? " · " + dureeChoisie : "")),
-            h("button", { type: "button", disabled: envoiEnCours, onClick: function () { setFFichier(null); setFHype(null); }, style: { background: "none", border: "none", padding: "6px 0", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } }, T("Changer", "Change"))))
+            h("span", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, T("Ta vidéo", "Your video", "Tu vídeo", "Il tuo video", "あなたの動画", "Dein Video", "الفيديو الخاص بك", "你的视频", "Jouw video", "O teu vídeo", "Din video", "Твоё видео", "Twój film", "내 동영상") + (dureeChoisie ? " · " + dureeChoisie : "")),
+            h("button", { type: "button", disabled: envoiEnCours, onClick: function () { setFFichier(null); setFHype(null); }, style: { background: "none", border: "none", padding: "6px 0", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } }, T("Changer", "Change", "Cambiar", "Cambia", "変更", "Ändern", "تغيير", "更换", "Wijzigen", "Alterar", "Byt", "Изменить", "Zmień", "변경"))))
       : h("div", { style: { padding: "calc(env(safe-area-inset-top) + 72px) 20px 8px" } },
           fSource === "fichier"
             ? h("label", { style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, height: 168, borderRadius: 18, border: "1px dashed " + CH2, cursor: "pointer" } },
                 h("span", { style: { color: CH, fontSize: 30, lineHeight: 1 } }, "+"),
-                h("span", { style: { fontSize: 13, color: IV } }, T("Choisir une vidéo", "Choose a video")),
-                h("span", { style: { fontSize: 11, color: IV3 } }, T("3 minutes au plus", "3 minutes max")),
+                h("span", { style: { fontSize: 13, color: IV } }, T("Choisir une vidéo", "Choose a video", "Elegir un vídeo", "Scegli un video", "動画を選ぶ", "Video auswählen", "اختر فيديو", "选择视频", "Kies een video", "Escolher um vídeo", "Välj en video", "Выбрать видео", "Wybierz film", "동영상 선택")),
+                h("span", { style: { fontSize: 11, color: IV3 } }, T("3 minutes au plus", "3 minutes max", "3 minutos como máximo", "3 minuti al massimo", "最長3分", "Höchstens 3 Minuten", "3 دقائق كحد أقصى", "最长 3 分钟", "Maximaal 3 minuten", "3 minutos no máximo", "Högst 3 minuter", "Не более 3 минут", "Maksymalnie 3 minuty", "최대 3분")),
                 h("input", { type: "file", accept: "video/*", onChange: async function (e) { var f = e.target.files && e.target.files[0]; try { if (typeof hypeVerifierQualiteMedia === "function") f = await hypeVerifierQualiteMedia(f); } catch (eTq) { }   /* 06/11 : Titi, jamais bloquant */ setFFichier(f || null); }, style: { display: "none" } }))
-            : (mesVideos === null ? vide(T("Chargement…", "Loading…"))
-              : !mesVideos.length ? vide(T("Tu n'as pas encore de vidéo dans Hype.", "No Hype videos yet."))
+            : (mesVideos === null ? vide(T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…"))
+              : !mesVideos.length ? vide(T("Tu n'as pas encore de vidéo dans Hype.", "You don't have any videos in Hype yet.", "Aún no tienes vídeos en Hype.", "Non hai ancora video su Hype.", "Hypeにはまだ動画がありません。", "Du hast noch keine Videos in Hype.", "ليس لديك أي فيديو في Hype بعد.", "你在 Hype 中还没有视频。", "Je hebt nog geen video's in Hype.", "Ainda não tens vídeos no Hype.", "Du har inga videor i Hype än.", "У тебя пока нет видео в Hype.", "Nie masz jeszcze filmów w Hype.", "아직 Hype에 동영상이 없어요."))
               : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } }, mesVideos.slice(0, 12).map(function (mv) {
                   return h("button", { key: "mv" + mv.id, type: "button", onClick: function () { setFHype(mv); }, style: { padding: 0, background: "none", border: "none", cursor: "pointer" } },
                     h("div", { style: { aspectRatio: "16 / 10", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(243,238,228,0.1)", background: PAN } },
@@ -840,9 +840,9 @@ function EcranTeamMedias() {
                     h("div", { style: { fontSize: 10, marginTop: 4, color: IV3, textAlign: "start" } }, dateCourte(mv.created_at)));
                 }))),
           h("button", { type: "button", onClick: function () { setFSource(fSource === "fichier" ? "hype" : "fichier"); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", padding: "6px 0", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } },
-            fSource === "fichier" ? T("ou choisir parmi mes vidéos Hype", "or pick from my Hype videos") : T("ou choisir sur mon téléphone", "or pick from my phone")));
+            fSource === "fichier" ? T("ou choisir parmi mes vidéos Hype", "or pick from my Hype videos", "o elegir entre mis vídeos de Hype", "oppure scegli tra i miei video Hype", "またはHypeの動画から選ぶ", "oder aus meinen Hype-Videos wählen", "أو اختر من فيديوهاتي في Hype", "或从我的 Hype 视频中选择", "of kies uit mijn Hype-video's", "ou escolher entre os meus vídeos Hype", "eller välj bland mina Hype-videor", "или выбрать из моих видео в Hype", "lub wybierz z moich filmów w Hype", "또는 내 Hype 동영상에서 선택") : T("ou choisir sur mon téléphone", "or pick from my phone", "o elegir en mi teléfono", "oppure scegli dal mio telefono", "またはスマホから選ぶ", "oder vom Handy auswählen", "أو اختر من هاتفي", "或从手机中选择", "of kies op mijn telefoon", "ou escolher no meu telemóvel", "eller välj från min telefon", "или выбрать на телефоне", "lub wybierz z telefonu", "또는 내 휴대폰에서 선택")));
 
-    var tuilesChevaux = !idsCh.length ? h("div", { style: { fontSize: 11.5, color: IV3, padding: "6px 0" } }, T("Aucun cheval dans l'équipe : ajoute-les depuis la page Team.", "No horses in the team yet."))
+    var tuilesChevaux = !idsCh.length ? h("div", { style: { fontSize: 11.5, color: IV3, padding: "6px 0" } }, T("Aucun cheval dans l'équipe : ajoute-les depuis la page Team.", "No horses in the team: add them from the Team page.", "No hay caballos en el equipo: añádelos desde la página Team.", "Nessun cavallo nella squadra: aggiungili dalla pagina Team.", "チームに馬がいません。Teamページから追加してね。", "Keine Pferde im Team: Füge sie auf der Team-Seite hinzu.", "لا توجد خيول في الفريق: أضفها من صفحة Team.", "团队中没有马匹：请在 Team 页面添加。", "Geen paarden in het team: voeg ze toe via de Team-pagina.", "Não há cavalos na equipa: adiciona-os a partir da página Team.", "Inga hästar i laget: lägg till dem från Team-sidan.", "В команде нет лошадей: добавь их на странице Team.", "Brak koni w drużynie: dodaj je na stronie Team.", "팀에 말이 없어요. Team 페이지에서 추가하세요."))
       : h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 8, overflowX: "auto", margin: "0 -20px", padding: "0 20px 4px", scrollbarWidth: "none" } }, idsCh.map(function (c) {
           var on = fCh.indexOf(c) !== -1, ch = chevauxParId[c];
           return h("button", { key: "tx" + c, type: "button", "aria-pressed": on, onClick: function () { if (!envoiEnCours) basculer(fCh, setFCh, c); },
@@ -860,9 +860,9 @@ function EcranTeamMedias() {
       h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "72%", display: "flex", flexDirection: "column", background: NOIR, borderRadius: "24px 24px 0 0", borderTop: "1px solid " + CH3, padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)" } },
         h("div", { style: { width: 40, height: 4, borderRadius: 2, background: "rgba(243,238,228,0.2)", margin: "0 auto 14px" } }),
         h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
-          h("div", { style: { fontFamily: SERIF, fontSize: 26 } }, T("Qui monte ?", "Who is riding?")),
+          h("div", { style: { fontFamily: SERIF, fontSize: 26 } }, T("Qui monte ?", "Who's riding?", "¿Quién monta?", "Chi monta?", "誰が乗る？", "Wer reitet?", "من يركب؟", "谁来骑？", "Wie rijdt er?", "Quem monta?", "Vem rider?", "Кто едет?", "Kto jedzie?", "누가 타나요?")),
           h("button", { type: "button", onClick: function () { setFeuilleCav(false); }, style: { background: "none", border: "none", minHeight: 40, padding: "0 4px", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, "OK")),
-        h("div", { style: { fontSize: 11.5, color: IV3, margin: "4px 0 8px" } }, T("Une ou plusieurs cavalières", "One or more riders")),
+        h("div", { style: { fontSize: 11.5, color: IV3, margin: "4px 0 8px" } }, T("Une ou plusieurs cavalières", "One or more riders", "Uno o varios jinetes", "Uno o più cavalieri", "1人または複数のライダー", "Eine oder mehrere Reiterinnen", "فارسة واحدة أو أكثر", "一位或多位骑手", "Een of meer ruiters", "Uma ou várias cavaleiras", "En eller flera ryttare", "Одна или несколько всадниц", "Jedna lub kilka jeźdźczyń", "한 명 이상의 라이더")),
         h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch" } }, (membres || []).slice().sort(function (a, b) { return nomProfil(a).localeCompare(nomProfil(b)); }).map(function (p) {
           var on = fCav.indexOf(p.id) !== -1;
           return h("button", { key: "fc" + p.id, type: "button", "aria-pressed": on, onClick: function () { basculer(fCav, setFCav, p.id); },
@@ -879,12 +879,12 @@ function EcranTeamMedias() {
           h("div", { style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 18, insetInlineEnd: 16, display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
             h("div", null,
               h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, (groupe && groupe.nom) || ""),
-              h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 2 } }, T("Ajouter une vidéo", "Add a video"))),
-            h("button", { type: "button", onClick: fermerAjout, disabled: envoiEnCours, "aria-label": T("Fermer", "Close"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "rgba(7,10,8,0.5)", color: IV, fontSize: 15, cursor: "pointer", opacity: envoiEnCours ? 0.4 : 1 } }, "✕")),
+              h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 2 } }, T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"))),
+            h("button", { type: "button", onClick: fermerAjout, disabled: envoiEnCours, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "rgba(7,10,8,0.5)", color: IV, fontSize: 15, cursor: "pointer", opacity: envoiEnCours ? 0.4 : 1 } }, "✕")),
           fEtat && fEtat.etape === "fini"
             ? h("div", { style: { padding: "calc(env(safe-area-inset-top) + 110px) 24px 40px", textAlign: "center" } },
                 h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.25 } }, fEtat.texte),
-                h("button", { type: "button", onClick: function () { setAjout(null); }, style: { marginTop: 22, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close")))
+                h("button", { type: "button", onClick: function () { setAjout(null); }, style: { marginTop: 22, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))
             : h("div", null,
                 haut,
                 h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 36, marginTop: -8, position: "relative", transform: rtl ? "scaleX(-1)" : "none" } },
@@ -892,15 +892,15 @@ function EcranTeamMedias() {
                 h("div", { style: { padding: "0 20px calc(env(safe-area-inset-bottom) + 28px)" } },
                   /* cavalière */
                   h("button", { type: "button", disabled: envoiEnCours, onClick: function () { setFeuilleCav(true); }, style: Object.assign({}, LIGNE, { width: "100%", background: "none", borderTop: "none", borderInlineStart: "none", borderInlineEnd: "none", padding: 0, color: IV, fontFamily: M, cursor: "pointer" }) },
-                    h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cavalière", "Rider")),
+                    h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cavalière", "Rider", "Jinete", "Cavaliere", "ライダー", "Reiterin", "الفارسة", "骑手", "Ruiter", "Cavaleira", "Ryttare", "Всадница", "Jeźdźczyni", "라이더")),
                     h("span", { style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0 } },
                       fCav.slice(0, 2).map(function (u) { return h("span", { key: "a" + u, style: { display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 500 } }, avatar(profilsParId[u] || { pseudo: "?" }, 28), nomProfil(profilsParId[u])); }),
                       fCav.length > 2 ? h("span", { style: { fontSize: 12, color: IV2 } }, "+" + (fCav.length - 2)) : null,
-                      h("span", { style: { color: CH, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" } }, fCav.length ? T("+ Ajouter", "+ Add") : T("Choisir", "Choose")))),
+                      h("span", { style: { color: CH, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" } }, fCav.length ? T("+ Ajouter", "+ Add", "+ Añadir", "+ Aggiungi", "+ 追加", "+ Hinzufügen", "+ إضافة", "+ 添加", "+ Toevoegen", "+ Adicionar", "+ Lägg till", "+ Добавить", "+ Dodaj", "+ 추가") : T("Choisir", "Choose", "Elegir", "Scegli", "選ぶ", "Auswählen", "اختر", "选择", "Kiezen", "Escolher", "Välj", "Выбрать", "Wybierz", "선택")))),
                   /* cheval */
                   h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", margin: "16px 0 10px" } },
-                    h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cheval", "Horse")),
-                    h("span", { style: { fontSize: 10.5, color: IV3 } }, T("un ou plusieurs", "one or more"))),
+                    h("span", { style: { fontSize: 12.5, color: IV3 } }, T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "الحصان", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말")),
+                    h("span", { style: { fontSize: 10.5, color: IV3 } }, T("un ou plusieurs", "one or more", "uno o varios", "uno o più", "1頭または複数", "eines oder mehrere", "واحد أو أكثر", "一匹或多匹", "een of meer", "um ou vários", "en eller flera", "одна или несколько", "jeden lub kilka", "한 마리 이상"))),
                   tuilesChevaux,
                   /* 06/11 soir — concours (facultatif) */
                   h("button", { type: "button", disabled: envoiEnCours, onClick: function () { ouvrirFeuilleConc("form", fConc); }, style: Object.assign({}, LIGNE, { marginTop: 14, width: "100%", background: "none", borderTop: "none", borderInlineStart: "none", borderInlineEnd: "none", padding: 0, color: IV, fontFamily: M, cursor: "pointer" }) },
@@ -910,8 +910,8 @@ function EcranTeamMedias() {
                       h("span", { style: { color: CH, fontSize: 12 } }, rtl ? "‹" : "›"))),
                   /* un mot */
                   h("div", { style: Object.assign({}, LIGNE, { marginTop: 0 }) },
-                    h("label", { htmlFor: "tv-desc", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?")),
-                    h("input", { id: "tv-desc", value: fDesc, disabled: envoiEnCours, onChange: function (e) { setFDesc(e.target.value); }, placeholder: T("Facultatif", "Optional"),
+                    h("label", { htmlFor: "tv-desc", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?", "¿Unas palabras?", "Una parola?", "ひとこと", "Ein Wort?", "كلمة؟", "说点什么？", "Een woordje?", "Uma palavra?", "Ett ord?", "Пара слов?", "Kilka słów?", "한마디?")),
+                    h("input", { id: "tv-desc", value: fDesc, disabled: envoiEnCours, onChange: function (e) { setFDesc(e.target.value); }, placeholder: T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택 사항"),
                       style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
                   /* 06/11 — sans le son (la personne qui publie choisit ; elle pourra changer d'avis sur la vignette) */
                   h("button", { type: "button", role: "switch", "aria-checked": fSansSon, disabled: envoiEnCours, onClick: function () { setFSansSon(!fSansSon); },
@@ -923,15 +923,15 @@ function EcranTeamMedias() {
                       h("span", { style: { position: "absolute", top: 3, insetInlineStart: fSansSon ? 21 : 3, width: 16, height: 16, borderRadius: "50%", background: fSansSon ? CH : "rgba(243,238,228,0.35)", transition: "inset-inline-start .2s" } }))),
                   /* vérification et publication */
                   h("div", { style: { fontFamily: SERIF, fontSize: 20, lineHeight: 1.3, margin: "20px 0 12px", color: resume ? IV : IV3 } },
-                    resume || (!aVideo ? T("Choisis ta vidéo, la cavalière et le cheval.", "Pick your video, the rider and the horse.") : T("Choisis la cavalière et le cheval.", "Pick the rider and the horse."))),
+                    resume || (!aVideo ? T("Choisis ta vidéo, la cavalière et le cheval.", "Pick your video, the rider and the horse.", "Elige tu vídeo, el jinete y el caballo.", "Scegli il tuo video, il cavaliere e il cavallo.", "動画、ライダー、馬を選んでね。", "Wähle dein Video, die Reiterin und das Pferd.", "اختر الفيديو والفارسة والحصان.", "选择你的视频、骑手和马匹。", "Kies je video, de ruiter en het paard.", "Escolhe o teu vídeo, a cavaleira e o cavalo.", "Välj din video, ryttaren och hästen.", "Выбери видео, всадницу и лошадь.", "Wybierz film, jeźdźczynię i konia.", "동영상, 라이더, 말을 선택하세요.") : T("Choisis la cavalière et le cheval.", "Pick the rider and the horse.", "Elige el jinete y el caballo.", "Scegli il cavaliere e il cavallo.", "ライダーと馬を選んでね。", "Wähle die Reiterin und das Pferd.", "اختر الفارسة والحصان.", "选择骑手和马匹。", "Kies de ruiter en het paard.", "Escolhe a cavaleira e o cavalo.", "Välj ryttaren och hästen.", "Выбери всадницу и лошадь.", "Wybierz jeźdźczynię i konia.", "라이더와 말을 선택하세요."))),
                   fEtat && fEtat.etape === "erreur" ? h("div", { role: "alert", style: { marginBottom: 12, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5, lineHeight: 1.45 } }, fEtat.texte) : null,
                   envoiEnCours ? h("div", { style: { marginBottom: 12 } },
                     h("div", { style: { fontSize: 12, color: IV2, marginBottom: 8 } }, fEtat.texte),
                     h("div", { style: { height: 3, borderRadius: 2, background: "rgba(243,238,228,0.1)", overflow: "hidden" } }, h("div", { style: { width: (fEtat.pct || 0) + "%", height: "100%", background: CH, transition: "width .3s" } })),
-                    h("div", { style: { fontSize: 10.5, color: IV3, marginTop: 8 } }, T("Garde cette page ouverte pendant l'envoi.", "Keep this page open while uploading."))) : null,
+                    h("div", { style: { fontSize: 10.5, color: IV3, marginTop: 8 } }, T("Garde cette page ouverte pendant l'envoi.", "Keep this page open while uploading.", "Mantén esta página abierta durante el envío.", "Tieni aperta questa pagina durante l'invio.", "アップロード中はこのページを開いたままにしてね。", "Lass diese Seite während des Uploads geöffnet.", "أبقِ هذه الصفحة مفتوحة أثناء الإرسال.", "上传期间请保持此页面打开。", "Houd deze pagina open tijdens het uploaden.", "Mantém esta página aberta durante o envio.", "Håll sidan öppen medan videon laddas upp.", "Не закрывай эту страницу во время отправки.", "Nie zamykaj tej strony podczas wysyłania.", "업로드하는 동안 이 페이지를 열어 두세요."))) : null,
                   h("button", { type: "button", disabled: !fPret || envoiEnCours, onClick: publier,
                     style: { width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid " + (fPret ? CH : "rgba(243,238,228,0.14)"), background: "transparent", color: fPret ? IV : IV3, fontFamily: M, fontSize: 14, fontWeight: 600, letterSpacing: ".02em", cursor: fPret && !envoiEnCours ? "pointer" : "default" } },
-                    envoiEnCours ? "…" : T("Publier dans la vidéothèque", "Publish to the library")))))),
+                    envoiEnCours ? "…" : T("Publier dans la vidéothèque", "Publish to the library", "Publicar en la videoteca", "Pubblica nella videoteca", "ライブラリに公開", "In der Videothek veröffentlichen", "نشر في المكتبة", "发布到视频库", "Publiceren in de videotheek", "Publicar na videoteca", "Publicera i biblioteket", "Опубликовать в видеотеке", "Opublikuj w wideotece", "라이브러리에 게시")))))),
       feuille);
   }
 
@@ -977,15 +977,15 @@ function EcranTeamMedias() {
     h("div", { dir: rtl ? "rtl" : "ltr", style: { maxWidth: 340, width: "100%", background: PAN, border: "1px solid " + CH3, borderRadius: 18, padding: "26px 22px 20px", textAlign: "center" } },
       h("div", { style: { width: 44, height: 44, margin: "0 auto 14px", borderRadius: "50%", border: "1px solid " + CH2, display: "flex", alignItems: "center", justifyContent: "center" } },
         h("svg", { width: 15, height: 17, viewBox: "0 0 11 12", "aria-hidden": "true" }, h("rect", { x: 1.2, y: 5.2, width: 8.6, height: 6, rx: 1.2, fill: "none", stroke: CH, strokeWidth: 1 }), h("path", { d: "M3.2 5.2V3.6a2.3 2.3 0 0 1 4.6 0v1.6", fill: "none", stroke: CH, strokeWidth: 1 }))),
-      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IV, lineHeight: 1.2 } }, T("Désolé, cette vidéo est réservée aux cavaliers du groupe.", "Sorry, this video is for the group's riders only.")),
-      h("button", { type: "button", onClick: function () { setReserve(false); }, style: { marginTop: 18, minHeight: 40, padding: "0 22px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Compris", "Got it"))));
+      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IV, lineHeight: 1.2 } }, T("Désolé, cette vidéo est réservée aux cavaliers du groupe.", "Sorry, this video is for the group's riders only.", "Lo siento, este vídeo está reservado a los jinetes del grupo.", "Spiacenti, questo video è riservato ai cavalieri del gruppo.", "ごめんね、この動画はグループのライダー専用です。", "Sorry, dieses Video ist den Reitern der Gruppe vorbehalten.", "عذرًا، هذا الفيديو مخصص لفرسان المجموعة فقط.", "抱歉，此视频仅限本组骑手观看。", "Sorry, deze video is alleen voor de ruiters van de groep.", "Desculpa, este vídeo é reservado aos cavaleiros do grupo.", "Tyvärr, den här videon är bara för gruppens ryttare.", "Извини, это видео только для всадников группы.", "Przepraszamy, ten film jest tylko dla jeźdźców z grupy.", "죄송해요, 이 동영상은 그룹 라이더 전용이에요.")),
+      h("button", { type: "button", onClick: function () { setReserve(false); }, style: { marginTop: 18, minHeight: 40, padding: "0 22px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Compris", "Got it", "Entendido", "Capito", "わかった", "Verstanden", "حسنًا", "知道了", "Begrepen", "Entendido", "Uppfattat", "Понятно", "Rozumiem", "알겠어요"))));
 
   return h("div", { dir: rtl ? "rtl" : "ltr", lang: lg, style: { minHeight: "100vh", background: NOIR, color: IV, fontFamily: M, overflowX: "clip" } },
     h("div", { style: { maxWidth: 820, margin: "0 auto" } },
       hero,
       h("div", { style: { padding: "0 18px 24px" } },
         barreOnglets,
-        erreur ? h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ") + erreur) : null,
+        erreur ? h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ") + erreur) : null,
         onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles())),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
@@ -993,13 +993,13 @@ function EcranTeamMedias() {
       style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(7,10,8,0.82)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 max(24px, env(safe-area-inset-left))" } },
       h("div", { dir: rtl ? "rtl" : "ltr", style: { maxWidth: 340, width: "100%", background: PAN, border: "1px solid " + CH3, borderRadius: 18, padding: "24px 22px 18px", textAlign: "center" } },
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IV, lineHeight: 1.25 } },
-          questionPub.publique ? T("Réserver cette vidéo à l'équipe ?", "Keep this video for the team only?") : T("Mettre cette vidéo en public ?", "Make this video public?")),
+          questionPub.publique ? T("Réserver cette vidéo à l'équipe ?", "Keep this video for the team only?", "¿Reservar este vídeo al equipo?", "Riservare questo video alla squadra?", "この動画をチーム限定にする？", "Dieses Video nur für das Team?", "هل تريد حصر هذا الفيديو بالفريق؟", "将此视频设为仅团队可见？", "Deze video alleen voor het team?", "Reservar este vídeo à equipa?", "Visa den här videon bara för laget?", "Оставить это видео только для команды?", "Zostawić ten film tylko dla drużyny?", "이 동영상을 팀 전용으로 할까요?") : T("Mettre cette vidéo en public ?", "Make this video public?", "¿Hacer público este vídeo?", "Rendere pubblico questo video?", "この動画を公開する？", "Dieses Video öffentlich machen?", "هل تريد جعل هذا الفيديو عامًا؟", "将此视频设为公开？", "Deze video openbaar maken?", "Tornar este vídeo público?", "Göra den här videon offentlig?", "Сделать это видео публичным?", "Upublicznić ten film?", "이 동영상을 공개할까요?")),
         h("div", { style: { fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5, marginTop: 8 } },
-          questionPub.publique ? T("Seuls les cavaliers du groupe et la coach pourront la regarder.", "Only the group's riders and the coach will be able to watch it.")
-            : T("Tous les comptes Hype pourront la regarder, pas seulement l'équipe.", "Every Hype account will be able to watch it.")),
+          questionPub.publique ? T("Seuls les cavaliers du groupe et la coach pourront la regarder.", "Only the group's riders and the coach will be able to watch it.", "Solo los jinetes del grupo y la entrenadora podrán verlo.", "Solo i cavalieri del gruppo e la coach potranno guardarlo.", "グループのライダーとコーチだけが見られます。", "Nur die Reiter der Gruppe und die Trainerin können es ansehen.", "لن يتمكن من مشاهدته إلا فرسان المجموعة والمدرّبة.", "只有本组骑手和教练可以观看。", "Alleen de ruiters van de groep en de coach kunnen hem bekijken.", "Só os cavaleiros do grupo e a treinadora o poderão ver.", "Bara gruppens ryttare och tränaren kan titta på den.", "Смотреть его смогут только всадники группы и тренер.", "Obejrzeć go będą mogli tylko jeźdźcy z grupy i trenerka.", "그룹 라이더와 코치만 볼 수 있어요.")
+            : T("Tous les comptes Hype pourront la regarder, pas seulement l'équipe.", "Every Hype account will be able to watch it, not just the team.", "Todas las cuentas de Hype podrán verlo, no solo el equipo.", "Tutti gli account Hype potranno guardarlo, non solo la squadra.", "チームだけでなく、すべてのHypeアカウントが見られます。", "Alle Hype-Konten können es ansehen, nicht nur das Team.", "سيتمكن كل حسابات Hype من مشاهدته، وليس الفريق فقط.", "所有 Hype 账号都可以观看，不只是团队。", "Alle Hype-accounts kunnen hem bekijken, niet alleen het team.", "Todas as contas Hype o poderão ver, não só a equipa.", "Alla Hype-konton kan titta på den, inte bara laget.", "Его смогут смотреть все аккаунты Hype, а не только команда.", "Obejrzeć go będą mogły wszystkie konta Hype, nie tylko drużyna.", "팀뿐 아니라 모든 Hype 계정이 볼 수 있어요.")),
         h("div", { style: { display: "flex", gap: 10, marginTop: 18 } },
-          h("button", { type: "button", onClick: function () { setQuestionPub(null); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Annuler", "Cancel")),
-          h("button", { type: "button", onClick: confirmerPublique, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, questionPub.publique ? T("Réserver", "Keep private") : T("Mettre en public", "Make public"))))) : null,
+          h("button", { type: "button", onClick: function () { setQuestionPub(null); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+          h("button", { type: "button", onClick: confirmerPublique, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, questionPub.publique ? T("Réserver", "Keep for the team", "Reservar", "Riserva", "チーム限定にする", "Nur fürs Team", "حصره بالفريق", "仅团队可见", "Alleen voor team", "Reservar", "Bara för laget", "Только команде", "Tylko dla drużyny", "팀 전용으로") : T("Mettre en public", "Make public", "Hacer público", "Rendi pubblico", "公開する", "Öffentlich machen", "جعله عامًا", "设为公开", "Openbaar maken", "Tornar público", "Gör offentlig", "Сделать публичным", "Upublicznij", "공개하기"))))) : null,
     formulaireAjout,
     feuilleConcours(),
     fenetrePartage,
@@ -1010,6 +1010,9 @@ function EcranTeamMedias() {
 function EcranEpinglePartagee() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
+  var lg = app.langue || "fr";
+  var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
   var setEcran = app.setEcran || function () { };
   var NOIR = "#070A08", PAN = "#101214", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.70)", IV3 = "rgba(243,238,228,0.42)", CH = "#C9A66B", CH3 = "rgba(201,166,107,0.22)";
   var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',system-ui,sans-serif";
@@ -1022,10 +1025,10 @@ function EcranEpinglePartagee() {
     (async function () {
       try {
         var id = null; try { id = window.__epinglePartagee || null; } catch (e) { }
-        if (!id || typeof supa === "undefined") { setErr("Ce conseil n'est plus disponible."); return; }
+        if (!id || typeof supa === "undefined") { setErr(T("Ce conseil n'est plus disponible.", "This tip is no longer available.", "Este consejo ya no está disponible.", "Questo consiglio non è più disponibile.", "このアドバイスはもう利用できません。", "Dieser Rat ist nicht mehr verfügbar.", "هذه النصيحة لم تعد متاحة.", "这条建议已不可用。", "Dit advies is niet meer beschikbaar.", "Este conselho já não está disponível.", "Det här rådet finns inte längre.", "Этот совет больше недоступен.", "Ta rada nie jest już dostępna.", "이 조언은 더 이상 볼 수 없어요.")); return; }
         var r = await supa.from("echanges_heybaby_epingles").select("id, question, reponse, cheval_nom, created_at, user_id").eq("id", id).maybeSingle();
         if (!vif) return;
-        if (!r || r.error || !r.data) { setErr("Ce conseil n'est plus partagé avec toi."); return; }
+        if (!r || r.error || !r.data) { setErr(T("Ce conseil n'est plus partagé avec toi.", "This tip is no longer shared with you.", "Este consejo ya no se comparte contigo.", "Questo consiglio non è più condiviso con te.", "このアドバイスはもうあなたと共有されていません。", "Dieser Rat wird nicht mehr mit dir geteilt.", "لم تعد هذه النصيحة مشتركة معك.", "这条建议已不再与你分享。", "Dit advies wordt niet meer met je gedeeld.", "Este conselho já não está partilhado contigo.", "Det här rådet delas inte längre med dig.", "Этот совет больше не доступен тебе.", "Ta rada nie jest już Ci udostępniona.", "이 조언은 더 이상 공유되지 않아요.")); return; }
         setEp(r.data);
         var rp = await supa.from("profiles").select("pseudo").eq("id", r.data.user_id).maybeSingle();
         if (vif && rp && rp.data) setQui(rp.data.pseudo || "");
@@ -1036,17 +1039,17 @@ function EcranEpinglePartagee() {
   function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (e) { } setEcran("dashboard"); }
   return h("div", { style: { minHeight: "100vh", background: NOIR, color: IV, fontFamily: M } },
     h("div", { style: { maxWidth: 720, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 14px) 20px 40px" } },
-      h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { width: 40, height: 40, borderRadius: "50%", background: "transparent", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, "‹"),
+      h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), style: { width: 40, height: 40, borderRadius: "50%", background: "transparent", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, "‹"),
       h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase", color: CH, marginTop: 22 } }, "Hey Baby" + (ep && ep.cheval_nom ? " · " + ep.cheval_nom : "")),
-      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(34px, 9vw, 48px)", lineHeight: 1.05, margin: "6px 0 0" } }, "Un conseil pour toi"),
+      h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(34px, 9vw, 48px)", lineHeight: 1.05, margin: "6px 0 0" } }, T("Un conseil pour toi", "A tip for you", "Un consejo para ti", "Un consiglio per te", "あなたへのアドバイス", "Ein Rat für dich", "نصيحة لك", "给你的建议", "Een tip voor jou", "Um conselho para ti", "Ett råd till dig", "Совет для тебя", "Rada dla Ciebie", "너를 위한 조언")),
       h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 34, margin: "8px 0 4px" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
       err ? h("div", { style: { fontSize: 13, color: IV3, fontStyle: "italic", marginTop: 20 } }, err)
-      : !ep ? h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", marginTop: 20 } }, "Chargement…")
+      : !ep ? h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", marginTop: 20 } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…"))
       : h("div", null,
-          qui ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 6 } }, "Partagé par " + qui) : null,
+          qui ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 6 } }, T("Partagé par ", "Shared by ", "Compartido por ", "Condiviso da ", "共有者：", "Geteilt von ", "شاركه ", "分享者：", "Gedeeld door ", "Partilhado por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + qui) : null,
           ep.question ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, lineHeight: 1.35, marginTop: 22, color: IV } }, "« " + ep.question + " »") : null,
           h("div", { style: { marginTop: 18, padding: "18px 17px", borderRadius: 16, border: "1px solid " + CH3, background: PAN } },
-            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 10 } }, "Réponse de Hey Baby"),
+            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 10 } }, T("Réponse de Hey Baby", "Hey Baby's answer", "Respuesta de Hey Baby", "Risposta di Hey Baby", "Hey Babyの回答", "Antwort von Hey Baby", "رد Hey Baby", "Hey Baby 的回答", "Antwoord van Hey Baby", "Resposta do Hey Baby", "Hey Babys svar", "Ответ Hey Baby", "Odpowiedź Hey Baby", "Hey Baby의 답변")),
             h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, ep.reponse || "")))),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null);
 }
