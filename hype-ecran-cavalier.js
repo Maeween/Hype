@@ -140,7 +140,12 @@ function EcranMonCavalier() {
     document.addEventListener("pointermove", bouge); document.addEventListener("pointerup", fin); document.addEventListener("pointercancel", fin);
   }
   var idPerso = __estVisite ? ((__visitePub && __visitePub.id) || null) : ((ctx.profil && ctx.profil.id) || null);
-  React.useEffect(function () { var okP = true; setPerso(null); if (!idPerso) return; (async function () { try { var rP = await supa.from("cavalier_perso").select("reglages").eq("user_id", idPerso).maybeSingle(); if (okP && rP && rP.data && rP.data.reglages) setPerso(rP.data.reglages); } catch (eP) { } })(); return function () { okP = false; }; }, [idPerso]);
+  React.useEffect(function () { var okP = true; setPerso(null); if (!idPerso) return; (async function () { try {
+      /* 07/11 : lecture par cavalier_perso_lire = les reglages ne s appliquent que si le cavalier est Premium (sinon la page revient au style d origine, les reglages restent gardes) */
+      var rP = await supa.rpc("cavalier_perso_lire", { p_uid: idPerso });
+      if (rP && rP.error) rP = await supa.from("cavalier_perso").select("reglages").eq("user_id", idPerso).maybeSingle().then(function (x) { return { data: x && x.data ? x.data.reglages : null }; });
+      if (okP && rP && rP.data) setPerso(rP.data);
+    } catch (eP) { } })(); return function () { okP = false; }; }, [idPerso]);
   var peutPerso = !__estVisite;   /* 07/11 « Premium uniquement » + « Ok continue » : le bouton est visible sur sa propre page ; sans Premium il ouvre la page Premium */
   var accesPerso = !!premium || estModAdm;
   var pzActif = (modePerso ? brouillonPerso : perso) || {};

@@ -738,6 +738,17 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🔒 07/11/2026 (11 h 25) — PERSONNALISATION : LECTURE « SEULEMENT SI PREMIUM » PRÊTE CÔTÉ APPLI
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 9 : lit les réglages par la fonction cavalier_perso_lire ; si elle n'existe pas encore, lecture comme avant |
+| index.html | racine | ?v cavalier 8 → 9, build 20261107-1125 (rien d'autre) |
+⚠️ EN ATTENTE : migration base « cavalier_perso_premium » (fonction cavalier_perso_lire + hype_est_premium_interne,
+enregistrement réservé aux Premium) — la confirmation demandée par la base n'a pas eu de réponse, RIEN n'a été
+appliqué en base. À relancer avec Blandine présente pour confirmer.
+
+════════════════════════════════════════════════════════════
+
 ✨ 07/11/2026 (09 h 50) — PERSONNALISATION OUVERTE AUX ABONNÉS PREMIUM + TRADUITE
 Blandine : « Ok continue » (après la question : ouverture Premium + traductions).
 | Fichier | Où | Quoi |
