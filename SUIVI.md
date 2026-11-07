@@ -18667,6 +18667,11 @@ sinon le français reste affiché (à retraduire). Les 4 phrases modifiées à l
 | hype-cours-sommaire.js | racine | régénéré |
 Testé (navigateur automatique, 390 px) : anglais, arabe, japonais, coréen, français ;
 sans droit modératrice → « Prochainement » ; 0 erreur.
+COMPLÉMENT (build 20261107-0440) : une autre session avait corrigé 69 phrases (audit, G8 v3 / G9 v4)
+pendant la traduction ; elles restaient en français dans les autres langues. Retraduites en 13 langues
+→ hype-cours-galop8.js v4, hype-cours-galop9.js v5, index.html ?v galop8 3 → 4, galop9 4 → 5. Vérifié :
+plus aucune phrase française restante. Mots nouveaux à faire vérifier : « gouttière » de la selle,
+« engagement » des postérieurs (G9 cours 11) ; BSE non repris en sigle hors français.
 POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Blandine) :
 - Galop 7 pas cohérent avec les nouveaux : suédois « Bogen in » / « öppna » ; polonais
   « kłus ćwiczebny » utilisé à tort pour le trot enlevé ; distinction cadence / rythme
