@@ -40,6 +40,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : à essayer sur iPhone avec une vraie vidéo — chapitre Médias sur la page Team, page Médias (Par cavalière / Par cheval, « Voir tout »), ajout d'une vidéo depuis le téléphone ET depuis « mes vidéos Hype », vérifier que la vignette s'affiche (si la copie de l'image échoue, la vidéo apparaît sans image), et le message « réservée aux cavaliers du groupe » avec un compte hors équipe (attend : Blandine)
 
 ## 3 — Quand on aura le temps
+- [07/11] Horse Lingo sur Google (Search Console, au 23/10) : 195 pages indexées, 447 non. Raisons : « page avec redirection » (normal), « découverte, pas encore indexée » (site récent, Google y va petit à petit), « explorée, pas indexée » (pages de vocabulaire trop semblables). Rien de cassé ; chantier : enrichir les pages de vocabulaire. Après Hype (attend : Claude, sur décision de Blandine)
 - [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
 - [07/11] Vidéos de la Team sur la fiche du concours : fait (build 0220, à tester sur iPhone)
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
