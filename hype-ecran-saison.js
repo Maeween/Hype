@@ -909,7 +909,8 @@ function EcranConcours() {
       /* 04/11 23h25 (Blandine : « pas intuitif, 4 fois que je m'y reprends ») : les outils de la coach EN HAUT de la fiche */
       gestion ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Pour la coach"))),
-        h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, F("Engagements et feuille SEP")),
+        h("button", { type: "button", className: "hs-btn plein", onClick: ouvrirEngagements }, (typeof TEAM_CLE !== "undefined" && ev.club_clef === TEAM_CLE) ? F("Engagements et feuille SEP")
+          : ((typeof hypeT7 === "function") ? hypeT7("Engagements et feuille d’engagement", "Entries and entry sheet", "Inscripciones y hoja de inscripción", "Iscrizioni e foglio di iscrizione", "エントリーとエントリーシート", "Nennungen und Nennungsliste", "التسجيلات وورقة التسجيل", "报名和报名表", "Inschrijvingen en inschrijvingsformulier", "Inscrições e ficha de inscrição", "Anmälningar och anmälningsblad", "Заявки и лист заявок", "Zgłoszenia i lista zgłoszeń", "참가 신청과 신청서") : "Engagements et feuille d’engagement")),   /* 07/11 : « SEP » seulement pour la SEP */
         h("div", { className: "hs-duo" },
           h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
           h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier"))),
@@ -1152,6 +1153,8 @@ function EcranEngagements() {
   var _msg = React.useState(""); var msg = _msg[0], setMsg = _msg[1];
   var _mod = React.useState(false); var modifie = _mod[0], setModifie = _mod[1];
   var _vf = React.useState(false); var voirFeuille = _vf[0], setVoirFeuille = _vf[1];
+  var _ncl = React.useState(""); var nomClubAff = _ncl[0], setNomClubAff = _ncl[1];   /* 07/11 : nom du club écrit en tête de la feuille neutre */
+  var _cch = React.useState(null); var choixCh = _cch[0], setChoixCh = _cch[1];       /* 07/11 : fenêtre « Choisir les chevaux » { sel, busy, err } */
   var _ech = React.useState(false); var editChef = _ech[0], setEditChef = _ech[1];   /* 05/11 visuel 1 : chef d’équipe en modification */
   var _ecv = React.useState({}); var editCav = _ecv[0], setEditCav = _ecv[1];       /* cartes cavalières ouvertes (nom, licence) */
   var _aep = React.useState(false); var ajoutEp = _aep[0], setAjoutEp = _aep[1];    /* champ « nouvelle épreuve » ouvert */
@@ -1287,6 +1290,7 @@ function EcranEngagements() {
             [rpm && rpm.data && rpm.data.ecurie, rpm && rpm.data && rpm.data.ecurie2].forEach(function (n) { if (n && clefDe(n) === E.club_clef) nomClub = n; });
           }
         } catch (eT) { }
+        if (vif) setNomClubAff(nomClub);
         var membres = [];
         try { membres = await hypeCavaliersDuClub(nomClub, "id, pseudo, avatar_url, ecurie, ecurie2"); } catch (eM) { membres = []; }
         (membres || []).forEach(function (p) { ajouterP(p, "club"); });
@@ -1530,6 +1534,9 @@ function EcranEngagements() {
   lignes.forEach(function (l, i) { [1, 2].forEach(function (n) { var c = String(l["cheval" + n + "_nom"] || "").trim(); if (!c) return; (montes[c] = montes[c] || []).push({ i: i, n: n, qui: prenomDe(l.nom) }); }); });
   var proposees = candidates.filter(function (c) { return (c.src === "inscrite" || c.src === "compet") && c.id !== moiId; });
   var chevauxConc = chevaux.filter(function (c) { return c.src === "concours"; });
+  /* 07/11 (Blandine : « ça veut me donner les feuilles d’engagement de la SEP » pour un concours de Feinn) : la feuille SEP
+     reste pour la SEP seulement ; tout autre club a une feuille d’engagement neutre (feuilleNeutre). */
+  var estSep = !!(ev && typeof TEAM_CLE !== "undefined" && ev.club_clef === TEAM_CLE);
   var q = String(recherche || "").trim().toLowerCase();
   var resultats = [];
   if (q.length >= 2) {
@@ -1799,8 +1806,71 @@ function EcranEngagements() {
           h("button", { type: "button", className: "hs-btn", onClick: ajouterLus }, F("Ajouter à la feuille")),
           h("button", { type: "button", className: "hs-btn", onClick: function () { setLus(null); } }, F("Annuler")))) : null);
   }
+  /* 07/11 19h30 (Blandine : « ça me propose pas d’ajouter les chevaux du déplacement », choix B) : on choisit les chevaux qui partent
+     DIRECTEMENT ici. Même table que « Chevaux du déplacement » du rendez-vous (agenda_chevaux, mêmes droits : gestion du club).
+     Tous les chevaux connus pour ce concours sont proposés d’un coup (Team s’il y en a une, puis ceux de l’écurie) : rien à
+     aller chercher ailleurs, même pour un club sans équipe comme Feinn. */
+  var T7 = (typeof hypeT7 === "function") ? hypeT7 : function (fr) { return fr; };
+  function ouvrirChoixCh() {
+    var s0 = {}; chevaux.forEach(function (c) { if (c.src === "concours") s0[c.id] = true; });
+    setChoixCh({ sel: s0, busy: false, err: "" });
+  }
+  async function enregistrerChoixCh() {
+    if (!choixCh || choixCh.busy || !ev || !ev.id) return;
+    var sel = choixCh.sel;
+    setChoixCh(Object.assign({}, choixCh, { busy: true, err: "" }));
+    try {
+      var avant = {}; chevaux.forEach(function (c) { if (c.src === "concours") avant[c.id] = true; });
+      var ajouts = Object.keys(sel).filter(function (i) { return sel[i] && !avant[i]; });
+      var retraits = Object.keys(avant).filter(function (i) { return !sel[i]; });
+      if (ajouts.length) { var ra = await supa.from("agenda_chevaux").insert(ajouts.map(function (i) { return { agenda_id: ev.id, cheval_id: i }; })); if (ra && ra.error) throw new Error(ra.error.message || String(ra.error)); }
+      if (retraits.length) { var rr = await supa.from("agenda_chevaux").delete().eq("agenda_id", ev.id).in("cheval_id", retraits); if (rr && rr.error) throw new Error(rr.error.message || String(rr.error)); }
+      var rgS = { concours: 0, team: 1, club: 2 };
+      setChevaux(chevaux.map(function (c) {
+        if (sel[c.id]) return Object.assign({}, c, { src: "concours" });
+        if (c.src === "concours") return Object.assign({}, c, { src: "club" });
+        return c;
+      }).sort(function (a, b) { return (rgS[a.src] - rgS[b.src]) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }));
+      setChoixCh(null);
+    } catch (eC) {
+      setChoixCh(Object.assign({}, choixCh, { sel: sel, busy: false, err: T7("Les chevaux n’ont pas pu être enregistrés : ", "Horses could not be saved: ", "No se pudieron guardar los caballos: ", "Impossibile salvare i cavalli: ", "馬を保存できませんでした：", "Pferde konnten nicht gespeichert werden: ", "تعذّر حفظ الخيول: ", "无法保存马匹：", "De paarden konden niet worden opgeslagen: ", "Não foi possível salvar os cavalos: ", "Hästarna kunde inte sparas: ", "Не удалось сохранить лошадей: ", "Nie udało się zapisać koni: ", "말을 저장하지 못했어요: ") + String((eC && eC.message) || eC).slice(0, 160) }));
+    }
+  }
+  function boutonChoixCh() {
+    return h("button", { type: "button", className: "hs-btn", "data-choisir-chevaux-eng": "1", style: { marginTop: 12 }, onClick: ouvrirChoixCh },
+      nomsCh.length ? T7("Modifier les chevaux", "Change the horses", "Cambiar los caballos", "Modifica i cavalli", "馬を変更", "Pferde ändern", "تعديل الخيول", "修改马匹", "Paarden wijzigen", "Alterar os cavalos", "Ändra hästar", "Изменить лошадей", "Zmień konie", "말 변경")
+        : T7("Choisir les chevaux", "Choose the horses", "Elegir los caballos", "Scegli i cavalli", "馬を選ぶ", "Pferde auswählen", "اختر الخيول", "选择马匹", "Paarden kiezen", "Escolher os cavalos", "Välj hästar", "Выбрать лошадей", "Wybierz konie", "말 선택"));
+  }
+  function fenetreChoixCh() {
+    if (!choixCh) return null;
+    var sel = choixCh.sel;
+    return h("div", { "data-noswipe": "1", role: "dialog", "aria-modal": "true", onClick: function (e) { if (e.target === e.currentTarget && !choixCh.busy) setChoixCh(null); },
+      style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(3,5,6,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { style: { width: "100%", maxWidth: 560, maxHeight: "86vh", display: "flex", flexDirection: "column", background: "#0B1113", borderTop: "1px solid rgba(201,166,107,0.35)", borderRadius: "22px 22px 0 0", padding: "18px 16px calc(env(safe-area-inset-bottom) + 16px)" } },
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 24, color: "var(--hs-iv)", textAlign: "center" } },
+          T7("Qui part ?", "Who’s going?", "¿Quién va?", "Chi parte?", "誰が行く？", "Wer fährt mit?", "من سيذهب؟", "谁去？", "Wie gaat er mee?", "Quem vai?", "Vem åker?", "Кто едет?", "Kto jedzie?", "누가 가나요?")),
+        h("div", { style: { fontSize: 12.5, color: "var(--hs-iv2)", textAlign: "center", margin: "4px 0 14px" } },
+          T7("Coche les chevaux qui partent au concours.", "Tick the horses going to the show.", "Marca los caballos que van al concurso.", "Spunta i cavalli che vanno al concorso.", "大会に行く馬にチェックを入れてね。", "Hake die Pferde an, die zum Turnier fahren.", "حدّد الخيول التي تذهب إلى المسابقة.", "勾选去比赛的马匹。", "Vink de paarden aan die naar de wedstrijd gaan.", "Marque os cavalos que vão ao concurso.", "Bocka i hästarna som åker till tävlingen.", "Отметь лошадей, которые едут на соревнования.", "Zaznacz konie, które jadą na zawody.", "대회에 가는 말을 체크해 줘.")),
+        h("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+          chevaux.length ? chevaux.map(function (c) {
+            var on = !!sel[c.id];
+            return h("button", { key: "cc" + c.id, type: "button", onClick: function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setChoixCh(Object.assign({}, choixCh, { sel: n })); },
+              style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 52, padding: "6px 12px", marginBottom: 6, borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(243,238,228,0.1)"), background: "transparent", color: "var(--hs-iv)" } },
+              h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: photoCh(c.nom), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } })),
+              h("span", { style: { flex: 1, minWidth: 0, fontSize: 15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
+              h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? "#C9A66B" : "rgba(243,238,228,0.35)"), color: "#C9A66B", fontSize: 14, lineHeight: "21px", textAlign: "center" } }, on ? "✓" : ""));
+          }) : h("div", { className: "hs-vide" }, T7("Aucun cheval trouvé dans l’écurie.", "No horse found in the stable.", "No se encontró ningún caballo en la cuadra.", "Nessun cavallo trovato nella scuderia.", "厩舎に馬が見つかりません。", "Kein Pferd im Stall gefunden.", "لم يُعثر على أي حصان في الإسطبل.", "马厩里没有找到马。", "Geen paard gevonden in de stal.", "Nenhum cavalo encontrado na hípica.", "Ingen häst hittades i stallet.", "В конюшне не найдено лошадей.", "Nie znaleziono koni w stajni.", "마구간에서 말을 찾지 못했어요."))),
+        choixCh.err ? h("div", { className: "hs-err", style: { marginTop: 8 } }, choixCh.err) : null,
+        h("div", { className: "hs-duo", style: { marginTop: 12 } },
+          h("button", { type: "button", className: "hs-btn", disabled: choixCh.busy, onClick: function () { setChoixCh(null); } },
+            T7("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+          h("button", { type: "button", className: "hs-btn", disabled: choixCh.busy, onClick: enregistrerChoixCh },
+            choixCh.busy ? "…" : T7("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장")))));
+  }
   function vueChevauxV1() {
-    if (!nomsCh.length) return h("div", { className: "hs-vide" }, F("Aucun cheval pour l’instant. Coche-les dans « Chevaux du déplacement » du rendez-vous, ou choisis-les dans les cartes des cavalières."));
+    if (!nomsCh.length) return h(React.Fragment, null,
+      h("div", { className: "hs-vide" }, T7("Aucun cheval pour l’instant. Choisis ceux qui partent au concours.", "No horse yet. Choose the ones going to the show.", "Aún no hay caballos. Elige los que van al concurso.", "Ancora nessun cavallo. Scegli quelli che vanno al concorso.", "まだ馬がいません。大会に行く馬を選んでね。", "Noch kein Pferd. Wähle die, die zum Turnier fahren.", "لا خيول بعد. اختر التي تذهب إلى المسابقة.", "还没有马。选择去比赛的马匹。", "Nog geen paard. Kies de paarden die naar de wedstrijd gaan.", "Ainda nenhum cavalo. Escolha os que vão ao concurso.", "Inga hästar än. Välj de som åker till tävlingen.", "Пока нет лошадей. Выбери тех, кто едет на соревнования.", "Jeszcze brak koni. Wybierz te, które jadą na zawody.", "아직 말이 없어요. 대회에 가는 말을 골라 줘.")),
+      boutonChoixCh());
     return h(React.Fragment, null,
       h("div", { className: "e1-compte" }, h("span", null, nomsCh.length + (nomsCh.length > 1 ? F(" chevaux · ") : F(" cheval · ")) + libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre"))), choixMax()),
       h("div", { className: "e1-tuiles" }, nomsCh.map(function (c) {
@@ -1811,7 +1881,8 @@ function EcranEngagements() {
             h("h4", null, c), pointsDe(c),
             h("div", { className: "e1-tuile-r" + (r < 0 ? " trop" : "") }, resteDe(c)),
             m.length ? h("div", { className: "e1-tuile-l" }, m.map(function (x, j) { return h("div", { key: j }, (j + 1) + ". " + x.qui, epDe(x) ? h("em", null, " · " + epDe(x)) : null); })) : null));
-      })));
+      })),
+      boutonChoixCh());
   }
   function vueEpreuvesV1() {
     var parEp = {}, ordre = [];
@@ -1850,9 +1921,11 @@ function EcranEngagements() {
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
         h("div", { className: "hs-duo", style: { marginTop: 0 } },
           h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !modifie, onClick: enregistrer }, occupe ? F("Enregistrement…") : (modifie ? F("Enregistrer") : F("✓ Enregistré"))),
-          h("button", { type: "button", className: "hs-btn", onClick: function () { setVoirFeuille(true); } }, F("Feuille SEP")))),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { setVoirFeuille(true); } }, estSep ? F("Feuille SEP") : T7("Feuille d’engagement", "Entry sheet", "Hoja de inscripción", "Foglio di iscrizione", "エントリーシート", "Nennungsliste", "ورقة التسجيل", "报名表", "Inschrijvingsformulier", "Ficha de inscrição", "Anmälningsblad", "Лист заявок", "Lista zgłoszeń", "참가 신청서")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null),
-    voirFeuille ? feuilleSep(h, ev, feuille, lignes, function () { setVoirFeuille(false); }, modifie) : null);
+    fenetreChoixCh(),
+    voirFeuille ? (estSep ? feuilleSep(h, ev, feuille, lignes, function () { setVoirFeuille(false); }, modifie)
+      : feuilleNeutre(h, ev, feuille, lignes, function () { setVoirFeuille(false); }, modifie, nomClubAff)) : null);
 }
 
 /* La feuille « Engagements Concours CSO Club », à l'identique de la fiche papier de la SEP.
@@ -1944,6 +2017,215 @@ function feuilleSep(h, ev, fe, lignes, fermer, nonEnregistre) {
           h("tbody", null, R.epreuves.map(function (e) { return h("tr", { key: e }, h("td", null, e), h("td", { className: "c" }, String(R.parEp[e]))); }),
             h("tr", null, h("td", { style: { fontWeight: 700 } }, "Total"), h("td", { className: "c", style: { fontWeight: 700 } }, String(R.total))))));
     })());
+}
+
+/* ── 07/11/2026 19h30 — FEUILLE D’ENGAGEMENT NEUTRE (tous les clubs sauf la SEP). Blandine : « propose juste d’éditer une
+   feuille d’engagement sans conserver le mot SEP ni leur mise en page ou logo », puis « une mise en page classique qui
+   pourrait convenir à tous » (maquette validée : nom du club en titre, infos, une ligne par tour, total, signature,
+   mention « Feuille générée avec Hype » gardée). Feuille imprimée en français, comme la feuille SEP (document pour un
+   organisateur français). Mêmes données que la feuille SEP : rien de plus n’est enregistré. ── */
+function hsLignesNeutre(lignes) {
+  var tri = (lignes || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+  var out = [];
+  tri.forEach(function (l) {
+    var t = 0;
+    [1, 2].forEach(function (n) {
+      var c = String(l["cheval" + n + "_nom"] || "").trim(), e = String(l["epreuve" + n] || "").trim();
+      if (c || e) { t++; out.push({ nom: String(l.nom || "").trim(), licence: String(l.licence || "").trim(), cheval: c, ep: e }); }
+    });
+    if (!t && String(l.nom || "").trim()) out.push({ nom: String(l.nom || "").trim(), licence: String(l.licence || "").trim(), cheval: "", ep: "" });
+  });
+  return out;
+}
+function hsPrixNeutre(prix, nb) {
+  var brut = String(prix || "").trim(); if (!brut) return { un: "", total: "" };
+  var v = parseFloat(brut.replace(/\s/g, "").replace(",", ".").replace(/[^0-9.]/g, ""));
+  if (!(v >= 0)) return { un: brut, total: "" };
+  function eu(x) { return (Math.round(x * 100) / 100).toLocaleString("fr-FR", { minimumFractionDigits: (x % 1) ? 2 : 0, maximumFractionDigits: 2 }) + " €"; }
+  return { un: eu(v), total: nb ? eu(v * nb) : "" };
+}
+function hsDateNeutre(ev) {
+  var d = hsDateLoc(ev && ev.date_jour), df = hsDateLoc(ev && ev.date_fin);
+  function jl(x) { try { return x.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); } catch (e) { return ""; } }
+  if (!d) return "";
+  var t = jl(d); t = t.charAt(0).toUpperCase() + t.slice(1);
+  if (df && df.getTime() !== d.getTime()) t = "Du " + jl(d) + " au " + jl(df);
+  return t;
+}
+function hsNomClubNeutre(nom) {
+  var n = String(nom || "").trim(); if (!n) return "";
+  if (n === n.toLowerCase()) n = n.replace(/(^|[\s'’(-])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); });   /* clé « ecurie feinn » → « Ecurie Feinn » */
+  return n;
+}
+function feuilleNeutre(h, ev, fe, lignes, fermer, nonEnregistre, nomClub) {
+  fe = fe || {};
+  var club = hsNomClubNeutre(nomClub) || "";
+  var disc = String(fe.discipline || "").trim() || "CSO";
+  var titre = "Feuille d’engagement · " + disc;
+  var date = hsDateNeutre(ev);
+  var rangs = hsLignesNeutre(lignes);
+  var nbTours = rangs.filter(function (r) { return r.cheval || r.ep; }).length;
+  var px = hsPrixNeutre(fe.prix, nbTours);
+  var transport = String(fe.transport || "").trim();
+  var chef = (fe.chef_nom || "") + (fe.chef_licence ? " · licence " + fe.chef_licence : "");
+  var concours = String((ev && ev.titre) || "").trim();
+  var info = [["Concours", concours], ["N° de concours FFE", fe.numero], ["Date", date], ["Lieu", ev && ev.lieu], ["Chef d’équipe", chef], ["Transport en camion", transport]];
+  function partagerPdf() {
+    try {
+      var octets = hsPdfFeuilleNeutre({ club: club, titre: titre, date: date, info: info, rangs: rangs, prix: px, nbTours: nbTours, recap: hsRecapFeuille(lignes), lieu: (ev && ev.lieu) || "" });
+      var nom = "feuille-engagement-" + String((ev && ev.titre) || "concours").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase().replace(/^-+|-+$/g, "") + ".pdf";
+      var fic = null; try { fic = new File([octets], nom, { type: "application/pdf" }); } catch (eF) { fic = null; }
+      if (fic && navigator.canShare && navigator.canShare({ files: [fic] }) && navigator.share) { navigator.share({ files: [fic], title: titre }).catch(function () { }); return; }
+      var url = URL.createObjectURL(new Blob([octets], { type: "application/pdf" }));
+      var lien = document.createElement("a"); lien.href = url; lien.download = nom; document.body.appendChild(lien); lien.click(); lien.remove();
+      setTimeout(function () { try { URL.revokeObjectURL(url); } catch (eR) { } }, 60000);
+    } catch (eP) { try { window.__hsPdfErreur = String(eP); console.error(eP); } catch (e2) { } }
+  }
+  var vides = Math.max(0, 6 - rangs.length);
+  var thS = { borderBottom: "1.5px solid #111", padding: "6px 5px", fontSize: 12, fontWeight: 700, textAlign: "left" };
+  var tdS = { borderBottom: "1px solid #ccc", padding: "8px 5px", fontSize: 12.5, height: 30, verticalAlign: "middle" };
+  return h("div", { id: "zone-impression", className: "hs-feuille hs-feuille-neutre", role: "dialog", "aria-label": titre },
+    h("div", { className: "bar no-print" },
+      h("button", { type: "button", className: "p", onClick: function () { partagerPdf(); } }, "Enregistrer en PDF"),
+      h("button", { type: "button", className: "f", onClick: function () { try { window.print(); } catch (e) { } } }, "Imprimer"),
+      h("button", { type: "button", className: "f", onClick: fermer }, "Fermer")),
+    nonEnregistre ? h("div", { className: "no-print", style: { maxWidth: 780, margin: "10px auto 0", padding: "0 16px", fontSize: 12.5, color: "#8a5a00" } }, "Attention : tes dernières modifications ne sont pas encore enregistrées.") : null,
+    h("div", { className: "page" },
+      h("div", { style: { textAlign: "center", borderBottom: "1.5px solid #111", paddingBottom: 12, marginBottom: 16 } },
+        club ? h("div", { style: { fontFamily: "Helvetica,Arial,sans-serif", fontSize: 24, fontWeight: 700, letterSpacing: ".01em" } }, club) : null,
+        h("div", { style: { fontFamily: "Helvetica,Arial,sans-serif", fontSize: 14, color: "#444", marginTop: 4 } }, titre)),
+      h("table", { style: { width: "100%", marginBottom: 18, fontSize: 13 } },
+        h("tbody", null, info.map(function (x) {
+          return h("tr", { key: x[0] }, h("td", { style: { padding: "3px 10px 3px 0", color: "#555", width: "38%", verticalAlign: "top" } }, x[0]),
+            h("td", { style: { padding: "3px 0", fontWeight: 700, borderBottom: x[1] ? "none" : "1px dotted #999" } }, x[1] || ""));
+        }))),
+      h("table", { style: { width: "100%", tableLayout: "fixed", borderCollapse: "collapse" } },
+        h("thead", null, h("tr", null,
+          h("th", { style: Object.assign({ width: "28%" }, thS) }, "Cavalier"), h("th", { style: Object.assign({ width: "16%" }, thS) }, "Licence"),
+          h("th", { style: Object.assign({ width: "22%" }, thS) }, "Cheval"), h("th", { style: Object.assign({ width: "21%" }, thS) }, "Épreuve"),
+          h("th", { style: Object.assign({ width: "13%", textAlign: "right" }, thS) }, "Tarif"))),
+        h("tbody", null,
+          rangs.map(function (r, i) {
+            return h("tr", { key: i }, h("td", { style: tdS }, r.nom), h("td", { style: tdS }, r.licence), h("td", { style: tdS }, r.cheval), h("td", { style: tdS }, r.ep),
+              h("td", { style: Object.assign({ textAlign: "right" }, tdS) }, (r.cheval || r.ep) ? px.un : ""));
+          }),
+          Array.apply(null, Array(vides)).map(function (x, i) { return h("tr", { key: "v" + i }, [0, 1, 2, 3, 4].map(function (k) { return h("td", { key: k, style: tdS }); })); }),
+          h("tr", null, h("td", { colSpan: 4, style: { padding: "9px 5px", textAlign: "right", fontWeight: 700, fontSize: 13 } }, "Total" + (nbTours ? " (" + nbTours + (nbTours > 1 ? " tours)" : " tour)") : "")),
+            h("td", { style: { padding: "9px 5px", textAlign: "right", fontWeight: 700, fontSize: 13 } }, px.total)))),
+      h("div", { style: { display: "flex", justifyContent: "space-between", gap: 16, marginTop: 34, fontSize: 12.5 } },
+        h("span", null, "Fait le ", h("span", { style: { display: "inline-block", minWidth: 110, borderBottom: "1px dotted #888", fontWeight: 700 } }, fe.faits_le || "")),
+        h("span", null, "Signature du chef d’équipe")),
+      h("div", { style: { textAlign: "center", marginTop: 46, fontSize: 10.5, color: "#999" } }, "Feuille générée avec Hype")),
+    (function () {
+      var R = hsRecapFeuille(lignes); if (!R.chevaux.length) return null;
+      var cols = []; for (var j = 0; j < R.nbCol; j++) cols.push(j);
+      return h("div", { className: "page", style: { marginTop: 18 } },
+        h("div", { style: { textAlign: "center", fontFamily: "Helvetica,Arial,sans-serif", fontSize: 18, fontWeight: 700, marginBottom: 4 } }, "Récapitulatif des engagements"),
+        h("div", { style: { textAlign: "center", fontSize: 12.5, marginBottom: 14, color: "#444" } }, [club, date, ev && ev.lieu].filter(Boolean).join(" · ") + " — " + R.total + (R.total > 1 ? " tours" : " tour")),
+        h("table", { className: "grille" },
+          h("thead", null, h("tr", null, h("th", { style: { width: "24%" } }, "Cheval"), h("th", { className: "c", style: { width: "8%" } }, "Tours"),
+            cols.map(function (j) { return h("th", { key: j }, (j + 1) + (j === 0 ? "er" : "e") + " tour"); }))),
+          h("tbody", null, R.chevaux.map(function (c) {
+            var m = R.parCh[c];
+            return h("tr", { key: c }, h("td", null, c), h("td", { className: "c" }, String(m.length)),
+              cols.map(function (j) { var x = m[j]; return h("td", { key: j }, x ? (x.qui + (x.ep ? " · " + x.ep : "")) : ""); }));
+          }))));
+    })());
+}
+/* PDF de la feuille neutre : A4, Helvetica, plusieurs pages si la liste est longue, puis le récapitulatif par cheval. */
+function hsPdfFeuilleNeutre(o) {
+  var W = 595.28, H = 841.89, pages = [], ops = [];
+  function Y(y) { return (H - y).toFixed(2); }
+  function txt(x, y, t, pol, tl, coul) { if (!t) return; ops.push((coul || "0 0 0") + " rg BT /" + pol + " " + tl + " Tf " + x.toFixed(2) + " " + Y(y) + " Td (" + hsPdfTexte(t) + ") Tj ET"); }
+  function txtG(x1, x2, y, t, pol, tl) { if (!t) return; txt(x1 + 4, y, hsCouper(t, pol, tl, x2 - x1 - 8), pol, tl); }
+  function txtD(x1, x2, y, t, pol, tl) { if (!t) return; var tt = hsCouper(t, pol, tl, x2 - x1 - 8); txt(x2 - 4 - hsLargeur(tt, pol, tl), y, tt, pol, tl); }
+  function txtC(y, t, pol, tl, coul) { if (!t) return; var tt = hsCouper(t, pol, tl, W - 80); txt((W - hsLargeur(tt, pol, tl)) / 2, y, tt, pol, tl, coul); }
+  function trait(x1, y1, x2, y2, ep, gris) { ops.push((ep || 0.8) + " w " + (gris ? "0.78 0.78 0.78" : "0 0 0") + " RG " + x1.toFixed(2) + " " + Y(y1) + " m " + x2.toFixed(2) + " " + Y(y2) + " l S"); }
+  function pointilles(x1, x2, y) { ops.push("[0.6 1.6] 0 d 0.5 w 0.45 0.45 0.45 RG " + x1.toFixed(2) + " " + Y(y) + " m " + x2.toFixed(2) + " " + Y(y) + " l S [] 0 d"); }
+  function finPage() { pages.push(ops.map(hsPdfTexteBrut).join("\n")); ops = []; }
+  var x0 = 40, wT = 515, props = [28, 16, 22, 21, 13], xs = [x0];
+  props.forEach(function (p) { xs.push(xs[xs.length - 1] + wT * p / 100); });
+  function tete(suite) {
+    var y = 58;
+    if (o.club) { txtC(y, o.club, "F2", 20); y += 20; }
+    txtC(y, o.titre + (suite ? " (suite)" : ""), "F1", 12, "0.27 0.27 0.27");
+    y += 12; trait(x0, y, x0 + wT, y, 1.2);
+    return y + 22;
+  }
+  function enteteGrille(y) {
+    ["Cavalier", "Licence", "Cheval", "Épreuve"].forEach(function (t, i) { txtG(xs[i], xs[i + 1], y, t, "F2", 10); });
+    txtD(xs[4], xs[5], y, "Tarif", "F2", 10);
+    trait(x0, y + 6, x0 + wT, y + 6, 1.1);
+    return y + 6;
+  }
+  var y = tete(false);
+  (o.info || []).forEach(function (x) {
+    txt(x0, y, x[0], "F1", 10.5, "0.33 0.33 0.33");
+    if (x[1]) txt(x0 + 160, y, hsCouper(x[1], "F2", 10.5, wT - 170), "F2", 10.5); else pointilles(x0 + 160, x0 + 330, y + 2);
+    y += 17;
+  });
+  y += 14;
+  var hL = 22, rangs = (o.rangs || []).slice();
+  var nbVides = Math.max(0, 6 - rangs.length); for (var v = 0; v < nbVides; v++) rangs.push(null);
+  var yl = enteteGrille(y);
+  rangs.forEach(function (r) {
+    if (yl + hL > H - 150) { finPage(); yl = enteteGrille(tete(true)); }
+    var yy = yl + hL / 2 + 4;
+    if (r) {
+      txtG(xs[0], xs[1], yy, r.nom, "F2", 10); txtG(xs[1], xs[2], yy, r.licence, "F1", 10); txtG(xs[2], xs[3], yy, r.cheval, "F1", 10);
+      txtG(xs[3], xs[4], yy, r.ep, "F1", 10); if (r.cheval || r.ep) txtD(xs[4], xs[5], yy, o.prix && o.prix.un, "F1", 10);
+    }
+    yl += hL; trait(x0, yl, x0 + wT, yl, 0.6, true);
+  });
+  var lt = "Total" + (o.nbTours ? " (" + o.nbTours + (o.nbTours > 1 ? " tours)" : " tour)") : "");
+  txtD(xs[0], xs[4], yl + 16, lt, "F2", 10.5); txtD(xs[4], xs[5], yl + 16, o.prix && o.prix.total, "F2", 10.5);
+  var yS = yl + 60;
+  txt(x0, yS, "Fait le", "F1", 10.5); pointilles(x0 + 40, x0 + 170, yS + 2);
+  var sig = "Signature du chef d’équipe"; txt(x0 + wT - hsLargeur(sig, "F1", 10.5), yS, sig, "F1", 10.5);
+  txtC(H - 40, "Feuille générée avec Hype", "F1", 8.5, "0.6 0.6 0.6");
+  finPage();
+  /* récapitulatif par cheval */
+  var R = o.recap;
+  if (R && R.chevaux && R.chevaux.length) {
+    txtC(62, "Récapitulatif des engagements", "F2", 16);
+    txtC(82, [o.club, o.date, o.lieu].filter(Boolean).join(" · ") + " — " + R.total + (R.total > 1 ? " tours" : " tour"), "F1", 10, "0.27 0.27 0.27");
+    var pxr = [x0, x0 + wT * 0.24, x0 + wT * 0.32], reste = wT * 0.68 / R.nbCol;
+    for (var j = 1; j <= R.nbCol; j++) pxr.push(pxr[2] + reste * j);
+    var y2 = 112;
+    txtG(pxr[0], pxr[1], y2, "Cheval", "F2", 9.5); txtG(pxr[1], pxr[2], y2, "Tours", "F2", 9.5);
+    for (var j2 = 0; j2 < R.nbCol; j2++) txtG(pxr[2 + j2], pxr[3 + j2], y2, (j2 + 1) + (j2 === 0 ? "er" : "e") + " tour", "F2", 9.5);
+    trait(x0, y2 + 6, x0 + wT, y2 + 6, 1.1); y2 += 6;
+    R.chevaux.forEach(function (c) {
+      if (y2 + 20 > H - 60) return;
+      var yy = y2 + 14, m = R.parCh[c];
+      txtG(pxr[0], pxr[1], yy, c, "F2", 9); txtG(pxr[1], pxr[2], yy, String(m.length), "F1", 9);
+      for (var j3 = 0; j3 < R.nbCol; j3++) { var x = m[j3]; if (x) txtG(pxr[2 + j3], pxr[3 + j3], yy, x.qui + (x.ep ? " · " + x.ep : ""), "F1", 9); }
+      y2 += 20; trait(x0, y2, x0 + wT, y2, 0.6, true);
+    });
+    txtC(H - 40, "Feuille générée avec Hype", "F1", 8.5, "0.6 0.6 0.6");
+    finPage();
+  }
+  /* assemblage : 1 catalogue, 1 arbre de pages, 2 polices, puis (page, contenu) par page */
+  var res = "<< /Font << /F1 3 0 R /F2 4 0 R >> >>";
+  var objs = ["<< /Type /Catalog /Pages 2 0 R >>", null,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>"];
+  var kids = [];
+  pages.forEach(function (flux) {
+    var np = objs.length + 1; kids.push(np + " 0 R");
+    objs.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources " + res + " /Contents " + (np + 1) + " 0 R >>");
+    objs.push("<< /Length " + flux.length + " >>\nstream\n" + flux + "\nendstream");
+  });
+  objs[1] = "<< /Type /Pages /Kids [" + kids.join(" ") + "] /Count " + pages.length + " >>";
+  var out = "%PDF-1.4\n%âãÏÓ\n", pos = [];
+  objs.forEach(function (ob, i) { pos.push(out.length); out += (i + 1) + " 0 obj\n" + ob + "\nendobj\n"; });
+  var xref = out.length;
+  out += "xref\n0 " + (objs.length + 1) + "\n0000000000 65535 f \n";
+  pos.forEach(function (p) { out += String(p).padStart(10, "0") + " 00000 n \n"; });
+  out += "trailer\n<< /Size " + (objs.length + 1) + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF";
+  var octets = new Uint8Array(out.length);
+  for (var k = 0; k < out.length; k++) octets[k] = out.charCodeAt(k) & 0xFF;
+  return octets;
 }
 
 /* ── Le PDF de la feuille, écrit directement (aucune bibliothèque à charger) : polices standard des PDF
