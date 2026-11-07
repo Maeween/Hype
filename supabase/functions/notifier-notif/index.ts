@@ -4,6 +4,8 @@
 // notifications (mention @, identification, commentaire sur ses albums / vidéos / chevaux / sa page), elle est envoyée
 // sur les téléphones de la personne qui ont activé les notifications (table push_abonnements, la même que les rappels
 // de rendez-vous, fonction notifier-rdv). Pas les j'aime ni les publications de la communauté (choix de Blandine).
+// 07/11 : SAUF les j'aime sur l'histoire d'un cheval, une présentation de cavalier et une vidéo de la Team (« Oui pour les j'aime »,
+// Blandine 07/11 01 h 36) : type « jaime_texte », une seule notification par personne et par texte/vidéo (la base y veille).
 //
 // QUI L'APPELLE : une règle en base (trigger AFTER INSERT sur notifications, sql/2026-10-20-notif-telephone.sql) avec
 // l'identifiant de la ligne. « Verify JWT » ÉTEINT (la base l'appelle sans jeton, comme notifier-rdv).
@@ -21,7 +23,7 @@ const SUJET = Deno.env.get("VAPID_SUBJECT") || "mailto:feinn@live.fr"
 const PUBLIQUE = "BP-1TH_5bpRxes4Z2DsVTMa3y8ItFEqsGwizTGy8NLb86OX3X1A-QYuDDaMQXBBIQO0_hD5Va-BMR96rctn4wZM"
 if (PRIVEE) webpush.setVapidDetails(SUJET, PUBLIQUE, PRIVEE)
 
-const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video", "heybaby", "soin_a_confirmer"]   // 21/10 : + « Hey Baby t'a répondu » (créée par le relais assistant quand le téléphone est parti avant la fin) ; 05/11 : + soin ajouté par un cavalier, à confirmer par l'écurie (option B de Blandine)
+const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video", "heybaby", "soin_a_confirmer", "jaime_texte"]   // 21/10 : + « Hey Baby t'a répondu » (créée par le relais assistant quand le téléphone est parti avant la fin) ; 05/11 : + soin ajouté par un cavalier, à confirmer par l'écurie (option B de Blandine)
 
 function json(c: unknown, s = 200) { return new Response(JSON.stringify(c), { status: s, headers: { "content-type": "application/json; charset=utf-8" } }) }
 const ent = (x: Record<string, string> = {}) => ({ apikey: SERVICE, Authorization: "Bearer " + SERVICE, "Content-Type": "application/json", ...x })
@@ -35,10 +37,15 @@ async function rest(chemin: string, init: RequestInit = {}) {
 type L = "fr" | "en" | "es" | "it" | "ja" | "de" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko"
 const T7 = (lg: L, o: Partial<Record<L, string>> & { fr: string }) => o[lg] || o.en || o.fr
 
-function phrase(type: string, lg: L, nom: string, sur: string): string {
+function phrase(type: string, lg: L, nom: string, sur: string, cible = ""): string {
   if (type === "soin_a_confirmer") return T7(lg, { fr: (nom || "Un cavalier") + " a ajouté un soin, à confirmer", en: (nom || "A rider") + " added a care entry to confirm" })   // 05/11
   if (type === "heybaby") return T7(lg, { fr: "Hey Baby t'a répondu", en: "Hey Baby answered you", es: "Hey Baby te ha respondido", it: "Hey Baby ti ha risposto", ja: "Hey Babyが返信しました", de: "Hey Baby hat dir geantwortet", ar: "Hey Baby ردّ عليكِ", zh: "Hey Baby 回复了你", nl: "Hey Baby heeft je geantwoord", pt: "O Hey Baby respondeu você", sv: "Hey Baby har svarat dig", ru: "Hey Baby ответил тебе", pl: "Hey Baby ci odpowiedział", ko: "Hey Baby가 답했어요" })
   const n = nom || T7(lg, { fr: "Quelqu'un", en: "Someone", es: "Alguien", it: "Qualcuno", ja: "誰か", de: "Jemand", ar: "شخص ما", zh: "有人", nl: "Iemand", pt: "Alguém", sv: "Någon", ru: "Кто-то", pl: "Ktoś", ko: "누군가" })
+  if (type === "jaime_texte") {   // 07/11
+    if (cible.indexOf("cheval:") === 0) return T7(lg, { fr: n + " a aimé l'histoire de" + sur, en: n + " liked the story of" + sur, es: n + " le gustó la historia de" + sur, it: n + " ha messo mi piace alla storia di" + sur, ja: n + "がストーリーにいいねしました：" + sur, de: n + " gefällt die Geschichte von" + sur, ar: n + " أعجبته قصة" + sur, zh: n + "赞了这段故事：" + sur, nl: n + " vindt het verhaal leuk van" + sur, pt: n + " curtiu a história de" + sur, sv: n + " gillade berättelsen om" + sur, ru: n + " оценил(а) историю" + sur, pl: n + " polubił(a) historię" + sur, ko: n + "님이 이야기에 좋아요를 눌렀어요:" + sur })
+    if (cible.indexOf("teamvideo:") === 0) return T7(lg, { fr: n + " a aimé ta vidéo", en: n + " liked your video", es: n + " le gustó tu vídeo", it: n + " ha messo mi piace al tuo video", ja: n + "があなたの動画にいいねしました", de: n + " gefällt dein Video", ar: n + " أعجبه الفيديو الخاص بك", zh: n + "赞了你的视频", nl: n + " vindt je video leuk", pt: n + " curtiu o seu vídeo", sv: n + " gillade din video", ru: n + " оценил(а) твоё видео", pl: n + " polubił(a) twoje wideo", ko: n + "님이 내 영상에 좋아요를 눌렀어요" })
+    return T7(lg, { fr: n + " a aimé ta présentation", en: n + " liked your introduction", es: n + " le gustó tu presentación", it: n + " ha messo mi piace alla tua presentazione", ja: n + "があなたの紹介にいいねしました", de: n + " gefällt deine Vorstellung", ar: n + " أعجبه تقديمك", zh: n + "赞了你的自我介绍", nl: n + " vindt je voorstelling leuk", pt: n + " curtiu a sua apresentação", sv: n + " gillade din presentation", ru: n + " оценил(а) твоё описание", pl: n + " polubił(a) twoją prezentację", ko: n + "님이 내 소개에 좋아요를 눌렀어요" })
+  }
   if (type.indexOf("identification") === 0) {
     if (type === "identification_photos") return T7(lg, { fr: n + " t'a identifié(e) sur des photos", en: n + " tagged you in photos", es: n + " te etiquetó en fotos", it: n + " ti ha taggato in alcune foto", ja: n + "が写真であなたをタグ付けしました", de: n + " hat dich auf Fotos markiert", ar: n + " أشار إليك في صور", zh: n + "在照片中标记了你", nl: n + " heeft je getagd op foto's", pt: n + " marcou você em fotos", sv: n + " har taggat dig i foton", ru: n + " отметил(а) тебя на фото", pl: n + " oznaczył(a) cię na zdjęciach", ko: n + "님이 사진에 태그했어요" })
     return T7(lg, { fr: n + " t'a mentionné(e)", en: n + " mentioned you", es: n + " te mencionó", it: n + " ti ha menzionato", ja: n + "があなたをメンションしました", de: n + " hat dich erwähnt", ar: n + " أشار إليك", zh: n + "提到了你", nl: n + " heeft je genoemd", pt: n + " mencionou você", sv: n + " har nämnt dig", ru: n + " упомянул(а) тебя", pl: n + " wspomniał(a) o tobie", ko: n + "님이 멘션했어요" })
@@ -97,8 +104,8 @@ Deno.serve(async (req) => {
     const pAct = profils.find((p: any) => p.id === n.acteur) || {}
     const lg = (["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"].indexOf(pDest.langue) >= 0 ? pDest.langue : "fr") as L
     const li = await lien(String(n.cible || ""))
-    const titre = phrase(String(n.type), lg, String(pAct.pseudo || "").trim(), li.sur(lg))
-    const charge = JSON.stringify({ titre, corps: n.extrait ? String(n.extrait).slice(0, 140) : "", url: li.url, tag: "notif-" + id })
+    const titre = phrase(String(n.type), lg, String(pAct.pseudo || "").trim(), n.type === "jaime_texte" && n.extrait ? " " + String(n.extrait) : li.sur(lg), String(n.cible || ""))
+    const charge = JSON.stringify({ titre, corps: (n.extrait && n.type !== "jaime_texte") ? String(n.extrait).slice(0, 140) : "", url: li.url, tag: "notif-" + id })
     let envoyes = 0
     await Promise.allSettled(appareils.map(async (a: any) => {
       try { await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, charge); envoyes++ }

@@ -41,7 +41,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Horse Lingo sur Google (Search Console, au 23/10) : 195 pages indexées, 447 non. Raisons : « page avec redirection » (normal), « découverte, pas encore indexée » (site récent, Google y va petit à petit), « explorée, pas indexée » (pages de vocabulaire trop semblables). Rien de cassé ; chantier : enrichir les pages de vocabulaire. Après Hype (attend : Claude, sur décision de Blandine)
 - [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
 - [07/11] Vidéos de la Team sur la fiche du concours : fait (build 0220, à tester sur iPhone)
-- [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
+- [07/11] J'aime sur les textes : fait (build 0100) + notification sur le téléphone (07/11 02 h 45) — à tester sur iPhone
 - [07/11] « Sans le son » : Team (case à l'envoi) + toutes les autres vidéos Mux (bouton dans la visionneuse, build 0240) — à tester sur iPhone
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [05/11] Recherche de concours (numéro FFE) : « Trouver le numéro » est sur la page Engagements (build 0210) ET, depuis le build 20261106-2350, à la création d'un concours (agenda), avec « Calendrier FFE › » en secours ; à essayer sur iPhone. Reste : étape 3 = recherche par dates, région, discipline (attend : Blandine pour le test, puis Claude)
@@ -642,6 +642,26 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+📲 07/11/2026 (02 h 45) — LES J'AIME ARRIVENT AUSSI SUR LE TÉLÉPHONE
+Blandine (01 h 36) : « Oui pour les j'aime » → change la règle du 20/10
+(« pas les j'aime sur le téléphone ») pour les j'aime sur l'histoire d'un
+cheval, une présentation de cavalier et une vidéo de la Team.
+| Fichier | Où | Quoi |
+|---|---|---|
+| supabase/functions/notifier-notif/index.ts | dépôt + DÉPLOYÉE (version 11) | type « jaime_texte » ajouté, phrases 14 langues |
+CE QUI A ÉTÉ FAIT
+· « X a aimé l'histoire de <cheval> » (ouvre la fiche du cheval), « X a
+  aimé ta présentation » (ouvre la page cavalier), « X a aimé ta vidéo ».
+  Toujours une seule notification par personne et par texte/vidéo (la base
+  y veille) : pas de rafale si quelqu'un clique plusieurs fois.
+· Parti de la version en service (identique au dépôt), seules ces lignes
+  changent. Les autres j'aime (photos, albums) restent sans notification.
+VÉRIFIÉ : la fonction démarre et répond correctement après déploiement
+(appel d'essai → « rien à envoyer »). NON VU : une vraie notification reçue
+sur iPhone.
 
 ════════════════════════════════════════════════════════════
 
