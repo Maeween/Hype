@@ -18738,3 +18738,21 @@ RESTE À FAIRE (attend : Blandine) :
 - Testé avec une réponse simulée (programme à 2 épreuves) : les couples des épreuves trouvées reçoivent heure, piste et n° d'épreuve ; ceux dont le cheval ne correspond pas ne sont pas touchés. Non testé avec une vraie photo (lecture payante, à essayer sur iPhone).
 - Français seulement.
 - Fichiers : hype-ecran-saison.js (v42), index.html (build 20261107-0335), SUIVI.md.
+
+📚 07/11/2026 (05 h 30) — GALOPS 7, 8, 9 : CADENCE / RYTHME + LABELS DE LA COMPÉTITION — PUBLIÉ (build 20261107-0530)
+Suite de l'harmonisation (« Ok continue » de Blandine).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop7.js | racine | v12 : cadence/rythme (en, de, sv, ja) |
+| hype-cours-galop8.js | racine | v6 : cours 19, les « labels des concours » non confirmés remplacés par ce que confirme la FFE (label Pôle d'excellence de compétition équestre pour les sites ; Grand National FFE = circuit en étapes), 13 langues ; cadence/rythme (en, de, sv, ja) |
+| hype-cours-galop9.js | racine | v7 : cadence/rythme (en, de, sv, ja) |
+| index.html | racine | ?v galop7 → 13, galop8 → 6, galop9 → 7 |
+RÈGLE APPLIQUÉE (d'après les lexiques des cours : cadence = fréquence des foulées, rythme = répartition des temps) :
+cadence → en tempo / de Tempo / sv tempo / ja テンポ ; rythme → en rhythm / de Takt / sv takt / ja リズム ;
+« rythme » au sens courant (au rythme des foulées, à ton rythme, rythme du parcours) laissé tel quel.
+Changés : anglais 93 textes, allemand 94, suédois 94, japonais 33 (le français n'a pas bougé).
+EXCEPTION : « trot cadencé » du piaffer et du passage (G8 cours 18) garde le sens d'allure élevée et rebondie
+(cadenced / kadenziert / kadens), ce n'est pas une fréquence.
+À faire relire par un natif : les mêmes termes dans les 9 autres langues n'ont pas été passés en revue (attend : Blandine).
+
+════════════════════════════════════════════════════════════
