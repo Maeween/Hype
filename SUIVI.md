@@ -815,6 +815,17 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+📅 07/11/2026 (23 h 00) — AGENDA : UNE PHOTO MÊME SANS AFFICHE, SELON LA SORTE DE RENDEZ-VOUS
+Blandine : « Quand il n'y a pas d'affiche à un événement laisse une photo dans l'onglet ou le hero quand même, une en rapport avec le thème choisi ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-agenda.js | racine | version 3 : carte « Prochains rendez-vous » sans affiche → photo à droite selon la sorte (Concours : cavalière à l'obstacle hype-entete-concours.jpg ; Stage : theme-dressage-bai-trot.webp ; Sortie : actualite-ambiance.webp) ; carte souvenir des Événements passés sans photo ni affiche → même photo |
+| index.html | racine | haut de la fiche du rendez-vous : la photo suit la sorte (avant : toujours la photo concours) ; ?v agenda 2 → 3, build 20261107-2300 |
+· Avec une affiche : rien ne change (l'affiche reste prioritaire sur la carte). Aucun nouveau texte → rien à traduire.
+· Testé sur copie (3 rendez-vous sans affiche : concours, stage, sortie).
+
+════════════════════════════════════════════════════════════
+
 ↕️ 07/11/2026 (20 h 35) — FICHE CHEVAL : ORDRE DES BLOCS (TABLETTE / ORDINATEUR)
 Blandine : « Ok continue » (après la proposition : déplacer les blocs tout de suite sur tablette / ordinateur, le téléphone gardant l'ordre d'origine).
 | Fichier | Où | Quoi |

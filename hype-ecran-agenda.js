@@ -1205,7 +1205,7 @@ function hypeRecompense(place, partants) {
        inventee ; sans media ni affiche, pas de zone photo du tout. Point de categorie champagne
        pour toutes (Blandine : pas une couleur par categorie). */
     if (vuePasses) {
-      var couvS = montres.length ? montres[0] : "";
+      var couvS = montres.length ? montres[0] : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg");   /* 07/11 (Blandine) : sans photo ni affiche, une photo en rapport avec la sorte de rendez-vous */
       var visuelS = null;
       if (couvS) {
         if (estVideo(couvS)) visuelS = (typeof hypeMiniatureVideo === "function") ? h("div", { style: { position: "absolute", inset: 0, overflow: "hidden" } }, hypeMiniatureVideo(couvS, { largeur: 640, picto: 16 })) : null;
@@ -1482,11 +1482,12 @@ function hypeRecompense(place, partants) {
       try { window.__agendaFiche = ev.id; } catch (eF) { } setEcran("guilde");
     };
     return h("div", { key: "pr" + ev.id, "data-agenda-carte": "1", style: { position: "relative", borderRadius: 14, border: "1px solid rgba(201,166,107,0.26)", background: "#0B0E11", overflow: "hidden" } },
-      ev.image_url ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "48%", pointerEvents: "none",
+      /* 07/11 (Blandine) : sans affiche, une photo en rapport avec la sorte de rendez-vous */
+      (function () { var imgCarte = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg"); return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "48%", pointerEvents: "none",
           WebkitMaskImage: "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 40%, #000 100%)",
           maskImage: "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 40%, #000 100%)" } },
-        h("img", { src: ev.image_url, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } },
-          style: { width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.78, filter: "saturate(0.8) brightness(0.85)" } })) : null,
+        h("img", { src: imgCarte, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } },
+          style: { width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.78, filter: "saturate(0.8) brightness(0.85)" } })); })(),
       h("div", { role: "button", onClick: ouvrir, style: { position: "relative", display: "flex", alignItems: "center", gap: 14, padding: "12px 12px", paddingInlineStart: 12, minHeight: 92, boxSizing: "border-box", cursor: "pointer" } },
         h("div", { style: { flex: "0 0 58px", height: 66, borderRadius: 10, border: "1px solid rgba(201,166,107,0.50)", background: "rgba(6,7,9,0.55)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" } },
           h("div", { style: { fontFamily: CGA, fontSize: 27, fontWeight: 600, color: "#F3EEE4", lineHeight: 1 } }, okD ? d.getDate() : "\u2014"),
