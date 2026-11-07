@@ -13,7 +13,8 @@
      · les vétérinaires reliés aux chevaux (cheval_professionnels → professionnels, rôle « veterinaire »).
    CE QUI N'EXISTE PAS ENCORE est affiché « Bientôt » ou « À compléter », jamais inventé : détenteur, plan des lieux,
    mouvements, partie contrôles, camion, compta, aides.
-   Textes en français seulement : traduction quand le français sera relu (règle de Blandine du 02/11).
+   Textes : 07/11, traduits dans les 14 langues de l'appli (dictionnaires i18n/gestion-<langue>.json, voir hT plus bas) ;
+   le registre IMPRIMÉ reste en français (document officiel).
    Accès : lien caché 2hype.fr/#mon-ecurie (aucun bouton ajouté ailleurs à cette étape). */
 /* Copie de la feuille de style de la Vidéothèque (hype-video.js, CSS2, recopiée le 04/11/2026) : même design. */
 var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-p2:rgba(16,29,34,.82);--hv-og:rgba(16,26,29,.45);--hv-og-on:linear-gradient(180deg,rgba(16,29,34,.95),rgba(12,22,26,.95));--hv-pan:linear-gradient(180deg,rgba(16,29,34,.96),rgba(12,21,25,.98));--hv-iv:#F3EEE4;--hv-iv2:rgba(243,238,228,.64);--hv-iv3:rgba(243,238,228,.40);--hv-ch:#C9A66B;--hv-ch2:rgba(201,166,107,.55);\nbackground:var(--hv-noir);color:var(--hv-iv);font-family:'Montserrat',system-ui,sans-serif;min-height:100vh;padding-bottom:24px;overflow-x:clip}\n.hv2 *{box-sizing:border-box}\n.hv2 button{font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}\n.hv2-in{max-width:1240px;margin:0 auto;padding:0 18px}\n.hv2-traite{position:relative;overflow:hidden;background:#0B0F0E}\n.hv2-traite img{display:block;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}\n.hv2-traite:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 70px rgba(7,10,8,var(--hv-bords,0))}\n.hv2{position:relative}.hv2-langue{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:14px}\n.hv2-hero{position:relative;padding-top:calc(env(safe-area-inset-top) + 14px)}\n.hv2-marque{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;letter-spacing:.62em;padding-inline-start:.62em;color:var(--hv-iv);position:relative;z-index:2}\n.hv2-photo{position:relative;height:clamp(300px,92vw,430px);margin-top:-6px}\n.hv2-photo img{object-position:var(--hv-pos-tel,center)}\n.hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);mask-composite:intersect}\n.hv2-photo.hv2-traite:after{box-shadow:none}\n.hv2-courbe{position:absolute;left:0;right:0;width:100%;height:70px;pointer-events:none;z-index:2}\n.hv2-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}\n.hv2-hero-retour{position:relative;z-index:4;margin-top:2px}\n.hv2-hero-r .hv2-photo{margin-top:-30px}\n.hv2-courbe.c2{position:relative;display:block;height:64px;margin-top:-64px}\n[dir=rtl] .hv2-courbe{transform:scaleX(-1)}\n.hv2-titre{text-align:end;margin-top:-12px;position:relative;z-index:3}\n.hv2-titre h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0;color:var(--hv-iv);letter-spacing:.005em}\n.hv2-titre p{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(17px,4.6vw,21px);margin:8px 0 0;color:var(--hv-iv);opacity:.88}\n.hv2-intro{position:absolute;inset-inline-end:12%;top:52%;width:58px;height:58px;border-radius:50%;border:1px solid var(--hv-ch);background:rgba(7,10,8,.35);display:flex;align-items:center;justify-content:center;z-index:3}\n.hv2-ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding:4px 0 10px;position:relative}\n.hv2-ligne:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.15),var(--hv-ch) 55%,rgba(201,166,107,.15))}\n.hv2-mes{display:flex;align-items:center;gap:14px;background:none;border:none;padding:10px 6px;min-height:44px;font-size:15px;letter-spacing:.03em;color:var(--hv-iv)}\n.hv2-mes svg,.hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}\n.hv2-mes svg{color:var(--hv-ch)}\n.hv2-loupe{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--hv-iv)}\n.hv2-rech{display:flex;align-items:center;gap:10px;margin-top:14px;padding:4px 6px 4px 14px;padding-inline-start:14px;padding-inline-end:6px;border-radius:14px;border:1px solid var(--hv-ch2);background:var(--hv-p1);box-shadow:0 10px 28px -16px rgba(0,0,0,.9)}\n.hv2-rech svg{width:18px;height:18px;stroke:var(--hv-ch);fill:none;stroke-width:1.6;flex:0 0 18px}\n.hv2-rech:focus-within{border-color:var(--hv-ch)}\n.hv2-rech input:focus,.hv2-rech input:focus-visible{outline:none}\n.hv2-rech input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--hv-iv);font-family:inherit;font-size:16px;padding:10px 0}\n.hv2-rech input::placeholder{color:var(--hv-iv3)}\n.hv2-rech input::-webkit-search-cancel-button{display:none}\n.hv2-x{width:40px;height:40px;border:none;background:none;color:var(--hv-iv2);font-size:22px;line-height:1}\n.hv2-onglets{display:flex;gap:8px;overflow-x:auto;margin:22px -18px 0;padding:2px 18px 8px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}\n.hv2-onglets::-webkit-scrollbar{display:none}\n.hv2-og{flex:0 0 auto;scroll-snap-align:start;min-height:46px;padding:9px 17px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);\ncolor:var(--hv-iv);font-size:14px;letter-spacing:.02em;white-space:nowrap;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;transition:border-color .2s,background .2s}\n.hv2-og.on{border-color:var(--hv-ch);background:var(--hv-og-on);box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.35)}\n.hv2-og:disabled{opacity:.42;cursor:default}\n.hv2-o2 .hv2-og{border-radius:999px;padding:9px 20px;background:linear-gradient(180deg,rgba(28,40,44,.62),rgba(7,10,8,.55));border-color:rgba(201,166,107,.22);box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}\n.hv2-o2 .hv2-og.on{background:linear-gradient(180deg,rgba(201,166,107,.30),rgba(201,166,107,.08));border-color:rgba(201,166,107,.85);color:#F7E9CF;box-shadow:0 10px 22px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.08)}\n.hv2-o3 .hv2-og{border-radius:10px 10px 4px 4px;border:none;border-bottom:1px solid rgba(243,238,228,.14);background:linear-gradient(180deg,rgba(243,238,228,.07),rgba(243,238,228,.015));box-shadow:0 10px 20px -14px rgba(0,0,0,.95)}\n.hv2-o3 .hv2-og.on{background:linear-gradient(180deg,rgba(16,29,34,.85),rgba(16,29,34,.35));border-bottom:2px solid #C9A66B;box-shadow:0 12px 24px -12px rgba(0,0,0,.95)}\n.hv2-o4 .hv2-og{border-radius:14px;background:linear-gradient(160deg,rgba(243,238,228,.12),rgba(243,238,228,.025));border-color:rgba(243,238,228,.16);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 22px -14px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07)}\n.hv2-o4 .hv2-og.on{background:linear-gradient(160deg,rgba(243,238,228,.24),rgba(201,166,107,.10));border-color:rgba(243,238,228,.55);box-shadow:0 12px 24px -12px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.14)}\n.hv2-og-court{display:none}\n.hv2-choix{margin-top:22px}\n.hv2-choix-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}\n.hv2-tous{min-height:40px;padding:7px 20px;border-radius:999px;border:1px solid rgba(243,238,228,.18);background:var(--hv-og);color:var(--hv-iv);font-size:14px;box-shadow:0 8px 18px -12px rgba(0,0,0,.95)}\n.hv2-tous.on{border-color:var(--hv-ch)}\n.hv2-choix-rang{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}\n.hv2-choix-plus{margin-top:7px;animation:hv2Deroule .25s ease-out}\n@keyframes hv2Deroule{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}\n.hv2-cg:disabled{opacity:.42}\n.hv2-cg-plus span{color:var(--hv-ch)}.hv2-cg-plus.ouvert{border-color:rgba(201,166,107,.45)}\n.hv2-cg{width:100%;min-width:0;min-height:62px;padding:9px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center}\n.hv2-cg b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:17px;line-height:1.1;color:var(--hv-iv);white-space:nowrap}\n.hv2-cg span{font-size:10px;letter-spacing:.03em;color:var(--hv-iv2);margin-top:4px;white-space:nowrap}\n@media (min-width:700px){.hv2-choix-rang{gap:12px}.hv2-choix-plus{margin-top:12px}.hv2-cg b{font-size:22px}}\n.hv2-serre .hv2-onglets{overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0;gap:5px}\n.hv2-serre .hv2-og{flex:1 1 0;min-width:0;padding:6px 2px;min-height:52px;border-radius:11px}\n.hv2-serre .hv2-og-long,.hv2-serre .hv2-og small{display:none}\n.hv2-serre .hv2-og-court{display:flex;flex-direction:column;align-items:center;line-height:1}\n.hv2-serre .hv2-og-court i{font-style:normal;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--hv-iv2);margin-bottom:4px}\n.hv2-serre .hv2-og-court b{font-family:'Montserrat',sans-serif;font-weight:500;font-size:16px;color:var(--hv-iv);font-variant-numeric:lining-nums}\n.hv2-serre .hv2-og:first-child{flex-grow:1.35}\n.hv2-serre .hv2-og:first-child .hv2-og-court b{font-family:'Montserrat',sans-serif;font-weight:500;font-size:12.5px}\n.hv2-serre .hv2-og:disabled{opacity:.32}\n.hv2-serre .hv2-og.on .hv2-og-court i{color:var(--hv-ch)}\n.hv2-og small{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--hv-iv2);margin-top:3px}\n.hv2-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.4vw,36px);margin:22px 0 14px;color:var(--hv-iv);line-height:1.1}\n.hv2-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}\n.hv2-theme{display:flex;flex-direction:column;text-align:center;padding:0;border-radius:16px;overflow:hidden;border:1px solid rgba(243,238,228,.09);background:var(--hv-p2);box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}\n.hv2-theme .hv2-traite{aspect-ratio:4/3;width:100%}\n.hv2-theme img{object-position:var(--hv-pos,center)}\n.hv2-pan{flex:1;display:flex;flex-direction:column;justify-content:center;padding:11px 8px 13px;background:var(--hv-pan)}\n.hv2-pan b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19px;line-height:1.15;color:var(--hv-iv);overflow-wrap:anywhere}\n.hv2-pan span{display:block;font-size:12px;letter-spacing:.04em;color:var(--hv-iv2);margin-top:4px}\n.hv2-theme:active{transform:scale(.985)}\n@media (max-width:699px){.hv2-theme.seul2{grid-column:1/-1}.hv2-theme.seul2 .hv2-traite{aspect-ratio:21/9}}\n.hv2-theme.large{grid-column:1/-1}.hv2-theme.large .hv2-traite{aspect-ratio:21/9}\n@media (min-width:700px){.hv2-theme.large .hv2-traite{aspect-ratio:3/1}}\n.hv2-retour{display:flex;align-items:center;gap:10px;background:none;border:none;padding:12px 2px;min-height:44px;font-size:14px;color:var(--hv-iv);letter-spacing:.02em}\n.hv2-retour i{font-style:normal;color:var(--hv-ch);font-size:22px;line-height:1}\n[dir=rtl] .hv2-retour i{transform:scaleX(-1)}\n.hv2-sous{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:18px;color:var(--hv-iv2);margin:-6px 0 16px}\n.hv2-liste{border-radius:16px;border:1px solid rgba(243,238,228,.08);background:var(--hv-p1);padding:2px 14px;box-shadow:0 14px 30px -20px rgba(0,0,0,.95)}\n.hv2 .hv-ligne{padding:12px 0}\n.hv2 .hv-ligne h4{color:var(--hv-iv);font-size:14px}\n.hv2 .hv-ligne .hv-meta{color:var(--hv-iv2);font-size:11px}\n.hv2 .hv-ligne .hv-cov{border-color:rgba(243,238,228,.1);width:96px;flex-basis:96px}\n.hv2 .hv-ligne .hv-arc{display:none}\n.hv2 .hv-fav{width:44px;height:44px;font-size:18px;color:var(--hv-iv3)}\n.hv2 .hv-fav.on{color:var(--hv-ch)}\n.hv2-liste>div:last-child{border-bottom:none!important}\n.hv2-vide{text-align:center;padding:26px 10px}\n.hv2-vide p{margin:0;font-size:14px;color:var(--hv-iv2);line-height:1.6}\n.hv2-vide p+p{font-size:12px;color:var(--hv-iv3);margin-top:6px}\n.hv2-mini-ong{display:flex;gap:8px;margin:22px 0 14px}\n.hv2-mini-ong button{min-height:44px;padding:9px 18px;border-radius:12px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);font-size:14px}\n.hv2-mini-ong button.on{border-color:var(--hv-ch);background:var(--hv-og-on)}\n.hv2-pB{--hv-p1:rgba(21,22,22,.84);--hv-p2:rgba(23,24,24,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));--hv-og-on:linear-gradient(180deg,rgba(38,39,39,.95),rgba(24,25,25,.95));--hv-pan:linear-gradient(180deg,rgba(26,27,27,.97),rgba(17,18,18,.98))}\n.hv2-pC{--hv-p1:rgba(12,16,17,.84);--hv-p2:rgba(13,18,19,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));--hv-og-on:linear-gradient(180deg,rgba(16,29,34,.95),rgba(10,17,19,.95));--hv-pan:linear-gradient(180deg,rgba(15,20,21,.97),rgba(9,12,12,.98))}\n.hv2-k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hv-ch);margin:22px 0 10px}\n.hv2-modo{display:block;margin:34px auto 0;background:none;border:none;font-size:11px;letter-spacing:.12em;color:var(--hv-iv3);padding:12px}\n.hv2-vc-ajout{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;border:1px dashed rgba(201,166,107,.5);background:rgba(201,166,107,.05);color:#C9A66B;font-family:inherit;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}\n.hv2-vc-ajout span{font-size:20px;line-height:1;font-weight:400}\n.hv2-vc-form{padding:18px 16px;border-radius:16px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(160deg,rgba(16,26,29,.7),rgba(7,10,8,.7));box-shadow:0 12px 30px rgba(0,0,0,.35)}\n.hv2-vc-form select{appearance:auto}\n.hv2-vc-ok{flex:1;padding:13px;border-radius:12px;border:1px solid rgba(201,166,107,.6);background:rgba(201,166,107,.14);color:#F3EEE4;font-family:inherit;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}\n.hv2-vc-ok:disabled{opacity:.45}\n.hv2-vc-non{padding:13px 16px;border-radius:12px;border:1px solid rgba(243,238,228,.18);background:none;color:rgba(243,238,228,.7);font-family:inherit;font-size:12px;letter-spacing:.1em;text-transform:uppercase}\n.hv2-l-in{padding-top:6px}\n.hv2-l-hero .hv2-titre h1{font-size:clamp(30px,8.4vw,44px);line-height:1.08}\n.hv2-l-hero .hv2-titre p{font-style:normal;font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.03em;color:var(--hv-iv2)}\n.hv2-dC .hv2-l-hero .hv2-titre h1,.hv2-dD .hv2-l-hero .hv2-titre h1,.hv2-dE .hv2-l-hero .hv2-titre h1{font-size:52px}\n.hv2-l-averifier{margin:8px 0 4px;padding:10px 12px;border-radius:10px;border:1px dashed var(--hv-ch2);font-size:12.5px;color:var(--hv-ch)}\n.hv2-l-cours-l{display:block;width:100%;text-align:start;background:none;border:0;padding:6px 0 4px;border-top:1px solid rgba(243,238,228,.07)}\n.hv2-l-cours-l:first-of-type{border-top:0;padding-top:0}\n.hv2-l-sc.seule{grid-column:1/-1;flex-direction:row;align-items:stretch}\n.hv2-l-sc.seule .hv2-l-sc-img{flex:0 0 46%}\n.hv2-l-sc.seule .hv2-l-sc-t{display:flex;align-items:center}\n.hv2-lecteur{position:relative;aspect-ratio:16/9;margin-top:22px;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 18px 40px -22px rgba(0,0,0,.95)}\n.hv2-l2 .hv2-lecteur{margin-left:-18px;margin-right:-18px;border-radius:0}\n.hv2-lecteur iframe,.hv2-lecteur video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}\n.hv2-lect-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#0B0F0E;display:block}\n.hv2-lect-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}\n.hv2-play{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:rgba(7,10,8,.55);border:1px solid rgba(243,238,228,.75);display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}\n.hv2-play svg{width:24px;height:24px;fill:#F3EEE4;margin-left:3px}\n.hv2-play.petit{left:auto;top:auto;right:10px;bottom:10px;margin:0;width:34px;height:34px}.hv2-play.petit svg{width:15px;height:15px;margin-left:2px}\n[dir=rtl] .hv2-play.petit{right:auto;left:10px}\n.hv2-lect-bientot{position:absolute;inset:auto 0 14px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--hv-iv)}\n.hv2-l-courbe{display:block;width:100%;height:30px;margin:6px 0 4px}\n[dir=rtl] .hv2-l-courbe{transform:scaleX(-1)}\n.hv2-l-meta{margin:6px 0 0;font-size:13px;letter-spacing:.03em;color:var(--hv-iv2)}\n.hv2-l-titre{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(32px,8.6vw,46px);line-height:1.08;margin:6px 0 0;color:var(--hv-iv)}\n.hv2-l-resume{margin:10px 0 0;font-size:15px;line-height:1.55;color:var(--hv-iv)}\n.hv2-l-langue{margin:8px 0 0;font-size:13px;font-style:italic;color:var(--hv-iv2)}\n.hv2-l-yt{float:inline-end;margin:8px 0 0 12px;font-size:13px;color:var(--hv-iv2);text-decoration:underline;text-underline-offset:3px}\n.hv2-l-actions{display:grid;grid-template-columns:1.45fr 1fr;gap:12px;margin-top:20px}\n.hv2-l-btn{min-height:50px;display:flex;align-items:center;justify-content:center;gap:12px;border-radius:12px;border:1px solid rgba(243,238,228,.16);background:var(--hv-og);font-size:14.5px;color:var(--hv-iv);box-shadow:0 10px 22px -14px rgba(0,0,0,.95)}\n.hv2-l-btn span{font-size:18px;color:var(--hv-iv)}\n.hv2-l-btn.on{border-color:var(--hv-ch);background:var(--hv-og-on)}.hv2-l-btn.on span{color:var(--hv-ch)}\n.hv2-l-carte{display:block;width:100%;text-align:start;margin-top:16px;padding:16px 18px;border-radius:14px;border:1px solid rgba(243,238,228,.09);background:var(--hv-p1);box-shadow:0 14px 30px -20px rgba(0,0,0,.95)}\n.hv2-l-k{margin:0 0 6px;font-size:13px;font-style:italic;color:var(--hv-ch)}\n.hv2-l-carte b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;line-height:1.15;color:var(--hv-iv)}\n.hv2-l-lien{display:inline-block;margin-top:10px;font-size:14px;color:var(--hv-ch);text-decoration:none}\n.hv2-l-petit{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:var(--hv-iv2)}\n.hv2-l-obs{list-style:none;margin:0;padding:0}\n.hv2-l-obs li{position:relative;padding:7px 0;padding-inline-start:18px;font-size:14px;line-height:1.45;color:var(--hv-iv);border-bottom:1px solid rgba(243,238,228,.06)}\n.hv2-l-obs li:last-child{border-bottom:0}\n.hv2-l-obs li:before{content:'';position:absolute;inset-inline-start:2px;top:15px;width:5px;height:5px;border-radius:50%;background:var(--hv-ch)}\n.hv2-l-suiv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}\n.hv2-l-sc{display:flex;flex-direction:column;padding:0;text-align:start;border-radius:14px;overflow:hidden;border:1px solid rgba(243,238,228,.09);background:var(--hv-p2);box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}\n.hv2-l-sc-img{position:relative;display:block;aspect-ratio:16/10;background:#0B0F0E}\n.hv2-l-sc-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre,none)}\n.hv2-l-sc-t{display:block;padding:11px 13px 13px;font-size:14px;line-height:1.35;color:var(--hv-iv);background:var(--hv-pan);flex:1}\n@media (min-width:700px){.hv2-l2 .hv2-lecteur{margin-left:-32px;margin-right:-32px}.hv2-l-suiv{grid-template-columns:repeat(3,minmax(0,1fr))}}\n@media (min-width:1100px){.hv2-l-in{max-width:960px}.hv2-l2 .hv2-lecteur{margin-left:0;margin-right:0;border-radius:14px}.hv2-l-suiv{grid-template-columns:repeat(4,minmax(0,1fr))}}\n@media (min-width:700px){.hv2-in{padding:0 32px}.hv2-onglets{margin:26px -32px 0;padding:2px 32px 8px}\n.hv2-grille{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.hv2-theme.seul3{grid-column:2}\n.hv2-photo{height:clamp(360px,52vw,460px)}.hv2-photo img{object-position:var(--hv-pos-tab,center)}\n.hv2-titre{margin-top:-16px}.hv2-marque{font-size:22px}}\n@media (min-width:1100px){.hv2-photo img{object-position:var(--hv-pos-ordi,center)}\n.hv2-onglets{overflow:visible;flex-wrap:nowrap;justify-content:flex-start;margin:28px 0 0;padding:2px 0 8px}\n.hv2-grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hv2-theme.seul3{grid-column:auto}\n.hv2-liste{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:36px}.hv2-liste>div{border-bottom:1px solid rgba(243,238,228,.07)!important}\n.hv2-dA .hv2-photo{height:480px;width:100%;max-width:1240px;margin:0 auto;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%)}\n.hv2-dA .hv2-courbe.c2{max-width:1240px;margin:-64px auto 0}.hv2-dA .hv2-hero-retour{margin-bottom:6px}\n.hv2-dA .hv2-titre h1{font-size:68px}\n.hv2-dC .hv2-photo,.hv2-dD .hv2-photo,.hv2-dE .hv2-photo{width:100%;max-width:1240px;margin:0 auto;display:flex;justify-content:center;-webkit-mask-image:none;mask-image:none;background:transparent}\n.hv2-dC .hv2-photo{height:520px}.hv2-dD .hv2-photo{height:440px}.hv2-dE .hv2-photo{height:580px;justify-content:flex-end;padding-inline-end:32px}\n.hv2-dC .hv2-photo img,.hv2-dD .hv2-photo img,.hv2-dE .hv2-photo img{width:auto;max-width:100%;height:100%;object-fit:contain;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 62%,transparent 94%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 62%,transparent 94%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-composite:intersect}\n.hv2-dC .hv2-photo.hv2-traite:after,.hv2-dD .hv2-photo.hv2-traite:after,.hv2-dE .hv2-photo.hv2-traite:after{display:none}\n.hv2-dC .hv2-courbe.c2,.hv2-dD .hv2-courbe.c2,.hv2-dE .hv2-courbe.c2{max-width:1240px;margin:-64px auto 0}\n.hv2-dC .hv2-titre h1,.hv2-dD .hv2-titre h1,.hv2-dE .hv2-titre h1{font-size:68px}\n.hv2-dD .hv2-titre{text-align:center}\n.hv2-dB .hv2-hero{display:grid;grid-template-columns:minmax(0,40fr) minmax(0,60fr);grid-template-rows:auto auto 1fr auto;grid-template-areas:'m m' 'r p' 't p' 'c c';max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;column-gap:24px}\n.hv2-dB .hv2-marque{grid-area:m}.hv2-dB .hv2-hero-retour{grid-area:r;padding:0;margin:26px 0 0;max-width:none}\n.hv2-dB .hv2-photo{grid-area:p;width:100%;height:480px;margin:0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(90deg,transparent 0,#000 30%,#000 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(90deg,transparent 0,#000 30%,#000 100%)}\n[dir=rtl] .hv2-dB .hv2-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(270deg,transparent 0,#000 30%,#000 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 56%,transparent 92%),linear-gradient(270deg,transparent 0,#000 30%,#000 100%)}\n.hv2-dB .hv2-hero>.hv2-in:not(.hv2-hero-retour){grid-area:t;align-self:end;padding:0 0 70px;margin:0;max-width:none;position:relative;z-index:3}\n.hv2-dB .hv2-titre{text-align:start;margin:0}.hv2-dB .hv2-titre h1{font-size:68px}.hv2-dB .hv2-titre p{font-size:22px}\n.hv2-dB .hv2-courbe.c2{grid-area:c;margin:-64px 0 0;max-width:none}}\n.hv2{--hv-filtre-vig:saturate(.82) contrast(1.1) brightness(.86) sepia(.24) hue-rotate(-4deg);--hv-p1:linear-gradient(135deg,rgba(14,22,24,.62),rgba(7,10,8,.94) 62%);--hv-p2:rgba(10,14,14,.9);--hv-og:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018));--hv-og-on:linear-gradient(180deg,rgba(201,166,107,.12),rgba(201,166,107,.03));--hv-pan:linear-gradient(180deg,rgba(12,17,18,.96),rgba(7,10,8,.98))}\n.hv2-rech{background:rgba(7,10,8,.66)}\n.hv2-vide{background:none;border:1px solid rgba(243,238,228,.08);border-radius:14px}\n.hv3-pils{display:flex;gap:10px;overflow-x:auto;margin:22px 0 0;padding:2px 0 8px;scroll-snap-type:x proximity;scrollbar-width:none}\n.hv3-pils::-webkit-scrollbar{display:none}\n.hv3-pil{flex:0 0 auto;scroll-snap-align:start;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(243,238,228,.12);background:var(--hv-og);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -12px rgba(0,0,0,.95);color:var(--hv-iv);font-family:inherit;font-size:15px;white-space:nowrap}\n.hv3-pil.on{border-color:var(--hv-ch);background:var(--hv-og-on);box-shadow:0 8px 22px -12px rgba(0,0,0,.95),inset 0 0 0 .5px rgba(201,166,107,.4)}\n.hv3-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.6vw,34px);line-height:1.05;color:var(--hv-iv);margin:36px 0 24px;padding-inline-start:16px;border-inline-start:2px solid var(--hv-ch)}\n.hv3-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}\n.hv3-tete .hv3-h2{margin-bottom:24px}\n.hv3-voir{flex:0 0 auto;background:none;border:none;color:var(--hv-iv);font-family:inherit;font-size:14px;padding:10px 0 18px;white-space:nowrap}\n.hv3-voir i{font-style:normal;font-size:18px}\n.hv3-cartes{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}\n.hv3-carte{position:relative;display:flex;flex-wrap:wrap;align-items:stretch;min-height:0;border-radius:14px;border:1px solid rgba(243,238,228,.09);background:var(--hv-p1);overflow:hidden;box-shadow:0 12px 26px -20px rgba(0,0,0,.95)}\n.hv3-vig{position:relative;flex:0 0 35%;max-width:240px;aspect-ratio:16/10.4;min-height:0;padding:0;border:none;background:#0B0F0E;overflow:hidden;cursor:pointer}\n.hv3-vig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre-vig)}\n.hv3-vig:after,.hv3-photo-img:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 95% at 50% 42%,rgba(7,10,8,0) 52%,rgba(7,10,8,.62) 100%),linear-gradient(180deg,rgba(214,150,74,.10),rgba(7,10,8,.18))}\n.hv3-play,.hv3-duree,.hv3-lock{z-index:2}\n.hv3-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:rgba(7,10,8,.42);border:1px solid rgba(243,238,228,.75);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center}\n.hv3-play svg{width:18px;height:18px;fill:#F3EEE4;margin-inline-start:2px}\n.hv3-play.petit{width:32px;height:32px}.hv3-play.petit svg{width:14px;height:14px}\n.hv3-duree{position:absolute;inset-inline-end:6px;bottom:6px;padding:2px 7px;border-radius:6px;background:rgba(7,10,8,.78);color:#F3EEE4;font-size:11px;letter-spacing:.02em}\n.hv3-lock{position:absolute;top:6px;inset-inline-start:6px;color:#C9A66B;font-size:14px}\n.hv3-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:9px 12px;padding-inline-end:38px;background:none;border:none;color:inherit;text-align:start;font-family:inherit;cursor:pointer}\n.hv3-info h4{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19.5px;line-height:1.15;color:var(--hv-iv);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}\n.hv3-cours{font-size:12px;color:var(--hv-iv2);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}\n.hv3-meta{display:flex;flex-wrap:nowrap;min-width:0;align-items:center;gap:6px 9px;margin-top:4px;font-size:12px;color:var(--hv-iv2)}\n.hv3-pill{font-style:normal;border:1px solid rgba(201,166,107,.75);color:var(--hv-ch);border-radius:999px;padding:2px 10px;font-size:11.5px;line-height:1.4;white-space:nowrap}\n.hv3-pill+.hv3-qui{padding-inline-start:9px;border-inline-start:1px solid rgba(243,238,228,.25)}\n.hv3-qui{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n.hv3-prog{display:flex;align-items:center;gap:10px;margin-top:5px}\n.hv3-barre{flex:1;height:3px;border-radius:2px;background:rgba(243,238,228,.12);overflow:hidden}\n.hv3-barre span{display:block;height:100%;background:linear-gradient(90deg,#B8955C,#E2C48E)}\n.hv3-etat{font-size:12px;color:var(--hv-iv);white-space:nowrap}\n.hv3-fav{position:absolute;top:2px;inset-inline-end:2px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer}\n.hv3-fav svg{width:22px;height:22px;fill:none;stroke:rgba(243,238,228,.7);stroke-width:1.4;stroke-linejoin:round}\n.hv3-fav.on svg{fill:var(--hv-ch);stroke:var(--hv-ch)}\n.hv3-actions{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px 12px;border-top:1px solid rgba(243,238,228,.06)}\n.hv3-actions button{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.5);background:none;color:var(--hv-ch);font-family:inherit;font-size:12.5px}\n.hv3-actions button.gris{border-color:rgba(243,238,228,.2);color:var(--hv-iv2)}\n.hv3-vc{margin-top:10px;padding-top:6px;border-top:1px solid rgba(243,238,228,.07)}\n.hv3-rangee{display:grid;grid-auto-flow:column;grid-auto-columns:31.5%;gap:10px;overflow-x:auto;margin:0;padding:0 0 6px;scroll-snap-type:x proximity;scrollbar-width:none}\n.hv3-rangee::-webkit-scrollbar{display:none}\n.hv3-photo{scroll-snap-align:start;text-align:start;background:none;border:none;padding:0;color:inherit;font-family:inherit;min-width:0;cursor:pointer}\n.hv3-photo-img{position:relative;display:block;aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.08);background:#0B0F0E}\n.hv3-photo-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre-vig)}\n.hv3-photo b{display:block;margin-top:8px;font-weight:500;font-size:13px;line-height:1.3;color:var(--hv-iv);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}\n.hv3-photo small{display:block;margin-top:3px;font-size:11px;color:var(--hv-iv2)}\n.hv3-ajout-zone{display:flex;justify-content:center;margin:40px 0 8px}\n.hv3-plus-zone{display:flex;justify-content:center;margin:14px 0 0}\n.hv3-plus{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid rgba(243,238,228,.16);background:var(--hv-og);color:var(--hv-iv);font-family:inherit;font-size:14px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}\n.hv3-plus i{font-style:normal;color:var(--hv-ch);font-size:16px}\n.hv3-ajout{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 32px;border-radius:999px;border:1px solid var(--hv-ch);background:rgba(7,10,8,.55);color:var(--hv-ch);font-family:inherit;font-size:15.5px;font-weight:500;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 24px -16px rgba(0,0,0,.95)}\n.hv3-ajout span{font-size:24px;font-weight:300;line-height:1}\n.hv3-ajout-zone:has(.hv3-ban){display:block}\n.hv3-ban{position:relative;display:block;width:100%;min-height:400px;padding:0;border:1px solid rgba(201,166,107,.28);border-radius:20px;overflow:hidden;background:#070A08;color:#F3EEE4;font-family:inherit;text-align:start;cursor:pointer;box-shadow:0 18px 40px -24px rgba(0,0,0,.95)}\n.hv3-ban-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--hv-filtre-vig,none);transform:scale(1.02);transition:transform .6s ease}\n.hv3-ban:active .hv3-ban-img{transform:scale(1.05)}\n.hv3-ban-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0) 48%,rgba(7,10,8,.62) 68%,rgba(7,10,8,.96) 100%)}\n.hv3-ban-txt{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:400px;box-sizing:border-box;padding:22px 20px 20px}\n.hv3-ban-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:500;line-height:1.1;color:#F3EEE4}\n.hv3-ban-s{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16.5px;line-height:1.35;color:rgba(243,238,228,.82);max-width:34em}\n.hv3-ban-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:8px;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid var(--hv-ch);background:rgba(7,10,8,.55);color:var(--hv-ch);font-size:15px;font-weight:500;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}\n.hv3-ban-cta i{font-style:normal;font-size:22px;font-weight:300;line-height:1}\n@media (min-width:900px){.hv3-ban,.hv3-ban-txt{min-height:340px}.hv3-ban-txt{padding:30px 32px}.hv3-ban-t{font-size:32px}}\n.hv3-voile{position:fixed;inset:0;z-index:2147483600;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);animation:hv3Fondu .2s ease-out}\n.hv3-feuille{position:fixed;left:0;right:0;bottom:0;z-index:2147483601;max-width:640px;margin:0 auto;max-height:88vh;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:22px 22px 0 0;border-top:1px solid rgba(201,166,107,.35);background:linear-gradient(180deg,#0D1315,#070A08 40%);padding:8px 18px calc(env(safe-area-inset-bottom) + 24px);box-shadow:0 -20px 50px rgba(0,0,0,.7);animation:hv3Monte .28s cubic-bezier(.2,.8,.2,1)}\n.hv3-poignee{display:block;width:44px;height:4px;border-radius:2px;background:rgba(243,238,228,.25);margin:4px auto 14px}\n.hv3-feuille .hv2-vc-form{border:none;background:none;box-shadow:none;padding:0}\n.hv3-feuille input:focus,.hv3-feuille textarea:focus,.hv3-feuille select:focus{outline:none;border-color:rgba(201,166,107,.75)!important;box-shadow:0 0 0 3px rgba(201,166,107,.18)}\n@keyframes hv3Monte{from{transform:translateY(100%)}to{transform:none}}\n@keyframes hv3Fondu{from{opacity:0}to{opacity:1}}\n.hv2-mini-ong button{border-radius:999px;background:var(--hv-og);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 20px -12px rgba(0,0,0,.95);color:var(--hv-iv);font-family:inherit}\n.hv2-mini-ong button.on{border-color:var(--hv-ch);background:var(--hv-og-on)}\n.hv3-reserve>div{padding:12px 14px!important;border:1px solid rgba(243,238,228,.09)!important;border-radius:14px;background:var(--hv-p1)}\n.hv2-lect-img,.hv2-l-suiv img{filter:var(--hv-filtre-vig)}\n@media (min-width:700px){.hv3-pils{margin-top:26px}.hv3-rangee{grid-auto-columns:31%}.hv3-vig{flex-basis:34%}.hv3-info h4{font-size:23px}}\n@media (min-width:980px){.hv3-cartes{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.hv3-rangee{grid-auto-columns:23%}}\n.hv3-hm{position:relative}\n.hv3-hm-photo{position:relative;height:clamp(300px,74vw,460px);overflow:hidden}\n.hv3-hm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--hv-pos-tel,center);filter:var(--hv-filtre,none)}\n.hv3-hm-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 45%,rgba(7,10,8,.78) 78%,#070A08 100%),linear-gradient(90deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 60%)}\n[dir=rtl] .hv3-hm-photo:after{background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 22%,rgba(7,10,8,0) 45%,rgba(7,10,8,.78) 78%,#070A08 100%),linear-gradient(270deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 60%)}\n.hv3-rond{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-start:16px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.28);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:0}\n.hv3-rond svg{width:20px;height:20px;fill:none;stroke:#F3EEE4;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}\n[dir=rtl] .hv3-rond svg{transform:scaleX(-1)}\n.hv3-hm .hv2-langue{z-index:6}\n.hv3-hm-txt{position:absolute;z-index:4;left:0;right:0;bottom:clamp(42px,11vw,64px);max-width:1240px;margin:0 auto;padding:0 24px;text-align:start}\n.hv3-hm-k{display:block;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--hv-ch);font-weight:500;margin-bottom:6px}\n.hv3-hm-txt h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(46px,13vw,72px);line-height:.98;color:var(--hv-iv)}\n.hv3-hm-txt p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(17px,4.6vw,22px);color:var(--hv-iv);opacity:.9}\n.hv3-hm-courbe{position:absolute;z-index:3;left:0;bottom:-1px;width:100%;height:clamp(34px,9vw,60px);display:block}\n@media (min-width:700px){.hv3-hm-photo{height:clamp(380px,48vw,520px)}.hv3-hm-photo img{object-position:var(--hv-pos-tab,center)}.hv3-hm-txt{padding:0 32px}}\n@media (min-width:1100px){.hv3-hm-photo img{object-position:var(--hv-pos-ordi,center)}}\n.hv3-pils{gap:12px;padding:4px 2px 12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}\n.hv3-pil{padding:0 22px;min-height:46px;border-color:rgba(243,238,228,.10);background:linear-gradient(180deg,rgba(16,26,29,.72),rgba(7,10,8,.72));box-shadow:0 10px 24px -14px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04)}\n.hv3-pil.on{border-color:var(--hv-ch);background:linear-gradient(180deg,rgba(16,26,29,.85),rgba(7,10,8,.85));box-shadow:0 10px 24px -14px rgba(0,0,0,.9),inset 0 0 0 .5px rgba(201,166,107,.5)}\n.hv3-cartes{gap:16px}\n.hv3-carte{background:linear-gradient(135deg,rgba(16,26,29,.42),rgba(7,10,8,.96) 58%)}\n.hv3-vig{flex:0 0 44%;max-width:300px;aspect-ratio:16/9}\n.hv3-info h4{font-size:18px}\n.hv3-info{padding:8px 11px;padding-inline-end:36px}\n.hv3-cours{font-size:11.5px}.hv3-meta{font-size:11.5px}.hv3-pill{font-size:11px;padding:1px 9px}\n.hv3-page-bas{height:calc(env(safe-area-inset-bottom) + 96px)}\n.hv2-cg{min-height:66px;border-radius:14px;border:1px solid rgba(243,238,228,.10);background:linear-gradient(180deg,rgba(16,26,29,.70),rgba(7,10,8,.78));box-shadow:0 10px 24px -14px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04)}\n.hv2-cg.on{border-color:var(--hv-ch);background:linear-gradient(180deg,rgba(16,26,29,.9),rgba(7,10,8,.9));box-shadow:0 10px 24px -14px rgba(0,0,0,.9),inset 0 0 0 .5px rgba(201,166,107,.5)}\n.hv2-cg b{font-size:18px}.hv2-cg span{font-size:10.5px;color:rgba(243,238,228,.72)}\n.hv2-choix-rang{gap:9px}\n.hv2-choix-defile{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 27px) / 4);gap:9px;overflow-x:auto;scroll-snap-type:none;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0 10px}\n.hv2-choix-defile::-webkit-scrollbar{display:none}\n.hv2-choix-defile .hv2-cg{scroll-snap-align:start}\n@media (min-width:700px){.hv2-choix-defile{grid-auto-columns:calc((100% - 72px) / 7);gap:12px}}\n.hv2-tous{background:linear-gradient(180deg,rgba(16,26,29,.70),rgba(7,10,8,.78))}\n.hv2-theme{background:#070A08;border-color:rgba(243,238,228,.08)}\n.hv2-theme .hv2-traite{position:relative}\n.hv2-theme .hv2-traite:before{content:'';position:absolute;left:0;right:0;bottom:0;height:42%;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,10,8,0),#070A08)}\n.hv2-pan{background:#070A08;padding:4px 10px 15px;min-height:64px;justify-content:flex-start}\n.hv2-pan b{font-size:20px;font-weight:500;letter-spacing:.005em}\n.hv2-pan span{font-size:12px;color:rgba(243,238,228,.74);margin-top:5px}\n@media (min-width:700px){.hv3-vig{flex-basis:40%}.hv3-info h4{font-size:21px}}\n@media (min-width:980px){.hv3-vig{flex-basis:42%}}";
@@ -58,6 +59,77 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   var RACINE = "hv2 hv2-dE hv2-o1 hv2-pA hv2-l1 hg";
   var FILTRE = { "--hv-filtre": "saturate(.92) contrast(1.05) brightness(.95) sepia(.07)", "--hv-bords": .5 };
+
+  /* ───────────── 07/11 TRADUCTIONS (Blandine : « Vas y », traductions de tout l'espace Mon écurie) ─────────────
+     Le code garde ses textes en français. Au moment de l'affichage, hT (qui remplace React.createElement) traduit
+     les textes visibles (enfants texte, placeholder, title, aria-label, alt) avec le dictionnaire de la langue
+     choisie : i18n/gestion-<langue>.json, chargé seulement si la langue n'est pas le français. Les valeurs
+     enregistrées en base (motifs, organismes…) ne passent jamais par là : elles restent en français.
+     Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
+     Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
+     s'il est connu). */
+  var I18N_V = 1;
+  var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
+  function locale() { return LOCALES[LG] || "fr-FR"; }
+  function chargerDico(lg) {
+    if (CHARGE[lg]) return CHARGE[lg];
+    CHARGE[lg] = fetch("i18n/gestion-" + lg + ".json?v=" + I18N_V).then(function (r) { return r.ok ? r.json() : {}; }).then(function (o) {
+      DICO[lg] = o || {};
+      MODELES[lg] = Object.keys(DICO[lg]).filter(function (k) { return k.indexOf("{") >= 0; }).sort(function (a, b) { return b.length - a.length; }).map(function (k) {
+        var noms = [];
+        var re = k.replace(/[.*+?^$()|[\]\\]/g, "\\$&").replace(/\\?\{(n|x)(\d?)\\?\}|\{(n|x)(\d?)\}/g, function (_, a, b, c, e) { noms.push((a || c) + ((b || e) || "")); return (a || c) === "n" ? "(-?\\d+(?:[.,]\\d+)?)" : "((?![·—\\s]).+?)"; });
+        return { re: new RegExp("^" + re + "$"), noms: noms, val: DICO[lg][k] };
+      });
+    }).catch(function () { DICO[lg] = {}; MODELES[lg] = []; });
+    return CHARGE[lg];
+  }
+  function trMorceau(x) {
+    var d = DICO[LG] || {};
+    if (d[x] != null && x.indexOf("{") < 0) return d[x];
+    if (/, | · | — /.test(x)) return x.split(/(, | · | — )/).map(function (y) { return d[y] != null ? d[y] : trTexte(y); }).join("");
+    return trTexte(x);
+  }
+  function trTexte(s) {
+    if (LG === "fr" || typeof s !== "string" || !DICO[LG]) return s;
+    var m = s.match(/^(\s*)([\s\S]*?)(\s*)$/), c = m[2];
+    if (!c) return s;
+    var d = DICO[LG];
+    if (d[c] != null) return m[1] + d[c] + m[3];
+    var ms = MODELES[LG] || [];
+    for (var i = 0; i < ms.length; i++) {
+      var r = c.match(ms[i].re);
+      if (r) {
+        var v = {}; ms[i].noms.forEach(function (n, k) { v[n] = n.charAt(0) === "x" ? trMorceau(r[k + 1]) : r[k + 1]; });
+        return m[1] + ms[i].val.replace(/\{([nx]\d?)\}/g, function (_, n) { return v[n] != null ? v[n] : ""; }) + m[3];
+      }
+    }
+    if (/ · | — /.test(c)) { var t = c.split(/( · | — )/).map(function (y) { return d[y] != null ? d[y] : (/^( · | — )$/.test(y) ? y : trTexte(y)); }).join(""); if (t !== c) return m[1] + t + m[3]; }
+    return s;
+  }
+  function trEnfant(e) { return typeof e === "string" ? trTexte(e) : (Array.isArray(e) ? e.map(trEnfant) : e); }
+  var PROPS_TXT = ["placeholder", "title", "aria-label", "alt"];
+  function hT(type, props) {
+    var a = Array.prototype.slice.call(arguments);
+    if (LG !== "fr" && DICO[LG] && type !== "style") {
+      if (props) { var cp = null; PROPS_TXT.forEach(function (k) { if (typeof props[k] === "string") { cp = cp || Object.assign({}, props); cp[k] = trTexte(props[k]); } }); if (cp) a[1] = cp; }
+      for (var i = 2; i < a.length; i++) a[i] = trEnfant(a[i]);
+    }
+    return React.createElement.apply(null, a);
+  }
+  var hF = React.createElement;
+  function useLangue() {
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var lg = (app && app.langue) || "fr";
+    LG = lg;
+    var _f = React.useState(0), force = _f[1];
+    React.useEffect(function () { if (lg !== "fr" && !DICO[lg]) chargerDico(lg).then(function () { force(function (n) { return n + 1; }); }); }, [lg]);
+    return lg;
+  }
+  function moisAn(mo, an) {
+    if (LG === "fr") return MOIS[mo - 1] + " " + an;
+    try { return new Intl.DateTimeFormat(locale(), { month: "long", year: "numeric" }).format(new Date(+an, mo - 1, 1)); } catch (e) { return MOIS[mo - 1] + " " + an; }
+  }
 
   /* ───────────── petits morceaux de dessin (mêmes balises que la Vidéothèque) ───────────── */
   function courbe(h, cls, d) {
@@ -187,7 +259,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   function photoCheval(d, id) { var c = (d.chevaux || []).filter(function (x) { return x.id === id; })[0]; return (c && c.photo_url) ? { img: c.photo_url, pos: "50% 35%" } : PHOTOS.chevaux; }
   function nomCheval(d, id) { var c = (d.chevaux || []).filter(function (x) { return x.id === id; })[0]; return c ? (c.nom || "") : ""; }
   var TYPES = { vaccin: "Vaccin", vermifuge: "Vermifuge", ferrure: "Ferrure", parage: "Parage", veterinaire: "Vétérinaire", dentiste: "Dentiste", osteopathe: "Ostéopathe", traitement: "Traitement" };
-  function dateCourte(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var dd = new Date(+m[1], +m[2] - 1, +m[3]); var o = { day: "numeric", month: "short" }; if (dd.getFullYear() !== new Date().getFullYear()) o.year = "numeric"; return new Intl.DateTimeFormat("fr-FR", o).format(dd); } catch (e) { return m[3] + "/" + m[2]; } }
+  function dateCourte(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var dd = new Date(+m[1], +m[2] - 1, +m[3]); var o = { day: "numeric", month: "short" }; if (dd.getFullYear() !== new Date().getFullYear()) o.year = "numeric"; return new Intl.DateTimeFormat(locale(), o).format(dd); } catch (e) { return m[3] + "/" + m[2]; } }
 
   function etatRegistre(d) {
     var nCh = (d.chevaux || []).length;
@@ -240,7 +312,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var SVG_LOUPE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" })); };
   var SVG_IMPRIMER = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 9V3.5h10V9" }), h("path", { d: "M7 17.5H4.5v-8h15v8H17" }), h("path", { d: "M7 14h10v6.5H7z" })); };
   var SVG_PLUS = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" })); };
-  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}";
+  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}[dir=rtl] .hg-ret i{display:inline-block;transform:scaleX(-1)}";
   function ligneEcurie(h, c, icones) {
     var plusieurs = c.clubs && c.clubs.length > 1;
     return h("div", { className: "hv2-ligne" },
@@ -275,7 +347,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   /* ═════════════════════════ PAGE « MON ÉCURIE » ═════════════════════════ */
   function EcranMonEcurie() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
@@ -316,7 +388,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.accueil, titre: "Mon écurie", sous: c.club ? c.club : "Tout en règle. Pars tranquille." }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -328,7 +400,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   /* ═════════════════════════ PAGE « LE REGISTRE » ═════════════════════════ */
   function EcranRegistre() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
@@ -364,7 +436,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.registre, titre: "Le registre", sous: "Ton registre d'élevage, toujours prêt.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -405,7 +477,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   ].join("\n");
 
   function EcranDetenteur() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () {
@@ -472,7 +544,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "La personne qui s'occupe du lieu où vivent les chevaux doit se déclarer à l'IFCE. Ces informations ouvrent ton registre d'élevage."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.detenteur, titre: "Le détenteur", sous: "Parties I et III de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -493,7 +565,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     { k: "destination", lab: "Parti vers", ex: "Adresse de destination" }
   ];
   function EcranRegistreChevaux() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () {
@@ -582,7 +654,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.chevaux, titre: "Les chevaux", sous: "Partie IV de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -606,7 +678,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     return _pseudos;
   }
   function quandLong(iso) {
-    try { var d = new Date(iso); if (isNaN(d)) return ""; return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(d).replace(":", " h "); } catch (e) { return ""; }
+    try { var d = new Date(iso); if (isNaN(d)) return ""; var t = new Intl.DateTimeFormat(locale(), { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(d); return LG === "fr" ? t.replace(":", " h ") : t; } catch (e) { return ""; }
   }
   async function confirmerSoin(id, ok) {
     var r = await supa.rpc("hype_confirmer_soin", { p_soin: id, p_ok: ok });
@@ -617,7 +689,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   /* Bloc affiché dans le détail d'un soin (FeuilleSoin, index.html) */
   function TraceSoin(props) {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var s = props.soin || {};
     var actif = ("confirme_le" in s) || ("refuse" in s);
     var _p = React.useState({}); var ps = _p[0], setPs = _p[1];
@@ -661,7 +733,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   /* Page « À confirmer » : tous les soins non confirmés des chevaux de l'écurie */
   function EcranSoinsAConfirmer() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () { injecterCss(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
@@ -696,7 +768,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })),
       h("div", { className: "hg-sous" }, "Ces soins ont été ajoutés par des cavaliers. Ils comptent déjà partout ; confirme-les après avoir vérifié avec le propriétaire. Leur auteur reste noté."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.soins, titre: "À confirmer", sous: "Les soins ajoutés par les cavaliers.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -711,7 +783,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var TYPES_DOCS = { ordonnance: "Ordonnance", compte_rendu: "Compte rendu", certificat_vaccin: "Certificat de vaccination", carnet_vaccin: "Carnet de vaccination", protocole: "Protocole", facture: "Facture", autre: "Document" };
   var MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
   function EcranRegistreSoins() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () {
@@ -770,7 +842,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       }).sort(function (a, b) { return b.date.localeCompare(a.date); });
       var groupes = [], cle = null;
       vis.forEach(function (it) { var m = it.date.slice(0, 7); if (m !== cle) { cle = m; groupes.push({ m: m, l: [] }); } groupes[groupes.length - 1].l.push(it); });
-      function titreMois(m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; }
+      function titreMois(m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? moisAn(+p[1], p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; }
       function selecteur(val, set, options, lab) {
         return h("label", { style: { display: "flex", flexDirection: "column", gap: 5, flex: 1, minWidth: 0 } },
           h("span", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(243,238,228,.6)", fontFamily: M } }, lab),
@@ -809,7 +881,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Les ordonnances et factures se gardent 5 ans avec le registre."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.soins, titre: "Les soins", sous: "Partie VI de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -823,7 +895,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Ajout, modification et suppression : modératrices et gestionnaires de l'écurie seulement (la base revérifie). */
   var MOTIFS = ["Concours", "Stage", "Randonnée", "Vétérinaire", "Clinique", "Saillie", "Autre"];
   function EcranRegistreMouvements() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     React.useEffect(function () {
@@ -950,7 +1022,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         .sort(function (a, b) { return String(b.date_sortie || "").localeCompare(String(a.date_sortie || "")); });
       var groupesMv = [], cleMv = null;
       vis2.forEach(function (l) { var m = String(l.date_sortie || "").slice(0, 7); if (m !== cleMv) { cleMv = m; groupesMv.push({ m: m, l: [] }); } groupesMv[groupesMv.length - 1].l.push(l); });
-      var titreMoisMv = function (m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; };
+      var titreMoisMv = function (m) { var p = m.split("-"); return (p.length === 2 && +p[1]) ? moisAn(+p[1], p[0]).replace(/^./, function (x) { return x.toUpperCase(); }) : "Sans date"; };
       var carteMv = function (l) {
         var dates = dateCourte(l.date_sortie) + (l.date_retour && l.date_retour !== l.date_sortie ? " → " + dateCourte(l.date_retour) : "");
         var quoi = [l.motif, l.destination].filter(Boolean).join(" · ");
@@ -976,7 +1048,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.mouvements, titre: "Mouvements temporaires", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -996,7 +1068,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
   function SoinGroupe(props) {
-    var h = React.createElement, M = "'Montserrat',sans-serif";
+    var h = hT, M = "'Montserrat',sans-serif"; useLangue();
     var d = props.donnees;
     var chevaux = (d.chevaux || []).filter(function (x) { var r = (d.regch || {})[String(x.id)]; return !(r && r.date_sortie); })
       .slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
@@ -1094,7 +1166,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   /* Documents d'une partie du registre (plan des lieux, pages de contrôle signées). La ligne est créée AVANT
      l'envoi du fichier : la règle de stockage retrouve l'écurie grâce à elle. Si l'envoi échoue, on efface la ligne. */
   function DocsRegistre(props) {
-    var h = React.createElement, d = props.donnees, type = props.type;
+    var h = hT, d = props.donnees, type = props.type;
     var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
     var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
@@ -1158,7 +1230,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
 
   /* ───────────── PAGE « LE PLAN DES LIEUX » (partie II) ───────────── */
   function EcranRegistrePlan() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1198,7 +1270,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
       h("div", { className: "hg-sous" }, "Le plan montre tous les bâtiments et toutes les pâtures où vivent les chevaux, même de temps en temps. Un plan dessiné, un plan du cadastre ou une vue satellite conviennent."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Partie II de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1206,7 +1278,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   /* ───────────── PAGE « LES CONTRÔLES » (partie VII) ───────────── */
   var ORGANISMES = ["DDPP", "IFCE", "Vétérinaire sanitaire", "Vétérinaire traitant", "Autre"];
   function EcranRegistreControles() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1290,7 +1362,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h(DocsRegistre, { donnees: d, club: c.club, type: "controle", titreDefaut: "Page de contrôle signée", photo: PHOTOS.controles, bouton: "+ Ajouter une page signée", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
       h("div", { className: "hg-sous" }, "Cette partie est remplie et signée par l'agent de la DDPP ou de l'IFCE, ou visée par ton vétérinaire. Imprime le registre : les pages à signer, numérotées, sont à la fin. Note ensuite la visite ici et ajoute la photo de la page signée."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.controles, titre: "Les contrôles", sous: "Partie VII de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1319,7 +1391,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     "#hg-zone-impr .hgi{border-radius:0;padding:0;margin:0;overflow:visible}#hg-zone-impr .hgi-saut{break-before:page;page-break-before:always}#hg-zone-impr tr{break-inside:avoid}}"
   ].join("\n");
   function EcranRegistreImprimer() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1367,45 +1439,45 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var dansAnnee = function (iso) { return annee === "tout" || String(iso || "").slice(0, 4) === annee; };
       var annees = []; (d.soins || []).concat(d.mouvements || []).forEach(function (x) { var a = String(x.date_intervention || x.date_sortie || "").slice(0, 4); if (a && annees.indexOf(a) < 0) annees.push(a); }); annees.sort().reverse();
       var j = function (iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? (m[3] + "/" + m[2] + "/" + m[1]) : ""; };
-      var vide = function (t) { return h("div", { className: "hgi-vide" }, t); };
-      var ch = function (lab, v) { return [h("b", { key: lab + "l" }, lab), h("span", { key: lab + "v" }, v || "—")]; };
+      var vide = function (t) { return hF("div", { className: "hgi-vide" }, t); };
+      var ch = function (lab, v) { return [hF("b", { key: lab + "l" }, lab), hF("span", { key: lab + "v" }, v || "—")]; };
       var docsSoin = {}; (d.docs || []).forEach(function (x) { if (x.soin_id) docsSoin[x.soin_id] = true; });
       var chevaux = (d.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
       var mvts = (d.mouvements || []).filter(function (l) { return dansAnnee(l.date_sortie); }).sort(function (a, b) { return String(a.date_sortie).localeCompare(String(b.date_sortie)); });
       var soins = (d.soins || []).filter(function (s) { return !s.refuse && dansAnnee(s.date_intervention); }).sort(function (a, b) { return String(a.date_intervention || "").localeCompare(String(b.date_intervention || "")); });
       var plans = (d.docsReg || []).filter(function (x) { return x.type === "plan"; });
       var NB_PAGES_VII = 2;
-      var doc = h("div", { className: "hgi", ref: refDoc },
-        h("h1", null, "Registre d'élevage et de détention d'équidés"),
-        h("div", null, (f.structure || c.club) + (f.adresse_lieu ? " — " + f.adresse_lieu : "")),
-        h("div", { style: { color: "#555", marginTop: 2 } }, "Édité le " + j(isoAuj()) + (annee !== "tout" ? " · parties V et VI : année " + annee : "") + " · à conserver 5 ans"),
-        h("div", { className: "hgi-part" }, h("h2", null, "I. Informations générales — le détenteur"),
-          h("div", { className: "hgi-ch" }, ch("Structure", f.structure || c.club), ch("Responsable du lieu", f.responsable), ch("Adresse du lieu de détention", f.adresse_lieu), ch("N° de détenteur SIRE", f.numero_detenteur), ch("SIRET", f.siret), ch("Code APE", f.code_ape))),
-        h("div", { className: "hgi-part" }, h("h2", null, "II. Caractéristiques du lieu de détention"),
-          f.description_lieu ? h("div", { style: { whiteSpace: "pre-wrap" } }, f.description_lieu) : vide("Description à compléter."),
-          plans.length ? plans.map(function (x) { return urls[x.id] ? h("img", { key: x.id, src: urls[x.id], alt: x.titre || "Plan" }) : h("div", { key: x.id }, "Plan joint : " + (x.titre || "document") + (/\.pdf$/i.test(x.chemin || "") ? " (PDF, à imprimer à part)" : "")); }) : vide("Plan des lieux à joindre.")),
-        h("div", { className: "hgi-part" }, h("h2", null, "III. Encadrement sanitaire et médical"),
-          h("div", { className: "hgi-ch" }, ch("Vétérinaire traitant", f.veto_traitant), ch("Vétérinaire sanitaire", f.veto_sanitaire))),
-        h("div", { className: "hgi-part hgi-saut" }, h("h2", null, "IV. Présence et caractéristiques des animaux"),
-          h("table", null, h("thead", null, h("tr", null, ["Nom", "N° SIRE", "Transpondeur", "Propriétaire", "Entrée", "Provenance", "Sortie", "Motif / destination"].map(function (t) { return h("th", { key: t }, t); }))),
-            h("tbody", null, chevaux.map(function (x) { var r = (d.regch || {})[String(x.id)] || {};
-              return h("tr", { key: x.id }, h("td", null, x.nom || ""), h("td", null, sireReg(d, x)), h("td", null, r.puce || ""), h("td", null, r.proprietaire || ""), h("td", null, j(r.date_entree)), h("td", null, r.provenance || ""), h("td", null, j(r.date_sortie)), h("td", null, [r.motif_sortie, r.destination].filter(Boolean).join(" — ")));
+      var doc = hF("div", { className: "hgi", ref: refDoc },
+        hF("h1", null, "Registre d'élevage et de détention d'équidés"),
+        hF("div", null, (f.structure || c.club) + (f.adresse_lieu ? " — " + f.adresse_lieu : "")),
+        hF("div", { style: { color: "#555", marginTop: 2 } }, "Édité le " + j(isoAuj()) + (annee !== "tout" ? " · parties V et VI : année " + annee : "") + " · à conserver 5 ans"),
+        hF("div", { className: "hgi-part" }, hF("h2", null, "I. Informations générales — le détenteur"),
+          hF("div", { className: "hgi-ch" }, ch("Structure", f.structure || c.club), ch("Responsable du lieu", f.responsable), ch("Adresse du lieu de détention", f.adresse_lieu), ch("N° de détenteur SIRE", f.numero_detenteur), ch("SIRET", f.siret), ch("Code APE", f.code_ape))),
+        hF("div", { className: "hgi-part" }, hF("h2", null, "II. Caractéristiques du lieu de détention"),
+          f.description_lieu ? hF("div", { style: { whiteSpace: "pre-wrap" } }, f.description_lieu) : vide("Description à compléter."),
+          plans.length ? plans.map(function (x) { return urls[x.id] ? hF("img", { key: x.id, src: urls[x.id], alt: x.titre || "Plan" }) : hF("div", { key: x.id }, "Plan joint : " + (x.titre || "document") + (/\.pdf$/i.test(x.chemin || "") ? " (PDF, à imprimer à part)" : "")); }) : vide("Plan des lieux à joindre.")),
+        hF("div", { className: "hgi-part" }, hF("h2", null, "III. Encadrement sanitaire et médical"),
+          hF("div", { className: "hgi-ch" }, ch("Vétérinaire traitant", f.veto_traitant), ch("Vétérinaire sanitaire", f.veto_sanitaire))),
+        hF("div", { className: "hgi-part hgi-saut" }, hF("h2", null, "IV. Présence et caractéristiques des animaux"),
+          hF("table", null, hF("thead", null, hF("tr", null, ["Nom", "N° SIRE", "Transpondeur", "Propriétaire", "Entrée", "Provenance", "Sortie", "Motif / destination"].map(function (t) { return hF("th", { key: t }, t); }))),
+            hF("tbody", null, chevaux.map(function (x) { var r = (d.regch || {})[String(x.id)] || {};
+              return hF("tr", { key: x.id }, hF("td", null, x.nom || ""), hF("td", null, sireReg(d, x)), hF("td", null, r.puce || ""), hF("td", null, r.proprietaire || ""), hF("td", null, j(r.date_entree)), hF("td", null, r.provenance || ""), hF("td", null, j(r.date_sortie)), hF("td", null, [r.motif_sortie, r.destination].filter(Boolean).join(" — ")));
             })))),
-        h("div", { className: "hgi-part hgi-saut" }, h("h2", null, "V. Mouvements temporaires des animaux"),
-          mvts.length ? h("table", null, h("thead", null, h("tr", null, ["Sortie", "Retour", "Cheval", "Motif", "Destination", "Camion", "Chef d'équipe"].map(function (t) { return h("th", { key: t }, t); }))),
-            h("tbody", null, mvts.map(function (l) { return h("tr", { key: l.id }, h("td", null, j(l.date_sortie)), h("td", null, j(l.date_retour)), h("td", null, nomDe[l.cheval_id] || ""), h("td", null, l.motif || ""), h("td", null, l.destination || ""), h("td", null, l.camion === true ? "Oui" : (l.camion === false ? "Non" : "")), h("td", null, l.chef_equipe || "")); }))) : vide("Aucune sortie notée.")),
-        h("div", { className: "hgi-part hgi-saut" }, h("h2", null, "VI. Interventions et soins courants"),
-          soins.length ? h("table", null, h("thead", null, h("tr", null, ["Date", "Cheval", "Soin", "Produit / détail", "Prochain", "Noté par", "Ordonnance"].map(function (t) { return h("th", { key: t }, t); }))),
-            h("tbody", null, soins.map(function (s) { return h("tr", { key: s.id }, h("td", null, j(s.date_intervention)), h("td", null, nomDe[s.cheval_id] || ""), h("td", null, TYPES[s.type] || s.type || ""), h("td", null, [s.titre, s.notes].filter(Boolean).join(" — ")), h("td", null, j(s.date_prochaine)), h("td", null, (ps[s.created_by] || "") + (nonConfirme(s) ? " (non confirmé)" : "")), h("td", null, docsSoin[s.id] ? "Oui, conservée" : "")); }))) : vide("Aucun soin noté.")),
-        (d.controles || []).length ? h("div", { className: "hgi-part hgi-saut" }, h("h2", null, "VII. Visites déjà notées"),
-          h("table", null, h("thead", null, h("tr", null, ["Date", "Qui", "Nom", "Observations"].map(function (t) { return h("th", { key: t }, t); }))),
-            h("tbody", null, d.controles.slice().reverse().map(function (l) { return h("tr", { key: l.id }, h("td", null, j(l.date_controle)), h("td", null, l.organisme || ""), h("td", null, l.controleur || ""), h("td", null, l.observations || "")); })))) : null,
+        hF("div", { className: "hgi-part hgi-saut" }, hF("h2", null, "V. Mouvements temporaires des animaux"),
+          mvts.length ? hF("table", null, hF("thead", null, hF("tr", null, ["Sortie", "Retour", "Cheval", "Motif", "Destination", "Camion", "Chef d'équipe"].map(function (t) { return hF("th", { key: t }, t); }))),
+            hF("tbody", null, mvts.map(function (l) { return hF("tr", { key: l.id }, hF("td", null, j(l.date_sortie)), hF("td", null, j(l.date_retour)), hF("td", null, nomDe[l.cheval_id] || ""), hF("td", null, l.motif || ""), hF("td", null, l.destination || ""), hF("td", null, l.camion === true ? "Oui" : (l.camion === false ? "Non" : "")), hF("td", null, l.chef_equipe || "")); }))) : vide("Aucune sortie notée.")),
+        hF("div", { className: "hgi-part hgi-saut" }, hF("h2", null, "VI. Interventions et soins courants"),
+          soins.length ? hF("table", null, hF("thead", null, hF("tr", null, ["Date", "Cheval", "Soin", "Produit / détail", "Prochain", "Noté par", "Ordonnance"].map(function (t) { return hF("th", { key: t }, t); }))),
+            hF("tbody", null, soins.map(function (s) { return hF("tr", { key: s.id }, hF("td", null, j(s.date_intervention)), hF("td", null, nomDe[s.cheval_id] || ""), hF("td", null, TYPES[s.type] || s.type || ""), hF("td", null, [s.titre, s.notes].filter(Boolean).join(" — ")), hF("td", null, j(s.date_prochaine)), hF("td", null, (ps[s.created_by] || "") + (nonConfirme(s) ? " (non confirmé)" : "")), hF("td", null, docsSoin[s.id] ? "Oui, conservée" : "")); }))) : vide("Aucun soin noté.")),
+        (d.controles || []).length ? hF("div", { className: "hgi-part hgi-saut" }, hF("h2", null, "VII. Visites déjà notées"),
+          hF("table", null, hF("thead", null, hF("tr", null, ["Date", "Qui", "Nom", "Observations"].map(function (t) { return hF("th", { key: t }, t); }))),
+            hF("tbody", null, d.controles.slice().reverse().map(function (l) { return hF("tr", { key: l.id }, hF("td", null, j(l.date_controle)), hF("td", null, l.organisme || ""), hF("td", null, l.controleur || ""), hF("td", null, l.observations || "")); })))) : null,
         Array.apply(null, Array(NB_PAGES_VII)).map(function (_, i) {
-          return h("div", { key: "p7" + i, className: "hgi-part hgi-saut" }, h("h2", null, "VII. Contrôle du registre d'élevage et de détention d'équidés"),
-            h("div", { style: { color: "#555" } }, "À remplir par les agents habilités (DDPP, IFCE) ou le vétérinaire."),
-            h("table", { className: "hgi-sign" }, h("thead", null, h("tr", null, ["Date", "Organisme et nom", "Observations", "Signature et cachet"].map(function (t) { return h("th", { key: t }, t); }))),
-              h("tbody", null, Array.apply(null, Array(9)).map(function (__, k) { return h("tr", { key: k }, h("td", { style: { width: "14%" } }), h("td", { style: { width: "24%" } }), h("td", null), h("td", { style: { width: "22%" } })); }))),
-            h("div", { className: "hgi-pied" }, "Partie VII — page " + (i + 1) + " / " + NB_PAGES_VII));
+          return hF("div", { key: "p7" + i, className: "hgi-part hgi-saut" }, hF("h2", null, "VII. Contrôle du registre d'élevage et de détention d'équidés"),
+            hF("div", { style: { color: "#555" } }, "À remplir par les agents habilités (DDPP, IFCE) ou le vétérinaire."),
+            hF("table", { className: "hgi-sign" }, hF("thead", null, hF("tr", null, ["Date", "Organisme et nom", "Observations", "Signature et cachet"].map(function (t) { return hF("th", { key: t }, t); }))),
+              hF("tbody", null, Array.apply(null, Array(9)).map(function (__, k) { return hF("tr", { key: k }, hF("td", { style: { width: "14%" } }), hF("td", { style: { width: "24%" } }), hF("td", null), hF("td", { style: { width: "22%" } })); }))),
+            hF("div", { className: "hgi-pied" }, "Partie VII — page " + (i + 1) + " / " + NB_PAGES_VII));
         }));
       corps = h("div", null,
         ligneEcurie(h, c, [{ svg: SVG_IMPRIMER, lab: "Imprimer ou enregistrer en PDF", clic: imprimer }]),
@@ -1416,7 +1488,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Registre tenu sur l'appli : imprime-le chaque trimestre, après chaque visite du vétérinaire et si un contrôleur te le demande. « Imprimer » te propose aussi d'enregistrer un PDF."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.registre, titre: "Le registre imprimé", sous: "Les 7 parties, prêtes à montrer.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1438,7 +1510,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     return Math.round((new Date(+a[1], +a[2] - 1, +a[3]) - new Date(+b[1], +b[2] - 1, +b[3])) / 86400000);
   }
   function EcranEcheances() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1479,7 +1551,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         .sort(function (a, b) { return a.date.localeCompare(b.date); });
       var groupes = [], cle = null;
       vis.forEach(function (it) { var g = it.j < 0 ? "retard" : it.date.slice(0, 7); if (g !== cle) { cle = g; groupes.push({ g: g, l: [] }); } groupes[groupes.length - 1].l.push(it); });
-      var titreG = function (g) { if (g === "retard") return "En retard"; var p = g.split("-"); return (MOIS[+p[1] - 1] + " " + p[0]).replace(/^./, function (x) { return x.toUpperCase(); }); };
+      var titreG = function (g) { if (g === "retard") return "En retard"; var p = g.split("-"); return moisAn(+p[1], p[0]).replace(/^./, function (x) { return x.toUpperCase(); }); };
       var etatDe = function (j) { return j < 0 ? ("En retard de " + (-j) + " jour" + (-j > 1 ? "s" : "")) : j === 0 ? "Aujourd'hui" : ("Dans " + j + " jour" + (j > 1 ? "s" : "")); };
       corps = h("div", null,
         ligneEcurie(h, c, [{ svg: SVG_LOUPE, lab: "Chercher un cheval", on: rechCh, clic: function () { if (rechCh) setFCh("tous"); setRechCh(!rechCh); } }]),
@@ -1493,7 +1565,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Les rappels viennent des soins notés (date du prochain soin) et des dates du camion."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.controles, titre: "Les échéances", sous: "Ce qui arrive, au bon moment.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1506,7 +1578,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      2 ans, > 3,5 t chaque année. Les dates remontent dans « Les échéances ». */
   var GENRES = [["camion", "Camion"], ["van", "Van"], ["remorque", "Remorque"], ["autre", "Autre"]];
   function EcranCamion() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1638,7 +1710,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Au-delà de 65 km : autorisation de transport, certificat de compétence (CAPTAV) du conducteur et registre de transport gardé 3 ans. À toute distance : le document d'accompagnement de chaque cheval. Les dates du contrôle technique, de l'assurance et de l'autorisation remontent dans « Les échéances »."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.camion, titre: "Le camion", sous: "Papiers et dates à surveiller.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1651,7 +1723,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      structure qui valide ; jamais « on fait ta compta ». */
   function euros(n) { var x = Math.round(+n || 0); return String(Math.abs(x)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u202F") + "\u00A0€"; }
   function EcranCompta() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1724,7 +1796,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, (cur.source ? "Préparé à partir de " + cur.source + ". " : "") + "Hype t'aide à préparer ta comptabilité : c'est toi qui la valides. Les comptes restent sous la responsabilité de " + (D.forme === "association" ? "l'association et sont approuvés en assemblée générale." : "ta structure, et ton comptable les finalise.")),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.compta, titre: "Ma compta", sous: sousHero, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1764,7 +1836,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     { k: "cheval-idf", photo: "controles", titre: "Conseil des chevaux", sous: "Île-de-France", pill: "Projets", url: "https://www.conseil-cheval-iledefrance.com", texte: "Accompagne les projets de la filière équine en Île-de-France et donne son avis sur certains financements." }
   ];
   function EcranAides() {
-    var h = React.createElement;
+    var h = hT; useLangue();
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
     usePreparerEcran();
@@ -1798,7 +1870,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })),
       h("div", { className: "hg-sous" }, "Montants et dates vérifiés le 6 novembre 2026, sauf les aides marquées « À vérifier ». Ils changent souvent : vérifie toujours la source avant de faire ta demande. Hype n'a aucun accord commercial avec ces organismes."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE },
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.aides, titre: "Aides et contacts", sous: "Ce à quoi ton écurie a droit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
