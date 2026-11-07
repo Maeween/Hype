@@ -2371,8 +2371,8 @@ function EcranSanteCheval() {
         : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/sante-fond-defaut.webp')",   /* 07/11 (Blandine) : sans photo, SA photo du cheval bai tete baissee en fond (a la place du cheval bleu), tete jamais coupee */
       /* 07/11 (Blandine) : sans photo, le cheval du fond est decale pour ne pas passer sous l image du haut :
          telephone = en bas de l ecran (sous le haut de page) ; tablette / ordinateur = a gauche (l image du haut est a droite). Tete jamais coupee. */
-      backgroundSize: photoVue ? "cover, cover, cover" : (largeS ? "cover, cover, auto 80%" : "cover, cover, auto 60%"),
-      backgroundPosition: photoVue ? "center, center, center" : (largeS ? "center, center, left bottom" : "center, center, 74% bottom"),
+      backgroundSize: photoVue ? "cover, cover, cover" : (largeS ? "cover, cover, auto 100%" : "cover, cover, auto 60%"),
+      backgroundPosition: photoVue ? "center, center, center" : (largeS ? "center, center, center center" : "center, center, 74% bottom"),
       backgroundRepeat: "no-repeat, no-repeat, no-repeat"
     }
   });
@@ -2409,7 +2409,7 @@ function EcranSanteCheval() {
         var photoHeroS = photoVue || "images/galops-carte-cours-bai.webp";   /* 07/11 (Blandine) : sans photo du cheval, le cheval de la Videotheque en image par defaut */
         return h("div", { style: { position: "relative", width: "100%", height: largeS ? 358 : "calc(env(safe-area-inset-top) + 360px)" /* 29/10 : +58 px, photo descendue sous la ligne des boutons comme Histoire / Photos */, overflow: "hidden", marginBottom: 4 } },
           /* fondu par masque (pas de voile noir plein) : la photo se dissout dans le fond de page, sans bord visible en bas */
-          h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: largeS ? "68%" : "100%" /* 04/11 : photo entière, pleine largeur sur iPhone */,   /* (937) 62 % ; (941) 80 % + fondu court : la tete du cheval n est plus coupee (Blandine) ; (942) 68 % ordinateur */ WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)" } },
+          (largeS && !photoVue) ? null /* 07/11 (Blandine, version 1) : sur ordinateur, sans photo, pas d image en haut — le cheval est en fond au milieu */ : h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: largeS ? "68%" : "100%" /* 04/11 : photo entière, pleine largeur sur iPhone */,   /* (937) 62 % ; (941) 80 % + fondu court : la tete du cheval n est plus coupee (Blandine) ; (942) 68 % ordinateur */ WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)" } },
             h("img", { src: photoHeroS, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" /* 04/11 19h15 Blandine : photo du cheval ENTIÈRE */, objectPosition: rtlS ? "0% 50%" : "100% 50%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 8%, #000 18%)", maskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 12%, #000 26%)" } })),
           h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, left: 0, right: 0, height: 90, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0.5) 0%, rgba(6,7,9,0) 100%)" } }),
           /* (941) voile seulement derriere le titre (coin bas, cote texte) : le reste de la photo reste net */
