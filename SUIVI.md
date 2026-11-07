@@ -788,6 +788,16 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+📚 07/11/2026 (16 h 15) — GALOP 9 · COURS 3 : MÉDICAMENTS PÉRIMÉS (point « À confirmer » de l'audit, confirmé)
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | version 11 : « au vétérinaire ou à la pharmacie » → « au vétérinaire (la collecte en pharmacie ne prend que les médicaments humains) » + quiz q7 et son explication |
+| index.html | racine | ?v galop9 10 → 11, build 20261107-1615 (rien d'autre) |
+Source : Ordre des pharmaciens — Cyclamed collecte « uniquement les médicaments non utilisés… à usage humain ».
+Toujours « À confirmer » : « de ferme à ferme » (aucune définition officielle trouvée en ligne).
+
+════════════════════════════════════════════════════════════
+
 ⏳ 07/11/2026 (16 h 05) — PERSONNALISATION : PRÉVENIR AVANT LA FIN D'UN ABONNEMENT RÉSILIÉ
 Blandine : « Ok continue » (après : prévenir avant la fin demande d'enregistrer la résiliation venant de Stripe).
 | Fichier | Où | Quoi |
