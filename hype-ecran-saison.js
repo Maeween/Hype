@@ -529,6 +529,21 @@ var CSS2 = [
   ".rc-dt ol em{font-style:normal;color:var(--hs-iv3)}",
   ".rc-dt ol li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".rc-dt ol li.libre{font-style:italic;color:var(--hs-iv3)}",
+  ".rc-le{margin-bottom:22px}",
+  ".rc-ban{position:relative;height:118px;border-radius:22px;overflow:hidden;background:#0d1214;margin-bottom:4px}",
+  ".rc-ban img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 30%}",
+  ".rc-ban .voile{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,10,8,.9) 30%,rgba(7,10,8,.2))}",
+  ".rc-ban .t{position:absolute;left:16px;right:16px;bottom:14px}",
+  ".rc-ban .t b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;line-height:1}",
+  ".rc-ban .t span{font-size:11px;color:var(--hs-iv2)}",
+  ".rc-li{display:grid;grid-template-columns:26px 44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.07)}",
+  ".rc-li .k{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:var(--hs-ch);text-align:center}",
+  ".rc-li img,.rc-vide3{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,166,107,.42);display:block}",
+  ".rc-vide3{border-style:dashed}",
+  ".rc-li .q b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:17px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".rc-li .q>span{display:block;font-size:11px;color:var(--hs-iv2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".rc-li .hh{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-variant-numeric:tabular-nums}",
+  ".rc-li .hh.vide{color:var(--hs-iv3)}",
   ".rc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}",
   ".rc-rail::-webkit-scrollbar{display:none}",
   ".rc-ch{flex:0 0 72%;max-width:300px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(16,26,29,.6),rgba(7,10,8,.4))}",
@@ -1649,20 +1664,25 @@ function EcranEngagements() {
         }))) : null,
       /* les épreuves : le fil, par ordre de passage une fois sorti */
       h("div", { className: "rc-t" }, h("h3", null, F("Les épreuves")), h("span", null, nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
+      /* L (choix de Blandine 07/11 01h37) : un bandeau photo par épreuve, puis la liste de départ numérotée, médaillon du cheval,
+         heure à droite ; dans l'ordre de passage dès qu'il est connu (heures de Jour J), sinon dans l'ordre de la feuille. */
       ordreEp.map(function (e) {
         var l0 = parEp[e], connus = l0.filter(function (x) { return x.h; }).length, sorti = connus === l0.length && l0.length > 0;
         var liste = l0.slice();
         if (connus) liste.sort(function (a, b) { var ma = a.h ? hsMinutes(a.h) : 99999, mb = b.h ? hsMinutes(b.h) : 99999; return ma - mb; });
-        return h("div", { key: e, className: "rc-ep" },
-          h("h4", null, e, h("span", null, " · " + l0.length + (l0.length > 1 ? F(" tours") : F(" tour")))),
-          h("div", { className: "rc-etat" + (sorti ? " ok" : "") }, sorti ? F("Ordre de passage") : (connus ? F("Ordre de passage en partie connu") : F("Ordre de passage pas encore sorti"))),
-          h("div", { className: "rc-fil" }, liste.map(function (x, j) {
+        var phB = (l0.filter(function (x) { return x.ch; })[0] || {}).ch;
+        return h("div", { key: e, className: "rc-le" },
+          h("div", { className: "rc-ban" }, phB ? h("img", { src: photoCh(phB), alt: "" }) : null, h("div", { className: "voile" }),
+            h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti")))))),
+          liste.map(function (x, j) {
             var k = x.ch ? kTour(x.i, x.n) : 0, np = nomPrenom(x.nom);
-            return h("div", { key: j, className: "rc-pt" + (x.h ? " h" : "") },
-              x.h ? h("div", { className: "rc-h" }, x.h, x.piste ? h("small", null, F("piste ") + x.piste) : null) : null,
-              h("div", { className: "rc-q" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
-                h("p", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null)));
-          })));
+            return h("div", { key: j, className: "rc-li" },
+              h("div", { className: "k" }, String(j + 1)),
+              x.ch ? h("img", { src: photoCh(x.ch), alt: "" }) : h("span", { className: "rc-vide3" }),
+              h("div", { className: "q" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
+                h("span", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null, x.piste ? " · " + F("piste ") + x.piste : "")),
+              h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"));
+          }));
       }));
   }
   function switchVue() {
