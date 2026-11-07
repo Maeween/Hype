@@ -650,6 +650,34 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   hypeT7. Restent en français : ce que l'écurie a écrit elle-même (noms,
   lieux, notes) et les noms de disciplines (règle existante).
   ⚠️ Tout nouveau texte de Mon écurie = l'ajouter aux 13 fichiers i18n.
+· 07/11 01 h 42 (« ajoute pièce d'identité et permis là où il y a les
+  papiers du van », « et éventuellement carte handicap quand on en a une »,
+  puis « enfin laisse la carte handicap » compris comme : la garder) →
+  LE CAMION, rubrique Papiers : avant d'ajouter le fichier, on choisit
+  « Quel papier » (Carte grise, Attestation d'assurance, Autorisation de
+  transport, Certificat CAPTAV, Permis de conduire, Pièce d'identité, Carte
+  handicap (CMI), Autre) et « À qui il appartient » (facultatif) ; le titre
+  devient « Permis de conduire · Marie Dupont ». Rien de changé en base.
+  Les menus déroulants des formulaires de Mon écurie ont maintenant le même
+  style que les champs (fond sombre, petite flèche champagne).
+· 07/11 02 h (carte blanche « jusqu'au bout ») → PAGE « CE QUE HYPE
+  T'APPORTE » (#hype-pour-toi, dans hype-ecran-gestion.js ?v=18, écran
+  PourToi). 3 onglets : Une écurie / Une équipe / Moi (cavalier). Héros +
+  courbe, cartes photo (photos chaudes, pas de cyan) qui ouvrent les pages :
+  Écurie → Mon écurie, page de l'écurie, agenda, soins, photos, résultats,
+  Ma Sellerie, Le Mag ; Équipe → page de l'équipe, Ma saison, résultats FFE,
+  classement, sorties notées toutes seules, créer une équipe ; Cavalier →
+  Galops, Vidéothèque, Mes chevaux, Mon carnet, Réviser mes reprises,
+  Communauté, Le Mag, Hey Baby. Encart « Le tout en 14 langues ».
+  PLACE : juste après « Qu'aimerais-tu faire avec Hype ? » (validerSetup ne
+  va plus directement au globe : page PourToi, puis « Entrer dans Hype » →
+  le globe comme avant ; « Passer » va toujours à l'accueil). Onglet de
+  départ selon les réponses (gérer une écurie / page du club / pro /
+  enseignant → Écurie ; résultats en compétition / groupes → Équipe ;
+  sinon Cavalier). Reste accessible ensuite : bouton « Ce que Hype
+  t'apporte » dans Mon compte (hype-ecran-mon-compte.js ?v=3). Traduit
+  dans les 14 langues. PUBLIÉ avec le camion (build 20261107-0305).
+  ⚠️ À tester sur iPhone avec un nouveau compte.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le

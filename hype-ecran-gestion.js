@@ -68,7 +68,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 1;
+  var I18N_V = 2;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -462,8 +462,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var CSS_FORM = [
     ".hg-f{margin-top:6px}",
     ".hg-f label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.64);margin:16px 0 6px;font-family:'Montserrat',sans-serif}",
-    ".hg-f input{width:100%;box-sizing:border-box;min-height:46px;padding:11px 13px;border-radius:12px;border:1px solid rgba(243,238,228,.14);background:rgba(16,26,29,.55);color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:16px;outline:none}",
-    ".hg-f input:focus{border-color:#C9A66B}",
+    ".hg-f input,.hg-f select{width:100%;box-sizing:border-box;min-height:46px;padding:11px 13px;border-radius:12px;border:1px solid rgba(243,238,228,.14);background:rgba(16,26,29,.55);color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:16px;outline:none}",
+    ".hg-f input:focus,.hg-f select:focus{border-color:#C9A66B}",
+    ".hg-f select{-webkit-appearance:none;appearance:none;padding-inline-end:36px;background-image:linear-gradient(45deg,transparent 50%,#C9A66B 50%),linear-gradient(135deg,#C9A66B 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat}",
+    "[dir=rtl] .hg-f select{background-position:20px 50%,15px 50%}",
+    ".hg-f select option{background:#101A1D;color:#F3EEE4}",
     ".hg-f input::placeholder{color:rgba(243,238,228,.38)}",
     ".hg-f input[readonly]{opacity:.7}",
     ".hg-aide{font-size:11px;line-height:1.45;color:rgba(243,238,228,.5);margin-top:6px;font-family:'Montserrat',sans-serif}",
@@ -1172,6 +1175,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
     var refFichier = React.useRef(null);
     var _vj = React.useState(""); var valable = _vj[0], setValable = _vj[1];   /* 07/11 : date de validité (papiers du camion) */
+    /* 07/11 01 h 42 (Blandine : « ajoute pièce d'identité et permis là où il y a les papiers du van ») : quand la page
+       donne une liste de sortes de papiers, on choisit la sorte (et à qui il appartient) avant d'ajouter le fichier ;
+       le titre enregistré devient « Permis de conduire · Marie Dupont » au lieu du nom du fichier. */
+    var _so = React.useState(""); var sorte = _so[0], setSorte = _so[1];
+    var _qu = React.useState(""); var qui = _qu[0], setQui = _qu[1];
     var docs = (d.docsReg || []).filter(function (x) { return x.type === type && x.chemin; });
     async function envoyer(f) {
       if (!f) return;
@@ -1180,6 +1188,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var id = null;
       try {
         var titre = String(f.name || "").replace(/\.[a-z0-9]+$/i, "") || props.titreDefaut;
+        if (props.sortes && sorte && sorte !== "Autre") titre = sorte + (qui.trim() ? " · " + qui.trim() : "");
+        else if (props.sortes && qui.trim()) titre = titre + " · " + qui.trim();
         var ligneD = { club_clef: clefDe(props.club), type: type, titre: titre, date_doc: isoAuj() };
         if (props.avecDate && valable) ligneD.valable_jusqu = valable;
         var r = await supa.from("registre_documents").insert(ligneD).select("*");
@@ -1191,7 +1201,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         if (up && up.error) throw new Error(up.error.message || String(up.error));
         var r2 = await supa.from("registre_documents").update({ chemin: chemin }).eq("id", id).select("id");
         if (r2 && r2.error) throw new Error(r2.error.message || String(r2.error));
-        setMsg("✓ Ajouté"); setValable(""); if (props.onChange) props.onChange();
+        setMsg("✓ Ajouté"); setValable(""); setSorte(""); setQui(""); if (props.onChange) props.onChange();
       } catch (e) {
         if (id) { try { await supa.from("registre_documents").delete().eq("id", id); } catch (eD) { } }
         setMsg("Pas ajouté : " + String((e && e.message) || e));
@@ -1221,6 +1231,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
                 h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(x); } }, "Retirer vraiment"))
             : h("button", { type: "button", onClick: function () { setASuppr(x.id); }, style: { display: "block", margin: "6px 0 0 auto", background: "none", border: "none", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer"));
       })) : null,
+      props.sortes ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-so-" + type }, "Quel papier"),
+        h("select", { id: "hgd-so-" + type, value: sorte, onChange: function (e) { setSorte(e.target.value); } },
+          [h("option", { key: "", value: "" }, "Choisir…")].concat(props.sortes.map(function (x) { return h("option", { key: x, value: x }, x); })))) : null,
+      props.sortes ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-qui-" + type }, "À qui il appartient (facultatif)"),
+        h("input", { id: "hgd-qui-" + type, type: "text", value: qui, maxLength: 60, placeholder: "Prénom et nom", onChange: function (e) { setQui(e.target.value); } })) : null,
       props.avecDate ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-val-" + type }, "Valable jusqu'au (facultatif)"),
         h("input", { id: "hgd-val-" + type, type: "date", value: valable, onChange: function (e) { setValable(e.target.value); } })) : null,
       h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : props.bouton),
@@ -1576,6 +1591,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      transport FNCH 2024, règlement CE 1/2005) : au-delà de 65 km, autorisation type 1 (type 2 au-delà de 8 h) +
      CAPTAV du conducteur + registre de transport gardé 3 ans ; contrôle technique ≤ 3,5 t à 4 ans puis tous les
      2 ans, > 3,5 t chaque année. Les dates remontent dans « Les échéances ». */
+  var SORTES_CAMION = ["Carte grise", "Attestation d'assurance", "Autorisation de transport", "Certificat CAPTAV", "Permis de conduire", "Pièce d'identité", "Carte handicap (CMI)", "Autre"];   /* 07/11 */
   var GENRES = [["camion", "Camion"], ["van", "Van"], ["remorque", "Remorque"], ["autre", "Autre"]];
   function EcranCamion() {
     var h = hT; useLangue();
@@ -1705,8 +1721,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           h("div", { className: "hg-aide" }, "Pour transporter des chevaux à plus de 65 km dans le cadre de ton activité : autorisation type 1 (type 2 au-delà de 8 h), délivrée par la DDPP et valable 5 ans."),
           h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrerAut }, envoi ? "Enregistrement…" : "Enregistrer l'autorisation")) : null,
         montrer("papiers") ? h("div", null, h("h2", { className: "hv3-h2" }, "Les papiers"),
-          h(DocsRegistre, { donnees: d, club: c.club, type: "camion", avecDate: true, titreDefaut: "Papier du camion", photo: PHOTOS.camion, bouton: "+ Ajouter un papier", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
-          h("div", { className: "hg-aide" }, "Carte grise, attestation d'assurance, autorisation de transport, certificat CAPTAV de chaque conducteur.")) : null,
+          h(DocsRegistre, { donnees: d, club: c.club, type: "camion", avecDate: true, sortes: SORTES_CAMION, titreDefaut: "Papier du camion", photo: PHOTOS.camion, bouton: "+ Ajouter un papier", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
+          h("div", { className: "hg-aide" }, "Carte grise, attestation d'assurance, autorisation de transport, et pour chaque conducteur : certificat CAPTAV, permis de conduire, pièce d'identité et, s'il y en a une, carte handicap. Rangés dans un espace privé : seuls les responsables de l'écurie les voient.")) : null,
         h("div", { className: "hg-sous" }, "Au-delà de 65 km : autorisation de transport, certificat de compétence (CAPTAV) du conducteur et registre de transport gardé 3 ans. À toute distance : le document d'accompagnement de chaque cheval. Les dates du contrôle technique, de l'assurance et de l'autorisation remontent dans « Les échéances »."),
         LEGAL(h));
     }
@@ -1875,5 +1891,88 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « CE QUE HYPE T'APPORTE » (07/11) ═════════════════════════
+     Demande de Blandine (07/11 00 h 50) : une page « accessible par tous quand on se connecte », qui présente ce que Hype
+     apporte à une ÉCURIE, à une ÉQUIPE COMPÉTITION et à un CAVALIER, « une page après celle qui demande ce pour quoi on
+     vient sur Hype, avec les liens directs vers les pages concernées ». Ouverte juste après les questions d'accueil
+     (EcranPersonnalisation → validerSetup), puis « Entrer dans Hype » mène au globe comme avant. Lien direct #hype-pour-toi.
+     L'onglet de départ suit les réponses : gérer une écurie / page du club / pro / enseignant → Écurie ; résultats en
+     compétition / groupes de cavaliers → Équipe ; sinon → Cavalier. Rien n'est écrit en base : la page ne fait que lire le
+     profil déjà rempli. Même design que la Vidéothèque (héros + courbe, cases, cartes photo). */
+  var POUR_TOI = {
+    ecurie: { photo: { img: "images/ECURIE_HERO2.jpg", pos: "50% 62%" }, titre: "Pour ton écurie", sous: "Le club, les chevaux et l'administratif, au même endroit.",
+      cartes: [
+        { k: "me", large: true, img: "images/galop7-tmp-19-ecurie-couchant.webp", pos: "50% 55%", titre: "Mon écurie", sous: "Registre d'élevage, échéances, camion, compta, aides", ecran: "mon-ecurie" },
+        { k: "pa", img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%", titre: "La page de l'écurie", sous: "Le fil du club, les nouvelles du jour", ecran: "guilde" },
+        { k: "ag", img: "images/communaute-carte-agenda.webp", pos: "50% 50%", titre: "L'agenda du club", sous: "Cours, stages et concours", ecran: "agenda-club" },
+        { k: "so", img: "images/cours-g1-c3-box.webp", pos: "50% 40%", titre: "Les soins des chevaux", sous: "Consignes, rappels, équipe de soins", ecran: "sante-club" },
+        { k: "al", img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%", titre: "Photos et souvenirs", sous: "Les albums du club", ecran: "album-ecurie" },
+        { k: "re", img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%", titre: "Les résultats de l'écurie", sous: "Tous les concours, au même endroit", ecran: "resultats-ecurie" },
+        { k: "se", img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%", titre: "Ma Sellerie", sous: "Codes et adresses partenaires", ecran: "sellerie" },
+        { k: "mg", large: true, img: "images/galop1-hero-bai.webp", pos: "60% 35%", titre: "Le Mag", sous: "Les écrits de tes enseignants mis en avant", ecran: "articles" }
+      ] },
+    equipe: { photo: { img: "images/TEAM_COMPETITION.webp", pos: "50% 30%" }, titre: "Pour ton équipe compétition", sous: "Cavaliers, chevaux et concours, toute la saison.",
+      cartes: [
+        { k: "tm", large: true, img: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "60% 40%", titre: "La page de l'équipe", sous: "Cavaliers, chevaux, agenda, résultats", ecran: "team-competition" },
+        { k: "sa", img: "images/galop5-c07-transport.webp", pos: "50% 50%", titre: "Ma saison", sous: "Dossier du concours, papiers du van", ecran: "ma-saison" },
+        { k: "rf", img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%", titre: "Mes résultats FFE", sous: "Les résultats rassemblés", ecran: "mes-resultats-ffe" },
+        { k: "cl", img: "images/galop6-hero-gris.webp", pos: "60% 35%", titre: "Le classement", sous: "Challenges et points de la saison", ecran: "classement" },
+        { k: "mv", img: "images/galop5-hero-elfe-liam.webp", pos: "50% 40%", titre: "Les sorties notées toutes seules", sous: "Les concours remplissent le registre", ecran: "registre-mouvements" },
+        { k: "ec", large: true, img: "images/ECURIE_HERO2.jpg", pos: "50% 62%", titre: "Créer une équipe", sous: "Depuis la page des chevaux de l'écurie", ecran: "ecurie-hype" }
+      ] },
+    cavalier: { photo: { img: "images/cours-pansage-01_couverture_hero.webp", pos: "60% 40%" }, titre: "Pour toi, cavalier", sous: "Apprendre, progresser, garder tes souvenirs.",
+      cartes: [
+        { k: "ga", large: true, img: "images/galop2-hero-bai-entier.webp", pos: "50% 45%", titre: "Les Galops", sous: "Des cours illustrés, conformes au programme fédéral", ecran: "galops" },
+        { k: "vi", img: "images/cavalier-acces-videos.webp", pos: "50% 40%", titre: "La Vidéothèque", sous: "Voir et revoir le geste juste", ecran: "videos" },
+        { k: "ch", img: "images/cavalier_ajouter_cheval_v1.webp", pos: "50% 40%", titre: "Mes chevaux", sous: "Leur fiche, leurs soins, leurs souvenirs", ecran: "chevaux" },
+        { k: "ca", img: "images/JOURNAL_CARNET_FOND.webp", pos: "50% 50%", titre: "Mon carnet", sous: "Tes séances et tes progrès", ecran: "carnet" },
+        { k: "rp", img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%", titre: "Réviser mes reprises", sous: "Les reprises de dressage pas à pas", ecran: "reprises" },
+        { k: "co", img: "images/accueil_v2_communaute_v2.webp", pos: "50% 60%", titre: "La Communauté", sous: "Les cavaliers et les écuries de Hype", ecran: "communaute" },
+        { k: "lm", img: "images/communaute-carte-agenda.webp", pos: "50% 50%", titre: "Le Mag", sous: "Théorie et culture équestre", ecran: "articles" },
+        { k: "hb", large: true, img: "images/FOND_HEYBABY.webp", pos: "50% 30%", titre: "Hey Baby", sous: "Ton assistant, pour toutes tes questions", ecran: "assistant" }
+      ] }
+  };
+  function ongletDepart(p) {
+    try {
+      var e = (p && Array.isArray(p.envies)) ? p.envies : [], g = p && p.galop;
+      if (e.indexOf("pro_ecurie") >= 0 || e.indexOf("page_club") >= 0 || g === "Professionnel / Autre" || g === "Enseignant") return "ecurie";
+      if (e.indexOf("resultats_competition") >= 0 || e.indexOf("groupes_cavaliers") >= 0) return "equipe";
+    } catch (eD) { }
+    return "cavalier";
+  }
+  function EcranPourToi() {
+    var h = hT; useLangue();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var depuisAccueil = React.useRef(false);
+    var _o = React.useState(function () {
+      var a = null; try { a = window.__hypePourToiAccueil; window.__hypePourToiAccueil = null; } catch (e) { }
+      if (a) depuisAccueil.current = true;
+      return ongletDepart(a || app.profil || {});
+    });
+    var onglet = _o[0], setOnglet = _o[1];
+    var v = POUR_TOI[onglet];
+    function aller(ecran) { try { if (depuisAccueil.current && typeof GLOBE_ONBOARDING !== "undefined") GLOBE_ONBOARDING = false; } catch (eG) { } try { window.scrollTo(0, 0); } catch (e) { } setEcran(ecran); }   /* quitter vers une page : le globe ne rejouera pas l'accueil plus tard */
+    function entrer() { setEcran(depuisAccueil.current ? "monde" : "dashboard"); }
+    var corps = h("div", null,
+      h("div", { className: "hv2-choix", style: { marginTop: 18 } },
+        h("div", { className: "hv2-choix-tete" }, h("h2", { className: "hv2-h2", style: { margin: 0 } }, "Tu viens pour…")),
+        h("div", { className: "hv2-choix-rang", style: { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" } }, [["ecurie", "Une écurie", "Gérer le club"], ["equipe", "Une équipe", "La compétition"], ["cavalier", "Moi", "Cavalier"]].map(function (x) {
+          var on = onglet === x[0];
+          return h("button", { key: x[0], type: "button", className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { setOnglet(x[0]); } },
+            h("b", null, x[1]), h("span", null, x[2]));
+        }))),
+      h("h2", { className: "hv2-h2" }, "Ce que Hype t'apporte"),
+      h("div", { className: "hv2-grille" }, v.cartes.map(function (x) {
+        return theme(h, x.large ? "large" : "", { img: x.img, pos: x.pos }, x.titre, x.sous, function () { aller(x.ecran); });
+      })),
+      h("div", { className: "hg-encart", style: { marginTop: 22, textAlign: "center" } }, h("b", null, "Le tout en 14 langues"), "Chacun lit l'appli dans sa langue : cavaliers, parents, propriétaires."),
+      h("button", { type: "button", className: "hg-btn", style: { marginTop: 22 }, onClick: entrer }, depuisAccueil.current ? "Entrer dans Hype" : "Retour à l'accueil"));
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      hero(h, { photo: v.photo, titre: v.titre, sous: v.sous }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();

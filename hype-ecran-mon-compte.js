@@ -295,6 +295,10 @@ function EcranMonCompte() {
 
       ) : null,
 
+      /* 07/11 (Blandine) : la page « Ce que Hype t'apporte » (écurie / équipe / cavalier) reste accessible ici, pour tout le monde. */
+      React.createElement("button", { onClick: function () { setEcran("hype-pour-toi"); }, style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, width: "100%", maxWidth: 420, textAlign: "left", margin: "18px auto 0", padding: "14px 16px", borderRadius: 20, border: "1px solid rgba(201,166,107,0.42)", background: "linear-gradient(120deg, rgba(201,166,107,0.10), rgba(10,14,18,0.75))", cursor: "pointer", color: "#EDF2F5" } },
+        React.createElement("span", { style: { fontFamily: "'Cinzel', serif", fontSize: 15, fontWeight: 600 } }, tr({ fr: "Ce que Hype t\u2019apporte", en: "What Hype brings you", es: "Lo que Hype te aporta", it: "Cosa ti offre Hype", ja: "Hype \u3067\u3067\u304d\u308b\u3053\u3068", de: "Was Hype dir bringt", ar: "\u0645\u0627 \u064a\u0642\u062f\u0651\u0645\u0647 \u0644\u0643 Hype", zh: "Hype \u80fd\u4e3a\u4f60\u5e26\u6765\u4ec0\u4e48", nl: "Wat Hype je brengt", pt: "O que a Hype te traz", sv: "Vad Hype ger dig", ru: "\u0427\u0442\u043e \u0442\u0435\u0431\u0435 \u0434\u0430\u0451\u0442 Hype", pl: "Co daje ci Hype", ko: "Hype\uac00 \uc8fc\ub294 \uac83" })),
+        React.createElement("span", { "aria-hidden": "true", style: { color: "#C9A66B", fontSize: 18 } }, "\u203a")),
       /* (548) raccourci vers l ANCIENNE page Ecurie (ou retour a la nouvelle) - son compte seulement */
       ((user && typeof estCompteFeinnHype === "function" && estCompteFeinnHype(user)) ? (function () {
         var anc = false; try { anc = !!window.__ecurieAncienne; } catch (eA) { }
