@@ -18965,7 +18965,7 @@ PRÉPAS AUX DIPLÔMES D'ENSEIGNEMENT — AE · BP · DE (+ DES préparé, non pu
 - Accès : page des Galops (GalopsV2Haut), bloc « Et après les Galops ? Deviens enseignant » sous la courbe, 3 boutons AE / BP / DE — MODÉRATRICES SEULES
   (estModGal), comme la page elle-même (sinon retour aux Galops). Français seul. Accès Premium à brancher à l'ouverture.
 - Photos provisoires (déjà dans images/) : AE cours-g1-c10-hero.webp, BP article-cso-saut.webp, DE galops-v2-carte-reprises-hd2.jpg, DES PERFORMANCES_CHEVAUX_HERO.webp.
-- Non fait (hors périmètre, à décider) : la phrase du cours de culture « la FFE crée les diplômes d'enseignement comme le BPJEPS » (hype-galops.js) — le BPJEPS est un diplôme d'État.
+- 07/11 11h30 — RÉGLÉ, sans mise en ligne : la phrase « la FFE crée les diplômes d'enseignement comme le BPJEPS » n'existait plus que dans hype-galops.js, ancienne copie qu'AUCUNE page ne charge (le cours visible, g1-c12 dans hype-cours-galop1.js, est juste depuis le 02/11, 14 langues). La copie a été alignée (puce, 2 explications de quiz, question « Quel diplôme permet de devenir moniteur d'équitation ? », 5 langues), envoyée SANS [publier] : rien ne change pour les cavalières.
 | Fichier | Où | Quoi |
 |---|---|---|
 | hype-ecran-prepa.js | racine | NOUVEAU : la page des prépas (textes + mise en page) |
