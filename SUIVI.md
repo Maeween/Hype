@@ -641,6 +641,19 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   (hype-ecran-saison.js ?v=38) lit / ajoute / retire là ; « Le camion »
   propose « Valable jusqu'au » à l'ajout et l'affiche ; ces dates remontent
   dans « Les échéances » (gestion ?v=16). dossier_van gardée, plus utilisée.
+· 07/11 01 h (« Vas y 1 après ») → TRADUCTIONS DE TOUT MON ÉCURIE dans les
+  14 langues — PRÊT, TESTÉ SUR LE BANC, PAS ENCORE PUBLIÉ (attend son Ok).
+  Méthode : le code garde ses textes en français ; à l'affichage, hT
+  (remplace React.createElement dans hype-ecran-gestion.js ?v=17) traduit
+  les textes visibles avec i18n/gestion-<langue>.json (525 textes par
+  langue, chargés seulement hors français). Valeurs enregistrées en base
+  (motifs, organismes…) jamais traduites. Le REGISTRE IMPRIMÉ reste en
+  français (document officiel pour la DDPP / l'IFCE). Dates au format de
+  la langue ; arabe de droite à gauche. Création d'équipe (index.html,
+  CreationEquipeEH + « Créer » / « Une page d'équipe… ») traduite avec
+  hypeT7. Restent en français : ce que l'écurie a écrit elle-même (noms,
+  lieux, notes) et les noms de disciplines (règle existante).
+  ⚠️ Tout nouveau texte de Mon écurie = l'ajouter aux 13 fichiers i18n.
 · À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
   ordonnances par cheval et par date (page « Les soins » du registre).
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
