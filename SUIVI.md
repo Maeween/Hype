@@ -81,7 +81,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [01/11] Reprise Amateur 3 Grand Prix : ajouter des conseils du coach si tu le demandes (attend : Blandine)
 - [19/10] Regrouper en une seule carte du fil les photos sans texte publiées à la suite par la même personne le même jour (attend : Blandine)
 - [21/10 → 07/11] Petit ménage en base : FAIT. Réponses Hey Baby gardées (décision du 25/10) ; fiche de progression du compte de test « Claude » (copie du profil de Blandine) EFFACÉE le 07/11 à 1 h 35 sur son « Ok 3 », copie gardée dans sauvegarde_progression_071126 (le compte lui-même existe toujours).
-- [16/09 → 07/11] Vieux nettoyages de base : FAITS le 07/11 (colonne resultats.format_large ajoutée ; épingle « idao » rattachée à la vraie fiche Boréalis de Feinn ; Liam n'a plus qu'un compte). Reste : « Elle m'a dit » et « Elle m'a dit circee » = même cheval en double à la SEP, à fusionner seulement avec Blandine (attend : Blandine)
+- [16/09 → 07/11] Vieux nettoyages de base : FAITS le 07/11 (colonne resultats.format_large ajoutée ; épingle « idao » rattachée à la vraie fiche Boréalis de Feinn ; Liam n'a plus qu'un compte). « Elle m'a dit » en double : FUSIONNÉ le 07/11 à 1 h 50 (Blandine : « Passe sur la mienne et laisse bien les albums de Maëlys »)
 
 ────────────────────────────────────────────────────────────
 
@@ -18584,3 +18584,8 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Textes en français seulement (traductions après relecture).
 - Fichiers : hype-ecran-saison.js (v40), index.html (build 20261107-0245), SUIVI.md.
 - 07/11 02h — HORSE LINGO, RÉFÉRENCEMENT (Blandine : « Oui vas-y… carte blanche ») : outils/seo-lexique.cjs (dépôt HorseLingo) ajoute sur chaque page de vocabulaire le récit de l'arrivée dans la ville (volets déjà validés et traduits en 16 langues), MÊME RÈGLE QUE L'APPLI : 3 volets pour les 4 villes offertes, le 1er seulement pour les autres (l'avant-goût déjà visible de tous dans l'appli). 624 pages d'étape concernées, rien d'autre ne change (vérifié : seule différence = le récit et son style). Captures réelles iPhone fr + arabe. Publié : commit d8759ca [publier] sur HorseLingo.
+
+## 07/11/2026 01h50 — base — « Elle m'a dit » : doublon fusionné
+- Blandine : « Passe sur la mienne et laisse bien quand même les albums etc de Maëlys ».
+- Gardée : « Elle m'a dit circee » (fiche de Blandine, a27df268…). Maylis l'avait déjà dans ses chevaux, et son album « Maylis et Elle m'a dit 🩷 » y était déjà rangé : rien changé à part l'ajout ci-dessous.
+- Fiche en double de Maylis (8b45fe0e…, « Elle m'a dit », vide : pas de résultat, d'album ni de lien) : sa photo AJOUTÉE à son album (11 photos), sa notification du 11/09 repointée vers la fiche gardée, puis la fiche EFFACÉE. Copie complète dans sauvegarde_chevaux_071126.
