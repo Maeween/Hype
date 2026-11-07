@@ -34,7 +34,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     aides: { img: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "60% 40%" },
     obligations: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" },
     contrats: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%" },
-    stock: { img: "images/encartEcurieHype.jpg", pos: "78% 55%" }
+    stock: { img: "images/encartEcurieHype.jpg", pos: "100% 58%" }
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -319,7 +319,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var SVG_LOUPE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" })); };
   var SVG_IMPRIMER = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 9V3.5h10V9" }), h("path", { d: "M7 17.5H4.5v-8h15v8H17" }), h("path", { d: "M7 14h10v6.5H7z" })); };
   var SVG_PLUS = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" })); };
-  var CSS_LIGNE = ".hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}[dir=rtl] .hg-ret i{display:inline-block;transform:scaleX(-1)}";
+  var CSS_LIGNE = "@media (min-width:700px) and (max-width:1099px){.hg .hv2-grille .hg-t3{grid-column:span 2}.hg .hv2-grille .hg-t3 .hv2-traite{aspect-ratio:8/3}}.hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}[dir=rtl] .hg-ret i{display:inline-block;transform:scaleX(-1)}";
   function ligneEcurie(h, c, icones) {
     var plusieurs = c.clubs && c.clubs.length > 1;
     return h("div", { className: "hv2-ligne" },
@@ -394,7 +394,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.detenteur, "Le personnel", "Le registre unique du personnel", function () { ouvrir("personnel-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.contrats, "Les contrats", "Assurances, cotisations : chaque règlement", function () { ouvrir("contrats-ecurie"); }),   /* 07/11 */
-          theme(h, "", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
+          theme(h, "hg-t3", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));

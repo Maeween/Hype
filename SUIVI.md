@@ -740,6 +740,12 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   dans « Les échéances ») ; « Commandé aujourd'hui » coupe l'alerte 15 jours,
   le temps de la livraison. 14 langues. Les deux : PUBLIÉ build 20261107-1205.
   À tester sur iPhone avec ses vrais contrats.
+· 07/11 (carte blanche) → MON ÉCURIE SUR TABLETTE ET ORDINATEUR : les pages
+  de l'espace restaient dans une colonne de téléphone (480 px) au milieu de
+  l'écran, avec des cartes coupées (« Assur… »). Elles passent en pleine
+  largeur (liste ECRANS_LARGES_TESTS), sauf l'impression du registre. Sur
+  tablette, la carte « Le stock » prend deux cases pour ne pas laisser de
+  trou. Vérifié à 1280 et 820 px sur les 18 pages.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
