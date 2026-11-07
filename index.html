@@ -59932,21 +59932,26 @@ var PPG_CSS = ".ppg{max-width:1240px;margin:0 auto;padding:34px 18px 8px}"
   + ".ppg-b span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.65)}"
   + ".ppg-b:focus-visible{outline:2px solid #C9A66B;outline-offset:3px}"
   + ".ppg-moi{display:inline-block;margin-top:12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#C9A66B;border:1px dashed rgba(201,166,107,.6);border-radius:999px;padding:3px 10px}"
-  + "@media (prefers-reduced-motion:reduce){.ppg-b{transition:none}}";
+  + "@media (prefers-reduced-motion:reduce){.ppg-b{transition:none}}"
+  + ".ppg[dir=rtl] *{letter-spacing:0!important}";
+var PPG_TXT = {"fr":{"bandeau_titre":"Et après les Galops ?","bandeau_em":"Deviens enseignant","bandeau_intro":"Les tests d'entrée, les épreuves et les conseils pour te préparer aux diplômes d'enseignement.","bandeau_moi":"Visible de toi seule · en relecture","metier_AE":"Animateur","metier_BP":"Moniteur","metier_DE":"Entraîneur"},"en":{"bandeau_titre":"What comes after the Galops?","bandeau_em":"Become a riding teacher","bandeau_intro":"Entry tests, exams and tips to help you prepare for the teaching qualifications.","bandeau_moi":"Only visible to you · under review","metier_AE":"Riding leader","metier_BP":"Riding instructor","metier_DE":"Coach"},"es":{"bandeau_titre":"¿Y después de los Galops?","bandeau_em":"Hazte docente","bandeau_intro":"Las pruebas de acceso, los exámenes y consejos para prepararte a los títulos de enseñanza.","bandeau_moi":"Solo lo ves tú · en revisión","metier_AE":"Animador","metier_BP":"Monitor","metier_DE":"Entrenador"},"it":{"bandeau_titre":"E dopo i Galop?","bandeau_em":"Diventa insegnante","bandeau_intro":"I test d'ingresso, le prove e i consigli per prepararti ai diplomi di insegnamento.","bandeau_moi":"Visibile solo a te · in revisione","metier_AE":"Animatore","metier_BP":"Istruttore","metier_DE":"Allenatore"},"ja":{"bandeau_titre":"Galopのその先は？","bandeau_em":"指導者になろう","bandeau_intro":"指導者資格に向けた入学試験、本試験、準備のアドバイスをまとめました。","bandeau_moi":"あなただけに表示 · 確認中","metier_AE":"アニマトゥール","metier_BP":"インストラクター","metier_DE":"コーチ"},"de":{"bandeau_titre":"Und nach den Galops?","bandeau_em":"Unterrichte selbst","bandeau_intro":"Aufnahmeprüfungen, Prüfungsteile und Tipps, mit denen du dich auf die Ausbilderabschlüsse vorbereitest.","bandeau_moi":"Nur für dich sichtbar · in Überarbeitung","metier_AE":"Reitbetreuer","metier_BP":"Reitlehrer","metier_DE":"Trainer"},"ar":{"bandeau_titre":"وماذا بعد مستويات Galop؟","bandeau_em":"كوني مدرّسة","bandeau_intro":"اختبارات الدخول، والاختبارات، ونصائح للاستعداد لشهادات التدريس.","bandeau_moi":"مرئي لكِ وحدك · قيد المراجعة","metier_AE":"منشّطة","metier_BP":"مدرّبة فروسية","metier_DE":"مدرّبة رياضية"},"zh":{"bandeau_titre":"考完 Galop 之后呢？","bandeau_em":"成为马术教练","bandeau_intro":"入学测试、考核内容和备考建议，助你拿下马术教学文凭。","bandeau_moi":"仅你本人可见 · 审校中","metier_AE":"辅导员","metier_BP":"教练","metier_DE":"训练师"},"nl":{"bandeau_titre":"En na de Galops?","bandeau_em":"Word instructeur","bandeau_intro":"De toelatingstests, de examens en tips om je voor te bereiden op de lesgeversdiploma's.","bandeau_moi":"Alleen zichtbaar voor jou · wordt nagelezen","metier_AE":"Ruiterbegeleider","metier_BP":"Instructeur","metier_DE":"Trainer"},"pt":{"bandeau_titre":"E depois dos Galops?","bandeau_em":"Torne-se professor","bandeau_intro":"Os testes de entrada, as provas e as dicas para você se preparar para os diplomas de ensino.","bandeau_moi":"Visível só para você · em revisão","metier_AE":"Animador","metier_BP":"Instrutor","metier_DE":"Treinador"},"sv":{"bandeau_titre":"Och efter Galopperna?","bandeau_em":"Bli ridlärare","bandeau_intro":"Antagningsprov, examensprov och tips för att förbereda dig inför lärarexamina.","bandeau_moi":"Syns bara för dig · under granskning","metier_AE":"Ridledare","metier_BP":"Ridlärare","metier_DE":"Tränare"},"ru":{"bandeau_titre":"А что после Galops?","bandeau_em":"Стань преподавателем","bandeau_intro":"Вступительные тесты, экзамены и советы, которые помогут подготовиться к педагогическим дипломам.","bandeau_moi":"Видно только тебе · на проверке","metier_AE":"Аниматор","metier_BP":"Инструктор","metier_DE":"Тренер"},"pl":{"bandeau_titre":"Co po Galopach?","bandeau_em":"Zostań instruktorem","bandeau_intro":"Testy wstępne, egzaminy i wskazówki, jak przygotować się do dyplomów uprawniających do nauczania jazdy.","bandeau_moi":"Widoczne tylko dla ciebie · w trakcie korekty","metier_AE":"Animator","metier_BP":"Instruktor","metier_DE":"Trener"},"ko":{"bandeau_titre":"Galop 다음에는요?","bandeau_em":"승마 지도자가 되어 보세요","bandeau_intro":"지도자 자격증을 준비하는 데 필요한 입학 시험, 평가 과정, 그리고 준비 요령을 담았어요.","bandeau_moi":"나만 볼 수 있어요 · 검토 중","metier_AE":"승마 지도 보조자","metier_BP":"승마 강사","metier_DE":"승마 코치"}};
 function BlocPrepaDiplomes(props) {
   const h = React.createElement;
+  const T = PPG_TXT[props.langue] || PPG_TXT.fr;
+  const rtl = props.langue === "ar";
   const ouvrir = function (id) { try { window.__prepaDiplome = id; } catch (e) { } props.setEcran("prepa-diplomes"); };
-  return h("div", { className: "ppg" },
+  return h("div", { className: "ppg", dir: rtl ? "rtl" : undefined },
     h("style", null, PPG_CSS),
     h("div", { className: "gv2-tpp-tete" },
-      h("h2", { className: "gv2-tpp-titre" }, "Et après les Galops ? ", h("em", null, "Deviens enseignant")),
-      h("p", { className: "gv2-tpp-intro" }, "Les tests d'entrée, les épreuves et les conseils pour te préparer aux diplômes d'enseignement.")),
+      h("h2", { className: "gv2-tpp-titre" }, T.bandeau_titre + " ", h("em", null, T.bandeau_em)),
+      h("p", { className: "gv2-tpp-intro" }, T.bandeau_intro)),
     h("div", { className: "ppg-rang" },
-      [["AE", "Animateur"], ["BP", "Moniteur"], ["DE", "Entraîneur"]].map(function (x) {
-        return h("button", { key: x[0], type: "button", className: "ppg-b", onClick: function () { ouvrir(x[0]); }, "aria-label": "Prépa " + x[0] + " — " + x[1] },
-          h("b", null, x[0]), h("span", null, x[1]));
+      ["AE", "BP", "DE"].map(function (id) {
+        var m = T["metier_" + id];
+        return h("button", { key: id, type: "button", className: "ppg-b", onClick: function () { ouvrir(id); }, "aria-label": id + " — " + m },
+          h("b", null, id), h("span", null, m));
       })),
-    h("span", { className: "ppg-moi" }, "Visible de toi seule · en relecture"));
+    h("span", { className: "ppg-moi" }, T.bandeau_moi));
 }
 function GalopsV2Haut(props) {
   const h = React.createElement;
@@ -60490,7 +60495,7 @@ function GalopsV2Haut(props) {
       null),
     blocProg,
     espace,
-    estModGal ? h(BlocPrepaDiplomes, { setEcran: setEcran }) : null,   /* 07/11 prépas AE · BP · DE (modératrices seules) */
+    estModGal ? h(BlocPrepaDiplomes, { setEcran: setEcran, langue: langue }) : null,   /* 07/11 prépas AE · BP · DE (modératrices seules) */
     h("div", { className: "gv2-tpp" },
       h("div", { className: "gv2-tpp-tete" },
         h("h2", { className: "gv2-tpp-titre" }, tr(TP.t1) + " ", h("em", null, tr(TP.t2))),
