@@ -1845,7 +1845,9 @@ function EcranEngagements() {
         h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")))),
         h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, nomsCh.map(function (c) {
           var m = montes[c] || [], cases = [];
-          for (var j = 0; j < Math.max(toursMax, m.length); j++) {
+          /* 08/11 (Blandine : « ajoute le tour suivant que quand celui d'avant est rempli, ça évite de surcharger ») :
+             les tours pris, puis UNE seule place libre (tant que le maximum n'est pas atteint) */
+          for (var j = 0; j < Math.max(Math.min(toursMax, m.length + 1), m.length); j++) {
             var y = m[j];
             cases.push(y
               ? h("div", { key: j, className: "rc-slot plein" + (j >= toursMax ? " trop" : "") }, h("i", null, j + 1), h("span", null, y.qui), h("em", null, epDe(y)))

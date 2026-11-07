@@ -19648,3 +19648,8 @@ Fichiers : SUIVI.md.
 - Mon carnet, demande de Lore (2) : bouton lien (icône chaîne) → « Colle le lien (Blooming Riders…) » + texte affiché facultatif ; à la lecture le lien s'ouvre (nouvel onglet). Une adresse collée telle quelle dans le texte devient aussi un lien. Pas de vraie connexion à Blooming Riders (appli fermée et payante) : c'est un lien vers sa vidéo.
 - Textes traduits dans les 14 langues.
 - Testé sur copie (téléphone et ordinateur) : mise en forme posée, relue et réenregistrée à l'identique, liens ouverts, aucune erreur.
+
+## 08/11/2026 01h35 — PRÊT, NON PUBLIÉ (à grouper) — Engagements : une seule « place libre » à la fois (Blandine 00h46)
+- Demande : « ajoute le tour suivant que quand celui d'avant est rempli, ça évite de surcharger ».
+- Récapitulatif de la page Engagements, cartes « Les chevaux » : on voit les tours pris, puis UNE seule case « place libre » (la suivante) tant que le maximum (3 en Club, 5 à poney) n'est pas atteint ; plus de 3 à 5 cases vides d'un coup. Le compteur « places libres » en tête reste le total.
+- Testé sur copie : Daphne (1 tour) → 1 tour + 1 place libre ; Rizotto (3 tours, maximum Club) → 3 tours, aucune case vide. hype-ecran-saison.js (version déjà passée à v=49 dans ce lot, non publiée).
