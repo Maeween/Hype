@@ -177,6 +177,137 @@ function EcranCheval() {
   /* 03/09 : mon surnom a moi pour ce cheval. Perso, jamais visible chez les autres. */
   var snSt = React.useState(""); var surnomPerso = snSt[0], setSurnomPerso = snSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
+
+  /* 07/11 (Blandine : « Ok continue … carte blanche ») PERSONNALISATION DE LA FICHE CHEVAL (telephone) :
+     masquer / reafficher les blocs, fond de page, style d en-tete. Pas de couleur (12/10 : tous les chevaux aux memes couleurs).
+     Pas de deplacement des blocs ici (la fiche est en 3 parties, deplacer obligerait a la refaire) : il viendra avec la nouvelle fiche.
+     Reglages dans cheval_perso, lus par cheval_perso_lire (appliques seulement si la proprietaire est Premium).
+     PHASE DE TEST : bouton visible seulement pour la proprietaire du cheval ET moderatrice. */
+  var PZC_TR = {"Masqué pour les visiteurs": ["Hidden from visitors", "Oculto para los visitantes", "Nascosto ai visitatori", "訪問者には非表示", "Für Besucher ausgeblendet", "مخفي عن الزوار", "对访客隐藏", "Verborgen voor bezoekers", "Oculto para os visitantes", "Dold för besökare", "Скрыто от посетителей", "Ukryte dla odwiedzających", "방문자에게 숨김"], "Mode personnalisation": ["Customize mode", "Modo personalización", "Modalità personalizzazione", "カスタマイズモード", "Anpassungsmodus", "وضع التخصيص", "自定义模式", "Aanpasmodus", "Modo de personalização", "Anpassningsläge", "Режим настройки", "Tryb personalizacji", "꾸미기 모드"], "Annuler": ["Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소"], "Terminé": ["Done", "Listo", "Fatto", "完了", "Fertig", "تم", "完成", "Klaar", "Concluído", "Klar", "Готово", "Gotowe", "완료"], "Fond": ["Background", "Fondo", "Sfondo", "背景", "Hintergrund", "الخلفية", "背景", "Achtergrond", "Fundo", "Bakgrund", "Фон", "Tło", "배경"], "En-tête": ["Header", "Cabecera", "Intestazione", "ヘッダー", "Kopfbereich", "الترويسة", "页眉", "Koptekst", "Cabeçalho", "Sidhuvud", "Шапка", "Nagłówek", "헤더"], "Revenir à l'origine": ["Back to original", "Volver al original", "Torna all'originale", "元に戻す", "Zurück zum Original", "العودة إلى الأصل", "恢复原样", "Terug naar origineel", "Voltar ao original", "Återställ", "Вернуть как было", "Przywróć oryginał", "원래대로"], "Mon en-tête": ["My header", "Mi cabecera", "La mia intestazione", "私のヘッダー", "Mein Kopfbereich", "ترويستي", "我的页眉", "Mijn koptekst", "O meu cabeçalho", "Mitt sidhuvud", "Моя шапка", "Mój nagłówek", "나의 헤더"], "Mon fond de page": ["My page background", "Mi fondo de página", "Il mio sfondo", "私のページ背景", "Mein Seitenhintergrund", "خلفية صفحتي", "我的页面背景", "Mijn pagina-achtergrond", "O meu fundo de página", "Min sidbakgrund", "Мой фон страницы", "Moje tło strony", "나의 페이지 배경"], "La façon dont ta photo s'affiche en haut de ta page.": ["How your photo is shown at the top of your page.", "Cómo se muestra tu foto arriba de tu página.", "Come appare la tua foto in cima alla pagina.", "ページ上部での写真の見せ方。", "Wie dein Foto oben auf deiner Seite erscheint.", "طريقة ظهور صورتك أعلى صفحتك.", "你的照片在页面顶部的显示方式。", "Hoe je foto bovenaan je pagina verschijnt.", "Como a tua foto aparece no topo da tua página.", "Hur ditt foto visas överst på din sida.", "Как твоё фото выглядит вверху страницы.", "Jak twoje zdjęcie wyświetla się u góry strony.", "페이지 상단에 사진이 보이는 방식이야."], "Choisis l'ambiance de ta page.": ["Choose the mood of your page.", "Elige el ambiente de tu página.", "Scegli l'atmosfera della tua pagina.", "ページの雰囲気を選んでね。", "Wähl die Stimmung deiner Seite.", "اختر أجواء صفحتك.", "选择你页面的氛围。", "Kies de sfeer van je pagina.", "Escolhe o ambiente da tua página.", "Välj stämningen på din sida.", "Выбери настроение своей страницы.", "Wybierz klimat swojej strony.", "페이지 분위기를 골라 봐."], "Valider": ["Confirm", "Confirmar", "Conferma", "決定", "Bestätigen", "تأكيد", "确定", "Bevestigen", "Confirmar", "Bekräfta", "Подтвердить", "Zatwierdź", "확인"], "Enregistrement impossible, réessaie.": ["Couldn't save, try again.", "No se pudo guardar, inténtalo de nuevo.", "Salvataggio non riuscito, riprova.", "保存できませんでした。もう一度試してね。", "Speichern nicht möglich, versuch es nochmal.", "تعذّر الحفظ، حاول مجددًا.", "无法保存，请重试。", "Opslaan mislukt, probeer opnieuw.", "Não foi possível guardar, tenta de novo.", "Kunde inte spara, försök igen.", "Не удалось сохранить, попробуй ещё раз.", "Nie udało się zapisać, spróbuj ponownie.", "저장하지 못했어. 다시 해 봐."], "Nuit": ["Night", "Noche", "Notte", "ナイト", "Nacht", "ليل", "夜色", "Nacht", "Noite", "Natt", "Ночь", "Noc", "나이트"], "Ébène": ["Ebony", "Ébano", "Ebano", "エボニー", "Ebenholz", "أبنوس", "乌木", "Ebbenhout", "Ébano", "Ebenholts", "Эбеновый", "Heban", "흑단"], "Encre": ["Ink", "Tinta", "Inchiostro", "インク", "Tinte", "حبر", "墨蓝", "Inkt", "Tinta", "Bläck", "Чернила", "Atrament", "잉크"], "Forêt": ["Forest", "Bosque", "Foresta", "フォレスト", "Wald", "غابة", "森林", "Bos", "Floresta", "Skog", "Лес", "Las", "숲"], "Dégradé": ["Gradient", "Degradado", "Sfumato", "グラデーション", "Verlauf", "تدرج", "渐变", "Verloop", "Degradê", "Toning", "Градиент", "Gradient", "그라데이션"], "Photo floutée": ["Blurred photo", "Foto difuminada", "Foto sfocata", "ぼかし写真", "Unscharfes Foto", "صورة ضبابية", "模糊照片", "Vervaagde foto", "Foto desfocada", "Suddigt foto", "Размытое фото", "Rozmyte zdjęcie", "흐린 사진"], "Ivoire (essai)": ["Ivory (trial)", "Marfil (prueba)", "Avorio (prova)", "アイボリー（試用）", "Elfenbein (Test)", "عاجي (تجربة)", "象牙白（试用）", "Ivoor (test)", "Marfim (teste)", "Elfenben (test)", "Слоновая кость (тест)", "Kość słoniowa (test)", "아이보리 (테스트)"], "Grande photo": ["Large photo", "Foto grande", "Foto grande", "大きな写真", "Großes Foto", "صورة كبيرة", "大图", "Grote foto", "Foto grande", "Stort foto", "Большое фото", "Duże zdjęcie", "큰 사진"], "Bandeau": ["Banner", "Banda", "Banda", "バナー", "Banner", "شريط", "横幅", "Banner", "Faixa", "Banderoll", "Баннер", "Baner", "배너"], "Portrait": ["Portrait", "Retrato", "Ritratto", "ポートレート", "Porträt", "صورة شخصية", "头像", "Portret", "Retrato", "Porträtt", "Портрет", "Portret", "인물 사진"], "Personnaliser la fiche": ["Customize the profile", "Personalizar la ficha", "Personalizza la scheda", "プロフィールをカスタマイズ", "Steckbrief gestalten", "تخصيص البطاقة", "自定义档案", "Profiel aanpassen", "Personalizar a ficha", "Anpassa profilen", "Настроить карточку", "Personalizuj profil", "프로필 꾸미기"], "Blocs": ["Blocks", "Bloques", "Blocchi", "ブロック", "Blöcke", "الكتل", "区块", "Blokken", "Blocos", "Block", "Блоки", "Bloki", "블록"], "Raccourcis": ["Shortcuts", "Accesos", "Scorciatoie", "ショートカット", "Verknüpfungen", "اختصارات", "快捷入口", "Snelkoppelingen", "Atalhos", "Genvägar", "Ярлыки", "Skróty", "바로가기"], "Identité & origines": ["Identity & pedigree", "Identidad y orígenes", "Identità e origini", "プロフィールと血統", "Identität & Abstammung", "الهوية والأصول", "身份与血统", "Identiteit & afstamming", "Identidade e origens", "Identitet & härstamning", "Личность и происхождение", "Tożsamość i pochodzenie", "정보와 혈통"], "IPO": ["IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO", "IPO"], "Coupes et flots": ["Trophies and rosettes", "Copas y escarapelas", "Coppe e coccarde", "トロフィーとロゼット", "Pokale und Schleifen", "الكؤوس والأوسمة", "奖杯与绶带", "Bekers en rozetten", "Taças e rosetas", "Pokaler och rosetter", "Кубки и розетки", "Puchary i floty", "트로피와 리본"], "Résumé des résultats": ["Results summary", "Resumen de resultados", "Riepilogo dei risultati", "成績の概要", "Ergebnisübersicht", "ملخص النتائج", "成绩概要", "Resultatenoverzicht", "Resumo dos resultados", "Resultatöversikt", "Сводка результатов", "Podsumowanie wyników", "성적 요약"], "Derniers résultats": ["Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج", "最近成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultat", "Последние результаты", "Ostatnie wyniki", "최근 성적"], "Principaux résultats": ["Main results", "Resultados principales", "Risultati principali", "主な成績", "Wichtigste Ergebnisse", "أبرز النتائج", "主要成绩", "Belangrijkste resultaten", "Principais resultados", "Främsta resultat", "Главные результаты", "Najważniejsze wyniki", "주요 성적"], "Vidéos et souvenirs": ["Videos and memories", "Vídeos y recuerdos", "Video e ricordi", "動画と思い出", "Videos und Erinnerungen", "فيديوهات وذكريات", "视频与回忆", "Video's en herinneringen", "Vídeos e recordações", "Videor och minnen", "Видео и воспоминания", "Filmy i wspomnienia", "영상과 추억"], "Partager sa fiche": ["Share this profile", "Compartir ficha", "Condividi la scheda", "プロフィールを共有", "Steckbrief teilen", "مشاركة البطاقة", "分享档案", "Profiel delen", "Partilhar a ficha", "Dela profilen", "Поделиться карточкой", "Udostępnij profil", "프로필 공유"], "Masque ou réaffiche les blocs de la fiche": ["Hide or show the profile's blocks", "Oculta o muestra los bloques de la ficha", "Nascondi o mostra i blocchi della scheda", "プロフィールのブロックを表示・非表示", "Blende die Blöcke des Steckbriefs aus oder ein", "أخفِ كتل البطاقة أو أظهرها", "隐藏或显示档案的区块", "Verberg of toon de blokken van het profiel", "Esconde ou mostra os blocos da ficha", "Dölj eller visa profilens block", "Скрывай или показывай блоки карточки", "Ukryj lub pokaż bloki profilu", "프로필 블록을 숨기거나 보여 줘"], "Les blocs de la fiche": ["The profile's blocks", "Los bloques de la ficha", "I blocchi della scheda", "プロフィールのブロック", "Die Blöcke des Steckbriefs", "كتل البطاقة", "档案的区块", "De blokken van het profiel", "Os blocos da ficha", "Profilens block", "Блоки карточки", "Bloki profilu", "프로필 블록"], "Les visiteurs ne voient pas les blocs masqués.": ["Visitors don't see hidden blocks.", "Los visitantes no ven los bloques ocultos.", "I visitatori non vedono i blocchi nascosti.", "訪問者には非表示のブロックは見えません。", "Besucher sehen ausgeblendete Blöcke nicht.", "لا يرى الزوار الكتل المخفية.", "访客看不到隐藏的区块。", "Bezoekers zien verborgen blokken niet.", "Os visitantes não veem os blocos escondidos.", "Besökare ser inte dolda block.", "Посетители не видят скрытые блоки.", "Odwiedzający nie widzą ukrytych bloków.", "방문자는 숨긴 블록을 볼 수 없어."]};
+  function PZC(fr) { var t = PZC_TR[fr]; return t ? T.apply(null, [fr].concat(t)) : fr; }
+  var PZC_BLOCS = [["raccourcis", "Raccourcis"], ["identite", "Identité & origines"], ["ipo", "IPO"], ["coupes", "Coupes et flots"], ["resume", "Résumé des résultats"], ["derniers", "Derniers résultats"], ["principaux", "Principaux résultats"], ["medias", "Vidéos et souvenirs"], ["partage", "Partager sa fiche"]];
+  var PZC_FONDS = [["nuit", "Nuit", null], ["ebene", "Ébène", "#0F0B07"], ["encre", "Encre", "#060A16"], ["foret", "Forêt", "#050F0B"], ["degrade", "Dégradé", "linear-gradient(180deg,#05080B 0%,#0C1418 45%,#14100A 100%)"], ["photo", "Photo floutée", "PHOTO"], ["ivoire", "Ivoire (essai)", "#F4EFE6"]];
+  var PZC_ENTETES = [["grand", "Grande photo"], ["bandeau", "Bandeau"], ["portrait", "Portrait"]];
+  var _pzc = React.useState(null), pzc = _pzc[0], setPzc = _pzc[1];
+  var _pzcm = React.useState(false), modePzc = _pzcm[0], setModePzc = _pzcm[1];
+  var _pzcb = React.useState(null), brouillonPzc = _pzcb[0], setBrouillonPzc = _pzcb[1];
+  var _pzcf = React.useState(null), feuillePzc = _pzcf[0], setFeuillePzc = _pzcf[1];
+  var _pzce = React.useState(""), erreurPzc = _pzce[0], setErreurPzc = _pzce[1];
+  var racinePzcRef = React.useRef(null);
+  var idPzc = (c && c.dbId) || (chevalDyn && chevalDyn.dbId) || null;
+  React.useEffect(function () { var okP = true; setPzc(null); if (!idPzc) return; (async function () { try { var rP = await supa.rpc("cheval_perso_lire", { p_cheval: idPzc }); if (okP && rP && !rP.error && rP.data) setPzc(rP.data); } catch (eP) { } })(); return function () { okP = false; }; }, [idPzc]);
+  var proprioPzc = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+  var peutPzc = proprioPzc && !!idPzc && (typeof estModerateurHype === "function" && moi && estModerateurHype(moi));   /* TEST : moderatrice seulement ; ensuite : proprietaire Premium */
+  var pzcActif = (modePzc ? brouillonPzc : pzc) || {};
+  function pzcCache(k) { return Array.isArray(pzcActif.caches) && pzcActif.caches.indexOf(k) >= 0; }
+  function pzcChanger(f) { setBrouillonPzc(function (b) { var n = Object.assign({}, b || {}); f(n); return n; }); }
+  function pzcBasculer(k) { pzcChanger(function (n) { var cc = Array.isArray(n.caches) ? n.caches.slice() : []; var i = cc.indexOf(k); if (i >= 0) cc.splice(i, 1); else cc.push(k); n.caches = cc; }); }
+  function pzM(k, el) {
+    if (!el) return el;
+    if (!pzcCache(k)) return el;
+    if (!modePzc) return null;
+    return h("div", { style: { position: "relative" } }, h("div", { style: { opacity: 0.3, filter: "grayscale(0.6)", pointerEvents: "none" } }, el),
+      h("div", { style: { position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.35)", background: "rgba(5,8,11,0.85)", whiteSpace: "nowrap", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", color: "#F3EEE4", zIndex: 5 } }, PZC("Masqué pour les visiteurs")));
+  }
+  function pzcFondDe() { for (var i = 0; i < PZC_FONDS.length; i++) if (PZC_FONDS[i][0] === pzcActif.fond) return PZC_FONDS[i]; return PZC_FONDS[0]; }
+  function pzcFondCss(defaut) { var f = pzcFondDe(); return (f[2] && f[2] !== "PHOTO") ? f[2] : defaut; }
+  function pzcPhoto() { return (chevalDyn && chevalDyn.photo) || (c && c.photo) || ""; }
+  function pzcFondPhoto() { if (pzcFondDe()[2] !== "PHOTO" || !pzcPhoto()) return null; return h("div", { key: "pzcFondPhoto", "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: -1, overflow: "hidden", pointerEvents: "none" } }, h("div", { style: { position: "absolute", inset: -40, background: "url(" + pzcPhoto() + ") center/cover", filter: "blur(22px) saturate(0.8)", opacity: 0.32 } })); }
+  var pzcEntete = pzcActif.entete || "grand";
+  function pzcOuvrir() { setBrouillonPzc(Object.assign({}, pzc || {})); setModePzc(true); }
+  function pzcAnnuler() { setModePzc(false); setFeuillePzc(null); setBrouillonPzc(null); }
+  async function pzcTerminer() {
+    var b = brouillonPzc || {}, avant = pzc; setPzc(b); setModePzc(false); setFeuillePzc(null);
+    try { var rS = await supa.from("cheval_perso").upsert({ cheval_id: idPzc, reglages: b, maj: new Date().toISOString() }); if (rS && rS.error) throw rS.error; }
+    catch (eT) { setPzc(avant); setErreurPzc(PZC("Enregistrement impossible, réessaie.")); setTimeout(function () { setErreurPzc(""); }, 4000); }
+  }
+  /* fond Ivoire (essai) : meme principe que la page cavalier, la photo du haut reste sombre */
+  React.useEffect(function () {
+    var el = racinePzcRef.current; if (!el || pzcFondDe()[0] !== "ivoire") return;
+    var TXT = "42,35,27", ACC = "142,122,86";
+    function parse(sv) { var m = (sv || "").match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1 : +m[4]] : null; }
+    function lum(x) { return (0.299 * x[0] + 0.587 * x[1] + 0.114 * x[2]) / 255; }
+    function estAcc(x) { return x[0] > 150 && x[0] < 235 && x[1] > 120 && x[1] < 210 && x[2] > 70 && x[2] < 175 && x[0] - x[2] > 35; }
+    function grad(sv) { return sv.replace(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/g, function (m, a, b2, d, al) { var v = [+a, +b2, +d]; al = al === undefined ? 1 : +al; if (estAcc(v)) return "rgba(" + ACC + "," + al + ")"; if (lum(v) < 0.25) return "rgba(244,239,230," + al + ")"; if (lum(v) > 0.75) return "rgba(" + TXT + "," + al + ")"; return m; }); }
+    var occupe = false;
+    function traiter(n) {
+      if (n.nodeType !== 1 || n.closest("header.hero,[data-pzc-ui]") || n.hasAttribute("data-pzc-iv")) return;
+      var cs = getComputedStyle(n), st = {};
+      var co = parse(cs.color); if (co) { if (estAcc(co)) st.color = "rgba(" + ACC + "," + co[3] + ")"; else if (lum(co) > 0.6) st.color = "rgba(" + TXT + "," + Math.max(co[3], 0.78) + ")"; }
+      var bg = parse(cs.backgroundColor); if (bg && bg[3] > 0.05) { if (estAcc(bg)) st["background-color"] = "rgba(" + ACC + "," + bg[3] + ")"; else if (lum(bg) < 0.25) st["background-color"] = bg[3] > 0.5 ? "rgba(255,252,246,0.94)" : ("rgba(255,252,246," + bg[3] + ")"); }
+      var bgi = cs.backgroundImage; var photo = /url\(/.test(bgi) || !!n.querySelector("img");
+      if (bgi && bgi !== "none" && /gradient/.test(bgi) && !photo) st["background-image"] = grad(bgi);
+      ["top", "right", "bottom", "left"].forEach(function (cote) { var bo = parse(cs["border" + cote.charAt(0).toUpperCase() + cote.slice(1) + "Color"]); if (!bo || bo[3] === 0) return; if (estAcc(bo)) st["border-" + cote + "-color"] = "rgba(" + ACC + "," + Math.max(bo[3], 0.5) + ")"; else if (lum(bo) > 0.5) st["border-" + cote + "-color"] = "rgba(" + TXT + "," + Math.min(0.25, bo[3] + 0.08) + ")"; });
+      if (n.tagName === "path" || n.tagName === "svg" || n.tagName === "circle") { var k2 = parse(cs.stroke); if (k2 && (estAcc(k2) || lum(k2) > 0.6)) st.stroke = "rgb(" + (estAcc(k2) ? ACC : TXT) + ")"; }
+      var cles = Object.keys(st); if (!cles.length) { n.setAttribute("data-pzc-iv", ""); return; }
+      if (!n.hasAttribute("data-pzc-orig")) n.setAttribute("data-pzc-orig", n.getAttribute("style") || ""); n.setAttribute("data-pzc-iv", "1");
+      cles.forEach(function (kk) { n.style.setProperty(kk, st[kk], "important"); });
+    }
+    var raf = 0, mo = new MutationObserver(function (recs) { if (occupe) return; recs.forEach(function (r) { if (r.type === "attributes" && r.target.removeAttribute) r.target.removeAttribute("data-pzc-iv"); }); if (raf) return; raf = requestAnimationFrame(function () { raf = 0; passe(); }); });
+    function passe() { occupe = true; try { [].slice.call(el.querySelectorAll("*")).forEach(traiter); } finally { occupe = false; } mo.takeRecords(); }
+    passe(); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "class"] });
+    return function () { mo.disconnect(); if (raf) cancelAnimationFrame(raf); [].slice.call(el.querySelectorAll("[data-pzc-iv]")).forEach(function (n) { if (n.hasAttribute("data-pzc-orig")) { var o = n.getAttribute("data-pzc-orig"); if (o) n.setAttribute("style", o); else n.removeAttribute("style"); n.removeAttribute("data-pzc-orig"); } n.removeAttribute("data-pzc-iv"); }); };
+  }, [pzcActif.fond, modePzc]);
+  function pzcBouton() {
+    if (!peutPzc || modePzc) return null;
+    return h("div", { key: "pzcBouton", style: { textAlign: "center", marginTop: 18 } }, h("button", { onClick: pzcOuvrir, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "1px solid #C5AA78", borderRadius: 999, background: "transparent", color: "#C5AA78", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 600, letterSpacing: 0.8, textTransform: "uppercase", cursor: "pointer" } },
+      h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#C5AA78", strokeWidth: 1.8, strokeLinecap: "round" }, h("path", { d: "M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" }), h("circle", { cx: 16, cy: 6, r: 2 }), h("circle", { cx: 10, cy: 12, r: 2 }), h("circle", { cx: 18, cy: 18, r: 2 })),
+      PZC("Personnaliser la fiche")));
+  }
+  function pzcInterface() {
+    var MOp = "'Montserrat',sans-serif", puce = { padding: "7px 12px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.7)", background: "transparent", color: "#C5AA78", fontFamily: MOp, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" };
+    var out = [];
+    if (erreurPzc) out.push(h("div", { key: "pzcErr", "data-pzc-ui": "1", style: { position: "fixed", left: 16, right: 16, bottom: 24, zIndex: 9300, padding: "12px 16px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.25)", background: "#0C1418", color: "#F3EEE4", fontFamily: MOp, fontSize: 13, textAlign: "center" } }, erreurPzc));
+    if (pzcEntete === "portrait") out.push(h("style", { key: "pzcStPortrait" }, ".pzcPortrait > div[aria-hidden] { -webkit-mask-image: none !important; mask-image: none !important; } .pzcPortrait > div[aria-hidden] > img { top: calc(env(safe-area-inset-top) + 64px) !important; bottom: auto !important; left: 50% !important; right: auto !important; inset-inline-end: auto !important; width: 150px !important; height: 150px !important; margin-left: -75px !important; border-radius: 50% !important; object-fit: cover !important; border: 1px solid #C5AA78 !important; box-shadow: 0 12px 34px rgba(0,0,0,0.6) !important; -webkit-mask-image: none !important; mask-image: none !important; }"));
+    if (!modePzc) return out;
+    out.push(h("div", { key: "pzcBarre", "data-pzc-ui": "1", style: { position: "fixed", left: 0, right: 0, top: 0, zIndex: 9000, padding: "calc(env(safe-area-inset-top) + 12px) 16px 12px", background: "#05080B", borderBottom: "1px solid rgba(197,170,120,0.3)" } },
+      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 21, color: "#F3EEE4", lineHeight: 1.1 } }, PZC("Mode personnalisation")),
+          h("div", { style: { fontFamily: MOp, fontSize: 10.5, color: "#BDB6AA", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, (c && c.nom) || "")),
+        h("div", { style: { display: "flex", gap: 8, flexShrink: 0 } },
+          h("button", { onClick: pzcAnnuler, style: Object.assign({}, puce, { border: "1px solid rgba(243,238,228,0.25)", color: "#BDB6AA" }) }, PZC("Annuler")),
+          h("button", { onClick: pzcTerminer, style: Object.assign({}, puce, { padding: "8px 16px", fontSize: 12.5 }) }, PZC("Terminé")))),
+      h("div", { style: { display: "flex", gap: 8, marginTop: 10, overflowX: "auto" } },
+        h("button", { onClick: function () { setFeuillePzc("blocs"); }, style: puce }, PZC("Blocs")),
+        h("button", { onClick: function () { setFeuillePzc("fond"); }, style: puce }, PZC("Fond")),
+        h("button", { onClick: function () { setFeuillePzc("entete"); }, style: puce }, PZC("En-tête")),
+        h("button", { onClick: function () { setBrouillonPzc({}); }, style: Object.assign({}, puce, { border: "1px solid rgba(243,238,228,0.25)", color: "#BDB6AA" }) }, PZC("Revenir à l'origine")))));
+    if (feuillePzc) {
+      var estB = feuillePzc === "blocs", estE = feuillePzc === "entete";
+      var titre = estB ? PZC("Les blocs de la fiche") : (estE ? PZC("Mon en-tête") : PZC("Mon fond de page"));
+      var sous = estB ? PZC("Les visiteurs ne voient pas les blocs masqués.") : (estE ? PZC("La façon dont ta photo s'affiche en haut de ta page.") : PZC("Choisis l'ambiance de ta page."));
+      var contenu;
+      if (estB) {
+        contenu = h("div", null, PZC_BLOCS.map(function (b) {
+          var cache = pzcCache(b[0]);
+          return h("button", { key: b[0], onClick: function () { pzcBasculer(b[0]); }, style: { display: "flex", alignItems: "center", width: "100%", gap: 12, padding: "12px 4px", border: 0, borderBottom: "1px solid rgba(243,238,228,0.07)", background: "transparent", color: cache ? "#878D8E" : "#F3EEE4", fontFamily: MOp, fontSize: 14, textAlign: "start", cursor: "pointer" } },
+            h("span", { style: { flex: 1 } }, PZC(b[1])),
+            h("span", { "aria-hidden": "true", style: { width: 42, height: 24, borderRadius: 999, border: cache ? "1px solid rgba(243,238,228,0.25)" : "1px solid #C5AA78", position: "relative", boxSizing: "border-box", flexShrink: 0 } },
+              h("span", { style: { position: "absolute", top: 3, left: cache ? 3 : 21, width: 16, height: 16, borderRadius: "50%", background: cache ? "rgba(243,238,228,0.35)" : "#C5AA78", transition: "left .2s" } })));
+        }));
+      } else {
+        var liste = estE ? PZC_ENTETES : PZC_FONDS, actuel = estE ? (pzcActif.entete || "grand") : (pzcActif.fond || "nuit"), ph = pzcPhoto();
+        contenu = h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 } }, liste.map(function (x) {
+          var on = x[0] === actuel;
+          var apercu = estE
+            ? h("div", { style: { height: 56, borderRadius: 9, marginBottom: 8, background: "#16232A", position: "relative", overflow: "hidden" } },
+                x[0] === "portrait" ? h("div", { style: { position: "absolute", left: "50%", top: 8, width: 30, height: 30, marginLeft: -15, borderRadius: "50%", border: "1px solid #C5AA78", background: "url(" + ph + ") center/cover" } })
+                  : h("div", { style: { position: "absolute", left: 0, right: 0, top: 0, height: x[0] === "bandeau" ? "55%" : "100%", background: "url(" + ph + ") center 25%/cover", opacity: 0.85 } }))
+            : h("div", { style: { height: 56, borderRadius: 9, marginBottom: 8, border: "1px solid rgba(243,238,228,0.1)", background: x[2] === "PHOTO" ? ("linear-gradient(rgba(5,8,11,0.55),rgba(5,8,11,0.75)), url(" + ph + ") center/cover") : (x[2] || "#060709") } });
+          return h("button", { key: x[0], onClick: function () { pzcChanger(function (n) { if (estE) n.entete = x[0]; else n.fond = x[0]; }); }, style: { padding: "10px 8px", borderRadius: 14, border: on ? "1px solid #C5AA78" : "1px solid rgba(243,238,228,0.12)", background: "transparent", color: on ? "#F3EEE4" : "#BDB6AA", fontFamily: MOp, fontSize: 12, cursor: "pointer" } }, apercu, PZC(x[1]));
+        }));
+      }
+      out.push(h("div", { key: "pzcVoile", "data-pzc-ui": "1", onClick: function () { setFeuillePzc(null); }, style: { position: "fixed", inset: 0, zIndex: 9100, background: "rgba(2,4,6,0.55)" } }));
+      out.push(h("div", { key: "pzcFeuille", "data-pzc-ui": "1", style: { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9101, maxHeight: "72vh", overflowY: "auto", background: "linear-gradient(180deg,#0E161A,#070B0E)", borderTop: "1px solid rgba(197,170,120,0.35)", borderRadius: "22px 22px 0 0", padding: "10px 18px calc(env(safe-area-inset-bottom) + 22px)", boxSizing: "border-box", color: "#F3EEE4", fontFamily: MOp } },
+        h("div", { style: { width: 42, height: 4, borderRadius: 4, background: "rgba(243,238,228,0.25)", margin: "0 auto 14px" } }),
+        h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 26 } }, titre),
+        h("div", { style: { fontSize: 12, color: "#BDB6AA", marginTop: 2, marginBottom: 14 } }, sous),
+        contenu,
+        h("button", { onClick: function () { setFeuillePzc(null); }, style: Object.assign({}, puce, { display: "block", width: "100%", marginTop: 18, padding: "12px", fontSize: 12.5 }) }, PZC("Valider"))));
+    }
+    return out;
+  }
   /* 03/11 (Blandine : classement des chevaux les plus populaires, « nombre de visites ») : une visite = une personne connectée qui ouvre la fiche
      d'un cheval qui n'est pas le sien ; comptée une fois par personne (table hype_vues, type « cheval », date mise à jour à chaque passage). */
   React.useEffect(function () {
@@ -2878,7 +3009,7 @@ async function supprimerSouvenirOuvert() {
       finPageCh());
   }
 
-  return h("div", { className: "chv chvr" + (largeCh ? " chvL" : "") + (menuCh ? " chvD" : "") + (nouvV4 ? " chvN" : "") /* 15/10 (1149) fiche sur tablette (chvL, des 768 px) et ordinateur (chvD, des 1024 px) */, style: { "--teinte": teinte, position: "relative", zIndex: 0, background: "#060709" } },
+  return h("div", { className: "chv chvr" + (largeCh ? " chvL" : "") + (menuCh ? " chvD" : "") + (nouvV4 ? " chvN" : "") /* 15/10 (1149) fiche sur tablette (chvL, des 768 px) et ordinateur (chvD, des 1024 px) */, ref: racinePzcRef, style: { "--teinte": teinte, position: "relative", zIndex: 0, background: pzcFondCss("#060709") } }, pzcFondPhoto(), pzcInterface(),   /* 07/11 personnalisation */
     null /* 13/10 (1077) Blandine : « si on doit passer en fond de page normal, utilise la presentation de fond de page de la v3 » : plus d image de fond (images/FOND_SANTE.webp) sous la fiche, le noir uni de l accueil / de la V3 (#060709), porte par .chv. La photo du cheval du haut se fond dedans. */,
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_CSS } }),
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_R_CSS } }),
@@ -2965,7 +3096,9 @@ async function supprimerSouvenirOuvert() {
           } catch (eEb) { return ""; }
         })();
         var hPhotoH = largeCh ? (menuCh ? "438px" : "358px") /* 29/10 : +58 px (photo descendue sous la ligne des boutons, comme Histoire / Photos) */ : "calc(env(safe-area-inset-top) + 360px)";   /* 13/10 (1072) hauteur de la photo seule */
-        return h("header", { className: "hero", style: { position: "relative", background: "transparent", padding: 0, height: largeCh ? ("calc(" + hPhotoH + " + 92px)") : "calc(env(safe-area-inset-top) + 360px + 84px)" /* (1072) photo + bande du titre dessous */, minHeight: 0, overflow: "hidden", marginBottom: 4 } },
+        if (pzcEntete === "bandeau") hPhotoH = largeCh ? (menuCh ? "330px" : "270px") : "calc(env(safe-area-inset-top) + 250px)";
+        if (pzcEntete === "portrait") hPhotoH = largeCh ? (menuCh ? "300px" : "260px") : "calc(env(safe-area-inset-top) + 236px)";   /* portrait : photo ronde, en-tete plus court */   /* 07/11 personnalisation : en-tete bandeau */
+        return h("header", { className: "hero" + (pzcEntete === "portrait" ? " pzcPortrait" : ""), style: { position: "relative", background: pzcFondDe()[0] === "ivoire" ? "linear-gradient(180deg,#060709 0%,#060709 86%,#F4EFE6 100%)" : "transparent", padding: 0, height: largeCh ? ("calc(" + hPhotoH + " + 92px)") : ("calc(" + hPhotoH + " + 84px)") /* (1072) photo + bande du titre dessous */, minHeight: 0, overflow: "hidden", marginBottom: 4 } },
           /* 12/10 (1066) Blandine : « applique le meme systeme de hero que la V2 » et « descends les titres plus bas qu ils
              n empietent pas trop sur la photo ». Comme la V2 (736/742/751/757) : photo sur TOUTE la largeur, cadree sur la tete,
              haut legerement assombri (lisibilite des boutons), bas qui rejoint le fond, fondu lateral cote texte ; nom en bas,
@@ -3093,13 +3226,13 @@ async function supprimerSouvenirOuvert() {
 
         null, /* 31/07 soir : barre de chapitres RETIREE (remplacee par les 3 cartes du haut, demande Blandine) */
         /* 13/10 (1076) Blandine : « mets la petite phrase de la v3 au dessus des cartes » (meme police manuscrite champagne que l accueil) */
-        h("div", { key: "phraseV3", style: { margin: "26px 16px 0", textAlign: "center", color: "#DCCBAA", fontFamily: "'Parisienne','Cormorant Garamond',Georgia,cursive", fontSize: 22, lineHeight: 1.4, letterSpacing: ".2px" } },
+        pzcBouton(), h("div", { key: "phraseV3", style: { margin: "26px 16px 0", textAlign: "center", color: "#DCCBAA", fontFamily: "'Parisienne','Cormorant Garamond',Georgia,cursive", fontSize: 22, lineHeight: 1.4, letterSpacing: ".2px" } },
           h("style", null, "@import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');"),
           T("Chaque cheval a son histoire,", "Every horse has its story,", "Cada caballo tiene su historia,", "Ogni cavallo ha la sua storia,", "どの馬にも物語があり、", "Jedes Pferd hat seine Geschichte,", "لكل حصان قصته،", "每匹马都有自己的故事，", "Elk paard heeft zijn verhaal,", "Todo cavalo tem sua história,", "Varje häst har sin historia,", "У каждой лошади есть своя история,", "Każdy koń ma swoją historię,", "모든 말에게는 저마다의 이야기가 있어요,"),
           h("br", null),
           T("la sienne s’écrit ici.", "this one is written here.", "la suya se escribe aquí.", "la sua si scrive qui.", "その物語はここに綴られる。", "seine wird hier geschrieben.", "وقصته تُكتب هنا.", "它的故事就写在这里。", "het hare wordt hier geschreven.", "a dele é escrita aqui.", "den här skrivs här.", "её история пишется здесь.", "jego historia pisze się tutaj.", "그 이야기는 여기에서 쓰여요.")),
         /* (1076) « passe les 6 cartes au dessus » : la grille des 6 tuiles remonte AVANT la carte Origines */
-        (function () { /* 31/07 soir : les 3 raccourcis remontent sous le badge, en grille compacte de 3 (demande Blandine) */
+        pzM("raccourcis", (function () { /* 31/07 soir : les 3 raccourcis remontent sous le badge, en grille compacte de 3 (demande Blandine) */
           var nbR = ((palmTous && palmTous.length) || 0) + ((c.flots && c.flots.length) || 0);
           function carteR(img3, ic3, ti3, cta3, act3, kR) {
             /* 10/10 (901) Blandine : « applique exactement le design des tuiles de l accueil, et leurs couleurs » (.acc2-tuile) :
@@ -3146,10 +3279,10 @@ async function supprimerSouvenirOuvert() {
               T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식"),
               T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f", "\u00d6ffnen", "\u0641\u062a\u062d", "打开", "Openen", "Abrir", "Öppna", "Открыть", "Otwórz", "열기"),
               function () { setPanneau("actualite"); }, "rn")); /* 14/09 (127) : la carte n est plus grisee, la page est ouverte */ /* 29/08 : carte grisee et non cliquable (demande Blandine) — la page existe deja (panneau "actualite") mais reste fermee le temps de decider qui publie et ce qu'est un post */
-        })(),
+        })()),
         /* (1081) titre de section au-dessus de la carte, comme la V2 */
-        h("h2", { key: "titreOrigV1", style: { margin: "40px 20px 14px" /* 13/10 (1093) ecart unique de 40 px entre les chapitres (mesure) */, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 22, lineHeight: 1.2, color: "#F3EEE4" } }, T("Identité & origines", "Identity & bloodline", "Identidad y orígenes", "Identità e origini", "プロフィールと血統", "Identität & Herkunft", "الهوية والنسب", "身份与血统", "Identiteit & afstamming", "Identidade e origens", "Identitet & ursprung", "Данные и происхождение", "Tożsamość i pochodzenie", "기본 정보 & 혈통")),
-        h("div", { id: "chvInfos", style: { perspective: 1200, margin: "0 16px 0" /* (1081) le titre porte l ecart */ } },   /* 13/10 (1071) bas 26 -> 0 : un seul ecart de 28 px entre les blocs */ /* (832) 22 -> 34 px au-dessus (Blandine : « un peu d espace au-dessus de l onglet des origines aussi ») */ /* 10/10 (823) Blandine : « un peu plus d espace en dessous de l encart des origines » (0 -> 26 px) */ /* 31/07 : espace sous le badge */ /* 31/07 : carte Origines qui se retourne (maquette validee) */
+        pzM("identite", h("h2", { key: "titreOrigV1", style: { margin: "40px 20px 14px" /* 13/10 (1093) ecart unique de 40 px entre les chapitres (mesure) */, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 22, lineHeight: 1.2, color: "#F3EEE4" } }, T("Identité & origines", "Identity & bloodline", "Identidad y orígenes", "Identità e origini", "プロフィールと血統", "Identität & Herkunft", "الهوية والنسب", "身份与血统", "Identiteit & afstamming", "Identidade e origens", "Identitet & ursprung", "Данные и происхождение", "Tożsamość i pochodzenie", "기본 정보 & 혈통"))),
+        pzM("identite", h("div", { id: "chvInfos", style: { perspective: 1200, margin: "0 16px 0" /* (1081) le titre porte l ecart */ } },   /* 13/10 (1071) bas 26 -> 0 : un seul ecart de 28 px entre les blocs */ /* (832) 22 -> 34 px au-dessus (Blandine : « un peu d espace au-dessus de l onglet des origines aussi ») */ /* 10/10 (823) Blandine : « un peu plus d espace en dessous de l encart des origines » (0 -> 26 px) */ /* 31/07 : espace sous le badge */ /* 31/07 : carte Origines qui se retourne (maquette validee) */
           h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", height: origOuv ? "min(58svh, 520px)" : "auto" } }, /* 31/07 soir : overflow:hidden RETIRE — il aplatissait le preserve-3d (dos jamais affiche, face avant vue en miroir) */
             h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid rgba(214,196,161,0.42)", borderRadius: 18, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (897) */, padding: "12px" /* (1081) comme la V2 */ } },
               (function () {
@@ -3332,7 +3465,7 @@ async function supprimerSouvenirOuvert() {
                 "Um den IPO (oder einen anderen Index) bestätigen zu lassen, importiere einen Screenshot einer Seite, die ihn zeigt: IFCE, Info Chevaux, Horsetelex…",
                 "لاعتماد مؤشر IPO (أو مؤشر آخر)، استوردي لقطة شاشة لموقع يذكره: IFCE وInfo Chevaux وHorsetelex…", "想让 IPO（或其他指标）通过验证，请导入提到它的网站截图：IFCE、Info Chevaux、Horsetelex…", "Om de IPO (of een andere index) te laten valideren, importeer je een screenshot van een website waarop die staat: IFCE, Info Chevaux, Horsetelex…", "Para validar o IPO (ou outro índice), importe a captura de um site que o mencione: IFCE, Info Chevaux, Horsetelex…", "För att få IPO (eller ett annat index) verifierat, importera en skärmdump från en webbplats som nämner det: IFCE, Info Chevaux, Horsetelex…", "Чтобы подтвердить IPO (или другой индекс), загрузи скриншот сайта, где он указан: IFCE, Info Chevaux, Horsetelex…", "Aby zatwierdzić IPO (lub inny indeks), zaimportuj zrzut ekranu ze strony, która go podaje: IFCE, Info Chevaux, Horsetelex…", "IPO(또는 다른 지수)를 확인받으려면 해당 정보가 나온 사이트의 캡처를 가져오세요: IFCE, Info Chevaux, Horsetelex…")));
         })(),
-        null, null))))),
+        null, null)))))),
         null /* (1076) les 6 tuiles sont remontees au-dessus de la carte Origines */,
         
         
@@ -3509,7 +3642,7 @@ async function supprimerSouvenirOuvert() {
            rail de flots non plus n a pas bouge d un pixel — seulement sa
            place, avec l accord explicite de Blandine (la passation du 24/08
            le disait INTOUCHABLE : cela vaut pour son contenu et son style). */
-        (ongletPerf === "coupes") ? (function () { /* 31/07 soir : carte IPO REMISE sous les coupes — elle etait piegee dans l etat vide, donc jamais affichee pour un cheval ayant coupes ou resultats */
+        pzM("ipo", (ongletPerf === "coupes") ? (function () { /* 31/07 soir : carte IPO REMISE sous les coupes — elle etait piegee dans l etat vide, donc jamais affichee pour un cheval ayant coupes ou resultats */
           var ogI = c.origines || {};
           var ixI = (ogI.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */; });
           if (!ixI.length) return null;
@@ -3531,16 +3664,16 @@ async function supprimerSouvenirOuvert() {
             lblI ? h("div", { style: { flexShrink: 0, marginLeft: "auto", textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3), maxWidth: 120 } },
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pI, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblI),
               h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#A39D92", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde", "\u062e\u064a\u0648\u0644 \u0631\u064a\u0627\u0636\u064a\u0629", "运动马", "sportpaarden", "cavalos de esporte", "sporthästar", "спортивные лошади", "konie sportowe", "스포츠 말"))) : null);
-        })() : null,
+        })() : null),
 
         null, /* 25/08 : pilule Coupes retiree (Blandine) — le rail reste ; l'onglet Resultats etait deja retire (s152) */
-        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise chvCoupes" /* (1149) */, style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 34 /* (901) plus d air sous les coupes (10 -> 34) */ } },
+        pzM("coupes", (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise chvCoupes" /* (1149) */, style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 34 /* (901) plus d air sous les coupes (10 -> 34) */ } },
           c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
             return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") { setVisionneuseAlbumId(null); setVisionneuse(fl.img); } else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
               fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
                 : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
               fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(243,238,228,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
-          }).concat(peutSaisirResultat ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+          }).concat(peutSaisirResultat ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null), /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
 
 
         /* ═══ 22/08 session 152 — LE RÉSUMÉ DES RÉSULTATS ═══════════════
@@ -3550,7 +3683,7 @@ async function supprimerSouvenirOuvert() {
            catégorie, hauteurs FIXES à 62 px, noms jamais coupés,
            plafond à SEPT puis « et N autres ».
            🟥 Se pose SOUS la carte IPO. Le rail de coupes reste intact.  */
-        (function () {
+        pzM("resume", (function () {
           var lignes = (lignesPourModule || []).filter(function (r) {
             return r && (r.place != null || r.classement);
           });
@@ -3752,7 +3885,7 @@ async function supprimerSouvenirOuvert() {
                 : T("Aucun r\u00e9sultat pour l'instant", "No results yet", "A\u00fan sin resultados",
                     "Nessun risultato", "\u307e\u3060\u6210\u7e3e\u306f\u3042\u308a\u307e\u305b\u3093",
                     "Noch keine Ergebnisse", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c \u062d\u0627\u0644\u064a\u0627", "暂时还没有成绩", "Nog geen resultaten", "Nenhum resultado por enquanto", "Inga resultat ännu", "Пока нет результатов", "Na razie brak wyników", "아직 결과가 없어요")));
-        })(),
+        })()),
 
         /* ═══ 25/08 session 163 — LE BLOC DÉCOUVERTE, À SA VRAIE PLACE ═══
            🟥 IL EST ICI, SOUS LE RÉSUMÉ, ET SURTOUT **HORS DE L ENCART**.
@@ -3828,8 +3961,8 @@ async function supprimerSouvenirOuvert() {
 
         /* 13/10 (1079) Blandine : « mets le visuel de la v2 pour les derniers resultats et les principaux resultats, en adaptant la couleur
            au reste de la page » : titre de section + « Voir tout › », cartes, « + Ajouter un resultat » en texte, puis « Principaux resultats ». */
-        (ongletPerf === "resultats" && palmTous && palmTous.length) ? enteteResV1(T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج", "最近成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultat", "Последние результаты", "Ostatnie wyniki", "최근 결과"), function () { setPanneau("palmares"); }, "22px 16px 16px" /* 13/10 (1093) ecart unique de 40 px entre les chapitres (mesure) */) : null,
-        (ongletPerf === "resultats" && palmTous && palmTous.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 4px" /* (1079) marges de la V2 */, alignItems: "stretch" /* 13/10 (1093) Blandine : « aligne les cartes de resultat sur la meme hauteur » (textes deja limites a 2 lignes) */, scrollbarWidth: "none", animationDelay: ".17s", marginBottom: 16 } },
+        pzM("derniers", (ongletPerf === "resultats" && palmTous && palmTous.length) ? enteteResV1(T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج", "最近成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultat", "Последние результаты", "Ostatnie wyniki", "최근 결과"), function () { setPanneau("palmares"); }, "22px 16px 16px" /* 13/10 (1093) ecart unique de 40 px entre les chapitres (mesure) */) : null),
+        pzM("derniers", (ongletPerf === "resultats" && palmTous && palmTous.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 4px" /* (1079) marges de la V2 */, alignItems: "stretch" /* 13/10 (1093) Blandine : « aligne les cartes de resultat sur la meme hauteur » (textes deja limites a 2 lignes) */, scrollbarWidth: "none", animationDelay: ".17s", marginBottom: 16 } },
           /* 02/09 (Blandine : « je veux la meme chose que sur l ecurie ») — LA CARTE DU
              RAIL REPREND CELLE DE LA PAGE ECURIE, maquette qu elle a validee le 01/09 :
              medaille + annee, PUIS le portrait rond, PUIS « 1er CAVALIER sur CHEVAL »,
@@ -3891,11 +4024,11 @@ async function supprimerSouvenirOuvert() {
             });
           })()
           .concat((false && peutSaisirResultat) /* (1079) remplace par « + Ajouter un resultat » sous les cartes */ ? [h("div", { key: "addresF", role: "button", onClick: function (eAj) { try { eAj.stopPropagation(); } catch (eS2) { } ouvrirAjoutResultat(); }, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
-        : null /* 10/10 (860) l encadre « Ses premiers resultats l attendent » est monte sous la video, au-dessus du bouton d import */,
+        : null) /* 10/10 (860) l encadre « Ses premiers resultats l attendent » est monte sous la video, au-dessus du bouton d import */,
         (false /* 13/10 (1092) retire : l ajout est dans la ligne « Ajouter un resultat ou importer… » */ && ongletPerf === "resultats" && palmTous && palmTous.length && peutSaisirResultat) ? h("div", { style: { margin: "12px 16px 0", textAlign: "end" } },
           h("button", { type: "button", onClick: function () { ouvrirAjoutResultat(); }, style: { background: "none", border: "none", padding: "6px 2px", color: "#D6C4A1", fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 15.5, cursor: "pointer" } },
             "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة", "添加成绩", "Een resultaat toevoegen", "Adicionar um resultado", "Lägg till ett resultat", "Добавить результат", "Dodaj wynik", "결과 추가"))) : null,
-        (function () {   /* (1079) PRINCIPAUX RESULTATS — meilleurs classements (a classement egal, le plus recent), une ligne par epreuve */
+        pzM("principaux", (function () {   /* (1079) PRINCIPAUX RESULTATS — meilleurs classements (a classement egal, le plus recent), une ligne par epreuve */
           if (ongletPerf !== "resultats" || !(resDb && resDb.length)) return null;
           var grpP = {}, ordreP = [];
           resDb.forEach(function (rP) {
@@ -3923,11 +4056,11 @@ async function supprimerSouvenirOuvert() {
                     String(g.pl) + (g.pl === 1 ? "er" : "e"), g.part ? h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10, opacity: 0.75 } }, " / " + g.part) : null),
                   h("span", { "aria-hidden": "true", style: { color: "rgba(214,196,161,0.8)", fontSize: 15 } }, "\u203a"));
               })));
-        })(),
+        })()),
 
         /* 31/07 : l IPO vit dans le chapitre Performances (decision Blandine) */
-        cristal("medias"),
-        h("div", { id: "chapMedias", style: { position: "relative" } },
+        pzM("medias", cristal("medias")),
+        pzM("medias", h("div", { id: "chapMedias", style: { position: "relative" } },
           null /* (902) titre vertical Medias retire */,
           h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, sansDefile: true, sansAlbums: true /* (1036) Blandine : des photos au lieu des albums */, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuseAlbumId(null); setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } }),
             /* 12/10 (1036) Blandine : « mets des photos au lieu des albums sur la page cheval » -> l encart « Les moments recents »
@@ -3940,7 +4073,7 @@ async function supprimerSouvenirOuvert() {
               onAjouter: function () { setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
-        /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
+        /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */))),
         /* 🟥 05/09 (Blandine : "retire le fil pour l'instant, il y en a un deuxieme sur la
            page cheval elle-meme") — cet apercu compact du Fil (rail, sur la page d accueil du
            cheval, AVANT tout onglet) est retire : il faisait doublon avec la page Actualite
@@ -3951,7 +4084,7 @@ async function supprimerSouvenirOuvert() {
            carte Partager sa fiche restent identiques. Le Fil complet (MurHype) et l onglet
            Actualite existent toujours dans le code, prets pour quand Blandine voudra les ouvrir. */
         /* 25/08 : chapitre Sante & sellerie RETIRE de la fiche (cartes Clinique veterinaire + Sellerie) — decision Blandine ; les ecrans clinique/sellerie restent atteignables depuis leurs autres portes */
-        cristal("partage"), h("div", { style: { position: "relative" } }, /* 02/08 : conteneur positionne ajoute — le titre vertical s ancrait a un ancetre lointain et se posait par-dessus le titre d un autre chapitre (bug signale par Blandine) */
+        pzM("partage", cristal("partage")), pzM("partage", h("div", { style: { position: "relative" } }, /* 02/08 : conteneur positionne ajoute — le titre vertical s ancrait a un ancetre lointain et se posait par-dessus le titre d un autre chapitre (bug signale par Blandine) */
           null /* (902) titre vertical Liens & partage retire */,
         h("div", { className: "share rise", style: { position: "relative", animationDelay: ".18s" } },
           h("div", { className: "row" },
@@ -3961,7 +4094,7 @@ async function supprimerSouvenirOuvert() {
             h("div", { className: "qr" }, h("svg", { viewBox: "0 0 24 24" }, h("circle", { cx: 18, cy: 5, r: 2.5 }), h("circle", { cx: 6, cy: 12, r: 2.5 }), h("circle", { cx: 18, cy: 19, r: 2.5 }), h("path", { d: "M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4" })))),   /* (1071) icone de partage (le faux QR hachure faisait « pas fini ») */
           h("button", { className: "btnGhost", onClick: partagerFiche }, T("G\u00e9n\u00e9rer un lien", "Generate a link", "Generar enlace", "Genera un link", "\u30ea\u30f3\u30af\u3092\u751f\u6210", "Link erstellen", "\u0625\u0646\u0634\u0627\u0621 \u0631\u0627\u0628\u0637", "生成链接", "Link maken", "Gerar um link", "Skapa en länk", "Создать ссылку", "Wygeneruj link", "링크 만들기")),
           null, /* 25/08 : encart « Partager sur l'Ecurie Hype » RETIRE — projet Ecurie Hype en suspens (decision Blandine) ; donnees inchangees, aucun cheval departage */
-          null /* 30/07 : ligne FFE retiree (promesse sans backend — decision Blandine ; lien SIRE dans Origines a la place) */)),
+          null /* 30/07 : ligne FFE retiree (promesse sans backend — decision Blandine ; lien SIRE dans Origines a la place) */))),
 
         
 

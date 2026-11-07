@@ -801,6 +801,21 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🐴 07/11/2026 (19 h 35) — FICHE CHEVAL PERSONNALISABLE (TÉLÉPHONE) : EN TEST SUR LE COMPTE DE BLANDINE
+Blandine : « Ok continue et fais tout ce que tu peux faire tu as carte blanche ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| base Supabase | migration cheval_perso | NOUVELLE table cheval_perso (cheval_id, reglages) : écriture par la propriétaire Premium seulement ; lecture publique via cheval_perso_lire (réglages appliqués seulement si la propriétaire est Premium) |
+| hype-ecran-cheval.js | racine | version 9 : bouton « Personnaliser la fiche » (sous le nom) → mode personnalisation : Blocs (masquer/réafficher 9 blocs), Fond (7 dont Ivoire essai), En-tête (grande photo / bandeau / portrait), Revenir à l'origine, Annuler / Terminé |
+| index.html | racine | ?v cheval 8 → 9, build 20261107-1935 (rien d'autre) |
+· TEST : bouton visible seulement si propriétaire du cheval ET compte modératrice.
+· Pas de couleur (décision 12/10 : tous les chevaux aux mêmes couleurs). Pas de déplacement des blocs : la fiche
+  téléphone est en 3 parties (dont celle qui gère le défilement) → viendra avec la nouvelle fiche téléphone.
+· Traduit 14 langues. Testé sur copie : masquer Identité, fond Forêt, en-tête Portrait, Ivoire, enregistrement.
+RESTE : ouvrir aux propriétaires Premium après le test ; tablette/ordinateur (nouvelle fiche) pas encore branchés.
+
+════════════════════════════════════════════════════════════
+
 📚 07/11/2026 (16 h 15) — GALOP 9 · COURS 3 : MÉDICAMENTS PÉRIMÉS (point « À confirmer » de l'audit, confirmé)
 | Fichier | Où | Quoi |
 |---|---|---|
