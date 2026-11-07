@@ -830,6 +830,17 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🤍 08/11/2026 (00 h 30) — FOND IVOIRE : ÉCRITURES NETTES
+Blandine (23 h 21, captures de sa page cavalier en Ivoire) : « C'est joli en blanc mais tout est flou écritures comprises ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 13 : en Ivoire, les ombres noires sous les textes (faites pour le fond sombre) sont retirées → écritures nettes |
+| hype-ecran-cheval.js | racine | version 16 : même correction pour la fiche cheval en Ivoire |
+| index.html | racine | ?v cavalier 12 → 13, cheval 15 → 16, build 20261108-0030 (rien d'autre) |
+· Les fonds sombres ne changent pas. À vérifier sur iPhone : textes nets ; si les photos des cartes paraissent encore voilées, le dire.
+
+════════════════════════════════════════════════════════════
+
 ⛔ 08/11/2026 (00 h 25) — RETOUR EN ARRIÈRE : ANCIENNE FICHE CHEVAL REMISE SUR TÉLÉPHONE
 Blandine (23 h 18) : « C'est quoi ce massacre sur la page cheval plus rien à la bonne taille ».
 | Fichier | Où | Quoi |

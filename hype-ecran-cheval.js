@@ -246,6 +246,8 @@ function EcranCheval() {
       if (bgi && bgi !== "none" && /gradient/.test(bgi) && !photo) st["background-image"] = grad(bgi);
       ["top", "right", "bottom", "left"].forEach(function (cote) { var bo = parse(cs["border" + cote.charAt(0).toUpperCase() + cote.slice(1) + "Color"]); if (!bo || bo[3] === 0) return; if (estAcc(bo)) st["border-" + cote + "-color"] = "rgba(" + ACC + "," + Math.max(bo[3], 0.5) + ")"; else if (lum(bo) > 0.5) st["border-" + cote + "-color"] = "rgba(" + TXT + "," + Math.min(0.25, bo[3] + 0.08) + ")"; });
       if (n.tagName === "path" || n.tagName === "svg" || n.tagName === "circle") { var k2 = parse(cs.stroke); if (k2 && (estAcc(k2) || lum(k2) > 0.6)) st.stroke = "rgb(" + (estAcc(k2) ? ACC : TXT) + ")"; }
+      /* 07/11 (Blandine « tout est flou ecritures comprises ») : les ombres noires des textes faites pour le fond sombre floutent les ecritures sur fond clair -> retirees */
+      if (cs.textShadow && cs.textShadow !== "none") st["text-shadow"] = "none";
       var cles = Object.keys(st); if (!cles.length) { n.setAttribute("data-pzc-iv", ""); return; }
       /* 07/11 : on ne garde que les proprietes touchees (restaurer tout l attribut style ecrasait les mises a jour de React -> blocs deplaces) */ var sv0 = {}; try { sv0 = JSON.parse(n.getAttribute("data-pzc-orig") || "{}") || {}; } catch (eS) { sv0 = {}; } Object.keys(st).forEach(function (kk) { if (!(kk in sv0)) sv0[kk] = [n.style.getPropertyValue(kk), n.style.getPropertyPriority(kk)]; }); n.setAttribute("data-pzc-orig", JSON.stringify(sv0)); n.setAttribute("data-pzc-iv", "1");
       cles.forEach(function (kk) { n.style.setProperty(kk, st[kk], "important"); });
