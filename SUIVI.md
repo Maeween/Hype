@@ -18902,3 +18902,11 @@ Fichier hype-cours-galops-sup.js NON touché (ancien fichier gardé pour les vie
 À faire relire par un natif : nl « takt » / « ritme » à l'obstacle ; de « Galopprhythmus » gardé à l'obstacle.
 
 ════════════════════════════════════════════════════════════
+## 07/11/2026 10h30 — Page Vaccins dans le style de la Vidéothèque (build 20261107-1110, NON PUBLIÉ)
+- Maquette validée par Blandine (« c'est mieux oui », « décolle juste le À jour », « tu peux retirer l'agenda »).
+- La famille Vaccin de la page Santé ouvre maintenant une PAGE plein écran (à la place de la fenêtre du bas) : bouton retour rond + drapeau des langues, photo (images/theme-sante-bai-repos.webp) avec les courbes dorées, titre « Vaccins » / « Le carnet de vaccination. ».
+- Encadré d'état en une seconde : À jour / Rappel bientôt (≤ 15 j) / Rappel dépassé / Aucun vaccin, « Prochaine vaccination le … · grippe + rhinopneumonie », « En règle pour : Club / Poney · Amateur / Pro · SHF · FEI » et les remarques du contrôle (moins de 7 jours, < 3 injections, écart inhabituel). Mêmes règles qu'avant (analyseMaladie).
+- Ligne « Lire le carnet » + « + » (ajouter un vaccin). « Par vaccin » : un onglet par vaccin (Grippe, Rhinopneumonie, Tétanos, Autres) avec l'état, la prochaine date et les jours restants ; il se déroule sur place : dates par année (années plus visibles, lignes resserrées), 8 dernières puis « Voir les N plus anciennes », pages du carnet en vignettes + « Joindre une page ».
+- Pages du carnet en grand (galerie) : passer d'une page à l'autre (glisser, flèches sur ordinateur), Télécharger, Tourner, Supprimer (confirmation habituelle). PDF : « Ouvrir le PDF » + Télécharger.
+- Agenda retiré de la page : idée notée d'un AGENDA GLOBAL de l'écurie avec toutes les dates (à faire plus tard).
+- Textes traduits dans les 14 langues. hype-ecran-sante-cheval.js?v=8. Vérifié sur banc d'essai (iPhone + ordinateur) avec les vrais vaccins du cheval.

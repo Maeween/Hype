@@ -564,10 +564,356 @@ function EcranSanteCheval() {
   /* Le panneau d'une famille : detache vers <body> pour passer au-dessus de la
      barre d'onglets, et termine par la cale de l'encoche. Les lignes y sont les
      memes que celles du Carnet (elles ouvrent la feuille de saisie). */
+  /* 07/11 (Blandine, maquette validee le 07/11 vers 10h : « dans le design de la vidéothèque », drapeau des langues,
+     « un petit À jour et prochaine vaccination le xxx » en haut, chaque vaccin dans son onglet « qui se déroule quand on
+     clique dessus avec le reste des infos et les images », images « en grand » et téléchargeables ; agenda retiré :
+     il y aura un agenda global de l'écurie). PAGE VACCINS plein écran, a la place de la fenetre « Vaccin ». */
+  var stVt = React.useState(false); var vacTout = stVt[0], setVacTout = stVt[1];        /* dates anciennes deroulees */
+  var stGa = React.useState(null); var galerie = stGa[0], setGalerie = stGa[1];         /* { ids:[...], i, busy, err, conf } */
+  var stGu = React.useState({}); var urlsGal = stGu[0], setUrlsGal = stGu[1];          /* liens des PDF ouverts en grand */
+  function cssPageVac() {
+    if (typeof document === "undefined" || document.getElementById("hype-vxp-css")) return;
+    var st = document.createElement("style"); st.id = "hype-vxp-css";
+    st.textContent = [
+      ".vxp{position:fixed;inset:0;z-index:9400;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif}",
+      ".vxp-in{max-width:760px;margin:0 auto;padding:0 18px calc(env(safe-area-inset-bottom) + 40px)}",
+      ".vxp-hero{position:relative;padding-top:calc(env(safe-area-inset-top) + 14px)}",
+      ".vxp-photo{position:relative;height:clamp(300px,92vw,430px);margin-top:-30px;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 50%,transparent 90%),linear-gradient(90deg,transparent 0,#000 12%,#000 100%);mask-composite:intersect}",
+      ".vxp-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:62% 40%;filter:saturate(.92) contrast(1.05) brightness(.95) sepia(.07)}",
+      ".vxp-courbe{position:absolute;left:0;right:0;width:100%;pointer-events:none;z-index:2}",
+      ".vxp-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
+      ".vxp-courbe.c2{position:relative;display:block;height:64px;margin-top:-64px}",
+      ".vxp-rond{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-start:16px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.28);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}",
+      ".vxp-rond svg{width:22px;height:22px;stroke:#F3EEE4;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+      "[dir=rtl] .vxp-rond svg{transform:scaleX(-1)}",
+      ".vxp-langue{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:14px}",
+      ".vxp-titre{text-align:end;margin-top:-12px;position:relative;z-index:3}",
+      ".vxp-titre h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0;color:#F3EEE4}",
+      ".vxp-titre p{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(17px,4.6vw,21px);margin:8px 0 0;color:#F3EEE4;opacity:.88}",
+      ".vxp-etat{display:flex;align-items:center;gap:12px;margin:26px 0 4px;padding:12px 16px;border-radius:16px;border:1px solid}",
+      ".vxp-etat .r{width:30px;height:30px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}",
+      ".vxp-etat b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:20px;line-height:1.15;color:#F3EEE4}",
+      ".vxp-etat .t{font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.72)}",
+      ".vxp-etat .n{font-size:11px;line-height:1.5;color:rgba(243,238,228,.55);margin-top:4px}",
+      ".vxp-ligne{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:4px 0 10px;position:relative}",
+      ".vxp-ligne:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.15),#C9A66B 55%,rgba(201,166,107,.15))}",
+      ".vxp-mes{display:flex;align-items:center;gap:14px;background:none;border:none;padding:10px 6px;min-height:44px;font-family:'Montserrat',sans-serif;font-size:15px;letter-spacing:.03em;color:#F3EEE4;cursor:pointer}",
+      ".vxp-mes svg,.vxp-plus svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+      ".vxp-mes svg{color:#C9A66B}",
+      ".vxp-plus{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:#F3EEE4;cursor:pointer}",
+      ".vxp-h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,7.4vw,36px);margin:22px 0 14px;color:#F3EEE4;line-height:1.1}",
+      ".vxp-acc{border-radius:16px;border:1px solid rgba(243,238,228,.09);background:#070A08;box-shadow:0 14px 30px -18px rgba(0,0,0,.95);margin-bottom:10px;overflow:hidden}",
+      ".vxp-acc.ouv{border-color:rgba(201,166,107,.5)}",
+      ".vxp-tete{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}",
+      ".vxp-tete .n{flex:1;min-width:0}",
+      ".vxp-tete .n b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:23px;line-height:1.1;color:#F3EEE4}",
+      ".vxp-tete .n span{display:block;font-size:12px;line-height:1.45;color:rgba(243,238,228,.66);margin-top:4px}",
+      ".vxp-tete .n span i{font-style:normal;font-weight:600}",
+      ".vxp-tete .j{text-align:end;flex:0 0 auto}",
+      ".vxp-tete .j b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;line-height:1;color:#F3EEE4}",
+      ".vxp-tete .j small{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,238,228,.45)}",
+      ".vxp-tete .ch{color:#C9A66B;flex:0 0 auto;transition:transform .2s}",
+      ".vxp-tete .ch svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}",
+      ".vxp-acc.ouv .ch{transform:rotate(180deg)}",
+      ".vxp-corps{padding:0 16px 16px}",
+      ".vxp-an{display:flex;align-items:center;gap:10px;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:14px;letter-spacing:.2em;color:#E2C58F;margin:14px 0 2px}",
+      ".vxp-an:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.55),rgba(201,166,107,0))}",
+      ".vxp-l{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 2px}",
+      ".vxp-l.ed{cursor:pointer}",
+      ".vxp-l b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19px;color:#F3EEE4;white-space:nowrap}",
+      ".vxp-l span{font-size:12.5px;color:rgba(243,238,228,.66);text-align:end;min-width:0}",
+      ".vxp-l em{font-style:normal;font-size:10px;border:1px solid rgba(201,166,107,.45);color:#E9D9B8;border-radius:999px;padding:1px 7px;margin-inline-start:6px;white-space:nowrap}",
+      ".vxp-pl{display:inline-block;font-size:11.5px;color:#C9A66B;margin:8px 2px 0;cursor:pointer}",
+      ".vxp-sous{font-family:'Cinzel',Georgia,serif;font-size:10.5px;letter-spacing:.2em;color:rgba(243,238,228,.55);margin:16px 2px 0}",
+      ".vxp-ph{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}",
+      ".vxp-ph>span{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:1px solid rgba(201,166,107,.3);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);cursor:pointer;font-size:11px;color:#E9D9B8;text-align:center}",
+      ".vxp-ph img{width:100%;height:100%;object-fit:cover;display:block}",
+      ".vxp-ph .aj{border-style:dashed;flex-direction:column;gap:6px}",
+      ".vxp-vide{font-size:12.5px;color:rgba(243,238,228,.5);padding:10px 2px}",
+      ".vxp-note{font-size:10.5px;line-height:1.5;color:rgba(243,238,228,.42);margin-top:24px}",
+      ".vxp-gal{position:fixed;inset:0;z-index:9650;background:rgba(3,5,4,.97);display:flex;flex-direction:column;color:#F3EEE4;font-family:'Montserrat',sans-serif}",
+      ".vxp-gal .haut{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 14px) 18px 10px}",
+      ".vxp-gal .haut b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;min-width:0}",
+      ".vxp-gal .x{width:42px;height:42px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(243,238,228,.25);background:transparent;color:#F3EEE4;font-size:16px;cursor:pointer}",
+      ".vxp-gal .img{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px 10px;position:relative}",
+      ".vxp-gal .img img{max-width:100%;max-height:100%;border-radius:8px;object-fit:contain}",
+      ".vxp-gal .fl{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid rgba(243,238,228,.2);background:rgba(7,10,8,.5);color:#C9A66B;font-size:22px;cursor:pointer}",
+      ".vxp-gal .pts{display:flex;gap:6px;justify-content:center;min-height:6px}",
+      ".vxp-gal .pts i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}.vxp-gal .pts i.on{background:#C9A66B}",
+      ".vxp-gal .bas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:14px 16px calc(env(safe-area-inset-bottom) + 22px)}",
+      ".vxp-gal .bt{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(201,166,107,.75);color:#E9D9B8;display:flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;font-size:13.5px;background:transparent;cursor:pointer}",
+      ".vxp-gal .bt.sup{border-color:rgba(240,160,160,.45);color:#F0A0A0}",
+      ".vxp-gal .err{color:#F0A05F;font-size:12px;text-align:center;padding:0 16px}",
+      "@media (min-width:1024px){.vxp-photo{height:480px;width:100%;max-width:1240px;margin:-30px auto 0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 54%,transparent 90%),linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%)}}",
+      "@media (min-width:700px){.vxp-photo{height:clamp(360px,52vw,460px)}.vxp-in{padding-left:32px;padding-right:32px}.vxp-ph{grid-template-columns:repeat(4,minmax(0,1fr))}}"
+    ].join("");
+    document.head.appendChild(st);
+  }
+  function courbeVac(cls, d) {
+    var id = "vxpg-" + cls;
+    return h("svg", { className: "vxp-courbe " + cls, viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+      h("defs", null, h("linearGradient", { id: id, x1: "0", x2: "1", y1: "0", y2: "0" },
+        h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+      cls === "c2" ? h("path", { d: d + " L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }) : null,
+      h("path", { d: d, fill: "none", stroke: "url(#" + id + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
+  }
+  function dateLongue(iso) {
+    var d = (iso instanceof Date) ? iso : jourDe(iso); if (!d) return "—";
+    var lg = "fr"; try { lg = (ctx.langue || (document.documentElement.lang) || "fr"); } catch (eL) { }
+    try { return d.toLocaleDateString(lg, { day: "numeric", month: "long", year: "numeric" }); } catch (eD) { return dateCourte(d.toISOString().slice(0, 10), "jour"); }
+  }
+  function isoDe(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  /* les vaccins ranges par maladie + l'etat de chacune (meme regle que le protocole : grippe et rhino calculees, les autres d'apres leur date prevue) */
+  function etatVaccins(l) {
+    var GR = [
+      { k: "g", nom: T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "독감"), toujours: true },
+      { k: "r", nom: T("Rhinopneumonie", "EHV (rhino)", "Rinoneumonía", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "الالتهاب الأنفي الرئوي", "马鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumoni", "Ринопневмония", "Rynopneumonia", "리노뉴모니티스"), toujours: true },
+      { k: "t", nom: T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Stelkramp", "Столбняк", "Tężec", "파상풍") },
+      { k: "a", nom: T("Autres vaccins", "Other vaccines", "Otras vacunas", "Altri vaccini", "その他のワクチン", "Weitere Impfungen", "لقاحات أخرى", "其他疫苗", "Andere vaccins", "Outras vacinas", "Andra vacciner", "Другие прививки", "Inne szczepionki", "기타 백신") }
+    ];
+    var par = { g: [], r: [], t: [], a: [] };
+    l.forEach(function (x) {
+      if (String(x.type) !== "vaccin") return;
+      var m = maladiesDuVaccin(x);
+      if (m.g) par.g.push(x); if (m.r) par.r.push(x); if (m.t) par.t.push(x);
+      if (!m.g && !m.r && !m.t) par.a.push(x);
+    });
+    var auj = new Date(); auj.setHours(0, 0, 0, 0);
+    function datesDe(arr) { return arr.filter(function (x) { return x.date_intervention; }).map(function (x) { return String(x.date_intervention).slice(0, 10); }); }
+    var A = { g: analyseMaladie(datesDe(par.g), 92), r: analyseMaladie(datesDe(par.r), 60) };
+    return GR.filter(function (g) { return g.toujours || par[g.k].length; }).map(function (g) {
+      var arr = par[g.k];
+      var faits = arr.filter(function (x) { return x.date_intervention; }).sort(function (a, b) { return String(b.date_intervention).localeCompare(String(a.date_intervention)); });
+      var e = { k: g.k, nom: g.nom, arr: arr, faits: faits, der: faits[0] || null, etat: "fait", lim: null };
+      if (A[g.k]) {
+        var an = A[g.k];
+        if (an.etat === "aucun") e.etat = "aucun";
+        else { e.lim = an.limite; e.etat = an.etat === "retard" ? "retard" : "ok"; }
+      } else {
+        var pr = arr.filter(function (x) { return x.date_prochaine; }).sort(function (a, b) { return String(b.date_prochaine).localeCompare(String(a.date_prochaine)); })[0];
+        if (pr) { e.lim = jourDe(pr.date_prochaine); e.etat = (e.lim && e.lim.getTime() < auj.getTime()) ? "retard" : "ok"; }
+        else if (!faits.length) e.etat = "aucun";
+      }
+      if (e.lim) e.jours = Math.round((e.lim.getTime() - auj.getTime()) / 86400000);
+      if (e.etat === "ok" && e.jours !== undefined && e.jours <= 15) e.etat = "bientot";
+      return e;
+    });
+  }
+  var COUL_VAC = { ok: "#96CDAA", bientot: "#E8C887", retard: "#E39A88", fait: "#C9A66B", aucun: "rgba(243,238,228,.5)" };
+  function docsVaccins(l) {
+    return (docs || []).filter(function (d) { return typeDoc(d.type).f === "vaccins" || (d.soin_id && l.some(function (x) { return x.id === d.soin_id; })); });
+  }
+  async function telechargerDoc(d) {
+    try {
+      var nom = (String(d.chemin || "").split("/").pop() || "document");
+      var r = await supa.storage.from("sante").createSignedUrl(d.chemin, 600, { download: nom });
+      if (r && r.error) throw r.error;
+      var u = r && r.data && (r.data.signedUrl || r.data.signedURL);
+      if (!u) throw new Error("lien");
+      var a = document.createElement("a"); a.href = u; a.download = nom; a.rel = "noopener"; document.body.appendChild(a); a.click(); setTimeout(function () { try { a.remove(); } catch (eR) { } }, 1500);
+    } catch (eT) { setGalerie(function (o) { return o ? Object.assign({}, o, { err: String((eT && eT.message) || eT) }) : o; }); }
+  }
+  async function tournerGalerie(d) {
+    setGalerie(function (o) { return Object.assign({}, o, { busy: true, err: "" }); });
+    try {
+      var dl = await supa.storage.from("sante").download(d.chemin);
+      if (dl && dl.error) throw dl.error;
+      var nd = await remplacerImageDoc(d, await tournerImage(dl.data, 90));
+      var r = await supa.storage.from("sante").createSignedUrl(nd.chemin, 3600);
+      var u = r && r.data && (r.data.signedUrl || r.data.signedURL);
+      if (u) setVignettes(function (o) { var n = Object.assign({}, o); n[nd.id] = u; return n; });
+      setGalerie(function (o) { return Object.assign({}, o, { busy: false }); });
+    } catch (eT) { setGalerie(function (o) { return Object.assign({}, o, { busy: false, err: String((eT && eT.message) || eT) }); }); }
+  }
+  function ouvrirGalerie(liste, i) {
+    chargerVignettes(liste);
+    setGalerie({ ids: liste.map(function (d) { return d.id; }), i: i, busy: false, err: "" });
+    var d = liste[i]; if (d && !/^image\//i.test(String(d.mime || "")) && !urlsGal[d.id]) lienPdf(d);
+  }
+  function lienPdf(d) {
+    supa.storage.from("sante").createSignedUrl(d.chemin, 3600).then(function (r) {
+      var u = r && r.data && (r.data.signedUrl || r.data.signedURL);
+      if (u) setUrlsGal(function (o) { var n = Object.assign({}, o); n[d.id] = u; return n; });
+    }).catch(function () { });
+  }
+  function fenetreGalerie() {
+    var g = galerie; if (!g) return null;
+    var liste = g.ids.map(function (id) { return (docs || []).filter(function (x) { return x.id === id; })[0]; }).filter(Boolean);
+    if (!liste.length) return null;
+    var i = Math.max(0, Math.min(g.i, liste.length - 1)), d = liste[i];
+    var estImg = /^image\//i.test(String(d.mime || ""));
+    function aller(k) {
+      var n = (i + k + liste.length) % liste.length;
+      setGalerie(Object.assign({}, g, { i: n, err: "" }));
+      var dn = liste[n]; if (dn && !/^image\//i.test(String(dn.mime || "")) && !urlsGal[dn.id]) lienPdf(dn);
+    }
+    var x0 = null;
+    var tdv = typeDoc(d.type);
+    var fen = h("div", { className: "vxp-gal", "data-noswipe": "true", role: "dialog", "aria-modal": "true",
+        onTouchStart: function (e) { try { x0 = e.touches[0].clientX; } catch (e0) { x0 = null; } },
+        onTouchEnd: function (e) { try { if (x0 === null || liste.length < 2) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) aller(dx < 0 ? 1 : -1); } catch (e1) { } x0 = null; } },
+      h("div", { className: "haut" },
+        h("b", null, (d.titre || tdv.t) + (d.date_doc ? " · " + dateCourte(d.date_doc, "jour") : "")),
+        h("button", { type: "button", className: "x", onClick: function () { setGalerie(null); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, "✕")),
+      h("div", { className: "img" },
+        estImg
+          ? (vignettes[d.id] ? h("img", { src: vignettes[d.id], alt: tdv.t }) : h("span", { style: { fontSize: 13, color: "rgba(243,238,228,.6)" } }, "…"))
+          : h("div", { style: { textAlign: "center" } },
+              h("div", { style: { fontSize: 54 } }, "📄"),
+              h("button", { type: "button", className: "bt", style: { margin: "14px auto 0" }, onClick: function () { ouvrirDoc(d); } }, T("Ouvrir le PDF", "Open the PDF", "Abrir el PDF", "Apri il PDF", "PDFを開く", "PDF öffnen", "فتح ملف PDF", "打开 PDF", "PDF openen", "Abrir o PDF", "Öppna PDF:en", "Открыть PDF", "Otwórz PDF", "PDF 열기"))),
+        (liste.length > 1 && largeS) ? h("button", { type: "button", className: "fl", style: { insetInlineStart: 10 }, onClick: function () { aller(-1); }, "aria-label": "‹" }, "‹") : null,
+        (liste.length > 1 && largeS) ? h("button", { type: "button", className: "fl", style: { insetInlineEnd: 10 }, onClick: function () { aller(1); }, "aria-label": "›" }, "›") : null),
+      h("div", { className: "pts" }, liste.length > 1 ? liste.map(function (x, k) { return h("i", { key: "p" + k, className: k === i ? "on" : "" }); }) : null),
+      g.err ? h("div", { className: "err" }, g.err) : null,
+      h("div", { className: "bas" },
+        h("button", { type: "button", className: "bt", onClick: function () { telechargerDoc(d); } }, "↓ " + T("Télécharger", "Download", "Descargar", "Scarica", "ダウンロード", "Herunterladen", "تنزيل", "下载", "Downloaden", "Baixar", "Ladda ner", "Скачать", "Pobierz", "다운로드")),
+        (peutEcrire && estImg) ? h("button", { type: "button", className: "bt", disabled: !!g.busy, onClick: function () { tournerGalerie(d); } }, g.busy ? "…" : "↻ " + T("Tourner", "Rotate", "Girar", "Ruota", "回転", "Drehen", "تدوير", "旋转", "Draaien", "Girar", "Rotera", "Повернуть", "Obróć", "회전")) : null,
+        peutEcrire ? h("button", { type: "button", className: "bt sup", onClick: function () { setGalerie(null); setDocVu(Object.assign({}, d, { confSup: true })); } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제")) : null));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
+  }
+  function pageVaccins(l) {
+    cssPageVac();
+    var E = etatVaccins(l), dv = docsVaccins(l);
+    var auj = new Date(); auj.setHours(0, 0, 0, 0);
+    /* --- etat global, lisible en une seconde --- */
+    var gr = E.filter(function (e) { return e.k === "g" || e.k === "r"; });
+    var enRetard = E.filter(function (e) { return e.etat === "retard"; });
+    var aVenir = E.filter(function (e) { return (e.etat === "ok" || e.etat === "bientot") && e.lim; }).sort(function (a, b) { return a.lim.getTime() - b.lim.getTime(); });
+    var global, titreG, texteG;
+    var rienDuTout = !E.some(function (e) { return e.faits.length; });
+    if (rienDuTout) {
+      global = "aucun";
+      titreG = T("Aucun vaccin enregistré", "No vaccine recorded", "Ninguna vacuna registrada", "Nessun vaccino registrato", "ワクチンの記録なし", "Keine Impfung erfasst", "لا يوجد لقاح مسجل", "没有疫苗记录", "Geen vaccin geregistreerd", "Nenhuma vacina registrada", "Ingen vaccination registrerad", "Прививки не записаны", "Brak zapisanych szczepień", "기록된 백신 없음");
+      texteG = T("Lis le carnet pour remplir les dates en une fois.", "Read the record book to fill in all the dates at once.", "Lee la cartilla para rellenar todas las fechas de una vez.", "Leggi il libretto per inserire tutte le date in una volta.", "手帳を読み取って日付をまとめて入力しよう。", "Lies den Impfpass ein, um alle Daten auf einmal einzutragen.", "اقرأ الدفتر لملء كل التواريخ مرة واحدة.", "读取疫苗本，一次填好所有日期。", "Lees het boekje om alle data in één keer in te vullen.", "Lê a caderneta para preencher todas as datas de uma vez.", "Läs in vaccinationsboken för att fylla i alla datum på en gång.", "Считай паспорт, чтобы заполнить все даты сразу.", "Wczytaj książeczkę, aby uzupełnić wszystkie daty naraz.", "수첩을 읽어 날짜를 한 번에 채워요.");
+    } else if (enRetard.length) {
+      global = "retard";
+      titreG = T("Rappel dépassé", "Booster overdue", "Refuerzo vencido", "Richiamo scaduto", "追加接種の期限切れ", "Auffrischung überfällig", "الجرعة المعززة متأخرة", "加强针已逾期", "Herhaling te laat", "Reforço atrasado", "Booster försenad", "Ревакцинация просрочена", "Dawka przypominająca po terminie", "추가 접종 기한 지남");
+      texteG = enRetard.map(function (e) { return e.nom + " · " + T("à faire depuis le ", "due since ", "pendiente desde el ", "da fare dal ", "期限：", "fällig seit ", "مستحقة منذ ", "应于以下日期前完成：", "te doen sinds ", "a fazer desde ", "skulle gjorts ", "нужно было сделать до ", "do zrobienia od ", "기한: ") + dateLongue(e.lim); }).join(" — ");
+    } else {
+      global = aVenir.length && aVenir[0].etat === "bientot" ? "bientot" : "ok";
+      titreG = global === "bientot"
+        ? T("Rappel bientôt", "Booster soon", "Refuerzo pronto", "Richiamo a breve", "追加接種がもうすぐ", "Auffrischung bald fällig", "الجرعة المعززة قريبًا", "加强针即将到期", "Herhaling binnenkort", "Reforço em breve", "Booster snart", "Скоро ревакцинация", "Wkrótce dawka przypominająca", "곧 추가 접종")
+        : T("À jour", "Up to date", "Al día", "In regola", "最新", "Aktuell", "محدّث", "已是最新", "Up-to-date", "Em dia", "Aktuell", "Актуально", "Aktualne", "최신 상태");
+      if (aVenir.length) {
+        var t0 = aVenir[0].lim.getTime();
+        var memes = aVenir.filter(function (e) { return Math.abs(e.lim.getTime() - t0) < 86400000; }).map(function (e) { return e.nom.toLowerCase(); });
+        texteG = T("Prochaine vaccination le ", "Next vaccination on ", "Próxima vacunación el ", "Prossima vaccinazione il ", "次回のワクチン：", "Nächste Impfung am ", "التطعيم القادم في ", "下次接种：", "Volgende vaccinatie op ", "Próxima vacinação em ", "Nästa vaccination ", "Следующая прививка ", "Następne szczepienie ", "다음 접종: ") + dateLongue(aVenir[0].lim) + " · " + memes.join(" + ");
+      } else texteG = "";
+    }
+    /* niveaux de concours (meme controle qu avant, en une ligne) */
+    function datesK(k) { return (E.filter(function (e) { return e.k === k; })[0] || { faits: [] }).faits.map(function (x) { return String(x.date_intervention).slice(0, 10); }); }
+    var G = analyseMaladie(datesK("g"), 92), R = analyseMaladie(datesK("r"), 60);
+    var okG = G.etat === "ok", okR = R.etat === "ok";
+    var niv = [];
+    if (okG) niv.push(T("Club / Poney", "Club / Pony", "Club / Poni", "Club / Pony", "クラブ/ポニー", "Club / Pony", "نادٍ / مهر", "俱乐部 / 小马", "Manege / Pony", "Clube / Pônei", "Klubb / Ponny", "Клуб / Пони", "Klub / Kucyk", "클럽 / 포니"));
+    if (okG && okR) niv.push(T("Amateur / Pro", "Amateur / Pro", "Amateur / Pro", "Amateur / Pro", "アマ/プロ", "Amateur / Profi", "هاوٍ / محترف", "业余 / 职业", "Amateur / Prof", "Amador / Profissional", "Amatör / Proffs", "Любитель / Профессионал", "Amator / Zawodowiec", "아마추어 / 프로"));
+    if (okG && okR && !G.mois14 && !R.mois14) niv.push("SHF");
+    if (okG && G.fei) niv.push("FEI");
+    var notes = [];
+    if (niv.length && global !== "aucun") notes.push(T("En règle pour : ", "Eligible for: ", "En regla para: ", "In regola per: ", "出場可能：", "Startberechtigt: ", "مؤهل لـ: ", "符合参赛：", "In orde voor: ", "Em dia para: ", "Godkänd för: ", "Допуск: ", "Dopuszczony: ", "출전 가능: ") + niv.join(" · "));
+    if (G.sept || R.sept) notes.push(T("Injection de moins de 7 jours : pas de concours avant le ", "Injection less than 7 days ago: no competition before ", "Inyección de hace menos de 7 días: sin concurso antes del ", "Iniezione di meno di 7 giorni: niente gare prima del ", "接種から7日未満：次の日まで競技不可 ", "Impfung vor weniger als 7 Tagen: kein Turnier vor dem ", "حقنة منذ أقل من 7 أيام: لا مسابقة قبل ", "接种不足7天：以下日期前不能参赛 ", "Injectie minder dan 7 dagen geleden: geen wedstrijd vóór ", "Injeção há menos de 7 dias: sem competição antes de ", "Injektion för mindre än 7 dagar sedan: ingen tävling före ", "Прививке меньше 7 дней: без соревнований до ", "Szczepienie sprzed mniej niż 7 dni: bez zawodów przed ", "접종 7일 미만: 다음 날짜 전 출전 불가 ") + (function () { var der = [G.dernier, R.dernier].filter(Boolean).sort().pop(); var d7 = jourDe(der); if (!d7) return ""; d7 = new Date(d7.getTime()); d7.setDate(d7.getDate() + 7); return dateCourte(isoDe(d7), "jour"); })());
+    if ((G.nb && G.incomplet) || (R.nb && R.incomplet)) notes.push(T("Moins de 3 injections enregistrées : la primo-vaccination n’est pas visible dans Hype.", "Fewer than 3 injections recorded: the primary vaccination isn’t visible in Hype.", "Menos de 3 inyecciones registradas: la primovacunación no se ve en Hype.", "Meno di 3 iniezioni registrate: la vaccinazione primaria non è visibile in Hype.", "記録が3回未満：初回接種がHypeで確認できません。", "Weniger als 3 Impfungen erfasst: die Grundimmunisierung ist in Hype nicht sichtbar.", "أقل من 3 حقن مسجلة: التطعيم الأولي غير ظاهر في Hype.", "记录少于3针：在Hype中看不到基础免疫。", "Minder dan 3 injecties geregistreerd: de basisvaccinatie is niet zichtbaar in Hype.", "Menos de 3 injeções registradas: a primovacinação não aparece no Hype.", "Färre än 3 injektioner registrerade: grundvaccinationen syns inte i Hype.", "Записано меньше 3 прививок: первичная вакцинация не видна в Hype.", "Mniej niż 3 zapisane szczepienia: szczepienie podstawowe nie jest widoczne w Hype.", "기록된 접종이 3회 미만: Hype에서 기초 접종이 보이지 않아요."));
+    if (G.ecart || R.ecart) notes.push(T("Écart inhabituel entre les deux premières injections : à vérifier avec le vétérinaire.", "Unusual gap between the first two injections: check with the vet.", "Intervalo inusual entre las dos primeras inyecciones: consúltalo con el veterinario.", "Intervallo insolito tra le prime due iniezioni: verifica con il veterinario.", "最初の2回の間隔が通常と異なります：獣医に確認を。", "Ungewöhnlicher Abstand zwischen den ersten beiden Impfungen: mit dem Tierarzt prüfen.", "فاصل غير معتاد بين الحقنتين الأوليين: تحقق مع الطبيب البيطري.", "前两针间隔异常：请与兽医确认。", "Ongebruikelijke tussenpoos tussen de eerste twee injecties: controleer bij de dierenarts.", "Intervalo incomum entre as duas primeiras injeções: verifica com o veterinário.", "Ovanligt intervall mellan de två första injektionerna: kontrollera med veterinären.", "Необычный интервал между двумя первыми прививками: уточни у ветеринара.", "Nietypowy odstęp między dwoma pierwszymi szczepieniami: sprawdź z weterynarzem.", "처음 두 접종 간격이 특이해요: 수의사와 확인하세요."));
+    var cg = COUL_VAC[global];
+    var etatBox = h("div", { className: "vxp-etat", style: { borderColor: ({ ok: "rgba(150,205,170,.4)", bientot: "rgba(232,200,135,.45)", retard: "rgba(227,154,136,.5)", aucun: "rgba(201,166,107,.35)" })[global], background: "linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01))" } },
+      h("div", { className: "r", style: { color: global === "aucun" ? "#C9A66B" : cg } }, global === "ok" ? "✓" : (global === "aucun" ? "＋" : "!")),
+      h("div", { style: { minWidth: 0 } },
+        h("b", null, titreG),
+        texteG ? h("div", { className: "t" }, texteG) : null,
+        notes.map(function (n, i) { return h("div", { key: "n" + i, className: "n" }, n); })));
+    /* --- onglets par vaccin --- */
+    var svgCh = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M6 9l6 6 6-6" }));
+    var LIM = 8;
+    var onglets = E.map(function (e) {
+      var ouvert = vacOuvert === e.k, c = COUL_VAC[e.etat];
+      var mot = {
+        ok: T("À jour", "Up to date", "Al día", "In regola", "最新", "Aktuell", "محدّث", "已是最新", "Up-to-date", "Em dia", "Aktuell", "Актуально", "Aktualne", "최신"),
+        bientot: T("Bientôt", "Soon", "Pronto", "A breve", "まもなく", "Bald", "قريبًا", "即将", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧"),
+        retard: T("En retard", "Overdue", "Vencido", "In ritardo", "期限切れ", "Überfällig", "متأخر", "已逾期", "Te laat", "Atrasado", "Försenad", "Просрочено", "Po terminie", "기한 지남"),
+        fait: T("Fait", "Done", "Hecho", "Fatto", "済み", "Erledigt", "تم", "已完成", "Gedaan", "Feito", "Klar", "Сделано", "Zrobione", "완료"),
+        aucun: T("Aucun vaccin", "No vaccine", "Ninguna vacuna", "Nessun vaccino", "記録なし", "Keine Impfung", "لا لقاح", "无疫苗", "Geen vaccin", "Nenhuma vacina", "Ingen vaccination", "Нет прививок", "Brak szczepień", "백신 없음")
+      }[e.etat];
+      var suite = "";
+      if (e.etat === "ok" || e.etat === "bientot") suite = T("prochaine le ", "next on ", "próxima el ", "prossima il ", "次回：", "nächste am ", "التالية في ", "下次：", "volgende op ", "próxima em ", "nästa ", "следующая ", "następna ", "다음: ") + dateCourte(isoDe(e.lim), "jour");
+      else if (e.etat === "retard") suite = T("depuis le ", "since ", "desde el ", "dal ", "期限：", "seit ", "منذ ", "自 ", "sinds ", "desde ", "sedan ", "с ", "od ", "기한: ") + dateCourte(isoDe(e.lim), "jour");
+      else if (e.etat === "fait" && e.der) suite = T("le ", "on ", "el ", "il ", "", "am ", "في ", "", "op ", "em ", "", "", "", "") + dateCourte(e.der.date_intervention, "jour") + (produitVaccin(e.der) ? " · " + produitVaccin(e.der) : "");
+      var droite = null;
+      if (e.jours !== undefined && e.etat !== "fait") {
+        droite = h("div", { className: "j" }, h("b", { style: e.etat === "retard" ? { color: c } : null }, String(Math.abs(e.jours))),
+          h("small", null, e.jours < 0 ? T("j de retard", "days late", "días de retraso", "gg di ritardo", "日超過", "Tage drüber", "يوم تأخير", "天逾期", "d te laat", "dias de atraso", "dagar sen", "дн. просрочки", "dni po terminie", "일 지남") : T("jours", "days", "días", "giorni", "日", "Tage", "يوم", "天", "dagen", "dias", "dagar", "дн.", "dni", "일")));
+      } else if (e.etat === "fait") droite = h("div", { className: "j" }, h("b", { style: { color: c } }, "✓"));
+      var corps = null;
+      if (ouvert) {
+        var lignesV = e.arr.slice().sort(function (a, b) { return String(b.date_intervention || b.date_prochaine || "").localeCompare(String(a.date_intervention || a.date_prochaine || "")); });
+        var plus = lignesV.length - LIM, visibles = (vacTout || plus <= 1) ? lignesV : lignesV.slice(0, LIM);
+        var an = null, enfants = [];
+        visibles.forEach(function (x, i) {
+          var dIso = String(x.date_intervention || x.date_prochaine || ""), a = dIso.slice(0, 4);
+          if (a !== an) { an = a; enfants.push(h("div", { key: "a" + a + i, className: "vxp-an" }, a)); }
+          var mm = maladiesDuVaccin(x), autres = [];
+          if (e.k !== "g" && mm.g) autres.push(T("grippe", "flu", "gripe", "influenza", "インフルエンザ", "Influenza", "إنفلونزا", "流感", "griep", "gripe", "influensa", "грипп", "grypa", "독감"));
+          if (e.k !== "r" && mm.r) autres.push(T("rhino", "EHV", "rino", "rino", "鼻肺炎", "Rhino", "الرينو", "马疱疹", "rhino", "rinopneumonite", "rhino", "ринопневмония", "herpes", "리노"));
+          if (e.k !== "t" && mm.t) autres.push(T("tétanos", "tetanus", "tétanos", "tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "tetanus", "tétano", "stelkramp", "столбняк", "tężec", "파상풍"));
+          var dd = jourDe(dIso), jourMois = dd ? (function () { var lg = "fr"; try { lg = ctx.langue || "fr"; } catch (eL) { } try { return dd.toLocaleDateString(lg, { day: "numeric", month: "short" }); } catch (eT) { return dateCourte(dIso, "jour"); } })() : "—";
+          enfants.push(h("div", { key: "l" + (x.id || i), className: "vxp-l" + (peutEcrire ? " ed" : ""), role: peutEcrire ? "button" : null, onClick: peutEcrire ? function () { setFeuille({ soin: x }); } : null },
+            h("b", { style: x.date_intervention ? null : { color: COUL_VAC.ok } }, jourMois),
+            h("span", null, (produitVaccin(x) || x.titre || ""), autres.length ? h("em", null, "+ " + autres.join(", ")) : null)));
+        });
+        if (plus > 1 && !vacTout) {
+          var anc = lignesV.slice(LIM), a1 = String(anc[anc.length - 1].date_intervention || anc[anc.length - 1].date_prochaine || "").slice(0, 4), a2 = String(anc[0].date_intervention || anc[0].date_prochaine || "").slice(0, 4);
+          enfants.push(h("span", { key: "pl", className: "vxp-pl", role: "button", onClick: function () { setVacTout(true); } },
+            T("Voir les ", "Show the ", "Ver las ", "Vedi le ", "", "Die ", "عرض ", "查看更早的 ", "Bekijk de ", "Ver as ", "Visa de ", "Показать ещё ", "Pokaż ", "") + plus + T(" plus anciennes", " older ones", " más antiguas", " più vecchie", "件の古い記録を見る", " älteren anzeigen", " الأقدم", " 条", " oudere", " mais antigas", " äldre", " более ранних", " starszych", "개의 이전 기록 보기") + (a1 && a2 ? " (" + a1 + (a1 !== a2 ? " → " + a2 : "") + ")" : "") + " ⌄"));
+        }
+        if (!lignesV.length) enfants.push(h("div", { key: "v", className: "vxp-vide" }, T("Rien d'enregistré pour l'instant.", "Nothing recorded yet.", "Nada registrado por ahora.", "Nulla registrato per ora.", "まだ記録がありません。", "Noch nichts erfasst.", "لا شيء مسجل حاليا.", "暂时没有记录。", "Nog niets geregistreerd.", "Nada registrado por enquanto.", "Inget registrerat ännu.", "Пока ничего не записано.", "Na razie nic nie zapisano.", "아직 기록이 없어요.")));
+        if (dv.length || peutEcrire) {
+          enfants.push(h("div", { key: "st", className: "vxp-sous" }, T("Pages du carnet", "Record pages", "Páginas de la cartilla", "Pagine del libretto", "手帳のページ", "Seiten des Impfpasses", "صفحات الدفتر", "疫苗本页面", "Pagina's van het boekje", "Páginas da caderneta", "Sidor ur vaccinationsboken", "Страницы паспорта", "Strony książeczki", "수첩 페이지").toUpperCase()));
+          enfants.push(h("div", { key: "ph", className: "vxp-ph" },
+            dv.map(function (d, k) {
+              var u = vignettes[d.id], estPdf = !/^image\//i.test(String(d.mime || ""));
+              return h("span", { key: "d" + d.id, role: "button", onClick: function () { ouvrirGalerie(dv, k); } },
+                u ? h("img", { src: u, alt: typeDoc(d.type).t, loading: "lazy" }) : h("span", null, h("span", { style: { fontSize: 24, display: "block" } }, estPdf ? "📄" : "…"), estPdf ? "PDF" : ""));
+            }),
+            peutEcrire ? h("span", { key: "aj", className: "aj", role: "button", onClick: function () { ouvrirDocAjout("carnet_vaccin", ""); } },
+              h("span", { style: { fontSize: 22, color: "#C9A66B" } }, "+"),
+              T("Joindre une page", "Add a page", "Añadir una página", "Aggiungi una pagina", "ページを追加", "Seite hinzufügen", "إضافة صفحة", "添加页面", "Pagina toevoegen", "Juntar uma página", "Lägg till en sida", "Добавить страницу", "Dodaj stronę", "페이지 추가")) : null));
+        }
+        corps = h("div", { className: "vxp-corps" }, enfants);
+      }
+      return h("div", { key: "o" + e.k, className: "vxp-acc" + (ouvert ? " ouv" : "") },
+        h("div", { className: "vxp-tete", role: "button", "aria-expanded": ouvert ? "true" : "false", onClick: function () { var n = ouvert ? null : e.k; setVacOuvert(n); setVacTout(false); if (n) chargerVignettes(dv); } },
+          h("div", { className: "n" }, h("b", null, e.nom), h("span", null, h("i", { style: { color: c } }, mot), suite ? " · " + suite : "")),
+          droite,
+          h("span", { className: "ch" }, svgCh)),
+        corps);
+    });
+    var svgCam = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M4 8h3l2-2.5h6L17 8h3v11H4z" }), h("circle", { cx: 12, cy: 13.2, r: 3.6 }));
+    var svgPlus = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" }));
+    var fermer = function () { setFamille(null); setVacOuvert(null); setVacTout(false); };
+    var page = h("div", { className: "vxp", "data-noswipe": "true" },
+      h("div", { className: "vxp-hero" },
+        (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
+        h("button", { type: "button", className: "vxp-rond", onClick: fermer, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로") }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M14.5 5.5 8 12l6.5 6.5" }))),
+        courbeVac("c1", "M250 4 C 330 8, 385 40, 400 96"),
+        h("div", { className: "vxp-photo" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", fetchpriority: "high" })),
+        courbeVac("c2", "M0 92 C 130 90, 240 62, 400 8"),
+        h("div", { className: "vxp-in", style: { paddingBottom: 0 } }, h("div", { className: "vxp-titre" },
+          h("h1", null, T("Vaccins", "Vaccines", "Vacunas", "Vaccini", "ワクチン", "Impfungen", "اللقاحات", "疫苗", "Vaccinaties", "Vacinas", "Vaccinationer", "Прививки", "Szczepienia", "백신")),
+          h("p", null, T("Le carnet de vaccination.", "The vaccination record.", "La cartilla de vacunación.", "Il libretto delle vaccinazioni.", "ワクチン手帳。", "Der Impfpass.", "دفتر التطعيمات.", "疫苗接种本。", "Het vaccinatieboekje.", "A caderneta de vacinação.", "Vaccinationsboken.", "Паспорт прививок.", "Książeczka szczepień.", "예방접종 수첩."))))),
+      h("div", { className: "vxp-in" },
+        etatBox,
+        h("div", { className: "vxp-ligne" },
+          peutEcrire ? h("button", { type: "button", className: "vxp-mes", onClick: function () { ouvrirLectCarnet(); } }, svgCam, T("Lire le carnet", "Read the record book", "Leer la cartilla", "Leggi il libretto", "手帳を読み取る", "Impfpass einlesen", "قراءة الدفتر", "读取疫苗本", "Boekje inlezen", "Ler a caderneta", "Läs in vaccinationsboken", "Считать паспорт", "Wczytaj książeczkę", "수첩 읽기")) : h("span", null),
+          peutEcrire ? h("button", { type: "button", className: "vxp-plus", onClick: function () { setFeuille({ soin: null, type: "vaccin" }); }, "aria-label": T("Ajouter un vaccin", "Add a vaccine", "Añadir una vacuna", "Aggiungi un vaccino", "ワクチンを追加", "Impfung hinzufügen", "إضافة لقاح", "添加疫苗", "Vaccin toevoegen", "Adicionar uma vacina", "Lägg till en vaccination", "Добавить прививку", "Dodaj szczepienie", "백신 추가") }, svgPlus) : null),
+        h("h2", { className: "vxp-h2" }, T("Par vaccin", "By vaccine", "Por vacuna", "Per vaccino", "ワクチン別", "Nach Impfung", "حسب اللقاح", "按疫苗", "Per vaccin", "Por vacina", "Per vaccin", "По прививкам", "Według szczepionki", "백신별")),
+        onglets,
+        h("div", { className: "vxp-note" }, T("D’après les vaccins enregistrés dans Hype et les règlements FFE / SHF / FEI. Ne remplace pas le livret ni l’avis du vétérinaire.", "Based on the vaccines recorded in Hype and FFE / SHF / FEI rules. Does not replace the passport or the vet’s advice.", "Según las vacunas registradas en Hype y los reglamentos FFE / SHF / FEI. No sustituye al pasaporte ni al veterinario.", "In base ai vaccini registrati in Hype e ai regolamenti FFE / SHF / FEI. Non sostituisce il libretto né il parere del veterinario.", "Hypeに記録されたワクチンとFFE / SHF / FEIの規則に基づきます。手帳や獣医の判断に代わるものではありません。", "Nach den in Hype erfassten Impfungen und den Regeln von FFE / SHF / FEI. Ersetzt weder den Pass noch den Tierarzt.", "وفقًا للقاحات المسجلة في Hype ولوائح FFE / SHF / FEI. لا يغني عن الجواز ولا عن رأي الطبيب البيطري.", "根据Hype中记录的疫苗及FFE / SHF / FEI规则。不能代替马匹护照或兽医意见。", "Op basis van de in Hype geregistreerde vaccins en de regels van FFE / SHF / FEI. Vervangt het paspoort of de dierenarts niet.", "Com base nas vacinas registradas no Hype e nas regras FFE / SHF / FEI. Não substitui o passaporte nem o veterinário.", "Utifrån vaccinationerna i Hype och reglerna från FFE / SHF / FEI. Ersätter inte passet eller veterinären.", "По прививкам, записанным в Hype, и правилам FFE / SHF / FEI. Не заменяет паспорт и ветеринара.", "Na podstawie szczepień zapisanych w Hype i przepisów FFE / SHF / FEI. Nie zastępuje paszportu ani weterynarza.", "Hype에 기록된 백신과 FFE / SHF / FEI 규정 기준이에요. 여권이나 수의사 의견을 대신하지 않아요."))));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(page) : page;
+  }
   function panneauFamille() {
     if (!famille) return null;
     var f = familleDe(famille); if (!f) return null;
     var l = lignesDe(f);
+    if (f.types.length === 1 && f.types[0] === "vaccin") return pageVaccins(l);   /* 07/11 page Vaccins plein ecran (maquette validee) */
     var voile = h("div", { onClick: function () { setFamille(null); }, style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } }, style: { width: "100%", maxWidth: 560, maxHeight: "86vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.28)", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 20px)" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
@@ -1616,6 +1962,7 @@ function EcranSanteCheval() {
     fenetrePartagePro(),
     fenetreDocs(),   /* (944) */
     fenetreLectCarnet(),   /* (945) */
+    fenetreGalerie(),   /* 07/11 pages du carnet en grand */
     feuille ? h(FeuilleSoin, {
       chevalId: chId,
       nomCheval: nomVu,
