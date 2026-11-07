@@ -19171,3 +19171,17 @@ CARNET DE SANTÉ DU CHEVAL EN TUILES PAR ANNÉE (maquette « Tuiles » validée 
 | hype-ecran-sante-cheval.js | racine | carnet en tuiles par année |
 | index.html | racine | ?v sante-cheval → 11 + build 20261107-1910 |
 | SUIVI.md | racine | cette entrée + ligne en « 2 — Important » |
+
+## 07/11/2026 19h30 — PRÊT, NON PUBLIÉ (à grouper avec la prochaine publication) — Prépas : suite (Blandine 19h05 « carte blanche »)
+- Page AE comparée au nouveau règlement FFE (version au 17/07/2026, ffe.com/system/files/encadrer/documents/pdf/reglement-ae-2026-vf.pdf) : conditions d'entrée (Galop selon le cas, âge, licence, PSC, certificat médical), vérification de sécurité (Galop 5), modules en ligne, 3 démonstrations d'environ 10 min dont une au choix obstacle / terrain varié / derby cross → tout concorde, rien à corriger.
+- Impossible de lire la suite du PDF (pages 32 à 50 : grilles 3-2-1 à 3-2-5 et annexe 5 des dispenses, en image). Les points « À vérifier » de l'AE restent donc en place → il faut que Blandine envoie le PDF en pièce jointe (attend : Blandine).
+- BP, DE, DES : plus aucun point marqué « À vérifier » dans les pages. Légifrance reste inaccessible d'ici.
+- Traduction espagnole corrigée : « passage au pas dans une zone » (BP) était mal rendu.
+Fichiers à publier :
+| Fichier | Où | Quoi |
+|---|---|---|
+| i18n/prepa-es.json | i18n/ | phrase corrigée |
+| hype-ecran-prepa.js | racine | numéro de version des traductions → 2 |
+| index.html | racine | hype-ecran-prepa.js?v=3 (+ marqueur de build au moment de publier) |
+| SUIVI.md | racine | cette entrée |
+

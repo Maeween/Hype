@@ -13,7 +13,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
   var DATA = window.__HYPE_PREPA_DATA || {};
   /* 07/11 : traductions — le français reste dans ce fichier ; les 13 autres langues sont chargées à la demande
      depuis i18n/prepa-<lg>.json (mêmes données + textes de l'écran). En attendant le chargement, on garde le français. */
-  var I18N_V = 1, LG = "fr", TR = {}, CHARGE = {}, UI = null;
+  var I18N_V = 2, LG = "fr", TR = {}, CHARGE = {}, UI = null;
   function T(k, fr) { return (UI && UI[k]) || fr; }
   function chargerTr(lg) {
     if (CHARGE[lg]) return CHARGE[lg];
