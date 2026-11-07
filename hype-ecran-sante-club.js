@@ -204,7 +204,7 @@ function EcranSanteClub() {
     if (j === 1) return T("demain", "tomorrow", "mañana", "domani", "明日", "morgen", "غدا", "明天", "morgen", "amanhã", "imorgon", "завтра", "jutro", "내일");
     return T("dans " + j + " jours", "in " + j + " days", "en " + j + " días", "tra " + j + " giorni", j + "日後", "in " + j + " Tagen", "بعد " + j + " أيام", "还有 " + j + " 天", "over " + j + " dagen", "em " + j + " dias", "om " + j + " dagar", "через " + j + " дн.", "za " + j + " dni", j + "일 후");
   }
-  var RX = { grippe: /grippe|equip\s*f\b|equip\s*ft|proteq|resequin|prequenza|influenza/i, rhino: /rhino|ehv|pneumequine/i, tetanos: /t[ée]tanos|equip\s*ft|prequenza\s*te|flu-?te|tetanus/i, westnile: /wnv|west\s*nile|nil\b/i };
+  var RX = { grippe: /grippe|equip\s*f\b|equip\s*ft|proteq|resequin|prequenza|influenza/i, rhino: /rhino|ehv|pneumequin/i, tetanos: /t[ée]tanos|equip\s*ft|prequenza\s*te|flu-?te|tetanus/i, westnile: /wnv|west\s*-?\s*nil|nilo\s*occ|nil\s*occ/i };
   var TYPES = [
     { k: "grippe", pic: "s", t: T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자"), vac: true },
     { k: "rhino", pic: "s", t: T("Rhinopneumonie", "Rhinopneumonitis", "Rinoneumonitis", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "التهاب الأنف والرئة", "鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumonit", "Ринопневмония", "Rhinopneumonia", "비폐렴") , vac: true },
