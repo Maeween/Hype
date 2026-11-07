@@ -19503,3 +19503,14 @@ Fichiers à publier :
 - Photo du DES : provisoire comme les autres (attend : Blandine, ChatGPT).
 Fichiers : hype-ecran-prepa.js (v=7), index.html (bandeau 4 boutons, marqueur 20261108-0045), outils/seo-prepas.py, outils/prepas-liens.json, sitemap-pages.xml, 14 × <langue>/prepa-desjeps-equitation/index.html (NOUVEAUX) + 42 pages prépas régénérées (liens « autres prépas »), SUIVI.md.
 
+## 07/11/2026 23h50 — PRÊT, NON PUBLIÉ (à grouper) — Page équipe : photo des rendez-vous sans affiche + l'équipe ouverte ne saute plus sur la SEP
+- Blandine 23h41 : « dans l'agenda j'ai toujours pas de photo de thème quand il n'y a pas d'affiche (CSO Versailles) ». Page équipe (hype-ecran-team.js, cartes de l'agenda) : même règle que l'agenda du club — sans affiche, photo selon la sorte de rendez-vous (concours → hype-entete-concours.jpg, stage → theme-dressage-bai-trot.webp, sortie → actualite-ambiance.webp). Le détail déplié n'affiche toujours que la vraie affiche.
+- Blandine 23h41 : « je suis sur celle de Feinn, je passe l'appli en fond 2 secondes, je reviens : je suis revenue sur celle de la SEP ». Cause : l'équipe ouverte n'était gardée qu'en mémoire ; au retour de l'appli, la page Team repartait sur l'équipe par défaut (Team CSO Club SEP). Corrigé : __teamCourante ajouté à ce que la reprise garde (index.html, HYPE_REPRISE_GLOBALES) ; les boutons retour de Ma saison et de Performances chevaux reviennent sur l'équipe qu'on regardait au lieu de la SEP.
+- Non testé en vrai : à vérifier sur iPhone (ouvrir l'équipe de Feinn, passer l'appli en fond, revenir ; ouvrir Ma saison puis retour).
+Fichiers à publier :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-team.js | racine | photo de thème des rendez-vous sans affiche |
+| hype-ecran-saison.js | racine | retour de Ma saison vers l'équipe ouverte |
+| index.html | racine | reprise garde l'équipe ouverte ; retour de Performances chevaux ; hype-ecran-team.js?v=9 ; hype-ecran-saison.js?v=45 (7 endroits) ; marqueur de build au moment de publier |
+| SUIVI.md | racine | cette entrée |

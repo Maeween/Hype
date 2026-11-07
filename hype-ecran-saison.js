@@ -290,7 +290,7 @@ function EcranMaSaison() {
   }
 
   /* ── navigation ── */
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { if (window.__teamCourante) window.__teamArmee = true; } catch (eA) { } setEcran("team-competition"); }   /* 07/11 : on revient sur l'équipe qu'on regardait */
   function ouvrir(ev) {
     var fin = String(ev.date_fin || ev.date_jour || "").slice(0, 10);
     /* 07/11 : passé ou à venir, un concours s'ouvre sur la fiche du Centre (qui contient maintenant le fil, les photos et les résultats) */

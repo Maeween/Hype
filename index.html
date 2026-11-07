@@ -27752,7 +27752,7 @@ function hypeEtatSansImages(data) {
    Pages jamais reprises (parcours ou actions en cours) : la reprise garde alors la derniere page « normale ». */
 var HYPE_REPRISE_CLE = "hype_reprise_v1", HYPE_REPRISE_DUREE = 2 * 3600 * 1000;
 var HYPE_REPRISE_EXCLUS = { intro: 1, splash: 1, connexion: 1, "onboarding-1": 1, "profil-setup": 1, cours: 1, quiz: 1, examen: 1, "examen-blanc": 1, "jeu-galop": 1, partager: 1, "import-resultats": 1, "rattacher-ffe": 1, installer: 1, "challenge-reprise": 1, "journal-session": 1, "video-lecture": 1, "entrainer-tracer": 1, "trace-anime": 1 };
-var HYPE_REPRISE_GLOBALES = ["__galopReprise", "__chevalOuvert", "__cavalierOuvert", "__cavalierPublic", "__guildeEcurie", "__agendaFiche", "__agendaFicheRetour", "__communauteCible", "__ecurieHypeClub", "__carnet", "__filEcurieNom", "__filEcurieCible", "__hypeEcurieVisite", "__evPasse", "__evPasseId", "__resCavaliereId", "__albumOuvert", "__perfGroupe", "__perfGroupeCourant", "__perfClub", "__evenementOuvert", "__ecurieHypePiquet", "__articleOuvert", "__agendaClub", "__souvenirsClub", "__santeCheval", "__santeClub", "__cavaliersClub", "__videosCavaliereId", "__photosCavaliereId", "__actuCavaliereId", "__chevalCommunOuvert", "__chevalCommunDemo", "__conversationOuverte", "__teinteEcurieActive", "__ecurieAncienne"];
+var HYPE_REPRISE_GLOBALES = ["__galopReprise", "__chevalOuvert", "__cavalierOuvert", "__cavalierPublic", "__guildeEcurie", "__agendaFiche", "__agendaFicheRetour", "__communauteCible", "__ecurieHypeClub", "__carnet", "__filEcurieNom", "__filEcurieCible", "__hypeEcurieVisite", "__evPasse", "__evPasseId", "__resCavaliereId", "__albumOuvert", "__perfGroupe", "__perfGroupeCourant", "__perfClub", "__evenementOuvert", "__ecurieHypePiquet", "__articleOuvert", "__agendaClub", "__souvenirsClub", "__santeCheval", "__santeClub", "__cavaliersClub", "__videosCavaliereId", "__photosCavaliereId", "__actuCavaliereId", "__chevalCommunOuvert", "__chevalCommunDemo", "__conversationOuverte", "__teinteEcurieActive", "__ecurieAncienne", "__teamCourante"];   /* 07/11 23h45 (Blandine) : l'équipe ouverte (ex. Feinn) reste ouverte au retour de l'appli */
 var HYPE_REPRISE_ECRAN = null;
 function hypeRepriseZone() {
   /* la zone qui defile : un grand panneau fixe (fiche cheval...) s il y en a un qui a defile, sinon la page */
@@ -39197,7 +39197,7 @@ function EcranPerformancesChevaux() {
   var selectionVide = (lignesBrutes !== null) && lignesBrutes.length > 0 && resVue.length === 0;   /* aucune ligne pour cette saison / cette epreuve : pas de faux points */
   var podium = classement.slice(0, 3), suite = classement.slice(3);
 
-  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("team-competition"); }
+  function retour() { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { if (window.__teamCourante) window.__teamArmee = true; } catch (eA) { } setEcran("team-competition"); }   /* 07/11 : on revient sur l'équipe qu'on regardait */
   function ouvrirCheval(id) { try { window.__chevalOuvert = id; } catch (e) { } setEcran("cheval"); }
   function imgCheval(src, l) { return src ? ((typeof vignetteHype === "function") ? vignetteHype(src, l, l) : src) : ""; }
 
@@ -39388,12 +39388,12 @@ function hypeRequeteTeam(colonnes, clef) {
 /* 01/10 (523) : la liste écrite TEAM_CHEVAUX_TEMP est RETIRÉE (choix A de Blandine) : les chevaux de l'équipe
    sont désormais ceux du GROUPE (table groupes_chevaux), ajoutés / retirés par « Gérer les chevaux ». */
 
-const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=8", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
+const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=9", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=28", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=28", "HypeGestion", "Registre");
@@ -39431,13 +39431,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=44", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=45", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
