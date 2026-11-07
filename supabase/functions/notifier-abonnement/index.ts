@@ -45,6 +45,7 @@ const LIBELLES: Record<string, string> = {
   annuel: "Premium annuel",
   ai: "Hey Baby",
   duo: "Pack Duo",
+  famille: "Premium Famille",
 };
 const libelle = (p: unknown) => LIBELLES[String(p || "")] || String(p || "abonnement");
 
@@ -185,8 +186,38 @@ Deno.serve(async (req) => {
       console.log("[notifier-abonnement] inscriptions ignorées :", String(e).slice(0, 200));
     }
 
+    // ── 07/11 : les nouvelles familles (Premium Famille, rangé dans « familles », pas dans abonnements_premium) ──
+    // Colonne familles.notifie_le ajoutée par sql/2026-11-07-famille-notification.sql. Protégé : tant que ce SQL
+    // n'est pas passé, la lecture échoue et rien ne change (abonnements et inscriptions marchent comme avant).
+    let familles = 0;
+    try {
+      const fam = await rest(
+        "familles?notifie_le=is.null&statut=eq.actif&select=id,titulaire_id&order=cree_le.asc&limit=20",
+        { headers: entetes() }) || [];
+      for (const f of fam) {
+        const prise = await rest(
+          "familles?id=eq." + encodeURIComponent(f.id) + "&notifie_le=is.null",
+          {
+            method: "PATCH",
+            headers: entetes({ Prefer: "return=representation" }),
+            body: JSON.stringify({ notifie_le: new Date().toISOString() }),
+          });
+        if (!prise || !prise.length) continue;
+        const qui = await nomCavaliere(f.titulaire_id);
+        const r = await envoyer(appareils, {
+          titre: "🎉 Nouvel abonnement",
+          corps: libelle("famille") + (qui ? " — " + qui : ""),
+          url: "/", tag: "hype-famille-" + f.id,
+        });
+        if (r.envois > 0) familles++;
+        erreurs.push(...r.erreurs);
+      }
+    } catch (e) {
+      console.log("[notifier-abonnement] familles ignorées :", String(e).slice(0, 200));
+    }
+
     if (erreurs.length) console.log("[notifier-abonnement] erreurs d'envoi :", erreurs.join(" | "));
-    return json({ ok: true, en_attente: attente.length, annonces, inscriptions, erreurs });
+    return json({ ok: true, en_attente: attente.length, annonces, inscriptions, familles, erreurs });
   } catch (e) {
     console.log("[notifier-abonnement] erreur :", String(e));
     return json({ ok: false, erreur: String(e && (e as Error).message || e).slice(0, 200) }, 500);
