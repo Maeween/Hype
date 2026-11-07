@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 04h20)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 05h10)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -18695,3 +18695,23 @@ POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Bla
 - Protocole vaccinal : gardé (badges Club / Amateur / SHF / FEI, notes, Lire le carnet) sans les lignes Grippe / Rhino (passées dans les cartes) ni le message « vaccin sans maladie précisée » (ces vaccins vont dans « Autres vaccins », ex. Equip WNV).
 - Le tétanos est maintenant reconnu (Equip FT, ProteqFlu-Te, Prequenza Te, « tétanos » dans l'intitulé).
 - Nouveaux textes traduits dans les 14 langues. hype-ecran-sante-cheval.js?v=6. Vérifié sur banc d'essai avec les vrais vaccins du cheval (31 injections).
+
+📚 07/11/2026 (05 h 10) — GALOPS 7, 8, 9 : HARMONISATION DU VOCABULAIRE (audit ChatGPT) — PUBLIÉ (build 20261107-0510)
+Demande de Blandine : prompt ChatGPT « harmonisation terminologique » ; audit en lecture seule présenté, « Ok » pour les points 1 à 6.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop7.js | racine | v11 : suédois « bogen in » → « öppna » et « bogen ut » → « förvänd öppna » (cours 12 et quiz cours 10, 36 textes) ; polonais « kłus ćwiczebny » (= trot assis) → « kłus anglezowany » / « anglezowanie » pour le trot enlevé (cours 9 et 10, 5 textes) |
+| hype-cours-galop8.js | racine | v5 : cours 1, plus de nombre de doigts sous l'arcade (contrôle du garrot, de la colonne et du dégagement en mouvement) ; cours 19, Poney Club de France et Cheval Club de France = MENTIONS du label École française d'équitation (source : ffe.com/pratiquer/labels) ; cours 15, nom « Réviser mes reprises » aligné sur le bouton de l'appli |
+| hype-cours-galop9.js | racine | v6 : cours 8, « 8 à 14 mouvements respiratoires par minute (inspiration + expiration), varie selon les chevaux » ; cours 12, nom « Réviser mes reprises » aligné |
+| index.html | racine | ?v galop7 → 12, galop8 → 5, galop9 → 6 |
+Les 3 phrases françaises changées sont retraduites dans les 13 langues. Testé : suédois, polonais, allemand, arabe, portugais (ordinateur), français ; 0 erreur.
+Laissé tel quel (déjà conforme) : coup de sang (terme vétérinaire dans chaque langue), « de ferme à ferme » (déjà expliqué galop–pas–galop), vaccins (21–60 j puis 120–180 j).
+Non retenu : allemand « Wirbelkanal » gardé (mot courant des selliers pour la gouttière).
+RESTE À FAIRE (attend : Blandine) :
+- Cadence / rythme : ~90 phrases dans les 3 Galops, à relire une par une en anglais, japonais, allemand, suédois (chantier à part).
+- Glossaire commun des 14 langues (chantier à part).
+- Labels des CONCOURS (G8 cours 19, « certains concours portent un label… ») : non confirmé sur le site FFE, à vérifier ou retirer.
+- Non confirmés, laissés signalés : distances G9 cours 14, partie commune des examens G8/G9.
+- À faire valider par un cavalier natif : suédois « förvänd öppna » (contre-épaule en dedans), gouttière et engagement dans toutes les langues.
+
+════════════════════════════════════════════════════════════
