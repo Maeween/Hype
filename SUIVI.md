@@ -834,6 +834,18 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+⏪ 08/11/2026 (03 h 10 build) — FICHE CHEVAL TÉLÉPHONE : PHOTO DU HAUT ET PHOTO IDENTITÉ REMISES COMME LE 03/11
+Blandine (00 h 25) : « va voir dans l'index il y a une semaine et regarde comment elle était » ; (00 h 29) « Remets comme avant les deux ».
+· Comparaison réelle faite (code du 03/11, commit 2b4f8e44, rendu côte à côte) : seules différences = photo du haut (passée « entière » le 04/11), photo de la carte Identité (cadre fixe ajouté ce soir), bouton « Personnaliser la fiche ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 20 : photo du haut et son fondu = code exact du 03/11 (grande photo recadrée) ; photo de la carte Identité = cadre du 03/11. Annule le changement du 04/11 sur la fiche (les sous-pages Histoire / Photos gardent la photo entière) et mes deux retouches de cette nuit |
+| index.html | racine | ?v cheval 19 → 20, build 20261108-0310 (rien d'autre) |
+· PUBLIÉ ([publier]). Rendu vérifié côte à côte avec le 03/11 : identique hors bouton Personnaliser.
+· Note : l'historique complet du dépôt est disponible (la copie de travail était « courte », elle est maintenant complète) → toujours comparer avec une vraie version datée avant d'affirmer « identique ».
+
+════════════════════════════════════════════════════════════
+
 🖼️ 08/11/2026 (01 h 25) — FICHE CHEVAL : PHOTO DE LA CARTE « IDENTITÉ & ORIGINES » RECADRÉE
 Blandine (00 h 04, capture de Rizotto) : « t'as vu le décadrage de la photo ça a jamais été comme ça ».
 · Cause : la photo s'étirait sur toute la hauteur du texte (long pour Rizotto : origines sur plusieurs lignes) et la petite vignette 360 × 440 était donc agrandie et rognée. Code de la carte inchangé depuis le 06/11 au soir ; la façon de fabriquer les vignettes a changé le 06/11 (« photos plus nettes »).
