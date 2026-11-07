@@ -19573,3 +19573,12 @@ Fichiers à publier :
 - Testé en local (fausse base, téléphone) : une seule Chloe (2 tours), 6 tuiles sur 2 lignes, récap sans débordement, aucune erreur.
 - Vérifié en base : AUCUNE heure de passage enregistrée sur les 3 concours (Tigery, Versailles, « Cso » du 06/12). Blandine dit avoir donné l'ordre de passage 3 fois à « l'outil » : à éclaircir (quelle page ?).
 Fichiers : hype-ecran-saison.js (v=46 dans index.html, 7 endroits), SUIVI.md.
+
+## 08/11/2026 00h20 — PRÊT, NON PUBLIÉ (à grouper) — Engagements : lire l'ordre de passage sur la page (choix B)
+- Cause du « j'ai donné 3 fois l'ordre de passage » : Blandine l'a mis dans « Ou lire une fiche déjà remplie » de la page Engagements, qui ne lit que des feuilles d'engagement (« Aucune cavalière trouvée ») ; le lecteur d'ordre de passage n'existait que dans Jour J. Rien n'avait été enregistré (vérifié en base : aucune heure sur les 3 concours).
+- Choix B de Blandine : bloc « Ordre de passage » sur la page Engagements, sous le récap : photo / capture / PDF de la liste de départ ou du programme → même lecture que Jour J (hsLireProgramme) → liste à cocher (heure, piste, n° d'ordre, d'où vient l'heure) → « Mettre ces heures » (enregistré tout de suite).
+- Pour TOUS les tours (1 à 5). Un couple engagé dans plusieurs épreuves reçoit l'heure de SON épreuve (par nom ou numéro d'épreuve). Sans heure de passage lue : heure estimée = début de l'épreuve + 1 min 45 par rang (marquée « estimée »).
+- Les heures et pistes des tours 1 et 2 sont aussi recopiées dans les colonnes lues par Jour J (passage1/2, piste1/2).
+- Testé en local (fausse base, lecture simulée) : 4 heures proposées et posées (dont un 3e tour reconnu par le numéro d'épreuve), visibles dans le récap ; aucune erreur.
+- Reste : Jour J ne montre et ne modifie encore que les tours 1 et 2.
+Fichiers : hype-ecran-saison.js (v=47 dans index.html, 7 endroits), SUIVI.md.

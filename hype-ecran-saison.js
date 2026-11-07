@@ -721,6 +721,7 @@ var CSS2 = [
   ".e1 .rc-li{grid-template-columns:26px 44px minmax(0,1fr) auto 32px}",
   ".e1 .rc-x{width:32px;height:32px;border-radius:50%;border:1px solid rgba(243,238,228,.12);background:none;color:var(--hs-iv3);font-size:16px;line-height:1;padding:0}",
   ".e1 .d3-sans{margin-top:26px}",
+  ".e1 .d3-ordre{margin-top:30px;padding:16px;border-radius:18px;border:1px solid rgba(201,166,107,.3);background:#0E1415}",
   ".e1 .rc-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}",
   "@media (min-width:700px){.e1 .rc-rail{grid-template-columns:repeat(3,minmax(0,1fr))}}",
   "@media (min-width:1000px){.e1 .rc-rail{grid-template-columns:repeat(4,minmax(0,1fr))}}",
@@ -1282,6 +1283,10 @@ function EcranEngagements() {
   var _cph = React.useState(""); var autreCh = _cph[0], setAutreCh = _cph[1];
   var _cpm = React.useState(""); var msgC = _cpm[0], setMsgC = _cpm[1];
   var _cpl = React.useState(false); var editLic = _cpl[0], setEditLic = _cpl[1];
+  /* 08/11 00h10 (Blandine, choix B : « j'ai mis trois fois l'ordre de passage dans le lecteur des engagements ») : lecture de
+     l'ordre de passage / programme directement ici, pour tous les tours (1 à 5). Même lecture que Jour J (hsLireProgramme). */
+  var _olu = React.useState(null); var ordreProp = _olu[0], setOrdreProp = _olu[1];
+  var _olc = React.useState(""); var ordreLect = _olc[0], setOrdreLect = _olc[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
   var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
 
@@ -1574,6 +1579,8 @@ function EcranEngagements() {
         var row = { agenda_id: idEv, cavalier_id: l.cavalier_id || null, nom: String(l.nom || "").trim(), licence: String(l.licence || "").trim() || null,
           epreuve1: mi.epreuve1 || null, cheval1_nom: mi.cheval1_nom || null, cheval1_id: idCheval(mi.cheval1_nom),
           epreuve2: mi.epreuve2 || null, cheval2_nom: mi.cheval2_nom || null, cheval2_id: idCheval(mi.cheval2_nom),
+          passage1: (toursL[0] && toursL[0].passage) || null, piste1: (toursL[0] && toursL[0].piste) || null,
+          passage2: (toursL[1] && toursL[1].passage) || null, piste2: (toursL[1] && toursL[1].piste) || null,
           ordre: i, maj_le: new Date().toISOString() };
         var rr = l.id
           ? await supa.from("concours_engagements").update(row).eq("id", l.id).select("*")
@@ -2028,6 +2035,75 @@ function EcranEngagements() {
           h("button", { type: "button", className: "hs-btn", onClick: ajouterLus }, F("Ajouter à la feuille")),
           h("button", { type: "button", className: "hs-btn", onClick: function () { setLus(null); } }, F("Annuler")))) : null);
   }
+  async function lireOrdre(e) {
+    var f = e && e.target && e.target.files && e.target.files[0];
+    try { e.target.value = ""; } catch (eV) { }
+    if (!f) return;
+    setOrdreProp(null); setOrdreLect("en_cours");
+    try {
+      var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
+      if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
+      var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
+      var equipe = []; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.cheval_nom || t.epreuve) equipe.push({ cavalier: l.nom, cheval: t.cheval_nom || "", epreuve: t.epreuve || "" }); }); });
+      var lu = await hsLireProgramme(imgs, equipe);
+      function norm(x) { return String(x || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+      function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
+      function memeCh(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
+      var props = [], pris = [];
+      lignes.forEach(function (l, i) { (l.tours || []).forEach(function (t, k) {
+        var ch = String(t.cheval_nom || "").trim(), ep = String(t.epreuve || "").trim();
+        if (!ch && !ep) return;
+        var cands = lu.passages.filter(function (x, ix) { return x && pris.indexOf(ix) === -1 && (hsMemePers(x.cavalier, l.nom) || (ch && memeCh(x.cheval, ch))) && (!x.cheval || !ch || memeCh(x.cheval, ch)); });
+        /* un couple qui fait plusieurs épreuves : on prend la ligne de SON épreuve */
+        var p = cands.filter(function (x) { return ep && (memeEp(x.epreuve, ep) || lu.epreuves.some(function (y) { return y && y.numero && norm(y.numero) === norm(x.epreuve) && memeEp(y.nom, ep); })); })[0] || (cands.length === 1 ? cands[0] : null);
+        if (p) pris.push(lu.passages.indexOf(p));
+        var eL = lu.epreuves.filter(function (x) { return x && (memeEp(x.nom, ep) || (p && (memeEp(x.nom, p.epreuve) || (x.numero && norm(x.numero) === norm(p.epreuve))))); })[0] || null;
+        var heure = "", source = "";
+        if (p && p.heure) { heure = hsHeurePropre(p.heure); source = F("heure de passage lue"); }
+        else if (p && p.ordre && eL && eL.heure && hsMinutes(hsHeurePropre(eL.heure)) < 99999) { heure = hsHeure(hsMinutes(hsHeurePropre(eL.heure)) + Math.round((Number(String(p.ordre).replace(/\D/g, "")) - 1) * 1.75)); source = F("estimée : début de l’épreuve + ordre de passage"); }
+        else if (eL && eL.heure) { heure = hsHeurePropre(eL.heure); source = F("début de l’épreuve (ordre pas encore connu)"); }
+        var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
+        if (!heure && !piste) return;
+        props.push({ i: i, k: k, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, ordre: p && p.ordre ? String(p.ordre) : "", coche: true });
+      }); });
+      setOrdreProp(props);
+      setOrdreLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à tes engagements.") : F("Je n’ai rien trouvé d’utilisable sur ce document.")));
+    } catch (eL2) { setOrdreLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
+  }
+  function appliquerOrdre() {
+    if (!ordreProp) return;
+    var n = lignes.slice(), nb = 0;
+    ordreProp.forEach(function (x) {
+      if (!x.coche || !n[x.i] || !(n[x.i].tours || [])[x.k]) return;
+      var l = Object.assign({}, n[x.i]), t = l.tours.slice(), u = Object.assign({}, t[x.k]);
+      if (x.heure) u.passage = x.heure; if (x.piste) u.piste = x.piste;
+      t[x.k] = u; l.tours = t; n[x.i] = l; nb++;
+    });
+    setLignes(n); setModifie(true); setOrdreProp(null);
+    setOrdreLect(nb ? "✓ " + nb + (nb > 1 ? F(" heures mises") : F(" heure mise")) + F(" : elles apparaissent dans le récapitulatif et dans Jour J.") : "");
+    if (nb) enregistrer(n, supprimees);
+  }
+  function blocOrdre() {
+    var nbT = 0; lignes.forEach(function (l) { nbT += (l.tours || []).length; });
+    if (!nbT) return null;
+    return h("div", { className: "d3-ordre" },
+      h("div", { className: "d3-k" }, F("Ordre de passage")),
+      h("div", { className: "d3-msg", style: { marginTop: 0 } }, F("Une photo, une capture ou le PDF de la liste de départ ou du programme : les heures et les pistes de tes couples se remplissent toutes seules.")),
+      h("label", { className: "hs-lien d3-petit", style: { cursor: "pointer", opacity: ordreLect === "en_cours" ? 0.6 : 1 } },
+        ordreLect === "en_cours" ? F("Lecture de l’ordre de passage… (1 à 2 min)") : F("Lire l’ordre de passage (photo ou PDF) ›"),
+        h("input", { type: "file", accept: "image/*,application/pdf", disabled: ordreLect === "en_cours", onChange: lireOrdre, style: { display: "none" } })),
+      ordreLect && ordreLect !== "en_cours" ? h("div", { className: "d3-msg" }, ordreLect) : null,
+      ordreProp && ordreProp.length ? h("div", { className: "hs-lus" },
+        ordreProp.map(function (x, j) {
+          return h("label", { key: j, className: "hs-lu" },
+            h("input", { type: "checkbox", checked: !!x.coche, onChange: function () { var c = ordreProp.slice(); c[j] = Object.assign({}, x, { coche: !x.coche }); setOrdreProp(c); } }),
+            h("span", null, h("b", null, prenomDe(x.nom) + " · " + (x.ch || "?") + (x.ep ? " · " + x.ep : "")),
+              h("em", null, [x.heure, x.piste ? F("piste ") + x.piste : "", x.ordre ? F("n° ") + x.ordre : "", x.source].filter(Boolean).join(" · "))));
+        }),
+        h("div", { className: "hs-duo", style: { marginTop: 12 } },
+          h("button", { type: "button", className: "hs-btn", onClick: appliquerOrdre }, F("Mettre ces heures")),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { setOrdreProp(null); setOrdreLect(""); } }, F("Annuler")))) : null);
+  }
   /* engagements enregistrés sans aucun tour (anciens écrans, fiche lue) : visibles, avec × pour les retirer */
   function sansTour() {
     var l0 = lignes.map(function (l, i) { return { l: l, i: i }; }).filter(function (x) { return !(x.l.tours || []).some(function (t) { return t.epreuve || t.cheval_nom; }); });
@@ -2206,6 +2282,7 @@ function EcranEngagements() {
       carteConcours(),
       composeur(),
       recapFin(),
+      blocOrdre(),
       sansTour(),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seuls toi et le cavalier concerné les voient. Chacun voit son engagement sur la fiche du concours.")),
       /* actions */
