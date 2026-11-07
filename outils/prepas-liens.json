@@ -1,0 +1,310 @@
+{
+ "fr": {
+  "titre": "Et après les Galops ?",
+  "em": "Deviens enseignant",
+  "intro": "Les tests d'entrée, les épreuves et les conseils pour te préparer aux diplômes d'enseignement.",
+  "items": [
+   {
+    "t": "Prépa AE",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Prépa BP",
+    "s": "BPJEPS mention équitation",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Prépa DE",
+    "s": "DEJEPS sports équestres",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "en": {
+  "titre": "What comes after the Galops?",
+  "em": "Become a riding teacher",
+  "intro": "Entry tests, exams and tips to help you prepare for the teaching qualifications.",
+  "items": [
+   {
+    "t": "AE prep",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "BP prep",
+    "s": "BPJEPS, riding specialism",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "DE prep",
+    "s": "DEJEPS equestrian sports",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "es": {
+  "titre": "¿Y después de los Galops?",
+  "em": "Hazte docente",
+  "intro": "Las pruebas de acceso, los exámenes y consejos para prepararte a los títulos de enseñanza.",
+  "items": [
+   {
+    "t": "Prepara el AE",
+    "s": "Animador de Equitación",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Prepara el BP",
+    "s": "BPJEPS mención equitación",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Prepara el DE",
+    "s": "DEJEPS deportes ecuestres",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "it": {
+  "titre": "E dopo i Galop?",
+  "em": "Diventa insegnante",
+  "intro": "I test d'ingresso, le prove e i consigli per prepararti ai diplomi di insegnamento.",
+  "items": [
+   {
+    "t": "Prepara l'AE",
+    "s": "Animateur d'Équitation (animatore di equitazione)",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Prepara il BP",
+    "s": "BPJEPS indirizzo equitazione",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Prepara il DE",
+    "s": "DEJEPS sport equestri",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "ja": {
+  "titre": "Galopのその先は？",
+  "em": "指導者になろう",
+  "intro": "指導者資格に向けた入学試験、本試験、準備のアドバイスをまとめました。",
+  "items": [
+   {
+    "t": "AE準備",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "BP準備",
+    "s": "BPJEPS mention équitation",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "DE準備",
+    "s": "DEJEPS sports équestres",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "de": {
+  "titre": "Und nach den Galops?",
+  "em": "Unterrichte selbst",
+  "intro": "Aufnahmeprüfungen, Prüfungsteile und Tipps, mit denen du dich auf die Ausbilderabschlüsse vorbereitest.",
+  "items": [
+   {
+    "t": "Vorbereitung AE",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Vorbereitung BP",
+    "s": "BPJEPS Fachrichtung Reiten",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Vorbereitung DE",
+    "s": "DEJEPS Pferdesport",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "ar": {
+  "titre": "وماذا بعد مستويات Galop؟",
+  "em": "كوني مدرّسة",
+  "intro": "اختبارات الدخول، والاختبارات، ونصائح للاستعداد لشهادات التدريس.",
+  "items": [
+   {
+    "t": "التحضير لـAE",
+    "s": "منشّطة الفروسية (Animateur d'Équitation)",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "التحضير لـBP",
+    "s": "BPJEPS تخصّص الفروسية",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "التحضير لـDE",
+    "s": "DEJEPS الرياضات الفروسية",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "zh": {
+  "titre": "考完 Galop 之后呢？",
+  "em": "成为马术教练",
+  "intro": "入学测试、考核内容和备考建议，助你拿下马术教学文凭。",
+  "items": [
+   {
+    "t": "AE 备考",
+    "s": "马术辅导员（Animateur d'Équitation）",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "BP 备考",
+    "s": "BPJEPS 马术方向",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "DE 备考",
+    "s": "DEJEPS 马术运动方向",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "nl": {
+  "titre": "En na de Galops?",
+  "em": "Word instructeur",
+  "intro": "De toelatingstests, de examens en tips om je voor te bereiden op de lesgeversdiploma's.",
+  "items": [
+   {
+    "t": "Voorbereiding AE",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Voorbereiding BP",
+    "s": "BPJEPS richting paardrijden",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Voorbereiding DE",
+    "s": "DEJEPS paardensport",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "pt": {
+  "titre": "E depois dos Galops?",
+  "em": "Torne-se professor",
+  "intro": "Os testes de entrada, as provas e as dicas para você se preparar para os diplomas de ensino.",
+  "items": [
+   {
+    "t": "Prepa AE",
+    "s": "Animateur d'Équitation",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Prepa BP",
+    "s": "BPJEPS menção equitação",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Prepa DE",
+    "s": "DEJEPS esportes equestres",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "sv": {
+  "titre": "Och efter Galopperna?",
+  "em": "Bli ridlärare",
+  "intro": "Antagningsprov, examensprov och tips för att förbereda dig inför lärarexamina.",
+  "items": [
+   {
+    "t": "Förberedelse AE",
+    "s": "Animateur d'Équitation (ridledare)",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Förberedelse BP",
+    "s": "BPJEPS inriktning ridsport",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Förberedelse DE",
+    "s": "DEJEPS hästsport",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "ru": {
+  "titre": "А что после Galops?",
+  "em": "Стань преподавателем",
+  "intro": "Вступительные тесты, экзамены и советы, которые помогут подготовиться к педагогическим дипломам.",
+  "items": [
+   {
+    "t": "Подготовка к AE",
+    "s": "Аниматор верховой езды",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Подготовка к BP",
+    "s": "BPJEPS, специализация «верховая езда»",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Подготовка к DE",
+    "s": "DEJEPS, конный спорт",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "pl": {
+  "titre": "Co po Galopach?",
+  "em": "Zostań instruktorem",
+  "intro": "Testy wstępne, egzaminy i wskazówki, jak przygotować się do dyplomów uprawniających do nauczania jazdy.",
+  "items": [
+   {
+    "t": "Przygotowanie do AE",
+    "s": "Animateur d'Équitation (animator jazdy konnej)",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "Przygotowanie do BP",
+    "s": "BPJEPS, specjalność jeździectwo",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "Przygotowanie do DE",
+    "s": "DEJEPS, sporty jeździeckie",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ },
+ "ko": {
+  "titre": "Galop 다음에는요?",
+  "em": "승마 지도자가 되어 보세요",
+  "intro": "지도자 자격증을 준비하는 데 필요한 입학 시험, 평가 과정, 그리고 준비 요령을 담았어요.",
+  "items": [
+   {
+    "t": "AE 준비",
+    "s": "승마 지도 보조자(Animateur d'Équitation)",
+    "u": "prepa-animateur-equitation"
+   },
+   {
+    "t": "BP 준비",
+    "s": "BPJEPS 승마 전공",
+    "u": "prepa-bpjeps-equitation"
+   },
+   {
+    "t": "DE 준비",
+    "s": "DEJEPS 승마 스포츠",
+    "u": "prepa-dejeps-equitation"
+   }
+  ]
+ }
+}

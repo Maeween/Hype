@@ -472,6 +472,16 @@ function ecrire(rel, html) {
 }
 
 /* ---------- Fabrication ---------- */
+/* 07/11 (Blandine : « mets-les en ligne ») : lien vers les prépas aux diplômes d'enseignement (AE · BPJEPS · DEJEPS)
+   sur le sommaire des Galops et en bas des Galops 6 à 9 — textes dans outils/prepas-liens.json (14 langues). */
+let PREPAS = null; try { PREPAS = JSON.parse(fs.readFileSync(path.join(__dirname, "prepas-liens.json"), "utf8")); } catch (eP) { PREPAS = null; }
+function blocPrepas(lg) {
+  const t = PREPAS && (PREPAS[lg] || PREPAS.fr); if (!t) return "";
+  let h = `<h2>${e(t.titre)} <em>${e(t.em)}</em></h2><p>${e(t.intro)}</p><ul class="liste">`;
+  for (const it of t.items) h += `<li><a href="${DOM}/${lg}/${it.u}/"><strong>${e(it.t)}</strong><span class="sous">${e(it.s)}</span></a></li>`;
+  return h + `</ul>`;
+}
+
 function principal() {
   const cours = chargerCours();
   const infos = infosGalops();
@@ -508,7 +518,7 @@ function principal() {
       const nb = cours[n].length;
       corps += `<li><a href="${DOM}/${lg}/galop-${n}/"><strong>${e(nomGalop(n, lg))}</strong><span class="pastille">${e(n === 1 ? ui.gratuit : "Hype+")}</span><span class="sous">${e(sousTitre(n, lg))} · ${nb} ${e(ui.chap)}</span></a></li>`;
     }
-    corps += `</ul><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
+    corps += `</ul>` + blocPrepas(lg) + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
     ecrire(`${lg}/galops`, page({ lg, cible: "galops", chemin: "galops/", titre: `${ui.theorie} | Hype`, desc: ui.sousTitre, h1: ui.theorie, fil: accueil, corps,
       jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: ui.theorie, inLanguage: HL[lg], url: `${DOM}/${lg}/galops/`, isPartOf: { "@id": DOM + "/#website" } } }));
     if (lg === LANGS[0]) urls.push({ chemin: "galops/" });
@@ -557,7 +567,7 @@ function principal() {
         liste.forEach((ch, i) => { c += pub.indexOf(i) >= 0
           ? `<li><a href="${DOM}/${lg}/galop-${n}/${sg[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`
           : `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`; });
-        c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
+        c += `</ol>` + (n >= 6 ? blocPrepas(lg) : "") + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
         ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
@@ -585,7 +595,7 @@ function principal() {
       } else {
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;
         for (const ch of liste) c += `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`;
-        c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
+        c += `</ol>` + (n >= 6 ? blocPrepas(lg) : "") + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
         ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
