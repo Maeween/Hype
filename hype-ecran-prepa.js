@@ -15,6 +15,12 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
      depuis i18n/prepa-<lg>.json (mêmes données + textes de l'écran). En attendant le chargement, on garde le français. */
   var I18N_V = 3, LG = "fr", TR = {}, CHARGE = {}, UI = null;
   function T(k, fr) { return (UI && UI[k]) || fr; }
+  /* 07/11 19h52 (Blandine : « Premium ») — les prépas sont réservées aux abonnés Premium (et aux modératrices).
+     Sans abonnement : la partie « En bref » se lit en entier, puis une carte « Débloquer la suite avec Premium ».
+     Textes en 14 langues : [titre, texte, bouton, voir comme une non-abonnée, revenir à ma vue]. */
+  var PREM = {"fr": ["La suite de la prépa est réservée à Premium", "Tu viens de lire l'essentiel. Débloque les tests d'entrée, le détail des épreuves, les grilles de notation, les dispenses et ta liste à cocher avec Hype Premium.", "Débloquer la suite avec Premium", "Voir comme une non-abonnée", "Revenir à ma vue"], "en": ["The rest of the prep is for Premium", "You've just read the essentials. Unlock the entry tests, the full exam details, the marking grids, the exemptions and your checklist with Hype Premium.", "Unlock the rest with Premium", "View as a non-subscriber", "Back to my view"], "es": ["El resto de la preparación es para Premium", "Acabas de leer lo esencial. Desbloquea las pruebas de acceso, el detalle de los exámenes, las tablas de puntuación, las exenciones y tu lista de control con Hype Premium.", "Desbloquear el resto con Premium", "Ver como no suscriptora", "Volver a mi vista"], "it": ["Il seguito della preparazione è riservato a Premium", "Hai appena letto l'essenziale. Sblocca i test d'ingresso, il dettaglio delle prove, le griglie di valutazione, le dispense e la tua lista di controllo con Hype Premium.", "Sblocca il seguito con Premium", "Vedi come non abbonata", "Torna alla mia vista"], "ja": ["準備ガイドの続きはPremium限定です", "ここまでが基本情報です。入学試験、試験の詳細、採点表、免除、チェックリストはHype Premiumで読めます。", "Premiumで続きを読む", "非会員として表示", "通常の表示に戻る"], "de": ["Der Rest der Vorbereitung ist für Premium", "Du hast gerade das Wichtigste gelesen. Schalte die Aufnahmetests, alle Prüfungsdetails, die Bewertungsbögen, die Befreiungen und deine Checkliste mit Hype Premium frei.", "Den Rest mit Premium freischalten", "Als Nicht-Abonnentin ansehen", "Zurück zu meiner Ansicht"], "ar": ["تتمة التحضير مخصصة لـ Premium", "قرأتِ للتو الأساسيات. افتحي اختبارات القبول وتفاصيل الامتحانات وجداول التقييم والإعفاءات وقائمة التحقق الخاصة بك مع Hype Premium.", "افتحي التتمة مع Premium", "العرض كغير مشتركة", "العودة إلى عرضي"], "zh": ["后续备考内容仅限 Premium", "你刚读完了要点。开通 Hype Premium，解锁入学测试、考试详情、评分表、免考规定和你的核对清单。", "开通 Premium 继续阅读", "以非会员身份查看", "返回我的视图"], "nl": ["De rest van de voorbereiding is voor Premium", "Je hebt net het belangrijkste gelezen. Ontgrendel de toelatingstests, alle details van de examens, de beoordelingsformulieren, de vrijstellingen en je checklist met Hype Premium.", "Ontgrendel de rest met Premium", "Bekijken als niet-abonnee", "Terug naar mijn weergave"], "pt": ["O restante da preparação é exclusivo do Premium", "Você acabou de ler o essencial. Desbloqueie os testes de entrada, os detalhes das provas, as grades de avaliação, as dispensas e a sua lista de verificação com o Hype Premium.", "Desbloquear o restante com Premium", "Ver como não assinante", "Voltar à minha visualização"], "sv": ["Resten av förberedelsen är för Premium", "Du har precis läst det viktigaste. Lås upp antagningsproven, alla detaljer om proven, bedömningsmallarna, undantagen och din checklista med Hype Premium.", "Lås upp resten med Premium", "Visa som icke-prenumerant", "Tillbaka till min vy"], "ru": ["Продолжение подготовки доступно в Premium", "Это было самое главное. Открой вступительные тесты, подробности экзаменов, оценочные листы, освобождения и свой чек-лист с Hype Premium.", "Открыть продолжение с Premium", "Смотреть без подписки", "Вернуться к моему виду"], "pl": ["Dalsza część przygotowania jest dostępna w Premium", "To były najważniejsze informacje. Odblokuj testy wstępne, szczegóły egzaminów, arkusze ocen, zwolnienia i swoją listę kontrolną z Hype Premium.", "Odblokuj resztę z Premium", "Zobacz jako osoba bez subskrypcji", "Wróć do mojego widoku"], "ko": ["준비 가이드의 나머지는 Premium 전용이에요", "방금 핵심 내용을 읽었어요. Hype Premium으로 입학 시험, 시험 세부 내용, 채점표, 면제 조건, 체크리스트를 열어 보세요.", "Premium으로 나머지 열기", "비구독자 화면으로 보기", "내 화면으로 돌아가기"]};
+  function P(i) { return (PREM[LG] || PREM.fr)[i]; }
+
   function chargerTr(lg) {
     if (CHARGE[lg]) return CHARGE[lg];
     CHARGE[lg] = fetch("i18n/prepa-" + lg + ".json?v=" + I18N_V).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j) TR[lg] = j; }).catch(function () { });
@@ -35,7 +41,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     if (/préparation/i.test(t)) return "Ma préparation";
     return t;
   }
-  var CSS_ID = "hype-prepa-css-1";
+  var CSS_ID = "hype-prepa-css-2";
   var CSS = window.__HYPE_PREPA_HERO_CSS + [
     ".pp{--pp-iv:#F3EEE4;--pp-iv2:rgba(243,238,228,.78);--pp-iv3:rgba(243,238,228,.55);--pp-ch:#C9A66B;--pp-bd:rgba(201,166,107,.22);--pp-pan:rgba(16,26,29,.62);padding-bottom:calc(env(safe-area-inset-bottom) + 96px)}",
     ".pp .hv2-titre p{max-width:none}",
@@ -109,7 +115,13 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     "@media (min-width:768px){.pp-dips{max-width:620px}.pp-dep>button{padding:18px 20px}.pp-dep-in{padding:2px 20px 10px}.pp p,.pp li{font-size:15.5px}.pp-sec{padding-top:44px}}",
     "@media (min-width:1100px){.pp-corps>*{max-width:920px}}",
     "@media (prefers-reduced-motion:reduce){.pp-chev,.pp-dip{transition:none}}",
-    ".pp[dir=rtl] *,.pp:lang(ar) *{letter-spacing:0!important}"
+    ".pp[dir=rtl] *,.pp:lang(ar) *{letter-spacing:0!important}",
+    ".pp-verrou{margin:34px 0 10px;border:1px solid rgba(201,166,107,.35);border-radius:18px;padding:30px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,rgba(201,166,107,.06),rgba(201,166,107,0))}",
+    ".pp-verrou .pp-cad{width:60px;height:60px;border-radius:50%;border:1px solid rgba(201,166,107,.5);display:flex;align-items:center;justify-content:center;margin-bottom:16px}",
+    ".pp-verrou h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:600;line-height:1.15;margin:0 0 12px;max-width:380px;color:#F3EEE4}",
+    ".pp-verrou p{font-size:14px;line-height:1.6;color:rgba(243,238,228,.74);max-width:400px;margin:0 0 20px}",
+    ".pp-verrou-b{min-height:48px;padding:0 26px;border-radius:999px;border:1px solid #C9A66B;background:transparent;color:#D8BA82;font-size:14.5px;font-weight:600;cursor:pointer}",
+    ".pp-vue{display:inline-block;margin-top:12px;background:transparent;border:1px dashed rgba(201,166,107,.6);border-radius:999px;padding:4px 12px;font-size:11px;letter-spacing:.06em;color:#C9A66B;cursor:pointer}"
   ].join("\n");
   function injecter() { try { if (!document.getElementById(CSS_ID)) { var st = document.createElement("style"); st.id = CSS_ID; st.textContent = CSS; document.head.appendChild(st); } } catch (e) { } }
 
@@ -187,6 +199,8 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     var rangRef = React.useRef(null), verrou = React.useRef(0);
     React.useEffect(function () { injecter(); try { window.scrollTo(0, 0); } catch (e) { } var ok = true; (async function () { try { var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; if (ok) setMoi(u || null); } catch (e) { if (ok) setMoi(null); } })(); return function () { ok = false; }; }, []);
     var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
+    var sV = React.useState(false), vueNonAbo = sV[0], setVueNonAbo = sV[1];
+    var acces = (!!app.premium || estMod) && !vueNonAbo;
     React.useEffect(function () { if (moi !== undefined && !estMod) { try { setEcran("galops"); } catch (e) { } } }, [moi, estMod]);
     var d = (TL && TL[dip]) || DATA[dip] || { sections: [], sources: [] };
     React.useEffect(function () {
@@ -208,7 +222,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     var D = DIPLOMES.find(function (x) { return x.id === dip; }) || DIPLOMES[2];
     function choisir(id) { setDip(id); setOuv({}); setActif(0); try { window.__prepaDiplome = id; } catch (e) { } }
     function aller(i) {
-      try { var el = document.getElementById("pp-s" + i); verrou.current = Date.now() + 1100; var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; if (el) el.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" }); setActif(i); } catch (e) { }
+      try { var el = document.getElementById(!acces && i > 0 ? "pp-verrou" : "pp-s" + i); verrou.current = Date.now() + 1100; var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; if (el) el.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" }); setActif(i); } catch (e) { }
     }
     function retour() { try { if (app.peutReculer && typeof app.retourEcran === "function") { app.retourEcran(); return; } } catch (e) { } setEcran("galops"); }
     function bascule(k) { var n = Object.assign({}, ouv); n[k] = !n[k]; setOuv(n); }
@@ -225,12 +239,13 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
         h("div", { className: "pp-dips", role: "tablist", "aria-label": T("choisis", "Choisis ton diplôme") }, DIPLOMES.filter(function (x) { return !x.reserve || estMod; }).map(function (x) {
           return h("button", { key: x.id, type: "button", role: "tab", "aria-selected": dip === x.id ? "true" : "false", className: "pp-dip" + (dip === x.id ? " on" : ""), onClick: function () { choisir(x.id); } },
             h("b", null, x.court), h("span", null, T("metier_" + x.id, x.metier)), x.reserve ? h("small", null, T("nonPublie", "Non publié")) : null);
-        }))),
+        })),
+        estMod ? h("button", { type: "button", className: "pp-vue", onClick: function () { setVueNonAbo(!vueNonAbo); } }, vueNonAbo ? P(4) : P(3)) : null),
       h("nav", { className: "pp-nav", "aria-label": T("parties", "Parties de la page") }, h("div", { className: "pp-nav-rang", ref: rangRef }, d.sections.map(function (s, i) {
         return h("button", { key: i, type: "button", className: "pp-ong" + (actif === i ? " on" : ""), "aria-current": actif === i ? "true" : undefined, onClick: function () { aller(i); } }, s.c || court(s.titre));
       }))),
       h("div", { className: "pp-corps" },
-        d.sections.map(function (s, i) {
+        (acces ? d.sections : d.sections.slice(0, 1)).map(function (s, i) {
           return h("section", { key: dip + i, id: "pp-s" + i, className: "pp-sec", "aria-labelledby": "pp-h" + i },
             h("h2", { id: "pp-h" + i }, s.titre), h("div", { className: "pp-filet", "aria-hidden": "true" }),
             s.b.map(function (b, j) { return bloc(b, j, dip); }),
@@ -243,7 +258,13 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
                 o ? h("div", { id: "pp-d" + k, className: "pp-dep-in" }, sb.b.map(function (b, m) { return bloc(b, m, dip); })) : null);
             }));
         }),
-        d.sources.length ? h("div", { className: "pp-src" }, h("h2", null, T("sources", "Sources officielles")), h("ul", null, d.sources.map(function (x, i) { return h("li", { key: i }, ins(x)); }))) : null,
+        acces ? null : h("div", { id: "pp-verrou", className: "pp-verrou" },
+          h("div", { className: "pp-cad", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
+            h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
+          h("h2", null, P(0)), h("p", null, P(1)),
+          (typeof BandeauDejaAbonne === "function") ? h(BandeauDejaAbonne, null) : null,
+          h("button", { type: "button", className: "pp-verrou-b", onClick: function () { try { setEcran("premium"); } catch (e) { } } }, P(2))),
+        acces && d.sources.length ? h("div", { className: "pp-src" }, h("h2", null, T("sources", "Sources officielles")), h("ul", null, d.sources.map(function (x, i) { return h("li", { key: i }, ins(x)); }))) : null,
         h("p", { className: "pp-res" }, T("rappel", "Les règles des diplômes changent régulièrement : vérifie toujours auprès de ton centre de formation et de la FFE avant de t'inscrire."))),
       (typeof FinPageHype === "function") ? h("div", { style: { marginTop: 30 } }, h(FinPageHype, null)) : null);
   }

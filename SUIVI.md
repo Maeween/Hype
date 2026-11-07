@@ -21,7 +21,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Vers le 21/11 – 05/12 : regarder dans la Search Console si les pages « explorée, pas indexée » de horselingo.fr baissent après l'ajout du récit des villes ; sinon, décider s'il faut montrer plus de mots gratuits (attend : Blandine)
 - [07/11] Carnet de santé du cheval EN TUILES PAR ANNÉE (build 20261107-1910) : à tester sur iPhone avec Cirrus (6 tuiles : 2026 à 2022 + « Avant · 14 soins »), toucher une tuile ouvre ses soins (attend : Blandine)
 - [07/11] Page Santé du cheval : la photo du cheval sert aussi de FOND à toute la page (build 20261107-1550). À tester sur iPhone avec un cheval qui a une photo, puis un cheval sans photo (doit garder l'ancien fond Santé) (attend : Blandine)
-- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » RÉGLÉS le 07/11 20h15 (règlement AE 2026 complet) ; photos : on garde celles d'aujourd'hui (Blandine 07/11 19h51), nouvelles photos ChatGPT plus tard quand la limite d'images sera levée (prompts donnés le 07/11) ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; puis accès Premium et ouverture à toutes (attend : Blandine)
+- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » RÉGLÉS le 07/11 20h15 (règlement AE 2026 complet) ; photos : on garde celles d'aujourd'hui (Blandine 07/11 19h51), nouvelles photos ChatGPT plus tard quand la limite d'images sera levée (prompts donnés le 07/11) ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; accès PREMIUM décidé (07/11 19h52) et prêt (non publié) ; reste l'ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 « La charte du bien-être équin » à garder ou renommer (l'introduction est corrigée le 07/11 : le programme demande les principes d'éthologie et de bien-être, la Charte les résume), ouverture (attend : Blandine)
@@ -19256,5 +19256,18 @@ Fichiers à publier (en plus de l'entrée de 19h30) :
 | hype-ecran-prepa.js | racine | AE en français mise à jour ; traductions version 3 |
 | i18n/prepa-*.json (13) | i18n/ | AE traduite à jour |
 | index.html | racine | hype-ecran-prepa.js?v=4 (+ marqueur de build au moment de publier) |
+| SUIVI.md | racine | cette entrée |
+
+## 07/11/2026 20h40 — PRÊT, NON PUBLIÉ (à grouper) — Prépas réservées à Premium (Blandine 19h52 : « Premium »)
+- Sans abonnement (et pas modératrice) : le haut de page, le choix du diplôme, les onglets et la partie « En bref » se lisent en entier ; ensuite une carte cadenas « La suite de la prépa est réservée à Premium » + « Débloquer la suite avec Premium » (bouton contour champagne, fond transparent) qui ouvre la page Premium ; la ligne « Déjà abonné ? / Me connecter » (BandeauDejaAbonne) est au-dessus du bouton, donc une personne non connectée peut se connecter d'abord (règle du 18/10). Les onglets des parties verrouillées amènent à la carte. Sources masquées dans cette vue.
+- Abonnées Premium (et Evan, Liam, Mégane… via le Premium de l'appli) et modératrices : tout, comme avant.
+- Pour tester : sous le choix du diplôme, bouton pointillé « Voir comme une non-abonnée » / « Revenir à ma vue » (modératrices seulement).
+- Textes en 14 langues (arabe au féminin). La page reste visible des modératrices seules tant que Blandine n'a pas décidé de l'ouvrir à toutes.
+- Testé : français, arabe, japonais × téléphone / ordinateur ; aucune erreur, aucun débordement ; le bouton ouvre bien la page Premium.
+Fichiers à publier (en plus des entrées de 19h30 et 20h15) :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-prepa.js | racine | verrou Premium + bouton de test |
+| index.html | racine | hype-ecran-prepa.js?v=5 (+ marqueur de build au moment de publier) |
 | SUIVI.md | racine | cette entrée |
 
