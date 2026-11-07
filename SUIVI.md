@@ -694,6 +694,19 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   + Photo retirée à la demande de Blandine (cavalière sur cheval gris,
   galop5-hero-elfe-liam) : remplacée dans Mouvements, Aides, et la page
   « Ce que Hype t'apporte ». PUBLIÉ build 20261107-0345.
+· 07/11 02 h 47 (« tu peux le mettre en ligne dans l'appli aussi ? ») →
+  LE REGISTRE DU PERSONNEL (#personnel-ecurie, carte « Le personnel » dans
+  Mon écurie + lien depuis la fiche « Le personnel » des obligations).
+  SQL PASSÉ (sql-07-11-registre-personnel.sql : table registre_personnel,
+  lisible SEULEMENT par les responsables de l'écurie et les modératrices).
+  Une fiche par personne (nom, prénoms, contrat CDI/CDD/Apprentissage/
+  Stagiaire/Saisonnier/Autre, emploi, qualification ou tuteur de stage,
+  temps partiel, entrée, sortie, naissance, sexe, nationalité, titre de
+  travail si étranger). Cases Présents / Partis / Stagiaires / Tout.
+  Impression : registre papier en français (salariés dans l'ordre
+  d'embauche + stagiaires à part, art. L. 1221-13 et D. 1221-23).
+  Suppression réservée aux erreurs de saisie (le registre se garde 5 ans
+  après chaque départ). 14 langues. PUBLIÉ build 20261107-0610.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 

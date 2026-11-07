@@ -69,7 +69,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 3;
+  var I18N_V = 4;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -385,7 +385,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
           theme(h, "", PHOTOS.camion, "Le camion", d.vhAbsent ? "Bientôt" : "Papiers et dates à surveiller", d.vhAbsent ? null : function () { ouvrir("camion"); }),
           theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
-          theme(h, "large", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.detenteur, "Le personnel", "Le registre unique du personnel", function () { ouvrir("personnel-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
@@ -2012,7 +2013,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       texte: ["Un bâtiment où entre du public (club-house, manège couvert, tribunes) peut être un établissement recevant du public. Alors : extincteurs vérifiés chaque année, plan d'évacuation affiché, registre de sécurité où l'on note les vérifications.",
         "Les règles exactes dépendent de la catégorie du bâtiment (nombre de personnes accueillies) : à demander à ta mairie ou au service prévention des pompiers."],
       source: "https://www.orne.gouv.fr/contenu/telechargement/6739/74879/file/Fiche_autoevaluations_centre_equestre_Basse-Normandie_cle0cb1fc.pdf", sourceNom: "Préfecture de l'Orne, grille d'un centre équestre" },
-    { k: "personnel", cat: "employeur", photo: "aides", titre: "Le personnel", sous: "Registre et affichages", pill: "Dès 1 salarié", etat: "Obligatoire",
+    { k: "personnel", cat: "employeur", photo: "aides", titre: "Le personnel", sous: "Registre et affichages", pill: "Dès 1 salarié", etat: "Dans l'appli", lienInterne: "personnel-ecurie",
       texte: ["Dès le premier salarié : le registre unique du personnel (tous les salariés, stagiaires compris, dans l'ordre d'embauche), et les affichages du droit du travail (inspection du travail, médecine du travail, convention collective, horaires, interdiction de fumer…).",
         "Le GHN fournit des modèles prêts à imprimer pour les établissements équestres."],
       source: "https://www.ghn.com.fr", sourceNom: "GHN, syndicat des établissements équestres" },
@@ -2060,7 +2061,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, alerte: !!a.aVerifier, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
           ouvert === a.k ? h("div", { style: { padding: "12px 6px 16px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,.82)" } },
             a.texte.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); }),
-            a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : "Ouvrir Le registre") : null,
+            a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : (a.lienInterne === "personnel-ecurie" ? "Ouvrir Le personnel" : "Ouvrir Le registre")) : null,
             lien(a.source, "Lire la source")) : null);
       })),
       h("div", { className: "hg-sous" }, "Vérifié le 7 novembre 2026 sur des sources officielles. Les règles changent : vérifie toujours la source, et demande à ta mairie, aux pompiers ou au service jeunesse et sports de ton département pour ce qui dépend de ton cas. Hype t'aide à ne rien oublier ; la responsabilité reste celle du dirigeant."),
@@ -2070,5 +2071,171 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « LE REGISTRE DU PERSONNEL » (07/11 02 h 47) ═════════════════════════
+     Blandine : « tu peux le mettre en ligne dans l'appli aussi ? ». Registre unique du personnel (Code du travail
+     L. 1221-13, D. 1221-23) : salariés dans l'ordre d'embauche, stagiaires à part, gardé 5 ans après chaque départ.
+     Table registre_personnel (sql-07-11-registre-personnel.sql) : lisible SEULEMENT par les responsables de l'écurie.
+     Impression comme le registre d'élevage (aperçu papier en français, zone #hg-zone-impr). */
+  var CONTRATS = ["CDI", "CDD", "Apprentissage", "Stage", "Saisonnier", "Autre"];
+  function libContrat(x) { return x === "Stage" ? "Stagiaire" : x; }   /* « Stage » ici = un stagiaire (pas un stage d'équitation) */
+  function EcranPersonnel() {
+    var h = hT; useLangue();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    React.useEffect(function () { try { if (!document.getElementById(CSS_ID + "-imp")) { var s = document.createElement("style"); s.id = CSS_ID + "-imp"; s.textContent = CSS_IMP; document.head.appendChild(s); } } catch (e) { } }, []);
+    var c = useClub();
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var _d = React.useState(null); var d = _d[0], setD = _d[1];
+    var _f = React.useState("presents"); var f = _f[0], setF = _f[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var _s = React.useState(false); var confSuppr = _s[0], setConfSuppr = _s[1];
+    var _i = React.useState(false); var apercu = _i[0], setApercu = _i[1];
+    var refDoc = React.useRef(null);
+    React.useEffect(function () {
+      var vif = true; setD(null);
+      (async function () {
+        var res = { lignes: [], absent: false, peutGerer: false, erreur: "" };
+        try {
+          if (!c.club || typeof supa === "undefined" || !supa) { if (vif) setD(res); return; }
+          var clef = clefDe(c.club);
+          try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
+          if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
+          if (res.peutGerer) {
+            var rp = await supa.from("registre_personnel").select("*").eq("club_clef", clef).order("date_entree", { ascending: true }).limit(500);
+            if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
+            else res.lignes = (rp && rp.data) || [];
+          }
+        } catch (e) { res.erreur = String((e && e.message) || e); }
+        if (vif) setD(res);
+      })();
+      return function () { vif = false; };
+    }, [c.club, recharge]);
+    function ouvrirLigne(l) {
+      if (ouvert === (l ? l.id : "nouveau")) { setOuvert(null); return; }
+      setMsg(""); setConfSuppr(false);
+      var v = {}; ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes"].forEach(function (k) { v[k] = (l && l[k]) || ""; });
+      v.temps_partiel = !!(l && l.temps_partiel);
+      if (!l) { v.date_entree = isoAuj(); v.nationalite = "Française"; }
+      setVal(v); setOuvert(l ? l.id : "nouveau");
+    }
+    function maj(k, v) { setMsg(""); setVal(function (o) { var n = Object.assign({}, o); n[k] = v; return n; }); }
+    async function enregistrer(l) {
+      if (!String(val.nom || "").trim()) { setMsg("Indique le nom."); return; }
+      if (!val.date_entree) { setMsg("Indique la date d'entrée."); return; }
+      if (val.date_sortie && val.date_sortie < val.date_entree) { setMsg("La sortie ne peut pas être avant l'entrée."); return; }
+      setEnvoi(true); setMsg("");
+      try {
+        var ligne = { club_clef: clefDe(c.club), temps_partiel: !!val.temps_partiel, maj_le: new Date().toISOString() };
+        ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes"].forEach(function (k) { var x = String(val[k] || "").trim(); ligne[k] = x || null; });
+        var r = l ? await supa.from("registre_personnel").update(ligne).eq("id", l.id).select("*") : await supa.from("registre_personnel").insert(ligne).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("✓ Enregistré"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    async function supprimer(l) {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("registre_personnel").delete().eq("id", l.id).select("id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé (droits de l'écurie à vérifier).");
+        setOuvert(null); setMsg("Ligne supprimée."); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas supprimé : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    function imprimer() {
+      setMsg("");
+      try {
+        var z = document.getElementById("hg-zone-impr");
+        if (!z) { z = document.createElement("div"); z.id = "hg-zone-impr"; document.body.appendChild(z); }
+        z.innerHTML = refDoc.current ? refDoc.current.outerHTML : "";
+        document.documentElement.classList.add("hg-impr");
+        var fin = function () { document.documentElement.classList.remove("hg-impr"); window.removeEventListener("afterprint", fin); };
+        window.addEventListener("afterprint", fin);
+        setTimeout(function () { window.print(); setTimeout(fin, 1500); }, 250);
+      } catch (e) { setMsg("Impression impossible : " + String((e && e.message) || e)); }
+    }
+    function champ(k, lab, o) {
+      o = o || {};
+      return [h("label", { key: k + "l", htmlFor: "hgp-" + k }, lab),
+        h("input", { key: k, id: "hgp-" + k, type: o.type || "text", value: val[k] || "", placeholder: o.ex || "", maxLength: 120, onChange: function (e) { maj(k, e.target.value); } })];
+    }
+    function choix(k, lab, liste) {
+      return [h("label", { key: k + "l" }, lab), h("div", { key: k, className: "hg-sugg" }, liste.map(function (x) {
+        var on = x === val[k];
+        return h("button", { key: x, type: "button", onClick: function () { maj(k, on ? "" : x); }, style: on ? { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" } : null }, libContrat(x));
+      }))];
+    }
+    function formulaire(l) {
+      var stage = val.type_contrat === "Stage";
+      return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+        champ("nom", "Nom"), champ("prenoms", "Prénoms"),
+        choix("type_contrat", "Contrat", CONTRATS),
+        champ("emploi", "Emploi", { ex: "ex. Palefrenier soigneur, enseignant" }),
+        stage ? champ("tuteur", "Tuteur du stage") : champ("qualification", "Qualification", { ex: "ex. BPJEPS, CAP, sans diplôme" }),
+        h("label", { key: "tp", style: { display: "flex", alignItems: "center", gap: 10, textTransform: "none", letterSpacing: 0, fontSize: 14, color: "#F3EEE4" } },
+          h("input", { type: "checkbox", checked: !!val.temps_partiel, onChange: function (e) { maj("temps_partiel", e.target.checked); }, style: { width: 20, minHeight: 20 } }), "Temps partiel"),
+        champ("date_entree", "Date d'entrée", { type: "date" }), champ("date_sortie", "Date de sortie (s'il est parti)", { type: "date" }),
+        champ("date_naissance", "Date de naissance", { type: "date" }),
+        choix("sexe", "Sexe", ["Femme", "Homme"]),
+        champ("nationalite", "Nationalité"),
+        val.nationalite && !/^fran/i.test(val.nationalite) ? champ("titre_travail", "Titre qui autorise à travailler", { ex: "Type et numéro" }) : null,
+        h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
+        l ? (confSuppr
+          ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setConfSuppr(false); } }, "Garder"),
+              h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(l); } }, "Supprimer vraiment"))
+          : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, textDecoration: "underline" } }, "Supprimer (erreur de saisie seulement)")) : null,
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
+    }
+    var corps;
+    if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+    else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie.");
+    else if (d.absent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
+    else {
+      var L = d.lignes || [];
+      var sal = L.filter(function (x) { return x.type_contrat !== "Stage"; }), stg = L.filter(function (x) { return x.type_contrat === "Stage"; });
+      var pres = L.filter(function (x) { return !x.date_sortie; }), partis = L.filter(function (x) { return !!x.date_sortie; });
+      var vis = f === "presents" ? pres : f === "partis" ? partis : f === "stages" ? stg : L;
+      var j = function (iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? (m[3] + "/" + m[2] + "/" + m[1]) : ""; };
+      var tab = function (liste, cols, ligne) {
+        return liste.length ? hF("table", null, hF("thead", null, hF("tr", null, cols.map(function (t) { return hF("th", { key: t }, t); }))),
+          hF("tbody", null, liste.map(function (x, i) { return hF("tr", { key: x.id }, ligne(x, i).map(function (v, k) { return hF("td", { key: k }, v || ""); })); }))) : hF("div", { className: "hgi-vide" }, "Aucune ligne.");
+      };
+      var doc = hF("div", { className: "hgi", ref: refDoc, style: { fontSize: 9.5 } },
+        hF("h1", null, "Registre unique du personnel"),
+        hF("div", null, c.club),
+        hF("div", { style: { color: "#555", marginTop: 2 } }, "Édité le " + j(isoAuj()) + " · Code du travail, art. L. 1221-13 et D. 1221-23 · à conserver 5 ans après le départ de chaque salarié"),
+        hF("div", { className: "hgi-part" }, hF("h2", null, "Salariés, dans l'ordre d'embauche"),
+          tab(sal, ["N°", "Nom et prénoms", "Nationalité", "Naissance", "Sexe", "Emploi", "Qualification", "Contrat", "Entrée", "Sortie", "Titre de travail"],
+            function (x, i) { return [String(i + 1), [x.nom, x.prenoms].filter(Boolean).join(" "), x.nationalite, j(x.date_naissance), x.sexe, x.emploi, x.qualification, [x.type_contrat, x.temps_partiel ? "temps partiel" : ""].filter(Boolean).join(", "), j(x.date_entree), j(x.date_sortie), x.titre_travail]; })),
+        hF("div", { className: "hgi-part" }, hF("h2", null, "Stagiaires"),
+          tab(stg, ["Nom et prénoms", "Début", "Fin", "Tuteur", "Lieu"], function (x) { return [[x.nom, x.prenoms].filter(Boolean).join(" "), j(x.date_entree), j(x.date_sortie), x.tuteur, c.club]; })));
+      corps = h("div", null,
+        ligneEcurie(h, c, [{ svg: SVG_IMPRIMER, lab: "Imprimer ou enregistrer en PDF", on: apercu, clic: function () { setApercu(!apercu); } }, { svg: SVG_PLUS, lab: "Ajouter une personne", on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
+        tuiles(h, [{ k: "presents", b: "Présents", s: String(pres.length), n: 1 }, { k: "partis", b: "Partis", s: String(partis.length), n: partis.length }, { k: "stages", b: "Stagiaires", s: String(stg.length), n: stg.length }, { k: "tous", b: "Tout", s: String(L.length), n: 1 }], f === "tous" ? "tous" : f, function (v) { setF(v === "tous" && f === "tous" ? "presents" : v); }),
+        ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, "Nouvelle personne"), formulaire(null)) : null,
+        msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
+        vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (x) {
+          return h("div", { key: x.id },
+            carte(h, { cle: x.id, photo: PHOTOS.detenteur, titre: [x.prenoms, x.nom].filter(Boolean).join(" "), sous: x.emploi || "Emploi à noter", pill: x.type_contrat ? libContrat(x.type_contrat) : "Contrat à noter", qui: "", etat: x.date_sortie ? ("Parti le " + dateCourte(x.date_sortie)) : ("Entré le " + dateCourte(x.date_entree)), onClick: function () { ouvrirLigne(x); } }),
+            ouvert === x.id ? formulaire(x) : null);
+        })) : h("div", { className: "hg-vide" }, L.length ? "Personne pour ce choix." : "Aucune personne notée. Touche + dès la première embauche, apprenti ou stagiaire compris."),
+        apercu ? h("div", null, h("button", { type: "button", className: "hg-btn", onClick: imprimer }, "Imprimer ou enregistrer en PDF"), doc) : null,
+        h("div", { className: "hg-sous" }, "Obligatoire dès le premier salarié : chaque personne est notée au moment de l'embauche, dans l'ordre d'arrivée, puis gardée 5 ans après son départ. Les bénévoles n'y figurent pas. Seuls les responsables de l'écurie voient cette page."),
+        LEGAL(h));
+    }
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      hero(h, { photo: PHOTOS.detenteur, titre: "Le personnel", sous: "Le registre unique du personnel.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
