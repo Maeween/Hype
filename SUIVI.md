@@ -19272,3 +19272,9 @@ Fichiers à publier (en plus des entrées de 19h30 et 20h15) :
 | index.html | racine | hype-ecran-prepa.js?v=5 (+ marqueur de build au moment de publier) |
 | SUIVI.md | racine | cette entrée |
 
+## 07/11/2026 19h55 — PUBLICATION build 20261107-2055 (Blandine 19h55 : « Ok continue ») — PRÉPAS : AE 2026 complète + dispenses, accès Premium, correction espagnole
+- Part en ligne : les 3 entrées « PRÊT, NON PUBLIÉ » des prépas ci-dessus (correction espagnole ; AE avec grilles 2026 et partie Dispenses, 14 langues ; verrou Premium + bouton « Voir comme une non-abonnée »).
+- Part AUSSI (déposé par l'autre conversation, marqué « à grouper ») : Santé de l'écurie « Noter pour plusieurs chevaux » et son nouveau design.
+- Fichiers des prépas : hype-ecran-prepa.js (v=5), i18n/prepa-*.json (13), index.html (marqueur 20261107-2055), SUIVI.md.
+- À tester sur iPhone : Galops › « Deviens enseignant » › AE : nouvelles parties ; bouton « Voir comme une non-abonnée » (attend : Blandine)
+
