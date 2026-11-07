@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 05h10)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 06h30)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -15,8 +15,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 ## 2 — Important
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
-- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule (build 20261107-0110), TRADUITS dans les 13 autres langues le 07/11 (build 20261107-0420). Même suite que le Galop 8 : relecture (appli + ChatGPT, texte donné le 07/11), corrections, traductions, photos (texte donné le 07/11), ouverture. Points à trancher : titre du cours 6 (charte), Amateur 1, distances (cours 14), latéraux aux longues rênes (cours 5), « tourner sur les hanches au galop » (cours 11) (attend : Blandine)
-- [07/11] Galop 8 : les 20 cours sont en ligne, visibles de Blandine seule (Galop 8 « Prochainement »), TRADUITS dans les 13 autres langues le 07/11 (build 20261107-0420). À relire dans l'appli et par ChatGPT (texte de relecture donné le 05/11), puis corrections, puis traductions dans toutes les langues, puis ouverture. Photos des cours provisoires (texte pour les créer donné le 05/11). Points à trancher : « galop ferme à ferme » (cours 15), labels FFE (cours 19), déroulé de l'examen (cours 20), quiz à 8 questions au lieu de 10 (attend : Blandine)
+- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 (le programme parle de « principes d'éthologie et de bien-être équin », pas de la Charte), ouverture (attend : Blandine)
+- [07/11] Galop 8 : les 20 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Vérifié dans le programme FFE (REF 237) : partie commune + 3 parties spécifiques, « circuits et labels de la compétition », longe / longues rênes / liberté. Reste : relecture dans l'appli, photos (texte donné le 05/11), ouverture (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
 - [06/11] Titi « qualité insuffisante » (build 20261106-1230) : à tester sur iPhone avec une photo et une vidéo passées par WhatsApp → Titi doit apparaître ; avec une photo/vidéo d'origine → rien ne s'affiche. « Garder quand même » doit envoyer normalement (attend : Blandine)
@@ -18821,3 +18821,18 @@ nl « ritme » gardé pour le rythme entre les obstacles ; pl « kadencjonowany 
 - PDF : pas de rotation (les pages restent telles quelles ; la lecture les lit quand même).
 - Rotation testée sur navigateur (375×500 → 500×375, texte lisible). Pas encore testé avec la vraie lecture en ligne : à tester sur iPhone.
 - À venir : refonte de la fenêtre Vaccins (9 maquettes A→I envoyées, choix en attente) + idée de Blandine « une sorte d'agenda avec les dates des rappels colorées ».
+
+📚 07/11/2026 (06 h 30) — GLOSSAIRE COMMUN + VÉRIFICATIONS DANS LE PROGRAMME FFE — PUBLIÉ (build 20261107-0630)
+« Ok continue… carte blanche » de Blandine.
+| Fichier | Où | Quoi |
+|---|---|---|
+| outils/glossaire/glossaire-galops-7-9.json | outils/glossaire/ (NOUVEAU) | glossaire des Galops 7-8-9 : 291 termes, définition, 13 traductions, cours où le terme apparaît, termes à éviter, niveau (tous « proposé », aucun encore validé par un natif). L'appli ne le lit pas : c'est la référence pour les prochains cours et traductions |
+| hype-cours-galop7.js | racine | v14 : sv « Arbetsbandage » (au lieu de « Arbetslinda »), de « Dehnungshaltung » (rond et bas) |
+| hype-cours-galop8.js | racine | v8 : ru « Круглая и низкая », en « Leg-yielding » |
+| hype-cours-galop9.js | racine | v9 : cours 19, PAS de partie commune au Galop 9 (texte, lexique, quiz, 14 langues) ; cours 17, « En 1921 naît la FNSE » (le mois « juin » n'est confirmé nulle part) |
+| index.html | racine | ?v galop7 → 15, galop8 → 8, galop9 → 9 |
+Contrôle de cohérence des lexiques G7-G8-G9 : 37 termes communs, 6 écarts trouvés, 5 corrigés (le 6e, « angle », a deux sens différents : de Winkel / Ecke, normal).
+Source : programmes officiels des Galops 8 et 9, La REF n° 237 (medias.ffe.com/public/2022-11/REF-237-c2.pdf).
+Le programme FFE dit « Utiliser son équilibre sur les étriers » : les cours gardent « le poids dans les talons », selon la consigne de Blandine.
+
+════════════════════════════════════════════════════════════
