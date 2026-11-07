@@ -36,7 +36,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     contrats: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%" },
     stock: { img: "images/encartEcurieHype.jpg", pos: "100% 58%" },
     pensions: { img: "images/communaute-carte-ecuries.webp", pos: "60% 50%" },
-    planning: { img: "images/pansage-comprendre-2.webp", pos: "50% 40%" }
+    planning: { img: "images/pansage-comprendre-2.webp", pos: "50% 40%" },
+    liaison: { img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%" },
+    paddocks: { img: "images/mes-chevaux-fond-couchant.webp", pos: "50% 35%" }
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -73,7 +75,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 9;
+  var I18N_V = 10;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -396,10 +398,12 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
           theme(h, "", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.detenteur, "Le personnel", "Le registre unique du personnel", function () { ouvrir("personnel-ecurie"); }),   /* 07/11 */
-          theme(h, "hg-t3", PHOTOS.planning, "Le planning", "Qui fait quoi, jour par jour", function () { ouvrir("planning-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.planning, "Le planning", "Qui fait quoi, jour par jour", function () { ouvrir("planning-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.liaison, "Le cahier de liaison", "Le mot du jour pour l'équipe", function () { ouvrir("liaison-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.paddocks, "Les paddocks", "Qui est dans quel pré", function () { ouvrir("paddocks-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.pensions, "Les pensions", "Tarifs et paiements à encaisser", function () { ouvrir("pensions-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.contrats, "Les contrats", "Assurances, cotisations : chaque règlement", function () { ouvrir("contrats-ecurie"); }),   /* 07/11 */
-          theme(h, "hg-t3", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
@@ -2248,7 +2252,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         champ("nationalite", "Nationalité"),
         val.nationalite && !/^fran/i.test(val.nationalite) ? champ("titre_travail", "Titre qui autorise à travailler", { ex: "Type et numéro" }) : null,
         champ("email", "E-mail de son compte Hype (facultatif)", { type: "email", ex: "prenom@exemple.fr" }),   /* 07/11 : accès au planning */
-        h("div", { key: "emA", className: "hg-aide" }, "Avec cet e-mail, la personne voit « Le planning » de l'écurie dans Hype et coche ce qu'elle a fait. Rien d'autre ne lui est ouvert."),
+        h("div", { key: "emA", className: "hg-aide" }, "Avec cet e-mail, la personne voit « Le planning » de l'écurie dans Hype et coche ce qu'elle a fait, et lit et écrit dans « Le cahier de liaison ». Rien d'autre ne lui est ouvert."),
         h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
         l ? (confSuppr
           ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
@@ -2424,6 +2428,49 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     action: { lab: "C'est fait", si: function (x) { return !faitAuj(x); }, maj: function () { return { fait_le: isoAuj() }; }, ok: "Noté : c'est fait." },
     defauts: function () { return { jours: JOURS.join(","), moment: "Matin" }; }
   };
+  /* ── 07/11 22 h 40 (« Ok continue » après les n° 1 et 2) : idées n° 3 et 4 → LE CAHIER DE LIAISON et LES PADDOCKS ── */
+  function joursDepuis(iso, auj) { var j = -ecartJours(String(iso).slice(0, 10), auj); return j <= 0 ? "Depuis aujourd'hui" : "Depuis " + j + (j === 1 ? " jour" : " jours"); }
+  var CFG_LIAISON = {
+    table: "ecurie_liaison", cle: "texte", ordre: "created_at", desc: true, personnel: true, personnelEcrit: true, sansPhoto: false, titre: "Le cahier de liaison", sous: "Le mot du jour pour toute l'équipe.", photo: "liaison",
+    nouveau: "Nouveau mot", ajouter: "Écrire un mot", videMsg: "Indique ton mot.",
+    vide: "Aucun mot pour l'instant. Touche + pour écrire le premier (« Elfe boite, pas de travail aujourd'hui »).",
+    aide: "Chaque mot est signé avec le pseudo Hype de la personne qui l'écrit. Ton personnel noté avec son e-mail le lit et peut écrire aussi.",
+    aidePerso: "Écris ici ce que l'équipe doit savoir. Ton mot est signé avec ton pseudo Hype.",
+    champs: [
+      { k: "texte", lab: "Le mot", type: "textarea", ex: "ex. Elfe boite de l'antérieur droit, pas de travail aujourd'hui." },
+      { k: "cheval", lab: "Cheval concerné (facultatif)", ex: "Nom du cheval" },
+      { k: "priorite", lab: "Importance", choix: ["Normal", "Important"] }],
+    tuiles: [["tous", "Tous"], ["auj", "Aujourd'hui"], ["Important", "Importants"], ["7", "Cette semaine"]],
+    filtre: function (f, x, auj) { if (f === "tous") return true; var j = ecartJours(String(x.created_at).slice(0, 10), auj); if (f === "auj") return j === 0; if (f === "7") return j >= -6; return x.priorite === f; },
+    carte: function (x, auj) {
+      var j = ecartJours(String(x.created_at).slice(0, 10), auj);
+      return { titre: x.texte, sous: [x.auteur, x.cheval].filter(Boolean).join(" · "), pill: j === 0 ? "Aujourd'hui" : j === -1 ? "Hier" : dateCourte(x.created_at),
+        etat: x.priorite === "Important" ? "Important" : "", alerte: x.priorite === "Important" && j >= -2 };
+    },
+    action: null,
+    defauts: function () { return { priorite: "Normal" }; }
+  };
+  var CFG_PADDOCKS = {
+    table: "ecurie_paddocks", ordre: "nom", titre: "Les paddocks", sous: "Quel cheval est dans quel pré, et quel pré se repose.", photo: "paddocks",
+    nouveau: "Nouveau pré", ajouter: "Ajouter un pré",
+    vide: "Aucun pré noté. Touche + pour ajouter tes prés et paddocks.",
+    aide: "Touche « Mettre au repos » quand tu sors les chevaux d'un pré : tu vois depuis combien de jours chaque pré est occupé ou se repose.",
+    champs: [
+      { k: "nom", lab: "Nom du pré", ex: "ex. Grand pré", sugg: ["Grand pré", "Petit pré", "Paddock 1", "Paddock 2", "Paddock d'hiver"] },
+      { k: "etat", lab: "État", choix: ["Occupé", "Au repos"] },
+      { k: "chevaux", lab: "Chevaux dedans", ex: "ex. Elfe, Crumble" },
+      { k: "depuis", lab: "Depuis le", type: "date" },
+      { k: "surface", lab: "Surface (facultatif)", ex: "ex. 1 ha" },
+      { k: "notes", lab: "Note (facultatif)", ex: "ex. clôture à vérifier côté route" }],
+    tuiles: [["tous", "Tous"], ["Occupé", "Occupés"], ["Au repos", "Au repos"]],
+    filtre: function (f, x) { return f === "tous" ? true : x.etat === f; },
+    carte: function (x, auj) {
+      return { titre: x.nom, sous: x.chevaux || x.surface || "", pill: x.etat || "État à noter", etat: x.depuis ? joursDepuis(x.depuis, auj) : "", alerte: false };
+    },
+    action: { lab: function (x) { return x.etat === "Occupé" ? "Mettre au repos" : "Remettre des chevaux"; }, si: function (x) { return true; },
+      maj: function (x) { return x.etat === "Occupé" ? { etat: "Au repos", depuis: isoAuj(), chevaux: null } : { etat: "Occupé", depuis: isoAuj() }; }, ok: "Noté." },
+    defauts: function () { return { etat: "Occupé", depuis: isoAuj() }; }
+  };
   function EcranListe(cfg) {
     return function () {
       var h = hT; useLangue();
@@ -2450,8 +2497,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
             if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
             if (!res.peutGerer && cfg.personnel) { try { var r3 = await supa.rpc("hype_est_personnel_club", { p_clef: clef }); res.lecture = !!(r3 && r3.data === true); } catch (eP) { } }
+            if (res.lecture && cfg.personnelEcrit) { try { var ru = await supa.auth.getUser(); res.moi = ru && ru.data && ru.data.user ? ru.data.user.id : null; } catch (eU) { } }
             if (res.peutGerer || res.lecture) {
-              var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: true }).limit(500);
+              var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: !cfg.desc }).limit(500);
               if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
               else { res.lignes = (rp && rp.data) || []; if (cfg.tri) res.lignes.sort(cfg.tri); }
               if (cfg.suggDyn && res.peutGerer) { try { var rs = await supa.from(cfg.suggDyn.table).select("*").eq("club_clef", clef).limit(200); if (rs && !rs.error && vif) setSuggDyn(cfg.suggDyn.fn(rs.data || []).filter(Boolean)); } catch (eS) { } }
@@ -2486,7 +2534,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         setEnvoi(false);
       }
       function enregistrer(l) {
-        if (!String(val[cfg.cle || "nom"] || "").trim()) { setMsg("Indique le nom."); return; }
+        if (!String(val[cfg.cle || "nom"] || "").trim()) { setMsg(cfg.videMsg || "Indique le nom."); return; }
         var ligne = {};
         cfg.champs.forEach(function (ch) { var x = String(val[ch.k] == null ? "" : val[ch.k]).trim(); ligne[ch.k] = ch.type === "number" ? nombre(x) : (x || null); });
         ecrire(l, ligne);
@@ -2503,18 +2551,21 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       }
       function formulaire(l) {
         var on = { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" };
-        if (d && !d.peutGerer) return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+        if (d && !d.peutGerer && cfg.personnelEcrit && l && l.created_by !== d.moi) return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+          h("div", { style: { color: "#F3EEE4", fontSize: 15, lineHeight: 1.55, whiteSpace: "pre-wrap" } }, l.texte));
+        if (d && !d.peutGerer && !cfg.personnelEcrit) return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
           l.notes ? h("div", { className: "hg-aide", style: { marginTop: 0 } }, l.notes) : null,
           cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 6 }, disabled: envoi, onClick: function () { ecrire(l, {}, cfg.action.ok); } }, cfg.action.lab) : h("div", { className: "hg-ok" }, "✓ Fait aujourd'hui"),
           msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
         return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
-          l && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", dateCourte(m.prochain_reglement || m.prochain_paiement || isoAuj()))); } }, cfg.action.lab) : null,
+          l && cfg.action && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", dateCourte(m.prochain_reglement || m.prochain_paiement || isoAuj()))); } }, typeof cfg.action.lab === "function" ? cfg.action.lab(l) : cfg.action.lab) : null,
           cfg.champs.map(function (ch) {
             var id = "hgl-" + cfg.table + "-" + ch.k;
             var lab = h("label", { key: ch.k + "l", htmlFor: ch.choix ? undefined : id }, ch.lab);
             if (ch.multi) { var sel = String(val[ch.k] || "").split(",").filter(Boolean); return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.multi.map(function (x) { var o = sel.indexOf(x) >= 0; return h("button", { key: x, type: "button", "aria-pressed": o, onClick: function () { maj(ch.k, ch.multi.filter(function (y) { return y === x ? !o : sel.indexOf(y) >= 0; }).join(",")); }, style: o ? on : null }, x); }))); }
             var sg = (cfg.suggDyn && cfg.suggDyn.k === ch.k) ? suggDyn : ch.sugg;
             if (ch.choix) return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.choix.map(function (x) { var o = x === val[ch.k]; return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, o ? "" : x); }, style: o ? on : null }, x); })));
+            if (ch.type === "textarea") return h("div", { key: ch.k }, lab, h("textarea", { id: id, value: val[ch.k] == null ? "" : val[ch.k], placeholder: ch.ex || "", maxLength: 600, rows: 4, onChange: function (e) { maj(ch.k, e.target.value); }, style: { width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: "inherit" } }));
             return h("div", { key: ch.k }, lab,
               h("input", { id: id, type: ch.type || "text", inputMode: ch.type === "number" ? "decimal" : undefined, value: val[ch.k] == null ? "" : val[ch.k], placeholder: ch.ex || "", maxLength: 120, onChange: function (e) { maj(ch.k, e.target.value); } }),
               sg && sg.length && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, sg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); if (ch.suggMoment && ch.suggMoment[x]) maj("moment", ch.suggMoment[x]); } }, x); })) : null,
@@ -2537,7 +2588,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         var auj = isoAuj(), L = d.lignes || [];
         var vis = L.filter(function (x) { return cfg.filtre(f, x, auj); });
         corps = h("div", null,
-          ligneEcurie(h, c, [d.peutGerer ? { svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } } : null]),
+          ligneEcurie(h, c, [d.peutGerer || cfg.personnelEcrit ? { svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } } : null]),
           tuiles(h, cfg.tuiles.map(function (t) { var n = L.filter(function (x) { return cfg.filtre(t[0], x, auj); }).length; return { k: t[0], b: t[1], s: String(n), n: t[0] === "tous" ? 1 : n }; }), f, setF),
           ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, cfg.nouveau), formulaire(null)) : null,
           cfg.resume && cfg.resume(L) ? h("div", { className: "hg-sous", style: { marginTop: 10 } }, cfg.resume(L)) : null,
@@ -2549,14 +2600,14 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               carte(h, { cle: x.id, photo: PHOTOS[cfg.photo], titre: k.titre, sous: k.sous, pill: k.pill, etat: k.etat, alerte: k.alerte, onClick: function () { ouvrirLigne(x); } }),
               ouvert === x.id ? formulaire(x) : null);
           })) : h("div", { className: "hg-vide" }, L.length ? "Rien pour ce choix." : cfg.vide),
-          h("div", { className: "hg-sous" }, d.peutGerer ? cfg.aide : "Touche une tâche puis « C'est fait » quand tu l'as faite. Le responsable de l'écurie le voit tout de suite."));
+          h("div", { className: "hg-sous" }, d.peutGerer ? cfg.aide : (cfg.aidePerso || "Touche une tâche puis « C'est fait » quand tu l'as faite. Le responsable de l'écurie le voit tout de suite.")));
       }
       return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
         hero(h, { photo: PHOTOS[cfg.photo], titre: cfg.titre, sous: cfg.sous, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
         h("div", { className: "hv2-in" }, corps));
     };
   }
-  var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK), EcranPensions = EcranListe(CFG_PENSIONS), EcranPlanning = EcranListe(CFG_PLANNING);
+  var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK), EcranPensions = EcranListe(CFG_PENSIONS), EcranPlanning = EcranListe(CFG_PLANNING), EcranLiaison = EcranListe(CFG_LIAISON), EcranPaddocks = EcranListe(CFG_PADDOCKS);
 
-  window.HypeGestion = { Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  window.HypeGestion = { Liaison: EcranLiaison, Paddocks: EcranPaddocks, Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();

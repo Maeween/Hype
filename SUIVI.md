@@ -784,6 +784,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   règle aussi le moment. Le gestionnaire écrit déjà n'importe quelle tâche :
   le champ le dit maintenant (« Écris la tâche de ton choix, ou touche une
   idée »). 14 langues. PUBLIÉ build 20261107-2115.
+· 07/11 22 h 40 (« Ok continue » après les n° 1 et 2) → idées n° 3 et 4 :
+  LE CAHIER DE LIAISON (#liaison-ecurie) et LES PADDOCKS (#paddocks-ecurie).
+  SQL PASSÉ (sql-07-11-liaison-paddocks.sql, que des ajouts). Cahier : le
+  mot du jour (texte, cheval, Important), signé par la base avec le pseudo
+  Hype ; le responsable ET le personnel noté avec son e-mail lisent et
+  écrivent ; chacun ne modifie/supprime que ses mots, le responsable tout.
+  Paddocks (responsable seulement) : nom, occupé / au repos, chevaux,
+  depuis quand ; « Mettre au repos » / « Remettre des chevaux ». Mon écurie :
+  12 petites cartes, plus de carte double sur tablette. 14 langues.
+  PUBLIÉ build 20261107-2310.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
