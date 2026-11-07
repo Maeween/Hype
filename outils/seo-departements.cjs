@@ -59,6 +59,8 @@ footer{max-width:980px;margin:0 auto;padding:22px 20px max(28px,env(safe-area-in
 @media (min-width:700px){.liste.deps{grid-template-columns:repeat(3,minmax(0,1fr))}.liste{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:1000px){.liste{grid-template-columns:repeat(3,minmax(0,1fr))}.liste.deps{grid-template-columns:repeat(4,minmax(0,1fr))}}`;
 
+// 08/11 (Blandine : « fais ça sur la totalité des pages ») : repères hype-cible / hype-seo / hype-texte → netlify/edge-functions/cours-route.ts
+// ouvre la VRAIE page « trouver mon écurie » (le globe, écuries proches) ; la liste reste lisible par Google, cachée dans la page.
 function page(o) {
   const url = `${DOM}/fr/${o.chemin}`;
   return `<!doctype html>
@@ -66,6 +68,8 @@ function page(o) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="hype-cible" content="ecran-monde">
+<!--hype-seo-->
 <title>${e(o.titre)}</title>
 <meta name="description" content="${e(o.desc)}">
 <link rel="canonical" href="${url}">
@@ -84,16 +88,18 @@ function page(o) {
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="application/ld+json">${JSON.stringify(o.jsonld).replace(/</g, "\\u003c")}</script>
+<!--/hype-seo-->
 <style>${CSS}</style>
 </head>
 <body>
-<header class="barre"><a class="marque" href="${DOM}/fr/">HYPE</a></header>
+<!--hype-texte--><header class="barre"><a class="marque" href="${DOM}/fr/">HYPE</a></header>
 <main>
 <nav class="fil" aria-label="fil">${o.fil}</nav>
 <h1>${e(o.h1)}</h1>
 ${o.corps}
 </main>
 <footer><p>Liste établie à partir de données publiques (OpenStreetMap). Une erreur, une écurie manquante ? Écris-nous depuis l'appli.</p><p><a href="${DOM}/fr/">Hype</a> · <a href="${DOM}/fr/centres-equestres/">Tous les départements</a></p></footer>
+<!--/hype-texte-->
 </body>
 </html>
 `;
