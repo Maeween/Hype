@@ -6,7 +6,7 @@
    ===================================================================================== */
 (function () {
 "use strict";
-var COURS_GALOP5_VERSION = 4; /* 02/11 : g5-robes — corrections FFE/IFCE (balzan, sabino, léopard, tachetés définis, zébrures) */ /* précédente : 3 — 30/10 : g5-robes ajouté */ /* 21/10 : suédois (11e langue) */
+var COURS_GALOP5_VERSION = 5; /* 07/11 : lexique aligné, cadence = tempo (13 langues) */ /* 02/11 : g5-robes — corrections FFE/IFCE (balzan, sabino, léopard, tachetés définis, zébrures) */ /* précédente : 3 — 30/10 : g5-robes ajouté */ /* 21/10 : suédois (11e langue) */
 var HYPE_IMGS = (typeof window !== "undefined" && window.HYPE_IMGS) || {};
 const COURS_GALOP5_FR = [
     {

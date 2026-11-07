@@ -18868,3 +18868,22 @@ Source : programmes officiels des Galops 8 et 9, La REF n° 237 (medias.ffe.com/
 Le programme FFE dit « Utiliser son équilibre sur les étriers » : les cours gardent « le poids dans les talons », selon la consigne de Blandine.
 
 ════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (10 h 10) — GALOPS 5 À 9 : VOCABULAIRE ALIGNÉ D'UN GALOP À L'AUTRE + PORTUGAIS DU GALOP 6 — PUBLIÉ (build 20261107-1010)
+« Ok continue… carte blanche » de Blandine (09 h 45).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop5.js | racine | v5 : lexique aligné ; cadence/rythme dans les 13 langues (même règle que G7-G9) |
+| hype-cours-galop6.js | racine | v5 : lexique aligné ; cadence/rythme dans les 13 langues ; PORTUGAIS passé du Portugal (« tu ») au Brésil (« você ») comme tous les autres Galops (669 textes) |
+| hype-cours-galop7.js / 8.js / 9.js | racine | v15 / v9 / v10 : lexiques alignés |
+| index.html | racine | ?v galop5 → 13, galop6 → 5, galop7 → 16, galop8 → 9, galop9 → 10 |
+- Lexiques : 33 termes français traduits différemment d'un Galop à l'autre (Galops 5 à 9) ; 165 mots corrigés dans les 13 langues.
+  Erreurs nettes corrigées : sv « Framförande » et pl « Zaangażowanie » (engagement des postérieurs), sv « Framridning » (= détente) pour l'abord,
+  de « Absprung » (= appel) pour contre-bas, cadence du Galop 5 traduite « Cadence / Kadens / 케이던스 ». Sens différents gardés distincts :
+  engagement (inscription au G5 / postérieurs au G6-G9), tracé (parcours au G5 / figure au G6), rêne extérieure (longues rênes au G8).
+- Cadence/rythme des Galops 5 et 6 : 62 textes revus × 13 langues (≈ 650 corrections). Le français n'a pas bougé.
+- Aucune phrase restée en français dans les Galops 5 et 6.
+À faire relire par des natifs (attend : Blandine) : pt du G6 (« andamento », « dressage », « fosso »), it « Direttore di campo » (chef de piste),
+ru « Система » / pl « Szereg » (combinaison), es « Cinchuelo » (surfaix).
+
+════════════════════════════════════════════════════════════
