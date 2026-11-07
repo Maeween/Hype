@@ -1008,6 +1008,10 @@ function EcranSanteCheval() {
         throw (r && r.error) || new Error(MSG_REFUS_DOC);
       }
       setDocAjout(null); setDocs(function (o) { return [r.data[0]].concat(o || []); });
+      if ((a.type === "carnet_vaccin" || a.type === "certificat_vaccin") && premiumSanteOk()) {
+        setLectCarnet({ etape: "lecture", lignes: [], err: "", garder: false, docDeja: true, fichier: f, busy: false });
+        lireCarnetSur(f);
+      }
     } catch (eE) { setDocAjout(Object.assign({}, a, { busy: false, err: String((eE && eE.message) || eE) })); }
   }
   async function ouvrirDoc(d) {
@@ -1102,6 +1106,12 @@ function EcranSanteCheval() {
     try { e.target.value = ""; } catch (eV) { }
     if (!f) return;
     setLectCarnet(function (o) { return Object.assign({}, o, { etape: "lecture", err: "", fichier: f }); });
+    await lireCarnetSur(f);
+  }
+  /* 07/11 (Blandine : « que la lecture se fasse automatiquement… pas obligé de le charger deux fois ») :
+     la lecture elle-meme, appelee aussi juste apres l'ajout d'un document « page du carnet » ou
+     « certificat de vaccination » (le fichier est deja enregistre : docDeja, rien n'est recharge). */
+  async function lireCarnetSur(f) {
     try {
       var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 1800)).images : [await hypeImageEnJpeg(f, 1800)];
@@ -1188,7 +1198,7 @@ function EcranSanteCheval() {
               puce(l.t, T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Tetanus", "Столбняк", "Tężec", "파상풍"), function () { majL(l.cle, { t: !l.t }); })),
             l.deja ? h("div", { style: { fontFamily: M, fontSize: 11, color: "#E8C887", marginTop: 6 } }, T("Déjà un vaccin à cette date dans le carnet.", "Already a vaccine on this date.", "Ya hay una vacuna en esta fecha.", "Già un vaccino in questa data.", "この日付には既に記録があります。", "An diesem Datum schon erfasst.", "يوجد لقاح بهذا التاريخ.", "记录中这个日期已有一针疫苗。", "Er staat al een vaccin op deze datum.", "Já há uma vacina nesta data.", "Det finns redan ett vaccin med det här datumet i journalen.", "На эту дату в книжке уже есть прививка.", "W tym dniu w książeczce jest już szczepionka.", "이 날짜에 이미 노트에 백신이 있어요.")) : null);
         }),
-        h("div", { role: "button", onClick: function () { setLectCarnet(function (o) { return Object.assign({}, o, { garder: !o.garder }); }); }, style: { display: "flex", alignItems: "center", gap: 10, marginTop: 14, cursor: "pointer" } },
+        lc.docDeja ? null : h("div", { role: "button", onClick: function () { setLectCarnet(function (o) { return Object.assign({}, o, { garder: !o.garder }); }); }, style: { display: "flex", alignItems: "center", gap: 10, marginTop: 14, cursor: "pointer" } },
           h("span", { style: { width: 22, height: 22, borderRadius: 6, border: "1.5px solid #C9A66B", background: lc.garder ? "rgba(201,166,107,0.2)" : "transparent", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 } }, lc.garder ? "✓" : ""),
           h("span", { style: { fontFamily: M, fontSize: 12.5, color: "#EDE6D8" } }, T("Garder la photo dans les documents du carnet", "Keep the photo in the record documents", "Guardar la foto en los documentos", "Salva la foto nei documenti", "写真を書類に保存", "Foto bei den Dokumenten behalten", "احفظ الصورة في المستندات", "把照片保存在记录文件中", "De foto bewaren in de documenten van het boekje", "Guardar a foto nos documentos da caderneta", "Spara fotot bland journalens dokument", "Сохранить фото в документах книжки", "Zachowaj zdjęcie w dokumentach książeczki", "사진을 노트의 문서에 보관하기"))),
         lc.err ? h("div", { style: { marginTop: 10, fontFamily: M, fontSize: 12, color: "#F0A05F" } }, lc.err) : null,

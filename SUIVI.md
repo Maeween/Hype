@@ -18676,3 +18676,9 @@ POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Bla
 - Arabe au féminin, portugais du Brésil (« você »), comme le Galop 7.
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 02h25 — Lecture automatique des vaccins à l'ajout d'un document (build 20261107-0225, NON PUBLIÉ)
+- Demande : « que la lecture se fasse automatiquement pour ces vaccins, pas obligé de le charger deux fois ».
+- Santé du cheval : quand on joint un document de type « Page du carnet de vaccination » ou « Certificat de vaccination », le fichier est enregistré une seule fois, puis la lecture des vaccins se lance toute seule sur ce même fichier (liste à vérifier, puis Enregistrer). La case « Garder la photo » est masquée dans ce cas (déjà gardée) → plus de document en double.
+- Réservé aux abonnés comme la lecture actuelle. Aucun nouveau texte. hype-ecran-sante-cheval.js?v=5.
+- À venir (attente ok Blandine) : refonte de la partie Vaccins en une carte par vaccin (Grippe, Rhino, Tétanos, Autres/West Nile), dernier vaccin + prochain rappel, ouverture = toutes les dates + photo du carnet.
