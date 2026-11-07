@@ -811,6 +811,11 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   écurie : sous-titre de Mon écurie à jour (registre, échéances, pensions,
   contrats, stock, compta) + 2 cartes « Le planning » et « Le cahier de
   liaison ». 14 langues. PUBLIÉ build 20261107-2340.
+· 08/11 00 h 42 (« Ok continue » = vas-y pour Ma compta) → RÉSUMÉ « MA COMPTA »
+  RAFRAÎCHI depuis Qonto (lecture seule), arrêté au 07/11/2026, même méthode
+  que le 06/11 (frais Qonto hors « sans ticket »), écrit directement en base
+  (compta_apercus) — aucun chiffre dans le dépôt. Rien à republier : la page
+  lit la base. Revérifié : un compte inconnu ne voit aucune ligne.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
