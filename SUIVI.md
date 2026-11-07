@@ -21,7 +21,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Vers le 21/11 – 05/12 : regarder dans la Search Console si les pages « explorée, pas indexée » de horselingo.fr baissent après l'ajout du récit des villes ; sinon, décider s'il faut montrer plus de mots gratuits (attend : Blandine)
 - [07/11] Carnet de santé du cheval EN TUILES PAR ANNÉE (build 20261107-1910) : à tester sur iPhone avec Cirrus (6 tuiles : 2026 à 2022 + « Avant · 14 soins »), toucher une tuile ouvre ses soins (attend : Blandine)
 - [07/11] Page Santé du cheval : la photo du cheval sert aussi de FOND à toute la page (build 20261107-1550). À tester sur iPhone avec un cheval qui a une photo, puis un cheval sans photo (doit garder l'ancien fond Santé) (attend : Blandine)
-- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; puis accès Premium et ouverture à toutes (attend : Blandine)
+- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » RÉGLÉS le 07/11 20h15 (règlement AE 2026 complet) ; photos provisoires ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; puis accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 « La charte du bien-être équin » à garder ou renommer (l'introduction est corrigée le 07/11 : le programme demande les principes d'éthologie et de bien-être, la Charte les résume), ouverture (attend : Blandine)
@@ -19238,3 +19238,20 @@ Page refaite d'après la maquette validée (design Vidéothèque) et détachée 
 | index.html | `function EcranSanteClub` (175 lignes) remplacée par `hypeEcranDiffere("hype-ecran-sante-club.js?v=1", "HypeSanteClub", "SanteClub")`. |
 À tester sur iPhone : Cirrus bien à sa place (ordre alphabétique) ; un vaccin grippe reconnu (recherche dans le titre/la ligne importée : Equip F, Proteq, Resequin, Prequenza…) ; l'ouverture d'un cheval → sa page Santé.
 Non fait (à décider) : « + Noter pour plusieurs chevaux » (aujourd'hui seul l'import existe) ; date d'Aceitunero (prochaine 2022-10-16).
+
+## 07/11/2026 20h15 — PRÊT, NON PUBLIÉ (à grouper) — Prépa AE complétée avec le règlement 2026 complet (PDF envoyé par Blandine à 19h44)
+- Démonstrations (grilles 3-2-1 à 3-2-5) : longe (dispositif des 2 cercles, portes de 3 m, vertical de 50 cm, 3 exercices dans l'ordre), plat (22 mouvements, principaux mouvements listés : cessions à la jambe, reculer, pas libre, galop moyen, trot moyen, laisser filer les rênes), obstacle (type Hunter Grand Prix, foulées indicatives), terrain varié (29 difficultés en 5 blocs), derby cross (10 obstacles dont au moins la moitié naturels, 1 combinaison, niveau Club 1).
+- Notation commune : 3 parties notées sur 20 → au moins 10/20 dans chacune ET au moins 36/60 ; chute éliminatoire à cheval.
+- NOUVELLE partie « Les dispenses » (annexe 5) : tableau de 13 lignes (ATE, Degré 2, CEP 2, CAPA, bacs pro CGEH / CGEA, brevet de soigneur animateur, 3 classements Club 1 par discipline) ; personne n'est dispensé du BC2. Croix relevées à leur position exacte dans le PDF.
+- Durée de formation ajoutée (490 h + stage de 294 h minimum, 70 % du contrat en apprentissage) ; case « J'ai vérifié si j'ai droit à une dispense » ajoutée à la liste à cocher.
+- Plus AUCUN point « À vérifier » dans les 4 prépas. L'ancienne source 2023 est retirée.
+- 53 phrases nouvelles traduites dans les 13 langues (mêmes traducteurs, même vocabulaire) ; testé 6 langues × téléphone / ordinateur : aucune erreur, aucun débordement.
+- Photos : prompts ChatGPT donnés à Blandine (4 photos, une par diplôme) (attend : Blandine).
+Fichiers à publier (en plus de l'entrée de 19h30) :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-prepa.js | racine | AE en français mise à jour ; traductions version 3 |
+| i18n/prepa-*.json (13) | i18n/ | AE traduite à jour |
+| index.html | racine | hype-ecran-prepa.js?v=4 (+ marqueur de build au moment de publier) |
+| SUIVI.md | racine | cette entrée |
+
