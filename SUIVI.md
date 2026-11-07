@@ -8,7 +8,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
-- [07/11 23h50] Nouvelle page Engagements (P1 + étapes D3) PRÊTE, NON PUBLIÉE — à tester sur iPhone après publication : engager en 3 touchers (qui → cheval → épreuve), 2e et 3e tour, « Nouvelle épreuve », × pour retirer un tour, feuille d'engagement. Ne pas toucher à EcranEngagements, concours_engagements ni concours_tours sans relire l'entrée du 07/11 23h50. (attend : Blandine)
+- [07/11 23h35] Nouvelle page Engagements (P1 + étapes D3) PUBLIÉE (build 20261108-0040) — à tester sur iPhone après publication : engager en 3 touchers (qui → cheval → épreuve), 2e et 3e tour, « Nouvelle épreuve », × pour retirer un tour, feuille d'engagement. Ne pas toucher à EcranEngagements, concours_engagements ni concours_tours sans relire l'entrée du 07/11 23h50. (attend : Blandine)
 - [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
 - [26/10] Sécurité : la clé d'accès Supabase des mails est SUPPRIMÉE (07/11 01h54, vérifié sur capture : restent seulement « github-hype » et « Github hype 2 »). Reste à supprimer le secret HYPE_CLE_MAILS (supabase.com/dashboard/project/ldpjebgtskzdokrublfg/functions/secrets) — sans la clé, il ne peut plus rien faire, c'est du rangement (attend : Blandine)
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
@@ -19464,7 +19464,7 @@ Titre traduit dans les 13 autres langues ; la page Google du cours prend le nouv
 - Fabriqué à chaque publication par outils/seo-galops.cjs ; textes dans outils/prepas-liens.json (NOUVEAU, tirés des traductions des prépas).
 Fichiers : outils/seo-galops.cjs, outils/prepas-liens.json (NOUVEAU), SUIVI.md.
 
-## 07/11/2026 23h50 — PRÊT, NON PUBLIÉ (à grouper) — Page Engagements refaite : P1 + étapes D3 (une ligne par tour)
+## 07/11/2026 23h35 — PUBLIÉ (build 20261108-0040, Blandine 23h30 : « Vas y ») — Page Engagements refaite : P1 + étapes D3 (une ligne par tour)
 - Choix de Blandine : page « P1 », composeur « D3 » (tuiles photo 3 par ligne : Qui → Cheval → Épreuve, barre du bas qui se remplit, « Engager » s'allume), récapitulatif par épreuve gardé (« Visuel 7 »). Cavaliers ET cavalières (« Qui part en concours ? »).
 - Chaque « Engager » est enregistré tout de suite. Le couple reste choisi : on touche une autre épreuve pour le tour suivant. « Nouveau couple › » repart à zéro.
 - Tours : jusqu'à 3 par jour en épreuves Club, 5 si une épreuve du cavalier est une épreuve poney (nom contenant « Poney », « Pony » ou « P1 », « P2 »…) — règle donnée par Blandine. Un même couple ne peut pas être engagé deux fois dans la même épreuve. Au maximum, les épreuves se grisent ; à 5 tours, la tuile du cavalier se grise.
@@ -19481,5 +19481,6 @@ Fichiers à publier :
 | Fichier | Où | Quoi |
 |---|---|---|
 | hype-ecran-saison.js | racine | page Engagements P1 + D3, tours dans concours_tours |
-| index.html | racine | hype-ecran-saison.js?v=44 (7 endroits) + marqueur de build au moment de publier |
+| index.html | racine | hype-ecran-saison.js?v=44 (7 endroits) + marqueur de build 20261108-0040 |
 | SUIVI.md | racine | cette entrée |
+- Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
