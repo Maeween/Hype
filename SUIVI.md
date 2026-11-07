@@ -19650,7 +19650,7 @@ Fichiers : SUIVI.md.
 - Textes traduits dans les 14 langues.
 - Testé sur copie (téléphone et ordinateur) : mise en forme posée, relue et réenregistrée à l'identique, liens ouverts, aucune erreur.
 
-## 08/11/2026 01h35 — PRÊT, NON PUBLIÉ (à grouper) — Engagements : une seule « place libre » à la fois (Blandine 00h46)
+## 08/11/2026 01h35 — PUBLIÉ (build 20261108-0400) — Engagements : une seule « place libre » à la fois (Blandine 00h46)
 - Demande : « ajoute le tour suivant que quand celui d'avant est rempli, ça évite de surcharger ».
 - Récapitulatif de la page Engagements, cartes « Les chevaux » : on voit les tours pris, puis UNE seule case « place libre » (la suivante) tant que le maximum (3 en Club, 5 à poney) n'est pas atteint ; plus de 3 à 5 cases vides d'un coup. Le compteur « places libres » en tête reste le total.
 - Testé sur copie : Daphne (1 tour) → 1 tour + 1 place libre ; Rizotto (3 tours, maximum Club) → 3 tours, aucune case vide. hype-ecran-saison.js (version déjà passée à v=49 dans ce lot, non publiée).
@@ -19660,7 +19660,9 @@ Fichiers : SUIVI.md.
 - Aucun code, aucune donnée, aucune règle de sécurité modifiés.
 Fichiers : SUIVI.md.
 
-## 08/11/2026 01h00 — PRÊT, NON PUBLIÉ (URGENT) — Page Cavalier en panne (« Un caillou dans le sabot »)
+## 08/11/2026 01h00 — PUBLIÉ (build 20261108-0400, Blandine « Ok » 00h59) — Page Cavalier en panne (« Un caillou dans le sabot »)
 - Signalé par Blandine 00h55 (capture) : écran moncavalier, « ReferenceError: Can't find variable: h », PzSpectre (hype-ecran-cavalier.js:24).
 - Cause : le dégradé « Ma couleur à moi » (Personnaliser, build 20261108-0335, autre conversation) utilise h sans le définir.
 - Correction : une ligne ajoutée dans PzSpectre (var h = React.createElement). hype-ecran-cavalier.js v=18. Rien d'autre.
+
+- 08/11 01h00 : la publication 20261108-0400 emporte aussi « Santé de l'écurie au style de la page Santé du cheval » (autre conversation, préparée en 0345, non publiée jusque-là).
