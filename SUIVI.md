@@ -19528,3 +19528,14 @@ Fichiers à publier :
 | hype-ecran-evenement-passe.js | racine | haut de page |
 | index.html | racine | hypeImageRdv + ancien agenda du club ; ecurie-v2 v=8, resultats-ecurie v=8, evenement-passe v=4 ; marqueur de build au moment de publier |
 | SUIVI.md | racine | cette entrée |
+
+## 07/11/2026 23h55 — PRÊT, NON PUBLIÉ (à grouper) — Engagements : retours de Blandine sur iPhone (« quel bordel encore »)
+- Les boutons « Enregistré / Feuille d'engagement » ne collent plus à l'écran (ils cachaient les tuiles et la barre) : ils sont à la fin de la page, au-dessus de la barre de l'appli.
+- Plus de tuile « + Autre » / « + Nouvelle épreuve » (Blandine : « ne rajoute pas une 7e tuile et une ligne juste pour écrire + ») : petits liens sous les tuiles (« + Un autre cavalier › », « + Un autre cheval › », « + Nouvelle épreuve › »).
+- Tuiles cavaliers et chevaux plus petites (« réduis les onglets ») : 4 par ligne sur téléphone (6 tablette, 8 ordinateur) ; épreuves 3 par ligne, moins hautes.
+- « Chloe » en double : un engagement fait sans compte et la cavalière du même nom qui a un compte = une seule tuile ; l'engagement se rattache à son compte au prochain tour engagé.
+- Récap : un nom sans NOM en capitales (« Chloe ») ne s'écrit plus deux fois ; « Les chevaux » en grille (2 par ligne téléphone) au lieu d'une bande qui sortait de l'écran.
+- Heures et pistes saisies dans Jour J (colonnes passage1/2, piste1/2) : de nouveau affichées dans le récap pour les tours 1 et 2.
+- Testé en local (fausse base, téléphone) : une seule Chloe (2 tours), 6 tuiles sur 2 lignes, récap sans débordement, aucune erreur.
+- Vérifié en base : AUCUNE heure de passage enregistrée sur les 3 concours (Tigery, Versailles, « Cso » du 06/12). Blandine dit avoir donné l'ordre de passage 3 fois à « l'outil » : à éclaircir (quelle page ?).
+Fichiers : hype-ecran-saison.js (v=46 dans index.html, 7 endroits), SUIVI.md.

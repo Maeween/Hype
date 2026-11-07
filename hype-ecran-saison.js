@@ -675,24 +675,28 @@ var CSS2 = [
   ".e1 .d3-et.on{color:var(--hs-iv)}.e1 .d3-et.on i{border-color:var(--hs-ch);background:rgba(201,166,107,.18)}",
   ".e1 .d3-trait{flex:1;height:1px;min-width:8px;background:rgba(243,238,228,.12)}.e1 .d3-trait.fait{background:var(--hs-ch)}",
   ".e1 .d3-q{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;line-height:1.08;margin:16px 0 12px;color:var(--hs-iv)}",
-  ".e1 .d3-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}",
-  "@media (min-width:700px){.e1 .d3-g{grid-template-columns:repeat(4,minmax(0,1fr))}}",
-  "@media (min-width:1000px){.e1 .d3-g{grid-template-columns:repeat(6,minmax(0,1fr))}}",
-  ".e1 .d3-t{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(243,238,228,.1);background:#0d1214;padding:0;cursor:pointer;color:var(--hs-iv);text-align:start}",
+  /* 07/11 23h49 (Blandine : « réduis les onglets des chevaux et cavaliers ») : 4 petites tuiles par ligne sur téléphone */
+  ".e1 .d3-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}",
+  "@media (min-width:700px){.e1 .d3-g{grid-template-columns:repeat(6,minmax(0,1fr))}}",
+  "@media (min-width:1000px){.e1 .d3-g{grid-template-columns:repeat(8,minmax(0,1fr))}}",
+  ".e1 .d3-g.d3-ge{grid-template-columns:repeat(3,minmax(0,1fr))}",
+  "@media (min-width:700px){.e1 .d3-g.d3-ge{grid-template-columns:repeat(4,minmax(0,1fr))}}",
+  "@media (min-width:1000px){.e1 .d3-g.d3-ge{grid-template-columns:repeat(6,minmax(0,1fr))}}",
+  ".e1 .d3-t{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:12px;overflow:hidden;border:1px solid rgba(243,238,228,.1);background:#0d1214;padding:0;cursor:pointer;color:var(--hs-iv);text-align:start}",
   ".e1 .d3-t img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 35%}",
   ".e1 .d3-t:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 45%,rgba(7,10,8,.92))}",
-  ".e1 .d3-t b{position:absolute;z-index:2;left:8px;right:8px;bottom:8px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:15.5px;line-height:1.05;overflow-wrap:anywhere}",
-  ".e1 .d3-t small{position:absolute;z-index:2;top:6px;left:6px;font-size:9.5px;padding:2px 7px;border-radius:999px;background:rgba(7,10,8,.65);color:var(--hs-iv2)}",
+  ".e1 .d3-t b{position:absolute;z-index:2;left:6px;right:6px;bottom:6px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:13.5px;line-height:1.05;overflow-wrap:anywhere}",
+  ".e1 .d3-t small{position:absolute;z-index:2;top:4px;left:4px;font-size:8.5px;padding:2px 6px;border-radius:999px;background:rgba(7,10,8,.65);color:var(--hs-iv2)}",
   "[dir=rtl] .e1 .d3-t small{left:auto;right:6px}",
-  ".e1 .d3-t .d3-ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;color:var(--hs-ch)}",
+  ".e1 .d3-t .d3-ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;color:var(--hs-ch)}",
   ".e1 .d3-t.on{border:2px solid var(--hs-ch)}",
-  ".e1 .d3-t.on:before{content:'✓';position:absolute;z-index:3;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(7,10,8,.7);border:1px solid var(--hs-ch);color:var(--hs-ch);font-size:11px;display:grid;place-items:center}",
+  ".e1 .d3-t.on:before{content:'✓';position:absolute;z-index:3;top:4px;right:4px;width:18px;height:18px;border-radius:50%;background:rgba(7,10,8,.7);border:1px solid var(--hs-ch);color:var(--hs-ch);font-size:11px;display:grid;place-items:center}",
   "[dir=rtl] .e1 .d3-t.on:before{right:auto;left:6px}",
   ".e1 .d3-t.gris{opacity:.38;cursor:default}",
   ".e1 .d3-t.plus{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-style:dashed;border-color:rgba(201,166,107,.55);background:none;color:var(--hs-ch);font:400 12.5px 'Montserrat',sans-serif;text-align:center}",
   ".e1 .d3-t.plus:after{display:none}.e1 .d3-t.plus i{font-style:normal;font-size:18px}.e1 .d3-t.plus.on{border-style:solid}",
-  ".e1 .d3-ep{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:14px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(180deg,rgba(201,166,107,.07),rgba(201,166,107,0));display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:10px;color:var(--hs-iv);text-align:start;cursor:pointer}",
-  ".e1 .d3-ep b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;line-height:1;overflow-wrap:anywhere}",
+  ".e1 .d3-ep{position:relative;aspect-ratio:3/2;max-width:100%;border-radius:14px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(180deg,rgba(201,166,107,.07),rgba(201,166,107,0));display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:10px;color:var(--hs-iv);text-align:start;cursor:pointer}",
+  ".e1 .d3-ep b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:18px;line-height:1;overflow-wrap:anywhere}",
   ".e1 .d3-ep span{font-size:10.5px;color:var(--hs-iv3);margin-top:4px}",
   ".e1 .d3-ep>i{position:absolute;top:4px;right:4px;width:30px;height:30px;display:grid;place-items:center;font-style:normal;color:var(--hs-iv3);font-size:16px}",
   "[dir=rtl] .e1 .d3-ep>i{right:auto;left:4px}",
@@ -717,11 +721,16 @@ var CSS2 = [
   ".e1 .rc-li{grid-template-columns:26px 44px minmax(0,1fr) auto 32px}",
   ".e1 .rc-x{width:32px;height:32px;border-radius:50%;border:1px solid rgba(243,238,228,.12);background:none;color:var(--hs-iv3);font-size:16px;line-height:1;padding:0}",
   ".e1 .d3-sans{margin-top:26px}",
+  ".e1 .rc-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}",
+  "@media (min-width:700px){.e1 .rc-rail{grid-template-columns:repeat(3,minmax(0,1fr))}}",
+  "@media (min-width:1000px){.e1 .rc-rail{grid-template-columns:repeat(4,minmax(0,1fr))}}",
+  ".e1 .rc-ch{flex:none;max-width:none;min-width:0;border-radius:16px}.e1 .rc-ch .ph{height:96px}.e1 .rc-ch .ph h4{font-size:17px;left:10px;right:10px;bottom:8px;overflow-wrap:anywhere}",
+  ".e1 .rc-slots{padding:8px 10px 10px;gap:6px}.e1 .rc-slot{grid-template-columns:20px minmax(0,1fr) auto;font-size:11.5px;gap:6px}.e1 .rc-slot span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.e1 .rc-slot i{width:20px;height:20px}",
   ".e1 .d3-sl{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.07)}",
   ".e1 .d3-sl-n{background:none;border:none;padding:0;color:var(--hs-iv);font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;text-align:start}",
   ".e1 .d3-sl-n span{font-family:'Montserrat',sans-serif;font-size:12px;color:var(--hs-ch)}",
   /* les boutons du bas restent au-dessus de la barre d'onglets de l'appli (64 px) */
-  ".e1 .hs-coll{padding-bottom:calc(84px + env(safe-area-inset-bottom))}",
+  ".e1 .hs-coll{position:static;background:none;padding-top:22px;padding-bottom:calc(96px + env(safe-area-inset-bottom))}",
   /* iPhone : jamais moins de 16 px dans un champ, sinon l'écran zoome tout seul au toucher (règle Hype) */
   ".e1 input,.e1 select{font-size:16px!important}",
   ".e1 .e1-tour-ch select{padding-inline-end:22px!important;text-overflow:ellipsis}"
@@ -1192,7 +1201,7 @@ function hsNomEpreuve(t) {
    (numéro 1 à 5). Tant que la feuille SEP, le jour J, la liste du van et Ma saison lisent encore les colonnes « tour 1 / tour 2 »
    de concours_engagements, la page Engagements y recopie les deux premiers tours (hsMiroir). */
 function hsToursDepuis(l, liste) {
-  if (liste && liste.length) return liste.map(function (t) { return { epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || "", piste: t.piste || "" }; });
+  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
   var o = [];
   [1, 2].forEach(function (n) {
     var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
@@ -1782,7 +1791,7 @@ function EcranEngagements() {
     var cav = lignes.map(function (l, i) { return { l: l, i: i }; }).filter(function (x) { return String(x.l.nom || "").trim(); });
     if (!cav.length) return null;
     function kTour(i, n) { var t = (lignes[i].tours || [])[n - 1], c = String((t && t.cheval_nom) || "").trim(), k = 0; (montes[c] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return k; }
-    function nomPrenom(nom) { var m = String(nom || "").trim().split(/\s+/), maj = m.filter(function (w) { return w.length > 1 && w === w.toUpperCase(); }), mi = m.filter(function (w) { return !(w.length > 1 && w === w.toUpperCase()); }); return [maj.join(" ") || m[0] || "", mi.join(" ")]; }
+    function nomPrenom(nom) { var m = String(nom || "").trim().split(/\s+/), maj = m.filter(function (w) { return w.length > 1 && w === w.toUpperCase(); }), mi = m.filter(function (w) { return !(w.length > 1 && w === w.toUpperCase()); }); var a = maj.join(" "), b = mi.join(" "); return [a || (b ? "" : (m[0] || "")), b]; }   /* 07/11 : un nom sans NOM en capitales ne s'écrit plus deux fois */
     /* par épreuve, rangé par heure de passage quand elle est connue (Jour J ou chronométreur repris dans Jour J) */
     var parEp = {}, ordreEp = [];
     lignes.forEach(function (l, i) { (l.tours || []).forEach(function (t, k0) {
@@ -1813,12 +1822,12 @@ function EcranEngagements() {
           h("span", { className: "rc-dn" }, String(r + 1)),
           x.l.licence ? h("span", { className: "rc-dl" }, x.l.licence) : null,
           h("div", { className: "rc-dt" },
-            h("h4", null, np[1] || np[0], np[1] ? h("span", null, np[0]) : null),
+            h("h4", null, np[1] || np[0], np[1] && np[0] ? h("span", null, np[0]) : null),
             h("ol", null, tours.length ? tours.map(function (t, k) { return h("li", { key: k }, (t.c || F("cheval à choisir")), t.k ? h("span", { className: "sup" }, String(t.k)) : null, t.e ? h("em", null, " · " + t.e) : null); }) : h("li", { className: "libre" }, F("chevaux à choisir")))));
       })),
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
       nomsCh.length ? h(React.Fragment, null,
-        h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")) + (nomsCh.length > 1 ? F(" · fais glisser") : ""))),
+        h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")))),
         h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, nomsCh.map(function (c) {
           var m = montes[c] || [], cases = [];
           for (var j = 0; j < Math.max(toursMax, m.length); j++) {
@@ -1848,7 +1857,7 @@ function EcranEngagements() {
             return h("div", { key: j, className: "rc-li" },
               h("div", { className: "k" }, String(j + 1)),
               x.ch ? h("img", { src: photoCh(x.ch), alt: "" }) : h("span", { className: "rc-vide3" }),
-              h("div", { className: "q" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
+              h("div", { className: "q" }, h("b", null, [np[1], np[0]].filter(Boolean).join(" ")),
                 h("span", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null, x.piste ? " · " + F("piste ") + x.piste : "")),
               h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"),
               h("button", { type: "button", className: "rc-x", "aria-label": F("Retirer ce tour"), onClick: function () { retirerTour(x.i, x.n - 1); } }, "×"));
@@ -1858,9 +1867,16 @@ function EcranEngagements() {
   /* ═══ 07/11/2026 23h20 — P1 + D3 (choix de Blandine) : on engage en 3 touchers, cavalier ou cavalière → cheval → épreuve,
      en tuiles photo (3 par ligne) ; la barre du bas se remplit et « Engager » s'allume. Le couple reste choisi pour le tour
      suivant (on change juste l'épreuve). Chaque engagement est enregistré tout de suite. ═══ */
+  /* 07/11 23h50 (Blandine : « Chloe en double ») : un engagement fait sans compte (« Chloe ») et la cavalière du même nom
+     qui a un compte sont la même personne : une seule tuile, et l'engagement se rattache à son compte au prochain tour. */
+  function memeCav(l, c) {
+    if (!l || !c) return false;
+    if (c.id && l.cavalier_id === c.id) return true;
+    return !l.cavalier_id && hsMemePers(l.nom, c.nom || c.pseudo);
+  }
   function toursDuCav(c) {
     if (!c) return [];
-    var l = lignes.filter(function (x) { return (c.id && x.cavalier_id === c.id) || (!c.id && hsMemePers(x.nom, c.nom)); })[0];
+    var l = lignes.filter(function (x) { return memeCav(x, c); })[0];
     return (l && l.tours) || [];
   }
   function choisirCav(c) { setComp({ cav: c, ch: comp.ch && comp.cav && c && comp.cav.id === c.id ? comp.ch : "", ep: "", etape: 2 }); setAutreC(""); setMsgC(""); setEditLic(false); setRecherche(""); }
@@ -1869,7 +1885,8 @@ function EcranEngagements() {
   function engager() {
     if (!comp.cav || !comp.ch || !comp.ep || occupe) return;
     var n = lignes.slice(), j = -1;
-    n.forEach(function (l, k) { if (j === -1 && ((comp.cav.id && l.cavalier_id === comp.cav.id) || (!comp.cav.id && hsMemePers(l.nom, comp.cav.nom)))) j = k; });
+    n.forEach(function (l, k) { if (j === -1 && memeCav(l, comp.cav)) j = k; });
+    if (j !== -1 && !n[j].cavalier_id && comp.cav.id) n[j] = Object.assign({}, n[j], { cavalier_id: comp.cav.id });
     if (j === -1) { n.push({ __n: true, cavalier_id: comp.cav.id || null, nom: comp.cav.nom || nomFfeDe(comp.cav.pseudo) || "", licence: comp.cav.licence || "", tours: [], ordre: n.length }); j = n.length - 1; }
     var l = Object.assign({}, n[j]), t = (l.tours || []).slice();
     if (t.some(function (x) { return x.epreuve === comp.ep && x.cheval_nom === comp.ch; })) { setMsgC(F("Ce couple est déjà engagé dans cette épreuve.")); return; }
@@ -1914,6 +1931,7 @@ function EcranEngagements() {
       candidates.forEach(function (c) { if ((c.src === "inscrite" || c.src === "compet" || c.src === "team") && c.id !== moiId && !vus[c.id]) { vus[c.id] = 1; liste.push(c); } });
       lignes.forEach(function (l) {
         if (l.cavalier_id && vus[l.cavalier_id]) return;
+        if (!l.cavalier_id && liste.some(function (c0) { return memeCav(l, c0); })) return;
         var c = l.cavalier_id ? candidates.filter(function (x) { return x.id === l.cavalier_id; })[0] : null;
         c = c || { id: l.cavalier_id || null, nom: l.nom, licence: l.licence || "", pseudo: "" };
         if (c.id) vus[c.id] = 1; liste.push(c);
@@ -1921,13 +1939,13 @@ function EcranEngagements() {
       if (!liste.length) candidates.filter(function (c) { return c.id !== moiId; }).slice(0, 11).forEach(function (c) { liste.push(c); });
       var tu = liste.map(function (c, k) {
         var t = toursDuCav(c), max = hsMaxTours(t.map(function (x) { return x.epreuve; }));
-        var on = comp.cav && ((c.id && comp.cav.id === c.id) || (!c.id && hsMemePers(comp.cav.nom, c.nom)));
+        var on = comp.cav && ((c.id && comp.cav.id === c.id) || (!c.id && !comp.cav.id && hsMemePers(comp.cav.nom, c.nom)));
         return tuile("c" + (c.id || k), c.id ? hsPhotoProfil(c) : "", prenomDe(c.nom || c.pseudo), t.length ? t.length + (t.length > 1 ? F(" tours") : F(" tour")) + (t.length >= max ? F(" · max") : "") : "", on, t.length >= 5, function () { choisirCav(c); });
       });
-      tu.push(tuilePlus("cplus", F("Autre"), function () { setAutreC(autreC === "cav" ? "" : "cav"); }, autreC === "cav"));
       corps = h(React.Fragment, null,
         h("h3", { className: "d3-q" }, F("Qui part en concours ?")),
         h("div", { className: "d3-g" }, tu),
+        h("button", { type: "button", className: "hs-lien d3-petit", onClick: function () { setAutreC(autreC === "cav" ? "" : "cav"); } }, F("+ Un autre cavalier ›")),
         autreC === "cav" ? h("div", { className: "d3-autre" },
           h("input", { type: "search", value: recherche, placeholder: F("Nom ou pseudo"), autoFocus: true, onChange: function (e) { setRecherche(e.target.value); } }),
           q.length >= 2 ? h("div", { className: "hs-puces" },
@@ -1942,10 +1960,10 @@ function EcranEngagements() {
         var m = (montes[c.nom] || []).length;
         return tuile("h" + c.id, photoCh(c.nom), c.nom, m ? m + (m > 1 ? F(" tours") : F(" tour")) : "", comp.ch === c.nom, false, function () { choisirCh(c.nom); });
       }).concat(enPlus.map(function (c) { var m = (montes[c] || []).length; return tuile("hx" + c, photoCh(c), c, m + (m > 1 ? F(" tours") : F(" tour")), comp.ch === c, false, function () { choisirCh(c); }); }));
-      tc.push(tuilePlus("hplus", F("Autre"), function () { setAutreC(autreC === "ch" ? "" : "ch"); }, autreC === "ch"));
       corps = h(React.Fragment, null,
         h("h3", { className: "d3-q" }, F("Quel cheval pour ") + prenomDe(comp.cav && comp.cav.nom) + " ?"),
         h("div", { className: "d3-g" }, tc),
+        h("button", { type: "button", className: "hs-lien d3-petit", onClick: function () { setAutreC(autreC === "ch" ? "" : "ch"); } }, F("+ Un autre cheval ›")),
         autreC === "ch" ? h("div", { className: "d3-autre d3-ligne" },
           h("input", { type: "text", list: "d3-chevaux", value: autreCh, placeholder: F("Nom du cheval"), autoFocus: true, onChange: function (e) { setAutreCh(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter" && String(autreCh).trim()) { e.preventDefault(); choisirCh(String(autreCh).trim()); } } }),
           h("datalist", { id: "d3-chevaux" }, chevaux.map(function (c) { return h("option", { key: c.id, value: c.nom }); })),
@@ -1962,17 +1980,17 @@ function EcranEngagements() {
           h("b", null, e), h("span", null, deja ? F("déjà engagé") : (plein ? F("maximum atteint") : (nb ? nb + (nb > 1 ? F(" tours") : F(" tour")) : F("personne encore")))),
           !nb ? h("i", { role: "button", "aria-label": F("Retirer l’épreuve ") + e, onClick: function (ev0) { ev0.stopPropagation(); retirerEpreuve(e); if (comp.ep === e) setComp(Object.assign({}, comp, { ep: "" })); } }, "×") : null);
       });
-      te.push(h("button", { key: "eplus", type: "button", className: "d3-ep plus" + (autreC === "ep" || !eps.length ? " on" : ""), onClick: function () { setAutreC(autreC === "ep" ? "" : "ep"); } }, h("i", null, "＋"), h("span", null, F("Nouvelle épreuve"))));
       corps = h(React.Fragment, null,
         h("h3", { className: "d3-q" }, F("Quelle épreuve ?")),
-        h("div", { className: "d3-g" }, te),
+        te.length ? h("div", { className: "d3-g d3-ge" }, te) : null,
+        h("button", { type: "button", className: "hs-lien d3-petit", onClick: function () { setAutreC(autreC === "ep" ? "" : "ep"); } }, F("+ Nouvelle épreuve ›")),
         autreC === "ep" || !eps.length ? h("div", { className: "d3-autre d3-ligne" },
           h("input", { type: "text", value: nouvelleEp, placeholder: F("Ex. Club 2, Poney 1"), autoFocus: autreC === "ep", onChange: function (e) { setNouvelleEp(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); var t0 = hsNomEpreuve(nouvelleEp); ajouterEpreuve(); if (t0) { choisirEp(t0); } } } }),
           h("button", { type: "button", className: "hs-lien", onClick: function () { var t0 = hsNomEpreuve(nouvelleEp); ajouterEpreuve(); if (t0) choisirEp(t0); } }, F("Ajouter"))) : null);
     }
     /* la barre qui se remplit */
     var pCav = comp.cav && comp.cav.id ? hsPhotoProfil(comp.cav) : "";
-    var licL = comp.cav ? (lignes.filter(function (l) { return (comp.cav.id && l.cavalier_id === comp.cav.id) || (!comp.cav.id && hsMemePers(l.nom, comp.cav.nom)); })[0] || null) : null;
+    var licL = comp.cav ? (lignes.filter(function (l) { return memeCav(l, comp.cav); })[0] || null) : null;
     var licence = licL ? (licL.licence || "") : ((comp.cav && comp.cav.licence) || "");
     var pret = !!(comp.cav && comp.ch && comp.ep);
     return h("div", { className: "d3" },
