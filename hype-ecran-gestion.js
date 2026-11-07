@@ -73,7 +73,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 8;
+  var I18N_V = 9;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -2366,6 +2366,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   };
   /* ── 07/11 15 h 43 : Blandine choisit « 1 et 2 » → LES PENSIONS et LE PLANNING ── */
   var JOURS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+  var MOMENTS = ["Matin", "Midi", "Après-midi", "Soir"];
   function jourAuj() { return ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"][new Date().getDay()]; }
   function joursDe(x) { return String(x.jours || "").split(",").map(function (j) { return j.trim(); }).filter(Boolean); }
   function prevuAuj(x) { var j = joursDe(x); return !j.length || j.indexOf(jourAuj()) >= 0; }
@@ -2405,12 +2406,15 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     aide: "Note chaque tâche une fois avec ses jours. Touche « C'est fait » quand c'est fait : tu vois d'un coup d'œil ce qu'il reste pour aujourd'hui.",
     suggDyn: { k: "qui", table: "registre_personnel", fn: function (L) { return L.filter(function (p) { return !p.date_sortie; }).map(function (p) { return [p.prenoms, p.nom].filter(Boolean).join(" "); }); } },
     champs: [
-      { k: "tache", lab: "Tâche", ex: "ex. Distribuer le foin", sugg: ["Distribuer le foin", "Repas du matin", "Repas du soir", "Curer les boxes", "Sortir les chevaux au pré", "Rentrer les chevaux", "Remplir les abreuvoirs", "Faire la carrière"] },
+      { k: "tache", lab: "Tâche", ex: "Écris ta tâche", aide: "Écris la tâche de ton choix, ou touche une idée.", sugg: ["Foin du matin", "Foin de l'après-midi", "Eau", "Repas du matin", "Repas du soir", "Curer les boxes", "Sortir les chevaux au pré", "Rentrer les chevaux", "Faire la carrière"],
+        /* 07/11 20 h 03 (« Ajoute foin matin et aprèm et eau ») : la suggestion choisie règle aussi le moment */
+        suggMoment: { "Foin du matin": "Matin", "Foin de l'après-midi": "Après-midi", "Repas du matin": "Matin", "Repas du soir": "Soir" } },
       { k: "qui", lab: "Qui s'en charge", ex: "Prénom" },
       { k: "jours", lab: "Jours", multi: JOURS },
-      { k: "moment", lab: "Moment", choix: ["Matin", "Midi", "Soir"] },
+      { k: "moment", lab: "Moment", choix: MOMENTS },
       { k: "notes", lab: "Note (facultatif)", ex: "ex. 2 bottes par paddock" }],
     tuiles: [["auj", "Aujourd'hui"], ["reste", "Reste à faire"], ["Matin", "Matin"], ["tous", "Toutes"]],
+    tri: function (a, b) { var ia = MOMENTS.indexOf(a.moment), ib = MOMENTS.indexOf(b.moment); return (ia < 0 ? 9 : ia) - (ib < 0 ? 9 : ib) || String(a.tache || "").localeCompare(String(b.tache || "")); },
     filtre: function (f, x) { if (f === "tous") return true; if (f === "auj") return prevuAuj(x); if (f === "reste") return prevuAuj(x) && !faitAuj(x); return x.moment === f && prevuAuj(x); },
     carte: function (x) {
       var j = joursDe(x);
@@ -2449,7 +2453,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             if (res.peutGerer || res.lecture) {
               var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: true }).limit(500);
               if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
-              else res.lignes = (rp && rp.data) || [];
+              else { res.lignes = (rp && rp.data) || []; if (cfg.tri) res.lignes.sort(cfg.tri); }
               if (cfg.suggDyn && res.peutGerer) { try { var rs = await supa.from(cfg.suggDyn.table).select("*").eq("club_clef", clef).limit(200); if (rs && !rs.error && vif) setSuggDyn(cfg.suggDyn.fn(rs.data || []).filter(Boolean)); } catch (eS) { } }
             }
           } catch (e) { res.erreur = String((e && e.message) || e); }
@@ -2513,7 +2517,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             if (ch.choix) return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.choix.map(function (x) { var o = x === val[ch.k]; return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, o ? "" : x); }, style: o ? on : null }, x); })));
             return h("div", { key: ch.k }, lab,
               h("input", { id: id, type: ch.type || "text", inputMode: ch.type === "number" ? "decimal" : undefined, value: val[ch.k] == null ? "" : val[ch.k], placeholder: ch.ex || "", maxLength: 120, onChange: function (e) { maj(ch.k, e.target.value); } }),
-              sg && sg.length && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, sg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); } }, x); })) : null,
+              sg && sg.length && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, sg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); if (ch.suggMoment && ch.suggMoment[x]) maj("moment", ch.suggMoment[x]); } }, x); })) : null,
               ch.aide ? h("div", { className: "hg-aide" }, ch.aide) : null);
           }),
           h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),

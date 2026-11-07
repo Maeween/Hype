@@ -774,6 +774,13 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   « C'est fait » (ni ajout, ni modif, ni suppression ; tout le reste de Mon
   écurie leur reste fermé). Testé en base : un compte inconnu ne voit rien.
   14 langues. PUBLIÉ build 20261107-1840. À tester avec un vrai compte salarié.
+· 07/11 20 h 03 (« Ajoute foin matin et aprèm et eau » ; « laisser la
+  possibilité d'ajouter des tâches au gestionnaire ») → idées « Foin du
+  matin », « Foin de l'après-midi », « Eau » en tête ; nouveau moment
+  « Après-midi » (tri Matin → Midi → Après-midi → Soir) ; l'idée choisie
+  règle aussi le moment. Le gestionnaire écrit déjà n'importe quelle tâche :
+  le champ le dit maintenant (« Écris la tâche de ton choix, ou touche une
+  idée »). 14 langues. PUBLIÉ build 20261107-2115.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
