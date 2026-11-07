@@ -63,6 +63,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [05/11] Médias de la Team : à essayer sur iPhone avec une vraie vidéo — chapitre Médias sur la page Team, page Médias (Par cavalière / Par cheval, « Voir tout »), ajout d'une vidéo depuis le téléphone ET depuis « mes vidéos Hype », vérifier que la vignette s'affiche (si la copie de l'image échoue, la vidéo apparaît sans image), et le message « réservée aux cavaliers du groupe » avec un compte hors équipe (attend : Blandine)
 
 ## 3 — Quand on aura le temps
+- [08/11] NOUVELLES FONCTIONS retenues le 04/11 (Blandine 08/11 : « garde-les en tête, mets-les dans le suivi, notamment la demi-pension »), dans son ordre :
+  1. Dossier de vente du cheval en un lien : EN COURS (08/11, propositions de visuels montrées, attend son choix). Lien privé, lisible sans compte, pas sur Google (≠ la page publique /cheval/ qui est floutée).
+  2. Demi-pension : qui monte quel cheval et quels jours, partage des frais, contrat simple, calendrier commun propriétaire / demi-pensionnaire, rappels. Rien de commencé (attend : Blandine)
+  3. Suivi de jument (élevage) : chaleurs, saillie (étalon, date, IA / monte en main), échographies (dates à prévoir automatiquement), date de poulinage calculée, rappels. À brancher sur la page Santé / registre d'élevage. Rien de commencé (attend : Blandine)
+  4. Foulées entre obstacles depuis une photo du plan de parcours (lecture par l'IA des distances, nombre de foulées au pas de 3,50 m cheval / selon la taille du poney). Rien de commencé (attend : Blandine)
+  5. [08/11] Idée de Blandine : comme Equilab, mesurer temps au pas / trot / galop à chaque main, distance et km parcourus. Possible en partie dans l'appli actuelle (écran allumé, appli ouverte) ; le vrai suivi en poche, écran éteint, demande la version App Store / Play Store. Rien de commencé (attend : Blandine)
 - [07/11] Horse Lingo sur Google (Search Console, au 23/10) : 195 pages indexées, 447 non. Raisons : « page avec redirection » (normal), « découverte, pas encore indexée » (site récent, Google y va petit à petit), « explorée, pas indexée » (pages de vocabulaire trop semblables). Rien de cassé ; chantier : enrichir les pages de vocabulaire. 07/11 FAIT (1re étape) : chaque page d'étape montre le récit de sa ville (16 langues) — à surveiller dans la Search Console d'ici 2 à 4 semaines ; si « explorée, pas indexée » ne baisse pas, prochaine piste à décider par Blandine : montrer plus de mots gratuits sur les pages (règle Premium) (attend : Google, puis Blandine)
 - [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
 - [07/11] Vidéos de la Team sur la fiche du concours : fait (build 0220, à tester sur iPhone)
@@ -19624,3 +19630,7 @@ Fichiers : hype-ecran-saison.js (v=48 dans index.html, 7 endroits), SUIVI.md.
 - Textes traduits dans les 14 langues.
 - Attention : la Team de la SEP est encore retrouvée en secours par « CSO + Club » quand aucune équipe n'est ouverte ; si on passe la Team SEP en « Mélangé », ce secours ne la trouvera plus (l'équipe choisie dans la liste, elle, s'ouvre normalement).
 - Testé sur copie : création (Dressage → Amateur → Mélangé, Hunter sans niveau), modification (CSO Club → Mélangé : nom « Team CSO », niveau vide enregistré), aucune erreur.
+
+## 08/11/2026 01h00 — SUIVI seul — nouvelles fonctions rangées dans « 3 — Quand on aura le temps »
+- Dossier de vente (en cours), demi-pension, suivi de jument, foulées depuis le plan, suivi des allures façon Equilab.
+Fichiers : SUIVI.md.
