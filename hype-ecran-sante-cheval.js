@@ -2368,7 +2368,7 @@ function EcranSanteCheval() {
          assombrie par deux voiles pour que tout reste lisible. Sans photo : l ancien fond Sante, inchange. */
       backgroundImage: photoVue
         ? "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.35) 30%, rgba(6,7,9,0.70) 65%, rgba(6,7,9,0.95) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.85) 0%, rgba(6,7,9,0.45) 55%, rgba(6,7,9,0.20) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
-        : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/FOND_SANTE.webp')",
+        : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/galops-carte-cours-bai.webp')",   /* 07/11 (Blandine) : sans photo, le cheval de la Videotheque en fond aussi (a la place du cheval bleu) */
       backgroundSize: "cover, cover, cover",
       backgroundPosition: photoVue ? "center, center, center" : "center, center, center right",
       backgroundRepeat: "no-repeat, no-repeat, no-repeat"
