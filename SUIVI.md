@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 02h20)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 02h40)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -42,7 +42,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Vidéos de la Team : envoi C + lecture B + épreuve faits (build 0140, à tester sur iPhone)
 - [07/11] Vidéos de la Team sur la fiche du concours : fait (build 0220, à tester sur iPhone)
 - [07/11] J'aime sur les textes : fait (build 0100, à tester sur iPhone). Reste à décider : notification aussi sur le téléphone ? (attend : Blandine)
-- [06/11] « Sans le son » : fait pour la Team (build 1815, à tester sur iPhone) ; à étendre aux albums, au fil, aux souvenirs d'écurie et à l'onglet Vidéos de la fiche cheval (attend : test de Blandine)
+- [07/11] « Sans le son » : Team (case à l'envoi) + toutes les autres vidéos Mux (bouton dans la visionneuse, build 0240) — à tester sur iPhone
 - [04/11] Équipes et groupes pour TOUS les clubs : généraliser les pages Team / groupes / Centre de compétition pour que d'autres clubs aient les mêmes fonctions (attend : Blandine)
 - [05/11] Recherche de concours (numéro FFE) : « Trouver le numéro » est sur la page Engagements (build 0210) ET, depuis le build 20261106-2350, à la création d'un concours (agenda), avec « Calendrier FFE › » en secours ; à essayer sur iPhone. Reste : étape 3 = recherche par dates, région, discipline (attend : Blandine pour le test, puis Claude)
 - [04/11] Mettre la liste « Les vidéos de ce cours » sur la page de révision de chaque cours. Tu as demandé à en reparler, rien n'est fait (attend : Blandine)
@@ -642,6 +642,34 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
+
+════════════════════════════════════════════════════════════
+
+🔇 07/11/2026 (02 h 40) — « SANS LE SON » SUR TOUTES LES VIDÉOS (DANS LA VISIONNEUSE) — build 20261107-0240
+Carte blanche de Blandine (01 h 28, « continue sur tout ce que tu peux »).
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | build 20261107-0240 ; PhotoZoomHype : bouton du son + lecture muette |
+BASE (passée le 07/11 vers 02 h 30, migration videos_mux_sans_son) :
+videos_mux.sans_son (non par défaut : rien ne change pour les vidéos en
+ligne) ; hype_video_son(playback) = état + « c'est moi qui l'ai envoyée » ;
+hype_video_sans_son(playback, oui/non) = auteur seulement.
+CE QUI A ÉTÉ FAIT
+· Toutes les visionneuses vidéo de l'appli passent par PhotoZoomHype
+  (albums, fil, souvenirs, fiche cheval) : la personne qui a envoyé une
+  vidéo Mux voit en haut à gauche « Couper le son » / « Son coupé » et la
+  touche pour basculer. Une vidéo coupée se lit muette pour tout le monde,
+  sans bouton de volume, et se recoupe si on remet le son. Le lecteur
+  attend l'état du son (quelques millisecondes) avant de démarrer : une
+  vidéo muette ne se fait jamais entendre.
+· Écrans d'envoi NON touchés (l'autre session y travaille) : le réglage se
+  fait après l'envoi, dans la visionneuse. Vidéos Team : réglage propre
+  inchangé (pastille + case à l'envoi). Anciennes vidéos stockées hors Mux :
+  pas concernées.
+· Libellés dans les 14 langues.
+VÉRIFIÉ (Chromium, base simulée) : « Couper le son » → vidéo muette et
+« Son coupé » ; « Remettre le son » → son rendu ; aucune erreur.
+NON VU : sur iPhone, avec le vrai lecteur Mux (bloqué ici).
 
 ════════════════════════════════════════════════════════════
 
