@@ -19416,8 +19416,8 @@ Titre traduit dans les 13 autres langues ; la page Google du cours prend le nouv
 - Suite prévue, une étape à la fois : (1) nouvelle page Engagements P1 qui écrit dans concours_tours ET recopie les tours 1 et 2 dans les anciennes colonnes, pour que la feuille SEP, le jour J, la liste du van et Ma saison continuent de marcher ; (2) puis ces écrans passent un par un sur concours_tours ; (3) seulement à la fin, on retire les anciennes colonnes.
 - Rien publié dans l'appli à cette étape.
 
-## 07/11/2026 23h20 — PUBLICATION build 20261107-2320 (Blandine 23h16 : « mets-les en ligne ») — Liens vers les prépas sur les pages publiques des Galops
+## 07/11/2026 23h20 — PUBLICATION (pages publiques seulement, marqueur de l'appli inchangé 20261107-2350) (Blandine 23h16 : « mets-les en ligne ») — Liens vers les prépas sur les pages publiques des Galops
 - Pages Google des Galops (14 langues) : bloc « Et après les Galops ? Deviens enseignant » + liens vers Prépa AE, BP, DE sur le sommaire /<langue>/galops/ et en bas des Galops 6, 7, 8 et 9 → Google trouve les prépas depuis le reste du site, et les cavalières qui lisent le Galop 7 les voient.
 - Fabriqué à chaque publication par outils/seo-galops.cjs ; textes dans outils/prepas-liens.json (NOUVEAU, tirés des traductions des prépas).
-Fichiers : outils/seo-galops.cjs, outils/prepas-liens.json (NOUVEAU), index.html (marqueur), SUIVI.md.
+Fichiers : outils/seo-galops.cjs, outils/prepas-liens.json (NOUVEAU), SUIVI.md.
 
