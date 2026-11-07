@@ -14,7 +14,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 2 — Important
 - [07/11] Page Santé du cheval : la photo du cheval sert aussi de FOND à toute la page (build 20261107-1550). À tester sur iPhone avec un cheval qui a une photo, puis un cheval sans photo (doit garder l'ancien fond Santé) (attend : Blandine)
-- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; puis traductions, accès Premium et ouverture à toutes (attend : Blandine)
+- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; traductions des 13 langues FAITES le 07/11 16h30 (prêtes, non publiées : voir l'entrée du jour) ; puis accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 (le programme parle de « principes d'éthologie et de bien-être équin », pas de la Charte), ouverture (attend : Blandine)
@@ -19077,3 +19077,22 @@ Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles
 - Hey Baby et Le magazine santé : grandes cartes photo.
 - Nouveaux textes traduits en 14 langues. Vérifié sur banc d'essai (iPhone, avec et sans photo du cheval).
 - Demande suivante notée (07/11 15h50) : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » → à proposer.
+
+
+## 07/11/2026 16h30 — PRÊT, NON PUBLIÉ — PRÉPAS AE · BP · DE (+ DES) TRADUITES DANS LES 13 AUTRES LANGUES (Blandine 15h50 : « Traduction »)
+- Traduit : tout le contenu des 4 prépas (sections, épreuves, tableaux, listes à cocher, sources), les textes de l'écran (retour, onglets, « À vérifier », « Oui/Non », compteur de la liste, rappel final) et le bandeau « Et après les Galops ? » de la page des Galops.
+- Une langue par assistant (comme pour les Galops 8 et 9), puis contrôle automatique de chaque langue : même nombre de parties, de lignes et de cases ; chiffres, notes, seuils et liens identiques au français ; noms officiels gardés en français (AE, BPJEPS, DEJEPS, DESJEPS, TEP, UC, BC, FFE…).
+- Ton : « tu » partout ; portugais du Brésil au « você » ; arabe au féminin, page affichée de droite à gauche.
+- Nom de la rubrique « Réviser mes reprises » aligné sur celui déjà utilisé dans l'appli dans chaque langue.
+- Comment ça marche : le français reste dans hype-ecran-prepa.js ; chaque autre langue est un fichier i18n/prepa-<langue>.json chargé seulement quand on choisit cette langue (rien de plus lourd pour les autres pages).
+- Testé sur le banc (iPhone SE et 13, tablette, ordinateur ; 14 langues × 4 diplômes, toutes les parties ouvertes) : aucune erreur, aucun débordement.
+- À faire relire par quelqu'un qui parle la langue (termes signalés par les traducteurs) : « changement de pied de ferme à ferme », « doubler », « obstacle directionnel », « encadrement » du saut, « liant », « contre-haut / contre-bas », « parcours en terrain varié », « perméabilité aux aides », noms des métiers (animateur / moniteur / entraîneur / instructeur). Portugais : « foulées » à revoir.
+- Rappel : les traductions reprennent le français du 07/11 ; si la relecture française change des textes, il faudra repasser ces phrases dans les 13 langues.
+Fichiers à publier (avec l'accord de Blandine) :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-prepa.js | racine | chargement des langues, arabe de droite à gauche |
+| i18n/prepa-en.json … prepa-ko.json (13 fichiers) | i18n/ | NOUVEAUX : les 13 traductions |
+| index.html | racine | bandeau des Galops traduit ; hype-ecran-prepa.js?v=2 ; marqueur de build |
+| SUIVI.md | racine | cette entrée + ligne des prépas en « 2 — Important » |
+
