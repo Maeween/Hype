@@ -830,6 +830,17 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🐎 08/11/2026 (01 h 00) — FICHE CHEVAL TÉLÉPHONE : HAUT DE PAGE SANS BORD NET
+Blandine (23 h 53) : « Le découpage visuel du hero est abrupt » ; « t'as fait le retour à avant ? ».
+· Vérifié sur copie : la fiche téléphone est identique à celle du 06/11 au soir (avant mes changements), seul le bouton « Personnaliser la fiche » s'ajoute ; les plaques et flots de Rizotto sont bien là, sous la carte IPO. Le bord net du haut et la photo entière (non recadrée) datent du 04/11 (« dézoome les hero des chevaux, ils sont tous coupés »).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 18 : quand la photo du haut est plus étroite que l'écran, le fondu à gauche se fait sur le vrai bord de la photo (plus de coupure nette) ; fondu plus doux |
+| index.html | racine | ?v cheval 17 → 18, build 20261108-0100 (rien d'autre) |
+· ⚠️ Envoyé SANS [publier] : deux envois d'une autre conversation (photo de thématique, Engagements) attendent l'accord de Blandine et partiraient avec. En ligne à la prochaine publication.
+
+════════════════════════════════════════════════════════════
+
 🗂️ 08/11/2026 (00 h 50) — PAGE CAVALIER : « COACH / NOM DU GROUPE » EN ONGLETS SOUS LA PHOTO (CHOIX C)
 Blandine : « Coach / nom du groupe en onglet… s'il y en a deux deux onglets… ailleurs qu'en plein milieu de la photo » ; elle renvoie la capture de la proposition C (23 h 34).
 | Fichier | Où | Quoi |
