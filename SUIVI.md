@@ -80,7 +80,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [20/10] Page d'équipe par défaut que chaque écurie pourrait créer et remplir elle-même, sur le modèle de la Team Compétition SEP, puis rebrancher « Créer une équipe » (attend : Blandine)
 - [01/11] Reprise Amateur 3 Grand Prix : ajouter des conseils du coach si tu le demandes (attend : Blandine)
 - [19/10] Regrouper en une seule carte du fil les photos sans texte publiées à la suite par la même personne le même jour (attend : Blandine)
-- [21/10] Petit ménage en base : réponses Hey Baby gardées (décision du 25/10). Ligne de progression du compte de test « Claude » (claude@hitpail.fr, contient une copie de la présentation de Blandine) : copie de sauvegarde faite le 07/11 à 1 h 30 (table sauvegarde_progression_071126) ; la suppression elle-même attend que Blandine accepte la confirmation demandée par la base (2 essais restés sans réponse) (attend : Blandine)
+- [21/10 → 07/11] Petit ménage en base : FAIT. Réponses Hey Baby gardées (décision du 25/10) ; fiche de progression du compte de test « Claude » (copie du profil de Blandine) EFFACÉE le 07/11 à 1 h 35 sur son « Ok 3 », copie gardée dans sauvegarde_progression_071126 (le compte lui-même existe toujours).
 - [16/09 → 07/11] Vieux nettoyages de base : FAITS le 07/11 (colonne resultats.format_large ajoutée ; épingle « idao » rattachée à la vraie fiche Boréalis de Feinn ; Liam n'a plus qu'un compte). Reste : « Elle m'a dit » et « Elle m'a dit circee » = même cheval en double à la SEP, à fusionner seulement avec Blandine (attend : Blandine)
 
 ────────────────────────────────────────────────────────────
@@ -18517,3 +18517,5 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 
 ## 07/11/2026 01h30 — SUIVI seul — liste d'urgence
 - Retiré de la liste (dépassé) : « Galops 8 et 9 : aucun cours écrit » — les 20 + 19 cours sont en ligne en français, visibles de Blandine seule (voir les deux lignes Galops 8 et 9 en section « Important »).
+
+- 07/11 01h35 : fiche de progression du compte de test « Claude » effacée (Blandine « Ok 3 »), sauvegarde dans sauvegarde_progression_071126.
