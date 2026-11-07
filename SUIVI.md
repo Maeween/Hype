@@ -18887,3 +18887,18 @@ Le programme FFE dit « Utiliser son équilibre sur les étriers » : les cours 
 ru « Система » / pl « Szereg » (combinaison), es « Cinchuelo » (surfaix).
 
 ════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (11 h 00) — GALOPS 1 À 4 + COMPLÉMENTS DE COURS : CADENCE / RYTHME ET PORTUGAIS — PUBLIÉ (build 20261107-1100)
+Suite du « carte blanche » de Blandine : même règle que les Galops 5 à 9, appliquée aux Galops 1 à 4 et aux compléments
+(« Pour les plus curieux », glossaire, Hey Baby…).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop1.js / 2.js / 3.js / 4.js | racine | v24 / v14 / v19 / v6 : cadence → tempo, rythme → takt/ritmo… (13 langues) ; portugais au « tu » passé au « você » |
+| hype-cours-complements.js | racine | cadence/rythme (13 langues) |
+| index.html | racine | ?v galop1 → 24, galop2 → 15, galop3 → 20, galop4 → 7, compléments → 2 |
+168 textes revus × 13 langues (≈ 500 corrections) ; plus aucun « cadence / Kadenz / kadens / cadencia / cadenza / cadência / cadans / kadencja / 케이던스 »
+pour la cadence dans les Galops 1 à 9. 34 textes portugais au « tu » passés au « você ». Le français n'a pas bougé.
+Fichier hype-cours-galops-sup.js NON touché (ancien fichier gardé pour les vieilles versions de l'appli, « NE PLUS LE MODIFIER »).
+À faire relire par un natif : nl « takt » / « ritme » à l'obstacle ; de « Galopprhythmus » gardé à l'obstacle.
+
+════════════════════════════════════════════════════════════
