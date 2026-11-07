@@ -18519,3 +18519,12 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Retiré de la liste (dépassé) : « Galops 8 et 9 : aucun cours écrit » — les 20 + 19 cours sont en ligne en français, visibles de Blandine seule (voir les deux lignes Galops 8 et 9 en section « Important »).
 
 - 07/11 01h35 : fiche de progression du compte de test « Claude » effacée (Blandine « Ok 3 »), sauvegarde dans sauvegarde_progression_071126.
+
+## 07/11/2026 02h45 — PUBLICATION build 20261107-0245 (Blandine 00h22 → 01h37 : « sur la page de mes engagements fais un récapitulatif clair à la fin, par cavalier, par cheval et par épreuve » ; choix après aperçus : chevaux = E, cavalières = D, épreuves = L ; 01h37 « continue sur tout ce que tu peux jusqu'au bout, tu as carte blanche »)
+- Engagements : en bas de page, nouveau « Récapitulatif — La journée en un coup d'œil » (ligne courbe de la Vidéothèque, totaux cavalières / tours / chevaux) :
+  · Les cavalières (D) : cartes photo deux par ligne ; n° en haut à gauche, licence en pastille, prénom en grand et NOM dessous, ses deux chevaux avec le n° de tour et l'épreuve ; fond = sa photo de profil si elle en a une, sinon la photo de son premier cheval.
+  · Les chevaux (E) : cartes photo à faire glisser, avec leurs tours en cases (1, 2, 3 ; case pointillée = place libre ; au-delà du maximum réglé, le nom est souligné).
+  · Les épreuves (L) : un bandeau photo par épreuve (« ordre de passage », « en partie connu » ou « pas encore sorti »), puis la liste de départ numérotée : médaillon du cheval, cavalière, cheval et n° de tour, piste, heure à droite. Rangée par heure de passage dès qu'elle est saisie dans Jour J (ou reprise du chronométreur dans Jour J), sinon dans l'ordre de la feuille avec « — ».
+- Aperçus préparés sur une branche à part (recap-engagements-apercu), réunis à la version en ligne pour cette publication. Rien d'autre n'est changé sur la page (onglets, feuille SEP, enregistrement).
+- Textes en français seulement (traductions après relecture).
+- Fichiers : hype-ecran-saison.js (v40), index.html (build 20261107-0245), SUIVI.md.
