@@ -11,6 +11,101 @@
    Outils partagés de l'appli utilisés à l'exécution : useApp, supa, hypeChevauxDuClub, HypeVoileSantePremium, ImportSoinsClub,
    vignetteHype, useHypeLargeur, hypeRolesSoins, HYPE_ROLES_ORDRE, SelecteurLangue. */
 (function () {
+/* 07/11 — « + Noter pour plusieurs chevaux » (accord de Blandine 19h46) : UN soin, UNE date, plusieurs chevaux cochés -> une ligne
+   soins_cheval par cheval (même écriture que l'import : details.import = "plusieurs"). Prochaine échéance proposée par hypeImportProchaine,
+   modifiable. Rien n'est écrit avant « Enregistrer ». Boutons à contour champagne, jamais pleins. */
+function NoterPlusieurs(props) {
+  var h = React.createElement, T = props.T, chevaux = props.chevaux || [];
+  function auj() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function proch(ty, d) { return (typeof hypeImportProchaine === "function") ? (hypeImportProchaine(ty, d) || "") : ""; }
+  var s1 = React.useState("vaccin"); var type = s1[0], setType = s1[1];
+  var s2 = React.useState({ grippe: true }); var vacs = s2[0], setVacs = s2[1];
+  var s3 = React.useState(""); var produit = s3[0], setProduit = s3[1];
+  var s4 = React.useState(auj()); var date = s4[0], setDate = s4[1];
+  var s5 = React.useState(proch("vaccin", auj())); var prochaine = s5[0], setProchaine = s5[1];
+  var s6 = React.useState(false); var prochMain = s6[0], setProchMain = s6[1];
+  var s7 = React.useState({}); var coches = s7[0], setCoches = s7[1];
+  var s8 = React.useState(false); var occupe = s8[0], setOccupe = s8[1];
+  var s9 = React.useState(null); var bilan = s9[0], setBilan = s9[1];
+  function changer(ty, d) { if (!prochMain) setProchaine(proch(ty, d)); }
+  var TYS = [
+    ["vaccin", T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepionka", "백신")],
+    ["vermifuge", T("Vermifuge", "Deworming", "Vermífugo", "Vermifugo", "駆虫", "Wurmkur", "مضاد الديدان", "驱虫", "Ontwormen", "Vermífugo", "Avmaskning", "Глистогонное", "Odrobaczanie", "구충제")],
+    ["ferrure", T("Ferrure", "Shoeing", "Herraje", "Ferratura", "装蹄", "Beschlag", "تركيب الحدوة", "钉蹄", "Beslag", "Ferrageamento", "Skoning", "Ковка", "Kucie", "장제")],
+    ["parage", T("Parage", "Trimming", "Recorte de cascos", "Pareggio", "削蹄", "Hufbearbeitung", "تقليم الحوافر", "修蹄", "Bekappen", "Casqueamento", "Verkning", "Расчистка", "Werkowanie", "삭제")],
+    ["dentiste", T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과")],
+    ["osteopathe", T("Ostéopathe", "Osteopath", "Osteópata", "Osteopata", "整骨", "Osteopath", "أخصائي العظام", "整骨", "Osteopaat", "Osteopata", "Osteopat", "Остеопат", "Osteopata", "오스테오파시")],
+    ["veterinaire", T("Vétérinaire", "Vet", "Veterinario", "Veterinario", "獣医", "Tierarzt", "طبيب بيطري", "兽医", "Dierenarts", "Veterinário", "Veterinär", "Ветеринар", "Weterynarz", "수의사")]
+  ];
+  var VACS = [
+    ["grippe", T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자")],
+    ["rhino", T("Rhinopneumonie", "Rhinopneumonitis", "Rinoneumonitis", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "التهاب الأنف والرئة", "鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumonit", "Ринопневмония", "Rhinopneumonia", "비폐렴")],
+    ["tetanos", T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Stelkramp", "Столбняк", "Tężec", "파상풍")],
+    ["westnile", "West Nile"]
+  ];
+  /* le titre reste en français (comme ceux de l'import) : c'est lui que la page relit pour ranger le vaccin dans sa ligne */
+  var NOMS_FR = { grippe: "Grippe", rhino: "Rhinopneumonie", tetanos: "Tétanos", westnile: "West Nile" };
+  var vacList = ["grippe", "rhino", "tetanos", "westnile"].filter(function (k) { return vacs[k]; });
+  var titre = type === "vaccin" ? (vacList.map(function (k) { return NOMS_FR[k]; }).join(" + ") + (produit.trim() ? " (" + produit.trim() + ")" : "")) : produit.trim();
+  var ids = chevaux.filter(function (c) { return coches[String(c.id)]; }).map(function (c) { return c.id; });
+  var pret = ids.length && /^\d{4}-\d{2}-\d{2}$/.test(date) && (type !== "vaccin" || vacList.length) && !occupe;
+  async function enregistrer() {
+    if (!pret) return;
+    setOccupe(true); setBilan(null);
+    var ok = 0, ko = [], restants = Object.assign({}, coches);
+    for (var i = 0; i < ids.length; i++) {
+      try {
+        var ligne = Object.assign({ cheval_id: ids[i], type: type, date_intervention: date, details: { import: "plusieurs", ligne: titre } }, titre ? { titre: titre } : {}, /^\d{4}-\d{2}-\d{2}$/.test(prochaine) ? { date_prochaine: prochaine } : {});
+        var r = await supa.from("soins_cheval").insert(ligne).select("id");
+        if (r && r.error) ko.push(String(r.error.message || r.error)); else { ok++; delete restants[String(ids[i])]; }
+      } catch (e) { ko.push(String(e)); }
+    }
+    setCoches(restants); setOccupe(false); setBilan({ ok: ok, ko: ko });
+    if (ok && props.onEnregistre) props.onEnregistre();
+  }
+  function puce(actif, txt, clic, cle) {
+    return h("button", { key: cle, type: "button", className: "sc-np-p" + (actif ? " on" : ""), "aria-pressed": actif ? "true" : "false", onClick: clic }, txt);
+  }
+  var tousCoches = chevaux.length && ids.length === chevaux.length;
+  var feuille = h("div", { className: "sc-np", role: "dialog", "aria-modal": "true" },
+    h("div", { className: "sc-np-in" },
+      h("div", { className: "sc-np-t" },
+        h("h2", null, T("Noter pour plusieurs chevaux", "Record for several horses", "Registrar para varios caballos", "Registra per più cavalli", "複数の馬に記録", "Für mehrere Pferde eintragen", "تسجيل لعدة خيول", "为多匹马记录", "Voor meerdere paarden noteren", "Registrar para vários cavalos", "Registrera för flera hästar", "Записать для нескольких лошадей", "Zapisz dla kilku koni", "여러 말에 기록")),
+        h("button", { type: "button", className: "sc-np-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, "×")),
+      h("p", { className: "sc-lab" }, T("Le soin", "The care", "El cuidado", "La cura", "ケア", "Die Pflege", "العناية", "护理", "De verzorging", "O cuidado", "Vården", "Уход", "Zabieg", "관리")),
+      h("div", { className: "sc-chips" }, TYS.map(function (t) { return puce(type === t[0], t[1], function () { setType(t[0]); changer(t[0], date); }, "t" + t[0]); })),
+      type === "vaccin" ? h("div", { style: { marginTop: 16 } },
+        h("p", { className: "sc-lab" }, T("Contre", "Against", "Contra", "Contro", "対象", "Gegen", "ضد", "预防", "Tegen", "Contra", "Mot", "Против", "Przeciw", "대상")),
+        h("div", { className: "sc-chips" }, VACS.map(function (v) { return puce(!!vacs[v[0]], v[1], function () { var n = Object.assign({}, vacs); n[v[0]] = !n[v[0]]; setVacs(n); }, "v" + v[0]); }))) : null,
+      h("label", { className: "sc-np-c" },
+        h("span", { className: "sc-lab" }, type === "vaccin"
+          ? T("Nom du vaccin (facultatif)", "Vaccine name (optional)", "Nombre de la vacuna (opcional)", "Nome del vaccino (facoltativo)", "ワクチン名（任意）", "Name des Impfstoffs (optional)", "اسم اللقاح (اختياري)", "疫苗名称（选填）", "Naam van het vaccin (optioneel)", "Nome da vacina (opcional)", "Vaccinets namn (valfritt)", "Название вакцины (необязательно)", "Nazwa szczepionki (opcjonalnie)", "백신 이름 (선택)")
+          : T("Précision (facultatif)", "Details (optional)", "Detalle (opcional)", "Dettaglio (facoltativo)", "詳細（任意）", "Angabe (optional)", "تفاصيل (اختياري)", "说明（选填）", "Toelichting (optioneel)", "Detalhe (opcional)", "Detalj (valfritt)", "Уточнение (необязательно)", "Szczegóły (opcjonalnie)", "세부 사항 (선택)")),
+        h("input", { type: "text", value: produit, onChange: function (e) { setProduit(e.target.value); }, placeholder: type === "vaccin" ? "Equip F, ProteqFlu-Te…" : "", maxLength: 120 })),
+      h("div", { className: "sc-np-d" },
+        h("label", { className: "sc-np-c" }, h("span", { className: "sc-lab" }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜")),
+          h("input", { type: "date", value: date, onChange: function (e) { setDate(e.target.value); changer(type, e.target.value); } })),
+        h("label", { className: "sc-np-c" }, h("span", { className: "sc-lab" }, T("Prochaine échéance", "Next due date", "Próximo vencimiento", "Prossima scadenza", "次回予定", "Nächste Fälligkeit", "الموعد القادم", "下次到期", "Volgende vervaldatum", "Próximo vencimento", "Nästa förfallodatum", "Следующий срок", "Następny termin", "다음 예정일")),
+          h("input", { type: "date", value: prochaine, onChange: function (e) { setProchaine(e.target.value); setProchMain(true); } }))),
+      h("div", { className: "sc-h2", style: { margin: "22px 0 10px" } },
+        h("p", { className: "sc-lab", style: { margin: 0 } }, T("Les chevaux", "The horses", "Los caballos", "I cavalli", "馬", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말") + " · " + ids.length + " / " + chevaux.length),
+        h("button", { type: "button", className: "sc-voir", onClick: function () { var n = {}; if (!tousCoches) chevaux.forEach(function (c) { n[String(c.id)] = 1; }); setCoches(n); } },
+          tousCoches ? T("Tout décocher", "Uncheck all", "Desmarcar todo", "Deseleziona tutto", "すべて解除", "Alle abwählen", "إلغاء الكل", "全部取消", "Alles uitvinken", "Desmarcar tudo", "Avmarkera alla", "Снять все", "Odznacz wszystkie", "모두 해제")
+                     : T("Tout cocher", "Check all", "Marcar todo", "Seleziona tutto", "すべて選択", "Alle auswählen", "تحديد الكل", "全选", "Alles aanvinken", "Marcar tudo", "Markera alla", "Отметить все", "Zaznacz wszystkie", "모두 선택"))),
+      h("div", { className: "sc-np-l" }, chevaux.map(function (c) {
+        var k = String(c.id), on = !!coches[k];
+        return h("label", { key: "n" + k, className: "sc-np-ch" + (on ? " on" : "") },
+          h("input", { type: "checkbox", checked: on, onChange: function () { var n = Object.assign({}, coches); if (n[k]) delete n[k]; else n[k] = 1; setCoches(n); } }),
+          h("span", null, c.nom || ""));
+      })),
+      bilan ? h("div", { className: bilan.ko.length ? "sc-err" : "sc-np-ok" },
+        bilan.ok ? T(bilan.ok + " soin(s) enregistré(s).", bilan.ok + " record(s) saved.", bilan.ok + " cuidado(s) guardado(s).", bilan.ok + " cura/e salvata/e.", bilan.ok + " 件保存しました。", bilan.ok + " Eintrag/Einträge gespeichert.", "تم حفظ " + bilan.ok + ".", bilan.ok + " 条记录已保存。", bilan.ok + " behandeling(en) opgeslagen.", bilan.ok + " cuidado(s) salvo(s).", bilan.ok + " post(er) sparade.", "Сохранено: " + bilan.ok + ".", "Zapisano: " + bilan.ok + ".", bilan.ok + "건 저장됨.") + " " : "",
+        bilan.ko.length ? T("Refusé pour " + bilan.ko.length + " cheval(aux) (restés cochés) : ", "Refused for " + bilan.ko.length + " horse(s) (still checked): ", "Rechazado para " + bilan.ko.length + " caballo(s) (siguen marcados): ", "Rifiutato per " + bilan.ko.length + " cavallo/i (ancora selezionati): ", bilan.ko.length + " 頭で拒否（選択のまま）：", "Abgelehnt für " + bilan.ko.length + " Pferd(e) (noch ausgewählt): ", "رُفض لـ " + bilan.ko.length + " (ما زالت محددة): ", bilan.ko.length + " 匹被拒绝（仍勾选）：", "Geweigerd voor " + bilan.ko.length + " paard(en) (nog aangevinkt): ", "Recusado para " + bilan.ko.length + " cavalo(s) (ainda marcados): ", "Nekad för " + bilan.ko.length + " häst(ar) (fortfarande markerade): ", "Отклонено для " + bilan.ko.length + " (остались отмечены): ", "Odrzucono dla " + bilan.ko.length + " (nadal zaznaczone): ", bilan.ko.length + "마리 거부됨 (선택 유지): ") + bilan.ko[0] : null) : null),
+    h("div", { className: "sc-np-b" },
+      h("button", { type: "button", className: "sc-imp", disabled: !pret, onClick: enregistrer, style: { width: "100%", maxWidth: 520, minHeight: 50, fontSize: 14.5, opacity: pret ? 1 : 0.45 } },
+        occupe ? "…" : T("Enregistrer pour " + ids.length + (ids.length > 1 ? " chevaux" : " cheval"), "Save for " + ids.length + (ids.length > 1 ? " horses" : " horse"), "Guardar para " + ids.length + " caballo(s)", "Salva per " + ids.length + " cavallo/i", ids.length + " 頭に保存", "Für " + ids.length + " Pferd(e) speichern", "حفظ لـ " + ids.length + " حصان", "为 " + ids.length + " 匹马保存", "Opslaan voor " + ids.length + " paard(en)", "Salvar para " + ids.length + " cavalo(s)", "Spara för " + ids.length + " häst(ar)", "Сохранить для " + ids.length, "Zapisz dla " + ids.length, ids.length + "마리에 저장"))));
+  return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(feuille, document.body) : feuille;
+}
 function EcranSanteClub() {
   var h = React.createElement;
   var ctx = (typeof useApp === "function") ? useApp() : {};
@@ -33,6 +128,7 @@ function EcranSanteClub() {
   var stR = React.useState(0); var recharge = stR[0], setRecharge = stR[1];
   var stT = React.useState(false); var tous = stT[0], setTous = stT[1];          /* « Voir les N » : tous les chevaux en grille */
   var stO = React.useState(""); var soinOuvert = stO[0], setSoinOuvert = stO[1]; /* ligne de soin ouverte */
+  var stN = React.useState(false); var noterOuvert = stN[0], setNoterOuvert = stN[1]; /* « + Noter pour plusieurs chevaux » */
 
   React.useEffect(function () {
     if (typeof document === "undefined" || document.getElementById("hype-sc-css")) return;
@@ -128,6 +224,25 @@ function EcranSanteClub() {
       ".sc-err{margin:14px 0;padding:11px 13px;border-radius:12px;border:1px solid rgba(217,147,158,.4);background:rgba(217,147,158,.07);color:#E6B3BB;font-size:12.5px;line-height:1.5}",
       ".sc-vide{padding:34px 8px;text-align:center;font-size:13px;line-height:1.6;color:rgba(243,238,228,.8)}",
       ".sc-note{font-size:10.5px;line-height:1.5;color:rgba(243,238,228,.42);margin-top:28px}",
+      ".sc-np{position:fixed;inset:0;z-index:10000;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;overflow-y:auto;-webkit-overflow-scrolling:touch}",
+      ".sc-np-in{max-width:620px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 16px) 18px 150px}",
+      ".sc-np-t{display:flex;align-items:center;gap:12px;margin-bottom:20px}",
+      ".sc-np-t h2{flex:1;margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,7vw,32px);line-height:1.1}",
+      ".sc-np-x{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(243,238,228,.25);background:transparent;color:#F3EEE4;font-size:24px;line-height:1;cursor:pointer}",
+      ".sc-np-p{font-size:13px;padding:8px 14px;min-height:38px;border-radius:999px;border:1px solid rgba(243,238,228,.16);background:transparent;color:rgba(243,238,228,.8);font-family:inherit;cursor:pointer}",
+      ".sc-np-p.on{border-color:#C9A66B;color:#E9D9B8;background:rgba(201,166,107,.08)}",
+      ".sc-np-c{display:block;flex:1;min-width:0;margin-top:16px}",
+      ".sc-np-c .sc-lab{display:block}",
+      ".sc-np-c input{display:block;width:100%;box-sizing:border-box;min-height:44px;padding:9px 12px;border-radius:12px;border:1px solid rgba(243,238,228,.16);background:rgba(13,21,24,.7);color:#F3EEE4;font-family:inherit;font-size:16px;color-scheme:dark}",
+      ".sc-np-d{display:flex;gap:12px}",
+      ".sc-np-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}",
+      ".sc-np-ch{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px;border-radius:12px;border:1px solid rgba(243,238,228,.1);font-size:14px;cursor:pointer;min-width:0}",
+      ".sc-np-ch span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      ".sc-np-ch.on{border-color:rgba(201,166,107,.6);background:rgba(201,166,107,.06)}",
+      ".sc-np-ch input{width:18px;height:18px;flex:0 0 auto;accent-color:#C9A66B}",
+      ".sc-np-ok{margin:16px 0;padding:11px 13px;border-radius:12px;border:1px solid rgba(92,135,146,.5);color:#A9CBD3;font-size:13px}",
+      ".sc-np-b{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:14px 18px calc(env(safe-area-inset-bottom) + 14px);background:linear-gradient(180deg,rgba(7,10,8,0) 0%,#070A08 40%)}",
+      ".sc-np-b .sc-imp{background:rgba(7,10,8,.85)}",
       "@media (prefers-reduced-motion:reduce){.sc-s-t .c{transition:none}}"
     ].join("\n");
     document.head.appendChild(st);
@@ -186,12 +301,31 @@ function EcranSanteClub() {
   /* --- calculs : prochaine echeance par cheval, et point par soin --- */
   var liste = chevaux || [];
   var parId = {}; liste.forEach(function (c) { parId[String(c.id)] = c; });
-  var prochaine = {};
-  soins.forEach(function (so) {
-    var k = String(so.cheval_id || ""); if (!k || !so.date_prochaine) return;
-    if (!prochaine[k] || String(so.date_prochaine) < String(prochaine[k].date_prochaine)) prochaine[k] = so;
-  });
+  /* 07/11 : seule compte l echeance du DERNIER soin de chaque sorte (grippe, rhino, tetanos, West Nile, vermifuge, marechal...) :
+     un rappel de 2022 deja remplace par un vaccin plus recent ne doit pas faire apparaitre le cheval « en retard » (cas d Aceitunero). */
+  var prochaine = null;
+  function calcProchaine() {
+    var der = {};
+    soins.forEach(function (so) {
+      var k = String(so.cheval_id || ""); if (!k) return;
+      var ty = String(so.type || "").toLowerCase();
+      var cats = ty === "vaccin" ? ["grippe", "rhino", "tetanos", "westnile"].filter(function (c) { return dansType(so, c); }) : [ty === "ferrure" || ty === "parage" ? "marechal" : ty];
+      if (!cats.length) cats = ["vaccin"];
+      cats.forEach(function (c) {
+        var cle = k + "|" + c, d = String(so.date_intervention || "");
+        if (!der[cle] || d > String(der[cle].date_intervention || "") || (d === String(der[cle].date_intervention || "") && so.date_prochaine && !der[cle].date_prochaine)) der[cle] = so;
+      });
+    });
+    var res = {};
+    Object.keys(der).forEach(function (cle) {
+      var so = der[cle]; if (!so.date_prochaine) return;
+      var k = cle.split("|")[0];
+      if (!res[k] || String(so.date_prochaine) < String(res[k].date_prochaine)) res[k] = so;
+    });
+    return res;
+  }
   function etatDe(c) {
+    if (!prochaine) prochaine = calcProchaine();
     var so = prochaine[String(c.id)]; if (!so) return { so: null, etat: null, j: null };
     var j = joursAvant(so.date_prochaine);
     return { so: so, j: j, etat: j === null ? null : (j < 0 ? "vr" : (j <= 15 ? "amb" : "pe")) };
@@ -311,7 +445,9 @@ function EcranSanteClub() {
             h("p", { className: "sc-lab" }, T("Faits", "Done", "Hechos", "Fatti", "済み", "Erledigt", "تمّت", "已完成", "Gedaan", "Feitos", "Klara", "Сделано", "Zrobione", "완료") + " · " + n),
             h("div", { className: "sc-chips" }, pt.faits.map(function (c) { return h("button", { key: "f" + c.id, type: "button", className: "sc-chip ok", onClick: function () { ouvrir(c); } }, c.nom || ""); })))
           : h("p", { className: "sc-lab", style: { textTransform: "none", letterSpacing: 0, fontSize: 12.5 } }, T("Aucun cheval n’a ce soin noté dans les 12 derniers mois.", "No horse has this recorded in the last 12 months.", "Ningún caballo lo tiene registrado en los últimos 12 meses.", "Nessun cavallo lo ha registrato negli ultimi 12 mesi.", "過去12か月に記録された馬はいません。", "Bei keinem Pferd in den letzten 12 Monaten eingetragen.", "لا يوجد حصان مسجل له ذلك خلال آخر 12 شهرًا.", "过去 12 个月没有马匹记录此项。", "Bij geen enkel paard ingevuld in de laatste 12 maanden.", "Nenhum cavalo tem isto registrado nos últimos 12 meses.", "Ingen häst har detta registrerat de senaste 12 månaderna.", "Ни у одной лошади нет записи за 12 месяцев.", "Żaden koń nie ma tego zapisanego w ostatnich 12 miesiącach.", "최근 12개월 동안 기록된 말이 없습니다."))) : null);
-    })));
+    })),
+    h("button", { type: "button", className: "sc-imp", style: { marginTop: 14, width: "100%", minHeight: 46 }, onClick: function () { setNoterOuvert(true); } },
+      "+ " + T("Noter pour plusieurs chevaux", "Record for several horses", "Registrar para varios caballos", "Registra per più cavalli", "複数の馬に記録", "Für mehrere Pferde eintragen", "تسجيل لعدة خيول", "为多匹马记录", "Voor meerdere paarden noteren", "Registrar para vários cavalos", "Registrera för flera hästar", "Записать для нескольких лошадей", "Zapisz dla kilku koni", "여러 말에 기록")));
 
   var ROLES = (typeof hypeRolesSoins === "function") ? hypeRolesSoins(T) : {};
   var ORDRE = (typeof HYPE_ROLES_ORDRE !== "undefined" && HYPE_ROLES_ORDRE) ? HYPE_ROLES_ORDRE : ["veterinaire", "marechal", "osteopathe", "dentiste"];
@@ -373,6 +509,7 @@ function EcranSanteClub() {
       h((typeof HypeVoileSantePremium === "function") ? HypeVoileSantePremium : "div", null,
         err ? h("div", { className: "sc-err" }, T("Les chevaux ou les soins de l’écurie n’ont pas pu être lus : ", "The stable’s horses or care could not load: ", "No se pudieron cargar los caballos o cuidados: ", "Impossibile caricare cavalli o cure: ", "馬またはケアを読み込めませんでした：", "Pferde oder Pflege nicht geladen: ", "تعذّر تحميل الخيول أو العناية: ", "无法加载马匹或护理：", "Paarden of verzorging konden niet laden: ", "Não foi possível carregar cavalos ou cuidados: ", "Hästar eller vård kunde inte laddas: ", "Не удалось загрузить лошадей или уход: ", "Nie udało się wczytać koni lub zabiegów: ", "말 또는 관리 기록을 불러오지 못했습니다: ") + err) : null,
         corps)),
+    noterOuvert ? h(NoterPlusieurs, { T: T, chevaux: liste, onFermer: function () { setNoterOuvert(false); }, onEnregistre: function () { setRecharge(function (n) { return n + 1; }); } }) : null,
     importOuvert && typeof ImportSoinsClub === "function" ? h(ImportSoinsClub, { T: T, chevaux: liste, onFermer: function () { setImportOuvert(false); }, onEnregistre: function () { setRecharge(function (n) { return n + 1; }); } }) : null);
   return page;
 }

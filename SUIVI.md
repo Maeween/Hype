@@ -19231,6 +19231,9 @@ Fichiers à publier :
 ## 07/11/2026 19h40 — Santé de l'écurie refaite (build 20261107-1940, envoyée sur GitHub sans mise en ligne, à grouper)
 ⚠ Répartition décidée par Blandine le 07/11 à 19h29 : cette conversation ne touche QUE la page Santé de l'écurie ; tout ce qui concerne UN cheval (Santé du cheval, fiche cheval) est fait par l'autre conversation. C'est l'autre conversation qui publie : cette page partira avec sa prochaine mise en ligne (rien à faire de plus).
 Vérifié sur les vrais soins en base (19h35) : le vaccin « Pneumequin » (sans e) est maintenant compté en Rhinopneumonie, et West Nile ne se repère plus que par WNV / West Nile (l'ancien mot « nil » pouvait se tromper). Les 7 soins nommés juste « Vaccin » ou « Vaccins », sans le nom du produit, ne peuvent aller dans aucune ligne.
+19h55 (accord de Blandine « Oui ok ») :
+- « + Noter pour plusieurs chevaux » ajouté sous Les soins de l'écurie : choisir le soin (vaccin : grippe / rhino / tétanos / West Nile + nom facultatif), la date, la prochaine échéance (proposée, modifiable), cocher les chevaux (« Tout cocher »), Enregistrer → une ligne de soin par cheval (même écriture que l'import, details.import = "plusieurs"). Ceux refusés restent cochés avec la raison. Boutons à contour, jamais pleins. 14 langues.
+- Aceitunero : MON ERREUR — sa date n'était pas fausse (le rappel de 2022 vient du vaccin rhino du 16/10/2021). Rien corrigé en base. Le vrai problème était dans la nouvelle page : un ancien rappel déjà remplacé par un vaccin plus récent l'aurait affiché « en retard de 4 ans ». Corrigé : seule compte l'échéance du DERNIER soin de chaque sorte (grippe, rhino, tétanos, West Nile, vermifuge, maréchal…).
 Page refaite d'après la maquette validée (design Vidéothèque) et détachée de index.html.
 | Fichier | Changement |
 |---|---|
