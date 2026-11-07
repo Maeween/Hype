@@ -18484,3 +18484,4 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Fichiers : sql/2026-11-07-famille-notification.sql (nouveau), supabase/functions/notifier-abonnement/index.ts, SUIVI.md.
 
 - 07/11 01h — BING FAIT : Blandine a inscrit 2hype.fr dans Bing Webmaster Tools (connexion Google, import depuis la Search Console) ; données en traitement (48 h). Ligne retirée du niveau 1. L'envoi automatique IndexNow à chaque mise en ligne continue.
+- 07/11 01h15 — BING, SUITE : plans du site envoyés à la main par Blandine dans Bing Webmaster Tools : https://2hype.fr/sitemap.xml et https://horselingo.fr/sitemap.xml (horselingo.fr aussi inscrit). Rien d'autre à faire : IndexNow prévient Bing à chaque mise en ligne des deux sites.
