@@ -34,6 +34,12 @@ function EcranEcurieV2(props) {
      toutes les personnes connectées, juste sous l en-tête de l écurie. On montre la Team (équipe) et les piquets qui ont au
      moins un cavalier. Rien n est écrit ; lecture soumise à la RLS existante. */
   var _grE = React.useState([]); var groupesEc = _grE[0], setGroupesEc = _grE[1];
+  /* 07/11 20h (Blandine : « à la place de l'onglet qui existe quand un groupe est créé, une proposition pour en créer un
+     quand il n'y en a aucun », puis « Oui ok » : seulement pour les responsables, et un petit « + » quand il y a déjà un groupe) */
+  var _gEc = React.useState(false); var gereEc = _gEc[0], setGereEc = _gEc[1];
+  var _cEc = React.useState(null); var creaEc = _cEc[0], setCreaEc = _cEc[1];     /* null | "choix" | "equipe" | "communaute" */
+  var _hEc = React.useState(null); var chEc = _hEc[0], setChEc = _hEc[1];         /* chevaux de l'écurie, pour la création */
+  var _vEc = React.useState(0); var verGrEc = _vEc[0], setVerGrEc = _vEc[1];
   React.useEffect(function () {
     var vivant = true;
     var nomC = String(d.monClub || "").trim();
@@ -51,9 +57,22 @@ function EcranEcurieV2(props) {
         l.sort(function (x, y) { return ((x.nature === "equipe" ? 0 : 1) - (y.nature === "equipe" ? 0 : 1)) || ((x.ordre == null ? 9999 : x.ordre) - (y.ordre == null ? 9999 : y.ordre)) || String(x.cree_le || "").localeCompare(String(y.cree_le || "")); });
         if (vivant) setGroupesEc(l.map(function (g) { return Object.assign({}, g, { __club: nomC }); }));
       } catch (eG) { if (vivant) setGroupesEc([]); }
+      /* responsable de cette écurie ? (même règle que « Les chevaux de l'écurie » ; la base tranche de toute façon) */
+      try {
+        var uR = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null, gR = false;
+        try { gR = !!(uR && typeof clubRevendiquePar === "function" && clubRevendiquePar(nomC, uR)); } catch (eRv) { }
+        if (!gR && uR) { var rgR = await supa.from("club_gestionnaires").select("user_id").eq("club_clef", hypeClefClubPiquets(nomC)).eq("user_id", uR.id).limit(1); gR = !!(rgR && rgR.data && rgR.data.length); }
+        if (vivant) setGereEc(gR);
+      } catch (eR) { if (vivant) setGereEc(false); }
     })();
     return function () { vivant = false; };
-  }, [d.monClub, d.visiteurG]);
+  }, [d.monClub, d.visiteurG, verGrEc]);
+  function ouvrirCreaEc(mode) {
+    setCreaEc(mode);
+    if (mode !== "choix" && chEc === null && typeof hypeChevauxEcurieTous === "function") {
+      hypeChevauxEcurieTous(String(d.monClub || "")).then(function (l) { setChEc(l || []); }).catch(function () { setChEc([]); });
+    }
+  }
   var _ev = React.useState(null); var evs = _ev[0], setEvs = _ev[1];
   /* 26/10 (Blandine) : les 3 derniers événements passés de l'écurie, sous les prochains événements */
   var _evp = React.useState(null); var evsPasses = _evp[0], setEvsPasses = _evp[1];
@@ -273,9 +292,59 @@ function EcranEcurieV2(props) {
           h("bdi", null, nomG),
           sansPage ? h("span", { style: { fontSize: 9.5, letterSpacing: 1.2, textTransform: "uppercase", color: CH } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demnächst", "\u0642\u0631\u064a\u0628\u0627", "即将到来", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "곧 공개")) : h("span", { "aria-hidden": "true", style: { color: CH, fontSize: 15 } }, CHEV));
       }))) : null;
-  var blocGroupes = (cartesEquipes || pastillesPiquets) ? h("div", { "data-groupes-ecurie-bloc": "1" },
-    cartesEquipes ? h("div", { style: { padding: large ? "22px 0 0" : "22px 16px 0", maxWidth: large ? 820 : undefined, margin: large ? "0 auto" : undefined } }, cartesEquipes) : null,
-    pastillesPiquets) : null;
+  /* 07/11 20h : responsables seulement — aucune équipe : la carte « Crée ton premier groupe » prend la place de la carte du
+     groupe ; déjà une équipe : un petit « + Créer un groupe » discret dessous. */
+  var invitationGr = (gereEc && !equipesEc.length) ? h("button", { type: "button", "data-creer-groupe": "1", onClick: function () { ouvrirCreaEc("choix"); },
+      style: { position: "relative", isolation: "isolate", display: "block", width: "100%", minWidth: 0, textAlign: "start", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: "1px dashed rgba(201,166,107,0.55)", background: "rgba(5,8,11,0.55)", padding: large ? "20px 22px" : "16px 18px", color: IV } },
+      h("div", { style: { fontFamily: SERIF, fontSize: large ? 24 : 21, fontWeight: 500, lineHeight: 1.1, textShadow: ombreGr } },
+        T("Crée ton premier groupe", "Create your first group", "Crea tu primer grupo", "Crea il tuo primo gruppo", "最初のグループを作ろう", "Erstelle deine erste Gruppe", "أنشئ مجموعتك الأولى", "创建你的第一个小组", "Maak je eerste groep", "Cria o teu primeiro grupo", "Skapa din första grupp", "Создай свою первую группу", "Utwórz swoją pierwszą grupę", "첫 그룹을 만들어 봐")),
+      h("div", { style: { fontFamily: M, fontSize: large ? 13 : 12, color: "rgba(243,238,228,0.75)", marginTop: 6, paddingInlineEnd: 50 } },
+        T("Une équipe de compétition ou une communauté de cavaliers.", "A competition team or a riders’ community.", "Un equipo de competición o una comunidad de jinetes.", "Una squadra agonistica o una comunità di cavalieri.", "競技チーム、またはライダーのコミュニティ。", "Ein Turnierteam oder eine Reitergemeinschaft.", "فريق مسابقات أو مجتمع فرسان.", "比赛队伍或骑手社群。", "Een wedstrijdteam of een ruiterscommunity.", "Uma equipa de competição ou uma comunidade de cavaleiros.", "Ett tävlingslag eller en ryttargemenskap.", "Команда для соревнований или сообщество всадников.", "Drużyna zawodnicza lub społeczność jeźdźców.", "대회 팀 또는 라이더 커뮤니티.")),
+      h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: large ? 18 : 14, width: large ? 38 : 34, height: large ? 38 : 34, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.6)", color: CH, fontSize: 20, lineHeight: (large ? 36 : 32) + "px", textAlign: "center" } }, "+")) : null;
+  var plusGr = (gereEc && equipesEc.length) ? h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 8 } },
+    h("button", { type: "button", "data-creer-groupe": "1", onClick: function () { ouvrirCreaEc("choix"); },
+      style: { minHeight: 32, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.45)", background: "transparent", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } },
+      "+ " + T("Créer un groupe", "Create a group", "Crear un grupo", "Crea un gruppo", "グループを作る", "Gruppe erstellen", "إنشاء مجموعة", "创建小组", "Groep maken", "Criar um grupo", "Skapa en grupp", "Создать группу", "Utwórz grupę", "그룹 만들기"))) : null;
+  var blocEquipesEc = (cartesEquipes || invitationGr) ? h("div", { style: { padding: large ? "22px 0 0" : "22px 16px 0", maxWidth: large ? 820 : undefined, margin: large ? "0 auto" : undefined } }, cartesEquipes || invitationGr, plusGr) : null;
+  /* choix « Équipe de compétition » / « Communauté », puis la création existante (CreationEquipeEH, index.html) */
+  function carteChoixEc(mode, titreC, texteC, img) {
+    return h("button", { key: mode, type: "button", onClick: function () { ouvrirCreaEc(mode); },
+      style: { position: "relative", isolation: "isolate", display: "block", width: "100%", minHeight: 112, marginTop: 12, borderRadius: 16, overflow: "hidden", padding: "16px 18px", textAlign: "start", cursor: "pointer", border: "1px solid rgba(201,166,107,0.4)", background: "#070A08", color: IV } },
+      h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.42, zIndex: -1 } }),
+      h("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: -1, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.55) 70%, rgba(7,10,8,0.3) 100%)" } }),
+      h("div", { style: { fontFamily: SERIF, fontSize: 23, fontWeight: 500, lineHeight: 1.1 } }, titreC),
+      h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.78)", marginTop: 6, paddingInlineEnd: 40, lineHeight: 1.45 } }, texteC),
+      h("span", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineEnd: 14, color: CH, fontSize: 20 } }, CHEV));
+  }
+  var feuilleCreaEc = null;
+  if (creaEc === "choix") {
+    feuilleCreaEc = h("div", { "data-noswipe": "1", role: "dialog", "aria-modal": "true", onClick: function (e) { if (e.target === e.currentTarget) setCreaEc(null); },
+      style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.78)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { style: { width: "100%", maxWidth: 560, boxSizing: "border-box", background: "#070A08", border: "1px solid rgba(201,166,107,0.28)", borderBottom: "none", borderRadius: "24px 24px 0 0", padding: "22px 18px calc(96px + env(safe-area-inset-bottom))" } },
+        h("div", { style: { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: CH, fontWeight: 600, fontFamily: M } },
+          T("Nouveau groupe", "New group", "Nuevo grupo", "Nuovo gruppo", "新しいグループ", "Neue Gruppe", "مجموعة جديدة", "新小组", "Nieuwe groep", "Novo grupo", "Ny grupp", "Новая группа", "Nowa grupa", "새 그룹")),
+        h("div", { style: { fontFamily: SERIF, fontSize: 28, lineHeight: 1.05, marginTop: 4 } },
+          T("Que veux-tu créer ?", "What do you want to create?", "¿Qué quieres crear?", "Cosa vuoi creare?", "何を作る？", "Was möchtest du erstellen?", "ماذا تريد أن تنشئ؟", "你想创建什么？", "Wat wil je maken?", "O que queres criar?", "Vad vill du skapa?", "Что ты хочешь создать?", "Co chcesz utworzyć?", "무엇을 만들까?")),
+        h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26, marginTop: 4 } },
+          h("path", { d: "M0 34 C110 6 230 6 300 18 S380 32 400 12", fill: "none", stroke: CH, strokeWidth: 1.2, opacity: 0.9 })),
+        carteChoixEc("equipe",
+          T("Équipe de compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق مسابقات", "比赛队伍", "Wedstrijdteam", "Equipa de competição", "Tävlingslag", "Команда для соревнований", "Drużyna zawodnicza", "대회 팀"),
+          T("Une discipline, ses cavaliers et ses chevaux, son agenda de concours et ses résultats.", "A discipline, its riders and horses, its show calendar and results.", "Una disciplina, sus jinetes y caballos, su agenda de concursos y sus resultados.", "Una disciplina, i suoi cavalieri e cavalli, il calendario dei concorsi e i risultati.", "種目、ライダーと馬、大会の予定と結果。", "Eine Disziplin, ihre Reiter und Pferde, ihr Turnierkalender und ihre Ergebnisse.", "تخصص، فرسانه وخيوله، مواعيد مسابقاته ونتائجه.", "一个项目，它的骑手和马匹、比赛日程和成绩。", "Een discipline, de ruiters en paarden, de wedstrijdagenda en de uitslagen.", "Uma disciplina, os seus cavaleiros e cavalos, o calendário de concursos e os resultados.", "En gren, dess ryttare och hästar, tävlingskalender och resultat.", "Дисциплина, её всадники и лошади, календарь соревнований и результаты.", "Dyscyplina, jej jeźdźcy i konie, kalendarz zawodów i wyniki.", "종목, 라이더와 말, 대회 일정과 결과."),
+          "images/TEAM_COMPETITION.webp"),
+        carteChoixEc("communaute",
+          T("Communauté", "Community", "Comunidad", "Comunità", "コミュニティ", "Gemeinschaft", "مجتمع", "社群", "Community", "Comunidade", "Gemenskap", "Сообщество", "Społeczność", "커뮤니티"),
+          T("Un groupe de cavaliers hors compétition : cours du mercredi, propriétaires, stage…", "A group of riders outside competition: Wednesday lessons, owners, a clinic…", "Un grupo de jinetes fuera de la competición: clases del miércoles, propietarios, cursillo…", "Un gruppo di cavalieri fuori dalle gare: lezioni del mercoledì, proprietari, stage…", "競技以外のライダーのグループ：水曜日のレッスン、オーナー、講習会など。", "Eine Reitergruppe ohne Turniere: Mittwochsstunden, Besitzer, Lehrgang…", "مجموعة فرسان خارج المسابقات: دروس الأربعاء، الملاك، دورة تدريبية…", "比赛之外的骑手小组：周三课程、马主、集训……", "Een groep ruiters buiten de wedstrijden: woensdaglessen, eigenaars, een clinic…", "Um grupo de cavaleiros fora da competição: aulas de quarta-feira, proprietários, estágio…", "En ryttargrupp utanför tävlingarna: onsdagslektioner, hästägare, kurs…", "Группа всадников вне соревнований: занятия по средам, владельцы, сборы…", "Grupa jeźdźców poza zawodami: lekcje w środę, właściciele, obóz…", "대회 밖의 라이더 그룹: 수요일 수업, 말 주인, 캠프…"),
+          "images/FOND_CAVALIERS_ECURIE.webp"),
+        h("button", { type: "button", onClick: function () { setCreaEc(null); }, style: { marginTop: 16, width: "100%", minHeight: 46, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13.5, cursor: "pointer" } },
+          T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소"))));
+  } else if ((creaEc === "equipe" || creaEc === "communaute") && typeof CreationEquipeEH === "function") {
+    feuilleCreaEc = h(CreationEquipeEH, { key: creaEc, clef: hypeClefClubPiquets(String(d.monClub || "")), club: String(d.monClub || ""), chevaux: chEc || [], piquets: [], communaute: creaEc === "communaute",
+      onFermer: function () { setCreaEc(null); },
+      onFini: function (g) { setCreaEc(null); setVerGrEc(verGrEc + 1); if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); } });
+  }
+  var blocGroupes = (blocEquipesEc || pastillesPiquets || feuilleCreaEc) ? h("div", { "data-groupes-ecurie-bloc": "1" },
+    blocEquipesEc,
+    pastillesPiquets, feuilleCreaEc) : null;
 
   /* ── 2. SIX ONGLETS ── */
   var ONGLETS = [
