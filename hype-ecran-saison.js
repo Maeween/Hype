@@ -2842,7 +2842,7 @@ function EcranVideoParcours() {
 }
 
 function hsOrdreBase(L) {
-  var o = {}; (L || []).forEach(function (l, i) { o[i + "-1"] = hsMinutes(l.passage1); o[i + "-2"] = hsMinutes(l.passage2); }); return o;
+  var o = {}; (L || []).forEach(function (l, i) { [1, 2, 3, 4, 5].forEach(function (n) { o[i + "-" + n] = hsMinutes(l["passage" + n]); }); }); return o;
 }
 function hsHeurePropre(v) {
   try { if (typeof hypeHeurePropre === "function") return hypeHeurePropre(v); } catch (e) { }
@@ -3069,7 +3069,15 @@ function EcranJourJ() {
         if (!g) return;
         var rl = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
         if (rl && rl.error) throw new Error(rl.error.message || String(rl.error));
-        if (vif) { setLignes(rl.data || []); setBase(hsOrdreBase(rl.data || [])); }
+        /* 08/11 00h15 (Blandine « Ok ») : Jour J passe sur les 5 tours de concours_tours (une ligne par tour) */
+        var LJ = rl.data || [];
+        try {
+          var rT = await supa.from("concours_tours").select("*").eq("agenda_id", idEv).order("numero", { ascending: true });
+          if (rT && rT.error) throw rT.error;
+          var parE = {}; ((rT && rT.data) || []).forEach(function (t) { (parE[t.engagement_id] = parE[t.engagement_id] || []).push(t); });
+          LJ.forEach(function (l) { hsToursDepuis(l, parE[l.id]).forEach(function (t, k) { var n = k + 1; l["epreuve" + n] = t.epreuve; l["cheval" + n + "_nom"] = t.cheval_nom; l["passage" + n] = t.passage; l["piste" + n] = t.piste; }); });
+        } catch (eTo) { }
+        if (vif) { setLignes(LJ); setBase(hsOrdreBase(LJ)); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
     })();
     return function () { vif = false; };
@@ -3079,8 +3087,7 @@ function EcranJourJ() {
   /* toutes les passes de la journée, dans l'ordre de l'heure */
   var passes = [];
   (lignes || []).forEach(function (l, i) {
-    if (l.epreuve1 || l.cheval1_nom) passes.push({ i: i, n: 1, nom: l.nom, ep: l.epreuve1, ch: l.cheval1_nom, hp: l.passage1, pi: l.piste1 });
-    if (l.epreuve2 || l.cheval2_nom) passes.push({ i: i, n: 2, nom: l.nom, ep: l.epreuve2, ch: l.cheval2_nom, hp: l.passage2, pi: l.piste2 });
+    [1, 2, 3, 4, 5].forEach(function (n) { if (l["epreuve" + n] || l["cheval" + n + "_nom"]) passes.push({ i: i, n: n, nom: l.nom, ep: l["epreuve" + n], ch: l["cheval" + n + "_nom"], hp: l["passage" + n], pi: l["piste" + n] }); });
   });
   passes.sort(function (a, b) { var ka = base[a.i + "-" + a.n], kb = base[b.i + "-" + b.n]; return (ka == null ? 99999 : ka) - (kb == null ? 99999 : kb) || a.i - b.i; });
   /* alerte : deux passages à moins de 10 minutes sur deux pistes différentes (la coach ne peut pas être aux deux) */
@@ -3099,7 +3106,7 @@ function EcranJourJ() {
     var d = parseInt(dec.min, 10); if (!dec.ep || !d) { setMsg(F("Choisis une épreuve et un nombre de minutes.")); return; }
     var n = lignes.slice(), m = Object.assign({}, modif), nb = 0;
     n.forEach(function (l, i) {
-      [1, 2].forEach(function (k) {
+      [1, 2, 3, 4, 5].forEach(function (k) {
         if (l["epreuve" + k] !== dec.ep) return;
         var mi = hsMinutes(l["passage" + k]); if (mi > 9999) return;
         n[i] = Object.assign({}, n[i]); n[i]["passage" + k] = hsHeure(mi + d); m[l.id] = true; nb++;
@@ -3118,6 +3125,12 @@ function EcranJourJ() {
         var r = await supa.from("concours_engagements").update(row).eq("id", l.id).select("id");
         if (r && r.error) throw new Error(l.nom + " : " + (r.error.message || r.error));
         if (!r || !r.data || !r.data.length) throw new Error(l.nom + F(" : refusé par la base"));
+        /* les 5 tours dans concours_tours (les tours qui n'y sont pas encore n'existent que dans les colonnes 1 et 2) */
+        for (var nT = 1; nT <= 5; nT++) {
+          if (!(l["epreuve" + nT] || l["cheval" + nT + "_nom"])) continue;
+          var rT2 = await supa.from("concours_tours").update({ passage: hsHeurePropre(l["passage" + nT]) || null, piste: String(l["piste" + nT] || "").trim() || null, passage_maj_le: maint }).eq("engagement_id", l.id).eq("numero", nT).select("id");
+          if (rT2 && rT2.error) throw new Error(l.nom + " : " + (rT2.error.message || rT2.error));
+        }
       }
       if (ev && String(lien || "").trim() !== String(ev.lien_direct || "")) {
         var t = String(lien || "").trim();
@@ -3185,13 +3198,13 @@ function EcranJourJ() {
       var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
-      var equipe = []; lignes.forEach(function (l) { [1, 2].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
+      var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
       var lu = await hsLireProgramme(imgs, equipe);
       function norm(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
       function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
       function memeCh(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
       var props = [];
-      lignes.forEach(function (l, i) { [1, 2].forEach(function (n) {
+      lignes.forEach(function (l, i) { [1, 2, 3, 4, 5].forEach(function (n) {
         var ch = String(l["cheval" + n + "_nom"] || "").trim(), ep = String(l["epreuve" + n] || "").trim();
         if (!ch && !ep) return;
         var p = lu.passages.filter(function (x) { return x && (hsMemePers(x.cavalier, l.nom) || (ch && memeCh(x.cheval, ch))) && (!x.cheval || !ch || memeCh(x.cheval, ch)); })[0] || null;
@@ -3229,7 +3242,8 @@ function EcranJourJ() {
       if (!d.heure_estimee) return;
       var i = -1; n.forEach(function (l, j) { if (l.id === d.engagement) i = j; }); if (i < 0) return;
       var l = Object.assign({}, n[i]);
-      var k = proche(l.epreuve2, d.epreuve) ? 2 : (proche(l.epreuve1, d.epreuve) || !l.passage1 ? 1 : 2);
+      var k = 0; [1, 2, 3, 4, 5].forEach(function (nk) { if (!k && proche(l["epreuve" + nk], d.epreuve)) k = nk; });   /* 08/11 : le tour de cette épreuve, parmi les 5 */
+      if (!k) k = !l.passage1 ? 1 : 2;
       l["passage" + k] = d.heure_estimee; n[i] = l; m[l.id] = true; nb++;
     });
     setLignes(n); setModif(m);
