@@ -19217,6 +19217,7 @@ Fichiers à publier :
 
 
 ## 07/11/2026 19h40 — Santé de l'écurie refaite (build 20261107-1940, envoyée sur GitHub sans mise en ligne, à grouper)
+⚠ Répartition décidée par Blandine le 07/11 à 19h29 : cette conversation ne touche QUE la page Santé de l'écurie ; tout ce qui concerne UN cheval (Santé du cheval, fiche cheval) est fait par l'autre conversation. C'est l'autre conversation qui publie : cette page partira avec sa prochaine mise en ligne (rien à faire de plus).
 Page refaite d'après la maquette validée (design Vidéothèque) et détachée de index.html.
 | Fichier | Changement |
 |---|---|
