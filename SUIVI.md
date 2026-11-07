@@ -678,6 +678,22 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   t'apporte » dans Mon compte (hype-ecran-mon-compte.js ?v=3). Traduit
   dans les 14 langues. PUBLIÉ avec le camion (build 20261107-0305).
   ⚠️ À tester sur iPhone avec un nouveau compte.
+· 07/11 02 h 23 (« rassembler toutes les obligations légales, document unique,
+  plan d'évacuation… » + « et un résumé ») → PAGE « LES OBLIGATIONS »
+  (#obligations-ecurie, gestion ?v=19, carte dans Mon écurie). Un encart
+  « L'essentiel » (6 points) puis 13 fiches dépliables, par thème (Le club,
+  Sécurité, Employeur, Chevaux) : affichages (R. 322-5), secours (R. 322-4),
+  assurance RC (L. 321-1), enseignants diplôme + carte pro + honorabilité,
+  accident grave sous 48 h (R. 322-6), document unique (dès 1 salarié,
+  annuel dès 11, gardé 40 ans), incendie (consigne obligatoire avec foin,
+  R. 4227-37 ; plan et exercice recommandés INRS), accueil du public (ERP :
+  « Selon ton cas », à vérifier en mairie), registre du personnel,
+  détenteur IFCE (→ Le registre), transport (→ Le camion), vente d'un
+  cheval (certificat d'engagement, 7 jours), médiateur de la consommation.
+  Chaque fiche a sa source officielle. 14 langues. Vérifié le 07/11.
+  + Photo retirée à la demande de Blandine (cavalière sur cheval gris,
+  galop5-hero-elfe-liam) : remplacée dans Mouvements, Aides, et la page
+  « Ce que Hype t'apporte ». PUBLIÉ build 20261107-0345.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 

@@ -26,12 +26,13 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     plan: { img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%" },
     veto: { img: "images/cours-g1-c3-box.webp", pos: "50% 40%" },
     chevaux: { img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%" },
-    mouvements: { img: "images/galop5-hero-elfe-liam.webp", pos: "50% 40%" },
+    mouvements: { img: "images/communaute-carte-agenda.webp", pos: "50% 45%" },
     soins: { img: "images/galop1-hero-bai.webp", pos: "60% 35%" },
     controles: { img: "images/galop6-hero-gris.webp", pos: "60% 35%" },
     camion: { img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%" },
     compta: { img: "images/cours-g1-c3-box.webp", pos: "50% 40%" },
-    aides: { img: "images/galop5-hero-elfe-liam.webp", pos: "50% 40%" }
+    aides: { img: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "60% 40%" },
+    obligations: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" }
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -68,7 +69,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 2;
+  var I18N_V = 3;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -384,6 +385,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.controles, "Les échéances", nRet ? (nRet + " en retard") : (prochain ? ("Prochaine : " + dateCourte(prochain.date_prochaine)) : "Aucune date à venir"), function () { ouvrir("echeances"); }),
           theme(h, "", PHOTOS.camion, "Le camion", d.vhAbsent ? "Bientôt" : "Papiers et dates à surveiller", d.vhAbsent ? null : function () { ouvrir("camion"); }),
           theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
+          theme(h, "large", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
@@ -1917,7 +1919,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         { k: "sa", img: "images/galop5-c07-transport.webp", pos: "50% 50%", titre: "Ma saison", sous: "Dossier du concours, papiers du van", ecran: "ma-saison" },
         { k: "rf", img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%", titre: "Mes résultats FFE", sous: "Les résultats rassemblés", ecran: "mes-resultats-ffe" },
         { k: "cl", img: "images/galop6-hero-gris.webp", pos: "60% 35%", titre: "Le classement", sous: "Challenges et points de la saison", ecran: "classement" },
-        { k: "mv", img: "images/galop5-hero-elfe-liam.webp", pos: "50% 40%", titre: "Les sorties notées toutes seules", sous: "Les concours remplissent le registre", ecran: "registre-mouvements" },
+        { k: "mv", img: "images/communaute-carte-agenda.webp", pos: "50% 45%", titre: "Les sorties notées toutes seules", sous: "Les concours remplissent le registre", ecran: "registre-mouvements" },
         { k: "ec", large: true, img: "images/ECURIE_HERO2.jpg", pos: "50% 62%", titre: "Créer une équipe", sous: "Depuis la page des chevaux de l'écurie", ecran: "ecurie-hype" }
       ] },
     cavalier: { photo: { img: "images/cours-pansage-01_couverture_hero.webp", pos: "60% 40%" }, titre: "Pour toi, cavalier", sous: "Apprendre, progresser, garder tes souvenirs.",
@@ -1974,5 +1976,99 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ PAGE « LES OBLIGATIONS » (07/11 02 h 23) ═════════════════════════
+     Blandine : « rassembler toutes les obligations légales, par exemple document unique, plan d'évacuation quand besoin
+     etc. » + « et un résumé de celles-ci ». Même présentation que « Aides et contacts » : un résumé en tête, des cases
+     par thème, une carte par obligation qui se déplie (ce qu'il faut faire, pour qui, le texte de loi, la source).
+     Vérifié le 07/11/2026 sur des sources officielles (préfectures, INRS, Bpifrance) ; ce qui dépend du cas de l'écurie
+     est marqué « Selon ton cas ». Rien n'est écrit en base. */
+  var OBLIGS = [
+    { k: "affichage", cat: "club", photo: "registre", titre: "Les affichages", sous: "Code du sport R. 322-5", pill: "Tout club", etat: "À afficher",
+      texte: ["À afficher dans un endroit visible de tous : les copies des diplômes et des cartes professionnelles de chaque enseignant, l'attestation d'assurance responsabilité civile de l'établissement, et les règles d'hygiène et de sécurité des activités proposées.",
+        "On y ajoute en pratique : le règlement intérieur, les tarifs et les horaires, les numéros d'urgence."],
+      source: "https://www.bas-rhin.gouv.fr/index.php/contenu/telechargement/28905/198867/file/FICHE+2+DDCS+AFFICHAGES+OBLIGATOIRES-BAT.pdf", sourceNom: "Préfecture du Bas-Rhin, affichages obligatoires" },
+    { k: "secours", cat: "club", photo: "soins", titre: "Les secours", sous: "Code du sport R. 322-4", pill: "Tout club", etat: "À vérifier souvent",
+      texte: ["Une trousse de secours pour les premiers soins (vérifier les dates de péremption), un moyen d'alerter vite les secours (téléphone fixe ou portable qui capte), et un tableau des secours affiché : adresses et numéros des pompiers, du SAMU, de la gendarmerie, du vétérinaire."],
+      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
+    { k: "assurance", cat: "club", photo: "controles", titre: "L'assurance RC", sous: "Code du sport L. 321-1", pill: "Tout club", etat: "Obligatoire",
+      texte: ["L'établissement doit être assuré en responsabilité civile pour ses dirigeants, ses enseignants, ses salariés et les cavaliers qui pratiquent chez lui. L'attestation est affichée."],
+      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
+    { k: "enseignants", cat: "club", photo: "chevaux", titre: "Les enseignants", sous: "Diplôme et carte professionnelle", pill: "Enseignement payé", etat: "Obligatoire",
+      texte: ["Toute personne payée pour enseigner l'équitation doit avoir un diplôme reconnu par l'État et une carte professionnelle à jour (Code du sport, art. L. 212-1 et suivants). Employer quelqu'un sans diplôme est puni par la loi.",
+        "Honorabilité : une personne condamnée pour certaines infractions ne peut ni encadrer ni diriger un établissement sportif (art. L. 212-9 et L. 322-1)."],
+      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
+    { k: "accident", cat: "club", photo: "veto", titre: "Accident grave", sous: "Code du sport R. 322-6", pill: "Tout club", etat: "Sous 48 h",
+      texte: ["Tout accident grave, ou toute situation qui met gravement en danger les cavaliers, se déclare au préfet, par le service jeunesse et sports du département, avec le formulaire officiel, dans les 48 heures. C'est le dirigeant de l'établissement qui déclare."],
+      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
+    { k: "duerp", cat: "employeur", photo: "detenteur", titre: "Le document unique", sous: "Évaluation des risques (DUERP)", pill: "Dès 1 salarié", etat: "Chaque année",
+      texte: ["Dès le premier salarié (apprenti compris), l'employeur écrit le document unique : les risques de chaque poste (chutes, coups de pied, charges lourdes, poussière de foin, tracteur…) et ce qui est fait pour les réduire.",
+        "Il se met à jour à chaque changement important, et au moins une fois par an à partir de 11 salariés. Il se garde 40 ans."],
+      source: "https://bpifrance-creation.fr/encyclopedie/gerer-lentreprise/sante-securite-au-travail/document-unique-devaluation-risques", sourceNom: "Bpifrance Création, le document unique" },
+    { k: "incendie", cat: "securite", photo: "camion", titre: "Incendie", sous: "Consigne et évacuation", pill: "Avec salariés", etat: "Foin = obligatoire",
+      texte: ["Là où l'on stocke des matières qui brûlent facilement (foin, paille, copeaux, carburant), l'employeur doit écrire et afficher une consigne de sécurité incendie, quelle que soit la taille de l'écurie : les extincteurs, qui s'en occupe, qui guide l'évacuation, comment donner l'alerte, le numéro des pompiers. Elle est envoyée à l'inspection du travail.",
+        "Un plan d'évacuation affiché et un exercice d'évacuation tous les 6 mois sont recommandés (INRS). Tout le personnel apprend à se servir des extincteurs."],
+      source: "https://www.inrs.fr/publications/juridique/focus-juridiques/focus-juridique-formation-risque-incendie-obligations-pour-employeur.html", sourceNom: "INRS, risque incendie et employeur" },
+    { k: "erp", cat: "securite", photo: "plan", titre: "Accueil du public", sous: "Club-house, manège, tribunes", pill: "Selon ton cas", etat: "À vérifier", aVerifier: true,
+      texte: ["Un bâtiment où entre du public (club-house, manège couvert, tribunes) peut être un établissement recevant du public. Alors : extincteurs vérifiés chaque année, plan d'évacuation affiché, registre de sécurité où l'on note les vérifications.",
+        "Les règles exactes dépendent de la catégorie du bâtiment (nombre de personnes accueillies) : à demander à ta mairie ou au service prévention des pompiers."],
+      source: "https://www.orne.gouv.fr/contenu/telechargement/6739/74879/file/Fiche_autoevaluations_centre_equestre_Basse-Normandie_cle0cb1fc.pdf", sourceNom: "Préfecture de l'Orne, grille d'un centre équestre" },
+    { k: "personnel", cat: "employeur", photo: "aides", titre: "Le personnel", sous: "Registre et affichages", pill: "Dès 1 salarié", etat: "Obligatoire",
+      texte: ["Dès le premier salarié : le registre unique du personnel (tous les salariés, stagiaires compris, dans l'ordre d'embauche), et les affichages du droit du travail (inspection du travail, médecine du travail, convention collective, horaires, interdiction de fumer…).",
+        "Le GHN fournit des modèles prêts à imprimer pour les établissements équestres."],
+      source: "https://www.ghn.com.fr", sourceNom: "GHN, syndicat des établissements équestres" },
+    { k: "detenteur", cat: "chevaux", photo: "detenteur", titre: "Détenteur IFCE", sous: "Et registre d'élevage", pill: "Dès 1 cheval", etat: "Dans l'appli", lienInterne: "registre",
+      texte: ["La personne qui s'occupe du lieu où vivent les chevaux se déclare à l'IFCE et tient le registre d'élevage en 7 parties : tout est dans « Le registre » de Mon écurie, prêt à imprimer.",
+        "Les papiers d'identification de chaque cheval présent sont gardés à l'écurie."],
+      source: "https://www.ifce.fr", sourceNom: "IFCE" },
+    { k: "transport", cat: "chevaux", photo: "camion", titre: "Le transport", sous: "Plus de 65 km", pill: "Selon ton cas", etat: "Dans l'appli", lienInterne: "camion",
+      texte: ["Au-delà de 65 km dans le cadre de l'activité : autorisation de transport, certificat CAPTAV du conducteur et registre de transport. Tout se suit dans « Le camion »."],
+      source: "https://www.ifce.fr", sourceNom: "IFCE" },
+    { k: "vente", cat: "chevaux", photo: "chevaux", titre: "Vendre un cheval", sous: "Certificat d'engagement", pill: "Acheteur particulier", etat: "7 jours avant",
+      texte: ["Depuis la loi de 2021 contre la maltraitance animale, un particulier qui achète ou reçoit un équidé signe un certificat d'engagement et de connaissance des besoins de l'animal. Le cheval ne peut lui être remis que 7 jours après la signature : le vendeur vérifie que c'est fait."],
+      source: "https://www.senat.fr/rap/l20-844/l20-8446.html", sourceNom: "Sénat, loi contre la maltraitance animale" },
+    { k: "mediateur", cat: "club", photo: "compta", titre: "Le médiateur", sous: "De la consommation", pill: "Clients particuliers", etat: "Obligatoire",
+      texte: ["Quand on vend des cours, des stages ou des pensions à des particuliers, il faut adhérer à un médiateur de la consommation agréé et donner ses coordonnées aux clients (contrats, site, conditions de vente)."],
+      source: "https://www.economie.gouv.fr/mediation-conso", sourceNom: "Ministère de l'Économie, médiation de la consommation" }
+  ];
+  var CATS_OBLIG = [["club", "Le club"], ["securite", "Sécurité"], ["employeur", "Employeur"], ["chevaux", "Chevaux"]];
+  function EcranObligations() {
+    var h = hT; useLangue();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var c = useClub();
+    var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+    var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    function ouvrir(ecran) { try { window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
+    function lien(url, txt) { return h("a", { href: url, target: "_blank", rel: "noopener noreferrer", className: "hg-btn", style: { display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", textDecoration: "none", marginTop: 12 } }, txt); }
+    var n = function (cat) { return OBLIGS.filter(function (a) { return cat === "tous" || a.cat === cat; }).length; };
+    var vis = OBLIGS.filter(function (a) { return f === "tous" || a.cat === f; });
+    var corps = h("div", null,
+      ligneEcurie(h, c, []),
+      h("div", { className: "hg-encart", style: { marginTop: 16 } }, h("b", null, "L'essentiel"),
+        h("ul", { style: { margin: "6px 0 0", paddingInlineStart: 18, lineHeight: 1.6 } },
+          ["Afficher les diplômes, les cartes pro, l'assurance et le tableau des secours.",
+            "Avoir une trousse de secours et un téléphone qui capte.",
+            "Déclarer un accident grave dans les 48 heures.",
+            "Dès le premier salarié : document unique et registre du personnel.",
+            "Avec du foin stocké : consigne incendie affichée et extincteurs.",
+            "Les chevaux : déclaration IFCE, registre d'élevage, papiers du camion."].map(function (t, k) { return h("li", { key: k }, t); }))),
+      tuiles(h, CATS_OBLIG.map(function (x) { return { k: x[0], b: x[1], s: String(n(x[0])), n: n(x[0]) }; }), f, setF),
+      h("h2", { className: "hv3-h2" }, f === "tous" ? "Toutes les obligations" : (CATS_OBLIG.filter(function (x) { return x[0] === f; })[0] || ["", ""])[1]),
+      h("div", { className: "hv3-cartes" }, vis.map(function (a) {
+        return h("div", { key: a.k },
+          carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, alerte: !!a.aVerifier, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
+          ouvert === a.k ? h("div", { style: { padding: "12px 6px 16px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,.82)" } },
+            a.texte.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); }),
+            a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : "Ouvrir Le registre") : null,
+            lien(a.source, "Lire la source")) : null);
+      })),
+      h("div", { className: "hg-sous" }, "Vérifié le 7 novembre 2026 sur des sources officielles. Les règles changent : vérifie toujours la source, et demande à ta mairie, aux pompiers ou au service jeunesse et sports de ton département pour ce qui dépend de ton cas. Hype t'aide à ne rien oublier ; la responsabilité reste celle du dirigeant."),
+      LEGAL(h));
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      hero(h, { photo: PHOTOS.obligations, titre: "Les obligations", sous: "Tout ce que la loi demande, au même endroit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+      h("div", { className: "hv2-in" }, corps));
+  }
+
+  window.HypeGestion = { Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
