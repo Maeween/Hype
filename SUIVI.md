@@ -794,6 +794,10 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   depuis quand ; « Mettre au repos » / « Remettre des chevaux ». Mon écurie :
   12 petites cartes, plus de carte double sur tablette. 14 langues.
   PUBLIÉ build 20261107-2310.
+· 07/11 23 h (« Ok continue ») → page « Ce que Hype t'apporte », onglet
+  écurie : sous-titre de Mon écurie à jour (registre, échéances, pensions,
+  contrats, stock, compta) + 2 cartes « Le planning » et « Le cahier de
+  liaison ». 14 langues. PUBLIÉ build 20261107-2340.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 

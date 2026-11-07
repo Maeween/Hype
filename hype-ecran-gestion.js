@@ -75,7 +75,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 10;
+  var I18N_V = 11;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -1937,13 +1937,15 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var POUR_TOI = {
     ecurie: { photo: { img: "images/ECURIE_HERO2.jpg", pos: "50% 62%" }, titre: "Pour ton écurie", sous: "Le club, les chevaux et l'administratif, au même endroit.",
       cartes: [
-        { k: "me", large: true, img: "images/galop7-tmp-19-ecurie-couchant.webp", pos: "50% 55%", titre: "Mon écurie", sous: "Registre d'élevage, échéances, camion, compta, aides", ecran: "mon-ecurie" },
+        { k: "me", large: true, img: "images/galop7-tmp-19-ecurie-couchant.webp", pos: "50% 55%", titre: "Mon écurie", sous: "Registre, échéances, pensions, contrats, stock, compta", ecran: "mon-ecurie" },   /* 07/11 23 h : sous-titre à jour */
         { k: "pa", img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%", titre: "La page de l'écurie", sous: "Le fil du club, les nouvelles du jour", ecran: "guilde" },
         { k: "ag", img: "images/communaute-carte-agenda.webp", pos: "50% 50%", titre: "L'agenda du club", sous: "Cours, stages et concours", ecran: "agenda-club" },
         { k: "so", img: "images/cours-g1-c3-box.webp", pos: "50% 40%", titre: "Les soins des chevaux", sous: "Consignes, rappels, équipe de soins", ecran: "sante-club" },
         { k: "al", img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%", titre: "Photos et souvenirs", sous: "Les albums du club", ecran: "album-ecurie" },
         { k: "re", img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%", titre: "Les résultats de l'écurie", sous: "Tous les concours, au même endroit", ecran: "resultats-ecurie" },
         { k: "se", img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%", titre: "Ma Sellerie", sous: "Codes et adresses partenaires", ecran: "sellerie" },
+        { k: "pl", img: "images/pansage-comprendre-2.webp", pos: "50% 40%", titre: "Le planning", sous: "Qui fait quoi, et ton personnel coche", ecran: "planning-ecurie" },   /* 07/11 */
+        { k: "li", img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%", titre: "Le cahier de liaison", sous: "Le mot du jour pour l'équipe", ecran: "liaison-ecurie" },   /* 07/11 */
         { k: "mg", large: true, img: "images/galop1-hero-bai.webp", pos: "60% 35%", titre: "Le Mag", sous: "Les écrits de tes enseignants mis en avant", ecran: "articles" }
       ] },
     equipe: { photo: { img: "images/TEAM_COMPETITION.webp", pos: "50% 30%" }, titre: "Pour ton équipe compétition", sous: "Cavaliers, chevaux et concours, toute la saison.",
