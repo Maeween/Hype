@@ -18753,7 +18753,12 @@ cadence → en tempo / de Tempo / sv tempo / ja テンポ ; rythme → en rhythm
 Changés : anglais 93 textes, allemand 94, suédois 94, japonais 33 (le français n'a pas bougé).
 EXCEPTION : « trot cadencé » du piaffer et du passage (G8 cours 18) garde le sens d'allure élevée et rebondie
 (cadenced / kadenziert / kadens), ce n'est pas une fréquence.
-À faire relire par un natif : les mêmes termes dans les 9 autres langues n'ont pas été passés en revue (attend : Blandine).
+SUITE (build 20261107-0545, « Ok continue ») : les 9 autres langues passées en revue avec la même règle.
+cadence → es/it/pt/nl/pl « tempo », ru « темп », ko « 템포 », ar « الوتيرة », zh « 步频 » ; rythme → ritmo / takt (nl) / ритм / rytm / 리듬 / الإيقاع / 节奏.
+Changés : es, it, pt, pl, ko 93 textes chacun ; nl 98 ; ru 6 ; ar 3 ; zh 3 (ces trois-là étaient déjà presque justes).
+hype-cours-galop7.js v13, hype-cours-galop8.js v7, hype-cours-galop9.js v8 ; index.html ?v galop7 → 14, galop8 → 7, galop9 → 8.
+Doutes laissés (attend : un natif) : pt « tempo » plutôt que « andamento » ; it « tempo » / « tempi » proches dans G8 cours 11 ;
+nl « ritme » gardé pour le rythme entre les obstacles ; pl « kadencjonowany » (piaffer/passage) peu courant.
 
 ════════════════════════════════════════════════════════════
 
