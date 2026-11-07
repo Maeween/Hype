@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 02h40)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 04h20)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -15,8 +15,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 ## 2 — Important
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
-- [07/11] Galop 9 : les 19 cours sont en ligne en FRANÇAIS, visibles de Blandine seule (build 20261107-0110). Même suite que le Galop 8 : relecture (appli + ChatGPT, texte donné le 07/11), corrections, traductions, photos (texte donné le 07/11), ouverture. Points à trancher : titre du cours 6 (charte), Amateur 1, distances (cours 14), latéraux aux longues rênes (cours 5), « tourner sur les hanches au galop » (cours 11) (attend : Blandine)
-- [07/11] Galop 8 : les 20 cours sont en ligne en FRANÇAIS, visibles de Blandine seule (Galop 8 « Prochainement »). À relire dans l'appli et par ChatGPT (texte de relecture donné le 05/11), puis corrections, puis traductions dans toutes les langues, puis ouverture. Photos des cours provisoires (texte pour les créer donné le 05/11). Points à trancher : « galop ferme à ferme » (cours 15), labels FFE (cours 19), déroulé de l'examen (cours 20), quiz à 8 questions au lieu de 10 (attend : Blandine)
+- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule (build 20261107-0110), TRADUITS dans les 13 autres langues le 07/11 (build 20261107-0420). Même suite que le Galop 8 : relecture (appli + ChatGPT, texte donné le 07/11), corrections, traductions, photos (texte donné le 07/11), ouverture. Points à trancher : titre du cours 6 (charte), Amateur 1, distances (cours 14), latéraux aux longues rênes (cours 5), « tourner sur les hanches au galop » (cours 11) (attend : Blandine)
+- [07/11] Galop 8 : les 20 cours sont en ligne, visibles de Blandine seule (Galop 8 « Prochainement »), TRADUITS dans les 13 autres langues le 07/11 (build 20261107-0420). À relire dans l'appli et par ChatGPT (texte de relecture donné le 05/11), puis corrections, puis traductions dans toutes les langues, puis ouverture. Photos des cours provisoires (texte pour les créer donné le 05/11). Points à trancher : « galop ferme à ferme » (cours 15), labels FFE (cours 19), déroulé de l'examen (cours 20), quiz à 8 questions au lieu de 10 (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
 - [06/11] Titi « qualité insuffisante » (build 20261106-1230) : à tester sur iPhone avec une photo et une vidéo passées par WhatsApp → Titi doit apparaître ; avec une photo/vidéo d'origine → rien ne s'affiche. « Garder quand même » doit envoyer normalement (attend : Blandine)
@@ -18652,3 +18652,27 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 ## 07/11/2026 03h10 — PUBLICATION build 20261107-0310 (Blandine 02h04 « Ok continue » : suite du récapitulatif des Engagements, épreuves « avec l'ordre de passage une fois qu'il est sorti »)
 - Récapitulatif, partie Épreuves : quand le concours a son lien Winjump (trouvé par « Trouver le direct » dans Jour J) et que les heures ne sont pas encore saisies dans Jour J, la liste de départ se range toute seule dans l'ordre lu chez le chronométreur, avec l'heure estimée (« ~9h12 ») et la mention « ordre du chronométreur · heures estimées ». Les heures saisies par la coach dans Jour J restent prioritaires. Rien n'est enregistré en base (lecture seule, même fonction direct-concours que la fiche du concours, mise en cache 3 min).
 - Fichiers : hype-ecran-saison.js (v41), index.html (build 20261107-0310), SUIVI.md.
+
+📚 07/11/2026 (04 h 20) — GALOPS 8 ET 9 TRADUITS EN 13 LANGUES — PUBLIÉ (build 20261107-0420)
+Demande de Blandine : « Et traduis maintenant » puis « Vas y ». Les 39 cours (textes, encadrés,
+lexique, quiz) traduits en en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Même principe que
+le Galop 7 : une traduction ne s'affiche que si le texte français n'a pas changé depuis ;
+sinon le français reste affiché (à retraduire). Les 4 phrases modifiées à la relecture
+(G9 cours 1, 13, 15) ont été retraduites. Toujours « Prochainement » : seule Blandine les ouvre.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop8.js | racine | version 3 : traductions (TR_G8N, 2 886 textes) |
+| hype-cours-galop9.js | racine | version 4 : traductions (TR_G9N, 2 592 textes) |
+| index.html | racine | ?v galop8 2 → 3, galop9 3 → 4 |
+| hype-cours-sommaire.js | racine | régénéré |
+Testé (navigateur automatique, 390 px) : anglais, arabe, japonais, coréen, français ;
+sans droit modératrice → « Prochainement » ; 0 erreur.
+POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Blandine) :
+- Galop 7 pas cohérent avec les nouveaux : suédois « Bogen in » / « öppna » ; polonais
+  « kłus ćwiczebny » utilisé à tort pour le trot enlevé ; distinction cadence / rythme
+  différente en anglais, japonais, allemand, suédois.
+- « Réviser mes reprises » : libellé à aligner d'une langue à l'autre.
+- Termes laissés en français ou incertains : tares, coup de sang, « de ferme à ferme ».
+- Arabe au féminin, portugais du Brésil (« você »), comme le Galop 7.
+
+════════════════════════════════════════════════════════════
