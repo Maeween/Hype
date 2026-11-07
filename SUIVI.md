@@ -74,7 +74,6 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Partage d'un cours : si un jour on met une limite au nombre de partages, il faudra des liens uniques enregistrés en base. Le code actuel peut être fabriqué par quelqu'un de débrouillard (attend : Claude)
 - [04/11] Atlas animé du cheval (modèle 3D, Laboratoire du mouvement) : mis de côté au profit de l'atlas simple (attend : Blandine)
 - [02/11] Lecture à voix haute : une vraie voix enregistrée à la place de celle du téléphone, en commençant par le français (attend : Blandine)
-- [27/10] Galops 8 et 9 : aucun cours écrit, ils restent « Prochainement » (attend : Blandine)
 - [25/10] Carte « Exercices pratiques » de la page Galops : contenu à créer (des exercices à travailler ou à faire travailler pour chaque niveau) (attend : Blandine)
 - [25/10] Version claire de la page Galops, peut-être avec un bouton clair/sombre en haut : « on en reparle » (attend : Blandine)
 - [25/10] Se servir des envies, du niveau et de l'âge saisis à l'inscription (ligne « Pour toi » sur l'Accueil, page Galops ouverte sur le prochain Galop, Hey Baby adapté, protections pour les moins de 18 ans, endroit pour modifier ses envies). Aucune idée choisie (attend : Blandine)
@@ -18487,3 +18486,6 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 
 ## 07/11/2026 01h30 — TUTOIEMENT : dernier point tranché
 - Blandine : « Vous conditions générales, vous donateurs ». Les conditions générales (fr/cgv et autres langues) et la page publique de l'association restent au « vous ». L'ancienne page Premium (plus montrée qu'aux modératrices) n'est pas touchée. Rien à modifier : le point « vouvoiements » est retiré de la liste en tête.
+
+## 07/11/2026 01h30 — SUIVI seul — liste d'urgence
+- Retiré de la liste (dépassé) : « Galops 8 et 9 : aucun cours écrit » — les 20 + 19 cours sont en ligne en français, visibles de Blandine seule (voir les deux lignes Galops 8 et 9 en section « Important »).
