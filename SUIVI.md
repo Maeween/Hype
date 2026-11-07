@@ -19304,7 +19304,7 @@ Demande de Blandine : « Ok pour ouvrir g8/9 aux premium et référence les auss
 Règles Premium inchangées : Galop 1 et Baby gratuits ; Galops 2 à 9 = début de chaque chapitre pour tous, la suite pour les abonnés ; un cours reçu par lien de partage se lit en entier.
 Testé : sans abonnement, un cours du Galop 8 et du Galop 9 s'ouvre en aperçu (« Lire la suite »), comme le Galop 7 ; page Galops sans « Prochainement » ; 0 erreur.
 Pages Google vérifiées dans une copie : 9 Galops, 159 pages par langue (dont 20 pour le Galop 9), titres « … — Théorie Galop 9 | Hype ».
-Non touché : le choix « mon Galop actuel » du profil va toujours de 1 à 7 (à étendre à 8 et 9 si Blandine le veut).
+Choix « mon Galop actuel » : étendu à 1 à 9 le 07/11 soir (« Oui ok vas y »), voir l'entrée suivante.
 
 ════════════════════════════════════════════════════════════
 ## 07/11/2026 22h45 — PUBLIÉ (build 20261107-2245, Blandine 22h40 : « Ok continue ») — Mon carnet : jusqu'à 3 objectifs en cartes photo (demande de Lore)
@@ -19319,3 +19319,14 @@ Fichiers à publier :
 | hype-ecran-mon-carnet.js | racine | bloc « Mes objectifs » (3 cartes photo) |
 | index.html | racine | hype-ecran-mon-carnet.js?v=2 + marqueur de build 20261107-2245 |
 | SUIVI.md | racine | cette entrée |
+
+🎯 07/11/2026 (22 h 50) — « MON GALOP ACTUEL » DE 1 À 9 — PUBLIÉ (build 20261107-2250)
+Demande de Blandine : « Oui ok vas y ». Les sélecteurs du profil (demi-cercle « Galop actuel », demi-cercle et curseur de l'objectif,
+boutons 1 à 9, liste déroulante) vont maintenant jusqu'au Galop 9 ; les pages qui lisent le Galop actuel (Galops, cours, progression)
+acceptent 8 et 9 (avant : tout Galop au-dessus de 7 retombait à 1).
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | SelecteurArc / SelecteurArcDouble (9 graduations), SelecteurArcObjectif (1 → 9), SelecteurGalop (9 boutons), liste du profil, 5 lectures du Galop actuel |
+Vérifié sur capture (390 px) : les 9 graduations s'affichent proprement, 0 erreur. Non touché : les paliers de points de la famille « galops » (gamification, 1 à 7).
+
+════════════════════════════════════════════════════════════
