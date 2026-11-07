@@ -19100,3 +19100,15 @@ demande d'accorder ta pratique avec les principes d'éthologie et de bien-être 
 Le titre du cours (« La charte du bien-être équin ») reste à décider par Blandine.
 
 ════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (18 h 30) — GALOP 9 COURS 3 : TRADUCTIONS ALIGNÉES SUR LA CORRECTION « MÉDICAMENTS PÉRIMÉS » — PUBLIÉ (build 20261107-1830)
+Une autre conversation (build 20261107-1615) a corrigé le français (médicaments vétérinaires périmés → au vétérinaire ; Cyclamed = humains)
+mais les 13 traductions disaient encore « au vétérinaire OU à la pharmacie ». Les 3 textes sont retraduits.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | v13 |
+| index.html | racine | ?v galop9 → 13 |
+RAPPEL pour toutes les conversations : quand on change un texte français d'un cours traduit, il faut aussi retraduire (sinon l'ancienne
+traduction reste affichée si on recopie le nouveau français dans la table de traduction).
+
+════════════════════════════════════════════════════════════
