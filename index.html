@@ -39394,7 +39394,7 @@ function hypeRequeteTeam(colonnes, clef) {
 /* 01/10 (523) : la liste écrite TEAM_CHEVAUX_TEMP est RETIRÉE (choix A de Blandine) : les chevaux de l'équipe
    sont désormais ceux du GROUPE (table groupes_chevaux), ajoutés / retirés par « Gérer les chevaux ». */
 
-const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=9", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
+const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=10", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
@@ -57573,9 +57573,15 @@ function CreationEquipeEH(props) {
   var h = React.createElement;
   var T = hypeT7;   /* 07/11 : textes traduits dans les 14 langues */
   var CH = "#C9A66B", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.62)", M = "'Montserrat',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
-  var _c = React.useState(null), choix = _c[0], setChoix = _c[1];
-  var _ni = React.useState("club"), niv = _ni[0], setNiv = _ni[1];   /* 07/11 00 h 10 : onglets Club / Amateur / Poney / Autres */
-  var _n = React.useState(""), nom = _n[0], setNom = _n[1];
+  /* 08/11 (Blandine : « ça t'oblige à choisir entre club, poney et amat… dans les petites structures tout est mélangé ;
+     une fois le groupe créé il n'y a rien pour modifier ») : on choisit la DISCIPLINE seule ; le niveau est facultatif,
+     « Mélangé » par défaut (niveau vide en base). props.groupe = modification d'un groupe existant (nom, discipline, niveau). */
+  var G0 = props.groupe || null, edit = !!G0;
+  var _c = React.useState(G0 && G0.discipline && G0.discipline !== "loisir" ? G0.discipline : null), disc = _c[0], setDisc = _c[1];
+  var _ni = React.useState(G0 && G0.niveau && G0.niveau !== "sans_circuit" ? G0.niveau : ""), niv = _ni[0], setNiv = _ni[1];
+  var _n = React.useState(G0 ? String(G0.nom || "") : ""), nom = _n[0], setNom = _n[1];
+  /* en modification : un nom resté « Team <discipline> <niveau> » suit le nouveau choix ; un nom personnalisé n'est jamais touché */
+  var _nt = React.useState(edit && !/^Team (CSO|Dressage|Complet|Hunter|Voltige|Equifun|Equifeel|Shetland)( \S+)?$/.test(String(G0.nom || ""))), nomTouche = _nt[0], setNomTouche = _nt[1];
   var _m = React.useState(null), cav = _m[0], setCav = _m[1];
   var _sm = React.useState({}), selM = _sm[0], setSelM = _sm[1];
   var _sc = React.useState({}), selC = _sc[0], setSelC = _sc[1];
@@ -57583,6 +57589,7 @@ function CreationEquipeEH(props) {
   var _e = React.useState(""), err = _e[0], setErr = _e[1];
   React.useEffect(function () {
     var vif = true;
+    if (edit) return function () { vif = false; };
     (async function () {
       var l = [];
       try { l = await hypeCavaliersDuClub(props.club, "id, pseudo, avatar_url") || []; } catch (eC) { l = []; }
@@ -57591,24 +57598,32 @@ function CreationEquipeEH(props) {
     })();
     return function () { vif = false; };
   }, [props.club]);
-  var propos = HYPE_PIQUETS_PROPOSES.filter(function (p) { return p.t !== "loisir"; });
+  var DISCS = [["cso", "CSO"], ["dressage", "Dressage"], ["complet", "Complet"], ["hunter", "Hunter"], ["voltige", "Voltige"], ["equifun", "Equifun"], ["equifeel", "Equifeel"], ["shetland", "Shetland"]];
+  var AVEC_NIV = { cso: 1, dressage: 1, complet: 1 };
+  var NIVS = [["", T("Mélangé", "Mixed", "Mixto", "Misto", "混合", "Gemischt", "مختلط", "混合", "Gemengd", "Misto", "Blandat", "Смешанный", "Mieszany", "혼합")],
+    ["club", T("Club", "Club", "Club", "Club", "クラブ", "Club", "نادي", "俱乐部", "Club", "Clube", "Klubb", "Клуб", "Klub", "클럽")],
+    ["amateur", T("Amateur", "Amateur", "Amateur", "Amateur", "アマチュア", "Amateur", "هواة", "业余", "Amateur", "Amador", "Amatör", "Любители", "Amator", "아마추어")],
+    ["poney", T("Poney", "Pony", "Poni", "Pony", "ポニー", "Pony", "بوني", "小马", "Pony", "Pónei", "Ponny", "Пони", "Kuce", "포니")]];
+  function libDisc(d) { var x = DISCS.filter(function (y) { return y[0] === d; })[0]; return x ? x[1] : ""; }
+  function nomPropose(d, n) { if (!d) return ""; var ln = n && AVEC_NIV[d] ? NIVS.filter(function (y) { return y[0] === n; })[0] : null; return "Team " + libDisc(d) + (ln ? " " + ln[1] : ""); }
+  function choisir(d, n) { setDisc(d); setNiv(AVEC_NIV[d] ? n : ""); if (!nomTouche) setNom(nomPropose(d, AVEC_NIV[d] ? n : "")); setErr(""); }
   var chevaux = (props.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
   var nbM = Object.keys(selM).length, nbC = Object.keys(selC).length;
   var nomFinal = String(nom || "").trim();
   /* 07/11 20h (Blandine « Oui ok ») : props.communaute = un groupe de cavaliers HORS compétition (cours du mercredi,
      propriétaires…) : pas de discipline, rangé en base comme une équipe marquée « loisir » (aucun changement de base). */
   var commu = !!props.communaute;
-  var pret = (commu || !!choix) && !!nomFinal && !busy;
+  var pret = (commu || !!disc) && !!nomFinal && !busy;
   /* 07/11 00 h 07 (Blandine : « un visuel plus sympa et moins de vert pétrole ») : fond noir, photos des disciplines,
      portraits ronds des cavaliers, vignettes photo des chevaux, ligne courbe champagne sous le héros. */
   function tuileDisc(p) {
-    var on = choix === p;
-    var img = (typeof hypePhotoPiquet === "function") ? hypePhotoPiquet({ discipline: p.d, niveau: p.n }) : "";
-    return h("button", { key: "e" + p.nom, type: "button", onClick: function () { setChoix(p); setNom("Team " + p.nom); setErr(""); },
+    var on = disc === p[0];
+    var img = (typeof hypePhotoPiquet === "function") ? hypePhotoPiquet({ discipline: p[0], niveau: on ? niv : "" }) : "";
+    return h("button", { key: "e" + p[0], type: "button", onClick: function () { choisir(p[0], on ? niv : ""); },
       style: { position: "relative", height: 74, borderRadius: 14, overflow: "hidden", padding: 0, cursor: "pointer", border: "1px solid " + (on ? CH : "rgba(243,238,228,0.12)"), background: "#0A0C0B", boxShadow: on ? "0 0 0 1px " + CH + " inset" : "none" } },
       img ? h("img", { src: img, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: on ? 0.75 : 0.45 } }) : null,
       h("span", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0) 20%, rgba(7,10,8,0.88) 100%)" } }),
-      h("span", { style: { position: "absolute", insetInlineStart: 10, insetInlineEnd: 10, bottom: 8, fontFamily: SERIF, fontSize: 16.5, color: IV, textAlign: "start", lineHeight: 1.1 } }, p.nom),
+      h("span", { style: { position: "absolute", insetInlineStart: 10, insetInlineEnd: 10, bottom: 8, fontFamily: SERIF, fontSize: 16.5, color: IV, textAlign: "start", lineHeight: 1.1 } }, p[1]),
       on ? h("span", { style: { position: "absolute", top: 7, insetInlineEnd: 7, width: 20, height: 20, borderRadius: "50%", border: "1px solid " + CH, background: "rgba(7,10,8,0.7)", color: CH, fontSize: 12, lineHeight: "18px", textAlign: "center" } }, "\u2713") : null);
   }
   function portrait(u) {
@@ -57634,9 +57649,23 @@ function CreationEquipeEH(props) {
     if (!pret) return;
     setBusy(true); setErr("");
     var idG = null;
+    if (edit) {
+      try {
+        var mo = commu ? { nom: nomFinal } : { nom: nomFinal, discipline: disc, niveau: (AVEC_NIV[disc] && niv) ? niv : null };
+        var ru = await supa.from("groupes").update(mo).eq("id", G0.id).select("id, club_clef, nom, discipline, niveau, type");
+        if (ru && ru.error) throw new Error(ru.error.message || String(ru.error));
+        if (!ru || !ru.data || !ru.data.length) throw new Error(T("tu n’as pas le droit de modifier ce groupe.", "you are not allowed to edit this group.", "no tienes permiso para modificar este grupo.", "non hai il permesso di modificare questo gruppo.", "このグループを編集する権限がありません。", "du darfst diese Gruppe nicht bearbeiten.", "ليس لديك صلاحية تعديل هذه المجموعة.", "你无权修改此小组。", "je mag deze groep niet wijzigen.", "não tens permissão para modificar este grupo.", "du har inte behörighet att ändra gruppen.", "у тебя нет прав изменять эту группу.", "nie masz uprawnień do zmiany tej grupy.", "이 그룹을 수정할 권한이 없습니다."));
+        setBusy(false);
+        if (props.onFini) props.onFini(ru.data[0]);
+      } catch (eM) {
+        setBusy(false);
+        setErr(T("Le groupe n’a pas pu être modifié : ", "The group could not be edited: ", "No se ha podido modificar el grupo: ", "Non è stato possibile modificare il gruppo: ", "グループを編集できませんでした：", "Die Gruppe konnte nicht geändert werden: ", "تعذّر تعديل المجموعة: ", "无法修改小组：", "De groep kon niet worden gewijzigd: ", "Não foi possível modificar o grupo: ", "Gruppen kunde inte ändras: ", "Не удалось изменить группу: ", "Nie udało się zmienić grupy: ", "그룹을 수정할 수 없습니다: ") + String((eM && eM.message) || eM));
+      }
+      return;
+    }
     try {
       var rg = await supa.from("groupes").insert(commu ? { club_clef: props.clef, nom: nomFinal, nature: "equipe", discipline: null, niveau: null, type: "loisir" }
-        : { club_clef: props.clef, nom: nomFinal, nature: "equipe", discipline: choix.d || null, niveau: choix.n || null, type: "competition" }).select("id, club_clef, nom, discipline, niveau").single();
+        : { club_clef: props.clef, nom: nomFinal, nature: "equipe", discipline: disc, niveau: (AVEC_NIV[disc] && niv) ? niv : null, type: "competition" }).select("id, club_clef, nom, discipline, niveau").single();
       if (rg && rg.error) throw new Error(rg.error.message || String(rg.error));
       idG = rg && rg.data && rg.data.id; if (!idG) throw new Error("équipe non créée");
       var lm = Object.keys(selM).map(function (u) { return { groupe_id: idG, user_id: u }; });
@@ -57663,23 +57692,26 @@ function CreationEquipeEH(props) {
         h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: 2, width: "100%", height: 34 } },
           h("path", { d: "M0 34 C110 6 230 6 300 18 S380 32 400 12", fill: "none", stroke: CH, strokeWidth: 1.2, opacity: 0.9 })),
         h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 30 } },
-          h("div", { style: { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: CH, fontWeight: 600 } }, (commu ? T("Nouvelle communauté", "New community", "Nueva comunidad", "Nuova comunità", "新しいコミュニティ", "Neue Gemeinschaft", "مجتمع جديد", "新社群", "Nieuwe community", "Nova comunidade", "Ny gemenskap", "Новое сообщество", "Nowa społeczność", "새 커뮤니티") : T("Nouvelle équipe", "New team", "Nuevo equipo", "Nuova squadra", "新しいチーム", "Neues Team", "فريق جديد", "新队伍", "Nieuw team", "Nova equipa", "Nytt lag", "Новая команда", "Nowa drużyna", "새 팀"))),
+          h("div", { style: { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: CH, fontWeight: 600 } }, edit ? T("Modifier le groupe", "Edit the group", "Modificar el grupo", "Modifica il gruppo", "グループを編集", "Gruppe bearbeiten", "تعديل المجموعة", "修改小组", "Groep wijzigen", "Modificar o grupo", "Ändra gruppen", "Изменить группу", "Edytuj grupę", "그룹 수정") : (commu ? T("Nouvelle communauté", "New community", "Nueva comunidad", "Nuova comunità", "新しいコミュニティ", "Neue Gemeinschaft", "مجتمع جديد", "新社群", "Nieuwe community", "Nova comunidade", "Ny gemenskap", "Новое сообщество", "Nowa społeczność", "새 커뮤니티") : T("Nouvelle équipe", "New team", "Nuevo equipo", "Nuova squadra", "新しいチーム", "Neues Team", "فريق جديد", "新队伍", "Nieuw team", "Nova equipa", "Nytt lag", "Новая команда", "Nowa drużyna", "새 팀"))),
           h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, (commu ? T("Ta communauté de cavaliers", "Your riders’ community", "Tu comunidad de jinetes", "La tua comunità di cavalieri", "あなたのライダーコミュニティ", "Deine Reitergemeinschaft", "مجتمع فرسانك", "你的骑手社群", "Jouw ruiterscommunity", "A tua comunidade de cavaleiros", "Din ryttargemenskap", "Твоё сообщество всадников", "Twoja społeczność jeźdźców", "나의 라이더 커뮤니티") : T("Ton équipe de compétition", "Your competition team", "Tu equipo de competición", "La tua squadra agonistica", "あなたの競技チーム", "Dein Wettkampfteam", "فريقك للمنافسات", "你的比赛队伍", "Je wedstrijdteam", "A tua equipa de competição", "Ditt tävlingslag", "Твоя команда для соревнований", "Twoja drużyna zawodnicza", "나의 경기 팀"))))),
       h("div", { style: { padding: "4px 18px calc(110px + env(safe-area-inset-bottom))" } },
         commu ? null : h(React.Fragment, null,
         titre(T("La discipline", "The discipline", "La disciplina", "La disciplina", "種目", "Die Disziplin", "التخصص", "项目", "De discipline", "A disciplina", "Grenen", "Дисциплина", "Dyscyplina", "종목")),
-        h("div", { role: "tablist", style: { display: "flex", gap: 6, marginTop: 12, padding: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.25)" } },
-          [["club", T("Club", "Club", "Club", "Club", "クラブ", "Club", "نادي", "俱乐部", "Club", "Clube", "Klubb", "Клуб", "Klub", "클럽")], ["amateur", T("Amateur", "Amateur", "Amateur", "Amateur", "アマチュア", "Amateur", "هواة", "业余", "Amateur", "Amador", "Amatör", "Любители", "Amator", "아마추어")], ["poney", T("Poney", "Pony", "Poni", "Pony", "ポニー", "Pony", "بوني", "小马", "Pony", "Pónei", "Ponny", "Пони", "Kuce", "포니")], ["autre", T("Autres", "Others", "Otros", "Altri", "その他", "Andere", "أخرى", "其他", "Overige", "Outros", "Övriga", "Другие", "Inne", "기타")]].map(function (o) {
-            var on = niv === o[0];
-            return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { setNiv(o[0]); },
-              style: { flex: 1, minHeight: 36, borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 13, letterSpacing: 0.3, border: "1px solid " + (on ? CH : "transparent"), background: on ? "rgba(201,166,107,0.12)" : "transparent", color: on ? CH : "rgba(243,238,228,0.75)" } }, o[1]);
-          })),
-        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } },
-          propos.filter(function (p) { return niv === "autre" ? !p.n : p.n === niv; }).map(tuileDisc))),
+        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 8, marginTop: 12 } }, DISCS.map(tuileDisc)),
+        disc && AVEC_NIV[disc] ? h(React.Fragment, null,
+          titre(T("Le niveau", "The level", "El nivel", "Il livello", "レベル", "Das Niveau", "المستوى", "级别", "Het niveau", "O nível", "Nivån", "Уровень", "Poziom", "수준")),
+          aide(T("Facultatif : laisse « Mélangé » si ton groupe a un peu de tout.", "Optional: keep “Mixed” if your group has a bit of everything.", "Opcional: deja «Mixto» si tu grupo tiene un poco de todo.", "Facoltativo: lascia «Misto» se il tuo gruppo ha un po’ di tutto.", "任意：いろいろなレベルが混ざっているなら「混合」のままに。", "Freiwillig: Lass „Gemischt“, wenn deine Gruppe von allem etwas hat.", "اختياري: اترك «مختلط» إذا كانت مجموعتك تضم قليلًا من كل شيء.", "可选：如果你的小组各种级别都有，就保留“混合”。", "Optioneel: laat ‘Gemengd’ staan als je groep van alles wat heeft.", "Opcional: deixa «Misto» se o teu grupo tem um pouco de tudo.", "Valfritt: behåll ”Blandat” om gruppen har lite av varje.", "Необязательно: оставь «Смешанный», если в группе всего понемногу.", "Opcjonalnie: zostaw „Mieszany”, jeśli w grupie jest wszystkiego po trochu.", "선택 사항: 여러 수준이 섞여 있다면 ‘혼합’으로 두세요.")),
+          h("div", { role: "tablist", style: { display: "flex", gap: 6, marginTop: 12, padding: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.25)" } },
+            NIVS.map(function (o) {
+              var on = niv === o[0];
+              return h("button", { key: "n" + o[0], type: "button", role: "tab", "aria-selected": on, onClick: function () { choisir(disc, o[0]); },
+                style: { flex: 1, minWidth: 0, minHeight: 36, borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12.5, letterSpacing: 0.2, border: "1px solid " + (on ? CH : "transparent"), background: on ? "rgba(201,166,107,0.12)" : "transparent", color: on ? CH : "rgba(243,238,228,0.75)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o[1]);
+            }))) : null),
         titre(T("Son nom", "Its name", "Su nombre", "Il suo nome", "チーム名", "Sein Name", "اسمه", "队伍名称", "De naam", "O nome", "Namn", "Название", "Nazwa", "팀 이름")),
-        h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setErr(""); }, placeholder: (commu ? T("ex. Cours du mercredi", "e.g. Wednesday lessons", "p. ej. Clases del miércoles", "es. Lezioni del mercoledì", "例：水曜日のレッスン", "z. B. Mittwochsstunden", "مثال: دروس الأربعاء", "例如：周三课程", "bv. Woensdaglessen", "ex. Aulas de quarta-feira", "t.ex. Onsdagslektioner", "напр. Занятия по средам", "np. Lekcje w środę", "예: 수요일 수업") : T("ex. Team CSO Poney", "e.g. Team Pony Show Jumping", "p. ej. Team CSO Poni", "es. Team CSO Pony", "例：Team CSO ポニー", "z. B. Team CSO Pony", "مثال: Team CSO بوني", "例如 Team CSO 小马", "bijv. Team CSO Pony", "ex. Team CSO Pónei", "t.ex. Team CSO Ponny", "напр. Team CSO Пони", "np. Team CSO Kuce", "예: Team CSO 포니")),
+        h("input", { value: nom, maxLength: 40, onChange: function (e) { setNom(e.target.value); setNomTouche(true); setErr(""); }, placeholder: (commu ? T("ex. Cours du mercredi", "e.g. Wednesday lessons", "p. ej. Clases del miércoles", "es. Lezioni del mercoledì", "例：水曜日のレッスン", "z. B. Mittwochsstunden", "مثال: دروس الأربعاء", "例如：周三课程", "bv. Woensdaglessen", "ex. Aulas de quarta-feira", "t.ex. Onsdagslektioner", "напр. Занятия по средам", "np. Lekcje w środę", "예: 수요일 수업") : T("ex. Team CSO Poney", "e.g. Team Pony Show Jumping", "p. ej. Team CSO Poni", "es. Team CSO Pony", "例：Team CSO ポニー", "z. B. Team CSO Pony", "مثال: Team CSO بوني", "例如 Team CSO 小马", "bijv. Team CSO Pony", "ex. Team CSO Pónei", "t.ex. Team CSO Ponny", "напр. Team CSO Пони", "np. Team CSO Kuce", "예: Team CSO 포니")),
           style: { width: "100%", boxSizing: "border-box", minHeight: 48, marginTop: 12, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.35)", background: "rgba(243,238,228,0.03)", color: IV, fontFamily: SERIF, fontSize: 20 } }),
-        aide((commu ? T("Tu en deviens la responsable. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page du groupe.", "You become its manager. You can add or remove riders and horses at any time from the group page.", "Te conviertes en su responsable. Podrás añadir o quitar jinetes y caballos en cualquier momento desde la página del grupo.", "Ne diventi la responsabile. Potrai aggiungere o togliere cavalieri e cavalli in qualsiasi momento dalla pagina del gruppo.", "あなたが管理者になります。グループページからいつでもライダーや馬を追加・削除できます。", "Du wirst die Verantwortliche. Du kannst jederzeit auf der Gruppenseite Reiter und Pferde hinzufügen oder entfernen.", "تصبح مسؤولته. يمكنك إضافة الفرسان والخيول أو إزالتهم في أي وقت من صفحة المجموعة.", "你将成为负责人。你可以随时在小组页面添加或移除骑手和马匹。", "Je wordt de verantwoordelijke. Je kunt op elk moment ruiters en paarden toevoegen of verwijderen via de groepspagina.", "Passas a ser a responsável. Podes adicionar ou retirar cavaleiros e cavalos a qualquer momento na página do grupo.", "Du blir ansvarig. Du kan när som helst lägga till eller ta bort ryttare och hästar från gruppsidan.", "Ты становишься ответственной. Ты сможешь в любой момент добавлять или убирать всадников и лошадей на странице группы.", "Zostajesz odpowiedzialna. W każdej chwili możesz dodać lub usunąć jeźdźców i konie na stronie grupy.", "네가 담당자가 돼. 그룹 페이지에서 언제든지 라이더와 말을 추가하거나 뺄 수 있어.") : T("Tu en deviens la coach. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page de l'équipe.", "You become its coach. You can add or remove riders and horses at any time from the team page.", "Te conviertes en su coach. Podrás añadir o quitar jinetes y caballos en cualquier momento desde la página del equipo.", "Ne diventi la coach. Potrai aggiungere o togliere cavalieri e cavalli in qualsiasi momento dalla pagina della squadra.", "あなたがこのチームのコーチになります。チームページからいつでもライダーや馬を追加・削除できます。", "Du wirst seine Trainerin. Du kannst jederzeit auf der Teamseite Reiter und Pferde hinzufügen oder entfernen.", "تصبح مدرّبة الفريق. يمكنك إضافة الفرسان والخيول أو إزالتهم في أي وقت من صفحة الفريق.", "你将成为队伍的教练。你可以随时在队伍页面添加或移除骑手和马匹。", "Je wordt de coach. Je kunt op elk moment ruiters en paarden toevoegen of verwijderen via de teampagina.", "Passas a ser a coach. Podes adicionar ou retirar cavaleiros e cavalos a qualquer momento na página da equipa.", "Du blir lagets tränare. Du kan när som helst lägga till eller ta bort ryttare och hästar från lagets sida.", "Ты становишься тренером команды. Ты сможешь в любой момент добавлять или убирать всадников и лошадей на странице команды.", "Zostajesz trenerką drużyny. W każdej chwili możesz dodawać lub usuwać jeźdźców i konie na stronie drużyny.", "당신이 팀의 코치가 돼요. 팀 페이지에서 언제든 라이더와 말을 추가하거나 뺄 수 있어요."))),
+        edit ? null : aide((commu ? T("Tu en deviens la responsable. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page du groupe.", "You become its manager. You can add or remove riders and horses at any time from the group page.", "Te conviertes en su responsable. Podrás añadir o quitar jinetes y caballos en cualquier momento desde la página del grupo.", "Ne diventi la responsabile. Potrai aggiungere o togliere cavalieri e cavalli in qualsiasi momento dalla pagina del gruppo.", "あなたが管理者になります。グループページからいつでもライダーや馬を追加・削除できます。", "Du wirst die Verantwortliche. Du kannst jederzeit auf der Gruppenseite Reiter und Pferde hinzufügen oder entfernen.", "تصبح مسؤولته. يمكنك إضافة الفرسان والخيول أو إزالتهم في أي وقت من صفحة المجموعة.", "你将成为负责人。你可以随时在小组页面添加或移除骑手和马匹。", "Je wordt de verantwoordelijke. Je kunt op elk moment ruiters en paarden toevoegen of verwijderen via de groepspagina.", "Passas a ser a responsável. Podes adicionar ou retirar cavaleiros e cavalos a qualquer momento na página do grupo.", "Du blir ansvarig. Du kan när som helst lägga till eller ta bort ryttare och hästar från gruppsidan.", "Ты становишься ответственной. Ты сможешь в любой момент добавлять или убирать всадников и лошадей на странице группы.", "Zostajesz odpowiedzialna. W każdej chwili możesz dodać lub usunąć jeźdźców i konie na stronie grupy.", "네가 담당자가 돼. 그룹 페이지에서 언제든지 라이더와 말을 추가하거나 뺄 수 있어.") : T("Tu en deviens la coach. Tu pourras ajouter ou retirer des cavaliers et des chevaux à tout moment depuis la page de l'équipe.", "You become its coach. You can add or remove riders and horses at any time from the team page.", "Te conviertes en su coach. Podrás añadir o quitar jinetes y caballos en cualquier momento desde la página del equipo.", "Ne diventi la coach. Potrai aggiungere o togliere cavalieri e cavalli in qualsiasi momento dalla pagina della squadra.", "あなたがこのチームのコーチになります。チームページからいつでもライダーや馬を追加・削除できます。", "Du wirst seine Trainerin. Du kannst jederzeit auf der Teamseite Reiter und Pferde hinzufügen oder entfernen.", "تصبح مدرّبة الفريق. يمكنك إضافة الفرسان والخيول أو إزالتهم في أي وقت من صفحة الفريق.", "你将成为队伍的教练。你可以随时在队伍页面添加或移除骑手和马匹。", "Je wordt de coach. Je kunt op elk moment ruiters en paarden toevoegen of verwijderen via de teampagina.", "Passas a ser a coach. Podes adicionar ou retirar cavaleiros e cavalos a qualquer momento na página da equipa.", "Du blir lagets tränare. Du kan när som helst lägga till eller ta bort ryttare och hästar från lagets sida.", "Ты становишься тренером команды. Ты сможешь в любой момент добавлять или убирать всадников и лошадей на странице команды.", "Zostajesz trenerką drużyny. W każdej chwili możesz dodawać lub usuwać jeźdźców i konie na stronie drużyny.", "당신이 팀의 코치가 돼요. 팀 페이지에서 언제든 라이더와 말을 추가하거나 뺄 수 있어요."))),
+        edit ? null : h(React.Fragment, null,
         titre(T("Ses cavaliers", "Its riders", "Sus jinetes", "I suoi cavalieri", "ライダー", "Seine Reiter", "فرسانه", "骑手", "De ruiters", "Os cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더") + (nbM ? " · " + nbM : "")),
         cav === null ? aide(T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…")) : (cav.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: "14px 8px", marginTop: 14 } }, cav.map(portrait))
           : aide(T("Aucun cavalier rattaché à l'écurie pour l'instant.", "No rider linked to the yard yet.", "Ningún jinete vinculado a la cuadra por ahora.", "Nessun cavaliere collegato alla scuderia per ora.", "厩舎に所属するライダーはまだいません。", "Noch kein Reiter mit dem Stall verbunden.", "لا يوجد فارس مرتبط بالإسطبل حتى الآن.", "暂无骑手关联到该马场。", "Nog geen ruiter aan de stal gekoppeld.", "Nenhum cavaleiro ligado à cavalariça por agora.", "Ingen ryttare kopplad till stallet än.", "Пока ни один всадник не привязан к конюшне.", "Na razie żaden jeździec nie jest przypisany do stajni.", "아직 마구간에 연결된 라이더가 없어요."))),
@@ -57691,11 +57723,12 @@ function CreationEquipeEH(props) {
         })) : null,
         chevaux.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8, marginTop: 12 } }, chevaux.map(vignette))
           : aide(T("Aucun cheval sur cette page pour l'instant.", "No horse on this page yet.", "Ningún caballo en esta página por ahora.", "Nessun cavallo su questa pagina per ora.", "このページにはまだ馬がいません。", "Noch kein Pferd auf dieser Seite.", "لا يوجد حصان في هذه الصفحة حتى الآن.", "此页面暂无马匹。", "Nog geen paard op deze pagina.", "Nenhum cavalo nesta página por agora.", "Ingen häst på den här sidan än.", "Пока на этой странице нет лошадей.", "Na razie brak koni na tej stronie.", "아직 이 페이지에 말이 없어요.")),
+        null),
         err ? h("div", { role: "alert", style: { marginTop: 16, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null),
       h("div", { style: { position: "sticky", bottom: 0, display: "flex", gap: 10, padding: "14px 18px calc(84px + env(safe-area-inset-bottom))", background: "linear-gradient(180deg, rgba(7,10,8,0) 0%, #070A08 30%)" } },
         h("button", { type: "button", disabled: busy, onClick: function () { if (props.onFermer) props.onFermer(); }, style: { flex: 1, minHeight: 50, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "#070A08", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
         h("button", { type: "button", disabled: !pret, onClick: creer, style: { flex: 1.5, minHeight: 50, borderRadius: 999, border: "1px solid " + (pret ? CH : "rgba(201,166,107,0.25)"), background: "#070A08", color: pret ? CH : "rgba(201,166,107,0.45)", fontFamily: M, fontSize: 14, fontWeight: 600, cursor: pret ? "pointer" : "default" } },
-          busy ? T("Création…", "Creating…", "Creando…", "Creazione…", "作成中…", "Wird erstellt…", "جارٍ الإنشاء…", "正在创建…", "Aanmaken…", "A criar…", "Skapar…", "Создание…", "Tworzenie…", "만드는 중…") : T("Créer l'équipe", "Create the team", "Crear el equipo", "Crea la squadra", "チームを作成", "Team erstellen", "إنشاء الفريق", "创建队伍", "Team aanmaken", "Criar a equipa", "Skapa laget", "Создать команду", "Utwórz drużynę", "팀 만들기")))));
+          busy ? T("Création…", "Creating…", "Creando…", "Creazione…", "作成中…", "Wird erstellt…", "جارٍ الإنشاء…", "正在创建…", "Aanmaken…", "A criar…", "Skapar…", "Создание…", "Tworzenie…", "만드는 중…") : edit ? T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Guardar", "Spara", "Сохранить", "Zapisz", "저장") : T("Créer l'équipe", "Create the team", "Crear el equipo", "Crea la squadra", "チームを作成", "Team erstellen", "إنشاء الفريق", "创建队伍", "Team aanmaken", "Criar a equipa", "Skapa laget", "Создать команду", "Utwórz drużynę", "팀 만들기")))));
 }
 function CreationPiquetEH(props) {
   var h = React.createElement;

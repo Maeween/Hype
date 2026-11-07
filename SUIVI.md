@@ -19614,3 +19614,11 @@ Fichiers : hype-ecran-saison.js (v=47 dans index.html, 7 endroits), SUIVI.md.
 - Testé en local (fausse base) : 4 passages affichés dont un 3e tour, heure d'un tour existant reprise des anciennes colonnes, enregistrement du 3e tour ; aucune erreur.
 - Reste : la fiche du concours vue par le cavalier, la liste du van et Ma saison ne montrent encore que les tours 1 et 2.
 Fichiers : hype-ecran-saison.js (v=48 dans index.html, 7 endroits), SUIVI.md.
+
+## 08/11/2026 00h45 — PRÊT, NON PUBLIÉ (à grouper) — Groupes : niveau facultatif + « Modifier le groupe » (Blandine 00h27 : « Vas y »)
+- Demande : « ça t'oblige à choisir entre club, poney et amat… dans les petites structures (Feinn) tout est mélangé ; une fois le groupe créé il n'y a rien pour modifier ».
+- Version A appliquée (sa réponse « Vas y » sans préciser A ou B ; A = la 1re proposée, facile à passer en B) : création d'équipe (CreationEquipeEH, index.html) = choix de la DISCIPLINE seule (8 tuiles photo : CSO, Dressage, Complet, Hunter, Voltige, Equifun, Equifeel, Shetland) ; pour CSO / Dressage / Complet, « Le niveau » facultatif : Mélangé (défaut, niveau vide en base) / Club / Amateur / Poney. Nom proposé « Team CSO », « Team Dressage Amateur »… ; un nom tapé à la main n'est plus jamais écrasé.
+- Page de l'équipe (hype-ecran-team.js v=10) : bouton « Modifier le groupe » à côté de « Gérer les membres » (gérants seulement) : même feuille, en mode modification (nom, discipline, niveau ; cavaliers et chevaux restent dans « Gérer les membres / les chevaux »). Base : aucune modification (niveau vide déjà permis, règle « groupes modification » = hype_peut_gerer_club).
+- Textes traduits dans les 14 langues.
+- Attention : la Team de la SEP est encore retrouvée en secours par « CSO + Club » quand aucune équipe n'est ouverte ; si on passe la Team SEP en « Mélangé », ce secours ne la trouvera plus (l'équipe choisie dans la liste, elle, s'ouvre normalement).
+- Testé sur copie : création (Dressage → Amateur → Mélangé, Hunter sans niveau), modification (CSO Club → Mélangé : nom « Team CSO », niveau vide enregistré), aucune erreur.

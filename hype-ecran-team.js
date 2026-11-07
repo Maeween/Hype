@@ -22,6 +22,7 @@ function EcranTeamCompetition() {
   var CHEV = rtl ? "‹" : "›";
 
   var _g = React.useState(null); var groupe = _g[0], setGroupe = _g[1];
+  var _mg = React.useState(false); var modifGroupe = _mg[0], setModifGroupe = _mg[1];   /* 08/11 : « Modifier le groupe » (nom, discipline, niveau) */
   /* 10/10 (799) ÉTAPE K : piquet de destination de la Team (groupes.groupe_destination_id, réglable, lien par identifiant).
      Lu à part et sans risque : si la colonne n'existe pas encore, l'erreur est ignorée et « Voir tout » garde son comportement. */
   var _gd = React.useState(null); var destPiquet = _gd[0], setDestPiquet = _gd[1];
@@ -204,7 +205,7 @@ function EcranTeamCompetition() {
             if (vif) setGestion(!!(rgs && rgs.data && rgs.data.length));
           }
         } catch (eGs) { }
-        var rg = TC ? await supa.from("groupes").select("id, club_clef, nom").eq("id", TC.id).maybeSingle() : await hypeRequeteTeam("id, club_clef, nom");   /* (783) par la fiche ; 06/11 : ou l'équipe choisie */
+        var rg = TC ? await supa.from("groupes").select("id, club_clef, nom, discipline, niveau, type").eq("id", TC.id).maybeSingle() : await hypeRequeteTeam("id, club_clef, nom, discipline, niveau, type");   /* (783) par la fiche ; 06/11 : ou l'équipe choisie */
         if (rg && rg.error) throw new Error("groupe : " + (rg.error.message || rg.error));
         var G = rg && rg.data;
         if (!G) throw new Error("groupe « " + TEAM_NOM_GROUPE + " » introuvable");
@@ -399,8 +400,14 @@ function EcranTeamCompetition() {
     enTete(T("Nos cavalières", "Our riders", "Nuestras jinetes", "Le nostre amazzoni", "私たちのライダー", "Unsere Reiterinnen", "فارساتنا", "我们的骑手", "Onze ruiters", "Nossas amazonas", "Våra ryttare", "Наши всадницы", "Nasze amazonki", "우리 기수들"), "cav", itemsCav.length, 8),
     membres === null ? chargement()
       : (itemsCav.length ? grillePortraits(itemsCav, "cav") : vide(T("Aucune cavalière pour l’instant.", "No riders yet.", "Aún no hay jinetes.", "Nessuna amazzone per ora.", "まだライダーはいません。", "Noch keine Reiterinnen.", "لا توجد فارسات حاليا.", "目前还没有骑手。", "Nog geen ruiters.", "Nenhuma amazona por enquanto.", "Inga ryttare ännu.", "Пока нет ни одной всадницы.", "Na razie nie ma żadnej amazonki.", "아직 기수가 없어요."))),
-    (gestion && groupe) ? h("button", { type: "button", onClick: function () { setErrPanneau(""); setRecherche(""); setPanneau("membres"); }, style: { marginTop: 12, minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer" } },
-      T("Gérer les membres", "Manage members", "Gestionar miembros", "Gestisci i membri", "メンバーを管理", "Mitglieder verwalten", "إدارة الأعضاء", "管理成员", "Leden beheren", "Gerenciar os membros", "Hantera medlemmar", "Управлять участниками", "Zarządzaj członkami", "멤버 관리")) : null), true);
+    (gestion && groupe) ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 } },
+      h("button", { type: "button", onClick: function () { setErrPanneau(""); setRecherche(""); setPanneau("membres"); }, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer" } },
+        T("Gérer les membres", "Manage members", "Gestionar miembros", "Gestisci i membri", "メンバーを管理", "Mitglieder verwalten", "إدارة الأعضاء", "管理成员", "Leden beheren", "Gerenciar os membros", "Hantera medlemmar", "Управлять участниками", "Zarządzaj członkami", "멤버 관리")),
+      typeof CreationEquipeEH === "function" ? h("button", { type: "button", onClick: function () { setModifGroupe(true); }, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer" } },
+        T("Modifier le groupe", "Edit the group", "Modificar el grupo", "Modifica il gruppo", "グループを編集", "Gruppe bearbeiten", "تعديل المجموعة", "修改小组", "Groep wijzigen", "Modificar o grupo", "Ändra gruppen", "Изменить группу", "Edytuj grupę", "그룹 수정")) : null) : null,
+    (modifGroupe && groupe && typeof CreationEquipeEH === "function") ? h(CreationEquipeEH, { clef: groupe.club_clef, club: TEAM_CLUB, groupe: groupe, communaute: groupe.type === "loisir", chevaux: [], piquets: [],
+      onFermer: function () { setModifGroupe(false); },
+      onFini: function (gN) { setGroupe(Object.assign({}, groupe, gN || {})); setModifGroupe(false); } }) : null), true);
 
   /* ── nos chevaux ── */
   var itemsCh = (chevaux || []).map(function (c) { return portrait("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
