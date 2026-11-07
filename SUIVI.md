@@ -18688,3 +18688,10 @@ POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Bla
 - Santé du cheval : quand on joint un document de type « Page du carnet de vaccination » ou « Certificat de vaccination », le fichier est enregistré une seule fois, puis la lecture des vaccins se lance toute seule sur ce même fichier (liste à vérifier, puis Enregistrer). La case « Garder la photo » est masquée dans ce cas (déjà gardée) → plus de document en double.
 - Réservé aux abonnés comme la lecture actuelle. Aucun nouveau texte. hype-ecran-sante-cheval.js?v=5.
 - À venir (attente ok Blandine) : refonte de la partie Vaccins en une carte par vaccin (Grippe, Rhino, Tétanos, Autres/West Nile), dernier vaccin + prochain rappel, ouverture = toutes les dates + photo du carnet.
+
+## 07/11/2026 02h50 — Vaccins : une carte par vaccin (build 20261107-0450, NON PUBLIÉ)
+- Demande : « une partie pour chaque vaccin… le dernier protocole réalisé… quand on clique dessus, toutes les dates et la copie avec la photo ». Validé (« Ok »).
+- Fenêtre Vaccin de la page Santé : cartes Grippe, Rhinopneumonie (toujours), Tétanos et Autres vaccins (si présents). Chaque carte : état du rappel (à jour / dépassé), dernier vaccin (date + produit), nombre d'injections depuis l'année de la première. Une seule carte ouverte à la fois : une ligne courte par injection (date + produit, « + tétanos » pour une double ; on la touche pour modifier), puis « Pages du carnet » en vignettes (photo) ou PDF.
+- Protocole vaccinal : gardé (badges Club / Amateur / SHF / FEI, notes, Lire le carnet) sans les lignes Grippe / Rhino (passées dans les cartes) ni le message « vaccin sans maladie précisée » (ces vaccins vont dans « Autres vaccins », ex. Equip WNV).
+- Le tétanos est maintenant reconnu (Equip FT, ProteqFlu-Te, Prequenza Te, « tétanos » dans l'intitulé).
+- Nouveaux textes traduits dans les 14 langues. hype-ecran-sante-cheval.js?v=6. Vérifié sur banc d'essai avec les vrais vaccins du cheval (31 injections).

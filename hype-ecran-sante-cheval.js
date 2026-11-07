@@ -578,10 +578,11 @@ function EcranSanteCheval() {
           var ids = {}; l.forEach(function (x) { ids[x.id] = 1; });
           var dl = (docs || []).filter(function (d) { return (d.soin_id && ids[d.soin_id]) || (f.types.indexOf("vaccin") >= 0 && typeDoc(d.type).f === "vaccins"); });
           var bAj = peutEcrire ? h("span", { role: "button", onClick: function () { setFamille(null); ouvrirDocAjout(f.types.indexOf("vaccin") >= 0 ? "carnet_vaccin" : "autre", ""); }, style: { display: "inline-block", marginBottom: 10, padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", color: "#E9D9B8", fontFamily: M, fontSize: 12, cursor: "pointer" } }, "+ " + T("Joindre un document", "Attach a document", "Adjuntar un documento", "Allega un documento", "書類を添付", "Dokument anhängen", "إرفاق مستند", "附上文件", "Een document toevoegen", "Anexar um documento", "Bifoga ett dokument", "Прикрепить документ", "Dołącz dokument", "문서 첨부")) : null;
-          if (!dl.length) return bAj;
+          if (!dl.length || (f.types.indexOf("vaccin") >= 0 && l.length)) return bAj;   /* 07/11 vaccins : les pages du carnet sont dans chaque carte */
           return h("div", { style: { marginBottom: 12 } }, h("div", { style: { borderRadius: 14, border: "1px solid rgba(201,166,107,0.25)", overflow: "hidden", marginBottom: 8 } }, dl.map(function (d, i) { return ligneDoc(d, i); })), bAj);
         })(),
-        l.length
+        (l.length && f.types.indexOf("vaccin") >= 0) ? cartesVaccins(l)   /* 07/11 une carte par vaccin */
+        : l.length
           ? h("div", null, l.map(function (x, i) { return ligne(x, "fam" + (x.id || i)); }))
           : h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#6D7681", lineHeight: 1.6, padding: "6px 2px 10px" } },
               T("Rien d'enregistr\u00e9 pour l'instant.", "Nothing recorded yet.", "Nada registrado por ahora.", "Nulla registrato per ora.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch nichts erfasst.", "\u0644\u0627 \u0634\u064a\u0621 \u0645\u0633\u062c\u0644 \u062d\u0627\u0644\u064a\u0627.", "暂时没有记录。", "Nog niets geregistreerd.", "Nada registrado por enquanto.", "Inget registrerat ännu.", "Пока ничего не записано.", "Na razie nic nie zapisano.", "아직 기록된 것이 없어요.")),
@@ -1096,6 +1097,8 @@ function EcranSanteCheval() {
   /* (945) « Lire le carnet de vaccination » : photo(s) ou PDF -> liste des injections (date, vaccin, maladies) a verifier,
      puis enregistrement en soins « vaccin » (+ la photo gardee comme document « page du carnet » si coche). */
   var stLc = React.useState(null); var lectCarnet = stLc[0], setLectCarnet = stLc[1];
+  var stVo = React.useState(null); var vacOuvert = stVo[0], setVacOuvert = stVo[1];   /* 07/11 carte de vaccin ouverte */
+  var stVg = React.useState({}); var vignettes = stVg[0], setVignettes = stVg[1];     /* 07/11 vignettes des pages du carnet */
   function ouvrirLectCarnet() {
     if (!premiumSanteOk()) { setVoilePremium(true); return; }
     setLectCarnet({ etape: "choix", lignes: [], err: "", garder: true, fichier: null, busy: false });
@@ -1234,7 +1237,8 @@ function EcranSanteCheval() {
     var t = (String(x.titre || "") + " " + String(x.notes || "")).toLowerCase();
     var g = /grippe|influenza|flu|prequenza|proteq|resequin|calvenza|equip\s*f/.test(t);
     var r = /rhino|ehv|herp|pneumequine|duvaxyn|equip\s*ehv/.test(t);
-    return { g: g, r: r };
+    var te = /t[ée]tanos|tetanus|equip\s*ft|equip\s*t\b|prequenza\s*te|proteq\s*flu[\s-]*te|equilis\s*te/.test(t);   /* 07/11 : carte Tetanos */
+    return { g: g, r: r, t: te };
   }
   function analyseMaladie(dates, maxPrimo) {
     var l = dates.slice().sort();
@@ -1253,6 +1257,98 @@ function EcranSanteCheval() {
     res.fei = depuis <= 202;
     return res;
   }
+  /* 07/11 : le texte « a jour / rappel depasse » d'une maladie, partage par le protocole et les cartes par vaccin. */
+  function etatVacTxt(A) {
+      var txt, coul;
+      if (A.etat === "aucun") { txt = T("aucun vaccin enregistré", "no vaccine recorded", "ninguna vacuna registrada", "nessun vaccino registrato", "記録なし", "keine Impfung erfasst", "لا يوجد لقاح مسجل", "没有疫苗记录", "geen vaccin geregistreerd", "nenhuma vacina registrada", "inget vaccin registrerat", "нет записей о прививках", "brak zapisanej szczepionki", "기록된 백신 없음"); coul = "#D9A85C"; }
+      else if (A.etat === "retard") { txt = T("rappel dépassé depuis le ", "booster overdue since ", "refuerzo vencido desde el ", "richiamo scaduto dal ", "追加接種期限切れ：", "Auffrischung überfällig seit ", "الجرعة المعززة متأخرة منذ ", "加强针已逾期，自 ", "herhaling te laat sinds ", "reforço vencido desde ", "boostern är försenad sedan ", "ревакцинация просрочена с ", "przypominające po terminie od ", "추가 접종 기한이 지났어요: ") + (("0" + A.limite.getDate()).slice(-2) + "/" + ("0" + (A.limite.getMonth() + 1)).slice(-2) + "/" + A.limite.getFullYear()); coul = "#D9A85C"; }
+      else { txt = T("à jour — prochain rappel avant le ", "up to date — next booster before ", "al día — próximo refuerzo antes del ", "in regola — prossimo richiamo entro il ", "最新 — 次回の追加接種：", "aktuell — nächste Auffrischung vor dem ", "محدّث — الجرعة التالية قبل ", "已是最新——下次加强针须在以下日期前 ", "up-to-date — volgende herhaling vóór ", "em dia — próximo reforço antes de ", "uppdaterad — nästa booster före ", "всё в порядке — следующая ревакцинация до ", "aktualne — kolejne przypominające przed ", "최신 상태 — 다음 추가 접종 기한: ") + (("0" + A.limite.getDate()).slice(-2) + "/" + ("0" + (A.limite.getMonth() + 1)).slice(-2) + "/" + A.limite.getFullYear()); coul = "#A9CDB4"; }
+      return { txt: txt, coul: coul };
+  }
+  /* 07/11 (Blandine : « une partie pour chaque vaccin… quand on clique dessus, ça nous ouvre toutes les dates et la copie avec la photo »)
+     Dans la fenetre Vaccin : une carte par maladie (Grippe, Rhinopneumonie, Tetanos, Autres vaccins) avec le dernier vaccin
+     fait, l'etat du rappel et le nombre d'injections. Une seule carte ouverte a la fois : toutes ses dates (les memes lignes
+     que le carnet, qu'on touche pour modifier) puis les pages du carnet en vignettes (photo) ou en fichier (PDF).
+     Une injection double (Grippe + Tetanos) compte dans les deux cartes. */
+  function produitVaccin(x) {
+    var t = String(x.titre || ""), m = t.match(/\(([^)]+)\)\s*$/);
+    return m ? m[1] : "";
+  }
+  function chargerVignettes(liste) {
+    var manque = liste.filter(function (d) { return /^image\//i.test(String(d.mime || "")) && !vignettes[d.id]; });
+    if (!manque.length) return;
+    supa.storage.from("sante").createSignedUrls(manque.map(function (d) { return d.chemin; }), 3600).then(function (r) {
+      var res = (r && r.data) || [], n = {};
+      manque.forEach(function (d, i) { var u = res[i] && (res[i].signedUrl || res[i].signedURL); if (u) n[d.id] = u; });
+      setVignettes(function (o) { return Object.assign({}, o, n); });
+    }).catch(function () { });
+  }
+  function cartesVaccins(l) {
+    var GR = [
+      { k: "g", nom: T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "독감"), ic: "🤧", toujours: true },
+      { k: "r", nom: T("Rhinopneumonie", "EHV (rhino)", "Rinoneumonía", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "الالتهاب الأنفي الرئوي", "马鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumoni", "Ринопневмония", "Rynopneumonia", "리노뉴모니티스"), ic: "🫁", toujours: true },
+      { k: "t", nom: T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Stelkramp", "Столбняк", "Tężec", "파상풍"), ic: "🩹" },
+      { k: "a", nom: T("Autres vaccins", "Other vaccines", "Otras vacunas", "Altri vaccini", "その他のワクチン", "Weitere Impfungen", "لقاحات أخرى", "其他疫苗", "Andere vaccins", "Outras vacinas", "Andra vacciner", "Другие прививки", "Inne szczepionki", "기타 백신"), ic: "💉" }
+    ];
+    var par = { g: [], r: [], t: [], a: [] };
+    l.forEach(function (x) {
+      if (String(x.type) !== "vaccin") return;
+      var m = maladiesDuVaccin(x);
+      if (m.g) par.g.push(x); if (m.r) par.r.push(x); if (m.t) par.t.push(x);
+      if (!m.g && !m.r && !m.t) par.a.push(x);
+    });
+    function datesDe(arr) { return arr.filter(function (x) { return x.date_intervention; }).map(function (x) { return String(x.date_intervention).slice(0, 10); }); }
+    var etats = { g: analyseMaladie(datesDe(par.g), 92), r: analyseMaladie(datesDe(par.r), 60) };
+    var docsVac = (docs || []).filter(function (d) { return typeDoc(d.type).f === "vaccins" || (d.soin_id && l.some(function (x) { return x.id === d.soin_id; })); });
+    var rtlV = false; try { rtlV = document.documentElement.dir === "rtl"; } catch (eD) { }
+    return h("div", { style: { marginBottom: 12 } }, GR.filter(function (g) { return g.toujours || par[g.k].length; }).map(function (g) {
+      var arr = par[g.k], ouvert = vacOuvert === g.k;
+      var faits = arr.filter(function (x) { return x.date_intervention; }).sort(function (a, b) { return String(b.date_intervention).localeCompare(String(a.date_intervention)); });
+      var der = faits[0], prem = faits[faits.length - 1];
+      var etat;
+      if (etats[g.k]) etat = etatVacTxt(etats[g.k]);
+      else {
+        var pr = arr.filter(function (x) { return x.date_prochaine; }).sort(function (a, b) { return String(b.date_prochaine).localeCompare(String(a.date_prochaine)); })[0];
+        etat = pr ? { txt: T("prochain rappel : ", "next booster: ", "próximo refuerzo: ", "prossimo richiamo: ", "次回の追加接種：", "nächste Auffrischung: ", "الجرعة التالية: ", "下次加强针：", "volgende herhaling: ", "próximo reforço: ", "nästa booster: ", "следующая ревакцинация: ", "kolejna dawka: ", "다음 추가 접종: ") + dateCourte(pr.date_prochaine, pr.precision_prochaine), coul: joursAvant(pr.date_prochaine) < 0 ? "#D9A85C" : "#A9CDB4" } : null;
+      }
+      var tete = h("div", { role: "button", onClick: function () { var n = ouvert ? null : g.k; setVacOuvert(n); if (n) chargerVignettes(docsVac); }, style: { display: "flex", alignItems: "flex-start", gap: 12, padding: "14px 14px", cursor: "pointer" } },
+        h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2 } }, g.nom),
+          etat ? h("div", { style: { display: "flex", alignItems: "baseline", gap: 7, marginTop: 4 } },
+            h("span", { style: { width: 6, height: 6, borderRadius: "50%", background: etat.coul, flex: "0 0 auto", transform: "translateY(-1px)" } }),
+            h("span", { style: { fontFamily: M, fontSize: 12, color: etat.coul, lineHeight: 1.45 } }, etat.txt)) : null,
+          der ? h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.75)", marginTop: 5, lineHeight: 1.45 } },
+            T("Dernier : ", "Last: ", "Último: ", "Ultimo: ", "前回：", "Zuletzt: ", "الأخير: ", "最近：", "Laatste: ", "Último: ", "Senaste: ", "Последняя: ", "Ostatnia: ", "마지막: ") + dateCourte(der.date_intervention, "jour") + (produitVaccin(der) ? " · " + produitVaccin(der) : "")) : null,
+          faits.length ? h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(243,238,228,0.45)", marginTop: 3 } },
+            faits.length + " " + (faits.length > 1
+              ? T("injections depuis ", "injections since ", "inyecciones desde ", "iniezioni dal ", "回（", "Impfungen seit ", "حقن منذ ", "次注射，自 ", "injecties sinds ", "injeções desde ", "injektioner sedan ", "инъекций с ", "iniekcji od ", "회 접종, ")
+              : T("injection en ", "injection in ", "inyección en ", "iniezione nel ", "回（", "Impfung im Jahr ", "حقنة في ", "次注射，于 ", "injectie in ", "injeção em ", "injektion år ", "инъекция в ", "iniekcja w ", "회 접종, ")) + String(prem.date_intervention).slice(0, 4) + T("", "", "", "", "年〜）", "", "", "", "", "", "", " г.", "", "년부터")) : null),
+        h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: TQ, fontSize: 18, lineHeight: 1, marginTop: 4, transform: ouvert ? "rotate(90deg)" : "none", transition: "transform .2s" } }, rtlV ? "‹" : "›"));
+      var corps = null;
+      if (ouvert) {
+        var lignesG = arr.slice().sort(function (a, b) { return String(b.date_intervention || b.date_prochaine || "").localeCompare(String(a.date_intervention || a.date_prochaine || "")); });
+        corps = h("div", { style: { padding: "0 12px 14px", borderTop: "1px solid rgba(255,255,255,0.06)" } },
+          lignesG.length ? h("div", { style: { marginTop: 6 } }, lignesG.map(function (x, i) {   /* une ligne courte par injection : date + produit ; la toucher ouvre la modification */
+            var autres = []; var mm = maladiesDuVaccin(x); if (g.k !== "g" && mm.g) autres.push(T("grippe", "flu", "gripe", "influenza", "インフルエンザ", "Influenza", "إنفلونزا", "流感", "griep", "gripe", "influensa", "грипп", "grypa", "독감")); if (g.k !== "r" && mm.r) autres.push(T("rhino", "EHV", "rino", "rino", "鼻肺炎", "Rhino", "الرينو", "马疱疹", "rhino", "rinopneumonite", "rhino", "ринопневмония", "herpes", "리노")); if (g.k !== "t" && mm.t) autres.push(T("tétanos", "tetanus", "tétanos", "tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "tetanus", "tétano", "stelkramp", "столбняк", "tężec", "파상풍"));
+            return h("div", { key: "vac" + g.k + (x.id || i), role: "button", onClick: function () { setFeuille({ soin: x }); }, style: { display: "flex", alignItems: "baseline", gap: 12, padding: "10px 4px", borderTop: i ? "1px solid rgba(255,255,255,0.05)" : "none", cursor: "pointer" } },
+              h("span", { style: { flex: "0 0 auto", minWidth: 84, fontFamily: M, fontSize: 13, fontWeight: 600, color: x.date_intervention ? "#EDE6D8" : "#E8C887", fontVariantNumeric: "tabular-nums" } }, x.date_intervention ? dateCourte(x.date_intervention, "jour") : dateCourte(x.date_prochaine, x.precision_prochaine)),
+              h("span", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.75)" } }, (produitVaccin(x) || x.titre || "") + (autres.length ? " · + " + autres.join(", ") : "")),
+              peutEcrire ? h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: "rgba(201,166,107,0.6)", fontSize: 13 } }, "✎") : null);
+          }))
+            : h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#6D7681", padding: "12px 2px" } }, T("Rien d'enregistré pour l'instant.", "Nothing recorded yet.", "Nada registrado por ahora.", "Nulla registrato per ora.", "まだ記録がありません。", "Noch nichts erfasst.", "لا شيء مسجل حاليا.", "暂时没有记录。", "Nog niets geregistreerd.", "Nada registrado por enquanto.", "Inget registrerat ännu.", "Пока ничего не записано.", "Na razie nic nie zapisano.", "아직 기록이 없어요.")),
+          docsVac.length ? h("div", { style: { marginTop: 12 } },
+            h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#D9C7A3", marginBottom: 8 } }, T("Pages du carnet", "Record pages", "Páginas de la cartilla", "Pagine del libretto", "手帳のページ", "Seiten des Impfpasses", "صفحات الدفتر", "疫苗本页面", "Pagina's van het boekje", "Páginas da caderneta", "Sidor ur vaccinationsboken", "Страницы паспорта", "Strony książeczki", "수첩 페이지")),
+            h("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))", gap: 8 } }, docsVac.map(function (d) {
+              var u = vignettes[d.id], estPdf = /pdf/i.test(String(d.mime || "")) || /\.pdf$/i.test(String(d.chemin || ""));
+              return h("div", { key: "vg" + d.id, role: "button", onClick: function () { setDocVu(d); }, style: { position: "relative", aspectRatio: "3 / 4", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(201,166,107,0.3)", background: "rgba(255,255,255,0.04)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } },
+                u ? h("img", { src: u, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                  : h("div", { style: { textAlign: "center", fontFamily: M, fontSize: 11, color: "#E9D9B8" } }, h("div", { style: { fontSize: 24 } }, estPdf ? "📄" : "🖼️"), estPdf ? "PDF" : "…"),
+                d.date_doc ? h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "14px 6px 5px", background: "linear-gradient(transparent, rgba(0,0,0,0.75))", fontFamily: M, fontSize: 10, color: "#EDE6D8", textAlign: "center" } }, dateCourte(d.date_doc, "jour")) : null);
+            }))) : null);
+      }
+      return h("div", { key: "cv" + g.k, style: { marginBottom: 10, borderRadius: 16, border: "1px solid " + (ouvert ? "rgba(201,166,107,0.45)" : "rgba(201,166,107,0.2)"), background: "linear-gradient(165deg, rgba(17,27,31,0.6) 0%, rgba(11,18,21,0.5) 100%)", overflow: "hidden" } }, tete, corps);
+    }));
+  }
   function protocoleVaccinal() {
     var vac = (soins || []).filter(function (x) { return String(x.type) === "vaccin" && x.date_intervention; });
     if (!vac.length) {   /* (945) aucun vaccin : seulement l invitation a lire le carnet, pour qui peut modifier */
@@ -1268,10 +1364,7 @@ function EcranSanteCheval() {
     var okG = G.etat === "ok", okR = R.etat === "ok";
     var VERT = "#A9CDB4", ROUGE = "#D9A85C", AMBRE = "#CDBB98";   /* (968) plus discret : plus de rouge vif ; « a faire » en ambre doux, « a jour » vert pale */
     function ligneM(nom, A) {
-      var txt, coul;
-      if (A.etat === "aucun") { txt = T("aucun vaccin enregistré", "no vaccine recorded", "ninguna vacuna registrada", "nessun vaccino registrato", "記録なし", "keine Impfung erfasst", "لا يوجد لقاح مسجل", "没有疫苗记录", "geen vaccin geregistreerd", "nenhuma vacina registrada", "inget vaccin registrerat", "нет записей о прививках", "brak zapisanej szczepionki", "기록된 백신 없음"); coul = ROUGE; }
-      else if (A.etat === "retard") { txt = T("rappel dépassé depuis le ", "booster overdue since ", "refuerzo vencido desde el ", "richiamo scaduto dal ", "追加接種期限切れ：", "Auffrischung überfällig seit ", "الجرعة المعززة متأخرة منذ ", "加强针已逾期，自 ", "herhaling te laat sinds ", "reforço vencido desde ", "boostern är försenad sedan ", "ревакцинация просрочена с ", "przypominające po terminie od ", "추가 접종 기한이 지났어요: ") + (("0" + A.limite.getDate()).slice(-2) + "/" + ("0" + (A.limite.getMonth() + 1)).slice(-2) + "/" + A.limite.getFullYear()); coul = ROUGE; }
-      else { txt = T("à jour — prochain rappel avant le ", "up to date — next booster before ", "al día — próximo refuerzo antes del ", "in regola — prossimo richiamo entro il ", "最新 — 次回の追加接種：", "aktuell — nächste Auffrischung vor dem ", "محدّث — الجرعة التالية قبل ", "已是最新——下次加强针须在以下日期前 ", "up-to-date — volgende herhaling vóór ", "em dia — próximo reforço antes de ", "uppdaterad — nästa booster före ", "всё в порядке — следующая ревакцинация до ", "aktualne — kolejne przypominające przed ", "최신 상태 — 다음 추가 접종 기한: ") + (("0" + A.limite.getDate()).slice(-2) + "/" + ("0" + (A.limite.getMonth() + 1)).slice(-2) + "/" + A.limite.getFullYear()); coul = VERT; }
+      var e = etatVacTxt(A), txt = e.txt, coul = e.coul;
       return h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, padding: "6px 0" } },
         h("span", { style: { width: 6, height: 6, borderRadius: "50%", background: coul, flex: "0 0 auto", transform: "translateY(-1px)" } }),
         h("span", { style: { fontFamily: M, fontSize: 13, fontWeight: 700, color: "#EDE6D8", flex: "0 0 auto" } }, nom),
@@ -1285,11 +1378,10 @@ function EcranSanteCheval() {
     if (G.sept || R.sept) notes.push(T("Injection de moins de 7 jours : pas de concours avant le ", "Injection less than 7 days ago: no competition before ", "Inyección de hace menos de 7 días: sin concurso antes del ", "Iniezione di meno di 7 giorni: niente gare prima del ", "接種から7日未満：競技会は次の日以降：", "Impfung vor weniger als 7 Tagen: kein Turnier vor dem ", "حقنة منذ أقل من 7 أيام: لا مسابقات قبل ", "距离上次注射不满 7 天：在此日期前不能参赛 ", "Injectie minder dan 7 dagen geleden: geen wedstrijd vóór ", "Aplicação há menos de 7 dias: sem competição antes de ", "Vaccination för mindre än 7 dagar sedan: ingen tävling före ", "Прививка сделана меньше 7 дней назад: на соревнования нельзя до ", "Szczepienie sprzed mniej niż 7 dni: brak zawodów przed ", "접종한 지 7일 미만이에요. 다음 날짜 전에는 대회에 나갈 수 없어요: ") + (function () { var d = jourDe([G.dernier, R.dernier].filter(Boolean).sort().pop()); d.setDate(d.getDate() + 7); return d.getDate() + " " + MOIS[d.getMonth()]; })() + ".");
     if ((G.nb && G.incomplet) || (R.nb && R.incomplet)) notes.push(T("Carnet incomplet dans Hype (moins de 3 injections) : la primo-vaccination n’est pas visible, le contrôle suppose qu’elle a été faite.", "Incomplete record in Hype (fewer than 3 injections): the primary course is not visible; the check assumes it was done.", "Historial incompleto en Hype (menos de 3 inyecciones): la primovacunación no es visible; se supone hecha.", "Libretto incompleto in Hype (meno di 3 iniezioni): la vaccinazione primaria non è visibile; si presume fatta.", "Hypeの記録が不完全（3回未満）：初回接種は実施済みと仮定。", "Unvollständiger Verlauf in Hype (weniger als 3 Impfungen): Grundimmunisierung nicht sichtbar, wird angenommen.", "سجل غير مكتمل في Hype (أقل من 3 حقن): التلقيح الأولي غير ظاهر ويُفترض أنه تم.", "Hype 中的记录不完整（不足 3 针）：看不到基础免疫，检查默认已经完成。", "Onvolledig boekje in Hype (minder dan 3 injecties): de basisvaccinatie is niet zichtbaar, de controle gaat ervan uit dat die is gedaan.", "Caderneta incompleta no Hype (menos de 3 aplicações): a primovacinação não aparece, e a verificação supõe que ela foi feita.", "Ofullständig journal i Hype (färre än 3 vaccinationer): grundvaccinationen syns inte, kontrollen utgår från att den är gjord.", "Книжка в Hype неполная (меньше 3 прививок): первичная вакцинация не видна, проверка исходит из того, что она была сделана.", "Niekompletna książeczka w Hype (mniej niż 3 szczepienia): pierwsze szczepienie podstawowe nie jest widoczne, kontrola zakłada, że zostało wykonane.", "Hype의 수첩이 불완전해요 (접종 3회 미만). 기초 접종이 보이지 않아서 이미 마쳤다고 가정하고 확인해요."));
     if (G.ecart || R.ecart) notes.push(T("Écart inhabituel entre les deux premières injections : à vérifier avec le vétérinaire.", "Unusual gap between the first two injections: check with the vet.", "Intervalo inusual entre las dos primeras inyecciones: consultar al veterinario.", "Intervallo insolito tra le prime due iniezioni: verificare con il veterinario.", "最初の2回の間隔が通常と異なります：獣医師に確認。", "Ungewöhnlicher Abstand zwischen den ersten beiden Impfungen: mit dem Tierarzt prüfen.", "فاصل غير معتاد بين الحقنتين الأوليين: يُرجى التحقق مع الطبيب.", "前两针的间隔不寻常：请向兽医核实。", "Ongebruikelijke tussentijd tussen de eerste twee injecties: laat het controleren door de dierenarts.", "Intervalo incomum entre as duas primeiras aplicações: confira com o veterinário.", "Ovanligt långt mellanrum mellan de två första vaccinationerna: kontrollera med veterinären.", "Необычный интервал между первыми двумя прививками: проверь с ветеринаром.", "Nietypowy odstęp między dwoma pierwszymi szczepieniami: sprawdź to z weterynarzem.", "첫 두 접종 사이의 간격이 평소와 달라요. 수의사에게 확인해 보세요."));
-    if (inconnus) notes.push(inconnus + T(" vaccin(s) sans maladie précisée (grippe ? rhino ?) : ajoute-la dans l’intitulé pour qu’il compte.", " vaccine(s) with no disease named (flu? EHV?): add it to the title so it counts.", " vacuna(s) sin enfermedad indicada (¿gripe? ¿rino?): añádela al título.", " vaccino/i senza malattia indicata (influenza? rino?): aggiungila al titolo.", "件のワクチンに病名がありません：タイトルに追加してください。", " Impfung(en) ohne Krankheit (Influenza? Rhino?): im Titel ergänzen.", " لقاح بدون ذكر المرض (إنفلونزا؟ رينو؟): أضفه إلى العنوان.", " 针疫苗未注明疾病（流感？马疱疹？）：请在标题中补充，才会被计入。", " vaccin(s) zonder genoemde ziekte (griep? rhino?): voeg die toe in de titel zodat het meetelt.", " vacina(s) sem doença especificada (gripe? rinopneumonite?): adicione no título para que ela conte.", " vaccin utan angiven sjukdom (influensa? rhino?): lägg till den i rubriken så att det räknas.", " прив. без указанной болезни (грипп? ринопневмония?): добавь её в название, чтобы прививка учитывалась.", " szczepionek bez podanej choroby (grypa? herpes?): dodaj ją w tytule, żeby się liczyła.", "개의 백신에 질병이 적혀 있지 않아요 (독감? 리노?). 제목에 추가해야 계산에 포함돼요."));
+    if (false && inconnus) notes.push(inconnus + T(" vaccin(s) sans maladie précisée (grippe ? rhino ?) : ajoute-la dans l’intitulé pour qu’il compte.", " vaccine(s) with no disease named (flu? EHV?): add it to the title so it counts.", " vacuna(s) sin enfermedad indicada (¿gripe? ¿rino?): añádela al título.", " vaccino/i senza malattia indicata (influenza? rino?): aggiungila al titolo.", "件のワクチンに病名がありません：タイトルに追加してください。", " Impfung(en) ohne Krankheit (Influenza? Rhino?): im Titel ergänzen.", " لقاح بدون ذكر المرض (إنفلونزا؟ رينو؟): أضفه إلى العنوان.", " 针疫苗未注明疾病（流感？马疱疹？）：请在标题中补充，才会被计入。", " vaccin(s) zonder genoemde ziekte (griep? rhino?): voeg die toe in de titel zodat het meetelt.", " vacina(s) sem doença especificada (gripe? rinopneumonite?): adicione no título para que ela conte.", " vaccin utan angiven sjukdom (influensa? rhino?): lägg till den i rubriken så att det räknas.", " прив. без указанной болезни (грипп? ринопневмония?): добавь её в название, чтобы прививка учитывалась.", " szczepionek bez podanej choroby (grypa? herpes?): dodaj ją w tytule, żeby się liczyła.", "개의 백신에 질병이 적혀 있지 않아요 (독감? 리노?). 제목에 추가해야 계산에 포함돼요."));
     return h("div", { style: { marginTop: 0, marginBottom: 14 /* (968) dans la fenetre Vaccin */, padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.2)", background: "linear-gradient(165deg, rgba(17,27,31,0.6) 0%, rgba(11,18,21,0.5) 100%)" } },
       h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 16, fontWeight: 600, color: "#F3EEE4", marginBottom: 6 } }, T("Protocole vaccinal", "Vaccination protocol", "Protocolo de vacunación", "Protocollo vaccinale", "ワクチン接種プロトコル", "Impfprotokoll", "بروتوكول التلقيح", "疫苗方案", "Vaccinatieprotocol", "Protocolo de vacinação", "Vaccinationsprotokoll", "Протокол вакцинации", "Schemat szczepień", "백신 프로토콜")),
-      ligneM(T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "독감"), G),
-      ligneM(T("Rhinopneumonie", "EHV (rhino)", "Rinoneumonía", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "الالتهاب الأنفي الرئوي", "马鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumoni", "Ринопневмония", "Rynopneumonia", "리노뉴모니티스"), R),
+      /* 07/11 : Grippe et Rhinopneumonie ont chacune leur carte juste en dessous (cartesVaccins) */
       h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 10 } },
         niveau(T("Club / Poney", "Club / Pony", "Club / Poni", "Club / Pony", "クラブ/ポニー", "Club / Pony", "نادٍ / مهر", "俱乐部 / 小马", "Manege / Pony", "Clube / Pônei", "Klubb / Ponny", "Клуб / Пони", "Klub / Kucyk", "클럽 / 포니"), okG, null),
         niveau(T("Amateur / Pro", "Amateur / Pro", "Amateur / Pro", "Amateur / Pro", "アマ/プロ", "Amateur / Profi", "هاوٍ / محترف", "业余 / 职业", "Amateur / Prof", "Amador / Profissional", "Amatör / Proffs", "Любитель / Профессионал", "Amator / Zawodowiec", "아마추어 / 프로"), okG && okR, okG ? rhinoManque : null),
