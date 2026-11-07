@@ -725,6 +725,28 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🎨 07/11/2026 (05 h 50) — PAGE CAVALIER PERSONNALISABLE : EN TEST SUR LE COMPTE DE BLANDINE
+Blandine : « On pourrait laisser tlm personnaliser pour soi même déjà sa page cavalier », simulations
+validées (mode personnalisation directement sur la page, palettes, fonds), « Premium uniquement », « Ok ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| base Supabase | migration cavalier_perso | NOUVELLE table cavalier_perso (user_id, reglages, maj) : lecture pour tous, écriture seulement par le cavalier lui-même |
+| hype-ecran-cavalier.js | racine | version 5 : mode personnalisation |
+| index.html | racine | ?v cavalier 4 → 5, build 20261107-0550 (rien d'autre) |
+CE QUI MARCHE : bouton « Personnaliser ma page » sous le nom (SEULEMENT compte modératrice pour le test)
+→ bandeau « Mode personnalisation » (Annuler / Terminé) ; puces Photo (= Changer ma photo existant),
+Couleur (6 : Champagne, Platine, Rubis, Émeraude, Lavande, Rose poudré), Fond (6 : Nuit, Ébène, Encre,
+Forêt, Dégradé, Photo floutée), Revenir à l'origine ; chaque bloc (Mon écurie, Mon récit, Mes chevaux,
+Mes amis, Mes résultats) encadré avec ↑ ↓ et l'œil (masquer). Terminé = enregistré ; les visiteurs voient
+la page réglée. Ordinateur (≥ 1200 px) : ordre appliqué dans chaque zone.
+PAS ENCORE : glisser au doigt (seulement ↑ ↓ pour l'instant) ; style d'en-tête (bandeau / portrait) ;
+fond Ivoire (chantier à part) ; réservé Premium (à brancher après le test) ; traductions (textes en
+français seulement, à traduire après validation).
+⚠️ À tester sur iPhone : ouvrir sa page cavalier, Personnaliser, déplacer, masquer, couleur, fond, Terminé,
+puis vérifier depuis un autre compte que la page apparaît réglée.
+
+════════════════════════════════════════════════════════════
+
 ✅ 07/11/2026 (03 h 10) — GALOPS 8 ET 9 : AUDIT COMPLET + CORRECTIONS SÛRES APPLIQUÉES
 Blandine : « Ah mince plus de crédit sur chat tu sauras gérer ? » puis « Ok vas y ».
 Audit intégral des 39 cours fait par Claude (rapport Audit-Galops-8-9.md envoyé

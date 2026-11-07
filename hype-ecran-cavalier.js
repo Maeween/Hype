@@ -105,6 +105,132 @@ function EcranMonCavalier() {
   // --- Mode visite : profil d'un autre cavalier ---
   var __visitePub = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
   var __estVisite = !!__visitePub;
+  /* 07/11 (Blandine : « Monte moi une simulation », mode personnalisation, palettes de couleur, fonds de page, « Premium uniquement », « Ok »)
+     PERSONNALISATION DE SA PAGE CAVALIER : ordre des blocs, blocs masques, couleur d accent, fond de page (photo du haut = « Changer ma photo » existant).
+     Reglages ranges dans la table cavalier_perso (une ligne par cavalier, lisible par tous, modifiable seulement par lui).
+     PHASE DE TEST : le bouton n apparait que sur le compte moderatrice ; ensuite il sera reserve aux abonnes Premium.
+     Textes en francais seulement pour l instant (traductions apres validation, regle du 02/11). */
+  var PERSO_ZONES = ["ecuries", "recit", "chevaux", "amis", "res"];
+  var PERSO_NOMS = { ecuries: "Mon écurie", recit: "Mon récit", chevaux: "Mes chevaux", amis: "Mes amis", res: "Mes résultats" };
+  var PERSO_COULEURS = [["champagne", "Champagne", [197, 170, 120]], ["platine", "Platine", [201, 205, 210]], ["rubis", "Rubis", [176, 80, 92]], ["emeraude", "Émeraude", [95, 165, 133]], ["lavande", "Lavande", [165, 149, 208]], ["rose", "Rose poudré", [215, 163, 160]]];
+  var PERSO_FONDS = [["nuit", "Nuit", null], ["ebene", "Ébène", "#0F0B07"], ["encre", "Encre", "#060A16"], ["foret", "Forêt", "#050F0B"], ["degrade", "Dégradé", "linear-gradient(180deg,#05080B 0%,#0C1418 45%,#14100A 100%)"], ["photo", "Photo floutée", "PHOTO"]];
+  var _pz = React.useState(null), perso = _pz[0], setPerso = _pz[1];
+  var _pzm = React.useState(false), modePerso = _pzm[0], setModePerso = _pzm[1];
+  var _pzf = React.useState(null), feuillePerso = _pzf[0], setFeuillePerso = _pzf[1];
+  var _pzb = React.useState(null), brouillonPerso = _pzb[0], setBrouillonPerso = _pzb[1];
+  var _pze = React.useState(""), erreurPerso = _pze[0], setErreurPerso = _pze[1];
+  var racinePersoRef = React.useRef(null);
+  var idPerso = __estVisite ? ((__visitePub && __visitePub.id) || null) : ((ctx.profil && ctx.profil.id) || null);
+  React.useEffect(function () { var okP = true; setPerso(null); if (!idPerso) return; (async function () { try { var rP = await supa.from("cavalier_perso").select("reglages").eq("user_id", idPerso).maybeSingle(); if (okP && rP && rP.data && rP.data.reglages) setPerso(rP.data.reglages); } catch (eP) { } })(); return function () { okP = false; }; }, [idPerso]);
+  var peutPerso = !__estVisite && estModAdm;   /* TEST : compte moderatrice seulement ; ensuite : abonnes Premium */
+  var pzActif = (modePerso ? brouillonPerso : perso) || {};
+  function pzOrdre(p) { var o = (p && Array.isArray(p.ordre)) ? p.ordre.filter(function (z) { return PERSO_ZONES.indexOf(z) >= 0; }) : []; PERSO_ZONES.forEach(function (z) { if (o.indexOf(z) < 0) o.push(z); }); return o; }
+  function pzCache(p, z) { return !!(p && Array.isArray(p.caches) && p.caches.indexOf(z) >= 0); }
+  function pzChanger(f) { setBrouillonPerso(function (b) { var n = Object.assign({}, b || {}); f(n); return n; }); }
+  function pzDeplacer(z, d) { pzChanger(function (n) { var o = pzOrdre(n), i = o.indexOf(z), j = i + d; if (j < 0 || j >= o.length) return; o.splice(i, 1); o.splice(j, 0, z); n.ordre = o; }); }
+  function pzBasculer(z) { pzChanger(function (n) { var c = Array.isArray(n.caches) ? n.caches.slice() : []; var i = c.indexOf(z); if (i >= 0) c.splice(i, 1); else c.push(z); n.caches = c; }); }
+  function pzOuvrir() { setBrouillonPerso(Object.assign({}, perso || {})); setModePerso(true); try { window.scrollTo(0, 0); } catch (eS) { } }
+  function pzAnnuler() { setModePerso(false); setFeuillePerso(null); setBrouillonPerso(null); }
+  async function pzTerminer() {
+    var b = brouillonPerso || {}; var avant = perso;
+    setPerso(b); setModePerso(false); setFeuillePerso(null);
+    try { var uP = await utilisateurActuel(); if (!uP || !uP.id) throw new Error("connexion"); var rS = await supa.from("cavalier_perso").upsert({ user_id: uP.id, reglages: b, maj: new Date().toISOString() }); if (rS && rS.error) throw rS.error; }
+    catch (eT) { setPerso(avant); setErreurPerso("Enregistrement impossible, réessaie."); setTimeout(function () { setErreurPerso(""); }, 4000); }
+  }
+  /* chaque bloc personnalisable passe par ici : en mode personnalisation il recoit son cadre (nom, monter, descendre, masquer) */
+  function pzZone(zone, el) {
+    if (PERSO_ZONES.indexOf(zone) < 0 || !el) return el;
+    var cacheZ = pzCache(pzActif, zone), inner = el;
+    if (modePerso) {
+      var oZ = pzOrdre(pzActif), iZ = oZ.indexOf(zone);
+      var rondZ = { width: 32, height: 32, borderRadius: "50%", background: "#0C1418", border: "1px solid #C5AA78", color: "#C5AA78", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 15, fontWeight: 600, padding: 0, cursor: "pointer" };
+      var oeil = h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: "#C5AA78", strokeWidth: 1.8, strokeLinecap: "round" }, h("path", { d: "M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" }), h("circle", { cx: 12, cy: 12, r: 3 }), cacheZ ? h("path", { d: "M4 4l16 16" }) : null);
+      inner = h("div", { style: { position: "relative", border: "1.5px dashed rgba(197,170,120,0.55)", borderRadius: 16, margin: "34px 8px 0", padding: "24px 0 10px" } },
+        h("div", { style: { position: "absolute", top: -17, left: 8, zIndex: 50, height: 32, padding: "0 12px", borderRadius: 999, background: "#0C1418", border: "1px solid #C5AA78", color: "#C5AA78", display: "flex", alignItems: "center", gap: 7, fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 0.5 } }, "≡  " + PERSO_NOMS[zone]),
+        h("div", { style: { position: "absolute", top: -17, right: 8, zIndex: 50, display: "flex", gap: 6 } },
+          h("button", { "aria-label": "Monter", disabled: iZ <= 0, onClick: function () { pzDeplacer(zone, -1); }, style: Object.assign({}, rondZ, { opacity: iZ <= 0 ? 0.35 : 1 }) }, "↑"),
+          h("button", { "aria-label": "Descendre", disabled: iZ >= oZ.length - 1, onClick: function () { pzDeplacer(zone, 1); }, style: Object.assign({}, rondZ, { opacity: iZ >= oZ.length - 1 ? 0.35 : 1 }) }, "↓"),
+          h("button", { "aria-label": cacheZ ? "Afficher" : "Masquer", onClick: function () { pzBasculer(zone); }, style: rondZ }, oeil)),
+        h("div", { style: cacheZ ? { opacity: 0.32, filter: "grayscale(0.6)", pointerEvents: "none" } : { pointerEvents: "none" } }, el),
+        cacheZ ? h("div", { style: { position: "absolute", left: "50%", top: "55%", transform: "translate(-50%,-50%)", padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.35)", background: "rgba(5,8,11,0.85)", whiteSpace: "nowrap", fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: "#F3EEE4", zIndex: 45 } }, "Masqué pour les visiteurs") : null);
+    } else if (cacheZ) inner = null;
+    return h(React.Fragment, { key: "pz-" + zone }, inner);
+  }
+  function pzRang(el) { var o = pzOrdre(pzActif); var k = el && el.key ? String(el.key) : ""; return k.indexOf("pz-") === 0 ? o.indexOf(k.slice(3)) : -1; }
+  function pzRanger(kids) {
+    var pos = []; kids.forEach(function (k, i) { if (pzRang(k) >= 0) pos.push(i); });
+    if (pos.length < 2) return kids;
+    var els = pos.map(function (i) { return kids[i]; }).sort(function (a, b) { return pzRang(a) - pzRang(b); });
+    var out = kids.slice(); pos.forEach(function (p, j) { out[p] = els[j]; }); return out;
+  }
+  function pzFond() { var fd = pzActif.fond; for (var i = 0; i < PERSO_FONDS.length; i++) if (PERSO_FONDS[i][0] === fd) return PERSO_FONDS[i]; return PERSO_FONDS[0]; }
+  function pzRacine(props) {
+    var fd = pzFond(), st = Object.assign({}, props.style);
+    if (fd[2] && fd[2] !== "PHOTO") st.background = fd[2];
+    if (fd[2] === "PHOTO") st.zIndex = 0;
+    return Object.assign({}, props, { ref: racinePersoRef, style: st });
+  }
+  /* couleur d accent : on remplace le champagne (et son bronze) dans les styles de la page, en direct */
+  React.useEffect(function () {
+    var cP = null; for (var i = 0; i < PERSO_COULEURS.length; i++) if (PERSO_COULEURS[i][0] === pzActif.couleur) cP = PERSO_COULEURS[i];
+    var el = racinePersoRef.current; if (!el || !cP || cP[0] === "champagne") return;
+    var P = cP[2], D = P.map(function (v) { return Math.round(v * 0.85); });
+    var aller = { "197,170,120": P, "201,166,107": P, "173,139,87": D };
+    var retour = {}; retour[P.join(",")] = [197, 170, 120]; retour[D.join(",")] = [173, 139, 87];
+    function rep(s, tab) { return s.replace(/rgb(a?)\((\d+), ?(\d+), ?(\d+)(, ?[\d.]+)?\)/g, function (m, a, r, g, b, al) { var t = tab[r + "," + g + "," + b]; return t ? ("rgb" + a + "(" + t.join(", ") + (al || "") + ")") : m; }); }
+    var hexes = { "#C5AA78": P, "#C9A66B": P, "#AD8B57": D };
+    function passe(tab, hx) {
+      var l = [el].concat([].slice.call(el.querySelectorAll("[style],[stroke],[fill]")));
+      l.forEach(function (n) {
+        var s = n.getAttribute("style"); if (s && s.indexOf("rgb") >= 0) { var s2 = rep(s, tab); if (s2 !== s) n.setAttribute("style", s2); }
+        ["stroke", "fill"].forEach(function (a) { var v = n.getAttribute(a); if (!v) return; var t = hx && hx[v.toUpperCase()]; if (t) n.setAttribute(a, "rgb(" + t.join(",") + ")"); else if (v.indexOf("rgb") === 0) { var v2 = rep(v.replace(/,(\S)/g, ", $1"), tab); if (v2 !== v.replace(/,(\S)/g, ", $1")) n.setAttribute(a, v2); } });
+      });
+    }
+    var raf = 0; function plan() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; passe(aller, hexes); }); }
+    passe(aller, hexes);
+    var mo = new MutationObserver(plan); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "stroke", "fill"] });
+    return function () { mo.disconnect(); if (raf) cancelAnimationFrame(raf); try { passe(retour, null); } catch (eR) { } };
+  }, [pzActif.couleur]);
+  /* barre du mode personnalisation + feuilles Couleur / Fond */
+  function pzInterface() {
+    var puce = { padding: "7px 12px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.7)", background: "transparent", color: "#C5AA78", fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" };
+    var out = [];
+    if (erreurPerso) out.push(h("div", { key: "pzErr", style: { position: "fixed", left: 16, right: 16, bottom: 24, zIndex: 9300, padding: "12px 16px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.25)", background: "#0C1418", color: "#F3EEE4", fontFamily: M, fontSize: 13, textAlign: "center" } }, erreurPerso));
+    if (!modePerso) return out;
+    out.push(h("div", { key: "pzBarre", style: { position: "fixed", left: 0, right: 0, top: 0, zIndex: 9000, padding: "calc(env(safe-area-inset-top) + 12px) 16px 12px", background: "#05080B", borderBottom: "1px solid rgba(197,170,120,0.3)" } },
+      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 21, color: "#F3EEE4", lineHeight: 1.1 } }, "Mode personnalisation"),
+          h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#BDB6AA", marginTop: 3 } }, "Range tes blocs, masque ceux que tu veux")),
+        h("div", { style: { display: "flex", gap: 8, flexShrink: 0 } },
+          h("button", { onClick: pzAnnuler, style: Object.assign({}, puce, { border: "1px solid rgba(243,238,228,0.25)", color: "#BDB6AA" }) }, "Annuler"),
+          h("button", { onClick: pzTerminer, style: Object.assign({}, puce, { padding: "8px 16px", fontSize: 12.5 }) }, "Terminé"))),
+      h("div", { style: { display: "flex", gap: 8, marginTop: 10, overflowX: "auto" } },
+        h("button", { onClick: function () { fileRef.current && fileRef.current.click(); }, style: puce }, "Photo"),
+        h("button", { onClick: function () { setFeuillePerso("couleur"); }, style: puce }, "Couleur"),
+        h("button", { onClick: function () { setFeuillePerso("fond"); }, style: puce }, "Fond"),
+        h("button", { onClick: function () { setBrouillonPerso({}); }, style: Object.assign({}, puce, { border: "1px solid rgba(243,238,228,0.25)", color: "#BDB6AA" }) }, "Revenir à l'origine"))));
+    if (feuillePerso) {
+      var estC = feuillePerso === "couleur";
+      var liste = estC ? PERSO_COULEURS : PERSO_FONDS;
+      var actuel = estC ? (pzActif.couleur || "champagne") : (pzActif.fond || "nuit");
+      out.push(h("div", { key: "pzVoile", onClick: function () { setFeuillePerso(null); }, style: { position: "fixed", inset: 0, zIndex: 9100, background: "rgba(2,4,6,0.55)" } }));
+      out.push(h("div", { key: "pzFeuille", style: { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9101, maxHeight: "70vh", overflowY: "auto", background: "linear-gradient(180deg,#0E161A,#070B0E)", borderTop: "1px solid rgba(197,170,120,0.35)", borderRadius: "22px 22px 0 0", padding: "10px 18px calc(env(safe-area-inset-bottom) + 22px)", boxSizing: "border-box", color: "#F3EEE4", fontFamily: M } },
+        h("div", { style: { width: 42, height: 4, borderRadius: 4, background: "rgba(243,238,228,0.25)", margin: "0 auto 14px" } }),
+        h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 26 } }, estC ? "Ma couleur" : "Mon fond de page"),
+        h("div", { style: { fontSize: 12, color: "#BDB6AA", marginTop: 2, marginBottom: 16 } }, estC ? "Elle remplace le champagne sur toute ta page." : "Toujours sombre, pour que tes photos ressortent."),
+        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 } },
+          liste.map(function (x) {
+            var on = x[0] === actuel;
+            var apercu = estC
+              ? h("div", { style: { width: 38, height: 38, borderRadius: "50%", margin: "0 auto 8px", background: "radial-gradient(circle at 35% 35%, rgb(" + (x[0] === "champagne" ? "196,170,120" : x[2].join(",")) + "), #05080B 120%)"   /* 196 : echappe au remplacement de couleur */ } })
+              : h("div", { style: { height: 56, borderRadius: 9, marginBottom: 8, border: "1px solid rgba(243,238,228,0.1)", background: x[2] === "PHOTO" ? ("linear-gradient(rgba(5,8,11,0.55),rgba(5,8,11,0.75)), url(" + heroImg + ") center/cover") : (x[2] || "#05080B") } });
+            return h("button", { key: x[0], onClick: function () { pzChanger(function (n) { if (estC) n.couleur = x[0]; else n.fond = x[0]; }); }, style: { padding: "10px 8px", borderRadius: 14, border: on ? "1px solid #C5AA78" : "1px solid rgba(243,238,228,0.12)", background: "transparent", color: on ? "#F3EEE4" : "#BDB6AA", fontFamily: M, fontSize: 12, cursor: "pointer" } }, apercu, x[1]);
+          })),
+        h("button", { onClick: function () { setFeuillePerso(null); }, style: Object.assign({}, puce, { display: "block", width: "100%", marginTop: 18, padding: "12px", fontSize: 12.5 }) }, "Valider")));
+    }
+    return out;
+  }
   var _msgEnCours = React.useState(false), messageEnCours = _msgEnCours[0], setMessageEnCours = _msgEnCours[1];
   function ouvrirMessageAvecVisite() {
     if (!__visitePub || !__visitePub.id || messageEnCours) return;
@@ -705,6 +831,9 @@ function EcranMonCavalier() {
             handleV2 ? h("span", { dir: "ltr" }, handleV2) : null,
             (handleV2 && ecV2) ? " · " : null,
             ecV2 ? h("span", { style: { color: "#F3EEE4" } }, ecV2) : null) : null,
+          (peutPerso && !modePerso) ? h("button", { onClick: pzOuvrir, style: { marginTop: 14, display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "1px solid #C5AA78", borderRadius: 999, background: "transparent", color: "#C5AA78", fontFamily: M, fontSize: 11.5, fontWeight: 600, letterSpacing: 0.8, textTransform: "uppercase", cursor: "pointer" } },
+            h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#C5AA78", strokeWidth: 1.8, strokeLinecap: "round" }, h("path", { d: "M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" }), h("circle", { cx: 16, cy: 6, r: 2 }), h("circle", { cx: 10, cy: 12, r: 2 }), h("circle", { cx: 18, cy: 18, r: 2 })),
+            "Personnaliser ma page") : null,   /* 07/11 personnalisation (test : compte moderatrice) */
           citation ? h("div", { style: { marginTop: 8, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: cavPanneau ? 19 : 16, lineHeight: 1.35, color: "rgba(243,238,228,0.78)", textShadow: ombreTxt } }, "« " + citation + " »") : null)));
   }
   /* 22/10 (brief « Refonte responsive de la page Cavalier », proposition 3) — MISE EN PAGE ORDINATEUR (>= 1200 px).
@@ -712,7 +841,7 @@ function EcranMonCavalier() {
      cavMiseEnPage les range : panneau a gauche (photo ronde, prenom, identifiant, badge Coach, les 6 acces en liste),
      a droite le bandeau photo, les ecuries, le groupe et le recit ; puis les chevaux sur toute la largeur ; puis
      « Mes amis » et « Mes resultats » cote a cote. Sous 1200 px, cavZ rend la partie telle quelle : page inchangee. */
-  function cavZ(zone, el) { return (CAV_V2 && cavPanneau) ? { __cavZone: zone, el: el } : el; }
+  function cavZ(zone, el) { el = pzZone(zone, el); return (CAV_V2 && cavPanneau) ? { __cavZone: zone, el: el } : el; }   /* 07/11 : pzZone = personnalisation */
   function cavPanneauProfil() {
     var srcP = __estVisite ? (__visitePub || profil) : (profRecit || profil);
     var handleP = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcP) : "";
@@ -725,7 +854,10 @@ function EcranMonCavalier() {
   }
   function cavMiseEnPage(tag, props) {
     var kids = Array.prototype.slice.call(arguments, 2);
-    if (!(CAV_V2 && cavPanneau)) return h.apply(null, [tag, props].concat(kids));
+    props = pzRacine(props);   /* 07/11 personnalisation : fond de page + reference pour la couleur */
+    if (pzFond()[2] === "PHOTO") kids.unshift(h("div", { key: "pzFondPhoto", "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: -1, overflow: "hidden", pointerEvents: "none" } }, h("div", { style: { position: "absolute", inset: -40, background: "url(" + heroImg + ") center/cover", filter: "blur(22px) saturate(0.8)", opacity: 0.32 } })));
+    kids = kids.concat(pzInterface());
+    if (!(CAV_V2 && cavPanneau)) return h.apply(null, [tag, props].concat(pzRanger(kids)));
     var Z = {}, avant = [], milieu = [], apres = [], vuZone = false, finHaut = false;
     kids.forEach(function (k) {
       if (k && typeof k === "object" && k.__cavZone) { Z[k.__cavZone] = k.el; vuZone = true; if (k.__cavZone === "chevaux") finHaut = true; return; }
@@ -734,11 +866,12 @@ function EcranMonCavalier() {
     var cle = function (el, c) { return el ? h("div", { key: c, style: { minWidth: 0 } }, el) : null; };
     var panneau = h("aside", { key: "cavPanneau", "data-cav-panneau": "1", style: { position: "sticky", top: 80, alignSelf: "start", paddingTop: 64, paddingInlineEnd: 22, paddingBottom: 24, borderInlineEnd: "1px solid rgba(201,166,107,0.16)", boxSizing: "border-box" } },
       cavPanneauProfil(), Z.acces || null);
-    var colonne = h.apply(null, ["div", { key: "cavCol", style: { minWidth: 0 } }].concat([cle(Z.hero, "zh"), cle(Z.ecuries, "ze"), cle(Z.recit, "zr")]).concat(milieu.map(function (m, iM) { return cle(m, "zm" + iM); })));
+    var pzG = function (l) { return l.sort(function (a, b) { return pzOrdre(pzActif).indexOf(a[0]) - pzOrdre(pzActif).indexOf(b[0]); }).map(function (x) { return cle(Z[x[0]], x[1]); }); };   /* 07/11 ordre choisi */
+    var colonne = h.apply(null, ["div", { key: "cavCol", style: { minWidth: 0 } }].concat([cle(Z.hero, "zh")].concat(pzG([["ecuries", "ze"], ["recit", "zr"]]))).concat(milieu.map(function (m, iM) { return cle(m, "zm" + iM); })));
     /* 22/10 23 h (« retour strict a la maquette ») : colonne profil 250 px | grand contenu ; puis chevaux, amis et resultats
        sur toute la largeur (Blandine : « laisse les resultats sur toute la largeur »). */
     var haut = h("div", { key: "cavHaut", style: { display: "grid", gridTemplateColumns: "250px minmax(0, 1fr)", columnGap: 12, paddingInlineStart: 16 } }, panneau, colonne);
-    return h.apply(null, [tag, props].concat(avant, [haut, cle(Z.chevaux, "zc"), cle(Z.amis, "za"), cle(Z.res, "zs")], apres));
+    return h.apply(null, [tag, props].concat(avant, [haut].concat(pzG([["chevaux", "zc"], ["amis", "za"], ["res", "zs"]])), apres));
   }
   return cavMiseEnPage("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? (cavPanneau ? 1600 : 1180) : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
     /* 11/10 (955) — LE HALO QUI RESPIRE DE L ACCUEIL, A L IDENTIQUE (Blandine : « identique », « tu peux laisser la couleur de fond de page de ma page cavalier et juste mettre le halo qui respire »).
