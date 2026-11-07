@@ -19201,3 +19201,12 @@ Fichiers à publier :
 | index.html | racine | hype-ecran-prepa.js?v=3 (+ marqueur de build au moment de publier) |
 | SUIVI.md | racine | cette entrée |
 
+
+## 07/11/2026 19h40 — Santé de l'écurie refaite (build 20261107-1940, envoyée sur GitHub sans mise en ligne, à grouper)
+Page refaite d'après la maquette validée (design Vidéothèque) et détachée de index.html.
+| Fichier | Changement |
+|---|---|
+| hype-ecran-sante-club.js (nouveau) | La page entière : haut Vidéothèque (theme-sante-bai-repos, courbes dorées, « Santé · Prendre soin, c'est déjà aimer. »), ligne de l'écurie + « Importer des soins », À surveiller (en retard = vieux rose #D9939E, ≤ 15 j = doré #E8C887), Les chevaux par ordre ALPHABÉTIQUE (rangée + « Voir les N » → grille), Les soins de l'écurie (Grippe, Rhinopneumonie, Tétanos, West Nile, Vermifuge, Maréchal, Dentiste ; 12 derniers mois ; ouvrir = chevaux faits ; « Il reste » seulement à 80 % ou plus), L'équipe de soins (pros de tous les chevaux du club, avec le nombre de chevaux suivis), Hey Baby (question préremplie avec le nom de l'écurie), Le magazine santé, Le registre d'élevage. Voile Premium et erreurs lisibles conservés. 14 langues. |
+| index.html | `function EcranSanteClub` (175 lignes) remplacée par `hypeEcranDiffere("hype-ecran-sante-club.js?v=1", "HypeSanteClub", "SanteClub")`. |
+À tester sur iPhone : Cirrus bien à sa place (ordre alphabétique) ; un vaccin grippe reconnu (recherche dans le titre/la ligne importée : Equip F, Proteq, Resequin, Prequenza…) ; l'ouverture d'un cheval → sa page Santé.
+Non fait (à décider) : « + Noter pour plusieurs chevaux » (aujourd'hui seul l'import existe) ; date d'Aceitunero (prochaine 2022-10-16).
