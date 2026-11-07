@@ -1,0 +1,100 @@
+{
+ "fr": {
+  "programme": "Au programme de la prépa",
+  "appel": "La prépa complète, avec chaque épreuve en détail, les grilles de notation, les dispenses et ta liste à cocher, est dans l'appli Hype.",
+  "autres": "Les autres prépas",
+  "desc": "",
+  "titre": ""
+ },
+ "en": {
+  "programme": "What's in the prep",
+  "appel": "The full prep — every exam in detail, the marking grids, the exemptions and your checklist — is in the Hype app.",
+  "autres": "The other preps",
+  "desc": "{sous}: entry requirements, exams on foot and on horseback, marking, exemptions and tips to prepare. Hype, the app for riders.",
+  "titre": "{titre}: exams, marking and exemptions | Hype"
+ },
+ "es": {
+  "programme": "Qué incluye la preparación",
+  "appel": "La preparación completa —cada prueba en detalle, las tablas de puntuación, las exenciones y tu lista de control— está en la app Hype.",
+  "autres": "Las otras preparaciones",
+  "desc": "{sous}: requisitos de acceso, pruebas a pie y a caballo, puntuación, exenciones y consejos para prepararte. Hype, la app de los jinetes.",
+  "titre": "{titre}: pruebas, puntuación y exenciones | Hype"
+ },
+ "it": {
+  "programme": "Cosa contiene la preparazione",
+  "appel": "La preparazione completa — ogni prova nel dettaglio, le griglie di valutazione, le dispense e la tua lista di controllo — è nell'app Hype.",
+  "autres": "Le altre preparazioni",
+  "desc": "{sous}: requisiti d'ingresso, prove a piedi e a cavallo, valutazione, dispense e consigli per prepararti. Hype, l'app dei cavalieri.",
+  "titre": "{titre}: prove, valutazione e dispense | Hype"
+ },
+ "ja": {
+  "programme": "準備ガイドの内容",
+  "appel": "各試験の詳細、採点表、免除、チェックリストを含む完全版の準備ガイドはHypeアプリにあります。",
+  "autres": "ほかの準備ガイド",
+  "desc": "{sous}：入学条件、徒歩と騎乗の試験、採点、免除、準備のコツ。ライダーのためのアプリ Hype。",
+  "titre": "{titre}：試験・採点・免除 | Hype"
+ },
+ "de": {
+  "programme": "Das steckt in der Vorbereitung",
+  "appel": "Die vollständige Vorbereitung – jede Prüfung im Detail, die Bewertungsbögen, die Befreiungen und deine Checkliste – findest du in der Hype-App.",
+  "autres": "Die anderen Vorbereitungen",
+  "desc": "{sous}: Zulassungsvoraussetzungen, Prüfungen zu Fuß und im Sattel, Bewertung, Befreiungen und Tipps zur Vorbereitung. Hype, die App für Reiter.",
+  "titre": "{titre}: Prüfungen, Bewertung und Befreiungen | Hype"
+ },
+ "ar": {
+  "programme": "محتوى التحضير",
+  "appel": "التحضير الكامل — كل امتحان بالتفصيل وجداول التقييم والإعفاءات وقائمة التحقق الخاصة بك — موجود في تطبيق Hype.",
+  "autres": "التحضيرات الأخرى",
+  "desc": "{sous}: شروط القبول، الامتحانات على الأرض وعلى ظهر الحصان، التقييم، الإعفاءات ونصائح للتحضير. Hype، تطبيق الفرسان.",
+  "titre": "{titre}: الامتحانات والتقييم والإعفاءات | Hype"
+ },
+ "zh": {
+  "programme": "备考内容一览",
+  "appel": "完整的备考内容——每项考试的详细说明、评分表、免考规定和你的核对清单——都在 Hype 应用里。",
+  "autres": "其他备考指南",
+  "desc": "{sous}：入学条件、地面与骑乘考试、评分、免考规定及备考建议。Hype，骑手的应用。",
+  "titre": "{titre}：考试、评分与免考 | Hype"
+ },
+ "nl": {
+  "programme": "Wat zit er in de voorbereiding",
+  "appel": "De volledige voorbereiding – elk examen in detail, de beoordelingsformulieren, de vrijstellingen en je checklist – vind je in de Hype-app.",
+  "autres": "De andere voorbereidingen",
+  "desc": "{sous}: toelatingseisen, examens naast en op het paard, beoordeling, vrijstellingen en tips om je voor te bereiden. Hype, de app voor ruiters.",
+  "titre": "{titre}: examens, beoordeling en vrijstellingen | Hype"
+ },
+ "pt": {
+  "programme": "O que tem na preparação",
+  "appel": "A preparação completa — cada prova em detalhe, as grades de avaliação, as dispensas e a sua lista de verificação — está no app Hype.",
+  "autres": "As outras preparações",
+  "desc": "{sous}: requisitos de entrada, provas a pé e montadas, avaliação, dispensas e dicas para se preparar. Hype, o app dos cavaleiros.",
+  "titre": "{titre}: provas, avaliação e dispensas | Hype"
+ },
+ "sv": {
+  "programme": "Det här ingår i förberedelsen",
+  "appel": "Hela förberedelsen – varje prov i detalj, bedömningsmallarna, undantagen och din checklista – finns i appen Hype.",
+  "autres": "De andra förberedelserna",
+  "desc": "{sous}: antagningskrav, prov från marken och till häst, bedömning, undantag och tips för att förbereda dig. Hype, appen för ryttare.",
+  "titre": "{titre}: prov, bedömning och undantag | Hype"
+ },
+ "ru": {
+  "programme": "Что входит в подготовку",
+  "appel": "Полная подготовка — каждый экзамен подробно, оценочные листы, освобождения и твой чек-лист — в приложении Hype.",
+  "autres": "Другие программы подготовки",
+  "desc": "{sous}: условия поступления, экзамены с земли и верхом, оценивание, освобождения и советы по подготовке. Hype — приложение для всадников.",
+  "titre": "{titre}: экзамены, оценивание и освобождения | Hype"
+ },
+ "pl": {
+  "programme": "Co zawiera przygotowanie",
+  "appel": "Pełne przygotowanie — każdy egzamin w szczegółach, arkusze ocen, zwolnienia i twoja lista kontrolna — jest w aplikacji Hype.",
+  "autres": "Pozostałe przygotowania",
+  "desc": "{sous}: warunki przyjęcia, egzaminy z ziemi i w siodle, ocenianie, zwolnienia i wskazówki, jak się przygotować. Hype, aplikacja dla jeźdźców.",
+  "titre": "{titre}: egzaminy, ocenianie i zwolnienia | Hype"
+ },
+ "ko": {
+  "programme": "준비 가이드에 담긴 내용",
+  "appel": "각 시험의 자세한 내용, 채점표, 면제 조건, 체크리스트까지 담긴 전체 준비 가이드는 Hype 앱에 있어요.",
+  "autres": "다른 준비 가이드",
+  "desc": "{sous}: 입학 조건, 지상·기승 시험, 채점, 면제 조건과 준비 팁. 라이더를 위한 앱 Hype.",
+  "titre": "{titre}: 시험, 채점, 면제 | Hype"
+ }
+}
