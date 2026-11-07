@@ -738,6 +738,23 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+✨ 07/11/2026 (09 h 50) — PERSONNALISATION OUVERTE AUX ABONNÉS PREMIUM + TRADUITE
+Blandine : « Ok continue » (après la question : ouverture Premium + traductions).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 8 |
+| index.html | racine | ?v cavalier 7 → 8, build 20261107-0950 (rien d'autre) |
+· Le bouton « Personnaliser ma page » apparaît sur SA PROPRE page pour tout le monde :
+  abonné Premium (ou modératrice) → mode personnalisation ; pas Premium → ouvre la page Premium.
+· Tous les textes de la personnalisation traduits dans les 14 langues (fr, en, es, it, ja, de, ar, zh,
+  nl, pt, sv, ru, pl, ko), testé en anglais et en japonais. Sous-titre du choix du fond changé en
+  « Choisis l'ambiance de ta page. » (l'Ivoire n'est pas sombre).
+DETTES : 1) la base ne vérifie pas le Premium à l'enregistrement (seul le bouton le vérifie) ;
+2) si l'abonnement s'arrête, la page garde ses réglages (pas encore de retour automatique au style
+d'origine) ; 3) Ivoire : cartes avec photo à retoucher si on le garde.
+
+════════════════════════════════════════════════════════════
+
 🎨 07/11/2026 (06 h 40) — PERSONNALISATION : FOND « IVOIRE (ESSAI) »
 Blandine : « Ok continue ».
 | Fichier | Où | Quoi |
