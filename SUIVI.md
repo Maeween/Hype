@@ -80,7 +80,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [20/10] Page d'équipe par défaut que chaque écurie pourrait créer et remplir elle-même, sur le modèle de la Team Compétition SEP, puis rebrancher « Créer une équipe » (attend : Blandine)
 - [01/11] Reprise Amateur 3 Grand Prix : ajouter des conseils du coach si tu le demandes (attend : Blandine)
 - [19/10] Regrouper en une seule carte du fil les photos sans texte publiées à la suite par la même personne le même jour (attend : Blandine)
-- [21/10] Petit ménage en base : réponses Hey Baby gardées (décision du 25/10). Ligne de progression du compte de test « Claude » (claude@hitpail.fr, contient une copie de la présentation de Blandine) : suppression demandée le 07/11, la base a demandé une confirmation restée sans réponse → rien supprimé (attend : Blandine)
+- [21/10] Petit ménage en base : réponses Hey Baby gardées (décision du 25/10). Ligne de progression du compte de test « Claude » (claude@hitpail.fr, contient une copie de la présentation de Blandine) : copie de sauvegarde faite le 07/11 à 1 h 30 (table sauvegarde_progression_071126) ; la suppression elle-même attend que Blandine accepte la confirmation demandée par la base (2 essais restés sans réponse) (attend : Blandine)
 - [16/09 → 07/11] Vieux nettoyages de base : FAITS le 07/11 (colonne resultats.format_large ajoutée ; épingle « idao » rattachée à la vraie fiche Boréalis de Feinn ; Liam n'a plus qu'un compte). Reste : « Elle m'a dit » et « Elle m'a dit circee » = même cheval en double à la SEP, à fusionner seulement avec Blandine (attend : Blandine)
 
 ────────────────────────────────────────────────────────────
