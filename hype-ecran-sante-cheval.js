@@ -909,11 +909,71 @@ function EcranSanteCheval() {
         h("div", { className: "vxp-note" }, T("D’après les vaccins enregistrés dans Hype et les règlements FFE / SHF / FEI. Ne remplace pas le livret ni l’avis du vétérinaire.", "Based on the vaccines recorded in Hype and FFE / SHF / FEI rules. Does not replace the passport or the vet’s advice.", "Según las vacunas registradas en Hype y los reglamentos FFE / SHF / FEI. No sustituye al pasaporte ni al veterinario.", "In base ai vaccini registrati in Hype e ai regolamenti FFE / SHF / FEI. Non sostituisce il libretto né il parere del veterinario.", "Hypeに記録されたワクチンとFFE / SHF / FEIの規則に基づきます。手帳や獣医の判断に代わるものではありません。", "Nach den in Hype erfassten Impfungen und den Regeln von FFE / SHF / FEI. Ersetzt weder den Pass noch den Tierarzt.", "وفقًا للقاحات المسجلة في Hype ولوائح FFE / SHF / FEI. لا يغني عن الجواز ولا عن رأي الطبيب البيطري.", "根据Hype中记录的疫苗及FFE / SHF / FEI规则。不能代替马匹护照或兽医意见。", "Op basis van de in Hype geregistreerde vaccins en de regels van FFE / SHF / FEI. Vervangt het paspoort of de dierenarts niet.", "Com base nas vacinas registradas no Hype e nas regras FFE / SHF / FEI. Não substitui o passaporte nem o veterinário.", "Utifrån vaccinationerna i Hype och reglerna från FFE / SHF / FEI. Ersätter inte passet eller veterinären.", "По прививкам, записанным в Hype, и правилам FFE / SHF / FEI. Не заменяет паспорт и ветеринара.", "Na podstawie szczepień zapisanych w Hype i przepisów FFE / SHF / FEI. Nie zastępuje paszportu ani weterynarza.", "Hype에 기록된 백신과 FFE / SHF / FEI 규정 기준이에요. 여권이나 수의사 의견을 대신하지 않아요."))));
     return (typeof hypePortailBody === "function") ? hypePortailBody(page) : page;
   }
+  /* 07/11 (carte blanche, même style que la page Vaccins validée) : les autres rubriques du suivi (vermifuge, ferrure,
+     dentiste… et « Tout voir ») s ouvrent aussi en PAGE plein écran façon Vidéothèque : photo de la rubrique, état en une
+     seconde, « + Ajouter » / « + Document », puis l historique par année (soins et documents liés), lignes à toucher pour
+     modifier ou ouvrir. Remplace la fenêtre du bas pour ces rubriques. */
+  function pageFamille(f, l) {
+    cssPageVac(); cssSante();
+    var e = etatsSuivi().filter(function (x) { return x.f.cle === f.cle; })[0] || null;
+    var ids = {}; l.forEach(function (x) { ids[x.id] = 1; });
+    var tout = f.cle === FAM_TOUT.cle;
+    var dl = (docs || []).filter(function (d) { return tout || (d.soin_id && ids[d.soin_id]); });
+    var lignesM = l.map(function (x) { return { d: String(x.date_intervention || x.date_prochaine || ""), soin: x }; }).concat(dl.map(function (x) { return { d: String(x.date_doc || x.created_at || ""), doc: x }; }))
+      .sort(function (p1, p2) { return p2.d.localeCompare(p1.d); });
+    var an = null, enfants = [], MAXF = 12, plusF = famTout === f.cle ? 0 : Math.max(0, lignesM.length - MAXF);   /* pas de liste de « 300 km » : 12 lignes, puis « Voir les N plus anciens » */
+    (plusF ? lignesM.slice(0, MAXF) : lignesM).forEach(function (m, i) {
+      var a = m.d.slice(0, 4);
+      if (a && a !== an) { an = a; enfants.push(h("div", { key: "fa" + a + i, className: "vxp-an" }, a)); }
+      enfants.push(ligneCarnet2(m, i));
+    });
+    if (plusF) enfants.push(h("span", { key: "fplus", role: "button", className: "vxp-pl", onClick: function () { setFamTout(f.cle); } },
+      T("Voir les " + plusF + " plus anciens", "See the " + plusF + " older ones", "Ver los " + plusF + " más antiguos", "Vedi i " + plusF + " più vecchi", "古い" + plusF + "件を見る", "Die " + plusF + " älteren ansehen", "عرض الأقدم (" + plusF + ")", "查看更早的 " + plusF + " 条", "De " + plusF + " oudere bekijken", "Ver os " + plusF + " mais antigos", "Visa de " + plusF + " äldre", "Показать ещё " + plusF, "Zobacz " + plusF + " starszych", "이전 기록 " + plusF + "개 보기")));
+    var boite = null;
+    if (e && !tout) {
+      var k = e.etat === "retard" ? "retard" : (e.etat === "ok" ? (e.jours <= 15 ? "bientot" : "ok") : "aucun");
+      var titreB = { retard: T("À faire", "To do", "Pendiente", "Da fare", "要対応", "Zu erledigen", "مطلوب", "待处理", "Te doen", "A fazer", "Att göra", "Нужно сделать", "Do zrobienia", "해야 할 일"),
+        ok: T("À jour", "Up to date", "Al día", "In regola", "最新", "Aktuell", "محدّث", "已是最新", "Up-to-date", "Em dia", "Aktuell", "Актуально", "Aktualne", "최신 상태"),
+        bientot: T("Bientôt", "Soon", "Pronto", "A breve", "まもなく", "Bald", "قريبًا", "即将", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧"),
+        aucun: e.der ? T("Rien de prévu", "Nothing planned", "Nada previsto", "Niente in programma", "予定なし", "Nichts geplant", "لا شيء مقرر", "暂无安排", "Niets gepland", "Nada previsto", "Inget planerat", "Ничего не запланировано", "Nic nie zaplanowano", "예정 없음") : T("Rien d’enregistré pour l’instant", "Nothing recorded yet", "Nada registrado por ahora", "Nulla registrato per ora", "まだ記録がありません", "Noch nichts erfasst", "لا شيء مسجل حاليا", "暂无记录", "Nog niets geregistreerd", "Nada registrado por enquanto", "Inget registrerat ännu", "Пока ничего не записано", "Na razie nic nie zapisano", "아직 기록이 없어요") }[k];
+      var texteB = "";
+      if (e.lim) texteB = (e.etat === "retard" ? T("Prévu le ", "Due on ", "Previsto el ", "Previsto il ", "予定：", "Fällig am ", "مقرر في ", "原定 ", "Gepland op ", "Previsto a ", "Planerat ", "Запланировано на ", "Zaplanowane na ", "예정: ") : T("Prochain le ", "Next on ", "Próximo el ", "Prossimo il ", "次回：", "Nächster am ", "التالي في ", "下次：", "Volgende op ", "Próximo em ", "Nästa ", "Следующий ", "Następny ", "다음: ")) + dateLongue(e.lim);
+      if (e.der) texteB += (texteB ? " · " : "") + T("dernier le ", "last on ", "último el ", "ultimo il ", "前回：", "zuletzt am ", "الأخير في ", "上次：", "laatste op ", "último em ", "senast ", "последний ", "ostatni ", "마지막: ") + dateCourte(e.der.date_intervention, "jour");
+      var coulB = { ok: "#96CDAA", bientot: "#E8C887", retard: "#E39A88", aucun: "#C9A66B" }[k];
+      var bordB = { ok: "rgba(150,205,170,.4)", bientot: "rgba(232,200,135,.45)", retard: "rgba(227,154,136,.5)", aucun: "rgba(201,166,107,.35)" }[k];
+      boite = h("div", { className: "vxp-etat", style: { borderColor: bordB, background: "linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01))" } },
+        h("div", { className: "r", style: { color: coulB } }, k === "ok" ? "✓" : (k === "aucun" ? "＋" : "!")),
+        h("div", { style: { minWidth: 0 } }, h("b", null, titreB), texteB ? h("div", { className: "t" }, texteB) : null));
+    }
+    var svgPlus = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" }));
+    var svgDoc = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 3h7l4 4v14H7zM14 3v4h4M9.5 12h6M9.5 15.5h4" }));
+    var fermer = function () { setFamille(null); setFamTout(""); };
+    var page = h("div", { className: "vxp", "data-noswipe": "true" },
+      h("div", { className: "vxp-hero" },
+        (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
+        h("button", { type: "button", className: "vxp-rond", onClick: fermer, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로") }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M14.5 5.5 8 12l6.5 6.5" }))),
+        courbeVac("c1", "M250 4 C 330 8, 385 40, 400 96"),
+        h("div", { className: "vxp-photo" }, h("img", { src: f.img || "images/sante-hero-defaut.webp", alt: "", fetchpriority: "high" })),
+        courbeVac("c2", "M0 92 C 130 90, 240 62, 400 8"),
+        h("div", { className: "vxp-in", style: { paddingBottom: 0 } }, h("div", { className: "vxp-titre" },
+          h("span", { className: "sx-kicker" }, nomCourt),
+          h("h1", null, f.titre),
+          h("p", null, tout ? T("Tout son carnet de santé.", "Their whole health record.", "Toda su cartilla de salud.", "Tutto il suo libretto sanitario.", "健康手帳のすべて。", "Sein ganzes Gesundheitsheft.", "سجله الصحي كاملًا.", "完整的健康档案。", "Zijn hele gezondheidsboekje.", "Toda a sua caderneta de saúde.", "Hela hälsojournalen.", "Вся медкарта.", "Cała książeczka zdrowia.", "건강 수첩 전체.") : T("Tout l’historique, au même endroit.", "The whole history, in one place.", "Todo el historial, en un solo lugar.", "Tutta la storia, in un solo posto.", "すべての記録をひとつに。", "Die ganze Geschichte an einem Ort.", "السجل كله في مكان واحد.", "所有记录，集中一处。", "De hele geschiedenis op één plek.", "Todo o histórico, num só lugar.", "Hela historiken på ett ställe.", "Вся история в одном месте.", "Cała historia w jednym miejscu.", "모든 기록을 한곳에."))))),
+      h("div", { className: "vxp-in" },
+        boite,
+        peutEcrire ? h("div", { className: "vxp-ligne" },
+          h("button", { type: "button", className: "vxp-mes", onClick: function () { setFeuille({ soin: null, type: tout ? undefined : f.neuf }); } }, svgPlus, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가")),
+          h("button", { type: "button", className: "vxp-mes", style: { gap: 10, fontSize: 14 }, onClick: function () { ouvrirDocAjout("autre", ""); } }, svgDoc, T("Document", "Document", "Documento", "Documento", "書類", "Dokument", "مستند", "文件", "Document", "Documento", "Dokument", "Документ", "Dokument", "문서"))) : null,
+        h("h2", { className: "vxp-h2" }, T("Historique", "History", "Historial", "Storico", "履歴", "Verlauf", "السجل", "记录", "Geschiedenis", "Histórico", "Historik", "История", "Historia", "기록")),
+        lignesM.length ? enfants : (e && !tout && !e.der) ? null : h("div", { className: "sx-vide" }, T("Rien d'enregistré pour l'instant.", "Nothing recorded yet.", "Nada registrado por ahora.", "Nulla registrato per ora.", "まだ記録がありません。", "Noch nichts erfasst.", "لا شيء مسجل حاليا.", "暂时没有记录。", "Nog niets geregistreerd.", "Nada registrado por enquanto.", "Inget registrerat ännu.", "Пока ничего не записано.", "Na razie nic nie zapisano.", "아직 기록이 없어요."))));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(page) : page;
+  }
   function panneauFamille() {
     if (!famille) return null;
     var f = familleDe(famille); if (!f) return null;
     var l = lignesDe(f);
     if (f.types.length === 1 && f.types[0] === "vaccin") return pageVaccins(l);   /* 07/11 page Vaccins plein ecran (maquette validee) */
+    return pageFamille(f, l);   /* 07/11 les autres rubriques aussi en page (meme style) ; l ancienne fenetre ci-dessous ne sert plus */
     var voile = h("div", { onClick: function () { setFamille(null); }, style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } }, style: { width: "100%", maxWidth: 560, maxHeight: "86vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.28)", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 20px)" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
@@ -1952,7 +2012,8 @@ function EcranSanteCheval() {
      alignees en haut ; bandeaux Hey Baby et Magazine cote a cote, meme hauteur. Memes fonctions, memes donnees. */
   /* 07/11 — styles de la page Santé façon Vidéothèque (cartes photo, titres, pastilles, lignes du carnet, équipe). */
   var stCt = React.useState(false); var carnetTout = stCt[0], setCarnetTout = stCt[1];
-  var stAnS = React.useState(""); var anSel = stAnS[0], setAnSel = stAnS[1];   /* 07/11 : tuile d annee ouverte dans le carnet */
+  var stAnS = React.useState(""); var anSel = stAnS[0], setAnSel = stAnS[1];
+  var stFamT = React.useState(""); var famTout = stFamT[0], setFamTout = stFamT[1];   /* 07/11 : page d une rubrique, historique complet deplie */   /* 07/11 : tuile d annee ouverte dans le carnet */
   function cssSante() {
     if (typeof document === "undefined" || document.getElementById("hype-sx-css")) return;
     var st = document.createElement("style"); st.id = "hype-sx-css";
