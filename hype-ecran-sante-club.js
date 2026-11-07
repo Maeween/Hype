@@ -63,47 +63,76 @@ function NoterPlusieurs(props) {
     setCoches(restants); setOccupe(false); setBilan({ ok: ok, ko: ko });
     if (ok && props.onEnregistre) props.onEnregistre();
   }
-  function puce(actif, txt, clic, cle) {
-    return h("button", { key: cle, type: "button", className: "sc-np-p" + (actif ? " on" : ""), "aria-pressed": actif ? "true" : "false", onClick: clic }, txt);
+  var ICO = {
+    vaccin: "M18 2l4 4M20 4l-9.5 9.5M14 4l6 6M15.5 8.5l-9 9-3 1 1-3 9-9M7 13l4 4M3 21l2.5-2.5",
+    vermifuge: "M10.5 20.5l10-10a4.95 4.95 0 0 0-7-7l-10 10a4.95 4.95 0 0 0 7 7zM8.5 8.5l7 7",
+    ferrure: "M6 20H4.5C3.5 15 3 12 3.5 9 4.5 4.5 8 2.5 12 2.5S19.5 4.5 20.5 9c.5 3 0 6-1 11H18c.6-4 1-6.8.5-9C17.8 7.5 15.5 6 12 6S6.2 7.5 5.5 11C5 13.2 5.4 16 6 20z",
+    parage: "M5 21h14M7 21c0-6 1.5-11 5-15 3.5 4 5 9 5 15M9.5 14h5",
+    dentiste: "M12 5.5C10.5 4 8.8 3.5 7 3.5 4.5 3.5 3 5.5 3 8c0 2.5 1 4 1.6 6 .6 2.2.9 6.5 2.6 6.5 1.6 0 1.8-3.5 2.4-5.2.4-1 .9-1.3 1.4-1.3h2c.5 0 1 .3 1.4 1.3.6 1.7.8 5.2 2.4 5.2 1.7 0 2-4.3 2.6-6.5C20 12 21 10.5 21 8c0-2.5-1.5-4.5-4-4.5-1.8 0-3.5.5-5 2z",
+    osteopathe: "M12 3v18M8 6h8M7 10h10M8 14h8M9 18h6",
+    veterinaire: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3a5 5 0 0 0 10 0v-2M20 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
+  };
+  function svg(d, cls) { return h("svg", { className: cls, viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: d })); }
+  function moisCourt(d) { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})$/); if (!m) return ""; try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString((document.documentElement && document.documentElement.lang) || undefined, { day: "numeric", month: "long", year: "numeric" }); } catch (eD) { return m[3] + "/" + m[2] + "/" + m[1]; } }
+  function section(num, titre, droite) {
+    return h("div", { className: "np-sec" }, h("span", { className: "np-num" }, num), h("h3", null, titre), droite || null);
   }
   var tousCoches = chevaux.length && ids.length === chevaux.length;
-  var feuille = h("div", { className: "sc-np", role: "dialog", "aria-modal": "true" },
-    h("div", { className: "sc-np-in" },
-      h("div", { className: "sc-np-t" },
-        h("h2", null, T("Noter pour plusieurs chevaux", "Record for several horses", "Registrar para varios caballos", "Registra per più cavalli", "複数の馬に記録", "Für mehrere Pferde eintragen", "تسجيل لعدة خيول", "为多匹马记录", "Voor meerdere paarden noteren", "Registrar para vários cavalos", "Registrera för flera hästar", "Записать для нескольких лошадей", "Zapisz dla kilku koni", "여러 말에 기록")),
-        h("button", { type: "button", className: "sc-np-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, "×")),
-      h("p", { className: "sc-lab" }, T("Le soin", "The care", "El cuidado", "La cura", "ケア", "Die Pflege", "العناية", "护理", "De verzorging", "O cuidado", "Vården", "Уход", "Zabieg", "관리")),
-      h("div", { className: "sc-chips" }, TYS.map(function (t) { return puce(type === t[0], t[1], function () { setType(t[0]); changer(t[0], date); }, "t" + t[0]); })),
-      type === "vaccin" ? h("div", { style: { marginTop: 16 } },
-        h("p", { className: "sc-lab" }, T("Contre", "Against", "Contra", "Contro", "対象", "Gegen", "ضد", "预防", "Tegen", "Contra", "Mot", "Против", "Przeciw", "대상")),
-        h("div", { className: "sc-chips" }, VACS.map(function (v) { return puce(!!vacs[v[0]], v[1], function () { var n = Object.assign({}, vacs); n[v[0]] = !n[v[0]]; setVacs(n); }, "v" + v[0]); }))) : null,
-      h("label", { className: "sc-np-c" },
-        h("span", { className: "sc-lab" }, type === "vaccin"
-          ? T("Nom du vaccin (facultatif)", "Vaccine name (optional)", "Nombre de la vacuna (opcional)", "Nome del vaccino (facoltativo)", "ワクチン名（任意）", "Name des Impfstoffs (optional)", "اسم اللقاح (اختياري)", "疫苗名称（选填）", "Naam van het vaccin (optioneel)", "Nome da vacina (opcional)", "Vaccinets namn (valfritt)", "Название вакцины (необязательно)", "Nazwa szczepionki (opcjonalnie)", "백신 이름 (선택)")
-          : T("Précision (facultatif)", "Details (optional)", "Detalle (opcional)", "Dettaglio (facoltativo)", "詳細（任意）", "Angabe (optional)", "تفاصيل (اختياري)", "说明（选填）", "Toelichting (optioneel)", "Detalhe (opcional)", "Detalj (valfritt)", "Уточнение (необязательно)", "Szczegóły (opcjonalnie)", "세부 사항 (선택)")),
-        h("input", { type: "text", value: produit, onChange: function (e) { setProduit(e.target.value); }, placeholder: type === "vaccin" ? "Equip F, ProteqFlu-Te…" : "", maxLength: 120 })),
-      h("div", { className: "sc-np-d" },
-        h("label", { className: "sc-np-c" }, h("span", { className: "sc-lab" }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜")),
-          h("input", { type: "date", value: date, onChange: function (e) { setDate(e.target.value); changer(type, e.target.value); } })),
-        h("label", { className: "sc-np-c" }, h("span", { className: "sc-lab" }, T("Prochaine échéance", "Next due date", "Próximo vencimiento", "Prossima scadenza", "次回予定", "Nächste Fälligkeit", "الموعد القادم", "下次到期", "Volgende vervaldatum", "Próximo vencimento", "Nästa förfallodatum", "Следующий срок", "Następny termin", "다음 예정일")),
-          h("input", { type: "date", value: prochaine, onChange: function (e) { setProchaine(e.target.value); setProchMain(true); } }))),
-      h("div", { className: "sc-h2", style: { margin: "22px 0 10px" } },
-        h("p", { className: "sc-lab", style: { margin: 0 } }, T("Les chevaux", "The horses", "Los caballos", "I cavalli", "馬", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말") + " · " + ids.length + " / " + chevaux.length),
-        h("button", { type: "button", className: "sc-voir", onClick: function () { var n = {}; if (!tousCoches) chevaux.forEach(function (c) { n[String(c.id)] = 1; }); setCoches(n); } },
-          tousCoches ? T("Tout décocher", "Uncheck all", "Desmarcar todo", "Deseleziona tutto", "すべて解除", "Alle abwählen", "إلغاء الكل", "全部取消", "Alles uitvinken", "Desmarcar tudo", "Avmarkera alla", "Снять все", "Odznacz wszystkie", "모두 해제")
-                     : T("Tout cocher", "Check all", "Marcar todo", "Seleziona tutto", "すべて選択", "Alle auswählen", "تحديد الكل", "全选", "Alles aanvinken", "Marcar tudo", "Markera alla", "Отметить все", "Zaznacz wszystkie", "모두 선택"))),
-      h("div", { className: "sc-np-l" }, chevaux.map(function (c) {
-        var k = String(c.id), on = !!coches[k];
-        return h("label", { key: "n" + k, className: "sc-np-ch" + (on ? " on" : "") },
-          h("input", { type: "checkbox", checked: on, onChange: function () { var n = Object.assign({}, coches); if (n[k]) delete n[k]; else n[k] = 1; setCoches(n); } }),
-          h("span", null, c.nom || ""));
+  var libType = (TYS.filter(function (t) { return t[0] === type; })[0] || ["", ""])[1];
+  var recap = (type === "vaccin" && vacList.length ? VACS.filter(function (v) { return vacs[v[0]]; }).map(function (v) { return v[1]; }).join(" + ") : libType) + (date ? " · " + moisCourt(date) : "");
+  var feuille = h("div", { className: "np", role: "dialog", "aria-modal": "true" },
+    h("div", { className: "np-hero" },
+      h("div", { className: "np-photo" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", decoding: "async" })),
+      h("svg", { className: "np-courbe", viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+        h("defs", null, h("linearGradient", { id: "npg", x1: "0", x2: "1", y1: "0", y2: "0" },
+          h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+        h("path", { d: "M0 92 C 130 90, 240 62, 400 8 L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }),
+        h("path", { d: "M0 92 C 130 90, 240 62, 400 8", fill: "none", stroke: "url(#npg)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" })),
+      h("button", { type: "button", className: "np-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, svg("M6 6l12 12M18 6L6 18")),
+      h("div", { className: "np-titre" },
+        h("h2", null, T("Noter un soin", "Record a care", "Registrar un cuidado", "Registra una cura", "ケアを記録", "Pflege eintragen", "تسجيل عناية", "记录护理", "Verzorging noteren", "Registrar um cuidado", "Registrera vård", "Записать уход", "Zapisz zabieg", "관리 기록")),
+        h("p", null, T("Un soin, une date, tous les chevaux concernés.", "One care, one date, all the horses concerned.", "Un cuidado, una fecha, todos los caballos.", "Una cura, una data, tutti i cavalli interessati.", "ひとつのケア、ひとつの日付、対象の馬すべてに。", "Eine Pflege, ein Datum, alle betroffenen Pferde.", "عناية واحدة، تاريخ واحد، كل الخيول المعنية.", "一项护理，一个日期，所有相关马匹。", "Eén verzorging, één datum, alle betrokken paarden.", "Um cuidado, uma data, todos os cavalos.", "En vård, ett datum, alla berörda hästar.", "Один уход, одна дата, все нужные лошади.", "Jeden zabieg, jedna data, wszystkie konie.", "하나의 관리, 하나의 날짜, 해당 말 모두.")))),
+    h("div", { className: "np-in" },
+      section("I", T("Le soin", "The care", "El cuidado", "La cura", "ケア", "Die Pflege", "العناية", "护理", "De verzorging", "O cuidado", "Vården", "Уход", "Zabieg", "관리")),
+      h("div", { className: "np-types" }, TYS.map(function (t) {
+        var on = type === t[0];
+        return h("button", { key: "t" + t[0], type: "button", className: "np-type" + (on ? " on" : ""), "aria-pressed": on ? "true" : "false", onClick: function () { setType(t[0]); changer(t[0], date); } },
+          svg(ICO[t[0]] || ICO.vaccin, "np-ico"), h("span", null, t[1]));
       })),
-      bilan ? h("div", { className: bilan.ko.length ? "sc-err" : "sc-np-ok" },
+      type === "vaccin" ? h("div", { className: "np-contre" },
+        h("p", { className: "np-lab" }, T("Contre", "Against", "Contra", "Contro", "対象", "Gegen", "ضد", "预防", "Tegen", "Contra", "Mot", "Против", "Przeciw", "대상")),
+        h("div", { className: "np-puces" }, VACS.map(function (v) {
+          var on = !!vacs[v[0]];
+          return h("button", { key: "v" + v[0], type: "button", className: "np-puce" + (on ? " on" : ""), "aria-pressed": on ? "true" : "false", onClick: function () { var n = Object.assign({}, vacs); n[v[0]] = !n[v[0]]; setVacs(n); } },
+            h("span", { className: "np-rond", "aria-hidden": "true" }), v[1]);
+        }))) : null,
+      h("label", { className: "np-champ np-verre" },
+        h("span", { className: "np-lab" }, type === "vaccin" ? T("Nom du vaccin (facultatif)", "Vaccine name (optional)", "Nombre de la vacuna (opcional)", "Nome del vaccino (facoltativo)", "ワクチン名（任意）", "Name des Impfstoffs (optional)", "اسم اللقاح (اختياري)", "疫苗名称（选填）", "Naam van het vaccin (optioneel)", "Nome da vacina (opcional)", "Vaccinets namn (valfritt)", "Название вакцины (необязательно)", "Nazwa szczepionki (opcjonalnie)", "백신 이름 (선택)") : T("Précision (facultatif)", "Details (optional)", "Detalle (opcional)", "Dettaglio (facoltativo)", "詳細（任意）", "Angabe (optional)", "تفاصيل (اختياري)", "说明（选填）", "Toelichting (optioneel)", "Detalhe (opcional)", "Detalj (valfritt)", "Уточнение (необязательно)", "Szczegóły (opcjonalnie)", "세부 사항 (선택)")),
+        h("input", { type: "text", value: produit, onChange: function (e) { setProduit(e.target.value); }, placeholder: type === "vaccin" ? "Equip F, ProteqFlu-Te…" : "", maxLength: 120 })),
+      section("II", T("Quand", "When", "Cuándo", "Quando", "いつ", "Wann", "متى", "时间", "Wanneer", "Quando", "När", "Когда", "Kiedy", "언제")),
+      h("div", { className: "np-verre np-dates" },
+        h("label", { className: "np-champ" }, h("span", { className: "np-lab" }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜")),
+          h("input", { type: "date", value: date, onChange: function (e) { setDate(e.target.value); changer(type, e.target.value); } })),
+        h("span", { className: "np-fleche", "aria-hidden": "true" }, "→"),
+        h("label", { className: "np-champ" }, h("span", { className: "np-lab" }, T("Prochaine échéance", "Next due date", "Próximo vencimiento", "Prossima scadenza", "次回予定", "Nächste Fälligkeit", "الموعد القادم", "下次到期", "Volgende vervaldatum", "Próximo vencimento", "Nästa förfallodatum", "Следующий срок", "Następny termin", "다음 예정일")),
+          h("input", { type: "date", value: prochaine, onChange: function (e) { setProchaine(e.target.value); setProchMain(true); } }))),
+      section("III", T("Les chevaux", "The horses", "Los caballos", "I cavalli", "馬", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말"), h("button", { type: "button", className: "np-tout", onClick: function () { var n = {}; if (!tousCoches) chevaux.forEach(function (c) { n[String(c.id)] = 1; }); setCoches(n); } }, tousCoches ? T("Tout décocher", "Uncheck all", "Desmarcar todo", "Deseleziona tutto", "すべて解除", "Alle abwählen", "إلغاء الكل", "全部取消", "Alles uitvinken", "Desmarcar tudo", "Avmarkera alla", "Снять все", "Odznacz wszystkie", "모두 해제") : T("Tout cocher", "Check all", "Marcar todo", "Seleziona tutto", "すべて選択", "Alle auswählen", "تحديد الكل", "全选", "Alles aanvinken", "Marcar tudo", "Markera alla", "Отметить все", "Zaznacz wszystkie", "모두 선택"))),
+      h("p", { className: "np-compte" }, ids.length + " / " + chevaux.length),
+      h("div", { className: "np-chx" }, chevaux.map(function (c) {
+        var k = String(c.id), on = !!coches[k], ph = c.photo_url || "";
+        return h("button", { key: "n" + k, type: "button", className: "np-ch" + (on ? " on" : ""), "aria-pressed": on ? "true" : "false", onClick: function () { var n = Object.assign({}, coches); if (n[k]) delete n[k]; else n[k] = 1; setCoches(n); } },
+          h("span", { className: "np-ph" },
+            ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 200, 200) : ph, alt: "", loading: "lazy", decoding: "async" }) : h("span", { className: "np-ini" }, String(c.nom || "?").trim().charAt(0).toUpperCase()),
+            h("span", { className: "np-ok", "aria-hidden": "true" }, svg("M5 12.5l4.5 4.5L19 7.5"))),
+          h("span", { className: "np-nom" }, c.nom || ""));
+      })),
+      bilan ? h("div", { className: bilan.ko.length ? "sc-err" : "np-bilan" },
         bilan.ok ? T(bilan.ok + " soin(s) enregistré(s).", bilan.ok + " record(s) saved.", bilan.ok + " cuidado(s) guardado(s).", bilan.ok + " cura/e salvata/e.", bilan.ok + " 件保存しました。", bilan.ok + " Eintrag/Einträge gespeichert.", "تم حفظ " + bilan.ok + ".", bilan.ok + " 条记录已保存。", bilan.ok + " behandeling(en) opgeslagen.", bilan.ok + " cuidado(s) salvo(s).", bilan.ok + " post(er) sparade.", "Сохранено: " + bilan.ok + ".", "Zapisano: " + bilan.ok + ".", bilan.ok + "건 저장됨.") + " " : "",
         bilan.ko.length ? T("Refusé pour " + bilan.ko.length + " cheval(aux) (restés cochés) : ", "Refused for " + bilan.ko.length + " horse(s) (still checked): ", "Rechazado para " + bilan.ko.length + " caballo(s) (siguen marcados): ", "Rifiutato per " + bilan.ko.length + " cavallo/i (ancora selezionati): ", bilan.ko.length + " 頭で拒否（選択のまま）：", "Abgelehnt für " + bilan.ko.length + " Pferd(e) (noch ausgewählt): ", "رُفض لـ " + bilan.ko.length + " (ما زالت محددة): ", bilan.ko.length + " 匹被拒绝（仍勾选）：", "Geweigerd voor " + bilan.ko.length + " paard(en) (nog aangevinkt): ", "Recusado para " + bilan.ko.length + " cavalo(s) (ainda marcados): ", "Nekad för " + bilan.ko.length + " häst(ar) (fortfarande markerade): ", "Отклонено для " + bilan.ko.length + " (остались отмечены): ", "Odrzucono dla " + bilan.ko.length + " (nadal zaznaczone): ", bilan.ko.length + "마리 거부됨 (선택 유지): ") + bilan.ko[0] : null) : null),
-    h("div", { className: "sc-np-b" },
-      h("button", { type: "button", className: "sc-imp", disabled: !pret, onClick: enregistrer, style: { width: "100%", maxWidth: 520, minHeight: 50, fontSize: 14.5, opacity: pret ? 1 : 0.45 } },
-        occupe ? "…" : T("Enregistrer pour " + ids.length + (ids.length > 1 ? " chevaux" : " cheval"), "Save for " + ids.length + (ids.length > 1 ? " horses" : " horse"), "Guardar para " + ids.length + " caballo(s)", "Salva per " + ids.length + " cavallo/i", ids.length + " 頭に保存", "Für " + ids.length + " Pferd(e) speichern", "حفظ لـ " + ids.length + " حصان", "为 " + ids.length + " 匹马保存", "Opslaan voor " + ids.length + " paard(en)", "Salvar para " + ids.length + " cavalo(s)", "Spara för " + ids.length + " häst(ar)", "Сохранить для " + ids.length, "Zapisz dla " + ids.length, ids.length + "마리에 저장"))));
+    h("div", { className: "np-bas" },
+      h("div", { className: "np-bas-in" },
+        h("p", { className: "np-recap" }, recap),
+        h("button", { type: "button", className: "np-go", disabled: !pret, onClick: enregistrer }, occupe ? "…" : T("Enregistrer pour " + ids.length + (ids.length > 1 ? " chevaux" : " cheval"), "Save for " + ids.length + (ids.length > 1 ? " horses" : " horse"), "Guardar para " + ids.length + " caballo(s)", "Salva per " + ids.length + " cavallo/i", ids.length + " 頭に保存", "Für " + ids.length + " Pferd(e) speichern", "حفظ لـ " + ids.length + " حصان", "为 " + ids.length + " 匹马保存", "Opslaan voor " + ids.length + " paard(en)", "Salvar para " + ids.length + " cavalo(s)", "Spara för " + ids.length + " häst(ar)", "Сохранить для " + ids.length, "Zapisz dla " + ids.length, ids.length + "마리에 저장")))));
   return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(feuille, document.body) : feuille;
 }
 function EcranSanteClub() {
@@ -224,25 +253,65 @@ function EcranSanteClub() {
       ".sc-err{margin:14px 0;padding:11px 13px;border-radius:12px;border:1px solid rgba(217,147,158,.4);background:rgba(217,147,158,.07);color:#E6B3BB;font-size:12.5px;line-height:1.5}",
       ".sc-vide{padding:34px 8px;text-align:center;font-size:13px;line-height:1.6;color:rgba(243,238,228,.8)}",
       ".sc-note{font-size:10.5px;line-height:1.5;color:rgba(243,238,228,.42);margin-top:28px}",
-      ".sc-np{position:fixed;inset:0;z-index:10000;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;overflow-y:auto;-webkit-overflow-scrolling:touch}",
-      ".sc-np-in{max-width:620px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 16px) 18px 150px}",
-      ".sc-np-t{display:flex;align-items:center;gap:12px;margin-bottom:20px}",
-      ".sc-np-t h2{flex:1;margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,7vw,32px);line-height:1.1}",
-      ".sc-np-x{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(243,238,228,.25);background:transparent;color:#F3EEE4;font-size:24px;line-height:1;cursor:pointer}",
-      ".sc-np-p{font-size:13px;padding:8px 14px;min-height:38px;border-radius:999px;border:1px solid rgba(243,238,228,.16);background:transparent;color:rgba(243,238,228,.8);font-family:inherit;cursor:pointer}",
-      ".sc-np-p.on{border-color:#C9A66B;color:#E9D9B8;background:rgba(201,166,107,.08)}",
-      ".sc-np-c{display:block;flex:1;min-width:0;margin-top:16px}",
-      ".sc-np-c .sc-lab{display:block}",
-      ".sc-np-c input{display:block;width:100%;box-sizing:border-box;min-height:44px;padding:9px 12px;border-radius:12px;border:1px solid rgba(243,238,228,.16);background:rgba(13,21,24,.7);color:#F3EEE4;font-family:inherit;font-size:16px;color-scheme:dark}",
-      ".sc-np-d{display:flex;gap:12px}",
-      ".sc-np-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}",
-      ".sc-np-ch{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px;border-radius:12px;border:1px solid rgba(243,238,228,.1);font-size:14px;cursor:pointer;min-width:0}",
-      ".sc-np-ch span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-      ".sc-np-ch.on{border-color:rgba(201,166,107,.6);background:rgba(201,166,107,.06)}",
-      ".sc-np-ch input{width:18px;height:18px;flex:0 0 auto;accent-color:#C9A66B}",
-      ".sc-np-ok{margin:16px 0;padding:11px 13px;border-radius:12px;border:1px solid rgba(92,135,146,.5);color:#A9CBD3;font-size:13px}",
-      ".sc-np-b{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:14px 18px calc(env(safe-area-inset-bottom) + 14px);background:linear-gradient(180deg,rgba(7,10,8,0) 0%,#070A08 40%)}",
-      ".sc-np-b .sc-imp{background:rgba(7,10,8,.85)}",
+      ".np{position:fixed;inset:0;z-index:10000;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;overflow-y:auto;-webkit-overflow-scrolling:touch}",
+      ".np-hero{position:relative}",
+      ".np-photo{height:clamp(190px,52vw,260px);overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 100%);mask-image:linear-gradient(180deg,#000 40%,transparent 100%)}",
+      ".np-photo img{width:100%;height:100%;object-fit:cover;object-position:62% 38%;display:block;filter:saturate(.9) contrast(1.05) brightness(.82) sepia(.08)}",
+      ".np-courbe{position:relative;display:block;width:100%;height:64px;margin-top:-64px}",
+      ".np-x{position:absolute;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:16px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,238,228,.3);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}",
+      ".np-x svg{width:18px;height:18px;stroke:#F3EEE4;fill:none;stroke-width:1.6;stroke-linecap:round}",
+      ".np-titre{max-width:660px;margin:-18px auto 0;padding:0 20px;text-align:end;position:relative}",
+      ".np-titre h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(38px,10.5vw,54px);line-height:1}",
+      ".np-titre p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(16px,4.4vw,19px);opacity:.85}",
+      ".np-in{max-width:660px;margin:0 auto;padding:4px 20px 190px}",
+      ".np-sec{display:flex;align-items:baseline;gap:12px;margin:34px 0 14px;padding-bottom:10px;position:relative}",
+      ".np-sec:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.6),rgba(201,166,107,.08))}",
+      "[dir=rtl] .np-sec:after{background:linear-gradient(270deg,rgba(201,166,107,.6),rgba(201,166,107,.08))}",
+      ".np-num{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:20px;color:#C9A66B;min-width:22px}",
+      ".np-sec h3{flex:1;margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,7vw,31px);line-height:1.1}",
+      ".np-tout{background:none;border:none;color:#E9D9B8;font-family:inherit;font-size:13px;cursor:pointer;padding:8px 0;white-space:nowrap}",
+      ".np-types{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}",
+      ".np-type{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:94px;padding:12px 6px;border-radius:16px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(165deg,rgba(28,44,50,.42) 0%,rgba(10,16,19,.28) 100%);color:rgba(243,238,228,.78);font-family:inherit;font-size:12.5px;cursor:pointer;box-shadow:0 14px 24px -18px rgba(0,0,0,.95);transition:border-color .2s,box-shadow .2s,color .2s}",
+      ".np-ico{width:27px;height:27px;fill:none;stroke:rgba(201,166,107,.75);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}",
+      ".np-type.on{border-color:#C9A66B;color:#F3EEE4;box-shadow:0 0 0 1px rgba(201,166,107,.35),0 16px 30px -16px rgba(201,166,107,.35)}",
+      ".np-type.on .np-ico{stroke:#E9D9B8}",
+      ".np-contre{margin-top:20px}",
+      ".np-lab{display:block;margin:0 0 9px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(243,238,228,.55)}",
+      ".np-puces{display:flex;flex-wrap:wrap;gap:8px}",
+      ".np-puce{display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:0 16px 0 12px;border-radius:999px;border:1px solid rgba(243,238,228,.14);background:transparent;color:rgba(243,238,228,.78);font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;cursor:pointer}",
+      ".np-rond{width:14px;height:14px;border-radius:50%;border:1px solid rgba(201,166,107,.6);flex:0 0 auto}",
+      ".np-puce.on{border-color:#C9A66B;color:#F3EEE4}",
+      ".np-puce.on .np-rond{background:radial-gradient(circle,#E9D9B8 0 35%,transparent 40%)}",
+      ".np-verre{border-radius:16px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(165deg,rgba(28,44,50,.5) 0%,rgba(10,16,19,.3) 100%);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 18px 30px -18px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.05)}",
+      ".np-champ{display:block;min-width:0}",
+      ".np-champ.np-verre{margin-top:18px;padding:14px 16px 12px}",
+      ".np-champ input{display:block;width:100%;box-sizing:border-box;border:0;border-bottom:1px solid rgba(201,166,107,.3);background:transparent;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:600;padding:4px 0 6px;min-height:40px;color-scheme:dark;border-radius:0;-webkit-appearance:none;appearance:none}",
+      ".np-champ input::placeholder{color:rgba(243,238,228,.3);font-style:italic;font-weight:500}",
+      ".np-champ input:focus{outline:none;border-bottom-color:#C9A66B}",
+      ".np-dates{display:flex;align-items:flex-end;gap:12px;padding:16px}",
+      ".np-dates .np-champ{flex:1}",
+      ".np-fleche{color:#C9A66B;font-size:18px;padding-bottom:12px}",
+      "[dir=rtl] .np-fleche{transform:scaleX(-1)}",
+      ".np-compte{margin:-6px 0 14px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;color:rgba(243,238,228,.6)}",
+      ".np-chx{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:16px 10px}",
+      ".np-ch{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;padding:0;color:rgba(243,238,228,.72);font-family:inherit;cursor:pointer;min-width:0}",
+      ".np-ph{position:relative;width:74px;height:74px;border-radius:50%;padding:3px;border:1px solid rgba(243,238,228,.12);transition:border-color .2s,box-shadow .2s}",
+      ".np-ph img,.np-ini{width:100%;height:100%;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,rgba(201,166,107,.2),rgba(16,21,24,.95) 70%);font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;color:#E9D9B8;filter:saturate(.8) brightness(.8)}",
+      ".np-ok{position:absolute;bottom:-2px;inset-inline-end:-2px;width:24px;height:24px;border-radius:50%;background:#070A08;border:1px solid #C9A66B;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s}",
+      ".np-ok svg{width:14px;height:14px;fill:none;stroke:#E9D9B8;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}",
+      ".np-nom{max-width:100%;font-size:12.5px;line-height:1.25;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      ".np-ch.on .np-ph{border-color:#C9A66B;box-shadow:0 0 0 1px rgba(201,166,107,.3),0 10px 24px -10px rgba(201,166,107,.45)}",
+      ".np-ch.on .np-ph img,.np-ch.on .np-ini{filter:none}",
+      ".np-ch.on .np-ok{opacity:1;transform:scale(1)}",
+      ".np-ch.on .np-nom{color:#F3EEE4}",
+      ".np-bilan{margin:22px 0 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(92,135,146,.5);color:#A9CBD3;font-size:13px}",
+      ".np-bas{position:fixed;left:0;right:0;bottom:0;padding:26px 20px calc(env(safe-area-inset-bottom) + 14px);background:linear-gradient(180deg,rgba(7,10,8,0) 0%,rgba(7,10,8,.92) 35%,#070A08 100%)}",
+      ".np-bas-in{max-width:620px;margin:0 auto;text-align:center}",
+      ".np-recap{margin:0 0 10px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16px;color:rgba(243,238,228,.75);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      ".np-go{width:100%;min-height:52px;border-radius:999px;border:1px solid #C9A66B;background:rgba(201,166,107,.08);color:#E9D9B8;font-family:inherit;font-size:14.5px;letter-spacing:.04em;cursor:pointer;box-shadow:0 14px 30px -18px rgba(201,166,107,.5)}",
+      ".np-go:disabled{opacity:.4;cursor:default;box-shadow:none}",
+      ".np-type:focus-visible,.np-puce:focus-visible,.np-ch:focus-visible,.np-go:focus-visible,.np-x:focus-visible,.np-tout:focus-visible{outline:2px solid #C9A66B;outline-offset:2px}",
+      "@media (prefers-reduced-motion:reduce){.np-type,.np-ph,.np-ok{transition:none}}",
       "@media (prefers-reduced-motion:reduce){.sc-s-t .c{transition:none}}"
     ].join("\n");
     document.head.appendChild(st);

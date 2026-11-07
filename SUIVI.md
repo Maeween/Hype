@@ -19234,6 +19234,7 @@ Vérifié sur les vrais soins en base (19h35) : le vaccin « Pneumequin » (sans
 19h55 (accord de Blandine « Oui ok ») :
 - « + Noter pour plusieurs chevaux » ajouté sous Les soins de l'écurie : choisir le soin (vaccin : grippe / rhino / tétanos / West Nile + nom facultatif), la date, la prochaine échéance (proposée, modifiable), cocher les chevaux (« Tout cocher »), Enregistrer → une ligne de soin par cheval (même écriture que l'import, details.import = "plusieurs"). Ceux refusés restent cochés avec la raison. Boutons à contour, jamais pleins. 14 langues.
 - Aceitunero : MON ERREUR — sa date n'était pas fausse (le rappel de 2022 vient du vaccin rhino du 16/10/2021). Rien corrigé en base. Le vrai problème était dans la nouvelle page : un ancien rappel déjà remplacé par un vaccin plus récent l'aurait affiché « en retard de 4 ans ». Corrigé : seule compte l'échéance du DERNIER soin de chaque sorte (grippe, rhino, tétanos, West Nile, vermifuge, maréchal…).
+20h05 (« fais-moi un vrai beau design ») : la feuille « Noter pour plusieurs chevaux » redessinée en style Vidéothèque : photo + courbe dorée + « Noter un soin », parties I Le soin (tuiles avec pictos), II Quand (dates dans une carte de verre, flèche), III Les chevaux (photos rondes, anneau champagne + coche quand choisi), récapitulatif et bouton à contour en bas. Aperçu : artefact « Noter un soin ».
 Page refaite d'après la maquette validée (design Vidéothèque) et détachée de index.html.
 | Fichier | Changement |
 |---|---|
