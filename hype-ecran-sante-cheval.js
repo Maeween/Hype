@@ -1836,9 +1836,14 @@ function EcranSanteCheval() {
     "aria-hidden": "true",
     style: {
       position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" /* (1003) */, backgroundColor: "#060709",
-      backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/FOND_SANTE.webp')",
+      /* 07/11 (Blandine, maquette « Ta photo en haut + en fond » choisie, « en gardant taille normale ») : quand le cheval a une
+         photo, elle sert AUSSI de fond a toute la page — meme photo qu en haut, taille normale (cover, sans zoom), fond fixe,
+         assombrie par deux voiles pour que tout reste lisible. Sans photo : l ancien fond Sante, inchange. */
+      backgroundImage: photoVue
+        ? "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.35) 30%, rgba(6,7,9,0.70) 65%, rgba(6,7,9,0.95) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.85) 0%, rgba(6,7,9,0.45) 55%, rgba(6,7,9,0.20) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
+        : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/FOND_SANTE.webp')",
       backgroundSize: "cover, cover, cover",
-      backgroundPosition: "center, center, center right",
+      backgroundPosition: photoVue ? "center, center, center" : "center, center, center right",
       backgroundRepeat: "no-repeat, no-repeat, no-repeat"
     }
   });

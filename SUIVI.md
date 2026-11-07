@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 11h50)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 15h50)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -13,6 +13,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
 
 ## 2 — Important
+- [07/11] Page Santé du cheval : la photo du cheval sert aussi de FOND à toute la page (build 20261107-1550). À tester sur iPhone avec un cheval qui a une photo, puis un cheval sans photo (doit garder l'ancien fond Santé) (attend : Blandine)
 - [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; puis traductions, accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
@@ -19008,4 +19009,24 @@ PRÉPAS AUX DIPLÔMES D'ENSEIGNEMENT — AE · BP · DE (+ DES préparé, non pu
 |---|---|---|
 | hype-ecran-prepa.js | racine | NOUVEAU : la page des prépas (textes + mise en page) |
 | index.html | racine | écran différé + adresse « prepa-diplomes » + bloc sur la page Galops (modératrices) + build 20261107-1150 |
+| SUIVI.md | racine | cette entrée + ligne en « 2 — Important » |
+
+════════════════════════════════════════════════════════════
+
+## 07/11/2026 15h50 — PUBLICATION build 20261107-1550 (Blandine 15h45 « Ok je choisis ta photo en haut + en fond » / « En gardant taille normale » ; 15h47 « Publié » = accord de publication)
+PAGE SANTÉ DU CHEVAL — LA PHOTO DU CHEVAL EN FOND DE PAGE
+- Choix fait sur maquette (artifact « Santé de Cirrus », bouton « Ta photo en haut + en fond ») avec une vraie photo envoyée par Blandine.
+- Ce qui change : quand le cheval a une photo (photoVue = photo perso, sinon photo de la fiche), elle reste en haut comme avant ET devient le fond fixe de toute la page :
+  même photo, taille normale (cover, sans zoom), deux voiles (haut 0,55 → 0,35 → 0,70 → 0,95 ; côté texte 0,85 → 0,45 → 0,20, miroir en arabe).
+- Sans photo : l'ancien fond images/FOND_SANTE.webp, réglages inchangés.
+- Hors périmètre, NON touché : les autres pages qui utilisent FOND_SANTE.webp (fiche cheval V1 hors onglet Photos, fiche cheval V2). Blandine veut en remplacer beaucoup : à décider page par page.
+- Tests : node --check du fichier ; fond calculé avec et sans photo (vérifié en exécutant l'expression) ; pas d'essai dans l'appli réelle ici → test sur iPhone par Blandine.
+- Décisions du jour sur les maquettes, PAS encore codées : liste Santé de l'écurie en ordre alphabétique avec alerte délicate (vieux rose) ; page Santé de l'écurie au design Vidéothèque
+  (soins par type, équipe de soins + Hey Baby + magazine repris de la page cheval) ; carnet du cheval en TUILES par année (6 max : 5 années + « Avant », lignes équilibrées 2+2, 3+2,
+  3+3…, une année vide après le 1er soin = tuile « Pas de soin renseigné ») ; onglets semi-transparents à ombre dégradée.
+- Données repérées (non corrigées) : échéance d'Aceitunero au 16/10/2022 alors que le vaccin est du 16/10/2026 (lecture du carnet à revoir) ; 0 SIRE/puce notés sur les 56 chevaux SEP.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-sante-cheval.js | racine | fond de page = photo du cheval si elle existe |
+| index.html | racine | ?v sante-cheval → 9 + build 20261107-1550 |
 | SUIVI.md | racine | cette entrée + ligne en « 2 — Important » |
