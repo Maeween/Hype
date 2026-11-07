@@ -725,6 +725,21 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🎨 07/11/2026 (06 h 00) — PERSONNALISATION : GLISSER AU DOIGT + STYLE D'EN-TÊTE
+Blandine : « Ok continue fais tout ce que tu peux tu as carte blanche ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 6 |
+| index.html | racine | ?v cavalier 5 → 6, build 20261107-0600 (rien d'autre) |
+· Glisser : appuyer sur la poignée « ≡ Nom du bloc » et faire glisser ; le bloc se pose là où on lâche
+  (la page défile toute seule près des bords). Les flèches ↑ ↓ restent.
+· Nouvelle puce « En-tête » : Grande photo (comme avant), Bandeau (photo moins haute), Portrait
+  (photo ronde centrée, contour couleur).
+· Toujours en test sur le compte modératrice seulement ; textes en français seulement.
+RESTE : réserver aux abonnés Premium après le test ; traductions après validation ; fond Ivoire (chantier à part).
+
+════════════════════════════════════════════════════════════
+
 🎨 07/11/2026 (05 h 50) — PAGE CAVALIER PERSONNALISABLE : EN TEST SUR LE COMPTE DE BLANDINE
 Blandine : « On pourrait laisser tlm personnaliser pour soi même déjà sa page cavalier », simulations
 validées (mode personnalisation directement sur la page, palettes, fonds), « Premium uniquement », « Ok ».
