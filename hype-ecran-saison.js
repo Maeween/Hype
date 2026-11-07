@@ -516,6 +516,19 @@ var CSS2 = [
   ".rc-gt b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:17px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".rc-gt em{font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--hs-iv3)}",
   ".rc-gt.vide{display:block;color:var(--hs-iv3);font-style:italic;font-size:12px}",
+  ".rc-dg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}",
+  ".rc-dc{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/4;max-width:100%;background:#0d1214;border:1px solid rgba(243,238,228,.06)}",
+  ".rc-dc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88}",
+  ".rc-dc .voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.05) 25%,rgba(7,10,8,.93) 76%)}",
+  ".rc-dn{position:absolute;top:10px;left:12px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:24px;color:var(--hs-ch);line-height:1;text-shadow:0 1px 8px rgba(0,0,0,.8)}",
+  ".rc-dl{position:absolute;top:10px;right:10px;font-size:9px;letter-spacing:.12em;border:1px solid rgba(201,166,107,.42);border-radius:999px;padding:4px 8px;background:rgba(7,10,8,.55);color:var(--hs-iv)}",
+  ".rc-dt{position:absolute;left:12px;right:12px;bottom:12px}",
+  ".rc-dt h4{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:20px;line-height:1.02;margin:0 0 6px}",
+  ".rc-dt h4 span{display:block;font-size:13px;letter-spacing:.06em;color:var(--hs-iv2)}",
+  ".rc-dt ol{list-style:none;margin:0;padding:0;font-size:11px;color:var(--hs-iv2);line-height:1.5}",
+  ".rc-dt ol em{font-style:normal;color:var(--hs-iv3)}",
+  ".rc-dt ol li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".rc-dt ol li.libre{font-style:italic;color:var(--hs-iv3)}",
   ".rc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:0 18px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}",
   ".rc-rail::-webkit-scrollbar{display:none}",
   ".rc-ch{flex:0 0 72%;max-width:300px;scroll-snap-align:start;border:1px solid rgba(243,238,228,.14);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(16,26,29,.6),rgba(7,10,8,.4))}",
@@ -1603,24 +1616,21 @@ function EcranEngagements() {
         h("div", { className: "rc-eb" }, F("Récapitulatif")),
         h("h2", null, F("La journée en un coup d’œil")),
         h("p", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
-      /* les cavalières : cartes à faire glisser, comme les chevaux (essai G demandé par Blandine 07/11 00h49) */
-      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" · fais glisser") : ""))),
-      h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, cav.map(function (x, r) {
-        var np = nomPrenom(x.l.nom), p0 = cavDe(x.l), ph = p0 && hsPhotoProfil(p0);
-        var ini = ((np[1] || "").charAt(0) + (np[0] || "").charAt(0)).toUpperCase() || "?";
-        return h("div", { key: "rc" + x.i, className: "rc-gc" },
-          h("div", { className: "haut" },
-            ph ? h("img", { className: "mono", src: ph, alt: "" }) : h("div", { className: "mono" }, ini),
-            h("div", { style: { minWidth: 0 } }, h("h4", null, np[0], np[1] ? h("span", null, np[1]) : null),
-              h("small", null, (r + 1) + (r ? F("e") : F("re")) + (x.l.licence ? F(" · lic. ") + x.l.licence : "")))),
-          [1, 2].map(function (n) {
-            var c = String(x.l["cheval" + n + "_nom"] || "").trim(), e = String(x.l["epreuve" + n] || "").trim();
-            if (!c && !e) return n === 2 ? null : h("div", { key: n, className: "rc-gt vide" }, F("Cheval à choisir"));
-            var k = c ? kTour(x.i, n) : 0;
-            return h("div", { key: n, className: "rc-gt" },
-              c ? h("img", { src: photoCh(c), alt: "" }) : h("span", { className: "rc-vide2" }),
-              h("div", { style: { minWidth: 0 } }, h("b", null, c || F("Cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null), h("em", null, e || F("épreuve à choisir"))));
-          }));
+      /* les cavalières : cartes photo deux par ligne, comme les cartes chevaux du « programme » (D) — essai demandé par Blandine
+         07/11 01h32. Fond : sa photo de profil si elle en a une, sinon la photo de son premier cheval. */
+      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
+      h("div", { className: "rc-dg" }, cav.map(function (x, r) {
+        var np = nomPrenom(x.l.nom), p0 = cavDe(x.l), pv = p0 && p0.avatar_url ? hsPhotoProfil(p0) : "";
+        var c1 = String(x.l.cheval1_nom || "").trim(), c2 = String(x.l.cheval2_nom || "").trim();
+        var fond = pv || (c1 ? photoCh(c1) : (c2 ? photoCh(c2) : ""));
+        var tours = [1, 2].map(function (n) { var c = String(x.l["cheval" + n + "_nom"] || "").trim(), e = String(x.l["epreuve" + n] || "").trim(); if (!c && !e) return null; var k = c ? kTour(x.i, n) : 0; return { c: c, e: e, k: k }; }).filter(Boolean);
+        return h("div", { key: "rc" + x.i, className: "rc-dc" },
+          fond ? h("img", { src: fond, alt: "" }) : null, h("div", { className: "voile" }),
+          h("span", { className: "rc-dn" }, String(r + 1)),
+          x.l.licence ? h("span", { className: "rc-dl" }, x.l.licence) : null,
+          h("div", { className: "rc-dt" },
+            h("h4", null, np[1] || np[0], np[1] ? h("span", null, np[0]) : null),
+            h("ol", null, tours.length ? tours.map(function (t, k) { return h("li", { key: k }, (t.c || F("cheval à choisir")), t.k ? h("span", { className: "sup" }, String(t.k)) : null, t.e ? h("em", null, " · " + t.e) : null); }) : h("li", { className: "libre" }, F("chevaux à choisir")))));
       })),
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
       nomsCh.length ? h(React.Fragment, null,
