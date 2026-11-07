@@ -801,6 +801,19 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🐴 07/11/2026 (20 h 05) — FICHE CHEVAL PERSONNALISABLE : OUVERTE AUX PROPRIÉTAIRES PREMIUM + TABLETTE / ORDINATEUR
+Blandine : « Ok continue et fais tout ce que tu peux faire tu as carte blanche dis moi quand c'est fini ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 10 : bouton « Personnaliser la fiche » pour TOUTE propriétaire du cheval ; Premium (ou modératrice) → mode personnalisation ; sans Premium → page Premium. Nouvelle fiche tablette / ordinateur branchée : blocs masqués, fond (dont photo et Ivoire) ; « En-tête » caché sur tablette / ordinateur (ne concerne que le téléphone). Ivoire : le texte posé sur une photo reste clair |
+| hype-ecran-cavalier.js | racine | version 12 : Ivoire — au retour en arrière, on ne remet que les couleurs changées (avant : tout le style était remis, ce qui pouvait déplacer des blocs) |
+| index.html | racine | ?v cheval 9 → 10, cavalier 11 → 12, build 20261107-2005 (rien d'autre) |
+· Aucun changement SQL / Stripe / tarifs : la base n'appliquait déjà les réglages que si la propriétaire est Premium.
+· Testé sur copie (téléphone 390 px et tablette 1180 px) : masquer Identité, fond Forêt, Ivoire, enregistrement, bouton sans Premium → page Premium.
+RESTE : déplacer les blocs (viendra avec la nouvelle fiche téléphone).
+
+════════════════════════════════════════════════════════════
+
 🐴 07/11/2026 (19 h 35) — FICHE CHEVAL PERSONNALISABLE (TÉLÉPHONE) : EN TEST SUR LE COMPTE DE BLANDINE
 Blandine : « Ok continue et fais tout ce que tu peux faire tu as carte blanche ».
 | Fichier | Où | Quoi |

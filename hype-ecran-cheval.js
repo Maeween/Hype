@@ -197,7 +197,8 @@ function EcranCheval() {
   var idPzc = (c && c.dbId) || (chevalDyn && chevalDyn.dbId) || null;
   React.useEffect(function () { var okP = true; setPzc(null); if (!idPzc) return; (async function () { try { var rP = await supa.rpc("cheval_perso_lire", { p_cheval: idPzc }); if (okP && rP && !rP.error && rP.data) setPzc(rP.data); } catch (eP) { } })(); return function () { okP = false; }; }, [idPzc]);
   var proprioPzc = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-  var peutPzc = proprioPzc && !!idPzc && (typeof estModerateurHype === "function" && moi && estModerateurHype(moi));   /* TEST : moderatrice seulement ; ensuite : proprietaire Premium */
+  var peutPzc = proprioPzc && !!idPzc;   /* 07/11 « Ok continue … carte blanche » : ouvert a toutes les proprietaires ; sans Premium le bouton ouvre la page Premium */
+  var accesPzc = !!ctx.premium || (typeof estModerateurHype === "function" && moi && estModerateurHype(moi));
   var pzcActif = (modePzc ? brouillonPzc : pzc) || {};
   function pzcCache(k) { return Array.isArray(pzcActif.caches) && pzcActif.caches.indexOf(k) >= 0; }
   function pzcChanger(f) { setBrouillonPzc(function (b) { var n = Object.assign({}, b || {}); f(n); return n; }); }
@@ -231,7 +232,9 @@ function EcranCheval() {
     function grad(sv) { return sv.replace(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/g, function (m, a, b2, d, al) { var v = [+a, +b2, +d]; al = al === undefined ? 1 : +al; if (estAcc(v)) return "rgba(" + ACC + "," + al + ")"; if (lum(v) < 0.25) return "rgba(244,239,230," + al + ")"; if (lum(v) > 0.75) return "rgba(" + TXT + "," + al + ")"; return m; }); }
     var occupe = false;
     function traiter(n) {
-      if (n.nodeType !== 1 || n.closest("header.hero,[data-pzc-ui]") || n.hasAttribute("data-pzc-iv")) return;
+      if (n.nodeType !== 1 || n.closest("header.hero,[data-pzc-hero],[data-pzc-ui]") || n.hasAttribute("data-pzc-iv")) return;
+      /* 07/11 : texte pose sur une photo (carte « Dernieres photos ») : on n y touche pas */
+      for (var anc = n.parentElement, nA = 0; anc && anc !== el && nA < 6; anc = anc.parentElement, nA++) { if (/url\(/.test(getComputedStyle(anc).backgroundImage) || anc.querySelector(":scope > img")) { n.setAttribute("data-pzc-iv", ""); return; } }
       var cs = getComputedStyle(n), st = {};
       var co = parse(cs.color); if (co) { if (estAcc(co)) st.color = "rgba(" + ACC + "," + co[3] + ")"; else if (lum(co) > 0.6) st.color = "rgba(" + TXT + "," + Math.max(co[3], 0.78) + ")"; }
       var bg = parse(cs.backgroundColor); if (bg && bg[3] > 0.05) { if (estAcc(bg)) st["background-color"] = "rgba(" + ACC + "," + bg[3] + ")"; else if (lum(bg) < 0.25) st["background-color"] = bg[3] > 0.5 ? "rgba(255,252,246,0.94)" : ("rgba(255,252,246," + bg[3] + ")"); }
@@ -240,17 +243,17 @@ function EcranCheval() {
       ["top", "right", "bottom", "left"].forEach(function (cote) { var bo = parse(cs["border" + cote.charAt(0).toUpperCase() + cote.slice(1) + "Color"]); if (!bo || bo[3] === 0) return; if (estAcc(bo)) st["border-" + cote + "-color"] = "rgba(" + ACC + "," + Math.max(bo[3], 0.5) + ")"; else if (lum(bo) > 0.5) st["border-" + cote + "-color"] = "rgba(" + TXT + "," + Math.min(0.25, bo[3] + 0.08) + ")"; });
       if (n.tagName === "path" || n.tagName === "svg" || n.tagName === "circle") { var k2 = parse(cs.stroke); if (k2 && (estAcc(k2) || lum(k2) > 0.6)) st.stroke = "rgb(" + (estAcc(k2) ? ACC : TXT) + ")"; }
       var cles = Object.keys(st); if (!cles.length) { n.setAttribute("data-pzc-iv", ""); return; }
-      if (!n.hasAttribute("data-pzc-orig")) n.setAttribute("data-pzc-orig", n.getAttribute("style") || ""); n.setAttribute("data-pzc-iv", "1");
+      /* 07/11 : on ne garde que les proprietes touchees (restaurer tout l attribut style ecrasait les mises a jour de React -> blocs deplaces) */ var sv0 = {}; try { sv0 = JSON.parse(n.getAttribute("data-pzc-orig") || "{}") || {}; } catch (eS) { sv0 = {}; } Object.keys(st).forEach(function (kk) { if (!(kk in sv0)) sv0[kk] = [n.style.getPropertyValue(kk), n.style.getPropertyPriority(kk)]; }); n.setAttribute("data-pzc-orig", JSON.stringify(sv0)); n.setAttribute("data-pzc-iv", "1");
       cles.forEach(function (kk) { n.style.setProperty(kk, st[kk], "important"); });
     }
     var raf = 0, mo = new MutationObserver(function (recs) { if (occupe) return; recs.forEach(function (r) { if (r.type === "attributes" && r.target.removeAttribute) r.target.removeAttribute("data-pzc-iv"); }); if (raf) return; raf = requestAnimationFrame(function () { raf = 0; passe(); }); });
     function passe() { occupe = true; try { [].slice.call(el.querySelectorAll("*")).forEach(traiter); } finally { occupe = false; } mo.takeRecords(); }
     passe(); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "class"] });
-    return function () { mo.disconnect(); if (raf) cancelAnimationFrame(raf); [].slice.call(el.querySelectorAll("[data-pzc-iv]")).forEach(function (n) { if (n.hasAttribute("data-pzc-orig")) { var o = n.getAttribute("data-pzc-orig"); if (o) n.setAttribute("style", o); else n.removeAttribute("style"); n.removeAttribute("data-pzc-orig"); } n.removeAttribute("data-pzc-iv"); }); };
+    return function () { mo.disconnect(); if (raf) cancelAnimationFrame(raf); [].slice.call(el.querySelectorAll("[data-pzc-iv]")).forEach(function (n) { if (n.hasAttribute("data-pzc-orig")) { var o = {}; try { o = JSON.parse(n.getAttribute("data-pzc-orig") || "{}") || {}; } catch (eO) { o = {}; } Object.keys(o).forEach(function (kk) { var v = o[kk] || []; if (v[0]) n.style.setProperty(kk, v[0], v[1] || ""); else n.style.removeProperty(kk); }); n.removeAttribute("data-pzc-orig"); } n.removeAttribute("data-pzc-iv"); }); };
   }, [pzcActif.fond, modePzc]);
   function pzcBouton() {
     if (!peutPzc || modePzc) return null;
-    return h("div", { key: "pzcBouton", style: { textAlign: "center", marginTop: 18 } }, h("button", { onClick: pzcOuvrir, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "1px solid #C5AA78", borderRadius: 999, background: "transparent", color: "#C5AA78", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 600, letterSpacing: 0.8, textTransform: "uppercase", cursor: "pointer" } },
+    return h("div", { key: "pzcBouton", style: { textAlign: "center", marginTop: 18 } }, h("button", { onClick: function () { if (accesPzc) pzcOuvrir(); else setEcran("premium"); }, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "1px solid #C5AA78", borderRadius: 999, background: "transparent", color: "#C5AA78", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 600, letterSpacing: 0.8, textTransform: "uppercase", cursor: "pointer" } },
       h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#C5AA78", strokeWidth: 1.8, strokeLinecap: "round" }, h("path", { d: "M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" }), h("circle", { cx: 16, cy: 6, r: 2 }), h("circle", { cx: 10, cy: 12, r: 2 }), h("circle", { cx: 18, cy: 18, r: 2 })),
       PZC("Personnaliser la fiche")));
   }
@@ -271,7 +274,7 @@ function EcranCheval() {
       h("div", { style: { display: "flex", gap: 8, marginTop: 10, overflowX: "auto" } },
         h("button", { onClick: function () { setFeuillePzc("blocs"); }, style: puce }, PZC("Blocs")),
         h("button", { onClick: function () { setFeuillePzc("fond"); }, style: puce }, PZC("Fond")),
-        h("button", { onClick: function () { setFeuillePzc("entete"); }, style: puce }, PZC("En-tête")),
+        nouvV4 ? null : h("button", { onClick: function () { setFeuillePzc("entete"); }, style: puce }, PZC("En-tête")),   /* 07/11 : l en-tete (bandeau / portrait) ne concerne que la fiche telephone */
         h("button", { onClick: function () { setBrouillonPzc({}); }, style: Object.assign({}, puce, { border: "1px solid rgba(243,238,228,0.25)", color: "#BDB6AA" }) }, PZC("Revenir à l'origine")))));
     if (feuillePzc) {
       var estB = feuillePzc === "blocs", estE = feuillePzc === "entete";
@@ -2711,7 +2714,7 @@ async function supprimerSouvenirOuvert() {
     })();
     var rondSt = { width: 44, height: 44, borderRadius: "50%", border: "1px solid " + CHL, background: "rgba(5,8,11,0.42)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", boxSizing: "border-box", padding: 0, color: CHL };
     var lie = !!estLieFiche;
-    var hero = h("header", { style: { position: "relative", height: D ? 420 : (L ? 330 : "calc(env(safe-area-inset-top) + 400px)"), overflow: "hidden" } },
+    var hero = h("header", { "data-pzc-hero": "1", style: { position: "relative", height: D ? 420 : (L ? 330 : "calc(env(safe-area-inset-top) + 400px)"), overflow: "hidden" } },
       h("img", { src: photoCh || ((typeof chevalDefaut === "function") ? chevalDefaut({ id: c.dbId || id, nom: c.nom, robe: c.robe, origines: (chevalDyn && chevalDyn.origines) || c.origines }) : "images/cheval-defaut-alezan.webp") /* (1157) cheval sans photo ; 02/11 (Blandine, choix A) : portrait de SA robe, sinon un des 6 en alternance */, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: (D || L) ? "62% 26%" : "60% 22%", display: "block" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlV ? "270deg" : "90deg") + ", rgba(5,8,11,0.94) 0%, rgba(5,8,11,0.72) " + ((D || L) ? "28%" : "20%") + ", rgba(5,8,11,0.18) " + ((D || L) ? "58%" : "62%") + ", rgba(5,8,11,0) 80%)" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,8,11,0.55) 0%, rgba(5,8,11,0) 22%, rgba(5,8,11,0) 52%, rgba(5,8,11,0.72) 84%, #05080B 100%)" } }),
@@ -3004,9 +3007,16 @@ async function supprimerSouvenirOuvert() {
 
     var esp = D ? 34 : (L ? 28 : 24);
     function sp(k) { return h("div", { key: k, style: { height: esp } }); }
-    return h("div", { className: "chv4", style: { position: "relative", background: "#05080B", paddingBottom: D ? 30 : 0 /* (1156) plus de marges cumulees sous la fin de page : seul le cadre de l appli garde la place de la barre du bas */, color: IV } },
-      hero, raccourcis, sp("s1"), blocAI, sp("s2"), origines, bandeauIpo ? sp("s3") : null, bandeauIpo, sp("s4"), resultats, sp("s5"), medias, sp("s6"), partage,
-      finPageCh());
+    /* 07/11 personnalisation (nouvelle fiche tablette / ordinateur) : memes blocs masques que sur telephone ; « resultats » masque si les 3 blocs de resultats le sont */
+    var pzItems = [["raccourcis", raccourcis], ["identite", blocAI], ["identite", origines], ["ipo", bandeauIpo], ["resultatsV4", resultats], ["medias", medias], ["partage", partage]];
+    var pzOut = [];
+    pzItems.forEach(function (it, iP) {
+      var elP = it[0] === "resultatsV4" ? ((pzcCache("resume") && pzcCache("derniers") && pzcCache("principaux")) ? pzM("resume", it[1]) : it[1]) : pzM(it[0], it[1]);
+      if (!elP) return;
+      if (pzOut.length) pzOut.push(sp("s" + iP));
+      pzOut.push(elP);
+    });
+    return h.apply(null, ["div", { className: "chv4", style: { position: "relative", background: pzcFondDe()[2] === "PHOTO" && pzcPhoto() ? "transparent" : pzcFondCss("#05080B"), paddingBottom: D ? 30 : 0 /* (1156) plus de marges cumulees sous la fin de page : seul le cadre de l appli garde la place de la barre du bas */, color: IV } }, hero, pzcBouton()].concat(pzOut).concat([finPageCh()]));
   }
 
   return h("div", { className: "chv chvr" + (largeCh ? " chvL" : "") + (menuCh ? " chvD" : "") + (nouvV4 ? " chvN" : "") /* 15/10 (1149) fiche sur tablette (chvL, des 768 px) et ordinateur (chvD, des 1024 px) */, ref: racinePzcRef, style: { "--teinte": teinte, position: "relative", zIndex: 0, background: pzcFondCss("#060709") } }, pzcFondPhoto(), pzcInterface(),   /* 07/11 personnalisation */

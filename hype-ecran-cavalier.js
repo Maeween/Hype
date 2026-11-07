@@ -261,7 +261,7 @@ function EcranMonCavalier() {
       ["top", "right", "bottom", "left"].forEach(function (cote) { var b = parse(cs["border" + cote.charAt(0).toUpperCase() + cote.slice(1) + "Color"]); if (!b || b[3] === 0) return; if (estAcc(b)) st["border-" + cote + "-color"] = "rgba(" + ACC + "," + Math.max(b[3], 0.5) + ")"; else if (lum(b) > 0.5) st["border-" + cote + "-color"] = "rgba(" + TXT + "," + Math.min(0.25, b[3] + 0.08) + ")"; });
       if (n.tagName === "path" || n.tagName === "svg" || n.tagName === "circle") { var k = parse(cs.stroke); if (k && (estAcc(k) || lum(k) > 0.6)) st.stroke = "rgb(" + (estAcc(k) ? ACC : TXT) + ")"; }
       var cles = Object.keys(st); if (!cles.length) { n.setAttribute("data-pz-iv", ""); return; }
-      if (!n.hasAttribute("data-pz-orig")) n.setAttribute("data-pz-orig", n.getAttribute("style") || ""); n.setAttribute("data-pz-iv", "1");
+      /* 07/11 : on ne garde que les proprietes touchees (restaurer tout l attribut style ecrasait les mises a jour de React -> blocs deplaces) */ var sv0 = {}; try { sv0 = JSON.parse(n.getAttribute("data-pz-orig") || "{}") || {}; } catch (eS) { sv0 = {}; } Object.keys(st).forEach(function (kk) { if (!(kk in sv0)) sv0[kk] = [n.style.getPropertyValue(kk), n.style.getPropertyPriority(kk)]; }); n.setAttribute("data-pz-orig", JSON.stringify(sv0)); n.setAttribute("data-pz-iv", "1");
       cles.forEach(function (kk) { n.style.setProperty(kk, st[kk], "important"); });
     }
     function passe() { occupe = true; try { [].slice.call(el.querySelectorAll("*")).forEach(traiter); } finally { occupe = false; } mo.takeRecords(); }
@@ -269,7 +269,7 @@ function EcranMonCavalier() {
     passe(); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "class"] });
     return function () {
       mo.disconnect(); if (raf) cancelAnimationFrame(raf);
-      [].slice.call(el.querySelectorAll("[data-pz-iv]")).forEach(function (n) { if (n.hasAttribute("data-pz-orig")) { var o = n.getAttribute("data-pz-orig"); if (o) n.setAttribute("style", o); else n.removeAttribute("style"); n.removeAttribute("data-pz-orig"); } n.removeAttribute("data-pz-iv"); });
+      [].slice.call(el.querySelectorAll("[data-pz-iv]")).forEach(function (n) { if (n.hasAttribute("data-pz-orig")) { var o = {}; try { o = JSON.parse(n.getAttribute("data-pz-orig") || "{}") || {}; } catch (eO) { o = {}; } Object.keys(o).forEach(function (kk) { var v = o[kk] || []; if (v[0]) n.style.setProperty(kk, v[0], v[1] || ""); else n.style.removeProperty(kk); }); n.removeAttribute("data-pz-orig"); } n.removeAttribute("data-pz-iv"); });
     };
   }, [pzActif.fond, pzActif.couleur, modePerso]);
   /* barre du mode personnalisation + feuilles Couleur / Fond */
