@@ -832,6 +832,17 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🖼️ 08/11/2026 (01 h 25) — FICHE CHEVAL : PHOTO DE LA CARTE « IDENTITÉ & ORIGINES » RECADRÉE
+Blandine (00 h 04, capture de Rizotto) : « t'as vu le décadrage de la photo ça a jamais été comme ça ».
+· Cause : la photo s'étirait sur toute la hauteur du texte (long pour Rizotto : origines sur plusieurs lignes) et la petite vignette 360 × 440 était donc agrandie et rognée. Code de la carte inchangé depuis le 06/11 au soir ; la façon de fabriquer les vignettes a changé le 06/11 (« photos plus nettes »).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 19 : la photo garde un cadre 4/5 (celui de sa vignette), centrée à côté du texte, au lieu de s'étirer — téléphone |
+| index.html | racine | ?v cheval 18 → 19, build 20261108-0125 (rien d'autre) |
+· PUBLIÉ ([publier]). Testé sur copie avec une photo en hauteur.
+
+════════════════════════════════════════════════════════════
+
 🐎 08/11/2026 (01 h 00) — FICHE CHEVAL TÉLÉPHONE : HAUT DE PAGE SANS BORD NET
 Blandine (23 h 53) : « Le découpage visuel du hero est abrupt » ; « t'as fait le retour à avant ? ».
 · Vérifié sur copie : la fiche téléphone est identique à celle du 06/11 au soir (avant mes changements), seul le bouton « Personnaliser la fiche » s'ajoute ; les plaques et flots de Rizotto sont bien là, sous la carte IPO. Le bord net du haut et la photo entière (non recadrée) datent du 04/11 (« dézoome les hero des chevaux, ils sont tous coupés »).
