@@ -1503,7 +1503,7 @@ function EcranMonCavalier() {
           var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
           var sigleG = (String(g.__club || "").match(/\(([^()]{2,12})\)\s*$/) || [])[1] || "";
           var saisonG = g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645", "赛季", "Seizoen", "Temporada", "Säsong", "Сезон", "Sezon", "시즌") + " " + String(g.saison).replace(/\s*[-\u2013]\s*/, " \u2013 ")) : "";
-          var meta = [sigleG ? "" : g.__club, saisonG, niv].filter(Boolean);
+          var meta = [sigleG || g.__club, saisonG, niv].filter(Boolean);   /* 08/11 (Blandine, option 1) : le club (ou son sigle) toujours sur la petite ligne, jamais colle au nom de l equipe */
           var labG = autreV2 ? T("Son groupe", "Their group", "Su grupo", "Il suo gruppo", "\u6240\u5c5e\u30b0\u30eb\u30fc\u30d7", "Ihre Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u0647\u0627", "TA的小组", "Hun groep", "O grupo dele(a)", "Deras grupp", "Группа", "Jej grupa", "그의 그룹") : T("Mon groupe", "My group", "Mi grupo", "Il mio gruppo", "\u79c1\u306e\u30b0\u30eb\u30fc\u30d7", "Meine Gruppe", "\u0645\u062c\u0645\u0648\u0639\u062a\u064a", "我的小组", "Mijn groep", "Meu grupo", "Min grupp", "Моя группа", "Moja grupa", "내 그룹");
           var mG = "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 0%, #000 55%)";
           return h("div", { key: "grp" + g.id, role: "button", "data-groupe-cavalier": g.id, "aria-disabled": sansPageG ? "true" : undefined,
@@ -1519,7 +1519,7 @@ function EcranMonCavalier() {
             h("div", { style: { display: "flex", alignItems: "center", gap: cavTab ? 12 : 10, marginTop: cavTab ? 10 : 8, minWidth: 0 } },
               h("img", { src: photoG, alt: "", "aria-hidden": "true", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 auto", width: cavTab ? 58 : 46, height: cavTab ? 42 : 34, borderRadius: 6, objectFit: "cover", objectPosition: "center 35%", border: "1px solid rgba(243,238,228,0.18)", background: "#101D22" } }),
               h("div", { style: { minWidth: 0 } },
-                h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 21 : 18, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, h("bdi", null, (g.nom || "") + (sigleG ? " \u2013 " + sigleG : ""))),
+                h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? 21 : 18, fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, h("bdi", null, g.nom || "")),
                 meta.length ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12.5 : 11.5, color: "rgba(243,238,228,0.75)", marginTop: 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
                   meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); })) : null)),
             sansPageG
