@@ -69,7 +69,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 4;
+  var I18N_V = 5;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -230,6 +230,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             else res.controles = (rct && rct.data) || [];
             try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
             if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
+            /* 07/11 : le personnel (cartes pro qui expirent → Les échéances), seulement pour les responsables */
+            if (res.peutGerer) { try { var rpe = await supa.from("registre_personnel").select("*").eq("club_clef", clef).limit(500); if (rpe && !rpe.error) res.personnel = rpe.data || []; } catch (ePe) { } }
           } catch (eF) { }
         } catch (e) { res.erreur = String((e && e.message) || e); }
         if (vif) setD(res);
@@ -1558,6 +1560,14 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       });
       (d.docsReg || []).forEach(function (x) { if (x.type === "camion" && x.valable_jusqu) items.push({ k: "dv" + x.id, date: String(x.valable_jusqu).slice(0, 10), ch: null, titre: x.titre || "Papier du camion", sous: "Fin de validité · papier du camion", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } }); });
       if (d.fiche && d.fiche.autorisation_transport_fin) items.push({ k: "aut", date: String(d.fiche.autorisation_transport_fin).slice(0, 10), ch: null, titre: "Autorisation de transport", sous: "Fin de validité · à renouveler auprès de la DDPP", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } });
+      /* 07/11 : les dates des obligations (page « Les obligations ») et les cartes pro du personnel */
+      var plus = function (iso, mois) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; var dd = new Date(+m[1], +m[2] - 1 + mois, +m[3]); return dd.getFullYear() + "-" + String(dd.getMonth() + 1).padStart(2, "0") + "-" + String(dd.getDate()).padStart(2, "0"); };
+      var ouvrirOb = function () { ouvrir("obligations-ecurie"); };
+      if (d.fiche && d.fiche.extincteurs_verif) items.push({ k: "ext", date: plus(d.fiche.extincteurs_verif, 12), ch: null, titre: "Les extincteurs", sous: "Vérification annuelle", photo: PHOTOS.obligations, clic: ouvrirOb });
+      if (d.fiche && d.fiche.duerp_maj) items.push({ k: "duerp", date: plus(d.fiche.duerp_maj, 12), ch: null, titre: "Le document unique", sous: "Mise à jour annuelle", photo: PHOTOS.obligations, clic: ouvrirOb });
+      if (d.fiche && d.fiche.trousse_verif) items.push({ k: "trousse", date: plus(d.fiche.trousse_verif, 6), ch: null, titre: "La trousse de secours", sous: "À vérifier tous les 6 mois", photo: PHOTOS.obligations, clic: ouvrirOb });
+      if (d.fiche && d.fiche.assurance_rc_fin) items.push({ k: "rc", date: String(d.fiche.assurance_rc_fin).slice(0, 10), ch: null, titre: "L'assurance RC", sous: "Fin du contrat · à renouveler", photo: PHOTOS.obligations, clic: ouvrirOb });
+      (d.personnel || []).forEach(function (x) { if (x.carte_pro_fin && !x.date_sortie) items.push({ k: "cp" + x.id, date: String(x.carte_pro_fin).slice(0, 10), ch: null, titre: "Carte professionnelle", sous: [x.prenoms, x.nom].filter(Boolean).join(" ") + " · à renouveler", photo: PHOTOS.detenteur, clic: function () { ouvrir("personnel-ecurie"); } }); });
       if (d.peutGerer) {
         var ft = finTrimestre(auj);
         items.push({ k: "reg" + ft, date: ft, ch: null, titre: "Imprimer le registre", sous: "Fin du trimestre · registre tenu sur l'appli", photo: PHOTOS.registre, clic: function () { ouvrir("registre-imprimer"); } });
@@ -2040,6 +2050,37 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var c = useClub();
     var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
     var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+    /* 07/11 (carte blanche) : « Tes dates » — dernières vérifications, qui deviennent des rappels dans Les échéances */
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var d = useDonneesEcurie(c.club, recharge);
+    var _dt = React.useState({}); var dates = _dt[0], setDates = _dt[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    React.useEffect(function () { if (d && d.fiche) setDates({ extincteurs_verif: d.fiche.extincteurs_verif || "", duerp_maj: d.fiche.duerp_maj || "", trousse_verif: d.fiche.trousse_verif || "", assurance_rc_fin: d.fiche.assurance_rc_fin || "" }); }, [d]);
+    async function enregistrerDates() {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("ecurie_registre").upsert({ club_clef: clefDe(c.club), club_nom: c.club, extincteurs_verif: dates.extincteurs_verif || null, duerp_maj: dates.duerp_maj || null, trousse_verif: dates.trousse_verif || null, assurance_rc_fin: dates.assurance_rc_fin || null, maj_le: new Date().toISOString() }, { onConflict: "club_clef" }).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+        setMsg("✓ Enregistré"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    function blocDates() {
+      if (!d || !d.peutGerer) return null;
+      var ch = function (k, lab, aide) { return [h("label", { key: k + "l", htmlFor: "hgo-" + k }, lab), h("input", { key: k, id: "hgo-" + k, type: "date", value: dates[k] || "", onChange: function (e) { setMsg(""); var n = Object.assign({}, dates); n[k] = e.target.value; setDates(n); } }), aide ? h("div", { key: k + "a", className: "hg-aide" }, aide) : null]; };
+      return h("div", null,
+        h("h2", { className: "hv3-h2" }, "Tes dates"),
+        h("div", { className: "hg-f", style: { padding: "0 4px" } },
+          ch("extincteurs_verif", "Dernière vérification des extincteurs", "Rappel un an après."),
+          ch("duerp_maj", "Dernière mise à jour du document unique", "Rappel un an après."),
+          ch("trousse_verif", "Dernière vérification de la trousse de secours", "Rappel six mois après."),
+          ch("assurance_rc_fin", "Fin de l'assurance responsabilité civile", "Rappel à cette date."),
+          h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: enregistrerDates }, envoi ? "Enregistrement…" : "Enregistrer mes dates"),
+          msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+          h("div", { className: "hg-aide", style: { marginTop: 10 } }, "Les rappels arrivent dans « Les échéances », avec les cartes professionnelles notées dans « Le personnel ».")));
+    }
     function ouvrir(ecran) { try { window.__gestionClub = c.club; } catch (e) { } setEcran(ecran); }
     function lien(url, txt) { return h("a", { href: url, target: "_blank", rel: "noopener noreferrer", className: "hg-btn", style: { display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", textDecoration: "none", marginTop: 12 } }, txt); }
     var n = function (cat) { return OBLIGS.filter(function (a) { return cat === "tous" || a.cat === cat; }).length; };
@@ -2064,6 +2105,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : (a.lienInterne === "personnel-ecurie" ? "Ouvrir Le personnel" : "Ouvrir Le registre")) : null,
             lien(a.source, "Lire la source")) : null);
       })),
+      blocDates(),
       h("div", { className: "hg-sous" }, "Vérifié le 7 novembre 2026 sur des sources officielles. Les règles changent : vérifie toujours la source, et demande à ta mairie, aux pompiers ou au service jeunesse et sports de ton département pour ce qui dépend de ton cas. Hype t'aide à ne rien oublier ; la responsabilité reste celle du dirigeant."),
       LEGAL(h));
     return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
@@ -2117,7 +2159,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     function ouvrirLigne(l) {
       if (ouvert === (l ? l.id : "nouveau")) { setOuvert(null); return; }
       setMsg(""); setConfSuppr(false);
-      var v = {}; ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes"].forEach(function (k) { v[k] = (l && l[k]) || ""; });
+      var v = {}; ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin"].forEach(function (k) { v[k] = (l && l[k]) || ""; });
       v.temps_partiel = !!(l && l.temps_partiel);
       if (!l) { v.date_entree = isoAuj(); v.nationalite = "Française"; }
       setVal(v); setOuvert(l ? l.id : "nouveau");
@@ -2130,7 +2172,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       setEnvoi(true); setMsg("");
       try {
         var ligne = { club_clef: clefDe(c.club), temps_partiel: !!val.temps_partiel, maj_le: new Date().toISOString() };
-        ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes"].forEach(function (k) { var x = String(val[k] || "").trim(); ligne[k] = x || null; });
+        ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin"].forEach(function (k) { var x = String(val[k] || "").trim(); ligne[k] = x || null; });
         var r = l ? await supa.from("registre_personnel").update(ligne).eq("id", l.id).select("*") : await supa.from("registre_personnel").insert(ligne).select("*");
         if (r && r.error) throw new Error(r.error.message || String(r.error));
         if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
@@ -2178,6 +2220,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         choix("type_contrat", "Contrat", CONTRATS),
         champ("emploi", "Emploi", { ex: "ex. Palefrenier soigneur, enseignant" }),
         stage ? champ("tuteur", "Tuteur du stage") : champ("qualification", "Qualification", { ex: "ex. BPJEPS, CAP, sans diplôme" }),
+        stage ? null : champ("carte_pro_numero", "Carte professionnelle (si la personne enseigne)", { ex: "N° de la carte" }),
+        stage || !val.carte_pro_numero ? null : champ("carte_pro_fin", "Carte pro valable jusqu'au", { type: "date" }),
         h("label", { key: "tp", style: { display: "flex", alignItems: "center", gap: 10, textTransform: "none", letterSpacing: 0, fontSize: 14, color: "#F3EEE4" } },
           h("input", { type: "checkbox", checked: !!val.temps_partiel, onChange: function (e) { maj("temps_partiel", e.target.checked); }, style: { width: 20, minHeight: 20 } }), "Temps partiel"),
         champ("date_entree", "Date d'entrée", { type: "date" }), champ("date_sortie", "Date de sortie (s'il est parti)", { type: "date" }),

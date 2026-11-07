@@ -713,6 +713,15 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   d'embauche + stagiaires à part, art. L. 1221-13 et D. 1221-23).
   Suppression réservée aux erreurs de saisie (le registre se garde 5 ans
   après chaque départ). 14 langues. PUBLIÉ build 20261107-0610.
+· 07/11 10 h 30 (carte blanche) → RAPPELS DES OBLIGATIONS. SQL PASSÉ
+  (sql-07-11-obligations-dates.sql : colonnes vides ajoutées, rien d'autre).
+  Page « Les obligations » : bloc « Tes dates » (responsables seulement) —
+  dernière vérification des extincteurs, dernière mise à jour du document
+  unique, dernière vérification de la trousse de secours, fin de l'assurance
+  RC. « Le personnel » : n° de carte professionnelle + date de fin. Tout
+  remonte dans « Les échéances » : extincteurs et document unique 1 an
+  après, trousse 6 mois après, assurance RC à sa date, carte pro de chaque
+  personne encore présente à sa date. 14 langues. PUBLIÉ build 20261107-1135.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
