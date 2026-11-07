@@ -27,7 +27,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » RÉGLÉS le 07/11 20h15 (règlement AE 2026 complet) ; photos : on garde celles d'aujourd'hui (Blandine 07/11 19h51), nouvelles photos ChatGPT plus tard quand la limite d'images sera levée (prompts donnés le 07/11) ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; accès PREMIUM décidé (07/11 19h52) et prêt (non publié) ; OUVERTES à tous le 07/11 22h45 (build 20261107-2255) avec leurs 42 pages Google/Bing
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
-- [07/11] Galop 9 : les 19 cours OUVERTS aux Premium le 07/11 soir (build 20261107-2130), même règle que les Galops 2 à 7 (début de chapitre pour les non-abonnés), traduits en 14 langues, pages Google en ligne. Reste : photos des cours, titre du cours 6 (« La charte du bien-être équin » à garder ou renommer) (attend : Blandine)
+- [07/11] Galop 9 : les 19 cours OUVERTS aux Premium le 07/11 soir (build 20261107-2130), même règle que les Galops 2 à 7 (début de chapitre pour les non-abonnés), traduits en 14 langues, pages Google en ligne. Reste : photos des cours, titre du cours 6 FAIT le 07/11 (« Éthologie et bien-être équin ») (attend : Blandine)
 - [07/11] Galop 8 : les 20 cours OUVERTS aux Premium le 07/11 soir (build 20261107-2130), même règle que les Galops 2 à 7, traduits en 14 langues, pages Google en ligne. Reste : photos des cours (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
@@ -19368,5 +19368,16 @@ XP des Galops 8 et 9 = 360 et 420 (suite de 40, 70, 110, 160, 200, 240, 300). Se
 |---|---|---|
 | index.html | racine | HYPE_FAMILLES (galops) 7 → 9 marches ; nom traduit ; classement de démonstration jusqu'au Galop 9 |
 Conséquence : une cavalière qui avait « fini » les 7 Galops voit 2 marches de plus à gagner.
+
+════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (23 h 00) — GALOP 9 COURS 6 RENOMMÉ « ÉTHOLOGIE ET BIEN-ÊTRE ÉQUIN » — PUBLIÉ (build 20261107-2320)
+Choix 1 de Blandine (titre fidèle au programme FFE : « principes d'éthologie et de bien-être équin »). Ancien titre : « La charte du bien-être équin ».
+Titre traduit dans les 13 autres langues ; la page Google du cours prend le nouveau titre (nouvelle adresse) à la prochaine mise en ligne.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | v14 : titre du cours 6 |
+| hype-cours-sommaire.js | racine | régénéré |
+| index.html | racine | ?v galop9 → 14 |
 
 ════════════════════════════════════════════════════════════
