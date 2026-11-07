@@ -19278,11 +19278,3 @@ Fichiers à publier (en plus des entrées de 19h30 et 20h15) :
 - Fichiers des prépas : hype-ecran-prepa.js (v=5), i18n/prepa-*.json (13), index.html (marqueur 20261107-2055), SUIVI.md.
 - À tester sur iPhone : Galops › « Deviens enseignant » › AE : nouvelles parties ; bouton « Voir comme une non-abonnée » (attend : Blandine)
 
-## 07/11/2026 20h05 — PRÊT, NON PUBLIÉ — Pages Google et Bing des prépas (Blandine 19h57 : « ajoute les bons mots dans Google et Bing », « Référencement »)
-- 42 pages publiques : /<langue>/prepa-animateur-equitation/, /prepa-bpjeps-equitation/, /prepa-dejeps-equitation/ × 14 langues (le DES n'en a pas : non publié).
-- Contenu : titre et description avec les mots cherchés en français (« Prépa BPJEPS équitation : TEP, épreuves, notation et dispenses », « Prépa DEJEPS sports équestres », « Prépa Animateur d'Équitation (AE) »…), la partie gratuite « En bref » (même texte que dans l'appli, traduit), le sommaire de la prépa (tests d'entrée, BC/UC, dispenses…), bouton « Ouvrir Hype », liens vers les 2 autres prépas, liens entre les 14 langues. Le détail payant n'est PAS sur ces pages.
-- Ajoutées à sitemap-pages.xml (Google le lit) ; Bing, DuckDuckGo, Yahoo, Ecosia, Qwant sont prévenus tout seuls à la publication (outils/indexnow.cjs).
-- Fabriquées par outils/seo-prepas.py (+ outils/seo-prepas-textes.json) : à relancer si les textes des prépas changent.
-- ⚠️ Ces pages envoient vers l'appli, où les prépas ne sont visibles que des modératrices : il faut OUVRIR les prépas à tous (avec le verrou Premium) au moment de publier ces pages (attend : Blandine)
-Fichiers : 42 × <langue>/prepa-…/index.html (NOUVEAUX), sitemap-pages.xml, outils/seo-prepas.py (NOUVEAU), outils/seo-prepas-textes.json (NOUVEAU), SUIVI.md.
-
