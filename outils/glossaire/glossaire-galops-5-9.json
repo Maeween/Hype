@@ -1,5 +1,5 @@
 {
- "description": "Glossaire équestre commun des cours Hype (Galops 7, 8, 9), 14 langues. Construit le 07/11/2026 à partir des lexiques des cours + décisions d’harmonisation. Niveaux : proposé / vérifié / validé par un natif. Aucune entrée n’est encore « validé par un natif ». Fichier de référence : l’appli ne le lit pas.",
+ "description": "Glossaire équestre commun des cours Hype (Galops 5 à 9), 14 langues. Construit à partir des lexiques des cours (après harmonisation du 07/11/2026) + décisions de vocabulaire. Niveaux : proposé / vérifié / validé par un natif ; aucune entrée n’est encore « validé par un natif ». Fichier de référence : l’appli ne le lit pas. Les Galops 1 à 4 n’ont pas de lexique dans leurs cours.",
  "langues": [
   "fr",
   "en",
@@ -18,6 +18,49 @@
  ],
  "maj": "2026-11-07",
  "termes": [
+  {
+   "terme_fr": "4 rênes",
+   "definition_fr": "deux rênes dans chaque main, celle du filet et celle de l'enrênement.",
+   "traductions": {
+    "en": "4 reins",
+    "es": "4 riendas",
+    "it": "4 redini",
+    "ja": "4本の手綱",
+    "de": "4 Zügel",
+    "ar": "4 أعنة",
+    "zh": "四根缰绳",
+    "nl": "4 teugels",
+    "pt": "4 rédeas",
+    "sv": "4 tyglar",
+    "ru": "4 повода",
+    "pl": "4 wodze",
+    "ko": "4개의 고삐"
+   },
+   "cours": [
+    "g6n-03"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
   {
    "terme_fr": "Abattu",
    "definition_fr": "Se dit d'un cheval sans énergie, tête basse, peu attentif.",
@@ -63,7 +106,7 @@
   },
   {
    "terme_fr": "Abord",
-   "definition_fr": "Les dernières foulées avant un obstacle.",
+   "definition_fr": "Les dernières foulées avant l'obstacle ; il doit être droit et centré.",
    "traductions": {
     "en": "Approach",
     "es": "Aproximación",
@@ -74,12 +117,13 @@
     "zh": "接近",
     "nl": "Aanloop",
     "pt": "Abordagem",
-    "sv": "Framridning",
-    "ru": "Подход",
+    "sv": "Anridning",
+    "ru": "Заход",
     "pl": "Najazd",
     "ko": "접근"
    },
    "cours": [
+    "g5n-11",
     "g8n-16",
     "g9n-13"
    ],
@@ -100,6 +144,65 @@
      "pl": "praktyka",
      "ko": "실습"
     },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Activité",
+   "definition_fr": "Énergie que met le cheval dans ses déplacements, grâce à la poussée des postérieurs.",
+   "traductions": {
+    "en": "Activity",
+    "es": "Actividad",
+    "it": "Attività",
+    "ja": "活発さ",
+    "de": "Aktivität",
+    "ar": "النشاط",
+    "zh": "活跃度",
+    "nl": "Activiteit",
+    "pt": "Atividade",
+    "sv": "Aktivitet",
+    "ru": "Активность",
+    "pl": "Aktywność",
+    "ko": "활동성"
+   },
+   "cours": [
+    "g6n-09"
+   ],
+   "partie": [
     {
      "fr": "pratique",
      "en": "practical",
@@ -201,6 +304,49 @@
      "ru": "с земли",
      "pl": "z ziemi",
      "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Aides du galop",
+   "definition_fr": "Les aides coordonnées des jambes, des mains et de l'assiette qui demandent le galop sur un pied précis.",
+   "traductions": {
+    "en": "Canter aids",
+    "es": "Ayudas del galope",
+    "it": "Aiuti del galoppo",
+    "ja": "駈歩の扶助",
+    "de": "Galopphilfen",
+    "ar": "مساعدات العدو",
+    "zh": "跑步扶助",
+    "nl": "Galophulpen",
+    "pt": "Ajudas do galope",
+    "sv": "Galopphjälper",
+    "ru": "Помощи для галопа",
+    "pl": "Pomoce do galopu",
+    "ko": "구보의 보조"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -330,6 +476,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Allure artificielle",
+   "definition_fr": "une allure obtenue par le dressage, comme le passage.",
+   "traductions": {
+    "en": "Artificial gait",
+    "es": "Aire artificial",
+    "it": "Andatura artificiale",
+    "ja": "人工的な歩法",
+    "de": "Künstliche Gangart",
+    "ar": "المشية المصطنعة",
+    "zh": "人为的步法",
+    "nl": "Kunstmatige gang",
+    "pt": "Andamento artificial",
+    "sv": "Konstgjord gångart",
+    "ru": "Искусственный аллюр",
+    "pl": "Chód sztuczny",
+    "ko": "인공적인 걸음"
+   },
+   "cours": [
+    "g6n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -510,7 +699,7 @@
   },
   {
    "terme_fr": "Amplitude",
-   "definition_fr": "La longueur des foulées du cheval.",
+   "definition_fr": "La longueur de la foulée.",
    "traductions": {
     "en": "Stride length",
     "es": "Amplitud",
@@ -527,11 +716,28 @@
     "ko": "보폭"
    },
    "cours": [
+    "g5n-08",
     "g7n-14",
     "g8n-13",
     "g9n-04"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -707,7 +913,8 @@
     ]
    },
    "a_eviter": {},
-   "niveau": "proposé"
+   "niveau": "proposé",
+   "note": "Deux sens : angle de l’épaule en dedans (de Winkel) et obstacle d’angle en CSO (de Ecke)."
   },
   {
    "terme_fr": "Antérieur intérieur",
@@ -746,6 +953,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Anticorps",
+   "definition_fr": "les défenses que le poulain reçoit de sa mère par le colostrum.",
+   "traductions": {
+    "en": "Antibodies",
+    "es": "Anticuerpos",
+    "it": "Anticorpi",
+    "ja": "抗体",
+    "de": "Antikörper",
+    "ar": "الأجسام المضادة",
+    "zh": "抗体",
+    "nl": "Antistoffen",
+    "pt": "Anticorpos",
+    "sv": "Antikroppar",
+    "ru": "Антитела",
+    "pl": "Przeciwciała",
+    "ko": "항체"
+   },
+   "cours": [
+    "g6n-10"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -796,6 +1046,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Aplomb",
+   "definition_fr": "à l'arrêt, le cheval bien posé sur ses quatre membres.",
+   "traductions": {
+    "en": "Square",
+    "es": "Aplomo",
+    "it": "Appiombo",
+    "ja": "肢勢",
+    "de": "Gerade Stellung der Beine",
+    "ar": "استواء القوائم",
+    "zh": "站姿端正（aplomb）",
+    "nl": "Beenstand",
+    "pt": "Aprumo",
+    "sv": "Balans",
+    "ru": "Правильная постановка конечностей",
+    "pl": "Ustawienie kończyn",
+    "ko": "반듯한 자세"
+   },
+   "cours": [
+    "g6n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Aplombs",
    "definition_fr": "Direction des membres par rapport au corps et au sol.",
    "traductions": {
@@ -832,6 +1125,49 @@
      "ru": "теория",
      "pl": "teoria",
      "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Appel",
+   "definition_fr": "Le moment où le cheval décolle pour sauter.",
+   "traductions": {
+    "en": "Take-off",
+    "es": "Batida",
+    "it": "Battuta",
+    "ja": "踏み切り",
+    "de": "Absprung",
+    "ar": "الارتقاء",
+    "zh": "起跳",
+    "nl": "Afzet",
+    "pt": "Batida",
+    "sv": "Avsprång",
+    "ru": "Отталкивание",
+    "pl": "Odbicie",
+    "ko": "도약"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -942,8 +1278,180 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Arrêt carré (on dit aussi d'aplomb)",
+   "definition_fr": "le cheval arrêté, les quatre membres bien sous lui, comme aux quatre coins d'un rectangle.",
+   "traductions": {
+    "en": "Square halt (also called “d'aplomb”)",
+    "es": "Parada cuadrada (se dice también de aplomo)",
+    "it": "Fermata in appiombo (si dice anche squadrata)",
+    "ja": "四肢をそろえた停止（均等に立つとも言う）",
+    "de": "Quadratischer Halt (man sagt auch gerade stehend)",
+    "ar": "التوقف المربع (ويقال أيضا المستوي)",
+    "zh": "方正停止（也说站得端正）",
+    "nl": "Vierkante halt (ook wel “in evenwicht” genoemd)",
+    "pt": "Parada aprumada (também se diz em quadrado)",
+    "sv": "Fyrkantig halt (man säger också i balans)",
+    "ru": "Ровная остановка (говорят также «на четыре ноги»)",
+    "pl": "Zatrzymanie równe (mówi się też: na czterech kończynach)",
+    "ko": "사각 정지(반듯한 정지라고도 해요)"
+   },
+   "cours": [
+    "g6n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Arrêt progressif",
+   "definition_fr": "mot de la reprise Club 2 Grand Prix pour l'arrêt demandé depuis le trot.",
+   "traductions": {
+    "en": "Progressive halt",
+    "es": "Parada progresiva",
+    "it": "Arrêt progressif",
+    "ja": "段階的な停止",
+    "de": "Progressiver Halt",
+    "ar": "التوقف التدريجي",
+    "zh": "渐进停止",
+    "nl": "Geleidelijke halt",
+    "pt": "Parada progressiva",
+    "sv": "Progressiv halt",
+    "ru": "Постепенная остановка",
+    "pl": "Zatrzymanie stopniowe",
+    "ko": "점진적 정지"
+   },
+   "cours": [
+    "g6n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Arrêtoir",
+   "definition_fr": "petite pièce de cuir ou de caoutchouc sur la rêne, qui empêche l'anneau de la martingale d'aller jusqu'au mors.",
+   "traductions": {
+    "en": "Rein stop",
+    "es": "Tope",
+    "it": "Fermo",
+    "ja": "ストッパー",
+    "de": "Zügelstopper",
+    "ar": "المثبّت",
+    "zh": "缰挡",
+    "nl": "Teugelstopper",
+    "pt": "Batente",
+    "sv": "Tyglarstopp",
+    "ru": "Ограничитель",
+    "pl": "Ogranicznik",
+    "ko": "스토퍼"
+   },
+   "cours": [
+    "g6n-03"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Articulation",
+   "definition_fr": "Jonction mobile entre deux os : épaule, genou, jarret, boulet…",
+   "traductions": {
+    "en": "Joint",
+    "es": "Articulación",
+    "it": "Articolazione",
+    "ja": "関節",
+    "de": "Gelenk",
+    "ar": "المفصل",
+    "zh": "关节",
+    "nl": "Gewricht",
+    "pt": "Articulação",
+    "sv": "Led",
+    "ru": "Сустав",
+    "pl": "Staw",
+    "ko": "관절"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Assiette",
-   "definition_fr": "Façon dont le cavalier est assis et accompagne le mouvement du cheval.",
+   "definition_fr": "La façon dont le cavalier est assis et suit le mouvement du cheval.",
    "traductions": {
     "en": "Seat",
     "es": "Asiento",
@@ -960,6 +1468,7 @@
     "ko": "기좌"
    },
    "cours": [
+    "g5n-08",
     "g9n-11"
    ],
    "partie": [
@@ -978,6 +1487,65 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Association",
+   "definition_fr": "Lien que fait le cheval entre deux choses qui se suivent : un signal et ce qui suit, ou son geste et ce qui suit.",
+   "traductions": {
+    "en": "Association",
+    "es": "Asociación",
+    "it": "Associazione",
+    "ja": "連合（結びつけ）",
+    "de": "Verknüpfung",
+    "ar": "الربط",
+    "zh": "联想",
+    "nl": "Associatie",
+    "pt": "Associação",
+    "sv": "Association",
+    "ru": "Ассоциация",
+    "pl": "Skojarzenie",
+    "ko": "연합"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -1157,6 +1725,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Balzane",
+   "definition_fr": "partie blanche en bas d'un membre.",
+   "traductions": {
+    "en": "White sock",
+    "es": "Calzado",
+    "it": "Balzana",
+    "ja": "白斑",
+    "de": "Weißes Abzeichen am Fesselbereich (Balzane)",
+    "ar": "البلزان (البياض)",
+    "zh": "白袜",
+    "nl": "Kous",
+    "pt": "Balzana",
+    "sv": "Vit strumpa",
+    "ru": "Белый носок",
+    "pl": "Odmiana na nodze",
+    "ko": "흰 양말(발목 흰 털)"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Bande de polo",
    "definition_fr": "Bande en polaire posée sans sous-bande pour protéger le bas du membre pendant le travail.",
    "traductions": {
@@ -1201,7 +1812,7 @@
   },
   {
    "terme_fr": "Bande de repos",
-   "definition_fr": "Bande posée au box, sur un coton épais, pour reposer les membres.",
+   "definition_fr": "Bande large et un peu élastique, posée sur une sous-bande, au box ou pour le transport, pour protéger le bas du membre et le garder au chaud.",
    "traductions": {
     "en": "Stable bandage",
     "es": "Venda de descanso",
@@ -1218,9 +1829,26 @@
     "ko": "휴식용 붕대"
    },
    "cours": [
+    "g5n-05",
     "g9n-01"
    ],
    "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -1296,6 +1924,49 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Banquette",
+   "definition_fr": "une marche à monter, un plateau, une marche à descendre.",
+   "traductions": {
+    "en": "Bank",
+    "es": "Banqueta",
+    "it": "Banchina",
+    "ja": "バンケット",
+    "de": "Bank",
+    "ar": "المصطبة",
+    "zh": "台阶障碍（banquette）",
+    "nl": "Bank",
+    "pt": "Banqueta",
+    "sv": "Bankett",
+    "ru": "Банкет",
+    "pl": "Bankiet",
+    "ko": "뱅케트"
+   },
+   "cours": [
+    "g6n-14"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -1382,6 +2053,92 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Barre arrière",
+   "definition_fr": "Barre fermée derrière le cheval dans le van, pour l'empêcher de reculer.",
+   "traductions": {
+    "en": "Breech bar",
+    "es": "Barra trasera",
+    "it": "Barra posteriore",
+    "ja": "後ろのバー",
+    "de": "Heckstange",
+    "ar": "العارضة الخلفية",
+    "zh": "后挡杆",
+    "nl": "Achterboom",
+    "pt": "Barra traseira",
+    "sv": "Bakre bom",
+    "ru": "Задняя перекладина",
+    "pl": "Tylny drążek",
+    "ko": "뒷바"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Barre en oreille",
+   "definition_fr": "barre posée en biais, du haut du chandelier intérieur jusqu'au sol, pour que la longe glisse sans s'accrocher.",
+   "traductions": {
+    "en": "Ground-line pole",
+    "es": "Pértiga en oreja",
+    "it": "Barra a orecchio",
+    "ja": "耳の形の横木",
+    "de": "Ohrenstange",
+    "ar": "عارضة مائلة",
+    "zh": "斜放横杆",
+    "nl": "Schuine bar",
+    "pt": "Barra em orelha",
+    "sv": "Örebom",
+    "ru": "Жердь-«ухо»",
+    "pl": "Drąg ukośny",
+    "ko": "귀 바"
+   },
+   "cours": [
+    "g6n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
     }
    ],
    "variantes": {},
@@ -1604,6 +2361,152 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Bipède latéral",
+   "definition_fr": "l'antérieur et le postérieur d'un même côté du cheval.",
+   "traductions": {
+    "en": "Lateral pair",
+    "es": "Bípedo lateral",
+    "it": "Bipede laterale",
+    "ja": "側対肢",
+    "de": "Laterales Beinpaar",
+    "ar": "الثنائي الجانبي",
+    "zh": "侧对肢",
+    "nl": "Zijdelingse bipede",
+    "pt": "Bípede lateral",
+    "sv": "Lateralt benpar",
+    "ru": "Боковой бипед",
+    "pl": "Biped boczny",
+    "ko": "같은 쪽 두 다리"
+   },
+   "cours": [
+    "g6n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Bon pied",
+   "definition_fr": "Au galop à main droite, l'antérieur droit avance plus loin, et inversement.",
+   "traductions": {
+    "en": "Correct lead",
+    "es": "Mano correcta",
+    "it": "Piede giusto",
+    "ja": "正しい手前",
+    "de": "Richtiger Galopp",
+    "ar": "القائمة الصحيحة",
+    "zh": "正确的领先腿",
+    "nl": "Juiste been",
+    "pt": "Pé certo",
+    "sv": "Rätt galopp",
+    "ru": "Правильная нога",
+    "pl": "Właściwa noga",
+    "ko": "올바른 발"
+   },
+   "cours": [
+    "g5n-10",
+    "g6n-05"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Boulet",
+   "definition_fr": "Articulation au-dessus du paturon.",
+   "traductions": {
+    "en": "Fetlock",
+    "es": "Menudillo",
+    "it": "Nodello",
+    "ja": "球節",
+    "de": "Fesselgelenk",
+    "ar": "العقدة",
+    "zh": "球节",
+    "nl": "Kogel",
+    "pt": "Boleto",
+    "sv": "Kotled",
+    "ru": "Путовый сустав",
+    "pl": "Pęcina",
+    "ko": "구절"
+   },
+   "cours": [
+    "g5n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Brassicourt",
    "definition_fr": "Genou porté en avant de la ligne d'aplomb, de naissance (arqué s'il vient de l'usure).",
    "traductions": {
@@ -1690,8 +2593,51 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Brocher",
+   "definition_fr": "planter les clous.",
+   "traductions": {
+    "en": "Nail on",
+    "es": "Clavar",
+    "it": "Inchiodare",
+    "ja": "釘を打つ",
+    "de": "Nageln",
+    "ar": "التسمير",
+    "zh": "钉钉",
+    "nl": "Nagelen",
+    "pt": "Cravar",
+    "sv": "Spika",
+    "ru": "Прибить",
+    "pl": "Przybijać",
+    "ko": "못 박기"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Cadence",
-   "definition_fr": "Tempo des foulées ; elle doit rester bonne et stable dans chaque allure.",
+   "definition_fr": "Nombre de foulées dans un temps donné ; une bonne cadence reste régulière.",
    "traductions": {
     "en": "Tempo",
     "es": "Tempo",
@@ -1708,10 +2654,27 @@
     "ko": "템포"
    },
    "cours": [
+    "g5n-08",
     "g7n-09",
     "g8n-11"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -1831,6 +2794,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Cæcum",
+   "definition_fr": "Grande poche de l'intestin où des micro-organismes digèrent les fibres.",
+   "traductions": {
+    "en": "Caecum",
+    "es": "Ciego",
+    "it": "Cieco",
+    "ja": "盲腸",
+    "de": "Blinddarm",
+    "ar": "الأعور",
+    "zh": "盲肠",
+    "nl": "Blindedarm",
+    "pt": "Ceco",
+    "sv": "Blindtarm",
+    "ru": "Слепая кишка",
+    "pl": "Jelito ślepe",
+    "ko": "맹장"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Cagneux",
    "definition_fr": "Cheval dont les pinces sont tournées vers l'intérieur.",
    "traductions": {
@@ -1867,6 +2873,49 @@
      "ru": "теория",
      "pl": "teoria",
      "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Camion",
+   "definition_fr": "Véhicule à moteur aménagé pour transporter des chevaux.",
+   "traductions": {
+    "en": "Horsebox",
+    "es": "Camión",
+    "it": "Camion",
+    "ja": "馬運トラック",
+    "de": "LKW",
+    "ar": "الشاحنة",
+    "zh": "运马卡车",
+    "nl": "Paardenvrachtwagen",
+    "pt": "Caminhão",
+    "sv": "Hästlastbil",
+    "ru": "Грузовик",
+    "pl": "Koniowóz",
+    "ko": "마필 수송 트럭"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -1935,9 +2984,26 @@
     "ko": "관부"
    },
    "cours": [
+    "g5n-05",
     "g9n-01"
    ],
    "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -1953,6 +3019,92 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Carrière de dressage",
+   "definition_fr": "Rectangle de 20 m sur 40 m (ou 60 m) bordé de lettres, où l'on présente une reprise.",
+   "traductions": {
+    "en": "Dressage arena",
+    "es": "Pista de doma",
+    "it": "Rettangolo di dressage",
+    "ja": "馬場馬術のアリーナ",
+    "de": "Dressurviereck",
+    "ar": "ميدان الترويض",
+    "zh": "盛装舞步场地",
+    "nl": "Dressuurrijbaan",
+    "pt": "Pista de adestramento",
+    "sv": "Dressyrbana",
+    "ru": "Манеж для выездки",
+    "pl": "Czworobok ujeżdżeniowy",
+    "ko": "마장마술 마장"
+   },
+   "cours": [
+    "g5n-01"
+   ],
+   "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Carte d'immatriculation",
+   "definition_fr": "Document qui indique le propriétaire du cheval.",
+   "traductions": {
+    "en": "Registration card",
+    "es": "Tarjeta de matrícula",
+    "it": "Carta di immatricolazione",
+    "ja": "登録証",
+    "de": "Eigentumsurkunde",
+    "ar": "بطاقة التسجيل",
+    "zh": "登记卡",
+    "nl": "Registratiekaart",
+    "pt": "Cartão de registro",
+    "sv": "Registreringskort",
+    "ru": "Регистрационная карта",
+    "pl": "Karta rejestracyjna",
+    "ko": "등록증"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -2004,7 +3156,7 @@
   },
   {
    "terme_fr": "Caveçon",
-   "definition_fr": "Têtière avec une muserolle renforcée et un anneau au milieu, où s'accroche la longe.",
+   "definition_fr": "Têtière munie d'une muserolle renforcée et d'un anneau pour accrocher la longe.",
    "traductions": {
     "en": "Cavesson",
     "es": "Cabezón",
@@ -2021,9 +3173,26 @@
     "ko": "캐베슨"
    },
    "cours": [
+    "g5n-06",
     "g8n-04"
    ],
    "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -2046,8 +3215,94 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Céder",
+   "definition_fr": "Relâcher l'action de l'aide dès que le cheval a répondu.",
+   "traductions": {
+    "en": "Give",
+    "es": "Ceder",
+    "it": "Cedere",
+    "ja": "譲る",
+    "de": "Nachgeben",
+    "ar": "التنازل",
+    "zh": "让开",
+    "nl": "Meegeven",
+    "pt": "Ceder",
+    "sv": "Ge efter",
+    "ru": "Уступить",
+    "pl": "Ustąpić",
+    "ko": "양보하기"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Cercle",
+   "definition_fr": "Courbe régulière ; au Galop 5, 12 m au pas, 15 m au trot, 20 m au galop.",
+   "traductions": {
+    "en": "Circle",
+    "es": "Círculo",
+    "it": "Circolo",
+    "ja": "輪乗り",
+    "de": "Zirkel",
+    "ar": "الدائرة",
+    "zh": "圆圈",
+    "nl": "Cirkel",
+    "pt": "Círculo",
+    "sv": "Volt",
+    "ru": "Круг",
+    "pl": "Koło",
+    "ko": "원"
+   },
+   "cours": [
+    "g5n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Cession à la jambe",
-   "definition_fr": "Mouvement où le cheval, presque droit, avance en se déplaçant de côté, en s'éloignant de la jambe qui agit.",
+   "definition_fr": "Le cheval avance et se déplace de côté, presque droit, légèrement plié à l'opposé du mouvement.",
    "traductions": {
     "en": "Leg-yielding",
     "es": "Cesión a la pierna",
@@ -2064,10 +3319,27 @@
     "ko": "레그일딩"
    },
    "cours": [
+    "g5n-10",
     "g7n-12",
     "g8n-13"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -2193,7 +3465,7 @@
   },
   {
    "terme_fr": "Chambrière",
-   "definition_fr": "Long fouet du travail à pied, qui soutient l'impulsion.",
+   "definition_fr": "Long fouet de longe ; il prolonge le bras pour demander l'avant.",
    "traductions": {
     "en": "Lunge whip",
     "es": "Fusta de dar cuerda",
@@ -2210,10 +3482,27 @@
     "ko": "조마삭 채찍"
    },
    "cours": [
+    "g5n-06",
     "g8n-04",
     "g9n-04"
    ],
    "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -2545,26 +3834,43 @@
   },
   {
    "terme_fr": "Chef de piste",
-   "definition_fr": "Personne qui dessine et construit le parcours.",
+   "definition_fr": "la personne qui construit le parcours et règle les distances.",
    "traductions": {
     "en": "Course designer",
     "es": "Jefe de pista",
-    "it": "Direttore di percorso",
+    "it": "Direttore di campo",
     "ja": "コースデザイナー",
     "de": "Parcourschef",
     "ar": "مصمّم المسار",
     "zh": "路线设计师",
     "nl": "Parcoursbouwer",
-    "pt": "Chefe de pista",
+    "pt": "Desenhador de percurso",
     "sv": "Banbyggare",
     "ru": "Курс-дизайнер",
     "pl": "Gospodarz toru",
     "ko": "코스 설계자"
    },
    "cours": [
+    "g6n-13",
     "g9n-14"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -2802,6 +4108,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Cloche",
+   "definition_fr": "Protection en forme de cloche qui couvre la couronne et les talons des antérieurs.",
+   "traductions": {
+    "en": "Over-reach boot",
+    "es": "Campana",
+    "it": "Campana",
+    "ja": "オーバーリーチブーツ（ベルブーツ）",
+    "de": "Hufglocke",
+    "ar": "الجرس الواقي",
+    "zh": "护蹄套",
+    "nl": "Overreachboot",
+    "pt": "Cloche",
+    "sv": "Hovklocka",
+    "ru": "Колокольчик",
+    "pl": "Kaloszek",
+    "ko": "벨 부츠"
+   },
+   "cours": [
+    "g5n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Club 1",
    "definition_fr": "Niveau des compétitions Club visé au Galop 7 ; ses cotes sont fixées par le règlement de chaque discipline.",
    "traductions": {
@@ -2948,6 +4297,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Coefficient",
+   "definition_fr": "le nombre par lequel une note est multipliée.",
+   "traductions": {
+    "en": "Coefficient",
+    "es": "Coeficiente",
+    "it": "Coefficiente",
+    "ja": "係数",
+    "de": "Koeffizient",
+    "ar": "المعامل",
+    "zh": "系数",
+    "nl": "Coëfficiënt",
+    "pt": "Coeficiente",
+    "sv": "Koefficient",
+    "ru": "Коэффициент",
+    "pl": "Współczynnik",
+    "ko": "계수"
+   },
+   "cours": [
+    "g6n-15"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Coin",
    "definition_fr": "Obstacle en forme de V, sauté du côté étroit, perpendiculaire à la ligne qui partage l'angle en deux.",
    "traductions": {
@@ -2984,6 +4376,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Colique",
+   "definition_fr": "Douleur du ventre, souvent digestive ; c'est une urgence.",
+   "traductions": {
+    "en": "Colic",
+    "es": "Cólico",
+    "it": "Colica",
+    "ja": "疝痛",
+    "de": "Kolik",
+    "ar": "المغص",
+    "zh": "疝痛",
+    "nl": "Koliek",
+    "pt": "Cólica",
+    "sv": "Kolik",
+    "ru": "Колики",
+    "pl": "Kolka",
+    "ko": "산통"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -3034,26 +4469,146 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Colonne vertébrale",
+   "definition_fr": "Suite de vertèbres de la nuque à la queue ; elle porte le dos et le cavalier.",
+   "traductions": {
+    "en": "Spine",
+    "es": "Columna vertebral",
+    "it": "Colonna vertebrale",
+    "ja": "脊柱",
+    "de": "Wirbelsäule",
+    "ar": "العمود الفقري",
+    "zh": "脊柱",
+    "nl": "Wervelkolom",
+    "pt": "Coluna vertebral",
+    "sv": "Ryggrad",
+    "ru": "Позвоночник",
+    "pl": "Kręgosłup",
+    "ko": "척추"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Combinaison",
-   "definition_fr": "Double ou triple : obstacles séparés par une ou deux foulées, appelés A, B et C.",
+   "definition_fr": "Deux ou trois obstacles proches, sous un seul numéro suivi d'une lettre (5A, 5B).",
    "traductions": {
     "en": "Combination",
     "es": "Combinación",
     "it": "Combinazione",
     "ja": "コンビネーション",
     "de": "Kombination",
-    "ar": "المركّبة (combinaison)",
+    "ar": "المركّبة",
     "zh": "组合障碍",
     "nl": "Combinatie",
     "pt": "Combinação",
     "sv": "Kombination",
-    "ru": "Комбинация",
-    "pl": "Kombinacja",
+    "ru": "Система",
+    "pl": "Szereg",
     "ko": "콤비네이션"
    },
    "cours": [
+    "g5n-01",
     "g7n-14",
     "g9n-14"
+   ],
+   "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Combinaison de cross",
+   "definition_fr": "plusieurs obstacles assez proches pour se sauter comme un seul exercice.",
+   "traductions": {
+    "en": "Cross-country combination",
+    "es": "Combinación de cross",
+    "it": "Combinazione di cross",
+    "ja": "クロスカントリーのコンビネーション",
+    "de": "Geländekombination",
+    "ar": "مركّبة الكروس",
+    "zh": "越野组合障碍",
+    "nl": "Crosscombinatie",
+    "pt": "Combinação de cross",
+    "sv": "Terrängkombination",
+    "ru": "Комбинация кросса",
+    "pl": "Kombinacja crossowa",
+    "ko": "크로스컨트리 콤비네이션"
+   },
+   "cours": [
+    "g6n-14",
+    "g9n-15"
    ],
    "partie": [
     {
@@ -3094,25 +4649,25 @@
    "niveau": "proposé"
   },
   {
-   "terme_fr": "Combinaison de cross",
-   "definition_fr": "Plusieurs éléments rapprochés, jugés comme un seul obstacle.",
+   "terme_fr": "Concours complet",
+   "definition_fr": "Discipline qui réunit dressage, saut d'obstacles et cross.",
    "traductions": {
-    "en": "Cross-country combination",
-    "es": "Combinación de cross",
-    "it": "Combinazione di cross",
-    "ja": "クロスカントリーのコンビネーション",
-    "de": "Geländekombination",
-    "ar": "مركّبة الكروس",
-    "zh": "越野组合障碍",
-    "nl": "Crosscombinatie",
-    "pt": "Combinação de cross",
-    "sv": "Terrängkombination",
-    "ru": "Комбинация кросса",
-    "pl": "Kombinacja crossowa",
-    "ko": "크로스컨트리 콤비네이션"
+    "en": "Eventing",
+    "es": "Concurso completo",
+    "it": "Concorso completo",
+    "ja": "総合馬術",
+    "de": "Vielseitigkeit",
+    "ar": "المسابقة الكاملة",
+    "zh": "三项赛",
+    "nl": "Eventing",
+    "pt": "Concurso completo",
+    "sv": "Fälttävlan",
+    "ru": "Троеборье",
+    "pl": "WKKW (konkurs wszechstronny)",
+    "ko": "종합마술"
    },
    "cours": [
-    "g9n-15"
+    "g5n-12"
    ],
    "partie": [
     {
@@ -3326,6 +4881,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Contagieux",
+   "definition_fr": "qui se transmet d'un cheval à l'autre.",
+   "traductions": {
+    "en": "Contagious",
+    "es": "Contagioso",
+    "it": "Contagioso",
+    "ja": "伝染性の",
+    "de": "Ansteckend",
+    "ar": "معدٍ",
+    "zh": "传染性的",
+    "nl": "Besmettelijk",
+    "pt": "Contagioso",
+    "sv": "Smittsam",
+    "ru": "Заразный",
+    "pl": "Zaraźliwy",
+    "ko": "전염성"
+   },
+   "cours": [
+    "g6n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Contrat de foulées",
    "definition_fr": "Nombre de foulées prévu entre deux obstacles.",
    "traductions": {
@@ -3370,26 +4968,43 @@
   },
   {
    "terme_fr": "Contre-bas",
-   "definition_fr": "Obstacle qui fait descendre le cheval d'une marche.",
+   "definition_fr": "Obstacle qui fait descendre une marche.",
    "traductions": {
     "en": "Drop",
     "es": "Salto de bajada",
     "it": "Salto in discesa",
     "ja": "下り段差",
-    "de": "Absprung",
-    "ar": "حاجز نازل (contre-bas)",
+    "de": "Tiefsprung",
+    "ar": "الحاجز النازل",
     "zh": "下坎",
-    "nl": "Sprong omlaag",
-    "pt": "Degrau para baixo (contre-bas)",
+    "nl": "Afsprong",
+    "pt": "Degrau para baixo",
     "sv": "Nedhopp",
     "ru": "Прыжок вниз с уступа",
-    "pl": "Skok w dół",
+    "pl": "Uskok w dół",
     "ko": "내려가는 단"
    },
    "cours": [
+    "g5n-12",
     "g7n-15"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -3516,26 +5131,43 @@
   },
   {
    "terme_fr": "Contre-haut",
-   "definition_fr": "Obstacle qui fait monter le cheval sur une marche.",
+   "definition_fr": "Obstacle qui fait monter sur une marche.",
    "traductions": {
     "en": "Step up",
     "es": "Salto de subida",
     "it": "Salto in salita",
     "ja": "上り段差",
     "de": "Aufsprung",
-    "ar": "حاجز صاعد (contre-haut)",
+    "ar": "الحاجز الصاعد",
     "zh": "上坎",
-    "nl": "Sprong omhoog",
-    "pt": "Degrau para cima (contre-haut)",
+    "nl": "Opsprong",
+    "pt": "Degrau para cima",
     "sv": "Uppsprång",
     "ru": "Прыжок на возвышение",
-    "pl": "Skok na górę",
+    "pl": "Uskok w górę",
     "ko": "오르는 단"
    },
    "cours": [
+    "g5n-12",
     "g7n-15"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -3620,6 +5252,49 @@
    },
    "cours": [
     "g7n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Contrôle de filiation",
+   "definition_fr": "analyse ADN qui vérifie qui sont le père et la mère.",
+   "traductions": {
+    "en": "Parentage check",
+    "es": "Control de filiación",
+    "it": "Controllo di filiazione",
+    "ja": "親子鑑定",
+    "de": "Abstammungskontrolle",
+    "ar": "فحص النسب",
+    "zh": "亲子鉴定",
+    "nl": "Afstammingscontrole",
+    "pt": "Controle de filiação",
+    "sv": "Avstamningskontroll",
+    "ru": "Проверка происхождения",
+    "pl": "Kontrola pochodzenia",
+    "ko": "친자 확인"
+   },
+   "cours": [
+    "g6n-07"
    ],
    "partie": [
     {
@@ -3913,6 +5588,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Couronne",
+   "definition_fr": "Bord du haut du sabot, à la limite avec la peau.",
+   "traductions": {
+    "en": "Coronet",
+    "es": "Corona",
+    "it": "Corona",
+    "ja": "蹄冠",
+    "de": "Krone",
+    "ar": "التاج",
+    "zh": "蹄冠",
+    "nl": "Kroonrand",
+    "pt": "Coroa",
+    "sv": "Kronrand",
+    "ru": "Венчик",
+    "pl": "Koronka",
+    "ko": "관부"
+   },
+   "cours": [
+    "g5n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Croiser",
+   "definition_fr": "Les membres du côté de la jambe active passent devant ceux de l'autre côté.",
+   "traductions": {
+    "en": "Crossing",
+    "es": "Cruzar",
+    "it": "Incrociare",
+    "ja": "交差する",
+    "de": "Kreuzen",
+    "ar": "التصالب",
+    "zh": "交叉",
+    "nl": "Kruisen",
+    "pt": "Cruzar",
+    "sv": "Korsa",
+    "ru": "Перекрещивать",
+    "pl": "Krzyżować",
+    "ko": "교차하기"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Croisillon",
    "definition_fr": "Obstacle formé de deux barres croisées, qui guide le cheval vers le centre.",
    "traductions": {
@@ -3949,6 +5710,49 @@
      "ru": "с земли",
      "pl": "z ziemi",
      "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Cross",
+   "definition_fr": "Parcours d'obstacles fixes et naturels, en extérieur.",
+   "traductions": {
+    "en": "Cross-country",
+    "es": "Cross",
+    "it": "Cross",
+    "ja": "クロスカントリー",
+    "de": "Geländeritt (Cross)",
+    "ar": "الكروس",
+    "zh": "越野",
+    "nl": "Cross",
+    "pt": "Cross",
+    "sv": "Terräng",
+    "ru": "Кросс",
+    "pl": "Cross",
+    "ko": "크로스컨트리"
+   },
+   "cours": [
+    "g5n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -4070,6 +5874,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Déferrer",
+   "definition_fr": "retirer l'ancien fer après avoir coupé les rivets.",
+   "traductions": {
+    "en": "Remove the shoe",
+    "es": "Desherrar",
+    "it": "Togliere i ferri",
+    "ja": "蹄鉄を外す",
+    "de": "Abnehmen",
+    "ar": "نزع الحدوة",
+    "zh": "卸蹄铁",
+    "nl": "Ontijzeren",
+    "pt": "Desferrar",
+    "sv": "Ta av skon",
+    "ru": "Расковать",
+    "pl": "Rozkuć",
+    "ko": "편자 떼기"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Délai d'élimination",
    "definition_fr": "Temps nécessaire pour qu'une substance disparaisse de l'organisme.",
    "traductions": {
@@ -4132,6 +5979,49 @@
    },
    "cours": [
     "g7n-13"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Demi-diagonale",
+   "definition_fr": "ligne qui va d'une lettre du grand côté jusqu'au centre de la carrière.",
+   "traductions": {
+    "en": "Half-diagonal",
+    "es": "Media diagonal",
+    "it": "Mezza diagonale",
+    "ja": "半斜線",
+    "de": "Halbe Diagonale",
+    "ar": "نصف القطر",
+    "zh": "半对角线",
+    "nl": "Halve diagonaal",
+    "pt": "Meia-diagonal",
+    "sv": "Halv diagonal",
+    "ru": "Полудиагональ",
+    "pl": "Półprzekątna",
+    "ko": "반대각선 절반"
+   },
+   "cours": [
+    "g6n-01"
    ],
    "partie": [
     {
@@ -4285,6 +6175,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Départ au galop",
+   "definition_fr": "Transition vers le galop, depuis le pas ou le trot.",
+   "traductions": {
+    "en": "Canter depart",
+    "es": "Salida al galope",
+    "it": "Partenza al galoppo",
+    "ja": "駈歩発進",
+    "de": "Angaloppieren",
+    "ar": "الانطلاق في العدو",
+    "zh": "跑步起步",
+    "nl": "Galopaanspringen",
+    "pt": "Partida a galope",
+    "sv": "Galoppfattning",
+    "ru": "Подъём в галоп",
+    "pl": "Zagalopowanie",
+    "ko": "구보 발진"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Déplacement latéral",
    "definition_fr": "Mouvement où le cheval avance en se déplaçant de côté.",
    "traductions": {
@@ -4328,27 +6261,87 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Déplacer le cercle",
+   "definition_fr": "faire avancer le cercle de longe dans la carrière en marchant.",
+   "traductions": {
+    "en": "Moving the circle",
+    "es": "Desplazar el círculo",
+    "it": "Spostare il circolo",
+    "ja": "円を移動させる",
+    "de": "Den Zirkel verlagern",
+    "ar": "نقل الدائرة",
+    "zh": "移动圆圈",
+    "nl": "De cirkel verplaatsen",
+    "pt": "Deslocar o círculo",
+    "sv": "Flytta cirkeln",
+    "ru": "Перемещать круг",
+    "pl": "Przesuwanie koła",
+    "ko": "원 옮기기"
+   },
+   "cours": [
+    "g6n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Dérobé",
    "definition_fr": "Le cheval évite l'obstacle par le côté.",
    "traductions": {
     "en": "Run-out",
-    "es": "Escapada lateral",
+    "es": "Escapada",
     "it": "Scarto",
     "ja": "逃避",
     "de": "Ausbrechen",
-    "ar": "تهرّب",
-    "zh": "躲闪",
+    "ar": "التهرّب",
+    "zh": "逃避",
     "nl": "Uitbreken",
-    "pt": "Fuga de lado (dérobé)",
-    "sv": "Smita",
-    "ru": "Увод в сторону",
-    "pl": "Ucieczka w bok (dérobé)",
-    "ko": "회피"
+    "pt": "Desvio",
+    "sv": "Utbrytning",
+    "ru": "Обнос",
+    "pl": "Wyłamanie",
+    "ko": "런아웃"
    },
    "cours": [
+    "g5n-11",
     "g7n-15"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -4501,7 +6494,7 @@
   },
   {
    "terme_fr": "Détente",
-   "definition_fr": "Début de séance qui vise la décontraction du cheval et l'échauffement progressif de ses muscles.",
+   "definition_fr": "l'échauffement du cheval avant le travail.",
    "traductions": {
     "en": "Warm-up",
     "es": "Calentamiento",
@@ -4518,6 +6511,7 @@
     "ko": "워밍업"
    },
    "cours": [
+    "g6n-11",
     "g7n-10",
     "g8n-12"
    ],
@@ -4553,6 +6547,65 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Détenteur",
+   "definition_fr": "la personne ou la structure qui héberge des chevaux.",
+   "traductions": {
+    "en": "Keeper",
+    "es": "Tenedor",
+    "it": "Detentore",
+    "ja": "保有者",
+    "de": "Halter",
+    "ar": "الحائز",
+    "zh": "持有人",
+    "nl": "Houder",
+    "pt": "Detentor",
+    "sv": "Innehavare",
+    "ru": "Держатель",
+    "pl": "Posiadacz",
+    "ko": "보유자"
+   },
+   "cours": [
+    "g6n-07"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -4622,6 +6675,92 @@
    },
    "cours": [
     "g7n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Disponibilité",
+   "definition_fr": "Capacité du cheval à répondre immédiatement à une demande légère.",
+   "traductions": {
+    "en": "Availability",
+    "es": "Disponibilidad",
+    "it": "Disponibilità",
+    "ja": "即応性",
+    "de": "Verfügbarkeit",
+    "ar": "الجاهزية",
+    "zh": "随时待命",
+    "nl": "Beschikbaarheid",
+    "pt": "Disponibilidade",
+    "sv": "Tillgänglighet",
+    "ru": "Готовность",
+    "pl": "Gotowość",
+    "ko": "준비 상태"
+   },
+   "cours": [
+    "g6n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Distance",
+   "definition_fr": "l'espace entre deux obstacles, compté en foulées.",
+   "traductions": {
+    "en": "Distance",
+    "es": "Distancia",
+    "it": "Distanza",
+    "ja": "距離",
+    "de": "Distanz",
+    "ar": "المسافة",
+    "zh": "距离",
+    "nl": "Afstand",
+    "pt": "Distância",
+    "sv": "Avstånd",
+    "ru": "Дистанция",
+    "pl": "Odległość",
+    "ko": "거리"
+   },
+   "cours": [
+    "g6n-13"
    ],
    "partie": [
     {
@@ -4725,6 +6864,66 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Document d'identification",
+   "definition_fr": "Le livret du cheval : il voyage toujours avec lui.",
+   "traductions": {
+    "en": "Identification document",
+    "es": "Documento de identificación",
+    "it": "Documento d'identificazione",
+    "ja": "識別書類",
+    "de": "Equidenpass",
+    "ar": "وثيقة التعريف",
+    "zh": "身份证件",
+    "nl": "Identificatiedocument",
+    "pt": "Documento de identificação",
+    "sv": "Identitetshandling",
+    "ru": "Идентификационный документ",
+    "pl": "Dokument identyfikacyjny",
+    "ko": "신원 증명서"
+   },
+   "cours": [
+    "g5n-07",
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -4904,6 +7103,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Échographie",
+   "definition_fr": "examen qui permet de voir l'embryon dans l'utérus.",
+   "traductions": {
+    "en": "Ultrasound scan",
+    "es": "Ecografía",
+    "it": "Ecografia",
+    "ja": "超音波検査",
+    "de": "Ultraschall",
+    "ar": "الفحص بالموجات فوق الصوتية",
+    "zh": "超声波检查",
+    "nl": "Echo",
+    "pt": "Ultrassonografia",
+    "sv": "Ultraljud",
+    "ru": "УЗИ",
+    "pl": "USG",
+    "ko": "초음파 검사"
+   },
+   "cours": [
+    "g6n-10"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "École française",
    "definition_fr": "Tradition d'équitation française, transmise depuis Pluvinel, qui recherche la légèreté et l'harmonie.",
    "traductions": {
@@ -4940,6 +7182,92 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Élément",
+   "definition_fr": "un des obstacles qui forment une combinaison.",
+   "traductions": {
+    "en": "Element",
+    "es": "Elemento",
+    "it": "Elemento",
+    "ja": "要素",
+    "de": "Element",
+    "ar": "العنصر",
+    "zh": "单元（élément）",
+    "nl": "Element",
+    "pt": "Elemento",
+    "sv": "Element",
+    "ru": "Элемент",
+    "pl": "Element",
+    "ko": "요소"
+   },
+   "cours": [
+    "g6n-13"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Empreinte",
+   "definition_fr": "la marque laissée par le pied du cheval sur le sol.",
+   "traductions": {
+    "en": "Print",
+    "es": "Huella",
+    "it": "Impronta",
+    "ja": "足跡",
+    "de": "Abdruck",
+    "ar": "الأثر",
+    "zh": "蹄印",
+    "nl": "Afdruk",
+    "pt": "Pegada",
+    "sv": "Spår",
+    "ru": "След",
+    "pl": "Odcisk",
+    "ko": "발자국"
+   },
+   "cours": [
+    "g6n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -5051,12 +7379,12 @@
   },
   {
    "terme_fr": "Engagement",
-   "definition_fr": "Avancée des postérieurs sous la masse du cheval.",
+   "definition_fr": "Action des postérieurs qui s'avancent sous la masse du cheval.",
    "traductions": {
     "en": "Engagement",
     "es": "Remetimiento",
     "it": "Impegno",
-    "ja": "踏みこみ",
+    "ja": "踏み込み",
     "de": "Untertreten",
     "ar": "الإدخال",
     "zh": "后肢踏入",
@@ -5068,9 +7396,26 @@
     "ko": "뒷다리 넣기"
    },
    "cours": [
+    "g6n-09",
     "g9n-10"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -5094,8 +7439,51 @@
    "note": "Capacité du cheval à avancer ses postérieurs sous sa masse."
   },
   {
+   "terme_fr": "engagement (inscription)",
+   "definition_fr": "L'inscription d'un cavalier et d'un cheval à une épreuve de compétition ; en Club, c'est le club qui engage.",
+   "traductions": {
+    "en": "Entry",
+    "es": "Inscripción",
+    "it": "Iscrizione",
+    "ja": "エントリー",
+    "de": "Nennung",
+    "ar": "التسجيل",
+    "zh": "报名",
+    "nl": "Inschrijving",
+    "pt": "Inscrição",
+    "sv": "Anmälan",
+    "ru": "Заявка",
+    "pl": "Zgłoszenie",
+    "ko": "참가 신청"
+   },
+   "cours": [
+    "g5n-01"
+   ],
+   "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Enrênement",
-   "definition_fr": "Dispositif mécanique relié au mors qui guide l'attitude de la tête et de l'encolure du cheval.",
+   "definition_fr": "accessoire qui fixe une limite à l'attitude de la tête et de l'encolure du cheval.",
    "traductions": {
     "en": "Training aid",
     "es": "Riendas auxiliares",
@@ -5112,10 +7500,27 @@
     "ko": "보조 고삐"
    },
    "cours": [
+    "g6n-03",
     "g7n-03",
     "g8n-04"
    ],
    "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -5477,6 +7882,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Extension d'encolure",
+   "definition_fr": "le cheval étend son encolure vers l'avant et vers le bas, le nez en avant de la verticale.",
+   "traductions": {
+    "en": "Neck extension",
+    "es": "Extensión del cuello",
+    "it": "Estensione del collo",
+    "ja": "首の伸展",
+    "de": "Halsdehnung",
+    "ar": "مد الرقبة",
+    "zh": "颈部伸展",
+    "nl": "Halsstrekking",
+    "pt": "Extensão do pescoço",
+    "sv": "Halsutsträckning",
+    "ru": "Вытягивание шеи",
+    "pl": "Wyciąganie szyi",
+    "ko": "목 늘리기"
+   },
+   "cours": [
+    "g6n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Fausse gourmette",
    "definition_fr": "Petite lanière qui passe dans l'anneau du milieu de la gourmette et la retient.",
    "traductions": {
@@ -5633,6 +8081,49 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Fibres",
+   "definition_fr": "La partie dure des plantes, très présente dans le foin et l'herbe : la base de l'alimentation du cheval.",
+   "traductions": {
+    "en": "Fibre",
+    "es": "Fibras",
+    "it": "Fibre",
+    "ja": "繊維",
+    "de": "Fasern",
+    "ar": "الألياف",
+    "zh": "纤维",
+    "nl": "Vezels",
+    "pt": "Fibras",
+    "sv": "Fibrer",
+    "ru": "Клетчатка",
+    "pl": "Włókno",
+    "ko": "섬유질"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -5898,6 +8389,135 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Foulée",
+   "definition_fr": "Un cycle complet d'une allure.",
+   "traductions": {
+    "en": "Stride",
+    "es": "Tranco",
+    "it": "Falcata",
+    "ja": "完歩",
+    "de": "Tritt",
+    "ar": "الخطوة",
+    "zh": "步子",
+    "nl": "Pas",
+    "pt": "Passada",
+    "sv": "Steg (språng)",
+    "ru": "Шаг аллюра",
+    "pl": "Krok (fula)",
+    "ko": "걸음"
+   },
+   "cours": [
+    "g5n-08"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Foulées de développement",
+   "definition_fr": "quelques foulées où le cheval agrandit son trot.",
+   "traductions": {
+    "en": "Lengthened strides",
+    "es": "Zancadas de desarrollo",
+    "it": "Falcate di allungamento",
+    "ja": "伸びた歩み",
+    "de": "Tritte der Entwicklung",
+    "ar": "خطوات التمديد",
+    "zh": "加大步幅的几步",
+    "nl": "Ontwikkelde passen",
+    "pt": "Passadas de desenvolvimento",
+    "sv": "Utvecklingssteg",
+    "ru": "Развитые фуле",
+    "pl": "Wydłużenia kroku",
+    "ko": "신장 걸음"
+   },
+   "cours": [
+    "g6n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Fourche",
+   "definition_fr": "pièce du gogue, au poitrail, d'où partent les deux cordes.",
+   "traductions": {
+    "en": "Fork",
+    "es": "Horquilla",
+    "it": "Forcella",
+    "ja": "フォーク",
+    "de": "Gabel",
+    "ar": "الشوكة",
+    "zh": "叉形件",
+    "nl": "Vork",
+    "pt": "Forquilha",
+    "sv": "Gaffel",
+    "ru": "Вилка",
+    "pl": "Rozwidlenie",
+    "ko": "포크(갈래)"
+   },
+   "cours": [
+    "g6n-03"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Fourrage",
    "definition_fr": "Foin, paille ou herbe : la base de l'alimentation du cheval.",
    "traductions": {
@@ -5984,6 +8604,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Galop à faux",
+   "definition_fr": "Galoper volontairement sur le pied opposé à la main (pied gauche à main droite) : un exercice des niveaux supérieurs, à ne pas confondre avec une erreur de pied.",
+   "traductions": {
+    "en": "Counter-canter",
+    "es": "Contragalope",
+    "it": "Galoppo rovescio",
+    "ja": "反対駈歩",
+    "de": "Außengalopp",
+    "ar": "العدو المعاكس",
+    "zh": "反对跑步",
+    "nl": "Contragalop",
+    "pt": "Galope em falso",
+    "sv": "Kontergalopp",
+    "ru": "Контргалоп",
+    "pl": "Kontrgalop",
+    "ko": "반대 구보"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Galop de parcours",
+   "definition_fr": "Galop régulier, assez actif, qui reste le même tout le parcours.",
+   "traductions": {
+    "en": "Course canter",
+    "es": "Galope de recorrido",
+    "it": "Galoppo da percorso",
+    "ja": "コースでの駈歩",
+    "de": "Parcoursgalopp",
+    "ar": "عدو المسار",
+    "zh": "路线跑步",
+    "nl": "Parcoursgalop",
+    "pt": "Galope de percurso",
+    "sv": "Bangalopp",
+    "ru": "Галоп на маршруте",
+    "pl": "Galop parkurowy",
+    "ko": "코스 구보"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Galop désuni",
    "definition_fr": "Faute d'allure : le cheval galope sur un pied devant et sur l'autre derrière.",
    "traductions": {
@@ -6020,6 +8726,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Galop rompu",
+   "definition_fr": "un galop qui a perdu sa projection et se déroule en 4 temps.",
+   "traductions": {
+    "en": "Broken canter",
+    "es": "Galope roto",
+    "it": "Galoppo rotto",
+    "ja": "崩れた駈歩",
+    "de": "Zerrissener Galopp",
+    "ar": "العدو المكسور",
+    "zh": "断拍跑步",
+    "nl": "Gebroken galop",
+    "pt": "Galope quebrado",
+    "sv": "Bruten galopp",
+    "ru": "Разорванный галоп",
+    "pl": "Galop rozłamany",
+    "ko": "깨진 구보"
+   },
+   "cours": [
+    "g6n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -6087,6 +8836,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Ganache",
+   "definition_fr": "la partie molle qui couvre la mâchoire inférieure du cheval.",
+   "traductions": {
+    "en": "Jowl",
+    "es": "Ganacha",
+    "it": "Ganascia",
+    "ja": "顎",
+    "de": "Ganasche",
+    "ar": "الفكّ (الغنّاش)",
+    "zh": "下颌（ganache）",
+    "nl": "Kaak",
+    "pt": "Ganacha",
+    "sv": "Käkvinkel",
+    "ru": "Ганаш",
+    "pl": "Kąt żuchwy",
+    "ko": "턱 아래"
+   },
+   "cours": [
+    "g6n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Garniture",
+   "definition_fr": "partie du fer qui dépasse légèrement le bord de la paroi.",
+   "traductions": {
+    "en": "Overhang",
+    "es": "Vuelo",
+    "it": "Sporgenza",
+    "ja": "蹄鉄の張り出し",
+    "de": "Überstand",
+    "ar": "الحافة البارزة",
+    "zh": "外露部分",
+    "nl": "Overstek",
+    "pt": "Guarnição",
+    "sv": "Utstick",
+    "ru": "Выступ подковы",
+    "pl": "Wypust",
+    "ko": "가장자리 여유분"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Garrot",
    "definition_fr": "Saillie osseuse en haut du dos, à la base de l'encolure, juste devant la selle.",
    "traductions": {
@@ -6131,7 +8966,7 @@
   },
   {
    "terme_fr": "Gilet de protection",
-   "definition_fr": "Protection du buste obligatoire en cross.",
+   "definition_fr": "Gilet obligatoire en cross, qui protège le dos et le torse.",
    "traductions": {
     "en": "Body protector",
     "es": "Chaleco de protección",
@@ -6148,9 +8983,26 @@
     "ko": "보호 조끼"
    },
    "cours": [
+    "g5n-12",
     "g8n-17"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -6209,6 +9061,49 @@
      "ru": "с земли",
      "pl": "z ziemi",
      "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Gogue commandé",
+   "definition_fr": "gogue dont les cordes rejoignent des rênes tenues par le cavalier.",
+   "traductions": {
+    "en": "Operated gogue",
+    "es": "Gogue de mando",
+    "it": "Gogue comandato",
+    "ja": "操作できるゴーグ",
+    "de": "Steuerbarer Gogue",
+    "ar": "الغوغ المتحكَّم فيه",
+    "zh": "可操控戈格",
+    "nl": "Bediende gogue",
+    "pt": "Gogue comandado",
+    "sv": "Manövrerad gogue",
+    "ru": "Управляемый гог",
+    "pl": "Gogue sterowane",
+    "ko": "조절식 고그"
+   },
+   "cours": [
+    "g6n-03"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
     }
    ],
    "variantes": {},
@@ -6399,13 +9294,56 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Gué",
+   "definition_fr": "Passage dans l'eau.",
+   "traductions": {
+    "en": "Water crossing",
+    "es": "Vado",
+    "it": "Guado",
+    "ja": "水の中の通過",
+    "de": "Wasserdurchritt",
+    "ar": "المخاضة",
+    "zh": "涉水处",
+    "nl": "Waterdoorgang",
+    "pt": "Vau",
+    "sv": "Vattenpassage",
+    "ru": "Брод",
+    "pl": "Bród",
+    "ko": "물 건너기"
+   },
+   "cours": [
+    "g5n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Guêtre",
-   "definition_fr": "Protection plus rigide du membre, préférée à l'obstacle et en cross.",
+   "definition_fr": "Protection du membre pendant le travail.",
    "traductions": {
     "en": "Tendon boot",
     "es": "Protector de tendones",
     "it": "Paratendini",
-    "ja": "ブーツ",
+    "ja": "テンドンブーツ",
     "de": "Gamasche",
     "ar": "واقي الساق",
     "zh": "护腿",
@@ -6417,9 +9355,26 @@
     "ko": "레그 가드"
    },
    "cours": [
+    "g5n-05",
     "g7n-02"
    ],
    "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -6435,6 +9390,49 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Habituation",
+   "definition_fr": "Le cheval cesse de réagir à quelque chose qui se répète sans danger.",
+   "traductions": {
+    "en": "Habituation",
+    "es": "Habituación",
+    "it": "Abituazione",
+    "ja": "馴化",
+    "de": "Gewöhnung",
+    "ar": "التعوّد",
+    "zh": "习惯化",
+    "nl": "Gewenning",
+    "pt": "Habituação",
+    "sv": "Tillvänjning",
+    "ru": "Привыкание",
+    "pl": "Habituacja",
+    "ko": "습관화"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -6528,8 +9526,137 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Hunter",
+   "definition_fr": "une épreuve d'obstacles où l'on juge la qualité de l'équitation et du parcours, et pas seulement les fautes.",
+   "traductions": {
+    "en": "Hunter",
+    "es": "Hunter",
+    "it": "Hunter",
+    "ja": "Hunter",
+    "de": "Hunter",
+    "ar": "Hunter",
+    "zh": "Hunter",
+    "nl": "Hunter",
+    "pt": "Hunter",
+    "sv": "Hunter",
+    "ru": "Hunter",
+    "pl": "Hunter",
+    "ko": "Hunter"
+   },
+   "cours": [
+    "g6n-13"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Idées directrices",
+   "definition_fr": "ce que le juge doit regarder pour noter une figure, écrit sur la feuille.",
+   "traductions": {
+    "en": "Directive ideas",
+    "es": "Ideas directrices",
+    "it": "Idee direttrici",
+    "ja": "指導の理念",
+    "de": "Leitgedanken",
+    "ar": "الأفكار الموجِّهة",
+    "zh": "评判要点",
+    "nl": "Richtlijnen",
+    "pt": "Ideias diretrizes",
+    "sv": "Riktlinjer",
+    "ru": "Ключевые идеи",
+    "pl": "Idee przewodnie",
+    "ko": "지침이 되는 요점"
+   },
+   "cours": [
+    "g6n-15"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Identificateur",
+   "definition_fr": "Professionnel habilité à identifier un cheval et à poser sa puce : vétérinaire ou agent de l'IFCE.",
+   "traductions": {
+    "en": "Identifier",
+    "es": "Identificador",
+    "it": "Identificatore",
+    "ja": "識別担当者",
+    "de": "Identifizierungsbeauftragter",
+    "ar": "المعرِّف",
+    "zh": "身份登记员",
+    "nl": "Identificeerder",
+    "pt": "Identificador",
+    "sv": "Identifierare",
+    "ru": "Специалист по идентификации",
+    "pl": "Identyfikator",
+    "ko": "식별 담당자"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "IFCE",
-   "definition_fr": "Institut français du cheval et de l'équitation.",
+   "definition_fr": "Institut français du cheval et de l'équitation : il tient le fichier SIRE.",
    "traductions": {
     "en": "IFCE",
     "es": "IFCE",
@@ -6546,10 +9673,27 @@
     "ko": "IFCE"
    },
    "cours": [
+    "g5-identite",
     "g9n-16",
     "g9n-17"
    ],
    "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    },
     {
      "fr": "culture",
      "en": "culture",
@@ -6589,10 +9733,10 @@
   },
   {
    "terme_fr": "Impulsion",
-   "definition_fr": "Énergie que le cheval produit avec ses postérieurs pour se porter en avant.",
+   "definition_fr": "Volonté et énergie que met le cheval dans le mouvement en avant, tout en restant contrôlé, donc soumis aux aides du cavalier.",
    "traductions": {
     "en": "Impulsion",
-    "es": "Impulso",
+    "es": "Impulsión",
     "it": "Impulso",
     "ja": "推進力",
     "de": "Schwung",
@@ -6600,15 +9744,32 @@
     "zh": "冲力",
     "nl": "Impuls",
     "pt": "Impulsão",
-    "sv": "Framåtdrivning",
-    "ru": "Импульс",
+    "sv": "Framåtbjudning",
+    "ru": "Импульсия",
     "pl": "Impuls",
     "ko": "추진력"
    },
    "cours": [
+    "g6n-09",
     "g9n-04"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -6632,7 +9793,7 @@
   },
   {
    "terme_fr": "Incurvation",
-   "definition_fr": "Courbure du cheval de la nuque à la queue, dans le sens de la courbe.",
+   "definition_fr": "Le cheval s'arrondit sur la courbe, de la nuque aux hanches, pour suivre la ligne.",
    "traductions": {
     "en": "Bend",
     "es": "Incurvación",
@@ -6649,10 +9810,27 @@
     "ko": "휨"
    },
    "cours": [
+    "g5n-09",
     "g8n-05",
     "g8n-13"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -6669,6 +9847,49 @@
      "pl": "z ziemi",
      "ko": "지상"
     },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Indépendance des aides",
+   "definition_fr": "Les mains, les jambes et le bassin agissent séparément, sans se gêner.",
+   "traductions": {
+    "en": "Independence of the aids",
+    "es": "Independencia de las ayudas",
+    "it": "Indipendenza degli aiuti",
+    "ja": "扶助の独立性",
+    "de": "Unabhängige Hilfengebung",
+    "ar": "استقلالية المساعدات",
+    "zh": "扶助的独立性",
+    "nl": "Onafhankelijkheid van de hulpen",
+    "pt": "Independência das ajudas",
+    "sv": "Hjälpernas oberoende",
+    "ru": "Независимость помощей",
+    "pl": "Niezależność pomocy",
+    "ko": "보조의 독립성"
+   },
+   "cours": [
+    "g5n-08"
+   ],
+   "partie": [
     {
      "fr": "pratique",
      "en": "practical",
@@ -6753,6 +9974,92 @@
    },
    "cours": [
     "g9n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Jambe active",
+   "definition_fr": "La jambe qui demande le déplacement de côté.",
+   "traductions": {
+    "en": "Active leg",
+    "es": "Pierna activa",
+    "it": "Gamba attiva",
+    "ja": "働く脚",
+    "de": "Aktiver Schenkel",
+    "ar": "الساق الفاعلة",
+    "zh": "主动腿",
+    "nl": "Actief been",
+    "pt": "Perna ativa",
+    "sv": "Verkande skänkel",
+    "ru": "Активный шенкель",
+    "pl": "Aktywna łydka",
+    "ko": "작용하는 다리"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Jambe intérieure",
+   "definition_fr": "La jambe du côté de l'intérieur de la courbe.",
+   "traductions": {
+    "en": "Inside leg",
+    "es": "Pierna interior",
+    "it": "Gamba interna",
+    "ja": "内方脚",
+    "de": "Innerer Schenkel",
+    "ar": "الساق الداخلية",
+    "zh": "内侧腿",
+    "nl": "Binnenbeen",
+    "pt": "Perna de dentro",
+    "sv": "Inre skänkel",
+    "ru": "Внутренний шенкель",
+    "pl": "Łydka wewnętrzna",
+    "ko": "안쪽 다리"
+   },
+   "cours": [
+    "g5n-09"
    ],
    "partie": [
     {
@@ -6863,6 +10170,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Juste",
+   "definition_fr": "Ton cheval galope sur le pied de la main à laquelle tu travailles (pied droit à main droite).",
+   "traductions": {
+    "en": "True canter",
+    "es": "Galope correcto",
+    "it": "Giusto",
+    "ja": "正駈歩",
+    "de": "Handgalopp",
+    "ar": "العدو الصحيح",
+    "zh": "正确的跑步",
+    "nl": "Juist",
+    "pt": "Galope certo",
+    "sv": "Rätt galopp",
+    "ru": "Правильный галоп",
+    "pl": "Galop prawidłowy",
+    "ko": "바른 구보"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "La position d'équilibre",
+   "definition_fr": "Le cavalier reste au-dessus de ses pieds, le poids dans les talons, le buste un peu incliné, les fesses juste au-dessus de la selle.",
+   "traductions": {
+    "en": "The balanced position",
+    "es": "La posición de equilibrio",
+    "it": "La posizione di equilibrio",
+    "ja": "バランスの姿勢（前傾姿勢）",
+    "de": "Der leichte Sitz",
+    "ar": "وضعية التوازن",
+    "zh": "平衡姿势",
+    "nl": "De evenwichtszit",
+    "pt": "A posição de equilíbrio",
+    "sv": "Lätt sits (balanssits)",
+    "ru": "Посадка в равновесии",
+    "pl": "Pozycja w równowadze (półsiad)",
+    "ko": "균형 자세"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Label",
    "definition_fr": "Garantie de qualité délivrée par la FFE à une structure ou à un concours.",
    "traductions": {
@@ -6942,6 +10335,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Lecteur",
+   "definition_fr": "Appareil qui lit le numéro de la puce quand on le passe le long de l'encolure.",
+   "traductions": {
+    "en": "Reader",
+    "es": "Lector",
+    "it": "Lettore",
+    "ja": "リーダー",
+    "de": "Lesegerät",
+    "ar": "القارئ",
+    "zh": "读卡器",
+    "nl": "Lezer",
+    "pt": "Leitor",
+    "sv": "Läsare",
+    "ru": "Сканер",
+    "pl": "Czytnik",
+    "ko": "리더기"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -7036,7 +10472,7 @@
   },
   {
    "terme_fr": "Liant",
-   "definition_fr": "Qualité du cavalier qui suit le mouvement du cheval sans être déséquilibré.",
+   "definition_fr": "la souplesse du cavalier qui accompagne le cheval sans se crisper.",
    "traductions": {
     "en": "Suppleness in the saddle (liant)",
     "es": "Soltura",
@@ -7053,6 +10489,7 @@
     "ko": "일체감"
    },
    "cours": [
+    "g6n-13",
     "g7n-10"
    ],
    "partie": [
@@ -7071,6 +10508,65 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Lieu de détention",
+   "definition_fr": "l'endroit où se trouvent les chevaux dont le détenteur est responsable, qu'il déclare à l'IFCE.",
+   "traductions": {
+    "en": "Holding place",
+    "es": "Lugar de tenencia",
+    "it": "Luogo di detenzione",
+    "ja": "飼養場所",
+    "de": "Haltungsort",
+    "ar": "مكان الحيازة",
+    "zh": "饲养地",
+    "nl": "Verblijfplaats",
+    "pt": "Local de detenção",
+    "sv": "Uppehållsplats",
+    "ru": "Место содержания",
+    "pl": "Miejsce pobytu",
+    "ko": "보유 장소"
+   },
+   "cours": [
+    "g6n-07"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -7121,27 +10617,87 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Ligne de gymnastique",
+   "definition_fr": "Plusieurs obstacles séparés par une ou deux foulées.",
+   "traductions": {
+    "en": "Grid",
+    "es": "Línea de gimnasia",
+    "it": "Linea di ginnastica",
+    "ja": "ジムナスティックライン",
+    "de": "Gymnastikreihe",
+    "ar": "خط الجمباز",
+    "zh": "体操障碍线",
+    "nl": "Gymnastieklijn",
+    "pt": "Linha de ginástica",
+    "sv": "Gymnastikserie",
+    "ru": "Гимнастический ряд",
+    "pl": "Szereg gimnastyczny",
+    "ko": "짐내스틱 라인"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Ligne du dessus",
-   "definition_fr": "Muscles qui vont de la nuque à la croupe, en passant par le dos.",
+   "definition_fr": "Les muscles de l'encolure, du dos et de la croupe ; un travail correct aide à les développer.",
    "traductions": {
     "en": "Topline",
     "es": "Línea superior",
     "it": "Linea superiore",
-    "ja": "背線",
+    "ja": "トップライン",
     "de": "Oberlinie",
     "ar": "الخط العلوي",
     "zh": "上线",
     "nl": "Bovenlijn",
     "pt": "Linha superior",
-    "sv": "Överlinjen",
+    "sv": "Överlinje",
     "ru": "Верхняя линия",
     "pl": "Górna linia",
-    "ko": "윗선"
+    "ko": "톱라인"
    },
    "cours": [
+    "g5n-04",
     "g9n-07"
    ],
    "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    },
     {
      "fr": "théorie",
      "en": "theory",
@@ -7250,8 +10806,94 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Locomotion",
+   "definition_fr": "La façon dont le cheval se déplace, grâce aux os, aux muscles et aux articulations.",
+   "traductions": {
+    "en": "Locomotion",
+    "es": "Locomoción",
+    "it": "Locomozione",
+    "ja": "運動（ロコモーション）",
+    "de": "Bewegungsapparat",
+    "ar": "الحركة (التنقّل)",
+    "zh": "运动机能",
+    "nl": "Voortbeweging",
+    "pt": "Locomoção",
+    "sv": "Rörelseapparat",
+    "ru": "Локомоция",
+    "pl": "Lokomocja",
+    "ko": "운동(로코모션)"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Longe",
+   "definition_fr": "Corde longue de 7 à 8 m pour faire travailler le cheval sur un cercle.",
+   "traductions": {
+    "en": "Lunge line",
+    "es": "Cuerda",
+    "it": "Longia",
+    "ja": "調馬索",
+    "de": "Longe",
+    "ar": "الحبل",
+    "zh": "打圈绳",
+    "nl": "Longeerlijn",
+    "pt": "Guia",
+    "sv": "Longerlina",
+    "ru": "Корда",
+    "pl": "Lonża",
+    "ko": "조마삭"
+   },
+   "cours": [
+    "g5n-06"
+   ],
+   "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Longues rênes",
-   "definition_fr": "Deux longues rênes passées dans les anneaux d'un surfaix, pour diriger le cheval à pied, de côté ou derrière lui.",
+   "definition_fr": "Travail avec deux longes, le meneur derrière le cheval.",
    "traductions": {
     "en": "Long reins",
     "es": "Riendas largas",
@@ -7268,6 +10910,7 @@
     "ko": "긴 고삐"
    },
    "cours": [
+    "g5n-06",
     "g7n-04",
     "g8n-05",
     "g9n-05"
@@ -7276,7 +10919,7 @@
     {
      "fr": "à pied",
      "en": "groundwork",
-     "es": "a pie",
+     "es": "pie a tierra",
      "it": "da terra",
      "ja": "グランドワーク",
      "de": "Bodenarbeit",
@@ -7309,6 +10952,65 @@
      "fr": "à pied",
      "en": "groundwork",
      "es": "a pie",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    },
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "a pie",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Lovée",
+   "definition_fr": "Tenue en boucles dans la main, prête à filer.",
+   "traductions": {
+    "en": "Coiled",
+    "es": "En lazadas",
+    "it": "Raccolta ad anse",
+    "ja": "輪にして持つ",
+    "de": "In Schlaufen",
+    "ar": "مطويّ على شكل حلقات",
+    "zh": "盘绳",
+    "nl": "In lussen",
+    "pt": "Em laçadas",
+    "sv": "I öglor",
+    "ru": "Сложенная петлями",
+    "pl": "Zwinięta w pętle",
+    "ko": "사려 잡기"
+   },
+   "cours": [
+    "g5n-06"
+   ],
+   "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
      "it": "da terra",
      "ja": "グランドワーク",
      "de": "Bodenarbeit",
@@ -7432,6 +11134,152 @@
    },
    "cours": [
     "g8n-08"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Mauvais pied",
+   "definition_fr": "Ton cheval part sur un autre pied que celui que tu as demandé : c'est une erreur, tu reviens au trot ou au pas et tu redemandes.",
+   "traductions": {
+    "en": "Wrong lead",
+    "es": "Mano incorrecta",
+    "it": "Piede sbagliato",
+    "ja": "間違った手前",
+    "de": "Falscher Galopp",
+    "ar": "القائمة الخاطئة",
+    "zh": "错误的领先腿",
+    "nl": "Verkeerde been",
+    "pt": "Pé errado",
+    "sv": "Fel galopp",
+    "ru": "Неправильная нога",
+    "pl": "Niewłaściwa noga",
+    "ko": "잘못된 발"
+   },
+   "cours": [
+    "g5n-10",
+    "g6n-01"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Mener en main",
+   "definition_fr": "Conduire un cheval à pied, à côté de lui, au licol ou au filet.",
+   "traductions": {
+    "en": "Leading in hand",
+    "es": "Llevar del ramal",
+    "it": "Condurre a mano",
+    "ja": "手で引く（リーディング）",
+    "de": "An der Hand führen",
+    "ar": "القيادة باليد",
+    "zh": "牵行",
+    "nl": "Aan de hand leiden",
+    "pt": "Conduzir à mão",
+    "sv": "Leda för hand",
+    "ru": "Вести в руках",
+    "pl": "Prowadzenie w ręku",
+    "ko": "끌고 가기"
+   },
+   "cours": [
+    "g5n-06"
+   ],
+   "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Mise bas",
+   "definition_fr": "autre nom de la naissance du poulain.",
+   "traductions": {
+    "en": "Foaling",
+    "es": "Parto",
+    "it": "Parto",
+    "ja": "出産",
+    "de": "Geburt",
+    "ar": "الولادة",
+    "zh": "产驹（mise bas）",
+    "nl": "Werpen",
+    "pt": "Parto",
+    "sv": "Fölning",
+    "ru": "Роды",
+    "pl": "Poród",
+    "ko": "분만"
+   },
+   "cours": [
+    "g6n-10"
    ],
    "partie": [
     {
@@ -7628,8 +11476,51 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Muserolle allemande",
+   "definition_fr": "muserolle basse, qui passe sous le mors.",
+   "traductions": {
+    "en": "German noseband",
+    "es": "Muserola alemana",
+    "it": "Nasale tedesco",
+    "ja": "ドイツ式鼻革",
+    "de": "Hannoverscher Nasenriemen",
+    "ar": "الأنفية الألمانية",
+    "zh": "德式鼻革",
+    "nl": "Duitse neusriem",
+    "pt": "Focinheira alemã",
+    "sv": "Tysk nosgrimma",
+    "ru": "Немецкий нахрапник",
+    "pl": "Nachrapnik niemiecki",
+    "ko": "독일식 코끈"
+   },
+   "cours": [
+    "g6n-03"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Notes d'ensemble",
-   "definition_fr": "Notes données à la fin d'une reprise sur les allures, l'impulsion, la disponibilité, la position et le tracé.",
+   "definition_fr": "les notes données à la fin sur l'impression générale, pour le cheval et le cavalier.",
    "traductions": {
     "en": "Collective marks",
     "es": "Notas de conjunto",
@@ -7646,9 +11537,26 @@
     "ko": "종합 점수"
    },
    "cours": [
+    "g6n-15",
     "g7n-16"
    ],
    "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    },
     {
      "fr": "culture",
      "en": "culture",
@@ -7664,6 +11572,92 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Nuancier",
+   "definition_fr": "planche de couleurs qui aide à nommer une robe.",
+   "traductions": {
+    "en": "Colour chart",
+    "es": "Carta de colores",
+    "it": "Cartella colori",
+    "ja": "毛色見本",
+    "de": "Farbkarte",
+    "ar": "جدول الألوان",
+    "zh": "色卡",
+    "nl": "Kleurenwaaier",
+    "pt": "Nuancier",
+    "sv": "Färgkarta",
+    "ru": "Шкала мастей",
+    "pl": "Wzornik",
+    "ko": "색상표"
+   },
+   "cours": [
+    "g6n-07"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Numéro SIRE",
+   "definition_fr": "Numéro qui identifie le cheval dans le fichier national SIRE.",
+   "traductions": {
+    "en": "SIRE number",
+    "es": "Número SIRE",
+    "it": "Numero SIRE",
+    "ja": "SIRE番号",
+    "de": "SIRE-Nummer",
+    "ar": "رقم SIRE",
+    "zh": "SIRE 编号",
+    "nl": "SIRE-nummer",
+    "pt": "Número SIRE",
+    "sv": "SIRE-nummer",
+    "ru": "Номер SIRE",
+    "pl": "Numer SIRE",
+    "ko": "SIRE 번호"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -7707,6 +11701,49 @@
      "ru": "с земли",
      "pl": "z ziemi",
      "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Obstacle de volée",
+   "definition_fr": "un obstacle qu'on saute dans l'élan du galop, souvent large.",
+   "traductions": {
+    "en": "Spread fence",
+    "es": "Obstáculo de volada",
+    "it": "Ostacolo di volata",
+    "ja": "幅の障害",
+    "de": "Weitsprung",
+    "ar": "حاجز الاندفاع",
+    "zh": "冲跳障碍",
+    "nl": "Vaarthindernis",
+    "pt": "Obstáculo de largura",
+    "sv": "Voléhinder",
+    "ru": "Препятствие с хода",
+    "pl": "Przeszkoda lotna",
+    "ko": "비약 장애물"
+   },
+   "cours": [
+    "g6n-14"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -7793,6 +11830,49 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Optimum",
+   "definition_fr": "la plage de notes où le cheval est en bon état, entre 2,5 et 3,5 pour l'IFCE.",
+   "traductions": {
+    "en": "Optimum",
+    "es": "Óptimo",
+    "it": "Ottimale",
+    "ja": "最適",
+    "de": "Optimum",
+    "ar": "المثالي",
+    "zh": "最佳值",
+    "nl": "Optimum",
+    "pt": "Ótimo",
+    "sv": "Optimum",
+    "ru": "Оптимум",
+    "pl": "Optimum",
+    "ko": "적정 범위"
+   },
+   "cours": [
+    "g6n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -7887,7 +11967,7 @@
   },
   {
    "terme_fr": "Oxer",
-   "definition_fr": "Obstacle large, formé de deux plans de barres.",
+   "definition_fr": "Obstacle large, fait de deux plans de barres.",
    "traductions": {
     "en": "Oxer",
     "es": "Oxer",
@@ -7904,9 +11984,26 @@
     "ko": "옥서"
    },
    "cours": [
+    "g5n-01",
     "g8n-04"
    ],
    "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -7922,6 +12019,49 @@
      "ru": "с земли",
      "pl": "z ziemi",
      "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Palper",
+   "definition_fr": "toucher en appuyant pour sentir la graisse sous la peau.",
+   "traductions": {
+    "en": "Feel (palpate)",
+    "es": "Palpar",
+    "it": "Palpare",
+    "ja": "触診する",
+    "de": "Abtasten",
+    "ar": "التحسس",
+    "zh": "触诊",
+    "nl": "Betasten",
+    "pt": "Apalpar",
+    "sv": "Känna på",
+    "ru": "Прощупывать",
+    "pl": "Obmacywać",
+    "ko": "만져 보기"
+   },
+   "cours": [
+    "g6n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -8307,6 +12447,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Peigne à crinière",
+   "definition_fr": "petit peigne qui sert à partager et démêler les crins.",
+   "traductions": {
+    "en": "Mane comb",
+    "es": "Peine de crin",
+    "it": "Pettine da criniera",
+    "ja": "たてがみ用のくし",
+    "de": "Mähnenkamm",
+    "ar": "مشط العرف",
+    "zh": "鬃毛梳",
+    "nl": "Manenkam",
+    "pt": "Pente de crina",
+    "sv": "Mankam",
+    "ru": "Гребень для гривы",
+    "pl": "Grzebień do grzywy",
+    "ko": "갈기 빗"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Péremption",
    "definition_fr": "Date après laquelle un produit ne doit plus être utilisé.",
    "traductions": {
@@ -8343,6 +12526,92 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Périople",
+   "definition_fr": "le « vernis » naturel du haut de la paroi.",
+   "traductions": {
+    "en": "Periople",
+    "es": "Perioplo",
+    "it": "Periople",
+    "ja": "ペリオープル",
+    "de": "Saumband",
+    "ar": "البريوبل",
+    "zh": "蹄缘角质（périople）",
+    "nl": "Hoefglazuur",
+    "pt": "Perioplo",
+    "sv": "Perioplen",
+    "ru": "Периопль",
+    "pl": "Nabłonek okrywający",
+    "ko": "발굽 외피"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Perméabilité aux aides",
+   "definition_fr": "la façon dont le cheval reçoit et accepte tes demandes.",
+   "traductions": {
+    "en": "Throughness",
+    "es": "Permeabilidad a las ayudas",
+    "it": "Permeabilità agli aiuti",
+    "ja": "扶助への通りのよさ",
+    "de": "Durchlässigkeit für die Hilfen",
+    "ar": "النفاذية للمساعدات",
+    "zh": "对扶助的通透性",
+    "nl": "Doorlaatbaarheid voor de hulpen",
+    "pt": "Permeabilidade às ajudas",
+    "sv": "Genomsläpplighet för hjälperna",
+    "ru": "Проницаемость для помощей",
+    "pl": "Przepuszczalność na pomoce",
+    "ko": "보조 수용성(perméabilité aux aides)"
+   },
+   "cours": [
+    "g6n-15"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -8737,6 +13006,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Pinçon",
+   "definition_fr": "la languette qui tient le fer contre la paroi.",
+   "traductions": {
+    "en": "Clip",
+    "es": "Pestaña",
+    "it": "Linguetta di fermo",
+    "ja": "クリップ",
+    "de": "Aufzug",
+    "ar": "اللسين",
+    "zh": "铁唇（pinçon）",
+    "nl": "Kap",
+    "pt": "Pestana",
+    "sv": "Tåklaff",
+    "ru": "Зацеп",
+    "pl": "Ząbek",
+    "ko": "클립(핀송)"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Pion",
+   "definition_fr": "tresse repliée en petite boule.",
+   "traductions": {
+    "en": "Button",
+    "es": "Moño",
+    "it": "Pon-pon",
+    "ja": "玉（ボタン）",
+    "de": "Knoten",
+    "ar": "الكرة (بيون)",
+    "zh": "小球（pion）",
+    "nl": "Knoopje",
+    "pt": "Pião",
+    "sv": "Boll",
+    "ru": "Пион",
+    "pl": "Pion",
+    "ko": "폰"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Pirouette",
    "definition_fr": "Tour complet du cheval au galop autour de ses hanches.",
    "traductions": {
@@ -8840,6 +13195,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Pleine",
+   "definition_fr": "se dit d'une jument en gestation.",
+   "traductions": {
+    "en": "In foal",
+    "es": "Preñada",
+    "it": "Gravida",
+    "ja": "妊娠した",
+    "de": "Tragend",
+    "ar": "حامل",
+    "zh": "怀孕的",
+    "nl": "Drachtig",
+    "pt": "Prenhe",
+    "sv": "Dräktig",
+    "ru": "Жеребая",
+    "pl": "Źrebna",
+    "ko": "임신한"
+   },
+   "cours": [
+    "g6n-10"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Pleuropneumonie",
    "definition_fr": "Forme grave de la fièvre du transport, qui touche les poumons et l'enveloppe qui les entoure.",
    "traductions": {
@@ -8859,6 +13257,221 @@
    },
    "cours": [
     "g7n-07"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Pli",
+   "definition_fr": "L'encolure et la nuque tournées du côté de la courbe.",
+   "traductions": {
+    "en": "Flexion",
+    "es": "Flexión",
+    "it": "Piega",
+    "ja": "屈撓",
+    "de": "Stellung",
+    "ar": "الانثناء",
+    "zh": "屈曲",
+    "nl": "Stelling",
+    "pt": "Flexão",
+    "sv": "Flexion",
+    "ru": "Сгибание",
+    "pl": "Ustawienie",
+    "ko": "꺾임"
+   },
+   "cours": [
+    "g5n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Pli contraire",
+   "definition_fr": "autre nom du pli externe, utilisé par l'échelle de progression de la FFE.",
+   "traductions": {
+    "en": "Counter-flexion",
+    "es": "Flexión contraria",
+    "it": "Flessione contraria",
+    "ja": "反対姿勢",
+    "de": "Konterstellung",
+    "ar": "الانثناء المعاكس",
+    "zh": "反弯",
+    "nl": "Tegenbuiging",
+    "pt": "Flexão contrária",
+    "sv": "Kontraställning",
+    "ru": "Противоположная постановка",
+    "pl": "Kontrzgięcie",
+    "ko": "반대 굴곡"
+   },
+   "cours": [
+    "g6n-01"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Pli opposé",
+   "definition_fr": "Léger pli de la nuque, à l'opposé du côté où va le cheval.",
+   "traductions": {
+    "en": "Opposite flexion",
+    "es": "Flexión contraria",
+    "it": "Piega opposta",
+    "ja": "反対側への屈撓",
+    "de": "Gegenstellung",
+    "ar": "الانثناء المعاكس",
+    "zh": "反向屈曲",
+    "nl": "Tegengestelde stelling",
+    "pt": "Flexão oposta",
+    "sv": "Motsatt flexion",
+    "ru": "Обратное сгибание",
+    "pl": "Przeciwne ustawienie",
+    "ko": "반대쪽 꺾임"
+   },
+   "cours": [
+    "g5n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Pont",
+   "definition_fr": "Rampe par laquelle le cheval monte dans le van ou le camion.",
+   "traductions": {
+    "en": "Ramp",
+    "es": "Rampa",
+    "it": "Rampa",
+    "ja": "渡り板（ランプ）",
+    "de": "Rampe",
+    "ar": "المنحدر",
+    "zh": "踏板",
+    "nl": "Laadklep",
+    "pt": "Rampa",
+    "sv": "Ramp",
+    "ru": "Трап",
+    "pl": "Rampa",
+    "ko": "램프"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Porteuse",
+   "definition_fr": "la jument qui porte le poulain d'une autre, après un transfert d'embryon.",
+   "traductions": {
+    "en": "Recipient mare",
+    "es": "Receptora",
+    "it": "Portatrice",
+    "ja": "借り腹の馬",
+    "de": "Leihmutter",
+    "ar": "الحاضنة",
+    "zh": "代孕母马",
+    "nl": "Draagmoeder",
+    "pt": "Portadora",
+    "sv": "Bärsto",
+    "ru": "Носительница",
+    "pl": "Biorczyni",
+    "ko": "대리모"
+   },
+   "cours": [
+    "g6n-10"
    ],
    "partie": [
     {
@@ -9055,8 +13668,94 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Pourtour",
+   "definition_fr": "Le tour de la carrière ; ses lettres se lisent A, K, E, H, C, M, B, F.",
+   "traductions": {
+    "en": "Outside track",
+    "es": "Contorno",
+    "it": "Perimetro",
+    "ja": "外周",
+    "de": "Rand",
+    "ar": "المحيط",
+    "zh": "场地四周",
+    "nl": "Rand van de baan",
+    "pt": "Contorno",
+    "sv": "Ytterkant",
+    "ru": "Периметр",
+    "pl": "Obwód",
+    "ko": "가장자리"
+   },
+   "cours": [
+    "g5n-01"
+   ],
+   "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Président du jury",
+   "definition_fr": "le juge qui dirige le jury et signale les erreurs de tracé.",
+   "traductions": {
+    "en": "President of the jury",
+    "es": "Presidente del jurado",
+    "it": "Presidente di giuria",
+    "ja": "審判長",
+    "de": "Richter-Vorsitzender",
+    "ar": "رئيس لجنة التحكيم",
+    "zh": "评审团主席",
+    "nl": "Juryvoorzitter",
+    "pt": "Presidente do júri",
+    "sv": "Domarordförande",
+    "ru": "Председатель жюри",
+    "pl": "Przewodniczący jury",
+    "ko": "심판장"
+   },
+   "cours": [
+    "g6n-15"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Primo-vaccination",
-   "definition_fr": "Première série d'injections d'un vaccin, avant les rappels.",
+   "definition_fr": "les premières injections d'un vaccin, avant les rappels.",
    "traductions": {
     "en": "Primary vaccination",
     "es": "Primovacunación",
@@ -9073,9 +13772,26 @@
     "ko": "기초 접종"
    },
    "cours": [
+    "g6n-06",
     "g9n-02"
    ],
    "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -9176,6 +13892,50 @@
     ]
    },
    "a_eviter": {},
+   "niveau": "proposé",
+   "note": "en : Profile / Fence profile, deux formulations correctes."
+  },
+  {
+   "terme_fr": "Profil d'obstacles",
+   "definition_fr": "un groupe d'obstacles qui s'abordent de la même façon.",
+   "traductions": {
+    "en": "Fence profile",
+    "es": "Perfil de obstáculos",
+    "it": "Profilo di ostacoli",
+    "ja": "障害の形",
+    "de": "Hindernisprofil",
+    "ar": "نوع الحواجز",
+    "zh": "障碍外形",
+    "nl": "Hindernisprofiel",
+    "pt": "Perfil de obstáculos",
+    "sv": "Hinderprofil",
+    "ru": "Профиль препятствий",
+    "pl": "Profil przeszkód",
+    "ko": "장애물 유형"
+   },
+   "cours": [
+    "g6n-14"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
    "niveau": "proposé"
   },
   {
@@ -9222,6 +13982,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Proie",
+   "definition_fr": "Animal chassé dans la nature ; son premier réflexe face au danger est la fuite.",
+   "traductions": {
+    "en": "Prey animal",
+    "es": "Presa",
+    "it": "Preda",
+    "ja": "被食動物",
+    "de": "Beutetier",
+    "ar": "الفريسة",
+    "zh": "猎物",
+    "nl": "Prooidier",
+    "pt": "Presa",
+    "sv": "Bytesdjur",
+    "ru": "Добыча",
+    "pl": "Ofiara",
+    "ko": "먹잇감"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Propulsion",
    "definition_fr": "Poussée des postérieurs qui porte le cheval en avant.",
    "traductions": {
@@ -9258,6 +14061,178 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Protections de transport",
+   "definition_fr": "Protections longues des quatre membres, qui couvrent couronnes et talons.",
+   "traductions": {
+    "en": "Travel boots",
+    "es": "Protectores de transporte",
+    "it": "Protezioni da trasporto",
+    "ja": "輸送用プロテクター",
+    "de": "Transportgamaschen",
+    "ar": "واقيات النقل",
+    "zh": "运输护腿",
+    "nl": "Transportbeschermers",
+    "pt": "Protetores de transporte",
+    "sv": "Transportskydd",
+    "ru": "Транспортировочная защита",
+    "pl": "Ochraniacze transportowe",
+    "ko": "수송용 보호대"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Protège-queue",
+   "definition_fr": "Protection de la queue pendant le voyage.",
+   "traductions": {
+    "en": "Tail guard",
+    "es": "Protector de cola",
+    "it": "Paracoda",
+    "ja": "テールガード",
+    "de": "Schweifschutz",
+    "ar": "واقي الذيل",
+    "zh": "护尾套",
+    "nl": "Staartbeschermer",
+    "pt": "Protetor de cauda",
+    "sv": "Svansskydd",
+    "ru": "Защита для хвоста",
+    "pl": "Ochraniacz na ogon",
+    "ko": "꼬리 보호대"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Puce électronique",
+   "definition_fr": "Transpondeur placé dans l'encolure ; son numéro se lit avec un lecteur.",
+   "traductions": {
+    "en": "Microchip",
+    "es": "Microchip",
+    "it": "Microchip",
+    "ja": "マイクロチップ",
+    "de": "Mikrochip",
+    "ar": "الشريحة الإلكترونية",
+    "zh": "电子芯片",
+    "nl": "Elektronische chip",
+    "pt": "Chip eletrônico",
+    "sv": "Elektroniskt chip",
+    "ru": "Электронный чип",
+    "pl": "Mikroczip",
+    "ko": "전자 칩"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Punition",
+   "definition_fr": "Ce qui cherche à faire diminuer un comportement (ajouter du désagréable ou retirer de l'agréable) ; mal employée, elle crée peur et confusion.",
+   "traductions": {
+    "en": "Punishment",
+    "es": "Castigo",
+    "it": "Punizione",
+    "ja": "罰",
+    "de": "Strafe",
+    "ar": "العقاب",
+    "zh": "惩罚",
+    "nl": "Straf",
+    "pt": "Punição",
+    "sv": "Bestraffning",
+    "ru": "Наказание",
+    "pl": "Kara",
+    "ko": "처벌"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -9523,6 +14498,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Rappel de vaccin",
+   "definition_fr": "l'injection qui renouvelle la protection.",
+   "traductions": {
+    "en": "Booster vaccination",
+    "es": "Refuerzo de vacuna",
+    "it": "Richiamo del vaccino",
+    "ja": "追加接種",
+    "de": "Auffrischungsimpfung",
+    "ar": "الجرعة المنشطة للقاح",
+    "zh": "疫苗加强针",
+    "nl": "Herhalingsvaccin",
+    "pt": "Reforço da vacina",
+    "sv": "Booster",
+    "ru": "Ревакцинация",
+    "pl": "Szczepienie przypominające",
+    "ko": "추가 접종"
+   },
+   "cours": [
+    "g6n-06"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Rassemblé",
    "definition_fr": "Allure où la foulée est plus courte et plus élevée, le poids sur les postérieurs.",
    "traductions": {
@@ -9695,8 +14713,51 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Réception",
+   "definition_fr": "Le moment où le cheval se pose après l'obstacle.",
+   "traductions": {
+    "en": "Landing",
+    "es": "Recepción",
+    "it": "Atterraggio",
+    "ja": "着地",
+    "de": "Landung",
+    "ar": "الهبوط",
+    "zh": "落地",
+    "nl": "Landing",
+    "pt": "Recepção",
+    "sv": "Landning",
+    "ru": "Приземление",
+    "pl": "Lądowanie",
+    "ko": "착지"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Récompense",
-   "definition_fr": "Ce qui dit au cheval qu'il a bien répondu : voix, caresse, arrêt de la demande.",
+   "definition_fr": "Relâchement de l'aide dès que le cheval a répondu correctement.",
    "traductions": {
     "en": "Reward",
     "es": "Recompensa",
@@ -9713,9 +14774,26 @@
     "ko": "보상"
    },
    "cours": [
+    "g6n-09",
     "g8n-08"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "théorie",
      "en": "theory",
@@ -9739,27 +14817,61 @@
   },
   {
    "terme_fr": "Reconnaissance",
-   "definition_fr": "Visite du parcours à pied avant l'épreuve.",
+   "definition_fr": "Le parcours marché à pied avant l'épreuve, pour retenir l'ordre et les trajectoires.",
    "traductions": {
     "en": "Course walk",
     "es": "Reconocimiento",
     "it": "Ricognizione",
     "ja": "下見",
     "de": "Besichtigung",
-    "ar": "المعاينة (reconnaissance)",
+    "ar": "المعاينة",
     "zh": "勘察路线",
     "nl": "Verkenning",
     "pt": "Reconhecimento",
     "sv": "Banvandring",
     "ru": "Осмотр трассы",
-    "pl": "Oględziny",
+    "pl": "Zapoznanie z parkurem",
     "ko": "답사"
    },
    "cours": [
+    "g5n-01",
+    "g6n-14",
     "g7n-16",
     "g8n-16"
    ],
    "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "culture",
      "en": "culture",
@@ -10064,6 +15176,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Refus",
+   "definition_fr": "Le cheval s'arrête devant l'obstacle.",
+   "traductions": {
+    "en": "Refusal",
+    "es": "Rehúse",
+    "it": "Rifiuto",
+    "ja": "拒止",
+    "de": "Verweigerung",
+    "ar": "الرفض",
+    "zh": "拒跳",
+    "nl": "Weigering",
+    "pt": "Recusa",
+    "sv": "Vägran",
+    "ru": "Закидка",
+    "pl": "Odmowa",
+    "ko": "거부"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Registre d'élevage",
    "definition_fr": "Registre obligatoire de l'écurie où sont notés notamment les traitements des chevaux.",
    "traductions": {
@@ -10107,27 +15262,87 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Rendre les rênes",
+   "definition_fr": "avancer les mains jusqu'à ce que les rênes se détendent.",
+   "traductions": {
+    "en": "Giving the reins",
+    "es": "Ceder las riendas",
+    "it": "Rendere le redini",
+    "ja": "手綱を譲る",
+    "de": "Die Zügel hingeben",
+    "ar": "إعطاء الأعنة",
+    "zh": "放缰",
+    "nl": "De teugels teruggeven",
+    "pt": "Devolver as rédeas",
+    "sv": "Ge efter på tyglarna",
+    "ru": "Отдать поводья",
+    "pl": "Oddać wodze",
+    "ko": "고삐 내주기"
+   },
+   "cours": [
+    "g6n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Rêne extérieure",
-   "definition_fr": "Rêne du côté extérieur de la courbe ; aux longues rênes, elle contourne l'arrière-main.",
+   "definition_fr": "La rêne du côté de l'extérieur de la courbe.",
    "traductions": {
     "en": "Outside rein",
     "es": "Rienda exterior",
     "it": "Redine esterna",
     "ja": "外方の手綱",
-    "de": "Äußere Leine",
+    "de": "Äußerer Zügel",
     "ar": "العنان الخارجي",
     "zh": "外侧缰",
     "nl": "Buitenteugel",
     "pt": "Rédea de fora",
-    "sv": "Yttre tömmen",
-    "ru": "Наружная вожжа",
-    "pl": "Zewnętrzna wodza",
+    "sv": "Yttre tygel",
+    "ru": "Наружный повод",
+    "pl": "Wodza zewnętrzna",
     "ko": "바깥쪽 고삐"
    },
    "cours": [
+    "g5n-09",
     "g8n-05"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -10145,9 +15360,20 @@
      "ko": "지상"
     }
    ],
-   "variantes": {},
+   "variantes": {
+    "de": [
+     "Äußere Leine"
+    ],
+    "sv": [
+     "Yttre töm"
+    ],
+    "ru": [
+     "Наружная вожжа"
+    ]
+   },
    "a_eviter": {},
-   "niveau": "proposé"
+   "niveau": "proposé",
+   "note": "Aux longues rênes (G8 cours 5) : de Leine, sv töm, ru вожжа — c’est normal."
   },
   {
    "terme_fr": "Rênes élastiques",
@@ -10236,6 +15462,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Renforcement négatif",
+   "definition_fr": "On retire une pression dès que le cheval donne la bonne réponse.",
+   "traductions": {
+    "en": "Negative reinforcement",
+    "es": "Refuerzo negativo",
+    "it": "Rinforzo negativo",
+    "ja": "負の強化",
+    "de": "Negative Verstärkung",
+    "ar": "التعزيز السلبي",
+    "zh": "负强化",
+    "nl": "Negatieve bekrachtiging",
+    "pt": "Reforço negativo",
+    "sv": "Negativ förstärkning",
+    "ru": "Отрицательное подкрепление",
+    "pl": "Wzmocnienie negatywne",
+    "ko": "부적 강화"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Renforcement positif",
+   "definition_fr": "On ajoute quelque chose d'agréable (grattage au garrot, friandise à pied, voix associée à quelque chose d'agréable) juste après la bonne réponse.",
+   "traductions": {
+    "en": "Positive reinforcement",
+    "es": "Refuerzo positivo",
+    "it": "Rinforzo positivo",
+    "ja": "正の強化",
+    "de": "Positive Verstärkung",
+    "ar": "التعزيز الإيجابي",
+    "zh": "正强化",
+    "nl": "Positieve bekrachtiging",
+    "pt": "Reforço positivo",
+    "sv": "Positiv förstärkning",
+    "ru": "Положительное подкрепление",
+    "pl": "Wzmocnienie pozytywne",
+    "ko": "정적 강화"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Repos de selle",
    "definition_fr": "Période pendant laquelle on ne selle plus le cheval, le temps qu'une blessure guérisse.",
    "traductions": {
@@ -10280,26 +15592,43 @@
   },
   {
    "terme_fr": "Reprise",
-   "definition_fr": "Suite de mouvements de dressage imposés, présentés dans un ordre précis.",
+   "definition_fr": "Enchaînement de figures imposées, présenté devant un juge et noté.",
    "traductions": {
     "en": "Test",
     "es": "Reprise",
     "it": "Ripresa",
     "ja": "課目",
     "de": "Aufgabe",
-    "ar": "البرنامج (reprise)",
+    "ar": "البرنامج",
     "zh": "套路",
     "nl": "Proef",
     "pt": "Reprise",
     "sv": "Program",
-    "ru": "Программа (выездки)",
+    "ru": "Езда",
     "pl": "Program",
     "ko": "과제"
    },
    "cours": [
+    "g5n-01",
     "g7n-16"
    ],
    "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
     {
      "fr": "culture",
      "en": "culture",
@@ -10401,6 +15730,49 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "River",
+   "definition_fr": "couper et rabattre la pointe des clous.",
+   "traductions": {
+    "en": "Clench",
+    "es": "Remachar",
+    "it": "Ribattere",
+    "ja": "釘先を曲げる",
+    "de": "Vernieten",
+    "ar": "الثني",
+    "zh": "铆钉",
+    "nl": "Klinken",
+    "pt": "Rebitar",
+    "sv": "Klinchar",
+    "ru": "Расклепать",
+    "pl": "Zaginać",
+    "ko": "못 끝 접기"
+   },
+   "cours": [
+    "g6n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -10574,6 +15946,49 @@
    },
    "cours": [
     "g7n-10"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "S'échapper",
+   "definition_fr": "Le cheval sort de la courbe par l'épaule ou les hanches.",
+   "traductions": {
+    "en": "Escaping",
+    "es": "Escaparse",
+    "it": "Scappare",
+    "ja": "逃げる",
+    "de": "Ausweichen",
+    "ar": "الهروب",
+    "zh": "逃出",
+    "nl": "Uitwijken",
+    "pt": "Escapar",
+    "sv": "Vika ut",
+    "ru": "Убегать",
+    "pl": "Uciekać",
+    "ko": "빠져나가기"
+   },
+   "cours": [
+    "g5n-09"
    ],
    "partie": [
     {
@@ -10899,8 +16314,94 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Semence réfrigérée",
+   "definition_fr": "semence de l'étalon gardée au froid, envoyée à l'éleveur de la jument.",
+   "traductions": {
+    "en": "Chilled semen",
+    "es": "Semen refrigerado",
+    "it": "Seme refrigerato",
+    "ja": "冷蔵精液",
+    "de": "Gekühlter Samen",
+    "ar": "السائل المنوي المبرَّد",
+    "zh": "冷藏精液",
+    "nl": "Gekoeld sperma",
+    "pt": "Sêmen refrigerado",
+    "sv": "Kyld sperma",
+    "ru": "Охлаждённое семя",
+    "pl": "Nasienie schłodzone",
+    "ko": "냉장 정액"
+   },
+   "cours": [
+    "g6n-10"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Sensibilisation",
+   "definition_fr": "Le cheval réagit de plus en plus fort à quelque chose qui se répète, au lieu de s'y habituer.",
+   "traductions": {
+    "en": "Sensitisation",
+    "es": "Sensibilización",
+    "it": "Sensibilizzazione",
+    "ja": "鋭敏化",
+    "de": "Sensibilisierung",
+    "ar": "التحسّس",
+    "zh": "敏感化",
+    "nl": "Sensitisatie",
+    "pt": "Sensibilização",
+    "sv": "Sensibilisering",
+    "ru": "Сенсибилизация",
+    "pl": "Uwrażliwienie",
+    "ko": "민감화"
+   },
+   "cours": [
+    "g5n-03"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Serpentine",
-   "definition_fr": "Figure en boucles successives qui fait changer de main plusieurs fois.",
+   "definition_fr": "Suite de boucles régulières ; tu changes de main à chaque passage sur la ligne du milieu.",
    "traductions": {
     "en": "Serpentine",
     "es": "Serpentina",
@@ -10917,9 +16418,43 @@
     "ko": "서펜타인"
    },
    "cours": [
+    "g5n-01",
+    "g5n-09",
     "g8n-05"
    ],
    "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -11038,6 +16573,49 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Signalement",
+   "definition_fr": "Description du cheval (sexe, robe, marques, balzanes, épis), écrite et dessinée dans son livret.",
+   "traductions": {
+    "en": "Description",
+    "es": "Reseña",
+    "it": "Segnalamento",
+    "ja": "特徴",
+    "de": "Signalement",
+    "ar": "الوصف",
+    "zh": "特征描述",
+    "nl": "Signalement",
+    "pt": "Resenha",
+    "sv": "Signalement",
+    "ru": "Приметы",
+    "pl": "Opis konia",
+    "ko": "특징 기록"
+   },
+   "cours": [
+    "g5-identite"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -11261,26 +16839,43 @@
   },
   {
    "terme_fr": "Sous-bande",
-   "definition_fr": "Protection posée sous la bande, qui répartit la pression sur le tendon.",
+   "definition_fr": "Épaisseur en ouate ou en mousse, posée sous la bande de repos pour répartir la pression.",
    "traductions": {
-    "en": "Under-wrap",
+    "en": "Underwrap",
     "es": "Almohadilla",
     "it": "Sottofascia",
     "ja": "アンダーラップ",
     "de": "Bandagierunterlage",
-    "ar": "الرباط التحتي",
-    "zh": "衬垫",
+    "ar": "البطانة",
+    "zh": "绷带衬垫",
     "nl": "Onderlegger",
     "pt": "Forro",
     "sv": "Bandageunderlägg",
-    "ru": "Подкладка",
+    "ru": "Подкладка под бинт",
     "pl": "Podkład pod bandaż",
     "ko": "붕대 밑받침"
    },
    "cours": [
+    "g5n-05",
     "g9n-01"
    ],
    "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -11339,6 +16934,49 @@
      "ru": "культура",
      "pl": "kultura",
      "ko": "교양"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Squelette",
+   "definition_fr": "Ensemble des os qui soutiennent le corps et protègent les organes.",
+   "traductions": {
+    "en": "Skeleton",
+    "es": "Esqueleto",
+    "it": "Scheletro",
+    "ja": "骨格",
+    "de": "Skelett",
+    "ar": "الهيكل العظمي",
+    "zh": "骨骼",
+    "nl": "Skelet",
+    "pt": "Esqueleto",
+    "sv": "Skelett",
+    "ru": "Скелет",
+    "pl": "Szkielet",
+    "ko": "골격"
+   },
+   "cours": [
+    "g5n-04"
+   ],
+   "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
     }
    ],
    "variantes": {},
@@ -11579,7 +17217,7 @@
   },
   {
    "terme_fr": "Sur la main",
-   "definition_fr": "Cheval aux allures correctes, souple, au contact fidèle et moelleux, qui accepte les actions de la main sans résister.",
+   "definition_fr": "cheval qui accepte le contact du mors sous l'action de ses postérieurs.",
    "traductions": {
     "en": "On the bit",
     "es": "En la mano",
@@ -11596,9 +17234,26 @@
     "ko": "손에 올라옴"
    },
    "cours": [
+    "g6n-09",
     "g7n-09"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -11622,10 +17277,10 @@
   },
   {
    "terme_fr": "Surfaix",
-   "definition_fr": "Sangle munie d'anneaux, posée sur un tapis, où s'attachent les enrênements.",
+   "definition_fr": "Sangle autour du ventre, avec des anneaux pour passer les rênes.",
    "traductions": {
     "en": "Roller",
-    "es": "Sobrecincha",
+    "es": "Cinchuelo",
     "it": "Fascione",
     "ja": "サーシングル",
     "de": "Longiergurt",
@@ -11639,10 +17294,27 @@
     "ko": "서싱글"
    },
    "cours": [
+    "g5n-06",
     "g7n-03",
     "g8n-04"
    ],
    "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    },
     {
      "fr": "à pied",
      "en": "groundwork",
@@ -11803,6 +17475,49 @@
      "ru": "практика",
      "pl": "praktyka",
      "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Taquet",
+   "definition_fr": "support fixé au chandelier, sur lequel repose la barre.",
+   "traductions": {
+    "en": "Cup",
+    "es": "Taco",
+    "it": "Sostegno",
+    "ja": "受け具",
+    "de": "Stangenhalter",
+    "ar": "المسند",
+    "zh": "挂杆钉",
+    "nl": "Pinhouder",
+    "pt": "Copo",
+    "sv": "Hakfäste",
+    "ru": "Штифт",
+    "pl": "Zaczep",
+    "ko": "받침"
+   },
+   "cours": [
+    "g6n-05"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
     }
    ],
    "variantes": {},
@@ -12069,7 +17784,7 @@
   },
   {
    "terme_fr": "Tendon",
-   "definition_fr": "Cordon qui relie un muscle à un os ; à l'arrière du canon, il est fragile chez le cheval de sport.",
+   "definition_fr": "Cordon qui relie un muscle à un os et transmet sa force.",
    "traductions": {
     "en": "Tendon",
     "es": "Tendón",
@@ -12086,9 +17801,43 @@
     "ko": "힘줄"
    },
    "cours": [
+    "g5n-04",
+    "g5n-05",
     "g9n-01"
    ],
    "partie": [
+    {
+     "fr": "théorie",
+     "en": "theory",
+     "es": "teoría",
+     "it": "teoria",
+     "ja": "理論",
+     "de": "Theorie",
+     "ar": "نظري",
+     "zh": "理论",
+     "nl": "theorie",
+     "pt": "teoria",
+     "sv": "teori",
+     "ru": "теория",
+     "pl": "teoria",
+     "ko": "이론"
+    },
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vårdposter",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    },
     {
      "fr": "soins",
      "en": "care",
@@ -12104,6 +17853,49 @@
      "ru": "уход",
      "pl": "pielęgnacja",
      "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Terrain varié",
+   "definition_fr": "Sol en pente, inégal ou changeant : herbe, sable, terre, eau.",
+   "traductions": {
+    "en": "Varied terrain",
+    "es": "Terreno variado",
+    "it": "Terreno vario",
+    "ja": "変化のある地形",
+    "de": "Abwechslungsreiches Terrain",
+    "ar": "التضاريس المتنوعة",
+    "zh": "多样地形",
+    "nl": "Gevarieerd terrein",
+    "pt": "Terreno variado",
+    "sv": "Varierad terräng",
+    "ru": "Пересечённая местность",
+    "pl": "Zróżnicowany teren",
+    "ko": "다양한 지형"
+   },
+   "cours": [
+    "g5n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
     }
    ],
    "variantes": {},
@@ -12190,6 +17982,49 @@
      "ru": "теория",
      "pl": "teoria",
      "ko": "이론"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Toiletter",
+   "definition_fr": "préparer un cheval pour qu'il soit propre et bien présenté.",
+   "traductions": {
+    "en": "Turnout",
+    "es": "Acicalar",
+    "it": "Toelettare",
+    "ja": "手入れをする",
+    "de": "Fertigmachen",
+    "ar": "التجميل",
+    "zh": "梳洗打扮",
+    "nl": "Trimmen",
+    "pt": "Arranjar",
+    "sv": "Rykta och fläta",
+    "ru": "Приводить в порядок внешний вид",
+    "pl": "Trymowanie",
+    "ko": "손질하기"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
     }
    ],
    "variantes": {},
@@ -12412,6 +18247,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Toupet",
+   "definition_fr": "la mèche de crins qui tombe sur le front, entre les oreilles.",
+   "traductions": {
+    "en": "Forelock",
+    "es": "Tupé",
+    "it": "Ciuffo",
+    "ja": "前髪",
+    "de": "Schopf",
+    "ar": "الناصية",
+    "zh": "额毛",
+    "nl": "Voorlok",
+    "pt": "Topete",
+    "sv": "Pannlugg",
+    "ru": "Чёлка",
+    "pl": "Czub",
+    "ko": "앞머리"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Tourner sur l'obstacle",
    "definition_fr": "Préparer, pendant le saut, la direction de la réception.",
    "traductions": {
@@ -12431,6 +18309,92 @@
    },
    "cours": [
     "g9n-13"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Tracé",
+   "definition_fr": "Le chemin choisi entre les obstacles, avec ses virages.",
+   "traductions": {
+    "en": "Track",
+    "es": "Trazado",
+    "it": "Tracciato",
+    "ja": "進路",
+    "de": "Linienführung",
+    "ar": "خط السير",
+    "zh": "线路",
+    "nl": "Lijn",
+    "pt": "Traçado",
+    "sv": "Väg",
+    "ru": "Траектория",
+    "pl": "Tor jazdy",
+    "ko": "진행 경로"
+   },
+   "cours": [
+    "g5n-11"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "tracé (figure)",
+   "definition_fr": "le chemin précis que suit le cheval, d'une lettre à l'autre.",
+   "traductions": {
+    "en": "Line",
+    "es": "Trazado",
+    "it": "Tracciato",
+    "ja": "図形",
+    "de": "Linienführung",
+    "ar": "المسار",
+    "zh": "路线",
+    "nl": "Route",
+    "pt": "Percurso",
+    "sv": "Bana",
+    "ru": "Траектория",
+    "pl": "Tor",
+    "ko": "경로"
+   },
+   "cours": [
+    "g6n-11"
    ],
    "partie": [
     {
@@ -12499,7 +18463,7 @@
   },
   {
    "terme_fr": "Transition",
-   "definition_fr": "Passage d'une allure à une autre, ou changement de vitesse dans une allure.",
+   "definition_fr": "Passage d'une allure à une autre, ou changement dans une même allure.",
    "traductions": {
     "en": "Transition",
     "es": "Transición",
@@ -12516,10 +18480,27 @@
     "ko": "이행"
    },
    "cours": [
+    "g5n-08",
     "g8n-11",
     "g9n-04"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -12601,6 +18582,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Transition descendante",
+   "definition_fr": "Vers une allure plus lente : galop-trot, trot-pas.",
+   "traductions": {
+    "en": "Downward transition",
+    "es": "Transición descendente",
+    "it": "Transizione discendente",
+    "ja": "下方移行",
+    "de": "Übergang abwärts",
+    "ar": "الانتقال النازل",
+    "zh": "向下转换",
+    "nl": "Neerwaartse overgang",
+    "pt": "Transição descendente",
+    "sv": "Nedåtgående övergång",
+    "ru": "Переход вниз",
+    "pl": "Przejście w dół",
+    "ko": "하향 이행"
+   },
+   "cours": [
+    "g5n-08"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Transition directe",
    "definition_fr": "Passage d'une allure à une autre en sautant l'allure intermédiaire, par exemple du galop au pas.",
    "traductions": {
@@ -12622,6 +18646,66 @@
     "g7n-13"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Transition montante",
+   "definition_fr": "Vers une allure plus rapide : pas-trot, trot-galop.",
+   "traductions": {
+    "en": "Upward transition",
+    "es": "Transición ascendente",
+    "it": "Transizione ascendente",
+    "ja": "上方移行",
+    "de": "Übergang nach oben",
+    "ar": "الانتقال الصاعد",
+    "zh": "向上转换",
+    "nl": "Opwaartse overgang",
+    "pt": "Transição ascendente",
+    "sv": "Övergång uppåt",
+    "ru": "Переход вверх",
+    "pl": "Przejście w górę",
+    "ko": "상향 전환"
+   },
+   "cours": [
+    "g5n-08",
+    "g6n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -12790,6 +18874,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Triangle de longe",
+   "definition_fr": "La main de longe, la main de chambrière et le cheval forment un triangle.",
+   "traductions": {
+    "en": "Lunging triangle",
+    "es": "Triángulo de la cuerda",
+    "it": "Triangolo della longia",
+    "ja": "調馬索の三角形",
+    "de": "Longierdreieck",
+    "ar": "مثلث الحبل",
+    "zh": "打圈三角形",
+    "nl": "Longeerdriehoek",
+    "pt": "Triângulo da guia",
+    "sv": "Longeringstriangel",
+    "ru": "Треугольник корды",
+    "pl": "Trójkąt lonżowania",
+    "ko": "조마삭 삼각형"
+   },
+   "cours": [
+    "g5n-06"
+   ],
+   "partie": [
+    {
+     "fr": "à pied",
+     "en": "groundwork",
+     "es": "pie a tierra",
+     "it": "da terra",
+     "ja": "グランドワーク",
+     "de": "Bodenarbeit",
+     "ar": "من الأرض",
+     "zh": "地面",
+     "nl": "grondwerk",
+     "pt": "a pé",
+     "sv": "till fots",
+     "ru": "с земли",
+     "pl": "z ziemi",
+     "ko": "지상"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Triple barre",
    "definition_fr": "Obstacle large formé de trois plans de barres de plus en plus hauts.",
    "traductions": {
@@ -12809,6 +18936,92 @@
    },
    "cours": [
     "g9n-13"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Tronçon",
+   "definition_fr": "la partie osseuse de la queue, couverte de crins.",
+   "traductions": {
+    "en": "Dock",
+    "es": "Maslo",
+    "it": "Troncone",
+    "ja": "尾幹",
+    "de": "Schweifrübe",
+    "ar": "جذع الذيل",
+    "zh": "尾根（tronçon）",
+    "nl": "Staartwortel",
+    "pt": "Tronco da cauda",
+    "sv": "Svansrot",
+    "ru": "Репица",
+    "pl": "Dok",
+    "ko": "꼬리뼈 부분"
+   },
+   "cours": [
+    "g6n-02"
+   ],
+   "partie": [
+    {
+     "fr": "soins",
+     "en": "care",
+     "es": "cuidados",
+     "it": "cure",
+     "ja": "ケア",
+     "de": "Pflege",
+     "ar": "عناية",
+     "zh": "护理",
+     "nl": "verzorging",
+     "pt": "cuidados",
+     "sv": "vård",
+     "ru": "уход",
+     "pl": "pielęgnacja",
+     "ko": "관리"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Trot de travail",
+   "definition_fr": "le trot de base, actif et régulier, d'où partent les variations d'amplitude.",
+   "traductions": {
+    "en": "Working trot",
+    "es": "Trote de trabajo",
+    "it": "Trotto di lavoro",
+    "ja": "基本の速歩",
+    "de": "Arbeitstrab",
+    "ar": "خبب العمل",
+    "zh": "工作快步",
+    "nl": "Werkdraf",
+    "pt": "Trote de trabalho",
+    "sv": "Arbetstrav",
+    "ru": "Рабочая рысь",
+    "pl": "Kłus roboczy",
+    "ko": "작업 속보"
+   },
+   "cours": [
+    "g6n-12"
    ],
    "partie": [
     {
@@ -12934,6 +19147,49 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Van",
+   "definition_fr": "Remorque pour transporter un ou deux chevaux, tirée par une voiture.",
+   "traductions": {
+    "en": "Trailer",
+    "es": "Remolque",
+    "it": "Van",
+    "ja": "馬運車（トレーラー）",
+    "de": "Pferdeanhänger",
+    "ar": "المقطورة",
+    "zh": "运马拖车",
+    "nl": "Trailer",
+    "pt": "Trailer",
+    "sv": "Hästtransport",
+    "ru": "Коневоз",
+    "pl": "Przyczepa",
+    "ko": "트레일러"
+   },
+   "cours": [
+    "g5n-07"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Velcro",
    "definition_fr": "Fermeture auto-agrippante de la bande.",
    "traductions": {
@@ -12978,9 +19234,9 @@
   },
   {
    "terme_fr": "Vertical",
-   "definition_fr": "Obstacle dont les barres sont dans un seul plan.",
+   "definition_fr": "Obstacle droit, fait de barres les unes au-dessus des autres.",
    "traductions": {
-    "en": "Upright",
+    "en": "Vertical",
     "es": "Vertical",
     "it": "Verticale",
     "ja": "垂直障害",
@@ -12989,15 +19245,32 @@
     "zh": "垂直障碍",
     "nl": "Steilsprong",
     "pt": "Vertical",
-    "sv": "Rakt hinder (vertikal)",
+    "sv": "Rakt hinder",
     "ru": "Вертикаль",
     "pl": "Stacjonata",
     "ko": "수직 장애물"
    },
    "cours": [
+    "g5n-01",
     "g8n-16"
    ],
    "partie": [
+    {
+     "fr": "culture",
+     "en": "culture",
+     "es": "cultura",
+     "it": "cultura",
+     "ja": "教養",
+     "de": "Kultur",
+     "ar": "ثقافة",
+     "zh": "文化",
+     "nl": "cultuur",
+     "pt": "cultura",
+     "sv": "kultur",
+     "ru": "культура",
+     "pl": "kultura",
+     "ko": "교양"
+    },
     {
      "fr": "pratique",
      "en": "practical",
@@ -13063,6 +19336,92 @@
    "niveau": "proposé"
   },
   {
+   "terme_fr": "Vitesse",
+   "definition_fr": "Distance parcourue par le cheval dans un temps donné.",
+   "traductions": {
+    "en": "Speed",
+    "es": "Velocidad",
+    "it": "Velocità",
+    "ja": "速度",
+    "de": "Geschwindigkeit",
+    "ar": "السرعة",
+    "zh": "速度",
+    "nl": "Snelheid",
+    "pt": "Velocidade",
+    "sv": "Fart",
+    "ru": "Скорость",
+    "pl": "Prędkość",
+    "ko": "속도"
+   },
+   "cours": [
+    "g6n-09"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
+   "terme_fr": "Vitesse contrôlée",
+   "definition_fr": "Un galop que tu peux ralentir ou allonger à tout moment, en restant en équilibre.",
+   "traductions": {
+    "en": "Controlled speed",
+    "es": "Velocidad controlada",
+    "it": "Velocità controllata",
+    "ja": "コントロールされたスピード",
+    "de": "Kontrollierte Geschwindigkeit",
+    "ar": "السرعة المتحكَّم فيها",
+    "zh": "受控制的速度",
+    "nl": "Gecontroleerd tempo",
+    "pt": "Velocidade controlada",
+    "sv": "Kontrollerad fart",
+    "ru": "Контролируемая скорость",
+    "pl": "Kontrolowana prędkość",
+    "ko": "조절된 속도"
+   },
+   "cours": [
+    "g5n-12"
+   ],
+   "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    }
+   ],
+   "variantes": {},
+   "a_eviter": {},
+   "niveau": "proposé"
+  },
+  {
    "terme_fr": "Voies respiratoires",
    "definition_fr": "Le chemin de l'air : naseaux, gorge, trachée, poumons.",
    "traductions": {
@@ -13107,7 +19466,7 @@
   },
   {
    "terme_fr": "Volte",
-   "definition_fr": "Cercle de 10 m de diamètre au plus.",
+   "definition_fr": "cercle de 10 m de diamètre au plus.",
    "traductions": {
     "en": "Volte",
     "es": "Volta",
@@ -13124,9 +19483,26 @@
     "ko": "볼트"
    },
    "cours": [
+    "g6n-01",
     "g7n-11"
    ],
    "partie": [
+    {
+     "fr": "pratique",
+     "en": "practical",
+     "es": "práctica",
+     "it": "pratica",
+     "ja": "実技",
+     "de": "Praxis",
+     "ar": "تطبيقي",
+     "zh": "实践",
+     "nl": "praktijk",
+     "pt": "prática",
+     "sv": "praktik",
+     "ru": "практика",
+     "pl": "praktyka",
+     "ko": "실습"
+    },
     {
      "fr": "pratique",
      "en": "practical",

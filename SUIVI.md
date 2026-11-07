@@ -18910,3 +18910,17 @@ Fichier hype-cours-galops-sup.js NON touché (ancien fichier gardé pour les vie
 - Pages du carnet en grand (galerie) : passer d'une page à l'autre (glisser, flèches sur ordinateur), Télécharger, Tourner, Supprimer (confirmation habituelle). PDF : « Ouvrir le PDF » + Télécharger.
 - Agenda retiré de la page : idée notée d'un AGENDA GLOBAL de l'écurie avec toutes les dates (à faire plus tard).
 - Textes traduits dans les 14 langues. hype-ecran-sante-cheval.js?v=8. Vérifié sur banc d'essai (iPhone + ordinateur) avec les vrais vaccins du cheval.
+
+🔎 07/11/2026 (11 h 20) — CONTRÔLE QUALITÉ DE TOUS LES COURS + GLOSSAIRE GALOPS 5 À 9 — PUBLIÉ (build 20261107-1120)
+Contrôle automatique des Galops 1 à 9 et des compléments, dans les 13 langues : traductions manquantes, phrases restées en français,
+nombre de réponses des quiz identique dans chaque langue, bonne réponse existante.
+Résultat : aucun quiz décalé, aucune bonne réponse hors liste, aucune phrase oubliée en français (hors noms propres et notes internes).
+Manques trouvés = seulement des photos sans version propre à une langue (la photo française s'affiche, normal) et des petits mots
+de couverture volontairement vides dans les langues sans article (ex. « LE » en russe).
+| Fichier | Où | Quoi |
+|---|---|---|
+| outils/glossaire/glossaire-galops-5-9.json | outils/glossaire/ | REMPLACE glossaire-galops-7-9.json : 420 termes des Galops 5 à 9, 14 langues, notes sur les mots à double sens |
+| hype-cours-galop5.js | racine | v6 : allemand « Equidenpass » aligné dans le cours sur l'identité |
+| index.html | racine | ?v galop5 → 14 |
+
+════════════════════════════════════════════════════════════
