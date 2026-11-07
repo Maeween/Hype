@@ -19120,3 +19120,10 @@ RAPPEL pour toutes les conversations : quand on change un texte français d'un c
 traduction reste affichée si on recopie le nouveau français dans la table de traduction).
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 18h10 — Photographier le carnet pas à pas → PDF + lecture des vaccins (build 20261107-1810, NON PUBLIÉ)
+- Demande : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » ; proposition acceptée (« Ok continue »).
+- Page Vaccins : « Photographier le carnet » (remplace « Lire le carnet » sur la ligne) ouvre un pas-à-pas : conseil (à plat, lumière, sans flash ni reflet, toute la page) ; 1 = page d'identité (nom, SIRE, transpondeur) ; 2 = chaque page de vaccins (6 au plus), une photo par page ; toucher une photo pour la reprendre, ✕ pour la retirer ; lien « Tu as déjà un PDF ou des photos ? Choisir un fichier » (ancienne lecture).
+- « Terminer » : Hype lit les vaccins et le sens de chaque photo, remet les photos droites, fabrique UN PDF « Carnet de vaccination » (une page par photo, fabriqué dans le téléphone, sans service extérieur), le range dans les pages du carnet (cheval_documents, type carnet_vaccin), puis montre la liste des vaccins à valider. Si la lecture échoue, le PDF est quand même gardé et un message le dit.
+- Réservé aux abonnés comme la lecture. Textes traduits en 14 langues. hype-ecran-sante-cheval.js?v=10.
+- Vérifié sur banc d'essai : PDF valide (2 pages, rotation appliquée), pas-à-pas avec 3 photos. Pas testé sur iPhone ni avec la vraie lecture en ligne.
