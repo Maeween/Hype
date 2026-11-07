@@ -40,28 +40,37 @@ function EcranMonCarnet() {
   var stJr = React.useState(function () { try { return window.__jcJour || ""; } catch (eJ) { return ""; } }); var jourJC = stJr[0], setJourJC = stJr[1];
   function changerSemJC(l) { try { window.__jcSem = l; } catch (eW3) { } setSemJC(l); }
   function choisirJourJC(iso) { try { window.__jcJour = iso; window.__jcNb = 8; } catch (eW4) { } setJourJC(iso); setNbJC(8); }
-  /* 27/09 (429) : MON OBJECTIF DU MOMENT. Table privee public.carnet_objectifs (une ligne par compte :
-     user_id = auth.uid() en cle primaire, texte, updated_at ; RLS « soi seulement »). DEUX echanges
-     seulement : une lecture a l ouverture, une ecriture quand on enregistre. Texte vide enregistre =
-     la ligne est supprimee (action volontaire). Jamais dans profiles (lisible par d autres). */
-  var stOb = React.useState(undefined); var objJC = stOb[0], setObjJC = stOb[1];       /* undefined = chargement, null = indisponible, "" = aucun */
-  var stObE = React.useState(false); var objEd = stObE[0], setObjEd = stObE[1];
-  var stObT = React.useState(""); var objTmp = stObT[0], setObjTmp = stObT[1];
+  /* 07/11 : MES OBJECTIFS DU MOMENT — jusqu'a 3 (demande de Lore, valide par Blandine : cartes photo, photo
+     choisie par la cavaliere). Table privee public.carnet_objectifs_liste (id, user_id, texte <= 140,
+     photo = mot-cle de OBJ_PHOTOS_JC, ordre 1..3 unique par compte ; RLS « soi seulement »).
+     L ancienne table carnet_objectifs (un seul objectif, 27/09) n est plus lue ni ecrite par la page ;
+     ses 3 objectifs ont ete recopies en objectif 1 (photo Dressage). */
+  var OBJ_PHOTOS_JC = [
+    { k: "dressage", img: "images/theme-dressage-bai-trot.webp", pos: "55% 45%" },
+    { k: "obstacle", img: "images/theme-obstacle-saut-noir-cadre.webp", pos: "50% 42%" },
+    { k: "position", img: "images/theme-position-cavalier-noir.webp", pos: "26% 40%" },
+    { k: "pied", img: "images/securite-g1-longe.webp", pos: "50% 50%" },
+    { k: "soins", img: "images/pansage-hero.webp", pos: "62% 40%" },
+    { k: "sante", img: "images/theme-sante-bai-repos.webp", pos: "62% 40%" }];
+  function objPhotoJC(k) { for (var i = 0; i < OBJ_PHOTOS_JC.length; i++) { if (OBJ_PHOTOS_JC[i].k === k) return OBJ_PHOTOS_JC[i]; } return OBJ_PHOTOS_JC[0]; }
+  var stOb = React.useState(undefined); var objsJC = stOb[0], setObjsJC = stOb[1];     /* undefined = chargement, null = indisponible, [] = aucun */
+  var stObE = React.useState(null); var objEd = stObE[0], setObjEd = stObE[1];        /* null = ferme ; sinon { id, texte, photo } (id vide = nouvel objectif) */
   var stObS = React.useState(false); var objEnv = stObS[0], setObjEnv = stObS[1];
   var stObR = React.useState(""); var objErr = stObR[0], setObjErr = stObR[1];
+  var stObX = React.useState(false); var objSup = stObX[0], setObjSup = stObX[1];     /* 1er toucher sur Supprimer = demande de confirmation */
+  async function chargerObjsJC() {
+    try {
+      if (typeof supa === "undefined" || !supa) return null;
+      var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+      if (!u || !u.id) return null;
+      var r = await supa.from("carnet_objectifs_liste").select("id, texte, photo, ordre").eq("user_id", u.id).order("ordre", { ascending: true });
+      if (r && r.error) { try { console.warn("[journal] objectifs illisibles :", r.error.message || r.error); } catch (eC) { } return null; }
+      return (r && r.data) || [];
+    } catch (eO) { return null; }
+  }
   React.useEffect(function () {
     var vif = true;
-    (async function () {
-      try {
-        if (typeof supa === "undefined" || !supa) { if (vif) setObjJC(null); return; }
-        var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
-        if (!u || !u.id) { if (vif) setObjJC(null); return; }
-        var r = await supa.from("carnet_objectifs").select("texte").eq("user_id", u.id).maybeSingle();
-        if (!vif) return;
-        if (r && r.error) { try { console.warn("[journal] objectif illisible :", r.error.message || r.error); } catch (eC) { } setObjJC(null); return; }
-        setObjJC(String((r && r.data && r.data.texte) || ""));
-      } catch (eO) { if (vif) setObjJC(null); }
-    })();
+    chargerObjsJC().then(function (l) { if (vif) setObjsJC(l); });
     return function () { vif = false; };
   }, []);
   /* 27/09 (430) : PHOTO DE SECOURS DES CARTES. Pour une seance SANS media, dans l ordre de la fiche
@@ -116,20 +125,47 @@ function EcranMonCarnet() {
   }, [seances]);
 
   async function enregistrerObjJC() {
-    if (objEnv) return;
+    if (objEnv || !objEd) return;
     setObjErr(""); setObjEnv(true);
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       if (!u || !u.id) throw new Error("session");
-      var t = String(objTmp || "").trim();
-      var r;
-      if (t) r = await supa.from("carnet_objectifs").upsert({ user_id: u.id, texte: t, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
-      else r = await supa.from("carnet_objectifs").delete().eq("user_id", u.id);
+      var t = String(objEd.texte || "").trim().slice(0, 140);
+      var ph = objPhotoJC(objEd.photo).k;
+      var r = null;
+      if (objEd.id) {
+        /* texte vide sur un objectif existant = il est retire (meme regle qu avant) */
+        if (t) r = await supa.from("carnet_objectifs_liste").update({ texte: t, photo: ph, updated_at: new Date().toISOString() }).eq("id", objEd.id).eq("user_id", u.id);
+        else r = await supa.from("carnet_objectifs_liste").delete().eq("id", objEd.id).eq("user_id", u.id);
+      } else if (t) {
+        var pris = {}; (objsJC || []).forEach(function (o) { pris[o.ordre] = 1; });
+        var ordre = 0; for (var i = 1; i <= 3; i++) { if (!pris[i]) { ordre = i; break; } }
+        if (!ordre) throw new Error("trois objectifs deja");
+        r = await supa.from("carnet_objectifs_liste").insert({ user_id: u.id, texte: t, photo: ph, ordre: ordre });
+      }
       if (r && r.error) throw r.error;
-      setObjJC(t); setObjEd(false);
+      var l = await chargerObjsJC(); if (l) setObjsJC(l);
+      setObjEd(null); setObjSup(false);
     } catch (eE) {
       try { console.warn("[journal] objectif non enregistre :", (eE && eE.message) || eE); } catch (eC2) { }
       setObjErr(T("L’objectif n’a pas pu être enregistré.", "The goal could not be saved.", "No se pudo guardar el objetivo.", "Impossibile salvare l’obiettivo.", "目標を保存できませんでした。", "Das Ziel konnte nicht gespeichert werden.", "تعذر حفظ الهدف.", "目标保存失败。", "Het doel kon niet worden opgeslagen.", "Não foi possível salvar o objetivo.", "Målet kunde inte sparas.", "Не удалось сохранить цель.", "Nie udało się zapisać celu.", "목표를 저장하지 못했어요."));
+    }
+    setObjEnv(false);
+  }
+  async function supprimerObjJC() {
+    if (objEnv || !objEd || !objEd.id) return;
+    if (!objSup) { setObjSup(true); return; }
+    setObjErr(""); setObjEnv(true);
+    try {
+      var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+      if (!u || !u.id) throw new Error("session");
+      var r = await supa.from("carnet_objectifs_liste").delete().eq("id", objEd.id).eq("user_id", u.id);
+      if (r && r.error) throw r.error;
+      var l = await chargerObjsJC(); if (l) setObjsJC(l);
+      setObjEd(null); setObjSup(false);
+    } catch (eD) {
+      try { console.warn("[journal] objectif non supprime :", (eD && eD.message) || eD); } catch (eC3) { }
+      setObjErr(T("L’objectif n’a pas pu être supprimé.", "The goal could not be deleted.", "No se pudo eliminar el objetivo.", "Impossibile eliminare l’obiettivo.", "目標を削除できませんでした。", "Das Ziel konnte nicht gelöscht werden.", "تعذر حذف الهدف.", "目标删除失败。", "Het doel kon niet worden verwijderd.", "Não foi possível excluir o objetivo.", "Målet kunde inte tas bort.", "Не удалось удалить цель.", "Nie udało się usunąć celu.", "목표를 삭제하지 못했어요."));
     }
     setObjEnv(false);
   }
@@ -367,39 +403,102 @@ function EcranMonCarnet() {
             })));
       })(),
 
-      /* 27/09 (429) : MON OBJECTIF DU MOMENT (sous le calendrier) */
-      (objJC === undefined) ? null : h("div", { className: "jc-obj", style: { marginTop: 26, minWidth: 0 } },
-        h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 12, minWidth: 0 } },
-          h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 30, height: 2, background: JC.champ } }),
-          h("div", { style: { flex: 1, minWidth: 0, fontFamily: C, fontSize: 17, fontWeight: 600, letterSpacing: rtlJC ? 0 : 1.4, textTransform: "uppercase", color: JC.ivoire, lineHeight: 1.25 } },
-            T("Mon objectif du moment", "My current goal", "Mi objetivo del momento", "Il mio obiettivo del momento", "今の目標", "Mein aktuelles Ziel", "هدفي الحالي", "我当前的目标", "Mijn doel van dit moment", "Meu objetivo do momento", "Mitt mål just nu", "Моя цель на сейчас", "Mój cel na teraz", "지금 내 목표"))),
-        (objJC === null)
-          ? h("div", { style: { padding: "14px 16px", borderRadius: 14, border: "1px solid " + JC.ligne, background: JC.carte, fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.8)" } },
-              T("Objectif indisponible pour le moment.", "Goal unavailable for now.", "Objetivo no disponible por ahora.", "Obiettivo non disponibile al momento.", "目標は現在表示できません。", "Ziel derzeit nicht verfügbar.", "الهدف غير متاح حاليًا.", "目标暂时无法使用。", "Doel op dit moment niet beschikbaar.", "Objetivo indisponível no momento.", "Målet är inte tillgängligt just nu.", "Цель пока недоступна.", "Cel chwilowo niedostępny.", "지금은 목표를 사용할 수 없어요."))
-          : objEd
-            ? h("div", { style: { padding: 14, borderRadius: 14, border: "1px solid " + JC.reflet, background: JC.carte, minWidth: 0 } },
-                h("textarea", { value: objTmp, rows: 2, maxLength: 140, dir: String(objTmp || "").trim() ? "auto" : (rtlJC ? "rtl" : "ltr"), onChange: function (e) { setObjTmp(e.target.value); },
-                  placeholder: T("ex. Gagner en stabilité dans mes transitions", "e.g. Gain stability in my transitions", "p. ej. Ganar estabilidad en mis transiciones", "es. Più stabilità nelle transizioni", "例：移行を安定させる", "z. B. Mehr Stabilität in den Übergängen", "مثلا: ثبات أكبر في الانتقالات", "例如：让我的过渡更稳定", "bijv. Stabieler worden in mijn overgangen", "ex.: Ganhar estabilidade nas minhas transições", "t.ex. Bli stadigare i mina övergångar", "напр. Стать устойчивее в переходах", "np. Zyskać stabilność w przejściach", "예: 전환할 때 더 안정적으로 하기"),
-                  style: { display: "block", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", minHeight: 72, padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(242,237,228,0.2)", background: JC.fond, color: JC.ivoire, fontFamily: M, fontSize: 16, lineHeight: 1.45, resize: "none", outline: "none", WebkitAppearance: "none" } }),
-                objErr ? h("div", { style: { marginTop: 10, fontFamily: M, fontSize: 12.5, color: "#FF9B9B" } }, objErr) : null,
-                h("div", { style: { display: "flex", alignItems: "center", justifyContent: "flex-end", flexWrap: "wrap", gap: 8, marginTop: 12 } },
-                  h("div", { role: "button", onClick: function () { setObjEd(false); setObjErr(""); },
-                    style: { display: "flex", alignItems: "center", minHeight: 44, padding: "0 14px", fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.86)", cursor: "pointer" } },
-                    T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
-                  h("div", { role: "button", onClick: enregistrerObjJC,
-                    style: { display: "flex", alignItems: "center", minHeight: 44, padding: "0 18px", borderRadius: 12, border: "1px solid " + JC.reflet, background: JC.pet, fontFamily: M, fontSize: 13.5, fontWeight: 600, color: JC.ivoire, cursor: objEnv ? "default" : "pointer", opacity: objEnv ? 0.6 : 1 } },
-                    objEnv ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…", "جار الحفظ…", "保存中…", "Opslaan…", "Salvando…", "Sparar…", "Сохранение…", "Zapisywanie…", "저장하는 중…") : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장"))))
-            : h("div", { style: { display: "flex", alignItems: "center", gap: 14, padding: "12px 12px 12px 14px", borderRadius: 14, border: "1px solid " + JC.ligne, background: JC.carte, minWidth: 0 } },
-                h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 46, height: 46, borderRadius: 10, border: "1px solid rgba(214,182,118,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
-                  h("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: JC.champ, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block" } },
-                    h("path", { d: "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z" }),
-                    h("path", { d: "M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" }),
-                    h("path", { d: "M12 12l7-7M16 5h3v3" }))),
-                h("div", { dir: objJC ? "auto" : undefined, style: { flex: 1, minWidth: 0, fontFamily: objJC ? "'Cormorant Garamond',Georgia,serif" : M, fontSize: objJC ? "clamp(16.5px, 4.9vw, 19px)" : 13.5, fontWeight: objJC ? 600 : 400, lineHeight: 1.3, color: objJC ? JC.ivoire : "rgba(242,237,228,0.84)", overflowWrap: "anywhere" } },
-                  objJC || T("Choisis un objectif sur lequel te concentrer.", "Pick a goal to focus on.", "Elige un objetivo en el que concentrarte.", "Scegli un obiettivo su cui concentrarti.", "取り組む目標を決めましょう。", "Wähle ein Ziel, auf das du dich konzentrierst.", "اختاري هدفًا تركزين عليه.", "选一个要专注的目标。", "Kies een doel om je op te richten.", "Escolha um objetivo para focar.", "Välj ett mål att fokusera på.", "Выбери цель, на которой сосредоточиться.", "Wybierz cel, na którym chcesz się skupić.", "집중할 목표를 골라 보세요.")),
-                h("div", { role: "button", onClick: function () { setObjTmp(objJC || ""); setObjErr(""); setObjEd(true); },
-                  style: { flex: "0 0 auto", display: "flex", alignItems: "center", minHeight: 44, padding: "0 4px 0 12px", borderInlineStart: "1px solid " + JC.ligne, fontFamily: M, fontSize: 13.5, color: "#8ECBD8", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" } },
-                  objJC ? T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "修改", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정") : T("Définir", "Set", "Definir", "Definisci", "設定", "Festlegen", "تحديد", "设定", "Instellen", "Definir", "Ange", "Задать", "Ustaw", "설정하기")))),
+      /* 07/11 : MES OBJECTIFS (sous le calendrier) — jusqu a 3 cartes photo, esprit Videotheque :
+         grand titre Cormorant, courbe champagne, carte = photo + degrade noir + « OBJECTIF n » + texte + courbe.
+         Toucher une carte = la modifier sur place (texte, photo, supprimer). Boutons a contour champagne. */
+      (objsJC === undefined) ? null : (function () {
+        var G = "'Cormorant Garamond',Georgia,serif";
+        var liste = Array.isArray(objsJC) ? objsJC : [];
+        var rtl = rtlJC;
+        var degrade = "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(8,10,11,0.92) 0%, rgba(8,10,11,0.6) 48%, rgba(8,10,11,0) 85%), linear-gradient(180deg, rgba(8,10,11,0) 45%, rgba(8,10,11,0.72) 100%)";
+        function courbeObj(id, d, haut, epais, fond) {
+          return h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true",
+              style: { display: "block", width: "100%", height: haut, transform: rtl ? "scaleX(-1)" : undefined } },
+            h("defs", null, h("linearGradient", { id: id, x1: "0", x2: "1", y1: "0", y2: "0" },
+              h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: fond ? ".55" : "0" }),
+              h("stop", { offset: ".5", stopColor: "#D9B97E", stopOpacity: ".95" }),
+              h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: fond ? ".8" : ".15" }))),
+            h("path", { d: d, fill: "none", stroke: "url(#" + id + ")", strokeWidth: epais, vectorEffect: "non-scaling-stroke" }));
+        }
+        var bouton = function (txt, onClick, extra) {
+          return h("div", { role: "button", onClick: onClick,
+            style: Object.assign({ display: "inline-flex", alignItems: "center", gap: 10, minHeight: 44, padding: "0 18px", borderRadius: 999, border: "1px solid " + JC.champ, background: "transparent", color: JC.champ, fontFamily: M, fontSize: 13.5, fontWeight: 500, letterSpacing: 0.3, cursor: "pointer" }, extra || {}) }, txt);
+        };
+        var plus = h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: JC.champ, strokeWidth: 1.6, strokeLinecap: "round", "aria-hidden": "true", style: { display: "block" } }, h("path", { d: "M12 5v14M5 12h14" }));
+        var lObjectif = T("Objectif", "Goal", "Objetivo", "Obiettivo", "目標", "Ziel", "الهدف", "目标", "Doel", "Objetivo", "Mål", "Цель", "Cel", "목표");
+        var lAnnuler = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소");
+
+        function carte(o, i) {
+          var p = objPhotoJC(o.photo);
+          return h("div", { key: o.id, role: "button", "aria-label": T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "修改", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정") + " — " + (o.texte || ""),
+              onClick: function () { setObjErr(""); setObjSup(false); setObjEd({ id: o.id, texte: o.texte || "", photo: p.k }); },
+              style: { position: "relative", minHeight: 168, borderRadius: 18, overflow: "hidden", border: "1px solid " + JC.ligne, background: JC.carte, cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "flex-end", minWidth: 0 } },
+            h("img", { src: p.img, alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: p.pos } }),
+            h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: degrade } }),
+            h("span", { "aria-hidden": "true", style: { position: "absolute", zIndex: 3, top: 12, right: rtl ? undefined : 12, left: rtl ? 12 : undefined, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(8,10,11,0.45)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center" } },
+              h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: JC.ivoire, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block" } }, h("path", { d: "M4 20h4L19 9l-4-4L4 16z" }))),
+            h("div", { style: { position: "relative", zIndex: 2, padding: "62px 18px 26px", maxWidth: "74%", display: "flex", flexDirection: "column", gap: 6, minWidth: 0 } },
+              h("span", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 500, letterSpacing: rtl ? 0 : "0.32em", textTransform: "uppercase", color: JC.champ } }, lObjectif + " " + (i + 1)),
+              h("div", { dir: "auto", style: { fontFamily: G, fontWeight: 600, fontSize: "clamp(21px, 6vw, 24px)", lineHeight: 1.1, color: JC.ivoire, overflowWrap: "anywhere", textWrap: "balance" } }, o.texte)),
+            h("div", { style: { position: "absolute", zIndex: 2, left: 0, right: 0, bottom: -1 } },
+              courbeObj("jcog" + i, "M0 20 C 120 26, 230 38, 400 12", 26, 1.6, true)));
+        }
+
+        function editeur() {
+          var neuf = !objEd.id;
+          return h("div", { key: "ed", style: { padding: 16, borderRadius: 18, border: "1px solid " + JC.ligne, background: JC.carte, display: "flex", flexDirection: "column", gap: 14, minWidth: 0 } },
+            h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 500, letterSpacing: rtl ? 0 : "0.26em", textTransform: "uppercase", color: JC.champ } },
+              T("Mon objectif", "My goal", "Mi objetivo", "Il mio obiettivo", "私の目標", "Mein Ziel", "هدفي", "我的目标", "Mijn doel", "Meu objetivo", "Mitt mål", "Моя цель", "Mój cel", "내 목표")),
+            h("textarea", { value: objEd.texte, rows: 2, maxLength: 140, dir: String(objEd.texte || "").trim() ? "auto" : (rtl ? "rtl" : "ltr"),
+              onChange: function (e) { var v = e.target.value; setObjEd(function (x) { return Object.assign({}, x, { texte: v }); }); },
+              placeholder: T("ex. Gagner en stabilité dans mes transitions", "e.g. Gain stability in my transitions", "p. ej. Ganar estabilidad en mis transiciones", "es. Più stabilità nelle transizioni", "例：移行を安定させる", "z. B. Mehr Stabilität in den Übergängen", "مثلا: ثبات أكبر في الانتقالات", "例如：让我的过渡更稳定", "bijv. Stabieler worden in mijn overgangen", "ex.: Ganhar estabilidade nas minhas transições", "t.ex. Bli stadigare i mina övergångar", "напр. Стать устойчивее в переходах", "np. Zyskać stabilność w przejściach", "예: 전환할 때 더 안정적으로 하기"),
+              style: { display: "block", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", minHeight: 72, padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(242,237,228,0.2)", background: JC.fond, color: JC.ivoire, fontFamily: M, fontSize: 16, lineHeight: 1.45, resize: "none", outline: "none", WebkitAppearance: "none" } }),
+            h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 500, letterSpacing: rtl ? 0 : "0.26em", textTransform: "uppercase", color: JC.champ } },
+              T("Choisis ta photo", "Choose your photo", "Elige tu foto", "Scegli la tua foto", "写真を選ぼう", "Wähle dein Foto", "اختاري صورتك", "选择你的照片", "Kies je foto", "Escolha sua foto", "Välj ditt foto", "Выбери фото", "Wybierz zdjęcie", "사진을 골라 보세요")),
+            h("div", { role: "radiogroup", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
+              OBJ_PHOTOS_JC.map(function (p) {
+                var on = objPhotoJC(objEd.photo).k === p.k;
+                return h("div", { key: p.k, role: "radio", "aria-checked": on ? "true" : "false", tabIndex: 0,
+                    onClick: function () { setObjEd(function (x) { return Object.assign({}, x, { photo: p.k }); }); },
+                    style: { position: "relative", aspectRatio: "1 / 1", maxWidth: "100%", borderRadius: 12, overflow: "hidden", border: on ? "2px solid " + JC.champ : "1px solid " + JC.ligne, cursor: "pointer", boxSizing: "border-box" } },
+                  h("img", { src: p.img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: p.pos } }),
+                  on ? h("span", { "aria-hidden": "true", style: { position: "absolute", top: 6, right: rtl ? undefined : 6, left: rtl ? 6 : undefined, width: 22, height: 22, borderRadius: "50%", background: "rgba(8,10,11,0.7)", border: "1px solid " + JC.champ, display: "flex", alignItems: "center", justifyContent: "center" } },
+                    h("svg", { width: 12, height: 12, viewBox: "0 0 24 24", fill: "none", stroke: JC.champ, strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block" } }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }))) : null);
+              })),
+            objErr ? h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#FF9B9B" } }, objErr) : null,
+            h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 } },
+              neuf ? h("span", null) : h("div", { role: "button", onClick: supprimerObjJC,
+                style: { display: "flex", alignItems: "center", minHeight: 44, fontFamily: M, fontSize: 13, color: "#FF9B9B", cursor: "pointer" } },
+                objSup ? T("Confirmer la suppression", "Confirm deletion", "Confirmar la eliminación", "Conferma l’eliminazione", "削除を確定", "Löschen bestätigen", "تأكيد الحذف", "确认删除", "Verwijderen bevestigen", "Confirmar exclusão", "Bekräfta borttagning", "Подтвердить удаление", "Potwierdź usunięcie", "삭제 확인")
+                  : T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제")),
+              h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+                h("div", { role: "button", onClick: function () { setObjEd(null); setObjErr(""); setObjSup(false); },
+                  style: { display: "flex", alignItems: "center", minHeight: 44, padding: "0 12px", fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.86)", cursor: "pointer" } }, lAnnuler),
+                bouton(objEnv ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…", "جار الحفظ…", "保存中…", "Opslaan…", "Salvando…", "Sparar…", "Сохранение…", "Zapisywanie…", "저장하는 중…") : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장"),
+                  enregistrerObjJC, { opacity: objEnv ? 0.6 : 1, cursor: objEnv ? "default" : "pointer" }))));
+        }
+
+        var enfants = [];
+        if (objsJC === null) {
+          enfants.push(h("div", { key: "ind", style: { padding: "14px 16px", borderRadius: 14, border: "1px solid " + JC.ligne, background: JC.carte, fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.8)" } },
+            T("Objectifs indisponibles pour le moment.", "Goals unavailable for now.", "Objetivos no disponibles por ahora.", "Obiettivi non disponibili al momento.", "目標は現在表示できません。", "Ziele derzeit nicht verfügbar.", "الأهداف غير متاحة حاليًا.", "目标暂时无法使用。", "Doelen op dit moment niet beschikbaar.", "Objetivos indisponíveis no momento.", "Målen är inte tillgängliga just nu.", "Цели пока недоступны.", "Cele chwilowo niedostępne.", "지금은 목표를 사용할 수 없어요.")));
+        } else {
+          liste.forEach(function (o, i) { enfants.push((objEd && objEd.id === o.id) ? editeur() : carte(o, i)); });
+          if (objEd && !objEd.id) enfants.push(editeur());
+          else if (liste.length < 3) {
+            if (!liste.length) enfants.push(h("div", { key: "vide", style: { fontFamily: M, fontSize: 13.5, lineHeight: 1.5, color: "rgba(242,237,228,0.84)" } },
+              T("Choisis jusqu’à 3 objectifs sur lesquels te concentrer.", "Pick up to 3 goals to focus on.", "Elige hasta 3 objetivos en los que concentrarte.", "Scegli fino a 3 obiettivi su cui concentrarti.", "取り組む目標を3つまで決めましょう。", "Wähle bis zu 3 Ziele, auf die du dich konzentrierst.", "اختاري حتى 3 أهداف تركزين عليها.", "最多选 3 个要专注的目标。", "Kies tot 3 doelen om je op te richten.", "Escolha até 3 objetivos para focar.", "Välj upp till 3 mål att fokusera på.", "Выбери до 3 целей, на которых сосредоточиться.", "Wybierz do 3 celów, na których chcesz się skupić.", "집중할 목표를 3개까지 골라 보세요.")));
+            enfants.push(h("div", { key: "aj" }, bouton([plus, h("span", { key: "t" }, T("Ajouter un objectif", "Add a goal", "Añadir un objetivo", "Aggiungi un obiettivo", "目標を追加", "Ziel hinzufügen", "إضافة هدف", "添加目标", "Doel toevoegen", "Adicionar objetivo", "Lägg till ett mål", "Добавить цель", "Dodaj cel", "목표 추가"))],
+              function () { setObjErr(""); setObjSup(false); setObjEd({ id: "", texte: "", photo: OBJ_PHOTOS_JC[0].k }); })));
+          }
+        }
+
+        return h("div", { className: "jc-obj", style: { marginTop: 30, minWidth: 0 } },
+          h("div", { style: { fontFamily: G, fontWeight: 500, fontSize: "clamp(34px, 10vw, 42px)", lineHeight: 1, color: JC.ivoire } },
+            T("Mes objectifs", "My goals", "Mis objetivos", "I miei obiettivi", "私の目標", "Meine Ziele", "أهدافي", "我的目标", "Mijn doelen", "Meus objetivos", "Mina mål", "Мои цели", "Moje cele", "나의 목표")),
+          h("div", { style: { margin: "6px 0 14px" } }, courbeObj("jcogt", "M0 36 C 120 34, 240 20, 400 4", 30, 1.1, false)),
+          h("div", { style: { display: "flex", flexDirection: "column", gap: 14, minWidth: 0 } }, enfants));
+      })(),
 
       /* 27/09 (425) : « MES CONSEILS HEY BABY » en ligne secondaire compacte. Fonctionnement INCHANGE :
          compterEpinglesHB, ouverture de PanneauConseilsHB, reouverture au retour d un conseil
