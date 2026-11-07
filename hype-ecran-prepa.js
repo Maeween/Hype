@@ -11,6 +11,15 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
 (function () {
   var h = React.createElement;
   var DATA = window.__HYPE_PREPA_DATA || {};
+  /* 07/11 : traductions — le français reste dans ce fichier ; les 13 autres langues sont chargées à la demande
+     depuis i18n/prepa-<lg>.json (mêmes données + textes de l'écran). En attendant le chargement, on garde le français. */
+  var I18N_V = 1, LG = "fr", TR = {}, CHARGE = {}, UI = null;
+  function T(k, fr) { return (UI && UI[k]) || fr; }
+  function chargerTr(lg) {
+    if (CHARGE[lg]) return CHARGE[lg];
+    CHARGE[lg] = fetch("i18n/prepa-" + lg + ".json?v=" + I18N_V).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j) TR[lg] = j; }).catch(function () { });
+    return CHARGE[lg];
+  }
   var DIPLOMES = [
     { id: "AE", court: "AE", nom: "Animateur d'Équitation", metier: "Animateur", titre: "Prépa AE", sous: "Animateur d'Équitation", photo: "images/cours-g1-c10-hero.webp", pos: "50% 40%" },
     { id: "BP", court: "BP", nom: "BPJEPS mention équitation", metier: "Moniteur", titre: "Prépa BP", sous: "BPJEPS mention équitation", photo: "images/article-cso-saut.webp", pos: "62% 40%" },
@@ -99,14 +108,15 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     "@media (max-width:639px){.pp-tab.cartes{display:none}.pp-cartes.cartes{display:block}}",
     "@media (min-width:768px){.pp-dips{max-width:620px}.pp-dep>button{padding:18px 20px}.pp-dep-in{padding:2px 20px 10px}.pp p,.pp li{font-size:15.5px}.pp-sec{padding-top:44px}}",
     "@media (min-width:1100px){.pp-corps>*{max-width:920px}}",
-    "@media (prefers-reduced-motion:reduce){.pp-chev,.pp-dip{transition:none}}"
+    "@media (prefers-reduced-motion:reduce){.pp-chev,.pp-dip{transition:none}}",
+    ".pp[dir=rtl] *,.pp:lang(ar) *{letter-spacing:0!important}"
   ].join("\n");
   function injecter() { try { if (!document.getElementById(CSS_ID)) { var st = document.createElement("style"); st.id = CSS_ID; st.textContent = CSS; document.head.appendChild(st); } } catch (e) { } }
 
   function ins(x, k) {
     if (x == null) return null;
     if (typeof x === "string") return x;
-    if (!Array.isArray(x) && x.v) return h(React.Fragment, { key: k }, ins(x.x), h("span", { className: "pp-verif" }, "À vérifier"));
+    if (!Array.isArray(x) && x.v) return h(React.Fragment, { key: k }, ins(x.x), h("span", { className: "pp-verif" }, T("verif", "À vérifier")));
     return x.map(function (s, i) {
       if (s.b) return h("b", { key: i }, s.t);
       if (s.u) return h("a", { key: i, href: s.u, target: "_blank", rel: "noopener noreferrer" }, s.t);
@@ -114,7 +124,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     });
   }
   function txt(x) { if (x == null) return ""; if (typeof x === "string") return x; if (!Array.isArray(x) && x.v) return txt(x.x); return x.map(function (s) { return s.t; }).join(""); }
-  function cellule(c) { var t = txt(c); if (t === "Oui") return h("span", { className: "pp-oui" }, "Oui"); if (t === "—") return h("span", { "aria-label": "Non" }, "—"); return ins(c); }
+  function cellule(c) { var t = txt(c); if (t === "Oui") return h("span", { className: "pp-oui" }, T("oui", "Oui")); if (t === "—") return h("span", { "aria-label": T("non", "Non") }, "—"); return ins(c); }
 
   function Liste(props) {
     var b = props.b, cle = props.cle;
@@ -123,7 +133,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     function bascule(i) { var n = Object.assign({}, coche); n[i] = !n[i]; setCoche(n); try { localStorage.setItem(cle, JSON.stringify(n)); } catch (e) { } }
     var nb = b.it.filter(function (_, i) { return coche[i]; }).length;
     return h("div", null,
-      h("p", { className: "pp-compte", "aria-live": "polite" }, nb + " sur " + b.it.length),
+      h("p", { className: "pp-compte", "aria-live": "polite" }, T("sur", "{nb} sur {total}").replace("{nb}", nb).replace("{total}", b.it.length)),
       h("ul", { className: "pp-chk" }, b.it.map(function (it, i) {
         return h("li", { key: i }, h("label", null,
           h("input", { type: "checkbox", checked: !!coche[i], onChange: function () { bascule(i); } }),
@@ -166,6 +176,10 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
   function Prepa() {
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
+    var lg = (app && app.langue) || "fr", rtl = lg === "ar";
+    var _f = React.useState(0), forcer = _f[1];
+    React.useEffect(function () { if (lg !== "fr" && !TR[lg]) chargerTr(lg).then(function () { forcer(function (n) { return n + 1; }); }); }, [lg]);
+    LG = lg; var TL = lg !== "fr" ? TR[lg] : null; UI = TL ? TL.ui : null;
     var sM = React.useState(undefined), moi = sM[0], setMoi = sM[1];
     var sD = React.useState(function () { try { return window.__prepaDiplome || "DE"; } catch (e) { return "DE"; } }), dip = sD[0], setDip = sD[1];
     var sO = React.useState({}), ouv = sO[0], setOuv = sO[1];
@@ -174,7 +188,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     React.useEffect(function () { injecter(); try { window.scrollTo(0, 0); } catch (e) { } var ok = true; (async function () { try { var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; if (ok) setMoi(u || null); } catch (e) { if (ok) setMoi(null); } })(); return function () { ok = false; }; }, []);
     var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
     React.useEffect(function () { if (moi !== undefined && !estMod) { try { setEcran("galops"); } catch (e) { } } }, [moi, estMod]);
-    var d = DATA[dip] || { sections: [], sources: [] };
+    var d = (TL && TL[dip]) || DATA[dip] || { sections: [], sources: [] };
     React.useEffect(function () {
       var att = null;
       function f() {
@@ -190,7 +204,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
       return function () { window.removeEventListener("scroll", f); if (att) clearTimeout(att); };
     }, [dip]);
     React.useEffect(function () { try { var r = rangRef.current; if (!r) return; var b = r.querySelector(".pp-ong.on"); if (!b) return; var x = b.offsetLeft - (r.clientWidth - b.offsetWidth) / 2; r.scrollTo({ left: Math.max(0, x), behavior: "auto" }); } catch (e) { } }, [actif]);
-    if (moi === undefined || !estMod) return h("div", { className: "hv2 pp", style: { minHeight: "100vh" } });
+    if (moi === undefined || !estMod) return h("div", { className: "hv2 pp", dir: rtl ? "rtl" : undefined, style: { minHeight: "100vh" } });
     var D = DIPLOMES.find(function (x) { return x.id === dip; }) || DIPLOMES[2];
     function choisir(id) { setDip(id); setOuv({}); setActif(0); try { window.__prepaDiplome = id; } catch (e) { } }
     function aller(i) {
@@ -198,22 +212,22 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     }
     function retour() { try { if (app.peutReculer && typeof app.retourEcran === "function") { app.retourEcran(); return; } } catch (e) { } setEcran("galops"); }
     function bascule(k) { var n = Object.assign({}, ouv); n[k] = !n[k]; setOuv(n); }
-    return h("div", { className: "hv2 pp" },
+    return h("div", { className: "hv2 pp", dir: rtl ? "rtl" : undefined, lang: lg },
       h("div", { className: "hv2-hero hv2-hero-r" },
         (typeof SelecteurLangue === "function") ? h("div", { className: "hv2-langue" }, h(SelecteurLangue, { compact: true })) : null,
-        h("div", { className: "hv2-in hv2-hero-retour" }, h("button", { type: "button", className: "pp-ret", onClick: retour }, h("i", null, "‹"), "Les Galops")),
+        h("div", { className: "hv2-in hv2-hero-retour" }, h("button", { type: "button", className: "pp-ret", onClick: retour }, h("i", null, rtl ? "›" : "‹"), T("retour", "Les Galops"))),
         courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
         h("div", { className: "hv2-photo hv2-traite", style: { "--hv-pos-tel": D.pos, "--hv-pos-tab": D.pos, "--hv-pos-ordi": D.pos } },
           h("img", { key: D.photo, src: D.photo, alt: "", "aria-hidden": "true", fetchpriority: "high" })),
         courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
-        h("div", { className: "hv2-in" }, h("div", { className: "hv2-titre" }, h("h1", null, D.titre), h("p", null, D.sous)))),
+        h("div", { className: "hv2-in" }, h("div", { className: "hv2-titre" }, h("h1", null, T("titre_" + D.id, D.titre)), h("p", null, T("sous_" + D.id, D.sous))))),
       h("div", { className: "hv2-in" },
-        h("div", { className: "pp-dips", role: "tablist", "aria-label": "Choisis ton diplôme" }, DIPLOMES.filter(function (x) { return !x.reserve || estMod; }).map(function (x) {
+        h("div", { className: "pp-dips", role: "tablist", "aria-label": T("choisis", "Choisis ton diplôme") }, DIPLOMES.filter(function (x) { return !x.reserve || estMod; }).map(function (x) {
           return h("button", { key: x.id, type: "button", role: "tab", "aria-selected": dip === x.id ? "true" : "false", className: "pp-dip" + (dip === x.id ? " on" : ""), onClick: function () { choisir(x.id); } },
-            h("b", null, x.court), h("span", null, x.metier), x.reserve ? h("small", null, "Non publié") : null);
+            h("b", null, x.court), h("span", null, T("metier_" + x.id, x.metier)), x.reserve ? h("small", null, T("nonPublie", "Non publié")) : null);
         }))),
-      h("nav", { className: "pp-nav", "aria-label": "Parties de la page" }, h("div", { className: "pp-nav-rang", ref: rangRef }, d.sections.map(function (s, i) {
-        return h("button", { key: i, type: "button", className: "pp-ong" + (actif === i ? " on" : ""), "aria-current": actif === i ? "true" : undefined, onClick: function () { aller(i); } }, court(s.titre));
+      h("nav", { className: "pp-nav", "aria-label": T("parties", "Parties de la page") }, h("div", { className: "pp-nav-rang", ref: rangRef }, d.sections.map(function (s, i) {
+        return h("button", { key: i, type: "button", className: "pp-ong" + (actif === i ? " on" : ""), "aria-current": actif === i ? "true" : undefined, onClick: function () { aller(i); } }, s.c || court(s.titre));
       }))),
       h("div", { className: "pp-corps" },
         d.sections.map(function (s, i) {
@@ -221,7 +235,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
             h("h2", { id: "pp-h" + i }, s.titre), h("div", { className: "pp-filet", "aria-hidden": "true" }),
             s.b.map(function (b, j) { return bloc(b, j, dip); }),
             s.sous.map(function (sb, j) {
-              var k = i + "-" + j, o = !!ouv[k] || /liste à cocher/i.test(sb.titre), md = mode(sb.titre);
+              var k = i + "-" + j, o = !!ouv[k] || !!sb.o || /liste à cocher/i.test(sb.titre), md = sb.m !== undefined ? { t: sb.titre, m: sb.m } : mode(sb.titre);
               return h("div", { key: k, className: "pp-dep" + (o ? " ouv" : "") },
                 h("button", { type: "button", "aria-expanded": o ? "true" : "false", "aria-controls": "pp-d" + k, onClick: function () { bascule(k); } },
                   h("div", { style: { flex: 1 } }, h("h3", null, md.t), md.m ? h("span", { className: "pp-mode" }, md.m) : null),
@@ -229,8 +243,8 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
                 o ? h("div", { id: "pp-d" + k, className: "pp-dep-in" }, sb.b.map(function (b, m) { return bloc(b, m, dip); })) : null);
             }));
         }),
-        d.sources.length ? h("div", { className: "pp-src" }, h("h2", null, "Sources officielles"), h("ul", null, d.sources.map(function (x, i) { return h("li", { key: i }, ins(x)); }))) : null,
-        h("p", { className: "pp-res" }, "Les règles des diplômes changent régulièrement : vérifie toujours auprès de ton centre de formation et de la FFE avant de t'inscrire.")),
+        d.sources.length ? h("div", { className: "pp-src" }, h("h2", null, T("sources", "Sources officielles")), h("ul", null, d.sources.map(function (x, i) { return h("li", { key: i }, ins(x)); }))) : null,
+        h("p", { className: "pp-res" }, T("rappel", "Les règles des diplômes changent régulièrement : vérifie toujours auprès de ton centre de formation et de la FFE avant de t'inscrire."))),
       (typeof FinPageHype === "function") ? h("div", { style: { marginTop: 30 } }, h(FinPageHype, null)) : null);
   }
   window.HypePrepa = { Prepa: Prepa };
