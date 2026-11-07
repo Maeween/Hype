@@ -19040,3 +19040,15 @@ PAGE SANTÉ DU CHEVAL — LA PHOTO DU CHEVAL EN FOND DE PAGE
 | hype-ecran-sante-cheval.js | racine | fond de page = photo du cheval si elle existe |
 | index.html | racine | ?v sante-cheval → 9 + build 20261107-1550 |
 | SUIVI.md | racine | cette entrée + ligne en « 2 — Important » |
+
+🔎 07/11/2026 (16 h 00) — TUTOIEMENT DANS LES TRADUCTIONS DES COURS — PUBLIÉ (build 20261107-1600)
+« Ok continue » de Blandine. Recherche du vouvoiement (de Sie, nl u, ru вы, es usted, it Lei, pl Pan/Pani, sv ni) dans les Galops 1 à 9 et
+les compléments : aucun vrai vouvoiement (les cas trouvés sont « son / sa » du cheval ou « vous deux », cavalier + cheval).
+Portugais : 8 dernières phrases à la façon du Portugal (« deves », « queres », « Escolhe… tua », « registo ») passées au Brésil (« você »).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop1.js / 2.js / 4.js / 5.js | racine | v25 / v15 / v7 / v7 : phrases portugaises corrigées |
+| index.html | racine | ?v galop1 → 25, galop2 → 16, galop4 → 8, galop5 → 15 |
+Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles ne permet pas de le contrôler sûrement), à faire relire par une arabophone.
+
+════════════════════════════════════════════════════════════
