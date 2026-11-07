@@ -18756,3 +18756,13 @@ EXCEPTION : « trot cadencé » du piaffer et du passage (G8 cours 18) garde le 
 À faire relire par un natif : les mêmes termes dans les 9 autres langues n'ont pas été passés en revue (attend : Blandine).
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 05h00 — Photos de documents remises droites (build 20261107-0500, NON PUBLIÉ)
+- Demande : « remets automatiquement les images dans le bon sens quand besoin sinon on lit rien… faut que l'appli le fasse ».
+- La lecture du carnet dit maintenant aussi de combien tourner chaque image (0/90/180/270, invite de hypeLireCarnetVaccins dans index.html).
+- Photo jointe comme « Page du carnet » / « Certificat » : après la lecture automatique, le fichier enregistré est remplacé par la photo remise droite (nouveau fichier, ligne cheval_documents mise à jour, ancien fichier supprimé).
+- « Lire le carnet » avec « Garder la photo » : la photo est remise droite avant d'être enregistrée.
+- Fenêtre d'un document photo : bouton « ↻ Tourner la photo » (90° à chaque appui, enregistré) pour les photos déjà en ligne ou si la lecture se trompe. Texte traduit en 14 langues.
+- PDF : pas de rotation (les pages restent telles quelles ; la lecture les lit quand même).
+- Rotation testée sur navigateur (375×500 → 500×375, texte lisible). Pas encore testé avec la vraie lecture en ligne : à tester sur iPhone.
+- À venir : refonte de la fenêtre Vaccins (9 maquettes A→I envoyées, choix en attente) + idée de Blandine « une sorte d'agenda avec les dates des rappels colorées ».

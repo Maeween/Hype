@@ -146,6 +146,7 @@ function EcranSanteCheval() {
   /* (944) DOCUMENTS DU CARNET (table cheval_documents + stockage prive « sante », SQL passe par Blandine le 11/10).
      null = pas lu ; [] = rien ou table absente (jamais d erreur affichee pour une simple lecture vide). */
   var stDo = React.useState(null); var docs = stDo[0], setDocs = stDo[1];
+  var docsRef = React.useRef(null); docsRef.current = docs;   /* 07/11 : la liste a jour pendant la lecture (remise droite de la photo) */
   var stDa = React.useState(null); var docAjout = stDa[0], setDocAjout = stDa[1];   /* fenetre d ajout */
   var stDv = React.useState(null); var docVu = stDv[0], setDocVu = stDv[1];   /* fenetre d un document */
   React.useEffect(function () {
@@ -1010,10 +1011,59 @@ function EcranSanteCheval() {
       }
       setDocAjout(null); setDocs(function (o) { return [r.data[0]].concat(o || []); });
       if ((a.type === "carnet_vaccin" || a.type === "certificat_vaccin") && premiumSanteOk()) {
+        docsRef.current = [r.data[0]].concat(docsRef.current || []);
         setLectCarnet({ etape: "lecture", lignes: [], err: "", garder: false, docDeja: true, fichier: f, busy: false });
-        lireCarnetSur(f);
+        lireCarnetSur(f, r.data[0].id);
       }
     } catch (eE) { setDocAjout(Object.assign({}, a, { busy: false, err: String((eE && eE.message) || eE) })); }
+  }
+  /* 07/11 (Blandine : « remets automatiquement les images dans le bon sens… faut que l appli le fasse ») :
+     tourner une photo de document (90, 180 ou 270 degres, sens des aiguilles d une montre) et remplacer le fichier
+     enregistre. L angle vient de la lecture du carnet (elle dit de combien tourner chaque image) ou du bouton « Tourner ». */
+  function chargerImageDoc(src) {
+    return new Promise(function (ok, ko) {
+      var u = URL.createObjectURL(src), im = new Image();
+      im.onload = function () { ok({ im: im, u: u }); };
+      im.onerror = function () { try { URL.revokeObjectURL(u); } catch (e0) { } ko(new Error("image")); };
+      im.src = u;
+    });
+  }
+  async function tournerImage(src, deg) {
+    deg = ((Number(deg) || 0) % 360 + 360) % 360;
+    if (!deg) return src;
+    var r = await chargerImageDoc(src), im = r.im;
+    var w = im.naturalWidth, hh = im.naturalHeight, k = Math.min(1, 2560 / Math.max(w, hh));
+    w = Math.round(w * k); hh = Math.round(hh * k);
+    var cv = document.createElement("canvas"), quart = deg === 90 || deg === 270;
+    cv.width = quart ? hh : w; cv.height = quart ? w : hh;
+    var cx = cv.getContext("2d");
+    cx.translate(cv.width / 2, cv.height / 2); cx.rotate(deg * Math.PI / 180); cx.drawImage(im, -w / 2, -hh / 2, w, hh);
+    try { URL.revokeObjectURL(r.u); } catch (e1) { }
+    var b = await new Promise(function (ok) { cv.toBlob(ok, "image/jpeg", 0.9); });
+    if (!b) throw new Error("image");
+    try { return new File([b], "page.jpg", { type: "image/jpeg" }); } catch (e2) { return b; }
+  }
+  async function remplacerImageDoc(d, blob) {
+    var chemin = String(chId) + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".jpg";
+    var up = await supa.storage.from("sante").upload(chemin, blob, { contentType: "image/jpeg", upsert: false });
+    if (up && up.error) throw up.error;
+    var r = await supa.from("cheval_documents").update({ chemin: chemin, mime: "image/jpeg", taille: blob.size || null }).eq("id", d.id).select();
+    if ((r && r.error) || !r || !r.data || !r.data.length) { try { await supa.storage.from("sante").remove([chemin]); } catch (eR) { } throw (r && r.error) || new Error(MSG_REFUS_DOC); }
+    try { await supa.storage.from("sante").remove([d.chemin]); } catch (eA) { }
+    var nd = r.data[0];
+    setDocs(function (o) { return (o || []).map(function (x) { return x.id === d.id ? nd : x; }); });
+    setVignettes(function (o) { var n = Object.assign({}, o); delete n[d.id]; return n; });
+    return nd;
+  }
+  async function tournerDoc(d) {
+    if (!d || d.busyRot) return;
+    setDocVu(Object.assign({}, d, { busyRot: true, err: "" }));
+    try {
+      var dl = await supa.storage.from("sante").download(d.chemin);
+      if (dl && dl.error) throw dl.error;
+      var nd = await remplacerImageDoc(d, await tournerImage(dl.data, 90));
+      setDocVu(nd);
+    } catch (eT) { setDocVu(Object.assign({}, d, { busyRot: false, err: String((eT && eT.message) || eT) })); }
   }
   async function ouvrirDoc(d) {
     try {
@@ -1088,6 +1138,7 @@ function EcranSanteCheval() {
         v.err ? h("div", { key: "e", style: { marginTop: 12, fontFamily: M, fontSize: 12, color: "#F0A05F", lineHeight: 1.5, textAlign: "center" } }, v.err) : null,
         h("div", { key: "b", style: { display: "flex", flexDirection: "column", gap: 8, marginTop: 18 } },
           h("button", { type: "button", onClick: function () { ouvrirDoc(v); }, style: or9 }, T("Ouvrir le document", "Open the document", "Abrir el documento", "Apri il documento", "書類を開く", "Dokument öffnen", "فتح المستند", "打开文件", "Het document openen", "Abrir o documento", "Öppna dokumentet", "Открыть документ", "Otwórz dokument", "문서 열기")),
+          (peutEcrire && /^image\//i.test(String(v.mime || ""))) ? h("button", { type: "button", disabled: !!v.busyRot, onClick: function () { tournerDoc(v); }, style: btn }, v.busyRot ? "…" : "↻ " + T("Tourner la photo", "Rotate the photo", "Girar la foto", "Ruota la foto", "写真を回転", "Foto drehen", "تدوير الصورة", "旋转照片", "Foto draaien", "Girar a foto", "Rotera fotot", "Повернуть фото", "Obróć zdjęcie", "사진 회전")) : null,
           (peutEcrire && !v.confSup) ? h("button", { type: "button", onClick: function () { setDocVu(Object.assign({}, v, { confSup: true })); }, style: Object.assign({}, btn, { color: "#F0A0A0", border: "1px solid rgba(240,120,120,0.4)" }) }, T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제")) : null,
           (peutEcrire && v.confSup) ? h("button", { type: "button", onClick: function () { supprimerDoc(v); }, style: Object.assign({}, btn, { color: "#FF6B6B", border: "1px solid #FF6B6B", fontWeight: 700 }) }, T("Confirmer la suppression", "Confirm deletion", "Confirmar la eliminación", "Conferma l'eliminazione", "削除を確認", "Löschen bestätigen", "تأكيد الحذف", "确认删除", "Verwijderen bevestigen", "Confirmar a exclusão", "Bekräfta borttagningen", "Подтвердить удаление", "Potwierdź usunięcie", "삭제 확인")) : null,
           h("button", { type: "button", onClick: function () { setDocVu(null); }, style: btn }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))]);
@@ -1114,18 +1165,23 @@ function EcranSanteCheval() {
   /* 07/11 (Blandine : « que la lecture se fasse automatiquement… pas obligé de le charger deux fois ») :
      la lecture elle-meme, appelee aussi juste apres l'ajout d'un document « page du carnet » ou
      « certificat de vaccination » (le fichier est deja enregistre : docDeja, rien n'est recharge). */
-  async function lireCarnetSur(f) {
+  async function lireCarnetSur(f, docDeja) {
     try {
       var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 1800)).images : [await hypeImageEnJpeg(f, 1800)];
       var res = await hypeLireCarnetVaccins(imgs, aujIso());
+      var rot = (!estPdf && res && Array.isArray(res.rotations)) ? (Number(res.rotations[0]) || 0) : 0;
+      if ([90, 180, 270].indexOf(rot) < 0) rot = 0;
+      if (rot && docDeja) {   /* 07/11 le document vient d etre joint : on remplace le fichier par la photo remise droite */
+        try { var dd = (docsRef.current || []).filter(function (x) { return x.id === docDeja; })[0]; if (dd) await remplacerImageDoc(dd, await tournerImage(f, rot)); } catch (eRot) { }
+      }
       var deja = {}; (soins || []).forEach(function (x) { if (String(x.type) === "vaccin" && x.date_intervention) deja[String(x.date_intervention).slice(0, 10)] = 1; });
       var lignes = ((res && res.lignes) || []).map(function (l, i) {
         var mal = Array.isArray(l.maladies) ? l.maladies.map(function (x) { return String(x).toLowerCase(); }) : [];
         var d = /^\d{4}-\d{2}-\d{2}$/.test(String(l.date || "")) ? String(l.date) : "";
         return { cle: "l" + i, date: d, vaccin: String(l.vaccin || ""), g: mal.indexOf("grippe") >= 0, r: mal.indexOf("rhino") >= 0, t: mal.indexOf("tetanos") >= 0, texte: String(l.texte || ""), deja: !!(d && deja[d]), coche: !!d && !(d && deja[d]) };
       }).sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
-      setLectCarnet(function (o) { return Object.assign({}, o, { etape: "resultat", lignes: lignes }); });
+      setLectCarnet(function (o) { return Object.assign({}, o, { etape: "resultat", lignes: lignes, rot: rot }); });
     } catch (eL) { setLectCarnet(function (o) { return Object.assign({}, o, { etape: "choix", err: T("La lecture n’a pas abouti : ", "Reading failed: ", "La lectura falló: ", "Lettura non riuscita: ", "読み取り失敗：", "Lesen fehlgeschlagen: ", "فشلت القراءة: ", "读取未成功：", "Het lezen is mislukt: ", "A leitura não deu certo: ", "Avläsningen lyckades inte: ", "Не удалось прочитать: ", "Nie udało się odczytać: ", "읽기에 실패했어요: ") + String((eL && eL.message) || eL) }); }); }
   }
   function titreVaccin(l) {
@@ -1153,7 +1209,9 @@ function EcranSanteCheval() {
     var docOk = false;
     if (lc.garder && lc.fichier) {
       try {
-        var f = lc.fichier, ext = (String(f.name || "").split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg";
+        var f = lc.fichier;
+        if (lc.rot) { try { f = await tournerImage(f, lc.rot); } catch (eRo) { f = lc.fichier; } }
+        var ext = (String(f.name || "").split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg";
         var chemin = String(chId) + "/" + Date.now() + "-carnet." + ext;
         var up = await supa.storage.from("sante").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
         if (!(up && up.error)) {
