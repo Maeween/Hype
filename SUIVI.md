@@ -18715,3 +18715,10 @@ RESTE À FAIRE (attend : Blandine) :
 - À faire valider par un cavalier natif : suédois « förvänd öppna » (contre-épaule en dedans), gouttière et engagement dans toutes les langues.
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 03h35 — PUBLICATION build 20261107-0335 (Blandine 02h28 : « ajoute la possibilité de lire les infos, comme l'outil des événements : qu'on puisse lui mettre une photo avec les numéros et heures d'épreuve et qu'il prépare tout »)
+- Jour J : nouveau bloc en haut « Lire le programme » : photo, capture ou PDF (4 pages au plus) du programme ou de la liste de départ. Lecture par hey-baby-vision (même chemin que la lecture de la fiche d'engagement et des carnets de vaccins : 1 à 2 min, réservée aux abonnés Premium et à la modératrice). Hype lit les épreuves (numéro, nom, heure de début, piste) et, s'ils y sont, les passages des cavalières de l'équipe (ordre, heure, piste).
+- Pour chaque couple engagé, il propose : l'heure de passage lue ; sinon une heure estimée (début de l'épreuve + 1 min 45 par couple avant, comme pour Winjump) si l'ordre est lu ; sinon l'heure de début de l'épreuve (« ordre pas encore connu ») ; et la piste. Liste à cocher → « Appliquer » remplit les cases Heure de passage / Piste → la coach vérifie puis « Enregistrer » (avec la case « Prévenir les cavalières » comme avant). Rien n'est enregistré avant.
+- Testé avec une réponse simulée (programme à 2 épreuves) : les couples des épreuves trouvées reçoivent heure, piste et n° d'épreuve ; ceux dont le cheval ne correspond pas ne sont pas touchés. Non testé avec une vraie photo (lecture payante, à essayer sur iPhone).
+- Français seulement.
+- Fichiers : hype-ecran-saison.js (v42), index.html (build 20261107-0335), SUIVI.md.
