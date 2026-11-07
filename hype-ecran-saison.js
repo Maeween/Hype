@@ -664,6 +664,64 @@ var CSS2 = [
   ".e1 .hs-coll .hs-btn{border-radius:999px}",
   ".e1 .e1-compte select{flex:0 0 auto;width:auto;max-width:150px;border:1px solid rgba(243,238,228,.12)!important;border-radius:999px!important;padding:5px 26px 5px 12px;font-size:11.5px;color:var(--hs-iv2)}",
   ".e1 .e1-tour-ep{margin-top:2px}.e1 .e1-tour-ep select{padding:3px 32px 3px 12px!important;min-width:0;width:auto!important;min-height:0!important;height:30px;line-height:1;background-position:calc(100% - 15px) 12px,calc(100% - 10px) 12px!important}",
+  ".e1 .e1-ligne input.e1-in::placeholder{color:var(--hs-iv3);font-size:14px}",
+  /* 07/11 23h20 — composeur P1/D3 : tuiles photo 3 par ligne, barre qui se remplit, boutons à contour champagne (jamais pleins) */
+  ".e1 .d3{margin-top:30px}",
+  ".e1 .d3-k{font-size:10.5px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--hs-ch);margin-bottom:14px}",
+  ".e1 .d3-etapes{display:flex;align-items:center;gap:8px}",
+  ".e1 .d3-et{display:flex;align-items:center;gap:7px;background:none;border:none;padding:4px 0;color:var(--hs-iv3);font:400 12px 'Montserrat',sans-serif;white-space:nowrap;min-height:36px}",
+  ".e1 .d3-et i{font-style:normal;width:26px;height:26px;border-radius:50%;border:1px solid rgba(243,238,228,.12);display:grid;place-items:center;font-size:12px}",
+  ".e1 .d3-et.fait{color:var(--hs-iv2)}.e1 .d3-et.fait i{border-color:var(--hs-ch);color:var(--hs-ch)}",
+  ".e1 .d3-et.on{color:var(--hs-iv)}.e1 .d3-et.on i{border-color:var(--hs-ch);background:rgba(201,166,107,.18)}",
+  ".e1 .d3-trait{flex:1;height:1px;min-width:8px;background:rgba(243,238,228,.12)}.e1 .d3-trait.fait{background:var(--hs-ch)}",
+  ".e1 .d3-q{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;line-height:1.08;margin:16px 0 12px;color:var(--hs-iv)}",
+  ".e1 .d3-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}",
+  "@media (min-width:700px){.e1 .d3-g{grid-template-columns:repeat(4,minmax(0,1fr))}}",
+  "@media (min-width:1000px){.e1 .d3-g{grid-template-columns:repeat(6,minmax(0,1fr))}}",
+  ".e1 .d3-t{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(243,238,228,.1);background:#0d1214;padding:0;cursor:pointer;color:var(--hs-iv);text-align:start}",
+  ".e1 .d3-t img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 35%}",
+  ".e1 .d3-t:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 45%,rgba(7,10,8,.92))}",
+  ".e1 .d3-t b{position:absolute;z-index:2;left:8px;right:8px;bottom:8px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:15.5px;line-height:1.05;overflow-wrap:anywhere}",
+  ".e1 .d3-t small{position:absolute;z-index:2;top:6px;left:6px;font-size:9.5px;padding:2px 7px;border-radius:999px;background:rgba(7,10,8,.65);color:var(--hs-iv2)}",
+  "[dir=rtl] .e1 .d3-t small{left:auto;right:6px}",
+  ".e1 .d3-t .d3-ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;color:var(--hs-ch)}",
+  ".e1 .d3-t.on{border:2px solid var(--hs-ch)}",
+  ".e1 .d3-t.on:before{content:'✓';position:absolute;z-index:3;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(7,10,8,.7);border:1px solid var(--hs-ch);color:var(--hs-ch);font-size:11px;display:grid;place-items:center}",
+  "[dir=rtl] .e1 .d3-t.on:before{right:auto;left:6px}",
+  ".e1 .d3-t.gris{opacity:.38;cursor:default}",
+  ".e1 .d3-t.plus{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-style:dashed;border-color:rgba(201,166,107,.55);background:none;color:var(--hs-ch);font:400 12.5px 'Montserrat',sans-serif;text-align:center}",
+  ".e1 .d3-t.plus:after{display:none}.e1 .d3-t.plus i{font-style:normal;font-size:18px}.e1 .d3-t.plus.on{border-style:solid}",
+  ".e1 .d3-ep{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:14px;border:1px solid rgba(243,238,228,.1);background:linear-gradient(180deg,rgba(201,166,107,.07),rgba(201,166,107,0));display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:10px;color:var(--hs-iv);text-align:start;cursor:pointer}",
+  ".e1 .d3-ep b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;line-height:1;overflow-wrap:anywhere}",
+  ".e1 .d3-ep span{font-size:10.5px;color:var(--hs-iv3);margin-top:4px}",
+  ".e1 .d3-ep>i{position:absolute;top:4px;right:4px;width:30px;height:30px;display:grid;place-items:center;font-style:normal;color:var(--hs-iv3);font-size:16px}",
+  "[dir=rtl] .e1 .d3-ep>i{right:auto;left:4px}",
+  ".e1 .d3-ep.on{border:2px solid var(--hs-ch)}.e1 .d3-ep.gris{opacity:.38;cursor:default}",
+  ".e1 .d3-ep.plus{justify-content:center;align-items:center;text-align:center;gap:6px;border-style:dashed;border-color:rgba(201,166,107,.55);background:none;color:var(--hs-ch);font-size:12.5px}",
+  ".e1 .d3-ep.plus>i{position:static;width:auto;height:auto;color:var(--hs-ch)}",
+  ".e1 .d3-ep.plus i{font-style:normal;font-size:18px}.e1 .d3-ep.plus span{color:var(--hs-ch);font-size:12.5px;margin:0}.e1 .d3-ep.plus.on{border-style:solid}",
+  ".e1 .d3-autre{margin-top:12px;display:flex;flex-direction:column;gap:10px}",
+  ".e1 .d3-autre.d3-ligne{flex-direction:row;align-items:center;gap:12px}.e1 .d3-autre.d3-ligne input{flex:1;min-width:0}",
+  ".e1 .d3-autre input{min-height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(201,166,107,.45)!important;background:#070A08;color:var(--hs-iv)}",
+  ".e1 .d3-recap{display:flex;gap:6px;align-items:center;padding:10px;margin-top:16px;border-radius:18px;border:1px solid rgba(201,166,107,.35);background:#0E1415}",
+  ".e1 .d3-rc{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;color:var(--hs-iv);font:400 12px 'Montserrat',sans-serif;text-align:start;min-height:36px}",
+  ".e1 .d3-rc img,.e1 .d3-rc .d3-mini,.e1 .d3-rc i,.e1 .d3-rc em{flex:0 0 28px;width:28px;height:28px;border-radius:8px;object-fit:cover}",
+  ".e1 .d3-rc .d3-mini{display:grid;place-items:center;border:1px solid var(--hs-ch);color:var(--hs-ch);font-family:'Cormorant Garamond',Georgia,serif;font-size:12px}",
+  ".e1 .d3-rc i{border:1px dashed rgba(201,166,107,.5)}",
+  ".e1 .d3-rc em{font-style:normal;display:grid;place-items:center;border:1px solid var(--hs-ch);color:var(--hs-ch);font-family:'Cormorant Garamond',Georgia,serif;font-size:13px}",
+  ".e1 .d3-rc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.e1 .d3-rc.vide span{color:var(--hs-iv3)}",
+  ".e1 .d3-ok{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.35);background:transparent;color:var(--hs-iv3);font:500 12.5px 'Montserrat',sans-serif}",
+  ".e1 .d3-ok.pret{border-color:var(--hs-ch);color:var(--hs-ch)}",
+  ".e1 .d3-petit{display:block;margin-top:12px;font-size:12.5px;text-align:start}",
+  ".e1 .d3-msg{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--hs-iv2)}",
+  ".e1 .rc-li{grid-template-columns:26px 44px minmax(0,1fr) auto 32px}",
+  ".e1 .rc-x{width:32px;height:32px;border-radius:50%;border:1px solid rgba(243,238,228,.12);background:none;color:var(--hs-iv3);font-size:16px;line-height:1;padding:0}",
+  ".e1 .d3-sans{margin-top:26px}",
+  ".e1 .d3-sl{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.07)}",
+  ".e1 .d3-sl-n{background:none;border:none;padding:0;color:var(--hs-iv);font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;text-align:start}",
+  ".e1 .d3-sl-n span{font-family:'Montserrat',sans-serif;font-size:12px;color:var(--hs-ch)}",
+  /* les boutons du bas restent au-dessus de la barre d'onglets de l'appli (64 px) */
+  ".e1 .hs-coll{padding-bottom:calc(84px + env(safe-area-inset-bottom))}",
   /* iPhone : jamais moins de 16 px dans un champ, sinon l'écran zoome tout seul au toucher (règle Hype) */
   ".e1 input,.e1 select{font-size:16px!important}",
   ".e1 .e1-tour-ch select{padding-inline-end:22px!important;text-overflow:ellipsis}"
@@ -1130,6 +1188,34 @@ function hsNomChoisi(garde, pseudo, reel) {
 function hsNomEpreuve(t) {
   return String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim();
 }
+/* 07/11/2026 23h20 (Blandine, choix « C » : une ligne par tour) — les tours d'un engagement sont rangés dans concours_tours
+   (numéro 1 à 5). Tant que la feuille SEP, le jour J, la liste du van et Ma saison lisent encore les colonnes « tour 1 / tour 2 »
+   de concours_engagements, la page Engagements y recopie les deux premiers tours (hsMiroir). */
+function hsToursDepuis(l, liste) {
+  if (liste && liste.length) return liste.map(function (t) { return { epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || "", piste: t.piste || "" }; });
+  var o = [];
+  [1, 2].forEach(function (n) {
+    var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
+    if (e || c) o.push({ epreuve: e, cheval_nom: c, passage: l["passage" + n] || "", piste: l["piste" + n] || "" });
+  });
+  return o;
+}
+function hsMiroir(l) {
+  var t = l.tours || [];
+  return Object.assign({}, l, { epreuve1: (t[0] && t[0].epreuve) || "", cheval1_nom: (t[0] && t[0].cheval_nom) || "", epreuve2: (t[1] && t[1].epreuve) || "", cheval2_nom: (t[1] && t[1].cheval_nom) || "" });
+}
+/* feuille papier : deux tours par ligne ; un cavalier à 3, 4 ou 5 tours prend 2 ou 3 lignes */
+function hsLignesFeuille(lignes) {
+  var o = [];
+  (lignes || []).forEach(function (l) {
+    var t = l.tours || [];
+    if (t.length <= 2) { o.push(hsMiroir(l)); return; }
+    for (var k = 0; k < t.length; k += 2) o.push(hsMiroir(Object.assign({}, l, { tours: t.slice(k, k + 2) })));
+  });
+  return o;
+}
+/* Blandine 07/11 23h05 : « un cavalier peut faire jusqu'à 5 tours par jour à poney et 3 en épreuve club » */
+function hsMaxTours(eps) { return (eps || []).some(function (e) { return /poney|pony|^p\s?\d/i.test(String(e || "")); }) ? 5 : 3; }
 function EcranEngagements() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -1170,7 +1256,7 @@ function EcranEngagements() {
   React.useEffect(function () {
     var vif = true;
     if (!ev || !/^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String(ev.lien_direct || "")) || !lignes || !lignes.length) return;
-    if (lignes.every(function (l) { return (!l.cheval1_nom || l.passage1) && (!l.cheval2_nom || l.passage2); })) return;
+    if (lignes.every(function (l) { return (l.tours || []).every(function (t) { return !t.cheval_nom || t.passage; }); })) return;
     try {
       supa.functions.invoke("direct-concours", { body: { action: "lire", agenda_id: ev.id } }).then(function (r) {
         var d = r && r.data; if (!vif || !d || !d.lignes) return;
@@ -1181,6 +1267,12 @@ function EcranEngagements() {
     return function () { vif = false; };
   }, [ev && ev.lien_direct, lignes ? lignes.length : 0]);
   var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
+  /* 07/11 23h20 — composeur « P1 / D3 » : qui, quel cheval, quelle épreuve, en tuiles photo ; la barre du bas se remplit */
+  var _cp = React.useState({ cav: null, ch: "", ep: "", etape: 1 }); var comp = _cp[0], setComp = _cp[1];
+  var _cpa = React.useState(""); var autreC = _cpa[0], setAutreC = _cpa[1];   /* "cav" | "ch" | "ep" : saisie « autre » ouverte */
+  var _cph = React.useState(""); var autreCh = _cph[0], setAutreCh = _cph[1];
+  var _cpm = React.useState(""); var msgC = _cpm[0], setMsgC = _cpm[1];
+  var _cpl = React.useState(false); var editLic = _cpl[0], setEditLic = _cpl[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
   var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
 
@@ -1242,6 +1334,12 @@ function EcranEngagements() {
         if (rl && rl.error) throw new Error(F("engagements : ") + (rl.error.message || rl.error));
         var L = (rl && rl.data) || [];
         L.forEach(function (l) { if (l.epreuve1) l.epreuve1 = hsNomEpreuve(l.epreuve1); if (l.epreuve2) l.epreuve2 = hsNomEpreuve(l.epreuve2); });
+        try {
+          var rT = await supa.from("concours_tours").select("*").eq("agenda_id", idEv).order("numero", { ascending: true });
+          if (rT && rT.error) throw rT.error;
+          var parEng = {}; ((rT && rT.data) || []).forEach(function (t) { (parEng[t.engagement_id] = parEng[t.engagement_id] || []).push(t); });
+          L.forEach(function (l) { l.tours = hsToursDepuis(l, parEng[l.id]); });
+        } catch (eTo) { L.forEach(function (l) { l.tours = hsToursDepuis(l, null); }); }
         /* cavalières possibles : inscrites, membres de la Team (SEP), membres du club */
         var parId = {};
         function ajouterP(p, src) { if (!p || !p.id) return; if (!parId[p.id]) parId[p.id] = { id: p.id, pseudo: p.pseudo || "", avatar_url: p.avatar_url || null, src: src }; }
@@ -1319,7 +1417,7 @@ function EcranEngagements() {
         cand.sort(function (a, b) { var o = { inscrite: 0, compet: 1, team: 2, club: 3 }; return (o[a.src] - o[b.src]) || String(a.nom || a.pseudo).localeCompare(String(b.nom || b.pseudo), "fr"); });
         if (vif) setCandidates(cand);
         /* première ouverture : on part des cavalières inscrites */
-        if (!L.length) {
+        if (false && !L.length) {   /* 07/11 23h20 : plus de lignes vides pré-remplies, les inscrits sont proposés en premier dans les tuiles */
           /* 04/11 23h25 (Blandine : « ne me fais pas apparaître en cavalière, en tant que coach ; par défaut ne me mets pas en premier couple ») :
              la coach qui ouvre la page n'est jamais pré-remplie comme couple (elle reste chef d'équipe ; elle peut s'ajouter elle-même si besoin). */
           L = cand.filter(function (p) { return p.src === "inscrite" && !(u && p.id === u.id); }).map(function (p, i) { return { __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: i }; });
@@ -1393,10 +1491,10 @@ function EcranEngagements() {
   function ajouterCavaliere(val) {
     if (!val) return;
     var n = lignes.slice();
-    if (val === "__autre" || (val && val.libre !== undefined)) n.push({ __n: true, cavalier_id: null, nom: (val && val.libre) || "", licence: "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
+    if (val === "__autre" || (val && val.libre !== undefined)) n.push({ __n: true, cavalier_id: null, nom: (val && val.libre) || "", licence: "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", tours: [], ordre: n.length });
     else {
       var p = (typeof val === "object") ? val : candidates.filter(function (c) { return c.id === val; })[0]; if (!p) return;
-      n.push({ __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", ordre: n.length });
+      n.push({ __n: true, cavalier_id: p.id, nom: p.nom || nomFfeDe(p.pseudo), licence: p.licence || "", epreuve1: "", cheval1_nom: "", epreuve2: "", cheval2_nom: "", tours: [], ordre: n.length });
     }
     setLignes(n); setModifie(true); setMsg(""); setRecherche(""); setTrouves([]);
   }
@@ -1428,7 +1526,8 @@ function EcranEngagements() {
       [x.epreuve1, x.epreuve2].forEach(function (ep) { if (ep && !eAjout.some(function (y) { return y.toLowerCase() === ep.toLowerCase(); })) eAjout.push(ep); });
       var j = -1; n.forEach(function (li, k) { if (j === -1 && ((x.compte && li.cavalier_id === x.compte.id) || hsMemePers(li.nom, x.nom))) j = k; });
       if (j !== -1) { n[j] = Object.assign({}, n[j], { nom: x.nom || n[j].nom, licence: x.licence || n[j].licence }); return; }
-      n.push({ __n: true, cavalier_id: x.compte ? x.compte.id : null, nom: x.nom, licence: x.licence, epreuve1: x.epreuve1, cheval1_nom: x.cheval1, epreuve2: x.epreuve2, cheval2_nom: x.cheval2, ordre: n.length });
+      n.push({ __n: true, cavalier_id: x.compte ? x.compte.id : null, nom: x.nom, licence: x.licence, ordre: n.length,
+        tours: [[x.epreuve1, x.cheval1], [x.epreuve2, x.cheval2]].filter(function (y) { return y[0] || y[1]; }).map(function (y) { return { epreuve: y[0] || "", cheval_nom: String(y[1] || "").trim(), passage: "", piste: "" }; }) });
     });
     if (eAjout.length !== (feuille.epreuves || []).length) setFeuille(Object.assign({}, feuille, { epreuves: eAjout }));
     setLignes(n); setModifie(true); setLus(null); setMsg("Fiche ajoutée : vérifie, puis touche « Enregistrer ».");
@@ -1443,7 +1542,8 @@ function EcranEngagements() {
     return c.length === 1 ? c[0].id : null;
   }
 
-  async function enregistrer() {
+  function enregistrer(lignesX, supprX) { return enregistrerL(Array.isArray(lignesX) ? lignesX : lignes, Array.isArray(supprX) ? supprX : supprimees); }
+  async function enregistrerL(lignes, supprimees) {
     if (occupe || !feuille || !lignes) return;
     var vides = lignes.filter(function (l) { return !String(l.nom || "").trim(); });
     if (vides.length) { setMsg(F("Il manque le nom d’une cavalière.")); return; }
@@ -1460,16 +1560,27 @@ function EcranEngagements() {
       var nouv = [];
       for (var i = 0; i < lignes.length; i++) {
         var l = lignes[i];
+        var toursL = (l.tours || []).filter(function (t) { return t.epreuve || t.cheval_nom; }).slice(0, 5);
+        var mi = hsMiroir({ tours: toursL });
         var row = { agenda_id: idEv, cavalier_id: l.cavalier_id || null, nom: String(l.nom || "").trim(), licence: String(l.licence || "").trim() || null,
-          epreuve1: l.epreuve1 || null, cheval1_nom: String(l.cheval1_nom || "").trim() || null, cheval1_id: idCheval(l.cheval1_nom),
-          epreuve2: l.epreuve2 || null, cheval2_nom: String(l.cheval2_nom || "").trim() || null, cheval2_id: idCheval(l.cheval2_nom),
+          epreuve1: mi.epreuve1 || null, cheval1_nom: mi.cheval1_nom || null, cheval1_id: idCheval(mi.cheval1_nom),
+          epreuve2: mi.epreuve2 || null, cheval2_nom: mi.cheval2_nom || null, cheval2_id: idCheval(mi.cheval2_nom),
           ordre: i, maj_le: new Date().toISOString() };
         var rr = l.id
           ? await supa.from("concours_engagements").update(row).eq("id", l.id).select("*")
           : await supa.from("concours_engagements").insert(row).select("*");
         if (rr && rr.error) throw new Error(row.nom + " : " + (rr.error.message || rr.error));
         if (!rr || !rr.data || !rr.data.length) throw new Error(row.nom + F(" : refusé par la base"));
-        nouv.push(rr.data[0]);
+        var eid = rr.data[0].id;
+        var rdT = await supa.from("concours_tours").delete().eq("engagement_id", eid);
+        if (rdT && rdT.error) throw new Error(row.nom + " : " + (rdT.error.message || rdT.error));
+        if (toursL.length) {
+          var riT = await supa.from("concours_tours").insert(toursL.map(function (t, k) {
+            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve || null, cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null };
+          })).select("id");
+          if (riT && riT.error) throw new Error(row.nom + " : " + (riT.error.message || riT.error));
+        }
+        nouv.push(Object.assign({}, rr.data[0], { tours: toursL }));
         /* la licence et le nom sont gardés pour la prochaine fois */
         if (row.cavalier_id && (row.licence || row.nom)) {
           try { await supa.from("cavaliers_licences").upsert({ user_id: row.cavalier_id, nom: row.nom, licence: row.licence, maj_le: new Date().toISOString() }, { onConflict: "user_id" }).select("user_id"); } catch (eLi) { }
@@ -1531,7 +1642,7 @@ function EcranEngagements() {
   /* « SOJFER Lauren » → « Lauren » (le mot qui n'est pas tout en majuscules) */
   function prenomDe(nom) { var m = String(nom || "").trim().split(/\s+/).filter(Boolean); var p = m.filter(function (x) { return x !== x.toUpperCase(); }); return (p.length ? p.join(" ") : m[0]) || "?"; }
   var montes = {};   /* cheval → qui le monte déjà sur la feuille */
-  lignes.forEach(function (l, i) { [1, 2].forEach(function (n) { var c = String(l["cheval" + n + "_nom"] || "").trim(); if (!c) return; (montes[c] = montes[c] || []).push({ i: i, n: n, qui: prenomDe(l.nom) }); }); });
+  lignes.forEach(function (l, i) { (l.tours || []).forEach(function (t, k) { var c = String(t.cheval_nom || "").trim(); if (!c) return; (montes[c] = montes[c] || []).push({ i: i, n: k + 1, qui: prenomDe(l.nom) }); }); });
   var proposees = candidates.filter(function (c) { return (c.src === "inscrite" || c.src === "compet") && c.id !== moiId; });
   var chevauxConc = chevaux.filter(function (c) { return c.src === "concours"; });
   /* 07/11 (Blandine : « ça veut me donner les feuilles d’engagement de la SEP » pour un concours de Feinn) : la feuille SEP
@@ -1561,7 +1672,7 @@ function EcranEngagements() {
   nomsCh.sort(function (a, b) { return a.localeCompare(b, "fr"); });
   var nbTours = 0; Object.keys(montes).forEach(function (c) { nbTours += montes[c].length; });
   var libresTot = 0; nomsCh.forEach(function (c) { libresTot += Math.max(0, toursMax - (montes[c] || []).length); });
-  function epDe(x) { return lignes[x.i] ? (lignes[x.i]["epreuve" + x.n] || "") : ""; }
+  function epDe(x) { var t = lignes[x.i] && lignes[x.i].tours && lignes[x.i].tours[x.n - 1]; return t ? (t.epreuve || "") : ""; }
   function choixMax() {
     return h("select", { className: "hs-mini", value: String(toursMax), "aria-label": F("Tours par cheval"), onChange: function (e) { var v = Number(e.target.value) || 3; setToursMax(v); try { localStorage.setItem("hype_tours_max", String(v)); } catch (eL) { } } },
       [1, 2, 3, 4, 5].map(function (v) { return h("option", { key: v, value: String(v) }, v + F(" tours max")); }));
@@ -1662,12 +1773,7 @@ function EcranEngagements() {
               h("button", { type: "button", className: "hs-lien", onClick: function () { setEditChef(false); } }, F("OK"))))
         : rangee(F("Chef d’équipe"), h("button", { type: "button", className: "e1-chef", onClick: function () { setEditChef(true); } },
             h("b", null, chefNom || F("À compléter")), h("small", null, (chefLic || F("licence ?")) + F(" · Modifier ›"))), "c"),
-      rangee(F("Épreuves"), h("div", { className: "e1-puces" },
-        eps.map(function (t) { return h("span", { key: t, className: "e1-puce" }, t, h("button", { type: "button", "aria-label": F("Retirer ") + t, onClick: function () { retirerEpreuve(t); } }, "×")); }),
-        h("button", { type: "button", className: "e1-puce plus", "aria-label": F("Ajouter une épreuve"), onClick: function () { setAjoutEp(!ajoutEp); } }, "+")), "e"),
-      ajoutEp || !eps.length ? h("div", { className: "e1-ajout-ep" },
-        h("input", { type: "text", value: nouvelleEp, placeholder: F("Ex. Club 2, Club 1 GP"), "aria-label": F("Nom de l’épreuve"), onChange: function (e) { setNouvelleEp(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); ajouterEpreuve(); } } }),
-        h("button", { type: "button", className: "hs-lien", onClick: ajouterEpreuve }, F("Ajouter"))) : null);
+      null);   /* 07/11 23h20 : les épreuves se créent à l'étape 3 du composeur (« Nouvelle épreuve ») */
   }
   /* 07/11 00h22-00h33 (Blandine : « sur la page de mes engagements fais un récapitulatif clair à la fin, par cavalier, par cheval
      et par épreuve » ; choix : chevaux = cartes photo à faire glisser avec leurs tours en cases (E) ; cavalières = « ses deux
@@ -1675,15 +1781,15 @@ function EcranEngagements() {
   function recapFin() {
     var cav = lignes.map(function (l, i) { return { l: l, i: i }; }).filter(function (x) { return String(x.l.nom || "").trim(); });
     if (!cav.length) return null;
-    function kTour(i, n) { var c = String(lignes[i]["cheval" + n + "_nom"] || "").trim(), k = 0; (montes[c] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return k; }
+    function kTour(i, n) { var t = (lignes[i].tours || [])[n - 1], c = String((t && t.cheval_nom) || "").trim(), k = 0; (montes[c] || []).forEach(function (x, j) { if (x.i === i && x.n === n) k = j + 1; }); return k; }
     function nomPrenom(nom) { var m = String(nom || "").trim().split(/\s+/), maj = m.filter(function (w) { return w.length > 1 && w === w.toUpperCase(); }), mi = m.filter(function (w) { return !(w.length > 1 && w === w.toUpperCase()); }); return [maj.join(" ") || m[0] || "", mi.join(" ")]; }
     /* par épreuve, rangé par heure de passage quand elle est connue (Jour J ou chronométreur repris dans Jour J) */
     var parEp = {}, ordreEp = [];
-    lignes.forEach(function (l, i) { [1, 2].forEach(function (n) {
-      var e = String(l["epreuve" + n] || "").trim(), c = String(l["cheval" + n + "_nom"] || "").trim(); if (!e && !c) return;
+    lignes.forEach(function (l, i) { (l.tours || []).forEach(function (t, k0) {
+      var n = k0 + 1, e = String(t.epreuve || "").trim(), c = String(t.cheval_nom || "").trim(); if (!e && !c) return;
       var k = e || F("Épreuve à choisir"); if (!parEp[k]) { parEp[k] = []; ordreEp.push(k); }
-      var hS = String(l["passage" + n] || "").trim(), lu = (!hS && l.id && c) ? ordreLu[l.id + "|" + c.toLowerCase()] : null;
-      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: hS || (lu && lu.h ? "~" + lu.h : ""), lu: !!lu, ordreLu: lu ? lu.ordre : 0, piste: String(l["piste" + n] || "").trim() });
+      var hS = String(t.passage || "").trim(), lu = (!hS && l.id && c) ? ordreLu[l.id + "|" + c.toLowerCase()] : null;
+      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: hS || (lu && lu.h ? "~" + lu.h : ""), lu: !!lu, ordreLu: lu ? lu.ordre : 0, piste: String(t.piste || "").trim() });
     }); });
     ordreEp.sort(function (a, b) { return (eps.indexOf(a) === -1 ? 99 : eps.indexOf(a)) - (eps.indexOf(b) === -1 ? 99 : eps.indexOf(b)) || a.localeCompare(b, "fr"); });
     return h("div", { className: "rc" },
@@ -1693,15 +1799,15 @@ function EcranEngagements() {
           h("path", { d: "M0 54 C 120 52, 240 34, 400 4", fill: "none", stroke: "url(#rcg)", strokeWidth: 1.2 })),
         h("div", { className: "rc-eb" }, F("Récapitulatif")),
         h("h2", null, F("La journée en un coup d’œil")),
-        h("p", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
+        h("p", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
       /* les cavalières : cartes photo deux par ligne, comme les cartes chevaux du « programme » (D) — essai demandé par Blandine
          07/11 01h32. Fond : sa photo de profil si elle en a une, sinon la photo de son premier cheval. */
-      h("div", { className: "rc-t" }, h("h3", null, F("Les cavalières")), h("span", null, cav.length + (cav.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
+      h("div", { className: "rc-t" }, h("h3", null, F("Les cavaliers")), h("span", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
       h("div", { className: "rc-dg" }, cav.map(function (x, r) {
         var np = nomPrenom(x.l.nom), p0 = cavDe(x.l), pv = p0 && p0.avatar_url ? hsPhotoProfil(p0) : "";
-        var c1 = String(x.l.cheval1_nom || "").trim(), c2 = String(x.l.cheval2_nom || "").trim();
-        var fond = pv || (c1 ? photoCh(c1) : (c2 ? photoCh(c2) : ""));
-        var tours = [1, 2].map(function (n) { var c = String(x.l["cheval" + n + "_nom"] || "").trim(), e = String(x.l["epreuve" + n] || "").trim(); if (!c && !e) return null; var k = c ? kTour(x.i, n) : 0; return { c: c, e: e, k: k }; }).filter(Boolean);
+        var c1 = ((x.l.tours || []).filter(function (t) { return t.cheval_nom; })[0] || {}).cheval_nom || "";
+        var fond = pv || (c1 ? photoCh(c1) : "");
+        var tours = (x.l.tours || []).map(function (t, k0) { var c = String(t.cheval_nom || "").trim(), e = String(t.epreuve || "").trim(); if (!c && !e) return null; var k = c ? kTour(x.i, k0 + 1) : 0; return { c: c, e: e, k: k }; }).filter(Boolean);
         return h("div", { key: "rc" + x.i, className: "rc-dc" },
           fond ? h("img", { src: fond, alt: "" }) : null, h("div", { className: "voile" }),
           h("span", { className: "rc-dn" }, String(r + 1)),
@@ -1744,8 +1850,176 @@ function EcranEngagements() {
               x.ch ? h("img", { src: photoCh(x.ch), alt: "" }) : h("span", { className: "rc-vide3" }),
               h("div", { className: "q" }, h("b", null, (np[1] ? np[1] + " " : "") + np[0]),
                 h("span", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null, x.piste ? " · " + F("piste ") + x.piste : "")),
-              h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"));
+              h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"),
+              h("button", { type: "button", className: "rc-x", "aria-label": F("Retirer ce tour"), onClick: function () { retirerTour(x.i, x.n - 1); } }, "×"));
           }));
+      }));
+  }
+  /* ═══ 07/11/2026 23h20 — P1 + D3 (choix de Blandine) : on engage en 3 touchers, cavalier ou cavalière → cheval → épreuve,
+     en tuiles photo (3 par ligne) ; la barre du bas se remplit et « Engager » s'allume. Le couple reste choisi pour le tour
+     suivant (on change juste l'épreuve). Chaque engagement est enregistré tout de suite. ═══ */
+  function toursDuCav(c) {
+    if (!c) return [];
+    var l = lignes.filter(function (x) { return (c.id && x.cavalier_id === c.id) || (!c.id && hsMemePers(x.nom, c.nom)); })[0];
+    return (l && l.tours) || [];
+  }
+  function choisirCav(c) { setComp({ cav: c, ch: comp.ch && comp.cav && c && comp.cav.id === c.id ? comp.ch : "", ep: "", etape: 2 }); setAutreC(""); setMsgC(""); setEditLic(false); setRecherche(""); }
+  function choisirCh(nom) { setComp(Object.assign({}, comp, { ch: nom, etape: 3 })); setAutreC(""); setAutreCh(""); setMsgC(""); }
+  function choisirEp(e) { setComp(Object.assign({}, comp, { ep: e })); setAutreC(""); setMsgC(""); }
+  function engager() {
+    if (!comp.cav || !comp.ch || !comp.ep || occupe) return;
+    var n = lignes.slice(), j = -1;
+    n.forEach(function (l, k) { if (j === -1 && ((comp.cav.id && l.cavalier_id === comp.cav.id) || (!comp.cav.id && hsMemePers(l.nom, comp.cav.nom)))) j = k; });
+    if (j === -1) { n.push({ __n: true, cavalier_id: comp.cav.id || null, nom: comp.cav.nom || nomFfeDe(comp.cav.pseudo) || "", licence: comp.cav.licence || "", tours: [], ordre: n.length }); j = n.length - 1; }
+    var l = Object.assign({}, n[j]), t = (l.tours || []).slice();
+    if (t.some(function (x) { return x.epreuve === comp.ep && x.cheval_nom === comp.ch; })) { setMsgC(F("Ce couple est déjà engagé dans cette épreuve.")); return; }
+    var max = hsMaxTours(t.map(function (x) { return x.epreuve; }).concat([comp.ep]));
+    if (t.length >= max) { setMsgC(F("Déjà ") + t.length + F(" tours : c’est le maximum (") + max + F(" par jour en ") + (max === 5 ? F("poney") : F("club")) + ")."); return; }
+    t.push({ epreuve: comp.ep, cheval_nom: comp.ch, passage: "", piste: "" }); l.tours = t; n[j] = l;
+    setLignes(n); setModifie(true);
+    setMsgC("✓ " + prenomDe(l.nom) + " · " + comp.ch + " · " + comp.ep + F(" — engagé. Choisis une autre épreuve pour un tour de plus, ou un autre cavalier."));
+    setComp(Object.assign({}, comp, { ep: "", etape: 3 }));
+    enregistrer(n, supprimees);
+  }
+  function retirerTour(i, k) {
+    var n = lignes.slice(), sup = supprimees.slice(), l = Object.assign({}, n[i]), t = (l.tours || []).slice();
+    t.splice(k, 1); l.tours = t;
+    if (!t.length) { if (l.id) sup.push(l.id); n.splice(i, 1); } else n[i] = l;
+    setLignes(n); setSupprimees(sup); setModifie(true); setMsgC("");
+    enregistrer(n, sup);
+  }
+  function retirerSansTour(i) {
+    var n = lignes.slice(), sup = supprimees.slice(), l = n[i]; if (l && l.id) sup.push(l.id); n.splice(i, 1);
+    setLignes(n); setSupprimees(sup); setModifie(true);
+    enregistrer(n, sup);
+  }
+  function tuile(k, photo, nom, badge, on, gris, onClick, pos) {
+    return h("button", { key: k, type: "button", className: "d3-t" + (on ? " on" : "") + (gris ? " gris" : ""), disabled: !!gris, onClick: onClick, "aria-pressed": !!on },
+      photo ? h("img", { src: photo, alt: "", loading: "lazy", style: pos ? { objectPosition: pos } : null }) : h("span", { className: "d3-ini" }, initiales(nom)),
+      badge ? h("small", null, badge) : null, h("b", null, nom));
+  }
+  function tuilePlus(k, txt, onClick, on) { return h("button", { key: k, type: "button", className: "d3-t plus" + (on ? " on" : ""), onClick: onClick }, h("i", null, "＋"), h("span", null, txt)); }
+  function composeur() {
+    var et = comp.etape;
+    function pastille(n, lab) {
+      var fait = (n === 1 && comp.cav) || (n === 2 && comp.ch) || (n === 3 && comp.ep);
+      var ok = n === 1 || (n === 2 && comp.cav) || (n === 3 && comp.cav && comp.ch);
+      return h("button", { key: n, type: "button", disabled: !ok, className: "d3-et" + (et === n ? " on" : (fait ? " fait" : "")), onClick: function () { if (ok) { setComp(Object.assign({}, comp, { etape: n })); setAutreC(""); } } },
+        h("i", null, fait && et !== n ? "✓" : String(n)), lab);
+    }
+    var etapes = h("div", { className: "d3-etapes" }, pastille(1, F("Qui")), h("span", { className: "d3-trait" + (comp.cav ? " fait" : "") }), pastille(2, F("Cheval")), h("span", { className: "d3-trait" + (comp.ch ? " fait" : "") }), pastille(3, F("Épreuve")));
+    var corps;
+    if (et === 1) {
+      var vus = {}, liste = [];
+      candidates.forEach(function (c) { if ((c.src === "inscrite" || c.src === "compet" || c.src === "team") && c.id !== moiId && !vus[c.id]) { vus[c.id] = 1; liste.push(c); } });
+      lignes.forEach(function (l) {
+        if (l.cavalier_id && vus[l.cavalier_id]) return;
+        var c = l.cavalier_id ? candidates.filter(function (x) { return x.id === l.cavalier_id; })[0] : null;
+        c = c || { id: l.cavalier_id || null, nom: l.nom, licence: l.licence || "", pseudo: "" };
+        if (c.id) vus[c.id] = 1; liste.push(c);
+      });
+      if (!liste.length) candidates.filter(function (c) { return c.id !== moiId; }).slice(0, 11).forEach(function (c) { liste.push(c); });
+      var tu = liste.map(function (c, k) {
+        var t = toursDuCav(c), max = hsMaxTours(t.map(function (x) { return x.epreuve; }));
+        var on = comp.cav && ((c.id && comp.cav.id === c.id) || (!c.id && hsMemePers(comp.cav.nom, c.nom)));
+        return tuile("c" + (c.id || k), c.id ? hsPhotoProfil(c) : "", prenomDe(c.nom || c.pseudo), t.length ? t.length + (t.length > 1 ? F(" tours") : F(" tour")) + (t.length >= max ? F(" · max") : "") : "", on, t.length >= 5, function () { choisirCav(c); });
+      });
+      tu.push(tuilePlus("cplus", F("Autre"), function () { setAutreC(autreC === "cav" ? "" : "cav"); }, autreC === "cav"));
+      corps = h(React.Fragment, null,
+        h("h3", { className: "d3-q" }, F("Qui part en concours ?")),
+        h("div", { className: "d3-g" }, tu),
+        autreC === "cav" ? h("div", { className: "d3-autre" },
+          h("input", { type: "search", value: recherche, placeholder: F("Nom ou pseudo"), autoFocus: true, onChange: function (e) { setRecherche(e.target.value); } }),
+          q.length >= 2 ? h("div", { className: "hs-puces" },
+            resultats.map(function (c) { return h("button", { key: c.id, type: "button", className: "hs-puce hs-puce-cav", onClick: function () { choisirCav(c); } }, (c.nom || c.pseudo || "?")); }),
+            h("button", { type: "button", className: "hs-puce hs-puce-cav", onClick: function () { choisirCav({ id: null, nom: String(recherche).trim(), licence: "" }); } }, F("+ « ") + String(recherche).trim() + F(" » sans compte Hype"))) : null) : null);
+    } else if (et === 2) {
+      var base = chevaux.filter(function (c) { return c.src === "concours" || c.src === "team"; });
+      if (!base.length) base = chevaux.slice(0, 11);
+      var vusCh = {}; base.forEach(function (c) { vusCh[c.nom] = 1; });
+      var enPlus = Object.keys(montes).filter(function (c) { return !vusCh[c]; });
+      var tc = base.map(function (c) {
+        var m = (montes[c.nom] || []).length;
+        return tuile("h" + c.id, photoCh(c.nom), c.nom, m ? m + (m > 1 ? F(" tours") : F(" tour")) : "", comp.ch === c.nom, false, function () { choisirCh(c.nom); });
+      }).concat(enPlus.map(function (c) { var m = (montes[c] || []).length; return tuile("hx" + c, photoCh(c), c, m + (m > 1 ? F(" tours") : F(" tour")), comp.ch === c, false, function () { choisirCh(c); }); }));
+      tc.push(tuilePlus("hplus", F("Autre"), function () { setAutreC(autreC === "ch" ? "" : "ch"); }, autreC === "ch"));
+      corps = h(React.Fragment, null,
+        h("h3", { className: "d3-q" }, F("Quel cheval pour ") + prenomDe(comp.cav && comp.cav.nom) + " ?"),
+        h("div", { className: "d3-g" }, tc),
+        autreC === "ch" ? h("div", { className: "d3-autre d3-ligne" },
+          h("input", { type: "text", list: "d3-chevaux", value: autreCh, placeholder: F("Nom du cheval"), autoFocus: true, onChange: function (e) { setAutreCh(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter" && String(autreCh).trim()) { e.preventDefault(); choisirCh(String(autreCh).trim()); } } }),
+          h("datalist", { id: "d3-chevaux" }, chevaux.map(function (c) { return h("option", { key: c.id, value: c.nom }); })),
+          h("button", { type: "button", className: "hs-lien", disabled: !String(autreCh).trim(), onClick: function () { choisirCh(String(autreCh).trim()); } }, F("Choisir"))) : null,
+        h("button", { type: "button", className: "hs-lien d3-petit", onClick: ouvrirChoixCh }, F("Choisir les chevaux qui partent ›")));
+    } else {
+      var tCav = toursDuCav(comp.cav);
+      var te = eps.map(function (e) {
+        var nb = 0; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.epreuve === e) nb++; }); });
+        var max = hsMaxTours(tCav.map(function (x) { return x.epreuve; }).concat([e]));
+        var deja = tCav.some(function (x) { return x.epreuve === e && x.cheval_nom === comp.ch; });
+        var plein = tCav.length >= max;
+        return h("button", { key: "e" + e, type: "button", className: "d3-ep" + (comp.ep === e ? " on" : "") + (deja || plein ? " gris" : ""), disabled: deja || plein, onClick: function () { choisirEp(e); } },
+          h("b", null, e), h("span", null, deja ? F("déjà engagé") : (plein ? F("maximum atteint") : (nb ? nb + (nb > 1 ? F(" tours") : F(" tour")) : F("personne encore")))),
+          !nb ? h("i", { role: "button", "aria-label": F("Retirer l’épreuve ") + e, onClick: function (ev0) { ev0.stopPropagation(); retirerEpreuve(e); if (comp.ep === e) setComp(Object.assign({}, comp, { ep: "" })); } }, "×") : null);
+      });
+      te.push(h("button", { key: "eplus", type: "button", className: "d3-ep plus" + (autreC === "ep" || !eps.length ? " on" : ""), onClick: function () { setAutreC(autreC === "ep" ? "" : "ep"); } }, h("i", null, "＋"), h("span", null, F("Nouvelle épreuve"))));
+      corps = h(React.Fragment, null,
+        h("h3", { className: "d3-q" }, F("Quelle épreuve ?")),
+        h("div", { className: "d3-g" }, te),
+        autreC === "ep" || !eps.length ? h("div", { className: "d3-autre d3-ligne" },
+          h("input", { type: "text", value: nouvelleEp, placeholder: F("Ex. Club 2, Poney 1"), autoFocus: autreC === "ep", onChange: function (e) { setNouvelleEp(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") { e.preventDefault(); var t0 = hsNomEpreuve(nouvelleEp); ajouterEpreuve(); if (t0) { choisirEp(t0); } } } }),
+          h("button", { type: "button", className: "hs-lien", onClick: function () { var t0 = hsNomEpreuve(nouvelleEp); ajouterEpreuve(); if (t0) choisirEp(t0); } }, F("Ajouter"))) : null);
+    }
+    /* la barre qui se remplit */
+    var pCav = comp.cav && comp.cav.id ? hsPhotoProfil(comp.cav) : "";
+    var licL = comp.cav ? (lignes.filter(function (l) { return (comp.cav.id && l.cavalier_id === comp.cav.id) || (!comp.cav.id && hsMemePers(l.nom, comp.cav.nom)); })[0] || null) : null;
+    var licence = licL ? (licL.licence || "") : ((comp.cav && comp.cav.licence) || "");
+    var pret = !!(comp.cav && comp.ch && comp.ep);
+    return h("div", { className: "d3" },
+      h("div", { className: "d3-k" }, F("Nouvel engagement")),
+      etapes, corps,
+      h("div", { className: "d3-recap" },
+        h("button", { type: "button", className: "d3-rc" + (comp.cav ? "" : " vide"), onClick: function () { setComp(Object.assign({}, comp, { etape: 1 })); } },
+          comp.cav ? (pCav ? h("img", { src: pCav, alt: "" }) : h("span", { className: "d3-mini" }, initiales(comp.cav.nom))) : h("i", null), h("span", null, comp.cav ? prenomDe(comp.cav.nom || comp.cav.pseudo) : F("Qui"))),
+        h("button", { type: "button", className: "d3-rc" + (comp.ch ? "" : " vide"), disabled: !comp.cav, onClick: function () { setComp(Object.assign({}, comp, { etape: 2 })); } },
+          comp.ch ? h("img", { src: photoCh(comp.ch), alt: "" }) : h("i", null), h("span", null, comp.ch || F("Cheval"))),
+        h("button", { type: "button", className: "d3-rc" + (comp.ep ? " ep" : " vide"), disabled: !(comp.cav && comp.ch), onClick: function () { setComp(Object.assign({}, comp, { etape: 3 })); } },
+          comp.ep ? h("em", null, (function (x) { var m = String(x).match(/\d+/); return (String(x).trim().charAt(0).toUpperCase() + (m ? m[0] : "")).slice(0, 3); })(comp.ep)) : h("i", null), h("span", null, comp.ep || F("Épreuve"))),
+        h("button", { type: "button", className: "d3-ok" + (pret ? " pret" : ""), disabled: !pret || occupe, onClick: engager }, occupe ? "…" : F("Engager"))),
+      comp.cav ? (editLic
+        ? h("div", { className: "d3-autre d3-ligne" },
+            h("input", { type: "text", value: licence, placeholder: F("N° de licence"), autoCapitalize: "characters", "aria-label": F("Licence"), autoFocus: true,
+              onChange: function (e) { var v = e.target.value; if (licL) { var i0 = lignes.indexOf(licL); poserL(i0, "licence", v); } else setComp(Object.assign({}, comp, { cav: Object.assign({}, comp.cav, { licence: v }) })); } }),
+            h("button", { type: "button", className: "hs-lien", onClick: function () { setEditLic(false); } }, F("OK")))
+        : h("button", { type: "button", className: "hs-lien d3-petit", onClick: function () { setEditLic(true); } }, (licence ? F("Licence ") + licence : F("Licence à compléter")) + " ›")) : null,
+      msgC ? h("div", { className: "d3-msg" }, msgC) : null,
+      comp.cav ? h("button", { type: "button", className: "hs-lien d3-petit", onClick: function () { setComp({ cav: null, ch: "", ep: "", etape: 1 }); setMsgC(""); setEditLic(false); } }, F("Nouveau couple ›")) : null,
+      /* lire une fiche déjà remplie (gardé) */
+      h("label", { className: "hs-lien d3-petit", style: { cursor: "pointer", opacity: lecture === "en_cours" ? 0.6 : 1 } },
+        lecture === "en_cours" ? F("Lecture de la fiche… (1 à 2 min)") : F("Ou lire une fiche déjà remplie (photo ou PDF) ›"),
+        h("input", { type: "file", accept: "image/*,application/pdf", disabled: lecture === "en_cours", onChange: lireFiche, style: { display: "none" } })),
+      lecture && lecture !== "en_cours" ? h("div", { className: "hs-note", style: { marginTop: 4 } }, lecture) : null,
+      lus && lus.length ? h("div", { className: "hs-lus" },
+        h("div", { className: "hs-pep-t" }, h("span", null, F("Lu sur la fiche")), h("span", null, lus.length + F(" cavaliers"))),
+        lus.map(function (x, k) {
+          return h("label", { key: k, className: "hs-lu" },
+            h("input", { type: "checkbox", checked: !!x.coche, onChange: function () { var c = lus.slice(); c[k] = Object.assign({}, x, { coche: !x.coche }); setLus(c); } }),
+            h("span", null, h("b", null, x.nom), h("em", null, [x.licence, x.compte ? F("compte Hype : ") + (x.compte.pseudo || x.compte.nom) : F("sans compte Hype"), x.deja ? F("déjà sur la feuille : nom et licence mis à jour") : ""].filter(Boolean).join(" · "))));
+        }),
+        h("div", { className: "hs-duo", style: { marginTop: 12 } },
+          h("button", { type: "button", className: "hs-btn", onClick: ajouterLus }, F("Ajouter à la feuille")),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { setLus(null); } }, F("Annuler")))) : null);
+  }
+  /* engagements enregistrés sans aucun tour (anciens écrans, fiche lue) : visibles, avec × pour les retirer */
+  function sansTour() {
+    var l0 = lignes.map(function (l, i) { return { l: l, i: i }; }).filter(function (x) { return !(x.l.tours || []).some(function (t) { return t.epreuve || t.cheval_nom; }); });
+    if (!l0.length) return null;
+    return h("div", { className: "d3-sans" },
+      h("div", { className: "d3-k" }, F("Sans épreuve pour l’instant")),
+      l0.map(function (x) {
+        return h("div", { key: "s" + x.i, className: "d3-sl" },
+          h("button", { type: "button", className: "d3-sl-n", onClick: function () { var c = x.l.cavalier_id ? candidates.filter(function (y) { return y.id === x.l.cavalier_id; })[0] : null; choisirCav(c || { id: x.l.cavalier_id || null, nom: x.l.nom, licence: x.l.licence || "" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (eS) { } } }, String(x.l.nom || "").trim() || "?", h("span", null, F(" · engager ›"))),
+          h("button", { type: "button", className: "rc-x", "aria-label": F("Retirer"), onClick: function () { retirerSansTour(x.i); } }, "×"));
       }));
   }
   function switchVue() {
@@ -1912,20 +2186,20 @@ function EcranEngagements() {
     hero,
     h("div", { className: "hs-in" },
       carteConcours(),
-      switchVue(),
-      vue === "chevaux" || vue === "grille" ? vueChevauxV1() : (vue === "epreuves" ? vueEpreuvesV1() : vueCavalieres()),
+      composeur(),
       recapFin(),
-      h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seules toi et la cavalière concernée les voient. Chaque cavalière voit son engagement sur la fiche du concours.")),
+      sansTour(),
+      h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seuls toi et le cavalier concerné les voient. Chacun voit son engagement sur la fiche du concours.")),
       /* actions */
       h("div", { className: "hs-coll" },
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
         h("div", { className: "hs-duo", style: { marginTop: 0 } },
-          h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !modifie, onClick: enregistrer }, occupe ? F("Enregistrement…") : (modifie ? F("Enregistrer") : F("✓ Enregistré"))),
+          h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !modifie, onClick: function () { enregistrer(); } }, occupe ? F("Enregistrement…") : (modifie ? F("Enregistrer") : F("✓ Enregistré"))),
           h("button", { type: "button", className: "hs-btn", onClick: function () { setVoirFeuille(true); } }, estSep ? F("Feuille SEP") : T7("Feuille d’engagement", "Entry sheet", "Hoja de inscripción", "Foglio di iscrizione", "エントリーシート", "Nennungsliste", "ورقة التسجيل", "报名表", "Inschrijvingsformulier", "Ficha de inscrição", "Anmälningsblad", "Лист заявок", "Lista zgłoszeń", "참가 신청서")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null),
     fenetreChoixCh(),
-    voirFeuille ? (estSep ? feuilleSep(h, ev, feuille, lignes, function () { setVoirFeuille(false); }, modifie)
-      : feuilleNeutre(h, ev, feuille, lignes, function () { setVoirFeuille(false); }, modifie, nomClubAff)) : null);
+    voirFeuille ? (estSep ? feuilleSep(h, ev, feuille, hsLignesFeuille(lignes), function () { setVoirFeuille(false); }, modifie)
+      : feuilleNeutre(h, ev, feuille, hsLignesFeuille(lignes), function () { setVoirFeuille(false); }, modifie, nomClubAff)) : null);
 }
 
 /* La feuille « Engagements Concours CSO Club », à l'identique de la fiche papier de la SEP.

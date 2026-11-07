@@ -8,7 +8,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
-- [07/11 23h15] 🚧 PAGE ENGAGEMENTS EN COURS DE REFONTE dans une autre conversation (P1 + étapes D3 + récap par épreuve, choix de Blandine) — ne pas toucher à EcranEngagements ni à concours_engagements / concours_tours en attendant. Base faite : nouvelle table concours_tours (une ligne par tour, jusqu'à 5). (attend : Claude)
+- [07/11 23h50] Nouvelle page Engagements (P1 + étapes D3) PRÊTE, NON PUBLIÉE — à tester sur iPhone après publication : engager en 3 touchers (qui → cheval → épreuve), 2e et 3e tour, « Nouvelle épreuve », × pour retirer un tour, feuille d'engagement. Ne pas toucher à EcranEngagements, concours_engagements ni concours_tours sans relire l'entrée du 07/11 23h50. (attend : Blandine)
 - [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
 - [26/10] Sécurité : la clé d'accès Supabase des mails est SUPPRIMÉE (07/11 01h54, vérifié sur capture : restent seulement « github-hype » et « Github hype 2 »). Reste à supprimer le secret HYPE_CLE_MAILS (supabase.com/dashboard/project/ldpjebgtskzdokrublfg/functions/secrets) — sans la clé, il ne peut plus rien faire, c'est du rangement (attend : Blandine)
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
@@ -19421,3 +19421,22 @@ Titre traduit dans les 13 autres langues ; la page Google du cours prend le nouv
 - Fabriqué à chaque publication par outils/seo-galops.cjs ; textes dans outils/prepas-liens.json (NOUVEAU, tirés des traductions des prépas).
 Fichiers : outils/seo-galops.cjs, outils/prepas-liens.json (NOUVEAU), SUIVI.md.
 
+## 07/11/2026 23h50 — PRÊT, NON PUBLIÉ (à grouper) — Page Engagements refaite : P1 + étapes D3 (une ligne par tour)
+- Choix de Blandine : page « P1 », composeur « D3 » (tuiles photo 3 par ligne : Qui → Cheval → Épreuve, barre du bas qui se remplit, « Engager » s'allume), récapitulatif par épreuve gardé (« Visuel 7 »). Cavaliers ET cavalières (« Qui part en concours ? »).
+- Chaque « Engager » est enregistré tout de suite. Le couple reste choisi : on touche une autre épreuve pour le tour suivant. « Nouveau couple › » repart à zéro.
+- Tours : jusqu'à 3 par jour en épreuves Club, 5 si une épreuve du cavalier est une épreuve poney (nom contenant « Poney », « Pony » ou « P1 », « P2 »…) — règle donnée par Blandine. Un même couple ne peut pas être engagé deux fois dans la même épreuve. Au maximum, les épreuves se grisent ; à 5 tours, la tuile du cavalier se grise.
+- Les épreuves se créent à l'étape 3 (« Nouvelle épreuve ») : le bloc « Épreuves » et le champ « Ex. Club 2 » sont retirés des infos du concours. Une épreuve sans aucun tour peut être retirée (×).
+- Récap : × sur chaque tour pour le retirer (enregistré tout de suite ; un cavalier sans plus aucun tour est retiré de la feuille). Engagements anciens sans aucune épreuve : liste « Sans épreuve pour l'instant » avec × et « engager › ».
+- Gardé : n° de concours (et « Trouver le numéro »), tarif, camion, chef d'équipe, licence (lien sous la barre), recherche d'un autre cavalier (tuile « Autre »), cavalier sans compte Hype, « Autre » cheval (nom tapé, avec les chevaux connus proposés), « Choisir les chevaux qui partent », lecture d'une fiche déjà remplie, ordre du chronométreur, feuille SEP / feuille d'engagement, bouton Enregistrer (pour les infos du concours).
+- Changé : plus de lignes vides pré-remplies avec les inscrits à la première ouverture (ils sont proposés en premier dans les tuiles) ; les onglets Cavalières / Chevaux / Épreuves sont remplacés par le composeur.
+- Base : lit et écrit concours_tours (numéros 1 à 5) ET recopie les tours 1 et 2 dans les colonnes de concours_engagements, pour que le jour J, la liste du van et Ma saison continuent de marcher. La feuille d'engagement papier met 2 tours par ligne : un cavalier à 3, 4 ou 5 tours y prend 2 ou 3 lignes.
+- Les boutons du bas restent au-dessus de la barre de l'appli (84 px de marge).
+- Testé en local avec une fausse base (téléphone et ordinateur) : 3 tours engagés pour un cavalier, 4e refusé (épreuves grisées), nouvelle épreuve créée et enregistrée dans la feuille, retrait d'un tour (renumérotation 1-2, colonnes recopiées) ; aucune erreur.
+- Textes en français seulement, comme tout le Centre de compétition (traduction prévue avant l'ouverture à tous).
+- RESTE À FAIRE (étapes suivantes, une à la fois) : jour J (heures et pistes des tours 3 à 5), liste du van, Ma saison et fiche du concours sur concours_tours ; puis retirer les anciennes colonnes.
+Fichiers à publier :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-saison.js | racine | page Engagements P1 + D3, tours dans concours_tours |
+| index.html | racine | hype-ecran-saison.js?v=44 (7 endroits) + marqueur de build au moment de publier |
+| SUIVI.md | racine | cette entrée |
