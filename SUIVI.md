@@ -837,7 +837,7 @@ Blandine (23 h 53) : « Le découpage visuel du hero est abrupt » ; « t'as fai
 |---|---|---|
 | hype-ecran-cheval.js | racine | version 18 : quand la photo du haut est plus étroite que l'écran, le fondu à gauche se fait sur le vrai bord de la photo (plus de coupure nette) ; fondu plus doux |
 | index.html | racine | ?v cheval 17 → 18, build 20261108-0100 (rien d'autre) |
-· ⚠️ Envoyé SANS [publier] : deux envois d'une autre conversation (photo de thématique, Engagements) attendent l'accord de Blandine et partiraient avec. En ligne à la prochaine publication.
+· PUBLIÉ le 08/11 à 00 h 05 (« Ok » de Blandine), build 20261108-0105, avec les deux envois en attente de l'autre conversation (photo de thématique quand un événement n'a pas d'affiche ; Engagements).
 
 ════════════════════════════════════════════════════════════
 
