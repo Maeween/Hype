@@ -439,7 +439,7 @@ async function upsertAbonnement(service, ligne) {
     const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?on_conflict=user_id", {
         method: "POST",
         headers: { ...entetesSupabase(service), Prefer: "resolution=merge-duplicates" },
-        body: JSON.stringify(ligne),
+        body: JSON.stringify(Object.assign({ resilie_fin_periode: false }, ligne)),   /* 07/11 : un nouvel abonnement efface une ancienne résiliation programmée */
     });
     if (!r.ok) log("upsert KO", r.status, (await r.text().catch(() => "")).slice(0, 300));
     return r.ok;
@@ -756,6 +756,15 @@ export default async (req) => {
            Aucune ligne Hype pour cet abonnement (Famille, ancien abonnement) : rien n'est touché. */
         else if (evenement.type === "customer.subscription.updated" && objet && objet.id) {
             const avant = (evenement.data && evenement.data.previous_attributes) || {};
+            /* 07/11 : résiliation programmée (« s'arrête à la fin de la période ») ou annulée -> resilie_fin_periode,
+               pour prévenir l'abonné avant la fin (page cavalier). N'empêche jamais le reste du traitement. */
+            try {
+                if (Object.prototype.hasOwnProperty.call(avant, "cancel_at_period_end") || Object.prototype.hasOwnProperty.call(avant, "cancel_at")) {
+                    const resilie = !!(objet.cancel_at_period_end || objet.cancel_at);
+                    const nR = await majParAbonnement(service, objet.id, { resilie_fin_periode: resilie });
+                    log("Résiliation programmée :", resilie ? "oui" : "non", "—", objet.id, "—", nR, "ligne(s)");
+                }
+            } catch (eR) { log("résiliation programmée : erreur", String(eR && eR.message || eR)); }
             const item = objet.items && objet.items.data && objet.items.data[0];
             const prixN = item && item.price ? (typeof item.price === "string" ? item.price : item.price.id) : null;
             const offreN = prixN ? OFFRES_PAR_PRIX[prixN] : null;

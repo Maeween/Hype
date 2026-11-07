@@ -788,6 +788,19 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+⏳ 07/11/2026 (16 h 05) — PERSONNALISATION : PRÉVENIR AVANT LA FIN D'UN ABONNEMENT RÉSILIÉ
+Blandine : « Ok continue » (après : prévenir avant la fin demande d'enregistrer la résiliation venant de Stripe).
+| Fichier | Où | Quoi |
+|---|---|---|
+| base Supabase | migration abonnements_premium_resilie_fin_periode | nouvelle colonne resilie_fin_periode (oui/non, lisible par l'abonné) |
+| netlify/functions/stripe-webhook.js | netlify/functions | quand Stripe annonce « s'arrête à la fin de la période » (ou l'annulation de cette demande) → resilie_fin_periode ; un nouvel abonnement remet à non. Bloc isolé : ne peut pas gêner le reste. |
+| hype-ecran-cavalier.js | racine | version 11 : sur SA page, si résilié + design gardé : « Ton abonnement s'arrête le 3 décembre : ton design personnalisé sera mis en pause. » + bouton « Garder mon design » (page Premium) |
+| index.html | racine | ?v cavalier 10 → 11, build 20261107-1605 (rien d'autre) |
+Traduit 14 langues. ⚠️ Fonctionne pour les résiliations faites À PARTIR de maintenant (les anciennes ne sont pas connues).
+Vérifier une fois dans Stripe que l'événement customer.subscription.updated est bien coché (il l'est depuis le 18/10).
+
+════════════════════════════════════════════════════════════
+
 💤 07/11/2026 (11 h 55) — PERSONNALISATION : « RETROUVER MON DESIGN » APRÈS UN ABONNEMENT ARRÊTÉ
 Blandine : « si la personne se réabonne… un bouton retrouver le design… ça te dit de renouveler ton abonnement ».
 | Fichier | Où | Quoi |
