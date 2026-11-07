@@ -723,6 +723,23 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   remonte dans « Les échéances » : extincteurs et document unique 1 an
   après, trousse 6 mois après, assurance RC à sa date, carte pro de chaque
   personne encore présente à sa date. 14 langues. PUBLIÉ build 20261107-1135.
+· 07/11 11 h 22 (Blandine : « rajouter l'ARC, les rappels de règlement pour
+  l'ARC aussi, les rappels pour l'assurance des véhicules, etc. » — compris
+  « la RC », à corriger si elle voulait dire autre chose) → LES CONTRATS
+  (#contrats-ecurie). SQL PASSÉ (sql-07-11-contrats.sql : table
+  ecurie_contrats, responsables seulement). Une fiche par contrat : nom
+  (suggestions RC, camion, van, bâtiments, FFE, GHN, médiateur), catégorie,
+  organisme, montant, fréquence, prochain règlement, fin de contrat.
+  « C'est réglé » avance la date d'une période. Règlements et fins de contrat
+  dans « Les échéances ». Lien depuis la fiche « L'assurance RC » des
+  obligations. 14 langues.
+· 07/11 (carte blanche, idée n° 8 pour soulager le dirigeant) → LE STOCK
+  (#stock-ecurie). SQL PASSÉ (sql-07-11-stock.sql : table ecurie_stock,
+  responsables seulement). Produit, catégorie, quantité, unité, seuil,
+  fournisseur, dernière commande. Sous le seuil = « À recommander » (aussi
+  dans « Les échéances ») ; « Commandé aujourd'hui » coupe l'alerte 15 jours,
+  le temps de la livraison. 14 langues. Les deux : PUBLIÉ build 20261107-1205.
+  À tester sur iPhone avec ses vrais contrats.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 

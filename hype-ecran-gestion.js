@@ -32,7 +32,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     camion: { img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%" },
     compta: { img: "images/cours-g1-c3-box.webp", pos: "50% 40%" },
     aides: { img: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "60% 40%" },
-    obligations: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" }
+    obligations: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" },
+    contrats: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%" },
+    stock: { img: "images/encartEcurieHype.jpg", pos: "78% 55%" }
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -69,7 +71,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 5;
+  var I18N_V = 6;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -232,6 +234,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
             /* 07/11 : le personnel (cartes pro qui expirent → Les échéances), seulement pour les responsables */
             if (res.peutGerer) { try { var rpe = await supa.from("registre_personnel").select("*").eq("club_clef", clef).limit(500); if (rpe && !rpe.error) res.personnel = rpe.data || []; } catch (ePe) { } }
+            if (res.peutGerer) { try { var rco = await supa.from("ecurie_contrats").select("*").eq("club_clef", clef).limit(500); if (rco && !rco.error) res.contrats = rco.data || []; } catch (eCo) { } }
+            if (res.peutGerer) { try { var rst = await supa.from("ecurie_stock").select("*").eq("club_clef", clef).limit(500); if (rst && !rst.error) res.stock = rst.data || []; } catch (eSt) { } }
           } catch (eF) { }
         } catch (e) { res.erreur = String((e && e.message) || e); }
         if (vif) setD(res);
@@ -389,6 +393,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
           theme(h, "", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.detenteur, "Le personnel", "Le registre unique du personnel", function () { ouvrir("personnel-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.contrats, "Les contrats", "Assurances, cotisations : chaque règlement", function () { ouvrir("contrats-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
@@ -1568,6 +1574,12 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       if (d.fiche && d.fiche.trousse_verif) items.push({ k: "trousse", date: plus(d.fiche.trousse_verif, 6), ch: null, titre: "La trousse de secours", sous: "À vérifier tous les 6 mois", photo: PHOTOS.obligations, clic: ouvrirOb });
       if (d.fiche && d.fiche.assurance_rc_fin) items.push({ k: "rc", date: String(d.fiche.assurance_rc_fin).slice(0, 10), ch: null, titre: "L'assurance RC", sous: "Fin du contrat · à renouveler", photo: PHOTOS.obligations, clic: ouvrirOb });
       (d.personnel || []).forEach(function (x) { if (x.carte_pro_fin && !x.date_sortie) items.push({ k: "cp" + x.id, date: String(x.carte_pro_fin).slice(0, 10), ch: null, titre: "Carte professionnelle", sous: [x.prenoms, x.nom].filter(Boolean).join(" ") + " · à renouveler", photo: PHOTOS.detenteur, clic: function () { ouvrir("personnel-ecurie"); } }); });
+      (d.contrats || []).forEach(function (x) {
+        var oc = function () { ouvrir("contrats-ecurie"); };
+        if (x.prochain_reglement) items.push({ k: "rg" + x.id, date: String(x.prochain_reglement).slice(0, 10), ch: null, titre: x.nom, sous: "À régler" + (x.montant != null ? " · " + euros(nombre(x.montant)) : ""), photo: PHOTOS.contrats, clic: oc });
+        if (x.fin_contrat) items.push({ k: "fc" + x.id, date: String(x.fin_contrat).slice(0, 10), ch: null, titre: x.nom, sous: "Fin du contrat · à renouveler ou résilier", photo: PHOTOS.contrats, clic: oc });
+      });
+      (d.stock || []).forEach(function (x) { if (aCommander(x)) items.push({ k: "st" + x.id, date: auj, ch: null, titre: x.nom, sous: "À recommander", photo: PHOTOS.stock, clic: function () { ouvrir("stock-ecurie"); } }); });
       if (d.peutGerer) {
         var ft = finTrimestre(auj);
         items.push({ k: "reg" + ft, date: ft, ch: null, titre: "Imprimer le registre", sous: "Fin du trimestre · registre tenu sur l'appli", photo: PHOTOS.registre, clic: function () { ouvrir("registre-imprimer"); } });
@@ -2003,7 +2015,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
     { k: "assurance", cat: "club", photo: "controles", titre: "L'assurance RC", sous: "Code du sport L. 321-1", pill: "Tout club", etat: "Obligatoire",
       texte: ["L'établissement doit être assuré en responsabilité civile pour ses dirigeants, ses enseignants, ses salariés et les cavaliers qui pratiquent chez lui. L'attestation est affichée."],
-      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs" },
+      source: "https://www.allier.gouv.fr/contenu/telechargement/4770/46233/file/Obligations.pdf", sourceNom: "Préfecture de l'Allier, obligations des établissements sportifs", lienInterne: "contrats-ecurie" },
     { k: "enseignants", cat: "club", photo: "chevaux", titre: "Les enseignants", sous: "Diplôme et carte professionnelle", pill: "Enseignement payé", etat: "Obligatoire",
       texte: ["Toute personne payée pour enseigner l'équitation doit avoir un diplôme reconnu par l'État et une carte professionnelle à jour (Code du sport, art. L. 212-1 et suivants). Employer quelqu'un sans diplôme est puni par la loi.",
         "Honorabilité : une personne condamnée pour certaines infractions ne peut ni encadrer ni diriger un établissement sportif (art. L. 212-9 et L. 322-1)."],
@@ -2102,7 +2114,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           carte(h, { cle: a.k, photo: PHOTOS[a.photo], titre: a.titre, sous: a.sous, pill: a.pill, etat: a.etat, alerte: !!a.aVerifier, onClick: function () { setOuvert(ouvert === a.k ? null : a.k); } }),
           ouvert === a.k ? h("div", { style: { padding: "12px 6px 16px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,.82)" } },
             a.texte.map(function (t, k) { return h("p", { key: k, style: { margin: k ? "10px 0 0" : 0 } }, t); }),
-            a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : (a.lienInterne === "personnel-ecurie" ? "Ouvrir Le personnel" : "Ouvrir Le registre")) : null,
+            a.lienInterne ? h("button", { type: "button", className: "hg-btn", onClick: function () { ouvrir(a.lienInterne); } }, a.lienInterne === "camion" ? "Ouvrir Le camion" : a.lienInterne === "personnel-ecurie" ? "Ouvrir Le personnel" : a.lienInterne === "contrats-ecurie" ? "Ouvrir Les contrats" : "Ouvrir Le registre") : null,
             lien(a.source, "Lire la source")) : null);
       })),
       blocDates(),
@@ -2281,5 +2293,187 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h("div", { className: "hv2-in" }, corps));
   }
 
-  window.HypeGestion = { Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ LISTES SIMPLES : « LES CONTRATS » ET « LE STOCK » (07/11) ═════════════════════════
+     Contrats : demande de Blandine (07/11 11 h 22) — rappels de règlement de l'assurance RC, des assurances des véhicules,
+     etc. Une fiche par contrat (montant, fréquence, prochain règlement, fin de contrat) ; « C'est réglé » avance la date
+     d'une période ; les règlements et fins de contrat remontent dans « Les échéances ».
+     Stock : idée n° 8 (carte blanche) — foin, paille, aliments, copeaux ; sous le seuil = « À recommander », remonte
+     aussi dans « Les échéances ». Tables ecurie_contrats / ecurie_stock (responsables de l'écurie seulement). */
+  var FREQ_MOIS = { "Mensuel": 1, "Trimestriel": 3, "Semestriel": 6, "Annuel": 12 };
+  function plusMois(iso, mois) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; var dd = new Date(+m[1], +m[2] - 1 + mois, +m[3]); return dd.getFullYear() + "-" + String(dd.getMonth() + 1).padStart(2, "0") + "-" + String(dd.getDate()).padStart(2, "0"); }
+  function nombre(x) { var n = parseFloat(String(x == null ? "" : x).replace(",", ".")); return isNaN(n) ? null : n; }
+  function euros(n) { return n == null ? "" : n.toLocaleString(locale(), { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " €"; }
+  function stockBas(x) { var q = nombre(x.quantite), s = nombre(x.seuil); return q != null && s != null && q <= s; }
+  /* commandé il y a moins de 15 jours : on attend la livraison, plus d'alerte (la quantité se met à jour à l'arrivée) */
+  function stockCommande(x) { return stockBas(x) && !!x.derniere_commande && ecartJours(String(x.derniere_commande).slice(0, 10), isoAuj()) >= -14; }
+  function aCommander(x) { return stockBas(x) && !stockCommande(x); }
+  var CFG_CONTRATS = {
+    table: "ecurie_contrats", ordre: "prochain_reglement", titre: "Les contrats", sous: "Assurances, cotisations, abonnements : chaque règlement à temps.", photo: "contrats",
+    nouveau: "Nouveau contrat", ajouter: "Ajouter un contrat",
+    vide: "Aucun contrat noté. Touche + pour ajouter ton assurance RC, celle du camion, tes cotisations…",
+    aide: "Note chaque contrat une fois : Hype te rappelle chaque règlement dans « Les échéances ». Touche « C'est réglé » après avoir payé : la date passe à la période suivante.",
+    champs: [
+      { k: "nom", lab: "Nom", ex: "ex. Assurance RC, Assurance du camion", sugg: ["Assurance responsabilité civile", "Assurance du camion", "Assurance du van", "Assurance des bâtiments", "Adhésion FFE du club", "Cotisation GHN", "Médiateur de la consommation"] },
+      { k: "categorie", lab: "Catégorie", choix: ["Assurance", "Cotisation", "Abonnement", "Loyer", "Autre"] },
+      { k: "organisme", lab: "Organisme", ex: "ex. assureur, fédération" },
+      { k: "montant", lab: "Montant de chaque règlement (€)", type: "number" },
+      { k: "frequence", lab: "Fréquence", choix: ["Mensuel", "Trimestriel", "Semestriel", "Annuel", "Une fois"] },
+      { k: "prochain_reglement", lab: "Prochain règlement", type: "date" },
+      { k: "fin_contrat", lab: "Fin du contrat (facultatif)", type: "date", aide: "Pour penser à le renouveler ou à le résilier à temps." },
+      { k: "notes", lab: "Note (facultatif)", ex: "ex. n° de contrat, prélèvement automatique" }],
+    tuiles: [["tous", "Tous"], ["Assurance", "Assurances"], ["30", "À régler"], ["fin", "Fin proche"]],
+    filtre: function (f, x, auj) { if (f === "tous") return true; if (f === "30") return !!x.prochain_reglement && ecartJours(String(x.prochain_reglement).slice(0, 10), auj) <= 30; if (f === "fin") return !!x.fin_contrat && ecartJours(String(x.fin_contrat).slice(0, 10), auj) <= 90; return x.categorie === f; },
+    carte: function (x, auj) {
+      var j = x.prochain_reglement ? ecartJours(String(x.prochain_reglement).slice(0, 10), auj) : null;
+      return { titre: x.nom, sous: [x.organisme, x.frequence].filter(Boolean).join(" · ") || "À compléter", pill: x.montant != null ? euros(nombre(x.montant)) : (x.categorie || "Contrat"),
+        etat: j == null ? "Date à noter" : j < 0 ? "En retard de " + (-j) + (j === -1 ? " jour" : " jours") : j === 0 ? "Aujourd'hui" : "Dans " + j + (j === 1 ? " jour" : " jours"), alerte: j != null && j <= 7 };
+    },
+    action: { lab: "C'est réglé", si: function (x) { return !!x.prochain_reglement && x.frequence && x.frequence !== "Une fois"; },
+      maj: function (x) { return { prochain_reglement: plusMois(x.prochain_reglement, FREQ_MOIS[x.frequence] || 12) }; }, ok: "Prochain règlement : {x}" },
+    defauts: function () { return { categorie: "Assurance", frequence: "Annuel", prochain_reglement: isoAuj() }; }
+  };
+  var CFG_STOCK = {
+    table: "ecurie_stock", ordre: "nom", titre: "Le stock", sous: "Foin, paille, aliments : commander avant de manquer.", photo: "stock",
+    nouveau: "Nouveau produit", ajouter: "Ajouter un produit",
+    vide: "Aucun produit noté. Touche + pour ajouter le foin, la paille, les aliments…",
+    aide: "Mets à jour ce qu'il reste quand tu fais le tour de la grange. Sous le seuil, le produit passe « À recommander » et apparaît dans « Les échéances ».",
+    champs: [
+      { k: "nom", lab: "Produit", ex: "ex. Foin, Granulés", sugg: ["Foin", "Paille", "Copeaux", "Granulés", "Floconnés", "Orge", "Pierres à sel", "Vermifuges"] },
+      { k: "categorie", lab: "Catégorie", choix: ["Fourrage", "Litière", "Aliment", "Soins", "Autre"] },
+      { k: "quantite", lab: "Il reste", type: "number" },
+      { k: "unite", lab: "Unité", choix: ["bottes", "balles", "sacs", "kg", "seaux"] },
+      { k: "seuil", lab: "Recommander en dessous de", type: "number" },
+      { k: "fournisseur", lab: "Fournisseur (facultatif)", ex: "Nom, téléphone" },
+      { k: "derniere_commande", lab: "Dernière commande", type: "date" },
+      { k: "notes", lab: "Note (facultatif)" }],
+    tuiles: [["tous", "Tout"], ["bas", "À acheter"], ["Fourrage", "Fourrage"], ["Aliment", "Aliments"]],
+    filtre: function (f, x) { return f === "tous" ? true : f === "bas" ? aCommander(x) : x.categorie === f; },
+    carte: function (x) {
+      var q = nombre(x.quantite);
+      return { titre: x.nom, sous: x.fournisseur || x.categorie || "", pill: q != null ? (String(q).replace(".", ",") + " " + (x.unite || "")).trim() : "Quantité à noter",
+        etat: aCommander(x) ? "À recommander" : (x.derniere_commande ? "Commandé le " + dateCourte(x.derniere_commande) : ""), alerte: aCommander(x) };
+    },
+    action: { lab: "Commandé aujourd'hui", si: function (x) { return aCommander(x); }, maj: function () { return { derniere_commande: isoAuj() }; }, ok: "Commande notée." },
+    defauts: function () { return { categorie: "Fourrage", unite: "bottes" }; }
+  };
+  function EcranListe(cfg) {
+    return function () {
+      var h = hT; useLangue();
+      var app = (typeof useApp === "function") ? useApp() : {};
+      var setEcran = app.setEcran || function () { };
+      usePreparerEcran();
+      var c = useClub();
+      var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+      var _d = React.useState(null); var d = _d[0], setD = _d[1];
+      var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+      var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
+      var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+      var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+      var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+      var _s = React.useState(false); var confSuppr = _s[0], setConfSuppr = _s[1];
+      React.useEffect(function () {
+        var vif = true; setD(null);
+        (async function () {
+          var res = { lignes: [], absent: false, peutGerer: false, erreur: "" };
+          try {
+            if (!c.club || typeof supa === "undefined" || !supa) { if (vif) setD(res); return; }
+            var clef = clefDe(c.club);
+            try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
+            if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
+            if (res.peutGerer) {
+              var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: true }).limit(500);
+              if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
+              else res.lignes = (rp && rp.data) || [];
+            }
+          } catch (e) { res.erreur = String((e && e.message) || e); }
+          if (vif) setD(res);
+        })();
+        return function () { vif = false; };
+      }, [c.club, recharge]);
+      function ouvrirLigne(l) {
+        if (ouvert === (l ? l.id : "nouveau")) { setOuvert(null); return; }
+        setMsg(""); setConfSuppr(false);
+        var v = l ? {} : cfg.defauts();
+        cfg.champs.forEach(function (ch) { if (l) v[ch.k] = l[ch.k] == null ? "" : String(l[ch.k]); else if (v[ch.k] == null) v[ch.k] = ""; });
+        setVal(v); setOuvert(l ? l.id : "nouveau");
+      }
+      function maj(k, x) { setMsg(""); setVal(function (o) { var n = Object.assign({}, o); n[k] = x; return n; }); }
+      async function ecrire(l, ligne, ok) {
+        setEnvoi(true); setMsg("");
+        try {
+          ligne.maj_le = new Date().toISOString();
+          var r = l ? await supa.from(cfg.table).update(ligne).eq("id", l.id).select("*") : await supa.from(cfg.table).insert(Object.assign({ club_clef: clefDe(c.club) }, ligne)).select("*");
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
+          setOuvert(null); setMsg(ok || "✓ Enregistré"); setRecharge(function (n) { return n + 1; });
+        } catch (e) { setMsg("Pas enregistré : " + String((e && e.message) || e)); }
+        setEnvoi(false);
+      }
+      function enregistrer(l) {
+        if (!String(val.nom || "").trim()) { setMsg("Indique le nom."); return; }
+        var ligne = {};
+        cfg.champs.forEach(function (ch) { var x = String(val[ch.k] == null ? "" : val[ch.k]).trim(); ligne[ch.k] = ch.type === "number" ? nombre(x) : (x || null); });
+        ecrire(l, ligne);
+      }
+      async function supprimer(l) {
+        setEnvoi(true); setMsg("");
+        try {
+          var r = await supa.from(cfg.table).delete().eq("id", l.id).select("id");
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé (droits de l'écurie à vérifier).");
+          setOuvert(null); setMsg("Supprimé."); setRecharge(function (n) { return n + 1; });
+        } catch (e) { setMsg("Pas supprimé : " + String((e && e.message) || e)); }
+        setEnvoi(false);
+      }
+      function formulaire(l) {
+        var on = { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" };
+        return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+          l && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", m.prochain_reglement ? dateCourte(m.prochain_reglement) : "")); } }, cfg.action.lab) : null,
+          cfg.champs.map(function (ch) {
+            var id = "hgl-" + cfg.table + "-" + ch.k;
+            var lab = h("label", { key: ch.k + "l", htmlFor: ch.choix ? undefined : id }, ch.lab);
+            if (ch.choix) return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.choix.map(function (x) { var o = x === val[ch.k]; return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, o ? "" : x); }, style: o ? on : null }, x); })));
+            return h("div", { key: ch.k }, lab,
+              h("input", { id: id, type: ch.type || "text", inputMode: ch.type === "number" ? "decimal" : undefined, value: val[ch.k] == null ? "" : val[ch.k], placeholder: ch.ex || "", maxLength: 120, onChange: function (e) { maj(ch.k, e.target.value); } }),
+              ch.sugg && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, ch.sugg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); } }, x); })) : null,
+              ch.aide ? h("div", { className: "hg-aide" }, ch.aide) : null);
+          }),
+          h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
+          l ? (confSuppr
+            ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+                h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setConfSuppr(false); } }, "Garder"),
+                h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, background: "transparent", color: "#C9A66B" }, disabled: envoi, onClick: function () { supprimer(l); } }, "Supprimer vraiment"))
+            : h("button", { type: "button", onClick: function () { setConfSuppr(true); }, style: { display: "block", margin: "12px auto 0", background: "none", border: "none", color: "rgba(243,238,228,.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, textDecoration: "underline" } }, "Supprimer")) : null,
+          msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
+      }
+      var corps;
+      if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+      else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
+      else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie.");
+      else if (d.absent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
+      else {
+        var auj = isoAuj(), L = d.lignes || [];
+        var vis = L.filter(function (x) { return cfg.filtre(f, x, auj); });
+        corps = h("div", null,
+          ligneEcurie(h, c, [{ svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
+          tuiles(h, cfg.tuiles.map(function (t) { var n = L.filter(function (x) { return cfg.filtre(t[0], x, auj); }).length; return { k: t[0], b: t[1], s: String(n), n: t[0] === "tous" ? 1 : n }; }), f, setF),
+          ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, cfg.nouveau), formulaire(null)) : null,
+          msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+          d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
+          vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (x) {
+            var k = cfg.carte(x, auj);
+            return h("div", { key: x.id },
+              carte(h, { cle: x.id, photo: PHOTOS[cfg.photo], titre: k.titre, sous: k.sous, pill: k.pill, etat: k.etat, alerte: k.alerte, onClick: function () { ouvrirLigne(x); } }),
+              ouvert === x.id ? formulaire(x) : null);
+          })) : h("div", { className: "hg-vide" }, L.length ? "Rien pour ce choix." : cfg.vide),
+          h("div", { className: "hg-sous" }, cfg.aide));
+      }
+      return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+        hero(h, { photo: PHOTOS[cfg.photo], titre: cfg.titre, sous: cfg.sous, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
+        h("div", { className: "hv2-in" }, corps));
+    };
+  }
+  var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK);
+
+  window.HypeGestion = { Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
