@@ -13,7 +13,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
 
 ## 2 — Important
-- [07/11] Personnalisation (Premium), à tester sur iPhone : (1) page Cavalier : bouton « Personnaliser » → déplacer / masquer des blocs, couleur, fond (dont Ivoire), en-tête ; (2) fiche d'un de TES chevaux : « Personnaliser la fiche » → masquer des blocs, fond, en-tête (téléphone) ; aussi sur tablette / ordinateur (build 20261107-2005). Avec un compte SANS Premium : le bouton doit mener à la page Premium ; après la fin d'un abonnement : « Retrouver mon design ». Reste à décider : déplacer les blocs de la fiche cheval (possible tout de suite sur tablette / ordinateur, mais le téléphone garderait l'ordre d'origine tant que la nouvelle fiche téléphone n'est pas faite) (attend : Blandine)
+- [07/11] Personnalisation (Premium), à tester sur iPhone : (1) page Cavalier : bouton « Personnaliser » → déplacer / masquer des blocs, couleur, fond (dont Ivoire), en-tête ; (2) fiche d'un de TES chevaux : « Personnaliser la fiche » → masquer des blocs, fond, en-tête (téléphone) ; aussi sur tablette / ordinateur (build 20261107-2005). Avec un compte SANS Premium : le bouton doit mener à la page Premium ; après la fin d'un abonnement : « Retrouver mon design ». Sur tablette / ordinateur : « Blocs » › « Ordre des blocs » (flèches) pour changer l'ordre (build 20261107-2035) ; sur téléphone l'ordre reste celui d'origine jusqu'à la nouvelle fiche téléphone (attend : Blandine)
 - [07/11] Santé du cheval : Vermifuge, Ferrure, Dentiste… et « Tout voir » s'ouvrent maintenant en PAGE PLEIN ÉCRAN, même style que la page Vaccins (photo en haut, retour, drapeau, état « À jour / Prochain le… », Ajouter / Document, historique par année, 12 lignes puis « Voir les N plus anciens ») (build 20261107-1930) — NON PUBLIÉ, à grouper avec la prochaine publication validée par Blandine. À tester sur iPhone (attend : Blandine)
 - [07/11] Google Search Console, à vérifier 1 minute par site : menu ☰ › « Sitemaps » — sitemap.xml doit apparaître avec le statut « Réussite », pour 2hype.fr ET pour horselingo.fr ; s'il n'y est pas, taper sitemap.xml dans la case et « Envoyer ». (Bing : fait pour les deux le 07/11, rien à refaire.) (attend : Blandine)
 - [07/11] Référencement à faire quand ce sera ouvert à tous : pages Google (14 langues) de Mon écurie (registre d'élevage complet, registre du personnel, obligations, planning…) et des prépas AE · BP · DE ; page santé passée en « registre d'élevage complet » (attend : ouverture par Blandine, puis Claude)
@@ -799,6 +799,17 @@ haut niveau. Réponses détaillées a → m données à Blandine le 07/11 vers 0
 FICHIER POUR L'AUDIT : texte intégral des 39 cours (chapitres, encadrés,
 lexique, quiz avec bonne réponse et explication) envoyé à Blandine, à joindre
 au prompt d'audit (ChatGPT).
+
+════════════════════════════════════════════════════════════
+
+↕️ 07/11/2026 (20 h 35) — FICHE CHEVAL : ORDRE DES BLOCS (TABLETTE / ORDINATEUR)
+Blandine : « Ok continue » (après la proposition : déplacer les blocs tout de suite sur tablette / ordinateur, le téléphone gardant l'ordre d'origine).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 11 : mode personnalisation › Blocs › nouvelle partie « Ordre des blocs » (tablette / ordinateur seulement) : 6 blocs (Raccourcis, Identité & origines, IPO, Résultats, Vidéos et souvenirs, Partager sa fiche) avec flèches monter / descendre ; enregistré avec le reste du design (réglage « ordre ») |
+| index.html | racine | ?v cheval 10 → 11, build 20261107-2035 (rien d'autre) |
+· Sur téléphone : rien ne change, l'ordre d'origine reste (la phrase l'explique dans la feuille). Traduit 14 langues.
+· Testé sur copie (tablette 1180 px : « Partager sa fiche » remonté avant les vidéos ; téléphone inchangé).
 
 ════════════════════════════════════════════════════════════
 
