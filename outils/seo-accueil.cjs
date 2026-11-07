@@ -44,7 +44,7 @@ const TEXTE =
   `<p>Pose toutes tes questions d'équitation à Hey Baby. Il se souvient de toi et de ton cheval, et ses conseils suivent vos progrès au fil du temps. Il analyse les photos de ton cheval et de ta position, et te répond dans ta langue.</p>` +
 
   `<h2 ${H2}>Apprendre l'équitation, en 14 langues</h2>` +
-  `<p>Toute la théorie des Galops 1 à 7, illustrée de schémas et d'affiches, avec des quiz pour t'entraîner. Elle est disponible en français, anglais, espagnol, italien, allemand, japonais, arabe, chinois, néerlandais et português do Brasil : apprends l'équitation dans ta langue, ou le vocabulaire équestre dans une autre.</p>` +
+  `<p>Toute la théorie des Galops 1 à 9, illustrée de schémas et d'affiches, avec des quiz pour t'entraîner. Elle est disponible en français, anglais, espagnol, italien, allemand, japonais, arabe, chinois, néerlandais et português do Brasil : apprends l'équitation dans ta langue, ou le vocabulaire équestre dans une autre.</p>` +
 
   `<h2 ${H2}>Toute la vie de ton cheval</h2><ul style="padding-left:18px;margin:0">` +
   `<li>Photos et albums, partagés avec les autres cavaliers de ton cheval</li>` +
