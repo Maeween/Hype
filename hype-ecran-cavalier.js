@@ -113,7 +113,7 @@ function EcranMonCavalier() {
   var PERSO_ZONES = ["ecuries", "recit", "chevaux", "amis", "res"];
   var PERSO_NOMS = { ecuries: "Mon écurie", recit: "Mon récit", chevaux: "Mes chevaux", amis: "Mes amis", res: "Mes résultats" };
   var PERSO_COULEURS = [["champagne", "Champagne", [197, 170, 120]], ["platine", "Platine", [201, 205, 210]], ["rubis", "Rubis", [176, 80, 92]], ["emeraude", "Émeraude", [95, 165, 133]], ["lavande", "Lavande", [165, 149, 208]], ["rose", "Rose poudré", [215, 163, 160]]];
-  var PERSO_FONDS = [["nuit", "Nuit", null], ["ebene", "Ébène", "#0F0B07"], ["encre", "Encre", "#060A16"], ["foret", "Forêt", "#050F0B"], ["degrade", "Dégradé", "linear-gradient(180deg,#05080B 0%,#0C1418 45%,#14100A 100%)"], ["photo", "Photo floutée", "PHOTO"]];
+  var PERSO_FONDS = [["nuit", "Nuit", null], ["ebene", "Ébène", "#0F0B07"], ["encre", "Encre", "#060A16"], ["foret", "Forêt", "#050F0B"], ["degrade", "Dégradé", "linear-gradient(180deg,#05080B 0%,#0C1418 45%,#14100A 100%)"], ["photo", "Photo floutée", "PHOTO"], ["ivoire", "Ivoire (essai)", "#F4EFE6"]];
   var _pz = React.useState(null), perso = _pz[0], setPerso = _pz[1];
   var _pzm = React.useState(false), modePerso = _pzm[0], setModePerso = _pzm[1];
   var _pzf = React.useState(null), feuillePerso = _pzf[0], setFeuillePerso = _pzf[1];
@@ -172,7 +172,7 @@ function EcranMonCavalier() {
         h("div", { style: cacheZ ? { opacity: 0.32, filter: "grayscale(0.6)", pointerEvents: "none" } : { pointerEvents: "none" } }, el),
         cacheZ ? h("div", { style: { position: "absolute", left: "50%", top: "55%", transform: "translate(-50%,-50%)", padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.35)", background: "rgba(5,8,11,0.85)", whiteSpace: "nowrap", fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: "#F3EEE4", zIndex: 45 } }, "Masqué pour les visiteurs") : null);
     } else if (cacheZ) inner = null;
-    return h(React.Fragment, { key: "pz-" + zone }, inner);
+    return h(React.Fragment, { key: "pz-" + zone }, h(React.Fragment, { key: modePerso ? "m" : "n" }, inner));   /* cle differente : le bloc est recree en entrant / sortant du mode (aucun reste du cadre) */
   }
   function pzRang(el) { var o = pzOrdre(pzActif); var k = el && el.key ? String(el.key) : ""; return k.indexOf("pz-") === 0 ? o.indexOf(k.slice(3)) : -1; }
   function pzRanger(kids) {
@@ -209,13 +209,48 @@ function EcranMonCavalier() {
     var mo = new MutationObserver(plan); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "stroke", "fill"] });
     return function () { mo.disconnect(); if (raf) cancelAnimationFrame(raf); try { passe(retour, null); } catch (eR) { } };
   }, [pzActif.couleur]);
+  /* FOND IVOIRE (essai) : la page passe en clair. Textes clairs -> brun fonce, fonds sombres -> ivoire, accent assombri pour
+     rester lisible. Le haut (photo) reste sombre. Chaque element modifie garde son style d origine (data-pz-orig) pour revenir en arriere. */
+  React.useEffect(function () {
+    var el = racinePersoRef.current; if (!el || pzFond()[0] !== "ivoire") return;
+    var cP = null; for (var i = 0; i < PERSO_COULEURS.length; i++) if (PERSO_COULEURS[i][0] === (pzActif.couleur || "champagne")) cP = PERSO_COULEURS[i];
+    var P = cP ? cP[2] : [197, 170, 120];
+    var ACC = P.map(function (v) { return Math.round(v * 0.72); }).join(",");
+    var TXT = "42,35,27";
+    function parse(sv) { var m = (sv || "").match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1 : +m[4]] : null; }
+    function lum(c) { return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; }
+    function estAcc(c) { var ch = c[0] > 150 && c[0] < 215 && c[1] > 120 && c[1] < 185 && c[2] > 70 && c[2] < 135 && c[0] - c[2] > 45; var pal = Math.abs(c[0] - P[0]) + Math.abs(c[1] - P[1]) + Math.abs(c[2] - P[2]) < 40 || Math.abs(c[0] - P[0] * 0.85) + Math.abs(c[1] - P[1] * 0.85) + Math.abs(c[2] - P[2] * 0.85) < 30; return ch || pal; }
+    function grad(sv) { return sv.replace(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/g, function (m, a, c, d, al) { var v = [+a, +c, +d]; al = al === undefined ? 1 : +al; if (estAcc(v)) return "rgba(" + ACC + "," + al + ")"; if (lum(v) < 0.25) return "rgba(244,239,230," + al + ")"; if (lum(v) > 0.75) return "rgba(" + TXT + "," + al + ")"; return m; }); }
+    var occupe = false;
+    function traiter(n) {
+      if (n.nodeType !== 1 || n.closest("[data-pz-hero],[data-pz-ui]")) return;
+      if (n.hasAttribute("data-pz-iv")) return;
+      var cs = getComputedStyle(n), st = {};
+      var c = parse(cs.color); if (c) { if (estAcc(c)) st.color = "rgba(" + ACC + "," + c[3] + ")"; else if (lum(c) > 0.6) st.color = "rgba(" + TXT + "," + Math.max(c[3], 0.78) + ")"; }
+      var bg = parse(cs.backgroundColor); if (bg && bg[3] > 0.05) { if (estAcc(bg)) st["background-color"] = "rgba(" + ACC + "," + bg[3] + ")"; else if (lum(bg) < 0.25) st["background-color"] = bg[3] > 0.5 ? "rgba(255,252,246,0.94)" : ("rgba(255,252,246," + bg[3] + ")"); }
+      var bgi = cs.backgroundImage; var photo = /url\(/.test(bgi) || !!n.querySelector("img");
+      if (bgi && bgi !== "none" && /gradient/.test(bgi) && !photo) st["background-image"] = grad(bgi);
+      ["top", "right", "bottom", "left"].forEach(function (cote) { var b = parse(cs["border" + cote.charAt(0).toUpperCase() + cote.slice(1) + "Color"]); if (!b || b[3] === 0) return; if (estAcc(b)) st["border-" + cote + "-color"] = "rgba(" + ACC + "," + Math.max(b[3], 0.5) + ")"; else if (lum(b) > 0.5) st["border-" + cote + "-color"] = "rgba(" + TXT + "," + Math.min(0.25, b[3] + 0.08) + ")"; });
+      if (n.tagName === "path" || n.tagName === "svg" || n.tagName === "circle") { var k = parse(cs.stroke); if (k && (estAcc(k) || lum(k) > 0.6)) st.stroke = "rgb(" + (estAcc(k) ? ACC : TXT) + ")"; }
+      var cles = Object.keys(st); if (!cles.length) { n.setAttribute("data-pz-iv", ""); return; }
+      if (!n.hasAttribute("data-pz-orig")) n.setAttribute("data-pz-orig", n.getAttribute("style") || ""); n.setAttribute("data-pz-iv", "1");
+      cles.forEach(function (kk) { n.style.setProperty(kk, st[kk], "important"); });
+    }
+    function passe() { occupe = true; try { [].slice.call(el.querySelectorAll("*")).forEach(traiter); } finally { occupe = false; } mo.takeRecords(); }
+    var raf = 0; var mo = new MutationObserver(function (recs) { if (occupe) return; recs.forEach(function (r) { if (r.type === "attributes" && r.target.removeAttribute) r.target.removeAttribute("data-pz-iv"); }); if (raf) return; raf = requestAnimationFrame(function () { raf = 0; passe(); }); });
+    passe(); mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ["style", "class"] });
+    return function () {
+      mo.disconnect(); if (raf) cancelAnimationFrame(raf);
+      [].slice.call(el.querySelectorAll("[data-pz-iv]")).forEach(function (n) { if (n.hasAttribute("data-pz-orig")) { var o = n.getAttribute("data-pz-orig"); if (o) n.setAttribute("style", o); else n.removeAttribute("style"); n.removeAttribute("data-pz-orig"); } n.removeAttribute("data-pz-iv"); });
+    };
+  }, [pzActif.fond, pzActif.couleur, modePerso]);
   /* barre du mode personnalisation + feuilles Couleur / Fond */
   function pzInterface() {
     var puce = { padding: "7px 12px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.7)", background: "transparent", color: "#C5AA78", fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" };
     var out = [];
-    if (erreurPerso) out.push(h("div", { key: "pzErr", style: { position: "fixed", left: 16, right: 16, bottom: 24, zIndex: 9300, padding: "12px 16px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.25)", background: "#0C1418", color: "#F3EEE4", fontFamily: M, fontSize: 13, textAlign: "center" } }, erreurPerso));
+    if (erreurPerso) out.push(h("div", { key: "pzErr", "data-pz-ui": "1", style: { position: "fixed", left: 16, right: 16, bottom: 24, zIndex: 9300, padding: "12px 16px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.25)", background: "#0C1418", color: "#F3EEE4", fontFamily: M, fontSize: 13, textAlign: "center" } }, erreurPerso));
     if (!modePerso) return out;
-    out.push(h("div", { key: "pzBarre", style: { position: "fixed", left: 0, right: 0, top: 0, zIndex: 9000, padding: "calc(env(safe-area-inset-top) + 12px) 16px 12px", background: "#05080B", borderBottom: "1px solid rgba(197,170,120,0.3)" } },
+    out.push(h("div", { key: "pzBarre", "data-pz-ui": "1", style: { position: "fixed", left: 0, right: 0, top: 0, zIndex: 9000, padding: "calc(env(safe-area-inset-top) + 12px) 16px 12px", background: "#05080B", borderBottom: "1px solid rgba(197,170,120,0.3)" } },
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
         h("div", { style: { minWidth: 0 } },
           h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 21, color: "#F3EEE4", lineHeight: 1.1 } }, "Mode personnalisation"),
@@ -233,8 +268,8 @@ function EcranMonCavalier() {
       var estC = feuillePerso === "couleur", estE = feuillePerso === "entete";
       var liste = estC ? PERSO_COULEURS : (estE ? PERSO_ENTETES : PERSO_FONDS);
       var actuel = estC ? (pzActif.couleur || "champagne") : (estE ? (pzActif.entete || "grand") : (pzActif.fond || "nuit"));
-      out.push(h("div", { key: "pzVoile", onClick: function () { setFeuillePerso(null); }, style: { position: "fixed", inset: 0, zIndex: 9100, background: "rgba(2,4,6,0.55)" } }));
-      out.push(h("div", { key: "pzFeuille", style: { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9101, maxHeight: "70vh", overflowY: "auto", background: "linear-gradient(180deg,#0E161A,#070B0E)", borderTop: "1px solid rgba(197,170,120,0.35)", borderRadius: "22px 22px 0 0", padding: "10px 18px calc(env(safe-area-inset-bottom) + 22px)", boxSizing: "border-box", color: "#F3EEE4", fontFamily: M } },
+      out.push(h("div", { key: "pzVoile", "data-pz-ui": "1", onClick: function () { setFeuillePerso(null); }, style: { position: "fixed", inset: 0, zIndex: 9100, background: "rgba(2,4,6,0.55)" } }));
+      out.push(h("div", { key: "pzFeuille", "data-pz-ui": "1", style: { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9101, maxHeight: "70vh", overflowY: "auto", background: "linear-gradient(180deg,#0E161A,#070B0E)", borderTop: "1px solid rgba(197,170,120,0.35)", borderRadius: "22px 22px 0 0", padding: "10px 18px calc(env(safe-area-inset-bottom) + 22px)", boxSizing: "border-box", color: "#F3EEE4", fontFamily: M } },
         h("div", { style: { width: 42, height: 4, borderRadius: 4, background: "rgba(243,238,228,0.25)", margin: "0 auto 14px" } }),
         h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 26 } }, estC ? "Ma couleur" : (estE ? "Mon en-tête" : "Mon fond de page")),
         h("div", { style: { fontSize: 12, color: "#BDB6AA", marginTop: 2, marginBottom: 16 } }, estC ? "Elle remplace le champagne sur toute ta page." : (estE ? "La façon dont ta photo s'affiche en haut de ta page." : "Toujours sombre, pour que tes photos ressortent.")),
@@ -824,7 +859,7 @@ function EcranMonCavalier() {
       entreesV2.push({ cle: "zik", txt: T("Ma musique", "My music", "Mi música", "La mia musica", "音楽", "Meine Musik", "موسيقاي", "我的音乐", "Mijn muziek", "Minha música", "Min musik", "Моя музыка", "Moja muzyka", "내 음악"), act: function () { setDemandeMusique(function (n) { return n + 1; }); } });
     }
     var rondV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 26 /* 15/10 (1137) a droite dans toutes les langues, comme le partage et le drapeau ; en arabe il passait sous la fleche retour */, zIndex: 6, width: 36, height: 36, borderRadius: "50%", background: CAV_ICONE, border: "1px solid rgba(197,170,120,0.36)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", padding: 0 };
-    return h("div", { key: "cavV2Hero", style: { position: "relative", zIndex: 1, height: "calc(env(safe-area-inset-top) + " + hV2 + "px)", overflow: "visible" } },
+    return h("div", { key: "cavV2Hero", "data-pz-hero": "1", style: { background: (pzFond()[0] === "ivoire") ? "linear-gradient(180deg,#05080B 0%,#05080B 80%,#F4EFE6 100%)" : undefined, position: "relative", zIndex: 1, height: "calc(env(safe-area-inset-top) + " + hV2 + "px)", overflow: "visible" } },
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden" } },
         estLogo
           ? h("div", { style: Object.assign({}, photoV2, { backgroundImage: "url(" + heroImg + ")", backgroundSize: "auto 86%", backgroundRepeat: "no-repeat", backgroundPosition: "center 30%", opacity: 0.9 }) })

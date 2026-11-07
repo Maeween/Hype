@@ -738,6 +738,21 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🎨 07/11/2026 (06 h 40) — PERSONNALISATION : FOND « IVOIRE (ESSAI) »
+Blandine : « Ok continue ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 7 |
+| index.html | racine | ?v cavalier 6 → 7, build 20261107-0640 (rien d'autre) |
+· 7e fond « Ivoire (essai) » : page en clair (textes brun foncé, cartes crème, accent assombri pour rester
+  lisible), photo du haut gardée sombre puis fondue dans l'ivoire. Retour au fond sombre testé : tout revient.
+· Limite connue : les cartes avec photo (Mon écurie, Mon récit, Mes résultats, image du bas) gardent des
+  fondus pensés pour le noir → voiles gris ; à retoucher bloc par bloc si Blandine garde l'Ivoire.
+· Correctif : en sortant du mode personnalisation, les blocs sont recréés (aucun reste de cadre pointillé).
+· Toujours en test sur le compte modératrice seulement ; textes en français seulement.
+
+════════════════════════════════════════════════════════════
+
 🎨 07/11/2026 (06 h 00) — PERSONNALISATION : GLISSER AU DOIGT + STYLE D'EN-TÊTE
 Blandine : « Ok continue fais tout ce que tu peux tu as carte blanche ».
 | Fichier | Où | Quoi |
