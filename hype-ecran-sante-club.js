@@ -93,13 +93,12 @@ function NoterPlusieurs(props) {
   var tousCoches = chevaux.length && ids.length === chevaux.length;
   var mCour = METIERS.filter(function (m) { return m.k === metier; })[0];
   var feuille = h("div", { className: "nf", role: "dialog", "aria-modal": "true" },
-    h("div", { className: "nf-tete" },
-      h("img", { src: "images/galop7-tmp-19-ecurie-couchant.webp", alt: "", decoding: "async" }),
-      h("h2", null, T("Noter un soin", "Record a care", "Registrar un cuidado", "Registra una cura", "ケアを記録", "Pflege eintragen", "تسجيل عناية", "记录护理", "Verzorging noteren", "Registrar um cuidado", "Registrera vård", "Записать уход", "Zapisz zabieg", "관리 기록")),
-      h("svg", { className: "nf-courbe", viewBox: "0 0 400 50", preserveAspectRatio: "none", "aria-hidden": "true" },
-        h("defs", null, h("linearGradient", { id: "nfg", x1: "0", x2: "1", y1: "0", y2: "0" },
-          h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: ".25" }), h("stop", { offset: ".5", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".2" }))),
-        h("path", { d: "M0 46 C 140 44, 260 26, 400 2", fill: "none", stroke: "url(#nfg)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" })),
+    /* 08/11 : haut de page EXACTEMENT comme la Vidéothèque (photo fondue, courbe dorée au-dessus et en dessous, titre à droite + phrase), demandé par Blandine */
+    h("div", { className: "sc-hero nf-hero" },
+      h("svg", { className: "sc-courbe c1", viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" }, h("defs", null, h("linearGradient", { id: "nfc1", x1: "0", x2: "1", y1: "0", y2: "0" }, h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))), h("path", { d: "M250 4 C 330 8, 385 40, 400 96", fill: "none", stroke: "url(#nfc1)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" })),
+      h("div", { className: "sc-photo" }, h("img", { src: "images/galop7-tmp-19-ecurie-couchant.webp", alt: "", decoding: "async", style: { objectPosition: "58% 50%" } })),
+      h("svg", { className: "sc-courbe c2", viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" }, h("defs", null, h("linearGradient", { id: "nfc2", x1: "0", x2: "1", y1: "0", y2: "0" }, h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))), h("path", { d: "M0 92 C 130 90, 240 62, 400 8 L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }), h("path", { d: "M0 92 C 130 90, 240 62, 400 8", fill: "none", stroke: "url(#nfc2)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" })),
+      h("div", { className: "sc-in" }, h("div", { className: "sc-titre" }, h("h1", null, T("Noter un soin", "Record a care", "Registrar un cuidado", "Registra una cura", "ケアを記録", "Pflege eintragen", "تسجيل عناية", "记录护理", "Verzorging noteren", "Registrar um cuidado", "Registrera vård", "Записать уход", "Zapisz zabieg", "관리 기록")), h("p", null, T("Un soin, une date, tous les chevaux concernés.", "One care, one date, all the horses concerned.", "Un cuidado, una fecha, todos los caballos.", "Una cura, una data, tutti i cavalli interessati.", "ひとつのケア、ひとつの日付、対象の馬すべてに。", "Eine Pflege, ein Datum, alle betroffenen Pferde.", "عناية واحدة، تاريخ واحد، كل الخيول المعنية.", "一项护理，一个日期，所有相关马匹。", "Eén verzorging, één datum, alle betrokken paarden.", "Um cuidado, uma data, todos os cavalos.", "En vård, ett datum, alla berörda hästar.", "Один уход, одна дата, все нужные лошади.", "Jeden zabieg, jedna data, wszystkie konie.", "하나의 관리, 하나의 날짜, 해당 말 모두.")))),
       h("button", { type: "button", className: "nf-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, svg("M6 6l12 12M18 6L6 18"))),
     h("div", { className: "nf-in" },
       h("div", { className: "nf-metiers" }, METIERS.map(function (m) {
@@ -262,14 +261,10 @@ function EcranSanteClub() {
       ".sc-vide{padding:34px 8px;text-align:center;font-size:13px;line-height:1.6;color:rgba(243,238,228,.8)}",
       ".sc-note{font-size:10.5px;line-height:1.5;color:rgba(243,238,228,.42);margin-top:28px}",
       ".nf{position:fixed;inset:0;z-index:10000;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;overflow-y:auto;-webkit-overflow-scrolling:touch}",
-      ".nf-tete{position:relative;height:calc(env(safe-area-inset-top) + 170px);overflow:hidden}",
-      ".nf-tete img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;filter:saturate(.9) brightness(.85) sepia(.06)}",
-      ".nf-tete:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.3) 0%,rgba(7,10,8,.15) 40%,#070A08 100%)}",
-      ".nf-tete h2{position:absolute;z-index:2;bottom:8px;inset-inline-end:22px;margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(38px,11vw,50px);line-height:1}",
-      ".nf-courbe{position:absolute;z-index:3;left:0;right:0;bottom:-4px;width:100%;height:50px}",
       ".nf-x{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:16px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,238,228,.3);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}",
       ".nf-x svg{width:18px;height:18px;stroke:#F3EEE4;fill:none;stroke-width:1.6;stroke-linecap:round}",
-      ".nf-in{max-width:680px;margin:0 auto;padding:18px 20px 150px}",
+      ".nf-in{max-width:680px;margin:0 auto;padding:44px 20px 150px}",
+      ".nf-hero .sc-titre h1{font-size:clamp(40px,11vw,58px)}",
       ".nf-metiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}",
       ".nf-me{position:relative;height:96px;border-radius:16px;overflow:hidden;border:1px solid rgba(243,238,228,.08);background:#0D1518;padding:0;cursor:pointer;color:#F3EEE4;text-align:start;font-family:inherit;transition:border-color .2s,box-shadow .2s}",
       ".nf-me img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.9)}",
@@ -308,7 +303,7 @@ function EcranSanteClub() {
       ".nf-go{width:100%;min-height:52px;border-radius:999px;border:1px solid #C9A66B;background:rgba(201,166,107,.07);color:#E9D9B8;font-family:inherit;font-size:14.5px;letter-spacing:.04em;cursor:pointer}",
       ".nf-go:disabled{opacity:.4;cursor:default}",
       ".nf-me:focus-visible,.nf-puce:focus-visible,.nf-c:focus-visible,.nf-go:focus-visible,.nf-x:focus-visible,.nf-tout:focus-visible{outline:2px solid #C9A66B;outline-offset:2px}",
-      "@media (min-width:700px){.nf-metiers{grid-template-columns:repeat(4,1fr)}.nf-me{height:120px}.nf-tete{height:calc(env(safe-area-inset-top) + 220px)}}",
+      "@media (min-width:700px){.nf-metiers{grid-template-columns:repeat(4,1fr)}.nf-me{height:120px}.nf-in{padding-top:56px}}",
       "@media (prefers-reduced-motion:reduce){.nf-me,.nf-v{transition:none}}",
       "@media (prefers-reduced-motion:reduce){.sc-s-t .c{transition:none}}"
     ].join("\n");
