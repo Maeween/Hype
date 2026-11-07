@@ -755,8 +755,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   mois ; échéances à encaisser dans « Les échéances ». Planning : tâche, qui
   (suggestions = personnel présent du registre), jours, moment ; vue
   « Aujourd'hui » par défaut, « C'est fait » du jour. 14 langues.
-  PUBLIÉ build 20261107-1600. À DÉCIDER : faire voir le planning aux
-  salariés eux-mêmes (aujourd'hui, seul le responsable le voit).
+  PUBLIÉ build 20261107-1600.
+· 07/11 17 h 59 (« Ok continue » à la proposition) → LE PLANNING VU PAR LE
+  PERSONNEL. SQL PASSÉ (sql-07-11-planning-personnel.sql, que des ajouts) :
+  colonne email dans registre_personnel ; fonctions hype_est_personnel_club
+  et hype_tache_faite ; règle de lecture taches_lire_personnel. Seules les
+  personnes présentes du « Personnel » dont le responsable a rempli l'e-mail
+  du compte Hype voient le planning de l'écurie et peuvent seulement cocher
+  « C'est fait » (ni ajout, ni modif, ni suppression ; tout le reste de Mon
+  écurie leur reste fermé). Testé en base : un compte inconnu ne voit rien.
+  14 langues. PUBLIÉ build 20261107-1840. À tester avec un vrai compte salarié.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
