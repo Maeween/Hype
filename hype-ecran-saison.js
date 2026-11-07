@@ -1123,6 +1123,22 @@ function EcranEngagements() {
   var _lf = React.useState(null); var lus = _lf[0], setLus = _lf[1];        /* fiche lue : [{nom, licence, …, compte, coche}] */
   var _lfe = React.useState(""); var lecture = _lfe[0], setLecture = _lfe[1]; /* "" | "en_cours" | message */
   var _vu = React.useState("couples"); var vue = _vu[0], setVue = _vu[1];   /* onglets : couples (cavalières + chevaux) / épreuves / grille */
+  /* 07/11 02h05 : l'ordre de passage lu chez le chronométreur (Winjump, fonction direct-concours) sert au récapitulatif tant que la
+     coach n'a pas saisi les heures dans Jour J : « engagement|cheval » → { ordre, h (heure estimée) }. Rien n'est enregistré. */
+  var _od = React.useState({}); var ordreLu = _od[0], setOrdreLu = _od[1];
+  React.useEffect(function () {
+    var vif = true;
+    if (!ev || !/^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String(ev.lien_direct || "")) || !lignes || !lignes.length) return;
+    if (lignes.every(function (l) { return (!l.cheval1_nom || l.passage1) && (!l.cheval2_nom || l.passage2); })) return;
+    try {
+      supa.functions.invoke("direct-concours", { body: { action: "lire", agenda_id: ev.id } }).then(function (r) {
+        var d = r && r.data; if (!vif || !d || !d.lignes) return;
+        var m = {}; d.lignes.forEach(function (x) { if (x && x.engagement && x.cheval) m[x.engagement + "|" + String(x.cheval).trim().toLowerCase()] = { ordre: x.ordre, h: x.heure_estimee || "" }; });
+        setOrdreLu(m);
+      }).catch(function () { });
+    } catch (eD) { }
+    return function () { vif = false; };
+  }, [ev && ev.lien_direct, lignes ? lignes.length : 0]);
   var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
   var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
@@ -1621,7 +1637,8 @@ function EcranEngagements() {
     lignes.forEach(function (l, i) { [1, 2].forEach(function (n) {
       var e = String(l["epreuve" + n] || "").trim(), c = String(l["cheval" + n + "_nom"] || "").trim(); if (!e && !c) return;
       var k = e || F("Épreuve à choisir"); if (!parEp[k]) { parEp[k] = []; ordreEp.push(k); }
-      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: String(l["passage" + n] || "").trim(), piste: String(l["piste" + n] || "").trim() });
+      var hS = String(l["passage" + n] || "").trim(), lu = (!hS && l.id && c) ? ordreLu[l.id + "|" + c.toLowerCase()] : null;
+      parEp[k].push({ i: i, n: n, nom: String(l.nom || "").trim() || "?", ch: c, h: hS || (lu && lu.h ? "~" + lu.h : ""), lu: !!lu, ordreLu: lu ? lu.ordre : 0, piste: String(l["piste" + n] || "").trim() });
     }); });
     ordreEp.sort(function (a, b) { return (eps.indexOf(a) === -1 ? 99 : eps.indexOf(a)) - (eps.indexOf(b) === -1 ? 99 : eps.indexOf(b)) || a.localeCompare(b, "fr"); });
     return h("div", { className: "rc" },
@@ -1670,11 +1687,11 @@ function EcranEngagements() {
       ordreEp.map(function (e) {
         var l0 = parEp[e], connus = l0.filter(function (x) { return x.h; }).length, sorti = connus === l0.length && l0.length > 0;
         var liste = l0.slice();
-        if (connus) liste.sort(function (a, b) { var ma = a.h ? hsMinutes(a.h) : 99999, mb = b.h ? hsMinutes(b.h) : 99999; return ma - mb; });
+        if (connus) liste.sort(function (a, b) { var ma = a.h ? hsMinutes(String(a.h).replace("~", "")) : 99999, mb = b.h ? hsMinutes(String(b.h).replace("~", "")) : 99999; return ma - mb; });
         var phB = (l0.filter(function (x) { return x.ch; })[0] || {}).ch;
         return h("div", { key: e, className: "rc-le" },
           h("div", { className: "rc-ban" }, phB ? h("img", { src: photoCh(phB), alt: "" }) : null, h("div", { className: "voile" }),
-            h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti")))))),
+            h("div", { className: "t" }, h("b", null, e), h("span", null, l0.length + (l0.length > 1 ? F(" tours · ") : F(" tour · ")) + (l0.some(function (x) { return x.lu; }) ? F("ordre du chronométreur · heures estimées") : (sorti ? F("ordre de passage") : (connus ? F("ordre de passage en partie connu") : F("ordre de passage pas encore sorti"))))))),
           liste.map(function (x, j) {
             var k = x.ch ? kTour(x.i, x.n) : 0, np = nomPrenom(x.nom);
             return h("div", { key: j, className: "rc-li" },

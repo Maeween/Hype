@@ -18617,3 +18617,7 @@ Demande de Blandine (05/11, brief « Refonte de l'espace médias de la page Comp
 - Blandine : « Passe sur la mienne et laisse bien quand même les albums etc de Maëlys ».
 - Gardée : « Elle m'a dit circee » (fiche de Blandine, a27df268…). Maylis l'avait déjà dans ses chevaux, et son album « Maylis et Elle m'a dit 🩷 » y était déjà rangé : rien changé à part l'ajout ci-dessous.
 - Fiche en double de Maylis (8b45fe0e…, « Elle m'a dit », vide : pas de résultat, d'album ni de lien) : sa photo AJOUTÉE à son album (11 photos), sa notification du 11/09 repointée vers la fiche gardée, puis la fiche EFFACÉE. Copie complète dans sauvegarde_chevaux_071126.
+
+## 07/11/2026 03h10 — PUBLICATION build 20261107-0310 (Blandine 02h04 « Ok continue » : suite du récapitulatif des Engagements, épreuves « avec l'ordre de passage une fois qu'il est sorti »)
+- Récapitulatif, partie Épreuves : quand le concours a son lien Winjump (trouvé par « Trouver le direct » dans Jour J) et que les heures ne sont pas encore saisies dans Jour J, la liste de départ se range toute seule dans l'ordre lu chez le chronométreur, avec l'heure estimée (« ~9h12 ») et la mention « ordre du chronométreur · heures estimées ». Les heures saisies par la coach dans Jour J restent prioritaires. Rien n'est enregistré en base (lecture seule, même fonction direct-concours que la fiche du concours, mise en cache 3 min).
+- Fichiers : hype-ecran-saison.js (v41), index.html (build 20261107-0310), SUIVI.md.
