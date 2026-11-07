@@ -166,6 +166,84 @@ function EcranSanteClub() {
   var stO = React.useState(""); var soinOuvert = stO[0], setSoinOuvert = stO[1]; /* ligne de soin ouverte */
   var stN = React.useState(false); var noterOuvert = stN[0], setNoterOuvert = stN[1]; /* « + Noter pour plusieurs chevaux » */
 
+  React.useEffect(function () {   /* 08/11 : styles « page Santé du cheval » */
+    if (typeof document === "undefined" || document.getElementById("hype-sx2-css")) return;
+    var st = document.createElement("style"); st.id = "hype-sx2-css";
+    st.textContent = [
+      ".sc{position:relative;background:#060709}",
+      ".sx-fond{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(6,7,9,.82) 0%,rgba(6,7,9,.45) 30%,rgba(6,7,9,.75) 65%,rgba(6,7,9,.96) 100%),linear-gradient(90deg,rgba(6,7,9,.85) 0%,rgba(6,7,9,.5) 50%,rgba(6,7,9,.3) 100%),url('images/galop7-tmp-19-ecurie-couchant.webp') center/cover no-repeat}",
+      "[dir=rtl] .sx-fond{transform:scaleX(-1)}",
+      ".sx-hero,.sc>.sc-in{position:relative;z-index:1}",
+      ".sx-hero{position:relative;max-width:1240px;margin:0 auto;height:calc(env(safe-area-inset-top) + 360px)}",
+      ".sx-hero .ph{position:absolute;top:calc(env(safe-area-inset-top) + 58px);bottom:0;inset-inline-end:0;width:100%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%,#000 60%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 15%,#000 60%,transparent 100%),linear-gradient(90deg,transparent 0,#000 30%);mask-composite:intersect}",
+      "[dir=rtl] .sx-hero .ph{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%,#000 60%,transparent 100%),linear-gradient(270deg,transparent 0,#000 30%);mask-image:linear-gradient(180deg,transparent 0,#000 15%,#000 60%,transparent 100%),linear-gradient(270deg,transparent 0,#000 30%)}",
+      ".sx-hero .ph img{width:100%;height:100%;object-fit:cover;object-position:70% 40%;display:block}",
+      ".sx-rond{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-start:18px;width:52px;height:52px;border-radius:50%;border:1px solid rgba(201,166,107,.7);background:rgba(6,7,9,.35);display:flex;align-items:center;justify-content:center;cursor:pointer}",
+      ".sx-rond svg{width:20px;height:20px;stroke:#C9A66B;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+      "[dir=rtl] .sx-rond svg{transform:scaleX(-1)}",
+      ".sx-hero .nom{position:absolute;z-index:2;inset-inline-start:20px;inset-inline-end:20px;bottom:18px}",
+      ".sx-hero .k{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#C9A66B;font-weight:600}",
+      ".sx-hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:44px;line-height:1;margin:8px 0 2px;color:#F3EEE4;text-shadow:0 2px 14px rgba(0,0,0,.6)}",
+      ".sx-hero .s{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#C9A66B}",
+      ".sx-phrase{text-align:end;font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:21px;color:#C9A66B;margin:26px 0 20px;text-shadow:0 0 18px rgba(201,166,107,.25)}",
+      ".sx-cases{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}",
+      ".sx-case{text-align:start;border:1px dashed rgba(201,166,107,.45);border-radius:14px;padding:11px 12px;background:rgba(6,7,9,.35);color:#F3EEE4;font-family:inherit;cursor:pointer}",
+      ".sx-case b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:17px}",
+      ".sx-case b i{font-style:normal;color:#C9A66B;margin-inline-end:6px}",
+      ".sx-case span{display:block;font-size:11px;color:rgba(243,238,228,.62);margin-top:3px;line-height:1.35}",
+      ".sx-tete{display:flex;align-items:center;gap:10px;margin:0 0 12px}",
+      ".sx-tete svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:#C9A66B;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+      ".sx-tete .t{flex:1;font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#F3EEE4}",
+      ".sx-tete .sc-voir{font-size:12.5px;color:rgba(243,238,228,.8)}",
+      ".sx-boite{border-radius:16px;border:1px solid rgba(201,166,107,.28);background:linear-gradient(165deg,rgba(17,27,31,.6) 0%,rgba(11,18,21,.5) 100%);overflow:hidden}",
+      ".sx-l{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}",
+      ".sx-l+.sx-l{border-top:1px solid rgba(255,255,255,.06)}",
+      ".sx-l .r{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.45);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:#0D1518}",
+      ".sx-l .r img{width:100%;height:100%;object-fit:cover;display:block}",
+      ".sx-l .n{flex:1;min-width:0}",
+      ".sx-l .n b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;line-height:1.2}",
+      ".sx-l .n span{display:block;font-size:12px;margin-top:2px}",
+      ".sx-l .c,.sx-ch .c{color:#C9A66B;font-size:18px}",
+      "[dir=rtl] .sx-l .c,[dir=rtl] .sx-ch .c{transform:scaleX(-1)}",
+      ".sx-ch{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:132px;padding:14px;border-radius:16px;border:1px solid rgba(201,166,107,.28);background:linear-gradient(165deg,#111B1F 0%,#0B1215 100%);color:#F3EEE4;font-family:inherit;text-align:start;cursor:pointer;min-width:0}",
+      ".sx-ch.vr{border-color:rgba(217,147,158,.55)}",
+      ".sx-ch.amb{border-color:rgba(232,200,135,.5)}",
+      ".sx-ch .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center}",
+      ".sx-ch .ph.vide{display:flex;align-items:center;justify-content:flex-end;padding-inline-end:22px;font-size:34px;opacity:.35}",
+      ".sx-ch:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(8,11,13,.85) 0%,rgba(8,11,13,.45) 50%,rgba(8,11,13,0) 80%),linear-gradient(0deg,rgba(8,11,13,.55) 0%,rgba(8,11,13,0) 55%)}",
+      "[dir=rtl] .sx-ch:after{background:linear-gradient(270deg,rgba(8,11,13,.85) 0%,rgba(8,11,13,.45) 50%,rgba(8,11,13,0) 80%),linear-gradient(0deg,rgba(8,11,13,.55) 0%,rgba(8,11,13,0) 55%)}",
+      ".sx-ch>b,.sx-ch>.g,.sx-ch>.c{position:relative;z-index:1}",
+      ".sx-ch>.c{position:absolute;inset-inline-end:12px;bottom:12px}",
+      ".sx-ch b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:600;line-height:1.15;text-shadow:0 1px 8px rgba(0,0,0,.7);overflow-wrap:anywhere;padding-inline-end:10px}",
+      ".sx-ch .g{display:flex;flex-wrap:wrap;gap:2px 6px;margin-top:6px;padding-inline-end:16px;font-size:11.5px}",
+      ".sx-ch .g>span{color:rgba(243,238,228,.62)}",
+      ".sx-ch .g em{font-style:normal;font-weight:600;font-size:12px}",
+      ".sc-rangee .sx-ch{flex:0 0 auto;width:clamp(150px,44vw,230px);scroll-snap-align:start}",
+      ".sx-soins .sx-s+.sx-s{border-top:1px solid rgba(255,255,255,.06)}",
+      ".sx-soins{margin-bottom:30px}",
+      ".sx-soins .sc-s-t .p{flex:0 0 44px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.45);align-items:center}",
+      ".sx-soins .sc-s-t .p svg{width:22px;height:22px}",
+      ".sc-eq{border-color:rgba(201,166,107,.28)}",
+      ".sc-eq-l .r.vide{border:1px dashed rgba(201,166,107,.6)}",
+      ".sc-eq-l .r.vide img{opacity:.75}",
+      ".sx-tel{width:40px;height:40px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center}",
+      ".sx-tel svg{width:18px;height:18px;fill:none;stroke:#C9A66B;stroke-width:1.5;stroke-linejoin:round}",
+      ".sx-bands{display:grid;gap:14px;margin-top:30px}",
+      ".sx-band{position:relative;overflow:hidden;height:104px;border-radius:16px;border:1px solid rgba(201,166,107,.32);display:flex;align-items:center;gap:14px;padding:0 16px;background:#0B1215;color:#F3EEE4;font-family:inherit;text-align:start;cursor:pointer;width:100%}",
+      ".sx-band>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:85% 38%}",
+      "[dir=rtl] .sx-band>img{transform:scaleX(-1)}",
+      ".sx-band:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(8,11,13,.9) 0%,rgba(8,11,13,.55) 45%,rgba(8,11,13,.05) 75%)}",
+      ".sx-band.reg:after{background:linear-gradient(90deg,rgba(8,11,13,.92) 0%,rgba(8,11,13,.7) 50%,rgba(8,11,13,.35) 100%)}",
+      "[dir=rtl] .sx-band:after{transform:scaleX(-1)}",
+      ".sx-band .r,.sx-band .x{position:relative;z-index:1}",
+      ".sx-band .r{width:46px;height:46px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.6);display:flex;align-items:center;justify-content:center}",
+      ".sx-band .r svg{width:22px;height:22px;fill:none;stroke:#C9A66B;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
+      ".sx-band b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:600}",
+      ".sx-band .x span{display:block;font-size:12.5px;color:rgba(243,238,228,.75);margin-top:2px}",
+      "@media (min-width:1024px){.sc .sc-in{box-sizing:border-box;max-width:1240px;padding:0 32px!important}.sx-hero .ph{width:68%}.sx-hero .nom{inset-inline-start:32px}.sx-rond{inset-inline-start:32px}.sx-deux{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px}.sx-bands{grid-template-columns:1fr 1fr;gap:20px}.sx-band.reg{grid-column:1/-1}}"
+    ].join("\n");
+    document.head.appendChild(st);
+  }, []);
   React.useEffect(function () {
     if (typeof document === "undefined" || document.getElementById("hype-sc-css")) return;
     var st = document.createElement("style"); st.id = "hype-sc-css";
@@ -448,37 +526,52 @@ function EcranSanteClub() {
     return ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, taille, taille) : ph, alt: "", loading: "lazy", decoding: "async" }) : "🐎";
   }
   function carteCheval(c) {
-    var e = etatDe(c);
-    var sous = e.etat === "vr" || e.etat === "amb" ? motRetard(e.j)
-      : (e.etat === "pe" ? libelle(e.so.type) + " · " + enClair(e.so.date_prochaine)
-        : T("Aucune échéance", "No due date", "Sin vencimiento", "Nessuna scadenza", "予定なし", "Keine Fälligkeit", "لا يوجد موعد", "没有到期日", "Geen vervaldatum", "Sem data prevista", "Inget förfallodatum", "Нет срока", "Brak terminu", "예정 없음"));
-    return h("button", { key: "ch" + c.id, type: "button", className: "sc-ch" + (e.etat === "vr" || e.etat === "amb" ? " " + e.etat : ""), onClick: function () { ouvrir(c); } },
-      h("span", { className: "im" }, vign(c, 360)),
+    var e = etatDe(c), alerte = e.etat === "vr" || e.etat === "amb";
+    var ph = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 480, 480) : c.photo_url) : "";
+    var coul = e.etat === "vr" ? VR : (e.etat === "amb" ? AMB : TQ);
+    return h("button", { key: "ch" + c.id, type: "button", className: "sx-ch" + (alerte ? " " + e.etat : ""), onClick: function () { ouvrir(c); } },
+      ph ? h("img", { className: "ph", src: ph, alt: "", loading: "lazy", decoding: "async" }) : h("span", { className: "ph vide", "aria-hidden": "true" }, "🐎"),
       h("b", null, c.nom || ""),
-      h("small", { className: e.etat || "" }, sous));
+      h("span", { className: "g" },
+        h("span", null, e.so ? libelle(e.so.type) : T("Prochain", "Next", "Próximo", "Prossimo", "次回", "Nächster", "القادم", "下一次", "Volgende", "Próximo", "Nästa", "Следующий", "Następny", "다음")),
+        h("em", { style: { color: e.so ? coul : "rgba(243,238,228,.45)" } }, e.so ? (alerte ? motRetard(e.j) : enClair(e.so.date_prochaine)) : "—")),
+      h("span", { className: "c", "aria-hidden": "true" }, "›"));
   }
 
+
+  /* 08/11 (Blandine, maquette choisie) : la page reprend le style de la page Santé du cheval —
+     titres en majuscules espacées avec une petite icône dorée, listes fines encadrées, cartes des chevaux comme le Suivi. */
+  var ICOS = {
+    alerte: ["M12 3.5l9 16H3z", "M12 10v4.5M12 17.2v.3"],
+    cheval: ["M4 20c1-6 3-9 7-10l-1-4 3 2c3 0 6 2 7 6l-2 1-2-2-1 7"],
+    soins: ["M5.5 3.5h13v17h-13z", "M8.5 8h7M8.5 12h7M8.5 16h4"],
+    equipe: ["M9 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z", "M3.5 19c.6-3.4 2.8-5 5.5-5s4.9 1.6 5.5 5M16 6.5a2.6 2.6 0 1 1 0 5M17.5 14.5c1.8.5 2.8 2 3 4.5"]
+  };
+  function tete(k, txt, droite) {
+    return h("div", { className: "sx-tete" },
+      h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, (ICOS[k] || []).map(function (d, i) { return h("path", { key: i, d: d }); })),
+      h("div", { className: "t" }, txt), droite || null);
+  }
   /* --- les blocs de la page --- */
-  var nbCols = ordi ? 4 : (tablette ? 3 : 2);
+  var nbCols = ordi ? 5 : (tablette ? 3 : 2);   /* 08/11 : 5 cartes par ligne sur ordinateur (style Suivi) */
   var alertes = liste.map(function (c) { return { c: c, e: etatDe(c) }; }).filter(function (x) { return x.e.etat === "vr" || x.e.etat === "amb"; })
     .sort(function (a, b) { return a.e.j - b.e.j; });
 
-  var blocAlertes = alertes.length ? h("div", null,
-    h("div", { className: "sc-h2" }, h("h2", null, T("À surveiller", "To watch", "A vigilar", "Da tenere d’occhio", "要チェック", "Im Blick behalten", "للمتابعة", "需留意", "In de gaten houden", "A vigiar", "Att hålla koll på", "Под наблюдением", "Do obserwacji", "주의 필요"))),
-    alertes.map(function (x) {
+  var blocAlertes = alertes.length ? h("div", { style: { marginBottom: 30 } },
+    tete("alerte", T("À surveiller", "To watch", "A vigilar", "Da tenere d’occhio", "要チェック", "Im Blick behalten", "للمتابعة", "需留意", "In de gaten houden", "A vigiar", "Att hålla koll på", "Под наблюдением", "Do obserwacji", "주의 필요")),
+    h("div", { className: "sx-boite" }, alertes.map(function (x) {
       var coul = x.e.etat === "vr" ? VR : AMB;
-      return h("div", { key: "al" + x.c.id, role: "button", tabIndex: 0, className: "sc-verre sc-alerte" + (x.e.etat === "amb" ? " amb" : ""), onClick: function () { ouvrir(x.c); },
+      return h("div", { key: "al" + x.c.id, role: "button", tabIndex: 0, className: "sx-l", onClick: function () { ouvrir(x.c); },
           onKeyDown: function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); ouvrir(x.c); } } },
-        h("span", { className: "v" }, vign(x.c, 200)),
-        h("div", { className: "t" }, h("b", null, x.c.nom || ""),
-          h("span", { style: { color: coul } }, libelle(x.e.so.type) + " · " + enClair(x.e.so.date_prochaine)),
-          h("i", { style: { color: coul } }, motRetard(x.e.j))),
-        h("span", { style: { color: TQ, fontSize: 18 } }, "›"));
-    })) : null;
+        h("span", { className: "r" }, vign(x.c, 120)),
+        h("span", { className: "n" }, h("b", null, x.c.nom || ""),
+          h("span", { style: { color: coul } }, libelle(x.e.so.type) + " · " + enClair(x.e.so.date_prochaine) + " · " + motRetard(x.e.j))),
+        h("span", { className: "c", "aria-hidden": "true" }, "›"));
+    }))) : null;
 
-  var blocChevaux = h("div", null,
-    h("div", { className: "sc-h2" },
-      h("h2", null, T("Les chevaux", "The horses", "Los caballos", "I cavalli", "馬たち", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들")),
+  var blocChevaux = h("div", { style: { marginBottom: 30 } },
+    h("div", { className: "sx-tete" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, ICOS.cheval.map(function (d, k) { return h("path", { key: k, d: d }); })),
+      h("div", { className: "t" }, T("Les chevaux", "The horses", "Los caballos", "I cavalli", "馬たち", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들")),
       liste.length > nbCols ? h("button", { type: "button", className: "sc-voir", onClick: function () { setTous(!tous); } },
         tous ? T("Réduire", "Show less", "Ver menos", "Riduci", "閉じる", "Weniger", "عرض أقل", "收起", "Minder", "Ver menos", "Visa färre", "Свернуть", "Zwiń", "접기") + " ‹"
              : T("Voir les ", "See all ", "Ver los ", "Vedi tutti i ", "", "Alle ", "عرض الـ ", "查看全部 ", "Bekijk alle ", "Ver os ", "Visa alla ", "Все ", "Zobacz wszystkie ", "") + liste.length + T("", "", "", "", "頭を見る", " ansehen", "", "", "", "", "", "", "", "마리 보기") + " ›") : null),
@@ -487,12 +580,12 @@ function EcranSanteClub() {
       : h("div", { className: "sc-rangee" }, liste.map(carteCheval)));
 
   var blocSoins = h("div", null,
-    h("div", { className: "sc-h2" }, h("h2", null, T("Les soins de l’écurie", "The stable’s care", "Los cuidados de la cuadra", "Le cure della scuderia", "厩舎のケア", "Die Pflege im Stall", "عناية الإسطبل", "马厩护理", "De verzorging van de stal", "Os cuidados da cocheira", "Stallets vård", "Уход в конюшне", "Opieka w stajni", "마구간 관리"))),
+    tete("soins", T("Les soins de l’écurie", "The stable’s care", "Los cuidados de la cuadra", "Le cure della scuderia", "厩舎のケア", "Die Pflege im Stall", "عناية الإسطبل", "马厩护理", "De verzorging van de stal", "Os cuidados da cocheira", "Stallets vård", "Уход в конюшне", "Opieka w stajni", "마구간 관리")),
     h("p", { className: "sc-intro" }, T("Notés dans les 12 derniers mois, sur les ", "Recorded in the last 12 months, out of ", "Registrados en los últimos 12 meses, de ", "Registrati negli ultimi 12 mesi, su ", "過去12か月の記録・全", "In den letzten 12 Monaten eingetragen, von ", "مسجلة خلال آخر 12 شهرًا، من أصل ", "过去 12 个月的记录，共 ", "Ingevuld in de laatste 12 maanden, van de ", "Registrados nos últimos 12 meses, de ", "Registrerade de senaste 12 månaderna, av ", "За последние 12 месяцев, из ", "Zapisane w ostatnich 12 miesiącach, z ", "최근 12개월 기록, 전체 ") + nbChevaux(liste.length) + "."),
-    h("div", { className: "sc-soins" }, points.map(function (pt) {
+    h("div", { className: "sx-boite sx-soins" }, points.map(function (pt) {
       var ouv = soinOuvert === pt.k, n = pt.faits.length, presque = liste.length && n / liste.length >= 0.8;
       var reste = presque ? liste.filter(function (c) { return pt.faits.indexOf(c) < 0; }) : [];
-      return h("div", { key: "so" + pt.k, className: "sc-verre sc-s" + (ouv ? " ouv" : "") },
+      return h("div", { key: "so" + pt.k, className: "sc-s sx-s" + (ouv ? " ouv" : "") },
         h("button", { type: "button", className: "sc-s-t", "aria-expanded": ouv ? "true" : "false", onClick: function () { setSoinOuvert(ouv ? "" : pt.k); } },
           h("span", { className: "p" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: PIC[pt.pic] }))),
           h("span", { className: "x" }, h("b", null, pt.t),
@@ -507,9 +600,7 @@ function EcranSanteClub() {
             h("p", { className: "sc-lab" }, T("Faits", "Done", "Hechos", "Fatti", "済み", "Erledigt", "تمّت", "已完成", "Gedaan", "Feitos", "Klara", "Сделано", "Zrobione", "완료") + " · " + n),
             h("div", { className: "sc-chips" }, pt.faits.map(function (c) { return h("button", { key: "f" + c.id, type: "button", className: "sc-chip ok", onClick: function () { ouvrir(c); } }, c.nom || ""); })))
           : h("p", { className: "sc-lab", style: { textTransform: "none", letterSpacing: 0, fontSize: 12.5 } }, T("Aucun cheval n’a ce soin noté dans les 12 derniers mois.", "No horse has this recorded in the last 12 months.", "Ningún caballo lo tiene registrado en los últimos 12 meses.", "Nessun cavallo lo ha registrato negli ultimi 12 mesi.", "過去12か月に記録された馬はいません。", "Bei keinem Pferd in den letzten 12 Monaten eingetragen.", "لا يوجد حصان مسجل له ذلك خلال آخر 12 شهرًا.", "过去 12 个月没有马匹记录此项。", "Bij geen enkel paard ingevuld in de laatste 12 maanden.", "Nenhum cavalo tem isto registrado nos últimos 12 meses.", "Ingen häst har detta registrerat de senaste 12 månaderna.", "Ни у одной лошади нет записи за 12 месяцев.", "Żaden koń nie ma tego zapisanego w ostatnich 12 miesiącach.", "최근 12개월 동안 기록된 말이 없습니다."))) : null);
-    })),
-    h("button", { type: "button", className: "sc-imp", style: { marginTop: 14, width: "100%", minHeight: 46 }, onClick: function () { setNoterOuvert(true); } },
-      "+ " + T("Noter pour plusieurs chevaux", "Record for several horses", "Registrar para varios caballos", "Registra per più cavalli", "複数の馬に記録", "Für mehrere Pferde eintragen", "تسجيل لعدة خيول", "为多匹马记录", "Voor meerdere paarden noteren", "Registrar para vários cavalos", "Registrera för flera hästar", "Записать для нескольких лошадей", "Zapisz dla kilku koni", "여러 말에 기록")));
+    })));
 
   var ROLES = (typeof hypeRolesSoins === "function") ? hypeRolesSoins(T) : {};
   var ORDRE = (typeof HYPE_ROLES_ORDRE !== "undefined" && HYPE_ROLES_ORDRE) ? HYPE_ROLES_ORDRE : ["veterinaire", "marechal", "osteopathe", "dentiste"];
@@ -517,25 +608,27 @@ function EcranSanteClub() {
   ORDRE.forEach(function (r) {
     var ps = pros.filter(function (p) { return String(p.role || "") === r; }).sort(function (a, b) { return (b.nCh || 0) - (a.nCh || 0); });
     var img = "images/sante-pro-" + r + ".webp";
-    if (!ps.length) lignesEq.push(h("div", { key: "eq" + r, className: "sc-eq-l" }, h("span", { className: "r" }, "+"),
+    if (!ps.length) lignesEq.push(h("div", { key: "eq" + r, className: "sc-eq-l" }, h("span", { className: "r vide" }, h("img", { src: img, alt: "", loading: "lazy" })),   /* 08/11 : la photo du métier aussi sur case vide */
       h("div", { className: "n" }, h("b", null, ROLES[r] || r), h("span", { className: "or" }, T("À ajouter depuis la page Santé d’un cheval", "Add it from a horse’s Health page", "Añádelo desde la página Salud de un caballo", "Aggiungilo dalla pagina Salute di un cavallo", "馬の健康ページから追加", "Über die Gesundheitsseite eines Pferdes hinzufügen", "أضِفه من صفحة صحة أحد الخيول", "在某匹马的健康页面中添加", "Toevoegen via de gezondheidspagina van een paard", "Adicione pela página Saúde de um cavalo", "Lägg till från en hästs hälsosida", "Добавьте на странице здоровья лошади", "Dodaj na stronie Zdrowie konia", "말의 건강 페이지에서 추가")))));
     ps.forEach(function (p) {
       lignesEq.push(h("div", { key: "eq" + p.id, className: "sc-eq-l plein" }, h("span", { className: "r" }, h("img", { src: img, alt: "", loading: "lazy" })),
         h("div", { className: "n" }, h("b", null, p.nom || ""), h("span", null, (ROLES[r] || r) + " · " + nbChevaux(p.nCh || 0))),
-        p.tel ? h("a", { href: "tel:" + String(p.tel).replace(/\s+/g, ""), style: { color: TQ, fontSize: 13, textDecoration: "none" } }, String(p.tel)) : null));
+        p.tel ? h("a", { className: "sx-tel", href: "tel:" + String(p.tel).replace(/\s+/g, ""), "aria-label": T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화") + " " + String(p.tel) }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" }))) : null));
     });
   });
   var blocEquipe = h("div", null,
-    h("div", { className: "sc-eq-t" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 12, cy: 8, r: 3.5, fill: "none", stroke: TQ, strokeWidth: 1.6 }), h("path", { d: "M5 20c.8-3.8 3.6-5.5 7-5.5s6.2 1.7 7 5.5M5.5 11a2.5 2.5 0 1 1 0-.1M18.5 11a2.5 2.5 0 1 1 0-.1", fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round" })),
-      h("div", null, T("L’équipe de soins", "The care team", "El equipo de cuidados", "La squadra di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية", "护理团队", "Het verzorgingsteam", "A equipe de cuidados", "Vårdteamet", "Команда ухода", "Zespół opieki", "케어 팀"))),
+    tete("equipe", T("L’équipe de soins", "The care team", "El equipo de cuidados", "La squadra di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية", "护理团队", "Het verzorgingsteam", "A equipe de cuidados", "Vårdteamet", "Команда ухода", "Zespół opieki", "케어 팀")),
     h("div", { className: "sc-eq" }, lignesEq));
 
-  function carte(cle, img, titre, sous, onTap) {
-    return h("button", { key: cle, type: "button", className: "sc-carte", onClick: onTap },
-      h("span", { className: "ph" }, h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { objectPosition: "85% 50%" } })),
-      h("span", { className: "pan" }, h("b", null, titre), h("span", null, sous)));
+  var ICOB = { hb: "M4 5h16v11H9l-5 4zM8 10.5h.01M12 10.5h.01M16 10.5h.01", mag: "M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5c-3-.5-6 0-8 1.5zM12 6v14.5", reg: "M6 3.5h9l3 3v14H6zM9 9h6M9 13h6M9 17h4" };
+  function carte(cle, img, titre, sous, onTap) {   /* 08/11 : bandeaux comme sur la page Santé du cheval (photo bien visible à droite) */
+    return h("button", { key: cle, type: "button", className: "sx-band" + (cle === "reg" ? " reg" : ""), onClick: onTap },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async" }),
+      h("span", { className: "r" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: ICOB[cle] }))),
+      h("span", { className: "x" }, h("b", null, titre), h("span", null, sous)));
   }
-  var blocCartes = h("div", { className: "sc-cartes", style: { gridTemplateColumns: tablette ? "repeat(3,minmax(0,1fr))" : "minmax(0,1fr)" } },
+
+  var blocCartes = h("div", { className: "sx-bands" },
     carte("hb", "images/sante-bandeau-heybaby.webp", T("Demander à Hey Baby", "Ask Hey Baby", "Preguntar a Hey Baby", "Chiedi a Hey Baby", "Hey Baby に聞く", "Hey Baby fragen", "اسأل Hey Baby", "问问 Hey Baby", "Vraag het aan Hey Baby", "Perguntar ao Hey Baby", "Fråga Hey Baby", "Спросить Hey Baby", "Zapytaj Hey Baby", "Hey Baby에게 묻기"),
       T("Une question sur la santé de tes chevaux ?", "A question about your horses’ health?", "¿Una pregunta sobre la salud de tus caballos?", "Una domanda sulla salute dei tuoi cavalli?", "馬の健康について質問がありますか？", "Eine Frage zur Gesundheit deiner Pferde?", "سؤال عن صحة خيولك؟", "关于你的马匹健康有疑问吗？", "Een vraag over de gezondheid van je paarden?", "Uma pergunta sobre a saúde dos seus cavalos?", "En fråga om dina hästars hälsa?", "Вопрос о здоровье твоих лошадей?", "Pytanie o zdrowie twoich koni?", "말들의 건강에 대해 궁금한 점이 있나요?"),
       function () { try { window.__hbPrefill = T("J'ai une question sur la santé des chevaux de ", "I have a question about the health of the horses at ", "Tengo una pregunta sobre la salud de los caballos de ", "Ho una domanda sulla salute dei cavalli di ", "", "Ich habe eine Frage zur Gesundheit der Pferde von ", "لدي سؤال عن صحة خيول ", "我有一个关于马厩马匹健康的问题：", "Ik heb een vraag over de gezondheid van de paarden van ", "Tenho uma dúvida sobre a saúde dos cavalos de ", "Jag har en fråga om hälsan hos hästarna på ", "У меня вопрос о здоровье лошадей ", "Mam pytanie o zdrowie koni w ", "마구간 말들의 건강에 대해 질문이 있어요: ") + clubS + T(" : ", ": ", ": ", ": ", " の馬の健康について質問があります：", ": ", ": ", ": ", ": ", ": ", ": ", ": ", ": ", ": "); } catch (eP) { } setEcran("assistant"); }),
@@ -549,25 +642,26 @@ function EcranSanteClub() {
   var corps;
   if (chevaux === null) corps = h("div", { className: "sc-vide" }, "…");
   else if (!liste.length) corps = h("div", { className: "sc-vide" }, T("Aucun cheval rattaché à l’écurie pour l’instant.", "No horse attached to the stable yet.", "Ningún caballo vinculado a la cuadra.", "Nessun cavallo collegato alla scuderia.", "まだ馬がいません。", "Noch keine Pferde im Stall.", "لا توجد خيول مرتبطة بالإسطبل بعد.", "马厩还没有关联的马匹。", "Nog geen paarden gekoppeld aan de stal.", "Nenhum cavalo vinculado à cocheira ainda.", "Inga hästar kopplade till stallet ännu.", "К конюшне пока не привязана ни одна лошадь.", "Do stajni nie przypisano jeszcze żadnego konia.", "아직 마구간에 연결된 말이 없습니다."));
-  else corps = h("div", null, blocAlertes, blocChevaux, blocSoins, blocEquipe, blocCartes,
+  else corps = h("div", null, blocAlertes, blocChevaux, ordi ? h("div", { className: "sx-deux" }, h("div", null, blocSoins), h("div", null, blocEquipe)) : h("div", null, blocSoins, blocEquipe), blocCartes,
     h("div", { className: "sc-note" }, T("Hype t’aide à tenir ton registre à jour et à ne rien oublier. Le registre reste sous ta responsabilité de détenteur.", "Hype helps you keep your register up to date. The register remains your responsibility as keeper.", "Hype te ayuda a mantener tu registro al día. El registro sigue siendo tu responsabilidad como titular.", "Hype ti aiuta a tenere aggiornato il registro. Il registro resta sotto la tua responsabilità di detentore.", "Hype は台帳の更新を手伝います。台帳の責任は飼養者にあります。", "Hype hilft dir, dein Register aktuell zu halten. Das Register bleibt in deiner Verantwortung als Halter.", "يساعدك Hype على تحديث سجلك. يبقى السجل من مسؤوليتك بصفتك الحائز.", "Hype 帮你保持登记簿更新。登记簿仍由你作为饲养人负责。", "Hype helpt je je register bij te houden. Het register blijft jouw verantwoordelijkheid als houder.", "O Hype ajuda você a manter o registro em dia. O registro continua sob sua responsabilidade de detentor.", "Hype hjälper dig att hålla registret uppdaterat. Registret är fortfarande ditt ansvar som djurhållare.", "Hype помогает вести журнал. Ответственность за журнал остаётся за владельцем.", "Hype pomaga prowadzić rejestr. Rejestr pozostaje na twojej odpowiedzialności jako posiadacza.", "Hype가 대장 관리를 도와줍니다. 대장의 책임은 사육자에게 있습니다.")));
 
   var page = h("div", { className: "sc" },
-    h("div", { className: "sc-hero" },
+    h("div", { className: "sx-fond", "aria-hidden": "true" }),
+    /* 08/11 (Blandine) : haut de page comme la page Santé du cheval — « SANTÉ & SOINS », le nom de l’écurie, le nombre de chevaux */
+    h("div", { className: "sx-hero" },
+      h("div", { className: "ph" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", fetchPriority: "high" })),
       (typeof SelecteurLangue === "function") ? h("div", { className: "sc-langue" }, h(SelecteurLangue, { compact: true })) : null,
-      h("button", { type: "button", className: "sc-rond", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로") },
+      h("button", { type: "button", className: "sx-rond", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로") },
         h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M15 5l-7 7 7 7" }))),
-      courbe("c1", "M250 4 C 330 8, 385 40, 400 96"),
-      h("div", { className: "sc-photo" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", fetchPriority: "high" })),
-      courbe("c2", "M0 92 C 130 90, 240 62, 400 8"),
-      h("div", { className: "sc-in" }, h("div", { className: "sc-titre" },
-        h("h1", null, T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강")),
-        h("p", null, T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es amar.", "Prendersi cura è già amare.", "世話をすることは、もう愛すること。", "Sich kümmern heißt schon lieben.", "الرعاية حبٌّ بالفعل.", "照顾，就是爱。", "Zorgen is al liefhebben.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит уже любить.", "Troszczyć się to już kochać.", "돌보는 것이 곧 사랑입니다."))))),
+      h("div", { className: "nom" },
+        h("div", { className: "k" }, T("Santé & soins", "Health & care", "Salud y cuidados", "Salute e cure", "健康とケア", "Gesundheit & Pflege", "الصحة والعناية", "健康与护理", "Gezondheid & verzorging", "Saúde & cuidados", "Hälsa & vård", "Здоровье и уход", "Zdrowie i opieka", "건강 & 케어")),
+        h("h1", null, clubS || T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강")),
+        liste.length ? h("div", { className: "s" }, nbChevaux(liste.length)) : null)),
     h("div", { className: "sc-in" },
-      h("div", { className: "sc-ligne" },
-        h("div", { className: "sc-mes" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M3 11l9-7 9 7" }), h("path", { d: "M5 10v10h14V10" }), h("path", { d: "M10 20v-6h4v6" })), h("span", null, clubS)),
-        liste.length ? h("button", { type: "button", className: "sc-imp", onClick: function () { setImportOuvert(true); } },
-          T("Importer des soins", "Import care records", "Importar cuidados", "Importa cure", "ケア記録の取り込み", "Pflege importieren", "استيراد العناية", "导入护理记录", "Verzorging importeren", "Importar cuidados", "Importera vård", "Импорт записей", "Importuj zabiegi", "관리 기록 가져오기")) : null),
+      h("p", { className: "sx-phrase" }, T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es amar.", "Prendersi cura è già amare.", "世話をすることは、もう愛すること。", "Sich kümmern heißt schon lieben.", "الرعاية حبٌّ بالفعل.", "照顾，就是爱。", "Zorgen is al liefhebben.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит уже любить.", "Troszczyć się to już kochać.", "돌보는 것이 곧 사랑입니다.")),
+      liste.length ? h("div", { className: "sx-cases" },
+        h("button", { type: "button", className: "sx-case", onClick: function () { setNoterOuvert(true); } }, h("b", null, h("i", null, "+"), T("Noter un soin", "Record a treatment", "Registrar un cuidado", "Registra una cura", "ケアを記録", "Pflege eintragen", "تسجيل عناية", "记录护理", "Verzorging noteren", "Registrar um cuidado", "Notera en vård", "Записать уход", "Zapisz zabieg", "케어 기록")), h("span", null, T("Pour plusieurs chevaux à la fois", "For several horses at once", "Para varios caballos a la vez", "Per più cavalli insieme", "複数の馬にまとめて", "Für mehrere Pferde auf einmal", "لعدة خيول دفعة واحدة", "一次为多匹马", "Voor meerdere paarden tegelijk", "Para vários cavalos de uma vez", "För flera hästar samtidigt", "Сразу для нескольких лошадей", "Dla kilku koni naraz", "여러 말을 한 번에"))),
+        h("button", { type: "button", className: "sx-case", onClick: function () { setImportOuvert(true); } }, h("b", null, h("i", null, "+"), T("Importer des soins", "Import care records", "Importar cuidados", "Importa cure", "ケア記録の取り込み", "Pflege importieren", "استيراد العناية", "导入护理记录", "Verzorging importeren", "Importar cuidados", "Importera vård", "Импорт записей", "Importuj zabiegi", "관리 기록 가져오기")), h("span", null, T("Tableau, liste du vétérinaire…", "Spreadsheet, vet’s list…", "Tabla, lista del veterinario…", "Tabella, elenco del veterinario…", "表、獣医のリスト…", "Tabelle, Liste des Tierarztes…", "جدول، قائمة الطبيب البيطري…", "表格、兽医清单…", "Tabel, lijst van de dierenarts…", "Planilha, lista do veterinário…", "Tabell, veterinärens lista…", "Таблица, список ветеринара…", "Tabela, lista weterynarza…", "표, 수의사 목록…")))) : null,
       h((typeof HypeVoileSantePremium === "function") ? HypeVoileSantePremium : "div", null,
         err ? h("div", { className: "sc-err" }, T("Les chevaux ou les soins de l’écurie n’ont pas pu être lus : ", "The stable’s horses or care could not load: ", "No se pudieron cargar los caballos o cuidados: ", "Impossibile caricare cavalli o cure: ", "馬またはケアを読み込めませんでした：", "Pferde oder Pflege nicht geladen: ", "تعذّر تحميل الخيول أو العناية: ", "无法加载马匹或护理：", "Paarden of verzorging konden niet laden: ", "Não foi possível carregar cavalos ou cuidados: ", "Hästar eller vård kunde inte laddas: ", "Не удалось загрузить лошадей или уход: ", "Nie udało się wczytać koni lub zabiegów: ", "말 또는 관리 기록을 불러오지 못했습니다: ") + err) : null,
         corps)),
