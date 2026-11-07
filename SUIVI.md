@@ -743,9 +743,10 @@ au prompt d'audit (ChatGPT).
 |---|---|---|
 | hype-ecran-cavalier.js | racine | version 9 : lit les réglages par la fonction cavalier_perso_lire ; si elle n'existe pas encore, lecture comme avant |
 | index.html | racine | ?v cavalier 8 → 9, build 20261107-1125 (rien d'autre) |
-⚠️ EN ATTENTE : migration base « cavalier_perso_premium » (fonction cavalier_perso_lire + hype_est_premium_interne,
-enregistrement réservé aux Premium) — la confirmation demandée par la base n'a pas eu de réponse, RIEN n'a été
-appliqué en base. À relancer avec Blandine présente pour confirmer.
+✅ 07/11 (10 h 30) migration « cavalier_perso_premium » APPLIQUÉE (Blandine : « Refais ») : enregistrement
+réservé aux Premium (vérifié par la base), réglages appliqués seulement si le cavalier est Premium (sinon page
+d'origine, réglages gardés), table plus lisible directement par les visiteurs (seulement via cavalier_perso_lire).
+Vérifié : le compte qui a déjà des réglages est bien reconnu Premium et sa page reste réglée.
 
 ════════════════════════════════════════════════════════════
 
