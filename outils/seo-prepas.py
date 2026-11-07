@@ -76,6 +76,8 @@ def page(lg,D,dip,slug,dd):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="hype-cible" content="prepa-{dip}">
+<!--hype-seo-->
 <title>{esc(mt)}</title>
 <meta name="description" content="{esc(md)}">
 <link rel="canonical" href="{url}">
@@ -91,19 +93,20 @@ def page(lg,D,dip,slug,dd):
 <meta property="og:image" content="https://2hype.fr/images/hype-partage-1200x630.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{json.dumps(ld,ensure_ascii=False)}</script>
+<!--/hype-seo-->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{json.dumps(ld,ensure_ascii=False)}</script>
 <style>{c['css']}</style>
 </head>
 <body>
-<header class="barre"><a class="marque" href="https://2hype.fr/{lg}/">HYPE</a><a class="langue" href="#langues">{c['langue']}</a></header>
+<!--hype-texte--><header class="barre"><a class="marque" href="https://2hype.fr/{lg}/">HYPE</a><a class="langue" href="#langues">{c['langue']}</a></header>
 <main>
 <nav class="fil" aria-label="fil"><a href="https://2hype.fr/{lg}/">{c['accueil']}</a></nav>
 <h1>{esc(titre)} — {esc(sous)}</h1>
 <h2>{esc(S[0]['titre'])}</h2>{corps}<h2>{esc(T['programme'])}</h2>{som}<div class="appel"><p>{esc(T['appel'])}</p><a class="btn" href="https://2hype.fr/">{c['ouvrir']}</a></div><h2>{esc(T['autres'])}</h2>{autres}
 </main>
-<footer><p>{c['pied']}</p><p id="langues" style="margin-top:8px">{langues}</p></footer>
+<footer><p>{c['pied']}</p><p id="langues" style="margin-top:8px">{langues}</p></footer><!--/hype-texte-->
 </body>
 </html>
 '''
