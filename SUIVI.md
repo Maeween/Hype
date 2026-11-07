@@ -8,6 +8,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
+- [07/11 23h15] 🚧 PAGE ENGAGEMENTS EN COURS DE REFONTE dans une autre conversation (P1 + étapes D3 + récap par épreuve, choix de Blandine) — ne pas toucher à EcranEngagements ni à concours_engagements / concours_tours en attendant. Base faite : nouvelle table concours_tours (une ligne par tour, jusqu'à 5). (attend : Claude)
 - [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
 - [26/10] Sécurité : la clé d'accès Supabase des mails est SUPPRIMÉE (07/11 01h54, vérifié sur capture : restent seulement « github-hype » et « Github hype 2 »). Reste à supprimer le secret HYPE_CLE_MAILS (supabase.com/dashboard/project/ldpjebgtskzdokrublfg/functions/secrets) — sans la clé, il ne peut plus rien faire, c'est du rangement (attend : Blandine)
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
@@ -19397,3 +19398,10 @@ Titre traduit dans les 13 autres langues ; la page Google du cours prend le nouv
 | index.html | racine | ?v galop9 → 14 |
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 23h15 — BASE FAITE (accord de Blandine « C » puis « Ok oui vas y ») — Engagements : une ligne par tour (jusqu'à 5)
+- Pourquoi : Blandine veut pouvoir engager jusqu'à 5 tours par jour à poney et 3 en Club, et choisir cavalier, cheval et épreuve sur la même page (choix : page « P1 » avec les étapes « D3 » en tuiles photo, récap par épreuve façon « Visuel 7 »). Cavaliers ET cavalières.
+- Fait en base : nouvelle table public.concours_tours (id, engagement_id → concours_engagements, agenda_id, numero 1 à 5, epreuve, cheval_id, cheval_nom, passage, piste, passage_maj_le ; un seul tour n par engagement). Mêmes règles d'accès que concours_engagements (le cavalier voit ses tours ; coach du club et modératrices gèrent).
+- Les 26 tours existants recopiés (17 tours 1 + 9 tours 2, sur 17 engagements et 3 concours). concours_engagements NON modifiée : ses colonnes epreuve1/2, cheval1/2, passage1/2, piste1/2 restent lues par les autres écrans.
+- Suite prévue, une étape à la fois : (1) nouvelle page Engagements P1 qui écrit dans concours_tours ET recopie les tours 1 et 2 dans les anciennes colonnes, pour que la feuille SEP, le jour J, la liste du van et Ma saison continuent de marcher ; (2) puis ces écrans passent un par un sur concours_tours ; (3) seulement à la fin, on retire les anciennes colonnes.
+- Rien publié dans l'appli à cette étape.
