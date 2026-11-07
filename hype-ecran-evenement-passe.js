@@ -592,7 +592,7 @@ function EcranEvenementPasse(props) {
        l image. ⚠️ IL Y A DEUX HEROS IDENTIQUES DANS LE FICHIER : l autre appartient a
        EcranEvenement (grands evenements nationaux). Seul celui-ci est touche. */
     integre ? null : h("div", { style: { position: "relative", minHeight: 176, overflow: "hidden" } },
-      couv ? h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype(couv, 1400) : couv, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
+      (couv || typeof hypeImageRdv === "function") ? h("img", { src: couv ? ((typeof grandeImageHype === "function") ? grandeImageHype(couv, 1400) : couv) : hypeImageRdv(ev), alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.62) 0%, rgba(6,7,9,0.26) 34%, rgba(6,7,9,0.88) 76%, #060709 100%)" } }),
       h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 3 } }, "\u2039"),
       /* 21/09 (313) : partager le souvenir. */

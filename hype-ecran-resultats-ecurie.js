@@ -622,6 +622,7 @@ function EcranResultatsEcurie() {
   function imageGroupe(g) {
     if (g.rdv && g.rdv.image_url) return String(g.rdv.image_url);
     if (g.rdv && D && D.photos) { var p = D.photos.filter(function (x) { return x.agenda_id === g.rdv.id; })[0]; if (p) return p.url; }
+    if (g.rdv && typeof hypeImageRdv === "function") return hypeImageRdv(g.rdv);   /* 07/11 : sans affiche ni photo, la photo de la thématique */
     return null;
   }
   var secDernier = null;

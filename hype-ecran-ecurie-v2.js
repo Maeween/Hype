@@ -389,7 +389,7 @@ function EcranEcurieV2(props) {
     /* (545) mode : "seul" (1 evenement, toute la ligne), "duo" (2), "car" (carrousel a partir de 3)
        (559) Blandine : l affiche prend toute la carte, fondue / assombrie en bas, le texte pose dessus. */
     var gros = mode === "seul";
-    var img = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
+    var img = (typeof hypeImageRdv === "function") ? hypeImageRdv(ev) : ((typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "");   /* 07/11 : sans affiche, la photo de la thématique */
     var jour = String(Number((String(ev.date_jour || "").match(/-(\d{2})$/) || [])[1] || "") || "");
     var mois = fmt(ev.date_jour, { month: "short" }).replace(".", "");
     return h("button", { key: "ev" + ev.id, type: "button", onClick: function () { try { if (pont.current) pont.current.ouvrir(ev); } catch (e) { } }, style: { position: "relative", display: "block", minWidth: 0, width: "100%", aspectRatio: (mode === "seul" ? "16 / 9" : (mode === "duo" ? "1 / 1" : "4 / 5")), padding: 0, textAlign: "start", background: "linear-gradient(160deg,#13242A 0%,#101D22 55%,#0A1013 100%)", border: "1px solid " + BORD, borderRadius: 12, overflow: "hidden", cursor: "pointer", color: IV, boxShadow: OMBRE } },
@@ -415,7 +415,7 @@ function EcranEcurieV2(props) {
   };
   var NOIR_EV = "#080A0B";   /* (592) noir des cartes evenements : un cran au-dessus du fond de page NOIR (050809 depuis le 662) pour que la carte reste lisible */
   function carteEvH(ev, passe) {
-    var img = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
+    var img = (typeof hypeImageRdv === "function") ? hypeImageRdv(ev) : ((typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "");   /* 07/11 : sans affiche, la photo de la thématique */
     var jour = String(Number((String(ev.date_jour || "").match(/-(\d{2})$/) || [])[1] || "") || "");
     var mois = fmt(ev.date_jour, { month: "short" }).replace(".", "");
     var an = String(ev.date_jour || "").slice(0, 4);

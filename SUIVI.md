@@ -19514,3 +19514,17 @@ Fichiers à publier :
 | hype-ecran-saison.js | racine | retour de Ma saison vers l'équipe ouverte |
 | index.html | racine | reprise garde l'équipe ouverte ; retour de Performances chevaux ; hype-ecran-team.js?v=9 ; hype-ecran-saison.js?v=45 (7 endroits) ; marqueur de build 20261108-0055 |
 | SUIVI.md | racine | cette entrée |
+
+## 07/11/2026 23h55 — PRÊT, NON PUBLIÉ (à grouper) — Photo de thématique partout quand un événement n'a pas d'affiche
+- Blandine 23h46 : « sur la page écurie, CSO Tigery, toujours pas de photo ; applique ça partout : quand un événement n'a pas d'affiche, la photo de la thématique par défaut ».
+- Nouvelle aide commune hypeImageRdv(ev) (index.html, juste avant hypeOuvrirRdv) : l'affiche si elle existe, sinon concours → images/hype-entete-concours.jpg, stage → images/theme-dressage-bai-trot.webp, sortie → images/actualite-ambiance.webp (même règle que l'agenda du club du 07/11).
+- Appliquée : page Écurie (cartes « Prochains événements » et « Événements passés », hype-ecran-ecurie-v2.js), ancien agenda du club (AgendaClubHype, index.html), résultats de l'écurie (image d'un concours sans affiche ni photo, hype-ecran-resultats-ecurie.js), haut de la page d'un événement passé sans couverture (hype-ecran-evenement-passe.js). Déjà fait avant : page équipe, agenda du club (hype-ecran-agenda.js).
+- Pas touché : le partage en story d'un événement (on ne partage pas une photo de thème comme si c'était l'affiche), le choix de couverture d'un événement passé.
+Fichiers à publier :
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-ecurie-v2.js | racine | cartes d'événements |
+| hype-ecran-resultats-ecurie.js | racine | image d'un concours |
+| hype-ecran-evenement-passe.js | racine | haut de page |
+| index.html | racine | hypeImageRdv + ancien agenda du club ; ecurie-v2 v=8, resultats-ecurie v=8, evenement-passe v=4 ; marqueur de build au moment de publier |
+| SUIVI.md | racine | cette entrée |
