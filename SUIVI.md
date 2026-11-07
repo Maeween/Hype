@@ -19278,3 +19278,6 @@ Fichiers à publier (en plus des entrées de 19h30 et 20h15) :
 - Fichiers des prépas : hype-ecran-prepa.js (v=5), i18n/prepa-*.json (13), index.html (marqueur 20261107-2055), SUIVI.md.
 - À tester sur iPhone : Galops › « Deviens enseignant » › AE : nouvelles parties ; bouton « Voir comme une non-abonnée » (attend : Blandine)
 
+## 07/11/2026 20h10 — Pages Google des prépas : gardées de côté
+- Pour qu'une publication d'une autre conversation ne les mette pas en ligne trop tôt (les prépas sont encore réservées aux modératrices), les 42 pages de l'entrée de 20h05 sont RETIRÉES du dépôt en ligne et gardées de côté par Claude (branche locale « pages-prepas »). Elles reviennent le jour où Blandine ouvre les prépas ; relancer outils/seo-prepas.py si les textes ont changé (attend : Blandine)
+
