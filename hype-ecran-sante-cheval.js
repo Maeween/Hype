@@ -973,7 +973,6 @@ function EcranSanteCheval() {
     var f = familleDe(famille); if (!f) return null;
     var l = lignesDe(f);
     if (f.types.length === 1 && f.types[0] === "vaccin") return pageVaccins(l);   /* 07/11 page Vaccins plein ecran (maquette validee) */
-    return pageFamille(f, l);   /* 07/11 les autres rubriques aussi en page (meme style) ; l ancienne fenetre ci-dessous ne sert plus */
     var voile = h("div", { onClick: function () { setFamille(null); }, style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } }, style: { width: "100%", maxWidth: 560, maxHeight: "86vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.28)", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 20px)" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
@@ -1054,7 +1053,9 @@ function EcranSanteCheval() {
     var bord = i ? "1px solid rgba(255,255,255,0.06)" : "none";
     if (!p) {
       return h("div", { key: "le" + r, role: "button", onClick: function () { setFeuillePro({ role: r, pro: null }); }, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderTop: bord, cursor: "pointer" } },
-        h("span", { style: { width: 44, height: 44, flex: "0 0 auto", borderRadius: "50%", border: "1px dashed rgba(201,166,107,0.45)", display: "flex", alignItems: "center", justifyContent: "center", color: TQ, fontSize: 18 } }, "+"),
+        ({ veterinaire: 1, marechal: 1, dentiste: 1, osteopathe: 1 })[r]   /* 07/11 (Blandine) : l image du metier aussi quand la case est vide */
+          ? h("img", { src: "images/sante-pro-" + r + ".webp", alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { width: 46, height: 46, flex: "0 0 auto", borderRadius: "50%", border: "1px dashed rgba(201,166,107,0.6)", objectFit: "cover", display: "block", opacity: 0.75 } })
+          : h("span", { style: { width: 44, height: 44, flex: "0 0 auto", borderRadius: "50%", border: "1px dashed rgba(201,166,107,0.45)", display: "flex", alignItems: "center", justifyContent: "center", color: TQ, fontSize: 18 } }, "+"),
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { fontFamily: M, fontSize: 13, color: "rgba(243,238,228,0.7)" } }, ROLES_EQ[r] || r),
           h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(201,166,107,0.8)", marginTop: 2 } }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가"))));
@@ -1133,10 +1134,16 @@ function EcranSanteCheval() {
      Blandine (cadre dessine retire : le liseré est trace par l appli, net sur tous les ecrans). Hey Baby s ouvre avec une phrase
      de depart sur la sante du cheval (son nom seulement — aucune donnee medicale transmise). Les observations epinglees : une
      ligne depliable sous le bandeau, seulement s il y en a. */
-  function bandeauSante(cle, img, ico, titre, sous, onTap) {   /* 07/11 : grande carte photo façon Vidéothèque (avant : bandeau 104 px) */
-    return h("div", { key: cle, role: "button", className: "sx-carte large", onClick: onTap },
-      h("div", { className: "ph" }, h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { objectPosition: "85% 50%" } })),
-      h("div", { className: "pan" }, h("b", null, titre), h("span", null, sous)));
+  function bandeauSante(cle, img, ico, titre, sous, onTap) {   /* 07/11 (Blandine) : bandeau d avant (104 px), photo bien visible a droite */
+    var rtlB = false; try { rtlB = document.documentElement.dir === "rtl"; } catch (eD) { }
+    return h("div", { key: cle, role: "button", onClick: onTap, style: { position: "relative", overflow: "hidden", height: 104, borderRadius: 16, border: "1px solid rgba(201,166,107,0.55)", background: "#080B0D", cursor: "pointer", display: "flex", alignItems: "center", gap: 14, padding: "0 16px" } },
+      h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "85% 38%", transform: rtlB ? "scaleX(-1)" : "none", pointerEvents: "none" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtlB ? "270deg" : "90deg") + ", rgba(8,11,13,0.86) 0%, rgba(8,11,13,0.45) 42%, rgba(8,11,13,0) 66%)" } }),
+      h("span", { style: { position: "relative", flex: "0 0 auto", width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.75)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(8,11,13,0.35)" } }, ico),
+      h("div", { style: { position: "relative", flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.15, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, titre),
+        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.82)", marginTop: 4, lineHeight: 1.35, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, sous)),
+      h("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 auto", color: TQ, fontSize: 24, lineHeight: 1 } }, rtlB ? "‹" : "›"));
   }
   var stOb = React.useState(false); var obsOuvert = stOb[0], setObsOuvert = stOb[1];
   function blocHeyBaby() {
@@ -1341,6 +1348,40 @@ function EcranSanteCheval() {
     var visD = ld.filter(function (d) { return docDansFiltre(d, fAct.k); });
     var lignesM = vis.map(function (x) { return { d: String(x.date_intervention || x.date_prochaine || ""), soin: x }; }).concat(visD.map(function (x) { return { d: String(x.date_doc || x.created_at || ""), doc: x }; }))
       .sort(function (p1, p2) { return p2.d.localeCompare(p1.d); });
+    cssSante();   /* 07/11 : tuiles par annee (styles de l autre conversation) dans le carnet d avant */
+    var parAn = {}; lignesM.forEach(function (m) { var a = m.d.slice(0, 4); if (!/^\d{4}$/.test(a)) a = "?"; (parAn[a] = parAn[a] || []).push(m); });
+    var ansN = Object.keys(parAn).filter(function (a) { return a !== "?"; }).map(Number).sort(function (a, b) { return b - a; });
+    var tuilesA = [];
+    if (ansN.length) {
+      var anMax = Math.max(ansN[0], new Date().getFullYear()), anMin = ansN[ansN.length - 1];
+      for (var yA = anMax; yA >= anMin; yA--) tuilesA.push({ k: String(yA), lignes: parAn[String(yA)] || [] });
+      if (tuilesA.length > 6) { tuilesA = tuilesA.slice(0, 5).concat([{ k: "avant", lignes: tuilesA.slice(5).reduce(function (acc, x) { return acc.concat(x.lignes); }, []) }]); }
+    }
+    if (parAn["?"]) { if (tuilesA.length && tuilesA[tuilesA.length - 1].k === "avant") tuilesA[tuilesA.length - 1].lignes = tuilesA[tuilesA.length - 1].lignes.concat(parAn["?"]); else tuilesA.push({ k: "avant", lignes: parAn["?"] }); }
+    function rangeesA(n) { var r = Math.ceil(n / 3), base = Math.floor(n / r), pl = n % r, L = []; for (var i = 0; i < r; i++) L.push(base + (i < pl ? 1 : 0)); return L; }
+    function etiqA(L) {
+      var ns = L.filter(function (m) { return !!m.soin; }).length, nd = L.length - ns, out = [];
+      if (ns) out.push(ns + " " + (ns > 1 ? T("soins", "treatments", "cuidados", "cure", "件", "Behandlungen", "علاجات", "项护理", "behandelingen", "cuidados", "behandlingar", "процед.", "zabiegi", "건")
+                                           : T("soin", "treatment", "cuidado", "cura", "件", "Behandlung", "علاج", "项护理", "behandeling", "cuidado", "behandling", "процед.", "zabieg", "건")));
+      if (nd) out.push(nd + " " + T("doc.", "doc.", "doc.", "doc.", "書類", "Dok.", "مستند", "文件", "doc.", "doc.", "dok.", "док.", "dok.", "문서"));
+      return out.length ? out.join(" · ") : T("Pas de soin renseigné", "No care recorded", "Sin cuidados registrados", "Nessuna cura registrata", "記録なし", "Keine Pflege eingetragen", "لا يوجد علاج مسجل", "未记录护理", "Geen zorg ingevuld", "Nenhum cuidado registrado", "Ingen vård registrerad", "Нет записей", "Brak zapisanych zabiegów", "기록 없음");
+    }
+    var selA = tuilesA.filter(function (x) { return x.k === anSel && x.lignes.length; })[0] || null;
+    var grilleA = null;
+    if (tuilesA.length) {
+      var kA = 0, celA = [];
+      rangeesA(tuilesA.length).forEach(function (c) {
+        for (var iA = 0; iA < c; iA++, kA++) (function (x) {
+          var vide = !x.lignes.length, seule = tuilesA.length === 1;
+          celA.push(h("button", { key: "tu" + x.k, type: "button", disabled: vide, "aria-expanded": vide ? undefined : (selA && selA.k === x.k ? "true" : "false"),
+            className: "sx-tu" + (vide ? " vide" : "") + (seule ? " horiz" : "") + (selA && selA.k === x.k ? " on" : ""), style: { gridColumn: "span " + (6 / c) },
+            onClick: vide ? null : function () { setAnSel(anSel === x.k ? "" : x.k); } },
+            h("b", null, x.k === "avant" ? T("Avant", "Earlier", "Antes", "Prima", "それ以前", "Früher", "قبل ذلك", "更早", "Eerder", "Antes", "Tidigare", "Ранее", "Wcześniej", "이전") : x.k),
+            h("small", null, etiqA(x.lignes))));
+        })(tuilesA[kA]);
+      });
+      grilleA = h("div", { className: "sx-tg" }, celA);
+    }
     return h("div", { style: { marginBottom: 6 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 12 } },
         h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, display: "block", flexShrink: 0 } }, h("path", { d: "M3.5 6.5h6l2 2h9v11h-17zM12 17.5s-3-1.8-3-3.6a1.6 1.6 0 0 1 3-.8 1.6 1.6 0 0 1 3 .8c0 1.8-3 3.6-3 3.6z", fill: "none", stroke: TQ, strokeWidth: 1.5, strokeLinejoin: "round" })),
@@ -1349,7 +1390,7 @@ function EcranSanteCheval() {
         h("div", { style: { flex: "1 1 auto", minWidth: 0, display: "flex", gap: 20, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "0 2px" } },   /* 11/10 (974) maquette A choisie par Blandine : onglets SOULIGNES (comme les pages chevaux) */
         FILTRES_CARNET.filter(function (f) { return f.k === "tous" || cpt[f.k] > 0 || !(l.length + ld.length); /* (983) carnet vide : tous les onglets restent visibles */ }).map(function (f) {
           var on = f.k === fAct.k;
-          return h("span", { key: f.k, role: "button", onClick: function () { setCarnetFiltre(f.k); }, style: { position: "relative", flex: "0 0 auto", padding: "8px 0 9px", color: on ? "#E9D9B8" : "rgba(243,238,228,0.6)", fontFamily: M, fontSize: 13, fontWeight: on ? 700 : 500, cursor: "pointer", whiteSpace: "nowrap" } },
+          return h("span", { key: f.k, role: "button", onClick: function () { setCarnetFiltre(f.k); setAnSel(""); }, style: { position: "relative", flex: "0 0 auto", padding: "8px 0 9px", color: on ? "#E9D9B8" : "rgba(243,238,228,0.6)", fontFamily: M, fontSize: 13, fontWeight: on ? 700 : 500, cursor: "pointer", whiteSpace: "nowrap" } },
             f.t, cpt[f.k] ? h("span", { style: { marginInlineStart: 5, fontSize: 11, fontWeight: 500, color: "rgba(201,166,107,0.8)" } }, cpt[f.k]) : null,
             on ? h("span", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, bottom: 0, height: 2, borderRadius: 2, background: "#C9A66B" } }) : null);
         })),
@@ -1365,14 +1406,11 @@ function EcranSanteCheval() {
           h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, color: "#E9D9B8", lineHeight: 1.15 } }, T("Ajouter un document", "Add a document", "A\u00f1adir un documento", "Aggiungi un documento", "\u66f8\u985e\u3092\u8ffd\u52a0", "Dokument hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0645\u0633\u062a\u0646\u062f", "添加文件", "Een document toevoegen", "Adicionar um documento", "Lägg till ett dokument", "Добавить документ", "Dodaj dokument", "문서 추가")),
           h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.6)", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, T("Ordonnances, r\u00e9sultats, analyses\u2026", "Prescriptions, results, tests\u2026", "Recetas, resultados, an\u00e1lisis\u2026", "Ricette, risultati, analisi\u2026", "\u51e6\u65b9\u7b8b\u3001\u7d50\u679c\u3001\u691c\u67fb\u2026", "Rezepte, Ergebnisse, Analysen\u2026", "\u0648\u0635\u0641\u0627\u062a\u060c \u0646\u062a\u0627\u0626\u062c\u060c \u062a\u062d\u0627\u0644\u064a\u0644\u2026", "处方、结果、检查…", "Recepten, uitslagen, onderzoeken…", "Receitas, resultados, exames…", "Recept, resultat, analyser…", "Рецепты, результаты, анализы…", "Recepty, wyniki, badania…", "처방전, 결과, 검사…"))),
         h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: TQ, fontSize: 22, lineHeight: 1 } }, (function () { try { return document.documentElement.dir === "rtl" ? "\u2039" : "\u203a"; } catch (eR) { return "\u203a"; } })())) : null,
-      h("div", { style: { borderRadius: 16, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, rgba(17,27,31,0.6) 0%, rgba(11,18,21,0.5) 100%)", overflow: "hidden" } },
-        lignesM.length ? lignesM.map(function (m, i) { return m.doc ? ligneDoc(m.doc, i) : ligneCarnet(m.soin, i); })
-          : h("div", { style: { padding: "22px 18px", textAlign: "center", fontFamily: M, fontSize: 13, color: "#8A929C", lineHeight: 1.6 } },   /* (983) carnet vide : le carnet reste affiche (titre, onglets, « Ajouter un document ») avec ce message */
-              T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0646\u0627\u064a\u0629 \u0645\u0633\u062c\u0644\u0629 \u062d\u0627\u0644\u064a\u0627.", "暂时没有护理记录。", "Nog geen verzorging geregistreerd.", "Nenhum cuidado registrado por enquanto.", "Ingen vård registrerad ännu.", "Пока нет записей об уходе.", "Na razie nie zapisano żadnej opieki.", "아직 기록된 케어가 없어요."))),
-      !lignesM.length ? null : h("div", { style: { textAlign: "center", fontSize: 11, color: "#5B646E", fontFamily: M, marginTop: 8 } },
-        lignesM.length + " " + (lignesM.length === 1
-          ? T("soin", "entry", "cuidado", "cura", "件", "Eintrag", "عناية", "条", "behandeling", "cuidado", "vårdpost", "запись", "zabieg", "케어")
-          : T("soins", "entries", "cuidados", "cure", "件", "Einträge", "عنايات", "条", "behandelingen", "cuidados", "vårdposter", "записей", "zabiegi", "케어"))));
+      lignesM.length ? grilleA : null,
+      selA ? h("div", { style: { marginTop: 10, borderRadius: 16, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, rgba(17,27,31,0.6) 0%, rgba(11,18,21,0.5) 100%)", overflow: "hidden" } },
+        selA.lignes.map(function (m, i) { return m.doc ? ligneDoc(m.doc, i) : ligneCarnet(m.soin, i); })) : null,
+      lignesM.length ? null : h("div", { style: { borderRadius: 16, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, rgba(17,27,31,0.6) 0%, rgba(11,18,21,0.5) 100%)", padding: "22px 18px", textAlign: "center", fontFamily: M, fontSize: 13, color: "#8A929C", lineHeight: 1.6 } },
+        T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")));
   }
 
   /* (944) Documents : types, filtres du carnet, ajout (photo ou PDF, type, date, soin associe), ouverture par lien temporaire, suppression. */
@@ -2066,6 +2104,8 @@ function EcranSanteCheval() {
       ".sx-pros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}",
       ".sx-pro{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(243,238,228,.09);background:#070A08;box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
       ".sx-pro.plein{grid-column:1/-1}",
+      ".sx-pros4{grid-template-columns:repeat(4,minmax(0,1fr))!important}",
+      "@media (max-width:1100px){.sx-pros4{grid-template-columns:repeat(2,minmax(0,1fr))!important}}",
       ".sx-pro .r{width:46px;height:46px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.45);object-fit:cover;display:flex;align-items:center;justify-content:center;color:#C9A66B}",
       ".sx-pro b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:18px;line-height:1.15;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis}",
       ".sx-pro span.s{display:block;font-size:11.5px;color:#C9A66B;margin-top:2px}",
@@ -2239,6 +2279,28 @@ function EcranSanteCheval() {
       lignesM.length ? [grilleA, enfants.length ? h("div", { key: "sel", className: "sx-tgl" }, enfants) : null] : h("div", { className: "sx-vide" }, T("Aucun soin enregistré pour l’instant.", "No care recorded yet.", "Aún no hay cuidados registrados.", "Nessuna cura registrata.", "まだ記録がありません。", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")),
       null);
   }
+  /* 07/11 (Blandine, choix B) : sur ORDINATEUR, l equipe en carres sur toute la largeur (4 par ligne), noms en entier ; telephone : liste pleine largeur */
+  function equipeCarres() {
+    cssSante();
+    var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
+    if (!roles.length && !errPro) return null;
+    return h("div", { style: { marginBottom: 30 } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 12 } },
+        h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, display: "block", flexShrink: 0 } }, h("circle", { cx: 12, cy: 8, r: 3.5, fill: "none", stroke: TQ, strokeWidth: 1.6 }), h("path", { d: "M5 20c.8-3.8 3.6-5.5 7-5.5s6.2 1.7 7 5.5M5.5 11a2.5 2.5 0 1 1 0-.1M18.5 11a2.5 2.5 0 1 1 0-.1", fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round" })),
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F3EEE4", flex: 1 } }, T("L'équipe de soins", "The care team", "El equipo de cuidados", "L'équipe di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية", "护理团队", "Het verzorgingsteam", "A equipe de cuidados", "Vårdteamet", "Команда по уходу", "Zespół opieki", "케어 팀"))),
+      errPro ? h("div", { style: { marginBottom: 10, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, String(errPro)) : null,
+      roles.length ? h("div", { className: "sx-pros sx-pros4" }, roles.map(function (r) {
+        var p = proDuRole(r), img = ({ veterinaire: 1, marechal: 1, dentiste: 1, osteopathe: 1 })[r] ? "images/sante-pro-" + r + ".webp" : null;
+        var rond = img ? h("img", { className: "r", src: img, alt: "", "aria-hidden": "true", loading: "lazy" }) : h("span", { className: "r" }, p ? initialesEq(p.nom) : "+");
+        if (!p) return h("div", { key: "eq" + r, role: "button", className: "sx-pro", style: { cursor: "pointer" }, onClick: function () { setFeuillePro({ role: r, pro: null }); } },
+          rond, h("div", { style: { minWidth: 0 } }, h("b", null, ROLES_EQ[r] || r), h("span", { className: "s" }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가"))));
+        return h("div", { key: "eq" + r, className: "sx-pro", role: peutEcrire ? "button" : null, style: { cursor: peutEcrire ? "pointer" : "default" }, onClick: peutEcrire ? function () { setFeuillePro({ role: r, pro: p }); } : null },
+          rond,
+          h("div", { style: { flex: 1, minWidth: 0 } }, h("b", null, p.nom), h("span", { className: "s", style: { color: "rgba(243,238,228,.6)" } }, (ROLES_EQ[r] || r) + (p.structure ? " · " + p.structure : ""))),
+          p.tel ? rondEq("tel", "tel:" + String(p.tel).replace(/\s+/g, ""), "t", T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화하기")) : null,
+          p.email ? rondEq("mail", "mailto:" + String(p.email).trim(), "m", T("Écrire", "Email", "Escribir", "Scrivi", "メール", "E-Mail", "كتابة", "写邮件", "Schrijven", "Escrever", "Skriv", "Написать", "Napisz", "쓰기")) : null);
+      })) : null);
+  }
   function equipe2() {
     var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
     if (!roles.length && !errPro) return null;
@@ -2265,14 +2327,13 @@ function EcranSanteCheval() {
       h("div", { className: "sx-cartes" }, S.map(carteSuivi2)));
   }
   function mepSante(blocCarnet) {
-    if (!largeS) return h("div", { style: { padding: "0 18px 30px" } },
-      suivi2(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */, blocCarnet,
-      h("div", { style: { marginTop: 10 } }, equipe2(), blocHeyBaby(), blocMagazine()));
+    if (!largeS) return h("div", { style: { padding: "0 16px 30px" } },
+      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */, blocCarnet,
+      h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));
     return h("div", { style: { padding: "0 32px 40px" } },
-      suivi2(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
-      h("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 1fr)", gap: 24, alignItems: "start" } },
-        h("div", { style: { minWidth: 0 } }, blocCarnet),
-        h("div", { style: { minWidth: 0 } }, equipe2())),
+      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
+      h("div", { style: { minWidth: 0 } }, blocCarnet),   /* 07/11 (Blandine, choix B) : carnet sur toute la largeur, */
+      h("div", { style: { minWidth: 0, marginTop: 30 } }, equipeCarres()),   /* puis l equipe en carres, noms en entier */
       h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 30, alignItems: "start" } },
         h("div", { style: { minWidth: 0 } }, blocHeyBaby()),
         h("div", { style: { minWidth: 0 } }, blocMagazine())));
@@ -2285,14 +2346,14 @@ function EcranSanteCheval() {
       h("div", { style: { fontSize: 30 } }, "\ud83e\ude7a"),
       h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 10, lineHeight: 1.6 } },
         T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0646\u0627\u064a\u0629 \u0645\u0633\u062c\u0644\u0629 \u062d\u0627\u0644\u064a\u0627.", "暂时没有护理记录。", "Nog geen verzorging geregistreerd.", "Nenhum cuidado registrado por enquanto.", "Ingen vård registrerad ännu.", "Пока нет записей об уходе.", "Na razie nie zapisano żadnej opieki.", "아직 기록된 케어가 없어요.")));
-    corps = mepSante(carnetSante2());   /* (983) Blandine : « laisse au moins ecrit Carnet de sante, les onglets et la proposition d en ajouter un » — le carnet (titre, onglets, Ajouter un document, documents deja la) s affiche aussi sans soin ; avant : boiteVide seule */
+    corps = mepSante(carnetSante());   /* (983) Blandine : « laisse au moins ecrit Carnet de sante, les onglets et la proposition d en ajouter un » — le carnet (titre, onglets, Ajouter un document, documents deja la) s affiche aussi sans soin ; avant : boiteVide seule */
   } else {
     var titreSec = function (txt) {
       return h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 11px" } },
         h("div", { style: { fontFamily: C, fontSize: 14, fontWeight: 700, color: "#D9C7A3", letterSpacing: 0.6, textTransform: "uppercase" } }, txt),
         h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.35), transparent)" } }));
     };
-    corps = mepSante(carnetSante2());   /* (942) */
+    corps = mepSante(carnetSante());   /* (942) */
   }
 
   /* FOND — UN SEUL calque fixe (image + deux voiles dans le meme background) :
@@ -2307,14 +2368,16 @@ function EcranSanteCheval() {
          assombrie par deux voiles pour que tout reste lisible. Sans photo : l ancien fond Sante, inchange. */
       backgroundImage: photoVue
         ? "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.35) 30%, rgba(6,7,9,0.70) 65%, rgba(6,7,9,0.95) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.85) 0%, rgba(6,7,9,0.45) 55%, rgba(6,7,9,0.20) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
-        : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/FOND_SANTE.webp')",
-      backgroundSize: "cover, cover, cover",
-      backgroundPosition: photoVue ? "center, center, center" : "center, center, center right",
+        : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/sante-fond-defaut.webp')",   /* 07/11 (Blandine) : sans photo, SA photo du cheval bai tete baissee en fond (a la place du cheval bleu), tete jamais coupee */
+      /* 07/11 (Blandine) : sans photo, le cheval du fond est decale pour ne pas passer sous l image du haut :
+         telephone = en bas de l ecran (sous le haut de page) ; tablette / ordinateur = a gauche (l image du haut est a droite). Tete jamais coupee. */
+      backgroundSize: photoVue ? "cover, cover, cover" : (largeS ? "cover, cover, auto 100%" : "cover, cover, auto 60%"),
+      backgroundPosition: photoVue ? "center, center, center" : (largeS ? "center, center, center center" : "center, center, 74% bottom"),
       backgroundRepeat: "no-repeat, no-repeat, no-repeat"
     }
   });
 
-  return h("div", { style: { position: "relative", minHeight: "100vh", background: "#070A08" /* 07/11 fond uni (Vidéothèque) ; (899) lueur retirée */, color: "#EDF2F5", paddingBottom: 120 } },
+  return h("div", { style: { position: "relative", minHeight: "100vh", background: "radial-gradient(ellipse 130% 420px at 50% 0%, rgba(127,163,173,0.22), rgba(127,163,173,0.07) 55%, transparent 80%) local, #060709" /* (899) lueur de l accueil */, color: "#EDF2F5", paddingBottom: 120 } },
     fond,
     h("div", { style: { position: "relative", zIndex: 1, maxWidth: largeS ? 1240 : "none", margin: "0 auto" } },   /* (942) ordinateur : largeur de lecture confortable */
       /* ---------- EN-TETE CHEVAL : PORTRAIT FONDU DANS LE NOIR ----------
@@ -2331,26 +2394,28 @@ function EcranSanteCheval() {
          « SANTE & SOINS », nom en grand, phrase, bouton « + Ajouter un soin » a contour champagne DANS le hero.
          ~40 px plus haut que la maquette (consigne), plus d air avant la premiere rubrique. Sans photo : meme texte sur le fond de page.
          Arabe : tout est en miroir (photo a gauche, degrade vers la droite). */
-      /* 07/11 (Blandine : « reste dans le design de la vidéothèque », maquette « sante1 » validée « Ok continue ») :
-         haut de page comme la Vidéothèque — retour rond + drapeau, photo (celle du cheval, ENTIÈRE comme décidé le 04/11 ;
-         sans photo, la photo Santé de Hype), courbes dorées, puis à droite le nom du cheval en petites capitales,
-         « Santé » en grand et la phrase en italique. Remplace l en-tête 931/937/941. */
       (function () {
-        cssPageVac(); cssSante();
         var rtlS = false; try { rtlS = document.documentElement.dir === "rtl"; } catch (eR) { }
-        var retourFlottant = h("button", { key: "ret", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), className: "vxp-rond" }, rtlS ? "›" : "‹");
-        var titre = h("div", { className: "vxp-in", style: { paddingBottom: 0, maxWidth: largeS ? 1240 : undefined } }, h("div", { className: "vxp-titre" },
-          h("span", { className: "sx-kicker" }, nomCourt + (affixe ? " " + affixe : "")),
-          montrerOffi ? h("span", { className: "sx-offi" }, nomOffi) : null,
-          h("h1", null, T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강")),
-          h("p", null, T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura è già amare.", "気づかうことは、愛すること。", "Fürsorge ist schon Liebe.", "الاعتناء هو بالفعل حب.", "悉心照料，便是爱。", "Zorgen is al liefhebben.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит любить.", "Troska to już miłość.", "돌보는 것이 곧 사랑이에요."))));
-        return h("div", { className: "vxp-hero", style: { marginBottom: 4 } },
-          (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
+        var lgN = String(nomCourt || "").length;
+        var tailleNom = (lgN <= 10 ? 40 : (lgN <= 16 ? 34 : (lgN <= 24 ? 29 : 25))) * (largeS ? 1.4 : 1);
+        var blocNom = h("div", { style: { minWidth: 0, maxWidth: "50%" } },   /* (937) le titre reste sur le cote sombre, jamais sur la tete du cheval */
+          h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 3.6, textTransform: "uppercase", color: TQ, textShadow: "0 1px 10px rgba(0,0,0,0.7)" } },
+            T("Santé & soins", "Health & care", "Salud y cuidados", "Salute e cure", "健康とケア", "Gesundheit & Pflege", "الصحة والعناية", "健康与护理", "Gezondheid & verzorging", "Saúde & cuidados", "Hälsa & vård", "Здоровье и уход", "Zdrowie i opieka", "건강 & 케어")),
+          h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: tailleNom, fontWeight: 600, lineHeight: 1.04, marginTop: 6, color: "#F6F1E7", overflowWrap: "normal", wordBreak: "keep-all", textShadow: "0 2px 18px rgba(0,0,0,0.6)" } }, nomCourt),
+          affixe ? h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 16, color: TQ, marginTop: 2, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, affixe) : null,
+          montrerOffi ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA3AB", marginTop: 4 } }, nomOffi) : null,
+          null /* (937) phrase et bouton sortis du hero (Blandine) */);
+        var retourFlottant = h("button", { key: "ret", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 10px)", insetInlineStart: 16, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.75)", background: "rgba(6,7,9,0.35)", color: "#C9A66B", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } }, rtlS ? "›" : "‹");
+        var photoHeroS = photoVue || "images/galops-carte-cours-bai.webp";   /* 07/11 (Blandine) : sans photo du cheval, le cheval de la Videotheque en image par defaut */
+        return h("div", { style: { position: "relative", width: "100%", height: largeS ? 358 : "calc(env(safe-area-inset-top) + 360px)" /* 29/10 : +58 px, photo descendue sous la ligne des boutons comme Histoire / Photos */, overflow: "hidden", marginBottom: 4 } },
+          /* fondu par masque (pas de voile noir plein) : la photo se dissout dans le fond de page, sans bord visible en bas */
+          (largeS && !photoVue) ? null /* 07/11 (Blandine, version 1) : sur ordinateur, sans photo, pas d image en haut — le cheval est en fond au milieu */ : h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: largeS ? "68%" : "100%" /* 04/11 : photo entière, pleine largeur sur iPhone */,   /* (937) 62 % ; (941) 80 % + fondu court : la tete du cheval n est plus coupee (Blandine) ; (942) 68 % ordinateur */ WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)" } },
+            h("img", { src: photoHeroS, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" /* 04/11 19h15 Blandine : photo du cheval ENTIÈRE */, objectPosition: rtlS ? "0% 50%" : "100% 50%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 8%, #000 18%)", maskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 12%, #000 26%)" } })),
+          h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, left: 0, right: 0, height: 90, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0.5) 0%, rgba(6,7,9,0) 100%)" } }),
+          /* (941) voile seulement derriere le titre (coin bas, cote texte) : le reste de la photo reste net */
+          h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 75% 45% at " + (rtlS ? "100%" : "0%") + " 100%, rgba(6,7,9,0.88) 0%, rgba(6,7,9,0.55) 45%, rgba(6,7,9,0) 100%)" } }),
           retourFlottant,
-          courbeVac("c1", "M250 4 C 330 8, 385 40, 400 96"),
-          h("div", { className: "vxp-photo" + (photoVue ? " sx-photo-cheval" : "") }, h("img", { src: photoVue || "images/sante-hero-defaut.webp", alt: "", fetchpriority: "high" })),
-          courbeVac("c2", "M0 92 C 130 90, 240 62, 400 8"),
-          titre);
+          h("div", { style: { position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, zIndex: 2, padding: largeS ? "0 32px 26px" : "0 20px 18px" } }, blocNom));
       })(),
       /* (937) Blandine : la petite phrase en italique revient SOUS le titre, a droite (comme avant le 931), puis « + Ajouter un soin » centre en dessous. */
       /* 11/10 (980) Blandine : « ajoute le petit menu qu on a sur les autres pages » — memes onglets que Histoire / Photos /
@@ -2371,7 +2436,8 @@ function EcranSanteCheval() {
             return h("button", { key: "tbs" + tb[0], type: "button", onClick: function () { if (onTb) return; try { window.__chevalOuvert = chId; window.__hypePanneauReprise = tb[0]; } catch (eTb) { } setEcran("cheval"); }, style: { flex: "0 0 auto", padding: "12px 4px 12px", minHeight: 44, border: "none", borderBottom: "1.5px solid " + (onTb ? "rgba(201,166,107,0.85)" : "transparent"), marginBottom: -1, background: "none", cursor: onTb ? "default" : "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 600 : 500, letterSpacing: "0.02em", color: onTb ? "rgba(217,190,140,0.95)" : "rgba(237,242,245,0.42)", textShadow: "0 1px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap" } }, tb[1]);
           }));
       })(),
-      null /* 07/11 : la phrase est dans le haut de page (Vidéothèque) */,
+      h("div", { style: { padding: "24px 22px 10px 16px", textAlign: "end", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.25, color: "#D2B07A", textShadow: "0 0 14px rgba(201,166,107,0.42)", opacity: 0.92 } },
+        T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura è già amare.", "気づかうことは、愛すること。", "Fürsorge ist schon Liebe.", "الاعتناء هو بالفعل حب.", "悉心照料，本身就是爱。", "Zorgen is al houden van.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит уже любить.", "Dbać to już kochać.", "돌본다는 건 이미 사랑하는 거예요.")),
       /* 11/10 (973) Blandine (capture 22 h 21) : « Ajouter un soin, change-le en un onglet similaire a Ajouter ses consignes » —
          le bouton rond devient la meme carte en pointilles que « Ajouter ses consignes » (+, titre Cormorant, sous-titre).
          Meme action (feuille de saisie d un soin), meme verrou Premium. */
@@ -2379,15 +2445,33 @@ function EcranSanteCheval() {
          encore AUCUNE consigne, les deux cartes en pointilles se partagent la ligne (2 colonnes). Des qu il a des consignes, le bandeau
          « Consignes du cheval » (depliable) reprend toute la largeur sous « Ajouter un soin », comme avant. */
       h((typeof HypeVoileSantePremium === "function") ? HypeVoileSantePremium : React.Fragment, null,   /* 02/11 (Blandine) : sans Premium, tout ce qui suit le haut de page est flouté */
-      /* 07/11 (maquette Vidéothèque) : l état en une seconde, puis la ligne « + Ajouter un soin » / « Consignes » (quand il n y en a pas encore) ;
-         les consignes déjà remplies gardent leur carte dépliable (blocConsignes). Remplace les cartes en pointillés 973/980. */
       (function () {
         var consVides = consignes !== null && !RUB_CONS.some(function (r) { return String((consignes || {})[r.k] || "").trim(); });
-        return h("div", { style: { padding: largeS ? "0 32px" : "0 18px" } },
-          boiteEtatSante(),
-          ligneActionsSante(consVides),
-          consVides ? null : h("div", { style: { marginTop: 18 } }, blocConsignes()));
-      })(),
+        var pad = largeS ? "18px 32px 0" : "18px 16px 0";   /* (1062) 12 -> 18 */
+        function carteDuo(titre, sous, agir) {
+          return h("div", { role: "button", onClick: agir, style: { minWidth: 0, padding: "13px 12px", borderRadius: 16, border: "1px dashed rgba(201,166,107,0.5)", background: "rgba(14,26,24,0.3)", cursor: "pointer" } },
+            h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 17, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2 } }, h("span", { style: { color: TQ, marginInlineEnd: 6, fontFamily: M, fontWeight: 400 } }, "+"), titre),
+            h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(243,238,228,0.6)", marginTop: 3, lineHeight: 1.35 } }, sous));
+        }
+        if (peutEcrire && consVides) {
+          return h("div", { style: { padding: pad } },
+            h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 /* (1062) 10 -> 14 */, margin: "0 0 30px" } },
+              carteDuo(T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0631\u0639\u0627\u064a\u0629", "添加护理记录", "Verzorging toevoegen", "Adicionar um cuidado", "Lägg till en vårdpost", "Добавить запись об уходе", "Dodaj zabieg", "케어 추가"),
+                T("Vaccin, vermifuge, ferrure, dentiste\u2026", "Vaccine, deworming, shoeing, dentist\u2026", "Vacuna, desparasitaci\u00f3n, herrado, dentista\u2026", "Vaccino, vermifugo, ferratura, dentista\u2026", "\u30ef\u30af\u30c1\u30f3\u3001\u99c6\u866b\u3001\u88c5\u8e44\u3001\u6b6f\u79d1\u2026", "Impfung, Entwurmung, Beschlag, Zahnarzt\u2026", "\u0644\u0642\u0627\u062d\u060c \u062a\u062e\u0644\u064a\u0635 \u0645\u0646 \u0627\u0644\u062f\u064a\u062f\u0627\u0646\u060c \u062a\u0646\u0639\u064a\u0644\u060c \u0637\u0628\u064a\u0628 \u0623\u0633\u0646\u0627\u0646\u2026", "疫苗、驱虫、钉蹄铁、牙医…", "Vaccin, ontwormen, beslag, tandarts…", "Vacina, vermífugo, ferrageamento, dentista…", "Vaccin, avmaskning, skoning, tandläkare…", "Прививка, глистогонное, ковка, стоматолог…", "Szczepionka, odrobaczanie, kucie, dentysta…", "백신, 구충제, 장제, 치과…"),
+                function () { setFeuille({ soin: null }); }),
+              carteDuo(T("Ses consignes", "Instructions", "Sus consignas", "Le istruzioni", "\u6ce8\u610f\u4e8b\u9805", "Hinweise", "\u062a\u0639\u0644\u064a\u0645\u0627\u062a\u0647", "注意事项", "Zijn/haar instructies", "Instruções dele", "Hans/hennes instruktioner", "Её указания", "Jego wskazówki", "말의 지침"),
+                T("Enrênement, matériel, soins spécifiques", "Training aids, tack, specific care", "Riendas, material, cuidados", "Redini, attrezzatura, cure", "補助具、馬具、特別なケア", "Hilfszügel, Ausrüstung, Pflege", "أدوات، معدات، عناية خاصة", "辅助缰具、装备、特殊护理", "Hulpmiddelen, materiaal, speciale verzorging", "Rédeas auxiliares, equipamento, cuidados específicos", "Hjälpmedel, utrustning, särskild vård", "Вспомогательные поводья, амуниция, особый уход", "Wodze pomocnicze, sprzęt, specjalna pielęgnacja", "보조 고삐, 장구, 특별 케어"),
+                ouvrirConsEdit)));
+        }
+        return h(React.Fragment, null,
+      peutEcrire ? h("div", { style: { padding: largeS ? "12px 32px 0" : "12px 16px 0" } },
+        h("div", { role: "button", onClick: function () { setFeuille({ soin: null }); }, style: { margin: "0 0 14px", padding: "14px 16px", borderRadius: 16, border: "1px dashed rgba(201,166,107,0.5)", background: "rgba(14,26,24,0.3)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" } },
+          h("span", { style: { color: TQ, fontSize: 20, lineHeight: 1 } }, "+"),
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, color: "#F3EEE4" } }, T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0639\u0646\u0627\u064a\u0629", "添加护理记录", "Verzorging toevoegen", "Adicionar um cuidado", "Lägg till en vårdpost", "Добавить запись об уходе", "Dodaj zabieg", "케어 추가")),
+            h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.6)", marginTop: 2 } }, T("Vaccin, vermifuge, ferrure, dentiste\u2026", "Vaccine, deworming, shoeing, dentist\u2026", "Vacuna, desparasitaci\u00f3n, herrado, dentista\u2026", "Vaccino, vermifugo, ferratura, dentista\u2026", "\u30ef\u30af\u30c1\u30f3\u3001\u99c6\u866b\u3001\u88c5\u8e44\u3001\u6b6f\u79d1\u2026", "Impfung, Wurmkur, Beschlag, Zahnarzt\u2026", "\u0644\u0642\u0627\u062d\u060c \u0637\u0627\u0631\u062f \u062f\u064a\u062f\u0627\u0646\u060c \u062a\u0646\u0639\u064a\u0644\u060c \u0637\u0628\u064a\u0628 \u0623\u0633\u0646\u0627\u0646\u2026", "疫苗、驱虫、钉蹄铁、牙医…", "Vaccin, ontwormen, beslag, tandarts…", "Vacina, vermífugo, ferrageamento, dentista…", "Vaccin, avmaskning, skoning, tandläkare…", "Прививка, глистогонное, ковка, стоматолог…", "Szczepionka, odrobaczanie, kucie, dentysta…", "백신, 구충제, 장제, 치과…"))))) : h("div", { style: { height: 24 } }),
+          h("div", { style: { padding: largeS ? "0 32px" : "0 16px" } }, blocConsignes()));
+      })(),   /* (940) consignes avant le SUIVI (maquette) */
       fenetreConsignes(),
       null /* (932) « A surveiller » remplace par SUIVI */,
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
