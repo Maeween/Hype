@@ -73,7 +73,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 7;
+  var I18N_V = 8;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -2177,7 +2177,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     function ouvrirLigne(l) {
       if (ouvert === (l ? l.id : "nouveau")) { setOuvert(null); return; }
       setMsg(""); setConfSuppr(false);
-      var v = {}; ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin"].forEach(function (k) { v[k] = (l && l[k]) || ""; });
+      var v = {}; ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin", "email"].forEach(function (k) { v[k] = (l && l[k]) || ""; });
       v.temps_partiel = !!(l && l.temps_partiel);
       if (!l) { v.date_entree = isoAuj(); v.nationalite = "Française"; }
       setVal(v); setOuvert(l ? l.id : "nouveau");
@@ -2190,7 +2190,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       setEnvoi(true); setMsg("");
       try {
         var ligne = { club_clef: clefDe(c.club), temps_partiel: !!val.temps_partiel, maj_le: new Date().toISOString() };
-        ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin"].forEach(function (k) { var x = String(val[k] || "").trim(); ligne[k] = x || null; });
+        ["nom", "prenoms", "nationalite", "date_naissance", "sexe", "emploi", "qualification", "type_contrat", "date_entree", "date_sortie", "titre_travail", "tuteur", "notes", "carte_pro_numero", "carte_pro_fin", "email"].forEach(function (k) { var x = String(val[k] || "").trim(); ligne[k] = x || null; });
         var r = l ? await supa.from("registre_personnel").update(ligne).eq("id", l.id).select("*") : await supa.from("registre_personnel").insert(ligne).select("*");
         if (r && r.error) throw new Error(r.error.message || String(r.error));
         if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré (droits de l'écurie à vérifier).");
@@ -2247,6 +2247,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         choix("sexe", "Sexe", ["Femme", "Homme"]),
         champ("nationalite", "Nationalité"),
         val.nationalite && !/^fran/i.test(val.nationalite) ? champ("titre_travail", "Titre qui autorise à travailler", { ex: "Type et numéro" }) : null,
+        champ("email", "E-mail de son compte Hype (facultatif)", { type: "email", ex: "prenom@exemple.fr" }),   /* 07/11 : accès au planning */
+        h("div", { key: "emA", className: "hg-aide" }, "Avec cet e-mail, la personne voit « Le planning » de l'écurie dans Hype et coche ce qu'elle a fait. Rien d'autre ne lui est ouvert."),
         h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
         l ? (confSuppr
           ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
@@ -2397,7 +2399,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     defauts: function () { return { formule: "Box", frequence: "Mensuel", prochain_paiement: isoAuj() }; }
   };
   var CFG_PLANNING = {
-    table: "ecurie_taches", cle: "tache", ordre: "moment", titre: "Le planning", sous: "Qui nourrit, qui sort les chevaux, qui fait les boxes.", photo: "planning",
+    table: "ecurie_taches", cle: "tache", ordre: "moment", personnel: true, rpcFait: "hype_tache_faite", titre: "Le planning", sous: "Qui nourrit, qui sort les chevaux, qui fait les boxes.", photo: "planning",
     nouveau: "Nouvelle tâche", ajouter: "Ajouter une tâche", depart: "auj",
     vide: "Aucune tâche notée. Touche + pour ajouter les repas, les sorties, les boxes…",
     aide: "Note chaque tâche une fois avec ses jours. Touche « C'est fait » quand c'est fait : tu vois d'un coup d'œil ce qu'il reste pour aujourd'hui.",
@@ -2443,11 +2445,12 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             var clef = clefDe(c.club);
             try { var r1 = await supa.rpc("hype_est_moderatrice"); res.peutGerer = !!(r1 && r1.data === true); } catch (eM) { }
             if (!res.peutGerer) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); res.peutGerer = !!(r2 && r2.data === true); } catch (eG) { } }
-            if (res.peutGerer) {
+            if (!res.peutGerer && cfg.personnel) { try { var r3 = await supa.rpc("hype_est_personnel_club", { p_clef: clef }); res.lecture = !!(r3 && r3.data === true); } catch (eP) { } }
+            if (res.peutGerer || res.lecture) {
               var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: true }).limit(500);
               if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
               else res.lignes = (rp && rp.data) || [];
-              if (cfg.suggDyn) { try { var rs = await supa.from(cfg.suggDyn.table).select("*").eq("club_clef", clef).limit(200); if (rs && !rs.error && vif) setSuggDyn(cfg.suggDyn.fn(rs.data || []).filter(Boolean)); } catch (eS) { } }
+              if (cfg.suggDyn && res.peutGerer) { try { var rs = await supa.from(cfg.suggDyn.table).select("*").eq("club_clef", clef).limit(200); if (rs && !rs.error && vif) setSuggDyn(cfg.suggDyn.fn(rs.data || []).filter(Boolean)); } catch (eS) { } }
             }
           } catch (e) { res.erreur = String((e && e.message) || e); }
           if (vif) setD(res);
@@ -2465,6 +2468,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       async function ecrire(l, ligne, ok) {
         setEnvoi(true); setMsg("");
         try {
+          if (d && !d.peutGerer && d.lecture && cfg.rpcFait) {
+            var rr = await supa.rpc(cfg.rpcFait, { p_id: l.id });
+            if (rr && rr.error) throw new Error(rr.error.message || String(rr.error));
+            setOuvert(null); setMsg(ok || "✓ Enregistré"); setRecharge(function (n) { return n + 1; }); setEnvoi(false); return;
+          }
           ligne.maj_le = new Date().toISOString();
           var r = l ? await supa.from(cfg.table).update(ligne).eq("id", l.id).select("*") : await supa.from(cfg.table).insert(Object.assign({ club_clef: clefDe(c.club) }, ligne)).select("*");
           if (r && r.error) throw new Error(r.error.message || String(r.error));
@@ -2491,6 +2499,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       }
       function formulaire(l) {
         var on = { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" };
+        if (d && !d.peutGerer) return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
+          l.notes ? h("div", { className: "hg-aide", style: { marginTop: 0 } }, l.notes) : null,
+          cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 6 }, disabled: envoi, onClick: function () { ecrire(l, {}, cfg.action.ok); } }, cfg.action.lab) : h("div", { className: "hg-ok" }, "✓ Fait aujourd'hui"),
+          msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
         return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
           l && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", dateCourte(m.prochain_reglement || m.prochain_paiement || isoAuj()))); } }, cfg.action.lab) : null,
           cfg.champs.map(function (ch) {
@@ -2515,13 +2527,13 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var corps;
       if (!d) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
       else if (!c.club) corps = h("div", { className: "hg-vide" }, "Rattache-toi à une écurie depuis ton profil pour ouvrir cet espace.");
-      else if (!d.peutGerer) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie.");
+      else if (!d.peutGerer && !d.lecture) corps = h("div", { className: "hg-encart" }, h("b", null, "Réservé au responsable"), "Seule la personne qui gère l'écurie peut voir et remplir cette partie.");
       else if (d.absent) corps = h("div", { className: "hg-encart" }, h("b", null, "Bientôt"), "Cette partie arrive très vite : elle n'est pas encore activée.");
       else {
         var auj = isoAuj(), L = d.lignes || [];
         var vis = L.filter(function (x) { return cfg.filtre(f, x, auj); });
         corps = h("div", null,
-          ligneEcurie(h, c, [{ svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
+          ligneEcurie(h, c, [d.peutGerer ? { svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } } : null]),
           tuiles(h, cfg.tuiles.map(function (t) { var n = L.filter(function (x) { return cfg.filtre(t[0], x, auj); }).length; return { k: t[0], b: t[1], s: String(n), n: t[0] === "tous" ? 1 : n }; }), f, setF),
           ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, cfg.nouveau), formulaire(null)) : null,
           cfg.resume && cfg.resume(L) ? h("div", { className: "hg-sous", style: { marginTop: 10 } }, cfg.resume(L)) : null,
@@ -2533,7 +2545,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               carte(h, { cle: x.id, photo: PHOTOS[cfg.photo], titre: k.titre, sous: k.sous, pill: k.pill, etat: k.etat, alerte: k.alerte, onClick: function () { ouvrirLigne(x); } }),
               ouvert === x.id ? formulaire(x) : null);
           })) : h("div", { className: "hg-vide" }, L.length ? "Rien pour ce choix." : cfg.vide),
-          h("div", { className: "hg-sous" }, cfg.aide));
+          h("div", { className: "hg-sous" }, d.peutGerer ? cfg.aide : "Touche une tâche puis « C'est fait » quand tu l'as faite. Le responsable de l'écurie le voit tout de suite."));
       }
       return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
         hero(h, { photo: PHOTOS[cfg.photo], titre: cfg.titre, sous: cfg.sous, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),

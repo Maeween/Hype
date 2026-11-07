@@ -14,10 +14,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 2 — Important
 - [07/11] Page Santé du cheval : la photo du cheval sert aussi de FOND à toute la page (build 20261107-1550). À tester sur iPhone avec un cheval qui a une photo, puis un cheval sans photo (doit garder l'ancien fond Santé) (attend : Blandine)
-- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; traductions des 13 langues FAITES le 07/11 16h30 (prêtes, non publiées : voir l'entrée du jour) ; puis accès Premium et ouverture à toutes (attend : Blandine)
+- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; traductions des 13 langues EN LIGNE (build 20261107-1900) ; puis accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
-- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 (le programme parle de « principes d'éthologie et de bien-être équin », pas de la Charte), ouverture (attend : Blandine)
+- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 « La charte du bien-être équin » à garder ou renommer (l'introduction est corrigée le 07/11 : le programme demande les principes d'éthologie et de bien-être, la Charte les résume), ouverture (attend : Blandine)
 - [07/11] Galop 8 : les 20 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Vérifié dans le programme FFE (REF 237) : partie commune + 3 parties spécifiques, « circuits et labels de la compétition », longe / longues rênes / liberté. Reste : relecture dans l'appli, photos (texte donné le 05/11), ouverture (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
@@ -755,8 +755,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   mois ; échéances à encaisser dans « Les échéances ». Planning : tâche, qui
   (suggestions = personnel présent du registre), jours, moment ; vue
   « Aujourd'hui » par défaut, « C'est fait » du jour. 14 langues.
-  PUBLIÉ build 20261107-1600. À DÉCIDER : faire voir le planning aux
-  salariés eux-mêmes (aujourd'hui, seul le responsable le voit).
+  PUBLIÉ build 20261107-1600.
+· 07/11 17 h 59 (« Ok continue » à la proposition) → LE PLANNING VU PAR LE
+  PERSONNEL. SQL PASSÉ (sql-07-11-planning-personnel.sql, que des ajouts) :
+  colonne email dans registre_personnel ; fonctions hype_est_personnel_club
+  et hype_tache_faite ; règle de lecture taches_lire_personnel. Seules les
+  personnes présentes du « Personnel » dont le responsable a rempli l'e-mail
+  du compte Hype voient le planning de l'écurie et peuvent seulement cocher
+  « C'est fait » (ni ajout, ni modif, ni suppression ; tout le reste de Mon
+  écurie leur reste fermé). Testé en base : un compte inconnu ne voit rien.
+  14 langues. PUBLIÉ build 20261107-1840. À tester avec un vrai compte salarié.
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 
@@ -785,6 +793,16 @@ haut niveau. Réponses détaillées a → m données à Blandine le 07/11 vers 0
 FICHIER POUR L'AUDIT : texte intégral des 39 cours (chapitres, encadrés,
 lexique, quiz avec bonne réponse et explication) envoyé à Blandine, à joindre
 au prompt d'audit (ChatGPT).
+
+════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (16 h 15) — GALOP 9 · COURS 3 : MÉDICAMENTS PÉRIMÉS (point « À confirmer » de l'audit, confirmé)
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | version 11 : « au vétérinaire ou à la pharmacie » → « au vétérinaire (la collecte en pharmacie ne prend que les médicaments humains) » + quiz q7 et son explication |
+| index.html | racine | ?v galop9 10 → 11, build 20261107-1615 (rien d'autre) |
+Source : Ordre des pharmaciens — Cyclamed collecte « uniquement les médicaments non utilisés… à usage humain ».
+Toujours « À confirmer » : « de ferme à ferme » (aucune définition officielle trouvée en ligne).
 
 ════════════════════════════════════════════════════════════
 
@@ -19065,7 +19083,7 @@ Portugais : 8 dernières phrases à la façon du Portugal (« deves », « quere
 Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles ne permet pas de le contrôler sûrement), à faire relire par une arabophone.
 
 ════════════════════════════════════════════════════════════
-## 07/11/2026 16h05 — Page Santé du cheval dans le style de la Vidéothèque (build 20261107-1610, NON PUBLIÉ)
+## 07/11/2026 16h05 — Page Santé du cheval dans le style de la Vidéothèque (build 20261107-1610 — EN LIGNE avec les publications de l'autre conversation, 18h10–18h40)
 - Maquette « sante1 » acceptée (« Ok continue »). Fichier : hype-ecran-sante-cheval.js?v=9.
 - Haut de page : retour rond + drapeau, photo du cheval ENTIÈRE à droite fondue dans le noir (décision 04/11 gardée ; sans photo : images/sante-hero-defaut.webp), courbes dorées, nom du cheval en petites capitales, « Santé » en grand, « Prendre soin, c'est déjà aimer. » en italique (remplace l'en-tête 931/937/941 et la phrase en écriture manuscrite).
 - Onglets du cheval inchangés. Fond de page : on garde le choix de Blandine de 15h50 (photo du cheval en fond, sinon FOND_SANTE), publié par l'autre conversation.
@@ -19079,7 +19097,7 @@ Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles
 - Demande suivante notée (07/11 15h50) : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » → à proposer.
 
 
-## 07/11/2026 16h30 — PRÊT, NON PUBLIÉ — PRÉPAS AE · BP · DE (+ DES) TRADUITES DANS LES 13 AUTRES LANGUES (Blandine 15h50 : « Traduction »)
+## 07/11/2026 19h00 — PUBLICATION build 20261107-1900 (Blandine 17h59 et 18h40 : « Ok continue ») — PRÉPAS AE · BP · DE (+ DES) TRADUITES DANS LES 13 AUTRES LANGUES (demande 15h50 : « Traduction »)
 - Traduit : tout le contenu des 4 prépas (sections, épreuves, tableaux, listes à cocher, sources), les textes de l'écran (retour, onglets, « À vérifier », « Oui/Non », compteur de la liste, rappel final) et le bandeau « Et après les Galops ? » de la page des Galops.
 - Une langue par assistant (comme pour les Galops 8 et 9), puis contrôle automatique de chaque langue : même nombre de parties, de lignes et de cases ; chiffres, notes, seuils et liens identiques au français ; noms officiels gardés en français (AE, BPJEPS, DEJEPS, DESJEPS, TEP, UC, BC, FFE…).
 - Ton : « tu » partout ; portugais du Brésil au « você » ; arabe au féminin, page affichée de droite à gauche.
@@ -19096,3 +19114,35 @@ Fichiers à publier (avec l'accord de Blandine) :
 | index.html | racine | bandeau des Galops traduit ; hype-ecran-prepa.js?v=2 ; marqueur de build |
 | SUIVI.md | racine | cette entrée + ligne des prépas en « 2 — Important » |
 
+
+📚 07/11/2026 (18 h 10) — GALOP 9 COURS 6 : INTRODUCTION FIDÈLE AU PROGRAMME — PUBLIÉ (build 20261107-1820)
+Le cours disait « Au Galop 9, tu dois connaître les 8 mesures de la Charte nationale ». Le programme FFE (REF 237) dit seulement
+« mettre en cohérence sa pratique avec les principes d'éthologie et de bien-être équin ». Nouvelle phrase : « Au Galop 9, le programme te
+demande d'accorder ta pratique avec les principes d'éthologie et de bien-être équin. La Charte nationale pour le bien-être équin et ses
+8 mesures les résument bien. » Le reste du cours ne bouge pas. Traduit dans les 13 langues.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | v12 (garde aussi la correction du cours 3 faite par une autre conversation) |
+| index.html | racine | ?v galop9 → 12 |
+Le titre du cours (« La charte du bien-être équin ») reste à décider par Blandine.
+
+════════════════════════════════════════════════════════════
+
+📚 07/11/2026 (18 h 30) — GALOP 9 COURS 3 : TRADUCTIONS ALIGNÉES SUR LA CORRECTION « MÉDICAMENTS PÉRIMÉS » — PUBLIÉ (build 20261107-1830)
+Une autre conversation (build 20261107-1615) a corrigé le français (médicaments vétérinaires périmés → au vétérinaire ; Cyclamed = humains)
+mais les 13 traductions disaient encore « au vétérinaire OU à la pharmacie ». Les 3 textes sont retraduits.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | v13 |
+| index.html | racine | ?v galop9 → 13 |
+RAPPEL pour toutes les conversations : quand on change un texte français d'un cours traduit, il faut aussi retraduire (sinon l'ancienne
+traduction reste affichée si on recopie le nouveau français dans la table de traduction).
+
+════════════════════════════════════════════════════════════
+
+## 07/11/2026 18h10 — Photographier le carnet pas à pas → PDF + lecture des vaccins (build 20261107-1850 — PUBLIÉ le 07/11 vers 18h45 avec l'accord de Blandine)
+- Demande : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » ; proposition acceptée (« Ok continue »).
+- Page Vaccins : « Photographier le carnet » (remplace « Lire le carnet » sur la ligne) ouvre un pas-à-pas : conseil (à plat, lumière, sans flash ni reflet, toute la page) ; 1 = page d'identité (nom, SIRE, transpondeur) ; 2 = chaque page de vaccins (6 au plus), une photo par page ; toucher une photo pour la reprendre, ✕ pour la retirer ; lien « Tu as déjà un PDF ou des photos ? Choisir un fichier » (ancienne lecture).
+- « Terminer » : Hype lit les vaccins et le sens de chaque photo, remet les photos droites, fabrique UN PDF « Carnet de vaccination » (une page par photo, fabriqué dans le téléphone, sans service extérieur), le range dans les pages du carnet (cheval_documents, type carnet_vaccin), puis montre la liste des vaccins à valider. Si la lecture échoue, le PDF est quand même gardé et un message le dit.
+- Réservé aux abonnés comme la lecture. Textes traduits en 14 langues. hype-ecran-sante-cheval.js?v=10.
+- Vérifié sur banc d'essai : PDF valide (2 pages, rotation appliquée), pas-à-pas avec 3 photos. Pas testé sur iPhone ni avec la vraie lecture en ligne.

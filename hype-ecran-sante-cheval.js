@@ -902,7 +902,7 @@ function EcranSanteCheval() {
       h("div", { className: "vxp-in" },
         etatBox,
         h("div", { className: "vxp-ligne" },
-          peutEcrire ? h("button", { type: "button", className: "vxp-mes", onClick: function () { ouvrirLectCarnet(); } }, svgCam, T("Lire le carnet", "Read the record book", "Leer la cartilla", "Leggi il libretto", "手帳を読み取る", "Impfpass einlesen", "قراءة الدفتر", "读取疫苗本", "Boekje inlezen", "Ler a caderneta", "Läs in vaccinationsboken", "Считать паспорт", "Wczytaj książeczkę", "수첩 읽기")) : h("span", null),
+          peutEcrire ? h("button", { type: "button", className: "vxp-mes", onClick: function () { ouvrirGuide(); } }, svgCam, T("Photographier le carnet", "Photograph the record", "Fotografiar la cartilla", "Fotografa il libretto", "手帳を撮影する", "Impfpass fotografieren", "تصوير الدفتر", "拍摄疫苗本", "Boekje fotograferen", "Fotografar a caderneta", "Fotografera boken", "Сфотографировать паспорт", "Sfotografuj książeczkę", "수첩 촬영하기")) : h("span", null),
           peutEcrire ? h("button", { type: "button", className: "vxp-plus", onClick: function () { setFeuille({ soin: null, type: "vaccin" }); }, "aria-label": T("Ajouter un vaccin", "Add a vaccine", "Añadir una vacuna", "Aggiungi un vaccino", "ワクチンを追加", "Impfung hinzufügen", "إضافة لقاح", "添加疫苗", "Vaccin toevoegen", "Adicionar uma vacina", "Lägg till en vaccination", "Добавить прививку", "Dodaj szczepienie", "백신 추가") }, svgPlus) : null),
         h("h2", { className: "vxp-h2" }, T("Par vaccin", "By vaccine", "Por vacuna", "Per vaccino", "ワクチン別", "Nach Impfung", "حسب اللقاح", "按疫苗", "Per vaccin", "Por vacina", "Per vaccin", "По прививкам", "Według szczepionki", "백신별")),
         onglets,
@@ -1490,6 +1490,164 @@ function EcranSanteCheval() {
   var stLc = React.useState(null); var lectCarnet = stLc[0], setLectCarnet = stLc[1];
   var stVo = React.useState(null); var vacOuvert = stVo[0], setVacOuvert = stVo[1];   /* 07/11 carte de vaccin ouverte */
   var stVg = React.useState({}); var vignettes = stVg[0], setVignettes = stVg[1];     /* 07/11 vignettes des pages du carnet */
+  /* 07/11 (Blandine : « qu'on puisse prendre les photos des vaccins et de la première page du carnet en précisant au
+     cavalier ce qu'il faut photographier et que ça montre le PDF à garder en mémoire », proposition acceptée « Ok continue ») :
+     PHOTOGRAPHIER LE CARNET, pas à pas. 1 = page d'identité (nom, SIRE, transpondeur) ; 2.. = chaque page de vaccins.
+     « Terminer » : Hype lit les vaccins (et le sens de chaque photo), remet les photos droites, en fait UN PDF
+     « Carnet de vaccination » rangé dans les pages du carnet, puis montre la liste des vaccins à valider. */
+  var stGd = React.useState(null); var guide = stGd[0], setGuide = stGd[1];   /* { ident: {f,u} | null, pages: [{f,u}], err } */
+  function ouvrirGuide() {
+    if (!premiumSanteOk()) { setVoilePremium(true); return; }
+    setGuide({ ident: null, pages: [], err: "" });
+  }
+  function fermerGuide() {
+    try { if (guide) { if (guide.ident) URL.revokeObjectURL(guide.ident.u); (guide.pages || []).forEach(function (p) { URL.revokeObjectURL(p.u); }); } } catch (eU) { }
+    setGuide(null);
+  }
+  function prendrePhotoGuide(quoi, idx) {
+    var inp = document.createElement("input");
+    inp.type = "file"; inp.accept = "image/*"; inp.setAttribute("capture", "environment");
+    inp.onchange = function () {
+      var f = inp.files && inp.files[0]; if (!f) return;
+      var u = URL.createObjectURL(f);
+      setGuide(function (o) {
+        if (!o) return o;
+        if (quoi === "ident") { try { if (o.ident) URL.revokeObjectURL(o.ident.u); } catch (e0) { } return Object.assign({}, o, { ident: { f: f, u: u }, err: "" }); }
+        var p = (o.pages || []).slice();
+        if (idx !== undefined && p[idx]) { try { URL.revokeObjectURL(p[idx].u); } catch (e1) { } p[idx] = { f: f, u: u }; } else p.push({ f: f, u: u });
+        return Object.assign({}, o, { pages: p, err: "" });
+      });
+    };
+    inp.click();
+  }
+  function retirerPageGuide(i) {
+    setGuide(function (o) { var p = (o.pages || []).slice(); try { URL.revokeObjectURL(p[i].u); } catch (e0) { } p.splice(i, 1); return Object.assign({}, o, { pages: p }); });
+  }
+  /* une photo -> page JPEG droite (pour le PDF) */
+  async function pageJpeg(src, deg) {
+    deg = ((Number(deg) || 0) % 360 + 360) % 360;
+    var r = await chargerImageDoc(src), im = r.im;
+    var w = im.naturalWidth, hh = im.naturalHeight, k = Math.min(1, 2000 / Math.max(w, hh));
+    w = Math.round(w * k); hh = Math.round(hh * k);
+    var cv = document.createElement("canvas"), quart = deg === 90 || deg === 270;
+    cv.width = quart ? hh : w; cv.height = quart ? w : hh;
+    var cx = cv.getContext("2d");
+    cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height);
+    cx.translate(cv.width / 2, cv.height / 2); cx.rotate(deg * Math.PI / 180); cx.drawImage(im, -w / 2, -hh / 2, w, hh);
+    try { URL.revokeObjectURL(r.u); } catch (e1) { }
+    var b = await new Promise(function (ok) { cv.toBlob(ok, "image/jpeg", 0.85); });
+    if (!b) throw new Error("image");
+    return { bytes: new Uint8Array(await b.arrayBuffer()), w: cv.width, h: cv.height };
+  }
+  /* PDF tres simple, une photo JPEG par page (largeur A4, hauteur selon la photo) — sans bibliotheque */
+  function fabriquerPdf(pages) {
+    var enc = new TextEncoder(), morceaux = [], pos = 0, offs = [];
+    function ecrire(x) { var b = typeof x === "string" ? enc.encode(x) : x; morceaux.push(b); pos += b.length; }
+    function objet(n, corps) { offs[n] = pos; ecrire(n + " 0 obj\n"); corps.forEach(ecrire); ecrire("\nendobj\n"); }
+    ecrire("%PDF-1.4\n%âãÏÓ\n");
+    var kids = pages.map(function (p, i) { return (3 + i * 3) + " 0 R"; }).join(" ");
+    objet(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
+    objet(2, ["<< /Type /Pages /Kids [" + kids + "] /Count " + pages.length + " >>"]);
+    pages.forEach(function (p, i) {
+      var nP = 3 + i * 3, nC = nP + 1, nI = nP + 2;
+      var W = 595, H = Math.round(595 * p.h / p.w);
+      var flux = "q " + W + " 0 0 " + H + " 0 0 cm /Im0 Do Q";
+      objet(nP, ["<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /XObject << /Im0 " + nI + " 0 R >> >> /Contents " + nC + " 0 R >>"]);
+      objet(nC, ["<< /Length " + flux.length + " >>\nstream\n" + flux + "\nendstream"]);
+      objet(nI, ["<< /Type /XObject /Subtype /Image /Width " + p.w + " /Height " + p.h + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + p.bytes.length + " >>\nstream\n", p.bytes, "\nendstream"]);
+    });
+    var nb = 3 + pages.length * 3, xref = pos;
+    ecrire("xref\n0 " + nb + "\n0000000000 65535 f \n");
+    for (var n = 1; n < nb; n++) ecrire(("0000000000" + offs[n]).slice(-10) + " 00000 n \n");
+    ecrire("trailer\n<< /Size " + nb + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF");
+    return new Blob(morceaux, { type: "application/pdf" });
+  }
+  function lignesDeLecture(res) {
+    var deja = {}; (soins || []).forEach(function (x) { if (String(x.type) === "vaccin" && x.date_intervention) deja[String(x.date_intervention).slice(0, 10)] = 1; });
+    return ((res && res.lignes) || []).map(function (l, i) {
+      var mal = Array.isArray(l.maladies) ? l.maladies.map(function (x) { return String(x).toLowerCase(); }) : [];
+      var d = /^\d{4}-\d{2}-\d{2}$/.test(String(l.date || "")) ? String(l.date) : "";
+      return { cle: "l" + i, date: d, vaccin: String(l.vaccin || ""), g: mal.indexOf("grippe") >= 0, r: mal.indexOf("rhino") >= 0, t: mal.indexOf("tetanos") >= 0, texte: String(l.texte || ""), deja: !!(d && deja[d]), coche: !!(d && !deja[d]) };
+    }).sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+  }
+  async function terminerGuide() {
+    var g = guide; if (!g || !g.pages.length) return;
+    var fichiers = (g.ident ? [g.ident.f] : []).concat(g.pages.map(function (p) { return p.f; }));
+    fermerGuide();
+    setLectCarnet({ etape: "lecture", lignes: [], err: "", garder: false, docDeja: true, fichier: null, busy: false });
+    var res = null, errLect = "";
+    try {
+      var imgs = []; for (var i = 0; i < fichiers.length; i++) imgs.push(await hypeImageEnJpeg(fichiers[i], 1800));
+      res = await hypeLireCarnetVaccins(imgs, aujIso());
+    } catch (eL) { errLect = String((eL && eL.message) || eL); }
+    var rots = (res && Array.isArray(res.rotations)) ? res.rotations : [];
+    var docId = null, errDoc = "";
+    try {
+      var pages = []; for (var k = 0; k < fichiers.length; k++) { var rk = Number(rots[k]) || 0; pages.push(await pageJpeg(fichiers[k], [90, 180, 270].indexOf(rk) >= 0 ? rk : 0)); }
+      var pdf = fabriquerPdf(pages);
+      var chemin = String(chId) + "/" + Date.now() + "-carnet.pdf";
+      var up = await supa.storage.from("sante").upload(chemin, pdf, { contentType: "application/pdf", upsert: false });
+      if (up && up.error) throw up.error;
+      var r = await supa.from("cheval_documents").insert({ cheval_id: chId, type: "carnet_vaccin", titre: T("Carnet de vaccination", "Vaccination record", "Cartilla de vacunación", "Libretto delle vaccinazioni", "ワクチン手帳", "Impfpass", "دفتر التطعيم", "疫苗接种本", "Vaccinatieboekje", "Caderneta de vacinação", "Vaccinationsbok", "Паспорт прививок", "Książeczka szczepień", "예방접종 수첩"), date_doc: aujIso(), chemin: chemin, mime: "application/pdf", taille: pdf.size || null, soin_id: null }).select();
+      if ((r && r.error) || !r || !r.data || !r.data.length) { try { await supa.storage.from("sante").remove([chemin]); } catch (eRm) { } throw (r && r.error) || new Error(MSG_REFUS_DOC); }
+      docId = r.data[0].id;
+      setDocs(function (o) { return [r.data[0]].concat(o || []); });
+    } catch (eD) { errDoc = String((eD && eD.message) || eD); }
+    if (errLect) {
+      setLectCarnet({ etape: "choix", lignes: [], err: (docId ? T("Le PDF du carnet est bien enregistré, mais la lecture des vaccins n’a pas abouti : ", "The record PDF is saved, but reading the vaccines failed: ", "El PDF de la cartilla está guardado, pero la lectura de las vacunas falló: ", "Il PDF del libretto è salvato, ma la lettura dei vaccini non è riuscita: ", "手帳のPDFは保存されましたが、ワクチンの読み取りに失敗しました：", "Das PDF ist gespeichert, aber das Lesen der Impfungen ist fehlgeschlagen: ", "تم حفظ ملف PDF، لكن قراءة اللقاحات فشلت: ", "PDF 已保存，但疫苗读取失败：", "De pdf is opgeslagen, maar het lezen van de vaccins is mislukt: ", "O PDF está guardado, mas a leitura das vacinas falhou: ", "PDF:en är sparad, men läsningen av vaccinationerna misslyckades: ", "PDF сохранён, но прочитать прививки не удалось: ", "PDF jest zapisany, ale odczyt szczepień się nie udał: ", "PDF는 저장됐지만 백신 읽기에 실패했어요: ") : "") + errLect + (errDoc ? " — " + errDoc : ""), garder: false, fichier: null, busy: false });
+      return;
+    }
+    setLectCarnet({ etape: "resultat", lignes: lignesDeLecture(res), err: errDoc ? T("Le PDF n’a pas pu être enregistré : ", "The PDF could not be saved: ", "No se pudo guardar el PDF: ", "Impossibile salvare il PDF: ", "PDFを保存できませんでした：", "Das PDF konnte nicht gespeichert werden: ", "تعذر حفظ ملف PDF: ", "无法保存 PDF：", "De pdf kon niet worden opgeslagen: ", "Não foi possível guardar o PDF: ", "PDF:en kunde inte sparas: ", "Не удалось сохранить PDF: ", "Nie udało się zapisać PDF: ", "PDF를 저장하지 못했어요: ") + errDoc : "", garder: false, docDeja: docId || true, fichier: null, busy: false });
+  }
+  function fenetreGuide() {
+    var g = guide; if (!g) return null;
+    var vignette = function (u, cle, onTap, onRetirer) {
+      return h("div", { key: cle, style: { position: "relative" } },
+        h("span", { role: "button", onClick: onTap, style: { display: "block", aspectRatio: "3 / 4", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(201,166,107,.45)", cursor: "pointer" } },
+          h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })),
+        onRetirer ? h("button", { type: "button", onClick: onRetirer, "aria-label": "✕", style: { position: "absolute", top: -8, insetInlineEnd: -8, width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(243,238,228,.3)", background: "#0C1115", color: "#F3EEE4", fontSize: 12, cursor: "pointer" } }, "✕") : null);
+    };
+    var caseVide = function (cle, txt, onTap) {
+      return h("span", { key: cle, role: "button", onClick: onTap, style: { aspectRatio: "3 / 4", borderRadius: 12, border: "1px dashed rgba(201,166,107,.6)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, color: "#E9D9B8", fontFamily: M, fontSize: 11.5, textAlign: "center", padding: 6, cursor: "pointer" } },
+        h("span", { style: { fontSize: 24 } }, "📷"), txt);
+    };
+    var etape = function (n, titre, texte) {
+      return h("div", { style: { display: "flex", gap: 12, alignItems: "flex-start", margin: "22px 0 10px" } },
+        h("span", { style: { width: 30, height: 30, flex: "0 0 auto", borderRadius: "50%", border: "1px solid #C9A66B", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 17, fontWeight: 600 } }, n),
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 21, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.15 } }, titre),
+          h("div", { style: { fontFamily: M, fontSize: 12.5, lineHeight: 1.5, color: "rgba(243,238,228,.68)", marginTop: 3 } }, texte)));
+    };
+    var grille = { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10, maxWidth: 420 };
+    var MAXP = 6;
+    var fen = h("div", { className: "vxp", style: { zIndex: 9600 }, "data-noswipe": "true", role: "dialog", "aria-modal": "true" },
+      h("div", { className: "vxp-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 18px)" } },
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 } },
+          h("span", { className: "sx-kicker", style: { margin: 0 } }, T("Carnet de vaccination", "Vaccination record", "Cartilla de vacunación", "Libretto delle vaccinazioni", "ワクチン手帳", "Impfpass", "دفتر التطعيم", "疫苗接种本", "Vaccinatieboekje", "Caderneta de vacinação", "Vaccinationsbok", "Паспорт прививок", "Książeczka szczepień", "예방접종 수첩")),
+          h("button", { type: "button", onClick: fermerGuide, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(243,238,228,.25)", background: "transparent", color: "#F3EEE4", fontSize: 16, cursor: "pointer" } }, "✕")),
+        h("h1", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: "clamp(34px, 9vw, 46px)", lineHeight: 1.05, margin: "10px 0 6px", color: "#F3EEE4" } }, T("Photographier le carnet", "Photograph the record", "Fotografiar la cartilla", "Fotografa il libretto", "手帳を撮影する", "Impfpass fotografieren", "تصوير الدفتر", "拍摄疫苗本", "Het boekje fotograferen", "Fotografar a caderneta", "Fotografera vaccinationsboken", "Сфотографировать паспорт", "Sfotografuj książeczkę", "수첩 촬영하기")),
+        h("p", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 18, color: "rgba(243,238,228,.85)", margin: 0 } }, T("Hype en fait un PDF et lit les vaccins pour toi.", "Hype turns it into a PDF and reads the vaccines for you.", "Hype hace un PDF y lee las vacunas por ti.", "Hype ne fa un PDF e legge i vaccini per te.", "HypeがPDFにして、ワクチンを読み取ります。", "Hype macht daraus ein PDF und liest die Impfungen für dich.", "يحوّله Hype إلى PDF ويقرأ اللقاحات عنك.", "Hype 会生成 PDF 并为你读取疫苗。", "Hype maakt er een pdf van en leest de vaccins voor je.", "O Hype faz um PDF e lê as vacinas por ti.", "Hype gör en PDF och läser vaccinationerna åt dig.", "Hype сделает PDF и прочитает прививки за тебя.", "Hype zrobi z tego PDF i odczyta szczepienia za ciebie.", "Hype가 PDF로 만들고 백신을 읽어 줘요.")),
+        h("div", { style: { marginTop: 18, padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(201,166,107,.3)", fontFamily: M, fontSize: 12, lineHeight: 1.55, color: "rgba(243,238,228,.75)" } },
+          "💡 " + T("Pose le carnet à plat, en pleine lumière, sans flash ni reflet. Prends toute la page dans le cadre.", "Lay the record flat, in good light, no flash or glare. Fit the whole page in the frame.", "Pon la cartilla plana, con buena luz, sin flash ni reflejos. Encuadra toda la página.", "Appoggia il libretto in piano, con buona luce, senza flash né riflessi. Inquadra tutta la pagina.", "手帳を平らに置き、明るい場所でフラッシュや反射なしで、ページ全体を枠に収めて撮影しよう。", "Leg den Pass flach hin, bei gutem Licht, ohne Blitz und Spiegelung. Nimm die ganze Seite ins Bild.", "ضع الدفتر مسطحًا في إضاءة جيدة، دون فلاش أو انعكاس، وأدخل الصفحة كاملة في الإطار.", "把疫苗本平放，光线充足，不用闪光灯、避免反光，整页都要拍进框内。", "Leg het boekje plat, in goed licht, zonder flits of weerspiegeling. Zet de hele pagina in beeld.", "Pousa a caderneta na horizontal, com boa luz, sem flash nem reflexos. Enquadra a página inteira.", "Lägg boken plant i bra ljus, utan blixt eller reflexer. Få med hela sidan i bilden.", "Положи паспорт ровно, при хорошем свете, без вспышки и бликов. Вся страница должна попасть в кадр.", "Połóż książeczkę płasko, w dobrym świetle, bez flesza i odblasków. Zmieść całą stronę w kadrze.", "수첩을 평평하게 두고, 밝은 곳에서 플래시와 반사 없이 페이지 전체가 나오게 찍어요.")),
+        etape("1", T("La page d’identité", "The identity page", "La página de identidad", "La pagina di identità", "身元ページ", "Die Identitätsseite", "صفحة الهوية", "身份页", "De identiteitspagina", "A página de identidade", "Identitetssidan", "Страница с данными", "Strona identyfikacyjna", "신원 페이지"),
+          T("La première page du carnet : le nom du cheval, son numéro SIRE et son transpondeur.", "The first page of the record: the horse’s name, SIRE number and microchip.", "La primera página: el nombre del caballo, su número SIRE y su transpondedor.", "La prima pagina del libretto: il nome del cavallo, il numero SIRE e il microchip.", "手帳の最初のページ：馬の名前、SIRE番号、マイクロチップ。", "Die erste Seite: Name des Pferdes, SIRE-Nummer und Transponder.", "الصفحة الأولى من الدفتر: اسم الحصان ورقم SIRE والشريحة.", "疫苗本第一页：马名、SIRE 编号和芯片号。", "De eerste pagina: de naam van het paard, het SIRE-nummer en de transponder.", "A primeira página: o nome do cavalo, o número SIRE e o transponder.", "Första sidan: hästens namn, SIRE-nummer och chip.", "Первая страница паспорта: кличка лошади, номер SIRE и чип.", "Pierwsza strona: imię konia, numer SIRE i transponder.", "수첩 첫 페이지: 말 이름, SIRE 번호, 마이크로칩.")),
+        h("div", { style: grille },
+          g.ident ? vignette(g.ident.u, "id", function () { prendrePhotoGuide("ident"); }, function () { setGuide(function (o) { try { URL.revokeObjectURL(o.ident.u); } catch (e0) { } return Object.assign({}, o, { ident: null }); }); })
+            : caseVide("id", T("Prendre la photo", "Take the photo", "Hacer la foto", "Scatta la foto", "撮影する", "Foto aufnehmen", "التقاط الصورة", "拍照", "Foto maken", "Tirar a foto", "Ta bilden", "Сделать фото", "Zrób zdjęcie", "사진 찍기"), function () { prendrePhotoGuide("ident"); })),
+        etape("2", T("Les pages des vaccins", "The vaccine pages", "Las páginas de vacunas", "Le pagine dei vaccini", "ワクチンのページ", "Die Impfseiten", "صفحات اللقاحات", "疫苗页", "De vaccinatiepagina's", "As páginas das vacinas", "Vaccinationssidorna", "Страницы с прививками", "Strony ze szczepieniami", "백신 페이지"),
+          T("Chaque page où le vétérinaire a noté les vaccins, avec ses étiquettes et ses tampons : une photo par page.", "Every page where the vet recorded the vaccines, with labels and stamps: one photo per page.", "Cada página donde el veterinario anotó las vacunas, con etiquetas y sellos: una foto por página.", "Ogni pagina in cui il veterinario ha annotato i vaccini, con etichette e timbri: una foto per pagina.", "獣医がワクチンを記入したページ（ラベルと印付き）を、1ページずつ撮影。", "Jede Seite, auf der der Tierarzt die Impfungen eingetragen hat, mit Etiketten und Stempeln: ein Foto pro Seite.", "كل صفحة سجّل فيها الطبيب البيطري اللقاحات مع الملصقات والأختام: صورة لكل صفحة.", "兽医记录疫苗的每一页（含标签和印章）：每页拍一张。", "Elke pagina waar de dierenarts de vaccins noteerde, met etiketten en stempels: één foto per pagina.", "Cada página onde o veterinário anotou as vacinas, com etiquetas e carimbos: uma foto por página.", "Varje sida där veterinären skrev in vaccinationerna, med etiketter och stämplar: ett foto per sida.", "Каждая страница, где ветеринар отметил прививки, с наклейками и печатями: одно фото на страницу.", "Każda strona, na której weterynarz wpisał szczepienia, z naklejkami i pieczątkami: jedno zdjęcie na stronę.", "수의사가 백신을 기록한 모든 페이지(라벨·도장 포함)를 한 장씩 찍어요.")),
+        h("div", { style: grille },
+          g.pages.map(function (p, i) { return vignette(p.u, "p" + i, function () { prendrePhotoGuide("page", i); }, function () { retirerPageGuide(i); }); }),
+          g.pages.length < MAXP ? caseVide("plus", g.pages.length ? T("+ Une autre page", "+ Another page", "+ Otra página", "+ Un'altra pagina", "＋ 別のページ", "+ Weitere Seite", "+ صفحة أخرى", "+ 再拍一页", "+ Nog een pagina", "+ Outra página", "+ En sida till", "+ Ещё страница", "+ Kolejna strona", "+ 다른 페이지") : T("Prendre la photo", "Take the photo", "Hacer la foto", "Scatta la foto", "撮影する", "Foto aufnehmen", "التقاط الصورة", "拍照", "Foto maken", "Tirar a foto", "Ta bilden", "Сделать фото", "Zrób zdjęcie", "사진 찍기"), function () { prendrePhotoGuide("page"); }) : null),
+        h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(243,238,228,.5)", marginTop: 8 } }, T("Touche une photo pour la reprendre. 6 pages au plus.", "Tap a photo to retake it. 6 pages max.", "Toca una foto para repetirla. 6 páginas como máximo.", "Tocca una foto per rifarla. Massimo 6 pagine.", "写真をタップすると撮り直せます。最大6ページ。", "Tippe auf ein Foto, um es neu aufzunehmen. Höchstens 6 Seiten.", "اضغط على صورة لإعادة التقاطها. 6 صفحات كحد أقصى.", "点按照片可重拍。最多 6 页。", "Tik op een foto om hem opnieuw te maken. Maximaal 6 pagina's.", "Toca numa foto para a repetir. 6 páginas no máximo.", "Tryck på ett foto för att ta om det. Högst 6 sidor.", "Нажми на фото, чтобы переснять. Не больше 6 страниц.", "Dotknij zdjęcia, aby je powtórzyć. Maksymalnie 6 stron.", "사진을 누르면 다시 찍을 수 있어요. 최대 6페이지.")),
+        g.err ? h("div", { style: { marginTop: 12, color: "#F0A05F", fontFamily: M, fontSize: 12.5 } }, g.err) : null,
+        h("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 28 } },
+          h("button", { type: "button", disabled: !g.pages.length, onClick: terminerGuide, style: { minHeight: 50, padding: "0 28px", borderRadius: 999, border: "1px solid " + (g.pages.length ? "#C9A66B" : "rgba(201,166,107,.3)"), background: "transparent", color: g.pages.length ? "#E9D9B8" : "rgba(233,217,184,.4)", fontFamily: M, fontSize: 14.5, cursor: g.pages.length ? "pointer" : "default" } },
+            T("Terminer : faire le PDF et lire les vaccins", "Finish: make the PDF and read the vaccines", "Terminar: hacer el PDF y leer las vacunas", "Fine: crea il PDF e leggi i vaccini", "完了：PDFを作成してワクチンを読み取る", "Fertig: PDF erstellen und Impfungen lesen", "إنهاء: إنشاء PDF وقراءة اللقاحات", "完成：生成 PDF 并读取疫苗", "Klaar: pdf maken en vaccins lezen", "Terminar: fazer o PDF e ler as vacinas", "Klar: gör PDF och läs vaccinationerna", "Готово: сделать PDF и прочитать прививки", "Zakończ: utwórz PDF i odczytaj szczepienia", "완료: PDF 만들고 백신 읽기")),
+          h("span", { role: "button", onClick: function () { fermerGuide(); ouvrirLectCarnet(); }, style: { fontFamily: M, fontSize: 12.5, color: "#C9A66B", cursor: "pointer", textAlign: "center" } },
+            T("Tu as déjà un PDF ou des photos ? Choisir un fichier", "Already have a PDF or photos? Choose a file", "¿Ya tienes un PDF o fotos? Elegir un archivo", "Hai già un PDF o delle foto? Scegli un file", "PDFや写真がある？ファイルを選ぶ", "Schon ein PDF oder Fotos? Datei wählen", "لديك PDF أو صور؟ اختر ملفًا", "已有 PDF 或照片？选择文件", "Heb je al een pdf of foto's? Kies een bestand", "Já tens um PDF ou fotos? Escolher um ficheiro", "Har du redan en PDF eller foton? Välj en fil", "Уже есть PDF или фото? Выбрать файл", "Masz już PDF lub zdjęcia? Wybierz plik", "PDF나 사진이 이미 있나요? 파일 선택")))));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
+  }
   function ouvrirLectCarnet() {
     if (!premiumSanteOk()) { setVoilePremium(true); return; }
     setLectCarnet({ etape: "choix", lignes: [], err: "", garder: true, fichier: null, busy: false });
@@ -2141,6 +2299,7 @@ function EcranSanteCheval() {
     fenetreDocs(),   /* (944) */
     fenetreLectCarnet(),   /* (945) */
     fenetreGalerie(),   /* 07/11 pages du carnet en grand */
+    fenetreGuide(),   /* 07/11 photographier le carnet pas a pas */
     feuille ? h(FeuilleSoin, {
       chevalId: chId,
       nomCheval: nomVu,
