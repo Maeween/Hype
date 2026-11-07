@@ -19594,7 +19594,7 @@ Fichiers : hype-ecran-saison.js (v=46 dans index.html, 7 endroits), SUIVI.md.
 Fichiers : hype-ecran-saison.js (v=47 dans index.html, 7 endroits), SUIVI.md.
 - Partent AUSSI avec cette publication (déposés par les autres conversations) : pages Google/Bing qui ouvrent la vraie page de l'appli (accueil, Hey Baby, reprises, Lamotte, fiche cheval, photos, résultats, santé, gestion d'écurie), Santé de l'écurie (haut de « Noter un soin » au style Vidéothèque).
 
-## 08/11/2026 00h30 — PRÊT, NON PUBLIÉ (à grouper) — Jour J : les 5 tours (Blandine 00h14 : « Ok »)
+## 08/11/2026 00h30 — PUBLIÉ (build 20261108-0230) — Jour J : les 5 tours (Blandine 00h14 : « Ok »)
 - Jour J lit maintenant les tours dans concours_tours : chaque tour (jusqu'à 5 par cavalier) a sa ligne heure de passage + piste, l'alerte « deux passages en même temps sur deux pistes », « Décaler une épreuve », la lecture du programme / de la liste de départ et la reprise des heures du direct Winjump (par épreuve, parmi les 5 tours).
 - Enregistrer : écrit l'heure et la piste dans concours_tours (tours 1 à 5) ET dans les colonnes passage1/2, piste1/2 de concours_engagements (lues par la fiche du concours et les notifications).
 - Testé en local (fausse base) : 4 passages affichés dont un 3e tour, heure d'un tour existant reprise des anciennes colonnes, enregistrement du 3e tour ; aucune erreur.
