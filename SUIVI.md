@@ -19083,7 +19083,7 @@ Portugais : 8 dernières phrases à la façon du Portugal (« deves », « quere
 Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles ne permet pas de le contrôler sûrement), à faire relire par une arabophone.
 
 ════════════════════════════════════════════════════════════
-## 07/11/2026 16h05 — Page Santé du cheval dans le style de la Vidéothèque (build 20261107-1610, NON PUBLIÉ)
+## 07/11/2026 16h05 — Page Santé du cheval dans le style de la Vidéothèque (build 20261107-1610 — EN LIGNE avec les publications de l'autre conversation, 18h10–18h40)
 - Maquette « sante1 » acceptée (« Ok continue »). Fichier : hype-ecran-sante-cheval.js?v=9.
 - Haut de page : retour rond + drapeau, photo du cheval ENTIÈRE à droite fondue dans le noir (décision 04/11 gardée ; sans photo : images/sante-hero-defaut.webp), courbes dorées, nom du cheval en petites capitales, « Santé » en grand, « Prendre soin, c'est déjà aimer. » en italique (remplace l'en-tête 931/937/941 et la phrase en écriture manuscrite).
 - Onglets du cheval inchangés. Fond de page : on garde le choix de Blandine de 15h50 (photo du cheval en fond, sinon FOND_SANTE), publié par l'autre conversation.
@@ -19121,7 +19121,7 @@ traduction reste affichée si on recopie le nouveau français dans la table de t
 
 ════════════════════════════════════════════════════════════
 
-## 07/11/2026 18h10 — Photographier le carnet pas à pas → PDF + lecture des vaccins (build 20261107-1810, NON PUBLIÉ)
+## 07/11/2026 18h10 — Photographier le carnet pas à pas → PDF + lecture des vaccins (build 20261107-1850, NON PUBLIÉ)
 - Demande : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » ; proposition acceptée (« Ok continue »).
 - Page Vaccins : « Photographier le carnet » (remplace « Lire le carnet » sur la ligne) ouvre un pas-à-pas : conseil (à plat, lumière, sans flash ni reflet, toute la page) ; 1 = page d'identité (nom, SIRE, transpondeur) ; 2 = chaque page de vaccins (6 au plus), une photo par page ; toucher une photo pour la reprendre, ✕ pour la retirer ; lien « Tu as déjà un PDF ou des photos ? Choisir un fichier » (ancienne lecture).
 - « Terminer » : Hype lit les vaccins et le sens de chaque photo, remet les photos droites, fabrique UN PDF « Carnet de vaccination » (une page par photo, fabriqué dans le téléphone, sans service extérieur), le range dans les pages du carnet (cheval_documents, type carnet_vaccin), puis montre la liste des vaccins à valider. Si la lecture échoue, le PDF est quand même gardé et un message le dit.
