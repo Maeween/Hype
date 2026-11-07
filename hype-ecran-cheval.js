@@ -288,7 +288,7 @@ function EcranCheval() {
       if (estB) {
         var ordreV4 = nouvV4 ? h("div", { key: "pzcOrdre", style: { marginTop: 22 } },
           h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 21, color: "#F3EEE4" } }, PZC("Ordre des blocs")),
-          h("div", { style: { fontFamily: MOp, fontSize: 11.5, color: "#BDB6AA", margin: "3px 0 8px" } }, PZC("Sur tablette et ordinateur. Sur téléphone, la fiche garde pour l'instant l'ordre d'origine.")),
+          h("div", { style: { height: 8 } }),   /* 07/11 : phrase « Sur tablette et ordinateur… » retiree, l ordre vaut maintenant aussi sur telephone */
           pzcOrdre().map(function (k, iO, tO) {
             var lib = ""; PZC_ORDRE_V4.forEach(function (x) { if (x[0] === k) lib = x[1]; });
             var fl = function (d, actif, lab) { return h("button", { "aria-label": PZC(lab), title: PZC(lab), disabled: !actif, onClick: function () { pzcBouger(k, d); }, style: { width: 34, height: 34, borderRadius: 999, border: "1px solid " + (actif ? "rgba(197,170,120,0.7)" : "rgba(243,238,228,0.12)"), background: "transparent", color: actif ? "#C5AA78" : "rgba(243,238,228,0.2)", cursor: actif ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center" } },
@@ -1902,7 +1902,8 @@ function EcranCheval() {
   var menuCh = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
   var largeCh = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : menuCh;
   /* 15/10 (1153) NOUVELLE FICHE (ficheV4) : tablette / ordinateur, ou apercu cache #chevalv4-<id> sur telephone */
-  var nouvV4 = !!largeCh || (function () { try { var tv = window.__ficheV4TelId; return !!(tv && (String(tv) === String(id) || String(tv) === String((c && c.dbId) || ""))); } catch (eV4) { return false; } })();   /* 15/10 (1164) RETOUR EN ARRIERE : Blandine n avait PAS donne son accord pour le telephone (« je t avais dit de pas brancher sur tel ») ; iPhone = ancienne fiche ; nouvelle fiche seulement tablette / ordinateur + apercu cache #chevalv4-<id> */
+  /* 07/11 (Blandine « Ok vas y », apres la maquette telephone) : la nouvelle fiche est branchee sur le TELEPHONE pour tout le monde ; l ancien calcul reste en dessous, inutilise */
+  var nouvV4 = true || !!largeCh || (function () { try { var tv = window.__ficheV4TelId; return !!(tv && (String(tv) === String(id) || String(tv) === String((c && c.dbId) || ""))); } catch (eV4) { return false; } })();   /* 15/10 (1164) RETOUR EN ARRIERE : Blandine n avait PAS donne son accord pour le telephone (« je t avais dit de pas brancher sur tel ») ; iPhone = ancienne fiche ; nouvelle fiche seulement tablette / ordinateur + apercu cache #chevalv4-<id> */
   var v4mSt = React.useState(null); var v4Med = v4mSt[0], setV4Med = v4mSt[1];
   var v4tSt = React.useState(false); var v4Team = v4tSt[0], setV4Team = v4tSt[1];
   var v4pSt = React.useState(false); var v4Ped = v4pSt[0], setV4Ped = v4pSt[1];
