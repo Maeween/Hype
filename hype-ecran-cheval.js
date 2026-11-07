@@ -1903,7 +1903,7 @@ function EcranCheval() {
   var largeCh = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : menuCh;
   /* 15/10 (1153) NOUVELLE FICHE (ficheV4) : tablette / ordinateur, ou apercu cache #chevalv4-<id> sur telephone */
   /* 07/11 (Blandine « Ok vas y », apres la maquette telephone) : la nouvelle fiche est branchee sur le TELEPHONE pour tout le monde ; l ancien calcul reste en dessous, inutilise */
-  var nouvV4 = true || !!largeCh || (function () { try { var tv = window.__ficheV4TelId; return !!(tv && (String(tv) === String(id) || String(tv) === String((c && c.dbId) || ""))); } catch (eV4) { return false; } })();   /* 15/10 (1164) RETOUR EN ARRIERE : Blandine n avait PAS donne son accord pour le telephone (« je t avais dit de pas brancher sur tel ») ; iPhone = ancienne fiche ; nouvelle fiche seulement tablette / ordinateur + apercu cache #chevalv4-<id> */
+  var nouvV4 = /* 07/11 23h20 : RETIRE du telephone, Blandine « c est quoi ce massacre… plus rien a la bonne taille » */ !!largeCh || (function () { try { var tv = window.__ficheV4TelId; return !!(tv && (String(tv) === String(id) || String(tv) === String((c && c.dbId) || ""))); } catch (eV4) { return false; } })();   /* 15/10 (1164) RETOUR EN ARRIERE : Blandine n avait PAS donne son accord pour le telephone (« je t avais dit de pas brancher sur tel ») ; iPhone = ancienne fiche ; nouvelle fiche seulement tablette / ordinateur + apercu cache #chevalv4-<id> */
   var v4mSt = React.useState(null); var v4Med = v4mSt[0], setV4Med = v4mSt[1];
   var v4tSt = React.useState(false); var v4Team = v4tSt[0], setV4Team = v4tSt[1];
   var v4pSt = React.useState(false); var v4Ped = v4pSt[0], setV4Ped = v4pSt[1];

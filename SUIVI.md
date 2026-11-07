@@ -830,6 +830,16 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+⛔ 08/11/2026 (00 h 25) — RETOUR EN ARRIÈRE : ANCIENNE FICHE CHEVAL REMISE SUR TÉLÉPHONE
+Blandine (23 h 18) : « C'est quoi ce massacre sur la page cheval plus rien à la bonne taille ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 15 : le téléphone retrouve l'ancienne fiche (comme avant 23 h 30) ; tablette / ordinateur inchangés |
+| index.html | racine | ?v cheval 14 → 15, build 20261108-0025 |
+· Cause à chercher : les captures sur copie étaient bonnes, le vrai iPhone non → demander une capture à Blandine.
+
+════════════════════════════════════════════════════════════
+
 🏆 08/11/2026 (00 h 20) — FICHE CHEVAL : « COUPES ET FLOTS » GARDÉ
 Blandine : « Plaques et flots on le garde hein ».
 | Fichier | Où | Quoi |
