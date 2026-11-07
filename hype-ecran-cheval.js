@@ -298,7 +298,7 @@ function EcranCheval() {
               h("span", { style: { flex: 1, fontFamily: MOp, fontSize: 14, color: "#F3EEE4" } }, PZC(lib)),
               fl(-1, iO > 0, "Monter"), fl(1, iO < tO.length - 1, "Descendre"));
           })) : null;
-        contenu = h("div", null, PZC_BLOCS.map(function (b) {
+        contenu = h("div", null, (nouvV4 ? PZC_ORDRE_V4 : PZC_BLOCS).map(function (b) {   /* 07/11 : sur la nouvelle fiche, la liste suit ses 6 blocs (« Coupes et flots » n y existe pas) */
           var cache = pzcCache(b[0]);
           return h("button", { key: b[0], onClick: function () { pzcBasculer(b[0]); }, style: { display: "flex", alignItems: "center", width: "100%", gap: 12, padding: "12px 4px", border: 0, borderBottom: "1px solid rgba(243,238,228,0.07)", background: "transparent", color: cache ? "#878D8E" : "#F3EEE4", fontFamily: MOp, fontSize: 14, textAlign: "start", cursor: "pointer" } },
             h("span", { style: { flex: 1 } }, PZC(b[1])),
@@ -3029,7 +3029,7 @@ async function supprimerSouvenirOuvert() {
     var pzOrd = pzcOrdre(); pzItems = pzItems.map(function (it, iI) { return [it, iI]; }).sort(function (x, y) { return (pzOrd.indexOf(x[0][0]) - pzOrd.indexOf(y[0][0])) || (x[1] - y[1]); }).map(function (x) { return x[0]; });
     var pzOut = [];
     pzItems.forEach(function (it, iP) {
-      var elP = it[0] === "resultatsV4" ? ((pzcCache("resume") && pzcCache("derniers") && pzcCache("principaux")) ? pzM("resume", it[1]) : it[1]) : pzM(it[0], it[1]);
+      var elP = it[0] === "resultatsV4" ? ((pzcCache("resultatsV4") || (pzcCache("resume") && pzcCache("derniers") && pzcCache("principaux"))) ? pzM(pzcCache("resultatsV4") ? "resultatsV4" : "resume", it[1]) : it[1]) : pzM(it[0], it[1]);
       if (!elP) return;
       if (pzOut.length) pzOut.push(sp("s" + iP));
       pzOut.push(elP);

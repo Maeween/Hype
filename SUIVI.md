@@ -830,6 +830,16 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🧩 07/11/2026 (23 h 50) — FICHE CHEVAL : LISTE « BLOCS » ALIGNÉE SUR LA NOUVELLE FICHE
+Blandine : « Ok continue ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 13 : dans Personnaliser › Blocs, la liste à masquer reprend les 6 blocs de la nouvelle fiche (Raccourcis, Identité & origines, IPO, Résultats, Vidéos et souvenirs, Partager sa fiche) au lieu des 9 de l'ancienne (« Coupes et flots » n'existe pas sur la nouvelle fiche) ; « Résultats » se masque d'un seul geste (les anciens réglages qui masquaient les 3 blocs de résultats restent valables) |
+| index.html | racine | ?v cheval 12 → 13, build 20261107-2350 (rien d'autre) |
+· Aucun nouveau texte (« Résultats » déjà traduit). Testé sur copie, téléphone : masquer Résultats.
+
+════════════════════════════════════════════════════════════
+
 📱 07/11/2026 (23 h 30) — NOUVELLE FICHE CHEVAL BRANCHÉE SUR TÉLÉPHONE POUR TOUT LE MONDE
 Blandine : « Ok vas y » (après la maquette téléphone et le lien d'aperçu #chevalv4-…). Annule le retour en arrière du 15/10.
 | Fichier | Où | Quoi |
