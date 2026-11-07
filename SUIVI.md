@@ -17,7 +17,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; puis traductions, accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
-- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 (le programme parle de « principes d'éthologie et de bien-être équin », pas de la Charte), ouverture (attend : Blandine)
+- [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 « La charte du bien-être équin » à garder ou renommer (l'introduction est corrigée le 07/11 : le programme demande les principes d'éthologie et de bien-être, la Charte les résume), ouverture (attend : Blandine)
 - [07/11] Galop 8 : les 20 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Vérifié dans le programme FFE (REF 237) : partie commune + 3 parties spécifiques, « circuits et labels de la compétition », longe / longues rênes / liberté. Reste : relecture dans l'appli, photos (texte donné le 05/11), ouverture (attend : Blandine)
 - [06/11] Vidéos déjà en ligne : encodées en qualité « basic » (la plus basse). Proposé : les ré-encoder en premium depuis l'original gardé par Mux ; et prévenir la cavalière quand sa vidéo arrive déjà petite ou à 15 images/s (attend : Blandine)
 - [06/11] Photos et vidéos « au max » (build 20261106-1130) : à tester sur iPhone. Toucher une vidéo → elle part tout de suite, en grand, puis en plein écran (sinon sans le son au 1er toucher : toucher le haut-parleur). Photos plus nettes partout (albums, fil, visionneuse, fiche cheval) ; nouvelle photo de fiche cheval à envoyer pour voir la différence (attend : Blandine)
@@ -19087,3 +19087,16 @@ Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles
 - Hey Baby et Le magazine santé : grandes cartes photo.
 - Nouveaux textes traduits en 14 langues. Vérifié sur banc d'essai (iPhone, avec et sans photo du cheval).
 - Demande suivante notée (07/11 15h50) : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » → à proposer.
+
+📚 07/11/2026 (18 h 10) — GALOP 9 COURS 6 : INTRODUCTION FIDÈLE AU PROGRAMME — PUBLIÉ (build 20261107-1820)
+Le cours disait « Au Galop 9, tu dois connaître les 8 mesures de la Charte nationale ». Le programme FFE (REF 237) dit seulement
+« mettre en cohérence sa pratique avec les principes d'éthologie et de bien-être équin ». Nouvelle phrase : « Au Galop 9, le programme te
+demande d'accorder ta pratique avec les principes d'éthologie et de bien-être équin. La Charte nationale pour le bien-être équin et ses
+8 mesures les résument bien. » Le reste du cours ne bouge pas. Traduit dans les 13 langues.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | v12 (garde aussi la correction du cours 3 faite par une autre conversation) |
+| index.html | racine | ?v galop9 → 12 |
+Le titre du cours (« La charte du bien-être équin ») reste à décider par Blandine.
+
+════════════════════════════════════════════════════════════
