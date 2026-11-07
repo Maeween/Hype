@@ -747,6 +747,16 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   largeur (liste ECRANS_LARGES_TESTS), sauf l'impression du registre. Sur
   tablette, la carte « Le stock » prend deux cases pour ne pas laisser de
   trou. Vérifié à 1280 et 820 px sur les 18 pages.
+· 07/11 15 h 43 (Blandine choisit « 1 et 2 ») → LES PENSIONS (#pensions-ecurie)
+  et LE PLANNING (#planning-ecurie). SQL PASSÉS (sql-07-11-pensions.sql,
+  sql-07-11-taches.sql : tables ecurie_pensions, ecurie_taches, responsables
+  seulement). Pensions : cheval, propriétaire, contact, formule, tarif,
+  fréquence, prochaine échéance ; « Payé » avance d'une période ; total par
+  mois ; échéances à encaisser dans « Les échéances ». Planning : tâche, qui
+  (suggestions = personnel présent du registre), jours, moment ; vue
+  « Aujourd'hui » par défaut, « C'est fait » du jour. 14 langues.
+  PUBLIÉ build 20261107-1600. À DÉCIDER : faire voir le planning aux
+  salariés eux-mêmes (aujourd'hui, seul le responsable le voit).
 · ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
   ordonnances par cheval (loupe), par année et par type (tuiles).
 

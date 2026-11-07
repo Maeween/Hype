@@ -34,7 +34,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     aides: { img: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "60% 40%" },
     obligations: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" },
     contrats: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "50% 50%" },
-    stock: { img: "images/encartEcurieHype.jpg", pos: "100% 58%" }
+    stock: { img: "images/encartEcurieHype.jpg", pos: "100% 58%" },
+    pensions: { img: "images/communaute-carte-ecuries.webp", pos: "60% 50%" },
+    planning: { img: "images/pansage-comprendre-2.webp", pos: "50% 40%" }
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -71,7 +73,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 6;
+  var I18N_V = 7;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -235,6 +237,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             /* 07/11 : le personnel (cartes pro qui expirent → Les échéances), seulement pour les responsables */
             if (res.peutGerer) { try { var rpe = await supa.from("registre_personnel").select("*").eq("club_clef", clef).limit(500); if (rpe && !rpe.error) res.personnel = rpe.data || []; } catch (ePe) { } }
             if (res.peutGerer) { try { var rco = await supa.from("ecurie_contrats").select("*").eq("club_clef", clef).limit(500); if (rco && !rco.error) res.contrats = rco.data || []; } catch (eCo) { } }
+            if (res.peutGerer) { try { var rpn = await supa.from("ecurie_pensions").select("*").eq("club_clef", clef).limit(500); if (rpn && !rpn.error) res.pensions = rpn.data || []; } catch (ePn) { } }
             if (res.peutGerer) { try { var rst = await supa.from("ecurie_stock").select("*").eq("club_clef", clef).limit(500); if (rst && !rst.error) res.stock = rst.data || []; } catch (eSt) { } }
           } catch (eF) { }
         } catch (e) { res.erreur = String((e && e.message) || e); }
@@ -319,7 +322,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   var SVG_LOUPE = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("circle", { cx: 10.5, cy: 10.5, r: 6.5 }), h("path", { d: "M15.5 15.5 21 21" })); };
   var SVG_IMPRIMER = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M7 9V3.5h10V9" }), h("path", { d: "M7 17.5H4.5v-8h15v8H17" }), h("path", { d: "M7 14h10v6.5H7z" })); };
   var SVG_PLUS = function (h) { return h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" })); };
-  var CSS_LIGNE = "@media (min-width:700px) and (max-width:1099px){.hg .hv2-grille .hg-t3{grid-column:span 2}.hg .hv2-grille .hg-t3 .hv2-traite{aspect-ratio:8/3}}.hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}[dir=rtl] .hg-ret i{display:inline-block;transform:scaleX(-1)}";
+  var CSS_LIGNE = "@media (min-width:700px){.hg .hv2-grille{grid-auto-flow:row dense}.hg .hv2-grille .hg-t3{grid-column:span 2}.hg .hv2-grille .hg-t3 .hv2-traite{aspect-ratio:8/3}}.hg .hv2-ligne .hg-icos{display:flex;gap:4px}.hg .hv2-loupe svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hg .hv2-loupe.on{color:#C9A66B}.hg .hv2-mes i{font-style:normal;color:#C9A66B;font-size:12px;margin-inline-start:-6px}.hg .hg-f input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}.hg .hg-f div{min-width:0}.hg .hv2-loupe{position:relative}.hg .hg-point{position:absolute;top:9px;right:8px;width:7px;height:7px;border-radius:50%;background:#C9A66B}.hg .hv2-loupe svg path{fill:none}.hg .hg-sous{margin:16px 2px 0;font-size:11px;line-height:1.5;color:rgba(243,238,228,.5)}[dir=rtl] .hg-ret i{display:inline-block;transform:scaleX(-1)}";
   function ligneEcurie(h, c, icones) {
     var plusieurs = c.clubs && c.clubs.length > 1;
     return h("div", { className: "hv2-ligne" },
@@ -393,6 +396,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.compta, "Ma compta", "Préparée depuis ta banque", function () { ouvrir("compta"); }),
           theme(h, "", PHOTOS.obligations, "Les obligations", "Affichages, secours, document unique, incendie", function () { ouvrir("obligations-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.detenteur, "Le personnel", "Le registre unique du personnel", function () { ouvrir("personnel-ecurie"); }),   /* 07/11 */
+          theme(h, "hg-t3", PHOTOS.planning, "Le planning", "Qui fait quoi, jour par jour", function () { ouvrir("planning-ecurie"); }),   /* 07/11 */
+          theme(h, "", PHOTOS.pensions, "Les pensions", "Tarifs et paiements à encaisser", function () { ouvrir("pensions-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.contrats, "Les contrats", "Assurances, cotisations : chaque règlement", function () { ouvrir("contrats-ecurie"); }),   /* 07/11 */
           theme(h, "hg-t3", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
@@ -1579,6 +1584,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         if (x.prochain_reglement) items.push({ k: "rg" + x.id, date: String(x.prochain_reglement).slice(0, 10), ch: null, titre: x.nom, sous: "À régler" + (x.montant != null ? " · " + euros(nombre(x.montant)) : ""), photo: PHOTOS.contrats, clic: oc });
         if (x.fin_contrat) items.push({ k: "fc" + x.id, date: String(x.fin_contrat).slice(0, 10), ch: null, titre: x.nom, sous: "Fin du contrat · à renouveler ou résilier", photo: PHOTOS.contrats, clic: oc });
       });
+      (d.pensions || []).forEach(function (x) { if (x.prochain_paiement) items.push({ k: "pn" + x.id, date: String(x.prochain_paiement).slice(0, 10), ch: null, titre: x.cheval, sous: "Pension à encaisser" + (x.tarif != null ? " · " + euros(nombre(x.tarif)) : "") + (x.proprietaire ? " · " + x.proprietaire : ""), photo: PHOTOS.pensions, clic: function () { ouvrir("pensions-ecurie"); } }); });
       (d.stock || []).forEach(function (x) { if (aCommander(x)) items.push({ k: "st" + x.id, date: auj, ch: null, titre: x.nom, sous: "À recommander", photo: PHOTOS.stock, clic: function () { ouvrir("stock-ecurie"); } }); });
       if (d.peutGerer) {
         var ft = finTrimestre(auj);
@@ -2356,6 +2362,62 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     action: { lab: "Commandé aujourd'hui", si: function (x) { return aCommander(x); }, maj: function () { return { derniere_commande: isoAuj() }; }, ok: "Commande notée." },
     defauts: function () { return { categorie: "Fourrage", unite: "bottes" }; }
   };
+  /* ── 07/11 15 h 43 : Blandine choisit « 1 et 2 » → LES PENSIONS et LE PLANNING ── */
+  var JOURS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+  function jourAuj() { return ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"][new Date().getDay()]; }
+  function joursDe(x) { return String(x.jours || "").split(",").map(function (j) { return j.trim(); }).filter(Boolean); }
+  function prevuAuj(x) { var j = joursDe(x); return !j.length || j.indexOf(jourAuj()) >= 0; }
+  function faitAuj(x) { return !!x.fait_le && String(x.fait_le).slice(0, 10) === isoAuj(); }
+  function etatDate(iso, auj) { var j = ecartJours(String(iso).slice(0, 10), auj); return { j: j, t: j < 0 ? "En retard de " + (-j) + (j === -1 ? " jour" : " jours") : j === 0 ? "Aujourd'hui" : "Dans " + j + (j === 1 ? " jour" : " jours") }; }
+  var CFG_PENSIONS = {
+    table: "ecurie_pensions", cle: "cheval", ordre: "cheval", titre: "Les pensions", sous: "Qui est en pension, à quel tarif, et ce qu'il reste à encaisser.", photo: "pensions",
+    nouveau: "Nouvelle pension", ajouter: "Ajouter une pension",
+    vide: "Aucune pension notée. Touche + pour ajouter les chevaux en pension chez toi.",
+    aide: "Touche « Payé » quand le propriétaire a réglé : la date passe à l'échéance suivante. Les pensions à encaisser apparaissent dans « Les échéances ».",
+    champs: [
+      { k: "cheval", lab: "Cheval", ex: "Nom du cheval" },
+      { k: "proprietaire", lab: "Propriétaire", ex: "Nom, prénom" },
+      { k: "contact", lab: "Contact (facultatif)", ex: "Téléphone ou e-mail" },
+      { k: "formule", lab: "Formule", choix: ["Box", "Pré", "Box et pré", "Demi-pension", "Travail", "Autre"] },
+      { k: "tarif", lab: "Tarif de chaque échéance (€)", type: "number" },
+      { k: "frequence", lab: "Fréquence", choix: ["Mensuel", "Trimestriel", "Annuel"] },
+      { k: "prochain_paiement", lab: "Prochaine échéance", type: "date" },
+      { k: "debut", lab: "Arrivée en pension (facultatif)", type: "date" },
+      { k: "notes", lab: "Note (facultatif)", ex: "ex. ferrure comprise, sorties au pré" }],
+    tuiles: [["tous", "Tous"], ["7", "À encaisser"], ["retard", "En retard"], ["Box", "Box"]],
+    filtre: function (f, x, auj) { if (f === "tous") return true; var j = x.prochain_paiement ? ecartJours(String(x.prochain_paiement).slice(0, 10), auj) : null; if (f === "7") return j != null && j <= 7; if (f === "retard") return j != null && j < 0; return String(x.formule || "").indexOf(f) >= 0; },
+    resume: function (L) { var t = 0; L.forEach(function (x) { var n = nombre(x.tarif); if (n != null) t += n / (FREQ_MOIS[x.frequence] || 1); }); return t ? "Total par mois : " + euros(Math.round(t * 100) / 100) : ""; },
+    carte: function (x, auj) {
+      var e = x.prochain_paiement ? etatDate(x.prochain_paiement, auj) : null;
+      return { titre: x.cheval, sous: [x.proprietaire, x.formule].filter(Boolean).join(" · ") || "À compléter", pill: x.tarif != null ? euros(nombre(x.tarif)) : "Tarif à noter",
+        etat: e ? e.t : "Date à noter", alerte: !!e && e.j <= 3 };
+    },
+    action: { lab: "Payé", si: function (x) { return !!x.prochain_paiement; },
+      maj: function (x) { return { prochain_paiement: plusMois(x.prochain_paiement, FREQ_MOIS[x.frequence] || 1) }; }, ok: "Prochaine échéance : {x}" },
+    defauts: function () { return { formule: "Box", frequence: "Mensuel", prochain_paiement: isoAuj() }; }
+  };
+  var CFG_PLANNING = {
+    table: "ecurie_taches", cle: "tache", ordre: "moment", titre: "Le planning", sous: "Qui nourrit, qui sort les chevaux, qui fait les boxes.", photo: "planning",
+    nouveau: "Nouvelle tâche", ajouter: "Ajouter une tâche", depart: "auj",
+    vide: "Aucune tâche notée. Touche + pour ajouter les repas, les sorties, les boxes…",
+    aide: "Note chaque tâche une fois avec ses jours. Touche « C'est fait » quand c'est fait : tu vois d'un coup d'œil ce qu'il reste pour aujourd'hui.",
+    suggDyn: { k: "qui", table: "registre_personnel", fn: function (L) { return L.filter(function (p) { return !p.date_sortie; }).map(function (p) { return [p.prenoms, p.nom].filter(Boolean).join(" "); }); } },
+    champs: [
+      { k: "tache", lab: "Tâche", ex: "ex. Distribuer le foin", sugg: ["Distribuer le foin", "Repas du matin", "Repas du soir", "Curer les boxes", "Sortir les chevaux au pré", "Rentrer les chevaux", "Remplir les abreuvoirs", "Faire la carrière"] },
+      { k: "qui", lab: "Qui s'en charge", ex: "Prénom" },
+      { k: "jours", lab: "Jours", multi: JOURS },
+      { k: "moment", lab: "Moment", choix: ["Matin", "Midi", "Soir"] },
+      { k: "notes", lab: "Note (facultatif)", ex: "ex. 2 bottes par paddock" }],
+    tuiles: [["auj", "Aujourd'hui"], ["reste", "Reste à faire"], ["Matin", "Matin"], ["tous", "Toutes"]],
+    filtre: function (f, x) { if (f === "tous") return true; if (f === "auj") return prevuAuj(x); if (f === "reste") return prevuAuj(x) && !faitAuj(x); return x.moment === f && prevuAuj(x); },
+    carte: function (x) {
+      var j = joursDe(x);
+      return { titre: x.tache, sous: [x.qui].concat(j.length === 7 || !j.length ? ["Tous les jours"] : j).filter(Boolean).join(" · "), pill: x.moment || "Moment à noter",
+        etat: faitAuj(x) ? "✓ Fait aujourd'hui" : prevuAuj(x) ? "À faire aujourd'hui" : "", alerte: prevuAuj(x) && !faitAuj(x) };
+    },
+    action: { lab: "C'est fait", si: function (x) { return !faitAuj(x); }, maj: function () { return { fait_le: isoAuj() }; }, ok: "Noté : c'est fait." },
+    defauts: function () { return { jours: JOURS.join(","), moment: "Matin" }; }
+  };
   function EcranListe(cfg) {
     return function () {
       var h = hT; useLangue();
@@ -2365,9 +2427,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       var c = useClub();
       var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
       var _d = React.useState(null); var d = _d[0], setD = _d[1];
-      var _f = React.useState("tous"); var f = _f[0], setF = _f[1];
+      var _f = React.useState(cfg.depart || "tous"); var f = _f[0], setF = _f[1];
       var _o = React.useState(null); var ouvert = _o[0], setOuvert = _o[1];
       var _v = React.useState({}); var val = _v[0], setVal = _v[1];
+      var _sd = React.useState([]); var suggDyn = _sd[0], setSuggDyn = _sd[1];
       var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
       var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
       var _s = React.useState(false); var confSuppr = _s[0], setConfSuppr = _s[1];
@@ -2384,6 +2447,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               var rp = await supa.from(cfg.table).select("*").eq("club_clef", clef).order(cfg.ordre, { ascending: true }).limit(500);
               if (rp && rp.error) { if (/does not exist|relation|42P01|schema cache/i.test(String(rp.error.message || rp.error.code || ""))) res.absent = true; else res.erreur = String(rp.error.message || rp.error); }
               else res.lignes = (rp && rp.data) || [];
+              if (cfg.suggDyn) { try { var rs = await supa.from(cfg.suggDyn.table).select("*").eq("club_clef", clef).limit(200); if (rs && !rs.error && vif) setSuggDyn(cfg.suggDyn.fn(rs.data || []).filter(Boolean)); } catch (eS) { } }
             }
           } catch (e) { res.erreur = String((e && e.message) || e); }
           if (vif) setD(res);
@@ -2410,7 +2474,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         setEnvoi(false);
       }
       function enregistrer(l) {
-        if (!String(val.nom || "").trim()) { setMsg("Indique le nom."); return; }
+        if (!String(val[cfg.cle || "nom"] || "").trim()) { setMsg("Indique le nom."); return; }
         var ligne = {};
         cfg.champs.forEach(function (ch) { var x = String(val[ch.k] == null ? "" : val[ch.k]).trim(); ligne[ch.k] = ch.type === "number" ? nombre(x) : (x || null); });
         ecrire(l, ligne);
@@ -2428,14 +2492,16 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       function formulaire(l) {
         var on = { background: "rgba(201,166,107,.14)", color: "#F3EEE4", borderColor: "#C9A66B" };
         return h("div", { className: "hg-f", style: { padding: "0 4px 14px" } },
-          l && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", m.prochain_reglement ? dateCourte(m.prochain_reglement) : "")); } }, cfg.action.lab) : null,
+          l && cfg.action.si(l) ? h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, marginBottom: 6 }, disabled: envoi, onClick: function () { var m = cfg.action.maj(l); ecrire(l, m, cfg.action.ok.replace("{x}", dateCourte(m.prochain_reglement || m.prochain_paiement || isoAuj()))); } }, cfg.action.lab) : null,
           cfg.champs.map(function (ch) {
             var id = "hgl-" + cfg.table + "-" + ch.k;
             var lab = h("label", { key: ch.k + "l", htmlFor: ch.choix ? undefined : id }, ch.lab);
+            if (ch.multi) { var sel = String(val[ch.k] || "").split(",").filter(Boolean); return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.multi.map(function (x) { var o = sel.indexOf(x) >= 0; return h("button", { key: x, type: "button", "aria-pressed": o, onClick: function () { maj(ch.k, ch.multi.filter(function (y) { return y === x ? !o : sel.indexOf(y) >= 0; }).join(",")); }, style: o ? on : null }, x); }))); }
+            var sg = (cfg.suggDyn && cfg.suggDyn.k === ch.k) ? suggDyn : ch.sugg;
             if (ch.choix) return h("div", { key: ch.k }, lab, h("div", { className: "hg-sugg" }, ch.choix.map(function (x) { var o = x === val[ch.k]; return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, o ? "" : x); }, style: o ? on : null }, x); })));
             return h("div", { key: ch.k }, lab,
               h("input", { id: id, type: ch.type || "text", inputMode: ch.type === "number" ? "decimal" : undefined, value: val[ch.k] == null ? "" : val[ch.k], placeholder: ch.ex || "", maxLength: 120, onChange: function (e) { maj(ch.k, e.target.value); } }),
-              ch.sugg && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, ch.sugg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); } }, x); })) : null,
+              sg && sg.length && !l && !val[ch.k] ? h("div", { className: "hg-sugg" }, sg.map(function (x) { return h("button", { key: x, type: "button", onClick: function () { maj(ch.k, x); } }, x); })) : null,
               ch.aide ? h("div", { className: "hg-aide" }, ch.aide) : null);
           }),
           h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { enregistrer(l); } }, envoi ? "Enregistrement…" : "Enregistrer"),
@@ -2458,6 +2524,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           ligneEcurie(h, c, [{ svg: SVG_PLUS, lab: cfg.ajouter, on: ouvert === "nouveau", clic: function () { ouvrirLigne(null); } }]),
           tuiles(h, cfg.tuiles.map(function (t) { var n = L.filter(function (x) { return cfg.filtre(t[0], x, auj); }).length; return { k: t[0], b: t[1], s: String(n), n: t[0] === "tous" ? 1 : n }; }), f, setF),
           ouvert === "nouveau" ? h("div", null, h("h2", { className: "hv3-h2" }, cfg.nouveau), formulaire(null)) : null,
+          cfg.resume && cfg.resume(L) ? h("div", { className: "hg-sous", style: { marginTop: 10 } }, cfg.resume(L)) : null,
           msg && !ouvert ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
           d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
           vis.length ? h("div", { className: "hv3-cartes", style: { marginTop: 16 } }, vis.map(function (x) {
@@ -2473,7 +2540,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hv2-in" }, corps));
     };
   }
-  var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK);
+  var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK), EcranPensions = EcranListe(CFG_PENSIONS), EcranPlanning = EcranListe(CFG_PLANNING);
 
-  window.HypeGestion = { Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  window.HypeGestion = { Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();
