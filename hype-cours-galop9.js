@@ -11,7 +11,7 @@
 (function () {
 "use strict";
 if (typeof window === "undefined") return;
-var COURS_GALOP9_VERSION = 2; /* 07/11 : quiz à 10 questions partout (comme le Galop 7), relecture ; vaccins (calendrier) et niveaux de l'examen précisés d'après le programme FFE */ /* v1 : */ /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
+var COURS_GALOP9_VERSION = 3; /* 07/11 nuit : relecture (Claude) — équilibre « poids dans les talons » au lieu de « sur les étriers » (cours 13 et 15), conseil des bandes reformulé (cours 1) */ /* 07/11 : quiz à 10 questions partout (comme le Galop 7), relecture ; vaccins (calendrier) et niveaux de l'examen précisés d'après le programme FFE */ /* v1 : */ /* 07/11 : les 19 cours g9n-01 … g9n-19 écrits en français, à relire */
 var S = function (titre, sous, puces) { var o = { k: "section", titre: titre }; if (sous) o.sous = sous; if (puces) o.puces = puces.map(function (p) { return typeof p === "string" ? { texte: p } : p; }); return o; };
 var P = function (texte) { return { k: "para", texte: texte }; };
 var E = function (emoji, titre, texte) { var o = { k: "encadre", emoji: emoji, texte: texte }; if (titre) o.titre = titre; return o; };
@@ -57,7 +57,7 @@ var COURS = [
         "Tu dois pouvoir glisser un doigt sous la bande, sans plus.",
         "La sous-bande dépasse légèrement en haut et en bas de la bande."
       ]),
-      E("👨‍🏫", "Le conseil du coach", "Pose toujours dans le même sens que tu enroules : de l'avant vers l'arrière en passant par l'extérieur. Ainsi la bande ne tire jamais le tendon vers l'extérieur du membre.")
+      E("👨‍🏫", "Le conseil du coach", "Enroule toujours de l'avant vers l'arrière en passant par l'extérieur du membre, aux quatre membres : c'est le sens qui évite de tirer le tendon vers l'extérieur.")
     ]),
 
     B("Pendant et après le travail", [
@@ -1302,9 +1302,9 @@ var COURS = [
     { type: "couv-affiche", src: "images/galop5-c11-saut.webp", couv: {} },
 
     B("Varier l'abord avec son équilibre", [
-      P("Au Galop 9, en CSO, tu n'es plus seulement stable : tu utilises ton équilibre sur les étriers et ton poids pour changer l'abord de ton cheval, selon l'obstacle et le tracé."),
+      P("Au Galop 9, en CSO, tu n'es plus seulement stable : tu utilises ton équilibre, le poids descendu dans les talons, pour changer l'abord de ton cheval, selon l'obstacle et le tracé."),
       S("⚖️ Ton équilibre agit sur le cheval", null, [
-        { gras: "En équilibre sur les étriers, buste un peu avancé :", texte: "tu libères le dos et tu accompagnes un galop plus ample." },
+        { gras: "En équilibre, le poids dans les talons, buste un peu avancé :", texte: "tu libères le dos et tu accompagnes un galop plus ample." },
         { gras: "Le buste plus redressé, plus près de la selle :", texte: "tu aides le cheval à se raccourcir et à porter davantage sur ses postérieurs." },
         { gras: "Un peu plus de poids dans un étrier :", texte: "tu accompagnes un tournant, sans te pencher." },
         "Toujours le poids dans les talons, les jambes au contact."
@@ -1510,7 +1510,7 @@ var COURS = [
     B("Intervenir sur l'abord", [
       P("Au Galop 9, en cross, tu ne te contentes plus de rester en équilibre : tu utilises ton équilibre pour intervenir sur l'abord de ton cheval, l'adapter à chaque obstacle, et gérer ton parcours contre la montre."),
       S("⚖️ Ton équilibre, ton outil", null, [
-        { gras: "Pour allonger :", texte: "équilibre sur les étriers, buste avancé, mains qui accompagnent : le cheval peut ouvrir son galop." },
+        { gras: "Pour allonger :", texte: "en équilibre, le poids dans les talons, buste avancé, mains qui accompagnent : le cheval peut ouvrir son galop." },
         { gras: "Pour raccourcir et équilibrer :", texte: "buste redressé, assiette plus proche de la selle, sans t'asseoir lourdement : le cheval se remet sur ses postérieurs." },
         { gras: "Pour soutenir :", texte: "jambes au contact, actives, pour garder l'impulsion jusqu'à l'obstacle." },
         "Tu agis tôt, plusieurs foulées avant l'obstacle, pour que l'abord soit calme."

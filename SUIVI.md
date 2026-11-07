@@ -658,6 +658,28 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
 
 ════════════════════════════════════════════════════════════
 
+📚 07/11/2026 (03 h 00) — GALOPS 8 ET 9 : PREMIÈRE RELECTURE + FICHIER POUR L'AUDIT
+Blandine a envoyé deux prompts de relecture (expert BPJEPS/DEJEPS, « audit
+intégral des Galops 8 et 9 »). Relecture partielle faite par Claude :
+vérifications automatiques sur les 39 cours (demi-arrêt/demi-parade, vous,
+quiz à 10 questions, bonne réponse valide, doublons de phrases) → seuls
+écarts : « équilibre sur les étriers » (G9 cours 13 et 15).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop9.js | racine | version 3 : « équilibre, le poids dans les talons » (cours 13 ×2, cours 15) ; conseil des bandes reformulé (cours 1) |
+| index.html | racine | ?v galop9 2 → 3 (rien d'autre) |
+POINTS LAISSÉS À VALIDER (non modifiés) : V3 grippe/rhino « 120 à 180 jours »
+(protocole SHF, à confirmer dans le règlement FFE) ; « 8 à 14 respirations,
+repère du programme » (à vérifier dans La REF n°237) ; organisation des
+examens G8/G9 (partie commune + spécifique) non confirmée ; tableau des
+distances au G9 (hors compétences CSO citées) ; FNSE « juin 1921 » ; vocabulaire
+haut niveau. Réponses détaillées a → m données à Blandine le 07/11 vers 01 h 45.
+FICHIER POUR L'AUDIT : texte intégral des 39 cours (chapitres, encadrés,
+lexique, quiz avec bonne réponse et explication) envoyé à Blandine, à joindre
+au prompt d'audit (ChatGPT).
+
+════════════════════════════════════════════════════════════
+
 📲 07/11/2026 (02 h 45) — LES J'AIME ARRIVENT AUSSI SUR LE TÉLÉPHONE
 Blandine (01 h 36) : « Oui pour les j'aime » → change la règle du 20/10
 (« pas les j'aime sur le téléphone ») pour les j'aime sur l'histoire d'un
