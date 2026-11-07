@@ -201,7 +201,8 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
     var sV = React.useState(false), vueNonAbo = sV[0], setVueNonAbo = sV[1];
     var acces = (!!app.premium || estMod) && !vueNonAbo;
-    React.useEffect(function () { if (moi !== undefined && !estMod) { try { setEcran("galops"); } catch (e) { } } }, [moi, estMod]);
+    /* 07/11 22h40 (Blandine : « Ok » à l'ouverture) — prépas AE · BP · DE ouvertes à tous, verrou Premium ; le DES reste aux modératrices. */
+    if (dip === "DES" && moi !== undefined && !estMod) dip = "DE";
     var d = (TL && TL[dip]) || DATA[dip] || { sections: [], sources: [] };
     React.useEffect(function () {
       var att = null;
@@ -218,7 +219,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
       return function () { window.removeEventListener("scroll", f); if (att) clearTimeout(att); };
     }, [dip]);
     React.useEffect(function () { try { var r = rangRef.current; if (!r) return; var b = r.querySelector(".pp-ong.on"); if (!b) return; var x = b.offsetLeft - (r.clientWidth - b.offsetWidth) / 2; r.scrollTo({ left: Math.max(0, x), behavior: "auto" }); } catch (e) { } }, [actif]);
-    if (moi === undefined || !estMod) return h("div", { className: "hv2 pp", dir: rtl ? "rtl" : undefined, style: { minHeight: "100vh" } });
+    if (moi === undefined) return h("div", { className: "hv2 pp", dir: rtl ? "rtl" : undefined, style: { minHeight: "100vh" } });
     var D = DIPLOMES.find(function (x) { return x.id === dip; }) || DIPLOMES[2];
     function choisir(id) { setDip(id); setOuv({}); setActif(0); try { window.__prepaDiplome = id; } catch (e) { } }
     function aller(i) {
