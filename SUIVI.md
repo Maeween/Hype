@@ -708,6 +708,37 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+✅ 07/11/2026 (03 h 10) — GALOPS 8 ET 9 : AUDIT COMPLET + CORRECTIONS SÛRES APPLIQUÉES
+Blandine : « Ah mince plus de crédit sur chat tu sauras gérer ? » puis « Ok vas y ».
+Audit intégral des 39 cours fait par Claude (rapport Audit-Galops-8-9.md envoyé
+à Blandine : statut par cours, bilan global, tableau des points a → m).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-cours-galop8.js | racine | version 3 (16 corrections, voir ci-dessous) |
+| hype-cours-galop9.js | racine | version 4 (22 corrections, voir ci-dessous) |
+| index.html | racine | ?v galop8 2 → 3, galop9 3 → 4, build 20261107-0310 (rien d'autre) |
+GALOP 8 : selle « deux à trois doigts selon selle et cheval » (c1) ; quiz c2 q10
+aligné sur le cours ; c5 q5 (doublon de q3) remplacée ; Pur-sang « en lignée
+paternelle » (c7) ; coup de chaleur : boire à volonté, arrosage continu (c9 +
+erreurs + q7) ; poids dans les latéraux : ischion intérieur en épaule en dedans,
+milieu en cession (c13 + q6 + q9 remplacée) ; jambe du contre-galop précisée (c14) ;
+définition de l'angle de cross corrigée (c17) ; JO 1900 puis 1912 (c19 + q2).
+GALOP 9 : bandes = protection d'abord (c1 + q2 remplacée) ; vaccins : primo 21 à
+60 jours (ancien protocole 21-92 avant 2024), rhino Pro 2024 / Amateur 2026,
+« concourir à partir du 8e jour », BSE (c2 + synthèse + q3) ; place du longeur selon
+le mouvement (c5) ; charte remise en 2018 (c6 + q6) ; « repère habituel » 8 à 14
+(c8 + q4) ; tourner sur les hanches ≠ pirouette (c11 + q7) ; accès Amateur/Pro =
+règlement FFE (c14, c19 + q8 remplacée) ; FEI 24/11/1921, du Teil premier
+président (c17 + synthèse + q3).
+NON MODIFIÉ (à confirmer avant) : médicaments périmés « ou à la pharmacie » (G9 c3) ;
+buste en descente/contrebas (G8 c17) ; « de ferme à ferme » et reprise Amateur 2 GP
+(G8 c15) ; contenu reprise Amateur 1 et notes d'ensemble (G9 c12) ; labels FFE ;
+vocabulaire haut niveau (G9 c18) ; FNSE « juin 1921 ».
+Traductions des cours G8/G9 : toujours à faire une fois le français validé.
+⚠️ À tester sur iPhone : ouvrir un cours G8 et un cours G9, vérifier le quiz.
+
+════════════════════════════════════════════════════════════
+
 📲 07/11/2026 (02 h 45) — LES J'AIME ARRIVENT AUSSI SUR LE TÉLÉPHONE
 Blandine (01 h 36) : « Oui pour les j'aime » → change la règle du 20/10
 (« pas les j'aime sur le téléphone ») pour les j'aime sur l'histoire d'un

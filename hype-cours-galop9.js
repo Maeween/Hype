@@ -31,7 +31,7 @@ var COURS = [
       P("Au Galop 9, tu dois savoir poser des bandes de travail. Ce ne sont pas les bandes de repos que tu poses au box : les bandes de travail se portent pendant la séance, sur les canons, pour protéger et soutenir les membres."),
       S("🎯 Leurs rôles", null, [
         { gras: "Protéger :", texte: "des coups que le cheval peut se donner lui-même, d'un membre contre l'autre." },
-        { gras: "Soutenir :", texte: "bien posées, elles accompagnent les tendons pendant l'effort. On les choisit surtout pour un cheval dont les tendons sont fragiles." },
+        { gras: "Soutenir :", texte: "bien posées, elles apportent un léger maintien ; leur rôle principal reste la protection contre les coups." },
         { gras: "Tenir propre :", texte: "elles évitent que la terre et le sable frottent la peau." }
       ]),
       S("🧰 Le matériel", null, [
@@ -113,7 +113,7 @@ var COURS = [
   ] },
   quiz: [
     Q("Quand porte-t-on des bandes de travail ?", ["Au box, la nuit", "Pendant le transport uniquement", "Au pré", "Pendant la séance"], 3, "Les bandes de travail se portent pendant la séance ; les bandes de repos, au box."),
-    Q("Pour quel cheval choisit-on surtout des bandes de travail ?", ["Un poney au pré", "Un cheval qui ne travaille pas", "Un cheval aux tendons fragiles", "Un cheval qui a froid"], 2, "Bien posées, elles soutiennent et protègent les membres, surtout quand les tendons sont fragiles."),
+    Q("Quel est le rôle principal des bandes de travail ?", ["Tenir chaud au cheval", "Protéger les membres des coups", "Remplacer la ferrure", "Faire briller le poil"], 1, "Elles protègent d'abord des coups qu'un membre peut donner à l'autre ; leur effet de maintien reste léger."),
     Q("Où commences-tu la bande ?", ["Au sabot", "Au boulet", "En haut du canon, sous le genou ou le jarret", "Au milieu du tendon"], 2, "On commence en haut du canon, on descend jusqu'au boulet, puis on remonte."),
     Q("De combien chaque tour recouvre-t-il le précédent ?", ["D'un quart", "De la moitié", "Pas du tout", "Entièrement"], 1, "Chaque tour recouvre la moitié du précédent, pour une tension régulière."),
     Q("Jusqu'où descend la bande ?", ["Jusqu'au sabot", "Jusqu'au boulet, sans le bloquer", "Jusqu'au milieu du canon", "Sous le paturon"], 1, "Elle s'arrête au boulet sans gêner sa flexion."),
@@ -138,13 +138,13 @@ var COURS = [
       P("Au Galop 9, tu organises les soins qui reviennent régulièrement : vaccins, vermifuges, dents, pieds, et la surveillance de chaque jour. Ces soins préviennent la plupart des problèmes de santé."),
       S("💉 Les vaccins du cheval de compétition", "Les règles changent : vérifie chaque saison le règlement général de la FFE.", [
         { gras: "La grippe équine :", texte: "obligatoire pour toute compétition et tout rassemblement de chevaux." },
-        { gras: "La rhinopneumonie :", texte: "obligatoire en compétition Amateur et Pro, en même temps que la grippe." },
+        { gras: "La rhinopneumonie :", texte: "obligatoire en plus de la grippe, en compétition Pro depuis le 1er janvier 2024 et en Amateur depuis le 1er janvier 2026." },
         { gras: "Le tétanos :", texte: "pas obligatoire en compétition, mais vivement conseillé pour tous les chevaux." }
       ]),
       S("📅 Le calendrier", null, [
-        "La primo-vaccination : deux injections à 21 à 92 jours d'intervalle, puis un premier rappel 4 à 6 mois plus tard (120 à 180 jours ; protocole 2026).",
+        "La primo-vaccination : deux injections à 21 à 60 jours d'intervalle, puis une troisième 120 à 180 jours après la deuxième. Une primo commencée avant 2024 reste valable selon l'ancien protocole (21 à 92 jours) : vérifie dans le livret.",
         "Ensuite, un rappel chaque année, sans jamais dépasser le délai : sinon, tout est à recommencer.",
-        "Aucune injection dans les 7 jours qui précèdent une compétition.",
+        "Après une injection, primo ou rappel, le cheval peut concourir à partir du 8e jour.",
         "Chaque vaccin est noté par le vétérinaire dans le livret du cheval et enregistré en ligne."
       ]),
       E("💡", "Le savais-tu ?", "Un retard de quelques jours sur un rappel suffit pour qu'un cheval ne puisse plus concourir : c'est l'une des causes les plus fréquentes de refus aux contrôles des papiers en concours.")
@@ -167,7 +167,7 @@ var COURS = [
         "Entre deux visites, surveille les fers qui bougent, les clous qui dépassent et la corne qui se fend."
       ]),
       S("🩺 Le bilan sanitaire d'élevage", null, [
-        "Une visite du vétérinaire dans l'écurie, au moins une fois par an.",
+        "Une visite annuelle du vétérinaire dans l'écurie : le bilan sanitaire d'élevage (BSE).",
         "Il fait le point sur la santé des chevaux, le logement, l'alimentation et les traitements, et propose un plan de prévention."
       ])
     ]),
@@ -213,7 +213,7 @@ var COURS = [
       ]),
       S("⚡ La synthèse en 10 secondes", null, [
         "Vaccins : grippe et rhinopneumonie en Amateur et Pro, rappels à l'heure.",
-        "Pas de vaccin dans les 7 jours avant un concours.",
+        "Pas de concours avant le 8e jour après un vaccin.",
         "Vermifuge après analyse des crottins.",
         "Dents une fois par an, pieds toutes les 6 à 8 semaines.",
         "Chaque jour : box, pré, pansage, avant et après le travail."
@@ -232,7 +232,7 @@ var COURS = [
   quiz: [
     Q("Quel vaccin est obligatoire pour toute compétition ?", ["La grippe équine", "La rage", "La gourme", "Aucun"], 0, "La grippe équine est obligatoire pour toute compétition et tout rassemblement de chevaux."),
     Q("Quel vaccin s'ajoute à la grippe en compétition Amateur et Pro ?", ["Le tétanos", "La rage", "La rhinopneumonie", "La piroplasmose"], 2, "La rhinopneumonie est obligatoire en Amateur et Pro, en même temps que la grippe."),
-    Q("Combien de jours avant un concours ne doit-on plus vacciner ?", ["7 jours", "1 jour", "3 jours", "30 jours"], 0, "Aucune injection dans les 7 jours qui précèdent une compétition."),
+    Q("Après un vaccin, à partir de quel jour ton cheval peut-il concourir ?", ["Le 8e jour", "Le lendemain", "Le 3e jour", "Le 30e jour"], 0, "Après une injection, primo ou rappel, il peut concourir à partir du 8e jour."),
     Q("Qu'est-ce qu'une coproscopie ?", ["Une prise de sang", "Une radio des pieds", "Un contrôle des dents", "Une analyse des crottins"], 3, "La coproscopie compte les œufs de vers dans les crottins, pour savoir s'il faut vermifuger."),
     Q("Pourquoi ne vermifuge-t-on plus systématiquement ?", ["Parce que c'est interdit", "Parce que les vers deviennent résistants aux produits", "Parce que les vermifuges sont trop chers", "Parce que les chevaux n'ont plus de vers"], 1, "Les traitements répétés sans analyse rendent les vers résistants."),
     Q("Quel signe peut indiquer un problème de dents ?", ["Le cheval perd du grain et mâche de travers", "Le cheval hennit", "Le poil brille", "Le cheval galope vite"], 0, "Perte de grain, mastication de travers, amaigrissement ou défenses contre le mors doivent alerter."),
@@ -471,7 +471,7 @@ var COURS = [
     B("Les déplacements latéraux aux longues rênes", [
       P("Au Galop 9, tu fais travailler ton cheval aux longues rênes en déplacements latéraux, aux trois allures, et autour de ses hanches. C'est le travail à pied le plus fin du programme des Galops."),
       S("📍 Ta place", null, [
-        "Tu te places en arrière du cheval, légèrement décalé du côté opposé au déplacement, à l'extérieur : c'est de là que tu le pousses de côté.",
+        "Ta place dépend du mouvement. Pour pousser le cheval de côté, tu te places en arrière, légèrement décalé du côté opposé au déplacement ; pour le travail autour des hanches, à hauteur de l'arrière-main, du côté extérieur au tournant, pour contenir les hanches.",
         "Tu restes à une distance de sécurité, hors de portée des postérieurs.",
         "Tes deux rênes gardent un contact léger et égal."
       ]),
@@ -568,14 +568,14 @@ var COURS = [
 /* ---------------------------------------------------------------------------------
    g9n-06 — LE BIEN-ÊTRE DU CHEVAL   (programme FFE Galop 9, connaissance du cheval : les 8 mesures de la Charte nationale pour le bien-être équin)
    — ancien titre du sommaire : « Éthologie et bien-être » ; le programme parle de la charte : titre recentré, À CONFIRMER par Blandine
-   Source : Charte nationale pour le bien-être équin (filière cheval, 2016)
+   Source : Charte nationale pour le bien-être équin (filière cheval, remise à la DGAL en 2018)
    --------------------------------------------------------------------------------- */
 { id: "g9n-06", icone: "🧠", type: { fr: "théorie" }, duree: { fr: "10 min" }, titre: { fr: "La charte du bien-être équin" },
   blocs: [
     { type: "couv-affiche", src: "images/IMG_SANTE_PORTRAIT.jpg", couv: {} },
 
     B("La charte nationale", [
-      P("Au Galop 9, tu dois connaître les 8 mesures de la Charte nationale pour le bien-être équin. Cette charte a été écrite en 2016 par toute la filière cheval : éleveurs, vétérinaires, Fédération française d'équitation, courses. Elle dit ce dont un cheval a besoin pour bien vivre, de sa naissance à sa mort."),
+      P("Au Galop 9, tu dois connaître les 8 mesures de la Charte nationale pour le bien-être équin. Cette charte a été élaborée par toute la filière cheval, puis remise au ministère de l'Agriculture en 2018 : éleveurs, vétérinaires, Fédération française d'équitation, courses. Elle dit ce dont un cheval a besoin pour bien vivre, de sa naissance à sa mort."),
       S("🐴 Le bien-être, c'est quoi ?", null, [
         "Un cheval en bonne santé, sans douleur.",
         "Un cheval qui mange, boit et se repose selon ses besoins.",
@@ -657,7 +657,7 @@ var COURS = [
     Q("La première mesure demande de respecter…", ["Le caractère grégaire du cheval", "Son pedigree", "Ses résultats", "Ses horaires"], 0, "Le cheval vit en groupe : il a besoin de contacts sociaux positifs."),
     Q("Que garantit la sixième mesure ?", ["Assez d'eau et d'aliments, adaptés aux besoins du cheval", "Un concours par mois", "Un box individuel", "Une couverture"], 0, "Elle demande de garantir eau et aliments, adaptés aux besoins physiques et au comportement."),
     Q("Que dit la charte sur la douleur ?", ["Qu'elle est normale au travail", "Qu'il faut la prévenir ou la soulager", "Qu'il ne faut pas en parler", "Rien"], 1, "Une mesure entière est consacrée à prévenir ou soulager la douleur."),
-    Q("En quelle année la charte a-t-elle été écrite ?", ["1921", "2016", "1987", "2024"], 1, "La Charte nationale pour le bien-être équin a été écrite en 2016 par la filière cheval."),
+    Q("En quelle année la charte a-t-elle été remise au ministère de l'Agriculture ?", ["1921", "2018", "1987", "2024"], 1, "La Charte nationale pour le bien-être équin a été remise au ministère de l'Agriculture en 2018."),
     Q("Quelle mesure concerne la relation avec l'homme ?", ["Monter tous les jours", "Ne jamais toucher le cheval", "Le récompenser avec du sucre", "Établir une relation de confiance"], 3, "La charte demande d'établir une relation de confiance dans les manipulations."),
     Q("Un cheval mord sans cesse le bord de sa mangeoire. C'est souvent…", ["Un tic, signe possible de mal-être", "Un jeu sans importance", "Un signe de bonne santé", "De la gourmandise"], 0, "Les tics traduisent souvent un mal-être : ennui, isolement, manque de fourrage."),
     Q("Quelle situation respecte le mieux le bien-être ?", ["Un cheval qui sort chaque jour et voit d'autres chevaux", "Un cheval seul au box toute la journée", "Un cheval nourri deux fois par jour sans foin", "Un cheval toujours attaché"], 0, "Mouvement et contacts sociaux font partie des besoins essentiels du cheval."),
@@ -806,7 +806,7 @@ var COURS = [
         "Compte pendant une minute entière : la respiration est plus lente que le pouls."
       ]),
       S("📏 Les valeurs au repos", null, [
-        "Repère du programme : 8 à 14 respirations par minute au repos.",
+        "Repère habituel : 8 à 14 respirations par minute au repos ; elle peut tripler à l'effort.",
         "La respiration est régulière, silencieuse, sans effort visible du ventre."
       ]),
       E("👨‍🏫", "Le conseil du coach", "Prends les valeurs le matin, avant le pansage et avant le travail, dans le calme : un cheval qui vient de manger, de s'agiter ou qui a chaud a des valeurs plus élevées.")
@@ -867,7 +867,7 @@ var COURS = [
     Q("Où places-tu le stéthoscope pour écouter le cœur ?", ["Sur la croupe", "Sur l'encolure, côté droit", "Sous le ventre, derrière le nombril", "Sur le côté gauche, derrière le coude"], 3, "Le cœur s'écoute sur le côté gauche de la poitrine, derrière le coude."),
     Q("Un battement fait deux bruits rapprochés. Combien en comptes-tu ?", ["Deux", "Un", "Aucun", "Quatre"], 1, "Les deux bruits rapprochés forment un seul battement."),
     Q("Quel est un repère courant du pouls d'un cheval adulte au repos ?", ["Environ 10 à 15", "Environ 80 à 100", "Environ 150", "Environ 28 à 44"], 3, "Environ 28 à 44 battements par minute au repos, à comparer aux valeurs habituelles du cheval."),
-    Q("Quelle est la fréquence respiratoire au repos indiquée par le programme ?", ["8 à 14", "2 à 4", "30 à 40", "60 à 80"], 0, "Le programme indique 8 à 14 respirations par minute au repos."),
+    Q("Quel est le repère habituel de fréquence respiratoire au repos ?", ["8 à 14", "2 à 4", "30 à 40", "60 à 80"], 0, "Environ 8 à 14 respirations par minute au repos."),
     Q("Qu'est-ce qui compte pour une respiration ?", ["Une inspiration seule", "Un hennissement", "Un mouvement d'oreille", "Une inspiration et une expiration"], 3, "Un cycle complet, inspiration et expiration, compte pour une respiration."),
     Q("Quelle température indique une fièvre chez le cheval adulte ?", ["36 °C", "37,5 °C", "38 °C", "Au-dessus de 38,5 °C"], 3, "Au-dessus d'environ 38,5 °C au repos, on parle de fièvre : appelle le vétérinaire."),
     Q("Pourquoi éviter de prendre le pouls avec le pouce ?", ["Il est trop gros", "Il a son propre pouls", "Il chatouille le cheval", "Ce n'est pas autorisé"], 1, "Le pouce a son propre pouls, qui fausse le comptage."),
@@ -1129,7 +1129,7 @@ var COURS = [
       S("🔄 Ce qu'on demande", null, [
         "Le cheval tourne ses épaules autour de ses hanches, au galop, sur un petit cercle.",
         "Il garde un galop à trois temps, sauteur, et la même cadence.",
-        "C'est la préparation de la pirouette, que l'on rencontre aux niveaux plus élevés."
+        "Ce n'est pas une pirouette : il développe l'engagement et l'équilibre dont la pirouette aura besoin plus tard."
       ]),
       S("🔁 Comment le travailler", null, [
         "Pars d'un galop raccourci, sur un grand cercle, avec un léger pli intérieur.",
@@ -1183,7 +1183,7 @@ var COURS = [
     Q("Entre un appuyer à gauche et un appuyer à droite, que fais-tu ?", ["J'enchaîne directement", "Je m'arrête", "Je passe au galop", "Je redresse le cheval, puis je change le pli et j'inverse mes jambes"], 3, "On redresse d'abord, puis on change le pli et on inverse les jambes."),
     Q("Au galop, inverser un déplacement latéral demande aussi…", ["Un arrêt", "Un changement de pied", "Un reculer", "Un trot"], 1, "Au galop, chaque changement de sens du latéral demande un changement de pied."),
     Q("Dans une transition au cours d'un appuyer, le cheval…", ["Garde l'angle et le pli", "Se redresse", "Change de direction", "S'arrête"], 0, "Il garde l'angle et le pli : c'est un test de son équilibre."),
-    Q("Tourner sur les hanches au galop prépare…", ["Le changement de pied simple", "Le contre-galop", "Le reculer", "La pirouette"], 3, "C'est la préparation de la pirouette, rencontrée aux niveaux plus élevés."),
+    Q("Tourner sur les hanches au galop développe…", ["La vitesse", "Le contre-galop", "Le reculer", "L'engagement et l'équilibre utiles plus tard à la pirouette"], 3, "Ce n'est pas une pirouette, mais il développe l'engagement et l'équilibre dont elle aura besoin."),
     Q("Que demande le programme dans les déplacements latéraux ?", ["Des sauts", "Des arrêts prolongés", "Des reculers", "Des transitions dans les déplacements latéraux"], 3, "Le programme demande d'obtenir des transitions dans les déplacements latéraux, aux trois allures."),
     Q("Comment ralentis-tu le mouvement avec ton bassin ?", ["En le bloquant brutalement", "En le suivant moins", "En le suivant davantage", "En te levant"], 1, "En suivant moins le mouvement, ton bassin ralentit le cheval, sans à-coup."),
     Q("Le galop s'éteint pendant le tournant. Que fais-tu ?", ["Je serre encore plus", "Je passe au trot et j'arrête la séance", "Je repars aussitôt plus grand, en avant", "Je recule"], 2, "On repart plus grand pour retrouver un galop vivant.")
@@ -1437,7 +1437,7 @@ var COURS = [
       S("🏁 Ce qui t'attend", null, [
         "Un parcours de niveau Amateur, avec des lignes, des combinaisons, des tournants serrés et des profils variés.",
         "Les cotes des obstacles (hauteur, largeur) sont fixées par le règlement CSO de la saison : ton enseignant te dit ce qu'il prévoit.",
-        "Le Galop 9 ouvre l'accès aux compétitions Amateur et Pro, selon le règlement des épreuves."
+        "Le Galop requis pour courir en Amateur et en Pro est fixé par le règlement général de la FFE : vérifie-le avec ton enseignant."
       ]),
       S("🎯 Ta préparation", null, [
         "Reconnaissance à pied : tracé, distances, changements de pied.",
@@ -1709,7 +1709,7 @@ var COURS = [
       P("Au Galop 9, tu connais les organismes qui encadrent l'équitation et l'élevage en France et dans le monde, et l'histoire de ta fédération."),
       S("📜 Une année clé", null, [
         "En juin 1921 naît en France la Fédération nationale des sports équestres (FNSE).",
-        "En novembre 1921 naît la Fédération équestre internationale (FEI), à l'initiative d'un Français, le baron du Teil.",
+        "Le 24 novembre 1921, à Paris, naît la Fédération équestre internationale (FEI) : le Français baron du Teil en est l'un des initiateurs et le premier président.",
         "Pour la première fois, les règles des compétitions sont communes à plusieurs pays."
       ]),
       E("💡", "Le savais-tu ?", "La FEI a été créée par huit pays seulement. Elle en réunit aujourd'hui plus de 130, et organise les championnats du monde et les épreuves des Jeux olympiques.")
@@ -1765,7 +1765,7 @@ var COURS = [
       ]),
       S("⚡ La synthèse en 10 secondes", null, [
         "1921 : FNSE en France, FEI dans le monde.",
-        "Le baron du Teil, à l'origine de la FEI.",
+        "Le baron du Teil, premier président de la FEI.",
         "1987 : la FFE réunit sport, tourisme et poney-clubs.",
         "IFCE : élevage, SIRE, Cadre Noir.",
         "SHF, France Galop, LeTrot, CNOSF."
@@ -1783,7 +1783,7 @@ var COURS = [
   quiz: [
     Q("En quelle année naissent la FNSE et la FEI ?", ["1912", "1987", "2010", "1921"], 3, "Les deux naissent en 1921, en juin et en novembre."),
     Q("Combien de pays ont créé la FEI ?", ["Deux", "Cinquante", "Cent", "Huit"], 3, "La FEI a été créée par huit pays ; elle en réunit aujourd'hui plus de 130."),
-    Q("Qui est à l'origine de la FEI ?", ["La Guérinière", "Le baron du Teil", "Le comte d'Aure", "Pierre de Coubertin"], 1, "La FEI a été créée à l'initiative du Français baron du Teil."),
+    Q("Quel Français a été le premier président de la FEI ?", ["La Guérinière", "Le baron du Teil", "Le comte d'Aure", "Pierre de Coubertin"], 1, "Le baron du Teil, l'un des initiateurs de la FEI, en a été le premier président."),
     Q("En quelle année naît la FFE ?", ["1921", "1952", "2010", "1987"], 3, "La FFE naît en 1987 de la réunion du sport, du tourisme équestre et des poney-clubs."),
     Q("Où se trouve le siège de la FFE ?", ["À Saumur", "À Paris, place de la Concorde", "Au Parc équestre fédéral de Lamotte-Beuvron", "À Lausanne"], 2, "La FFE a son siège au Parc équestre fédéral, à Lamotte-Beuvron."),
     Q("De quelle réunion est né l'IFCE ?", ["Des Haras nationaux et de l'École nationale d'équitation", "De la FFE et de la FEI", "De France Galop et LeTrot", "Des clubs parisiens"], 0, "L'IFCE est né en 2010 de la réunion des Haras nationaux et de l'École nationale d'équitation."),
@@ -1926,7 +1926,7 @@ var COURS = [
 
     B("Et après le Galop 9 ?", [
       S("🚀 Ce qui s'ouvre à toi", null, [
-        "Les compétitions Amateur et Pro, selon le règlement des épreuves.",
+        "Des objectifs en compétition Amateur et Pro, selon le Galop requis par le règlement général de la FFE.",
         "Les tests d'entrée des diplômes d'enseignant et d'entraîneur, si tu veux transmettre ta passion.",
         "Les Galops de spécialité et les autres disciplines, pour continuer d'apprendre."
       ]),
@@ -1958,7 +1958,7 @@ var COURS = [
     Q("Comment se prépare le Galop 9 ?", ["En une semaine", "Sur une saison, avec un calendrier fixé avec ton enseignant", "Seul, sans enseignant", "Sans cheval"], 1, "Connaissances au fil des semaines, travail à pied l'hiver, partie à cheval avec les concours."),
     Q("En concours complet, quel est le niveau demandé ?", ["CCE Club 3", "CCE Pro 1", "Aucun", "CCE Amateur 1"], 3, "Le programme demande un test de dressage, un parcours d'obstacles et un cross de niveau CCE Amateur 1."),
     Q("Pour la pratique à cheval, que présentes-tu ?", ["Les trois disciplines", "La partie commune et une partie spécifique au choix", "Seulement du dressage", "Seulement du cross"], 1, "La partie commune pour tous, puis une partie spécifique : dressage, CSO ou complet."),
-    Q("Que t'ouvre le Galop 9 ?", ["Seulement les compétitions Club", "Le permis de conduire un van", "Les compétitions Amateur et Pro, selon le règlement des épreuves", "Rien de plus"], 2, "Il ouvre l'accès aux compétitions Amateur et Pro, selon le règlement des épreuves."),
+    Q("Qui fixe le Galop requis pour courir en Amateur et en Pro ?", ["Ton club", "Le juge du concours", "Le règlement général de la FFE", "Le propriétaire du cheval"], 2, "C'est le règlement général de la FFE : vérifie-le avec ton enseignant."),
     Q("Où retrouves-tu ton Galop une fois validé ?", ["Sur le livret de ton cheval", "Nulle part", "Au secrétariat de la mairie", "Dans ton espace cavalier sur le site de la FFE"], 3, "Ton enseignant l'enregistre en ligne ; tu le retrouves dans ton espace cavalier FFE."),
     Q("Que peux-tu faire après le Galop 9, si tu veux transmettre ta passion ?", ["Rien", "Passer les tests d'entrée des diplômes d'enseignant", "Repasser le Galop 1", "Devenir juge immédiatement"], 1, "Le Galop 9 ouvre la voie aux tests d'entrée des diplômes d'enseignant et d'entraîneur.")
   ]
