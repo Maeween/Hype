@@ -19357,6 +19357,16 @@ acceptent 8 et 9 (avant : tout Galop au-dessus de 7 retombait à 1).
 | Fichier | Où | Quoi |
 |---|---|---|
 | index.html | racine | SelecteurArc / SelecteurArcDouble (9 graduations), SelecteurArcObjectif (1 → 9), SelecteurGalop (9 boutons), liste du profil, 5 lectures du Galop actuel |
-Vérifié sur capture (390 px) : les 9 graduations s'affichent proprement, 0 erreur. Non touché : les paliers de points de la famille « galops » (gamification, 1 à 7).
+Vérifié sur capture (390 px) : les 9 graduations s'affichent proprement, 0 erreur. Paliers de la famille « galops » : passés à 9 le 07/11 (voir l'entrée suivante).
+
+════════════════════════════════════════════════════════════
+
+🏅 07/11/2026 (23 h 00) — HAUTS FAITS : « LES 9 GALOPS » — PUBLIÉ (build 20261107-2315)
+« Ok continue » de Blandine. La famille de hauts faits « Les 7 Galops » devient « Les 9 Galops » (14 langues) : 9 marches,
+XP des Galops 8 et 9 = 360 et 420 (suite de 40, 70, 110, 160, 200, 240, 300). Se déclenche toujours quand on met à jour son Galop dans le profil.
+| Fichier | Où | Quoi |
+|---|---|---|
+| index.html | racine | HYPE_FAMILLES (galops) 7 → 9 marches ; nom traduit ; classement de démonstration jusqu'au Galop 9 |
+Conséquence : une cavalière qui avait « fini » les 7 Galops voit 2 marches de plus à gagner.
 
 ════════════════════════════════════════════════════════════
