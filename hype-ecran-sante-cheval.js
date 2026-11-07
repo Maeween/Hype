@@ -1952,6 +1952,7 @@ function EcranSanteCheval() {
      alignees en haut ; bandeaux Hey Baby et Magazine cote a cote, meme hauteur. Memes fonctions, memes donnees. */
   /* 07/11 — styles de la page Santé façon Vidéothèque (cartes photo, titres, pastilles, lignes du carnet, équipe). */
   var stCt = React.useState(false); var carnetTout = stCt[0], setCarnetTout = stCt[1];
+  var stAnS = React.useState(""); var anSel = stAnS[0], setAnSel = stAnS[1];   /* 07/11 : tuile d annee ouverte dans le carnet */
   function cssSante() {
     if (typeof document === "undefined" || document.getElementById("hype-sx-css")) return;
     var st = document.createElement("style"); st.id = "hype-sx-css";
@@ -1978,6 +1979,20 @@ function EcranSanteCheval() {
       ".sx-chips::-webkit-scrollbar{display:none}",
       ".sx-chip{flex:0 0 auto;min-height:44px;padding:6px 18px;border-radius:999px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,rgba(28,40,44,.62),rgba(7,10,8,.55));color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:13.5px;cursor:pointer;white-space:nowrap}",
       ".sx-chip small{font-size:11px;color:rgba(201,166,107,.85);margin-inline-start:6px}",
+      /* 07/11 : tuiles d annee du carnet - semi-transparentes, ombre en degrade (choix de Blandine) */
+      ".sx-tg{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:6px 0 4px}",
+      ".sx-tu{min-width:0;padding:14px 8px;border-radius:16px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(165deg,rgba(28,44,50,.52),rgba(10,16,19,.32));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 18px 30px -18px rgba(0,0,0,.95),0 6px 14px -10px rgba(201,166,107,.18),inset 0 1px 0 rgba(255,255,255,.06);color:#F3EEE4;text-align:center;font-family:inherit;cursor:pointer}",
+      ".sx-tu b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;line-height:1.1}",
+      ".sx-tu small{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:3px}",
+      ".sx-tu.on{border-color:rgba(201,166,107,.75);background:linear-gradient(165deg,rgba(201,166,107,.18),rgba(10,16,19,.35))}",
+      ".sx-tu.vide{background:rgba(10,16,19,.22);box-shadow:none;border-style:dashed;border-color:rgba(201,166,107,.2);cursor:default}",
+      ".sx-tu.vide b{color:rgba(243,238,228,.45)}",
+      ".sx-tu.vide small{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:12.5px;color:rgba(243,238,228,.45)}",
+      ".sx-tu.horiz{display:flex;align-items:baseline;gap:12px;text-align:start;padding:16px 18px}",
+      ".sx-tu.horiz b{font-size:26px}",
+      ".sx-tu.horiz small{flex:1;margin:0}",
+      ".sx-tu:focus-visible{outline:2px solid #C9A66B;outline-offset:2px}",
+      ".sx-tgl{margin-top:6px}",
       ".sx-chip.on{border-color:#C9A66B;background:linear-gradient(180deg,rgba(201,166,107,.30),rgba(201,166,107,.08));color:#F7E9CF}",
       ".sx-row{display:flex;align-items:center;gap:12px;padding:9px 2px;min-height:44px}",
       ".sx-row.ed{cursor:pointer}",
@@ -2109,11 +2124,48 @@ function EcranSanteCheval() {
     var visD = ld.filter(function (d) { return docDansFiltre(d, fAct.k); });
     var lignesM = vis.map(function (x) { return { d: String(x.date_intervention || x.date_prochaine || ""), soin: x }; }).concat(visD.map(function (x) { return { d: String(x.date_doc || x.created_at || ""), doc: x }; }))
       .sort(function (p1, p2) { return p2.d.localeCompare(p1.d); });
-    var LIM = 7, plus = lignesM.length - LIM, visibles = (carnetTout || plus <= 1) ? lignesM : lignesM.slice(0, LIM);
+    /* 07/11 (Blandine, maquette « Tuiles » validee) : le carnet ne liste plus tous les soins (« 300 km »). UNE TUILE PAR ANNEE,
+       de la plus recente a la premiere annee du carnet ; une annee sans soin APRES le premier soin garde sa tuile
+       (« Pas de soin renseigné »), rien avant le premier soin. 6 tuiles au maximum : les 5 plus recentes + « Avant ».
+       Lignes EQUILIBREES (3 tuiles max par ligne, repartition la plus egale : 4 = 2+2, 5 = 3+2), toujours pleine largeur ;
+       une seule annee = une tuile horizontale. Toucher une tuile ouvre ses soins dessous (re-toucher la referme). */
+    var parAn = {}; lignesM.forEach(function (m) { var a = m.d.slice(0, 4); if (!/^\d{4}$/.test(a)) a = "?"; (parAn[a] = parAn[a] || []).push(m); });
+    var ansN = Object.keys(parAn).filter(function (a) { return a !== "?"; }).map(Number).sort(function (a, b) { return b - a; });
+    var tuilesA = [];
+    if (ansN.length) {
+      var anMax = Math.max(ansN[0], new Date().getFullYear()), anMin = ansN[ansN.length - 1];
+      for (var yA = anMax; yA >= anMin; yA--) tuilesA.push({ k: String(yA), lignes: parAn[String(yA)] || [] });
+      if (tuilesA.length > 6) { tuilesA = tuilesA.slice(0, 5).concat([{ k: "avant", lignes: tuilesA.slice(5).reduce(function (acc, x) { return acc.concat(x.lignes); }, []) }]); }
+    }
+    if (parAn["?"]) { if (tuilesA.length && tuilesA[tuilesA.length - 1].k === "avant") tuilesA[tuilesA.length - 1].lignes = tuilesA[tuilesA.length - 1].lignes.concat(parAn["?"]); else tuilesA.push({ k: "avant", lignes: parAn["?"] }); }
+    function rangeesA(n) { var r = Math.ceil(n / 3), base = Math.floor(n / r), pl = n % r, L = []; for (var i = 0; i < r; i++) L.push(base + (i < pl ? 1 : 0)); return L; }
+    function etiqA(L) {
+      var ns = L.filter(function (m) { return !!m.soin; }).length, nd = L.length - ns, out = [];
+      if (ns) out.push(ns + " " + (ns > 1 ? T("soins", "treatments", "cuidados", "cure", "件", "Behandlungen", "علاجات", "项护理", "behandelingen", "cuidados", "behandlingar", "процед.", "zabiegi", "건")
+                                           : T("soin", "treatment", "cuidado", "cura", "件", "Behandlung", "علاج", "项护理", "behandeling", "cuidado", "behandling", "процед.", "zabieg", "건")));
+      if (nd) out.push(nd + " " + T("doc.", "doc.", "doc.", "doc.", "書類", "Dok.", "مستند", "文件", "doc.", "doc.", "dok.", "док.", "dok.", "문서"));
+      return out.length ? out.join(" · ") : T("Pas de soin renseigné", "No care recorded", "Sin cuidados registrados", "Nessuna cura registrata", "記録なし", "Keine Pflege eingetragen", "لا يوجد علاج مسجل", "未记录护理", "Geen zorg ingevuld", "Nenhum cuidado registrado", "Ingen vård registrerad", "Нет записей", "Brak zapisanych zabiegów", "기록 없음");
+    }
+    var selA = tuilesA.filter(function (x) { return x.k === anSel && x.lignes.length; })[0] || null;
+    var grilleA = null;
+    if (tuilesA.length) {
+      var kA = 0, celA = [];
+      rangeesA(tuilesA.length).forEach(function (c) {
+        for (var iA = 0; iA < c; iA++, kA++) (function (x) {
+          var vide = !x.lignes.length, seule = tuilesA.length === 1;
+          celA.push(h("button", { key: "tu" + x.k, type: "button", disabled: vide, "aria-expanded": vide ? undefined : (selA && selA.k === x.k ? "true" : "false"),
+            className: "sx-tu" + (vide ? " vide" : "") + (seule ? " horiz" : "") + (selA && selA.k === x.k ? " on" : ""), style: { gridColumn: "span " + (6 / c) },
+            onClick: vide ? null : function () { setAnSel(anSel === x.k ? "" : x.k); } },
+            h("b", null, x.k === "avant" ? T("Avant", "Earlier", "Antes", "Prima", "それ以前", "Früher", "قبل ذلك", "更早", "Eerder", "Antes", "Tidigare", "Ранее", "Wcześniej", "이전") : x.k),
+            h("small", null, etiqA(x.lignes))));
+        })(tuilesA[kA]);
+      });
+      grilleA = h("div", { className: "sx-tg" }, celA);
+    }
     var an = null, enfants = [];
-    visibles.forEach(function (m, i) {
+    if (selA) selA.lignes.forEach(function (m, i) {
       var a = m.d.slice(0, 4);
-      if (a && a !== an) { an = a; enfants.push(h("div", { key: "an" + a + i, className: "vxp-an" }, a)); }
+      if (selA.k === "avant" && a && a !== an) { an = a; enfants.push(h("div", { key: "an" + a + i, className: "vxp-an" }, a)); }
       enfants.push(ligneCarnet2(m, i));
     });
     return h("div", { style: { marginBottom: 6 } },
@@ -2121,11 +2173,10 @@ function EcranSanteCheval() {
         peutEcrire ? "+ " + T("Document", "Document", "Documento", "Documento", "書類", "Dokument", "مستند", "文件", "Document", "Documento", "Dokument", "Документ", "Dokument", "문서") : null, function () { ouvrirDocAjout(); }),
       h("div", { className: "sx-chips" },
         FILTRES_CARNET.filter(function (f) { return f.k === "tous" || cpt[f.k] > 0 || !(l.length + ld.length); }).map(function (f) {
-          return h("button", { key: f.k, type: "button", className: "sx-chip" + (f.k === fAct.k ? " on" : ""), onClick: function () { setCarnetFiltre(f.k); setCarnetTout(false); } }, f.t, cpt[f.k] ? h("small", null, cpt[f.k]) : null);
+          return h("button", { key: f.k, type: "button", className: "sx-chip" + (f.k === fAct.k ? " on" : ""), onClick: function () { setCarnetFiltre(f.k); setCarnetTout(false); setAnSel(""); } }, f.t, cpt[f.k] ? h("small", null, cpt[f.k]) : null);
         })),
-      lignesM.length ? enfants : h("div", { className: "sx-vide" }, T("Aucun soin enregistré pour l’instant.", "No care recorded yet.", "Aún no hay cuidados registrados.", "Nessuna cura registrata.", "まだ記録がありません。", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")),
-      (plus > 1 && !carnetTout) ? h("span", { className: "vxp-pl", role: "button", onClick: function () { setCarnetTout(true); } },
-        T("Voir les ", "Show the ", "Ver los ", "Vedi gli ", "", "Die ", "عرض ", "查看其余 ", "Bekijk de ", "Ver os ", "Visa de ", "Показать ещё ", "Pokaż ", "") + plus + T(" autres", " others", " demás", " altri", "件をすべて見る", " weiteren", " الأخرى", " 条", " andere", " outros", " andra", "", " pozostałe", "개 더 보기") + " ⌄") : null);
+      lignesM.length ? [grilleA, enfants.length ? h("div", { key: "sel", className: "sx-tgl" }, enfants) : null] : h("div", { className: "sx-vide" }, T("Aucun soin enregistré pour l’instant.", "No care recorded yet.", "Aún no hay cuidados registrados.", "Nessuna cura registrata.", "まだ記録がありません。", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")),
+      null);
   }
   function equipe2() {
     var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
