@@ -19548,7 +19548,7 @@ Fichiers à publier :
 | index.html | racine | reprise garde l'équipe ouverte ; retour de Performances chevaux ; hype-ecran-team.js?v=9 ; hype-ecran-saison.js?v=45 (7 endroits) ; marqueur de build 20261108-0055 |
 | SUIVI.md | racine | cette entrée |
 
-## 07/11/2026 23h55 — PRÊT, NON PUBLIÉ (à grouper) — Photo de thématique partout quand un événement n'a pas d'affiche
+## 07/11/2026 23h55 — PUBLIÉ (parti avec la publication du 08/11 00h00 d'une autre conversation ; Blandine 00h07 : « Oui ») — Photo de thématique partout quand un événement n'a pas d'affiche
 - Blandine 23h46 : « sur la page écurie, CSO Tigery, toujours pas de photo ; applique ça partout : quand un événement n'a pas d'affiche, la photo de la thématique par défaut ».
 - Nouvelle aide commune hypeImageRdv(ev) (index.html, juste avant hypeOuvrirRdv) : l'affiche si elle existe, sinon concours → images/hype-entete-concours.jpg, stage → images/theme-dressage-bai-trot.webp, sortie → images/actualite-ambiance.webp (même règle que l'agenda du club du 07/11).
 - Appliquée : page Écurie (cartes « Prochains événements » et « Événements passés », hype-ecran-ecurie-v2.js), ancien agenda du club (AgendaClubHype, index.html), résultats de l'écurie (image d'un concours sans affiche ni photo, hype-ecran-resultats-ecurie.js), haut de la page d'un événement passé sans couverture (hype-ecran-evenement-passe.js). Déjà fait avant : page équipe, agenda du club (hype-ecran-agenda.js).
@@ -19562,7 +19562,7 @@ Fichiers à publier :
 | index.html | racine | hypeImageRdv + ancien agenda du club ; ecurie-v2 v=8, resultats-ecurie v=8, evenement-passe v=4 ; marqueur de build au moment de publier |
 | SUIVI.md | racine | cette entrée |
 
-## 07/11/2026 23h55 — PRÊT, NON PUBLIÉ (à grouper) — Engagements : retours de Blandine sur iPhone (« quel bordel encore »)
+## 07/11/2026 23h55 — PUBLIÉ (parti avec la publication du 08/11 00h00 d'une autre conversation ; Blandine 00h07 : « Oui ») — Engagements : retours de Blandine sur iPhone (« quel bordel encore »)
 - Les boutons « Enregistré / Feuille d'engagement » ne collent plus à l'écran (ils cachaient les tuiles et la barre) : ils sont à la fin de la page, au-dessus de la barre de l'appli.
 - Plus de tuile « + Autre » / « + Nouvelle épreuve » (Blandine : « ne rajoute pas une 7e tuile et une ligne juste pour écrire + ») : petits liens sous les tuiles (« + Un autre cavalier › », « + Un autre cheval › », « + Nouvelle épreuve › »).
 - Tuiles cavaliers et chevaux plus petites (« réduis les onglets ») : 4 par ligne sur téléphone (6 tablette, 8 ordinateur) ; épreuves 3 par ligne, moins hautes.
