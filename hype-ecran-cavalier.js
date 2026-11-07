@@ -463,14 +463,14 @@ function EcranMonCavalier() {
     if (!uidGrp || (!nomGrp1 && !nomGrp2) || typeof supa === "undefined" || !supa || typeof hypeClefClubPiquets !== "function") { setGroupesCav([]); return; }
     (async function () {
       try {
-        var r = await supa.from("groupes_membres").select("groupe_id, groupes(id, nom, nature, club_clef, discipline, niveau, saison, photo_url, ordre, cree_le)").eq("user_id", uidGrp);
+        var r = await supa.from("groupes_membres").select("groupe_id, role, groupes(id, nom, nature, club_clef, discipline, niveau, saison, photo_url, ordre, cree_le)").eq("user_id", uidGrp);
         if (!vivant || !r || r.error || !Array.isArray(r.data)) { if (vivant) setGroupesCav([]); return; }
         /* 22/10 15 h 41 (Blandine : « le créateur d un groupe en fait toujours partie », option A) : les groupes CRÉÉS par
            ce cavalier s affichent aussi ici, sans qu il soit inscrit dans groupes_membres (il n apparaît donc ni dans la
            liste des cavalières ni dans les effectifs). Même filtre d écurie que les groupes dont il est membre. */
         try {
           var rc = await supa.from("groupes").select("id, nom, nature, club_clef, discipline, niveau, saison, photo_url, ordre, cree_le").eq("cree_par", uidGrp);
-          if (vivant && rc && !rc.error && Array.isArray(rc.data)) rc.data.forEach(function (g) { r.data.push({ groupe_id: g.id, groupes: g }); });
+          if (vivant && rc && !rc.error && Array.isArray(rc.data)) rc.data.forEach(function (g) { r.data.push({ groupe_id: g.id, groupes: g, role: "coach" }); });
         } catch (eCr) { }
         if (!vivant) return;
         var k1 = nomGrp1 ? hypeClefClubPiquets(nomGrp1) : null, k2 = nomGrp2 ? hypeClefClubPiquets(nomGrp2) : null;
@@ -480,7 +480,7 @@ function EcranMonCavalier() {
           var rang = (k1 && g.club_clef === k1) ? 0 : ((k2 && g.club_clef === k2 && k2 !== k1) ? 1 : -1);
           if (rang < 0) return;   /* groupe d une écurie qui n est plus la sienne : on ne l affiche pas */
           vus[g.id] = true;
-          l.push(Object.assign({}, g, { __rang: rang, __club: rang === 0 ? nomGrp1 : nomGrp2 }));
+          l.push(Object.assign({}, g, { __rang: rang, __club: rang === 0 ? nomGrp1 : nomGrp2, __coach: String(x.role || "").toLowerCase() === "coach" }));
         });
         l.sort(function (a, b) { return (a.__rang - b.__rang) || ((a.ordre == null ? 9999 : a.ordre) - (b.ordre == null ? 9999 : b.ordre)) || String(a.cree_le || "").localeCompare(String(b.cree_le || "")) || String(a.nom || "").localeCompare(String(b.nom || "")); });
         if (vivant) setGroupesCav(l);
@@ -883,6 +883,23 @@ function EcranMonCavalier() {
       h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlT ? "270deg" : "90deg") + ", rgba(201,166,107,0.5), transparent)" } }),
       (voirTxt && onVoir) ? h("button", { onClick: onVoir, style: { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#C9A66B", fontFamily: M, fontSize: 12, whiteSpace: "nowrap" } }, sansFleche ? voirTxt : (voirTxt + " " + (rtlT ? "\u2190" : "\u2192"))) : null);
   }
+  /* 07/11 (Blandine : « Coach / nom du groupe en onglet, s il y en a deux deux onglets… ailleurs qu en plein milieu de la photo », choix C) :
+     des onglets de classeur poses sur un filet, juste sous la photo ; un par groupe (equipe). Chaque onglet ouvre la page du groupe. */
+  function cavOngletsGroupes() {
+    var gs = (groupesCav || []).filter(function (gE) { return gE && gE.nature === "equipe"; });
+    var cleTm = (typeof TEAM_CLE !== "undefined") ? TEAM_CLE : "societe d'equitation de paris (sep)";
+    var items = gs.map(function (g) { return { k: "g" + g.id, nom: g.nom || "", coach: !!g.__coach || (roleTeamAff === "coach" && g.club_clef === cleTm), ouvrir: function () { if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); else setEcran("team-competition"); } }; });
+    if (!items.length && roleTeamAff) items.push({ k: "team", nom: "Team CSO Club", coach: roleTeamAff === "coach", ouvrir: function () { setEcran("team-competition"); } });
+    if (!items.length) return null;
+    var lCoach = T("Coach", "Coach", "Coach", "Coach", "\u30b3\u30fc\u30c1", "Coach", "\u0645\u062f\u0631\u0628", "\u6559\u7ec3", "Coach", "Coach", "Coach", "\u0422\u0440\u0435\u043d\u0435\u0440", "Trener", "\ucf54\uce58");
+    var lMembre = T("Membre", "Member", "Miembro", "Membro", "\u30e1\u30f3\u30d0\u30fc", "Mitglied", "\u0639\u0636\u0648", "\u6210\u5458", "Lid", "Membro", "Medlem", "\u0423\u0447\u0430\u0441\u0442\u043d\u0438\u043a", "Cz\u0142onek", "\uba64\ubc84");
+    return h("div", { key: "cavOnglets", "data-pz-hero": "1", style: { display: "flex", gap: 6, alignItems: "flex-end", margin: cavTab ? "6px 34px 0" : "6px 16px 0", borderBottom: "1px solid rgba(197,170,120,0.45)", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } },
+      items.map(function (it) {
+        return h("button", { key: it.k, onClick: it.ouvrir, style: { flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: 7, height: 30, padding: "0 13px", border: "1px solid rgba(197,170,120,0.55)", borderBottom: "none", borderRadius: "12px 12px 0 0", background: "linear-gradient(180deg,rgba(16,21,24,0.92),rgba(5,8,11,0.98))", fontFamily: M, fontSize: 10, letterSpacing: 1, textTransform: "uppercase", whiteSpace: "nowrap", cursor: "pointer" } },
+          h("span", { style: { color: "#C9A66B", fontWeight: 700 } }, "\u2726 " + (it.coach ? lCoach : lMembre)),
+          h("span", { style: { color: "#F3EEE4", fontWeight: 600 } }, it.nom));
+      }));
+  }
   function cavV2Hero() {
     var tabV2 = cavTab, grandV2 = cavOrdi;   /* (1130) avant : largeur lue une fois, seuils 700 / 1100 */
     var rtlV2 = false; try { rtlV2 = document.documentElement.dir === "rtl"; } catch (eR) { }
@@ -936,7 +953,7 @@ function EcranMonCavalier() {
           h("div", { style: { display: "flex", alignItems: "flex-end", flexWrap: "wrap", gap: "6px 12px", marginTop: 8 } },
             h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavPanneau ? 64 : (grandV2 ? 52 : (tabV2 ? 48 : 40)), lineHeight: 1, color: "#F3EEE4", textShadow: ombreTxt, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" } }, prenom),
             (!__estVisite) ? h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": hypeT7("Modifier mon pseudo", "Edit my username", "Modificar mi seudónimo", "Modifica il mio nickname", "ユーザー名を変更", "Meinen Benutzernamen ändern", "تعديل اسم المستخدم", "修改我的昵称", "Mijn gebruikersnaam wijzigen", "Editar meu apelido", "Redigera mitt användarnamn", "Изменить мой ник", "Edytuj mój pseudonim", "닉네임 수정하기"), style: { flexShrink: 0, marginBottom: 6, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.55)", border: "1px solid rgba(243,238,228,0.22)", color: "#F3EEE4", fontSize: 11, cursor: "pointer", padding: 0 } }, "✎") : null,
-            roleTeamAff ? h("button", { onClick: function (eTm) { if (eTm && eTm.stopPropagation) eTm.stopPropagation(); setEcran("team-competition"); }, style: { flexShrink: 0, marginBottom: 6, display: "inline-flex", alignItems: "center", gap: 4, minHeight: 24, padding: "0 10px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "rgba(5,8,11,0.5)", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null),
+            false /* 07/11 (Blandine, choix C) : le badge quitte le milieu de la photo, il devient des onglets sous la photo (cavOngletsGroupes) */ && roleTeamAff ? h("button", { onClick: function (eTm) { if (eTm && eTm.stopPropagation) eTm.stopPropagation(); setEcran("team-competition"); }, style: { flexShrink: 0, marginBottom: 6, display: "inline-flex", alignItems: "center", gap: 4, minHeight: 24, padding: "0 10px", borderRadius: 999, border: "1px solid rgba(197,170,120,0.55)", background: "rgba(5,8,11,0.5)", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } }, "✦ " + (roleTeamAff === "coach" ? T("Coach", "Coach", "Coach", "Coach", "コーチ", "Coach", "مدرب", "教练", "Coach", "Coach", "Coach", "Тренер", "Trener", "코치") : "Team CSO Club")) : null),
           (handleV2 || ecV2) ? h("div", { style: { fontFamily: M, fontSize: cavPanneau ? 15.5 : 13, color: "rgba(243,238,228,0.78)", marginTop: cavPanneau ? 14 : 10, textShadow: ombreTxt } },
             handleV2 ? h("span", { dir: "ltr" }, handleV2) : null,
             (handleV2 && ecV2) ? " · " : null,
@@ -1004,7 +1021,7 @@ function EcranMonCavalier() {
        Le carnet se rejoint desormais par APPRENTISSAGE, comme les deux autres rubriques. */
     h("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } }),
     h("button", { onClick: function () { /* 01/10 (533) : la fleche revient a la page precedente (comme le geste retour) ; sans page precedente, Accueil comme avant */ if (ctx && ctx.peutReculer && typeof ctx.retourEcran === "function") ctx.retourEcran(); else setEcran("dashboard"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 26 /* (957) */, zIndex: 6, width: 36, height: 36, borderRadius: "50%", background: CAV_ICONE, border: "1px solid rgba(197,170,120,0.36)", color: "#F3EEE4", fontSize: 19, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
-    cavZ("hero", CAV_V2 ? cavV2Hero() : null),   /* (1104) */
+    cavZ("hero", CAV_V2 ? h(React.Fragment, null, cavV2Hero(), cavOngletsGroupes()) : null),   /* (1104) */
     CAV_V2 ? null : h("div", { style: { position: "relative", zIndex: 1 /* (955) au-dessus du halo, comme la video de l accueil */, margin: "calc(env(safe-area-inset-top) + 62px) 26px 0" /* 11/10 (957) 16 -> 26 px (Blandine : « un peu plus d espace entre la bordure du telephone et celles de la photo hero ») */, borderRadius: 24, overflow: "hidden", background: "#05080B", border: "1px solid " + CAV_BORD, WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 66%, rgba(0,0,0,0.55) 84%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 66%, rgba(0,0,0,0.55) 84%, rgba(0,0,0,0) 100%)" } },   /* (679) Blandine : « faire fondre le bas de la photo hero avec le fond de la page » : MASQUE (transparence), aucune couleur posee sur la photo */
       /* 17/08 (137, demande de Blandine : « la laisser en entier, ca m'enerve
          de la voir coupee ainsi que son cadre »). LA PHOTO N'EST PLUS ROGNEE.

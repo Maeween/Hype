@@ -830,6 +830,16 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🗂️ 08/11/2026 (00 h 50) — PAGE CAVALIER : « COACH / NOM DU GROUPE » EN ONGLETS SOUS LA PHOTO (CHOIX C)
+Blandine : « Coach / nom du groupe en onglet… s'il y en a deux deux onglets… ailleurs qu'en plein milieu de la photo » ; elle renvoie la capture de la proposition C (23 h 34).
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 15 : le badge à côté du nom est retiré ; sous la photo, un onglet de classeur par groupe (équipe) : « ✦ Coach · nom » ou « ✦ Membre · nom », posés sur un filet champagne ; plusieurs groupes = plusieurs onglets côte à côte (on fait glisser s'ils dépassent) ; toucher un onglet ouvre la page du groupe. Coach = créatrice du groupe, rôle coach, ou gestionnaire de l'écurie de la Team. Téléphone, tablette, ordinateur |
+| index.html | racine | ?v cavalier 14 → 15, build 20261108-0050 (rien d'autre) |
+· « Membre » traduit 14 langues (« Coach » existait). Testé sur copie, téléphone et tablette.
+
+════════════════════════════════════════════════════════════
+
 🎨 08/11/2026 (00 h 35) — PAGE CAVALIER : DESIGN QUI NE SE REMETTAIT PLUS À ZÉRO + NOUVEAUX CHOIX
 Blandine (23 h 24 → 23 h 26) : « gris anthracite et bleu roi », « différents types d'écritures… italique », « divers transparence pour les onglets (dont le fameux semi transparent ombre dégradé) », « les onglets histoire etc… on devine mal que ce sont des boutons », « ici ça fait encore très filtré », « j'enregistre je change de page je reviens ça s'est réinitialisé ».
 | Fichier | Où | Quoi |
