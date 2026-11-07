@@ -2,6 +2,8 @@
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
+> 🟥 RÈGLE PERMANENTE — PAGES POUR GOOGLE / BING (Blandine, 08/11 00h03 : « fais ça sur la totalité des pages […] et préviens dans le suivi d'en faire autant pour celles à venir ») : JAMAIS de page de présentation à part. Toute adresse publique doit ouvrir la VRAIE page de l'appli (comme les Galops et les prépas : netlify/edge-functions/cours-route.ts + <meta name="hype-cible">), le visiteur lit le début, puis la suite est FLOUTÉE avec la proposition d'abonnement (connexion d'abord). Le texte pour Google reste caché dans la page. Vaut pour TOUTES les pages à venir.
+
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
@@ -19506,7 +19508,7 @@ Fichiers à publier :
 | SUIVI.md | racine | cette entrée |
 - Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
 
-## 08/11/2026 00h20 — Prépas : les pages Google/Bing ouvrent la VRAIE page, la suite floutée (build 20261108-0120) — PRÊT, NON publié
+## 08/11/2026 00h20 — Prépas : les pages Google/Bing ouvrent la VRAIE page, la suite floutée (build 20261108-0120) — PUBLIÉ le 08/11 00h10 (Blandine : « Ok c'est mieux »)
 Blandine (23h57) : « toutes tes pages de présentation on avait dit que c'était pas possible […] les gens devaient voir le début de la vraie page puis qu'elle devienne floutée en proposant abonnement » + « Ça ressemble à rien ».
 - netlify/edge-functions/cours-route.ts : les 56 adresses /<langue>/prepa-…-equitation/ passent par le même aiguillage que les Galops → la page Hype normale s'ouvre sur la vraie page prépa (cible « prepa-AE/BP/DE/DES »). Google garde le texte caché dans la page.
 - index.html : la cible « prepa-X » ouvre l'écran prepa-diplomes sur le bon diplôme ; hype-ecran-prepa.js?v=8 ; build 20261108-0120.
