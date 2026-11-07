@@ -41,7 +41,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     if (/préparation/i.test(t)) return "Ma préparation";
     return t;
   }
-  var CSS_ID = "hype-prepa-css-2";
+  var CSS_ID = "hype-prepa-css-3";
   var CSS = window.__HYPE_PREPA_HERO_CSS + [
     ".pp{--pp-iv:#F3EEE4;--pp-iv2:rgba(243,238,228,.78);--pp-iv3:rgba(243,238,228,.55);--pp-ch:#C9A66B;--pp-bd:rgba(201,166,107,.22);--pp-pan:rgba(16,26,29,.62);padding-bottom:calc(env(safe-area-inset-bottom) + 96px)}",
     ".pp .hv2-titre p{max-width:none}",
@@ -120,6 +120,9 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     ".pp-verrou .pp-cad{width:60px;height:60px;border-radius:50%;border:1px solid rgba(201,166,107,.5);display:flex;align-items:center;justify-content:center;margin-bottom:16px}",
     ".pp-verrou h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;font-weight:600;line-height:1.15;margin:0 0 12px;max-width:380px;color:#F3EEE4}",
     ".pp-verrou p{font-size:14px;line-height:1.6;color:rgba(243,238,228,.74);max-width:400px;margin:0 0 20px}",
+    ".pp-flou{position:relative;max-height:520px;overflow:hidden;filter:blur(7px);opacity:.75;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 35%,transparent 100%)}",
+    ".pp-verrou.pp-verrou-sur{position:relative;z-index:2;margin-top:-330px;background:linear-gradient(180deg,rgba(6,10,9,.82),rgba(6,10,9,.96));-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}",
+    "@media (min-width:768px){.pp-flou{max-height:600px}.pp-verrou.pp-verrou-sur{margin-top:-380px}}",
     ".pp-verrou-b{min-height:48px;padding:0 26px;border-radius:999px;border:1px solid #C9A66B;background:transparent;color:#D8BA82;font-size:14.5px;font-weight:600;cursor:pointer}",
     ".pp-vue{display:inline-block;margin-top:12px;background:transparent;border:1px dashed rgba(201,166,107,.6);border-radius:999px;padding:4px 12px;font-size:11px;letter-spacing:.06em;color:#C9A66B;cursor:pointer}"
   ].join("\n");
@@ -245,8 +248,8 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
         return h("button", { key: i, type: "button", className: "pp-ong" + (actif === i ? " on" : ""), "aria-current": actif === i ? "true" : undefined, onClick: function () { aller(i); } }, s.c || court(s.titre));
       }))),
       h("div", { className: "pp-corps" },
-        (acces ? d.sections : d.sections.slice(0, 1)).map(function (s, i) {
-          return h("section", { key: dip + i, id: "pp-s" + i, className: "pp-sec", "aria-labelledby": "pp-h" + i },
+        (function () { var secs = d.sections.map(function (s, i) {
+          return h("section", { key: dip + i, id: acces || i === 0 ? "pp-s" + i : undefined, className: "pp-sec", "aria-labelledby": "pp-h" + i },
             h("h2", { id: "pp-h" + i }, s.titre), h("div", { className: "pp-filet", "aria-hidden": "true" }),
             s.b.map(function (b, j) { return bloc(b, j, dip); }),
             s.sous.map(function (sb, j) {
@@ -257,8 +260,12 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
                   h("span", { className: "pp-chev" }, CHEV)),
                 o ? h("div", { id: "pp-d" + k, className: "pp-dep-in" }, sb.b.map(function (b, m) { return bloc(b, m, dip); })) : null);
             }));
-        }),
-        acces ? null : h("div", { id: "pp-verrou", className: "pp-verrou" },
+        });
+          /* 08/11 (Blandine : « le début de la vraie page puis qu'elle devienne floutée en proposant abonnement ») : sans accès, la 1re partie se lit, la suite apparaît floutée sous la carte Premium. */
+          if (acces) return secs;
+          return [secs[0], secs.length > 1 ? h("div", { key: "flou", className: "pp-flou", "aria-hidden": "true", inert: "" }, secs.slice(1, 3)) : null];
+        })(),
+        acces ? null : h("div", { id: "pp-verrou", className: "pp-verrou" + (d.sections.length > 1 ? " pp-verrou-sur" : "") },
           h("div", { className: "pp-cad", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
             h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
           h("h2", null, P(0)), h("p", null, P(1)),

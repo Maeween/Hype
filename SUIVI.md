@@ -19506,6 +19506,15 @@ Fichiers à publier :
 | SUIVI.md | racine | cette entrée |
 - Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
 
+## 08/11/2026 00h20 — Prépas : les pages Google/Bing ouvrent la VRAIE page, la suite floutée (build 20261108-0120) — PRÊT, NON publié
+Blandine (23h57) : « toutes tes pages de présentation on avait dit que c'était pas possible […] les gens devaient voir le début de la vraie page puis qu'elle devienne floutée en proposant abonnement » + « Ça ressemble à rien ».
+- netlify/edge-functions/cours-route.ts : les 56 adresses /<langue>/prepa-…-equitation/ passent par le même aiguillage que les Galops → la page Hype normale s'ouvre sur la vraie page prépa (cible « prepa-AE/BP/DE/DES »). Google garde le texte caché dans la page.
+- index.html : la cible « prepa-X » ouvre l'écran prepa-diplomes sur le bon diplôme ; hype-ecran-prepa.js?v=8 ; build 20261108-0120.
+- hype-ecran-prepa.js : sans Premium, la 1re partie (« En bref ») se lit en entier, puis les 2 parties suivantes apparaissent FLOUTÉES sous la carte « Débloquer la suite avec Premium » (même règle que Santé). Aucun nouveau texte (rien à traduire).
+- outils/seo-prepas.py + les 56 pages : repères hype-cible / hype-seo / hype-texte.
+- Testé (non-abonnée) : téléphone, tablette, ordinateur, français, anglais, arabe.
+- Inchangés : i18n/prepa-*.json, outils/seo-galops.cjs, outils/prepas-liens.json, sitemap-pages.xml.
+
 ## 07/11/2026 23h40 — PUBLICATION build 20261108-0045 (Blandine 23h34 : « Ok ouvre le DES et gère ») — PRÉPA DES OUVERTE
 - Prépa DES (DESJEPS mention équitation, instructeur) ouverte à tous comme les autres (« En bref » libre, la suite en Premium) ; plus de mention « Non publié ».
 - Bandeau « Deviens enseignant » de la page des Galops : 4 boutons AE · BP · DE · DES (2 × 2 sur téléphone, 4 de front sur tablette et ordinateur) ; métier « Instructeur » traduit dans les 14 langues.
