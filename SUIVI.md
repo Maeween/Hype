@@ -678,8 +678,9 @@ propositions, visuel et en contenu »). RIEN DE CODÉ NI DE PUBLIÉ.
   t'apporte » dans Mon compte (hype-ecran-mon-compte.js ?v=3). Traduit
   dans les 14 langues. PUBLIÉ avec le camion (build 20261107-0305).
   ⚠️ À tester sur iPhone avec un nouveau compte.
-· À FAIRE ENSUITE (demande de Blandine 11 h 30) : retrouver les soins ET les
-  ordonnances par cheval et par date (page « Les soins » du registre).
+· ✅ (fait le 05/11, vérifié le 07/11) Les soins du registre : retrouver les soins et les
+  ordonnances par cheval (loupe), par année et par type (tuiles).
+
 · Vrai retard repéré : rappel de vaccin de Hey Baby Please prévu le
   17/10/2026, non enregistré. 9 chevaux ferrés le 09/10 → prochaine
   ferrure vers le 04/12 (jour du Salon).
