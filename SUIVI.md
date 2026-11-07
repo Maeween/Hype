@@ -830,6 +830,16 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🏆 08/11/2026 (00 h 20) — FICHE CHEVAL : « COUPES ET FLOTS » GARDÉ
+Blandine : « Plaques et flots on le garde hein ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cheval.js | racine | version 14 : les plaques et flots sont toujours affichés sur la nouvelle fiche (en bas du bloc Résultats, dès qu'il y en a) ; « Coupes et flots » revient dans Personnaliser › Blocs, masquable à part |
+| index.html | racine | ?v cheval 13 → 14, build 20261108-0020 (rien d'autre) |
+· Texte déjà traduit. Testé sur copie (la ligne « Coupes et flots » est bien dans la liste).
+
+════════════════════════════════════════════════════════════
+
 🧩 07/11/2026 (23 h 50) — FICHE CHEVAL : LISTE « BLOCS » ALIGNÉE SUR LA NOUVELLE FICHE
 Blandine : « Ok continue ».
 | Fichier | Où | Quoi |

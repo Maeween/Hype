@@ -298,7 +298,7 @@ function EcranCheval() {
               h("span", { style: { flex: 1, fontFamily: MOp, fontSize: 14, color: "#F3EEE4" } }, PZC(lib)),
               fl(-1, iO > 0, "Monter"), fl(1, iO < tO.length - 1, "Descendre"));
           })) : null;
-        contenu = h("div", null, (nouvV4 ? PZC_ORDRE_V4 : PZC_BLOCS).map(function (b) {   /* 07/11 : sur la nouvelle fiche, la liste suit ses 6 blocs (« Coupes et flots » n y existe pas) */
+        contenu = h("div", null, (nouvV4 ? PZC_ORDRE_V4.slice(0, 4).concat([["coupes", "Coupes et flots"]], PZC_ORDRE_V4.slice(4)) : PZC_BLOCS).map(function (b) {   /* 07/11 : sur la nouvelle fiche, la liste suit ses 6 blocs (« Coupes et flots » n y existe pas) */
           var cache = pzcCache(b[0]);
           return h("button", { key: b[0], onClick: function () { pzcBasculer(b[0]); }, style: { display: "flex", alignItems: "center", width: "100%", gap: 12, padding: "12px 4px", border: 0, borderBottom: "1px solid rgba(243,238,228,0.07)", background: "transparent", color: cache ? "#878D8E" : "#F3EEE4", fontFamily: MOp, fontSize: 14, textAlign: "start", cursor: "pointer" } },
             h("span", { style: { flex: 1 } }, PZC(b[1])),
@@ -2987,7 +2987,7 @@ async function supprimerSouvenirOuvert() {
             h("div", { style: { fontFamily: SERIF, fontSize: D ? 24 : 21, color: IV } }, T("Aucun résultat pour le moment", "No results yet", "Aún no hay resultados", "Ancora nessun risultato", "まだ成績はありません", "Noch keine Ergebnisse", "لا توجد نتائج حاليًا", "暂时没有成绩", "Nog geen resultaten", "Nenhum resultado por enquanto", "Inga resultat ännu", "Пока нет результатов", "Na razie brak wyników", "아직 결과가 없어요")),
             h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: 12.5, lineHeight: 1.5, color: DX } }, T("Les résultats de ce cheval n’ont pas encore été ajoutés.", "This horse’s results haven’t been added yet.", "Los resultados de este caballo aún no se han añadido.", "I risultati di questo cavallo non sono ancora stati aggiunti.", "この馬の成績はまだ追加されていません。", "Die Ergebnisse dieses Pferdes wurden noch nicht hinzugefügt.", "لم تُضف نتائج هذا الحصان بعد.", "这匹马的成绩还没有添加。", "De uitslagen van dit paard zijn nog niet toegevoegd.", "Os resultados deste cavalo ainda não foram adicionados.", "Den här hästens resultat har inte lagts till än.", "Результаты этой лошади пока не добавлены.", "Wyniki tego konia nie zostały jeszcze dodane.", "이 말의 결과는 아직 추가되지 않았어요.")))),
       actionsR,
-      coupes);
+      pzM("coupes", coupes));   /* 07/11 (Blandine « Plaques et flots on le garde ») : masquable a part */
 
     /* ── 7. DERNIERES PHOTOS / DERNIERES VIDEOS (aperçus ; les pages completes restent Photos et Videos) ── */
     var medV = v4Med || [];
