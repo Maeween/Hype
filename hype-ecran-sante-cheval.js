@@ -2104,6 +2104,8 @@ function EcranSanteCheval() {
       ".sx-pros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}",
       ".sx-pro{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(243,238,228,.09);background:#070A08;box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
       ".sx-pro.plein{grid-column:1/-1}",
+      ".sx-pros4{grid-template-columns:repeat(4,minmax(0,1fr))!important}",
+      "@media (max-width:1100px){.sx-pros4{grid-template-columns:repeat(2,minmax(0,1fr))!important}}",
       ".sx-pro .r{width:46px;height:46px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.45);object-fit:cover;display:flex;align-items:center;justify-content:center;color:#C9A66B}",
       ".sx-pro b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:18px;line-height:1.15;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis}",
       ".sx-pro span.s{display:block;font-size:11.5px;color:#C9A66B;margin-top:2px}",
@@ -2277,6 +2279,28 @@ function EcranSanteCheval() {
       lignesM.length ? [grilleA, enfants.length ? h("div", { key: "sel", className: "sx-tgl" }, enfants) : null] : h("div", { className: "sx-vide" }, T("Aucun soin enregistré pour l’instant.", "No care recorded yet.", "Aún no hay cuidados registrados.", "Nessuna cura registrata.", "まだ記録がありません。", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")),
       null);
   }
+  /* 07/11 (Blandine, choix B) : sur ORDINATEUR, l equipe en carres sur toute la largeur (4 par ligne), noms en entier ; telephone : liste pleine largeur */
+  function equipeCarres() {
+    cssSante();
+    var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
+    if (!roles.length && !errPro) return null;
+    return h("div", { style: { marginBottom: 30 } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 12 } },
+        h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, display: "block", flexShrink: 0 } }, h("circle", { cx: 12, cy: 8, r: 3.5, fill: "none", stroke: TQ, strokeWidth: 1.6 }), h("path", { d: "M5 20c.8-3.8 3.6-5.5 7-5.5s6.2 1.7 7 5.5M5.5 11a2.5 2.5 0 1 1 0-.1M18.5 11a2.5 2.5 0 1 1 0-.1", fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round" })),
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F3EEE4", flex: 1 } }, T("L'équipe de soins", "The care team", "El equipo de cuidados", "L'équipe di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية", "护理团队", "Het verzorgingsteam", "A equipe de cuidados", "Vårdteamet", "Команда по уходу", "Zespół opieki", "케어 팀"))),
+      errPro ? h("div", { style: { marginBottom: 10, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, String(errPro)) : null,
+      roles.length ? h("div", { className: "sx-pros sx-pros4" }, roles.map(function (r) {
+        var p = proDuRole(r), img = ({ veterinaire: 1, marechal: 1, dentiste: 1, osteopathe: 1 })[r] ? "images/sante-pro-" + r + ".webp" : null;
+        var rond = img ? h("img", { className: "r", src: img, alt: "", "aria-hidden": "true", loading: "lazy" }) : h("span", { className: "r" }, p ? initialesEq(p.nom) : "+");
+        if (!p) return h("div", { key: "eq" + r, role: "button", className: "sx-pro", style: { cursor: "pointer" }, onClick: function () { setFeuillePro({ role: r, pro: null }); } },
+          rond, h("div", { style: { minWidth: 0 } }, h("b", null, ROLES_EQ[r] || r), h("span", { className: "s" }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가"))));
+        return h("div", { key: "eq" + r, className: "sx-pro", role: peutEcrire ? "button" : null, style: { cursor: peutEcrire ? "pointer" : "default" }, onClick: peutEcrire ? function () { setFeuillePro({ role: r, pro: p }); } : null },
+          rond,
+          h("div", { style: { flex: 1, minWidth: 0 } }, h("b", null, p.nom), h("span", { className: "s", style: { color: "rgba(243,238,228,.6)" } }, (ROLES_EQ[r] || r) + (p.structure ? " · " + p.structure : ""))),
+          p.tel ? rondEq("tel", "tel:" + String(p.tel).replace(/\s+/g, ""), "t", T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화하기")) : null,
+          p.email ? rondEq("mail", "mailto:" + String(p.email).trim(), "m", T("Écrire", "Email", "Escribir", "Scrivi", "メール", "E-Mail", "كتابة", "写邮件", "Schrijven", "Escrever", "Skriv", "Написать", "Napisz", "쓰기")) : null);
+      })) : null);
+  }
   function equipe2() {
     var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
     if (!roles.length && !errPro) return null;
@@ -2308,9 +2332,8 @@ function EcranSanteCheval() {
       h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));
     return h("div", { style: { padding: "0 32px 40px" } },
       suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
-      h("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 1fr)", gap: 24, alignItems: "start" } },
-        h("div", { style: { minWidth: 0 } }, blocCarnet),
-        h("div", { style: { minWidth: 0 } }, equipeLignes())),
+      h("div", { style: { minWidth: 0 } }, blocCarnet),   /* 07/11 (Blandine, choix B) : carnet sur toute la largeur, */
+      h("div", { style: { minWidth: 0, marginTop: 30 } }, equipeCarres()),   /* puis l equipe en carres, noms en entier */
       h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 30, alignItems: "start" } },
         h("div", { style: { minWidth: 0 } }, blocHeyBaby()),
         h("div", { style: { minWidth: 0 } }, blocMagazine())));
