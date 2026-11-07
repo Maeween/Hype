@@ -1,4 +1,4 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 06h30)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 07/11/2026 11h50)
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -13,6 +13,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [06/11 23h45] Pages Google des cours → abonnements, visiteur SANS compte : CORRIGÉ ET PUBLIÉ le 06/11 à 23h45 (build 20261107-0045). Ce qui change : il touche un abonnement → message « Crée ton compte Hype ou connecte-toi pour t'abonner. Tu reviendras ensuite ici… » (14 langues) → écran d'entrée Créer mon compte / Se connecter (celui qui a les cases d'accord du 21/10), au lieu du formulaire de Mon compte qui ne les avait pas → après inscription (une fois les questions d'accueil passées) ou connexion, il revient AUTOMATIQUEMENT sur la page des abonnements. Les comptes connectés ne voient aucun changement. Testé dans Chrome sur le code exact (4 cas). À tester sur iPhone en navigation privée : ouvrir un cours du Galop 3 sur 2hype.fr, « Voir les abonnements », toucher une formule, créer un compte test (attend : test iPhone de Blandine)
 
 ## 2 — Important
+- [07/11] Prépas aux diplômes d'enseignement (AE · BP · DE, + DES non publié) : page en ligne, en FRANÇAIS, visible de Blandine seule (build 20261107-1150). Entrée : page des Galops, bloc « Et après les Galops ? Deviens enseignant » sous la courbe. Textes = les 4 documents de relecture du 07/11 (Prépa AE / BP / DE / DES). Reste : relecture dans l'appli ; points « À vérifier » (AE : grilles 2026 des démonstrations, derby cross, dispenses ; BP : arrêté du 30/04/2026, colonnes du tableau des dispenses ; DE et DES : colonnes des dispenses) — il faut les textes officiels en fichier ; photos provisoires ; puis traductions, accès Premium et ouverture à toutes (attend : Blandine)
 - [06/11] Référencement, page santé (2hype.fr/fr/sante-cheval/) : elle parle pour l'instant de « la partie soins de ton registre d'élevage ». Le jour où Mon écurie (registre complet : entrées et sorties reliées aux concours) est ouvert à tous, la passer en « registre d'élevage complet » dans les 14 langues (attend : ouverture de Mon écurie, Claude)
 - [06/11] Mosaïque (build 20261106-1200) : toucher une vidéo → plein écran tout de suite AVEC le son, la publication s'ouvre derrière. À tester sur iPhone (attend : Blandine)
 - [07/11] Galop 9 : les 19 cours sont en ligne, visibles de Blandine seule, TRADUITS dans les 13 autres langues, vocabulaire harmonisé (build 20261107-0630). Points vérifiés dans le programme FFE (REF 237) le 07/11 : Amateur 1 (dressage Amateur 1 GP, CCE Amateur 1), tableau des distances, latéraux et travail autour des hanches aux longues rênes, tourner sur les hanches au galop = tous AU PROGRAMME ; PAS de partie commune au Galop 9 (corrigé). Reste : relecture dans l'appli, photos (texte donné le 07/11), titre du cours 6 (le programme parle de « principes d'éthologie et de bien-être équin », pas de la Charte), ouverture (attend : Blandine)
@@ -18951,3 +18952,22 @@ de couverture volontairement vides dans les langues sans article (ex. « LE » e
 | index.html | racine | ?v galop5 → 14 |
 
 ════════════════════════════════════════════════════════════
+
+## 07/11/2026 11h50 — PUBLICATION build 20261107-1150 (Blandine 02h30 « continue par tout ce que tu peux là-dessus en commençant par le DE, tu as carte blanche » ; 02h36 « tout le détail des épreuves à pied et à cheval, les systèmes et grilles de notation, les conseils pour se préparer » ; 10h30 « continue… dis-moi quand c'est fini » ; 10h40 « Ok continue » après l'aperçu)
+PRÉPAS AUX DIPLÔMES D'ENSEIGNEMENT — AE · BP · DE (+ DES préparé, non publié)
+- Textes : 4 documents écrits et vérifiés sur les textes officiels le 07/11 (Prépa AE, Prépa BP, Prépa DE, Prépa DES), recopiés tels quels.
+  Plan commun : en bref / tests d'entrée / avant le stage / épreuves (à pied ou à cheval, déroulement, grille ou barème, préparation) / dispenses / ma préparation (liste à cocher) / sources.
+  Textes de référence : AE = règlement FFE du 17/07/2026 (RNCP 42622) ; BP = arrêté du 18/11/2024 modifié le 13/03/2025 ; DE = arrêté du 21/09/2018 modifié le 27/05/2024 ;
+  DES = arrêté du 27/05/2024 + livret FFE de 09/2024.
+- Page : écran « prepa-diplomes », fichier séparé hype-ecran-prepa.js?v=1 (chargé à l'ouverture). Haut de page de la Vidéothèque (photo + courbes dorées, titre Cormorant),
+  sélecteur AE · BP · DE (+ DES « Non publié »), onglets collants, épreuves en volets, tableaux en cartes sur téléphone, liste à cocher gardée sur l'appareil,
+  étiquette « À vérifier » sur les passages non confirmés. Boutons à contour champagne, jamais pleins. Téléphone, tablette et ordinateur vérifiés sur banc d'essai.
+- Accès : page des Galops (GalopsV2Haut), bloc « Et après les Galops ? Deviens enseignant » sous la courbe, 3 boutons AE / BP / DE — MODÉRATRICES SEULES
+  (estModGal), comme la page elle-même (sinon retour aux Galops). Français seul. Accès Premium à brancher à l'ouverture.
+- Photos provisoires (déjà dans images/) : AE cours-g1-c10-hero.webp, BP article-cso-saut.webp, DE galops-v2-carte-reprises-hd2.jpg, DES PERFORMANCES_CHEVAUX_HERO.webp.
+- Non fait (hors périmètre, à décider) : la phrase du cours de culture « la FFE crée les diplômes d'enseignement comme le BPJEPS » (hype-galops.js) — le BPJEPS est un diplôme d'État.
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-prepa.js | racine | NOUVEAU : la page des prépas (textes + mise en page) |
+| index.html | racine | écran différé + adresse « prepa-diplomes » + bloc sur la page Galops (modératrices) + build 20261107-1150 |
+| SUIVI.md | racine | cette entrée + ligne en « 2 — Important » |
