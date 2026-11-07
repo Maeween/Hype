@@ -830,12 +830,13 @@ function EcranCommunauteV2() {
       h("div", { className: "com2-hero-voile", "aria-hidden": "true" }),
       h("div", { className: "com2b-assombri", "aria-hidden": "true" }),
       (ctx && ctx.peutReculer && ctx.retourEcran) ? h("button", { type: "button", className: "com2b-retour", onClick: function () { try { ctx.retourEcran(); } catch (eR) { } }, "aria-label": T2({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "\u623b\u308b", de: "Zur\u00fcck", ar: "\u0631\u062c\u0648\u0639", zh: "返回", nl: "Terug", pt: "Voltar", sv: "Tillbaka", ru: "Назад", pl: "Wróć", ko: "뒤로" }) }, (function () { try { return document.documentElement.dir === "rtl" ? "\u203a" : "\u2039"; } catch (eD) { return "\u2039"; } })()) : null,   /* (991) Blandine : « revenir a la page d ou on vient » ; absent s il n y a pas de page precedente */
-      h("div", { className: "com2b-bloc" },   /* (981) titre comme les pages du cheval : petit titre champagne espace + mot en grand, sur un coin assombri */
-        h("div", { className: "com2b-eb" }, T2(TXT.eb)),
-        h("h1", { className: "com2b-nom" }, T2(TXT.titre)))),
+      /* 08/11 Blandine (proposition 3 validee, « Oui ») : plus de grand titre « Communaute » au milieu de l image ; le petit « LE MONDE HYPE »
+         passe juste au-dessus du slogan, sous les cavaliers. Le titre reste dans la page pour les lecteurs d ecran (invisible). */
+      h("h1", { style: { position: "absolute", width: 1, height: 1, margin: -1, padding: 0, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 } }, T2(TXT.titre))),
     /* 10/10 (807) Blandine : « descends le titre en dessous de la photo » : titre, sous-titre et capsule Monde Hype sortent du hero
        et se posent juste sous la photo (plus par-dessus le ciel). */
     h("div", { className: "com2-hero-x" },
+        h("div", { className: "com2b-eb", style: { marginBottom: 8 } }, T2(TXT.eb)),   /* 08/11 : surtitre deplace ici (proposition 3) */
         h("div", { className: "com2b-titre" }, h("span", null, T2(TXT.sous1)), " ", h("span", null, T2(TXT.sous2))),   /* (981) le slogan en ecriture doree, comme « Prendre soin, c est deja aimer » ; « COMMUNAUTE » en Anton a halo retire (Blandine) */
         h("button", { type: "button", className: "com2-monde-cap", onClick: ouvrirMonde, "data-com2": "monde" },
           h("span", { className: "com2-monde-ic" }, icGlobe),
