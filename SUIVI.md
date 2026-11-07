@@ -830,6 +830,18 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+🎨 08/11/2026 (00 h 35) — PAGE CAVALIER : DESIGN QUI NE SE REMETTAIT PLUS À ZÉRO + NOUVEAUX CHOIX
+Blandine (23 h 24 → 23 h 26) : « gris anthracite et bleu roi », « différents types d'écritures… italique », « divers transparence pour les onglets (dont le fameux semi transparent ombre dégradé) », « les onglets histoire etc… on devine mal que ce sont des boutons », « ici ça fait encore très filtré », « j'enregistre je change de page je reviens ça s'est réinitialisé ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 14 : CORRECTIF — le design enregistré n'était jamais relu (la page cherchait l'identifiant du compte au mauvais endroit) → il revenait à l'origine en changeant de page ; NOUVEAU — fonds « Gris anthracite » et « Bleu roi » ; bouton « Écriture » (Classique, Classique italique, Gravée, Moderne) ; bouton « Onglets » pour Histoire / Performances… (Lignes, Pleins, Semi-transparents, Verre dépoli, Ombre dégradée) ; Ivoire : voile sur les photos des cartes allégé |
+| hype-ecran-cheval.js | racine | version 17 : Ivoire, voile sur les photos allégé (même règle) |
+| index.html | racine | ?v cavalier 13 → 14, cheval 16 → 17, build 20261108-0035 (rien d'autre) |
+· Nouveaux textes traduits 14 langues. Testé sur copie : Ivoire + Ombre dégradée + italique ; Bleu roi + Semi-transparents + Gravée.
+· ⚠️ Son design enregistré à 23 h 27 ne contient plus que l'ordre des blocs (le fond Ivoire et la couleur Rubis ont été écrasés à cause du bug) : à refaire une fois.
+
+════════════════════════════════════════════════════════════
+
 🤍 08/11/2026 (00 h 30) — FOND IVOIRE : ÉCRITURES NETTES
 Blandine (23 h 21, captures de sa page cavalier en Ivoire) : « C'est joli en blanc mais tout est flou écritures comprises ».
 | Fichier | Où | Quoi |
