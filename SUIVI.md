@@ -18683,7 +18683,7 @@ POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Bla
 
 ════════════════════════════════════════════════════════════
 
-## 07/11/2026 02h25 — Lecture automatique des vaccins à l'ajout d'un document (build 20261107-0225, NON PUBLIÉ)
+## 07/11/2026 02h25 — Lecture automatique des vaccins à l'ajout d'un document (build 20261107-0225 — EN LIGNE depuis la publication 20261107-0440 de l'autre conversation)
 - Demande : « que la lecture se fasse automatiquement pour ces vaccins, pas obligé de le charger deux fois ».
 - Santé du cheval : quand on joint un document de type « Page du carnet de vaccination » ou « Certificat de vaccination », le fichier est enregistré une seule fois, puis la lecture des vaccins se lance toute seule sur ce même fichier (liste à vérifier, puis Enregistrer). La case « Garder la photo » est masquée dans ce cas (déjà gardée) → plus de document en double.
 - Réservé aux abonnés comme la lecture actuelle. Aucun nouveau texte. hype-ecran-sante-cheval.js?v=5.
