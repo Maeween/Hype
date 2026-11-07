@@ -2369,8 +2369,10 @@ function EcranSanteCheval() {
       backgroundImage: photoVue
         ? "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.35) 30%, rgba(6,7,9,0.70) 65%, rgba(6,7,9,0.95) 100%), linear-gradient(" + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? "270deg" : "90deg") + ", rgba(6,7,9,0.85) 0%, rgba(6,7,9,0.45) 55%, rgba(6,7,9,0.20) 100%), url(\"" + String(photoVue).replace(/"/g, "%22") + "\")"
         : "linear-gradient(180deg, rgba(6,7,9,0.80) 0%, rgba(6,7,9,0.14) 28%, rgba(6,7,9,0.22) 60%, rgba(6,7,9,0.92) 100%), linear-gradient(90deg, rgba(6,7,9,0.90) 0%, rgba(6,7,9,0.52) 48%, rgba(6,7,9,0.24) 100%), url('images/sante-fond-defaut.webp')",   /* 07/11 (Blandine) : sans photo, SA photo du cheval bai tete baissee en fond (a la place du cheval bleu), tete jamais coupee */
-      backgroundSize: "cover, cover, cover",
-      backgroundPosition: photoVue ? "center, center, center" : "center, center, 76% center",   /* 07/11 : 76 % = la tete du cheval reste entiere sur telephone */
+      /* 07/11 (Blandine) : sans photo, le cheval du fond est decale pour ne pas passer sous l image du haut :
+         telephone = en bas de l ecran (sous le haut de page) ; tablette / ordinateur = a gauche (l image du haut est a droite). Tete jamais coupee. */
+      backgroundSize: photoVue ? "cover, cover, cover" : (largeS ? "cover, cover, auto 80%" : "cover, cover, auto 60%"),
+      backgroundPosition: photoVue ? "center, center, center" : (largeS ? "center, center, left bottom" : "center, center, 74% bottom"),
       backgroundRepeat: "no-repeat, no-repeat, no-repeat"
     }
   });
