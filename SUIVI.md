@@ -754,6 +754,21 @@ au prompt d'audit (ChatGPT).
 
 ════════════════════════════════════════════════════════════
 
+💤 07/11/2026 (11 h 55) — PERSONNALISATION : « RETROUVER MON DESIGN » APRÈS UN ABONNEMENT ARRÊTÉ
+Blandine : « si la personne se réabonne… un bouton retrouver le design… ça te dit de renouveler ton abonnement ».
+| Fichier | Où | Quoi |
+|---|---|---|
+| hype-ecran-cavalier.js | racine | version 10 |
+| index.html | racine | ?v cavalier 9 → 10, build 20261107-1155 (rien d'autre) |
+· Sur SA page, si l'abonnement est arrêté mais qu'un design est gardé : le bouton devient « Retrouver mon
+  design » + petit mot « Ton design personnalisé est gardé : renouvelle ton abonnement Premium pour le
+  retrouver tel quel. » ; le bouton ouvre la page Premium. Dès le réabonnement, le design revient tout seul.
+· Traduit dans les 14 langues.
+PAS FAIT : prévenir AVANT la fin (la base ne sait pas si un abonnement va se renouveler ou s'arrêter : pas de
+case « résilié » enregistrée depuis Stripe) → à brancher si on ajoute cette information.
+
+════════════════════════════════════════════════════════════
+
 🔒 07/11/2026 (11 h 25) — PERSONNALISATION : LECTURE « SEULEMENT SI PREMIUM » PRÊTE CÔTÉ APPLI
 | Fichier | Où | Quoi |
 |---|---|---|
