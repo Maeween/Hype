@@ -30,7 +30,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     { id: "AE", court: "AE", nom: "Animateur d'Équitation", metier: "Animateur", titre: "Prépa AE", sous: "Animateur d'Équitation", photo: "images/cours-g1-c10-hero.webp", pos: "50% 40%" },
     { id: "BP", court: "BP", nom: "BPJEPS mention équitation", metier: "Moniteur", titre: "Prépa BP", sous: "BPJEPS mention équitation", photo: "images/article-cso-saut.webp", pos: "62% 40%" },
     { id: "DE", court: "DE", nom: "DEJEPS sports équestres", metier: "Entraîneur", titre: "Prépa DE", sous: "DEJEPS sports équestres", photo: "images/galops-v2-carte-reprises-hd2.jpg", pos: "45% 18%" },
-    { id: "DES", court: "DES", nom: "DESJEPS mention équitation", metier: "Instructeur", titre: "Prépa DES", sous: "DESJEPS mention équitation", photo: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "62% 40%", reserve: true }
+    { id: "DES", court: "DES", nom: "DESJEPS mention équitation", metier: "Instructeur", titre: "Prépa DES", sous: "DESJEPS mention équitation", photo: "images/PERFORMANCES_CHEVAUX_HERO.webp", pos: "62% 40%" }
   ];
   function court(t) {
     if (/en bref/i.test(t)) return "En bref";
@@ -201,8 +201,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
     var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
     var sV = React.useState(false), vueNonAbo = sV[0], setVueNonAbo = sV[1];
     var acces = (!!app.premium || estMod) && !vueNonAbo;
-    /* 07/11 22h40 (Blandine : « Ok » à l'ouverture) — prépas AE · BP · DE ouvertes à tous, verrou Premium ; le DES reste aux modératrices. */
-    if (dip === "DES" && moi !== undefined && !estMod) dip = "DE";
+    /* 07/11 22h40 (Blandine : « Ok » à l'ouverture) — prépas AE · BP · DE ouvertes à tous, verrou Premium ; 23h34 : le DES aussi (Blandine : « ouvre le DES »). */
     var d = (TL && TL[dip]) || DATA[dip] || { sections: [], sources: [] };
     React.useEffect(function () {
       var att = null;

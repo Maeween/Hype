@@ -1,5 +1,5 @@
 # HYPE ▸ outils/seo-prepas.py — 07/11/2026 (Blandine : « ajoute les bons mots dans Google et Bing », « Référencement »).
-# Fabrique les pages publiques des prépas aux diplômes d'enseignement, 3 diplômes × 14 langues :
+# Fabrique les pages publiques des prépas aux diplômes d'enseignement, 4 diplômes × 14 langues :
 #   /<langue>/prepa-animateur-equitation/  /<langue>/prepa-bpjeps-equitation/  /<langue>/prepa-dejeps-equitation/
 # Contenu : la partie gratuite « En bref » (la même que dans l'appli) + le sommaire de la prépa + bouton « Ouvrir Hype ».
 # Le détail des épreuves, la notation et les dispenses restent dans l'appli (Premium).
@@ -12,14 +12,16 @@ R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LG = ['fr','en','es','it','ja','de','ar','zh','nl','pt','sv','ru','pl','ko']
 HREF = {'zh':'zh-Hans','pt':'pt-BR'}
 NOMS = {'fr':'Français','en':'English','es':'Español','it':'Italiano','de':'Deutsch','ja':'日本語','ar':'العربية','zh':'中文','nl':'Nederlands','pt':'Português','sv':'Svenska','ru':'Русский','pl':'Polski','ko':'한국어'}
-DIP = [('AE','prepa-animateur-equitation'),('BP','prepa-bpjeps-equitation'),('DE','prepa-dejeps-equitation')]
+DIP = [('AE','prepa-animateur-equitation'),('BP','prepa-bpjeps-equitation'),('DE','prepa-dejeps-equitation'),('DES','prepa-desjeps-equitation')]
 FR_SEO = {
  'AE': ("Prépa Animateur d'Équitation (AE) : entrée, épreuves, notation et dispenses | Hype",
         "Préparer l'AE (Animateur d'Équitation, règlement 2026) : Galop demandé, vérification avant le stage, BC1 à BC3, démonstrations longe, plat, obstacle, terrain varié et derby cross, notation et dispenses."),
  'BP': ("Prépa BPJEPS équitation : TEP, épreuves, notation et dispenses | Hype",
         "Préparer le BPJEPS mention équitation : tests d'entrée (TEP), vérification avant le stage, épreuves des BC1 à BC4, notation, dispenses et conseils pour réussir."),
  'DE': ("Prépa DEJEPS sports équestres : tests d'entrée, épreuves et dispenses | Hype",
-        "Préparer le DEJEPS sports équestres : tests d'entrée techniques et pédagogique, vérification avant le stage, épreuves des UC, notation, dispenses et conseils pour réussir.")}
+        "Préparer le DEJEPS sports équestres : tests d'entrée techniques et pédagogique, vérification avant le stage, épreuves des UC, notation, dispenses et conseils pour réussir."),
+ 'DES': ("Prépa DESJEPS équitation : tests d'entrée, épreuves et dispenses | Hype",
+        "Préparer le DESJEPS mention équitation, le diplôme d'instructeur : tests d'entrée, vérification avant le stage, épreuves des UC, dispenses et conseils pour réussir.")}
 TX = json.load(open(os.path.join(R,'outils','seo-prepas-textes.json')))
 def esc(s): return html.escape(s, quote=True)
 def txt(x):
@@ -48,7 +50,7 @@ def donnees():
     for lg in LG[1:]:
         j=json.load(open(os.path.join(R,'i18n','prepa-%s.json'%lg))); d[lg]={'data':j,'ui':j['ui']}
     return d
-UI_FR={'titre_AE':'Prépa AE','sous_AE':"Animateur d'Équitation",'titre_BP':'Prépa BP','sous_BP':'BPJEPS mention équitation','titre_DE':'Prépa DE','sous_DE':'DEJEPS sports équestres'}
+UI_FR={'titre_DES':'Prépa DES','sous_DES':'DESJEPS mention équitation','titre_AE':'Prépa AE','sous_AE':"Animateur d'Équitation",'titre_BP':'Prépa BP','sous_BP':'BPJEPS mention équitation','titre_DE':'Prépa DE','sous_DE':'DEJEPS sports équestres'}
 def commun(lg):
     s=open(os.path.join(R,lg,'gestion-ecurie','index.html')).read()
     g=lambda p: re.search(p,s,re.S).group(1)

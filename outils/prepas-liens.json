@@ -18,6 +18,11 @@
     "t": "Prépa DE",
     "s": "DEJEPS sports équestres",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Prépa DES",
+    "s": "DESJEPS mention équitation",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -40,6 +45,11 @@
     "t": "DE prep",
     "s": "DEJEPS equestrian sports",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "DES prep",
+    "s": "DESJEPS, riding specialism",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -62,6 +72,11 @@
     "t": "Prepara el DE",
     "s": "DEJEPS deportes ecuestres",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Prepara el DES",
+    "s": "DESJEPS mención equitación",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -84,6 +99,11 @@
     "t": "Prepara il DE",
     "s": "DEJEPS sport equestri",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Prepara il DES",
+    "s": "DESJEPS indirizzo equitazione",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -106,6 +126,11 @@
     "t": "DE準備",
     "s": "DEJEPS sports équestres",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "DES準備",
+    "s": "DESJEPS mention équitation",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -128,6 +153,11 @@
     "t": "Vorbereitung DE",
     "s": "DEJEPS Pferdesport",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Vorbereitung DES",
+    "s": "DESJEPS Fachrichtung Reiten",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -150,6 +180,11 @@
     "t": "التحضير لـDE",
     "s": "DEJEPS الرياضات الفروسية",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "التحضير لـDES",
+    "s": "DESJEPS تخصّص الفروسية",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -172,6 +207,11 @@
     "t": "DE 备考",
     "s": "DEJEPS 马术运动方向",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "DES 备考",
+    "s": "DESJEPS 马术方向",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -194,6 +234,11 @@
     "t": "Voorbereiding DE",
     "s": "DEJEPS paardensport",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Voorbereiding DES",
+    "s": "DESJEPS richting paardrijden",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -216,6 +261,11 @@
     "t": "Prepa DE",
     "s": "DEJEPS esportes equestres",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Prepa DES",
+    "s": "DESJEPS menção equitação",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -238,6 +288,11 @@
     "t": "Förberedelse DE",
     "s": "DEJEPS hästsport",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Förberedelse DES",
+    "s": "DESJEPS inriktning ridsport",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -260,6 +315,11 @@
     "t": "Подготовка к DE",
     "s": "DEJEPS, конный спорт",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Подготовка к DES",
+    "s": "DESJEPS, специализация «верховая езда»",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -282,6 +342,11 @@
     "t": "Przygotowanie do DE",
     "s": "DEJEPS, sporty jeździeckie",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "Przygotowanie do DES",
+    "s": "DESJEPS, specjalność jeździectwo",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  },
@@ -304,6 +369,11 @@
     "t": "DE 준비",
     "s": "DEJEPS 승마 스포츠",
     "u": "prepa-dejeps-equitation"
+   },
+   {
+    "t": "DES 준비",
+    "s": "DESJEPS 승마 전공",
+    "u": "prepa-desjeps-equitation"
    }
   ]
  }
