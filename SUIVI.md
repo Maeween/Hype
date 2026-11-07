@@ -19065,3 +19065,15 @@ Portugais : 8 dernières phrases à la façon du Portugal (« deves », « quere
 Non vérifiable automatiquement : l'arabe au féminin (l'écriture sans voyelles ne permet pas de le contrôler sûrement), à faire relire par une arabophone.
 
 ════════════════════════════════════════════════════════════
+## 07/11/2026 16h05 — Page Santé du cheval dans le style de la Vidéothèque (build 20261107-1610, NON PUBLIÉ)
+- Maquette « sante1 » acceptée (« Ok continue »). Fichier : hype-ecran-sante-cheval.js?v=9.
+- Haut de page : retour rond + drapeau, photo du cheval ENTIÈRE à droite fondue dans le noir (décision 04/11 gardée ; sans photo : images/sante-hero-defaut.webp), courbes dorées, nom du cheval en petites capitales, « Santé » en grand, « Prendre soin, c'est déjà aimer. » en italique (remplace l'en-tête 931/937/941 et la phrase en écriture manuscrite).
+- Onglets du cheval inchangés. Fond de page : on garde le choix de Blandine de 15h50 (photo du cheval en fond, sinon FOND_SANTE), publié par l'autre conversation.
+- Encadré d'état en une seconde : Tout est à jour / À faire (rappels dépassés) / Rien d'enregistré + « Prochain rendez-vous le … · … » (vaccins : même calcul que la page Vaccins ; autres rubriques : prochaine date prévue).
+- Ligne « + Ajouter un soin » / « Consignes » (quand aucune consigne ; sinon la carte « Consignes du cheval » reste dessous). Remplace les cartes en pointillés 973/980.
+- Suivi : cartes photo façon Vidéothèque (nom + état : À jour · prochain le / À faire depuis le / Dernier le / Rien de prévu). La carte Vaccin prend la date de la page Vaccins (avant : seulement la date prévue la plus proche).
+- Carnet de santé : titre + bouton « + Document », filtres en pastilles, lignes par année (date à gauche), 7 dernières puis « Voir les N autres ». Mêmes infos qu'avant (non confirmé, refusé, prochain, notes, en retard).
+- L'équipe de soins : cartes avec médaillon ; les pros renseignés en pleine largeur avec Appeler / Écrire.
+- Hey Baby et Le magazine santé : grandes cartes photo.
+- Nouveaux textes traduits en 14 langues. Vérifié sur banc d'essai (iPhone, avec et sans photo du cheval).
+- Demande suivante notée (07/11 15h50) : « prendre les photos des vaccins et de la première page du carnet en précisant au cavalier ce qu'il faut photographier, et que ça montre le PDF à garder en mémoire » → à proposer.

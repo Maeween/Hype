@@ -583,7 +583,7 @@ function EcranSanteCheval() {
       ".vxp-courbe{position:absolute;left:0;right:0;width:100%;pointer-events:none;z-index:2}",
       ".vxp-courbe.c1{top:calc(env(safe-area-inset-top) + 2px);height:110px}",
       ".vxp-courbe.c2{position:relative;display:block;height:64px;margin-top:-64px}",
-      ".vxp-rond{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-start:16px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.28);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}",
+      ".vxp-rond{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-start:16px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.28);background:rgba(7,10,8,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;color:#F3EEE4;font-size:26px;line-height:1}",
       ".vxp-rond svg{width:22px;height:22px;stroke:#F3EEE4;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}",
       "[dir=rtl] .vxp-rond svg{transform:scaleX(-1)}",
       ".vxp-langue{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 12px);inset-inline-end:14px}",
@@ -1073,16 +1073,10 @@ function EcranSanteCheval() {
      Blandine (cadre dessine retire : le liseré est trace par l appli, net sur tous les ecrans). Hey Baby s ouvre avec une phrase
      de depart sur la sante du cheval (son nom seulement — aucune donnee medicale transmise). Les observations epinglees : une
      ligne depliable sous le bandeau, seulement s il y en a. */
-  function bandeauSante(cle, img, ico, titre, sous, onTap) {
-    var rtlB = false; try { rtlB = document.documentElement.dir === "rtl"; } catch (eD) { }
-    return h("div", { key: cle, role: "button", onClick: onTap, style: { position: "relative", overflow: "hidden", height: 104, borderRadius: 16, border: "1px solid rgba(201,166,107,0.55)", background: "#080B0D", cursor: "pointer", display: "flex", alignItems: "center", gap: 14, padding: "0 16px" } },
-      h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "right center", transform: rtlB ? "scaleX(-1)" : "none", pointerEvents: "none" } }),
-      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtlB ? "270deg" : "90deg") + ", rgba(8,11,13,0.82) 0%, rgba(8,11,13,0.55) 45%, rgba(8,11,13,0) 80%)" } }),
-      h("span", { style: { position: "relative", flex: "0 0 auto", width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.75)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(8,11,13,0.35)" } }, ico),
-      h("div", { style: { position: "relative", flex: 1, minWidth: 0 } },
-        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.15, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, titre),
-        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.82)", marginTop: 4, lineHeight: 1.35, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, sous)),
-      h("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 auto", color: TQ, fontSize: 24, lineHeight: 1 } }, rtlB ? "‹" : "›"));
+  function bandeauSante(cle, img, ico, titre, sous, onTap) {   /* 07/11 : grande carte photo façon Vidéothèque (avant : bandeau 104 px) */
+    return h("div", { key: cle, role: "button", className: "sx-carte large", onClick: onTap },
+      h("div", { className: "ph" }, h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { objectPosition: "85% 50%" } })),
+      h("div", { className: "pan" }, h("b", null, titre), h("span", null, sous)));
   }
   var stOb = React.useState(false); var obsOuvert = stOb[0], setObsOuvert = stOb[1];
   function blocHeyBaby() {
@@ -1798,15 +1792,217 @@ function EcranSanteCheval() {
   /* (942) MISE EN PAGE : iPhone = rubriques a la suite (Suivi, Carnet, Equipe, Hey Baby, Magazine).
      Ordinateur (>= 1024 px, maquette validee) : Suivi sur une ligne ; Carnet (gauche, ~62 %) et Equipe (droite) en deux colonnes
      alignees en haut ; bandeaux Hey Baby et Magazine cote a cote, meme hauteur. Memes fonctions, memes donnees. */
+  /* 07/11 — styles de la page Santé façon Vidéothèque (cartes photo, titres, pastilles, lignes du carnet, équipe). */
+  var stCt = React.useState(false); var carnetTout = stCt[0], setCarnetTout = stCt[1];
+  function cssSante() {
+    if (typeof document === "undefined" || document.getElementById("hype-sx-css")) return;
+    var st = document.createElement("style"); st.id = "hype-sx-css";
+    st.textContent = [
+      ".sx-kicker{display:block;font-family:'Cinzel',Georgia,serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#C9A66B;margin-bottom:8px}",
+      ".sx-offi{display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#9AA3AB;margin:-4px 0 8px}",
+      ".sx-photo-cheval{display:flex;justify-content:flex-end}",
+      ".sx-photo-cheval img{width:auto!important;max-width:100%;height:100%;object-fit:contain!important;object-position:100% 50%!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}",
+      "[dir=rtl] .sx-photo-cheval{justify-content:flex-start}",
+      "[dir=rtl] .sx-photo-cheval img{object-position:0% 50%!important;-webkit-mask-image:linear-gradient(270deg,transparent 0,#000 30%);mask-image:linear-gradient(270deg,transparent 0,#000 30%)}",
+      ".sx-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:34px 0 14px}",
+      ".sx-tete .vxp-h2{margin:0}",
+      ".sx-pill{flex:0 0 auto;min-height:42px;padding:0 18px;border-radius:999px;border:1px solid rgba(201,166,107,.55);background:transparent;color:#E9D9B8;font-family:'Montserrat',sans-serif;font-size:13.5px;cursor:pointer;white-space:nowrap}",
+      ".sx-cartes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}",
+      ".sx-carte{display:flex;flex-direction:column;border-radius:18px;border:1px solid rgba(243,238,228,.09);background:#070A08;box-shadow:0 14px 30px -18px rgba(0,0,0,.95);overflow:hidden;cursor:pointer;min-width:0;text-align:center}",
+      ".sx-carte.retard{border-color:rgba(227,154,136,.55)}",
+      ".sx-carte .ph{position:relative;aspect-ratio:4/3;overflow:hidden}",
+      ".sx-carte .ph img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) contrast(1.05) brightness(.95) sepia(.07);-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 55%,transparent 100%)}",
+      ".sx-carte .pan{padding:4px 10px 16px}",
+      ".sx-carte .pan b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:21px;line-height:1.15;color:#F3EEE4}",
+      ".sx-carte .pan span{display:block;font-size:12px;line-height:1.45;color:rgba(243,238,228,.62);margin-top:4px}",
+      ".sx-carte.large .ph{aspect-ratio:auto;height:150px}",
+      ".sx-chips{display:flex;gap:8px;overflow-x:auto;margin:0 -18px 4px;padding:2px 18px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}",
+      ".sx-chips::-webkit-scrollbar{display:none}",
+      ".sx-chip{flex:0 0 auto;min-height:44px;padding:6px 18px;border-radius:999px;border:1px solid rgba(201,166,107,.22);background:linear-gradient(180deg,rgba(28,40,44,.62),rgba(7,10,8,.55));color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:13.5px;cursor:pointer;white-space:nowrap}",
+      ".sx-chip small{font-size:11px;color:rgba(201,166,107,.85);margin-inline-start:6px}",
+      ".sx-chip.on{border-color:#C9A66B;background:linear-gradient(180deg,rgba(201,166,107,.30),rgba(201,166,107,.08));color:#F7E9CF}",
+      ".sx-row{display:flex;align-items:center;gap:12px;padding:9px 2px;min-height:44px}",
+      ".sx-row.ed{cursor:pointer}",
+      ".sx-row .d{flex:0 0 auto;min-width:64px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:19px;color:#F3EEE4;white-space:nowrap}",
+      ".sx-row .m{flex:1;min-width:0}",
+      ".sx-row .m b{display:block;font-weight:500;font-size:13.5px;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      ".sx-row .m span{display:block;font-size:11px;color:rgba(243,238,228,.5);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      ".sx-row .c{flex:0 0 auto;color:#C9A66B;font-size:18px;line-height:1}",
+      ".sx-vide{padding:18px 2px;font-size:13px;color:rgba(243,238,228,.5)}",
+      ".sx-pros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}",
+      ".sx-pro{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(243,238,228,.09);background:#070A08;box-shadow:0 14px 30px -18px rgba(0,0,0,.95);min-width:0}",
+      ".sx-pro.plein{grid-column:1/-1}",
+      ".sx-pro .r{width:46px;height:46px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(201,166,107,.45);object-fit:cover;display:flex;align-items:center;justify-content:center;color:#C9A66B}",
+      ".sx-pro b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:18px;line-height:1.15;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis}",
+      ".sx-pro span.s{display:block;font-size:11.5px;color:#C9A66B;margin-top:2px}",
+      "@media (min-width:1024px){.sx-cartes{grid-template-columns:repeat(4,minmax(0,1fr))}.sx-pros{grid-template-columns:repeat(2,minmax(0,1fr))}.sx-carte.large .ph{height:180px}}"
+    ].join("");
+    document.head.appendChild(st);
+  }
+  function teteSection(titre, pill, onPill) {
+    return h("div", { className: "sx-tete" }, h("h2", { className: "vxp-h2" }, titre), pill ? h("button", { type: "button", className: "sx-pill", onClick: onPill }, pill) : null);
+  }
+  /* l etat de chaque rubrique du SUIVI : vaccins = meme calcul que la page Vaccins ; autres = prochaine date prevue */
+  function etatsSuivi() {
+    var auj = new Date(); auj.setHours(0, 0, 0, 0);
+    return FAM_SUIVI.map(function (f) {
+      var e = { f: f, lim: null, etat: "rien", der: dernierFait(f.types) };
+      if (f.types.length === 1 && f.types[0] === "vaccin") {
+        var E = etatVaccins(lignesDe(f)).filter(function (x) { return x.lim && (x.etat === "ok" || x.etat === "bientot" || x.etat === "retard"); });
+        var ret = E.filter(function (x) { return x.etat === "retard"; }).sort(function (a, b) { return a.lim - b.lim; });
+        var ok = E.filter(function (x) { return x.etat !== "retard"; }).sort(function (a, b) { return a.lim - b.lim; });
+        if (ret.length) { e.etat = "retard"; e.lim = ret[0].lim; e.noms = ret.map(function (x) { return x.nom; }); }
+        else if (ok.length) { e.etat = "ok"; e.lim = ok[0].lim; e.noms = ok.filter(function (x) { return Math.abs(x.lim - ok[0].lim) < 86400000; }).map(function (x) { return x.nom; }); }
+        else if (e.der) e.etat = "fait";
+      } else {
+        var pr = prochaineDe(f.types);
+        if (pr) { e.lim = jourDe(pr.date_prochaine); e.etat = (e.lim && e.lim.getTime() < auj.getTime()) ? "retard" : "ok"; e.prec = pr.precision_prochaine; }
+        else if (e.der) e.etat = "fait";
+      }
+      if (e.lim) e.jours = Math.round((e.lim.getTime() - auj.getTime()) / 86400000);
+      return e;
+    });
+  }
+  function etatGlobalSante() {
+    var S = etatsSuivi();
+    var ret = S.filter(function (e) { return e.etat === "retard"; });
+    var av = S.filter(function (e) { return e.etat === "ok" && e.lim; }).sort(function (a, b) { return a.lim - b.lim; });
+    var rien = !(soins || []).length;
+    var nomE = function (e) { return String(e.f.titre || "").toLowerCase() + (e.noms && e.noms.length ? " " + e.noms.map(function (n) { return String(n).toLowerCase(); }).join(" + ") : ""); };
+    if (rien) return { k: "aucun", titre: T("Rien d’enregistré pour l’instant", "Nothing recorded yet", "Nada registrado por ahora", "Nulla registrato per ora", "まだ記録がありません", "Noch nichts erfasst", "لا شيء مسجل حاليا", "暂无记录", "Nog niets geregistreerd", "Nada registrado por enquanto", "Inget registrerat ännu", "Пока ничего не записано", "Na razie nic nie zapisano", "아직 기록이 없어요"),
+      texte: T("Ajoute un soin ou lis le carnet de vaccination pour commencer.", "Add a care entry or read the vaccination record to start.", "Añade un cuidado o lee la cartilla de vacunación para empezar.", "Aggiungi una cura o leggi il libretto delle vaccinazioni per iniziare.", "ケアを追加するか、ワクチン手帳を読み取って始めよう。", "Füge einen Eintrag hinzu oder lies den Impfpass ein, um zu beginnen.", "أضف عناية أو اقرأ دفتر التطعيم للبدء.", "添加一条护理记录或读取疫苗本即可开始。", "Voeg een behandeling toe of lees het vaccinatieboekje in om te beginnen.", "Adiciona um cuidado ou lê a caderneta de vacinação para começar.", "Lägg till en vårdpost eller läs in vaccinationsboken för att börja.", "Добавь запись или считай паспорт прививок, чтобы начать.", "Dodaj zabieg albo wczytaj książeczkę szczepień, aby zacząć.", "케어를 추가하거나 예방접종 수첩을 읽어 시작해요.") };
+    if (ret.length) return { k: "retard", titre: T("À faire", "To do", "Pendiente", "Da fare", "要対応", "Zu erledigen", "مطلوب", "待处理", "Te doen", "A fazer", "Att göra", "Нужно сделать", "Do zrobienia", "해야 할 일"),
+      texte: ret.map(function (e) { return nomE(e) + " · " + T("prévu le ", "due ", "previsto el ", "previsto il ", "予定：", "fällig am ", "مقرر في ", "原定 ", "gepland op ", "previsto a ", "planerat ", "запланировано на ", "zaplanowane na ", "예정: ") + dateLongue(e.lim); }).join(" — ") };
+    if (av.length) {
+      var t0 = av[0].lim.getTime();
+      var memes = av.filter(function (e) { return Math.abs(e.lim.getTime() - t0) < 86400000; });
+      return { k: av[0].jours <= 15 ? "bientot" : "ok", titre: T("Tout est à jour", "All up to date", "Todo al día", "Tutto in regola", "すべて最新", "Alles aktuell", "كل شيء محدّث", "一切正常", "Alles up-to-date", "Tudo em dia", "Allt är aktuellt", "Всё актуально", "Wszystko aktualne", "모두 최신 상태"),
+        texte: T("Prochain rendez-vous le ", "Next appointment on ", "Próxima cita el ", "Prossimo appuntamento il ", "次の予定：", "Nächster Termin am ", "الموعد القادم في ", "下次预约：", "Volgende afspraak op ", "Próxima consulta em ", "Nästa tillfälle ", "Следующий визит ", "Następny termin ", "다음 일정: ") + dateLongue(av[0].lim) + " · " + memes.map(nomE).join(", ") };
+    }
+    return { k: "ok", titre: T("Tout est à jour", "All up to date", "Todo al día", "Tutto in regola", "すべて最新", "Alles aktuell", "كل شيء محدّث", "一切正常", "Alles up-to-date", "Tudo em dia", "Allt är aktuellt", "Всё актуально", "Wszystko aktualne", "모두 최신 상태"),
+      texte: T("Aucun rendez-vous prévu.", "No appointment planned.", "Ninguna cita prevista.", "Nessun appuntamento previsto.", "予定はありません。", "Kein Termin geplant.", "لا يوجد موعد مقرر.", "暂无预约。", "Geen afspraak gepland.", "Nenhuma consulta prevista.", "Inget inplanerat.", "Визитов не запланировано.", "Brak zaplanowanych terminów.", "예정된 일정이 없어요.") };
+  }
+  function boiteEtatSante() {
+    if (soins === null) return null;
+    var g = etatGlobalSante();
+    var bord = { ok: "rgba(150,205,170,.4)", bientot: "rgba(232,200,135,.45)", retard: "rgba(227,154,136,.5)", aucun: "rgba(201,166,107,.35)" }[g.k];
+    var coul = { ok: "#96CDAA", bientot: "#E8C887", retard: "#E39A88", aucun: "#C9A66B" }[g.k];
+    return h("div", { className: "vxp-etat", style: { borderColor: bord, background: "linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01))", marginTop: 22 } },
+      h("div", { className: "r", style: { color: coul } }, g.k === "ok" ? "✓" : (g.k === "aucun" ? "＋" : "!")),
+      h("div", { style: { minWidth: 0 } }, h("b", null, g.titre), g.texte ? h("div", { className: "t" }, g.texte) : null));
+  }
+  function ligneActionsSante(consVides) {
+    var svgPlus = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M12 5v14M5 12h14" }));
+    var svgClip = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M8 4h8v3H8zM6 5.5H5v15h14v-15h-1M8.5 12h7M8.5 15.5h5" }));
+    if (!peutEcrire) return null;
+    return h("div", { className: "vxp-ligne", style: { marginBottom: consVides ? 0 : 18 } },
+      h("button", { type: "button", className: "vxp-mes", onClick: function () { setFeuille({ soin: null }); } }, svgPlus, T("Ajouter un soin", "Add a care entry", "Añadir un cuidado", "Aggiungi una cura", "ケアを追加", "Eintrag hinzufügen", "إضافة رعاية", "添加护理记录", "Behandeling toevoegen", "Adicionar cuidado", "Lägg till vårdpost", "Добавить уход", "Dodaj zabieg", "케어 추가")),
+      consVides ? h("button", { type: "button", className: "vxp-mes", style: { gap: 10, fontSize: 14 }, onClick: ouvrirConsEdit }, svgClip, T("Consignes", "Instructions", "Consignas", "Istruzioni", "注意事項", "Hinweise", "تعليمات", "注意事项", "Instructies", "Instruções", "Instruktioner", "Указания", "Zalecenia", "주의사항")) : null);
+  }
+  function carteSuivi2(e) {
+    var f = e.f;
+    var txt = "", txt2 = "";
+    if (e.etat === "retard") txt = T("À faire depuis le ", "Due since ", "Pendiente desde el ", "Da fare dal ", "期限：", "Fällig seit ", "مستحق منذ ", "应于 ", "Te doen sinds ", "A fazer desde ", "Skulle gjorts ", "Нужно с ", "Do zrobienia od ", "기한: ") + dateCourte(isoDe(e.lim), "jour");
+    else if (e.etat === "ok") { txt = T("À jour", "Up to date", "Al día", "In regola", "最新", "Aktuell", "محدّث", "已是最新", "Up-to-date", "Em dia", "Aktuell", "Актуально", "Aktualne", "최신"); txt2 = T("prochain le ", "next on ", "próximo el ", "prossimo il ", "次回：", "nächster am ", "التالي في ", "下次：", "volgende op ", "próximo em ", "nästa ", "следующий ", "następny ", "다음: ") + dateCourte(isoDe(e.lim), e.prec || "jour"); }
+    else if (e.etat === "fait") txt = T("Dernier le ", "Last on ", "Último el ", "Ultimo il ", "前回：", "Zuletzt am ", "الأخير في ", "上次：", "Laatste op ", "Último em ", "Senast ", "Последний ", "Ostatni ", "마지막: ") + dateCourte(e.der.date_intervention, "jour");
+    else txt = T("Rien de prévu", "Nothing planned", "Nada previsto", "Niente in programma", "予定なし", "Nichts geplant", "لا شيء مقرر", "暂无安排", "Niets gepland", "Nada previsto", "Inget planerat", "Ничего не запланировано", "Nic nie zaplanowano", "예정 없음");
+    return h("div", { key: f.cle, role: "button", className: "sx-carte" + (e.etat === "retard" ? " retard" : ""), onClick: function () { setFamille(f.cle); } },
+      f.img ? h("div", { className: "ph" }, h("img", { src: f.img, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async" })) : null,
+      h("div", { className: "pan" }, h("b", null, f.titre),
+        h("span", { style: e.etat === "retard" ? { color: "#E39A88" } : (e.etat === "ok" ? { color: "#96CDAA" } : null) }, txt),
+        txt2 ? h("span", { style: { marginTop: 2, fontSize: 11 } }, txt2) : null));
+  }
+  /* une ligne du carnet (soin ou document) : date a gauche, intitule, detail ; on la touche pour modifier / ouvrir */
+  function ligneCarnet2(m, i) {
+    var dIso = m.d.slice(0, 10), dd = jourDe(dIso);
+    var lg = "fr"; try { lg = ctx.langue || "fr"; } catch (eL) { }
+    var jm = dd ? (function () { try { return dd.toLocaleDateString(lg, { day: "numeric", month: "short" }); } catch (eT) { return dateCourte(dIso, "jour"); } })() : "—";
+    var rtlL = false; try { rtlL = document.documentElement.dir === "rtl"; } catch (eD) { }
+    if (m.doc) {
+      var d = m.doc, td = typeDoc(d.type), soinLie = d.soin_id ? (soins || []).filter(function (x) { return x.id === d.soin_id; })[0] : null;
+      return h("div", { key: "ld" + d.id, role: "button", className: "sx-row ed", onClick: function () { setDocVu(d); } },
+        h("span", { className: "d" }, jm),
+        h("div", { className: "m" }, h("b", null, "📎 " + (d.titre || td.t)), h("span", null, td.t + (soinLie ? " · " + (soinLie.titre || libelle(soinLie.type)) : ""))),
+        h("span", { className: "c", "aria-hidden": "true" }, rtlL ? "‹" : "›"));
+    }
+    var s = m.soin;
+    var j = s.date_prochaine ? joursAvant(s.date_prochaine) : null, retard = (j !== null && j < 0);
+    var titre = [zoneEnClair(s), s.titre || ""].filter(function (x) { return !!x; }).join(" · ") || libelle(s.type);
+    var sous = [];
+    if (s.confirme_le === null && !s.refuse) sous.push("Non confirmé");
+    if (s.refuse) sous.push("Refusé");
+    if (s.titre) sous.push(libelle(s.type));
+    if (!s.date_intervention && s.date_prochaine) sous.push(T("Prévu", "Planned", "Previsto", "Previsto", "予定", "Geplant", "مقرر", "计划中", "Gepland", "Previsto", "Planerat", "Запланировано", "Zaplanowane", "예정"));
+    else if (s.date_prochaine) sous.push(T("Prochain", "Next", "Próximo", "Prossimo", "次回", "Nächster", "القادم", "下一次", "Volgende", "Próximo", "Nästa", "Следующий", "Następny", "다음") + " " + dateCourte(s.date_prochaine, s.precision_prochaine));
+    if (s.notes) sous.push(String(s.notes).split("\n")[0]);
+    if (retard) sous.push(T("en retard", "overdue", "atrasado", "in ritardo", "期限切れ", "überfällig", "متأخر", "已逾期", "te laat", "atrasado", "försenad", "просрочено", "spóźnione", "기한 지남"));
+    return h("div", { key: "lc" + (s.id || i), role: peutEcrire ? "button" : null, className: "sx-row" + (peutEcrire ? " ed" : ""), onClick: peutEcrire ? function () { setFeuille({ soin: s }); } : null },
+      h("span", { className: "d", style: s.date_intervention ? null : { color: "#96CDAA" } }, jm),
+      h("div", { className: "m" }, h("b", null, titre), sous.length ? h("span", { style: retard ? { color: "#E39A88" } : null }, sous.join(" · ")) : null),
+      peutEcrire ? h("span", { className: "c", "aria-hidden": "true" }, rtlL ? "‹" : "›") : null);
+  }
+  function carnetSante2() {
+    var l = soins || [], ld = docs || [];
+    function docDansFiltre(d, fk) { return fk === "tous" || typeDoc(d.type).f === fk; }
+    var cpt = {}; FILTRES_CARNET.forEach(function (f) { cpt[f.k] = (f.types ? l.filter(function (x) { return f.types.indexOf(String(x.type)) >= 0; }).length : l.length) + ld.filter(function (d) { return docDansFiltre(d, f.k); }).length; });
+    var fAct = FILTRES_CARNET.filter(function (f) { return f.k === carnetFiltre; })[0] || FILTRES_CARNET[0];
+    if (fAct.k !== "tous" && !cpt[fAct.k]) fAct = FILTRES_CARNET[0];
+    var vis = fAct.types ? l.filter(function (x) { return fAct.types.indexOf(String(x.type)) >= 0; }) : l;
+    var visD = ld.filter(function (d) { return docDansFiltre(d, fAct.k); });
+    var lignesM = vis.map(function (x) { return { d: String(x.date_intervention || x.date_prochaine || ""), soin: x }; }).concat(visD.map(function (x) { return { d: String(x.date_doc || x.created_at || ""), doc: x }; }))
+      .sort(function (p1, p2) { return p2.d.localeCompare(p1.d); });
+    var LIM = 7, plus = lignesM.length - LIM, visibles = (carnetTout || plus <= 1) ? lignesM : lignesM.slice(0, LIM);
+    var an = null, enfants = [];
+    visibles.forEach(function (m, i) {
+      var a = m.d.slice(0, 4);
+      if (a && a !== an) { an = a; enfants.push(h("div", { key: "an" + a + i, className: "vxp-an" }, a)); }
+      enfants.push(ligneCarnet2(m, i));
+    });
+    return h("div", { style: { marginBottom: 6 } },
+      teteSection(T("Carnet de santé", "Health record", "Cartilla de salud", "Libretto sanitario", "健康手帳", "Gesundheitsheft", "السجل الصحي", "健康档案", "Gezondheidsboekje", "Caderneta de saúde", "Hälsojournal", "Медкарта", "Książeczka zdrowia", "건강 수첩"),
+        peutEcrire ? "+ " + T("Document", "Document", "Documento", "Documento", "書類", "Dokument", "مستند", "文件", "Document", "Documento", "Dokument", "Документ", "Dokument", "문서") : null, function () { ouvrirDocAjout(); }),
+      h("div", { className: "sx-chips" },
+        FILTRES_CARNET.filter(function (f) { return f.k === "tous" || cpt[f.k] > 0 || !(l.length + ld.length); }).map(function (f) {
+          return h("button", { key: f.k, type: "button", className: "sx-chip" + (f.k === fAct.k ? " on" : ""), onClick: function () { setCarnetFiltre(f.k); setCarnetTout(false); } }, f.t, cpt[f.k] ? h("small", null, cpt[f.k]) : null);
+        })),
+      lignesM.length ? enfants : h("div", { className: "sx-vide" }, T("Aucun soin enregistré pour l’instant.", "No care recorded yet.", "Aún no hay cuidados registrados.", "Nessuna cura registrata.", "まだ記録がありません。", "Noch keine Einträge.", "لا توجد عناية مسجلة بعد.", "暂无护理记录。", "Nog geen verzorging geregistreerd.", "Ainda não há cuidados registrados.", "Ingen vård registrerad ännu.", "Пока нет записей.", "Brak zapisanych zabiegów.", "아직 기록된 케어가 없어요.")),
+      (plus > 1 && !carnetTout) ? h("span", { className: "vxp-pl", role: "button", onClick: function () { setCarnetTout(true); } },
+        T("Voir les ", "Show the ", "Ver los ", "Vedi gli ", "", "Die ", "عرض ", "查看其余 ", "Bekijk de ", "Ver os ", "Visa de ", "Показать ещё ", "Pokaż ", "") + plus + T(" autres", " others", " demás", " altri", "件をすべて見る", " weiteren", " الأخرى", " 条", " andere", " outros", " andra", "", " pozostałe", "개 더 보기") + " ⌄") : null);
+  }
+  function equipe2() {
+    var roles = HYPE_ROLES_ORDRE.filter(function (r) { return !!proDuRole(r) || peutEcrire; });
+    if (!roles.length && !errPro) return null;
+    roles = roles.slice().sort(function (a, b) { return (proDuRole(b) ? 1 : 0) - (proDuRole(a) ? 1 : 0); });
+    return h("div", { style: { marginBottom: 30 } },
+      teteSection(T("L'équipe de soins", "The care team", "El equipo de cuidados", "L'équipe di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية", "护理团队", "Het verzorgingsteam", "A equipe de cuidados", "Vårdteamet", "Команда ухода", "Zespół opieki", "케어 팀")),
+      errPro ? h("div", { style: { marginBottom: 10, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, String(errPro)) : null,
+      roles.length ? h("div", { className: "sx-pros" }, roles.map(function (r) {
+        var p = proDuRole(r), img = ({ veterinaire: 1, marechal: 1, dentiste: 1, osteopathe: 1 })[r] ? "images/sante-pro-" + r + ".webp" : null;
+        var rond = img ? h("img", { className: "r", src: img, alt: "", "aria-hidden": "true", loading: "lazy" }) : h("span", { className: "r" }, p ? initialesEq(p.nom) : "+");
+        if (!p) return h("div", { key: "eq" + r, role: "button", className: "sx-pro", style: { cursor: "pointer" }, onClick: function () { setFeuillePro({ role: r, pro: null }); } },
+          rond, h("div", { style: { minWidth: 0 } }, h("b", null, ROLES_EQ[r] || r), h("span", { className: "s" }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가"))));
+        return h("div", { key: "eq" + r, className: "sx-pro plein", role: peutEcrire ? "button" : null, style: { cursor: peutEcrire ? "pointer" : "default" }, onClick: peutEcrire ? function () { setFeuillePro({ role: r, pro: p }); } : null },
+          rond,
+          h("div", { style: { flex: 1, minWidth: 0 } }, h("b", null, p.nom), h("span", { className: "s", style: { color: "rgba(243,238,228,.6)" } }, (ROLES_EQ[r] || r) + (p.structure ? " · " + p.structure : ""))),
+          p.tel ? rondEq("tel", "tel:" + String(p.tel).replace(/\s+/g, ""), "t", T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화하기")) : null,
+          p.email ? rondEq("mail", "mailto:" + String(p.email).trim(), "m", T("Écrire", "Email", "Escribir", "Scrivi", "メール", "E-Mail", "كتابة", "写邮件", "Schrijven", "Escrever", "Skriv", "Написать", "Napisz", "쓰기")) : null);
+      })) : null);
+  }
+  function suivi2() {
+    var S = etatsSuivi();
+    return h("div", { style: { marginBottom: 6 } },
+      teteSection(T("Suivi", "Follow-up", "Seguimiento", "Monitoraggio", "フォロー", "Verlauf", "المتابعة", "跟进", "Opvolging", "Acompanhamento", "Uppföljning", "Наблюдение", "Kontrola", "관리"), T("Tout voir", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть всё", "Zobacz wszystko", "모두 보기"), function () { setFamille(FAM_TOUT.cle); }),
+      h("div", { className: "sx-cartes" }, S.map(carteSuivi2)));
+  }
   function mepSante(blocCarnet) {
-    if (!largeS) return h("div", { style: { padding: "0 16px 30px" } },
-      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */, blocCarnet,
-      h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));
+    if (!largeS) return h("div", { style: { padding: "0 18px 30px" } },
+      suivi2(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */, blocCarnet,
+      h("div", { style: { marginTop: 10 } }, equipe2(), blocHeyBaby(), blocMagazine()));
     return h("div", { style: { padding: "0 32px 40px" } },
-      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
+      suivi2(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
       h("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 1fr)", gap: 24, alignItems: "start" } },
         h("div", { style: { minWidth: 0 } }, blocCarnet),
-        h("div", { style: { minWidth: 0 } }, equipeLignes())),
+        h("div", { style: { minWidth: 0 } }, equipe2())),
       h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 30, alignItems: "start" } },
         h("div", { style: { minWidth: 0 } }, blocHeyBaby()),
         h("div", { style: { minWidth: 0 } }, blocMagazine())));
@@ -1819,14 +2015,14 @@ function EcranSanteCheval() {
       h("div", { style: { fontSize: 30 } }, "\ud83e\ude7a"),
       h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 10, lineHeight: 1.6 } },
         T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0646\u0627\u064a\u0629 \u0645\u0633\u062c\u0644\u0629 \u062d\u0627\u0644\u064a\u0627.", "暂时没有护理记录。", "Nog geen verzorging geregistreerd.", "Nenhum cuidado registrado por enquanto.", "Ingen vård registrerad ännu.", "Пока нет записей об уходе.", "Na razie nie zapisano żadnej opieki.", "아직 기록된 케어가 없어요.")));
-    corps = mepSante(carnetSante());   /* (983) Blandine : « laisse au moins ecrit Carnet de sante, les onglets et la proposition d en ajouter un » — le carnet (titre, onglets, Ajouter un document, documents deja la) s affiche aussi sans soin ; avant : boiteVide seule */
+    corps = mepSante(carnetSante2());   /* (983) Blandine : « laisse au moins ecrit Carnet de sante, les onglets et la proposition d en ajouter un » — le carnet (titre, onglets, Ajouter un document, documents deja la) s affiche aussi sans soin ; avant : boiteVide seule */
   } else {
     var titreSec = function (txt) {
       return h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 11px" } },
         h("div", { style: { fontFamily: C, fontSize: 14, fontWeight: 700, color: "#D9C7A3", letterSpacing: 0.6, textTransform: "uppercase" } }, txt),
         h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.35), transparent)" } }));
     };
-    corps = mepSante(carnetSante());   /* (942) */
+    corps = mepSante(carnetSante2());   /* (942) */
   }
 
   /* FOND — UN SEUL calque fixe (image + deux voiles dans le meme background) :
@@ -1848,7 +2044,7 @@ function EcranSanteCheval() {
     }
   });
 
-  return h("div", { style: { position: "relative", minHeight: "100vh", background: "radial-gradient(ellipse 130% 420px at 50% 0%, rgba(127,163,173,0.22), rgba(127,163,173,0.07) 55%, transparent 80%) local, #060709" /* (899) lueur de l accueil */, color: "#EDF2F5", paddingBottom: 120 } },
+  return h("div", { style: { position: "relative", minHeight: "100vh", background: "#070A08" /* 07/11 fond uni (Vidéothèque) ; (899) lueur retirée */, color: "#EDF2F5", paddingBottom: 120 } },
     fond,
     h("div", { style: { position: "relative", zIndex: 1, maxWidth: largeS ? 1240 : "none", margin: "0 auto" } },   /* (942) ordinateur : largeur de lecture confortable */
       /* ---------- EN-TETE CHEVAL : PORTRAIT FONDU DANS LE NOIR ----------
@@ -1865,30 +2061,26 @@ function EcranSanteCheval() {
          « SANTE & SOINS », nom en grand, phrase, bouton « + Ajouter un soin » a contour champagne DANS le hero.
          ~40 px plus haut que la maquette (consigne), plus d air avant la premiere rubrique. Sans photo : meme texte sur le fond de page.
          Arabe : tout est en miroir (photo a gauche, degrade vers la droite). */
+      /* 07/11 (Blandine : « reste dans le design de la vidéothèque », maquette « sante1 » validée « Ok continue ») :
+         haut de page comme la Vidéothèque — retour rond + drapeau, photo (celle du cheval, ENTIÈRE comme décidé le 04/11 ;
+         sans photo, la photo Santé de Hype), courbes dorées, puis à droite le nom du cheval en petites capitales,
+         « Santé » en grand et la phrase en italique. Remplace l en-tête 931/937/941. */
       (function () {
+        cssPageVac(); cssSante();
         var rtlS = false; try { rtlS = document.documentElement.dir === "rtl"; } catch (eR) { }
-        var lgN = String(nomCourt || "").length;
-        var tailleNom = (lgN <= 10 ? 40 : (lgN <= 16 ? 34 : (lgN <= 24 ? 29 : 25))) * (largeS ? 1.4 : 1);
-        var blocNom = h("div", { style: { minWidth: 0, maxWidth: photoVue ? "50%" : "100%" } },   /* (937) le titre reste sur le cote sombre, jamais sur la tete du cheval */
-          h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: 3.6, textTransform: "uppercase", color: TQ, textShadow: "0 1px 10px rgba(0,0,0,0.7)" } },
-            T("Santé & soins", "Health & care", "Salud y cuidados", "Salute e cure", "健康とケア", "Gesundheit & Pflege", "الصحة والعناية", "健康与护理", "Gezondheid & verzorging", "Saúde & cuidados", "Hälsa & vård", "Здоровье и уход", "Zdrowie i opieka", "건강 & 케어")),
-          h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: tailleNom, fontWeight: 600, lineHeight: 1.04, marginTop: 6, color: "#F6F1E7", overflowWrap: "normal", wordBreak: "keep-all", textShadow: "0 2px 18px rgba(0,0,0,0.6)" } }, nomCourt),
-          affixe ? h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 16, color: TQ, marginTop: 2, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, affixe) : null,
-          montrerOffi ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA3AB", marginTop: 4 } }, nomOffi) : null,
-          null /* (937) phrase et bouton sortis du hero (Blandine) */);
-        var retourFlottant = h("button", { key: "ret", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 10px)", insetInlineStart: 16, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.75)", background: "rgba(6,7,9,0.35)", color: "#C9A66B", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } }, rtlS ? "›" : "‹");
-        if (!photoVue) {
-          return h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 66px) 20px 4px", marginBottom: 4 } }, retourFlottant, blocNom);
-        }
-        return h("div", { style: { position: "relative", width: "100%", height: largeS ? 358 : "calc(env(safe-area-inset-top) + 360px)" /* 29/10 : +58 px, photo descendue sous la ligne des boutons comme Histoire / Photos */, overflow: "hidden", marginBottom: 4 } },
-          /* fondu par masque (pas de voile noir plein) : la photo se dissout dans le fond de page, sans bord visible en bas */
-          h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: largeS ? "68%" : "100%" /* 04/11 : photo entière, pleine largeur sur iPhone */,   /* (937) 62 % ; (941) 80 % + fondu court : la tete du cheval n est plus coupee (Blandine) ; (942) 68 % ordinateur */ WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, transparent 0%, #000 14%, #000 90%, rgba(0,0,0,0) 100%)" } },
-            h("img", { src: photoVue, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" /* 04/11 19h15 Blandine : photo du cheval ENTIÈRE */, objectPosition: rtlS ? "0% 50%" : "100% 50%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 8%, #000 18%)", maskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 12%, #000 26%)" } })),
-          h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, left: 0, right: 0, height: 90, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0.5) 0%, rgba(6,7,9,0) 100%)" } }),
-          /* (941) voile seulement derriere le titre (coin bas, cote texte) : le reste de la photo reste net */
-          h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 75% 45% at " + (rtlS ? "100%" : "0%") + " 100%, rgba(6,7,9,0.88) 0%, rgba(6,7,9,0.55) 45%, rgba(6,7,9,0) 100%)" } }),
+        var retourFlottant = h("button", { key: "ret", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), className: "vxp-rond" }, rtlS ? "›" : "‹");
+        var titre = h("div", { className: "vxp-in", style: { paddingBottom: 0, maxWidth: largeS ? 1240 : undefined } }, h("div", { className: "vxp-titre" },
+          h("span", { className: "sx-kicker" }, nomCourt + (affixe ? " " + affixe : "")),
+          montrerOffi ? h("span", { className: "sx-offi" }, nomOffi) : null,
+          h("h1", null, T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강")),
+          h("p", null, T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura è già amare.", "気づかうことは、愛すること。", "Fürsorge ist schon Liebe.", "الاعتناء هو بالفعل حب.", "悉心照料，便是爱。", "Zorgen is al liefhebben.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит любить.", "Troska to już miłość.", "돌보는 것이 곧 사랑이에요."))));
+        return h("div", { className: "vxp-hero", style: { marginBottom: 4 } },
+          (typeof SelecteurLangue === "function") ? h("div", { className: "vxp-langue" }, h(SelecteurLangue, { compact: true })) : null,
           retourFlottant,
-          h("div", { style: { position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, zIndex: 2, padding: largeS ? "0 32px 26px" : "0 20px 18px" } }, blocNom));
+          courbeVac("c1", "M250 4 C 330 8, 385 40, 400 96"),
+          h("div", { className: "vxp-photo" + (photoVue ? " sx-photo-cheval" : "") }, h("img", { src: photoVue || "images/sante-hero-defaut.webp", alt: "", fetchpriority: "high" })),
+          courbeVac("c2", "M0 92 C 130 90, 240 62, 400 8"),
+          titre);
       })(),
       /* (937) Blandine : la petite phrase en italique revient SOUS le titre, a droite (comme avant le 931), puis « + Ajouter un soin » centre en dessous. */
       /* 11/10 (980) Blandine : « ajoute le petit menu qu on a sur les autres pages » — memes onglets que Histoire / Photos /
@@ -1909,8 +2101,7 @@ function EcranSanteCheval() {
             return h("button", { key: "tbs" + tb[0], type: "button", onClick: function () { if (onTb) return; try { window.__chevalOuvert = chId; window.__hypePanneauReprise = tb[0]; } catch (eTb) { } setEcran("cheval"); }, style: { flex: "0 0 auto", padding: "12px 4px 12px", minHeight: 44, border: "none", borderBottom: "1.5px solid " + (onTb ? "rgba(201,166,107,0.85)" : "transparent"), marginBottom: -1, background: "none", cursor: onTb ? "default" : "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 600 : 500, letterSpacing: "0.02em", color: onTb ? "rgba(217,190,140,0.95)" : "rgba(237,242,245,0.42)", textShadow: "0 1px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap" } }, tb[1]);
           }));
       })(),
-      h("div", { style: { padding: "24px 22px 10px 16px", textAlign: "end", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.25, color: "#D2B07A", textShadow: "0 0 14px rgba(201,166,107,0.42)", opacity: 0.92 } },
-        T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura è già amare.", "気づかうことは、愛すること。", "Fürsorge ist schon Liebe.", "الاعتناء هو بالفعل حب.", "悉心照料，本身就是爱。", "Zorgen is al houden van.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит уже любить.", "Dbać to już kochać.", "돌본다는 건 이미 사랑하는 거예요.")),
+      null /* 07/11 : la phrase est dans le haut de page (Vidéothèque) */,
       /* 11/10 (973) Blandine (capture 22 h 21) : « Ajouter un soin, change-le en un onglet similaire a Ajouter ses consignes » —
          le bouton rond devient la meme carte en pointilles que « Ajouter ses consignes » (+, titre Cormorant, sous-titre).
          Meme action (feuille de saisie d un soin), meme verrou Premium. */
@@ -1918,33 +2109,15 @@ function EcranSanteCheval() {
          encore AUCUNE consigne, les deux cartes en pointilles se partagent la ligne (2 colonnes). Des qu il a des consignes, le bandeau
          « Consignes du cheval » (depliable) reprend toute la largeur sous « Ajouter un soin », comme avant. */
       h((typeof HypeVoileSantePremium === "function") ? HypeVoileSantePremium : React.Fragment, null,   /* 02/11 (Blandine) : sans Premium, tout ce qui suit le haut de page est flouté */
+      /* 07/11 (maquette Vidéothèque) : l état en une seconde, puis la ligne « + Ajouter un soin » / « Consignes » (quand il n y en a pas encore) ;
+         les consignes déjà remplies gardent leur carte dépliable (blocConsignes). Remplace les cartes en pointillés 973/980. */
       (function () {
         var consVides = consignes !== null && !RUB_CONS.some(function (r) { return String((consignes || {})[r.k] || "").trim(); });
-        var pad = largeS ? "18px 32px 0" : "18px 16px 0";   /* (1062) 12 -> 18 */
-        function carteDuo(titre, sous, agir) {
-          return h("div", { role: "button", onClick: agir, style: { minWidth: 0, padding: "13px 12px", borderRadius: 16, border: "1px dashed rgba(201,166,107,0.5)", background: "rgba(14,26,24,0.3)", cursor: "pointer" } },
-            h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 17, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2 } }, h("span", { style: { color: TQ, marginInlineEnd: 6, fontFamily: M, fontWeight: 400 } }, "+"), titre),
-            h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(243,238,228,0.6)", marginTop: 3, lineHeight: 1.35 } }, sous));
-        }
-        if (peutEcrire && consVides) {
-          return h("div", { style: { padding: pad } },
-            h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 /* (1062) 10 -> 14 */, margin: "0 0 30px" } },
-              carteDuo(T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0631\u0639\u0627\u064a\u0629", "添加护理记录", "Verzorging toevoegen", "Adicionar um cuidado", "Lägg till en vårdpost", "Добавить запись об уходе", "Dodaj zabieg", "케어 추가"),
-                T("Vaccin, vermifuge, ferrure, dentiste\u2026", "Vaccine, deworming, shoeing, dentist\u2026", "Vacuna, desparasitaci\u00f3n, herrado, dentista\u2026", "Vaccino, vermifugo, ferratura, dentista\u2026", "\u30ef\u30af\u30c1\u30f3\u3001\u99c6\u866b\u3001\u88c5\u8e44\u3001\u6b6f\u79d1\u2026", "Impfung, Entwurmung, Beschlag, Zahnarzt\u2026", "\u0644\u0642\u0627\u062d\u060c \u062a\u062e\u0644\u064a\u0635 \u0645\u0646 \u0627\u0644\u062f\u064a\u062f\u0627\u0646\u060c \u062a\u0646\u0639\u064a\u0644\u060c \u0637\u0628\u064a\u0628 \u0623\u0633\u0646\u0627\u0646\u2026", "疫苗、驱虫、钉蹄铁、牙医…", "Vaccin, ontwormen, beslag, tandarts…", "Vacina, vermífugo, ferrageamento, dentista…", "Vaccin, avmaskning, skoning, tandläkare…", "Прививка, глистогонное, ковка, стоматолог…", "Szczepionka, odrobaczanie, kucie, dentysta…", "백신, 구충제, 장제, 치과…"),
-                function () { setFeuille({ soin: null }); }),
-              carteDuo(T("Ses consignes", "Instructions", "Sus consignas", "Le istruzioni", "\u6ce8\u610f\u4e8b\u9805", "Hinweise", "\u062a\u0639\u0644\u064a\u0645\u0627\u062a\u0647", "注意事项", "Zijn/haar instructies", "Instruções dele", "Hans/hennes instruktioner", "Её указания", "Jego wskazówki", "말의 지침"),
-                T("Enrênement, matériel, soins spécifiques", "Training aids, tack, specific care", "Riendas, material, cuidados", "Redini, attrezzatura, cure", "補助具、馬具、特別なケア", "Hilfszügel, Ausrüstung, Pflege", "أدوات، معدات، عناية خاصة", "辅助缰具、装备、特殊护理", "Hulpmiddelen, materiaal, speciale verzorging", "Rédeas auxiliares, equipamento, cuidados específicos", "Hjälpmedel, utrustning, särskild vård", "Вспомогательные поводья, амуниция, особый уход", "Wodze pomocnicze, sprzęt, specjalna pielęgnacja", "보조 고삐, 장구, 특별 케어"),
-                ouvrirConsEdit)));
-        }
-        return h(React.Fragment, null,
-      peutEcrire ? h("div", { style: { padding: largeS ? "12px 32px 0" : "12px 16px 0" } },
-        h("div", { role: "button", onClick: function () { setFeuille({ soin: null }); }, style: { margin: "0 0 14px", padding: "14px 16px", borderRadius: 16, border: "1px dashed rgba(201,166,107,0.5)", background: "rgba(14,26,24,0.3)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" } },
-          h("span", { style: { color: TQ, fontSize: 20, lineHeight: 1 } }, "+"),
-          h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, color: "#F3EEE4" } }, T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0639\u0646\u0627\u064a\u0629", "添加护理记录", "Verzorging toevoegen", "Adicionar um cuidado", "Lägg till en vårdpost", "Добавить запись об уходе", "Dodaj zabieg", "케어 추가")),
-            h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.6)", marginTop: 2 } }, T("Vaccin, vermifuge, ferrure, dentiste\u2026", "Vaccine, deworming, shoeing, dentist\u2026", "Vacuna, desparasitaci\u00f3n, herrado, dentista\u2026", "Vaccino, vermifugo, ferratura, dentista\u2026", "\u30ef\u30af\u30c1\u30f3\u3001\u99c6\u866b\u3001\u88c5\u8e44\u3001\u6b6f\u79d1\u2026", "Impfung, Wurmkur, Beschlag, Zahnarzt\u2026", "\u0644\u0642\u0627\u062d\u060c \u0637\u0627\u0631\u062f \u062f\u064a\u062f\u0627\u0646\u060c \u062a\u0646\u0639\u064a\u0644\u060c \u0637\u0628\u064a\u0628 \u0623\u0633\u0646\u0627\u0646\u2026", "疫苗、驱虫、钉蹄铁、牙医…", "Vaccin, ontwormen, beslag, tandarts…", "Vacina, vermífugo, ferrageamento, dentista…", "Vaccin, avmaskning, skoning, tandläkare…", "Прививка, глистогонное, ковка, стоматолог…", "Szczepionka, odrobaczanie, kucie, dentysta…", "백신, 구충제, 장제, 치과…"))))) : h("div", { style: { height: 24 } }),
-          h("div", { style: { padding: largeS ? "0 32px" : "0 16px" } }, blocConsignes()));
-      })(),   /* (940) consignes avant le SUIVI (maquette) */
+        return h("div", { style: { padding: largeS ? "0 32px" : "0 18px" } },
+          boiteEtatSante(),
+          ligneActionsSante(consVides),
+          consVides ? null : h("div", { style: { marginTop: 18 } }, blocConsignes()));
+      })(),
       fenetreConsignes(),
       null /* (932) « A surveiller » remplace par SUIVI */,
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
