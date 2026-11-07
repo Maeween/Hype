@@ -19520,6 +19520,16 @@ Fichiers à publier :
 | SUIVI.md | racine | cette entrée |
 - Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
 
+## 08/11/2026 00h35 → 01h00 — Pages Google/Bing des fonctions → VRAIE page de l'appli (build 20261108-0150) — PUBLIÉ (Blandine 00h11 : « carte blanche »)
+Blandine (00h03) : « fais ça sur la totalité des pages que Google ou Bing [voient] ».
+- FAIT (56 pages) : accueil de chaque langue /<langue>/ → écran d'accueil ; /<langue>/ia-equestre/ → Hey Baby ; /<langue>/reprises-dressage/ → Réviser mes reprises ; /<langue>/plan-lamotte-beuvron/ → page Lamotte (Generali Open de France). Fonctions gratuites : pas de flou. Testé en visiteuse sans compte.
+- netlify/edge-functions/cours-route.ts (adresses + cibles « ecran-… »), index.html (cibles « ecran-dashboard/assistant/reprises/lamotte »), les 56 pages (repères).
+- FAIT ensuite (70 pages, carte blanche) — cheval vitrine = Rizotto d'Emery (Écurie Feinn, déjà public, photo + origines + histoire + 182 résultats) :
+  /<langue>/fiche-cheval/ et /photos-souvenirs/ → sa fiche ; /concours-resultats/ → ses Performances ; /sante-cheval/ → sa page Santé : le haut, puis tout FLOUTÉ sous « La santé est réservée à Premium » (et la base ne donne de toute façon AUCUN soin à un visiteur sans compte) ; /gestion-ecurie/ → la page de l'Écurie Feinn (« Crée ton compte pour découvrir ses chevaux, ses résultats et son agenda »).
+  Cibles « vitrine-cheval/perf/sante/ecurie » (index.html + cours-route.ts). Pour changer de cheval vitrine : la valeur VIT_CH dans index.html.
+- NON FAIT, volontairement : /fr/centres-equestres/ (annuaire par département, fabriqué à chaque publication) : c'est une liste de liens vers les vraies pages /ecurie/, l'appli n'a pas d'écran « écuries d'un département » à ouvrir. À trancher par Blandine : garder la liste, ou ouvrir la carte des écuries (globe).
+- Déjà en vraie page : Galops, lexique, prépas, /cheval/, /ecurie/, /evenement/. Restent des pages à part, volontairement : association, mentions légales, CGV.
+
 ## 08/11/2026 00h20 — Prépas : les pages Google/Bing ouvrent la VRAIE page, la suite floutée (build 20261108-0120) — PUBLIÉ le 08/11 00h10 (Blandine : « Ok c'est mieux »)
 Blandine (23h57) : « toutes tes pages de présentation on avait dit que c'était pas possible […] les gens devaient voir le début de la vraie page puis qu'elle devienne floutée en proposant abonnement » + « Ça ressemble à rien ».
 - netlify/edge-functions/cours-route.ts : les 56 adresses /<langue>/prepa-…-equitation/ passent par le même aiguillage que les Galops → la page Hype normale s'ouvre sur la vraie page prépa (cible « prepa-AE/BP/DE/DES »). Google garde le texte caché dans la page.
