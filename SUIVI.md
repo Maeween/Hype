@@ -18787,7 +18787,7 @@ POINTS DE VOCABULAIRE SIGNALÉS PAR LES TRADUCTIONS (non modifiés, attend : Bla
 - Réservé aux abonnés comme la lecture actuelle. Aucun nouveau texte. hype-ecran-sante-cheval.js?v=5.
 - À venir (attente ok Blandine) : refonte de la partie Vaccins en une carte par vaccin (Grippe, Rhino, Tétanos, Autres/West Nile), dernier vaccin + prochain rappel, ouverture = toutes les dates + photo du carnet.
 
-## 07/11/2026 02h50 — Vaccins : une carte par vaccin (build 20261107-0450, NON PUBLIÉ)
+## 07/11/2026 02h50 — Vaccins : une carte par vaccin (build 20261107-0450 — EN LIGNE avec la publication 20261107-1100, remplacé par la page Vaccins)
 - Demande : « une partie pour chaque vaccin… le dernier protocole réalisé… quand on clique dessus, toutes les dates et la copie avec la photo ». Validé (« Ok »).
 - Fenêtre Vaccin de la page Santé : cartes Grippe, Rhinopneumonie (toujours), Tétanos et Autres vaccins (si présents). Chaque carte : état du rappel (à jour / dépassé), dernier vaccin (date + produit), nombre d'injections depuis l'année de la première. Une seule carte ouverte à la fois : une ligne courte par injection (date + produit, « + tétanos » pour une double ; on la touche pour modifier), puis « Pages du carnet » en vignettes (photo) ou PDF.
 - Protocole vaccinal : gardé (badges Club / Amateur / SHF / FEI, notes, Lire le carnet) sans les lignes Grippe / Rhino (passées dans les cartes) ni le message « vaccin sans maladie précisée » (ces vaccins vont dans « Autres vaccins », ex. Equip WNV).
@@ -18844,7 +18844,7 @@ nl « ritme » gardé pour le rythme entre les obstacles ; pl « kadencjonowany 
 
 ════════════════════════════════════════════════════════════
 
-## 07/11/2026 05h00 — Photos de documents remises droites (build 20261107-0500, NON PUBLIÉ)
+## 07/11/2026 05h00 — Photos de documents remises droites (build 20261107-0500 — EN LIGNE avec la publication 20261107-1100)
 - Demande : « remets automatiquement les images dans le bon sens quand besoin sinon on lit rien… faut que l'appli le fasse ».
 - La lecture du carnet dit maintenant aussi de combien tourner chaque image (0/90/180/270, invite de hypeLireCarnetVaccins dans index.html).
 - Photo jointe comme « Page du carnet » / « Certificat » : après la lecture automatique, le fichier enregistré est remplacé par la photo remise droite (nouveau fichier, ligne cheval_documents mise à jour, ancien fichier supprimé).
