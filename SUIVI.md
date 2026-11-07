@@ -10,6 +10,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
+- [08/11] AUDIT du Centre de compétition remis (doc « Audit du Centre de compétition », lecture seule, rien modifié). Verdict : pas d'ouverture aux autres clubs. À corriger d'abord : provenance des heures (une estimation part en « Ton heure de passage » et peut écraser une heure saisie), suppression d'un rendez-vous qui efface engagements, tours et notes vidéo en cascade, vidéos de la Team lisibles par tout compte connecté, droits par club et non par groupe. Feuille de route en 12 points dans le doc. RIEN n'est corrigé sans accord explicite (attend : Blandine)
 - [07/11 23h35] Nouvelle page Engagements (P1 + étapes D3) PUBLIÉE (build 20261108-0040) — à tester sur iPhone après publication : engager en 3 touchers (qui → cheval → épreuve), 2e et 3e tour, « Nouvelle épreuve », × pour retirer un tour, feuille d'engagement. Ne pas toucher à EcranEngagements, concours_engagements ni concours_tours sans relire l'entrée du 07/11 23h50. (attend : Blandine)
 - [26/10] Les mails « mot de passe oublié » partent par le service de base de Supabase : 2 mails par heure au maximum, et parfois seulement aux membres de l'équipe Supabase. Il faut brancher un vrai service d'envoi (par exemple Brevo), sinon des cavaliers ne reçoivent rien (attend : Blandine)
 - [26/10] Sécurité : la clé d'accès Supabase des mails est SUPPRIMÉE (07/11 01h54, vérifié sur capture : restent seulement « github-hype » et « Github hype 2 »). Reste à supprimer le secret HYPE_CLE_MAILS (supabase.com/dashboard/project/ldpjebgtskzdokrublfg/functions/secrets) — sans la clé, il ne peut plus rien faire, c'est du rangement (attend : Blandine)
@@ -19653,3 +19654,8 @@ Fichiers : SUIVI.md.
 - Demande : « ajoute le tour suivant que quand celui d'avant est rempli, ça évite de surcharger ».
 - Récapitulatif de la page Engagements, cartes « Les chevaux » : on voit les tours pris, puis UNE seule case « place libre » (la suivante) tant que le maximum (3 en Club, 5 à poney) n'est pas atteint ; plus de 3 à 5 cases vides d'un coup. Le compteur « places libres » en tête reste le total.
 - Testé sur copie : Daphne (1 tour) → 1 tour + 1 place libre ; Rizotto (3 tours, maximum Club) → 3 tours, aucune case vide. hype-ecran-saison.js (version déjà passée à v=49 dans ce lot, non publiée).
+
+## 08/11/2026 01h40 — SUIVI seul — audit du Centre de compétition (lecture seule)
+- Tests réels en base sous 3 identités (sans compte, cavalière, compte extérieur), écriture essayée puis annulée : engagements, tours, feuille, licences bien protégés ; vidéos de la Team (5 non publiques) visibles par un compte extérieur.
+- Aucun code, aucune donnée, aucune règle de sécurité modifiés.
+Fichiers : SUIVI.md.
