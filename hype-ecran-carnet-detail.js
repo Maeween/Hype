@@ -2,6 +2,133 @@
    Chargé seulement à l'ouverture de l'écran (voir hypeEcranDiffere dans index.html). Code d'origine déplacé SANS changement :
    il utilise les mêmes outils partagés que le reste de l'appli (useApp, useState, T, etc.), disponibles à l'exécution. */
 (function () {
+/* 08/11 (demande de Lore) — ÉDITEUR DU RÉSUMÉ AVEC MISE EN FORME : gras, italique, souligné, barré, 3 tailles, et lien
+   (ex. une vidéo Blooming Riders). Zone modifiable (contentEditable) ; le texte est rangé en base avec les marques décrites
+   au-dessus de hypeNoteRendu (index.html). Les marques ne se voient jamais : ni ici, ni dans les aperçus. */
+function hjEsc(t) { return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function hjMarquesEnHtml(t) {
+  var x = hjEsc(t);
+  x = x.replace(/\[lien=([^\]\s]+)\]([\s\S]*?)\[\/lien\]/g, function (m, u, tx) { return '<a href="' + u + '">' + (tx || u) + "</a>"; });
+  x = x.replace(/\[(\/?)(b|i|u|s)\]/g, "<$1$2>").replace(/\[grand\]/g, '<font size="5">').replace(/\[petit\]/g, '<font size="2">').replace(/\[\/(grand|petit)\]/g, "</font>");
+  return x.replace(/\n/g, "<br>");
+}
+function hjHtmlEnMarques(racine) {
+  var out = "";
+  function marques(el) {
+    var t = String(el.tagName || "").toUpperCase(), st = el.style || {}, o = [];
+    var fw = String(st.fontWeight || "");
+    if (t === "B" || t === "STRONG" || fw === "bold" || Number(fw) >= 600) o.push("b");
+    if (t === "I" || t === "EM" || st.fontStyle === "italic") o.push("i");
+    var dec = String(st.textDecoration || st.textDecorationLine || "");
+    if (t === "U" || /underline/.test(dec)) o.push("u");
+    if (t === "S" || t === "STRIKE" || t === "DEL" || /line-through/.test(dec)) o.push("s");
+    var taille = "";
+    if (t === "FONT" && el.getAttribute("size")) { var n = Number(el.getAttribute("size")); if (n && n <= 2) taille = "petit"; else if (n >= 4) taille = "grand"; }
+    var fs = String(st.fontSize || "");
+    if (fs) { var px = parseFloat(fs); if (/small/.test(fs) || (/px/.test(fs) && px < 15)) taille = "petit"; else if (/large/.test(fs) || (/px/.test(fs) && px > 18) || (/em/.test(fs) && px > 1.1)) taille = "grand"; }
+    if (taille) o.push(taille);
+    return o;
+  }
+  function dans(n) {
+    if (n.nodeType === 3) { out += String(n.nodeValue || "").replace(/ /g, " "); return; }
+    if (n.nodeType !== 1) return;
+    var t = String(n.tagName || "").toUpperCase();
+    if (t === "BR") { out += "\n"; return; }
+    if (t === "SCRIPT" || t === "STYLE") return;
+    var bloc = (t === "DIV" || t === "P" || t === "LI" || /^H[1-6]$/.test(t));
+    if (bloc && out.length && out.charAt(out.length - 1) !== "\n") out += "\n";
+    if (t === "A" && n.getAttribute("href")) {
+      var avant = out; out = ""; Array.prototype.forEach.call(n.childNodes, dans); var tx = out.replace(/\[\/?(b|i|u|s|grand|petit)\]/g, "").replace(/\n/g, " "); out = avant;
+      out += "[lien=" + String(n.getAttribute("href")).replace(/[\]\s]/g, "") + "]" + tx + "[/lien]"; return;
+    }
+    var mq = marques(n);
+    var av = out; out = ""; Array.prototype.forEach.call(n.childNodes, dans); var dedans = out; out = av;
+    if (mq.length && dedans.replace(/\n/g, "").length) {
+      var debut = (dedans.match(/^\n*/) || [""])[0], fin = (dedans.match(/\n*$/) || [""])[0];
+      var milieu = dedans.slice(debut.length, dedans.length - fin.length);
+      out += debut + mq.map(function (q) { return "[" + q + "]"; }).join("") + milieu + mq.slice().reverse().map(function (q) { return "[/" + q + "]"; }).join("") + fin;
+    } else out += dedans;
+  }
+  Array.prototype.forEach.call(racine.childNodes, dans);
+  return out.replace(/\[(b|i|u|s|grand|petit)\]\[\/\1\]/g, "");
+}
+function EditeurNoteHJ(props) {
+  var h = React.createElement, T = props.T, CH = "#D6B676", M = "'Montserrat',sans-serif";
+  var ref = React.useRef(null), plage = React.useRef(null);
+  var _l = React.useState(null), lienF = _l[0], setLienF = _l[1];   /* null ou { url, texte } */
+  var _v = React.useState(!String(props.valeur || "").trim()), vide = _v[0], setVide = _v[1];
+  var dernier = React.useRef(null);   /* dernière valeur sortie de l'éditeur : une valeur venue d'ailleurs (brouillon retrouvé) est rechargée */
+  React.useEffect(function () {
+    var v = String(props.valeur || "");
+    if (dernier.current !== null && v === dernier.current) return;
+    try { if (ref.current) { ref.current.innerHTML = hjMarquesEnHtml(v); dernier.current = v; setVide(!v.trim()); } } catch (eI) { }
+  }, [props.valeur]);
+  function lire() { try { var el = ref.current; if (!el) return; var v = hjHtmlEnMarques(el); dernier.current = v; setVide(!v.trim()); props.onChange(v); } catch (eL) { } }
+  function garder() { try { var sel = window.getSelection(); if (sel && sel.rangeCount && ref.current && ref.current.contains(sel.anchorNode)) plage.current = sel.getRangeAt(0).cloneRange(); } catch (eG) { } }
+  function remettre() {
+    try {
+      var el = ref.current; if (!el) return; el.focus();
+      var sel = window.getSelection();
+      if (plage.current) { sel.removeAllRanges(); sel.addRange(plage.current); }
+      else if (!(sel && sel.rangeCount && el.contains(sel.anchorNode))) { var r = document.createRange(); r.selectNodeContents(el); r.collapse(false); sel.removeAllRanges(); sel.addRange(r); }
+    } catch (eR) { }
+  }
+  function cmd(c, v) {
+    remettre();
+    try { document.execCommand("styleWithCSS", false, false); } catch (eS) { }
+    try { document.execCommand(c, false, v); } catch (eC) { }
+    garder(); lire();
+  }
+  function poserLien() {
+    var u = (typeof hypeLienSur === "function") ? hypeLienSur(lienF && lienF.url) : String((lienF && lienF.url) || "").trim();
+    if (!u) { setLienF(null); return; }
+    var tx = String((lienF && lienF.texte) || "").trim() || u.replace(/^https?:\/\/(www\.)?/i, "");
+    remettre();
+    try { document.execCommand("insertHTML", false, '<a href="' + hjEsc(u) + '">' + hjEsc(tx) + "</a>&nbsp;"); }
+    catch (eA) { try { ref.current.insertAdjacentHTML("beforeend", '<a href="' + hjEsc(u) + '">' + hjEsc(tx) + "</a>&nbsp;"); } catch (eB) { } }
+    setLienF(null); garder(); lire();
+  }
+  function bouton(cle, contenu, aria, action, stTexte) {
+    return h("button", { key: cle, type: "button", "aria-label": aria, title: aria,
+      onPointerDown: function (e) { try { e.preventDefault(); } catch (eP) { } }, onMouseDown: function (e) { try { e.preventDefault(); } catch (eM) { } },
+      onClick: action,
+      style: Object.assign({ flex: "0 0 auto", minWidth: 36, height: 38, padding: "0 8px", borderRadius: 10, border: "1px solid rgba(214,182,118,0.35)", background: "transparent", color: CH, fontFamily: M, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }, stTexte || {}) }, contenu);
+  }
+  var sep = function (k) { return h("span", { key: k, "aria-hidden": "true", style: { flex: "0 0 auto", width: 1, alignSelf: "stretch", margin: "4px 2px", background: "rgba(214,182,118,0.25)" } }); };
+  var stIn = { display: "block", width: "100%", boxSizing: "border-box", minHeight: 44, padding: "0 12px", borderRadius: 10, border: "1px solid rgba(214,182,118,0.35)", background: "rgba(242,237,228,0.04)", color: "#F2EDE4", fontFamily: M, fontSize: 15, marginTop: 8 };
+  return h("div", null,
+    h("div", { style: { display: "flex", flexWrap: "wrap", gap: 5, paddingBottom: 8, minWidth: 0 } },
+      bouton("b", "B", T("Gras", "Bold", "Negrita", "Grassetto", "太字", "Fett", "عريض", "加粗", "Vet", "Negrito", "Fet", "Жирный", "Pogrubienie", "굵게"), function () { cmd("bold"); }, { fontWeight: 700 }),
+      bouton("i", "I", T("Italique", "Italic", "Cursiva", "Corsivo", "斜体", "Kursiv", "مائل", "斜体", "Cursief", "Itálico", "Kursiv", "Курсив", "Kursywa", "기울임"), function () { cmd("italic"); }, { fontStyle: "italic", fontFamily: "Georgia,serif" }),
+      bouton("u", "U", T("Souligné", "Underline", "Subrayado", "Sottolineato", "下線", "Unterstrichen", "تسطير", "下划线", "Onderstreept", "Sublinhado", "Understruken", "Подчёркнутый", "Podkreślenie", "밑줄"), function () { cmd("underline"); }, { textDecoration: "underline" }),
+      bouton("s", "S", T("Barré", "Strikethrough", "Tachado", "Barrato", "取り消し線", "Durchgestrichen", "يتوسطه خط", "删除线", "Doorgehaald", "Riscado", "Genomstruken", "Зачёркнутый", "Przekreślenie", "취소선"), function () { cmd("strikeThrough"); }, { textDecoration: "line-through" }),
+      sep("s1"),
+      bouton("tp", "A", T("Petit texte", "Small text", "Texto pequeño", "Testo piccolo", "小さい文字", "Kleiner Text", "نص صغير", "小字", "Kleine tekst", "Texto pequeno", "Liten text", "Мелкий текст", "Mały tekst", "작은 글자"), function () { cmd("fontSize", "2"); }, { fontSize: 11.5 }),
+      bouton("tn", "A", T("Texte normal", "Normal text", "Texto normal", "Testo normale", "標準の文字", "Normaler Text", "نص عادي", "正常字", "Normale tekst", "Texto normal", "Normal text", "Обычный текст", "Zwykły tekst", "보통 글자"), function () { cmd("fontSize", "3"); }, { fontSize: 15 }),
+      bouton("tg", "A", T("Grand texte", "Large text", "Texto grande", "Testo grande", "大きい文字", "Großer Text", "نص كبير", "大字", "Grote tekst", "Texto grande", "Stor text", "Крупный текст", "Duży tekst", "큰 글자"), function () { cmd("fontSize", "5"); }, { fontSize: 20 }),
+      sep("s2"),
+      bouton("ln", [h("svg", { key: "ic", width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: CH, strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" },
+          h("path", { d: "M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" }), h("path", { d: "M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" }))],
+        T("Ajouter un lien", "Add a link", "Añadir un enlace", "Aggiungi un link", "リンクを追加", "Link hinzufügen", "إضافة رابط", "添加链接", "Link toevoegen", "Adicionar um link", "Lägg till en länk", "Добавить ссылку", "Dodaj link", "링크 추가"),
+        function () { garder(); setLienF(lienF ? null : { url: "", texte: "" }); })),
+    lienF ? h("div", { style: { margin: "0 0 10px", padding: 12, borderRadius: 12, border: "1px solid rgba(214,182,118,0.3)", background: "rgba(10,14,16,0.6)" } },
+      h("input", { type: "url", inputMode: "url", autoFocus: true, value: lienF.url, onChange: function (e) { setLienF({ url: e.target.value, texte: lienF.texte }); }, style: Object.assign({}, stIn, { marginTop: 0 }),
+        placeholder: T("Colle le lien (Blooming Riders…)", "Paste the link (Blooming Riders…)", "Pega el enlace (Blooming Riders…)", "Incolla il link (Blooming Riders…)", "リンクを貼り付け（Blooming Riders…）", "Link einfügen (Blooming Riders…)", "الصق الرابط (Blooming Riders…)", "粘贴链接（Blooming Riders…）", "Plak de link (Blooming Riders…)", "Cola o link (Blooming Riders…)", "Klistra in länken (Blooming Riders…)", "Вставь ссылку (Blooming Riders…)", "Wklej link (Blooming Riders…)", "링크 붙여넣기 (Blooming Riders…)") }),
+      h("input", { type: "text", value: lienF.texte, maxLength: 80, onChange: function (e) { setLienF({ url: lienF.url, texte: e.target.value }); }, style: stIn,
+        placeholder: T("Texte affiché (facultatif)", "Text shown (optional)", "Texto mostrado (opcional)", "Testo mostrato (facoltativo)", "表示する文字（任意）", "Angezeigter Text (optional)", "النص الظاهر (اختياري)", "显示的文字（可选）", "Getoonde tekst (optioneel)", "Texto exibido (opcional)", "Visad text (valfritt)", "Показываемый текст (необязательно)", "Wyświetlany tekst (opcjonalnie)", "표시할 글자 (선택)") }),
+      h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+        h("button", { type: "button", onClick: function () { setLienF(null); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid rgba(242,237,228,0.22)", background: "transparent", color: "#F2EDE4", fontFamily: M, fontSize: 13.5, cursor: "pointer" } },
+          T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+        h("button", { type: "button", onClick: poserLien, disabled: !String(lienF.url || "").trim(), style: { flex: 1.4, minHeight: 42, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: String(lienF.url || "").trim() ? 1 : 0.45 } },
+          T("Ajouter le lien", "Add the link", "Añadir el enlace", "Aggiungi il link", "リンクを追加", "Link hinzufügen", "إضافة الرابط", "添加链接", "Link toevoegen", "Adicionar o link", "Lägg till länken", "Добавить ссылку", "Dodaj link", "링크 추가")))) : null,
+    h("div", { ref: ref, className: "hj-ed" + (vide ? " hj-vide" : ""), contentEditable: true, suppressContentEditableWarning: true, role: "textbox", "aria-multiline": "true", dir: "auto", "data-ph": props.placeholder,
+      onInput: lire, onBlur: function () { garder(); lire(); }, onKeyUp: garder, onMouseUp: garder, onTouchEnd: function () { setTimeout(garder, 0); },
+      onPaste: function (e) {
+        /* un collage garde le texte (les adresses deviennent des liens à la lecture), pas la mise en page d'un autre site */
+        try { var tx = (e.clipboardData || window.clipboardData).getData("text/plain"); if (tx) { e.preventDefault(); document.execCommand("insertText", false, tx); lire(); } } catch (eCo) { }
+      },
+      style: props.style }));
+}
 function EcranCarnetDetail() {
   var h = React.createElement;
   var ctx = (typeof useApp === "function") ? useApp() : {};
@@ -736,9 +863,9 @@ function EcranCarnetDetail() {
       /* RESUME DE LA SEANCE : la zone principale, ecrit dans `note` (logique inchangee) */
       sectionHJ("res", [
         etiqHJ(T("Résumé de la séance", "Session summary", "Resumen de la sesión", "Riepilogo della sessione", "稽古のまとめ", "Zusammenfassung der Einheit", "ملخّص الحصة", "训练小结", "Samenvatting van de training", "Resumo da sessão", "Sammanfattning av ridpasset", "Итоги тренировки", "Podsumowanie treningu", "훈련 요약")),
-        h("textarea", { key: "no", className: "hj-ta", dir: hjDirChamp(note), value: note, rows: 5, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { ecrireNote(e.target.value); grandir(e.target); },
+        h(EditeurNoteHJ, { key: "no", T: T, valeur: note, onChange: ecrireNote,   /* 08/11 : mise en forme (demande de Lore) */
           placeholder: T("Comment s’est passée la séance ?\nUne sensation, un progrès, quelque chose à retravailler…", "How did the session go?\nA feeling, some progress, something to work on again…", "¿Cómo fue la sesión?\nUna sensación, un progreso, algo que volver a trabajar…", "Com’è andata la sessione?\nUna sensazione, un progresso, qualcosa da rilavorare…", "稽古はどうでしたか？\n感覚、上達、もう一度取り組みたいこと…", "Wie lief die Einheit?\nEin Gefühl, ein Fortschritt, etwas zum Weiterüben…", "كيف جرت الحصة؟\nإحساس، تقدّم، شيء يجب العمل عليه من جديد…", "这次训练怎么样？\n一种感觉、一点进步、还需要再练的地方…", "Hoe ging de training?\nEen gevoel, vooruitgang, iets om opnieuw aan te werken…", "Como foi a sessão?\nUma sensação, um progresso, algo para trabalhar de novo…", "Hur gick ridpasset?\nEn känsla, ett framsteg, något att jobba mer med…", "Как прошла тренировка?\nОщущение, прогресс, что-то, над чем стоит ещё поработать…", "Jak poszedł trening?\nOdczucie, postęp, coś do dopracowania…", "훈련은 어땠나요?\n느낌, 발전한 점, 다시 연습할 점…"),
-          style: Object.assign({}, stChamp, { minHeight: 150, padding: "14px 15px", borderRadius: 14, background: SURF, border: "1px solid " + LIGNE, resize: "none", lineHeight: 1.55, overflow: "hidden" }) }),
+          style: Object.assign({}, stChamp, { minHeight: 150, padding: "14px 15px", borderRadius: 14, background: SURF, border: "1px solid " + LIGNE, lineHeight: 1.55, whiteSpace: "pre-wrap", overflowWrap: "anywhere", outline: "none", WebkitUserSelect: "text", userSelect: "text" }) }),
         afficherARetenir ? h("div", { key: "arw", style: { marginTop: 14 } },
           etiqHJ(T("À retenir", "To remember", "Para recordar", "Da ricordare", "覚えておくこと", "Merken", "للتذكر", "要点", "Om te onthouden", "Para lembrar", "Att komma ihåg", "Запомнить", "Do zapamiętania", "기억할 점")),
           h("textarea", { className: "hj-ta", dir: hjDirChamp(aRetenir), value: aRetenir, rows: 2, maxLength: 300, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { setARetenir(e.target.value); grandir(e.target); },
@@ -865,7 +992,7 @@ function EcranCarnetDetail() {
       /* RESUME : la note, puis « A retenir » a la suite, separe discretement - aucun des deux n est cache */
       sectionHJ("resL", [
         etiqHJ(T("Résumé de la séance", "Session summary", "Resumen de la sesión", "Riepilogo della sessione", "稽古のまとめ", "Zusammenfassung der Einheit", "ملخّص الحصة", "训练小结", "Samenvatting van de training", "Resumo da sessão", "Sammanfattning av ridpasset", "Итоги тренировки", "Podsumowanie treningu", "훈련 요약")),
-        noteL ? h("div", { key: "n", dir: "auto", style: { fontFamily: M, fontSize: 16, lineHeight: 1.62, color: "#ECE8E0", whiteSpace: "pre-wrap", overflowWrap: "anywhere" } }, noteL) : null,
+        noteL ? h("div", { key: "n", dir: "auto", style: { fontFamily: M, fontSize: 16, lineHeight: 1.62, color: "#ECE8E0", whiteSpace: "pre-wrap", overflowWrap: "anywhere" } }, (typeof hypeNoteRendu === "function") ? hypeNoteRendu(h, noteL) : noteL) : null,
         arL ? h("div", { key: "a", style: noteL ? { marginTop: 18, paddingTop: 14, borderTop: "1px solid " + LIGNE } : {} },
           etiqHJ(T("À retenir", "To remember", "Para recordar", "Da ricordare", "覚えておくこと", "Merken", "للتذكر", "要点", "Om te onthouden", "Para lembrar", "Att komma ihåg", "Запомнить", "Do zapamiętania", "기억할 점")),
           h("div", { dir: "auto", style: { fontFamily: M, fontSize: 15.5, lineHeight: 1.6, color: "#ECE8E0", whiteSpace: "pre-wrap", overflowWrap: "anywhere" } }, arL)) : null,
@@ -910,7 +1037,7 @@ function EcranCarnetDetail() {
   }
   return h("div", { dir: (ctx.langue === "ar") ? "rtl" : undefined, lang: ctx.langue || undefined, style: { minHeight: "100vh", background: HJ.fond, color: HJ.ivoire, paddingBottom: 8 } },
     /* 27/09 (408) : barre d onglets cachee sur cet ecran ; date iOS alignee et bornee. */
-    h("style", null, "body.hb-sans-barre .hype-barre-onglets{display:none !important} .hj-date{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%} .hj-date::-webkit-date-and-time-value{text-align:left;min-height:1.3em} .hj-date::-webkit-calendar-picker-indicator{filter:invert(0.8)} .hj-rail::-webkit-scrollbar{display:none} .hj-in::placeholder,.hj-ta::placeholder{color:rgba(242,237,228,0.42);opacity:1;font-size:14px}"),
+    h("style", null, "body.hb-sans-barre .hype-barre-onglets{display:none !important} .hj-date{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%} .hj-date::-webkit-date-and-time-value{text-align:left;min-height:1.3em} .hj-date::-webkit-calendar-picker-indicator{filter:invert(0.8)} .hj-rail::-webkit-scrollbar{display:none} .hj-in::placeholder,.hj-ta::placeholder{color:rgba(242,237,228,0.42);opacity:1;font-size:14px} .hj-ed.hj-vide:before{content:attr(data-ph);color:rgba(242,237,228,0.42);font-size:14px;white-space:pre-line;pointer-events:none;display:block} .hj-ed a{color:#D6B676;text-decoration:underline;text-underline-offset:3px} .hj-ed font[size=\"2\"]{font-size:0.82em} .hj-ed font[size=\"5\"]{font-size:1.3em;line-height:1.35}"),
     /* 27/09 (421) : le bandeau photographique, en edition COMME en lecture. */
     bandeauHJ,
     corps,

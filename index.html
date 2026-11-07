@@ -2260,6 +2260,59 @@ function dernierVuHype(last, tr) {
     return null;
   } catch (e) { return null; }
 }
+/* 08/11 (demande de Lore, Blandine « fais tout ce que tu peux ») — MISE EN FORME DU RÉSUMÉ D'UNE SÉANCE DU CARNET.
+   Le texte reste du texte simple en base (carnet_seances.note) avec de petites marques : [b]gras[/b], [i]italique[/i],
+   [u]souligné[/u], [s]barré[/s], [grand]…[/grand], [petit]…[/petit], [lien=https://…]texte[/lien]. L'éditeur (page séance)
+   les pose sans qu'on les voie. hypeNoteSansMarques : texte nu (aperçus, cartes) ; hypeNoteRendu : texte mis en forme
+   (liens cliquables, y compris une adresse collée telle quelle, ex. une vidéo Blooming Riders). */
+var HYPE_NOTE_MARQUES = /\[(\/?)(b|i|u|s|grand|petit)\]|\[lien=([^\]\s]+)\]([\s\S]*?)\[\/lien\]/g;
+function hypeNoteSansMarques(t) {
+  return String(t || "").replace(/\[lien=([^\]\s]+)\]([\s\S]*?)\[\/lien\]/g, function (m, u, x) { return String(x || "").replace(/\[\/?(b|i|u|s|grand|petit)\]/g, "") || u; })
+    .replace(/\[\/?(b|i|u|s|grand|petit)\]/g, "");
+}
+function hypeLienSur(u) {
+  u = String(u || "").trim();
+  if (!u) return "";
+  if (!/^https?:\/\//i.test(u)) { if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return ""; u = "https://" + u; }
+  return u;
+}
+function hypeNoteRendu(h, t, opts) {
+  opts = opts || {};
+  var src = String(t || ""), out = [], k = 0, last = 0, cnt = { b: 0, i: 0, u: 0, s: 0, grand: 0, petit: 0 }, m;
+  var stLien = Object.assign({ color: "#D6B676", textDecoration: "underline", textUnderlineOffset: 3, overflowWrap: "anywhere" }, opts.styleLien || {});
+  function style() {
+    var st = {};
+    if (cnt.b) st.fontWeight = 700;
+    if (cnt.i) st.fontStyle = "italic";
+    var dec = []; if (cnt.u) dec.push("underline"); if (cnt.s) dec.push("line-through"); if (dec.length) st.textDecoration = dec.join(" ");
+    if (cnt.grand > cnt.petit) { st.fontSize = "1.3em"; st.lineHeight = 1.35; } else if (cnt.petit > cnt.grand) st.fontSize = "0.82em";
+    return st;
+  }
+  function lien(u, x) {
+    var sur = hypeLienSur(u);
+    if (!sur) return h("span", { key: "x" + (k++) }, x);
+    return h("a", { key: "l" + (k++), href: sur, target: "_blank", rel: "noopener noreferrer", onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } }, style: Object.assign({}, style(), stLien) }, x || sur.replace(/^https?:\/\/(www\.)?/i, ""));
+  }
+  function texte(x) {
+    if (!x) return;
+    var re = /(https?:\/\/[^\s\]]+)/gi, d = 0, mm, st = style();
+    while ((mm = re.exec(x))) {
+      if (mm.index > d) out.push(h("span", { key: "t" + (k++), style: st }, x.slice(d, mm.index)));
+      var u = mm[1].replace(/[.,;:!?)]+$/, ""); out.push(lien(u, u.replace(/^https?:\/\/(www\.)?/i, ""))); d = mm.index + u.length; re.lastIndex = d;
+    }
+    if (d < x.length) out.push(h("span", { key: "t" + (k++), style: st }, x.slice(d)));
+  }
+  HYPE_NOTE_MARQUES.lastIndex = 0;
+  while ((m = HYPE_NOTE_MARQUES.exec(src))) {
+    texte(src.slice(last, m.index));
+    if (m[3] !== undefined) out.push(lien(m[3], String(m[4] || "").replace(/\[\/?(b|i|u|s|grand|petit)\]/g, "")));
+    else if (m[1]) { if (cnt[m[2]] > 0) cnt[m[2]]--; }
+    else cnt[m[2]]++;
+    last = HYPE_NOTE_MARQUES.lastIndex;
+  }
+  texte(src.slice(last));
+  return out;
+}
 /* 07/11 00h23 (Blandine : « ajoute à la page Versailles les fonctionnalités de la page rendez-vous, et que quand quelqu'un clique sur
    l'événement à venir ou passé il arrive sur cette page-là ») : un CONCOURS s'ouvre sur la fiche du Centre de compétition (qui contient
    désormais aussi le fil, les photos et les résultats de la page du rendez-vous). Tant que le Centre est réservé à la modératrice
@@ -39399,7 +39452,7 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=10", "HypeTe
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=8", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=28", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=28", "HypeGestion", "Registre");
@@ -39437,13 +39490,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=48", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=49", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
@@ -44811,7 +44864,7 @@ function VueConseilCarnet(props) {
                       h("div", { style: { fontFamily: C, fontSize: 15.5, color: "#F4F7FA", lineHeight: 1.2 } }, enClairC(se.date_seance)),
                       [se.cheval_nom || null, se.discipline || null].filter(function (v) { return !!v; }).length
                         ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: TQL, marginTop: 3 } }, [se.cheval_nom || null, se.discipline || null].filter(function (v) { return !!v; }).join(" \u00b7 ")) : null,
-                      se.note ? h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(220,227,232,0.70)", marginTop: 4, lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, se.note) : null),
+                      se.note ? h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(220,227,232,0.70)", marginTop: 4, lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, hypeNoteSansMarques(se.note)) : null),
                     h("span", { style: { flex: "0 0 auto", color: TQL, fontSize: 16, paddingTop: 14 } }, "\u203a"));
                 }))
             : h("div", { style: { padding: "20px 16px", borderRadius: 16, border: "1px dashed rgba(255,255,255,0.12)", fontFamily: M, fontSize: 12.5, color: "#7B848E", lineHeight: 1.6, textAlign: "center" } },
@@ -44983,7 +45036,7 @@ async function hypeCarnetRattraperVideos() {
   return bilan;
 }
 
-const EcranCarnetDetail = hypeEcranDiffere("hype-ecran-carnet-detail.js?v=2", "HypeCarnetDetail", "CarnetDetail");
+const EcranCarnetDetail = hypeEcranDiffere("hype-ecran-carnet-detail.js?v=3", "HypeCarnetDetail", "CarnetDetail");
 
 /* 15/09 (194) : LE COMPOSANT `EcranApprentissage` A ETE SUPPRIME ICI, avec son accord
    explicite. Cree par erreur au 181, sa route etait debranchee depuis le 185 : il n etait
@@ -45177,7 +45230,7 @@ function EcranMonApprentissage() {
       ouvert ? h("div", { className: "hype-apprentissage-apercu" },
         h("div", { className: "d" }, enClair(seance.date_seance)),
         sous ? h("div", { className: "s" }, sous) : null,
-        seance.note ? h("div", { className: "n" }, String(seance.note)) : null) : null);
+        seance.note ? h("div", { className: "n" }, hypeNoteSansMarques(seance.note)) : null) : null);
   }
 
   /* --- Linguae --- */
@@ -45270,7 +45323,7 @@ function EcranMonApprentissage() {
     panOuvert ? h(PanneauConseilsHB, { depuis: "apprentissage", onFermer: function () { setPanOuvert(false); } }) : null);
 }
 
-const EcranMonCarnet = hypeEcranDiffere("hype-ecran-mon-carnet.js?v=2", "HypeMonCarnet", "MonCarnet");
+const EcranMonCarnet = hypeEcranDiffere("hype-ecran-mon-carnet.js?v=3", "HypeMonCarnet", "MonCarnet");
 
 const EcranEvenementPasse = hypeEcranDiffere("hype-ecran-evenement-passe.js?v=4", "HypeEvtPasse", "EvtPasse");
 

@@ -285,7 +285,7 @@ function EcranMonCarnet() {
     var dt = jcDate(se.date_seance);
     var disc = jcLibelleSeance(se);
     var aRet = String(se.a_retenir || "").trim();
-    var noteC = String(se.note || "").trim();
+    var noteC = ((typeof hypeNoteSansMarques === "function") ? hypeNoteSansMarques(se.note) : String(se.note || "")).trim();   /* 08/11 : sans les marques de mise en forme */
     var ress = jcRessenti(se.ressenti_cle);
     return h("div", { key: se.id, role: "button",
       onClick: function () {

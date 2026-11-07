@@ -898,11 +898,19 @@ function EcranConcours() {
           try {
             var re = await supa.from("concours_engagements").select("*").eq("agenda_id", idEv).eq("cavalier_id", u.id);
             var mes = (re && !re.error && re.data) || [];
+            /* 08/11 : ses tours 1 à 5 (concours_tours) ; sans tours enregistrés, les colonnes 1 et 2 comme avant */
+            if (mes.length) {
+              try {
+                var rTm = await supa.from("concours_tours").select("*").in("engagement_id", mes.map(function (e) { return e.id; })).order("numero", { ascending: true });
+                var parEm = {}; ((rTm && !rTm.error && rTm.data) || []).forEach(function (t) { (parEm[t.engagement_id] = parEm[t.engagement_id] || []).push(t); });
+                mes = mes.map(function (e) { var lt = parEm[e.id] || []; return Object.assign({}, e, { tours: hsToursDepuis(e, lt), __toursIds: lt.map(function (t) { return t.cheval_id; }).filter(Boolean) }); });
+              } catch (eTm) { }
+            }
             if (vif) setMesEng(mes);
             /* 04/11 (étape 3) : consignes de ses chevaux engagés (cheval_consignes, mêmes droits que Santé)
                et l'historique du couple (resultats : elle + ce cheval). Une lecture refusée = section absente. */
             var idsCh = [];
-            mes.forEach(function (e) { [e.cheval1_id, e.cheval2_id].forEach(function (c) { if (c && idsCh.indexOf(c) === -1) idsCh.push(c); }); });
+            mes.forEach(function (e) { [e.cheval1_id, e.cheval2_id].concat(e.__toursIds || []).forEach(function (c) { if (c && idsCh.indexOf(c) === -1) idsCh.push(c); }); });
             if (idsCh.length) {
               try {
                 var rcs = await supa.from("cheval_consignes").select("cheval_id, enrenement, materiel, soins").in("cheval_id", idsCh);
@@ -997,8 +1005,7 @@ function EcranConcours() {
       mesEng.length ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Ma journée"))),
         h("div", { className: "hs-carte" }, mesEng.reduce(function (acc, e) {
-          if (e.epreuve1 || e.cheval1_nom) acc.push({ ep: e.epreuve1, ch: e.cheval1_nom, hp: e.passage1, pi: e.piste1, maj: e.passage_maj_le });
-          if (e.epreuve2 || e.cheval2_nom) acc.push({ ep: e.epreuve2, ch: e.cheval2_nom, hp: e.passage2, pi: e.piste2, maj: e.passage_maj_le });
+          (e.tours || hsToursDepuis(e, null)).forEach(function (t) { acc.push({ ep: t.epreuve, ch: t.cheval_nom, hp: t.passage, pi: t.piste, maj: e.passage_maj_le }); });
           return acc;
         }, []).sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); }).map(function (x, i) {
           var recent = x.maj && (Date.now() - new Date(x.maj).getTime() < 36 * 3600 * 1000);
@@ -1199,8 +1206,9 @@ function hsNomEpreuve(t) {
   return String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim();
 }
 /* 07/11/2026 23h20 (Blandine, choix « C » : une ligne par tour) — les tours d'un engagement sont rangés dans concours_tours
-   (numéro 1 à 5). Tant que la feuille SEP, le jour J, la liste du van et Ma saison lisent encore les colonnes « tour 1 / tour 2 »
-   de concours_engagements, la page Engagements y recopie les deux premiers tours (hsMiroir). */
+   (numéro 1 à 5). La page Engagements recopie encore les deux premiers tours dans les colonnes « tour 1 / tour 2 » de
+   concours_engagements (hsMiroir). 08/11 : Jour J, la fiche du concours (Ma journée) et le dossier lisent les 5 tours ;
+   la liste du van ne lit que le cheval du 1er tour (une liste par cheval) ; Ma saison ne lit pas les engagements. */
 function hsToursDepuis(l, liste) {
   if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
   var o = [];
@@ -3368,6 +3376,8 @@ function EcranDossierConcours() {
         if (vif) setLicences(L.map(function (l) { return { nom: l.nom, licence: l.licence, moi: !!(u && l.cavalier_id === u.id) }; }));
         var ch = {};
         L.forEach(function (l) { if (l.cheval1_id) ch[l.cheval1_id] = l.cheval1_nom; if (l.cheval2_id) ch[l.cheval2_id] = l.cheval2_nom; });
+        /* 08/11 : les chevaux des tours 3 à 5 (concours_tours) aussi */
+        try { var rTd = await supa.from("concours_tours").select("cheval_id, cheval_nom").eq("agenda_id", idEv); ((rTd && !rTd.error && rTd.data) || []).forEach(function (t) { if (t.cheval_id && !ch[t.cheval_id]) ch[t.cheval_id] = t.cheval_nom; }); } catch (eTd) { }
         var ids = Object.keys(ch), res = [];
         if (ids.length) {
           var rs = await supa.from("soins_cheval").select("cheval_id, titre, date_intervention, date_prochaine").eq("type", "vaccin").in("cheval_id", ids).order("date_intervention", { ascending: false });
