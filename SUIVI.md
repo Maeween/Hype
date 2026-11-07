@@ -19508,6 +19508,13 @@ Fichiers à publier :
 | SUIVI.md | racine | cette entrée |
 - Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
 
+## 08/11/2026 00h35 — Pages Google/Bing des fonctions → VRAIE page de l'appli (build 20261108-0135) — PRÊT, NON publié
+Blandine (00h03) : « fais ça sur la totalité des pages que Google ou Bing [voient] ».
+- FAIT (56 pages) : accueil de chaque langue /<langue>/ → écran d'accueil ; /<langue>/ia-equestre/ → Hey Baby ; /<langue>/reprises-dressage/ → Réviser mes reprises ; /<langue>/plan-lamotte-beuvron/ → page Lamotte (Generali Open de France). Fonctions gratuites : pas de flou. Testé en visiteuse sans compte.
+- netlify/edge-functions/cours-route.ts (adresses + cibles « ecran-… »), index.html (cibles « ecran-dashboard/assistant/reprises/lamotte »), les 56 pages (repères).
+- RESTE, attend Blandine (il faut un vrai cheval / une vraie écurie à montrer) : fiche-cheval, photos-souvenirs, concours-resultats, sante-cheval, gestion-ecurie (8 à 14 langues chacune) ; puis les pages /fr/centres-equestres/ (annuaire par département).
+- Déjà en vraie page : Galops, lexique, prépas, /cheval/, /ecurie/, /evenement/. Restent des pages à part, volontairement : association, mentions légales, CGV.
+
 ## 08/11/2026 00h20 — Prépas : les pages Google/Bing ouvrent la VRAIE page, la suite floutée (build 20261108-0120) — PUBLIÉ le 08/11 00h10 (Blandine : « Ok c'est mieux »)
 Blandine (23h57) : « toutes tes pages de présentation on avait dit que c'était pas possible […] les gens devaient voir le début de la vraie page puis qu'elle devienne floutée en proposant abonnement » + « Ça ressemble à rien ».
 - netlify/edge-functions/cours-route.ts : les 56 adresses /<langue>/prepa-…-equitation/ passent par le même aiguillage que les Galops → la page Hype normale s'ouvre sur la vraie page prépa (cible « prepa-AE/BP/DE/DES »). Google garde le texte caché dans la page.
