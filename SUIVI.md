@@ -19659,3 +19659,8 @@ Fichiers : SUIVI.md.
 - Tests réels en base sous 3 identités (sans compte, cavalière, compte extérieur), écriture essayée puis annulée : engagements, tours, feuille, licences bien protégés ; vidéos de la Team (5 non publiques) visibles par un compte extérieur.
 - Aucun code, aucune donnée, aucune règle de sécurité modifiés.
 Fichiers : SUIVI.md.
+
+## 08/11/2026 01h00 — PRÊT, NON PUBLIÉ (URGENT) — Page Cavalier en panne (« Un caillou dans le sabot »)
+- Signalé par Blandine 00h55 (capture) : écran moncavalier, « ReferenceError: Can't find variable: h », PzSpectre (hype-ecran-cavalier.js:24).
+- Cause : le dégradé « Ma couleur à moi » (Personnaliser, build 20261108-0335, autre conversation) utilise h sans le définir.
+- Correction : une ligne ajoutée dans PzSpectre (var h = React.createElement). hype-ecran-cavalier.js v=18. Rien d'autre.

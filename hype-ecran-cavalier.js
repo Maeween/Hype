@@ -6,6 +6,7 @@
    Personnaliser > Couleur et > Fond. Bornes de lisibilite : une couleur d accent reste assez claire sur le noir (52-85 %),
    un fond reste sombre (3-17 %) ; la derniere bande a droite donne les gris. Renvoie [r, g, b] a chaque toucher. */
 function PzSpectre(props) {
+  var h = React.createElement;   /* 08/11 01h00 : manquait (« Can't find variable: h », page Cavalier > Personnaliser en panne) */
   var ref = React.useRef(null);
   var _m = React.useState(null), mark = _m[0], setMark = _m[1];
   var fond = props.mode === "fond";
