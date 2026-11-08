@@ -1159,9 +1159,6 @@ function EcranConcours() {
 
   /* ── PASSAGES ── */
   var blocPassages = [
-    gestion ? h("div", { key: "outils", className: "hs-duo", style: { marginTop: 0, marginBottom: 12 } },
-      h("button", { type: "button", className: "hs-btn", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")),
-      h("button", { type: "button", className: "hs-btn", onClick: ouvrirEngagements }, F("Engagements"))) : null,
     mesLignes.length ? h("div", { key: "moi" },
       h("div", { className: "hc-sous" }, F("Ma journée")),
       h("div", { className: "hs-carte" }, mesLignes.map(function (x, i) {
@@ -1254,7 +1251,7 @@ function EcranConcours() {
           vg ? h("img", { src: vg, alt: "", loading: "lazy" }) : h("div", { className: "hc-vid-vide" }),
           h("span", null, "▶ " + (v.pseudo || "")));
       })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Pas encore de vidéo. Ajoute-la sur le fil du concours : ta coach pourra la commenter seconde par seconde."))) : null,
-    voir("equipe") && (typeof HypeVideosEquipeConcours === "function" && idEv) ? h(HypeVideosEquipeConcours, { key: "vq" + idEv, agendaId: idEv }) : null,
+    voir("equipe") && (typeof HypeVideosEquipeConcours === "function" && idEv) ? h("div", { key: "vqw", className: "hc-vq" }, h(HypeVideosEquipeConcours, { key: "vq" + idEv, agendaId: idEv })) : null,
     voir("photos") ? h("div", { key: "fil", id: "hs-fil" },
       h("div", { className: "hc-sous" }, fini ? F("Photos, résultats et commentaires") : F("Photos et commentaires")),
       (function () { try { window.__evPasse = null; window.__evPasseId = idEv; } catch (eW) { } return null; })(),
@@ -1300,9 +1297,10 @@ function EcranConcours() {
           }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Les horaires ne sont pas encore indiqués.")))),
           ev.description ? h("div", { className: "hs-texte", style: { borderTop: "1px solid rgba(243,238,228,.07)" } }, ev.description) : null) : null),
       /* les deux boutons */
-      fini ? h("div", { className: "hs-vide", style: { marginTop: 12 } }, F("Ce concours est terminé.")) : h("div", { className: "hc-actions" },
-        h("button", { type: "button", className: "hc-act", disabled: occupe, onClick: basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
+      h("div", { className: "hc-actions" },
+        h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
         h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van"))),
+      fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null,
       (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
       msg ? h("div", { className: "hs-msg" }, msg) : null,
       (!fini && msgPrep) ? h("div", { className: "hs-msg" }, msgPrep) : null,
@@ -1378,8 +1376,8 @@ var HC_CSS = [
   ".hc .hc-act{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:rgba(7,10,8,.35);color:#F3EEE4;font-size:14px;letter-spacing:.01em}",
   ".hc .hc-act[disabled]{opacity:.5}",
   ".hc .hc-partie{border-bottom:1px solid rgba(201,166,107,.18)}",
-  ".hc .hc-p-tete{display:flex;align-items:center;gap:10px;width:100%;min-height:54px;background:none;border:none;color:#F3EEE4;padding:6px 2px;text-align:start}",
-  ".hc .hc-p-tete b{flex:1;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:21px}",
+  ".hc .hc-p-tete{display:flex;align-items:center;gap:10px;width:100%;min-height:46px;background:none;border:none;color:#F3EEE4;padding:6px 2px;text-align:start}",
+  ".hc .hc-p-tete b{flex:1;font-family:'Montserrat',sans-serif;font-weight:500;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#C9A66B}",   /* 09/11 : titres légers, les cartes du haut sont les accès principaux */
   ".hc .hc-p-tete i{font-style:normal;color:#C9A66B;font-size:20px;width:20px;text-align:center}",
   ".hc .hc-nb{font-size:11.5px;color:rgba(243,238,228,.6)}",
   ".hc .hc-p-corps{padding:2px 0 18px}",
@@ -1401,6 +1399,11 @@ var HC_CSS = [
   ".hc .hc-vid{position:relative;padding:0;border:1px solid rgba(201,166,107,.22);border-radius:11px;overflow:hidden;background:#0c1011}",
   ".hc .hc-vid img{display:block;width:100%;height:auto}",
   ".hc .hc-vid-vide{aspect-ratio:16/9}",
+  ".hc{padding-bottom:calc(env(safe-area-inset-bottom) + 130px)!important}",   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
+  ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
+  ".hc .hc-vq .hs-sec{display:none}",   /* le titre est déjà dans le filtre et la partie Médias */
+  ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:8px}",
+  ".hc .hc-act[disabled]{opacity:.45}",
   ".hc .hc-vid span{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:8px;background:rgba(7,10,8,.72);color:#F3EEE4}",
   "@media (min-width:768px){.hc .hc-titre{bottom:64px}.hc .hc-cartes{gap:12px}.hc .hc-photo img{max-height:62vh}}"
 ].join("\n");
