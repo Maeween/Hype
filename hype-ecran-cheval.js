@@ -3160,6 +3160,24 @@ async function supprimerSouvenirOuvert() {
       })(),
 
       h("div", { className: "scroll" },
+        /* 08/11 (Blandine : « sur la page d un cheval, j aimerais qu on puisse ajouter son ecurie », choix 2) : l ecurie du cheval
+           VISIBLE sous le nom. Vide -> bouton detoure « + Ajouter son ecurie » ; remplie -> son nom avec un crayon. Peuvent agir :
+           proprietaire, cavalieres rattachees (« Ajouter a mes chevaux ») et moderatrices (= set_cheval_club en base). Les autres
+           voient seulement le nom. Ouvre la feuille existante FeuilleEcurieCheval. */
+        (function () {
+          if (panneau === "souvenirs" || !chevalDyn) return null;
+          var clubE = String(chevalDyn.club || "").trim(); if (clubE === "__perso__") clubE = "";
+          var peutE = !!(c.dbId && moi && (chevalDyn.ownerId === moi.id || estLieFiche || (typeof estModerateurHype === "function" && estModerateurHype(moi))));
+          if (!clubE && !peutE) return null;
+          var styleE = { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 34, padding: "6px 15px", borderRadius: 999, background: "transparent", fontFamily: "'Montserrat',sans-serif", fontSize: 12, cursor: peutE ? "pointer" : "default", maxWidth: "100%" };
+          return h("div", { style: { display: "flex", justifyContent: "center", margin: "8px 16px 0" } },
+            clubE
+              ? h(peutE ? "button" : "div", { type: peutE ? "button" : undefined, onClick: peutE ? function () { setEcurieFicheOuverte(true); } : undefined, "aria-label": peutE ? T("Changer son écurie", "Change its stable", "Cambiar su cuadra", "Cambia la sua scuderia", "所属厩舎を変更", "Stall ändern", "تغيير إسطبله", "更改它的马厩", "Stal wijzigen", "Mudar a cocheira", "Byt stall", "Изменить конюшню", "Zmień stajnię", "마구간 변경") : undefined, style: Object.assign({}, styleE, { border: "none", color: "#E8E1D4", padding: "4px 8px" }) },
+                  h("span", { "aria-hidden": "true" }, "\ud83c\udfe0"),
+                  h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, clubE),
+                  peutE ? h("span", { "aria-hidden": "true", style: { color: "#D6C4A1", fontSize: 13 } }, "\u270e") : null)
+              : h("button", { type: "button", onClick: function () { setEcurieFicheOuverte(true); }, style: Object.assign({}, styleE, { border: "1px solid rgba(214,196,161,0.7)", color: "#D6C4A1" }) }, "\uff0b " + T("Ajouter son écurie", "Add its stable", "Añadir su cuadra", "Aggiungi la sua scuderia", "所属厩舎を追加", "Seinen Stall hinzufügen", "إضافة إسطبله", "添加它的马厩", "Stal toevoegen", "Adicionar a cocheira", "Lägg till stall", "Добавить конюшню", "Dodaj stajnię", "마구간 추가")));
+        })(),
         /* 13/10 (1081) bouton sous le nom : meme geste et memes droits qu avant (peutLierFiche / basculerLienFiche), habille comme la V2
            (capsule a contour champagne, coeur) ; masque sur la page Histoire comme avant. */
         (!peutLierFiche() || panneau === "souvenirs") ? null : h("div", { style: { display: "flex", justifyContent: "center", margin: "6px 16px 2px" } },
@@ -5463,7 +5481,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         /* 11/09 (15) — ZEUS : l'ecurie du cheval, en UN tap depuis ce menu (avant : cachee dans
            « Modifier la fiche », et seulement si la personne connectee avait deux ecuries).
            Proprietaire OU moderatrice, comme set_cheval_club en base. Ouvre FeuilleEcurieCheval. */
-        (c.dbId && moi && chevalDyn && (chevalDyn.ownerId === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi)))) ? h("button", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); setEcurieFicheOuverte(true); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#F3EEE4", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
+        (c.dbId && moi && chevalDyn && (chevalDyn.ownerId === moi.id || estLieFiche /* 08/11 choix 2 */ || (typeof estModerateurHype === "function" && estModerateurHype(moi)))) ? h("button", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); setEcurieFicheOuverte(true); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#F3EEE4", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
           "\ud83c\udfe0 " + T("\u00c9curie du cheval", "Horse's stable", "Cuadra del caballo", "Scuderia del cavallo", "\u6240\u5c5e\u53a9\u820e", "Stall des Pferds", "\u0625\u0633\u0637\u0628\u0644 \u0627\u0644\u062d\u0635\u0627\u0646", "马的马厩", "Stal van het paard", "Cocheira do cavalo", "Hästens stall", "Конюшня лошади", "Stajnia konia", "말의 마구간") + " \u00b7 " + ((chevalDyn && chevalDyn.club) ? String(chevalDyn.club) : T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine", "\u0644\u0627 \u0634\u064a\u0621", "无", "Geen", "Nenhuma", "Inget", "Нет", "Żadna", "없음"))) : null,
         h("button", { onClick: function () { setMenuFiche(false); if (refPhotoCh.current) refPhotoCh.current.click(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#F3EEE4", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83d\udcf7 " + T("Changer la photo", "Change photo", "Cambiar foto", "Cambia foto", "\u5199\u771f\u3092\u5909\u66f4", "Foto \u00e4ndern", "\u062a\u063a\u064a\u064a\u0631 \u0627\u0644\u0635\u0648\u0631\u0629", "更换照片", "Foto wijzigen", "Trocar a foto", "Byt foto", "Сменить фото", "Zmień zdjęcie", "사진 변경")),
           h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#F3EEE4", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden", "\u0636\u0628\u0637 / \u0642\u0635 \u0627\u0644\u0635\u0648\u0631\u0629", "调整 / 裁剪照片", "Foto bijstellen / bijsnijden", "Ajustar / recortar a foto", "Justera / beskär fotot", "Настроить / обрезать фото", "Dopasuj / przytnij zdjęcie", "사진 조정 / 자르기")),
