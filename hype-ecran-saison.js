@@ -25,6 +25,7 @@ var HS_TR_BRUT = {
   "demain": ["tomorrow", "mañana", "domani", "明日", "morgen", "غدا", "明天", "morgen", "amanhã", "i morgon", "завтра", "jutro", "내일"],
   "dans ": ["in ", "en ", "tra ", "あと", "in ", "بعد ", "还有", "over ", "em ", "om ", "через ", "za ", ""],
   "en cours": ["ongoing", "en curso", "in corso", "開催中", "läuft", "جار", "进行中", "bezig", "em andamento", "pågår", "идёт", "trwa", "진행 중"],
+  "Cavalier non renseigné": ["Rider not specified","Jinete sin indicar","Cavaliere non indicato","騎手未入力","Reiter nicht angegeben","فارس غير محدّد","骑手未填写","Ruiter niet ingevuld","Cavaleiro não indicado","Ryttare ej angiven","Всадник не указан","Jeździec nie podany","라이더 미입력"],
   "Retour": ["Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"],
   "Ma saison": ["My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"],
   "L’équipe": ["The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipe", "Laget", "Команда", "Drużyna", "팀"],
@@ -1147,7 +1148,7 @@ function EcranConcours() {
     return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans"), onClick: action },
       h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); }, onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }),
       cle === "medias" ? h("span", { className: "hc-lecture", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
-      h("span", { className: "hc-c-pied" }, hcIcone(icone), h("b", null, titre)));
+      h("span", { className: "hc-c-pied" }, h("b", null, titre)));   /* 09/11 : plus d’icône, le titre seul en bas de la photo */
   }
   function partie(idP, titre, nb, enfants, ouvertDefaut) {
     var ouv = ouvert[idP] === undefined ? !!ouvertDefaut : ouvert[idP];
@@ -1157,57 +1158,63 @@ function EcranConcours() {
       ouv ? h("div", { className: "hc-p-corps" }, enfants) : null);
   }
 
-  /* ── PASSAGES ── */
+  /* 09/11 (cahier « refinement ») : avatar = vraie photo de profil, sinon initiale sobre (plus l'illustration répétée) */
+  function avatarHc(p, t) {
+    var u = p && p.avatar_url ? String(p.avatar_url) : "";
+    var src = u ? ((u.charAt(0) === "@") ? ((typeof CAV_IMGS !== "undefined" && CAV_IMGS[u.slice(1)]) || "") : u) : "";
+    var nom = (p && p.pseudo) || "";
+    return src ? h("img", { className: "hc-av", src: src, alt: "", style: t ? { width: t, height: t } : null })
+      : h("span", { className: "hc-av hc-av-ini", style: t ? { width: t, height: t } : null }, nom ? nom.charAt(0).toUpperCase() : "·");
+  }
+  function nomP(p) { return (p && p.pseudo) || F("Cavalier non renseigné"); }
+  var resDirect = {}; ((enDirect && enDirect.lignes) || []).forEach(function (d) { if (d.clt) resDirect[hsNomEpreuve(d.epreuve || "")] = d.clt + (d.clt === "1" ? "re" : "e"); });
+  /* ── PASSAGES : une ligne par couple, rangée par épreuve ; « Ma journée » seulement quand la liste de l'équipe n'est pas lisible ── */
   var blocPassages = [
-    mesLignes.length ? h("div", { key: "moi" },
-      h("div", { className: "hc-sous" }, F("Ma journée")),
-      h("div", { className: "hs-carte" }, mesLignes.map(function (x, i) {
+    (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
+      mesLignes.map(function (x, i) {
         var recent = x.maj && (Date.now() - new Date(x.maj).getTime() < 36 * 3600 * 1000);
-        return h("div", { key: i, className: "hs-row" },
-          h("div", { className: "g" }, h("b", null, x.ep || F("Épreuve à venir")),
-            h("span", null, [x.ch ? F("avec ") + x.ch : "", x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
-            (x.hp && recent) ? h("span", { style: { color: "#C9A66B" } }, F("heure mise à jour par ta coach")) : null),
-          h("span", { className: "d" }, x.hp || F("heure à venir")));
-      }))) : null,
-    (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", { key: "direct" },
-      h("div", { className: "hc-sous" }, F("En direct"), h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
-      h("div", { className: "hs-carte" }, enDirect.lignes.map(function (d, i) {
-        var res = d.clt ? (d.clt + (d.clt === "1" ? "re" : "e") + (d.points !== "" ? " · " + d.points + " pt" : "") + (d.temps ? " · " + d.temps + " s" : "")) : "";
-        return h("div", { key: i, className: "hs-row" },
-          h("div", { className: "g" }, h("b", null, d.epreuve), h("span", null, [d.cheval, F("n° ") + d.ordre + F(" sur ") + d.engages, d.heure_estimee ? F("vers ") + d.heure_estimee : ""].filter(Boolean).join(" · "))),
-          h("span", { className: "d", style: { fontSize: 13 } }, res || F("à venir")));
-      })),
-      h("div", { className: "hs-note" }, F("Lu par Hype chez le chronométreur. Heure estimée, résultats provisoires pendant le concours."))) : null,
-    parEpreuve.length ? h("div", { key: "equipe" },
-      h("div", { className: "hc-sous" }, F("Toute l’équipe")),
-      parEpreuve.map(function (g, gi) {
-        return h("div", { key: gi, className: "hc-ep" },
-          h("div", { className: "hc-ep-t" }, h("b", null, g.ep), g.debut ? h("span", null, g.debut) : null),
-          g.l.map(function (p, i) {
-            var moiLa = moi && p.cavalier_id === moi.id;
-            return h("div", { key: i, className: "hc-pass" + (moiLa ? " moi" : "") },
-              h("span", { className: "hc-h" }, p.passage || "–"),
-              h("img", { src: hsPhotoProfil({ avatar_url: p.avatar_url, pseudo: p.pseudo }), alt: "" }),
-              h("div", { className: "hc-qui" }, h("b", null, p.pseudo || "?"), h("span", null, [p.cheval_nom, p.piste ? F("piste ") + p.piste : "", p.numero > 1 ? F("tour ") + p.numero : ""].filter(Boolean).join(" · "))));
-          }));
+        return h("div", { key: i, className: "hc-l" },
+          h("span", { className: "hc-h" }, x.hp || "–"),
+          h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")),
+            h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : "", (x.hp && recent) ? F("heure mise à jour par ta coach") : ""].filter(Boolean).join(" · "))));
       })) : null,
-    (!mesLignes.length && !parEpreuve.length && !(enDirect && enDirect.lignes && enDirect.lignes.length)) ? h("div", { key: "vide", className: "hs-vide" }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")) : null,
-    ev.lien_direct ? h("a", { key: "lien", className: "hs-btn", href: ev.lien_direct, target: "_blank", rel: "noopener", style: { textDecoration: "none", marginTop: 12 } }, F("Résultats en direct")) : null
+    parEpreuve.map(function (g, gi) {
+      return h("div", { key: "ep" + gi, className: "hc-liste" },
+        h("div", { className: "hc-ep-t" }, h("b", null, g.ep), h("span", null, [g.debut, (g.l[0] && g.l[0].piste) ? F("piste ") + g.l[0].piste : "", resDirect[g.ep] ? "" : ""].filter(Boolean).join(" · "))),
+        g.l.map(function (p, i) {
+          var moiLa = moi && p.cavalier_id === moi.id;
+          var res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
+          return h("div", { key: i, className: "hc-l" + (moiLa ? " moi" : "") },
+            h("span", { className: "hc-h" }, p.passage || "–"),
+            avatarHc(p),
+            h("div", { className: "hc-qui" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, p.numero > 1 ? F("tour ") + p.numero : ""].filter(Boolean).join(" · "))),
+            res ? h("span", { className: "hc-res" }, res) : null);
+        }));
+    }),
+    (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", { key: "direct", className: "hc-liste" },
+      h("div", { className: "hc-ep-t" }, h("b", null, F("En direct")), h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
+      enDirect.lignes.map(function (d, i) {
+        var res = d.clt ? (d.clt + (d.clt === "1" ? "re" : "e") + (d.points !== "" ? " · " + d.points + " pt" : "") + (d.temps ? " · " + d.temps + " s" : "")) : "";
+        return h("div", { key: i, className: "hc-l" },
+          h("span", { className: "hc-h" }, d.heure_estimee || "–"),
+          h("div", { className: "hc-qui" }, h("b", null, d.epreuve), h("span", null, [d.cheval, F("n° ") + d.ordre + F(" sur ") + d.engages].filter(Boolean).join(" · "))),
+          h("span", { className: "hc-res" }, res || F("à venir")));
+      }),
+      h("div", { className: "hs-note" }, F("Lu par Hype chez le chronométreur. Heure estimée, résultats provisoires pendant le concours."))) : null,
+    (!mesLignes.length && !parEpreuve.length && !(enDirect && enDirect.lignes && enDirect.lignes.length)) ? h("div", { key: "vide", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")) : null,
+    ev.lien_direct ? h("a", { key: "lien", className: "hc-lien-d", href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats en direct") + (rtl ? " ‹" : " ›")) : null
   ];
 
-  /* ── ÉQUIPE ── */
+  /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
+  var gens = [];
+  function personne(id, p) { var g = null; gens.forEach(function (x) { if (x.id === id) g = x; }); if (!g) { g = { id: id, p: p, ch: [] }; gens.push(g); } return g; }
+  couples.forEach(function (c) { var g = personne(c.p.cavalier_id || ("n:" + c.p.pseudo), c.p); if (c.p.cheval_nom && g.ch.indexOf(c.p.cheval_nom) === -1) g.ch.push(c.p.cheval_nom); });
+  (inscrits || []).forEach(function (p) { personne(p.id, p); });
   var blocEquipe = [
-    inscrits && inscrits.length ? h("div", { key: "ins" },
-      h("div", { className: "hc-sous" }, inscrits.length + (inscrits.length > 1 ? F(" cavaliers participent") : F(" cavalier participe"))),
-      h("div", { className: "hs-av" }, inscrits.map(function (p) { return h("span", { key: p.id }, h("img", { src: hsPhotoProfil(p), alt: "" }), p.pseudo || "?"); }))) : null,
-    couples.length ? h("div", { key: "cpl" },
-      h("div", { className: "hc-sous" }, F("Les couples engagés")),
-      h("div", { className: "hs-carte" }, couples.map(function (c, i) {
-        return h("div", { key: i, className: "hs-row" },
-          h("img", { src: hsPhotoProfil({ avatar_url: c.p.avatar_url, pseudo: c.p.pseudo }), alt: "", style: { width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flex: "none" } }),
-          h("div", { className: "g" }, h("b", null, (c.p.pseudo || "?") + (c.p.cheval_nom ? " · " + c.p.cheval_nom : "")), h("span", null, c.ep.join(" · "))));
-      }))) : null,
-    (!(inscrits && inscrits.length) && !couples.length) ? h("div", { key: "vide", className: "hs-vide" }, F("Personne n’est encore inscrit.")) : null
+    gens.length ? h("div", { key: "g", className: "hc-liste" }, gens.map(function (g, i) {
+      return h("div", { key: i, className: "hc-l" }, avatarHc(g.p, 30),
+        h("div", { className: "hc-qui" }, h("b", null, nomP(g.p)), g.ch.length ? h("span", null, g.ch.join(" · ")) : null));
+    })) : h("div", { key: "vide", className: "hs-note", style: { marginTop: 0 } }, F("Personne n’est encore inscrit."))
   ];
 
   /* ── MA PRÉPARATION ── */
@@ -1236,26 +1243,21 @@ function EcranConcours() {
       pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null) : null
   ];
 
-  /* ── MÉDIAS : filtres simples, une seule partie ── */
-  var filtres = [["tout", F("Tout")], ["parcours", F("Vidéos de parcours")], ["equipe", F("Vidéos de l’équipe")], ["photos", F("Photos et commentaires")]];
-  function voir(k) { return filtreM === "tout" || filtreM === k; }
+  /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
+     puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
-    h("div", { key: "f", className: "hc-filtres" }, filtres.map(function (f) { return h("button", { type: "button", key: f[0], className: filtreM === f[0] ? "on" : "", onClick: function () { setFiltreM(f[0]); } }, f[1]); })),
-    /* les vidéos de parcours sont aussi dans le fil (Photos et commentaires) : sous « Tout », on ne les montre qu'une fois, dans le fil ;
-       le filtre « Vidéos de parcours » garde l'accès au commentaire seconde par seconde */
-    filtreM === "parcours" ? h("div", { key: "vp" },
-      h("div", { className: "hc-sous" }, F("Vidéos de parcours"), h("button", { type: "button", className: "hs-lien", onClick: function () { setFiltreM("photos"); allerA("hc-medias"); } }, F("+ Ajouter"))),
-      videos.length ? h("div", { className: "hc-vids" }, videos.slice(0, 9).map(function (v, i) {
+    videos.length ? h("div", { key: "vp" },
+      h("div", { className: "hc-sous" }, F("Vidéos de parcours")),
+      h("div", { className: "hc-vids" }, videos.slice(0, 8).map(function (v, i) {
         var vg = hsVignetteVideo(v.media);
         return h("button", { type: "button", key: i, className: "hc-vid", onClick: function () { try { window.__videoParcours = { media: v.media, proprio: v.proprio, pseudo: v.pseudo, agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); } },
           vg ? h("img", { src: vg, alt: "", loading: "lazy" }) : h("div", { className: "hc-vid-vide" }),
           h("span", null, "▶ " + (v.pseudo || "")));
-      })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Pas encore de vidéo. Ajoute-la sur le fil du concours : ta coach pourra la commenter seconde par seconde."))) : null,
-    voir("equipe") && (typeof HypeVideosEquipeConcours === "function" && idEv) ? h("div", { key: "vqw", className: "hc-vq" }, h(HypeVideosEquipeConcours, { key: "vq" + idEv, agendaId: idEv })) : null,
-    voir("photos") ? h("div", { key: "fil", id: "hs-fil" },
-      h("div", { className: "hc-sous" }, fini ? F("Photos, résultats et commentaires") : F("Photos et commentaires")),
+      }))) : null,
+    (typeof HypeVideosEquipeConcours === "function" && idEv) ? h("div", { key: "vqw", className: "hc-vq" }, h(HypeVideosEquipeConcours, { key: "vq" + idEv, agendaId: idEv })) : null,
+    h("div", { key: "fil", id: "hs-fil" },
       (function () { try { window.__evPasse = null; window.__evPasseId = idEv; } catch (eW) { } return null; })(),
-      (typeof EcranEvenementPasse !== "undefined") ? h(EcranEvenementPasse, { key: "ep" + idEv, integre: true }) : null) : null
+      (typeof EcranEvenementPasse !== "undefined") ? h(EcranEvenementPasse, { key: "ep" + idEv, integre: true }) : null)
   ];
 
   /* ── DOSSIER DU CONCOURS ── */
@@ -1358,9 +1360,9 @@ var HC_CSS = [
   ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px}",
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
-  ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 2px 9px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.82) 60%)}",
+  ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 2px 8px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.62))}",
   ".hc .hc-carte.sans .hc-c-pied{top:0;justify-content:center;background:none}",
-  ".hc .hc-c-pied b{font-weight:500;font-size:clamp(10px,2.75vw,12.5px);color:#F3EEE4;letter-spacing:-.15px;white-space:nowrap}",
+  ".hc .hc-c-pied b{font-weight:500;font-size:clamp(9.5px,2.55vw,12.5px);color:#F3EEE4;letter-spacing:-.2px;white-space:nowrap}",
   ".hc .hc-lecture{position:absolute;top:22%;left:50%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:rgba(7,10,8,.6);border:1px solid rgba(243,238,228,.6);display:flex;align-items:center;justify-content:center;padding-left:2px}",
   ".hc .hc-carte.sans .hc-lecture{display:none}",
   ".hc .hc-bande{margin-top:12px;border:1px solid rgba(201,166,107,.3);border-radius:15px;background:linear-gradient(180deg,#0d1112,#090c0d)}",
@@ -1404,6 +1406,23 @@ var HC_CSS = [
   ".hc .hc-vq .hs-sec{display:none}",   /* le titre est déjà dans le filtre et la partie Médias */
   ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:8px}",
   ".hc .hc-act[disabled]{opacity:.45}",
+  ".hc .hc-b-case{padding:8px 8px}",
+  ".hc .hc-b-case:first-child{flex:.8}",
+  ".hc .hc-b-case small{font-size:10px;letter-spacing:.02em}",
+  ".hc .hc-b-case b{font-size:14px}",
+  ".hc .hc-b-case+.hc-b-case{border-inline-start-color:rgba(201,166,107,.22)}",
+  ".hc .hc-b-chev{width:26px;font-size:16px}",
+  ".hc .hc-liste{margin:0 0 14px}",
+  ".hc .hc-liste .hc-ep-t{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0 6px;background:none;border-bottom:1px solid rgba(201,166,107,.18)}",
+  ".hc .hc-liste .hc-ep-t b{font-weight:500;font-size:13px;color:#F3EEE4}.hc .hc-liste .hc-ep-t span{font-size:11.5px;color:rgba(243,238,228,.6)}",
+  ".hc .hc-l{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 0;border-bottom:1px solid rgba(243,238,228,.06)}",
+  ".hc .hc-l.moi .hc-qui b{color:#C9A66B}",
+  ".hc .hc-l .hc-qui{flex:1}",
+  ".hc .hc-av{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none;border:1px solid rgba(201,166,107,.35)}",
+  ".hc .hc-av-ini{display:inline-flex;align-items:center;justify-content:center;background:#121718;color:rgba(243,238,228,.7);font-size:12px}",
+  ".hc .hc-res{font-size:12px;color:#C9A66B;white-space:nowrap}",
+  ".hc .hc-lien-d{display:inline-block;margin-top:4px;color:#C9A66B;font-size:12.5px;text-decoration:none}",
+  ".hc #hs-fil{margin-top:6px}",
   ".hc .hc-vid span{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:8px;background:rgba(7,10,8,.72);color:#F3EEE4}",
   "@media (min-width:768px){.hc .hc-titre{bottom:64px}.hc .hc-cartes{gap:12px}.hc .hc-photo img{max-height:62vh}}"
 ].join("\n");
