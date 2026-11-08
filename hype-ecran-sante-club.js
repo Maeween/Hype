@@ -164,6 +164,7 @@ function EcranSanteClub() {
   var stR = React.useState(0); var recharge = stR[0], setRecharge = stR[1];
   var stT = React.useState(false); var tous = stT[0], setTous = stT[1];          /* « Voir les N » : tous les chevaux en grille */
   var stO = React.useState(""); var soinOuvert = stO[0], setSoinOuvert = stO[1]; /* ligne de soin ouverte */
+  var stVo = React.useState(false); var vacOuvert = stVo[0], setVacOuvert = stVo[1]; /* 08/11 : ligne « Vaccins » déroulée */
   var stN = React.useState(false); var noterOuvert = stN[0], setNoterOuvert = stN[1]; /* « + Noter pour plusieurs chevaux » */
 
   React.useEffect(function () {   /* 08/11 : styles « page Santé du cheval » */
@@ -221,6 +222,11 @@ function EcranSanteClub() {
       ".sc-rangee .sx-ch{flex:0 0 auto;width:clamp(150px,44vw,230px);scroll-snap-align:start}",
       ".sx-soins .sx-s+.sx-s{border-top:1px solid rgba(255,255,255,.06)}",
       ".sx-soins{margin-bottom:30px}",
+      ".sx-soins .sx-s.sous{background:rgba(255,255,255,.025)}",
+      ".sx-soins .sx-s.sous .sc-s-t{padding-inline-start:34px}",
+      ".sx-soins .sx-s.sous .sc-s-t .p{flex-basis:36px;width:36px;height:36px}",
+      ".sx-soins .sx-s.sous .sc-s-t .p svg{width:18px;height:18px}",
+      ".sx-soins .sx-s.sous .sc-s-c{padding-inline-start:84px}",
       ".sx-soins .sc-s-t .p{flex:0 0 44px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.45);align-items:center}",
       ".sx-soins .sc-s-t .p svg{width:22px;height:22px}",
       ".sc-eq{border-color:rgba(201,166,107,.28)}",
@@ -582,10 +588,13 @@ function EcranSanteClub() {
   var blocSoins = h("div", null,
     tete("soins", T("Les soins de l’écurie", "The stable’s care", "Los cuidados de la cuadra", "Le cure della scuderia", "厩舎のケア", "Die Pflege im Stall", "عناية الإسطبل", "马厩护理", "De verzorging van de stal", "Os cuidados da cocheira", "Stallets vård", "Уход в конюшне", "Opieka w stajni", "마구간 관리")),
     h("p", { className: "sc-intro" }, T("Notés dans les 12 derniers mois, sur les ", "Recorded in the last 12 months, out of ", "Registrados en los últimos 12 meses, de ", "Registrati negli ultimi 12 mesi, su ", "過去12か月の記録・全", "In den letzten 12 Monaten eingetragen, von ", "مسجلة خلال آخر 12 شهرًا، من أصل ", "过去 12 个月的记录，共 ", "Ingevuld in de laatste 12 maanden, van de ", "Registrados nos últimos 12 meses, de ", "Registrerade de senaste 12 månaderna, av ", "За последние 12 месяцев, из ", "Zapisane w ostatnich 12 miesiącach, z ", "최근 12개월 기록, 전체 ") + nbChevaux(liste.length) + "."),
-    h("div", { className: "sx-boite sx-soins" }, points.map(function (pt) {
+    h("div", { className: "sx-boite sx-soins" }, lignesSoins()));
+
+  /* 08/11 (Blandine) : une seule ligne « Vaccins » ; on la touche pour dérouler Grippe, Rhinopneumonie, Tétanos, West Nile */
+  function ligneSoin(pt) {
       var ouv = soinOuvert === pt.k, n = pt.faits.length, presque = liste.length && n / liste.length >= 0.8;
       var reste = presque ? liste.filter(function (c) { return pt.faits.indexOf(c) < 0; }) : [];
-      return h("div", { key: "so" + pt.k, className: "sc-s sx-s" + (ouv ? " ouv" : "") },
+      return h("div", { key: "so" + pt.k, className: "sc-s sx-s" + (ouv ? " ouv" : "") + (pt.vac ? " sous" : "") },
         h("button", { type: "button", className: "sc-s-t", "aria-expanded": ouv ? "true" : "false", onClick: function () { setSoinOuvert(ouv ? "" : pt.k); } },
           h("span", { className: "p" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: PIC[pt.pic] }))),
           h("span", { className: "x" }, h("b", null, pt.t),
@@ -600,7 +609,27 @@ function EcranSanteClub() {
             h("p", { className: "sc-lab" }, T("Faits", "Done", "Hechos", "Fatti", "済み", "Erledigt", "تمّت", "已完成", "Gedaan", "Feitos", "Klara", "Сделано", "Zrobione", "완료") + " · " + n),
             h("div", { className: "sc-chips" }, pt.faits.map(function (c) { return h("button", { key: "f" + c.id, type: "button", className: "sc-chip ok", onClick: function () { ouvrir(c); } }, c.nom || ""); })))
           : h("p", { className: "sc-lab", style: { textTransform: "none", letterSpacing: 0, fontSize: 12.5 } }, T("Aucun cheval n’a ce soin noté dans les 12 derniers mois.", "No horse has this recorded in the last 12 months.", "Ningún caballo lo tiene registrado en los últimos 12 meses.", "Nessun cavallo lo ha registrato negli ultimi 12 mesi.", "過去12か月に記録された馬はいません。", "Bei keinem Pferd in den letzten 12 Monaten eingetragen.", "لا يوجد حصان مسجل له ذلك خلال آخر 12 شهرًا.", "过去 12 个月没有马匹记录此项。", "Bij geen enkel paard ingevuld in de laatste 12 maanden.", "Nenhum cavalo tem isto registrado nos últimos 12 meses.", "Ingen häst har detta registrerat de senaste 12 månaderna.", "Ни у одной лошади нет записи за 12 месяцев.", "Żaden koń nie ma tego zapisanego w ostatnich 12 miesiącach.", "최근 12개월 동안 기록된 말이 없습니다."))) : null);
-    })));
+  }
+  function lignesSoins() {
+    var vacs = points.filter(function (pt) { return pt.vac; }), autres = points.filter(function (pt) { return !pt.vac; });
+    var faitsV = {}, derV = "";
+    /* tous les vaccins comptent ici, même ceux dont la maladie n'est pas précisée (ex. « Vaccins ») */
+    soins.forEach(function (so) {
+      if (String(so.type || "").toLowerCase() !== "vaccin") return;
+      var d = String(so.date_intervention || "");
+      if (d > derV) derV = d;
+      if (d >= unAn && parId[String(so.cheval_id)]) faitsV[String(so.cheval_id)] = 1;
+    });
+    var nV = Object.keys(faitsV).length;
+    var ligneV = h("div", { key: "so-vac", className: "sc-s sx-s" + (vacOuvert ? " ouv" : "") },
+      h("button", { type: "button", className: "sc-s-t", "aria-expanded": vacOuvert ? "true" : "false", onClick: function () { setVacOuvert(!vacOuvert); if (vacOuvert) setSoinOuvert(""); } },
+        h("span", { className: "p" }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: PIC.s }))),
+        h("span", { className: "x" }, h("b", null, T("Vaccins", "Vaccines", "Vacunas", "Vaccini", "ワクチン", "Impfungen", "اللقاحات", "疫苗", "Vaccins", "Vacinas", "Vacciner", "Прививки", "Szczepienia", "백신")),
+          h("small", null, nV ? nbChevaux(nV) : T("Rien de noté", "Nothing recorded", "Nada registrado", "Niente registrato", "記録なし", "Nichts eingetragen", "لا شيء مسجل", "暂无记录", "Niets ingevuld", "Nada registrado", "Inget noterat", "Ничего не записано", "Nic nie zapisano", "기록 없음"))),
+        h("span", { className: "d" + (derV ? "" : " vide") }, derV ? enClair(derV) : "—"),
+        h("span", { className: "c", "aria-hidden": "true" }, "›")));
+    return [ligneV].concat(vacOuvert ? vacs.map(ligneSoin) : [], autres.map(ligneSoin));
+  }
 
   var ROLES = (typeof hypeRolesSoins === "function") ? hypeRolesSoins(T) : {};
   var ORDRE = (typeof HYPE_ROLES_ORDRE !== "undefined" && HYPE_ROLES_ORDRE) ? HYPE_ROLES_ORDRE : ["veterinaire", "marechal", "osteopathe", "dentiste"];
