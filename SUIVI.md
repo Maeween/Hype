@@ -19672,3 +19672,9 @@ Fichiers : SUIVI.md.
 - Correction : une ligne ajoutée dans PzSpectre (var h = React.createElement). hype-ecran-cavalier.js v=18. Rien d'autre.
 
 - 08/11 01h00 : la publication 20261108-0400 emporte aussi « Santé de l'écurie au style de la page Santé du cheval » (autre conversation, préparée en 0345, non publiée jusque-là).
+
+## 08/11/2026 10h15 — PRÊT, NON PUBLIÉ — Fiche cheval : photo du haut ENTIÈRE, en-tête « page thème » de la Vidéothèque (Blandine 10h09 : « B »)
+- Demande (capture de Golden des Brouets) : « la photo ça va pas » ; « le but c'est qu'on la voie elle aussi avec sa jument, pas que la jument ». Maquette à 3 téléphones montrée (artefact « Photo fiche Golden »), choix B = « comme une page thème de la Vidéothèque ».
+- hype-ecran-cheval.js v=21, en-tête par défaut (« grand ») seulement : photo ENTIÈRE, jamais recadrée (largeur de l'écran ; hauteur limitée à 64 % de l'écran pour une photo très haute ; tablette / ordinateur : centrée, 560 px de haut au plus), fondue en haut, en bas et sur les côtés ; courbe champagne dessous ; puis « JUMENT · 2016 » en petites capitales champagne, le nom en grand (Cormorant) à gauche, la race dessous ; nom officiel en petit si un surnom est affiché. Les en-têtes « bandeau » et « portrait » (Personnaliser) ne changent pas.
+- ⚠️ Remplace le réglage « remis comme le 03/11 » (build 20261108-0310, autre conversation) pour l'en-tête par défaut : ne pas le remettre sans demander à Blandine.
+- Testé sur copie (téléphone 390 px et ordinateur 1280 px) avec la photo de Golden : photo entière, cavalière et jument visibles, aucune erreur.

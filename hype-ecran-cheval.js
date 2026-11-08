@@ -3116,19 +3116,42 @@ async function supprimerSouvenirOuvert() {
         var courtH = mSpH ? mSpH[1] : nmH, affixeH = mSpH ? mSpH[2] : "";
         var lgN = courtH.length;
         var tailleNom = (lgN <= 10 ? 40 : (lgN <= 16 ? 34 : (lgN <= 24 ? 29 : 25))) * (largeCh ? 1.4 : 1);
+        var ebRace = "", ebSx = "", ebAn = "";   /* 08/11 : morceaux séparés pour l'en-tête B */
         var eb = (function () {   /* 13/10 (1080) Blandine : « sous le nom il n y a plus rien… adapte ce qui est ecrit dessous a la v3 » : race · sexe · annee de naissance, comme la V3 (plus l age : il reste dans la carte Origines) */
           try {
             var ogE = c.origines || {};
             var raceE = String((chevalDyn && chevalDyn.race) || c.race || (String(c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(function (x) { return x && !/^\d+\s*ans?\b/i.test(x); })[0]) || "").trim();
             var sxE = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي", "骟马", "Ruin", "Castrado", "Valack", "Мерин", "Wałach", "거세마"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牝馬", "Stute", "فرس", "母马", "Merrie", "Égua", "Sto", "Кобыла", "Klacz", "암말"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل", "种公马", "Hengst", "Garanhão", "Hingst", "Жеребец", "Ogier", "종마") }[String(ogE.sexe || "").toLowerCase().trim()] || "";
             var anE = (String(ogE.naissance || "").match(/(?:^|\D)((?:19|20)\d{2})(?:\D|$)/) || [])[1] || "";   /* (1081) « 19/04/2002 » comme « 2002-04-19 » */
+            ebRace = raceE; ebSx = sxE; ebAn = anE;
             return [raceE, sxE, anE].filter(Boolean).join("  \u00b7  ");
           } catch (eEb) { return ""; }
         })();
         var hPhotoH = largeCh ? (menuCh ? "438px" : "358px") /* 29/10 : +58 px (photo descendue sous la ligne des boutons, comme Histoire / Photos) */ : "calc(env(safe-area-inset-top) + 360px)";   /* 13/10 (1072) hauteur de la photo seule */
         if (pzcEntete === "bandeau") hPhotoH = largeCh ? (menuCh ? "330px" : "270px") : "calc(env(safe-area-inset-top) + 250px)";
         if (pzcEntete === "portrait") hPhotoH = largeCh ? (menuCh ? "300px" : "260px") : "calc(env(safe-area-inset-top) + 236px)";   /* portrait : photo ronde, en-tete plus court */   /* 07/11 personnalisation : en-tete bandeau */
-        return h("header", { className: "hero" + (pzcEntete === "portrait" ? " pzcPortrait" : ""), style: { position: "relative", background: pzcFondDe()[0] === "ivoire" ? "linear-gradient(180deg,#060709 0%,#060709 86%,#F4EFE6 100%)" : "transparent", padding: 0, height: largeCh ? ("calc(" + hPhotoH + " + 92px)") : ("calc(" + hPhotoH + " + 84px)") /* (1072) photo + bande du titre dessous */, minHeight: 0, overflow: "hidden", marginBottom: 4 } },
+        /* 08/11 10h09 (Blandine, choix « B » sur maquette : « le but c'est qu'on la voie elle aussi avec sa jument, pas que la jument ») :
+           en-tête par défaut (« grand ») comme une page thème de la Vidéothèque : photo ENTIÈRE (jamais recadrée, quel que soit son
+           format), fondue en haut, en bas et sur les côtés, courbe champagne dessous, puis « sexe · année », le nom en grand à gauche
+           et la race. Téléphone : toute la largeur (hauteur limitée à 64 % de l'écran pour une photo très haute) ; tablette et
+           ordinateur : même chose, photo centrée, 560 px de haut au plus. Les en-têtes « bandeau » et « portrait » ne changent pas. */
+        var heroB = pzcEntete === "grand";
+        var masqueB = "linear-gradient(180deg, transparent 0%, #000 20%, #000 74%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%)";
+        return h("header", { className: "hero" + (pzcEntete === "portrait" ? " pzcPortrait" : ""), style: heroB ? { position: "relative", background: "transparent", padding: 0, minHeight: 0, overflow: "hidden", marginBottom: 4 } : { position: "relative", background: pzcFondDe()[0] === "ivoire" ? "linear-gradient(180deg,#060709 0%,#060709 86%,#F4EFE6 100%)" : "transparent", padding: 0, height: largeCh ? ("calc(" + hPhotoH + " + 92px)") : ("calc(" + hPhotoH + " + 84px)") /* (1072) photo + bande du titre dessous */, minHeight: 0, overflow: "hidden", marginBottom: 4 } },
+          heroB ? h(React.Fragment, null,
+            h("div", { style: { paddingTop: "calc(env(safe-area-inset-top) + 64px)", minHeight: photoCh ? 0 : "calc(env(safe-area-inset-top) + 64px)" } },
+              photoCh ? h("img", { src: photoCh, alt: "", style: { display: "block", margin: "0 auto", width: "auto", height: "auto", maxWidth: "100%", maxHeight: largeCh ? 560 : "64vh", WebkitMaskImage: masqueB, maskImage: masqueB, WebkitMaskComposite: "source-in", maskComposite: "intersect" } }) : null),
+            h("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "relative", zIndex: 2, display: "block", width: "100%", height: largeCh ? 56 : 40, marginTop: photoCh ? (largeCh ? -40 : -28) : 0, transform: rtlH ? "scaleX(-1)" : "none" } },
+              h("defs", null, h("linearGradient", { id: "chvB-courbe", x1: "0", x2: "1", y1: "0", y2: "0" },
+                h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: ".55" }), h("stop", { offset: ".6", stopColor: "#D9B97E", stopOpacity: "1" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".8" }))),
+              h("path", { d: "M0 22 C 120 30, 230 52, 400 18", fill: "none", stroke: "url(#chvB-courbe)", strokeWidth: 2, vectorEffect: "non-scaling-stroke" })),
+            h("div", { style: { position: "relative", zIndex: 2, padding: largeCh ? "2px 32px 10px" : "2px 22px 8px", textAlign: "start", maxWidth: largeCh ? 1240 : "none", margin: largeCh ? "0 auto" : 0, boxSizing: "border-box" } },
+              h("style", null, "@keyframes chvTitreV3{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}"),
+              (ebSx || ebAn) ? h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: largeCh ? 12 : 11, fontWeight: 500, letterSpacing: rtlH ? "0.04em" : "0.3em", textTransform: "uppercase", color: "#D6B676", marginBottom: 6, opacity: 0, animation: "chvTitreV3 1s ease 0.2s forwards" } }, [ebSx, ebAn].filter(Boolean).join("  \u00b7  ")) : null,
+              h("h1", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: largeCh ? (nmH.length > 22 ? 48 : 60) : (nmH.length > 22 ? 32 : (nmH.length > 14 ? 38 : 44)), lineHeight: 1, color: "#F3EEE4", overflowWrap: "anywhere", textWrap: "balance", opacity: 0, animation: "chvTitreV3 1s ease 0.3s forwards" } }, nmH),
+              ebRace ? h("div", { style: { marginTop: 8, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: largeCh ? 22 : 18, color: "#F3EEE4", opacity: 0, animation: "chvTitreV3 1s ease 0.5s forwards" } }, ebRace) : null,
+              montrerOffiH ? h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A39D92", marginTop: 6 } }, nomOffiH) : null)) :
+          h(React.Fragment, null,
           /* 12/10 (1066) Blandine : « applique le meme systeme de hero que la V2 » et « descends les titres plus bas qu ils
              n empietent pas trop sur la photo ». Comme la V2 (736/742/751/757) : photo sur TOUTE la largeur, cadree sur la tete,
              haut legerement assombri (lisibilite des boutons), bas qui rejoint le fond, fondu lateral cote texte ; nom en bas,
@@ -3147,6 +3170,7 @@ async function supprimerSouvenirOuvert() {
               h("h1", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: largeCh ? (nmH.length > 18 ? 34 : 42) : (nmH.length > 16 ? 25 : 32), fontWeight: 500, lineHeight: 1.08, letterSpacing: largeCh ? "0.14em" : "0.1em", textTransform: "uppercase", color: "#F3EEE4", overflowWrap: "anywhere", opacity: 0, animation: "chvTitreV3 1s ease 0.3s forwards" } }, nmH),
               eb ? h("div", { style: { marginTop: 10, fontFamily: "'Montserrat',sans-serif", fontSize: eb.length > 30 ? 10 : 11, fontWeight: 600, letterSpacing: rtlH ? "0.04em" : (eb.length > 30 ? "0.16em" : "0.29em") /* (1080) longue race : tient sur une ligne */, textTransform: "uppercase", color: "rgba(248,251,253,0.72)", opacity: 0, animation: "chvTitreV3 1s ease 0.6s forwards" } }, eb) : null,
               montrerOffiH ? h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A39D92", marginTop: 4 } }, nomOffiH) : null)),
+        ),
         /* (1066) le menu ••• monte en haut a droite, en rond (voir la ligne du haut) */
         h("div", { className: "htop" },
           h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", role: "button", "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), onClick: function () { /* 01/10 (533) : retour a la page precedente ; sans page precedente, Mon cavalier comme avant */ if (ctx && ctx.peutReculer && typeof ctx.retourEcran === "function") ctx.retourEcran(); else setEcran("moncavalier"); }, style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6C4A1", background: "rgba(7,10,8,0.38)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", boxSizing: "border-box" /* (1066) rond champagne, comme la V2 */ } }, h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "#D6C4A1", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtlH ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" })))),
