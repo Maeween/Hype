@@ -36,6 +36,7 @@ function EcranTeamMedias() {
   var _pr = React.useState({}); var profilsParId = _pr[0], setProfilsParId = _pr[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
   var _vi = React.useState(null); var visu = _vi[0], setVisu = _vi[1];
+  var _tr = React.useState([]); var tvRonds = _tr[0], setTvRonds = _tr[1];   /* 08/11 soir : ronds de la page vidéo */
   var _re = React.useState(false); var reserve = _re[0], setReserve = _re[1];
   var _oc = React.useState(""); var occupe = _oc[0], setOccupe = _oc[1];
   var _rv = React.useState(0); var rev = _rv[0], setRev = _rv[1];            /* recharge après un ajout */
@@ -359,6 +360,24 @@ function EcranTeamMedias() {
     ((typeof estModerateurHype === "function") && estModerateurHype(moi))));
   function peutLire(v) { return estDuGroupe || (v && v.publique); }
 
+  React.useEffect(function () {
+    var vif = true;
+    var v0 = (videos || []).filter(function (x) { return x.id === visuV; })[0];
+    if (!v0) { setTvRonds([]); return; }
+    (async function () {
+      var out = [];
+      function ajoute(u) { u = String(u || ""); if (u && out.indexOf(u) === -1 && !((typeof estUrlVideo === "function") && estUrlVideo(u)) && !/^mux:/.test(u)) out.push(u); }
+      try {
+        if (v0.agenda_id) {
+          var r = await supa.from("commentaires").select("user_id, photo_url, medias, prive").eq("cible", "agenda:" + v0.agenda_id).order("created_at", { ascending: false }).limit(60);
+          ((r && !r.error && r.data) || []).forEach(function (po) { if (po.prive && !(moi && po.user_id === moi.id)) return; ajoute(po.photo_url); (Array.isArray(po.medias) ? po.medias : []).forEach(ajoute); });
+        }
+      } catch (eR) { }
+      if (out.length < 3) (v0.chevaux || []).forEach(function (c) { var ch = chevauxParId[c]; if (ch && ch.photo_url) ajoute(ch.photo_url); });
+      if (vif) setTvRonds(out.slice(0, 3));
+    })();
+    return function () { vif = false; };
+  }, [visuV]);
   async function lire(v) {
     if (!peutLire(v)) { setReserve(true); return; }
     setOccupe(v.id);
@@ -1213,38 +1232,42 @@ function EcranTeamMedias() {
   /* 07/11 — PAGE DE LECTURE « B » (choix laissé à Claude par Blandine : « la vidéo est tout là-haut » avec du noir dessous) :
      la vidéo, puis sa fiche (cavalière(s) sur cheval(aux), concours · épreuve · date, le petit mot), le j'aime, le son pour
      l'auteur, les commentaires, et vidéo précédente / suivante dans la liste de l'équipe. */
+  /* 08/11 soir (Blandine « Ok vas y ») : la vidéo de la Team s'ouvre dans la PAGE VIDÉO COMMUNE (HypePageVideo, maquette
+     immersive), comme celles du cavalier et du cheval. En bas : les autres vidéos du même concours (sinon du même cheval) ;
+     ronds = photos réelles du même concours (sinon du cheval) ; dessous, tout ce que la Team avait déjà (cavaliers, son,
+     collection, j'aime, commentaires, précédente / suivante). */
   function lecteurTeam() {
     if (!visu || !visuV) return null;
     var v = (videos || []).filter(function (x) { return x.id === visuV; })[0];
     if (!v) return null;
+    if (typeof HypePageVideo !== "function") return null;
     var liste = videos || [], idx = liste.indexOf(v);
     var prec = idx > 0 ? liste[idx - 1] : null, suiv = idx >= 0 && idx < liste.length - 1 ? liste[idx + 1] : null;
-    var estMux = /stream\.mux\.com\/[A-Za-z0-9]+\.m3u8/.test(String(visu));
-    var lecteur = (estMux && typeof HypeLecteurMuxTest === "function")
-      ? h(HypeLecteurMuxTest, { key: "tv-" + visu, src: visu, sansSon: !!v.sans_son, repli: h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } }) })
-      : h("video", { key: "tv-" + visu, src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, onVolumeChange: v.sans_son ? function (e) { try { if (!e.target.muted) e.target.muted = true; } catch (e0) { } } : undefined, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } });
     var cavs = (v.cavaliers || []).map(function (u) { return profilsParId[u]; }).filter(Boolean);
     var titre = cavs.map(nomProfil).join(", ") + (v.chevaux && v.chevaux.length ? (cavs.length ? " " + T("sur", "on", "con", "su", "／", "auf", "على", "骑", "op", "com", "på", "на", "na", "—") + " " : "") + v.chevaux.map(nomCheval).join(", ") : "");
     var lieuLigne = [v.lieu || v.concours || "", v.epreuve || "", dateCourte(v.date_video || v.cree_le)].filter(Boolean).join(" · ");
     var estAuteurV = !!(moi && v.auteur_id === moi.id);
     function fermer() { setVisu(null); setVisuV(null); }
     function navBtn(cible, txt, fin) {
-      return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) lire(cible); }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.18)", fontFamily: M, fontSize: 11.5, cursor: cible ? "pointer" : "default", textAlign: fin ? "end" : "start" } }, txt);
+      return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) lire(cible); }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.2)", fontFamily: M, fontSize: 12.5, cursor: cible ? "pointer" : "default" } }, txt);
     }
-    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", "data-hscroll": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8800, background: NOIR, color: IV, fontFamily: M } },
-      h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}.sc-theme-team .sc-texte{color:" + IV2 + " !important}.sc-theme-team .sc-champ{color:" + IV + " !important;font-size:16px !important}.sc-theme-team .sc-media{border-color:" + CH3 + " !important}"),
-      h("button", { type: "button", onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 12px)", insetInlineEnd: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.62)", border: "1px solid rgba(255,255,255,0.22)", color: IV, fontSize: 18, cursor: "pointer" } }, "\u2715"),
-      h("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
-        h("div", { style: { maxWidth: 820, margin: "0 auto", paddingTop: "calc(env(safe-area-inset-top) + 64px)" } },
-          h("div", { style: { background: "#000" } }, lecteur),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 32, transform: rtl ? "scaleX(-1)" : "none" } },
-            h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
-          h("div", { style: { padding: "0 18px calc(env(safe-area-inset-bottom) + 120px)" } },
+    var memes = liste.filter(function (x) { return x.id !== v.id && v.agenda_id && x.agenda_id === v.agenda_id; });
+    if (!memes.length) memes = liste.filter(function (x) { return x.id !== v.id && (x.chevaux || []).some(function (c) { return (v.chevaux || []).indexOf(c) !== -1; }); });
+    function videoDe(u) { if (u === visu) return v; var m = /^team:(.+)$/.exec(String(u)); return m ? liste.filter(function (x) { return x.id === m[1]; })[0] : null; }
+    var dLong = (function () { var m = String(v.date_video || v.cree_le || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var t = new Intl.DateTimeFormat(lg, { weekday: "long", day: "numeric", month: "long" }).format(new Date(+m[1], +m[2] - 1, +m[3])); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return dateCourte(v.date_video || v.cree_le); } })();
+    return h(HypePageVideo, { key: "pvt", url: visu, sansSon: !!v.sans_son, sansActions: true,
+      liste: memes.map(function (x) { return "team:" + x.id; }),
+      vignetteDe: function (u) { return vignetteDe(videoDe(u)); },
+      dureeDe: function (u) { var x = videoDe(u); return x ? duree(x.duree) : ""; },
+      onChoisir: function (u) { var x = videoDe(u); if (x) lire(x); },
+      titre: v.titre || titre, surTitre: v.concours || v.lieu || "", date: dLong, ronds: tvRonds,
+      onFermer: fermer,
+      bas: h("div", { className: "sc-theme-team" },
+        h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
+        h("div", { style: { padding: "18px 18px 0" } },
             h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-              cavs.length ? h("div", { style: { display: "flex" } }, cavs.slice(0, 3).map(function (p, k) { return h("div", { key: "av" + p.id, style: { marginInlineStart: k ? -10 : 0 } }, avatar(p, 38)); })) : null,
-              h("div", { style: { minWidth: 0 } },
-                h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 22, lineHeight: 1.2 } }, titre || T("Vidéo", "Video")),
-                lieuLigne ? h("div", { dir: "auto", style: { fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: IV3, marginTop: 4 } }, lieuLigne) : null)),
+              cavs.length ? h("div", { style: { display: "flex" } }, cavs.slice(0, 3).map(function (p, k) { return h("div", { key: "av" + p.id, style: { marginInlineStart: k ? -10 : 0 } }, avatar(p, 34)); })) : null,
+              lieuLigne ? h("div", { dir: "auto", style: { fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: IV3 } }, lieuLigne) : null),
             v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.4, color: IV2, marginTop: 14 } }, "« " + v.description + " »") : null,
             h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 16 } },
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
@@ -1254,9 +1277,8 @@ function EcranTeamMedias() {
               boutonCollection(v) /* 08/11 */),
             (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
             h("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 18, borderTop: "1px solid " + CH3 } },
-              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true))))));
+              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true)))) });
   }
-
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },
     style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(7,10,8,0.82)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 max(24px, env(safe-area-inset-left))" } },
