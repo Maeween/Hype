@@ -47449,7 +47449,7 @@ function HypePageVideo(props) {
     try {
       var N = 8, imgs = [];
       for (var k = 0; k < N; k++) {
-        var tK = pas[0] + (pas[1] - pas[0]) * (k + 0.5) / N;
+        var tK = pas[0] + (pas[1] - pas[0]) * k / (N - 1);   /* 08/11 23h : la 1re image = début exact, la dernière = fin exacte */
         var rI = await fetch("https://image.mux.com/" + mm[1] + "/thumbnail.jpg?width=1024&time=" + tK.toFixed(2));
         if (!rI.ok) throw new Error("image " + rI.status);
         var bl = await rI.blob();
@@ -47540,7 +47540,7 @@ function HypePageVideo(props) {
         }) : null)),
     h("button", { type: "button", disabled: !duree || prepHb, onClick: envoyerPassageHb,
       style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 44, marginTop: 8, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.85)", background: "transparent", color: "#E8D5AE", fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: duree ? "pointer" : "default", opacity: duree ? 1 : 0.5, whiteSpace: "nowrap" } },
-      prepHb ? T("Préparation des images…", "Preparing the images…", "Preparando las imágenes…", "Preparazione delle immagini…", "画像を準備中…", "Bilder werden vorbereitet…", "جارٍ تجهيز الصور…", "正在准备图片…", "Beelden worden voorbereid…", "Preparando as imagens…", "Förbereder bilderna…", "Готовлю изображения…", "Przygotowuję obrazy…", "이미지를 준비하는 중…") : T("Envoyer ce passage à Hey Baby", "Send this part to Hey Baby", "Enviar este fragmento a Hey Baby", "Invia questo passaggio a Hey Baby", "この場面を Hey Baby に送る", "Diesen Abschnitt an Hey Baby senden", "أرسل هذا المقطع إلى Hey Baby", "把这个片段发给 Hey Baby", "Dit stuk naar Hey Baby sturen", "Enviar este trecho ao Hey Baby", "Skicka avsnittet till Hey Baby", "Отправить фрагмент Hey Baby", "Wyślij ten fragment do Hey Baby", "이 구간을 Hey Baby에게 보내기")),
+      prepHb ? T("Préparation des images…", "Preparing the images…", "Preparando las imágenes…", "Preparazione delle immagini…", "画像を準備中…", "Bilder werden vorbereitet…", "جارٍ تجهيز الصور…", "正在准备图片…", "Beelden worden voorbereid…", "Preparando as imagens…", "Förbereder bilderna…", "Готовлю изображения…", "Przygotowuję obrazy…", "이미지를 준비하는 중…") : T("Envoyer à Hey Baby", "Send to Hey Baby", "Enviar a Hey Baby", "Invia a Hey Baby", "Hey Baby に送る", "An Hey Baby senden", "أرسل إلى Hey Baby", "发给 Hey Baby", "Naar Hey Baby sturen", "Enviar ao Hey Baby", "Skicka till Hey Baby", "Отправить Hey Baby", "Wyślij do Hey Baby", "Hey Baby에게 보내기")),
     msgHb ? h("div", { style: { marginTop: 10, fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5 } }, msgHb) : null);
   var infos = h("div", { style: { padding: large ? "2px 0 0" : "22px 18px 0" } },
     h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: menu ? 36 : 31, fontWeight: 500, lineHeight: 1.1, color: IV } }, props.titre || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Wideo", "동영상")),
@@ -47582,16 +47582,47 @@ function HypePageVideo(props) {
   var stJ = React.useState(!!props.lectureDirecte), joue = stJ[0], setJoue = stJ[1];
   var stG = React.useState(0), galI = stG[0], setGalI = stG[1];
   var stO = React.useState(false), hbOuv = stO[0], setHbOuv = stO[1];
+  var stA = React.useState(false), apercu = stA[0], setApercu = stA[1];
+  /* 08/11 23h : la bande de Hey Baby a besoin de la durée, même quand la vidéo n'est pas encore lancée : lue chez Mux (liste des morceaux) */
+  React.useEffect(function () {
+    if (!hbOuv || duree || !mm) return; var vif = true;
+    (async function () {
+      try {
+        var r1 = await fetch("https://stream.mux.com/" + mm[1] + ".m3u8"); var t1 = await r1.text();
+        var lg1 = t1.split("\n").filter(function (l) { return l && l.charAt(0) !== "#"; })[0];
+        if (!lg1) return; var u2 = new URL(lg1.trim(), "https://stream.mux.com/" + mm[1] + ".m3u8").href;
+        var t2 = await (await fetch(u2)).text(); var tot = 0;
+        t2.split("\n").forEach(function (l) { var m0 = /^#EXTINF:([\d.]+)/.exec(l); if (m0) tot += parseFloat(m0[1]); });
+        if (vif && tot > 0) setDuree(function (x) { return x > 0 ? x : tot; });
+      } catch (eD) { }
+    })();
+    return function () { vif = false; };
+  }, [hbOuv, url]);
+  /* aperçu du passage : la vidéo se lit du début à la fin choisis, puis s'arrête */
+  React.useEffect(function () {
+    if (!apercu) return; var debut = pas[0], fin = pas[1], lance = false, t0 = Date.now();
+    var it = setInterval(function () {
+      try {
+        var mp = refMp.current; var med = mp && (mp.media ? (mp.media.nativeEl || mp.media) : mp); var vv = med || document.getElementById("hpv-video");
+        if (!vv) { if (Date.now() - t0 > 8000) { clearInterval(it); setApercu(false); } return; }
+        if (!lance) { lance = true; vv.currentTime = debut; var pp = vv.play && vv.play(); if (pp && pp.catch) pp.catch(function () { }); return; }
+        if (vv.currentTime >= fin) { vv.pause(); clearInterval(it); setApercu(false); }
+      } catch (eA) { }
+    }, 200);
+    return function () { clearInterval(it); };
+  }, [apercu]);
   var refX = React.useRef(0);
   var refUrl2 = React.useRef(url);
   React.useEffect(function () { if (refUrl2.current === url) return; refUrl2.current = url; setJoue(true); setGalI(0); }, [url]);   /* une autre vidéo choisie en bas : elle se lit en grand */
   var photoFond = props.photoFond || "images/galop1-hero-bai.webp";
-  var ronds = (props.ronds || []).filter(Boolean).slice(0, 3);
+  /* 08/11 23h (maquette « pastilles ») : 3 pastilles à droite = la vidéo, une photo réelle, Hey Baby */
+  var photo1 = (props.ronds || []).filter(Boolean)[0] || "";
+  var ronds = photo1 ? [photo1] : [];
   var gal = [{ src: photoFond, fond: true }].concat(ronds.map(function (u) { return { src: u }; }));
   var gi = Math.min(galI, gal.length - 1);
   function vignette(u) { if (props.vignetteDe) { var v0 = props.vignetteDe(u); if (v0) return v0; } return (typeof hypeImageVideo === "function") ? hypeImageVideo(u, 520) : null; }
   function glisse(s) { setJoue(false); setGalI(function (g) { var n = g + s; return n < 0 ? 0 : (n > gal.length - 1 ? gal.length - 1 : n); }); }
-  function versHb() { setJoue(true); setHbOuv(true); setTimeout(function () { try { var el = document.getElementById("hpv-hb"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 80); }
+  function versHb() { setHbOuv(true); setTimeout(function () { try { var el = document.getElementById("hpv-hb"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 80); }
   var titreH = props.titre || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Wideo", "동영상");
   var scene = joue
     ? h("div", { className: "hpv-video" }, lecteur,
@@ -47615,22 +47646,30 @@ function HypePageVideo(props) {
         props.surTitre ? h("i", { className: "hpv-filet" }) : null,
         h("h1", { dir: "auto", className: titreH.length > 26 ? "long" : "" }, titreH),
         (props.date || props.sousTitre) ? h("p", { dir: "auto" }, props.date || props.sousTitre) : null),
-      (!joue && ronds.length) ? h("div", { className: "hpv-ronds" }, ronds.map(function (u, i) {
-        return h("button", { type: "button", key: "r" + i, className: "hpv-r" + (gi === i + 1 ? " on" : ""), onClick: function () { setJoue(false); setGalI(gi === i + 1 ? 0 : i + 1); } },
-          h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 170, 170) : u, alt: "", loading: "lazy" }));
-      })) : null),
-    (!joue && gal.length > 1) ? h("div", { className: "hpv-traits" }, gal.map(function (g, i) { return h("button", { type: "button", key: "t" + i, className: i === gi ? "on" : "", "aria-label": String(i + 1), onClick: function () { setGalI(i); } }); })) : h("div", { style: { height: 18 } }),
+      joue ? null : h("div", { className: "hpv-ronds" },
+        h("button", { type: "button", className: "hpv-r", "aria-label": T("Lire la vidéo", "Play the video", "Ver el vídeo", "Guarda il video", "動画を再生", "Video abspielen", "تشغيل الفيديو", "播放视频", "Video afspelen", "Ver o vídeo", "Spela videon", "Смотреть видео", "Odtwórz wideo", "영상 재생"), onClick: function () { setJoue(true); } },
+          vignette(url) ? h("img", { src: vignette(url), alt: "", loading: "lazy" }) : null,
+          h("span", { className: "hpv-r-ic" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M8 5.5v13l10-6.5z", fill: IV })))),
+        photo1 ? h("button", { type: "button", className: "hpv-r" + (gi === 1 ? " on" : ""), "aria-label": T("Photo", "Photo", "Foto", "Foto", "写真", "Foto", "صورة", "照片", "Foto", "Foto", "Foto", "Фото", "Zdjęcie", "사진"), onClick: function () { setJoue(false); setGalI(gi === 1 ? 0 : 1); } },
+          h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(photo1, 170, 170) : photo1, alt: "", loading: "lazy" })) : null,
+        mm ? h("button", { type: "button", className: "hpv-r hpv-r-hb" + (hbOuv ? " on" : ""), "aria-label": "Hey Baby", onClick: function () { if (hbOuv) setHbOuv(false); else versHb(); } },
+          h("img", { src: "images/FOND_HEYBABY.webp", alt: "", loading: "lazy" }),
+          h("span", { className: "hpv-r-ic" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: CH, "aria-hidden": "true" }, h("path", { d: "M9 2l1.6 5.4L16 9l-5.4 1.6L9 16l-1.6-5.4L2 9l5.4-1.6z" }), h("path", { d: "M18 13l.9 2.6 2.6.9-2.6.9L18 20l-.9-2.6-2.6-.9 2.6-.9z" })))) : null)),
+    h("div", { style: { height: 18 } }),
     h("div", { className: "hpv-vids" }, basV.map(function (u, k) {
       var vg = vignette(u), d = props.dureeDe ? props.dureeDe(u) : "", sel = u === url;
       return h("button", { type: "button", key: "v" + k, className: "hpv-v" + (sel ? " on" : ""), onClick: function () { if (sel) setJoue(true); else if (props.onChoisir) props.onChoisir(u); } },
         vg ? h("img", { src: vg, alt: "", loading: "lazy" }) : h("span", { className: "hpv-v-vide" }),
         h("span", { className: "hpv-duree" }, h("svg", { width: 8, height: 9, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })), d ? " " + d : ""));
     })),
-    mm ? h("div", { id: "hpv-hb", className: "hpv-hb" },
-      h("button", { type: "button", className: "hpv-hb-tete", onClick: function () { if (!hbOuv) versHb(); else setHbOuv(false); } },
-        h("b", null, "✦ " + T("Analyser un passage avec Hey Baby", "Analyse a part with Hey Baby", "Analizar un fragmento con Hey Baby", "Analizza un passaggio con Hey Baby", "Hey Baby で場面を分析", "Einen Abschnitt mit Hey Baby analysieren", "حلّل مقطعًا مع Hey Baby", "用 Hey Baby 分析一个片段", "Een stuk analyseren met Hey Baby", "Analisar um trecho com o Hey Baby", "Analysera ett avsnitt med Hey Baby", "Разобрать фрагмент с Hey Baby", "Przeanalizuj fragment z Hey Baby", "Hey Baby와 구간 분석하기")),
-        h("i", { "aria-hidden": "true" }, hbOuv ? "−" : "+")),
-      hbOuv ? h("div", { className: "hpv-hb-corps" }, encart) : null) : null,
+    (mm && hbOuv) ? h("div", { id: "hpv-hb", className: "hpv-hb" },
+      h("div", { className: "hpv-hb-tete" },
+        h("b", null, T("Analyser un passage avec Hey Baby", "Analyse a part with Hey Baby", "Analizar un fragmento con Hey Baby", "Analizza un passaggio con Hey Baby", "Hey Baby で場面を分析", "Einen Abschnitt mit Hey Baby analysieren", "حلّل مقطعًا مع Hey Baby", "用 Hey Baby 分析一个片段", "Een stuk analyseren met Hey Baby", "Analisar um trecho com o Hey Baby", "Analysera ett avsnitt med Hey Baby", "Разобрать фрагмент с Hey Baby", "Przeanalizuj fragment z Hey Baby", "Hey Baby와 구간 분석하기")),
+        h("button", { type: "button", className: "hpv-x", onClick: function () { setHbOuv(false); setApercu(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, "×")),
+      h("div", { className: "hpv-hb-corps" }, encart,
+        duree ? h("div", { className: "hpv-hb-duree" },
+          h("span", null, hms(pas[0]) + " → " + hms(pas[1]) + " · " + T("Extrait de ", "Clip of ", "Fragmento de ", "Estratto di ", "抜粋 ", "Ausschnitt von ", "مقطع مدته ", "片段 ", "Fragment van ", "Excerto de ", "Utdrag på ", "Фрагмент ", "Fragment ", "구간 ") + Math.round(pas[1] - pas[0]) + " s"),
+          h("button", { type: "button", onClick: function () { setJoue(true); setApercu(true); } }, apercu ? T("Aperçu en cours…", "Previewing…", "Vista previa…", "Anteprima…", "プレビュー中…", "Vorschau läuft…", "جارٍ العرض…", "预览中…", "Voorbeeld loopt…", "A pré-visualizar…", "Förhandsvisar…", "Просмотр…", "Podgląd…", "미리 보는 중…") : "▶ " + T("Prévisualiser le passage", "Preview the part", "Previsualizar el fragmento", "Anteprima del passaggio", "場面をプレビュー", "Abschnitt ansehen", "معاينة المقطع", "预览片段", "Fragment bekijken", "Pré-visualizar o trecho", "Förhandsvisa avsnittet", "Просмотреть фрагмент", "Podejrzyj fragment", "구간 미리 보기"))) : null)) : null,
     h("div", { id: "hpv-infos", className: "hpv-infos" }, infos,
       props.bas || null,
       btnAj ? h("div", { style: { padding: "18px 18px 0" } }, btnAj) : null));
@@ -47661,7 +47700,13 @@ var HPV_CSS = [
   ".hpv .hpv-ronds{position:absolute;z-index:3;inset-inline-end:14px;top:30%;display:flex;flex-direction:column;gap:14px}",
   ".hpv .hpv-r{width:clamp(62px,17vw,84px);height:clamp(62px,17vw,84px);border-radius:50%;padding:0;overflow:hidden;border:1px solid rgba(201,166,107,.55);background:#0c1011;cursor:pointer}",
   ".hpv .hpv-r.on{border:1.5px solid #C9A66B}",
+  ".hpv .hpv-r{position:relative}",
   ".hpv .hpv-r img{width:100%;height:100%;object-fit:cover;display:block}",
+  ".hpv .hpv-r-ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,10,8,.35)}",
+  ".hpv .hpv-r-hb img{filter:brightness(.6)}",
+  ".hpv .hpv-x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,166,107,.55);background:transparent;color:#F3EEE4;font-size:20px;line-height:1;cursor:pointer}",
+  ".hpv .hpv-hb-duree{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:rgba(243,238,228,.7)}",
+  ".hpv .hpv-hb-duree button{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;font-size:12.5px;cursor:pointer}",
   ".hpv .hpv-traits{display:flex;justify-content:center;gap:7px;margin:4px 0 22px}",
   ".hpv .hpv-traits button{width:26px;height:3px;border:none;border-radius:2px;background:rgba(243,238,228,.22);padding:0;cursor:pointer}",
   ".hpv .hpv-traits button.on{background:#C9A66B}",
