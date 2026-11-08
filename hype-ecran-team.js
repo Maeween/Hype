@@ -58,7 +58,7 @@ function EcranTeamCompetition() {
     var vifM = true;
     (async function () {
       try {
-        var rv = await supa.from("team_videos").select("id, vignette, duree, titre, concours, date_video, cree_le").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(200);
+        var rv = await supa.from("team_videos").select("id, vignette, duree, titre, concours, date_video, cree_le, resultat").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(200);
         var vids = (rv && !rv.error && rv.data) || [];
         /* 05/11 soir : pas de titre saisi → on affiche le nom du cheval sous la vignette */
         if (vids.length) {
@@ -68,6 +68,12 @@ function EcranTeamCompetition() {
             lh.forEach(function (x) { if (idsH.indexOf(x.cheval_id) === -1) idsH.push(x.cheval_id); });
             var nh = {}; if (idsH.length) { var rnc = await supa.from("chevaux").select("id, nom, alias").in("id", idsH); ((rnc && rnc.data) || []).forEach(function (c) { nh[c.id] = c.alias || c.nom; }); }
             vids.forEach(function (x) { x.nomsChevaux = lh.filter(function (l) { return l.video_id === x.id; }).map(function (l) { return nh[l.cheval_id]; }).filter(Boolean).join(", "); });
+            /* 08/11 (Blandine) : « Daphné sur Velleda » — prénom du cavalier ou de la cavalière + cheval */
+            var rcv = await supa.from("team_videos_cavaliers").select("video_id, user_id").in("video_id", vids.map(function (x) { return x.id; }));
+            var lc = (rcv && rcv.data) || [], idsC = [];
+            lc.forEach(function (x) { if (idsC.indexOf(x.user_id) === -1) idsC.push(x.user_id); });
+            var np = {}; if (idsC.length) { var rnp = await supa.from("profiles").select("id, pseudo").in("id", idsC); ((rnp && rnp.data) || []).forEach(function (pp) { np[pp.id] = String(pp.pseudo || "").trim().split(/\s+/)[0]; }); }
+            vids.forEach(function (x) { x.prenoms = lc.filter(function (l) { return l.video_id === x.id; }).map(function (l) { return np[l.user_id]; }).filter(Boolean).join(", "); });
           } catch (eH) { }
         }
         var nb = {};
@@ -715,7 +721,8 @@ function EcranTeamCompetition() {
             h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         v.jaime ? h("span", { style: { position: "absolute", insetInlineStart: 6, top: 6, fontFamily: M, fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "rgba(6,7,9,0.66)" } }, "\u2661 " + v.jaime) : null,
         dureeM(v.duree) ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(6,7,9,0.72)", fontVariantNumeric: "tabular-nums" } }, dureeM(v.duree)) : null),
-      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, marginTop: 7, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, v.titre || v.nomsChevaux || T("Vidéo", "Video")));
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, marginTop: 7, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, ((v.prenoms && v.nomsChevaux) ? v.prenoms + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "×") + " " + v.nomsChevaux : (v.titre || v.nomsChevaux || T("Vidéo", "Video"))),   /* 08/11 : « Daphné sur Velleda 🏆 2e / 35 » */
+        v.resultat ? h("span", { style: { color: "#C9A66B", fontWeight: 600 } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null));
   }
   var LIB_PARTAGE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
   function tuilePartage(p, seule) {

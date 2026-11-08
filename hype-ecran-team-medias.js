@@ -104,7 +104,7 @@ function EcranTeamMedias() {
   function ouvrirFeuilleConc(pour, actuel) {
     var autre = !!(actuel && !actuel.agenda_id && (actuel.lieu || actuel.autre));
     setConcAutre(autre); setConcDate((actuel && (actuel.date || actuel.date_video)) || aujourdhui()); setConcLieu(autre ? (actuel.lieu || "") : "");
-    setConcEv(null); setEpreuvesConc(null); setConcEpreuve((actuel && actuel.epreuve) || "");
+    setConcEv(null); setEpreuvesConc(null); setConcEpreuve((actuel && actuel.epreuve) || ""); setConcRes((actuel && actuel.resultat) || "");
     setFeuilleConc({ pour: pour });
   }
   async function allerEpreuve(ev) {
@@ -165,7 +165,7 @@ function EcranTeamMedias() {
         var rm = await supa.from("groupes_membres").select("user_id, ajoute_le").eq("groupe_id", G.id);
         var idsM = ((rm && rm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
 
-        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, agenda_id, lieu, epreuve, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
+        var rv = await supa.from("team_videos").select("id, groupe_id, vignette, duree, titre, description, concours, date_video, categorie, publique, sans_son, agenda_id, lieu, epreuve, resultat, auteur_id, cree_le").eq("groupe_id", G.id).order("date_video", { ascending: false, nullsFirst: false }).order("cree_le", { ascending: false });
         if (rv && rv.error) throw new Error(rv.error.message || String(rv.error));
         var vids = (rv && rv.data) || [];
         var idsV = vids.map(function (x) { return x.id; });
@@ -299,7 +299,10 @@ function EcranTeamMedias() {
   function tuileVideo(v, cle, enGrille, etendue) {
     var src = vignetteDe(v), d = duree(v.duree), verrou = !peutLire(v);
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
-    var titreAff = v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
+    /* 08/11 (Blandine) : « Daphné sur Velleda » — le prénom du cavalier ou de la cavalière, puis le cheval */
+    var prenoms = (v.cavaliers || []).map(function (u) { var pp = profilsParId[u]; return pp ? String(nomProfil(pp)).split(/\s+/)[0] : ""; }).filter(function (x) { return x && x !== "—"; });
+    var couple = (prenoms.length && v.chevaux && v.chevaux.length) ? prenoms.join(", ") + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "×") + " " + v.chevaux.map(nomCheval).join(", ") : "";
+    var titreAff = couple || v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
     var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.epreuve || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu ; 07/11 : + épreuve, le petit mot a sa propre ligne */
     /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
        sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
@@ -348,7 +351,8 @@ function EcranTeamMedias() {
               : verrou ? ICONE_CADENAS
               : h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
-      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff),
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff,
+        v.resultat ? h("span", { style: { color: CH, fontWeight: 600, whiteSpace: "nowrap" } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null),
       meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
       v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 14, lineHeight: 1.3, color: IV2, marginTop: 4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null,
       /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
@@ -713,11 +717,14 @@ function EcranTeamMedias() {
   var _fd = React.useState(""); var fDate = _fd[0], setFDate = _fd[1];
   var _fe = React.useState(""); var fDesc = _fe[0], setFDesc = _fe[1];
   var _fcq = React.useState(null); var fConc = _fcq[0], setFConc = _fcq[1];   /* 06/11 soir : concours (facultatif) */
-  var _fm = React.useState(false); var fSansSon = _fm[0], setFSansSon = _fm[1];   /* 06/11 : case « Sans le son » */
+  var _fm = React.useState(false); var fSansSon = _fm[0], setFSansSon = _fm[1];
+  var _frs = React.useState(""); var fRes = _frs[0], setFRes = _frs[1];   /* 08/11 (Blandine, choix B) : résultat facultatif, pré-rempli quand Hype le connaît */
+  var _fra = React.useState(""); var fResAuto = _fra[0], setFResAuto = _fra[1];
+  var _crs = React.useState(""); var concRes = _crs[0], setConcRes = _crs[1];   /* correction du résultat après coup */   /* 06/11 : case « Sans le son » */
   var _fp = React.useState(null); var fEtat = _fp[0], setFEtat = _fp[1];   /* null | { etape, pct, texte, erreur } */
   function aujourdhui() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function ouvrirAjout(pre) {
-    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null); setFSansSon(false); setFConc(null);
+    setFSource("fichier"); setFFichier(null); setFHype(null); setFTitre(""); setFConcours(""); setFDate(aujourdhui()); setFDesc(""); setFEtat(null); setFSansSon(false); setFConc(null); setFRes(""); setFResAuto("");
     setFCav((pre && pre.cav) ? pre.cav.slice() : []); setFCh((pre && pre.ch) ? pre.ch.slice() : []);
     setFeuilleCav(false);
     setAjout(pre || {});
@@ -749,7 +756,7 @@ function EcranTeamMedias() {
     var media = (typeof hypeMuxUrlLecture === "function") ? hypeMuxUrlLecture(playbackId) : ("https://stream.mux.com/" + playbackId + ".m3u8");
     var vign = await copierVignette(playbackId);
     var r = await supa.from("team_videos").insert({ groupe_id: meta.groupe, media: media, video_mux_id: videoMuxId || null, vignette: vign, duree: duree || null,
-      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, epreuve: meta.epreuve || null, auteur_id: moi.id }).select("id").single();
+      titre: meta.titre || null, description: meta.description || null, concours: meta.concours || null, date_video: meta.date || null, sans_son: !!meta.sansSon, lieu: meta.lieu || null, agenda_id: meta.agenda || null, epreuve: meta.epreuve || null, resultat: meta.resultat || null, auteur_id: moi.id }).select("id").single();
     if (r && r.error) {
       var msg = String(r.error.message || r.error);
       if (/duplicate|unique/i.test(msg)) throw new Error(T("Cette vidéo est déjà dans la vidéothèque de l'équipe.", "This video is already in the team library.", "Este vídeo ya está en la videoteca del equipo.", "Questo video è già nella videoteca della squadra.", "この動画はすでにチームのライブラリにあります。", "Dieses Video ist bereits in der Videothek des Teams.", "هذا الفيديو موجود بالفعل في مكتبة الفريق.", "该视频已在团队视频库中。", "Deze video staat al in de videotheek van het team.", "Este vídeo já está na videoteca da equipa.", "Den här videon finns redan i lagets videobibliotek.", "Это видео уже есть в видеотеке команды.", "Ten film jest już w wideotece drużyny.", "이 동영상은 이미 팀 라이브러리에 있어요."));
@@ -792,10 +799,37 @@ function EcranTeamMedias() {
   }, [moi && moi.id, groupe && groupe.id]);
 
   var fPret = (fSource === "fichier" ? !!fFichier : !!fHype) && fCav.length > 0 && fCh.length > 0;
+  /* 08/11 : résultat déjà connu dans Hype (même concours, même épreuve, un des chevaux choisis) → on pré-remplit */
+  function texteResultat(x) {
+    if (!x) return "";
+    if (x.place) return x.place + T(x.place === 1 ? "er" : "e", x.place === 1 ? "st" : x.place === 2 ? "nd" : x.place === 3 ? "rd" : "th", "º", "º", "位", ".", "", "名", "e", "º", ":a", "-е", ".", "위") + (x.partants ? " / " + x.partants : "");
+    return x.classement || "";
+  }
+  React.useEffect(function () {
+    var ok = true;
+    if (!ajout || !fConc || !fConc.epreuve || !fCh.length || typeof supa === "undefined" || !supa) return;
+    (async function () {
+      try {
+        var r = await supa.rpc("team_resultat_suggere", { p_agenda: fConc.agenda_id || null, p_date: fConc.agenda_id ? null : (fConc.date || null), p_epreuve: fConc.epreuve, p_chevaux: fCh.slice() });
+        var x = r && !r.error && r.data && r.data[0];
+        var t = texteResultat(x);
+        if (!ok || !t) return;
+        setFRes(function (avant) { return (!avant || avant === fResAuto) ? t : avant; }); setFResAuto(t);
+      } catch (eS) { }
+    })();
+    return function () { ok = false; };
+  }, [ajout, fConc && fConc.agenda_id, fConc && fConc.epreuve, fConc && fConc.date, fCh.join(",")]);
+  async function enregistrerResultat(v, txt) {
+    if (!v || !v.id) return;
+    try {
+      var r = await supa.rpc("team_video_resultat", { p_id: v.id, p_resultat: txt || "" });
+      if (r && !r.error && r.data === true) setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { resultat: (txt || "").trim() || null }) : x; }); });
+    } catch (eR) { }
+  }
   async function publier() {
     if (!fPret || !groupe || !moi) return;
     var meta = { groupe: groupe.id, titre: null, concours: (fConc && fConc.titre) || null, date: (fConc && fConc.date) || aujourdhui(), lieu: (fConc && fConc.lieu && String(fConc.lieu).trim()) || null, agenda: (fConc && fConc.agenda_id) || null, epreuve: (fConc && fConc.epreuve) || null,
-      description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon };
+      description: fDesc.trim(), cav: fCav.slice(), ch: fCh.slice(), sansSon: !!fSansSon, resultat: fRes.trim().slice(0, 60) };
     try {
       if (fSource === "hype") {
         setFEtat({ etape: "envoi", pct: 100, texte: T("Ajout à la vidéothèque…", "Adding to the library…", "Añadiendo a la videoteca…", "Aggiunta alla videoteca…", "ライブラリに追加中…", "Wird zur Videothek hinzugefügt…", "جارٍ الإضافة إلى المكتبة…", "正在添加到视频库…", "Toevoegen aan de videotheek…", "A adicionar à videoteca…", "Lägger till i biblioteket…", "Добавление в видеотеку…", "Dodawanie do wideoteki…", "라이브러리에 추가하는 중…") });
@@ -973,6 +1007,11 @@ function EcranTeamMedias() {
                     h("span", { dir: "auto", style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0, fontSize: fConc ? 14 : 12.5, color: fConc ? IV : IV3 } },
                       h("span", { style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, fConc ? libelleConc(fConc) : T("Facultatif", "Optional", "Opcional", "Facoltativo", "任意", "Optional", "اختياري", "可选", "Optioneel", "Opcional", "Valfritt", "Необязательно", "Opcjonalnie", "선택")),
                       h("span", { style: { color: CH, fontSize: 12 } }, rtl ? "‹" : "›"))),
+                  /* 08/11 — résultat (facultatif), pré-rempli quand Hype le connaît */
+                  h("div", { style: Object.assign({}, LIGNE, { marginTop: 0 }) },
+                    h("label", { htmlFor: "tv-res", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, "🏆 " + T("Résultat", "Result", "Resultado", "Risultato", "結果", "Ergebnis", "النتيجة", "成绩", "Resultaat", "Resultado", "Resultat", "Результат", "Wynik", "결과")),
+                    h("input", { id: "tv-res", value: fRes, maxLength: 60, disabled: envoiEnCours, onChange: function (e) { setFRes(e.target.value); }, placeholder: T("Facultatif · ex. 2e / 35", "Optional · e.g. 2nd / 35", "Opcional · p. ej. 2º / 35", "Facoltativo · es. 2º / 35", "任意・例：2位 / 35", "Optional · z. B. 2. / 35", "اختياري · مثال: 2 / 35", "可选 · 例如 第2名 / 35", "Optioneel · bv. 2e / 35", "Opcional · ex. 2º / 35", "Valfritt · t.ex. 2:a / 35", "Необязательно · напр. 2-е / 35", "Opcjonalnie · np. 2. / 35", "선택 · 예: 2위 / 35"),
+                      style: { flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: IV, fontFamily: M, fontSize: 16, textAlign: "end" } })),
                   /* un mot */
                   h("div", { style: Object.assign({}, LIGNE, { marginTop: 0 }) },
                     h("label", { htmlFor: "tv-desc", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, T("Un mot ?", "A word?", "¿Unas palabras?", "Una parola?", "ひとこと", "Ein Wort?", "كلمة؟", "说点什么？", "Een woordje?", "Uma palavra?", "Ett ord?", "Пара слов?", "Kilka słów?", "한마디?")),
@@ -1021,6 +1060,13 @@ function EcranTeamMedias() {
         concEv ? h("button", { type: "button", onClick: function () { setConcEv(null); }, style: { alignSelf: "flex-start", background: "none", border: "none", padding: "2px 0 6px", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } }, (rtl ? "› " : "‹ ") + T("Concours", "Competition", "Concurso", "Concorso", "競技会", "Turnier", "المسابقة", "比赛", "Wedstrijd", "Concurso", "Tävling", "Соревнование", "Zawody", "대회")) : null,
         h("div", { style: { fontFamily: SERIF, fontSize: 26, marginBottom: concEv ? 2 : 6 } }, concEv ? T("Quelle épreuve ?", "Which class?", "¿Qué prueba?", "Quale prova?", "どの競技？", "Welche Prüfung?", "أي فئة؟", "哪个项目？", "Welke rubriek?", "Qual prova?", "Vilken klass?", "Какой маршрут?", "Który konkurs?", "어떤 종목인가요?") : T("Quel concours ?", "Which competition?", "¿Qué concurso?", "Quale concorso?", "どの競技会？", "Welches Turnier?", "أي مسابقة؟", "哪场比赛？", "Welke wedstrijd?", "Qual concurso?", "Vilken tävling?", "Какое соревнование?", "Które zawody?", "어떤 대회인가요?")),
         concEv ? h("div", { dir: "auto", style: { fontSize: 11.5, color: IV3, marginBottom: 8 } }, libelleConc(concEv)) : null,
+        /* 08/11 — corriger le résultat d'une vidéo déjà en ligne */
+        (!concEv && feuilleConc.pour && feuilleConc.pour !== "form" && feuilleConc.pour.id) ? h("div", { style: Object.assign({}, LIGNE, { marginBottom: 6 }) },
+          h("label", { htmlFor: "tq-res", style: { fontSize: 12.5, color: IV3, flex: "0 0 auto" } }, "🏆 " + T("Résultat", "Result", "Resultado", "Risultato", "結果", "Ergebnis", "النتيجة", "成绩", "Resultaat", "Resultado", "Resultat", "Результат", "Wynik", "결과")),
+          h("input", { id: "tq-res", value: concRes, maxLength: 60, onChange: function (e) { setConcRes(e.target.value); },
+            onBlur: function () { var v0 = feuilleConc.pour; if ((concRes || "").trim() !== (v0.resultat || "")) enregistrerResultat(v0, concRes); },
+            placeholder: T("Facultatif · ex. 2e / 35", "Optional · e.g. 2nd / 35", "Opcional · p. ej. 2º / 35", "Facoltativo · es. 2º / 35", "任意・例：2位 / 35", "Optional · z. B. 2. / 35", "اختياري · مثال: 2 / 35", "可选 · 例如 第2名 / 35", "Optioneel · bv. 2e / 35", "Opcional · ex. 2º / 35", "Valfritt · t.ex. 2:a / 35", "Необязательно · напр. 2-е / 35", "Opcjonalnie · np. 2. / 35", "선택 · 예: 2위 / 35"),
+            style: CHAMP })) : null,
         concEv ? h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch" } },
           epreuvesConc === null ? h("div", { style: { fontSize: 12, color: IV3, padding: "10px 0" } }, "…")
             : epreuvesConc.length ? epreuvesConc.map(function (ep) { return ligne("ep" + ep, ep, null, concEpreuve === ep, function () { choisirConc({ ev: concEv, epreuve: ep }); }); })
