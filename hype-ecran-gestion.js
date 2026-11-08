@@ -75,7 +75,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 11;
+  var I18N_V = 12;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -605,6 +605,15 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
 
+    var _ri = React.useState(null); var retirId = _ri[0], setRetirId = _ri[1];
+    /* Retrait d un cheval de l ecurie : meme appel que sur sa fiche (set_cheval_club), reserve par la base aux proprietaires,
+       cavalieres rattachees et moderatrices. Deux appuis : « Retirer de l'ecurie » puis « Confirmer le retrait ». */
+    function retirerCheval(ch) {
+      changerClubCheval(ch.id, null).then(function (r) {
+        if (r && r.error) { setMsg("Pas retiré, réessaie."); setRetirId(null); return; }
+        setMsg("✓ Retiré de l'écurie"); setRetirId(null); setRecharge(function (n) { return n + 1; });
+      }).catch(function () { setMsg("Pas retiré, réessaie."); setRetirId(null); });
+    }
     function ouvrirCheval(ch) {
       if (ouvert === ch.id) { setOuvert(null); return; }
       var x = (d.regch || {})[String(ch.id)] || {};
@@ -672,7 +681,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               pill: sire ? ("SIRE " + sire) : "", qui: "",
               etat: l.sorti ? (l.x.motif_sortie || "Sorti") : (l.manque.length ? "À compléter" : "✓ À jour"),
               alerte: !l.sorti && l.manque.length > 0, onClick: function () { ouvrirCheval(l.ch); } }),
-            ouvert === l.ch.id ? formulaire(l.ch) : null);
+            ouvert === l.ch.id ? formulaire(l.ch) : null,
+            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 4px" } },
+              h("button", { type: "button", className: "hg-btn", onClick: function () { try { window.__chevalOuvert = l.ch.id; } catch (eO) { } setEcran("cheval"); } }, "Voir la fiche"),
+              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", onClick: function () { retirerCheval(l.ch); } }, "Confirmer le retrait") : null,
+              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", onClick: function () { setRetirId(null); } }, "Annuler") : h("button", { type: "button", className: "hg-btn", onClick: function () { setRetirId(l.ch.id); } }, "Retirer de l'écurie")));
         })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
