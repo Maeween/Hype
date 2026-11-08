@@ -2290,26 +2290,30 @@ function EcranCheval() {
   /* 08/11 (Blandine « Ok » apres la page du cavalier) : depuis l onglet Videos, une video s ouvre dans la NOUVELLE PAGE DE
      LECTURE (HypePageVideo), comme sur la page du cavalier. Galerie = les autres videos de sa collection (titre = nom de la
      collection), sinon les videos hors collection. « + Ajouter » ouvre la collection (droits : peutGererCol). « Supprimer la
-     video » reprend la suppression de la visionneuse (memes droits : peutGererPhotoOuverte). Les videos ouvertes depuis
-     d autres onglets (Photos, Histoire…) gardent la visionneuse d avant. */
+     video » reprend la suppression de la visionneuse (memes droits : peutGererPhotoOuverte). Depuis le 08/11 au soir, les videos ouvertes depuis
+     d autres onglets (Photos, Histoire…) s ouvrent aussi ici (galerie = la liste d ou elles viennent) ; les PHOTOS gardent la visionneuse. */
   function pageVideoCh() {
     var u = visionneuse;
     var prets = videosPretesCh().concat(videosColExtCh());
     var colV = (collVid || []).filter(function (c) { return (Array.isArray(c.videos) ? c.videos : []).indexOf(u) >= 0; })[0] || null;
     var liste;
+    var depuisAutre = panneau !== "videos";   /* 08/11 (« Vas y continue ») : video ouverte depuis Photos, Histoire… */
+    var visL = []; try { visL = (window.__visListe || []).filter(function (x) { return typeof x === "string" && estUrlVideo(x); }); } catch (eVl) { }
     if (colV) liste = colV.videos.filter(function (x) { return prets.indexOf(x) >= 0; });
+    else if (depuisAutre && visL.length) liste = visL;
     else {
       var dansCol = {}; (collVid || []).forEach(function (c) { (Array.isArray(c.videos) ? c.videos : []).forEach(function (x) { dansCol[x] = 1; }); });
       liste = prets.filter(function (x) { return !dansCol[x]; });
     }
-    return h(HypePageVideo, { url: u, liste: liste, titre: (chevalDyn && chevalDyn.nom) || (c && c.nom) || "", sousTitre: colV ? String(colV.nom || "").trim() : "", titreGalerie: colV ? String(colV.nom || "").trim() : null,
+    return h(React.Fragment, null, h(HypePageVideo, { url: u, liste: liste, titre: (chevalDyn && chevalDyn.nom) || (c && c.nom) || "", sousTitre: colV ? String(colV.nom || "").trim() : "", titreGalerie: colV ? String(colV.nom || "").trim() : null,
       lk: socVidCh.lk[u], nc: socVidCh.nc[u] || 0, onJaime: function () { socVidCh.basculer(u); }, onCommenter: function () { setVidComFeuille(u); },
       onChoisir: function (x) { setVisionneuseAlbumId(null); setVisionneuse(x); }, onFermer: function () { setVisionneuse(null); setVisionneuseAlbumId(null); setConfSuppr(false); },
       onAjouter: (colV && peutGererCol()) ? function () { ouvrirCol(colV); } : null,
-      onSupprimer: peutGererPhotoOuverte() ? function () { supprimerPhotoOuverte(); } : null });
+      onSupprimer: peutGererPhotoOuverte() ? function () { supprimerPhotoOuverte(); } : null }),
+      depuisAutre ? feuilleComVidCh(true) : null);   /* hors onglet Videos, la feuille des commentaires est montee ici */
   }
-  function feuilleComVidCh() {
-    if (!vidComFeuille || panneau !== "videos") return null;
+  function feuilleComVidCh(horsOnglet) {
+    if (!vidComFeuille || (panneau !== "videos" && !horsOnglet)) return null;
     return h(FeuilleCommentairesHype, { key: vidComFeuille, cle: vidComFeuille, titre: T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b", "Video", "\u0641\u064a\u062f\u064a\u0648", "视频", "Video", "Vídeo", "Video", "Видео", "Wideo", "동영상") + " \u00b7 " + (c.nom || ""), cible: "cheval:" + ((chevalDyn && chevalDyn.dbId) || id), proprio: (chevalDyn && chevalDyn.ownerId) || null, prefixe: "videocom", lk: socVidCh.lk[vidComFeuille], onJaime: function () { socVidCh.basculer(vidComFeuille); }, onFermer: function () { setVidComFeuille(null); }, onNombre: function (n) { socVidCh.nombre(vidComFeuille, n); }, large: largeCh });
   }
   function vignetteVidCh(url) {
@@ -5616,7 +5620,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
        .souvVoile / .souvVue sont des selecteurs SIMPLES (sans parent) et
        les variables --cm-ease vivent sur :root — les deux survivent au
        deplacement. */
-    (visionneuse && panneau === "videos" && typeof HypePageVideo === "function" && typeof estUrlVideo === "function" && estUrlVideo(visionneuse)) ? pageVideoCh() /* 08/11 : nouvelle page de lecture */ :
+    (visionneuse && typeof HypePageVideo === "function" && typeof estUrlVideo === "function" && estUrlVideo(visionneuse)) ? pageVideoCh() /* 08/11 : nouvelle page de lecture */ :
     visionneuse ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: function (eF) { /* 05/09 : sur une VIDEO, seule la croix ferme (cf. visionneuse d album). */ if (visionneuse && typeof estUrlVideo === "function" && estUrlVideo(visionneuse)) return; fermerVisionneuse(eF); }, "data-noswipe": "true", className: "souvVoile" + (visFerme ? " souvQuitte" : ""), /* \ud83d\udfe5 05/09 (Blandine : « on dirait qu on ne peut pas balayer d une photo a l autre sur la page Photos »). Le balayage vivait UNIQUEMENT sur l image (PhotoZoomHype pose ses onTouch sur le <img>). Une photo en portrait laisse de larges bandes noires a gauche et a droite : un balayage qui part de la, ne fait rien. La visionneuse des albums, elle, ecoute sur tout l ecran. Meme chose ici : le voile ecoute aussi, et NE reagit PAS si le toucher est parti de l image (PhotoZoomHype s en charge deja, sinon on avancerait de deux). */ onTouchStart: function (eT) { try { var t0 = eT.touches && eT.touches[0]; if (!t0) return; var cibleT = eT.target; if (cibleT && cibleT.tagName === "IMG") { window.__visSwipe = null; return; } window.__visSwipe = { x: t0.clientX, y: t0.clientY }; } catch (eT0) { } }, onTouchEnd: function (eT) { try { var d0 = window.__visSwipe; window.__visSwipe = null; if (!d0) return; var t1 = eT.changedTouches && eT.changedTouches[0]; if (!t1) return; var dxS = t1.clientX - d0.x, dyS = Math.abs(t1.clientY - d0.y); if (Math.abs(dxS) > 50 && dyS < 70) { var lS = (window.__visListe || []).slice(); if (lS.length < 2) return; var iS = lS.indexOf(visionneuse); if (iS < 0) return; var pS = dxS < 0 ? 1 : -1; var nS = ((iS + pS) % lS.length + lS.length) % lS.length; setVisFerme(false); setVisionneuse(lS[nS]); } } catch (eT1) { } }, ref: hypeRefBloquerPincement, style: { touchAction: "manipulation", position: "fixed", inset: 0, zIndex: 8800, background: (visionneuse && typeof estUrlVideo === "function" && estUrlVideo(visionneuse)) ? "#000" : "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: (visionneuse && typeof estUrlVideo === "function" && estUrlVideo(visionneuse)) ? 0 : 10 } },
       h("div", { className: "souvGrandHalo" }),
       estUrlVideo(visionneuse)

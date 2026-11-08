@@ -312,6 +312,21 @@ function EcranAssistantIA() {
     useEffect(() => { rechargerMemoireHB(); rechargerFichesEcurie(); try { chargerCorrectionsHB(); } catch (eCo) { } }, []);
     const [framesVideo, setFramesVideo] = useState(null);
     const [extractionVideo, setExtractionVideo] = useState(false);
+    /* 08/11 (Blandine « Vas y continue ») : PASSAGE DE VIDEO ENVOYE DEPUIS LA NOUVELLE PAGE DE LECTURE (« Envoyer ce passage a
+       Hey Baby »). La page de lecture prepare les images (vignettes Mux du passage choisi, meme forme que extraireFramesVideo :
+       { t, data }) et les depose ici ; elles arrivent JOINTES, comme une video choisie dans le telephone, avec une question
+       pre-remplie. Rien ne part tant que la personne n a pas appuye sur Envoyer : memes regles et meme quota qu une video. */
+    useEffect(() => {
+        try {
+            const pV = window.__hbPassageVideo;
+            if (pV && Array.isArray(pV.frames) && pV.frames.length) {
+                window.__hbPassageVideo = null;
+                setFramesVideo(pV.frames); setImageJointe(pV.frames[0].data);
+                if (pV.question) setSaisie(String(pV.question));
+                hbLog("passage de vidéo reçu de la page de lecture :", pV.frames.length, "images");
+            }
+        } catch (ePv) { }
+    }, []);
     // Corrige l'orientation EXIF, limite la résolution seulement si nécessaire (assez grande pour
     // voir mains/jambes/étriers/regard/attitude du cheval), et journalise le diagnostic avant/après.
     const traiterPhotoHeyBaby = (fichier) => new Promise(async (resoudre, rejeter) => {
