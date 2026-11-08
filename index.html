@@ -39666,8 +39666,8 @@ function hypeRequeteTeam(colonnes, clef) {
 
 const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=12", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
-const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=12", "HypeTeamMedias", "Medias");
-const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=12", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
+const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=13", "HypeTeamMedias", "Medias");
+const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=13", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
 const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=54", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
@@ -47528,7 +47528,7 @@ function HypePageVideo(props) {
         Array.apply(null, Array(nbI)).map(function (_, k) {
           var tk = duree ? (duree * (k + 0.5) / nbI) : (k * 4);
           var dans = duree && tk >= pas[0] && tk <= pas[1];
-          return h("img", { key: "bi" + k, src: "https://image.mux.com/" + mm[1] + "/thumbnail.webp?width=200&time=" + tk.toFixed(1), alt: "", draggable: false, loading: "lazy", style: { flex: 1, minWidth: 0, height: "100%", objectFit: "cover", filter: dans ? "none" : "brightness(0.5)", pointerEvents: "none" } });
+          return h("img", { key: "bi" + k, src: "https://image.mux.com/" + mm[1] + "/thumbnail.webp?width=200&time=" + tk.toFixed(1), alt: "", draggable: false, onError: function () { try { setBandeErr(true); } catch (eB) { } }, style: { flex: 1, minWidth: 0, height: "100%", objectFit: "cover", filter: dans ? "none" : "brightness(0.5)", pointerEvents: "none" } });
         })),
       duree ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, height: 56, insetInlineStart: (pas[0] / duree * 100) + "%", width: ((pas[1] - pas[0]) / duree * 100) + "%", border: "1.5px solid " + CH, borderRadius: 6, boxSizing: "border-box", pointerEvents: "none" } }) : null,
       h("div", { ref: refPoig, style: { position: "relative", height: 34 } },
@@ -47583,9 +47583,16 @@ function HypePageVideo(props) {
   var stG = React.useState(0), galI = stG[0], setGalI = stG[1];
   var stO = React.useState(false), hbOuv = stO[0], setHbOuv = stO[1];
   var stA = React.useState(false), apercu = stA[0], setApercu = stA[1];
+  var stBE = React.useState(false), bandeErr = stBE[0], setBandeErr = stBE[1];
+  var stDE = React.useState(false), dureeEchec = stDE[0], setDureeEchec = stDE[1];
+  var stMn = React.useState(false), menuOuv = stMn[0], setMenuOuv = stMn[1];
+  React.useEffect(function () { setBandeErr(false); setDureeEchec(false); setMenuOuv(false); }, [url]);
   /* 08/11 23h : la bande de Hey Baby a besoin de la durée, même quand la vidéo n'est pas encore lancée : lue chez Mux (liste des morceaux) */
   React.useEffect(function () {
     if (!hbOuv || duree || !mm) return; var vif = true;
+    var connue = props.dureeSecDe ? Number(props.dureeSecDe(url)) || 0 : 0;
+    if (connue > 0) { setDuree(connue); return; }
+    var garde = setTimeout(function () { if (vif) setDureeEchec(true); }, 9000);
     (async function () {
       try {
         var r1 = await fetch("https://stream.mux.com/" + mm[1] + ".m3u8"); var t1 = await r1.text();
@@ -47593,10 +47600,10 @@ function HypePageVideo(props) {
         if (!lg1) return; var u2 = new URL(lg1.trim(), "https://stream.mux.com/" + mm[1] + ".m3u8").href;
         var t2 = await (await fetch(u2)).text(); var tot = 0;
         t2.split("\n").forEach(function (l) { var m0 = /^#EXTINF:([\d.]+)/.exec(l); if (m0) tot += parseFloat(m0[1]); });
-        if (vif && tot > 0) setDuree(function (x) { return x > 0 ? x : tot; });
-      } catch (eD) { }
+        if (vif && tot > 0) { clearTimeout(garde); setDuree(function (x) { return x > 0 ? x : tot; }); }
+      } catch (eD) { if (vif) { clearTimeout(garde); setDureeEchec(true); } }
     })();
-    return function () { vif = false; };
+    return function () { vif = false; clearTimeout(garde); };
   }, [hbOuv, url]);
   /* aperçu du passage : la vidéo se lit du début à la fin choisis, puis s'arrête */
   React.useEffect(function () {
@@ -47639,8 +47646,11 @@ function HypePageVideo(props) {
       scene,
       h("button", { type: "button", className: "hpv-rond hpv-retour", onClick: props.onFermer, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로") },
         h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
-      h("button", { type: "button", className: "hpv-rond hpv-plus", onClick: function () { try { document.getElementById("hpv-infos").scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, "aria-label": "…" },
+      h("button", { type: "button", className: "hpv-rond hpv-plus", onClick: function () { var mn = (props.menu || []).filter(Boolean); if (mn.length) setMenuOuv(!menuOuv); else { try { document.getElementById("hpv-infos").scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } }, "aria-label": "…" },
         h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5, cy: 12, r: 1.7 }), h("circle", { cx: 12, cy: 12, r: 1.7 }), h("circle", { cx: 19, cy: 12, r: 1.7 }))),
+      menuOuv ? h("div", { className: "hpv-menu", onClick: function () { setMenuOuv(false); } }, (props.menu || []).filter(Boolean).map(function (it, k) {
+        return h("button", { type: "button", key: "mn" + k, disabled: it.actif === false, onClick: function () { if (it.action) it.action(); } }, it.label);
+      })) : null,
       joue ? null : h("div", { className: "hpv-titre" },
         props.surTitre ? h("div", { className: "hpv-sur", dir: "auto" }, props.surTitre) : null,
         props.surTitre ? h("i", { className: "hpv-filet" }) : null,
@@ -47666,6 +47676,7 @@ function HypePageVideo(props) {
       h("div", { className: "hpv-hb-tete" },
         h("b", null, T("Analyser un passage avec Hey Baby", "Analyse a part with Hey Baby", "Analizar un fragmento con Hey Baby", "Analizza un passaggio con Hey Baby", "Hey Baby で場面を分析", "Einen Abschnitt mit Hey Baby analysieren", "حلّل مقطعًا مع Hey Baby", "用 Hey Baby 分析一个片段", "Een stuk analyseren met Hey Baby", "Analisar um trecho com o Hey Baby", "Analysera ett avsnitt med Hey Baby", "Разобрать фрагмент с Hey Baby", "Przeanalizuj fragment z Hey Baby", "Hey Baby와 구간 분석하기")),
         h("button", { type: "button", className: "hpv-x", onClick: function () { setHbOuv(false); setApercu(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, "×")),
+      (bandeErr || (dureeEchec && !duree)) ? h("div", { className: "hpv-hb-err" }, T("Les images de cette vidéo n’ont pas pu être chargées. Lance la vidéo une fois, puis rouvre Hey Baby.", "The images of this video couldn’t be loaded. Play the video once, then open Hey Baby again.", "No se pudieron cargar las imágenes de este vídeo. Reproduce el vídeo una vez y vuelve a abrir Hey Baby.", "Non è stato possibile caricare le immagini di questo video. Avvia il video una volta, poi riapri Hey Baby.", "この動画の画像を読み込めませんでした。一度動画を再生してから、Hey Baby をもう一度開いてね。", "Die Bilder dieses Videos konnten nicht geladen werden. Spiel das Video einmal ab und öffne Hey Baby dann erneut.", "تعذّر تحميل صور هذا الفيديو. شغّل الفيديو مرة واحدة ثم افتح Hey Baby من جديد.", "无法加载这段视频的画面。先播放一次视频，再重新打开 Hey Baby。", "De beelden van deze video konden niet worden geladen. Speel de video één keer af en open Hey Baby opnieuw.", "Não foi possível carregar as imagens deste vídeo. Reproduz o vídeo uma vez e volta a abrir o Hey Baby.", "Bilderna i videon kunde inte laddas. Spela upp videon en gång och öppna Hey Baby igen.", "Не удалось загрузить кадры этого видео. Запусти видео один раз и снова открой Hey Baby.", "Nie udało się wczytać obrazów z tego wideo. Odtwórz je raz i ponownie otwórz Hey Baby.", "이 영상의 이미지를 불러오지 못했어요. 영상을 한 번 재생한 뒤 Hey Baby를 다시 열어 줘.")) :
       h("div", { className: "hpv-hb-corps" }, encart,
         duree ? h("div", { className: "hpv-hb-duree" },
           h("span", null, hms(pas[0]) + " → " + hms(pas[1]) + " · " + T("Extrait de ", "Clip of ", "Fragmento de ", "Estratto di ", "抜粋 ", "Ausschnitt von ", "مقطع مدته ", "片段 ", "Fragment van ", "Excerto de ", "Utdrag på ", "Фрагмент ", "Fragment ", "구간 ") + Math.round(pas[1] - pas[0]) + " s"),
@@ -47681,26 +47692,31 @@ function HypePageVideo(props) {
 var HPV_CSS = [
   ".hpv.hpv-photo-on #hpv-infos>div:first-child>div:first-child{display:none}",   /* le titre est déjà sur la photo : pas de doublon */
   ".hpv .hpv-in{max-width:1100px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}",
-  ".hpv .hpv-scene{position:relative;height:min(76vh,760px);min-height:520px;overflow:hidden;background:#070A08}",
+  ".hpv .hpv-scene{position:relative;height:clamp(470px,66vh,720px);overflow:hidden;background:#070A08}",   /* 08/11 23h40 : moins de vide avant les vidéos */
   ".hpv .hpv-photo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}",
   ".hpv .hpv-photo img{width:100%;height:100%;object-fit:contain;display:block}",
   ".hpv .hpv-photo:not(.fond){padding:calc(env(safe-area-inset-top) + 250px) 0 12px}",
-  ".hpv .hpv-photo.fond img{object-fit:cover;object-position:68% 50%;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}",
+  ".hpv .hpv-photo.fond img{object-fit:cover;object-position:62% 38%;-webkit-mask-image:linear-gradient(180deg,#000 86%,transparent);mask-image:linear-gradient(180deg,#000 86%,transparent)}",
   ".hpv .hpv-video{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding-top:calc(env(safe-area-inset-top) + 64px)}",
   ".hpv .hpv-sous-video{display:flex;justify-content:center;gap:10px;margin-top:12px}",
   ".hpv .hpv-sous-video button{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;font-size:12.5px}",
   ".hpv .hpv-rond{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);width:44px;height:44px;padding:0;border-radius:50%;border:1px solid rgba(201,166,107,.65);background:rgba(7,10,8,.35);color:#F3EEE4;display:flex;align-items:center;justify-content:center;cursor:pointer}",
   ".hpv .hpv-retour{inset-inline-start:16px}.hpv .hpv-plus{inset-inline-end:16px}",
-  ".hpv .hpv-titre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 72px);inset-inline-start:20px;max-width:58%;text-shadow:0 2px 12px rgba(0,0,0,.6)}",
+  ".hpv .hpv-titre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 76px);inset-inline-start:20px;max-width:44%;text-shadow:0 2px 14px rgba(0,0,0,.75)}",
   ".hpv .hpv-sur{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:#F3EEE4;opacity:.92}",
   ".hpv .hpv-filet{display:block;width:54px;height:1.5px;background:#C9A66B;margin:12px 0 14px}",
-  ".hpv .hpv-titre h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(36px,10.5vw,54px);line-height:1;color:#F3EEE4}",
+  ".hpv .hpv-titre h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(32px,9vw,50px);line-height:1.08;padding-top:4px;color:#F3EEE4;overflow-wrap:break-word}",
   ".hpv .hpv-titre h1.long{font-size:clamp(28px,8vw,42px)}",
   ".hpv .hpv-titre p{margin:12px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#F3EEE4}",
   ".hpv .hpv-ronds{position:absolute;z-index:3;inset-inline-end:14px;top:30%;display:flex;flex-direction:column;gap:14px}",
   ".hpv .hpv-r{width:clamp(62px,17vw,84px);height:clamp(62px,17vw,84px);border-radius:50%;padding:0;overflow:hidden;border:1px solid rgba(201,166,107,.55);background:#0c1011;cursor:pointer}",
   ".hpv .hpv-r.on{border:1.5px solid #C9A66B}",
   ".hpv .hpv-r{position:relative}",
+  ".hpv .hpv-ronds{top:calc(env(safe-area-inset-top) + 150px)!important}",
+  ".hpv .hpv-menu{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 62px);inset-inline-end:16px;min-width:230px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:rgba(10,14,15,.97);padding:6px;box-shadow:0 14px 30px rgba(0,0,0,.6)}",
+  ".hpv .hpv-menu button{display:block;width:100%;text-align:start;background:none;border:none;color:#F3EEE4;font-size:13.5px;padding:11px 12px;border-radius:10px;cursor:pointer}",
+  ".hpv .hpv-menu button[disabled]{color:rgba(243,238,228,.5);cursor:default}",
+  ".hpv .hpv-hb-err{padding:4px 2px 16px;font-size:12.5px;line-height:1.5;color:rgba(243,238,228,.75)}",
   ".hpv .hpv-r img{width:100%;height:100%;object-fit:cover;display:block}",
   ".hpv .hpv-r-ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,10,8,.35)}",
   ".hpv .hpv-r-hb img{filter:brightness(.6)}",
@@ -47710,9 +47726,9 @@ var HPV_CSS = [
   ".hpv .hpv-traits{display:flex;justify-content:center;gap:7px;margin:4px 0 22px}",
   ".hpv .hpv-traits button{width:26px;height:3px;border:none;border-radius:2px;background:rgba(243,238,228,.22);padding:0;cursor:pointer}",
   ".hpv .hpv-traits button.on{background:#C9A66B}",
-  ".hpv .hpv-vids{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 20px)/3);gap:10px;overflow-x:auto;scrollbar-width:none;padding:0 16px}",
+  ".hpv .hpv-vids{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 12px)/3);gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 10px;margin-top:-6px}",
   ".hpv .hpv-vids::-webkit-scrollbar{display:none}",
-  ".hpv .hpv-v{position:relative;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:11px;overflow:hidden;background:#0c1011;aspect-ratio:3/2;cursor:pointer}",
+  ".hpv .hpv-v{position:relative;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:10px;overflow:hidden;background:#0c1011;aspect-ratio:4/3;cursor:pointer}",
   ".hpv .hpv-v.on{border:1.5px solid #C9A66B}",
   ".hpv .hpv-v img{width:100%;height:100%;object-fit:cover;display:block}",
   ".hpv .hpv-duree{position:absolute;inset-inline-end:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:9px;background:rgba(7,10,8,.72);color:#F3EEE4;font-variant-numeric:tabular-nums}",
