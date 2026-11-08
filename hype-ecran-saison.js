@@ -25,6 +25,11 @@ var HS_TR_BRUT = {
   "demain": ["tomorrow", "mañana", "domani", "明日", "morgen", "غدا", "明天", "morgen", "amanhã", "i morgon", "завтра", "jutro", "내일"],
   "dans ": ["in ", "en ", "tra ", "あと", "in ", "بعد ", "还有", "over ", "em ", "om ", "через ", "za ", ""],
   "en cours": ["ongoing", "en curso", "in corso", "開催中", "läuft", "جار", "进行中", "bezig", "em andamento", "pågår", "идёт", "trwa", "진행 중"],
+  "Résultats": ["Results","Resultados","Risultati","結果","Ergebnisse","النتائج","成绩","Uitslagen","Resultados","Resultat","Результаты","Wyniki","결과"],
+  "partants": ["starters","participantes","partenti","頭出走","Starter","مشاركًا","匹出赛","starters","participantes","startande","участников","startujących","출전"],
+  "Épreuve": ["Class","Prueba","Gara","競技","Prüfung","المنافسة","比赛","Proef","Prova","Klass","Соревнование","Konkurs","경기"],
+  "Sans faute": ["Clear round","Sin faltas","Percorso netto","減点なし","Null-Fehler-Ritt","دون أخطاء","零失误","Foutloos","Sem faltas","Felfri","Без ошибок","Bez błędów","무결점"],
+  "Les résultats de ce concours n’ont pas encore été ajoutés.": ["The results of this show haven’t been added yet.","Los resultados de este concurso aún no se han añadido.","I risultati di questo concorso non sono ancora stati aggiunti.","この大会の結果はまだ追加されていません。","Die Ergebnisse dieses Turniers wurden noch nicht hinzugefügt.","لم تُضَف نتائج هذه المسابقة بعد.","该比赛的成绩尚未添加。","De uitslagen van deze wedstrijd zijn nog niet toegevoegd.","Os resultados deste concurso ainda não foram adicionados.","Resultaten från tävlingen har inte lagts till än.","Результаты этого соревнования ещё не добавлены.","Wyniki tych zawodów nie zostały jeszcze dodane.","이 대회의 결과는 아직 추가되지 않았어요."],
   "Cavalier non renseigné": ["Rider not specified","Jinete sin indicar","Cavaliere non indicato","騎手未入力","Reiter nicht angegeben","فارس غير محدّد","骑手未填写","Ruiter niet ingevuld","Cavaleiro não indicado","Ryttare ej angiven","Всадник не указан","Jeździec nie podany","라이더 미입력"],
   "Retour": ["Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"],
   "Ma saison": ["My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"],
@@ -952,7 +957,8 @@ function EcranConcours() {
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
   var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq = _pq[1];
-  var _oc = React.useState(""); var ongletC = _oc[0], setOngletC = _oc[1];   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
+  var _oc = React.useState(""); var ongletC = _oc[0], setOngletC = _oc[1];
+  var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
     setDvOcc(true);
@@ -994,6 +1000,19 @@ function EcranConcours() {
         if (vif) setEv(r.data);
         chargerInscrits(u);
         hsPeutGerer(r.data.club_clef).then(function (g) { if (vif) setGestion(g); });
+        /* 09/11 : résultats du concours, par épreuve (seulement ceux rattachés à ce rendez-vous) */
+        try {
+          var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere").eq("agenda_id", idEv).limit(200);
+          var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x.visible !== false; });
+          if (lr.length) {
+            var idsP = [], idsH = []; lr.forEach(function (x) { if (x.cavalier_id && idsP.indexOf(x.cavalier_id) === -1) idsP.push(x.cavalier_id); if (x.cheval_id && idsH.indexOf(x.cheval_id) === -1) idsH.push(x.cheval_id); });
+            var pP = {}, pH = {};
+            if (idsP.length) { var rpp = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsP); ((rpp && rpp.data) || []).forEach(function (x) { pP[x.id] = x; }); }
+            if (idsH.length) { var rhh = await supa.from("chevaux").select("id, nom, alias").in("id", idsH); ((rhh && rhh.data) || []).forEach(function (x) { pH[x.id] = x; }); }
+            lr.forEach(function (x) { x.__p = pP[x.cavalier_id] || null; x.__ch = pH[x.cheval_id] ? (pH[x.cheval_id].alias || pH[x.cheval_id].nom) : ""; });
+          }
+          if (vif) setResConc(lr);
+        } catch (eRc) { }
         /* 08/11 : passages de toute l'équipe (fonction en base hype_passages_concours : équipe du club, coach, modératrice ; liste vide sinon) */
         try { supa.rpc("hype_passages_concours", { p_agenda: idEv }).then(function (rq) { if (vif && rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); }); } catch (eQ) { }
         /* 04/11 22h15 — vidéos de parcours : celles publiées sur le fil du concours (cible « agenda:<id> ») */
@@ -1245,6 +1264,26 @@ function EcranConcours() {
       pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null) : null
   ];
 
+  /* ── RÉSULTATS PAR ÉPREUVE (09/11, Blandine : « un petit onglet avec les résultats par épreuve et ensuite les vidéos ») ──
+     Nom affiché : le pseudo du compte, sinon le prénom + l'initiale du nom FFE (règle des cavaliers mineurs) ; jamais la licence. */
+  function prenomInitiale(t) { var m = String(t || "").trim().split(/\s+/).filter(Boolean); if (m.length < 2) return m[0] || ""; var nom = m[0], pre = m.slice(1).join(" "); if (nom !== nom.toUpperCase()) { pre = m[0]; nom = m[m.length - 1]; } return pre.charAt(0).toUpperCase() + pre.slice(1).toLowerCase() + " " + nom.charAt(0).toUpperCase() + "."; }
+  var resParEp = [];
+  (resConc || []).forEach(function (r) { var k = hsNomEpreuve(r.epreuve || "") || F("Épreuve"); var g = null; resParEp.forEach(function (x) { if (x.ep === k) g = x; }); if (!g) { g = { ep: k, l: [] }; resParEp.push(g); } g.l.push(r); });
+  resParEp.forEach(function (g) { g.l.sort(function (a, b) { return (a.place || 999) - (b.place || 999); }); });
+  var blocResultats = resParEp.length ? h("div", { key: "res" },
+    h("div", { className: "hc-sous" }, F("Résultats")),
+    resParEp.map(function (g, gi) {
+      return h("div", { key: gi, className: "hc-liste" },
+        h("div", { className: "hc-ep-t" }, h("b", null, g.ep), h("span", null, g.l[0] && g.l[0].partants ? g.l[0].partants + " " + F("partants") : "")),
+        g.l.map(function (r) {
+          var nom = (r.__p && r.__p.pseudo) || prenomInitiale(r.cavalier) || F("Cavalier non renseigné");
+          var pl = r.place ? (r.place + (r.place === 1 ? "re" : "e")) : (r.classement || "");
+          return h("div", { key: r.id, className: "hc-l" },
+            avatarHc(r.__p || { pseudo: nom }),
+            h("div", { className: "hc-qui" }, h("b", null, nom), h("span", null, [r.__ch, r.mention ? F("Sans faute") : ""].filter(Boolean).join(" · "))),
+            pl ? h("span", { className: "hc-res" }, pl) : null);
+        }));
+    })) : (fini ? h("div", { key: "res0", className: "hs-note", style: { marginTop: 0, marginBottom: 12 } }, F("Les résultats de ce concours n’ont pas encore été ajoutés.")) : null);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
@@ -1324,7 +1363,7 @@ function EcranConcours() {
         ongletC === "equipe" ? blocEquipe : null,
         ongletC === "medias" ? blocMedias : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
-        : ((videos.length || typeof HypeVideosEquipeConcours === "function") ? h("div", { className: "hc-onglet" }, blocMedias[0], blocMedias[1]) : null),
+        : h("div", { className: "hc-onglet" }, blocResultats, blocMedias[0], blocMedias[1]),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
