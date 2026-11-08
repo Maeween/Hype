@@ -952,6 +952,7 @@ function EcranConcours() {
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
   var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq = _pq[1];
+  var _oc = React.useState(""); var ongletC = _oc[0], setOngletC = _oc[1];   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
     setDvOcc(true);
@@ -1090,9 +1091,10 @@ function EcranConcours() {
         menuOuv ? h("div", { className: "hc-menu", onClick: function () { setMenuOuv(false); } },
           gestion ? h("button", { type: "button", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement")) : null,
           gestion ? h("button", { type: "button", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")) : null,
-          gestion ? h("button", { type: "button", onClick: function () { ouvrir("dossier-concours"); } }, F("Le dossier")) : null,
+          h("button", { type: "button", onClick: function () { if (gestion) ouvrir("dossier-concours"); else prep("dossier-concours"); } }, F("Le dossier")),
+          !fini ? h("button", { type: "button", onClick: basculerPush }, pushEtat === "actif" ? F("✓ Alertes activées sur ce téléphone") : F("Me prévenir (alertes)")) : null,
           gestion ? h("button", { type: "button", onClick: modifierRdv }, F("Modifier le rendez-vous")) : null,
-          h("button", { type: "button", onClick: function () { allerA("hc-medias"); } }, F("Photos et commentaires")),
+          h("button", { type: "button", onClick: function () { setOngletC("medias"); } }, F("Photos et commentaires")),
           ev && ev.lien_direct ? h("a", { href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats en direct")) : null) : null));
   }
   function heroC(titre, sous) {
@@ -1145,7 +1147,7 @@ function EcranConcours() {
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
-    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans"), onClick: action },
+    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { setOngletC(ongletC === cle ? "" : cle); } },
       h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); }, onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }),
       cle === "medias" ? h("span", { className: "hc-lecture", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
       h("span", { className: "hc-c-pied" }, h("b", null, titre)));   /* 09/11 : plus d’icône, le titre seul en bas de la photo */
@@ -1279,10 +1281,10 @@ function EcranConcours() {
     heroC(ev.titre || F("Concours"), sousTitre),
     h("div", { className: "hs-in" },
       h("div", { className: "hc-cartes" },
-        carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, function () { if (gestion) ouvrirEngagements(); else allerA("hc-passages"); }),
-        carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, function () { if (gestion) ouvrir("jour-j"); else allerA("hc-passages"); }),
-        carte("equipe", F("Équipe"), "eq", HS_IMG_CONCOURS.equipe, function () { allerA("hc-equipe"); }),
-        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, function () { allerA("hc-medias"); })),
+        carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
+        carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
+        carte("equipe", F("Équipe"), "eq", HS_IMG_CONCOURS.equipe, null),
+        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
       h("div", { className: "hc-bande" + (infosOuv ? " ouv" : "") },
         h("div", { className: "hc-b-ligne" },
@@ -1306,13 +1308,21 @@ function EcranConcours() {
       (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
       msg ? h("div", { className: "hs-msg" }, msg) : null,
       (!fini && msgPrep) ? h("div", { className: "hs-msg" }, msgPrep) : null,
-      /* les parties */
-      h("div", { style: { height: 10 } }),
-      partie("hc-passages", F("Passages"), passagesEq && passagesEq.length ? String(couples.length) : (mesLignes.length ? String(mesLignes.length) : ""), blocPassages, mesLignes.length > 0 || (!fini && parEpreuve.length > 0)),
-      partie("hc-equipe", F("Équipe"), inscrits && inscrits.length ? String(inscrits.length) : "", blocEquipe, false),
-      fini && !consignes.length ? null : partie("hc-prep", F("Ma préparation"), "", blocPrep, false),
-      partie("hc-medias", F("Médias"), videos.length ? String(videos.length) : "", blocMedias, fini),
-      dossierUtile ? partie("hc-dossier", F("Dossier du concours"), "", blocDossier, false) : null,
+      pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null,
+      /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
+      ongletC ? h("div", { className: "hc-onglet" },
+        ongletC === "engagements" ? [
+          mesLignes.length ? h("div", { key: "mes", className: "hc-liste" }, mesLignes.map(function (x, i) {
+            return h("div", { key: i, className: "hc-l" }, h("span", { className: "hc-h" }, x.hp || "–"),
+              h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")), h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · "))));
+          })) : h("div", { key: "rien", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")),
+          blocPrep.filter(function (x, i) { return i >= 2 && i < 3; }),
+          histo.length ? blocDossier[1] : null,
+          gestion ? h("button", { key: "ln", type: "button", className: "hc-lien-d", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement") + (rtl ? " ‹" : " ›")) : null
+        ] : null,
+        ongletC === "passages" ? [blocPassages, gestion ? h("button", { key: "lj", type: "button", className: "hc-lien-d", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages") + (rtl ? " ‹" : " ›")) : null] : null,
+        ongletC === "equipe" ? blocEquipe : null,
+        ongletC === "medias" ? blocMedias : null) : null,
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
@@ -1359,6 +1369,9 @@ var HC_CSS = [
   ".hc .hc-courbe{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:2}",
   ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px}",
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
+  ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
+  ".hc .hc-onglet{margin-top:18px;padding-top:4px}",
+  "button.hc-lien-d{background:none;border:none;padding:6px 0;cursor:pointer}",
   ".hc .hc-carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
   ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 2px 8px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.62))}",
   ".hc .hc-carte.sans .hc-c-pied{top:0;justify-content:center;background:none}",
