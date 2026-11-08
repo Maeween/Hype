@@ -3539,6 +3539,7 @@ function hsGarde(Comp) {
         var u = null; try { u = await utilisateurActuel(); } catch (e) { }
         var m = false; try { m = (typeof estModerateurHype === "function") && estModerateurHype(u); } catch (e2) { }
         if (!m && u) { try { var r = await supa.rpc("hype_est_moderatrice"); m = r && r.data === true; } catch (e3) { } }
+        if (!m && u && typeof hypeAccesCentre === "function") { try { m = await hypeAccesCentre(u); } catch (e6) { } }   /* 08/11 choix B : membres des groupes de Blandine */
         if (vif) setOk(!!m);
       })();
       return function () { vif = false; };
