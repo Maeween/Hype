@@ -1622,6 +1622,21 @@ function EcranCheval() {
     try { if (typeof listerCollectionsVideos === "function") listerCollectionsVideos(cibleCh).then(function (rCv) { if (vifCv) setCollVid((rCv && rCv.data) || []); }); } catch (eCv) { }
     return function () { vifCv = false; };
   }, [cibleCh]);
+  /* 08/11 (Blandine « Ok continue ») : une collection peut maintenant contenir une video ajoutee depuis la Team (« Ajouter a une
+     collection »), qui n est pas dans les albums du cheval. Elle s affiche quand meme — SAUF si c est une video d un album PRIVE
+     d une autre personne : ces adresses-la sont chargees ici et ne sont jamais montrees par une collection. */
+  var cvPrSt = React.useState([]); var vidsPriveesCh = cvPrSt[0], setVidsPriveesCh = cvPrSt[1];
+  React.useEffect(function () {
+    var vifPr = true;
+    try {
+      if (cibleCh && typeof supa !== "undefined" && supa) supa.from("albums_cheval").select("photos, user_id").eq("cible", cibleCh).eq("visibilite", "prive").then(function (rPr) {
+        if (!vifPr) return;
+        var l = []; ((rPr && rPr.data) || []).forEach(function (a) { if (a && !(moi && a.user_id === moi.id)) (Array.isArray(a.photos) ? a.photos : []).forEach(function (u) { if (u) l.push(String(u)); }); });
+        setVidsPriveesCh(l);
+      });
+    } catch (ePr) { }
+    return function () { vifPr = false; };
+  }, [cibleCh, moi && moi.id]);
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
   /* \U0001f7e9 06/09 (Blandine, capture) : compteur qui dit a AlbumsCheval de refermer SA
      propre photo ouverte des que celle-ci (la visionneuse de la fiche) s'ouvre \u2014 evite les
@@ -1962,6 +1977,16 @@ function EcranCheval() {
     (chVidsCom || []).forEach(function (x) { if (x && x.url && (!x.statut || x.statut === "ready") && l.indexOf(x.url) < 0) l.push(x.url); });
     return l;
   }
+  /* 08/11 : videos rangees dans une collection sans venir des albums du cheval (ex. ajoutees depuis la Team) */
+  function videosColExtCh() {
+    var deja = videosPretesCh(), l = [];
+    (collVid || []).forEach(function (c) { (Array.isArray(c.videos) ? c.videos : []).forEach(function (u) {
+      if (typeof u !== "string" || !u || deja.indexOf(u) >= 0 || l.indexOf(u) >= 0 || vidsPriveesCh.indexOf(u) >= 0) return;
+      if (!/stream\.mux\.com\/[A-Za-z0-9]+\.m3u8/.test(u)) return;   /* seulement des videos Mux (celles de la Team) */
+      l.push(u);
+    }); });
+    return l;
+  }
   function rechargerCollVid() {
     try { if (typeof listerCollectionsVideos === "function") return listerCollectionsVideos(cibleCh).then(function (rCv) { setCollVid((rCv && rCv.data) || []); }); } catch (eRc) { }
     return Promise.resolve();
@@ -2039,7 +2064,7 @@ function EcranCheval() {
   }
   function fenetreCol() {
     var e = colEdit; if (!e) return null;
-    var prets = videosPretesCh();
+    var prets = videosPretesCh().concat(videosColExtCh());   /* 08/11 : + videos venues de la Team */
     var nomDe = {}; (collVid || []).forEach(function (cN) { if (cN.id !== e.id) (Array.isArray(cN.videos) ? cN.videos : []).forEach(function (u) { nomDe[u] = String(cN.nom || ""); }); });
     var idx = -1, nbC = (collVid || []).length; (collVid || []).forEach(function (cX, k) { if (cX.id === e.id) idx = k; });
     var btnS = { minHeight: 40, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(214,196,161,0.45)", background: "rgba(16,29,34,0.55)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, cursor: "pointer" };
@@ -2136,6 +2161,8 @@ function EcranCheval() {
     if (!cols.length) return null;
     var prets = (chVids || []).slice();
     (chVidsCom || []).forEach(function (x) { if (x && x.url && (!x.statut || x.statut === "ready") && prets.indexOf(x.url) < 0) prets.push(x.url); });
+    var extCol = videosColExtCh();   /* 08/11 : videos ajoutees depuis la Team, montrees dans LEUR collection seulement */
+    prets = prets.concat(extCol);
     var vus = {}, secs = [];
     cols.forEach(function (col) {
       var lst = (Array.isArray(col.videos) ? col.videos : []).filter(function (u) { return typeof u === "string" && prets.indexOf(u) >= 0 && !vus[u]; });
@@ -2143,7 +2170,7 @@ function EcranCheval() {
       if (lst.length) secs.push({ cle: "c" + col.id, nom: String(col.nom || "").trim(), vids: lst, col: col });
     });
     if (!secs.length) return null;
-    var autres = prets.filter(function (u) { return !vus[u]; });
+    var autres = prets.filter(function (u) { return !vus[u] && extCol.indexOf(u) < 0; });
     var enPrep = (chVidsCom || []).filter(function (x) { return x && x.statut && x.statut !== "ready"; });
     function nbTxt(n) { return n + " " + (n > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상")); }
     function section(cle, titre, vids, extra, txtTout, colObj) {

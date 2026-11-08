@@ -57,6 +57,10 @@ function EcranTeamMedias() {
   var _vv = React.useState(null); var visuV = _vv[0], setVisuV = _vv[1];   /* 07/11 : id de la vidéo ouverte (page de lecture « B ») */
   var _vm = React.useState(false); var visuMuet = _vm[0], setVisuMuet = _vm[1];
   var _cs = React.useState(""); var changeSon = _cs[0], setChangeSon = _cs[1];
+  /* 08/11 (Blandine « Ok continue ») : « Ajouter à une collection » depuis la page de lecture d'une vidéo de la Team */
+  var _va = React.useState(""); var visuAdr = _va[0], setVisuAdr = _va[1];       /* adresse brute de la vidéo ouverte */
+  var _ccl = React.useState(null); var colCibles = _ccl[0], setColCibles = _ccl[1];   /* pages (cavalier / cheval) que je peux ranger */
+  var _fcl = React.useState(null); var feuilleCol = _fcl[0], setFeuilleCol = _fcl[1];
   var T_SANS_SON = function () { return T("Sans le son", "Without sound", "Sin sonido", "Senza audio", "音声なし", "Ohne Ton", "بدون صوت", "静音", "Zonder geluid", "Sem som", "Utan ljud", "Без звука", "Bez dźwięku", "소리 없이"); };
   async function basculerSon(v) {
     if (!v || !moi || v.auteur_id !== moi.id || changeSon) return;
@@ -240,6 +244,115 @@ function EcranTeamMedias() {
     if (v) lire(v);
   }, [videos]);
 
+  React.useEffect(function () {
+    setColCibles(null);
+    if (!visuV || !moi || typeof supa === "undefined" || !supa) return;
+    var v = (videos || []).filter(function (x) { return x.id === visuV; })[0]; if (!v) return;
+    var vifCc = true;
+    (async function () {
+      var cands = [];
+      (v.cavaliers || []).forEach(function (u) { var pp = profilsParId[u]; cands.push({ cible: "cavalier:" + u, nom: pp ? nomProfil(pp) : "" }); });
+      (v.chevaux || []).forEach(function (c) { cands.push({ cible: "cheval:" + c, nom: nomCheval(c) }); });
+      var ok = [];
+      for (var i = 0; i < cands.length; i++) {
+        try { var r = await supa.rpc("hype_peut_gerer_collections", { p_cible: cands[i].cible }); if (r && !r.error && r.data === true) ok.push(cands[i]); } catch (eC) { }
+      }
+      if (vifCc) setColCibles(ok);
+    })();
+    return function () { vifCc = false; };
+  }, [visuV, moi && moi.id]);
+  async function ouvrirFeuilleCol(v) {
+    var url = visuAdr; if (!url || !colCibles || !colCibles.length) return;
+    var nomDef = String(v.concours || v.lieu || "").trim().slice(0, 60);
+    var cib = [];
+    for (var i = 0; i < colCibles.length; i++) {
+      var rL = (typeof listerCollectionsVideos === "function") ? await listerCollectionsVideos(colCibles[i].cible) : { data: [] };
+      var cols = (rL && rL.data) || [];
+      var dedans = cols.filter(function (c) { return (Array.isArray(c.videos) ? c.videos : []).indexOf(url) >= 0; })[0];
+      cib.push({ cible: colCibles[i].cible, nom: colCibles[i].nom, cols: cols, avant: dedans ? dedans.id : "", choix: dedans ? dedans.id : "", nouvNom: nomDef });
+    }
+    setFeuilleCol({ v: v, url: url, cib: cib, busy: false, err: "", fait: false });
+  }
+  function choixCol(k, val, nom) { setFeuilleCol(function (o) { if (!o) return o; var c = o.cib.slice(); c[k] = Object.assign({}, c[k], nom != null ? { nouvNom: nom } : { choix: val }); return Object.assign({}, o, { cib: c, err: "" }); }); }
+  async function enregistrerFeuilleCol() {
+    var f = feuilleCol; if (!f || f.busy) return;
+    var refus = T("Action refusée : tu n’as pas les droits sur ces collections.", "Action refused: you don’t have rights on these collections.", "Acción rechazada: no tienes derechos sobre estas colecciones.", "Azione rifiutata: non hai i diritti su queste raccolte.", "このコレクションを編集する権限がありません。", "Aktion abgelehnt: Du hast keine Rechte an diesen Sammlungen.", "تم رفض الإجراء: ليس لديك صلاحيات على هذه المجموعات.", "操作被拒绝：你对这些合集没有权限。", "Actie geweigerd: je hebt geen rechten op deze collecties.", "Ação recusada: você não tem permissões sobre estas coleções.", "Åtgärden nekades: du har inga rättigheter för de här samlingarna.", "Действие отклонено: у тебя нет прав на эти коллекции.", "Akcja odrzucona: nie masz uprawnień do tych kolekcji.", "허용되지 않은 동작이에요. 이 컬렉션에 대한 권한이 없어요.");
+    for (var k0 = 0; k0 < f.cib.length; k0++) {
+      if (f.cib[k0].choix === "nouv" && !String(f.cib[k0].nouvNom || "").trim()) { setFeuilleCol(Object.assign({}, f, { err: T("Le nom est obligatoire.", "The name is required.", "El nombre es obligatorio.", "Il nome è obbligatorio.", "名前は必須です。", "Der Name ist erforderlich.", "الاسم مطلوب.", "名称必填。", "De naam is verplicht.", "O nome é obrigatório.", "Namn måste anges.", "Название обязательно.", "Nazwa jest wymagana.", "이름은 필수예요.") })); return; }
+    }
+    setFeuilleCol(Object.assign({}, f, { busy: true, err: "" }));
+    try {
+      for (var k = 0; k < f.cib.length; k++) {
+        var t = f.cib[k];
+        if (t.choix === t.avant) continue;
+        /* une vidéo n'est que dans UNE collection par page : on la retire d'abord de celles qui l'ont */
+        var aRet = t.cols.filter(function (c) { return c.id !== t.choix && (Array.isArray(c.videos) ? c.videos : []).indexOf(f.url) >= 0; });
+        for (var j = 0; j < aRet.length; j++) {
+          var rR = await supa.from("collections_videos").update({ videos: aRet[j].videos.filter(function (u) { return u !== f.url; }) }).eq("id", aRet[j].id).select("id");
+          if (rR && rR.error) throw rR.error;
+          if (!rR || !rR.data || !rR.data.length) throw new Error(refus);
+        }
+        if (t.choix === "nouv") {
+          var maxO = t.cols.reduce(function (m, cO) { return Math.max(m, cO.ordre || 0); }, -1);
+          var rI = await supa.from("collections_videos").insert({ cible: t.cible, nom: String(t.nouvNom).trim().slice(0, 60), videos: [f.url], ordre: maxO + 1 }).select("id");
+          if (rI && rI.error) throw rI.error;
+          if (!rI || !rI.data || !rI.data.length) throw new Error(refus);
+        } else if (t.choix) {
+          var col = t.cols.filter(function (c) { return c.id === t.choix; })[0];
+          var l = (col && Array.isArray(col.videos) ? col.videos : []).filter(function (u) { return u !== f.url; }).concat([f.url]);
+          var rU = await supa.from("collections_videos").update({ videos: l }).eq("id", t.choix).select("id");
+          if (rU && rU.error) throw rU.error;
+          if (!rU || !rU.data || !rU.data.length) throw new Error(refus);
+        }
+      }
+      setFeuilleCol(Object.assign({}, f, { busy: false, fait: true }));
+      setTimeout(function () { setFeuilleCol(function (o) { return (o && o.fait) ? null : o; }); }, 1400);
+    } catch (eE) { setFeuilleCol(Object.assign({}, f, { busy: false, err: String((eE && eE.message) || eE) })); }
+  }
+  function boutonCollection(v) {
+    if (!colCibles || !colCibles.length || !visuAdr) return null;
+    return h("button", { type: "button", onClick: function () { ouvrirFeuilleCol(v); },
+      style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 36, padding: "0 13px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } },
+      "+ " + T("Ajouter à une collection", "Add to a collection", "Añadir a una colección", "Aggiungi a una raccolta", "コレクションに追加", "Zu einer Sammlung hinzufügen", "إضافة إلى مجموعة", "加入合集", "Aan een collectie toevoegen", "Adicionar a uma coleção", "Lägg till i en samling", "Добавить в коллекцию", "Dodaj do kolekcji", "컬렉션에 추가"));
+  }
+  function fenetreFeuilleCol() {
+    var f = feuilleCol; if (!f) return null;
+    var v = f.v;
+    var radio = function (on) { return h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (on ? CH : "rgba(243,238,228,0.4)"), display: "flex", alignItems: "center", justifyContent: "center" } }, on ? h("span", { style: { width: 12, height: 12, borderRadius: "50%", background: CH } }) : null); };
+    var ligne = function (k, val, txt, sous) {
+      var on = f.cib[k].choix === val;
+      return h("button", { key: "l" + k + "_" + val, type: "button", onClick: function () { choixCol(k, val); }, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 48, padding: "8px 2px", background: "none", border: "none", borderBottom: "1px solid rgba(243,238,228,0.07)", color: IV, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { flex: 1, minWidth: 0 } },
+          h("span", { dir: "auto", style: { display: "block", fontFamily: SERIF, fontSize: 19, lineHeight: 1.2 } }, txt),
+          sous ? h("span", { style: { display: "block", fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, sous) : null),
+        radio(on));
+    };
+    var nbTxt = function (n) { return n + " " + (n > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상")); };
+    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", onClick: function (eF) { if (eF.target === eF.currentTarget && !f.busy) setFeuilleCol(null); },
+      style: { position: "fixed", inset: 0, zIndex: 10060, background: "rgba(3,7,6,0.78)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { dir: rtl ? "rtl" : "ltr", style: { width: "100%", maxWidth: 560, maxHeight: "88vh", overflowY: "auto", boxSizing: "border-box", padding: "14px 20px calc(24px + env(safe-area-inset-bottom))", borderRadius: "22px 22px 0 0", background: "#0E1214", borderTop: "1px solid " + CH2, color: IV, fontFamily: M } },
+        h("div", { style: { width: 40, height: 4, borderRadius: 4, background: "rgba(255,255,255,0.25)", margin: "0 auto 14px" } }),
+        h("div", { style: { fontFamily: SERIF, fontSize: 26, lineHeight: 1.15 } }, T("Ajouter à une collection", "Add to a collection", "Añadir a una colección", "Aggiungi a una raccolta", "コレクションに追加", "Zu einer Sammlung hinzufügen", "إضافة إلى مجموعة", "加入合集", "Aan een collectie toevoegen", "Adicionar a uma coleção", "Lägg till i en samling", "Добавить в коллекцию", "Dodaj do kolekcji", "컬렉션에 추가")),
+        h("div", { dir: "auto", style: { fontSize: 12, color: IV2, marginTop: 4 } }, [v.lieu || v.concours || "", v.epreuve || "", dateCourte(v.date_video || v.cree_le)].filter(Boolean).join(" · ")),
+        h("div", { style: { fontSize: 11.5, color: IV3, lineHeight: 1.5, marginTop: 10 } }, T("Une fois dans une collection, la vidéo est visible par tous ceux qui voient la page, pas seulement par l’équipe.", "Once in a collection, the video can be seen by everyone who sees the page, not just the team.", "Una vez en una colección, el vídeo lo ve cualquiera que vea la página, no solo el equipo.", "Una volta in una raccolta, il video è visibile a chiunque veda la pagina, non solo alla squadra.", "コレクションに入れると、チームだけでなくページを見るすべての人が動画を見られます。", "In einer Sammlung sehen alle das Video, die die Seite sehen – nicht nur das Team.", "بمجرد وضعه في مجموعة، يصبح الفيديو مرئيا لكل من يرى الصفحة، وليس للفريق فقط.", "放进合集后，所有能看到该页面的人都能看到这个视频，不只是团队。", "Eenmaal in een collectie is de video zichtbaar voor iedereen die de pagina ziet, niet alleen voor het team.", "Depois de entrar numa coleção, o vídeo fica visível para todos que veem a página, não só para a equipe.", "När videon ligger i en samling syns den för alla som ser sidan, inte bara för laget.", "В коллекции видео видят все, кто открывает страницу, а не только команда.", "Po dodaniu do kolekcji wideo widzą wszyscy, którzy oglądają stronę, nie tylko drużyna.", "컬렉션에 넣으면 팀뿐 아니라 그 페이지를 보는 모든 사람이 영상을 볼 수 있어요.")),
+        v.sans_son ? h("div", { style: { fontSize: 11.5, color: CH, lineHeight: 1.5, marginTop: 6 } }, T("Le son est coupé dans la Team : dans une collection, la vidéo sera lue avec le son.", "Sound is off in the Team: in a collection, the video will play with sound.", "El sonido está quitado en el equipo: en una colección, el vídeo se reproducirá con sonido.", "L’audio è disattivato nella squadra: in una raccolta il video sarà riprodotto con l’audio.", "チームでは音声なしですが、コレクションでは音声付きで再生されます。", "Im Team ist der Ton aus: In einer Sammlung läuft das Video mit Ton.", "الصوت مكتوم في الفريق: في المجموعة سيُشغَّل الفيديو بالصوت.", "团队里是静音的：放进合集后会带声音播放。", "Het geluid staat uit in het team: in een collectie speelt de video met geluid.", "O som está desligado na equipe: numa coleção, o vídeo vai tocar com som.", "Ljudet är avstängt i laget: i en samling spelas videon med ljud.", "В команде звук выключен: в коллекции видео будет со звуком.", "W drużynie dźwięk jest wyłączony: w kolekcji wideo będzie odtwarzane z dźwiękiem.", "팀에서는 소리가 꺼져 있지만, 컬렉션에서는 소리와 함께 재생돼요.")) : null,
+        f.cib.map(function (t, k) {
+          return h("div", { key: "cb" + k, style: { marginTop: 20 } },
+            h("div", { style: { fontSize: 10.5, letterSpacing: ".16em", textTransform: "uppercase", color: CH, marginBottom: 4 } }, (t.cible.indexOf("cheval:") === 0 ? T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "الحصان", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말") : T("Cavalier", "Rider", "Jinete", "Cavaliere", "ライダー", "Reiter", "الفارس", "骑手", "Ruiter", "Cavaleiro", "Ryttare", "Всадник", "Jeździec", "라이더")) + " · " + t.nom),
+            ligne(k, "", T("Aucune", "None", "Ninguna", "Nessuna", "なし", "Keine", "لا شيء", "无", "Geen", "Nenhuma", "Inget", "Нет", "Żadna", "없음"), null),
+            t.cols.map(function (c) { return ligne(k, c.id, String(c.nom || ""), nbTxt((Array.isArray(c.videos) ? c.videos : []).length)); }),
+            ligne(k, "nouv", "+ " + T("Nouvelle collection", "New collection", "Nueva colección", "Nuova raccolta", "新しいコレクション", "Neue Sammlung", "مجموعة جديدة", "新合集", "Nieuwe collectie", "Nova coleção", "Ny samling", "Новая коллекция", "Nowa kolekcja", "새 컬렉션"), null),
+            t.choix === "nouv" ? h("input", { type: "text", value: t.nouvNom, maxLength: 60, dir: "auto", onChange: function (eI) { choixCol(k, null, eI.target.value); },
+              placeholder: T("Nom de la collection", "Collection name", "Nombre de la colección", "Nome della raccolta", "コレクション名", "Name der Sammlung", "اسم المجموعة", "合集名称", "Naam van de collectie", "Nome da coleção", "Samlingens namn", "Название коллекции", "Nazwa kolekcji", "컬렉션 이름"),
+              style: { width: "100%", boxSizing: "border-box", minHeight: 46, marginTop: 10, padding: "0 14px", borderRadius: 12, border: "1px solid " + CH2, background: "rgba(255,255,255,0.03)", color: IV, fontFamily: M, fontSize: 16 } }) : null);
+        }),
+        f.err ? h("div", { style: { marginTop: 14, padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.55)", fontSize: 12, color: "#FFD3D9", lineHeight: 1.5 } }, f.err) : null,
+        h("div", { style: { display: "flex", gap: 10, marginTop: 22 } },
+          h("button", { type: "button", disabled: f.busy, onClick: function () { setFeuilleCol(null); }, style: { flex: 1, minHeight: 46, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: IV2, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+          h("button", { type: "button", disabled: f.busy || f.fait, onClick: enregistrerFeuilleCol, style: { flex: 1.4, minHeight: 46, borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } },
+            f.fait ? "✓ " + T("Enregistré", "Saved", "Guardado", "Salvato", "保存しました", "Gespeichert", "تم الحفظ", "已保存", "Opgeslagen", "Salvo", "Sparat", "Сохранено", "Zapisano", "저장했어요") : (f.busy ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장"))))));
+  }
+
   var estDuGroupe = !!(moi && (
     (membres || []).some(function (p) { return p.id === moi.id; }) ||
     (groupe && groupe.cree_par === moi.id) ||
@@ -253,7 +366,7 @@ function EcranTeamMedias() {
       var r = await supa.rpc("team_video_lecture", { p_id: v.id });
       var adr = r && !r.error ? r.data : null;
       if (!adr) { setReserve(true); return; }
-      setVisuMuet(!!v.sans_son); setVisuV(v.id);
+      setVisuMuet(!!v.sans_son); setVisuV(v.id); setVisuAdr(String(adr));
       setVisu(((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(adr) && typeof hypeMuxLecture === "function") ? hypeMuxLecture(adr) : adr);
     } catch (eR) { setReserve(true); }
     finally { setOccupe(""); }
@@ -1137,7 +1250,8 @@ function EcranTeamMedias() {
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
               (estAuteurV || v.sans_son) ? h("button", { type: "button", disabled: !estAuteurV || changeSon === v.id, onClick: function () { basculerSon(v); },
                 style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 36, padding: "0 13px", borderRadius: 999, border: "1px solid " + (v.sans_son ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.22)"), background: "transparent", color: v.sans_son ? CH : IV2, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: estAuteurV ? "pointer" : "default" } },
-                changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") : "\uD83D\uDD0A " + T("Son", "Sound", "Sonido", "Audio", "音声", "Ton", "صوت", "有声", "Geluid", "Som", "Ljud", "Звук", "Dźwięk", "소리"))) : null),
+                changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") : "\uD83D\uDD0A " + T("Son", "Sound", "Sonido", "Audio", "音声", "Ton", "صوت", "有声", "Geluid", "Som", "Ljud", "Звук", "Dźwięk", "소리"))) : null,
+              boutonCollection(v) /* 08/11 */),
             (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
             h("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 18, borderTop: "1px solid " + CH3 } },
               navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true))))));
@@ -1175,7 +1289,8 @@ function EcranTeamMedias() {
     formulaireAjout,
     feuilleConcours(),
     fenetrePartage,
-    visuV ? lecteurTeam() : ((visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null));
+    visuV ? lecteurTeam() : ((visu && typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }, { sansSon: visuMuet }) : null),
+    fenetreFeuilleCol() /* 08/11 */);
 }
 /* 05/11 soir — page « conseil Hey Baby partagé avec toi » (route epingle-partagee), ouverte depuis la notification.
    La base ne laisse lire l'épingle qu'à qui elle a été partagée (ou à son autrice). Lecture seule. */
