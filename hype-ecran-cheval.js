@@ -2775,15 +2775,25 @@ async function supprimerSouvenirOuvert() {
     /* ── 3. A PROPOS + IDENTITE ── */
     var histV = String((chevalDyn && chevalDyn.histoire) || c.histoire || "").trim();
     var padCarte = D ? "28px 30px" : (L ? "24px 24px" : "22px 20px");   /* (1158) cartes plus aerees */
-    var aPropos = histV ? h("div", { style: Object.assign({}, carteSt, { padding: padCarte, display: "flex", flexDirection: "column" }) },
-        titre(T("À propos", "About", "Acerca de", "Informazioni", "紹介", "Über", "نبذة", "关于", "Over", "Sobre", "Om", "О нас", "O nas", "소개")),
-        h("div", { style: { fontFamily: MO, fontSize: D ? 14.5 : 14, lineHeight: 1.7, color: "rgba(243,238,228,0.86)", whiteSpace: "pre-line", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: D ? 7 : 6, WebkitBoxOrient: "vertical", WebkitMaskImage: histV.length > 320 ? "linear-gradient(180deg, #000 68%, rgba(0,0,0,0.22) 100%)" : "none", maskImage: histV.length > 320 ? "linear-gradient(180deg, #000 68%, rgba(0,0,0,0.22) 100%)" : "none" /* (1158) fondu : le recit continue dans Lire son histoire */ } }, histV),
-        h("div", { style: { marginTop: "auto", paddingTop: 20 } }, lienBtn(T("Lire son histoire", "Read its story", "Leer su historia", "Leggi la sua storia", "物語を読む", "Seine Geschichte lesen", "اقرأ قصته", "阅读它的故事", "Lees zijn verhaal", "Ler a história dele", "Läs berättelsen", "Прочитать её историю", "Przeczytaj jego historię", "이야기 읽기"), function () { setPanneau("souvenirs"); })))
-      : (estMonChevalFiche ? h("div", { style: Object.assign({}, carteSt, { padding: padCarte }) },
-          titre(T("À propos", "About", "Acerca de", "Informazioni", "紹介", "Über", "نبذة", "关于", "Over", "Sobre", "Om", "О нас", "O nas", "소개")),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: DX, marginBottom: 14 } }, T("Son histoire n’est pas encore écrite.", "Its story hasn’t been written yet.", "Su historia aún no está escrita.", "La sua storia non è ancora stata scritta.", "物語はまだ書かれていません。", "Seine Geschichte ist noch nicht geschrieben.", "لم تُكتب قصته بعد.", "它的故事还没有写下来。", "Zijn verhaal is nog niet geschreven.", "A história dele ainda não foi escrita.", "Berättelsen är inte skriven än.", "Её история ещё не написана.", "Jego historia nie została jeszcze napisana.", "아직 이야기가 쓰여 있지 않아요.")),
-          lienBtn(T("Écris son histoire", "Write its story", "Escribe su historia", "Scrivi la sua storia", "物語を書く", "Schreib seine Geschichte", "اكتب قصته", "写下它的故事", "Schrijf zijn verhaal", "Escreva a história dele", "Skriv berättelsen", "Напиши её историю", "Napisz jego historię", "이야기 쓰기"), function () { setPanneau("souvenirs"); }))
-        : null);
+    /* 08/11 (Blandine : « reproduis le visuel de l histoire de la page cavalier et ajoute le sur la page cheval ») : meme encart que
+       « Mon recit » sur la page Cavalier (fond sombre, oeil du cheval a droite, filet dore, texte, bouton contour). Vide : meme encart
+       avec l invitation, pour le proprietaire et les rattachees. Textes deja traduits dans les 14 langues. */
+    var aPropos = (function () {
+      if (!histV && !estMonChevalFiche) return null;
+      var rtlA = false; try { rtlA = document.documentElement.dir === "rtl"; } catch (eRa) { }
+      var mA = "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", transparent 0%, #000 45%)";
+      var btnA = { marginTop: 13, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: MO, border: "1px solid rgba(197,170,120,0.36)", background: "rgba(5,8,11,0.6)", color: "#F3EEE4" };
+      return h("div", { style: { position: "relative", overflow: "hidden", borderRadius: 18, border: "1px solid rgba(197,170,120,0.36)", background: "linear-gradient(160deg, rgba(24,52,62,0.55) 0%, rgba(8,16,20,0.82) 45%, rgba(4,6,8,0.92) 100%)", minHeight: 200, padding: padCarte, boxSizing: "border-box", display: "flex", flexDirection: "column" } },
+        h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "58%", backgroundImage: "url(" + HYPE_FOND_RECIT + ")", backgroundSize: "cover", backgroundPosition: "center", WebkitMaskImage: mA, maskImage: mA, opacity: 0.95, pointerEvents: "none" } }),
+        h("div", { style: { position: "relative", maxWidth: "66%" } },
+          h("div", { style: { fontSize: 10, letterSpacing: "0.28em", color: CH, textTransform: "uppercase", fontWeight: 700, fontFamily: MO } }, "\u2726 " + T("Son histoire", "Story", "Su historia", "La sua storia", "物語", "Geschichte", "قصته", "它的故事", "Zijn verhaal", "A história dele", "Berättelsen", "Его история", "Jego historia", "이야기")),
+          h("div", { style: { height: 1, width: 64, background: "linear-gradient(90deg, rgba(197,170,120,0.58), rgba(197,170,120,0.08), transparent)", margin: "10px 0 12px" } }),
+          histV
+            ? h("div", { style: { fontSize: 13, lineHeight: 1.42, color: "#F3EEE4", whiteSpace: "pre-line", fontFamily: MO, fontWeight: 400, textShadow: "0 1px 6px rgba(0,0,0,0.9)", display: "-webkit-box", WebkitLineClamp: 8, WebkitBoxOrient: "vertical", overflow: "hidden" } }, histV)
+            : h("div", { style: { fontSize: 12.5, lineHeight: 1.6, color: "rgba(243,238,228,.4)", fontStyle: "italic", fontFamily: MO } }, T("Son histoire n’est pas encore écrite.", "Its story hasn’t been written yet.", "Su historia aún no está escrita.", "La sua storia non è ancora stata scritta.", "物語はまだ書かれていません。", "Seine Geschichte ist noch nicht geschrieben.", "لم تُكتب قصته بعد.", "它的故事还没有写下来。", "Zijn verhaal is nog niet geschreven.", "A história dele ainda não foi escrita.", "Berättelsen är inte skriven än.", "Её история ещё не написана.", "Jego historia nie została jeszcze napisana.", "아직 이야기가 쓰여 있지 않아요.")),
+          h("button", { type: "button", onClick: function () { setPanneau("souvenirs"); }, style: btnA }, histV ? T("Lire son histoire", "Read its story", "Leer su historia", "Leggi la sua storia", "物語を読む", "Seine Geschichte lesen", "اقرأ قصته", "阅读它的故事", "Lees zijn verhaal", "Ler a história dele", "Läs berättelsen", "Прочитать её историю", "Przeczytaj jego historię", "이야기 읽기") : T("Écris son histoire", "Write its story", "Escribe su historia", "Scrivi la sua storia", "物語を書く", "Schreib seine Geschichte", "اكتب قصته", "写下它的故事", "Schrijf zijn verhaal", "Escreva a história dele", "Skriv berättelsen", "Напиши её историю", "Napisz jego historię", "이야기 쓰기")))
+      );
+    })();
     var lignesId = (function () {
       var out = [];
       function li(icoC, texte, sous) {
