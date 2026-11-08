@@ -1322,7 +1322,9 @@ function EcranConcours() {
         ] : null,
         ongletC === "passages" ? [blocPassages, gestion ? h("button", { key: "lj", type: "button", className: "hc-lien-d", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages") + (rtl ? " ‹" : " ›")) : null] : null,
         ongletC === "equipe" ? blocEquipe : null,
-        ongletC === "medias" ? blocMedias : null) : null,
+        ongletC === "medias" ? blocMedias : null)
+        /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
+        : ((videos.length || typeof HypeVideosEquipeConcours === "function") ? h("div", { className: "hc-onglet" }, blocMedias[0], blocMedias[1]) : null),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
@@ -1416,7 +1418,7 @@ var HC_CSS = [
   ".hc .hc-vid-vide{aspect-ratio:16/9}",
   ".hc{padding-bottom:calc(env(safe-area-inset-bottom) + 130px)!important}",   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
-  ".hc .hc-vq .hs-sec{display:none}",   /* le titre est déjà dans le filtre et la partie Médias */
+  ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:8px}",
   ".hc .hc-act[disabled]{opacity:.45}",
   ".hc .hc-b-case{padding:8px 8px}",
