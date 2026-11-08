@@ -19553,6 +19553,10 @@ Fichiers à publier :
 | SUIVI.md | racine | cette entrée |
 - Partent AUSSI avec cette publication (déposés par les autres conversations, non publiés) : fiche cheval (Coupes et flots, ancienne fiche remise sur téléphone, liste Blocs), Ivoire sans ombres de texte, page Cavalier (fonds anthracite / bleu roi, écriture, onglets).
 
+## 08/11/2026 16h40 — Registre d'élevage de l'Écurie Feinn : partie I et III remplies en base (Blandine : « Remplis pour l'association », « Couderc »)
+- ecurie_registre (club « ecurie feinn ») : structure FEINN EQUITATION ET ENVIRONNEMENT (association), responsable Blandine Pronost, lieu 3 chemin des Prés Picard 91760 Itteville, SIRET 898 028 980 00016 (siège, source societe.com), APE 9319Z ; vétérinaire traitant et sanitaire : Dr Couderc 01 60 83 84 00 (fiche de l'équipe de soins). Aucun code changé.
+- Reste (attend : Blandine) : n° de détenteur SIRE (pas public, dans son espace SIRE ifce.fr « Sanitaire et détention ») ; plan des lieux + description ; puce et date d'arrivée de chaque cheval ; SIRE manquants.
+
 ## 08/11/2026 11h30 — Page Google « Mon écurie » publiée en 14 langues (build 20261108-1130) — PUBLIÉ (Blandine : « Ok vas y », « Et mon écurie est ouvert non »)
 - Mon écurie est bien ouvert : la page « Ce que Hype t'apporte » (après « Qu'aimerais-tu faire avec Hype ? ») a la carte Mon écurie en tête de l'onglet Écurie. (La mention « lien caché uniquement » plus bas dans ce suivi date du 04/11 et n'est plus vraie.)
 - Nouvelles adresses /<langue>/logiciel-gestion-ecurie/ × 14 : texte FR validé (Claude Docs « Hype — page Google Mon écurie »), traduit ; les règles (registre obligatoire, obligations) sont présentées « en France » dans les autres langues. FAQ : accès Premium ou offre Écurie. Données structurées WebPage + FAQPage, 15 liens hreflang, ajoutées à sitemap-pages.xml (14 adresses).
