@@ -1262,22 +1262,21 @@ function EcranTeamMedias() {
       onChoisir: function (u) { var x = videoDe(u); if (x) lire(x); },
       titre: v.titre || titre, surTitre: v.concours || v.lieu || "", date: dLong, ronds: tvRonds,
       onFermer: fermer,
+      /* 08/11 23h40 (corrections visuelles) : son et collection passent dans le menu ••• de la page ; la navigation se fait par les miniatures */
+      menu: [
+        (estAuteurV || v.sans_son) ? { label: changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") + (estAuteurV ? " — " + T("remettre le son", "turn sound back on", "volver a poner el sonido", "rimetti l’audio", "音声を戻す", "Ton wieder einschalten", "إعادة الصوت", "恢复声音", "geluid weer aan", "voltar a pôr o som", "slå på ljudet", "включить звук", "włącz dźwięk", "소리 켜기") : "") : "\uD83D\uDD0A " + T("Couper le son de la vidéo", "Mute the video", "Quitar el sonido del vídeo", "Togli l’audio al video", "動画の音声を消す", "Ton des Videos ausschalten", "كتم صوت الفيديو", "关闭视频声音", "Geluid van de video uit", "Tirar o som do vídeo", "Stäng av videons ljud", "Выключить звук видео", "Wycisz wideo", "영상 소리 끄기")), actif: estAuteurV, action: function () { basculerSon(v); } } : null,
+        (colCibles && colCibles.length && visuAdr) ? { label: "+ " + T("Ajouter à une collection", "Add to a collection", "Añadir a una colección", "Aggiungi a una raccolta", "コレクションに追加", "Zu einer Sammlung hinzufügen", "إضافة إلى مجموعة", "加入合集", "Aan een collectie toevoegen", "Adicionar a uma coleção", "Lägg till i en samling", "Добавить в коллекцию", "Dodaj do kolekcji", "컬렉션에 추가"), actif: true, action: function () { ouvrirFeuilleCol(v); } } : null
+      ].filter(Boolean),
+      dureeSecDe: function (u) { var x = videoDe(u); return x ? (Number(x.duree) || 0) : 0; },
       bas: h("div", { className: "sc-theme-team" },
         h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
         h("div", { style: { padding: "18px 18px 0" } },
-            h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-              cavs.length ? h("div", { style: { display: "flex" } }, cavs.slice(0, 3).map(function (p, k) { return h("div", { key: "av" + p.id, style: { marginInlineStart: k ? -10 : 0 } }, avatar(p, 34)); })) : null,
-              lieuLigne ? h("div", { dir: "auto", style: { fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: IV3 } }, lieuLigne) : null),
             v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.4, color: IV2, marginTop: 14 } }, "« " + v.description + " »") : null,
             h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 16 } },
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
-              (estAuteurV || v.sans_son) ? h("button", { type: "button", disabled: !estAuteurV || changeSon === v.id, onClick: function () { basculerSon(v); },
-                style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 36, padding: "0 13px", borderRadius: 999, border: "1px solid " + (v.sans_son ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.22)"), background: "transparent", color: v.sans_son ? CH : IV2, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: estAuteurV ? "pointer" : "default" } },
-                changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") : "\uD83D\uDD0A " + T("Son", "Sound", "Sonido", "Audio", "音声", "Ton", "صوت", "有声", "Geluid", "Som", "Ljud", "Звук", "Dźwięk", "소리"))) : null,
-              boutonCollection(v) /* 08/11 */),
+              null),
             (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
-            h("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 18, borderTop: "1px solid " + CH3 } },
-              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true)))) });
+null)) });
   }
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },
