@@ -3175,8 +3175,6 @@ async function supprimerSouvenirOuvert() {
            voient seulement le nom. Ouvre la feuille existante FeuilleEcurieCheval. */
         (function () {
           if (panneau === "souvenirs" || !chevalDyn) return null;
-          /* 08/11 (doublon « Ecurie Feinn ») : pour une proprietaire qui a plusieurs ecuries, le selecteur ▼ sous le titre affiche deja l ecurie : on ne repete pas la ligne ✎ sous le nom. */
-          if (moi && chevalDyn.ownerId === moi.id && mesClubsFiche.length >= 2) return null;
           var clubE = String(chevalDyn.club || "").trim(); if (clubE === "__perso__") clubE = "";
           var peutE = !!(c.dbId && moi && (chevalDyn.ownerId === moi.id || estLieFiche || (typeof estModerateurHype === "function" && estModerateurHype(moi))));
           if (!clubE && !peutE) return null;
@@ -3234,6 +3232,7 @@ async function supprimerSouvenirOuvert() {
              ⚠️ L echec d ecriture se DIT (lecon du .catch() vide du 01/09). */
           h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 14, rowGap: 8, marginTop: 10 } }, /* (903) ecurie et Legende Hype sur la meme ligne */
           (function () {
+            return null; /* 08/11 (Blandine : « vire celle du bas ») : doublon supprime, la ligne ✎ sous le nom suffit */
             var proprioE = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
             var actuel = String((chevalDyn && chevalDyn.club) || "").trim();
             /* (903) Blandine : « la ligne de l ecurie devrait s afficher dans une fiche cheval, qu on sache d ou il vient ».
