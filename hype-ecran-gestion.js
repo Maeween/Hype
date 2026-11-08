@@ -195,8 +195,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           var tous = (rc && rc.data) || [];
           /* 08/11 (Blandine : « j ai retire Jokayr plusieurs fois et il est toujours la ») : la regle commune « sans club : partout » faisait
              apparaitre dans TOUTES les ecuries les chevaux sans ecurie. Ici, un cheval sans ecurie n apparait que s il est a moi. */
-          var uidG = null; try { var ugR = await supa.auth.getUser(); uidG = (ugR && ugR.data && ugR.data.user && ugR.data.user.id) || null; } catch (eUg) { }
-          res.chevaux = ((typeof hypeChevauxDuClub === "function") ? hypeChevauxDuClub(tous, club) : []).filter(function (ch) { return String(ch.club || "").trim() !== "" || (!!uidG && ch.user_id === uidG); });
+          res.chevaux = ((typeof hypeChevauxDuClub === "function") ? hypeChevauxDuClub(tous, club) : []).filter(function (ch) { return String(ch.club || "").trim() !== ""; });
           var ids = res.chevaux.map(function (c) { return c.id; }).filter(Boolean);
           if (ids.length) {
             var rs = await supa.from("soins_cheval").select("*").in("cheval_id", ids.slice(0, 300)).limit(2000);
