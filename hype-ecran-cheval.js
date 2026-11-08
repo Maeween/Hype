@@ -2750,10 +2750,9 @@ async function supprimerSouvenirOuvert() {
         h("h1", { style: { margin: 0, fontFamily: SERIF, fontWeight: 500, fontSize: D ? (nmV.length > 22 ? 54 : 68) : (L ? (nmV.length > 22 ? 44 : 54) : (nmV.length > 20 ? 32 : 42)) /* (1157) nom plus present */, lineHeight: 1.04, color: IV, overflowWrap: "anywhere", textShadow: "0 2px 18px rgba(0,0,0,0.65)" } }, nmV),
         montrerOffi ? h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(243,238,228,0.62)" } }, nomOffi) : null,
         ligneId ? h("div", { style: { marginTop: D ? 14 : 12, fontFamily: MO, fontSize: D ? 15 : (L ? 13.5 : 12), fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(243,238,228,0.88)" } }, ligneId) : null,
-        (ecurieV || v4Team || lblLeg) ? h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 12, rowGap: 8, marginTop: D ? 20 : 16 } },
+        (v4Team || lblLeg) ? h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 12, rowGap: 8, marginTop: D ? 20 : 16 } },
           v4Team ? h("span", { style: badgeSt }, ico(h("path", { d: "M4 17h16l-1.5-9-4.5 4-2-6-2 6-4.5-4z" }), 14), T("Équipe compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق المنافسات", "比赛队", "Wedstrijdteam", "Equipe de competição", "Tävlingsteam", "Команда соревнований", "Drużyna zawodnicza", "대회 팀")) : null,
-          lblLeg ? h("span", { style: badgeSt }, "✦ " + T("LÉGENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "伝説", "HYPE-LEGENDE", "أسطورة HYPE", "HYPE 传奇", "HYPE-LEGENDE", "LENDA HYPE", "HYPE-LEGEND", "ЛЕГЕНДА HYPE", "LEGENDA HYPE", "HYPE 레전드")) : null,
-          ecurieV) : null));
+          lblLeg ? h("span", { style: badgeSt }, "✦ " + T("LÉGENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "伝説", "HYPE-LEGENDE", "أسطورة HYPE", "HYPE 传奇", "HYPE-LEGENDE", "LENDA HYPE", "HYPE-LEGEND", "ЛЕГЕНДА HYPE", "LEGENDA HYPE", "HYPE 레전드")) : null) : null));
 
     /* ── 2. SEPT RACCOURCIS (memes pages qu avant ; Origines descend au bloc Origines) ── */
     var racs = [
@@ -3173,7 +3172,7 @@ async function supprimerSouvenirOuvert() {
           return h("div", { style: { display: "flex", justifyContent: "center", margin: "8px 16px 0" } },
             clubE
               ? h(peutE ? "button" : "div", { type: peutE ? "button" : undefined, onClick: peutE ? function () { setEcurieFicheOuverte(true); } : undefined, "aria-label": peutE ? T("Changer son écurie", "Change its stable", "Cambiar su cuadra", "Cambia la sua scuderia", "所属厩舎を変更", "Stall ändern", "تغيير إسطبله", "更改它的马厩", "Stal wijzigen", "Mudar a cocheira", "Byt stall", "Изменить конюшню", "Zmień stajnię", "마구간 변경") : undefined, style: Object.assign({}, styleE, { border: "none", color: "#E8E1D4", padding: "4px 8px" }) },
-                  h("span", { "aria-hidden": "true" }, "\ud83c\udfe0"),
+                  h("span", { "aria-hidden": "true" }, "\ud83d\udccd"),
                   h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, clubE),
                   peutE ? h("span", { "aria-hidden": "true", style: { color: "#D6C4A1", fontSize: 13 } }, "\u270e") : null)
               : h("button", { type: "button", onClick: function () { setEcurieFicheOuverte(true); }, style: Object.assign({}, styleE, { border: "1px solid rgba(214,196,161,0.7)", color: "#D6C4A1" }) }, "\uff0b " + T("Ajouter son écurie", "Add its stable", "Añadir su cuadra", "Aggiungi la sua scuderia", "所属厩舎を追加", "Seinen Stall hinzufügen", "إضافة إسطبله", "添加它的马厩", "Stal toevoegen", "Adicionar a cocheira", "Lägg till stall", "Добавить конюшню", "Dodaj stajnię", "마구간 추가")));
