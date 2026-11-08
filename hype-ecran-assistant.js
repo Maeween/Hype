@@ -311,6 +311,9 @@ function EcranAssistantIA() {
     const rechargerFichesEcurie = () => { try { chargerFichesEcurie().then((f) => { if (f) setFichesEcurie(f); }).catch(() => { }); } catch (e) { } };
     useEffect(() => { rechargerMemoireHB(); rechargerFichesEcurie(); try { chargerCorrectionsHB(); } catch (eCo) { } }, []);
     const [framesVideo, setFramesVideo] = useState(null);
+    /* 08/11 soir : un passage envoyé depuis la page de lecture d'une vidéo (« Analyser un passage avec Hey Baby ») arrive ici
+       déjà découpé en images (window.__hbFramesVideo) — même chemin qu'une vidéo choisie dans la pellicule. */
+    useEffect(function () { try { var fv = window.__hbFramesVideo; if (fv && fv.length) { window.__hbFramesVideo = null; setFramesVideo(fv); setImageJointe(fv[0].data); } } catch (e) { } }, []);
     const [extractionVideo, setExtractionVideo] = useState(false);
     // Corrige l'orientation EXIF, limite la résolution seulement si nécessaire (assez grande pour
     // voir mains/jambes/étriers/regard/attitude du cheval), et journalise le diagnostic avant/après.

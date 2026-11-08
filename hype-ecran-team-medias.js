@@ -12,6 +12,62 @@
 (function () {
 var TM_VERSION = 6;
 
+/* 08/11 soir — page de lecture immersive */
+var TV_CSS = [
+  ".tv .tv-in{max-width:820px;margin:0 auto;padding-bottom:20px}",
+  ".tv .tv-scene{position:relative;height:min(76vh,700px);min-height:520px;overflow:hidden;background:#070A08}",
+  ".tv .tv-photo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}",
+  ".tv .tv-photo img{width:100%;height:100%;object-fit:contain;display:block}",
+  ".tv .tv-photo:not(.fond){padding:calc(env(safe-area-inset-top) + 250px) 0 12px}",
+  ".tv .tv-photo.fond img{object-fit:cover;object-position:68% 50%;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}",
+  ".tv .tv-video{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding-top:calc(env(safe-area-inset-top) + 64px)}",
+  ".tv .tv-hb-lien{align-self:center;margin-top:12px;background:none;border:1px solid rgba(201,166,107,.6);color:#C9A66B;border-radius:999px;padding:8px 14px;font-size:12px}",
+  ".tv .tv-rond{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,166,107,.65);background:rgba(7,10,8,.35);color:#F3EEE4;font-size:19px;display:flex;align-items:center;justify-content:center}",
+  ".tv .tv-retour{inset-inline-start:16px}",
+  ".tv .tv-menu-ancre{position:absolute;z-index:5;top:0;inset-inline-end:16px}",
+  ".tv .tv-menu-ancre .tv-rond{position:relative;top:calc(env(safe-area-inset-top) + 12px);letter-spacing:1px;font-size:13px}",
+  ".tv .tv-menu{position:absolute;top:calc(env(safe-area-inset-top) + 62px);inset-inline-end:0;min-width:240px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:rgba(10,14,15,.97);padding:6px}",
+  ".tv .tv-menu button{display:block;width:100%;text-align:start;background:none;border:none;color:#F3EEE4;font-size:13.5px;padding:11px 12px}",
+  ".tv .tv-titre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 72px);inset-inline-start:20px;max-width:58%;text-shadow:0 2px 12px rgba(0,0,0,.6)}",
+  ".tv .tv-sur{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:#F3EEE4;opacity:.92}",
+  ".tv .tv-filet{display:block;width:54px;height:1.5px;background:#C9A66B;margin:12px 0 14px}",
+  ".tv .tv-titre h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(36px,10.5vw,54px);line-height:1;color:#F3EEE4}",
+  ".tv .tv-titre h1.long{font-size:clamp(28px,8vw,42px)}",
+  ".tv .tv-titre p{margin:12px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#F3EEE4}",
+  ".tv .tv-ronds{position:absolute;z-index:3;inset-inline-end:14px;top:30%;display:flex;flex-direction:column;gap:14px}",
+  ".tv .tv-r{width:clamp(62px,17vw,84px);height:clamp(62px,17vw,84px);border-radius:50%;padding:0;overflow:hidden;border:1px solid rgba(201,166,107,.55);background:#0c1011}",
+  ".tv .tv-r.on{border:1.5px solid #C9A66B}",
+  ".tv .tv-r img{width:100%;height:100%;object-fit:cover;display:block}",
+  ".tv .tv-traits{display:flex;justify-content:center;gap:7px;margin:4px 0 22px}",
+  ".tv .tv-traits button{width:26px;height:3px;border:none;border-radius:2px;background:rgba(243,238,228,.22);padding:0}",
+  ".tv .tv-traits button.on{background:#C9A66B}",
+  ".tv .tv-vids{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 20px)/3);gap:10px;overflow-x:auto;scrollbar-width:none;padding:0 16px}",
+  ".tv .tv-vids::-webkit-scrollbar{display:none}",
+  ".tv .tv-v{position:relative;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:11px;overflow:hidden;background:#0c1011;aspect-ratio:3/2}",
+  ".tv .tv-v.on{border:1.5px solid #C9A66B}",
+  ".tv .tv-v img{width:100%;height:100%;object-fit:cover;display:block}",
+  ".tv .tv-duree{position:absolute;inset-inline-end:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:9px;background:rgba(7,10,8,.72);color:#F3EEE4;font-variant-numeric:tabular-nums}",
+  ".tv .tv-hb{margin:26px 16px 0;border-top:1px solid rgba(201,166,107,.22);border-bottom:1px solid rgba(201,166,107,.22)}",
+  ".tv .tv-hb-tete{display:flex;align-items:center;width:100%;min-height:54px;background:none;border:none;color:#F3EEE4;padding:0 2px;text-align:start}",
+  ".tv .tv-hb-tete b{flex:1;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:19px}",
+  ".tv .tv-hb-tete i{font-style:normal;color:#C9A66B;font-size:20px}",
+  ".tv .tv-hb-corps{padding:4px 0 18px}",
+  ".tv .tv-bande{position:relative;display:flex;height:40px;border-radius:8px;overflow:hidden;border:1px solid rgba(201,166,107,.18)}",
+  ".tv .tv-bande img{flex:1;min-width:0;height:100%;object-fit:cover;opacity:.55}",
+  ".tv .tv-sel{position:absolute;top:0;bottom:0;border:1.6px solid #C9A66B;border-radius:6px;background:rgba(201,166,107,.12)}",
+  ".tv .tv-curs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}",
+  ".tv .tv-curs label{font-size:11.5px;color:rgba(243,238,228,.64)}",
+  ".tv .tv-curs b{color:#F3EEE4;font-weight:500}",
+  ".tv .tv-curs input{width:100%;accent-color:#C9A66B;margin-top:6px}",
+  ".tv .tv-apercu{display:flex;gap:12px;align-items:center;margin-top:14px}",
+  ".tv .tv-apercu img{width:110px;border-radius:8px;display:block;flex:none}",
+  ".tv .tv-apercu b{display:block;font-size:13px;font-weight:500}",
+  ".tv .tv-apercu span{display:block;font-size:11.5px;color:rgba(243,238,228,.64);margin-top:3px;line-height:1.4}",
+  ".tv .tv-btn{display:block;margin:16px auto 0;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid #C9A66B;background:transparent;color:#C9A66B;font-size:13.5px}",
+  ".tv .tv-btn[disabled]{opacity:.5}",
+  "@media (min-width:768px){.tv .tv-scene{height:min(78vh,760px)}.tv .tv-titre{max-width:46%}}"
+].join("\n");
+
 function EcranTeamMedias() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -36,6 +92,17 @@ function EcranTeamMedias() {
   var _pr = React.useState({}); var profilsParId = _pr[0], setProfilsParId = _pr[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
   var _vi = React.useState(null); var visu = _vi[0], setVisu = _vi[1];
+  /* 08/11 soir : nouvelle page de lecture (galerie, ronds, lecture en grand, module Hey Baby) */
+  var _tj = React.useState(false); var tvJoue = _tj[0], setTvJoue = _tj[1];
+  var _tg = React.useState(0); var tvGal = _tg[0], setTvGal = _tg[1];
+  var _th = React.useState(false); var tvHb = _th[0], setTvHb = _th[1];
+  var _tm = React.useState(false); var tvMenu = _tm[0], setTvMenu = _tm[1];
+  var _tr = React.useState([]); var tvRonds = _tr[0], setTvRonds = _tr[1];
+  var _td = React.useState(0); var tvDeb = _td[0], setTvDeb = _td[1];
+  var _tf = React.useState(-1); var tvFin = _tf[0], setTvFin = _tf[1];
+  var _to = React.useState(false); var tvHbOcc = _to[0], setTvHbOcc = _to[1];
+  var _tz = React.useState(""); var tvHbMsg = _tz[0], setTvHbMsg = _tz[1];
+  var tvX = React.useRef(0);
   var _re = React.useState(false); var reserve = _re[0], setReserve = _re[1];
   var _oc = React.useState(""); var occupe = _oc[0], setOccupe = _oc[1];
   var _rv = React.useState(0); var rev = _rv[0], setRev = _rv[1];            /* recharge après un ajout */
@@ -359,6 +426,24 @@ function EcranTeamMedias() {
     ((typeof estModerateurHype === "function") && estModerateurHype(moi))));
   function peutLire(v) { return estDuGroupe || (v && v.publique); }
 
+  React.useEffect(function () {
+    var vif = true; setTvDeb(0); setTvFin(-1); setTvGal(0); setTvMenu(false); setTvHbMsg("");
+    var v0 = (videos || []).filter(function (x) { return x.id === visuV; })[0];
+    if (!v0) { setTvRonds([]); return; }
+    (async function () {
+      var out = [];
+      function ajoute(u) { u = String(u || ""); if (u && out.indexOf(u) === -1 && !((typeof estUrlVideo === "function") && estUrlVideo(u)) && !/^mux:/.test(u)) out.push(u); }
+      try {
+        if (v0.agenda_id) {
+          var r = await supa.from("commentaires").select("user_id, photo_url, medias, prive").eq("cible", "agenda:" + v0.agenda_id).order("created_at", { ascending: false }).limit(60);
+          ((r && !r.error && r.data) || []).forEach(function (po) { if (po.prive && !(moi && po.user_id === moi.id)) return; ajoute(po.photo_url); (Array.isArray(po.medias) ? po.medias : []).forEach(ajoute); });
+        }
+      } catch (eR) { }
+      if (out.length < 3) (v0.chevaux || []).forEach(function (c) { var ch = chevauxParId[c]; if (ch && ch.photo_url) ajoute(ch.photo_url); });
+      if (vif) setTvRonds(out.slice(0, 3));
+    })();
+    return function () { vif = false; };
+  }, [visuV]);
   async function lire(v) {
     if (!peutLire(v)) { setReserve(true); return; }
     setOccupe(v.id);
@@ -1213,6 +1298,13 @@ function EcranTeamMedias() {
   /* 07/11 — PAGE DE LECTURE « B » (choix laissé à Claude par Blandine : « la vidéo est tout là-haut » avec du noir dessous) :
      la vidéo, puis sa fiche (cavalière(s) sur cheval(aux), concours · épreuve · date, le petit mot), le j'aime, le son pour
      l'auteur, les commentaires, et vidéo précédente / suivante dans la liste de l'équipe. */
+  /* 08/11 soir (Blandine, maquette « page vidéo immersive » validée, réponses 1 à 5) : NOUVELLE PAGE DE LECTURE.
+     Grande photo sur fond noir (celle qui sert déjà de fond : cheval bai), titre en haut à gauche, 3 ronds à droite
+     (photos du même concours, sinon du cheval) qui s'affichent en grand, traits de galerie, vidéos du même concours
+     (sinon du même cheval) tout en bas — une vidéo touchée se lit en grand, à ses vraies proportions. Dessous :
+     « Analyser un passage avec Hey Baby » (fermé), puis tout ce qui existait (j'aime, son, collection, commentaires,
+     précédente / suivante). Aucune nouvelle page. */
+  var TV_PHOTO_FOND = "images/galop1-hero-bai.webp";
   function lecteurTeam() {
     if (!visu || !visuV) return null;
     var v = (videos || []).filter(function (x) { return x.id === visuV; })[0];
@@ -1221,25 +1313,66 @@ function EcranTeamMedias() {
     var prec = idx > 0 ? liste[idx - 1] : null, suiv = idx >= 0 && idx < liste.length - 1 ? liste[idx + 1] : null;
     var estMux = /stream\.mux\.com\/[A-Za-z0-9]+\.m3u8/.test(String(visu));
     var lecteur = (estMux && typeof HypeLecteurMuxTest === "function")
-      ? h(HypeLecteurMuxTest, { key: "tv-" + visu, src: visu, sansSon: !!v.sans_son, repli: h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } }) })
-      : h("video", { key: "tv-" + visu, src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, onVolumeChange: v.sans_son ? function (e) { try { if (!e.target.muted) e.target.muted = true; } catch (e0) { } } : undefined, style: { width: "100%", maxHeight: "70vh", background: "#000", display: "block" } });
+      ? h(HypeLecteurMuxTest, { key: "tv-" + visu, src: visu, sansSon: !!v.sans_son, repli: h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, style: { width: "100%", maxHeight: "62vh", background: "#000", display: "block" } }) })
+      : h("video", { key: "tv-" + visu, src: visu, controls: true, autoPlay: true, playsInline: true, muted: !!v.sans_son, onVolumeChange: v.sans_son ? function (e) { try { if (!e.target.muted) e.target.muted = true; } catch (e0) { } } : undefined, style: { width: "100%", maxHeight: "62vh", background: "#000", display: "block" } });
     var cavs = (v.cavaliers || []).map(function (u) { return profilsParId[u]; }).filter(Boolean);
     var titre = cavs.map(nomProfil).join(", ") + (v.chevaux && v.chevaux.length ? (cavs.length ? " " + T("sur", "on", "con", "su", "／", "auf", "على", "骑", "op", "com", "på", "на", "na", "—") + " " : "") + v.chevaux.map(nomCheval).join(", ") : "");
     var lieuLigne = [v.lieu || v.concours || "", v.epreuve || "", dateCourte(v.date_video || v.cree_le)].filter(Boolean).join(" · ");
     var estAuteurV = !!(moi && v.auteur_id === moi.id);
-    function fermer() { setVisu(null); setVisuV(null); }
+    function fermer() { setVisu(null); setVisuV(null); setTvJoue(false); setTvGal(0); setTvHb(false); }
     function navBtn(cible, txt, fin) {
-      return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) lire(cible); }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.18)", fontFamily: M, fontSize: 11.5, cursor: cible ? "pointer" : "default", textAlign: fin ? "end" : "start" } }, txt);
+      return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) { setTvJoue(true); lire(cible); } }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.2)", fontFamily: M, fontSize: 12.5, cursor: cible ? "pointer" : "default" } }, txt);
     }
-    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", "data-hscroll": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8800, background: NOIR, color: IV, fontFamily: M } },
-      h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}.sc-theme-team .sc-texte{color:" + IV2 + " !important}.sc-theme-team .sc-champ{color:" + IV + " !important;font-size:16px !important}.sc-theme-team .sc-media{border-color:" + CH3 + " !important}"),
-      h("button", { type: "button", onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 12px)", insetInlineEnd: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.62)", border: "1px solid rgba(255,255,255,0.22)", color: IV, fontSize: 18, cursor: "pointer" } }, "\u2715"),
+    /* textes du haut : concours, titre, date longue */
+    var dLong = (function () { var m = String(v.date_video || v.cree_le || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var t = new Intl.DateTimeFormat(lg === "fr" ? "fr-FR" : lg, { weekday: "long", day: "numeric", month: "long" }).format(new Date(+m[1], +m[2] - 1, +m[3])); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return dateCourte(v.date_video || v.cree_le); } })();
+    var surTitre = v.concours || v.lieu || "";
+    var grandTitre = v.titre || titre || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
+    /* galerie : la grande photo, puis les 3 ronds (photos réelles du concours, sinon du cheval) */
+    var ronds = (tvRonds || []).slice(0, 3);
+    var galerie = [{ src: TV_PHOTO_FOND, fond: true }].concat(ronds.map(function (u) { return { src: u }; }));
+    var gi = Math.min(tvGal, galerie.length - 1);
+    /* vidéos du bas : même concours, sinon même cheval ; la vidéo ouverte en premier */
+    var memes = liste.filter(function (x) { return x.id !== v.id && v.agenda_id && x.agenda_id === v.agenda_id; });
+    if (!memes.length) memes = liste.filter(function (x) { return x.id !== v.id && (x.chevaux || []).some(function (c) { return (v.chevaux || []).indexOf(c) !== -1; }); });
+    var bas = [v].concat(memes);
+    function glisse(sens) { setTvJoue(false); setTvGal(function (g) { var n = g + sens; return n < 0 ? 0 : (n > galerie.length - 1 ? galerie.length - 1 : n); }); }
+    var scene = tvJoue
+      ? h("div", { className: "tv-video" }, lecteur,
+          estMux ? h("button", { type: "button", className: "tv-hb-lien", onClick: function () { setTvHb(true); setTimeout(function () { try { var el = document.getElementById("tv-hb"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 60); } }, "✦ " + T("Analyser un passage avec Hey Baby")) : null)
+      : h("div", { className: "tv-photo" + (galerie[gi].fond ? " fond" : ""),
+          onTouchStart: function (e) { try { tvX.current = e.touches[0].clientX; } catch (e0) { } },
+          onTouchEnd: function (e) { try { var dx = e.changedTouches[0].clientX - tvX.current; if (Math.abs(dx) > 40) glisse(dx < 0 ? 1 : -1); } catch (e0) { } } },
+          h("img", { key: galerie[gi].src, src: galerie[gi].fond ? galerie[gi].src : ((typeof grandeImageHype === "function") ? grandeImageHype(galerie[gi].src, 1200) : galerie[gi].src), alt: "" }));
+    return h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", "data-hscroll": "1", dir: rtl ? "rtl" : "ltr", className: "tv", style: { position: "fixed", inset: 0, zIndex: 8800, background: NOIR, color: IV, fontFamily: M } },
+      h("style", null, TV_CSS + ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
       h("div", { style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
-        h("div", { style: { maxWidth: 820, margin: "0 auto", paddingTop: "calc(env(safe-area-inset-top) + 64px)" } },
-          h("div", { style: { background: "#000" } }, lecteur),
-          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 32, transform: rtl ? "scaleX(-1)" : "none" } },
-            h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
-          h("div", { style: { padding: "0 18px calc(env(safe-area-inset-bottom) + 120px)" } },
+        h("div", { className: "tv-in" },
+          h("div", { className: "tv-scene" },
+            scene,
+            h("button", { type: "button", className: "tv-rond tv-retour", onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기") }, rtl ? "›" : "‹"),
+            h("div", { className: "tv-menu-ancre" },
+              h("button", { type: "button", className: "tv-rond", onClick: function () { setTvMenu(!tvMenu); }, "aria-label": "…" }, "•••"),
+              tvMenu ? h("div", { className: "tv-menu", onClick: function () { setTvMenu(false); } },
+                h("button", { type: "button", onClick: function () { try { var el = document.getElementById("tv-plus"); if (el) el.scrollIntoView({ behavior: "smooth" }); } catch (e) { } } }, T("J’aime, commentaires et collection")),
+                estMux ? h("button", { type: "button", onClick: function () { setTvHb(true); setTimeout(function () { try { document.getElementById("tv-hb").scrollIntoView({ behavior: "smooth" }); } catch (e) { } }, 60); } }, T("Analyser un passage avec Hey Baby")) : null) : null),
+            tvJoue ? null : h("div", { className: "tv-titre" },
+              surTitre ? h("div", { className: "tv-sur", dir: "auto" }, surTitre) : null,
+              surTitre ? h("i", { className: "tv-filet" }) : null,
+              h("h1", { dir: "auto", className: grandTitre.length > 26 ? "long" : "" }, grandTitre),
+              dLong ? h("p", null, dLong) : null),
+            (!tvJoue && ronds.length) ? h("div", { className: "tv-ronds" }, ronds.map(function (u, i) {
+              return h("button", { type: "button", key: i, className: "tv-r" + (gi === i + 1 ? " on" : ""), onClick: function () { setTvJoue(false); setTvGal(gi === i + 1 ? 0 : i + 1); } },
+                h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 160, 160) : u, alt: "", loading: "lazy" }));
+            })) : null),
+          (!tvJoue && galerie.length > 1) ? h("div", { className: "tv-traits" }, galerie.map(function (g, i) { return h("button", { type: "button", key: i, className: i === gi ? "on" : "", "aria-label": String(i + 1), onClick: function () { setTvGal(i); } }); })) : null,
+          h("div", { className: "tv-vids" + (bas.length < 3 ? " peu" : "") }, bas.map(function (x) {
+            var src = vignetteDe(x), d = duree(x.duree), sel = x.id === v.id;
+            return h("button", { type: "button", key: x.id, className: "tv-v" + (sel ? " on" : ""), disabled: occupe === x.id, onClick: function () { if (x.id === v.id) setTvJoue(true); else { setTvJoue(true); lire(x); } } },
+              src ? h("img", { src: src, alt: "", loading: "lazy" }) : h("span", { className: "tv-v-vide" }),
+              h("span", { className: "tv-duree" }, h("svg", { width: 8, height: 9, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })), d ? " " + d : ""));
+          })),
+          estMux ? tvModuleHb(v) : null,
+          h("div", { id: "tv-plus", style: { maxWidth: 820, margin: "0 auto" } }, h("div", { style: { padding: "0 18px calc(env(safe-area-inset-bottom) + 120px)" } },
             h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
               cavs.length ? h("div", { style: { display: "flex" } }, cavs.slice(0, 3).map(function (p, k) { return h("div", { key: "av" + p.id, style: { marginInlineStart: k ? -10 : 0 } }, avatar(p, 38)); })) : null,
               h("div", { style: { minWidth: 0 } },
@@ -1254,8 +1387,52 @@ function EcranTeamMedias() {
               boutonCollection(v) /* 08/11 */),
             (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
             h("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 18, borderTop: "1px solid " + CH3 } },
-              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true))))));
+              navBtn(prec, (rtl ? "› " : "‹ ") + T("Vidéo précédente", "Previous video", "Vídeo anterior", "Video precedente", "前の動画", "Vorheriges Video", "الفيديو السابق", "上一个视频", "Vorige video", "Vídeo anterior", "Föregående video", "Предыдущее видео", "Poprzednie wideo", "이전 영상"), false), navBtn(suiv, T("Vidéo suivante", "Next video", "Vídeo siguiente", "Video successivo", "次の動画", "Nächstes Video", "الفيديو التالي", "下一个视频", "Volgende video", "Próximo vídeo", "Nästa video", "Следующее видео", "Następne wideo", "다음 영상") + (rtl ? " ‹" : " ›"), true)))))));
   }
+  /* Module « Analyser un passage avec Hey Baby » : fermé par défaut ; une dizaine d'images du passage choisi
+     (images fournies par Mux à la seconde près), envoyées à Hey Baby par son chemin habituel (analyse vidéo,
+     mêmes règles Premium). Hey Baby s'ouvre avec la vidéo déjà jointe et la question prête. */
+  function tvModuleHb(v) {
+    var idMux = (String(visu).match(/stream\.mux\.com\/([A-Za-z0-9]+)\.m3u8/) || [])[1] || "";
+    var tot = Math.max(1, Math.round(Number(v.duree) || 0) || 60);
+    var deb = Math.min(tvDeb, tot - 1), fin = Math.max(Math.min(tvFin < 0 ? Math.min(tot, 15) : tvFin, tot), deb + 1);
+    function img(t, l) { return "https://image.mux.com/" + idMux + "/thumbnail.jpg?time=" + t + "&width=" + (l || 320) + "&fit_mode=preserve"; }
+    function mmss(s) { s = Math.round(s); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+    async function envoyer() {
+      if (tvHbOcc) return; setTvHbOcc(true); setTvHbMsg("");
+      try {
+        var n = Math.min(10, Math.max(4, fin - deb)), frames = [];
+        for (var i = 0; i < n; i++) {
+          var t = Math.round((deb + (fin - deb) * i / (n - 1)) * 10) / 10;
+          var rp = await fetch(img(t, 1024)); if (!rp.ok) throw new Error("image " + rp.status);
+          var bl = await rp.blob();
+          var du = await new Promise(function (ok, ko) { var fr = new FileReader(); fr.onload = function () { ok(fr.result); }; fr.onerror = ko; fr.readAsDataURL(bl); });
+          frames.push({ data: du, t: t });
+        }
+        window.__hbFramesVideo = frames;
+        window.__hbPrefill = T("Analyse ce passage de ma vidéo") + " (" + mmss(deb) + " → " + mmss(fin) + ")" + (grandTitreHb(v) ? " — " + grandTitreHb(v) : "") + " : ";
+        fermer(); setEcran("assistant");
+      } catch (e) { setTvHbMsg(T("Les images de la vidéo n’ont pas pu être préparées : ") + String((e && e.message) || e)); }
+      setTvHbOcc(false);
+    }
+    var ouv = tvHb;
+    return h("div", { id: "tv-hb", className: "tv-hb" },
+      h("button", { type: "button", className: "tv-hb-tete", onClick: function () { setTvHb(!ouv); } },
+        h("b", null, "✦ " + T("Analyser un passage avec Hey Baby")), h("i", { "aria-hidden": "true" }, ouv ? "−" : "+")),
+      ouv ? h("div", { className: "tv-hb-corps" },
+        h("div", { className: "tv-bande" },
+          [0, 1, 2, 3, 4, 5, 6].map(function (k) { return h("img", { key: k, src: img(Math.round(tot * (k + 0.5) / 7), 160), alt: "" }); }),
+          h("div", { className: "tv-sel", style: { left: (deb / tot * 100) + "%", width: ((fin - deb) / tot * 100) + "%" } })),
+        h("div", { className: "tv-curs" },
+          h("label", null, T("Début"), " ", h("b", null, mmss(deb)), h("input", { type: "range", min: 0, max: tot - 1, step: 1, value: deb, onChange: function (e) { var x = +e.target.value; setTvDeb(x); if (fin <= x) setTvFin(Math.min(tot, x + 1)); } })),
+          h("label", null, T("Fin"), " ", h("b", null, mmss(fin)), h("input", { type: "range", min: 1, max: tot, step: 1, value: fin, onChange: function (e) { var x = +e.target.value; setTvFin(x); if (deb >= x) setTvDeb(Math.max(0, x - 1)); } }))),
+        h("div", { className: "tv-apercu" },
+          h("img", { src: img(deb, 480), alt: "" }),
+          h("div", null, h("b", null, T("Extrait de ") + (fin - deb) + " s"), h("span", null, T("Hey Baby regarde une dizaine d’images prises tout au long de ce passage.")))),
+        h("button", { type: "button", className: "tv-btn", disabled: tvHbOcc, onClick: envoyer }, tvHbOcc ? T("Préparation des images…") : T("Envoyer à Hey Baby")),
+        tvHbMsg ? h("div", { style: { marginTop: 10, fontSize: 12, color: CH } }, tvHbMsg) : null) : null);
+  }
+  function grandTitreHb(v) { return (v && (v.titre || v.concours || "")) || ""; }
 
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },
