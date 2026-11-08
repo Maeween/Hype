@@ -250,7 +250,7 @@ function EcranMonCavalier() {
   function pzFond() { var fd = pzActif.fond; var rF = pzRgbPerso(fd); if (rF) return ["x", PZ("Ma couleur à moi"), "linear-gradient(180deg,rgb(" + rF.join(",") + ") 0%,rgb(" + rF.map(function (v) { return Math.round(v * 0.45); }).join(",") + ") 70%,#060709 100%)"]; for (var i = 0; i < PERSO_FONDS.length; i++) if (PERSO_FONDS[i][0] === fd) return PERSO_FONDS[i]; return PERSO_FONDS[0]; }
   function pzRacine(props) {
     var fd = pzFond(), st = Object.assign({}, props.style);
-    if (fd[2] && fd[2] !== "PHOTO") st.background = fd[2];
+    if (fd[2] && fd[2] !== "PHOTO") st.background = (fd[0] === "nuit" || fd[0] === "ivoire") ? fd[2] : ("linear-gradient(180deg,rgba(6,7,9,0.62) 0%,rgba(6,7,9,0.42) 22%,rgba(6,7,9,0.12) 55%,rgba(6,7,9,0) 80%), " + fd[2] + (fd[2].charAt(0) === "#" ? "" : ", #060709"));   /* 08/11 (Blandine : « en haut ça fait béton… plus semi-transparent ») */
     if (fd[2] === "PHOTO") st.zIndex = 0;
     return Object.assign({}, props, { ref: racinePersoRef, style: st, "data-pz-police": pzActif.police || "classique" });
   }
@@ -928,16 +928,20 @@ function EcranMonCavalier() {
   function cavOngletsGroupes() {
     var gs = (groupesCav || []).filter(function (gE) { return gE && gE.nature === "equipe"; });
     var cleTm = (typeof TEAM_CLE !== "undefined") ? TEAM_CLE : "societe d'equitation de paris (sep)";
-    var items = gs.map(function (g) { return { k: "g" + g.id, nom: g.nom || "", coach: !!g.__coach || (roleTeamAff === "coach" && g.club_clef === cleTm), ouvrir: function () { if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); else setEcran("team-competition"); } }; });
+    function sigleClub(c) { c = String(c || ""); var m = /\(([^)]+)\)/.exec(c); if (m) return m[1].toUpperCase(); var w = c.trim().split(/\s+/).pop() || ""; return w ? w.charAt(0).toUpperCase() + w.slice(1) : ""; }
+    var items = gs.map(function (g) { return { k: "g" + g.id, nom: g.nom || "", club: sigleClub(g.club_clef), coach: !!g.__coach || (roleTeamAff === "coach" && g.club_clef === cleTm), ouvrir: function () { if (typeof hypeOuvrirEquipe === "function") hypeOuvrirEquipe(g, setEcran); else setEcran("team-competition"); } }; });
     if (!items.length && roleTeamAff) items.push({ k: "team", nom: "Team CSO Club", coach: roleTeamAff === "coach", ouvrir: function () { setEcran("team-competition"); } });
     if (!items.length) return null;
     var lCoach = T("Coach", "Coach", "Coach", "Coach", "\u30b3\u30fc\u30c1", "Coach", "\u0645\u062f\u0631\u0628", "\u6559\u7ec3", "Coach", "Coach", "Coach", "\u0422\u0440\u0435\u043d\u0435\u0440", "Trener", "\ucf54\uce58");
     var lMembre = T("Membre", "Member", "Miembro", "Membro", "\u30e1\u30f3\u30d0\u30fc", "Mitglied", "\u0639\u0636\u0648", "\u6210\u5458", "Lid", "Membro", "Medlem", "\u0423\u0447\u0430\u0441\u0442\u043d\u0438\u043a", "Cz\u0142onek", "\uba64\ubc84");
-    return h("div", { key: "cavOnglets", "data-pz-hero": "1", style: { display: "flex", gap: 6, alignItems: "flex-end", margin: cavTab ? "6px 34px 0" : "6px 16px 0", borderBottom: "1px solid rgba(197,170,120,0.45)", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } },
+    /* 08/11 (Blandine : « deux onglets de meme largeur… sur la ligne ») : les onglets se partagent la ligne a parts egales, plus
+       aucun debordement ; 2 lignes dans chaque onglet (Coach en petit, puis le nom) et le club quand il y a plusieurs equipes */
+    var plusieurs = items.length > 1;
+    return h("div", { key: "cavOnglets", "data-pz-hero": "1", style: { display: "flex", gap: 6, alignItems: "stretch", margin: cavTab ? "6px 34px 0" : "6px 16px 0", borderBottom: "1px solid rgba(197,170,120,0.45)" } },
       items.map(function (it) {
-        return h("button", { key: it.k, onClick: it.ouvrir, style: { flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: 7, height: 30, padding: "0 13px", border: "1px solid rgba(197,170,120,0.55)", borderBottom: "none", borderRadius: "12px 12px 0 0", background: "linear-gradient(180deg,rgba(16,21,24,0.92),rgba(5,8,11,0.98))", fontFamily: M, fontSize: 10, letterSpacing: 1, textTransform: "uppercase", whiteSpace: "nowrap", cursor: "pointer" } },
-          h("span", { style: { color: "#C9A66B", fontWeight: 700 } }, "\u2726 " + (it.coach ? lCoach : lMembre)),
-          h("span", { style: { color: "#F3EEE4", fontWeight: 600 } }, it.nom));
+        return h("button", { key: it.k, onClick: it.ouvrir, style: { flex: plusieurs ? "1 1 0" : "0 1 auto", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", gap: 2, minHeight: 42, padding: "6px 12px", border: "1px solid rgba(197,170,120,0.55)", borderBottom: "none", borderRadius: "12px 12px 0 0", background: "linear-gradient(180deg,rgba(16,21,24,0.92),rgba(5,8,11,0.98))", fontFamily: M, textAlign: "start", cursor: "pointer" } },
+          h("span", { style: { color: "#C9A66B", fontWeight: 700, fontSize: 9, letterSpacing: 1.2, textTransform: "uppercase" } }, "\u2726 " + (it.coach ? lCoach : lMembre)),
+          h("span", { style: { color: "#F3EEE4", fontWeight: 600, fontSize: 11.5, lineHeight: 1.25, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, it.nom + ((plusieurs && it.club) ? " \u00b7 " + it.club : "")));
       }));
   }
   function cavV2Hero() {
@@ -965,6 +969,9 @@ function EcranMonCavalier() {
     var rondV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 26 /* 15/10 (1137) a droite dans toutes les langues, comme le partage et le drapeau ; en arabe il passait sous la fleche retour */, zIndex: 6, width: 36, height: 36, borderRadius: "50%", background: CAV_ICONE, border: "1px solid rgba(197,170,120,0.36)", color: "#F3EEE4", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", padding: 0 };
     return h("div", { key: "cavV2Hero", "data-pz-hero": "1", style: { background: (pzFond()[0] === "ivoire") ? "linear-gradient(180deg,#05080B 0%,#05080B 80%,#F4EFE6 100%)" : undefined, position: "relative", zIndex: 1, height: "calc(env(safe-area-inset-top) + " + hV2 + "px)", overflow: "visible" } },
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden" } },
+        /* 08/11 (Blandine : « ça gâche complètement la photo ») : le fond choisi ne passe plus a travers la photo ; sous la photo,
+           du noir neutre qui s efface vers le bas, la couleur de la page reprend seulement sous la photo */
+        (pzActif.fond && pzActif.fond !== "nuit" && pzFond()[0] !== "ivoire" && pzFond()[2] !== "PHOTO") ? h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg,#060709 0%,#060709 72%,rgba(6,7,9,0) 100%)" } }) : null,
         estLogo
           ? h("div", { style: Object.assign({}, photoV2, { backgroundImage: "url(" + heroImg + ")", backgroundSize: "auto 86%", backgroundRepeat: "no-repeat", backgroundPosition: "center 30%", opacity: 0.9 }) })
           : (enteteV2 === "portrait")
