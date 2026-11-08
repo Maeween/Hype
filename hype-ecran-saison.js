@@ -29,8 +29,8 @@ var HS_TR_BRUT = {
   "Ma saison": ["My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"],
   "L’équipe": ["The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipe", "Laget", "Команда", "Drużyna", "팀"],
   ", saison ": [", season ", ", temporada ", ", stagione ", "・シーズン ", ", Saison ", "، موسم ", "，赛季 ", ", seizoen ", ", temporada ", ", säsong ", ", сезон ", ", sezon ", ", 시즌 "],
-  " cavalières": [" riders", " jinetes", " cavaliere", "人のライダー", " Reiterinnen", " فارسات", " 位骑手", " ruiters", " cavaleiras", " ryttare", " всадницы", " amazonki", "명의 라이더"],
-  " cavalière": [" rider", " jinete", " cavaliera", "人のライダー", " Reiterin", " فارسة", " 位骑手", " ruiter", " cavaleira", " ryttare", " всадница", " amazonka", "명의 라이더"],
+  " cavaliers": [" riders", " jinetes", " cavalieri", "人のライダー", " Reiter", " فرسان", " 位骑手", " ruiters", " cavaleiros", " ryttare", " всадники", " jeźdźcy", "명의 라이더"],
+  " cavalier": [" rider", " jinete", " cavaliere", "人のライダー", " Reiter", " فارس", " 位骑手", " ruiter", " cavaleiro", " ryttare", " всадник", " jeździec", "명의 라이더"],
   "À engager": ["To enter", "Por inscribir", "Da iscrivere", "エントリー前", "Zu nennen", "للتسجيل", "待报名", "In te schrijven", "A inscrever", "Att anmäla", "Записать", "Do zgłoszenia", "출전 신청 전"],
   "Stage": ["Clinic", "Cursillo", "Stage", "講習会", "Lehrgang", "تدريب", "集训", "Clinic", "Estágio", "Kurs", "Сбор", "Obóz", "캠프"],
   "Concours": ["Show", "Concurso", "Concorso", "競技会", "Turnier", "مسابقة", "比赛", "Wedstrijd", "Concurso", "Tävling", "Соревнования", "Zawody", "대회"],
@@ -328,7 +328,7 @@ function EcranMaSaison() {
     var liste = ins[ev.id] || [];
     var moiDedans = !!(moi && moi.id && liste.indexOf(moi.id) !== -1);
     var nb = liste.length;
-    var etiquette = nb ? (nb + (nb > 1 ? F(" cavalières") : F(" cavalière"))) : (String(ev.date_jour || "").slice(0, 10) > isoAuj ? F("À engager") : "");
+    var etiquette = nb ? (nb + (nb > 1 ? F(" cavaliers") : F(" cavalier"))) : (String(ev.date_jour || "").slice(0, 10) > isoAuj ? F("À engager") : "");
     var clubCourt = clubs.length > 1 ? (clubs.filter(function (n) { return clefDe(n) === ev.club_clef; })[0] || "") : "";
     var lieu = ev.lieu || clubCourt;
     var carteEl = h("button", { type: "button", key: ev.id, className: "hs-cd", onClick: function () { ouvrir(ev); } },
@@ -1075,7 +1075,7 @@ function EcranConcours() {
         msg ? h("div", { className: "hs-msg" }, msg) : null,
         pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null),
       inscrits && inscrits.length ? h("div", { className: "hs-carte", style: { marginTop: 14 } },
-        h("div", { className: "hs-row" }, h("div", { className: "g" }, h("b", null, inscrits.length + (inscrits.length > 1 ? F(" cavalières participent") : F(" cavalière participe"))))),
+        h("div", { className: "hs-row" }, h("div", { className: "g" }, h("b", null, inscrits.length + (inscrits.length > 1 ? F(" cavaliers participent") : F(" cavalier participe"))))),
         h("div", { className: "hs-av" }, inscrits.map(function (p) { return h("span", { key: p.id }, h("img", { src: hsPhotoProfil(p), alt: "" }), p.pseudo || "?"); }))) : null,
       /* ce qu'il faut savoir */
       ev.description ? h("div", null,
@@ -1536,7 +1536,7 @@ function EcranEngagements() {
         var deja = lignes.some(function (li) { return (c && li.cavalier_id === c.id) || hsMemePers(li.nom, x.nom); });
         return { nom: String(x.nom || "").trim(), licence: String(x.licence || "").trim(), epreuve1: hsNomEpreuve(x.epreuve1 || ""), cheval1: String(x.cheval1 || "").trim(), epreuve2: hsNomEpreuve(x.epreuve2 || ""), cheval2: String(x.cheval2 || "").trim(), compte: c, deja: deja, coche: true };
       });
-      setLus(res); setLecture(res.length ? "" : "Aucune cavalière trouvée sur cette fiche.");
+      setLus(res); setLecture(res.length ? "" : "Aucun cavalier trouvé sur cette fiche.");
     } catch (eL) { setLecture("Lecture impossible : " + String((eL && eL.message) || eL)); }
   }
   /* ajoute les cavalières cochées ; celles déjà sur la feuille reçoivent juste le nom et la licence lus */
@@ -1568,7 +1568,7 @@ function EcranEngagements() {
   async function enregistrerL(lignes, supprimees) {
     if (occupe || !feuille || !lignes) return;
     var vides = lignes.filter(function (l) { return !String(l.nom || "").trim(); });
-    if (vides.length) { setMsg(F("Il manque le nom d’une cavalière.")); return; }
+    if (vides.length) { setMsg(F("Il manque le nom d’un cavalier.")); return; }
     setOccupe(true); setMsg("");
     try {
       var fe = { agenda_id: idEv, epreuves: feuille.epreuves || [], discipline: feuille.discipline || null, numero: feuille.numero || null, prix: feuille.prix || null, transport: feuille.transport || null, facturer_le: feuille.facturer_le || null, faits_le: feuille.faits_le || null, chef_nom: feuille.chef_nom || null, chef_licence: feuille.chef_licence || null, maj_le: new Date().toISOString() };
@@ -1752,7 +1752,7 @@ function EcranEngagements() {
       h("div", { className: "hs-pep-tot" }, nbTours + F(" tours · ") + libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre"))));
   }
   function onglets() {
-    var o = [["couples", F("Cavalières et chevaux")], ["epreuves", F("Par épreuve")], ["grille", F("Grille des tours")]];
+    var o = [["couples", F("Cavaliers et chevaux")], ["epreuves", F("Par épreuve")], ["grille", F("Grille des tours")]];
     return h("div", { className: "hs-onglets", role: "tablist" }, o.map(function (x) {
       return h("button", { key: x[0], type: "button", role: "tab", "aria-selected": vue === x[0], className: vue === x[0] ? "on" : "", onClick: function () { setVue(x[0]); } }, x[1]);
     }));
@@ -2127,21 +2127,21 @@ function EcranEngagements() {
       }));
   }
   function switchVue() {
-    var o = [["couples", F("Cavalières")], ["chevaux", F("Chevaux")], ["epreuves", F("Épreuves")]];
+    var o = [["couples", F("Cavaliers")], ["chevaux", F("Chevaux")], ["epreuves", F("Épreuves")]];
     return h("div", { className: "e1-sw", role: "tablist" }, o.map(function (x) {
       return h("button", { key: x[0], type: "button", role: "tab", "aria-selected": vue === x[0], className: vue === x[0] ? "on" : "", onClick: function () { setVue(x[0]); } }, x[1]);
     }));
   }
   function vueCavalieres() {
     return h(React.Fragment, null,
-      h("div", { className: "e1-compte" }, lignes.length ? lignes.length + (lignes.length > 1 ? F(" cavalières · ") : F(" cavalière · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")) : F("Aucune cavalière pour l’instant.")),
+      h("div", { className: "e1-compte" }, lignes.length ? lignes.length + (lignes.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")) : F("Aucun cavalier pour l’instant.")),
       lignes.map(function (l, i) {
         var p = cavDe(l), ouvert = !!editCav[i] || !String(l.nom || "").trim();
         return h("div", { key: l.id || ("n" + i), className: "e1-carte e1-cav" },
           p && hsPhotoProfil(p) ? h("img", { className: "e1-av", src: hsPhotoProfil(p), alt: "" }) : h("div", { className: "e1-av" }, initiales(l.nom)),
           h("div", { className: "e1-cav-c" },
             h("div", { className: "e1-cav-t" },
-              h("b", null, String(l.nom || "").trim() || F("Nouvelle cavalière")),
+              h("b", null, String(l.nom || "").trim() || F("Nouveau cavalier")),
               h("button", { type: "button", className: "hs-lien", onClick: function () { retirerLigne(i); } }, F("Retirer"))),
             ouvert
               ? h("div", { className: "e1-cav-ed" },
@@ -2158,11 +2158,11 @@ function EcranEngagements() {
             })));
       }),
       /* où on en est : cavalières et chevaux prévus, grisés une fois engagés */
-      proposees.length ? h("div", { className: "hs-champ", style: { marginTop: 14 } }, h("label", null, F("Cavalières de compétition") + " · " + proposees.filter(function (c) { return dejaLa[c.id]; }).length + "/" + proposees.length),
+      proposees.length ? h("div", { className: "hs-champ", style: { marginTop: 14 } }, h("label", null, F("Cavaliers de compétition") + " · " + proposees.filter(function (c) { return dejaLa[c.id]; }).length + "/" + proposees.length),
         h("div", { className: "hs-puces" }, proposees.map(puceCav))) : null,
       chevauxConc.length ? h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Chevaux du concours") + " · " + chevauxConc.filter(function (c) { return montes[c.nom]; }).length + "/" + chevauxConc.length),
         h("div", { className: "hs-puces" }, chevauxConc.map(function (c) { var m = montes[c.nom]; return h("span", { key: c.id, className: "hs-puce hs-puce-cav" + (m ? " fait" : "") }, (m ? "✓ " : "") + c.nom); }))) : null,
-      h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Chercher une autre cavalière")),
+      h("div", { className: "hs-champ", style: { marginTop: 6 } }, h("label", null, F("Chercher un autre cavalier")),
         h("input", { type: "search", value: recherche, placeholder: F("Nom ou pseudo"), onChange: function (e) { setRecherche(e.target.value); } })),
       q.length >= 2 ? h("div", { className: "hs-puces" },
         resultats.map(puceCav),
@@ -2174,7 +2174,7 @@ function EcranEngagements() {
           h("input", { type: "file", accept: "image/*,application/pdf", disabled: lecture === "en_cours", onChange: lireFiche, style: { display: "none" } }))),
       lecture && lecture !== "en_cours" ? h("div", { className: "hs-note", style: { marginTop: 4 } }, lecture) : null,
       lus && lus.length ? h("div", { className: "hs-lus" },
-        h("div", { className: "hs-pep-t" }, h("span", null, F("Lu sur la fiche")), h("span", null, lus.length + F(" cavalières"))),
+        h("div", { className: "hs-pep-t" }, h("span", null, F("Lu sur la fiche")), h("span", null, lus.length + F(" cavaliers"))),
         lus.map(function (x, k) {
           return h("label", { key: k, className: "hs-lu" },
             h("input", { type: "checkbox", checked: !!x.coche, onChange: function () { var c = lus.slice(); c[k] = Object.assign({}, x, { coche: !x.coche }); setLus(c); } }),
@@ -2848,7 +2848,7 @@ function EcranVideoParcours() {
           h("textarea", { value: texte, rows: 3, placeholder: F("ex. Abord trop rapide, reprends le galop avant le virage"), onFocus: function () { try { refV.current.pause(); } catch (e) { } }, onChange: function (e) { setTexte(e.target.value); }, style: { width: "100%", borderRadius: 10, border: "1px solid rgba(243,238,228,.16)", background: "rgba(16,26,29,.6)", color: "#F3EEE4", fontFamily: "inherit", fontSize: 16, padding: "10px 12px", resize: "vertical" } })),
         h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !String(texte).trim(), onClick: ajouter }, occupe ? "…" : F("Ajouter à ") + hsTemps(tps))) : null,
       msg ? h("div", { className: "hs-msg" }, msg) : null,
-      h("div", { className: "hs-note" }, F("Touche une heure pour revoir ce moment. Commentaires visibles par la cavalière, sa coach et leur auteur."))));
+      h("div", { className: "hs-note" }, F("Touche une heure pour revoir ce moment. Commentaires visibles par le cavalier, sa coach et leur auteur."))));
 }
 
 function hsOrdreBase(L) {
@@ -3152,13 +3152,13 @@ function EcranJourJ() {
       }
       setModif({}); setBase(hsOrdreBase(lignes));
       /* 04/11 22h : prévenir chaque cavalière concernée sur son téléphone (fonction serveur notifier-passage) */
-      var faitMsg = F("✓ Enregistré. Les cavalières voient leur nouvelle heure sur la fiche du concours.");
+      var faitMsg = F("✓ Enregistré. Les cavaliers voient leur nouvelle heure sur la fiche du concours.");
       if (prevenir && ids.length) {
         try {
           var rn = await supa.functions.invoke("notifier-passage", { body: { agenda_id: idEv, engagements: ids } });
           var dn = rn && rn.data;
           if (rn && rn.error) faitMsg += " " + F("Notification impossible : ") + (rn.error.message || rn.error);
-          else if (dn && dn.ok) faitMsg += " " + (dn.envois ? F("Notification envoyée") + " (" + dn.envois + ")." : "") + (dn.sans_alertes ? " " + dn.sans_alertes + F(" cavalière(s) sans alertes activées.") : "");
+          else if (dn && dn.ok) faitMsg += " " + (dn.envois ? F("Notification envoyée") + " (" + dn.envois + ")." : "") + (dn.sans_alertes ? " " + dn.sans_alertes + F(" cavalier(s) sans alertes activées.") : "");
         } catch (eN) { faitMsg += " " + F("Notification impossible."); }
       }
       setMsg(faitMsg);
@@ -3269,9 +3269,9 @@ function EcranJourJ() {
   return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
     h("div", { className: "hs-in" },
       nbConflits ? h("div", { className: "hs-carte", style: { borderColor: "rgba(201,166,107,.7)", padding: "12px 14px", marginTop: 18, fontSize: 13, lineHeight: 1.5 } },
-        h("b", { style: { color: "#C9A66B" } }, F("Attention : ")), F("deux cavalières passent en même temps sur deux pistes différentes. Regarde les lignes marquées.")) : null,
+        h("b", { style: { color: "#C9A66B" } }, F("Attention : ")), F("deux cavaliers passent en même temps sur deux pistes différentes. Regarde les lignes marquées.")) : null,
       h("div", { className: "hs-sec" }, h("b", null, F("Lire le programme"))),
-      h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Une photo, une capture ou le PDF du programme ou de la liste de départ (numéros et heures d’épreuve, ordre de passage) : Hype prépare les heures et les pistes de tes cavalières.")),
+      h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Une photo, une capture ou le PDF du programme ou de la liste de départ (numéros et heures d’épreuve, ordre de passage) : Hype prépare les heures et les pistes de tes cavaliers.")),
       h("label", { className: "hs-btn", style: { cursor: "pointer", opacity: progLect === "en_cours" ? 0.6 : 1 } },
         progLect === "en_cours" ? F("Lecture du programme… (1 à 2 min)") : F("Photo, capture ou PDF du programme"),
         h("input", { type: "file", accept: "image/*,application/pdf", disabled: progLect === "en_cours", onChange: lireProgramme, style: { display: "none" } })),
@@ -3326,14 +3326,14 @@ function EcranJourJ() {
           })),
           h("button", { type: "button", className: "hs-btn", style: { marginTop: 10 }, onClick: prendreHeures }, F("Reprendre ces heures dans les passages")),
           h("div", { className: "hs-note" }, F("Heures estimées par Hype : début de l’épreuve + environ 1 min 45 par couple avant le sien. Les résultats sont ceux du chronométreur, encore provisoires pendant le concours."))) :
-          h("div", { className: "hs-vide", style: { marginTop: 10 } }, F("Aucune de tes cavalières trouvée dans les listes de départ pour l’instant (les listes sont souvent publiées la veille)."))) : null) : null,
+          h("div", { className: "hs-vide", style: { marginTop: 10 } }, F("Aucun de tes cavaliers trouvé dans les listes de départ pour l’instant (les listes sont souvent publiées la veille)."))) : null) : null,
       h("div", { className: "hs-champ", style: { marginTop: 14 } }, h("label", null, F("Lien du direct (chronométreur)")), h("input", { type: "url", value: lien, placeholder: "https://…", onChange: function (e) { setLien(e.target.value); setMsg(""); } })),
-      h("div", { className: "hs-note", style: { marginTop: -4 } }, F("Colle ici la page des résultats en direct : les cavalières auront un bouton « Résultats en direct » sur la fiche du concours.")),
+      h("div", { className: "hs-note", style: { marginTop: -4 } }, F("Colle ici la page des résultats en direct : les cavaliers auront un bouton « Résultats en direct » sur la fiche du concours.")),
       h("div", { className: "hs-coll" },
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
         h("label", { style: { display: "flex", alignItems: "center", gap: 10, fontSize: 12.5, color: "rgba(243,238,228,.8)", marginBottom: 10 } },
           h("input", { type: "checkbox", checked: prevenir, onChange: function (e) { setPrevenir(e.target.checked); }, style: { width: 20, minHeight: 20, height: 20, accentColor: "#C9A66B" } }),
-          F("Prévenir les cavalières sur leur téléphone")),
+          F("Prévenir les cavaliers sur leur téléphone")),
         h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !aModif, onClick: enregistrer }, occupe ? F("Enregistrement…") : (aModif ? F("Enregistrer") : F("✓ Enregistré")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }

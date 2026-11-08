@@ -402,7 +402,7 @@ function EcranProfilInterne() {
                         estModAdmin ? tuile({
                 cle: "scorevitrine",
                 titre: "Score vitrine des chevaux",
-                sous: "Classement interne (remplissage du profil, photos/vidéos) — jamais visible des cavalières",
+                sous: "Classement interne (remplissage du profil, photos/vidéos) — jamais visible des cavaliers",
                 onClick: () => setEcran("score-vitrine"),
                 ico: [React.createElement("path", { key: "a", d: "M4 20V10M12 20V4M20 20v-7" })],
             }) : null,
@@ -412,7 +412,7 @@ function EcranProfilInterne() {
             estModAdmin ? tuile({
                 cle: "rattacherffe",
                 titre: "Relier les r\u00e9sultats FFE",
-                sous: "Donner \u00e0 une cavali\u00e8re les r\u00e9sultats de son nom FFE, et ses points de la saison",
+                sous: "Donner à un cavalier les résultats de son nom FFE, et ses points de la saison",
                 onClick: () => setEcran("rattacher-ffe"),
                 ico: [React.createElement("path", { key: "a", d: "M9 12a3 3 0 0 1 3-3h3a3 3 0 0 1 0 6h-1" }), React.createElement("path", { key: "b", d: "M15 12a3 3 0 0 1-3 3H9a3 3 0 0 1 0-6h1" })],
             }) : null,

@@ -1003,7 +1003,7 @@ function EcranGuilde() {
       exDemande ? h("div", { style: { position: "fixed", left: 12, right: 12, bottom: "calc(env(safe-area-inset-bottom) + 84px)", zIndex: 8300, padding: "13px 15px", borderRadius: 16, background: "rgba(12,16,22,0.97)", border: "1px solid rgba(255,154,168,0.45)", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" } },
         h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#FFD3D9", lineHeight: 1.5 } },
           T("Retirer ", "Remove ", "Quitar ", "Rimuovere ", "", "", "\u0625\u0632\u0627\u0644\u0629 ", "移除", "Verwijder ", "Tirar ", "Ta bort ", "Убрать ", "Usunąć ", " ")
-            + (exDemande.pseudo || T("cette cavali\u00e8re", "this rider", "esta jinete", "questa amazzone", "", "", "\u0647\u0630\u0647 \u0627\u0644\u0641\u0627\u0631\u0633\u0629", "这位骑手", "deze ruiter", "esta amazona", "den här ryttaren", "эту всадницу", "tę amazonkę", "이 기수"))
+            + (exDemande.pseudo || T("ce cavalier", "this rider", "este jinete", "questa cavaliere", "", "", "هذه الفارس", "这位骑手", "deze ruiter", "esto cavaleiro", "den här ryttaren", "эту всадника", "tę jeźdźca", "이 기수"))
             + T(" de l\u2019\u00e9curie ? Touche la croix une seconde fois pour confirmer.",
                 " from the stable? Tap the cross again to confirm.",
                 " de la cuadra? Toca la cruz otra vez para confirmar.",

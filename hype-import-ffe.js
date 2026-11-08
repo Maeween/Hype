@@ -1038,7 +1038,7 @@
         }
       } catch (eRg) { }
       if (E.completes > 0) phrase += " " + E.completes + " point" + (E.completes > 1 ? "s manquants ont été complétés" : " manquant a été complété") + " sur des lignes déjà là.";
-      if (E.rattachees > 0) phrase += " " + E.rattachees + " résultat" + (E.rattachees > 1 ? "s ont été rattachés" : " a été rattaché") + " au compte de" + (E.rattachees > 1 ? " leurs cavalières" : " sa cavalière") + " (visibles sur leur page Performances).";
+      if (E.rattachees > 0) phrase += " " + E.rattachees + " résultat" + (E.rattachees > 1 ? "s ont été rattachés" : " a été rattaché") + " au compte de" + (E.rattachees > 1 ? " leurs cavaliers" : " son cavalier") + " (visibles sur leur page Performances).";
       /* 30/10 : DIRE le lien avec l agenda — relie, non relie faute de pouvoir trancher, ou souci de lecture. */
       try {
         var Ag = E.agenda;
