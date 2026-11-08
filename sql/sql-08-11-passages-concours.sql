@@ -1,0 +1,6 @@
+-- 08/11 (Blandine « Ok ») — PASSÉ EN BASE par Claude (migrations hype_passages_concours_lecture_equipe + _sans_compte_prenom_initiale).
+-- Lecture des passages de l'équipe sur la fiche concours, sans ouvrir les tables concours_engagements / concours_tours.
+-- Accès : modératrice, responsables du club du concours, membres de l'équipe (groupes nature 'equipe') du même club.
+-- Renvoie : pseudo + photo de profil (ou prénom + initiale pour un cavalier sans compte), cheval, épreuve, tour, heure, piste.
+-- Ne renvoie JAMAIS : licence, nom complet de la feuille, consignes, santé, documents, montants. Appel interdit sans compte (anon).
+-- Texte exact : voir la fonction public.hype_passages_concours(uuid) en base.
