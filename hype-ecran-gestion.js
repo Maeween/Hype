@@ -193,7 +193,10 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           var rc = await supa.from("chevaux").select("*").is("supprime_le", null).limit(600);
           if (rc && rc.error) throw new Error(rc.error.message || String(rc.error));
           var tous = (rc && rc.data) || [];
-          res.chevaux = (typeof hypeChevauxDuClub === "function") ? hypeChevauxDuClub(tous, club) : [];
+          /* 08/11 (Blandine : « j ai retire Jokayr plusieurs fois et il est toujours la ») : la regle commune « sans club : partout » faisait
+             apparaitre dans TOUTES les ecuries les chevaux sans ecurie. Ici, un cheval sans ecurie n apparait que s il est a moi. */
+          var uidG = null; try { var ugR = await supa.auth.getUser(); uidG = (ugR && ugR.data && ugR.data.user && ugR.data.user.id) || null; } catch (eUg) { }
+          res.chevaux = ((typeof hypeChevauxDuClub === "function") ? hypeChevauxDuClub(tous, club) : []).filter(function (ch) { return String(ch.club || "").trim() !== "" || (!!uidG && ch.user_id === uidG); });
           var ids = res.chevaux.map(function (c) { return c.id; }).filter(Boolean);
           if (ids.length) {
             var rs = await supa.from("soins_cheval").select("*").in("cheval_id", ids.slice(0, 300)).limit(2000);
@@ -605,6 +608,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
 
+    var MINI_BTN = { minHeight: 0, padding: "5px 12px", fontSize: 11, lineHeight: 1.2 };
     var _ri = React.useState(null); var retirId = _ri[0], setRetirId = _ri[1];
     /* Retrait d un cheval de l ecurie : meme appel que sur sa fiche (set_cheval_club), reserve par la base aux proprietaires,
        cavalieres rattachees et moderatrices. Deux appuis : « Retirer de l'ecurie » puis « Confirmer le retrait ». */
@@ -683,9 +687,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               alerte: !l.sorti && l.manque.length > 0, onClick: function () { ouvrirCheval(l.ch); } }),
             ouvert === l.ch.id ? formulaire(l.ch) : null,
             h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 4px" } },
-              h("button", { type: "button", className: "hg-btn", onClick: function () { try { window.__chevalOuvert = l.ch.id; } catch (eO) { } setEcran("cheval"); } }, "Voir la fiche"),
-              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", onClick: function () { retirerCheval(l.ch); } }, "Confirmer le retrait") : null,
-              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", onClick: function () { setRetirId(null); } }, "Annuler") : h("button", { type: "button", className: "hg-btn", onClick: function () { setRetirId(l.ch.id); } }, "Retirer de l'écurie")));
+              h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { try { window.__chevalOuvert = l.ch.id; } catch (eO) { } setEcran("cheval"); } }, "Voir la fiche"),
+              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { retirerCheval(l.ch); } }, "Confirmer le retrait") : null,
+              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { setRetirId(null); } }, "Annuler") : h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { setRetirId(l.ch.id); } }, "Retirer de l'écurie")));
         })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
