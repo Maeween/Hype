@@ -608,15 +608,6 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
 
     var MINI_BTN = { minHeight: 0, padding: "5px 12px", fontSize: 11, lineHeight: 1.2 };
-    var _ri = React.useState(null); var retirId = _ri[0], setRetirId = _ri[1];
-    /* Retrait d un cheval de l ecurie : meme appel que sur sa fiche (set_cheval_club), reserve par la base aux proprietaires,
-       cavalieres rattachees et moderatrices. Deux appuis : « Retirer de l'ecurie » puis « Confirmer le retrait ». */
-    function retirerCheval(ch) {
-      changerClubCheval(ch.id, null).then(function (r) {
-        if (r && r.error) { setMsg("Pas retiré, réessaie."); setRetirId(null); return; }
-        setMsg("✓ Retiré de l'écurie"); setRetirId(null); setRecharge(function (n) { return n + 1; });
-      }).catch(function () { setMsg("Pas retiré, réessaie."); setRetirId(null); });
-    }
     function ouvrirCheval(ch) {
       if (ouvert === ch.id) { setOuvert(null); return; }
       var x = (d.regch || {})[String(ch.id)] || {};
@@ -687,8 +678,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             ouvert === l.ch.id ? formulaire(l.ch) : null,
             h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 4px" } },
               h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { try { window.__chevalOuvert = l.ch.id; } catch (eO) { } setEcran("cheval"); } }, "Voir la fiche"),
-              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { retirerCheval(l.ch); } }, "Confirmer le retrait") : null,
-              retirId === l.ch.id ? h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { setRetirId(null); } }, "Annuler") : h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { setRetirId(l.ch.id); } }, "Retirer de l'écurie")));
+              h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { ouvrirCheval(l.ch); } }, "Marquer comme sorti")));
         })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
