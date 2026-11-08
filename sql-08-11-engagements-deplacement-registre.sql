@@ -1,0 +1,5 @@
+-- 08/11 (Blandine, choix A, « fais en sorte que les trois s'alignent automatiquement ») — APPLIQUÉ en base le 08/11 18h.
+-- Engagements (concours_tours) -> chevaux du déplacement (agenda_chevaux) -> registre des mouvements (trigger existant).
+-- Colonne agenda_chevaux.auto = ajouté automatiquement depuis un engagement (retiré seul si le cheval n'est plus engagé ;
+-- un cheval ajouté à la main au déplacement n'est jamais retiré automatiquement).
+-- Voir la migration Supabase « engagements_vers_deplacement_et_registre » pour le texte exact.
