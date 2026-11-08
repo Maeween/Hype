@@ -34,7 +34,7 @@ const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
 const LECTURE_MAX = 2 * 1024 * 1024;
-const FORME_CIBLE = /^(galops|lexique|[1-7]|g[1-7]n?-[a-z0-9-]{1,60}|prepa-(AE|BP|DE|DES)|ecran-(dashboard|assistant|reprises|lamotte|monde)|vitrine-(cheval|perf|sante|ecurie))$/;   // 08/11 : accueil de chaque langue, Hey Baby, reprises, plan de Lamotte = la VRAIE page   // 08/11 : les prépas AE · BP · DE · DES (outils/seo-prepas.py) ouvrent la VRAIE page prépa   // 04/11 : « lexique » = /<langue>/lexique/ (outils/seo-lexique.cjs)   // 04/11 : tous les chapitres, y compris les nouveaux g5n-…, g7n-… (g5n-02 = « Les embouchures », écran à part)
+const FORME_CIBLE = /^(galops|lexique|[1-7]|g[1-7]n?-[a-z0-9-]{1,60}|prepa-(AE|BP|DE|DES)|ecran-(dashboard|assistant|reprises|lamotte|monde|pour-toi)|vitrine-(cheval|perf|sante|ecurie))$/;   // 08/11 : accueil de chaque langue, Hey Baby, reprises, plan de Lamotte = la VRAIE page   // 08/11 : les prépas AE · BP · DE · DES (outils/seo-prepas.py) ouvrent la VRAIE page prépa   // 04/11 : « lexique » = /<langue>/lexique/ (outils/seo-lexique.cjs)   // 04/11 : tous les chapitres, y compris les nouveaux g5n-…, g7n-… (g5n-02 = « Les embouchures », écran à part)
 
 function chercher(tas: Uint8Array, motif: Uint8Array): number {
   const n = tas.length - motif.length;
