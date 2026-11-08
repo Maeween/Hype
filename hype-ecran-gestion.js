@@ -676,9 +676,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
               etat: l.sorti ? (l.x.motif_sortie || "Sorti") : (l.manque.length ? "À compléter" : "✓ À jour"),
               alerte: !l.sorti && l.manque.length > 0, onClick: function () { ouvrirCheval(l.ch); } }),
             ouvert === l.ch.id ? formulaire(l.ch) : null,
-            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 4px" } },
+            ouvert === l.ch.id ? h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 4px" } },
               h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { try { window.__chevalOuvert = l.ch.id; } catch (eO) { } setEcran("cheval"); } }, "Voir la fiche"),
-              h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { ouvrirCheval(l.ch); } }, "Marquer comme sorti")));
+              h("button", { type: "button", className: "hg-btn", style: MINI_BTN, onClick: function () { ouvrirCheval(l.ch); } }, "Marquer comme sorti")) : null);
         })) : h("div", { className: "hg-vide" }, filtre === "afaire" ? "Toutes les fiches sont complètes." : filtre === "sortis" ? "Aucun cheval sorti." : "Aucune fiche complète pour l'instant."),
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
