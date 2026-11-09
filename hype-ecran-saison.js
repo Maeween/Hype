@@ -2319,7 +2319,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [blocPratique, blocRegles, outilsPassages, blocPassages, blocPaddock, liensPassages] : null,   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
+        ongletC === "passages" ? [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages] : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, blocFil, liensMedias] : null)
         : null,
@@ -2372,7 +2372,7 @@ var HC_CSS = [
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
-  ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:22px 0}",
   /* 09/11 13h10 — Médias du concours, présentation « reportage » */
   ".hc .hc-rep-titre{margin:4px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(34px,10vw,52px);line-height:1.02;color:#F3EEE4}",
   ".hc .hc-rep-filet{display:block;width:120px;height:1px;margin:14px 0 18px;background:linear-gradient(90deg,#C9A66B,rgba(201,166,107,0))}",
