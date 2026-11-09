@@ -1286,10 +1286,11 @@ function EcranTeamMedias() {
         h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
         h("div", { style: { padding: "18px 18px 0" } },
             v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.4, color: IV2, marginTop: 14 } }, "« " + v.description + " »") : null,
-            h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 10, marginTop: 16 } },
+            /* 09/11 21h20 (Blandine : « ne laisse pas les commentaires visibles sur la page ») : plus de filet ni de section à part —
+               la bulle des commentaires se range à côté du cœur ; la liste ne s'ouvre que si on la touche */
+            h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14, marginTop: 12 } },
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
-              null),
-            (typeof SectionCommentaires === "function") ? h("div", { style: { marginTop: 18, paddingTop: 12, borderTop: "1px solid " + CH3 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null,
+              (typeof SectionCommentaires === "function") ? h("div", { style: { flex: "1 1 auto", minWidth: 0 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null),
 null)) });
   }
   /* ───────── message « réservée au groupe » ───────── */
