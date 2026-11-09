@@ -1219,12 +1219,12 @@ function EcranConcours() {
   var _oc = React.useState(null); var ongletChoisi = _oc[0], setOngletC = _oc[1];   /* null = carte choisie selon le moment (09/11) */
   var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   React.useEffect(function () {
-    var ids = []; (resConc || []).forEach(function (r) { if (r.cheval_id && ids.indexOf(r.cheval_id) === -1 && chPhotos[r.cheval_id] === undefined) ids.push(r.cheval_id); });
+    var ids = []; (resConc || []).concat(passagesEq || []).forEach(function (r) { if (r.cheval_id && ids.indexOf(r.cheval_id) === -1 && chPhotos[r.cheval_id] === undefined) ids.push(r.cheval_id); });
     if (!ids.length || typeof supa === "undefined" || !supa) return;
     var vif = true;
     supa.from("chevaux").select("id, photo_url").in("id", ids.slice(0, 100)).then(function (r) { if (!vif) return; var m = Object.assign({}, chPhotos); ids.forEach(function (i) { m[i] = null; }); ((r && r.data) || []).forEach(function (x) { m[x.id] = x.photo_url || null; }); setChPhotos(m); });
     return function () { vif = false; };
-  }, [resConc]);
+  }, [resConc, passagesEq]);
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
     setDvOcc(true);
@@ -2294,7 +2294,7 @@ function EcranConcours() {
     if (!ids || !ids.length) { grpV("__", F("À identifier"), null).l.push(x); return; }
     ids.forEach(function (id) {
       var o = (medGrp === "ch" ? optCh : optCav).filter(function (q) { return q.id === String(id); })[0];
-      var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrp === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; });
+      var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrp === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; }); if (medGrp === "ch") ph = chPhotos[id] || null;
       grpV(String(id), (o && o.nom) || (medGrp === "ch" ? F("Cheval") : F("Cavalier")), ph).l.push(x);
     });
   });
@@ -2304,11 +2304,12 @@ function EcranConcours() {
     videosF.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start", margin: "0 0 14px" } },
       [["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) { return h("button", { key: o[0], type: "button", className: "hc-chip-p" + (medGrp === o[0] ? " on" : ""), onClick: function () { setMedGrp(o[0]); } }, o[1]); })) : null,
     videosF.length ? grpsV.map(function (g) {
+      /* 09/11 15h14 (Blandine) : un bandeau photo + nom sépare chaque lot ; 2 vidéos côte à côte, la suite défile */
       return h("div", { key: g.id, className: "hc-vg" },
         h("div", { className: "hc-vg-t" },
-          h("span", { className: "hc-vg-av" }, g.photo ? h("img", { src: g.photo, alt: "", loading: "lazy" }) : h("b", null, g.id === "__" ? "?" : String(g.nom || "?").charAt(0).toUpperCase())),
+          h("span", { className: "hc-vg-av" }, g.photo ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(g.photo, 160, 160) : g.photo, alt: "", loading: "lazy" }) : h("b", null, g.id === "__" ? "?" : String(g.nom || "?").charAt(0).toUpperCase())),
           h("b", null, g.nom), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
-        h("div", { className: "hc-galh", "data-hscroll": "1" }, g.l.map(function (x) { return h("div", { key: x.cle, className: "hc-galh-i" }, vue(x, "hc-galh-m", 700)); })));
+        h("div", { className: "hc-vg-l", "data-hscroll": "1" }, g.l.map(function (x) { return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700), x.epreuve ? h("span", { className: "hc-vg-ep" }, x.epreuve) : null); })));
     }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
   function selF(val, set, libre, opts, ic) {
     return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
@@ -2823,10 +2824,14 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
-  ".hc .hc-vg{margin-bottom:18px}",
-  ".hc .hc-vg .hc-galh-m{height:128px}",
-  ".hc .hc-vg .hc-galh-m img{height:128px}",
-  ".hc .hc-vg-t{display:flex;align-items:center;gap:10px;margin-bottom:10px}",
+  ".hc .hc-vg{margin-bottom:20px}",
+  ".hc .hc-vg-t{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:8px 14px 8px 8px;border:1px solid rgba(201,166,107,.35);border-radius:999px;background:linear-gradient(90deg,rgba(201,166,107,.12),rgba(201,166,107,0) 70%)}",
+  ".hc .hc-vg-l{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}",
+  ".hc .hc-vg-l::-webkit-scrollbar{display:none}",
+  ".hc .hc-vg-i{flex:0 0 calc((100% - 10px) / 2);scroll-snap-align:start;min-width:0}",
+  ".hc .hc-vg-m{position:relative;display:block;width:100%;aspect-ratio:16/10;padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
+  ".hc .hc-vg-m img{width:100%;height:100%;object-fit:contain}",
+  ".hc .hc-vg-ep{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:5px}",
   ".hc .hc-vg-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:600}",
   ".hc .hc-vg-t span:last-child{font-size:12px;color:rgba(243,238,228,.6);margin-inline-start:auto}",
   ".hc .hc-vg-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;flex:none;background:#141a1c}",
