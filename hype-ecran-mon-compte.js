@@ -299,6 +299,25 @@ function EcranMonCompte() {
       React.createElement("button", { onClick: function () { setEcran("hype-pour-toi"); }, style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, width: "100%", maxWidth: 420, textAlign: "left", margin: "18px auto 0", padding: "14px 16px", borderRadius: 20, border: "1px solid rgba(201,166,107,0.42)", background: "linear-gradient(120deg, rgba(201,166,107,0.10), rgba(10,14,18,0.75))", cursor: "pointer", color: "#EDF2F5" } },
         React.createElement("span", { style: { fontFamily: "'Cinzel', serif", fontSize: 15, fontWeight: 600 } }, tr({ fr: "Ce que Hype t\u2019apporte", en: "What Hype brings you", es: "Lo que Hype te aporta", it: "Cosa ti offre Hype", ja: "Hype \u3067\u3067\u304d\u308b\u3053\u3068", de: "Was Hype dir bringt", ar: "\u0645\u0627 \u064a\u0642\u062f\u0651\u0645\u0647 \u0644\u0643 Hype", zh: "Hype \u80fd\u4e3a\u4f60\u5e26\u6765\u4ec0\u4e48", nl: "Wat Hype je brengt", pt: "O que a Hype te traz", sv: "Vad Hype ger dig", ru: "\u0427\u0442\u043e \u0442\u0435\u0431\u0435 \u0434\u0430\u0451\u0442 Hype", pl: "Co daje ci Hype", ko: "Hype\uac00 \uc8fc\ub294 \uac83" })),
         React.createElement("span", { "aria-hidden": "true", style: { color: "#C9A66B", fontSize: 18 } }, "\u203a")),
+      /* 09/11 23h50 (Blandine : « déjà dans Mon compte, oui, dans un bel onglet ») : PARTAGER HYPE (code QR + lien), page « partager »
+         qui n'avait plus d'accès depuis le nouvel accueil. Carte au style des cartes-liens de la Team : icône, filet, titre Cormorant,
+         portrait entier à droite. Textes = ceux de la page Partager (14 langues). */
+      (function () {
+        var Dp = (typeof HYPE_PARTAGER_DICT !== "undefined") ? (HYPE_PARTAGER_DICT[langue] || HYPE_PARTAGER_DICT.fr) : { l1: "Tu aimes Hype ?", l2: "Fais-le d\u00e9couvrir." };
+        var rtlP = false; try { rtlP = document.documentElement.dir === "rtl"; } catch (eR) { }
+        return React.createElement("button", { onClick: function () { setEcran("partager"); }, style: { position: "relative", overflow: "hidden", display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 420, height: 104, margin: "18px auto 0", padding: "0 13px", borderRadius: 14, border: "1px solid rgba(214,182,118,0.38)", background: "#0B0F13", cursor: "pointer", color: "#F3EEE4", textAlign: "start", font: "inherit" } },
+          React.createElement("img", { src: "images/cavalier-defaut-12.webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, height: "100%", width: "auto", maxWidth: "52%", objectFit: "contain", transform: rtlP ? "scaleX(-1)" : "none" } }),
+          React.createElement("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlP ? "270deg" : "90deg") + ",#0B0F13 42%,rgba(11,15,19,.75) 58%,rgba(11,15,19,0) 82%)" } }),
+          React.createElement("span", { style: { position: "relative", flex: "0 0 auto", width: 28, display: "flex", justifyContent: "center" } },
+            React.createElement("svg", { viewBox: "0 0 24 24", width: 22, height: 22, "aria-hidden": "true", fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" },
+              React.createElement("circle", { cx: 18, cy: 5, r: 2.4 }), React.createElement("circle", { cx: 6, cy: 12, r: 2.4 }), React.createElement("circle", { cx: 18, cy: 19, r: 2.4 }),
+              React.createElement("path", { d: "M8.2 10.9l7.6-4.6M8.2 13.1l7.6 4.6" }))),
+          React.createElement("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 auto", width: 1, alignSelf: "stretch", margin: "16px 0", background: "rgba(214,182,118,0.28)" } }),
+          React.createElement("span", { style: { position: "relative", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 } },
+            React.createElement("b", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 20, fontWeight: 600, lineHeight: 1.15, color: "#F3EEE4" } }, Dp.l1),
+            React.createElement("small", { style: { fontFamily: "'Montserrat', sans-serif", fontSize: 11.5, color: "rgba(244,241,234,0.72)" } }, Dp.l2)),
+          React.createElement("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 auto", color: "#C9A66B", fontSize: 18 } }, rtlP ? "\u2039" : "\u203a"));
+      })(),
       /* (548) raccourci vers l ANCIENNE page Ecurie (ou retour a la nouvelle) - son compte seulement */
       ((user && typeof estCompteFeinnHype === "function" && estCompteFeinnHype(user)) ? (function () {
         var anc = false; try { anc = !!window.__ecurieAncienne; } catch (eA) { }
