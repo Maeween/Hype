@@ -566,8 +566,7 @@ function EcranTeamCompetition() {
           /* 09/11 15h01 (Blandine) : plus de bouton « Événements passés » — « Voir tout » montre à venir ET passés */
           (ouvert.ag && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous pass\u00e9s", "Past events", "Citas pasadas", "Appuntamenti passati", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangene Termine", "\u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
-            h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return carteRdvE(ev, true); }))) : null),
-    lienSaison));
+            h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return carteRdvE(ev, true); }))) : null),));   /* 09/11 23h00 (Blandine : « décale plus bas le bouton Ma saison ») : déplacé sous les Résultats récents */
 
   /* ── résultats récents ── */
   function placeDe(r) { if (r.place != null && !isNaN(Number(r.place))) return Number(r.place); var m = String(r.classement || "").match(/^\s*(\d+)/); return m ? Number(m[1]) : null; }
@@ -963,7 +962,7 @@ function EcranTeamCompetition() {
     hero,
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
-    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, blocSv, trait(), blocMedias, trait(), blocCoach, trait(), blocReg,
+    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocSv, trait(), blocMedias, trait(), blocCoach, trait(), blocReg,
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
