@@ -20,6 +20,14 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  /* 09/11 13h55 — doublons, crayon des résultats */
+  "Supprimer": ["Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제"],
+  "Corriger": ["Correct", "Corregir", "Correggi", "修正", "Korrigieren", "تصحيح", "更正", "Corrigeren", "Corrigir", "Rätta", "Исправить", "Popraw", "수정"],
+  "Supprimer ce résultat de ": ["Delete this result for ", "¿Eliminar este resultado de ", "Eliminare questo risultato di ", "この結果を削除しますか：", "Dieses Ergebnis löschen von ", "حذف هذه النتيجة لـ ", "删除此成绩：", "Dit resultaat verwijderen van ", "Excluir este resultado de ", "Ta bort detta resultat för ", "Удалить этот результат: ", "Usunąć ten wynik: ", "이 결과를 삭제할까요: "],
+  "✓ Résultat supprimé.": ["✓ Result deleted.", "✓ Resultado eliminado.", "✓ Risultato eliminato.", "✓ 結果を削除しました。", "✓ Ergebnis gelöscht.", "✓ تم حذف النتيجة.", "✓ 成绩已删除。", "✓ Resultaat verwijderd.", "✓ Resultado excluído.", "✓ Resultatet har tagits bort.", "✓ Результат удалён.", "✓ Wynik usunięty.", "✓ 결과가 삭제됐어."],
+  "Suppression impossible : ": ["Couldn't delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "削除できません：", "Löschen nicht möglich: ", "تعذّر الحذف: ", "无法删除：", "Verwijderen mislukt: ", "Exclusão impossível: ", "Kunde inte ta bort: ", "Не удалось удалить: ", "Nie udało się usunąć: ", "삭제할 수 없음: "],
+  "refusé : seule la personne qui l’a ajouté ou la modératrice peut le supprimer": ["refused: only the person who added it or the moderator can delete it", "rechazado: solo quien lo añadió o la moderadora puede eliminarlo", "rifiutato: solo chi l’ha aggiunto o la moderatrice può eliminarlo", "拒否：追加した人かモデレーターだけが削除できます", "abgelehnt: nur wer es hinzugefügt hat oder die Moderatorin kann es löschen", "مرفوض: لا يمكن حذفه إلا لمن أضافه أو للمشرفة", "被拒绝：只有添加者或管理员可以删除", "geweigerd: alleen wie het heeft toegevoegd of de moderator kan het verwijderen", "recusado: só quem o adicionou ou a moderadora pode excluí-lo", "nekat: bara den som lade till det eller moderatorn kan ta bort det", "отказано: удалить может только тот, кто добавил, или модератор", "odmowa: usunąć może tylko osoba, która dodała, lub moderatorka", "거부됨: 추가한 사람이나 관리자만 삭제할 수 있어"],
+  "Engagé deux fois dans la même épreuve avec le même cheval, le doublon a été retiré : ": ["Entered twice in the same class with the same horse, the duplicate was removed: ", "Inscrito dos veces en la misma prueba con el mismo caballo, se ha quitado el duplicado: ", "Iscritto due volte nella stessa prova con lo stesso cavallo, il doppione è stato tolto: ", "同じ競技に同じ馬で二重登録されていたため、重複を削除しました：", "Zweimal in derselben Prüfung mit demselben Pferd genannt, das Duplikat wurde entfernt: ", "مسجَّل مرتين في المسابقة نفسها بالحصان نفسه، تمت إزالة التكرار: ", "同一赛项同一匹马报名两次，已删除重复项：", "Twee keer ingeschreven in dezelfde rubriek met hetzelfde paard, het dubbele is verwijderd: ", "Inscrito duas vezes na mesma prova com o mesmo cavalo, o duplicado foi retirado: ", "Anmäld två gånger i samma klass med samma häst, dubbletten togs bort: ", "Заявлен дважды в один маршрут с той же лошадью, дубль удалён: ", "Zgłoszony dwa razy do tego samego konkursu z tym samym koniem, duplikat usunięto: ", "같은 종목에 같은 말로 두 번 신청돼서 중복을 삭제했어: "],
   /* 09/11 — lire les résultats (PDF ou capture) */
   "Lire les résultats (PDF ou capture)": ["Read the results (PDF or screenshot)", "Leer los resultados (PDF o captura)", "Leggi i risultati (PDF o screenshot)", "結果を読み取る（PDFまたはスクリーンショット）", "Ergebnisse lesen (PDF oder Screenshot)", "قراءة النتائج (PDF أو لقطة شاشة)", "读取成绩（PDF 或截图）", "Uitslagen lezen (pdf of screenshot)", "Ler os resultados (PDF ou captura)", "Läs resultaten (PDF eller skärmbild)", "Прочитать результаты (PDF или скриншот)", "Odczytaj wyniki (PDF lub zrzut ekranu)", "결과 읽기 (PDF 또는 스크린샷)"],
   "Lecture des résultats… (1 à 2 min)": ["Reading the results… (1 to 2 min)", "Leyendo los resultados… (1 a 2 min)", "Lettura dei risultati… (1-2 min)", "結果を読み取り中…（1〜2分）", "Ergebnisse werden gelesen … (1 bis 2 Min.)", "جارٍ قراءة النتائج… (1 إلى 2 دقيقة)", "正在读取成绩…（1 至 2 分钟）", "Uitslagen worden gelezen… (1 à 2 min)", "Lendo os resultados… (1 a 2 min)", "Läser resultaten… (1–2 min)", "Чтение результатов… (1–2 мин)", "Odczytywanie wyników… (1–2 min)", "결과 읽는 중… (1~2분)"],
@@ -1118,11 +1126,12 @@ function EcranConcours() {
   /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
   var _gd = React.useState([]); var grpD = _gd[0], setGrpD = _gd[1];
   /* 09/11 — PAGE RÉSULTATS */
-  var _rso = React.useState(null); var resOuv = _rso[0], setResOuv = _rso[1];   /* épreuve dépliée (null = automatique) */
+  var _rso = React.useState({}); var resOuv = _rso[0], setResOuv = _rso[1];   /* 09/11 13h50 (Blandine) : plusieurs épreuves dépliées à la fois — { épreuve: true/false }, absente = automatique */
   var _tvr = React.useState({}); var tvRes = _tvr[0], setTvRes = _tvr[1];      /* vidéos de la Team rattachées à un résultat */
   var _red = React.useState(null); var resEd = _red[0], setResEd = _red[1];    /* saisie rapide de la coach */
   var _rem = React.useState(""); var resMsg = _rem[0], setResMsg = _rem[1];
   var _reo = React.useState(false); var resOcc = _reo[0], setResOcc = _reo[1];
+  var _rlm = React.useState(null); var resMod = _rlm[0], setResMod = _rlm[1];    /* 09/11 13h55 : { id, sup } — crayon d'un résultat publié (coach) */
   var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
   var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
@@ -1370,7 +1379,7 @@ function EcranConcours() {
   /* 09/11 08h11 (Blandine) : à l'ouverture, la carte suit le moment — avant le concours Engagements, le jour même Passages, après : résultats et vidéos (aucune carte) */
   var hcAuj = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
   var hcJourJ = !fini && String(ev.date_jour || "").slice(0, 10) <= hcAuj && String(ev.date_jour || "") !== "";
-  var ongletC = ongletChoisi !== null ? ongletChoisi : (fini ? "" : ((hcJourJ || gestion) ? "passages" : "engagements"));   /* la coach : Engagements est une page à part */
+  var ongletC = ongletChoisi !== null ? ongletChoisi : (fini ? "resultats" : ((hcJourJ || gestion) ? "passages" : "engagements"));   /* 09/11 13h50 (Blandine : « les médias n'ont rien à faire en bas des résultats ») : concours passé = carte Résultats, seule */   /* la coach : Engagements est une page à part */
   var lieuCourt = String(ev.lieu || "").split(",")[0].trim();
 
   /* les passages de l'équipe (fonction hype_passages_concours : membres de l'équipe du club, coach, modératrice) */
@@ -1673,7 +1682,11 @@ function EcranConcours() {
     x.etat = !x.l.length ? (fini ? F("Résultats en attente") : F("À venir")) : off ? F("Officiel") : (dir && !fini ? F("En cours") : (dir ? F("Provisoire") : F("Saisie coach")));
     x.meilleur = 0; x.l.forEach(function (l) { if (l.place && (!x.meilleur || l.place < x.meilleur)) x.meilleur = l.place; });
   });
-  var epCourantRes = resOuv === null ? (epsRes.filter(function (x) { return x.l.length; })[0] || epsRes[0] || {}).ep : resOuv;
+  /* par défaut : toutes les épreuves qui ont des résultats sont dépliées (sinon la première) ; chacune se plie / déplie sans toucher aux autres */
+  var auMoinsUneRes = epsRes.some(function (x) { return x.l.length; });
+  function estOuverte(x, xi) { if (resOuv[x.ep] !== undefined) return !!resOuv[x.ep]; return auMoinsUneRes ? !!x.l.length : xi === 0; }
+  function basculerEp(ep, v) { setResOuv(function (o) { var n = Object.assign({}, o); n[ep] = v; return n; }); }
+  var epCourantRes = (epsRes.filter(function (x, xi) { return estOuverte(x, xi); })[0] || {}).ep;
   function lauriersPl(n, txt) { return h("span", { className: "hc-lp" + (n === 2 ? " ar" : n === 3 ? " br" : "") }, lauriers(), h("b", null, txt || n)); }
   function ouvrirVideo(v) { try { window.__teamMediasGroupe = v.groupe_id; window.__teamMediasOnglet = "videos"; window.__teamMediasOuvrir = v.id; } catch (e) { } setEcran("team-medias"); }
   /* bandeau du direct : résultats en direct + live vidéo (chaque accès seulement s'il existe ; badge seulement si la coach l'a mis en route) */
@@ -1700,7 +1713,8 @@ function EcranConcours() {
   /* saisie rapide de la coach (une épreuve, toutes ses lignes) — brouillon invisible, puis publication ; correction tracée */
   function ouvrirSaisie(x) {
     var gP = null; parEpreuve.forEach(function (g) { if (g.ep === x.ep) gP = g; });
-    var lignes = (gP ? gP.l : []).map(function (p) {
+    var vusS = {};
+    var lignes = (gP ? gP.l : []).filter(function (p) { var c = (p.cavalier_id || String(p.pseudo || "").toLowerCase()) + "|" + (p.cheval_id || hsCleTour("", p.cheval_nom)); if (vusS[c]) return false; vusS[c] = 1; return true; }).map(function (p) {
       var r = null; (resConc || []).forEach(function (q) { if (!r && hsNomEpreuve(q.epreuve || "") === x.ep && q.cavalier_id && q.cavalier_id === p.cavalier_id && (!q.cheval_id || q.cheval_id === p.cheval_id)) r = q; });
       var et = r ? (etatDe(r.classement) ? r.classement : "") : "";
       return { p: p, id: r && r.id, avant: r || null, place: r && r.place ? String(r.place) : "", pen: (r && r.penalites) || "", temps: (r && r.temps) || "", gains: r && r.gains != null ? String(r.gains) : "", sf: !!(r && /sf|sans\s*faute/i.test(String(r.mention || ""))), etat: /el/i.test(et) ? "el" : /ab/i.test(et) ? "ab" : /np/i.test(et) ? "np" : /nc/i.test(et) ? "nc" : "" };
@@ -1755,17 +1769,20 @@ function EcranConcours() {
       if (!trouves.length) { setResLect(F("Aucun résultat de l’équipe trouvé sur ce document. Vérifie que les chevaux de l’équipe y apparaissent.")); return; }
       setResLect(F("Lu : ") + trouves.join(" · ") + ". " + F("Vérifie chaque épreuve, puis touche « Publier »."));
       var prem = null; epsRes.forEach(function (x) { if (!prem && lu[x.ep]) prem = x; });
-      if (prem) { setResOuv(prem.ep); ouvrirSaisie(prem, lu); }
+      if (prem) { basculerEp(prem.ep, true); ouvrirSaisie(prem, lu); }
     } catch (eL) { setResLect(F("Lecture impossible : ") + String((eL && eL.message) || eL)); }
   }
   async function enregistrerSaisie(publier) {
     if (!resEd || resOcc) return; setResOcc(true); setResMsg("");
     try {
-      var u = moi || {}; var maint = new Date().toISOString(); var nb = 0;
+      var u = moi || {}; var maint = new Date().toISOString(); var nb = 0, faits = {};
       var ETAT = { el: "El.", ab: "Ab.", np: "NP", nc: "NC" };
       for (var i = 0; i < resEd.lignes.length; i++) {
         var l = resEd.lignes[i]; var p = l.p;
         var vide = !l.place && !l.etat && !l.pen && !l.temps && !l.id; if (vide) continue;
+        var cleR = (p.cavalier_id || nomP(p)) + "|" + (p.cheval_id || p.cheval_nom || ""); if (faits[cleR]) continue; faits[cleR] = 1;
+        /* un résultat existe déjà pour ce couple dans cette épreuve (saisi ou importé) : on le met à jour au lieu d'en créer un second */
+        if (!l.id) (resConc || []).forEach(function (q) { if (!l.id && hsNomEpreuve(q.epreuve || "") === resEd.ep && q.cavalier_id && q.cavalier_id === p.cavalier_id && (!q.cheval_id || !p.cheval_id || q.cheval_id === p.cheval_id)) { l.id = q.id; l.avant = q; } });
         var pa = parseInt(resEd.partants, 10) || null, pl = parseInt(l.place, 10) || null;
         var e = 0; try { e = (mesEng || []).length; } catch (eE) { }
         var ligne = { agenda_id: idEv, concours: ev.titre || null, date_epreuve: String(ev.date_jour || "").slice(0, 10) || null, annee: Number(String(ev.date_jour || "").slice(0, 4)) || null,
@@ -1788,7 +1805,7 @@ function EcranConcours() {
       if (rr && !rr.error) { var lr = (rr.data || []).filter(function (x) { return x.visible !== false || x.statut === "saisie"; }); lr.forEach(function (x) { var o = null; (resConc || []).forEach(function (y) { if (y.id === x.id) o = y; }); x.__p = o && o.__p; x.__ch = o && o.__ch; if (!x.__ch) (passagesEq || []).forEach(function (q) { if (!x.__ch && q.cheval_id && q.cheval_id === x.cheval_id) x.__ch = q.cheval_nom; }); if (!x.__p) (passagesEq || []).forEach(function (q) { if (!x.__p && q.cavalier_id && q.cavalier_id === x.cavalier_id) x.__p = q; }); }); setResConc(lr); }
       var epFait = resEd.ep; setResEd(null);
       if (resLu && resLu[epFait]) { var lu2 = Object.assign({}, resLu); delete lu2[epFait]; setResLu(lu2);
-        if (publier) { var suiv = null; epsRes.forEach(function (x) { if (!suiv && lu2[x.ep]) suiv = x; }); if (suiv) { setResOuv(suiv.ep); setTimeout(function () { ouvrirSaisie(suiv, lu2); }, 0); } } }
+        if (publier) { var suiv = null; epsRes.forEach(function (x) { if (!suiv && lu2[x.ep]) suiv = x; }); if (suiv) { basculerEp(suiv.ep, true); setTimeout(function () { ouvrirSaisie(suiv, lu2); }, 0); } } }
       setResMsg(publier ? F("✓ Résultats publiés : ils apparaissent sur la fiche du concours, les performances et les podiums.") : F("✓ Brouillon enregistré : toi seule le vois."));
     } catch (eS) { setResMsg(F("Enregistrement impossible : ") + String((eS && eS.message) || eS)); }
     setResOcc(false);
@@ -1803,6 +1820,8 @@ function EcranConcours() {
       var ETAT = function (t) { t = String(t || "").toLowerCase(); return /\bel\b|elim/.test(t) ? "El." : /\bab\b|aband/.test(t) ? "Ab." : /np|forfait/.test(t) ? "NP" : /\bnc\b/.test(t) ? "NC" : ""; };
       for (var i = 0; i < x.l.length; i++) {
         var l = x.l[i]; if (l.statut !== "direct" || l.attente) continue;
+        if (x.l.some(function (q, j) { return j !== i && q.statut !== "direct" && l.p && q.cavalier_id && q.cavalier_id === l.p.cavalier_id && norm(q.cheval) === norm(l.cheval); })) continue;   /* déjà un résultat pour ce couple */
+        if (x.l.slice(0, i).some(function (q) { return q.statut === "direct" && q.p && l.p && q.p.cavalier_id && q.p.cavalier_id === l.p.cavalier_id && norm(q.cheval) === norm(l.cheval); })) continue;   /* même couple deux fois dans le direct */
         var p = l.p || {}; var et = l.place ? "" : ETAT(l.etat);
         if (!l.place && !et) continue;
         var ligne = { user_id: u.id, origine: "direct", statut: "provisoire", visible: true, agenda_id: idEv, concours: ev.titre || null,
@@ -1816,6 +1835,18 @@ function EcranConcours() {
       if (rr && !rr.error) { var lr = (rr.data || []).filter(function (q) { return q.visible !== false || q.statut === "saisie"; }); lr.forEach(function (q) { (passagesEq || []).forEach(function (z) { if (!q.__ch && z.cheval_id && z.cheval_id === q.cheval_id) q.__ch = z.cheval_nom; if (!q.__p && z.cavalier_id && z.cavalier_id === q.cavalier_id) q.__p = z; }); (resConc || []).forEach(function (y) { if (y.id === q.id) { q.__p = q.__p || y.__p; q.__ch = q.__ch || y.__ch; } }); }); setResConc(lr); }
       setResMsg(n ? "✓ " + n + " " + (n > 1 ? F("résultats publiés") : F("résultat publié")) + F(" depuis le direct (provisoires, confirmés par l’import du télémat).") : F("Rien à publier : aucun classement lu pour l’instant."));
     } catch (eD) { setResMsg(F("Enregistrement impossible : ") + String((eD && eD.message) || eD)); }
+    setResOcc(false);
+  }
+  /* 09/11 13h55 (Blandine : « une petite poubelle ou un crayon pour modifier si besoin un résultat ») */
+  async function supprimerRes(id) {
+    if (resOcc || !id) return; setResOcc(true); setResMsg("");
+    try {
+      var r = await supa.from("resultats").delete().eq("id", id).select("id");
+      if (r && r.error) throw r.error;
+      if (!r || !r.data || !r.data.length) throw new Error(F("refusé : seule la personne qui l’a ajouté ou la modératrice peut le supprimer"));
+      setResConc((resConc || []).filter(function (q) { return q.id !== id; })); setResMod(null);
+      setResMsg(F("✓ Résultat supprimé."));
+    } catch (eS) { setResMsg(F("Suppression impossible : ") + String((eS && eS.message) || eS)); }
     setResOcc(false);
   }
   function editeurRes() {
@@ -1845,10 +1876,10 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-btn-l fort", disabled: resOcc, onClick: function () { enregistrerSaisie(true); } }, resOcc ? "…" : F("Publier"))));
   }
   var listeRes = epsRes.length ? h("div", { key: "lr", className: "hc-eps" }, epsRes.map(function (x, xi) {
-    var ouv = epCourantRes === x.ep;
+    var ouv = estOuverte(x, xi);
     var info = [x.num ? F("N° ") + x.num : "", x.piste ? F("Piste ") + x.piste : "", x.partants ? x.partants + " " + F("partants") : "", x.nbEq ? x.nbEq + " " + F("de l’équipe") : ""].filter(Boolean).join(" · ");
     return h("section", { key: x.ep, className: "hc-ep" + (ouv ? " ouv" : "") },
-      h("button", { type: "button", className: "hc-ep-b hc-rep-b", "aria-expanded": ouv, onClick: function () { setResOuv(ouv ? "" : x.ep); } },
+      h("button", { type: "button", className: "hc-ep-b hc-rep-b", "aria-expanded": ouv, onClick: function () { basculerEp(x.ep, !ouv); } },
         h("b", null, x.ep),
         h("span", null, info, h("i", { className: "hc-etat" }, x.etat + (x.meilleur ? " · " + F("meilleur : ") + placeTxt(x.meilleur) : ""))),
         h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
@@ -1856,13 +1887,24 @@ function EcranConcours() {
         (resEd && resEd.ep === x.ep) ? editeurRes() : [
           x.l.length ? x.l.filter(function (l) { return gestion || !l.brouillon; }).map(function (l) {
             var aVid = l.vids && l.vids.length;
-            return h("div", { key: l.cle, className: "hc-rl" + (moi && l.cavalier_id === moi.id ? " moi" : "") },
+            var peutMod = gestion && l.id;
+            var modOuv = peutMod && resMod && resMod.id === l.id;
+            return h(React.Fragment, { key: l.cle }, h("div", { className: "hc-rl" + (peutMod ? " ged" : "") + (moi && l.cavalier_id === moi.id ? " moi" : "") },
               h("span", { className: "hc-rl-pl" }, l.place ? (l.place <= 3 ? lauriersPl(l.place, placeTxt(l.place)) : h("b", null, placeTxt(l.place))) : h("i", null, l.etat || (l.attente ? F("En attente") : "–"))),
               avatarHc(l.p, 34),
               h("span", { className: "hc-rl-q" }, h("b", null, l.nom), h("span", null, [l.cheval, l.sf ? F("Sans-faute") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · "))),
               h("span", { className: "hc-rl-pen" }, l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : ""),
               h("span", { className: "hc-rl-t" }, l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : ""),
-              aVid ? h("button", { type: "button", className: "hc-rl-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" }))) : h("span", { className: "hc-rl-v" }));
+              aVid ? h("button", { type: "button", className: "hc-rl-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" }))) : h("span", { className: "hc-rl-v" }),
+              peutMod ? h("button", { type: "button", className: "hc-rl-m" + (modOuv ? " on" : ""), "aria-label": F("Modifier ou supprimer"), onClick: function () { setResMsg(""); setResMod(modOuv ? null : { id: l.id, sup: false }); } },
+                h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }))) : null),
+              modOuv ? h("div", { className: "hc-rl-mp" }, resMod.sup
+                ? [h("span", { key: "q" }, F("Supprimer ce résultat de ") + l.nom + " ?"),
+                   h("span", { key: "b", className: "hc-rl-mb" }, h("button", { type: "button", className: "hs-lien", onClick: function () { setResMod({ id: l.id, sup: false }); } }, F("Non")),
+                     h("button", { type: "button", className: "hc-btn-l rouge", disabled: resOcc, onClick: function () { supprimerRes(l.id); } }, resOcc ? "…" : F("Oui, supprimer")))]
+                : h("span", { className: "hc-rl-mb" },
+                    h("button", { type: "button", className: "hc-btn-l rouge", onClick: function () { setResMod({ id: l.id, sup: true }); } }, F("Supprimer")),
+                    h("button", { type: "button", className: "hc-btn-l", onClick: function () { setResMod(null); ouvrirSaisie(x); } }, F("Corriger")))) : null);
           }) : h("div", { key: "v", className: "hc-rl-vide" }, x.etat),
           gestion ? h("div", { key: "act", className: "hc-ged-fin", style: { margin: "6px 0 12px" } },
             x.l.some(function (l) { return l.statut === "direct" && !l.attente; }) ? h("button", { type: "button", className: "hc-btn-l fort", disabled: resOcc, onClick: function () { publierDirect(x); } }, F("Publier les résultats du direct")) : null,
@@ -2198,8 +2240,7 @@ function EcranConcours() {
         ongletC === "passages" ? [outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, blocFil] : null)
-        /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
-        : h("div", { className: "hc-onglet" }, blocResultats, blocGalerie),
+        : null,
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
@@ -2360,6 +2401,12 @@ var HC_CSS = [
   ".hc .hc-rl-q span{font-size:12px;color:rgba(243,238,228,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".hc .hc-rl-pen,.hc .hc-rl-t{font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}",
   ".hc .hc-rl-v{display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;width:26px}",
+  ".hc .hc-rl.ged{grid-template-columns:44px 34px 1fr auto auto 22px 30px;column-gap:8px}",
+  ".hc .hc-rl-m{width:30px;height:30px;border-radius:50%;border:1px solid rgba(201,166,107,.45);background:none;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}",
+  ".hc .hc-rl-m.on{border-color:#C9A66B}",
+  ".hc .hc-rl-mp{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 12px;border-bottom:1px solid rgba(243,238,228,.08);font-size:13px}",
+  ".hc .hc-rl-mb{display:flex;gap:10px;align-items:center;margin-inline-start:auto}",
+  ".hc .hc-btn-l.rouge{border-color:rgba(214,120,110,.55);color:#E3A59C}",
   ".hc .hc-rl-vide{padding:14px 0;font-size:13px;color:rgba(243,238,228,.6)}",
   ".hc .hc-rs-part{display:grid;grid-template-columns:auto 90px;align-items:center;gap:10px;font-size:13px}",
   ".hc .hc-rs-l{display:flex;flex-direction:column;gap:7px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
@@ -2680,6 +2727,12 @@ async function hsLireResultats(images, equipe) {
   var m = texte.match(/\{[\s\S]*\}/);
   var o = JSON.parse(m ? m[0] : texte) || {};
   return Array.isArray(o.epreuves) ? o.epreuves : [];
+}
+/* 09/11 13h50 (Blandine : « quand il voit le même cavalier, le même cheval, la même épreuve, il devrait se poser des questions ») —
+   clé d'un tour : épreuve (fautes rectifiées) + cheval, sans accents ni majuscules. Deux tours d'un même cavalier avec la même clé = doublon. */
+function hsCleTour(ep, ch) {
+  function n(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  return n(hsNomEpreuve(ep || "")) + "|" + n(ch);
 }
 /* même personne ? (mots sans accents ni ordre : « MASURE Maelys » = « Maelys MASURE » ; « Aurélie » seul = « BUSSONNAIS Aurélie ») */
 function hsMemePers(a, b) {
@@ -3121,10 +3174,17 @@ function EcranEngagements() {
         var rd = await supa.from("concours_engagements").delete().in("id", supprimees).select("id");
         if (rd && rd.error) throw new Error(F("retrait : ") + (rd.error.message || rd.error));
       }
-      var nouv = [];
+      var nouv = [], doublons = [], vusCav = {};
       for (var i = 0; i < lignes.length; i++) {
         var l = lignes[i];
-        var toursL = (l.tours || []).filter(function (t) { return t.epreuve || t.cheval_nom; }).slice(0, 5);
+        /* même cavalier + même épreuve + même cheval (dans sa ligne ou dans une autre ligne du même cavalier) : on garde le premier tour */
+        var cleCav = l.cavalier_id ? "id:" + l.cavalier_id : "nom:" + String(l.nom || "").trim().toLowerCase();
+        var vus = vusCav[cleCav] = vusCav[cleCav] || {};
+        var toursL = (l.tours || []).filter(function (t) { return t.epreuve || t.cheval_nom; }).filter(function (t) {
+          var c = hsCleTour(t.epreuve, t.cheval_nom); if (c === "|") return true;
+          if (vus[c]) { var p0 = vus[c]; if (!p0.passage && t.passage) p0.passage = t.passage; if (!p0.piste && t.piste) p0.piste = t.piste; doublons.push(String(l.nom || "").trim() + " · " + (t.cheval_nom || "") + " · " + hsNomEpreuve(t.epreuve || "")); return false; }
+          vus[c] = t; return true;
+        }).slice(0, 5);
         var mi = hsMiroir({ tours: toursL });
         var row = { agenda_id: idEv, cavalier_id: l.cavalier_id || null, nom: String(l.nom || "").trim(), licence: String(l.licence || "").trim() || null,
           epreuve1: mi.epreuve1 || null, cheval1_nom: mi.cheval1_nom || null, cheval1_id: idCheval(mi.cheval1_nom),
@@ -3154,7 +3214,7 @@ function EcranEngagements() {
       }
       setLignes(nouv); setSupprimees([]); setModifie(false);
       setFeuille(Object.assign({}, feuille, { __nouvelle: false }));
-      setMsg(F("✓ Enregistré."));
+      setMsg(F("✓ Enregistré.") + (doublons.length ? " " + F("Engagé deux fois dans la même épreuve avec le même cheval, le doublon a été retiré : ") + doublons.join(", ") + "." : ""));
     } catch (eS) { setMsg(F("Pas enregistré : ") + String((eS && eS.message) || eS)); }
     setOccupe(false);
   }
