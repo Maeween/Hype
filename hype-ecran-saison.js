@@ -1206,7 +1206,7 @@ function EcranConcours() {
         try {
           var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere, penalites, temps, gains, statut, origine, user_id").eq("agenda_id", idEv).limit(400);
           var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x.visible !== false || x.statut === "saisie"; });   /* 09/11 : un brouillon de la coach (saisie, pas encore publié) reste visible pour elle seule, filtré à l'affichage */
-          try { var rtv = await supa.from("team_videos").select("id, groupe_id, resultat, vignette, media, duree").eq("agenda_id", idEv).not("resultat", "is", null); var mtv = {}; ((rtv && !rtv.error && rtv.data) || []).forEach(function (v) { (mtv[v.resultat] = mtv[v.resultat] || []).push(v); }); if (vif) setTvRes(mtv); } catch (eTv) { }
+          try { var rtv = await supa.from("team_videos").select("id, groupe_id, resultat, vignette, duree").eq("agenda_id", idEv).not("resultat", "is", null); var mtv = {}; ((rtv && !rtv.error && rtv.data) || []).forEach(function (v) { (mtv[v.resultat] = mtv[v.resultat] || []).push(v); }); if (vif) setTvRes(mtv); } catch (eTv) { }
           if (lr.length) {
             var idsP = [], idsH = []; lr.forEach(function (x) { if (x.cavalier_id && idsP.indexOf(x.cavalier_id) === -1) idsP.push(x.cavalier_id); if (x.cheval_id && idsH.indexOf(x.cheval_id) === -1) idsH.push(x.cheval_id); });
             var pP = {}, pH = {};
@@ -1237,7 +1237,8 @@ function EcranConcours() {
             var rvl = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at, texte, liens").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(400);
             ((rvl && !rvl.error && rvl.data) || []).forEach(function (po) { if (po.prive && !(u && po.user_id === u.id)) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } });
             try { if (typeof hypePostsAgenda === "function") { var rpa2 = await hypePostsAgenda(idEv); ((rpa2 && rpa2.data) || []).forEach(function (po) { if (!po || (po.prive && !(u && po.user_id === u.id))) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } }); } } catch (ePa) { }
-            var rtg = await supa.from("team_videos").select("id, groupe_id, media, video_mux_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
+            /* 09/11 13h35 : media et video_mux_id ne sont PAS lisibles (droits par colonne, lecture via team_video_lecture) : les demander vidait toute la liste */
+            var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
             var tvG = (rtg && !rtg.error && rtg.data) || [];
             var urlsG = []; postsG.forEach(function (po) { [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && urlsG.indexOf(String(m)) === -1) urlsG.push(String(m)); }); });
             var identG = {};

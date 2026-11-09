@@ -39830,7 +39830,7 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=13", "HypeTe
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "Registre");
@@ -39868,13 +39868,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=83", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=84", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
