@@ -496,7 +496,7 @@ function EcranTeamMedias() {
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff,
         v.resultat ? h("span", { style: { color: CH, fontWeight: 600, whiteSpace: "nowrap" } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null),
       meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
-      v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 14, lineHeight: 1.3, color: IV2, marginTop: 4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null,
+      v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 13.5, lineHeight: 1.25, color: IV2, marginTop: 2, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null,
       /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
       (typeof HypeJaimeTexte === "function" && !verrou) ? h(HypeJaimeTexte, { cible: "teamvideo:" + v.id, petit: true, marge: 2 }) : null,
       /* 06/11 soir — l'auteur corrige le concours / la date / le lieu */
@@ -551,12 +551,12 @@ function EcranTeamMedias() {
     var deux = siennes.slice(0, 2);
     return h("div", { key: "cav" + p.id },
       i > 0 ? filet() : null,
-      h("div", { style: { padding: "18px 0 16px" } },
+      h("div", { style: { padding: "12px 0 8px" } },   /* 09/11 21h10 (Blandine : « plus compacte ») — était 18 / 16 */
         h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
           h("button", { type: "button", disabled: !siennes.length, onClick: function () { ouvrirCavaliere(p); }, style: { display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0, background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: siennes.length ? "pointer" : "default" } },
-            avatar(p, 46),
+            avatar(p, 40),
             h("div", { style: { minWidth: 0 } },
-              h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 22, lineHeight: 1.1 } }, nomProfil(p)),
+              h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 600, fontSize: 21, lineHeight: 1.1 } }, nomProfil(p)),
               sousTitre ? h("div", { style: { fontFamily: M, fontSize: 11, color: IV3, marginTop: 2 } }, sousTitre) : null)),
           siennes.length ? h("button", { type: "button", onClick: function () { ouvrirCavaliere(p); }, style: { flex: "0 0 auto", minHeight: 34, background: "none", border: "none", padding: "0 2px", color: CH, fontFamily: M, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "모두 보기") + " " + (rtl ? "‹" : "›")) : null),
         /* sans vidéo : une petite case « + » et une petite écriture, rien de plus */
@@ -564,7 +564,7 @@ function EcranTeamMedias() {
             h("button", { type: "button", onClick: function () { ouvrirAjout({ cav: [p.id] }); }, "aria-label": T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"),
               style: { flex: "0 0 auto", width: 58, height: 40, borderRadius: 10, border: "1px dashed " + CH2, background: "transparent", color: CH, fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" } }, "+"),
             h("div", { style: { fontFamily: M, fontSize: 11, fontStyle: "italic", color: IV3, lineHeight: 1.4 } }, T("Ajoute les vidéos de concours ici", "Add your competition videos here", "Añade aquí los vídeos de concurso", "Aggiungi qui i video dei concorsi", "大会の動画をここに追加しよう", "Füge hier die Turniervideos hinzu", "أضف فيديوهات المسابقات هنا", "在这里添加比赛视频", "Voeg hier je wedstrijdvideo's toe", "Adiciona aqui os vídeos de concurso", "Lägg till tävlingsvideor här", "Добавляй сюда видео с соревнований", "Dodaj tu filmy z zawodów", "대회 동영상을 여기에 추가하세요"))) : null)
-          : h("div", { style: { marginTop: 12, maxWidth: 560 } },
+          : h("div", { style: { marginTop: 9, maxWidth: 560 } },
               deux.length === 2 ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, deux.map(function (v) { return tuileVideo(v, "v" + p.id + v.id, true); }))
                 : grilleEquilibree(deux, "l" + p.id, 2, { cav: [p.id] }))));
   }

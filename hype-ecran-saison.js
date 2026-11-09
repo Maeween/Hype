@@ -2392,8 +2392,6 @@ function EcranConcours() {
      « Par cavalier » / « Par cheval », qui ouvrent la vue Explorer (ci-dessus). Photos jamais rognées : le même cliché
      flouté remplit la case. Visionneuse photo et lecteur vidéo existants (Hey Baby est dans le lecteur, pas ici). */
   var premiersM = itemsM.slice().sort(function (a, b) { return String(a.date || "").localeCompare(String(b.date || "")); }).slice(0, 3);
-  var premP = premiersM.filter(function (x) { return x.cle === medSel; })[0] || premiersM[0] || null;
-  var premAutres = premiersM.filter(function (x) { return x !== premP; });
   function nomsDe(x) { var c = x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }).filter(Boolean), c2 = x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }).filter(Boolean); return [c.join(", "), c2.join(", ")].filter(Boolean).join(" · "); }
   function caseMd(x, cls, larg, action, style) {   /* une case : photo entière sur son propre flou, ▶ et durée pour les vidéos */
     var src = apercu(x, larg), qui = nomsDe(x);
@@ -2419,11 +2417,9 @@ function EcranConcours() {
       h("span", { className: "hc-md-acc-t" }, h("b", null, titre), h("small", null, sous)),
       h("span", { className: "hc-md-acc-c", "aria-hidden": "true" }, rtl ? "‹" : "›"));
   }
-  var galM = itemsM.slice(0, medNE);
-  /* 09/11 13h (règle de Blandine, gardée) : aucune vignette seule sur la dernière ligne — quand tout est chargé, la première s'élargit */
-  var colsMd = (function () { var w = medLarg || 390; return w >= 1400 ? 7 : w >= 1024 ? 6 : w >= 900 ? 5 : w >= 600 ? 4 : 3; })();   /* mêmes seuils que les règles @container hcmd */
+  var premP = premiersM[0] || null;   /* 09/11 21h10 : un seul média à l'honneur — le premier publié */
+  var galTous = itemsM.filter(function (x) { return x !== premP; }), galM = galTous.slice(0, medNE);
   function mesurerMd(el) { if (!el) return; try { var w = el.clientWidth; if (w && Math.abs(w - medLarg) > 8) setMedLarg(w); } catch (e) { } }
-  var resteMd = (itemsM.length <= medNE) ? (galM.length % colsMd) : 0, largeMd = (resteMd === 1 && colsMd > 2) ? 2 : 1;   /* une case de plus suffit : la dernière ligne a au moins deux vignettes, sans case géante */
   /* ══ 09/11 20h30 — « PAR CHEVAL » / « PAR CAVALIER » (maquettes ordinateur, tablette, iPhone validées) ══
      Une médiathèque par cheval (ou par cavalier) : la liste à choisir (colonne à gauche en grand, bande qui défile sur
      iPhone), un bandeau (photo entière, nom, « Ses médias sur ce concours », photos / vidéos, Ajouter des médias), les
@@ -2463,8 +2459,8 @@ function EcranConcours() {
       : (g.sans ? h("b", null, "?") : (xModeCh ? icoXp("ch") : h("b", null, String(g.nom || "?").charAt(0).toUpperCase()))));
   }
   function ico2(n) { var d = n === "v" ? "M3.5 6.5h12v11h-12zM15.5 10.5l5-3v9l-5-3" : "M3.5 5.5h17v13h-17zM3.5 15l4.5-4.5 4 4 2.5-2.5 6 6M15.5 9.5h.01"; return h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: d, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinecap: "round", strokeLinejoin: "round" })); }
-  function tuileX(x) {   /* mosaïque : la vignette garde ses proportions (largeur pleine, hauteur naturelle) */
-    var src = apercu(x, 900), qui = nomsDe(x), peutId = moi && (x.auteur === moi.id || gestion);
+  function tuileX(x, sansId, larg) {   /* mosaïque : la vignette garde ses proportions (largeur pleine, hauteur naturelle) */
+    var src = apercu(x, larg || 900), qui = nomsDe(x), peutId = !sansId && moi && (x.auteur === moi.id || gestion);
     return h("div", { key: x.cle, className: "hc-xm-t" },
       h("button", { type: "button", className: "hc-xm-b", onClick: function () { ouvrirMedia(x); }, title: qui || undefined, "aria-label": (x.video ? F("Lire la vidéo") : F("Voir la photo")) + (qui ? " — " + qui : "") },
         src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-xm-vide" }),
@@ -2519,15 +2515,15 @@ function EcranConcours() {
       h("div", { key: "paj" }, panneauAjout),
       !medG ? h("div", { key: "att", className: "hs-note" }, "…") : null,
       (medG && !itemsM.length) ? h("div", { key: "vide", className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
+      /* 09/11 21h10 (Blandine, captures iPhone) : UN seul média à l'honneur, à ses vraies proportions ; il n'est pas répété dessous */
       premP ? h("div", { key: "prem", className: "hc-md-s" },
         secMd(F("Les premiers souvenirs")),
-        h("div", { className: "hc-md-une n" + premiersM.length },
-          caseMd(premP, "hc-md-p", 1600),
-          premAutres.map(function (x) { return caseMd(x, "hc-md-m", 900, function () { setMedSel(x.cle); }); }))) : null,
-      itemsM.length > premiersM.length ? h("div", { key: "tous", className: "hc-md-s" },
-        secMd(F("Tous les souvenirs"), h("span", null, itemsM.length + " " + (itemsM.length > 1 ? F("médias") : F("média")))),
-        h("div", { className: "hc-md-grille" }, galM.map(function (x, i) { return caseMd(x, "hc-md-g" + (i === 0 && largeMd > 1 ? " large" : ""), i === 0 && largeMd > 1 ? 1200 : 600, null, i === 0 && largeMd > 1 ? { gridColumn: "span " + largeMd, aspectRatio: String(Math.round(largeMd * (colsMd <= 3 ? 1 : 4 / 3) * 100) / 100) + " / 1" } : null); })),
-        itemsM.length > medNE ? h("div", { key: "sent" + medNE, ref: sentinelle, className: "hc-md-suite" },
+        h("div", { className: "hc-md-une1" }, tuileX(premP, true, 1600))) : null,
+      galM.length ? h("div", { key: "tous", className: "hc-md-s" },
+        secMd(F("Tous les souvenirs"), h("span", null, galTous.length + " " + (galTous.length > 1 ? F("médias") : F("média")))),
+        /* mosaïque à hauteurs variables (formats naturels) ; jamais de colonne vide : 1 média = pleine largeur, 2 = deux moitiés */
+        h("div", { className: "hc-xm-mos hc-md-mos n" + Math.min(galM.length, 4) }, galM.map(function (x) { return tuileX(x, true); })),
+        galTous.length > medNE ? h("div", { key: "sent" + medNE, ref: sentinelle, className: "hc-md-suite" },
           h("button", { type: "button", className: "hc-md-aj", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus"))) : null) : null],
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
@@ -3134,6 +3130,15 @@ var HC_CSS = [
   ".hc #hs-fil{margin-top:6px}",
   ".hc .hc-vid span{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:8px;background:rgba(7,10,8,.72);color:#F3EEE4}",
   "@media (min-width:768px){.hc .hc-titre{bottom:64px}.hc .hc-cartes{gap:12px}.hc .hc-photo img{max-height:62vh}}",
+  /* 09/11 21h10 (Blandine : « le héros est beaucoup trop haut sur iPhone ») : même photo, même courbe, même titre, mais moins haut ;
+     la photo n'est plus agrandie et rognée pour remplir la largeur : elle est montrée ENTIÈRE à gauche, fondue dans le noir */
+  ".hc .hc-hero .hs-photo{height:clamp(200px,56vw,280px);margin-top:-14px}",
+  ".hc .hc-hero .hs-photo img{width:auto;max-width:100%;height:100%;object-fit:contain;object-position:left center;-webkit-mask-image:linear-gradient(90deg,#000 66%,transparent);mask-image:linear-gradient(90deg,#000 66%,transparent)}",
+  "[dir=rtl] .hc .hc-hero .hs-photo img{margin-inline-start:auto;object-position:right center;-webkit-mask-image:linear-gradient(270deg,#000 66%,transparent);mask-image:linear-gradient(270deg,#000 66%,transparent)}",
+  ".hc .hc-hero .hs-titre{margin-top:-58px}",
+  ".hc .hc-hero .hs-titre h1{text-shadow:0 2px 16px rgba(0,0,0,.7)}",
+  ".hc .hc-cartes{gap:7px;margin-top:14px}",
+  ".hc .hc-carte{aspect-ratio:1.08}",
   /* ══ 09/11 soir — MÉDIAS DU CONCOURS, maquette validée (ordinateur, tablette, iPhone) ══ */
   ".hc .hc-md{margin-top:6px;container:hcmd/inline-size}",
   ".hc .hc-md-tete{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:30px 0 4px}",
@@ -3195,6 +3200,22 @@ var HC_CSS = [
   ".hc .hc-mn::-webkit-scrollbar{display:none}",
   ".hc .hc-mn-b{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.28);background:#070A08;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:500;white-space:nowrap;cursor:pointer}",
   ".hc .hc-mn-b svg{width:19px;height:19px}",
+  /* ══ 09/11 21h10 — corrections iPhone (captures de Blandine) : moins de vide, un seul média à l'honneur, mosaïque naturelle ══ */
+  ".hc .hc-md-tete{margin:0}",
+  ".hc .hc-onglet .hc-md{margin-top:-12px}",
+  ".hc .hc-mn{margin:10px 0 0}",
+  ".hc .hc-md-ajr{margin:8px 0 0}",
+  ".hc .hc-md-s{margin-top:16px}",
+  ".hc .hc-md-sec{margin:0 0 10px}",
+  ".hc .hc-md-aj{min-height:36px;padding:0 15px;font-size:12.5px;background:rgba(7,10,8,.35)}",
+  ".hc .hc-md-une1 .hc-xm-t{margin:0;background:#070A08}",
+  ".hc .hc-md-une1 .hc-xm-b{display:flex;justify-content:center}",
+  ".hc .hc-md-une1 .hc-xm-b img{width:auto;max-width:100%;max-height:min(62vh,520px)}",   /* photo verticale : à ses proportions, jamais étirée dans un cadre horizontal */
+  ".hc .hc-md-une1 .hc-md-play{width:48px;height:48px;inset-inline-start:14px;bottom:14px}",
+  ".hc .hc-md-mos.n1{column-count:1!important}",
+  ".hc .hc-md-mos.n2{column-count:2!important}",
+  "@container hcmd (min-width:600px){.hc .hc-md-mos{column-count:3;column-gap:12px}.hc .hc-md-mos .hc-xm-t{margin-bottom:12px}}",
+  "@container hcmd (min-width:1024px){.hc .hc-md-mos{column-count:4}.hc .hc-md-mos.n3{column-count:3}}",
   "@container hcmd (max-width:440px){.hc .hc-mn{gap:6px}.hc .hc-mn-b{flex:1 1 auto;padding:0 9px;gap:5px;font-size:15px;min-height:40px}.hc .hc-mn-b svg{width:15px;height:15px}}",
   ".hc .hc-mn-b.on{border-color:#C9A66B;box-shadow:0 0 0 1px rgba(201,166,107,.35) inset}",   /* actif : noir, contour champagne — jamais plein doré */
   ".hc .hc-xm{margin-top:18px}",
