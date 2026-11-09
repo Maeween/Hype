@@ -1211,7 +1211,8 @@ function EcranConcours() {
   var _mvu = React.useState("tous"); var medVue = _mvu[0], setMedVue = _mvu[1];   /* 09/11 20h (brief « Par cavalier ») : Tous les souvenirs / Par cavalier / Par cheval */
   var _mvs = React.useState({ cav: null, ch: null }); var medSujet = _mvs[0], setMedSujet = _mvs[1];   /* cavalier ou cheval choisi dans chaque vue */
   var _mvf = React.useState(""); var medAvec = _mvf[0], setMedAvec = _mvf[1];   /* filtre « Avec … » */
-  var _mpc = React.useState(2); var medCols = _mpc[0], setMedCols = _mpc[1];   /* colonnes de la mosaïque, d après la largeur réelle de la galerie */
+  var _mpc = React.useState(2); var medCols = _mpc[0], setMedCols = _mpc[1];
+  var _mrt = React.useState({}); var medRatio = _mrt[0], setMedRatio = _mrt[1];   /* 09/11 20h40 : proportions réelles de chaque média (largeur / hauteur), lues au chargement */   /* colonnes de la mosaïque, d après la largeur réelle de la galerie */
   var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
@@ -2416,11 +2417,11 @@ function EcranConcours() {
     var legende = x.video ? [(modeS === "ch" ? x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }) : x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; })).filter(Boolean).join(", "), x.epreuve || ""].filter(Boolean).join(" · ") : "";
     return h("div", { key: x.cle, className: "hc-ps-t" },
       h("button", { type: "button", className: "hc-ps-m", onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
-        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-ps-vide" }),
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onLoad: function (e) { try { var im = e.target, q = im.naturalWidth / im.naturalHeight; if (q > 0.2 && q < 5 && Math.abs((medRatio[x.cle] || 0) - q) > 0.01) setMedRatio(function (m) { var o = Object.assign({}, m); o[x.cle] = q; return o; }); } catch (e0) { } }, onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-ps-vide" }),
         x.video ? h("span", { className: "hc-ps-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
         (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-ps-d" }, dureeTxt(x.duree)) : null),
-      boutonId(x),
-      legende ? h("div", { className: "hc-ps-lg" }, legende) : null);
+      legende ? h("div", { className: "hc-ps-lg" }, legende) : null,
+      boutonId(x));
   }
   var blocParSujet = (medVue === "tous" || !medG) ? null : h("div", { key: "ps", className: "hc-ps" },
     !sujets.length ? h("div", { className: "hs-note", style: { marginTop: 0 } }, modeS === "ch" ? F("Aucun cheval n’est encore engagé ou identifié sur ce concours.") : F("Aucun cavalier n’est encore engagé ou identifié sur ce concours.")) : h("div", { key: "in", className: "hc-ps-in" },
@@ -2445,10 +2446,14 @@ function EcranConcours() {
             return h("button", { key: o.id, type: "button", className: "hc-mn-b f" + (avecOk === o.id ? " on" : ""), onClick: function () { setMedAvec(avecOk === o.id ? "" : o.id); } }, modeS === "ch" ? icoCav(14) : icoCh(14), F("Avec") + " " + o.nom + " (" + o.n + ")");
           }))) : null,
         medAjout ? panneauAjout : null,
-        sujF.length ? h("div", { className: "hc-ps-g", ref: refColsMed }, (function () {   /* mosaïque : N colonnes remplies tour à tour (ordre de lecture gauche → droite), chaque média dans ses proportions */
-          var cols = []; for (var c = 0; c < medCols; c++) cols.push([]);
-          sujF.forEach(function (x, i) { cols[i % medCols].push(tuile(x)); });
-          return cols.map(function (l, c) { return h("div", { key: "c" + c, className: "hc-ps-col" }, l); });
+        sujF.length ? h("div", { className: "hc-ps-g", ref: refColsMed }, (function () {
+          /* 09/11 20h40 (Blandine : « équilibrer… je veux pas avoir la moitié vide sur une des lignes ») : lignes TOUJOURS pleines.
+             Les médias sont répartis sur le moins de lignes possible, le plus également possible (4 en 3 colonnes → 2 + 2 ;
+             5 en 2 colonnes → 2 + 2 + 1 en pleine largeur ; 1 seul → pleine largeur). Dans une ligne, chaque média prend une
+             largeur proportionnelle à son format : même hauteur pour tous, aucune image rognée. */
+          var n = sujF.length, R = Math.ceil(n / medCols), base = Math.floor(n / R), plus = n % R, lignes = [], k = 0;
+          for (var r = 0; r < R; r++) { var t = base + (r < plus ? 1 : 0); lignes.push(sujF.slice(k, k + t)); k += t; }
+          return lignes.map(function (l, r) { return h("div", { key: "l" + r, className: "hc-ps-row" }, l.map(function (x) { var q = medRatio[x.cle] || 1.5; return h("div", { key: x.cle, className: "hc-ps-cell", style: { flex: q + " 1 0" } }, tuile(x)); })); });
         })())
           : h("div", { className: "hs-note", style: { marginTop: 4 } }, sujet ? (modeS === "ch" ? F("Pas encore de média de ce cheval sur ce concours. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.") : F("Pas encore de média de ce cavalier sur ce concours. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.")) : null),
         sujF.length ? h("div", { className: "hc-rep-aj hc-ps-aj2" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))) : null)
@@ -3025,8 +3030,9 @@ var HC_CSS = [
   ".hc .hc-ps-bc i{width:1px;height:16px;background:rgba(201,166,107,.35)}",
   ".hc .hc-ps-aj{display:none;align-self:center;margin-inline-end:16px}",
   ".hc .hc-ps-f{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 14px}",
-  ".hc .hc-ps-g{display:flex;gap:10px;align-items:flex-start}",
-  ".hc .hc-ps-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-ps-g{display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-ps-row{display:flex;gap:10px;align-items:flex-start}",
+  ".hc .hc-ps-cell{min-width:0}",
   ".hc .hc-ps-t{position:relative}",
   ".hc .hc-ps-m{position:relative;display:block;width:100%;padding:0;border:1px solid rgba(201,166,107,.18);border-radius:12px;overflow:hidden;background:#0B0F11;cursor:pointer}",
   ".hc .hc-ps-m img{display:block;width:100%;height:auto}",
@@ -3037,7 +3043,8 @@ var HC_CSS = [
   "[dir=rtl] .hc .hc-ps-d{right:auto;left:10px}",
   ".hc .hc-ps-t .hc-mt-id{position:absolute;top:8px;right:8px;z-index:2}",
   "[dir=rtl] .hc .hc-ps-t .hc-mt-id{right:auto;left:8px}",
-  ".hc .hc-ps-lg{font-size:11px;color:rgba(243,238,228,.62);margin:5px 2px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-ps-lg{position:absolute;top:10px;left:12px;right:46px;font-size:11.5px;font-weight:600;color:#F3EEE4;text-shadow:0 1px 4px rgba(0,0,0,.9);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none}",
+  "[dir=rtl] .hc .hc-ps-lg{left:46px;right:12px}",
   "@container (min-width:560px){.hc .hc-ps-aj{display:inline-flex} .hc .hc-ps-aj2{display:none} .hc .hc-ps-bph img{max-height:170px} .hc .hc-ps-ban{min-height:140px}}",
   "@container (min-width:860px){.hc .hc-ps-in{display:grid;grid-template-columns:168px minmax(0,1fr);gap:18px;align-items:start} .hc .hc-ps-lt{display:block} .hc .hc-ps-l{border-inline-end:1px solid rgba(201,166,107,.18);padding-inline-end:12px} .hc .hc-ps-ll{flex-direction:column;overflow:visible;gap:8px} .hc .hc-ps-s{flex-direction:row;width:100%;gap:10px;padding:5px 8px;border:1px solid transparent;border-radius:999px;font-size:13.5px} .hc .hc-ps-s.on{border-color:#C9A66B;background:#15191A} .hc .hc-ps-s.on .hc-ps-av{border:1px solid rgba(243,238,228,.14);padding:0} .hc .hc-ps-av{width:38px;height:38px} .hc .hc-ps-av b{font-size:17px}}",
   
