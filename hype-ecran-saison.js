@@ -1982,13 +1982,13 @@ function EcranConcours() {
       h("span", { className: "hc-cl-chev", "aria-hidden": "true" }, rtl ? "‹" : "›"));
   }
   function cartesLiens(cle, l) { l = l.filter(Boolean); return l.length ? h("div", { key: cle, className: "hc-cls" }, l) : null; }
-  var liensPassages = cartesLiens("lp", [
+  var liensPassages = cartesLiens("cl-pas", [
     /* 09/11 14h15 (Blandine : « Passages, c'est la page Jour J ») : pas de carte Jour J ici */
     carteLien("dos", "dos", F("Dossier du concours"), F("licence, vaccins du cheval, papiers"), "images/concours-hero-cso.webp", function () { ouvrir("dossier-concours"); })]);
-  var liensResultats = cartesLiens("lr", [
+  var liensResultats = cartesLiens("cl-res", [
     carteLien("pc", "perf", F("Performances chevaux"), F("Classement de la saison"), "images/team-competition-performances-hero.webp", function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (e) { } setEcran("performances-chevaux"); }),
     moi ? carteLien("pm", "moi", F("Mes performances"), F("Tous tes résultats de la saison"), "images/cavalier-acces-performances.webp", function () { try { window.__perfCavalierId = moi.id; } catch (e) { } setEcran("performances-cavalier"); }) : null]);
-  var liensMedias = cartesLiens("lm", [
+  var liensMedias = cartesLiens("cl-med", [
     (equipe && equipe.id) ? carteLien("vt", "vid", F("Vidéothèque de la Team"), F("Toutes les vidéos de l’équipe"), "images/cavalier-acces-videos.webp", function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; } catch (e) { } setEcran("team-medias"); }) : null,
     carteLien("al", "alb", F("Album de l’écurie"), F("Les photos du club"), "images/albumEcurieEncart.jpg", function () { setEcran("album-ecurie"); })]);
   var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
