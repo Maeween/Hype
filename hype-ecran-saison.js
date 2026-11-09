@@ -2574,7 +2574,7 @@ var HC_CSS = [
   "@keyframes hcFondu{from{opacity:0}to{opacity:1}}",
   "@media (prefers-reduced-motion:reduce){.hc .hc-une-p{animation:none}}",
   ".hc .hc-une-m{position:relative;display:block;padding:0;border:none;background:none;cursor:pointer;border-radius:14px;overflow:hidden;line-height:0}",
-  ".hc .hc-une-m img{display:block;max-width:100%;max-height:min(42vh,380px);width:auto;height:auto}",   /* 09/11 16h32 (Blandine) : photo mise en avant moins grande */
+  ".hc .hc-une-m img{display:block;max-width:100%;max-height:min(30vh,260px);width:auto;height:auto}",   /* 09/11 16h32 puis 19h12 (Blandine : « réduis la taille de la photo ») : photo mise en avant plus petite, toujours entière */
   ".hc .hc-ronds{display:flex;flex-direction:column;align-items:center;gap:12px}",
   ".hc .hc-rond{position:relative;flex:none;width:clamp(58px,17vw,96px);height:clamp(58px,17vw,96px);border-radius:50%;overflow:hidden;padding:0;border:1px solid rgba(201,166,107,.6);background:#0B0E0C;cursor:pointer}",
   ".hc .hc-rond img{width:100%;height:100%;object-fit:cover;display:block}",
