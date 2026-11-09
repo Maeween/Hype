@@ -1605,7 +1605,8 @@ function EcranConcours() {
       grs.map(function (g, gi) {
         return h("div", { key: g.id || g.__nv, className: "hc-ged-g" },
           h("input", { className: "hc-ged-nom", value: g.nom || "", "aria-label": F("Nom du groupe"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.nom = v; }); }); } }),
-          h("input", { className: "hc-ged-h", value: g.heure_rdv || "", placeholder: "10h00", inputMode: "numeric", "aria-label": F("Heure de rendez-vous au paddock"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.heure_rdv = v; }); }); } }),
+          /* 09/11 14h15 (Blandine : « quand on écrit l'heure ce n'est pas clair, on peut même entrer 8 chiffres ») : vrai sélecteur d'heure (roue sur iPhone), enregistré au format 10h00 */
+          h("input", { className: "hc-ged-h", type: "time", step: 300, value: (function () { var m = String(g.heure_rdv || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })(), "aria-label": F("Heure de rendez-vous au paddock"), onChange: function (e) { var t = String(e.target.value || ""), mm = t.match(/^(\d{2}):(\d{2})/); var v = mm ? (Number(mm[1]) + "h" + mm[2]) : ""; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.heure_rdv = v; }); }); } }),
           h("button", { type: "button", className: "hc-ged-x", "aria-label": F("Supprimer le groupe"), onClick: function () { majBrouillon(function (n) { for (var i = n.length - 1; i >= 0; i--) { var x = n[i]; if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) { if (x.id) x.__suppr = true; else n.splice(i, 1); } } }); } }, "×"));
       }),
       h("div", { className: "hc-ged-k" }, F("Couples de l’épreuve")),
@@ -2318,7 +2319,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [blocPratique, outilsPassages, blocPassages, blocPaddock, blocRegles, liensPassages] : null,
+        ongletC === "passages" ? [blocPratique, blocRegles, outilsPassages, blocPassages, blocPaddock, liensPassages] : null,   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, blocFil, liensMedias] : null)
         : null,
@@ -2539,7 +2540,9 @@ var HC_CSS = [
   ".hc .hc-ged{display:flex;flex-direction:column;gap:10px}",
   ".hc .hc-ged-act,.hc .hc-ged-fin{display:flex;flex-wrap:wrap;gap:8px}",
   ".hc .hc-ged-fin{justify-content:flex-end;margin-top:8px}",
-  ".hc .hc-ged-g{display:grid;grid-template-columns:1fr 78px 34px;gap:8px}",
+  ".hc .hc-ged-g{display:grid;grid-template-columns:1fr 104px 34px;gap:8px}",
+  ".hc .hc-ged-g input.hc-ged-h{padding:9px 8px;color-scheme:dark;-webkit-appearance:none;appearance:none;text-align:center;min-height:40px}",
+  ".hc .hc-ged-g input.hc-ged-h::-webkit-date-and-time-value{text-align:center}",
   ".hc .hc-ged-g input{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:#F3EEE4;font:inherit;font-size:14px;padding:9px 11px;min-width:0}",
   ".hc .hc-ged-x{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:rgba(243,238,228,.7);font-size:18px;cursor:pointer}",
   ".hc .hc-ged-k{margin-top:8px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#C9A66B}",
