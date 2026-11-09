@@ -2589,7 +2589,21 @@ function EcranConcours() {
           h("button", { key: "eq", type: "button", className: "hpv-r hcp-r", "aria-label": F("Les médias de l’équipe"), onClick: function () { setMedPage(null); setMedPgSel(null); setMedVue(""); } },
             h("b", null, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, "aria-hidden": "true" }, h("path", { d: "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16.5 10a2.5 2.5 0 1 0 0-5M3.5 19c.7-3 2.8-4.6 5.5-4.6s4.8 1.6 5.5 4.6M15.5 14.6c2.3.1 4.1 1.6 4.8 4.4", fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinecap: "round" }))),
             h("i", null, F("Équipe"))))),
-      h("div", { className: "hc hcp-bas" }, h("div", { className: "vr" },
+      hsCourbe(h, "c2", "M0 92 C 130 90, 240 62, 400 8"),   /* 09/11 22h46 (Blandine) : la courbe dorée sépare le haut de la suite */
+      h("div", { className: "hc hcp-bas" },
+        /* 09/11 22h46 (Blandine : « garde quand même les raccourcis des autres pages ») : les 4 accès du concours ; en toucher un
+           referme cette page et ouvre l'onglet ; Médias ramène à la page Médias du concours */
+        h("div", { className: "hc-cartes hcp-cartes", onClickCapture: function (e) {
+          var c = null; try { c = e.target.closest(".hc-carte"); } catch (e0) { }
+          if (!c) return; var estMed = c === c.parentNode.lastElementChild;
+          setMedPage(null); setMedPgSel(null); setMedVue("");
+          if (estMed) { e.stopPropagation(); e.preventDefault(); }
+        } },
+          carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
+          carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
+          carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),
+          carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
+        h("div", { className: "vr" },
         !pgL.length ? h("div", { className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
         pgBig ? h("div", { key: "a" },
           pgTitre(pgV.length ? F("Vidéos") : F("Photos"), pgA.length, false),
@@ -2808,7 +2822,8 @@ var HCP_CSS = [
   "html body .hcp .hpv-scene .hcp-r{display:flex!important;flex-direction:column;align-items:center;gap:4px;width:auto!important;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;overflow:visible!important;padding:0}",
   ".hcp .hcp-r>img,.hcp .hcp-r>b{width:48px;height:48px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,166,107,.7);background:rgba(7,10,8,.6);object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#C9A66B}",
   ".hcp .hcp-r>i{font-style:normal;font-family:Montserrat,sans-serif;font-size:9.5px;color:#F3EEE4;text-shadow:0 1px 6px #000;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".hcp .hcp-bas{padding:0 16px 0!important;max-width:680px;margin:-34px auto 0;position:relative;z-index:2}",
+  ".hcp .hcp-bas{padding:0 16px 0!important;max-width:680px;margin:0 auto;position:relative;z-index:2}",
+  ".hcp .hcp-cartes{margin:0 0 26px}",
   ".hcp .hcp-bas .vr{margin-top:0}"
 ].join("");
 var HC_CSS_ID = "hype-saison-css-concours";
