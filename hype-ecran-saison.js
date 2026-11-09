@@ -2884,7 +2884,7 @@ var HC_CSS = [
   ".hc .hc-ep-img .hc-ep-chev{background:rgba(7,10,8,.55);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center}",
   ".hc .hc-vg{margin-bottom:14px;padding:10px 10px 12px;border:1px solid rgba(201,166,107,.22);border-radius:18px;background:#0B0F13}",
   ".hc .hc-vg.seule .hc-vg-i{flex:0 0 100%}",
-  ".hc .hc-vg .hc-vg-m{aspect-ratio:auto;height:clamp(118px,32vw,200px)}",   /* 09/11 16h34 (Blandine) : seules ou côte à côte, même hauteur */
+  ".hc .hc-vg .hc-vg-m{aspect-ratio:auto;height:clamp(180px,52vw,300px)}",   /* 09/11 16h34 (Blandine) : seules ou côte à côte, même hauteur */
   ".hc .hc-vg-t{position:relative;overflow:hidden;height:52px;display:flex;flex-direction:row;align-items:center;gap:10px;margin-bottom:16px;padding:0 14px;border:1px solid rgba(201,166,107,.38);border-radius:12px;background:#0B0F13}",
   ".hc .hc-vg-img{position:absolute;top:0;inset-inline-end:0;width:50%;height:100%;object-fit:cover;object-position:60% 35%}",
   ".hc .hc-vg-voile{position:absolute;inset:0;background:linear-gradient(90deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 85%)}",
@@ -2894,7 +2894,7 @@ var HC_CSS = [
   ".hc .hc-vg-n{position:relative;font-size:11.5px;color:rgba(243,238,228,.75);white-space:nowrap}",
   ".hc .hc-vg-l{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}",
   ".hc .hc-vg-l::-webkit-scrollbar{display:none}",
-  ".hc .hc-vg-i{flex:0 0 calc((100% - 10px) / 2);scroll-snap-align:start;min-width:0}",
+  ".hc .hc-vg-i{flex:0 0 88%;scroll-snap-align:start;min-width:0}",   /* 09/11 19h12 (Blandine : « une seule par ligne et on déroule après ») : une vidéo par écran, la suivante dépasse un peu pour montrer qu'on peut glisser */
   ".hc .hc-vg-m{position:relative;display:block;width:100%;aspect-ratio:16/10;padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
   ".hc .hc-vg-m img{width:100%;height:100%;object-fit:cover}",
   ".hc .hc-vg-ch{display:block;font-size:14px;font-weight:600;line-height:1.2;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
