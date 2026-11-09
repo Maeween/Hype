@@ -23,7 +23,8 @@ const SUJET = Deno.env.get("VAPID_SUBJECT") || "mailto:feinn@live.fr"
 const PUBLIQUE = "BP-1TH_5bpRxes4Z2DsVTMa3y8ItFEqsGwizTGy8NLb86OX3X1A-QYuDDaMQXBBIQO0_hD5Va-BMR96rctn4wZM"
 if (PRIVEE) webpush.setVapidDetails(SUJET, PUBLIQUE, PRIVEE)
 
-const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video", "heybaby", "soin_a_confirmer", "jaime_texte"]   // 21/10 : + « Hey Baby t'a répondu » (créée par le relais assistant quand le téléphone est parti avant la fin) ; 05/11 : + soin ajouté par un cavalier, à confirmer par l'écurie (option B de Blandine)
+const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video", "heybaby", "soin_a_confirmer", "jaime_texte", "epingle_partagee"]   // 09/11 : + conseil Hey Baby envoyé par un coach (Blandine : « surtout qu'ils reçoivent une notification sur leur téléphone »)
+// 21/10 : + « Hey Baby t'a répondu » (créée par le relais assistant quand le téléphone est parti avant la fin) ; 05/11 : + soin ajouté par un cavalier, à confirmer par l'écurie (option B de Blandine)
 
 function json(c: unknown, s = 200) { return new Response(JSON.stringify(c), { status: s, headers: { "content-type": "application/json; charset=utf-8" } }) }
 const ent = (x: Record<string, string> = {}) => ({ apikey: SERVICE, Authorization: "Bearer " + SERVICE, "Content-Type": "application/json", ...x })
@@ -39,6 +40,7 @@ const T7 = (lg: L, o: Partial<Record<L, string>> & { fr: string }) => o[lg] || o
 
 function phrase(type: string, lg: L, nom: string, sur: string, cible = ""): string {
   if (type === "soin_a_confirmer") return T7(lg, { fr: (nom || "Un cavalier") + " a ajouté un soin, à confirmer", en: (nom || "A rider") + " added a care entry to confirm" })   // 05/11
+  if (type === "epingle_partagee") return T7(lg, { fr: (nom || "Ton coach") + " t'a envoyé un conseil Hey Baby", en: (nom || "Your coach") + " sent you a Hey Baby tip", es: (nom || "Tu coach") + " te ha enviado un consejo de Hey Baby", it: (nom || "Il tuo coach") + " ti ha inviato un consiglio di Hey Baby", ja: (nom || "コーチ") + "がHey Babyのアドバイスを送りました", de: (nom || "Dein Coach") + " hat dir einen Hey-Baby-Rat geschickt", ar: (nom || "مدرّبك") + " أرسل إليكِ نصيحة من Hey Baby", zh: (nom || "你的教练") + "给你发了一条 Hey Baby 建议", nl: (nom || "Je coach") + " heeft je een Hey Baby-tip gestuurd", pt: (nom || "O teu treinador") + " enviou-te um conselho do Hey Baby", sv: (nom || "Din tränare") + " har skickat ett Hey Baby-råd till dig", ru: (nom || "Твой тренер") + " отправил(а) тебе совет Hey Baby", pl: (nom || "Twój trener") + " wysłał(a) ci wskazówkę Hey Baby", ko: (nom || "코치") + "님이 Hey Baby 조언을 보냈어요" })   // 09/11
   if (type === "heybaby") return T7(lg, { fr: "Hey Baby t'a répondu", en: "Hey Baby answered you", es: "Hey Baby te ha respondido", it: "Hey Baby ti ha risposto", ja: "Hey Babyが返信しました", de: "Hey Baby hat dir geantwortet", ar: "Hey Baby ردّ عليكِ", zh: "Hey Baby 回复了你", nl: "Hey Baby heeft je geantwoord", pt: "O Hey Baby respondeu você", sv: "Hey Baby har svarat dig", ru: "Hey Baby ответил тебе", pl: "Hey Baby ci odpowiedział", ko: "Hey Baby가 답했어요" })
   const n = nom || T7(lg, { fr: "Quelqu'un", en: "Someone", es: "Alguien", it: "Qualcuno", ja: "誰か", de: "Jemand", ar: "شخص ما", zh: "有人", nl: "Iemand", pt: "Alguém", sv: "Någon", ru: "Кто-то", pl: "Ktoś", ko: "누군가" })
   if (type === "jaime_texte") {   // 07/11
@@ -59,6 +61,7 @@ function phrase(type: string, lg: L, nom: string, sur: string, cible = ""): stri
 async function lien(cible: string): Promise<{ url: string; sur: (lg: L) => string }> {
   const rien = { url: "/", sur: (_: L) => "" }
   if (!cible) return rien
+  if (cible.indexOf("epingle:") === 0) return { url: "/#ep-" + encodeURIComponent(cible.slice(8)), sur: (_: L) => "" }   // 09/11 : ouvre le conseil partagé
   if (cible === "heybaby") return { url: "/#hb=1", sur: (_: L) => "" }   // 21/10 : ouvre Hey Baby, qui affiche la réponse gardée
   if (cible.indexOf("soin:") === 0) return { url: "/#soins-a-confirmer", sur: (_: L) => "" }   // 05/11 : page « À confirmer » de l'écurie
   let pu = "", cb = cible

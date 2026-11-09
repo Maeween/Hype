@@ -1351,7 +1351,25 @@ function EcranEpinglePartagee() {
         if (!id || typeof supa === "undefined") { setErr(T("Ce conseil n'est plus disponible.", "This tip is no longer available.", "Este consejo ya no está disponible.", "Questo consiglio non è più disponibile.", "このアドバイスはもう利用できません。", "Dieser Rat ist nicht mehr verfügbar.", "هذه النصيحة لم تعد متاحة.", "这条建议已不可用。", "Dit advies is niet meer beschikbaar.", "Este conselho já não está disponível.", "Det här rådet finns inte längre.", "Этот совет больше недоступен.", "Ta rada nie jest już dostępna.", "이 조언은 더 이상 볼 수 없어요.")); return; }
         var r = await supa.from("echanges_heybaby_epingles").select("id, question, reponse, cheval_nom, created_at, user_id").eq("id", id).maybeSingle();
         if (!vif) return;
-        if (!r || r.error || !r.data) { setErr(T("Ce conseil n'est plus partagé avec toi.", "This tip is no longer shared with you.", "Este consejo ya no se comparte contigo.", "Questo consiglio non è più condiviso con te.", "このアドバイスはもうあなたと共有されていません。", "Dieser Rat wird nicht mehr mit dir geteilt.", "لم تعد هذه النصيحة مشتركة معك.", "这条建议已不再与你分享。", "Dit advies wordt niet meer met je gedeeld.", "Este conselho já não está partilhado contigo.", "Det här rådet delas inte längre med dig.", "Этот совет больше не доступен тебе.", "Ta rada nie jest już Ci udostępniona.", "이 조언은 더 이상 공유되지 않아요.")); return; }
+        /* 09/11 23h40 (option A de Blandine) : la base ne rend la reponse qu aux Premium. Si le conseil m a bien ete
+           envoye (ligne de partage visible) mais que la reponse est refusee, c est que je ne suis pas Premium :
+           on montre qui l a envoye et la question, reponse verrouillee + « Decouvre Premium ». */
+        if (!r || r.error || !r.data) {
+          try {
+            var uV = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+            var rv = uV ? await supa.from("epingles_partages").select("partage_par, masque_le").eq("epingle_id", id).eq("destinataire_id", uV.id).is("masque_le", null).limit(1) : null;
+            var pv = rv && rv.data && rv.data[0];
+            if (pv && vif) {
+              var rn = await supa.from("notifications").select("extrait").eq("destinataire", uV.id).eq("cible", "epingle:" + id).limit(1);
+              var rq = await supa.from("profiles").select("pseudo").eq("id", pv.partage_par).maybeSingle();
+              if (!vif) return;
+              setQui((rq && rq.data && rq.data.pseudo) || "");
+              setEp({ id: id, question: (rn && rn.data && rn.data[0] && rn.data[0].extrait) || "", reponse: "", verrou: true });
+              return;
+            }
+          } catch (eVr) { }
+          if (!vif) return;
+          setErr(T("Ce conseil n'est plus partagé avec toi.", "This tip is no longer shared with you.", "Este consejo ya no se comparte contigo.", "Questo consiglio non è più condiviso con te.", "このアドバイスはもうあなたと共有されていません。", "Dieser Rat wird nicht mehr mit dir geteilt.", "لم تعد هذه النصيحة مشتركة معك.", "这条建议已不再与你分享。", "Dit advies wordt niet meer met je gedeeld.", "Este conselho já não está partilhado contigo.", "Det här rådet delas inte längre med dig.", "Этот совет больше не доступен тебе.", "Ta rada nie jest już Ci udostępniona.", "이 조언은 더 이상 공유되지 않아요.")); return; }
         setEp(r.data);
         var rp = await supa.from("profiles").select("pseudo").eq("id", r.data.user_id).maybeSingle();
         if (vif && rp && rp.data) setQui(rp.data.pseudo || "");
@@ -1373,7 +1391,12 @@ function EcranEpinglePartagee() {
           ep.question ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, lineHeight: 1.35, marginTop: 22, color: IV } }, "« " + ep.question + " »") : null,
           h("div", { style: { marginTop: 18, padding: "18px 17px", borderRadius: 16, border: "1px solid " + CH3, background: PAN } },
             h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 10 } }, T("Réponse de Hey Baby", "Hey Baby's answer", "Respuesta de Hey Baby", "Risposta di Hey Baby", "Hey Babyの回答", "Antwort von Hey Baby", "رد Hey Baby", "Hey Baby 的回答", "Antwoord van Hey Baby", "Resposta do Hey Baby", "Hey Babys svar", "Ответ Hey Baby", "Odpowiedź Hey Baby", "Hey Baby의 답변")),
-            h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, ep.reponse || "")))),
+            ep.verrou
+              ? h("div", null,
+                  h("div", { "aria-hidden": "true", style: { filter: "blur(5px)", userSelect: "none", fontSize: 14.5, lineHeight: 1.65, color: IV2 } }, "Hey Baby te donne ici un conseil précis, pas à pas, adapté à ta situation et à ton cheval, avec les points à surveiller."),
+                  h("div", { style: { fontSize: 13, lineHeight: 1.55, color: IV, marginTop: 14 } }, T("Ce conseil est réservé aux membres Premium (Cercle Crystal).", "This tip is for Premium members (Crystal Circle).", "Este consejo está reservado a los miembros Premium (Círculo Crystal).", "Questo consiglio è riservato ai membri Premium (Cerchio Crystal).", "このアドバイスはプレミアム会員（クリスタル・サークル）限定です。", "Dieser Rat ist Premium-Mitgliedern vorbehalten (Crystal Circle).", "هذه النصيحة مخصّصة لأعضاء Premium (دائرة Crystal).", "这条建议仅限 Premium 会员（Crystal 圈）。", "Deze tip is voor Premium-leden (Crystal Circle).", "Este conselho é reservado aos membros Premium (Círculo Crystal).", "Det här rådet är för Premium-medlemmar (Crystal Circle).", "Этот совет доступен только участникам Premium (Crystal Circle).", "Ta wskazówka jest dla członków Premium (Krąg Crystal).", "이 조언은 프리미엄 회원(크리스털 서클) 전용이에요.")),
+                  h("button", { type: "button", onClick: function () { setEcran("premium"); }, style: { marginTop: 14, width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 14, fontWeight: 700, cursor: "pointer" } }, T("Découvrir Premium", "Discover Premium", "Descubrir Premium", "Scopri Premium", "プレミアムを見る", "Premium entdecken", "اكتشفي Premium", "了解 Premium", "Ontdek Premium", "Descobrir o Premium", "Upptäck Premium", "Узнать о Premium", "Poznaj Premium", "프리미엄 알아보기")))
+              : h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, ep.reponse || "")))),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null);
 }
 window.HypeTeamMedias = { Medias: EcranTeamMedias, Epingle: EcranEpinglePartagee, version: TM_VERSION };

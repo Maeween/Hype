@@ -530,6 +530,21 @@ function EcranAssistantIA() {
                     }
                 }
             } catch (eTh) { }
+            /* 09/11 23h40 (Blandine : « vas y fais le », option A) : choisir un cavalier = LUI ENVOYER le conseil.
+               Une ligne epingles_partages ; la base cree la notification (accueil) et l envoie sur son telephone.
+               Son echec ne perd JAMAIS l epingle (meme regle que le theme) ; il est signale. Pas d envoi a soi-meme. */
+            let envoiRate = false;
+            try {
+                const idEp2 = (r && r.data && r.data.id) ? r.data.id : null;
+                if (idEp2 && cavalierId) {
+                    const u3 = await utilisateurActuel();
+                    if (u3 && u3.id && String(u3.id) !== String(cavalierId)) {
+                        const rs = await supa.from("epingles_partages").insert({ epingle_id: idEp2, partage_par: u3.id, destinataire_id: cavalierId });
+                        if (rs && rs.error && !/duplicate|unique/i.test(String(rs.error.message || ""))) envoiRate = true;
+                    }
+                }
+            } catch (eSh) { envoiRate = true; }
+            if (envoiRate) { try { setToastHB(TXT("Conseil épinglé, mais pas envoyé au cavalier. Réessaie depuis le conseil (Partager).", "Tip pinned, but not sent to the rider. Try again from the tip (Share).", "Consejo fijado, pero no enviado al jinete. Inténtalo de nuevo desde el consejo (Compartir).", "Consiglio fissato, ma non inviato al cavaliere. Riprova dal consiglio (Condividi).", "ピン留めしましたが、騎手には送れませんでした。アドバイスの「共有」からやり直してね。", "Rat angeheftet, aber nicht an den Reiter gesendet. Versuch es über den Rat (Teilen) noch einmal.", "تم تثبيت النصيحة لكنها لم تُرسل إلى الفارس. أعيدي المحاولة من النصيحة (مشاركة).", "建议已置顶，但没有发给骑手。请在建议里点“分享”再试一次。", "Tip vastgezet, maar niet naar de ruiter gestuurd. Probeer opnieuw via de tip (Delen).", "Conselho fixado, mas não enviado ao cavaleiro. Tenta de novo a partir do conselho (Partilhar).", "Rådet är fäst men skickades inte till ryttaren. Försök igen från rådet (Dela).", "Совет закреплён, но не отправлен всаднику. Попробуй снова через совет (Поделиться).", "Wskazówka przypięta, ale nie wysłana do jeźdźca. Spróbuj ponownie z poziomu wskazówki (Udostępnij).", "조언은 고정했지만 기수에게 보내지 못했어요. 조언에서 (공유)로 다시 시도해 봐요.")); setTimeout(() => setToastHB(null), 5000); } catch (eTo) { } setEpingleCible(null); return; }
             setEpingleCible(null);
             /* 19/08/2026 (demande de Blandine) — AVERTISSEMENT AVANT LE PLAFOND.
                Le compte est déjà fait juste au-dessus (r0) : aucune requête en
