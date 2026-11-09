@@ -1,0 +1,5 @@
+-- 09/11/2026 — PASSÉ EN BASE (migration « resultats_details_et_live », Blandine « Ok vas y »)
+-- resultats : + penalites text, temps text, gains numeric, statut ('provisoire'|'officiel'|'saisie'), maj_par uuid, maj_le timestamptz
+-- resultats_corrections (resultat_id, avant jsonb, apres jsonb, par, le) — trace des corrections ; lecture/ajout : modératrice
+-- club_agenda : + lien_live text (retransmission vidéo), live_actif boolean (badge « EN DIRECT » mis en route par la coach)
+-- Droits de resultats INCHANGÉS (insertion : son propre user_id ou modératrice ; modification : auteur, propriétaire du cheval, modératrice).

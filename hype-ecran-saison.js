@@ -1001,6 +1001,13 @@ function EcranConcours() {
   var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];
   /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
   var _gd = React.useState([]); var grpD = _gd[0], setGrpD = _gd[1];
+  /* 09/11 — PAGE RÉSULTATS */
+  var _rso = React.useState(null); var resOuv = _rso[0], setResOuv = _rso[1];   /* épreuve dépliée (null = automatique) */
+  var _tvr = React.useState({}); var tvRes = _tvr[0], setTvRes = _tvr[1];      /* vidéos de la Team rattachées à un résultat */
+  var _red = React.useState(null); var resEd = _red[0], setResEd = _red[1];    /* saisie rapide de la coach */
+  var _rem = React.useState(""); var resMsg = _rem[0], setResMsg = _rem[1];
+  var _reo = React.useState(false); var resOcc = _reo[0], setResOcc = _reo[1];
+  var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
   var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
@@ -1032,8 +1039,8 @@ function EcranConcours() {
     }).catch(function () { setDvOcc(false); });
   }
   React.useEffect(function () {
-    if (ev && mesEng.length && /^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String(ev.lien_direct || ""))) lireEnDirect();
-  }, [ev && ev.lien_direct, mesEng.length]);
+    if (ev && (mesEng.length || gestion) && /^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String(ev.lien_direct || ""))) lireEnDirect();
+  }, [ev && ev.lien_direct, mesEng.length, gestion]);   /* 09/11 : la coach lit aussi le direct (toute l'équipe) */
 
   React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
 
@@ -1066,8 +1073,9 @@ function EcranConcours() {
         hsPeutGerer(r.data.club_clef).then(function (g) { if (vif) setGestion(g); });
         /* 09/11 : résultats du concours, par épreuve (seulement ceux rattachés à ce rendez-vous) */
         try {
-          var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere").eq("agenda_id", idEv).limit(200);
-          var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x.visible !== false; });
+          var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere, penalites, temps, gains, statut, origine, user_id").eq("agenda_id", idEv).limit(400);
+          var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x.visible !== false || x.statut === "saisie"; });   /* 09/11 : un brouillon de la coach (saisie, pas encore publié) reste visible pour elle seule, filtré à l'affichage */
+          try { var rtv = await supa.from("team_videos").select("id, groupe_id, resultat, vignette, media, duree").eq("agenda_id", idEv).not("resultat", "is", null); var mtv = {}; ((rtv && !rtv.error && rtv.data) || []).forEach(function (v) { (mtv[v.resultat] = mtv[v.resultat] || []).push(v); }); if (vif) setTvRes(mtv); } catch (eTv) { }
           if (lr.length) {
             var idsP = [], idsH = []; lr.forEach(function (x) { if (x.cavalier_id && idsP.indexOf(x.cavalier_id) === -1) idsP.push(x.cavalier_id); if (x.cheval_id && idsH.indexOf(x.cheval_id) === -1) idsH.push(x.cheval_id); });
             var pP = {}, pH = {};
@@ -1479,20 +1487,177 @@ function EcranConcours() {
   var resParEp = [];
   (resConc || []).forEach(function (r) { var k = hsNomEpreuve(r.epreuve || "") || F("Épreuve"); var g = null; resParEp.forEach(function (x) { if (x.ep === k) g = x; }); if (!g) { g = { ep: k, l: [] }; resParEp.push(g); } g.l.push(r); });
   resParEp.forEach(function (g) { g.l.sort(function (a, b) { return (a.place || 999) - (b.place || 999); }); });
-  var blocResultats = resParEp.length ? h("div", { key: "res" },
-    h("div", { className: "hc-sous" }, F("Résultats")),
-    resParEp.map(function (g, gi) {
-      return h("div", { key: gi, className: "hc-liste" },
-        h("div", { className: "hc-ep-t" }, h("b", null, g.ep), h("span", null, g.l[0] && g.l[0].partants ? g.l[0].partants + " " + F("partants") : "")),
-        g.l.map(function (r) {
-          var nom = (r.__p && r.__p.pseudo) || prenomInitiale(r.cavalier) || F("Cavalier non renseigné");
-          var pl = r.place ? (r.place + (r.place === 1 ? "re" : "e")) : (r.classement || "");
-          return h("div", { key: r.id, className: "hc-l" },
-            avatarHc(r.__p || { pseudo: nom }),
-            h("div", { className: "hc-qui" }, h("b", null, nom), h("span", null, [r.__ch, r.mention ? F("Sans faute") : ""].filter(Boolean).join(" · "))),
-            pl ? h("span", { className: "hc-res" }, pl) : null);
-        }));
-    })) : (fini ? h("div", { key: "res0", className: "hs-note", style: { marginTop: 0, marginBottom: 12 } }, F("Les résultats de ce concours n’ont pas encore été ajoutés.")) : null);
+  /* ── 09/11 12h30 — PAGE RÉSULTATS (brief de Blandine, capture « CSO Tigery ») ──
+     Sources, sans rien inventer : (1) les résultats enregistrés dans Hype pour CE concours (resultats.agenda_id) — statut
+     officiel (import FFE), provisoire (direct) ou saisie de la coach ; (2) le direct du chronométreur pour l'équipe
+     (place, pénalités, temps) quand aucun résultat n'est encore enregistré ; (3) les passages, pour les épreuves à venir.
+     Podiums : par épreuve, jamais de classement général inventé ; deux victoires = deux 1res places. */
+  function estOfficiel(r) { return r.statut === "officiel" || (!r.statut && /import|telemat|ffe/i.test(String(r.origine || ""))); }
+  function placeTxt(n) { n = Number(n); if (!n) return ""; return n + (lg === "fr" ? (n === 1 ? "er" : "e") : ""); }
+  function etatDe(txt) {   /* mentions FFE / chronométreur → statut lisible ; null = classé */
+    var t = String(txt || "").toLowerCase();
+    if (/\bel\b|elim/.test(t)) return F("Éliminé"); if (/\bab\b|aband/.test(t)) return F("Abandon"); if (/np|non\s*part|forfait/.test(t)) return F("Non partant"); if (/\bnc\b|non\s*class/.test(t)) return F("Non classé");
+    return null;
+  }
+  var lignesRes = {};   /* épreuve → { ep, l:[{cle, nom, p, cheval, place, etat, pen, temps, gains, sf, statut, id, vids}], partants, piste, nbEq } */
+  function grpRes(ep) { var k = hsNomEpreuve(ep || "") || F("Épreuve"); if (!lignesRes[k]) lignesRes[k] = { ep: k, l: [], partants: 0, piste: "", nbEq: 0, ordre: 9999, num: "", url: "" }; return lignesRes[k]; }
+  parEpreuve.forEach(function (g, gi) { var x = grpRes(g.ep); x.ordre = Math.min(x.ordre, gi); x.nbEq = g.l.length; var pi = []; g.l.forEach(function (p) { if (p.piste && pi.indexOf(String(p.piste)) === -1) pi.push(String(p.piste)); }); x.piste = pi.join(", "); });
+  (resConc || []).forEach(function (r) {
+    if (r.visible === false && !gestion) return;
+    var x = grpRes(r.epreuve); if (r.partants) x.partants = Math.max(x.partants, Number(r.partants) || 0);
+    var nom = (r.__p && r.__p.pseudo) || prenomInitiale(r.cavalier) || F("Cavalier non renseigné");
+    x.l.push({ cle: "r" + r.id, id: r.id, nom: nom, p: r.__p || { pseudo: nom }, cavalier_id: r.cavalier_id, cheval: r.__ch || "", place: Number(r.place) || 0, etat: etatDe(r.classement) || etatDe(r.mention), pen: r.penalites || "", temps: r.temps || "", gains: r.gains, sf: /sf|sans\s*faute/i.test(String(r.mention || "")), statut: estOfficiel(r) ? "officiel" : (r.statut || "saisie"), brouillon: r.visible === false, vids: tvRes[r.id] || [] });
+  });
+  ((enDirect && enDirect.lignes) || []).forEach(function (d) {
+    var x = grpRes(d.epreuve); if (d.engages) x.partants = Math.max(x.partants, Number(d.engages) || 0); if (d.num_epreuve) x.num = d.num_epreuve; if (d.url_resultats) x.url = d.url_resultats;
+    var p = null; (passagesEq || []).forEach(function (q) { if (!p && q.engagement_id === d.engagement) p = q; });
+    var deja = x.l.some(function (l) { return l.statut !== "direct" && p && l.cavalier_id && l.cavalier_id === p.cavalier_id && norm(l.cheval) === norm(d.cheval); });
+    if (deja) return;
+    x.l.push({ cle: "d" + d.engagement + d.cheval, nom: (p && nomP(p)) || prenomInitiale(d.nom), p: p || { pseudo: d.nom }, cavalier_id: p && p.cavalier_id, cheval: d.cheval || (p && p.cheval_nom) || "", place: /^\d+$/.test(String(d.clt || "")) ? Number(d.clt) : 0, etat: d.clt ? etatDe(d.clt) : null, pen: d.points !== "" && d.points != null ? String(d.points) : "", temps: d.temps || "", statut: "direct", attente: !d.clt, vids: [] });
+  });
+  function norm(t) { return String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  var epsRes = Object.keys(lignesRes).map(function (k) { return lignesRes[k]; }).sort(function (a, b) { return a.ordre - b.ordre; });
+  epsRes.forEach(function (x) {
+    x.l.sort(function (a, b) { return (a.place || 999) - (b.place || 999); });
+    var off = x.l.some(function (l) { return l.statut === "officiel"; }), dir = x.l.some(function (l) { return l.statut === "direct" || l.statut === "provisoire"; });
+    x.etat = !x.l.length ? (fini ? F("Résultats en attente") : F("À venir")) : off ? F("Officiel") : (dir && !fini ? F("En cours") : (dir ? F("Provisoire") : F("Saisie coach")));
+    x.meilleur = 0; x.l.forEach(function (l) { if (l.place && (!x.meilleur || l.place < x.meilleur)) x.meilleur = l.place; });
+  });
+  var epCourantRes = resOuv === null ? (epsRes.filter(function (x) { return x.l.length; })[0] || epsRes[0] || {}).ep : resOuv;
+  function lauriersPl(n) { return h("span", { className: "hc-lp" + (n === 2 ? " ar" : n === 3 ? " br" : "") }, lauriers(), h("b", null, n)); }
+  function ouvrirVideo(v) { try { window.__teamMediasGroupe = v.groupe_id; window.__teamMediasOnglet = "videos"; window.__teamMediasOuvrir = v.id; } catch (e) { } setEcran("team-medias"); }
+  /* bandeau du direct : résultats en direct + live vidéo (chaque accès seulement s'il existe ; badge seulement si la coach l'a mis en route) */
+  var bandeauDirect = (ev.lien_direct || ev.lien_live || gestion) ? h("div", { key: "bd", className: "hc-bd" },
+    h("span", { className: "hc-bd-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 12, r: 2.2, fill: "#C9A66B" }), h("path", { d: "M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14" })))),
+    h("b", { className: "hc-bd-t" }, F("Concours en direct")),
+    (ev.live_actif && ev.lien_live) ? h("span", { className: "hc-bd-live" }, F("EN DIRECT")) : null,
+    h("span", { className: "hc-bd-acc" },
+      ev.lien_direct ? h("a", { href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats en direct"), " ↗") : null,
+      ev.lien_live ? h("a", { href: ev.lien_live, target: "_blank", rel: "noopener", className: "live" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" })), F("Voir le live"), " ↗") : null,
+      (gestion && !ev.lien_live && !ev.lien_direct) ? h("span", { className: "hc-bd-vide" }, F("Aucun lien pour l’instant")) : null),
+    gestion ? h("button", { type: "button", className: "hc-bd-reg", onClick: function () { setLiveEd(liveEd ? null : { live: ev.lien_live || "", actif: !!ev.live_actif }); } }, F("Régler")) : null) : null;
+  async function enregistrerLive() {
+    if (!liveEd) return; var u = String(liveEd.live || "").trim();
+    if (u && !/^https:\/\//i.test(u)) { setResMsg(F("Le lien du live doit commencer par https://")); return; }
+    try { var r = await supa.from("club_agenda").update({ lien_live: u || null, live_actif: !!(u && liveEd.actif) }).eq("id", idEv).select("id"); if (r && r.error) throw r.error; setEv(Object.assign({}, ev, { lien_live: u || null, live_actif: !!(u && liveEd.actif) })); setLiveEd(null); setResMsg(""); }
+    catch (eL) { setResMsg(F("Enregistrement impossible : ") + String((eL && eL.message) || eL)); }
+  }
+  var regLive = (gestion && liveEd) ? h("div", { key: "rl", className: "hc-ged" },
+    h("input", { className: "hc-in", value: liveEd.live, placeholder: F("Lien du live vidéo (https://…)"), onChange: function (e) { setLiveEd(Object.assign({}, liveEd, { live: e.target.value })); } }),
+    h("label", { className: "hc-coche" }, h("input", { type: "checkbox", checked: !!liveEd.actif, onChange: function (e) { setLiveEd(Object.assign({}, liveEd, { actif: e.target.checked })); } }), F("La diffusion est en cours (affiche « EN DIRECT »)")),
+    h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Le lien des résultats en direct se règle dans Jour J.")),
+    h("div", { className: "hc-ged-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setLiveEd(null); } }, F("Annuler")), h("button", { type: "button", className: "hc-btn-l fort", onClick: enregistrerLive }, F("Enregistrer")))) : null;
+  /* saisie rapide de la coach (une épreuve, toutes ses lignes) — brouillon invisible, puis publication ; correction tracée */
+  function ouvrirSaisie(x) {
+    var gP = null; parEpreuve.forEach(function (g) { if (g.ep === x.ep) gP = g; });
+    var lignes = (gP ? gP.l : []).map(function (p) {
+      var r = null; (resConc || []).forEach(function (q) { if (!r && hsNomEpreuve(q.epreuve || "") === x.ep && q.cavalier_id && q.cavalier_id === p.cavalier_id && (!q.cheval_id || q.cheval_id === p.cheval_id)) r = q; });
+      var et = r ? (etatDe(r.classement) ? r.classement : "") : "";
+      return { p: p, id: r && r.id, avant: r || null, place: r && r.place ? String(r.place) : "", pen: (r && r.penalites) || "", temps: (r && r.temps) || "", gains: r && r.gains != null ? String(r.gains) : "", sf: !!(r && /sf|sans\s*faute/i.test(String(r.mention || ""))), etat: /el/i.test(et) ? "el" : /ab/i.test(et) ? "ab" : /np/i.test(et) ? "np" : /nc/i.test(et) ? "nc" : "" };
+    });
+    setResMsg(""); setResEd({ ep: x.ep, partants: x.partants ? String(x.partants) : "", lignes: lignes });
+  }
+  async function enregistrerSaisie(publier) {
+    if (!resEd || resOcc) return; setResOcc(true); setResMsg("");
+    try {
+      var u = moi || {}; var maint = new Date().toISOString(); var nb = 0;
+      var ETAT = { el: "El.", ab: "Ab.", np: "NP", nc: "NC" };
+      for (var i = 0; i < resEd.lignes.length; i++) {
+        var l = resEd.lignes[i]; var p = l.p;
+        var vide = !l.place && !l.etat && !l.pen && !l.temps && !l.id; if (vide) continue;
+        var pa = parseInt(resEd.partants, 10) || null, pl = parseInt(l.place, 10) || null;
+        var e = 0; try { e = (mesEng || []).length; } catch (eE) { }
+        var ligne = { agenda_id: idEv, concours: ev.titre || null, date_epreuve: String(ev.date_jour || "").slice(0, 10) || null, annee: Number(String(ev.date_jour || "").slice(0, 4)) || null,
+          epreuve: resEd.ep, place: l.etat ? null : pl, partants: pa, classement: l.etat ? (ETAT[l.etat] + (pa ? " / " + pa : "")) : (pl ? placeTxt(pl) + (pa ? " / " + pa : "") : null),
+          mention: l.sf ? "SF" : null, penalites: String(l.pen || "").trim() || null, temps: String(l.temps || "").trim() || null, gains: l.gains !== "" && !isNaN(parseFloat(String(l.gains).replace(",", "."))) ? parseFloat(String(l.gains).replace(",", ".")) : null,
+          cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cavalier: nomP(p), statut: (l.avant && estOfficiel(l.avant)) ? "officiel" : "saisie", maj_par: u.id || null, maj_le: maint };
+        if (publier) ligne.visible = true; else if (!l.id) ligne.visible = false;
+        var r;
+        if (l.id) {
+          r = await supa.from("resultats").update(ligne).eq("id", l.id).select("id");
+          if (r && r.error) throw r.error;
+          if (l.avant && l.avant.visible !== false) { try { await supa.from("resultats_corrections").insert({ resultat_id: l.id, avant: { place: l.avant.place, partants: l.avant.partants, classement: l.avant.classement, penalites: l.avant.penalites, temps: l.avant.temps, gains: l.avant.gains, mention: l.avant.mention }, apres: { place: ligne.place, partants: ligne.partants, classement: ligne.classement, penalites: ligne.penalites, temps: ligne.temps, gains: ligne.gains, mention: ligne.mention } }); } catch (eC) { } }
+        } else {
+          r = await supa.from("resultats").insert(Object.assign({ user_id: u.id, origine: "saisie", visible: !!publier }, ligne)).select("id");
+          if (r && r.error) throw r.error;
+        }
+        nb++;
+      }
+      var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere, penalites, temps, gains, statut, origine, user_id").eq("agenda_id", idEv).limit(400);
+      if (rr && !rr.error) { var lr = (rr.data || []).filter(function (x) { return x.visible !== false || x.statut === "saisie"; }); lr.forEach(function (x) { var o = null; (resConc || []).forEach(function (y) { if (y.id === x.id) o = y; }); x.__p = o && o.__p; x.__ch = o && o.__ch; if (!x.__ch) (passagesEq || []).forEach(function (q) { if (!x.__ch && q.cheval_id && q.cheval_id === x.cheval_id) x.__ch = q.cheval_nom; }); if (!x.__p) (passagesEq || []).forEach(function (q) { if (!x.__p && q.cavalier_id && q.cavalier_id === x.cavalier_id) x.__p = q; }); }); setResConc(lr); }
+      setResEd(null);
+      setResMsg(publier ? F("✓ Résultats publiés : ils apparaissent sur la fiche du concours, les performances et les podiums.") : F("✓ Brouillon enregistré : toi seule le vois."));
+    } catch (eS) { setResMsg(F("Enregistrement impossible : ") + String((eS && eS.message) || eS)); }
+    setResOcc(false);
+  }
+  function editeurRes() {
+    function maj(i, f) { setResEd(function (e) { var n = Object.assign({}, e, { lignes: e.lignes.slice() }); n.lignes[i] = Object.assign({}, n.lignes[i]); f(n.lignes[i]); return n; }); }
+    return h("div", { className: "hc-ged hc-rsaisie" },
+      h("div", { className: "hc-ged-k" }, F("Saisie rapide") + " · " + resEd.ep),
+      h("label", { className: "hc-rs-part" }, F("Partants"), h("input", { className: "hc-in", inputMode: "numeric", value: resEd.partants, onChange: function (e) { var v = e.target.value; setResEd(Object.assign({}, resEd, { partants: v })); } })),
+      resEd.lignes.length ? resEd.lignes.map(function (l, i) {
+        return h("div", { key: i, className: "hc-rs-l" },
+          h("div", { className: "hc-rs-q" }, h("b", null, prenomDe(l.p)), h("span", null, " · " + (l.p.cheval_nom || ""))),
+          h("div", { className: "hc-rs-c" },
+            h("input", { className: "hc-in", placeholder: F("Place"), inputMode: "numeric", value: l.place, disabled: !!l.etat, onChange: function (e) { var v = e.target.value; maj(i, function (x) { x.place = v; }); } }),
+            h("input", { className: "hc-in", placeholder: F("Pén."), value: l.pen, onChange: function (e) { var v = e.target.value; maj(i, function (x) { x.pen = v; }); } }),
+            h("input", { className: "hc-in", placeholder: F("Temps"), value: l.temps, onChange: function (e) { var v = e.target.value; maj(i, function (x) { x.temps = v; }); } }),
+            h("input", { className: "hc-in", placeholder: F("Gains €"), inputMode: "decimal", value: l.gains, onChange: function (e) { var v = e.target.value; maj(i, function (x) { x.gains = v; }); } })),
+          h("div", { className: "hc-ged-ch" },
+            [["sf", F("Sans-faute")], ["el", F("Éliminé")], ["ab", F("Abandon")], ["np", F("Non partant")], ["nc", F("Non classé")]].map(function (o) {
+              var on = o[0] === "sf" ? l.sf : l.etat === o[0];
+              return h("button", { key: o[0], type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { maj(i, function (x) { if (o[0] === "sf") x.sf = !x.sf; else { x.etat = on ? "" : o[0]; if (!on) { x.place = ""; x.sf = false; } } }); } }, o[1]);
+            })));
+      }) : h("div", { className: "hs-note" }, F("Aucun couple de l’équipe dans cette épreuve.")),
+      h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Une saisie de la coach n’est jamais présentée comme un résultat officiel : l’import du télémat FFE la confirmera.")),
+      h("div", { className: "hc-ged-fin" },
+        h("button", { type: "button", className: "hc-btn-l", disabled: resOcc, onClick: function () { setResEd(null); setResMsg(""); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l", disabled: resOcc, onClick: function () { enregistrerSaisie(false); } }, F("Brouillon")),
+        h("button", { type: "button", className: "hc-btn-l fort", disabled: resOcc, onClick: function () { enregistrerSaisie(true); } }, resOcc ? "…" : F("Publier"))));
+  }
+  var listeRes = epsRes.length ? h("div", { key: "lr", className: "hc-eps" }, epsRes.map(function (x, xi) {
+    var ouv = epCourantRes === x.ep;
+    var info = [x.num ? F("N° ") + x.num : "", x.piste ? F("Piste ") + x.piste : "", x.partants ? x.partants + " " + F("partants") : "", x.nbEq ? x.nbEq + " " + F("de l’équipe") : ""].filter(Boolean).join(" · ");
+    return h("section", { key: x.ep, className: "hc-ep" + (ouv ? " ouv" : "") },
+      h("button", { type: "button", className: "hc-ep-b hc-rep-b", "aria-expanded": ouv, onClick: function () { setResOuv(ouv ? "" : x.ep); } },
+        h("b", null, x.ep),
+        h("span", null, info, h("i", { className: "hc-etat" }, x.etat + (x.meilleur ? " · " + F("meilleur : ") + placeTxt(x.meilleur) : ""))),
+        h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
+      ouv ? h("div", { className: "hc-ep-l" },
+        (resEd && resEd.ep === x.ep) ? editeurRes() : [
+          x.l.length ? x.l.filter(function (l) { return gestion || !l.brouillon; }).map(function (l) {
+            var aVid = l.vids && l.vids.length;
+            return h("div", { key: l.cle, className: "hc-rl" + (moi && l.cavalier_id === moi.id ? " moi" : "") },
+              h("span", { className: "hc-rl-pl" }, l.place ? (l.place <= 3 ? lauriersPl(placeTxt(l.place)) : h("b", null, placeTxt(l.place))) : h("i", null, l.etat || (l.attente ? F("En attente") : "–"))),
+              avatarHc(l.p, 34),
+              h("span", { className: "hc-rl-q" }, h("b", null, l.nom), h("span", null, [l.cheval, l.sf ? F("Sans-faute") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · "))),
+              h("span", { className: "hc-rl-pen" }, l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : ""),
+              h("span", { className: "hc-rl-t" }, l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : ""),
+              aVid ? h("button", { type: "button", className: "hc-rl-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" }))) : h("span", { className: "hc-rl-v" }));
+          }) : h("div", { key: "v", className: "hc-rl-vide" }, x.etat),
+          gestion ? h("div", { key: "act", className: "hc-ged-fin", style: { margin: "6px 0 12px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrirSaisie(x); } }, F("Saisir ou corriger"))) : null
+        ]) : null);
+  })) : (fini ? h("div", { key: "res0", className: "hs-note", style: { marginTop: 0, marginBottom: 12 } }, F("Les résultats de ce concours n’ont pas encore été ajoutés.")) : null);
+  /* podiums de l'équipe : 1res, puis 2es, puis 3es ; à place égale, ordre des épreuves ; chaque podium garde son épreuve */
+  var podiums = []; epsRes.forEach(function (x, xi) { x.l.forEach(function (l) { if (l.place >= 1 && l.place <= 3 && !l.brouillon) podiums.push({ l: l, ep: x.ep, o: xi }); }); });
+  podiums.sort(function (a, b) { return (a.l.place - b.l.place) || (a.o - b.o); });
+  var nbP = [0, 0, 0]; podiums.forEach(function (p) { nbP[p.l.place - 1]++; });
+  var nbClasses = 0; epsRes.forEach(function (x) { x.l.forEach(function (l) { if (l.place && x.partants && l.place <= Math.max(1, Math.ceil(x.partants / 4)) && !l.brouillon) nbClasses++; }); });
+  var blocPodiums = podiums.length ? h("div", { key: "pod", className: "hc-pod" },
+    h("div", { className: "hc-pod-tete" }, h("h2", null, F("Les podiums de l’équipe"))),
+    h("div", { className: "hc-pod-res" }, [nbP[0] ? nbP[0] + " " + (nbP[0] > 1 ? F("victoires") : F("victoire")) : "", nbP[1] ? nbP[1] + " " + (nbP[1] > 1 ? F("deuxièmes places") : F("deuxième place")) : "", nbP[2] ? nbP[2] + " " + (nbP[2] > 1 ? F("troisièmes places") : F("troisième place")) : "", nbClasses ? nbClasses + " " + (nbClasses > 1 ? F("classements") : F("classement")) : ""].filter(Boolean).join(" · ")),
+    h("div", { className: "hc-pod-l" + (podiums.length > 3 ? " car" : "") }, podiums.map(function (p, i) {
+      return h("div", { key: i, className: "hc-pod-c" }, lauriersPl(p.l.place), h("b", null, p.l.nom + " & " + (p.l.cheval || "")), h("span", null, p.ep));
+    }))) : null;
+  var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
+    (epsRes.some(function (x) { return x.url; }) || ev.lien_direct) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
+    h("button", { type: "button", className: "hc-btn-l", onClick: function () { setOngletC("medias"); } }, F("Revoir les vidéos")),
+    h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrir("dossier-concours"); } }, F("Dossier du concours")));
+  var blocResultats = h("div", { key: "res" },
+    bandeauDirect, regLive,
+    (epsRes.length || gestion) ? h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Résultats de l’équipe"))) : null,
+    listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
+    blocPodiums, boutonsBas);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
@@ -1633,7 +1798,7 @@ function EcranConcours() {
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
         ongletC === "passages" ? [outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
-        ongletC === "resultats" ? [outilsResultats, blocResultats] : null,
+        ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [outilsMedias, blocMedias] : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
         : h("div", { className: "hc-onglet" }, blocResultats, blocMedias[0], blocMedias[1]),
@@ -1687,6 +1852,53 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 — Page Résultats */
+  ".hc .hc-bd{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;border:1px solid rgba(201,166,107,.55);border-radius:16px;padding:12px 14px;margin:0 0 22px}",
+  ".hc .hc-bd-t{font-size:15px;font-weight:600}",
+  ".hc .hc-bd-live{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#F3EEE4;border:1px solid #C0453A;background:rgba(192,69,58,.85);border-radius:5px;padding:2px 6px}",
+  ".hc .hc-bd-acc{display:flex;flex-wrap:wrap;gap:8px 14px;margin-inline-start:auto}",
+  ".hc .hc-bd-acc a{display:inline-flex;align-items:center;gap:6px;color:#C9A66B;text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap}",
+  ".hc .hc-bd-vide{font-size:12px;color:rgba(243,238,228,.55)}",
+  ".hc .hc-bd-reg{background:transparent;border:none;color:rgba(243,238,228,.6);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer;padding:0}",
+  ".hc .hc-in{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:#F3EEE4;font:inherit;font-size:14px;padding:9px 11px;min-width:0;width:100%;box-sizing:border-box}",
+  ".hc .hc-coche{display:flex;gap:8px;align-items:center;font-size:13px}",
+  ".hc .hc-rep-b > span:nth-child(2){display:flex;flex-direction:column;gap:2px}",
+  ".hc .hc-etat{font-style:normal;font-size:11px;letter-spacing:.06em;color:#C9A66B}",
+  ".hc .hc-rl{display:grid;grid-template-columns:52px 34px 1fr auto auto 26px;align-items:center;column-gap:10px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
+  ".hc .hc-rl:last-of-type{border-bottom:none}",
+  ".hc .hc-rl.moi .hc-rl-q b{color:#C9A66B}",
+  ".hc .hc-rl-pl{display:flex;justify-content:center}",
+  ".hc .hc-rl-pl b{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:500;font-variant-numeric:lining-nums}",
+  ".hc .hc-rl-pl i{font-style:normal;font-size:10.5px;color:rgba(243,238,228,.65);text-align:center;line-height:1.2}",
+  ".hc .hc-lp{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:30px}",
+  ".hc .hc-lp .hc-laur{position:absolute;inset:0;width:44px;height:30px}",
+  ".hc .hc-lp b{position:relative;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;font-weight:600;color:#C9A66B;font-variant-numeric:lining-nums}",
+  ".hc .hc-lp.ar b,.hc .hc-lp.ar ellipse{color:#C8CCD0;fill:#C8CCD0}.hc .hc-lp.ar path{stroke:#C8CCD0}",
+  ".hc .hc-lp.br b{color:#B07A4F}.hc .hc-lp.br ellipse{fill:#B07A4F}.hc .hc-lp.br path{stroke:#B07A4F}",
+  ".hc .hc-rl-q{display:flex;flex-direction:column;min-width:0}",
+  ".hc .hc-rl-q b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-rl-q span{font-size:12px;color:rgba(243,238,228,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-rl-pen,.hc .hc-rl-t{font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}",
+  ".hc .hc-rl-v{display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;width:26px}",
+  ".hc .hc-rl-vide{padding:14px 0;font-size:13px;color:rgba(243,238,228,.6)}",
+  ".hc .hc-rs-part{display:grid;grid-template-columns:auto 90px;align-items:center;gap:10px;font-size:13px}",
+  ".hc .hc-rs-l{display:flex;flex-direction:column;gap:7px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
+  ".hc .hc-rs-q{font-size:13.5px}.hc .hc-rs-q span{color:rgba(243,238,228,.7)}",
+  ".hc .hc-rs-c{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}",
+  ".hc .hc-rs-l .hc-ged-ch{justify-content:flex-start}",
+  ".hc .hc-pod{margin-top:34px}",
+  ".hc .hc-pod-tete h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.2vw,28px);color:#F3EEE4}",
+  ".hc .hc-pod-res{font-size:12px;color:rgba(243,238,228,.7);margin:6px 0 14px}",
+  ".hc .hc-pod-l{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));border:1px solid rgba(201,166,107,.35);border-radius:16px}",
+  ".hc .hc-pod-l.car{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}",
+  ".hc .hc-pod-l.car::-webkit-scrollbar{display:none}",
+  ".hc .hc-pod-c{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:16px 10px;border-inline-start:1px solid rgba(201,166,107,.22);min-width:0}",
+  ".hc .hc-pod-l.car .hc-pod-c{flex:0 0 36%;scroll-snap-align:start}",
+  ".hc .hc-pod-c:first-child{border-inline-start:none}",
+  ".hc .hc-pod-c b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:17px;line-height:1.2}",
+  ".hc .hc-pod-c span{font-size:11.5px;color:rgba(243,238,228,.65)}",
+  ".hc .hc-bb{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;justify-content:center}",
+  "@media (min-width:768px){.hc .hc-rl{grid-template-columns:64px 40px 1fr 90px 90px 30px}}",
   /* 09/11 — Organisation du paddock + règles */
   ".hc .hc-pad{margin-top:34px;padding-top:26px;border-top:1px solid rgba(201,166,107,.22)}",
   ".hc .hc-pad-tete{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:16px}",
