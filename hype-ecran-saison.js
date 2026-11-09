@@ -1863,6 +1863,19 @@ function EcranConcours() {
     if (x.video && /^mux:/.test(x.url)) { try { window.__videoParcours = { media: x.url, proprio: x.auteur, pseudo: (medG.auteurs || {})[x.auteur] || "", agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); return; }
     setMedVisu(x.url);
   }
+  /* 09/11 13h (Blandine : « pas de photo seule, tout aligné à même hauteur et largeur ») : les grilles se remplissent
+     toujours ligne entière — s'il manque des cases sur la dernière ligne, la PREMIÈRE vignette s'élargit d'autant
+     (même hauteur de ligne partout) ; aucune vignette isolée. */
+  var colsGal = (function () { try { var w = window.innerWidth || 390; return w >= 900 ? 4 : (w >= 600 ? 3 : 2); } catch (e) { return 2; } })();
+  /* « Mes médias » : la tête (1 grande + 2, ou 2 côte à côte) prend juste ce qu'il faut pour que la suite tombe en lignes pleines */
+  var nHeros = (function () { var n = mesM.length; if (n <= 2) return n; if ((n - 3) % colsGal === 0) return 3; if ((n - 2) % colsGal === 0) return 2; return 3; })();
+  if (medNM % colsGal) medNM = medNM - (medNM % colsGal) + colsGal;
+  function grilleRemplie(liste, cle) {
+    var n = liste.length; if (!n) return null;
+    var reste = n % colsGal, large = reste ? (colsGal - reste + 1) : 1;
+    return h("div", { key: cle, className: "hc-gal-grille", style: { gridTemplateColumns: "repeat(" + colsGal + ", 1fr)", "--cols": colsGal } },
+      liste.map(function (x, i) { return h("div", { key: x.cle, className: "hc-gcase", style: i === 0 && large > 1 ? { gridColumn: "span " + Math.min(large, colsGal) } : null }, tuile(x, false)); }));
+  }
   function tuile(x, grand) {
     var vg = vignetteDe(x);
     var peutId = !x.tv && moi && (x.auteur === moi.id || gestion);
@@ -1917,14 +1930,14 @@ function EcranConcours() {
     (medG && moi) ? h("div", { className: "hc-gal-s" },
       h("div", { className: "hc-gal-st" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
       mesM.length ? [
-        h("div", { key: "m3", className: "hc-gal-m3" + (mesM.length === 1 ? " un" : mesM.length === 2 ? " deux" : "") }, mesM.slice(0, 3).map(function (x, i) { return tuile(x, i === 0); })),
-        mesM.length > 3 ? h("div", { key: "mr", className: "hc-gal-grille" }, mesM.slice(3, 3 + medNM).map(function (x) { return tuile(x, false); })) : null,
-        mesM.length > 3 + medNM ? h("button", { key: "mp", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus")) : null
+        h("div", { key: "m3", className: "hc-gal-m3" + (nHeros === 1 ? " un" : nHeros === 2 ? " deux" : "") }, mesM.slice(0, nHeros).map(function (x, i) { return tuile(x, i === 0 && nHeros === 3); })),
+        mesM.length > nHeros ? grilleRemplie(mesM.slice(nHeros, nHeros + medNM), "mr") : null,
+        mesM.length > nHeros + medNM ? h("button", { key: "mp", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus")) : null
       ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun de tes médias ne correspond à ces filtres.") : F("Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe."))) : null,
     medG ? h("div", { className: "hc-gal-s" },
       h("div", { className: "hc-gal-st" }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
       eqM.length ? [
-        h("div", { key: "eg", className: "hc-gal-grille eq" }, eqM.slice(0, medNE).map(function (x) { return tuile(x, false); })),
+        grilleRemplie(eqM.slice(0, medNE), "eg"),
         eqM.length > medNE ? h("button", { key: "ep", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")") : null
       ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours."))) : null,
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
@@ -2129,16 +2142,16 @@ var HC_CSS = [
   ".hc .hc-gal-st{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
   ".hc .hc-gal-st h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;color:#F3EEE4}",
   ".hc .hc-gal-st span{font-size:12.5px;color:#C9A66B}",
-  ".hc .hc-gal-m3{display:grid;grid-template-columns:1.7fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:clamp(220px,62vw,420px)}",
+  ".hc .hc-gal-m3{display:grid;grid-template-columns:1.7fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:calc(100cqw * .62)}",
   ".hc .hc-gal-m3 .hc-mt.grand{grid-row:1 / span 2}",
   ".hc .hc-gal-m3.un{grid-template-columns:1fr;grid-template-rows:1fr}",
-  ".hc .hc-gal-m3.deux{grid-template-columns:1fr 1fr;grid-template-rows:1fr}.hc .hc-gal-m3.deux .hc-mt.grand{grid-row:auto}",
-  ".hc .hc-gal-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}",
-  ".hc .hc-gal-grille.eq{grid-template-columns:repeat(2,1fr);margin-top:0}",
-  "@media (min-width:600px){.hc .hc-gal-grille.eq{grid-template-columns:repeat(3,1fr)}}",
-  "@media (min-width:900px){.hc .hc-gal-grille.eq{grid-template-columns:repeat(4,1fr)}.hc .hc-gal-grille{grid-template-columns:repeat(4,1fr)}}",
-  ".hc .hc-gal-grille .hc-mt{aspect-ratio:1.2}",
-  ".hc .hc-gal-grille.eq .hc-mt{aspect-ratio:1.15}",
+  ".hc .hc-gal-m3.deux{grid-template-columns:1fr 1fr;grid-template-rows:1fr;height:calc((100cqw - 8px) / 2 / 1.4)}.hc .hc-gal-m3.deux .hc-mt.grand{grid-row:auto}",
+  ".hc .hc-gal-m3.un{height:calc(100cqw / 1.4)}",
+  ".hc .hc-gal-s{container-type:inline-size}",
+  ".hc .hc-gal-grille{display:grid;gap:8px;margin-top:8px;grid-auto-rows:calc((100cqw - (var(--cols) - 1) * 8px) / var(--cols) / 1.4)}",
+  ".hc .hc-gal-s > .hc-gal-grille:first-of-type{margin-top:0}",
+  ".hc .hc-gcase{min-width:0;min-height:0;display:flex}",
+  ".hc .hc-gcase .hc-mt{flex:1}",
   ".hc .hc-mt{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(201,166,107,.35);background:#0B0E0C;min-height:0}",
   ".hc .hc-mt-b{position:absolute;inset:0;width:100%;height:100%;padding:0;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden}",
   ".hc .hc-mt-fond{position:absolute;inset:-14px;background-size:cover;background-position:center;filter:blur(14px) brightness(.4)}",
