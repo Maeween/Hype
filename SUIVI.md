@@ -4,6 +4,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE PERMANENTE — PAGES POUR GOOGLE / BING (Blandine, 08/11 00h03 : « fais ça sur la totalité des pages […] et préviens dans le suivi d'en faire autant pour celles à venir ») : JAMAIS de page de présentation à part. Toute adresse publique doit ouvrir la VRAIE page de l'appli (comme les Galops et les prépas : netlify/edge-functions/cours-route.ts + <meta name="hype-cible">), le visiteur lit le début, puis la suite est FLOUTÉE avec la proposition d'abonnement (connexion d'abord). Le texte pour Google reste caché dans la page. Vaut pour TOUTES les pages à venir.
 
+> 🟥 RÈGLE PERMANENTE — NUMÉRO DE VERSION À CHAQUE PUBLICATION (Blandine, 09/11 01h03 : « note-le dans le suivi ») : À CHAQUE commit [publier], changer <meta name="hype-build" content="AAAAMMJJ-HHMM"> dans le <head> d'index.html avec une valeur PLUS GRANDE que celle en ligne. Sinon les téléphones gardent l'ancienne version (l'appli ne se recharge que si ce numéro change). Arrivé 2 fois dans la nuit du 08 au 09/11 (fiche concours publiée sans changer le numéro → Blandine voyait l'ancienne page). Avant chaque publication : git fetch, repartir de origin/main, vérifier le hype-build en ligne. Vaut pour TOUTES les conversations qui publient.
+
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
