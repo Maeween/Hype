@@ -64,7 +64,7 @@ function EcranResultatsCavaliere() {
   var c = { nom: nomCav, palmares: [] };
   var chevalDyn = { ownerId: null, nom: "", photo_palmares: null, moments_forts_medias: null, dbId: null };
   var id = riderId;
-  var photoCh = prof ? (((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) || IMG_CAVALIER_HERO_DEFAUT /* (1134) avant : un avatar Hype tire au hasard */) : "";
+  var photoCh = prof ? (((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) || ((typeof hypeImgCavalierDefaut === "function" && prof.id) ? hypeImgCavalierDefaut(prof.id) : IMG_CAVALIER_HERO_DEFAUT) /* 09/11 23h20 : les 14 portraits ; (1134) avant : un avatar Hype tire au hasard */) : "";
   var photosForts = [], albumsForts = [], mediaTousMF = [];
   var pickerMomentF = null; function setPickerMomentF() { } function ouvrirPickerMomentF() { } function definirMediaMomentFort() { }
   function estModerateurHype() { return false; }   /* page de lecture : aucun outil ici */
@@ -106,7 +106,7 @@ function EcranResultatsCavaliere() {
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110 } },
     h(HypeDrapeauLangue, null),   /* (491) */
     /* 18/10 (Blandine) : meme hero que la page Cavalier (hypeHeroSousPageCavalier), a la place de la ligne « Resultats en concours » et de l encart */
-    hypeHeroSousPageCavalier({ large: largeRC, ordi: ordiRC, retour: retour, labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), libelle: T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki sportowe", "성적"), nom: nomCav, photo: (prof && prof.avatar_url) ? photoCh : "", ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
+    hypeHeroSousPageCavalier({ idCav: (prof && prof.id) || "", large: largeRC, ordi: ordiRC, retour: retour, labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"), libelle: T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki sportowe", "성적"), nom: nomCav, photo: (prof && prof.avatar_url) ? photoCh : "", ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
     corpsRC((resDb === null)
       ? h("div", { style: { padding: "40px 20px", textAlign: "center", color: "#8A929C", fontFamily: "'Montserrat',sans-serif", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026", "加载中…", "Laden…", "Carregando…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…"))
       : (!resDb.length

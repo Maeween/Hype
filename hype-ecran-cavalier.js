@@ -813,7 +813,7 @@ function EcranMonCavalier() {
      ligne ne s'affiche pas. Celles qui ont écrit une citation la gardent.
      ⚠️ Le Mur des Songes n'est PAS touché — mot de Blandine. */
   var citation = profil.citation || "";
-  var heroImg = profil.avatar || IMG_CAVALIER_HERO_DEFAUT;   /* (1134) avant : silhouette bleue (ou sa version Crimson), affichee comme un logo */
+  var heroImg = profil.avatar || ((typeof hypeImgCavalierDefaut === "function" && (profil.id || profil.pseudo)) ? hypeImgCavalierDefaut((__estVisite ? (__visitePub && __visitePub.id) : (moiIdAlb || profil.id)) || profil.pseudo) : IMG_CAVALIER_HERO_DEFAUT);   /* 09/11 23h20 : les 14 portraits par défaut */   /* (1134) avant : silhouette bleue (ou sa version Crimson), affichee comme un logo */
   var estLogo = false;
   /* 29/09 (513) : position « relative » sur la page. Sans elle, la fleche retour, le badge Premium, le partage et le
      drapeau se calaient sur un conteneur plus haut de l appli et tombaient ~110 px trop bas, DANS la photo (capture
