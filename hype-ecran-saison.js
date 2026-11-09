@@ -940,6 +940,8 @@ function EcranConcours() {
   var _mg = React.useState([]); var mesEng = _mg[0], setMesEng = _mg[1];
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
+  var _che = React.useState({}); var chEng = _che[0], setChEng = _che[1];   /* 09/11 : photos et noms de ses chevaux engagés */
+  var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];   /* 09/11 : cheval choisi pour l'historique */
   var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
   var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
   React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
@@ -1050,7 +1052,8 @@ function EcranConcours() {
                 if (vif && rcs && !rcs.error) setConsignes(rcs.data || []);
               } catch (eCs) { }
               try {
-                var rh = await supa.from("resultats").select("id, concours, epreuve, date_epreuve, classement, place, partants, cheval_id").eq("cavalier_id", u.id).in("cheval_id", idsCh).order("date_epreuve", { ascending: false }).limit(12);
+                try { var rcp = await supa.from("chevaux").select("id, nom, alias, photo_url").in("id", idsCh); var mc = {}; ((rcp && !rcp.error && rcp.data) || []).forEach(function (x) { mc[x.id] = x; }); if (vif) setChEng(mc); } catch (eCp) { }
+                var rh = await supa.from("resultats").select("id, concours, epreuve, date_epreuve, classement, place, partants, cheval_id").eq("cavalier_id", u.id).in("cheval_id", idsCh).order("date_epreuve", { ascending: false }).limit(40);
                 if (vif && rh && !rh.error) setHisto(rh.data || []);
               } catch (eH) { }
             }
@@ -1165,7 +1168,7 @@ function EcranConcours() {
     var e = hsNomEpreuve(p.epreuve || ""); if (e && c.ep.indexOf(e) === -1) c.ep.push(e);
   });
   var mesLignes = mesEng.reduce(function (acc, e) {
-    (e.tours || hsToursDepuis(e, null)).forEach(function (t) { acc.push({ ep: t.epreuve, ch: t.cheval_nom, hp: t.passage, pi: t.piste, maj: e.passage_maj_le }); });
+    (e.tours || hsToursDepuis(e, null)).forEach(function (t) { acc.push({ ep: t.epreuve, ch: t.cheval_nom, cid: t.cheval_id, nu: t.numero, hp: t.passage, pi: t.piste, maj: e.passage_maj_le }); });
     return acc;
   }, []).sort(function (a, b) { return hsMinutes(a.hp) - hsMinutes(b.hp); });
 
@@ -1324,6 +1327,48 @@ function EcranConcours() {
   ];
   var dossierUtile = gestion || histo.length;
 
+  /* ── 09/11 11h37 — MES ENGAGEMENTS + HISTORIQUE (maquette validée de Blandine, vue cavalier) ──
+     Une fiche par engagement (photo du cheval entière, épreuve, cheval, tour, passage et piste si connus). Toucher une fiche
+     choisit ce cheval pour l'historique ; aucune autre page. Consignes de la coach : masquées pour l'instant (Blandine). */
+  function joliConcours(t) { var x = String(t || "").trim(); if (x && x === x.toUpperCase()) x = x.toLowerCase().replace(/(^|[\s'’-])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); }).replace(/\b(De|Du|Des|La|Le|Les|Et|D|L)\b/g, function (m) { return m.toLowerCase(); }); return x; }
+  var mesChevaux = []; mesLignes.forEach(function (x) { var k = x.cid || x.ch; if (k && !mesChevaux.some(function (c) { return c.k === k; })) mesChevaux.push({ k: k, id: x.cid, nom: (x.cid && chEng[x.cid] && (chEng[x.cid].alias || chEng[x.cid].nom)) || x.ch }); });
+  var chCourant = (chSel && mesChevaux.some(function (c) { return c.k === chSel; })) ? chSel : (mesChevaux[0] ? mesChevaux[0].k : null);
+  var histoCh = histo.filter(function (r) { return !chCourant || r.cheval_id === chCourant; }).slice(0, 5);
+  function lauriers() {
+    var fe = []; [0, 1, 2, 3].forEach(function (k) { var t = 0.18 + k * 0.22, a = Math.PI * (0.62 + t * 0.62), x = 16 + 11 * Math.cos(a), y = 13 + 10 * Math.sin(a) * -1; fe.push([x, y, (a * 180 / Math.PI) - 60]); fe.push([32 - x, y, 180 - ((a * 180 / Math.PI) - 60)]); });
+    return h("svg", { viewBox: "0 0 32 26", width: 30, height: 24, "aria-hidden": "true", className: "hc-laur" },
+      h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.1, strokeLinecap: "round" }, h("path", { d: "M13 24 C 5 21, 3 12, 7 4" }), h("path", { d: "M19 24 C 27 21, 29 12, 25 4" })),
+      h("g", { fill: "#C9A66B" }, [[5.2, 19.5, -55], [3.6, 14.5, -25], [4.2, 9.5, 0], [6.4, 5, 20], [26.8, 19.5, 55], [28.4, 14.5, 25], [27.8, 9.5, 0], [25.6, 5, -20], [9, 22.3, -80], [23, 22.3, 80]].map(function (f, i) { return h("ellipse", { key: i, cx: f[0], cy: f[1], rx: 1.5, ry: 3, transform: "rotate(" + f[2] + " " + f[0] + " " + f[1] + ")" }); })));
+  }
+  function horloge() { return h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("g", { fill: "none", stroke: "#F3EEE4", strokeWidth: 1.6, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 13, r: 8 }), h("path", { d: "M12 9v4l2.5 2M9.5 3h5" }))); }
+  var blocMesEng = gestion ? null : h("div", { key: "me" },
+    h("div", { className: "hc-titre-s" }, h("h2", null, F("Mes engagements")), h("span", { className: "hc-filet", "aria-hidden": "true" })),
+    h("div", { className: "hc-sous-c" }, F("Mes épreuves sur ce concours")),
+    mesLignes.length ? h("div", { className: "hc-engs" }, mesLignes.map(function (x, i) {
+      var ch = x.cid ? chEng[x.cid] : null; var ph = ch && ch.photo_url;
+      var k = x.cid || x.ch;
+      return h("button", { key: i, type: "button", className: "hc-eng" + (k === chCourant && mesChevaux.length > 1 ? " on" : ""), onClick: function () { setChSel(k); try { var el = document.getElementById("hc-histo"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } },
+        h("div", { className: "hc-eng-ph" }, ph ? [h("span", { key: "f", className: "hc-eng-fond", "aria-hidden": "true", style: { backgroundImage: "url(\"" + ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(ph, 360, 720) : ph) + "\")" } }), h("img", { key: "i", src: (typeof vignetteHypeContain === "function") ? vignetteHypeContain(ph, 360, 720) : ph, alt: "", loading: "lazy", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } })] : h("span", { className: "hc-eng-ini" }, String(x.ch || "?").charAt(0).toUpperCase())),
+        h("div", { className: "hc-eng-txt" },
+          x.ep ? h("span", { className: "hc-pill" }, x.ep) : null,
+          h("b", { className: "hc-eng-ch" }, (ch && (ch.alias || ch.nom)) || x.ch || F("Cheval à préciser")),
+          h("span", { className: "hc-eng-tour" }, [F("Tour ") + (x.nu || (i + 1)), x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · ")),
+          x.hp ? h("span", { className: "hc-eng-h" }, horloge(), h("span", null, F("Passage : ") + x.hp)) : null));
+    })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Tu n’es engagé sur aucune épreuve de ce concours.")),
+    mesChevaux.length ? h("div", { id: "hc-histo", className: "hc-histo" },
+      h("div", { className: "hc-histo-tete" },
+        h("div", null, h("div", { className: "hc-titre-s" }, h("h2", null, F("Historique")), h("span", { className: "hc-filet court", "aria-hidden": "true" })), h("div", { className: "hc-sous-c" }, F("Tes derniers résultats"))),
+        mesChevaux.length > 1 ? h("div", { className: "hc-chips", role: "tablist" }, mesChevaux.map(function (c) { return h("button", { key: c.k, type: "button", role: "tab", "aria-selected": c.k === chCourant, className: "hc-chip" + (c.k === chCourant ? " on" : ""), onClick: function () { setChSel(c.k); } }, c.nom); })) : null),
+      histoCh.length ? h("div", { className: "hc-hl" }, histoCh.map(function (r) {
+        var pl = r.place ? (r.place + (r.place === 1 ? (lg === "fr" ? "er" : "") : (lg === "fr" ? "e" : ""))) : (r.classement || "");
+        return h("div", { key: r.id, className: "hc-hr" },
+          h("span", { className: "hc-hr-lau" }, r.place && r.place <= 3 ? lauriers() : null),
+          h("span", { className: "hc-hr-pl" }, h("b", null, pl), r.place && r.partants ? h("span", null, " / " + r.partants) : null),
+          h("span", { className: "hc-hr-sep", "aria-hidden": "true" }),
+          h("span", { className: "hc-hr-c" }, h("b", null, joliConcours(r.concours) || F("Concours")), r.epreuve ? h("span", null, r.epreuve) : null),
+          h("span", { className: "hc-hr-d" }, hsFmt(r.date_epreuve, { day: "numeric", month: "short", year: "numeric" })));
+      })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Pas encore de résultat avec ce cheval."))) : null);
+
   /* 09/11 08h52 (Blandine : « l'ordre de passage doit aller dessus… idem résultats en direct sur résultats et l'ajout de vidéo sur médias ») : les outils dans leur carte */
   function outil(cle, titre, texte, action, fichier) {
     var corps = [h("span", { key: "t", className: "hc-o-t" }, titre), texte ? h("span", { key: "x", className: "hc-o-x" }, texte) : null, h("span", { key: "c", className: "hc-o-c", "aria-hidden": "true" }, rtl ? "‹" : "›")];
@@ -1374,15 +1419,7 @@ function EcranConcours() {
       pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null,
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
-        ongletC === "engagements" ? [
-          mesLignes.length ? h("div", { key: "mes", className: "hc-liste" }, mesLignes.map(function (x, i) {
-            return h("div", { key: i, className: "hc-l" }, mesLignes.some(function (t) { return t.hp; }) ? h("span", { className: "hc-h" }, x.hp || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
-              h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")), h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · "))));
-          })) : h("div", { key: "rien", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")),
-          blocPrep.filter(function (x, i) { return i >= 2 && i < 3; }),
-          histo.length ? blocDossier[1] : null,
-          gestion ? h("button", { key: "ln", type: "button", className: "hc-lien-d", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement") + (rtl ? " ‹" : " ›")) : null
-        ] : null,
+        ongletC === "engagements" ? blocMesEng : null,
         ongletC === "passages" ? [outilsPassages, blocPassages] : null,
         ongletC === "resultats" ? [outilsResultats, blocResultats] : null,
         ongletC === "medias" ? [outilsMedias, blocMedias] : null)
@@ -1438,6 +1475,41 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 — Mes engagements + Historique (maquette de Blandine) */
+  ".hc .hc-titre-s{display:flex;align-items:center;gap:16px}",
+  ".hc .hc-titre-s h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:34px;line-height:1.1;color:#F3EEE4;white-space:nowrap}",
+  ".hc .hc-filet{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.85),rgba(201,166,107,.35))}",
+  ".hc .hc-filet.court{flex:0 0 48px}",
+  ".hc .hc-sous-c{font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:rgba(243,238,228,.85);margin:8px 0 20px}",
+  ".hc .hc-engs{display:flex;flex-direction:column;gap:12px}",
+  ".hc .hc-eng{display:grid;grid-template-columns:38% 1fr;align-items:stretch;width:100%;padding:0;border:1px solid rgba(201,166,107,.42);border-radius:14px;overflow:hidden;background:#070A08;color:#F3EEE4;text-align:start;cursor:pointer;font-family:inherit}",
+  ".hc .hc-eng.on{border-color:#C9A66B}",
+  ".hc .hc-eng-ph{position:relative;display:flex;align-items:center;justify-content:center;background:#0B0E0C;min-height:120px;overflow:hidden}",
+  ".hc .hc-eng-fond{position:absolute;inset:-12px;background-size:cover;background-position:center;filter:blur(14px) brightness(.42)}",   /* le même cliché flouté derrière : la photo reste entière, sans bandes noires */
+  ".hc .hc-eng-ph img{position:relative;width:100%;height:100%;max-height:170px;object-fit:contain;display:block}",
+  ".hc .hc-eng-ini{font-family:'Cormorant Garamond',serif;font-size:40px;color:#C9A66B}",
+  ".hc .hc-eng-txt{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:14px 16px}",
+  ".hc .hc-pill{font-size:12px;color:#C9A66B;border:1px solid rgba(201,166,107,.7);border-radius:999px;padding:2px 10px;line-height:1.35}",
+  ".hc .hc-eng-ch{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:25px;line-height:1.1}",
+  ".hc .hc-eng-tour{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(243,238,228,.8)}",
+  ".hc .hc-eng-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:3px}",
+  ".hc .hc-histo{margin-top:34px;scroll-margin-top:20px}",
+  ".hc .hc-histo-tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}",
+  ".hc .hc-histo-tete .hc-sous-c{margin-bottom:0}",
+  ".hc .hc-chips{display:flex;border:1px solid rgba(201,166,107,.55);border-radius:999px;padding:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}",
+  ".hc .hc-chip{background:transparent;border:1px solid transparent;border-radius:999px;color:rgba(243,238,228,.85);font:inherit;font-size:13px;padding:6px 14px;white-space:nowrap;cursor:pointer}",
+  ".hc .hc-chip.on{border-color:#C9A66B;color:#C9A66B}",
+  ".hc .hc-hl{margin-top:18px;border:1px solid rgba(201,166,107,.42);border-radius:14px;padding:0 14px}",
+  ".hc .hc-hr{display:grid;grid-template-columns:28px 62px 1px 1fr auto;align-items:center;column-gap:10px;padding:13px 0;border-bottom:1px solid rgba(243,238,228,.1)}",
+  ".hc .hc-hr:last-child{border-bottom:none}",
+  ".hc .hc-hr-pl{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:#F3EEE4;white-space:nowrap;font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1}",
+  ".hc .hc-hr-pl b{font-weight:500;color:#C9A66B}",
+  ".hc .hc-hr-sep{width:1px;height:26px;background:rgba(201,166,107,.6)}",
+  ".hc .hc-hr-c{display:flex;flex-direction:column;min-width:0}",
+  ".hc .hc-hr-c b{font-size:13px;font-weight:600;line-height:1.25}",
+  ".hc .hc-hr-c span{font-size:12px;color:rgba(243,238,228,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-hr-d{font-size:11.5px;color:rgba(243,238,228,.8);white-space:nowrap}",
+  "@media (min-width:768px){.hc .hc-engs{display:grid;grid-template-columns:1fr 1fr}}",
   ".hc .hc-outil{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px;width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid rgba(201,166,107,.55);border-radius:14px;background:transparent;color:#C9A66B;text-decoration:none;text-align:start;cursor:pointer;font-family:inherit}",
   ".hc .hc-o-t{grid-column:1;font-size:14px;letter-spacing:.01em}",
   ".hc .hc-o-x{grid-column:1;font-size:11.5px;line-height:1.4;color:rgba(243,238,228,.6);margin-top:3px}",
@@ -1634,11 +1706,11 @@ function hsNomEpreuve(t) {
    concours_engagements (hsMiroir). 08/11 : Jour J, la fiche du concours (Ma journée) et le dossier lisent les 5 tours ;
    la liste du van ne lit que le cheval du 1er tour (une liste par cheval) ; Ma saison ne lit pas les engagements. */
 function hsToursDepuis(l, liste) {
-  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
+  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
   var o = [];
   [1, 2].forEach(function (n) {
     var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
-    if (e || c) o.push({ epreuve: e, cheval_nom: c, passage: l["passage" + n] || "", piste: l["piste" + n] || "" });
+    if (e || c) o.push({ numero: n, cheval_id: l["cheval" + n + "_id"] || null, epreuve: e, cheval_nom: c, passage: l["passage" + n] || "", piste: l["piste" + n] || "" });
   });
   return o;
 }
