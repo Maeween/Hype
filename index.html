@@ -46867,7 +46867,7 @@ function FenetreProChevaux(props) {
   return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
 }
 
-const EcranSanteCheval = hypeEcranDiffere("hype-ecran-sante-cheval.js?v=15", "HypeSanteCheval", "SanteCheval");
+const EcranSanteCheval = hypeEcranDiffere("hype-ecran-sante-cheval.js?v=16", "HypeSanteCheval", "SanteCheval");
 
 function EcranCliniqueEquine() {
   var h = React.createElement;
@@ -57350,7 +57350,7 @@ async function hypeEnregistrerCapturePalmares(ctx) {
   }
 
 function hypePortailBody(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP) { } return el; }   /* 18/10 : feuilles du bas sorties du panneau (elles s affichaient trop bas, sous la barre du bas) */
-const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=32", "HypeCheval", "Cheval");
+const EcranCheval = hypeEcranDiffere("hype-ecran-cheval.js?v=33", "HypeCheval", "Cheval");
 
 
 /* ==================== (735) FICHE CHEVAL V2 — EcranChevalV2 ====================
@@ -70919,7 +70919,7 @@ function getSystemPrompt(langue, ctx) {
     return base;
 }
 /* (813) Hey Baby garde son turquoise d origine (Blandine : « Hey Baby tu peux le laisser, on verra les couleurs plus tard ») */
-const EcranAssistantIA = hypeEcranDiffere("hype-ecran-assistant.js?v=3", "HypeAssistant", "Assistant");
+const EcranAssistantIA = hypeEcranDiffere("hype-ecran-assistant.js?v=4", "HypeAssistant", "Assistant");
 
 /* 22/10/2026 — HEY BABY LIT SES REPONSES A VOIX HAUTE (Blandine : « voix de l iPhone »). Voix du telephone (speechSynthesis), gratuite, aucun serveur.
    Un seul texte lu a la fois ; reappui = arret ; la lecture s arrete en quittant la page. Le texte est nettoye (puces, titres, emojis) et lu phrase par phrase
@@ -71136,7 +71136,7 @@ const IMG_SANTE_PORTRAIT = "images/IMG_SANTE_PORTRAIT.jpg";
 const EcranSante = hypeEcranDiffere("hype-ecran-sante.js?v=1", "HypeSante", "Sante");
 
 
-function EncartConseilsHB({ chevalId, teinte, visite }) {
+function EncartConseilsHB({ chevalId, teinte, visite, cacherSiVide }) {
   const TQe = teinte || COLORS.turquoise; const TQeD = teinte || COLORS.turquoiseDark;
     const { tr, setEcran } = useApp();
     const L = (fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) => tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko });
@@ -71153,6 +71153,9 @@ function EncartConseilsHB({ chevalId, teinte, visite }) {
     const recharger = () => { if (visite) { setListe([]); return; } try { chargerEpinglesHB(chevalId || null).then((r) => setListe((r && r.data) || [])).catch(() => setListe([])); } catch (e) { setListe([]); } };
     useEffect(() => { recharger(); }, [chevalId, visite]);
     const retirer = (id) => { try { retirerEpingleHB(id).then(() => recharger()); } catch (e) { } };
+    /* 09/11 22h (Blandine : « ok pour Actualites ») : sur la page Actualite du cheval, l encart est CACHE tant que la personne
+       connectee n a rien epingle sur ce cheval - ni carte d invitation, ni « … ». Chacun n y voit que ses propres conseils. */
+    if (cacherSiVide && (!liste || !liste.length)) return null;
     return (React.createElement("div", { style: { marginTop: 20, marginBottom: 8 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, margin: "0 0 10px" } },
             React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),

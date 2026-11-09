@@ -5491,6 +5491,13 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           apresComposer: function (etatA) { return ambianceActuCh(etatA); },   /* (1144) */
           chargerEnPlus: function () { return hypePostsIdentifiesCheval((c && c.dbId) || id); }
         }),
+        /* 09/11 22h (Blandine : « ok pour Actualites et vire-le de Sante ») : les conseils Hey Baby epingles sur CE cheval
+           reviennent ici (retires de Histoire au 1004 avec la mention « ira sur Actualites », jamais rebranches). Encart
+           CACHE si la personne connectee n a rien epingle sur ce cheval ; chacun ne voit que les siens (la lecture ne
+           charge que les epingles du compte connecte). Couleur champagne, plus l ancien turquoise. */
+        ((typeof EncartConseilsHB === "function") && ((chevalDyn && chevalDyn.dbId) || (c && c.dbId)))
+          ? h("div", { style: { padding: "0 16px" } }, h(EncartConseilsHB, { chevalId: (chevalDyn && chevalDyn.dbId) || (c && c.dbId), teinte: "#C9A66B", cacherSiVide: true }))
+          : null,
         finPageCh() /* 19/10 02:16 Blandine « il y a bien la fin de page habituelle ? » : la page Actualite du cheval n avait pas le bandeau HYPE (le cavalier l a) */) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
