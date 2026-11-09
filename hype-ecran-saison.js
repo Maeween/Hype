@@ -352,6 +352,7 @@ var HS_TR_BRUT = {
   " — engagé. Choisis une autre épreuve pour un tour de plus, ou un autre cavalier.": [" — entered. Pick another class for one more round, or another rider.", " — inscrito. Elige otra prueba para una vuelta más, u otro jinete.", " — iscritto. Scegli un'altra prova per un giro in più, o un altro cavaliere.", " — エントリー済み。もう1回走るなら別の競技を、または別のライダーを選んでね。", " — genannt. Wähle eine andere Prüfung für einen weiteren Ritt oder einen anderen Reiter.", " — تم التسجيل. اختر مسابقة أخرى لجولة إضافية، أو فارسا آخر.", " — 已报名。再选一个项目多跑一轮，或换一位骑手。", " — ingeschreven. Kies een andere proef voor nog een ronde, of een andere ruiter.", " — inscrito. Escolhe outra prova para mais uma volta, ou outro cavaleiro.", " — anmäld. Välj en annan klass för en runda till, eller en annan ryttare.", " — записан. Выбери другой маршрут для ещё одного выступления или другого всадника.", " — zgłoszony. Wybierz inny konkurs na kolejny przejazd albo innego jeźdźca.", " — 출전 신청 완료. 한 번 더 뛰려면 다른 경기를, 아니면 다른 라이더를 골라 줘."],
   "+ Un autre cavalier ›": ["+ Another rider ›", "+ Otro jinete ›", "+ Un altro cavaliere ›", "+ 別のライダー ›", "+ Ein weiterer Reiter ›", "+ فارس آخر ›", "+ 另一位骑手 ›", "+ Nog een ruiter ›", "+ Outro cavaleiro ›", "+ En ryttare till ›", "+ Ещё один всадник ›", "+ Kolejny jeździec ›", "+ 다른 라이더 ›"],
   "Cavaliers": ["Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더"],
+  "Chevaux": ["Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말"],
   "Aucun cavalier pour l’instant.": ["No riders yet.", "Aún no hay jinetes.", "Ancora nessun cavaliere.", "まだライダーはいません。", "Noch keine Reiter.", "لا يوجد فرسان بعد.", "暂时还没有骑手。", "Nog geen ruiters.", "Ainda não há cavaleiros.", "Inga ryttare än.", "Пока нет всадников.", "Na razie brak jeźdźców.", "아직 라이더가 없어요."],
   "Nouveau cavalier": ["New rider", "Nuevo jinete", "Nuovo cavaliere", "新しいライダー", "Neuer Reiter", "فارس جديد", "新骑手", "Nieuwe ruiter", "Novo cavaleiro", "Ny ryttare", "Новый всадник", "Nowy jeździec", "새 라이더"],
   "Cavaliers de compétition": ["Competition riders", "Jinetes de competición", "Cavalieri da gara", "競技ライダー", "Turnierreiter", "فرسان المسابقات", "比赛骑手", "Wedstrijdruiters", "Cavaleiros de competição", "Tävlingsryttare", "Спортивные всадники", "Jeźdźcy sportowi", "대회 라이더"],
@@ -1521,7 +1522,7 @@ function EcranConcours() {
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
-    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { if (cle === "engagements" && gestion) { ouvrirEngagements(); return; } setOngletC(ongletC === cle ? "" : cle); } },   /* 09/11 08h32 : pour la coach, Engagements ouvre la page Engagements */
+    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { if (cle === "engagements" && gestion) { ouvrirEngagements(); return; } if (cle === "medias") { setOngletC("medias"); setMedVue(""); setMedPage({ conc: true }); setMedPgSel(null); return; } setOngletC(ongletC === cle ? "" : cle); } },   /* 09/11 23h15 (Blandine : « en haut je croyais qu'on mettait le héros de la nouvelle page ») : Médias ouvre la page Médias du concours */   /* 09/11 08h32 : pour la coach, Engagements ouvre la page Engagements */
       h("img", { src: img, alt: "", "aria-hidden": "true", decoding: "async",   /* 09/11 : plus de chargement différé (cartes visibles dès l'ouverture) ; une 2e tentative avant d'abandonner */
         ref: function (el) { if (el && el.complete && el.naturalWidth && !cartesOk[cle]) setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
         onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
@@ -2552,10 +2553,30 @@ function EcranConcours() {
       })) : null),
     vrRang.length ? h("div", { className: "vr-rang", "data-hscroll": "1" }, vrRang.map(function (x) { return vrCase(x, "vr-p", 600); })
       .concat(vrAutres.length > 3 + medNM ? [h("button", { key: "plus", type: "button", className: "vr-p vr-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus"))] : [])) : null) : null;
+  /* 09/11 23h15 (Blandine : « les médias de l'équipe, ça serait bien de les séparer par cavalière ») : une rangée par cavalier
+     (rond photo + prénom + nombre, puis ses médias qui défilent) ; un média à deux cavaliers est chez les deux ; « À identifier » en dernier.
+     Toucher le prénom ouvre sa page. */
+  var eqGr = [], eqParId = {}, eqSans = [];
+  eqM.forEach(function (x) {
+    var ids = (x.cav || []).filter(function (id) { return !(moi && id === String(moi.id)); });
+    if (!ids.length) { eqSans.push(x); return; }
+    ids.forEach(function (id) { if (!eqParId[id]) { eqParId[id] = { id: id, l: [] }; eqGr.push(eqParId[id]); } eqParId[id].l.push(x); });
+  });
+  eqGr.sort(function (a, b) { return b.l.length - a.l.length; });
+  if (eqSans.length) eqGr.push({ id: "__", l: eqSans, sans: true });
+  function eqNom(g) { return g.sans ? F("À identifier") : (nomsCav[g.id] || (medG && medG.noms && medG.noms.cav[g.id] && medG.noms.cav[g.id].nom) || F("Cavalier")); }
   var blocEqV = eqM.length ? h("div", { key: "vre" },
     h("div", { className: "vr-t" + (vrP ? " sep" : "") }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
-    h("div", { className: "vr-eq", "data-hscroll": "1" }, eqM.slice(0, medNE).map(function (x) { return vrCase(x, "vr-e", 600); })
-      .concat(eqM.length > medNE ? [h("div", { key: "sx" + medNE, ref: sentinelle, className: "vr-e vr-fin", "aria-hidden": "true" })] : []))) : null;
+    eqGr.map(function (g) {
+      var nm = eqNom(g), ph = g.sans ? null : photoCav(g.id);
+      return h("div", { key: "g" + g.id, className: "vr-gc" },
+        h("button", { type: "button", className: "vr-gc-t", onClick: function () { setMedPage({ ch: false, id: g.id }); setMedPgSel(null); } },
+          h("span", { className: "vr-gc-av" }, ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "", loading: "lazy" }) : h("b", null, g.sans ? "?" : String(nm).charAt(0).toUpperCase())),
+          h("b", { className: "vr-gc-n" }, nm),
+          h("small", null, g.l.length + " " + (g.l.length > 1 ? F("médias") : F("média"))),
+          h("i", { "aria-hidden": "true" }, rtl ? "‹" : "›")),
+        h("div", { className: "vr-eq" + (g.l.length <= 3 ? " n" + g.l.length : ""), "data-hscroll": "1" }, g.l.slice(0, 24).map(function (x) { return vrCase(x, "vr-e", 600); })));
+    })) : null;
   /* ══ 09/11 22h45 — PAGE D'UN CAVALIER / D'UN CHEVAL (Blandine : « on n'a pas du tout l'autre page qu'on avait validée, avec le
      grand cheval noir, les ronds en haut à droite » ; « garde la dispo des médias comme on vient de la faire sur la page médias,
      sans forcément garder les mêmes titres »). Haut = celui de la page d'une vidéo (même grande photo pour tous, titre en bas à
@@ -2564,7 +2585,9 @@ function EcranConcours() {
   if (medPage) {
     var pgCle = medPage.ch ? "ch" : "cav", pgAutre = medPage.ch ? "cav" : "ch";
     var pgL = itemsM.filter(function (x) { var l = x[pgCle] || []; return medPage.id === "__" ? !l.length : l.indexOf(medPage.id) !== -1; });
-    var pgNom = medPage.id === "__" ? F("À identifier") : ((medPage.ch ? nomsCh : nomsCav)[medPage.id] || (medPage.ch ? F("Cheval") : F("Cavalier")));
+    var pgConc = !!medPage.conc;
+    var pgV1 = itemsM.filter(function (x) { return x.video; })[0] || null;
+    var pgNom = pgConc ? ((ev && ev.titre) || F("Concours")) : medPage.id === "__" ? F("À identifier") : ((medPage.ch ? nomsCh : nomsCav)[medPage.id] || (medPage.ch ? F("Cheval") : F("Cavalier")));
     var pgV = pgL.filter(function (x) { return x.video; }), pgP = pgL.filter(function (x) { return !x.video; });
     var pgA = pgV.length ? pgV : pgP, pgB = pgV.length ? pgP : [];
     var pgBig = pgA.filter(function (x) { return x.cle === medPgSel; })[0] || pgA[0] || null;
@@ -2581,9 +2604,16 @@ function EcranConcours() {
     var corpsPg = h("div", { className: "hpv-in" },
       h("div", { className: "hpv-scene" },
         h("div", { className: "hpv-photo fond" }, h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype("images/galop1-hero-bai.webp", 1400) : "images/galop1-hero-bai.webp", alt: "" })),
-        h("button", { type: "button", className: "hpv-rond hpv-retour", onClick: function () { setMedPage(null); setMedPgSel(null); }, "aria-label": F("Retour") },
+        h("button", { type: "button", className: "hpv-rond hpv-retour", onClick: function () { if (pgConc) setOngletC(""); setMedPage(null); setMedPgSel(null); }, "aria-label": F("Retour") },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
         h("div", { className: "hpv-titre" }, h("h1", { dir: "auto", className: pgNom.length > 26 ? "long" : "" }, pgNom)),
+        pgConc ? h("div", { className: "hpv-ronds" },
+          h("button", { key: "cv", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cavalier"), onClick: function () { setMedPage(null); setMedVue("cav"); setMedId(null); } },
+            h("b", null, icoXp("cav")), h("i", null, F("Cavaliers"))),
+          h("button", { key: "ch", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cheval"), onClick: function () { setMedPage(null); setMedVue("ch"); setMedId(null); } },
+            h("b", null, icoXp("ch")), h("i", null, F("Chevaux"))),
+          pgV1 ? h("button", { key: "hb", type: "button", className: "hpv-r hcp-r", "aria-label": "Hey Baby", onClick: function () { ouvrirMedia(pgV1); } },
+            h("img", { src: "images/FOND_HEYBABY.webp", alt: "" }), h("i", null, "Hey Baby")) : null) :
         h("div", { className: "hpv-ronds" },
           pgPart.map(pgRond),
           h("button", { key: "eq", type: "button", className: "hpv-r hcp-r", "aria-label": F("Les médias de l’équipe"), onClick: function () { setMedPage(null); setMedPgSel(null); setMedVue(""); } },
@@ -2596,6 +2626,7 @@ function EcranConcours() {
         h("div", { className: "hc-cartes hcp-cartes", onClickCapture: function (e) {
           var c = null; try { c = e.target.closest(".hc-carte"); } catch (e0) { }
           if (!c) return; var estMed = c === c.parentNode.lastElementChild;
+          if (pgConc && estMed) { e.stopPropagation(); e.preventDefault(); return; }
           setMedPage(null); setMedPgSel(null); setMedVue("");
           if (estMed) { e.stopPropagation(); e.preventDefault(); }
         } },
@@ -2603,7 +2634,7 @@ function EcranConcours() {
           carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
           carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),
           carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
-        h("div", { className: "vr" },
+        pgConc ? h("div", { className: "vr" }, vrPrincipal(true)) : h("div", { className: "vr" },
         !pgL.length ? h("div", { className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
         pgBig ? h("div", { key: "a" },
           pgTitre(pgV.length ? F("Vidéos") : F("Photos"), pgA.length, false),
@@ -2617,7 +2648,7 @@ function EcranConcours() {
         h("div", { className: "vr-filet" })),
         (typeof FinPageHype === "function") ? h(FinPageHype, null) : null));
     var pgPage = h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", className: "hpv hpv-photo-on hcp", style: { position: "fixed", inset: 0, zIndex: 8700, background: "#070A08", color: "#F3EEE4", fontFamily: "Montserrat, sans-serif" } },
-      h("style", null, ((typeof HPV_CSS !== "undefined") ? HPV_CSS : "") + HC_B2_CSS + HCP_CSS),
+      h("style", null, ((typeof HPV_CSS !== "undefined") ? HPV_CSS : "") + HC_B2_CSS + HCP_CSS + HC_VR_COURBES_CSS + HC_VR_GC_CSS),
       h("div", { id: "hcp-defile", style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" } }, corpsPg));
     pageX = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(pgPage, document.body) : pgPage;
   }
@@ -2635,14 +2666,19 @@ function EcranConcours() {
       h("b", null, titre));
   }
   var blocGalerie = h("div", { key: "gal", ref: mesurerMd, className: "hc-gal hc-rep hc-md" },
-    h("style", { key: "b2" }, HC_B2_CSS + HC_XM_GRILLE_CSS + HC_VR_COURBES_CSS),
+    h("style", { key: "b2" }, HC_B2_CSS + HC_XM_GRILLE_CSS + HC_VR_COURBES_CSS + HC_VR_GC_CSS),
     medVue ? [
       h("div", { key: "tete", className: "hc-md-tete" },
         h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
       h("div", { key: "nav", className: "hc-mn", role: "tablist", "data-hscroll": "1" },
         ongletM("", F("Tous les souvenirs"), null), ongletM("cav", F("Par cavalier"), "cav"), ongletM("ch", F("Par cheval"), "ch"))] : null,
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
-    medVue === "ep" ? blocVideos : medVue ? blocExplorer : h("div", { key: "vr", className: "vr" },
+    medVue === "ep" ? blocVideos : medVue ? blocExplorer : h("div", { key: "vr", className: "vr" }, vrPrincipal(false)),
+    pageX,
+    medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
+  function vrPrincipal(dansPage) {
+    function quitter() { if (dansPage) { setMedPage(null); setMedPgSel(null); } }
+    return [
       !medG ? h("div", { key: "att", className: "hs-note" }, "…") : null,
       (medG && !itemsM.length) ? h("div", { key: "vide", className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
       /* 09/11 23h08 (Blandine : « aère au-dessus et en dessous, avec des courbes dorées entre chaque partie, puis des onglets
@@ -2652,11 +2688,11 @@ function EcranConcours() {
       vrCourbe(1, "c3"),
       h("div", { key: "ong", className: "vr-ong" + (itemsM.length ? "" : " seul") },
         vrOnglet("aj", HS_IMG_CONCOURS.passages, F("Ajouter des médias"), true, function () { setMedAjout(!medAjout); }, medAjout),
-        itemsM.length ? vrOnglet("cav", HS_IMG_CONCOURS.engagements, F("Par cavalier"), false, function () { setMedVue("cav"); setMedId(null); }) : null,
-        itemsM.length ? vrOnglet("ch", HS_IMG_CONCOURS.medias, F("Par cheval"), false, function () { setMedVue("ch"); setMedId(null); }) : null),
-      h("div", { key: "paj" }, panneauAjout)),
-    pageX,
-    medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
+        itemsM.length ? vrOnglet("cav", HS_IMG_CONCOURS.engagements, F("Par cavalier"), false, function () { quitter(); setMedVue("cav"); setMedId(null); }) : null,
+        itemsM.length ? vrOnglet("ch", HS_IMG_CONCOURS.medias, F("Par cheval"), false, function () { quitter(); setMedVue("ch"); setMedId(null); }) : null),
+      h("div", { key: "paj" }, panneauAjout),
+      dansPage ? h("div", { key: "pid" }, panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null) : null];
+  }
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
   var blocPartageConcours = h("div", { key: "pcc" },
     (function () { try { window.__evPasse = null; window.__evPasseId = idEv; } catch (eW) { } return null; })(),
@@ -2847,6 +2883,7 @@ var HCP_CSS = [
 var HC_XM_GRILLE_CSS = ".hc .hc-xm{display:block!important}.hc .hc-xm-ll{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;overflow:visible!important}.hc .hc-xm-it{width:100%;box-sizing:border-box;min-width:0;padding:8px 12px 8px 8px}.hc .hc-xm-it.on{border-color:rgba(201,166,107,.18)}.hc .hc-xm-in{min-width:0}.hc .hc-xm-in b{display:block;overflow-wrap:anywhere;line-height:1.05}.hc .hc-xm-chev{display:block!important}@container hcmd (min-width:640px){.hc .hc-xm-ll{grid-template-columns:repeat(3,minmax(0,1fr))}}@container hcmd (min-width:960px){.hc .hc-xm-ll{grid-template-columns:repeat(4,minmax(0,1fr))}}";
 /* 09/11 23h08 — page Médias du concours : courbes dorées entre les parties, onglets photo pour les boutons */
 var HC_VR_COURBES_CSS = ".hc .vr-c{display:block;width:100%;height:34px;margin:52px 0 50px}.hc .vr>.vr-c:first-child{margin-top:24px}.hc .vr .vr-t,.hc .vr .vr-t.sep{margin-top:0}.hc .vr-ong{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:26px}.hc .vr-ong.seul{grid-template-columns:1fr}.hc .vr-o{position:relative;aspect-ratio:3/3.4;padding:0;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,.35);background:#0B0E0C;cursor:pointer;font:inherit}.hc .vr-ong.seul .vr-o{aspect-ratio:3/1.3}.hc .vr-o.on{border-color:#C9A66B}.hc .vr-o img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hc .vr-o::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 40%,rgba(7,10,8,.85))}.hc .vr-o b{position:absolute;z-index:2;left:6px;right:6px;bottom:11px;text-align:center;font-family:Montserrat,sans-serif;font-weight:600;font-size:13px;line-height:1.2;color:#F3EEE4;text-shadow:0 1px 8px #000}.hc .vr-o i{position:absolute;z-index:2;left:50%;top:38%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(243,238,228,.85);background:rgba(7,10,8,.35);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:26px;font-weight:300;color:#F3EEE4}@container hcmd (min-width:640px){.hc .vr-o{aspect-ratio:3/2.2}}";
+var HC_VR_GC_CSS = ".hc .vr-gc+.vr-gc{margin-top:22px}.hc .vr-gc-t{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;padding:0;border:0;background:transparent;color:#F3EEE4;text-align:start;cursor:pointer;font:inherit}.hc .vr-gc-av{flex:none;width:42px;height:42px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;background:#0B0E0C}.hc .vr-gc-av img{width:100%;height:100%;object-fit:cover}.hc .vr-gc-av b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:20px;color:#C9A66B}.hc .vr-gc-n{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:23px;line-height:1.1}.hc .vr-gc-t small{font-size:12px;color:rgba(243,238,228,.65);margin-inline-start:2px}.hc .vr-gc-t i{margin-inline-start:auto;font-style:normal;color:#C9A66B;font-size:20px}.hcp .hcp-cartes{margin:0!important;padding-bottom:0!important}.hc .vr-eq.n1 .vr-e,.hc .vr-eq.n2 .vr-e,.hc .vr-eq.n3 .vr-e{flex:1 1 0;min-width:0}.hc .vr-eq.n1 .vr-e{aspect-ratio:16/9}.hc .vr-eq.n2 .vr-e{aspect-ratio:4/3}.hc .vr-eq.n1,.hc .vr-eq.n2,.hc .vr-eq.n3{margin-right:0;padding-right:0}";
 var HC_CSS_ID = "hype-saison-css-concours";
 var HC_CSS = [
   ".hc .hc-hero{position:relative;background:#070A08}",
