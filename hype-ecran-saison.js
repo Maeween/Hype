@@ -1146,7 +1146,7 @@ function EcranConcours() {
   /* 09/11 08h11 (Blandine) : à l'ouverture, la carte suit le moment — avant le concours Engagements, le jour même Passages, après : résultats et vidéos (aucune carte) */
   var hcAuj = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
   var hcJourJ = !fini && String(ev.date_jour || "").slice(0, 10) <= hcAuj && String(ev.date_jour || "") !== "";
-  var ongletC = ongletChoisi !== null ? ongletChoisi : (fini ? "" : (hcJourJ ? "passages" : "engagements"));
+  var ongletC = ongletChoisi !== null ? ongletChoisi : (fini ? "" : ((hcJourJ || gestion) ? "passages" : "engagements"));   /* la coach : Engagements est une page à part */
   var lieuCourt = String(ev.lieu || "").split(",")[0].trim();
 
   /* les passages de l'équipe (fonction hype_passages_concours : membres de l'équipe du club, coach, modératrice) */
@@ -1171,8 +1171,11 @@ function EcranConcours() {
 
   function allerA(idEl) { try { var el = document.getElementById(idEl); if (el) { setOuvert(function (o) { var n = Object.assign({}, o); n[idEl] = true; return n; }); setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); } } catch (e) { } }
   function carte(cle, titre, icone, img, action) {
-    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { setOngletC(ongletC === cle ? "" : cle); } },
-      h("img", { src: img, alt: "", "aria-hidden": "true", loading: "lazy", onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); }, onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }),
+    return h("button", { type: "button", className: "hc-carte" + (cartesOk[cle] ? "" : " sans") + (ongletC === cle ? " on" : ""), "aria-pressed": ongletC === cle, onClick: function () { if (cle === "engagements" && gestion) { ouvrirEngagements(); return; } setOngletC(ongletC === cle ? "" : cle); } },   /* 09/11 08h32 : pour la coach, Engagements ouvre la page Engagements */
+      h("img", { src: img, alt: "", "aria-hidden": "true", decoding: "async",   /* 09/11 : plus de chargement différé (cartes visibles dès l'ouverture) ; une 2e tentative avant d'abandonner */
+        ref: function (el) { if (el && el.complete && el.naturalWidth && !cartesOk[cle]) setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
+        onLoad: function () { setCartesOk(function (o) { if (o[cle]) return o; var n = Object.assign({}, o); n[cle] = true; return n; }); },
+        onError: function (e) { try { var t = e.target; if (!t.dataset.reessai) { t.dataset.reessai = "1"; t.src = img + (img.indexOf("?") < 0 ? "?" : "&") + "r=" + Date.now(); } else t.style.display = "none"; } catch (e0) { } } }),
       cle === "medias" ? h("span", { className: "hc-lecture", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
       h("span", { className: "hc-c-pied" }, h("b", null, titre)));   /* 09/11 : plus d’icône, le titre seul en bas de la photo */
   }
@@ -1381,7 +1384,7 @@ function hsPhotoConcours(ev, id) {
   /* la photo du concours d'abord ; sinon la photo de la maquette ; sinon (fichier absent) les photos de secours */
   var u = ev && ev.image_url ? String(ev.image_url) : "";
   if (u && !/\.(mp4|mov|m4v|webm)(\?|$)/i.test(u) && !/^mux:/.test(u)) return { img: (typeof vignetteHypeContain === "function") ? vignetteHypeContain(u, 900, 900) : u, pos: "center" };
-  return { img: HS_HERO_CONCOURS, pos: "72% 40%" };
+  return hsPhotoDe(id);   /* 09/11 08h32 (Blandine : « garde le héros des engagements… cohérence visuelle de l'ensemble ») : même photo que Ma saison, Engagements, Jour J, Liste du van, Le dossier */
 }
 function hcIcone(n) {
   var p = { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" };
