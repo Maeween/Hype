@@ -106,7 +106,8 @@ function EcranTeamCompetition() {
   var _pa = React.useState(false); var panneau = _pa[0], setPanneau = _pa[1];   /* (523) false | "membres" | "chevaux" */
   var _cc = React.useState([]); var clubChevaux = _cc[0], setClubChevaux = _cc[1];   /* (523) chevaux de la SEP proposés dans le panneau */
   var _ec = React.useState(""); var errChevaux = _ec[0], setErrChevaux = _ec[1];
-  var _ap = React.useState([]); var agendaPasse = _ap[0], setAgendaPasse = _ap[1];   /* (526) rendez-vous PASSES du groupe */
+  var _ap = React.useState([]); var agendaPasse = _ap[0], setAgendaPasse = _ap[1];
+  var _po = React.useState(false); var passesOuv = _po[0], setPassesOuv = _po[1];   /* 09/11 14h08 (Blandine : « ajoute événements passés, sinon ils ne savent pas où accéder à leur concours passé ») */   /* (526) rendez-vous PASSES du groupe */
   var _cr = React.useState(null); var clubRdv = _cr[0], setClubRdv = _cr[1];   /* (526) rendez-vous a venir de la SEP, pour le panneau */
   var _vu = React.useState(null); var visu = _vu[0], setVisu = _vu[1];
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
@@ -539,7 +540,11 @@ function EcranTeamCompetition() {
           agenda.length ? carteRdvE(agenda[0], false) : vide(T("Aucun rendez-vous \u00e0 venir pour l\u2019instant.", "No upcoming events yet.", "A\u00fan no hay citas pr\u00f3ximas.", "Nessun appuntamento in arrivo per ora.", "\u4eca\u5f8c\u306e\u4e88\u5b9a\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine anstehenden Termine.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f \u0642\u0627\u062f\u0645\u0629 \u062d\u0627\u0644\u064a\u0627.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")),
           (ouvert.ag && agenda.length > 1) ? h("div", null, agenda.slice(1).map(function (ev) { return carteRdvE(ev, false); })) : null,
           /* (526) les rendez-vous PASSES : dans « Voir tout », ouverts sur leur page souvenirs (photos) */
-          (ouvert.ag && (agendaPasse || []).length) ? h("div", { style: { marginTop: 16 } },
+          (agendaPasse || []).length ? h("button", { type: "button", "data-team-passes": "1", "aria-expanded": passesOuv || !!ouvert.ag, onClick: function () { setPassesOuv(!(passesOuv || ouvert.ag)); if (ouvert.ag) setOuvert(Object.assign({}, ouvert, { ag: false })); },
+              style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 10, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
+              h("span", null, T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Events", "الأحداث السابقة", "过往活动", "Afgelopen evenementen", "Eventos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 이벤트") + " (" + agendaPasse.length + ")"),
+              h("span", { style: { fontSize: 16 } }, (passesOuv || ouvert.ag) ? "⌃" : CHEV)) : null,
+          ((ouvert.ag || passesOuv) && (agendaPasse || []).length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous pass\u00e9s", "Past events", "Citas pasadas", "Appuntamenti passati", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangene Termine", "\u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
             h("div", { style: { marginTop: 6 } }, agendaPasse.map(function (ev) { return carteRdvE(ev, true); }))) : null),
     lienSaison));

@@ -20,6 +20,12 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Résultats complets en ligne": ["Full results online", "Resultados completos en línea", "Risultati completi online", "オンラインの全結果", "Vollständige Ergebnisse online", "النتائج الكاملة على الإنترنت", "在线完整成绩", "Volledige uitslagen online", "Resultados completos online", "Fullständiga resultat online", "Полные результаты онлайн", "Pełne wyniki online", "온라인 전체 결과"],
+  "Modifier le lien": ["Edit the link", "Modificar el enlace", "Modifica il link", "リンクを編集", "Link ändern", "تعديل الرابط", "修改链接", "Link wijzigen", "Alterar o link", "Ändra länken", "Изменить ссылку", "Zmień link", "링크 수정"],
+  "+ Lien vers les résultats en ligne": ["+ Link to the online results", "+ Enlace a los resultados en línea", "+ Link ai risultati online", "+ オンライン結果へのリンク", "+ Link zu den Online-Ergebnissen", "+ رابط النتائج على الإنترنت", "+ 在线成绩链接", "+ Link naar de online uitslagen", "+ Link para os resultados online", "+ Länk till resultaten online", "+ Ссылка на результаты онлайн", "+ Link do wyników online", "+ 온라인 결과 링크"],
+  "Le lien doit commencer par https://": ["The link must start with https://", "El enlace debe empezar por https://", "Il link deve iniziare con https://", "リンクは https:// で始めてください", "Der Link muss mit https:// beginnen", "يجب أن يبدأ الرابط بـ https://", "链接必须以 https:// 开头", "De link moet met https:// beginnen", "O link tem de começar por https://", "Länken måste börja med https://", "Ссылка должна начинаться с https://", "Link musi zaczynać się od https://", "링크는 https:// 로 시작해야 해"],
+  "Personne n’a encore été identifié sur les médias de ce concours avec ce filtre. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.": ["Nobody has been tagged in this competition's media for this filter yet. Tap ⋯ on a photo or video to say who is in it.", "Todavía nadie ha sido identificado en los medios de este concurso con este filtro. Toca ⋯ en una foto o un vídeo para decir quién aparece.", "Nessuno è ancora stato identificato nei media di questo concorso con questo filtro. Tocca ⋯ su una foto o un video per dire chi c’è.", "このフィルターでは、この大会のメディアにまだ誰もタグ付けされていません。写真や動画の ⋯ をタップして、誰が写っているか指定してください。", "Mit diesem Filter wurde in den Medien dieses Turniers noch niemand markiert. Tippe bei einem Foto oder Video auf ⋯, um anzugeben, wer darauf ist.", "لم تتم الإشارة إلى أحد بعد في وسائط هذه المسابقة بهذا الفلتر. اضغط ⋯ على صورة أو فيديو لتحديد من يظهر فيه.", "此筛选下，本次比赛的媒体中还没有人被标记。点击照片或视频上的 ⋯ 来标记是谁。", "Met dit filter is nog niemand getagd in de media van deze wedstrijd. Tik op ⋯ bij een foto of video om aan te geven wie erop staat.", "Ainda ninguém foi identificado nas mídias deste concurso com este filtro. Toca em ⋯ numa foto ou vídeo para dizer quem aparece.", "Ingen har taggats i tävlingens media med det här filtret än. Tryck på ⋯ på ett foto eller en video för att ange vem som syns.", "С этим фильтром в медиа соревнований ещё никто не отмечен. Нажми ⋯ на фото или видео, чтобы указать, кто на нём.", "Z tym filtrem nikt nie został jeszcze oznaczony w mediach z tych zawodów. Dotknij ⋯ na zdjęciu lub filmie, aby wskazać, kto na nim jest.", "이 필터로는 아직 이 대회 미디어에 태그된 사람이 없어. 사진이나 영상의 ⋯ 를 눌러 누가 나오는지 알려 줘."],
+  "✓ Identification enregistrée.": ["✓ Tag saved.", "✓ Identificación guardada.", "✓ Identificazione salvata.", "✓ タグを保存しました。", "✓ Markierung gespeichert.", "✓ تم حفظ الإشارة.", "✓ 标记已保存。", "✓ Tag opgeslagen.", "✓ Identificação guardada.", "✓ Taggning sparad.", "✓ Отметка сохранена.", "✓ Oznaczenie zapisane.", "✓ 태그를 저장했어."],
   /* 09/11 13h55 — doublons, crayon des résultats */
   "Supprimer": ["Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제"],
   "Corriger": ["Correct", "Corregir", "Correggi", "修正", "Korrigieren", "تصحيح", "更正", "Corrigeren", "Corrigir", "Rätta", "Исправить", "Popraw", "수정"],
@@ -1135,6 +1141,7 @@ function EcranConcours() {
   var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
   var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
+  var _lre = React.useState(null); var lienResEd = _lre[0], setLienResEd = _lre[1];   /* 09/11 14h07 : lien des résultats en ligne (concours terminé) */
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
   var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];   /* { posts, tv, ident, resCav } */
   var _mt = React.useState("tous"); var medType = _mt[0], setMedType = _mt[1];
@@ -1197,6 +1204,36 @@ function EcranConcours() {
       } catch (eI) { setInscrits([]); }
     })();
   }
+  /* 09/11 14h10 : la galerie se recharge (ouverture de la carte Médias, toutes les 15 s tant qu'elle est ouverte) — une photo publiée dans le fil y apparaît sans quitter la page */
+  var medGCharge = React.useRef(false);
+  /* recharge de la galerie : à chaque ouverture de la carte Médias, puis toutes les 15 s tant qu'elle est affichée (photo publiée dans le fil → visible) */
+  React.useEffect(function () {
+    var vif = true; function vifQ() { return vif; }
+    function tour() { try { if (document.querySelector(".hc-rep") && !document.hidden) chargerGalerie(moi, vifQ); } catch (e) { } }
+    var t0 = setTimeout(tour, 300), t = setInterval(tour, 15000);
+    return function () { vif = false; clearTimeout(t0); clearInterval(t); };
+  }, [ongletChoisi, moi && moi.id]);
+  async function chargerGalerie(u, estVif) {
+    function vifF() { return estVif ? estVif() : true; }
+    try {
+        var postsG = [], vusP = {};
+        var rvl = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at, texte, liens").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(400);
+        ((rvl && !rvl.error && rvl.data) || []).forEach(function (po) { if (po.prive && !(u && po.user_id === u.id)) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } });
+        try { if (typeof hypePostsAgenda === "function") { var rpa2 = await hypePostsAgenda(idEv); ((rpa2 && rpa2.data) || []).forEach(function (po) { if (!po || (po.prive && !(u && po.user_id === u.id))) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } }); } } catch (ePa) { }
+        /* 09/11 13h35 : media et video_mux_id ne sont PAS lisibles (droits par colonne, lecture via team_video_lecture) : les demander vidait toute la liste */
+        var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
+        var tvG = (rtg && !rtg.error && rtg.data) || [];
+        /* 09/11 14h10 : les vidéos de la Team s'identifient aussi (clé « teamvideo:<id> » dans identifications, comme « post: » / « album: ») */
+        var urlsG = tvG.map(function (v) { return "teamvideo:" + v.id; }); postsG.forEach(function (po) { [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && urlsG.indexOf(String(m)) === -1) urlsG.push(String(m)); }); });
+        var identG = {};
+        for (var iU = 0; iU < urlsG.length; iU += 200) { var ri = await supa.from("identifications").select("photo_url, type, cible_id, cible_nom, statut, auteur_id").in("photo_url", urlsG.slice(iU, iU + 200)); ((ri && !ri.error && ri.data) || []).forEach(function (x) { if (x.statut === "refuse") return; (identG[x.photo_url] = identG[x.photo_url] || []).push(x); }); }
+        var idsRes = tvG.map(function (v) { return v.resultat; }).filter(Boolean), resCavG = {};
+        if (idsRes.length) { var rrc = await supa.from("resultats").select("id, cavalier_id, cheval_id, epreuve").in("id", idsRes); ((rrc && !rrc.error && rrc.data) || []).forEach(function (x) { resCavG[x.id] = x; }); }
+        var idsAu = []; postsG.concat(tvG).forEach(function (x) { var a = x.user_id || x.auteur_id; if (a && idsAu.indexOf(a) === -1) idsAu.push(a); });
+        var auteursG = {}; if (idsAu.length) { var rau = await supa.from("profiles").select("id, pseudo").in("id", idsAu.slice(0, 300)); ((rau && rau.data) || []).forEach(function (x) { auteursG[x.id] = x.pseudo; }); }
+        if (vifF()) { medGCharge.current = true; setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG }); }
+    } catch (eG) { if (vifF() && !medGCharge.current) setMedG({ posts: [], tv: [], ident: {}, resCav: {}, auteurs: {} }); }
+  }
   React.useEffect(function () {
     var vif = true;
     (async function () {
@@ -1241,23 +1278,7 @@ function EcranConcours() {
           if (vif) setVideos(vids);
           /* 09/11 — galerie des médias du concours : publications du fil + publications rattachées, vidéos de la Team,
              identifications existantes (table identifications : cavalier / cheval, aucune déduction par le cheval) */
-          try {
-            var postsG = [], vusP = {};
-            var rvl = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at, texte, liens").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(400);
-            ((rvl && !rvl.error && rvl.data) || []).forEach(function (po) { if (po.prive && !(u && po.user_id === u.id)) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } });
-            try { if (typeof hypePostsAgenda === "function") { var rpa2 = await hypePostsAgenda(idEv); ((rpa2 && rpa2.data) || []).forEach(function (po) { if (!po || (po.prive && !(u && po.user_id === u.id))) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } }); } } catch (ePa) { }
-            /* 09/11 13h35 : media et video_mux_id ne sont PAS lisibles (droits par colonne, lecture via team_video_lecture) : les demander vidait toute la liste */
-            var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
-            var tvG = (rtg && !rtg.error && rtg.data) || [];
-            var urlsG = []; postsG.forEach(function (po) { [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && urlsG.indexOf(String(m)) === -1) urlsG.push(String(m)); }); });
-            var identG = {};
-            for (var iU = 0; iU < urlsG.length; iU += 200) { var ri = await supa.from("identifications").select("photo_url, type, cible_id, cible_nom, statut, auteur_id").in("photo_url", urlsG.slice(iU, iU + 200)); ((ri && !ri.error && ri.data) || []).forEach(function (x) { if (x.statut === "refuse") return; (identG[x.photo_url] = identG[x.photo_url] || []).push(x); }); }
-            var idsRes = tvG.map(function (v) { return v.resultat; }).filter(Boolean), resCavG = {};
-            if (idsRes.length) { var rrc = await supa.from("resultats").select("id, cavalier_id, cheval_id, epreuve").in("id", idsRes); ((rrc && !rrc.error && rrc.data) || []).forEach(function (x) { resCavG[x.id] = x; }); }
-            var idsAu = []; postsG.concat(tvG).forEach(function (x) { var a = x.user_id || x.auteur_id; if (a && idsAu.indexOf(a) === -1) idsAu.push(a); });
-            var auteursG = {}; if (idsAu.length) { var rau = await supa.from("profiles").select("id, pseudo").in("id", idsAu.slice(0, 300)); ((rau && rau.data) || []).forEach(function (x) { auteursG[x.id] = x.pseudo; }); }
-            if (vif) setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG });
-          } catch (eG) { if (vif) setMedG({ posts: [], tv: [], ident: {}, resCav: {}, auteurs: {} }); }
+          await chargerGalerie(u, function () { return vif; });
         } catch (eV) { }
         if (u && u.id) {
           try {
@@ -1690,7 +1711,8 @@ function EcranConcours() {
   function lauriersPl(n, txt) { return h("span", { className: "hc-lp" + (n === 2 ? " ar" : n === 3 ? " br" : "") }, lauriers(), h("b", null, txt || n)); }
   function ouvrirVideo(v) { try { window.__teamMediasGroupe = v.groupe_id; window.__teamMediasOnglet = "videos"; window.__teamMediasOuvrir = v.id; } catch (e) { } setEcran("team-medias"); }
   /* bandeau du direct : résultats en direct + live vidéo (chaque accès seulement s'il existe ; badge seulement si la coach l'a mis en route) */
-  var bandeauDirect = (ev.lien_direct || ev.lien_live || gestion) ? h("div", { key: "bd", className: "hc-bd" },
+  /* 09/11 14h07 (Blandine) : le bandeau « Concours en direct » disparaît une fois le concours terminé ; un lien discret vers les résultats en ligne en bas */
+  var bandeauDirect = (!fini && (ev.lien_direct || ev.lien_live || gestion)) ? h("div", { key: "bd", className: "hc-bd" },
     h("span", { className: "hc-bd-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 12, r: 2.2, fill: "#C9A66B" }), h("path", { d: "M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14" })))),
     h("b", { className: "hc-bd-t" }, F("Concours en direct")),
     (ev.live_actif && ev.lien_live) ? h("span", { className: "hc-bd-live" }, F("EN DIRECT")) : null,
@@ -1705,7 +1727,19 @@ function EcranConcours() {
     try { var r = await supa.from("club_agenda").update({ lien_live: u || null, live_actif: !!(u && liveEd.actif) }).eq("id", idEv).select("id"); if (r && r.error) throw r.error; setEv(Object.assign({}, ev, { lien_live: u || null, live_actif: !!(u && liveEd.actif) })); setLiveEd(null); setResMsg(""); }
     catch (eL) { setResMsg(F("Enregistrement impossible : ") + String((eL && eL.message) || eL)); }
   }
-  var regLive = (gestion && liveEd) ? h("div", { key: "rl", className: "hc-ged" },
+  async function enregistrerLienRes() {
+    var u = String(lienResEd || "").trim();
+    if (u && !/^https:\/\//i.test(u)) { setResMsg(F("Le lien doit commencer par https://")); return; }
+    try { var r = await supa.from("club_agenda").update({ lien_direct: u || null }).eq("id", idEv).select("id"); if (r && r.error) throw r.error; if (!r || !r.data || !r.data.length) throw new Error(F("refusé par la base")); setEv(Object.assign({}, ev, { lien_direct: u || null })); setLienResEd(null); setResMsg(""); }
+    catch (eL) { setResMsg(F("Enregistrement impossible : ") + String((eL && eL.message) || eL)); }
+  }
+  var lienResBas = fini ? h("div", { key: "lrb", className: "hc-lres" },
+    ev.lien_direct ? h("a", { href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats complets en ligne"), " ↗") : null,
+    (gestion && lienResEd === null) ? h("button", { type: "button", className: "hc-lres-r", onClick: function () { setLienResEd(ev.lien_direct || ""); } }, ev.lien_direct ? F("Modifier le lien") : F("+ Lien vers les résultats en ligne")) : null,
+    (gestion && lienResEd !== null) ? h("div", { className: "hc-ged", style: { width: "100%" } },
+      h("input", { className: "hc-in", value: lienResEd, placeholder: "https://…", onChange: function (e) { setLienResEd(e.target.value); } }),
+      h("div", { className: "hc-ged-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setLienResEd(null); } }, F("Annuler")), h("button", { type: "button", className: "hc-btn-l fort", onClick: enregistrerLienRes }, F("Enregistrer")))) : null) : null;
+  var regLive = (gestion && liveEd && !fini) ? h("div", { key: "rl", className: "hc-ged" },
     h("input", { className: "hc-in", value: liveEd.live, placeholder: F("Lien du live vidéo (https://…)"), onChange: function (e) { setLiveEd(Object.assign({}, liveEd, { live: e.target.value })); } }),
     h("label", { className: "hc-coche" }, h("input", { type: "checkbox", checked: !!liveEd.actif, onChange: function (e) { setLiveEd(Object.assign({}, liveEd, { actif: e.target.checked })); } }), F("La diffusion est en cours (affiche « EN DIRECT »)")),
     h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Le lien des résultats en direct se règle dans Jour J.")),
@@ -1923,7 +1957,7 @@ function EcranConcours() {
       return h("div", { key: i, className: "hc-pod-c" }, lauriersPl(p.l.place), h("b", null, p.l.nom + " & " + (p.l.cheval || "")), h("span", null, p.ep));
     }))) : null;
   var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
-    (epsRes.some(function (x) { return x.url; }) || ev.lien_direct) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
+    (!fini && (epsRes.some(function (x) { return x.url; }) || ev.lien_direct)) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
     h("button", { type: "button", className: "hc-btn-l", onClick: function () { setOngletC("medias"); } }, F("Revoir les vidéos")),
     h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrir("dossier-concours"); } }, F("Dossier du concours")));
   var blocResultats = h("div", { key: "res" },
@@ -1936,7 +1970,7 @@ function EcranConcours() {
       (resLect && resLect !== "en_cours") ? h("div", { className: "hs-note", style: { marginTop: 8 } }, resLect)
         : h("div", { className: "hs-note", style: { marginTop: 8 } }, F("Le PDF des résultats, une capture du site FFE ou du chronométreur : les résultats de tes couples se remplissent tout seuls."))) : null,
     listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
-    blocPodiums, boutonsBas);
+    blocPodiums, boutonsBas, lienResBas);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
@@ -1973,8 +2007,11 @@ function EcranConcours() {
     medG.tv.forEach(function (v) {
       if (!(membreT || v.publique || (moi && v.auteur_id === moi.id) || gestion)) return;
       var r = v.resultat ? medG.resCav[v.resultat] : null;
-      itemsM.push({ cle: "tv:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
-        cav: r && r.cavalier_id ? [String(r.cavalier_id)] : [], ch: r && r.cheval_id ? [String(r.cheval_id)] : [] });
+      var idtV = medG.ident["teamvideo:" + v.id] || [];
+      var cavV = idtV.filter(function (q) { return q.type === "cavalier"; }).map(function (q) { return String(q.cible_id); }), chV = idtV.filter(function (q) { return q.type === "cheval"; }).map(function (q) { return String(q.cible_id); });
+      if (r && r.cavalier_id && cavV.indexOf(String(r.cavalier_id)) === -1) cavV.push(String(r.cavalier_id)); if (r && r.cheval_id && chV.indexOf(String(r.cheval_id)) === -1) chV.push(String(r.cheval_id));
+      itemsM.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
+        cav: cavV, ch: chV });
     });
     itemsM.sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
   }
@@ -2013,7 +2050,7 @@ function EcranConcours() {
   }
   function tuile(x, grand) {
     var vg = vignetteDe(x);
-    var peutId = !x.tv && moi && (x.auteur === moi.id || gestion);
+    var peutId = moi && (x.auteur === moi.id || gestion);   /* 09/11 14h10 : vidéos de la Team comprises */
     return h("div", { key: x.cle, className: "hc-mt" + (grand ? " grand" : "") },
       h("button", { type: "button", className: "hc-mt-b", onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
         vg ? [h("span", { key: "f", className: "hc-mt-fond", style: { backgroundImage: "url(\"" + vg + "\")" }, "aria-hidden": "true" }), h("img", { key: "i", src: vg, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } })] : h("span", { className: "hc-mt-vide" }),
@@ -2025,13 +2062,21 @@ function EcranConcours() {
     if (!medId) return; var x = medId.x; setMedMsg("");
     try {
       var nouvC = medId.cav.filter(function (c) { return x.cav.indexOf(c) === -1; }), nouvH = medId.ch.filter(function (c) { return x.ch.indexOf(c) === -1; });
-      for (var i = 0; i < nouvC.length; i++) { var oc = optCav.filter(function (o) { return o.id === nouvC[i]; })[0]; if (typeof identifierSouvenir === "function") await identifierSouvenir(x.url, "cavalier", nouvC[i], oc ? oc.nom : null); }
-      for (var j = 0; j < nouvH.length; j++) { var oh = optCh.filter(function (o) { return o.id === nouvH[j]; })[0]; if (typeof identifierSouvenir === "function") await identifierSouvenir(x.url, "cheval", nouvH[j], oh ? oh.nom : null); }
+      /* vidéo de la Team : identifiée par sa coach ou son auteur → acceptée d'office (pas de vignette à valider ailleurs dans l'appli) */
+      async function poser(type, id, nom) {
+        if (!x.tv) { if (typeof identifierSouvenir === "function") return identifierSouvenir(x.url, type, id, nom); return null; }
+        var ri = await supa.from("identifications").insert({ photo_url: x.url, type: type, cible_id: String(id), cible_nom: nom || null, auteur_id: moi.id, statut: "accepte" }).select("id");
+        if (ri && ri.error) throw ri.error; return ri;
+      }
+      if (x.tv && (medId.ep || "") !== (x.epreuve || "")) { var rE = await supa.rpc("team_video_epreuve", { p_id: x.tv.id, p_epreuve: medId.ep || "" }); if (rE && rE.error) throw rE.error; x.tv.epreuve = medId.ep || null; }
+      for (var i = 0; i < nouvC.length; i++) { var oc = optCav.filter(function (o) { return o.id === nouvC[i]; })[0]; await poser("cavalier", nouvC[i], oc ? oc.nom : null); }
+      for (var j = 0; j < nouvH.length; j++) { var oh = optCh.filter(function (o) { return o.id === nouvH[j]; })[0]; await poser("cheval", nouvH[j], oh ? oh.nom : null); }
       if ((medId.ep || "") !== (x.epreuve || "") && x.post) { var l2 = Object.assign({}, x.post.liens || {}, { epreuve: medId.ep || null }); var ru = await supa.from("commentaires").update({ liens: l2 }).eq("id", x.post.id).select("id"); if (ru && ru.error) throw ru.error; x.post.liens = l2; }
       var ident = Object.assign({}, medG.ident); var lst = (ident[x.url] || []).slice();
-      nouvC.forEach(function (c) { lst.push({ photo_url: x.url, type: "cavalier", cible_id: c, statut: "attente" }); }); nouvH.forEach(function (c) { lst.push({ photo_url: x.url, type: "cheval", cible_id: c, statut: "attente" }); });
+      var stI = x.tv ? "accepte" : "attente";
+      nouvC.forEach(function (c) { lst.push({ photo_url: x.url, type: "cavalier", cible_id: c, statut: stI }); }); nouvH.forEach(function (c) { lst.push({ photo_url: x.url, type: "cheval", cible_id: c, statut: stI }); });
       ident[x.url] = lst; setMedG(Object.assign({}, medG, { ident: ident })); setMedId(null);
-      setMedMsg(F("✓ Identification enregistrée. Les cavaliers identifiés sont prévenus et peuvent la confirmer."));
+      setMedMsg(x.tv ? F("✓ Identification enregistrée.") : F("✓ Identification enregistrée. Les cavaliers identifiés sont prévenus et peuvent la confirmer."));
     } catch (eI) { setMedMsg(F("Enregistrement impossible : ") + String((eI && eI.message) || eI)); }
   }
   var panneauId = medId ? h("div", { key: "pid", className: "hc-ged hc-mid" },
@@ -2039,8 +2084,8 @@ function EcranConcours() {
     optCav.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optCav.map(function (o) { var on = medId.cav.indexOf(o.id) !== -1; return h("button", { key: o.id, type: "button", className: "hc-chip-p" + (on ? " on" : ""), disabled: on && medId.x.cav.indexOf(o.id) !== -1, onClick: function () { setMedId(Object.assign({}, medId, { cav: on ? medId.cav.filter(function (c) { return c !== o.id; }) : medId.cav.concat([o.id]) })); } }, o.nom); })) : null,
     optCh.length ? h("div", { className: "hc-ged-k" }, F("Cheval")) : null,
     optCh.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optCh.map(function (o) { var on = medId.ch.indexOf(o.id) !== -1; return h("button", { key: o.id, type: "button", className: "hc-chip-p" + (on ? " on" : ""), disabled: on && medId.x.ch.indexOf(o.id) !== -1, onClick: function () { setMedId(Object.assign({}, medId, { ch: on ? medId.ch.filter(function (c) { return c !== o.id; }) : medId.ch.concat([o.id]) })); } }, o.nom); })) : null,
-    (optEp.length && medId.x.post && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-k" }, F("Épreuve")) : null,
-    (optEp.length && medId.x.post && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optEp.map(function (e2) { var on = medId.ep === e2; return h("button", { key: e2, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { setMedId(Object.assign({}, medId, { ep: on ? "" : e2 })); } }, e2); })) : null,
+    (optEp.length && (medId.x.post || medId.x.tv) && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-k" }, F("Épreuve")) : null,
+    (optEp.length && (medId.x.post || medId.x.tv) && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optEp.map(function (e2) { var on = medId.ep === e2; return h("button", { key: e2, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { setMedId(Object.assign({}, medId, { ep: on ? "" : e2 })); } }, e2); })) : null,
     h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Facultatif : n’identifie que ce dont tu es sûr.")),
     h("div", { className: "hc-ged-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setMedId(null); } }, F("Annuler")), h("button", { type: "button", className: "hc-btn-l fort", onClick: enregistrerIdent }, F("Enregistrer")))) : null;
   function sel(val, set, libre, opts) {
@@ -2060,7 +2105,7 @@ function EcranConcours() {
   var principal = mesM.filter(function (x) { return x.cle === medSel; })[0] || mesM[0] || null;
   var autresMes = mesM.filter(function (x) { return x !== principal; });
   var ronds = autresMes.slice(0, 3), rangee = autresMes.slice(3, 3 + medNM);
-  function boutonId(x) { var ok = !x.tv && moi && (x.auteur === moi.id || gestion); return ok ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null; }
+  function boutonId(x) { var ok = moi && (x.auteur === moi.id || gestion); return ok ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null; }
   function vue(x, cls, larg) {   /* aperçu dans son format naturel (hauteur imposée par la classe, largeur libre) */
     var src = apercu(x, larg);
     return h("button", { type: "button", className: cls, onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
@@ -2091,7 +2136,7 @@ function EcranConcours() {
     h("div", { className: "hc-rep-st" }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
     eqM.length ? h("div", { className: "hc-galh", "data-hscroll": "1" }, eqM.slice(0, medNE).map(function (x) { return h("div", { key: x.cle, className: "hc-galh-i" }, vue(x, "hc-galh-m", 900)); })
       .concat(eqM.length > medNE ? [h("button", { key: "plus", type: "button", className: "hc-galh-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")")] : []))
-      : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours."))) : null;
+      : h("div", { className: "hs-note", style: { marginTop: 0 } }, (fCavM || fChM) && !itemsF.length ? F("Personne n’a encore été identifié sur les médias de ce concours avec ce filtre. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.") : (filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours.")))) : null;
   function selF(val, set, libre, opts, ic) {
     return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
       h("select", { value: val, "aria-label": libre, onChange: function (e) { set(e.target.value); setMedSel(null); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, libre + " · " + F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
@@ -2590,6 +2635,9 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-lres{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 16px;margin:18px 0 4px;font-size:12px}",
+  ".hc .hc-lres a{color:rgba(243,238,228,.72);text-decoration:none;border-bottom:1px solid rgba(201,166,107,.45);padding-bottom:1px}",
+  ".hc .hc-lres-r{background:none;border:none;padding:0;font:inherit;font-size:12px;color:rgba(201,166,107,.85);cursor:pointer}",
   ".hc .hc-prat .hc-bande{margin-top:0}",
   ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:12px}",
   ".hc .hc-act[disabled]{opacity:.45}",
