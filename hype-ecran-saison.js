@@ -1178,6 +1178,7 @@ function EcranConcours() {
   var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
   var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
+  var _chp = React.useState({}); var chPhotos = _chp[0], setChPhotos = _chp[1];   /* 09/11 15h20 : photo de chaque cheval des résultats (podiums en médaillons) */
   var _jjo = React.useState(false); var jjOuv = _jjo[0], setJjOuv = _jjo[1];   /* 09/11 15h : la modification des passages (ex-page Jour J) ouverte dans la carte Passages */
   var _dcl = React.useState(null); var decEp = _dcl[0], setDecEp = _dcl[1];   /* 09/11 14h53 (Blandine « Ok 2 ») : { ep, min, prev, occ, msg } — décaler une épreuve depuis Passages */
   var _lre = React.useState(null); var lienResEd = _lre[0], setLienResEd = _lre[1];   /* 09/11 14h07 : lien des résultats en ligne (concours terminé) */
@@ -1217,6 +1218,13 @@ function EcranConcours() {
   var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq = _pq[1];
   var _oc = React.useState(null); var ongletChoisi = _oc[0], setOngletC = _oc[1];   /* null = carte choisie selon le moment (09/11) */
   var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
+  React.useEffect(function () {
+    var ids = []; (resConc || []).forEach(function (r) { if (r.cheval_id && ids.indexOf(r.cheval_id) === -1 && chPhotos[r.cheval_id] === undefined) ids.push(r.cheval_id); });
+    if (!ids.length || typeof supa === "undefined" || !supa) return;
+    var vif = true;
+    supa.from("chevaux").select("id, photo_url").in("id", ids.slice(0, 100)).then(function (r) { if (!vif) return; var m = Object.assign({}, chPhotos); ids.forEach(function (i) { m[i] = null; }); ((r && r.data) || []).forEach(function (x) { m[x.id] = x.photo_url || null; }); setChPhotos(m); });
+    return function () { vif = false; };
+  }, [resConc]);
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
     setDvOcc(true);
@@ -2041,7 +2049,15 @@ function EcranConcours() {
     h("div", { className: "hc-pod-tete" }, h("h2", null, F("Les podiums de l’équipe"))),
     h("div", { className: "hc-pod-res" }, [nbP[0] ? nbP[0] + " " + (nbP[0] > 1 ? F("victoires") : F("victoire")) : "", nbP[1] ? nbP[1] + " " + (nbP[1] > 1 ? F("deuxièmes places") : F("deuxième place")) : "", nbP[2] ? nbP[2] + " " + (nbP[2] > 1 ? F("troisièmes places") : F("troisième place")) : "", nbClasses ? nbClasses + " " + (nbClasses > 1 ? F("classements") : F("classement")) : ""].filter(Boolean).join(" · ")),
     h("div", { className: "hc-pod-l" + (podiums.length > 3 ? " car" : "") }, podiums.map(function (p, i) {
-      return h("div", { key: i, className: "hc-pod-c" }, lauriersPl(p.l.place), h("b", null, p.l.nom + " & " + (p.l.cheval || "")), h("span", null, p.ep));
+      /* 09/11 15h20 (Blandine : « médaillons, la première proposition ») : photo du cheval (sinon du cavalier) en rond bordé or / argent / bronze, lauriers dessous */
+      var rq = null; (resConc || []).forEach(function (q) { if (!rq && ("r" + q.id) === p.l.cle) rq = q; });
+      var ph = (rq && rq.cheval_id && chPhotos[rq.cheval_id]) || (p.l.p && p.l.p.avatar_url) || "";
+      var src = ph ? ((typeof vignetteHype === "function") ? vignetteHype(ph, 300, 300) : ph) : "";
+      return h("div", { key: i, className: "hc-pod-c hc-pod-m" },
+        h("div", { className: "hc-pod-ph" + (p.l.place === 2 ? " ar" : p.l.place === 3 ? " br" : "") },
+          src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }) : h("i", null, String(p.l.cheval || p.l.nom || "?").charAt(0).toUpperCase()),
+          h("span", { className: "hc-pod-lr" }, lauriersPl(p.l.place))),
+        h("b", null, p.l.nom), h("em", null, p.l.cheval || ""), h("span", null, p.ep + (p.l.sf ? " · " + F("Sans-faute") : "")));
     }))) : null;
   /* 09/11 14h15 (Blandine : « les pages sont un peu tristes, un ou deux petits onglets dans les couleurs de la page de l'équipe ») —
      cartes-liens au style de « Performances chevaux » (Team) : icône, filet, titre Cormorant, photo à droite */
@@ -2636,6 +2652,16 @@ var HC_CSS = [
   ".hc .hc-pod-c:first-child{border-inline-start:none}",
   ".hc .hc-pod-c b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:17px;line-height:1.2}",
   ".hc .hc-pod-c span{font-size:11.5px;color:rgba(243,238,228,.65)}",
+  ".hc .hc-pod-m{padding:18px 8px 16px;background:linear-gradient(180deg,rgba(201,166,107,.07),transparent 60%)}",
+  ".hc .hc-pod-ph{position:relative;width:min(84px,22vw);aspect-ratio:1;border-radius:50%;border:2px solid #C9A66B;margin-bottom:18px;background:#141a1c;display:flex;align-items:center;justify-content:center}",
+  ".hc .hc-pod-ph.ar{border-color:#C9CDD2}",
+  ".hc .hc-pod-ph.br{border-color:#B98A5E}",
+  ".hc .hc-pod-ph img{width:100%;height:100%;object-fit:cover;border-radius:50%}",
+  ".hc .hc-pod-ph i{font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;color:#C9A66B}",
+  ".hc .hc-pod-lr{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);background:#070A08;border-radius:999px;padding:1px 4px;line-height:0}",
+  ".hc .hc-pod-m b{font-size:19px;font-weight:600;line-height:1.1}",
+  ".hc .hc-pod-m em{font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;color:rgba(243,238,228,.75);line-height:1.1}",
+  ".hc .hc-pod-m span{color:#C9A66B;margin-top:4px}",
   ".hc .hc-bb{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;justify-content:center}",
   "@media (min-width:768px){.hc .hc-rl{grid-template-columns:64px 40px 1fr 90px 90px 30px}}",
   /* 09/11 — Organisation du paddock + règles */
