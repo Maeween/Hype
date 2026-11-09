@@ -40044,8 +40044,7 @@ try { if (typeof window !== "undefined" && window.__ecurieAncienne == null) wind
    petit paysage fondu images/accueil_v2_fin_de_page_v1.webp, deux filets champagne et « HYPE ». Decoratif, aucun bouton. */
 /* 09/11 22h25 (Blandine : « toutes les photos et vidéos que j'ai mises des autres cavaliers, des autres chevaux, tu m'as tout mis
    sur ma page perso… il faut que tu apprennes à faire ça partout et tout le temps ») : retire des médias PERSO d'un cavalier ceux
-   qu'il a seulement PUBLIÉS mais où l'on sait que ce n'est pas lui : d'autres cavaliers identifiés (et pas lui), ou seulement
-   d'autres chevaux que les siens. Identifications acceptées OU en attente (un refus ne compte pas). On garde toujours : ce où il
+   qu'il a seulement PUBLIÉS mais où l'on sait que ce n'est pas lui : d'autres cavaliers identifiés (et pas lui). Identifications acceptées OU en attente (un refus ne compte pas). On garde toujours : ce où il
    est identifié (o.src === "__id__"), ses albums de profil (o.perso), et ses publications sans aucune identification.
    Rien n'est effacé en base : le média reste sur la page du cavalier, du cheval ou du concours concerné. */
 async function hypeFiltrerMediasPerso(out, cid, idsChevauxPerso) {
@@ -40067,8 +40066,8 @@ async function hypeFiltrerMediasPerso(out, cid, idsChevauxPerso) {
       var cav = l.filter(function (x) { return x.type === "cavalier"; }).map(function (x) { return String(x.cible_id); });
       if (cav.indexOf(moiC) !== -1) return true;
       if (cav.length) return false;   /* d'autres cavaliers, pas lui */
-      var chs = l.filter(function (x) { return x.type === "cheval"; }).map(function (x) { return String(x.cible_id); });
-      if (chs.length && !chs.some(function (c) { return mesCh[c]; })) return false;   /* seulement d'autres chevaux que les siens */
+      /* 09/11 22h27 (Blandine) : PAS de règle sur les chevaux — des chevaux qu'elle a créés sans les avoir (Elle vit Bellevue,
+         Olivia, Satine…) peuvent être montés par elle : seul un AUTRE CAVALIER identifié fait sortir un média de ses pages */
       return true;
     });
   } catch (e) { return out; }

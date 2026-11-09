@@ -1313,7 +1313,19 @@ function EcranConcours() {
         if (idsRes.length) { var rrc = await supa.from("resultats").select("id, cavalier_id, cheval_id, epreuve").in("id", idsRes); ((rrc && !rrc.error && rrc.data) || []).forEach(function (x) { resCavG[x.id] = x; }); }
         var idsAu = []; postsG.concat(tvG).forEach(function (x) { var a = x.user_id || x.auteur_id; if (a && idsAu.indexOf(a) === -1) idsAu.push(a); });
         var auteursG = {}; if (idsAu.length) { var rau = await supa.from("profiles").select("id, pseudo").in("id", idsAu.slice(0, 300)); ((rau && rau.data) || []).forEach(function (x) { auteursG[x.id] = x.pseudo; }); }
-        if (vifF()) { medGCharge.current = true; setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG }); }
+        /* 09/11 22h30 (Blandine : « catastrophe visuelle » — « Cavalier », « Cheval » au lieu des prénoms) : les noms et photos des
+           cavaliers et chevaux identifiés sont lus dans leurs fiches, même quand ils ne sont pas dans les engagements de ce concours */
+        var nomsG = { cav: {}, ch: {} };
+        try {
+          var idsCavG = [], idsChG = [];
+          function ajIdG(l, id) { id = String(id || ""); if (id && l.indexOf(id) === -1) l.push(id); }
+          tvG.forEach(function (v) { (v.__cav || []).forEach(function (c) { ajIdG(idsCavG, c); }); (v.__ch || []).forEach(function (c) { ajIdG(idsChG, c); }); });
+          Object.keys(identG).forEach(function (k) { (identG[k] || []).forEach(function (q) { if (q.type === "cavalier") ajIdG(idsCavG, q.cible_id); if (q.type === "cheval") ajIdG(idsChG, q.cible_id); }); });
+          Object.keys(resCavG).forEach(function (k) { ajIdG(idsCavG, resCavG[k].cavalier_id); ajIdG(idsChG, resCavG[k].cheval_id); });
+          if (idsCavG.length) { var rnc = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsCavG.slice(0, 200)); ((rnc && rnc.data) || []).forEach(function (x) { nomsG.cav[String(x.id)] = { nom: x.pseudo || "", ph: x.avatar_url || null }; }); }
+          if (idsChG.length) { var rnh = await supa.from("chevaux").select("id, nom, photo_url").in("id", idsChG.slice(0, 200)); ((rnh && rnh.data) || []).forEach(function (x) { nomsG.ch[String(x.id)] = { nom: x.nom || "", ph: x.photo_url || null }; }); }
+        } catch (eN) { }
+        if (vifF()) { medGCharge.current = true; setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG, noms: nomsG }); }
     } catch (eG) { if (vifF() && !medGCharge.current) setMedG({ posts: [], tv: [], ident: {}, resCav: {}, auteurs: {} }); }
   }
   React.useEffect(function () {
@@ -2342,7 +2354,9 @@ function EcranConcours() {
     ids.forEach(function (id) {
       var o = (medGrpE === "ch" ? optCh : optCav).filter(function (q) { return q.id === String(id); })[0];
       var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrpE === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; }); if (medGrpE === "ch") ph = chPhotos[id] || null; else if (!ph) (passagesEq || []).forEach(function (pq) { if (!ph && String(pq.cavalier_id) === String(id) && pq.cheval_id) ph = chPhotos[pq.cheval_id] || null; });
-      grpV(String(id), (o && o.nom) || (medGrpE === "ch" ? F("Cheval") : F("Cavalier")), ph).l.push(x);
+      var nG = medG && medG.noms && medG.noms[medGrpE === "ch" ? "ch" : "cav"][String(id)];   /* 09/11 22h30 : vrai nom lu dans la fiche */
+      if (!ph && nG) ph = nG.ph || null;
+      grpV(String(id), (o && o.nom) || (nG && nG.nom) || (medGrpE === "ch" ? F("Cheval") : F("Cavalier")), ph).l.push(x);
     });
   });
   var ordreEps = parEpreuve.map(function (g) { return g.ep; });
@@ -2432,11 +2446,12 @@ function EcranConcours() {
   var nomsCh = {}, nomsCav = {};
   optCh.forEach(function (o) { nomsCh[o.id] = o.nom; }); optCav.forEach(function (o) { nomsCav[o.id] = o.nom; });
   if (medG) Object.keys(medG.ident || {}).forEach(function (k) { (medG.ident[k] || []).forEach(function (q) { if (!q.cible_nom || !q.cible_id) return; var id = String(q.cible_id); if (q.type === "cheval" && !nomsCh[id]) nomsCh[id] = q.cible_nom; if (q.type === "cavalier" && !nomsCav[id]) nomsCav[id] = q.cible_nom; }); });
+  if (medG && medG.noms) { Object.keys(medG.noms.cav).forEach(function (id) { if (!nomsCav[id] && medG.noms.cav[id].nom) nomsCav[id] = medG.noms.cav[id].nom; }); Object.keys(medG.noms.ch).forEach(function (id) { if (!nomsCh[id] && medG.noms.ch[id].nom) nomsCh[id] = medG.noms.ch[id].nom; }); }   /* 09/11 22h30 */
   if (moi && !nomsCav[String(moi.id)]) nomsCav[String(moi.id)] = F("Moi");
   var xModeCh = medVue === "ch", xCle = xModeCh ? "ch" : "cav", xAutre = xModeCh ? "cav" : "ch";
   var xNoms = xModeCh ? nomsCh : nomsCav, xNomsAutre = xModeCh ? nomsCav : nomsCh;
-  function photoCh(id) { return chPhotos[id] || null; }
-  function photoCav(id) { var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url || null; }); return ph; }
+  function photoCh(id) { return chPhotos[id] || (medG && medG.noms && medG.noms.ch[String(id)] && medG.noms.ch[String(id)].ph) || null; }
+  function photoCav(id) { var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url || null; }); return ph || (medG && medG.noms && medG.noms.cav[String(id)] && medG.noms.cav[String(id)].ph) || null; }
   function xPhoto(id, modeCh) { return modeCh ? photoCh(id) : photoCav(id); }
   var xListe = [], xParId = {}, xSans = [];
   itemsM.forEach(function (x) {
