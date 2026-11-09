@@ -1093,6 +1093,8 @@ function hsHero(h, o) {
     hsCourbe(h, "c2", "M0 92 C 130 90, 240 62, 400 8"),
     h("div", { className: "hs-in" }, h("div", { className: "hs-titre" }, h("h1", { style: o.petit ? { fontSize: "clamp(34px,9.5vw,52px)", lineHeight: 1.05 } : null }, o.titre), o.sous ? h("p", null, o.sous) : null)));
 }
+var HS_IMG_LOTS_CAV = ["images/concours-carte-passages.webp", "images/article-cso-saut.webp", "images/concours-carte-engagements.webp", "images/article-cso-virage.webp"];
+var HS_IMG_LOTS_CH = ["images/concours-carte-medias.webp", "images/galop1-hero-bai.webp", "images/galop6-hero-gris.webp", "images/concours-hero-bai-tresse.webp"];
 function hsPhotoDe(id) {
   try { var p = window.__concoursPhoto; if (p && p.img) return p; } catch (e) { }
   var s = String(id || ""), n = 0; for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
@@ -2312,12 +2314,13 @@ function EcranConcours() {
     h("div", { className: "hc-rep-st" }, h("h3", null, F("Les vidéos")), h("span", null, videosF.length + " " + (videosF.length > 1 ? F("vidéos") : F("vidéo")))),
     videosF.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start", margin: "0 0 14px" } },
       [["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) { return h("button", { key: o[0], type: "button", className: "hc-chip-p" + (medGrp === o[0] ? " on" : ""), onClick: function () { setMedGrp(o[0]); } }, o[1]); })) : null,
-    videosF.length ? grpsV.map(function (g) {
+    videosF.length ? grpsV.map(function (g, gi) {
       /* 09/11 15h14 (Blandine) : un bandeau photo + nom sépare chaque lot ; 2 vidéos côte à côte, la suite défile */
       return h("div", { key: g.id, className: "hc-vg" },
         /* 09/11 15h17 (Blandine : « un truc visuel sympa, un encart avec image ») : encart au style de la page de l'équipe, photo à droite */
         h("div", { className: "hc-vg-t" },
-          h("img", { className: "hc-vg-img", src: g.photo ? ((typeof vignetteHype === "function") ? vignetteHype(g.photo, 600, 300) : g.photo) : (g.id === "__" ? "images/hype-entete-concours.jpg" : "images/concours-carte-medias.webp"), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
+          /* 09/11 15h56 (Blandine : « garde des images qu'on met nous, pour avoir quelque chose de régulier ») : images de l'appli, pas les photos de profil */
+          h("img", { className: "hc-vg-img", src: g.id === "__" ? "images/hype-entete-concours.jpg" : (medGrp === "ch" ? HS_IMG_LOTS_CH : HS_IMG_LOTS_CAV)[gi % 4], alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
           h("span", { className: "hc-vg-voile", "aria-hidden": "true" }),
           h("span", { className: "hc-vg-k" }, g.id === "__" ? F("Touche ⋯ pour dire qui est dessus") : (medGrp === "ch" ? F("Cheval") : F("Cavalier"))),
           h("b", null, g.nom), h("span", { className: "hc-vg-n" }, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
