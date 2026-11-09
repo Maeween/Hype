@@ -20,6 +20,16 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Jour J": ["D-Day", "Día D", "Giorno G", "当日", "Tag X", "اليوم الموعود", "比赛日", "D-day", "Dia D", "Dagen D", "День Х", "Dzień D", "D-데이"],
+  "Performances chevaux": ["Horse performances", "Rendimiento de los caballos", "Prestazioni dei cavalli", "馬の成績", "Leistungen der Pferde", "أداء الخيول", "马匹表现", "Prestaties van de paarden", "Desempenho dos cavalos", "Hästarnas prestationer", "Выступления лошадей", "Osiągnięcia koni", "말 성적"],
+  "Classement de la saison": ["Season ranking", "Clasificación de la temporada", "Classifica della stagione", "シーズンのランキング", "Saisonwertung", "ترتيب الموسم", "赛季排名", "Klassement van het seizoen", "Classificação da temporada", "Säsongens rankning", "Рейтинг сезона", "Klasyfikacja sezonu", "시즌 순위"],
+  "Le direct et les heures de passage": ["Live results and start times", "El directo y las horas de paso", "La diretta e gli orari di passaggio", "ライブと出走時刻", "Live-Ergebnisse und Startzeiten", "البث المباشر ومواعيد المرور", "直播和出场时间", "Live en starttijden", "O direto e os horários de passagem", "Live och starttider", "Прямой эфир и время старта", "Na żywo i godziny startu", "실시간 결과와 출전 시간"],
+  "Mes performances": ["My performances", "Mis resultados", "Le mie prestazioni", "私の成績", "Meine Leistungen", "أدائي", "我的成绩", "Mijn prestaties", "Meus desempenhos", "Mina prestationer", "Мои результаты", "Moje wyniki", "내 성적"],
+  "Tous tes résultats de la saison": ["All your results this season", "Todos tus resultados de la temporada", "Tutti i tuoi risultati della stagione", "今シーズンのすべての結果", "Alle deine Ergebnisse der Saison", "كل نتائجك هذا الموسم", "你本赛季的所有成绩", "Al je uitslagen van het seizoen", "Todos os teus resultados da temporada", "Alla dina resultat för säsongen", "Все твои результаты сезона", "Wszystkie twoje wyniki sezonu", "이번 시즌 너의 모든 결과"],
+  "Vidéothèque de la Team": ["Team video library", "Videoteca del equipo", "Videoteca della squadra", "チームの動画ライブラリ", "Videothek des Teams", "مكتبة فيديو الفريق", "团队视频库", "Videotheek van het team", "Videoteca da equipa", "Lagets videobibliotek", "Видеотека команды", "Wideoteka drużyny", "팀 비디오 라이브러리"],
+  "Toutes les vidéos de l’équipe": ["All the team's videos", "Todos los vídeos del equipo", "Tutti i video della squadra", "チームのすべての動画", "Alle Videos des Teams", "كل فيديوهات الفريق", "团队的所有视频", "Alle video's van het team", "Todos os vídeos da equipa", "Alla lagets videor", "Все видео команды", "Wszystkie filmy drużyny", "팀의 모든 영상"],
+  "Album de l’écurie": ["Stable album", "Álbum de la cuadra", "Album della scuderia", "厩舎のアルバム", "Stallalbum", "ألبوم الإسطبل", "马厩相册", "Stalalbum", "Álbum da cavalariça", "Stallets album", "Альбом конюшни", "Album stajni", "마구간 앨범"],
+  "Les photos du club": ["The club's photos", "Las fotos del club", "Le foto del club", "クラブの写真", "Die Fotos des Vereins", "صور النادي", "俱乐部的照片", "De foto's van de club", "As fotos do clube", "Klubbens foton", "Фото клуба", "Zdjęcia klubu", "클럽 사진"],
   "Résultats complets en ligne": ["Full results online", "Resultados completos en línea", "Risultati completi online", "オンラインの全結果", "Vollständige Ergebnisse online", "النتائج الكاملة على الإنترنت", "在线完整成绩", "Volledige uitslagen online", "Resultados completos online", "Fullständiga resultat online", "Полные результаты онлайн", "Pełne wyniki online", "온라인 전체 결과"],
   "Modifier le lien": ["Edit the link", "Modificar el enlace", "Modifica il link", "リンクを編集", "Link ändern", "تعديل الرابط", "修改链接", "Link wijzigen", "Alterar o link", "Ändra länken", "Изменить ссылку", "Zmień link", "링크 수정"],
   "+ Lien vers les résultats en ligne": ["+ Link to the online results", "+ Enlace a los resultados en línea", "+ Link ai risultati online", "+ オンライン結果へのリンク", "+ Link zu den Online-Ergebnissen", "+ رابط النتائج على الإنترنت", "+ 在线成绩链接", "+ Link naar de online uitslagen", "+ Link para os resultados online", "+ Länk till resultaten online", "+ Ссылка на результаты онлайн", "+ Link do wyników online", "+ 온라인 결과 링크"],
@@ -1956,10 +1966,33 @@ function EcranConcours() {
     h("div", { className: "hc-pod-l" + (podiums.length > 3 ? " car" : "") }, podiums.map(function (p, i) {
       return h("div", { key: i, className: "hc-pod-c" }, lauriersPl(p.l.place), h("b", null, p.l.nom + " & " + (p.l.cheval || "")), h("span", null, p.ep));
     }))) : null;
+  /* 09/11 14h15 (Blandine : « les pages sont un peu tristes, un ou deux petits onglets dans les couleurs de la page de l'équipe ») —
+     cartes-liens au style de « Performances chevaux » (Team) : icône, filet, titre Cormorant, photo à droite */
+  function icoLien(n) {
+    var p = { jj: "M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 1 0 8a4 4 0 0 1 0-8z", dos: "M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6", perf: "M4 20V12M10 20V7M16 20V3", moi: "M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6", vid: "M4 6h12v12H4zM16 10l4-2v8l-4-2", alb: "M3 6h18v13H3zM3 15l5-5 4 4 3-3 6 6M15 9.5a1.5 1.5 0 1 0 0-.01" }[n] || "";
+    return h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, "aria-hidden": "true" }, h("path", { d: p, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" }));
+  }
+  function carteLien(cle, ico, titre, sous, img, fn) {
+    return h("button", { key: cle, type: "button", className: "hc-cl", onClick: fn },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", className: "hc-cl-img", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
+      h("span", { className: "hc-cl-voile", "aria-hidden": "true" }),
+      h("span", { className: "hc-cl-ico" }, icoLien(ico)), h("span", { className: "hc-cl-fil", "aria-hidden": "true" }),
+      h("span", { className: "hc-cl-t" }, h("b", null, titre), sous ? h("small", null, sous) : null),
+      h("span", { className: "hc-cl-chev", "aria-hidden": "true" }, rtl ? "‹" : "›"));
+  }
+  function cartesLiens(cle, l) { l = l.filter(Boolean); return l.length ? h("div", { key: cle, className: "hc-cls" }, l) : null; }
+  var liensPassages = cartesLiens("lp", [
+    carteLien("jj", "jj", F("Jour J"), F("Le direct et les heures de passage"), "images/concours-hero-bai-tresse.webp", function () { ouvrir("jour-j"); }),
+    carteLien("dos", "dos", F("Dossier du concours"), F("licence, vaccins du cheval, papiers"), "images/concours-hero-cso.webp", function () { ouvrir("dossier-concours"); })]);
+  var liensResultats = cartesLiens("lr", [
+    carteLien("pc", "perf", F("Performances chevaux"), F("Classement de la saison"), "images/team-competition-performances-hero.webp", function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (e) { } setEcran("performances-chevaux"); }),
+    moi ? carteLien("pm", "moi", F("Mes performances"), F("Tous tes résultats de la saison"), "images/cavalier-acces-performances.webp", function () { try { window.__perfCavalierId = moi.id; } catch (e) { } setEcran("performances-cavalier"); }) : null]);
+  var liensMedias = cartesLiens("lm", [
+    (equipe && equipe.id) ? carteLien("vt", "vid", F("Vidéothèque de la Team"), F("Toutes les vidéos de l’équipe"), "images/cavalier-acces-videos.webp", function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; } catch (e) { } setEcran("team-medias"); }) : null,
+    carteLien("al", "alb", F("Album de l’écurie"), F("Les photos du club"), "images/albumEcurieEncart.jpg", function () { setEcran("album-ecurie"); })]);
   var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
     (!fini && (epsRes.some(function (x) { return x.url; }) || ev.lien_direct)) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
-    h("button", { type: "button", className: "hc-btn-l", onClick: function () { setOngletC("medias"); } }, F("Revoir les vidéos")),
-    h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrir("dossier-concours"); } }, F("Dossier du concours")));
+    h("button", { type: "button", className: "hc-btn-l", onClick: function () { setOngletC("medias"); } }, F("Revoir les vidéos")));   /* « Dossier du concours » : carte dans Passages (09/11 14h15) */
   var blocResultats = h("div", { key: "res" },
     bandeauDirect, regLive,
     (epsRes.length || gestion) ? h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Résultats de l’équipe"))) : null,
@@ -1970,7 +2003,7 @@ function EcranConcours() {
       (resLect && resLect !== "en_cours") ? h("div", { className: "hs-note", style: { marginTop: 8 } }, resLect)
         : h("div", { className: "hs-note", style: { marginTop: 8 } }, F("Le PDF des résultats, une capture du site FFE ou du chronométreur : les résultats de tes couples se remplissent tout seuls."))) : null,
     listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
-    blocPodiums, boutonsBas, lienResBas);
+    blocPodiums, boutonsBas, liensResultats, lienResBas);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
@@ -2285,9 +2318,9 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [blocPratique, outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
+        ongletC === "passages" ? [blocPratique, outilsPassages, blocPassages, blocPaddock, blocRegles, liensPassages] : null,
         ongletC === "resultats" ? blocResultats : null,
-        ongletC === "medias" ? [blocGalerie, blocFil] : null)
+        ongletC === "medias" ? [blocGalerie, blocFil, liensMedias] : null)
         : null,
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
@@ -2635,6 +2668,18 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-cls{display:grid;grid-template-columns:1fr;gap:10px;margin:26px 0 6px}",
+  "@media (min-width:700px){.hc .hc-cls{grid-template-columns:1fr 1fr;gap:14px}}",
+  ".hc .hc-cl{position:relative;overflow:hidden;width:100%;height:104px;display:flex;align-items:center;gap:12px;padding:0 13px;border-radius:12px;background:#0B0F13;border:1px solid rgba(214,182,118,.38);cursor:pointer;text-align:start;color:#F3EEE4;font:inherit}",
+  ".hc .hc-cl-img{position:absolute;top:0;inset-inline-end:0;width:55%;height:100%;object-fit:cover;object-position:60% 40%;display:block}",
+  ".hc .hc-cl-voile{position:absolute;inset:0;background:linear-gradient(90deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 82%)}",
+  "[dir=rtl] .hc .hc-cl-voile{background:linear-gradient(270deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 82%)}",
+  ".hc .hc-cl-ico{position:relative;flex:0 0 auto;width:28px;display:flex;justify-content:center}",
+  ".hc .hc-cl-fil{position:relative;flex:0 0 auto;width:1px;align-self:stretch;margin:16px 0;background:rgba(214,182,118,.28)}",
+  ".hc .hc-cl-t{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}",
+  ".hc .hc-cl-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:600;line-height:1.15;color:#F3EEE4}",
+  ".hc .hc-cl-t small{font-size:11px;color:rgba(244,241,234,.72)}",
+  ".hc .hc-cl-chev{position:relative;flex:0 0 auto;color:#C9A66B;font-size:18px}",
   ".hc .hc-lres{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 16px;margin:18px 0 4px;font-size:12px}",
   ".hc .hc-lres a{color:rgba(243,238,228,.72);text-decoration:none;border-bottom:1px solid rgba(201,166,107,.45);padding-bottom:1px}",
   ".hc .hc-lres-r{background:none;border:none;padding:0;font:inherit;font-size:12px;color:rgba(201,166,107,.85);cursor:pointer}",
