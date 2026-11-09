@@ -3130,15 +3130,10 @@ var HC_CSS = [
   ".hc #hs-fil{margin-top:6px}",
   ".hc .hc-vid span{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:8px;background:rgba(7,10,8,.72);color:#F3EEE4}",
   "@media (min-width:768px){.hc .hc-titre{bottom:64px}.hc .hc-cartes{gap:12px}.hc .hc-photo img{max-height:62vh}}",
-  /* 09/11 21h10 (Blandine : « le héros est beaucoup trop haut sur iPhone ») : même photo, même courbe, même titre, mais moins haut ;
-     la photo n'est plus agrandie et rognée pour remplir la largeur : elle est montrée ENTIÈRE à gauche, fondue dans le noir */
-  ".hc .hc-hero .hs-photo{height:clamp(200px,56vw,280px);margin-top:-14px}",
-  ".hc .hc-hero .hs-photo img{width:auto;max-width:100%;height:100%;object-fit:contain;object-position:left center;-webkit-mask-image:linear-gradient(90deg,#000 66%,transparent);mask-image:linear-gradient(90deg,#000 66%,transparent)}",
-  "[dir=rtl] .hc .hc-hero .hs-photo img{margin-inline-start:auto;object-position:right center;-webkit-mask-image:linear-gradient(270deg,#000 66%,transparent);mask-image:linear-gradient(270deg,#000 66%,transparent)}",
-  ".hc .hc-hero .hs-titre{margin-top:-58px}",
-  ".hc .hc-hero .hs-titre h1{text-shadow:0 2px 16px rgba(0,0,0,.7)}",
-  ".hc .hc-cartes{gap:7px;margin-top:14px}",
-  ".hc .hc-carte{aspect-ratio:1.08}",
+  /* 09/11 22h05 (Blandine : « on est passé de ça qui était très bien à ça qui ne va plus du tout ») : le haut de la fiche
+     revient EXACTEMENT comme avant 21h25 ; seuls les deux boutons ronds du haut (‹ et •••) sont protégés de la règle des ronds
+     de médias, qui les grossissait. */
+  ".hc .hc-hero .hc-rond{width:42px;height:42px;padding:0;overflow:visible;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.32)}",
   /* ══ 09/11 soir — MÉDIAS DU CONCOURS, maquette validée (ordinateur, tablette, iPhone) ══ */
   ".hc .hc-md{margin-top:6px;container:hcmd/inline-size}",
   ".hc .hc-md-tete{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:30px 0 4px}",
