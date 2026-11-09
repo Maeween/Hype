@@ -26,6 +26,11 @@ var HS_TR_BRUT = {
   "Voir les ": ["See the ", "Ver los ", "Vedi gli altri ", "残り", "Die weiteren ", "عرض ", "查看其余 ", "Bekijk de ", "Ver os ", "Visa de ", "Показать ещё ", "Pokaż pozostałe ", "나머지 "],
   "autres passages": ["other starts", "otros pasos", "passaggi", "件の出場を見る", "Starts anzeigen", "انطلاقات أخرى", "个出场", "andere starts", "outras passagens", "andra starterna", "стартов", "starty", "개 출전 보기"],
   "Touche ⋯ pour dire qui est dessus": ["Tap ⋯ to say who's in it", "Toca ⋯ para decir quién aparece", "Tocca ⋯ per dire chi c’è", "⋯ をタップして誰か指定", "Tippe auf ⋯, um anzugeben, wer drauf ist", "اضغط ⋯ لتحديد من فيه", "点击 ⋯ 标记是谁", "Tik op ⋯ om aan te geven wie erop staat", "Toca em ⋯ para dizer quem aparece", "Tryck på ⋯ för att ange vem som syns", "Нажми ⋯, чтобы указать, кто здесь", "Dotknij ⋯, aby wskazać, kto jest na nim", "⋯ 를 눌러 누가 나오는지 알려 줘"],
+  "Ses médias sur ce concours": ["Their media from this show", "Sus medios de este concurso", "I suoi contenuti di questo concorso", "この大会でのメディア", "Die Medien dieses Turniers", "وسائطه في هذه المسابقة", "本场比赛的媒体", "Media van deze wedstrijd", "As suas mídias desta competição", "Medier från den här tävlingen", "Медиа с этих соревнований", "Multimedia z tych zawodów", "이 대회의 미디어"],
+  "Avec ": ["With ", "Con ", "Con ", "", "Mit ", "مع ", "与", "Met ", "Com ", "Med ", "С ", "Z ", ""],
+  "Les chevaux": ["The horses", "Los caballos", "I cavalli", "馬たち", "Die Pferde", "الخيول", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들"],
+  "Voir tous les chevaux": ["See all horses", "Ver todos los caballos", "Vedi tutti i cavalli", "すべての馬を見る", "Alle Pferde ansehen", "عرض كل الخيول", "查看全部马匹", "Alle paarden bekijken", "Ver todos os cavalos", "Visa alla hästar", "Все лошади", "Zobacz wszystkie konie", "모든 말 보기"],
+  "Voir tous les cavaliers": ["See all riders", "Ver todos los jinetes", "Vedi tutti i cavalieri", "すべてのライダーを見る", "Alle Reiter ansehen", "عرض كل الفرسان", "查看全部骑手", "Alle ruiters bekijken", "Ver todos os cavaleiros", "Visa alla ryttare", "Все всадники", "Zobacz wszystkich jeźdźców", "모든 라이더 보기"],
   "Les premiers souvenirs": ["First memories", "Los primeros recuerdos", "I primi ricordi", "最初の思い出", "Die ersten Erinnerungen", "الذكريات الأولى", "最初的回忆", "De eerste herinneringen", "As primeiras lembranças", "De första minnena", "Первые воспоминания", "Pierwsze wspomnienia", "첫 번째 추억"],
   "Tous les souvenirs": ["All the memories", "Todos los recuerdos", "Tutti i ricordi", "すべての思い出", "Alle Erinnerungen", "كل الذكريات", "全部回忆", "Alle herinneringen", "Todas as lembranças", "Alla minnen", "Все воспоминания", "Wszystkie wspomnienia", "모든 추억"],
   "Pas encore de média sur ce concours.": ["No media for this show yet.", "Todavía no hay medios de este concurso.", "Ancora nessun contenuto per questo concorso.", "この大会のメディアはまだありません。", "Noch keine Medien zu diesem Turnier.", "لا توجد وسائط لهذه المسابقة بعد.", "这场比赛还没有媒体。", "Nog geen media van deze wedstrijd.", "Ainda não há mídias desta competição.", "Inga medier från tävlingen än.", "Пока нет медиа с этих соревнований.", "Brak jeszcze multimediów z tych zawodów.", "아직 이 대회의 미디어가 없어요."],
@@ -1214,7 +1219,10 @@ function EcranConcours() {
   var _fov = React.useState(false); var filOuv = _fov[0], setFilOuv = _fov[1];   /* 09/11 16h35 : le fil n'apparaît que pour ajouter des photos */
   var _vgf = React.useState({}); var vgFerme = _vgf[0], setVgFerme = _vgf[1];   /* 09/11 19h15 : lots de vidéos repliés */
   var _mvu = React.useState(""); var medVue = _mvu[0], setMedVue = _mvu[1];   /* 09/11 soir (maquette validée) : "" = galerie ; "cav" / "ch" / "ep" = vue Explorer les médias */
-  var _mlg = React.useState(0); var medLarg = _mlg[0], setMedLarg = _mlg[1];   /* largeur réelle de la partie Médias (colonnes de la galerie) */   /* 09/11 soir (maquette validée) : "" = galerie ; "cav" / "ch" / "ep" = vue Explorer les médias */
+  var _mlg = React.useState(0); var medLarg = _mlg[0], setMedLarg = _mlg[1];
+  var _mxs = React.useState({}); var medXSel = _mxs[0], setMedXSel = _mxs[1];   /* 09/11 20h30 : cheval / cavalier choisi dans Par cheval / Par cavalier ({ ch: id, cav: id }) */
+  var _mxf = React.useState(""); var medXFil = _mxf[0], setMedXFil = _mxf[1];   /* filtre croisé « Avec … » */
+  var _mxt = React.useState(false); var medXTous = _mxt[0], setMedXTous = _mxt[1];   /* « Voir tous les chevaux » */   /* largeur réelle de la partie Médias (colonnes de la galerie) */   /* 09/11 soir (maquette validée) : "" = galerie ; "cav" / "ch" / "ep" = vue Explorer les médias */
   var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
@@ -2416,12 +2424,98 @@ function EcranConcours() {
   var colsMd = (function () { var w = medLarg || 390; return w >= 1400 ? 7 : w >= 1024 ? 6 : w >= 900 ? 5 : w >= 600 ? 4 : 3; })();   /* mêmes seuils que les règles @container hcmd */
   function mesurerMd(el) { if (!el) return; try { var w = el.clientWidth; if (w && Math.abs(w - medLarg) > 8) setMedLarg(w); } catch (e) { } }
   var resteMd = (itemsM.length <= medNE) ? (galM.length % colsMd) : 0, largeMd = (resteMd === 1 && colsMd > 2) ? 2 : 1;   /* une case de plus suffit : la dernière ligne a au moins deux vignettes, sans case géante */
+  /* ══ 09/11 20h30 — « PAR CHEVAL » / « PAR CAVALIER » (maquettes ordinateur, tablette, iPhone validées) ══
+     Une médiathèque par cheval (ou par cavalier) : la liste à choisir (colonne à gauche en grand, bande qui défile sur
+     iPhone), un bandeau (photo entière, nom, « Ses médias sur ce concours », photos / vidéos, Ajouter des médias), les
+     filtres croisés « Avec … » puis la mosaïque photos + vidéos à leurs vraies proportions. Filtrage croisé exact :
+     Romy puis Yellow = Yellow puis Romy (mêmes médias). Rien n'est déduit : un média sans identification va dans
+     « À identifier », jamais attribué d'office. Hey Baby : dans le lecteur vidéo, pas sur les vignettes. */
+  var nomsCh = {}, nomsCav = {};
+  optCh.forEach(function (o) { nomsCh[o.id] = o.nom; }); optCav.forEach(function (o) { nomsCav[o.id] = o.nom; });
+  if (medG) Object.keys(medG.ident || {}).forEach(function (k) { (medG.ident[k] || []).forEach(function (q) { if (!q.cible_nom || !q.cible_id) return; var id = String(q.cible_id); if (q.type === "cheval" && !nomsCh[id]) nomsCh[id] = q.cible_nom; if (q.type === "cavalier" && !nomsCav[id]) nomsCav[id] = q.cible_nom; }); });
+  if (moi && !nomsCav[String(moi.id)]) nomsCav[String(moi.id)] = F("Moi");
+  var xModeCh = medVue === "ch", xCle = xModeCh ? "ch" : "cav", xAutre = xModeCh ? "cav" : "ch";
+  var xNoms = xModeCh ? nomsCh : nomsCav, xNomsAutre = xModeCh ? nomsCav : nomsCh;
+  function photoCh(id) { return chPhotos[id] || null; }
+  function photoCav(id) { var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url || null; }); return ph; }
+  function xPhoto(id, modeCh) { return modeCh ? photoCh(id) : photoCav(id); }
+  var xListe = [], xParId = {}, xSans = [];
+  itemsM.forEach(function (x) {
+    var ids = x[xCle] || [];
+    if (!ids.length) { xSans.push(x); return; }
+    ids.forEach(function (id) { if (!xParId[id]) { xParId[id] = { id: id, nom: xNoms[id] || (xModeCh ? F("Cheval") : F("Cavalier")), l: [] }; xListe.push(xParId[id]); } xParId[id].l.push(x); });
+  });
+  xListe.sort(function (a, b) { var am = (!xModeCh && moi && a.id === String(moi.id)) ? -1 : 0, bm = (!xModeCh && moi && b.id === String(moi.id)) ? -1 : 0; return (am - bm) || (b.l.length - a.l.length) || String(a.nom).localeCompare(String(b.nom)); });
+  if (xSans.length) xListe.push({ id: "__", nom: F("À identifier"), l: xSans, sans: true });
+  var xSelId = medXSel[xCle], xSel = xListe.filter(function (g) { return g.id === xSelId; })[0] || xListe[0] || null;
+  var xFiltres = [];
+  if (xSel) xSel.l.forEach(function (x) { (x[xAutre] || []).forEach(function (id) { var f = xFiltres.filter(function (q) { return q.id === id; })[0]; if (!f) { f = { id: id, nom: xNomsAutre[id] || (xModeCh ? F("Cavalier") : F("Cheval")), n: 0 }; xFiltres.push(f); } f.n++; }); });
+  xFiltres.sort(function (a, b) { return (b.n - a.n) || String(a.nom).localeCompare(String(b.nom)); });
+  var xFil = xFiltres.some(function (f) { return f.id === medXFil; }) ? medXFil : "";
+  var xMedias = xSel ? xSel.l.filter(function (x) { return !xFil || (x[xAutre] || []).indexOf(xFil) !== -1; }) : [];
+  var xNbV = xMedias.filter(function (x) { return x.video; }).length, xNbP = xMedias.length - xNbV;
+  var xMax = 6, xVisibles = (medXTous || xListe.length <= xMax + 1) ? xListe : xListe.slice(0, xMax);
+  if (xSel && xVisibles.indexOf(xSel) === -1) xVisibles = xVisibles.concat([xSel]);
+  function choisirX(id) { var n = Object.assign({}, medXSel); n[xCle] = id; setMedXSel(n); setMedXFil(""); setMedNE(24); }
+  function rondX(g, cls) {
+    var ph = g.sans ? null : xPhoto(g.id, xModeCh);
+    return h("span", { className: cls }, ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 160, 160) : ph, alt: "", loading: "lazy" })
+      : (g.sans ? h("b", null, "?") : (xModeCh ? icoXp("ch") : h("b", null, String(g.nom || "?").charAt(0).toUpperCase()))));
+  }
+  function ico2(n) { var d = n === "v" ? "M3.5 6.5h12v11h-12zM15.5 10.5l5-3v9l-5-3" : "M3.5 5.5h17v13h-17zM3.5 15l4.5-4.5 4 4 2.5-2.5 6 6M15.5 9.5h.01"; return h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: d, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinecap: "round", strokeLinejoin: "round" })); }
+  function tuileX(x) {   /* mosaïque : la vignette garde ses proportions (largeur pleine, hauteur naturelle) */
+    var src = apercu(x, 900), qui = nomsDe(x), peutId = moi && (x.auteur === moi.id || gestion);
+    return h("div", { key: x.cle, className: "hc-xm-t" },
+      h("button", { type: "button", className: "hc-xm-b", onClick: function () { ouvrirMedia(x); }, title: qui || undefined, "aria-label": (x.video ? F("Lire la vidéo") : F("Voir la photo")) + (qui ? " — " + qui : "") },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-xm-vide" }),
+        x.video ? h("span", { className: "hc-md-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M8.5 5.8v12.4l9.6-6.2z", fill: "#F3EEE4" }))) : null,
+        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-md-d" }, dureeTxt(x.duree)) : null),
+      peutId ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function () { setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); try { setTimeout(function () { var el = document.querySelector(".hc-mid"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 60); } catch (e1) { } } }, "⋯") : null);
+  }
+  var xMediasV = xMedias.slice(0, medNE);
+  var blocExplorer = !medVue || medVue === "ep" ? null : h("div", { key: "xm", className: "hc-xm" },
+    !xListe.length ? h("div", { className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : [
+      h("div", { key: "liste", className: "hc-xm-liste" },
+        h("div", { className: "hc-xm-lt" }, xModeCh ? F("Les chevaux") : F("Les cavaliers")),
+        h("div", { className: "hc-xm-ll", "data-hscroll": "1" }, xVisibles.map(function (g) {
+          var on = xSel && g.id === xSel.id;
+          return h("button", { key: g.id, type: "button", className: "hc-xm-it" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { choisirX(g.id); } },
+            rondX(g, "hc-xm-av"),
+            h("span", { className: "hc-xm-in" }, h("b", null, g.nom), h("small", null, g.l.length + " " + (g.l.length > 1 ? F("médias") : F("média")))),
+            h("i", { className: "hc-xm-chev", "aria-hidden": "true" }, rtl ? "‹" : "›"));
+        })),
+        xListe.length > xMax + 1 ? h("button", { type: "button", className: "hc-xm-tous", onClick: function () { setMedXTous(!medXTous); } },
+          medXTous ? F("Réduire") : ((xModeCh ? F("Voir tous les chevaux") : F("Voir tous les cavaliers")) + " (" + xListe.length + ")")) : null),
+      xSel ? h("div", { key: "main", className: "hc-xm-main" },
+        h("div", { className: "hc-xm-band" },
+          (!xSel.sans && xPhoto(xSel.id, xModeCh)) ? h("span", { className: "hc-xm-bph" }, h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype(xPhoto(xSel.id, xModeCh), 900) : xPhoto(xSel.id, xModeCh), alt: "" })) : null,
+          h("div", { className: "hc-xm-btx" },
+            h("h3", null, xSel.nom),
+            h("p", null, xSel.sans ? F("Touche ⋯ pour dire qui est dessus") : F("Ses médias sur ce concours")),
+            h("div", { className: "hc-xm-cpt" },
+              h("span", null, ico2("p"), h("b", null, xNbP), " " + (xNbP > 1 ? F("photos") : F("photo"))),
+              h("span", null, ico2("v"), h("b", null, xNbV), " " + (xNbV > 1 ? F("vidéos") : F("vidéo")))),
+            h("button", { type: "button", className: "hc-md-aj", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("span", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias")))),
+        h("div", { key: "paj" }, panneauAjout),
+        xFiltres.length ? h("div", { className: "hc-xm-fil", "data-hscroll": "1" },
+          [h("button", { key: "tous", type: "button", className: "hc-xm-f" + (!xFil ? " on" : ""), onClick: function () { setMedXFil(""); setMedNE(24); } }, F("Tous") + " (" + xSel.l.length + ")")]
+          .concat(xFiltres.map(function (f) { return h("button", { key: f.id, type: "button", className: "hc-xm-f" + (xFil === f.id ? " on" : ""), onClick: function () { setMedXFil(xFil === f.id ? "" : f.id); setMedNE(24); } },
+            xModeCh ? icoXp("cav") : icoXp("ch"), F("Avec ") + f.nom + " (" + f.n + ")"); }))) : null,
+        h("div", { className: "hc-xm-mos" }, xMediasV.map(tuileX)),
+        xMedias.length > medNE ? h("div", { key: "sx" + medNE, ref: sentinelle, className: "hc-md-suite" },
+          h("button", { type: "button", className: "hc-md-aj", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus"))) : null) : null]);
+  function ongletM(k, libre, ic) {
+    var on = (medVue || "") === k;
+    return h("button", { key: k || "tous", type: "button", className: "hc-mn-b" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { setMedVue(k); setMedId(null); setMedNE(24); } }, ic ? icoXp(ic) : null, libre);
+  }
   var blocGalerie = h("div", { key: "gal", ref: mesurerMd, className: "hc-gal hc-rep hc-md" },
+    h("div", { key: "tete", className: "hc-md-tete" },
+      h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
+    h("div", { key: "nav", className: "hc-mn", role: "tablist", "data-hscroll": "1" },
+      ongletM("", F("Tous les souvenirs"), null), ongletM("cav", F("Par cavalier"), "cav"), ongletM("ch", F("Par cheval"), "ch")),
+    !medVue ? h("div", { key: "ajr", className: "hc-md-ajr" }, h("button", { type: "button", className: "hc-md-aj", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("span", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias"))) : null,
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
-    medVue ? blocVideos : [
-      h("div", { key: "tete", className: "hc-md-tete" },
-        h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" }),
-        h("button", { type: "button", className: "hc-md-aj", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("span", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias"))),
+    medVue === "ep" ? blocVideos : medVue ? blocExplorer : [
       h("div", { key: "paj" }, panneauAjout),
       !medG ? h("div", { key: "att", className: "hs-note" }, "…") : null,
       (medG && !itemsM.length) ? h("div", { key: "vide", className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
@@ -2434,10 +2528,7 @@ function EcranConcours() {
         secMd(F("Tous les souvenirs"), h("span", null, itemsM.length + " " + (itemsM.length > 1 ? F("médias") : F("média")))),
         h("div", { className: "hc-md-grille" }, galM.map(function (x, i) { return caseMd(x, "hc-md-g" + (i === 0 && largeMd > 1 ? " large" : ""), i === 0 && largeMd > 1 ? 1200 : 600, null, i === 0 && largeMd > 1 ? { gridColumn: "span " + largeMd, aspectRatio: String(Math.round(largeMd * (colsMd <= 3 ? 1 : 4 / 3) * 100) / 100) + " / 1" } : null); })),
         itemsM.length > medNE ? h("div", { key: "sent" + medNE, ref: sentinelle, className: "hc-md-suite" },
-          h("button", { type: "button", className: "hc-md-aj", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus"))) : null) : null,
-      itemsM.length ? h("div", { key: "xp", className: "hc-md-xp" },
-        accesXp("cav", F("Par cavalier"), F("Voir les médias de chaque cavalier")),
-        accesXp("ch", F("Par cheval"), F("Voir les médias par cheval"))) : null],
+          h("button", { type: "button", className: "hc-md-aj", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus"))) : null) : null],
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
   var blocPartageConcours = h("div", { key: "pcc" },
@@ -3052,6 +3143,7 @@ var HC_CSS = [
   ".hc .hc-md-aj{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 18px;border-radius:10px;border:1px solid rgba(201,166,107,.7);background:transparent;color:#C9A66B;font-family:'Montserrat',system-ui,sans-serif;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer}",
   ".hc .hc-md-aj span{font-size:18px;font-weight:400;line-height:1}",
   ".hc .hc-md-s{margin-top:26px}",
+  ".hc .hc-md-ajr{display:flex;justify-content:flex-end;margin:12px 0 0}",
   ".hc .hc-md-sec{display:flex;align-items:center;gap:14px;margin:0 0 14px}",
   ".hc .hc-md-sec h2,.hc .hc-md-sec h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(24px,6.6vw,36px);line-height:1.1;color:#F3EEE4;white-space:nowrap}",
   ".hc .hc-md-sec>i{flex:1;height:1px;min-width:20px;background:linear-gradient(90deg,rgba(201,166,107,.55),rgba(201,166,107,0))}",
@@ -3098,10 +3190,61 @@ var HC_CSS = [
   ".hc .hc-rep .hc-xp .hc-vg .hc-mt-play{width:46px;max-width:46px}",
   ".hc .hc-xp .hc-vg-nm b{font-size:17px}",
   ".hc .hc-xp .hc-vg-av{width:44px;height:44px}",
+  /* ══ 09/11 20h30 — navigation Tous les souvenirs | Par cavalier | Par cheval, et médiathèque par cheval / par cavalier ══ */
+  ".hc .hc-mn{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:14px 0 4px;padding-bottom:2px}",
+  ".hc .hc-mn::-webkit-scrollbar{display:none}",
+  ".hc .hc-mn-b{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.28);background:#070A08;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:500;white-space:nowrap;cursor:pointer}",
+  ".hc .hc-mn-b svg{width:19px;height:19px}",
+  "@container hcmd (max-width:440px){.hc .hc-mn{gap:6px}.hc .hc-mn-b{flex:1 1 auto;padding:0 9px;gap:5px;font-size:15px;min-height:40px}.hc .hc-mn-b svg{width:15px;height:15px}}",
+  ".hc .hc-mn-b.on{border-color:#C9A66B;box-shadow:0 0 0 1px rgba(201,166,107,.35) inset}",   /* actif : noir, contour champagne — jamais plein doré */
+  ".hc .hc-xm{margin-top:18px}",
+  ".hc .hc-xm-lt{display:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:26px;color:#F3EEE4;margin:0 0 12px}",
+  ".hc .hc-xm-ll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}",
+  ".hc .hc-xm-ll::-webkit-scrollbar{display:none}",
+  ".hc .hc-xm-it{flex:0 0 auto;scroll-snap-align:start;display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 18px 8px 8px;border-radius:14px;border:1px solid rgba(201,166,107,.18);background:#070A08;color:#F3EEE4;text-align:start;cursor:pointer;font:inherit}",
+  ".hc .hc-xm-it.on{border-color:#C9A66B}",
+  ".hc .hc-xm-av{flex:none;width:48px;height:48px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,166,107,.6);background:#101413;display:flex;align-items:center;justify-content:center}",
+  ".hc .hc-xm-av img{width:100%;height:100%;object-fit:cover}",
+  ".hc .hc-xm-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500;color:#C9A66B}",
+  ".hc .hc-xm-in{display:flex;flex-direction:column;min-width:0}",
+  ".hc .hc-xm-in b{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:500;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}",
+  ".hc .hc-xm-in small{font-size:12px;color:rgba(243,238,228,.7);margin-top:2px}",
+  ".hc .hc-xm-chev{display:none;margin-inline-start:auto;font-style:normal;color:#C9A66B;font-size:20px}",
+  ".hc .hc-xm-tous{display:inline-flex;align-items:center;min-height:38px;margin-top:10px;padding:0 16px;border-radius:999px;border:1px solid rgba(201,166,107,.5);background:transparent;color:#C9A66B;font-size:12.5px;cursor:pointer}",
+  ".hc .hc-xm-main{margin-top:18px;min-width:0;container:hcxm/inline-size}",
+  /* bandeau : la photo entière à gauche, fondue dans le noir ; le nom en grand */
+  ".hc .hc-xm-band{position:relative;display:flex;align-items:center;gap:14px;min-height:118px;border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18);padding:10px 0;overflow:hidden}",
+  ".hc .hc-xm-bph{flex:0 1 auto;max-width:44%;height:118px;display:flex}",
+  ".hc .hc-xm-bph img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;-webkit-mask-image:linear-gradient(90deg,#000 62%,transparent);mask-image:linear-gradient(90deg,#000 62%,transparent)}",
+  "[dir=rtl] .hc .hc-xm-bph img{-webkit-mask-image:linear-gradient(270deg,#000 62%,transparent);mask-image:linear-gradient(270deg,#000 62%,transparent)}",
+  ".hc .hc-xm-btx{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}",
+  ".hc .hc-xm-btx h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:600;font-size:clamp(30px,8vw,46px);line-height:1;color:#F3EEE4;max-width:100%;overflow-wrap:anywhere}",
+  ".hc .hc-xm-btx p{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:rgba(243,238,228,.88)}",
+  ".hc .hc-xm-cpt{display:flex;flex-wrap:wrap;gap:4px 16px;margin:6px 0 8px;font-size:13px;color:#F3EEE4}",
+  ".hc .hc-xm-cpt span{display:inline-flex;align-items:center;gap:6px}",
+  ".hc .hc-xm-cpt b{font-weight:600}",
+  ".hc .hc-xm-btx .hc-md-aj{min-height:36px;padding:0 14px;font-size:12.5px}",
+  /* filtres croisés « Avec … » : noirs, contour champagne quand actifs */
+  ".hc .hc-xm-fil{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:16px 0 14px;padding-bottom:2px}",
+  ".hc .hc-xm-fil::-webkit-scrollbar{display:none}",
+  ".hc .hc-xm-f{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.28);background:#070A08;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;white-space:nowrap;cursor:pointer}",
+  ".hc .hc-xm-f svg{width:17px;height:17px}",
+  ".hc .hc-xm-f.on{border-color:#C9A66B}",
+  /* mosaïque : chaque média à ses vraies proportions, aucune découpe */
+  ".hc .hc-xm-mos{column-count:2;column-gap:9px}",
+  ".hc .hc-xm-t{position:relative;break-inside:avoid;margin:0 0 9px;border-radius:10px;overflow:hidden;border:1px solid rgba(201,166,107,.3);background:#0B0E0C}",
+  ".hc .hc-xm-b{position:relative;display:block;width:100%;padding:0;border:none;background:none;cursor:pointer;line-height:0}",
+  ".hc .hc-xm-b img{display:block;width:100%;height:auto}",
+  ".hc .hc-xm-b.vide,.hc .hc-xm-vide{display:block;aspect-ratio:4/3;background:linear-gradient(160deg,#141a1c,#0a0d0e)}",
+  ".hc .hc-xm-t .hc-md-play{width:38px;height:38px}",
+  ".hc .hc-xm-t .hc-mt-id{z-index:2;width:26px;height:26px;font-size:14px}",
+  "@container hcxm (min-width:520px){.hc .hc-xm-mos{column-count:3;column-gap:12px}.hc .hc-xm-t{margin-bottom:12px}.hc .hc-xm-bph{height:150px}.hc .hc-xm-band{min-height:150px}}",
+  "@container hcxm (min-width:820px){.hc .hc-xm-mos{column-count:4}.hc .hc-xm-band{gap:24px}.hc .hc-xm-bph{height:170px}.hc .hc-xm-btx{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:22px}.hc .hc-xm-btx h3,.hc .hc-xm-btx p{flex-basis:100%}.hc .hc-xm-btx .hc-md-aj{margin-inline-start:auto}}",
   "@container hcmd (min-width:600px){.hc .hc-md-une .hc-md-p,.hc .hc-md-une.n2 .hc-md-m{aspect-ratio:16/9}.hc .hc-md-une .hc-md-m{aspect-ratio:16/10}.hc .hc-md-grille{grid-template-columns:repeat(4,1fr);gap:9px}.hc .hc-md-g{aspect-ratio:4/3}.hc .hc-md-acc-t small{display:block}.hc .hc-xp .hc-vg-i,.hc .hc-xp .hc-vg.seule .hc-vg-i{flex:0 0 calc((100% - 20px) / 3)}.hc .hc-md-s{margin-top:32px}}",
   "@container hcmd (min-width:900px){.hc .hc-md-grille{grid-template-columns:repeat(5,1fr)}.hc .hc-md-xp{grid-template-columns:1fr 1fr;gap:22px}}",
   /* ordinateur : les trois premiers souvenirs sur une ligne, même hauteur ; galerie large */
   "@container hcmd (min-width:1024px){.hc .hc-md-une{grid-template-columns:1.75fr 1fr 1fr;grid-auto-rows:clamp(220px,22cqw,330px);gap:14px}.hc .hc-md-une .hc-md-p,.hc .hc-md-une .hc-md-m,.hc .hc-md-une.n2 .hc-md-m{grid-column:auto;aspect-ratio:auto}.hc .hc-md-une.n2{grid-template-columns:1.75fr 1fr}.hc .hc-md-une.n1{grid-template-columns:1fr;grid-auto-rows:clamp(260px,36cqw,460px)}.hc .hc-md-grille{grid-template-columns:repeat(6,1fr);gap:12px}.hc .hc-md-acc{min-height:74px;padding:12px 24px}.hc .hc-md-acc-t b{font-size:27px}.hc .hc-xp .hc-vg-i,.hc .hc-xp .hc-vg.seule .hc-vg-i{flex:0 0 calc((100% - 30px) / 4)}}",
+  "@container hcmd (min-width:860px){.hc .hc-xm{display:grid;grid-template-columns:250px minmax(0,1fr);gap:26px;align-items:start}.hc .hc-xm-lt{display:block}.hc .hc-xm-ll{flex-direction:column;overflow:visible;gap:8px}.hc .hc-xm-it{width:100%;box-sizing:border-box}.hc .hc-xm-chev{display:block}.hc .hc-xm-main{margin-top:0}.hc .hc-mn{margin-top:4px}.hc .hc-md-tete{margin-bottom:10px}}",
   "@container hcmd (min-width:1400px){.hc .hc-md-grille{grid-template-columns:repeat(7,1fr)}}"
 ].join("\n");
 function hsCssConcours() {
