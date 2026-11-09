@@ -557,11 +557,8 @@ function EcranTeamCompetition() {
           (ouvert.ag && agenda.length > 1) ? h("div", null, agenda.slice(1).map(function (ev) { return carteRdvE(ev, false); })) : null,
           dernierConcours ? carteDernier(dernierConcours) : null,
           /* (526) les rendez-vous PASSES : dans « Voir tout », ouverts sur leur page souvenirs (photos) */
-          autresPasses.length ? h("button", { type: "button", "data-team-passes": "1", "aria-expanded": passesOuv || !!ouvert.ag, onClick: function () { setPassesOuv(!(passesOuv || ouvert.ag)); if (ouvert.ag) setOuvert(Object.assign({}, ouvert, { ag: false })); },
-              style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 10, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
-              h("span", null, T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Events", "الأحداث السابقة", "过往活动", "Afgelopen evenementen", "Eventos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 이벤트") + " (" + autresPasses.length + ")"),
-              h("span", { style: { fontSize: 16 } }, (passesOuv || ouvert.ag) ? "⌃" : CHEV)) : null,
-          ((ouvert.ag || passesOuv) && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
+          /* 09/11 15h01 (Blandine) : plus de bouton « Événements passés » — « Voir tout » montre à venir ET passés */
+          (ouvert.ag && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous pass\u00e9s", "Past events", "Citas pasadas", "Appuntamenti passati", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangene Termine", "\u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
             h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return carteRdvE(ev, true); }))) : null),
     lienSaison));
