@@ -2846,7 +2846,7 @@ var HC_CSS = [
   ".hc .hc-titre h1.long{font-size:clamp(27px,7.6vw,40px);line-height:1.05}",
   ".hc .hc-titre p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(14px,4vw,19px);color:#F3EEE4;opacity:.92;white-space:nowrap}",
   ".hc .hc-courbe{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:2}",
-  ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:24px}",
+  ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:40px;padding-bottom:26px}",
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
