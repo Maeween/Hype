@@ -20,9 +20,17 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  /* 09/11 — modifier ou supprimer un engagement */
+  "Modifier ou supprimer": ["Edit or delete", "Modificar o eliminar", "Modifica o elimina", "編集または削除", "Bearbeiten oder löschen", "تعديل أو حذف", "编辑或删除", "Bewerken of verwijderen", "Editar ou excluir", "Ändra eller ta bort", "Изменить или удалить", "Edytuj lub usuń", "수정 또는 삭제"],
+  "Indique l’épreuve.": ["Enter the class.", "Indica la prueba.", "Indica la prova.", "競技を入力してください。", "Gib die Prüfung an.", "حدّد المسابقة.", "请填写赛项。", "Geef de rubriek op.", "Indica a prova.", "Ange klassen.", "Укажи маршрут.", "Podaj konkurs.", "종목을 입력해 주세요."],
+  "Engagement modifié : ": ["Entry updated: ", "Inscripción modificada: ", "Iscrizione modificata: ", "エントリーを変更しました：", "Nennung geändert: ", "تم تعديل التسجيل: ", "报名已修改：", "Inschrijving gewijzigd: ", "Inscrição alterada: ", "Anmälan ändrad: ", "Заявка изменена: ", "Zgłoszenie zmienione: ", "참가 신청 수정됨: "],
+  "Supprimer ce tour de ": ["Delete this round for ", "¿Eliminar esta vuelta de ", "Eliminare questo giro di ", "この回を削除しますか：", "Diese Runde löschen von ", "حذف هذه الجولة لـ ", "删除此轮次：", "Deze ronde verwijderen van ", "Excluir esta volta de ", "Ta bort denna runda för ", "Удалить этот заезд: ", "Usunąć ten przejazd: ", "이 라운드를 삭제할까요: "],
+  "Non": ["No", "No", "No", "いいえ", "Nein", "لا", "否", "Nee", "Não", "Nej", "Нет", "Nie", "아니요"],
+  "Oui, supprimer": ["Yes, delete", "Sí, eliminar", "Sì, elimina", "はい、削除", "Ja, löschen", "نعم، احذف", "是，删除", "Ja, verwijderen", "Sim, excluir", "Ja, ta bort", "Да, удалить", "Tak, usuń", "예, 삭제"],
+  "Supprimer ce tour": ["Delete this round", "Eliminar esta vuelta", "Elimina questo giro", "この回を削除", "Diese Runde löschen", "حذف هذه الجولة", "删除此轮次", "Deze ronde verwijderen", "Excluir esta volta", "Ta bort denna runda", "Удалить этот заезд", "Usuń ten przejazd", "이 라운드 삭제"],
   "Afficher ce média": ["Show this media", "Mostrar este medio", "Mostra questo media", "このメディアを表示", "Dieses Medium zeigen", "عرض هذا الوسيط", "显示此媒体", "Dit medium tonen", "Mostrar esta mídia", "Visa detta media", "Показать это медиа", "Pokaż to medium", "이 미디어 보기"],
   /* 09/11 13h30 — Médias du concours */
-  "Médias du concours": ["Show media", "Medios del concurso", "Media del concorso", "大会のメディア", "Medien des Turniers", "وسائط المسابقة", "比赛媒体", "Media van de wedstrijd", "Mídias do concurso", "Tävlingens media", "Медиа соревнований", "Media z zawodów", "대회 미디어"],
+  "Médias du concours": ["Competition media", "Medios del concurso", "Media del concorso", "大会のメディア", "Medien des Turniers", "وسائط المسابقة", "比赛媒体", "Media van de wedstrijd", "Mídias do concurso", "Tävlingens media", "Медиа соревнований", "Media z zawodów", "대회 미디어"],
   "Ajouter des médias": ["Add media", "Añadir medios", "Aggiungi media", "メディアを追加", "Medien hinzufügen", "إضافة وسائط", "添加媒体", "Media toevoegen", "Adicionar mídias", "Lägg till media", "Добавить медиа", "Dodaj media", "미디어 추가"],
   "Tous": ["All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alle", "Todos", "Alla", "Все", "Wszystkie", "전체"],
   "Vidéos": ["Videos", "Vídeos", "Video", "動画", "Videos", "فيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"],
@@ -972,6 +980,16 @@ var CSS2 = [
   ".e1 .d3-msg{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--hs-iv2)}",
   ".e1 .rc-li{grid-template-columns:26px 44px minmax(0,1fr) auto 32px}",
   ".e1 .rc-x{width:32px;height:32px;border-radius:50%;border:1px solid rgba(243,238,228,.12);background:none;color:var(--hs-iv3);font-size:16px;line-height:1;padding:0}",
+  /* 09/11 — modifier / supprimer un tour engagé */
+  ".e1 .rc-mod{display:flex;align-items:center;justify-content:center;border-color:rgba(201,166,107,.45)}",
+  ".e1 .rc-modp{grid-column:1 / -1;display:flex;flex-direction:column;gap:10px;margin:4px 0 6px;padding:12px;border:1px solid rgba(201,166,107,.35);border-radius:14px}",
+  ".e1 .rc-modp label{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px;font-size:12.5px;color:var(--hs-iv2)}",
+  ".e1 .rc-modp input{background:transparent;border:1px solid rgba(243,238,228,.22);border-radius:10px;color:#F3EEE4;font:inherit;font-size:14px;padding:9px 11px;min-width:0}",
+  ".e1 .rc-moda,.e1 .rc-modc{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px}",
+  ".e1 .rc-modc span{flex:1 0 100%;font-size:13px;color:#F3EEE4}",
+  ".e1 .rc-modx{background:transparent;border:1px solid rgba(214,120,110,.6);color:#E0A49B;border-radius:999px;font:inherit;font-size:12.5px;padding:7px 14px;cursor:pointer}",
+  ".e1 .rc-moda .rc-modx{margin-inline-end:auto}",
+  ".e1 .rc-modok{background:transparent;border:1px solid #C9A66B;color:#C9A66B;border-radius:999px;font:inherit;font-size:12.5px;font-weight:600;padding:7px 16px;cursor:pointer}",
   ".e1 .d3-sans{margin-top:26px}",
   ".e1 .d3-ordre{margin-top:30px;padding:16px;border-radius:18px;border:1px solid rgba(201,166,107,.3);background:#0E1415}",
   ".e1 .rc-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}",
@@ -2688,6 +2706,7 @@ function EcranEngagements() {
   var _moi = React.useState(null); var moiId = _moi[0], setMoiId = _moi[1];
   /* 07/11 23h20 — composeur « P1 / D3 » : qui, quel cheval, quelle épreuve, en tuiles photo ; la barre du bas se remplit */
   var _cp = React.useState({ cav: null, ch: "", ep: "", etape: 1 }); var comp = _cp[0], setComp = _cp[1];
+  var _mt = React.useState(null); var modTour = _mt[0], setModTour = _mt[1];   /* 09/11 (Blandine) : modifier / supprimer un tour engagé — { i, k, ep, ch, sup } */
   var _cpa = React.useState(""); var autreC = _cpa[0], setAutreC = _cpa[1];   /* "cav" | "ch" | "ep" : saisie « autre » ouverte */
   var _cph = React.useState(""); var autreCh = _cph[0], setAutreCh = _cph[1];
   var _cpm = React.useState(""); var msgC = _cpm[0], setMsgC = _cpm[1];
@@ -3286,7 +3305,20 @@ function EcranEngagements() {
               h("div", { className: "q" }, h("b", null, [np[1], np[0]].filter(Boolean).join(" ")),
                 h("span", null, x.ch || F("cheval à choisir"), k ? h("span", { className: "sup" }, String(k)) : null, x.piste ? " · " + F("piste ") + x.piste : "")),
               h("div", { className: "hh" + (x.h ? "" : " vide") }, x.h || "—"),
-              h("button", { type: "button", className: "rc-x", "aria-label": F("Retirer ce tour"), onClick: function () { retirerTour(x.i, x.n - 1); } }, "×"));
+              h("button", { type: "button", className: "rc-x rc-mod", "aria-label": F("Modifier ou supprimer"), onClick: function () { var t0 = ((lignes[x.i] || {}).tours || [])[x.n - 1] || {}; setMsgC(""); setModTour(modTour && modTour.i === x.i && modTour.k === x.n - 1 ? null : { i: x.i, k: x.n - 1, ep: t0.epreuve || e, ch: t0.cheval_nom || x.ch || "", sup: false }); } },
+                h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" }))),
+              (modTour && modTour.i === x.i && modTour.k === x.n - 1) ? h("div", { className: "rc-modp" },
+                h("label", null, h("span", null, F("Épreuve")), h("input", { type: "text", list: "rc-eps", value: modTour.ep, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ep: ev2.target.value })); } })),
+                h("datalist", { id: "rc-eps" }, eps.concat(ordreEp).filter(function (v, iv, tt) { return v && tt.indexOf(v) === iv; }).map(function (v) { return h("option", { key: v, value: v }); })),
+                h("label", null, h("span", null, F("Cheval")), h("input", { type: "text", list: "d3-chevaux-m", value: modTour.ch, onChange: function (ev2) { setModTour(Object.assign({}, modTour, { ch: ev2.target.value })); } })),
+                h("datalist", { id: "d3-chevaux-m" }, (chevaux || []).map(function (c) { return h("option", { key: c.id || c.nom, value: c.nom }); })),
+                modTour.sup ? h("div", { className: "rc-modc" }, h("span", null, F("Supprimer ce tour de ") + [np[1], np[0]].filter(Boolean).join(" ") + " ?"),
+                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(Object.assign({}, modTour, { sup: false })); } }, F("Non")),
+                    h("button", { type: "button", className: "rc-modx", onClick: function () { var mt = modTour; setModTour(null); retirerTour(mt.i, mt.k); } }, F("Oui, supprimer")))
+                  : h("div", { className: "rc-moda" },
+                    h("button", { type: "button", className: "rc-modx", onClick: function () { setModTour(Object.assign({}, modTour, { sup: true })); } }, F("Supprimer ce tour")),
+                    h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(null); } }, F("Annuler")),
+                    h("button", { type: "button", className: "rc-modok", onClick: validerModif }, F("Enregistrer")))) : null);
           }));
       }));
   }
@@ -3330,6 +3362,19 @@ function EcranEngagements() {
     if (!t.length) { if (l.id) sup.push(l.id); n.splice(i, 1); } else n[i] = l;
     setLignes(n); setSupprimees(sup); setModifie(true); setMsgC("");
     enregistrer(n, sup);
+  }
+  /* 09/11 (Blandine : « qu'on puisse modifier ou supprimer quelque chose qu'on a mis en engagement ») : un toucher sur la
+     ligne ouvre, juste dessous, l'épreuve et le cheval à changer, et « Supprimer ce tour » (avec confirmation). */
+  function validerModif() {
+    if (!modTour) return; var ep = hsNomEpreuve(String(modTour.ep || "").trim()), ch = String(modTour.ch || "").trim();
+    if (!ep) { setMsgC(F("Indique l’épreuve.")); return; }
+    var n = lignes.slice(), l = Object.assign({}, n[modTour.i]), t = (l.tours || []).slice(), u = Object.assign({}, t[modTour.k]);
+    var chChange = ch && ch !== u.cheval_nom;
+    u.epreuve = ep; if (ch) u.cheval_nom = ch; if (chChange) { u.cheval_id = null; }
+    t[modTour.k] = u; l.tours = t; n[modTour.i] = l;
+    setLignes(n); setModifie(true); setModTour(null);
+    setMsgC("✓ " + F("Engagement modifié : ") + ep + (ch ? " · " + ch : ""));
+    enregistrer(n, supprimees);
   }
   function retirerSansTour(i) {
     var n = lignes.slice(), sup = supprimees.slice(), l = n[i]; if (l && l.id) sup.push(l.id); n.splice(i, 1);
