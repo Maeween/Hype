@@ -2504,27 +2504,56 @@ function EcranConcours() {
     var on = (medVue || "") === k;
     return h("button", { key: k || "tous", type: "button", className: "hc-mn-b" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { setMedVue(k); setMedId(null); setMedNE(24); } }, ic ? icoXp(ic) : null, libre);
   }
+  /* ══ 09/11 21h55 — PAGE MÉDIAS REFAITE D'APRÈS LE VISUEL DE BLANDINE (« tout le principe on le refait », « colle exactement
+     au visuel ») : « Mes médias » = une grande + 3 ronds à droite + une rangée ; « Les médias de l'équipe » = une rangée qui
+     défile ; « + Ajouter des médias ». Effet soleil ADOUCI (B2) sur les vignettes seulement : la photo ouverte en grand et
+     la vidéo gardent leurs vraies couleurs. Mes médias = ceux que j'ai publiés ou où l'on m'a identifié (règle d'avant). ══ */
+  function vrImg(x, larg) {
+    var src = apercu(x, larg || 700);
+    return src ? [h("img", { key: "i", className: "hps-f", src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
+      h("span", { key: "l", className: "hps-l", "aria-hidden": "true" }), h("span", { key: "v", className: "hps-v", "aria-hidden": "true" })] : null;
+  }
+  function vrCase(x, cls, larg, action) {
+    var qui = nomsDe(x);
+    return h("button", { key: x.cle, type: "button", className: cls, onClick: action || function () { ouvrirMedia(x); }, title: qui || undefined, "aria-label": (x.video ? F("Lire la vidéo") : F("Voir la photo")) + (qui ? " — " + qui : "") },
+      vrImg(x, larg),
+      x.video ? h("i", { className: "vr-play", "aria-hidden": "true" }, h("b", null)) : null,
+      (x.video && dureeTxt(x.duree)) ? h("i", { className: "vr-d" }, dureeTxt(x.duree)) : null);
+  }
+  var vrP = mesM.filter(function (x) { return x.cle === medSel; })[0] || mesM[0] || null;
+  var vrAutres = mesM.filter(function (x) { return x !== vrP; });
+  var vrRonds = vrAutres.slice(0, 3), vrRang = vrAutres.slice(3, 3 + medNM);
+  var blocMesV = vrP ? h("div", { key: "vrm" },
+    h("div", { className: "vr-t" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
+    h("div", { className: "vr-haut" + (vrRonds.length ? "" : " seul") },
+      vrCase(vrP, "vr-big", 1400),
+      vrRonds.length ? h("div", { className: "vr-ronds" }, vrRonds.map(function (x) {
+        return h("button", { key: x.cle, type: "button", onClick: function () { setMedSel(x.cle); }, "aria-label": F("Afficher ce média") }, vrImg(x, 240));
+      })) : null),
+    vrRang.length ? h("div", { className: "vr-rang", "data-hscroll": "1" }, vrRang.map(function (x) { return vrCase(x, "vr-p", 600); })
+      .concat(vrAutres.length > 3 + medNM ? [h("button", { key: "plus", type: "button", className: "vr-p vr-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus"))] : [])) : null) : null;
+  var blocEqV = eqM.length ? h("div", { key: "vre" },
+    h("div", { className: "vr-t" + (vrP ? " sep" : "") }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
+    h("div", { className: "vr-eq", "data-hscroll": "1" }, eqM.slice(0, medNE).map(function (x) { return vrCase(x, "vr-e", 600); })
+      .concat(eqM.length > medNE ? [h("div", { key: "sx" + medNE, ref: sentinelle, className: "vr-e vr-fin", "aria-hidden": "true" })] : []))) : null;
   var blocGalerie = h("div", { key: "gal", ref: mesurerMd, className: "hc-gal hc-rep hc-md" },
-    h("div", { key: "tete", className: "hc-md-tete" },
-      h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
-    h("div", { key: "nav", className: "hc-mn", role: "tablist", "data-hscroll": "1" },
-      ongletM("", F("Tous les souvenirs"), null), ongletM("cav", F("Par cavalier"), "cav"), ongletM("ch", F("Par cheval"), "ch")),
-    !medVue ? h("div", { key: "ajr", className: "hc-md-ajr" }, h("button", { type: "button", className: "hc-md-aj", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("span", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias"))) : null,
+    h("style", { key: "b2" }, HC_B2_CSS),
+    medVue ? [
+      h("div", { key: "tete", className: "hc-md-tete" },
+        h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
+      h("div", { key: "nav", className: "hc-mn", role: "tablist", "data-hscroll": "1" },
+        ongletM("", F("Tous les souvenirs"), null), ongletM("cav", F("Par cavalier"), "cav"), ongletM("ch", F("Par cheval"), "ch"))] : null,
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
-    medVue === "ep" ? blocVideos : medVue ? blocExplorer : [
-      h("div", { key: "paj" }, panneauAjout),
+    medVue === "ep" ? blocVideos : medVue ? blocExplorer : h("div", { key: "vr", className: "vr" },
       !medG ? h("div", { key: "att", className: "hs-note" }, "…") : null,
       (medG && !itemsM.length) ? h("div", { key: "vide", className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
-      /* 09/11 21h10 (Blandine, captures iPhone) : UN seul média à l'honneur, à ses vraies proportions ; il n'est pas répété dessous */
-      premP ? h("div", { key: "prem", className: "hc-md-s" },
-        secMd(F("Les premiers souvenirs")),
-        h("div", { className: "hc-md-une1" }, tuileX(premP, true, 1600))) : null,
-      galM.length ? h("div", { key: "tous", className: "hc-md-s" },
-        secMd(F("Tous les souvenirs"), h("span", null, galTous.length + " " + (galTous.length > 1 ? F("médias") : F("média")))),
-        /* mosaïque à hauteurs variables (formats naturels) ; jamais de colonne vide : 1 média = pleine largeur, 2 = deux moitiés */
-        h("div", { className: "hc-xm-mos hc-md-mos n" + Math.min(galM.length, 4) }, galM.map(function (x) { return tuileX(x, true); })),
-        galTous.length > medNE ? h("div", { key: "sent" + medNE, ref: sentinelle, className: "hc-md-suite" },
-          h("button", { type: "button", className: "hc-md-aj", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus"))) : null) : null],
+      blocMesV, blocEqV,
+      h("div", { key: "aj", className: "vr-aj" }, h("button", { type: "button", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("i", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias"))),
+      h("div", { key: "paj" }, panneauAjout),
+      itemsM.length ? h("div", { key: "xp", className: "vr-liens" },
+        h("button", { type: "button", onClick: function () { setMedVue("cav"); setMedId(null); } }, F("Par cavalier")), h("i", { "aria-hidden": "true" }, "·"),
+        h("button", { type: "button", onClick: function () { setMedVue("ch"); setMedId(null); } }, F("Par cheval"))) : null,
+      h("div", { key: "fil", className: "vr-filet" })),
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
   var blocPartageConcours = h("div", { key: "pcc" },
@@ -2697,6 +2726,11 @@ function hcIcone(n) {
   if (n === "med") return h("svg", p, h("rect", { x: 3.5, y: 5, width: 17, height: 14, rx: 2 }), h("circle", { cx: 9, cy: 10, r: 1.6 }), h("path", { d: "M4 17l5-4.5 3.5 3 3-2.5 4.5 4" }));
   return null;
 }
+/* 09/11 21h46 (Blandine : « ok pour B2 ») : effet soleil ADOUCI — le même que HYPE_PH_SOLEIL_CSS (pages Cavalier, Écurie,
+   Challenge), à peu près moitié moins fort ; seulement sur les vignettes de la page Médias du concours pour l'instant. */
+var HC_B2_CSS = ".hc .hps-f{filter:sepia(.13) saturate(1.02) contrast(1.03)}.hc .hps-l,.hc .hps-v{position:absolute;z-index:1;inset:0;pointer-events:none;border-radius:inherit}"
+  + ".hc .hps-l{background:radial-gradient(ellipse 66% 60% at 52% 40%,rgba(255,155,55,.36),rgba(255,130,50,.14) 48%,rgba(255,120,45,.03) 75%);mix-blend-mode:overlay}"
+  + ".hc .hps-v{background:radial-gradient(ellipse 80% 74% at 52% 42%,rgba(14,8,3,0) 52%,rgba(14,8,3,.36) 100%),linear-gradient(0deg,rgba(12,7,3,.26),rgba(12,7,3,0) 36%)}";
 var HC_CSS_ID = "hype-saison-css-concours";
 var HC_CSS = [
   ".hc .hc-hero{position:relative;background:#070A08}",
@@ -3130,15 +3164,10 @@ var HC_CSS = [
   ".hc #hs-fil{margin-top:6px}",
   ".hc .hc-vid span{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 8px;border-radius:8px;background:rgba(7,10,8,.72);color:#F3EEE4}",
   "@media (min-width:768px){.hc .hc-titre{bottom:64px}.hc .hc-cartes{gap:12px}.hc .hc-photo img{max-height:62vh}}",
-  /* 09/11 21h10 (Blandine : « le héros est beaucoup trop haut sur iPhone ») : même photo, même courbe, même titre, mais moins haut ;
-     la photo n'est plus agrandie et rognée pour remplir la largeur : elle est montrée ENTIÈRE à gauche, fondue dans le noir */
-  ".hc .hc-hero .hs-photo{height:clamp(200px,56vw,280px);margin-top:-14px}",
-  ".hc .hc-hero .hs-photo img{width:auto;max-width:100%;height:100%;object-fit:contain;object-position:left center;-webkit-mask-image:linear-gradient(90deg,#000 66%,transparent);mask-image:linear-gradient(90deg,#000 66%,transparent)}",
-  "[dir=rtl] .hc .hc-hero .hs-photo img{margin-inline-start:auto;object-position:right center;-webkit-mask-image:linear-gradient(270deg,#000 66%,transparent);mask-image:linear-gradient(270deg,#000 66%,transparent)}",
-  ".hc .hc-hero .hs-titre{margin-top:-58px}",
-  ".hc .hc-hero .hs-titre h1{text-shadow:0 2px 16px rgba(0,0,0,.7)}",
-  ".hc .hc-cartes{gap:7px;margin-top:14px}",
-  ".hc .hc-carte{aspect-ratio:1.08}",
+  /* 09/11 22h05 (Blandine : « on est passé de ça qui était très bien à ça qui ne va plus du tout ») : le haut de la fiche
+     revient EXACTEMENT comme avant 21h25 ; seuls les deux boutons ronds du haut (‹ et •••) sont protégés de la règle des ronds
+     de médias, qui les grossissait. */
+  ".hc .hc-hero .hc-rond{width:42px;height:42px;padding:0;overflow:visible;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.32)}",
   /* ══ 09/11 soir — MÉDIAS DU CONCOURS, maquette validée (ordinateur, tablette, iPhone) ══ */
   ".hc .hc-md{margin-top:6px;container:hcmd/inline-size}",
   ".hc .hc-md-tete{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:30px 0 4px}",
@@ -3200,6 +3229,42 @@ var HC_CSS = [
   ".hc .hc-mn::-webkit-scrollbar{display:none}",
   ".hc .hc-mn-b{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.28);background:#070A08;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:500;white-space:nowrap;cursor:pointer}",
   ".hc .hc-mn-b svg{width:19px;height:19px}",
+  /* ══ 09/11 21h55 — page Médias d'après le visuel de Blandine ══ */
+  ".hc .vr{margin-top:-6px;color:#F3EEE4}",
+  ".hc .vr-t{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:4px 0 12px}",
+  ".hc .vr-t.sep{margin-top:28px}",
+  ".hc .vr-t h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(30px,8.6vw,40px);line-height:1;color:#F3EEE4}",
+  ".hc .vr-t span{flex:none;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:rgba(243,238,228,.85)}",
+  ".hc .vr-haut{display:grid;grid-template-columns:1fr clamp(56px,15vw,84px);gap:10px;align-items:stretch}",
+  ".hc .vr-haut.seul{grid-template-columns:1fr}",
+  ".hc .vr-big,.hc .vr-p,.hc .vr-e{position:relative;display:block;padding:0;border:1px solid rgba(201,166,107,.35);background:#0B0E0C;overflow:hidden;cursor:pointer}",
+  ".hc .vr-big{border-radius:14px;aspect-ratio:4/3}",
+  ".hc .vr-big img,.hc .vr-p img,.hc .vr-e img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}",   /* photo entière, le fond noir comble */
+  ".hc .vr-ronds{display:flex;flex-direction:column;justify-content:space-between;gap:8px}",
+  ".hc .vr-ronds button{position:relative;width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;padding:0;border:1px solid rgba(201,166,107,.75);background:#0B0E0C;cursor:pointer}",
+  ".hc .vr-ronds img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
+  ".hc .vr-rang{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:10px}",
+  ".hc .vr-rang::-webkit-scrollbar,.hc .vr-eq::-webkit-scrollbar{display:none}",
+  ".hc .vr-p{flex:0 0 calc((100% - 16px) / 3);border-radius:10px;aspect-ratio:16/10}",
+  ".hc .vr-plus{display:flex;align-items:center;justify-content:center;color:#C9A66B;font-size:12px}",
+  ".hc .vr-eq{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-inline-end:-18px;padding-inline-end:18px}",
+  ".hc .vr-e{flex:0 0 31%;border-radius:12px;aspect-ratio:1/.82}",
+  ".hc .vr-fin{flex:0 0 1px;border:none;background:none}",
+  ".hc .vr-play{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;border:2px solid rgba(243,238,228,.92);background:rgba(7,10,8,.35);display:flex;align-items:center;justify-content:center}",
+  ".hc .vr-play b{width:0;height:0;border-left:14px solid #F3EEE4;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}",
+  ".hc .vr-p .vr-play,.hc .vr-e .vr-play{left:8px;top:auto;bottom:7px;transform:none;width:30px;height:30px;border-width:1.5px}",
+  ".hc .vr-p .vr-play b,.hc .vr-e .vr-play b{border-left-width:9px;border-top-width:6px;border-bottom-width:6px;margin-left:3px}",
+  ".hc .vr-d{position:absolute;z-index:3;right:7px;bottom:8px;font-style:normal;font-family:Montserrat,system-ui,sans-serif;font-size:11.5px;color:#F3EEE4;background:rgba(7,10,8,.72);border-radius:8px;padding:2px 7px;font-variant-numeric:tabular-nums}",
+  ".hc .vr-big .vr-d{font-size:14px;right:12px;bottom:12px;padding:4px 10px;border-radius:10px}",
+  ".hc .vr-aj{display:flex;justify-content:center;margin-top:26px}",
+  ".hc .vr-aj button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:62%;min-height:48px;padding:0 24px;border-radius:999px;border:1px solid rgba(201,166,107,.75);background:transparent;color:#F3EEE4;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;cursor:pointer}",
+  ".hc .vr-aj button i{font-style:normal;font-size:26px;font-weight:300;line-height:1}",
+  ".hc .vr-liens{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:14px}",
+  ".hc .vr-liens button{background:none;border:none;padding:6px 2px;color:#C9A66B;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;cursor:pointer}",
+  ".hc .vr-liens i{font-style:normal;color:rgba(201,166,107,.6)}",
+  ".hc .vr-filet{height:1px;margin-top:20px;background:rgba(243,238,228,.12)}",
+  "@container hcmd (min-width:600px){.hc .vr-big{aspect-ratio:16/10}.hc .vr-e{flex-basis:23%}}",
+  "@container hcmd (min-width:1024px){.hc .vr-e{flex-basis:18%}}",
   /* ══ 09/11 21h10 — corrections iPhone (captures de Blandine) : moins de vide, un seul média à l'honneur, mosaïque naturelle ══ */
   ".hc .hc-md-tete{margin:0}",
   ".hc .hc-onglet .hc-md{margin-top:-12px}",
