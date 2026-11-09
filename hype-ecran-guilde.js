@@ -534,6 +534,7 @@ function EcranGuilde() {
           if (vusG[i]) return; vusG[i] = true; idsG.push(i);
         });
         if (idsG.length < 2 || typeof supa === "undefined" || !supa) { if (vivantXpG) setOrdreXpG(null); return; }
+        if (typeof hypeSessionPrete === "function" && !(await hypeSessionPrete())) { if (vivantXpG) setOrdreXpG(null); return; } /* 09/11 : badge de connexion à jour avant la lecture */
         var rG = await supa.rpc("hype_ordre_cavaliers_xp", { ids: idsG });
         if (!vivantXpG) return;
         if (rG && rG.error) { setOrdreXpG(null); return; }

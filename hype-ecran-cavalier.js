@@ -438,6 +438,7 @@ function EcranMonCavalier() {
         var idsX = [], vusX = {};
         (amisListe || []).concat(suggestions || []).forEach(function (pX) { var iX = pX && pX.id ? String(pX.id) : ""; if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(iX) || vusX[iX]) return; vusX[iX] = true; idsX.push(iX); });
         if (idsX.length < 2 || typeof supa === "undefined" || !supa) return;
+        if (typeof hypeSessionPrete === "function" && !(await hypeSessionPrete())) { return; } /* 09/11 : badge de connexion à jour avant la lecture */
         var rX = await supa.rpc("hype_ordre_cavaliers_xp", { ids: idsX });
         if (!vifX || !rX || rX.error) return;
         var cX = {}; (rX.data || []).forEach(function (l) { if (l && l.user_id != null && l.rang != null) cX[String(l.user_id)] = Number(l.rang); });
