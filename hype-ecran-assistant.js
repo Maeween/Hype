@@ -230,6 +230,20 @@ function EcranAssistantIA() {
 
     /* 16/09 (213) : PLUSIEURS THEMES par epingle, sa demande. Un tableau, pas une valeur. */
     const [themesEp, setThemesEp] = useState([]);
+    /* 09/11 22h20 (Blandine, maquette « visuel du lexique » validee : « Ouiiii ») : PAGE D EPINGLAGE EN UN SEUL ECRAN.
+       Deux onglets Chevaux / Cavaliers, recherche, groupes A-F G-L M-R S-Z et lettres comme le grand lexique ; on choisit
+       un cheval ET/OU un cavalier (tous deux facultatifs : rien = sur ma page cavalier, comme avant), les themes, puis
+       « Epingler ». L enregistrement ne change pas (validerEpingle, meme colonnes). Paywall et plafond : petite carte d avant. */
+    const [epOnglet, setEpOnglet] = useState("chevaux");
+    const [epCheval, setEpCheval] = useState(null);   /* { id, nom } */
+    const [epCav, setEpCav] = useState(null);         /* { id, nom } */
+    const [epRech, setEpRech] = useState("");
+    const [epGroupe, setEpGroupe] = useState(0);
+    const [epLettre, setEpLettre] = useState("");
+    useEffect(() => {
+        if (!epingleCible) return;
+        setEpOnglet("chevaux"); setEpCheval(null); setEpCav(null); setEpRech(""); setEpGroupe(0); setEpLettre(""); setThemesEp([]);
+    }, [!!epingleCible]);
     const basculerTheme = (cle) => {
         setThemesEp((av) => {
             const l = (av || []).slice();
@@ -275,7 +289,7 @@ function EcranAssistantIA() {
         return () => { vif = false; };
     }, [!!epingleCible]);
     useEffect(() => {
-        if (!epingleCible || !epingleCible.etapeCav || cavEpListe !== null) return;
+        if (!epingleCible || epingleCible.paywall || epingleCible.limite || cavEpListe !== null) return;
         let vif = true;
         (async () => {
             try {
@@ -296,7 +310,7 @@ function EcranAssistantIA() {
             } catch (eCe) { if (vif) setCavEpListe([]); }
         })();
         return () => { vif = false; };
-    }, [epingleCible && epingleCible.etapeCav]);
+    }, [!!epingleCible]);
     const [conversationId, setConversationId] = useState(() => obtenirConversationHB());
     const [toastHB, setToastHB] = useState(null);
     const fichierRef = useRef(null);
@@ -1529,6 +1543,84 @@ function EcranAssistantIA() {
     const listeHistoHB = () => (() => { const qs = messages.filter((m) => m.role === "user" && m.contenu).map((m) => m.contenu); return qs.length ? qs.map((q, i) => React.createElement("button", { key: i, onClick: () => { setHistoOuvert(false); envoyer(q); }, style: { textAlign: "left", padding: "11px 13px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.86)", fontSize: 13, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, q)) : React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13, textAlign: "center", marginTop: 20 } }, t("historique_vide")); })();
     const [hbPanCote, setHbPanCote] = useState(() => { try { if (window.__rouvrirConseils === "assistant") { window.__rouvrirConseils = null; return true; } } catch (eRo) { } return false; });   /* au retour d un conseil ouvert depuis ici, le panneau se rouvre (meme regle que le carnet) */
     /* 09/11 22h : sortie de la fenetre d epinglage vers le <body> (voir plus bas). */
+    /* 09/11 22h20 : la page d epinglage facon grand lexique (voir les etats en haut). */
+    const EP_GROUPES = [["A", "B", "C", "D", "E", "F"], ["G", "H", "I", "J", "K", "L"], ["M", "N", "O", "P", "Q", "R"], ["S", "T", "U", "V", "W", "X", "Y", "Z", "#"]];
+    const epNorm = (t) => { try { return String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().trim(); } catch (eN) { return String(t || "").toUpperCase().trim(); } };
+    const epLettreDe = (nom) => { const c = epNorm(nom).charAt(0); return (c >= "A" && c <= "Z") ? c : "#"; };
+    const rendrePageEpingle = () => {
+        const h = React.createElement;
+        const CH = "#C9A66B", IV = "#F3EEE4", DOUX = "rgba(243,238,228,0.58)", FIL = "rgba(243,238,228,0.11)";
+        const SERIF = "'Cormorant Garamond', Georgia, serif";
+        const verre = { border: "1px solid rgba(243,238,228,.13)", borderRadius: 5, background: "linear-gradient(145deg,rgba(243,238,228,.018),rgba(243,238,228,0)),rgba(7,10,8,.10)", WebkitBackdropFilter: "blur(3px)", backdropFilter: "blur(3px)", textShadow: "0 1px 4px rgba(0,0,0,.8)", color: IV, cursor: "pointer" };
+        const miensIds = {};
+        const lCh = [];
+        (chevauxCibles || []).forEach((cv) => { miensIds[String(cv.id)] = true; lCh.push({ id: cv.id, nom: String(cv.nom || "").trim(), meta: TXT("Mes chevaux") }); });
+        (chevauxEcurie || []).forEach((cv) => { if (!miensIds[String(cv.id)]) lCh.push({ id: cv.id, nom: String(cv.nom || "").trim(), meta: TXT("Écurie") }); });
+        const lCav = (cavEpListe || []).map((pr) => ({ id: pr.id, nom: String(pr.pseudo || "").trim() || "—", photo: pr.avatar_url || null }));
+        const estCh = epOnglet === "chevaux";
+        const base = estCh ? lCh : lCav;
+        const charge = estCh ? (chevauxEcurie !== null) : (cavEpListe !== null);
+        const parLettre = {};
+        base.forEach((x) => { const l = epLettreDe(x.nom); (parLettre[l] = parLettre[l] || []).push(x); });
+        Object.keys(parLettre).forEach((l) => parLettre[l].sort((a, b) => (estCh && a.meta !== b.meta) ? (a.meta === TXT("Mes chevaux") ? -1 : 1) : a.nom.localeCompare(b.nom)));
+        const q = epNorm(epRech);
+        let lettre = epLettre && parLettre[epLettre] ? epLettre : "";
+        let groupe = epGroupe;
+        if (!lettre) { for (let gi = 0; gi < EP_GROUPES.length && !lettre; gi++) { const gl = (gi + epGroupe) % EP_GROUPES.length; for (let li = 0; li < EP_GROUPES[gl].length; li++) { if (parLettre[EP_GROUPES[gl][li]]) { lettre = EP_GROUPES[gl][li]; groupe = gl; break; } } } }
+        if (lettre && EP_GROUPES[groupe].indexOf(lettre) === -1) { for (let gi = 0; gi < EP_GROUPES.length; gi++) if (EP_GROUPES[gi].indexOf(lettre) !== -1) groupe = gi; }
+        const lignes = q ? base.filter((x) => epNorm(x.nom).indexOf(q) !== -1).sort((a, b) => a.nom.localeCompare(b.nom)) : (parLettre[lettre] || []);
+        const choisi = estCh ? epCheval : epCav;
+        const toucher = (x) => {
+            if (estCh) setEpCheval(epCheval && String(epCheval.id) === String(x.id) ? null : { id: x.id, nom: x.nom });
+            else setEpCav(epCav && String(epCav.id) === String(x.id) ? null : { id: x.id, nom: x.nom });
+        };
+        const lettresG = EP_GROUPES[groupe].filter((l) => l !== "#" || parLettre["#"]);
+        const grande = lettre && lettresG.indexOf(lettre) !== -1 ? lettre : lettresG[0];
+        const autres = lettresG.filter((l) => l !== grande);
+        const ongletBtn = (cle, libelle, n) => h("button", { key: cle, type: "button", onClick: () => { setEpOnglet(cle); setEpRech(""); setEpLettre(""); setEpGroupe(0); }, style: { background: "none", border: "none", borderBottom: "1px solid " + (epOnglet === cle ? CH : "transparent"), padding: "0 0 9px", marginBottom: -1, color: epOnglet === cle ? IV : DOUX, fontFamily: HB_SANS, fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", cursor: "pointer", textShadow: "0 1px 6px #000" } },
+            libelle, n ? h("span", { style: { color: CH, marginInlineStart: 6, letterSpacing: 0 } }, "✓ " + n) : null);
+        const pastille = (cle, txt, vide, onX) => h("span", { key: cle, onClick: onX || undefined, style: { padding: "6px 11px", borderRadius: 999, border: vide ? "1px dashed rgba(243,238,228,.22)" : "1px solid rgba(201,166,107,.5)", color: vide ? "rgba(243,238,228,.45)" : "#EDE6D8", fontSize: 12, whiteSpace: "nowrap", cursor: onX ? "pointer" : "default", maxWidth: "48%", overflow: "hidden", textOverflow: "ellipsis" } }, txt);
+        return h("div", { "data-noswipe": "true", dir: hbRtl ? "rtl" : "ltr", role: "dialog", "aria-modal": "true", style: { position: "fixed", inset: 0, zIndex: 8600, background: "#070A08", color: IV, fontFamily: HB_SANS, display: "flex", flexDirection: "column" } },
+            h("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", position: "relative" } },
+                h("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, top: 0, height: 520, overflow: "hidden", pointerEvents: "none" } },
+                    h("img", { src: "images/galops-carte-videos-bai.webp", alt: "", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", filter: "saturate(.75) brightness(.8)", display: "block" } }),
+                    h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(7,10,8,.25) 0%,rgba(7,10,8,.45) 45%,#070A08 100%)" } })),
+                h("div", { style: { position: "relative", maxWidth: 560, margin: "0 auto", padding: "calc(18px + env(safe-area-inset-top, 0px)) 22px 24px" } },
+                    h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11, color: "rgba(243,238,228,.75)", letterSpacing: ".18em", textTransform: "uppercase", textShadow: "0 1px 6px #000" } },
+                        h("span", null, "Hey Baby"),
+                        h("button", { type: "button", "aria-label": TXT("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소"), onClick: () => setEpingleCible(null), style: { width: 44, height: 44, marginInlineEnd: -12, background: "none", border: "none", color: IV, fontSize: 18, cursor: "pointer" } }, "✕")),
+                    h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 44, lineHeight: 0.98, margin: "14px 0 0", textShadow: "0 2px 14px rgba(0,0,0,.7)" } }, TXT("Épingler"), h("br"), h("span", { style: { color: CH } }, TXT("ce conseil."))),
+                    h("div", { style: { display: "flex", alignItems: "center", gap: 8, minHeight: 44, marginTop: 26, padding: "0 10px", border: "1px solid rgba(255,255,255,.2)", borderRadius: 7, background: "linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.012)),rgba(10,10,10,.35)", WebkitBackdropFilter: "blur(7px)", backdropFilter: "blur(7px)" } },
+                        h("span", { "aria-hidden": "true", style: { fontSize: 13, opacity: 0.75 } }, "🔍"),
+                        h("input", { type: "search", value: epRech, onChange: (e) => setEpRech(e.target.value), placeholder: estCh ? TXT("Cherche un cheval") : TXT("Cherche un cavalier"), style: { flex: 1, minWidth: 0, padding: "12px 0", fontSize: 16, border: 0, outline: "none", background: "transparent", color: IV, WebkitAppearance: "none", appearance: "none" } })),
+                    h("div", { style: { display: "flex", gap: 22, marginTop: 20, borderBottom: "1px solid " + FIL } },
+                        ongletBtn("chevaux", TXT("Chevaux"), epCheval ? 1 : 0),
+                        ongletBtn("cavaliers", TXT("Cavaliers"), epCav ? 1 : 0)),
+                    q ? null : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 7, margin: "12px 0 7px" } },
+                        EP_GROUPES.map((g, gi) => h("button", { key: "g" + gi, type: "button", onClick: () => { setEpGroupe(gi); const pl = g.filter((l) => parLettre[l])[0]; setEpLettre(pl || ""); }, style: Object.assign({}, verre, { minHeight: 44, fontSize: 11, fontFamily: HB_SANS, borderBottom: "1px solid " + (gi === groupe ? CH : "rgba(243,238,228,.13)") }) }, g[0] + " – " + (g[g.length - 1] === "#" ? "Z" : g[g.length - 1])))),
+                    q ? null : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gridAutoRows: 46, gap: 7 } },
+                        [grande].concat(autres).map((l, i) => { const vide = !parLettre[l]; return h("button", { key: "l" + l, type: "button", disabled: vide, onClick: () => setEpLettre(l), style: Object.assign({}, verre, { gridColumn: i === 0 ? "span 2" : undefined, gridRow: i === 0 ? "span 2" : undefined, display: "flex", alignItems: "center", justifyContent: i === 0 ? "flex-start" : "center", paddingInlineStart: i === 0 ? 18 : 0, fontFamily: SERIF, fontSize: i === 0 ? 76 : 26, lineHeight: 1, opacity: vide ? 0.38 : 1, cursor: vide ? "default" : "pointer", borderColor: (l === lettre) ? "rgba(188,171,142,.7)" : "rgba(243,238,228,.13)" }) }, l); })),
+                    h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 16, paddingBottom: 4 } },
+                        h("span", { style: { fontFamily: SERIF, fontSize: q ? 24 : 34, lineHeight: 1, color: CH } }, q ? "« " + epRech.trim() + " »" : (lettre || "")),
+                        h("span", { style: { fontSize: 11, color: DOUX } }, charge ? (lignes.length + " " + (estCh ? (lignes.length > 1 ? TXT("chevaux") : TXT("cheval")) : (lignes.length > 1 ? TXT("cavaliers") : TXT("cavalier")))) : "…")),
+                    (!charge) ? h("p", { style: { margin: "14px 0", color: DOUX, fontSize: 13 } }, "…")
+                        : (!lignes.length) ? h("p", { style: { margin: "14px 0", color: DOUX, fontSize: 13, lineHeight: 1.5 } }, q ? TXT("Aucun résultat. Essaie un autre nom.") : (estCh ? TXT("Aucun cheval dans tes écuries.") : TXT("Aucun cavalier dans tes écuries.", "No rider in your stables.", "Ningún jinete en tus cuadras.", "Nessun cavaliere nelle tue scuderie.", "該当なし。", "Kein Reiter gefunden.", "لا توجد أي فارس في إسطبلاتك.", "你的马厩里没有骑手。", "Geen ruiters in jouw stallen.", "Nenhum cavaleiro nas tuas cocheiras.", "Ingen ryttare i dina stall.", "В твоих конюшнях нет всадников.", "Brak jeźdźców w twoich stajniach.", "마구간에 기수가 없어요.")))
+                        : lignes.map((x) => { const on = choisi && String(choisi.id) === String(x.id); return h("button", { key: (estCh ? "c" : "r") + x.id, type: "button", onClick: () => toucher(x), "aria-pressed": on ? "true" : "false", style: { display: "flex", width: "100%", alignItems: "center", gap: 12, minHeight: 50, padding: "8px 0", background: "none", border: "none", borderBottom: "1px solid " + FIL, color: on ? CH : IV, cursor: "pointer", textAlign: "start" } },
+                            (!estCh) ? (x.photo ? h("img", { src: x.photo, alt: "", loading: "lazy", decoding: "async", style: { width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto" } }) : h("span", { style: { width: 30, height: 30, borderRadius: "50%", flex: "0 0 auto", background: "rgba(243,238,228,.07)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: DOUX } }, x.nom.slice(0, 1).toUpperCase())) : null,
+                            h("span", { style: { flex: 1, minWidth: 0, fontFamily: SERIF, fontSize: 23, lineHeight: 1.1, overflowWrap: "anywhere" } }, x.nom),
+                            h("span", { style: { flex: "0 0 auto", fontSize: 11, color: on ? CH : DOUX } }, on ? ("✓ " + TXT("choisi")) : (x.meta || ""))); }),
+                    h("div", { style: { height: 8 } }))),
+            h("div", { style: { flex: "0 0 auto", borderTop: "1px solid rgba(201,166,107,.18)", background: "#070A08", padding: "12px 22px calc(14px + env(safe-area-inset-bottom, 0px))" } },
+                h("div", { style: { maxWidth: 516, margin: "0 auto" } },
+                    h("div", { style: { display: "flex", gap: 8, marginBottom: 10 } },
+                        epCheval ? pastille("pc", "🐴 " + epCheval.nom + " ✕", false, () => setEpCheval(null)) : pastille("pc", "🐴 " + TXT("Quel cheval ?"), true),
+                        epCav ? pastille("pr", "🏇 " + epCav.nom + " ✕", false, () => setEpCav(null)) : pastille("pr", "🏇 " + TXT("Pour qui ?"), true)),
+                    h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, marginBottom: 10 } },
+                        hypeThemesHB(TXT).map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return h("button", { key: th[0], type: "button", onClick: () => basculerTheme(th[0]), style: { flex: "0 0 auto", padding: "8px 13px", minHeight: 38, borderRadius: 999, border: "1px solid " + (pris ? "rgba(201,166,107,.6)" : "rgba(255,255,255,.14)"), background: pris ? "rgba(201,166,107,.08)" : "transparent", color: pris ? CH : DOUX, fontWeight: pris ? 700 : 500, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]); })),
+                    h("div", { style: { display: "flex", gap: 10 } },
+                        h("button", { type: "button", onClick: () => setEpingleCible(null), style: { flex: 1, minHeight: 46, background: "none", border: "none", color: DOUX, fontWeight: 700, fontSize: 14, cursor: "pointer" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+                        h("button", { type: "button", onClick: () => validerEpingle(epCheval ? epCheval.id : null, epCheval ? epCheval.nom : null, epCav ? epCav.id : null, epCav ? epCav.nom : null), style: { flex: 1.7, minHeight: 46, borderRadius: 10, border: "1px solid " + CH, background: "transparent", color: CH, fontWeight: 700, fontSize: 14, cursor: "pointer" } }, TXT("Épingler"))))));
+    };
     const hbPortailEp = (el) => { try { if (typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) return ReactDOM.createPortal(el, document.body); } catch (ePo) { } return el; };
     const HB_CSS = ".hb-cote{display:none}" +
       /* grand ecran : la conversation et la saisie gardent une largeur de lecture (780 px) centree ; plus de cale de barre d onglets en bas */
@@ -1590,6 +1682,7 @@ function EcranAssistantIA() {
            (23/08) : elle sort vers le <body> par un portail, passe au-dessus de tout (8600), et la carte
            ne depasse jamais l ecran - elle defile a l interieur si besoin. Repli : sans portail, rendu
            sur place comme avant. Rien d autre ne change (contenu, etapes, enregistrement). */
+        (epingleCible && !epingleCible.paywall && !epingleCible.limite) ? hbPortailEp(rendrePageEpingle()) :
         epingleCible ? hbPortailEp(React.createElement("div", { onClick: () => setEpingleCible(null), "data-noswipe": "true", dir: hbRtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(8,10,13,0.78)", display: "flex", alignItems: "center", justifyContent: "center", padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px))", boxSizing: "border-box", fontFamily: HB_SANS, color: HB_C.ivoire, animation: "fadeIn 0.2s ease-out" } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 360, maxHeight: "100%", overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 20, padding: "20px 18px" } },
                 epingleCible.paywall ? React.createElement(React.Fragment, null,
