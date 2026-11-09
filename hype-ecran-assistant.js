@@ -230,6 +230,17 @@ function EcranAssistantIA() {
 
     /* 16/09 (213) : PLUSIEURS THEMES par epingle, sa demande. Un tableau, pas une valeur. */
     const [themesEp, setThemesEp] = useState([]);
+    /* 09/11 22h20 (Blandine : « une liste des chevaux et cavaliers… avec le meme montage que pour le lexique », puis
+       « Ouiiii » a la maquette lexique-style) : UNE SEULE PAGE d epinglage, onglets Chevaux | Cavaliers, recherche,
+       groupes de lettres et grande lettre comme le grand lexique. Le choix (cheval et/ou cavalier, tous facultatifs)
+       reste en bas avec les themes et « Epingler ». L enregistrement ne change pas : validerEpingle(...). */
+    const [epOnglet, setEpOnglet] = useState("chevaux");
+    const [epRech, setEpRech] = useState("");
+    const [epGroupe, setEpGroupe] = useState(null);
+    const [epLettre, setEpLettre] = useState(null);
+    const [epCheval, setEpCheval] = useState(null);
+    const [epCav, setEpCav] = useState(null);
+    const [epEnvoi, setEpEnvoi] = useState(false);
     const basculerTheme = (cle) => {
         setThemesEp((av) => {
             const l = (av || []).slice();
@@ -275,7 +286,7 @@ function EcranAssistantIA() {
         return () => { vif = false; };
     }, [!!epingleCible]);
     useEffect(() => {
-        if (!epingleCible || !epingleCible.etapeCav || cavEpListe !== null) return;
+        if (!epingleCible || epingleCible.paywall || epingleCible.limite || cavEpListe !== null) return;   /* 09/11 22h20 : page unique Chevaux | Cavaliers -> chargee des l ouverture */
         let vif = true;
         (async () => {
             try {
@@ -296,7 +307,7 @@ function EcranAssistantIA() {
             } catch (eCe) { if (vif) setCavEpListe([]); }
         })();
         return () => { vif = false; };
-    }, [epingleCible && epingleCible.etapeCav]);
+    }, [!!epingleCible]);
     const [conversationId, setConversationId] = useState(() => obtenirConversationHB());
     const [toastHB, setToastHB] = useState(null);
     const fichierRef = useRef(null);
@@ -483,6 +494,8 @@ function EcranAssistantIA() {
         if (!premium && planAbo !== "ai" && planAbo !== "duo") { setEpingleCible({ paywall: true }); return; }
         let q = "";
         for (let j = i - 1; j >= 0; j--) { if (messages[j] && messages[j].role === "user") { q = messages[j].contenu || ""; break; } }
+        /* 09/11 22h20 : la page repart a vide a chaque ouverture (meme regle que le theme depuis le 211) */
+        setEpOnglet("chevaux"); setEpRech(""); setEpGroupe(null); setEpLettre(null); setEpCheval(null); setEpCav(null); setEpEnvoi(false); setThemesEp([]);
         setEpingleCible({ question: q, reponse: messages[i].contenu || "" });
     };
     /* 16/09 (206) : APRES le cheval, ON DEMANDE POUR QUI. Sa demande : elle est monitrice et
@@ -1530,6 +1543,112 @@ function EcranAssistantIA() {
     const [hbPanCote, setHbPanCote] = useState(() => { try { if (window.__rouvrirConseils === "assistant") { window.__rouvrirConseils = null; return true; } } catch (eRo) { } return false; });   /* au retour d un conseil ouvert depuis ici, le panneau se rouvre (meme regle que le carnet) */
     /* 09/11 22h : sortie de la fenetre d epinglage vers le <body> (voir plus bas). */
     const hbPortailEp = (el) => { try { if (typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) return ReactDOM.createPortal(el, document.body); } catch (ePo) { } return el; };
+    /* 09/11 22h20 — PAGE « EPINGLER CE CONSEIL » FACON GRAND LEXIQUE (maquette validee par Blandine : « Ouiiii »).
+       Textes nouveaux en FRANCAIS SEUL pour la relecture (tr retombe sur le francais) ; traductions apres validation. */
+    const hbLettreDe = (nom) => { const c = String(nom || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").charAt(0).toUpperCase(); return (c >= "A" && c <= "Z") ? c : "#"; };
+    const hbSansAcc = (v) => String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const HB_GROUPES = [["A", "B", "C", "D", "E", "F"], ["G", "H", "I", "J", "K", "L"], ["M", "N", "O", "P", "Q", "R"], ["S", "T", "U", "V", "W", "X", "Y", "Z", "#"]];
+    const hbPageEpingler = () => {
+        const C = "#C9A66B", IV = "#F3EEE4", MU = "rgba(243,238,228,0.58)", LI = "rgba(243,238,228,0.11)";
+        const SERIF = "'Cormorant Garamond', Georgia, serif";
+        const VERRE = { border: "1px solid rgba(243,238,228,.13)", borderRadius: 5, background: "linear-gradient(145deg,rgba(243,238,228,.018),rgba(243,238,228,0)),rgba(7,10,8,.10)", WebkitBackdropFilter: "blur(3px)", backdropFilter: "blur(3px)", color: IV, textShadow: "0 1px 4px rgba(0,0,0,.8)", cursor: "pointer" };
+        const estCh = epOnglet === "chevaux";
+        /* les elements de l onglet : { id, nom, note } */
+        const miensIds = {};
+        const elems = estCh
+            ? [].concat(
+                (chevauxCibles || []).map((cv) => { miensIds[String(cv.id)] = true; return { id: cv.id, nom: String(cv.nom || "").trim(), note: TXT("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde", "خيولي", "我的马", "Mijn paarden", "Meus cavalos", "Mina hästar", "Мои лошади", "Moje konie", "내 말") }; }),
+                (chevauxEcurie || []).filter((cv) => !miensIds[String(cv.id)]).map((cv) => ({ id: cv.id, nom: String(cv.nom || "").trim(), note: TXT("Écurie") })))
+            : (cavEpListe || []).map((pr) => ({ id: pr.id, nom: String(pr.pseudo || "").trim() || "—", photo: pr.avatar_url || null, note: "" }));
+        const charge = estCh ? true : (cavEpListe !== null);
+        const parLettre = {};
+        elems.forEach((e) => { const l = hbLettreDe(e.nom); (parLettre[l] = parLettre[l] || []).push(e); });
+        Object.keys(parLettre).forEach((l) => parLettre[l].sort((a, b) => a.nom.localeCompare(b.nom, "fr")));
+        const premiereLettre = (() => { for (let g = 0; g < HB_GROUPES.length; g++) for (let k = 0; k < HB_GROUPES[g].length; k++) if (parLettre[HB_GROUPES[g][k]]) return [g, HB_GROUPES[g][k]]; return [0, "A"]; })();
+        const lettre = (epLettre && parLettre[epLettre]) ? epLettre : premiereLettre[1];
+        const groupe = (epGroupe !== null) ? epGroupe : HB_GROUPES.findIndex((gr) => gr.indexOf(lettre) !== -1);
+        const rech = hbSansAcc(epRech).trim();
+        const liste = rech ? elems.filter((e) => hbSansAcc(e.nom).indexOf(rech) !== -1).sort((a, b) => a.nom.localeCompare(b.nom, "fr")) : (parLettre[lettre] || []);
+        const choisi = estCh ? epCheval : epCav;
+        const toucher = (e) => {
+            if (estCh) setEpCheval(epCheval && String(epCheval.id) === String(e.id) ? null : { id: e.id, nom: e.nom });
+            else setEpCav(epCav && String(epCav.id) === String(e.id) ? null : { id: e.id, nom: e.nom });
+        };
+        const lettresGroupe = HB_GROUPES[groupe] || HB_GROUPES[0];
+        const autres = lettresGroupe.filter((l) => l !== lettre);
+        const caseLettre = (l, grande) => React.createElement("button", { key: "l" + l, type: "button", disabled: !parLettre[l], onClick: () => { setEpLettre(l); setEpRech(""); },
+            style: Object.assign({}, VERRE, grande
+                ? { gridColumn: "span 2", gridRow: "span 2", display: "flex", alignItems: "center", justifyContent: "flex-start", paddingInlineStart: 18, fontFamily: SERIF, fontSize: 74, lineHeight: 1, borderColor: "rgba(188,171,142,.7)" }
+                : { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 26, lineHeight: 1, opacity: parLettre[l] ? 1 : 0.38, cursor: parLettre[l] ? "pointer" : "default" }) }, l);
+        const pastille = (txt, onX, vide, onTap) => React.createElement("span", { key: txt, role: "button", onClick: onTap || undefined,
+            style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 11px", borderRadius: 999, fontSize: 12.5, border: vide ? "1px dashed rgba(243,238,228,.22)" : "1px solid rgba(201,166,107,.5)", color: vide ? MU : IV, cursor: "pointer", whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis" } },
+            txt, onX ? React.createElement("span", { role: "button", "aria-label": TXT("Retirer", "Remove"), onClick: (ev) => { ev.stopPropagation(); onX(); }, style: { marginInlineStart: 2, color: MU, fontSize: 14, lineHeight: 1 } }, "✕") : null);
+        const epingler = async () => {
+            if (epEnvoi) return; setEpEnvoi(true);
+            try { await validerEpingle(epCheval ? epCheval.id : null, epCheval ? epCheval.nom : null, epCav ? epCav.id : null, epCav ? epCav.nom : null); }
+            finally { setEpEnvoi(false); }
+        };
+        const nb = rech ? liste.length : (parLettre[lettre] || []).length;
+        return React.createElement("div", { "data-noswipe": "true", dir: hbRtl ? "rtl" : "ltr", role: "dialog", "aria-modal": "true",
+                style: { position: "fixed", inset: 0, zIndex: 8600, background: "#070A08", color: IV, fontFamily: HB_SANS, display: "flex", flexDirection: "column", animation: "fadeIn 0.2s ease-out" } },
+            /* la photo du grand lexique, entiere en largeur, fondue dans le noir */
+            React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, top: 0, height: 520, pointerEvents: "none", backgroundImage: "url(images/galops-carte-videos-bai.webp)", backgroundSize: "cover", backgroundPosition: "center 30%", filter: "saturate(.75) brightness(.8)" } }),
+            React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, top: 0, height: 521, pointerEvents: "none", background: "linear-gradient(180deg,rgba(7,10,8,.25) 0%,rgba(7,10,8,.45) 45%,#070A08 100%)" } }),
+            /* contenu qui defile */
+            React.createElement("div", { style: { position: "relative", flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" } },
+                React.createElement("div", { style: { maxWidth: 560, margin: "0 auto", padding: "calc(18px + env(safe-area-inset-top, 0px)) 22px 18px" } },
+                    React.createElement("div", { style: { display: "flex", justifyContent: "flex-end" } },
+                        React.createElement("button", { type: "button", "aria-label": TXT("Fermer", "Close"), onClick: () => setEpingleCible(null), style: { width: 44, height: 44, border: "none", background: "transparent", color: IV, fontSize: 20, cursor: "pointer", textShadow: "0 1px 6px #000" } }, "✕")),
+                    React.createElement("h2", { style: { margin: "6px 0 0", fontFamily: SERIF, fontWeight: 500, fontSize: 44, lineHeight: 0.98, textShadow: "0 2px 14px rgba(0,0,0,.7)" } },
+                        TXT("Épingler"), React.createElement("br", null), React.createElement("span", { style: { color: C } }, TXT("ce conseil."))),
+                    /* recherche, verre fume du lexique ; 16 px pour que l iPhone ne zoome pas */
+                    React.createElement("label", { style: { marginTop: 26, display: "flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 10px", border: "1px solid rgba(255,255,255,.2)", borderRadius: 7, background: "linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.012)),rgba(10,10,10,.35)", WebkitBackdropFilter: "blur(7px)", backdropFilter: "blur(7px)" } },
+                        React.createElement("span", { "aria-hidden": "true", style: { fontSize: 14, opacity: 0.8 } }, "🔍"),
+                        React.createElement("input", { type: "search", value: epRech, onChange: (ev) => setEpRech(ev.target.value), placeholder: estCh ? TXT("Cherche un cheval") : TXT("Cherche un cavalier"),
+                            style: { flex: 1, minWidth: 0, padding: "11px 0", fontSize: 16, border: 0, outline: "none", background: "transparent", color: IV, fontFamily: HB_SANS } })),
+                    /* onglets Chevaux | Cavaliers */
+                    React.createElement("div", { style: { display: "flex", gap: 22, marginTop: 20, borderBottom: "1px solid rgba(243,238,228,.12)" } },
+                        [["chevaux", TXT("Chevaux"), epCheval], ["cavaliers", TXT("Cavaliers"), epCav]].map((o) => React.createElement("button", { key: o[0], type: "button", onClick: () => { setEpOnglet(o[0]); setEpRech(""); setEpLettre(null); setEpGroupe(null); },
+                            style: { padding: "0 0 9px", marginBottom: -1, border: "none", borderBottom: epOnglet === o[0] ? "1px solid " + C : "1px solid transparent", background: "transparent", color: epOnglet === o[0] ? IV : MU, fontFamily: HB_SANS, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", textShadow: "0 1px 6px #000" } },
+                            o[1], o[2] ? React.createElement("span", { style: { color: C, marginInlineStart: 6, letterSpacing: 0 } }, "✓ 1") : null))),
+                    !charge ? React.createElement("p", { style: { margin: "24px 0", textAlign: "center", color: MU } }, "…") : null,
+                    /* groupes de lettres + grande lettre, caches pendant une recherche */
+                    (charge && !rech && elems.length) ? React.createElement(React.Fragment, null,
+                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 7, margin: "12px 0 7px" } },
+                            HB_GROUPES.map((gr, gi) => React.createElement("button", { key: "g" + gi, type: "button", onClick: () => { setEpGroupe(gi); const l = gr.find((x) => parLettre[x]); if (l) setEpLettre(l); },
+                                style: Object.assign({}, VERRE, { minHeight: 42, fontFamily: HB_SANS, fontSize: 11, borderBottom: gi === groupe ? "1px solid " + C : VERRE.border }) }, gr[0] + " – " + (gr[gr.length - 1] === "#" ? gr[gr.length - 2] : gr[gr.length - 1])))),
+                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gridAutoRows: 46, gap: 7 } },
+                            caseLettre(lettre, true), autres.map((l) => caseLettre(l, false)))) : null,
+                    /* titre de la liste */
+                    charge ? React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginTop: 18, paddingBottom: 4 } },
+                        React.createElement("span", { style: { fontFamily: SERIF, fontSize: rech ? 24 : 34, lineHeight: 1, color: C } }, rech ? ("« " + epRech.trim() + " »") : lettre),
+                        React.createElement("span", { style: { fontSize: 11, color: MU } }, nb + " " + (estCh ? (nb > 1 ? TXT("chevaux") : TXT("cheval")) : (nb > 1 ? TXT("cavaliers") : TXT("cavalier"))))) : null,
+                    (charge && !liste.length) ? React.createElement("p", { style: { margin: "14px 0", fontSize: 12.5, color: MU, lineHeight: 1.6 } },
+                        estCh ? TXT("Aucun cheval ici. Essaie une autre lettre ou une autre recherche.") : TXT("Aucun cavalier ici. Essaie une autre lettre ou une autre recherche.")) : null,
+                    charge ? liste.map((e) => { const pris = choisi && String(choisi.id) === String(e.id); return React.createElement("button", { key: "e" + e.id, type: "button", onClick: () => toucher(e),
+                            style: { width: "100%", display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "8px 0", border: "none", borderBottom: "1px solid " + LI, background: "transparent", color: pris ? C : IV, textAlign: "start", cursor: "pointer" } },
+                            (!estCh) ? (e.photo
+                                ? React.createElement("img", { src: e.photo, alt: "", loading: "lazy", decoding: "async", style: { width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto" } })
+                                : React.createElement("span", { style: { width: 32, height: 32, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: MU } }, String(e.nom || "?").slice(0, 1).toUpperCase())) : null,
+                            React.createElement("span", { style: { flex: 1, minWidth: 0, fontFamily: SERIF, fontSize: 23, lineHeight: 1.12, overflowWrap: "anywhere" } }, e.nom),
+                            React.createElement("span", { style: { flex: "0 0 auto", fontSize: 11, color: pris ? C : MU } }, pris ? ("✓ " + TXT("choisi")) : e.note)); }) : null,
+                    React.createElement("div", { style: { height: 24 } }))),
+            /* bas fixe : le choix, les themes, Annuler / Epingler */
+            React.createElement("div", { style: { position: "relative", borderTop: "1px solid rgba(201,166,107,.18)", background: "#070A08", padding: "12px 22px calc(14px + env(safe-area-inset-bottom, 0px))" } },
+                React.createElement("div", { style: { maxWidth: 560, margin: "0 auto" } },
+                    React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 } },
+                        epCheval ? pastille("🐴 " + epCheval.nom, () => setEpCheval(null)) : pastille("🐴 " + TXT("Quel cheval ? (facultatif)"), null, true, () => { setEpOnglet("chevaux"); setEpRech(""); setEpLettre(null); setEpGroupe(null); }),
+                        epCav ? pastille("🏇 " + epCav.nom, () => setEpCav(null)) : pastille("🏇 " + TXT("Pour qui ? (facultatif)"), null, true, () => { setEpOnglet("cavaliers"); setEpRech(""); setEpLettre(null); setEpGroupe(null); })),
+                    (!epCheval && !epCav) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU } }, TXT("Sans cheval ni cavalier, le conseil va sur ta page cavalier.")) : null,
+                    React.createElement("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, marginBottom: 12 } },
+                        hypeThemesHB(TXT).map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return React.createElement("button", { key: th[0], type: "button", onClick: () => basculerTheme(th[0]),
+                            style: { flex: "0 0 auto", padding: "8px 13px", borderRadius: 999, minHeight: 38, border: "1px solid " + (pris ? "rgba(201,166,107,.6)" : "rgba(255,255,255,.14)"), background: pris ? "rgba(201,166,107,.08)" : "transparent", color: pris ? C : MU, fontWeight: pris ? 700 : 500, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap", fontFamily: HB_SANS } }, th[1]); })),
+                    React.createElement("div", { style: { display: "flex", gap: 10 } },
+                        React.createElement("button", { type: "button", onClick: () => setEpingleCible(null), style: { flex: 1, minHeight: 46, border: "none", borderRadius: 10, background: "transparent", color: MU, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: HB_SANS } },
+                            TXT("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+                        React.createElement("button", { type: "button", onClick: epingler, disabled: epEnvoi, style: { flex: 1.7, minHeight: 46, borderRadius: 10, border: "1px solid " + C, background: "transparent", color: C, fontWeight: 700, fontSize: 14, cursor: "pointer", opacity: epEnvoi ? 0.6 : 1, fontFamily: HB_SANS } },
+                            epEnvoi ? "…" : TXT("Épingler"))))));
+    };
     const HB_CSS = ".hb-cote{display:none}" +
       /* grand ecran : la conversation et la saisie gardent une largeur de lecture (780 px) centree ; plus de cale de barre d onglets en bas */
       "@media (min-width:1024px){.hb-fil{padding-left:max(18px,calc((100% - 780px) / 2)) !important;padding-right:max(18px,calc((100% - 780px) / 2)) !important}" +
@@ -1590,7 +1709,10 @@ function EcranAssistantIA() {
            (23/08) : elle sort vers le <body> par un portail, passe au-dessus de tout (8600), et la carte
            ne depasse jamais l ecran - elle defile a l interieur si besoin. Repli : sans portail, rendu
            sur place comme avant. Rien d autre ne change (contenu, etapes, enregistrement). */
-        epingleCible ? hbPortailEp(React.createElement("div", { onClick: () => setEpingleCible(null), "data-noswipe": "true", dir: hbRtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(8,10,13,0.78)", display: "flex", alignItems: "center", justifyContent: "center", padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px))", boxSizing: "border-box", fontFamily: HB_SANS, color: HB_C.ivoire, animation: "fadeIn 0.2s ease-out" } },
+        /* 09/11 22h20 : la petite fenetre ne sert plus qu au message Premium et au plafond atteint ; le choix du cheval et
+           du cavalier passe par la page facon lexique (hbPageEpingler, juste apres). Les branches d etapes restent en
+           place mais ne sont plus atteintes. */
+        (epingleCible && (epingleCible.paywall || epingleCible.limite)) ? hbPortailEp(React.createElement("div", { onClick: () => setEpingleCible(null), "data-noswipe": "true", dir: hbRtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(8,10,13,0.78)", display: "flex", alignItems: "center", justifyContent: "center", padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px))", boxSizing: "border-box", fontFamily: HB_SANS, color: HB_C.ivoire, animation: "fadeIn 0.2s ease-out" } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 360, maxHeight: "100%", overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 20, padding: "20px 18px" } },
                 epingleCible.paywall ? React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler ce conseil", "Pin this advice", "Fijar este consejo", "Fissa questo consiglio", "\u3053\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081", "Diesen Rat anheften", "ثبّتي هذه النصيحة", "置顶这条建议", "Deze tip vastzetten", "Fixar este conselho", "Fäst det här rådet", "Закрепить этот совет", "Przypnij tę wskazówkę", "이 조언 고정하기")),
@@ -1667,6 +1789,7 @@ function EcranAssistantIA() {
                             : null,
                         (chevauxEcurie || []).map((cv) => React.createElement("button", { key: "ec" + cv.id, onClick: () => choisirChevalEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: "transparent", border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 600, fontSize: 14, textAlign: "left", cursor: "pointer" } }, cv.nom)),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")))))) : null,
+        (epingleCible && !epingleCible.paywall && !epingleCible.limite) ? hbPortailEp(hbPageEpingler()) : null,
         toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${"#C9A66B"}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: "#C9A66B", marginTop: 3 } : null }, ln)) : toastHB) : null,
         hbMenuRendu, hbConfirmRendu, hbRenomRendu, hbCatRendu));
 }
