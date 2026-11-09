@@ -39254,9 +39254,10 @@ function EcranVideosCavaliere() {
           tous.forEach(function (u) {
             if (!u || typeof u !== "string" || vus[u]) return;
             if (!((typeof estUrlVideo === "function") && estUrlVideo(u))) return;
-            vus[u] = 1; out.push({ u: u, d: po.created_at });
+            vus[u] = 1; out.push({ u: u, d: po.created_at, pid: po.id });
           });
         });
+        var idsChV = [];
         /* (353) Sa réponse : « les 1 faut les mettre, et les 2 avec son accord » :
            1) les vidéos des ALBUMS DE SES CHEVAUX (chevaux possédés + chevaux rattachés), albums
               publics, ou privés si c est l utilisatrice qui les lit et en est l autrice ;
@@ -39273,6 +39274,7 @@ function EcranVideosCavaliere() {
             var rc2 = await supa.from("chevaux").select("id, nom").in("id", idsL);
             ((rc2 && !rc2.error && rc2.data) || []).forEach(function (cv) { if (cv && cv.id) { idsCh.push(cv.id); nomCh[String(cv.id)] = cv.nom || ""; } });
           }
+          idsChV = idsCh.slice();
           if (idsCh.length) {
             var cibles = idsCh.map(function (x) { return "cheval:" + x; });
             var ra = await supa.from("albums_cheval").select("id, cible, photos, visibilite, user_id, created_at").in("cible", cibles.slice(0, 80));
@@ -39305,6 +39307,7 @@ function EcranVideosCavaliere() {
             });
           }
         } catch (eX) { }
+        out = await hypeFiltrerMediasPerso(out, cid, idsChV);   /* 09/11 22h25 : pas les médias d'autres cavaliers / chevaux */
         out.sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")); });
         if (vif) setVids(out);
       } catch (eL) { if (vif) { setErreur(String(eL)); setVids([]); } }
@@ -40039,6 +40042,37 @@ try { if (typeof window !== "undefined" && window.__ecurieAncienne == null) wind
    changements de taille. Le telephone n est jamais concerne. */
 /* 12/10 (1022) LA FIN DE PAGE HYPE, en composant commun (meme dessin que finPageCh de la fiche cheval, (677)/(918)) :
    petit paysage fondu images/accueil_v2_fin_de_page_v1.webp, deux filets champagne et « HYPE ». Decoratif, aucun bouton. */
+/* 09/11 22h25 (Blandine : « toutes les photos et vidéos que j'ai mises des autres cavaliers, des autres chevaux, tu m'as tout mis
+   sur ma page perso… il faut que tu apprennes à faire ça partout et tout le temps ») : retire des médias PERSO d'un cavalier ceux
+   qu'il a seulement PUBLIÉS mais où l'on sait que ce n'est pas lui : d'autres cavaliers identifiés (et pas lui), ou seulement
+   d'autres chevaux que les siens. Identifications acceptées OU en attente (un refus ne compte pas). On garde toujours : ce où il
+   est identifié (o.src === "__id__"), ses albums de profil (o.perso), et ses publications sans aucune identification.
+   Rien n'est effacé en base : le média reste sur la page du cavalier, du cheval ou du concours concerné. */
+async function hypeFiltrerMediasPerso(out, cid, idsChevauxPerso) {
+  try {
+    if (!out || !out.length || !cid || typeof supa === "undefined" || !supa) return out;
+    var moiC = String(cid), mesCh = {}; (idsChevauxPerso || []).forEach(function (c) { mesCh[String(c)] = 1; });
+    var cle = function (x) { return String(x || "").split("#")[0]; };
+    var refs = [];
+    out.forEach(function (o) { if (o.src === "__id__" || o.perso) return; var k = cle(o.u); if (refs.indexOf(k) === -1) refs.push(k); if (o.pid && refs.indexOf("post:" + o.pid) === -1) refs.push("post:" + o.pid); });
+    if (!refs.length) return out;
+    var idt = {};
+    for (var i = 0; i < refs.length; i += 100) {
+      var r = await supa.from("identifications").select("photo_url, type, cible_id, statut").in("photo_url", refs.slice(i, i + 100));
+      ((r && !r.error && r.data) || []).forEach(function (l) { if (l.statut === "refuse") return; (idt[l.photo_url] = idt[l.photo_url] || []).push(l); });
+    }
+    return out.filter(function (o) {
+      if (o.src === "__id__" || o.perso) return true;
+      var l = (idt[cle(o.u)] || []).concat(o.pid ? (idt["post:" + o.pid] || []) : []);
+      var cav = l.filter(function (x) { return x.type === "cavalier"; }).map(function (x) { return String(x.cible_id); });
+      if (cav.indexOf(moiC) !== -1) return true;
+      if (cav.length) return false;   /* d'autres cavaliers, pas lui */
+      var chs = l.filter(function (x) { return x.type === "cheval"; }).map(function (x) { return String(x.cible_id); });
+      if (chs.length && !chs.some(function (c) { return mesCh[c]; })) return false;   /* seulement d'autres chevaux que les siens */
+      return true;
+    });
+  } catch (e) { return out; }
+}
 function FinPageHype() {
   var h = React.createElement;
   var rtl = false; try { rtl = document.documentElement.dir === "rtl"; } catch (eR) { }

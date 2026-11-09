@@ -94,7 +94,7 @@ function EcranPhotosCavaliere() {
           ((rpa && !rpa.error && rpa.data) || []).forEach(function (al) {
             if (!al) return;
             if (String(al.visibilite || "public").toLowerCase() === "prive" && !(moiV && al.user_id === moiV.id)) return;
-            (Array.isArray(al.photos) ? al.photos : []).forEach(function (u) { if (!u || typeof u !== "string" || vus[u] || !estPhotoP(u)) return; vus[u] = 1; out.push({ u: u, d: al.created_at }); });
+            (Array.isArray(al.photos) ? al.photos : []).forEach(function (u) { if (!u || typeof u !== "string" || vus[u] || !estPhotoP(u)) return; vus[u] = 1; out.push({ u: u, d: al.created_at, perso: true }); });
           });
           var ri = await supa.from("identifications").select("photo_url, created_at").eq("type", "cavalier").eq("cible_id", String(cid)).eq("statut", "accepte").limit(200);
           var idsPost = [];
@@ -116,6 +116,8 @@ function EcranPhotosCavaliere() {
         } catch (eX) { }
         /* 19/10 etape 3 : une publication faite sur la fiche d un de ses chevaux porte ce cheval (aucune deduction : seule la cible compte) */
         try { out.forEach(function (o) { if (!o.ch && typeof o.cible === "string" && o.cible.indexOf("cheval:") === 0) { var idC = o.cible.slice(7); if (nomChG[idC]) { o.ch = idC; if (!o.src) o.src = nomChG[idC]; } } }); } catch (eCh) { }
+        /* 09/11 22h25 : retire ce qu elle a seulement publie mais ou l on sait que ce n est pas elle (autres cavaliers, ou seulement d autres chevaux) */
+        if (typeof hypeFiltrerMediasPerso === "function") out = await hypeFiltrerMediasPerso(out, cid, Object.keys(nomChG || {}));
         out.sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")); });
         /* 19/10 filtres Annee et Cavalier (choix de Blandine) : rien n est deduit.
            - ANNEE = date de prise de vue (table photo_dates), seulement lue dans la photo (exif) ou saisie a la main (manuel).

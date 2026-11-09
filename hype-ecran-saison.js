@@ -2190,7 +2190,10 @@ function EcranConcours() {
     if (fCavM && x.cav.indexOf(fCavM) === -1) return false; if (fChM && x.ch.indexOf(fChM) === -1) return false; if (fEpM && x.epreuve !== fEpM) return false;
     return true;
   });
-  function estAMoi(x) { return !!moi && (x.auteur === moi.id || x.cav.indexOf(String(moi.id)) !== -1); }
+  /* 09/11 22h21 (Blandine : « quand c'est moi, mets quand même dans les médias de l'équipe quand tu vois qu'il y a d'autres
+     cavaliers que moi ») : un média est « à moi » si l'on m'y a identifié ; si j'en suis l'autrice mais que d'autres cavaliers
+     y sont identifiés (pas moi), il va dans « Les médias de l'équipe » ; sans aucune identification, il reste à son auteur. */
+  function estAMoi(x) { if (!moi) return false; var mid = String(moi.id); if (x.cav.indexOf(mid) !== -1) return true; return x.auteur === moi.id && !x.cav.length; }
   var mesM = itemsF.filter(estAMoi), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
   var nbV = itemsM.filter(function (x) { return x.video; }).length, nbP = itemsM.length - nbV;
   function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
