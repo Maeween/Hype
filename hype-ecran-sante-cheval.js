@@ -1183,7 +1183,9 @@ function EcranSanteCheval() {
   function blocHeyBaby() {
     var pr = { fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
     var icoHB = h("svg", { viewBox: "0 0 24 24", style: { width: 22, height: 22, display: "block" } }, h("path", Object.assign({ d: "M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17.5H4A1.5 1.5 0 0 1 2.5 16V7A1.5 1.5 0 0 1 4 5.5z" }, pr)), h("circle", { cx: 8, cy: 11.5, r: 0.9, fill: TQ }), h("circle", { cx: 12, cy: 11.5, r: 0.9, fill: TQ }), h("circle", { cx: 16, cy: 11.5, r: 0.9, fill: TQ }));
-    var nb = (epingles || []).length;
+    /* 09/11 22h (Blandine : « vire-le de Sante ») : les conseils Hey Baby epingles ne s affichent plus ici - ils sont sur la
+       page Actualite du cheval. Le bandeau « Demander a Hey Baby » reste. */
+    var nb = 0;
     return h("div", { style: { marginBottom: 16 } },
       bandeauSante("bhb", "images/sante-bandeau-heybaby.webp", icoHB,
         T("Demander à Hey Baby", "Ask Hey Baby", "Preguntar a Hey Baby", "Chiedi a Hey Baby", "Hey Baby に聞く", "Hey Baby fragen", "اسألي Hey Baby", "问问 Hey Baby", "Vraag het aan Hey Baby", "Perguntar ao Hey Baby", "Fråga Hey Baby", "Спросить Hey Baby", "Zapytaj Hey Baby", "Hey Baby에게 물어보기"),
