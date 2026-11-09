@@ -1485,7 +1485,7 @@ var HC_CSS = [
   ".hc .hc-vid{position:relative;padding:0;border:1px solid rgba(201,166,107,.22);border-radius:11px;overflow:hidden;background:#0c1011}",
   ".hc .hc-vid img{display:block;width:100%;height:auto}",
   ".hc .hc-vid-vide{aspect-ratio:16/9}",
-  ".hc{padding-bottom:calc(env(safe-area-inset-bottom) + 130px)!important}",   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
+  ".hc{padding-bottom:24px!important;min-height:0!important}",   /* 09/11 : la fin de page Hype suit la fiche (elle garde la barre d'onglets à distance) */   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:12px}",

@@ -28936,7 +28936,7 @@ function Router() {
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
-    const ECRANS_FIN_PAGE = ["chevaux" /* (1039) */, "resultats-ecurie" /* 30/10 */, "decouvrir" /* (1051) */, "agenda-club", "evenements-passes" /* (1060) bandeau de fin Hype (Blandine 21 h 46) */, "profil", "carnet", "apprentissage", "mes-resultats-ffe", /* (1023) Ecurie */ "cavaliers-club", "actualites-ecurie", "souvenirs-club", "sante-club", "evenement-passe", /* (1024) Sante */ "sante", "clinique", /* (1025) Culture equestre */ "articles", "article-detail", "article-cso", "cadre-noir", "ecole-jerez", "ecole-vienne", "ecole-portugaise", /* (1026) Videotheque */ "videos", "video-lecture" /* 04/11 page video refaite (maquette Blandine) */, /* 19/10 02:17 Blandine « fais le tour pour l ajouter sur toutes les fins de page, laisse juste la partie des Galops » + « en dehors des pages sur lesquelles on arrive avant de s inscrire » : */ "videos-cavalier", "team-competition", "evenement", "premium", "abonnements-hype", "moncompte", "partager", "cheval-commun", "performances-chevaux", "perf-concours", "classement", /* 19/10 matin : « stats » retire, c est la progression des Galops (cours, quiz, serie) */ "album-ecurie", "ecurie", "ecurie-hype", "sellerie", "carnet-detail", "reprises", "challenge-reprise"];
+    const ECRANS_FIN_PAGE = ["concours", "ma-saison", "engagements", "jour-j", "liste-van", "dossier-concours" /* 09/11 Blandine : « fermer avec la fin de page Hype à chaque fois » */, "chevaux" /* (1039) */, "resultats-ecurie" /* 30/10 */, "decouvrir" /* (1051) */, "agenda-club", "evenements-passes" /* (1060) bandeau de fin Hype (Blandine 21 h 46) */, "profil", "carnet", "apprentissage", "mes-resultats-ffe", /* (1023) Ecurie */ "cavaliers-club", "actualites-ecurie", "souvenirs-club", "sante-club", "evenement-passe", /* (1024) Sante */ "sante", "clinique", /* (1025) Culture equestre */ "articles", "article-detail", "article-cso", "cadre-noir", "ecole-jerez", "ecole-vienne", "ecole-portugaise", /* (1026) Videotheque */ "videos", "video-lecture" /* 04/11 page video refaite (maquette Blandine) */, /* 19/10 02:17 Blandine « fais le tour pour l ajouter sur toutes les fins de page, laisse juste la partie des Galops » + « en dehors des pages sur lesquelles on arrive avant de s inscrire » : */ "videos-cavalier", "team-competition", "evenement", "premium", "abonnements-hype", "moncompte", "partager", "cheval-commun", "performances-chevaux", "perf-concours", "classement", /* 19/10 matin : « stats » retire, c est la progression des Galops (cours, quiz, serie) */ "album-ecurie", "ecurie", "ecurie-hype", "sellerie", "carnet-detail", "reprises", "challenge-reprise"];
     /* 27/09 (459) : apres une INSCRIPTION avec session, les questions d accueil se deroulent comme
        avant ; a la premiere arrivee sur l accueil, on rouvre le rendez-vous du lien s il y en a un. */
     useEffect(() => {
@@ -39800,7 +39800,7 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=13", "HypeTe
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "Registre");
@@ -39838,13 +39838,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=66", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=67", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
