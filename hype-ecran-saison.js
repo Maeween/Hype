@@ -1323,7 +1323,7 @@ function EcranConcours() {
       h("div", { className: "hc-cartes" },
         carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
         carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
-        carte("equipe", F("Équipe"), "eq", HS_IMG_CONCOURS.equipe, null),
+        carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
         carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
       h("div", { className: "hc-bande" + (infosOuv ? " ouv" : "") },
@@ -1361,7 +1361,7 @@ function EcranConcours() {
           gestion ? h("button", { key: "ln", type: "button", className: "hc-lien-d", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement") + (rtl ? " ‹" : " ›")) : null
         ] : null,
         ongletC === "passages" ? [blocPassages, gestion ? h("button", { key: "lj", type: "button", className: "hc-lien-d", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages") + (rtl ? " ‹" : " ›")) : null] : null,
-        ongletC === "equipe" ? blocEquipe : null,
+        ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? blocMedias : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
         : h("div", { className: "hc-onglet" }, blocResultats, blocMedias[0], blocMedias[1]),
@@ -1410,10 +1410,10 @@ var HC_CSS = [
   ".hc .hc-titre h1.long{font-size:clamp(27px,7.6vw,40px);line-height:1.05}",
   ".hc .hc-titre p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(14px,4vw,19px);color:#F3EEE4;opacity:.92;white-space:nowrap}",
   ".hc .hc-courbe{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:2}",
-  ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px}",
+  ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:24px}",
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
-  ".hc .hc-onglet{margin-top:18px;padding-top:4px}",
+  ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   "button.hc-lien-d{background:none;border:none;padding:6px 0;cursor:pointer}",
   ".hc .hc-carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
   ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 2px 8px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.62))}",
@@ -1421,7 +1421,7 @@ var HC_CSS = [
   ".hc .hc-c-pied b{font-weight:500;font-size:clamp(9.5px,2.55vw,12.5px);color:#F3EEE4;letter-spacing:-.2px;white-space:nowrap}",
   ".hc .hc-lecture{position:absolute;top:22%;left:50%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:rgba(7,10,8,.6);border:1px solid rgba(243,238,228,.6);display:flex;align-items:center;justify-content:center;padding-left:2px}",
   ".hc .hc-carte.sans .hc-lecture{display:none}",
-  ".hc .hc-bande{margin-top:12px;border:1px solid rgba(201,166,107,.3);border-radius:15px;background:linear-gradient(180deg,#0d1112,#090c0d)}",
+  ".hc .hc-bande{margin-top:20px;border:1px solid rgba(201,166,107,.3);border-radius:15px;background:linear-gradient(180deg,#0d1112,#090c0d)}",
   ".hc .hc-b-ligne{display:flex;align-items:stretch;min-height:58px}",
   ".hc .hc-b-case{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 10px;background:none;border:none;color:#F3EEE4;text-decoration:none;text-align:start}",
   ".hc .hc-b-case+.hc-b-case{border-inline-start:1px solid rgba(201,166,107,.28)}",
@@ -1430,7 +1430,7 @@ var HC_CSS = [
   ".hc .hc-b-case b{display:block;font-weight:500;font-size:14.5px;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
   ".hc .hc-b-chev{flex:none;width:30px;background:none;border:none;color:#C9A66B;font-size:18px}",
   ".hc .hc-b-detail{border-top:1px solid rgba(201,166,107,.2)}",
-  ".hc .hc-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}",
+  ".hc .hc-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}",
   ".hc .hc-act{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border-radius:999px;border:1px solid rgba(201,166,107,.85);background:rgba(7,10,8,.35);color:#F3EEE4;font-size:14px;letter-spacing:.01em}",
   ".hc .hc-act[disabled]{opacity:.5}",
   ".hc .hc-partie{border-bottom:1px solid rgba(201,166,107,.18)}",
@@ -1460,7 +1460,7 @@ var HC_CSS = [
   ".hc{padding-bottom:calc(env(safe-area-inset-bottom) + 130px)!important}",   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
-  ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:8px}",
+  ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:12px}",
   ".hc .hc-act[disabled]{opacity:.45}",
   ".hc .hc-b-case{padding:8px 8px}",
   ".hc .hc-b-case:first-child{flex:.8}",
