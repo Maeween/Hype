@@ -957,7 +957,7 @@ function EcranConcours() {
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
   var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq = _pq[1];
-  var _oc = React.useState(""); var ongletC = _oc[0], setOngletC = _oc[1];
+  var _oc = React.useState(null); var ongletChoisi = _oc[0], setOngletC = _oc[1];   /* null = carte choisie selon le moment (09/11) */
   var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   /* 04/11 22h — le direct lu par Hype sur Winjump (fonction direct-concours) : elle ne voit que ses passages */
   function lireEnDirect() {
@@ -1143,6 +1143,10 @@ function EcranConcours() {
   var aAlerte = horaires.some(function (x) { return x.alerte; });
   var lienPlan = ev.lieu ? ("https://maps.apple.com/?q=" + encodeURIComponent(ev.lieu)) : null;
   var fini = String(ev.date_fin || ev.date_jour || "").slice(0, 10) < (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
+  /* 09/11 08h11 (Blandine) : à l'ouverture, la carte suit le moment — avant le concours Engagements, le jour même Passages, après : résultats et vidéos (aucune carte) */
+  var hcAuj = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
+  var hcJourJ = !fini && String(ev.date_jour || "").slice(0, 10) <= hcAuj && String(ev.date_jour || "") !== "";
+  var ongletC = ongletChoisi !== null ? ongletChoisi : (fini ? "" : (hcJourJ ? "passages" : "engagements"));
   var lieuCourt = String(ev.lieu || "").split(",")[0].trim();
 
   /* les passages de l'équipe (fonction hype_passages_concours : membres de l'équipe du club, coach, modératrice) */
