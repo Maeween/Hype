@@ -1113,6 +1113,8 @@ function EcranConcours() {
   var _red = React.useState(null); var resEd = _red[0], setResEd = _red[1];    /* saisie rapide de la coach */
   var _rem = React.useState(""); var resMsg = _rem[0], setResMsg = _rem[1];
   var _reo = React.useState(false); var resOcc = _reo[0], setResOcc = _reo[1];
+  var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
+  var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
   var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];   /* { posts, tv, ident, resCav } */
@@ -1692,7 +1694,58 @@ function EcranConcours() {
       var et = r ? (etatDe(r.classement) ? r.classement : "") : "";
       return { p: p, id: r && r.id, avant: r || null, place: r && r.place ? String(r.place) : "", pen: (r && r.penalites) || "", temps: (r && r.temps) || "", gains: r && r.gains != null ? String(r.gains) : "", sf: !!(r && /sf|sans\s*faute/i.test(String(r.mention || ""))), etat: /el/i.test(et) ? "el" : /ab/i.test(et) ? "ab" : /np/i.test(et) ? "np" : /nc/i.test(et) ? "nc" : "" };
     });
-    setResMsg(""); setResEd({ ep: x.ep, partants: x.partants ? String(x.partants) : "", lignes: lignes });
+    var lu = (arguments[1] || resLu || {})[x.ep] || null, nbLu = 0;
+    if (lu) lignes.forEach(function (l) {
+      var c = null; (lu.lignes || []).forEach(function (q) { if (!c && q && memeChR(q.cheval, l.p.cheval_nom) && (!q.cavalier || !l.p.pseudo || hsMemePers(q.cavalier, l.p.pseudo) || (lu.lignes || []).filter(function (z) { return z && memeChR(z.cheval, l.p.cheval_nom); }).length === 1)) c = q; });
+      if (!c) return; nbLu++;
+      var me = String(c.mention || "").toLowerCase();
+      l.etat = /\bel|elim/.test(me) ? "el" : /\bab|aband/.test(me) ? "ab" : /np|non\s*part|forfait/.test(me) ? "np" : /nc|non\s*class/.test(me) ? "nc" : "";
+      l.place = l.etat ? "" : String(c.place || "").replace(/\D/g, "");
+      l.pen = String(c.penalites == null ? "" : c.penalites).trim();
+      l.temps = String(c.temps || "").trim().replace(",", ".");
+      l.gains = String(c.gains || "").replace(/[^\d.,]/g, "");
+      l.sf = !l.etat && (/sf|sans\s*faute/.test(me) || l.pen === "0");
+      l.lu = true;
+    });
+    var partLu = lu && String(lu.partants || "").replace(/\D/g, "");
+    setResMsg(""); setResEd({ ep: x.ep, partants: partLu || (x.partants ? String(x.partants) : ""), lignes: lignes, lu: nbLu });
+  }
+  function normR(t) { return String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  function memeChR(a, b) { a = normR(a); b = normR(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
+  function memeEpR(a, b) { a = normR(hsNomEpreuve(a)); b = normR(hsNomEpreuve(b)); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
+  /* 09/11 13h30 — lire les résultats sur un ou plusieurs PDF / captures, puis ouvrir la saisie rapide pré-remplie */
+  async function lireResultats(e) {
+    var fs = Array.prototype.slice.call((e && e.target && e.target.files) || []);
+    try { e.target.value = ""; } catch (eV) { }
+    if (!fs.length) return;
+    setResLect("en_cours"); setResMsg(""); setResEd(null);
+    try {
+      var imgs = [];
+      for (var i = 0; i < fs.length && imgs.length < 8; i++) {
+        var f = fs[i]; var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
+        if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
+        if (estPdf) imgs = imgs.concat((await hypePdfEnImages(f, 6, 2000)).images); else imgs.push(await hypeImageEnJpeg(f, 2000));
+      }
+      imgs = imgs.slice(0, 8);
+      var equipe = []; parEpreuve.forEach(function (g) { g.l.forEach(function (p) { equipe.push({ cavalier: p.pseudo || "", cheval: p.cheval_nom || "", epreuve: g.ep }); }); });
+      var eps = await hsLireResultats(imgs, equipe);
+      var lu = {}, trouves = [];
+      parEpreuve.forEach(function (g) {
+        var cand = eps.filter(function (x) { return x && memeEpR(x.nom, g.ep); });
+        /* une seule épreuve lue et une seule épreuve pour ces chevaux : on la prend même si le nom diffère */
+        if (!cand.length) cand = eps.filter(function (x) { return x && (x.lignes || []).some(function (q) { return g.l.some(function (p) { return memeChR(q.cheval, p.cheval_nom); }); }) && !parEpreuve.some(function (g2) { return g2 !== g && memeEpR(x.nom, g2.ep); }); });
+        if (!cand.length) return;
+        var t = { partants: "", lignes: [] }; cand.forEach(function (x) { if (!t.partants && x.partants) t.partants = x.partants; t.lignes = t.lignes.concat(x.lignes || []); });
+        var n = g.l.filter(function (p) { return t.lignes.some(function (q) { return q && memeChR(q.cheval, p.cheval_nom); }); }).length;
+        if (!n) return;
+        lu[g.ep] = t; trouves.push(g.ep + " (" + n + ")");
+      });
+      setResLu(lu);
+      if (!trouves.length) { setResLect(F("Aucun résultat de l’équipe trouvé sur ce document. Vérifie que les chevaux de l’équipe y apparaissent.")); return; }
+      setResLect(F("Lu : ") + trouves.join(" · ") + ". " + F("Vérifie chaque épreuve, puis touche « Publier »."));
+      var prem = null; epsRes.forEach(function (x) { if (!prem && lu[x.ep]) prem = x; });
+      if (prem) { setResOuv(prem.ep); ouvrirSaisie(prem, lu); }
+    } catch (eL) { setResLect(F("Lecture impossible : ") + String((eL && eL.message) || eL)); }
   }
   async function enregistrerSaisie(publier) {
     if (!resEd || resOcc) return; setResOcc(true); setResMsg("");
@@ -1722,7 +1775,9 @@ function EcranConcours() {
       }
       var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere, penalites, temps, gains, statut, origine, user_id").eq("agenda_id", idEv).limit(400);
       if (rr && !rr.error) { var lr = (rr.data || []).filter(function (x) { return x.visible !== false || x.statut === "saisie"; }); lr.forEach(function (x) { var o = null; (resConc || []).forEach(function (y) { if (y.id === x.id) o = y; }); x.__p = o && o.__p; x.__ch = o && o.__ch; if (!x.__ch) (passagesEq || []).forEach(function (q) { if (!x.__ch && q.cheval_id && q.cheval_id === x.cheval_id) x.__ch = q.cheval_nom; }); if (!x.__p) (passagesEq || []).forEach(function (q) { if (!x.__p && q.cavalier_id && q.cavalier_id === x.cavalier_id) x.__p = q; }); }); setResConc(lr); }
-      setResEd(null);
+      var epFait = resEd.ep; setResEd(null);
+      if (resLu && resLu[epFait]) { var lu2 = Object.assign({}, resLu); delete lu2[epFait]; setResLu(lu2);
+        if (publier) { var suiv = null; epsRes.forEach(function (x) { if (!suiv && lu2[x.ep]) suiv = x; }); if (suiv) { setResOuv(suiv.ep); setTimeout(function () { ouvrirSaisie(suiv, lu2); }, 0); } } }
       setResMsg(publier ? F("✓ Résultats publiés : ils apparaissent sur la fiche du concours, les performances et les podiums.") : F("✓ Brouillon enregistré : toi seule le vois."));
     } catch (eS) { setResMsg(F("Enregistrement impossible : ") + String((eS && eS.message) || eS)); }
     setResOcc(false);
@@ -1756,6 +1811,7 @@ function EcranConcours() {
     function maj(i, f) { setResEd(function (e) { var n = Object.assign({}, e, { lignes: e.lignes.slice() }); n.lignes[i] = Object.assign({}, n.lignes[i]); f(n.lignes[i]); return n; }); }
     return h("div", { className: "hc-ged hc-rsaisie" },
       h("div", { className: "hc-ged-k" }, F("Saisie rapide") + " · " + resEd.ep),
+      resEd.lu ? h("div", { className: "hs-note hc-rs-lu", style: { marginTop: 0 } }, F("Rempli d’après ton document : vérifie, corrige si besoin, puis publie.")) : null,
       h("label", { className: "hc-rs-part" }, F("Partants"), h("input", { className: "hc-in", inputMode: "numeric", value: resEd.partants, onChange: function (e) { var v = e.target.value; setResEd(Object.assign({}, resEd, { partants: v })); } })),
       resEd.lignes.length ? resEd.lignes.map(function (l, i) {
         return h("div", { key: i, className: "hc-rs-l" },
@@ -1820,6 +1876,12 @@ function EcranConcours() {
   var blocResultats = h("div", { key: "res" },
     bandeauDirect, regLive,
     (epsRes.length || gestion) ? h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Résultats de l’équipe"))) : null,
+    (gestion && parEpreuve.length) ? h("div", { key: "lire", className: "hc-lire-res" },
+      h("label", { className: "hc-btn-l", style: { cursor: "pointer", opacity: resLect === "en_cours" ? 0.6 : 1 } },
+        resLect === "en_cours" ? F("Lecture des résultats… (1 à 2 min)") : F("Lire les résultats (PDF ou capture)"),
+        h("input", { type: "file", accept: "image/*,application/pdf", multiple: true, disabled: resLect === "en_cours", onChange: lireResultats, style: { display: "none" } })),
+      (resLect && resLect !== "en_cours") ? h("div", { className: "hs-note", style: { marginTop: 8 } }, resLect)
+        : h("div", { className: "hs-note", style: { marginTop: 8 } }, F("Le PDF des résultats, une capture du site FFE ou du chronométreur : les résultats de tes couples se remplissent tout seuls."))) : null,
     listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
     blocPodiums, boutonsBas);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
@@ -2292,6 +2354,10 @@ var HC_CSS = [
   ".hc .hc-rs-l{display:flex;flex-direction:column;gap:7px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
   ".hc .hc-rs-q{font-size:13.5px}.hc .hc-rs-q span{color:rgba(243,238,228,.7)}",
   ".hc .hc-rs-c{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}",
+  ".hc .hc-rs-c .hc-in{min-width:0;padding-left:8px;padding-right:8px;text-overflow:ellipsis}",
+  ".hc .hc-rs-c .hc-in::placeholder{font-size:13px}",
+  ".hc .hc-lire-res{margin:-4px 0 16px}",
+  ".hc .hc-rs-lu{color:#C9A66B}",
   ".hc .hc-rs-l .hc-ged-ch{justify-content:flex-start}",
   ".hc .hc-pod{margin-top:34px}",
   ".hc .hc-pod-tete h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.2vw,28px);color:#F3EEE4}",
@@ -2566,6 +2632,43 @@ async function hsLireProgramme(images, equipe) {
   var m = texte.match(/\{[\s\S]*\}/);
   var o = JSON.parse(m ? m[0] : texte) || {};
   return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [] };
+}
+/* 09/11 13h25 (Blandine : « on a des outils pour lire les PDF ou les screens ; sur cette page on s'attend à pouvoir rentrer
+   les résultats ») — LIRE LES RÉSULTATS D'UN CONCOURS (PDF de résultats, capture du site FFE ou du chronométreur, photo du
+   tableau) : même chemin que l'ordre de passage (hey-baby-vision). Seulement les couples de l'équipe ; rien n'est publié
+   sans que la coach vérifie la saisie rapide pré-remplie puis touche « Publier ». */
+async function hsLireResultats(images, equipe) {
+  var sess = await supa.auth.getSession();
+  var sv = sess && sess.data && sess.data.session;
+  if (!sv || !sv.access_token) throw new Error("session");
+  var system = "Tu lis les resultats d'un concours d'equitation (PDF de resultats FFE, capture d'ecran du site FFE ou du chronometreur, photo d'un tableau). "
+    + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"nom\":\"nom de l'epreuve recopie (ex. Club 2 Grand Prix)\",\"numero\":\"numero ou vide\",\"partants\":\"nombre de partants ou vide\",\"lignes\":[{\"place\":\"rang en chiffres ou vide\",\"cavalier\":\"nom recopie\",\"cheval\":\"nom recopie\",\"penalites\":\"points de penalite ou vide\",\"temps\":\"temps en secondes ex. 62.45 ou vide\",\"gains\":\"gains en euros ou vide\",\"mention\":\"SF, El, Ab, NP, NC ou vide\"}]}]}. "
+    + "Dans lignes, mets SEULEMENT les couples de cette liste s'ils apparaissent (compare surtout le nom du cheval) : " + JSON.stringify((equipe || []).slice(0, 60)) + ". "
+    + "Si un tableau compte les partants ou le nombre de classes, donne le nombre total de partants. Recopie exactement ce qui est ecrit. N'invente RIEN : case illisible ou absente = chaine vide.";
+  var blocs = (Array.isArray(images) ? images : [images]).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
+  blocs.push({ type: "text", text: blocs.length > 1 ? "Ces images sont les pages des resultats. Lis les resultats de ces couples." : "Lis les resultats de ces couples sur cette image." });
+  var corps = { mode: "perception", stream: false, differe: true, system: system, messages: [{ role: "user", content: blocs }] };
+  var rep = await fetch(String(SUPABASE_URL).replace(/\/+$/, "") + "/functions/v1/hey-baby-vision", { method: "POST", headers: { "Content-Type": "application/json", "apikey": CLE_PUBLISHABLE, "Authorization": "Bearer " + sv.access_token }, body: JSON.stringify(corps) });
+  var data = null; try { data = await rep.json(); } catch (e) { }
+  var texte = "";
+  if (rep.ok && data && data.ok && data.differe && data.jobId) {
+    var t0 = Date.now(), fini = null;
+    while (!fini && Date.now() - t0 < 300000) {
+      await new Promise(function (r) { setTimeout(r, 3000); });
+      try { var rj = await supa.from("heybaby_analyses").select("statut, resultat, erreur_code, erreur_message").eq("id", data.jobId).single(); if (rj && !rj.error && rj.data && rj.data.statut !== "en_cours") fini = rj.data; } catch (eJ) { }
+    }
+    if (!fini) throw new Error("délai dépassé");
+    if (fini.statut !== "termine") throw new Error((fini.erreur_code || "erreur") + " " + (fini.erreur_message || ""));
+    texte = String(fini.resultat || "");
+  } else if (rep.ok && data && data.ok && data.content) {
+    texte = (data.content || []).map(function (b) { return (b && b.text) || ""; }).join("");
+  } else {
+    if (data && data.code === "PREMIUM_REQUIRED") throw new Error("lecture réservée aux abonnés Premium");
+    throw new Error("HTTP " + rep.status + " " + ((data && (data.code || data.message)) || ""));
+  }
+  var m = texte.match(/\{[\s\S]*\}/);
+  var o = JSON.parse(m ? m[0] : texte) || {};
+  return Array.isArray(o.epreuves) ? o.epreuves : [];
 }
 /* même personne ? (mots sans accents ni ordre : « MASURE Maelys » = « Maelys MASURE » ; « Aurélie » seul = « BUSSONNAIS Aurélie ») */
 function hsMemePers(a, b) {
