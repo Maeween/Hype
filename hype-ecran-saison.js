@@ -2542,9 +2542,9 @@ var HC_CSS = [
   ".hc .hc-o-c{grid-column:2;grid-row:1 / span 2;font-size:18px}",
   "button.hc-lien-d{background:none;border:none;padding:6px 0;cursor:pointer}",
   ".hc .hc-carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
-  ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 2px 8px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.62))}",
+  ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:30px 2px 9px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.72) 45%,rgba(7,10,8,.94))}",   /* 09/11 14h00 (Blandine : « on a du mal à lire ») : fond plus sombre sous le titre */
   ".hc .hc-carte.sans .hc-c-pied{top:0;justify-content:center;background:none}",
-  ".hc .hc-c-pied b{font-weight:500;font-size:clamp(9.5px,2.55vw,12.5px);color:#F3EEE4;letter-spacing:-.2px;white-space:nowrap}",
+  ".hc .hc-c-pied b{font-weight:600;font-size:clamp(10.5px,2.8vw,14px);color:#F3EEE4;letter-spacing:-.2px;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 10px rgba(0,0,0,.6)}",
   ".hc .hc-lecture{position:absolute;top:22%;left:50%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:rgba(7,10,8,.6);border:1px solid rgba(243,238,228,.6);display:flex;align-items:center;justify-content:center;padding-left:2px}",
   ".hc .hc-carte.sans .hc-lecture{display:none}",
   ".hc .hc-bande{margin-top:20px;border:1px solid rgba(201,166,107,.3);border-radius:15px;background:linear-gradient(180deg,#0d1112,#090c0d)}",
