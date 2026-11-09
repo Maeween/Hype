@@ -2621,8 +2621,21 @@ function EcranConcours() {
       h("div", { id: "hcp-defile", style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" } }, corpsPg));
     pageX = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(pgPage, document.body) : pgPage;
   }
+  function vrCourbe(sens, k) {
+    var d = sens ? "M0 30 C 120 28, 250 8, 400 4" : "M0 4 C 150 6, 280 26, 400 30";
+    return h("svg", { key: k, className: "vr-c", viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true" },
+      h("defs", null, h("linearGradient", { id: "vrg-" + k, x1: "0", x2: "1", y1: "0", y2: "0" },
+        h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))),
+      h("path", { d: d, fill: "none", stroke: "url(#vrg-" + k + ")", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" }));
+  }
+  function vrOnglet(k, img, titre, plus, action, on) {
+    return h("button", { key: k, type: "button", className: "vr-o" + (on ? " on" : ""), "aria-expanded": plus ? !!on : undefined, onClick: action },
+      h("img", { src: img, alt: "", "aria-hidden": "true", decoding: "async" }),
+      plus ? h("i", { "aria-hidden": "true" }, "+") : null,
+      h("b", null, titre));
+  }
   var blocGalerie = h("div", { key: "gal", ref: mesurerMd, className: "hc-gal hc-rep hc-md" },
-    h("style", { key: "b2" }, HC_B2_CSS + HC_XM_GRILLE_CSS),
+    h("style", { key: "b2" }, HC_B2_CSS + HC_XM_GRILLE_CSS + HC_VR_COURBES_CSS),
     medVue ? [
       h("div", { key: "tete", className: "hc-md-tete" },
         h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
@@ -2632,13 +2645,16 @@ function EcranConcours() {
     medVue === "ep" ? blocVideos : medVue ? blocExplorer : h("div", { key: "vr", className: "vr" },
       !medG ? h("div", { key: "att", className: "hs-note" }, "…") : null,
       (medG && !itemsM.length) ? h("div", { key: "vide", className: "hs-note hc-md-vide" }, F("Pas encore de média sur ce concours.")) : null,
-      blocMesV, blocEqV,
-      h("div", { key: "aj", className: "vr-aj" }, h("button", { type: "button", "aria-expanded": medAjout, onClick: function () { setMedAjout(!medAjout); } }, h("i", { "aria-hidden": "true" }, "+"), " " + F("Ajouter des médias"))),
-      h("div", { key: "paj" }, panneauAjout),
-      itemsM.length ? h("div", { key: "xp", className: "vr-liens" },
-        h("button", { type: "button", onClick: function () { setMedVue("cav"); setMedId(null); } }, F("Par cavalier")), h("i", { "aria-hidden": "true" }, "·"),
-        h("button", { type: "button", onClick: function () { setMedVue("ch"); setMedId(null); } }, F("Par cheval"))) : null,
-      h("div", { key: "fil", className: "vr-filet" })),
+      /* 09/11 23h08 (Blandine : « aère au-dessus et en dessous, avec des courbes dorées entre chaque partie, puis des onglets
+         avec image pour les boutons ») : courbe / Mes médias / courbe / Les médias de l'équipe / courbe / 3 onglets photo */
+      vrCourbe(1, "c1"),
+      blocMesV, (blocMesV && blocEqV) ? vrCourbe(0, "c2") : null, blocEqV,
+      vrCourbe(1, "c3"),
+      h("div", { key: "ong", className: "vr-ong" + (itemsM.length ? "" : " seul") },
+        vrOnglet("aj", HS_IMG_CONCOURS.passages, F("Ajouter des médias"), true, function () { setMedAjout(!medAjout); }, medAjout),
+        itemsM.length ? vrOnglet("cav", HS_IMG_CONCOURS.engagements, F("Par cavalier"), false, function () { setMedVue("cav"); setMedId(null); }) : null,
+        itemsM.length ? vrOnglet("ch", HS_IMG_CONCOURS.medias, F("Par cheval"), false, function () { setMedVue("ch"); setMedId(null); }) : null),
+      h("div", { key: "paj" }, panneauAjout)),
     pageX,
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
@@ -2829,6 +2845,8 @@ var HCP_CSS = [
 /* 09/11 23h00 (Blandine : « je vois toujours rien ») : la liste « Par cavalier / Par cheval » n'a plus rien dessous (chaque nom
    ouvre sa page) : tous les noms en grille, avec la flèche, sans nom « choisi » d'avance */
 var HC_XM_GRILLE_CSS = ".hc .hc-xm{display:block!important}.hc .hc-xm-ll{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;overflow:visible!important}.hc .hc-xm-it{width:100%;box-sizing:border-box;min-width:0;padding:8px 12px 8px 8px}.hc .hc-xm-it.on{border-color:rgba(201,166,107,.18)}.hc .hc-xm-in{min-width:0}.hc .hc-xm-in b{display:block;overflow-wrap:anywhere;line-height:1.05}.hc .hc-xm-chev{display:block!important}@container hcmd (min-width:640px){.hc .hc-xm-ll{grid-template-columns:repeat(3,minmax(0,1fr))}}@container hcmd (min-width:960px){.hc .hc-xm-ll{grid-template-columns:repeat(4,minmax(0,1fr))}}";
+/* 09/11 23h08 — page Médias du concours : courbes dorées entre les parties, onglets photo pour les boutons */
+var HC_VR_COURBES_CSS = ".hc .vr-c{display:block;width:100%;height:34px;margin:30px 0 28px}.hc .vr>.vr-c:first-child{margin-top:4px}.hc .vr .vr-t,.hc .vr .vr-t.sep{margin-top:0}.hc .vr-ong{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:26px}.hc .vr-ong.seul{grid-template-columns:1fr}.hc .vr-o{position:relative;aspect-ratio:3/3.4;padding:0;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,.35);background:#0B0E0C;cursor:pointer;font:inherit}.hc .vr-ong.seul .vr-o{aspect-ratio:3/1.3}.hc .vr-o.on{border-color:#C9A66B}.hc .vr-o img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hc .vr-o::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 40%,rgba(7,10,8,.85))}.hc .vr-o b{position:absolute;z-index:2;left:6px;right:6px;bottom:11px;text-align:center;font-family:Montserrat,sans-serif;font-weight:600;font-size:13px;line-height:1.2;color:#F3EEE4;text-shadow:0 1px 8px #000}.hc .vr-o i{position:absolute;z-index:2;left:50%;top:38%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(243,238,228,.85);background:rgba(7,10,8,.35);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:26px;font-weight:300;color:#F3EEE4}@container hcmd (min-width:640px){.hc .vr-o{aspect-ratio:3/2.2}}";
 var HC_CSS_ID = "hype-saison-css-concours";
 var HC_CSS = [
   ".hc .hc-hero{position:relative;background:#070A08}",
