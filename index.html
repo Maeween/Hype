@@ -39827,10 +39827,10 @@ function hypeRequeteTeam(colonnes, clef) {
 
 const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=17", "HypeTeam", "Team");   /* 05/11 v5 : chapitre « Médias » */
 /* 05/11 Page Médias de la Team (Théorie · Vidéos · Épingles HB), fichier à part chargé à l'ouverture. */
-const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Medias");
-const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
+const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=15", "HypeTeamMedias", "Medias");
+const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=15", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "Registre");
@@ -39868,13 +39868,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=99", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=100", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie
@@ -45703,7 +45703,7 @@ function EcranMonApprentissage() {
 
 const EcranMonCarnet = hypeEcranDiffere("hype-ecran-mon-carnet.js?v=3", "HypeMonCarnet", "MonCarnet");
 
-const EcranEvenementPasse = hypeEcranDiffere("hype-ecran-evenement-passe.js?v=5", "HypeEvtPasse", "EvtPasse");
+const EcranEvenementPasse = hypeEcranDiffere("hype-ecran-evenement-passe.js?v=6", "HypeEvtPasse", "EvtPasse");
 
 /* 09/10 (768) — IMPORTER DES SOINS EN UNE FOIS (page Sante du club).
    Demande de Blandine : donner un message (ex. WhatsApp « Marechal : Elfe, Hey baby, Borealis… »)
@@ -47864,6 +47864,7 @@ var HPV_CSS = [
   ".hpv .hpv-sous-video button{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;font-size:12.5px}",
   ".hpv .hpv-rond{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);width:44px;height:44px;padding:0;border-radius:50%;border:1px solid rgba(201,166,107,.65);background:rgba(7,10,8,.35);color:#F3EEE4;display:flex;align-items:center;justify-content:center;cursor:pointer}",
   ".hpv .hpv-retour{inset-inline-start:16px}.hpv .hpv-plus{inset-inline-end:16px}",
+  ".hpv .hpv-rond,.hpv .hpv-menu{z-index:8;-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform}",   /* 09/11 15h25 (Blandine : « on ne voit pas les trois petits points en haut, j'ai dû bouger la page ») : iPhone ne peignait les boutons posés sur la vidéo qu'après un défilement — calque propre, au-dessus de la vidéo */
   ".hpv .hpv-titre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 76px);inset-inline-start:20px;max-width:44%;text-shadow:0 2px 14px rgba(0,0,0,.75)}",
   ".hpv .hpv-sur{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:#F3EEE4;opacity:.92}",
   ".hpv .hpv-filet{display:block;width:54px;height:1.5px;background:#C9A66B;margin:12px 0 14px}",

@@ -828,7 +828,7 @@ function EcranEvenementPasse(props) {
     /* 17/09 (227) : SUPPRIMER LE RENDEZ-VOUS, depuis sa propre page (sa demande : ne plus avoir
        a revenir en arriere pour le trouver). Gestionnaire du club seulement, confirmation
        obligatoire, refus de la base AFFICHE. La suppression emporte le mur du rendez-vous. */
-    (peutSupprimerRdv ? h("div", { style: { padding: "30px 18px calc(24px + env(safe-area-inset-bottom))" } },
+    ((peutSupprimerRdv && !seulementFil) ? h("div", { style: { padding: "30px 18px calc(24px + env(safe-area-inset-bottom))" } },   /* 09/11 15h25 (Blandine : « beau bordel visuel ») : pas de « Supprimer ce rendez-vous » au milieu des médias du concours */
       errSup ? h("div", { style: { marginBottom: 10, padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, errSup) : null,
       h("div", { role: "button", onClick: supprimerCeRdv,
         style: { margin: "0 auto", width: "fit-content", minHeight: 46, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(240,92,116,0.45)", background: "rgba(240,92,116,0.08)", color: "#F0A0AE", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: busySup ? "default" : "pointer", opacity: busySup ? 0.6 : 1 } },

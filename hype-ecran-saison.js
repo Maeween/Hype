@@ -1272,6 +1272,12 @@ function EcranConcours() {
         /* 09/11 13h35 : media et video_mux_id ne sont PAS lisibles (droits par colonne, lecture via team_video_lecture) : les demander vidait toute la liste */
         var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
         var tvG = (rtg && !rtg.error && rtg.data) || [];
+        /* 09/11 15h25 (Blandine : « j'avais déjà renseigné les cavaliers et chevaux ») : les rattachements faits dans la vidéothèque de la Team */
+        if (tvG.length) {
+          var idsTv = tvG.map(function (v) { return v.id; });
+          try { var rcv = await supa.from("team_videos_cavaliers").select("video_id, user_id").in("video_id", idsTv); var rch = await supa.from("team_videos_chevaux").select("video_id, cheval_id").in("video_id", idsTv);
+            tvG.forEach(function (v) { v.__cav = ((rcv && rcv.data) || []).filter(function (c) { return c.video_id === v.id; }).map(function (c) { return String(c.user_id); }); v.__ch = ((rch && rch.data) || []).filter(function (c) { return c.video_id === v.id; }).map(function (c) { return String(c.cheval_id); }); }); } catch (eTc) { }
+        }
         /* 09/11 14h10 : les vidéos de la Team s'identifient aussi (clé « teamvideo:<id> » dans identifications, comme « post: » / « album: ») */
         var urlsG = tvG.map(function (v) { return "teamvideo:" + v.id; }); postsG.forEach(function (po) { [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && urlsG.indexOf(String(m)) === -1) urlsG.push(String(m)); }); });
         var identG = {};
@@ -2136,6 +2142,7 @@ function EcranConcours() {
       var r = v.resultat ? medG.resCav[v.resultat] : null;
       var idtV = medG.ident["teamvideo:" + v.id] || [];
       var cavV = idtV.filter(function (q) { return q.type === "cavalier"; }).map(function (q) { return String(q.cible_id); }), chV = idtV.filter(function (q) { return q.type === "cheval"; }).map(function (q) { return String(q.cible_id); });
+      (v.__cav || []).forEach(function (c) { if (cavV.indexOf(c) === -1) cavV.push(c); }); (v.__ch || []).forEach(function (c) { if (chV.indexOf(c) === -1) chV.push(c); });
       if (r && r.cavalier_id && cavV.indexOf(String(r.cavalier_id)) === -1) cavV.push(String(r.cavalier_id)); if (r && r.cheval_id && chV.indexOf(String(r.cheval_id)) === -1) chV.push(String(r.cheval_id));
       itemsM.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
         cav: cavV, ch: chV });
@@ -2192,7 +2199,8 @@ function EcranConcours() {
       /* vidéo de la Team : identifiée par sa coach ou son auteur → acceptée d'office (pas de vignette à valider ailleurs dans l'appli) */
       async function poser(type, id, nom) {
         if (!x.tv) { if (typeof identifierSouvenir === "function") return identifierSouvenir(x.url, type, id, nom); return null; }
-        var ri = await supa.from("identifications").insert({ photo_url: x.url, type: type, cible_id: String(id), cible_nom: nom || null, auteur_id: moi.id, statut: "accepte" }).select("id");
+        /* vidéo de la Team : mêmes rattachements que dans la vidéothèque (team_videos_cavaliers / team_videos_chevaux) */
+        var ri = type === "cheval" ? await supa.from("team_videos_chevaux").insert({ video_id: x.tv.id, cheval_id: id }).select("video_id") : await supa.from("team_videos_cavaliers").insert({ video_id: x.tv.id, user_id: id }).select("video_id");
         if (ri && ri.error) throw ri.error; return ri;
       }
       if (x.tv && (medId.ep || "") !== (x.epreuve || "")) { var rE = await supa.rpc("team_video_epreuve", { p_id: x.tv.id, p_epreuve: medId.ep || "" }); if (rE && rE.error) throw rE.error; x.tv.epreuve = medId.ep || null; }
