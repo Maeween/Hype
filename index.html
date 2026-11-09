@@ -47859,7 +47859,8 @@ function HypePageVideo(props) {
           h("button", { type: "button", onClick: function () { setJoue(true); setApercu(true); } }, apercu ? T("Aperçu en cours…", "Previewing…", "Vista previa…", "Anteprima…", "プレビュー中…", "Vorschau läuft…", "جارٍ العرض…", "预览中…", "Voorbeeld loopt…", "A pré-visualizar…", "Förhandsvisar…", "Просмотр…", "Podgląd…", "미리 보는 중…") : "▶ " + T("Prévisualiser le passage", "Preview the part", "Previsualizar el fragmento", "Anteprima del passaggio", "場面をプレビュー", "Abschnitt ansehen", "معاينة المقطع", "预览片段", "Fragment bekijken", "Pré-visualizar o trecho", "Förhandsvisa avsnittet", "Просмотреть фрагмент", "Podejrzyj fragment", "구간 미리 보기"))) : null)) : null,
     h("div", { id: "hpv-infos", className: "hpv-infos" }, infos,
       props.bas || null,
-      btnAj ? h("div", { style: { padding: "18px 18px 0" } }, btnAj) : null));
+      btnAj ? h("div", { style: { padding: "18px 18px 0" } }, btnAj) : null),
+    (typeof FinPageHype === "function") ? h("div", { key: "fin", style: { paddingBottom: "env(safe-area-inset-bottom)" } }, h(FinPageHype, null)) : null);   /* 09/11 20h50 (Blandine : « mets la fin de page Hype dessus aussi ») : toutes les vidéos (Team, cavalier, cheval) */
   var page = h("div", { role: "dialog", "aria-modal": "true", "data-noswipe": "1", dir: rtl ? "rtl" : "ltr", className: "hpv" + (joue ? "" : " hpv-photo-on"), style: { position: "fixed", top: 0, bottom: 0, left: (menu && !rtl) ? 210 : 0, right: (menu && rtl) ? 210 : 0, zIndex: 8800, background: "#070A08", color: IV, fontFamily: M } },
     h("style", null, HPV_CSS),
     h("div", { id: "hpv-defile", style: { position: "absolute", inset: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" } }, corpsI));
