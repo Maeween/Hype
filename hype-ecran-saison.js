@@ -20,6 +20,19 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Les photos": ["Photos", "Las fotos", "Le foto", "写真", "Die Fotos", "الصور", "照片", "De foto's", "As fotos", "Bilderna", "Фото", "Zdjęcia", "사진"],
+  "Les vidéos": ["Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "영상"],
+  "photo": ["photo", "foto", "foto", "写真", "Foto", "صورة", "照片", "foto", "foto", "foto", "фото", "zdjęcie", "사진"],
+  "photos": ["photos", "fotos", "foto", "写真", "Fotos", "صور", "照片", "foto's", "fotos", "foton", "фото", "zdjęć", "사진"],
+  "vidéo": ["video", "vídeo", "video", "動画", "Video", "فيديو", "视频", "video", "vídeo", "video", "видео", "film", "영상"],
+  "vidéos": ["videos", "vídeos", "video", "動画", "Videos", "فيديوهات", "视频", "video's", "vídeos", "videor", "видео", "filmów", "영상"],
+  "Par cavalier": ["By rider", "Por jinete", "Per cavaliere", "ライダー別", "Nach Reiter", "حسب الفارس", "按骑手", "Per ruiter", "Por cavaleiro", "Per ryttare", "По всадникам", "Według jeźdźca", "기수별"],
+  "Par cheval": ["By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별"],
+  "À identifier": ["To tag", "Por identificar", "Da identificare", "未タグ", "Zu markieren", "بحاجة إلى تحديد", "待标记", "Te taggen", "Por identificar", "Att tagga", "Не отмечено", "Do oznaczenia", "태그 필요"],
+  "Aucune photo ne correspond à ces filtres.": ["No photo matches these filters.", "Ninguna foto coincide con estos filtros.", "Nessuna foto corrisponde a questi filtri.", "条件に合う写真はありません。", "Kein Foto passt zu diesen Filtern.", "لا توجد صورة تطابق هذه الفلاتر.", "没有符合筛选条件的照片。", "Geen foto past bij deze filters.", "Nenhuma foto corresponde a estes filtros.", "Inget foto matchar filtren.", "Нет фото по этим фильтрам.", "Brak zdjęć dla tych filtrów.", "필터에 맞는 사진이 없어."],
+  "Pas encore de photo sur ce concours.": ["No photos for this competition yet.", "Aún no hay fotos de este concurso.", "Ancora nessuna foto di questo concorso.", "この大会の写真はまだありません。", "Noch keine Fotos von diesem Turnier.", "لا توجد صور لهذه المسابقة بعد.", "本次比赛还没有照片。", "Nog geen foto's van deze wedstrijd.", "Ainda não há fotos deste concurso.", "Inga foton från tävlingen än.", "Пока нет фото с этих соревнований.", "Brak jeszcze zdjęć z tych zawodów.", "이 대회 사진이 아직 없어."],
+  "Aucune vidéo ne correspond à ces filtres.": ["No video matches these filters.", "Ningún vídeo coincide con estos filtros.", "Nessun video corrisponde a questi filtri.", "条件に合う動画はありません。", "Kein Video passt zu diesen Filtern.", "لا يوجد فيديو يطابق هذه الفلاتر.", "没有符合筛选条件的视频。", "Geen video past bij deze filters.", "Nenhum vídeo corresponde a estes filtros.", "Ingen video matchar filtren.", "Нет видео по этим фильтрам.", "Brak filmów dla tych filtrów.", "필터에 맞는 영상이 없어."],
+  "Pas encore de vidéo sur ce concours.": ["No videos for this competition yet.", "Aún no hay vídeos de este concurso.", "Ancora nessun video di questo concorso.", "この大会の動画はまだありません。", "Noch keine Videos von diesem Turnier.", "لا توجد فيديوهات لهذه المسابقة بعد.", "本次比赛还没有视频。", "Nog geen video's van deze wedstrijd.", "Ainda não há vídeos deste concurso.", "Inga videor från tävlingen än.", "Пока нет видео с этих соревнований.", "Brak jeszcze filmów z tych zawodów.", "이 대회 영상이 아직 없어."],
   "Modifier les passages": ["Edit start times", "Modificar las salidas", "Modifica le partenze", "出場を編集", "Starts bearbeiten", "تعديل أوقات الانطلاق", "修改出场", "Starts wijzigen", "Alterar as passagens", "Ändra starterna", "Изменить старты", "Edytuj starty", "출전 수정"],
   "Heures et pistes, ordre de passage ou programme (photo, capture ou PDF), direct du chronométreur.": ["Times and arenas, start list or programme (photo, screenshot or PDF), timekeeper's live results.", "Horas y pistas, orden de salida o programa (foto, captura o PDF), directo del cronometrador.", "Orari e campi, ordine di partenza o programma (foto, screenshot o PDF), diretta del cronometrista.", "時刻とアリーナ、出場順またはプログラム（写真・スクリーンショット・PDF）、計時のライブ。", "Zeiten und Plätze, Startliste oder Programm (Foto, Screenshot oder PDF), Live-Zeitnahme.", "الأوقات والميادين، ترتيب الانطلاق أو البرنامج (صورة، لقطة أو PDF)، البث المباشر للميقاتي.", "时间和场地、出场顺序或赛程（照片、截图或 PDF）、计时直播。", "Tijden en pistes, startvolgorde of programma (foto, screenshot of pdf), live tijdwaarneming.", "Horas e pistas, ordem de passagem ou programa (foto, captura ou PDF), direto do cronometrista.", "Tider och banor, startordning eller program (foto, skärmbild eller PDF), tidtagningens live.", "Время и манежи, стартовый порядок или программа (фото, скриншот или PDF), онлайн хронометража.", "Godziny i place, kolejność startu lub program (zdjęcie, zrzut lub PDF), wyniki na żywo.", "시간과 경기장, 출전 순서나 프로그램(사진·스크린샷·PDF), 계측 실시간."],
   "Terminer": ["Done", "Terminar", "Fine", "完了", "Fertig", "إنهاء", "完成", "Klaar", "Terminar", "Klar", "Готово", "Zakończ", "완료"],
@@ -1180,7 +1193,8 @@ function EcranConcours() {
   var _mid = React.useState(null); var medId = _mid[0], setMedId = _mid[1];   /* panneau « qui est sur ce média ? » */
   var _maj = React.useState(false); var medAjout = _maj[0], setMedAjout = _maj[1];
   var _mms = React.useState(""); var medMsg = _mms[0], setMedMsg = _mms[1];
-  var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
+  var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];
+  var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
   var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
@@ -2233,18 +2247,62 @@ function EcranConcours() {
     eqM.length ? h("div", { className: "hc-galh", "data-hscroll": "1" }, eqM.slice(0, medNE).map(function (x) { return h("div", { key: x.cle, className: "hc-galh-i" }, vue(x, "hc-galh-m", 900)); })
       .concat(eqM.length > medNE ? [h("button", { key: "plus", type: "button", className: "hc-galh-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")")] : []))
       : h("div", { className: "hs-note", style: { marginTop: 0 } }, (fCavM || fChM) && !itemsF.length ? F("Personne n’a encore été identifié sur les médias de ce concours avec ce filtre. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.") : (filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours.")))) : null;
+  /* ── 09/11 15h10 (Blandine : « les photos en haut, pour changer celle mise en avant sans que tout lague, et les vidéos en bas
+     rangées par cavalier ou par cheval, comme la vidéothèque de la Team ») : plus de « Mes médias / Médias de l'équipe » ;
+     les médias du cavalier connecté passent en premier. ── */
+  var photosF = itemsF.filter(function (x) { return !x.video; }).sort(function (a, b) { return (estAMoi(b) ? 1 : 0) - (estAMoi(a) ? 1 : 0); });
+  var videosF = itemsF.filter(function (x) { return x.video; });
+  var phP = photosF.filter(function (x) { return x.cle === medSel; })[0] || photosF[0] || null;
+  var phAutres = photosF.filter(function (x) { return x !== phP; });
+  var phRonds = phAutres.slice(0, 3), phRangee = phAutres.slice(3, 3 + medNM);
+  var blocPhotos = medG ? h("div", { className: "hc-rep-s" },
+    h("div", { className: "hc-rep-st" }, h("h3", null, F("Les photos")), h("span", null, photosF.length + " " + (photosF.length > 1 ? F("photos") : F("photo")))),
+    phP ? [
+      h("div", { key: "une", className: "hc-une" + (phRonds.length ? "" : " seule") },
+        h("div", { key: phP.cle, className: "hc-une-p" }, vue(phP, "hc-une-m", 1600)),
+        phRonds.length ? h("div", { className: "hc-ronds" }, phRonds.map(function (x) {
+          var src = apercu(x, 300);
+          return h("button", { key: x.cle, type: "button", className: "hc-rond", onClick: function () { setMedSel(x.cle); }, "aria-label": F("Afficher ce média") }, src ? h("img", { src: src, alt: "", loading: "lazy" }) : null);
+        })) : null),
+      phRangee.length ? h("div", { key: "rg", className: "hc-rangee", "data-hscroll": "1" }, phRangee.map(function (x) {
+        var src = apercu(x, 500);
+        return h("button", { key: x.cle, type: "button", className: "hc-rg", onClick: function () { setMedSel(x.cle); try { var el = document.querySelector(".hc-une"); if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) { } } },
+          src ? h("img", { src: src, alt: "", loading: "lazy" }) : h("span", { className: "hc-mt-vide" }));
+      }).concat(phAutres.length > 3 + medNM ? [h("button", { key: "plus", type: "button", className: "hc-rg hc-rg-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus"))] : [])) : null
+    ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune photo ne correspond à ces filtres.") : F("Pas encore de photo sur ce concours."))) : null;
+  /* vidéos : un groupe par cavalier (ou par cheval), les vidéos de chacun en rangée ; une vidéo non identifiée va dans « À identifier » */
+  var grpsV = [], grpParId = {};
+  function grpV(id, nom, photo) { if (!grpParId[id]) { grpParId[id] = { id: id, nom: nom, photo: photo, l: [] }; grpsV.push(grpParId[id]); } return grpParId[id]; }
+  videosF.forEach(function (x) {
+    var ids = medGrp === "ch" ? x.ch : x.cav;
+    if (!ids || !ids.length) { grpV("__", F("À identifier"), null).l.push(x); return; }
+    ids.forEach(function (id) {
+      var o = (medGrp === "ch" ? optCh : optCav).filter(function (q) { return q.id === String(id); })[0];
+      var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrp === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; });
+      grpV(String(id), (o && o.nom) || (medGrp === "ch" ? F("Cheval") : F("Cavalier")), ph).l.push(x);
+    });
+  });
+  grpsV.sort(function (a, b) { if (a.id === "__") return 1; if (b.id === "__") return -1; var am = moi && a.id === String(moi.id) ? -1 : 0, bm = moi && b.id === String(moi.id) ? -1 : 0; return (am - bm) || String(a.nom).localeCompare(String(b.nom)); });
+  var blocVideos = medG ? h("div", { className: "hc-rep-s" },
+    h("div", { className: "hc-rep-st" }, h("h3", null, F("Les vidéos")), h("span", null, videosF.length + " " + (videosF.length > 1 ? F("vidéos") : F("vidéo")))),
+    videosF.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start", margin: "0 0 14px" } },
+      [["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) { return h("button", { key: o[0], type: "button", className: "hc-chip-p" + (medGrp === o[0] ? " on" : ""), onClick: function () { setMedGrp(o[0]); } }, o[1]); })) : null,
+    videosF.length ? grpsV.map(function (g) {
+      return h("div", { key: g.id, className: "hc-vg" },
+        h("div", { className: "hc-vg-t" },
+          h("span", { className: "hc-vg-av" }, g.photo ? h("img", { src: g.photo, alt: "", loading: "lazy" }) : h("b", null, g.id === "__" ? "?" : String(g.nom || "?").charAt(0).toUpperCase())),
+          h("b", null, g.nom), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
+        h("div", { className: "hc-galh", "data-hscroll": "1" }, g.l.map(function (x) { return h("div", { key: x.cle, className: "hc-galh-i" }, vue(x, "hc-galh-m", 700)); })));
+    }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
   function selF(val, set, libre, opts, ic) {
     return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
       h("select", { value: val, "aria-label": libre, onChange: function (e) { set(e.target.value); setMedSel(null); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, libre + " · " + F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
   }
   var blocGalerie = h("div", { key: "gal", className: "hc-gal hc-rep" },
     h("h2", { className: "hc-rep-titre" }, F("Médias du concours")), h("span", { className: "hc-rep-filet", "aria-hidden": "true" }),
-    h("div", { className: "hc-rep-tabs", role: "tablist" }, [["tous", F("Tous"), itemsM.length, null], ["videos", F("Vidéos"), nbV, "video"], ["photos", F("Photos"), nbP, "photo"]].map(function (t) {
-      return h("button", { key: t[0], type: "button", role: "tab", "aria-selected": medType === t[0], className: "hc-rt" + (medType === t[0] ? " on" : ""), onClick: function () { setMedType(t[0]); setMedSel(null); setMedNM(12); setMedNE(24); } }, t[3] ? ico(t[3]) : null, t[1] + (medG ? " (" + t[2] + ")" : ""));
-    })),
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
     !medG ? h("div", { className: "hs-note" }, "…") : null,
-    blocMes, blocEq,
+    blocPhotos, blocVideos,
     h("div", { className: "hc-rep-aj" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
     panneauAjout,
     h("div", { className: "hc-rep-f" }, h("span", { className: "hc-rep-ft" }, F("Filtrer :")),
@@ -2739,6 +2797,15 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-vg{margin-bottom:18px}",
+  ".hc .hc-vg .hc-galh-m{height:128px}",
+  ".hc .hc-vg .hc-galh-m img{height:128px}",
+  ".hc .hc-vg-t{display:flex;align-items:center;gap:10px;margin-bottom:10px}",
+  ".hc .hc-vg-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:600}",
+  ".hc .hc-vg-t span:last-child{font-size:12px;color:rgba(243,238,228,.6);margin-inline-start:auto}",
+  ".hc .hc-vg-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;flex:none;background:#141a1c}",
+  ".hc .hc-vg-av img{width:100%;height:100%;object-fit:cover}",
+  ".hc .hc-vg-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;color:#C9A66B}",
   ".hs.hs-int{min-height:0!important;padding-bottom:0!important;background:none!important}",
   ".hs.hs-int .hs-in{padding:0;max-width:none}",
   ".hc .hc-jj{margin-top:8px}",
