@@ -20,6 +20,7 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Touche ⋯ pour dire qui est dessus": ["Tap ⋯ to say who's in it", "Toca ⋯ para decir quién aparece", "Tocca ⋯ per dire chi c’è", "⋯ をタップして誰か指定", "Tippe auf ⋯, um anzugeben, wer drauf ist", "اضغط ⋯ لتحديد من فيه", "点击 ⋯ 标记是谁", "Tik op ⋯ om aan te geven wie erop staat", "Toca em ⋯ para dizer quem aparece", "Tryck på ⋯ för att ange vem som syns", "Нажми ⋯, чтобы указать, кто здесь", "Dotknij ⋯, aby wskazać, kto jest na nim", "⋯ 를 눌러 누가 나오는지 알려 줘"],
   "Les photos": ["Photos", "Las fotos", "Le foto", "写真", "Die Fotos", "الصور", "照片", "De foto's", "As fotos", "Bilderna", "Фото", "Zdjęcia", "사진"],
   "Les vidéos": ["Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "영상"],
   "photo": ["photo", "foto", "foto", "写真", "Foto", "صورة", "照片", "foto", "foto", "foto", "фото", "zdjęcie", "사진"],
@@ -2294,7 +2295,7 @@ function EcranConcours() {
     if (!ids || !ids.length) { grpV("__", F("À identifier"), null).l.push(x); return; }
     ids.forEach(function (id) {
       var o = (medGrp === "ch" ? optCh : optCav).filter(function (q) { return q.id === String(id); })[0];
-      var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrp === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; }); if (medGrp === "ch") ph = chPhotos[id] || null;
+      var ph = null; (passagesEq || []).forEach(function (pq) { if (!ph && medGrp === "cav" && String(pq.cavalier_id) === String(id)) ph = pq.avatar_url; }); if (medGrp === "ch") ph = chPhotos[id] || null; else if (!ph) (passagesEq || []).forEach(function (pq) { if (!ph && String(pq.cavalier_id) === String(id) && pq.cheval_id) ph = chPhotos[pq.cheval_id] || null; });
       grpV(String(id), (o && o.nom) || (medGrp === "ch" ? F("Cheval") : F("Cavalier")), ph).l.push(x);
     });
   });
@@ -2306,9 +2307,12 @@ function EcranConcours() {
     videosF.length ? grpsV.map(function (g) {
       /* 09/11 15h14 (Blandine) : un bandeau photo + nom sépare chaque lot ; 2 vidéos côte à côte, la suite défile */
       return h("div", { key: g.id, className: "hc-vg" },
+        /* 09/11 15h17 (Blandine : « un truc visuel sympa, un encart avec image ») : encart au style de la page de l'équipe, photo à droite */
         h("div", { className: "hc-vg-t" },
-          h("span", { className: "hc-vg-av" }, g.photo ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(g.photo, 160, 160) : g.photo, alt: "", loading: "lazy" }) : h("b", null, g.id === "__" ? "?" : String(g.nom || "?").charAt(0).toUpperCase())),
-          h("b", null, g.nom), h("span", null, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
+          h("img", { className: "hc-vg-img", src: g.photo ? ((typeof vignetteHype === "function") ? vignetteHype(g.photo, 600, 300) : g.photo) : (g.id === "__" ? "images/hype-entete-concours.jpg" : "images/concours-carte-medias.webp"), alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
+          h("span", { className: "hc-vg-voile", "aria-hidden": "true" }),
+          h("span", { className: "hc-vg-k" }, g.id === "__" ? F("Touche ⋯ pour dire qui est dessus") : (medGrp === "ch" ? F("Cheval") : F("Cavalier"))),
+          h("b", null, g.nom), h("span", { className: "hc-vg-n" }, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
         h("div", { className: "hc-vg-l", "data-hscroll": "1" }, g.l.map(function (x) { return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700), x.epreuve ? h("span", { className: "hc-vg-ep" }, x.epreuve) : null); })));
     }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
   function selF(val, set, libre, opts, ic) {
@@ -2825,15 +2829,19 @@ var HC_CSS = [
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
   ".hc .hc-vg{margin-bottom:20px}",
-  ".hc .hc-vg-t{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:8px 14px 8px 8px;border:1px solid rgba(201,166,107,.35);border-radius:999px;background:linear-gradient(90deg,rgba(201,166,107,.12),rgba(201,166,107,0) 70%)}",
+  ".hc .hc-vg-t{position:relative;overflow:hidden;height:86px;display:flex;flex-direction:column;justify-content:center;gap:2px;margin-bottom:10px;padding:0 16px;border:1px solid rgba(201,166,107,.38);border-radius:14px;background:#0B0F13}",
+  ".hc .hc-vg-img{position:absolute;top:0;inset-inline-end:0;width:55%;height:100%;object-fit:cover;object-position:60% 35%}",
+  ".hc .hc-vg-voile{position:absolute;inset:0;background:linear-gradient(90deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 85%)}",
+  "[dir=rtl] .hc .hc-vg-voile{background:linear-gradient(270deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 85%)}",
+  ".hc .hc-vg-k{position:relative;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:#C9A66B;font-weight:600}",
+  ".hc .hc-vg-t > b{position:relative;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600;line-height:1.1}",
+  ".hc .hc-vg-n{position:relative;font-size:11.5px;color:rgba(243,238,228,.7)}",
   ".hc .hc-vg-l{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}",
   ".hc .hc-vg-l::-webkit-scrollbar{display:none}",
   ".hc .hc-vg-i{flex:0 0 calc((100% - 10px) / 2);scroll-snap-align:start;min-width:0}",
   ".hc .hc-vg-m{position:relative;display:block;width:100%;aspect-ratio:16/10;padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
   ".hc .hc-vg-m img{width:100%;height:100%;object-fit:contain}",
   ".hc .hc-vg-ep{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:5px}",
-  ".hc .hc-vg-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:600}",
-  ".hc .hc-vg-t span:last-child{font-size:12px;color:rgba(243,238,228,.6);margin-inline-start:auto}",
   ".hc .hc-vg-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;flex:none;background:#141a1c}",
   ".hc .hc-vg-av img{width:100%;height:100%;object-fit:cover}",
   ".hc .hc-vg-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;color:#C9A66B}",
