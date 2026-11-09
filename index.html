@@ -4258,7 +4258,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
     for (let deb = 0; deb < 50000; deb += 1000) {
       const d = await delaiDeGarde(
         supa.from("resultats")
-          .select("id,points,date_epreuve,epreuve,concours,cavalier,cheval_id")   /* (728) id + points : pour completer les points manquants des lignes deja la */
+          .select("id,points,date_epreuve,epreuve,concours,cavalier,cheval_id,origine,statut,place")   /* (728) id + points : pour completer les points manquants des lignes deja la ; 09/11 : origine/statut/place pour confirmer les resultats provisoires */
           .in("cheval_id", ciblesUniques)
           .order("id", { ascending: true })
           .range(deb, deb + 999),
@@ -4312,6 +4312,22 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
      reconnue comme doublon (rien n est ajoute) MAIS, si la base n a pas de points et que le fichier en a,
      on les complete. ⚠️ On ne touche JAMAIS a un point deja rempli (filtre .is("points", null)). */
   const aCompleter = [];
+  /* 09/11 (Blandine « Ok », etape 4 de la page Resultats) — CONFIRMER UN RESULTAT PROVISOIRE AU LIEU DE LE DOUBLER.
+     Une saisie de la coach ou un resultat publie depuis le direct porte le nom du concours de l agenda (« CSO Tigery ») et
+     l epreuve courte (« Club 2 ») : la cle ci-dessus ne le reconnait pas. On cherche donc, pour le MEME cheval le MEME jour,
+     une ligne provisoire dont l epreuve est contenue dans celle du telemat (« club 2 » dans « club 2 grand prix ») ; a
+     plusieurs candidates, celle qui a la meme place ; sinon on ne devine pas (ligne ecrite normalement). La ligne
+     provisoire est alors mise a jour avec les donnees FFE et passe « officiel » (son lien avec l agenda est garde). */
+  const aConfirmer = [], provUtilises = {};
+  const estProv = function (r) { return /^(saisie|direct)$/.test(String(r.origine || "")) || /^(saisie|provisoire)$/.test(String(r.statut || "")); };
+  const motsEp = function (t) { return propre(t).replace(/[^a-z0-9 ]+/g, " ").split(" ").filter(Boolean); };
+  aEcrire.forEach(function (r) {
+    const ch0 = r.__cible || chevalId, d0 = String(r.date || "").slice(0, 10), mE = motsEp(r.epreuve);
+    const cands = deja.filter(function (x) { return !provUtilises[x.id] && estProv(x) && String(x.cheval_id) === String(ch0) && String(x.date_epreuve || "").slice(0, 10) === d0 && motsEp(x.epreuve).length && motsEp(x.epreuve).every(function (w) { return mE.indexOf(w) !== -1; }); });
+    var c0 = cands.length === 1 ? cands[0] : (cands.filter(function (x) { return r.place != null && Number(x.place) === Number(r.place); })[0] || null);
+    if (c0) { provUtilises[c0.id] = true; r.__confirme = c0.id; aConfirmer.push(r); }
+  });
+  aEcrire = aEcrire.filter(function (r) { return !r.__confirme; });
   aEcrire.forEach(function (r) {
     const k = cle(r.date, r.epreuve, r.concours, r.cavalier, r.__cible || chevalId);
     if (vues[k] && vues[k].id && vues[k].points == null && r.points != null && !isNaN(Number(r.points))) {
@@ -4357,6 +4373,20 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts)
     });
   });
   let completes = 0, refusees = 0;
+  /* 09/11 : les resultats provisoires reconnus deviennent officiels (donnees du telemat) */
+  for (let iP = 0; iP < aConfirmer.length && iP < 200; iP++) {
+    const rP = aConfirmer[iP];
+    const nf = function (t) { var b = String(t || ""); try { if (typeof hypeReparerFFE === "function") b = hypeReparerFFE(b); } catch (e1) { } return b.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim(); };
+    try {
+      const rU = await delaiDeGarde(supa.from("resultats").update({
+        concours: nf(rP.concours), epreuve: nf(rP.epreuve), place: rP.place, partants: rP.partants, quart: rP.quart,
+        mention: nf(rP.mention || "") || null, points: (rP.points == null ? null : rP.points), origine: "import", statut: "officiel",
+        classement: (rP.place != null && rP.partants != null) ? (rP.place + (rP.place === 1 ? "er" : "e") + " / " + rP.partants) : (rP.statut === "elimine" ? "El." : rP.statut === "abandon" ? "Ab." : null),
+        maj_le: new Date().toISOString()
+      }).eq("id", rP.__confirme).select("id"), 15, "confirmation des resultats provisoires");
+      if (rU && !rU.error && rU.data && rU.data.length) completes++; else refusees++;
+    } catch (eP) { refusees++; }
+  }
   for (let iC = 0; iC < aCompleter.length && iC < 400; iC++) {
     try {
       const rU = await delaiDeGarde(supa.from("resultats").update({ points: aCompleter[iC].points }).eq("id", aCompleter[iC].id).is("points", null).select("id"), 15, "mise a jour des points");
@@ -39800,7 +39830,7 @@ const EcranTeamCompetition = hypeEcranDiffere("hype-ecran-team.js?v=13", "HypeTe
 const EcranTeamMedias = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Medias");
 const EcranEpinglePartagee = hypeEcranDiffere("hype-ecran-team-medias.js?v=14", "HypeTeamMedias", "Epingle");   /* 05/11 soir */
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : page « Ma saison » (hype-ecran-saison.js), en-tête de la Vidéothèque. Lien caché #saison + lien « Ma saison » sous l agenda de la page Team. */
-const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "Saison");
+const EcranMaSaison = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "Saison");
 /* 04/11 — ESPACE « MON ÉCURIE » (gestion d'écurie), ÉTAPE 1 : pages « Mon écurie » et « Le registre », design de la Vidéothèque, lecture seule. Lien caché #mon-ecurie. */
 const EcranMonEcurie = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "MonEcurie");
 const EcranRegistre = hypeEcranDiffere("hype-ecran-gestion.js?v=34", "HypeGestion", "Registre");
@@ -39838,13 +39868,13 @@ function EcranTraceSoin(props) {
     return (etat === 1 && window.HypeGestion && window.HypeGestion.TraceSoin) ? React.createElement(window.HypeGestion.TraceSoin, props) : null;
 }
 /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 2 : fiche concours (nouveau design) et page Engagements de la coach (feuille SEP), même fichier. */
-const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "Concours");
-const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "Engagements");
+const EcranConcours = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "Concours");
+const EcranEngagements = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "Engagements");
 /* 04/11 21h — CENTRE DE COMPÉTITION, ÉTAPE 3 : liste du van, jour J (passages, pistes, décalage, direct), dossier du concours. */
-const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "ListeVan");
-const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "JourJ");
-const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "Dossier");
-const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=76", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
+const EcranListeVan = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "ListeVan");
+const EcranJourJ = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "JourJ");
+const EcranDossierConcours = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "Dossier");
+const EcranVideoParcours = hypeEcranDiffere("hype-ecran-saison.js?v=77", "HypeSaison", "VideoParcours");   /* 04/11 22h15 vidéo de parcours commentée */
 /* 30/10 — PAGE « LES RÉSULTATS DE L'ÉCURIE » V3 (pack de Blandine, cavaliers en avant), construite À CÔTÉ de
    « Performances en concours ». Adresse cachée #resultats-ecurie (club : celui de la page Écurie ouverte, sinon le sien).
    HYPE_RESULTATS_V3 = true fera ouvrir la nouvelle page par le bouton « Voir les résultats » de la page Écurie

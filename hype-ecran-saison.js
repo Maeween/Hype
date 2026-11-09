@@ -20,6 +20,12 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  /* 09/11 — publier depuis le direct */
+  "Publier les résultats du direct": ["Publish the live results", "Publicar los resultados del directo", "Pubblica i risultati della diretta", "ライブの結果を公開", "Live-Ergebnisse veröffentlichen", "نشر النتائج المباشرة", "发布实时成绩", "Live-uitslagen publiceren", "Publicar os resultados ao vivo", "Publicera liveresultaten", "Опубликовать онлайн-результаты", "Opublikuj wyniki na żywo", "실시간 결과 공개"],
+  "résultats publiés": ["results published", "resultados publicados", "risultati pubblicati", "件の結果を公開", "Ergebnisse veröffentlicht", "نتائج منشورة", "条成绩已发布", "uitslagen gepubliceerd", "resultados publicados", "resultat publicerade", "результатов опубликовано", "wyników opublikowano", "개의 결과 공개"],
+  "résultat publié": ["result published", "resultado publicado", "risultato pubblicato", "件の結果を公開", "Ergebnis veröffentlicht", "نتيجة منشورة", "条成绩已发布", "uitslag gepubliceerd", "resultado publicado", "resultat publicerat", "результат опубликован", "wynik opublikowany", "개의 결과 공개"],
+  " depuis le direct (provisoires, confirmés par l’import du télémat).": [" from the live feed (provisional, confirmed by the FFE import).", " desde el directo (provisionales, confirmados por la importación de la FFE).", " dalla diretta (provvisori, confermati dall'importazione FFE).", " ライブから（暫定。FFE の取り込みで確定）。", " aus dem Live-Ergebnis (vorläufig, bestätigt durch den FFE-Import).", " من البث المباشر (مؤقتة، يؤكدها استيراد FFE).", " 来自实时成绩（临时，导入 FFE 后确认）。", " uit de live-uitslagen (voorlopig, bevestigd door de FFE-import).", " do ao vivo (provisórios, confirmados pela importação da FFE).", " från liveresultaten (preliminära, bekräftas av FFE-importen).", " из онлайн-результатов (предварительно, подтвердит импорт FFE).", " z wyników na żywo (tymczasowe, potwierdzi je import FFE).", " 실시간 결과에서 (잠정, FFE 가져오기로 확정)."],
+  "Rien à publier : aucun classement lu pour l’instant.": ["Nothing to publish: no placings read yet.", "Nada que publicar: aún no se ha leído ninguna clasificación.", "Niente da pubblicare: nessuna classifica letta per ora.", "公開するものはありません。まだ順位が読み込まれていません。", "Nichts zu veröffentlichen: noch keine Platzierung gelesen.", "لا شيء للنشر: لم يُقرأ أي تصنيف بعد.", "没有可发布的内容：尚未读取到排名。", "Niets te publiceren: nog geen klassering gelezen.", "Nada a publicar: nenhuma classificação lida ainda.", "Inget att publicera: inga placeringar lästa ännu.", "Нечего публиковать: места пока не получены.", "Nic do opublikowania: brak odczytanych miejsc.", "공개할 것이 없어요. 아직 읽은 순위가 없어요."],
   /* 09/11 13h — page Résultats du concours */
   "Éliminé": ["Eliminated", "Eliminado", "Eliminato", "失権", "Ausgeschieden", "مُقصى", "淘汰", "Uitgesloten", "Eliminado", "Utesluten", "Исключён", "Wyeliminowany", "실격"],
   "Abandon": ["Retired", "Abandono", "Ritirato", "棄権", "Aufgegeben", "انسحاب", "弃权", "Opgegeven", "Abandono", "Utgått", "Сход", "Wycofany", "기권"],
@@ -1575,7 +1581,7 @@ function EcranConcours() {
     x.meilleur = 0; x.l.forEach(function (l) { if (l.place && (!x.meilleur || l.place < x.meilleur)) x.meilleur = l.place; });
   });
   var epCourantRes = resOuv === null ? (epsRes.filter(function (x) { return x.l.length; })[0] || epsRes[0] || {}).ep : resOuv;
-  function lauriersPl(n) { return h("span", { className: "hc-lp" + (n === 2 ? " ar" : n === 3 ? " br" : "") }, lauriers(), h("b", null, n)); }
+  function lauriersPl(n, txt) { return h("span", { className: "hc-lp" + (n === 2 ? " ar" : n === 3 ? " br" : "") }, lauriers(), h("b", null, txt || n)); }
   function ouvrirVideo(v) { try { window.__teamMediasGroupe = v.groupe_id; window.__teamMediasOnglet = "videos"; window.__teamMediasOuvrir = v.id; } catch (e) { } setEcran("team-medias"); }
   /* bandeau du direct : résultats en direct + live vidéo (chaque accès seulement s'il existe ; badge seulement si la coach l'a mis en route) */
   var bandeauDirect = (ev.lien_direct || ev.lien_live || gestion) ? h("div", { key: "bd", className: "hc-bd" },
@@ -1641,6 +1647,31 @@ function EcranConcours() {
     } catch (eS) { setResMsg(F("Enregistrement impossible : ") + String((eS && eS.message) || eS)); }
     setResOcc(false);
   }
+  /* 09/11 (étape 4) : la coach publie en un geste ce que le chronométreur affiche pour l'équipe → résultats « provisoire »
+     (origine direct), rattachés au concours, au cavalier et au cheval. L'import du télémat les confirmera « officiel »
+     sans doublon (rapprochement : même cheval, même jour, épreuve contenue dans celle de la FFE). */
+  async function publierDirect(x) {
+    if (resOcc) return; setResOcc(true); setResMsg("");
+    try {
+      var u = moi || {}; var maint = new Date().toISOString(); var n = 0;
+      var ETAT = function (t) { t = String(t || "").toLowerCase(); return /\bel\b|elim/.test(t) ? "El." : /\bab\b|aband/.test(t) ? "Ab." : /np|forfait/.test(t) ? "NP" : /\bnc\b/.test(t) ? "NC" : ""; };
+      for (var i = 0; i < x.l.length; i++) {
+        var l = x.l[i]; if (l.statut !== "direct" || l.attente) continue;
+        var p = l.p || {}; var et = l.place ? "" : ETAT(l.etat);
+        if (!l.place && !et) continue;
+        var ligne = { user_id: u.id, origine: "direct", statut: "provisoire", visible: true, agenda_id: idEv, concours: ev.titre || null,
+          date_epreuve: String(ev.date_jour || "").slice(0, 10) || null, annee: Number(String(ev.date_jour || "").slice(0, 4)) || null, epreuve: x.ep,
+          place: l.place || null, partants: x.partants || null, classement: l.place ? (placeTxt(l.place) + (x.partants ? " / " + x.partants : "")) : (et + (x.partants ? " / " + x.partants : "")),
+          penalites: l.pen || null, temps: l.temps || null, mention: (String(l.pen) === "0" && l.place) ? "SF" : null,
+          cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cavalier: l.nom, maj_par: u.id || null, maj_le: maint };
+        var r = await supa.from("resultats").insert(ligne).select("id"); if (r && r.error) throw r.error; n++;
+      }
+      var rr = await supa.from("resultats").select("id, epreuve, place, partants, classement, mention, cavalier, cavalier_id, cheval_id, visible, masque_cavaliere, penalites, temps, gains, statut, origine, user_id").eq("agenda_id", idEv).limit(400);
+      if (rr && !rr.error) { var lr = (rr.data || []).filter(function (q) { return q.visible !== false || q.statut === "saisie"; }); lr.forEach(function (q) { (passagesEq || []).forEach(function (z) { if (!q.__ch && z.cheval_id && z.cheval_id === q.cheval_id) q.__ch = z.cheval_nom; if (!q.__p && z.cavalier_id && z.cavalier_id === q.cavalier_id) q.__p = z; }); (resConc || []).forEach(function (y) { if (y.id === q.id) { q.__p = q.__p || y.__p; q.__ch = q.__ch || y.__ch; } }); }); setResConc(lr); }
+      setResMsg(n ? "✓ " + n + " " + (n > 1 ? F("résultats publiés") : F("résultat publié")) + F(" depuis le direct (provisoires, confirmés par l’import du télémat).") : F("Rien à publier : aucun classement lu pour l’instant."));
+    } catch (eD) { setResMsg(F("Enregistrement impossible : ") + String((eD && eD.message) || eD)); }
+    setResOcc(false);
+  }
   function editeurRes() {
     function maj(i, f) { setResEd(function (e) { var n = Object.assign({}, e, { lignes: e.lignes.slice() }); n.lignes[i] = Object.assign({}, n.lignes[i]); f(n.lignes[i]); return n; }); }
     return h("div", { className: "hc-ged hc-rsaisie" },
@@ -1679,14 +1710,16 @@ function EcranConcours() {
           x.l.length ? x.l.filter(function (l) { return gestion || !l.brouillon; }).map(function (l) {
             var aVid = l.vids && l.vids.length;
             return h("div", { key: l.cle, className: "hc-rl" + (moi && l.cavalier_id === moi.id ? " moi" : "") },
-              h("span", { className: "hc-rl-pl" }, l.place ? (l.place <= 3 ? lauriersPl(placeTxt(l.place)) : h("b", null, placeTxt(l.place))) : h("i", null, l.etat || (l.attente ? F("En attente") : "–"))),
+              h("span", { className: "hc-rl-pl" }, l.place ? (l.place <= 3 ? lauriersPl(l.place, placeTxt(l.place)) : h("b", null, placeTxt(l.place))) : h("i", null, l.etat || (l.attente ? F("En attente") : "–"))),
               avatarHc(l.p, 34),
               h("span", { className: "hc-rl-q" }, h("b", null, l.nom), h("span", null, [l.cheval, l.sf ? F("Sans-faute") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · "))),
               h("span", { className: "hc-rl-pen" }, l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : ""),
               h("span", { className: "hc-rl-t" }, l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : ""),
               aVid ? h("button", { type: "button", className: "hc-rl-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" }))) : h("span", { className: "hc-rl-v" }));
           }) : h("div", { key: "v", className: "hc-rl-vide" }, x.etat),
-          gestion ? h("div", { key: "act", className: "hc-ged-fin", style: { margin: "6px 0 12px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrirSaisie(x); } }, F("Saisir ou corriger"))) : null
+          gestion ? h("div", { key: "act", className: "hc-ged-fin", style: { margin: "6px 0 12px" } },
+            x.l.some(function (l) { return l.statut === "direct" && !l.attente; }) ? h("button", { type: "button", className: "hc-btn-l fort", disabled: resOcc, onClick: function () { publierDirect(x); } }, F("Publier les résultats du direct")) : null,
+            h("button", { type: "button", className: "hc-btn-l", onClick: function () { ouvrirSaisie(x); } }, F("Saisir ou corriger"))) : null
         ]) : null);
   })) : (fini ? h("div", { key: "res0", className: "hs-note", style: { marginTop: 0, marginBottom: 12 } }, F("Les résultats de ce concours n’ont pas encore été ajoutés.")) : null);
   /* podiums de l'équipe : 1res, puis 2es, puis 3es ; à place égale, ordre des épreuves ; chaque podium garde son épreuve */
