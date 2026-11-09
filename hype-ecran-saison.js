@@ -2211,7 +2211,10 @@ function EcranConcours() {
      cavaliers que moi ») : un média est « à moi » si l'on m'y a identifié ; si j'en suis l'autrice mais que d'autres cavaliers
      y sont identifiés (pas moi), il va dans « Les médias de l'équipe » ; sans aucune identification, il reste à son auteur. */
   function estAMoi(x) { if (!moi) return false; var mid = String(moi.id); if (x.cav.indexOf(mid) !== -1) return true; return x.auteur === moi.id && !x.cav.length; }
-  var mesM = itemsF.filter(estAMoi), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
+  /* 10/11 00h26 (Blandine : « ok vas-y ») : les VIDÉOS qu'elle a filmées vont aussi dans « Mes médias », même quand quelqu'un
+     d'autre est dessus — elles restent en même temps dans « L'équipe », sur la carte du cavalier */
+  function dansMes(x) { return estAMoi(x) || (!!moi && x.video && x.auteur === moi.id); }
+  var mesM = itemsF.filter(dansMes), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
   var nbV = itemsM.filter(function (x) { return x.video; }).length, nbP = itemsM.length - nbV;
   function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
   function vignetteDe(x) { if (x.video && x.ch && x.ch.length && chPhotos[x.ch[0]]) { var pc = chPhotos[x.ch[0]]; return (typeof vignetteHype === "function") ? vignetteHype(pc, 800, 500) : pc; }   /* 09/11 16h16 (Blandine) : couverture des vidéos = photo du cheval */
