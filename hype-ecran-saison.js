@@ -1116,17 +1116,18 @@ function EcranConcours() {
           h("button", { type: "button", onClick: function () { setOngletC("medias"); } }, F("Photos et commentaires")),
           ev && ev.lien_direct ? h("a", { href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats en direct")) : null) : null));
   }
+  /* 09/11 (Blandine : « adapte le héros à celui de la Vidéothèque… descends le bas de ton héros ») : même en-tête que la Vidéothèque
+     (courbe du haut, grande photo fondue, courbe du bas avec le noir dessous, titre à droite en grand, date en italique) ;
+     on garde le retour rond, le drapeau et le menu ••• posés dessus. */
   function heroC(titre, sous) {
-    return h("div", { className: "hc-hero" },
+    return h("div", { className: "hs-hero hc-hero" },
       (typeof SelecteurLangue === "function") ? h("div", { className: "hs-langue" }, h(SelecteurLangue, { compact: true })) : null,
-      h("div", { className: "hc-photo" }, h("img", { src: heroPh.img, alt: "", "aria-hidden": "true", fetchpriority: "high", style: { objectPosition: heroPh.pos || "center" }, onError: function (e) { try { var s = hsPhotoDe(idEv); if (e.target.dataset.r !== "1") { e.target.dataset.r = "1"; e.target.src = s.img; } } catch (e0) { } } })),
       menuHaut(),
-      h("div", { className: "hc-titre" }, h("h1", { className: String(titre || "").length > 16 ? "long" : "" }, titre), sous ? h("p", null, sous) : null),
-      h("svg", { className: "hc-courbe", viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true" },
-        h("defs", null, h("linearGradient", { id: "hcg", x1: "0", x2: "1", y1: "0", y2: "0" },
-          h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: ".1" }), h("stop", { offset: ".55", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".35" }))),
-        h("path", { d: "M0 50 C 120 18, 230 66, 400 22 L400 60 L0 60 Z", fill: "#070A08", stroke: "none" }),
-        h("path", { d: "M0 50 C 120 18, 230 66, 400 22", fill: "none", stroke: "url(#hcg)", strokeWidth: 1.3, vectorEffect: "non-scaling-stroke" })));
+      hsCourbe(h, "c1", "M250 4 C 330 8, 385 40, 400 96"),
+      h("div", { className: "hs-photo hc-photo-v", style: { "--hs-pos": heroPh.pos || "70% 40%" } },
+        h("img", { src: heroPh.img, alt: "", "aria-hidden": "true", fetchpriority: "high", onError: function (e) { try { var sc = hsPhotoDe(idEv); if (e.target.dataset.r !== "1") { e.target.dataset.r = "1"; e.target.src = sc.img; } } catch (e0) { } } })),
+      hsCourbe(h, "c2", "M0 92 C 130 90, 240 62, 400 8"),
+      h("div", { className: "hs-in" }, h("div", { className: "hs-titre" }, h("h1", { style: String(titre || "").length > 14 ? { fontSize: "clamp(34px,9.5vw,52px)", lineHeight: 1.05 } : null }, titre), sous ? h("p", null, sous) : null)));
   }
   var sousTitre = ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "";
   if (!ev) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" }, heroC(F("Concours"), ""), h("div", { className: "hs-in" },
@@ -1376,7 +1377,7 @@ function hsPhotoConcours(ev, id) {
   /* la photo du concours d'abord ; sinon la photo de la maquette ; sinon (fichier absent) les photos de secours */
   var u = ev && ev.image_url ? String(ev.image_url) : "";
   if (u && !/\.(mp4|mov|m4v|webm)(\?|$)/i.test(u) && !/^mux:/.test(u)) return { img: (typeof vignetteHypeContain === "function") ? vignetteHypeContain(u, 900, 900) : u, pos: "center" };
-  return { img: HS_HERO_CONCOURS, pos: "center" };
+  return { img: HS_HERO_CONCOURS, pos: "72% 40%" };
 }
 function hcIcone(n) {
   var p = { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" };
@@ -1397,6 +1398,7 @@ var HC_CSS = [
   ".hc .hc-hero{position:relative;background:#070A08}",
   ".hc .hc-photo img{display:block;width:100%;height:auto;max-height:118vw;object-fit:cover;-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}",
   ".hc .hc-photo{min-height:calc(env(safe-area-inset-top) + 210px);background:#070A08}",
+  ".hc .hc-hero .hs-photo{margin-top:0}",
   ".hc .hc-haut{position:absolute;z-index:5;top:calc(env(safe-area-inset-top) + 10px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start}",
   ".hc .hc-rond{width:42px;height:42px;border-radius:50%;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.32);color:#F3EEE4;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;letter-spacing:1px}",
   ".hc .hc-menu{position:absolute;top:50px;inset-inline-end:0;min-width:230px;border:1px solid rgba(201,166,107,.4);border-radius:14px;background:rgba(10,14,15,.97);padding:6px;box-shadow:0 14px 30px rgba(0,0,0,.6);z-index:8}",
