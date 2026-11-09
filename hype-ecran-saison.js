@@ -2876,7 +2876,12 @@ var HCP_CSS = [
   ".hcp .hcp-r>i{font-style:normal;font-family:Montserrat,sans-serif;font-size:9.5px;color:#F3EEE4;text-shadow:0 1px 6px #000;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   ".hcp .hcp-bas{padding:0 16px 0!important;max-width:680px;margin:0 auto;position:relative;z-index:2}",
   ".hcp .hcp-cartes{margin:0 0 26px}",
-  ".hcp .hcp-bas .vr{margin-top:0}"
+  ".hcp .hcp-bas .vr{margin-top:0}",
+  /* 09/11 23h22 (Blandine : « descends un peu le héros pour que les ronds ne soient pas sur ses oreilles ») */
+  "html body .hcp .hpv-scene{height:calc(clamp(470px,66vh,720px) + 170px);background:linear-gradient(180deg,#000 75%,#070A08)}",
+  "html body .hcp .hpv-photo.fond{top:205px}",
+  /* 09/11 23h22 (Blandine : « mets les vidéos à la même profondeur ») : toutes les rangées par cavalier ont la même hauteur */
+  "html body .hc .vr-gc .vr-eq .vr-e{aspect-ratio:auto!important;height:clamp(118px,33vw,190px)}"
 ].join("");
 /* 09/11 23h00 (Blandine : « je vois toujours rien ») : la liste « Par cavalier / Par cheval » n'a plus rien dessous (chaque nom
    ouvre sa page) : tous les noms en grille, avec la flèche, sans nom « choisi » d'avance */
