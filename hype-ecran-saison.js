@@ -941,7 +941,8 @@ function EcranConcours() {
   var _cs = React.useState([]); var consignes = _cs[0], setConsignes = _cs[1];
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
   var _che = React.useState({}); var chEng = _che[0], setChEng = _che[1];   /* 09/11 : photos et noms de ses chevaux engagés */
-  var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];   /* 09/11 : cheval choisi pour l'historique */
+  var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];
+  var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
   var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
   var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
   React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
@@ -1053,7 +1054,7 @@ function EcranConcours() {
               } catch (eCs) { }
               try {
                 try { var rcp = await supa.from("chevaux").select("id, nom, alias, photo_url").in("id", idsCh); var mc = {}; ((rcp && !rcp.error && rcp.data) || []).forEach(function (x) { mc[x.id] = x; }); if (vif) setChEng(mc); } catch (eCp) { }
-                var rh = await supa.from("resultats").select("id, concours, epreuve, date_epreuve, classement, place, partants, cheval_id").eq("cavalier_id", u.id).in("cheval_id", idsCh).order("date_epreuve", { ascending: false }).limit(40);
+                var rh = await supa.from("resultats").select("id, concours, epreuve, date_epreuve, classement, place, partants, cheval_id").eq("cavalier_id", u.id).in("cheval_id", idsCh).order("date_epreuve", { ascending: false }).limit(80);
                 if (vif && rh && !rh.error) setHisto(rh.data || []);
               } catch (eH) { }
             }
@@ -1333,7 +1334,14 @@ function EcranConcours() {
   function joliConcours(t) { var x = String(t || "").trim(); if (x && x === x.toUpperCase()) x = x.toLowerCase().replace(/(^|[\s'’-])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); }).replace(/\b(De|Du|Des|La|Le|Les|Et|D|L)\b/g, function (m) { return m.toLowerCase(); }); return x; }
   var mesChevaux = []; mesLignes.forEach(function (x) { var k = x.cid || x.ch; if (k && !mesChevaux.some(function (c) { return c.k === k; })) mesChevaux.push({ k: k, id: x.cid, nom: (x.cid && chEng[x.cid] && (chEng[x.cid].alias || chEng[x.cid].nom)) || x.ch }); });
   var chCourant = (chSel && mesChevaux.some(function (c) { return c.k === chSel; })) ? chSel : (mesChevaux[0] ? mesChevaux[0].k : null);
-  var histoCh = histo.filter(function (r) { return !chCourant || r.cheval_id === chCourant; }).slice(0, 5);
+  /* 09/11 11h43 (Blandine : « les résultats au moins de la saison en cours… plutôt en juillet la saison ») : même règle de saison
+     que les pages Performances (hypeSaisonTeam, décision du 07/10 : Poney 8 juin, Club 22 juin, Amateur 15 juin, autres 1er sept.).
+     5 visibles, « Voir toute la saison » déplie ; saison vide → les 3 derniers résultats, avec la mention « Saison précédente ». */
+  var histoChTous = histo.filter(function (r) { return !chCourant || r.cheval_id === chCourant; });
+  var hcAujIso = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
+  var histoSaison = histoChTous.filter(function (r) { if (typeof hypeSaisonTeam !== "function") return true; var a = hypeSaisonTeam(r.date_epreuve, r.epreuve); return a !== null && a === hypeSaisonTeam(hcAujIso, r.epreuve); });
+  var histoAncien = !histoSaison.length && histoChTous.length;
+  var histoCh = histoAncien ? histoChTous.slice(0, 3) : (histoTout ? histoSaison : histoSaison.slice(0, 5));
   function lauriers() {
     var fe = []; [0, 1, 2, 3].forEach(function (k) { var t = 0.18 + k * 0.22, a = Math.PI * (0.62 + t * 0.62), x = 16 + 11 * Math.cos(a), y = 13 + 10 * Math.sin(a) * -1; fe.push([x, y, (a * 180 / Math.PI) - 60]); fe.push([32 - x, y, 180 - ((a * 180 / Math.PI) - 60)]); });
     return h("svg", { viewBox: "0 0 32 26", width: 30, height: 24, "aria-hidden": "true", className: "hc-laur" },
@@ -1347,7 +1355,7 @@ function EcranConcours() {
     mesLignes.length ? h("div", { className: "hc-engs" }, mesLignes.map(function (x, i) {
       var ch = x.cid ? chEng[x.cid] : null; var ph = ch && ch.photo_url;
       var k = x.cid || x.ch;
-      return h("button", { key: i, type: "button", className: "hc-eng" + (k === chCourant && mesChevaux.length > 1 ? " on" : ""), onClick: function () { setChSel(k); try { var el = document.getElementById("hc-histo"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } },
+      return h("button", { key: i, type: "button", className: "hc-eng" + (k === chCourant && mesChevaux.length > 1 ? " on" : ""), onClick: function () { setChSel(k); setHistoTout(false); try { var el = document.getElementById("hc-histo"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } } },
         h("div", { className: "hc-eng-ph" }, ph ? [h("span", { key: "f", className: "hc-eng-fond", "aria-hidden": "true", style: { backgroundImage: "url(\"" + ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(ph, 360, 720) : ph) + "\")" } }), h("img", { key: "i", src: (typeof vignetteHypeContain === "function") ? vignetteHypeContain(ph, 360, 720) : ph, alt: "", loading: "lazy", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } })] : h("span", { className: "hc-eng-ini" }, String(x.ch || "?").charAt(0).toUpperCase())),
         h("div", { className: "hc-eng-txt" },
           x.ep ? h("span", { className: "hc-pill" }, x.ep) : null,
@@ -1358,7 +1366,8 @@ function EcranConcours() {
     mesChevaux.length ? h("div", { id: "hc-histo", className: "hc-histo" },
       h("div", { className: "hc-histo-tete" },
         h("div", null, h("div", { className: "hc-titre-s" }, h("h2", null, F("Historique")), h("span", { className: "hc-filet court", "aria-hidden": "true" })), h("div", { className: "hc-sous-c" }, F("Tes derniers résultats"))),
-        mesChevaux.length > 1 ? h("div", { className: "hc-chips", role: "tablist" }, mesChevaux.map(function (c) { return h("button", { key: c.k, type: "button", role: "tab", "aria-selected": c.k === chCourant, className: "hc-chip" + (c.k === chCourant ? " on" : ""), onClick: function () { setChSel(c.k); } }, c.nom); })) : null),
+        mesChevaux.length > 1 ? h("div", { className: "hc-chips", role: "tablist" }, mesChevaux.map(function (c) { return h("button", { key: c.k, type: "button", role: "tab", "aria-selected": c.k === chCourant, className: "hc-chip" + (c.k === chCourant ? " on" : ""), onClick: function () { setChSel(c.k); setHistoTout(false); } }, c.nom); })) : null),
+      histoAncien ? h("div", { className: "hc-histo-mention" }, F("Rien encore cette saison · saison précédente")) : null,
       histoCh.length ? h("div", { className: "hc-hl" }, histoCh.map(function (r) {
         var pl = r.place ? (r.place + (r.place === 1 ? (lg === "fr" ? "er" : "") : (lg === "fr" ? "e" : ""))) : (r.classement || "");
         return h("div", { key: r.id, className: "hc-hr" },
@@ -1367,7 +1376,8 @@ function EcranConcours() {
           h("span", { className: "hc-hr-sep", "aria-hidden": "true" }),
           h("span", { className: "hc-hr-c" }, h("b", null, joliConcours(r.concours) || F("Concours")), r.epreuve ? h("span", null, r.epreuve) : null),
           h("span", { className: "hc-hr-d" }, hsFmt(r.date_epreuve, { day: "numeric", month: "short", year: "numeric" })));
-      })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Pas encore de résultat avec ce cheval."))) : null);
+      })) : h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Pas encore de résultat avec ce cheval.")),
+      (!histoAncien && histoSaison.length > 5) ? h("button", { type: "button", className: "hc-histo-plus", onClick: function () { setHistoTout(!histoTout); } }, histoTout ? F("Réduire") : F("Voir toute la saison") + " (" + histoSaison.length + ")") : null) : null);
 
   /* 09/11 08h52 (Blandine : « l'ordre de passage doit aller dessus… idem résultats en direct sur résultats et l'ajout de vidéo sur médias ») : les outils dans leur carte */
   function outil(cle, titre, texte, action, fichier) {
@@ -1496,6 +1506,8 @@ var HC_CSS = [
   ".hc .hc-histo{margin-top:34px;scroll-margin-top:20px}",
   ".hc .hc-histo-tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}",
   ".hc .hc-histo-tete .hc-sous-c{margin-bottom:0}",
+  ".hc .hc-histo-mention{margin-top:16px;font-size:12px;font-style:italic;color:rgba(243,238,228,.65)}",
+  ".hc .hc-histo-plus{display:block;margin:14px auto 0;background:transparent;border:1px solid rgba(201,166,107,.6);border-radius:999px;color:#C9A66B;font:inherit;font-size:13px;padding:9px 20px;cursor:pointer}",
   ".hc .hc-chips{display:flex;border:1px solid rgba(201,166,107,.55);border-radius:999px;padding:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}",
   ".hc .hc-chip{background:transparent;border:1px solid transparent;border-radius:999px;color:rgba(243,238,228,.85);font:inherit;font-size:13px;padding:6px 14px;white-space:nowrap;cursor:pointer}",
   ".hc .hc-chip.on{border-color:#C9A66B;color:#C9A66B}",
