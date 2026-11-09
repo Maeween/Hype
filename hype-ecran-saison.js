@@ -20,6 +20,16 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "groupes du paddock": ["paddock groups", "grupos del paddock", "gruppi del paddock", "パドックのグループ", "Abreitegruppen", "مجموعات منطقة الإحماء", "热身场分组", "paddockgroepen", "grupos do paddock", "framridningsgrupper", "группы разминки", "grupy rozprężalni", "패독 그룹"],
+  "groupe du paddock": ["paddock group", "grupo del paddock", "gruppo del paddock", "パドックのグループ", "Abreitegruppe", "مجموعة منطقة الإحماء", "热身场分组", "paddockgroep", "grupo do paddock", "framridningsgrupp", "группа разминки", "grupa rozprężalni", "패독 그룹"],
+  "Décaler": ["Shift", "Desplazar", "Sposta", "ずらす", "Verschieben", "تحريك", "调整", "Verschuiven", "Deslocar", "Flytta", "Сдвинуть", "Przesuń", "조정"],
+  "Notification envoyée": ["Notification sent", "Notificación enviada", "Notifica inviata", "通知を送信しました", "Benachrichtigung gesendet", "تم إرسال الإشعار", "通知已发送", "Melding verstuurd", "Notificação enviada", "Avisering skickad", "Уведомление отправлено", "Powiadomienie wysłane", "알림 보냄"],
+  "Notification impossible : ": ["Notification failed: ", "Notificación imposible: ", "Notifica impossibile: ", "通知できません：", "Benachrichtigung nicht möglich: ", "تعذّر الإشعار: ", "无法通知：", "Melding mislukt: ", "Notificação impossível: ", "Avisering misslyckades: ", "Не удалось уведомить: ", "Powiadomienie niemożliwe: ", "알림 실패: "],
+  "Notification impossible.": ["Notification failed.", "Notificación imposible.", "Notifica impossibile.", "通知できません。", "Benachrichtigung nicht möglich.", "تعذّر الإشعار.", "无法通知。", "Melding mislukt.", "Notificação impossível.", "Avisering misslyckades.", "Не удалось уведомить.", "Powiadomienie niemożliwe.", "알림 실패."],
+  "Décaler l’épreuve": ["Shift the class", "Desplazar la prueba", "Sposta la prova", "競技をずらす", "Prüfung verschieben", "تأجيل/تقديم المسابقة", "调整赛项时间", "Rubriek verschuiven", "Deslocar a prova", "Flytta klassen", "Сдвинуть маршрут", "Przesuń konkurs", "종목 시간 조정"],
+  "Choisis de combien de minutes.": ["Choose by how many minutes.", "Elige cuántos minutos.", "Scegli di quanti minuti.", "何分ずらすか選んでください。", "Wähle, um wie viele Minuten.", "اختر عدد الدقائق.", "选择调整的分钟数。", "Kies hoeveel minuten.", "Escolhe quantos minutos.", "Välj hur många minuter.", "Выбери, на сколько минут.", "Wybierz o ile minut.", "몇 분 조정할지 골라 줘."],
+  "Décaler de ": ["Shift by ", "Desplazar ", "Sposta di ", "ずらす：", "Verschieben um ", "تحريك بمقدار ", "调整 ", "Verschuif ", "Deslocar ", "Flytta ", "Сдвинуть на ", "Przesuń o ", "조정: "],
+  "décalée de ": ["shifted by ", "desplazada ", "spostata di ", "をずらしました：", "verschoben um ", "تم تحريكها بمقدار ", "已调整 ", "verschoven met ", "deslocada ", "flyttad ", "сдвинут на ", "przesunięty o ", "조정됨: "],
   "Jour J": ["D-Day", "Día D", "Giorno G", "当日", "Tag X", "اليوم الموعود", "比赛日", "D-day", "Dia D", "Dagen D", "День Х", "Dzień D", "D-데이"],
   "Performances chevaux": ["Horse performances", "Rendimiento de los caballos", "Prestazioni dei cavalli", "馬の成績", "Leistungen der Pferde", "أداء الخيول", "马匹表现", "Prestaties van de paarden", "Desempenho dos cavalos", "Hästarnas prestationer", "Выступления лошадей", "Osiągnięcia koni", "말 성적"],
   "Classement de la saison": ["Season ranking", "Clasificación de la temporada", "Classifica della stagione", "シーズンのランキング", "Saisonwertung", "ترتيب الموسم", "赛季排名", "Klassement van het seizoen", "Classificação da temporada", "Säsongens rankning", "Рейтинг сезона", "Klasyfikacja sezonu", "시즌 순위"],
@@ -1151,6 +1161,7 @@ function EcranConcours() {
   var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
   var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
+  var _dcl = React.useState(null); var decEp = _dcl[0], setDecEp = _dcl[1];   /* 09/11 14h53 (Blandine « Ok 2 ») : { ep, min, prev, occ, msg } — décaler une épreuve depuis Passages */
   var _lre = React.useState(null); var lienResEd = _lre[0], setLienResEd = _lre[1];   /* 09/11 14h07 : lien des résultats en ligne (concours terminé) */
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
   var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];   /* { posts, tv, ident, resCav } */
@@ -1465,6 +1476,52 @@ function EcranConcours() {
   var epAuto = null; parEpreuve.forEach(function (x) { if (!epAuto && moi && x.l.some(function (p) { return p.cavalier_id === moi.id; })) epAuto = x.ep; }); if (!epAuto && parEpreuve[0]) epAuto = parEpreuve[0].ep;
   var epCourant = epOuv === null ? epAuto : epOuv;
   var epPaddock = epCourant || epAuto;   /* le paddock suit l'épreuve dépliée (la dernière si on replie tout) */
+  /* 09/11 14h53 — DÉCALER UNE ÉPREUVE depuis la carte Passages (coach) : même enregistrement que la page Jour J
+     (concours_tours + colonnes 1/2 de concours_engagements), puis notification aux cavaliers concernés (notifier-passage). */
+  async function decalerEpreuve(g) {
+    if (!decEp || decEp.occ || !decEp.min) return;
+    var d = Number(decEp.min); setDecEp(Object.assign({}, decEp, { occ: true, msg: "" }));
+    try {
+      var maint = new Date().toISOString(), ids = [], n = 0;
+      for (var i = 0; i < g.l.length; i++) {
+        var p = g.l[i]; var m = hsMinutes(hsHeurePropre(p.passage || "")); if (!(m < 99999)) continue;
+        var nv = hsHeure(m + d), num = Number(p.numero) || 1;
+        var rT = await supa.from("concours_tours").update({ passage: nv, passage_maj_le: maint }).eq("engagement_id", p.engagement_id).eq("numero", num).select("id");
+        if (rT && rT.error) throw rT.error;
+        if (num <= 2) { var col = {}; col["passage" + num] = nv; col.passage_maj_le = maint; var rE = await supa.from("concours_engagements").update(col).eq("id", p.engagement_id).select("id"); if (rE && rE.error) throw rE.error; }
+        if (ids.indexOf(p.engagement_id) === -1) ids.push(p.engagement_id); n++;
+      }
+      /* les rendez-vous du paddock de cette épreuve suivent le même décalage */
+      var nG = 0;
+      for (var k = 0; k < (grpD || []).length; k++) { var gr = grpD[k]; if (hsNomEpreuve(gr.epreuve || "") !== g.ep || !gr.id) continue; var mg = hsMinutes(hsHeurePropre(gr.heure_rdv || "")); if (!(mg < 99999)) continue;
+        var rG = await supa.from("concours_groupes_detente").update({ heure_rdv: hsHeure(mg + d) }).eq("id", gr.id).select("id"); if (rG && rG.error) throw rG.error; nG++; }
+      if (nG) { try { var rg2 = await supa.from("concours_groupes_detente").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true }); if (rg2 && !rg2.error && Array.isArray(rg2.data)) setGrpD(rg2.data); } catch (eG2) { } }
+      var txt = "✓ " + g.ep + " " + F("décalée de ") + (d > 0 ? "+" : "") + d + " min (" + n + " " + (n > 1 ? F("passages") : F("passage")) + (nG ? ", " + nG + " " + (nG > 1 ? F("groupes du paddock") : F("groupe du paddock")) : "") + ").";
+      if (decEp.prev && ids.length) {
+        try { var rn = await supa.functions.invoke("notifier-passage", { body: { agenda_id: idEv, engagements: ids } }); var dn = rn && rn.data;
+          if (rn && rn.error) txt += " " + F("Notification impossible : ") + (rn.error.message || rn.error);
+          else if (dn && dn.ok) txt += " " + (dn.envois ? F("Notification envoyée") + " (" + dn.envois + ")." : "") + (dn.sans_alertes ? " " + dn.sans_alertes + F(" cavalier(s) sans alertes activées.") : ""); } catch (eN) { txt += " " + F("Notification impossible."); }
+      }
+      try { var rq = await supa.rpc("hype_passages_concours", { p_agenda: idEv }); if (rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); } catch (eR) { }
+      setDecEp({ ep: g.ep, fait: true, msg: txt });
+    } catch (eD) { setDecEp(Object.assign({}, decEp, { occ: false, msg: F("Pas enregistré : ") + String((eD && eD.message) || eD) })); }
+  }
+  function panneauDecaler(g) {
+    var avecH = g.l.filter(function (p) { return hsMinutes(hsHeurePropre(p.passage || "")) < 99999; });
+    if (!decEp || decEp.ep !== g.ep || decEp.fait) return h("div", { key: "dcb", className: "hc-dec-b" },
+      (decEp && decEp.ep === g.ep && decEp.msg) ? h("div", { className: "hs-msg", style: { margin: "0 0 8px" } }, decEp.msg) : null,
+      avecH.length ? h("button", { type: "button", className: "hc-btn-l", onClick: function () { setDecEp({ ep: g.ep, min: 0, prev: true }); } }, "⏱ " + F("Décaler l’épreuve")) : null);
+    var d = Number(decEp.min) || 0;
+    return h("div", { key: "dcp", className: "hc-dec" },
+      h("div", { className: "hc-ged-k" }, F("Décaler") + " " + g.ep),
+      h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, [-15, -10, -5, 5, 10, 15, 30].map(function (v) { return h("button", { key: v, type: "button", className: "hc-chip-p" + (d === v ? " on" : ""), onClick: function () { setDecEp(Object.assign({}, decEp, { min: v, msg: "" })); } }, (v > 0 ? "+" : "−") + Math.abs(v)); })),
+      d ? h("div", { className: "hc-dec-l" }, avecH.map(function (p, i) { var m = hsMinutes(hsHeurePropre(p.passage)); return h("div", { key: i, className: "hc-dec-r" }, h("span", null, nomP(p) + (p.cheval_nom ? " · " + p.cheval_nom : "")), h("span", null, h("s", null, hsHeurePropre(p.passage)), " → ", h("b", null, hsHeure(m + d)))); })) : h("div", { className: "hs-note" }, F("Choisis de combien de minutes.")),
+      h("label", { className: "hc-coche" }, h("input", { type: "checkbox", checked: !!decEp.prev, onChange: function (e) { setDecEp(Object.assign({}, decEp, { prev: e.target.checked })); } }), F("Prévenir les cavaliers sur leur téléphone")),
+      decEp.msg ? h("div", { className: "hs-msg" }, decEp.msg) : null,
+      h("div", { className: "hc-ged-fin" },
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { setDecEp(null); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l fort", disabled: !d || decEp.occ, onClick: function () { decalerEpreuve(g); } }, decEp.occ ? "…" : (d ? F("Décaler de ") + (d > 0 ? "+" : "−") + Math.abs(d) + " min" : F("Décaler")))));
+  }
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
       mesLignes.map(function (x, i, tous) {
@@ -1496,7 +1553,7 @@ function EcranConcours() {
             g.l.some(function (t) { return t.ordre_passage || t.ordre; }) ? h("span", { className: "hc-pl-n" }, num ? F("N° ") + num : "") : null,
             h("span", { className: "hc-pl-q" }, h("b", null, nomP(p)), p.cheval_nom ? h("span", null, " · " + p.cheval_nom) : null, p.numero > 1 ? h("i", null, " · " + F("tour ") + p.numero) : null),
             res ? h("span", { className: "hc-res" }, res) : (p.passage ? h("span", { className: "hc-pl-h" }, p.passage) : null));
-        })) : null);
+        }), gestion ? panneauDecaler(g) : null) : null);
     })) : null,
     (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", { key: "direct", className: "hc-liste" },
       h("div", { className: "hc-ep-t" }, h("b", null, F("En direct")), h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
@@ -2671,6 +2728,13 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-dec-b{display:flex;flex-direction:column;align-items:flex-end;padding:12px 0}",
+  ".hc .hc-dec{margin:0 -16px;padding:14px 16px;border-top:1px solid rgba(201,166,107,.25);background:rgba(201,166,107,.05)}",
+  ".hc .hc-dec-l{margin-top:8px}",
+  ".hc .hc-dec .hc-coche input{accent-color:#C9A66B}",
+  ".hc .hc-dec-r{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(243,238,228,.07)}",
+  ".hc .hc-dec-r s{color:rgba(243,238,228,.45)}",
+  ".hc .hc-dec-r b{color:#C9A66B}",
   ".hc .hc-cls{display:grid;grid-template-columns:1fr;gap:10px;margin:26px 0 6px}",
   "@media (min-width:700px){.hc .hc-cls{grid-template-columns:1fr 1fr;gap:14px}}",
   ".hc .hc-cl{position:relative;overflow:hidden;width:100%;height:104px;display:flex;align-items:center;gap:12px;padding:0 13px;border-radius:12px;background:#0B0F13;border:1px solid rgba(214,182,118,.38);cursor:pointer;text-align:start;color:#F3EEE4;font:inherit}",
