@@ -20,6 +20,10 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Modifier les passages": ["Edit start times", "Modificar las salidas", "Modifica le partenze", "出場を編集", "Starts bearbeiten", "تعديل أوقات الانطلاق", "修改出场", "Starts wijzigen", "Alterar as passagens", "Ändra starterna", "Изменить старты", "Edytuj starty", "출전 수정"],
+  "Heures et pistes, ordre de passage ou programme (photo, capture ou PDF), direct du chronométreur.": ["Times and arenas, start list or programme (photo, screenshot or PDF), timekeeper's live results.", "Horas y pistas, orden de salida o programa (foto, captura o PDF), directo del cronometrador.", "Orari e campi, ordine di partenza o programma (foto, screenshot o PDF), diretta del cronometrista.", "時刻とアリーナ、出場順またはプログラム（写真・スクリーンショット・PDF）、計時のライブ。", "Zeiten und Plätze, Startliste oder Programm (Foto, Screenshot oder PDF), Live-Zeitnahme.", "الأوقات والميادين، ترتيب الانطلاق أو البرنامج (صورة، لقطة أو PDF)، البث المباشر للميقاتي.", "时间和场地、出场顺序或赛程（照片、截图或 PDF）、计时直播。", "Tijden en pistes, startvolgorde of programma (foto, screenshot of pdf), live tijdwaarneming.", "Horas e pistas, ordem de passagem ou programa (foto, captura ou PDF), direto do cronometrista.", "Tider och banor, startordning eller program (foto, skärmbild eller PDF), tidtagningens live.", "Время и манежи, стартовый порядок или программа (фото, скриншот или PDF), онлайн хронометража.", "Godziny i place, kolejność startu lub program (zdjęcie, zrzut lub PDF), wyniki na żywo.", "시간과 경기장, 출전 순서나 프로그램(사진·스크린샷·PDF), 계측 실시간."],
+  "Terminer": ["Done", "Terminar", "Fine", "完了", "Fertig", "إنهاء", "完成", "Klaar", "Terminar", "Klar", "Готово", "Zakończ", "완료"],
+  "Lire l’ordre de passage ou le programme": ["Read the start list or programme", "Leer el orden de salida o el programa", "Leggi l’ordine di partenza o il programma", "出場順またはプログラムを読み取る", "Startliste oder Programm lesen", "قراءة ترتيب الانطلاق أو البرنامج", "读取出场顺序或赛程", "Startvolgorde of programma lezen", "Ler a ordem de passagem ou o programa", "Läs startordningen eller programmet", "Прочитать стартовый порядок или программу", "Odczytaj kolejność startu lub program", "출전 순서 또는 프로그램 읽기"],
   "groupes du paddock": ["paddock groups", "grupos del paddock", "gruppi del paddock", "パドックのグループ", "Abreitegruppen", "مجموعات منطقة الإحماء", "热身场分组", "paddockgroepen", "grupos do paddock", "framridningsgrupper", "группы разминки", "grupy rozprężalni", "패독 그룹"],
   "groupe du paddock": ["paddock group", "grupo del paddock", "gruppo del paddock", "パドックのグループ", "Abreitegruppe", "مجموعة منطقة الإحماء", "热身场分组", "paddockgroep", "grupo do paddock", "framridningsgrupp", "группа разминки", "grupa rozprężalni", "패독 그룹"],
   "Décaler": ["Shift", "Desplazar", "Sposta", "ずらす", "Verschieben", "تحريك", "调整", "Verschuiven", "Deslocar", "Flytta", "Сдвинуть", "Przesuń", "조정"],
@@ -1161,6 +1165,7 @@ function EcranConcours() {
   var _rlu = React.useState(null); var resLu = _rlu[0], setResLu = _rlu[1];      /* 09/11 : résultats lus sur un PDF / une capture, par épreuve */
   var _rlc = React.useState(""); var resLect = _rlc[0], setResLect = _rlc[1];    /* "en_cours" ou message */
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
+  var _jjo = React.useState(false); var jjOuv = _jjo[0], setJjOuv = _jjo[1];   /* 09/11 15h : la modification des passages (ex-page Jour J) ouverte dans la carte Passages */
   var _dcl = React.useState(null); var decEp = _dcl[0], setDecEp = _dcl[1];   /* 09/11 14h53 (Blandine « Ok 2 ») : { ep, min, prev, occ, msg } — décaler une épreuve depuis Passages */
   var _lre = React.useState(null); var lienResEd = _lre[0], setLienResEd = _lre[1];   /* 09/11 14h07 : lien des résultats en ligne (concours terminé) */
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
@@ -1384,7 +1389,7 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-rond", "aria-label": F("Plus"), onClick: function () { setMenuOuv(!menuOuv); } }, "•••"),
         menuOuv ? h("div", { className: "hc-menu", onClick: function () { setMenuOuv(false); } },
           gestion ? h("button", { type: "button", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement")) : null,
-          gestion ? h("button", { type: "button", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages")) : null,
+          gestion ? h("button", { type: "button", onClick: function () { ouvrirModifPassages(); } }, F("Modifier les passages")) : null,
           h("button", { type: "button", onClick: function () { if (gestion) ouvrir("dossier-concours"); else prep("dossier-concours"); } }, F("Le dossier")),
           !fini ? h("button", { type: "button", onClick: basculerPush }, pushEtat === "actif" ? F("✓ Alertes activées sur ce téléphone") : F("Me prévenir (alertes)")) : null,
           gestion ? h("button", { type: "button", onClick: modifierRdv }, F("Modifier le rendez-vous")) : null,
@@ -2329,12 +2334,18 @@ function EcranConcours() {
     if (typeof action === "string") return h("a", { key: cle, className: "hc-outil", href: action, target: "_blank", rel: "noopener" }, corps);
     return h("button", { key: cle, type: "button", className: "hc-outil", onClick: action }, corps);
   }
-  var outilsPassages = gestion ? h("div", { key: "op", className: "hc-outils" },
-    outil("ordre", F("Lire l’ordre de passage"), F("Photo, capture ou PDF : les heures et les pistes se remplissent toutes seules."), null, true),
-    outil("jj", F("Jour J : passages"), null, function () { ouvrir("jour-j"); })) : null;
+  /* 09/11 15h (Blandine : « Jour J et Passages doivent être une même et seule page ») : un seul outil, en bas de Passages */
+  function ouvrirModifPassages() { try { window.__concoursId = idEv; } catch (e) { } setDecEp(null); setOngletC("passages"); setJjOuv(true); setTimeout(function () { try { var el = document.querySelector(".hc-jj"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }, 150); }
+  function fermerModifPassages() { setJjOuv(false); try { supa.rpc("hype_passages_concours", { p_agenda: idEv }).then(function (rq) { if (rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); }); } catch (eQ) { } try { chargerAgendaEvenement(idEv).then(function (r) { if (r && r.data) setEv(r.data); }); } catch (eE) { } }
+  var outilsPassages = (gestion && !jjOuv) ? h("div", { key: "op", className: "hc-outils" },
+    outil("modp", F("Modifier les passages"), F("Heures et pistes, ordre de passage ou programme (photo, capture ou PDF), direct du chronométreur."), ouvrirModifPassages)) : null;
+  var blocModifPassages = (gestion && jjOuv && typeof EcranJourJ === "function") ? h("div", { key: "jj", className: "hc-jj" },
+    h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Modifier les passages"))),
+    h(EcranJourJ, { integre: true }),
+    h("div", { className: "hc-jj-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: fermerModifPassages }, F("Terminer")))) : null;
   var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
     ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
-      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, function () { ouvrir("jour-j"); })) : null;
+      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, ouvrirModifPassages)) : null;
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
     outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
 
@@ -2376,7 +2387,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages] : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
+        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocModifPassages, blocPaddock, liensPassages] : [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages]) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, blocFil, liensMedias] : null)
         : null,
@@ -2728,6 +2739,10 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hs.hs-int{min-height:0!important;padding-bottom:0!important;background:none!important}",
+  ".hs.hs-int .hs-in{padding:0;max-width:none}",
+  ".hc .hc-jj{margin-top:8px}",
+  ".hc .hc-jj-fin{display:flex;justify-content:flex-end;margin:14px 0 6px}",
   ".hc .hc-dec-b{display:flex;flex-direction:column;align-items:flex-end;padding:12px 0}",
   ".hc .hc-dec{margin:0 -16px;padding:14px 16px;border-top:1px solid rgba(201,166,107,.25);background:rgba(201,166,107,.05)}",
   ".hc .hc-dec-l{margin-top:8px}",
@@ -3890,6 +3905,7 @@ function EcranEngagements() {
   function blocOrdre() {
     var nbT = 0; lignes.forEach(function (l) { nbT += (l.tours || []).length; });
     if (!nbT) return null;
+    if (true) return null;   /* 09/11 15h (Blandine « Ok ») : un seul outil de lecture de l'ordre de passage, dans la carte Passages du concours */
     return h("div", { className: "d3-ordre" },
       h("div", { className: "d3-k" }, F("Ordre de passage")),
       h("div", { className: "d3-msg", style: { marginTop: 0 } }, F("Une photo, une capture ou le PDF de la liste de départ ou du programme : les heures et les pistes de tes couples se remplissent toutes seules.")),
@@ -4840,8 +4856,9 @@ function EcranListeVan() {
 }
 
 /* ════════════════════ JOUR J (coach) ════════════════════ */
-function EcranJourJ() {
+function EcranJourJ(props) {
   var h = React.createElement, c = hsCtx(), F = c.F, rtl = c.rtl;
+  var integre = !!(props && props.integre);   /* 09/11 15h (Blandine : « Jour J et Passages doivent être une seule page ») : dans la carte Passages, sans héros */
   var idEv = hsIdConcours();
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _li = React.useState(null); var lignes = _li[0], setLignes = _li[1];
@@ -4860,7 +4877,7 @@ function EcranJourJ() {
   var _pg = React.useState(null); var prog = _pg[0], setProg = _pg[1];          /* 07/11 : propositions lues sur la photo */
   var _pgl = React.useState(""); var progLect = _pgl[0], setProgLect = _pgl[1]; /* "" | "en_cours" | message */
 
-  React.useEffect(function () { injecterCss2(); try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () { injecterCss2(); if (!integre) { try { window.scrollTo(0, 0); } catch (e) { } } }, []);
   React.useEffect(function () {
     var vif = true;
     (async function () {
@@ -4879,7 +4896,7 @@ function EcranJourJ() {
           var rT = await supa.from("concours_tours").select("*").eq("agenda_id", idEv).order("numero", { ascending: true });
           if (rT && rT.error) throw rT.error;
           var parE = {}; ((rT && rT.data) || []).forEach(function (t) { (parE[t.engagement_id] = parE[t.engagement_id] || []).push(t); });
-          LJ.forEach(function (l) { hsToursDepuis(l, parE[l.id]).forEach(function (t, k) { var n = k + 1; l["epreuve" + n] = t.epreuve; l["cheval" + n + "_nom"] = t.cheval_nom; l["passage" + n] = t.passage; l["piste" + n] = t.piste; }); });
+          LJ.forEach(function (l) { hsToursDepuis(l, parE[l.id]).forEach(function (t, k) { var n = k + 1; l["epreuve" + n] = t.epreuve; l["cheval" + n + "_nom"] = t.cheval_nom; l["passage" + n] = t.passage; l["piste" + n] = t.piste; l["ordre" + n] = t.ordre_passage; }); });
         } catch (eTo) { }
         if (vif) { setLignes(LJ); setBase(hsOrdreBase(LJ)); }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignes(function (l) { return l || []; }); } }
@@ -4932,7 +4949,9 @@ function EcranJourJ() {
         /* les 5 tours dans concours_tours (les tours qui n'y sont pas encore n'existent que dans les colonnes 1 et 2) */
         for (var nT = 1; nT <= 5; nT++) {
           if (!(l["epreuve" + nT] || l["cheval" + nT + "_nom"])) continue;
-          var rT2 = await supa.from("concours_tours").update({ passage: hsHeurePropre(l["passage" + nT]) || null, piste: String(l["piste" + nT] || "").trim() || null, passage_maj_le: maint }).eq("engagement_id", l.id).eq("numero", nT).select("id");
+          var majT = { passage: hsHeurePropre(l["passage" + nT]) || null, piste: String(l["piste" + nT] || "").trim() || null, passage_maj_le: maint };
+          if (l["ordre" + nT] !== undefined) majT.ordre_passage = l["ordre" + nT] || null;
+          var rT2 = await supa.from("concours_tours").update(majT).eq("engagement_id", l.id).eq("numero", nT).select("id");
           if (rT2 && rT2.error) throw new Error(l.nom + " : " + (rT2.error.message || rT2.error));
         }
       }
@@ -5033,6 +5052,7 @@ function EcranJourJ() {
       var l = Object.assign({}, n[x.i]);
       if (x.heure) l["passage" + x.n] = x.heure;
       if (x.piste) l["piste" + x.n] = x.piste;
+      if (x.ordre && /\d/.test(x.ordre)) l["ordre" + x.n] = Number(String(x.ordre).replace(/\D/g, "")) || null;   /* 09/11 15h : le N° de passage aussi */
       n[x.i] = l; m[l.id] = true; nb++;
     });
     setLignes(n); setModif(m); setProg(null);
@@ -5056,15 +5076,15 @@ function EcranJourJ() {
   var estWinjump = /^https:\/\/[a-z0-9-]+\.winjump\.fr\/concours\//i.test(String((ev && ev.lien_direct) || ""));
 
   var hero = hsHero(h, { photo: hsPhotoDe(idEv), retour: function () { hsRetour(c.app, c.setEcran, "concours"); }, retourTxt: (ev && ev.titre) || F("Concours"), titre: F("Jour J"), sous: ev ? [hsPlage(ev), ev.lieu].filter(Boolean).join(" · ") : "" });
-  if (gestion === false) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Cette page est réservée à la coach du club."))));
-  if (lignes === null) return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero, h("div", { className: "hs-in" }, erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, erreur) : h("div", { className: "hs-attente" }, "…")));
+  if (gestion === false) return h("div", { className: "hs" + (integre ? " hs-int" : ""), dir: rtl ? "rtl" : "ltr" }, integre ? null : hero, h("div", { className: "hs-in" }, h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Cette page est réservée à la coach du club."))));
+  if (lignes === null) return h("div", { className: "hs" + (integre ? " hs-int" : ""), dir: rtl ? "rtl" : "ltr" }, integre ? null : hero, h("div", { className: "hs-in" }, erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, erreur) : h("div", { className: "hs-attente" }, "…")));
   var aModif = Object.keys(modif).length > 0 || (ev && String(lien || "").trim() !== String(ev.lien_direct || ""));
 
-  return h("div", { className: "hs", dir: rtl ? "rtl" : "ltr" }, hero,
+  return h("div", { className: "hs" + (integre ? " hs-int" : ""), dir: rtl ? "rtl" : "ltr" }, integre ? null : hero,
     h("div", { className: "hs-in" },
       nbConflits ? h("div", { className: "hs-carte", style: { borderColor: "rgba(201,166,107,.7)", padding: "12px 14px", marginTop: 18, fontSize: 13, lineHeight: 1.5 } },
         h("b", { style: { color: "#C9A66B" } }, F("Attention : ")), F("deux cavaliers passent en même temps sur deux pistes différentes. Regarde les lignes marquées.")) : null,
-      h("div", { className: "hs-sec" }, h("b", null, F("Lire le programme"))),
+      h("div", { className: "hs-sec" }, h("b", null, F("Lire l’ordre de passage ou le programme"))),
       h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Une photo, une capture ou le PDF du programme ou de la liste de départ (numéros et heures d’épreuve, ordre de passage) : Hype prépare les heures et les pistes de tes cavaliers.")),
       h("label", { className: "hs-btn", style: { cursor: "pointer", opacity: progLect === "en_cours" ? 0.6 : 1 } },
         progLect === "en_cours" ? F("Lecture du programme… (1 à 2 min)") : F("Photo, capture ou PDF du programme"),
@@ -5089,10 +5109,10 @@ function EcranJourJ() {
           h("div", { className: "hs-couple-t", style: { marginBottom: 6 } }, h("b", { style: { fontSize: 17 } }, p.nom), h("span", { style: { fontSize: 11.5, color: "rgba(243,238,228,.64)" } }, [p.ep, p.ch].filter(Boolean).join(" · "))),
           conf ? h("div", { style: { fontSize: 11.5, color: "#C9A66B", marginBottom: 6 } }, F("En même temps que ") + conf + F(", sur une autre piste")) : null,
           h("div", { className: "hs-g2" },
-            h("div", { className: "hs-champ" }, h("label", null, F("Heure de passage")), h("input", { type: "text", inputMode: "numeric", value: p.hp || "", placeholder: "11h40", onChange: function (e) { poser(p.i, "passage" + p.n, e.target.value); } })),
+            h("div", { className: "hs-champ" }, h("label", null, F("Heure de passage")), h("input", { type: "time", step: 60, style: { colorScheme: "dark" }, value: (function () { var m = String(p.hp || "").match(/(\d{1,2})\s*[h:.]\s*(\d{2})?/i); return m ? (("0" + m[1]).slice(-2) + ":" + (m[2] || "00")) : ""; })(), onChange: function (e) { var t = String(e.target.value || ""), mm = t.match(/^(\d{2}):(\d{2})/); poser(p.i, "passage" + p.n, mm ? (Number(mm[1]) + "h" + mm[2]) : ""); } })),
             h("div", { className: "hs-champ" }, h("label", null, F("Piste")), h("input", { type: "text", value: p.pi || "", placeholder: F("ex. 1, Bleue"), onChange: function (e) { poser(p.i, "piste" + p.n, e.target.value); } }))));
       })),
-      epreuves.length ? h("div", null,
+      (epreuves.length && !integre) ? h("div", null,
         h("div", { className: "hs-sec" }, h("b", null, F("Décaler une épreuve"))),
         h("div", { className: "hs-note", style: { marginTop: -4, marginBottom: 10 } }, F("Le concours a du retard ou de l’avance : décale d’un coup toutes les heures d’une épreuve.")),
         h("div", { className: "hs-ep" },
