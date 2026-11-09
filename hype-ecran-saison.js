@@ -20,6 +20,7 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Vidéo": ["Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "영상"],
   "Voir les ": ["See the ", "Ver los ", "Vedi gli altri ", "残り", "Die weiteren ", "عرض ", "查看其余 ", "Bekijk de ", "Ver os ", "Visa de ", "Показать ещё ", "Pokaż pozostałe ", "나머지 "],
   "autres passages": ["other starts", "otros pasos", "passaggi", "件の出場を見る", "Starts anzeigen", "انطلاقات أخرى", "个出场", "andere starts", "outras passagens", "andra starterna", "стартов", "starty", "개 출전 보기"],
   "Touche ⋯ pour dire qui est dessus": ["Tap ⋯ to say who's in it", "Toca ⋯ para decir quién aparece", "Tocca ⋯ per dire chi c’è", "⋯ をタップして誰か指定", "Tippe auf ⋯, um anzugeben, wer drauf ist", "اضغط ⋯ لتحديد من فيه", "点击 ⋯ 标记是谁", "Tik op ⋯ om aan te geven wie erop staat", "Toca em ⋯ para dizer quem aparece", "Tryck på ⋯ för att ange vem som syns", "Нажми ⋯, чтобы указать, кто здесь", "Dotknij ⋯, aby wskazać, kto jest na nim", "⋯ 를 눌러 누가 나오는지 알려 줘"],
@@ -2171,7 +2172,8 @@ function EcranConcours() {
   var mesM = itemsF.filter(estAMoi), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
   var nbV = itemsM.filter(function (x) { return x.video; }).length, nbP = itemsM.length - nbV;
   function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
-  function vignetteDe(x) { if (x.tv) return x.tv.vignette || (x.tv.video_mux_id ? "https://image.mux.com/" + x.tv.video_mux_id + "/thumbnail.jpg?width=640&fit_mode=preserve" : hsVignetteVideo(x.tv.media)); if (x.video) return hsVignetteVideo(x.url); return (typeof grandeImageHype === "function") ? grandeImageHype(x.url, 900) : x.url; }
+  function vignetteDe(x) { if (x.video && x.ch && x.ch.length && chPhotos[x.ch[0]]) { var pc = chPhotos[x.ch[0]]; return (typeof vignetteHype === "function") ? vignetteHype(pc, 800, 500) : pc; }   /* 09/11 16h16 (Blandine) : couverture des vidéos = photo du cheval */
+    if (x.tv) return x.tv.vignette || (x.tv.video_mux_id ? "https://image.mux.com/" + x.tv.video_mux_id + "/thumbnail.jpg?width=640&fit_mode=preserve" : hsVignetteVideo(x.tv.media)); if (x.video) return hsVignetteVideo(x.url); return (typeof grandeImageHype === "function") ? grandeImageHype(x.url, 900) : x.url; }
   function ouvrirMedia(x) {
     if (x.tv) { ouvrirVideo(x.tv); return; }
     if (x.video && /^mux:/.test(x.url)) { try { window.__videoParcours = { media: x.url, proprio: x.auteur, pseudo: (medG.auteurs || {})[x.auteur] || "", agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); return; }
@@ -2322,7 +2324,7 @@ function EcranConcours() {
       [["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) { return h("button", { key: o[0], type: "button", className: "hc-chip-p" + (medGrp === o[0] ? " on" : ""), onClick: function () { setMedGrp(o[0]); } }, o[1]); })) : null,
     videosF.length ? grpsV.map(function (g, gi) {
       /* 09/11 15h14 (Blandine) : un bandeau photo + nom sépare chaque lot ; 2 vidéos côte à côte, la suite défile */
-      return h("div", { key: g.id, className: "hc-vg" },
+      return h("div", { key: g.id, className: "hc-vg" + (g.l.length === 1 ? " seule" : "") },
         /* 09/11 15h17 (Blandine : « un truc visuel sympa, un encart avec image ») : encart au style de la page de l'équipe, photo à droite */
         h("div", { className: "hc-vg-t" },
           /* 09/11 15h56 (Blandine : « garde des images qu'on met nous, pour avoir quelque chose de régulier ») : images de l'appli, pas les photos de profil */
@@ -2337,7 +2339,7 @@ function EcranConcours() {
             if (hsNomEpreuve(r.epreuve || "") === x.epreuve && r.cavalier_id && x.cav.indexOf(String(r.cavalier_id)) !== -1 && (!r.cheval_id || !x.ch.length || x.ch.indexOf(String(r.cheval_id)) !== -1)) res = r; });
           var etR = res ? (res.place ? placeTxt(res.place) + (res.partants ? " / " + res.partants : "") : (etatDe(res.classement) || "")) : "";
           return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700),
-            nomsAutre.length ? h("span", { className: "hc-vg-ch" }, nomsAutre.join(", ")) : null,
+            nomsAutre.length ? h("span", { className: "hc-vg-ch" }, nomsAutre.join(", ")) : (x.cav.length || x.ch.length ? null : h("span", { className: "hc-vg-ch" }, F("Vidéo"))),
             (x.epreuve || etR) ? h("span", { className: "hc-vg-ep" }, x.epreuve || "", etR ? h("b", null, (x.epreuve ? " · " : "") + etR + (res && /sf|sans\s*faute/i.test(String(res.mention || "")) ? " · " + F("Sans-faute") : "")) : null) : null);
         })));
     }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
@@ -2854,8 +2856,10 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
-  ".hc .hc-vg{margin-bottom:20px}",
-  ".hc .hc-vg-t{position:relative;overflow:hidden;height:52px;display:flex;flex-direction:row;align-items:center;gap:10px;margin-bottom:10px;padding:0 16px;border:1px solid rgba(201,166,107,.38);border-radius:14px;background:#0B0F13}",
+  ".hc .hc-vg{margin-bottom:14px;padding:10px 10px 12px;border:1px solid rgba(201,166,107,.22);border-radius:18px;background:#0B0F13}",
+  ".hc .hc-vg.seule .hc-vg-i{flex:0 0 100%}",
+  ".hc .hc-vg.seule .hc-vg-m{aspect-ratio:16/9}",
+  ".hc .hc-vg-t{position:relative;overflow:hidden;height:52px;display:flex;flex-direction:row;align-items:center;gap:10px;margin-bottom:10px;padding:0 14px;border:1px solid rgba(201,166,107,.38);border-radius:12px;background:#0B0F13}",
   ".hc .hc-vg-img{position:absolute;top:0;inset-inline-end:0;width:50%;height:100%;object-fit:cover;object-position:60% 35%}",
   ".hc .hc-vg-voile{position:absolute;inset:0;background:linear-gradient(90deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 85%)}",
   "[dir=rtl] .hc .hc-vg-voile{background:linear-gradient(270deg,#0B0F13 40%,rgba(11,15,19,.8) 55%,rgba(11,15,19,0) 85%)}",
@@ -2866,9 +2870,9 @@ var HC_CSS = [
   ".hc .hc-vg-l::-webkit-scrollbar{display:none}",
   ".hc .hc-vg-i{flex:0 0 calc((100% - 10px) / 2);scroll-snap-align:start;min-width:0}",
   ".hc .hc-vg-m{position:relative;display:block;width:100%;aspect-ratio:16/10;padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
-  ".hc .hc-vg-m img{width:100%;height:100%;object-fit:contain}",
-  ".hc .hc-vg-ch{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;line-height:1.15;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-  ".hc .hc-vg-ep{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:2px}",
+  ".hc .hc-vg-m img{width:100%;height:100%;object-fit:cover}",
+  ".hc .hc-vg-ch{display:block;font-size:14px;font-weight:600;line-height:1.2;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".hc .hc-vg-ep{display:block;font-size:12px;color:rgba(243,238,228,.65);margin-top:2px}",
   ".hc .hc-vg-ep b{color:#C9A66B;font-weight:600}",
   ".hc .hc-vg-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;flex:none;background:#141a1c}",
   ".hc .hc-vg-av img{width:100%;height:100%;object-fit:cover}",
