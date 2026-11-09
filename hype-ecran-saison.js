@@ -2607,6 +2607,17 @@ function EcranConcours() {
      grand cheval noir, les ronds en haut à droite » ; « garde la dispo des médias comme on vient de la faire sur la page médias,
      sans forcément garder les mêmes titres »). Haut = celui de la page d'une vidéo (même grande photo pour tous, titre en bas à
      gauche, ronds sous •••) ; dessous = la disposition validée : une grande + 3 ronds + une rangée, puis une rangée qui défile. ══ */
+  /* 10/11 00h04 (Blandine : « quand on clique sur Par cavalier, qu'on arrive sur la page d'un cavalier, et que les ronds du haut
+     proposent les chevaux montés ou le retour à l'équipe ; inversement pour Par cheval ») : plus de liste intermédiaire —
+     on ouvre directement la page du cavalier (ou du cheval) qui a le plus de médias sur ce concours */
+  function allerPremier(modeCh) {
+    var cle = modeCh ? "ch" : "cav", n = {};
+    itemsM.forEach(function (x) { (x[cle] || []).forEach(function (id) { n[id] = (n[id] || 0) + 1; }); });
+    var ids = Object.keys(n).sort(function (a, b) { return n[b] - n[a]; });
+    if (!ids.length) { setMedPage(null); setMedVue(cle); setMedId(null); return; }
+    setMedPage({ ch: modeCh, id: ids[0] }); setMedPgSel(null);
+    try { var d = document.getElementById("hcp-defile"); if (d) d.scrollTop = 0; } catch (e) { }
+  }
   var pageX = null;
   if (medPage) {
     var pgCle = medPage.ch ? "ch" : "cav", pgAutre = medPage.ch ? "cav" : "ch";
@@ -2619,7 +2630,7 @@ function EcranConcours() {
     var pgBig = pgA.filter(function (x) { return x.cle === medPgSel; })[0] || pgA[0] || null;
     var pgRest = pgA.filter(function (x) { return x !== pgBig; });
     var pgCpt = {}; pgL.forEach(function (x) { (x[pgAutre] || []).forEach(function (id) { pgCpt[id] = (pgCpt[id] || 0) + 1; }); });
-    var pgPart = Object.keys(pgCpt).sort(function (a, b) { return pgCpt[b] - pgCpt[a]; }).slice(0, 2);
+    var pgPart = Object.keys(pgCpt).sort(function (a, b) { return pgCpt[b] - pgCpt[a]; }).slice(0, 3);
     function pgTitre(t, n, sep) { return h("div", { className: "vr-t" + (sep ? " sep" : "") }, h("h3", null, t), h("span", null, n + " " + (pgA === pgV && t === F("Vidéos") ? (n > 1 ? F("vidéos") : F("vidéo")) : (n > 1 ? F("photos") : F("photo"))))); }
     function pgRond(id) {
       var ph = medPage.ch ? photoCav(id) : photoCh(id), nm = (medPage.ch ? nomsCav : nomsCh)[id] || "";
@@ -2634,9 +2645,9 @@ function EcranConcours() {
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
         h("div", { className: "hpv-titre" }, h("h1", { dir: "auto", className: pgNom.length > 26 ? "long" : "" }, pgNom)),
         pgConc ? h("div", { className: "hpv-ronds" },
-          h("button", { key: "cv", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cavalier"), onClick: function () { setMedPage(null); setMedVue("cav"); setMedId(null); } },
+          h("button", { key: "cv", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cavalier"), onClick: function () { allerPremier(false); } },
             h("b", null, icoXp("cav")), h("i", null, F("Cavaliers"))),
-          h("button", { key: "ch", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cheval"), onClick: function () { setMedPage(null); setMedVue("ch"); setMedId(null); } },
+          h("button", { key: "ch", type: "button", className: "hpv-r hcp-r", "aria-label": F("Par cheval"), onClick: function () { allerPremier(true); } },
             h("b", null, icoXp("ch")), h("i", null, F("Chevaux"))),
           pgV1 ? h("button", { key: "hb", type: "button", className: "hpv-r hcp-r", "aria-label": "Hey Baby", onClick: function () { ouvrirMedia(pgV1); } },
             h("img", { src: "images/FOND_HEYBABY.webp", alt: "" }), h("i", null, "Hey Baby")) : null) :
@@ -2715,8 +2726,8 @@ function EcranConcours() {
       vrCourbe(1, "c3"),
       h("div", { key: "ong", className: "vr-ong" + (itemsM.length ? "" : " seul") },
         vrOnglet("aj", HS_IMG_CONCOURS.passages, F("Ajouter des médias"), true, function () { setMedAjout(!medAjout); }, medAjout),
-        itemsM.length ? vrOnglet("cav", HS_IMG_CONCOURS.engagements, F("Par cavalier"), false, function () { quitter(); setMedVue("cav"); setMedId(null); }) : null,
-        itemsM.length ? vrOnglet("ch", HS_IMG_CONCOURS.medias, F("Par cheval"), false, function () { quitter(); setMedVue("ch"); setMedId(null); }) : null),
+        itemsM.length ? vrOnglet("cav", HS_IMG_CONCOURS.engagements, F("Par cavalier"), false, function () { allerPremier(false); }) : null,
+        itemsM.length ? vrOnglet("ch", HS_IMG_CONCOURS.medias, F("Par cheval"), false, function () { allerPremier(true); }) : null),
       h("div", { key: "paj" }, panneauAjout),
       dansPage ? h("div", { key: "pid" }, panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null) : null];
   }
