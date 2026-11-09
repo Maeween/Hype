@@ -8,6 +8,7 @@ function EcranEvenementPasse(props) {
      s'affiche DANS la fiche du Centre de compétition, sans son bandeau, ses horaires, sa description ni la carte « Centre »
      (déjà sur la fiche) : seulement photos et vidéos, résultats, publications et commentaires, partage, suppression. */
   var integre = !!(props && props.integre);
+  var seulementFil = !!(props && props.seulementFil);   /* 09/11 : dans le Centre de compétition, la galerie « Médias du concours » montre déjà photos, vidéos et résultats → ici, le fil seul */
   var ctx = (typeof useApp === "function") ? useApp() : {};
   var tr = ctx.tr || function (o) { return (o && (o.fr || "")) || ""; };
   var setEcran = ctx.setEcran || function () { };
@@ -666,6 +667,7 @@ function EcranEvenementPasse(props) {
           h("button", { onClick: copierLienStory, style: { flex: 1, minHeight: 46, borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#EDF2F5", fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Copier le lien", "Copy link", "Copiar enlace", "Copia link", "リンクをコピー", "Link kopieren", "\u0646\u0633\u062e \u0627\u0644\u0631\u0627\u0628\u0637", "复制链接", "Link kopiëren", "Copiar o link", "Kopiera länken", "Скопировать ссылку", "Kopiuj link", "링크 복사")),
           h("button", { onClick: fermerStory, style: { flex: 1, minHeight: 46, borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#EDF2F5", fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "\u0625\u063a\u0644\u0627\u0642", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))))) : null,
 
+    seulementFil ? null : [
     /* — LE MUR DES SOUVENIRS (recopie de la page du cheval) — */
     photosEv.length ? titreEv(T("Le mur des souvenirs", "The memory wall", "El muro de recuerdos", "Il muro dei ricordi", "\u601d\u3044\u51fa\u306e\u58c1", "Die Erinnerungswand", "\u062c\u062f\u0627\u0631 \u0627\u0644\u0630\u0643\u0631\u064a\u0627\u062a", "回忆墙", "Het herinneringenprikbord", "O mural das lembranças", "Minnesväggen", "Стена воспоминаний", "Ściana wspomnień", "추억의 벽"), true) : null,
     (photosEv.length > 0 && photosEv.length < 3) ? h("div", { style: { padding: "8px 44px 0" } },
@@ -800,6 +802,7 @@ function EcranEvenementPasse(props) {
         h("span", { style: { color: "#C9A66B", fontSize: 22 } }, "\u203a"))) : null,
 
     /* Le fil du rendez-vous : commentaires et publication, comme dans la carte. */
+    ],
     h("div", { id: integre ? "hs-fil" : undefined, style: { padding: "26px 0 0" } },
       /* 18/09 (234) - « PUBLICATIONS & COMMENTAIRES ». Sa maquette prevoyait DEUX sections ;
          le releve a montre qu elles n existent pas separement dans le code : UN SEUL appel a

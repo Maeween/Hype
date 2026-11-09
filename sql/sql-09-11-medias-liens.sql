@@ -1,0 +1,3 @@
+-- 09/11/2026 — PASSÉ EN BASE (migration « commentaires_liens_medias », Blandine « 3 ok »)
+-- commentaires.liens jsonb : sert à l'ÉPREUVE d'un média du fil ({"epreuve":"Club 2"}). Les personnes et les chevaux
+-- passent par le mécanisme existant `identifications` (photo_url = l'adresse du média, type cavalier/cheval). Droits inchangés.

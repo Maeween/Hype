@@ -20,6 +20,36 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  /* 09/11 13h30 — Médias du concours */
+  "Médias du concours": ["Show media", "Medios del concurso", "Media del concorso", "大会のメディア", "Medien des Turniers", "وسائط المسابقة", "比赛媒体", "Media van de wedstrijd", "Mídias do concurso", "Tävlingens media", "Медиа соревнований", "Media z zawodów", "대회 미디어"],
+  "Ajouter des médias": ["Add media", "Añadir medios", "Aggiungi media", "メディアを追加", "Medien hinzufügen", "إضافة وسائط", "添加媒体", "Media toevoegen", "Adicionar mídias", "Lägg till media", "Добавить медиа", "Dodaj media", "미디어 추가"],
+  "Tous": ["All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alle", "Todos", "Alla", "Все", "Wszystkie", "전체"],
+  "Vidéos": ["Videos", "Vídeos", "Video", "動画", "Videos", "فيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"],
+  "Photos": ["Photos", "Fotos", "Foto", "写真", "Fotos", "صور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"],
+  "Filtrer :": ["Filter:", "Filtrar:", "Filtra:", "絞り込み：", "Filtern:", "تصفية:", "筛选：", "Filteren:", "Filtrar:", "Filtrera:", "Фильтр:", "Filtruj:", "필터:"],
+  "Cavalier": ["Rider", "Jinete", "Cavaliere", "騎手", "Reiter", "الفارس", "骑手", "Ruiter", "Cavaleiro", "Ryttare", "Всадник", "Jeździec", "라이더"],
+  "Cheval": ["Horse", "Caballo", "Cavallo", "馬", "Pferd", "الحصان", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말"],
+  "Effacer": ["Clear", "Borrar", "Cancella", "クリア", "Zurücksetzen", "مسح", "清除", "Wissen", "Limpar", "Rensa", "Сбросить", "Wyczyść", "초기화"],
+  "Mes médias": ["My media", "Mis medios", "I miei media", "私のメディア", "Meine Medien", "وسائطي", "我的媒体", "Mijn media", "Minhas mídias", "Mina media", "Мои медиа", "Moje media", "내 미디어"],
+  "Les médias de l’équipe": ["Team media", "Los medios del equipo", "I media della squadra", "チームのメディア", "Medien des Teams", "وسائط الفريق", "团队媒体", "Media van het team", "As mídias da equipe", "Lagets media", "Медиа команды", "Media drużyny", "팀 미디어"],
+  "médias": ["media", "medios", "media", "件", "Medien", "وسائط", "个媒体", "media", "mídias", "media", "медиа", "media", "개"],
+  "média": ["media item", "medio", "media", "件", "Medium", "وسيط", "个媒体", "medium", "mídia", "media", "медиа", "medium", "개"],
+  "Afficher plus": ["Show more", "Mostrar más", "Mostra altro", "もっと見る", "Mehr anzeigen", "عرض المزيد", "显示更多", "Meer tonen", "Mostrar mais", "Visa fler", "Показать ещё", "Pokaż więcej", "더 보기"],
+  "Aucun de tes médias ne correspond à ces filtres.": ["None of your media match these filters.", "Ninguno de tus medios coincide con estos filtros.", "Nessuno dei tuoi media corrisponde a questi filtri.", "条件に合うあなたのメディアはありません。", "Keins deiner Medien passt zu diesen Filtern.", "لا يطابق أي من وسائطك هذه المرشحات.", "没有符合这些筛选条件的个人媒体。", "Geen van je media past bij deze filters.", "Nenhuma das suas mídias corresponde a estes filtros.", "Inga av dina media matchar filtren.", "Нет твоих медиа по этим фильтрам.", "Żadne z twoich mediów nie pasuje do filtrów.", "조건에 맞는 내 미디어가 없어요."],
+  "Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe.": ["You don't have any media from this show yet. Add yours, or ask to be tagged in the team's photos.", "Aún no tienes medios de este concurso. Añade los tuyos o pide que te identifiquen en las fotos del equipo.", "Non hai ancora media di questo concorso. Aggiungi i tuoi o chiedi di essere identificato nelle foto della squadra.", "この大会のメディアはまだありません。自分のものを追加するか、チームの写真でタグ付けしてもらいましょう。", "Du hast noch keine Medien von diesem Turnier. Füge deine hinzu oder lass dich auf den Team-Fotos markieren.", "لا توجد لديك وسائط من هذه المسابقة بعد. أضف وسائطك أو اطلب أن يُشار إليك في صور الفريق.", "你还没有这场比赛的媒体。添加你的媒体，或请队友在照片中标记你。", "Je hebt nog geen media van deze wedstrijd. Voeg de jouwe toe of vraag om getagd te worden op de teamfoto's.", "Você ainda não tem mídias deste concurso. Adicione as suas ou peça para ser identificado nas fotos da equipe.", "Du har inga media från tävlingen än. Lägg till dina eller be om att bli taggad på lagets foton.", "У тебя пока нет медиа с этих соревнований. Добавь свои или попроси отметить тебя на фото команды.", "Nie masz jeszcze mediów z tych zawodów. Dodaj swoje lub poproś o oznaczenie na zdjęciach drużyny.", "아직 이 대회의 내 미디어가 없어요. 직접 추가하거나 팀 사진에 태그해 달라고 해요."],
+  "Aucun média de l’équipe ne correspond à ces filtres.": ["No team media match these filters.", "Ningún medio del equipo coincide con estos filtros.", "Nessun media della squadra corrisponde a questi filtri.", "条件に合うチームのメディアはありません。", "Keine Team-Medien passen zu diesen Filtern.", "لا تطابق أي من وسائط الفريق هذه المرشحات.", "没有符合这些筛选条件的团队媒体。", "Geen teammedia passen bij deze filters.", "Nenhuma mídia da equipe corresponde a estes filtros.", "Inga lagmedia matchar filtren.", "Нет медиа команды по этим фильтрам.", "Żadne media drużyny nie pasują do filtrów.", "조건에 맞는 팀 미디어가 없어요."],
+  "Pas encore de média de l’équipe sur ce concours.": ["No team media from this show yet.", "Aún no hay medios del equipo de este concurso.", "Ancora nessun media della squadra per questo concorso.", "この大会のチームのメディアはまだありません。", "Noch keine Team-Medien von diesem Turnier.", "لا توجد وسائط للفريق من هذه المسابقة بعد.", "这场比赛还没有团队媒体。", "Nog geen teammedia van deze wedstrijd.", "Ainda não há mídias da equipe deste concurso.", "Inga lagmedia från tävlingen än.", "Медиа команды с этих соревнований пока нет.", "Brak jeszcze mediów drużyny z tych zawodów.", "아직 이 대회의 팀 미디어가 없어요."],
+  "Lire la vidéo": ["Play the video", "Reproducir el vídeo", "Riproduci il video", "動画を再生", "Video abspielen", "تشغيل الفيديو", "播放视频", "Video afspelen", "Reproduzir o vídeo", "Spela videon", "Воспроизвести видео", "Odtwórz film", "영상 재생"],
+  "Voir la photo": ["View the photo", "Ver la foto", "Vedi la foto", "写真を見る", "Foto ansehen", "عرض الصورة", "查看照片", "Foto bekijken", "Ver a foto", "Visa fotot", "Открыть фото", "Zobacz zdjęcie", "사진 보기"],
+  "Identifier": ["Tag", "Identificar", "Identifica", "タグ付け", "Markieren", "وسم", "标记", "Taggen", "Identificar", "Tagga", "Отметить", "Oznacz", "태그"],
+  "Qui est sur ce média ?": ["Who's in this photo or video?", "¿Quién aparece en este medio?", "Chi c'è in questo media?", "このメディアに写っているのは？", "Wer ist auf diesem Medium?", "من يظهر في هذا الوسيط؟", "谁在这个媒体里？", "Wie staat erop?", "Quem aparece nesta mídia?", "Vem är med?", "Кто на этом медиа?", "Kto jest na tym medium?", "이 미디어에 누가 있나요?"],
+  "Facultatif : n’identifie que ce dont tu es sûr.": ["Optional: only tag what you're sure about.", "Opcional: identifica solo lo que tengas claro.", "Facoltativo: identifica solo ciò di cui sei sicuro.", "任意：確かなものだけタグ付けしましょう。", "Freiwillig: Markiere nur, was du sicher weißt.", "اختياري: لا تَسِم إلا ما أنت متأكد منه.", "可选：只标记你确定的内容。", "Optioneel: tag alleen wat je zeker weet.", "Opcional: identifique só o que tiver certeza.", "Valfritt: tagga bara det du är säker på.", "Необязательно: отмечай только то, в чём уверен.", "Opcjonalnie: oznaczaj tylko to, czego jesteś pewien.", "선택 사항: 확실한 것만 태그해요."],
+  "✓ Identification enregistrée. Les cavaliers identifiés sont prévenus et peuvent la confirmer.": ["✓ Tag saved. Tagged riders are notified and can confirm it.", "✓ Identificación guardada. Los jinetes identificados reciben un aviso y pueden confirmarla.", "✓ Identificazione salvata. I cavalieri identificati vengono avvisati e possono confermarla.", "✓ タグを保存しました。タグ付けされた騎手に通知され、確認できます。", "✓ Markierung gespeichert. Markierte Reiter werden benachrichtigt und können sie bestätigen.", "✓ حُفظ الوسم. يُبلَّغ الفرسان المعنيون ويمكنهم تأكيده.", "✓ 标记已保存。被标记的骑手会收到通知并可确认。", "✓ Tag opgeslagen. Getagde ruiters krijgen een melding en kunnen hem bevestigen.", "✓ Identificação salva. Os cavaleiros identificados são avisados e podem confirmá-la.", "✓ Taggning sparad. Taggade ryttare meddelas och kan bekräfta den.", "✓ Отметка сохранена. Отмеченные всадники получат уведомление и смогут её подтвердить.", "✓ Oznaczenie zapisane. Oznaczeni jeźdźcy dostaną powiadomienie i mogą je potwierdzić.", "✓ 태그를 저장했어요. 태그된 라이더에게 알림이 가고 확인할 수 있어요."],
+  "Moi": ["Me", "Yo", "Io", "自分", "Ich", "أنا", "我", "Ik", "Eu", "Jag", "Я", "Ja", "나"],
+  "Photos ou vidéos du concours": ["Show photos or videos", "Fotos o vídeos del concurso", "Foto o video del concorso", "大会の写真・動画", "Fotos oder Videos vom Turnier", "صور أو فيديوهات المسابقة", "比赛照片或视频", "Foto's of video's van de wedstrijd", "Fotos ou vídeos do concurso", "Foton eller videor från tävlingen", "Фото или видео с соревнований", "Zdjęcia lub filmy z zawodów", "대회 사진 또는 영상"],
+  "Dans le fil du concours, en bas de la page. Tu pourras ensuite identifier qui est dessus avec ⋯.": ["In the show feed, at the bottom of the page. You can then tag who's in them with ⋯.", "En el muro del concurso, al final de la página. Después podrás identificar quién aparece con ⋯.", "Nel feed del concorso, in fondo alla pagina. Potrai poi identificare chi c'è con ⋯.", "ページ下部の大会フィードから。あとで ⋯ で写っている人をタグ付けできます。", "Im Turnier-Feed unten auf der Seite. Danach kannst du mit ⋯ markieren, wer drauf ist.", "في موجز المسابقة أسفل الصفحة. يمكنك بعدها وسم من يظهر عبر ⋯.", "在页面底部的比赛动态中。之后可用 ⋯ 标记照片中的人。", "In de wedstrijdfeed onderaan de pagina. Daarna kun je met ⋯ taggen wie erop staat.", "No mural do concurso, no fim da página. Depois você pode identificar quem aparece com ⋯.", "I tävlingsflödet längst ner. Sedan kan du tagga vem som är med via ⋯.", "В ленте соревнований внизу страницы. Потом можно отметить, кто на них, через ⋯.", "W relacji z zawodów na dole strony. Potem oznaczysz, kto jest na zdjęciu, przez ⋯.", "페이지 아래 대회 피드에서요. 이후 ⋯로 누가 있는지 태그할 수 있어요."],
+  "Vidéo de parcours de l’équipe": ["Team round video", "Vídeo de recorrido del equipo", "Video del percorso della squadra", "チームの走行動画", "Rittvideo des Teams", "فيديو جولة للفريق", "团队比赛视频", "Rondevideo van het team", "Vídeo de percurso da equipe", "Lagets rundvideo", "Видео маршрута команды", "Film z przejazdu drużyny", "팀 라운드 영상"],
+  "Rattachée à l’épreuve et au résultat.": ["Linked to the class and the result.", "Vinculado a la prueba y al resultado.", "Collegato alla prova e al risultato.", "競技と結果にひも付けられます。", "Mit Prüfung und Ergebnis verknüpft.", "مرتبط بالفئة والنتيجة.", "关联到项目和成绩。", "Gekoppeld aan de rubriek en de uitslag.", "Vinculado à prova e ao resultado.", "Kopplad till klassen och resultatet.", "Привязано к маршруту и результату.", "Powiązany z konkursem i wynikiem.", "종목과 결과에 연결돼요."],
   /* 09/11 — publier depuis le direct */
   "Publier les résultats du direct": ["Publish the live results", "Publicar los resultados del directo", "Pubblica i risultati della diretta", "ライブの結果を公開", "Live-Ergebnisse veröffentlichen", "نشر النتائج المباشرة", "发布实时成绩", "Live-uitslagen publiceren", "Publicar os resultados ao vivo", "Publicera liveresultaten", "Опубликовать онлайн-результаты", "Opublikuj wyniki na żywo", "실시간 결과 공개"],
   "résultats publiés": ["results published", "resultados publicados", "risultati pubblicati", "件の結果を公開", "Ergebnisse veröffentlicht", "نتائج منشورة", "条成绩已发布", "uitslagen gepubliceerd", "resultados publicados", "resultat publicerade", "результатов опубликовано", "wyników opublikowano", "개의 결과 공개"],
@@ -1065,6 +1095,18 @@ function EcranConcours() {
   var _rem = React.useState(""); var resMsg = _rem[0], setResMsg = _rem[1];
   var _reo = React.useState(false); var resOcc = _reo[0], setResOcc = _reo[1];
   var _lve = React.useState(null); var liveEd = _lve[0], setLiveEd = _lve[1];
+  /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
+  var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];   /* { posts, tv, ident, resCav } */
+  var _mt = React.useState("tous"); var medType = _mt[0], setMedType = _mt[1];
+  var _mfc = React.useState(""); var fCavM = _mfc[0], setFCavM = _mfc[1];
+  var _mfh = React.useState(""); var fChM = _mfh[0], setFChM = _mfh[1];
+  var _mfe = React.useState(""); var fEpM = _mfe[0], setFEpM = _mfe[1];
+  var _mv = React.useState(null); var medVisu = _mv[0], setMedVisu = _mv[1];
+  var _mn = React.useState(12); var medNM = _mn[0], setMedNM = _mn[1];
+  var _mne = React.useState(24); var medNE = _mne[0], setMedNE = _mne[1];
+  var _mid = React.useState(null); var medId = _mid[0], setMedId = _mid[1];   /* panneau « qui est sur ce média ? » */
+  var _maj = React.useState(false); var medAjout = _maj[0], setMedAjout = _maj[1];
+  var _mms = React.useState(""); var medMsg = _mms[0], setMedMsg = _mms[1];
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
   var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
@@ -1156,6 +1198,24 @@ function EcranConcours() {
           var idsA = []; vids.forEach(function (v) { if (v.proprio && idsA.indexOf(v.proprio) === -1) idsA.push(v.proprio); });
           if (idsA.length) { var rpa = await supa.from("profiles").select("id, pseudo").in("id", idsA); var pa = {}; ((rpa && rpa.data) || []).forEach(function (x) { pa[x.id] = x.pseudo; }); vids.forEach(function (v) { v.pseudo = pa[v.proprio] || ""; }); }
           if (vif) setVideos(vids);
+          /* 09/11 — galerie des médias du concours : publications du fil + publications rattachées, vidéos de la Team,
+             identifications existantes (table identifications : cavalier / cheval, aucune déduction par le cheval) */
+          try {
+            var postsG = [], vusP = {};
+            var rvl = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at, texte, liens").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(400);
+            ((rvl && !rvl.error && rvl.data) || []).forEach(function (po) { if (po.prive && !(u && po.user_id === u.id)) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } });
+            try { if (typeof hypePostsAgenda === "function") { var rpa2 = await hypePostsAgenda(idEv); ((rpa2 && rpa2.data) || []).forEach(function (po) { if (!po || (po.prive && !(u && po.user_id === u.id))) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } }); } } catch (ePa) { }
+            var rtg = await supa.from("team_videos").select("id, groupe_id, media, video_mux_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
+            var tvG = (rtg && !rtg.error && rtg.data) || [];
+            var urlsG = []; postsG.forEach(function (po) { [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && urlsG.indexOf(String(m)) === -1) urlsG.push(String(m)); }); });
+            var identG = {};
+            for (var iU = 0; iU < urlsG.length; iU += 200) { var ri = await supa.from("identifications").select("photo_url, type, cible_id, cible_nom, statut, auteur_id").in("photo_url", urlsG.slice(iU, iU + 200)); ((ri && !ri.error && ri.data) || []).forEach(function (x) { if (x.statut === "refuse") return; (identG[x.photo_url] = identG[x.photo_url] || []).push(x); }); }
+            var idsRes = tvG.map(function (v) { return v.resultat; }).filter(Boolean), resCavG = {};
+            if (idsRes.length) { var rrc = await supa.from("resultats").select("id, cavalier_id, cheval_id, epreuve").in("id", idsRes); ((rrc && !rrc.error && rrc.data) || []).forEach(function (x) { resCavG[x.id] = x; }); }
+            var idsAu = []; postsG.concat(tvG).forEach(function (x) { var a = x.user_id || x.auteur_id; if (a && idsAu.indexOf(a) === -1) idsAu.push(a); });
+            var auteursG = {}; if (idsAu.length) { var rau = await supa.from("profiles").select("id, pseudo").in("id", idsAu.slice(0, 300)); ((rau && rau.data) || []).forEach(function (x) { auteursG[x.id] = x.pseudo; }); }
+            if (vif) setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG });
+          } catch (eG) { if (vif) setMedG({ posts: [], tv: [], ident: {}, resCav: {}, auteurs: {} }); }
         } catch (eV) { }
         if (u && u.id) {
           try {
@@ -1759,6 +1819,120 @@ function EcranConcours() {
       (typeof EcranEvenementPasse !== "undefined") ? h(EcranEvenementPasse, { key: "ep" + idEv, integre: true }) : null)
   ];
 
+  /* ── 09/11 — MÉDIAS DU CONCOURS (brief de Blandine) : UNE seule galerie — « Mes médias » d'abord, puis « Les médias de
+     l'équipe » sans doublon ; filtres Tous / Vidéos / Photos et Cavalier · Cheval · Épreuve ; photos jamais rognées (le même
+     cliché flouté derrière) ; visionneuse photo et lecteur vidéo existants. Un média est « à moi » si je l'ai ajouté, si l'on
+     m'y a identifié, ou si c'est la vidéo de MON résultat — jamais déduit du cheval seul. */
+  var itemsM = [];
+  if (medG) {
+    medG.posts.forEach(function (po) {
+      [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) {
+        if (!m) return; m = String(m); if (itemsM.some(function (x) { return x.url === m; })) return;
+        var idt = medG.ident[m] || [];
+        itemsM.push({ cle: m, url: m, video: hsEstVideo(m), auteur: po.user_id, post: po, date: po.created_at, epreuve: hsNomEpreuve((po.liens && po.liens.epreuve) || ""),
+          cav: idt.filter(function (x) { return x.type === "cavalier"; }).map(function (x) { return String(x.cible_id); }),
+          ch: idt.filter(function (x) { return x.type === "cheval"; }).map(function (x) { return String(x.cible_id); }) });
+      });
+    });
+    var membreT = !!(equipe && equipe.membre);
+    medG.tv.forEach(function (v) {
+      if (!(membreT || v.publique || (moi && v.auteur_id === moi.id) || gestion)) return;
+      var r = v.resultat ? medG.resCav[v.resultat] : null;
+      itemsM.push({ cle: "tv:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
+        cav: r && r.cavalier_id ? [String(r.cavalier_id)] : [], ch: r && r.cheval_id ? [String(r.cheval_id)] : [] });
+    });
+    itemsM.sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+  }
+  var optCav = [], optCh = [];
+  (passagesEq || []).forEach(function (p) { if (p.cavalier_id && !optCav.some(function (o) { return o.id === String(p.cavalier_id); })) optCav.push({ id: String(p.cavalier_id), nom: prenomDe(p) }); if (p.cheval_id && !optCh.some(function (o) { return o.id === String(p.cheval_id); })) optCh.push({ id: String(p.cheval_id), nom: p.cheval_nom || "" }); });
+  if (moi && !optCav.some(function (o) { return o.id === String(moi.id); }) && itemsM.some(function (x) { return x.cav.indexOf(String(moi.id)) !== -1; })) optCav.push({ id: String(moi.id), nom: F("Moi") });
+  var optEp = parEpreuve.map(function (g) { return g.ep; }); itemsM.forEach(function (x) { if (x.epreuve && optEp.indexOf(x.epreuve) === -1) optEp.push(x.epreuve); });
+  var filtresActifs = !!(fCavM || fChM || fEpM);
+  var itemsF = itemsM.filter(function (x) {
+    if (medType === "videos" && !x.video) return false; if (medType === "photos" && x.video) return false;
+    if (fCavM && x.cav.indexOf(fCavM) === -1) return false; if (fChM && x.ch.indexOf(fChM) === -1) return false; if (fEpM && x.epreuve !== fEpM) return false;
+    return true;
+  });
+  function estAMoi(x) { return !!moi && (x.auteur === moi.id || x.cav.indexOf(String(moi.id)) !== -1); }
+  var mesM = itemsF.filter(estAMoi), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
+  var nbV = itemsM.filter(function (x) { return x.video; }).length, nbP = itemsM.length - nbV;
+  function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
+  function vignetteDe(x) { if (x.tv) return x.tv.vignette || (x.tv.video_mux_id ? "https://image.mux.com/" + x.tv.video_mux_id + "/thumbnail.jpg?width=640&fit_mode=preserve" : hsVignetteVideo(x.tv.media)); if (x.video) return hsVignetteVideo(x.url); return (typeof grandeImageHype === "function") ? grandeImageHype(x.url, 900) : x.url; }
+  function ouvrirMedia(x) {
+    if (x.tv) { ouvrirVideo(x.tv); return; }
+    if (x.video && /^mux:/.test(x.url)) { try { window.__videoParcours = { media: x.url, proprio: x.auteur, pseudo: (medG.auteurs || {})[x.auteur] || "", agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); return; }
+    setMedVisu(x.url);
+  }
+  function tuile(x, grand) {
+    var vg = vignetteDe(x);
+    var peutId = !x.tv && moi && (x.auteur === moi.id || gestion);
+    return h("div", { key: x.cle, className: "hc-mt" + (grand ? " grand" : "") },
+      h("button", { type: "button", className: "hc-mt-b", onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
+        vg ? [h("span", { key: "f", className: "hc-mt-fond", style: { backgroundImage: "url(\"" + vg + "\")" }, "aria-hidden": "true" }), h("img", { key: "i", src: vg, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } })] : h("span", { className: "hc-mt-vide" }),
+        x.video ? h("span", { className: "hc-mt-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: grand ? 30 : 20, height: grand ? 30 : 20 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
+        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null),
+      peutId ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function () { setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null);
+  }
+  async function enregistrerIdent() {
+    if (!medId) return; var x = medId.x; setMedMsg("");
+    try {
+      var nouvC = medId.cav.filter(function (c) { return x.cav.indexOf(c) === -1; }), nouvH = medId.ch.filter(function (c) { return x.ch.indexOf(c) === -1; });
+      for (var i = 0; i < nouvC.length; i++) { var oc = optCav.filter(function (o) { return o.id === nouvC[i]; })[0]; if (typeof identifierSouvenir === "function") await identifierSouvenir(x.url, "cavalier", nouvC[i], oc ? oc.nom : null); }
+      for (var j = 0; j < nouvH.length; j++) { var oh = optCh.filter(function (o) { return o.id === nouvH[j]; })[0]; if (typeof identifierSouvenir === "function") await identifierSouvenir(x.url, "cheval", nouvH[j], oh ? oh.nom : null); }
+      if ((medId.ep || "") !== (x.epreuve || "") && x.post) { var l2 = Object.assign({}, x.post.liens || {}, { epreuve: medId.ep || null }); var ru = await supa.from("commentaires").update({ liens: l2 }).eq("id", x.post.id).select("id"); if (ru && ru.error) throw ru.error; x.post.liens = l2; }
+      var ident = Object.assign({}, medG.ident); var lst = (ident[x.url] || []).slice();
+      nouvC.forEach(function (c) { lst.push({ photo_url: x.url, type: "cavalier", cible_id: c, statut: "attente" }); }); nouvH.forEach(function (c) { lst.push({ photo_url: x.url, type: "cheval", cible_id: c, statut: "attente" }); });
+      ident[x.url] = lst; setMedG(Object.assign({}, medG, { ident: ident })); setMedId(null);
+      setMedMsg(F("✓ Identification enregistrée. Les cavaliers identifiés sont prévenus et peuvent la confirmer."));
+    } catch (eI) { setMedMsg(F("Enregistrement impossible : ") + String((eI && eI.message) || eI)); }
+  }
+  var panneauId = medId ? h("div", { key: "pid", className: "hc-ged hc-mid" },
+    h("div", { className: "hc-ged-k" }, F("Qui est sur ce média ?")),
+    optCav.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optCav.map(function (o) { var on = medId.cav.indexOf(o.id) !== -1; return h("button", { key: o.id, type: "button", className: "hc-chip-p" + (on ? " on" : ""), disabled: on && medId.x.cav.indexOf(o.id) !== -1, onClick: function () { setMedId(Object.assign({}, medId, { cav: on ? medId.cav.filter(function (c) { return c !== o.id; }) : medId.cav.concat([o.id]) })); } }, o.nom); })) : null,
+    optCh.length ? h("div", { className: "hc-ged-k" }, F("Cheval")) : null,
+    optCh.length ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optCh.map(function (o) { var on = medId.ch.indexOf(o.id) !== -1; return h("button", { key: o.id, type: "button", className: "hc-chip-p" + (on ? " on" : ""), disabled: on && medId.x.ch.indexOf(o.id) !== -1, onClick: function () { setMedId(Object.assign({}, medId, { ch: on ? medId.ch.filter(function (c) { return c !== o.id; }) : medId.ch.concat([o.id]) })); } }, o.nom); })) : null,
+    (optEp.length && medId.x.post && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-k" }, F("Épreuve")) : null,
+    (optEp.length && medId.x.post && moi && (medId.x.auteur === moi.id || gestion)) ? h("div", { className: "hc-ged-ch", style: { justifyContent: "flex-start" } }, optEp.map(function (e2) { var on = medId.ep === e2; return h("button", { key: e2, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { setMedId(Object.assign({}, medId, { ep: on ? "" : e2 })); } }, e2); })) : null,
+    h("div", { className: "hs-note", style: { marginTop: 0 } }, F("Facultatif : n’identifie que ce dont tu es sûr.")),
+    h("div", { className: "hc-ged-fin" }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setMedId(null); } }, F("Annuler")), h("button", { type: "button", className: "hc-btn-l fort", onClick: enregistrerIdent }, F("Enregistrer")))) : null;
+  function sel(val, set, libre, opts) {
+    return h("label", { className: "hc-fsel" + (val ? " on" : "") }, h("span", null, libre), h("select", { value: val, onChange: function (e) { set(e.target.value); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
+  }
+  var panneauAjout = medAjout ? h("div", { key: "paj", className: "hc-outils" },
+    outil("ajF", F("Photos ou vidéos du concours"), F("Dans le fil du concours, en bas de la page. Tu pourras ensuite identifier qui est dessus avec ⋯."), function () { setMedAjout(false); try { var el = document.getElementById("hs-fil"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }),
+    (equipe && equipe.membre) ? outil("ajT", F("Vidéo de parcours de l’équipe"), F("Rattachée à l’épreuve et au résultat."), function () { setMedAjout(false); try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); }) : null) : null;
+  var blocGalerie = h("div", { key: "gal", className: "hc-gal" },
+    h("div", { className: "hc-gal-tete" },
+      h("span", { className: "hc-gal-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 28, height: 28 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinejoin: "round" }, h("path", { d: "M3.5 8.5h3.2l1.6-2.4h7.4l1.6 2.4h3.2v10H3.5z" }), h("circle", { cx: 12, cy: 13.2, r: 3.4 })))),
+      h("h2", null, F("Médias du concours")),
+      h("button", { type: "button", className: "hc-btn-l", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
+    panneauAjout,
+    h("div", { className: "hc-gal-types" }, [["tous", F("Tous"), itemsM.length], ["videos", F("Vidéos"), nbV], ["photos", F("Photos"), nbP]].map(function (t) {
+      return h("button", { key: t[0], type: "button", className: "hc-gt" + (medType === t[0] ? " on" : ""), onClick: function () { setMedType(t[0]); setMedNM(12); setMedNE(24); } }, t[1] + (medG ? " (" + t[2] + ")" : ""));
+    })),
+    h("div", { className: "hc-fbar" }, h("span", { className: "hc-fbar-t" }, F("Filtrer :")), sel(fCavM, setFCavM, F("Cavalier"), optCav), sel(fChM, setFChM, F("Cheval"), optCh), sel(fEpM, setFEpM, F("Épreuve"), optEp),
+      filtresActifs ? h("button", { type: "button", className: "hc-fbar-z", onClick: function () { setFCavM(""); setFChM(""); setFEpM(""); } }, F("Effacer")) : null),
+    panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
+    !medG ? h("div", { className: "hs-note" }, "…") : null,
+    (medG && moi) ? h("div", { className: "hc-gal-s" },
+      h("div", { className: "hc-gal-st" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
+      mesM.length ? [
+        h("div", { key: "m3", className: "hc-gal-m3" + (mesM.length === 1 ? " un" : mesM.length === 2 ? " deux" : "") }, mesM.slice(0, 3).map(function (x, i) { return tuile(x, i === 0); })),
+        mesM.length > 3 ? h("div", { key: "mr", className: "hc-gal-grille" }, mesM.slice(3, 3 + medNM).map(function (x) { return tuile(x, false); })) : null,
+        mesM.length > 3 + medNM ? h("button", { key: "mp", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus")) : null
+      ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun de tes médias ne correspond à ces filtres.") : F("Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe."))) : null,
+    medG ? h("div", { className: "hc-gal-s" },
+      h("div", { className: "hc-gal-st" }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
+      eqM.length ? [
+        h("div", { key: "eg", className: "hc-gal-grille eq" }, eqM.slice(0, medNE).map(function (x) { return tuile(x, false); })),
+        eqM.length > medNE ? h("button", { key: "ep", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")") : null
+      ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours."))) : null,
+    medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
+  /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
+  var blocFil = h("div", { key: "fil", id: "hs-fil" },
+    (function () { try { window.__evPasse = null; window.__evPasseId = idEv; } catch (eW) { } return null; })(),
+    (typeof EcranEvenementPasse !== "undefined") ? h(EcranEvenementPasse, { key: "ep" + idEv, integre: true, seulementFil: true }) : null);
+
   /* ── DOSSIER DU CONCOURS ── */
   var blocDossier = [
     gestion ? h("button", { key: "dos", type: "button", className: "hs-btn", onClick: function () { ouvrir("dossier-concours"); } }, F("Ouvrir le dossier du concours")) : null,
@@ -1883,9 +2057,9 @@ function EcranConcours() {
         ongletC === "engagements" ? blocMesEng : null,
         ongletC === "passages" ? [outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
         ongletC === "resultats" ? blocResultats : null,
-        ongletC === "medias" ? [outilsMedias, blocMedias] : null)
+        ongletC === "medias" ? [blocGalerie, blocFil] : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
-        : h("div", { className: "hc-onglet" }, blocResultats, blocMedias[0], blocMedias[1]),
+        : h("div", { className: "hc-onglet" }, blocResultats, blocGalerie),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
 }
 
@@ -1936,6 +2110,45 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 — Médias du concours */
+  ".hc .hc-gal{margin-top:6px}",
+  ".hc .hc-gal-tete{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:14px}",
+  ".hc .hc-gal-tete h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.4vw,30px);color:#F3EEE4;line-height:1.1}",
+  ".hc .hc-gal-types{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px}",
+  ".hc .hc-gal-types::-webkit-scrollbar{display:none}",
+  ".hc .hc-gt{flex:0 0 auto;background:transparent;border:1px solid rgba(243,238,228,.22);border-radius:999px;color:rgba(243,238,228,.85);font:inherit;font-size:13px;padding:8px 16px;cursor:pointer;white-space:nowrap}",
+  ".hc .hc-gt.on{border-color:#C9A66B;color:#C9A66B}",
+  ".hc .hc-fbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid rgba(201,166,107,.45);border-radius:999px;padding:6px 10px 6px 14px;margin-bottom:22px}",
+  ".hc .hc-fbar-t{font-size:12px;color:rgba(243,238,228,.7)}",
+  ".hc .hc-fsel{position:relative;display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:#F3EEE4;border-radius:999px;padding:4px 10px;border:1px solid transparent}",
+  ".hc .hc-fsel.on{border-color:#C9A66B;color:#C9A66B}",
+  ".hc .hc-fsel select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}",
+  ".hc .hc-fsel span::after{content:' ▾';color:#C9A66B}",
+  ".hc .hc-fbar-z{margin-inline-start:auto;background:none;border:none;color:rgba(243,238,228,.65);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}",
+  ".hc .hc-gal-s{margin-bottom:28px}",
+  ".hc .hc-gal-st{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
+  ".hc .hc-gal-st h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;color:#F3EEE4}",
+  ".hc .hc-gal-st span{font-size:12.5px;color:#C9A66B}",
+  ".hc .hc-gal-m3{display:grid;grid-template-columns:1.7fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:clamp(220px,62vw,420px)}",
+  ".hc .hc-gal-m3 .hc-mt.grand{grid-row:1 / span 2}",
+  ".hc .hc-gal-m3.un{grid-template-columns:1fr;grid-template-rows:1fr}",
+  ".hc .hc-gal-m3.deux{grid-template-columns:1fr 1fr;grid-template-rows:1fr}.hc .hc-gal-m3.deux .hc-mt.grand{grid-row:auto}",
+  ".hc .hc-gal-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}",
+  ".hc .hc-gal-grille.eq{grid-template-columns:repeat(2,1fr);margin-top:0}",
+  "@media (min-width:600px){.hc .hc-gal-grille.eq{grid-template-columns:repeat(3,1fr)}}",
+  "@media (min-width:900px){.hc .hc-gal-grille.eq{grid-template-columns:repeat(4,1fr)}.hc .hc-gal-grille{grid-template-columns:repeat(4,1fr)}}",
+  ".hc .hc-gal-grille .hc-mt{aspect-ratio:1.2}",
+  ".hc .hc-gal-grille.eq .hc-mt{aspect-ratio:1.15}",
+  ".hc .hc-mt{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(201,166,107,.35);background:#0B0E0C;min-height:0}",
+  ".hc .hc-mt-b{position:absolute;inset:0;width:100%;height:100%;padding:0;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden}",
+  ".hc .hc-mt-fond{position:absolute;inset:-14px;background-size:cover;background-position:center;filter:blur(14px) brightness(.4)}",
+  ".hc .hc-mt-b img{position:relative;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}",
+  ".hc .hc-mt-vide{position:absolute;inset:0;background:linear-gradient(160deg,#141a1c,#0a0d0e)}",
+  ".hc .hc-mt-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:22%;max-width:58px;min-width:36px;aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(243,238,228,.9);background:rgba(7,10,8,.35)}",
+  ".hc .hc-mt-d{position:absolute;right:8px;bottom:8px;font-size:11.5px;color:#F3EEE4;background:rgba(7,10,8,.7);border-radius:6px;padding:2px 6px}",
+  ".hc .hc-mt-id{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(243,238,228,.4);background:rgba(7,10,8,.55);color:#F3EEE4;font-size:16px;line-height:1;cursor:pointer}",
+  ".hc .hc-plus{display:block;margin:12px auto 0}",
+  ".hc .hc-mid{border:1px solid rgba(201,166,107,.4);border-radius:14px;padding:12px;margin-bottom:16px}",
   /* 09/11 — Page Résultats */
   ".hc .hc-bd{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;border:1px solid rgba(201,166,107,.55);border-radius:16px;padding:12px 14px;margin:0 0 22px}",
   ".hc .hc-bd-t{font-size:15px;font-weight:600}",
