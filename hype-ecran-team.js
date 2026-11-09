@@ -364,7 +364,7 @@ function EcranTeamCompetition() {
   function trait() { return h("div", { style: { height: 1, margin: "24px 20px 0", background: "linear-gradient(90deg, rgba(214,182,118,0), rgba(214,182,118,0.22), rgba(214,182,118,0))" } }); }
 
   function portrait(key, src, nom, onClick, repli) {
-    return h("button", { key: key, type: "button", onClick: onClick, style: { background: "none", border: "none", padding: "2px 0 4px", cursor: "pointer", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", alignSelf: "start" } },
+    return h("button", { key: key, type: "button", onClick: onClick, style: { width: "100%", background: "none", border: "none", padding: "2px 0 4px", cursor: "pointer", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", alignSelf: "start" } },
       h("div", { style: { width: "100%", maxWidth: 74, aspectRatio: "1 / 1", borderRadius: "50%", padding: 2, border: "1px solid rgba(214,182,118,0.75)", boxSizing: "border-box" } },
         h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", background: "#11171C", display: "flex", alignItems: "center", justifyContent: "center" } },
           src ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(src, 200, 200) : src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
@@ -374,7 +374,13 @@ function EcranTeamCompetition() {
   }
   function grillePortraits(items, cle) {
     var liste = ouvert[cle] ? items : items.slice(0, 8);   /* (702) deux lignes de quatre */
-    return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", columnGap: 10, rowGap: 16 } }, liste);
+    /* 09/11 15h03 (Blandine : « équilibrer pour qu'il n'y ait pas de vide sur les lignes : 5 → 3 puis 2 centrés ») :
+       lignes de 4 au plus, réparties le plus également possible, les plus pleines d'abord, chaque ligne centrée ; même taille de portrait */
+    var n = liste.length, nbL = Math.max(1, Math.ceil(n / 4)), base = Math.floor(n / nbL), plus = n % nbL, lignes = [], k = 0;
+    for (var r = 0; r < nbL; r++) { var t = base + (r < plus ? 1 : 0); lignes.push(liste.slice(k, k + t)); k += t; }
+    return h("div", { style: { display: "flex", flexDirection: "column", rowGap: 16 } }, lignes.map(function (lg0, r) {
+      return h("div", { key: "l" + r, style: { display: "flex", justifyContent: "center", columnGap: 10 } }, lg0.map(function (it, j) { return h("div", { key: (it && it.key) || ("p" + j), style: { flex: "0 0 calc((100% - 30px) / 4)", minWidth: 0, display: "flex", justifyContent: "center" } }, it); }));
+    }));
   }
 
   /* ── hero ── */
