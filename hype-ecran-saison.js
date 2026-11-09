@@ -20,6 +20,7 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Afficher ce média": ["Show this media", "Mostrar este medio", "Mostra questo media", "このメディアを表示", "Dieses Medium zeigen", "عرض هذا الوسيط", "显示此媒体", "Dit medium tonen", "Mostrar esta mídia", "Visa detta media", "Показать это медиа", "Pokaż to medium", "이 미디어 보기"],
   /* 09/11 13h30 — Médias du concours */
   "Médias du concours": ["Show media", "Medios del concurso", "Media del concorso", "大会のメディア", "Medien des Turniers", "وسائط المسابقة", "比赛媒体", "Media van de wedstrijd", "Mídias do concurso", "Tävlingens media", "Медиа соревнований", "Media z zawodów", "대회 미디어"],
   "Ajouter des médias": ["Add media", "Añadir medios", "Aggiungi media", "メディアを追加", "Medien hinzufügen", "إضافة وسائط", "添加媒体", "Media toevoegen", "Adicionar mídias", "Lägg till media", "Добавить медиа", "Dodaj media", "미디어 추가"],
@@ -1107,6 +1108,7 @@ function EcranConcours() {
   var _mid = React.useState(null); var medId = _mid[0], setMedId = _mid[1];   /* panneau « qui est sur ce média ? » */
   var _maj = React.useState(false); var medAjout = _maj[0], setMedAjout = _maj[1];
   var _mms = React.useState(""); var medMsg = _mms[0], setMedMsg = _mms[1];
+  var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
   var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
@@ -1914,32 +1916,66 @@ function EcranConcours() {
   var panneauAjout = medAjout ? h("div", { key: "paj", className: "hc-outils" },
     outil("ajF", F("Photos ou vidéos du concours"), F("Dans le fil du concours, en bas de la page. Tu pourras ensuite identifier qui est dessus avec ⋯."), function () { setMedAjout(false); try { var el = document.getElementById("hs-fil"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }),
     (equipe && equipe.membre) ? outil("ajT", F("Vidéo de parcours de l’équipe"), F("Rattachée à l’épreuve et au résultat."), function () { setMedAjout(false); try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); }) : null) : null;
-  var blocGalerie = h("div", { key: "gal", className: "hc-gal" },
-    h("div", { className: "hc-gal-tete" },
-      h("span", { className: "hc-gal-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 28, height: 28 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinejoin: "round" }, h("path", { d: "M3.5 8.5h3.2l1.6-2.4h7.4l1.6 2.4h3.2v10H3.5z" }), h("circle", { cx: 12, cy: 13.2, r: 3.4 })))),
-      h("h2", null, F("Médias du concours")),
-      h("button", { type: "button", className: "hc-btn-l", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
-    panneauAjout,
-    h("div", { className: "hc-gal-types" }, [["tous", F("Tous"), itemsM.length], ["videos", F("Vidéos"), nbV], ["photos", F("Photos"), nbP]].map(function (t) {
-      return h("button", { key: t[0], type: "button", className: "hc-gt" + (medType === t[0] ? " on" : ""), onClick: function () { setMedType(t[0]); setMedNM(12); setMedNE(24); } }, t[1] + (medG ? " (" + t[2] + ")" : ""));
+  /* ── 09/11 13h10 — nouvelle présentation (maquette « reportage ») : un grand média à l'honneur dans son format naturel,
+     trois vignettes rondes à droite pour en changer, les autres en rangée dessous ; puis l'équipe en galerie horizontale
+     (hauteur fixe, largeur naturelle → rien n'est rogné) ; « Ajouter des médias » puis les filtres, discrets, en bas. */
+  function ico(nom) {
+    var P = { video: "M3.5 7h11v10h-11zM14.5 10.5l5-3v9l-5-3", photo: "M4 5.5h16v13H4zM4 15l4.5-4.5 4 4 2.5-2.5L20 17M15.5 9.5h.01", cav: "M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2zM5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6", ch: "M6 20c0-5 2-8 6-10l1-4 2 3c2 1 3 3 3 5l-2 1-2-2-3 2v5", ep: "M8 4h8v4a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4v4h-4z" };
+    return h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, "aria-hidden": "true" }, h("path", { d: P[nom], fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" }));
+  }
+  function apercu(x, l) { return vignetteDe(x) ? ((typeof grandeImageHype === "function" && !x.video) ? grandeImageHype(x.url, l || 1200) : vignetteDe(x)) : ""; }
+  var principal = mesM.filter(function (x) { return x.cle === medSel; })[0] || mesM[0] || null;
+  var autresMes = mesM.filter(function (x) { return x !== principal; });
+  var ronds = autresMes.slice(0, 3), rangee = autresMes.slice(3, 3 + medNM);
+  function boutonId(x) { var ok = !x.tv && moi && (x.auteur === moi.id || gestion); return ok ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null; }
+  function vue(x, cls, larg) {   /* aperçu dans son format naturel (hauteur imposée par la classe, largeur libre) */
+    var src = apercu(x, larg);
+    return h("button", { type: "button", className: cls, onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
+      src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }) : h("span", { className: "hc-mt-vide" }),
+      x.video ? h("span", { className: "hc-mt-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
+      (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null,
+      boutonId(x));
+  }
+  var blocMes = (medG && moi && (mesM.length || !gestion)) ? h("div", { className: "hc-rep-s" },
+    h("div", { className: "hc-rep-st" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
+    principal ? [
+      h("div", { key: "une", className: "hc-une" + (ronds.length ? "" : " seule") },
+        h("div", { key: principal.cle, className: "hc-une-p" }, vue(principal, "hc-une-m", 1600)),
+        ronds.length ? h("div", { className: "hc-ronds" }, ronds.map(function (x) {
+          var src = apercu(x, 300);
+          return h("button", { key: x.cle, type: "button", className: "hc-rond", onClick: function () { setMedSel(x.cle); }, "aria-label": F("Afficher ce média") },
+            src ? h("img", { src: src, alt: "", loading: "lazy" }) : null,
+            x.video ? h("span", { className: "hc-rond-v", "aria-hidden": "true" }, "▶") : null);
+        })) : null),
+      rangee.length ? h("div", { key: "rg", className: "hc-rangee", "data-hscroll": "1" }, rangee.map(function (x) {
+        var src = apercu(x, 500);
+        return h("button", { key: x.cle, type: "button", className: "hc-rg", onClick: function () { setMedSel(x.cle); try { var el = document.querySelector(".hc-une"); if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) { } } },
+          src ? h("img", { src: src, alt: "", loading: "lazy" }) : h("span", { className: "hc-mt-vide" }),
+          (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : (x.video ? h("span", { className: "hc-mt-d" }, "▶") : null));
+      }).concat(autresMes.length > 3 + medNM ? [h("button", { key: "plus", type: "button", className: "hc-rg hc-rg-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus"))] : [])) : null
+    ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun de tes médias ne correspond à ces filtres.") : F("Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe."))) : null;
+  var blocEq = medG ? h("div", { className: "hc-rep-s" },
+    h("div", { className: "hc-rep-st" }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
+    eqM.length ? h("div", { className: "hc-galh", "data-hscroll": "1" }, eqM.slice(0, medNE).map(function (x) { return h("div", { key: x.cle, className: "hc-galh-i" }, vue(x, "hc-galh-m", 900)); })
+      .concat(eqM.length > medNE ? [h("button", { key: "plus", type: "button", className: "hc-galh-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")")] : []))
+      : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours."))) : null;
+  function selF(val, set, libre, opts, ic) {
+    return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
+      h("select", { value: val, "aria-label": libre, onChange: function (e) { set(e.target.value); setMedSel(null); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, libre + " · " + F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
+  }
+  var blocGalerie = h("div", { key: "gal", className: "hc-gal hc-rep" },
+    h("h2", { className: "hc-rep-titre" }, F("Médias du concours")), h("span", { className: "hc-rep-filet", "aria-hidden": "true" }),
+    h("div", { className: "hc-rep-tabs", role: "tablist" }, [["tous", F("Tous"), itemsM.length, null], ["videos", F("Vidéos"), nbV, "video"], ["photos", F("Photos"), nbP, "photo"]].map(function (t) {
+      return h("button", { key: t[0], type: "button", role: "tab", "aria-selected": medType === t[0], className: "hc-rt" + (medType === t[0] ? " on" : ""), onClick: function () { setMedType(t[0]); setMedSel(null); setMedNM(12); setMedNE(24); } }, t[3] ? ico(t[3]) : null, t[1] + (medG ? " (" + t[2] + ")" : ""));
     })),
-    h("div", { className: "hc-fbar" }, h("span", { className: "hc-fbar-t" }, F("Filtrer :")), sel(fCavM, setFCavM, F("Cavalier"), optCav), sel(fChM, setFChM, F("Cheval"), optCh), sel(fEpM, setFEpM, F("Épreuve"), optEp),
-      filtresActifs ? h("button", { type: "button", className: "hc-fbar-z", onClick: function () { setFCavM(""); setFChM(""); setFEpM(""); } }, F("Effacer")) : null),
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
     !medG ? h("div", { className: "hs-note" }, "…") : null,
-    (medG && moi) ? h("div", { className: "hc-gal-s" },
-      h("div", { className: "hc-gal-st" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
-      mesM.length ? [
-        h("div", { key: "m3", className: "hc-gal-m3" + (nHeros === 1 ? " un" : nHeros === 2 ? " deux" : "") }, mesM.slice(0, nHeros).map(function (x, i) { return tuile(x, i === 0 && nHeros === 3); })),
-        mesM.length > nHeros ? grilleRemplie(mesM.slice(nHeros, nHeros + medNM), "mr") : null,
-        mesM.length > nHeros + medNM ? h("button", { key: "mp", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus")) : null
-      ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun de tes médias ne correspond à ces filtres.") : F("Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe."))) : null,
-    medG ? h("div", { className: "hc-gal-s" },
-      h("div", { className: "hc-gal-st" }, h("h3", null, F("Les médias de l’équipe")), h("span", null, eqM.length + " " + (eqM.length > 1 ? F("médias") : F("média")))),
-      eqM.length ? [
-        grilleRemplie(eqM.slice(0, medNE), "eg"),
-        eqM.length > medNE ? h("button", { key: "ep", type: "button", className: "hc-btn-l hc-plus", onClick: function () { setMedNE(medNE + 24); } }, F("Afficher plus") + " (" + (eqM.length - medNE) + ")") : null
-      ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun média de l’équipe ne correspond à ces filtres.") : F("Pas encore de média de l’équipe sur ce concours."))) : null,
+    blocMes, blocEq,
+    h("div", { className: "hc-rep-aj" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
+    panneauAjout,
+    h("div", { className: "hc-rep-f" }, h("span", { className: "hc-rep-ft" }, F("Filtrer :")),
+      selF(fCavM, setFCavM, F("Cavalier"), optCav, "cav"), selF(fChM, setFChM, F("Cheval"), optCh, "ch"), selF(fEpM, setFEpM, F("Épreuve"), optEp, "ep"),
+      filtresActifs ? h("button", { type: "button", className: "hc-fbar-z", onClick: function () { setFCavM(""); setFChM(""); setFEpM(""); setMedSel(null); } }, F("Effacer")) : null),
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
   var blocFil = h("div", { key: "fil", id: "hs-fil" },
@@ -2123,6 +2159,49 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 13h10 — Médias du concours, présentation « reportage » */
+  ".hc .hc-rep-titre{margin:4px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(34px,10vw,52px);line-height:1.02;color:#F3EEE4}",
+  ".hc .hc-rep-filet{display:block;width:120px;height:1px;margin:14px 0 18px;background:linear-gradient(90deg,#C9A66B,rgba(201,166,107,0))}",
+  ".hc .hc-rep-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:0 -4px 26px}",
+  ".hc .hc-rep-tabs::-webkit-scrollbar{display:none}",
+  ".hc .hc-rt{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;background:none;border:none;border-bottom:1.5px solid transparent;color:rgba(243,238,228,.8);font:inherit;font-size:13.5px;padding:8px 12px;cursor:pointer;white-space:nowrap}",
+  ".hc .hc-rt.on{color:#C9A66B;border-bottom-color:#C9A66B}",
+  ".hc .hc-rep-s{margin-bottom:30px}",
+  ".hc .hc-rep-st{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}",
+  ".hc .hc-rep-st h3{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,7.6vw,34px);color:#F3EEE4}",
+  ".hc .hc-rep-st span{font-size:12.5px;color:rgba(243,238,228,.75)}",
+  ".hc .hc-une{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}",
+  ".hc .hc-une.seule{grid-template-columns:1fr}",
+  ".hc .hc-une-p{display:flex;justify-content:center;animation:hcFondu .35s ease}",
+  "@keyframes hcFondu{from{opacity:0}to{opacity:1}}",
+  "@media (prefers-reduced-motion:reduce){.hc .hc-une-p{animation:none}}",
+  ".hc .hc-une-m{position:relative;display:block;padding:0;border:none;background:none;cursor:pointer;border-radius:14px;overflow:hidden;line-height:0}",
+  ".hc .hc-une-m img{display:block;max-width:100%;max-height:min(64vh,560px);width:auto;height:auto}",
+  ".hc .hc-ronds{display:flex;flex-direction:column;align-items:center;gap:12px}",
+  ".hc .hc-rond{position:relative;flex:none;width:clamp(58px,17vw,96px);height:clamp(58px,17vw,96px);border-radius:50%;overflow:hidden;padding:0;border:1px solid rgba(201,166,107,.6);background:#0B0E0C;cursor:pointer}",
+  ".hc .hc-rond img{width:100%;height:100%;object-fit:cover;display:block}",
+  ".hc .hc-rond-v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#F3EEE4;font-size:13px;text-shadow:0 1px 4px rgba(0,0,0,.8)}",
+  ".hc .hc-rangee{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-top:12px;padding-bottom:2px}",
+  ".hc .hc-rangee::-webkit-scrollbar,.hc .hc-galh::-webkit-scrollbar{display:none}",
+  ".hc .hc-rg{position:relative;flex:0 0 auto;height:clamp(64px,19vw,110px);padding:0;border:none;background:#0B0E0C;border-radius:10px;overflow:hidden;cursor:pointer;line-height:0}",
+  ".hc .hc-rg img{height:100%;width:auto;display:block}",
+  ".hc .hc-rg-plus,.hc .hc-galh-plus{min-width:110px;color:#C9A66B;font:inherit;font-size:12.5px;line-height:1.3;border:1px solid rgba(201,166,107,.5);background:transparent;border-radius:12px;padding:0 12px;cursor:pointer}",
+  ".hc .hc-galh{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;margin-right:-18px;padding-right:18px}",
+  ".hc .hc-galh-i{flex:0 0 auto;scroll-snap-align:start}",
+  ".hc .hc-galh-m{position:relative;display:block;height:clamp(118px,34vw,240px);padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
+  ".hc .hc-galh-m img{height:100%;width:auto;display:block}",
+  ".hc .hc-rep-aj{display:flex;justify-content:center;margin:6px 0 18px}",
+  ".hc .hc-rep-ajb{font-size:15px;padding:12px 30px}",
+  ".hc .hc-rep-f{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;align-items:center;gap:6px;border-top:1px solid rgba(243,238,228,.1);padding-top:16px;margin-bottom:10px}",
+  ".hc .hc-rep-ft{flex:0 0 auto;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#F3EEE4;margin-inline-end:4px}",
+  ".hc .hc-fp{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(201,166,107,.55);border-radius:999px;padding:6px 9px;color:#F3EEE4;font-size:11.5px;max-width:40vw}",
+  ".hc .hc-fp svg{width:14px;height:14px}",
+  ".hc .hc-rep-f::-webkit-scrollbar{display:none}",
+  ".hc .hc-fp span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-fp i{font-style:normal;color:#C9A66B}",
+  ".hc .hc-fp.on{border-color:#C9A66B;color:#C9A66B}",
+  ".hc .hc-fp select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}",
+  "@media (min-width:768px){.hc .hc-une-m img{max-height:min(70vh,640px)}.hc .hc-galh-m{height:260px}.hc .hc-rep-f{flex-wrap:wrap}}",
   /* 09/11 — Médias du concours */
   ".hc .hc-gal{margin-top:6px}",
   ".hc .hc-gal-tete{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:14px}",
