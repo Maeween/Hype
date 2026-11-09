@@ -960,7 +960,8 @@ function EcranConcours() {
   var _hi = React.useState([]); var histo = _hi[0], setHisto = _hi[1];
   var _che = React.useState({}); var chEng = _che[0], setChEng = _che[1];   /* 09/11 : photos et noms de ses chevaux engagés */
   var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];
-  var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
+  var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];
+  var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
   var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
   var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
   React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
@@ -1229,19 +1230,31 @@ function EcranConcours() {
           h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")),
             h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : "", (x.hp && recent) ? F("heure mise à jour par ta coach") : ""].filter(Boolean).join(" · "))));
       })) : null,
-    parEpreuve.map(function (g, gi) {
-      return h("div", { key: "ep" + gi, className: "hc-liste" },
-        h("div", { className: "hc-ep-t" }, h("b", null, g.ep), h("span", null, [g.debut, (g.l[0] && g.l[0].piste) ? F("piste ") + g.l[0].piste : "", resDirect[g.ep] ? "" : ""].filter(Boolean).join(" · "))),
-        g.l.map(function (p, i) {
+    /* 09/11 12h (brief « Passages & Organisation du paddock ») : titre, bouton « Voir le direct » bien visible,
+       une section repliable par épreuve dans l'ordre du concours, une seule ouverte (la sienne, sinon la première).
+       Lignes : N° de passage (quand il est enregistré), cavalier · cheval, heure à droite si connue. Pas de photo. */
+    parEpreuve.length ? h("div", { key: "pt", className: "hc-pas-tete" },
+      h("h2", { className: "hc-pas-titre" }, F("Passages de l’équipe")),
+      ev.lien_direct ? h("a", { className: "hc-direct" + (hcJourJ ? " vif" : ""), href: ev.lien_direct, target: "_blank", rel: "noopener" }, hcJourJ ? h("span", { className: "hc-direct-pt", "aria-hidden": "true" }) : null, F("Voir le direct"), h("span", { "aria-hidden": "true" }, rtl ? " ‹" : " ›")) : null) : null,
+    parEpreuve.length ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
+      var auto = null; parEpreuve.forEach(function (x) { if (!auto && moi && x.l.some(function (p) { return p.cavalier_id === moi.id; })) auto = x.ep; }); if (!auto) auto = parEpreuve[0].ep;
+      var ouv = (epOuv === null ? auto : epOuv) === g.ep;
+      var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
+      return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
+        h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { setEpOuv(ouv ? "" : g.ep); } },
+          h("b", null, g.ep),
+          h("span", null, [pistes.length ? F("Piste ") + pistes.join(", ") : "", g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))].filter(Boolean).join(" · ")),
+          h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
+        ouv ? h("div", { className: "hc-ep-l" }, g.l.map(function (p, i) {
           var moiLa = moi && p.cavalier_id === moi.id;
           var res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
-          return h("div", { key: i, className: "hc-l" + (moiLa ? " moi" : "") },
-            g.l.some(function (t) { return t.passage; }) ? h("span", { className: "hc-h" }, p.passage || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
-            avatarHc(p),
-            h("div", { className: "hc-qui" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, p.numero > 1 ? F("tour ") + p.numero : ""].filter(Boolean).join(" · "))),
-            res ? h("span", { className: "hc-res" }, res) : null);
-        }));
-    }),
+          var num = p.ordre_passage || p.ordre || null;
+          return h("div", { key: i, className: "hc-pl" + (moiLa ? " moi" : "") },
+            g.l.some(function (t) { return t.ordre_passage || t.ordre; }) ? h("span", { className: "hc-pl-n" }, num ? F("N° ") + num : "") : null,
+            h("span", { className: "hc-pl-q" }, h("b", null, nomP(p)), p.cheval_nom ? h("span", null, " · " + p.cheval_nom) : null, p.numero > 1 ? h("i", null, " · " + F("tour ") + p.numero) : null),
+            res ? h("span", { className: "hc-res" }, res) : (p.passage ? h("span", { className: "hc-pl-h" }, p.passage) : null));
+        })) : null);
+    })) : null,
     (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", { key: "direct", className: "hc-liste" },
       h("div", { className: "hc-ep-t" }, h("b", null, F("En direct")), h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
       enDirect.lignes.map(function (d, i) {
@@ -1508,6 +1521,28 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 — Passages de l'équipe (sections repliables) */
+  ".hc .hc-pas-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 16px}",
+  ".hc .hc-pas-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.4vw,28px);line-height:1.1;white-space:nowrap;color:#F3EEE4;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
+  ".hc .hc-direct{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border:1px solid #C9A66B;border-radius:999px;padding:8px 14px;color:#C9A66B;font-size:13px;font-weight:600;text-decoration:none;background:transparent}",
+  ".hc .hc-direct-pt{width:7px;height:7px;border-radius:50%;background:#C9A66B;animation:hcPouls 1.6s ease-in-out infinite}",
+  "@keyframes hcPouls{0%,100%{opacity:1}50%{opacity:.25}}",
+  ".hc .hc-eps{display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-ep{border:1px solid rgba(201,166,107,.3);border-radius:14px;overflow:hidden}",
+  ".hc .hc-ep.ouv{border-color:rgba(201,166,107,.55)}",
+  ".hc .hc-ep-b{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;width:100%;background:transparent;border:none;padding:14px 16px;color:#F3EEE4;font:inherit;text-align:start;cursor:pointer}",
+  ".hc .hc-ep-b b{color:#C9A66B;font-weight:600;font-size:15px}",
+  ".hc .hc-ep-b > span:nth-child(2){font-size:13px;color:rgba(243,238,228,.75)}",
+  ".hc .hc-ep-l{border-top:1px solid rgba(201,166,107,.25);padding:0 16px}",
+  ".hc .hc-pl{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid rgba(243,238,228,.08);font-size:14px}",
+  ".hc .hc-pl:last-child{border-bottom:none}",
+  ".hc .hc-pl.moi .hc-pl-q b{color:#C9A66B}",
+  ".hc .hc-pl-n{flex:0 0 48px;color:#C9A66B;font-weight:600}",
+  ".hc .hc-pl-q{flex:1;min-width:0}",
+  ".hc .hc-pl-q b{font-weight:600}",
+  ".hc .hc-pl-q span{color:rgba(243,238,228,.75)}",
+  ".hc .hc-pl-q i{font-style:normal;color:rgba(243,238,228,.5);font-size:12px}",
+  ".hc .hc-pl-h{font-weight:600;white-space:nowrap}",
   /* 09/11 — Mes engagements + Historique (maquette de Blandine) */
   ".hc .hc-titre-s{display:flex;align-items:center;gap:16px}",
   ".hc .hc-titre-s h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:34px;line-height:1.1;color:#F3EEE4;white-space:nowrap}",
