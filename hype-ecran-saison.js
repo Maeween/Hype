@@ -2583,7 +2583,28 @@ function hsNomChoisi(garde, pseudo, reel) {
 }
 /* 04/11 23h31 (Blandine : « impose un espace entre l'épreuve et l'indice : Club 3, Amat 2 ; si on l'oublie, mets-le toi ») */
 function hsNomEpreuve(t) {
-  return String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim();
+  return hsCorrigerEpreuve(String(t || "").replace(/([A-Za-zÀ-ÿ])(\d)/g, "$1 $2").replace(/(\d)([A-Za-zÀ-ÿ]{2,})/g, "$1 $2").replace(/\s+/g, " ").trim());
+}
+/* 09/11 (Blandine : « que ça rectifie automatiquement les fautes » — cas réel « Clib 3 ») : chaque mot d'un nom d'épreuve
+   est comparé au vocabulaire FFE ; à une lettre près (deux pour les mots longs), il est remplacé par le bon mot.
+   Les nombres, hauteurs et mots inconnus ne bougent pas. Sert à l'affichage ET à l'enregistrement des engagements. */
+var HS_VOC_EP = ["Club", "Poney", "Amateur", "Pro", "Préparatoire", "Elite", "Élite", "Vitesse", "Grand", "Prix", "As", "Jeune", "Jeunes", "Chevaux", "Equipe", "Équipe", "Barrage", "Spéciale", "Critérium", "Championnat", "Derby", "Six", "Barres", "Puissance", "Relais", "Cadet", "Junior", "Senior", "Minime", "Benjamin", "Poussin", "Circuit", "Ponam", "Tournée"];
+function hsDistance(a, b) {
+  a = a.toLowerCase(); b = b.toLowerCase(); if (a === b) return 0;
+  var m = a.length, n = b.length, d = []; for (var i = 0; i <= m; i++) { d[i] = [i]; } for (var j = 1; j <= n; j++) d[0][j] = j;
+  for (i = 1; i <= m; i++) for (j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[m][n];
+}
+function hsSansAccent(t) { try { return String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, ""); } catch (e) { return String(t); } }
+function hsCorrigerEpreuve(t) {
+  return String(t || "").split(" ").map(function (w) {
+    if (!w || /\d/.test(w) || w.length < 3) return w;
+    var brut = hsSansAccent(w).toLowerCase(), meilleur = null, dist = 9;
+    HS_VOC_EP.forEach(function (v) { var dd = hsDistance(brut, hsSansAccent(v)); if (dd < dist) { dist = dd; meilleur = v; } });
+    if (dist === 0) return w;   /* déjà juste (on garde sa casse et ses accents) */
+    var tol = brut.length >= 7 ? 2 : 1;
+    return (meilleur && dist <= tol) ? meilleur : w;
+  }).join(" ");
 }
 /* 07/11/2026 23h20 (Blandine, choix « C » : une ligne par tour) — les tours d'un engagement sont rangés dans concours_tours
    (numéro 1 à 5). La page Engagements recopie encore les deux premiers tours dans les colonnes « tour 1 / tour 2 » de
@@ -2600,7 +2621,7 @@ function hsToursDepuis(l, liste) {
 }
 function hsMiroir(l) {
   var t = l.tours || [];
-  return Object.assign({}, l, { epreuve1: (t[0] && t[0].epreuve) || "", cheval1_nom: (t[0] && t[0].cheval_nom) || "", epreuve2: (t[1] && t[1].epreuve) || "", cheval2_nom: (t[1] && t[1].cheval_nom) || "" });
+  return Object.assign({}, l, { epreuve1: (t[0] && t[0].epreuve) ? hsNomEpreuve(t[0].epreuve) : "", cheval1_nom: (t[0] && t[0].cheval_nom) || "", epreuve2: (t[1] && t[1].epreuve) ? hsNomEpreuve(t[1].epreuve) : "", cheval2_nom: (t[1] && t[1].cheval_nom) || "" });
 }
 /* feuille papier : deux tours par ligne ; un cavalier à 3, 4 ou 5 tours prend 2 ou 3 lignes */
 function hsLignesFeuille(lignes) {
@@ -2988,7 +3009,7 @@ function EcranEngagements() {
         if (rdT && rdT.error) throw new Error(row.nom + " : " + (rdT.error.message || rdT.error));
         if (toursL.length) {
           var riT = await supa.from("concours_tours").insert(toursL.map(function (t, k) {
-            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve || null, cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null, ordre_passage: t.ordre_passage || null };
+            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve ? hsNomEpreuve(t.epreuve) : null,   /* 09/11 : fautes rectifiées à l'enregistrement */ cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null, ordre_passage: t.ordre_passage || null };
           })).select("id");
           if (riT && riT.error) throw new Error(row.nom + " : " + (riT.error.message || riT.error));
         }
