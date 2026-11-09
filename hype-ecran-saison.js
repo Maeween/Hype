@@ -1587,7 +1587,9 @@ function EcranConcours() {
       var ouv = !epFerme[g.ep];
       var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
       return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
-        h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { var n = Object.assign({}, epFerme); n[g.ep] = ouv; setEpFerme(n); if (!ouv) setEpOuv(g.ep); } },
+        h("button", { type: "button", className: "hc-ep-b hc-ep-img", "aria-expanded": ouv, onClick: function () { var n = Object.assign({}, epFerme); n[g.ep] = ouv; setEpFerme(n); if (!ouv) setEpOuv(g.ep); } },
+          /* 09/11 16h36 (Blandine : « des photos dans les onglets des épreuves ») : image de l'appli à droite, comme les encarts des vidéos */
+          h("img", { className: "hc-ep-ph", src: HS_IMG_LOTS_EP[gi % 4], alt: "", loading: "lazy", decoding: "async", "aria-hidden": "true" }), h("span", { className: "hc-ep-voile", "aria-hidden": "true" }),
           h("b", null, g.ep),
           h("span", null, [pistes.length ? F("Piste ") + pistes.join(", ") : "", g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))].filter(Boolean).join(" · ")),
           h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
@@ -1597,7 +1599,7 @@ function EcranConcours() {
           var num = p.ordre_passage || p.ordre || null;
           return h("div", { key: i, className: "hc-pl" + (moiLa ? " moi" : "") },
             g.l.some(function (t) { return t.ordre_passage || t.ordre; }) ? h("span", { className: "hc-pl-n" }, num ? F("N° ") + num : "") : null,
-            h("span", { className: "hc-pl-q" }, h("b", null, nomP(p)), p.cheval_nom ? h("span", null, " · " + p.cheval_nom) : null, p.numero > 1 ? h("i", null, " · " + F("tour ") + p.numero) : null),
+            h("span", { className: "hc-pl-q" }, h("b", null, nomP(p)), p.cheval_nom ? h("span", null, " · " + p.cheval_nom) : null, (p.numero > 1 && g.l.filter(function (q) { return q.cavalier_id === p.cavalier_id && q.cheval_nom === p.cheval_nom; }).length > 1) ? h("i", null, " · " + F("tour ") + p.numero) : null),
             res ? h("span", { className: "hc-res" }, res) : (p.passage ? h("span", { className: "hc-pl-h" }, p.passage) : null));
         }), g.l.length > 8 ? h("div", { className: "hc-pl-plus" }, h("button", { type: "button", className: "hs-lien", onClick: function () { var n = Object.assign({}, epPlus); n[g.ep] = !epPlus[g.ep]; setEpPlus(n); } }, epPlus[g.ep] ? F("Réduire") : (F("Voir les ") + (g.l.length - 8) + " " + F("autres passages")) + (epPlus[g.ep] ? " ⌃" : " ⌄"))) : null,
           gestion ? panneauDecaler(g) : null) : null);
@@ -2751,7 +2753,7 @@ var HC_CSS = [
   ".hc .hc-regles li{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;color:rgba(243,238,228,.9)}",
   ".hc .hc-regles li svg{flex:0 0 auto;margin-top:2px}",
   /* 09/11 — Passages de l'équipe (sections repliables) */
-  ".hc .hc-pas-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 16px}",
+  ".hc .hc-pas-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:30px 0 20px}",   /* 09/11 16h36 : décollé de ce qui est au-dessus */
   ".hc .hc-pas-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.4vw,28px);line-height:1.1;white-space:nowrap;color:#F3EEE4;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
   ".hc .hc-direct{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border:1px solid #C9A66B;border-radius:999px;padding:8px 14px;color:#C9A66B;font-size:13px;font-weight:600;text-decoration:none;background:transparent}",
   ".hc .hc-direct-pt{width:7px;height:7px;border-radius:50%;background:#C9A66B;animation:hcPouls 1.6s ease-in-out infinite}",
@@ -2863,6 +2865,12 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-ep-img{position:relative;overflow:hidden;min-height:58px}",
+  ".hc .hc-ep-img > *{position:relative}",
+  ".hc .hc-ep-img > img.hc-ep-ph{position:absolute;top:0;inset-inline-end:0;width:40%;height:100%;object-fit:cover;object-position:60% 40%}",
+  ".hc .hc-ep-img > .hc-ep-voile{position:absolute;inset:0;background:linear-gradient(90deg,#090C0D 58%,rgba(9,12,13,.7) 68%,rgba(9,12,13,.1) 95%)}",
+  "[dir=rtl] .hc .hc-ep-img > .hc-ep-voile{background:linear-gradient(270deg,#090C0D 40%,rgba(9,12,13,.82) 56%,rgba(9,12,13,.15) 90%)}",
+  ".hc .hc-ep-img .hc-ep-chev{background:rgba(7,10,8,.55);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center}",
   ".hc .hc-vg{margin-bottom:14px;padding:10px 10px 12px;border:1px solid rgba(201,166,107,.22);border-radius:18px;background:#0B0F13}",
   ".hc .hc-vg.seule .hc-vg-i{flex:0 0 100%}",
   ".hc .hc-vg .hc-vg-m{aspect-ratio:auto;height:clamp(118px,32vw,200px)}",   /* 09/11 16h34 (Blandine) : seules ou côte à côte, même hauteur */
