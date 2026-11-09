@@ -2202,14 +2202,9 @@ function EcranConcours() {
   var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
     outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
 
-  return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
-    heroC(ev.titre || F("Concours"), sousTitre),
-    h("div", { className: "hs-in" },
-      h("div", { className: "hc-cartes" },
-        carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
-        carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
-        carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
-        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
+  /* 09/11 14h02 (Blandine : « cette partie ne devrait pas suivre de page en page… plutôt B ») — infos pratiques (lieu, départ,
+     reconnaissance) + Je participe / Liste du van : seulement dans la carte Passages */
+  var blocPratique = h("div", { key: "prat", className: "hc-prat" },
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
       h("div", { className: "hc-bande" + (infosOuv ? " ouv" : "") },
         h("div", { className: "hc-b-ligne" },
@@ -2229,7 +2224,15 @@ function EcranConcours() {
       h("div", { className: "hc-actions" },
         h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
         h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van"))),
-      fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null,
+      fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
+  return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
+    heroC(ev.titre || F("Concours"), sousTitre),
+    h("div", { className: "hs-in" },
+      h("div", { className: "hc-cartes" },
+        carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
+        carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
+        carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
+        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
       (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
       msg ? h("div", { className: "hs-msg" }, msg) : null,
       (!fini && msgPrep) ? h("div", { className: "hs-msg" }, msgPrep) : null,
@@ -2237,7 +2240,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
+        ongletC === "passages" ? [blocPratique, outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, blocFil] : null)
         : null,
@@ -2586,6 +2589,8 @@ var HC_CSS = [
   ".hc{padding-bottom:24px!important;min-height:0!important}",   /* 09/11 : la fin de page Hype suit la fiche (elle garde la barre d'onglets à distance) */   /* 09/11 : la barre d'onglets ne cache plus le bas de la fiche */
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
+  ".hc .hc-prat{margin-bottom:22px}",
+  ".hc .hc-prat .hc-bande{margin-top:0}",
   ".hc .hc-fini{text-align:center;font-size:11.5px;color:rgba(243,238,228,.55);margin-top:12px}",
   ".hc .hc-act[disabled]{opacity:.45}",
   ".hc .hc-b-case{padding:8px 8px}",
