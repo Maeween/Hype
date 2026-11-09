@@ -2808,7 +2808,7 @@ var HCP_CSS = [
   "html body .hcp .hpv-scene .hcp-r{display:flex!important;flex-direction:column;align-items:center;gap:4px;width:auto!important;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;overflow:visible!important;padding:0}",
   ".hcp .hcp-r>img,.hcp .hcp-r>b{width:48px;height:48px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,166,107,.7);background:rgba(7,10,8,.6);object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#C9A66B}",
   ".hcp .hcp-r>i{font-style:normal;font-family:Montserrat,sans-serif;font-size:9.5px;color:#F3EEE4;text-shadow:0 1px 6px #000;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".hcp .hcp-bas{padding:0 16px 0!important;max-width:820px;margin:-34px auto 0;position:relative;z-index:2}",
+  ".hcp .hcp-bas{padding:0 16px 0!important;max-width:680px;margin:-34px auto 0;position:relative;z-index:2}",
   ".hcp .hcp-bas .vr{margin-top:0}"
 ].join("");
 var HC_CSS_ID = "hype-saison-css-concours";
