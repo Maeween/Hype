@@ -1231,7 +1231,7 @@ function EcranConcours() {
       }),
       h("div", { className: "hs-note" }, F("Lu par Hype chez le chronométreur. Heure estimée, résultats provisoires pendant le concours."))) : null,
     (!mesLignes.length && !parEpreuve.length && !(enDirect && enDirect.lignes && enDirect.lignes.length)) ? h("div", { key: "vide", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")) : null,
-    ev.lien_direct ? h("a", { key: "lien", className: "hc-lien-d", href: ev.lien_direct, target: "_blank", rel: "noopener" }, F("Résultats en direct") + (rtl ? " ‹" : " ›")) : null
+    null   /* 09/11 : « Résultats en direct » est maintenant dans la carte Résultats */
   ];
 
   /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
@@ -1324,6 +1324,22 @@ function EcranConcours() {
   ];
   var dossierUtile = gestion || histo.length;
 
+  /* 09/11 08h52 (Blandine : « l'ordre de passage doit aller dessus… idem résultats en direct sur résultats et l'ajout de vidéo sur médias ») : les outils dans leur carte */
+  function outil(cle, titre, texte, action, fichier) {
+    var corps = [h("span", { key: "t", className: "hc-o-t" }, titre), texte ? h("span", { key: "x", className: "hc-o-x" }, texte) : null, h("span", { key: "c", className: "hc-o-c", "aria-hidden": "true" }, rtl ? "‹" : "›")];
+    if (fichier) return h("label", { key: cle, className: "hc-outil" }, corps, h("input", { type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: function (e) { var f = e && e.target && e.target.files && e.target.files[0]; try { e.target.value = ""; } catch (eV) { } if (!f) return; try { window.__ordreFichier = f; } catch (eW) { } ouvrirEngagements(); } }));
+    if (typeof action === "string") return h("a", { key: cle, className: "hc-outil", href: action, target: "_blank", rel: "noopener" }, corps);
+    return h("button", { key: cle, type: "button", className: "hc-outil", onClick: action }, corps);
+  }
+  var outilsPassages = gestion ? h("div", { key: "op", className: "hc-outils" },
+    outil("ordre", F("Lire l’ordre de passage"), F("Photo, capture ou PDF : les heures et les pistes se remplissent toutes seules."), null, true),
+    outil("jj", F("Jour J : passages"), null, function () { ouvrir("jour-j"); })) : null;
+  var outilsResultats = (ev.lien_direct || gestion) ? h("div", { key: "or", className: "hc-outils" },
+    ev.lien_direct ? outil("dir", F("Résultats en direct"), null, ev.lien_direct)
+      : outil("dirA", F("Ajouter le lien des résultats en direct"), null, function () { ouvrir("jour-j"); })) : null;
+  var outilsMedias = (equipe && equipe.membre) ? h("div", { key: "om", className: "hc-outils" },
+    outil("vid", F("Ajouter une vidéo"), null, function () { try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; } catch (e) { } setEcran("team-medias"); })) : null;
+
   return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
     heroC(ev.titre || F("Concours"), sousTitre),
     h("div", { className: "hs-in" },
@@ -1367,9 +1383,9 @@ function EcranConcours() {
           histo.length ? blocDossier[1] : null,
           gestion ? h("button", { key: "ln", type: "button", className: "hc-lien-d", onClick: ouvrirEngagements }, F("Engagements et feuille d’engagement") + (rtl ? " ‹" : " ›")) : null
         ] : null,
-        ongletC === "passages" ? [blocPassages, gestion ? h("button", { key: "lj", type: "button", className: "hc-lien-d", onClick: function () { ouvrir("jour-j"); } }, F("Jour J : passages") + (rtl ? " ‹" : " ›")) : null] : null,
-        ongletC === "resultats" ? blocResultats : null,
-        ongletC === "medias" ? blocMedias : null)
+        ongletC === "passages" ? [outilsPassages, blocPassages] : null,
+        ongletC === "resultats" ? [outilsResultats, blocResultats] : null,
+        ongletC === "medias" ? [outilsMedias, blocMedias] : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
         : h("div", { className: "hc-onglet" }, blocResultats, blocMedias[0], blocMedias[1]),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
@@ -1421,6 +1437,11 @@ var HC_CSS = [
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
+  ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  ".hc .hc-outil{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px;width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid rgba(201,166,107,.55);border-radius:14px;background:transparent;color:#C9A66B;text-decoration:none;text-align:start;cursor:pointer;font-family:inherit}",
+  ".hc .hc-o-t{grid-column:1;font-size:14px;letter-spacing:.01em}",
+  ".hc .hc-o-x{grid-column:1;font-size:11.5px;line-height:1.4;color:rgba(243,238,228,.6);margin-top:3px}",
+  ".hc .hc-o-c{grid-column:2;grid-row:1 / span 2;font-size:18px}",
   "button.hc-lien-d{background:none;border:none;padding:6px 0;cursor:pointer}",
   ".hc .hc-carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
   ".hc .hc-c-pied{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 2px 8px;background:linear-gradient(180deg,transparent,rgba(7,10,8,.62))}",
@@ -1693,6 +1714,14 @@ function EcranEngagements() {
   var _cpa = React.useState(""); var autreC = _cpa[0], setAutreC = _cpa[1];   /* "cav" | "ch" | "ep" : saisie « autre » ouverte */
   var _cph = React.useState(""); var autreCh = _cph[0], setAutreCh = _cph[1];
   var _cpm = React.useState(""); var msgC = _cpm[0], setMsgC = _cpm[1];
+  /* 09/11 : ordre de passage choisi depuis la carte Passages de la fiche concours → lu ici dès que les engagements sont chargés */
+  React.useEffect(function () {
+    if (!lignes || !lignes.length) return;
+    var f = null; try { f = window.__ordreFichier || null; window.__ordreFichier = null; } catch (e) { }
+    if (!f) return;
+    lireOrdre({ target: { files: [f] } });
+    setTimeout(function () { try { var el = document.querySelector(".d3-ordre"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e2) { } }, 400);
+  }, [lignes]);
   var _cpl = React.useState(false); var editLic = _cpl[0], setEditLic = _cpl[1];
   /* 08/11 00h10 (Blandine, choix B : « j'ai mis trois fois l'ordre de passage dans le lecteur des engagements ») : lecture de
      l'ordre de passage / programme directement ici, pour tous les tours (1 à 5). Même lecture que Jour J (hsLireProgramme). */

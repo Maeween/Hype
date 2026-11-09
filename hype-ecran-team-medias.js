@@ -236,6 +236,15 @@ function EcranTeamMedias() {
     return function () { vif = false; };
   }, [rev]);
 
+  /* 09/11 : « Ajouter une vidéo » depuis la carte Médias d'une fiche concours → formulaire ouvert, concours déjà choisi */
+  React.useEffect(function () {
+    if (!videos) return;
+    var c = null; try { c = window.__teamMediasAjout || null; window.__teamMediasAjout = null; } catch (e) { }
+    if (!c) return;
+    ouvrirAjout({});
+    setFConc({ agenda_id: c.agenda_id, titre: c.titre, lieu: c.lieu, date: c.date, epreuve: null });
+  }, [videos]);
+
   /* ouverture directe d'une vidéo demandée par le chapitre de la page Team */
   React.useEffect(function () {
     if (!videos) return;
