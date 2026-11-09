@@ -1197,10 +1197,10 @@ function EcranConcours() {
   /* ── PASSAGES : une ligne par couple, rangée par épreuve ; « Ma journée » seulement quand la liste de l'équipe n'est pas lisible ── */
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
-      mesLignes.map(function (x, i) {
+      mesLignes.map(function (x, i, tous) {
         var recent = x.maj && (Date.now() - new Date(x.maj).getTime() < 36 * 3600 * 1000);
         return h("div", { key: i, className: "hc-l" },
-          h("span", { className: "hc-h" }, x.hp || "–"),
+          tous.some(function (t) { return t.hp; }) ? h("span", { className: "hc-h" }, x.hp || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
           h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")),
             h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : "", (x.hp && recent) ? F("heure mise à jour par ta coach") : ""].filter(Boolean).join(" · "))));
       })) : null,
@@ -1211,7 +1211,7 @@ function EcranConcours() {
           var moiLa = moi && p.cavalier_id === moi.id;
           var res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
           return h("div", { key: i, className: "hc-l" + (moiLa ? " moi" : "") },
-            h("span", { className: "hc-h" }, p.passage || "–"),
+            g.l.some(function (t) { return t.passage; }) ? h("span", { className: "hc-h" }, p.passage || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
             avatarHc(p),
             h("div", { className: "hc-qui" }, h("b", null, nomP(p)), h("span", null, [p.cheval_nom, p.numero > 1 ? F("tour ") + p.numero : ""].filter(Boolean).join(" · "))),
             res ? h("span", { className: "hc-res" }, res) : null);
@@ -1357,7 +1357,7 @@ function EcranConcours() {
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? [
           mesLignes.length ? h("div", { key: "mes", className: "hc-liste" }, mesLignes.map(function (x, i) {
-            return h("div", { key: i, className: "hc-l" }, h("span", { className: "hc-h" }, x.hp || "–"),
+            return h("div", { key: i, className: "hc-l" }, mesLignes.some(function (t) { return t.hp; }) ? h("span", { className: "hc-h" }, x.hp || "–") : null,   /* 09/11 : pas de colonne d'heure vide */
               h("div", { className: "hc-qui" }, h("b", null, x.ep || F("Épreuve à venir")), h("span", null, [x.ch, x.pi ? F("piste ") + x.pi : ""].filter(Boolean).join(" · "))));
           })) : h("div", { key: "rien", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")),
           blocPrep.filter(function (x, i) { return i >= 2 && i < 3; }),
