@@ -479,6 +479,22 @@ function EcranTeamCompetition() {
       : (t === "sortie") ? T("Sortie", "Outing", "Salida", "Uscita", "お出かけ", "Ausflug", "خرجة", "外出活动", "Uitje", "Passeio", "Utflykt", "Выезд", "Wyjazd", "나들이")
       : T("Stage", "Clinic", "Curso", "Stage", "講習会", "Kurs", "تدريب", "训练营", "Clinic", "Estágio", "Kurs", "Сбор", "Warsztaty", "클리닉");
   }
+  /* 09/11 14h40 (Blandine : « fais un encart similaire pour le dernier concours ») : le dernier concours passé, même carte que « À venir »,
+     le toucher ouvre directement sa fiche (résultats, vidéos, médias) */
+  function carteDernier(ev) {
+    var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
+    var sous = [ev.lieu || ""].filter(Boolean).join(" · ");
+    return h("button", { key: "dern" + ev.id, type: "button", "data-team-dernier": "1", onClick: function () { ouvrirRdvPasse(ev); }, style: { position: "relative", display: "block", width: "100%", height: 104, padding: 0, marginBottom: 10, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(214,182,118,0.38)", background: "#0B0F13", cursor: "pointer", textAlign: "start", color: IV } },
+      h("img", { src: aff ? ((typeof vignetteHype === "function") ? vignetteHype(aff, 480, 300) : aff) : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg"), alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", display: "block" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
+      h("div", { style: { position: "absolute", insetInlineStart: 13, top: 11, insetInlineEnd: "40%" } },
+        h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: 1.8, fontWeight: 700, textTransform: "uppercase", color: OR, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, T("Dernier concours", "Last competition", "Último concurso", "Ultimo concorso", "前回の大会", "Letztes Turnier", "آخر مسابقة", "上一场比赛", "Laatste wedstrijd", "Último concurso", "Senaste tävlingen", "Последние соревнования", "Ostatnie zawody", "지난 대회") + " · " + jourMois(ev.date_jour)),
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 16.5, lineHeight: 1.12, marginTop: 5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textAlign: "start", overflowWrap: "anywhere" } }, ev.titre || ""),
+        sous ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 10.5, color: GR, marginTop: 4, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, sous + " · " + T("Résultats et vidéos", "Results and videos", "Resultados y vídeos", "Risultati e video", "結果と動画", "Ergebnisse und Videos", "النتائج والفيديوهات", "成绩和视频", "Uitslagen en video's", "Resultados e vídeos", "Resultat och videor", "Результаты и видео", "Wyniki i filmy", "결과와 영상")) : null),
+      h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineEnd: 12, bottom: 10, color: OR, fontSize: 16 } }, CHEV));
+  }
+  var dernierConcours = (function () { var l = (agendaPasse || []).filter(function (e) { return String(e.type || "").toLowerCase() === "concours"; }); if (!l.length) return null; return l.slice().sort(function (a, b) { return String(b.date_fin || b.date_jour || "").localeCompare(String(a.date_fin || a.date_jour || "")); })[0]; })();
+  var autresPasses = (agendaPasse || []).filter(function (e) { return !dernierConcours || e.id !== dernierConcours.id; });   /* le dernier concours est déjà affiché : pas de doublon dans la liste dépliée */
   function carteRdvE(ev, passe) {
     var cle = String(ev.id), ouv = (rdvOuvert === cle);
     var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
@@ -539,14 +555,15 @@ function EcranTeamCompetition() {
       : h("div", null,
           agenda.length ? carteRdvE(agenda[0], false) : vide(T("Aucun rendez-vous \u00e0 venir pour l\u2019instant.", "No upcoming events yet.", "A\u00fan no hay citas pr\u00f3ximas.", "Nessun appuntamento in arrivo per ora.", "\u4eca\u5f8c\u306e\u4e88\u5b9a\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine anstehenden Termine.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f \u0642\u0627\u062f\u0645\u0629 \u062d\u0627\u0644\u064a\u0627.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")),
           (ouvert.ag && agenda.length > 1) ? h("div", null, agenda.slice(1).map(function (ev) { return carteRdvE(ev, false); })) : null,
+          dernierConcours ? carteDernier(dernierConcours) : null,
           /* (526) les rendez-vous PASSES : dans « Voir tout », ouverts sur leur page souvenirs (photos) */
-          (agendaPasse || []).length ? h("button", { type: "button", "data-team-passes": "1", "aria-expanded": passesOuv || !!ouvert.ag, onClick: function () { setPassesOuv(!(passesOuv || ouvert.ag)); if (ouvert.ag) setOuvert(Object.assign({}, ouvert, { ag: false })); },
+          autresPasses.length ? h("button", { type: "button", "data-team-passes": "1", "aria-expanded": passesOuv || !!ouvert.ag, onClick: function () { setPassesOuv(!(passesOuv || ouvert.ag)); if (ouvert.ag) setOuvert(Object.assign({}, ouvert, { ag: false })); },
               style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 10, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
-              h("span", null, T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Events", "الأحداث السابقة", "过往活动", "Afgelopen evenementen", "Eventos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 이벤트") + " (" + agendaPasse.length + ")"),
+              h("span", null, T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Events", "الأحداث السابقة", "过往活动", "Afgelopen evenementen", "Eventos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 이벤트") + " (" + autresPasses.length + ")"),
               h("span", { style: { fontSize: 16 } }, (passesOuv || ouvert.ag) ? "⌃" : CHEV)) : null,
-          ((ouvert.ag || passesOuv) && (agendaPasse || []).length) ? h("div", { style: { marginTop: 16 } },
+          ((ouvert.ag || passesOuv) && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous pass\u00e9s", "Past events", "Citas pasadas", "Appuntamenti passati", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangene Termine", "\u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
-            h("div", { style: { marginTop: 6 } }, agendaPasse.map(function (ev) { return carteRdvE(ev, true); }))) : null),
+            h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return carteRdvE(ev, true); }))) : null),
     lienSaison));
 
   /* ── résultats récents ── */
