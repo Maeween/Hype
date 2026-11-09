@@ -171,6 +171,8 @@
   }
 
   function nb(x) { var n = parseInt(String(x || "").replace(/[^\d]/g, ""), 10); return isNaN(n) ? null : n; }
+  /* 09/11 (Blandine) : les POINTS gardent leur virgule. nb() effaçait le séparateur : « 1.88 » devenait 188, « 2,5 » devenait 25. */
+  function nbDecimal(x) { var m = String(x == null ? "" : x).replace(/\s/g, "").replace(",", ".").match(/-?\d+(?:\.\d+)?/); if (!m) return null; var n = parseFloat(m[0]); return isNaN(n) ? null : n; }
 
   /* Le classement et tous ses visages, vus en vrai dans tes sept PDF :
      « 38e / 47 » · « 1er / 3 » · « 12e / 26 - SF » · « El. / 42 »
@@ -446,7 +448,8 @@
            entiers, un décimal pourrait faire refuser tout l envoi. Un point fractionnaire n est donc
            pas écrit (null) - à reprendre avec le chantier « classement sportif », qui veut les points
            EXACTS. Les entiers (20, 15, 5) partent normalement. */
-        points: (r.points == null || isNaN(r.points) || Math.round(r.points) !== r.points) ? null : r.points,
+        /* 09/11 (Blandine) : la colonne points est un numeric sans limite : les points à virgule (2.5, 1.88) partent tels quels. */
+        points: (r.points == null || isNaN(r.points)) ? null : r.points,
         garder: r.statut === "classe" || estSansFauteFFE(r.mention)
       };
       if (!o.date) { o.doute = "date de l\u2019\u00e9preuve absente"; o.garder = false; }
@@ -532,7 +535,7 @@
            n'entrait dans la ligne écrite. Elles voyagent désormais jusqu'en base
            (colonnes `mention` et `points`). */
         mention: String(c.mention || "").trim(),
-        points: nb(f.points),
+        points: nbDecimal(f.points),   /* 09/11 : virgule gardée (avant : nb, « 1.88 » → 188) */
         /* Un sans-faute est coché d'office, même hors du premier quart : c'est
            un parcours réussi, il ne doit pas arriver décoché. */
         garder: c.statut === "classe" || estSansFauteFFE(c.mention)
