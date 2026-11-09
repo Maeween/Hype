@@ -1,0 +1,6 @@
+-- 09/11/2026 — PASSÉ EN BASE (migration « passages_numero_et_groupes_detente », Blandine « Ok » puis « refais »)
+-- (1) concours_tours.ordre_passage (integer) : N° de passage lu sur l'ordre de passage ;
+--     hype_passages_concours(uuid) renvoie en plus ordre_passage (mêmes droits : modératrice, coach du club, Team du club).
+-- (2) concours_groupes_detente : groupes de détente du paddock (agenda_id, epreuve, nom, heure_rdv, couples jsonb
+--     [{engagement_id, numero, cavalier_id, cheval_id, cheval_nom}], ordre, publie, publie_le, annonce_envoyee, rappel_envoye).
+--     RLS : lecture = modératrice, coach du club, et membres de la Team du club SEULEMENT si publie ; écriture = modératrice, coach du club.

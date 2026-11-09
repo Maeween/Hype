@@ -961,7 +961,12 @@ function EcranConcours() {
   var _che = React.useState({}); var chEng = _che[0], setChEng = _che[1];   /* 09/11 : photos et noms de ses chevaux engagés */
   var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];
   var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];
-  var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
+  var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];
+  /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
+  var _gd = React.useState([]); var grpD = _gd[0], setGrpD = _gd[1];
+  var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
+  var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
+  var _gdo = React.useState(false); var grpOcc = _gdo[0], setGrpOcc = _gdo[1];   /* 09/11 : épreuve dépliée dans Passages (null = automatique) */   /* 09/11 : historique déplié */   /* 09/11 : cheval choisi pour l'historique */
   var _eq = React.useState(null); var equipe = _eq[0], setEquipe = _eq[1];
   var _rp = React.useState(""); var msgPrep = _rp[0], setMsgPrep = _rp[1];
   React.useEffect(function () { var vif = true; hsEquipe().then(function (q) { if (vif) setEquipe(q); }); return function () { vif = false; }; }, []);
@@ -1037,6 +1042,7 @@ function EcranConcours() {
         } catch (eRc) { }
         /* 08/11 : passages de toute l'équipe (fonction en base hype_passages_concours : équipe du club, coach, modératrice ; liste vide sinon) */
         try { supa.rpc("hype_passages_concours", { p_agenda: idEv }).then(function (rq) { if (vif && rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); }); } catch (eQ) { }
+        try { supa.from("concours_groupes_detente").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true }).then(function (rg) { if (vif && rg && !rg.error && Array.isArray(rg.data)) setGrpD(rg.data); }); } catch (eGd) { }
         /* 04/11 22h15 — vidéos de parcours : celles publiées sur le fil du concours (cible « agenda:<id> ») */
         try {
           var rv = await supa.from("commentaires").select("id, user_id, photo_url, medias, prive, created_at").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(200);
@@ -1221,6 +1227,9 @@ function EcranConcours() {
   function nomP(p) { return (p && p.pseudo) || F("Cavalier non renseigné"); }
   var resDirect = {}; ((enDirect && enDirect.lignes) || []).forEach(function (d) { if (d.clt) resDirect[hsNomEpreuve(d.epreuve || "")] = d.clt + (d.clt === "1" ? "re" : "e"); });
   /* ── PASSAGES : une ligne par couple, rangée par épreuve ; « Ma journée » seulement quand la liste de l'équipe n'est pas lisible ── */
+  var epAuto = null; parEpreuve.forEach(function (x) { if (!epAuto && moi && x.l.some(function (p) { return p.cavalier_id === moi.id; })) epAuto = x.ep; }); if (!epAuto && parEpreuve[0]) epAuto = parEpreuve[0].ep;
+  var epCourant = epOuv === null ? epAuto : epOuv;
+  var epPaddock = epCourant || epAuto;   /* le paddock suit l'épreuve dépliée (la dernière si on replie tout) */
   var blocPassages = [
     (mesLignes.length && !parEpreuve.length) ? h("div", { key: "moi", className: "hc-liste" },
       mesLignes.map(function (x, i, tous) {
@@ -1237,8 +1246,7 @@ function EcranConcours() {
       h("h2", { className: "hc-pas-titre" }, F("Passages de l’équipe")),
       ev.lien_direct ? h("a", { className: "hc-direct" + (hcJourJ ? " vif" : ""), href: ev.lien_direct, target: "_blank", rel: "noopener" }, hcJourJ ? h("span", { className: "hc-direct-pt", "aria-hidden": "true" }) : null, F("Voir le direct"), h("span", { "aria-hidden": "true" }, rtl ? " ‹" : " ›")) : null) : null,
     parEpreuve.length ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
-      var auto = null; parEpreuve.forEach(function (x) { if (!auto && moi && x.l.some(function (p) { return p.cavalier_id === moi.id; })) auto = x.ep; }); if (!auto) auto = parEpreuve[0].ep;
-      var ouv = (epOuv === null ? auto : epOuv) === g.ep;
+      var ouv = epCourant === g.ep;
       var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
       return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
         h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { setEpOuv(ouv ? "" : g.ep); } },
@@ -1268,6 +1276,127 @@ function EcranConcours() {
     (!mesLignes.length && !parEpreuve.length && !(enDirect && enDirect.lignes && enDirect.lignes.length)) ? h("div", { key: "vide", className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Aucun couple engagé. Commence par la page Engagements.") : F("Les passages apparaîtront dès que ta coach les aura indiqués.")) : null,
     null   /* 09/11 : « Résultats en direct » est maintenant dans la carte Résultats */
   ];
+
+  /* ── 09/11 — ORGANISATION DU PADDOCK (brief de Blandine) ──
+     Groupes de détente par épreuve ; chaque membre est un COUPLE cavalier + cheval (Blandine 12h11). La coach compose,
+     propose, publie ; les cavaliers ne voient que le publié (règle en base). Aucun pointage, aucun suivi de présence. */
+  function cleCouple(p) { return String(p.engagement_id) + ":" + (p.numero || 1); }
+  var infoCouple = {}; (passagesEq || []).forEach(function (p) { infoCouple[cleCouple(p)] = p; });
+  function prenomDe(p) { var n = nomP(p); return String(n || "").split(/\s+/)[0]; }
+  function minutesDe(t) { var m = String(t || "").toLowerCase().match(/(\d{1,2})\s*[h:]\s*(\d{0,2})/); return m ? Number(m[1]) * 60 + Number(m[2] || 0) : null; }
+  function fmtMin(n) { if (n == null || isNaN(n)) return ""; n = (n + 1440) % 1440; return Math.floor(n / 60) + "h" + String(n % 60).padStart(2, "0"); }
+  var grpListe = grpEd ? grpEd : grpD;
+  var grpEp = grpListe.filter(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock; });
+  var gEp = null; parEpreuve.forEach(function (x) { if (x.ep === epPaddock) gEp = x; });
+  /* conflits : un cavalier ou un cheval dans deux groupes à moins de 30 min d'écart */
+  function conflitsDe(g) {
+    var out = []; var hg = minutesDe(g.heure_rdv); if (hg == null) return out;
+    (g.couples || []).forEach(function (c) {
+      grpListe.forEach(function (o) {
+        if (o === g || (o.id && o.id === g.id)) return; var ho = minutesDe(o.heure_rdv); if (ho == null || Math.abs(ho - hg) >= 30) return;
+        (o.couples || []).forEach(function (d) {
+          var memeCav = c.cavalier_id && d.cavalier_id === c.cavalier_id, memeCh = (c.cheval_id && d.cheval_id === c.cheval_id) || (!c.cheval_id && c.cheval_nom && d.cheval_nom === c.cheval_nom);
+          if (memeCav || memeCh) { var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || c; out.push((memeCav ? prenomDe(p) : (c.cheval_nom || "")) + F(" est aussi dans ") + (o.nom || F("un autre groupe")) + " · " + hsNomEpreuve(o.epreuve || "") + F(" à ") + (o.heure_rdv || "")); }
+        });
+      });
+    });
+    return out.filter(function (x, i, t) { return t.indexOf(x) === i; });
+  }
+  function membreCouple(c, k) {
+    var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, avatar_url: null };
+    return h("div", { key: k, className: "hc-gm" + (moi && p.cavalier_id === moi.id ? " moi" : "") }, avatarHc(p, 46), h("b", null, prenomDe(p)), h("span", null, c.cheval_nom || p.cheval_nom || ""));
+  }
+  var monGroupe = null; if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; })) { if (!monGroupe || hsNomEpreuve(g.epreuve) === epPaddock) monGroupe = g; } });
+  /* ── outils de la coach ── */
+  function ouvrirEditeur() { setGrpMsg(""); setGrpEd(grpD.map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); })); }
+  function majBrouillon(f) { setGrpEd(function (l) { var n = (l || []).map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); }); f(n); return n; }); }
+  function nouveauGroupe() { majBrouillon(function (n) { var k = n.filter(function (g) { return hsNomEpreuve(g.epreuve) === epPaddock; }).length + 1; n.push({ __nv: Date.now() + Math.random(), agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + k, heure_rdv: "", couples: [], ordre: n.length, publie: false }); }); }
+  function affecter(p, cible) {   /* cible : groupe ou null (aucun) — déplace le couple dans le groupe choisi de cette épreuve */
+    majBrouillon(function (n) {
+      var cl = cleCouple(p);
+      n.forEach(function (g) { if (hsNomEpreuve(g.epreuve) === epPaddock) g.couples = g.couples.filter(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) !== cl; }); });
+      if (cible) n.forEach(function (g) { if (g === cible || (g.id && g.id === cible.id) || (g.__nv && g.__nv === cible.__nv)) g.couples.push({ engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_nom || null }); });
+    });
+  }
+  function proposer() {   /* groupes de 4 à 6 couples dans l'ordre de passage ; rendez-vous 30 min avant le 1er passage du groupe quand on le connaît */
+    if (!gEp) return;
+    var l = gEp.l.slice().sort(function (a, b) { return ((a.ordre_passage || 999) - (b.ordre_passage || 999)) || (hsMinutes(a.passage) - hsMinutes(b.passage)); });
+    var nbG = Math.max(1, Math.ceil(l.length / 6)); var taille = Math.ceil(l.length / nbG);
+    majBrouillon(function (n) {
+      for (var i = n.length - 1; i >= 0; i--) if (hsNomEpreuve(n[i].epreuve) === epPaddock) { if (n[i].id) n[i].__suppr = true; else n.splice(i, 1); }
+      for (var k = 0; k < nbG; k++) {
+        var part = l.slice(k * taille, (k + 1) * taille); if (!part.length) continue;
+        var m1 = minutesDe(part[0].passage);
+        n.push({ __nv: Date.now() + k, agenda_id: idEv, epreuve: epPaddock, nom: F("Groupe ") + (k + 1), heure_rdv: m1 == null ? "" : fmtMin(m1 - 30), publie: false, ordre: n.length,
+          couples: part.map(function (p) { return { engagement_id: p.engagement_id, numero: p.numero || 1, cavalier_id: p.cavalier_id || null, cheval_id: p.cheval_id || null, cheval_nom: p.cheval_nom || null }; }) });
+      }
+    });
+    setGrpMsg(F("Proposition prête : vérifie-la, modifie-la si besoin, puis publie. Rien n’est envoyé avant."));
+  }
+  async function enregistrerGroupes(publier) {
+    if (!grpEd || grpOcc) return; setGrpOcc(true); setGrpMsg("");
+    try {
+      var maint = new Date().toISOString();
+      for (var i = 0; i < grpEd.length; i++) {
+        var g = grpEd[i];
+        if (g.__suppr || (g.__vide = (!g.couples.length && !g.id && !g.heure_rdv))) { if (g.id && g.__suppr) { var rd = await supa.from("concours_groupes_detente").delete().eq("id", g.id); if (rd && rd.error) throw rd.error; } continue; }
+        var ligne = { agenda_id: idEv, epreuve: g.epreuve, nom: String(g.nom || "").trim() || null, heure_rdv: hsHeurePropre(g.heure_rdv) || String(g.heure_rdv || "").trim() || null, couples: g.couples, ordre: i, maj_le: maint };
+        if (publier && hsNomEpreuve(g.epreuve) === epPaddock) { ligne.publie = true; ligne.publie_le = maint; ligne.annonce_envoyee = false; ligne.rappel_envoye = false; }
+        var r = g.id ? await supa.from("concours_groupes_detente").update(ligne).eq("id", g.id).select("id") : await supa.from("concours_groupes_detente").insert(ligne).select("id");
+        if (r && r.error) throw r.error;
+      }
+      var rg = await supa.from("concours_groupes_detente").select("*").eq("agenda_id", idEv).order("ordre", { ascending: true });
+      if (rg && !rg.error) setGrpD(rg.data || []);
+      setGrpEd(null);
+      setGrpMsg(publier ? F("✓ Groupes publiés : les cavaliers concernés sont prévenus, puis rappelés 20 minutes avant leur rendez-vous.") : F("✓ Groupes enregistrés (pas encore publiés)."));
+    } catch (eG) { setGrpMsg(F("Enregistrement impossible : ") + String((eG && eG.message) || eG)); }
+    setGrpOcc(false);
+  }
+  function carteGroupe(g, gi) {
+    var aMoi = moi && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; });
+    var conf = gestion ? conflitsDe(g) : [];
+    return h("div", { key: g.id || g.__nv || gi, className: "hc-grp" + (aMoi ? " moi" : "") },
+      h("div", { className: "hc-grp-t" }, h("b", null, g.nom || (F("Groupe ") + (gi + 1))), g.heure_rdv ? h("span", null, g.heure_rdv) : null, (gestion && !g.publie) ? h("i", null, F("brouillon")) : null),
+      (g.couples || []).length ? h("div", { className: "hc-gms" }, g.couples.map(membreCouple)) : h("div", { className: "hc-grp-vide" }, F("Aucun couple pour l’instant.")),
+      conf.length ? h("div", { className: "hc-grp-conf" }, conf.map(function (x, i) { return h("div", { key: i }, "⚠ " + x); })) : null);
+  }
+  function editeur() {
+    if (!gEp) return h("div", { className: "hs-note" }, F("Aucun couple dans cette épreuve."));
+    var grs = grpEd.filter(function (g) { return !g.__suppr && hsNomEpreuve(g.epreuve) === epPaddock; });
+    return h("div", { className: "hc-ged" },
+      h("div", { className: "hc-ged-act" },
+        h("button", { type: "button", className: "hc-btn-l", onClick: proposer }, F("Proposer des groupes")),
+        h("button", { type: "button", className: "hc-btn-l", onClick: nouveauGroupe }, F("+ Nouveau groupe"))),
+      grs.map(function (g, gi) {
+        return h("div", { key: g.id || g.__nv, className: "hc-ged-g" },
+          h("input", { className: "hc-ged-nom", value: g.nom || "", "aria-label": F("Nom du groupe"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.nom = v; }); }); } }),
+          h("input", { className: "hc-ged-h", value: g.heure_rdv || "", placeholder: "10h00", inputMode: "numeric", "aria-label": F("Heure de rendez-vous au paddock"), onChange: function (e) { var v = e.target.value; majBrouillon(function (n) { n.forEach(function (x) { if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) x.heure_rdv = v; }); }); } }),
+          h("button", { type: "button", className: "hc-ged-x", "aria-label": F("Supprimer le groupe"), onClick: function () { majBrouillon(function (n) { for (var i = n.length - 1; i >= 0; i--) { var x = n[i]; if ((x.id && x.id === g.id) || (x.__nv && x.__nv === g.__nv)) { if (x.id) x.__suppr = true; else n.splice(i, 1); } } }); } }, "×"));
+      }),
+      h("div", { className: "hc-ged-k" }, F("Couples de l’épreuve")),
+      gEp.l.map(function (p, i) {
+        var cl = cleCouple(p); var dans = null; grs.forEach(function (g) { if (g.couples.some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; })) dans = g; });
+        return h("div", { key: i, className: "hc-ged-c" },
+          h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || ""))),
+          h("div", { className: "hc-ged-ch" }, grs.map(function (g, gi) { var on = dans === g; return h("button", { key: gi, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { affecter(p, on ? null : g); } }, String(g.nom || "").replace(/^Groupe\s*/i, "G") || ("G" + (gi + 1))); })));
+      }),
+      h("div", { className: "hc-ged-fin" },
+        h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { setGrpEd(null); setGrpMsg(""); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { enregistrerGroupes(false); } }, F("Enregistrer")),
+        h("button", { type: "button", className: "hc-btn-l fort", disabled: grpOcc, onClick: function () { enregistrerGroupes(true); } }, grpOcc ? "…" : F("Publier aux cavaliers"))));
+  }
+  var blocPaddock = (parEpreuve.length && (gestion || grpD.some(function (g) { return g.publie; }))) ? h("div", { key: "pad", className: "hc-pad" },
+    h("div", { className: "hc-pad-tete" },
+      h("div", { className: "hc-pad-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 26, height: 26 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round" }, h("circle", { cx: 12, cy: 8, r: 3 }), h("circle", { cx: 5.5, cy: 9.5, r: 2.2 }), h("circle", { cx: 18.5, cy: 9.5, r: 2.2 }), h("path", { d: "M6.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M1.8 17.5c.4-2.2 1.8-3.6 3.7-3.6M22.2 17.5c-.4-2.2-1.8-3.6-3.7-3.6" })))),
+      h("div", { className: "hc-pad-tt" }, h("h2", null, F("Organisation du paddock")), h("span", null, F("Groupes de détente") + " · " + (epPaddock || ""))),
+      (gestion && !grpEd) ? h("button", { type: "button", className: "hc-btn-l", onClick: ouvrirEditeur }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" })), F("Modifier les groupes")) : null),
+    (!gestion && monGroupe) ? h("div", { className: "hc-pad-moi" }, F("Ton groupe : ") + (monGroupe.nom || "") + (monGroupe.heure_rdv ? F(" · rendez-vous au paddock à ") + monGroupe.heure_rdv : "")) : null,
+    grpEd ? editeur() : (grpEp.length ? h("div", { className: "hc-grps" }, grpEp.filter(function (g) { return gestion || g.publie; }).map(carteGroupe)) : h("div", { className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Pas encore de groupe pour cette épreuve : touche « Modifier les groupes ».") : F("Les groupes de détente apparaîtront quand ta coach les aura publiés."))),
+    grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
+  var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
+    h("div", { className: "hc-reg-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 34, height: 34 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinejoin: "round", strokeLinecap: "round" }, h("path", { d: "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z" }), h("path", { d: "M8.6 12.2l2.4 2.4 4.6-4.8" })))),
+    h("h3", null, F("Règles du paddock")),
+    h("ul", null, [F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
 
   /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
   var gens = [];
@@ -1466,7 +1595,7 @@ function EcranConcours() {
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? [outilsPassages, blocPassages] : null,
+        ongletC === "passages" ? [outilsPassages, blocPassages, blocPaddock, blocRegles] : null,
         ongletC === "resultats" ? [outilsResultats, blocResultats] : null,
         ongletC === "medias" ? [outilsMedias, blocMedias] : null)
         /* 09/11 (Blandine : « mets peut-être les vidéos en dessous sur la première page ») : sans carte touchée, les vidéos du concours */
@@ -1521,6 +1650,50 @@ var HC_CSS = [
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",
   ".hc .hc-outils{display:flex;flex-direction:column;gap:8px;margin:0 0 22px}",
+  /* 09/11 — Organisation du paddock + règles */
+  ".hc .hc-pad{margin-top:34px;padding-top:26px;border-top:1px solid rgba(201,166,107,.22)}",
+  ".hc .hc-pad-tete{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-bottom:16px}",
+  ".hc .hc-pad-tt h2{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(21px,6vw,26px);line-height:1.1;color:#F3EEE4}",
+  ".hc .hc-pad-tt span{display:block;font-size:12px;color:rgba(243,238,228,.7);margin-top:3px}",
+  ".hc .hc-btn-l{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(201,166,107,.75);border-radius:999px;color:#C9A66B;font:inherit;font-size:12.5px;padding:7px 13px;cursor:pointer;white-space:nowrap}",
+  ".hc .hc-btn-l.fort{border-color:#C9A66B;font-weight:600}",
+  ".hc .hc-btn-l[disabled]{opacity:.5}",
+  ".hc .hc-pad-moi{font-size:13.5px;color:#C9A66B;margin:-4px 0 14px}",
+  ".hc .hc-grps{display:grid;grid-template-columns:1fr;gap:12px}",
+  "@media (min-width:600px){.hc .hc-grps{grid-template-columns:1fr 1fr}}",
+  ".hc .hc-grp{border:1px solid rgba(201,166,107,.3);border-radius:16px;padding:14px 14px 12px}",
+  ".hc .hc-grp.moi{border-color:#C9A66B}",
+  ".hc .hc-grp-t{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}",
+  ".hc .hc-grp-t b{font-size:15px;font-weight:600}",
+  ".hc .hc-grp-t span{font-size:14px;color:rgba(243,238,228,.8)}",
+  ".hc .hc-grp-t i{margin-inline-start:auto;font-style:normal;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,228,.55)}",
+  ".hc .hc-gms{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:12px 8px}",
+  ".hc .hc-gm{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0}",
+  ".hc .hc-gm b{font-size:12.5px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-gm .hc-av-ini{font-size:17px;font-family:'Cormorant Garamond',Georgia,serif;color:#C9A66B}",
+  ".hc .hc-gm > span:not(.hc-av){font-size:10.5px;color:rgba(243,238,228,.65);line-height:1.25;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}",
+  ".hc .hc-gm.moi b{color:#C9A66B}",
+  ".hc .hc-grp-vide{font-size:12.5px;color:rgba(243,238,228,.55)}",
+  ".hc .hc-grp-conf{margin-top:10px;font-size:11.5px;color:#C9A66B;line-height:1.45}",
+  ".hc .hc-ged{display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-ged-act,.hc .hc-ged-fin{display:flex;flex-wrap:wrap;gap:8px}",
+  ".hc .hc-ged-fin{justify-content:flex-end;margin-top:8px}",
+  ".hc .hc-ged-g{display:grid;grid-template-columns:1fr 78px 34px;gap:8px}",
+  ".hc .hc-ged-g input{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:#F3EEE4;font:inherit;font-size:14px;padding:9px 11px;min-width:0}",
+  ".hc .hc-ged-x{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:rgba(243,238,228,.7);font-size:18px;cursor:pointer}",
+  ".hc .hc-ged-k{margin-top:8px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#C9A66B}",
+  ".hc .hc-ged-c{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
+  ".hc .hc-ged-q{display:flex;align-items:baseline;gap:8px;min-width:0;font-size:13.5px}",
+  ".hc .hc-ged-q span{color:rgba(243,238,228,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-ged-ch{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}",
+  ".hc .hc-chip-p{min-width:34px;background:transparent;border:1px solid rgba(243,238,228,.22);border-radius:999px;color:rgba(243,238,228,.8);font:inherit;font-size:12px;padding:5px 9px;cursor:pointer}",
+  ".hc .hc-chip-p.on{border-color:#C9A66B;color:#C9A66B}",
+  ".hc .hc-regles{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start;margin-top:22px;border:1px solid rgba(201,166,107,.35);border-radius:16px;padding:16px}",
+  ".hc .hc-reg-ic{grid-row:1 / span 2}",
+  ".hc .hc-regles h3{margin:2px 0 8px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:22px;color:#F3EEE4}",
+  ".hc .hc-regles ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}",
+  ".hc .hc-regles li{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;color:rgba(243,238,228,.9)}",
+  ".hc .hc-regles li svg{flex:0 0 auto;margin-top:2px}",
   /* 09/11 — Passages de l'équipe (sections repliables) */
   ".hc .hc-pas-tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 16px}",
   ".hc .hc-pas-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(22px,6.4vw,28px);line-height:1.1;white-space:nowrap;color:#F3EEE4;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
@@ -1779,7 +1952,7 @@ function hsNomEpreuve(t) {
    concours_engagements (hsMiroir). 08/11 : Jour J, la fiche du concours (Ma journée) et le dossier lisent les 5 tours ;
    la liste du van ne lit que le cheval du 1er tour (une liste par cheval) ; Ma saison ne lit pas les engagements. */
 function hsToursDepuis(l, liste) {
-  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
+  if (liste && liste.length) return liste.map(function (t) { var n = t.numero; return { numero: n, ordre_passage: t.ordre_passage || null, cheval_id: t.cheval_id || ((n === 1 || n === 2) ? (l["cheval" + n + "_id"] || null) : null), epreuve: hsNomEpreuve(t.epreuve || ""), cheval_nom: String(t.cheval_nom || "").trim(), passage: t.passage || ((n === 1 || n === 2) ? (l["passage" + n] || "") : ""), piste: t.piste || ((n === 1 || n === 2) ? (l["piste" + n] || "") : "") }; });
   var o = [];
   [1, 2].forEach(function (n) {
     var e = hsNomEpreuve(l["epreuve" + n] || ""), c = String(l["cheval" + n + "_nom"] || "").trim();
@@ -2177,7 +2350,7 @@ function EcranEngagements() {
         if (rdT && rdT.error) throw new Error(row.nom + " : " + (rdT.error.message || rdT.error));
         if (toursL.length) {
           var riT = await supa.from("concours_tours").insert(toursL.map(function (t, k) {
-            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve || null, cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null };
+            return { engagement_id: eid, agenda_id: idEv, numero: k + 1, epreuve: t.epreuve || null, cheval_nom: t.cheval_nom || null, cheval_id: idCheval(t.cheval_nom), passage: t.passage || null, piste: t.piste || null, ordre_passage: t.ordre_passage || null };
           })).select("id");
           if (riT && riT.error) throw new Error(row.nom + " : " + (riT.error.message || riT.error));
         }
@@ -2664,6 +2837,7 @@ function EcranEngagements() {
       if (!x.coche || !n[x.i] || !(n[x.i].tours || [])[x.k]) return;
       var l = Object.assign({}, n[x.i]), t = l.tours.slice(), u = Object.assign({}, t[x.k]);
       if (x.heure) u.passage = x.heure; if (x.piste) u.piste = x.piste;
+      if (x.ordre && /^\d+$/.test(String(x.ordre).trim())) u.ordre_passage = parseInt(String(x.ordre).trim(), 10);   /* 09/11 : le N° de passage lu est enfin gardé */
       t[x.k] = u; l.tours = t; n[x.i] = l; nb++;
     });
     setLignes(n); setModifie(true); setOrdreProp(null);
