@@ -199,13 +199,38 @@ function EcranTeamMedias() {
             eps = ((rep && rep.data) || []).map(function (s) { var e = parE[s.epingle_id]; return e ? Object.assign({}, e, { partage_par: s.partage_par, partage_le: s.partage_le }) : null; }).filter(Boolean);
           }
         } catch (eEp) { eps = []; }
+        /* 09/11 23h55 (Blandine : « on rend visible chaque épingle que par la cavalière concernée », « je voudrais le
+           conserver moi même s'il l'efface… visible par les admin ou par le coach en indiquant juste que celui-ci n'est plus
+           visible que par toi ») : les conseils ENVOYÉS À UN CAVALIER de l'équipe. La base (ep_lecture) ne rend que ceux
+           envoyés à moi ou par moi : le cavalier voit les siens, le coach voit tous ceux qu'il a envoyés (+ mention si
+           effacé). Un cavalier non Premium voit la question, la réponse reste verrouillée (la base la refuse). */
+        try {
+          var idsEq2 = idsM.concat(G.cree_par ? [G.cree_par] : []);
+          if (u && u.id && idsEq2.length) {
+            var rpe = await supa.from("epingles_partages").select("id, epingle_id, partage_par, partage_le, destinataire_id, masque_le").not("destinataire_id", "is", null).in("destinataire_id", idsEq2).order("partage_le", { ascending: false }).limit(200);
+            var dejaG = {}; eps.forEach(function (x) { dejaG[x.id] = true; });
+            var lp = ((rpe && !rpe.error && rpe.data) || []).filter(function (x) { return x.partage_par === u.id || (x.destinataire_id === u.id && !x.masque_le && !dejaG[x.epingle_id]); });
+            if (lp.length) {
+              var idsLp = lp.map(function (x) { return x.epingle_id; });
+              var ree2 = await supa.from("echanges_heybaby_epingles").select("id, question, reponse, cheval_id, cheval_nom, cavalier_nom, created_at, user_id").in("id", idsLp);
+              var parE2 = {}; ((ree2 && ree2.data) || []).forEach(function (x) { parE2[x.id] = x; });
+              var rnq = await supa.from("notifications").select("cible, extrait").eq("destinataire", u.id).eq("type", "epingle_partagee").limit(200);
+              var qN = {}; ((rnq && rnq.data) || []).forEach(function (x) { qN[String(x.cible || "").replace(/^epingle:/, "")] = x.extrait || ""; });
+              lp.forEach(function (x) {
+                var e2 = parE2[x.epingle_id] || { id: x.epingle_id, question: qN[x.epingle_id] || "", reponse: "", verrou: true };
+                eps.push(Object.assign({}, e2, { cle: x.id, partage_par: x.partage_par, partage_le: x.partage_le, pour: x.destinataire_id, masque: !!x.masque_le }));
+              });
+              eps.sort(function (a, b) { return String(b.partage_le || "").localeCompare(String(a.partage_le || "")); });
+            }
+          }
+        } catch (eEp2) { }
 
         /* profils : membres + auteurs + cavalières des vidéos + coach */
         var idsP = idsM.slice();
         function ajP(i) { if (i && idsP.indexOf(i) === -1) idsP.push(i); }
         vids.forEach(function (x) { ajP(x.auteur_id); x.cavaliers.forEach(ajP); });
         parts.forEach(function (x) { ajP(x.auteur_id); });
-        eps.forEach(function (x) { ajP(x.partage_par); });
+        eps.forEach(function (x) { ajP(x.partage_par); ajP(x.pour); });
         ajP(G.cree_par);
         var parP = {};
         if (idsP.length) {
@@ -832,13 +857,20 @@ function EcranTeamMedias() {
   /* ───────── ÉPINGLES HB : épingles Hey Baby partagées avec le groupe ───────── */
   var _ouv = React.useState(null); var epOuverte = _ouv[0], setEpOuverte = _ouv[1];
   function carteEpingle(e) {
-    var ouv = epOuverte === e.id, qui = profilsParId[e.partage_par];
-    return h("div", { key: "ep" + e.id, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
-      h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : e.id); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
+    var cleE = e.cle || e.id;   /* 09/11 : un même conseil envoyé à plusieurs cavaliers = une carte par cavalier */
+    var ouv = epOuverte === cleE, qui = profilsParId[e.partage_par];
+    return h("div", { key: "ep" + cleE, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
+      h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : cleE); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
         h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, e.cheval_nom ? T("Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ") + e.cheval_nom : "Hey Baby"),
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, e.question || ""),
         h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, color: IV2, marginTop: 6, lineHeight: 1.55, whiteSpace: "pre-wrap", overflow: ouv ? "visible" : "hidden", display: ouv ? "block" : "-webkit-box", WebkitLineClamp: ouv ? "none" : 3, WebkitBoxOrient: "vertical" } }, e.reponse || ""),
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui) + (ouv ? "" : " · " + T("Lire tout", "Read all", "Leer todo", "Leggi tutto", "全文を読む", "Alles lesen", "قراءة الكل", "阅读全部", "Alles lezen", "Ler tudo", "Läs allt", "Читать полностью", "Czytaj całość", "전체 읽기")))));
+        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui)
+          + (e.pour ? " · " + ((moi && e.pour === moi.id) ? T("Pour toi", "For you", "Para ti", "Per te", "あなたへ", "Für dich", "لكِ", "给你", "Voor jou", "Para ti", "Till dig", "Для тебя", "Dla ciebie", "나에게") : T("Pour ", "For ", "Para ", "Per ", "宛先：", "Für ", "إلى ", "给 ", "Voor ", "Para ", "Till ", "Для: ", "Dla: ", "받는 사람: ") + nomProfil(profilsParId[e.pour])) : "")
+          + ((ouv || e.verrou) ? "" : " · " + T("Lire tout", "Read all", "Leer todo", "Leggi tutto", "全文を読む", "Alles lesen", "قراءة الكل", "阅读全部", "Alles lezen", "Ler tudo", "Läs allt", "Читать полностью", "Czytaj całość", "전체 읽기"))),
+        e.masque ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, fontStyle: "italic", marginTop: 3 } }, T("Effacé par le cavalier — n'est plus visible que par toi", "Removed by the rider — now only visible to you", "Borrado por el jinete — ya solo lo ves tú", "Cancellato dal cavaliere — ora lo vedi solo tu", "騎手が削除 — 今はあなただけが見られます", "Vom Reiter entfernt — nur noch für dich sichtbar", "حذفه الفارس — أصبحتِ الوحيدة التي ترينه", "骑手已删除 — 现在只有你能看到", "Verwijderd door de ruiter — alleen jij ziet het nog", "Apagado pelo cavaleiro — agora só tu o vês", "Borttaget av ryttaren — nu syns det bara för dig", "Удалено всадником — теперь видно только тебе", "Usunięte przez jeźdźca — widzisz to już tylko ty", "기수가 지웠어요 — 이제 나만 볼 수 있어요")) : null),
+      e.verrou ? h("div", { style: { marginTop: 8 } },
+        h("div", { style: { fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5 } }, T("Ce conseil est réservé aux membres Premium (Cercle Crystal).", "This tip is for Premium members (Crystal Circle).", "Este consejo está reservado a los miembros Premium (Círculo Crystal).", "Questo consiglio è riservato ai membri Premium (Cerchio Crystal).", "このアドバイスはプレミアム会員（クリスタル・サークル）限定です。", "Dieser Rat ist Premium-Mitgliedern vorbehalten (Crystal Circle).", "هذه النصيحة مخصّصة لأعضاء Premium (دائرة Crystal).", "这条建议仅限 Premium 会员（Crystal 圈）。", "Deze tip is voor Premium-leden (Crystal Circle).", "Este conselho é reservado aos membros Premium (Círculo Crystal).", "Det här rådet är för Premium-medlemmar (Crystal Circle).", "Этот совет доступен только участникам Premium (Crystal Circle).", "Ta wskazówka jest dla członków Premium (Krąg Crystal).", "이 조언은 프리미엄 회원(크리스털 서클) 전용이에요.")),
+        h("button", { type: "button", onClick: function () { setEcran("premium"); }, style: { marginTop: 8, minHeight: 40, padding: "0 16px", borderRadius: 10, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, T("Découvrir Premium", "Discover Premium", "Descubrir Premium", "Scopri Premium", "プレミアムを見る", "Premium entdecken", "اكتشفي Premium", "了解 Premium", "Ontdek Premium", "Descobrir o Premium", "Upptäck Premium", "Узнать о Premium", "Poznaj Premium", "프리미엄 알아보기"))) : null);
   }
   function ongletEpingles() {
     if (epingles === null) return chargement();
