@@ -584,10 +584,10 @@ function EcranEvenementPasse(props) {
   }
 
   /* 09/11 16h31 (Blandine : « laisse juste un onglet pour partager ») : dans les Médias du concours, seulement le partage (story / publication) */
-  if (seulementPartage) return h("div", { style: { color: "#EDF2F5", margin: "18px 0 6px" } },
+  if (seulementPartage) return h("div", { style: { color: "#EDF2F5", margin: "0 0 30px" } },
     h("div", { style: { padding: "0 18px", textAlign: "center" } },
       h("button", { type: "button", onClick: function () { if (String(ev.type || "").toLowerCase() === "concours" && photosEv && photosEv.length) setChoixPart(true); else partagerSouvenir(); },
-        style: { minHeight: 42, padding: "0 20px", borderRadius: 999, border: "1px solid rgba(201,166,107,.75)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Partager ce concours", "Share this competition", "Compartir este concurso", "Condividi questo concorso", "この大会をシェア", "Dieses Turnier teilen", "مشاركة هذه المسابقة", "分享这场比赛", "Deze wedstrijd delen", "Partilhar este concurso", "Dela tävlingen", "Поделиться соревнованием", "Udostępnij te zawody", "이 대회 공유") + " ›")),
+        style: { minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(201,166,107,.75)", background: "transparent", color: "#C9A66B", fontFamily: M, fontSize: 13.5, cursor: "pointer" } }, T("Partager ce concours", "Share this competition", "Compartir este concurso", "Condividi questo concorso", "この大会をシェア", "Dieses Turnier teilen", "مشاركة هذه المسابقة", "分享这场比赛", "Deze wedstrijd delen", "Partilhar este concurso", "Dela tävlingen", "Поделиться соревнованием", "Udostępnij te zawody", "이 대회 공유") + " ›")),
     h("style", { dangerouslySetInnerHTML: { __html: HYEP_CSS } }),
     msgPartage ? h("div", { style: { margin: "12px 18px 0", fontFamily: M, fontSize: 11.5, color: "#8A99A1" } }, msgPartage) : null,
     /* 21/09 (333) : le panneau de choix du partage. */

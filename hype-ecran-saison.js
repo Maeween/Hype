@@ -2357,7 +2357,7 @@ function EcranConcours() {
       h("select", { value: val, "aria-label": libre, onChange: function (e) { set(e.target.value); setMedSel(null); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, libre + " · " + F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
   }
   var blocGalerie = h("div", { key: "gal", className: "hc-gal hc-rep" },
-    h("h2", { className: "hc-rep-titre" }, F("Médias du concours")), h("span", { className: "hc-rep-filet", "aria-hidden": "true" }),
+    /* 09/11 16h51 (Blandine : « aligner le design total de la page sur la jolie partie du haut ») : plus de grand titre en double ; titres de section comme « Passages de l'équipe » */
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
     !medG ? h("div", { className: "hs-note" }, "…") : null,
     blocPhotos, blocVideos,
@@ -2865,6 +2865,17 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  /* ── 09/11 16h51 — Médias alignés sur le haut de la fiche ── */
+  ".hc .hc-rep .hc-rep-st{align-items:center;margin:8px 0 18px}",
+  ".hc .hc-rep .hc-rep-st h3{font-size:clamp(22px,6.4vw,28px);line-height:1.1;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
+  ".hc .hc-rep .hc-rep-s + .hc-rep-s{margin-top:34px}",
+  ".hc .hc-une{max-width:640px;margin:0 auto}",
+  ".hc .hc-une-p{justify-content:center}",
+  ".hc .hc-rep .hc-vg{border:none;background:none;padding:0;margin-bottom:28px}",
+  ".hc .hc-rep .hc-vg-t{margin-bottom:12px}",
+  ".hc .hc-rep-aj{gap:10px;flex-wrap:wrap;margin:10px 0 6px}",
+  ".hc .hc-rep-ajb{font-size:13.5px;padding:11px 22px}",
+
   ".hc .hc-ep-img{position:relative;overflow:hidden;min-height:58px}",
   ".hc .hc-ep-img > *{position:relative}",
   ".hc .hc-ep-img > img.hc-ep-ph{position:absolute;top:0;inset-inline-end:0;width:40%;height:100%;object-fit:cover;object-position:60% 40%}",
