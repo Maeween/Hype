@@ -29289,7 +29289,8 @@ function Router() {
                 ecran === "partager" && React.createElement(EcranPartager, null),
                 ecran === "installer" && React.createElement(EcranInstaller, null),
                 (ecran === "messagerie" || ecran === "messagerie-fil") && React.createElement(EcranMessagerie, null),
-                (ECRANS_FIN_PAGE.indexOf(ecran) >= 0) && React.createElement(FinPageHype, { key: "fin-" + ecran }),   /* 12/10 (1022) bandeau de fin « HYPE » sous les pages qui ne l avaient pas */
+                (ECRANS_FIN_PAGE.indexOf(ecran) >= 0) && React.createElement(FinPageHype, { key: "fin-" + ecran }),
+                (["concours", "ma-saison", "engagements", "jour-j", "liste-van", "dossier-concours", "team-medias"].indexOf(ecran) >= 0) && caleBarreHype(),   /* 09/11 21h10 (Blandine : « la barre recouvre certains contenus ») : le bas du Centre de compétition et de la vidéothèque Team passe au-dessus de la barre */   /* 12/10 (1022) bandeau de fin « HYPE » sous les pages qui ne l avaient pas */
                 ),
                 React.createElement(OverlayQuoiDeNeuf, null),
                 React.createElement(InvitationIdentifiant, null),
@@ -47717,7 +47718,7 @@ function HypePageVideo(props) {
       style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 44, marginTop: 8, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.85)", background: "transparent", color: "#E8D5AE", fontFamily: M, fontSize: 13.5, fontWeight: 600, cursor: duree ? "pointer" : "default", opacity: duree ? 1 : 0.5, whiteSpace: "nowrap" } },
       prepHb ? T("Préparation des images…", "Preparing the images…", "Preparando las imágenes…", "Preparazione delle immagini…", "画像を準備中…", "Bilder werden vorbereitet…", "جارٍ تجهيز الصور…", "正在准备图片…", "Beelden worden voorbereid…", "Preparando as imagens…", "Förbereder bilderna…", "Готовлю изображения…", "Przygotowuję obrazy…", "이미지를 준비하는 중…") : T("Envoyer à Hey Baby", "Send to Hey Baby", "Enviar a Hey Baby", "Invia a Hey Baby", "Hey Baby に送る", "An Hey Baby senden", "أرسل إلى Hey Baby", "发给 Hey Baby", "Naar Hey Baby sturen", "Enviar ao Hey Baby", "Skicka till Hey Baby", "Отправить Hey Baby", "Wyślij do Hey Baby", "Hey Baby에게 보내기")),
     msgHb ? h("div", { style: { marginTop: 10, fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5 } }, msgHb) : null);
-  var infos = h("div", { style: { padding: large ? "2px 0 0" : "22px 18px 0" } },
+  var infos = h("div", { style: { padding: large ? "2px 0 0" : "10px 18px 0" } },   /* 09/11 21h10 : réactions plus près des vidéos (était 22) */
     h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: menu ? 36 : 31, fontWeight: 500, lineHeight: 1.1, color: IV } }, props.titre || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Wideo", "동영상")),
     props.sousTitre ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: IV2, marginTop: 6 } }, props.sousTitre) : null,
     props.sansActions ? null : h("div", { style: { marginTop: 12 } }, h(HypeActionsSociales, { cle: url, lk: props.lk, nc: props.nc || 0, onJaime: props.onJaime, onCommenter: props.onCommenter })),   /* 08/11 soir : la Team garde ses propres j aime / commentaires (props.bas) */
@@ -47868,7 +47869,7 @@ function HypePageVideo(props) {
 var HPV_CSS = [
   ".hpv.hpv-photo-on #hpv-infos>div:first-child>div:first-child{display:none}",   /* le titre est déjà sur la photo : pas de doublon */
   ".hpv .hpv-in{max-width:1100px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom) + 40px)}",
-  ".hpv .hpv-scene{position:relative;height:clamp(470px,66vh,720px);overflow:hidden;background:#070A08}",   /* 08/11 23h40 : moins de vide avant les vidéos */
+  ".hpv .hpv-scene{position:relative;height:clamp(470px,66vh,720px);overflow:hidden;background:#070A08}",   /* 08/11 23h40 : moins de vide avant les vidéos */   /* 08/11 23h40 : moins de vide avant les vidéos */
   ".hpv .hpv-photo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}",
   ".hpv .hpv-photo img{width:100%;height:100%;object-fit:contain;display:block}",
   ".hpv .hpv-photo:not(.fond){padding:calc(env(safe-area-inset-top) + 250px) 0 12px}",
@@ -47880,6 +47881,14 @@ var HPV_CSS = [
   ".hpv .hpv-retour{inset-inline-start:16px}.hpv .hpv-plus{inset-inline-end:16px}",
   ".hpv .hpv-rond,.hpv .hpv-menu{z-index:8;-webkit-transform:translateZ(0);transform:translateZ(0);will-change:transform}",   /* 09/11 15h25 (Blandine : « on ne voit pas les trois petits points en haut, j'ai dû bouger la page ») : iPhone ne peignait les boutons posés sur la vidéo qu'après un défilement — calque propre, au-dessus de la vidéo */
   ".hpv .hpv-titre{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 76px);inset-inline-start:20px;max-width:44%;text-shadow:0 2px 14px rgba(0,0,0,.75)}",
+  /* 09/11 21h10 (Blandine, capture annotée : « descends le titre, qu'il ne masque pas la tête du héros ») : le titre se pose
+     en bas à gauche, dans le noir sous l'encolure ; la tête du cheval (la même photo pour tous les couples) reste dégagée */
+  ".hpv .hpv-titre{top:auto;bottom:6px;max-width:58%}",
+  ".hpv .hpv-scene .hpv-titre h1{font-size:clamp(28px,7.6vw,42px)}",
+  ".hpv .hpv-scene .hpv-titre h1.long{font-size:clamp(25px,6.6vw,36px)}",
+  ".hpv .hpv-scene .hpv-sur{font-size:19px}",
+  ".hpv .hpv-scene .hpv-filet{margin:8px 0 10px}",
+  ".hpv .hpv-scene .hpv-titre p{margin-top:8px;font-size:16px}",
   ".hpv .hpv-sur{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:#F3EEE4;opacity:.92}",
   ".hpv .hpv-filet{display:block;width:54px;height:1.5px;background:#C9A66B;margin:12px 0 14px}",
   ".hpv .hpv-titre h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(32px,9vw,50px);line-height:1.08;padding-top:4px;color:#F3EEE4;overflow-wrap:break-word}",
@@ -47900,7 +47909,7 @@ var HPV_CSS = [
   ".hpv .hpv-x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,166,107,.55);background:transparent;color:#F3EEE4;font-size:20px;line-height:1;cursor:pointer}",
   ".hpv .hpv-hb-duree{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:rgba(243,238,228,.7)}",
   ".hpv .hpv-hb-duree button{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#F3EEE4;font-size:12.5px;cursor:pointer}",
-  ".hpv .hpv-traits{display:flex;justify-content:center;gap:7px;margin:10px 0 16px}",
+  ".hpv .hpv-traits{display:flex;justify-content:center;gap:7px;margin:4px 0 10px}",
   ".hpv .hpv-traits button{width:24px;height:2px;border:none;border-radius:2px;background:rgba(243,238,228,.2);padding:0;cursor:pointer}",
   ".hpv .hpv-traits button.on{background:#C9A66B}",
   ".hpv .hpv-vids{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 12px)/3);gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 10px}",
