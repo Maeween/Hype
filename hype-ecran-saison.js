@@ -1208,6 +1208,10 @@ function EcranConcours() {
   var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];
   var _fov = React.useState(false); var filOuv = _fov[0], setFilOuv = _fov[1];   /* 09/11 16h35 : le fil n'apparaît que pour ajouter des photos */
   var _vgf = React.useState({}); var vgFerme = _vgf[0], setVgFerme = _vgf[1];   /* 09/11 19h15 : lots de vidéos repliés */
+  var _mvu = React.useState("tous"); var medVue = _mvu[0], setMedVue = _mvu[1];   /* 09/11 20h (brief « Par cavalier ») : Tous les souvenirs / Par cavalier / Par cheval */
+  var _mvs = React.useState({ cav: null, ch: null }); var medSujet = _mvs[0], setMedSujet = _mvs[1];   /* cavalier ou cheval choisi dans chaque vue */
+  var _mvf = React.useState(""); var medAvec = _mvf[0], setMedAvec = _mvf[1];   /* filtre « Avec … » */
+  var _mpc = React.useState(2); var medCols = _mpc[0], setMedCols = _mpc[1];   /* colonnes de la mosaïque, d après la largeur réelle de la galerie */
   var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
@@ -2360,13 +2364,104 @@ function EcranConcours() {
     return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
       h("select", { value: val, "aria-label": libre, onChange: function (e) { set(e.target.value); setMedSel(null); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, libre + " · " + F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
   }
+  /* ── 09/11 20h — MÉDIAS « PAR CAVALIER » / « PAR CHEVAL » (brief + maquettes validées de Blandine) ──
+     Mêmes médias que « Tous les souvenirs » (itemsM), simplement filtrés : rien n'est copié en base.
+     Ordinateur / tablette paysage : colonne de portraits à gauche ; tablette portrait / iPhone : bandeau de portraits qui défile.
+     Galerie en colonnes (masonry) : chaque photo garde ses proportions, jamais rognée. Aucun bouton plein doré. */
+  var nomsIdent = {}; Object.keys((medG && medG.ident) || {}).forEach(function (k) { (medG.ident[k] || []).forEach(function (q) { if (q && q.cible_id && q.cible_nom) nomsIdent[q.type + ":" + String(q.cible_id)] = q.cible_nom; }); });
+  function sujetsDe(mode) {   /* les participants du concours (engagés) + toute personne / tout cheval identifié sur un média */
+    var base = mode === "ch" ? optCh.map(function (o) { return { id: o.id, nom: o.nom }; }) : optCav.map(function (o) { return { id: o.id, nom: o.nom }; });
+    itemsM.forEach(function (x) { (mode === "ch" ? x.ch : x.cav).forEach(function (id) { if (!base.some(function (o) { return o.id === id; })) { var n = nomsIdent[(mode === "ch" ? "cheval:" : "cavalier:") + id] || ""; if (mode !== "ch") n = String(n).split(/\s+/)[0]; base.push({ id: id, nom: n || (mode === "ch" ? F("Cheval") : F("Cavalier")) }); } }); });
+    base.forEach(function (o) {
+      o.n = itemsM.filter(function (x) { return (mode === "ch" ? x.ch : x.cav).indexOf(o.id) !== -1; }).length;
+      o.photo = null;
+      if (mode === "ch") o.photo = chPhotos[o.id] || null;
+      else (passagesEq || []).forEach(function (pq) { if (!o.photo && String(pq.cavalier_id) === o.id && pq.avatar_url) o.photo = pq.avatar_url; });
+    });
+    base.sort(function (a, b) { var am = mode !== "ch" && moi && a.id === String(moi.id) ? -1 : 0, bm = mode !== "ch" && moi && b.id === String(moi.id) ? -1 : 0; return (am - bm) || String(a.nom).localeCompare(String(b.nom)); });
+    return base;
+  }
+  var modeS = medVue === "ch" ? "ch" : "cav";
+  var sujets = (medVue === "tous" || !medG) ? [] : sujetsDe(modeS);
+  var sujetId = (medSujet[modeS] && sujets.some(function (o) { return o.id === medSujet[modeS]; })) ? medSujet[modeS]
+    : ((sujets.filter(function (o) { return modeS === "cav" && moi && o.id === String(moi.id) && o.n; })[0] || sujets.filter(function (o) { return o.n; })[0] || sujets[0] || {}).id || null);
+  var sujet = sujets.filter(function (o) { return o.id === sujetId; })[0] || null;
+  var sujM = sujet ? itemsM.filter(function (x) { return (modeS === "ch" ? x.ch : x.cav).indexOf(sujet.id) !== -1; }) : [];
+  var avecL = [];   /* « Avec Yellow (8) » : les chevaux (ou cavaliers en « Par cheval ») réellement rattachés aux médias du sujet */
+  sujM.forEach(function (x) { (modeS === "ch" ? x.cav : x.ch).forEach(function (id) { var o = avecL.filter(function (q) { return q.id === id; })[0]; if (!o) { var src = modeS === "ch" ? optCav : optCh; var oo = src.filter(function (q) { return q.id === id; })[0]; var n = (oo && oo.nom) || nomsIdent[(modeS === "ch" ? "cavalier:" : "cheval:") + id] || ""; if (modeS === "ch") n = String(n).split(/\s+/)[0]; o = { id: id, nom: n, n: 0 }; avecL.push(o); } o.n++; }); });
+  avecL = avecL.filter(function (o) { return o.nom; }).sort(function (a, b) { return b.n - a.n || String(a.nom).localeCompare(String(b.nom)); });
+  var avecOk = medAvec && avecL.some(function (o) { return o.id === medAvec; }) ? medAvec : "";
+  var sujF = avecOk ? sujM.filter(function (x) { return (modeS === "ch" ? x.cav : x.ch).indexOf(avecOk) !== -1; }) : sujM;
+  var nbPh = sujM.filter(function (x) { return !x.video; }).length, nbVi = sujM.length - nbPh;
+  function icoCh(t) { return h("svg", { viewBox: "0 0 24 24", width: t || 15, height: t || 15, "aria-hidden": "true" }, h("path", { d: "M6 20c0-5 2-8 6-10l1-4 2 3c2 1 3 3 3 5l-2 1-2-2-3 2v5", fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })); }
+  function icoCav(t) { return h("svg", { viewBox: "0 0 24 24", width: t || 15, height: t || 15, "aria-hidden": "true" }, h("path", { d: "M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2zM5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6", fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })); }
+  function icoPh() { return h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: "M4 5.5h16v13H4zM4 15l4.5-4.5 4 4 2.5-2.5L20 17M15.5 9.5h.01", fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })); }
+  function icoVi() { return h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": "true" }, h("path", { d: "M3.5 6h17v12h-17zM10 9.5v5l4.5-2.5z", fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })); }
+  function refColsMed(el) {
+    if (!el || el.__hcRo) return;
+    function maj() { try { var w = el.clientWidth || 0; var n = w < 500 ? 2 : (w < 1000 ? 3 : 4); setMedCols(function (v) { return v === n ? v : n; }); } catch (e) { } }
+    maj(); try { el.__hcRo = new ResizeObserver(maj); el.__hcRo.observe(el); } catch (e) { el.__hcRo = true; }
+  }
+  function choisirSujet(id) { var n = Object.assign({}, medSujet); n[modeS] = id; setMedSujet(n); setMedAvec(""); }
+  var blocNavMed = h("div", { key: "nav", className: "hc-mn" },
+    h("h3", { className: "hc-mn-t" }, F("Médias du concours")),
+    h("div", { className: "hc-mn-p", "data-hscroll": "1" }, [["tous", F("Tous les souvenirs"), null], ["cav", F("Par cavalier"), icoCav], ["ch", F("Par cheval"), icoCh]].map(function (o) {
+      return h("button", { key: o[0], type: "button", className: "hc-mn-b" + (medVue === o[0] ? " on" : ""), "aria-pressed": medVue === o[0], onClick: function () { setMedVue(o[0]); setMedAvec(""); } }, o[2] ? o[2](16) : null, o[1]);
+    })));
+  function rondSujet(o, petit) {
+    return h("span", { className: "hc-ps-av" + (petit ? " p" : "") }, o.photo ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(o.photo, 160, 160) : o.photo, alt: "", loading: "lazy" }) : h("b", null, String(o.nom || "?").charAt(0).toUpperCase()));
+  }
+  function tuile(x) {
+    var src = x.video ? ((x.tv && x.tv.vignette) || hsVignetteVideo(x.url) || vignetteDe(x)) : apercu(x, 800);
+    var legende = x.video ? [(modeS === "ch" ? x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }) : x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; })).filter(Boolean).join(", "), x.epreuve || ""].filter(Boolean).join(" · ") : "";
+    return h("div", { key: x.cle, className: "hc-ps-t" },
+      h("button", { type: "button", className: "hc-ps-m", onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-ps-vide" }),
+        x.video ? h("span", { className: "hc-ps-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
+        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-ps-d" }, dureeTxt(x.duree)) : null),
+      boutonId(x),
+      legende ? h("div", { className: "hc-ps-lg" }, legende) : null);
+  }
+  var blocParSujet = (medVue === "tous" || !medG) ? null : h("div", { key: "ps", className: "hc-ps" },
+    !sujets.length ? h("div", { className: "hs-note", style: { marginTop: 0 } }, modeS === "ch" ? F("Aucun cheval n’est encore engagé ou identifié sur ce concours.") : F("Aucun cavalier n’est encore engagé ou identifié sur ce concours.")) : h("div", { key: "in", className: "hc-ps-in" },
+      h("aside", { key: "l", className: "hc-ps-l" },
+        h("div", { className: "hc-ps-lt" }, modeS === "ch" ? F("Les chevaux") : F("Les cavaliers")),
+        h("div", { className: "hc-ps-ll", "data-hscroll": "1" }, sujets.map(function (o) {
+          return h("button", { key: o.id, type: "button", className: "hc-ps-s" + (o.id === sujetId ? " on" : "") + (o.n ? "" : " sans"), "aria-pressed": o.id === sujetId, onClick: function () { choisirSujet(o.id); } }, rondSujet(o), h("span", { className: "hc-ps-sn" }, o.nom));
+        }))),
+      h("div", { key: "r", className: "hc-ps-r" },
+        sujet ? h("div", { className: "hc-ps-ban" },
+          (function () { var ph = sujM.filter(function (x) { return !x.video; })[0]; var im = ph ? apercu(ph, 700) : (sujet.photo ? ((typeof grandeImageHype === "function") ? grandeImageHype(sujet.photo, 700) : sujet.photo) : ""); return im ? h("span", { className: "hc-ps-bph" }, h("img", { src: im, alt: "", loading: "lazy" })) : null; })(),
+          h("div", { className: "hc-ps-bt" },
+            h("div", { className: "hc-ps-bn" }, sujet.nom),
+            h("div", { className: "hc-ps-bs" }, F("Ses médias sur ce concours")),
+            h("div", { className: "hc-ps-bc" },
+              h("span", null, icoPh(), h("b", null, nbPh), " ", nbPh > 1 ? F("photos") : F("photo")),
+              h("i", { "aria-hidden": "true" }),
+              h("span", null, icoVi(), h("b", null, nbVi), " ", nbVi > 1 ? F("vidéos") : F("vidéo")))),
+          h("button", { type: "button", className: "hc-btn-l hc-ps-aj", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))) : null,
+        (sujet && avecL.length) ? h("div", { className: "hc-ps-f", "data-hscroll": "1" },
+          [h("button", { key: "__", type: "button", className: "hc-mn-b f" + (avecOk ? "" : " on"), onClick: function () { setMedAvec(""); } }, F("Tous") + " (" + sujM.length + ")")].concat(avecL.map(function (o) {
+            return h("button", { key: o.id, type: "button", className: "hc-mn-b f" + (avecOk === o.id ? " on" : ""), onClick: function () { setMedAvec(avecOk === o.id ? "" : o.id); } }, modeS === "ch" ? icoCav(14) : icoCh(14), F("Avec") + " " + o.nom + " (" + o.n + ")");
+          }))) : null,
+        medAjout ? panneauAjout : null,
+        sujF.length ? h("div", { className: "hc-ps-g", ref: refColsMed }, (function () {   /* mosaïque : N colonnes remplies tour à tour (ordre de lecture gauche → droite), chaque média dans ses proportions */
+          var cols = []; for (var c = 0; c < medCols; c++) cols.push([]);
+          sujF.forEach(function (x, i) { cols[i % medCols].push(tuile(x)); });
+          return cols.map(function (l, c) { return h("div", { key: "c" + c, className: "hc-ps-col" }, l); });
+        })())
+          : h("div", { className: "hs-note", style: { marginTop: 4 } }, sujet ? (modeS === "ch" ? F("Pas encore de média de ce cheval sur ce concours. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.") : F("Pas encore de média de ce cavalier sur ce concours. Touche ⋯ sur une photo ou une vidéo pour dire qui est dessus.")) : null),
+        sujF.length ? h("div", { className: "hc-rep-aj hc-ps-aj2" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))) : null)
+)
+    );
   var blocGalerie = h("div", { key: "gal", className: "hc-gal hc-rep" },
     /* 09/11 16h51 (Blandine : « aligner le design total de la page sur la jolie partie du haut ») : plus de grand titre en double ; titres de section comme « Passages de l'équipe » */
     panneauId, medMsg ? h("div", { className: "hs-msg" }, medMsg) : null,
     !medG ? h("div", { className: "hs-note" }, "…") : null,
-    blocPhotos, blocVideos,
-    h("div", { className: "hc-rep-aj" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
-    panneauAjout,
+    medG ? blocNavMed : null,
+    medVue === "tous" ? [blocPhotos, blocVideos,
+    h("div", { key: "aj", className: "hc-rep-aj" }, h("button", { type: "button", className: "hc-btn-l hc-rep-ajb", onClick: function () { setMedAjout(!medAjout); } }, "+ " + F("Ajouter des médias"))),
+    panneauAjout] : blocParSujet,
     medVisu && (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(medVisu, function () { setMedVisu(null); }) : null);
   /* le fil (publications, j'aime, commentaires, ajout) reste sous la galerie, sans sa propre galerie (seulementFil) */
   var blocPartageConcours = h("div", { key: "pcc" },
@@ -2895,7 +2990,57 @@ var HC_CSS = [
   ".hc .hc-une-p{justify-content:center}",
   ".hc .hc-rep-aj{gap:10px;flex-wrap:wrap;margin:10px 0 6px}",
   ".hc .hc-rep-ajb{font-size:13.5px;padding:11px 22px}",
-
+  /* 09/11 20h — Médias « Par cavalier / Par cheval » (maquettes ordinateur, tablette, iPhone). Sélection = contour champagne + fond noir un peu plus clair, JAMAIS doré plein. */
+  ".hc .hc-mn{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:4px 0 18px;padding-bottom:12px;border-bottom:1px solid rgba(201,166,107,.22)}",
+  ".hc .hc-mn-t{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(24px,6.6vw,30px);line-height:1.1;color:#F3EEE4}",
+  ".hc .hc-mn-p{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:100%;padding:2px}",
+  ".hc .hc-mn-p::-webkit-scrollbar,.hc .hc-ps-f::-webkit-scrollbar,.hc .hc-ps-ll::-webkit-scrollbar{display:none}",
+  ".hc .hc-mn-b{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(243,238,228,.16);border-radius:999px;color:rgba(243,238,228,.82);font:inherit;font-size:13px;padding:8px 15px;cursor:pointer;white-space:nowrap}",
+  ".hc .hc-mn-b.on{border-color:#C9A66B;color:#F3EEE4;background:#15191A}",
+  ".hc .hc-mn-b svg{color:#C9A66B}",
+  ".hc .hc-mn-b.f{font-size:12.5px;padding:7px 13px}",
+  "@media (max-width:430px){.hc .hc-mn{gap:10px} .hc .hc-mn-t{flex:1 0 100%} .hc .hc-mn-p{gap:5px} .hc .hc-mn-b{font-size:11.5px;padding:7px 9px;gap:4px} .hc .hc-mn-b svg{width:14px;height:14px}}",
+  ".hc .hc-ps{container-type:inline-size;margin-bottom:8px}",
+  ".hc .hc-ps-lt{display:none;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:22px;color:#F3EEE4;margin:2px 0 12px}",
+  ".hc .hc-ps-ll{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 12px}",
+  ".hc .hc-ps-s{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;background:transparent;border:0;color:rgba(243,238,228,.82);font:inherit;font-size:12px;cursor:pointer;padding:0;width:74px}",
+  ".hc .hc-ps-s.sans{opacity:.55}",
+  ".hc .hc-ps-sn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-ps-av{width:54px;height:54px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#101416;border:1px solid rgba(243,238,228,.14);box-sizing:border-box;flex:0 0 auto}",
+  ".hc .hc-ps-av img{width:100%;height:100%;object-fit:cover;display:block}",
+  ".hc .hc-ps-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;color:#C9A66B;font-weight:500}",
+  ".hc .hc-ps-s.on .hc-ps-av{border:1.5px solid #C9A66B;padding:2px}",
+  ".hc .hc-ps-s.on .hc-ps-av img{border-radius:50%}",
+  ".hc .hc-ps-s.on{color:#F3EEE4}",
+  ".hc .hc-ps-ban{position:relative;display:flex;align-items:stretch;gap:14px;min-height:120px;border:1px solid rgba(201,166,107,.22);border-radius:18px;background:#0B0F11;overflow:hidden;margin:4px 0 14px}",
+  ".hc .hc-ps-bph{flex:0 0 auto;max-width:42%;display:flex;align-items:center;justify-content:center;background:#070A08}",
+  ".hc .hc-ps-bph img{display:block;height:100%;max-height:150px;width:auto;max-width:100%;object-fit:contain}",
+  ".hc .hc-ps-bt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:12px 14px 12px 0}",
+  ".hc .hc-ps-bn{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(28px,8vw,40px);line-height:1;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-ps-bs{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16px;color:rgba(243,238,228,.78);margin:4px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(201,166,107,.3)}",
+  ".hc .hc-ps-bc{display:flex;align-items:center;gap:12px;font-size:12.5px;color:rgba(243,238,228,.82)}",
+  ".hc .hc-ps-bc span{display:inline-flex;align-items:center;gap:5px}",
+  ".hc .hc-ps-bc svg{color:#C9A66B}",
+  ".hc .hc-ps-bc b{font-weight:600;color:#F3EEE4}",
+  ".hc .hc-ps-bc i{width:1px;height:16px;background:rgba(201,166,107,.35)}",
+  ".hc .hc-ps-aj{display:none;align-self:center;margin-inline-end:16px}",
+  ".hc .hc-ps-f{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 14px}",
+  ".hc .hc-ps-g{display:flex;gap:10px;align-items:flex-start}",
+  ".hc .hc-ps-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-ps-t{position:relative}",
+  ".hc .hc-ps-m{position:relative;display:block;width:100%;padding:0;border:1px solid rgba(201,166,107,.18);border-radius:12px;overflow:hidden;background:#0B0F11;cursor:pointer}",
+  ".hc .hc-ps-m img{display:block;width:100%;height:auto}",
+  ".hc .hc-ps-m.vide,.hc .hc-ps-vide{display:block;min-height:120px}",
+  ".hc .hc-ps-play{position:absolute;left:10px;bottom:10px;width:36px;height:36px;border-radius:50%;border:1.5px solid #F3EEE4;background:rgba(7,10,8,.45);display:flex;align-items:center;justify-content:center}",
+  "[dir=rtl] .hc .hc-ps-play{left:auto;right:10px}",
+  ".hc .hc-ps-d{position:absolute;right:10px;bottom:12px;font-size:12px;font-weight:600;color:#F3EEE4;text-shadow:0 1px 3px rgba(0,0,0,.8)}",
+  "[dir=rtl] .hc .hc-ps-d{right:auto;left:10px}",
+  ".hc .hc-ps-t .hc-mt-id{position:absolute;top:8px;right:8px;z-index:2}",
+  "[dir=rtl] .hc .hc-ps-t .hc-mt-id{right:auto;left:8px}",
+  ".hc .hc-ps-lg{font-size:11px;color:rgba(243,238,228,.62);margin:5px 2px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  "@container (min-width:560px){.hc .hc-ps-aj{display:inline-flex} .hc .hc-ps-aj2{display:none} .hc .hc-ps-bph img{max-height:170px} .hc .hc-ps-ban{min-height:140px}}",
+  "@container (min-width:860px){.hc .hc-ps-in{display:grid;grid-template-columns:168px minmax(0,1fr);gap:18px;align-items:start} .hc .hc-ps-lt{display:block} .hc .hc-ps-l{border-inline-end:1px solid rgba(201,166,107,.18);padding-inline-end:12px} .hc .hc-ps-ll{flex-direction:column;overflow:visible;gap:8px} .hc .hc-ps-s{flex-direction:row;width:100%;gap:10px;padding:5px 8px;border:1px solid transparent;border-radius:999px;font-size:13.5px} .hc .hc-ps-s.on{border-color:#C9A66B;background:#15191A} .hc .hc-ps-s.on .hc-ps-av{border:1px solid rgba(243,238,228,.14);padding:0} .hc .hc-ps-av{width:38px;height:38px} .hc .hc-ps-av b{font-size:17px}}",
+  
   ".hc .hc-ep-img{position:relative;overflow:hidden;min-height:58px}",
   ".hc .hc-ep-img > *{position:relative}",
   ".hc .hc-ep-img > img.hc-ep-ph{position:absolute;top:0;inset-inline-end:0;width:40%;height:100%;object-fit:cover;object-position:60% 40%}",
