@@ -2622,7 +2622,7 @@ function EcranConcours() {
     pageX = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(pgPage, document.body) : pgPage;
   }
   var blocGalerie = h("div", { key: "gal", ref: mesurerMd, className: "hc-gal hc-rep hc-md" },
-    h("style", { key: "b2" }, HC_B2_CSS),
+    h("style", { key: "b2" }, HC_B2_CSS + HC_XM_GRILLE_CSS),
     medVue ? [
       h("div", { key: "tete", className: "hc-md-tete" },
         h("h2", null, F("Médias du concours")), h("i", { "aria-hidden": "true" })),
@@ -2826,6 +2826,9 @@ var HCP_CSS = [
   ".hcp .hcp-cartes{margin:0 0 26px}",
   ".hcp .hcp-bas .vr{margin-top:0}"
 ].join("");
+/* 09/11 23h00 (Blandine : « je vois toujours rien ») : la liste « Par cavalier / Par cheval » n'a plus rien dessous (chaque nom
+   ouvre sa page) : tous les noms en grille, avec la flèche, sans nom « choisi » d'avance */
+var HC_XM_GRILLE_CSS = ".hc .hc-xm{display:block!important}.hc .hc-xm-ll{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;overflow:visible!important}.hc .hc-xm-it{width:100%;box-sizing:border-box;min-width:0;padding:8px 12px 8px 8px}.hc .hc-xm-it.on{border-color:rgba(201,166,107,.18)}.hc .hc-xm-in{min-width:0}.hc .hc-xm-in b{display:block;overflow-wrap:anywhere;line-height:1.05}.hc .hc-xm-chev{display:block!important}@container hcmd (min-width:640px){.hc .hc-xm-ll{grid-template-columns:repeat(3,minmax(0,1fr))}}@container hcmd (min-width:960px){.hc .hc-xm-ll{grid-template-columns:repeat(4,minmax(0,1fr))}}";
 var HC_CSS_ID = "hype-saison-css-concours";
 var HC_CSS = [
   ".hc .hc-hero{position:relative;background:#070A08}",
