@@ -20,6 +20,8 @@
    Ordre : en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko. Les autres pages du Centre de compétition restent en français pour l'instant. */
 var HS_LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
 var HS_TR_BRUT = {
+  "Voir les ": ["See the ", "Ver los ", "Vedi gli altri ", "残り", "Die weiteren ", "عرض ", "查看其余 ", "Bekijk de ", "Ver os ", "Visa de ", "Показать ещё ", "Pokaż pozostałe ", "나머지 "],
+  "autres passages": ["other starts", "otros pasos", "passaggi", "件の出場を見る", "Starts anzeigen", "انطلاقات أخرى", "个出场", "andere starts", "outras passagens", "andra starterna", "стартов", "starty", "개 출전 보기"],
   "Touche ⋯ pour dire qui est dessus": ["Tap ⋯ to say who's in it", "Toca ⋯ para decir quién aparece", "Tocca ⋯ per dire chi c’è", "⋯ をタップして誰か指定", "Tippe auf ⋯, um anzugeben, wer drauf ist", "اضغط ⋯ لتحديد من فيه", "点击 ⋯ 标记是谁", "Tik op ⋯ om aan te geven wie erop staat", "Toca em ⋯ para dizer quem aparece", "Tryck på ⋯ för att ange vem som syns", "Нажми ⋯, чтобы указать, кто здесь", "Dotknij ⋯, aby wskazać, kto jest na nim", "⋯ 를 눌러 누가 나오는지 알려 줘"],
   "Les photos": ["Photos", "Las fotos", "Le foto", "写真", "Die Fotos", "الصور", "照片", "De foto's", "As fotos", "Bilderna", "Фото", "Zdjęcia", "사진"],
   "Les vidéos": ["Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "영상"],
@@ -1169,6 +1171,8 @@ function EcranConcours() {
   var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];
   var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];
   var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];
+  var _epf = React.useState({}); var epFerme = _epf[0], setEpFerme = _epf[1];   /* 09/11 16h (Blandine) : toutes les épreuves dépliées ; { ep: true } = repliée */
+  var _epp = React.useState({}); var epPlus = _epp[0], setEpPlus = _epp[1];     /* épreuves dont on a déroulé au-delà de 8 passages */
   /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
   var _gd = React.useState([]); var grpD = _gd[0], setGrpD = _gd[1];
   /* 09/11 — PAGE RÉSULTATS */
@@ -1544,6 +1548,7 @@ function EcranConcours() {
   }
   function panneauDecaler(g) {
     var avecH = g.l.filter(function (p) { return hsMinutes(hsHeurePropre(p.passage || "")) < 99999; });
+    if ((!decEp || decEp.ep !== g.ep) && !avecH.length) return null;   /* rien à décaler (pas d'heures) : pas de case vide */
     if (!decEp || decEp.ep !== g.ep || decEp.fait) return h("div", { key: "dcb", className: "hc-dec-b" },
       (decEp && decEp.ep === g.ep && decEp.msg) ? h("div", { className: "hs-msg", style: { margin: "0 0 8px" } }, decEp.msg) : null,
       avecH.length ? h("button", { type: "button", className: "hc-btn-l", onClick: function () { setDecEp({ ep: g.ep, min: 0, prev: true }); } }, "⏱ " + F("Décaler l’épreuve")) : null);
@@ -1574,14 +1579,14 @@ function EcranConcours() {
       h("h2", { className: "hc-pas-titre" }, F("Passages de l’équipe")),
       ev.lien_direct ? h("a", { className: "hc-direct" + (hcJourJ ? " vif" : ""), href: ev.lien_direct, target: "_blank", rel: "noopener" }, hcJourJ ? h("span", { className: "hc-direct-pt", "aria-hidden": "true" }) : null, F("Voir le direct"), h("span", { "aria-hidden": "true" }, rtl ? " ‹" : " ›")) : null) : null,
     parEpreuve.length ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
-      var ouv = epCourant === g.ep;
+      var ouv = !epFerme[g.ep];
       var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
       return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
-        h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { setEpOuv(ouv ? "" : g.ep); } },
+        h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { var n = Object.assign({}, epFerme); n[g.ep] = ouv; setEpFerme(n); if (!ouv) setEpOuv(g.ep); } },
           h("b", null, g.ep),
           h("span", null, [pistes.length ? F("Piste ") + pistes.join(", ") : "", g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))].filter(Boolean).join(" · ")),
           h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
-        ouv ? h("div", { className: "hc-ep-l" }, g.l.map(function (p, i) {
+        ouv ? h("div", { className: "hc-ep-l" }, (epPlus[g.ep] ? g.l : g.l.slice(0, 8)).map(function (p, i) {
           var moiLa = moi && p.cavalier_id === moi.id;
           var res = moiLa ? resDirect[hsNomEpreuve(p.epreuve || "")] : "";
           var num = p.ordre_passage || p.ordre || null;
@@ -1589,7 +1594,8 @@ function EcranConcours() {
             g.l.some(function (t) { return t.ordre_passage || t.ordre; }) ? h("span", { className: "hc-pl-n" }, num ? F("N° ") + num : "") : null,
             h("span", { className: "hc-pl-q" }, h("b", null, nomP(p)), p.cheval_nom ? h("span", null, " · " + p.cheval_nom) : null, p.numero > 1 ? h("i", null, " · " + F("tour ") + p.numero) : null),
             res ? h("span", { className: "hc-res" }, res) : (p.passage ? h("span", { className: "hc-pl-h" }, p.passage) : null));
-        }), gestion ? panneauDecaler(g) : null) : null);
+        }), g.l.length > 8 ? h("div", { className: "hc-pl-plus" }, h("button", { type: "button", className: "hs-lien", onClick: function () { var n = Object.assign({}, epPlus); n[g.ep] = !epPlus[g.ep]; setEpPlus(n); } }, epPlus[g.ep] ? F("Réduire") : (F("Voir les ") + (g.l.length - 8) + " " + F("autres passages")) + (epPlus[g.ep] ? " ⌃" : " ⌄"))) : null,
+          gestion ? panneauDecaler(g) : null) : null);
     })) : null,
     (enDirect && enDirect.lignes && enDirect.lignes.length) ? h("div", { key: "direct", className: "hc-liste" },
       h("div", { className: "hc-ep-t" }, h("b", null, F("En direct")), h("button", { type: "button", className: "hs-lien", disabled: dvOcc, onClick: lireEnDirect }, dvOcc ? "…" : F("Actualiser"))),
@@ -2871,6 +2877,7 @@ var HC_CSS = [
   ".hs.hs-int .hs-in{padding:0;max-width:none}",
   ".hc .hc-jj{margin-top:8px}",
   ".hc .hc-jj-fin{display:flex;justify-content:flex-end;margin:14px 0 6px}",
+  ".hc .hc-pl-plus{display:flex;justify-content:center;padding:12px 0 6px}",
   ".hc .hc-dec-b{display:flex;flex-direction:column;align-items:flex-end;padding:12px 0}",
   ".hc .hc-dec{margin:0 -16px;padding:14px 16px;border-top:1px solid rgba(201,166,107,.25);background:rgba(201,166,107,.05)}",
   ".hc .hc-dec-l{margin-top:8px}",
