@@ -1982,7 +1982,7 @@ function EcranConcours() {
   }
   function cartesLiens(cle, l) { l = l.filter(Boolean); return l.length ? h("div", { key: cle, className: "hc-cls" }, l) : null; }
   var liensPassages = cartesLiens("lp", [
-    carteLien("jj", "jj", F("Jour J"), F("Le direct et les heures de passage"), "images/concours-hero-bai-tresse.webp", function () { ouvrir("jour-j"); }),
+    /* 09/11 14h15 (Blandine : « Passages, c'est la page Jour J ») : pas de carte Jour J ici */
     carteLien("dos", "dos", F("Dossier du concours"), F("licence, vaccins du cheval, papiers"), "images/concours-hero-cso.webp", function () { ouvrir("dossier-concours"); })]);
   var liensResultats = cartesLiens("lr", [
     carteLien("pc", "perf", F("Performances chevaux"), F("Classement de la saison"), "images/team-competition-performances-hero.webp", function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (e) { } setEcran("performances-chevaux"); }),
