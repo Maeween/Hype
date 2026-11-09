@@ -1265,7 +1265,11 @@ function EcranTeamMedias() {
     function navBtn(cible, txt, fin) {
       return h("button", { type: "button", disabled: !cible || occupe, onClick: function () { if (cible) lire(cible); }, style: { background: "none", border: "none", padding: "10px 0", minHeight: 44, color: cible ? IV2 : "rgba(243,238,228,0.2)", fontFamily: M, fontSize: 12.5, cursor: cible ? "pointer" : "default" } }, txt);
     }
-    var memes = liste.filter(function (x) { return x.id !== v.id && v.agenda_id && x.agenda_id === v.agenda_id; });
+    /* 09/11 20h50 (Blandine : « quand j'ouvre les vidéos d'Evan et Rizotto je vois aussi celles de Chloé et Daphné ») : en bas, seulement
+       les vidéos du même concours qui ont le même cavalier ou le même cheval (une vidéo sans personne ni cheval rattaché garde tout le concours) */
+    var vCav = v.cavaliers || [], vCh = v.chevaux || [];
+    function memeCouple(x) { if (!vCav.length && !vCh.length) return true; return (x.cavaliers || []).some(function (c) { return vCav.indexOf(c) !== -1; }) || (x.chevaux || []).some(function (c) { return vCh.indexOf(c) !== -1; }); }
+    var memes = liste.filter(function (x) { return x.id !== v.id && v.agenda_id && x.agenda_id === v.agenda_id && memeCouple(x); });
     if (!memes.length) memes = liste.filter(function (x) { return x.id !== v.id && (x.chevaux || []).some(function (c) { return (v.chevaux || []).indexOf(c) !== -1; }); });
     function videoDe(u) { if (u === visu) return v; var m = /^team:(.+)$/.exec(String(u)); return m ? liste.filter(function (x) { return x.id === m[1]; })[0] : null; }
     var dLong = (function () { var m = String(v.date_video || v.cree_le || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var t = new Intl.DateTimeFormat(lg, { weekday: "long", day: "numeric", month: "long" }).format(new Date(+m[1], +m[2] - 1, +m[3])); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return dateCourte(v.date_video || v.cree_le); } })();
