@@ -39022,6 +39022,95 @@ function EcranVideosCavaliere() {
   var stErVC = React.useState(""); var errVC = stErVC[0], setErrVC = stErVC[1];
   var stCsVC = React.useState(false); var supVC = stCsVC[0], setSupVC = stCsVC[1];
   var cibleVC = "cavalier:" + cid;
+  /* 09/11 (Blandine « Ok continue ») : « + AJOUTER UNE VIDEO » DEPUIS LA PAGE DU CAVALIER. La video part chez Mux (cible
+     « cavalier:<id> », destination « collection ») et rejoint directement une collection de la page (existante ou nouvelle).
+     Elle compte dans la limite de videos du compte qui l envoie, comme les autres (fonction hype_reserver_place_video,
+     elargie le 09/11 : une video « collection » prete compte tant qu elle est dans une collection de la page).
+     Si Mux met plus de 2 min a la preparer : elle est notee en attente dans ce telephone et rangee a la prochaine ouverture. */
+  var stUpVC = React.useState(null); var upVC = stUpVC[0], setUpVC = stUpVC[1];   /* { choix, nouvNom, etape, pct, texte } */
+  var refFicVC = React.useRef(null);
+  var CLE_ATT_VC = "hype_vc_attente";
+  function lireAttVC() { try { return JSON.parse(localStorage.getItem(CLE_ATT_VC) || "[]") || []; } catch (e) { return []; } }
+  function ecrireAttVC(l) { try { localStorage.setItem(CLE_ATT_VC, JSON.stringify(l)); } catch (e) { } }
+  async function rangerDansColVC(colId, url) {
+    var rC = await supa.from("collections_videos").select("id, videos").eq("id", colId).maybeSingle();
+    if (rC && rC.error) throw rC.error;
+    var l = (rC && rC.data && Array.isArray(rC.data.videos)) ? rC.data.videos.slice() : [];
+    if (l.indexOf(url) < 0) l.push(url);
+    var rU = await supa.from("collections_videos").update({ videos: l }).eq("id", colId).select("id");
+    if (rU && rU.error) throw rU.error;
+    if (!rU || !rU.data || !rU.data.length) throw new Error(msgRefusVC);
+  }
+  React.useEffect(function () {   /* envois restes en preparation : on les range des qu ils sont prets */
+    if (!moiVC || !cid || typeof hypeMuxAppel !== "function") return;
+    var l = lireAttVC().filter(function (x) { return x && x.user === moiVC.id && x.cible === cibleVC; });
+    if (!l.length) return;
+    var vifA = true;
+    (async function () {
+      var fini = [];
+      for (var i = 0; i < l.length; i++) {
+        try {
+          var st = await hypeMuxAppel({ action: "status", upload_id: l[i].upload }, 20);
+          if (st && st.data && st.data.playback_id) {
+            await rangerDansColVC(l[i].col, "https://stream.mux.com/" + st.data.playback_id + ".m3u8");
+            try { await hypeVideoTraceMaj(l[i].upload, { statut: "ready", playback_id: st.data.playback_id, duree: st.data.duration || null }, "pasReady"); } catch (eT) { }
+            fini.push(l[i].upload);
+          } else if (st && st.data && typeof hypeMuxStatutTermine === "function" && hypeMuxStatutTermine(st.data.status)) {
+            try { await hypeVideoTraceMaj(l[i].upload, { statut: "errored", erreur: "Mux : " + String(st.data.status) }, "pasReady"); } catch (eT2) { }
+            fini.push(l[i].upload);
+          }
+        } catch (eA) { }
+      }
+      if (fini.length) { ecrireAttVC(lireAttVC().filter(function (x) { return fini.indexOf(x.upload) < 0; })); if (vifA) rechargerColVC(); }
+    })();
+    return function () { vifA = false; };
+  }, [moiVC && moiVC.id, cid]);
+  async function envoyerVideoVC(fichier) {
+    var u = upVC; if (!u || !fichier || !moiVC) return;
+    var nouvelle = u.choix === "nouv", colId = nouvelle ? null : u.choix, colCree = null;
+    function etat(o) { setUpVC(function (x) { return x ? Object.assign({}, x, o) : x; }); }
+    try {
+      if (!/^video\//.test(String(fichier.type || "")) && !/\.(mov|mp4|m4v|webm)$/i.test(String(fichier.name || ""))) throw new Error(T("Ce fichier n\u2019est pas une vid\u00e9o.", "This file is not a video.", "Este archivo no es un vídeo.", "Questo file non è un video.", "このファイルは動画ではありません。", "Diese Datei ist kein Video.", "هذا الملف ليس فيديو.", "这个文件不是视频。", "Dit bestand is geen video.", "Este arquivo não é um vídeo.", "Den här filen är ingen video.", "Этот файл не видео.", "Ten plik nie jest wideo.", "이 파일은 동영상이 아니에요."));
+      etat({ etape: "envoi", pct: 0, texte: T("Préparation de l’envoi…", "Preparing the upload…", "Preparando el envío…", "Preparazione dell’invio…", "アップロードを準備中…", "Upload wird vorbereitet…", "جارٍ تحضير الإرسال…", "正在准备上传…", "Upload voorbereiden…", "Preparando o envio…", "Förbereder uppladdningen…", "Готовлю отправку…", "Przygotowuję wysyłanie…", "업로드 준비 중…") });
+      if (nouvelle) {
+        var maxO = (colsVC || []).reduce(function (m, cO) { return Math.max(m, cO.ordre || 0); }, -1);
+        var rN = await supa.from("collections_videos").insert({ cible: cibleVC, nom: String(u.nouvNom || "").trim().slice(0, 60), videos: [], ordre: maxO + 1 }).select("id");
+        if (rN && rN.error) throw rN.error;
+        if (!rN || !rN.data || !rN.data.length) throw new Error(msgRefusVC);
+        colId = colCree = rN.data[0].id;
+      }
+      var rCr = await hypeMuxAppel({ cible: cibleVC }, 25);
+      if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
+        var refus = String((rCr && rCr.error && (rCr.error.code || rCr.error.message || rCr.error)) || "");
+        throw new Error(/plafond|autoris|quota/i.test(refus) ? T("Tu as atteint ton nombre maximum de vidéos.", "You’ve reached your maximum number of videos.", "Has alcanzado tu número máximo de vídeos.", "Hai raggiunto il numero massimo di video.", "動画の上限数に達しました。", "Du hast deine maximale Anzahl an Videos erreicht.", "لقد بلغت الحد الأقصى لعدد الفيديوهات.", "你已达到视频数量上限。", "Je hebt je maximale aantal video's bereikt.", "Você atingiu o número máximo de vídeos.", "Du har nått ditt högsta antal videor.", "Ты достиг максимального количества видео.", "Osiągnąłeś maksymalną liczbę wideo.", "동영상 최대 개수에 도달했어요.") : (T("Envoi impossible : ", "Upload impossible: ", "Envío imposible: ", "Invio impossibile: ", "アップロードできません：", "Upload nicht möglich: ", "تعذّر الإرسال: ", "无法上传：", "Upload onmogelijk: ", "Envio impossível: ", "Uppladdning omöjlig: ", "Отправка невозможна: ", "Wysyłanie niemożliwe: ", "업로드할 수 없어요: ") + refus));
+      }
+      var upId = String(rCr.data.upload_id);
+      var rTr = await hypeVideoTraceMaj(upId, { destination_type: "collection", destination_id: String(colId), nom: fichier.name }, null);
+      if (!rTr || rTr.error) throw new Error(T("Suivi de l’envoi impossible, rien n’a été envoyé.", "The upload couldn’t be tracked; nothing was sent.", "No se pudo seguir el envío; no se ha enviado nada.", "Impossibile seguire l’invio, non è stato inviato nulla.", "アップロードを追跡できず、何も送信されませんでした。", "Der Upload konnte nicht verfolgt werden, nichts wurde gesendet.", "تعذّر تتبّع الإرسال، لم يُرسل شيء.", "无法跟踪上传，未发送任何内容。", "De upload kon niet worden gevolgd, er is niets verzonden.", "Não foi possível acompanhar o envio, nada foi enviado.", "Uppladdningen kunde inte följas, inget skickades.", "Не удалось отследить отправку, ничего не отправлено.", "Nie udało się śledzić wysyłania, nic nie wysłano.", "업로드를 추적할 수 없어 아무것도 보내지 않았어요."));
+      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function (pct) { etat({ etape: "envoi", pct: pct, texte: T("Envoi de la vidéo… ", "Uploading the video… ", "Enviando el vídeo… ", "Invio del video… ", "動画をアップロード中… ", "Video wird hochgeladen… ", "جارٍ إرسال الفيديو… ", "正在上传视频… ", "Video uploaden… ", "Enviando o vídeo… ", "Laddar upp videon… ", "Отправка видео… ", "Wysyłanie wideo… ", "동영상 업로드 중… ") + Math.round(pct) + " %" }); });
+      if (rUp && rUp.error) { try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { } throw new Error(T("Envoi interrompu : ", "Upload interrupted: ", "Envío interrumpido: ", "Invio interrotto: ", "アップロードが中断されました：", "Upload unterbrochen: ", "انقطع الإرسال: ", "上传中断：", "Upload onderbroken: ", "Envio interrompido: ", "Uppladdningen avbröts: ", "Отправка прервана: ", "Wysyłanie przerwane: ", "업로드가 중단됐어요: ") + rUp.error); }
+      colCree = null;   /* la video est partie : la collection reste meme si Mux tarde */
+      try { await hypeVideoTraceMaj(upId, { statut: "processing" }, "pasReady"); } catch (e3) { }
+      etat({ etape: "envoi", pct: 100, texte: T("Vidéo reçue, Mux la prépare…", "Video received, Mux is preparing it…", "Vídeo recibido, Mux lo está preparando…", "Video ricevuto, Mux lo sta preparando…", "動画を受信しました。Muxが準備中…", "Video empfangen, Mux bereitet es vor…", "تم استلام الفيديو، Mux يجهّزه…", "已收到视频，Mux 正在处理…", "Video ontvangen, Mux bereidt hem voor…", "Vídeo recebido, o Mux está preparando…", "Videon har tagits emot, Mux förbereder den…", "Видео получено, Mux его готовит…", "Wideo odebrane, Mux je przygotowuje…", "동영상을 받았어요. Mux가 준비 중이에요…") });
+      var rSt = await hypeMuxAttendrePret(upId);
+      if (rSt && rSt.playback_id) {
+        await rangerDansColVC(colId, "https://stream.mux.com/" + rSt.playback_id + ".m3u8");
+        try { await hypeVideoTraceMaj(upId, { statut: "ready", playback_id: rSt.playback_id, duree: rSt.duree || null }, "pasReady"); } catch (e5) { }
+        await rechargerColVC();
+        etat({ etape: "fini", texte: T("Vidéo ajoutée.", "Video added.", "Vídeo añadido.", "Video aggiunto.", "動画を追加しました。", "Video hinzugefügt.", "تمت إضافة الفيديو.", "视频已添加。", "Video toegevoegd.", "Vídeo adicionado.", "Videon har lagts till.", "Видео добавлено.", "Wideo dodane.", "동영상을 추가했어요.") });
+      } else if (rSt && rSt.errored) {
+        try { await hypeVideoTraceMaj(upId, { statut: "errored", erreur: String(rSt.error || "Mux") }, "pasReady"); } catch (e6) { }
+        throw new Error(T("Mux n’a pas pu préparer cette vidéo.", "Mux could not prepare this video.", "Mux no pudo preparar este vídeo.", "Mux non è riuscito a preparare questo video.", "Muxがこの動画を準備できませんでした。", "Mux konnte dieses Video nicht vorbereiten.", "تعذّر على Mux تجهيز هذا الفيديو.", "Mux 无法处理这个视频。", "Mux kon deze video niet voorbereiden.", "O Mux não conseguiu preparar este vídeo.", "Mux kunde inte förbereda videon.", "Mux не смог подготовить это видео.", "Mux nie zdołał przygotować tego wideo.", "Mux가 이 동영상을 준비하지 못했어요."));
+      } else {
+        ecrireAttVC(lireAttVC().concat([{ user: moiVC.id, cible: cibleVC, upload: upId, col: colId }]));
+        await rechargerColVC();
+        etat({ etape: "fini", texte: T("La vidéo est bien envoyée. Elle est encore en préparation : elle apparaîtra dans sa collection dans quelques minutes (rouvre la page).", "The video has been sent. It’s still being prepared and will appear in its collection in a few minutes (reopen the page).", "El vídeo se ha enviado. Aún se está preparando: aparecerá en su colección en unos minutos (vuelve a abrir la página).", "Il video è stato inviato. È ancora in preparazione: comparirà nella sua raccolta tra qualche minuto (riapri la pagina).", "動画は送信されました。まだ準備中です。数分後にコレクションに表示されます（ページを開き直してね）。", "Das Video wurde gesendet. Es wird noch vorbereitet und erscheint in einigen Minuten in seiner Sammlung (öffne die Seite erneut).", "تم إرسال الفيديو. ما زال قيد التجهيز وسيظهر في مجموعته خلال دقائق (أعد فتح الصفحة).", "视频已发送，仍在处理中，几分钟后会出现在合集中（请重新打开页面）。", "De video is verzonden. Hij wordt nog voorbereid en verschijnt over een paar minuten in zijn collectie (open de pagina opnieuw).", "O vídeo foi enviado. Ainda está sendo preparado e vai aparecer na coleção em alguns minutos (abra a página de novo).", "Videon har skickats. Den förbereds fortfarande och dyker upp i sin samling om några minuter (öppna sidan igen).", "Видео отправлено. Оно ещё готовится и появится в коллекции через несколько минут (открой страницу заново).", "Wideo zostało wysłane. Wciąż jest przygotowywane i za kilka minut pojawi się w kolekcji (otwórz stronę ponownie).", "동영상을 보냈어요. 아직 준비 중이라 몇 분 뒤 컬렉션에 나타나요 (페이지를 다시 열어 줘).") });
+      }
+    } catch (eV) {
+      if (colCree) { try { await supa.from("collections_videos").delete().eq("id", colCree); } catch (eD) { } }
+      etat({ etape: "erreur", texte: String((eV && eV.message) || eV) });
+    }
+  }
   function rechargerColVC() {
     if (!cid || typeof listerCollectionsVideos !== "function") { setColsVC([]); return Promise.resolve(); }
     return listerCollectionsVideos(cibleVC).then(function (rC) { setColsVC((rC && rC.data) || []); }, function () { setColsVC([]); });
@@ -39225,13 +39314,19 @@ function EcranVideosCavaliere() {
   }
   function nbVidTxtVC(n) { return n + " " + (n > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "wideo", "동영상") : T("vidéo", "video", "vídeo", "video", "本", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "wideo", "동영상")); }
   function enteteVC() {
-    var peut = peutGererVC() && videosChoixVC().length > 0;
+    var peut = peutGererVC();
     return h("div", { style: { display: "flex", alignItems: "center", gap: 9, margin: "4px 0 24px" } },
       h("span", { style: { width: 7, height: 7, background: "#D6C4A1", transform: "rotate(45deg)", flexShrink: 0 } }),
       h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#F3EEE4", fontWeight: 700, letterSpacing: 1 } }, T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상")),
       h("span", { style: { flex: 1, minWidth: 10, height: 1, background: "linear-gradient(90deg, rgba(214,196,161,0.5), transparent)" } }),
-      peut ? h("button", { type: "button", onClick: function () { ouvrirColVC(null); }, style: { flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: 5, minHeight: 34, padding: "0 13px", borderRadius: 999, border: "1px solid rgba(214,196,161,0.45)", background: "transparent", color: "#E8D5AE", fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } },
-        "+ " + T("Créer une collection", "Create a collection", "Crear una colección", "Crea una raccolta", "コレクションを作成", "Sammlung erstellen", "إنشاء مجموعة", "创建合集", "Een collectie maken", "Criar uma coleção", "Skapa en samling", "Создать коллекцию", "Utwórz kolekcję", "컬렉션 만들기")) : null);
+      peut ? h("button", { type: "button", onClick: function () { var c0 = (colsVC || [])[0]; setUpVC({ choix: c0 ? c0.id : "nouv", nouvNom: "", etape: "choix" }); }, style: { flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: 5, minHeight: 34, padding: "0 13px", borderRadius: 999, border: "1px solid rgba(214,196,161,0.45)", background: "transparent", color: "#E8D5AE", fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } },
+        "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj wideo", "동영상 추가")) : null);
+  }
+  /* 09/11 : « + Nouvelle collection » passe sous les collections (case en pointilles, comme sur la maquette validee) */
+  function boutonNouvColVC() {
+    if (!peutGererVC() || !videosChoixVC().length) return null;
+    return h("button", { type: "button", onClick: function () { ouvrirColVC(null); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", minHeight: 60, margin: "0 0 34px", border: "1px dashed rgba(214,196,161,0.45)", borderRadius: 16, background: "transparent", color: "#D6C4A1", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer" } },
+        "+ " + T("Créer une collection", "Create a collection", "Crear una colección", "Crea una raccolta", "コレクションを作成", "Sammlung erstellen", "إنشاء مجموعة", "创建合集", "Een collectie maken", "Criar uma coleção", "Skapa en samling", "Создать коллекцию", "Utwórz kolekcję", "컬렉션 만들기"));
   }
   function tuileVC(u, cle, grande) {
     return h("div", { key: cle, role: "button", onClick: function () { setVisu(u); }, style: { cursor: "pointer", minWidth: 0 } },
@@ -39261,6 +39356,41 @@ function EcranVideosCavaliere() {
           h("div", { style: { fontSize: 9.5, color: "#6F7A83", marginTop: 4, textAlign: "center", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
             v.src === "__id__" ? T("Identifié", "Tagged", "Etiquetado", "Taggato", "タグ", "Markiert", "أشير إليه", "被标记", "Getagd", "Marcado", "Taggad", "Отмечен", "Oznaczony", "태그됨") : (v.src || dateCourte(v.d))));
       }));
+  }
+  function feuilleEnvoiVC() {
+    var u = upVC; if (!u) return null;
+    var occupe = u.etape === "envoi";
+    var radioV = function (val, txt, sous) {
+      var on = u.choix === val;
+      return h("button", { key: "rv" + val, type: "button", disabled: occupe, onClick: function () { setUpVC(function (x) { return Object.assign({}, x, { choix: val }); }); }, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 48, padding: "8px 2px", background: "none", border: "none", borderBottom: "1px solid rgba(243,238,228,0.07)", color: "#F3EEE4", textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { flex: 1, minWidth: 0 } }, h("span", { dir: "auto", style: { display: "block", fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 19, lineHeight: 1.2 } }, txt), sous ? h("span", { style: { display: "block", fontFamily: "'Montserrat',sans-serif", fontSize: 11, color: "rgba(243,238,228,0.45)", marginTop: 2 } }, sous) : null),
+        h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + (on ? "#D6C4A1" : "rgba(243,238,228,0.4)"), display: "flex", alignItems: "center", justifyContent: "center" } }, on ? h("span", { style: { width: 12, height: 12, borderRadius: "50%", background: "#D6C4A1" } }) : null));
+    };
+    var nomOk = u.choix !== "nouv" || String(u.nouvNom || "").trim();
+    var btnS = { minHeight: 46, borderRadius: 999, background: "transparent", fontFamily: "'Montserrat',sans-serif", fontSize: 13, cursor: "pointer" };
+    var fen = h("div", { "data-noswipe": "true", onClick: function () { if (!occupe) setUpVC(null); }, style: { position: "fixed", inset: 0, zIndex: 10050, background: "rgba(3,7,6,0.78)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "88vh", overflowY: "auto", boxSizing: "border-box", padding: "16px 20px calc(24px + env(safe-area-inset-bottom))", borderRadius: "22px 22px 0 0", background: "#0E1214", borderTop: "1px solid rgba(214,196,161,0.35)", color: "#F3EEE4" } },
+        h("input", { ref: refFicVC, type: "file", accept: "video/*", style: { display: "none" }, onChange: function (eF) { var f = eF.target.files && eF.target.files[0]; eF.target.value = ""; if (f) envoyerVideoVC(f); } }),
+        h("div", { style: { width: 40, height: 4, borderRadius: 4, background: "rgba(255,255,255,0.25)", margin: "0 auto 14px" } }),
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 26 } }, T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj wideo", "동영상 추가")),
+        (u.etape === "choix" || u.etape === "erreur") ? h(React.Fragment, null,
+          h("div", { style: { margin: "14px 0 4px", fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "#D6C4A1" } }, T("Dans quelle collection ?", "In which collection?", "¿En qué colección?", "In quale raccolta?", "どのコレクションに？", "In welche Sammlung?", "في أي مجموعة؟", "放进哪个合集？", "In welke collectie?", "Em qual coleção?", "I vilken samling?", "В какую коллекцию?", "Do której kolekcji?", "어느 컬렉션에?")),
+          (colsVC || []).map(function (c) { return radioV(c.id, String(c.nom || ""), nbVidTxtVC((Array.isArray(c.videos) ? c.videos : []).length)); }),
+          radioV("nouv", "+ " + T("Nouvelle collection", "New collection", "Nueva colección", "Nuova raccolta", "新しいコレクション", "Neue Sammlung", "مجموعة جديدة", "新合集", "Nieuwe collectie", "Nova coleção", "Ny samling", "Новая коллекция", "Nowa kolekcja", "새 컬렉션"), null),
+          u.choix === "nouv" ? h("input", { type: "text", value: u.nouvNom, maxLength: 60, dir: "auto", onChange: function (eI) { var v = eI.target.value; setUpVC(function (x) { return Object.assign({}, x, { nouvNom: v }); }); },
+            placeholder: T("Nom de la collection", "Collection name", "Nombre de la colección", "Nome della raccolta", "コレクション名", "Name der Sammlung", "اسم المجموعة", "合集名称", "Naam van de collectie", "Nome da coleção", "Samlingens namn", "Название коллекции", "Nazwa kolekcji", "컬렉션 이름"),
+            style: { width: "100%", boxSizing: "border-box", minHeight: 46, marginTop: 10, padding: "0 14px", borderRadius: 12, border: "1px solid rgba(214,196,161,0.4)", background: "rgba(255,255,255,0.03)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 16 } }) : null,
+          h("div", { style: { marginTop: 12, fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, color: "rgba(243,238,228,0.5)", lineHeight: 1.5 } }, T("La vidéo compte dans ta limite de vidéos, comme les autres.", "The video counts towards your video limit, like the others.", "El vídeo cuenta en tu límite de vídeos, como los demás.", "Il video conta nel tuo limite di video, come gli altri.", "ほかの動画と同じく、動画の上限数にカウントされます。", "Das Video zählt wie die anderen zu deinem Video-Limit.", "يُحتسب الفيديو ضمن حدّ فيديوهاتك مثل غيره.", "这个视频和其他视频一样计入你的视频上限。", "De video telt mee voor je videolimiet, net als de andere.", "O vídeo conta no seu limite de vídeos, como os outros.", "Videon räknas in i din videogräns, precis som de andra.", "Видео учитывается в твоём лимите, как и остальные.", "Wideo wlicza się do twojego limitu, jak pozostałe.", "이 동영상도 다른 동영상처럼 한도에 포함돼요.")),
+          u.etape === "erreur" ? h("div", { style: { marginTop: 12, padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "#FFD3D9", lineHeight: 1.5 } }, u.texte) : null,
+          h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
+            h("button", { type: "button", onClick: function () { setUpVC(null); }, style: Object.assign({}, btnS, { flex: 1, border: "1px solid rgba(243,238,228,0.22)", color: "rgba(243,238,228,0.7)" }) }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")),
+            h("button", { type: "button", disabled: !nomOk, onClick: function () { try { if (refFicVC.current) refFicVC.current.click(); } catch (eC) { } }, style: Object.assign({}, btnS, { flex: 1.4, border: "1px solid #D6C4A1", color: "#D6C4A1", fontWeight: 700, opacity: nomOk ? 1 : 0.45 }) }, T("Choisir la vidéo", "Choose the video", "Elegir el vídeo", "Scegli il video", "動画を選ぶ", "Video auswählen", "اختر الفيديو", "选择视频", "Video kiezen", "Escolher o vídeo", "Välj videon", "Выбрать видео", "Wybierz wideo", "동영상 고르기"))))
+        : h(React.Fragment, null,
+          h("div", { style: { margin: "18px 0 10px", fontFamily: "'Montserrat',sans-serif", fontSize: 13, color: "rgba(243,238,228,0.8)", lineHeight: 1.5 } }, u.texte || ""),
+          u.etape === "envoi" ? h("div", { style: { height: 4, borderRadius: 4, background: "rgba(243,238,228,0.15)", overflow: "hidden" } }, h("div", { style: { width: Math.max(4, Math.min(100, u.pct || 0)) + "%", height: "100%", background: "#C9A66B", transition: "width .3s" } })) : null,
+          u.etape === "fini" ? h("button", { type: "button", onClick: function () { setUpVC(null); }, style: Object.assign({}, btnS, { width: "100%", marginTop: 18, border: "1px solid #D6C4A1", color: "#D6C4A1", fontWeight: 700 }) }, "OK") : null)));
+    if (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) return ReactDOM.createPortal(fen, document.body);
+    return fen;
   }
   function fenetreColVC() {
     var e = edVC; if (!e) return null;
@@ -39321,12 +39451,13 @@ function EcranVideosCavaliere() {
             ? h("div", { style: { borderRadius: 14, border: "1px solid rgba(255,255,255,0.08)", padding: 16, color: "#8A929C", fontSize: 12.5, lineHeight: 1.55 } }, erreur || VIDE_VC)
             : h(React.Fragment, null,
                 secsVC().map(sectionVC),
+                boutonNouvColVC(),
                 autresVC().length ? h("div", null,
                   secsVC().length ? h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "6px 0 16px" } },
                     h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 24, fontStyle: "italic", color: "rgba(243,238,228,0.86)" } }, T("Autres vidéos", "Other videos", "Otros vídeos", "Altri video", "その他の動画", "Weitere Videos", "فيديوهات أخرى", "其他视频", "Andere video's", "Outros vídeos", "Andra videor", "Другие видео", "Inne wideo", "기타 동영상")),
                     h("span", { style: { flex: 1, minWidth: 12, height: 1, background: "linear-gradient(90deg, rgba(214,196,161,0.45), transparent)" } })) : null,
                   grilleAutresVC(autresVC())) : null))),
-    fenetreColVC(),
+    fenetreColVC(), feuilleEnvoiVC(),
     visu ? pageVideoVC() : null);
 }
 /* ════════ 28/09 (482) — LA PAGE « PHOTOS » D UNE CAVALIÈRE ════════
