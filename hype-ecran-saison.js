@@ -1207,6 +1207,7 @@ function EcranConcours() {
   var _mms = React.useState(""); var medMsg = _mms[0], setMedMsg = _mms[1];
   var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];
   var _fov = React.useState(false); var filOuv = _fov[0], setFilOuv = _fov[1];   /* 09/11 16h35 : le fil n'apparaît que pour ajouter des photos */
+  var _vgf = React.useState({}); var vgFerme = _vgf[0], setVgFerme = _vgf[1];   /* 09/11 19h15 : lots de vidéos repliés */
   var _mgp = React.useState("cav"); var medGrp = _mgp[0], setMedGrp = _mgp[1];   /* 09/11 15h10 : vidéos rangées par cavalier ou par cheval */   /* 09/11 13h10 : média principal choisi dans « Mes médias » */
   var _gde = React.useState(null); var grpEd = _gde[0], setGrpEd = _gde[1];   /* brouillon de la coach (null = fermé) */
   var _gdm = React.useState(""); var grpMsg = _gdm[0], setGrpMsg = _gdm[1];
@@ -2257,13 +2258,13 @@ function EcranConcours() {
   var autresMes = mesM.filter(function (x) { return x !== principal; });
   var ronds = autresMes.slice(0, 3), rangee = autresMes.slice(3, 3 + medNM);
   function boutonId(x) { var ok = moi && (x.auteur === moi.id || gestion); return ok ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null; }
-  function vue(x, cls, larg) {   /* aperçu dans son format naturel (hauteur imposée par la classe, largeur libre) */
+  function vue(x, cls, larg, sansId) {   /* aperçu dans son format naturel (hauteur imposée par la classe, largeur libre) */
     var src = apercu(x, larg);
     return h("button", { type: "button", className: cls, onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
       src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }) : h("span", { className: "hc-mt-vide" }),
       x.video ? h("span", { className: "hc-mt-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
       (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null,
-      boutonId(x));
+      sansId ? null : boutonId(x));
   }
   var blocMes = (medG && moi && (mesM.length || !gestion)) ? h("div", { className: "hc-rep-s" },
     h("div", { className: "hc-rep-st" }, h("h3", null, F("Mes médias")), h("span", null, mesM.length + " " + (mesM.length > 1 ? F("médias") : F("média")))),
@@ -2334,22 +2335,25 @@ function EcranConcours() {
     videosF.length ? grpsV.map(function (g, gi) {
       /* 09/11 15h14 (Blandine) : un bandeau photo + nom sépare chaque lot ; 2 vidéos côte à côte, la suite défile */
       return h("div", { key: g.id, className: "hc-vg" + (g.l.length === 1 ? " seule" : "") },
-        /* 09/11 15h17 (Blandine : « un truc visuel sympa, un encart avec image ») : encart au style de la page de l'équipe, photo à droite */
-        h("div", { className: "hc-vg-t" },
-          /* 09/11 15h56 (Blandine : « garde des images qu'on met nous, pour avoir quelque chose de régulier ») : images de l'appli, pas les photos de profil */
-          h("img", { className: "hc-vg-img", src: g.id === "__" ? "images/hype-entete-concours.jpg" : (medGrp === "ch" ? HS_IMG_LOTS_CH : medGrp === "ep" ? HS_IMG_LOTS_EP : HS_IMG_LOTS_CAV)[gi % 4], alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }),
-          h("span", { className: "hc-vg-voile", "aria-hidden": "true" }),
-          h("span", { className: "hc-vg-k" }, g.id === "__" ? F("Touche ⋯ pour dire qui est dessus") : (medGrp === "ch" ? F("Cheval") : F("Cavalier"))),
-          h("b", null, g.nom), h("span", { className: "hc-vg-n" }, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
+        /* 09/11 19h15 (Blandine, maquette : « retire leurs onglets et applique le design là ») : carte sombre, rond photo/initiale, nom, nombre, flèche pour replier */
+        h("button", { type: "button", className: "hc-vg-h", "aria-expanded": !vgFerme[g.id], onClick: function () { var n = Object.assign({}, vgFerme); n[g.id] = !vgFerme[g.id]; setVgFerme(n); } },
+          h("span", { className: "hc-vg-av" }, g.photo ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(g.photo, 160, 160) : g.photo, alt: "", loading: "lazy" })
+            : (g.id === "__" ? h("svg", { viewBox: "0 0 24 24", width: 24, height: 24, "aria-hidden": "true" }, h("path", { d: "M6 20c0-5 2-8 6-10l1-4 2 3c2 1 3 3 3 5l-2 1-2-2-3 2v5", fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round" })) : h("b", null, String(g.nom || "?").charAt(0).toUpperCase()))),
+          h("span", { className: "hc-vg-nm" }, h("b", null, g.nom), h("small", null, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
+          h("span", { className: "hc-vg-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 20, height: 20 }, h("path", { d: vgFerme[g.id] ? "M6 9l6 6 6-6" : "M6 15l6-6 6 6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" })))),
+        vgFerme[g.id] ? null :
         h("div", { className: "hc-vg-l", "data-hscroll": "1" }, g.l.map(function (x) {
           /* 09/11 15h55 (Blandine) : sous la vidéo, le cheval (ou le cavalier en « Par cheval »), l'épreuve et le classement quand on l'a */
           var nomsAutre = medGrp === "ep" ? [[x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }).filter(Boolean).join(", "), x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }).filter(Boolean).join(", ")].filter(Boolean).join(" & ")].filter(Boolean).concat([]).slice(0, 1) : (medGrp === "ch" ? x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }) : x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; })).filter(Boolean);
           var res = null; (resConc || []).forEach(function (r) { if (res || r.visible === false) return; if (x.tv && x.tv.resultat && r.id === x.tv.resultat) { res = r; return; }
             if (hsNomEpreuve(r.epreuve || "") === x.epreuve && r.cavalier_id && x.cav.indexOf(String(r.cavalier_id)) !== -1 && (!r.cheval_id || !x.ch.length || x.ch.indexOf(String(r.cheval_id)) !== -1)) res = r; });
           var etR = res ? (res.place ? placeTxt(res.place) + (res.partants ? " / " + res.partants : "") : (etatDe(res.classement) || "")) : "";
-          return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700),
+          return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700, true),
+            h("div", { className: "hc-vg-bas" }, h("div", { className: "hc-vg-txt" },
             nomsAutre.length ? h("span", { className: "hc-vg-ch" }, nomsAutre.join(", ")) : (x.cav.length || x.ch.length ? null : h("span", { className: "hc-vg-ch" }, F("Vidéo"))),
-            ((medGrp !== "ep" && x.epreuve) || etR) ? h("span", { className: "hc-vg-ep" }, medGrp === "ep" ? "" : (x.epreuve || ""), etR ? h("b", null, ((medGrp !== "ep" && x.epreuve) ? " · " : "") + etR + (res && /sf|sans\s*faute/i.test(String(res.mention || "")) ? " · " + F("Sans-faute") : "")) : null) : null);
+            ((medGrp !== "ep" && x.epreuve) || etR) ? h("span", { className: "hc-vg-ep" }, medGrp === "ep" ? "" : (x.epreuve || ""), etR ? h("b", null, ((medGrp !== "ep" && x.epreuve) ? " · " : "") + etR + (res && /sf|sans\s*faute/i.test(String(res.mention || "")) ? " · " + F("Sans-faute") : "")) : null) : null),
+              (x.tv && typeof HypeJaimeTexte === "function") ? h("span", { className: "hc-vg-jm" }, h(HypeJaimeTexte, { key: "jv" + x.tv.id, cible: "teamvideo:" + x.tv.id, marge: 0 })) : null,
+              (moi && (x.auteur === moi.id || gestion)) ? h("button", { type: "button", className: "hc-vg-mn", "aria-label": F("Identifier"), onClick: function () { setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); try { setTimeout(function () { var el = document.querySelector(".hc-mid"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 60); } catch (e0) { } } }, "•••") : null));
         })));
     }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
   function selF(val, set, libre, opts, ic) {
@@ -2865,14 +2869,30 @@ var HC_CSS = [
   ".hc .hc-vq button[style*='span 2']{grid-column:auto!important}",   /* vidéos de l'équipe : toutes la même largeur, 2 par ligne */
   ".hc .hc-vq .hs-sec{margin-top:4px}",
   ".hc .hc-prat{margin-bottom:22px}",
+  /* 09/11 19h15 — lots de vidéos selon la maquette de Blandine */
+  ".hc .hc-rep .hc-vg{border:1px solid rgba(201,166,107,.22);background:#0B0F13;border-radius:20px;padding:14px 14px 16px;margin-bottom:16px}",
+  ".hc .hc-vg-h{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;padding:0 0 14px;color:#F3EEE4;font:inherit;text-align:start;cursor:pointer}",
+  ".hc .hc-vg-av{flex:none;width:52px;height:52px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.75);background:#141a1c;display:flex;align-items:center;justify-content:center}",
+  ".hc .hc-vg-av img{width:100%;height:100%;object-fit:cover}",
+  ".hc .hc-vg-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:500;color:#C9A66B}",
+  ".hc .hc-vg-nm{flex:1;min-width:0;display:flex;flex-direction:column}",
+  ".hc .hc-vg-nm b{font-size:19px;font-weight:600;line-height:1.15}",
+  ".hc .hc-vg-nm small{font-size:13px;color:rgba(243,238,228,.65);margin-top:2px}",
+  ".hc .hc-vg-chev{flex:none;display:flex}",
+  ".hc .hc-vg-bas{display:flex;align-items:center;gap:12px;margin-top:10px}",
+  ".hc .hc-vg-txt{flex:1;min-width:0}",
+  ".hc .hc-vg-bas .hc-vg-ch{margin-top:0;font-size:15.5px}",
+  ".hc .hc-vg-jm{flex:none}",
+  ".hc .hc-vg-mn{flex:none;background:none;border:none;color:#F3EEE4;font-size:16px;letter-spacing:2px;padding:6px 2px;cursor:pointer}",
+  ".hc .hc-rep .hc-vg .hc-mt-play{width:62px;max-width:62px;border:1.5px solid #C9A66B;background:rgba(7,10,8,.45)}",
+  ".hc .hc-rep .hc-vg .hc-mt-d{right:10px;bottom:10px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:10px;background:rgba(7,10,8,.8)}",
+
   /* ── 09/11 16h51 — Médias alignés sur le haut de la fiche ── */
   ".hc .hc-rep .hc-rep-st{align-items:center;margin:8px 0 18px}",
   ".hc .hc-rep .hc-rep-st h3{font-size:clamp(22px,6.4vw,28px);line-height:1.1;padding-inline-start:12px;border-inline-start:2px solid #C9A66B}",
   ".hc .hc-rep .hc-rep-s + .hc-rep-s{margin-top:34px}",
   ".hc .hc-une{max-width:640px;margin:0 auto}",
   ".hc .hc-une-p{justify-content:center}",
-  ".hc .hc-rep .hc-vg{border:none;background:none;padding:0;margin-bottom:28px}",
-  ".hc .hc-rep .hc-vg-t{margin-bottom:12px}",
   ".hc .hc-rep-aj{gap:10px;flex-wrap:wrap;margin:10px 0 6px}",
   ".hc .hc-rep-ajb{font-size:13.5px;padding:11px 22px}",
 
