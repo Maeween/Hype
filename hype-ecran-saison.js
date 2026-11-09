@@ -2321,7 +2321,16 @@ function EcranConcours() {
           h("span", { className: "hc-vg-voile", "aria-hidden": "true" }),
           h("span", { className: "hc-vg-k" }, g.id === "__" ? F("Touche ⋯ pour dire qui est dessus") : (medGrp === "ch" ? F("Cheval") : F("Cavalier"))),
           h("b", null, g.nom), h("span", { className: "hc-vg-n" }, g.l.length + " " + (g.l.length > 1 ? F("vidéos") : F("vidéo")))),
-        h("div", { className: "hc-vg-l", "data-hscroll": "1" }, g.l.map(function (x) { return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700), x.epreuve ? h("span", { className: "hc-vg-ep" }, x.epreuve) : null); })));
+        h("div", { className: "hc-vg-l", "data-hscroll": "1" }, g.l.map(function (x) {
+          /* 09/11 15h55 (Blandine) : sous la vidéo, le cheval (ou le cavalier en « Par cheval »), l'épreuve et le classement quand on l'a */
+          var nomsAutre = (medGrp === "ch" ? x.cav.map(function (i) { var o = optCav.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; }) : x.ch.map(function (i) { var o = optCh.filter(function (q) { return q.id === i; })[0]; return o ? o.nom : ""; })).filter(Boolean);
+          var res = null; (resConc || []).forEach(function (r) { if (res || r.visible === false) return; if (x.tv && x.tv.resultat && r.id === x.tv.resultat) { res = r; return; }
+            if (hsNomEpreuve(r.epreuve || "") === x.epreuve && r.cavalier_id && x.cav.indexOf(String(r.cavalier_id)) !== -1 && (!r.cheval_id || !x.ch.length || x.ch.indexOf(String(r.cheval_id)) !== -1)) res = r; });
+          var etR = res ? (res.place ? placeTxt(res.place) + (res.partants ? " / " + res.partants : "") : (etatDe(res.classement) || "")) : "";
+          return h("div", { key: x.cle, className: "hc-vg-i" }, vue(x, "hc-vg-m", 700),
+            nomsAutre.length ? h("span", { className: "hc-vg-ch" }, nomsAutre.join(", ")) : null,
+            (x.epreuve || etR) ? h("span", { className: "hc-vg-ep" }, x.epreuve || "", etR ? h("b", null, (x.epreuve ? " · " : "") + etR + (res && /sf|sans\s*faute/i.test(String(res.mention || "")) ? " · " + F("Sans-faute") : "")) : null) : null);
+        })));
     }) : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs ? F("Aucune vidéo ne correspond à ces filtres.") : F("Pas encore de vidéo sur ce concours."))) : null;
   function selF(val, set, libre, opts, ic) {
     return h("label", { className: "hc-fp" + (val ? " on" : "") }, ico(ic), h("span", null, val ? ((opts.filter(function (o) { return (o.id || o) === val; })[0] || {}).nom || val) : libre), h("i", { "aria-hidden": "true" }, "⌄"),
@@ -2849,7 +2858,9 @@ var HC_CSS = [
   ".hc .hc-vg-i{flex:0 0 calc((100% - 10px) / 2);scroll-snap-align:start;min-width:0}",
   ".hc .hc-vg-m{position:relative;display:block;width:100%;aspect-ratio:16/10;padding:0;border:none;background:#0B0E0C;border-radius:12px;overflow:hidden;cursor:pointer;line-height:0}",
   ".hc .hc-vg-m img{width:100%;height:100%;object-fit:contain}",
-  ".hc .hc-vg-ep{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:5px}",
+  ".hc .hc-vg-ch{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;line-height:1.15;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".hc .hc-vg-ep{display:block;font-size:11px;color:rgba(243,238,228,.6);margin-top:2px}",
+  ".hc .hc-vg-ep b{color:#C9A66B;font-weight:600}",
   ".hc .hc-vg-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(201,166,107,.7);display:flex;align-items:center;justify-content:center;flex:none;background:#141a1c}",
   ".hc .hc-vg-av img{width:100%;height:100%;object-fit:cover}",
   ".hc .hc-vg-av b{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;color:#C9A66B}",
