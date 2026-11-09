@@ -181,7 +181,7 @@ function EcranCadreNoir() {
         ".cnx-hero p{color:#cdd8de;font-size:14px;line-height:1.65;margin:0 0 24px;max-width:560px}" +
         ".cnx-cta{display:flex;gap:12px;flex-wrap:wrap}" +
         ".cnx-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.03em;border:1px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;text-decoration:none}" +
-        ".cnx-btn-p{background:#7FA3AD;color:#04252b;box-shadow:0 8px 34px rgba(127,163,173,.35)}" +
+        ".cnx-btn-p{background:transparent;color:#C9A66B;border-color:#C9A66B;box-shadow:none}" +
         ".cnx-btn-v{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);color:#F4F7FA;backdrop-filter:blur(8px)}" +
         ".cnx-audio{position:sticky;top:calc(env(safe-area-inset-top) + 10px);z-index:40;display:flex;justify-content:flex-end;padding:0 16px;height:0}" +
         ".cnx-btn-audio{display:inline-flex;align-items:center;gap:8px;background:rgba(17,20,23,.85);border:1px solid rgba(127,163,173,.35);color:#F4F7FA;padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.45);font-family:'Montserrat',sans-serif}" +
@@ -631,7 +631,7 @@ function EcranEcolePortugaise() {
         ".cnx-hero p{color:#cdd8de;font-size:14px;line-height:1.65;margin:0 0 24px;max-width:560px}" +
         ".cnx-cta{display:flex;gap:12px;flex-wrap:wrap}" +
         ".cnx-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.03em;border:1px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;text-decoration:none}" +
-        ".cnx-btn-p{background:#7FA3AD;color:#04252b;box-shadow:0 8px 34px rgba(127,163,173,.35)}" +
+        ".cnx-btn-p{background:transparent;color:#C9A66B;border-color:#C9A66B;box-shadow:none}" +
         ".cnx-btn-v{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);color:#F4F7FA;backdrop-filter:blur(8px)}" +
         ".cnx-audio{position:sticky;top:calc(env(safe-area-inset-top) + 10px);z-index:40;display:flex;justify-content:flex-end;padding:0 16px;height:0}" +
         ".cnx-btn-audio{display:inline-flex;align-items:center;gap:8px;background:rgba(17,20,23,.85);border:1px solid rgba(127,163,173,.35);color:#F4F7FA;padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.45);font-family:'Montserrat',sans-serif}" +
@@ -1037,7 +1037,7 @@ function EcranEcoleJerez() {
         ".cnx-hero p{color:#cdd8de;font-size:14px;line-height:1.65;margin:0 0 24px;max-width:560px}" +
         ".cnx-cta{display:flex;gap:12px;flex-wrap:wrap}" +
         ".cnx-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.03em;border:1px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;text-decoration:none}" +
-        ".cnx-btn-p{background:#7FA3AD;color:#04252b;box-shadow:0 8px 34px rgba(127,163,173,.35)}" +
+        ".cnx-btn-p{background:transparent;color:#C9A66B;border-color:#C9A66B;box-shadow:none}" +
         ".cnx-btn-v{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);color:#F4F7FA;backdrop-filter:blur(8px)}" +
         ".cnx-audio{position:sticky;top:calc(env(safe-area-inset-top) + 10px);z-index:40;display:flex;justify-content:flex-end;padding:0 16px;height:0}" +
         ".cnx-btn-audio{display:inline-flex;align-items:center;gap:8px;background:rgba(17,20,23,.85);border:1px solid rgba(127,163,173,.35);color:#F4F7FA;padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.45);font-family:'Montserrat',sans-serif}" +
@@ -1438,7 +1438,7 @@ function EcranEcoleVienne() {
         ".cnx-hero p{color:#cdd8de;font-size:14px;line-height:1.65;margin:0 0 24px;max-width:560px}" +
         ".cnx-cta{display:flex;gap:12px;flex-wrap:wrap}" +
         ".cnx-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:13.5px;letter-spacing:.03em;border:1px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;text-decoration:none}" +
-        ".cnx-btn-p{background:#7FA3AD;color:#04252b;box-shadow:0 8px 34px rgba(127,163,173,.35)}" +
+        ".cnx-btn-p{background:transparent;color:#C9A66B;border-color:#C9A66B;box-shadow:none}" +
         ".cnx-btn-v{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);color:#F4F7FA;backdrop-filter:blur(8px)}" +
         ".cnx-audio{position:sticky;top:calc(env(safe-area-inset-top) + 10px);z-index:40;display:flex;justify-content:flex-end;padding:0 16px;height:0}" +
         ".cnx-btn-audio{display:inline-flex;align-items:center;gap:8px;background:rgba(17,20,23,.85);border:1px solid rgba(127,163,173,.35);color:#F4F7FA;padding:10px 16px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.45);font-family:'Montserrat',sans-serif}" +
