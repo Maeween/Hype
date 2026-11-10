@@ -241,6 +241,29 @@ function EcranAssistantIA() {
     const [epCheval, setEpCheval] = useState(null);
     const [epCav, setEpCav] = useState(null);
     const [epEnvoi, setEpEnvoi] = useState(false);
+    /* 10/11 18h45 (Blandine : « par défaut c'est privé ; que je puisse le laisser public, visible par la partie compétition ») :
+       le conseil envoyé à un cavalier reste PRIVÉ (lui + l'autrice ; il apparaît « 🔒 Privé » dans l'onglet Épingles de son
+       équipe, visible d'eux seuls). « Visible par l'équipe » le partage en plus avec l'équipe compétition commune. */
+    const [epEq, setEpEq] = useState(null);       /* équipe commune avec le cavalier choisi : { id, nom } ou null */
+    const [epPublic, setEpPublic] = useState(false);
+    useEffect(() => {
+        setEpPublic(false); setEpEq(null);
+        if (!epCav || !epCav.id) return;
+        let vif = true;
+        (async () => {
+            try {
+                const u = await utilisateurActuel(); if (!u || !u.id) return;
+                const rc = await supa.from("groupes_membres").select("groupe_id").eq("user_id", epCav.id);
+                const ids = ((rc && rc.data) || []).map((x) => x.groupe_id); if (!ids.length) return;
+                const rg = await supa.from("groupes").select("id, nom, cree_par").in("id", ids);
+                const rm = await supa.from("groupes_membres").select("groupe_id").eq("user_id", u.id).in("groupe_id", ids);
+                const miens = {}; ((rm && rm.data) || []).forEach((x) => { miens[x.groupe_id] = true; });
+                const g = ((rg && rg.data) || []).find((x) => miens[x.id] || String(x.cree_par) === String(u.id));
+                if (vif && g) setEpEq({ id: g.id, nom: g.nom || "" });
+            } catch (e) { }
+        })();
+        return () => { vif = false; };
+    }, [epCav && epCav.id]);
     const basculerTheme = (cle) => {
         setThemesEp((av) => {
             const l = (av || []).slice();
@@ -541,6 +564,10 @@ function EcranAssistantIA() {
                     if (u3 && u3.id && String(u3.id) !== String(cavalierId)) {
                         const rs = await supa.from("epingles_partages").insert({ epingle_id: idEp2, partage_par: u3.id, destinataire_id: cavalierId });
                         if (rs && rs.error && !/duplicate|unique/i.test(String(rs.error.message || ""))) envoiRate = true;
+                        if (epPublic && epEq && epEq.id) {
+                            const rg2 = await supa.from("epingles_partages").insert({ epingle_id: idEp2, partage_par: u3.id, groupe_id: epEq.id });
+                            if (rg2 && rg2.error && !/duplicate|unique/i.test(String(rg2.error.message || ""))) envoiRate = true;
+                        }
                     }
                 }
             } catch (eSh) { envoiRate = true; }
@@ -1654,6 +1681,12 @@ function EcranAssistantIA() {
                     React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 } },
                         epCheval ? pastille("🐴 " + epCheval.nom, () => setEpCheval(null)) : pastille("🐴 " + TXT("Quel cheval ? (facultatif)", "Which horse? (optional)", "¿Qué caballo? (opcional)", "Quale cavallo? (facoltativo)", "どの馬？（任意）", "Welches Pferd? (optional)", "أي حصان؟ (اختياري)", "哪匹马？（可选）", "Welk paard? (optioneel)", "Que cavalo? (opcional)", "Vilken häst? (valfritt)", "Какая лошадь? (необязательно)", "Który koń? (opcjonalnie)", "어떤 말? (선택)"), null, true, () => { setEpOnglet("chevaux"); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ }),
                         epCav ? pastille("🏇 " + epCav.nom, () => setEpCav(null)) : pastille("🏇 " + TXT("Pour qui ? (facultatif)", "For whom? (optional)", "¿Para quién? (opcional)", "Per chi? (facoltativo)", "誰のため？（任意）", "Für wen? (optional)", "لمن؟ (اختياري)", "给谁？（可选）", "Voor wie? (optioneel)", "Para quem? (opcional)", "För vem? (valfritt)", "Для кого? (необязательно)", "Dla kogo? (opcjonalnie)", "누구를 위해? (선택)"), null, true, () => { setEpOnglet("cavaliers"); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ })),
+                    (epCav && epEq) ? React.createElement("div", { role: "radiogroup", style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 } },
+                        [[false, "🔒 " + TXT("Privé", "Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개") + " · " + epCav.nom], [true, "👥 " + TXT("Visible par l’équipe", "Visible to the team", "Visible para el equipo", "Visibile alla squadra", "チームに公開", "Für das Team sichtbar", "مرئي للفريق", "团队可见", "Zichtbaar voor het team", "Visível para a equipa", "Synlig för laget", "Видно команде", "Widoczne dla drużyny", "팀에 공개")]].map((o) => React.createElement("button", { key: String(o[0]), type: "button", role: "radio", "aria-checked": epPublic === o[0], onClick: () => setEpPublic(o[0]),
+                            style: { flex: "1 1 0", minWidth: 0, minHeight: 38, padding: "6px 11px", borderRadius: 999, fontSize: 12.5, fontFamily: HB_SANS, cursor: "pointer", border: "1px solid " + (epPublic === o[0] ? "rgba(201,166,107,.7)" : "rgba(243,238,228,.16)"), background: epPublic === o[0] ? "rgba(201,166,107,.08)" : "transparent", color: epPublic === o[0] ? C : MU, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, o[1]))) : null,
+                    (epCav && epEq) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU, lineHeight: 1.45 } }, epPublic
+                        ? TXT("Toute l’équipe le verra dans l’onglet Épingles.", "The whole team will see it in the Pins tab.", "Todo el equipo lo verá en la pestaña Chinchetas.", "Tutta la squadra lo vedrà nella scheda Puntine.", "チーム全員がピン留めタブで見られます。", "Das ganze Team sieht ihn im Tab „Pins“.", "سيراه الفريق كله في تبويب الدبابيس.", "全队都能在“置顶”标签中看到。", "Het hele team ziet het in het tabblad Spelden.", "Toda a equipa vai vê-lo no separador Alfinetes.", "Hela laget ser det under fliken Nålar.", "Вся команда увидит это во вкладке «Закреплённое».", "Cała drużyna zobaczy to w zakładce Pinezki.", "팀 전체가 고정 탭에서 볼 수 있어요.")
+                        : TXT("Seuls toi et " + epCav.nom + " le verrez.", "Only you and " + epCav.nom + " will see it.", "Solo tú y " + epCav.nom + " lo veréis.", "Lo vedrete solo tu e " + epCav.nom + ".", "あなたと" + epCav.nom + "だけが見られます。", "Nur du und " + epCav.nom + " seht ihn.", "لن يراه إلا أنتِ و" + epCav.nom + ".", "只有你和" + epCav.nom + "能看到。", "Alleen jij en " + epCav.nom + " zien het.", "Só tu e " + epCav.nom + " o vão ver.", "Bara du och " + epCav.nom + " ser det.", "Это увидите только ты и " + epCav.nom + ".", "Zobaczysz to tylko ty i " + epCav.nom + ".", "너와 " + epCav.nom + "만 볼 수 있어요.")) : null,
                     (!epCheval && !epCav) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU } }, TXT("Sans cheval ni cavalier, le conseil va sur ta page cavalier.", "With no horse or rider, the advice goes to your rider page.", "Sin caballo ni jinete, el consejo va a tu página de jinete.", "Senza cavallo né cavaliere, il consiglio va sulla tua pagina cavaliere.", "馬も騎手も選ばないと、アドバイスはあなたの騎手ページに入ります。", "Ohne Pferd und Reiter landet der Rat auf deiner Reiterseite.", "من دون حصان ولا فارس، تذهب النصيحة إلى صفحتك كفارسة.", "不选马也不选骑手，建议会放到你的骑手主页。", "Zonder paard of ruiter komt de tip op je ruiterpagina.", "Sem cavalo nem cavaleiro, o conselho vai para a tua página de cavaleiro.", "Utan häst eller ryttare hamnar rådet på din ryttarsida.", "Без лошади и всадника совет попадёт на твою страницу всадника.", "Bez konia i jeźdźca wskazówka trafi na twoją stronę jeźdźca.", "말도 기수도 고르지 않으면 조언은 내 기수 페이지로 가요.")) : null,
                     React.createElement("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, marginBottom: 12 } },
                         hypeThemesHB(TXT).map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return React.createElement("button", { key: th[0], type: "button", onClick: () => basculerTheme(th[0]),
