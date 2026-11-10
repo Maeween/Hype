@@ -23,7 +23,7 @@ const aire = pts => pts.reduce((s, p, i) => { const q = pts[(i + 1) % pts.length
 for (const [niveau, fiche] of Object.entries(reprises)) {
     test(niveau + ' : toutes les figures sont continues, dans la carrière et dans le bon ordre', () => {
         const t = traces[niveau];
-        assert.equal(fiche.figures.length, { g3: 10, g4: 20, g5: 20, g6: 20, g7: 22, clubelite: 22 }[niveau]);
+        assert.equal(fiche.figures.length, { g3: 10, g4: 20, g5: 20, g6: 20, g7: 22, clubelite: 22, amat3gp: 22, amat2gp: 21 }[niveau]);
         const vues = new Set();
         t.points.forEach((p, i) => {
             assert(Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.dist));
@@ -168,7 +168,7 @@ test('le niveau sélectionné est conservé dans tous les modes, Club Élite com
 });
 test('les guides pointillés représentent 20 cercles et 13 demi-cercles réels', () => {
     let fermes = 0, ouverts = 0;
-    for (const t of Object.values(traces)) {
+    for (const t of ['g3', 'g4', 'g5', 'g6', 'g7', 'clubelite'].map(k => traces[k])) {
         for (const guide of contexte.guidesCourbesReprise(t)) {
             assert(guide.points.length >= 20);
             const a = guide.points[0], b = dernier(guide.points);
@@ -194,3 +194,9 @@ test('les conseils ne confondent plus les arrêts en G/S/I avec X, dans les 14 l
 });
 
 if (process.env.HYPE_TRACES_JSON) fs.writeFileSync(process.env.HYPE_TRACES_JSON, JSON.stringify({ letters: lettres, traces }));
+test('Amateur 2 GP : « PS — changement de main … vers X » va bien jusqu’à S (X n’est qu’un repère)', () => {
+    const f17 = figure('amat2gp', 17), f14 = figure('amat2gp', 14);
+    assert(f17.some(p => en(p, 'S')), 'la diagonale PS doit atteindre S');
+    assert(f14.some(p => en(p, 'R')), 'la diagonale VR doit atteindre R');
+    assert(f14.some(p => en(p, 'S')), 'RMCHS doit finir en S');
+});
