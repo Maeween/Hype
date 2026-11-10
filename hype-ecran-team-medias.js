@@ -511,7 +511,8 @@ function EcranTeamMedias() {
       h("button", { type: "button", onClick: function () { lire(v); }, disabled: occupe === v.id,
       style: { width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IV, cursor: "pointer", minWidth: 0 } },
       h("div", { style: { position: "relative", aspectRatio: "16 / 10", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(243,238,228,0.08)", background: PAN } },
-        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "sepia(.13) saturate(1.02) contrast(1.03)" } }) : null,   /* 10/11 : effet soleil adouci (B2) sur les couvertures de vidéo (Blandine) */
+        src ? h("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 66% 60% at 52% 40%,rgba(255,155,55,.30),rgba(255,130,50,.10) 48%,rgba(255,120,45,0) 75%)", mixBlendMode: "overlay" } }) : null,
         h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
           h("span", { style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(243,238,228,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
             occupe === v.id ? h("span", { style: { fontSize: 11 } }, "…")
