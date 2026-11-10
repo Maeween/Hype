@@ -27,7 +27,8 @@ function EcranTeamMedias() {
   var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return o || "videos"; } catch (e) { return "videos"; } })();
   var _o = React.useState(ongletDepart); var onglet = _o[0], setOnglet = _o[1];
   var _g = React.useState(null); var groupe = _g[0], setGroupe = _g[1];
-  var _sc = React.useState(""); var selConc = _sc[0], setSelConc = _sc[1];   /* 10/11 : onglet concours choisi ("" = toute la saison) */
+  var _sc = React.useState(""); var selConc = _sc[0], setSelConc = _sc[1];
+  var _de = React.useState(null); var descEd = _de[0], setDescEd = _de[1];   /* 10/11 : { id, txt, occ } description en cours de modification */   /* 10/11 : onglet concours choisi ("" = toute la saison) */
   var _mo = React.useState(null); var moi = _mo[0], setMoi = _mo[1];
   var _m = React.useState(null); var membres = _m[0], setMembres = _m[1];
   var _v = React.useState(null); var videos = _v[0], setVideos = _v[1];
@@ -1331,13 +1332,45 @@ function EcranTeamMedias() {
       bas: h("div", { className: "sc-theme-team" },
         h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
         h("div", { style: { padding: "18px 18px 0" } },
-            v.description ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.4, color: IV2, marginTop: 14 } }, "« " + v.description + " »") : null,
+            /* 10/11 17h46 (Blandine : « ma description de vidéo, que je puisse la modifier ou la supprimer, et qu'elle se déroule en
+               dessous avec les commentaires ») : plus affichée sous la vidéo ; elle devient le 1er message de la liste repliée */
             /* 09/11 21h20 (Blandine : « ne laisse pas les commentaires visibles sur la page ») : plus de filet ni de section à part —
                la bulle des commentaires se range à côté du cœur ; la liste ne s'ouvre que si on la touche */
             h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14, marginTop: 12 } },
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
-              (typeof SectionCommentaires === "function") ? h("div", { style: { flex: "1 1 auto", minWidth: 0 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team" })) : null),
+              (typeof SectionCommentaires === "function") ? h("div", { style: { flex: "1 1 auto", minWidth: 0 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team", intro: introDescription(v) })) : null),
 null)) });
+  }
+  /* 10/11 — le texte de publication d'une vidéo, en tête des commentaires : auteur, texte, et pour l'auteur ou la coach
+     « Modifier » / « Supprimer » (la base n'autorise que l'auteur et la coach du groupe à changer la description). */
+  function introDescription(v) {
+    var peut = !!(moi && (v.auteur_id === moi.id || (groupe && groupe.cree_par === moi.id)));
+    var ed = descEd && descEd.id === v.id ? descEd : null;
+    if (!v.description && !ed) return peut ? h("button", { type: "button", onClick: function () { setDescEd({ id: v.id, txt: "" }); }, style: { background: "none", border: "none", padding: "0 0 10px", color: CH, fontFamily: M, fontSize: 12, cursor: "pointer" } }, "+ " + T("Ajouter une description", "Add a description", "Añadir una descripción", "Aggiungi una descrizione", "説明を追加", "Beschreibung hinzufügen", "إضافة وصف", "添加描述", "Beschrijving toevoegen", "Adicionar uma descrição", "Lägg till en beskrivning", "Добавить описание", "Dodaj opis", "설명 추가")) : null;
+    var a = profilsParId[v.auteur_id];
+    async function enregistrer(txt) {
+      setDescEd({ id: v.id, txt: ed ? ed.txt : "", occ: true });
+      var val = String(txt || "").trim() || null;
+      var r = await supa.from("team_videos").update({ description: val, modifie_le: new Date().toISOString() }).eq("id", v.id).select("id");
+      if (r && !r.error && r.data && r.data.length) { setVideos(function (l) { return (l || []).map(function (x) { return x.id === v.id ? Object.assign({}, x, { description: val }) : x; }); }); setDescEd(null); }
+      else setDescEd({ id: v.id, txt: ed ? ed.txt : String(txt || ""), err: true });
+    }
+    var lien = { background: "none", border: "none", padding: 0, color: CH, fontFamily: M, fontSize: 11.5, cursor: "pointer" };
+    return h("div", { style: { display: "flex", gap: 9, marginBottom: 12 } },
+      h("div", { style: { width: 30, height: 30, borderRadius: "50%", flex: "0 0 auto", backgroundImage: a && a.avatar_url ? "url(" + a.avatar_url + ")" : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#1a2a30", border: "1px solid " + CH3 } }),
+      h("div", { style: { minWidth: 0, flex: 1 } },
+        h("div", { style: { fontSize: 12, fontWeight: 700, color: IV, fontFamily: M } }, a ? nomProfil(a) : ""),
+        ed ? h("div", null,
+          h("textarea", { value: ed.txt, autoFocus: true, rows: 3, onChange: function (e) { setDescEd({ id: v.id, txt: e.target.value }); }, style: { width: "100%", boxSizing: "border-box", marginTop: 6, padding: "8px 10px", borderRadius: 10, border: "1px solid " + CH3, background: "transparent", color: IV, fontFamily: M, fontSize: 14, lineHeight: 1.4, resize: "vertical" } }),
+          ed.err ? h("div", { style: { color: "#FF9B9B", fontSize: 11.5, marginTop: 4 } }, T("Impossible d'enregistrer.", "Could not save.", "No se pudo guardar.", "Impossibile salvare.", "保存できませんでした。", "Speichern fehlgeschlagen.", "تعذر الحفظ.", "无法保存。", "Opslaan mislukt.", "Não foi possível guardar.", "Kunde inte spara.", "Не удалось сохранить.", "Nie udało się zapisać.", "저장할 수 없습니다.")) : null,
+          h("div", { style: { display: "flex", gap: 16, marginTop: 8 } },
+            h("button", { type: "button", disabled: ed.occ, onClick: function () { enregistrer(ed.txt); }, style: lien }, ed.occ ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Guardar", "Spara", "Сохранить", "Zapisz", "저장")),
+            h("button", { type: "button", onClick: function () { setDescEd(null); }, style: Object.assign({}, lien, { color: IV3 }) }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")))) :
+        h("div", null,
+          h("div", { dir: "auto", style: { fontFamily: M, fontSize: 14, lineHeight: 1.45, color: IV2, marginTop: 2, whiteSpace: "pre-wrap", overflowWrap: "anywhere" } }, v.description),
+          peut ? h("div", { style: { display: "flex", gap: 16, marginTop: 6 } },
+            h("button", { type: "button", onClick: function () { setDescEd({ id: v.id, txt: v.description || "" }); }, style: lien }, T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "编辑", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정")),
+            h("button", { type: "button", onClick: function () { enregistrer(""); }, style: Object.assign({}, lien, { color: IV3 }) }, T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Eliminar", "Ta bort", "Удалить", "Usuń", "삭제"))) : null)));
   }
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },

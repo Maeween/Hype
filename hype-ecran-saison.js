@@ -1190,6 +1190,8 @@ function EcranConcours() {
   var _chs = React.useState(null); var chSel = _chs[0], setChSel = _chs[1];
   var _hto = React.useState(false); var histoTout = _hto[0], setHistoTout = _hto[1];
   var _epo = React.useState(null); var epOuv = _epo[0], setEpOuv = _epo[1];
+  var _pvu = React.useState("ep"); var pasVue = _pvu[0], setPasVue = _pvu[1];   /* 10/11 17h47 (Blandine : « j'ai besoin de la voir par cheval ») : "ep" | "cav" | "ch" */
+  var _chf = React.useState({}); var chFerme = _chf[0], setChFerme = _chf[1];
   var _epf = React.useState({}); var epFerme = _epf[0], setEpFerme = _epf[1];   /* 09/11 16h (Blandine) : toutes les épreuves dépliées ; { ep: true } = repliée */
   var _epp = React.useState({}); var epPlus = _epp[0], setEpPlus = _epp[1];     /* épreuves dont on a déroulé au-delà de 8 passages */
   /* 09/11 — PADDOCK : groupes de détente (table concours_groupes_detente ; écriture : coach/modératrice ; lecture Team : publiés) */
@@ -1649,7 +1651,36 @@ function EcranConcours() {
     parEpreuve.length ? h("div", { key: "pt", className: "hc-pas-tete" },
       h("h2", { className: "hc-pas-titre" }, F("Passages de l’équipe")),
       ev.lien_direct ? h("a", { className: "hc-direct" + (hcJourJ ? " vif" : ""), href: ev.lien_direct, target: "_blank", rel: "noopener" }, hcJourJ ? h("span", { className: "hc-direct-pt", "aria-hidden": "true" }) : null, F("Voir le direct"), h("span", { "aria-hidden": "true" }, rtl ? " ‹" : " ›")) : null) : null,
-    parEpreuve.length ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
+    /* 10/11 17h47 (Blandine : « la liste des engagements, j'ai besoin de la voir par cheval, et précise les épreuves club
+       concernées à chaque fois ») : 3 façons de lire les passages — par épreuve (comme avant), par cavalier, par cheval.
+       Par cheval / par cavalier : une section par cheval (ou cavalier), chaque ligne = l'épreuve (Club 3…) + l'autre nom. */
+    parEpreuve.length ? h("style", { key: "pvs" }, ".hc .hc-pas-vue{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}.hc .hc-pas-vue .vr-dep-b{display:inline-flex;align-items:center;min-height:36px;padding:0 15px;border-radius:999px;border:1px solid rgba(201,166,107,.4);background:transparent;color:#F3EEE4;font-family:Montserrat,sans-serif;font-size:12.5px;cursor:pointer}.hc .hc-pas-vue .vr-dep-b.on{border-color:#C9A66B;color:#C9A66B}") : null,
+    parEpreuve.length ? h("div", { key: "pv", className: "vr-dep-t hc-pas-vue" }, [["ep", F("Par épreuve")], ["cav", F("Par cavalier")], ["ch", F("Par cheval")]].map(function (o) {
+      return h("button", { key: o[0], type: "button", className: "vr-dep-b" + (pasVue === o[0] ? " on" : ""), "aria-pressed": pasVue === o[0], onClick: function () { setPasVue(o[0]); } }, o[1]);
+    })) : null,
+    (parEpreuve.length && pasVue !== "ep") ? h("div", { key: "pq", className: "hc-eps" }, (function () {
+      var parCh = pasVue === "ch", grp = {}, ordre = [];
+      parEpreuve.forEach(function (g, gi) { g.l.forEach(function (p) {
+        var k = parCh ? String(p.cheval_nom || "—") : String(p.cavalier_id || nomP(p));
+        if (!grp[k]) { grp[k] = { k: k, nom: parCh ? String(p.cheval_nom || "—") : nomP(p), l: [] }; ordre.push(k); }
+        grp[k].l.push({ ep: g.ep, gi: gi, autre: parCh ? nomP(p) : (p.cheval_nom || ""), h: p.passage || "", n: p.ordre_passage || p.ordre || null, moi: !!(moi && p.cavalier_id === moi.id) });
+      }); });
+      ordre.sort(function (a, b) { return grp[a].nom.localeCompare(grp[b].nom, "fr", { sensitivity: "base" }); });
+      return ordre.map(function (k, i) {
+        var g = grp[k], ouv = !chFerme[k], eps = []; g.l.forEach(function (x) { if (eps.indexOf(x.ep) === -1) eps.push(x.ep); });
+        return h("section", { key: "q" + k, className: "hc-ep" + (ouv ? " ouv" : "") },
+          h("button", { type: "button", className: "hc-ep-b", "aria-expanded": ouv, onClick: function () { var n = Object.assign({}, chFerme); n[k] = ouv; setChFerme(n); } },
+            h("b", null, g.nom),
+            h("span", null, eps.join(", ") + " · " + g.l.length + " " + (g.l.length > 1 ? F("passages") : F("passage"))),
+            h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
+          ouv ? h("div", { className: "hc-ep-l" }, g.l.map(function (x, j) {
+            return h("div", { key: j, className: "hc-pl" + (x.moi ? " moi" : "") },
+              h("span", { className: "hc-pl-q" }, h("b", { style: { color: "#C9A66B" } }, x.ep), x.autre ? h("span", null, " · " + x.autre) : null, x.n ? h("span", null, " · " + F("N° ") + x.n) : null),
+              x.h ? h("span", { className: "hc-pl-h" }, x.h) : null);
+          })) : null);
+      });
+    })()) : null,
+    (parEpreuve.length && pasVue === "ep") ? h("div", { key: "eps", className: "hc-eps" }, parEpreuve.map(function (g, gi) {
       var ouv = !epFerme[g.ep];
       var pistes = []; g.l.forEach(function (p) { if (p.piste && pistes.indexOf(String(p.piste)) === -1) pistes.push(String(p.piste)); });
       return h("section", { key: "ep" + gi, className: "hc-ep" + (ouv ? " ouv" : "") },
