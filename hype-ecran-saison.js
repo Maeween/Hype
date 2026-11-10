@@ -402,6 +402,13 @@ var HS_TR_BRUT = {
   "avec ": ["with ", "con ", "con ", "騎乗馬：", "mit ", "مع ", "搭档：", "met ", "com ", "med ", "на ", "na ", "함께: "],
   "piste ": ["arena ", "pista ", "campo ", "馬場 ", "Platz ", "الميدان ", "场地 ", "piste ", "pista ", "bana ", "поле ", "plac ", "경기장 "],
   "heure mise à jour par ta coach": ["time updated by your coach", "hora actualizada por tu entrenadora", "orario aggiornato dalla tua istruttrice", "コーチが時間を更新しました", "Zeit von deiner Trainerin aktualisiert", "حدّثت مدرّبتك الموعد", "教练已更新时间", "tijd bijgewerkt door je coach", "hora atualizada pela tua treinadora", "tid uppdaterad av din tränare", "время обновлено тренером", "godzina zaktualizowana przez trenerkę", "코치가 시간을 바꿨어요"],
+  "entrée en piste estimée": ["estimated arena entry", "entrada en pista estimada", "ingresso in campo stimato", "入場予定時刻", "geschätzter Einritt", "دخول الميدان المتوقع", "预计入场", "geschatte binnenkomst", "entrada em pista estimada", "beräknad inridning", "ориентировочный выход на поле", "szacowane wejście na parkur", "예상 입장 시간"],
+  " cavaliers à l’heure": [" riders an hour", " jinetes por hora", " cavalieri all’ora", " 人／時", " Reiter pro Stunde", " فارسًا في الساعة", " 人/小时", " ruiters per uur", " cavaleiros por hora", " ryttare i timmen", " всадников в час", " jeźdźców na godzinę", " 명/시간"],
+  "à cheval vers le n° ": ["in the saddle around no. ", "a caballo hacia el n.º ", "in sella verso il n. ", "騎乗の目安：", "aufsitzen etwa bei Nr. ", "اركب حوالي الرقم ", "约第 ", "in het zadel rond nr. ", "a cavalo por volta do n.º ", "sitt upp runt nr ", "в седле примерно к № ", "w siodle około nr ", "기승 목안 번호 "],
+  "Rythme de l’épreuve": ["Class pace", "Ritmo de la prueba", "Ritmo della prova", "競技のペース", "Tempo der Prüfung", "إيقاع المنافسة", "比赛节奏", "Tempo van de proef", "Ritmo da prova", "Klassens tempo", "Темп маршрута", "Tempo konkursu", "종목 진행 속도"],
+  "Grand Prix et barème classique": ["Grand Prix and standard table", "Gran Premio y baremo clásico", "Gran Premio e tabella classica", "グランプリ・通常の採点", "Grand Prix und Standardwertung", "الجائزة الكبرى والجدول العادي", "大奖赛及常规赛制", "Grand Prix en standaardtabel", "Grande Prémio e tabela clássica", "Grand Prix och standardbedömning", "Гран-при и обычная таблица", "Grand Prix i tabela standardowa", "그랑프리 및 일반 채점"],
+  "Vitesse": ["Speed", "Velocidad", "Velocità", "スピード", "Zeitspringen", "السرعة", "速度赛", "Snelheid", "Velocidade", "Hastighet", "Скоростной", "Szybkość", "스피드"],
+  "Calcul : 2 chevaux en piste ; le n° 1 et le n° 2 entrent au début de l’épreuve, chacun des suivants quand celui d’avant-avant sort. Les forfaits avancent l’heure, les barrages et les pauses la reculent.": ["How it works: 2 horses in the arena; no. 1 and no. 2 enter when the class starts, each next rider when the one two places ahead leaves. Withdrawals bring the time forward, jump-offs and breaks push it back.", "Cálculo: 2 caballos en pista; el n.º 1 y el n.º 2 entran al inicio de la prueba y cada siguiente cuando sale el de dos puestos antes. Las bajas adelantan la hora; los desempates y las pausas la retrasan.", "Calcolo: 2 cavalli in campo; il n. 1 e il n. 2 entrano all’inizio della prova, ogni successivo quando esce quello di due posti prima. I ritiri anticipano l’orario, barrage e pause lo ritardano.", "計算：馬場には2頭。1番と2番は競技開始時に入場し、以降は2つ前の人が退場したら入場。棄権があれば早まり、ジャンプオフや休憩で遅れます。", "Berechnung: 2 Pferde im Parcours; Nr. 1 und Nr. 2 reiten zu Prüfungsbeginn ein, jeder weitere, wenn der vorletzte hinausreitet. Abmeldungen ziehen die Zeit vor, Stechen und Pausen verschieben sie.", "الحساب: حصانان في الميدان؛ الرقمان 1 و2 يدخلان عند بدء المنافسة، وكل من يليهما عند خروج من يسبقه بمرتبتين. الانسحابات تقدّم الموعد، وجولات الحسم والاستراحات تؤخّره.", "计算方式：场内同时 2 匹马；1 号和 2 号在比赛开始时入场，之后每位在前两位的骑手出场时入场。退赛会使时间提前，附加赛和休息会推后。", "Berekening: 2 paarden in de piste; nr. 1 en nr. 2 komen binnen bij de start van de proef, elke volgende wanneer de ruiter twee plaatsen eerder naar buiten gaat. Afmeldingen vervroegen de tijd, barrages en pauzes vertragen hem.", "Cálculo: 2 cavalos em pista; o n.º 1 e o n.º 2 entram no início da prova, cada seguinte quando sai o de duas posições antes. As desistências adiantam a hora, os desempates e as pausas atrasam-na.", "Beräkning: 2 hästar på banan; nr 1 och nr 2 rider in när klassen startar, varje följande när den som är två platser före rider ut. Strykningar flyttar fram tiden, omhoppningar och pauser skjuter upp den.", "Расчёт: на поле 2 лошади; № 1 и № 2 выходят в начале маршрута, каждый следующий — когда уходит всадник на две позиции раньше. Снятия сдвигают время раньше, перепрыжки и паузы — позже.", "Obliczenie: 2 konie na parkurze; nr 1 i nr 2 wchodzą na początku konkursu, każdy następny, gdy zjeżdża jeździec o dwa miejsca wcześniej. Wycofania przyspieszają, rozgrywki i przerwy opóźniają.", "계산: 경기장에 말 2마리. 1번과 2번은 종목 시작 시 입장하고, 이후는 두 순번 앞 선수가 퇴장할 때 입장해요. 기권이 있으면 앞당겨지고, 점프오프나 휴식이 있으면 늦어져요."],
   "heure à venir": ["time to come", "hora por llegar", "orario in arrivo", "時間は未定", "Zeit folgt", "الموعد قادم", "时间待定", "tijd volgt", "hora a seguir", "tid kommer", "время уточняется", "godzina wkrótce", "시간 미정"],
   "En direct": ["Live", "En directo", "In diretta", "ライブ", "Live", "مباشر", "直播", "Live", "Em direto", "Live", "Онлайн", "Na żywo", "실시간"],
   "Actualiser": ["Refresh", "Actualizar", "Aggiorna", "更新", "Aktualisieren", "تحديث", "刷新", "Vernieuwen", "Atualizar", "Uppdatera", "Обновить", "Odśwież", "새로고침"],
@@ -3775,7 +3782,7 @@ async function hsLireProgramme(images, equipe) {
   var sv = sess && sess.data && sess.data.session;
   if (!sv || !sv.access_token) throw new Error("session");
   var system = "Tu lis le programme ou une liste de depart d'un concours d'equitation (photo, capture d'ecran ou page de PDF). "
-    + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"numero\":\"numero de l'epreuve ou vide\",\"nom\":\"nom recopie (ex. Club 3 Grand Prix)\",\"heure\":\"heure de debut HHhMM ou vide\",\"piste\":\"piste ou carriere ou vide\",\"jour\":\"AAAA-MM-JJ ou vide\"}],"
+    + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"numero\":\"numero de l'epreuve ou vide\",\"nom\":\"nom recopie (ex. Club 3 Grand Prix)\",\"heure\":\"heure de DEBUT de l'epreuve HHhMM (premier depart en piste, JAMAIS l'heure de reconnaissance ; si seule la reconnaissance est indiquee : vide)\",\"piste\":\"piste ou carriere ou vide\",\"jour\":\"AAAA-MM-JJ ou vide\"}],"
     + "\"passages\":[{\"epreuve\":\"nom ou numero de l'epreuve\",\"ordre\":\"numero d'ordre de passage ou vide\",\"heure\":\"heure de passage HHhMM ou vide\",\"cavalier\":\"nom du cavalier recopie\",\"cheval\":\"nom du cheval recopie\",\"piste\":\"piste ou vide\"}]}. "
     + "Les passages : seulement les lignes de ces cavaliers s'ils apparaissent (sinon aucune) : " + JSON.stringify((equipe || []).slice(0, 40)) + ". "
     + "Recopie exactement ce qui est ecrit. N'invente RIEN : case illisible ou absente = chaine vide.";
@@ -4811,7 +4818,7 @@ function EcranEngagements() {
         var eL = lu.epreuves.filter(function (x) { return x && (memeEp(x.nom, ep) || (p && (memeEp(x.nom, p.epreuve) || (x.numero && norm(x.numero) === norm(p.epreuve))))); })[0] || null;
         var heure = "", source = "";
         if (p && p.heure) { heure = hsHeurePropre(p.heure); source = F("heure de passage lue"); }
-        else if (p && p.ordre && eL && eL.heure && hsMinutes(hsHeurePropre(eL.heure)) < 99999) { heure = hsHeure(hsMinutes(hsHeurePropre(eL.heure)) + Math.round((Number(String(p.ordre).replace(/\D/g, "")) - 1) * 1.75)); source = F("estimée : début de l’épreuve + ordre de passage"); }
+        else if (p && p.ordre && eL && eL.heure && hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep)) { var eP1 = hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep); heure = hsHeure(eP1.min); source = F("entrée en piste estimée") + " · " + eP1.parHeure + F(" cavaliers à l’heure") + (eP1.n > 15 ? " · " + F("à cheval vers le n° ") + eP1.aCheval : ""); }
         else if (eL && eL.heure) { heure = hsHeurePropre(eL.heure); source = F("début de l’épreuve (ordre pas encore connu)"); }
         var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
         if (!heure && !piste) return;
@@ -5508,6 +5515,24 @@ function hsPdfTexteBrut(x) { return x; }
      · LE DOSSIER (écran « dossier-concours ») : papiers du van (coach seulement, fichiers privés), vaccins des
        chevaux engagés (page Santé, mêmes droits), licences (chacune la sienne, la coach toutes).
    ═══════════════════════════════════════════════════════════════════════════════ */
+/* 10/11 19h47 (Blandine) — HEURE D'ENTRÉE EN PISTE ESTIMÉE (CSO). Règle validée : on part de l'heure de DÉBUT
+   D'ÉPREUVE (jamais la reconnaissance) ; deux chevaux en piste : le n° 1 et le n° 2 entrent au début, chaque suivant
+   quand celui d'avant-avant sort → entrée = début + max(0, n − 2) × temps d'un passage. Repère terrain « 30 cavaliers
+   à l'heure » en Grand Prix (2 min), 40 en vitesse (1 min 30) ; réglable (localStorage hype_rythme_gp / hype_rythme_vit).
+   On arrondit à la minute inférieure : mieux vaut être prêt trop tôt. Repère « à cheval vers le n° » : 15 numéros avant. */
+function hsRythme(nomEp) {
+  var vit = /vitesse|speed|chrono\s*a\s*b|bar[eè]me\s*c\b/i.test(String(nomEp || ""));
+  var def = vit ? 40 : 30, v = def;
+  try { v = Number(localStorage.getItem(vit ? "hype_rythme_vit" : "hype_rythme_gp")) || def; } catch (e) { }
+  if (!(v >= 10 && v <= 90)) v = def;
+  return { parHeure: v, vitesse: vit };
+}
+function hsEntreePiste(debutMin, ordre, nomEp) {
+  var n = Number(String(ordre || "").replace(/\D/g, "")) || 0;
+  if (!(debutMin >= 0 && debutMin < 99999) || !n) return null;
+  var r = hsRythme(nomEp);
+  return { min: Math.floor(debutMin + Math.max(0, n - 2) * (60 / r.parHeure)), parHeure: r.parHeure, aCheval: Math.max(1, n - 15), n: n };
+}
 function hsMinutes(v) {
   var m = String(v || "").trim().toLowerCase().match(/^(\d{1,2})\s*[h:.]\s*(\d{0,2})$/);
   if (!m) return 99999;
@@ -5967,7 +5992,7 @@ function EcranJourJ(props) {
         var eL = lu.epreuves.filter(function (x) { return x && (memeEp(x.nom, ep) || (p && (memeEp(x.nom, p.epreuve) || (x.numero && norm(x.numero) === norm(p.epreuve))))); })[0] || null;
         var heure = "", source = "";
         if (p && p.heure) { heure = hsHeurePropre(p.heure); source = F("heure de passage lue"); }
-        else if (p && p.ordre && eL && eL.heure && hsMinutes(hsHeurePropre(eL.heure)) < 99999) { heure = hsHeure(hsMinutes(hsHeurePropre(eL.heure)) + Math.round((Number(String(p.ordre).replace(/\D/g, "")) - 1) * 1.75)); source = F("estimée : début de l’épreuve + ordre ") + p.ordre; }
+        else if (p && p.ordre && eL && eL.heure && hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep)) { var eP1 = hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep); heure = hsHeure(eP1.min); source = F("entrée en piste estimée") + " · " + eP1.parHeure + F(" cavaliers à l’heure") + (eP1.n > 15 ? " · " + F("à cheval vers le n° ") + eP1.aCheval : ""); }
         else if (eL && eL.heure) { heure = hsHeurePropre(eL.heure); source = F("début de l’épreuve (ordre pas encore connu)"); }
         var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
         if (!heure && !piste) return;
@@ -6022,6 +6047,18 @@ function EcranJourJ(props) {
       h("label", { className: "hs-btn", style: { cursor: "pointer", opacity: progLect === "en_cours" ? 0.6 : 1 } },
         progLect === "en_cours" ? F("Lecture du programme… (1 à 2 min)") : F("Photo, capture ou PDF du programme"),
         h("input", { type: "file", accept: "image/*,application/pdf", disabled: progLect === "en_cours", onChange: lireProgramme, style: { display: "none" } })),
+      /* 10/11 19h47 (Blandine) : le rythme qui sert à estimer l'heure d'entrée en piste — en cavaliers à l'heure, réglable */
+      h("div", { className: "hs-carte", style: { marginTop: 12, padding: "12px 14px" } },
+        h("div", { style: { fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, marginBottom: 8 } }, F("Rythme de l’épreuve")),
+        [["hype_rythme_gp", 30, F("Grand Prix et barème classique")], ["hype_rythme_vit", 40, F("Vitesse")]].map(function (r) {
+          var v0 = r[1]; try { v0 = Number(localStorage.getItem(r[0])) || r[1]; } catch (eR) { }
+          return h("label", { key: r[0], style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "6px 0", fontSize: 13 } },
+            h("span", null, r[2]),
+            h("span", { style: { display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap", color: "rgba(243,238,228,.7)", fontSize: 12 } },
+              h("input", { type: "number", inputMode: "numeric", min: 10, max: 90, defaultValue: v0, onChange: function (eV) { var n = Number(eV.target.value); try { if (n >= 10 && n <= 90) localStorage.setItem(r[0], String(n)); } catch (eS) { } }, style: { width: 54, minHeight: 36, borderRadius: 10, border: "1px solid rgba(201,166,107,.35)", background: "transparent", color: "#F3EEE4", textAlign: "center", fontSize: 14 } }),
+              F(" cavaliers à l’heure").trim()));
+        }),
+        h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, F("Calcul : 2 chevaux en piste ; le n° 1 et le n° 2 entrent au début de l’épreuve, chacun des suivants quand celui d’avant-avant sort. Les forfaits avancent l’heure, les barrages et les pauses la reculent."))),
       progLect && progLect !== "en_cours" ? h("div", { className: "hs-note" }, progLect) : null,
       prog && prog.props.length ? h("div", { className: "hs-carte", style: { marginTop: 10 } },
         prog.epreuves.length ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Lu : ") + prog.epreuves.map(function (x) { return [x.numero ? "n° " + x.numero : "", x.nom, x.heure ? hsHeurePropre(x.heure) : "", x.piste ? F("piste ") + x.piste : ""].filter(Boolean).join(" "); }).join(" · ")))) : null,

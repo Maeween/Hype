@@ -193,12 +193,12 @@ function EcranTeamMedias() {
         /* épingles : seules celles partagées avec ce groupe que la base laisse lire */
         var eps = [];
         try {
-          var rep = await supa.from("epingles_partages").select("epingle_id, partage_par, partage_le").eq("groupe_id", G.id).order("partage_le", { ascending: false }).limit(60);
+          var rep = await supa.from("epingles_partages").select("id, epingle_id, partage_par, partage_le").eq("groupe_id", G.id).order("partage_le", { ascending: false }).limit(60);
           var idsE = ((rep && rep.data) || []).map(function (x) { return x.epingle_id; });
           if (idsE.length) {
             var ree = await supa.from("echanges_heybaby_epingles").select("id, question, reponse, cheval_id, cheval_nom, cavalier_nom, created_at, user_id").in("id", idsE);
             var parE = {}; ((ree && ree.data) || []).forEach(function (x) { parE[x.id] = x; });
-            eps = ((rep && rep.data) || []).map(function (s) { var e = parE[s.epingle_id]; return e ? Object.assign({}, e, { partage_par: s.partage_par, partage_le: s.partage_le }) : null; }).filter(Boolean);
+            eps = ((rep && rep.data) || []).map(function (s) { var e = parE[s.epingle_id]; return e ? Object.assign({}, e, { partage_par: s.partage_par, partage_le: s.partage_le, partage_id: s.id }) : null; }).filter(Boolean);
           }
         } catch (eEp) { eps = []; }
         /* 09/11 23h55 (Blandine : « on rend visible chaque épingle que par la cavalière concernée », « je voudrais le
@@ -220,7 +220,7 @@ function EcranTeamMedias() {
               var qN = {}; ((rnq && rnq.data) || []).forEach(function (x) { qN[String(x.cible || "").replace(/^epingle:/, "")] = x.extrait || ""; });
               lp.forEach(function (x) {
                 var e2 = parE2[x.epingle_id] || { id: x.epingle_id, question: qN[x.epingle_id] || "", reponse: "", verrou: true };
-                eps.push(Object.assign({}, e2, { cle: x.id, partage_par: x.partage_par, partage_le: x.partage_le, pour: x.destinataire_id, masque: !!x.masque_le }));
+                eps.push(Object.assign({}, e2, { cle: x.id, partage_id: x.id, partage_par: x.partage_par, partage_le: x.partage_le, pour: x.destinataire_id, masque: !!x.masque_le }));
               });
               eps.sort(function (a, b) { return String(b.partage_le || "").localeCompare(String(a.partage_le || "")); });
             }
@@ -893,6 +893,24 @@ function EcranTeamMedias() {
 
   /* ───────── ÉPINGLES HB : épingles Hey Baby partagées avec le groupe ───────── */
   var _ouv = React.useState(null); var epOuverte = _ouv[0], setEpOuverte = _ouv[1];
+  /* 10/11 19h51 (Blandine : « il a épinglé ma question avec sa réponse ») : quand la réponse de Hey Baby commence par
+     « ÉPINGLE — titre », c'est ce titre qui s'affiche (pas la consigne tapée), et la ligne est retirée du texte. */
+  function epTitreLigne(e) { var m = String((e && e.reponse) || "").match(/^\s*[ÉE]PINGLE\s*[—–-]\s*([^\n]+)\n?/i); return m ? m[1].trim() : ""; }
+  function epTitre(e) { return epTitreLigne(e) || (e && e.question) || ""; }
+  function epCorps(e) { var r = String((e && e.reponse) || ""); return epTitreLigne(e) ? r.replace(/^\s*[ÉE]PINGLE\s*[—–-]\s*[^\n]+\n?\s*/i, "") : r; }
+  /* 10/11 : retirer un conseil de l'équipe (celui qui l'a partagé ou la modératrice ; la base décide : ep_suppr) */
+  var _epr = React.useState(null); var epRetrait = _epr[0], setEpRetrait = _epr[1];
+  async function retirerEpingle(e) {
+    if (!e || !e.partage_id) return;
+    setEpRetrait({ cle: e.cle || e.id, etat: "en_cours" });
+    try {
+      var r = await supa.from("epingles_partages").delete().eq("id", e.partage_id).select("id");
+      if (r && r.error) throw r.error;
+      if (!r || !r.data || !r.data.length) throw new Error(T("tu ne peux retirer que les conseils que tu as partagés", "you can only remove tips you shared", "solo puedes retirar los consejos que compartiste", "puoi rimuovere solo i consigli che hai condiviso", "自分が共有したアドバイスだけ外せます", "du kannst nur selbst geteilte Tipps entfernen", "لا يمكنك إزالة إلا النصائح التي شاركتها", "只能移除你分享的建议", "je kunt alleen tips verwijderen die je zelf deelde", "só podes retirar os conselhos que partilhaste", "du kan bara ta bort tips du själv delat", "можно убрать только свои советы", "możesz usunąć tylko udostępnione przez siebie porady", "내가 공유한 조언만 내릴 수 있어요"));
+      setEpingles(function (l) { return (l || []).filter(function (x) { return x.partage_id !== e.partage_id; }); });
+      setEpRetrait(null); setEpOuverte(null);
+    } catch (eR) { setEpRetrait({ cle: e.cle || e.id, etat: "erreur", msg: String((eR && eR.message) || eR) }); }
+  }
   function carteEpingle(e) {
     var cleE = e.cle || e.id;   /* 09/11 : un même conseil envoyé à plusieurs cavaliers = une carte par cavalier */
     var ouv = epOuverte === cleE, qui = profilsParId[e.partage_par];
@@ -903,12 +921,16 @@ function EcranTeamMedias() {
     return h("div", { key: "ep" + cleE, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
       h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : cleE); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
         h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, (e.pour ? "🔒 " + T("Privé", "Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개") + " · " : "") + (e.cheval_nom ? T("Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ") + e.cheval_nom : "Hey Baby")),
-        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, e.question || ""),
-        h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, color: IV2, marginTop: 6, lineHeight: 1.55, whiteSpace: "pre-wrap", overflow: ouv ? "visible" : "hidden", display: ouv ? "block" : "-webkit-box", WebkitLineClamp: ouv ? "none" : 3, WebkitBoxOrient: "vertical" } }, e.reponse || ""),
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, epTitre(e)),
+        h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, color: IV2, marginTop: 6, lineHeight: 1.55, whiteSpace: "pre-wrap", overflow: ouv ? "visible" : "hidden", display: ouv ? "block" : "-webkit-box", WebkitLineClamp: ouv ? "none" : 3, WebkitBoxOrient: "vertical" } }, epCorps(e)),
         h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui)
           + (e.pour ? " · " + ((moi && e.pour === moi.id) ? T("Pour toi", "For you", "Para ti", "Per te", "あなたへ", "Für dich", "لكِ", "给你", "Voor jou", "Para ti", "Till dig", "Для тебя", "Dla ciebie", "나에게") : T("Pour ", "For ", "Para ", "Per ", "宛先：", "Für ", "إلى ", "给 ", "Voor ", "Para ", "Till ", "Для: ", "Dla: ", "받는 사람: ") + nomProfil(profilsParId[e.pour])) : "")
           + ((ouv || e.verrou) ? "" : " · " + T("Lire tout", "Read all", "Leer todo", "Leggi tutto", "全文を読む", "Alles lesen", "قراءة الكل", "阅读全部", "Alles lezen", "Ler tudo", "Läs allt", "Читать полностью", "Czytaj całość", "전체 읽기"))),
         e.masque ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, fontStyle: "italic", marginTop: 3 } }, T("Effacé par le cavalier — n'est plus visible que par toi", "Removed by the rider — now only visible to you", "Borrado por el jinete — ya solo lo ves tú", "Cancellato dal cavaliere — ora lo vedi solo tu", "騎手が削除 — 今はあなただけが見られます", "Vom Reiter entfernt — nur noch für dich sichtbar", "حذفه الفارس — أصبحتِ الوحيدة التي ترينه", "骑手已删除 — 现在只有你能看到", "Verwijderd door de ruiter — alleen jij ziet het nog", "Apagado pelo cavaleiro — agora só tu o vês", "Borttaget av ryttaren — nu syns det bara för dig", "Удалено всадником — теперь видно только тебе", "Usunięte przez jeźdźca — widzisz to już tylko ty", "기수가 지웠어요 — 이제 나만 볼 수 있어요")) : null),
+      (ouv && moi && e.partage_id && e.partage_par === moi.id) ? h("div", { style: { marginTop: 10 } },
+        h("button", { type: "button", disabled: !!(epRetrait && epRetrait.cle === cleE && epRetrait.etat === "en_cours"), onClick: function () { retirerEpingle(e); }, style: { minHeight: 38, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,.45)", background: "transparent", color: CH, fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer" } },
+          (epRetrait && epRetrait.cle === cleE && epRetrait.etat === "en_cours") ? "…" : (e.pour ? T("Retirer ce conseil", "Remove this tip", "Retirar este consejo", "Rimuovi questo consiglio", "このアドバイスを外す", "Diesen Tipp entfernen", "إزالة هذه النصيحة", "移除这条建议", "Deze tip verwijderen", "Retirar este conselho", "Ta bort tipset", "Убрать совет", "Usuń tę poradę", "이 조언 내리기") : T("Retirer de l'équipe", "Remove from the team", "Retirar del equipo", "Rimuovi dalla squadra", "チームから外す", "Aus dem Team entfernen", "إزالة من الفريق", "从团队中移除", "Uit het team halen", "Retirar da equipa", "Ta bort från laget", "Убрать из команды", "Usuń z zespołu", "팀에서 내리기"))),
+        (epRetrait && epRetrait.cle === cleE && epRetrait.etat === "erreur") ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: CH, marginTop: 6 } }, epRetrait.msg) : null) : null,
       e.verrou ? h("div", { style: { marginTop: 8 } },
         h("div", { style: { fontFamily: M, fontSize: 12, color: IV2, lineHeight: 1.5 } }, T("Ce conseil est réservé aux membres Premium (Cercle Crystal).", "This tip is for Premium members (Crystal Circle).", "Este consejo está reservado a los miembros Premium (Círculo Crystal).", "Questo consiglio è riservato ai membri Premium (Cerchio Crystal).", "このアドバイスはプレミアム会員（クリスタル・サークル）限定です。", "Dieser Rat ist Premium-Mitgliedern vorbehalten (Crystal Circle).", "هذه النصيحة مخصّصة لأعضاء Premium (دائرة Crystal).", "这条建议仅限 Premium 会员（Crystal 圈）。", "Deze tip is voor Premium-leden (Crystal Circle).", "Este conselho é reservado aos membros Premium (Círculo Crystal).", "Det här rådet är för Premium-medlemmar (Crystal Circle).", "Этот совет доступен только участникам Premium (Crystal Circle).", "Ta wskazówka jest dla członków Premium (Krąg Crystal).", "이 조언은 프리미엄 회원(크리스털 서클) 전용이에요.")),
         h("button", { type: "button", onClick: function () { setEcran("premium"); }, style: { marginTop: 8, minHeight: 40, padding: "0 16px", borderRadius: 10, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, T("Découvrir Premium", "Discover Premium", "Descubrir Premium", "Scopri Premium", "プレミアムを見る", "Premium entdecken", "اكتشفي Premium", "了解 Premium", "Ontdek Premium", "Descobrir o Premium", "Upptäck Premium", "Узнать о Premium", "Poznaj Premium", "프리미엄 알아보기"))) : null);
@@ -1493,7 +1515,8 @@ function EcranEpinglePartagee() {
       : !ep ? h("div", { style: { fontSize: 12, color: IV3, fontStyle: "italic", marginTop: 20 } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…"))
       : h("div", null,
           qui ? h("div", { style: { fontSize: 12, color: IV3, marginTop: 6 } }, T("Partagé par ", "Shared by ", "Compartido por ", "Condiviso da ", "共有者：", "Geteilt von ", "شاركه ", "分享者：", "Gedeeld door ", "Partilhado por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + qui) : null,
-          ep.question ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, lineHeight: 1.35, marginTop: 22, color: IV } }, "« " + ep.question + " »") : null,
+          /* 10/11 : réponse « ÉPINGLE — titre » → ce titre remplace la consigne tapée */
+          (function () { var mT = String(ep.reponse || "").match(/^\s*[ÉE]PINGLE\s*[—–-]\s*([^\n]+)/i); return mT ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 24, fontWeight: 600, lineHeight: 1.25, marginTop: 22, color: IV } }, mT[1].trim()) : (ep.question ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, lineHeight: 1.35, marginTop: 22, color: IV } }, "« " + ep.question + " »") : null); })(),
           h("div", { style: { marginTop: 18, padding: "18px 17px", borderRadius: 16, border: "1px solid " + CH3, background: PAN } },
             h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 10 } }, T("Réponse de Hey Baby", "Hey Baby's answer", "Respuesta de Hey Baby", "Risposta di Hey Baby", "Hey Babyの回答", "Antwort von Hey Baby", "رد Hey Baby", "Hey Baby 的回答", "Antwoord van Hey Baby", "Resposta do Hey Baby", "Hey Babys svar", "Ответ Hey Baby", "Odpowiedź Hey Baby", "Hey Baby의 답변")),
             ep.verrou
@@ -1501,7 +1524,7 @@ function EcranEpinglePartagee() {
                   h("div", { "aria-hidden": "true", style: { filter: "blur(5px)", userSelect: "none", fontSize: 14.5, lineHeight: 1.65, color: IV2 } }, "Hey Baby te donne ici un conseil précis, pas à pas, adapté à ta situation et à ton cheval, avec les points à surveiller."),
                   h("div", { style: { fontSize: 13, lineHeight: 1.55, color: IV, marginTop: 14 } }, T("Ce conseil est réservé aux membres Premium (Cercle Crystal).", "This tip is for Premium members (Crystal Circle).", "Este consejo está reservado a los miembros Premium (Círculo Crystal).", "Questo consiglio è riservato ai membri Premium (Cerchio Crystal).", "このアドバイスはプレミアム会員（クリスタル・サークル）限定です。", "Dieser Rat ist Premium-Mitgliedern vorbehalten (Crystal Circle).", "هذه النصيحة مخصّصة لأعضاء Premium (دائرة Crystal).", "这条建议仅限 Premium 会员（Crystal 圈）。", "Deze tip is voor Premium-leden (Crystal Circle).", "Este conselho é reservado aos membros Premium (Círculo Crystal).", "Det här rådet är för Premium-medlemmar (Crystal Circle).", "Этот совет доступен только участникам Premium (Crystal Circle).", "Ta wskazówka jest dla członków Premium (Krąg Crystal).", "이 조언은 프리미엄 회원(크리스털 서클) 전용이에요.")),
                   h("button", { type: "button", onClick: function () { setEcran("premium"); }, style: { marginTop: 14, width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 14, fontWeight: 700, cursor: "pointer" } }, T("Découvrir Premium", "Discover Premium", "Descubrir Premium", "Scopri Premium", "プレミアムを見る", "Premium entdecken", "اكتشفي Premium", "了解 Premium", "Ontdek Premium", "Descobrir o Premium", "Upptäck Premium", "Узнать о Premium", "Poznaj Premium", "프리미엄 알아보기")))
-              : h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, ep.reponse || "")))),
+              : h("div", { dir: "auto", style: { fontSize: 14.5, lineHeight: 1.65, color: IV2, whiteSpace: "pre-wrap" } }, String(ep.reponse || "").replace(/^\s*[ÉE]PINGLE\s*[—–-]\s*[^\n]+\n?\s*/i, ""))))),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null);
 }
 window.HypeTeamMedias = { Medias: EcranTeamMedias, Epingle: EcranEpinglePartagee, version: TM_VERSION };
