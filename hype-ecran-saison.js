@@ -4904,7 +4904,10 @@ function EcranEngagements() {
         if (heure && doute) source = (source ? source + " · " : "") + F("à vérifier : plusieurs épreuves portent ce nom") + " (" + (eL.nom || "") + ")";
         var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
         if (!heure && !piste && !(p && p.ordre)) return;   /* 10/11 : un N° de passage seul compte aussi */
-        props.push({ i: i, k: k, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, ordre: ordreC, coche: true });
+        /* 10/11 22h20 (Blandine : « le nom complet partout où tu mentionnes les épreuves ») : « Club 3 » devient « Club 3 Grand Prix » */
+        var epC = String((eL && eL.nom) || (p && p.epreuve && !/^\s*\d+\s*$/.test(p.epreuve) ? p.epreuve : "") || "").replace(/^(CSO|Saut d.obstacles)\s*[:\-–]?\s*/i, "").trim();
+        if (!(epC && epC.length > ep.length && memeEp(epC, ep))) epC = "";
+        props.push({ i: i, k: k, nom: l.nom, ch: ch, ep: epC || ep, epComplet: epC ? hsNomEpreuve(epC) : "", heure: heure, piste: piste, source: source, ordre: ordreC, coche: true });
       }); });
       setOrdreProp(props);
       var nbLu = (lu.passages || []).length, nbNum = (lu.passages || []).filter(function (x) { return x && (x.ordre || x.heure); }).length;
@@ -4918,7 +4921,7 @@ function EcranEngagements() {
     ordreProp.forEach(function (x) {
       if (!x.coche || !n[x.i] || !(n[x.i].tours || [])[x.k]) return;
       var l = Object.assign({}, n[x.i]), t = l.tours.slice(), u = Object.assign({}, t[x.k]);
-      if (x.heure) u.passage = x.heure; if (x.piste) u.piste = x.piste;
+      if (x.heure) u.passage = x.heure; if (x.piste) u.piste = x.piste; if (x.epComplet) u.epreuve = x.epComplet;
       if (x.ordre && /^\d+$/.test(String(x.ordre).trim())) u.ordre_passage = parseInt(String(x.ordre).trim(), 10);   /* 09/11 : le N° de passage lu est enfin gardé */
       t[x.k] = u; l.tours = t; n[x.i] = l; nb++;
     });
