@@ -10,6 +10,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2310 — Hey Baby : partager une réponse ou une épingle (WhatsApp…)
+- Sous chaque réponse de Hey Baby : pastilles Écouter · Copier · Partager · Épingler · Corriger (« Classer » retiré). Libellés en 14 langues.
+- « Partager » fabrique une image : la question et la réponse comme dans Hey Baby, fond bleu nuit de la page, le petit poney qui regarde par-dessus le trait, « Hey Baby — Pose ta question ». Le message ne contient que le lien 2hype.fr/<langue>/ia-equestre/?d=p (sans image possible : le conseil part en texte).
+- Bouton « Partager ce conseil » aussi sur la page d'une épingle et sur l'épingle partagée à l'équipe (pas quand la réponse est verrouillée).
+- Arrivée par ce lien sans compte : la page Hey Baby s'ouvre avec la carte « Bienvenue » (créer mon compte gratuit, 1re question offerte / j'ai déjà un compte). Le conseil partagé n'est pas rouvert dans l'appli (lien identique pour tous, rien de privé).
+- Base : épingles en double n° 75, 76 et 78 supprimées (la n° 77, envoyée à Aurélie, reste).
+- Versions : hype-ecran-assistant.js v13, hype-ecran-team-medias.js v33.
+
 ### 10/11 — build 20261110-2300 — Médias : page d'accueil (proposition B) + barre d'écriture Hey Baby
 - Médias (hype-ecran-team-medias.js v=32) : nouvelle page d'accueil qui défile, validée par Blandine (proposition B) : une carte par cavalier (tous, l'image de sa dernière vidéo entière, son nombre de vidéos, ses chevaux ; toucher = ses vidéos ; sans vidéo = ajouter), les 2 dernières épingles + « Toutes les épingles », « À lire » (2 derniers partages) + « Tous les articles ». Les anciens onglets restent derrière « Toutes les vidéos (n) » avec un lien « ‹ Médias ». 4 cartes par ligne sur tablette/ordi. Fin de page Hype ajoutée. Les notifications (vidéo, épingle) ouvrent toujours directement la bonne vue.
 - Page équipe (hype-ecran-team.js v=21) : la tuile Médias ouvre cette page d'accueil. Rien d'autre ne change sur la page équipe.
