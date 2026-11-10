@@ -20,7 +20,8 @@
 if (typeof window === "undefined" || typeof React === "undefined") return;
 var h = React.createElement;
 var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
-var VERSION = 71;   /* 04/11 23h10 : photo de la fiche d'une notion en couleurs naturelles */
+var VERSION = 72;   /* 10/11 : grand lexique — mots des Galops 5 à 9 dans la langue de l'appli (et plus seulement en français) */
+/* précédente : VERSION = 71; */   /* 04/11 23h10 : photo de la fiche d'une notion en couleurs naturelles */
 /* précédente : VERSION = 70; */   /* 04/11 22h30 (Blandine) : grand lexique — photo de fond dézoomée (« Dézoome 2 »), recherche : les noms d'abord puis « Le mot apparaît aussi dans ces définitions » (S2), « Tu veux découvrir cette notion dans une autre langue ? » (C), moins de vide en bas */
 /* précédente : VERSION = 69; */   /* 04/11 soir (Blandine : maquette du grand lexique validée) : grand lexique — nouvelle présentation (photo en fond, recherche à côté du filtre, alphabet en reflet, fiche d'une notion avec flèches, partage, mémoire des filtres et du défilement) */
 /* précédente : VERSION = 68; */   /* 04/11 21h15 : bas des cours — carte « Révise, puis teste-toi » + carte « Partager ce cours » (14 langues) */
@@ -3702,7 +3703,7 @@ function glexEntrees(lg, pret) {
   /* 02/11 22h30 (Blandine : « le lexique est bien dans tous les Galops et ajouté au lexique général ? ») : on lit aussi le champ « lexique »
      écrit dans les cours eux-mêmes (Galops 5 à 9 : g5n-…, g7n-…), même si HYPE_LEXIQUE_EXTRA a été remplacé entre-temps */
   var DANS = {};
-  try { [5, 6, 7, 8, 9].forEach(function (g) { (window["COURS_GALOP" + g + "_FR"] || []).forEach(function (c) { if (c && c.id && c.lexique && c.lexique.fr && c.lexique.fr.length) DANS[c.id] = { fr: { titre: "Petit lexique", mots: c.lexique.fr } }; }); }); } catch (eD) { }
+  try { [5, 6, 7, 8, 9].forEach(function (g) { (window["COURS_GALOP" + g + "_FR"] || []).forEach(function (c) { if (c && c.id && c.lexique && c.lexique.fr && c.lexique.fr.length) { var LXd = {}; Object.keys(c.lexique).forEach(function (lgd) { var md = c.lexique[lgd]; if (md && md.length) LXd[lgd] = { titre: "Petit lexique", mots: md }; }); DANS[c.id] = LXd; } });   /* 10/11 (Blandine : « le lexique c'est prévu que les mots restent en français ? ») : les mots des Galops 5 à 9 sont lus dans TOUTES les langues écrites dans les cours (avant : français seul) */ }); } catch (eD) { }
   var ids = Object.keys(LEXIQUE_COURS); Object.keys(EXTRA).concat(Object.keys(DANS)).forEach(function (k) { if (ids.indexOf(k) < 0) ids.push(k); });
   ids.forEach(function (id) {
     var LX = lexDe(id) || DANS[id], lex = LX && (LX[lg] || LX.fr); if (!lex || !lex.mots) return;
