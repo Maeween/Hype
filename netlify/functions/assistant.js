@@ -78,6 +78,9 @@ const OPERATIONS = {
     // 20/10/2026 — Challenges de club : lecture d'une feuille de résultats papier (photo), annotations manuscrites comprises.
     lecture_challenge: { categorie: "outil", imagesMin: 1, imagesMax: 1, jetons: 12000, consigne: "lecture_challenge", texte: "Lis cette feuille de resultats et renvoie le JSON demande, rien d'autre." },
     memoire:           { categorie: "outil", imagesMax: 0, jetons: 4096 },
+    // 10/11/2026 (Blandine) — traduire UNE réponse de Hey Baby dans une autre langue (bouton « Traduire » sous le message).
+    // Décomptée comme un outil : ne consomme pas la question du jour.
+    traduction:        { categorie: "outil", imagesMax: 0, jetons: 12000 },
 };
 
 // ═══ CONSIGNES FIXES (recopiées à l identique depuis index.html le 14/10/2026) ═══
@@ -446,6 +449,14 @@ export default async (req, context) => {
         systeme = HEYBABY_PROMPT_PERCEPTION;
         const q = String(corps.question || "").slice(0, 2000);
         messagesApp = [{ role: "user", content: [corps.image, { type: "text", text: q || "Observe cette photo selon la méthode." }] }];
+    } else if (operation === "traduction") {
+        const NOMS_LG = { fr: "français", en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais", ar: "arabe", zh: "chinois simplifié", nl: "néerlandais", pt: "portugais", sv: "suédois", ru: "russe", pl: "polonais", ko: "coréen" };
+        const aTraduire = String(corps.texte || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]+/g, " ").slice(0, 24000);
+        if (!aTraduire.trim()) return erreurJSON("INVALID_REQUEST", "Texte manquant.");
+        systeme = "Tu es le traducteur de Hey Baby, le coach équestre de l'application Hype. Traduis fidèlement le texte ci-dessous en " + NOMS_LG[langue] + ". "
+            + "Garde exactement la même mise en forme (paragraphes, titres, listes à puces, retours à la ligne), le même ton (on tutoie le cavalier) et le vocabulaire équestre juste de cette langue. "
+            + "Ne résume pas, n'ajoute rien, ne commente pas, ne réponds pas aux questions du texte : renvoie uniquement la traduction.\n\nTEXTE À TRADUIRE :\n" + aTraduire;
+        messagesApp = [{ role: "user", content: "Traduis le texte maintenant." }];
     } else if (operation === "memoire") {
         systeme = consigneMemoire(corps.memoire);
         messagesApp = [{ role: "user", content: "Fais la synthèse maintenant." }];

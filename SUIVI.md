@@ -10,6 +10,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2340 — Hey Baby : réponses mieux présentées, Traduire, langue, flèches ↑↓
+- Réponses : titres en doré (Cormorant) avec un filet, vraies puces espacées, paragraphes aérés, **gras** respecté (le texte n'est pas réécrit).
+- 6e bouton « Traduire » sous chaque réponse : 14 langues, la bulle s'affiche traduite, « Voir l'original » ; Écouter, Copier, Partager suivent la version affichée. Nouvelle opération serveur « traduction » (netlify/functions/assistant.js), décomptée comme un outil : ne prend pas la question du jour.
+- Bouton drapeau en haut de Hey Baby : choix de la langue (toute l'appli et les réponses de Hey Baby).
+- Flèches ↑ / ↓ en bas à droite de la conversation dès qu'on est loin du haut ou du bas.
+- Partage texte : même mise en forme (titres en gras, puces). En attente : nouvelle formule de partage (page de lecture du conseil + aperçu au petit poney), à valider par Blandine.
+- hype-ecran-assistant.js v14.
+
 ### 10/11 — build 20261110-2335 — Partage Hey Baby : retour au message texte
 - Test de Blandine dans WhatsApp : images impossibles à zoomer, ordre mélangé (début manquant), et le lien ne s'ouvrait pas (WhatsApp efface le texte quand on envoie des images). Le partage (réponse et épingle) envoie maintenant un seul message texte : la question, toute la réponse (titres en gras, puces), puis « 👉 Pose ta question : lien » cliquable, avec l'aperçu Hey Baby. Les images ne sont plus envoyées.
 
