@@ -1,3 +1,8 @@
+function hypeNomClubLisible(c) { /* 10/11 22h (Blandine : « avoir le nom du groupe en haut de la page ») : « societe d'equitation de paris (sep) » -> « SEP », « ecurie feinn » -> « Écurie Feinn » */
+  c = String(c || "").trim(); if (!c) return "";
+  var m = c.match(/\(([^)]+)\)\s*$/); if (m) return m[1].toUpperCase();
+  return c.replace(/^ecurie\b/i, "Écurie").replace(/(^|[\s'-])(\S)/g, function (a, s, l) { return s + l.toUpperCase(); });
+}
 /* HYPE ▸ 30/10/2026 — Page TEAM COMPÉTITION (EcranTeamCompetition), DÉTACHÉ de index.html pour alléger le démarrage de l'appli (~94 Ko).
    Chargé seulement à l'ouverture de l'écran (voir hypeEcranDiffere dans index.html). Code d'origine déplacé SANS changement :
    il utilise les mêmes outils partagés que le reste de l'appli (useApp, useState, T, etc.), disponibles à l'exécution. */
@@ -402,6 +407,7 @@ function EcranTeamCompetition() {
           ? [h("div", { key: "t1" }, "Team"), h("div", { key: "t2" }, String(groupe.nom).replace(/^Team\s+/, ""))]
           : [h("div", { key: "t1" }, T("Team", "Competition", "Equipo de", "Team", "競技", "Wettkampf", "فريق", "Team", "Competitie", "Team", "Team", "Team", "Team", "팀")),
              h("div", { key: "t2" }, T("Compétition", "Team", "competición", "Agonistico", "チーム", "Team", "المنافسات", "比赛", "Wedstrijdsport", "Competição", "Tävling", "Соревнования", "Zawody", "대회"))]),
+      (groupe && hypeNomClubLisible(groupe.club_clef)) ? h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: 21, color: OR, marginTop: 8 } }, hypeNomClubLisible(groupe.club_clef)) : null,   /* 10/11 22h : le club de l'équipe, sous le titre */
       h("span", { style: { display: "block", width: 38, height: 1, background: OR, margin: "14px 0 12px" } }),
       h("div", { style: { fontFamily: M, fontSize: 12, lineHeight: 1.55, color: "rgba(244,241,234,0.86)" } },
         h("div", null, T("Des cavaliers, des chevaux,", "Riders, horses,", "Jinetes, caballos,", "Amazzoni, cavalli,", "ライダーと馬、", "Reiter, Pferde,", "فرسان، خيول،", "骑手们，马匹们，", "Ruiters, paarden,", "Cavaleiros, cavalos,", "Ryttare, hästar,", "Всадники, лошади,", "Jeźdźcy, konie,", "기수와 말,")),

@@ -10,6 +10,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2230 — Équipes : nom du club affiché, Vidéos en premier, description cachée
+- Nom du club sous le titre de l'équipe (hype-ecran-team.js v=20) et à côté du nom sur la page Médias (hype-ecran-team-medias.js v=31) : « SEP » / « Écurie Feinn », lu dans la fiche du groupe (club_clef). Raison : deux équipes « Team CSO Club », Blandine tombait sur la mauvaise.
+- Page Médias : onglets dans l'ordre Vidéos · Épingles HB · Théorie ; on arrive sur Vidéos (sauf notification d'épingle).
+- Vidéo ouverte : la description n'apparaît plus (ni en tête des commentaires).
+- Premium offert (base, 10/11 21h52, accord de Blandine « gratuit ») : Ambre, Chloé, Delphine (team Feinn) jusqu'au 10/12/2026, sans Stripe.
+- Vérifié : l'épingle privée d'Aurélie (n° 77) apparaît bien dans la team SEP (fermée « Privé » pour les autres) et dans « Mes conseils » d'Aurélie.
+- En attente : Camille n'a pas encore de compte ; propositions d'aménagement de la page Médias (A onglets rangés + Théorie séparée Hype/liens, B page unique défilante, C tout sur la page équipe) — captures à faire selon son choix ; flèche pour changer d'équipe proposée.
+
 ### 10/11 — build 20261110-2215 — Vidéothèque de l'équipe : plus de commentaire sur les vignettes
 - Demande de Blandine (21h44) : sur les vignettes vidéo, ne plus montrer le mot posté avec la vidéo ; garder seulement « Cavalier × Cheval » puis « Épreuve · Lieu · date ».
 - hype-ecran-team-medias.js (v=29) : « sur » remplacé par « × », ligne d'infos réordonnée (épreuve, lieu, date), ligne de description retirée de la vignette.

@@ -1,3 +1,8 @@
+function hypeNomClubLisible(c) { /* 10/11 22h (Blandine : « avoir le nom du groupe en haut de la page ») : « societe d'equitation de paris (sep) » -> « SEP », « ecurie feinn » -> « Écurie Feinn » */
+  c = String(c || "").trim(); if (!c) return "";
+  var m = c.match(/\(([^)]+)\)\s*$/); if (m) return m[1].toUpperCase();
+  return c.replace(/^ecurie\b/i, "Écurie").replace(/(^|[\s'-])(\S)/g, function (a, s, l) { return s + l.toUpperCase(); });
+}
 /* HYPE ▸ 05/11/2026 — Page MÉDIAS de la Team (EcranTeamMedias), route « team-medias ».
    Ouverte depuis le chapitre « Médias » de la page Team (hype-ecran-team.js). Chargée à la demande (hypeEcranDiffere).
    Trois onglets : Théorie (partages), Vidéos (vidéothèque de l'équipe), Épingles HB (épingles Hey Baby partagées avec le groupe).
@@ -487,9 +492,9 @@ function EcranTeamMedias() {
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, rtl ? "›" : "‹"),
     h("div", { style: { textAlign: "end", padding: "0 18px", marginTop: -14, position: "relative" } },
       h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(44px, 12vw, 64px)", lineHeight: 1, margin: 0, color: IV } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Média", "Media", "Медиа", "Media", "미디어")),
-      h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(17px, 4.6vw, 21px)", margin: "8px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "")));
+      h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: "clamp(17px, 4.6vw, 21px)", margin: "8px 0 0", color: IV, opacity: 0.88 } }, (groupe && groupe.nom) || "", (groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")));
 
-  var ONGLETS = [["theorie", T("Théorie", "Theory", "Teoría", "Teoria", "理論", "Theorie", "النظرية", "理论", "Theorie", "Teoria", "Teori", "Теория", "Teoria", "이론")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상")], ["epingles", T("Épingles HB", "HB pins", "Pines HB", "Pin HB", "HBピン", "HB-Pins", "تثبيتات HB", "HB 收藏", "HB-pins", "Pins HB", "HB-nålar", "Закладки HB", "Przypięte HB", "HB 핀")]];
+  var ONGLETS = [["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상")], ["epingles", T("Épingles HB", "HB pins", "Pines HB", "Pin HB", "HBピン", "HB-Pins", "تثبيتات HB", "HB 收藏", "HB-pins", "Pins HB", "HB-nålar", "Закладки HB", "Przypięte HB", "HB 핀")], ["theorie", T("Théorie", "Theory", "Teoría", "Teoria", "理論", "Theorie", "النظرية", "理论", "Theorie", "Teoria", "Teori", "Теория", "Teoria", "이론")]];   /* 10/11 22h (Blandine : « que ce soit celui de la vidéo d'abord ») : Vidéos en premier */
   var barreOnglets = h("div", { role: "tablist", style: { display: "flex", gap: 8, margin: "22px 0 0" } },
     ONGLETS.map(function (o) {
       var on = onglet === o[0];
@@ -908,7 +913,7 @@ function EcranTeamMedias() {
       h("div", { style: { maxWidth: 620, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 28px)" } },
         h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
           h("div", null,
-            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, (groupe && groupe.nom) || ""),
+            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, ((groupe && groupe.nom) || "") + ((groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")),
             h("div", { style: { fontFamily: SERIF, fontSize: 24, marginTop: 2 } }, T("Partager avec l'équipe", "Share with the team", "Compartir con el equipo", "Condividi con la squadra", "チームと共有", "Mit dem Team teilen", "مشاركة مع الفريق", "与团队分享", "Delen met het team", "Partilhar com a equipa", "Dela med laget", "Поделиться с командой", "Udostępnij drużynie", "팀과 공유"))),
           h("button", { type: "button", disabled: envoi, onClick: function () { setPartageOuvert(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IV, fontSize: 15, cursor: "pointer" } }, "\u2715")),
         h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, margin: "6px 0 10px", transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })),
@@ -1269,7 +1274,7 @@ function EcranTeamMedias() {
           /* titre et fermeture, posés sur le haut */
           h("div", { style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 18, insetInlineEnd: 16, display: "flex", justifyContent: "space-between", alignItems: "flex-start" } },
             h("div", null,
-              h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, (groupe && groupe.nom) || ""),
+              h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: CH } }, ((groupe && groupe.nom) || "") + ((groupe && hypeNomClubLisible(groupe.club_clef)) ? " · " + hypeNomClubLisible(groupe.club_clef) : "")),
               h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 2 } }, T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"))),
             h("button", { type: "button", onClick: fermerAjout, disabled: envoiEnCours, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기"), style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.2)", background: "rgba(7,10,8,0.5)", color: IV, fontSize: 15, cursor: "pointer", opacity: envoiEnCours ? 0.4 : 1 } }, "✕")),
           fEtat && fEtat.etape === "fini"
@@ -1460,7 +1465,7 @@ function EcranTeamMedias() {
                la bulle des commentaires se range à côté du cœur ; la liste ne s'ouvre que si on la touche */
             h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14, marginTop: 12 } },
               (typeof HypeJaimeTexte === "function") ? h(HypeJaimeTexte, { key: "jt" + v.id, cible: "teamvideo:" + v.id, marge: 0 }) : null,
-              (typeof SectionCommentaires === "function") ? h("div", { style: { flex: "1 1 auto", minWidth: 0 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team", intro: introDescription(v) })) : null),
+              (typeof SectionCommentaires === "function") ? h("div", { style: { flex: "1 1 auto", minWidth: 0 } }, h(SectionCommentaires, { key: "sc" + v.id, cible: "teamvideo:" + v.id, theme: "team", intro: null /* 10/11 21h51 (Blandine : « tu la caches la description de la vidéo ») */ })) : null),
 null)) });
   }
   /* 10/11 — le texte de publication d'une vidéo, en tête des commentaires : auteur, texte, et pour l'auteur ou la coach
