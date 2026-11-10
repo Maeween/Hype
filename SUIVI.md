@@ -10,6 +10,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2150 — Retour depuis un article partagé
+- Page d'un article (article-detail) et article CSO « Pourquoi éviter la longue… » (hype-article-cso.js v9 + outils/article-cso/modele.js) : le bouton Retour ramène à la page d'où l'on vient (ex. Vidéothèque Team › Théorie) ; sinon Le Mag. Avant, retour toujours au Mag (l'article CSO testait « histLen », absent du contexte de l'appli : c'est « peutReculer »).
+- Remarque : deux autres écrans de index.html testent aussi a.histLen (lignes ~25558 et ~25792) → même défaut probable (retour vers Communauté / Écurie) ; non touchés, à vérifier.
+
 ### 10/11 — build 20261110-2140 — « Partager avec l'équipe » propose les articles de Hype (hype-ecran-team-medias.js v28)
 - Onglet Théorie de la Vidéothèque Team, « + Partager » : en haut « Un article de Hype » avec recherche par titre (catégorie, image) ; toucher un article remplit 2hype.fr/#a=… et l'aperçu « Article Hype » ; « Choisir un autre article » ; le lien à coller reste en dessous (« ou »). Image de l'article CSO (« Pourquoi éviter la longue… ») corrigée dans l'aperçu.
 - Données 10/11 20h : épingle Hey Baby n° 80 et ses 13 notifications : la consigne tapée par Blandine remplacée par le titre « Corriger, puis retrouver l'encadrement des deux jambes et des deux rênes » (à sa demande).

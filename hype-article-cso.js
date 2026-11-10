@@ -151,7 +151,7 @@ function Article() {
       return m;
     });
   }
-  function retour() { var a = appRef.current; if (a.histLen && a.histLen > 0 && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
+  function retour() { var a = appRef.current; if ((a.peutReculer || (a.histLen && a.histLen > 0)) && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
   var flecheRetour = rtl ? "›" : "‹";
   var barre = h("div", { className: "acso-top" },
     h("button", { type: "button", className: "acso-back", onClick: retour, "aria-label": t("retour") }, flecheRetour),
