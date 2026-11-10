@@ -570,7 +570,17 @@ function EcranTeamMedias() {
   var _co = React.useState(null); var cavOuverte = _co[0], setCavOuverte = _co[1];
   var _tsc = React.useState(false); var tousCav = _tsc[0], setTousCav = _tsc[1];   /* 09/11 15h25 (Blandine) : les cavaliers sans vidéo masqués par défaut */
   var _oc2 = React.useState("tous"); var ongletCheval = _oc2[0], setOngletCheval = _oc2[1];
-  function ouvrirCavaliere(p) { setOngletCheval("tous"); setCavOuverte(p.id); try { window.scrollTo(0, 0); } catch (e) { } }
+  /* 10/11 18h10 (Blandine : « la vidéothèque renvoie vers les pages qu'on a faites par cavalier, par cheval et par couple ») :
+     « Voir tout » ouvre la page au grand cheval noir (toutes ses vidéos de l'équipe, tous concours confondus). Une vidéo
+     n'existe qu'une fois : publiée, modifiée ou supprimée ici ou sur la fiche du concours, elle l'est partout. */
+  function versPageMedias(estCh, id, liste) {
+    var ag = null; (liste || []).forEach(function (v) { if (!ag && v.agenda_id) ag = v.agenda_id; });
+    if (!ag) (videos || []).forEach(function (v) { if (!ag && v.agenda_id) ag = v.agenda_id; });
+    if (!ag) return false;
+    try { window.__concoursId = ag; window.__engagementsId = ag; window.__concoursPhoto = null; window.__medPageDirect = { ch: estCh, id: String(id) }; } catch (e) { return false; }
+    setEcran("concours"); return true;
+  }
+  function ouvrirCavaliere(p) { if (versPageMedias(false, p.id, videosDe(p))) return; setOngletCheval("tous"); setCavOuverte(p.id); try { window.scrollTo(0, 0); } catch (e) { } }
 
   function sectionCavaliere(p, i) {
     var siennes = videosDe(p), nbCh = chevauxDe(siennes).filter(function (c) { return c !== "_sans"; }).length;
@@ -633,7 +643,7 @@ function EcranTeamMedias() {
     return h("div", { style: { width: taille, height: taille, flex: "0 0 " + taille + "px", borderRadius: "50%", overflow: "hidden", border: "1px solid " + CH2, background: PAN, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: Math.round(taille * 0.46), color: CH } },
       (ch && ch.photo_url) ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ch.photo_url, taille * 3, taille * 3) : ch.photo_url, alt: "", loading: "lazy", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } }) : nomCheval(c).charAt(0).toUpperCase());
   }
-  function ouvrirCheval(c) { setOngletCav("tous"); setChOuvert(c); try { window.scrollTo(0, 0); } catch (e) { } }
+  function ouvrirCheval(c) { if (versPageMedias(true, c, videosDuCheval(c))) return; setOngletCav("tous"); setChOuvert(c); try { window.scrollTo(0, 0); } catch (e) { } }
   function sectionCheval(c, i) {
     var siens = videosDuCheval(c), nbCav = cavalieresDe(siens).length, deux = siens.slice(0, 2);
     return h("div", { key: "chv" + c },
