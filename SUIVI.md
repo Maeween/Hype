@@ -10,9 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2200 — Retour : même correction sur les autres pages + épingle d'Aurélie
+- Bouton Retour qui testait a.histLen (absent du contexte ; le bon champ est peutReculer) corrigé aussi : 2 écrans de index.html (retour vers Communauté / Écurie) et les 4 Grandes écoles (hype-ecoles.js v3). Ils ramènent maintenant à la page d'origine.
+- Données : épingle Hey Baby n° 77 (envoyée en privé à Aurélie, Team CSO Club SEP) : consigne de Blandine remplacée par « Analyse de ta courbe à droite avec Elle m'a dit Circée » (épingle + notification). Épingles 75, 76, 78 : même problème de titre mais non partagées, laissées telles quelles.
+- Constat : DEUX groupes « Team CSO Club » (SEP : Clémence, Ella, Eva, Lauren, Aurélie, Masure, Emma, Romy-Thaïs ; Feinn : Ambre, Chloé, Delphine, Evan, Liam) → l'épingle d'Aurélie n'apparaît que dans celui de la SEP. Idée à proposer : renommer (« Team CSO Club SEP » / « … Feinn ») ; et faire écrire par Hey Baby un vrai titre quand on lui demande de refaire une réponse « en épingle ».
+
 ### 10/11 — build 20261110-2150 — Retour depuis un article partagé
 - Page d'un article (article-detail) et article CSO « Pourquoi éviter la longue… » (hype-article-cso.js v9 + outils/article-cso/modele.js) : le bouton Retour ramène à la page d'où l'on vient (ex. Vidéothèque Team › Théorie) ; sinon Le Mag. Avant, retour toujours au Mag (l'article CSO testait « histLen », absent du contexte de l'appli : c'est « peutReculer »).
-- Remarque : deux autres écrans de index.html testent aussi a.histLen (lignes ~25558 et ~25792) → même défaut probable (retour vers Communauté / Écurie) ; non touchés, à vérifier.
 
 ### 10/11 — build 20261110-2140 — « Partager avec l'équipe » propose les articles de Hype (hype-ecran-team-medias.js v28)
 - Onglet Théorie de la Vidéothèque Team, « + Partager » : en haut « Un article de Hype » avec recherche par titre (catégorie, image) ; toucher un article remplit 2hype.fr/#a=… et l'aperçu « Article Hype » ; « Choisir un autre article » ; le lien à coller reste en dessous (« ou »). Image de l'article CSO (« Pourquoi éviter la longue… ») corrigée dans l'aperçu.

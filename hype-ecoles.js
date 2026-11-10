@@ -8,7 +8,7 @@ function EcranCadreNoir() {
     var ctx = useApp(); var setEcran = ctx.setEcran, tr = ctx.tr, langue = ctx.langue, setLangue = ctx.setLangue;
     var appRef = React.useRef(ctx); appRef.current = ctx;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
-    function retour() { var a = appRef.current; if (a.histLen && a.histLen > 0 && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
+    function retour() { var a = appRef.current; if ((a.peutReculer || (a.histLen && a.histLen > 0)) && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
     function WIKI(nom, w) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + nom + "?width=" + (w || 1100); }
     var IMG_CN_HERO = WIKI("Grand%20man%C3%A9ge%20des%20%C3%A9cuyers%20du%20Cadre%20noir.jpg", 1600);
     var IMG_CN_HISTOIRE = WIKI("Saumur%20-%20%C3%89cole%20de%20Cavalerie%20-%20Man%C3%A8ge%20des%20%C3%89cuyers.jpg");
@@ -458,7 +458,7 @@ function EcranEcolePortugaise() {
     var ctx = useApp(); var setEcran = ctx.setEcran, tr = ctx.tr, langue = ctx.langue, setLangue = ctx.setLangue, premium = ctx.premium;
     var appRef = React.useRef(ctx); appRef.current = ctx;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
-    function retour() { var a = appRef.current; if (a.histLen && a.histLen > 0 && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
+    function retour() { var a = appRef.current; if ((a.peutReculer || (a.histLen && a.histLen > 0)) && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
     function WIKI(nom, w) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + nom + "?width=" + (w || 1100); }
     var IMG_EPA_HERO = WIKI("Queluz%20Solo%20Picador%20%289181009668%29%20%28cropped%29.jpg", 1600);
     if (!premium) {
@@ -868,7 +868,7 @@ function EcranEcoleJerez() {
     var ctx = useApp(); var setEcran = ctx.setEcran, tr = ctx.tr, langue = ctx.langue, setLangue = ctx.setLangue, premium = ctx.premium;
     var appRef = React.useRef(ctx); appRef.current = ctx;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
-    function retour() { var a = appRef.current; if (a.histLen && a.histLen > 0 && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
+    function retour() { var a = appRef.current; if ((a.peutReculer || (a.histLen && a.histLen > 0)) && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
     function WIKI(nom, w) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + nom + "?width=" + (w || 1100); }
     var IMG_EJ_HERO = WIKI("Jerez-Real%20Escuela%20Andaluza%20del%20Arte%20Equestre-Palacio%20Duque%20de%20Abrantes-20110914.jpg", 1600);
     if (!premium) {
@@ -1264,7 +1264,7 @@ function EcranEcoleVienne() {
     var ctx = useApp(); var setEcran = ctx.setEcran, tr = ctx.tr, langue = ctx.langue, setLangue = ctx.setLangue, premium = ctx.premium;
     var appRef = React.useRef(ctx); appRef.current = ctx;
     function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
-    function retour() { var a = appRef.current; if (a.histLen && a.histLen > 0 && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
+    function retour() { var a = appRef.current; if ((a.peutReculer || (a.histLen && a.histLen > 0)) && a.retourEcran) { a.retourEcran(); } else { a.setEcran("articles"); } }
     function WIKI(nom, w) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + nom + "?width=" + (w || 1100); }
     var IMG_EV_HERO = WIKI("Spanische%20Hofreitschule%20Wien%20Vienna%20Winter%20riding%20manege%201.jpg", 1600);
     if (!premium) {
