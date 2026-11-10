@@ -842,7 +842,21 @@ function EcranTeamMedias() {
   var _pc = React.useState(""); var pCom = _pc[0], setPCom = _pc[1];
   var _pv = React.useState(null); var pApercu = _pv[0], setPApercu = _pv[1];      /* { titre, image, resume, categorie, site, secours } */
   var _pe = React.useState(""); var pEtat = _pe[0], setPEtat = _pe[1];            /* "" | "lecture" | "envoi" | "fini" | message d'erreur */
-  function ouvrirPartager() { setPUrl(""); setPType("lien"); setPCom(""); setPApercu(null); setPEtat(""); setPartageOuvert(true); }
+  /* 10/11 21h15 (Blandine : « je vois toujours pas comment on partage un article qui est déjà écrit dans l'appli ») :
+     la fenêtre propose d'abord les articles de Hype (recherche par titre) ; toucher un article remplit l'adresse
+     2hype.fr/#a=… et l'aperçu « Article Hype » se fait tout seul. Le lien à coller reste pour les pages extérieures. */
+  var _pr = React.useState(""); var pRech = _pr[0], setPRech = _pr[1];
+  function articlesHype() {
+    var liste = []; try { liste = (typeof ARTICLES !== "undefined" && ARTICLES) || []; } catch (e) { liste = []; }
+    var q = String(pRech || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return liste.filter(function (x) {
+      if (!x || x.id == null || !tr(x.titre)) return false;
+      if (!q) return true;
+      var t2 = (tr(x.titre) + " " + (x.categorie || "") + " " + (tr(x.extrait) || "")).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return t2.indexOf(q) >= 0;
+    }).slice(0, q ? 12 : 6);
+  }
+  function ouvrirPartager() { setPUrl(""); setPType("lien"); setPCom(""); setPApercu(null); setPEtat(""); setPRech(""); setPartageOuvert(true); }
   function urlPropre(u) { u = String(u || "").trim(); if (u && !/^https?:\/\//i.test(u) && /^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(u)) u = "https://" + u; return u; }
   function estVideoExterne(u) { return /(youtube\.com|youtu\.be|vimeo\.com|tiktok\.com|instagram\.com\/reel)/i.test(u); }
   async function lireApercu(brut) {
@@ -850,7 +864,7 @@ function EcranTeamMedias() {
     if (!/^https?:\/\/[^\s]+\.[^\s]+/i.test(u)) { setPApercu(null); return; }
     var ah = articleHypeDe(u);
     if (ah) {
-      var a = ah.art, img = (typeof a.tuile === "string" && /^(images\/|https?:)/.test(a.tuile)) ? a.tuile : "";
+      var a = ah.art, img = a.ecran === "article-cso" ? "images/article-cso-virage.webp" : ((typeof a.tuile === "string" && /^(images\/|https?:)/.test(a.tuile)) ? a.tuile : "");
       setPType("article_hype");
       setPApercu({ titre: tr(a.titre) || "", image: img, resume: tr(a.extrait) || "", categorie: a.categorie || "", site: "Hype" });
       return;
@@ -901,6 +915,22 @@ function EcranTeamMedias() {
             h("div", { style: { fontFamily: SERIF, fontSize: 22 } }, T("Partagé avec l'équipe.", "Shared with the team.", "Compartido con el equipo.", "Condiviso con la squadra.", "チームと共有しました。", "Mit dem Team geteilt.", "تمت المشاركة مع الفريق.", "已与团队分享。", "Gedeeld met het team.", "Partilhado com a equipa.", "Delat med laget.", "Отправлено команде.", "Udostępniono drużynie.", "팀과 공유했어요.")),
             h("button", { type: "button", onClick: function () { setPartageOuvert(false); }, style: { marginTop: 20, minHeight: 44, padding: "0 26px", borderRadius: 999, border: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기")))
         : h("div", null,
+          /* 10/11 : choisir un article de Hype */
+          pType === "article_hype" && pApercu ? null : h("div", { style: { marginBottom: 22 } },
+            h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, marginBottom: 8 } }, T("Un article de Hype", "A Hype article", "Un artículo de Hype", "Un articolo di Hype", "Hypeの記事", "Ein Hype-Artikel", "مقال من Hype", "Hype 文章", "Een artikel van Hype", "Um artigo da Hype", "En artikel från Hype", "Статья Hype", "Artykuł z Hype", "Hype 기사")),
+            h("input", { type: "search", value: pRech, disabled: envoi, onChange: function (e) { setPRech(e.target.value); }, placeholder: T("Chercher par titre (ex. embouchures, pansage…)", "Search by title (e.g. bits, grooming…)", "Buscar por título (ej. embocaduras, aseo…)", "Cerca per titolo (es. imboccature, governo…)", "タイトルで検索（例：ハミ、手入れ…）", "Nach Titel suchen (z. B. Gebisse, Putzen…)", "ابحث بالعنوان (مثل: اللجام، التنظيف…)", "按标题搜索（如：衔铁、刷拭…）", "Zoeken op titel (bv. bitten, poetsen…)", "Procurar por título (ex. embocaduras, limpeza…)", "Sök på titel (t.ex. bett, ryktning…)", "Поиск по названию (напр. удила, чистка…)", "Szukaj po tytule (np. wędzidła, czyszczenie…)", "제목으로 검색 (예: 재갈, 손질…)"),
+              style: { width: "100%", boxSizing: "border-box", minHeight: 44, padding: "0 14px", borderRadius: 12, border: "1px solid " + CH3, background: PAN, color: IV, fontFamily: M, fontSize: 15, outline: "none" } }),
+            h("div", { style: { marginTop: 8 } }, articlesHype().map(function (x) {
+              var img = x.ecran === "article-cso" ? "images/article-cso-virage.webp" : ((typeof x.tuile === "string" && /^(images\/|https?:)/.test(x.tuile)) ? x.tuile : "");
+              return h("button", { key: "ah" + x.id, type: "button", disabled: envoi, onClick: function () { setPUrl("https://2hype.fr/#a=" + x.id); setPRech(""); },
+                  style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "8px 0", background: "none", border: "none", borderBottom: "1px solid rgba(243,238,228,0.06)", color: IV, textAlign: "start", cursor: "pointer", fontFamily: M } },
+                h("div", { style: { width: 64, flex: "0 0 64px", aspectRatio: "16 / 11", borderRadius: 8, overflow: "hidden", background: PAN, display: "flex", alignItems: "center", justifyContent: "center", color: CH } }, img ? h("img", { src: img, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } }) : "\u2726"),
+                h("div", { style: { minWidth: 0, flex: 1 } },
+                  x.categorie ? h("div", { style: { fontSize: 9, letterSpacing: ".16em", textTransform: "uppercase", color: CH } }, x.categorie) : null,
+                  h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.2, marginTop: 2 } }, tr(x.titre))));
+            })),
+            h("div", { style: { fontSize: 12, color: IV3, marginTop: 16, textAlign: "center" } }, T("ou", "or", "o", "oppure", "または", "oder", "أو", "或", "of", "ou", "eller", "или", "lub", "또는"))),
+          pType === "article_hype" && pApercu ? h("button", { type: "button", disabled: envoi, onClick: function () { setPUrl(""); setPApercu(null); setPType("lien"); }, style: { background: "none", border: "none", color: CH, fontFamily: M, fontSize: 12, padding: "0 0 10px", cursor: "pointer", textDecoration: "underline" } }, T("Choisir un autre article", "Choose another article", "Elegir otro artículo", "Scegli un altro articolo", "別の記事を選ぶ", "Anderen Artikel wählen", "اختر مقالًا آخر", "选择其他文章", "Ander artikel kiezen", "Escolher outro artigo", "Välj en annan artikel", "Выбрать другую статью", "Wybierz inny artykuł", "다른 기사 고르기")) : null,
           h("label", { htmlFor: "tp-url", style: { display: "block", fontSize: 12.5, color: IV3, marginBottom: 6 } }, T("Colle l'adresse de l'article, de la vidéo ou de la page", "Paste the address of the article, video or page", "Pega la dirección del artículo, del vídeo o de la página", "Incolla l'indirizzo dell'articolo, del video o della pagina", "記事・動画・ページのアドレスを貼り付けて", "Füge die Adresse des Artikels, Videos oder der Seite ein", "الصق عنوان المقال أو الفيديو أو الصفحة", "粘贴文章、视频或网页的地址", "Plak het adres van het artikel, de video of de pagina", "Cola o endereço do artigo, do vídeo ou da página", "Klistra in adressen till artikeln, videon eller sidan", "Вставь адрес статьи, видео или страницы", "Wklej adres artykułu, filmu lub strony", "기사, 동영상 또는 페이지 주소를 붙여 넣으세요")),
           h("input", { id: "tp-url", type: "url", inputMode: "url", autoCapitalize: "off", autoCorrect: "off", value: pUrl, disabled: envoi, onChange: function (e) { setPUrl(e.target.value); }, placeholder: "https://…",
             style: { width: "100%", boxSizing: "border-box", minHeight: 46, padding: "0 2px", border: "none", borderBottom: "1px solid " + CH2, background: "transparent", color: IV, fontFamily: M, fontSize: 16, outline: "none" } }),
