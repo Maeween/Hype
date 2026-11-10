@@ -34,6 +34,7 @@ function EcranAssistantIA() {
         if (coursOuvert) { setEcran("cours"); } else { setEcran("galops"); }
     };
     const [messages, setMessages] = useState(() => {
+        try { if (typeof window !== "undefined" && Array.isArray(window.__hbDemo)) return window.__hbDemo; } catch (eDm) { }   /* captures de maquette uniquement */
         if (coursCtx) {
             let accueil;
             if (coursCtx.depuisQuiz && typeof coursCtx.score === "number" && coursCtx.score >= 100) {
@@ -178,7 +179,7 @@ function EcranAssistantIA() {
         (async () => {
             try {
                 const r = await supa.rpc("hype_est_moderatrice");
-                if (vif && r && !r.error && r.data === true) { setEstModoHB(true); return; }
+                if (vif && r && !r.error && r.data === true) { setEstModoHB(true); try { window.__hbModo = true; } catch (eW) { } return; }
             } catch (eM) { }
             try {
                 const sM = await supa.auth.getSession();
@@ -1508,10 +1509,73 @@ function EcranAssistantIA() {
         React.createElement("p", { style: { color: HB_C.ivoire, fontWeight: 700, fontSize: 15, margin: "0 0 6px" } }, t("limite_atteinte_titre")),
         React.createElement("p", { style: { color: "rgba(243,238,228,0.75)", fontSize: 13, margin: "0 0 16px" } }, t(planAbo === "duo" ? "limite_atteinte_texte_duo" : planAbo === "ai" ? "limite_atteinte_texte_ia" : premium ? "limite_atteinte_texte_premium" : "limite_atteinte_texte")),
         (planAbo === "ai" || planAbo === "duo") ? null : React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: HB_C.champ, secondaire: true, onClick: () => setEcran("premium") })) : null;
+    /* 10/11 19h05 (Blandine : « mettre une note à ses réponses, entre 1 et 5 étoiles, avec l'explication pourquoi quand
+       c'est pas bien ») : sous chaque réponse, 5 étoiles ; à 3 ou moins, « Pourquoi ? ». La note d'un coach compte plus
+       (calculé par la base). Rien n'est appris tout seul : les notes remontent dans « Réponses à revoir ». */
+    const [notesHB, setNotesHB] = useState({});
+    /* 10/11 19h10 (Blandine : « une page réservée admin où je puisse voir toutes ces rectifications et invalider une
+       correction ou un commentaire noté ; dans les tons habituels ») : page plein écran, héros + courbe dorée. */
+    const [admHB, setAdmHB] = useState(null);   /* null = fermée ; { ong, fil, corr, notes, noms, err, sup, edit } */
+    const admCharger = async (base) => {
+        const a = Object.assign({ ong: "notes", fil: "revoir", corr: null, notes: null, noms: {}, err: "", sup: null, edit: null }, base || {});
+        setAdmHB(a);
+        try {
+            const rc = await supa.from("heybaby_corrections").select("id, texte, actif, created_at, question").order("created_at", { ascending: false }).limit(200);
+            const rn = await supa.from("heybaby_notes").select("id, created_at, user_id, note, pourquoi, question, reponse_extrait, est_coach, ignoree").order("created_at", { ascending: false }).limit(300);
+            const ids = [...new Set(((rn && rn.data) || []).map((x) => x.user_id))];
+            const noms = {};
+            if (ids.length) { const rp = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids); ((rp && rp.data) || []).forEach((x) => { noms[x.id] = x; }); }
+            setAdmHB((o) => o ? { ...o, corr: (rc && rc.data) || [], notes: (rn && rn.data) || [], noms: noms, err: (rc && rc.error) ? rc.error.message : (rn && rn.error) ? rn.error.message : "" } : o);
+        } catch (eA) { setAdmHB((o) => o ? { ...o, corr: [], notes: [], err: String((eA && eA.message) || eA) } : o); }
+    };
+    const admMaj = async (table, id, champs) => {
+        try { const r = await supa.from(table).update(champs).eq("id", id).select("id"); if (r && r.error) throw r.error; } catch (eU) { setAdmHB((o) => o ? { ...o, err: "Non modifié : " + ((eU && eU.message) || eU) } : o); return; }
+        if (table === "heybaby_corrections") { try { await chargerCorrectionsHB(); } catch (e2) { } }
+        setAdmHB((o) => o ? { ...o, corr: table === "heybaby_corrections" ? o.corr.map((x) => x.id === id ? { ...x, ...champs } : x) : o.corr, notes: table === "heybaby_notes" ? o.notes.map((x) => x.id === id ? { ...x, ...champs } : x) : o.notes } : o);
+    };
+    const admSuppr = async (id) => {
+        try { const r = await supa.from("heybaby_corrections").delete().eq("id", id).select("id"); if (r && r.error) throw r.error; } catch (eS) { setAdmHB((o) => o ? { ...o, err: "Non supprimée : " + ((eS && eS.message) || eS), sup: null } : o); return; }
+        try { await chargerCorrectionsHB(); } catch (e2) { }
+        setAdmHB((o) => o ? { ...o, corr: o.corr.filter((x) => x.id !== id), sup: null } : o);
+    };
+    const admVersCorrection = async (n, texte) => {
+        texte = String(texte || "").trim(); if (texte.length < 3) return;
+        try {
+            const r = await supa.from("heybaby_corrections").insert({ texte: texte.slice(0, 500), question: String(n.question || "").slice(0, 1000), reponse_extrait: String(n.reponse_extrait || "").slice(0, 1500) }).select("id, texte, actif, created_at, question");
+            if (r && r.error) throw r.error;
+            try { HB_CORRECTIONS.push(texte); } catch (eP) { }
+            setAdmHB((o) => o ? { ...o, edit: null, corr: [].concat((r && r.data) || [], o.corr || []), ok: n.id } : o);
+        } catch (eV) { setAdmHB((o) => o ? { ...o, err: "Non enregistrée : " + ((eV && eV.message) || eV) } : o); }
+    };
+    const noterHB = async (i, note, pourquoi, envoyer) => {
+        setNotesHB((n) => ({ ...n, [i]: { ...(n[i] || {}), note: note, pourquoi: pourquoi != null ? pourquoi : ((n[i] || {}).pourquoi || ""), envoi: !!envoyer, fait: false } }));
+        if (!envoyer) return;
+        try {
+            let q = ""; for (let j = i - 1; j >= 0; j--) { if (messages[j] && messages[j].role === "user") { q = messages[j].contenu || ""; break; } }
+            await supa.from("heybaby_notes").insert({ note: note, pourquoi: String(pourquoi || "").trim().slice(0, 500) || null, question: String(q).slice(0, 1000), reponse_extrait: String((messages[i] && messages[i].contenu) || "").slice(0, 2000) });
+        } catch (eN) { }
+        setNotesHB((n) => ({ ...n, [i]: { ...(n[i] || {}), envoi: false, fait: true } }));
+    };
+    const hbEtoiles = (i) => {
+        const e = notesHB[i] || {}, note = e.note || 0;
+        const etoile = (k) => React.createElement("button", { key: k, type: "button", disabled: e.fait, "aria-label": k + " / 5", onClick: () => noterHB(i, k, null, false),
+            style: { width: 30, height: 30, padding: 0, border: "none", background: "transparent", color: k <= note ? "#C9A66B" : "rgba(243,238,228,.32)", fontSize: 19, lineHeight: 1, cursor: e.fait ? "default" : "pointer" } }, k <= note ? "\u2605" : "\u2606");
+        return React.createElement("div", { key: "n" + i, style: { margin: "-4px 0 6px", paddingInlineStart: 4, fontFamily: HB_SANS } },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 2 } },
+                [1, 2, 3, 4, 5].map(etoile),
+                e.fait ? React.createElement("span", { style: { marginInlineStart: 8, fontSize: 11.5, color: "#C9A66B" } }, TXT("Merci pour ta note !", "Thanks for your rating!", "¡Gracias por tu nota!", "Grazie per il tuo voto!", "評価ありがとう！", "Danke für deine Bewertung!", "شكرًا على تقييمك!", "谢谢你的评分！", "Bedankt voor je beoordeling!", "Obrigado pela tua nota!", "Tack för ditt betyg!", "Спасибо за оценку!", "Dzięki za ocenę!", "평가해 줘서 고마워!")) : null),
+            (note && !e.fait) ? React.createElement("div", { style: { marginTop: 6, maxWidth: 520 } },
+                React.createElement("textarea", { rows: 2, maxLength: 500, value: e.pourquoi || "", onChange: (ev) => { const v = ev.target.value; setNotesHB((n) => ({ ...n, [i]: { ...(n[i] || {}), pourquoi: v } })); },
+                    placeholder: note >= 4 ? TXT("Pourquoi ? Qu’est-ce qui t’a plu ? (facultatif)", "Why? What did you like? (optional)", "¿Por qué? ¿Qué te gustó? (opcional)", "Perché? Cosa ti è piaciuto? (facoltativo)", "なぜ？どこが良かった？（任意）", "Warum? Was hat dir gefallen? (optional)", "لماذا؟ ما الذي أعجبك؟ (اختياري)", "为什么？你喜欢哪里？（可选）", "Waarom? Wat vond je goed? (optioneel)", "Porquê? O que gostaste? (opcional)", "Varför? Vad gillade du? (valfritt)", "Почему? Что понравилось? (необязательно)", "Dlaczego? Co ci się podobało? (opcjonalnie)", "왜? 뭐가 좋았어? (선택)") : TXT("Pourquoi ? Qu’est-ce qui n’allait pas ?", "Why? What was wrong?", "¿Por qué? ¿Qué no estaba bien?", "Perché? Cosa non andava?", "なぜ？何が違った？", "Warum? Was stimmte nicht?", "لماذا؟ ما الذي لم يكن صحيحًا؟", "为什么？哪里不对？", "Waarom? Wat klopte er niet?", "Porquê? O que não estava bem?", "Varför? Vad var fel?", "Почему? Что было не так?", "Dlaczego? Co było nie tak?", "왜? 뭐가 틀렸어?"),
+                    style: { width: "100%", boxSizing: "border-box", fontSize: 16, lineHeight: 1.4, padding: "9px 11px", borderRadius: 10, background: "rgba(7,10,8,.55)", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.18)", fontFamily: HB_SANS } }),
+                React.createElement("button", { type: "button", disabled: e.envoi, onClick: () => noterHB(i, note, e.pourquoi || "", true),
+                    style: { marginTop: 6, minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid #C9A66B", background: "transparent", color: "#C9A66B", fontFamily: HB_SANS, fontWeight: 700, fontSize: 13, cursor: "pointer" } },
+                    e.envoi ? "…" : TXT("Envoyer ma note", "Send my rating", "Enviar mi nota", "Invia il voto", "評価を送る", "Bewertung senden", "إرسال تقييمي", "发送评分", "Beoordeling versturen", "Enviar a minha nota", "Skicka betyget", "Отправить оценку", "Wyślij ocenę", "평가 보내기"))) : null);
+    };
     const hbBulles = messages.map((m, i) => {
         if (i === 0 && m.intro) return null;
         const bulle = React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null, onCorriger: (estModoHB && m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirCorrection(i)) : null, onClasser: (hbCatsOk && m.role === "assistant" && !m.intro && !m.pending && m.contenu && conversationId) ? (() => hbOuvrirCat(conversationId)) : null });
-        if (m.role !== "user") return bulle;
+        if (m.role !== "user") return (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? React.createElement(React.Fragment, { key: "f" + i }, bulle, hbEtoiles(i)) : bulle;
         /* le « ⋯ » d'un échange se pose juste à côté de la question (prop `avant` de BulleMessage) */
         return React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, avant: React.createElement("button", { type: "button", onClick: (e) => hbOuvrirMenu(e, { type: "echange", idx: i }), "aria-label": HBR("optEch"), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "echange" && hbMenu.idx === i), style: { width: 36, height: 44, flexShrink: 0, background: "none", border: "none", color: "rgba(243,238,228,0.55)", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0, borderRadius: 8 } }, React.createElement("span", { "aria-hidden": "true", style: { display: "block", marginTop: -6 } }, "…")) });
     });
@@ -1569,6 +1633,7 @@ function EcranAssistantIA() {
             st.left = Math.max(12, Math.min(vw - W - 12, gauche)); return st; })() },
             hbMenu.type === "entete" ? React.createElement(React.Fragment, null,
                 hbCatsOk ? hbItem({ onClick: () => hbOuvrirCat(conversationId) }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 15, width: 16, textAlign: "center", flexShrink: 0 } }, "\uD83C\uDFF7\uFE0F"), HBR("classer")) : null,
+                estModoHB ? hbItem({ onClick: () => { setHbMenu(null); admCharger(); } }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 15, width: 16, textAlign: "center", flexShrink: 0 } }, "\u2726"), "Corrections & notes (admin)") : null,
                 hbItem({ onClick: () => hbDemander({ type: "vider", id: conversationId }) }, hbIconeBalai(), HBR("viderConv")),
                 hbItem({ onClick: () => hbDemander({ type: "supprimer", id: conversationId }) }, hbIconeCorbeille(), HBR("supprimerConv"), true))
             : hbMenu.type === "ligne" ? React.createElement(React.Fragment, null,
@@ -1630,6 +1695,83 @@ function EcranAssistantIA() {
     const hbLettreDe = (nom) => { const c = String(nom || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").charAt(0).toUpperCase(); return (c >= "A" && c <= "Z") ? c : "#"; };
     const hbSansAcc = (v) => String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
     const HB_GROUPES = [["A", "B", "C", "D", "E", "F"], ["G", "H", "I", "J", "K", "L"], ["M", "N", "O", "P", "Q", "R"], ["S", "T", "U", "V", "W", "X", "Y", "Z", "#"]];
+    const hbPageAdmin = () => {
+        const a = admHB; if (!a) return null;
+        const C = "#C9A66B", IV = "#F3EEE4", MU = "rgba(243,238,228,0.58)", MU2 = "rgba(243,238,228,0.38)", LI = "rgba(243,238,228,0.09)";
+        const SERIF = "'Cormorant Garamond', Georgia, serif";
+        const btn = (txt, onClick, fort, rouge) => React.createElement("button", { type: "button", onClick: onClick, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid " + (rouge ? "rgba(255,138,128,.55)" : fort ? C : "rgba(243,238,228,.2)"), background: "transparent", color: rouge ? "#FF9E94" : fort ? C : IV, fontFamily: HB_SANS, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, txt);
+        const date = (iso) => String(iso || "").slice(0, 10).split("-").reverse().join("/");
+        const etoiles = (n) => React.createElement("span", { style: { color: C, letterSpacing: 2, fontSize: 15 } }, "\u2605".repeat(n) + "\u2606".repeat(5 - n));
+        const notes = a.notes || [], corr = a.corr || [];
+        const poids = (x) => x.est_coach ? 5 : 1;
+        const FILS = [["revoir", "À revoir", (x) => !x.ignoree && x.note <= 3], ["modeles", "Modèles", (x) => !x.ignoree && x.note >= 4], ["toutes", "Toutes", (x) => true], ["ignorees", "Ignorées", (x) => x.ignoree]];
+        const fil = FILS.find((f) => f[0] === a.fil) || FILS[0];
+        const liste = notes.filter(fil[2]);
+        const actives = notes.filter((x) => !x.ignoree), tot = actives.reduce((t, x) => t + poids(x), 0);
+        const moyenne = tot ? (actives.reduce((t, x) => t + x.note * poids(x), 0) / tot) : 0;
+        const onglet = (k, txt, n) => React.createElement("button", { key: k, type: "button", role: "tab", "aria-selected": a.ong === k, onClick: () => setAdmHB({ ...a, ong: k, edit: null }),
+            style: { flex: 1, minHeight: 46, borderRadius: 12, border: "1px solid " + (a.ong === k ? C : "rgba(243,238,228,.12)"), background: a.ong === k ? "rgba(201,166,107,.06)" : "rgba(16,26,29,.35)", color: IV, fontFamily: HB_SANS, fontSize: 14, cursor: "pointer" } },
+            txt, React.createElement("span", { style: { marginInlineStart: 8, color: C, fontSize: 12 } }, n));
+        const courbe = (k) => React.createElement("svg", { key: k, viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, margin: "26px 0 18px" } },
+            React.createElement("path", { d: "M0 30 C 120 28, 250 8, 400 4", fill: "none", stroke: C, strokeOpacity: 0.7, strokeWidth: 1, vectorEffect: "non-scaling-stroke" }));
+        const carteNote = (x) => {
+            const qui = a.noms[x.user_id] || {}, ed = a.edit && a.edit.id === x.id;
+            return React.createElement("div", { key: x.id, style: { padding: "16px 0", borderTop: "1px solid " + LI, opacity: x.ignoree ? 0.5 : 1 } },
+                React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" } },
+                    etoiles(x.note),
+                    React.createElement("span", { style: { fontSize: 12.5, color: IV } }, qui.pseudo || "—"),
+                    x.est_coach ? React.createElement("span", { style: { fontSize: 9.5, letterSpacing: ".14em", textTransform: "uppercase", color: C, border: "1px solid rgba(201,166,107,.45)", borderRadius: 999, padding: "2px 8px" } }, "Coach \u00d75") : null,
+                    React.createElement("span", { style: { marginInlineStart: "auto", fontSize: 11, color: MU2 } }, date(x.created_at))),
+                x.pourquoi ? React.createElement("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 19, lineHeight: 1.3, color: IV, margin: "8px 0 0" } }, "« " + x.pourquoi + " »") : React.createElement("div", { style: { fontSize: 12, color: MU2, marginTop: 6 } }, "Sans explication"),
+                React.createElement("details", { style: { marginTop: 8 } },
+                    React.createElement("summary", { style: { fontSize: 12, color: MU, cursor: "pointer" } }, "Question : " + String(x.question || "").slice(0, 80) + (String(x.question || "").length > 80 ? "…" : "")),
+                    React.createElement("div", { dir: "auto", style: { fontSize: 12.5, lineHeight: 1.5, color: MU, whiteSpace: "pre-wrap", marginTop: 6, paddingInlineStart: 10, borderInlineStart: "1px solid rgba(201,166,107,.35)" } }, x.reponse_extrait || "")),
+                ed ? React.createElement("div", { style: { marginTop: 10 } },
+                    React.createElement("textarea", { rows: 3, maxLength: 500, value: a.edit.texte, autoFocus: true, onChange: (ev) => setAdmHB({ ...a, edit: { id: x.id, texte: ev.target.value } }),
+                        style: { width: "100%", boxSizing: "border-box", fontSize: 16, lineHeight: 1.4, padding: "10px 12px", borderRadius: 10, background: "rgba(7,10,8,.6)", color: IV, border: "1px solid rgba(201,166,107,.35)", fontFamily: HB_SANS } }),
+                    React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" } }, btn("Enregistrer comme correction", () => admVersCorrection(x, a.edit.texte), true), btn("Annuler", () => setAdmHB({ ...a, edit: null })))) :
+                React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" } },
+                    a.ok === x.id ? React.createElement("span", { style: { fontSize: 12, color: C, alignSelf: "center" } }, "\u2713 Devenue une correction") : btn("En faire une correction", () => setAdmHB({ ...a, edit: { id: x.id, texte: x.pourquoi || "" } }), true),
+                    btn(x.ignoree ? "Reprendre en compte" : "Ne pas en tenir compte", () => admMaj("heybaby_notes", x.id, { ignoree: !x.ignoree }))));
+        };
+        const carteCorr = (x) => React.createElement("div", { key: x.id, style: { padding: "16px 0", borderTop: "1px solid " + LI, opacity: x.actif ? 1 : 0.5 } },
+            React.createElement("div", { style: { display: "flex", gap: 10, alignItems: "center" } },
+                React.createElement("span", { style: { fontSize: 9.5, letterSpacing: ".14em", textTransform: "uppercase", color: x.actif ? C : MU2 } }, x.actif ? "Active" : "En pause"),
+                React.createElement("span", { style: { marginInlineStart: "auto", fontSize: 11, color: MU2 } }, date(x.created_at))),
+            React.createElement("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 19, lineHeight: 1.3, color: IV, marginTop: 6, whiteSpace: "pre-wrap", overflowWrap: "anywhere" } }, x.texte),
+            React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" } },
+                btn(x.actif ? "Ne plus en tenir compte" : "Réactiver", () => admMaj("heybaby_corrections", x.id, { actif: !x.actif }), !x.actif),
+                a.sup === x.id ? btn("Confirmer la suppression", () => admSuppr(x.id), false, true) : btn("Supprimer", () => setAdmHB({ ...a, sup: x.id }), false, true)));
+        const charge = a.notes !== null;
+        return React.createElement("div", { "data-noswipe": "true", role: "dialog", "aria-modal": "true", style: { position: "fixed", inset: 0, zIndex: 8600, background: "#070A08", color: IV, fontFamily: HB_SANS, overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" } },
+            React.createElement("div", { style: { position: "relative" } },
+                React.createElement("div", { style: { position: "relative", height: "clamp(230px, 64vw, 360px)", overflow: "hidden", WebkitMaskImage: "linear-gradient(180deg,#000 55%,transparent 97%)", maskImage: "linear-gradient(180deg,#000 55%,transparent 97%)" } },
+                    React.createElement("img", { src: "images/FOND_HEYBABY.webp", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" } })),
+                React.createElement("svg", { viewBox: "0 0 400 60", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 64, marginTop: -64, position: "relative" } },
+                    React.createElement("path", { d: "M0 22 C 120 30, 230 52, 400 18", fill: "none", stroke: C, strokeWidth: 1.2 })),
+                React.createElement("button", { type: "button", onClick: () => setAdmHB(null), "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(243,238,228,0.16)", color: IV, fontSize: 20, lineHeight: 1, cursor: "pointer" } }, "\u2039"),
+                React.createElement("div", { style: { textAlign: "end", padding: "0 18px", marginTop: -14, position: "relative" } },
+                    React.createElement("div", { style: { fontSize: 10, letterSpacing: ".24em", textTransform: "uppercase", color: C } }, "Admin · Hey Baby"),
+                    React.createElement("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(40px, 11vw, 60px)", lineHeight: 1, margin: "6px 0 0" } }, "Corrections & notes"),
+                    React.createElement("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18, margin: "8px 0 0", color: IV, opacity: 0.85 } }, "Ce que Hey Baby retient, et ce qu’il doit oublier."))),
+            React.createElement("div", { style: { maxWidth: 720, margin: "0 auto", padding: "0 18px 10px" } },
+                charge ? React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, margin: "22px 0 0", fontSize: 12, color: MU } },
+                    React.createElement("span", null, notes.length + " notes · " + corr.filter((x) => x.actif).length + " corrections actives"),
+                    tot ? React.createElement("span", { style: { color: C } }, "Moyenne " + moyenne.toFixed(1).replace(".", ",") + " \u2605") : null) : null,
+                React.createElement("div", { role: "tablist", style: { display: "flex", gap: 8, marginTop: 14 } }, onglet("notes", "Notes reçues", notes.filter((x) => !x.ignoree && x.note <= 3).length || ""), onglet("corr", "Corrections", corr.length || "")),
+                a.err ? React.createElement("p", { style: { color: "#FF9E94", fontSize: 13, margin: "14px 0 0" } }, a.err) : null,
+                courbe("c1"),
+                !charge ? React.createElement("p", { style: { color: MU, textAlign: "center" } }, "\u2026") :
+                a.ong === "notes" ? React.createElement(React.Fragment, null,
+                    React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 } }, FILS.map((f) => { const n = notes.filter(f[2]).length, on = a.fil === f[0]; return React.createElement("button", { key: f[0], type: "button", onClick: () => setAdmHB({ ...a, fil: f[0], edit: null }), style: { minHeight: 34, padding: "0 13px", borderRadius: 999, border: "1px solid " + (on ? "rgba(201,166,107,.7)" : "rgba(243,238,228,.14)"), background: on ? "rgba(201,166,107,.08)" : "transparent", color: on ? C : MU, fontFamily: HB_SANS, fontSize: 12.5, cursor: "pointer" } }, f[1] + " · " + n); })),
+                    React.createElement("p", { style: { fontSize: 11.5, color: MU2, lineHeight: 1.5, margin: "4px 0 6px" } }, "Une note de coach compte 5 fois plus. « Ne pas en tenir compte » : Hey Baby l’ignore. « En faire une correction » : ton texte devient une règle pour tous les cavaliers."),
+                    liste.length ? liste.map(carteNote) : React.createElement("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18, color: MU, padding: "18px 0" } }, "Rien ici pour l’instant.")) :
+                React.createElement(React.Fragment, null,
+                    React.createElement("p", { style: { fontSize: 11.5, color: MU2, lineHeight: 1.5, margin: "0 0 6px" } }, "Hey Baby applique les corrections actives à chaque question, pour tous les cavaliers. Une correction mise de côté est gardée mais ignorée."),
+                    corr.length ? corr.map(carteCorr) : React.createElement("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18, color: MU, padding: "18px 0" } }, "Aucune correction pour l’instant.")),
+                courbe("c2")),
+            (typeof FinPageHype === "function") ? React.createElement(FinPageHype, null) : null);
+    };
     const hbPageEpingler = () => {
         const C = "#C9A66B", IV = "#F3EEE4", MU = "rgba(243,238,228,0.58)", LI = "rgba(243,238,228,0.11)";
         const SERIF = "'Cormorant Garamond', Georgia, serif";
@@ -1791,14 +1933,16 @@ function EcranAssistantIA() {
                                 : React.createElement("button", { onClick: () => setCorrListe({ ...corrListe, aSupprimer: lg.id }), style: { fontSize: 12, fontWeight: 700, padding: "6px 12px", borderRadius: 999, background: "rgba(198,40,40,0.12)", color: "#FF8A80", border: "1px solid rgba(255,138,128,0.45)" } }, "Supprimer"))))),
                     React.createElement("button", { onClick: () => setCorrListe(null), style: { width: "100%", marginTop: 14, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.08)", color: COLORS.blanc, fontWeight: 700, fontSize: 15, border: "1px solid rgba(255,255,255,0.18)" } }, "\u2190 Retour")) :
                 corrCible.ok ? React.createElement(React.Fragment, null,
-                    React.createElement("p", { style: { margin: "8px 0 14px", fontSize: 14, lineHeight: 1.5 } }, "Enregistrée. Hey Baby en tient compte dès la prochaine question, pour tous les cavaliers."),
-                    React.createElement("button", { onClick: () => setCorrCible(null), style: { width: "100%", padding: "12px", borderRadius: 12, background: "rgba(7,10,8,0.5)", color: "#F3EEE4", boxShadow: "inset 0 0 0 1px #C9A66B", fontWeight: 800, fontSize: 15, border: "none" } }, "Fermer")) : React.createElement(React.Fragment, null,
+                    React.createElement("p", { style: { margin: "8px 0 14px", fontSize: 14, lineHeight: 1.5 } }, "\u2713 Enregistrée. Hey Baby l'applique dès maintenant, pour tous les cavaliers."),
+                    /* 10/11 19h05 (Blandine : « j'ai dû reprendre 5 fois ») : refaire tout de suite la réponse avec la correction */
+                    React.createElement("button", { onClick: () => { const tx = String(corrCible.texte || "").trim(); setCorrCible(null); setTimeout(() => envoyer("Refais ta réponse précédente en entier, en appliquant ma correction : « " + tx + " »"), 50); }, style: { width: "100%", padding: "12px", marginBottom: 10, borderRadius: 12, background: "transparent", color: "#C9A66B", border: "1px solid #C9A66B", fontWeight: 800, fontSize: 15 } }, "\u21BB Refaire la réponse avec cette correction"),
+                    React.createElement("button", { onClick: () => setCorrCible(null), style: { width: "100%", padding: "12px", borderRadius: 12, background: "transparent", color: "rgba(243,238,228,.7)", border: "1px solid rgba(243,238,228,.18)", fontWeight: 700, fontSize: 14 } }, "Plus tard")) : React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 10px", fontSize: 12.5, lineHeight: 1.45, color: "rgba(255,255,255,0.7)" } }, "Écris ce qui ne va pas, avec tes mots. Hey Baby s'en servira comme d'une règle pour tous les cavaliers, et la reformulera toujours proprement. Visible par les modératrices seulement."),
                     React.createElement("div", { style: { fontSize: 11.5, color: "rgba(255,255,255,0.5)", margin: "0 0 10px", maxHeight: 90, overflow: "hidden", borderLeft: "2px solid rgba(255,255,255,0.15)", paddingLeft: 8 } }, String(corrCible.reponse || "").slice(0, 280) + (String(corrCible.reponse || "").length > 280 ? "\u2026" : "")),
                     React.createElement("textarea", { value: corrCible.texte, autoFocus: true, rows: 5, maxLength: 500, placeholder: "Ex. : ne dis jamais « dos neutre », ça ne veut rien dire.", onChange: (e) => setCorrCible({ ...corrCible, texte: e.target.value, erreur: "" }), style: { width: "100%", boxSizing: "border-box", fontSize: 16, lineHeight: 1.4, padding: 10, borderRadius: 10, background: "rgba(255,255,255,0.06)", color: COLORS.blanc, border: "1px solid rgba(255,255,255,0.18)", resize: "vertical" } }),
                     React.createElement("div", { style: { fontSize: 11, textAlign: "right", color: "rgba(255,255,255,0.45)", margin: "4px 0 8px" } }, String(corrCible.texte || "").length + " / 500"),
                     corrCible.erreur ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 13, color: "#FF8A80" } }, corrCible.erreur) : null,
-                    React.createElement("button", { onClick: chargerListeCorrections, style: { display: "block", margin: "0 0 12px", padding: 0, background: "none", border: "none", color: "#E8C27A", fontSize: 13, fontWeight: 700, textDecoration: "underline" } }, "Toutes les corrections \u2192"),
+                    React.createElement("button", { onClick: () => { setCorrCible(null); setCorrListe(null); admCharger({ ong: "corr" }); }, style: { display: "block", margin: "0 0 12px", padding: 0, background: "none", border: "none", color: "#E8C27A", fontSize: 13, fontWeight: 700, textDecoration: "underline" } }, "Toutes les corrections \u2192"),
                     React.createElement("div", { style: { display: "flex", gap: 10 } },
                         React.createElement("button", { onClick: () => { setCorrCible(null); setCorrListe(null); }, disabled: corrCible.envoi, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.08)", color: COLORS.blanc, fontWeight: 700, fontSize: 15, border: "1px solid rgba(255,255,255,0.18)" } }, "Annuler"),
                         React.createElement("button", { onClick: enregistrerCorrection, disabled: corrCible.envoi, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(7,10,8,0.5)", color: "#F3EEE4", boxShadow: "inset 0 0 0 1px #C9A66B", fontWeight: 800, fontSize: 15, border: "none", opacity: corrCible.envoi ? 0.6 : 1 } }, corrCible.envoi ? "Envoi\u2026" : "Enregistrer")))))) : null,
@@ -1889,6 +2033,7 @@ function EcranAssistantIA() {
                         (chevauxEcurie || []).map((cv) => React.createElement("button", { key: "ec" + cv.id, onClick: () => choisirChevalEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: "transparent", border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 600, fontSize: 14, textAlign: "left", cursor: "pointer" } }, cv.nom)),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소")))))) : null,
         (epingleCible && !epingleCible.paywall && !epingleCible.limite) ? hbPortailEp(hbPageEpingler()) : null,
+        admHB ? hbPortailEp(hbPageAdmin()) : null,
         toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${"#C9A66B"}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: "#C9A66B", marginTop: 3 } : null }, ln)) : toastHB) : null,
         hbMenuRendu, hbConfirmRendu, hbRenomRendu, hbCatRendu));
 }
