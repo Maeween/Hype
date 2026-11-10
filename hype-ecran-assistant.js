@@ -246,6 +246,35 @@ function EcranAssistantIA() {
        équipe, visible d'eux seuls). « Visible par l'équipe » le partage en plus avec l'équipe compétition commune. */
     const [epEq, setEpEq] = useState(null);       /* équipe commune avec le cavalier choisi : { id, nom } ou null */
     const [epPublic, setEpPublic] = useState(false);
+    /* 10/11 19h00 (Blandine : « pouvoir épingler quelque chose dans un groupe entier… et sélectionner plusieurs groupes ») :
+       onglet « Groupes » de la page Épingler : les groupes dont je suis membre ou créatrice (avec au moins un membre),
+       plusieurs choix possibles ; le conseil est partagé avec chacun (onglet Épingles de l'équipe). */
+    const [epGroupes, setEpGroupes] = useState(null);
+    const [epGrpSel, setEpGrpSel] = useState([]);
+    useEffect(() => {
+        if (!epingleCible || epingleCible.paywall || epingleCible.limite) return;
+        setEpGrpSel([]);
+        if (epGroupes !== null) return;
+        let vif = true;
+        (async () => {
+            try {
+                const u = await utilisateurActuel(); if (!u || !u.id) { if (vif) setEpGroupes([]); return; }
+                const rm = await supa.from("groupes_membres").select("groupe_id").eq("user_id", u.id);
+                const idsM = ((rm && rm.data) || []).map((x) => x.groupe_id);
+                const rc = await supa.from("groupes").select("id, nom, club_clef").eq("cree_par", u.id);
+                const rmb = idsM.length ? await supa.from("groupes").select("id, nom, club_clef").in("id", idsM) : { data: [] };
+                const vus = {}, gs = [];
+                [].concat((rc && rc.data) || [], (rmb && rmb.data) || []).forEach((g) => { if (g && g.id && !vus[g.id]) { vus[g.id] = true; gs.push(g); } });
+                const ids = gs.map((g) => g.id), nb = {};
+                if (ids.length) { const rn = await supa.from("groupes_membres").select("groupe_id").in("groupe_id", ids); ((rn && rn.data) || []).forEach((x) => { nb[x.groupe_id] = (nb[x.groupe_id] || 0) + 1; }); }
+                const club = (c) => { c = String(c || "").trim(); const m = c.match(/\(([^)]+)\)\s*$/); if (m) return m[1].toUpperCase(); return c.replace(/(^|\s)\S/g, (x) => x.toUpperCase()); };
+                const l = gs.filter((g) => nb[g.id]).map((g) => ({ id: g.id, nom: String(g.nom || "").trim(), club: club(g.club_clef), n: nb[g.id] }));
+                l.sort((a, b) => (a.nom + a.club).localeCompare(b.nom + b.club, "fr"));
+                if (vif) setEpGroupes(l);
+            } catch (e) { if (vif) setEpGroupes([]); }
+        })();
+        return () => { vif = false; };
+    }, [!!epingleCible]);
     useEffect(() => {
         setEpPublic(false); setEpEq(null);
         if (!epCav || !epCav.id) return;
@@ -557,6 +586,17 @@ function EcranAssistantIA() {
                Une ligne epingles_partages ; la base cree la notification (accueil) et l envoie sur son telephone.
                Son echec ne perd JAMAIS l epingle (meme regle que le theme) ; il est signale. Pas d envoi a soi-meme. */
             let envoiRate = false;
+            try {
+                const idEpG = (r && r.data && r.data.id) ? r.data.id : null;
+                if (idEpG && epGrpSel && epGrpSel.length) {
+                    const uG = await utilisateurActuel();
+                    for (let gi = 0; uG && uG.id && gi < epGrpSel.length; gi++) {
+                        if (epPublic && epEq && String(epEq.id) === String(epGrpSel[gi])) continue;
+                        const rgG = await supa.from("epingles_partages").insert({ epingle_id: idEpG, partage_par: uG.id, groupe_id: epGrpSel[gi] });
+                        if (rgG && rgG.error && !/duplicate|unique/i.test(String(rgG.error.message || ""))) envoiRate = true;
+                    }
+                }
+            } catch (eG) { envoiRate = true; }
             try {
                 const idEp2 = (r && r.data && r.data.id) ? r.data.id : null;
                 if (idEp2 && cavalierId) {
@@ -1602,7 +1642,8 @@ function EcranAssistantIA() {
                 (chevauxCibles || []).map((cv) => { miensIds[String(cv.id)] = true; return { id: cv.id, nom: String(cv.nom || "").trim(), note: TXT("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde", "خيولي", "我的马", "Mijn paarden", "Meus cavalos", "Mina hästar", "Мои лошади", "Moje konie", "내 말") }; }),
                 (chevauxEcurie || []).filter((cv) => !miensIds[String(cv.id)]).map((cv) => ({ id: cv.id, nom: String(cv.nom || "").trim(), note: TXT("Écurie", "Stable", "Cuadra", "Scuderia", "厩舎", "Stall", "الإسطبل", "马厩", "Stal", "Cocheira", "Stall", "Конюшня", "Stajnia", "마구간") })))
             : (cavEpListe || []).map((pr) => ({ id: pr.id, nom: String(pr.pseudo || "").trim() || "—", photo: pr.avatar_url || null, note: "" }));
-        const charge = estCh ? true : (cavEpListe !== null);
+        const estGr = epOnglet === "groupes";
+        const charge = estGr ? false : estCh ? true : (cavEpListe !== null);
         const parLettre = {};
         elems.forEach((e) => { const l = hbLettreDe(e.nom); (parLettre[l] = parLettre[l] || []).push(e); });
         Object.keys(parLettre).forEach((l) => parLettre[l].sort((a, b) => a.nom.localeCompare(b.nom, "fr")));
@@ -1650,10 +1691,18 @@ function EcranAssistantIA() {
                             style: { flex: 1, minWidth: 0, padding: "11px 0", fontSize: 16, border: 0, outline: "none", background: "transparent", color: IV, fontFamily: HB_SANS } })),
                     /* onglets Chevaux | Cavaliers */
                     React.createElement("div", { style: { display: "flex", gap: 22, marginTop: 20, borderBottom: "1px solid rgba(243,238,228,.12)" } },
-                        [["chevaux", TXT("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말"), epCheval], ["cavaliers", TXT("Cavaliers", "Riders", "Jinetes", "Cavalieri", "騎手", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "기수"), epCav]].map((o) => React.createElement("button", { key: o[0], type: "button", onClick: () => { setEpOnglet(o[0]); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ },
+                        [["chevaux", TXT("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말"), epCheval], ["cavaliers", TXT("Cavaliers", "Riders", "Jinetes", "Cavalieri", "騎手", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "기수"), epCav]].concat((epGroupes && epGroupes.length) ? [["groupes", TXT("Groupes", "Groups", "Grupos", "Gruppi", "グループ", "Gruppen", "المجموعات", "群组", "Groepen", "Grupos", "Grupper", "Группы", "Grupy", "그룹"), epGrpSel.length ? { n: epGrpSel.length } : null]] : []).map((o) => React.createElement("button", { key: o[0], type: "button", onClick: () => { setEpOnglet(o[0]); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ },
                             style: { padding: "0 0 9px", marginBottom: -1, border: "none", borderBottom: epOnglet === o[0] ? "1px solid " + C : "1px solid transparent", background: "transparent", color: epOnglet === o[0] ? IV : MU, fontFamily: HB_SANS, fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", textShadow: "0 1px 6px #000" } },
-                            o[1], o[2] ? React.createElement("span", { style: { color: C, marginInlineStart: 6, letterSpacing: 0 } }, "✓ 1") : null))),
-                    !charge ? React.createElement("p", { style: { margin: "24px 0", textAlign: "center", color: MU } }, "…") : null,
+                            o[1], o[2] ? React.createElement("span", { style: { color: C, marginInlineStart: 6, letterSpacing: 0 } }, "✓ " + (o[2].n || 1)) : null))),
+                    (!charge && !estGr) ? React.createElement("p", { style: { margin: "24px 0", textAlign: "center", color: MU } }, "…") : null,
+                    estGr ? React.createElement("div", { style: { marginTop: 14 } },
+                        React.createElement("p", { style: { margin: "0 0 6px", fontSize: 11.5, color: MU, lineHeight: 1.5 } }, TXT("Coche un ou plusieurs groupes : tout le groupe le verra dans l’onglet Épingles.", "Tick one or more groups: the whole group will see it in the Pins tab.", "Marca uno o varios grupos: todo el grupo lo verá en la pestaña Chinchetas.", "Spunta uno o più gruppi: tutto il gruppo lo vedrà nella scheda Puntine.", "1つ以上のグループを選ぶと、グループ全員がピン留めタブで見られます。", "Wähle eine oder mehrere Gruppen: die ganze Gruppe sieht ihn im Tab „Pins“.", "اختر مجموعة أو أكثر: ستراه المجموعة كلها في تبويب الدبابيس.", "勾选一个或多个群组：整个群组都能在“置顶”标签中看到。", "Vink een of meer groepen aan: de hele groep ziet het in het tabblad Spelden.", "Marca um ou mais grupos: todo o grupo vai vê-lo no separador Alfinetes.", "Markera en eller flera grupper: hela gruppen ser det under fliken Nålar.", "Отметь одну или несколько групп: вся группа увидит это во вкладке «Закреплённое».", "Zaznacz jedną lub kilka grup: cała grupa zobaczy to w zakładce Pinezki.", "그룹을 하나 이상 고르면 그룹 전체가 고정 탭에서 볼 수 있어요.")),
+                        (epGroupes || []).filter((g) => !rech || hbSansAcc(g.nom + " " + g.club).indexOf(rech) !== -1).map((g) => { const pris = epGrpSel.indexOf(g.id) !== -1; return React.createElement("button", { key: "g" + g.id, type: "button", role: "checkbox", "aria-checked": pris, onClick: () => setEpGrpSel(pris ? epGrpSel.filter((x) => x !== g.id) : epGrpSel.concat([g.id])),
+                            style: { width: "100%", display: "flex", alignItems: "center", gap: 12, minHeight: 56, padding: "8px 0", border: "none", borderBottom: "1px solid " + LI, background: "transparent", color: pris ? C : IV, textAlign: "start", cursor: "pointer" } },
+                            React.createElement("span", { "aria-hidden": "true", style: { width: 22, height: 22, flex: "0 0 auto", borderRadius: 5, border: "1px solid " + (pris ? C : "rgba(243,238,228,.35)"), display: "flex", alignItems: "center", justifyContent: "center", color: C, fontSize: 14 } }, pris ? "✓" : ""),
+                            React.createElement("span", { style: { flex: 1, minWidth: 0 } },
+                                React.createElement("span", { style: { display: "block", fontFamily: SERIF, fontSize: 23, lineHeight: 1.12, overflowWrap: "anywhere" } }, g.nom),
+                                React.createElement("span", { style: { display: "block", fontSize: 11, color: MU, marginTop: 2 } }, (g.club ? g.club + " · " : "") + g.n + " " + (g.n > 1 ? TXT("membres", "members", "miembros", "membri", "人", "Mitglieder", "أعضاء", "名成员", "leden", "membros", "medlemmar", "участников", "członków", "명") : TXT("membre", "member", "miembro", "membro", "人", "Mitglied", "عضو", "名成员", "lid", "membro", "medlem", "участник", "członek", "명"))))); })) : null,
                     /* groupes de lettres + grande lettre, caches pendant une recherche */
                     (charge && !rech && elems.length) ? React.createElement(React.Fragment, null,
                         React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 7, margin: "12px 0 7px" } },
@@ -1680,6 +1729,7 @@ function EcranAssistantIA() {
                 React.createElement("div", { style: { maxWidth: 560, margin: "0 auto" } },
                     React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 } },
                         epCheval ? pastille("🐴 " + epCheval.nom, () => setEpCheval(null)) : pastille("🐴 " + TXT("Quel cheval ? (facultatif)", "Which horse? (optional)", "¿Qué caballo? (opcional)", "Quale cavallo? (facoltativo)", "どの馬？（任意）", "Welches Pferd? (optional)", "أي حصان؟ (اختياري)", "哪匹马？（可选）", "Welk paard? (optioneel)", "Que cavalo? (opcional)", "Vilken häst? (valfritt)", "Какая лошадь? (необязательно)", "Który koń? (opcjonalnie)", "어떤 말? (선택)"), null, true, () => { setEpOnglet("chevaux"); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ }),
+                        epGrpSel.length ? pastille("👥 " + epGrpSel.length + " " + (epGrpSel.length > 1 ? TXT("Groupes", "Groups", "Grupos", "Gruppi", "グループ", "Gruppen", "المجموعات", "群组", "Groepen", "Grupos", "Grupper", "Группы", "Grupy", "그룹").toLowerCase() : TXT("groupe", "group", "grupo", "gruppo", "グループ", "Gruppe", "مجموعة", "群组", "groep", "grupo", "grupp", "группа", "grupa", "그룹")), () => setEpGrpSel([]), false, () => setEpOnglet("groupes")) : null,
                         epCav ? pastille("🏇 " + epCav.nom, () => setEpCav(null)) : pastille("🏇 " + TXT("Pour qui ? (facultatif)", "For whom? (optional)", "¿Para quién? (opcional)", "Per chi? (facoltativo)", "誰のため？（任意）", "Für wen? (optional)", "لمن؟ (اختياري)", "给谁？（可选）", "Voor wie? (optioneel)", "Para quem? (opcional)", "För vem? (valfritt)", "Для кого? (необязательно)", "Dla kogo? (opcjonalnie)", "누구를 위해? (선택)"), null, true, () => { setEpOnglet("cavaliers"); setEpRech(""); /* 09/11 22h35 (Blandine) : on garde la lettre en changeant d onglet */ })),
                     (epCav && epEq) ? React.createElement("button", { type: "button", role: "checkbox", "aria-checked": epPublic, onClick: () => setEpPublic(!epPublic),
                             style: { display: "flex", alignItems: "center", gap: 10, width: "100%", minHeight: 40, padding: "4px 0", marginBottom: 4, border: "none", background: "transparent", color: epPublic ? C : IV, fontFamily: HB_SANS, fontSize: 13, textAlign: "start", cursor: "pointer" } },
@@ -1688,7 +1738,7 @@ function EcranAssistantIA() {
                     (epCav && epEq) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU, lineHeight: 1.45 } }, epPublic
                         ? TXT("Toute l’équipe le verra dans l’onglet Épingles.", "The whole team will see it in the Pins tab.", "Todo el equipo lo verá en la pestaña Chinchetas.", "Tutta la squadra lo vedrà nella scheda Puntine.", "チーム全員がピン留めタブで見られます。", "Das ganze Team sieht ihn im Tab „Pins“.", "سيراه الفريق كله في تبويب الدبابيس.", "全队都能在“置顶”标签中看到。", "Het hele team ziet het in het tabblad Spelden.", "Toda a equipa vai vê-lo no separador Alfinetes.", "Hela laget ser det under fliken Nålar.", "Вся команда увидит это во вкладке «Закреплённое».", "Cała drużyna zobaczy to w zakładce Pinezki.", "팀 전체가 고정 탭에서 볼 수 있어요.")
                         : TXT("L’équipe verra qu’un conseil a été envoyé, mais seuls toi et " + epCav.nom + " pourrez le lire.", "The team will see a tip was sent, but only you and " + epCav.nom + " can read it.", "El equipo verá que se envió un consejo, pero solo tú y " + epCav.nom + " podréis leerlo.", "La squadra vedrà che è stato inviato un consiglio, ma solo tu e " + epCav.nom + " potrete leggerlo.", "チームには送信されたことだけが表示され、読めるのはあなたと" + epCav.nom + "だけです。", "Das Team sieht, dass ein Rat verschickt wurde, aber nur du und " + epCav.nom + " könnt ihn lesen.", "سيرى الفريق أنّ نصيحة أُرسلت، لكن لن يقرأها إلا أنتِ و" + epCav.nom + ".", "团队会看到有一条建议已发送，但只有你和" + epCav.nom + "能阅读。", "Het team ziet dat er advies is verstuurd, maar alleen jij en " + epCav.nom + " kunnen het lezen.", "A equipa vai ver que foi enviado um conselho, mas só tu e " + epCav.nom + " o podem ler.", "Laget ser att ett råd har skickats, men bara du och " + epCav.nom + " kan läsa det.", "Команда увидит, что совет отправлен, но прочитать его сможете только ты и " + epCav.nom + ".", "Drużyna zobaczy, że wysłano radę, ale przeczytać ją możesz tylko ty i " + epCav.nom + ".", "팀은 조언이 보내진 것만 보고, 읽을 수 있는 건 너와 " + epCav.nom + "뿐이에요.")) : null,
-                    (!epCheval && !epCav) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU } }, TXT("Sans cheval ni cavalier, le conseil va sur ta page cavalier.", "With no horse or rider, the advice goes to your rider page.", "Sin caballo ni jinete, el consejo va a tu página de jinete.", "Senza cavallo né cavaliere, il consiglio va sulla tua pagina cavaliere.", "馬も騎手も選ばないと、アドバイスはあなたの騎手ページに入ります。", "Ohne Pferd und Reiter landet der Rat auf deiner Reiterseite.", "من دون حصان ولا فارس، تذهب النصيحة إلى صفحتك كفارسة.", "不选马也不选骑手，建议会放到你的骑手主页。", "Zonder paard of ruiter komt de tip op je ruiterpagina.", "Sem cavalo nem cavaleiro, o conselho vai para a tua página de cavaleiro.", "Utan häst eller ryttare hamnar rådet på din ryttarsida.", "Без лошади и всадника совет попадёт на твою страницу всадника.", "Bez konia i jeźdźca wskazówka trafi na twoją stronę jeźdźca.", "말도 기수도 고르지 않으면 조언은 내 기수 페이지로 가요.")) : null,
+                    (!epCheval && !epCav && !epGrpSel.length) ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11.5, color: MU } }, TXT("Sans cheval ni cavalier, le conseil va sur ta page cavalier.", "With no horse or rider, the advice goes to your rider page.", "Sin caballo ni jinete, el consejo va a tu página de jinete.", "Senza cavallo né cavaliere, il consiglio va sulla tua pagina cavaliere.", "馬も騎手も選ばないと、アドバイスはあなたの騎手ページに入ります。", "Ohne Pferd und Reiter landet der Rat auf deiner Reiterseite.", "من دون حصان ولا فارس، تذهب النصيحة إلى صفحتك كفارسة.", "不选马也不选骑手，建议会放到你的骑手主页。", "Zonder paard of ruiter komt de tip op je ruiterpagina.", "Sem cavalo nem cavaleiro, o conselho vai para a tua página de cavaleiro.", "Utan häst eller ryttare hamnar rådet på din ryttarsida.", "Без лошади и всадника совет попадёт на твою страницу всадника.", "Bez konia i jeźdźca wskazówka trafi na twoją stronę jeźdźca.", "말도 기수도 고르지 않으면 조언은 내 기수 페이지로 가요.")) : null,
                     React.createElement("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, marginBottom: 12 } },
                         hypeThemesHB(TXT).map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return React.createElement("button", { key: th[0], type: "button", onClick: () => basculerTheme(th[0]),
                             style: { flex: "0 0 auto", padding: "8px 13px", borderRadius: 999, minHeight: 38, border: "1px solid " + (pris ? "rgba(201,166,107,.6)" : "rgba(255,255,255,.14)"), background: pris ? "rgba(201,166,107,.08)" : "transparent", color: pris ? C : MU, fontWeight: pris ? 700 : 500, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap", fontFamily: HB_SANS } }, th[1]); })),
