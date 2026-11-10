@@ -58,8 +58,8 @@ function EcranTeamCompetition() {
     var vifM = true;
     (async function () {
       try {
-        var rv = await supa.from("team_videos").select("id, vignette, duree, titre, concours, date_video, cree_le, resultat").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(200);
-        var vids = (rv && !rv.error && rv.data) || [];
+        var rv = await supa.from("team_videos").select("id, vignette, duree, titre, concours, date_video, cree_le, resultat, privee").eq("groupe_id", groupe.id).order("cree_le", { ascending: false }).limit(200);
+        var vids = ((rv && !rv.error && rv.data) || []).filter(function (x) { return !x.privee; });   /* 10/11 : les vidéos privées ne sont pas mises en avant */
         /* 05/11 soir : pas de titre saisi → on affiche le nom du cheval sous la vignette */
         if (vids.length) {
           try {

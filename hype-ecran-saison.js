@@ -48,6 +48,8 @@ var HS_TR_BRUT = {
   "Aucune photo ne correspond à ces filtres.": ["No photo matches these filters.", "Ninguna foto coincide con estos filtros.", "Nessuna foto corrisponde a questi filtri.", "条件に合う写真はありません。", "Kein Foto passt zu diesen Filtern.", "لا توجد صورة تطابق هذه الفلاتر.", "没有符合筛选条件的照片。", "Geen foto past bij deze filters.", "Nenhuma foto corresponde a estes filtros.", "Inget foto matchar filtren.", "Нет фото по этим фильтрам.", "Brak zdjęć dla tych filtrów.", "필터에 맞는 사진이 없어."],
   "Pas encore de photo sur ce concours.": ["No photos for this competition yet.", "Aún no hay fotos de este concurso.", "Ancora nessuna foto di questo concorso.", "この大会の写真はまだありません。", "Noch keine Fotos von diesem Turnier.", "لا توجد صور لهذه المسابقة بعد.", "本次比赛还没有照片。", "Nog geen foto's van deze wedstrijd.", "Ainda não há fotos deste concurso.", "Inga foton från tävlingen än.", "Пока нет фото с этих соревнований.", "Brak jeszcze zdjęć z tych zawodów.", "이 대회 사진이 아직 없어."],
   "Aucune vidéo ne correspond à ces filtres.": ["No video matches these filters.", "Ningún vídeo coincide con estos filtros.", "Nessun video corrisponde a questi filtri.", "条件に合う動画はありません。", "Kein Video passt zu diesen Filtern.", "لا يوجد فيديو يطابق هذه الفلاتر.", "没有符合筛选条件的视频。", "Geen video past bij deze filters.", "Nenhum vídeo corresponde a estes filtros.", "Ingen video matchar filtren.", "Нет видео по этим фильтрам.", "Brak filmów dla tych filtrów.", "필터에 맞는 영상이 없어."],
+  "Privé": ["Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개"],
+  "Cette vidéo est privée : seuls le cavalier et son coach peuvent la voir.": ["This video is private: only the rider and their coach can see it.", "Este vídeo es privado: solo el jinete y su entrenador pueden verlo.", "Questo video è privato: solo il cavaliere e il suo coach possono vederlo.", "この動画は非公開です。騎手とコーチだけが見られます。", "Dieses Video ist privat: Nur der Reiter und sein Trainer können es sehen.", "هذا الفيديو خاص: لا يراه إلا الفارس ومدرّبه.", "此视频为私密：只有骑手和教练能看到。", "Deze video is privé: alleen de ruiter en de coach kunnen hem zien.", "Este vídeo é privado: só o cavaleiro e o treinador o podem ver.", "Den här videon är privat: bara ryttaren och tränaren kan se den.", "Это видео личное: его видят только всадник и тренер.", "Ten film jest prywatny: widzą go tylko jeździec i jego trener.", "이 영상은 비공개예요. 기수와 코치만 볼 수 있어요."],
   "Pas encore de vidéo.": ["No videos yet.", "Todavía no hay vídeos.", "Ancora nessun video.", "動画はまだありません。", "Noch keine Videos.", "لا توجد فيديوهات بعد.", "还没有视频。", "Nog geen video's.", "Ainda não há vídeos.", "Inga videor än.", "Видео пока нет.", "Brak jeszcze filmów.", "아직 영상이 없어요."],
   "Pas encore de vidéo sur ce concours.": ["No videos for this competition yet.", "Aún no hay vídeos de este concurso.", "Ancora nessun video di questo concorso.", "この大会の動画はまだありません。", "Noch keine Videos von diesem Turnier.", "لا توجد فيديوهات لهذه المسابقة بعد.", "本次比赛还没有视频。", "Nog geen video's van deze wedstrijd.", "Ainda não há vídeos deste concurso.", "Inga videor från tävlingen än.", "Пока нет видео с этих соревнований.", "Brak jeszcze filmów z tych zawodów.", "이 대회 영상이 아직 없어."],
   "Modifier les passages": ["Edit start times", "Modificar las salidas", "Modifica le partenze", "出場を編集", "Starts bearbeiten", "تعديل أوقات الانطلاق", "修改出场", "Starts wijzigen", "Alterar as passagens", "Ändra starterna", "Изменить старты", "Edytuj starty", "출전 수정"],
@@ -1171,6 +1173,16 @@ async function hsEquipe() {
     return HS_EQUIPE;
   } catch (e) { return null; }
 }
+/* 10/11 20h10 : vidéos privées de l'équipe — la base ne rend leur vignette qu'au cavalier, à l'auteur et au coach */
+async function hsTvPrivees(liste) {
+  try {
+    var ids = (liste || []).filter(function (v) { return v && v.privee; }).map(function (v) { return v.id; });
+    if (!ids.length || typeof supa === "undefined" || !supa) return;
+    var r = await supa.rpc("team_videos_vignettes_privees", { p_ids: ids });
+    var ok = {}; ((r && !r.error && r.data) || []).forEach(function (x) { ok[x.id] = x.vignette || ""; });
+    (liste || []).forEach(function (v) { if (v && v.privee && ok[v.id] !== undefined) { v.privOk = true; v.vignette = ok[v.id]; } });
+  } catch (e) { }
+}
 function EcranConcours() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -1271,14 +1283,15 @@ function EcranConcours() {
         }
         ids = ids.slice(0, 200);
         if (ids.length) {
-          var r = await supa.from("team_videos").select("id, agenda_id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").in("id", ids).order("cree_le", { ascending: false });
+          var r = await supa.from("team_videos").select("id, agenda_id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, privee, cree_le").in("id", ids).order("cree_le", { ascending: false });
+          if (r && r.data) await hsTvPrivees(r.data);
           var rc = await supa.from("team_videos_cavaliers").select("video_id, user_id").in("video_id", ids);
           var rh = await supa.from("team_videos_chevaux").select("video_id, cheval_id").in("video_id", ids);
           var mc = {}, mh = {}, idsC = {}, idsH = {};
           ((rc && rc.data) || []).forEach(function (x) { (mc[x.video_id] = mc[x.video_id] || []).push(String(x.user_id)); idsC[x.user_id] = 1; });
           ((rh && rh.data) || []).forEach(function (x) { (mh[x.video_id] = mh[x.video_id] || []).push(String(x.cheval_id)); idsH[x.cheval_id] = 1; });
           ((r && !r.error && r.data) || []).forEach(function (v) {
-            l.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || ""), cav: mc[v.id] || [], ch: mh[v.id] || [] });
+            l.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, privee: !!v.privee, bloque: !!(v.privee && !v.privOk), vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || ""), cav: mc[v.id] || [], ch: mh[v.id] || [] });
           });
           var lc = Object.keys(idsC), lh = Object.keys(idsH);
           if (lc.length) { var rnc = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", lc.slice(0, 200)); ((rnc && rnc.data) || []).forEach(function (x) { noms.cav[String(x.id)] = { nom: x.pseudo || "", ph: x.avatar_url || null }; }); }
@@ -1365,8 +1378,9 @@ function EcranConcours() {
         ((rvl && !rvl.error && rvl.data) || []).forEach(function (po) { if (po.prive && !(u && po.user_id === u.id)) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } });
         try { if (typeof hypePostsAgenda === "function") { var rpa2 = await hypePostsAgenda(idEv); ((rpa2 && rpa2.data) || []).forEach(function (po) { if (!po || (po.prive && !(u && po.user_id === u.id))) return; if (!vusP[po.id]) { vusP[po.id] = 1; postsG.push(po); } }); } } catch (ePa) { }
         /* 09/11 13h35 : media et video_mux_id ne sont PAS lisibles (droits par colonne, lecture via team_video_lecture) : les demander vidait toute la liste */
-        var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
+        var rtg = await supa.from("team_videos").select("id, groupe_id, vignette, duree, auteur_id, epreuve, resultat, publique, privee, cree_le").eq("agenda_id", idEv).order("cree_le", { ascending: false }).limit(300);
         var tvG = (rtg && !rtg.error && rtg.data) || [];
+        await hsTvPrivees(tvG);
         /* 09/11 15h25 (Blandine : « j'avais déjà renseigné les cavaliers et chevaux ») : les rattachements faits dans la vidéothèque de la Team */
         if (tvG.length) {
           var idsTv = tvG.map(function (v) { return v.id; });
@@ -2284,7 +2298,7 @@ function EcranConcours() {
       var cavV = idtV.filter(function (q) { return q.type === "cavalier"; }).map(function (q) { return String(q.cible_id); }), chV = idtV.filter(function (q) { return q.type === "cheval"; }).map(function (q) { return String(q.cible_id); });
       (v.__cav || []).forEach(function (c) { if (cavV.indexOf(c) === -1) cavV.push(c); }); (v.__ch || []).forEach(function (c) { if (chV.indexOf(c) === -1) chV.push(c); });
       if (r && r.cavalier_id && cavV.indexOf(String(r.cavalier_id)) === -1) cavV.push(String(r.cavalier_id)); if (r && r.cheval_id && chV.indexOf(String(r.cheval_id)) === -1) chV.push(String(r.cheval_id));
-      itemsM.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
+      itemsM.push({ cle: "tv:" + v.id, url: "teamvideo:" + v.id, tv: v, video: true, privee: !!v.privee, bloque: !!(v.privee && !v.privOk), vignette: v.vignette, duree: v.duree, auteur: v.auteur_id, date: v.cree_le, epreuve: hsNomEpreuve(v.epreuve || (r && r.epreuve) || ""),
         cav: cavV, ch: chV });
     });
     itemsM.sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
@@ -2308,10 +2322,16 @@ function EcranConcours() {
   function dansMes(x) { return estAMoi(x) || (!!moi && x.auteur === moi.id); }   /* 10/11 00h29 (Blandine : « tu peux me les laisser ») : ses photos aussi */
   var mesM = itemsF.filter(dansMes), eqM = itemsF.filter(function (x) { return !estAMoi(x); });
   var nbV = itemsM.filter(function (x) { return x.video; }).length, nbP = itemsM.length - nbV;
+  /* 10/11 20h10 (Blandine : vidéos privées) : « 🔒 Privé » posé sur la vignette ; grisée et sans lecture pour les autres */
+  function badgePriv(x) {
+    if (!x || !x.privee) return null;
+    return h("span", { key: "pv", "aria-hidden": "true", style: { position: "absolute", top: 6, left: 6, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 999, border: "1px solid rgba(201,166,107,.55)", background: "rgba(7,10,8,.78)", color: "#C9A66B", fontFamily: "Montserrat, sans-serif", fontSize: 9.5, fontWeight: 600, fontStyle: "normal", letterSpacing: ".04em", lineHeight: 1.2, pointerEvents: "none" } }, "\uD83D\uDD12 " + F("Privé"));
+  }
   function dureeTxt(d) { d = Number(d); if (!d || isNaN(d)) return ""; var m = Math.floor(d / 60), s2 = Math.round(d % 60); return m + ":" + String(s2).padStart(2, "0"); }
-  function vignetteDe(x) { if (x.video && x.ch && x.ch.length && chPhotos[x.ch[0]]) { var pc = chPhotos[x.ch[0]]; return (typeof vignetteHype === "function") ? vignetteHype(pc, 800, 500) : pc; }   /* 09/11 16h16 (Blandine) : couverture des vidéos = photo du cheval */
+  function vignetteDe(x) { if (x && x.bloque) return ""; if (x.video && x.ch && x.ch.length && chPhotos[x.ch[0]]) { var pc = chPhotos[x.ch[0]]; return (typeof vignetteHype === "function") ? vignetteHype(pc, 800, 500) : pc; }   /* 09/11 16h16 (Blandine) : couverture des vidéos = photo du cheval */
     if (x.tv) return x.tv.vignette || (x.tv.video_mux_id ? "https://image.mux.com/" + x.tv.video_mux_id + "/thumbnail.jpg?width=640&fit_mode=preserve" : hsVignetteVideo(x.tv.media)); if (x.video) return hsVignetteVideo(x.url); return (typeof grandeImageHype === "function") ? grandeImageHype(x.url, 900) : x.url; }
   function ouvrirMedia(x) {
+    if (x && x.bloque) { setMedMsg("\uD83D\uDD12 " + F("Cette vidéo est privée : seuls le cavalier et son coach peuvent la voir.")); setTimeout(function () { setMedMsg(""); }, 3500); return; }
     if (x.tv) { ouvrirVideo(x.tv); return; }
     if (x.video && /^mux:/.test(x.url)) { try { window.__videoParcours = { media: x.url, proprio: x.auteur, pseudo: (medG.auteurs || {})[x.auteur] || "", agenda: idEv, titre: ev.titre }; } catch (e) { } setEcran("video-parcours"); return; }
     setMedVisu(x.url);
@@ -2336,7 +2356,7 @@ function EcranConcours() {
       h("button", { type: "button", className: "hc-mt-b", onClick: function () { ouvrirMedia(x); }, "aria-label": x.video ? F("Lire la vidéo") : F("Voir la photo") },
         vg ? [h("span", { key: "f", className: "hc-mt-fond", style: { backgroundImage: "url(\"" + vg + "\")" }, "aria-hidden": "true" }), h("img", { key: "i", src: vg, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } })] : h("span", { className: "hc-mt-vide" }),
         x.video ? h("span", { className: "hc-mt-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: grand ? 30 : 20, height: grand ? 30 : 20 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
-        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null),
+        badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null),
       peutId ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function () { setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); } }, "⋯") : null);
   }
   async function enregistrerIdent() {
@@ -2394,7 +2414,7 @@ function EcranConcours() {
       src ? h("span", { className: "hc-mt-fond", style: { backgroundImage: "url(\"" + src + "\")" }, "aria-hidden": "true" }) : null,   /* 09/11 soir : photo entière, le même cliché flouté derrière */
       src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }) : h("span", { className: "hc-mt-vide" }),
       x.video ? h("span", { className: "hc-mt-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: "M9 6.5v11l9-5.5z", fill: "#F3EEE4" }))) : null,
-      (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null,
+      badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : null,
       sansId ? null : boutonId(x));
   }
   var blocMes = (medG && moi && (mesM.length || !gestion)) ? h("div", { className: "hc-rep-s" },
@@ -2412,7 +2432,7 @@ function EcranConcours() {
         var src = apercu(x, 500);
         return h("button", { key: x.cle, type: "button", className: "hc-rg", onClick: function () { setMedSel(x.cle); try { var el = document.querySelector(".hc-une"); if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) { } } },
           src ? h("img", { src: src, alt: "", loading: "lazy" }) : h("span", { className: "hc-mt-vide" }),
-          (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : (x.video ? h("span", { className: "hc-mt-d" }, "▶") : null));
+          badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-mt-d" }, dureeTxt(x.duree)) : (x.video ? h("span", { className: "hc-mt-d" }, "▶") : null));
       }).concat(autresMes.length > 3 + medNM ? [h("button", { key: "plus", type: "button", className: "hc-rg hc-rg-plus", onClick: function () { setMedNM(medNM + 24); } }, F("Afficher plus"))] : [])) : null
     ] : h("div", { className: "hs-note", style: { marginTop: 0 } }, filtresActifs || medType !== "tous" ? F("Aucun de tes médias ne correspond à ces filtres.") : F("Tu n’as pas encore de média sur ce concours. Ajoute les tiens, ou demande qu’on t’identifie sur les photos de l’équipe."))) : null;
   var blocEq = medG ? h("div", { className: "hc-rep-s" },
@@ -2517,7 +2537,7 @@ function EcranConcours() {
         src ? h("span", { className: "hc-mt-fond", style: { backgroundImage: "url(\"" + src + "\")" }, "aria-hidden": "true" }) : null,
         src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (e0) { } } }) : h("span", { className: "hc-mt-vide" }),
         x.video ? h("span", { className: "hc-md-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M8.5 5.8v12.4l9.6-6.2z", fill: "#F3EEE4" }))) : null,
-        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-md-d" }, dureeTxt(x.duree)) : null));   /* pas de petits boutons sur la galerie : « qui est dessus » se règle dans Par cavalier / Par cheval (lot « À identifier ») */
+        badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-md-d" }, dureeTxt(x.duree)) : null));   /* pas de petits boutons sur la galerie : « qui est dessus » se règle dans Par cavalier / Par cheval (lot « À identifier ») */
   }
   function secMd(titre, droite) { return h("div", { className: "hc-md-sec" }, h("h3", null, titre), h("i", { "aria-hidden": "true" }), droite || null); }
   function sentinelle(el) {   /* chargement progressif : le paquet suivant arrive avant qu'on atteigne le bas */
@@ -2583,7 +2603,7 @@ function EcranConcours() {
       h("button", { type: "button", className: "hc-xm-b", onClick: function () { ouvrirMedia(x); }, title: qui || undefined, "aria-label": (x.video ? F("Lire la vidéo") : F("Voir la photo")) + (qui ? " — " + qui : "") },
         src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; e.target.parentNode.classList.add("vide"); } catch (e0) { } } }) : h("span", { className: "hc-xm-vide" }),
         x.video ? h("span", { className: "hc-md-play", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: "M8.5 5.8v12.4l9.6-6.2z", fill: "#F3EEE4" }))) : null,
-        (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-md-d" }, dureeTxt(x.duree)) : null),
+        badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("span", { className: "hc-md-d" }, dureeTxt(x.duree)) : null),
       peutId ? h("button", { type: "button", className: "hc-mt-id", "aria-label": F("Identifier"), onClick: function () { setMedMsg(""); setMedId({ x: x, cav: x.cav.slice(), ch: x.ch.slice(), ep: x.epreuve || "" }); try { setTimeout(function () { var el = document.querySelector(".hc-mid"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 60); } catch (e1) { } } }, "⋯") : null);
   }
   var xMediasV = xMedias.slice(0, medNE);
@@ -2636,7 +2656,7 @@ function EcranConcours() {
     return h("button", { key: x.cle, type: "button", className: cls, onClick: action || function () { ouvrirMedia(x); }, title: qui || undefined, "aria-label": (x.video ? F("Lire la vidéo") : F("Voir la photo")) + (qui ? " — " + qui : "") },
       vrImg(x, larg),
       x.video ? h("i", { className: "vr-play", "aria-hidden": "true" }, h("b", null)) : null,
-      (x.video && dureeTxt(x.duree)) ? h("i", { className: "vr-d" }, dureeTxt(x.duree)) : null);
+      badgePriv(x), (x.video && dureeTxt(x.duree)) ? h("i", { className: "vr-d" }, dureeTxt(x.duree)) : null);
   }
   /* 09/11 23h45 (Blandine : « mets les petits onglets ronds au-dessus, adapte leur espacement à leur nombre pour que ça fasse
      un joli L de ronds autour de la photo centrale ») : Tous + un rond par cheval, même taille que la colonne de droite,
@@ -2747,7 +2767,7 @@ function EcranConcours() {
         h("button", { type: "button", className: "vr-k-c", onClick: function () { ouvrirMedia(x0); }, "aria-label": (x0.video ? F("Lire la vidéo") : F("Voir la photo")) + " — " + nm },
           vrImg(x0, 1200),
           x0.video ? h("i", { className: "vr-k-play", "aria-hidden": "true" }) : null,
-          (x0.video && dureeTxt(x0.duree)) ? h("i", { className: "vr-k-d" }, dureeTxt(x0.duree)) : null),
+          badgePriv(x0), (x0.video && dureeTxt(x0.duree)) ? h("i", { className: "vr-k-d" }, dureeTxt(x0.duree)) : null),
         h("div", { className: "vr-k-ov" },
           h("button", { type: "button", className: "vr-k-who", onClick: versPage },
             h("span", { className: "vr-gc-av" }, ph ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(ph, 120, 120) : ph, alt: "", loading: "lazy" }) : h("b", null, g.sans ? "?" : String(nm).charAt(0).toUpperCase())),
