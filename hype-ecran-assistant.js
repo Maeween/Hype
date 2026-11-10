@@ -1528,6 +1528,7 @@ function EcranAssistantIA() {
             setAdmHB((o) => o ? { ...o, corr: (rc && rc.data) || [], notes: (rn && rn.data) || [], noms: noms, err: (rc && rc.error) ? rc.error.message : (rn && rn.error) ? rn.error.message : "" } : o);
         } catch (eA) { setAdmHB((o) => o ? { ...o, corr: [], notes: [], err: String((eA && eA.message) || eA) } : o); }
     };
+    useEffect(() => { if (!estModoHB) return; try { if (window.__hbOuvrirAdmin) { window.__hbOuvrirAdmin = false; admCharger(); } } catch (eO) { } }, [estModoHB]);   /* ouverte depuis Mon compte (Espace admin) */
     const admMaj = async (table, id, champs) => {
         try { const r = await supa.from(table).update(champs).eq("id", id).select("id"); if (r && r.error) throw r.error; } catch (eU) { setAdmHB((o) => o ? { ...o, err: "Non modifié : " + ((eU && eU.message) || eU) } : o); return; }
         if (table === "heybaby_corrections") { try { await chargerCorrectionsHB(); } catch (e2) { } }
