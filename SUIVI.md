@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-0910 — Page d'un Galop : plus d'espace autour des objectifs officiels
+- Plus d'espace au-dessus et en dessous du bloc « Les objectifs officiels », et entre la phrase sur le programme FFE et la carte à onglets (téléphone, tablette, ordi).
+
 ### 10/11 — build 20261110-0830 — Page d'un Galop : objectifs officiels en haut (variante C) + tuile Quiz
 - Objectifs officiels du Galop remontés en haut de la page (sous les pastilles 1→9) : titre « Les objectifs *officiels* », mention du Programme officiel des Galops® FFE (2012), carte à onglets À cheval / À pied et soins / Connaissances sur photo du Galop, bouton contour « Voir le programme officiel (FFE) ». Ancien bloc du bas retiré (pas de doublon). 14 langues.
 - Galops 8–9 : résumé provisoire en attendant le programme officiel (à fournir par Blandine).
