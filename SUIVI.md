@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-1800 — Pages « Découvrir Hype » par profil (nouveau fichier hype-ecran-decouverte.js)
+- Nouvelle page 2hype.fr/#decouvrir-hype (écran « decouvrir-hype » ; l'écran « decouvrir » existait déjà = page À découvrir de la Communauté) : page d'entrée « Hype, à ta façon. » + 4 parcours (Je suis cavalier / Je gère une écurie / J'enseigne / Je suis coach ou compétiteur → pastilles Cavalier, Écurie, Enseignant, Compétition). Navigation de l'appli NON modifiée : accès par le lien seulement (emplacement d'un bouton à décider par Blandine).
+- Chaque fonction : Le souci / Avec Hype / « À essayer dans … » + bouton « Découvrir » vers la vraie page ; pastille d'état vérifiée le 10/11 dans l'appli et la base : Disponible / En cours · équipes pilotes (Centre de compétition) / Bientôt (sans bouton).
+- Pas encore faits, affichés « Bientôt » : import des engagements par capture + historique annuel ; chutes et incidents ; réservation des cours par les élèves ; page publique du direct (Hype Live). À développer.
+- Bandeau « Hype parle 14 langues » (argument) ; bouton de langue sur chaque page (le parcours est gardé) ; 14 langues, arabe RTL ; tablette/ordi : cartes photo à gauche, texte à droite ; fin de page Hype.
+- Filtre doré sur les 2 vraies photos (Liam au saut sur le poney blanc, article-cso-saut ; cavalier et poney blanc au manège, galop5-c07-transport).
+
 ### 10/11 — build 20261110-0945 — Page d'un Galop : lien FFE discret + cours en 4 cases photo (téléphone)
 - « Voir le programme officiel (FFE) » : plus de bouton doré sous la carte ; lien en italique ivoire, discret, en bas à droite DANS la carte des objectifs (à gauche en arabe).
 - Liste des cours sur téléphone : présentation v2 (4 grandes cases photo I–IV, on touche une partie pour afficher ses cours). Tablette et ordi restent en v1 (bandeaux à la suite).
