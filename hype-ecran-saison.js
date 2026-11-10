@@ -4866,7 +4866,7 @@ function EcranEngagements() {
     try {
       var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
-      var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
+      var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.cheval_nom || t.epreuve) equipe.push({ cavalier: l.nom, cheval: t.cheval_nom || "", epreuve: t.epreuve || "" }); }); });
       var cleL = "hype_lecture_ordre_" + idEv;
       var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem(cleL, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
@@ -6054,7 +6054,7 @@ function EcranJourJ(props) {
     try {
       var estPdf = /pdf/i.test(String(f.type || "")) || /\.pdf$/i.test(String(f.name || ""));
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
-      var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
+      var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
       var lu = await hsLireProgramme(imgs, equipe);
       function norm(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
