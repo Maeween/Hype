@@ -10,6 +10,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-0945 — Page d'un Galop : lien FFE discret + cours en 4 cases photo (téléphone)
+- « Voir le programme officiel (FFE) » : plus de bouton doré sous la carte ; lien en italique ivoire, discret, en bas à droite DANS la carte des objectifs (à gauche en arabe).
+- Liste des cours sur téléphone : présentation v2 (4 grandes cases photo I–IV, on touche une partie pour afficher ses cours). Tablette et ordi restent en v1 (bandeaux à la suite).
+
 ### 10/11 — build 20261110-0935 — Galops : « Programme officiel 2026 » (Google + appli) + veille hebdo
 - Pages publiques des Galops (14 langues, outils/seo-galops.cjs) : titre « Galop 3 — Programme officiel 2026 · <sous-titre> | Hype », page Galops « Théorie des Galops — Programme officiel 2026 | Hype », résumé Google commençant par « Programme officiel 2026 ». L'année = celle de la mise en ligne : passe à 2027 à la première publication de 2027.
 - Appli : sous « Les objectifs officiels », « · À jour 2026 » (14 langues), change seul le 1er janvier.
