@@ -50,6 +50,16 @@ var HS_TR_BRUT = {
   "Aucune vidéo ne correspond à ces filtres.": ["No video matches these filters.", "Ningún vídeo coincide con estos filtros.", "Nessun video corrisponde a questi filtri.", "条件に合う動画はありません。", "Kein Video passt zu diesen Filtern.", "لا يوجد فيديو يطابق هذه الفلاتر.", "没有符合筛选条件的视频。", "Geen video past bij deze filters.", "Nenhum vídeo corresponde a estes filtros.", "Ingen video matchar filtren.", "Нет видео по этим фильтрам.", "Brak filmów dla tych filtrów.", "필터에 맞는 영상이 없어."],
   "Privé": ["Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개"],
   "Cette vidéo est privée : seuls le cavalier et son coach peuvent la voir.": ["This video is private: only the rider and their coach can see it.", "Este vídeo es privado: solo el jinete y su entrenador pueden verlo.", "Questo video è privato: solo il cavaliere e il suo coach possono vederlo.", "この動画は非公開です。騎手とコーチだけが見られます。", "Dieses Video ist privat: Nur der Reiter und sein Trainer können es sehen.", "هذا الفيديو خاص: لا يراه إلا الفارس ومدرّبه.", "此视频为私密：只有骑手和教练能看到。", "Deze video is privé: alleen de ruiter en de coach kunnen hem zien.", "Este vídeo é privado: só o cavaleiro e o treinador o podem ver.", "Den här videon är privat: bara ryttaren och tränaren kan se den.", "Это видео личное: его видят только всадник и тренер.", "Ten film jest prywatny: widzą go tylko jeździec i jego trener.", "이 영상은 비공개예요. 기수와 코치만 볼 수 있어요."],
+  "Je chausse mes lunettes de lecture…": ["Putting my reading glasses on…", "Me pongo las gafas de leer…", "Mi metto gli occhiali da lettura…", "読書用メガネをかけてるよ…", "Ich setz meine Lesebrille auf…", "أضع نظارات القراءة…", "我戴上老花镜……", "Even mijn leesbril opzetten…", "Estou a pôr os óculos de leitura…", "Jag tar på mig läsglasögonen…", "Надеваю очки для чтения…", "Zakładam okulary do czytania…", "돋보기 쓰는 중…"],
+  "Je compte les numéros, sabot par sabot.": ["Counting the numbers, hoof by hoof.", "Cuento los números, casco a casco.", "Conto i numeri, zoccolo dopo zoccolo.", "番号をひづめ一つずつ数えてるよ。", "Ich zähle die Nummern, Huf für Huf.", "أعدّ الأرقام حافرًا حافرًا.", "我一蹄一蹄地数号码。", "Ik tel de nummers, hoef voor hoef.", "Conto os números, casco a casco.", "Jag räknar numren, hov för hov.", "Считаю номера, копытце за копытцем.", "Liczę numery, kopyto po kopycie.", "번호를 발굽 하나하나 세는 중."],
+  "Club 3, Club 2… je range tout ça dans l’ordre.": ["Club 3, Club 2… putting it all in order.", "Club 3, Club 2… lo ordeno todo.", "Club 3, Club 2… metto tutto in ordine.", "クラブ3、クラブ2…順番に並べてるよ。", "Club 3, Club 2 … ich bring alles in Ordnung.", "Club 3، Club 2… أرتّب كل شيء.", "Club 3、Club 2……我按顺序整理好。", "Club 3, Club 2… ik zet alles op volgorde.", "Club 3, Club 2… ponho tudo por ordem.", "Club 3, Club 2… jag sorterar allt.", "Club 3, Club 2… раскладываю всё по порядку.", "Club 3, Club 2… układam wszystko po kolei.", "클럽 3, 클럽 2… 순서대로 정리 중."],
+  "Promis, je ne saute aucune ligne.": ["Promise, I won't skip a line.", "Prometido, no me salto ninguna línea.", "Promesso, non salto nessuna riga.", "約束、1行も飛ばさないよ。", "Versprochen, ich überspringe keine Zeile.", "أعدك، لن أتخطّى أي سطر.", "保证一行都不漏。", "Beloofd, ik sla geen regel over.", "Prometo, não salto nenhuma linha.", "Lovar, jag hoppar inte över någon rad.", "Обещаю, ни строчки не пропущу.", "Obiecuję, nie pominę żadnej linijki.", "약속해, 한 줄도 안 건너뛸게."],
+  "Encore un petit tour de piste et j’ai fini.": ["One more lap of the arena and I'm done.", "Una vuelta más a la pista y termino.", "Ancora un giro di campo e ho finito.", "あと1周したら終わるよ。", "Noch eine Runde durch die Bahn, dann bin ich fertig.", "جولة أخيرة في الحلبة وأنتهي.", "再跑一圈就好。", "Nog één rondje door de bak en ik ben klaar.", "Mais uma volta à pista e acabei.", "Ett varv till på banan så är jag klar.", "Ещё кружок по манежу — и готово.", "Jeszcze jedno okrążenie i kończę.", "한 바퀴만 더 돌면 끝나."],
+  "Je vérifie deux fois, comme au paddock.": ["Double-checking, like in the warm-up ring.", "Lo compruebo dos veces, como en la pista de calentamiento.", "Controllo due volte, come al campo prova.", "パドックみたいに2回確認するね。", "Ich prüfe doppelt, wie auf dem Abreiteplatz.", "أتحقّق مرتين كما في حلبة الإحماء.", "像在热身场一样检查两遍。", "Ik controleer twee keer, zoals op de losrijpiste.", "Verifico duas vezes, como no paddock.", "Jag dubbelkollar, som på framridningen.", "Проверяю дважды, как на разминке.", "Sprawdzam dwa razy, jak na rozprężalni.", "워밍업장처럼 두 번 확인할게."],
+  "Je lis ton document (1 à 3 min). Tu peux quitter la page : je continue, et le résultat t’attendra ici.": ["Reading your document (1 to 3 min). You can leave the page: I'll keep going and the result will wait for you here.", "Leo tu documento (1 a 3 min). Puedes salir de la página: sigo trabajando y el resultado te esperará aquí.", "Leggo il tuo documento (1-3 min). Puoi lasciare la pagina: continuo io e il risultato ti aspetterà qui.", "書類を読んでるよ（1〜3分）。ページを離れても大丈夫、続けて結果はここで待ってるね。", "Ich lese dein Dokument (1 bis 3 Min.). Du kannst die Seite verlassen: Ich mach weiter, das Ergebnis wartet hier auf dich.", "أقرأ مستندك (من 1 إلى 3 دقائق). يمكنك مغادرة الصفحة: سأواصل وستجد النتيجة هنا.", "正在读你的文件（1到3分钟）。你可以离开页面：我会继续，结果会在这里等你。", "Ik lees je document (1 tot 3 min). Je mag de pagina verlaten: ik ga door en het resultaat wacht hier op je.", "Estou a ler o teu documento (1 a 3 min). Podes sair da página: eu continuo e o resultado fica aqui à tua espera.", "Jag läser ditt dokument (1–3 min). Du kan lämna sidan: jag fortsätter och resultatet väntar här.", "Читаю твой документ (1–3 мин). Можешь уйти со страницы: я продолжу, а результат будет ждать здесь.", "Czytam twój dokument (1–3 min). Możesz wyjść ze strony: kontynuuję, a wynik będzie tu czekał.", "문서를 읽는 중이야 (1~3분). 페이지를 나가도 돼: 계속할게, 결과는 여기서 기다릴게."],
+  "J’ai trouvé tes cavaliers, mais aucun numéro ni aucune heure de passage sur ce document. C’est sans doute la liste des engagés : envoie plutôt la page « Ordre de passage » du concours sur FFE Compet.": ["I found your riders, but no start number or time on this document. It's probably the entry list: send the competition's “Ordre de passage” page from FFE Compet instead.", "Encontré a tus jinetes, pero ningún número ni hora de salida en este documento. Seguramente es la lista de inscritos: envía mejor la página «Ordre de passage» del concurso en FFE Compet.", "Ho trovato i tuoi cavalieri, ma nessun numero né orario di partenza in questo documento. È probabilmente la lista degli iscritti: invia piuttosto la pagina «Ordre de passage» del concorso su FFE Compet.", "騎手は見つかったけど、この書類には出場番号も時刻もないよ。たぶんエントリー表だね。FFE Compet の「Ordre de passage」ページを送ってね。", "Ich habe deine Reiter gefunden, aber keine Startnummer und keine Startzeit in diesem Dokument. Das ist wohl die Nennliste: Schick lieber die Seite „Ordre de passage“ des Turniers auf FFE Compet.", "وجدت فرسانك، لكن لا رقم ولا وقت انطلاق في هذا المستند. على الأرجح إنها قائمة المسجّلين: أرسل بدلًا منها صفحة «Ordre de passage» للمسابقة على FFE Compet.", "找到了你的骑手，但这份文件里没有出场号码也没有时间。这大概是报名名单：请改发 FFE Compet 上比赛的“Ordre de passage”页面。", "Ik vond je ruiters, maar geen startnummer of tijd in dit document. Het is waarschijnlijk de inschrijvingslijst: stuur liever de pagina „Ordre de passage” van de wedstrijd op FFE Compet.", "Encontrei os teus cavaleiros, mas nenhum número nem hora de passagem neste documento. Deve ser a lista de inscritos: envia antes a página «Ordre de passage» do concurso no FFE Compet.", "Jag hittade dina ryttare, men inget startnummer eller starttid i dokumentet. Det är nog anmälningslistan: skicka hellre sidan ”Ordre de passage” för tävlingen på FFE Compet.", "Нашёл твоих всадников, но в документе нет ни номеров, ни времени старта. Скорее всего, это список заявок: пришли лучше страницу «Ordre de passage» соревнования на FFE Compet.", "Znalazłem twoich jeźdźców, ale w tym dokumencie nie ma numerów ani godzin startu. To pewnie lista zgłoszeń: wyślij raczej stronę „Ordre de passage” zawodów z FFE Compet.", "기수는 찾았는데 이 문서에는 출전 번호도 시간도 없어. 아마 참가자 명단일 거야: FFE Compet의 'Ordre de passage' 페이지를 보내 줘."],
+  "Compris": ["Got it", "Entendido", "Capito", "わかった", "Verstanden", "فهمت", "明白了", "Begrepen", "Percebi", "Uppfattat", "Понятно", "Rozumiem", "알겠어"],
+  "Enregistrer ces passages": ["Save these start times", "Guardar estas salidas", "Salva questi passaggi", "この出場順を保存", "Diese Starts speichern", "حفظ أوقات الانطلاق هذه", "保存这些出场", "Deze starts opslaan", "Guardar estas passagens", "Spara dessa starter", "Сохранить эти старты", "Zapisz te starty", "이 출전 정보 저장"],
   "Pas encore de vidéo.": ["No videos yet.", "Todavía no hay vídeos.", "Ancora nessun video.", "動画はまだありません。", "Noch keine Videos.", "لا توجد فيديوهات بعد.", "还没有视频。", "Nog geen video's.", "Ainda não há vídeos.", "Inga videor än.", "Видео пока нет.", "Brak jeszcze filmów.", "아직 영상이 없어요."],
   "Pas encore de vidéo sur ce concours.": ["No videos for this competition yet.", "Aún no hay vídeos de este concurso.", "Ancora nessun video di questo concorso.", "この大会の動画はまだありません。", "Noch keine Videos von diesem Turnier.", "لا توجد فيديوهات لهذه المسابقة بعد.", "本次比赛还没有视频。", "Nog geen video's van deze wedstrijd.", "Ainda não há vídeos deste concurso.", "Inga videor från tävlingen än.", "Пока нет видео с этих соревнований.", "Brak jeszcze filmów z tych zawodów.", "이 대회 영상이 아직 없어."],
   "Modifier les passages": ["Edit start times", "Modificar las salidas", "Modifica le partenze", "出場を編集", "Starts bearbeiten", "تعديل أوقات الانطلاق", "修改出场", "Starts wijzigen", "Alterar as passagens", "Ändra starterna", "Изменить старты", "Edytuj starty", "출전 수정"],
@@ -2883,7 +2893,7 @@ function EcranConcours() {
           if (estMed) { e.stopPropagation(); e.preventDefault(); }
         } },
           carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
-          carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
+          carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
           carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),
           carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
         pgConc ? h("div", { className: "vr" }, vrPrincipal(true)) : h("div", { className: "vr" },
@@ -3077,7 +3087,7 @@ function EcranConcours() {
     h("div", { className: "hs-in" },
       h("div", { className: "hc-cartes" },
         carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
-        carte("passages", F("Passages"), "pas", HS_IMG_CONCOURS.passages, null),
+        carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
         carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
         carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
       (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
@@ -3797,7 +3807,28 @@ async function hsLireFiche(images) {
    avec les numéros et heures d'épreuve et qu'il prépare tout ») — LIRE UNE PHOTO DU PROGRAMME OU DE LA LISTE DE DÉPART (photo,
    capture ou PDF), même chemin que la lecture de la fiche d'engagement (hey-baby-vision, perception en différé). Rien n'est
    enregistré sans « Appliquer » puis « Enregistrer ». */
-async function hsLireProgramme(images, equipe) {
+var HS_PHRASES_LECTURE = [
+  "Je chausse mes lunettes de lecture…", "Je compte les numéros, sabot par sabot.", "Club 3, Club 2… je range tout ça dans l’ordre.", "Promis, je ne saute aucune ligne.", "Encore un petit tour de piste et j’ai fini.", "Je vérifie deux fois, comme au paddock."];
+function HsPhraseLecture(props) {
+  var F = props.F || function (x) { return x; };
+  var _i = React.useState(0); var i = _i[0], setI = _i[1];
+  React.useEffect(function () { var t = setInterval(function () { setI(function (x) { return x + 1; }); }, 4200); return function () { clearInterval(t); }; }, []);
+  return React.createElement("div", { style: { fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 20, color: "#F3EEE4", minHeight: 52 } }, F(HS_PHRASES_LECTURE[i % HS_PHRASES_LECTURE.length]));
+}
+async function hsAttendreLecture(jobId) {
+  var t0 = Date.now(), fini = null;
+  while (!fini && Date.now() - t0 < 600000) {
+    try { var rj = await supa.from("heybaby_analyses").select("statut, resultat, erreur_code, erreur_message").eq("id", jobId).single(); if (rj && !rj.error && rj.data && rj.data.statut !== "en_cours") { fini = rj.data; break; } } catch (eJ) { }
+    await new Promise(function (r) { setTimeout(r, 3000); });
+  }
+  if (!fini) throw new Error("délai dépassé");
+  if (fini.statut !== "termine") throw new Error((fini.erreur_code || "erreur") + " " + (fini.erreur_message || ""));
+  var texte = String(fini.resultat || "");
+  var m = texte.match(/\{[\s\S]*\}/);
+  var o = JSON.parse(m ? m[0] : texte) || {};
+  return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [] };
+}
+async function hsLireProgramme(images, equipe, onJob) {
   var sess = await supa.auth.getSession();
   var sv = sess && sess.data && sess.data.session;
   if (!sv || !sv.access_token) throw new Error("session");
@@ -3813,6 +3844,8 @@ async function hsLireProgramme(images, equipe) {
   var data = null; try { data = await rep.json(); } catch (e) { }
   var texte = "";
   if (rep.ok && data && data.ok && data.differe && data.jobId) {
+    try { if (onJob) onJob(data.jobId); } catch (eOj) { }
+    return await hsAttendreLecture(data.jobId);
     var t0 = Date.now(), fini = null;
     while (!fini && Date.now() - t0 < 300000) {
       await new Promise(function (r) { setTimeout(r, 3000); });
@@ -4025,6 +4058,17 @@ function EcranEngagements() {
     lireOrdre({ target: { files: [f] } });
     setTimeout(function () { try { var el = document.querySelector(".d3-ordre"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e2) { } }, 400);
   }, [lignes]);
+  /* 10/11 20h50 (Blandine : « il tourne 2-3 minutes et s'arrête sans aucun mot ; je n'ai jamais retrouvé ce qu'il avait fait »)
+     — la lecture continue côté serveur même si on quitte la page : le numéro du travail est gardé sur le téléphone, et au
+     retour sur la page on reprend là où on en était. Le résultat s'affiche toujours, même quand rien n'a été trouvé. */
+  React.useEffect(function () {
+    if (!lignes || !lignes.length || ordreLect === "en_cours") return;
+    var st = null; try { st = JSON.parse(localStorage.getItem("hype_lecture_ordre_" + idEv) || "null"); } catch (e) { }
+    if (!st || !st.jobId || Date.now() - (st.t || 0) > 3600000) return;
+    setOrdreLect("en_cours");
+    hsAttendreLecture(st.jobId).then(function (lu) { try { localStorage.removeItem("hype_lecture_ordre_" + idEv); } catch (e1) { } traiterLecture(lu); })
+      .catch(function (e2) { try { localStorage.removeItem("hype_lecture_ordre_" + idEv); } catch (e3) { } setOrdreLect(F("Lecture impossible : ") + String((e2 && e2.message) || e2)); });
+  }, [lignes && lignes.length]);
   var _cpl = React.useState(false); var editLic = _cpl[0], setEditLic = _cpl[1];
   /* 08/11 00h10 (Blandine, choix B : « j'ai mis trois fois l'ordre de passage dans le lecteur des engagements ») : lecture de
      l'ordre de passage / programme directement ici, pour tous les tours (1 à 5). Même lecture que Jour J (hsLireProgramme). */
@@ -4823,7 +4867,14 @@ function EcranEngagements() {
       if (!estPdf && !/^image\//i.test(String(f.type || ""))) throw new Error(F("envoie une photo, une capture d’écran ou un PDF"));
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : [await hypeImageEnJpeg(f, 2000)];
       var equipe = []; lignes.forEach(function (l) { (l.tours || []).forEach(function (t) { if (t.cheval_nom || t.epreuve) equipe.push({ cavalier: l.nom, cheval: t.cheval_nom || "", epreuve: t.epreuve || "" }); }); });
-      var lu = await hsLireProgramme(imgs, equipe);
+      var cleL = "hype_lecture_ordre_" + idEv;
+      var lu = await hsLireProgramme(imgs, equipe, function (jobId) { try { localStorage.setItem(cleL, JSON.stringify({ jobId: jobId, t: Date.now() })); } catch (eS) { } });
+      try { localStorage.removeItem(cleL); } catch (eR) { }
+      traiterLecture(lu);
+    } catch (eL2) { setOrdreLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); try { localStorage.removeItem("hype_lecture_ordre_" + idEv); } catch (eR2) { } }
+  }
+  function traiterLecture(lu) {
+    try {
       function norm(x) { return String(x || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
       function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
       function memeCh(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
@@ -4841,12 +4892,14 @@ function EcranEngagements() {
         else if (p && p.ordre && eL && eL.heure && hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep)) { var eP1 = hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep); heure = hsHeure(eP1.min); source = F("entrée en piste estimée") + " · " + eP1.parHeure + F(" cavaliers à l’heure") + (eP1.n > 15 ? " · " + F("à cheval vers le n° ") + eP1.aCheval : ""); }
         else if (eL && eL.heure) { heure = hsHeurePropre(eL.heure); source = F("début de l’épreuve (ordre pas encore connu)"); }
         var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
-        if (!heure && !piste) return;
+        if (!heure && !piste && !(p && p.ordre)) return;   /* 10/11 : un N° de passage seul compte aussi */
         props.push({ i: i, k: k, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, ordre: p && p.ordre ? String(p.ordre) : "", coche: true });
       }); });
       setOrdreProp(props);
-      setOrdreLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à tes engagements.") : F("Je n’ai rien trouvé d’utilisable sur ce document.")));
-    } catch (eL2) { setOrdreLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
+      var nbLu = (lu.passages || []).length, nbNum = (lu.passages || []).filter(function (x) { return x && (x.ordre || x.heure); }).length;
+      setOrdreLect(props.length ? "" : (nbLu && !nbNum ? F("J’ai trouvé tes cavaliers, mais aucun numéro ni aucune heure de passage sur ce document. C’est sans doute la liste des engagés : envoie plutôt la page « Ordre de passage » du concours sur FFE Compet.")
+        : lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à tes engagements.") : F("Je n’ai rien trouvé d’utilisable sur ce document.")));
+    } catch (eT) { setOrdreLect(F("Lecture impossible : ") + String((eT && eT.message) || eT)); }
   }
   function appliquerOrdre() {
     if (!ordreProp) return;
@@ -4865,14 +4918,16 @@ function EcranEngagements() {
   function blocOrdre() {
     var nbT = 0; lignes.forEach(function (l) { nbT += (l.tours || []).length; });
     if (!nbT) return null;
-    if (true) return null;   /* 09/11 15h (Blandine « Ok ») : un seul outil de lecture de l'ordre de passage, dans la carte Passages du concours */
+    /* 09/11 15h : le bouton de lecture est dans la carte Passages du concours ; ici on n'affiche que le travail en cours et le résultat (10/11) */
+    if (ordreLect === "en_cours") return h("div", { className: "d3-ordre", style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center" } },
+      h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 170, height: 170, borderRadius: "50%", objectFit: "cover" } }),
+      h(HsPhraseLecture, { F: F }),
+      h("div", { className: "d3-msg", style: { marginTop: 0 } }, F("Je lis ton document (1 à 3 min). Tu peux quitter la page : je continue, et le résultat t’attendra ici.")));
+    if (!ordreLect && !(ordreProp && ordreProp.length)) return null;
     return h("div", { className: "d3-ordre" },
       h("div", { className: "d3-k" }, F("Ordre de passage")),
-      h("div", { className: "d3-msg", style: { marginTop: 0 } }, F("Une photo, une capture ou le PDF de la liste de départ ou du programme : les heures et les pistes de tes couples se remplissent toutes seules.")),
-      h("label", { className: "hs-lien d3-petit", style: { cursor: "pointer", opacity: ordreLect === "en_cours" ? 0.6 : 1 } },
-        ordreLect === "en_cours" ? F("Lecture de l’ordre de passage… (1 à 2 min)") : F("Lire l’ordre de passage (photo ou PDF) ›"),
-        h("input", { type: "file", accept: "image/*,application/pdf", disabled: ordreLect === "en_cours", onChange: lireOrdre, style: { display: "none" } })),
       ordreLect && ordreLect !== "en_cours" ? h("div", { className: "d3-msg" }, ordreLect) : null,
+      (ordreLect && ordreLect !== "en_cours" && !(ordreProp && ordreProp.length)) ? h("button", { type: "button", className: "hs-btn", style: { marginTop: 10 }, onClick: function () { setOrdreLect(""); } }, F("Compris")) : null,
       ordreProp && ordreProp.length ? h("div", { className: "hs-lus" },
         ordreProp.map(function (x, j) {
           return h("label", { key: j, className: "hs-lu" },
@@ -4881,7 +4936,7 @@ function EcranEngagements() {
               h("em", null, [x.heure, x.piste ? F("piste ") + x.piste : "", x.ordre ? F("n° ") + x.ordre : "", x.source].filter(Boolean).join(" · "))));
         }),
         h("div", { className: "hs-duo", style: { marginTop: 12 } },
-          h("button", { type: "button", className: "hs-btn", onClick: appliquerOrdre }, F("Mettre ces heures")),
+          h("button", { type: "button", className: "hs-btn", onClick: appliquerOrdre }, F("Enregistrer ces passages")),
           h("button", { type: "button", className: "hs-btn", onClick: function () { setOrdreProp(null); setOrdreLect(""); } }, F("Annuler")))) : null);
   }
   /* engagements enregistrés sans aucun tour (anciens écrans, fiche lue) : visibles, avec × pour les retirer */
@@ -5059,10 +5114,10 @@ function EcranEngagements() {
   return h("div", { className: "hs hs-eng e1", dir: rtl ? "rtl" : "ltr" },
     hero,
     h("div", { className: "hs-in" },
+      blocOrdre(),   /* 10/11 : la lecture en cours et son résultat tout en haut */
       carteConcours(),
       composeur(),
       recapFin(),
-      blocOrdre(),
       sansTour(),
       h("div", { className: "hs-note" }, F("Les licences sont gardées pour la prochaine fois. Seuls toi et le cavalier concerné les voient. Chacun voit son engagement sur la fiche du concours.")),
       /* actions */
