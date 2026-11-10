@@ -23,7 +23,7 @@ const aire = pts => pts.reduce((s, p, i) => { const q = pts[(i + 1) % pts.length
 for (const [niveau, fiche] of Object.entries(reprises)) {
     test(niveau + ' : toutes les figures sont continues, dans la carrière et dans le bon ordre', () => {
         const t = traces[niveau];
-        assert.equal(fiche.figures.length, { g3: 10, g4: 20, g5: 20, g6: 20, g7: 22, clubelite: 22, amat3gp: 22, amat2gp: 21, amat3b: 22, amat3a: 22, amat3prelim: 22, amat2b: 20, amat2a: 23, amat2prelim: 23, amat1prelim: 28 }[niveau]);
+        assert.equal(fiche.figures.length, { g3: 10, g4: 20, g5: 20, g6: 20, g7: 22, clubelite: 22, amat3gp: 22, amat2gp: 21, amat3b: 22, amat3a: 22, amat3prelim: 22, amat2b: 20, amat2a: 23, amat2prelim: 23, amat1prelim: 28, amat1b: 25, amat1gp: 29, amatelitea: 24, amateliteprelim: 26, amatelitegp: 27 }[niveau]);
         const vues = new Set();
         t.points.forEach((p, i) => {
             assert(Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.dist));
@@ -38,7 +38,7 @@ for (const [niveau, fiche] of Object.entries(reprises)) {
         });
         // Les lignes de note sans tracé (« Les transitions en M et K », Amateur 1) n'ont pas de lettres de départ.
         assert.equal(vues.size, fiche.figures.filter(f => / — /.test(f.fr)).length);
-        assert(en(dernier(t.points), { g3: 'G', g4: 'S', amat1prelim: 'X' }[niveau] || 'I'));
+        assert(en(dernier(t.points), { g3: 'G', g4: 'S', amat1prelim: 'X', amat1gp: 'X', amatelitea: 'X', amateliteprelim: 'X', amatelitegp: 'X' }[niveau] || 'I'));
     });
     test(niveau + ' : l’arrêt final reste réellement immobile', () => {
         const t = traces[niveau], a = t.points[t.points.length - 2], b = dernier(t.points);
