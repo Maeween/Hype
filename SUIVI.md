@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2315 — Partage Hey Baby : toute la réponse dans l'image
+- Blandine : « il n'y a qu'une partie de la réponse qui est postée ». L'image coupait après 36 lignes : plus aucune coupure, toute la réponse passe avant la carte du petit poney. Si la réponse est très longue, l'image est réduite (jamais coupée).
+
 ### 10/11 — build 20261110-2310 — Hey Baby : partager une réponse ou une épingle (WhatsApp…)
 - Sous chaque réponse de Hey Baby : pastilles Écouter · Copier · Partager · Épingler · Corriger (« Classer » retiré). Libellés en 14 langues.
 - « Partager » fabrique une image : la question et la réponse comme dans Hey Baby, fond bleu nuit de la page, le petit poney qui regarde par-dessus le trait, « Hey Baby — Pose ta question ». Le message ne contient que le lien 2hype.fr/<langue>/ia-equestre/?d=p (sans image possible : le conseil part en texte).
