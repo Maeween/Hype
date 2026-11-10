@@ -37,6 +37,10 @@ function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg
 function log() { console.log.apply(console, ["[seo-galops]"].concat([].slice.call(arguments))); }
 
 /* ---------- 04/11/2026 : mots-clés Google du titre de chaque chapitre (« La bride — Théorie Galop 7 | Hype ») ---------- */
+// 10/11 (Blandine) : « Galop 3 — Programme officiel 2026 » dans le titre Google ; l'année est celle de la mise en ligne (passe à 2027 à la première publication de 2027)
+const AN = new Date().getFullYear();
+const PROG = { fr: "Programme officiel", en: "Official programme", es: "Programa oficial", it: "Programma ufficiale", de: "Offizielles Programm", ja: "公式プログラム", ar: "البرنامج الرسمي", zh: "官方大纲", nl: "Officieel programma", pt: "Programa oficial", sv: "Officiellt program", ru: "Официальная программа", pl: "Oficjalny program", ko: "공식 프로그램" };
+const progAn = (lg) => (PROG[lg] || PROG.fr) + " " + AN;
 const THEO = {
   fr: (n) => "Théorie Galop " + n, en: (n) => "Galop " + n + " riding theory", es: (n) => "Teoría Galop " + n + " de equitación",
   it: (n) => "Teoria Galop " + n + " di equitazione", de: (n) => "Reitlehre Galop " + n, ja: (n) => "ギャロップ" + n + " 乗馬理論",
@@ -519,7 +523,7 @@ function principal() {
       corps += `<li><a href="${DOM}/${lg}/galop-${n}/"><strong>${e(nomGalop(n, lg))}</strong><span class="pastille">${e(n === 1 ? ui.gratuit : "Hype+")}</span><span class="sous">${e(sousTitre(n, lg))} · ${nb} ${e(ui.chap)}</span></a></li>`;
     }
     corps += `</ul>` + blocPrepas(lg) + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
-    ecrire(`${lg}/galops`, page({ lg, cible: "galops", chemin: "galops/", titre: `${ui.theorie} | Hype`, desc: ui.sousTitre, h1: ui.theorie, fil: accueil, corps,
+    ecrire(`${lg}/galops`, page({ lg, cible: "galops", chemin: "galops/", titre: `${ui.theorie} — ${progAn(lg)} | Hype`, desc: progAn(lg) + " · " + ui.sousTitre, h1: ui.theorie, fil: accueil, corps,
       jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: ui.theorie, inLanguage: HL[lg], url: `${DOM}/${lg}/galops/`, isPartOf: { "@id": DOM + "/#website" } } }));
     if (lg === LANGS[0]) urls.push({ chemin: "galops/" });
 
@@ -533,7 +537,7 @@ function principal() {
         const pub = liste.map((ch, i) => (aLaLangue(ch.titre, lg) ? i : -1)).filter((i) => i >= 0);
         liste.forEach((ch, i) => { if (pub.indexOf(i) < 0) return; c += `<li><a href="${DOM}/${lg}/galop-1/${slugs[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`; });
         c += `</ol><p class="nav"><a class="btn" href="${DOM}/">${e(ui.ouvrir)}</a></p>`;
-        ecrire(`${lg}/galop-1`, page({ lg, cible: "1", chemin: "galop-1/", titre: `${titreG} | Hype`, desc: `${THEO[lg](1)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-1`, page({ lg, cible: "1", chemin: "galop-1/", titre: `${nomGalop(1, lg)} — ${progAn(lg)}${sousTitre(1, lg) ? " · " + sousTitre(1, lg) : ""} | Hype`, desc: `${progAn(lg)} · ${THEO[lg](1)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(1, lg), description: sousTitre(1, lg), inLanguage: HL[lg], isAccessibleForFree: true, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: "galop-1/" });
 
@@ -568,7 +572,7 @@ function principal() {
           ? `<li><a href="${DOM}/${lg}/galop-${n}/${sg[i]}/">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></a></li>`
           : `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`; });
         c += `</ol>` + (n >= 6 ? blocPrepas(lg) : "") + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
-        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${nomGalop(n, lg)} — ${progAn(lg)}${sousTitre(n, lg) ? " · " + sousTitre(n, lg) : ""} | Hype`, desc: `${progAn(lg)} · ${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
 
@@ -596,7 +600,7 @@ function principal() {
         let c = `<div class="encadre"><p class="encadre-t">${e(ui.reserve)}</p><p>${e(ui.reserveTxt)}</p></div><ol class="liste">`;
         for (const ch of liste) c += `<li><span class="carte">${e(tr(ch.titre, lg))}<span class="sous">${e(tr(ch.duree, lg))}</span></span></li>`;
         c += `</ol>` + (n >= 6 ? blocPrepas(lg) : "") + `<p class="nav"><a class="btn" href="${DOM}/">${e(ui.lire)}</a></p>`;
-        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${titreG} | Hype`, desc: `${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
+        ecrire(`${lg}/galop-${n}`, page({ lg, cible: String(n), chemin: `galop-${n}/`, titre: `${nomGalop(n, lg)} — ${progAn(lg)}${sousTitre(n, lg) ? " · " + sousTitre(n, lg) : ""} | Hype`, desc: `${progAn(lg)} · ${THEO[lg](n)} : ${liste.map((x) => tr(x.titre, lg)).slice(0, 6).join(", ")}…`, h1: titreG, fil: filG, corps: c,
           jsonld: { "@context": "https://schema.org", "@type": "Course", name: nomGalop(n, lg), description: sousTitre(n, lg), inLanguage: HL[lg], isAccessibleForFree: false, provider: { "@type": "Organization", name: "Hype", url: DOM + "/" } } }));
         if (lg === LANGS[0]) urls.push({ chemin: `galop-${n}/` });
       }

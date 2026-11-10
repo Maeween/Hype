@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-0935 — Galops : « Programme officiel 2026 » (Google + appli) + veille hebdo
+- Pages publiques des Galops (14 langues, outils/seo-galops.cjs) : titre « Galop 3 — Programme officiel 2026 · <sous-titre> | Hype », page Galops « Théorie des Galops — Programme officiel 2026 | Hype », résumé Google commençant par « Programme officiel 2026 ». L'année = celle de la mise en ligne : passe à 2027 à la première publication de 2027.
+- Appli : sous « Les objectifs officiels », « · À jour 2026 » (14 langues), change seul le 1er janvier.
+- Tâche programmée « Veille programmes FFE : Galops et diplômes » : chaque lundi 10 h 17, notification téléphone ; surveille Galops 1–9, AE, BPJEPS, DEJEPS, DESJEPS (tests d'entrée, épreuves, théorie, textes officiels) ; en janvier vérifie l'année sur Google. Ne modifie et ne publie rien.
+
 ### 10/11 — build 20261110-0910 — Page d'un Galop : plus d'espace autour des objectifs officiels
 - Plus d'espace au-dessus et en dessous du bloc « Les objectifs officiels », et entre la phrase sur le programme FFE et la carte à onglets (téléphone, tablette, ordi).
 
