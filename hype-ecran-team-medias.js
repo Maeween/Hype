@@ -226,6 +226,18 @@ function EcranTeamMedias() {
             }
           }
         } catch (eEp2) { }
+        /* 10/11 18h50 (Blandine : « qu'il apparaisse dans l'équipe, mais lisible que par elle et moi ; les autres savent
+           qu'elle a reçu un conseil ») : les conseils privés des autres apparaissent fermés, sans la question ni la réponse
+           (team_epingles_privees ne renvoie que qui, pour qui, quand). */
+        try {
+          var rpv = await supa.rpc("team_epingles_privees", { p_groupe: G.id });
+          var dejaC = {}; eps.forEach(function (x) { if (x.cle) dejaC[x.cle] = true; });
+          ((rpv && !rpv.error && rpv.data) || []).forEach(function (x) {
+            if (dejaC[x.id]) return;
+            eps.push({ id: "pv" + x.id, cle: x.id, question: "", reponse: "", partage_par: x.partage_par, partage_le: x.partage_le, pour: x.destinataire_id, ferme: true });
+          });
+          eps.sort(function (a, b) { return String(b.partage_le || "").localeCompare(String(a.partage_le || "")); });
+        } catch (eEp3) { }
 
         /* profils : membres + auteurs + cavalières des vidéos + coach */
         var idsP = idsM.slice();
@@ -884,6 +896,10 @@ function EcranTeamMedias() {
   function carteEpingle(e) {
     var cleE = e.cle || e.id;   /* 09/11 : un même conseil envoyé à plusieurs cavaliers = une carte par cavalier */
     var ouv = epOuverte === cleE, qui = profilsParId[e.partage_par];
+    if (e.ferme) return h("div", { key: "ep" + cleE, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
+      h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, "🔒 " + T("Privé", "Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개") + " · Hey Baby"),
+      h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, T("Conseil personnel pour ", "Personal tip for ", "Consejo personal para ", "Consiglio personale per ", "個人向けアドバイス：", "Persönlicher Rat für ", "نصيحة شخصية لـ", "给 ", "Persoonlijk advies voor ", "Conselho pessoal para ", "Personligt råd till ", "Личный совет для: ", "Osobista rada dla: ", "개인 조언: ") + nomProfil(profilsParId[e.pour])),
+      h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui) + " · " + T("Lisible seulement par le cavalier et le coach", "Only the rider and the coach can read it", "Solo pueden leerlo el jinete y el entrenador", "Leggibile solo dal cavaliere e dal coach", "騎手とコーチだけが読めます", "Nur Reiter und Trainer können ihn lesen", "لا يقرؤها إلا الفارس والمدرّب", "仅骑手和教练可读", "Alleen de ruiter en de coach kunnen het lezen", "Só o cavaleiro e o treinador podem ler", "Bara ryttaren och tränaren kan läsa den", "Читать могут только всадник и тренер", "Mogą to przeczytać tylko jeździec i trener", "기수와 코치만 읽을 수 있어요")));
     return h("div", { key: "ep" + cleE, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
       h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : cleE); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
         h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, (e.pour ? "🔒 " + T("Privé", "Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개") + " · " : "") + (e.cheval_nom ? T("Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ", "Hey Baby · ") + e.cheval_nom : "Hey Baby")),
