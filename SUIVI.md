@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2215 — Vidéothèque de l'équipe : plus de commentaire sur les vignettes
+- Demande de Blandine (21h44) : sur les vignettes vidéo, ne plus montrer le mot posté avec la vidéo ; garder seulement « Cavalier × Cheval » puis « Épreuve · Lieu · date ».
+- hype-ecran-team-medias.js (v=29) : « sur » remplacé par « × », ligne d'infos réordonnée (épreuve, lieu, date), ligne de description retirée de la vignette.
+- Inchangé : la page d'une vidéo ouverte affiche toujours la description (Modifier / Supprimer) — question posée à Blandine, en attente.
+- En attente de son accord : sélecteur d'équipe sur les pages de groupe ; mois Premium offert à Ambre, Chloé, Delphine.
+
 ### 10/11 — build 20261110-2200 — Retour : même correction sur les autres pages + épingle d'Aurélie
 - Bouton Retour qui testait a.histLen (absent du contexte ; le bon champ est peutReculer) corrigé aussi : 2 écrans de index.html (retour vers Communauté / Écurie) et les 4 Grandes écoles (hype-ecoles.js v3). Ils ramènent maintenant à la page d'origine.
 - Données : épingle Hey Baby n° 77 (envoyée en privé à Aurélie, Team CSO Club SEP) : consigne de Blandine remplacée par « Analyse de ta courbe à droite avec Elle m'a dit Circée » (épingle + notification). Épingles 75, 76, 78 : même problème de titre mais non partagées, laissées telles quelles.

@@ -513,9 +513,10 @@ function EcranTeamMedias() {
     /* 05/11 soir : plus de titre à écrire — on affiche le cheval, puis la date (et « Un mot ? » s'il y en a un) */
     /* 08/11 (Blandine) : « Daphné sur Velleda » — le prénom du cavalier ou de la cavalière, puis le cheval */
     var prenoms = (v.cavaliers || []).map(function (u) { var pp = profilsParId[u]; return pp ? String(nomProfil(pp)).split(/\s+/)[0] : ""; }).filter(function (x) { return x && x !== "—"; });
-    var couple = (prenoms.length && v.chevaux && v.chevaux.length) ? prenoms.join(", ") + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "×") + " " + v.chevaux.map(nomCheval).join(", ") : "";
+    var couple = (prenoms.length && v.chevaux && v.chevaux.length) ? prenoms.join(", ") + " × " + v.chevaux.map(nomCheval).join(", ") : "";
     var titreAff = couple || v.titre || (v.chevaux && v.chevaux.length ? v.chevaux.map(nomCheval).join(", ") : "") || T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상");
-    var meta = [dateCourte(v.date_video || v.cree_le), v.lieu || v.concours || "", v.epreuve || ""].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu ; 07/11 : + épreuve, le petit mot a sa propre ligne */
+    /* 10/11 21h44 (Blandine : « Maëlys x Acetunero, club 3, Tigery ») : épreuve, lieu, puis la date */
+    var meta = [v.epreuve || "", v.lieu || v.concours || "", dateCourte(v.date_video || v.cree_le)].filter(Boolean).join(" · ");   /* 06/11 soir : + lieu ; 07/11 : + épreuve, le petit mot a sa propre ligne */
     /* 05/11 soir — « Mettre en public » : petit bouton posé sur la vignette, visible seulement pour la cavalière qui est
        sur la vidéo, la personne qui l'a postée (et, pour la remettre en privé, la coach). La base vérifie de toute façon. */
     var moiId = moi && moi.id;
@@ -570,7 +571,7 @@ function EcranTeamMedias() {
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff,
         v.resultat ? h("span", { style: { color: CH, fontWeight: 600, whiteSpace: "nowrap" } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null),
       meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
-      (v.description && !bloque) ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 13.5, lineHeight: 1.25, color: IV2, marginTop: 2, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, "« " + v.description + " »") : null,
+      /* 10/11 21h44 (Blandine) : le mot posté avec la vidéo n'apparaît plus sur la vignette (seulement nom × cheval, épreuve, lieu) */
       /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
       (typeof HypeJaimeTexte === "function" && !verrou) ? h(HypeJaimeTexte, { cible: "teamvideo:" + v.id, petit: true, marge: 2 }) : null,
       /* 06/11 soir — l'auteur corrige le concours / la date / le lieu */
