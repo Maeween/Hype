@@ -27,6 +27,7 @@ function EcranTeamMedias() {
   var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return o || "videos"; } catch (e) { return "videos"; } })();
   var _o = React.useState(ongletDepart); var onglet = _o[0], setOnglet = _o[1];
   var _g = React.useState(null); var groupe = _g[0], setGroupe = _g[1];
+  var _sc = React.useState(""); var selConc = _sc[0], setSelConc = _sc[1];   /* 10/11 : onglet concours choisi ("" = toute la saison) */
   var _mo = React.useState(null); var moi = _mo[0], setMoi = _mo[1];
   var _m = React.useState(null); var membres = _m[0], setMembres = _m[1];
   var _v = React.useState(null); var videos = _v[0], setVideos = _v[1];
@@ -696,6 +697,17 @@ function EcranTeamMedias() {
       });
       ordre.sort(function (a, b) { if (a === "_sans") return 1; if (b === "_sans") return -1; return String(grp[b].date).localeCompare(String(grp[a].date)); });
       var colsQ = largeur >= 700 ? 3 : 2;
+      /* 10/11 06h30 (idée de Blandine du 09/11, maquette validée) : un onglet par concours, le plus récent en premier, plus
+         « Toute la saison » ; chaque nouveau concours s'ajoute tout seul en tête. */
+      var ordreTous = ordre.slice(), selOk = selConc && grp[selConc] ? selConc : "";
+      if (selOk) ordre = [selOk];
+      var ongletsConc = ordreTous.length > 1 ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", margin: "4px 0 6px", paddingBottom: 4 } },
+        [h("button", { key: "tous", type: "button", onClick: function () { setSelConc(""); }, style: { flex: "0 0 auto", minHeight: 36, padding: "0 15px", borderRadius: 999, border: "1px solid " + (!selOk ? CH : "rgba(201,166,107,.3)"), background: "transparent", color: !selOk ? CH : IV, fontFamily: SERIF, fontSize: 16, whiteSpace: "nowrap", cursor: "pointer" } }, T("Toute la saison", "Whole season", "Toda la temporada", "Tutta la stagione", "シーズン全体", "Ganze Saison", "الموسم كله", "整个赛季", "Hele seizoen", "Toda a temporada", "Hela säsongen", "Весь сезон", "Cały sezon", "시즌 전체"))]
+        .concat(ordreTous.filter(function (c) { return c !== "_sans"; }).map(function (c) {
+          var g = grp[c], on = selOk === c;
+          return h("button", { key: c, type: "button", onClick: function () { setSelConc(c); }, style: { flex: "0 0 auto", minHeight: 36, padding: "0 15px", borderRadius: 999, border: "1px solid " + (on ? CH : "rgba(201,166,107,.3)"), background: "transparent", color: on ? CH : IV, fontFamily: SERIF, fontSize: 16, whiteSpace: "nowrap", cursor: "pointer" } },
+            g.titre || "—", g.date ? h("small", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginInlineStart: 6 } }, dateCourte(g.date)) : null);
+        }))) : null;
       corps = ordre.map(function (cle, i) {
             var g = grp[cle], n = g.liste.length, resteQ = n % colsQ;
             return h("section", { key: "sq" + cle, style: { padding: "18px 0 20px", borderTop: i ? "1px solid " + CH3 : "none" } },
@@ -707,6 +719,7 @@ function EcranTeamMedias() {
               h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + colsQ + ", minmax(0, 1fr))", gap: "14px 10px" } },
                 g.liste.map(function (v, k) { var derniere = k === n - 1 && resteQ; return tuileVideo(v, "q" + cle + v.id, true, derniere ? colsQ - resteQ + 1 : 0); })));
           });
+      corps = [ongletsConc].concat(corps);
       if (!(videos || []).length) corps = vide(T("Les concours apparaîtront ici dès qu'une vidéo y sera rattachée.", "Competitions will appear here as soon as a video is linked to one.", "Los concursos aparecerán aquí en cuanto se vincule un vídeo.", "I concorsi appariranno qui appena un video sarà collegato.", "動画が紐づけられると、ここに競技会が表示されます。", "Turniere erscheinen hier, sobald ein Video damit verknüpft ist.", "ستظهر المسابقات هنا بمجرد ربط فيديو بها.", "一旦有视频关联比赛，比赛就会显示在这里。", "Wedstrijden verschijnen hier zodra er een video aan gekoppeld is.", "Os concursos aparecerão aqui assim que um vídeo for ligado a eles.", "Tävlingar visas här så snart en video kopplas till dem.", "Соревнования появятся здесь, как только к ним привяжут видео.", "Zawody pojawią się tu, gdy tylko zostanie do nich przypisane wideo.", "영상이 연결되면 여기에 대회가 표시돼요."));
     } else if (vue === "cavaliere") {
       /* les cavalières qui ont des vidéos d'abord, puis les autres par ordre alphabétique */
