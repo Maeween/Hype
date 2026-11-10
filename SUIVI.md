@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2325 — Partage Hey Baby : la réponse en plusieurs images
+- Blandine : « il me manque toujours la moitié du texte ». Une seule image très haute était réduite / recadrée par WhatsApp. La réponse est maintenant découpée en plusieurs images au format téléphone (1080 × 2340), numérotées 1/7, 2/7… : la question sur la 1re, la réponse qui continue, la carte du petit poney sur la dernière. Testé sur sa vraie réponse (hernie discale, 7 images, tout le texte). Les tirets deviennent des puces ; la question va jusqu'à 8 lignes.
+
 ### 10/11 — build 20261110-2315 — Partage Hey Baby : toute la réponse dans l'image
 - Blandine : « il n'y a qu'une partie de la réponse qui est postée ». L'image coupait après 36 lignes : plus aucune coupure, toute la réponse passe avant la carte du petit poney. Si la réponse est très longue, l'image est réduite (jamais coupée).
 
