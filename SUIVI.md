@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2335 — Partage Hey Baby : retour au message texte
+- Test de Blandine dans WhatsApp : images impossibles à zoomer, ordre mélangé (début manquant), et le lien ne s'ouvrait pas (WhatsApp efface le texte quand on envoie des images). Le partage (réponse et épingle) envoie maintenant un seul message texte : la question, toute la réponse (titres en gras, puces), puis « 👉 Pose ta question : lien » cliquable, avec l'aperçu Hey Baby. Les images ne sont plus envoyées.
+
 ### 10/11 — build 20261110-2330 — Partage Hey Baby dans toutes les langues
 - Japonais, chinois : pas d'espaces entre les mots, le texte sortait de l'image → coupure caractère par caractère, la puce reste avec son texte, aucune ligne ne commence par 。、？. Arabe : lignes écrites de droite à gauche, calées à droite de la bulle. Textes de la carte et lien dans la langue de l'appli (ex. 2hype.fr/ja/ia-equestre). Testé en japonais.
 
