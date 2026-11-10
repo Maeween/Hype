@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 10/11 — build 20261110-2300 — Médias : page d'accueil (proposition B) + barre d'écriture Hey Baby
+- Médias (hype-ecran-team-medias.js v=32) : nouvelle page d'accueil qui défile, validée par Blandine (proposition B) : une carte par cavalier (tous, l'image de sa dernière vidéo entière, son nombre de vidéos, ses chevaux ; toucher = ses vidéos ; sans vidéo = ajouter), les 2 dernières épingles + « Toutes les épingles », « À lire » (2 derniers partages) + « Tous les articles ». Les anciens onglets restent derrière « Toutes les vidéos (n) » avec un lien « ‹ Médias ». 4 cartes par ligne sur tablette/ordi. Fin de page Hype ajoutée. Les notifications (vidéo, épingle) ouvrent toujours directement la bonne vue.
+- Page équipe (hype-ecran-team.js v=21) : la tuile Médias ouvre cette page d'accueil. Rien d'autre ne change sur la page équipe.
+- Hey Baby (hype-ecran-assistant.js v=12 + index) : la barre d'écriture remontait d'environ 84 px et cachait la fin des conversations. Cause : la page générale ajoutait 84 px sous l'écran (place de la barre du bas) alors que Hey Baby la réserve déjà → la page pouvait glisser vers le haut. Ces 84 px ne sont plus ajoutés sur Hey Baby ; la barre d'écriture garde 8 px de plus au-dessus de la barre du bas.
+- 🔴 Rappel (Blandine 22h38, « je ne sais plus quelle conversation était dessus ») : BARRE DU BAS BLOQUÉE AU MILIEU DE L'ÉCRAN — toujours à traiter en priorité (voir l'entrée du 10/11 22h10).
+- EN ATTENTE (non publié) — page équipe : chevaux en cartes (3 par ligne téléphone, 8 visibles) prêts dans le brouillon ; version ordinateur refusée (« pâté scolaire ») → 8 propositions montrées, Blandine préfère la 2 (mosaïque magazine) et la 3 (fiches en liste) et demande des propositions sur la page entière. Les cavaliers gardent leurs ronds.
+
 ### 10/11 — build 20261110-2230 — Équipes : nom du club affiché, Vidéos en premier, description cachée
 - Nom du club sous le titre de l'équipe (hype-ecran-team.js v=20) et à côté du nom sur la page Médias (hype-ecran-team-medias.js v=31) : « SEP » / « Écurie Feinn », lu dans la fiche du groupe (club_clef). Raison : deux équipes « Team CSO Club », Blandine tombait sur la mauvaise.
 - Page Médias : onglets dans l'ordre Vidéos · Épingles HB · Théorie ; on arrive sur Vidéos (sauf notification d'épingle).

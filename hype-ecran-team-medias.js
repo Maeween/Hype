@@ -29,7 +29,7 @@ function EcranTeamMedias() {
   var CH = "#C9A66B", CH2 = "rgba(201,166,107,0.55)", CH3 = "rgba(201,166,107,0.22)";
   var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',system-ui,sans-serif";
 
-  var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return o || "videos"; } catch (e) { return "videos"; } })();
+  var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return o || "accueil"; } catch (e) { return "accueil"; } })();   /* 10/11 22h35 : on arrive sur la page d'accueil des Médias */
   var _o = React.useState(ongletDepart); var onglet = _o[0], setOnglet = _o[1];
   var _g = React.useState(null); var groupe = _g[0], setGroupe = _g[1];
   var _sc = React.useState(""); var selConc = _sc[0], setSelConc = _sc[1];
@@ -1499,6 +1499,67 @@ null)) });
             h("button", { type: "button", onClick: function () { setDescEd({ id: v.id, txt: v.description || "" }); }, style: lien }, T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "编辑", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정")),
             h("button", { type: "button", onClick: function () { enregistrer(""); }, style: Object.assign({}, lien, { color: IV3 }) }, T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Eliminar", "Ta bort", "Удалить", "Usuń", "삭제"))) : null)));
   }
+  /* ───────── 10/11 22h35 — PAGE D'ACCUEIL DES MÉDIAS (proposition B validée par Blandine) ─────────
+     Une seule page qui défile : une carte par cavalier (tous, avec l'image de sa dernière vidéo et son nombre de vidéos ;
+     toucher la carte ouvre ses vidéos), puis les dernières épingles Hey Baby, puis les articles partagés. Les onglets
+     d'avant restent derrière « Toutes les vidéos », « Toutes les épingles » et « Tous les articles ». */
+  function titreAccueil(txt) {
+    var trait = function (sens) { return h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + sens + ", rgba(201,166,107,0), " + CH2 + ")" } }); };
+    return h("div", { style: { display: "flex", alignItems: "center", gap: 12, margin: "30px 0 14px" } }, trait("90deg"),
+      h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CH, whiteSpace: "nowrap" } }, txt), trait("270deg"));
+  }
+  function boutonAccueil(txt, fn) {
+    return h("div", { style: { display: "flex", justifyContent: "center", padding: "16px 0 2px" } },
+      h("button", { type: "button", onClick: fn, style: { minHeight: 42, padding: "0 22px", borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, txt));
+  }
+  function allerOnglet(o) { setOnglet(o); setCavOuverte(null); setChOuvert(null); try { window.scrollTo(0, 0); } catch (e) { } }
+  function carteCavalierAccueil(p, ratio) {
+    var siennes = videosDe(p), n = siennes.length;
+    var vis = siennes.filter(function (v) { return vignetteDe(v) && peutLire(v); })[0];
+    var src = vis ? vignetteDe(vis) : null;
+    var chx = []; siennes.forEach(function (v) { (v.chevaux || []).forEach(function (c) { var nc = nomCheval(c); if (nc && chx.indexOf(nc) === -1) chx.push(nc); }); });
+    var sous = n ? chx.join(" · ") : T("Pas encore de vidéo", "No video yet", "Aún no hay vídeos", "Ancora nessun video", "まだ動画はありません", "Noch kein Video", "لا يوجد فيديو بعد", "还没有视频", "Nog geen video", "Ainda sem vídeos", "Ingen video än", "Пока нет видео", "Jeszcze brak filmów", "아직 동영상이 없어요");
+    var nb = compte(n, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상"));
+    return h("button", { key: "ca" + p.id, type: "button",
+      onClick: function () { if (n) { setOnglet("videos"); setVue("cavaliere"); setChOuvert(null); ouvrirCavaliere(p); } else if (estDuGroupe) ouvrirAjout({ cav: [p.id] }); },
+      style: { display: "block", width: "100%", padding: 0, margin: 0, border: "1px solid " + CH3, borderRadius: 14, overflow: "hidden", background: "linear-gradient(165deg, #111B1F, #0B1215)", color: IV, textAlign: "start", cursor: (n || estDuGroupe) ? "pointer" : "default" } },
+      h("div", { style: { position: "relative", aspectRatio: ratio || "3 / 2", background: "#050607", overflow: "hidden" } },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", display: "block" } })
+          : h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 40, color: CH, background: "radial-gradient(circle at 50% 40%, rgba(201,166,107,0.12), rgba(6,7,9,0) 70%)" } }, String(nomProfil(p)).charAt(0)),
+        n ? h("span", { style: { position: "absolute", insetInlineEnd: 7, bottom: 7, fontFamily: M, fontSize: 10.5, fontWeight: 600, background: "rgba(6,7,9,0.72)", border: "1px solid " + CH2, color: CH, padding: "3px 9px", borderRadius: 999 } }, nb) : null),
+      h("div", { style: { padding: "9px 11px 11px" } },
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 20, lineHeight: 1.1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, String(nomProfil(p)).trim()),
+        h("div", { dir: "auto", style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, sous || " ")));
+  }
+  function pageAccueil() {
+    if (videos === null || membres === null) return chargement();
+    var large = false; try { large = window.innerWidth >= 760; } catch (eW) { }
+    var cav = (membres || []).slice().sort(function (a, b) { return videosDe(b).length - videosDe(a).length; });
+    var n = cav.length, parLigne = large ? 4 : 2, reste = n % parLigne, cols = parLigne * (reste || 1), base = reste || 1;
+    var grille = h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + cols + ", minmax(0, 1fr))", gap: 10 } }, cav.map(function (p, i) {
+      var der = reste && i >= n - reste, span = der ? cols / reste : base;
+      return h("div", { key: "g" + p.id, style: { gridColumn: "span " + span, minWidth: 0 } }, carteCavalierAccueil(p, der ? (span === cols ? "16 / 7" : "16 / 9") : null));
+    }));
+    var eps = (epingles || []).slice(0, 2), parts = (partages || []).slice(0, 2);
+    return h("div", null,
+      titreAccueil(T("Les vidéos de chacun", "Everyone's videos", "Los vídeos de cada uno", "I video di ognuno", "みんなの動画", "Die Videos von allen", "فيديوهات كل واحد", "每个人的视频", "Ieders video's", "Os vídeos de cada um", "Allas videor", "Видео каждого", "Filmy każdego", "각자의 동영상")),
+      n ? grille : vide(T("Aucun cavalier pour l’instant.", "No riders yet.", "Aún no hay jinetes.", "Nessun cavaliere per ora.", "まだライダーはいません。", "Noch keine Reiter.", "لا يوجد فرسان حاليا.", "目前还没有骑手。", "Nog geen ruiters.", "Ainda não há cavaleiros.", "Inga ryttare än.", "Пока нет всадников.", "Jeszcze brak jeźdźców.", "아직 기수가 없어요.")),
+      (videos || []).length ? boutonAccueil(T("Toutes les vidéos", "All videos", "Todos los vídeos", "Tutti i video", "すべての動画", "Alle Videos", "كل الفيديوهات", "全部视频", "Alle video's", "Todos os vídeos", "Alla videor", "Все видео", "Wszystkie filmy", "모든 동영상") + " (" + videos.length + ")", function () { allerOnglet("videos"); })
+        : (estDuGroupe ? boutonAccueil(T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen", "إضافة فيديو", "添加视频", "Video toevoegen", "Adicionar um vídeo", "Lägg till en video", "Добавить видео", "Dodaj film", "동영상 추가"), function () { ouvrirAjout({}); }) : null),
+      eps.length ? h("div", null,
+        titreAccueil(T("Les épingles Hey Baby", "Hey Baby pins", "Las chinchetas Hey Baby", "Le puntine Hey Baby", "Hey Baby のピン", "Die Hey-Baby-Pins", "دبابيس Hey Baby", "Hey Baby 置顶", "Hey Baby-pins", "Os pins da Hey Baby", "Hey Baby-nålar", "Закладки Hey Baby", "Przypięte Hey Baby", "Hey Baby 핀")),
+        eps.map(carteEpingle),
+        boutonAccueil(T("Toutes les épingles", "All pins", "Todas las chinchetas", "Tutte le puntine", "すべてのピン", "Alle Pins", "كل الدبابيس", "全部置顶", "Alle pins", "Todos os pins", "Alla nålar", "Все закладки", "Wszystkie przypięte", "모든 핀"), function () { allerOnglet("epingles"); })) : null,
+      h("div", null,
+        titreAccueil(T("À lire", "To read", "Para leer", "Da leggere", "読みもの", "Zum Lesen", "للقراءة", "阅读", "Om te lezen", "Para ler", "Att läsa", "Почитать", "Do przeczytania", "읽을거리")),
+        parts.length ? parts.map(cartePartage) : null,
+        boutonAccueil(parts.length ? T("Tous les articles", "All articles", "Todos los artículos", "Tutti gli articoli", "すべての記事", "Alle Artikel", "كل المقالات", "全部文章", "Alle artikelen", "Todos os artigos", "Alla artiklar", "Все статьи", "Wszystkie artykuły", "모든 기사")
+          : T("Partager un article", "Share an article", "Compartir un artículo", "Condividi un articolo", "記事を共有", "Einen Artikel teilen", "مشاركة مقال", "分享文章", "Een artikel delen", "Partilhar um artigo", "Dela en artikel", "Поделиться статьёй", "Udostępnij artykuł", "기사 공유"), function () { allerOnglet("theorie"); })));
+  }
+  function retourAccueil() {
+    return h("button", { type: "button", onClick: function () { allerOnglet("accueil"); }, style: { marginTop: 18, background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } },
+      (rtl ? "› " : "‹ ") + T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"));
+  }
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },
     style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(7,10,8,0.82)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 max(24px, env(safe-area-inset-left))" } },
@@ -1512,9 +1573,10 @@ null)) });
     h("div", { style: { maxWidth: 820, margin: "0 auto" } },
       hero,
       h("div", { style: { padding: "0 18px 24px" } },
-        barreOnglets,
+        onglet === "accueil" ? null : retourAccueil(),
+        onglet === "accueil" ? null : barreOnglets,
         erreur ? h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ") + erreur) : null,
-        onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles())),
+        onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles())),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
     questionPub ? h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setQuestionPub(null); },

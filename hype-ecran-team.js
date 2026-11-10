@@ -737,7 +737,7 @@ function EcranTeamCompetition() {
   /* 05/11 CHAPITRE « Médias » — proposition 4 : bandeau photo comme « Performances » / « Conseils du coach »,
      puis « Les plus aimées » (2 vidéos côte à côte, une seule = pleine largeur) et « Derniers partages » (idem ; absents si vides). */
   function ouvrirMedias(onglet, idVideo) {
-    try { window.__teamMediasGroupe = groupe && groupe.id; window.__teamMediasOnglet = onglet || "videos"; window.__teamMediasOuvrir = idVideo || null; } catch (eO) { }
+    try { window.__teamMediasGroupe = groupe && groupe.id; window.__teamMediasOnglet = onglet || "accueil"; window.__teamMediasOuvrir = idVideo || null; } catch (eO) { }
     setEcran("team-medias");
   }
   function dureeM(s) { var n = Math.round(Number(s) || 0); return n ? Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0") : ""; }
@@ -764,7 +764,7 @@ function EcranTeamCompetition() {
   function sousTitreM(txt) { return h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.2, textTransform: "uppercase", color: "rgba(244,241,234,0.45)", margin: "16px 0 8px" } }, txt); }
   var blocMedias = section(h("div", null,
     enTete(T("Médias", "Media"), "md", 0, 0),
-    h("button", { type: "button", "data-team-medias": "1", onClick: function () { ouvrirMedias("videos"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
+    h("button", { type: "button", "data-team-medias": "1", onClick: function () { ouvrirMedias("accueil"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
       h("img", { src: "images/piquet-cso.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 42%, rgba(11,15,19,0.78) 58%, rgba(11,15,19,0) 85%)" } }),
       h("svg", { width: 26, height: 22, viewBox: "0 0 18 16", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },

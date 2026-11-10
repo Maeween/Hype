@@ -1603,7 +1603,7 @@ function EcranAssistantIA() {
             hbBlocLimite,
             React.createElement("div", { ref: finRef }));
     })();
-    const hbBarreSaisie = React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: hbBureau ? "12px 28px calc(14px + env(safe-area-inset-bottom, 0px))" : (hbGrand ? "10px 24px calc(12px + 58px + env(safe-area-inset-bottom, 0px))" : "10px 14px calc(12px + 58px + env(safe-area-inset-bottom, 0px))"), borderTop: "1px solid rgba(201,166,107,0.12)", background: "rgba(7,10,8,0.9)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: HB_SANS } },
+    const hbBarreSaisie = React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: hbBureau ? "12px 28px calc(14px + env(safe-area-inset-bottom, 0px))" : (hbGrand ? "10px 24px calc(12px + 66px + env(safe-area-inset-bottom, 0px))" : "10px 14px calc(12px + 66px + env(safe-area-inset-bottom, 0px))"), borderTop: "1px solid rgba(201,166,107,0.12)", background: "rgba(7,10,8,0.9)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: HB_SANS } },
         React.createElement("div", { style: { maxWidth: hbGrand ? (hbVide ? 900 : (hbLecture + 0)) : "none", marginInlineStart: hbGrand && !hbVide ? 0 : undefined } },
             React.createElement("input", { ref: fichierRef, type: "file", accept: "image/*,video/*", onChange: choisirImage, style: { display: "none" } }),
             extractionVideo ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
