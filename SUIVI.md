@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-1205 — Partage Hey Baby : les « : ? ! » ne passent plus seuls à la ligne
+- Demande de Blandine : dans la question de la feuille de partage, « : comment la soulager ? » passait à la ligne avec les deux-points devant. Espace insécable fine devant : ; ? ! » et après « (fonction hbInsecables), dans la feuille et donc dans le message envoyé.
+
 ### 11/11 — build 20261111-1050 — Hey Baby : feuille « Partager ce conseil » (version courte ou réponse complète)
 - « Partager » (réponse de Hey Baby ou épingle) ouvre une feuille aux couleurs Hype (maquette validée) : question MODIFIABLE avant l'envoi (retirer un prénom…), choix « Version courte » (par défaut) ou « Réponse complète », aperçu Hypo + « Le lien est toujours inclus », bouton PARTAGER à contour, « Copier seulement le lien ».
 - Version courte : 4 à 6 points clés rédigés par Hey Baby (icône + titre + une phrase, sans prénom, sans rien ajouter à la réponse), préparés dès l'ouverture ; se termine par « ✨ Le conseil complet et ta question à Hey Baby : lien ». Nouvelle opération serveur resume_partage (netlify/functions/assistant.js), comptée comme un outil : ne consomme pas la question du jour.
