@@ -28570,12 +28570,14 @@ function HypeApp() {
                 try {
                     var codeOff = String(params.get("offert")).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 40);
                     if (codeOff) localStorage.setItem("hype_code_offert", JSON.stringify({ code: codeOff, t: Date.now() }));
-                    hypeMemoriserRetourPage("abo", "1");
                 } catch (eOff) { }
+                /* 11/11 22h35 : le code peut aussi être ajouté aux liens des autres pages (Galops, reprises, Hey Baby…) :
+                   on garde alors la page demandée ; on n'ouvre les abonnements que pour le lien d'accueil tout seul. */
+                var pageSeule = (window.location.pathname === "/" || window.location.pathname === "/index.html") && !String(window.location.hash || "").replace(/^#/, "");
                 params.delete("offert");
                 var resteOff = params.toString();
-                window.history.replaceState({}, "", window.location.pathname + (resteOff ? "?" + resteOff : ""));
-                setEcran("premium");
+                window.history.replaceState({}, "", window.location.pathname + (resteOff ? "?" + resteOff : "") + (window.location.hash || ""));
+                if (pageSeule) { try { hypeMemoriserRetourPage("abo", "1"); } catch (eRo) { } setEcran("premium"); }
             }
             if (params.get("merci") === "1") {
                 params.delete("merci");
