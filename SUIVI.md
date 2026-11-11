@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — Barre du bas posée DANS la page : version d'essai prête (branche test/barre-dans-la-page, PAS publiée)
+- Principe validé le 10/11 : la barre ne flotte plus (plus de position: fixed) ; la page défile dans sa zone (#hype-defile), la barre est posée dessous. Téléphone et tablette ; ordinateur inchangé (colonne).
+- S'active SEULEMENT sur l'appareil qui ouvre l'appli avec ?barre=2 (mémorisé) ; ?barre=1 revient à l'ancienne barre. Sans le lien : rien ne change (vérifié).
+- Un aiguillage unique redirige vers la zone tous les « faire défiler la fenêtre » (≈120 endroits : retour en haut, défilement mémorisé…) au lieu de les réécrire.
+- Pages qui se calculaient « plein écran moins 84 px » : elles lisent la vraie hauteur de la zone (--hype-h-page) ; Hey Baby et la messagerie ne réservent plus la place de la barre en mode essai (hype-ecran-assistant.js v16, hype-ecran-messagerie.js v2 ; sans le lien, identiques).
+- Vérifié (Chromium, 390×844 et 820×1180) : 16 pages, barre en bas, seule la zone défile, Hey Baby et messagerie tiennent pile dans l'écran, onglets = retour en haut, aucune erreur. Non vérifiable ici : clavier iPhone, encoche du bas → test sur l'iPhone de Blandine.
+
 ### 11/11 — build 20261111-0825 — Barre du bas bloquée au milieu de l'écran : correctif A (publié le 11/11 08h25, à tester sur l'iPhone)
 - Diagnostic : cause la plus probable = défaut d'iOS 26 (WebKit 297779) et de l'appli installée sur l'écran d'accueil : après le clavier, l'iPhone garde une hauteur d'écran trop petite ou un décalage ; tout ce qui flotte en bas se retrouve trop haut jusqu'à ce qu'il se remesure. Les deux mesures de l'écran sont fausses en même temps, d'où l'échec du correctif du 07/10. Les 84 px sous les pages ne sont pas en cause.
 - Correctif A (NavBar, index.html, une seule modification) : Hype retient la plus grande hauteur d'écran vue ; si, clavier fermé, l'iPhone annonce nettement moins (40 px sur l'appli installée, 150 px dans Safari à cause de la barre d'adresse) ou un décalage vertical, on le force à se remesurer, sans toucher au défilement. Téléphone seulement.

@@ -257,7 +257,7 @@ function EcranMessagerie() {
 
   // ---------- VUE LISTE ----------
   if (vue === "liste") {
-    return h("div", { style: { minHeight: "100vh", background: MSG_COL.fond, display: "flex", flexDirection: "column", paddingBottom: 100 } },
+    return h("div", { style: { minHeight: "var(--hype-h-page, 100vh)", background: MSG_COL.fond, display: "flex", flexDirection: "column", paddingBottom: "var(--hype-reserve, 100px)" } },
       /* 05/08 (choix Blandine) : bandeau video en tete de la messagerie — le poney facteur qui
          apporte la lettre. Version courte de 2 s, coupee avant que le mot MESSAGERIE s incruste
          dans l image, sinon il ferait doublon avec le titre juste dessous.

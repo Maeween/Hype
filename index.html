@@ -28939,13 +28939,69 @@ function hypeFiletScroll() {
     }
     catch (e) { }
 }
+/* 11/11 — BARRE DU BAS POSÉE DANS LA PAGE (version d'essai, validée sur le principe par Blandine le 10/11).
+   La barre ne flotte plus (plus de position: fixed, cible du défaut d'iOS 26) : la page défile dans sa propre zone
+   (#hype-defile) et la barre est posée dessous, dans le flux. Téléphone et tablette ; l'ordinateur garde sa colonne.
+   ACTIVÉ SEULEMENT sur l'appareil qui ouvre l'appli avec ?barre=2 (mémorisé) ; ?barre=1 revient à l'ancienne barre.
+   Les ~120 endroits qui font défiler « la fenêtre » (retour en haut, défilement mémorisé…) sont redirigés vers la zone
+   par un aiguillage unique ci-dessous, pour ne pas les réécrire un par un. */
+var HYPE_BARRE_V2 = (function () {
+    try {
+        var m = /[?&]barre=([12])/.exec(location.search || "");
+        if (m) localStorage.setItem("hype_barre_v2", m[1] === "2" ? "1" : "0");
+        return localStorage.getItem("hype_barre_v2") === "1";
+    } catch (eB) { return false; }
+})();
+(function hypeAiguillageDefilement() {
+    if (!HYPE_BARRE_V2) return;
+    try {
+        var zone = function () { var z = document.getElementById("hype-defile"); return (z && z.getAttribute("data-actif") === "1") ? z : null; };
+        var W = window, D = document, E = Element.prototype;
+        var natTo = W.scrollTo.bind(W), natBy = W.scrollBy.bind(W);
+        var dY = Object.getOwnPropertyDescriptor(W, "scrollY") || Object.getOwnPropertyDescriptor(Window.prototype, "scrollY");
+        var dX = Object.getOwnPropertyDescriptor(W, "scrollX") || Object.getOwnPropertyDescriptor(Window.prototype, "scrollX");
+        var dTop = Object.getOwnPropertyDescriptor(E, "scrollTop");
+        var dSE = Object.getOwnPropertyDescriptor(Document.prototype, "scrollingElement");
+        var args = function (a, b, base) {
+            if (a && typeof a === "object") { var o = { behavior: a.behavior || "auto" }; if (a.top != null) o.top = a.top; if (a.left != null) o.left = a.left; return o; }
+            return { left: Number(a) || 0, top: Number(b) || 0 };
+        };
+        W.scrollTo = W.scroll = function (a, b) { var z = zone(); if (!z) return natTo(a, b); z.scrollTo(args(a, b)); };
+        W.scrollBy = function (a, b) { var z = zone(); if (!z) return natBy(a, b); z.scrollBy(args(a, b)); };
+        var getY = function () { var z = zone(); return z ? z.scrollTop : dY.get.call(W); };
+        var getX = function () { var z = zone(); return z ? z.scrollLeft : dX.get.call(W); };
+        Object.defineProperty(W, "scrollY", { configurable: true, get: getY });
+        Object.defineProperty(W, "pageYOffset", { configurable: true, get: getY });
+        Object.defineProperty(W, "scrollX", { configurable: true, get: getX });
+        Object.defineProperty(W, "pageXOffset", { configurable: true, get: getX });
+        var surTop = function (el) {
+            Object.defineProperty(el, "scrollTop", { configurable: true,
+                get: function () { var z = zone(); return z ? z.scrollTop : dTop.get.call(el); },
+                set: function (v) { var z = zone(); if (z) z.scrollTop = v; else dTop.set.call(el, v); } });
+        };
+        surTop(D.documentElement); if (D.body) surTop(D.body); else D.addEventListener("DOMContentLoaded", function () { surTop(D.body); });
+        Object.defineProperty(D, "scrollingElement", { configurable: true, get: function () { return zone() || dSE.get.call(D); } });
+    } catch (eA) { }
+})();
 function Router() {
     const { ecran, setEcran, retourEcran, avancerEcran, zoomImg, merciVIP, impression, langue, coursOuvert: coursOuvertShell } = useApp();
     const pansageOrdiShell = useHypeLargeur(1100) && ecran === "cours" && coursOuvertShell === "g1-c2";   /* 30/10 : page ordinateur du cours Pansage : pleine largeur */
     /* Filet du verrou de defilement (14/08, reapplique) : a chaque changement d ecran et au retour
        d arriere-plan, body.overflow est realigne sur la realite du DOM. */
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
-    const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
+    const largeEcranApp = useHypeLarge();
+    const barreV2 = HYPE_BARRE_V2 && !largeEcranApp;   /* 11/11 barre posée dans la page (essai) */
+    try { window.__hypeBarreDansPage = barreV2; } catch (eBv) { }
+    const refDefile = React.useRef(null);
+    useEffect(() => {   /* la zone relaie son défilement à la fenêtre : les écrans qui écoutent « scroll » continuent de marcher */
+        const z = refDefile.current; if (!z) return undefined;
+        const relais = () => { try { window.dispatchEvent(new Event("scroll")); } catch (eRl) { } };
+        z.addEventListener("scroll", relais, { passive: true });
+        /* hauteur réelle de la zone, donnée aux pages qui se calculent « plein écran moins la barre » (--hype-h-page) */
+        const mesure = () => { try { z.style.setProperty("--hype-h-page", z.clientHeight + "px"); } catch (eMz) { } };
+        mesure(); let ro = null; try { ro = new ResizeObserver(mesure); ro.observe(z); } catch (eRo) { window.addEventListener("resize", mesure); }
+        return () => { try { z.removeEventListener("scroll", relais); if (ro) ro.disconnect(); else window.removeEventListener("resize", mesure); } catch (eRl2) { } };
+    }, [barreV2]);   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const appL1200 = useHypeLargeur(1200);
     /* 25/10 (Blandine : « il faut qu il soit envoye dans la langue du cavalier ») : la langue choisie dans l appli est recopiee
        dans le compte (Supabase Auth, user_metadata.langue) quand elle change, pour que les mails (mot de passe oublie,
@@ -29065,8 +29121,8 @@ function Router() {
                 retourEcran();
         }
     };
-    return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav && !cavHautApp) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, paddingTop: (cavHautApp && showNav) ? 64 : 0 /* 22/10 barre en haut sur la page Cavalier */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: cavHautApp ? 1600 : pansageOrdiShell ? 1600 : ((largeEcranApp || tabletteApp) && ECRANS_LARGES_TESTS.indexOf(ecran) >= 0) ? 1280 /* 21/10 (tests, probleme 10) */ : ((largeEcranApp || tabletteApp) && ECRANS_LECTURE_TESTS.indexOf(ecran) >= 0) ? 820 : (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */ || ecran === "assistant" /* 21/10 Hey Baby responsive */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp && ecran !== "assistant") ? 84 : 0 /* (862) ; 10/11 22h45 (Blandine : la barre d écriture de Hey Baby remontait et cachait la fin) : Hey Baby réserve déjà sa place à la barre du bas, sans ces 84 px la page ne peut plus glisser vers le haut */,
+    const __coque = (React.createElement("div", { style: { minHeight: barreV2 ? "var(--hype-h-page, 100%)" : "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav && !cavHautApp) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, paddingTop: (cavHautApp && showNav) ? 64 : 0 /* 22/10 barre en haut sur la page Cavalier */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
+        React.createElement("div", { style: { maxWidth: cavHautApp ? 1600 : pansageOrdiShell ? 1600 : ((largeEcranApp || tabletteApp) && ECRANS_LARGES_TESTS.indexOf(ecran) >= 0) ? 1280 /* 21/10 (tests, probleme 10) */ : ((largeEcranApp || tabletteApp) && ECRANS_LECTURE_TESTS.indexOf(ecran) >= 0) ? 820 : (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */ || ecran === "assistant" /* 21/10 Hey Baby responsive */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: barreV2 ? "var(--hype-h-page, 100%)" : "100vh", boxSizing: barreV2 ? "border-box" : undefined, background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp && ecran !== "assistant" && !barreV2) ? 84 : 0 /* (862) ; 10/11 22h45 (Blandine : la barre d écriture de Hey Baby remontait et cachait la fin) : Hey Baby réserve déjà sa place à la barre du bas, sans ces 84 px la page ne peut plus glisser vers le haut */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -29308,9 +29364,14 @@ function Router() {
                    `position: fixed` ne doit pas vivre dans un sous-arbre rogné.
                    Repli : si createPortal manque, on la rend sur place comme
                    avant — l app ne peut pas tomber pour ça. */
-                showNav && ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body)
+                showNav && !barreV2 && ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body)
                   ? ReactDOM.createPortal(React.createElement(NavBar, null), document.body)
                   : React.createElement(NavBar, null))))));
+    if (!barreV2) return __coque;
+    /* 11/11 : la page défile dans #hype-defile, la barre est posée dessous (dans le flux, plus de position: fixed). */
+    return React.createElement("div", { style: { height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", background: COLORS.nuit } },
+        React.createElement("div", { id: "hype-defile", "data-actif": "1", ref: refDefile, style: { "--hype-reserve": "0px", "--hype-sab": "0px", flex: "1 1 auto", minHeight: 0, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", overscrollBehaviorY: "contain", position: "relative" } }, __coque),
+        showNav && React.createElement(NavBar, null));
 }
 /* ---------- STYLES GLOBAUX ---------- */
 function GlobalStyles() {
@@ -59442,7 +59503,7 @@ function EcranMonde(){
     window.addEventListener("message", onLieu);
     return function(){ window.removeEventListener("message", onLieu); };
   }, []);
-  return React.createElement("div", { style: { position:"relative", width:"100%", height: GLOBE_ONBOARDING ? "100vh" : "calc(100dvh - 84px)", overflow:"hidden", background:"#04070d" } },
+  return React.createElement("div", { style: { position:"relative", width:"100%", height: GLOBE_ONBOARDING ? "100vh" : "var(--hype-h-page, calc(100dvh - 84px))", overflow:"hidden", background:"#04070d" } },
     React.createElement("div", { onTouchStart: function(ev){ var t0 = ev.touches && ev.touches[0]; __swipeMonde.current = t0 ? { x: t0.clientX, y: t0.clientY } : null; }, onTouchEnd: function(ev){ var s = __swipeMonde.current; __swipeMonde.current = null; if (!s) return; var t1 = ev.changedTouches && ev.changedTouches[0]; if (t1 && (t1.clientX - s.x) > 60 && Math.abs(t1.clientY - s.y) < 80) { var a2 = __appRef.current; if (GLOBE_ONBOARDING) { a2.setEcran("intro"); } else if (a2.histLen && a2.histLen > 0 && a2.retourEcran) { a2.retourEcran(); } else { a2.setEcran("dashboard"); } } }, style: { position:"absolute", left:0, top:0, bottom:0, width:26, zIndex:7, background:"transparent" } }),
     React.createElement("iframe", { srcDoc: GLOBE_HTML_HYPE, title: "Hype Universe", onLoad: function(ev){ try{ ev.target.contentWindow.postMessage({ t: "hype-lang", l: (__appRef.current && __appRef.current.langue) || "fr" }, "*");
       try { var _w = ev.target.contentWindow; hypeClubsHabites().then(function (l) { try { if (l && l.length) _w.postMessage({ t: "hype-clubs-habites", l: l }, "*"); } catch (eP) { } }); } catch (eH) { } try { hypeStoriesLieux().then(function (ls) { try { if (ls && ls.length) _w.postMessage({ t: "hype-stories-lieux", l: ls }, "*"); } catch (eS1) { } }); } catch (eS2) { } /* 20/08 (148) : lieux des stories en cours, en argent */ /* 20/08 : clubs habites en or sur le globe */
@@ -59613,6 +59674,7 @@ function NavBar() {
       return () => { try { minuteurs.forEach(clearTimeout); clearInterval(iv); window.removeEventListener("focusout", plusTard); window.removeEventListener("resize", plusTard); window.removeEventListener("pageshow", retour); document.removeEventListener("visibilitychange", retour); if (vv0) vv0.removeEventListener("resize", plusTard); } catch (eF) { } };
     }, []);
     const navLarge = useHypeLarge();   /* 10/10 (862) ordinateur : barre verticale a gauche (maquette validee par Blandine) */
+    const barreDansPage = HYPE_BARRE_V2 && !navLarge;   /* 11/11 essai : barre posée dans la page */
     /* 22/10 23 h (Blandine : « retour strict a la maquette Cavalier validee », « une seule navigation generale Hype, compacte »,
        « ne pas creer deux immenses barres laterales ») : sur la page Cavalier en ordinateur (>= 1200 px), la navigation generale
        devient une barre compacte EN HAUT, comme sur la maquette (memes onglets, memes destinations). Toutes les autres pages
@@ -59676,7 +59738,7 @@ function NavBar() {
         position: "fixed", top: 0, bottom: 0, [navRtl ? "right" : "left"]: 0, width: 210, display: "flex", flexDirection: "column", alignItems: "stretch",
         padding: "26px 0 20px", boxSizing: "border-box", zIndex: 50, overflowY: "auto",
         background: "linear-gradient(180deg, #0A1013 0%, #070B0D 55%, #050708 100%)",
-        [navRtl ? "borderLeft" : "borderRight"]: "1px solid rgba(201,166,107,0.12)" } : { position: "fixed", bottom: -decalBas - (nudge ? 0.5 : 0), left: 0, right: 0, width: "100%", maxWidth: 480, marginLeft: "auto", marginRight: "auto",
+        [navRtl ? "borderLeft" : "borderRight"]: "1px solid rgba(201,166,107,0.12)" } : { position: barreDansPage ? "relative" : "fixed", bottom: barreDansPage ? "auto" : -decalBas - (nudge ? 0.5 : 0), flex: "0 0 auto", boxSizing: "border-box", left: 0, right: 0, width: "100%", maxWidth: 480, marginLeft: "auto", marginRight: "auto",
         /* 🟥 23/08 session 157 — LE BLEU NUIT DES ONGLETS (choix de Blandine).
            Avant : COLORS.nuitClaire (#1B212A), la couleur des CARTES. Sur le fond
            passé à #060709 le matin même, elle ressortait comme une barre grise
@@ -59734,7 +59796,7 @@ function tempsRelatifMsg(iso, langue) {
   } catch (e) { return ""; }
 }
 
-const EcranMessagerie = hypeEcranDiffere("hype-ecran-messagerie.js?v=1", "HypeMessagerie", "Messagerie");
+const EcranMessagerie = hypeEcranDiffere("hype-ecran-messagerie.js?v=2", "HypeMessagerie", "Messagerie");
 /* ============== 05_ecrans_galops.jsx ============== */
 /* ---------- BIBLIOTHÈQUE DES GALOPS ---------- */
 
@@ -64469,7 +64531,7 @@ function CouvertureCours({ bloc, onCommencer, onRetour, langue }) {
             React.createElement("div", { style: { fontSize: 13.5, fontWeight: 800, color: COLORS.blanc, lineHeight: 1.15 } }, valeur),
             React.createElement("div", { style: { fontSize: 12, color: COLORS.grisDoux, lineHeight: 1.2 } }, label)));
     const sep = () => React.createElement("div", { style: { width: 1, alignSelf: "stretch", background: "rgba(255,255,255,0.13)", margin: "3px 0" } });
-    return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "calc(100dvh - 84px)", background: COLORS.nuit, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" } },
+    return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "var(--hype-h-page, calc(100dvh - 84px))", background: COLORS.nuit, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" } },
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: hero ? ("url(" + hero + ") 50% 10%/100% auto no-repeat") : ("linear-gradient(160deg, " + "#1B4A4E" + ", " + COLORS.nuit + ")") } }),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(180deg, " + COLORS.nuit + "33 0%, " + COLORS.nuit + "00 22%, " + COLORS.nuit + "66 46%, " + COLORS.nuit + "E6 68%, " + COLORS.nuit + " 86%)" } }),
         React.createElement("style", null, "@keyframes brumeUn{0%,100%{transform:translate3d(-18%,4%,0) scale(1.1);opacity:.07}50%{transform:translate3d(16%,-3%,0) scale(1.38);opacity:.22}}@keyframes brumeDeux{0%,100%{transform:translate3d(18%,3%,0) scale(1.3);opacity:.20}50%{transform:translate3d(-15%,8%,0) scale(1.52);opacity:.06}}@keyframes brumeTrois{0%,100%{transform:translate3d(0,7%,0) scale(1.15);opacity:.06}50%{transform:translate3d(11%,-4%,0) scale(1.46);opacity:.21}}"),
@@ -64558,7 +64620,7 @@ function SommaireCours({ bloc, total, baseIdx, progression, onRetour, onAllerA, 
     const fond = React.createElement(React.Fragment, null,
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: (typeof PHOTO_FOND_SOMMAIRE !== "undefined" ? ("url(" + PHOTO_FOND_SOMMAIRE + ") center/cover no-repeat") : COLORS.nuit) } }),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(180deg, rgba(7,10,14,0.82) 0%, rgba(10,26,36,0.154) 38%, rgba(10,26,36,0.145) 70%, rgba(7,10,14,0.92) 100%)" } }))
-    return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "calc(100dvh - 84px)", background: COLORS.nuit, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" } },
+    return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "var(--hype-h-page, calc(100dvh - 84px))", background: COLORS.nuit, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" } },
         fond,
         React.createElement("div", { style: { position: "relative", zIndex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 16px 6px" } },
             React.createElement("button", { onClick: onRetour, "aria-label": (langue==="ja"?"\u623b\u308b":langue==="en"?"Back":langue==="es"?"Volver":langue==="it"?"Indietro":langue==="de"?"Zur\u00fcck":hypeT7("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로")), style: { width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", padding: 0 } },
@@ -64715,7 +64777,7 @@ function CouvertureLecon({ data, hero, onRetour, onContinuer, langue, dezoom }) 
         if (nom === "bouclier") return React.createElement("svg", props, React.createElement("path", { d: "M12 3 L19 6 V11 C19 16 15.5 19.5 12 21 C8.5 19.5 5 16 5 11 V6 Z", strokeLinejoin: "round" }), React.createElement("path", { d: "M9 12 L11 14 L15 9.5", strokeLinecap: "round", strokeLinejoin: "round" }));
         return React.createElement("svg", props, React.createElement("circle", { cx: 12, cy: 12, r: 9 }), React.createElement("path", { d: "M8 12 L11 15 L16 9", strokeLinecap: "round", strokeLinejoin: "round" }));
     };
-    return React.createElement("div", { style: { position: "relative", minHeight: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", overflow: "hidden", background: COLORS.nuit } },
+    return React.createElement("div", { style: { position: "relative", minHeight: "var(--hype-h-page, calc(100dvh - 84px))", display: "flex", flexDirection: "column", overflow: "hidden", background: COLORS.nuit } },
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "url(" + heroImg + ") " + (dezoom ? "50% 0%/contain" : "50% 16%/cover") + " no-repeat" } }),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: (dezoom ? "linear-gradient(180deg, rgba(18,22,28,0.20) 0%, rgba(18,22,28,0) 30%, rgba(18,22,28,0.26) 58%, rgba(18,22,28,0.60) 76%, rgba(18,22,28,0.88) 90%, " + COLORS.nuit + " 100%)" : "linear-gradient(180deg, rgba(18,22,28,0.30) 0%, rgba(18,22,28,0) 26%, rgba(18,22,28,0.5) 52%, rgba(18,22,28,0.92) 78%, " + COLORS.nuit + " 96%)") } }),
         React.createElement("div", { style: { position: "relative", zIndex: 4, display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "14px 16px 0" } },
@@ -64748,7 +64810,7 @@ function CouvertureLecon({ data, hero, onRetour, onContinuer, langue, dezoom }) 
 
 function CouvImage({ src, cta, onRetour, onContinuer, langue }) {
     const L = (v) => (v && typeof v === "object" && !Array.isArray(v)) ? (v[langue] || ((langue === "zh" || langue === "nl" || langue === "pt" || langue === "sv" || langue === "ru" || langue === "pl" || langue === "ko") && v.en) || v.fr || "") : (v == null ? "" : v);
-    return React.createElement("div", { style: { position: "relative", minHeight: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#01060f" } },
+    return React.createElement("div", { style: { position: "relative", minHeight: "var(--hype-h-page, calc(100dvh - 84px))", display: "flex", flexDirection: "column", overflow: "hidden", background: "#01060f" } },
         React.createElement("div", { style: { position: "relative", zIndex: 4, display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "14px 16px 0" } },
             React.createElement("button", { onClick: onRetour, "aria-label": (langue==="ja"?"\u623b\u308b":langue==="en"?"Back":langue==="es"?"Volver":langue==="it"?"Indietro":langue==="de"?"Zur\u00fcck":hypeT7("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로")), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(8,10,13,0.5)", border: "1px solid rgba(255,255,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 } },
                 React.createElement("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M15 5 L8 12 L15 19" }))),
@@ -64845,7 +64907,7 @@ function CouvAffiche({ data, hero, logo, chapitre, onRetour, onContinuer, langue
     const voile = COUV_TEXTE_BAS
       ? "linear-gradient(180deg, rgba(1,6,15,0.32) 0%, rgba(1,6,15,0) 14%, rgba(1,6,15,0) 36%, rgba(1,6,15,0.62) 52%, rgba(1,6,15,0.9) 66%, #01060f 86%)"
       : "linear-gradient(180deg, rgba(1,6,15,0.32) 0%, rgba(1,6,15,0) 15%, rgba(1,6,15,0) 46%, rgba(1,6,15,0.42) 64%, rgba(1,6,15,0.9) 82%, #01060f 94%)";
-    return React.createElement("div", { style: { position: "relative", minHeight: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#01060f" } },
+    return React.createElement("div", { style: { position: "relative", minHeight: "var(--hype-h-page, calc(100dvh - 84px))", display: "flex", flexDirection: "column", overflow: "hidden", background: "#01060f" } },
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "url(" + heroPret + ") " + (C.pos || "center top") + "/contain no-repeat" } }),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 1, background: voile } }),
         React.createElement("div", { style: { position: "relative", zIndex: 4, display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "14px 16px 0" } },
@@ -64882,7 +64944,7 @@ function PagePriorites({ bloc, onNext, onPrev, langue }) {
     const onTouchStart = (e) => { const c = e.target; if (c && c.closest && c.closest('button, [role="dialog"]')) { touch.current = null; return; } const p = e.touches[0]; touch.current = { x: p.clientX, y: p.clientY }; };
     const onTouchEnd = (e) => { if (!touch.current) return; const p = e.changedTouches[0]; const dx = p.clientX - touch.current.x; const dy = p.clientY - touch.current.y; touch.current = null; if (Math.abs(dx) > SEUIL && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) { if (sub === 0) setSub(1); else onNext(); } else { if (sub === 1) setSub(0); else onPrev(); } } };
     if (sub === 0) {
-        return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "calc(100dvh - 84px)", background: COLORS.nuit } },
+        return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "var(--hype-h-page, calc(100dvh - 84px))", background: COLORS.nuit } },
             React.createElement(CouvertureLecon, { data: bloc.couv, hero: (typeof PHOTO_COUV_PRIORITES !== "undefined" ? PHOTO_COUV_PRIORITES : ""), dezoom: true, onRetour: onPrev, onContinuer: () => setSub(1), langue: langue }));
     }
     const cont = (bloc.contenu && (bloc.contenu[langue] || bloc.contenu.fr)) || [];
@@ -64902,7 +64964,7 @@ function PageDistances({ bloc, onNext, onPrev, langue }) {
     const onTouchStart = (e) => { const c = e.target; if (c && c.closest && c.closest('button, [role="dialog"]')) { touch.current = null; return; } const p = e.touches[0]; touch.current = { x: p.clientX, y: p.clientY }; };
     const onTouchEnd = (e) => { if (!touch.current) return; const p = e.changedTouches[0]; const dx = p.clientX - touch.current.x; const dy = p.clientY - touch.current.y; touch.current = null; if (Math.abs(dx) > SEUIL && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) { if (sub === 0) setSub(1); else onNext(); } else { if (sub === 1) setSub(0); else onPrev(); } } };
     if (sub === 0) {
-        return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "calc(100dvh - 84px)", background: COLORS.nuit } },
+        return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "var(--hype-h-page, calc(100dvh - 84px))", background: COLORS.nuit } },
             React.createElement(CouvertureLecon, { data: bloc.couv, hero: (typeof PHOTO_COUV_DISTANCES !== "undefined" ? PHOTO_COUV_DISTANCES : ""), onRetour: onPrev, onContinuer: () => setSub(1), langue: langue }));
     }
     const schema = (typeof PHOTO_DIST_SCHEMA_SRC !== "undefined") ? PHOTO_DIST_SCHEMA_SRC : null;
@@ -69209,7 +69271,7 @@ function EcranEntrainerTracer() {
     const T = (cle) => tr(ENTR_TXT[cle]);
     /* La coquille de l'appli ajoute paddingBottom 84 pour la barre de navigation : un écran plein
        doit donc faire 100dvh MOINS ces 84 px, sinon la page scrolle. */
-    const HAUTEUR_ECRAN = "calc(100dvh - 84px)";
+    const HAUTEUR_ECRAN = "var(--hype-h-page, calc(100dvh - 84px))";
     const initial = niveauInitialReprise(galopOuvert, "g4");
     const [niveau, setNiveau] = React.useState(initial);
     React.useEffect(() => { memoriserNiveauReprise(niveau, galopOuvert); }, [niveau, galopOuvert]);
@@ -70293,7 +70355,7 @@ function EcranTraceAnime() {
        navigation (mesure au rendu reel : root 862 px pour un ecran de 844). Notre ecran doit
        donc faire 100dvh MOINS ces 84 px, sinon la page scrolle — ce que la maquette ne
        montrait pas, faute de barre de navigation. */
-    const HAUTEUR_NAV = "calc(100dvh - 84px)";
+    const HAUTEUR_NAV = "var(--hype-h-page, calc(100dvh - 84px))";
     return React.createElement("div", { style: { height: HAUTEUR_NAV, display: "flex", flexDirection: "column", overflow: "hidden", background: COLORS.nuit } },
         /* ── en-tête : retour + choix de reprise, tout en haut ── */
         React.createElement("div", { style: { flex: "0 0 auto", display: "flex", alignItems: "center", gap: 8, padding: `calc(env(safe-area-inset-top) + ${compact ? 6 : 10}px) 12px 4px` } },
@@ -70865,7 +70927,8 @@ function hypePortailBody(el) {
    écrans en calc(100dvh - 84px)) + l'encoche. Élément réel plutôt qu'un padding, comme sur la
    fiche rendez-vous du 06/09 (Safari ignore parfois le padding d'un conteneur flex). */
 function caleBarreHype() {
-    return React.createElement("div", { "aria-hidden": "true", style: { flex: "0 0 auto", height: "calc(env(safe-area-inset-bottom) + 84px)" } });
+    var dansPage = false; try { dansPage = !!window.__hypeBarreDansPage; } catch (eCb) { }   /* 11/11 essai : la barre ne recouvre plus la page */
+    return React.createElement("div", { "aria-hidden": "true", style: { flex: "0 0 auto", height: dansPage ? 16 : "calc(env(safe-area-inset-bottom) + 84px)" } });
 }
 /* 07/09 — les pages de quiz défilent désormais : en haut à chaque nouvelle question, en bas
    quand l'explication apparaît (la cale garde le bouton au-dessus de la barre). */
@@ -71170,7 +71233,7 @@ function EcranQuiz() {
                bouton, puis la cale qui réserve la barre. Quand tout tient, rien ne bouge ; quand
                ça déborde, on glisse au lieu de cacher. À la validation la page descend d'elle-même
                (hypeDefilerBas) pour montrer l'explication et le bouton, réponses encore en vue. */
-            React.createElement("div", { style: { position: "relative", height: "calc((100dvh - 84px) * 0.37)", flex: "none", overflow: "hidden" } },
+            React.createElement("div", { style: { position: "relative", height: "calc(var(--hype-h-page, calc(100dvh - 84px)) * 0.37)", flex: "none", overflow: "hidden" } },
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + fondQuizChapitre + ")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(16px) brightness(0.55)", transform: "scale(1.12)" } }), /* session 112 : image du quiz ENTIERE (contain) sur fond flou, demande repetee de Blandine — plus aucun sujet coupe */ React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + fondQuizChapitre + ")", backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" } }),
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0.12) 42%, rgba(6,7,9,0.72) 78%, #060709 100%)" } }),
                 React.createElement("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 16, fontFamily: FQ, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: TQ, background: "rgba(6,9,12,0.4)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 99, padding: "6px 12px", backdropFilter: "blur(8px)" } }, T("Quiz", "Quiz", "Quiz", "Quiz", "\u30af\u30a4\u30ba", "Quiz", "\u0627\u062e\u062a\u0628\u0627\u0631", "测验", "Quiz", "Quiz", "Quiz", "Квиз", "Quiz", "퀴즈")),
@@ -72297,7 +72360,7 @@ function getSystemPrompt(langue, ctx) {
     return base;
 }
 /* (813) Hey Baby garde son turquoise d origine (Blandine : « Hey Baby tu peux le laisser, on verra les couleurs plus tard ») */
-const EcranAssistantIA = hypeEcranDiffere("hype-ecran-assistant.js?v=15", "HypeAssistant", "Assistant");
+const EcranAssistantIA = hypeEcranDiffere("hype-ecran-assistant.js?v=16", "HypeAssistant", "Assistant");
 
 /* 22/10/2026 — HEY BABY LIT SES REPONSES A VOIX HAUTE (Blandine : « voix de l iPhone »). Voix du telephone (speechSynthesis), gratuite, aucun serveur.
    Un seul texte lu a la fois ; reappui = arret ; la lecture s arrete en quittant la page. Le texte est nettoye (puces, titres, emojis) et lu phrase par phrase

@@ -1445,7 +1445,7 @@ function EcranAssistantIA() {
             React.createElement("button", { type: "button", onClick: hbNouvelle, style: { minHeight: 44, padding: "10px 14px", borderRadius: 12, background: "rgba(7,10,8,0.5)", border: "1px solid " + HB_C.champ, color: HB_C.ivoire, fontFamily: HB_SANS, fontSize: hbVue === "tablette" ? 12.5 : 13.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", textAlign: "center", lineHeight: 1.25 } },
                 React.createElement("span", { "aria-hidden": "true", style: { fontSize: 19, fontWeight: 300, lineHeight: 1, color: HB_C.champ } }, "+"), HBR("nouvelle")),
             hbBoutonConseils()),
-        React.createElement("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: (hbVue === "tablette" && !panneau) ? "4px 8px calc(env(safe-area-inset-bottom) + 84px)" : "4px 8px calc(env(safe-area-inset-bottom) + 16px)" } },
+        React.createElement("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: (hbVue === "tablette" && !panneau) ? "4px 8px calc(var(--hype-sab, env(safe-area-inset-bottom)) + var(--hype-reserve, 84px))" : "4px 8px calc(env(safe-area-inset-bottom) + 16px)" } },
             hbConvs === null && !hbListe.length
                 ? React.createElement("p", { style: { color: HB_C.doux, fontSize: 13, textAlign: "center", margin: "18px 0" } }, "…")
                 : null,
@@ -1641,7 +1641,7 @@ function EcranAssistantIA() {
             hbBlocLimite,
             React.createElement("div", { ref: finRef }));
     })();
-    const hbBarreSaisie = React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: hbBureau ? "12px 28px calc(14px + env(safe-area-inset-bottom, 0px))" : (hbGrand ? "10px 24px calc(12px + 66px + env(safe-area-inset-bottom, 0px))" : "10px 14px calc(12px + 66px + env(safe-area-inset-bottom, 0px))"), borderTop: "1px solid rgba(201,166,107,0.12)", background: "rgba(7,10,8,0.9)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: HB_SANS } },
+    const hbBarreSaisie = React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: hbBureau ? "12px 28px calc(14px + env(safe-area-inset-bottom, 0px))" : (hbGrand ? "10px 24px calc(12px + var(--hype-reserve, 66px) + var(--hype-sab, env(safe-area-inset-bottom, 0px)))" : "10px 14px calc(12px + var(--hype-reserve, 66px) + var(--hype-sab, env(safe-area-inset-bottom, 0px)))"), borderTop: "1px solid rgba(201,166,107,0.12)", background: "rgba(7,10,8,0.9)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: HB_SANS } },
         React.createElement("div", { style: { maxWidth: hbGrand ? (hbVide ? 900 : (hbLecture + 0)) : "none", marginInlineStart: hbGrand && !hbVide ? 0 : undefined } },
             React.createElement("input", { ref: fichierRef, type: "file", accept: "image/*,video/*", onChange: choisirImage, style: { display: "none" } }),
             extractionVideo ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
@@ -1939,7 +1939,7 @@ function EcranAssistantIA() {
       ".hb-cote-t{margin:6px 0 2px;font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#F3EEE4}" +
       ".hb-cote-b{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(127,163,173,.45);background:rgba(16,29,34,.7);color:#F3EEE4;font:600 13.5px 'Montserrat',sans-serif;cursor:pointer;text-align:start}" +
       ".hb-cote-b:hover{border-color:#8FB3BC}.hb-cote-l{display:flex;flex-direction:column;gap:8px}}";
-    return (React.createElement("div", { dir: hbRtl ? "rtl" : "ltr", style: { height: "100dvh", display: "flex", flexDirection: "row", position: "relative", overflow: "hidden", background: HB_C.fond, fontFamily: HB_SANS, color: HB_C.ivoire } },
+    return (React.createElement("div", { dir: hbRtl ? "rtl" : "ltr", style: { height: "var(--hype-h-page, 100dvh)", display: "flex", flexDirection: "row", position: "relative", overflow: "hidden", background: HB_C.fond, fontFamily: HB_SANS, color: HB_C.ivoire } },
         hbGrand ? React.createElement("aside", { style: { width: hbColW, flexShrink: 0, height: "100%", boxSizing: "border-box", background: HB_C.petrole2, borderInlineEnd: "1px solid rgba(201,166,107,0.14)", position: "relative", zIndex: 4 } }, hbRendreHistorique(false)) : null,
         React.createElement("div", { ref: hbMainRef, style: { flex: 1, minWidth: 0, height: "100%", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" } },
             hbFondCheval,
