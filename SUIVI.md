@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-0825 — Barre du bas bloquée au milieu de l'écran : correctif A (publié le 11/11 08h25, à tester sur l'iPhone)
+- Diagnostic : cause la plus probable = défaut d'iOS 26 (WebKit 297779) et de l'appli installée sur l'écran d'accueil : après le clavier, l'iPhone garde une hauteur d'écran trop petite ou un décalage ; tout ce qui flotte en bas se retrouve trop haut jusqu'à ce qu'il se remesure. Les deux mesures de l'écran sont fausses en même temps, d'où l'échec du correctif du 07/10. Les 84 px sous les pages ne sont pas en cause.
+- Correctif A (NavBar, index.html, une seule modification) : Hype retient la plus grande hauteur d'écran vue ; si, clavier fermé, l'iPhone annonce nettement moins (40 px sur l'appli installée, 150 px dans Safari à cause de la barre d'adresse) ou un décalage vertical, on le force à se remesurer, sans toucher au défilement. Téléphone seulement.
+- Vérifié (Chromium, 390×844, 820×1180, 1440×900 ; accueil, Galops, Cavalier, Chevaux, Communauté, Écurie, Hey Baby, Premium) : barre en bas partout, aucune erreur, aucun déclenchement à tort ; bug simulé → remesure faite, défilement gardé ; clavier ouvert → rien. Le bug iPhone lui-même ne se reproduit pas sur ordinateur : seul l'iPhone de Blandine confirmera.
+- Ensuite (validé le 10/11 23h48) : la barre « dans la page » (la page défile dans sa zone, la barre posée dessous), chantier long, page par page, captures avant publication.
+
 ### 11/11 — build 20261111-0815 — Hey Baby : réponses en mise en page magazine, pleine largeur
 - Réponses de Hey Baby (texte inchangé, seule la présentation change) : en-tête « HEY BABY · TON COACH » + temps de lecture ; sommaire cliquable « Dans cette réponse » (à partir de 3 parties) ; introduction en Cormorant ; parties numérotées 01, 02… avec picto fin champagne et filet courbe doré ; puces losange espacées ; encadrés « Le conseil du coach » (« Un repère… ») et « À retenir » (conclusion). Tout en champagne et ivoire : aucun point mis en avant en rouge (Blandine : « plus de tact »).
 - Les réponses prennent toute la largeur de l'écran (plus aéré, moins long).
