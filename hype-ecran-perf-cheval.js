@@ -445,6 +445,12 @@ function EcranPerformancesCheval(props) {
     } catch (eB) { annonce(T("Impossible pour l’instant — réessaie", "Not possible right now — try again", "No es posible ahora — reinténtalo", "Impossibile per ora — riprova", "今はできません — もう一度", "Derzeit nicht möglich — versuche es erneut", "غير ممكن حاليا — أعيدي المحاولة", "暂时无法操作，请重试", "Nu niet mogelijk — probeer het opnieuw", "Não é possível agora — tente de novo", "Det går inte just nu – försök igen", "Сейчас не получается — попробуй ещё раз", "Teraz się nie da — spróbuj ponownie", "지금은 할 수 없어요. 다시 시도해 주세요")); }
   }
   /* meme adresse que « Partager sa fiche » : adresse publique /cheval/<slug> si la base en donne une, sinon /#cheval-<id> */
+  async function partagerCav() {   /* 12/11 (Blandine : « le bouton partager la page… partout ») : adresse de la page du cavalier */
+    var u = location.origin + "/#perfcav-" + riderId;
+    var tx = (nomCh || "Hype") + " \u2014 " + T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적") + " \u2014 Hype";
+    try { if (navigator.share) { await navigator.share({ title: tx, text: tx, url: u }); return; } } catch (eS) { return; }
+    try { await navigator.clipboard.writeText(u); annonce(T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!", "تم نسخ الرابط!", "链接已复制！", "Link gekopieerd!", "Link copiado!", "Länken kopierades!", "Ссылка скопирована!", "Link skopiowany!", "링크를 복사했어요!")); } catch (eC) { }
+  }
   async function partagerCheval() {
     setMenuOuvert(false);
     var sl = typeof ligneCh.slug === "string" ? ligneCh.slug : "";
@@ -480,6 +486,18 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { display: "flex", gap: 10 } },
         h("button", { type: "button", onClick: function () { setCapTrouves(null); setCapOuvert(false); }, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 13, cursor: "pointer" } }, T("Annuler l'import", "Cancel import", "Cancelar la importación", "Annulla l'importazione", "取り込みをキャンセル", "Import abbrechen", "إلغاء الاستيراد", "取消导入", "Import annuleren", "Cancelar a importação", "Avbryt importen", "Отменить импорт", "Anuluj import", "가져오기 취소")),
         h("button", { type: "button", "data-perf-capture-ajouter": "1", onClick: validerCapture, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가")))) : boutonFermer(function () { setCapOuvert(false); setCapMsg(null); })), function () { if (!capEnCours) { setCapOuvert(false); setCapMsg(null); } }, "fCapture") : null;
+  /* 12/11 00h05 (Blandine : « virer les trucs du haut… à cet endroit il faut les onglets des autres pages photo vidéo… ») :
+     page du cavalier = petit menu vers ses autres pages ; les chiffres sont racontés plus bas dans les chapitres */
+  function allerPageCav(ecr) { try { window.__photosCavaliereId = riderId; window.__videosCavaliereId = riderId; window.__actuCavaliereId = riderId; } catch (eP) { } setEcran(ecr); }
+  var menuCav = h("div", { "data-perf-menu-cav": "1", "data-noswipe": "1", "data-hscroll": "1", style: { display: "flex", gap: 8, margin: "16px 0 0", padding: "0 18px 14px", overflowX: "auto", scrollbarWidth: "none", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
+    [["perf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적"), null],
+     ["ph", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"), "photos-cavalier"],
+     ["vi", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"), "videos-cavalier"],
+     ["ac", T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식"), "actualite-cavalier"]].map(function (o) {
+      var on = !o[2];
+      return h("button", { key: "mc" + o[0], type: "button", onClick: on ? undefined : function () { allerPageCav(o[2]); }, "aria-current": on ? "page" : undefined,
+        style: { flex: "0 0 auto", minHeight: 38, padding: "0 16px", borderRadius: 999, border: on ? "1.5px solid " + CHAMP : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 13, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
+    }));
   var heroVide = !tous.length;   /* (g5) page sans resultat : la photo prend plus de place, comme l ecran 5 de la maquette */
   /* 11/11 21h45 (Blandine : « le héros est tout écrasé… sans résultat il est beaucoup plus grand et beaucoup plus beau ») : page du cavalier = toujours le grand héros */
   var hero = h("div", { style: { position: "relative", height: (heroVide || modeCav) ? (largeP ? 380 : 340) : (largeP ? (ordiP ? 380 : 320) : 260), overflow: "hidden", background: PETROLE, borderRadius: ordiP ? "0 0 18px 18px" : 0 } },   /* (tableau) 320 -> 260 : demande de Blandine, le hero repoussait les resultats */
@@ -494,7 +512,8 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { marginInlineStart: "auto", display: "flex", gap: 8 } },
         peutLier ? h("button", { type: "button", "data-perf-coeur": droits.lie ? "1" : "0", onClick: basculerLien, "aria-pressed": droits.lie ? "true" : "false", "aria-label": droits.lie ? T("Retirer de mes chevaux", "Remove from my horses", "Quitar de mis caballos", "Rimuovi dai miei cavalli", "マイ馬から外す", "Aus meinen Pferden entfernen", "إزالة من خيولي", "从我的马中移除", "Verwijderen uit mijn paarden", "Remover dos meus cavalos", "Ta bort från mina hästar", "Убрать из моих лошадей", "Usuń z moich koni", "내 말에서 빼기") : T("Ajouter à mes chevaux", "Add to my horses", "Añadir a mis caballos", "Aggiungi ai miei cavalli", "マイ馬に追加", "Zu meinen Pferden hinzufügen", "إضافة إلى خيولي", "添加到我的马", "Toevoegen aan mijn paarden", "Adicionar aos meus cavalos", "Lägg till bland mina hästar", "Добавить к моим лошадям", "Dodaj do moich koni", "내 말에 추가"), style: rondHaut },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: droits.lie ? "#E6CF9C" : "none", stroke: droits.lie ? "#E6CF9C" : "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" }))) : null,
-        modeCav ? null : h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى", "更多选项", "Meer opties", "Mais opções", "Fler alternativ", "Ещё варианты", "Więcej opcji", "더 보기"), style: rondHaut },
+        modeCav ? h("button", { type: "button", "data-perf-partager": "1", onClick: partagerCav, "aria-label": T("Partager la page", "Share the page", "Compartir la página", "Condividi la pagina", "ページを共有", "Seite teilen", "مشاركة الصفحة", "分享页面", "Pagina delen", "Partilhar a página", "Dela sidan", "Поделиться страницей", "Udostępnij stronę", "페이지 공유"), style: rondHaut },
+          h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 3v12M7.5 7.5L12 3l4.5 4.5" }), h("path", { d: "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" }))) : h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى", "更多选项", "Meer opties", "Mais opções", "Fler alternativ", "Ещё варианты", "Więcej opcji", "더 보기"), style: rondHaut },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5.5, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18.5, cy: 12, r: 1.6 }))))),
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
       h("div", { style: { fontFamily: SERIF, fontSize: largeP ? 48 : 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
@@ -535,6 +554,7 @@ function EcranPerformancesCheval(props) {
     var grandBouton = function (contenu, onClick, cle) { return h("button", { key: cle, type: "button", onClick: onClick, style: { width: "100%", minHeight: 58, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.75)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 } }, contenu); };
     return h("div", { "data-ecran": "performances-cheval", "data-perf-vide": "1", style: racineSt },
       hero,
+      modeCav ? menuCav : null,
       h("div", { style: { maxWidth: largeP ? 620 : "none", margin: "0 auto" } },   /* (g8) page sans resultat en grand : colonne centree */
       h("div", { style: { padding: "22px 26px 0", textAlign: "center" } },
         h("div", { "aria-hidden": "true", style: { width: 84, height: 84, margin: "0 auto 18px", borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "radial-gradient(circle at 50% 40%, rgba(201,166,107,0.12), rgba(7,10,8,0) 70%)", display: "flex", alignItems: "center", justifyContent: "center" } },
@@ -736,18 +756,6 @@ function EcranPerformancesCheval(props) {
           h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12.5, color: "rgba(243,238,228,0.75)" } }, [dernier.d ? dateLisible(dernier.d) : "", dernier.cav || "", dernier.part ? T("sur ", "of ", "de ", "su ", "/", "von ", "من ", "/", "van ", "de ", "av ", "из ", "z ", "/") + dernier.part : "", hypePerfEstSansFaute(dernier) ? T("sans faute", "clear round", "sin faltas", "netto", "減点なし", "fehlerfrei", "بلا أخطاء", "零罚分", "foutloos", "sem faltas", "felfri", "чисто", "bez zrzutki", "무감점") : ""].filter(Boolean).join(" · ")))) : null,
       h("div", { style: { height: 6 } }));
   }
-  /* 12/11 00h05 (Blandine : « virer les trucs du haut… à cet endroit il faut les onglets des autres pages photo vidéo… ») :
-     page du cavalier = petit menu vers ses autres pages ; les chiffres sont racontés plus bas dans les chapitres */
-  function allerPageCav(ecr) { try { window.__photosCavaliereId = riderId; window.__videosCavaliereId = riderId; window.__actuCavaliereId = riderId; } catch (eP) { } setEcran(ecr); }
-  var menuCav = h("div", { "data-perf-menu-cav": "1", "data-noswipe": "1", "data-hscroll": "1", style: { display: "flex", gap: 8, margin: "16px 0 0", padding: "0 18px 14px", overflowX: "auto", scrollbarWidth: "none", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
-    [["perf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적"), null],
-     ["ph", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"), "photos-cavalier"],
-     ["vi", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"), "videos-cavalier"],
-     ["ac", T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식"), "actualite-cavalier"]].map(function (o) {
-      var on = !o[2];
-      return h("button", { key: "mc" + o[0], type: "button", onClick: on ? undefined : function () { allerPageCav(o[2]); }, "aria-current": on ? "page" : undefined,
-        style: { flex: "0 0 auto", minHeight: 38, padding: "0 16px", borderRadius: 999, border: on ? "1.5px solid " + CHAMP : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 13, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
-    }));
   /* 12/11 00h10 — maquette O choisie par Blandine : « Chapitre IV · Ses chevaux », une grande photo par cheval, ses résultats
      avec ce cheval et « Sa fiche » ; les saisons dépliables deviennent le Chapitre V, les boutons Ajouter / Importer passent en dessous. */
   var chapChevaux = null;
