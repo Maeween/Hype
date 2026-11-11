@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-2240 — La page qui sautait en bas en boucle (barre dans la page) + Médias sans connexion expliqués
+- Défilement (Blandine, 21 h 07, vidéo : « la page saute et me ramène en bas en boucle », partout, « depuis la barre ») : la reprise à la page quittée (hypeRepriseAppliquer, build 929) reposait l'ancienne position toutes les 300 ms pendant 12 s après chaque ouverture/mise à jour de l'appli. Avec la barre posée dans la page (11/11 matin), la page défile dans #hype-defile : la reprise testait la hauteur de la FENÊTRE (qui ne défile plus) et ne finissait jamais, tout en remettant la zone à l'ancienne place → chaque geste annulé. Corrigé : hauteur testée = celle de la zone, la zone n'est plus traitée deux fois (sy / zt), et le premier toucher arrête la reprise. Plus visible ce soir car chaque publication relance l'appli.
+- Médias de l'équipe ouverts sans être connecté (Safari) : au lieu de « permission denied for table team_videos », carte « Réservé à l'équipe » + bouton « Me connecter » + « Tu ne fais pas partie de l'équipe compétition ? Demande à l'un de ses membres de te partager le lien de la vidéo » (14 langues). Aucune règle de base changée (lecture de team_videos : comptes connectés).
+- Médias : la fin de page « Partage cette page / HYPE » était en double (posée par la page et par le Router) → retirée de la page.
+- Fichiers : index.html (reprise, build), hype-ecran-team-medias.js (v37). Aucun SQL.
+
 ### 11/11 — build 20261111-2140 — Concours : lieu modifiable depuis la fiche + adresse lue sur le programme
 - Fiche concours, infos pratiques : lien « Modifier › » sous Itinéraire (coach et modératrice seulement) → même fiche que « ••• › Modifier le rendez-vous ».
 - Lecture du programme (Jour J « Modifier les passages » et Engagements) : l'outil cherche aussi l'adresse complète du lieu ; si elle diffère du lieu enregistré, carte « Adresse trouvée sur le document » avec « Mettre cette adresse » / « Non merci ». Rien n'est changé sans ce toucher. Enregistrement par modifierAgendaClub (notification « nouvelles infos » au club, comme une modification à la main).
