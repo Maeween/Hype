@@ -223,6 +223,56 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
+- [11/11] À FAIRE PAR BLANDINE (quand elle aura le temps) — ÉCURIE FEINN : publier les annonces demi-pension / tiers de pension.
+Où : ChevalAnnonce (MODIFIER l'annonce n° 479926 du 09/09 : coller la version complète, prix 192 €, et RETIRER l'adresse et le portable affichés en clair dans le bloc contact), Equirodi, Cavalons (version complète) ; Leboncoin, HorseSinergia (version courte).
+Photos dans l'ordre : Elfe à l'obstacle (récente), bai à l'obstacle, poney alezan à l'obstacle, noir aux chevaux gonflables, gris, ancienne photo d'Elfe. Si un site limite le nombre : retirer d'abord l'ancienne Elfe, puis le gris. Accord des parents si un cavalier mineur apparaît.
+Claude peut publier lui-même seulement si la conversation est ouverte depuis l'ordinateur (appli Claude ou Chrome + extension Claude) avec les comptes connectés.
+- [11/11] ✅ FAIT — assistants de messagerie de l'écurie (MyChatBot « Écurie Feinn » et « Écurie Feinn Itteville ») : offres et tarifs à jour ; ils ne donnent plus l'adresse complète (« Itteville (91), proche RER D Ballancourt »).
+
+#### Textes des annonces Écurie Feinn (à garder ici, à copier-coller)
+
+=== ANNONCE — VERSION COMPLÈTE ===
+```text
+🐴 Demi-pension et tiers de pension, chevaux et poneys – Itteville (91)
+
+Envie de monter régulièrement, de progresser ou de vous lancer en concours ? On a peut-être votre futur partenaire !
+
+🐎 LES CHEVAUX
+4 chevaux d'enseignant, très bien nés, idéals à partir du Galop 4.
+Obstacle, dressage, balade, concours en Club et Amateur.
+
+🦄 LES PONEYS
+Demi-pension ou tiers de pension dès le Galop 2, au choix :
+• Compétition, avec possibilité de concourir jusqu'au Championnat de France inclus (Salon du Cheval de Paris, Championnat de France…)
+• Remise en confiance ou loisir, à votre rythme
+
+✨ CE QUI NOUS DISTINGUE
+• Équitation sans mors et compétition sans mors possibles
+• Préparation aux tests d'entrée AE, BPJEPS et DEJEPS
+• Encadrement par une enseignante diplômée d'État
+• Petite structure familiale, ambiance sympa, travail dans le respect du cheval
+• Carrière, rond de longe, prés et boxes
+
+💶 TARIFS
+• Demi-pension : à partir de 280 €/mois (tarif sur demande selon le cheval)
+• Tiers de pension : à partir de 192 €/mois, avec 2 cours collectifs ou 1 cours particulier inclus
+
+📍 Itteville (91), proche RER D Ballancourt-sur-Essonne
+📩 Contact par WhatsApp ou en message privé, on vous répond vite !
+```
+
+=== ANNONCE — VERSION COURTE ===
+```text
+Titre : Demi-pension / tiers de pension cheval ou poney – Itteville 91
+
+🐎 Chevaux d'enseignant dès Galop 4 · 🦄 Poneys dès Galop 2
+Compétition jusqu'au Championnat de France (Salon du Cheval…), ou loisir et remise en confiance.
+Équitation et compétition sans mors possibles. Préparation AE, BPJEPS, DEJEPS.
+Demi-pension dès 280 €/mois · Tiers de pension dès 192 €/mois, cours inclus.
+Petite structure familiale, enseignante DE.
+📍 Itteville (91), proche RER D Ballancourt. Écrivez-moi en privé !
+```
+
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
 - [11/11 20h15] À FAIRE PAR BLANDINE — SMTP Brevo dans Supabase (envoi au nom de « Hype <contact@2hype.fr> ») : clé SMTP générée dans Brevo (SMTP & API) puis Supabase → Authentication → Emails → SMTP : hôte smtp-relay.brevo.com, port 587, identifiant c25458001@smtp-brevo.com, expéditeur contact@2hype.fr / Hype. Pas encore fait au 11/11 20h15 (lecture : smtp_actif = non).
 - [11/11 20h15] PRÊT, PAS PUBLIÉ (attend le feu vert de Blandine) — index.html : (1) lien « mot de passe oublié » expiré → écran « Retrouver mon mot de passe » avec message, au lieu de la page d'entrée muette ; lien valide détecté dès l'ouverture ; (2) après demande d'un lien : « Lien envoyé ! … valable 24 heures » (14 langues) ; (3) NOTIFICATIONS « Tout marquer comme lu » retenu DANS LE COMPTE (user_metadata.notifs_comm_vu) — cause trouvée : la mémoire du téléphone est effacée à chaque changement de compte (Malicia ↔ Feinn) et diffère d'un navigateur à l'autre. Limite : une notification de communauté ouverte une par une n'est encore retenue que sur l'appareil.
