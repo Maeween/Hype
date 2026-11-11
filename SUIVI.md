@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-0815 — Hey Baby : réponses en mise en page magazine, pleine largeur
+- Réponses de Hey Baby (texte inchangé, seule la présentation change) : en-tête « HEY BABY · TON COACH » + temps de lecture ; sommaire cliquable « Dans cette réponse » (à partir de 3 parties) ; introduction en Cormorant ; parties numérotées 01, 02… avec picto fin champagne et filet courbe doré ; puces losange espacées ; encadrés « Le conseil du coach » (« Un repère… ») et « À retenir » (conclusion). Tout en champagne et ivoire : aucun point mis en avant en rouge (Blandine : « plus de tact »).
+- Les réponses prennent toute la largeur de l'écran (plus aéré, moins long).
+- Préparé mais inactif : page du conseil partagé (lien ?r=…), en attente de la table en base (accord de Blandine). Le partage reste le message texte.
+- hype-ecran-assistant.js v15.
+
 ### 10/11 — build 20261110-2340 — Hey Baby : réponses mieux présentées, Traduire, langue, flèches ↑↓
 - Réponses : titres en doré (Cormorant) avec un filet, vraies puces espacées, paragraphes aérés, **gras** respecté (le texte n'est pas réécrit).
 - 6e bouton « Traduire » sous chaque réponse : 14 langues, la bulle s'affiche traduite, « Voir l'original » ; Écouter, Copier, Partager suivent la version affichée. Nouvelle opération serveur « traduction » (netlify/functions/assistant.js), décomptée comme un outil : ne prend pas la question du jour.
