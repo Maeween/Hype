@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-1012 — Hey Baby : le conseil partagé se lit directement dans le groupe
+- But (Blandine) : que les membres d'un groupe WhatsApp lisent le conseil sans cliquer, pour donner envie d'essayer Hey Baby.
+- Le message partagé contient maintenant TOUT le conseil, aéré : « 🐴 HEY BABY · TON COACH ÉQUESTRE », la question en citation, un trait avant chaque partie, une icône devant chaque titre (🩺 soins, 🏇 à cheval, 🧰 matériel, 👣 pieds/podologue, 🏠 écurie, 🎯 travail…, ✦ sinon), une ligne vide entre chaque point, puis « ✨ Pose ta question : <lien vers la page du conseil> ». Le texte de l'IA n'est pas réécrit. 14 langues (textes déjà traduits de la carte Hey Baby).
+- La question partagée est la QUESTION D'ORIGINE : une demande de retouche (« ta réponse », « ajoute », « refais », « plus court »…) est sautée (hype-ecran-assistant.js v17).
+- Aperçu du lien : nouvel encart validé par Blandine (carte Hey Baby sur toute la largeur et la hauteur, Hypo par-dessus le bord, sans cheval derrière), 14 langues, remplace images/hey-baby-partage-<langue>.jpg (?v=2 sur les 14 pages /ia-equestre/ pour forcer le nouvel aperçu).
+- RESTE (étapes suivantes, à valider) : écran de choix avant envoi (« Version courte » rédigée par Hey Baby / « Réponse complète »), question modifiable avant l'envoi.
+
 ### 11/11 — build 20261111-0925 — Hey Baby : les parties se déroulent toutes seules
 - Réponses longues (3 parties ou plus) : introduction et partie 01 ouvertes ; les suivantes sont repliées (numéro, titre, « + ») et s'ouvrent toutes seules, en douceur, quand leur titre arrive au milieu de l'écran ; une partie ouverte le reste ; toucher le titre ouvre / referme. Le sommaire du haut est retiré (doublon avec les titres repliés). Même chose sur la page du conseil partagé.
 
