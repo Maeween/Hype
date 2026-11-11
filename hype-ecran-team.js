@@ -423,13 +423,13 @@ function EcranTeamCompetition() {
       h("div", { style: { fontFamily: M, fontSize: 11, letterSpacing: ".24em", textTransform: "uppercase", color: OR, fontWeight: 600 } }, n + " · " + lab),
       h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.05, color: IV, marginTop: 4 } }, titre));
   }
-  var PARTIES = [   /* 11/11 22h29 : Souvenirs remonte en tête (proposition A) */
+  var PARTIES = [   /* 11/11 23h06 : Souvenirs après Les concours (« après la saison ») */
+    { id: "eq-p1", lab: T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"),
+      titre: T("Cavaliers & chevaux", "Riders & horses", "Jinetes y caballos", "Cavalieri e cavalli", "ライダーと馬", "Reiter & Pferde", "الفرسان والخيول", "骑手与马匹", "Ruiters & paarden", "Cavaleiros e cavalos", "Ryttare & hästar", "Всадники и лошади", "Jeźdźcy i konie", "기수와 말") },   /* 11/11 23h15 : titres « A » */
+    { id: "eq-p2", lab: T("La saison", "The season", "La temporada", "La stagione", "シーズン", "Die Saison", "الموسم", "赛季", "Het seizoen", "A época", "Säsongen", "Сезон", "Sezon", "시즌"),
+      titre: T("Concours & résultats", "Competitions & results", "Concursos y resultados", "Concorsi e risultati", "競技会と成績", "Turniere & Ergebnisse", "المسابقات والنتائج", "比赛与成绩", "Wedstrijden & resultaten", "Concursos e resultados", "Tävlingar & resultat", "Соревнования и результаты", "Zawody i wyniki", "대회와 결과") },
     { id: "eq-p3", lab: T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "الذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억"),
       titre: T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간") },
-    { id: "eq-p1", lab: T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"),
-      titre: T("Qui monte, sur qui", "Who rides what", "Quién monta qué", "Chi monta chi", "誰がどの馬に", "Wer reitet wen", "من يركب ماذا", "谁骑哪匹马", "Wie rijdt wie", "Quem monta quem", "Vem rider vem", "Кто на ком", "Kto na kim", "누가 어떤 말을") },
-    { id: "eq-p2", lab: T("Les concours", "Competitions", "Los concursos", "I concorsi", "競技会", "Die Turniere", "المسابقات", "比赛", "De wedstrijden", "Os concursos", "Tävlingarna", "Соревнования", "Zawody", "대회"),
-      titre: T("La saison", "The season", "La temporada", "La stagione", "シーズン", "Die Saison", "الموسم", "赛季", "Het seizoen", "A época", "Säsongen", "Сезон", "Sezon", "시즌") },
     { id: "eq-p4", lab: T("Apprendre", "Learn", "Aprender", "Imparare", "学ぶ", "Lernen", "التعلّم", "学习", "Leren", "Aprender", "Lära", "Учиться", "Nauka", "배우기"),
       titre: T("Progresser ensemble", "Grow together", "Progresar juntos", "Progredire insieme", "一緒に上達しよう", "Gemeinsam besser werden", "نتقدّم معًا", "一起进步", "Samen vooruit", "Progredir juntos", "Utvecklas tillsammans", "Расти вместе", "Rozwijać się razem", "함께 성장하기") }
   ];
@@ -1160,9 +1160,9 @@ function EcranTeamCompetition() {
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
-    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocSv, trait(),
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocCav, blocCh, blocGerer, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
+    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocCav, blocCh, blocGerer, trait(),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocSv, trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, PARTIES[3].titre), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);

@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261112-0050 — Page équipe : Souvenirs après la saison ; nouveaux titres des parties (« A »)
+- Blandine (23 h 06 « je l'aurais mis après la saison », 23 h 15 « 1 est pas mal », 23 h 20 « mets le reste en ligne »). hype-ecran-team.js v=30.
+- Ordre (menu compris) : 1 L'équipe — « Cavaliers & chevaux » (remplace « Qui monte, sur qui », jugé « vraiment nul ») · 2 La saison — « Concours & résultats » (la pastille « Les concours » devient « La saison ») · 3 Souvenirs — « Nos plus beaux moments » · 4 Apprendre — « Progresser ensemble ». Nouveaux titres traduits dans les 14 langues.
+- En attente de son choix : présentation des cavaliers (aujourd'hui 8 au plus puis « Voir tout », contraire à sa règle « tout le monde visible ») — 8 maquettes montrées ; retrait éventuel des petits titres « Nos cavaliers » / « Nos chevaux ».
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').
 - Vérifié : sans compte 92 chevaux lisibles, connecté 92 ; aucun cheval n'est « privé » aujourd'hui en base, donc rien ne change à l'écran : la protection vaut pour les chevaux qui seront mis en privé. Pages Google (cheval-route, ecurie-route, sitemaps) inchangées.
