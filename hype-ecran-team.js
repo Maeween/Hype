@@ -79,6 +79,7 @@ function EcranTeamCompetition() {
      la page Médias complète est hype-ecran-team-medias.js (route team-medias). */
   var _md = React.useState(null); var mediasTop = _md[0], setMediasTop = _md[1];
   var _mp = React.useState(null); var mediasPartages = _mp[0], setMediasPartages = _mp[1];
+  var _mr = React.useState(null); var vidsRecentes = _mr[0], setVidsRecentes = _mr[1];   /* 11/11 22h05 : dernières vidéos (non privées) pour « Souvenirs » + leur nombre */
   React.useEffect(function () {
     if (!groupe || !groupe.id || typeof supa === "undefined" || !supa) return;
     var vifM = true;
@@ -115,8 +116,8 @@ function EcranTeamCompetition() {
           var pa = {}; ((ra && ra.data) || []).forEach(function (x) { pa[x.id] = x.pseudo; });
           parts.forEach(function (x) { x.auteur_nom = pa[x.auteur_id] || ""; });
         }
-        if (vifM) { setMediasTop(top); setMediasPartages(parts); }
-      } catch (eM) { if (vifM) { setMediasTop([]); setMediasPartages([]); } }
+        if (vifM) { setMediasTop(top); setMediasPartages(parts); setVidsRecentes({ n: vids.filter(function (x) { return !x.privee; }).length, l: vids.filter(function (x) { return !x.privee && x.vignette; }).slice(0, 6) }); }
+      } catch (eM) { if (vifM) { setMediasTop([]); setMediasPartages([]); setVidsRecentes({ n: 0, l: [] }); } }
     })();
     return function () { vifM = false; };
   }, [groupe && groupe.id]);
@@ -903,7 +904,7 @@ function EcranTeamCompetition() {
   function porteM(P) { return carteBasse("pm" + P.cle, ICO[P.cle === "videos" ? "video" : P.cle === "epingles" ? "bulle" : "perfs"], P.titre, P.sous, P.img, function () { ouvrirMedias(P.cle); }); }
   var blocMedias = section(h("div", null,
     enTete(T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"), "md", 0, 0),
-    h("div", { style: { marginTop: -10 } }, PORTES_M.map(porteM))));
+    h("div", { style: { marginTop: -10 } }, PORTES_M.filter(function (P) { return P.cle !== "videos"; }).map(porteM))));   /* 11/11 22h05 : « En piste » part dans Souvenirs */
 
   /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
@@ -924,7 +925,7 @@ function EcranTeamCompetition() {
   /* (721) CHAPITRE « Règlements » : les règlements officiels (PDF dans docs/), ouverts dans un nouvel onglet.
      11/11 21h46 (Blandine : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ») : deux carrés. */
   function carteReg(attr, href, titre, sous, source, photo) {   /* 11/11 21h51 : « mets un visuel dessus quand même » → photo en fond, voilée */
-    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", aspectRatio: "1 / 1", backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.25) 0%, rgba(6,7,9,0.55) 40%, rgba(6,7,9,0.94) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
+    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", minHeight: 104, backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.35) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.95) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
     pr[attr] = "1";
     return h("a", pr,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
@@ -939,7 +940,7 @@ function EcranTeamCompetition() {
   }
   var blocReg = section(h("div", null,
     enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정"), "rg", 0, 0),
-    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 142px)", gap: 10 } },   /* 11/11 21h51 : « beaucoup plus petites » */
+    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } },   /* 11/11 22h05 : petits rectangles sur toute la largeur */
       carteReg("data-reglement-odf", "docs/reglement-open-de-france-2026.pdf",
         T("Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "オープン・ド・フランス2026", "Open de France 2026", "أوبن فرنسا 2026", "2026 年法国公开赛", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "2026 Open de France"),
         T("Championnats de France Poney & Clubs", "French Pony & Club Championships", "Campeonatos de Francia Poni y Clubes", "Campionati di Francia Pony e Club", "フランス選手権 ポニー&クラブ", "Französische Pony- & Club-Meisterschaften", "بطولات فرنسا للبوني والأندية", "法国小马与俱乐部锦标赛", "Franse kampioenschappen Pony & Clubs", "Campeonatos da França de Pônei e Clubes", "Franska mästerskapen för ponny & ridklubb", "Чемпионаты Франции: пони и клубы", "Mistrzostwa Francji Kucyków i Klubów", "프랑스 포니·클럽 선수권"),
@@ -950,13 +951,43 @@ function EcranTeamCompetition() {
         T("Tours-Pernay, 15–18 octobre 2026", "Tours-Pernay, 15–18 October 2026", "Tours-Pernay, 15–18 de octubre de 2026", "Tours-Pernay, 15–18 ottobre 2026", "トゥール=ペルネ、2026年10月15〜18日", "Tours-Pernay, 15.–18. Oktober 2026", "تور-بيرنيه، 15–18 أكتوبر 2026", "图尔-佩尔奈，2026年10月15–18日", "Tours-Pernay, 15–18 oktober 2026", "Tours-Pernay, 15–18 de outubro de 2026", "Tours-Pernay, 15–18 oktober 2026", "Тур-Перне, 15–18 октября 2026", "Tours-Pernay, 15–18 października 2026", "투르-페르네, 2026년 10월 15–18일"),
         T("FFE · mis à jour le 10/06/2026", "FFE · updated 10/06/2026", "FFE · actualizado el 10/06/2026", "FFE · aggiornato il 10/06/2026", "FFE・2026年6月10日更新", "FFE · aktualisiert am 10.06.2026", "FFE · حُدّث في 10/06/2026", "FFE · 2026年6月10日更新", "FFE · bijgewerkt op 10/06/2026", "FFE · atualizado em 10/06/2026", "FFE · uppdaterad 10/06/2026", "FFE · обновлено 10.06.2026", "FFE · zaktualizowano 10.06.2026", "FFE · 2026년 6월 10일 업데이트"), "images/concours-hero-bai-tresse.webp"))));
 
+  /* 11/11 22h05 (Blandine : mélange des maquettes 1 et 5, « un visuel, un petit peu des dernières photos et ensuite l'accès vers
+     les pages ») : Souvenirs = les dernières photos ET vidéos (défilent sur téléphone, 4 de front sur grand écran), puis deux accès :
+     « Nos photos » (déplie toutes les photos ici) et « En piste » (les vidéos de l'équipe, déplacées depuis Apprendre). Pas de 2e titre. */
+  var svPhotos = (souvenirs || []).filter(function (x) { return !estVid(x.u); });
+  var svVids = (vidsRecentes && vidsRecentes.l) || [];
+  var svMix = svPhotos.slice(0, 8).map(function (x) { return { t: "p", d: String(x.d || ""), s: x }; })
+    .concat(svVids.map(function (v) { return { t: "v", d: String(v.date_video || v.cree_le || ""), v: v }; }))
+    .sort(function (a, b) { return b.d.localeCompare(a.d); }).slice(0, 8);
+  var svLarge = (typeof window !== "undefined" && window.innerWidth >= 820);
+  function tuileSv(m, i) {
+    var base = { flex: svLarge ? "0 0 calc((100% - 36px) / 4)" : "0 0 42%", aspectRatio: "4 / 5", position: "relative", padding: 0, border: "1px solid rgba(214,182,118,0.25)", borderRadius: 12, overflow: "hidden", background: "#11171C", cursor: "pointer", scrollSnapAlign: "start" };
+    if (m.t === "v") {
+      var v = m.v, src = (typeof vignetteHype === "function") ? vignetteHype(v.vignette, 400, 500) : v.vignette;
+      return h("button", { key: "svv" + v.id, type: "button", onClick: function () { ouvrirMedias("videos", v.id); }, style: base },
+        h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+        h("span", { style: { position: "absolute", top: 8, insetInlineEnd: 8, width: 28, height: 28, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(244,241,234,0.6)", display: "flex", alignItems: "center", justifyContent: "center" } },
+          h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV }))),
+        dureeM(v.duree) ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, color: IV, padding: "2px 6px", borderRadius: 6, background: "rgba(6,7,9,0.72)" } }, dureeM(v.duree)) : null);
+    }
+    var x = m.s, srcP = vignette(x.u);
+    return h("button", { key: "svp" + i, type: "button", onClick: function () { setVisu(x.u); }, style: base },
+      srcP ? h("img", { src: srcP, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null);
+  }
+  var nbVidsSv = (vidsRecentes && vidsRecentes.n) || 0;
+  var accesSv = h("div", { style: { display: "grid", gridTemplateColumns: svLarge ? "1fr 1fr" : "1fr", gap: svLarge ? 12 : 0, marginTop: 4 } },
+    carteBasse("svph", ICO.photo, T("Nos photos", "Our photos", "Nuestras fotos", "Le nostre foto", "私たちの写真", "Unsere Fotos", "صورنا", "我们的照片", "Onze foto's", "As nossas fotos", "Våra foton", "Наши фото", "Nasze zdjęcia", "우리의 사진"),
+      svPhotos.length ? (svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진"))) : T("Les photos des concours", "Competition photos", "Las fotos de los concursos", "Le foto dei concorsi", "大会の写真", "Die Turnierfotos", "صور المسابقات", "比赛照片", "De wedstrijdfoto's", "As fotos dos concursos", "Tävlingsfotona", "Фото с соревнований", "Zdjęcia z zawodów", "대회 사진"),
+      "images/concours-carte-equipe.webp", svPhotos.length ? function () { basculer("sv"); } : null, svLarge ? { marginBottom: 0 } : null),
+    carteBasse("svvi", ICO.video, T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로"),
+      nbVidsSv ? (nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상"))) : T("Les parcours de l'équipe", "The team's rounds", "Los recorridos del equipo", "I percorsi della squadra", "チームの走行", "Die Ritte des Teams", "جولات الفريق", "团队的比赛视频", "De rondes van het team", "Os percursos da equipa", "Lagets rundor", "Маршруты команды", "Przejazdy drużyny", "팀의 주행 영상"),
+      "images/galop2-hero-bai-entier.webp", function () { ouvrirMedias("videos"); }, svLarge ? { marginBottom: 0 } : null));
   var blocSv = section(h("div", null,
-    enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
-      h("svg", { width: 18, height: 16, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 1.5, width: 16, height: 13, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M2.5 12.5l4-4 3 3 2-2 4 3", fill: "none", stroke: OR, strokeWidth: 1.2 }), h("circle", { cx: 12.5, cy: 5.5, r: 1.3, fill: OR })),
-      T("Souvenirs récents", "Recent memories", "Recuerdos recientes", "Ricordi recenti", "最近の思い出", "Neueste Erinnerungen", "أحدث الذكريات", "最近的回忆", "Recente herinneringen", "Lembranças recentes", "Senaste minnen", "Недавние воспоминания", "Ostatnie wspomnienia", "최근 추억")), "sv", (souvenirs || []).length, 3),
-    souvenirs === null ? chargement()
-      : (!souvenirs.length ? videCartePh(ICO.photo, "images/concours-carte-equipe.webp", T("Aucun souvenir pour l’instant.", "No memories yet.", "Aún no hay recuerdos.", "Nessun ricordo per ora.", "まだ思い出はありません。", "Noch keine Erinnerungen.", "لا توجد ذكريات حاليا.", "暂时还没有回忆。", "Nog geen herinneringen.", "Nenhuma lembrança por enquanto.", "Inga minnen ännu.", "Пока нет воспоминаний.", "Na razie brak wspomnień.", "아직 추억이 없어요."))
-        : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } }, (ouvert.sv ? souvenirs : souvenirs.slice(0, 3)).map(tuile)))));   /* (531) choix D de Blandine : 3 par ligne, carrees ; (532) UNE seule ligne avant « Voir tout » */
+    (souvenirs === null && vidsRecentes === null) ? chargement()
+      : (!svMix.length ? videCartePh(ICO.photo, "images/concours-carte-equipe.webp", T("Aucun souvenir pour l’instant.", "No memories yet.", "Aún no hay recuerdos.", "Nessun ricordo per ora.", "まだ思い出はありません。", "Noch keine Erinnerungen.", "لا توجد ذكريات حاليا.", "暂时还没有回忆。", "Nog geen herinneringen.", "Nenhuma lembrança por enquanto.", "Inga minnen ännu.", "Пока нет воспоминаний.", "Na razie brak wspomnień.", "아직 추억이 없어요."))
+        : h("div", { "data-noswipe": "1", style: { display: "flex", gap: 12, overflowX: svLarge ? "hidden" : "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: 2, scrollbarWidth: "none" } }, svMix.map(tuileSv))),
+    accesSv,
+    ouvert.sv && svPhotos.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + (svLarge ? 6 : 3) + ", minmax(0, 1fr))", gap: 8, marginTop: 12 } }, svPhotos.map(tuile)) : null), true);
 
   /* ── panneau « Gérer les membres » (propriétaire / gestionnaires ; la base tranche) ── */
   async function ajouterMembre(p) {

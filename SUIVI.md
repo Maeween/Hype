@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261112-0010 — Page équipe : Souvenirs = photos + vidéos (maquettes 1 + 5) ; « En piste » quitte Apprendre ; règlements en petits rectangles
+- Blandine (22 h 05, après la maquette « 1 + 5 ») : « vas-y ». hype-ecran-team.js v=28. Partie 3 « Souvenirs » : sous « Nos plus beaux moments », plus de 2e titre ; les dernières photos ET vidéos de l'équipe mêlées par date (8 au plus ; défilent au doigt sur téléphone, 4 de front dès 820 px ; vidéo = ▶ + durée, ouvre la vidéo dans En piste ; photo = s'ouvre en grand), puis deux accès : « Nos photos » (N photos, déplie toutes les photos sur place) et « En piste » (N parcours filmés, ouvre les vidéos de l'équipe). Vidéos privées jamais dans le défilé ni dans le compte. Partie 4 « Apprendre » : ne garde que Les clés de Hey Baby, Optimise tes perfs et les Règlements.
+- Règlements : deux petits rectangles côte à côte sur toute la largeur (photo voilée en fond, titre, lieu, source FFE) — demande « je veux pas qu'ils soient trop gros et qu'ils prennent quand même toute la largeur ».
+- ⚠️ Blandine fait refaire la page équipe entière par ChatGPT : d'autres modifications de mise en page sont à prévoir.
+
 ### 11/11 — build 20261111-2355 / 2358 — Page équipe : les deux règlements en petites cartes carrées côte à côte
 - Blandine (21 h 46) : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ». hype-ecran-team.js v=26, partie « Apprendre » : Open de France 2026 et Championnat de France Amateur CSO 2026 en deux carrés (picto document + PDF en haut, titre court, lieu, « FFE · mis à jour le … » en petit), 460 px au plus sur ordinateur. Mêmes PDF, mêmes repères data-reglement-*. Textes courts traduits dans les 14 langues.
 - Build 20261111-2358 (Blandine 21 h 51 : « beaucoup plus petites », « mets un visuel dessus quand même ») : carrés de 142 px, textes réduits, photo en fond voilée de noir (Open de France = piquet-cso-poney.webp ; Amateur = concours-hero-bai-tresse.webp). hype-ecran-team.js v=27.
