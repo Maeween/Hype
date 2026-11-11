@@ -277,6 +277,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 1 — Urgent
 
+- [11/11 21h45] ✅ FAIT — Page équipe : le chapitre Médias = les trois portes (En piste → vidéos, Les clés de Hey Baby → épingles, Optimise tes perfs → théorie/articles) qui ouvrent directement la bonne rubrique ; page d'accueil des Médias supprimée (une page en moins, « ‹ L'équipe » pour revenir) ; « Les plus aimées », « Derniers partages » et « Conseils du coach » retirés du bas (doublons). Règlements gardés (à confirmer par Blandine). Build 20261111-2320.
+
 - [11/11 21h35] ✅ FAIT — « Ajouter une vidéo » refait d'après la maquette B choisie par Blandine : photo entière en haut, 4 étapes numérotées (1 Ta vidéo · 2 Le cavalier en tuiles photo comme les chevaux · 3 Le cheval · 4 Le concours avec Résultat, Légende, Sans le son), encadré « X sur Y » avant Publier ; « Un mot ? » devient « Légende » ; aucune fonction retirée ; 14 langues (build 20261111-2310).
 - [11/11 21h35] À FAIRE — Refonte complète de la page Team Compétition demandée par Blandine (« trop de trucs dans tous les sens ») : regrouper par thème (ex. tout l'apprentissage ensemble : articles, conseils du coach, épingles Hey Baby, théorie, règlements). Proposition de regroupement envoyée, maquettes à faire après son accord.
 
