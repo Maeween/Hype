@@ -343,6 +343,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 1 — Urgent
 
+- [12/11 01h45] ✅ FAIT — Performances du cavalier : Chapitre IV « Ses chevaux » (maquette O : une photo par cheval, résultats du couple, « Sa fiche »), saisons = Chapitre V, Ajouter / Importer sous les saisons ; bouton Partager la page (adresse #perfcav-…) ; menu Performances · Photos · Vidéos · Actualité aussi sur la page vide (builds 0135 et 0145).
+- [12/11 01h45] À DÉCIDER — Le bouton Performances du profil cavalier (et les liens équipe / écurie / agenda) ouvre encore l'ANCIENNE page Résultats (resultats-cavalier, 0 sorties / 0 victoires quand vide). Proposé : faire ouvrir la nouvelle page partout ; garder la carte vidéo « Importer tes résultats FFE ».
+
 - [12/11 01h25] ✅ FAIT — Performances du cavalier refaite d'après la maquette K « Chapitres » choisie par Blandine, avec les ajouts de la maquette J : menu Performances · Photos · Vidéos · Actualité à la place de la ligne de chiffres ; Chapitre I (victoires, podiums, barre, sorties/classés) ; « Sa régularité » en grand % ; « Son record » sur photo ; Chapitre II ses points par épreuve (saison en cours, « à venir » si inconnus) ; Chapitre III son dernier concours. Tout l'existant gardé dessous : filtre par cheval, moments forts, classement Team, ajouter / importer, saisons dépliables avec points de qualification, filtres et modification, vidéo. Page du cheval inchangée. Build 20261112-0125.
 
 - [11/11 21h50] ✅ FAIT — Page équipe réorganisée en 4 parties avec menu collant (L'équipe · Les concours · Souvenirs · Apprendre), « Classement des cavaliers » (liste → Performances du cavalier), cartes basses alignées, parties vides en petite carte avec photo (build 20261111-2330).
