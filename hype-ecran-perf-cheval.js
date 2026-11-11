@@ -748,6 +748,39 @@ function EcranPerformancesCheval(props) {
       return h("button", { key: "mc" + o[0], type: "button", onClick: on ? undefined : function () { allerPageCav(o[2]); }, "aria-current": on ? "page" : undefined,
         style: { flex: "0 0 auto", minHeight: 38, padding: "0 16px", borderRadius: 999, border: on ? "1.5px solid " + CHAMP : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 13, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
     }));
+  /* 12/11 00h10 — maquette O choisie par Blandine : « Chapitre IV · Ses chevaux », une grande photo par cheval, ses résultats
+     avec ce cheval et « Sa fiche » ; les saisons dépliables deviennent le Chapitre V, les boutons Ajouter / Importer passent en dessous. */
+  var chapChevaux = null;
+  if (modeCav && base.length) {
+    var parCh = {}, ordreCh = [];
+    base.forEach(function (f) { var k = f.cav || ""; if (!k) return; if (!parCh[k]) { parCh[k] = []; ordreCh.push(k); } parCh[k].push(f); });
+    ordreCh.sort(function (a, b) { return parCh[b].length - parCh[a].length; });
+    chapChevaux = h(React.Fragment, null,
+      h("div", { style: { padding: "40px 22px 0" } },
+        h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, T("Chapitre IV · Ses chevaux", "Chapter IV · The horses", "Capítulo IV · Sus caballos", "Capitolo IV · I suoi cavalli", "第4章・馬たち", "Kapitel IV · Seine Pferde", "الفصل الرابع · خيوله", "第四章 · 马匹", "Hoofdstuk IV · Zijn paarden", "Capítulo IV · Os cavalos", "Kapitel IV · Hästarna", "Глава IV · Лошади", "Rozdział IV · Konie", "4장 · 말들")),
+        h("div", { style: { fontFamily: SERIF, fontSize: 30, fontWeight: 500, color: IVOIRE, marginTop: 6 } }, T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Un binomio, una storia", "ひと組のペア、ひとつの物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "一对搭档，一段故事", "Eén combinatie, één verhaal", "Um par, uma história", "Ett ekipage, en historia", "Пара — это история", "Para, jedna historia", "한 쌍, 하나의 이야기"))),
+      ordreCh.map(function (k) {
+        var fsC = parCh[k].slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
+        var cvx = null, cvId = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (idc) { var c = cav.chevaux[idc]; if (c && ((String(c.alias || "").trim() || c.nom) === k)) { cvx = c; cvId = idc; } }); } catch (eCh) { }
+        var stC = hypePerfStatsHisto(fsC);
+        var ligne1 = stC.victoires ? stC.victoires + " " + (stC.victoires > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승")) : null;
+        var ligne2 = stC.sorties + " " + (stC.sorties > 1 ? T("sorties ensemble", "outings together", "salidas juntos", "uscite insieme", "回一緒に出場", "gemeinsame Starts", "مشاركات معًا", "次共同出赛", "starts samen", "saídas juntos", "starter tillsammans", "совместных стартов", "wspólnych startów", "회 함께 출전") : T("sortie ensemble", "outing together", "salida juntos", "uscita insieme", "回一緒に出場", "gemeinsamer Start", "مشاركة معًا", "次共同出赛", "start samen", "saída juntos", "start tillsammans", "совместный старт", "wspólny start", "회 함께 출전"));
+        return h("div", { key: "chx" + k, "data-perf-couple": k },
+          chapitre("cpl" + k, (cvx && cvx.photo_url) || "images/concours-hero-cso.webp", T("Avec ", "With ", "Con ", "Con ", "", "Mit ", "مع ", "与 ", "Met ", "Com ", "Med ", "С ", "Z ", "") + k,
+            h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.08, color: IVOIRE, marginTop: 6 } }, ligne1 ? h(React.Fragment, null, ligne1, h("br"), h("span", { style: { color: CHAMP } }, ligne2)) : ligne2)),
+          h("div", { style: { padding: "0 22px" } },
+            fsC.slice(0, 3).map(function (f, i) {
+              var g = f.pl === 1;
+              return h("div", { key: "cr" + (f.id || i), style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, padding: "14px 0", borderBottom: "1px solid rgba(201,166,107,0.12)" } },
+                h("div", { style: { minWidth: 0 } },
+                  h("div", { style: { fontFamily: SERIF, fontSize: 20, color: IVOIRE, lineHeight: 1.2 } }, [f.ep, f.nom].filter(Boolean).join(" · ")),
+                  h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 12, color: MUET } }, [f.d ? dateLisible(f.d) : "", f.part ? T("sur ", "of ", "de ", "su ", "/", "von ", "من ", "/", "van ", "de ", "av ", "из ", "z ", "/") + f.part : "", hypePerfEstSansFaute(f) ? T("sans faute", "clear round", "sin faltas", "netto", "減点なし", "fehlerfrei", "بلا أخطاء", "零罚分", "foutloos", "sem faltas", "felfri", "чисто", "bez zrzutki", "무감점") : "", (f.pts != null && !isNaN(f.pts)) ? "+" + arr(f.pts) + " pts" : ""].filter(Boolean).join(" · "))),
+                h("div", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 30, color: g ? CHAMP : IVOIRE, lineHeight: 1 } }, f.pl != null ? rangTxt(f.pl) : (f.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "استبعاد", "淘汰", "Uitg.", "Elim.", "Utsl.", "Искл.", "Wyel.", "실격") : T("Ab.", "Ret.", "Ab.", "Rit.", "棄権", "Aufg.", "انسحاب", "弃权", "Opg.", "Desist.", "Bröt", "Сход", "Rez.", "기권"))));
+            }),
+            cvId ? h("div", { style: { textAlign: "end", marginTop: 10 } }, h("button", { type: "button", onClick: function () { try { window.__chevalOuvert = cvId; } catch (eO) { } setEcran("cheval"); }, style: { background: "none", border: "none", padding: "6px 0", color: CHAMP, fontFamily: SANS, fontSize: 13, cursor: "pointer" } }, T("Sa fiche", "Profile", "Su ficha", "La scheda", "プロフィール", "Steckbrief", "ملفه", "档案", "Profiel", "A ficha", "Profil", "Карточка", "Profil", "프로필") + " " + (rtl ? "‹" : "›"))) : null));
+      }),
+      h("svg", { viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, marginTop: 34, transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 8 C 120 12, 230 32, 400 6", fill: "none", stroke: CHAMP, strokeWidth: 1 })));
+  }
   var elG = [
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
     /* (g2) comme la maquette : chiffres poses sur le fond, sans cadre, chiffres ivoire en serif, libelles en minuscules, filet fin dessous */
@@ -794,10 +827,12 @@ function EcranPerformancesCheval(props) {
         h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 11, color: "#E6CF9C", direction: "ltr", unicodeBidi: "isolate" } }, (Math.round((teamInfo.pts || 0) * 100) / 100) + " pts Team")),
       h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 20, lineHeight: 1 } }, rtl ? "‹" : "›")) : null,
     /* actions compactes */
-    actionsCompactes,
-    outilCapture,
+    modeCav ? null : actionsCompactes,
+    modeCav ? null : outilCapture,
   ];
   var elD = [
+    chapChevaux,
+    modeCav ? h("div", { style: { padding: "20px 18px 0", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, T("Chapitre V", "Chapter V", "Capítulo V", "Capitolo V", "第5章", "Kapitel V", "الفصل الخامس", "第五章", "Hoofdstuk V", "Capítulo V", "Kapitel V", "Глава V", "Rozdział V", "5장")) : null,
     /* toutes ses saisons : le tableau depliable */
     titreSection(T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه", "它的所有赛季", "Al zijn seizoenen", "Todas as temporadas", "Alla dess säsonger", "Все её сезоны", "Wszystkie jego sezony", "모든 시즌")),
     h("div", { style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "-4px 18px 12px" } }, LEGENDE.map(function (lg, i) {
@@ -806,6 +841,8 @@ function EcranPerformancesCheval(props) {
     h("div", { "data-perf-tableau": "1" }, saisons.map(ligneSaison)),
     (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "6px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer", padding: "8px" } }, libMasques())) : null,
     h("div", { "data-perf-compteur": "1", style: { textAlign: "center", margin: "6px 18px 0", fontFamily: SANS, fontSize: 10.5, color: MUET2 } }, places.length + " " + (places.length > 1 ? T("résultats enregistrés", "recorded results", "resultados registrados", "risultati registrati", "件の成績", "erfasste Ergebnisse", "نتائج مسجلة", "条已记录的成绩", "geregistreerde resultaten", "resultados registrados", "sparade resultat", "сохранённых результатов", "zapisanych wyników", "저장된 결과") : T("résultat enregistré", "recorded result", "resultado registrado", "risultato registrato", "件の成績", "erfasstes Ergebnis", "نتيجة مسجلة", "条已记录的成绩", "geregistreerd resultaat", "resultado registrado", "sparat resultat", "сохранённый результат", "zapisany wynik", "저장된 결과"))),
+    modeCav ? actionsCompactes : null,
+    modeCav ? outilCapture : null,
   ];
   return h("div", { "data-ecran": "performances-cheval", style: racineSt },
     hero,
