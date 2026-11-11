@@ -197,6 +197,12 @@ var HS_TR_BRUT = {
   "pts": ["pen.", "pts", "pen.", "点", "Fehler", "نقاط", "分", "fouten", "pts", "fel", "штр.", "pkt", "점"],
   "pt": ["pen.", "pt", "pen.", "点", "Fehler", "نقطة", "分", "fout", "pt", "fel", "штр.", "pkt", "점"],
   "Voir la vidéo du parcours": ["Watch the round video", "Ver el vídeo del recorrido", "Guarda il video del percorso", "走行動画を見る", "Video des Ritts ansehen", "شاهد فيديو الجولة", "观看本轮视频", "Video van de ronde bekijken", "Ver o vídeo do percurso", "Se rundens video", "Смотреть видео маршрута", "Obejrzyj film z przejazdu", "라운드 영상 보기"],
+  "Partager": ["Share", "Compartir", "Condividi", "共有", "Teilen", "مشاركة", "分享", "Delen", "Compartilhar", "Dela", "Поделиться", "Udostępnij", "공유"],
+  "Préparation de l’image…": ["Preparing the image…", "Preparando la imagen…", "Preparazione dell’immagine…", "画像を準備中…", "Bild wird vorbereitet…", "جارٍ تجهيز الصورة…", "正在准备图片…", "Afbeelding wordt voorbereid…", "Preparando a imagem…", "Bilden förbereds…", "Подготовка изображения…", "Przygotowywanie obrazu…", "이미지 준비 중…"],
+  "autre résultat": ["other result", "resultado más", "altro risultato", "件の他の成績", "weiteres Ergebnis", "نتيجة أخرى", "个其他成绩", "ander resultaat", "outro resultado", "annat resultat", "другой результат", "inny wynik", "개의 다른 성적"],
+  "autres résultats": ["other results", "resultados más", "altri risultati", "件の他の成績", "weitere Ergebnisse", "نتائج أخرى", "个其他成绩", "andere resultaten", "outros resultados", "andra resultat", "других результатов", "innych wyników", "개의 다른 성적"],
+  "L’image n’a pas pu être préparée : le lien est partagé seul.": ["The image could not be prepared: the link is shared on its own.", "No se pudo preparar la imagen: se comparte solo el enlace.", "Impossibile preparare l’immagine: viene condiviso solo il link.", "画像を準備できませんでした。リンクのみ共有します。", "Das Bild konnte nicht erstellt werden: Nur der Link wird geteilt.", "تعذّر تجهيز الصورة: تتم مشاركة الرابط وحده.", "无法准备图片：仅分享链接。", "De afbeelding kon niet worden gemaakt: alleen de link wordt gedeeld.", "Não foi possível preparar a imagem: o link é compartilhado sozinho.", "Bilden kunde inte förberedas: bara länken delas.", "Не удалось подготовить изображение: отправляется только ссылка.", "Nie udało się przygotować obrazu: udostępniany jest sam link.", "이미지를 준비하지 못했어요. 링크만 공유됩니다."],
+  "Lien copié": ["Link copied", "Enlace copiado", "Link copiato", "リンクをコピーしました", "Link kopiert", "تم نسخ الرابط", "链接已复制", "Link gekopieerd", "Link copiado", "Länken kopierad", "Ссылка скопирована", "Link skopiowany", "링크가 복사되었어요"],
   "Saisir ou corriger": ["Enter or correct", "Introducir o corregir", "Inserisci o correggi", "入力・修正", "Erfassen oder korrigieren", "إدخال أو تصحيح", "录入或更正", "Invoeren of corrigeren", "Inserir ou corrigir", "Mata in eller rätta", "Внести или исправить", "Wpisz lub popraw", "입력 또는 수정"],
   "Résultats de l’équipe": ["Team results", "Resultados del equipo", "Risultati della squadra", "チームの成績", "Ergebnisse des Teams", "نتائج الفريق", "团队成绩", "Uitslagen van het team", "Resultados da equipe", "Lagets resultat", "Результаты команды", "Wyniki drużyny", "팀 성적"],
   "Les podiums de l’équipe": ["Team podiums", "Los podios del equipo", "I podi della squadra", "チームの表彰台", "Die Podien des Teams", "منصات تتويج الفريق", "团队领奖台", "Podiumplaatsen van het team", "Os pódios da equipe", "Lagets pallplatser", "Пьедесталы команды", "Podia drużyny", "팀 시상대"],
@@ -1242,7 +1248,9 @@ function EcranConcours() {
   var _dcl = React.useState(null); var decEp = _dcl[0], setDecEp = _dcl[1];   /* 09/11 14h53 (Blandine « Ok 2 ») : { ep, min, prev, occ, msg } — décaler une épreuve depuis Passages */
   var _lre = React.useState(null); var lienResEd = _lre[0], setLienResEd = _lre[1];   /* 09/11 14h07 : lien des résultats en ligne (concours terminé) */
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
-  var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];   /* { posts, tv, ident, resCav } */
+  var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];
+  var _prs = React.useState(""); var partageRes = _prs[0], setPartageRes = _prs[1];   /* 11/11 : partage des résultats (« en_cours ») */
+  var _pmg = React.useState(""); var partageMsg = _pmg[0], setPartageMsg = _pmg[1];   /* { posts, tv, ident, resCav } */
   var _mt = React.useState("tous"); var medType = _mt[0], setMedType = _mt[1];
   var _mfc = React.useState(""); var fCavM = _mfc[0], setFCavM = _mfc[1];
   var _mfh = React.useState(""); var fChM = _mfh[0], setFChM = _mfh[1];
@@ -2258,9 +2266,45 @@ function EcranConcours() {
   var boutonsBas = h("div", { key: "bb", className: "hc-bb" },
     (!fini && (epsRes.some(function (x) { return x.url; }) || ev.lien_direct)) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
     null);   /* 09/11 23h55 (Blandine : « retire Revoir les vidéos ») */   /* « Dossier du concours » : carte dans Passages (09/11 14h15) */
+  /* 11/11 — PARTAGER LES RÉSULTATS : lien qui ouvre ce concours (famille « r », déjà reconnue par Hype : après connexion, la
+     personne arrive sur la fiche, onglet Résultats pour un concours terminé) + l'image story (hsImageResultats).
+     Bouton pour la coach et tous les cavaliers de l'équipe, dès qu'il y a au moins un résultat à montrer.
+     Dans l'image : classés (premier quart), podiums et sans-faute ; brouillons et lignes masquées jamais. */
+  var lignesStory = [];
+  epsRes.forEach(function (x, xi) { x.l.forEach(function (l) {
+    if (l.brouillon || l.attente) return;
+    var cl = l.place && x.partants && l.place <= Math.max(1, Math.ceil(x.partants / 4)), pod = l.place >= 1 && l.place <= 3;
+    if (!(cl || pod || l.sf)) return;
+    var u = l.p && l.p.avatar_url ? String(l.p.avatar_url) : "", av = u ? ((u.charAt(0) === "@") ? ((typeof CAV_IMGS !== "undefined" && CAV_IMGS[u.slice(1)]) || "") : ((typeof vignetteHype === "function") ? vignetteHype(u, 200, 200) : u)) : "";
+    lignesStory.push({ place: l.place || 0, suff: (lg === "fr" && l.place) ? (l.place === 1 ? "er" : "e") : "", sf: !!l.sf, nom: l.nom, cheval: l.cheval, ep: x.ep, avatar: av, o: xi });
+  }); });
+  lignesStory.sort(function (a, b) { return ((a.place || 999) - (b.place || 999)) || (a.o - b.o); });
+  var peutPartagerRes = !!(lignesStory.length && (gestion || (equipe && equipe.membre)));
+  async function partagerResultats() {
+    if (partageRes === "en_cours") return;
+    setPartageRes("en_cours"); setPartageMsg("");
+    var image = null;
+    try {
+      var photos = [];
+      try {
+        var rp = await supa.from("commentaires").select("photo_url, medias, prive").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(40);
+        ((rp && !rp.error && rp.data) || []).forEach(function (po) { if (po.prive) return; [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && !hsEstVideo(String(m)) && photos.length < 3 && photos.indexOf(m) === -1) photos.push((typeof grandeImageHype === "function") ? grandeImageHype(String(m), 1100) : String(m)); }); });
+      } catch (eP) { }
+      var bilan = [nbP[0] ? nbP[0] + " " + (nbP[0] > 1 ? F("victoires") : F("victoire")) : "", nbP[1] ? nbP[1] + " " + (nbP[1] > 1 ? F("deuxièmes places") : F("deuxième place")) : "", nbP[2] ? nbP[2] + " " + (nbP[2] > 1 ? F("troisièmes places") : F("troisième place")) : "", nbClasses ? nbClasses + " " + (nbClasses > 1 ? F("classements") : F("classement")) : ""].filter(Boolean).join(" · ");
+      image = await hsImageResultats({ titre: ev.titre || F("Concours"), sous: sousTitre, libelle: F("Résultats de l’équipe"), bilan: bilan, lignes: lignesStory, photos: photos, secours: heroPh && heroPh.img, rtl: rtl, sansFaute: F("Sans faute"), autre: F("autre résultat"), autres: F("autres résultats") });
+    } catch (eI) { image = null; setPartageMsg(F("L’image n’a pas pu être préparée : le lien est partagé seul.")); }
+    try {
+      if (typeof hypePartager === "function") await hypePartager("r", idEv, (ev.titre || F("Concours")) + " — " + F("Résultats de l’équipe"), { image: image || undefined, onCopie: function () { setPartageMsg(F("Lien copié")); } });
+    } catch (eS) { }
+    setPartageRes(""); if (image) setTimeout(function () { try { URL.revokeObjectURL(image); } catch (eR) { } }, 60000);
+  }
   var blocResultats = h("div", { key: "res" },
     bandeauDirect, regLive,
-    (epsRes.length || gestion) ? h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Résultats de l’équipe"))) : null,
+    (epsRes.length || gestion) ? h("div", { className: "hc-pas-tete" }, h("h2", { className: "hc-pas-titre" }, F("Résultats de l’équipe")),
+      peutPartagerRes ? h("button", { type: "button", className: "hc-btn-l", disabled: partageRes === "en_cours", onClick: partagerResultats, style: { flex: "0 0 auto", display: "inline-flex", alignItems: "center", gap: 8 } },
+        h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("g", { fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M12 3v12" }), h("path", { d: "M7.5 7.5 12 3l4.5 4.5" }), h("path", { d: "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" }))),
+        partageRes === "en_cours" ? F("Préparation de l’image…") : F("Partager")) : null) : null,
+    partageMsg ? h("div", { key: "pmsg", className: "hs-note", style: { marginTop: -10, marginBottom: 12 } }, partageMsg) : null,
     (gestion && parEpreuve.length) ? h("div", { key: "lire", className: "hc-lire-res" },
       h("label", { className: "hc-btn-l", style: { cursor: "pointer", opacity: resLect === "en_cours" ? 0.6 : 1 } },
         resLect === "en_cours" ? F("Lecture des résultats… (1 à 2 min)") : F("Lire les résultats (PDF ou capture)"),
@@ -3110,6 +3154,111 @@ function EcranConcours() {
    (aucune image de remplacement) et le héros reprend la photo de secours (les 8 photos de la saison). */
 var HS_HERO_CONCOURS = "images/concours-hero-cso.webp";
 var HS_IMG_CONCOURS = { engagements: "images/concours-carte-engagements.webp", passages: "images/concours-carte-passages.webp", equipe: "images/concours-carte-equipe.webp", medias: "images/concours-carte-medias.webp" };
+/* ════════════ 11/11 — IMAGE « STORY » DES RÉSULTATS (Blandine : « un lien de partage qui amène directement sur la page
+   et qui fasse une petite story en même temps avec les photos, les résultats ») ════════════
+   Une image verticale 1080 × 1920 (format story Instagram / WhatsApp) : photos du concours ENTIÈRES (jamais rognées : le même
+   cliché flouté derrière), 1 photo = pleine largeur, 2 = deux moitiés, 3 = une grande + deux moitiés ; courbe dorée, titre
+   Cormorant, date et lieu, « Résultats de l’équipe », le bilan (victoires, places, classements), puis les classés et sans-faute
+   (place, photo du cavalier, nom, cheval, épreuve), 5 lignes au plus + « + N autres résultats » ; fin « Hype · 2hype.fr ».
+   Trois couleurs seulement : noir, ivoire, champagne. Une photo qui refuse de se charger est simplement laissée de côté. */
+function hsChargerImage(src) {
+  return new Promise(function (ok) {
+    if (!src) { ok(null); return; }
+    var im = new Image(); var fini = false;
+    function fin(v) { if (!fini) { fini = true; ok(v); } }
+    if (!/^(data:|blob:|images\/|\/)/.test(src)) im.crossOrigin = "anonymous";
+    im.onload = function () { fin(im.naturalWidth ? im : null); }; im.onerror = function () { fin(null); };
+    setTimeout(function () { fin(null); }, 9000);
+    im.src = src;
+  });
+}
+async function hsImageResultats(d) {
+  var W = 1080, H = 1920, NOIR = "#070A08", IV = "#F3EEE4", OR = "#C9A66B", GRIS = "rgba(243,238,228,0.62)";
+  var SERIF = "'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', Arial, sans-serif";
+  try { if (document.fonts && document.fonts.load) await Promise.all(["500 120px 'Cormorant Garamond'", "italic 500 48px 'Cormorant Garamond'", "600 38px 'Montserrat'", "400 28px 'Montserrat'", "500 22px 'Montserrat'"].map(function (f) { return document.fonts.load(f).catch(function () { }); })); } catch (eF) { }
+  var cv = document.createElement("canvas"); cv.width = W; cv.height = H; var c = cv.getContext("2d");
+  c.fillStyle = NOIR; c.fillRect(0, 0, W, H);
+  /* ── photos ── */
+  var srcs = (d.photos || []).slice(0, 3); var ims = [];
+  for (var i = 0; i < srcs.length; i++) { var im = await hsChargerImage(srcs[i]); if (im) ims.push(im); }
+  if (!ims.length && d.secours) { var imS = await hsChargerImage(d.secours); if (imS) ims.push(imS); }
+  var HP = 880;
+  function photoEntiere(im, x, y, w, h) {
+    c.save(); c.beginPath(); c.rect(x, y, w, h); c.clip();
+    var sc = Math.max(w / im.naturalWidth, h / im.naturalHeight), bw = im.naturalWidth * sc, bh = im.naturalHeight * sc;
+    try { c.filter = "blur(28px) brightness(0.45)"; } catch (eB) { }
+    c.drawImage(im, x + (w - bw) / 2, y + (h - bh) / 2, bw, bh);
+    try { c.filter = "none"; } catch (eB2) { }
+    var s2 = Math.min(w / im.naturalWidth, h / im.naturalHeight), fw = im.naturalWidth * s2, fh = im.naturalHeight * s2;
+    c.drawImage(im, x + (w - fw) / 2, y + (h - fh) / 2, fw, fh);
+    c.restore();
+  }
+  var G = 8;
+  if (ims.length === 1) photoEntiere(ims[0], 0, 0, W, HP);
+  else if (ims.length === 2) { photoEntiere(ims[0], 0, 0, (W - G) / 2, HP); photoEntiere(ims[1], (W + G) / 2, 0, (W - G) / 2, HP); }
+  else if (ims.length >= 3) { var h1 = Math.round(HP * 0.6); photoEntiere(ims[0], 0, 0, W, h1); photoEntiere(ims[1], 0, h1 + G, (W - G) / 2, HP - h1 - G); photoEntiere(ims[2], (W + G) / 2, h1 + G, (W - G) / 2, HP - h1 - G); }
+  /* fondu vers le noir sous les photos */
+  var gr = c.createLinearGradient(0, HP - 300, 0, HP + 40); gr.addColorStop(0, "rgba(7,10,8,0)"); gr.addColorStop(1, NOIR);
+  c.fillStyle = gr; c.fillRect(0, HP - 300, W, 340);
+  /* courbe dorée (comme le haut des pages Hype) */
+  c.strokeStyle = OR; c.lineWidth = 2.2; c.globalAlpha = 0.9;
+  c.beginPath(); c.moveTo(0, HP - 20); c.bezierCurveTo(W * 0.33, HP - 26, W * 0.62, HP - 110, W, HP - 250); c.stroke(); c.globalAlpha = 1;
+  /* ── titre, date et lieu ── */
+  function ajuster(txt, police, max, taille, mini) { var t = taille; c.font = police.replace("{t}", t); while (c.measureText(txt).width > max && t > mini) { t -= 4; c.font = police.replace("{t}", t); } return t; }
+  var rtl = !!d.rtl; c.direction = rtl ? "rtl" : "ltr";
+  var X0 = rtl ? W - 72 : 72, ALIGN = rtl ? "right" : "left";
+  c.textAlign = ALIGN; c.textBaseline = "alphabetic";
+  c.fillStyle = IV; ajuster(d.titre || "", "500 {t}px " + SERIF, W - 144, 124, 64); c.fillText(d.titre || "", X0, HP + 70);
+  if (d.sous) { c.fillStyle = OR; ajuster(d.sous, "italic 500 {t}px " + SERIF, W - 144, 50, 30); c.fillText(d.sous, X0, HP + 138); }
+  /* ── « Résultats de l'équipe » + bilan ── */
+  var y = HP + 222;
+  c.font = "600 26px " + SANS; c.fillStyle = OR;
+  var lab = String(d.libelle || "").toUpperCase(); try { c.letterSpacing = "6px"; } catch (eL) { }
+  c.fillText(lab, X0, y); var lw = c.measureText(lab).width; try { c.letterSpacing = "0px"; } catch (eL2) { }
+  c.fillRect(rtl ? X0 - lw - 70 : X0 + lw + 22, y - 9, 48, 2);
+  if (d.bilan) { y += 52; c.font = "400 28px " + SANS; c.fillStyle = GRIS; ajuster(d.bilan, "400 {t}px " + SANS, W - 144, 28, 20); c.fillText(d.bilan, X0, y); }
+  /* ── lignes ── */
+  y += 40; var LH = 128, maxL = 5, lignes = (d.lignes || []).slice(0, maxL);
+  for (var k = 0; k < lignes.length; k++) {
+    var l = lignes[k], yc = y + k * LH + LH / 2;
+    var xp = rtl ? W - 72 - 50 : 72 + 50;
+    /* place : cercle fin (or / argent / bronze pour le podium) */
+    var col = l.place === 1 ? OR : l.place === 2 ? "#D9D7D2" : l.place === 3 ? "#B98A5E" : "rgba(201,166,107,0.55)";
+    c.strokeStyle = col; c.lineWidth = 2; c.beginPath(); c.arc(xp, yc, 46, 0, Math.PI * 2); c.stroke();
+    c.textAlign = "center"; c.fillStyle = l.place ? col : OR;
+    if (l.place) {   /* chiffres en Montserrat : ceux de Cormorant sont « à l'ancienne » (le 1 ressemble à un I) */
+      c.font = "600 38px " + SANS; var wN = c.measureText(String(l.place)).width; c.font = "600 18px " + SANS; var wS = l.suff ? c.measureText(l.suff).width + 2 : 0;
+      var x0 = xp - (wN + wS) / 2; c.textAlign = "left"; c.font = "600 38px " + SANS; c.fillText(String(l.place), x0, yc + 13);
+      if (l.suff) { c.font = "600 18px " + SANS; c.fillText(l.suff, x0 + wN + 2, yc - 4); } c.textAlign = "center"; }
+    else { c.font = "600 22px " + SANS; c.fillText("SF", xp, yc + 8); }
+    /* photo du cavalier */
+    var xa = rtl ? xp - 50 - 22 - 42 : xp + 50 + 22 + 42;
+    c.save(); c.beginPath(); c.arc(xa, yc, 42, 0, Math.PI * 2); c.closePath(); c.fillStyle = "#101A1D"; c.fill(); c.clip();
+    var av = l.avatar ? await hsChargerImage(l.avatar) : null;
+    if (av) { var s3 = Math.max(84 / av.naturalWidth, 84 / av.naturalHeight); c.drawImage(av, xa - av.naturalWidth * s3 / 2, yc - av.naturalHeight * s3 / 2, av.naturalWidth * s3, av.naturalHeight * s3); }
+    else { c.fillStyle = OR; c.font = "500 40px " + SERIF; c.textAlign = "center"; c.fillText(String(l.nom || "·").charAt(0).toUpperCase(), xa, yc + 13); }
+    c.restore();
+    c.strokeStyle = "rgba(201,166,107,0.6)"; c.lineWidth = 1.5; c.beginPath(); c.arc(xa, yc, 42, 0, Math.PI * 2); c.stroke();
+    /* nom, cheval · épreuve */
+    var xt = rtl ? xa - 42 - 26 : xa + 42 + 26, larg = rtl ? xt - 72 : W - 72 - xt;
+    c.textAlign = ALIGN; c.fillStyle = IV; ajuster(l.nom || "", "600 {t}px " + SANS, larg, 36, 24); c.fillText(l.nom || "", xt, yc - 4);
+    var sousL = [l.cheval, l.ep].filter(Boolean).join(" · ") + (l.sf && l.place ? " · " + (d.sansFaute || "") : "");
+    c.fillStyle = GRIS; var tS = ajuster(sousL, "400 {t}px " + SANS, larg, 26, 18);
+    while (c.measureText(sousL).width > larg && sousL.length > 4) sousL = sousL.slice(0, -2);
+    c.fillText(sousL, xt, yc + 36);
+    if (k < lignes.length - 1) { c.fillStyle = "rgba(201,166,107,0.16)"; c.fillRect(72, y + (k + 1) * LH - 1, W - 144, 1); }
+  }
+  var reste = (d.lignes || []).length - lignes.length;
+  var yb = y + lignes.length * LH;
+  if (reste > 0) { c.textAlign = ALIGN; c.font = "italic 500 34px " + SERIF; c.fillStyle = OR; c.fillText("+ " + reste + " " + (reste > 1 ? d.autres : d.autre), X0, yb + 44); }
+  /* ── fin : Hype · 2hype.fr ── */
+  c.fillStyle = "rgba(201,166,107,0.35)"; c.fillRect(W / 2 - 60, H - 112, 120, 1.5);
+  c.textAlign = "center"; c.fillStyle = IV; c.font = "500 46px " + SERIF; c.fillText("Hype", W / 2, H - 58);
+  c.fillStyle = OR; c.font = "500 22px " + SANS; try { c.letterSpacing = "5px"; } catch (eL3) { } c.fillText("2HYPE.FR", W / 2, H - 24); try { c.letterSpacing = "0px"; } catch (eL4) { }
+  return await new Promise(function (ok, ko) { try { cv.toBlob(function (b) { b ? ok(URL.createObjectURL(b)) : ko(new Error("vide")); }, "image/jpeg", 0.9); } catch (eT) { ko(eT); } });
+}
+try { window.hsImageResultats = hsImageResultats; } catch (eWr) { }
+
 function hsPhotoConcours(ev, id) {
   /* la photo du concours d'abord ; sinon la photo de la maquette ; sinon (fichier absent) les photos de secours */
   var u = ev && ev.image_url ? String(ev.image_url) : "";

@@ -388,6 +388,28 @@ function EcranTeamCompetition() {
     }));
   }
 
+  /* 11/11 (Blandine : « je croyais qu'on avait validé les carrés pour les chevaux ») : chevaux en CARTES CARRÉES
+     sur téléphone (3 par ligne) et tablette (4 par ligne), 8 visibles ; lignes équilibrées et centrées comme les ronds.
+     Ordinateur (≥ 1024 px) inchangé (ronds) en attendant son choix de mise en page. Les cavaliers gardent leurs ronds. */
+  function carreCheval(key, src, nom, onClick, repli) {
+    return h("button", { key: key, type: "button", onClick: onClick, style: { width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "stretch", alignSelf: "start" } },
+      h("div", { style: { width: "100%", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(214,182,118,0.55)", background: "#11171C", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box" } },
+        src ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(src, 360, 360) : src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+          : h("span", { style: { fontFamily: SERIF, fontSize: 30, color: OR } }, repli || "")),
+      h("div", { dir: "auto", style: { marginTop: 8, maxWidth: "100%", fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.1, textTransform: "uppercase", color: IV, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, nom || ""));
+  }
+  function grilleCarres(items, cle, parLigne) {
+    var liste = ouvert[cle] ? items : items.slice(0, 8);
+    var n = liste.length, nbL = Math.max(1, Math.ceil(n / parLigne)), base = Math.floor(n / nbL), plus = n % nbL, lignes = [], k = 0;
+    for (var r = 0; r < nbL; r++) { var t = base + (r < plus ? 1 : 0); lignes.push(liste.slice(k, k + t)); k += t; }
+    var ecart = 10, larg = "calc((100% - " + (ecart * (parLigne - 1)) + "px) / " + parLigne + ")";
+    return h("div", { style: { display: "flex", flexDirection: "column", rowGap: 14 } }, lignes.map(function (lg0, r) {
+      return h("div", { key: "l" + r, style: { display: "flex", justifyContent: "center", columnGap: ecart } }, lg0.map(function (it, j) { return h("div", { key: (it && it.key) || ("c" + j), style: { flex: "0 0 " + larg, minWidth: 0, display: "flex" } }, it); }));
+    }));
+  }
+  var largEcran = 390; try { largEcran = window.innerWidth || 390; } catch (eLe) { }
+  var chevauxCarres = largEcran < 1024, carresParLigne = largEcran < 600 ? 3 : 4;
+
   /* ── hero ── */
   var hero = h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 292px)", overflow: "hidden", background: BG } },
     h("img", { src: "images/TEAM_COMPETITION.webp", alt: "", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "72%", height: "100%", objectFit: "cover", objectPosition: "center 28%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
@@ -429,11 +451,11 @@ function EcranTeamCompetition() {
       onFini: function (gN) { setGroupe(Object.assign({}, groupe, gN || {})); setModifGroupe(false); } }) : null), true);
 
   /* ── nos chevaux ── */
-  var itemsCh = (chevaux || []).map(function (c) { return portrait("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
+  var itemsCh = (chevaux || []).map(function (c) { return (chevauxCarres ? carreCheval : portrait)("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
   var blocCh = section(h("div", null,
     enTete(T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"), "ch", itemsCh.length, 8),
     chevaux === null ? chargement()
-      : (itemsCh.length ? grillePortraits(itemsCh, "ch") : vide(T("Aucun cheval trouvé pour l’instant.", "No horses found yet.", "Aún no hay caballos.", "Nessun cavallo per ora.", "まだ馬はいません。", "Noch keine Pferde gefunden.", "لم يتم العثور على خيول حاليا.", "目前还没有找到马。", "Nog geen paarden gevonden.", "Nenhum cavalo encontrado por enquanto.", "Inga hästar hittades ännu.", "Пока лошадей не найдено.", "Na razie nie znaleziono żadnego konia.", "아직 말이 없어요."))),
+      : (itemsCh.length ? (chevauxCarres ? grilleCarres(itemsCh, "ch", carresParLigne) : grillePortraits(itemsCh, "ch")) : vide(T("Aucun cheval trouvé pour l’instant.", "No horses found yet.", "Aún no hay caballos.", "Nessun cavallo per ora.", "まだ馬はいません。", "Noch keine Pferde gefunden.", "لم يتم العثور على خيول حاليا.", "目前还没有找到马。", "Nog geen paarden gevonden.", "Nenhum cavalo encontrado por enquanto.", "Inga hästar hittades ännu.", "Пока лошадей не найдено.", "Na razie nie znaleziono żadnego konia.", "아직 말이 없어요."))),
     errChevaux ? h("div", { style: { marginTop: 8, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } }, errChevaux) : null,
     (gestion && groupe) ? h("div", { style: { display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 } },
     h("button", { type: "button", onClick: function () { setErrPanneau(""); setRecherche(""); setPanneau("chevaux"); }, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },

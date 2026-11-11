@@ -10,6 +10,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-1220 — Partager les résultats d'un concours (lien + image story) ; chevaux en carrés sur la page équipe
+- Fiche concours, onglet Résultats (hype-ecran-saison.js v=134) : bouton « Partager » à contour à droite de « Résultats de l'équipe », pour la coach et les cavaliers de l'équipe, dès qu'il y a un résultat à montrer. Il fabrique une image story 1080×1920 (photos du fil du concours entières sur fond flouté, 1 / 2 / 3 photos équilibrées, sinon la photo du haut de la fiche ; courbe dorée, titre, date et lieu, bilan victoires / places / classements, classés + podiums + sans-faute, 5 lignes au plus puis « + N autres résultats », fin « Hype · 2HYPE.FR ») et l'envoie avec le lien #r=<concours> (après connexion : fiche du Centre, onglet Résultats pour un concours terminé ; les comptes sans accès au Centre tombent sur l'ancienne fiche du rendez-vous). Brouillons et lignes masquées jamais dans l'image. Image ratée → le lien part seul avec un message. Textes en 14 langues.
+- Page équipe (hype-ecran-team.js v=22) : chevaux en cartes carrées — 3 par ligne sur téléphone, 4 sur tablette, 8 visibles, lignes équilibrées et centrées. Cavaliers : ronds inchangés. Ordinateur (≥ 1024 px) : ronds gardés en attendant le choix de mise en page (propositions 2 « mosaïque magazine » / 3 « fiches en liste »).
+- À tester sur iPhone (attend : Blandine) : bouton Partager sur CSO Tigery (vraies photos et photo de Chloé dans l'image), lien reçu ouvert depuis un autre téléphone, carrés de la page équipe.
+
 ### 11/11 — build 20261111-1205 — Partage Hey Baby : les « : ? ! » ne passent plus seuls à la ligne
 - Demande de Blandine : dans la question de la feuille de partage, « : comment la soulager ? » passait à la ligne avec les deux-points devant. Espace insécable fine devant : ; ? ! » et après « (fonction hbInsecables), dans la feuille et donc dans le message envoyé.
 
@@ -94,7 +99,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Page équipe (hype-ecran-team.js v=21) : la tuile Médias ouvre cette page d'accueil. Rien d'autre ne change sur la page équipe.
 - Hey Baby (hype-ecran-assistant.js v=12 + index) : la barre d'écriture remontait d'environ 84 px et cachait la fin des conversations. Cause : la page générale ajoutait 84 px sous l'écran (place de la barre du bas) alors que Hey Baby la réserve déjà → la page pouvait glisser vers le haut. Ces 84 px ne sont plus ajoutés sur Hey Baby ; la barre d'écriture garde 8 px de plus au-dessus de la barre du bas.
 - 🔴 Rappel (Blandine 22h38, « je ne sais plus quelle conversation était dessus ») : BARRE DU BAS BLOQUÉE AU MILIEU DE L'ÉCRAN — toujours à traiter en priorité (voir l'entrée du 10/11 22h10).
-- EN ATTENTE (non publié) — page équipe : chevaux en cartes (3 par ligne téléphone, 8 visibles) prêts dans le brouillon ; version ordinateur refusée (« pâté scolaire ») → 8 propositions montrées, Blandine préfère la 2 (mosaïque magazine) et la 3 (fiches en liste) et demande des propositions sur la page entière. Les cavaliers gardent leurs ronds.
+- [11/11 12h20 : téléphone et tablette PUBLIÉS en carrés ; reste l'ordinateur] EN ATTENTE (non publié) — page équipe : chevaux en cartes (3 par ligne téléphone, 8 visibles) prêts dans le brouillon ; version ordinateur refusée (« pâté scolaire ») → 8 propositions montrées, Blandine préfère la 2 (mosaïque magazine) et la 3 (fiches en liste) et demande des propositions sur la page entière. Les cavaliers gardent leurs ronds.
 
 ### 10/11 — build 20261110-2230 — Équipes : nom du club affiché, Vidéos en premier, description cachée
 - Nom du club sous le titre de l'équipe (hype-ecran-team.js v=20) et à côté du nom sur la page Médias (hype-ecran-team-medias.js v=31) : « SEP » / « Écurie Feinn », lu dans la fiche du groupe (club_clef). Raison : deux équipes « Team CSO Club », Blandine tombait sur la mauvaise.
