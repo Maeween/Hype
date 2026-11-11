@@ -32,6 +32,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Page équipe (hype-ecran-team.js v=22) : chevaux en cartes carrées — 3 par ligne sur téléphone, 4 sur tablette, 8 visibles, lignes équilibrées et centrées. Cavaliers : ronds inchangés. Ordinateur (≥ 1024 px) : ronds gardés en attendant le choix de mise en page (propositions 2 « mosaïque magazine » / 3 « fiches en liste »).
 - À tester sur iPhone (attend : Blandine) : bouton Partager sur CSO Tigery (vraies photos et photo de Chloé dans l'image), lien reçu ouvert depuis un autre téléphone, carrés de la page équipe.
 
+### 11/11 — build 20261111-2103 — Hey Baby : « Retirer ce partage » sur la page du conseil
+- Demande de Blandine (choix 3, « en bas à droite ») : sur la page ouverte par le lien partagé, bouton à contour « Retirer ce partage » en bas à droite du conseil, avec confirmation (« Le lien ne montrera plus ce conseil. Sûr ? » / Annuler / Oui, retirer). Visible SEULEMENT par l'auteur du partage (connecté) et la modératrice (Blandine, « Ok » à la question admin).
+- Une fois retiré, le lien affiche « Ce conseil n'est plus partagé » + l'invitation Hypo à poser sa propre question. 14 langues.
+- Base (migration heybaby_partage_retirer, faite le 11/11) : heybaby_partage_lire renvoie aussi peut_retirer (auteur ou hype_est_moderatrice()) ; nouvelle fonction heybaby_partage_retirer(code), réservée aux comptes connectés, qui supprime le partage si auteur ou modératrice. Les règles de la table ne changent pas.
+
 ### 11/11 — build 20261111-2045 — Hey Baby : anciennes réponses repliées, haut de page accessible, compliments
 - Réponses repliées (demande de Blandine, capture validée « Oui super ») : la dernière réponse reste toujours ouverte ; les précédentes se replient en carte « RÉPONSE DE HEY BABY » + titre + 2 lignes + « Relire la réponse ▾ » ; un toucher les rouvre, « Replier ▴ » les referme ; repli automatique quand une nouvelle question arrive ; remis à zéro quand on change de conversation. 14 langues ; même chose tablette/ordinateur (hype-ecran-assistant.js v18).
 - Haut de page Hey Baby : la barre Retour / drapeau / ⋯ / + passait sous l'heure et la batterie de l'iPhone (touchers captés par l'iPhone) → décalée sous la barre d'état (env(safe-area-inset-top)), téléphone et grand écran.
