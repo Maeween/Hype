@@ -82,7 +82,7 @@ const OPERATIONS = {
     // Décomptée comme un outil : ne consomme pas la question du jour.
     traduction:        { categorie: "outil", imagesMax: 0, jetons: 12000 },
     // 11/11/2026 (Blandine) — VERSION COURTE d'une réponse, pour la partager dans un groupe (4 à 6 points clés). Outil : ne consomme pas la question du jour.
-    resume_partage:    { categorie: "outil", imagesMax: 0, jetons: 3000 },
+    resume_partage:    { categorie: "outil", imagesMax: 0, jetons: 3500 },
 };
 
 // ═══ CONSIGNES FIXES (recopiées à l identique depuis index.html le 14/10/2026) ═══
@@ -463,13 +463,16 @@ export default async (req, context) => {
         const NOMS_LG2 = { fr: "français", en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais", ar: "arabe", zh: "chinois simplifié", nl: "néerlandais", pt: "portugais", sv: "suédois", ru: "russe", pl: "polonais", ko: "coréen" };
         const aResumer = String(corps.texte || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]+/g, " ").slice(0, 24000);
         if (!aResumer.trim()) return erreurJSON("INVALID_REQUEST", "Texte manquant.");
+        // 11/11 (Blandine : « plutôt que de mettre la question… un résumé du contenu, ex. douleur du genou à cheval… on mentionne pas les prénoms ») :
+        // la réponse donne aussi un SUJET générique (remplace la question dans le message) et les PRÉNOMS à remplacer dans la réponse complète.
         systeme = "Tu es Hey Baby, le coach équestre de l'application Hype. Un cavalier veut partager ta réponse ci-dessous dans un groupe de discussion. "
-            + "Écris-en une VERSION COURTE en " + (NOMS_LG2[langue] || "français") + " : 4 à 6 points clés, en tutoyant. "
-            + "Chaque point : une seule icône émoji sobre en rapport avec le point, un titre de 2 à 4 mots, et une phrase courte (25 mots au plus). "
+            + "Tout ce que tu écris est en " + (NOMS_LG2[langue] || "français") + ". Prépare trois choses : "
+            + "1) \"sujet\" : le thème de la réponse en 3 à 7 mots, générique, comme un titre (exemple : « Douleurs aux genoux à cheval »), sans aucun prénom ni détail personnel. "
+            + "2) \"prenoms\" : chaque prénom ou nom de PERSONNE cité dans la réponse (pas les noms de chevaux), avec un remplacement générique qui s'insère correctement dans les phrases (exemple : {\"nom\":\"Yumiko\",\"remplacement\":\"ta cavalière\"}) ; liste vide s'il n'y en a pas. "
+            + "3) \"points\" : une VERSION COURTE de 4 à 6 points clés, en tutoyant ; chaque point a une seule icône émoji sobre en rapport avec le point, un titre de 2 à 4 mots et une phrase courte (25 mots au plus). "
             + "Reprends uniquement ce que dit la réponse : n'ajoute aucune information, ne change aucun conseil, garde les nuances. "
-            + "Si la réponse dit dans quels cas consulter rapidement un médecin ou un vétérinaire, garde-le dans un point, sans dramatiser. "
-            + "N'écris aucun prénom ni aucun détail personnel. "
-            + "Réponds UNIQUEMENT avec un tableau JSON, sans aucun autre texte : [{\"icone\":\"…\",\"titre\":\"…\",\"texte\":\"…\"}]\n\nRÉPONSE À RÉSUMER :\n" + aResumer;
+            + "Si la réponse dit dans quels cas consulter rapidement un médecin ou un vétérinaire, garde-le dans un point, sans dramatiser. Aucun prénom dans les points. "
+            + "Réponds UNIQUEMENT avec un objet JSON, sans aucun autre texte : {\"sujet\":\"…\",\"prenoms\":[{\"nom\":\"…\",\"remplacement\":\"…\"}],\"points\":[{\"icone\":\"…\",\"titre\":\"…\",\"texte\":\"…\"}]}\n\nRÉPONSE :\n" + aResumer;
         messagesApp = [{ role: "user", content: "Écris la version courte maintenant." }];
     } else if (operation === "memoire") {
         systeme = consigneMemoire(corps.memoire);

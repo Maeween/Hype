@@ -15,6 +15,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Page équipe (hype-ecran-team.js v=22) : chevaux en cartes carrées — 3 par ligne sur téléphone, 4 sur tablette, 8 visibles, lignes équilibrées et centrées. Cavaliers : ronds inchangés. Ordinateur (≥ 1024 px) : ronds gardés en attendant le choix de mise en page (propositions 2 « mosaïque magazine » / 3 « fiches en liste »).
 - À tester sur iPhone (attend : Blandine) : bouton Partager sur CSO Tigery (vraies photos et photo de Chloé dans l'image), lien reçu ouvert depuis un autre téléphone, carrés de la page équipe.
 
+### 11/11 — build 20261111-1229 — Partage Hey Baby : un sujet générique au lieu de la question, sans prénoms ; partage dans la langue traduite
+- Demande de Blandine : la question (consignes, fautes, dictée vocale, prénoms) ne part plus. Hey Baby donne un SUJET générique de 3 à 7 mots (ex. « Douleurs aux genoux à cheval »), modifiable dans la feuille (champ « LE SUJET », 14 langues). C'est aussi le sujet qui est enregistré pour la page du lien.
+- Prénoms : Hey Baby repère les prénoms de personnes cités dans la réponse et un remplacement générique (« Yumiko » → « ta cavalière ») ; la réponse complète partagée ET la page du lien n'ont plus de prénom (hbSansPrenoms). La version courte n'en contient pas.
+- Une seule demande à l'IA à l'ouverture de la feuille (opération resume_partage, qui renvoie maintenant sujet + prénoms + points) ; « Partager » est grisé tant qu'elle n'est pas revenue.
+- Traduction : si on touche Partager pendant que la traduction se fait, le partage attend la fin et part dans la langue choisie (avant, il partait en français : constaté en base, les 3 partages de 11h25 étaient en français).
+
 ### 11/11 — build 20261111-1205 — Partage Hey Baby : les « : ? ! » ne passent plus seuls à la ligne
 - Demande de Blandine : dans la question de la feuille de partage, « : comment la soulager ? » passait à la ligne avec les deux-points devant. Espace insécable fine devant : ; ? ! » et après « (fonction hbInsecables), dans la feuille et donc dans le message envoyé.
 
