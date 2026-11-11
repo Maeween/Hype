@@ -342,6 +342,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - [04/11] Espace gestion d'écurie : registre d'élevage, échéances, papiers du camion, démo compta, présentation SEP. Tout le reste passe après, rien n'est abandonné. Détail complet juste sous cette liste (attend : Claude, étape par étape)
 
 ## 1 — Urgent
+- 12/11 00h25 — RETIRÉ : nouvelle page Performances du cavalier (chapitres). Elle ignorait `masque_cavaliere` et affichait les résultats que Blandine avait cachés ; titre sur le visage du héros ; encarts beaucoup trop grands ; design éloigné de ce qui avait été validé. Tous les liens rouvrent l'ancienne page Résultats (build 20261112-0225). À ne pas remettre en ligne sans : filtre `masque_cavaliere`, maquette validée sur ses vraies données.
 
 - [12/11 01h55] ✅ FAIT — « resultats-cavalier » ouvre désormais la nouvelle page Performances (ancienne EcranResultatsCavaliere gardée dans le code). Page vide : grande carte vidéo « Importer tes résultats FFE » (image entière) pour le cavalier lui-même ; pour les visiteurs, carte photo « X n'a pas encore partagé ses résultats » + bouton « L'inviter » (message d'invitation par Messages/WhatsApp). Build 20261112-0155.
 
