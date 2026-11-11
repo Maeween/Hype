@@ -843,17 +843,19 @@ function EcranTeamMedias() {
     if (ah) { try { window.__articleOuvert = ah.art.id; } catch (e) { } setEcran(ah.art.ecran || "article-detail"); return; }
     try { window.open(String(p.url || ""), "_blank", "noopener"); } catch (e) { }
   }
+  /* 11/11 (maquette « À découvrir » validée) : grande carte, photo entière, rubrique, titre, mot de celui qui partage, bouton */
   function cartePartage(p) {
-    var qui = profilsParId[p.auteur_id];
+    var qui = profilsParId[p.auteur_id], estArt = p.type === "article_hype";
     return h("button", { key: "pa" + p.id, type: "button", onClick: function () { ouvrirPartage(p); },
-      style: { width: "100%", display: "flex", gap: 12, alignItems: "stretch", padding: "14px 0", background: "none", border: "none", borderTop: "1px solid rgba(243,238,228,0.06)", color: IV, textAlign: "start", cursor: "pointer" } },
-      h("div", { style: { width: 88, flex: "0 0 88px", aspectRatio: "16 / 11", borderRadius: 10, overflow: "hidden", background: PAN, border: "1px solid " + CH3, display: "flex", alignItems: "center", justifyContent: "center", color: CH, fontFamily: SERIF, fontSize: 22 } },
-        p.image ? h("img", { src: p.image, alt: "", loading: "lazy", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } }) : "✦"),
-      h("div", { style: { minWidth: 0, flex: 1 } },
-        h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, LIB_TYPE[p.type] || ""),
-        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.15, marginTop: 3 } }, p.titre || p.url),
-        p.commentaire ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, color: IV2, marginTop: 4, lineHeight: 1.45 } }, "« " + p.commentaire + " »") : null,
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 4 } }, T("Partagé par ", "Shared by ", "Compartido por ", "Condiviso da ", "共有者：", "Geteilt von ", "شاركه ", "分享者：", "Gedeeld door ", "Partilhado por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui))));
+      style: { display: "block", width: "100%", padding: 0, marginTop: 18, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,.3)", background: PAN, color: IV, textAlign: "start", cursor: "pointer" } },
+      p.image ? h("img", { src: p.image, alt: "", loading: "lazy", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } }, style: { display: "block", width: "100%", height: "auto" } }) : null,
+      h("div", { style: { padding: "16px 18px 18px" } },
+        h("div", { style: { fontSize: 9.5, letterSpacing: ".28em", textTransform: "uppercase", color: CH, fontWeight: 600 } }, LIB_TYPE[p.type] || ""),
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 27, lineHeight: 1.08, marginTop: 6 } }, p.titre || p.url),
+        p.commentaire ? h("div", { dir: "auto", style: { marginTop: 12, padding: "8px 12px", borderInlineStart: "2px solid " + CH, fontFamily: SERIF, fontStyle: "italic", fontSize: 17, lineHeight: 1.35, color: IV2 } }, "« " + p.commentaire + " »") : null,
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 14 } },
+          h("span", { style: { fontSize: 11.5, color: IV3 } }, T("Partagé par ", "Shared by ", "Compartido por ", "Condiviso da ", "共有者：", "Geteilt von ", "شاركه ", "分享者：", "Gedeeld door ", "Partilhado por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui)),
+          h("span", { style: { display: "inline-flex", alignItems: "center", minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid " + CH, color: CH, fontSize: 13, fontWeight: 600 } }, (estArt ? T("Lire", "Read", "Leer", "Leggi", "読む", "Lesen", "اقرأ", "阅读", "Lezen", "Ler", "Läs", "Читать", "Czytaj", "읽기") : T("Voir", "Open", "Ver", "Apri", "見る", "Ansehen", "شاهد", "查看", "Bekijken", "Ver", "Öppna", "Открыть", "Zobacz", "보기")) + (rtl ? " ‹" : " ›")))));
   }
   function ongletTheorie() {
     if (partages === null) return chargement();
@@ -1579,7 +1581,47 @@ null)) });
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: 20, lineHeight: 1.1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, String(nomProfil(p)).trim()),
         h("div", { dir: "auto", style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, sous || " ")));
   }
+  /* 11/11 20h55 (Blandine : « ça met des trucs ensemble qui n'ont rien à voir… visuellement c'est laid » ; maquette A validée,
+     textes choisis : « En piste », « Les clés de Hey Baby », « LES MÉDIAS À DÉCOUVRIR — Optimise tes perfs ») — ACCUEIL EN TROIS PORTES :
+     chaque univers a sa page ; photos entières ; texte posé sur la photo quand elle est sombre, sous la photo quand elle est claire. */
+  var PORTES = {
+    videos: { lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"), titre: T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로"), img: "images/concours-hero-cso.webp" },
+    epingles: { lab: T("Les conseils de Hey Baby", "Hey Baby's tips", "Los consejos de Hey Baby", "I consigli di Hey Baby", "Hey Baby のアドバイス", "Die Tipps von Hey Baby", "نصائح Hey Baby", "Hey Baby 的建议", "De tips van Hey Baby", "Os conselhos do Hey Baby", "Hey Babys tips", "Советы Hey Baby", "Rady Hey Baby", "Hey Baby의 조언"), titre: T("Les clés de Hey Baby", "Hey Baby's keys", "Las claves de Hey Baby", "Le chiavi di Hey Baby", "Hey Baby のポイント", "Die Schlüssel von Hey Baby", "مفاتيح Hey Baby", "Hey Baby 的要点", "De sleutels van Hey Baby", "As chaves do Hey Baby", "Hey Babys nycklar", "Ключи от Hey Baby", "Klucze Hey Baby", "Hey Baby의 핵심"), img: "images/concours-hero-bai-tresse.webp" },
+    theorie: { lab: T("Les médias à découvrir", "Media to discover", "Medios para descubrir", "Media da scoprire", "おすすめメディア", "Medien zum Entdecken", "وسائط لاكتشافها", "值得一看的媒体", "Media om te ontdekken", "Mídia a descobrir", "Media att upptäcka", "Медиа для открытий", "Media do odkrycia", "살펴볼 미디어"), titre: T("Optimise tes perfs", "Boost your performance", "Optimiza tu rendimiento", "Ottimizza le tue prestazioni", "パフォーマンスを高めよう", "Optimiere deine Leistung", "حسّن أداءك", "提升你的表现", "Optimaliseer je prestaties", "Otimiza o teu desempenho", "Optimera dina prestationer", "Улучшай свои результаты", "Popraw swoje wyniki", "실력을 끌어올려"), img: "images/galop2-hero-bai-entier.webp" }   /* 11/11 21h (Blandine : photo sombre, dans l'esprit des deux autres) */
+  };
+  function pastilleNv(n) { return n ? h("span", { style: { fontSize: 9, letterSpacing: ".14em", textTransform: "uppercase", border: "1px solid " + CH, color: CH, borderRadius: 999, padding: "3px 8px" } }, n + " " + (n > 1 ? T("nouveaux", "new", "nuevos", "nuovi", "件の新着", "neu", "جديدة", "条新", "nieuw", "novos", "nya", "новых", "nowe", "개 새 글") : T("nouveau", "new", "nuevo", "nuovo", "件の新着", "neu", "جديد", "条新", "nieuw", "novo", "ny", "новый", "nowa", "개 새 글"))) : null; }
+  function porte(cle, sous, nNv, img) {
+    var P = PORTES[cle], clair = !!(P.clair);
+    if (/^0 /.test(String(sous))) sous = T("Rien pour l’instant", "Nothing yet", "Nada por ahora", "Ancora niente", "まだありません", "Noch nichts", "لا شيء حاليًا", "暂时还没有", "Nog niets", "Ainda nada", "Inget än", "Пока ничего нет", "Na razie nic", "아직 없어");
+    var texte = [h("div", { key: "l", style: { fontSize: 9.5, letterSpacing: ".28em", textTransform: "uppercase", color: CH, fontWeight: 600 } }, P.lab),
+      h("div", { key: "t", dir: "auto", style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, P.titre),
+      h("div", { key: "s", style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 8, fontSize: 12, color: IV2 } }, h("span", null, sous), pastilleNv(nNv) || h("span", { style: { color: CH, fontSize: 18 } }, rtl ? "‹" : "›"))];
+    return h("button", { key: "po" + cle, type: "button", onClick: function () { allerOnglet(cle); },
+      style: { position: "relative", display: "block", width: "100%", padding: 0, marginTop: 16, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,.3)", background: PAN, color: IV, textAlign: "start", cursor: "pointer" } },
+      h("img", { src: img || P.img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
+      clair ? h("div", { style: { padding: "14px 18px 16px" } }, texte)
+        : h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "44px 18px 16px", background: "linear-gradient(180deg, rgba(7,10,8,0), rgba(7,10,8,.92) 55%)" } }, texte));
+  }
   function pageAccueil() {
+    if (videos === null || membres === null) return chargement();
+    var nV = (videos || []).length, eps = (epingles || []).filter(function (e) { return !e.ferme; }), nE = eps.length;
+    var nNvE = eps.filter(function (e) { return !e.verrou && !estLue(e); }).length, nP = (partages || []).length;
+    var imgP = null; ((partages || [])[0] && partages[0].image) ? imgP = partages[0].image : null;
+    return h("div", { style: { marginTop: 6 } },
+      porte("videos", compte(nV, T("vidéo", "video", "vídeo", "video", "本の動画", "Video", "فيديو", "个视频", "video", "vídeo", "video", "видео", "film", "개 동영상"), T("vidéos", "videos", "vídeos", "video", "本の動画", "Videos", "فيديوهات", "个视频", "video's", "vídeos", "videor", "видео", "filmy", "개 동영상")), 0),
+      porte("epingles", compte(nE, T("conseil", "tip", "consejo", "consiglio", "件のアドバイス", "Tipp", "نصيحة", "条建议", "tip", "conselho", "tips", "совет", "rada", "개 조언"), T("conseils", "tips", "consejos", "consigli", "件のアドバイス", "Tipps", "نصائح", "条建议", "tips", "conselhos", "tips", "совета", "rady", "개 조언")), nNvE),
+      porte("theorie", compte(nP, T("média", "item", "medio", "contenuto", "件", "Medium", "وسيط", "个媒体", "item", "conteúdo", "media", "материал", "materiał", "개 미디어"), T("médias", "items", "medios", "contenuti", "件", "Medien", "وسائط", "个媒体", "items", "conteúdos", "media", "материала", "materiały", "개 미디어")), 0, null));
+  }
+  /* en tête de chaque rubrique : l'étiquette, le grand titre et la courbe (à la place des onglets) */
+  function enteteRubrique(cle) {
+    var P = PORTES[cle]; if (!P) return null;
+    return h("div", { style: { marginTop: 8 } },
+      h("div", { style: { fontSize: 9.5, letterSpacing: ".28em", textTransform: "uppercase", color: CH, fontWeight: 600 } }, P.lab),
+      h("h2", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: "clamp(36px, 10vw, 48px)", lineHeight: 1, margin: "8px 0 0", color: IV } }, P.titre),
+      h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, margin: "6px 0 2px", transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 10 C 120 14, 230 34, 400 8", fill: "none", stroke: CH, strokeWidth: 1.1 })));
+  }
+  /* ancienne page d'accueil (sections empilées), gardée hors d'usage */
+  function pageAccueilAncienne() {
     if (videos === null || membres === null) return chargement();
     var large = false; try { large = window.innerWidth >= 760; } catch (eW) { }
     var cav = (membres || []).slice().sort(function (a, b) { return videosDe(b).length - videosDe(a).length; });
@@ -1622,9 +1664,10 @@ null)) });
       hero,
       h("div", { style: { padding: "0 18px 24px" } },
         onglet === "accueil" ? null : retourAccueil(),
-        onglet === "accueil" ? null : barreOnglets,
+        onglet === "accueil" ? null : enteteRubrique(onglet),
         erreur ? h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ") + erreur) : null,
-        onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles())),
+        onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles(),
+        (typeof FinPageHype === "function") ? h("div", { style: { marginTop: 34 } }, h(FinPageHype, null)) : null)),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
     questionPub ? h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setQuestionPub(null); },

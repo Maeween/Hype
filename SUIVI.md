@@ -43,6 +43,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Page équipe (hype-ecran-team.js v=22) : chevaux en cartes carrées — 3 par ligne sur téléphone, 4 sur tablette, 8 visibles, lignes équilibrées et centrées. Cavaliers : ronds inchangés. Ordinateur (≥ 1024 px) : ronds gardés en attendant le choix de mise en page (propositions 2 « mosaïque magazine » / 3 « fiches en liste »).
 - À tester sur iPhone (attend : Blandine) : bouton Partager sur CSO Tigery (vraies photos et photo de Chloé dans l'image), lien reçu ouvert depuis un autre téléphone, carrés de la page équipe.
 
+### 11/11 — build 20261111-2200 — Médias de l'équipe : accueil en trois portes
+- Demande de Blandine (« ça met des trucs ensemble qui n'ont rien à voir… visuellement c'est laid ») ; maquette A validée, textes choisis par elle :
+  - LES VIDÉOS — « En piste » (photo concours-hero-cso) ;
+  - LES CONSEILS DE HEY BABY — « Les clés de Hey Baby » (photo concours-hero-bai-tresse ; PAS de mascotte ici : « ça casse avec le reste de la page ») ;
+  - LES MÉDIAS À DÉCOUVRIR — « Optimise tes perfs » (photo sombre galop2-hero-bai-entier, à sa demande).
+- Photos entières, texte posé sur la photo ; sous le titre : nombre d'éléments (ou « Rien pour l'instant »), pastille « N nouveau(x) » pour les conseils non lus.
+- Chaque porte ouvre sa rubrique ; les onglets du haut sont remplacés par « ‹ Médias » + étiquette + grand titre + courbe dorée ; fin de page Hype.
+- « Les médias à découvrir » : grandes cartes (photo entière, rubrique ARTICLE HYPE / VIDÉO / LIEN, titre, mot de celui qui partage en citation, « Partagé par… », bouton à contour « Lire › » / « Voir › »).
+- Vidéos et conseils : contenu inchangé. Ancienne page d'accueil gardée dans le code (pageAccueilAncienne), plus utilisée. 14 langues. hype-ecran-team-medias.js v35.
+- Non fait (à proposer) : le grand bandeau photo du haut de Médias coupe toujours un peu la photo.
+
 ### 11/11 — build 20261111-2143 — Épingles Hey Baby de l'équipe : lisibles, Hypo, « J'ai tout lu », questions à Hey Baby
 - Demande de Blandine (« on n'arrive même pas à le lire… tout est compact ») + maquette validée (« Ok ») — page Médias de l'équipe (onglet Épingles HB et bloc de l'accueil Médias) :
   - étiquette « CONSEIL DE HEY BABY » (+ cheval) ; pastille « NOUVEAU » sur les épingles pas encore lues ;
