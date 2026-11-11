@@ -343,8 +343,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 1 — Urgent
 
+- [12/11 01h55] ✅ FAIT — « resultats-cavalier » ouvre désormais la nouvelle page Performances (ancienne EcranResultatsCavaliere gardée dans le code). Page vide : grande carte vidéo « Importer tes résultats FFE » (image entière) pour le cavalier lui-même ; pour les visiteurs, carte photo « X n'a pas encore partagé ses résultats » + bouton « L'inviter » (message d'invitation par Messages/WhatsApp). Build 20261112-0155.
+
 - [12/11 01h45] ✅ FAIT — Performances du cavalier : Chapitre IV « Ses chevaux » (maquette O : une photo par cheval, résultats du couple, « Sa fiche »), saisons = Chapitre V, Ajouter / Importer sous les saisons ; bouton Partager la page (adresse #perfcav-…) ; menu Performances · Photos · Vidéos · Actualité aussi sur la page vide (builds 0135 et 0145).
-- [12/11 01h45] À DÉCIDER — Le bouton Performances du profil cavalier (et les liens équipe / écurie / agenda) ouvre encore l'ANCIENNE page Résultats (resultats-cavalier, 0 sorties / 0 victoires quand vide). Proposé : faire ouvrir la nouvelle page partout ; garder la carte vidéo « Importer tes résultats FFE ».
+- [12/11 01h55] ✅ FAIT (validé « Ouais ») — Le bouton Performances du profil cavalier (et les liens équipe / écurie / agenda) ouvre encore l'ANCIENNE page Résultats (resultats-cavalier, 0 sorties / 0 victoires quand vide). Proposé : faire ouvrir la nouvelle page partout ; garder la carte vidéo « Importer tes résultats FFE ».
 
 - [12/11 01h25] ✅ FAIT — Performances du cavalier refaite d'après la maquette K « Chapitres » choisie par Blandine, avec les ajouts de la maquette J : menu Performances · Photos · Vidéos · Actualité à la place de la ligne de chiffres ; Chapitre I (victoires, podiums, barre, sorties/classés) ; « Sa régularité » en grand % ; « Son record » sur photo ; Chapitre II ses points par épreuve (saison en cours, « à venir » si inconnus) ; Chapitre III son dernier concours. Tout l'existant gardé dessous : filtre par cheval, moments forts, classement Team, ajouter / importer, saisons dépliables avec points de qualification, filtres et modification, vidéo. Page du cheval inchangée. Build 20261112-0125.
 
