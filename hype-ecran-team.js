@@ -83,7 +83,35 @@ function EcranTeamCompetition() {
   var _md = React.useState(null); var mediasTop = _md[0], setMediasTop = _md[1];
   var _mp = React.useState(null); var mediasPartages = _mp[0], setMediasPartages = _mp[1];
   var _mr = React.useState(null); var vidsRecentes = _mr[0], setVidsRecentes = _mr[1];
-  var _mg = React.useState(false); var menuGerer = _mg[0], setMenuGerer = _mg[1];   /* 11/11 22h29 : menu « Gérer l'équipe » (coach) */   /* 11/11 22h05 : dernières vidéos (non privées) pour « Souvenirs » + leur nombre */
+  var _mg = React.useState(false); var menuGerer = _mg[0], setMenuGerer = _mg[1];
+  /* 11/11 23h37 (Blandine, proposition 4) : sous chaque portrait de cavalier, le cheval qu'il a le plus monté sur la saison en cours */
+  var _cm = React.useState({}); var chevalDuCav = _cm[0], setChevalDuCav = _cm[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        var ids = (membres || []).map(function (m) { return m.id; }).filter(Boolean);
+        if (!ids.length || typeof supa === "undefined" || !supa) return;
+        var rr = await supa.from("resultats").select("cavalier_id, user_id, cheval_id, date_epreuve, epreuve, visible").in("cavalier_id", ids.slice(0, 200)).limit(4000);
+        if (!rr || rr.error) return;
+        var aj = new Date(), ajIso = aj.getFullYear() + "-" + ("0" + (aj.getMonth() + 1)).slice(-2) + "-" + ("0" + aj.getDate()).slice(-2);
+        var sC = (typeof hypeSaisonTeam === "function") ? hypeSaisonTeam(ajIso, "poney") : null;
+        var cpt = {};
+        (rr.data || []).forEach(function (r) {
+          if (!r || r.visible === false || !r.cheval_id || !r.cavalier_id) return;
+          if (sC && typeof hypeSaisonTeam === "function" && hypeSaisonTeam(r.date_epreuve, r.epreuve) !== sC) return;
+          var c = cpt[r.cavalier_id] || (cpt[r.cavalier_id] = {}); c[r.cheval_id] = (c[r.cheval_id] || 0) + 1;
+        });
+        var choix = {}, idsCh = [];
+        Object.keys(cpt).forEach(function (u) { var best = null, n = 0; Object.keys(cpt[u]).forEach(function (c) { if (cpt[u][c] > n) { n = cpt[u][c]; best = c; } }); if (best) { choix[u] = best; if (idsCh.indexOf(best) < 0) idsCh.push(best); } });
+        var noms = {};
+        if (idsCh.length) { var rc = await supa.from("chevaux").select("id, nom, alias").in("id", idsCh); ((rc && rc.data) || []).forEach(function (c) { noms[c.id] = c.alias || c.nom; }); }
+        var out = {}; Object.keys(choix).forEach(function (u) { if (noms[choix[u]]) out[u] = noms[choix[u]]; });
+        if (vif) setChevalDuCav(out);
+      } catch (eCm) { }
+    })();
+    return function () { vif = false; };
+  }, [membres]);   /* 11/11 22h29 : menu « Gérer l'équipe » (coach) */   /* 11/11 22h05 : dernières vidéos (non privées) pour « Souvenirs » + leur nombre */
   React.useEffect(function () {
     if (!groupe || !groupe.id || typeof supa === "undefined" || !supa) return;
     var vifM = true;
@@ -519,11 +547,21 @@ function EcranTeamCompetition() {
         h("div", null, T("des objectifs communs.", "shared goals.", "objetivos comunes.", "obiettivi comuni.", "そして共通の目標。", "gemeinsame Ziele.", "وأهداف مشتركة.", "共同的目标。", "gedeelde doelen.", "objetivos em comum.", "gemensamma mål.", "общие цели.", "wspólne cele.", "모두 함께하는 목표.")))));
 
   /* ── nos cavalières ── */
-  var itemsCav = (membres || []).map(function (p) { return portrait("cv" + p.id, photoProfil(p), (p.pseudo || "") + (p.role === "coach" ? " · Coach" : ""), function () { ouvrirCavaliere(p); }, (p.pseudo || "?").charAt(0)); });
+  function carteCav(p) {
+    var src = photoProfil(p);
+    var nom = (p.pseudo || "") + (p.role === "coach" ? " · Coach" : "");
+    return h("button", { key: "cv" + p.id, type: "button", onClick: function () { ouvrirCavaliere(p); }, style: { display: "block", flex: (typeof window !== "undefined" && window.innerWidth >= 820) ? "0 0 132px" : "0 0 100px", padding: 0, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer", scrollSnapAlign: "start" } },
+      h("div", { style: { position: "relative", aspectRatio: "4 / 5", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(214,182,118,0.3)", background: "#0D1318" } },
+        src ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(src, 280, 350) : src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" } })
+          : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 34, color: OR } }, (p.pseudo || "?").charAt(0).toUpperCase())),
+      h("div", { style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.12, marginTop: 6 } }, nom),
+      chevalDuCav[p.id] ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(244,241,234,0.6)", marginTop: 2, lineHeight: 1.3 } }, chevalDuCav[p.id]) : null);
+  }
+  var itemsCav = (membres || []).map(carteCav);   /* 11/11 23h37 : portraits qui défilent (proposition 4) — tout le monde, plus de « Voir tout » */
   var blocCav = section(h("div", null,
-    enTete(T("Nos cavaliers", "Our riders", "Nuestras jinetes", "Le nostre cavalieri", "私たちのライダー", "Unsere Reiter", "فرساننا", "我们的骑手", "Onze ruiters", "Nossos cavaleiros", "Våra ryttare", "Наши всадники", "Nasze jeźdźcy", "우리 기수들"), "cav", itemsCav.length, 8),
+    enTete(T("Nos cavaliers", "Our riders", "Nuestras jinetes", "Le nostre cavalieri", "私たちのライダー", "Unsere Reiter", "فرساننا", "我们的骑手", "Onze ruiters", "Nossos cavaleiros", "Våra ryttare", "Наши всадники", "Nasze jeźdźcy", "우리 기수들"), "cav", 0, 0),
     membres === null ? chargement()
-      : (itemsCav.length ? grillePortraits(itemsCav, "cav") : vide(T("Aucun cavalier pour l’instant.", "No riders yet.", "Aún no hay jinetes.", "Nessun cavaliere per ora.", "まだライダーはいません。", "Noch keine Reiter.", "لا توجد فرسان حاليا.", "目前还没有骑手。", "Nog geen ruiters.", "Nenhum cavaleiro por enquanto.", "Inga ryttare ännu.", "Пока нет ни одной всадники.", "Na razie nie ma żadnej jeźdźcy.", "아직 기수가 없어요."))),
+      : (itemsCav.length ? h("div", { "data-noswipe": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: 2, scrollbarWidth: "none" } }, itemsCav) : vide(T("Aucun cavalier pour l’instant.", "No riders yet.", "Aún no hay jinetes.", "Nessun cavaliere per ora.", "まだライダーはいません。", "Noch keine Reiter.", "لا توجد فرسان حاليا.", "目前还没有骑手。", "Nog geen ruiters.", "Nenhum cavaleiro por enquanto.", "Inga ryttare ännu.", "Пока нет ни одной всадники.", "Na razie nie ma żadnej jeźdźcy.", "아직 기수가 없어요."))),
     null,
     (modifGroupe && groupe && typeof CreationEquipeEH === "function") ? h(CreationEquipeEH, { clef: groupe.club_clef, club: TEAM_CLUB, groupe: groupe, communaute: groupe.type === "loisir", chevaux: [], piquets: [],
       onFermer: function () { setModifGroupe(false); },

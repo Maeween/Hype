@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261112-0055 — Page équipe : les cavaliers en portraits qui défilent (proposition 4)
+- Blandine (23 h 37 « ça marche »), après 8 maquettes puis 3 avec les chevaux dessous. hype-ecran-team.js v=31.
+- « Nos cavaliers » : TOUS les cavaliers sur une ligne de portraits (4:5) qui défile au doigt — 3 entiers + le bord du 4e sur téléphone, 132 px chacun sur grand écran ; prénom (+ « · Coach »), et dessous le cheval qu'il a le plus monté sur la saison en cours (résultats où il est le cavalier) ; sans photo de profil = initiale. Fini la limite de 8 et « Voir tout » (règle « tout le monde visible »).
+- Reste à trancher : retirer ou non les petits titres « Nos cavaliers » / « Nos chevaux » sous « Cavaliers & chevaux ».
+
 ### 11/11 — build 20261112-0050 — Page équipe : Souvenirs après la saison ; nouveaux titres des parties (« A »)
 - Blandine (23 h 06 « je l'aurais mis après la saison », 23 h 15 « 1 est pas mal », 23 h 20 « mets le reste en ligne »). hype-ecran-team.js v=30.
 - Ordre (menu compris) : 1 L'équipe — « Cavaliers & chevaux » (remplace « Qui monte, sur qui », jugé « vraiment nul ») · 2 La saison — « Concours & résultats » (la pastille « Les concours » devient « La saison ») · 3 Souvenirs — « Nos plus beaux moments » · 4 Apprendre — « Progresser ensemble ». Nouveaux titres traduits dans les 14 langues.
