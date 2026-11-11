@@ -487,6 +487,12 @@ var HS_TR_BRUT = {
   "Je participe": ["I’m taking part", "Participo", "Partecipo", "参加する", "Ich nehme teil", "سأشارك", "我参加", "Ik doe mee", "Vou participar", "Jag deltar", "Я участвую", "Biorę udział", "참가할게요"],
   "Touche encore pour te retirer.": ["Tap again to withdraw.", "Toca otra vez para retirarte.", "Tocca di nuovo per ritirarti.", "もう一度タップすると取り消せます。", "Tippe noch einmal, um dich abzumelden.", "المس مرة أخرى للانسحاب.", "再点一次即可退出。", "Tik nog eens om je af te melden.", "Toca outra vez para te retirares.", "Tryck igen för att dra dig ur.", "Нажми ещё раз, чтобы отказаться.", "Dotknij ponownie, aby się wycofać.", "한 번 더 누르면 취소돼요."],
   "Ma préparation": ["My preparation", "Mi preparación", "La mia preparazione", "私の準備", "Meine Vorbereitung", "تحضيري", "我的准备", "Mijn voorbereiding", "A minha preparação", "Mina förberedelser", "Моя подготовка", "Moje przygotowanie", "나의 준비"],
+  "Adresse trouvée sur le document": ["Address found on the document", "Dirección encontrada en el documento", "Indirizzo trovato nel documento", "書類に載っていた住所", "Adresse im Dokument gefunden", "العنوان الموجود في المستند", "文件上找到的地址", "Adres gevonden in het document", "Endereço encontrado no documento", "Adress hittad i dokumentet", "Адрес, найденный в документе", "Adres znaleziony w dokumencie", "문서에서 찾은 주소"],
+  "Lieu enregistré actuellement : ": ["Venue saved right now: ", "Lugar guardado ahora: ", "Luogo salvato ora: ", "現在の登録場所：", "Aktuell gespeicherter Ort: ", "المكان المسجّل حاليًا: ", "当前保存的地点：", "Nu opgeslagen locatie: ", "Local guardado agora: ", "Plats som är sparad nu: ", "Сейчас сохранено место: ", "Obecnie zapisane miejsce: ", "현재 저장된 장소: "],
+  "Mettre cette adresse": ["Use this address", "Poner esta dirección", "Usa questo indirizzo", "この住所にする", "Diese Adresse übernehmen", "اعتمد هذا العنوان", "使用这个地址", "Dit adres gebruiken", "Usar este endereço", "Använd den här adressen", "Указать этот адрес", "Użyj tego adresu", "이 주소로 하기"],
+  "Non merci": ["No thanks", "No, gracias", "No grazie", "いいえ", "Nein danke", "لا شكرًا", "不用了", "Nee, bedankt", "Não, obrigado", "Nej tack", "Нет, спасибо", "Nie, dziękuję", "아니요"],
+  "✓ Adresse enregistrée : le bouton Itinéraire y mène maintenant.": ["✓ Address saved: the Directions button now leads there.", "✓ Dirección guardada: el botón Cómo llegar ahora lleva allí.", "✓ Indirizzo salvato: il pulsante Indicazioni ora porta lì.", "✓ 住所を保存しました。経路ボタンからそこへ行けます。", "✓ Adresse gespeichert: Der Route-Knopf führt jetzt dorthin.", "✓ تم حفظ العنوان: زر الاتجاهات يقود إليه الآن.", "✓ 地址已保存：“路线”按钮现在会带你去那里。", "✓ Adres opgeslagen: de knop Route brengt je er nu naartoe.", "✓ Endereço guardado: o botão Itinerário agora leva até lá.", "✓ Adressen är sparad: knappen Vägbeskrivning leder nu dit.", "✓ Адрес сохранён: кнопка «Маршрут» теперь ведёт туда.", "✓ Adres zapisany: przycisk Trasa prowadzi teraz tam.", "✓ 주소가 저장됐어요. 길찾기 버튼이 이제 그곳으로 안내해요."],
+  "Enregistrement impossible : ": ["Couldn’t save: ", "No se pudo guardar: ", "Impossibile salvare: ", "保存できませんでした：", "Speichern nicht möglich: ", "تعذّر الحفظ: ", "无法保存：", "Opslaan mislukt: ", "Não foi possível guardar: ", "Kunde inte spara: ", "Не удалось сохранить: ", "Nie udało się zapisać: ", "저장할 수 없어요: "],
   "Dossier du concours": ["Show file", "Expediente del concurso", "Fascicolo del concorso", "大会の書類", "Turnierunterlagen", "ملف المسابقة", "比赛资料", "Wedstrijddossier", "Dossiê do concurso", "Tävlingspärm", "Документы соревнования", "Dokumenty zawodów", "대회 서류"]   /* 08/11 23h : fiche concours traduite (Blandine « Ok continue ») */
 };
 var HS_TR = {};
@@ -3138,7 +3144,10 @@ function EcranConcours() {
           h("button", { type: "button", className: "hc-b-chev", "aria-label": F("Infos pratiques"), onClick: function () { setInfosOuv(!infosOuv); } }, infosOuv ? "⌃" : (rtl ? "‹" : "›"))),
         infosOuv ? h("div", { className: "hc-b-detail" },
           h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Lieu")), h("b", null, ev.lieu || F("Pas encore indiqué"))),
-            lienPlan ? h("a", { href: lienPlan, target: "_blank", rel: "noopener" }, F("Itinéraire") + (rtl ? " ‹" : " ›")) : null),
+            (lienPlan || gestion) ? h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, flexShrink: 0 } },
+              lienPlan ? h("a", { href: lienPlan, target: "_blank", rel: "noopener" }, F("Itinéraire") + (rtl ? " ‹" : " ›")) : null,
+              /* 11/11 20h25 (Blandine : « je vois pas comment modifier le lieu ») : la coach corrige l'adresse ici */
+              gestion ? h("button", { type: "button", onClick: modifierRdv, style: { background: "none", border: "none", padding: 0, color: "#C9A66B", font: "inherit", fontSize: 13, cursor: "pointer" } }, F("Modifier") + (rtl ? " ‹" : " ›")) : null) : null),
           horaires.length ? horaires.map(function (x, i) {
             return h("div", { key: i, className: "hs-row" }, h("div", { className: "g" }, h("b", null, x.k), x.alerte ? h("span", null, F("alerte 15 min avant")) : null), h("span", { className: "d" }, x.v));
           }) : h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Les horaires ne sont pas encore indiqués.")))),
@@ -4103,6 +4112,34 @@ function HsPhraseLecture(props) {
   React.useEffect(function () { var t = setInterval(function () { setI(function (x) { return x + 1; }); }, 4200); return function () { clearInterval(t); }; }, []);
   return React.createElement("div", { style: { fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 20, color: "#F3EEE4", minHeight: 52 } }, F(HS_PHRASES_LECTURE[i % HS_PHRASES_LECTURE.length]));
 }
+/* 11/11 20h25 (Blandine : « je vois pas comment modifier le lieu ni mettre la bonne adresse, l'outil saura lire si je lui envoie ? »,
+   puis « Ok » pour les deux propositions) : quand le programme lu donne l'adresse du concours, Hype la propose ; rien n'est
+   changé sans que la coach touche « Mettre cette adresse » (même enregistrement que « Modifier le rendez-vous »). */
+function hsAdresseDiff(lue, actuelle) {
+  function n(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  return !!n(lue) && n(lue) !== n(actuelle);
+}
+function HsAdresseLue(p) {
+  var h = React.createElement, F = p.F;
+  var _e = React.useState(""); var etat = _e[0], setEtat = _e[1];
+  if (!p.adresse) return null;
+  function mettre() {
+    setEtat("…");
+    modifierAgendaClub(p.idEv, { lieu: p.adresse }).then(function (r) {
+      if (r && r.error) { setEtat(F("Enregistrement impossible : ") + String((r.error && r.error.message) || r.error)); return; }
+      setEtat("ok"); try { if (p.onMaj) p.onMaj(p.adresse); } catch (e) { }
+    }).catch(function (e) { setEtat(F("Enregistrement impossible : ") + String((e && e.message) || e)); });
+  }
+  if (etat === "ok") return h("div", { className: "hs-carte", style: { marginTop: 12, padding: "12px 14px", fontSize: 13 } }, F("✓ Adresse enregistrée : le bouton Itinéraire y mène maintenant."));
+  return h("div", { className: "hs-carte", style: { marginTop: 12, padding: "12px 14px" } },
+    h("div", { style: { fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, marginBottom: 8 } }, F("Adresse trouvée sur le document")),
+    h("div", { style: { fontSize: 14.5, lineHeight: 1.45, color: "#F3EEE4", fontWeight: 600 } }, p.adresse),
+    p.actuelle ? h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, F("Lieu enregistré actuellement : ") + p.actuelle) : null,
+    etat && etat !== "…" ? h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, etat) : null,
+    h("div", { className: "hs-duo", style: { marginTop: 12 } },
+      h("button", { type: "button", className: "hs-btn", disabled: etat === "…", onClick: mettre }, F("Mettre cette adresse")),
+      h("button", { type: "button", className: "hs-btn", onClick: function () { if (p.onFin) p.onFin(); } }, F("Non merci"))));
+}
 async function hsAttendreLecture(jobId) {
   var t0 = Date.now(), fini = null;
   while (!fini && Date.now() - t0 < 600000) {
@@ -4114,7 +4151,7 @@ async function hsAttendreLecture(jobId) {
   var texte = String(fini.resultat || "");
   var m = texte.match(/\{[\s\S]*\}/);
   var o = JSON.parse(m ? m[0] : texte) || {};
-  return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [] };
+  return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [], adresse: String(o.adresse || "").trim() };
 }
 async function hsLireProgramme(images, equipe, onJob) {
   var sess = await supa.auth.getSession();
@@ -4122,7 +4159,7 @@ async function hsLireProgramme(images, equipe, onJob) {
   if (!sv || !sv.access_token) throw new Error("session");
   var system = "Tu lis le programme ou une liste de depart d'un concours d'equitation (photo, capture d'ecran ou page de PDF). "
     + "Reponds UNIQUEMENT en JSON : {\"epreuves\":[{\"numero\":\"numero de l'epreuve ou vide\",\"nom\":\"nom recopie (ex. Club 3 Grand Prix)\",\"heure\":\"heure de DEBUT de l'epreuve HHhMM (premier depart en piste, JAMAIS l'heure de reconnaissance ; si seule la reconnaissance est indiquee : vide)\",\"piste\":\"piste ou carriere ou vide\",\"jour\":\"AAAA-MM-JJ ou vide\"}],"
-    + "\"passages\":[{\"epreuve\":\"nom ou numero de l'epreuve\",\"ordre\":\"numero d'ordre de passage ou vide\",\"heure\":\"heure de passage HHhMM ou vide\",\"cavalier\":\"nom du cavalier recopie\",\"cheval\":\"nom du cheval recopie\",\"piste\":\"piste ou vide\"}]}. "
+    + "\"adresse\":\"adresse COMPLETE du lieu du concours si elle est ecrite (nom du club ou du centre equestre, rue, code postal, ville), sinon vide ; jamais l'adresse de l'organisateur ou du secretariat si elle est differente\",\"passages\":[{\"epreuve\":\"nom ou numero de l'epreuve\",\"ordre\":\"numero d'ordre de passage ou vide\",\"heure\":\"heure de passage HHhMM ou vide\",\"cavalier\":\"nom du cavalier recopie\",\"cheval\":\"nom du cheval recopie\",\"piste\":\"piste ou vide\"}]}. "
     + "Les passages : seulement les lignes de ces cavaliers s'ils apparaissent (sinon aucune) : " + JSON.stringify((equipe || []).slice(0, 40)) + ". "
     + "IMPORTANT (pages FFE Compet « Ordre de passage ») : il n'y a souvent PAS de colonne N° ni d'heure. Chaque partant est un bloc (cavalier, club, cheval, entraineur) avec un NOMBRE ECRIT JUSTE AU-DESSUS (1, 2, 3...) : ce nombre est son ordre de passage, mets-le dans ordre. Le titre de la page donne l'epreuve (ex. Epreuve n 03 ... CSO Club 2 Grand Prix) : utilise-la pour epreuve. Pas d'heure = heure vide, c'est normal. "
     + "Recopie exactement ce qui est ecrit. N'invente RIEN : case illisible ou absente = chaine vide.";
@@ -4151,7 +4188,7 @@ async function hsLireProgramme(images, equipe, onJob) {
   }
   var m = texte.match(/\{[\s\S]*\}/);
   var o = JSON.parse(m ? m[0] : texte) || {};
-  return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [] };
+  return { epreuves: Array.isArray(o.epreuves) ? o.epreuves : [], passages: Array.isArray(o.passages) ? o.passages : [], adresse: String(o.adresse || "").trim() };
 }
 /* 09/11 13h25 (Blandine : « on a des outils pour lire les PDF ou les screens ; sur cette page on s'attend à pouvoir rentrer
    les résultats ») — LIRE LES RÉSULTATS D'UN CONCOURS (PDF de résultats, capture du site FFE ou du chronométreur, photo du
@@ -4363,6 +4400,7 @@ function EcranEngagements() {
      l'ordre de passage / programme directement ici, pour tous les tours (1 à 5). Même lecture que Jour J (hsLireProgramme). */
   var _olu = React.useState(null); var ordreProp = _olu[0], setOrdreProp = _olu[1];
   var _olc = React.useState(""); var ordreLect = _olc[0], setOrdreLect = _olc[1];
+  var _adl = React.useState(""); var adrLue = _adl[0], setAdrLue = _adl[1];   /* 11/11 : adresse du concours lue sur le programme */
   var _rq = React.useState(""); var recherche = _rq[0], setRecherche = _rq[1];
   var _rh = React.useState([]); var trouves = _rh[0], setTrouves = _rh[1];   /* autres comptes Hype trouvés par la recherche */
 
@@ -5168,6 +5206,7 @@ function EcranEngagements() {
       function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
       function memeCh(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
       var props = [], pris = [];
+      setAdrLue(hsAdresseDiff(lu.adresse, ev && ev.lieu) ? lu.adresse : "");
       lignes.forEach(function (l, i) { (l.tours || []).forEach(function (t, k) {
         var ch = String(t.cheval_nom || "").trim(), ep = String(t.epreuve || "").trim();
         if (!ch && !ep) return;
@@ -5199,7 +5238,7 @@ function EcranEngagements() {
       setOrdreProp(props);
       var nbLu = (lu.passages || []).length, nbNum = (lu.passages || []).filter(function (x) { return x && (x.ordre || x.heure); }).length;
       setOrdreLect(props.length ? "" : (nbLu && !nbNum ? F("J’ai trouvé tes cavaliers, mais aucun numéro ni aucune heure de passage sur ce document. C’est sans doute la liste des engagés : envoie plutôt la page « Ordre de passage » du concours sur FFE Compet.")
-        : lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à tes engagements.") : F("Je n’ai rien trouvé d’utilisable sur ce document.")));
+        : lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur ce document."))));
     } catch (eT) { setOrdreLect(F("Lecture impossible : ") + String((eT && eT.message) || eT)); }
   }
   function appliquerOrdre() {
@@ -5415,6 +5454,7 @@ function EcranEngagements() {
   return h("div", { className: "hs hs-eng e1", dir: rtl ? "rtl" : "ltr" },
     hero,
     h("div", { className: "hs-in" },
+      adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
       blocOrdre(),   /* 10/11 : la lecture en cours et son résultat tout en haut */
       carteConcours(),
       composeur(),
@@ -6210,6 +6250,7 @@ function EcranJourJ(props) {
   var _db = React.useState(""); var dirOcc = _db[0], setDirOcc = _db[1];
   var _pg = React.useState(null); var prog = _pg[0], setProg = _pg[1];          /* 07/11 : propositions lues sur la photo */
   var _pgl = React.useState(""); var progLect = _pgl[0], setProgLect = _pgl[1]; /* "" | "en_cours" | message */
+  var _adl = React.useState(""); var adrLue = _adl[0], setAdrLue = _adl[1];   /* 11/11 : adresse du concours lue sur le programme */
 
   React.useEffect(function () { injecterCss2(); if (!integre) { try { window.scrollTo(0, 0); } catch (e) { } } }, []);
   React.useEffect(function () {
@@ -6357,6 +6398,7 @@ function EcranJourJ(props) {
       var imgs = estPdf ? (await hypePdfEnImages(f, 4, 2000)).images : ((typeof hypeImageEnBandes === "function") ? await hypeImageEnBandes(f, 2000) : [await hypeImageEnJpeg(f, 2000)]);
       var equipe = []; lignes.forEach(function (l) { [1, 2, 3, 4, 5].forEach(function (n) { if (l["cheval" + n + "_nom"] || l["epreuve" + n]) equipe.push({ cavalier: l.nom, cheval: l["cheval" + n + "_nom"] || "", epreuve: l["epreuve" + n] || "" }); }); });
       var lu = await hsLireProgramme(imgs, equipe);
+      setAdrLue(hsAdresseDiff(lu.adresse, ev && ev.lieu) ? lu.adresse : "");
       function norm(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
       function memeEp(a, b) { a = norm(a); b = norm(b); if (!a || !b) return false; if (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true; var aa = a.split(" "), bb = b.split(" "); return aa.length > 1 && aa.every(function (w) { return bb.indexOf(w) >= 0; }); }
       function memeCh(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a === b || a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
@@ -6375,7 +6417,7 @@ function EcranJourJ(props) {
         props.push({ i: i, n: n, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, num: eL && eL.numero ? String(eL.numero) : "", ordre: p && p.ordre ? String(p.ordre) : "", coche: true });
       }); });
       setProg({ props: props, epreuves: lu.epreuves });
-      setProgLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : F("Je n’ai rien trouvé d’utilisable sur cette image.")));
+      setProgLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur cette image."))));
     } catch (eL2) { setProgLect(F("Lecture impossible : ") + String((eL2 && eL2.message) || eL2)); }
   }
   function appliquerProgramme() {
@@ -6436,6 +6478,7 @@ function EcranJourJ(props) {
         }),
         h("div", { className: "hs-note", style: { marginTop: 6, marginBottom: 0 } }, F("Calcul : 2 chevaux en piste ; le n° 1 et le n° 2 entrent au début de l’épreuve, chacun des suivants quand celui d’avant-avant sort. Les forfaits avancent l’heure, les barrages et les pauses la reculent."))),
       progLect && progLect !== "en_cours" ? h("div", { className: "hs-note" }, progLect) : null,
+      adrLue ? h(HsAdresseLue, { F: F, idEv: idEv, adresse: adrLue, actuelle: ev && ev.lieu, onFin: function () { setAdrLue(""); }, onMaj: function (a) { setEv(Object.assign({}, ev, { lieu: a })); } }) : null,
       prog && prog.props.length ? h("div", { className: "hs-carte", style: { marginTop: 10 } },
         prog.epreuves.length ? h("div", { className: "hs-row" }, h("div", { className: "g" }, h("span", null, F("Lu : ") + prog.epreuves.map(function (x) { return [x.numero ? "n° " + x.numero : "", x.nom, x.heure ? hsHeurePropre(x.heure) : "", x.piste ? F("piste ") + x.piste : ""].filter(Boolean).join(" "); }).join(" · ")))) : null,
         prog.props.map(function (x, k) {
