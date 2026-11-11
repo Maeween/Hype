@@ -281,6 +281,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 1 — Urgent
 
+- [11/11 21h50] ✅ FAIT — Page équipe réorganisée en 4 parties avec menu collant (L'équipe · Les concours · Souvenirs · Apprendre), « Classement des cavaliers » (liste → Performances du cavalier), cartes basses alignées, parties vides en petite carte avec photo (build 20261111-2330).
+- [11/11 21h50] ✅ FAIT — Performances du cavalier : grand héros même avec des résultats ; pastilles choisies en contour champagne (plus de doré plein) (build 20261111-2340). 3 propositions de mise en page (A points puis résultats · B par type d'épreuve · C par cheval) envoyées, choix de Blandine attendu. Points provisoires FFE pas encore dans Hype (seuls ceux saisis).
+- [11/11 21h50] À FAIRE — Petit menu de navigation sur les sous-pages des profils (Photos, Vidéos, Performances, Actualité) pour cavalier, écurie et cheval, sur le modèle du profil qui l'a déjà (à identifier avec Blandine).
+- [11/11 21h50] PLUS TARD — Page spéciale Championnat de France (idée de Blandine, « on va attendre »).
+
 - [11/11 21h45] ✅ FAIT — Page équipe : le chapitre Médias = les trois portes (En piste → vidéos, Les clés de Hey Baby → épingles, Optimise tes perfs → théorie/articles) qui ouvrent directement la bonne rubrique ; page d'accueil des Médias supprimée (une page en moins, « ‹ L'équipe » pour revenir) ; « Les plus aimées », « Derniers partages » et « Conseils du coach » retirés du bas (doublons). Règlements gardés (à confirmer par Blandine). Build 20261111-2320.
 
 - [11/11 21h35] ✅ FAIT — « Ajouter une vidéo » refait d'après la maquette B choisie par Blandine : photo entière en haut, 4 étapes numérotées (1 Ta vidéo · 2 Le cavalier en tuiles photo comme les chevaux · 3 Le cheval · 4 Le concours avec Résultat, Légende, Sans le son), encadré « X sur Y » avant Publier ; « Un mot ? » devient « Légende » ; aucune fonction retirée ; 14 langues (build 20261111-2310).
