@@ -343,6 +343,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 1 — Urgent
 
+- [12/11 01h25] ✅ FAIT — Performances du cavalier refaite d'après la maquette K « Chapitres » choisie par Blandine, avec les ajouts de la maquette J : menu Performances · Photos · Vidéos · Actualité à la place de la ligne de chiffres ; Chapitre I (victoires, podiums, barre, sorties/classés) ; « Sa régularité » en grand % ; « Son record » sur photo ; Chapitre II ses points par épreuve (saison en cours, « à venir » si inconnus) ; Chapitre III son dernier concours. Tout l'existant gardé dessous : filtre par cheval, moments forts, classement Team, ajouter / importer, saisons dépliables avec points de qualification, filtres et modification, vidéo. Page du cheval inchangée. Build 20261112-0125.
+
 - [11/11 21h50] ✅ FAIT — Page équipe réorganisée en 4 parties avec menu collant (L'équipe · Les concours · Souvenirs · Apprendre), « Classement des cavaliers » (liste → Performances du cavalier), cartes basses alignées, parties vides en petite carte avec photo (build 20261111-2330).
 - [11/11 21h50] ✅ FAIT — Performances du cavalier : grand héros même avec des résultats ; pastilles choisies en contour champagne (plus de doré plein) (build 20261111-2340). 3 propositions de mise en page (A points puis résultats · B par type d'épreuve · C par cheval) envoyées, choix de Blandine attendu. Points provisoires FFE pas encore dans Hype (seuls ceux saisis).
 - [11/11 21h50] À FAIRE — Petit menu de navigation sur les sous-pages des profils (Photos, Vidéos, Performances, Actualité) pour cavalier, écurie et cheval, sur le modèle du profil qui l'a déjà (à identifier avec Blandine).
