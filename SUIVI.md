@@ -29,6 +29,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Vérifié (Chromium, 390×844, 820×1180, 1440×900 ; accueil, Galops, Cavalier, Chevaux, Communauté, Écurie, Hey Baby, Premium) : barre en bas partout, aucune erreur, aucun déclenchement à tort ; bug simulé → remesure faite, défilement gardé ; clavier ouvert → rien. Le bug iPhone lui-même ne se reproduit pas sur ordinateur : seul l'iPhone de Blandine confirmera.
 - Ensuite (validé le 10/11 23h48) : la barre « dans la page » (la page défile dans sa zone, la barre posée dessous), chantier long, page par page, captures avant publication.
 
+### 11/11 — build 20261111-0915 — Partager un conseil de Hey Baby par lien
+- Base (accord de Blandine « vas-y ») : table heybaby_partages (code unique, question, réponse, langue, vues ; chacun n'écrit/voit que les siens) + fonction heybaby_partage_lire(code) lisible par tous, y compris sans compte.
+- « Partager » (réponse ou épingle) : enregistre le conseil et envoie un message court « 🐴 Un conseil de Hey Baby pour toi » + la question + « 👉 Lis-le en entier ici : 2hype.fr/<langue>/ia-equestre/?r=<code> » (14 langues). Si l'enregistrement échoue : ancien message texte complet.
+- Le lien ouvre la page du conseil (mise en page magazine, lisible sans compte) puis la carte du petit poney (créer mon compte gratuit / j'ai déjà un compte, ou « Poser ma question » si connecté), fin de page Hype.
+- Aperçu des liens Hey Baby dans WhatsApp : nouvelle image au petit poney, une par langue (images/hey-baby-partage-<langue>.jpg), sur les 14 pages /<langue>/ia-equestre/.
+
 ### 11/11 — build 20261111-0815 — Hey Baby : réponses en mise en page magazine, pleine largeur
 - Réponses de Hey Baby (texte inchangé, seule la présentation change) : en-tête « HEY BABY · TON COACH » + temps de lecture ; sommaire cliquable « Dans cette réponse » (à partir de 3 parties) ; introduction en Cormorant ; parties numérotées 01, 02… avec picto fin champagne et filet courbe doré ; puces losange espacées ; encadrés « Le conseil du coach » (« Un repère… ») et « À retenir » (conclusion). Tout en champagne et ivoire : aucun point mis en avant en rouge (Blandine : « plus de tact »).
 - Les réponses prennent toute la largeur de l'écran (plus aéré, moins long).
