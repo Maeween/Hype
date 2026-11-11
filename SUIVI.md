@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-2140 — Concours : lieu modifiable depuis la fiche + adresse lue sur le programme
+- Fiche concours, infos pratiques : lien « Modifier › » sous Itinéraire (coach et modératrice seulement) → même fiche que « ••• › Modifier le rendez-vous ».
+- Lecture du programme (Jour J « Modifier les passages » et Engagements) : l'outil cherche aussi l'adresse complète du lieu ; si elle diffère du lieu enregistré, carte « Adresse trouvée sur le document » avec « Mettre cette adresse » / « Non merci ». Rien n'est changé sans ce toucher. Enregistrement par modifierAgendaClub (notification « nouvelles infos » au club, comme une modification à la main).
+- Textes traduits dans les 14 langues. Fichiers : hype-ecran-saison.js (v136), index.html (version + build). Aucun SQL.
+- À tester : envoyer un vrai avant-programme et vérifier que l'adresse est bien lue.
+
 ### 11/11 — build 20261111-2050 — Résultats de l'écurie : un résultat compte pour l'écurie du cheval monté ; résultats saisis en compétition reconnus
 - Demande de Blandine (11/11 19 h 34) : « il faut se fier au cheval monté pour savoir pour quelle écurie le cavalier a tourné » (ex. Dakota = SEP, les résultats d'Aurélie vont sur la SEP), et les résultats de Tigery n'apparaissaient pas sur la page Feinn.
 - Cause 1 (Tigery) : la page « Résultats de l'écurie » ne reconnaissait les cavaliers que par leur nom FFE (« CHLOE BERTHIER ») ; la saisie depuis la compétition enregistre le prénom (« Chloé ») relié au compte. Correctif (hype-ecran-resultats-ecurie.js v=9) : un cavalier de l'écurie ayant un nom FFE déclaré est aussi reconnu par son compte (cavalier_id).
