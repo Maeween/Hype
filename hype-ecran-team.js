@@ -59,12 +59,15 @@ function EcranTeamCompetition() {
       try {
         var ids = (chevaux || []).map(function (c) { return c.id; }).filter(Boolean);
         if (!ids.length || typeof supa === "undefined" || !supa || typeof hypeSaisonTeam !== "function" || typeof hypeClasserChevauxTeam !== "function") return;
-        var rr = await supa.from("resultats").select("cheval_id, points, date_epreuve, epreuve, concours, visible").in("cheval_id", ids.slice(0, 300)).limit(5000);
+        var rr = await supa.from("resultats").select("cheval_id, points, date_epreuve, epreuve, concours, visible, cavalier").in("cheval_id", ids.slice(0, 300)).limit(5000);
         if (!rr || rr.error) return;
         var aj = new Date(), ajIso = aj.getFullYear() + "-" + ("0" + (aj.getMonth() + 1)).slice(-2) + "-" + ("0" + aj.getDate()).slice(-2);
         var sCour = hypeSaisonTeam(ajIso, "poney");
         var resS = (rr.data || []).filter(function (r) { return r && hypeSaisonTeam(r.date_epreuve, r.epreuve) === sCour; });
         var o = {}; hypeClasserChevauxTeam(chevaux, resS, [], false).forEach(function (c) { o[c.id] = c.pts || 0; });
+        /* 11/11 22h23 : qui l'a monté cette saison (prénoms), pour la grande carte du meilleur cheval */
+        var mt = {}; resS.forEach(function (r) { if (!r || r.visible === false || !r.cheval_id) return; var pr = String(r.cavalier || "").trim().split(/\s+/)[0] || ""; if (!pr) return; pr = pr.charAt(0).toUpperCase() + pr.slice(1).toLowerCase(); var l = mt[r.cheval_id] || (mt[r.cheval_id] = []); if (l.indexOf(pr) < 0) l.push(pr); });
+        o.__montes = mt;
         if (vif) setPtsChevaux(o);
       } catch (eP) { }
     })();
@@ -79,7 +82,8 @@ function EcranTeamCompetition() {
      la page Médias complète est hype-ecran-team-medias.js (route team-medias). */
   var _md = React.useState(null); var mediasTop = _md[0], setMediasTop = _md[1];
   var _mp = React.useState(null); var mediasPartages = _mp[0], setMediasPartages = _mp[1];
-  var _mr = React.useState(null); var vidsRecentes = _mr[0], setVidsRecentes = _mr[1];   /* 11/11 22h05 : dernières vidéos (non privées) pour « Souvenirs » + leur nombre */
+  var _mr = React.useState(null); var vidsRecentes = _mr[0], setVidsRecentes = _mr[1];
+  var _mg = React.useState(false); var menuGerer = _mg[0], setMenuGerer = _mg[1];   /* 11/11 22h29 : menu « Gérer l'équipe » (coach) */   /* 11/11 22h05 : dernières vidéos (non privées) pour « Souvenirs » + leur nombre */
   React.useEffect(function () {
     if (!groupe || !groupe.id || typeof supa === "undefined" || !supa) return;
     var vifM = true;
@@ -419,13 +423,13 @@ function EcranTeamCompetition() {
       h("div", { style: { fontFamily: M, fontSize: 11, letterSpacing: ".24em", textTransform: "uppercase", color: OR, fontWeight: 600 } }, n + " · " + lab),
       h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.05, color: IV, marginTop: 4 } }, titre));
   }
-  var PARTIES = [
+  var PARTIES = [   /* 11/11 22h29 : Souvenirs remonte en tête (proposition A) */
+    { id: "eq-p3", lab: T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "الذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억"),
+      titre: T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간") },
     { id: "eq-p1", lab: T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"),
       titre: T("Qui monte, sur qui", "Who rides what", "Quién monta qué", "Chi monta chi", "誰がどの馬に", "Wer reitet wen", "من يركب ماذا", "谁骑哪匹马", "Wie rijdt wie", "Quem monta quem", "Vem rider vem", "Кто на ком", "Kto na kim", "누가 어떤 말을") },
     { id: "eq-p2", lab: T("Les concours", "Competitions", "Los concursos", "I concorsi", "競技会", "Die Turniere", "المسابقات", "比赛", "De wedstrijden", "Os concursos", "Tävlingarna", "Соревнования", "Zawody", "대회"),
       titre: T("La saison", "The season", "La temporada", "La stagione", "シーズン", "Die Saison", "الموسم", "赛季", "Het seizoen", "A época", "Säsongen", "Сезон", "Sezon", "시즌") },
-    { id: "eq-p3", lab: T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "الذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억"),
-      titre: T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간") },
     { id: "eq-p4", lab: T("Apprendre", "Learn", "Aprender", "Imparare", "学ぶ", "Lernen", "التعلّم", "学习", "Leren", "Aprender", "Lära", "Учиться", "Nauka", "배우기"),
       titre: T("Progresser ensemble", "Grow together", "Progresar juntos", "Progredire insieme", "一緒に上達しよう", "Gemeinsam besser werden", "نتقدّم معًا", "一起进步", "Samen vooruit", "Progredir juntos", "Utvecklas tillsammans", "Расти вместе", "Rozwijać się razem", "함께 성장하기") }
   ];
@@ -520,34 +524,58 @@ function EcranTeamCompetition() {
     enTete(T("Nos cavaliers", "Our riders", "Nuestras jinetes", "Le nostre cavalieri", "私たちのライダー", "Unsere Reiter", "فرساننا", "我们的骑手", "Onze ruiters", "Nossos cavaleiros", "Våra ryttare", "Наши всадники", "Nasze jeźdźcy", "우리 기수들"), "cav", itemsCav.length, 8),
     membres === null ? chargement()
       : (itemsCav.length ? grillePortraits(itemsCav, "cav") : vide(T("Aucun cavalier pour l’instant.", "No riders yet.", "Aún no hay jinetes.", "Nessun cavaliere per ora.", "まだライダーはいません。", "Noch keine Reiter.", "لا توجد فرسان حاليا.", "目前还没有骑手。", "Nog geen ruiters.", "Nenhum cavaleiro por enquanto.", "Inga ryttare ännu.", "Пока нет ни одной всадники.", "Na razie nie ma żadnej jeźdźcy.", "아직 기수가 없어요."))),
-    (gestion && groupe) ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 } },
-      h("button", { type: "button", onClick: function () { setErrPanneau(""); setRecherche(""); setPanneau("membres"); }, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer" } },
-        T("Gérer les membres", "Manage members", "Gestionar miembros", "Gestisci i membri", "メンバーを管理", "Mitglieder verwalten", "إدارة الأعضاء", "管理成员", "Leden beheren", "Gerenciar os membros", "Hantera medlemmar", "Управлять участниками", "Zarządzaj członkami", "멤버 관리")),
-      typeof CreationEquipeEH === "function" ? h("button", { type: "button", onClick: function () { setModifGroupe(true); }, style: { minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer" } },
-        T("Modifier le groupe", "Edit the group", "Modificar el grupo", "Modifica il gruppo", "グループを編集", "Gruppe bearbeiten", "تعديل المجموعة", "修改小组", "Groep wijzigen", "Modificar o grupo", "Ändra gruppen", "Изменить группу", "Edytuj grupę", "그룹 수정")) : null) : null,
+    null,
     (modifGroupe && groupe && typeof CreationEquipeEH === "function") ? h(CreationEquipeEH, { clef: groupe.club_clef, club: TEAM_CLUB, groupe: groupe, communaute: groupe.type === "loisir", chevaux: [], piquets: [],
       onFermer: function () { setModifGroupe(false); },
       onFini: function (gN) { setGroupe(Object.assign({}, groupe, gN || {})); setModifGroupe(false); } }) : null), true);
 
   /* ── nos chevaux ── */
-  var chevauxOrdonnes = (function () {
-    var l = (chevaux || []).slice();
-    var cleM = function (id) { var t = String(id) + graineMelange, x = 0; for (var i = 0; i < t.length; i++) x = (x * 31 + t.charCodeAt(i)) % 1000003; return x; };
-    var tete = l.filter(function (c) { return (ptsChevaux[c.id] || 0) > 0; }).sort(function (a, b) { return (ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0); }).slice(0, 2);
-    var reste = l.filter(function (c) { return tete.indexOf(c) < 0; }).sort(function (a, b) { return cleM(a.id) - cleM(b.id); });
-    return tete.concat(reste);
-  })();
-  var itemsCh = chevauxOrdonnes.map(function (c) { return (chevauxCarres ? carreCheval : portrait)("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
+  /* 11/11 22h23 (Blandine, proposition 4 : « celui en grand, c'est celui avec le plus de points, toujours par ordre de points gagnés,
+     et ça défile ») : tous les chevaux par points de la SAISON EN COURS (à égalité : ordre alphabétique) ; le premier en grand
+     (« Meilleur de la saison » s'il a des points), les autres dans une rangée qui défile. */
+  var chevauxOrdonnes = (chevaux || []).slice().sort(function (a, b) { return ((ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+  var montesCh = (ptsChevaux && ptsChevaux.__montes) || {};
+  function libPts(n) { return n + " " + (n > 1 ? T("pts", "pts", "pts", "pt", "pt", "Pkt.", "نقاط", "分", "ptn", "pts", "p", "очк.", "pkt", "점") : T("pt", "pt", "pt", "pt", "pt", "Pkt.", "نقطة", "分", "pt", "pt", "p", "очк.", "pkt", "점")); }
+  function grandCheval(c) {
+    var pts = ptsChevaux[c.id] || 0, mts = montesCh[c.id] || [];
+    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 900, 560) : c.photo_url) : "";
+    return h("button", { key: "chg" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { position: "relative", display: "block", width: "100%", height: chevauxCarres ? 200 : 260, padding: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(214,182,118,0.38)", background: "#11171C", cursor: "pointer", textAlign: "start", color: IV } },
+      src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } }) : null,
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0) 38%, rgba(6,7,9,0.88) 100%)" } }),
+      pts > 0 ? h("span", { style: { position: "absolute", top: 10, insetInlineStart: 10, fontFamily: M, fontSize: 9.5, letterSpacing: 1.6, textTransform: "uppercase", color: OR, border: "1px solid rgba(214,182,118,0.6)", borderRadius: 999, padding: "4px 9px", background: "rgba(6,7,9,0.55)" } }, "★ " + T("Meilleur de la saison", "Best of the season", "El mejor de la temporada", "Il migliore della stagione", "今シーズンのベスト", "Bester der Saison", "الأفضل هذا الموسم", "本赛季最佳", "Beste van het seizoen", "O melhor da temporada", "Säsongens bästa", "Лучший в сезоне", "Najlepszy w sezonie", "이번 시즌 최고")) : null,
+      h("div", { style: { position: "absolute", insetInlineStart: 14, insetInlineEnd: 14, bottom: 12 } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 26, fontWeight: 600, lineHeight: 1.1 } }, c.nom || ""),
+        (pts > 0 || mts.length) ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(244,241,234,0.82)", marginTop: 4 } }, [pts > 0 ? libPts(pts) : "", mts.length ? T("monté par ", "ridden by ", "montado por ", "montato da ", "騎乗：", "geritten von ", "يمتطيه ", "骑手：", "gereden door ", "montado por ", "riden av ", "всадники: ", "jeźdźcy: ", "기수: ") + mts.slice(0, 3).join(", ") : ""].filter(Boolean).join(" · ")) : null));
+  }
+  function petitCheval(c) {
+    var pts = ptsChevaux[c.id] || 0;
+    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 240, 240) : c.photo_url) : "";
+    return h("button", { key: "chp" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { display: "block", flex: chevauxCarres ? "0 0 96px" : "0 0 128px", padding: 0, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer", scrollSnapAlign: "start" } },
+      h("div", { style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(214,182,118,0.28)", background: "#11171C" } },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+          : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 28, color: OR } }, (c.nom || "?").charAt(0))),
+      h("div", { style: { fontFamily: SERIF, fontSize: 14.5, fontWeight: 600, lineHeight: 1.12, marginTop: 6 } }, c.nom || ""),
+      pts > 0 ? h("div", { style: { fontFamily: M, fontSize: 10, color: "rgba(244,241,234,0.6)", marginTop: 2 } }, libPts(pts)) : null);
+  }
   var blocCh = section(h("div", null,
-    enTete(T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"), "ch", itemsCh.length, 8),
+    enTete(T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"), "ch", 0, 0),
     chevaux === null ? chargement()
-      : (itemsCh.length ? (chevauxCarres ? grilleCarres(itemsCh, "ch", carresParLigne) : grillePortraits(itemsCh, "ch")) : vide(T("Aucun cheval trouvé pour l’instant.", "No horses found yet.", "Aún no hay caballos.", "Nessun cavallo per ora.", "まだ馬はいません。", "Noch keine Pferde gefunden.", "لم يتم العثور على خيول حاليا.", "目前还没有找到马。", "Nog geen paarden gevonden.", "Nenhum cavalo encontrado por enquanto.", "Inga hästar hittades ännu.", "Пока лошадей не найдено.", "Na razie nie znaleziono żadnego konia.", "아직 말이 없어요."))),
+      : (chevauxOrdonnes.length ? h("div", null,
+          grandCheval(chevauxOrdonnes[0]),
+          chevauxOrdonnes.length > 1 ? h("div", { "data-noswipe": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", marginTop: 12, paddingBottom: 2, scrollbarWidth: "none" } }, chevauxOrdonnes.slice(1).map(petitCheval)) : null)
+        : vide(T("Aucun cheval trouvé pour l’instant.", "No horses found yet.", "Aún no hay caballos.", "Nessun cavallo per ora.", "まだ馬はいません。", "Noch keine Pferde gefunden.", "لا توجد خيول حاليا.", "暂时没有找到马。", "Nog geen paarden gevonden.", "Nenhum cavalo encontrado por enquanto.", "Inga hästar hittades ännu.", "Пока лошадей нет.", "Na razie brak koni.", "아직 말이 없어요."))),
     errChevaux ? h("div", { style: { marginTop: 8, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } }, errChevaux) : null,
-    (gestion && groupe) ? h("div", { style: { display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 } },
-    h("button", { type: "button", onClick: function () { setErrPanneau(""); setRecherche(""); setPanneau("chevaux"); }, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
-      T("G\u00e9rer les chevaux", "Manage horses", "Gestionar caballos", "Gestisci i cavalli", "\u99ac\u3092\u7ba1\u7406", "Pferde verwalten", "\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u062e\u064a\u0648\u0644", "管理马匹", "Paarden beheren", "Gerenciar os cavalos", "Hantera hästar", "Управлять лошадьми", "Zarządzaj końmi", "말 관리")) ,
-    h("button", { type: "button", "data-import-multi": "1", onClick: function () { try { window.HYPE_IMPORT_MULTI = true; window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIm) { } setEcran("import-resultats"); }, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
-      T("Importer des r\u00e9sultats", "Import results", "Importar resultados", "Importa risultati", "\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기"))) : null));
+    null));
+
+  /* 11/11 22h29 : un seul bouton « Gérer l'équipe » (coach) en bas de « L'équipe », qui ouvre les trois réglages */
+  var blocGerer = (gestion && groupe) ? section(h("div", { style: { position: "relative" } },
+    h("button", { type: "button", "aria-expanded": menuGerer ? "true" : "false", onClick: function () { setMenuGerer(!menuGerer); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } },
+      h("svg", { width: 15, height: 15, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("circle", { cx: 10, cy: 10, r: 2.6, fill: "none", stroke: OR, strokeWidth: 1.3 }), h("path", { d: "M10 2.5v2.2M10 15.3v2.2M2.5 10h2.2M15.3 10h2.2M4.7 4.7l1.6 1.6M13.7 13.7l1.6 1.6M4.7 15.3l1.6-1.6M13.7 6.3l1.6-1.6", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round" })),
+      T("Gérer l'équipe", "Manage the team", "Gestionar el equipo", "Gestisci la squadra", "チームを管理", "Team verwalten", "إدارة الفريق", "管理团队", "Team beheren", "Gerenciar a equipe", "Hantera laget", "Управлять командой", "Zarządzaj drużyną", "팀 관리"), h("span", { "aria-hidden": "true", style: { fontSize: 11 } }, menuGerer ? "▴" : "▾")),
+    menuGerer ? h("div", { style: { marginTop: 8, maxWidth: 320, borderRadius: 14, border: "1px solid rgba(214,182,118,0.38)", background: "#0B0F13", overflow: "hidden" } },
+      h("button", { type: "button", onClick: function () { setMenuGerer(false); setErrPanneau(""); setRecherche(""); setPanneau("membres"); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Gérer les membres", "Manage members", "Gestionar miembros", "Gestisci i membri", "メンバーを管理", "Mitglieder verwalten", "إدارة الأعضاء", "管理成员", "Leden beheren", "Gerenciar os membros", "Hantera medlemmar", "Управлять участниками", "Zarządzaj członkami", "멤버 관리")),
+      h("button", { type: "button", onClick: function () { setMenuGerer(false); setErrPanneau(""); setRecherche(""); setPanneau("chevaux"); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", borderTop: "1px solid rgba(214,182,118,0.16)", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Gérer les chevaux", "Manage horses", "Gestionar caballos", "Gestisci i cavalli", "馬を管理", "Pferde verwalten", "إدارة الخيول", "管理马匹", "Paarden beheren", "Gerenciar os cavalos", "Hantera hästar", "Управлять лошадьми", "Zarządzaj końmi", "말 관리")),
+      typeof CreationEquipeEH === "function" ? h("button", { type: "button", onClick: function () { setMenuGerer(false); setModifGroupe(true); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", borderTop: "1px solid rgba(214,182,118,0.16)", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Modifier le groupe", "Edit the group", "Modificar el grupo", "Modifica il gruppo", "グループを編集", "Gruppe bearbeiten", "تعديل المجموعة", "修改小组", "Groep wijzigen", "Modificar o grupo", "Ändra gruppen", "Изменить группу", "Edytuj grupę", "그룹 수정")) : null) : null), false) : null;
 
   /* (706) CHAPITRE « Classements des chevaux » : meme titre et meme carte que les autres chapitres de la page ;
      l'onglet « Performances chevaux » mene a la page classement (route performances-chevaux). */
@@ -837,7 +865,10 @@ function EcranTeamCompetition() {
         (gestion && resRetires.length) ? h("div", { style: { marginTop: 4 } },
           h("button", { type: "button", onClick: function () { setVoirRetires(!voirRetires); }, style: { background: "none", border: "none", padding: 0, minHeight: 32, color: GR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: "pointer" } },
             T("Résultats retirés", "Removed results", "Resultados quitados", "Risultati tolti", "外した結果", "Entfernte Ergebnisse", "النتائج المحذوفة", "已移除的成绩", "Verwijderde resultaten", "Resultados removidos", "Borttagna resultat", "Убранные результаты", "Usunięte wyniki", "삭제된 결과") + " (" + resRetires.length + ") " + (voirRetires ? "˄" : "˅")),
-          voirRetires ? h("div", { style: { opacity: 0.6, marginTop: 6 } }, resRetires.map(carteRes)) : null) : null)));
+          voirRetires ? h("div", { style: { opacity: 0.6, marginTop: 6 } }, resRetires.map(carteRes)) : null) : null,
+        /* 11/11 22h29 (Blandine : les boutons « ne devraient pas aller ailleurs ? ») : « Importer des résultats » vit sous les résultats */
+        (gestion && groupe) ? h("div", { style: { marginTop: 12 } }, h("button", { type: "button", "data-import-multi": "1", onClick: function () { try { window.HYPE_IMPORT_MULTI = true; window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIm) { } setEcran("import-resultats"); }, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
+      T("Importer des r\u00e9sultats", "Import results", "Importar resultados", "Importa risultati", "\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기"))) : null)));
 
   /* ── souvenirs récents ── */
   function estVid(u) { return ((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(u)) || ((typeof estUrlVideo === "function") && estUrlVideo(u)); }
@@ -961,7 +992,7 @@ function EcranTeamCompetition() {
     .sort(function (a, b) { return b.d.localeCompare(a.d); }).slice(0, 8);
   var svLarge = (typeof window !== "undefined" && window.innerWidth >= 820);
   function tuileSv(m, i) {
-    var base = { flex: svLarge ? "0 0 calc((100% - 36px) / 4)" : "0 0 42%", aspectRatio: "4 / 5", position: "relative", padding: 0, border: "1px solid rgba(214,182,118,0.25)", borderRadius: 12, overflow: "hidden", background: "#11171C", cursor: "pointer", scrollSnapAlign: "start" };
+    var base = { flex: svLarge ? "0 0 calc((100% - 36px) / 4)" : "0 0 calc((100% - 24px) / 3)", aspectRatio: "4 / 5",   /* 11/11 22h15 : 3 photos visibles avant de faire glisser */ position: "relative", padding: 0, border: "1px solid rgba(214,182,118,0.25)", borderRadius: 12, overflow: "hidden", background: "#11171C", cursor: "pointer", scrollSnapAlign: "start" };
     if (m.t === "v") {
       var v = m.v, src = (typeof vignetteHype === "function") ? vignetteHype(v.vignette, 400, 500) : v.vignette;
       return h("button", { key: "svv" + v.id, type: "button", onClick: function () { ouvrirMedias("videos", v.id); }, style: base },
@@ -1129,9 +1160,9 @@ function EcranTeamCompetition() {
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
-    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocCav, blocCh, trait(),
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocSv, trait(),
+    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocSv, trait(),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocCav, blocCh, blocGerer, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, PARTIES[3].titre), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);

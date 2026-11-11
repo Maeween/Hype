@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261112-0035 — Page équipe : Souvenirs en tête, « Nos chevaux » proposition 4, boutons de la coach regroupés
+- Blandine (22 h 15 → 22 h 29, « Ok »). hype-ecran-team.js v=29.
+- Ordre des parties (menu de pastilles compris) : 1 Souvenirs · 2 L'équipe · 3 Les concours · 4 Apprendre (proposition A). Souvenirs : 3 photos entières visibles sur téléphone avant de faire glisser.
+- « Nos chevaux » = proposition 4 : tous les chevaux par points de la saison en cours (à égalité : ordre alphabétique ; fini le mélange au hasard) ; le premier en grande carte (« ★ Meilleur de la saison » s'il a des points, ses points, « monté par » + prénoms des cavaliers de ses résultats de la saison), les autres dans une rangée qui défile (photo carrée, nom entier, points). « Voir tout » retiré (la rangée montre tout).
+- Boutons de la coach : « Gérer les membres », « Gérer les chevaux » et « Modifier le groupe » réunis dans un seul bouton « Gérer l'équipe » (contour champagne) en bas de « L'équipe », qui ouvre un petit menu ; « Importer des résultats » déplacé sous « Résultats récents » (Les concours). Invisibles pour les cavaliers, comme avant.
+
 ### 11/11 — build 20261112-0010 — Page équipe : Souvenirs = photos + vidéos (maquettes 1 + 5) ; « En piste » quitte Apprendre ; règlements en petits rectangles
 - Blandine (22 h 05, après la maquette « 1 + 5 ») : « vas-y ». hype-ecran-team.js v=28. Partie 3 « Souvenirs » : sous « Nos plus beaux moments », plus de 2e titre ; les dernières photos ET vidéos de l'équipe mêlées par date (8 au plus ; défilent au doigt sur téléphone, 4 de front dès 820 px ; vidéo = ▶ + durée, ouvre la vidéo dans En piste ; photo = s'ouvre en grand), puis deux accès : « Nos photos » (N photos, déplie toutes les photos sur place) et « En piste » (N parcours filmés, ouvre les vidéos de l'équipe). Vidéos privées jamais dans le défilé ni dans le compte. Partie 4 « Apprendre » : ne garde que Les clés de Hey Baby, Optimise tes perfs et les Règlements.
 - Règlements : deux petits rectangles côte à côte sur toute la largeur (photo voilée en fond, titre, lieu, source FFE) — demande « je veux pas qu'ils soient trop gros et qu'ils prennent quand même toute la largeur ».
