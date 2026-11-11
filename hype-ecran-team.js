@@ -923,32 +923,32 @@ function EcranTeamCompetition() {
 
   /* (721) CHAPITRE « Règlements » : les règlements officiels (PDF dans docs/), ouverts dans un nouvel onglet.
      11/11 21h46 (Blandine : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ») : deux carrés. */
-  function carteReg(attr, href, titre, sous, source) {
-    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", aspectRatio: "1 / 1", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "14px 13px 12px", borderRadius: 14, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
+  function carteReg(attr, href, titre, sous, source, photo) {   /* 11/11 21h51 : « mets un visuel dessus quand même » → photo en fond, voilée */
+    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", aspectRatio: "1 / 1", backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.25) 0%, rgba(6,7,9,0.55) 40%, rgba(6,7,9,0.94) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
     pr[attr] = "1";
     return h("a", pr,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
-        h("svg", { width: 24, height: 24, viewBox: "0 0 20 20", "aria-hidden": "true" },
+        h("svg", { width: 18, height: 18, viewBox: "0 0 20 20", "aria-hidden": "true" },
           h("path", { d: "M5 2h7l4 4v12H5z", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinejoin: "round" }),
           h("path", { d: "M12 2v4h4M7.5 10h6M7.5 13h6", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round" })),
-        h("span", { style: { fontFamily: M, fontSize: 10, letterSpacing: 1.5, color: OR } }, "PDF")),
+        h("span", { style: { fontFamily: M, fontSize: 8.5, letterSpacing: 1.3, color: OR } }, "PDF")),
       h("div", null,
-        h("div", { style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, color: IV, lineHeight: 1.12 } }, titre),
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(244,241,234,0.72)", marginTop: 5, lineHeight: 1.35 } }, sous),
-        h("div", { style: { fontFamily: M, fontSize: 9, fontStyle: "italic", color: "rgba(243,238,228,0.5)", marginTop: 6, lineHeight: 1.3 } }, source)));
+        h("div", { style: { fontFamily: SERIF, fontSize: 14, fontWeight: 600, color: IV, lineHeight: 1.1 } }, titre),
+        h("div", { style: { fontFamily: M, fontSize: 9, color: "rgba(244,241,234,0.72)", marginTop: 3, lineHeight: 1.3 } }, sous),
+        h("div", { style: { fontFamily: M, fontSize: 8, fontStyle: "italic", color: "rgba(243,238,228,0.55)", marginTop: 3, lineHeight: 1.25 } }, source)));
   }
   var blocReg = section(h("div", null,
     enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정"), "rg", 0, 0),
-    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12, maxWidth: 460 } },
+    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 142px)", gap: 10 } },   /* 11/11 21h51 : « beaucoup plus petites » */
       carteReg("data-reglement-odf", "docs/reglement-open-de-france-2026.pdf",
         T("Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "オープン・ド・フランス2026", "Open de France 2026", "أوبن فرنسا 2026", "2026 年法国公开赛", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "2026 Open de France"),
         T("Championnats de France Poney & Clubs", "French Pony & Club Championships", "Campeonatos de Francia Poni y Clubes", "Campionati di Francia Pony e Club", "フランス選手権 ポニー&クラブ", "Französische Pony- & Club-Meisterschaften", "بطولات فرنسا للبوني والأندية", "法国小马与俱乐部锦标赛", "Franse kampioenschappen Pony & Clubs", "Campeonatos da França de Pônei e Clubes", "Franska mästerskapen för ponny & ridklubb", "Чемпионаты Франции: пони и клубы", "Mistrzostwa Francji Kucyków i Klubów", "프랑스 포니·클럽 선수권"),
-        T("FFE · mis à jour le 09/01/2026", "FFE · updated 09/01/2026", "FFE · actualizado el 09/01/2026", "FFE · aggiornato il 09/01/2026", "FFE・2026年1月9日更新", "FFE · aktualisiert am 09.01.2026", "FFE · حُدّث في 09/01/2026", "FFE · 2026年1月9日更新", "FFE · bijgewerkt op 09/01/2026", "FFE · atualizado em 09/01/2026", "FFE · uppdaterad 09/01/2026", "FFE · обновлено 09.01.2026", "FFE · zaktualizowano 09.01.2026", "FFE · 2026년 1월 9일 업데이트")),
+        T("FFE · mis à jour le 09/01/2026", "FFE · updated 09/01/2026", "FFE · actualizado el 09/01/2026", "FFE · aggiornato il 09/01/2026", "FFE・2026年1月9日更新", "FFE · aktualisiert am 09.01.2026", "FFE · حُدّث في 09/01/2026", "FFE · 2026年1月9日更新", "FFE · bijgewerkt op 09/01/2026", "FFE · atualizado em 09/01/2026", "FFE · uppdaterad 09/01/2026", "FFE · обновлено 09.01.2026", "FFE · zaktualizowano 09.01.2026", "FFE · 2026년 1월 9일 업데이트"), "images/piquet-cso-poney.webp"),
       /* 09/11 (Blandine, choix A) : 2e reglement, Championnat de France Amateur CSO 2026 (PDF fourni par Blandine, range dans docs/). */
       carteReg("data-reglement-amateur", "docs/reglement-championnat-amateur-cso-2026.pdf",
         T("Championnat de France Amateur CSO 2026", "French Amateur Show-Jumping Championship 2026", "Campeonato de Francia Amateur de Salto 2026", "Campionato di Francia Amateur Salto 2026", "フランス・アマチュア障害飛越選手権2026", "Französische Amateur-Meisterschaft Springen 2026", "بطولة فرنسا للهواة في قفز الحواجز 2026", "2026 年法国业余场地障碍锦标赛", "Frans Amateurkampioenschap Springen 2026", "Campeonato da França Amador de Saltos 2026", "Franska amatörmästerskapet i hoppning 2026", "Чемпионат Франции среди любителей по конкуру 2026", "Amatorskie Mistrzostwa Francji w skokach 2026", "2026 프랑스 아마추어 장애물 선수권"),
         T("Tours-Pernay, 15–18 octobre 2026", "Tours-Pernay, 15–18 October 2026", "Tours-Pernay, 15–18 de octubre de 2026", "Tours-Pernay, 15–18 ottobre 2026", "トゥール=ペルネ、2026年10月15〜18日", "Tours-Pernay, 15.–18. Oktober 2026", "تور-بيرنيه، 15–18 أكتوبر 2026", "图尔-佩尔奈，2026年10月15–18日", "Tours-Pernay, 15–18 oktober 2026", "Tours-Pernay, 15–18 de outubro de 2026", "Tours-Pernay, 15–18 oktober 2026", "Тур-Перне, 15–18 октября 2026", "Tours-Pernay, 15–18 października 2026", "투르-페르네, 2026년 10월 15–18일"),
-        T("FFE · mis à jour le 10/06/2026", "FFE · updated 10/06/2026", "FFE · actualizado el 10/06/2026", "FFE · aggiornato il 10/06/2026", "FFE・2026年6月10日更新", "FFE · aktualisiert am 10.06.2026", "FFE · حُدّث في 10/06/2026", "FFE · 2026年6月10日更新", "FFE · bijgewerkt op 10/06/2026", "FFE · atualizado em 10/06/2026", "FFE · uppdaterad 10/06/2026", "FFE · обновлено 10.06.2026", "FFE · zaktualizowano 10.06.2026", "FFE · 2026년 6월 10일 업데이트")))));
+        T("FFE · mis à jour le 10/06/2026", "FFE · updated 10/06/2026", "FFE · actualizado el 10/06/2026", "FFE · aggiornato il 10/06/2026", "FFE・2026年6月10日更新", "FFE · aktualisiert am 10.06.2026", "FFE · حُدّث في 10/06/2026", "FFE · 2026年6月10日更新", "FFE · bijgewerkt op 10/06/2026", "FFE · atualizado em 10/06/2026", "FFE · uppdaterad 10/06/2026", "FFE · обновлено 10.06.2026", "FFE · zaktualizowano 10.06.2026", "FFE · 2026년 6월 10일 업데이트"), "images/concours-hero-bai-tresse.webp"))));
 
   var blocSv = section(h("div", null,
     enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
