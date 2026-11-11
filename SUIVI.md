@@ -10,6 +10,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-0905 — Barre du bas posée dans la page : ALLUMÉE POUR TOUT LE MONDE
+- Demande de Blandine (11/11 08h56 : « active-le pour tout le monde »). Même code que le build 0855, seul l'interrupteur change : allumée par défaut sur téléphone et tablette (ordinateur inchangé).
+- Secours : ouvrir l'appli avec ?barre=1 remet l'ancienne barre sur cet appareil (mémorisé) ; ?barre=2 la rallume. Pour revenir en arrière pour tous : remettre « === "1" » dans HYPE_BARRE_V2 (index.html).
+- Vérifié (Chromium, 390×844 et 820×1180) : accueil, Galops, Team Compétition, Hey Baby, Chevaux ; défilement au doigt identique à l'ancienne barre ; ?barre=1 = ancienne barre ; ordinateur inchangé ; aucune erreur.
+- À surveiller sur iPhone/Android : clavier, encoche du bas, pages dont le bas serait coupé ou laisserait un vide au-dessus de la barre (pages calculées pour l'ancienne barre).
+
 ### 11/11 — build 20261111-0855 — Barre du bas posée DANS la page : version d'essai publiée ÉTEINTE (Blandine l'allume sur son iPhone avec ?barre=2, l'éteint avec ?barre=1)
 - Principe validé le 10/11 : la barre ne flotte plus (plus de position: fixed) ; la page défile dans sa zone (#hype-defile), la barre est posée dessous. Téléphone et tablette ; ordinateur inchangé (colonne).
 - S'active SEULEMENT sur l'appareil qui ouvre l'appli avec ?barre=2 (mémorisé) ; ?barre=1 revient à l'ancienne barre. Sans le lien : rien ne change (vérifié).
