@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-2355 — Page équipe : les deux règlements en petites cartes carrées côte à côte
+- Blandine (21 h 46) : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ». hype-ecran-team.js v=26, partie « Apprendre » : Open de France 2026 et Championnat de France Amateur CSO 2026 en deux carrés (picto document + PDF en haut, titre court, lieu, « FFE · mis à jour le … » en petit), 460 px au plus sur ordinateur. Mêmes PDF, mêmes repères data-reglement-*. Textes courts traduits dans les 14 langues.
+
 ### 11/11 — build 20261111-2350 — Story des résultats : tous les classés, et plus lisible
 - Blandine (21 h 39, après avoir vu la story de Tigery) : « on avait dit qu'on mettait tous les classés » (la story s'arrêtait à 3 lignes + « + N autres ») et « des phrases très dures à lire ». hype-ecran-saison.js v=137 (hsStoryDessiner) : toutes les lignes retenues (classés, podiums, sans-faute) jusqu'à 8 ; au-delà 7 + « + N autres résultats ». Jusqu'à 3 lignes : inchangé ; 4 : lignes un peu resserrées ; 5 et plus : une ligne par résultat (« Chloé & Daphne velleda · Club 3 · Sans faute »), lauriers réduits. Chiffre de la place en ivoire avec contour sombre (il était or sur lauriers or), épreuve et devise plus claires et plus grandes, dernière ligne qui ne touche plus « 2HYPE.FR ». Validé sur captures (« c'est mieux »).
 - Tigery en base : 4 résultats seulement (Evan 1er Club 2 et 5e/10 Club 3, Chloé 1re Club 3 et 2e Club 2) ; la 3e place dont parlait Blandine n'est pas saisie — question posée.
