@@ -283,6 +283,8 @@ function EcranPhotosCavaliere() {
                     h("button", { type: "button", onClick: function () { setNbAff(nbAff + 18); }, style: { minHeight: 42, padding: "0 20px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "transparent", color: "#E6CF9C", fontFamily: M, fontSize: 12.5, cursor: "pointer" } }, T("Afficher 18 photos de plus", "Show 18 more photos", "Ver 18 fotos más", "Mostra altre 18 foto", "さらに18枚表示", "18 weitere Fotos zeigen", "عرض 18 صورة أخرى", "再显示 18 张照片", "18 foto’s meer tonen", "Mostrar mais 18 fotos", "Visa 18 foton till", "Показать ещё 18 фото", "Pokaż 18 zdjęć więcej", "사진 18장 더 보기")),
                     h("span", { style: { fontSize: 11, color: "rgba(243,238,228,0.42)" } }, k + " " + T("sur", "of", "de", "su", "/", "von", "من", "/", "van", "de", "av", "из", "z", "중") + " " + liste.length)) : null);
               })())),
+    /* 12/11 (partage 3e étape) : ligne « Partage cette page » juste avant la fin de page */
+    (typeof EncartPartagePage === "function") ? h(EncartPartagePage, { ecran: "photos-cavalier" }) : null,
     /* 19/10 etape 1 : bas de page HYPE (paysage + signature), 118 / 150 / 180 px */
     h("div", { "aria-hidden": "true", style: { paddingTop: largeP ? 64 : 56 } },
       h("div", { style: { position: "relative", height: ordiP ? 180 : (largeP ? 150 : 118), overflow: "hidden" } },

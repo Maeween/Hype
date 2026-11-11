@@ -35,6 +35,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Retour arrière : grant select on public.profiles to anon;
 - ⚠️ Toute nouvelle lecture de profil faite SANS compte doit demander uniquement ces colonnes (sinon erreur « permission denied »).
 - Question ouverte : cacher aussi la photo de profil des cavaliers mineurs aux visiteurs sans compte.
+### 12/11 00h05 — build 20261112-0115 — Partage des pages, 3e étape (Blandine « 2 » puis « Ok »)
+- Nouvelles adresses (hypeLienPageCourante + hypeResoudreLienPage + HYPE_FAMILLES_PAGE) : #ag=club agenda d une écurie · #ep=club événements passés · #sv=club souvenirs · #pc=g|id|nom (piquet) ou t|id|clef|club (équipe) ou t (équipe par défaut) Performances chevaux.
+- Ligne « Partage cette page » ajoutée aux fins de page faites main : actualité d un cavalier (finPageCav, index.html) et photos d un cavalier (hype-ecran-photos-cav.js v=5).
+- Non touchés : fiche cheval (déjà la ligne via FinPageHype), challenge (iframe challenge.html avec son propre partage), chevaux de l écurie (#ec= existant).
+- Volontairement sans lien : album de l écurie (il montre toujours l écurie de la personne connectée → un lien partagé ouvrirait le mauvais album).
+- Imports FFE : cheval créé sans écurie → Blandine (23h58) préfère laisser ces fiches ouvertes pour que des gens qui connaissent le cheval les trouvent et les complètent ; rien à corriger.
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').
