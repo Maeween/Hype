@@ -207,12 +207,37 @@ function EcranResultatsEcurie() {
         }
         lignes = lignes.filter(function (x) { return x && x.visible !== false; });
         try { if (typeof hypeReparerLignes === "function") lignes = hypeReparerLignes(lignes); } catch (eRp) { }
+        /* 11/11 (Blandine : « il faut se fier au cheval monté pour savoir pour quelle écurie le cavalier a tourné », ex. Dakota = SEP) :
+           un résultat sur un cheval rattaché à UNE AUTRE écurie (champ club du cheval) ne s affiche pas ici.
+           Cheval perso, sans écurie ou illisible : règle d avant (écurie du cavalier). */
+        try {
+          var noyauIci = (typeof noyauEcurie === "function") ? noyauEcurie(club) : nrm(club).toLowerCase();
+          var idsTousC = [], ecCheval = {};
+          lignes.forEach(function (x) { if (x && x.cheval_id && idsTousC.indexOf(x.cheval_id) === -1) idsTousC.push(x.cheval_id); });
+          for (var iT = 0; iT < idsTousC.length; iT += 150) {
+            var rEc = await supa.from("chevaux").select("id, club").in("id", idsTousC.slice(iT, iT + 150));
+            ((rEc && !rEc.error && rEc.data) || []).forEach(function (c) {
+              var ec = String(c.club || "").trim();   /* « club » = la vraie écurie du cheval ; « ecurie » fige l écurie du créateur, jamais utilisée */
+              if (!ec || ec === "__perso__") return;
+              ecCheval[c.id] = (typeof noyauEcurie === "function") ? noyauEcurie(ec) : ec.toLowerCase();
+            });
+          }
+          if (noyauIci) lignes = lignes.filter(function (x) {
+            var k = x && x.cheval_id ? ecCheval[x.cheval_id] : "";
+            return !k || k === noyauIci || k.indexOf(noyauIci) !== -1 || noyauIci.indexOf(k) !== -1;
+          });
+        } catch (eEcC) { }
         /* les cavaliers DÉCLARÉS de l écurie. 30/10 (relecture) : comportement RESTRICTIF — si la liste des noms FFE ne peut pas
            être lue, on n affiche RIEN (état d erreur), jamais toutes les lignes importées par les membres. */
         var ffeUser = {}, noms = {};
         var rFf = await supa.from("cavaliers_ffe").select("nom, user_id, statut").in("user_id", ids);
         if (!rFf || rFf.error || !Array.isArray(rFf.data)) throw new Error("noms FFE illisibles");
         rFf.data.forEach(function (l) { if (l && l.nom) { noms[nrm(l.nom)] = true; if (l.user_id) ffeUser[nrm(l.nom)] = l.user_id; } });
+        /* 11/11 : les résultats saisis depuis la compétition portent le prénom (« Chloé ») mais sont reliés au compte du cavalier :
+           un cavalier de l écurie qui a un nom FFE déclaré est reconnu par son compte aussi, pas seulement par son nom. */
+        var compteFfe = {};
+        rFf.data.forEach(function (l) { if (l && l.nom && l.user_id) compteFfe[l.user_id] = true; });
+        var reconnu = function (x) { return !!(x && (noms[nrm(x.cavalier)] || (x.cavalier_id && compteFfe[x.cavalier_id]))); };
         /* cavaliers SANS compte Hype rattachés à l écurie : liste centrale club_cavaliers_ffe (rattachement confirmé par une gestionnaire).
            Tant que la table n existe pas en base (SQL en attente), repli PROVISOIRE sur la liste écrite de la page actuelle. */
         var clefClub = (typeof clefClubG === "function") ? clefClubG(club) : club.toLowerCase();
@@ -229,7 +254,7 @@ function EcranResultatsEcurie() {
         /* noms présents dans les résultats importés par les membres mais rattachés à personne : candidats pour la gestionnaire */
         var candidats = {};
         lignes.forEach(function (x) {
-          var k = nrm(x.cavalier); if (!k || noms[k]) return;
+          var k = nrm(x.cavalier); if (!k || reconnu(x)) return;
           if (/[0-9%\/]/.test(String(x.cavalier || ""))) return;   /* nom abîmé à l import (ex. « … Note/Score 63,08% ») : jamais proposé */
           var c = candidats[k] || (candidats[k] = { nom: x.cavalier, n: 0, der: "" }); c.n++; if ((x.date_epreuve || "") > c.der) c.der = x.date_epreuve || "";
         });
@@ -244,8 +269,8 @@ function EcranResultatsEcurie() {
         } catch (eLi) { }
         /* 30/10 22h09 (Blandine : Aceitunero « était classé club 3 aussi avec une autre cavalière ») : les parcours d un cheval montés par
            une cavalière NON rattachée sont gardés à part, pour compter TOUS les parcours du cheval dans « Nos chevaux » (jamais ailleurs). */
-        var autres = lignes.filter(function (x) { return x && x.cheval_id && !noms[nrm(x.cavalier)]; });
-        lignes = lignes.filter(function (x) { return x && noms[nrm(x.cavalier)]; });
+        var autres = lignes.filter(function (x) { return x && x.cheval_id && !reconnu(x); });
+        lignes = lignes.filter(function (x) { return reconnu(x); });
         if (!lignes.length) { if (vivant) { setD({ lignes: [], candidats: candidats, sansCompte: sansCompte, tableCentrale: tableCentrale, clefClub: clefClub, moi: u }); setEtat("vide"); } return; }
         /* profils des cavalières (photo, âge), chevaux, rendez-vous reliés, photos des rendez-vous */
         var idsP = [];
