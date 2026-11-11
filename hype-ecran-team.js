@@ -821,23 +821,36 @@ function EcranTeamCompetition() {
       p.auteur_nom ? h("span", { style: { fontFamily: M, fontSize: 10.5, color: GR } }, T("Partagé par ", "Shared by ") + p.auteur_nom) : null);
   }
   function sousTitreM(txt) { return h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.2, textTransform: "uppercase", color: "rgba(244,241,234,0.45)", margin: "16px 0 8px" } }, txt); }
+  /* 11/11 21h40 (Blandine : « la Vidéothèque va directement aux vidéos… les onglets que tu as faits sont beaucoup mieux… ça vire
+     toutes les petites merdes en bas ») : le chapitre Médias devient les trois portes (mêmes cartes que l'ancienne page d'accueil des
+     Médias, qui disparaît) ; « Les plus aimées », « Derniers partages » et « Conseils du coach » (déjà dans Optimise tes perfs) sont retirés. */
+  var PORTES_M = [
+    { cle: "videos", img: "images/concours-hero-cso.webp",
+      lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"),
+      titre: T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로"),
+      sous: T("Les parcours de l'équipe", "The team's rounds", "Los recorridos del equipo", "I percorsi della squadra", "チームの走行", "Die Ritte des Teams", "جولات الفريق", "团队的比赛视频", "De rondes van het team", "Os percursos da equipa", "Lagets rundor", "Маршруты команды", "Przejazdy drużyny", "팀의 주행 영상") },
+    { cle: "epingles", img: "images/concours-hero-bai-tresse.webp",
+      lab: T("Les conseils de Hey Baby", "Hey Baby's tips", "Los consejos de Hey Baby", "I consigli di Hey Baby", "Hey Baby のアドバイス", "Die Tipps von Hey Baby", "نصائح Hey Baby", "Hey Baby 的建议", "De tips van Hey Baby", "Os conselhos do Hey Baby", "Hey Babys tips", "Советы Hey Baby", "Rady Hey Baby", "Hey Baby의 조언"),
+      titre: T("Les clés de Hey Baby", "Hey Baby's keys", "Las claves de Hey Baby", "Le chiavi di Hey Baby", "Hey Baby のポイント", "Die Schlüssel von Hey Baby", "مفاتيح Hey Baby", "Hey Baby 的要点", "De sleutels van Hey Baby", "As chaves do Hey Baby", "Hey Babys nycklar", "Ключи от Hey Baby", "Klucze Hey Baby", "Hey Baby의 핵심"),
+      sous: T("Les conseils épinglés pour l'équipe", "Tips pinned for the team", "Los consejos fijados para el equipo", "I consigli fissati per la squadra", "チームに共有されたアドバイス", "Für das Team angeheftete Tipps", "نصائح مثبتة للفريق", "为团队置顶的建议", "Vastgezette tips voor het team", "Conselhos fixados para a equipa", "Fästa tips för laget", "Советы, закреплённые для команды", "Rady przypięte dla drużyny", "팀에 고정된 조언") },
+    { cle: "theorie", img: "images/galop2-hero-bai-entier.webp",
+      lab: T("Les médias à découvrir", "Media to discover", "Medios para descubrir", "Media da scoprire", "おすすめメディア", "Medien zum Entdecken", "وسائط لاكتشافها", "值得一看的媒体", "Media om te ontdekken", "Mídia a descobrir", "Media att upptäcka", "Медиа для открытий", "Media do odkrycia", "살펴볼 미디어"),
+      titre: T("Optimise tes perfs", "Boost your performance", "Optimiza tu rendimiento", "Ottimizza le tue prestazioni", "パフォーマンスを高めよう", "Optimiere deine Leistung", "حسّن أداءك", "提升你的表现", "Optimaliseer je prestaties", "Otimiza o teu desempenho", "Optimera dina prestationer", "Улучшай свои результаты", "Popraw swoje wyniki", "실력을 끌어올려"),
+      sous: T("Articles et conseils du coach", "Articles and coach's tips", "Artículos y consejos del entrenador", "Articoli e consigli del coach", "記事とコーチのアドバイス", "Artikel und Tipps vom Coach", "مقالات ونصائح المدرّب", "文章与教练建议", "Artikelen en tips van de coach", "Artigos e conselhos do treinador", "Artiklar och tips från coachen", "Статьи и советы тренера", "Artykuły i rady trenera", "아티클과 코치의 조언") }
+  ];
+  function porteM(P) {
+    return h("button", { key: "pm" + P.cle, type: "button", "data-team-medias": P.cle, onClick: function () { ouvrirMedias(P.cle); },
+      style: { position: "relative", display: "block", width: "100%", padding: 0, marginTop: 14, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,.3)", background: "#11171C", color: IV, textAlign: "start", cursor: "pointer" } },
+      h("img", { src: P.img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "44px 18px 16px", background: "linear-gradient(180deg, rgba(7,10,8,0), rgba(7,10,8,.92) 55%)" } },
+        h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: ".28em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600 } }, P.lab),
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, P.titre),
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 8, fontFamily: M, fontSize: 13, color: "rgba(244,241,234,0.75)" } },
+          h("span", null, P.sous), h("span", { style: { color: "#C9A66B", fontSize: 18 } }, rtl ? "‹" : "›"))));
+  }
   var blocMedias = section(h("div", null,
-    enTete(T("Médias", "Media"), "md", 0, 0),
-    h("button", { type: "button", "data-team-medias": "1", onClick: function () { ouvrirMedias("accueil"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
-      h("img", { src: "images/piquet-cso.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "50%", height: "100%", objectFit: "cover", objectPosition: "center 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
-      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 42%, rgba(11,15,19,0.78) 58%, rgba(11,15,19,0) 85%)" } }),
-      h("svg", { width: 26, height: 22, viewBox: "0 0 18 16", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
-        h("rect", { x: 1, y: 2, width: 12, height: 12, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }),
-        h("path", { d: "M13 6.5l4-2.5v8l-4-2.5", fill: "none", stroke: OR, strokeWidth: 1.2, strokeLinejoin: "round" })),
-      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", margin: "16px 0", background: "rgba(214,182,118,0.28)" } }),
-      h("div", { style: { flex: 1, minWidth: 0, position: "relative" } },
-        h("div", { style: { fontFamily: SERIF, fontSize: 20, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Vidéothèque de l’équipe", "Team video library")),
-        h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Théorie · Vidéos · Épingles HB", "Theory · Videos · HB pins"))),
-      h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1 } }, CHEV)),
-    (mediasTop && mediasTop.length) ? h("div", null, sousTitreM(T("Les plus aimées", "Most liked")),
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, mediasTop.map(function (v) { return tuileMedia(v, mediasTop.length === 1); }))) : null,
-    (mediasPartages && mediasPartages.length) ? h("div", null, sousTitreM(T("Derniers partages", "Latest shares")),
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, mediasPartages.map(function (p) { return tuilePartage(p, mediasPartages.length === 1); }))) : null));
+    enTete(T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"), "md", 0, 0),
+    PORTES_M.map(porteM)));
 
   /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
@@ -1027,7 +1040,7 @@ function EcranTeamCompetition() {
     hero,
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
-    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocSv, trait(), blocMedias, trait(), blocCoach, trait(), blocReg,
+    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocSv, trait(), blocMedias, trait(), blocReg,
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }

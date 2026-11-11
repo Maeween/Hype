@@ -54,7 +54,7 @@ function EcranTeamMedias() {
   var CH = "#C9A66B", CH2 = "rgba(201,166,107,0.55)", CH3 = "rgba(201,166,107,0.22)";
   var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',system-ui,sans-serif";
 
-  var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return o || "accueil"; } catch (e) { return "accueil"; } })();   /* 10/11 22h35 : on arrive sur la page d'accueil des Médias */
+  var ongletDepart = (function () { try { var o = window.__teamMediasOnglet; window.__teamMediasOnglet = null; return (o && o !== "accueil") ? o : "videos"; } catch (e) { return "videos"; } })();   /* 11/11 21h40 (Blandine : « ça nous fait une page en moins ») : plus de page d'accueil des Médias, les trois portes sont sur la page de l'équipe */   /* 10/11 22h35 : on arrive sur la page d'accueil des Médias */
   var _o = React.useState(ongletDepart); var onglet = _o[0], setOnglet = _o[1];
   var _g = React.useState(null); var groupe = _g[0], setGroupe = _g[1];
   var _sc = React.useState(""); var selConc = _sc[0], setSelConc = _sc[1];
@@ -1692,8 +1692,8 @@ null)) });
           : T("Partager un article", "Share an article", "Compartir un artículo", "Condividi un articolo", "記事を共有", "Einen Artikel teilen", "مشاركة مقال", "分享文章", "Een artikel delen", "Partilhar um artigo", "Dela en artikel", "Поделиться статьёй", "Udostępnij artykuł", "기사 공유"), function () { allerOnglet("theorie"); })));
   }
   function retourAccueil() {
-    return h("button", { type: "button", onClick: function () { allerOnglet("accueil"); }, style: { marginTop: 18, background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } },
-      (rtl ? "› " : "‹ ") + T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"));
+    return h("button", { type: "button", onClick: function () { try { window.__teamArmee = true; } catch (eTa) { } setEcran("team-competition"); }, style: { marginTop: 18, background: "none", border: "none", padding: "6px 0", minHeight: 36, color: CH, fontFamily: M, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } },
+      (rtl ? "› " : "‹ ") + T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"));
   }
   /* ───────── message « réservée au groupe » ───────── */
   var calqueReserve = !reserve ? null : h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setReserve(false); },
