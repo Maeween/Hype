@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-0925 — Hey Baby : les parties se déroulent toutes seules
+- Réponses longues (3 parties ou plus) : introduction et partie 01 ouvertes ; les suivantes sont repliées (numéro, titre, « + ») et s'ouvrent toutes seules, en douceur, quand leur titre arrive au milieu de l'écran ; une partie ouverte le reste ; toucher le titre ouvre / referme. Le sommaire du haut est retiré (doublon avec les titres repliés). Même chose sur la page du conseil partagé.
+
 ### 11/11 — build 20261111-0905 — Barre du bas posée dans la page : ALLUMÉE POUR TOUT LE MONDE
 - Demande de Blandine (11/11 08h56 : « active-le pour tout le monde »). Même code que le build 0855, seul l'interrupteur change : allumée par défaut sur téléphone et tablette (ordinateur inchangé).
 - Secours : ouvrir l'appli avec ?barre=1 remet l'ancienne barre sur cet appareil (mémorisé) ; ?barre=2 la rallume. Pour revenir en arrière pour tous : remettre « === "1" » dans HYPE_BARRE_V2 (index.html).
