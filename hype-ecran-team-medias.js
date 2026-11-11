@@ -339,6 +339,9 @@ function EcranTeamMedias() {
   /* 09/11 : « Ajouter une vidéo » depuis la carte Médias d'une fiche concours → formulaire ouvert, concours déjà choisi */
   React.useEffect(function () {
     if (!videos) return;
+    /* 11/11 21h (Blandine : le bouton « AJOUTER MA VIDÉO » du mail emmenait sur la page de l'équipe) : adresse #ajouter-video → formulaire d'ajout ouvert, sans concours choisi */
+    var libre = false; try { libre = !!window.__teamMediasAjoutLibre; window.__teamMediasAjoutLibre = false; } catch (eL) { }
+    if (libre) { ouvrirAjout({}); return; }
     var c = null; try { c = window.__teamMediasAjout || null; window.__teamMediasAjout = null; } catch (e) { }
     if (!c) return;
     ouvrirAjout({});
