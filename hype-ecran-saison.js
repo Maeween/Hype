@@ -2957,15 +2957,15 @@ function EcranConcours() {
       h("div", { className: "hc hcp-bas" },
         /* 09/11 22h46 (Blandine : « garde quand même les raccourcis des autres pages ») : les 4 accès du concours ; en toucher un
            referme cette page et ouvre l'onglet ; Médias ramène à la page Médias du concours */
-        pgSa ? null : h("div", { className: "hc-cartes hcp-cartes", onClickCapture: function (e) {
+        pgSa ? null : h("div", { className: "hc-cartes hcp-cartes" + (fini ? " hc-c2" : ""), onClickCapture: function (e) {
           var c = null; try { c = e.target.closest(".hc-carte"); } catch (e0) { }
           if (!c) return; var estMed = c === c.parentNode.lastElementChild;
           if (pgConc && estMed) { e.stopPropagation(); e.preventDefault(); return; }
           setMedPage(null); setMedPgSel(null); setMedVue("");
           if (estMed) { e.stopPropagation(); e.preventDefault(); }
         } },
-          carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
-          carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
+          fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
+          fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
           carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),
           carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
         pgConc ? h("div", { className: "vr" }, vrPrincipal(true)) : h("div", { className: "vr" },
@@ -3160,9 +3160,9 @@ function EcranConcours() {
   return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
     heroC(ev.titre || F("Concours"), sousTitre),
     h("div", { className: "hs-in" },
-      h("div", { className: "hc-cartes" },
-        carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),
-        carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
+      h("div", { className: "hc-cartes" + (fini ? " hc-c2" : "") },
+        fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
+        fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
         carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
         carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
       (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
@@ -3473,6 +3473,7 @@ var HC_CSS = [
   ".hc .hc-titre p{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(14px,4vw,19px);color:#F3EEE4;opacity:.92;white-space:nowrap}",
   ".hc .hc-courbe{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;z-index:2}",
   ".hc .hc-cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:40px;padding-bottom:26px}",
+  ".hc .hc-cartes.hc-c2{grid-template-columns:repeat(2,1fr)}.hc .hc-cartes.hc-c2 .hc-carte{aspect-ratio:1.5}",   /* 12/11 : concours passé, deux cartes = deux moitiés */
   ".hc .hc-carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0}",
   ".hc .hc-carte.on{border:1.5px solid #C9A66B}",
   ".hc .hc-onglet{margin-top:30px;padding-top:4px}",

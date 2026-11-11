@@ -68,6 +68,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Non touchés : fiche cheval (déjà la ligne via FinPageHype), challenge (iframe challenge.html avec son propre partage), chevaux de l écurie (#ec= existant).
 - Volontairement sans lien : album de l écurie (il montre toujours l écurie de la personne connectée → un lien partagé ouvrirait le mauvais album).
 - Imports FFE : cheval créé sans écurie → Blandine (23h58) préfère laisser ces fiches ouvertes pour que des gens qui connaissent le cheval les trouvent et les complètent ; rien à corriger.
+### 12/11 00h58 — build 20261112-0230 — Page équipe, fiche concours, conseils Hey Baby (Blandine « Ok »)
+- Grand cheval (hype-ecran-team.js v=32) : photo entière (vignetteHypeContain + même photo floutée en fond) ; en vedette le cheval qui a pris le plus de points au DERNIER concours (pastille « ★ Au dernier concours · <lieu> », points et cavaliers de ce jour) ; repli sur le meilleur de la saison si personne n a marqué. Rangée : toujours par points de la saison.
+- Résultats récents : tri date décroissante puis place croissante ; nom du concours nettoyé (« 25/10/2026 — HARAS DE FOLLEVILLE » → « Haras de Folleville »).
+- Fiche concours (hype-ecran-saison.js v=138) : concours passé → cartes Engagements et Jour J masquées ; Résultats + Médias en deux moitiés (hc-c2). La coach garde « Engagements et feuille d engagement » dans le menu •••.
+- Conseils Hey Baby de l équipe (hype-ecran-team-medias.js v=42) : non lus et le plus récent ouverts d office ; repli après « J ai tout lu » ; un conseil fermé à la main reste fermé.
+- En attente : légende « posté par » sous les vidéos (4 maquettes), emplacement / forme de « Nos plus beaux moments » (à préciser), Ma saison A/B, points de qualification des chevaux (maquettes à faire), carte « Album de l écurie » de Ma saison → Souvenirs (à faire avec le Centre de compétition).
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').

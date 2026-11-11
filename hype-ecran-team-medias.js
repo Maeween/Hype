@@ -1007,6 +1007,9 @@ function EcranTeamMedias() {
 
   /* ───────── ÉPINGLES HB : épingles Hey Baby partagées avec le groupe ───────── */
   var _ouv = React.useState(null); var epOuverte = _ouv[0], setEpOuverte = _ouv[1];
+  /* 12/11 00h51 (Blandine : « laisse toujours ouverte la dernière… on les fermait que quand elles avaient été lues ») :
+     un conseil non lu et le plus récent sont ouverts d'office ; seuls ceux qu'on a fermés soi-même restent fermés */
+  var _epf = React.useState({}); var epFermees = _epf[0], setEpFermees = _epf[1];
   /* 11/11 : épingles lues par ce cavalier (repliées dans la liste) */
   var _lus = React.useState({}); var epLues = _lus[0], setEpLues = _lus[1];
   React.useEffect(function () {
@@ -1041,9 +1044,10 @@ function EcranTeamMedias() {
   }
   function carteEpingle(e) {
     var cleE = e.cle || e.id;   /* 09/11 : un même conseil envoyé à plusieurs cavaliers = une carte par cavalier */
-    var ouv = epOuverte === cleE, qui = profilsParId[e.partage_par];
+    var derniereE = null; try { derniereE = (epingles || []).filter(function (x) { return x && !x.ferme && !x.verrou; })[0] || null; } catch (eDe) { }
+    var ouv = epOuverte === cleE || (!epFermees[cleE] && !e.ferme && !e.verrou && (!estLue(e) || (derniereE && (derniereE.cle || derniereE.id) === cleE))), qui = profilsParId[e.partage_par];
     /* 11/11 (Blandine) : une épingle lue se replie en une ligne fine (coche dorée) ; un toucher la rouvre */
-    if (!e.ferme && !e.verrou && !ouv && estLue(e)) return h("button", { key: "ep" + cleE, id: "ep-" + cleE, type: "button", onClick: function () { setEpOuverte(cleE); },
+    if (!e.ferme && !e.verrou && !ouv && estLue(e)) return h("button", { key: "ep" + cleE, id: "ep-" + cleE, type: "button", onClick: function () { setEpFermees(function (o) { var n = Object.assign({}, o); delete n[cleE]; return n; }); setEpOuverte(cleE); },
         style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 14px", marginTop: 10, borderRadius: 14, border: "1px solid rgba(243,238,228,0.10)", background: "rgba(16,29,34,0.55)", color: IV, textAlign: "start", cursor: "pointer" } },
       h("span", { "aria-hidden": "true", style: { width: 26, height: 26, flex: "0 0 auto", borderRadius: "50%", border: "1px solid rgba(201,166,107,.5)", color: CH, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 } }, "✓"),
       h("span", { dir: "auto", style: { flex: 1, minWidth: 0, fontFamily: SERIF, fontSize: 17, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: IV2 } }, epTitre(e)),
@@ -1053,7 +1057,7 @@ function EcranTeamMedias() {
       h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, T("Conseil personnel pour ", "Personal tip for ", "Consejo personal para ", "Consiglio personale per ", "個人向けアドバイス：", "Persönlicher Rat für ", "نصيحة شخصية لـ", "给 ", "Persoonlijk advies voor ", "Conselho pessoal para ", "Personligt råd till ", "Личный совет для: ", "Osobista rada dla: ", "개인 조언: ") + nomProfil(profilsParId[e.pour])),
       h("div", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginTop: 6 } }, T("Partagée par ", "Shared by ", "Compartida por ", "Condivisa da ", "共有者：", "Geteilt von ", "شاركتها ", "分享者：", "Gedeeld door ", "Partilhada por ", "Delad av ", "Поделился(-ась): ", "Udostępnione przez ", "공유한 사람: ") + nomProfil(qui) + " · " + T("Lisible seulement par le cavalier et le coach", "Only the rider and the coach can read it", "Solo pueden leerlo el jinete y el entrenador", "Leggibile solo dal cavaliere e dal coach", "騎手とコーチだけが読めます", "Nur Reiter und Trainer können ihn lesen", "لا يقرؤها إلا الفارس والمدرّب", "仅骑手和教练可读", "Alleen de ruiter en de coach kunnen het lezen", "Só o cavaleiro e o treinador podem ler", "Bara ryttaren och tränaren kan läsa den", "Читать могут только всадник и тренер", "Mogą to przeczytać tylko jeździec i trener", "기수와 코치만 읽을 수 있어요")));
     return h("div", { key: "ep" + cleE, id: "ep-" + cleE, style: { padding: "14px 0", borderTop: "1px solid rgba(243,238,228,0.06)" } },
-      h("button", { type: "button", onClick: function () { setEpOuverte(ouv ? null : cleE); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
+      h("button", { type: "button", onClick: function () { setEpFermees(function (o) { var n = Object.assign({}, o); if (ouv) n[cleE] = true; else delete n[cleE]; return n; }); setEpOuverte(ouv ? null : cleE); }, style: { width: "100%", background: "none", border: "none", padding: 0, color: IV, textAlign: "start", cursor: "pointer" } },
         h("div", { style: { fontFamily: M, fontSize: 9, letterSpacing: ".18em", textTransform: "uppercase", color: CH } }, (e.pour ? "🔒 " + T("Privé", "Private", "Privado", "Privato", "非公開", "Privat", "خاص", "私密", "Privé", "Privado", "Privat", "Лично", "Prywatne", "비공개") + " · " : "") + T("Conseil de Hey Baby", "Hey Baby tip", "Consejo de Hey Baby", "Consiglio di Hey Baby", "Hey Baby のアドバイス", "Tipp von Hey Baby", "نصيحة من Hey Baby", "Hey Baby 的建议", "Tip van Hey Baby", "Conselho do Hey Baby", "Tips från Hey Baby", "Совет Hey Baby", "Rada od Hey Baby", "Hey Baby의 조언") + (e.cheval_nom ? " · " + e.cheval_nom : ""), (!estLue(e) && !ouv) ? h("span", { style: { marginInlineStart: 8, padding: "2px 7px", borderRadius: 999, border: "1px solid " + CH, fontSize: 8.5, letterSpacing: ".12em" } }, T("Nouveau", "New", "Nuevo", "Nuovo", "新着", "Neu", "جديد", "新", "Nieuw", "Novo", "Ny", "Новое", "Nowe", "새 글")) : null),
         h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, lineHeight: 1.2, marginTop: 3 } }, epTitre(e)),
         ouv ? null : h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12.5, color: IV2, marginTop: 6, lineHeight: 1.55, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" } }, epCorps(e)),

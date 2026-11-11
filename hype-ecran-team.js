@@ -68,6 +68,19 @@ function EcranTeamCompetition() {
         /* 11/11 22h23 : qui l'a monté cette saison (prénoms), pour la grande carte du meilleur cheval */
         var mt = {}; resS.forEach(function (r) { if (!r || r.visible === false || !r.cheval_id) return; var pr = String(r.cavalier || "").trim().split(/\s+/)[0] || ""; if (!pr) return; pr = pr.charAt(0).toUpperCase() + pr.slice(1).toLowerCase(); var l = mt[r.cheval_id] || (mt[r.cheval_id] = []); if (l.indexOf(pr) < 0) l.push(pr); });
         o.__montes = mt;
+        /* 12/11 00h50 (Blandine) : en grand, le cheval qui a pris le plus de points au DERNIER concours de l équipe (pas celui de la saison) */
+        try {
+          var resV = resS.filter(function (r) { return r && r.visible !== false && r.date_epreuve; });
+          var dDern = resV.reduce(function (m, r) { return String(r.date_epreuve) > m ? String(r.date_epreuve) : m; }, "");
+          if (dDern) {
+            var resD = resV.filter(function (r) { return String(r.date_epreuve) === dDern; });
+            var pD = {}; hypeClasserChevauxTeam(chevaux, resD, [], false).forEach(function (c) { pD[c.id] = c.pts || 0; });
+            var mD = {}; resD.forEach(function (r) { if (!r.cheval_id) return; var pr = String(r.cavalier || "").trim().split(/\s+/)[0] || ""; if (!pr) return; pr = pr.charAt(0).toUpperCase() + pr.slice(1).toLowerCase(); var l = mD[r.cheval_id] || (mD[r.cheval_id] = []); if (l.indexOf(pr) < 0) l.push(pr); });
+            var nomC = String((resD[0] && resD[0].concours) || "").replace(/^\s*\d{1,2}\/\d{1,2}\/\d{2,4}\s*[—–-]\s*/, "").replace(/^CSO\s+/i, "").trim();
+            if (nomC && nomC === nomC.toUpperCase()) nomC = nomC.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (x, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/\b(De|Du|Des|La|Le|Les|Et)\b/g, function (x) { return x.toLowerCase(); });
+            o.__dernier = { date: dDern, nom: nomC, pts: pD, montes: mD };
+          }
+        } catch (eD) { }
         if (vif) setPtsChevaux(o);
       } catch (eP) { }
     })();
@@ -573,14 +586,26 @@ function EcranTeamCompetition() {
      (« Meilleur de la saison » s'il a des points), les autres dans une rangée qui défile. */
   var chevauxOrdonnes = (chevaux || []).slice().sort(function (a, b) { return ((ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
   var montesCh = (ptsChevaux && ptsChevaux.__montes) || {};
+  /* 12/11 : en tête, le meilleur du dernier concours (à égalité : points de la saison) ; s il n a rien marqué, le meilleur de la saison */
+  var dernierC = (ptsChevaux && ptsChevaux.__dernier) || null;
+  if (dernierC && chevauxOrdonnes.length) {
+    var vedette = chevauxOrdonnes.slice().sort(function (a, b) { return ((dernierC.pts[b.id] || 0) - (dernierC.pts[a.id] || 0)); })[0];
+    if (vedette && (dernierC.pts[vedette.id] || 0) > 0) chevauxOrdonnes = [vedette].concat(chevauxOrdonnes.filter(function (c) { return c.id !== vedette.id; }));
+    else dernierC = null;
+  }
   function libPts(n) { return n + " " + (n > 1 ? T("pts", "pts", "pts", "pt", "pt", "Pkt.", "نقاط", "分", "ptn", "pts", "p", "очк.", "pkt", "점") : T("pt", "pt", "pt", "pt", "pt", "Pkt.", "نقطة", "分", "pt", "pt", "p", "очк.", "pkt", "점")); }
   function grandCheval(c) {
-    var pts = ptsChevaux[c.id] || 0, mts = montesCh[c.id] || [];
-    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 900, 560) : c.photo_url) : "";
+    /* 12/11 : la vedette du dernier concours montre SES points et SES cavaliers de ce jour-là */
+    var vedetteD = !!(dernierC && (dernierC.pts[c.id] || 0) > 0);
+    var pts = vedetteD ? dernierC.pts[c.id] : (ptsChevaux[c.id] || 0), mts = vedetteD ? (dernierC.montes[c.id] || []) : (montesCh[c.id] || []);
+    /* 12/11 00h50 (Blandine : « que le cheval soit pas coupé en deux ») : photo ENTIÈRE (contain), le même cliché flouté remplit les bords */
+    var src = c.photo_url ? ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(c.photo_url, 900, 900) : c.photo_url) : "";
+    var srcFond = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 300, 200) : c.photo_url) : "";
     return h("button", { key: "chg" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { position: "relative", display: "block", width: "100%", height: chevauxCarres ? 200 : 260, padding: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(214,182,118,0.38)", background: "#11171C", cursor: "pointer", textAlign: "start", color: IV } },
-      src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } }) : null,
+      srcFond ? h("img", { src: srcFond, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { position: "absolute", inset: -24, width: "calc(100% + 48px)", height: "calc(100% + 48px)", objectFit: "cover", filter: "blur(22px) brightness(0.45)" } }) : null,
+      src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" } }) : null,
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0) 38%, rgba(6,7,9,0.88) 100%)" } }),
-      pts > 0 ? h("span", { style: { position: "absolute", top: 10, insetInlineStart: 10, fontFamily: M, fontSize: 9.5, letterSpacing: 1.6, textTransform: "uppercase", color: OR, border: "1px solid rgba(214,182,118,0.6)", borderRadius: 999, padding: "4px 9px", background: "rgba(6,7,9,0.55)" } }, "★ " + T("Meilleur de la saison", "Best of the season", "El mejor de la temporada", "Il migliore della stagione", "今シーズンのベスト", "Bester der Saison", "الأفضل هذا الموسم", "本赛季最佳", "Beste van het seizoen", "O melhor da temporada", "Säsongens bästa", "Лучший в сезоне", "Najlepszy w sezonie", "이번 시즌 최고")) : null,
+      (vedetteD || pts > 0) ? h("span", { style: { position: "absolute", top: 10, insetInlineStart: 10, fontFamily: M, fontSize: 9.5, letterSpacing: 1.6, textTransform: "uppercase", color: OR, border: "1px solid rgba(214,182,118,0.6)", borderRadius: 999, padding: "4px 9px", background: "rgba(6,7,9,0.55)" } }, "★ " + (vedetteD ? T("Au dernier concours", "At the last show", "En el último concurso", "All’ultimo concorso", "前回の大会", "Beim letzten Turnier", "في آخر مسابقة", "上一场比赛", "Op de laatste wedstrijd", "No último concurso", "På senaste tävlingen", "На последних соревнованиях", "Na ostatnich zawodach", "지난 대회") + (dernierC.nom ? " · " + dernierC.nom : "") : "★ " + T("Meilleur de la saison", "Best of the season", "El mejor de la temporada", "Il migliore della stagione", "今シーズンのベスト", "Bester der Saison", "الأفضل هذا الموسم", "本赛季最佳", "Beste van het seizoen", "O melhor da temporada", "Säsongens bästa", "Лучший в сезоне", "Najlepszy w sezonie", "이번 시즌 최고"))) : null,
       h("div", { style: { position: "absolute", insetInlineStart: 14, insetInlineEnd: 14, bottom: 12 } },
         h("div", { style: { fontFamily: SERIF, fontSize: 26, fontWeight: 600, lineHeight: 1.1 } }, c.nom || ""),
         (pts > 0 || mts.length) ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(244,241,234,0.82)", marginTop: 4 } }, [pts > 0 ? libPts(pts) : "", mts.length ? T("monté par ", "ridden by ", "montado por ", "montato da ", "騎乗：", "geritten von ", "يمتطيه ", "骑手：", "gereden door ", "montado por ", "riden av ", "всадники: ", "jeźdźcy: ", "기수: ") + mts.slice(0, 3).join(", ") : ""].filter(Boolean).join(" · ")) : null));
@@ -813,10 +838,15 @@ function EcranTeamCompetition() {
     var ch = (r.cheval_id && resInfos.ch[r.cheval_id]) || null;
     var qui = (cv && cv.pseudo) || nomPropre(r.cavalier) || "";
     var L = lieuxConcours[normTeam(r.concours)] || null;
-    var lieuNom = (L && (L.lieu_nom || L.ville)) || r.concours || "";
+    var lieuNom = (L && (L.lieu_nom || L.ville)) || nomConcoursPropre(r.concours) || "";   /* 12/11 : « 25/10/2026 — HARAS DE FOLLEVILLE » → « Haras de Folleville » */
     return { cv: cv, ch: ch, qui: qui, cheval: (ch && ch.nom) || "", photo: (ch && ch.photo_url) || (cv ? photoProfil(cv) : ""), L: L, lieuNom: lieuNom };
   }
   function dateLongue(iso) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(d); } catch (e) { return String(iso).slice(0, 10); } }
+  function nomConcoursPropre(x) {
+    var n = String(x || "").replace(/^\s*\d{1,2}\/\d{1,2}\/\d{2,4}\s*[—–-]\s*/, "").replace(/^CSO\s+/i, "").trim();
+    if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|D’|D') ?/g, function (m) { return m.toLowerCase(); });
+    return n;
+  }
   function carteRes(r) {
     var I = infosRes(r);
     var pl = placeDe(r); var podium = pl != null && pl >= 1 && pl <= 3;
@@ -889,7 +919,9 @@ function EcranTeamCompetition() {
         h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: 1.6, fontWeight: 700, textTransform: "uppercase", color: OR, marginBottom: 6 } }, "✦ " + T("Souvenirs de ce résultat", "Memories of this result", "Recuerdos de este resultado", "Ricordi di questo risultato", "この結果の思い出", "Erinnerungen an dieses Ergebnis", "ذكريات هذه النتيجة", "这条成绩的回忆", "Herinneringen aan dit resultaat", "Lembranças deste resultado", "Minnen från det här resultatet", "Воспоминания об этом результате", "Wspomnienia z tego wyniku", "이 결과의 추억")),
         (typeof MurHype === "function") ? h(MurHype, { key: "murres-" + r.id, cible: "resultat:" + String(r.id), vignette: true, sansTitre: true, teinte: OR, limite: 3, composerEnBas: true }) : null));
   }
-  var resVisibles = (resultats || []).filter(function (x) { return !resMasques[String(x.id)]; });   /* (529) */
+  /* 12/11 00h53 (Blandine : « mets en avant les meilleurs résultats ») : le plus récent d abord, et le même jour les meilleures places en tête */
+  function placeNum(x) { var n = parseInt(String((x && (x.place != null ? x.place : x.classement)) || ""), 10); return isFinite(n) && n > 0 ? n : 9999; }
+  var resVisibles = (resultats || []).filter(function (x) { return !resMasques[String(x.id)]; }).sort(function (a, b) { return String(b.date_epreuve || "").localeCompare(String(a.date_epreuve || "")) || (placeNum(a) - placeNum(b)); });   /* (529) */
   var resRetires = (resultats || []).filter(function (x) { return !!resMasques[String(x.id)]; });
   var blocRes = section(h("div", null,
     enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
