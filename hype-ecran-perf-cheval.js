@@ -682,10 +682,76 @@ function EcranPerformancesCheval(props) {
         premiumOk ? null : h("span", { style: { display: "block", marginTop: 2, fontSize: 10, fontWeight: 500, color: MUET2 } }, "Premium"))) : null) : null;
   /* (g8) TABLETTE / ORDINATEUR : deux colonnes (ecrans 7 a 9 de la maquette) — a gauche chiffres, cavaliers, moments forts, Team,
      actions et video ; a droite le tableau des saisons, qui profite de la largeur. Sur iPhone : la meme suite, en une colonne. */
+  /* 12/11 00h05 — maquette K « Chapitres » choisie par Blandine pour la page du CAVALIER : grandes photos entières, une idée par écran.
+     Tout l existant reste en dessous (moments forts, Team, ajout / import, saisons dépliables, filtres, modification, vidéo). */
+  function chapitre(cle, img, kick, contenu) {
+    return h("div", { key: cle, "data-perf-chapitre": cle, style: { position: "relative", marginTop: 34 } },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, " + NOIR + " 0%, rgba(7,10,8,0) 30%, rgba(7,10,8,0) 48%, rgba(7,10,8,0.82) 80%, " + NOIR + " 100%)" } }),
+      h("div", { style: { position: "absolute", left: 22, right: 22, bottom: 20 } },
+        h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, kick),
+        contenu));
+  }
+  var chapitres = null;
+  if (modeCav && base.length) {
+    var pctCl = base.length ? Math.round(places.length / base.length * 100) : 0;
+    var lgCour = base.filter(function (f) { return f.saison === saisonCour; });
+    var famPts = {}, famOrdre = [];
+    lgCour.forEach(function (f) { var k = hypePerfFamille(f.ep); if (!k) return; if (!(k in famPts)) { famPts[k] = null; famOrdre.push(k); } if (f.pts != null && !isNaN(f.pts)) famPts[k] = (famPts[k] || 0) + f.pts; });
+    famOrdre.sort(function (a, b) { return ((famPts[b] || 0) - (famPts[a] || 0)); });
+    var record = places.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || (b.d || "").localeCompare(a.d || ""); })[0] || null;
+    var dernier = base.filter(function (f) { return f.pl != null || f.statut; }).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); })[0] || null;
+    var serifBig = function (txt, coul, taille) { return h("div", { style: { fontFamily: SERIF, fontSize: taille || 54, fontWeight: 500, lineHeight: 1, color: coul || IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, txt); };
+    chapitres = h(React.Fragment, null,
+      chapitre("c1", "images/TEAM_COMPETITION.webp", T("Chapitre I · Sa saison", "Chapter I · The season", "Capítulo I · Su temporada", "Capitolo I · La stagione", "第1章・シーズン", "Kapitel I · Die Saison", "الفصل الأول · موسمه", "第一章 · 赛季", "Hoofdstuk I · Het seizoen", "Capítulo I · A época", "Kapitel I · Säsongen", "Глава I · Сезон", "Rozdział I · Sezon", "1장 · 시즌"),
+        h("div", { style: { fontFamily: SERIF, fontSize: 40, fontWeight: 500, lineHeight: 1.08, marginTop: 8, color: IVOIRE } },
+          stats.victoires + " " + (stats.victoires > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승")) + ",",
+          h("br"), h("span", { style: { color: CHAMP } }, stats.podiums + " " + (stats.podiums > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podien", "منصات", "次领奖台", "podiumplaatsen", "pódios", "prispallsplaceringar", "пьедесталов", "podia", "시상대") : T("podium", "podium", "podio", "podio", "表彰台", "Podium", "منصة", "次领奖台", "podiumplaats", "pódio", "prispallsplacering", "пьедестал", "podium", "시상대"))))),
+      h("div", { style: { margin: "12px 22px 0" } }, barre(base)),
+      h("div", { style: { margin: "8px 22px 0", fontFamily: SANS, fontSize: 12, color: MUET, display: "flex", justifyContent: "space-between" } },
+        h("span", null, stats.sorties + " " + (stats.sorties > 1 ? T("sorties", "outings", "salidas", "uscite", "出場", "Starts", "مشاركات", "次出赛", "starts", "saídas", "starter", "стартов", "starty", "출전") : T("sortie", "outing", "salida", "uscita", "出場", "Start", "مشاركة", "次出赛", "start", "saída", "start", "старт", "start", "출전"))),
+        h("span", null, stats.classes + " " + T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "获得名次", "geplaatst", "classificados", "placerade", "призовых мест", "w czołówce", "입상"))),
+      /* 12/11 00h05 — ajouts de la maquette J demandés par Blandine : le grand pourcentage et « Son record » */
+      h("svg", { viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 30, marginTop: 34, transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 8 C 120 12, 230 32, 400 6", fill: "none", stroke: CHAMP, strokeWidth: 1 })),
+      h("div", { "data-perf-pct": "1", style: { textAlign: "center", marginTop: 22 } },
+        h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Sa régularité", "Consistency", "Su regularidad", "La sua costanza", "安定感", "Seine Beständigkeit", "انتظامه", "稳定性", "Zijn regelmaat", "A regularidade", "Jämnheten", "Стабильность", "Regularność", "꾸준함")),
+        h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 116, lineHeight: 0.95, color: IVOIRE, marginTop: 10, direction: "ltr", unicodeBidi: "isolate" } }, String(pctCl), h("span", { style: { fontSize: 48 } }, "%")),
+        h("div", { style: { margin: "10px 30px 0", fontFamily: SANS, fontSize: 14, lineHeight: 1.6, color: "rgba(243,238,228,0.72)" } }, T("des concours où il est classé.", "of his shows with a placing.", "de los concursos en los que se clasifica.", "dei concorsi in cui si classifica.", "の大会で入賞。", "der Turniere mit Platzierung.", "من المسابقات التي صُنّف فيها.", "的比赛获得名次。", "van de wedstrijden waarin hij geplaatst is.", "dos concursos em que fica classificado.", "av tävlingarna med placering.", "соревнований с призовым местом.", "zawodów z miejscem w klasyfikacji.", "의 대회에서 입상."))),
+      record ? chapitre("rec", "images/concours-carte-passages.webp", T("Son record", "Personal best", "Su récord", "Il suo record", "自己ベスト", "Sein Rekord", "رقمه القياسي", "最佳成绩", "Zijn record", "O recorde", "Rekordet", "Рекорд", "Rekord", "최고 기록"),
+        h("div", null,
+          h("div", { style: { fontFamily: SERIF, fontSize: 54, fontWeight: 500, lineHeight: 1, color: IVOIRE, marginTop: 6, direction: "ltr", unicodeBidi: "isolate" } }, rangTxt(record.pl), record.part ? h("span", { style: { fontSize: 30, color: "rgba(243,238,228,0.7)" } }, " " + T("sur", "of", "de", "su", "/", "von", "من", "/", "van", "de", "av", "из", "z", "/") + " " + record.part) : null),
+          h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 13, color: "rgba(243,238,228,0.75)" } }, [record.ep, record.nom, record.d ? dateLisible(record.d) : ""].filter(Boolean).join(" · ")))) : null,
+      chapitre("c2", "images/concours-hero-bai-tresse.webp", T("Chapitre II · Ses points", "Chapter II · Points", "Capítulo II · Sus puntos", "Capitolo II · I suoi punti", "第2章・ポイント", "Kapitel II · Seine Punkte", "الفصل الثاني · نقاطه", "第二章 · 积分", "Hoofdstuk II · Zijn punten", "Capítulo II · Os pontos", "Kapitel II · Poängen", "Глава II · Очки", "Rozdział II · Punkty", "2장 · 포인트"),
+        h("div", null, libSaisonCour ? h("div", { style: { marginTop: 6, fontFamily: SANS, fontSize: 12, color: "rgba(243,238,228,0.7)" } }, T("Saison ", "Season ", "Temporada ", "Stagione ", "シーズン ", "Saison ", "موسم ", "赛季 ", "Seizoen ", "Época ", "Säsong ", "Сезон ", "Sezon ", "시즌 ") + libSaisonCour) : null,
+        famOrdre.length ? h("div", { style: { display: "flex", marginTop: 12 } }, famOrdre.slice(0, 3).map(function (k, ik) {
+          var v = famPts[k];
+          return h("div", { key: "cp" + k, style: { flex: 1, minWidth: 0, textAlign: "center", borderInlineStart: ik ? "1px solid rgba(201,166,107,0.3)" : "none" } },
+            serifBig(v != null ? String(arr(v)) : "–", v != null ? CHAMP : "rgba(243,238,228,0.35)"),
+            h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12, color: "rgba(243,238,228,0.75)" } }, k + (v == null ? " · " + T("à venir", "to come", "por llegar", "in arrivo", "未定", "folgt", "قريبًا", "待定", "volgt", "a seguir", "kommer", "скоро", "wkrótce", "예정") : "")));
+        })) : h("div", { style: { marginTop: 8, fontFamily: SERIF, fontSize: 26, color: IVOIRE } }, T("Pas encore de concours cette saison", "No shows yet this season", "Aún sin concursos esta temporada", "Ancora nessun concorso in questa stagione", "今シーズンはまだ大会なし", "Noch keine Turniere in dieser Saison", "لا مسابقات بعد هذا الموسم", "本赛季还没有比赛", "Nog geen wedstrijden dit seizoen", "Ainda sem concursos nesta época", "Inga tävlingar ännu denna säsong", "В этом сезоне ещё нет стартов", "Brak zawodów w tym sezonie", "이번 시즌 아직 대회 없음")))),
+      dernier ? chapitre("c3", dernier.photo || "images/concours-carte-medias.webp", T("Chapitre III · Son dernier concours", "Chapter III · Latest show", "Capítulo III · Su último concurso", "Capitolo III · L'ultimo concorso", "第3章・最新の大会", "Kapitel III · Sein letztes Turnier", "الفصل الثالث · آخر مسابقة", "第三章 · 最近一场比赛", "Hoofdstuk III · Laatste wedstrijd", "Capítulo III · O último concurso", "Kapitel III · Senaste tävlingen", "Глава III · Последний старт", "Rozdział III · Ostatnie zawody", "3장 · 최근 대회"),
+        h("div", null,
+          serifBig(dernier.pl != null ? rangTxt(dernier.pl) : (dernier.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "استبعاد", "淘汰", "Uitg.", "Elim.", "Utsl.", "Искл.", "Wyel.", "실격") : T("Ab.", "Ret.", "Ab.", "Rit.", "棄権", "Aufg.", "انسحاب", "弃权", "Opg.", "Desist.", "Bröt", "Сход", "Rez.", "기권")), CHAMP, 60),
+          h("div", { style: { fontFamily: SERIF, fontSize: 25, color: IVOIRE, marginTop: 4, lineHeight: 1.15 } }, [dernier.ep, dernier.lieu || dernier.nom].filter(Boolean).join(" · ")),
+          h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12.5, color: "rgba(243,238,228,0.75)" } }, [dernier.d ? dateLisible(dernier.d) : "", dernier.cav || "", dernier.part ? T("sur ", "of ", "de ", "su ", "/", "von ", "من ", "/", "van ", "de ", "av ", "из ", "z ", "/") + dernier.part : "", hypePerfEstSansFaute(dernier) ? T("sans faute", "clear round", "sin faltas", "netto", "減点なし", "fehlerfrei", "بلا أخطاء", "零罚分", "foutloos", "sem faltas", "felfri", "чисто", "bez zrzutki", "무감점") : ""].filter(Boolean).join(" · ")))) : null,
+      h("div", { style: { height: 6 } }));
+  }
+  /* 12/11 00h05 (Blandine : « virer les trucs du haut… à cet endroit il faut les onglets des autres pages photo vidéo… ») :
+     page du cavalier = petit menu vers ses autres pages ; les chiffres sont racontés plus bas dans les chapitres */
+  function allerPageCav(ecr) { try { window.__photosCavaliereId = riderId; window.__videosCavaliereId = riderId; window.__actuCavaliereId = riderId; } catch (eP) { } setEcran(ecr); }
+  var menuCav = h("div", { "data-perf-menu-cav": "1", "data-noswipe": "1", "data-hscroll": "1", style: { display: "flex", gap: 8, margin: "16px 0 0", padding: "0 18px 14px", overflowX: "auto", scrollbarWidth: "none", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
+    [["perf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적"), null],
+     ["ph", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"), "photos-cavalier"],
+     ["vi", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상"), "videos-cavalier"],
+     ["ac", T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식"), "actualite-cavalier"]].map(function (o) {
+      var on = !o[2];
+      return h("button", { key: "mc" + o[0], type: "button", onClick: on ? undefined : function () { allerPageCav(o[2]); }, "aria-current": on ? "page" : undefined,
+        style: { flex: "0 0 auto", minHeight: 38, padding: "0 16px", borderRadius: 999, border: on ? "1.5px solid " + CHAMP : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 13, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
+    }));
   var elG = [
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
     /* (g2) comme la maquette : chiffres poses sur le fond, sans cadre, chiffres ivoire en serif, libelles en minuscules, filet fin dessous */
-    h("div", { "data-perf-chiffres": "1", style: { display: "flex", margin: "16px 14px 0", padding: "4px 0 14px", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
+    modeCav ? menuCav : h("div", { "data-perf-chiffres": "1", style: { display: "flex", margin: "16px 14px 0", padding: "4px 0 14px", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
       chiffres.map(function (cq, i) {
         return h("div", { key: "ch" + i, "data-perf-chiffre": String(i), style: { flex: 1, textAlign: "center", minWidth: 0 } },
           h("div", { style: { display: "flex", justifyContent: "center", marginBottom: 6 } }, cq[2]),
@@ -703,6 +769,7 @@ function EcranPerformancesCheval(props) {
           (cvx && cvx.photo_url) ? h("img", { src: cvx.photo_url, alt: "", loading: "lazy", style: { width: 26, height: 26, borderRadius: 7, objectFit: "cover", flex: "0 0 auto" } }) : h("span", { style: { width: 4 } }),
           cv);
       })).concat([h("span", { key: "finPil", "aria-hidden": "true", style: { flex: "0 0 6px" } })])) : null,
+    chapitres,
     /* ses moments forts : mosaique de la maquette, une grande a gauche + quatre petites (2 x 2) ; toute la carriere, tous cavaliers */
     (forts.length || peutForts) ? h(React.Fragment, null,
       titreSection(T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة", "它的精彩时刻", "Zijn hoogtepunten", "Seus momentos marcantes", "Dess höjdpunkter", "Её яркие моменты", "Jego najważniejsze momenty", "하이라이트")),
