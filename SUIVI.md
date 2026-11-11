@@ -10,7 +10,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
-### 11/11 — Barre du bas posée DANS la page : version d'essai prête (branche test/barre-dans-la-page, PAS publiée)
+### 11/11 — build 20261111-0855 — Barre du bas posée DANS la page : version d'essai publiée ÉTEINTE (Blandine l'allume sur son iPhone avec ?barre=2, l'éteint avec ?barre=1)
 - Principe validé le 10/11 : la barre ne flotte plus (plus de position: fixed) ; la page défile dans sa zone (#hype-defile), la barre est posée dessous. Téléphone et tablette ; ordinateur inchangé (colonne).
 - S'active SEULEMENT sur l'appareil qui ouvre l'appli avec ?barre=2 (mémorisé) ; ?barre=1 revient à l'ancienne barre. Sans le lien : rien ne change (vérifié).
 - Un aiguillage unique redirige vers la zone tous les « faire défiler la fenêtre » (≈120 endroits : retour en haut, défilement mémorisé…) au lieu de les réécrire.
