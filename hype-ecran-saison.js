@@ -203,6 +203,17 @@ var HS_TR_BRUT = {
   "autres résultats": ["other results", "resultados más", "altri risultati", "件の他の成績", "weitere Ergebnisse", "نتائج أخرى", "个其他成绩", "andere resultaten", "outros resultados", "andra resultat", "других результатов", "innych wyników", "개의 다른 성적"],
   "L’image n’a pas pu être préparée : le lien est partagé seul.": ["The image could not be prepared: the link is shared on its own.", "No se pudo preparar la imagen: se comparte solo el enlace.", "Impossibile preparare l’immagine: viene condiviso solo il link.", "画像を準備できませんでした。リンクのみ共有します。", "Das Bild konnte nicht erstellt werden: Nur der Link wird geteilt.", "تعذّر تجهيز الصورة: تتم مشاركة الرابط وحده.", "无法准备图片：仅分享链接。", "De afbeelding kon niet worden gemaakt: alleen de link wordt gedeeld.", "Não foi possível preparar a imagem: o link é compartilhado sozinho.", "Bilden kunde inte förberedas: bara länken delas.", "Не удалось подготовить изображение: отправляется только ссылка.", "Nie udało się przygotować obrazu: udostępniany jest sam link.", "이미지를 준비하지 못했어요. 링크만 공유됩니다."],
   "Lien copié": ["Link copied", "Enlace copiado", "Link copiato", "リンクをコピーしました", "Link kopiert", "تم نسخ الرابط", "链接已复制", "Link gekopieerd", "Link copiado", "Länken kopierad", "Ссылка скопирована", "Link skopiowany", "링크가 복사되었어요"],
+  "Les résultats de la journée": ["Results of the day", "Los resultados del día", "I risultati della giornata", "この日の成績", "Die Ergebnisse des Tages", "نتائج اليوم", "当天成绩", "De uitslagen van de dag", "Os resultados do dia", "Dagens resultat", "Результаты дня", "Wyniki dnia", "오늘의 성적"],
+  "Chevaux × Passion × Communauté": ["Horses × Passion × Community", "Caballos × Pasión × Comunidad", "Cavalli × Passione × Comunità", "馬 × 情熱 × コミュニティ", "Pferde × Leidenschaft × Gemeinschaft", "خيول × شغف × مجتمع", "马 × 热爱 × 社区", "Paarden × Passie × Gemeenschap", "Cavalos × Paixão × Comunidade", "Hästar × Passion × Gemenskap", "Лошади × Страсть × Сообщество", "Konie × Pasja × Społeczność", "말 × 열정 × 커뮤니티"],
+  "Ta story": ["Your story", "Tu story", "La tua story", "あなたのストーリー", "Deine Story", "قصتك", "你的快拍", "Jouw story", "Seu story", "Din story", "Твоя история", "Twoja relacja", "나의 스토리"],
+  "Grande photo": ["Large photo", "Foto grande", "Foto grande", "大きな写真", "Großes Foto", "صورة كبيرة", "大照片", "Grote foto", "Foto grande", "Stort foto", "Большое фото", "Duże zdjęcie", "큰 사진"],
+  "Photo en hauteur": ["Portrait photo", "Foto vertical", "Foto verticale", "縦の写真", "Hochformat-Foto", "صورة عمودية", "竖版照片", "Staande foto", "Foto vertical", "Stående foto", "Вертикальное фото", "Zdjęcie pionowe", "세로 사진"],
+  "Petite photo": ["Small photo", "Foto pequeña", "Foto piccola", "小さな写真", "Kleines Foto", "صورة صغيرة", "小照片", "Kleine foto", "Foto pequena", "Litet foto", "Маленькое фото", "Małe zdjęcie", "작은 사진"],
+  "fais glisser la photo pour la placer": ["drag the photo to position it", "desliza la foto para colocarla", "trascina la foto per posizionarla", "写真をドラッグして位置を調整", "verschiebe das Foto, um es zu platzieren", "اسحب الصورة لوضعها", "拖动照片调整位置", "sleep de foto om hem te plaatsen", "arraste a foto para posicioná-la", "dra fotot för att placera det", "перетащи фото, чтобы его расположить", "przeciągnij zdjęcie, aby je ustawić", "사진을 끌어서 위치를 맞춰요"],
+  "Touche un cadre sur la story, puis choisis sa photo.": ["Tap a frame on the story, then choose its photo.", "Toca un marco de la story y elige su foto.", "Tocca una cornice della story, poi scegli la sua foto.", "ストーリーの枠をタップして写真を選んでね。", "Tippe auf einen Rahmen der Story und wähle dann sein Foto.", "المس إطارًا في القصة ثم اختر صورته.", "点击快拍中的相框，然后选择照片。", "Tik op een kader in de story en kies dan de foto.", "Toque em uma moldura do story e escolha a foto.", "Tryck på en ram i storyn och välj sedan dess foto.", "Нажми на рамку в истории и выбери для неё фото.", "Dotknij ramki w relacji i wybierz jej zdjęcie.", "스토리의 액자를 누르고 사진을 골라요."],
+  "Zoom": ["Zoom", "Zoom", "Zoom", "ズーム", "Zoom", "تكبير", "缩放", "Zoom", "Zoom", "Zoom", "Масштаб", "Powiększenie", "확대"],
+  "Retirer": ["Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "빼기"],
+  "Aucune photo dans les médias du concours.": ["No photos in the show’s media.", "No hay fotos en los medios del concurso.", "Nessuna foto nei media del concorso.", "競技会のメディアに写真がありません。", "Keine Fotos in den Medien des Turniers.", "لا توجد صور في وسائط المسابقة.", "比赛媒体中没有照片。", "Geen foto’s in de media van de wedstrijd.", "Nenhuma foto nas mídias do concurso.", "Inga foton i tävlingens media.", "В медиа соревнования нет фото.", "Brak zdjęć w mediach zawodów.", "대회 미디어에 사진이 없어요."],
   "Saisir ou corriger": ["Enter or correct", "Introducir o corregir", "Inserisci o correggi", "入力・修正", "Erfassen oder korrigieren", "إدخال أو تصحيح", "录入或更正", "Invoeren of corrigeren", "Inserir ou corrigir", "Mata in eller rätta", "Внести или исправить", "Wpisz lub popraw", "입력 또는 수정"],
   "Résultats de l’équipe": ["Team results", "Resultados del equipo", "Risultati della squadra", "チームの成績", "Ergebnisse des Teams", "نتائج الفريق", "团队成绩", "Uitslagen van het team", "Resultados da equipe", "Lagets resultat", "Результаты команды", "Wyniki drużyny", "팀 성적"],
   "Les podiums de l’équipe": ["Team podiums", "Los podios del equipo", "I podi della squadra", "チームの表彰台", "Die Podien des Teams", "منصات تتويج الفريق", "团队领奖台", "Podiumplaatsen van het team", "Os pódios da equipe", "Lagets pallplatser", "Пьедесталы команды", "Podia drużyny", "팀 시상대"],
@@ -1250,7 +1261,8 @@ function EcranConcours() {
   /* 09/11 — MÉDIAS DU CONCOURS (galerie : Mes médias puis Les médias de l'équipe) */
   var _mg = React.useState(null); var medG = _mg[0], setMedG = _mg[1];
   var _prs = React.useState(""); var partageRes = _prs[0], setPartageRes = _prs[1];   /* 11/11 : partage des résultats (« en_cours ») */
-  var _pmg = React.useState(""); var partageMsg = _pmg[0], setPartageMsg = _pmg[1];   /* { posts, tv, ident, resCav } */
+  var _pmg = React.useState(""); var partageMsg = _pmg[0], setPartageMsg = _pmg[1];
+  var _srs = React.useState(null); var storyRes = _srs[0], setStoryRes = _srs[1];   /* 11/11 : écran de cadrage de la story des résultats */   /* { posts, tv, ident, resCav } */
   var _mt = React.useState("tous"); var medType = _mt[0], setMedType = _mt[1];
   var _mfc = React.useState(""); var fCavM = _mfc[0], setFCavM = _mfc[1];
   var _mfh = React.useState(""); var fChM = _mfh[0], setFChM = _mfh[1];
@@ -1961,14 +1973,14 @@ function EcranConcours() {
     if (r.visible === false && !gestion) return;
     var x = grpRes(r.epreuve); if (r.partants) x.partants = Math.max(x.partants, Number(r.partants) || 0);
     var nom = (r.__p && r.__p.pseudo) || prenomInitiale(r.cavalier) || F("Cavalier non renseigné");
-    x.l.push({ cle: "r" + r.id, id: r.id, nom: nom, p: r.__p || { pseudo: nom }, cavalier_id: r.cavalier_id, cheval: r.__ch || "", place: Number(r.place) || 0, etat: etatDe(r.classement) || etatDe(r.mention), pen: r.penalites || "", temps: r.temps || "", gains: r.gains, sf: /sf|sans\s*faute/i.test(String(r.mention || "")), statut: estOfficiel(r) ? "officiel" : (r.statut || "saisie"), brouillon: r.visible === false, vids: tvRes[r.id] || [] });
+    x.l.push({ cle: "r" + r.id, id: r.id, nom: nom, p: r.__p || { pseudo: nom }, cavalier_id: r.cavalier_id, cheval_id: r.cheval_id, cheval: r.__ch || "", place: Number(r.place) || 0, etat: etatDe(r.classement) || etatDe(r.mention), pen: r.penalites || "", temps: r.temps || "", gains: r.gains, sf: /sf|sans\s*faute/i.test(String(r.mention || "")), statut: estOfficiel(r) ? "officiel" : (r.statut || "saisie"), brouillon: r.visible === false, vids: tvRes[r.id] || [] });
   });
   ((enDirect && enDirect.lignes) || []).forEach(function (d) {
     var x = grpRes(d.epreuve); if (d.engages) x.partants = Math.max(x.partants, Number(d.engages) || 0); if (d.num_epreuve) x.num = d.num_epreuve; if (d.url_resultats) x.url = d.url_resultats;
     var p = null; (passagesEq || []).forEach(function (q) { if (!p && q.engagement_id === d.engagement) p = q; });
     var deja = x.l.some(function (l) { return l.statut !== "direct" && p && l.cavalier_id && l.cavalier_id === p.cavalier_id && norm(l.cheval) === norm(d.cheval); });
     if (deja) return;
-    x.l.push({ cle: "d" + d.engagement + d.cheval, nom: (p && nomP(p)) || prenomInitiale(d.nom), p: p || { pseudo: d.nom }, cavalier_id: p && p.cavalier_id, cheval: d.cheval || (p && p.cheval_nom) || "", place: /^\d+$/.test(String(d.clt || "")) ? Number(d.clt) : 0, etat: d.clt ? etatDe(d.clt) : null, pen: d.points !== "" && d.points != null ? String(d.points) : "", temps: d.temps || "", statut: "direct", attente: !d.clt, vids: [] });
+    x.l.push({ cle: "d" + d.engagement + d.cheval, nom: (p && nomP(p)) || prenomInitiale(d.nom), p: p || { pseudo: d.nom }, cavalier_id: p && p.cavalier_id, cheval_id: p && p.cheval_id, cheval: d.cheval || (p && p.cheval_nom) || "", place: /^\d+$/.test(String(d.clt || "")) ? Number(d.clt) : 0, etat: d.clt ? etatDe(d.clt) : null, pen: d.points !== "" && d.points != null ? String(d.points) : "", temps: d.temps || "", statut: "direct", attente: !d.clt, vids: [] });
   });
   function norm(t) { return String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
   var epsRes = Object.keys(lignesRes).map(function (k) { return lignesRes[k]; }).sort(function (a, b) { return a.ordre - b.ordre; });
@@ -2187,26 +2199,33 @@ function EcranConcours() {
   var listeRes = epsRes.length ? h("div", { key: "lr", className: "hc-eps" }, epsRes.map(function (x, xi) {
     var ouv = estOuverte(x, xi);
     var info = [x.num ? F("N° ") + x.num : "", x.piste ? F("Piste ") + x.piste : "", x.partants ? x.partants + " " + F("partants") : "", x.nbEq ? x.nbEq + " " + F("de l’équipe") : ""].filter(Boolean).join(" · ");
-    return h("section", { key: x.ep, className: "hc-ep" + (ouv ? " ouv" : "") },
-      h("button", { type: "button", className: "hc-ep-b hc-rep-b", "aria-expanded": ouv, onClick: function () { basculerEp(x.ep, !ouv); } },
-        h("b", null, x.ep),
-        h("span", null, info, h("i", { className: "hc-etat" }, x.etat + (x.meilleur ? " · " + F("meilleur : ") + placeTxt(x.meilleur) : ""))),
-        h("span", { className: "hc-ep-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 18, height: 18 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
-      ouv ? h("div", { className: "hc-ep-l" },
+    /* 11/11 (Blandine, proposition « C » : « un peu trop doré à mon goût ») : plus de cadre doré autour des épreuves —
+       une étiquette sobre (épreuve, partants, état), puis une carte photo par résultat */
+    return h("section", { key: x.ep, className: "hc-rc-ep" + (ouv ? " ouv" : "") },
+      h("button", { type: "button", className: "hc-rc-tete", "aria-expanded": ouv, onClick: function () { basculerEp(x.ep, !ouv); } },
+        h("span", { className: "hc-rc-lab" }, h("b", null, x.ep), x.partants ? h("span", null, " · " + x.partants + " " + F("partants")) : null),
+        h("span", { className: "hc-rc-et" }, [x.num ? F("N° ") + x.num : "", x.piste ? F("Piste ") + x.piste : "", x.etat].filter(Boolean).join(" · ")),
+        h("span", { className: "hc-rc-chev", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16 }, h("path", { d: ouv ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6", fill: "none", stroke: "rgba(243,238,228,.55)", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" })))),
+      ouv ? h("div", { className: "hc-rc-l" },
         (resEd && resEd.ep === x.ep) ? editeurRes() : [
-          x.l.length ? x.l.filter(function (l) { return gestion || !l.brouillon; }).map(function (l) {
+          x.l.length ? x.l.filter(function (l) { return gestion || !l.brouillon; }).map(function (l, iL, arrL) {
             var aVid = l.vids && l.vids.length;
             var peutMod = gestion && l.id;
             var modOuv = peutMod && resMod && resMod.id === l.id;
-            return h(React.Fragment, { key: l.cle }, h("div", { className: "hc-rl" + (peutMod ? " ged" : "") + (moi && l.cavalier_id === moi.id ? " moi" : "") },
-              h("span", { className: "hc-rl-pl" }, l.place ? (l.place <= 3 ? lauriersPl(l.place, placeTxt(l.place)) : h("b", null, placeTxt(l.place))) : h("i", null, l.etat || (l.attente ? F("En attente") : "–"))),
-              avatarHc(l.p, 34),
-              h("span", { className: "hc-rl-q" }, h("b", null, l.nom), h("span", null, [l.cheval, l.sf ? F("Sans-faute") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · "))),
-              h("span", { className: "hc-rl-pen" }, l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : ""),
-              h("span", { className: "hc-rl-t" }, l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : ""),
-              aVid ? h("button", { type: "button", className: "hc-rl-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 22, height: 22 }, h("circle", { cx: 12, cy: 12, r: 10, fill: "none", stroke: "#C9A66B", strokeWidth: 1.3 }), h("path", { d: "M10 8.5v7l5.5-3.5z", fill: "#C9A66B" }))) : h("span", { className: "hc-rl-v" }),
-              peutMod ? h("button", { type: "button", className: "hc-rl-m" + (modOuv ? " on" : ""), "aria-label": F("Modifier ou supprimer"), onClick: function () { setResMsg(""); setResMod(modOuv ? null : { id: l.id, sup: false }); } },
-                h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }))) : null),
+            /* photo de la carte : vignette de la vidéo du parcours, sinon photo du cheval, sinon photo du cavalier */
+            var phV = (l.vids && l.vids[0] && l.vids[0].vignette) || "", phC = (l.cheval_id && chPhotos[l.cheval_id]) || "";
+            var uA = l.p && l.p.avatar_url ? String(l.p.avatar_url) : "", phA = uA ? ((uA.charAt(0) === "@") ? ((typeof CAV_IMGS !== "undefined" && CAV_IMGS[uA.slice(1)]) || "") : uA) : "";
+            var phSrc = phV || (phC ? ((typeof vignetteHype === "function") ? vignetteHype(phC, 300, 300) : phC) : "") || phA;
+            var etiq = l.place ? placeTxt(l.place) : (l.etat || (l.attente ? F("En attente") : "–"));
+            var detail = [l.pen !== "" ? (l.pen + " " + (Number(String(l.pen).replace(",", ".")) > 1 ? F("pts") : F("pt"))) : "", l.temps ? String(l.temps).replace(/\.(\d+)$/, "”$1") : "", l.brouillon ? F("brouillon") : ""].filter(Boolean).join(" · ");
+            return h(React.Fragment, { key: l.cle }, h("div", { className: "hc-rc" + (moi && l.cavalier_id === moi.id ? " moi" : "") + ((iL === arrL.length - 1 && arrL.length % 2 === 1) ? " plein" : "") },   /* tablette / ordinateur : une carte seule sur sa ligne prend toute la largeur */
+              h("div", { className: "hc-rc-ph" }, phSrc ? h("img", { src: phSrc, alt: "", loading: "lazy", onError: function (e) { try { e.target.style.visibility = "hidden"; } catch (e0) { } } }) : h("span", null, String(l.nom || "·").charAt(0).toUpperCase()),
+                aVid ? h("button", { type: "button", className: "hc-rc-v", "aria-label": F("Voir la vidéo du parcours"), onClick: function () { ouvrirVideo(l.vids[0]); } }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M8 5.5v13l10.5-6.5z", fill: "#F3EEE4" }))) : null),
+              h("div", { className: "hc-rc-t" },
+                h("span", { className: "hc-rc-pill" + (l.place === 1 ? " w" : "") }, [etiq, l.sf ? F("Sans faute") : ""].filter(Boolean).join(" · ")),
+                h("b", null, l.nom), l.cheval ? h("span", null, l.cheval) : null, detail ? h("small", null, detail) : null),
+              peutMod ? h("button", { type: "button", className: "hc-rl-m hc-rc-m" + (modOuv ? " on" : ""), "aria-label": F("Modifier ou supprimer"), onClick: function () { setResMsg(""); setResMod(modOuv ? null : { id: l.id, sup: false }); } },
+                h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4", fill: "none", stroke: "rgba(243,238,228,.75)", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }))) : null),
               modOuv ? h("div", { className: "hc-rl-mp" }, resMod.sup
                 ? [h("span", { key: "q" }, F("Supprimer ce résultat de ") + l.nom + " ?"),
                    h("span", { key: "b", className: "hc-rl-mb" }, h("button", { type: "button", className: "hs-lien", onClick: function () { setResMod({ id: l.id, sup: false }); } }, F("Non")),
@@ -2267,7 +2286,7 @@ function EcranConcours() {
     (!fini && (epsRes.some(function (x) { return x.url; }) || ev.lien_direct)) ? h("a", { className: "hc-btn-l", href: (epsRes.filter(function (x) { return x.url && x.ep === epCourantRes; })[0] || {}).url || ev.lien_direct, target: "_blank", rel: "noopener" }, F("Classements complets"), " ↗") : null,
     null);   /* 09/11 23h55 (Blandine : « retire Revoir les vidéos ») */   /* « Dossier du concours » : carte dans Passages (09/11 14h15) */
   /* 11/11 — PARTAGER LES RÉSULTATS : lien qui ouvre ce concours (famille « r », déjà reconnue par Hype : après connexion, la
-     personne arrive sur la fiche, onglet Résultats pour un concours terminé) + l'image story (hsImageResultats).
+     personne arrive sur la fiche, onglet Résultats pour un concours terminé) + l image story (écran HsStoryResultats, cadrage à la main).
      Bouton pour la coach et tous les cavaliers de l'équipe, dès qu'il y a au moins un résultat à montrer.
      Dans l'image : classés (premier quart), podiums et sans-faute ; brouillons et lignes masquées jamais. */
   var lignesStory = [];
@@ -2283,20 +2302,21 @@ function EcranConcours() {
   async function partagerResultats() {
     if (partageRes === "en_cours") return;
     setPartageRes("en_cours"); setPartageMsg("");
-    var image = null;
+    var photos = [];
     try {
-      var photos = [];
-      try {
-        var rp = await supa.from("commentaires").select("photo_url, medias, prive").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(40);
-        ((rp && !rp.error && rp.data) || []).forEach(function (po) { if (po.prive) return; [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && !hsEstVideo(String(m)) && photos.length < 3 && photos.indexOf(m) === -1) photos.push((typeof grandeImageHype === "function") ? grandeImageHype(String(m), 1100) : String(m)); }); });
-      } catch (eP) { }
-      var bilan = [nbP[0] ? nbP[0] + " " + (nbP[0] > 1 ? F("victoires") : F("victoire")) : "", nbP[1] ? nbP[1] + " " + (nbP[1] > 1 ? F("deuxièmes places") : F("deuxième place")) : "", nbP[2] ? nbP[2] + " " + (nbP[2] > 1 ? F("troisièmes places") : F("troisième place")) : "", nbClasses ? nbClasses + " " + (nbClasses > 1 ? F("classements") : F("classement")) : ""].filter(Boolean).join(" · ");
-      image = await hsImageResultats({ titre: ev.titre || F("Concours"), sous: sousTitre, libelle: F("Résultats de l’équipe"), bilan: bilan, lignes: lignesStory, photos: photos, secours: heroPh && heroPh.img, rtl: rtl, sansFaute: F("Sans faute"), autre: F("autre résultat"), autres: F("autres résultats") });
-    } catch (eI) { image = null; setPartageMsg(F("L’image n’a pas pu être préparée : le lien est partagé seul.")); }
+      var rp = await supa.from("commentaires").select("photo_url, medias, prive").eq("cible", "agenda:" + idEv).order("created_at", { ascending: false }).limit(60);
+      ((rp && !rp.error && rp.data) || []).forEach(function (po) { if (po.prive) return; [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (m) { if (m && !hsEstVideo(String(m)) && photos.length < 12) { var u = (typeof grandeImageHype === "function") ? grandeImageHype(String(m), 1100) : String(m); if (photos.indexOf(u) === -1) photos.push(u); } }); });
+    } catch (eP) { }
+    setPartageRes("");
+    setStoryRes({ photos: photos, donnees: { titre: ev.titre || F("Concours"), date: hsPlage(ev), lieu: ev.lieu || "", etiquette: F("Concours"), script: F("Les résultats de la journée"), devise: F("Chevaux × Passion × Communauté"), lignes: lignesStory, rtl: rtl, sansFaute: F("Sans faute"), autre: F("autre résultat"), autres: F("autres résultats") } });
+  }
+  async function envoyerStoryRes(image) {
+    setStoryRes(null);
+    if (!image) setPartageMsg(F("L’image n’a pas pu être préparée : le lien est partagé seul."));
     try {
       if (typeof hypePartager === "function") await hypePartager("r", idEv, (ev.titre || F("Concours")) + " — " + F("Résultats de l’équipe"), { image: image || undefined, onCopie: function () { setPartageMsg(F("Lien copié")); } });
     } catch (eS) { }
-    setPartageRes(""); if (image) setTimeout(function () { try { URL.revokeObjectURL(image); } catch (eR) { } }, 60000);
+    if (image) setTimeout(function () { try { URL.revokeObjectURL(image); } catch (eR) { } }, 60000);
   }
   var blocResultats = h("div", { key: "res" },
     bandeauDirect, regLive,
@@ -2312,7 +2332,8 @@ function EcranConcours() {
       (resLect && resLect !== "en_cours") ? h("div", { className: "hs-note", style: { marginTop: 8 } }, resLect)
         : h("div", { className: "hs-note", style: { marginTop: 8 } }, F("Le PDF des résultats, une capture du site FFE ou du chronométreur : les résultats de tes couples se remplissent tout seuls."))) : null,
     listeRes, resMsg ? h("div", { className: "hs-msg" }, resMsg) : null,
-    blocPodiums, boutonsBas, liensResultats, lienResBas);
+    blocPodiums, boutonsBas, liensResultats, lienResBas,
+    storyRes ? h(HsStoryResultats, { key: "story", F: F, photos: storyRes.photos, secours: heroPh && heroPh.img, donnees: storyRes.donnees, onFermer: function () { setStoryRes(null); }, onPartager: envoyerStoryRes }) : null);
   /* ── MÉDIAS : une seule partie, sans filtres (09/11) — vidéos de parcours (commentaire seconde par seconde), vidéos de l'équipe,
      puis le fil du concours (photos, publications, commentaires, partage, ajout) ── */
   var blocMedias = [
@@ -3154,110 +3175,207 @@ function EcranConcours() {
    (aucune image de remplacement) et le héros reprend la photo de secours (les 8 photos de la saison). */
 var HS_HERO_CONCOURS = "images/concours-hero-cso.webp";
 var HS_IMG_CONCOURS = { engagements: "images/concours-carte-engagements.webp", passages: "images/concours-carte-passages.webp", equipe: "images/concours-carte-equipe.webp", medias: "images/concours-carte-medias.webp" };
-/* ════════════ 11/11 — IMAGE « STORY » DES RÉSULTATS (Blandine : « un lien de partage qui amène directement sur la page
-   et qui fasse une petite story en même temps avec les photos, les résultats ») ════════════
-   Une image verticale 1080 × 1920 (format story Instagram / WhatsApp) : photos du concours ENTIÈRES (jamais rognées : le même
-   cliché flouté derrière), 1 photo = pleine largeur, 2 = deux moitiés, 3 = une grande + deux moitiés ; courbe dorée, titre
-   Cormorant, date et lieu, « Résultats de l’équipe », le bilan (victoires, places, classements), puis les classés et sans-faute
-   (place, photo du cavalier, nom, cheval, épreuve), 5 lignes au plus + « + N autres résultats » ; fin « Hype · 2hype.fr ».
-   Trois couleurs seulement : noir, ivoire, champagne. Une photo qui refuse de se charger est simplement laissée de côté. */
-function hsChargerImage(src) {
-  return new Promise(function (ok) {
-    if (!src) { ok(null); return; }
-    var im = new Image(); var fini = false;
-    function fin(v) { if (!fini) { fini = true; ok(v); } }
-    if (!/^(data:|blob:|images\/|\/)/.test(src)) im.crossOrigin = "anonymous";
-    im.onload = function () { fin(im.naturalWidth ? im : null); }; im.onerror = function () { fin(null); };
-    setTimeout(function () { fin(null); }, 9000);
-    im.src = src;
+/* ════════════ 11/11 — STORY « LES RÉSULTATS DE LA JOURNÉE » (maquette n° 1 choisie par Blandine à 11 h 57) ════════════
+   Dans l'esprit de la story « Les images de la journée » de l'Étrier : fond noir grainé, arcs dorés, « CONCOURS », titre,
+   date et lieu, TROIS CADRES POLAROÏD avec scotch (grand paysage, portrait, petit paysage), « Les résultats de la journée ♡ »
+   écrit à la main (police Allura, fichier fonts/allura-400.woff2), 3 résultats au plus avec lauriers (or / argent / bronze),
+   « + N autres résultats », pastille 2HYPE.FR et « Chevaux × Passion × Communauté ». Noir, ivoire, doré : plus de turquoise.
+   CADRAGE (Blandine : « si c'est pour voir juste l'oreille d'un cheval, c'est pas terrible ») : rien n'est automatique au
+   moment d'envoyer — l'écran HsStoryResultats montre la story, on touche un cadre, on choisit la photo parmi celles du
+   concours, on la fait glisser et on zoome ; l'image envoyée est exactement celle de l'écran.
+   Photos chargées par fetch → blob → adresse locale : l'image n'est jamais « contaminée », le partage reste possible. */
+var HS_ST_W = 1080, HS_ST_H = 1920;
+var HS_ST_CADRES = [
+  { cx: 450, cy: 620, w: 700, h: 420, rot: -4, scotchX: null },   /* grand paysage */
+  { cx: 850, cy: 960, w: 270, h: 440, rot: 6, scotchX: 70 },      /* portrait à droite */
+  { cx: 380, cy: 1010, w: 470, h: 250, rot: 5, scotchX: 0 }       /* petit paysage */
+];
+var HS_ST_M = 16;
+function hsStoryPolice() {
+  try {
+    if (window.__hsAllura) return window.__hsAllura;
+    if (typeof FontFace === "undefined" || !document.fonts) return Promise.resolve();
+    var f = new FontFace("Allura", "url(fonts/allura-400.woff2)");
+    window.__hsAllura = f.load().then(function (ff) { document.fonts.add(ff); }).catch(function () { });
+    return window.__hsAllura;
+  } catch (e) { return Promise.resolve(); }
+}
+async function hsStoryPolices() {
+  await hsStoryPolice();
+  try { if (document.fonts && document.fonts.load) await Promise.all(["500 112px 'Cormorant Garamond'", "600 40px 'Cormorant Garamond'", "400 27px 'Montserrat'", "500 30px 'Montserrat'", "600 38px 'Montserrat'", "84px 'Allura'"].map(function (x) { return document.fonts.load(x).catch(function () { }); })); } catch (eF) { }
+}
+async function hsChargerPhotoLocale(url) {
+  try {
+    var rp = await fetch(url); if (!rp || !rp.ok) return null;
+    var bl = await rp.blob(); if (!bl || !bl.size) return null;
+    var adr = URL.createObjectURL(bl);
+    return await new Promise(function (ok) { var im = new Image(); im.onload = function () { ok(im.naturalWidth ? im : null); }; im.onerror = function () { ok(null); }; im.src = adr; });
+  } catch (e) { return null; }
+}
+var hsStoryFondCache = null;
+function hsStoryFond() {
+  if (hsStoryFondCache) return hsStoryFondCache;
+  var cv = document.createElement("canvas"); cv.width = HS_ST_W; cv.height = HS_ST_H; var c = cv.getContext("2d");
+  var g = c.createLinearGradient(0, 0, 0, HS_ST_H); g.addColorStop(0, "#121311"); g.addColorStop(0.5, "#0A0B0A"); g.addColorStop(1, "#0E0F0D");
+  c.fillStyle = g; c.fillRect(0, 0, HS_ST_W, HS_ST_H);
+  try { var id = c.getImageData(0, 0, HS_ST_W, HS_ST_H), d = id.data; for (var i = 0; i < d.length; i += 4) { var n = ((Math.sin(i * 12.9898 + 7) * 43758.5453) % 1) * 14 - 7; d[i] += n; d[i + 1] += n; d[i + 2] += n; } c.putImageData(id, 0, 0); } catch (eG) { }
+  c.strokeStyle = "rgba(201,166,107,0.55)"; c.lineWidth = 2;
+  c.beginPath(); c.arc(HS_ST_W + 40, -60, 330, Math.PI * 0.5, Math.PI * 1.02); c.stroke();
+  c.beginPath(); c.arc(HS_ST_W - 30, -120, 470, Math.PI * 0.52, Math.PI * 0.86); c.stroke();
+  c.beginPath(); c.arc(-80, HS_ST_H + 60, 330, Math.PI * 1.5, Math.PI * 1.98); c.stroke();
+  function etoile(x, y, r) { c.fillStyle = "#E3C88E"; c.beginPath(); c.moveTo(x, y - r); c.quadraticCurveTo(x, y, x + r * 0.7, y); c.quadraticCurveTo(x, y, x, y + r); c.quadraticCurveTo(x, y, x - r * 0.7, y); c.quadraticCurveTo(x, y, x, y - r); c.fill(); }
+  etoile(HS_ST_W - 62, 150, 16); etoile(58, HS_ST_H - 300, 14);
+  hsStoryFondCache = cv; return cv;
+}
+/* place une photo dans un cadre : z = zoom (1 = la photo couvre juste le cadre), fx / fy = point de la photo (0 à 1) mis au centre */
+function hsPlacement(img, w, h, r) {
+  var iw = img.naturalWidth, ih = img.naturalHeight, z = Math.max(1, (r && r.z) || 1);
+  var k = Math.max(w / iw, h / ih) * z, dw = iw * k, dh = ih * k;
+  var fx = (r && r.fx != null) ? r.fx : 0.5, fy = (r && r.fy != null) ? r.fy : 0.4;
+  var x = w / 2 - fx * dw, y = h / 2 - fy * dh;
+  x = Math.min(0, Math.max(w - dw, x)); y = Math.min(0, Math.max(h - dh, y));
+  return { x: x, y: y, dw: dw, dh: dh, k: k };
+}
+function hsStoryDessiner(c, d, sel) {
+  var W = HS_ST_W, H = HS_ST_H, IV = "#F3EEE4", OR = "#C9A66B", ORC = "#E3C88E", GRIS = "rgba(243,238,228,0.62)";
+  var SERIF = "'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', Arial, sans-serif", SCRIPT = "'Allura', 'Cormorant Garamond', cursive";
+  var rtl = !!d.rtl;
+  c.save(); c.direction = "ltr";
+  c.drawImage(hsStoryFond(), 0, 0);
+  function lettres(px) { try { c.letterSpacing = px + "px"; } catch (e) { } }
+  function ajuster(txt, police, max, t, mini) { c.font = police.replace("{t}", t); while (c.measureText(txt).width > max && t > mini) { t -= 2; c.font = police.replace("{t}", t); } var s2 = String(txt); while (c.measureText(s2).width > max && s2.length > 2) s2 = s2.slice(0, -2); if (s2 !== String(txt)) s2 += "…"; return s2; }
+  /* en-tête */
+  c.textAlign = "left"; c.fillStyle = OR; c.font = "600 24px " + SANS; lettres(8);
+  var lab = String(d.etiquette || "CONCOURS").toUpperCase(); c.fillText(lab, 70, 98); var lw = c.measureText(lab).width; lettres(0);
+  c.fillRect(70 + lw + 18, 90, 300, 1.5);
+  c.fillStyle = IV; c.fillText(ajuster(d.titre || "", "500 {t}px " + SERIF, W - 140, 112, 60), 66, 222);
+  /* date et lieu, avec leurs pictos */
+  c.strokeStyle = OR; c.lineWidth = 2.4; c.strokeRect(68, 256, 28, 26); c.beginPath(); c.moveTo(68, 265); c.lineTo(96, 265); c.moveTo(75, 251); c.lineTo(75, 260); c.moveTo(89, 251); c.lineTo(89, 260); c.stroke();
+  c.fillStyle = OR; c.beginPath(); c.arc(82, 318, 12, Math.PI, 0); c.lineTo(82, 338); c.closePath(); c.fill(); c.fillStyle = "#0A0B0A"; c.beginPath(); c.arc(82, 318, 4.5, 0, 7); c.fill();
+  c.fillStyle = IV; if (d.date) c.fillText(ajuster(d.date, "500 {t}px " + SANS, W - 200, 30, 20), 128, 280); if (d.lieu) c.fillText(ajuster(d.lieu, "500 {t}px " + SANS, W - 200, 30, 20), 128, 334);
+  /* cadres polaroïd */
+  (d.cadres || []).forEach(function (cad, i) {
+    var F = HS_ST_CADRES[i]; if (!F || !cad || !cad.img) return;
+    var m = HS_ST_M, fw = F.w + 2 * m, fh = F.h + 2 * m;
+    c.save(); c.translate(F.cx, F.cy); c.rotate(F.rot * Math.PI / 180);
+    c.shadowColor = "rgba(0,0,0,0.6)"; c.shadowBlur = 30; c.shadowOffsetY = 12; c.fillStyle = "#EFE6D2"; c.fillRect(-fw / 2, -fh / 2, fw, fh); c.shadowColor = "transparent";
+    c.strokeStyle = "rgba(201,166,107,0.9)"; c.lineWidth = 2; c.strokeRect(-fw / 2 + 5, -fh / 2 + 5, fw - 10, fh - 10);
+    c.save(); c.beginPath(); c.rect(-F.w / 2, -F.h / 2, F.w, F.h); c.clip();
+    var pl = hsPlacement(cad.img, F.w, F.h, cad); c.drawImage(cad.img, -F.w / 2 + pl.x, -F.h / 2 + pl.y, pl.dw, pl.dh); c.restore();
+    c.strokeStyle = (sel === i) ? ORC : "rgba(150,115,60,0.7)"; c.lineWidth = (sel === i) ? 6 : 2; c.strokeRect(-F.w / 2, -F.h / 2, F.w, F.h);
+    var sx = F.scotchX != null ? F.scotchX : -fw / 2 + 40; c.save(); c.translate(sx, -fh / 2 + 2); c.rotate(-0.5); c.fillStyle = "rgba(222,200,150,0.72)"; c.fillRect(-55, -16, 110, 32); c.restore();
+    c.restore();
   });
-}
-async function hsImageResultats(d) {
-  var W = 1080, H = 1920, NOIR = "#070A08", IV = "#F3EEE4", OR = "#C9A66B", GRIS = "rgba(243,238,228,0.62)";
-  var SERIF = "'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', Arial, sans-serif";
-  try { if (document.fonts && document.fonts.load) await Promise.all(["500 120px 'Cormorant Garamond'", "italic 500 48px 'Cormorant Garamond'", "600 38px 'Montserrat'", "400 28px 'Montserrat'", "500 22px 'Montserrat'"].map(function (f) { return document.fonts.load(f).catch(function () { }); })); } catch (eF) { }
-  var cv = document.createElement("canvas"); cv.width = W; cv.height = H; var c = cv.getContext("2d");
-  c.fillStyle = NOIR; c.fillRect(0, 0, W, H);
-  /* ── photos ── */
-  var srcs = (d.photos || []).slice(0, 3); var ims = [];
-  for (var i = 0; i < srcs.length; i++) { var im = await hsChargerImage(srcs[i]); if (im) ims.push(im); }
-  if (!ims.length && d.secours) { var imS = await hsChargerImage(d.secours); if (imS) ims.push(imS); }
-  var HP = 880;
-  function photoEntiere(im, x, y, w, h) {
-    c.save(); c.beginPath(); c.rect(x, y, w, h); c.clip();
-    var sc = Math.max(w / im.naturalWidth, h / im.naturalHeight), bw = im.naturalWidth * sc, bh = im.naturalHeight * sc;
-    try { c.filter = "blur(28px) brightness(0.45)"; } catch (eB) { }
-    c.drawImage(im, x + (w - bw) / 2, y + (h - bh) / 2, bw, bh);
-    try { c.filter = "none"; } catch (eB2) { }
-    var s2 = Math.min(w / im.naturalWidth, h / im.naturalHeight), fw = im.naturalWidth * s2, fh = im.naturalHeight * s2;
-    c.drawImage(im, x + (w - fw) / 2, y + (h - fh) / 2, fw, fh);
-    c.restore();
-  }
-  var G = 8;
-  if (ims.length === 1) photoEntiere(ims[0], 0, 0, W, HP);
-  else if (ims.length === 2) { photoEntiere(ims[0], 0, 0, (W - G) / 2, HP); photoEntiere(ims[1], (W + G) / 2, 0, (W - G) / 2, HP); }
-  else if (ims.length >= 3) { var h1 = Math.round(HP * 0.6); photoEntiere(ims[0], 0, 0, W, h1); photoEntiere(ims[1], 0, h1 + G, (W - G) / 2, HP - h1 - G); photoEntiere(ims[2], (W + G) / 2, h1 + G, (W - G) / 2, HP - h1 - G); }
-  /* fondu vers le noir sous les photos */
-  var gr = c.createLinearGradient(0, HP - 300, 0, HP + 40); gr.addColorStop(0, "rgba(7,10,8,0)"); gr.addColorStop(1, NOIR);
-  c.fillStyle = gr; c.fillRect(0, HP - 300, W, 340);
-  /* courbe dorée (comme le haut des pages Hype) */
-  c.strokeStyle = OR; c.lineWidth = 2.2; c.globalAlpha = 0.9;
-  c.beginPath(); c.moveTo(0, HP - 20); c.bezierCurveTo(W * 0.33, HP - 26, W * 0.62, HP - 110, W, HP - 250); c.stroke(); c.globalAlpha = 1;
-  /* ── titre, date et lieu ── */
-  function ajuster(txt, police, max, taille, mini) { var t = taille; c.font = police.replace("{t}", t); while (c.measureText(txt).width > max && t > mini) { t -= 4; c.font = police.replace("{t}", t); } return t; }
-  var rtl = !!d.rtl; c.direction = rtl ? "rtl" : "ltr";
-  var X0 = rtl ? W - 72 : 72, ALIGN = rtl ? "right" : "left";
-  c.textAlign = ALIGN; c.textBaseline = "alphabetic";
-  c.fillStyle = IV; ajuster(d.titre || "", "500 {t}px " + SERIF, W - 144, 124, 64); c.fillText(d.titre || "", X0, HP + 70);
-  if (d.sous) { c.fillStyle = OR; ajuster(d.sous, "italic 500 {t}px " + SERIF, W - 144, 50, 30); c.fillText(d.sous, X0, HP + 138); }
-  /* ── « Résultats de l'équipe » + bilan ── */
-  var y = HP + 222;
-  c.font = "600 26px " + SANS; c.fillStyle = OR;
-  var lab = String(d.libelle || "").toUpperCase(); try { c.letterSpacing = "6px"; } catch (eL) { }
-  c.fillText(lab, X0, y); var lw = c.measureText(lab).width; try { c.letterSpacing = "0px"; } catch (eL2) { }
-  c.fillRect(rtl ? X0 - lw - 70 : X0 + lw + 22, y - 9, 48, 2);
-  if (d.bilan) { y += 52; c.font = "400 28px " + SANS; c.fillStyle = GRIS; ajuster(d.bilan, "400 {t}px " + SANS, W - 144, 28, 20); c.fillText(d.bilan, X0, y); }
-  /* ── lignes ── */
-  y += 40; var LH = 128, maxL = 5, lignes = (d.lignes || []).slice(0, maxL);
-  for (var k = 0; k < lignes.length; k++) {
-    var l = lignes[k], yc = y + k * LH + LH / 2;
-    var xp = rtl ? W - 72 - 50 : 72 + 50;
-    /* place : cercle fin (or / argent / bronze pour le podium) */
-    var col = l.place === 1 ? OR : l.place === 2 ? "#D9D7D2" : l.place === 3 ? "#B98A5E" : "rgba(201,166,107,0.55)";
-    c.strokeStyle = col; c.lineWidth = 2; c.beginPath(); c.arc(xp, yc, 46, 0, Math.PI * 2); c.stroke();
-    c.textAlign = "center"; c.fillStyle = l.place ? col : OR;
-    if (l.place) {   /* chiffres en Montserrat : ceux de Cormorant sont « à l'ancienne » (le 1 ressemble à un I) */
-      c.font = "600 38px " + SANS; var wN = c.measureText(String(l.place)).width; c.font = "600 18px " + SANS; var wS = l.suff ? c.measureText(l.suff).width + 2 : 0;
-      var x0 = xp - (wN + wS) / 2; c.textAlign = "left"; c.font = "600 38px " + SANS; c.fillText(String(l.place), x0, yc + 13);
-      if (l.suff) { c.font = "600 18px " + SANS; c.fillText(l.suff, x0 + wN + 2, yc - 4); } c.textAlign = "center"; }
-    else { c.font = "600 22px " + SANS; c.fillText("SF", xp, yc + 8); }
-    /* photo du cavalier */
-    var xa = rtl ? xp - 50 - 22 - 42 : xp + 50 + 22 + 42;
-    c.save(); c.beginPath(); c.arc(xa, yc, 42, 0, Math.PI * 2); c.closePath(); c.fillStyle = "#101A1D"; c.fill(); c.clip();
-    var av = l.avatar ? await hsChargerImage(l.avatar) : null;
-    if (av) { var s3 = Math.max(84 / av.naturalWidth, 84 / av.naturalHeight); c.drawImage(av, xa - av.naturalWidth * s3 / 2, yc - av.naturalHeight * s3 / 2, av.naturalWidth * s3, av.naturalHeight * s3); }
-    else { c.fillStyle = OR; c.font = "500 40px " + SERIF; c.textAlign = "center"; c.fillText(String(l.nom || "·").charAt(0).toUpperCase(), xa, yc + 13); }
-    c.restore();
-    c.strokeStyle = "rgba(201,166,107,0.6)"; c.lineWidth = 1.5; c.beginPath(); c.arc(xa, yc, 42, 0, Math.PI * 2); c.stroke();
-    /* nom, cheval · épreuve */
-    var xt = rtl ? xa - 42 - 26 : xa + 42 + 26, larg = rtl ? xt - 72 : W - 72 - xt;
-    c.textAlign = ALIGN; c.fillStyle = IV; ajuster(l.nom || "", "600 {t}px " + SANS, larg, 36, 24); c.fillText(l.nom || "", xt, yc - 4);
-    var sousL = [l.cheval, l.ep].filter(Boolean).join(" · ") + (l.sf && l.place ? " · " + (d.sansFaute || "") : "");
-    c.fillStyle = GRIS; var tS = ajuster(sousL, "400 {t}px " + SANS, larg, 26, 18);
-    while (c.measureText(sousL).width > larg && sousL.length > 4) sousL = sousL.slice(0, -2);
-    c.fillText(sousL, xt, yc + 36);
-    if (k < lignes.length - 1) { c.fillStyle = "rgba(201,166,107,0.16)"; c.fillRect(72, y + (k + 1) * LH - 1, W - 144, 1); }
-  }
+  /* « Les résultats de la journée ♡ » */
+  c.fillStyle = ORC; c.textAlign = "left"; var tS = 86; c.font = tS + "px " + SCRIPT;
+  while (c.measureText(d.script || "").width > W - 200 && tS > 50) { tS -= 4; c.font = tS + "px " + SCRIPT; }
+  c.fillText(d.script || "", 70, 1260); var ws = c.measureText(d.script || "").width;
+  var hx = 70 + ws + 34, hy = 1236; c.strokeStyle = ORC; c.lineWidth = 2.4; c.beginPath(); c.moveTo(hx, hy + 18); c.bezierCurveTo(hx - 30, hy - 2, hx - 14, hy - 24, hx, hy - 8); c.bezierCurveTo(hx + 14, hy - 24, hx + 30, hy - 2, hx, hy + 18); c.stroke();
+  /* résultats */
+  var COL = { 1: "#D7B572", 2: "#D9D7D2", 3: "#C08E62" };
+  var lignes = (d.lignes || []).slice(0, 3);
+  lignes.forEach(function (r, i) {
+    var yc = 1350 + i * 118, x = 130, col = COL[r.place] || "rgba(227,200,142,0.85)";
+    c.fillStyle = col;
+    for (var sg = -1; sg <= 1; sg += 2) for (var k = 0; k < 5; k++) { var a = Math.PI * (0.62 + k * 0.13), px = x + sg * Math.cos(a) * -38, py = yc + Math.sin(a) * 34 - 6; c.save(); c.translate(px, py); c.rotate(sg * (-a + Math.PI * 0.5) + (sg > 0 ? 0.6 : -0.6)); c.beginPath(); c.ellipse(0, 0, 5, 11, 0, 0, 7); c.fill(); c.restore(); }
+    if (r.place) { c.font = "600 40px " + SANS; var wN = c.measureText(String(r.place)).width; c.font = "600 18px " + SANS; var wSf = r.suff ? c.measureText(r.suff).width + 2 : 0; var x0 = x - (wN + wSf) / 2; c.font = "600 40px " + SANS; c.fillText(String(r.place), x0, yc + 14); if (r.suff) { c.font = "600 18px " + SANS; c.fillText(r.suff, x0 + wN + 2, yc - 6); } }
+    else { c.font = "600 20px " + SANS; c.textAlign = "center"; c.fillText(d.sigleSF || "SF", x, yc + 8); c.textAlign = "left"; }
+    c.fillStyle = IV; c.fillText(ajuster([r.nom, r.cheval].filter(Boolean).join(" & "), "600 {t}px " + SANS, W - 290, 38, 24), 215, yc - 4);
+    c.fillStyle = GRIS; c.fillText(ajuster([r.ep, r.sf ? d.sansFaute : ""].filter(Boolean).join(" · "), "400 {t}px " + SANS, W - 290, 27, 18), 215, yc + 36);
+    if (i < lignes.length - 1) { c.fillStyle = "rgba(201,166,107,0.18)"; c.fillRect(70, yc + 60, W - 140, 1); }
+  });
   var reste = (d.lignes || []).length - lignes.length;
-  var yb = y + lignes.length * LH;
-  if (reste > 0) { c.textAlign = ALIGN; c.font = "italic 500 34px " + SERIF; c.fillStyle = OR; c.fillText("+ " + reste + " " + (reste > 1 ? d.autres : d.autre), X0, yb + 44); }
-  /* ── fin : Hype · 2hype.fr ── */
-  c.fillStyle = "rgba(201,166,107,0.35)"; c.fillRect(W / 2 - 60, H - 112, 120, 1.5);
-  c.textAlign = "center"; c.fillStyle = IV; c.font = "500 46px " + SERIF; c.fillText("Hype", W / 2, H - 58);
-  c.fillStyle = OR; c.font = "500 22px " + SANS; try { c.letterSpacing = "5px"; } catch (eL3) { } c.fillText("2HYPE.FR", W / 2, H - 24); try { c.letterSpacing = "0px"; } catch (eL4) { }
-  return await new Promise(function (ok, ko) { try { cv.toBlob(function (b) { b ? ok(URL.createObjectURL(b)) : ko(new Error("vide")); }, "image/jpeg", 0.9); } catch (eT) { ko(eT); } });
+  if (reste > 0) { c.fillStyle = ORC; c.font = "italic 500 32px " + SERIF; c.fillText("+ " + reste + " " + (reste > 1 ? d.autres : d.autre), 215, 1350 + 3 * 118 - 10); }
+  /* pied */
+  c.textAlign = "center"; c.strokeStyle = OR; c.lineWidth = 2; var yp = H - 170, rp = 34, wp = 330;
+  c.beginPath(); if (c.roundRect) c.roundRect(W / 2 - wp / 2, yp - rp, wp, 2 * rp, rp); else c.rect(W / 2 - wp / 2, yp - rp, wp, 2 * rp); c.stroke();
+  c.fillStyle = ORC; c.font = "600 34px " + SANS; lettres(5); c.fillText("2HYPE.FR", W / 2 + 8, yp + 12);
+  c.font = "500 20px " + SANS; c.fillStyle = GRIS; c.fillText(String(d.devise || "").toUpperCase(), W / 2, H - 70); lettres(0);
+  c.fillStyle = "rgba(201,166,107,0.45)"; c.fillRect(110, H - 78, 120, 1.5); c.fillRect(W - 230, H - 78, 120, 1.5);
+  c.restore();
 }
-try { window.hsImageResultats = hsImageResultats; } catch (eWr) { }
+/* point touché (coordonnées de la story) → numéro du cadre, en tenant compte de sa rotation */
+function hsCadreTouche(x, y, d) {
+  for (var i = HS_ST_CADRES.length - 1; i >= 0; i--) {
+    if (!d.cadres[i] || !d.cadres[i].img) continue;
+    var F = HS_ST_CADRES[i], a = -F.rot * Math.PI / 180, dx = x - F.cx, dy = y - F.cy;
+    var rx = dx * Math.cos(a) - dy * Math.sin(a), ry = dx * Math.sin(a) + dy * Math.cos(a);
+    if (Math.abs(rx) <= F.w / 2 + HS_ST_M && Math.abs(ry) <= F.h / 2 + HS_ST_M) return i;
+  }
+  return -1;
+}
+/* écran de préparation : la story telle qu'elle partira, cadres à choisir et à cadrer */
+function HsStoryResultats(props) {
+  var h = React.createElement, F = props.F, d0 = props.donnees;
+  var _c = React.useState(null); var cadres = _c[0], setCadres = _c[1];
+  var _ph = React.useState([]); var photos = _ph[0], setPhotos = _ph[1];
+  var _s = React.useState(0); var sel = _s[0], setSel = _s[1];
+  var _o = React.useState(""); var etat = _o[0], setEtat = _o[1];
+  var refCv = React.useRef(null), refGlisse = React.useRef(null);
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      await hsStoryPolices();
+      var ims = [];
+      for (var i = 0; i < props.photos.length && ims.length < 12; i++) { var im = await hsChargerPhotoLocale(props.photos[i]); if (im) ims.push(im); }
+      if (!ims.length && props.secours) { var imS = await hsChargerPhotoLocale(props.secours); if (imS) ims.push(imS); }
+      if (!vif) return;
+      /* au départ : une photo en hauteur va dans le cadre portrait, les autres dans les paysages */
+      var portr = ims.filter(function (x) { return x.naturalHeight > x.naturalWidth; }), pays = ims.filter(function (x) { return x.naturalHeight <= x.naturalWidth; });
+      var c0 = pays.shift() || portr.shift() || null, c1 = portr.shift() || pays.shift() || null, c2 = pays.shift() || portr.shift() || null;
+      setPhotos(ims); setCadres([c0, c1, c2].map(function (x) { return x ? { img: x, z: 1, fx: 0.5, fy: 0.4 } : null; }));
+    })();
+    return function () { vif = false; };
+  }, []);
+  var d = Object.assign({}, d0, { cadres: cadres || [] });
+  React.useEffect(function () { var cv = refCv.current; if (!cv || !cadres) return; hsStoryDessiner(cv.getContext("2d"), d, sel); });
+  function pointStory(e) { var cv = refCv.current, r = cv.getBoundingClientRect(), t = (e.touches && e.touches[0]) || e; return { x: (t.clientX - r.left) * HS_ST_W / r.width, y: (t.clientY - r.top) * HS_ST_H / r.height }; }
+  function debut(e) {
+    if (!cadres) return; var p = pointStory(e), i = hsCadreTouche(p.x, p.y, d);
+    if (i < 0) return; setSel(i); var cd = cadres[i]; refGlisse.current = { i: i, x: p.x, y: p.y, fx: cd.fx, fy: cd.fy };
+  }
+  function bouge(e) {
+    var g = refGlisse.current; if (!g || !cadres) return; if (e.cancelable) e.preventDefault();
+    var p = pointStory(e), cd = cadres[g.i], Fc = HS_ST_CADRES[g.i], pl = hsPlacement(cd.img, Fc.w, Fc.h, cd);
+    var a = -Fc.rot * Math.PI / 180, dx = p.x - g.x, dy = p.y - g.y, rx = dx * Math.cos(a) - dy * Math.sin(a), ry = dx * Math.sin(a) + dy * Math.cos(a);
+    var n = cadres.slice(); n[g.i] = Object.assign({}, cd, { fx: Math.min(1, Math.max(0, g.fx - rx / pl.dw)), fy: Math.min(1, Math.max(0, g.fy - ry / pl.dh)) }); setCadres(n);
+  }
+  function fin() { refGlisse.current = null; }
+  function choisir(im) { var n = cadres.slice(); n[sel] = { img: im, z: 1, fx: 0.5, fy: 0.4 }; setCadres(n); }
+  function retirer() { var n = cadres.slice(); n[sel] = null; setCadres(n); var j = n.findIndex(function (x) { return x; }); setSel(j < 0 ? 0 : j); }
+  function zoom(v) { var n = cadres.slice(); if (!n[sel]) return; n[sel] = Object.assign({}, n[sel], { z: v }); setCadres(n); }
+  async function envoyer() {
+    if (etat) return; setEtat("en_cours");
+    var cv = document.createElement("canvas"); cv.width = HS_ST_W; cv.height = HS_ST_H; hsStoryDessiner(cv.getContext("2d"), d, -1);
+    var url = null; try { url = await new Promise(function (ok, ko) { cv.toBlob(function (b) { b ? ok(URL.createObjectURL(b)) : ko(new Error("vide")); }, "image/jpeg", 0.92); }); } catch (eT) { url = null; }
+    setEtat(""); props.onPartager(url);
+  }
+  var cd = cadres && cadres[sel];
+  var NOMS_CADRES = [F("Grande photo"), F("Photo en hauteur"), F("Petite photo")];
+  var bouton = function (txt, fn, off) { return h("button", { type: "button", disabled: !!off, onClick: fn, style: { minHeight: 40, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "transparent", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: off ? 0.5 : 1 } }, txt); };
+  var corps = h("div", { "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 9992, background: "#070A08", color: "#F3EEE4", display: "flex", flexDirection: "column", fontFamily: "'Montserrat',sans-serif", paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" } },
+    h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 16px 6px" } },
+      bouton(F("Annuler"), props.onFermer),
+      h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontSize: 20, fontWeight: 600, textAlign: "center" } }, F("Ta story")),
+      bouton(etat ? F("Préparation de l’image…") : F("Partager"), envoyer, !cadres || !!etat)),
+    h("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex", justifyContent: "center", padding: "4px 16px" } },
+      cadres ? h("canvas", { ref: refCv, width: HS_ST_W, height: HS_ST_H, onTouchStart: debut, onTouchMove: bouge, onTouchEnd: fin, onMouseDown: debut, onMouseMove: function (e) { if (refGlisse.current) bouge(e); }, onMouseUp: fin, onMouseLeave: fin,
+        style: { height: "100%", maxWidth: "100%", aspectRatio: "9 / 16", objectFit: "contain", borderRadius: 10, touchAction: "none", border: "1px solid rgba(243,238,228,0.12)" } })
+        : h("div", { style: { alignSelf: "center", color: "rgba(243,238,228,0.6)", fontSize: 13 } }, F("Préparation de l’image…"))),
+    h("div", { style: { padding: "8px 16px 12px", borderTop: "1px solid rgba(243,238,228,0.08)" } },
+      h("div", { style: { fontSize: 12, color: "rgba(243,238,228,0.7)", marginBottom: 8, textAlign: "center" } },
+        cd ? (NOMS_CADRES[sel] + " — " + F("fais glisser la photo pour la placer")) : F("Touche un cadre sur la story, puis choisis sa photo.")),
+      cd ? h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 } },
+        h("span", { style: { fontSize: 12, color: "#C9A66B" } }, F("Zoom")),
+        h("input", { type: "range", min: 1, max: 3, step: 0.02, value: cd.z || 1, onChange: function (e) { zoom(Number(e.target.value)); }, style: { flex: 1, accentColor: "#C9A66B" } }),
+        h("button", { type: "button", onClick: retirer, style: { background: "none", border: "none", color: "rgba(243,238,228,0.6)", fontSize: 12, textDecoration: "underline", cursor: "pointer" } }, F("Retirer"))) : null,
+      h("div", { style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 } },
+        [0, 1, 2].map(function (i) { return (cadres && !cadres[i]) ? h("button", { key: "v" + i, type: "button", onClick: function () { setSel(i); }, style: { flex: "0 0 auto", height: 56, padding: "0 12px", borderRadius: 8, border: "1px dashed " + (sel === i ? "#C9A66B" : "rgba(243,238,228,0.3)"), background: "transparent", color: "rgba(243,238,228,0.75)", fontSize: 11, cursor: "pointer" } }, "+ " + NOMS_CADRES[i]) : null; }),
+        photos.map(function (im, j) { return h("button", { key: j, type: "button", onClick: function () { choisir(im); }, style: { flex: "0 0 auto", width: 56, height: 56, padding: 0, borderRadius: 8, overflow: "hidden", border: (cd && cd.img === im) ? "2px solid #C9A66B" : "1px solid rgba(243,238,228,0.18)", background: "#111", cursor: "pointer" } }, h("img", { src: im.src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })); }),
+        (cadres && !photos.length) ? h("div", { style: { fontSize: 12, color: "rgba(243,238,228,0.6)" } }, F("Aucune photo dans les médias du concours.")) : null)));
+  return (typeof hypePortailBody === "function") ? hypePortailBody(corps) : corps;
+}
+try { window.hsStoryDessiner = hsStoryDessiner; window.HsStoryResultats = HsStoryResultats; } catch (eWr) { }
 
 function hsPhotoConcours(ev, id) {
   /* la photo du concours d'abord ; sinon la photo de la maquette ; sinon (fichier absent) les photos de secours */
@@ -3422,6 +3540,26 @@ var HC_CSS = [
   ".hc .hc-coche{display:flex;gap:8px;align-items:center;font-size:13px}",
   ".hc .hc-rep-b > span:nth-child(2){display:flex;flex-direction:column;gap:2px}",
   ".hc .hc-etat{font-style:normal;font-size:11px;letter-spacing:.06em;color:#C9A66B}",
+  /* 11/11 — résultats en cartes photo (proposition C) */
+  ".hc .hc-rc-ep{margin:0 0 18px}",
+  ".hc .hc-rc-tete{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;width:100%;background:none;border:none;padding:4px 0 10px;color:#F3EEE4;font:inherit;text-align:start;cursor:pointer}",
+  ".hc .hc-rc-lab{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(243,238,228,.62)}.hc .hc-rc-lab b{color:#F3EEE4;font-weight:600}",
+  ".hc .hc-rc-et{font-size:11px;color:rgba(243,238,228,.45);margin-inline-start:auto}",
+  ".hc .hc-rc-chev{display:flex}",
+  ".hc .hc-rc-l{display:flex;flex-direction:column;gap:10px}",
+  ".hc .hc-rc{position:relative;display:flex;align-items:stretch;gap:14px;background:#101A1D;border-radius:16px;overflow:hidden;min-height:96px}",
+  ".hc .hc-rc-ph{position:relative;flex:0 0 96px;width:96px;min-height:96px;background:#141B1E;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:34px;color:#F3EEE4}",
+  ".hc .hc-rc-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}",
+  ".hc .hc-rc-v{position:absolute;inset-inline-end:6px;bottom:6px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.55);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}",
+  ".hc .hc-rc-t{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;padding:12px 44px 12px 0}",
+  ".hc .hc-rc-pill{align-self:flex-start;font-size:11.5px;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:999px;border:1px solid rgba(243,238,228,.28);color:#F3EEE4;margin-bottom:6px;white-space:nowrap}",
+  ".hc .hc-rc-pill.w{border-color:rgba(201,166,107,.75);color:#C9A66B}",
+  ".hc .hc-rc-t b{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-rc-t > span:not(.hc-rc-pill){font-size:12.5px;color:rgba(243,238,228,.65);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".hc .hc-rc-t small{font-size:11.5px;color:rgba(243,238,228,.5);margin-top:2px}",
+  ".hc .hc-rc.moi .hc-rc-t b{color:#E3C88E}",
+  ".hc .hc-rc-m{position:absolute;top:10px;inset-inline-end:10px;border-color:rgba(243,238,228,.3)}",
+  "@media (min-width:820px){.hc .hc-rc-l{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hc .hc-rc-l > .hc-rl-mp,.hc .hc-rc-l > .hc-rl-vide,.hc .hc-rc-l > .hc-ged-fin,.hc .hc-rc.plein{grid-column:1/-1}}",
   ".hc .hc-rl{display:grid;grid-template-columns:52px 34px 1fr auto auto 26px;align-items:center;column-gap:10px;padding:10px 0;border-bottom:1px solid rgba(243,238,228,.08)}",
   ".hc .hc-rl:last-of-type{border-bottom:none}",
   ".hc .hc-rl.moi .hc-rl-q b{color:#C9A66B}",
@@ -6549,13 +6687,15 @@ function hsPdfListe(titre, sousTitre, lignes) {
    Tous les écrans du Centre de compétition passent par cette garde : seule la modératrice (ses comptes) y entre ;
    les autres voient « Bientôt disponible ». Pour ouvrir à tout le monde plus tard : HS_OUVERT_A_TOUS = true. */
 var HS_OUVERT_A_TOUS = false;
-function hsGarde(Comp) {
+function hsGarde(Comp, parLien) {
   return function EcranGarde(props) {
     var h = React.createElement;
+    /* 11/11 : fiche concours ouverte par un lien partagé (#r=<id>) → page entière pour tout compte (les autres écrans du Centre restent gardés) */
+    var lienOk = false; try { lienOk = !!parLien && !!window.__hsLienConcours && String(window.__hsLienConcours) === String(hsIdConcours()); } catch (eLk) { }
     var app = (typeof useApp === "function") ? useApp() : {};
     var _ok = React.useState(HS_OUVERT_A_TOUS ? true : null); var ok = _ok[0], setOk = _ok[1];
     React.useEffect(function () {
-      if (HS_OUVERT_A_TOUS) return;
+      if (HS_OUVERT_A_TOUS || lienOk) return;
       var vif = true;
       (async function () {
         var u = null; try { u = await utilisateurActuel(); } catch (e) { }
@@ -6566,7 +6706,7 @@ function hsGarde(Comp) {
       })();
       return function () { vif = false; };
     }, []);
-    if (ok === true) return h(Comp, props);
+    if (ok === true || lienOk) return h(Comp, props);
     try { injecterCss(); } catch (e4) { }
     return h("div", { className: "hs" },
       h("div", { className: "hs-in", style: { paddingTop: "calc(env(safe-area-inset-top) + 18px)" } },
@@ -6575,5 +6715,5 @@ function hsGarde(Comp) {
         h("div", { className: "hs-titre", style: { textAlign: "start", marginTop: 40 } }, h("h1", { style: { fontSize: 40 } }, "Bientôt disponible"), h("p", null, "Le Centre de compétition arrive très vite."))));
   };
 }
-window.HypeSaison = { Saison: hsGarde(EcranMaSaison), Concours: hsGarde(EcranConcours), Engagements: hsGarde(EcranEngagements), ListeVan: hsGarde(EcranListeVan), JourJ: hsGarde(EcranJourJ), Dossier: hsGarde(EcranDossierConcours), VideoParcours: hsGarde(EcranVideoParcours) };
+window.HypeSaison = { Saison: hsGarde(EcranMaSaison), Concours: hsGarde(EcranConcours, true), Engagements: hsGarde(EcranEngagements), ListeVan: hsGarde(EcranListeVan), JourJ: hsGarde(EcranJourJ), Dossier: hsGarde(EcranDossierConcours), VideoParcours: hsGarde(EcranVideoParcours) };
 })();
