@@ -1,4 +1,6 @@
-# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 09/11/2026 15h33)
+# ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 11/11/2026 22h40)
+
+> 🟥 URGENT SÉCURITÉ (11/11) : fermer en base la lecture sans compte des profils (dont la case « mineur ») et des chevaux privés — voir l'entrée du 11/11 build 20261112-0045.
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -9,6 +11,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
+
+### 11/11 — build 20261112-0045 — 🔒 Voile « Crée ton compte » sur les pages fermées sans compte (fuite des nouveaux profils)
+- Constat de Blandine (21 h 58, Safari sans connexion) : « Passer → » sur l'écran d'entrée ouvrait Accueil, Cavalier, Chevaux et Communauté ; la Communauté montrait les nouveaux profils (prénom, club, photos, dont une photo de famille). « La page communauté, c'est un gros problème. » Hey Baby bloque déjà à l'envoi (vérifié par elle), Galops conformes aux règles Premium, Écurie a déjà son encart.
+- Fait (index.html seul, maquette validée « j'adore, c'est validé », publication « Ok ») : composant HypeVoileCompte. Sans connexion, sur dashboard / moncavalier / chevaux / communaute / decouvrir (liste HYPE_ECRANS_VOILE_COMPTE), y compris par lien partagé : le haut de page reste net, puis fondu + flou jusqu'au noir, rien de cliquable ni de défilable dessous, carte avec titre propre à la page + « C'est gratuit » + boutons à contour « Se connecter » / « Créer mon compte » (ouvrent l'écran de connexion en mode connexion / inscription). 14 langues. Ordinateur : la barre de gauche reste utilisable. Rien ne change pour une personne connectée.
+- Restent ouverts sans compte : Galops et cours, Premium, Hey Baby, Écurie (son encart), fiches chevaux publiques.
+- Testé en local sans connexion (téléphone + ordinateur) : voile sur les 4 onglets, Galops intact, bouton « Créer mon compte » → écran d'inscription.
+- ⚠️ ÉTAPE SUIVANTE URGENTE (pas faite) : protection à l'écran seulement. En base, `profiles` (tout le profil, dont est_mineur, ville, last_seen_at) et `chevaux` (y compris les chevaux « privé ») restent lisibles sans compte : policies `lecture profils`, `profiles_lecture_publique_partage`, `pseudo proprietaire en lecture` (true) et `chevaux lecture` / `chevaux_lecture` (true, rôle public) qui annulent `fiche cheval publique en lecture`. À fermer après vérification de ce que lisent les pages publiques (stories, fiches chevaux Google). Décision de Blandine à prendre.
+- Question laissée ouverte : passer aussi la page Écurie au même voile (elle a déjà sa propre carte « Bienvenue sur Hype »).
 
 ### 11/11 — build 20261112-0035 — Page équipe : Souvenirs en tête, « Nos chevaux » proposition 4, boutons de la coach regroupés
 - Blandine (22 h 15 → 22 h 29, « Ok »). hype-ecran-team.js v=29.
