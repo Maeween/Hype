@@ -81,6 +81,8 @@ const OPERATIONS = {
     // 10/11/2026 (Blandine) — traduire UNE réponse de Hey Baby dans une autre langue (bouton « Traduire » sous le message).
     // Décomptée comme un outil : ne consomme pas la question du jour.
     traduction:        { categorie: "outil", imagesMax: 0, jetons: 12000 },
+    // 11/11/2026 (Blandine) — VERSION COURTE d'une réponse, pour la partager dans un groupe (4 à 6 points clés). Outil : ne consomme pas la question du jour.
+    resume_partage:    { categorie: "outil", imagesMax: 0, jetons: 3000 },
 };
 
 // ═══ CONSIGNES FIXES (recopiées à l identique depuis index.html le 14/10/2026) ═══
@@ -457,6 +459,18 @@ export default async (req, context) => {
             + "Garde exactement la même mise en forme (paragraphes, titres, listes à puces, retours à la ligne), le même ton (on tutoie le cavalier) et le vocabulaire équestre juste de cette langue. "
             + "Ne résume pas, n'ajoute rien, ne commente pas, ne réponds pas aux questions du texte : renvoie uniquement la traduction.\n\nTEXTE À TRADUIRE :\n" + aTraduire;
         messagesApp = [{ role: "user", content: "Traduis le texte maintenant." }];
+    } else if (operation === "resume_partage") {
+        const NOMS_LG2 = { fr: "français", en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais", ar: "arabe", zh: "chinois simplifié", nl: "néerlandais", pt: "portugais", sv: "suédois", ru: "russe", pl: "polonais", ko: "coréen" };
+        const aResumer = String(corps.texte || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]+/g, " ").slice(0, 24000);
+        if (!aResumer.trim()) return erreurJSON("INVALID_REQUEST", "Texte manquant.");
+        systeme = "Tu es Hey Baby, le coach équestre de l'application Hype. Un cavalier veut partager ta réponse ci-dessous dans un groupe de discussion. "
+            + "Écris-en une VERSION COURTE en " + (NOMS_LG2[langue] || "français") + " : 4 à 6 points clés, en tutoyant. "
+            + "Chaque point : une seule icône émoji sobre en rapport avec le point, un titre de 2 à 4 mots, et une phrase courte (25 mots au plus). "
+            + "Reprends uniquement ce que dit la réponse : n'ajoute aucune information, ne change aucun conseil, garde les nuances. "
+            + "Si la réponse dit dans quels cas consulter rapidement un médecin ou un vétérinaire, garde-le dans un point, sans dramatiser. "
+            + "N'écris aucun prénom ni aucun détail personnel. "
+            + "Réponds UNIQUEMENT avec un tableau JSON, sans aucun autre texte : [{\"icone\":\"…\",\"titre\":\"…\",\"texte\":\"…\"}]\n\nRÉPONSE À RÉSUMER :\n" + aResumer;
+        messagesApp = [{ role: "user", content: "Écris la version courte maintenant." }];
     } else if (operation === "memoire") {
         systeme = consigneMemoire(corps.memoire);
         messagesApp = [{ role: "user", content: "Fais la synthèse maintenant." }];

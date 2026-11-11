@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-1050 — Hey Baby : feuille « Partager ce conseil » (version courte ou réponse complète)
+- « Partager » (réponse de Hey Baby ou épingle) ouvre une feuille aux couleurs Hype (maquette validée) : question MODIFIABLE avant l'envoi (retirer un prénom…), choix « Version courte » (par défaut) ou « Réponse complète », aperçu Hypo + « Le lien est toujours inclus », bouton PARTAGER à contour, « Copier seulement le lien ».
+- Version courte : 4 à 6 points clés rédigés par Hey Baby (icône + titre + une phrase, sans prénom, sans rien ajouter à la réponse), préparés dès l'ouverture ; se termine par « ✨ Le conseil complet et ta question à Hey Baby : lien ». Nouvelle opération serveur resume_partage (netlify/functions/assistant.js), comptée comme un outil : ne consomme pas la question du jour.
+- Le partage de l'iPhone s'ouvre tout de suite au toucher ; l'enregistrement du conseil (heybaby_partages, question modifiée comprise) part en même temps. En cas d'échec d'enregistrement, message « Le lien n'a pas pu être enregistré ».
+- 14 langues pour tous les nouveaux textes.
+- RESTE : rien d'autre de prévu sur le partage ; à surveiller au test : qualité de la version courte, délai d'attente.
+
 ### 11/11 — build 20261111-1012 — Hey Baby : le conseil partagé se lit directement dans le groupe
 - But (Blandine) : que les membres d'un groupe WhatsApp lisent le conseil sans cliquer, pour donner envie d'essayer Hey Baby.
 - Le message partagé contient maintenant TOUT le conseil, aéré : « 🐴 HEY BABY · TON COACH ÉQUESTRE », la question en citation, un trait avant chaque partie, une icône devant chaque titre (🩺 soins, 🏇 à cheval, 🧰 matériel, 👣 pieds/podologue, 🏠 écurie, 🎯 travail…, ✦ sinon), une ligne vide entre chaque point, puis « ✨ Pose ta question : <lien vers la page du conseil> ». Le texte de l'IA n'est pas réécrit. 14 langues (textes déjà traduits de la carte Hey Baby).
