@@ -28565,7 +28565,7 @@ function HypeApp() {
                dans l appli (sur iPhone, Stripe s ouvre dans Safari, qui n a pas la session de l appli). */
             /* 11/11 22h10 (Blandine : « Ok Feinn ») — LIEN « 1 MOIS OFFERT » : 2hype.fr/?offert=FEINN1MOIS. Le code est gardé sur le
                téléphone (60 jours), la page des abonnements s'ouvre (après inscription / connexion si besoin), et le code est déjà
-               rempli sur la page de paiement Stripe des formules Mensuel et Duo (seules à accepter un code). */
+               rempli sur la page de paiement Stripe de la formule Mensuel (seule à accepter un code ; Duo retiré le 11/11 22h21). */
             if (params.get("offert")) {
                 try {
                     var codeOff = String(params.get("offert")).toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 40);
@@ -32495,7 +32495,7 @@ function hypeCodeOffert() {
 }
 function hypeLienAccepteCode(url) {
     var b = String(url || "").split("?")[0];
-    return b === "https://buy.stripe.com/dRm28r9u81RTbp72pJ4Ni02" /* mensuel */ || b === "https://buy.stripe.com/fZufZh5dSeEFbp73tN4Ni04" /* duo */;
+    return b === "https://buy.stripe.com/dRm28r9u81RTbp72pJ4Ni02" /* mensuel */;   /* 11/11 22h21 Blandine : pas le Pack Duo (trop d'accès Hey Baby, ça coûte cher) */
 }
 /* 11/11 22h10 — encart « 1 mois offert » glissé sous la photo de la page des abonnements (pas au-dessus du héros) */
 function hypeBandeauOffertHtml() {
@@ -32504,20 +32504,20 @@ function hypeBandeauOffertHtml() {
     var esc = function (x) { return String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
     return '<div class="wrap" style="margin-top:18px"><div style="padding:14px 16px;border:1px solid rgba(201,166,107,.55);border-radius:16px;background:rgba(13,21,24,.92);color:#F2EBDD">'
         + '<div style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#C9A66B;font-weight:600;margin-bottom:6px">' + esc(hypeT7("🎁 1 mois offert", "🎁 1 month free", "🎁 1 mes gratis", "🎁 1 mese gratis", "🎁 1か月無料", "🎁 1 Monat gratis", "🎁 شهر مجاني", "🎁 免费 1 个月", "🎁 1 maand gratis", "🎁 1 mês grátis", "🎁 1 månad gratis", "🎁 1 месяц бесплатно", "🎁 1 miesiąc za darmo", "🎁 1개월 무료")) + '</div>'
-        + '<div style="font-size:13.5px;line-height:1.5">' + esc(hypeT7("Choisis Premium Cavalier (mensuel) ou le Pack Duo : ton code " + code + " est déjà rempli sur la page de paiement. Ta carte est demandée, mais le premier mois est à 0 €. Tu peux arrêter quand tu veux avant la fin du mois.",
-                "Choose Premium Rider (monthly) or Duo: your code " + code + " is already filled in on the payment page. Your card is requested, but the first month costs €0. You can stop anytime before the month ends.",
-                "Elige Premium Jinete (mensual) o el Duo: tu código " + code + " ya está puesto en la página de pago. Se pide tu tarjeta, pero el primer mes cuesta 0 €. Puedes cancelar cuando quieras antes de que acabe el mes.",
-                "Scegli Premium Cavaliere (mensile) o il Duo: il tuo codice " + code + " è già inserito nella pagina di pagamento. Ti viene chiesta la carta, ma il primo mese costa 0 €. Puoi interrompere quando vuoi prima della fine del mese.",
-                "プレミアム・ライダー（月額）またはDuoを選んでね。コード " + code + " は支払いページにすでに入っているよ。カードは必要だけど、最初の1か月は0ユーロ。月末までならいつでもやめられるよ。",
-                "Wähle Premium Reiter (monatlich) oder Duo: Dein Code " + code + " ist auf der Zahlungsseite schon eingetragen. Deine Karte wird abgefragt, aber der erste Monat kostet 0 €. Du kannst jederzeit vor Monatsende kündigen.",
-                "اختر Premium الفارس (شهري) أو Duo: رمزك " + code + " مُدخل مسبقًا في صفحة الدفع. تُطلب بطاقتك، لكن الشهر الأول بـ 0 €. يمكنك الإيقاف متى شئت قبل نهاية الشهر.",
-                "选择骑手 Premium（按月）或 Duo：你的代码 " + code + " 已经填在付款页面上了。需要填写银行卡，但第一个月 0 欧元。月底前你随时可以取消。",
-                "Kies Premium Ruiter (maandelijks) of Duo: je code " + code + " staat al ingevuld op de betaalpagina. Je kaart wordt gevraagd, maar de eerste maand kost € 0. Je kunt op elk moment vóór het einde van de maand stoppen.",
-                "Escolhe Premium Cavaleiro (mensal) ou o Duo: o teu código " + code + " já está preenchido na página de pagamento. O cartão é pedido, mas o primeiro mês custa 0 €. Podes cancelar quando quiseres antes do fim do mês.",
-                "Välj Premium Ryttare (månadsvis) eller Duo: din kod " + code + " är redan ifylld på betalsidan. Ditt kort efterfrågas, men första månaden kostar 0 €. Du kan avsluta när du vill innan månaden är slut.",
-                "Выбери Premium Всадник (помесячно) или Duo: твой код " + code + " уже указан на странице оплаты. Карту попросят, но первый месяц стоит 0 €. Можно отменить в любой момент до конца месяца.",
-                "Wybierz Premium Jeździec (miesięczny) lub Duo: twój kod " + code + " jest już wpisany na stronie płatności. Karta jest wymagana, ale pierwszy miesiąc kosztuje 0 €. Możesz zrezygnować w dowolnym momencie przed końcem miesiąca.",
-                "프리미엄 라이더(월간) 또는 Duo를 골라요. 코드 " + code + "가 결제 페이지에 이미 입력돼 있어요. 카드는 필요하지만 첫 달은 0유로예요. 달이 끝나기 전 언제든 해지할 수 있어요.")) + '</div></div></div>';
+        + '<div style="font-size:13.5px;line-height:1.5">' + esc(hypeT7("Choisis Premium Cavalier (mensuel) : ton code " + code + " est déjà rempli sur la page de paiement. Ta carte est demandée, mais le premier mois est à 0 €. Tu peux arrêter quand tu veux avant la fin du mois.",
+                "Choose Premium Rider (monthly): your code " + code + " is already filled in on the payment page. Your card is requested, but the first month costs €0. You can stop anytime before the month ends.",
+                "Elige Premium Jinete (mensual): tu código " + code + " ya está puesto en la página de pago. Se pide tu tarjeta, pero el primer mes cuesta 0 €. Puedes cancelar cuando quieras antes de que acabe el mes.",
+                "Scegli Premium Cavaliere (mensile): il tuo codice " + code + " è già inserito nella pagina di pagamento. Ti viene chiesta la carta, ma il primo mese costa 0 €. Puoi interrompere quando vuoi prima della fine del mese.",
+                "プレミアム・ライダー（月額）を選んでね。コード " + code + " は支払いページにすでに入っているよ。カードは必要だけど、最初の1か月は0ユーロ。月末までならいつでもやめられるよ。",
+                "Wähle Premium Reiter (monatlich): Dein Code " + code + " ist auf der Zahlungsseite schon eingetragen. Deine Karte wird abgefragt, aber der erste Monat kostet 0 €. Du kannst jederzeit vor Monatsende kündigen.",
+                "اختر Premium الفارس (شهري): رمزك " + code + " مُدخل مسبقًا في صفحة الدفع. تُطلب بطاقتك، لكن الشهر الأول بـ 0 €. يمكنك الإيقاف متى شئت قبل نهاية الشهر.",
+                "选择骑手 Premium（按月）：你的代码 " + code + " 已经填在付款页面上了。需要填写银行卡，但第一个月 0 欧元。月底前你随时可以取消。",
+                "Kies Premium Ruiter (maandelijks): je code " + code + " staat al ingevuld op de betaalpagina. Je kaart wordt gevraagd, maar de eerste maand kost € 0. Je kunt op elk moment vóór het einde van de maand stoppen.",
+                "Escolhe Premium Cavaleiro (mensal): o teu código " + code + " já está preenchido na página de pagamento. O cartão é pedido, mas o primeiro mês custa 0 €. Podes cancelar quando quiseres antes do fim do mês.",
+                "Välj Premium Ryttare (månadsvis): din kod " + code + " är redan ifylld på betalsidan. Ditt kort efterfrågas, men första månaden kostar 0 €. Du kan avsluta när du vill innan månaden är slut.",
+                "Выбери Premium Всадник (помесячно): твой код " + code + " уже указан на странице оплаты. Карту попросят, но первый месяц стоит 0 €. Можно отменить в любой момент до конца месяца.",
+                "Wybierz Premium Jeździec (miesięczny): twój kod " + code + " jest już wpisany na stronie płatności. Karta jest wymagana, ale pierwszy miesiąc kosztuje 0 €. Możesz zrezygnować w dowolnym momencie przed końcem miesiąca.",
+                "프리미엄 라이더(월간)를 골라요. 코드 " + code + "가 결제 페이지에 이미 입력돼 있어요. 카드는 필요하지만 첫 달은 0유로예요. 달이 끝나기 전 언제든 해지할 수 있어요.")) + '</div></div></div>';
 }
 window.hypeOuvrirPaiement = async function (url) {
     let lien = url;
@@ -32618,7 +32618,7 @@ window.hypeOuvrirPaiement = async function (url) {
             if (u.email) lien += "&prefilled_email=" + encodeURIComponent(u.email);
         }
     } catch (e) { }
-    /* 11/11 22h10 — 1 mois offert : code gardé depuis 2hype.fr/?offert=CODE, prérempli sur Mensuel et Duo seulement */
+    /* 11/11 22h10 — 1 mois offert : code gardé depuis 2hype.fr/?offert=CODE, prérempli sur Mensuel seulement */
     try { var cOff = hypeCodeOffert(); if (cOff && hypeLienAccepteCode(url)) lien += (lien.indexOf("?") === -1 ? "?" : "&") + "prefilled_promo_code=" + encodeURIComponent(cOff); } catch (eCo) { }
     /* 18/10 (soir) — PAIEMENT EN COURS DE VERIFICATION. On note sur le telephone qu un paiement Premium vient d etre
        ouvert (compte + heure). Ce n est PAS une preuve de paiement : seuls les droits relus en base activent le Premium. */
