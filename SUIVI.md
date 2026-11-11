@@ -20080,3 +20080,10 @@ Fichiers : SUIVI.md.
 - hype-ecran-cheval.js v=21, en-tête par défaut (« grand ») seulement : photo ENTIÈRE, jamais recadrée (largeur de l'écran ; hauteur limitée à 64 % de l'écran pour une photo très haute ; tablette / ordinateur : centrée, 560 px de haut au plus), fondue en haut, en bas et sur les côtés ; courbe champagne dessous ; puis « JUMENT · 2016 » en petites capitales champagne, le nom en grand (Cormorant) à gauche, la race dessous ; nom officiel en petit si un surnom est affiché. Les en-têtes « bandeau » et « portrait » (Personnaliser) ne changent pas.
 - ⚠️ Remplace le réglage « remis comme le 03/11 » (build 20261108-0310, autre conversation) pour l'en-tête par défaut : ne pas le remettre sans demander à Blandine.
 - Testé sur copie (téléphone 390 px et ordinateur 1280 px) avec la photo de Golden : photo entière, cavalière et jument visibles, aucune erreur.
+
+## 11/11/2026 21h30 — PUBLIÉ (build 20261111-2130, Blandine « Ok » 20h12 puis « Ok » 20h21) — Menu : un onglet touché arrive toujours en haut
+- Signalé par Blandine : en touchant un raccourci du menu, la page s'ouvre parfois en bas ; ensuite, pour remonter, il faut s'y reprendre 8 à 10 fois car ça saute et ramène en bas.
+- Cause probable (non testée sur iPhone) : revenir sur l'onglet d'où l'on venait remettait l'ancienne position de défilement de cette page, souvent en bas. Depuis le 11/11 08h56 la page défile dans une zone à part (#hype-defile) qui garde elle aussi la position de la page quittée.
+- Correction (index.html, HypeApp : naviguer + effet [ecran]) : un onglet du menu touché (dashboard, galops, moncavalier, cavalier, chevaux, communaute, ecurie, assistant, premium) arrive toujours en haut ; arrivée en haut immédiate quand aucune position n'est à restaurer. La mémoire de position reste pour le retour (flèche, balayage) et pour les pages qui ne sont pas des onglets (jeux → cours).
+- ⚠️ Le défilement qui « saute » en remontant n'est pas forcément expliqué par cette cause : si ça continue après test, noter la page exacte et chercher de ce côté.
+Fichiers : index.html, SUIVI.md.
