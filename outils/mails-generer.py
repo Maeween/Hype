@@ -103,12 +103,78 @@ DEFAUT = {
  "reinitialisation": ("Reset your password", "<h2>Reset your password</h2>\n\n<p>We received a request to reset your password. Follow the link below to choose a new one.</p>\n<p><a href=\"{{ .ConfirmationURL }}\">Reset password</a></p>\n\n<p>If you didn't request this, you can safely ignore this email.</p>"),
  "confirmation": ("Confirm your email address", "<h2>Confirm your email address</h2>\n\n<p>Follow the link below to confirm this email address and finish signing up.</p>\n<p><a href=\"{{ .ConfirmationURL }}\">Confirm email address</a></p>"),
 }
+
+# 11/11 (Blandine, maquette « A » validee) : nouveau mail « mot de passe oublie » - nuit, centre, accents bleu clair,
+# titre en VRAI TEXTE (lisible meme quand la boite mail bloque les images), Hypo en petite image bonus au-dessus de sa signature.
+IMG_HYPO = "https://2hype.fr/images/mail-hypo.jpg"
+# cles : tag, titre1, titre2, corps, bouton, petit, signe
+RESET_A = {
+"fr": ["L’APP DES CAVALIERS","Tu as oublié","ton mot de passe ?","Pas de souci ! Touche le bouton pour créer un nouveau mot de passe et retrouver ton espace Hype.","Réinitialiser mon mot de passe","Tu n’as rien demandé ? Ignore ce mail, ton mot de passe ne change pas.","Je t’attends avec impatience à l’écurie ! 🥕"],
+"en": ["THE RIDERS’ APP","Forgot","your password?","No worries! Tap the button to create a new password and get back to your Hype space.","Reset my password","Didn’t ask for this? Just ignore this email: your password won’t change.","I can’t wait to see you at the stable! 🥕"],
+"es": ["LA APP DE LOS JINETES","¿Olvidaste","tu contraseña?","¡No pasa nada! Toca el botón para crear una nueva contraseña y volver a tu espacio Hype.","Restablecer mi contraseña","¿No lo has pedido? Ignora este correo: tu contraseña no cambia.","¡Te espero con impaciencia en la cuadra! 🥕"],
+"it": ["L’APP DEI CAVALIERI","Hai dimenticato","la password?","Nessun problema! Tocca il pulsante per creare una nuova password e ritrovare il tuo spazio Hype.","Reimposta la mia password","Non l’hai chiesto tu? Ignora questa email: la tua password non cambia.","Ti aspetto con impazienza in scuderia! 🥕"],
+"de": ["DIE APP FÜR REITER","Passwort","vergessen?","Kein Problem! Tippe auf den Button, um ein neues Passwort zu erstellen und zurück in deinen Hype-Bereich zu kommen.","Mein Passwort zurücksetzen","Du hast nichts angefordert? Ignoriere diese E-Mail einfach: Dein Passwort bleibt gleich.","Ich warte schon ungeduldig im Stall auf dich! 🥕"],
+"ja": ["ライダーのためのアプリ","パスワードを","忘れちゃった？","大丈夫！ボタンをタップして新しいパスワードを作り、Hypeに戻ろう。","パスワードを再設定","心当たりがない場合は、このメールは無視してね。パスワードは変わりません。","厩舎で待ってるね！🥕"],
+"ar": ["تطبيق الفرسان","نسيتِ","كلمة المرور؟","لا مشكلة! اضغطي على الزر لإنشاء كلمة مرور جديدة والعودة إلى مساحتكِ في Hype.","إعادة تعيين كلمة المرور","لم تطلبي ذلك؟ تجاهلي هذه الرسالة، فكلمة مروركِ لن تتغير.","أنتظركِ بفارغ الصبر في الإسطبل! 🥕"],
+"zh": ["骑手的应用","忘记","密码了？","没关系！点击按钮创建新密码，回到你的 Hype 空间。","重置我的密码","不是你申请的？忽略这封邮件即可，你的密码不会改变。","我在马厩里迫不及待地等你！🥕"],
+"nl": ["DE APP VOOR RUITERS","Wachtwoord","vergeten?","Geen probleem! Tik op de knop om een nieuw wachtwoord te maken en terug te gaan naar je Hype-ruimte.","Mijn wachtwoord resetten","Niets aangevraagd? Negeer deze e-mail: je wachtwoord blijft hetzelfde.","Ik wacht vol ongeduld op je in de stal! 🥕"],
+"pt": ["O APP DOS CAVALEIROS","Esqueceu","sua senha?","Sem problema! Toque no botão para criar uma nova senha e voltar ao seu espaço Hype.","Redefinir minha senha","Não pediu isso? Ignore este e-mail: sua senha não muda.","Estou te esperando ansioso no estábulo! 🥕"],
+"sv": ["APPEN FÖR RYTTARE","Glömt","ditt lösenord?","Inga problem! Tryck på knappen för att skapa ett nytt lösenord och komma tillbaka till ditt Hype-konto.","Återställ mitt lösenord","Har du inte bett om det? Ignorera mejlet, ditt lösenord ändras inte.","Jag väntar otåligt på dig i stallet! 🥕"],
+"ru": ["ПРИЛОЖЕНИЕ ДЛЯ ВСАДНИКОВ","Не помнишь","свой пароль?","Ничего страшного! Нажми на кнопку, чтобы создать новый пароль и вернуться в свой Hype.","Сбросить пароль","Ты ничего не запрашивал(а)? Просто проигнорируй это письмо: пароль не изменится.","Жду тебя с нетерпением в конюшне! 🥕"],
+"pl": ["APLIKACJA DLA JEŹDŹCÓW","Nie pamiętasz","hasła?","Nic się nie stało! Dotknij przycisku, aby utworzyć nowe hasło i wrócić do swojego Hype.","Zresetuj hasło","To nie ty? Zignoruj tę wiadomość: twoje hasło się nie zmieni.","Czekam na ciebie niecierpliwie w stajni! 🥕"],
+"ko": ["라이더를 위한 앱","비밀번호를","잊어버렸나요?","괜찮아요! 버튼을 눌러 새 비밀번호를 만들고 Hype로 돌아오세요.","비밀번호 재설정","요청한 적이 없나요? 이 메일은 무시하세요. 비밀번호는 바뀌지 않아요.","마구간에서 애타게 기다리고 있을게요! 🥕"],
+}
+assert sorted(RESET_A) == sorted(LANGUES)
+for k, v in RESET_A.items(): assert len(v) == 7, k
+IA = {"tag":0,"titre1":1,"titre2":2,"corps":3,"bouton":4,"petit":5,"signe":6}
+def corps_A(lg=None):
+    if lg is None:
+        def T(cle):
+            autres = [l for l in LANGUES if l != "fr"]
+            s = "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + e(RESET_A[l][IA[cle]]) for n, l in enumerate(autres)])
+            return s + "{{ else }}" + e(RESET_A["fr"][IA[cle]]) + "{{ end }}"
+        pre = choix(RESET, "pre")
+        lien_txt = "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + e(LIEN_TXT[l]) for n, l in enumerate([x for x in LANGUES if x != "fr"])]) + "{{ else }}" + e(LIEN_TXT["fr"]) + "{{ end }}"
+        dirv = '{{ if eq $l "ar" }}rtl{{ else }}ltr{{ end }}'; langv = "{{ $l }}"
+        tete = '{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}'
+        url = "{{ .ConfirmationURL }}"; fleche = '{{ if eq $l "ar" }}&#8592;{{ else }}&#8594;{{ end }}'
+    else:
+        T = lambda cle: e(RESET_A[lg][IA[cle]]); pre = e(RESET[lg][I["pre"]]); lien_txt = e(LIEN_TXT[lg])
+        dirv = "rtl" if lg == "ar" else "ltr"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg == "ar" else "&#8594;"
+    c = "#5CC8EA"
+    serif = "Georgia,'Times New Roman',serif"
+    sans = "-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif"
+    return f'''{tete}<!DOCTYPE html>
+<html lang="{langv}" dir="{dirv}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>Hype</title>
+<style>a[x-apple-data-detectors]{{color:inherit!important;text-decoration:none!important}}</style></head>
+<body style="margin:0;padding:0;background:#050b14;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">{pre}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#050b14" style="background:#050b14;"><tr><td align="center" style="padding:28px 14px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:500px;" dir="{dirv}">
+<tr><td align="center" style="font-family:{serif};font-style:italic;font-size:40px;line-height:1;color:#ffffff;">Hype</td></tr>
+<tr><td align="center" style="padding:8px 0 0;font-family:{sans};font-size:10px;letter-spacing:4px;color:{c};">{T("tag")}</td></tr>
+<tr><td align="center" style="padding:14px 0 34px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="60" height="1" bgcolor="{c}" style="font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
+<tr><td align="center" style="font-family:{serif};font-size:30px;line-height:1.2;color:#ffffff;">{T("titre1")}</td></tr>
+<tr><td align="center" style="padding:0 0 22px;font-family:{serif};font-style:italic;font-size:30px;line-height:1.2;color:{c};">{T("titre2")}</td></tr>
+<tr><td align="center" style="padding:0 10px 28px;font-family:{sans};font-size:16px;line-height:1.55;color:#d6dde5;">{T("corps")}</td></tr>
+<tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="border:1.5px solid {c};border-radius:999px;"><a href="{url}" style="display:inline-block;padding:13px 28px;font-family:{sans};font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">{T("bouton")}&nbsp;{fleche}</a></td></tr></table></td></tr>
+<tr><td align="center" style="padding:22px 20px 0;font-family:{sans};font-size:12px;line-height:1.5;color:#7d8a99;">{T("petit")}</td></tr>
+<tr><td align="center" style="padding:12px 20px 0;font-family:{sans};font-size:11px;line-height:1.5;color:#5d6b7b;">{lien_txt}<br><a href="{url}" style="color:#7fb9cc;word-break:break-all;">{url}</a></td></tr>
+<tr><td align="center" style="padding:36px 0 0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="280" height="1" bgcolor="#1d2c3d" style="font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
+<tr><td align="center" style="padding:28px 0 0;"><img src="{IMG_HYPO}" width="150" height="150" alt="🐴" style="display:block;width:150px;height:150px;border:0;font-size:40px;line-height:150px;color:{c};text-align:center;"></td></tr>
+<tr><td align="center" style="padding:10px 0 0;font-family:{serif};font-style:italic;font-size:26px;color:#ffffff;">Hypo <span style="color:{c};">&#9825;</span></td></tr>
+<tr><td align="center" style="padding:6px 10px 0;font-family:{serif};font-style:italic;font-size:16px;color:#c9d3dd;">{T("signe")}</td></tr>
+<tr><td align="center" style="padding:28px 0 0;font-family:{sans};font-size:11px;letter-spacing:3px;"><a href="https://2hype.fr" style="color:#5d6b7b;text-decoration:none;">2HYPE.FR</a></td></tr>
+</table></td></tr></table></body></html>
+'''
+
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(os.path.join(OUT, "apercus"), exist_ok=True)
 for nom, textes in (("reinitialisation", RESET), ("confirmation", CONF)):
-    open(os.path.join(OUT, nom + ".html"), "w", encoding="utf-8").write(COND_HYPE + corps(textes, nom) + "{{ else }}" + DEFAUT[nom][1] + "{{ end }}")
+    gen = (lambda lg=None: corps_A(lg)) if nom == "reinitialisation" else (lambda lg=None: corps(textes, nom, lg))   # 11/11 : maquette A
+    open(os.path.join(OUT, nom + ".html"), "w", encoding="utf-8").write(COND_HYPE + gen() + "{{ else }}" + DEFAUT[nom][1] + "{{ end }}")
     for lg in LANGUES:
-        open(os.path.join(OUT, "apercus", f"{nom}-{lg}.html"), "w", encoding="utf-8").write(corps(textes, nom, lg))
+        open(os.path.join(OUT, "apercus", f"{nom}-{lg}.html"), "w", encoding="utf-8").write(gen(lg))
 open(os.path.join(OUT, "objets.txt"), "w", encoding="utf-8").write(
 "OBJET « Reset Password » (mot de passe oublié) — version 14 langues :\n" + objet_modele(RESET, "reinitialisation") +
 "\n\nOBJET « Reset Password » — version de secours (si Supabase n'accepte pas les conditions dans l'objet) :\n" + RESET["fr"][0] +
