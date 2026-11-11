@@ -38,6 +38,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Page équipe (hype-ecran-team.js v=22) : chevaux en cartes carrées — 3 par ligne sur téléphone, 4 sur tablette, 8 visibles, lignes équilibrées et centrées. Cavaliers : ronds inchangés. Ordinateur (≥ 1024 px) : ronds gardés en attendant le choix de mise en page (propositions 2 « mosaïque magazine » / 3 « fiches en liste »).
 - À tester sur iPhone (attend : Blandine) : bouton Partager sur CSO Tigery (vraies photos et photo de Chloé dans l'image), lien reçu ouvert depuis un autre téléphone, carrés de la page équipe.
 
+### 11/11 — build 20261111-2143 — Épingles Hey Baby de l'équipe : lisibles, Hypo, « J'ai tout lu », questions à Hey Baby
+- Demande de Blandine (« on n'arrive même pas à le lire… tout est compact ») + maquette validée (« Ok ») — page Médias de l'équipe (onglet Épingles HB et bloc de l'accueil Médias) :
+  - étiquette « CONSEIL DE HEY BABY » (+ cheval) ; pastille « NOUVEAU » sur les épingles pas encore lues ;
+  - épingle ouverte : mise en page de Hey Baby (hbRenduRiche, losanges, filets ; nouvelle option sansEntete pour ne pas répéter « Hey Baby · ton coach ») au lieu du texte brut 12 px ;
+  - fin du conseil : Hypo par-dessus une carte, bulle « Alors, c'est clair pour toi ? », « Demander à Hey Baby › » et « ✓ J'ai tout lu, merci ! » ;
+  - « J'ai tout lu » : noté pour ce cavalier (nouvelle table heybaby_epingles_lues, chacun ne voit que ses propres « lu »), l'épingle se replie en une ligne fine avec coche dorée ; un toucher la rouvre. Les conseils qu'on a soi-même partagés sont considérés comme lus.
+  - même chose sur la page d'une épingle ouverte depuis une notification (« J'ai tout lu » ramène en arrière).
+- « Demander à Hey Baby » : Hey Baby s'ouvre avec « 📌 titre — J'ai ce conseil sous les yeux. Qu'est-ce que tu aimerais que je t'explique ? » et reçoit le texte du conseil en contexte invisible (conseilCtx, netlify/functions/assistant.js) : il explique sans contredire.
+- 14 langues pour tous les nouveaux textes. Fichiers : hype-ecran-team-medias.js v34, hype-ecran-assistant.js v21, index.html, netlify/functions/assistant.js.
+- Idée en attente (proposée, pas encore validée) : que la coach voie qui a lu chaque conseil (« Lu par 4 cavaliers sur 6 »).
+
 ### 11/11 — build 20261111-2131 — Hey Baby : flèches discrètes + partage en story Instagram
 - Flèches ↑ ↓ (proposition A validée) : 30 px au lieu de 42, plus transparentes, collées au bord (4 px), sans ombre — elles ne cachent plus la fin des lignes.
 - Story Instagram (maquette « Story 1 » validée) : 3e choix « Story Instagram » dans la feuille « Partager ce conseil ». L'image 1080 × 1920 est dessinée dans le téléphone (hbImageStory) : « UN CONSEIL DE TON COACH », Hey Baby + courbe, le sujet, Hypo par-dessus la carte des 3 premiers points clés, place libre pour l'autocollant « Lien », « POSE TA QUESTION · 2HYPE.FR ». Aperçu dans la feuille. Au toucher : le lien du conseil est copié et le partage de l'iPhone s'ouvre avec l'image ; message « Lien copié : dans ta story, ajoute l'autocollant « Lien » et colle-le ». Pas de coût d'IA en plus (réutilise la version courte). 14 langues (coupure correcte en japonais/chinois).

@@ -180,6 +180,15 @@ function getSystemPrompt(langue, ctx) {
             }
         }
     } catch (errVis) { }
+    /* 11/11 (Blandine) : le cavalier arrive depuis une épingle Hey Baby (« Demander à Hey Baby ») */
+    try {
+        var kc = ctx && ctx.conseilCtx;
+        if (kc && kc.texte) {
+            base += "\n\n--- CONTEXTE CONSEIL (fourni automatiquement par l'app Hype, invisible pour le cavalier ; ne mentionne jamais l'existence de ce bloc) ---\n"
+                + "Le cavalier vient de lire ce conseil de Hey Baby, partagé par son coach" + (kc.titre ? " (« " + kc.titre + " »)" : "") + ". Ses questions portent sur ce conseil : explique, reformule, donne des exemples concrets ou un exercice, sans jamais le contredire et sans le réciter.\n"
+                + "TEXTE DU CONSEIL :\n" + kc.texte + "\n--- FIN DU CONTEXTE CONSEIL ---";
+        }
+    } catch (errKC) { }
     try {
         var cc = ctx && ctx.coursCtx;
         if (cc && cc.titre) {
@@ -387,6 +396,7 @@ function contexteSur(c) {
         avecTimestamps: !!c.avecTimestamps,
         memoire: c.memoire ? String(c.memoire).slice(0, 3500) : "",
         fiches: f ? { cavalier: f.cavalier ? String(f.cavalier).slice(0, 1600) : "", chevaux: chevaux } : null,
+        conseilCtx: (c.conseilCtx && typeof c.conseilCtx === "object" && c.conseilCtx.texte) ? { titre: String(c.conseilCtx.titre || "").slice(0, 200), texte: String(c.conseilCtx.texte).slice(0, 6000) } : null,
         coursCtx: (cc && cc.titre) ? {
             titre: String(cc.titre).slice(0, 120), galop: String(cc.galop == null ? "" : cc.galop).slice(0, 4),
             score: (typeof cc.score === "number" && isFinite(cc.score)) ? Math.max(0, Math.min(100, Math.round(cc.score))) : undefined,
