@@ -389,6 +389,54 @@ function EcranTeamCompetition() {
   function section(contenu, premier) { return h("div", { style: { padding: premier ? "8px 20px 0" : "26px 20px 0" } }, contenu); }
   function trait() { return h("div", { style: { height: 1, margin: "24px 20px 0", background: "linear-gradient(90deg, rgba(214,182,118,0), rgba(214,182,118,0.22), rgba(214,182,118,0))" } }); }
 
+  /* 11/11 21h40 refonte de la page (maquette validée par Blandine) : cartes basses alignées, parties vides en petite carte avec photo */
+  function carteBasse(key, icone, titre, sous, img, onClick, extraStyle) {
+    var Tag = onClick ? "button" : "div";
+    return h(Tag, Object.assign({ key: key, style: Object.assign({ position: "relative", overflow: "hidden", width: "100%", minHeight: 92, display: "flex", alignItems: "center", gap: 12, padding: "12px 13px", marginTop: 10, borderRadius: 14, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.32)", color: IV, textAlign: "start", fontFamily: M, cursor: onClick ? "pointer" : "default", boxSizing: "border-box" }, extraStyle || {}) }, onClick ? { type: "button", onClick: onClick } : {}),
+      img ? h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "50%", height: "100%", objectFit: "cover", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }) : null,
+      img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 46%, rgba(11,15,19,0.78) 62%, rgba(11,15,19,0) 88%)" } }) : null,
+      h("span", { style: { flex: "0 0 26px", position: "relative", display: "flex", justifyContent: "center" } }, icone),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(214,182,118,0.28)" } }),
+      h("div", { style: { flex: 1, minWidth: 0, position: "relative", maxWidth: img ? "64%" : "none" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 19, fontWeight: 600, color: IV, lineHeight: 1.15 } }, titre),
+        sous ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(244,241,234,0.72)", marginTop: 4, lineHeight: 1.4 } }, sous) : null),
+      onClick ? h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1, marginInlineStart: "auto" } }, CHEV) : null);
+  }
+  var ICO = {
+    agenda: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("rect", { x: 1.5, y: 3, width: 15, height: 13.5, rx: 2, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M1.5 7h15M5.5 1v4M12.5 1v4", stroke: OR, strokeWidth: 1.2 })),
+    coupe: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("path", { d: "M5 2h8v4a4 4 0 0 1-8 0V2Zm0 1.5H2.2c0 2.4 1.2 3.6 3.1 3.9M13 3.5h2.8c0 2.4-1.2 3.6-3.1 3.9M9 10v3.5M6 16h6M7 13.5h4", fill: "none", stroke: OR, strokeWidth: 1.2 })),
+    photo: h("svg", { width: 22, height: 20, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 1.5, width: 16, height: 13, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M2.5 12.5l4-4 3 3 2-2 4 3", fill: "none", stroke: OR, strokeWidth: 1.2 })),
+    cavalier: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("circle", { cx: 10, cy: 6.5, r: 3.2, fill: "none", stroke: OR, strokeWidth: 1.3 }), h("path", { d: "M3.5 17.5c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5", fill: "none", stroke: OR, strokeWidth: 1.3 })),
+    video: h("svg", { width: 24, height: 21, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 2, width: 12, height: 12, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M13 6.5l4-2.5v8l-4-2.5", fill: "none", stroke: OR, strokeWidth: 1.2 })),
+    bulle: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3 2.5V13A2.5 2.5 0 0 1 4 10.5z", fill: "none", stroke: OR, strokeWidth: 1.3 })),
+    perfs: h("svg", { width: 24, height: 24, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }), h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: OR, strokeWidth: 1.3 }))
+  };
+  function videCartePh(icone, img, txt) { return videCarte(icone, txt, img); }
+  function videCarte(icone, txt, img) { return carteBasse(null, icone, h("span", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 400, lineHeight: 1.4 } }, txt), null, img, null, { marginTop: 0 }); }
+  function partie(id, n, lab, titre) {
+    return h("div", { id: id, style: { padding: "34px 20px 0", scrollMarginTop: 70 } },
+      h("div", { style: { fontFamily: M, fontSize: 11, letterSpacing: ".24em", textTransform: "uppercase", color: OR, fontWeight: 600 } }, n + " · " + lab),
+      h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.05, color: IV, marginTop: 4 } }, titre));
+  }
+  var PARTIES = [
+    { id: "eq-p1", lab: T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"),
+      titre: T("Qui monte, sur qui", "Who rides what", "Quién monta qué", "Chi monta chi", "誰がどの馬に", "Wer reitet wen", "من يركب ماذا", "谁骑哪匹马", "Wie rijdt wie", "Quem monta quem", "Vem rider vem", "Кто на ком", "Kto na kim", "누가 어떤 말을") },
+    { id: "eq-p2", lab: T("Les concours", "Competitions", "Los concursos", "I concorsi", "競技会", "Die Turniere", "المسابقات", "比赛", "De wedstrijden", "Os concursos", "Tävlingarna", "Соревнования", "Zawody", "대회"),
+      titre: T("La saison", "The season", "La temporada", "La stagione", "シーズン", "Die Saison", "الموسم", "赛季", "Het seizoen", "A época", "Säsongen", "Сезон", "Sezon", "시즌") },
+    { id: "eq-p3", lab: T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "الذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억"),
+      titre: T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간") },
+    { id: "eq-p4", lab: T("Apprendre", "Learn", "Aprender", "Imparare", "学ぶ", "Lernen", "التعلّم", "学习", "Leren", "Aprender", "Lära", "Учиться", "Nauka", "배우기"),
+      titre: T("Progresser ensemble", "Grow together", "Progresar juntos", "Progredire insieme", "一緒に上達しよう", "Gemeinsam besser werden", "نتقدّم معًا", "一起进步", "Samen vooruit", "Progredir juntos", "Utvecklas tillsammans", "Расти вместе", "Rozwijać się razem", "함께 성장하기") }
+  ];
+  var _pa = React.useState(0); var partieActive = _pa[0], setPartieActive = _pa[1];
+  function allerPartie(i) { setPartieActive(i); try { var el = document.getElementById(PARTIES[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }
+  var menuParties = h("div", { "data-noswipe": "1", "data-hscroll": "1", style: { position: "sticky", top: 0, zIndex: 20, display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", padding: "calc(env(safe-area-inset-top) * 0 + 12px) 20px", background: "rgba(6,7,9,0.94)", borderBottom: "1px solid rgba(214,182,118,0.18)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
+    PARTIES.map(function (P, i) { var on = i === partieActive; return h("button", { key: "mp" + i, type: "button", onClick: function () { allerPartie(i); }, style: { flex: "0 0 auto", minHeight: 38, padding: "0 15px", borderRadius: 999, border: on ? "1.5px solid " + OR : "1px solid rgba(244,241,234,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, P.lab); }));
+  React.useEffect(function () {   /* le bouton du menu suit la partie qu'on regarde */
+    function surDefil() { try { var act = 0; PARTIES.forEach(function (P, i) { var el = document.getElementById(P.id); if (el && el.getBoundingClientRect().top < 140) act = i; }); setPartieActive(act); } catch (e) { } }
+    window.addEventListener("scroll", surDefil, { passive: true }); return function () { window.removeEventListener("scroll", surDefil); };
+  }, []);
+
   function portrait(key, src, nom, onClick, repli) {
     return h("button", { key: key, type: "button", onClick: onClick, style: { width: "100%", background: "none", border: "none", padding: "2px 0 4px", cursor: "pointer", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", alignSelf: "start" } },
       h("div", { style: { width: "100%", maxWidth: 74, aspectRatio: "1 / 1", borderRadius: "50%", padding: 2, border: "1px solid rgba(214,182,118,0.75)", boxSizing: "border-box" } },
@@ -502,8 +550,22 @@ function EcranTeamCompetition() {
 
   /* (706) CHAPITRE « Classements des chevaux » : meme titre et meme carte que les autres chapitres de la page ;
      l'onglet « Performances chevaux » mene a la page classement (route performances-chevaux). */
+  /* 11/11 : « Classement des cavaliers » (comme Performances chevaux) : la liste des cavaliers de l'équipe, chacun ouvre sa page Performances */
+  var listePerfCav = !ouvert.pcav ? null : h("div", { style: { marginTop: 6, borderRadius: 14, border: "1px solid rgba(214,182,118,0.2)", overflow: "hidden" } },
+    (membres || []).filter(function (p) { return p.role !== "coach"; }).map(function (p) {
+      return h("button", { key: "pc" + p.id, type: "button", onClick: function () { try { window.__perfCavalierId = p.id; } catch (ePc) { } setEcran("performances-cavalier"); },
+        style: { width: "100%", display: "flex", alignItems: "center", gap: 12, minHeight: 54, padding: "6px 14px", background: "transparent", border: "none", borderBottom: "1px solid rgba(244,241,234,0.06)", color: IV, fontFamily: M, fontSize: 14, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { width: 36, height: 36, flex: "0 0 36px", borderRadius: "50%", overflow: "hidden", border: "1px solid rgba(214,182,118,0.5)", background: "#11171C", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 17, color: OR } },
+          photoProfil(p) ? h("img", { src: photoProfil(p), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } }) : (p.pseudo || "?").charAt(0).toUpperCase()),
+        h("span", { dir: "auto", style: { flex: 1, minWidth: 0 } }, p.pseudo || ""), h("span", { style: { color: OR } }, CHEV));
+    }));
   var blocClass = section(h("div", null,
-    enTete(T("Classements des chevaux", "Horse rankings", "Clasificaciones de los caballos", "Classifiche dei cavalli", "\u99ac\u306e\u30e9\u30f3\u30ad\u30f3\u30b0", "Pferde-Ranglisten", "\u062a\u0635\u0646\u064a\u0641\u0627\u062a \u0627\u0644\u062e\u064a\u0648\u0644", "马匹排名", "Klassementen van de paarden", "Classificações dos cavalos", "Hästrankning", "Рейтинги лошадей", "Klasyfikacje koni", "말 순위"), "cl", 0, 0),
+    enTete(T("Classements", "Rankings", "Clasificaciones", "Classifiche", "ランキング", "Ranglisten", "التصنيفات", "排名", "Klassementen", "Classificações", "Rankningar", "Рейтинги", "Klasyfikacje", "순위"), "cl", 0, 0),
+    carteBasse("pcav", ICO.cavalier, T("Classement des cavaliers", "Riders' ranking", "Clasificación de los jinetes", "Classifica dei cavalieri", "ライダーのランキング", "Reiter-Rangliste", "تصنيف الفرسان", "骑手排名", "Klassement van de ruiters", "Classificação dos cavaleiros", "Ryttarranking", "Рейтинг всадников", "Klasyfikacja jeźdźców", "라이더 순위"),
+      T("Résultats et points championnat", "Results and championship points", "Resultados y puntos de campeonato", "Risultati e punti campionato", "結果と選手権ポイント", "Ergebnisse und Meisterschaftspunkte", "النتائج ونقاط البطولة", "成绩与锦标赛积分", "Resultaten en kampioenschapspunten", "Resultados e pontos de campeonato", "Resultat och mästerskapspoäng", "Результаты и очки чемпионата", "Wyniki i punkty mistrzostw", "결과와 챔피언십 포인트"),
+      "images/cavalier-acces-performances.webp", function () { basculer("pcav"); }, { marginTop: 0 }),
+    listePerfCav,
+    h("div", { style: { height: 10 } }),
     h("button", { type: "button", "data-perf-chevaux": "1", onClick: function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
       h("img", { src: "images/team-competition-performances-hero.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", objectPosition: "78% 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
@@ -624,7 +686,7 @@ function EcranTeamCompetition() {
       T("Agenda", "Calendar", "Agenda", "Agenda", "予定", "Termine", "المواعيد", "日程", "Agenda", "Agenda", "Kalender", "Календарь", "Kalendarz", "일정")), "ag", (agenda || []).length + ((agendaPasse || []).length ? 9 : 0), 1, btnAjoutRdv),
     agenda === null ? chargement()
       : h("div", null,
-          agenda.length ? carteRdvE(agenda[0], false) : vide(T("Aucun rendez-vous \u00e0 venir pour l\u2019instant.", "No upcoming events yet.", "A\u00fan no hay citas pr\u00f3ximas.", "Nessun appuntamento in arrivo per ora.", "\u4eca\u5f8c\u306e\u4e88\u5b9a\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine anstehenden Termine.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f \u0642\u0627\u062f\u0645\u0629 \u062d\u0627\u0644\u064a\u0627.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")),
+          agenda.length ? carteRdvE(agenda[0], false) : videCartePh(ICO.agenda, "images/concours-carte-passages.webp", T("Aucun rendez-vous \u00e0 venir pour l\u2019instant.", "No upcoming events yet.", "A\u00fan no hay citas pr\u00f3ximas.", "Nessun appuntamento in arrivo per ora.", "\u4eca\u5f8c\u306e\u4e88\u5b9a\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine anstehenden Termine.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f \u0642\u0627\u062f\u0645\u0629 \u062d\u0627\u0644\u064a\u0627.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")),
           (ouvert.ag && agenda.length > 1) ? h("div", null, agenda.slice(1).map(function (ev) { return carteRdvE(ev, false); })) : null,
           dernierConcours ? carteDernier(dernierConcours) : null,
           /* (526) les rendez-vous PASSES : dans « Voir tout », ouverts sur leur page souvenirs (photos) */
@@ -768,7 +830,7 @@ function EcranTeamCompetition() {
       T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과")), "res", resVisibles.length, 3),
     resultats === null ? chargement()
       : h("div", null,
-        !resVisibles.length ? vide(T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요."))
+        !resVisibles.length ? videCartePh(ICO.coupe, "images/concours-hero-bai-tresse.webp", T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요."))
           : h("div", null, (ouvert.res ? resVisibles : resVisibles.slice(0, 3)).map(carteRes)),   /* (528) cartes E bis */
         /* (529) resultats retires : visibles seulement pour la proprietaire / les gestionnaires, pour les remettre */
         (gestion && resRetires.length) ? h("div", { style: { marginTop: 4 } },
@@ -838,19 +900,10 @@ function EcranTeamCompetition() {
       titre: T("Optimise tes perfs", "Boost your performance", "Optimiza tu rendimiento", "Ottimizza le tue prestazioni", "パフォーマンスを高めよう", "Optimiere deine Leistung", "حسّن أداءك", "提升你的表现", "Optimaliseer je prestaties", "Otimiza o teu desempenho", "Optimera dina prestationer", "Улучшай свои результаты", "Popraw swoje wyniki", "실력을 끌어올려"),
       sous: T("Articles et conseils du coach", "Articles and coach's tips", "Artículos y consejos del entrenador", "Articoli e consigli del coach", "記事とコーチのアドバイス", "Artikel und Tipps vom Coach", "مقالات ونصائح المدرّب", "文章与教练建议", "Artikelen en tips van de coach", "Artigos e conselhos do treinador", "Artiklar och tips från coachen", "Статьи и советы тренера", "Artykuły i rady trenera", "아티클과 코치의 조언") }
   ];
-  function porteM(P) {
-    return h("button", { key: "pm" + P.cle, type: "button", "data-team-medias": P.cle, onClick: function () { ouvrirMedias(P.cle); },
-      style: { position: "relative", display: "block", width: "100%", padding: 0, marginTop: 14, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(201,166,107,.3)", background: "#11171C", color: IV, textAlign: "start", cursor: "pointer" } },
-      h("img", { src: P.img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
-      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "44px 18px 16px", background: "linear-gradient(180deg, rgba(7,10,8,0), rgba(7,10,8,.92) 55%)" } },
-        h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: ".28em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600 } }, P.lab),
-        h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, marginTop: 4, color: IV } }, P.titre),
-        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 8, fontFamily: M, fontSize: 13, color: "rgba(244,241,234,0.75)" } },
-          h("span", null, P.sous), h("span", { style: { color: "#C9A66B", fontSize: 18 } }, rtl ? "‹" : "›"))));
-  }
+  function porteM(P) { return carteBasse("pm" + P.cle, ICO[P.cle === "videos" ? "video" : P.cle === "epingles" ? "bulle" : "perfs"], P.titre, P.sous, P.img, function () { ouvrirMedias(P.cle); }); }
   var blocMedias = section(h("div", null,
     enTete(T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"), "md", 0, 0),
-    PORTES_M.map(porteM)));
+    h("div", { style: { marginTop: -10 } }, PORTES_M.map(porteM))));
 
   /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
@@ -898,7 +951,7 @@ function EcranTeamCompetition() {
       h("svg", { width: 18, height: 16, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 1.5, width: 16, height: 13, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M2.5 12.5l4-4 3 3 2-2 4 3", fill: "none", stroke: OR, strokeWidth: 1.2 }), h("circle", { cx: 12.5, cy: 5.5, r: 1.3, fill: OR })),
       T("Souvenirs récents", "Recent memories", "Recuerdos recientes", "Ricordi recenti", "最近の思い出", "Neueste Erinnerungen", "أحدث الذكريات", "最近的回忆", "Recente herinneringen", "Lembranças recentes", "Senaste minnen", "Недавние воспоминания", "Ostatnie wspomnienia", "최근 추억")), "sv", (souvenirs || []).length, 3),
     souvenirs === null ? chargement()
-      : (!souvenirs.length ? vide(T("Aucun souvenir pour l’instant.", "No memories yet.", "Aún no hay recuerdos.", "Nessun ricordo per ora.", "まだ思い出はありません。", "Noch keine Erinnerungen.", "لا توجد ذكريات حاليا.", "暂时还没有回忆。", "Nog geen herinneringen.", "Nenhuma lembrança por enquanto.", "Inga minnen ännu.", "Пока нет воспоминаний.", "Na razie brak wspomnień.", "아직 추억이 없어요."))
+      : (!souvenirs.length ? videCartePh(ICO.photo, "images/concours-carte-equipe.webp", T("Aucun souvenir pour l’instant.", "No memories yet.", "Aún no hay recuerdos.", "Nessun ricordo per ora.", "まだ思い出はありません。", "Noch keine Erinnerungen.", "لا توجد ذكريات حاليا.", "暂时还没有回忆。", "Nog geen herinneringen.", "Nenhuma lembrança por enquanto.", "Inga minnen ännu.", "Пока нет воспоминаний.", "Na razie brak wspomnień.", "아직 추억이 없어요."))
         : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } }, (ouvert.sv ? souvenirs : souvenirs.slice(0, 3)).map(tuile)))));   /* (531) choix D de Blandine : 3 par ligne, carrees ; (532) UNE seule ligne avant « Voir tout » */
 
   /* ── panneau « Gérer les membres » (propriétaire / gestionnaires ; la base tranche) ── */
@@ -1040,7 +1093,11 @@ function EcranTeamCompetition() {
     hero,
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
-    blocCav, trait(), blocCh, trait(), blocClass, trait(), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocSv, trait(), blocMedias, trait(), blocReg,
+    menuParties,
+    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocCav, blocCh, trait(),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocSv, trait(),
+    partie(PARTIES[3].id, 4, PARTIES[3].lab, PARTIES[3].titre), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
