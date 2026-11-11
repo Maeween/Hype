@@ -3282,24 +3282,46 @@ function hsStoryDessiner(c, d, sel) {
   var hx = 70 + ws + 34, hy = 1236; c.strokeStyle = ORC; c.lineWidth = 2.4; c.beginPath(); c.moveTo(hx, hy + 18); c.bezierCurveTo(hx - 30, hy - 2, hx - 14, hy - 24, hx, hy - 8); c.bezierCurveTo(hx + 14, hy - 24, hx + 30, hy - 2, hx, hy + 18); c.stroke();
   /* résultats */
   var COL = { 1: "#D7B572", 2: "#D9D7D2", 3: "#C08E62" };
-  var lignes = (d.lignes || []).slice(0, 3);
+  /* 11/11 21h39 (Blandine : « on avait dit qu'on mettait tous les classés », et « des phrases très dures à lire ») :
+     TOUS les résultats retenus (jusqu'à 8 lignes, au-delà « + N autres ») — les lignes se resserrent selon leur nombre ;
+     chiffre de la place en ivoire (plus en or sur les lauriers dorés), épreuve et devise plus claires. */
+  var tout = d.lignes || [], MAXL = 8;
+  var lignes = tout.slice(0, tout.length > MAXL ? MAXL - 1 : MAXL);
+  var reste = tout.length - lignes.length;
+  var nRang = lignes.length + (reste > 0 ? 1 : 0);
+  var Y0 = 1345, YMAX = 1640;
+  var pas = nRang <= 3 ? 118 : Math.min(118, (YMAX - Y0) / (nRang - 1));
+  var kk = Math.min(1, pas / 118), compact = pas < 84;
+  var GRIS2 = "rgba(243,238,228,0.86)";
   lignes.forEach(function (r, i) {
-    var yc = 1350 + i * 118, x = 130, col = COL[r.place] || "rgba(227,200,142,0.85)";
+    var yc = Y0 + i * pas, x = 130, col = COL[r.place] || "rgba(227,200,142,0.85)";
+    var km = compact ? Math.max(0.62, kk * 1.12) : kk;
+    c.save(); c.translate(x, yc); c.scale(km, km); c.translate(-x, -yc);
     c.fillStyle = col;
     for (var sg = -1; sg <= 1; sg += 2) for (var k = 0; k < 5; k++) { var a = Math.PI * (0.62 + k * 0.13), px = x + sg * Math.cos(a) * -38, py = yc + Math.sin(a) * 34 - 6; c.save(); c.translate(px, py); c.rotate(sg * (-a + Math.PI * 0.5) + (sg > 0 ? 0.6 : -0.6)); c.beginPath(); c.ellipse(0, 0, 5, 11, 0, 0, 7); c.fill(); c.restore(); }
-    if (r.place) { c.font = "600 40px " + SANS; var wN = c.measureText(String(r.place)).width; c.font = "600 18px " + SANS; var wSf = r.suff ? c.measureText(r.suff).width + 2 : 0; var x0 = x - (wN + wSf) / 2; c.font = "600 40px " + SANS; c.fillText(String(r.place), x0, yc + 14); if (r.suff) { c.font = "600 18px " + SANS; c.fillText(r.suff, x0 + wN + 2, yc - 6); } }
-    else { c.font = "600 20px " + SANS; c.textAlign = "center"; c.fillText(d.sigleSF || "SF", x, yc + 8); c.textAlign = "left"; }
-    c.fillStyle = IV; c.fillText(ajuster([r.nom, r.cheval].filter(Boolean).join(" & "), "600 {t}px " + SANS, W - 290, 38, 24), 215, yc - 4);
-    c.fillStyle = GRIS; c.fillText(ajuster([r.ep, r.sf ? d.sansFaute : ""].filter(Boolean).join(" · "), "400 {t}px " + SANS, W - 290, 27, 18), 215, yc + 36);
-    if (i < lignes.length - 1) { c.fillStyle = "rgba(201,166,107,0.18)"; c.fillRect(70, yc + 60, W - 140, 1); }
+    c.fillStyle = IV; c.strokeStyle = "rgba(6,7,8,0.85)"; c.lineWidth = 6; c.lineJoin = "round";
+    if (r.place) { c.font = "700 40px " + SANS; var wN = c.measureText(String(r.place)).width; c.font = "700 19px " + SANS; var wSf = r.suff ? c.measureText(r.suff).width + 2 : 0; var x0 = x - (wN + wSf) / 2; c.font = "700 40px " + SANS; c.strokeText(String(r.place), x0, yc + 14); c.fillText(String(r.place), x0, yc + 14); if (r.suff) { c.font = "700 19px " + SANS; c.strokeText(r.suff, x0 + wN + 2, yc - 6); c.fillText(r.suff, x0 + wN + 2, yc - 6); } }
+    else { c.font = "700 20px " + SANS; c.textAlign = "center"; c.strokeText(d.sigleSF || "SF", x, yc + 8); c.fillText(d.sigleSF || "SF", x, yc + 8); c.textAlign = "left"; }
+    c.restore();
+    var qui = [r.nom, r.cheval].filter(Boolean).join(" & "), quoi = [r.ep, r.sf ? d.sansFaute : ""].filter(Boolean).join(" · ");
+    if (!compact) {
+      c.fillStyle = IV; c.fillText(ajuster(qui, "600 {t}px " + SANS, W - 290, Math.round(38 * Math.max(kk, 0.85)), 24), 215, yc - 4 * kk);
+      c.fillStyle = GRIS2; c.fillText(ajuster(quoi, "500 {t}px " + SANS, W - 290, Math.round(29 * Math.max(kk, 0.85)), 20), 215, yc + 36 * kk);
+      if (i < lignes.length - 1) { c.fillStyle = "rgba(201,166,107,0.2)"; c.fillRect(70, yc + pas / 2, W - 140, 1); }
+    } else {
+      /* lignes serrées : « Chloé & Daphne velleda  ·  Club 3 · Sans faute » sur une seule ligne */
+      var tQ = Math.round(Math.min(32, pas * 0.62)), tE = Math.max(22, tQ - 4), maxW = W - 290;
+      c.font = "600 " + tQ + "px " + SANS; var quiA = ajuster(qui, "600 {t}px " + SANS, maxW * 0.62, tQ, 20); var wQ = c.measureText(quiA).width;
+      c.fillStyle = IV; c.fillText(quiA, 215, yc + tQ * 0.36);
+      c.fillStyle = GRIS2; c.fillText(ajuster(quoi, "500 {t}px " + SANS, maxW - wQ - 24, tE, 16), 215 + wQ + 24, yc + tQ * 0.36);
+    }
   });
-  var reste = (d.lignes || []).length - lignes.length;
-  if (reste > 0) { c.fillStyle = ORC; c.font = "italic 500 32px " + SERIF; c.fillText("+ " + reste + " " + (reste > 1 ? d.autres : d.autre), 215, 1350 + 3 * 118 - 10); }
+  if (reste > 0) { c.fillStyle = ORC; c.font = "italic 500 " + Math.round(32 * Math.max(kk, 0.85)) + "px " + SERIF; c.fillText("+ " + reste + " " + (reste > 1 ? d.autres : d.autre), 215, Y0 + lignes.length * pas + (compact ? 10 : -10)); }
   /* pied */
   c.textAlign = "center"; c.strokeStyle = OR; c.lineWidth = 2; var yp = H - 170, rp = 34, wp = 330;
   c.beginPath(); if (c.roundRect) c.roundRect(W / 2 - wp / 2, yp - rp, wp, 2 * rp, rp); else c.rect(W / 2 - wp / 2, yp - rp, wp, 2 * rp); c.stroke();
   c.fillStyle = ORC; c.font = "600 34px " + SANS; lettres(5); c.fillText("2HYPE.FR", W / 2 + 8, yp + 12);
-  c.font = "500 20px " + SANS; c.fillStyle = GRIS; c.fillText(String(d.devise || "").toUpperCase(), W / 2, H - 70); lettres(0);
+  c.font = "500 22px " + SANS; c.fillStyle = "rgba(243,238,228,0.82)"; c.fillText(String(d.devise || "").toUpperCase(), W / 2, H - 70); lettres(0);
   c.fillStyle = "rgba(201,166,107,0.45)"; c.fillRect(110, H - 78, 120, 1.5); c.fillRect(W - 230, H - 78, 120, 1.5);
   c.restore();
 }

@@ -10,6 +10,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 11/11 — build 20261111-2350 — Story des résultats : tous les classés, et plus lisible
+- Blandine (21 h 39, après avoir vu la story de Tigery) : « on avait dit qu'on mettait tous les classés » (la story s'arrêtait à 3 lignes + « + N autres ») et « des phrases très dures à lire ». hype-ecran-saison.js v=137 (hsStoryDessiner) : toutes les lignes retenues (classés, podiums, sans-faute) jusqu'à 8 ; au-delà 7 + « + N autres résultats ». Jusqu'à 3 lignes : inchangé ; 4 : lignes un peu resserrées ; 5 et plus : une ligne par résultat (« Chloé & Daphne velleda · Club 3 · Sans faute »), lauriers réduits. Chiffre de la place en ivoire avec contour sombre (il était or sur lauriers or), épreuve et devise plus claires et plus grandes, dernière ligne qui ne touche plus « 2HYPE.FR ». Validé sur captures (« c'est mieux »).
+- Tigery en base : 4 résultats seulement (Evan 1er Club 2 et 5e/10 Club 3, Chloé 1re Club 3 et 2e Club 2) ; la 3e place dont parlait Blandine n'est pas saisie — question posée.
+
 ### 11/11 — build 20261111-2300 — Partager une vidéo de l'équipe (lien pour tous) + « Nos chevaux » : lignes pleines, les deux meilleurs en tête
 - Demande de Blandine (21 h 24, choix B) : « un vrai bouton partager sur les vidéos de l'équipe ». Dans la page d'une vidéo de l'équipe, menu ••• → « ↗ Partager la vidéo » (pas pour une vidéo privée). Lien 2hype.fr/#tv=<id> → nouvelle page « video-equipe » (hype-ecran-team-medias.js, EcranVideoEquipe) : la vidéo, les chevaux, le concours, la date, l'épreuve et le résultat, la Team ; ni prénoms ni profils (le lien circule hors de l'équipe) ; encart « Découvrir Hype ». Si la vidéo est passée en privée : « Cette vidéo n'est plus partagée ».
 - SQL passé (migration team_video_partagee) : fonction team_video_partagee(p_id) ouverte à tous (même sans compte), ne rend jamais une vidéo privée ; aucune autre règle changée. Conséquence : toute personne qui a le lien peut regarder la vidéo.
