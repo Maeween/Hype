@@ -49,6 +49,27 @@ function EcranTeamCompetition() {
   var _cl = React.useState([]); var clubMembres = _cl[0], setClubMembres = _cl[1];
   var _ch = React.useState(null); var chevaux = _ch[0], setChevaux = _ch[1];
   var _ag = React.useState(null); var agenda = _ag[0], setAgenda = _ag[1];
+  /* 11/11 21h24 (Blandine) : « Nos chevaux » — les deux chevaux qui ont gagné le plus de points sur la SAISON EN COURS passent en tête
+     (deux grandes demi-cases quand la grille en a), les autres ensuite, mélangés à chaque ouverture de la page. */
+  var _pc = React.useState({}); var ptsChevaux = _pc[0], setPtsChevaux = _pc[1];
+  var _sm = React.useState(function () { return Math.random(); }); var graineMelange = _sm[0];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        var ids = (chevaux || []).map(function (c) { return c.id; }).filter(Boolean);
+        if (!ids.length || typeof supa === "undefined" || !supa || typeof hypeSaisonTeam !== "function" || typeof hypeClasserChevauxTeam !== "function") return;
+        var rr = await supa.from("resultats").select("cheval_id, points, date_epreuve, epreuve, concours, visible").in("cheval_id", ids.slice(0, 300)).limit(5000);
+        if (!rr || rr.error) return;
+        var aj = new Date(), ajIso = aj.getFullYear() + "-" + ("0" + (aj.getMonth() + 1)).slice(-2) + "-" + ("0" + aj.getDate()).slice(-2);
+        var sCour = hypeSaisonTeam(ajIso, "poney");
+        var resS = (rr.data || []).filter(function (r) { return r && hypeSaisonTeam(r.date_epreuve, r.epreuve) === sCour; });
+        var o = {}; hypeClasserChevauxTeam(chevaux, resS, [], false).forEach(function (c) { o[c.id] = c.pts || 0; });
+        if (vif) setPtsChevaux(o);
+      } catch (eP) { }
+    })();
+    return function () { vif = false; };
+  }, [chevaux]);
   var _rs = React.useState(null); var resultats = _rs[0], setResultats = _rs[1];
   var _lx = React.useState({}); var lieuxConcours = _lx[0], setLieuxConcours = _lx[1];
   var _ri = React.useState({ ch: {}, cav: {} }); var resInfos = _ri[0], setResInfos = _ri[1];   /* (528) chevaux et cavalieres des resultats */
@@ -400,10 +421,19 @@ function EcranTeamCompetition() {
   }
   function grilleCarres(items, cle, parLigne) {
     var liste = ouvert[cle] ? items : items.slice(0, 8);
-    var n = liste.length, nbL = Math.max(1, Math.ceil(n / parLigne)), base = Math.floor(n / nbL), plus = n % nbL, lignes = [], k = 0;
-    for (var r = 0; r < nbL; r++) { var t = base + (r < plus ? 1 : 0); lignes.push(liste.slice(k, k + t)); k += t; }
-    var ecart = 10, larg = "calc((100% - " + (ecart * (parLigne - 1)) + "px) / " + parLigne + ")";
+    /* 11/11 21h24 (Blandine : « toujours toute la ligne de remplie […] deux demi-cases plus larges, on peut même commencer par elles ») :
+       chaque ligne occupe toute la largeur ; les lignes plus courtes (2 cases plus grandes) passent EN TÊTE, là où sont les deux
+       chevaux qui ont gagné le plus de points. Ex. 3 par ligne : 8 = 2+3+3, 7 = 2+2+3, 5 = 2+3, 4 = 2+2 ; 4 par ligne : 6 = 2+4, 7 = 3+4, 5 = 2+3. */
+    var n = liste.length, tailles = [], reste = n % parLigne, pleines = Math.floor(n / parLigne);
+    if (n <= parLigne) tailles = [n];
+    else if (reste === 0) { for (var q = 0; q < pleines; q++) tailles.push(parLigne); }
+    else if (reste >= 2) { tailles.push(reste); for (var q2 = 0; q2 < pleines; q2++) tailles.push(parLigne); }
+    else { tailles = parLigne === 3 ? [2, 2] : [2, parLigne - 1]; for (var q3 = 0; q3 < pleines - 1; q3++) tailles.push(parLigne); }
+    var lignes = [], k = 0;
+    tailles.forEach(function (t) { lignes.push(liste.slice(k, k + t)); k += t; });
+    var ecart = 10;
     return h("div", { style: { display: "flex", flexDirection: "column", rowGap: 14 } }, lignes.map(function (lg0, r) {
+      var nb = lg0.length, larg = "calc((100% - " + (ecart * (nb - 1)) + "px) / " + nb + ")";
       return h("div", { key: "l" + r, style: { display: "flex", justifyContent: "center", columnGap: ecart } }, lg0.map(function (it, j) { return h("div", { key: (it && it.key) || ("c" + j), style: { flex: "0 0 " + larg, minWidth: 0, display: "flex" } }, it); }));
     }));
   }
@@ -451,7 +481,14 @@ function EcranTeamCompetition() {
       onFini: function (gN) { setGroupe(Object.assign({}, groupe, gN || {})); setModifGroupe(false); } }) : null), true);
 
   /* ── nos chevaux ── */
-  var itemsCh = (chevaux || []).map(function (c) { return (chevauxCarres ? carreCheval : portrait)("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
+  var chevauxOrdonnes = (function () {
+    var l = (chevaux || []).slice();
+    var cleM = function (id) { var t = String(id) + graineMelange, x = 0; for (var i = 0; i < t.length; i++) x = (x * 31 + t.charCodeAt(i)) % 1000003; return x; };
+    var tete = l.filter(function (c) { return (ptsChevaux[c.id] || 0) > 0; }).sort(function (a, b) { return (ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0); }).slice(0, 2);
+    var reste = l.filter(function (c) { return tete.indexOf(c) < 0; }).sort(function (a, b) { return cleM(a.id) - cleM(b.id); });
+    return tete.concat(reste);
+  })();
+  var itemsCh = chevauxOrdonnes.map(function (c) { return (chevauxCarres ? carreCheval : portrait)("ch" + c.id, c.photo_url, c.nom, function () { ouvrirCheval(c.id); }, (c.nom || "?").charAt(0)); });
   var blocCh = section(h("div", null,
     enTete(T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"), "ch", itemsCh.length, 8),
     chevaux === null ? chargement()

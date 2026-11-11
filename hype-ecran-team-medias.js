@@ -1519,6 +1519,8 @@ function EcranTeamMedias() {
       onFermer: fermer,
       /* 08/11 23h40 (corrections visuelles) : son et collection passent dans le menu ••• de la page ; la navigation se fait par les miniatures */
       menu: [
+        /* 11/11 21h24 (Blandine : « un vrai bouton partager sur les vidéos de l'équipe ») : lien #tv=<id>, lisible par tous, même sans compte ; jamais pour une vidéo privée */
+        !v.privee ? { label: "\u2197 " + T("Partager la vidéo", "Share the video", "Compartir el vídeo", "Condividi il video", "動画をシェア", "Video teilen", "مشاركة الفيديو", "分享视频", "Video delen", "Partilhar o vídeo", "Dela videon", "Поделиться видео", "Udostępnij film", "영상 공유"), action: function () { tmPartagerVideoEquipe(v, (v.chevaux || []).map(nomCheval).join(", "), T("Lien copié", "Link copied", "Enlace copiado", "Link copiato", "リンクをコピーしました", "Link kopiert", "تم نسخ الرابط", "链接已复制", "Link gekopieerd", "Link copiado", "Länken kopierad", "Ссылка скопирована", "Link skopiowany", "링크가 복사됐어요")); } } : null,
         peutPrivee(v) ? { label: changePriv === v.id ? "…" : (v.privee ? "👥 " + T("Repasser dans l’équipe", "Share with the team again", "Volver a compartir con el equipo", "Ricondividi con la squadra", "チームに戻す", "Wieder mit dem Team teilen", "إعادة المشاركة مع الفريق", "重新分享给团队", "Weer delen met het team", "Voltar a partilhar com a equipa", "Dela med laget igen", "Снова показать команде", "Udostępnij znów drużynie", "팀에 다시 공유") : "🔒 " + T("Passer en privé", "Make private", "Hacer privado", "Rendi privato", "非公開にする", "Privat machen", "جعله خاصًا", "设为私密", "Privé maken", "Tornar privado", "Gör privat", "Сделать личным", "Ustaw jako prywatne", "비공개로 전환")), onClick: function () { basculerPrivee(v); } } : null,
         (estAuteurV || v.sans_son) ? { label: changeSon === v.id ? "…" : (v.sans_son ? "\uD83D\uDD07 " + T("Son coupé", "Muted", "Silenciado", "Muto", "ミュート", "Stumm", "صامت", "已静音", "Gedempt", "Sem som", "Ljudlös", "Без звука", "Wyciszone", "음소거") + (estAuteurV ? " — " + T("remettre le son", "turn sound back on", "volver a poner el sonido", "rimetti l’audio", "音声を戻す", "Ton wieder einschalten", "إعادة الصوت", "恢复声音", "geluid weer aan", "voltar a pôr o som", "slå på ljudet", "включить звук", "włącz dźwięk", "소리 켜기") : "") : "\uD83D\uDD0A " + T("Couper le son de la vidéo", "Mute the video", "Quitar el sonido del vídeo", "Togli l’audio al video", "動画の音声を消す", "Ton des Videos ausschalten", "كتم صوت الفيديو", "关闭视频声音", "Geluid van de video uit", "Tirar o som do vídeo", "Stäng av videons ljud", "Выключить звук видео", "Wycisz wideo", "영상 소리 끄기")), actif: estAuteurV, action: function () { basculerSon(v); } } : null,
         (colCibles && colCibles.length && visuAdr) ? { label: "+ " + T("Ajouter à une collection", "Add to a collection", "Añadir a una colección", "Aggiungi a una raccolta", "コレクションに追加", "Zu einer Sammlung hinzufügen", "إضافة إلى مجموعة", "加入合集", "Aan een collectie toevoegen", "Adicionar a uma coleção", "Lägg till i en samling", "Добавить в коллекцию", "Dodaj do kolekcji", "컬렉션에 추가"), actif: true, action: function () { ouvrirFeuilleCol(v); } } : null
@@ -1782,5 +1784,68 @@ function EcranEpinglePartagee() {
             T("Partager ce conseil", "Share this tip", "Compartir este consejo", "Condividi questo consiglio", "このアドバイスを共有", "Diesen Tipp teilen", "مشاركة هذه النصيحة", "分享这条建议", "Deze tip delen", "Partilhar este conselho", "Dela det här tipset", "Поделиться советом", "Udostępnij tę radę", "이 조언 공유")) : null)),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null);
 }
-window.HypeTeamMedias = { Medias: EcranTeamMedias, Epingle: EcranEpinglePartagee, version: TM_VERSION };
+/* 11/11 21h24 (Blandine) — PARTAGE D'UNE VIDÉO DE L'ÉQUIPE : le lien 2hype.fr/#tv=<id> ouvre la vidéo pour tout le monde,
+   même sans compte (fonction team_video_partagee : jamais une vidéo passée en privée). La page ne montre ni prénoms ni profils :
+   les chevaux, le concours, la date. */
+function tmLienVideoEquipe(id) { var base = ""; try { base = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : location.origin; } catch (e) { base = "https://2hype.fr"; } return base + "/#tv=" + encodeURIComponent(String(id)); }
+function tmPartagerVideoEquipe(v, titre, txtCopie) {
+  var lien = tmLienVideoEquipe(v.id);
+  var copier = function () {
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(lien).then(function () { try { if (typeof toastHype === "function") toastHype(txtCopie); } catch (eT) { } }, function () { try { window.prompt("", lien); } catch (e1) { } }); return; } } catch (eC) { }
+    try { window.prompt("", lien); } catch (e2) { }
+  };
+  try { if (navigator.share) { navigator.share({ title: "Hype", text: (titre ? titre + " — " : "") + (v.concours || v.lieu || ""), url: lien }).catch(function () { }); return; } } catch (eS) { }
+  copier();
+}
+function EcranVideoEquipe() {
+  var h = React.createElement;
+  var app = ((typeof useApp === "function") ? useApp() : null) || {};
+  var lg = app.langue || "fr";
+  var tr = app.tr || function (o) { return (o && (o[lg] || o.fr)) || ""; };
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }
+  var setEcran = app.setEcran || function () { };
+  var CH = "#C9A66B", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.68)", SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',system-ui,sans-serif";
+  var _d = React.useState(null); var d = _d[0], setD = _d[1];
+  var _c = React.useState(false); var connecte = _c[0], setConnecte = _c[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        var id = null; try { id = window.__videoEquipe || null; } catch (e) { }
+        try { var u = await utilisateurActuel(); if (vif) setConnecte(!!(u && u.id)); } catch (eU) { }
+        if (!id || typeof supa === "undefined" || !supa) { if (vif) setD("absente"); return; }
+        var r = await supa.rpc("team_video_partagee", { p_id: id });
+        var row = r && !r.error && r.data ? (Array.isArray(r.data) ? r.data[0] : r.data) : null;
+        if (vif) setD(row && row.media ? row : "absente");
+      } catch (eL) { if (vif) setD("absente"); }
+    })();
+    return function () { vif = false; };
+  }, []);
+  function sortir() { setEcran(connecte ? "dashboard" : "intro"); }
+  var btn = function (txt, onClick) { return h("button", { type: "button", onClick: onClick, style: { marginTop: 16, minHeight: 46, padding: "0 28px", borderRadius: 999, border: "1px solid " + CH, background: "transparent", color: CH, fontFamily: M, fontSize: 13, fontWeight: 600, letterSpacing: "0.04em", cursor: "pointer" } }, txt); };
+  var txtDecouvrir = connecte ? T("Retour à l'accueil", "Back to home", "Volver al inicio", "Torna alla home", "ホームに戻る", "Zur Startseite", "العودة إلى الرئيسية", "返回首页", "Terug naar home", "Voltar ao início", "Till startsidan", "На главную", "Wróć do strony głównej", "홈으로")
+    : T("Découvrir Hype", "Discover Hype", "Descubrir Hype", "Scopri Hype", "Hypeを見てみる", "Hype entdecken", "اكتشف Hype", "探索 Hype", "Ontdek Hype", "Descobrir o Hype", "Upptäck Hype", "Открыть Hype", "Odkryj Hype", "Hype 둘러보기");
+  if (d === null) return h("div", { style: { minHeight: "100vh", background: "#070A08", display: "flex", alignItems: "center", justifyContent: "center", color: IV2, fontFamily: M, fontSize: 13 } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٍ التحميل…", "加载中…", "Laden…", "A carregar…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…"));
+  if (d === "absente") return h("div", { style: { minHeight: "100vh", background: "#070A08", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 28px", textAlign: "center" } },
+    h("div", { style: { fontFamily: SERIF, fontSize: 28, color: IV, lineHeight: 1.15 } }, T("Cette vidéo n'est plus partagée", "This video is no longer shared", "Este vídeo ya no se comparte", "Questo video non è più condiviso", "この動画はもう共有されていません", "Dieses Video wird nicht mehr geteilt", "لم يعد هذا الفيديو مشاركًا", "此视频已不再分享", "Deze video wordt niet meer gedeeld", "Este vídeo já não está partilhado", "Videon delas inte längre", "Это видео больше не доступно по ссылке", "Ten film nie jest już udostępniany", "이 영상은 더 이상 공유되지 않아요")),
+    h("div", { style: { fontFamily: M, fontSize: 13, lineHeight: 1.6, color: IV2, marginTop: 10 } }, T("Le cavalier l'a peut-être passée en privé.", "The rider may have made it private.", "Puede que el jinete la haya hecho privada.", "Forse il cavaliere l'ha resa privata.", "ライダーが非公開にしたのかもしれません。", "Vielleicht hat der Reiter es privat gestellt.", "ربما جعله الفارس خاصًا.", "骑手可能已将其设为私密。", "Misschien heeft de ruiter hem privé gemaakt.", "Talvez o cavaleiro a tenha tornado privada.", "Ryttaren kan ha gjort den privat.", "Возможно, всадник сделал его личным.", "Możliwe, że jeździec ustawił go jako prywatny.", "라이더가 비공개로 바꿨을 수도 있어요.")),
+    btn(txtDecouvrir, sortir));
+  var url = String(d.media);
+  try { if (typeof hypeEstVideoMux === "function" && hypeEstVideoMux(url) && typeof hypeMuxLecture === "function") url = hypeMuxLecture(url); } catch (eM) { }
+  var dLong = (function () { var m = String(d.date_video || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; try { var t = new Intl.DateTimeFormat(lg, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date(+m[1], +m[2] - 1, +m[3])); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return m[3] + "/" + m[2] + "/" + m[1]; } })();
+  var chevaux = Array.isArray(d.chevaux) ? d.chevaux.filter(Boolean) : [];
+  var club = ""; try { club = (typeof hypeNomClubLisible === "function") ? (hypeNomClubLisible(d.club_clef) || "") : ""; } catch (eCl) { }
+  var equipe = [d.groupe_nom || "", club].filter(Boolean).join(" · ");
+  var bas = h("div", { style: { padding: "22px 18px 40px" } },
+    h("div", { style: { padding: "22px 20px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(180deg, rgba(201,166,107,0.07), rgba(201,166,107,0.02))", textAlign: "center" } },
+      h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: "0.3em", color: CH, fontWeight: 500 } }, T("UNE VIDÉO PARTAGÉE DEPUIS HYPE", "A VIDEO SHARED FROM HYPE", "UN VÍDEO COMPARTIDO DESDE HYPE", "UN VIDEO CONDIVISO DA HYPE", "HYPEからシェアされた動画", "EIN VIDEO AUS HYPE", "فيديو تمت مشاركته من HYPE", "来自 HYPE 的分享视频", "EEN VIDEO GEDEELD VIA HYPE", "UM VÍDEO PARTILHADO PELO HYPE", "EN VIDEO DELAD FRÅN HYPE", "ВИДЕО ИЗ HYPE", "FILM UDOSTĘPNIONY Z HYPE", "HYPE에서 공유한 영상")),
+      equipe ? h("div", { style: { fontFamily: SERIF, fontSize: 24, color: IV, marginTop: 10, lineHeight: 1.15 } }, equipe) : null,
+      h("div", { style: { fontFamily: M, fontSize: 13, lineHeight: 1.6, color: IV2, marginTop: 10 } }, T("Sur Hype, l'équipe retrouve ses vidéos de concours, ses résultats, ses chevaux, et Hey Baby, le coach qui répond aux questions des cavaliers.", "On Hype, the team finds its show videos, results, horses, and Hey Baby, the coach who answers riders' questions.", "En Hype, el equipo encuentra sus vídeos de concurso, sus resultados, sus caballos y Hey Baby, el coach que responde a los jinetes.", "Su Hype la squadra ritrova i video dei concorsi, i risultati, i cavalli e Hey Baby, il coach che risponde ai cavalieri.", "Hypeでは、チームの競技動画、成績、馬たち、そしてライダーの質問に答えるコーチHey Babyが見つかります。", "Auf Hype findet das Team seine Turniervideos, Ergebnisse, Pferde und Hey Baby, den Coach, der die Fragen der Reiter beantwortet.", "على Hype يجد الفريق فيديوهات المسابقات والنتائج والخيول، وHey Baby المدرب الذي يجيب عن أسئلة الفرسان.", "在 Hype 上，团队可以找到比赛视频、成绩、马匹，还有回答骑手问题的教练 Hey Baby。", "Op Hype vindt het team zijn wedstrijdvideo's, uitslagen, paarden en Hey Baby, de coach die de vragen van ruiters beantwoordt.", "No Hype, a equipa encontra os vídeos dos concursos, os resultados, os cavalos e o Hey Baby, o coach que responde aos cavaleiros.", "På Hype hittar laget sina tävlingsvideor, resultat, hästar och Hey Baby, coachen som svarar på ryttarnas frågor.", "В Hype команда находит видео с соревнований, результаты, лошадей и Hey Baby — коуча, который отвечает на вопросы всадников.", "W Hype drużyna znajdzie filmy z zawodów, wyniki, konie i Hey Baby, trenera, który odpowiada na pytania jeźdźców.", "Hype에서 팀은 대회 영상, 성적, 말들, 그리고 라이더의 질문에 답하는 코치 Hey Baby를 만나요.")),
+      btn(txtDecouvrir, sortir)));
+  return h(HypePageVideo, { key: "pve" + d.id, url: url, sansSon: !!d.sans_son, sansActions: true, liste: [],
+    titre: chevaux.length ? chevaux.join(", ") : T("Vidéo de l'équipe", "Team video", "Vídeo del equipo", "Video della squadra", "チームの動画", "Teamvideo", "فيديو الفريق", "团队视频", "Teamvideo", "Vídeo da equipa", "Lagvideo", "Видео команды", "Film drużyny", "팀 영상"),
+    surTitre: d.concours || d.lieu || "", date: [dLong, d.epreuve || "", d.resultat || ""].filter(Boolean).join(" · "), ronds: [],
+    onFermer: sortir, menu: [], bas: bas });
+}
+window.HypeTeamMedias = { Medias: EcranTeamMedias, Epingle: EcranEpinglePartagee, Video: EcranVideoEquipe, version: TM_VERSION };
 })();
