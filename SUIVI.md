@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — build 20261112-0100 — « 1 mois offert » : lien de partage avec Hypo, code prérempli sur Premium Cavalier
+- Demande de Blandine (11/11 22h10 « Ok Feinn », puis 22h21 : plus de 30 utilisations, pas le Pack Duo « ça va me coûter cher » avec Hey Baby).
+- STRIPE (compte de l'association) : code HYPE1MOIS sur le coupon BLN8QOMl (100 %, une fois) — 150 utilisations, nouveaux clients seulement. Codes promo autorisés UNIQUEMENT sur le lien Premium Cavalier mensuel (plink_1UUsXHHWk0xyvsbCy7nEE0oL) ; Duo remis sans code. Ancien code FEINN1MOIS (30 utilisations) toujours actif mais plus utilisé — Claude ne peut pas le désactiver d'ici (Stripe → Coupons → FEINN1MOIS → Désactiver).
+- APPLI (index.html) : 2hype.fr/?offert=CODE garde le code 60 jours sur le téléphone ; lien d'accueil seul → page des abonnements (après inscription si besoin) ; ?offert= ajouté à n'importe quelle autre page garde la page demandée. Encart « 🎁 1 mois offert » sous la photo de la page Premium (14 langues). Code prérempli (prefilled_promo_code) sur Premium Cavalier seulement.
+- PAGE DE PARTAGE : 2hype.fr/offert/ (offert/index.html, noindex) — aperçu WhatsApp = images/hype-mois-offert-partage.jpg (Hypo seul qui dépasse de la ligne dorée), puis renvoi vers /?offert=HYPE1MOIS (/offert/?c=AUTRE pour un autre code).
+- Message WhatsApp du groupe écrit par Blandine (lien https://2hype.fr/offert/). À tester : aperçu WhatsApp, encart Premium, code rempli sur Stripe (sans payer).
+
 ### 11/11 — build 20261112-0055 — Page équipe : les cavaliers en portraits qui défilent (proposition 4)
 - Blandine (23 h 37 « ça marche »), après 8 maquettes puis 3 avec les chevaux dessous. hype-ecran-team.js v=31.
 - « Nos cavaliers » : TOUS les cavaliers sur une ligne de portraits (4:5) qui défile au doigt — 3 entiers + le bord du 4e sur téléphone, 132 px chacun sur grand écran ; prénom (+ « · Coach »), et dessous le cheval qu'il a le plus monté sur la saison en cours (résultats où il est le cavalier) ; sans photo de profil = initiale. Fini la limite de 8 et « Voir tout » (règle « tout le monde visible »).
