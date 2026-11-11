@@ -45,7 +45,7 @@ function EcranPerformancesCheval(props) {
     (async function () {
       try {
         if (typeof supa === "undefined" || !supa) { if (v) setCav({ prof: { id: riderId }, lignes: [], chevaux: {} }); return; }
-        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar, ecurie").eq("id", riderId).maybeSingle();
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar, ecurie").eq("id", riderId).maybeSingle(); if (rp && rp.error) rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar").eq("id", riderId).maybeSingle(); /* 11/11 : visiteur sans compte */
         var rr = await supa.from("resultats").select("*").eq("cavalier_id", riderId).limit(2000);
         var ls = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true; });
         var ids = []; ls.forEach(function (x) { if (x.cheval_id && ids.indexOf(x.cheval_id) === -1) ids.push(x.cheval_id); });

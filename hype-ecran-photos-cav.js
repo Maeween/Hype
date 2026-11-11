@@ -44,7 +44,7 @@ function EcranPhotosCavaliere() {
     (async function () {
       try {
         if (!cid || typeof supa === "undefined" || !supa) { if (vif) setVids([]); return; }
-        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie").eq("id", cid).maybeSingle();   /* 18/10 : photo et ecurie pour le hero */
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie").eq("id", cid).maybeSingle(); if (rp && rp.error) rp = await supa.from("profiles").select("id, pseudo, avatar_url").eq("id", cid).maybeSingle(); /* 11/11 : visiteur sans compte */   /* 18/10 : photo et ecurie pour le hero */
         if (vif) setProf((rp && rp.data) || { id: cid, pseudo: "" });
         var r = await supa.from("commentaires").select("id, cible, photo_url, medias, created_at")
           .eq("user_id", cid).or("cible.like.ecurie:%,cible.like.club:%,cible.like.agenda:%,cible.like.cheval:%")

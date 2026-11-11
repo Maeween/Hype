@@ -409,7 +409,7 @@ function EcranMonCavalier() {
         if (uid && typeof resultatsDe === "function") { var rr = await resultatsDe(uid); setVisiteResultats((rr && rr.data) || []); } else { setVisiteResultats([]); }
       } catch (eRe) { setVisiteResultats([]); }
       try {
-        if (uid) { var rp = await supa.from("profiles").select("*").eq("id", uid).single(); if (rp && rp.data) setVisiteProfilFull(rp.data); }
+        if (uid) { var rp = await supa.from("profiles").select("*").eq("id", uid).single(); if (rp && rp.error) rp = await supa.from("profiles").select("id, pseudo, handle, avatar_url, avatar").eq("id", uid).single(); /* 11/11 : visiteur sans compte */ if (rp && rp.data) setVisiteProfilFull(rp.data); }
       } catch (eVP) { }
     })();
   }, [__estVisite, (__visitePub && __visitePub.id) || ""]);

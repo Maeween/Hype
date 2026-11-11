@@ -1,6 +1,6 @@
 # ⭐ À FAIRE — PAR ORDRE D'URGENCE (mis à jour le 11/11/2026 22h40)
 
-> 🟥 URGENT SÉCURITÉ (11/11) : fermer en base la lecture sans compte des profils (dont la case « mineur ») et des chevaux privés — voir l'entrée du 11/11 build 20261112-0045.
+> ✅ FAIT (11/11 minuit) : profils et chevaux privés fermés en base aux visiteurs sans compte — voir entrées du 11/11. Reste : fiche cheval sans compte (haut + derniers résultats puis voile), photo des mineurs (à décider).
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
@@ -28,6 +28,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (23 h 06 « je l'aurais mis après la saison », 23 h 15 « 1 est pas mal », 23 h 20 « mets le reste en ligne »). hype-ecran-team.js v=30.
 - Ordre (menu compris) : 1 L'équipe — « Cavaliers & chevaux » (remplace « Qui monte, sur qui », jugé « vraiment nul ») · 2 La saison — « Concours & résultats » (la pastille « Les concours » devient « La saison ») · 3 Souvenirs — « Nos plus beaux moments » · 4 Apprendre — « Progresser ensemble ». Nouveaux titres traduits dans les 14 langues.
 - En attente de son choix : présentation des cavaliers (aujourd'hui 8 au plus puis « Voir tout », contraire à sa règle « tout le monde visible ») — 8 maquettes montrées ; retrait éventuel des petits titres « Nos cavaliers » / « Nos chevaux ».
+### 11/11 minuit — build 20261112-0110 + BASE — 🔒 Profils : sans compte, seuls pseudo, @ et photo restent lisibles (temps 2)
+- Blandine (23h56) : « l'écurie, pour moi, c'est déjà trop […] ça te dit où trouver la gamine en question avec sa photo » → l'écurie (ecurie, ecurie2) est aussi retirée. Publication + base : « Ok ».
+- Code publié d'abord (repli quand la lecture complète est refusée à un visiteur) : index.html (fiche cheval constellation l. ~24846, page publique d'un cavalier __visitePub l. ~34608), hype-ecran-cavalier.js v=23, hype-ecran-cheval.js v=34 (nom du propriétaire), hype-ecran-perf-cheval.js v=6, hype-ecran-photos-cav.js v=4. Pour les connectés : inchangé.
+- Base ensuite (migration `profils_colonnes_publiques_anon`) : revoke select on profiles from anon ; grant select (id, pseudo, handle, avatar_url, avatar, compte_supprime, musique_page, teinte, cheval_photo) to anon. Plus lisibles sans compte : ecurie, ecurie2, ville, est_mineur, last_seen_at, histoire, voix, langue, etc. Essai fait avant en transaction annulée.
+- Retour arrière : grant select on public.profiles to anon;
+- ⚠️ Toute nouvelle lecture de profil faite SANS compte doit demander uniquement ces colonnes (sinon erreur « permission denied »).
+- Question ouverte : cacher aussi la photo de profil des cavaliers mineurs aux visiteurs sans compte.
+
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').
 - Vérifié : sans compte 92 chevaux lisibles, connecté 92 ; aucun cheval n'est « privé » aujourd'hui en base, donc rien ne change à l'écran : la protection vaut pour les chevaux qui seront mis en privé. Pages Google (cheval-route, ecurie-route, sitemaps) inchangées.
