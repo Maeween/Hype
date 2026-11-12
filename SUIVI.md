@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h10 — build 20261113-0110 — Import : l'iPhone propose tous les fichiers
+- hype-import-ffe.js v=35 : plus de filtre sur le type de fichier (avant : PDF seulement, puis PDF + .xls) — l'iPhone grisait ou cachait le fichier « Eng_Result_….xls » de FFE Compet et sa recherche ne le trouvait pas. Le module reconnaît lui-même le PDF et l'export .xls.
+- hype-ecran-perf-cheval.js v=22 : 8 propositions de « Tous tes résultats » en essai (window.__archVar = A…H), invisibles tant que Blandine n'a pas choisi ; points de qualification réservés à la saison en cours dans ces propositions.
+
 ### 13/11 00h50 — build 20261113-0050 — IMPORT FFE : chevaux inconnus gardés, fichier .xls FFE Compet, non partants
 - Constat (fichier « Eng_Result » de Blandine, 224 engagements) : 18 places sur 48 manquaient dans Hype, TOUTES sur des chevaux sans fiche (Cabri Eole, Gamine des Bois, Bruant II, Kignonette du Chêne, Lina du Val, Mab Danhouet, Peper) — règle du 18/09 « cheval non reconnu = ligne non écrite » ; un bouton « Créer sa fiche » existait en fin d'import mais restait manuel.
 - hype-import-ffe.js v=34 :

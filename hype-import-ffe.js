@@ -953,7 +953,7 @@
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
       '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs PDF' : 'Choisir un PDF') + '</b>' +
       '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Une fiche FFE par cheval : tu peux en choisir plusieurs d\'un coup' : 'Depuis Fichiers, sur ton téléphone') + '</span>' +
-      '<input type="file" accept="application/pdf,.pdf,.xls,.html,.htm,application/vnd.ms-excel,text/html" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
+      '<input type="file" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
       '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
       '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
