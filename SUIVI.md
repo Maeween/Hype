@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 15h35 — build 20261112-1550 — maquette cachée « Médias de la saison » (Blandine « Oui fais ça pour la page cachée »)
+- maquette-medias-saison.html à la racine (2hype.fr/maquette-medias-saison.html) : non reliée à l'appli, noindex. Vraies vidéos / photos de la saison (team_videos + photos des concours), vues Par concours / Par cavalier (frise de la saison) / Par cheval, partage + fin de page.
+- En tête : les deux fiches du 20/09 (« CSO l'étrier », agenda SEP, 5 résultats ; « CSO étrier de Paris », agenda Écurie Feinn) pour choisir l'affiche ; la page Médias les montrera comme un seul concours (aucune fiche supprimée sans accord).
+- À RETIRER à la publication de la vraie page (même mise en ligne). Les adresses d'essai Netlify (branches) ne sont pas activées : la branche maquette-medias-saison sur GitHub ne sert à rien, à supprimer.
+- Suite prévue : la page remplace les Médias de l'équipe (même adresse #tm), onglets « Médias » et « Performances cavaliers » dans Ma saison, « Photos » / « Vidéos » de Souvenirs y mènent.
+
 ### 12/11 — build 20261112-1545 — Référencement Liban (hreflang ar-LB) publié
 - Demande de Blandine (« rajouter Liban sur le référencement Google, Bing »). Chaque page publique en arabe est désormais aussi signalée aux moteurs de recherche comme destinée au Liban (hreflang « ar-LB », même adresse /ar/).
 - 238 pages + sitemap-pages.xml (200 entrées). Générateurs mis à jour pour que ça reste à la prochaine génération : seo-galops.cjs, seo-lexique.cjs, seo-prepas.py, association-generer.py, cgv-generer.py.
