@@ -14,6 +14,10 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 const EXCLUS = new Set(["malicia2008@hotmail.fr", "feinn@live.fr", "fzinn@live.fr", "cherry@gmail.com", "clem@hotmail.fe", "chatgpt@gg.com", "csr2w682sz@privaterelay.appleid.com"]);
 const GARCONS = new Set(["a.sitou055@outlook.com", "evanroux569@gmail.com", "liamroux0@gmail.com", "elias.leinenweber@free.fr", "arnaud.aboaf@gmail.com", "guillaumedecoux75@gmail.com"]);
 const PRENOMS: Record<string, string> = { "filou_2016@yahoo.com": "Grace" };
+// 12/11 (Blandine, 14h54 : « tu peux ajouter les deux adresses mail que je te donne ») — personnes SANS compte invitées par
+// Blandine (dont des pros) : liste Brevo « Invitations » (créée si absente), mail d'invitation + 1 mois offert. Ajout uniquement
+// à sa demande ; dès qu'une de ces adresses crée son compte, elle est traitée comme les autres comptes.
+const INVITES: Record<string, [string, string]> = { "clementine.savin@gmail.com": ["Clémentine", "Arlin"], "david.arlin20@gmail.com": ["David", "Arlin"], "deborah.guilmain@free.fr": ["Déborah", "Guilmain"] };
 const LISTE_TOUS = 2, LISTE_ACCES_OFFERT = 4, FIN_OFFRE = "2026-12-10";
 const B = "https://api.brevo.com/v3";
 
@@ -70,6 +74,13 @@ Deno.serve(async (req: Request) => {
     const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: "Pas encore abonnés", folderId: 1 }) });
     if (r.ok) LISTE_PAS_ABONNES = (await r.json()).id;
   }
+  let LISTE_INVITES = 0;
+  { const r = await fetch(`${B}/contacts/lists?limit=50`, { headers: hb }); const j = r.ok ? await r.json() : {};
+    const l = (j.lists || []).find((x: any) => x.name === "Invitations"); if (l) LISTE_INVITES = l.id; }
+  if (!LISTE_INVITES && !essai) {
+    const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: "Invitations", folderId: 1 }) });
+    if (r.ok) LISTE_INVITES = (await r.json()).id;
+  }
   if (!essai) { await fetch(`${B}/contacts/attributes/normal/GENRE`, { method: "POST", headers: hb, body: JSON.stringify({ type: "text" }) }); }
 
   const bilan = { comptes: users.length, ajoutes: [] as string[], mis_a_jour: 0, acces_offert: [] as string[], pas_abonnes: 0, liste_pas_abonnes: 0, ignores: 0, erreurs: [] as string[] };
@@ -98,5 +109,15 @@ Deno.serve(async (req: Request) => {
     else bilan.erreurs.push(`${u.email}: ${r.status} ${(await r.text()).slice(0, 120)}`);
   }
   bilan.liste_pas_abonnes = LISTE_PAS_ABONNES;
+  const aComptes = new Set(users.map((u) => u.email));
+  const invites: string[] = [];
+  for (const [mail, [prenom, nom]] of Object.entries(INVITES)) {
+    if (aComptes.has(mail) || !LISTE_INVITES || essai) continue;
+    const deja = existants.get(mail);
+    const attrs: Record<string, string> = { NOM: nom }; if (!deja || !(deja.attributes || {}).PRENOM) attrs.PRENOM = prenom;
+    const r = await fetch(`${B}/contacts`, { method: "POST", headers: hb, body: JSON.stringify({ email: mail, attributes: attrs, listIds: [LISTE_INVITES], updateEnabled: true }) });
+    if (r.ok || r.status === 204) invites.push(mail); else bilan.erreurs.push(`${mail}: ${r.status} ${(await r.text()).slice(0, 120)}`);
+  }
+  (bilan as any).invites = invites.length; (bilan as any).liste_invites = LISTE_INVITES;
   return rep({ ok: bilan.erreurs.length === 0, essai, ...bilan });
 });
