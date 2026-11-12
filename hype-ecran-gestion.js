@@ -408,6 +408,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           theme(h, "", PHOTOS.contrats, "Les contrats", "Assurances, cotisations : chaque règlement", function () { ouvrir("contrats-ecurie"); }),   /* 07/11 */
           theme(h, "", PHOTOS.stock, "Le stock", "Foin, paille, aliments", function () { ouvrir("stock-ecurie"); }),   /* 07/11 */
           theme(h, "large", PHOTOS.aides, "Aides et bons contacts", "Apprentis, Pass'Sport, subventions", function () { ouvrir("aides-ecurie"); })),
+        /* 12/11 19h40 (Blandine : « mets un accès [au coffre] depuis l'écurie aussi… visible que par la personne qui gère l'écurie ») */
+        (d.peutGerer && typeof HypeLienCoffre === "function") ? h("div", { style: { marginTop: 18 } }, h(HypeLienCoffre, { setEcran: setEcran, large: (function () { try { return window.innerWidth >= 768; } catch (eW) { return false; } })() })) : null,
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }

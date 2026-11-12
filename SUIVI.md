@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 20h50 — build 20261112-2050 — COFFRE : entrée aussi dans « Mon écurie », pour la responsable seulement (Blandine 19h39)
+- hype-ecran-gestion.js ?v=38 : bande « Mes documents et coffre-fort » sous les thèmes de Mon écurie, affichée seulement si peutGerer (responsable de l'écurie ou modératrice) ; ouvre « Mes documents » (Papiers du camion / van…). L'entrée de la page Cavalier reste.
+
 ### 12/11 20h45 — build 20261112-2045 — IMPORT FFE Compet : quart calculé quand la FFE n'en donne pas
 - Blandine (18 h 49) : « tu peux lui donner consigne de les calculer 1/4 partants ».
 - hype-import-ffe.js v=33 : dans le lecteur FFE Compet SEULEMENT, une ligne classée sans quart reçoit quart = place ÷ (partants ÷ 4 arrondi au supérieur) — la règle quartAttendu vérifiée 21/21. Marquée quart_calcule (non écrit en base). Un quart donné par la FFE n'est jamais remplacé. Exception volontaire et limitée à la règle « on ne calcule jamais le quart » (telemat et SIF inchangés).
