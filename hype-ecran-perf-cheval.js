@@ -47,7 +47,7 @@ function EcranPerformancesCheval(props) {
         if (typeof supa === "undefined" || !supa) { if (v) setCav({ prof: { id: riderId }, lignes: [], chevaux: {} }); return; }
         var rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar, ecurie").eq("id", riderId).maybeSingle(); if (rp && rp.error) rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar").eq("id", riderId).maybeSingle(); /* 11/11 : visiteur sans compte */
         var rr = await supa.from("resultats").select("*").eq("cavalier_id", riderId).limit(2000);
-        var ls = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true && x.visible !== false; });   /* 12/11 08h (Blandine : la page montrait des résultats qu elle avait cachés) : même règle que l ancienne page Résultats */
+        var ls = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true; });   /* 12/11 14h19 (Blandine, régularité à 100 % alors qu elle est tombée) : les lignes masquées reviennent pour les CHIFFRES (règle « masquer = affichage seulement ») ; les listes les cachent toujours (f.masque) */   /* 12/11 08h (Blandine : la page montrait des résultats qu elle avait cachés) : même règle que l ancienne page Résultats */
         var ids = []; ls.forEach(function (x) { if (x.cheval_id && ids.indexOf(x.cheval_id) === -1) ids.push(x.cheval_id); });
         var chx = {};
         if (ids.length) { var rc = await supa.from("chevaux").select("id, nom, alias, photo_url, moments_forts_medias").in("id", ids.slice(0, 300)); ((rc && !rc.error && rc.data) || []).forEach(function (c) { if (c && c.id) chx[String(c.id)] = c; }); }
@@ -652,8 +652,16 @@ function EcranPerformancesCheval(props) {
   if (estProprio) FILTRES_SEC.push(["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "クリア", "Fehlerfrei", "بلا أخطاء", "零罚分", "Foutloos", "Sem faltas", "Felfri", "Без ошибок", "Bez błędu", "무실수")]);
   /* filtres secondaires = ceux de l ancien palmares (menu d affichage) : Classes = premier quart (preparatoire : victoire seule),
      Podiums = 3 premiers (preparatoire : victoire seule), Sans faute = mention du telemat (proprietaire). Ils ne touchent pas aux chiffres. */
+  /* 12/11 14h25 (Blandine) : « classé » = premier quart des partants (place ≤ partants ÷ 4, arrondi au-dessus) ; la colonne
+     quart du fichier FFE ne sert que si le nombre de partants manque. Les points restent ceux écrits par la FFE (dégressifs). */
+  function estClasseQ(f) {
+    if (!f || f.pl == null) return false;
+    if (hypePerfEstPrepa(f.ep)) return f.pl === 1;
+    if (f.part) return f.pl <= Math.ceil(f.part / 4);
+    return f.q === 1;
+  }
   function filtrer(fs, cle) {
-    if (cle === "classes") return fs.filter(function (f) { return f.pl != null && (hypePerfEstPrepa(f.ep) ? f.pl === 1 : f.q === 1); });
+    if (cle === "classes") return fs.filter(estClasseQ);
     if (cle === "podiums") return fs.filter(function (f) { return f.pl != null && (hypePerfEstPrepa(f.ep) ? f.pl === 1 : f.pl <= 3); });
     if (cle === "sf") return fs.filter(hypePerfEstSansFaute);
     return fs;
@@ -747,12 +755,14 @@ function EcranPerformancesCheval(props) {
   }
   var chapitres = null;
   if (modeCav && base.length) {
-    var pctCl = base.length ? Math.round(places.length / base.length * 100) : 0;
+    var nbClassesQ = base.filter(estClasseQ).length;   /* 14h19 : « classé » = dans le quart (comme le filtre Classés) */
+    var nbEpreuves = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length;   /* toutes les épreuves courues, éliminations et abandons compris */
+    var pctCl = nbEpreuves ? Math.round(nbClassesQ / nbEpreuves * 100) : 0;
     var lgCour = base.filter(function (f) { return f.saison === saisonCour; });
     var famPts = {}, famOrdre = [];
     lgCour.forEach(function (f) { var k = hypePerfFamille(f.ep); if (!k) return; if (!(k in famPts)) { famPts[k] = null; famOrdre.push(k); } if (f.pts != null && !isNaN(f.pts)) famPts[k] = (famPts[k] || 0) + f.pts; });
     famOrdre.sort(function (a, b) { return ((famPts[b] || 0) - (famPts[a] || 0)); });
-    var record = places.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || (b.d || "").localeCompare(a.d || ""); })[0] || null;
+    var record = places.filter(function (f) { return !f.masque; }).sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || (b.d || "").localeCompare(a.d || ""); })[0] || null;
     var dernier = base.filter(function (f) { return f.pl != null || f.statut; }).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); })[0] || null;
     var serifBig = function (txt, coul, taille) { return h("div", { style: { fontFamily: SERIF, fontSize: taille || 26, fontWeight: 500, lineHeight: 1, color: coul || IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, txt); };
     chapitres = h(React.Fragment, null,
@@ -763,13 +773,13 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { margin: "12px 22px 0" } }, barre(base)),
       h("div", { style: { margin: "8px 22px 0", fontFamily: SANS, fontSize: 12, color: MUET, display: "flex", justifyContent: "space-between" } },
         h("span", null, stats.sorties + " " + (stats.sorties > 1 ? T("sorties", "outings", "salidas", "uscite", "出場", "Starts", "مشاركات", "次出赛", "starts", "saídas", "starter", "стартов", "starty", "출전") : T("sortie", "outing", "salida", "uscita", "出場", "Start", "مشاركة", "次出赛", "start", "saída", "start", "старт", "start", "출전"))),
-        h("span", null, stats.classes + " " + T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "获得名次", "geplaatst", "classificados", "placerade", "призовых мест", "w czołówce", "입상"))),
+        h("span", null, (typeof nbClassesQ === "number" ? nbClassesQ : stats.classes) + " " + T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "获得名次", "geplaatst", "classificados", "placerade", "призовых мест", "w czołówce", "입상"))),
       /* 12/11 00h05 — ajouts de la maquette J demandés par Blandine : le grand pourcentage et « Son record » */
       h("svg", { viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 24, marginTop: 20, transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 8 C 120 12, 230 32, 400 6", fill: "none", stroke: CHAMP, strokeWidth: 1 })),
       h("div", { "data-perf-pct": "1", style: { textAlign: "center", marginTop: 4 } },
         h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Sa régularité", "Consistency", "Su regularidad", "La sua costanza", "安定感", "Seine Beständigkeit", "انتظامه", "稳定性", "Zijn regelmaat", "A regularidade", "Jämnheten", "Стабильность", "Regularność", "꾸준함")),
         h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 46, lineHeight: 1, color: IVOIRE, marginTop: 6, direction: "ltr", unicodeBidi: "isolate" } }, String(pctCl), h("span", { style: { fontSize: 22 } }, "%")),
-        h("div", { style: { margin: "4px 30px 0", fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(243,238,228,0.72)" } }, T("des concours où il est classé.", "of his shows with a placing.", "de los concursos en los que se clasifica.", "dei concorsi in cui si classifica.", "の大会で入賞。", "der Turniere mit Platzierung.", "من المسابقات التي صُنّف فيها.", "的比赛获得名次。", "van de wedstrijden waarin hij geplaatst is.", "dos concursos em que fica classificado.", "av tävlingarna med placering.", "соревнований с призовым местом.", "zawodów z miejscem w klasyfikacji.", "의 대회에서 입상."))),
+        h("div", { style: { margin: "4px 30px 0", fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(243,238,228,0.72)" } }, (T("des épreuves courues sont classées", "of the classes ridden were placings", "de las pruebas disputadas, clasificado", "delle prove disputate, classificato", "の出場競技で入賞", "der gerittenen Prüfungen platziert", "من المسابقات التي شارك فيها مُصنّفة", "的参赛项目获得名次", "van de gereden proeven geplaatst", "das provas disputadas, classificado", "av de ridna klasserna placerade", "стартов с призовым местом", "przejazdów w klasyfikacji", "의 출전 경기에서 입상") + " (" + nbClassesQ + " / " + nbEpreuves + ")."))),
       record ? chapitre("rec", "images/concours-carte-passages.webp", T("Son record", "Personal best", "Su récord", "Il suo record", "自己ベスト", "Sein Rekord", "رقمه القياسي", "最佳成绩", "Zijn record", "O recorde", "Rekordet", "Рекорд", "Rekord", "최고 기록"),
         h("div", null,
           h("div", { style: { fontFamily: SERIF, fontSize: 28, fontWeight: 500, lineHeight: 1, color: IVOIRE, marginTop: 6, direction: "ltr", unicodeBidi: "isolate" } }, rangTxt(record.pl), record.part ? h("span", { style: { fontSize: 16, color: "rgba(243,238,228,0.7)" } }, " " + T("sur", "of", "de", "su", "/", "von", "من", "/", "van", "de", "av", "из", "z", "/") + " " + record.part) : null),
@@ -810,7 +820,7 @@ function EcranPerformancesCheval(props) {
           chapitre("cpl" + k, (cvx && cvx.photo_url) || "images/concours-hero-cso.webp", T("Avec ", "With ", "Con ", "Con ", "", "Mit ", "مع ", "与 ", "Met ", "Com ", "Med ", "С ", "Z ", "") + k,
             h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 500, lineHeight: 1.12, color: IVOIRE, marginTop: 5 } }, ligne1 ? h(React.Fragment, null, ligne1, h("br"), h("span", { style: { color: CHAMP } }, ligne2)) : ligne2)),
           h("div", { style: { padding: "2px 30px 0" } },
-            fsC.slice(0, 3).map(function (f, i) {
+            fsC.filter(function (f) { return !f.masque; }).slice(0, 3).map(function (f, i) {
               var g = f.pl === 1;
               return h("div", { key: "cr" + (f.id || i), style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, padding: "9px 0", borderBottom: "1px solid rgba(201,166,107,0.12)" } },
                 h("div", { style: { minWidth: 0 } },

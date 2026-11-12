@@ -12,6 +12,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 14h26 — build 20261112-1430 — Performances du cavalier : « classé » = premier quart, éliminations masquées comptées (Blandine « vas-y »)
+- hype-ecran-perf-cheval.js ?v=12.
+- estClasseQ : classé = place ≤ partants ÷ 4 arrondi au-dessus (préparatoire : 1er seulement) ; la case quart du fichier FFE ne sert que si les partants manquent (elle peut être fausse : Paris 20/09, 10e/36 notée quart 1).
+- Régularité = classés ÷ épreuves courues (éliminations et abandons compris) ; « N classés » sous la barre et filtre « Classés » avec la même règle.
+- Page d'un cavalier : les résultats masqués (visible = false) reviennent dans les CHIFFRES (règle « masquer = affichage seulement ») ; listes, record et derniers résultats par cheval les cachent toujours.
+- Points : inchangés, toujours ceux écrits par la FFE (dégressifs par quart, concours doubles compris). Aucun calcul de points dans Hype.
+- Ex. Aurélie : 3 épreuves, 0 classée → 0 % (avant 100 %), 20 points.
+
 ### 12/11 — Mail d'inscription étoffé (14 langues), PAS ENCORE APPLIQUÉ dans Supabase
 - Demandes de Blandine (12/11 13h25 → 14h17) : photo entière (choix 3 : images/accueil-video-ordi-poster.jpg), « Ce qui t'attend sur Hype » (10 fonctions avec liens, dont coffre-fort → 2hype.fr/#coffre, Galops 1 à 9 & prépas AE/BPJEPS/DEJEPS), « Et pour les professionnels » (registre d'élevage, résultats en une capture, rappels, page publique, agenda/messagerie, documents légaux, pensions/contrats, compta et demandes d'aides ; « Personnel » retiré), Hypo qui signe. Traduit dans les 14 langues (outils/mails-fonctions-langues.py) ; généré par outils/mails-generer.py → outils/mails/confirmation.html.
 - Pas de copier-coller pour Blandine : fonction reglages-mails (v5) avec nouvelle action « appliquer_confirmation » (recopie confirmation.html + objet depuis le dépôt dans Supabase). Les mails partent déjà par Brevo (SMTP smtp-relay.brevo.com, contact@2hype.fr).
