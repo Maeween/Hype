@@ -877,7 +877,7 @@ function EcranTeamCompetition() {
     stImg[cotePhoto] = 0;
     var stTxt = { position: "absolute", top: 0, bottom: 0, width: grandEq ? "48%" : "40%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: gauche ? "flex-end" : "flex-start", textAlign: gauche ? "end" : "start", boxSizing: "border-box" };
     stTxt[coteTxt] = grandEq ? 40 : 20;
-    var toutClic = (!Array.isArray(btn) && typeof onClick === "function") ? onClick : null;   /* 12/11 15h25 (Blandine) : un seul bouton → tout le bandeau ouvre la page */
+    var toutClic = Array.isArray(btn) ? ((btn[0] && typeof btn[0][1] === "function") ? btn[0][1] : null) : (typeof onClick === "function" ? onClick : null);   /* 12/11 16h25 (Blandine : « généralise le tap ») : plusieurs boutons → le premier */   /* 12/11 15h25 (Blandine) : un seul bouton → tout le bandeau ouvre la page */
     return h("div", { key: key, onClick: toutClic, role: toutClic ? "link" : undefined, style: { cursor: toutClic ? "pointer" : "default", position: "relative", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 41.3", overflow: "hidden", background: "transparent" } },
       h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: stImg }),
       h("div", { style: stTxt },
@@ -888,7 +888,7 @@ function EcranTeamCompetition() {
           var L = Array.isArray(btn) ? btn : (btn ? [[btn, onClick]] : []);
           if (!L.length) return null;
           return h("div", { style: { display: "flex", flexDirection: "column", alignItems: gauche ? "flex-end" : "flex-start", gap: 8, marginTop: 10 } }, L.map(function (B, iB) {
-            return h("button", { key: iB, type: "button", onClick: B[1], style: { minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", whiteSpace: "nowrap" } },
+            return h("button", { key: iB, type: "button", onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } B[1](eB); }, style: { minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", whiteSpace: "nowrap" } },
               B[0], h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"));
           }));
         })()));
@@ -924,7 +924,8 @@ function EcranTeamCompetition() {
   }
   function bandeauConcours(ev, miroir) {
     var droite = miroir ? !rtl : rtl;   /* côté du texte */
-    return h("div", { key: miroir ? "dern" : "une", "data-team-dernier": miroir ? "1" : null, style: { position: "relative", overflow: "hidden", background: BG } },
+    function allerC() { if (miroir) ouvrirRdvPasse(ev); else ouvrirEv(ev); }   /* 12/11 16h25 (Blandine) : tout le bandeau ouvre le concours */
+    return h("div", { key: miroir ? "dern" : "une", "data-team-dernier": miroir ? "1" : null, role: "link", onClick: allerC, style: { position: "relative", overflow: "hidden", background: BG, cursor: "pointer" } },
     h("img", { src: miroir ? "images/bandeau-dernier-concours.webp" : BANDEAU_PROCHAIN, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", aspectRatio: "1920 / 819", objectFit: "cover" } }),
     h("div", { style: { position: "absolute", top: 0, bottom: 0, left: droite ? "auto" : 0, right: droite ? 0 : "auto", width: "48%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-end" : "flex-start", textAlign: droite ? "right" : "left", padding: droite ? "0 16px 6% 0" : "0 0 6% 16px", boxSizing: "border-box" } },
       h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 26 : 13.5, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, miroir ? T("Dernier concours", "Last competition", "Último concurso", "Ultimo concorso", "前回の大会", "Letztes Turnier", "آخر مسابقة", "上一场比赛", "Laatste wedstrijd", "Último concurso", "Senaste tävlingen", "Последние соревнования", "Ostatnie zawody", "지난 대회", "آخرین مسابقه") : T("Prochain concours", "Next competition", "Próximo concurso", "Prossimo concorso", "次の大会", "Nächstes Turnier", "المسابقة القادمة", "下一场比赛", "Volgende wedstrijd", "Próximo concurso", "Nästa tävling", "Следующие соревнования", "Następne zawody", "다음 대회", "مسابقهٔ بعدی")),
@@ -934,7 +935,7 @@ function EcranTeamCompetition() {
         h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 22 : 12, textTransform: "uppercase", letterSpacing: 1, color: IV } }, moisCourt(ev.date_jour))),
       h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 17, fontWeight: 500, lineHeight: 1.08, marginTop: 4, color: IV, textAlign: "center" } }, ligneCourte(ev))),
       
-      h("button", { type: "button", onClick: function () { if (miroir) ouvrirRdvPasse(ev); else ouvrirEv(ev); }, style: { alignSelf: droite ? "flex-end" : "flex-start", marginTop: 7, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
+      h("button", { type: "button", onClick: function (eC) { try { eC.stopPropagation(); } catch (eS) { } allerC(); }, style: { alignSelf: droite ? "flex-end" : "flex-start", marginTop: 7, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
         (miroir ? T("Voir les résultats", "See the results", "Ver los resultados", "Vedi i risultati", "結果を見る", "Ergebnisse ansehen", "عرض النتائج", "查看成绩", "Uitslagen bekijken", "Ver os resultados", "Se resultaten", "Смотреть результаты", "Zobacz wyniki", "결과 보기", "دیدن نتایج") : T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기", "دیدن مسابقه")), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
   }
   var uneConcours = prochainC ? bandeauConcours(prochainC, false) : null;
@@ -987,7 +988,7 @@ function EcranTeamCompetition() {
     if (lg === "sv") return (n + ((n % 10 === 1 || n % 10 === 2) && n % 100 !== 11 && n % 100 !== 12 ? ":a" : ":e"));
     if (lg === "ru") return (n + "-\u0439");
     if (lg === "pl") return (n + ".");
-    if (lg === "ko" || lg === "fa") return (n + "\uc704");
+    if (lg === "ko") return (n + "\uc704");
     if (lg === "ar") return "المركز " + n;
     return String(n);
   }
@@ -1304,6 +1305,8 @@ function EcranTeamCompetition() {
   /* 05/11 CHAPITRE « Médias » — proposition 4 : bandeau photo comme « Performances » / « Conseils du coach »,
      puis « Les plus aimées » (2 vidéos côte à côte, une seule = pleine largeur) et « Derniers partages » (idem ; absents si vides). */
   function ouvrirMedias(onglet, idVideo) {
+    /* 12/11 16h30 (Blandine : une seule page pour les médias) : Photos et Vidéos ouvrent les Médias de la saison (page Médias des concours, tous concours) */
+    if (!idVideo && (onglet === "videos" || onglet === "photos" || onglet === "travail")) { try { window.__concoursId = "__saison"; window.__engagementsId = "__saison"; } catch (eS) { } setEcran("concours"); return; }
     try { window.__teamMediasGroupe = groupe && groupe.id; window.__teamMediasOnglet = onglet || "accueil"; window.__teamMediasOuvrir = idVideo || null; } catch (eO) { }
     setEcran("team-medias");
   }
@@ -1455,7 +1458,7 @@ function EcranTeamCompetition() {
   var svPhotosTri = svPhotos.slice().sort(function (a2, b2) { return String(b2.d || "").localeCompare(String(a2.d || "")); });
   var srcPhotos = svPhotosTri.map(function (x) { return vignette(x.u); }).filter(Boolean);
   var srcVids = svVids.map(function (v) { return v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, 300, 534) : v.vignette) : ""; }).filter(Boolean);
-  var ouvrirPhotosSv = svPhotos.length ? function () { basculer("sv"); } : null;
+  var ouvrirPhotosSv = function () { ouvrirMedias("photos"); };   /* 12/11 16h (Blandine) : « Photos » ouvre l'album des Médias (encarts par concours), plus de grille dépliée */
   var ouvrirVidsSv = function () { ouvrirMedias("videos"); };
   var txtPhotos = svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진", "عکس") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진", "عکس"));
   var txtVids = nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상", "مسیرهای فیلم‌برداری‌شده") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상", "مسیر فیلم‌برداری‌شده"));
