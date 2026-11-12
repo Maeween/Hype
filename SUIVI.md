@@ -12,7 +12,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
-### 12/11 — Entrée « Liban » dans les sélecteurs de langue (prête, PAS publiée)
+### 12/11 — build 20261112-1535 — Entrée « Liban (arabe) » dans les sélecteurs de langue (publiée)
 - Demande de Blandine (« Liban et entre parenthèses arabe ») : entrée « لبنان (العربية) » avec le drapeau libanais, juste sous l'arabe, dans les 3 sélecteurs (page d'entrée, écrans de connexion, sélecteur de l'appli).
 - Ce n'est pas une 15e langue : elle ouvre l'arabe standard déjà en place (le libanais est surtout parlé ; à l'écrit, le Liban utilise l'arabe standard). Rien à traduire. Choix mémorisé sur l'appareil (hype_langue_variante) ; choisir une autre langue l'efface.
 - LANGUES reste à 14 (traductions, drapeaux des contenus inchangés) ; nouvelle liste LANGUES_CHOIX pour les sélecteurs.
