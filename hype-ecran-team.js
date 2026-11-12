@@ -882,7 +882,9 @@ function EcranTeamCompetition() {
         T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기"), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
   function ligneAg(ev, passe) {
     var cle = String(ev.id), ouv = rdvOuvert === cle;
-    var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
+    /* 12/11 02h31 (Blandine : « une photo par défaut quand il n'y a rien pour un concours ») : sans affiche, la photo de thème
+       (même règle que l'agenda du club : concours, stage, sortie) */
+    var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg");
     return h("div", { key: "lag" + cle },
       h("button", { type: "button", onClick: function () { ouvrirEv(ev); }, style: { position: "relative", display: "flex", alignItems: "center", width: "100%", minHeight: 64, padding: "10px 14px", marginTop: 8, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.1)", background: "#0A0D10", color: IV, textAlign: "start", cursor: "pointer", opacity: passe ? 0.7 : 1 } },
         aff ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(aff, 360, 140) : aff, alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "38%", height: "100%", objectFit: "cover" } }) : null,
