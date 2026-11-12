@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 21h05 — build 20261112-2105 — COFFRE : Modifier, cadenas, pages de santé rassemblées, petit fil des derniers ajouts (Blandine 19h43-19h46)
+- « Modifier » sous chaque document : nom, catégorie (Mes documents / Mon coffre-fort / nouvelle catégorie), cheval, échéance (nouvelle date → le rappel repartira). Carnets de santé : seul le nom se modifie (propriétaire du cheval).
+- Cadenas « Verrouiller / Verrouillé » : un document verrouillé n'a plus de bouton Retirer, et la base refuse de le supprimer (colonne coffre_documents.verrouille + policy coffre_supprimer « and not verrouille », passées le 12/11 19h50).
+- « Tous mes documents » : les carnets de santé rassemblés en UNE carte « Carnet et vaccination » qui ouvre les chevaux ; en tête, un petit fil « Derniers ajouts » (5 lignes fines). Page d'un cheval : une carte par sorte de document (« Page du carnet de vaccination · 4 pages ») qui se déplie en vignettes numérotées.
+- hype-ecran-gestion.js ?v=39, i18n/gestion-*.json (I18N_V 16), 15 langues.
+
 ### 12/11 20h50 — build 20261112-2050 — COFFRE : entrée aussi dans « Mon écurie », pour la responsable seulement (Blandine 19h39)
 - hype-ecran-gestion.js ?v=38 : bande « Mes documents et coffre-fort » sous les thèmes de Mon écurie, affichée seulement si peutGerer (responsable de l'écurie ou modératrice) ; ouvre « Mes documents » (Papiers du camion / van…). L'entrée de la page Cavalier reste.
 

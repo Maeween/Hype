@@ -76,7 +76,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 15;   /* 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
+  var I18N_V = 16;   /* 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -2702,6 +2702,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
     var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
     var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
+    var _md = React.useState(null); var modif = _md[0], setModif = _md[1];
+    var _og = React.useState(""); var groupeOuvert = _og[0], setGroupeOuvert = _og[1];   /* 12/11 19h45 : paquet de pages déplié */   /* 12/11 19h43 (Blandine : « il faudrait la possibilité de modifier ») : { id, titre, type, cheval, echeance } */
     var _vp = React.useState(false); var voileP = _vp[0], setVoileP = _vp[1];
     var refFichier = React.useRef(null);
     var premiumOk = !!app.premium || moderatrice;
@@ -2741,7 +2743,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             if (idsCh.length) {
               var rd = await supa.from("cheval_documents").select("*").in("cheval_id", idsCh.slice(0, 200)).order("date_doc", { ascending: false }).limit(500);
               sante = ((rd && !rd.error && rd.data) || []).map(function (x) {
-                return { id: "s:" + x.id, idSante: x.id, sante: true, type: "vaccins", typeSante: x.type, titre: x.titre || null, cheval_id: x.cheval_id, echeance: null, chemin: x.chemin, created_at: x.date_doc || x.created_at };
+                return { id: "s:" + x.id, idSante: x.id, sante: true, type: "vaccins", typeSante: x.type, titre: x.titre || null, cheval_id: x.cheval_id, echeance: null, chemin: x.chemin, mime: x.mime || "", created_at: x.date_doc || x.created_at };
               });
             }
           } catch (eSa) { }
@@ -2823,6 +2825,27 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       } catch (e) { setMsg("Pas ajouté : " + String((e && e.message) || e)); }
       setEnvoi(false);
     }
+    async function enregistrerModif(doc) {
+      var m = modif; if (!m) return;
+      setEnvoi(true); setMsg("");
+      try {
+        if (doc.sante) {
+          var rS = await supa.from("cheval_documents").update({ titre: String(m.titre || "").trim() || null }).eq("id", doc.idSante).select("id");
+          if ((rS && rS.error) || !rS || !rS.data || !rS.data.length) throw new Error("Seul le propriétaire du cheval peut modifier ce document.");
+        } else {
+          var tp = m.type === "__nouvelle" ? ("c:" + espace + ":" + String(m.nouvelle || "").trim().slice(0, 40)) : m.type;
+          if (m.type === "__nouvelle" && !String(m.nouvelle || "").trim()) throw new Error("Donne un nom à ta catégorie.");
+          if (tp === "vaccins") throw new Error("Les carnets se rangent depuis « Ajouter », sur la page Santé du cheval.");
+          var ligne = { titre: String(m.titre || "").trim() || null, type: tp, cheval_id: (typeCoffre(tp).e === "docs" && m.cheval) ? m.cheval : null, echeance: m.echeance || null };
+          if ((m.echeance || null) !== (doc.echeance || null)) ligne.rappel_le = null;   /* nouvelle date : le rappel repartira */
+          var r = await supa.from("coffre_documents").update(ligne).eq("id", doc.id).select("id");
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré.");
+        }
+        setModif(null); setMsg("✓ Modifié"); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas modifié : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
     async function supprimer(doc) {
       setEnvoi(true); setMsg("");
       if (doc.sante) {
@@ -2856,8 +2879,97 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })();
     }
     function chevalDe(id) { return chevaux.filter(function (x) { return String(x.id) === String(id); })[0] || null; }
+    /* 12/11 19h43 (Blandine : « un petit cadenas qu'on ouvre ou qu'on ferme, pour être sûr que les papiers restent dedans ») :
+       un document verrouillé ne peut plus être retiré (la base le refuse aussi) tant qu'on ne rouvre pas le cadenas. */
+    async function basculerVerrou(doc) {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("coffre_documents").update({ verrouille: !doc.verrouille }).eq("id", doc.id).select("id");
+        if ((r && r.error) || !r || !r.data || !r.data.length) throw new Error((r && r.error && r.error.message) || "La base n'a rien enregistré.");
+        setMsg(doc.verrouille ? "Cadenas ouvert : ce document peut être retiré." : "🔒 Verrouillé : ce document ne peut plus être retiré par erreur.");
+        setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas modifié : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    /* 12/11 19h45 (Blandine : « rassemble quand on a plein de pages de santé… pas besoin d'en avoir 15 ») :
+       vue d'ensemble → une carte par cheval ; vue d'un cheval → une carte par sorte de document, qui se déplie en vignettes. */
+    function regrouperParCheval(liste) {   /* 12/11 19h46 : tous les carnets en UNE carte « Carnet et vaccination », qui ouvre les chevaux */
+      var g = null, out = [];
+      liste.forEach(function (x) {
+        if (!x.sante) { out.push(x); return; }
+        if (!g) { g = { id: "g:carnets", groupeCarnets: true, n: 0 }; out.unshift(g); }
+        g.n++;
+      });
+      return out;
+    }
+    /* 12/11 19h46 (Blandine : « garder quelque part un tout petit fil de ce qui a été fait, qui se met à jour ») : les 5 derniers ajouts, en lignes fines */
+    function filAjouts(liste) {
+      var l = liste.slice().sort(function (a, b) { return String(b.created_at || "").localeCompare(String(a.created_at || "")); }).slice(0, 5);
+      if (!l.length) return null;
+      return h("div", { style: { margin: "0 0 18px", border: "1px solid rgba(255,255,255,.07)", borderRadius: 14, overflow: "hidden" } },
+        h("div", { style: { padding: "9px 14px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, letterSpacing: ".14em", textTransform: "uppercase", color: "#9a8a6a", borderBottom: "1px solid rgba(255,255,255,.06)" } }, "Derniers ajouts"),
+        l.map(function (x) {
+          var chx = x.cheval_id ? chevalDe(x.cheval_id) : null;
+          var nomx = x.titre || (x.sante ? (LIB_SANTE[x.typeSante] || "Document de santé") : typeCoffre(x.type).b);
+          return h("button", { key: "f" + x.id, type: "button", onClick: x.chemin ? function () { setMsg(""); ouvrirDoc(x); } : undefined, style: { display: "flex", alignItems: "baseline", gap: 10, width: "100%", padding: "9px 14px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,.04)", textAlign: "start", cursor: "pointer", color: "#F3EEE4" } },
+            h("span", { style: { flex: 1, minWidth: 0, fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, nomx + (chx ? " · " + chx.nom : "")),
+            h("span", { style: { flexShrink: 0, fontFamily: "'Montserrat',sans-serif", fontSize: 11, color: "rgba(243,238,228,.5)" } }, dateCourte(x.created_at)));
+        }));
+    }
+    function regrouperPages(liste) {
+      var vus = {}, out = [];
+      liste.forEach(function (x) {
+        if (!x.sante) { out.push(x); return; }
+        var k = String(x.cheval_id) + ":" + String(x.typeSante || "");
+        if (!vus[k]) { vus[k] = { id: "p:" + k, groupePages: [], cheval_id: x.cheval_id, typeSante: x.typeSante }; out.push(vus[k]); }
+        vus[k].groupePages.push(x);
+      });
+      return out.map(function (g) { return (g.groupePages && g.groupePages.length === 1) ? g.groupePages[0] : g; });
+    }
+    function lienPage(x) { return x.chemin ? liens[(x.sante ? "sante:" : "") + x.chemin] : ""; }
+    function formModif(x) {
+      var m = modif, ch = function (k, v) { var o = Object.assign({}, m); o[k] = v; setModif(o); };
+      var tous = TYPES_COFFRE.filter(function (t) { return t.k !== "vaccins"; }).slice();
+      (docs || []).forEach(function (d) { if (/^c:/.test(String(d.type)) && !tous.some(function (t) { return t.k === d.type; })) tous.push(typeCoffre(d.type)); });
+      var espaceType = m.type === "__nouvelle" ? espace : typeCoffre(m.type).e;
+      return h("div", { className: "hg-f", style: { marginTop: 8 } },
+        h("label", { htmlFor: "hgm-titre-" + x.id }, "Nom du document"),
+        h("input", { id: "hgm-titre-" + x.id, type: "text", value: m.titre, maxLength: 80, onChange: function (e) { ch("titre", e.target.value); } }),
+        x.sante ? h("div", { className: "hg-aide" }, "Ce carnet est aussi sur la page Santé du cheval : seul son nom se modifie ici.") : null,
+        !x.sante ? h("label", { htmlFor: "hgm-type-" + x.id }, "Catégorie") : null,
+        !x.sante ? h("select", { id: "hgm-type-" + x.id, value: m.type, onChange: function (e) { ch("type", e.target.value); } },
+          [h("optgroup", { key: "g1", label: "Mes documents" }, tous.filter(function (t) { return t.e === "docs"; }).map(function (t) { return h("option", { key: t.k, value: t.k }, t.b); })),
+           h("optgroup", { key: "g2", label: "Mon coffre-fort" }, tous.filter(function (t) { return t.e === "coffre"; }).map(function (t) { return h("option", { key: t.k, value: t.k }, t.b); })),
+           h("option", { key: "__nouvelle", value: "__nouvelle" }, "+ Créer ma catégorie")]) : null,
+        (!x.sante && m.type === "__nouvelle") ? h("input", { type: "text", value: m.nouvelle, maxLength: 40, placeholder: "Nom de ta catégorie", onChange: function (e) { ch("nouvelle", e.target.value); } }) : null,
+        (!x.sante && espaceType === "docs" && chevaux.length) ? h("label", { htmlFor: "hgm-ch-" + x.id }, "Cheval (facultatif)") : null,
+        (!x.sante && espaceType === "docs" && chevaux.length) ? h("select", { id: "hgm-ch-" + x.id, value: m.cheval, onChange: function (e) { ch("cheval", e.target.value); } },
+          [h("option", { key: "", value: "" }, "Aucun")].concat(chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); }))) : null,
+        !x.sante ? h("label", { htmlFor: "hgm-ech-" + x.id }, "Échéance (facultatif)") : null,
+        !x.sante ? h("input", { id: "hgm-ech-" + x.id, type: "date", value: m.echeance, onChange: function (e) { ch("echeance", e.target.value); } }) : null,
+        h("div", { style: { display: "flex", gap: 8, marginTop: 12 } },
+          h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setModif(null); } }, "Annuler"),
+          h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, disabled: envoi, onClick: function () { enregistrerModif(x); } }, envoi ? "Enregistrement…" : "Enregistrer")));
+    }
     function cartesDocs(liste) {
       return h("div", { className: "hv3-cartes" }, liste.map(function (x) {
+        var dernierG = liste.length % 2 === 1 && liste.length > 1 && x === liste[liste.length - 1];
+        if (x.groupeCarnets) {
+          return h("div", { key: x.id, style: dernierG ? { gridColumn: "1 / -1" } : null },
+            carte(h, { cle: x.id, photo: typeCoffre("vaccins").photo, titre: "Carnet et vaccination", sous: nbDocs(x.n), pill: "Tes chevaux", etat: "Voir", onClick: function () { setVue("t:vaccins"); } }));
+        }
+        if (x.groupePages) {
+          var cp = chevalDe(x.cheval_id), ouvertP = groupeOuvert === x.id, nP = x.groupePages.length;
+          return h("div", { key: x.id, style: (dernierG || ouvertP) ? { gridColumn: "1 / -1" } : null },
+            carte(h, { cle: x.id, photo: (cp && cp.photo) ? { img: cp.photo, pos: "50% 35%" } : typeCoffre("vaccins").photo, titre: LIB_SANTE[x.typeSante] || "Document de santé", sous: nP + " pages", pill: cp ? cp.nom : "Carnet et vaccination", etat: ouvertP ? "Replier" : "Voir les pages", onClick: function () { setGroupeOuvert(ouvertP ? "" : x.id); } }),
+            ouvertP ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + (nP % 3 === 0 || nP > 4 ? 3 : 2) + ", minmax(0, 1fr))", gap: 8, marginTop: 8 } }, x.groupePages.map(function (pg, i) {
+              var u = lienPage(pg), img = u && !/pdf/i.test(pg.mime || "") && !/\.pdf$/i.test(pg.chemin || "");
+              return h("button", { key: pg.id, type: "button", onClick: function () { setMsg(""); ouvrirDoc(pg); }, style: { position: "relative", aspectRatio: "3 / 4", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(201,166,107,.3)", background: "#0b1014", padding: 0, cursor: "pointer" } },
+                img ? h("img", { src: u, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "contain", display: "block" } }) : h("span", { style: { color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 13 } }, "PDF"),
+                h("span", { style: { position: "absolute", left: 6, bottom: 6, padding: "2px 7px", borderRadius: 999, background: "rgba(6,8,10,.8)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 11 } }, String(i + 1)));
+            })) : null,
+            ouvertP ? h("div", { className: "hg-aide", style: { marginTop: 6 } }, "Pour retirer une page, ouvre la page Santé du cheval.") : null);
+        }
         var t = typeCoffre(x.type), ch = x.cheval_id ? chevalDe(x.cheval_id) : null, ec = etatEcheance(x.echeance);
         var titreC = x.titre || (x.sante ? (LIB_SANTE[x.typeSante] || "Document de santé") : t.b);
         var photo = (ch && ch.photo) ? { img: ch.photo, pos: "50% 35%" } : t.photo;
@@ -2865,11 +2977,18 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         return h("div", { key: x.id, style: dernierSeul ? { gridColumn: "1 / -1" } : null },
           carte(h, { cle: x.id, photo: photo, titre: titreC, sous: ec ? ec.t : ("Ajouté le " + dateCourte(x.created_at)), pill: ch ? ch.nom : t.b,
             etat: x.chemin ? "Ouvrir" : "Fichier absent", alerte: !!(ec && ec.alerte), onClick: x.chemin ? function () { setMsg(""); ouvrirDoc(x); } : null }),
-          aSuppr === x.id
+          (modif && modif.id === x.id) ? formModif(x)
+          : aSuppr === x.id
             ? h("div", { style: { display: "flex", gap: 8, marginTop: 6 } },
                 h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setASuppr(null); } }, "Garder"),
                 h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, disabled: envoi, onClick: function () { supprimer(x); } }, "Retirer vraiment"))
-            : h("button", { type: "button", onClick: function () { setASuppr(x.id); }, style: { display: "block", margin: "6px 0 0 auto", background: "none", border: "none", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer"));
+            : h("div", { style: { display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 18, marginTop: 6 } },
+                !x.sante ? h("button", { type: "button", disabled: envoi, onClick: function () { basculerVerrou(x); }, "aria-pressed": !!x.verrouille, style: { display: "inline-flex", alignItems: "center", gap: 5, background: "none", border: "none", padding: "4px 0", color: x.verrouille ? "#C9A66B" : "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12 } },
+                  h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" },
+                    h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: x.verrouille ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-1.9" })),
+                  x.verrouille ? "Verrouillé" : "Verrouiller") : null,
+                h("button", { type: "button", onClick: function () { setASuppr(null); setMsg(""); setModif({ id: x.id, titre: x.titre || "", type: x.type, cheval: x.cheval_id || "", echeance: x.echeance ? String(x.echeance).slice(0, 10) : "", nouvelle: "" }); }, style: { background: "none", border: "none", padding: "4px 0", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Modifier"),
+                x.verrouille ? null : h("button", { type: "button", onClick: function () { setModif(null); setASuppr(x.id); }, style: { background: "none", border: "none", padding: "4px 0", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer")));
       }));
     }
 
@@ -2910,7 +3029,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
             return h("div", { key: cid, style: seul ? { gridColumn: "1 / -1" } : null },
               carte(h, { cle: cid, photo: ch.photo ? { img: ch.photo, pos: "50% 35%" } : typeCoffre("vaccins").photo, titre: ch.nom, sous: nbDocs(parCheval[cid]), pill: "Carnet et vaccination", etat: "Voir", onClick: function () { setVue("ch:" + cid); } }));
           })) : null,
-          sansCh.length ? cartesDocs(sansCh) : null,
+          sansCh.length ? cartesDocs(regrouperPages(sansCh)) : null,
           (!ids.length && !sansCh.length) ? h("div", { className: "hg-vide" }, "Aucun carnet pour l'instant. Les carnets de tes chevaux apparaissent ici et sur leur page Santé.") : null);
       } else if (vue.indexOf("t:") === 0) {
         var tt = typeCoffre(vue.slice(2)); titreVue = tt.b;
@@ -2919,9 +3038,9 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       } else if (vue.indexOf("ch:") === 0) {
         var chV = chevalDe(vue.slice(3)); titreVue = chV ? chV.nom : "Mes chevaux";
         var lc = docs.filter(function (x) { return String(x.cheval_id) === vue.slice(3); });
-        contenu = lc.length ? cartesDocs(lc) : h("div", { className: "hg-vide" }, "Aucun document pour ce cheval. Touche « Ajouter » pour ranger son carnet.");
+        contenu = lc.length ? cartesDocs(regrouperPages(lc)) : h("div", { className: "hg-vide" }, "Aucun document pour ce cheval. Touche « Ajouter » pour ranger son carnet.");
       } else if (vue === "alerte") { titreVue = "À renouveler"; contenu = cartesDocs(aRenouveler); }
-      else { titreVue = espace === "coffre" ? "Tout mon coffre-fort" : "Tous mes documents"; contenu = cartesDocs(ici); }
+      else { titreVue = espace === "coffre" ? "Tout mon coffre-fort" : "Tous mes documents"; contenu = h("div", null, filAjouts(ici), cartesDocs(regrouperParCheval(ici))); }
       var formulaire = ouvert ? h("div", { className: "hg-f" }, h("h2", { className: "hv3-h2" }, espace === "coffre" ? "Ranger dans mon coffre-fort" : "Ranger un document"),
         h("label", { htmlFor: "hgc-type" }, "Catégorie"),
         h("select", { id: "hgc-type", value: type, onChange: function (e) { setType(e.target.value); setMsg(""); } },
