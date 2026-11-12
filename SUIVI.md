@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 12h45 — build 20261112-1250 — Page équipe : ordre B, bas en « sommaire », retour par balayage sur les pages en calque (Blandine « vas-y »)
+- hype-ecran-team.js ?v=46 + index.html.
+- Ordre : 1 L'équipe ; 2 La saison = agenda (prochain, rendez-vous, dernier) puis Ma saison ; 3 Souvenirs = Nos plus beaux moments, puis résultats récents (design inchangé) et classements ; 4 Apprendre.
+- Style « sommaire » (ligneSom : petite photo ronde, titre, sous-titre, chevron, filet) pour Classement des cavaliers, Performances chevaux, Les clés de Hey Baby, Optimise tes perfs et les 2 règlements (étiquette PDF). Titres « Médias » et « Règlements » retirés (maquette validée). Résultats récents : inchangés.
+- Retour par balayage (index.html, routeur) : sur un calque plein écran marqué data-noswipe qui a un bouton .hpv-retour ou [data-retour-geste] (page médias d'un concours, page vidéo immersive), balayage vers la droite = ce bouton ; le retour du navigateur ferme aussi d'abord ce calque. Écrans sans barre (moncompte, partager, installer, messagerie-fil) : balayage droite = retour. Non testé sur téléphone : à vérifier par Blandine.
+- En attente : design des résultats récents (6 propositions, maq-res), autres calques plein écran à marquer data-retour-geste si besoin.
+
 ### 12/11 08h31 — build 20261112-0835 — Page équipe : Souvenirs en éventails, Ma saison avant Souvenirs, Classements sous Souvenirs (Blandine « C'est mieux déjà vas-y »)
 - hype-ecran-team.js ?v=45.
 - Souvenirs : titre « Nos plus beaux moments » ; dernières photos en éventail à gauche (→ toutes les photos dépliées sur place, il n'existe pas de page photos de l'équipe), dernières vidéos en éventail à droite (→ page de tous les parcours filmés). Case en pointillés quand il n'y a rien (« + Ajouter un parcours »). Les cartes « Nos photos » / « En piste » et la rangée de 3 vignettes disparaissent.

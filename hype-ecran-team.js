@@ -458,6 +458,23 @@ function EcranTeamCompetition() {
     perfs: h("svg", { width: 24, height: 24, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }), h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3 }))
   };
   function videCartePh(icone, img, txt) { return videCarte(icone, txt, img); }
+  /* 12/11 12h35 (Blandine : style « sommaire » pour le bas, sauf les résultats récents) : ligne fine, petite photo ronde,
+     titre, sous-titre, chevron, filet dessous. Sert aux classements, à Hey Baby / Optimise tes perfs et aux règlements. */
+  function ligneSom(key, titre, sous, img, onClick, opts) {
+    opts = opts || {};
+    var Tag = opts.href ? "a" : (onClick ? "button" : "div");
+    var pr = { key: key, style: { display: "flex", alignItems: "center", gap: 14, width: "100%", padding: "13px 0", margin: 0, border: "none", borderBottom: "1px solid rgba(244,241,234,0.1)", borderRadius: 0, background: "transparent", color: IV, textAlign: "start", textDecoration: "none", fontFamily: M, cursor: (onClick || opts.href) ? "pointer" : "default", boxSizing: "border-box" } };
+    if (opts.href) { pr.href = opts.href; pr.target = "_blank"; pr.rel = "noopener noreferrer"; }
+    else if (onClick) { pr.type = "button"; pr.onClick = onClick; }
+    if (opts.attr) pr[opts.attr] = "1";
+    return h(Tag, pr,
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { flex: "0 0 52px", width: 52, height: 52, borderRadius: "50%", objectFit: "cover", objectPosition: opts.pos || "center", border: "1px solid rgba(201,166,107,0.45)", display: "block" } }),
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: SERIF, fontSize: grandEq ? 23 : 20, fontWeight: 500, color: IV, lineHeight: 1.12 } }, titre,
+          opts.pdf ? h("span", { style: { fontFamily: M, fontSize: 8.5, fontWeight: 600, letterSpacing: 1.4, color: OR, border: "1px solid rgba(201,166,107,0.5)", borderRadius: 4, padding: "2px 5px", marginInlineStart: 8, verticalAlign: "middle", whiteSpace: "nowrap" } }, "PDF") : null),
+        sous ? h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.6)", marginTop: 3, lineHeight: 1.35 } }, sous) : null),
+      (onClick || opts.href) ? h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: OR, fontSize: 18, lineHeight: 1 } }, CHEV) : null);
+  }
   function videCarte(icone, txt, img) { return carteBasse(null, icone, h("span", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 400, lineHeight: 1.4 } }, txt), null, img, null, { marginTop: 0 }); }
   function partie(id, n, lab, titre, droite) {
     return h("div", { id: id, style: { padding: "44px 20px 6px", scrollMarginTop: 70 } },
@@ -741,23 +758,11 @@ function EcranTeamCompetition() {
     }));
   var blocClass = section(h("div", null,
     enTete(T("Classements", "Rankings", "Clasificaciones", "Classifiche", "ランキング", "Ranglisten", "التصنيفات", "排名", "Klassementen", "Classificações", "Rankningar", "Рейтинги", "Klasyfikacje", "순위"), "cl", 0, 0),
-    carteBasse("pcav", ICO.cavalier, T("Classement des cavaliers", "Riders' ranking", "Clasificación de los jinetes", "Classifica dei cavalieri", "ライダーのランキング", "Reiter-Rangliste", "تصنيف الفرسان", "骑手排名", "Klassement van de ruiters", "Classificação dos cavaleiros", "Ryttarranking", "Рейтинг всадников", "Klasyfikacja jeźdźców", "라이더 순위"),
+    ligneSom("pcav", T("Classement des cavaliers", "Riders' ranking", "Clasificación de los jinetes", "Classifica dei cavalieri", "ライダーのランキング", "Reiter-Rangliste", "تصنيف الفرسان", "骑手排名", "Klassement van de ruiters", "Classificação dos cavaleiros", "Ryttarranking", "Рейтинг всадников", "Klasyfikacja jeźdźców", "라이더 순위"),
       T("Résultats et points championnat", "Results and championship points", "Resultados y puntos de campeonato", "Risultati e punti campionato", "結果と選手権ポイント", "Ergebnisse und Meisterschaftspunkte", "النتائج ونقاط البطولة", "成绩与锦标赛积分", "Resultaten en kampioenschapspunten", "Resultados e pontos de campeonato", "Resultat och mästerskapspoäng", "Результаты и очки чемпионата", "Wyniki i punkty mistrzostw", "결과와 챔피언십 포인트"),
-      "images/cavalier-acces-performances.webp", function () { basculer("pcav"); }, { marginTop: 0 }),
+      "images/cavalier-acces-performances.webp", function () { basculer("pcav"); }),
     listePerfCav,
-    h("div", { style: { height: 10 } }),
-    h("button", { type: "button", "data-perf-chevaux": "1", onClick: function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
-      h("img", { src: "images/team-competition-performances-hero.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", objectPosition: "78% 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
-      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
-      h("svg", { width: 26, height: 26, viewBox: "0 0 20 20", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
-        h("rect", { x: 2, y: 11, width: 4, height: 7, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 }),
-        h("rect", { x: 8, y: 6, width: 4, height: 12, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 }),
-        h("rect", { x: 14, y: 2, width: 4, height: 16, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 })),
-      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(244,241,234,0.14)" } }),
-      h("div", { style: { flex: 1, minWidth: 0, position: "relative" } },
-        h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Performances chevaux", "Horse performances", "Rendimiento de los caballos", "Prestazioni dei cavalli", "\u99ac\u306e\u6210\u7e3e", "Leistungen der Pferde", "\u0623\u062f\u0627\u0621 \u0627\u0644\u062e\u064a\u0648\u0644", "马匹表现", "Prestaties van de paarden", "Desempenho dos cavalos", "Hästarnas prestationer", "Выступления лошадей", "Osiągnięcia koni", "말 성적")),
-        h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Classement de la saison", "Season ranking", "Clasificaci\u00f3n de la temporada", "Classifica della stagione", "\u30b7\u30fc\u30ba\u30f3\u306e\u30e9\u30f3\u30ad\u30f3\u30b0", "Saisonwertung", "\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u0645\u0648\u0633\u0645", "赛季排名", "Klassement van het seizoen", "Classificação da temporada", "Säsongens rankning", "Рейтинг сезона", "Klasyfikacja sezonu", "시즌 순위"))),
-      h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1 } }, CHEV))));
+    ligneSom("pch", T("Performances chevaux", "Horse performances", "Rendimiento de los caballos", "Prestazioni dei cavalli", "\u99ac\u306e\u6210\u7e3e", "Leistungen der Pferde", "\u0623\u062f\u0627\u0621 \u0627\u0644\u062e\u064a\u0648\u0644", "马匹表现", "Prestaties van de paarden", "Desempenho dos cavalos", "Hästarnas prestationer", "Выступления лошадей", "Osiągnięcia koni", "말 성적"), T("Classement de la saison", "Season ranking", "Clasificaci\u00f3n de la temporada", "Classifica della stagione", "\u30b7\u30fc\u30ba\u30f3\u306e\u30e9\u30f3\u30ad\u30f3\u30b0", "Saisonwertung", "\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u0645\u0648\u0633\u0645", "赛季排名", "Klassement van het seizoen", "Classificação da temporada", "Säsongens rankning", "Рейтинг сезона", "Klasyfikacja sezonu", "시즌 순위"), "images/team-competition-performances-hero.webp", function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }, { attr: "data-perf-chevaux", pos: "72% 45%" })));
 
   /* ── agenda ── */
   function badgeRdv(ev) {
@@ -1145,10 +1150,9 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
       titre: T("Optimise tes perfs", "Boost your performance", "Optimiza tu rendimiento", "Ottimizza le tue prestazioni", "パフォーマンスを高めよう", "Optimiere deine Leistung", "حسّن أداءك", "提升你的表现", "Optimaliseer je prestaties", "Otimiza o teu desempenho", "Optimera dina prestationer", "Улучшай свои результаты", "Popraw swoje wyniki", "실력을 끌어올려"),
       sous: T("Articles et conseils du coach", "Articles and coach's tips", "Artículos y consejos del entrenador", "Articoli e consigli del coach", "記事とコーチのアドバイス", "Artikel und Tipps vom Coach", "مقالات ونصائح المدرّب", "文章与教练建议", "Artikelen en tips van de coach", "Artigos e conselhos do treinador", "Artiklar och tips från coachen", "Статьи и советы тренера", "Artykuły i rady trenera", "아티클과 코치의 조언") }
   ];
-  function porteM(P) { return carteBasse("pm" + P.cle, ICO[P.cle === "videos" ? "video" : P.cle === "epingles" ? "bulle" : "perfs"], P.titre, P.sous, P.img, function () { ouvrirMedias(P.cle); }); }
+  function porteM(P) { return ligneSom("pm" + P.cle, P.titre, P.sous, P.img, function () { ouvrirMedias(P.cle); }); }
   var blocMedias = section(h("div", null,
-    enTete(T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "الوسائط", "媒体", "Media", "Mídia", "Media", "Медиа", "Media", "미디어"), "md", 0, 0),
-    h("div", { style: { marginTop: -10 } }, PORTES_M.filter(function (P) { return P.cle !== "videos"; }).map(porteM))));   /* 11/11 22h05 : « En piste » part dans Souvenirs */
+    h("div", { style: { marginTop: 4 } }, PORTES_M.filter(function (P) { return P.cle !== "videos"; }).map(porteM))));   /* 11/11 22h05 : « En piste » part dans Souvenirs */
 
   /* 30/10 (2130) CHAPITRE « Conseils du coach » : ouvre l'article Hype Magazine CSO (écran article-cso, réservé Premium :
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
@@ -1168,23 +1172,11 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
 
   /* (721) CHAPITRE « Règlements » : les règlements officiels (PDF dans docs/), ouverts dans un nouvel onglet.
      11/11 21h46 (Blandine : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ») : deux carrés. */
-  function carteReg(attr, href, titre, sous, source, photo) {   /* 11/11 21h51 : « mets un visuel dessus quand même » → photo en fond, voilée */
-    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", minHeight: 104, backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.35) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.95) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
-    pr[attr] = "1";
-    return h("a", pr,
-      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
-        h("svg", { width: 18, height: 18, viewBox: "0 0 20 20", "aria-hidden": "true" },
-          h("path", { d: "M5 2h7l4 4v12H5z", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinejoin: "round" }),
-          h("path", { d: "M12 2v4h4M7.5 10h6M7.5 13h6", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round" })),
-        h("span", { style: { fontFamily: M, fontSize: 8.5, letterSpacing: 1.3, color: OR } }, "PDF")),
-      h("div", null,
-        h("div", { style: { fontFamily: SERIF, fontSize: 14, fontWeight: 600, color: IV, lineHeight: 1.1 } }, titre),
-        h("div", { style: { fontFamily: M, fontSize: 9, color: "rgba(244,241,234,0.72)", marginTop: 3, lineHeight: 1.3 } }, sous),
-        h("div", { style: { fontFamily: M, fontSize: 8, fontStyle: "italic", color: "rgba(243,238,228,0.55)", marginTop: 3, lineHeight: 1.25 } }, source)));
+  function carteReg(attr, href, titre, sous, source, photo) {   /* 12/11 : ligne « sommaire » (Blandine) */
+    return ligneSom(attr, titre, h("span", null, sous, h("span", { style: { display: "block", fontStyle: "italic", fontSize: 10, color: "rgba(243,238,228,0.5)", marginTop: 2 } }, source)), photo, null, { href: href, attr: attr, pdf: true });
   }
   var blocReg = section(h("div", null,
-    enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정"), "rg", 0, 0),
-    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } },   /* 11/11 22h05 : petits rectangles sur toute la largeur */
+    h("div", null,   /* 11/11 22h05 : petits rectangles sur toute la largeur */
       carteReg("data-reglement-odf", "docs/reglement-open-de-france-2026.pdf",
         T("Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "オープン・ド・フランス2026", "Open de France 2026", "أوبن فرنسا 2026", "2026 年法国公开赛", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "2026 Open de France"),
         T("Championnats de France Poney & Clubs", "French Pony & Club Championships", "Campeonatos de Francia Poni y Clubes", "Campionati di Francia Pony e Club", "フランス選手権 ポニー&クラブ", "Französische Pony- & Club-Meisterschaften", "بطولات فرنسا للبوني والأندية", "法国小马与俱乐部锦标赛", "Franse kampioenschappen Pony & Clubs", "Campeonatos da França de Pônei e Clubes", "Franska mästerskapen för ponny & ridklubb", "Чемпионаты Франции: пони и клубы", "Mistrzostwa Francji Kucyków i Klubów", "프랑스 포니·클럽 선수권"),
@@ -1414,8 +1406,10 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
     partie(PARTIES[0].id, 1, PARTIES[0].lab, null, blocGerer), blocEquipe, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "34px 0 6px" } }, lienSaison) : null, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, h("div", { key: "clsv", style: { paddingTop: 34 } }, blocClass), trait(),
+    /* 12/11 12h33 (Blandine, maquette B, « touche à rien d'autre ») : La saison = agenda puis Ma saison ; Souvenirs = Nos plus beaux moments,
+       puis en dernier les résultats récents et les classements (et Apprendre ensuite). Styles inchangés. */
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, lienSaison ? h("div", { key: "lsa", style: { padding: "40px 0 0" } }, lienSaison) : null, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, blocRes, h("div", { key: "clsv", style: { paddingTop: 34 } }, blocClass), trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
