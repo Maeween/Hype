@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 19h30 — build 20261112-1930 — RAPPELS D'ÉCHÉANCE (Blandine 18h27 : « Ok, continue… des rappels d'échéance, même pour les contrôles techniques… les assurances »)
+- Base (sql-12-11-rappels-echeances.sql, passé le 12/11) : fonction hype_rappels_echeances() + tâche planifiée « rappels-echeances-quotidien » (pg_cron, 6h15 UTC = 7h15 à Paris l'hiver, 8h15 l'été). Aucune table, aucun droit changé.
+- Dans le mois qui précède, UNE notification « À renouveler » par échéance : coffre (coffre_documents.echeance → le propriétaire ; rappel_le noté) ; véhicules de l'écurie (ecurie_vehicules.ct_prochain = contrôle technique, assurance_fin = assurance) et papiers de l'écurie (registre_documents.valable_jusqu, ex. assurances) → les responsables de l'écurie (clubs_revendiques + club_gestionnaires). Testé en base (2 rappels créés, 0 au 2e passage, annulé).
+- Appli (index.html) : notification « À renouveler : <document> — échéance le <date> » avec une icône calendrier (15 langues) ; toucher → coffre (bon onglet), Le camion (véhicule) ou Les échéances (papiers de l'écurie).
+- Pas encore d'envoi sur l'écran du téléphone pour ce type (la cloche de l'appli seulement) : à ajouter dans notifier-notif si Blandine le veut.
+
 ### 12/11 — build 20261112-1915 — PERSAN étape 3 : pages publiques Google/Bing + « 15 langues »
 - 17 pages publiques en persan dans fa/ (accueil, association + mentions légales, CGV, concours, fiche cheval, gestion d'écurie, IA, logiciel, photos, plan Lamotte, 4 prépas, reprises, santé), droite-à-gauche, tutoiement (sauf CGV, mentions, association : « شما »).
 - Liens pour les moteurs : hreflang « fa » ajouté dans toutes les langues + plan du site (12 entrées fa) ; « فارسی » ajouté aux menus et pieds de page de langues. Bing prévenu automatiquement à la publication (IndexNow Netlify).
@@ -27,12 +33,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Deux espaces : « Mes documents » (Licence, Carnet et vaccination, Papiers du camion / van, Assurance, Autres documents) et « Mon coffre-fort » (Contrat de travail, Compta, Livret de famille, Identité et permis, Diplômes et carte pro, Autres papiers). « + Créer ma catégorie » : catégorie au nom libre (type « c:docs:<nom> » / « c:coffre:<nom> »).
 - Premium (modératrice comprise) ; ce qui est déjà rangé reste lisible sans Premium. Privé : table coffre_documents (SQL sql-12-11-coffre.sql, passé le 12/11 14h05, chaque compte ne voit que ses lignes) + espace « documents » (dossier <id du compte>/).
 - « Carnet et vaccination » = LES MÊMES documents que la page Santé de chaque cheval (table cheval_documents, espace « sante »), sans copie : une carte par cheval (ses chevaux, même vides), ajouter un carnet depuis le coffre le range sur la page Santé (propriétaire Premium seulement). Blandine : « il faudra s'assurer que ces deux pages-là soient bien la même ».
-- Échéance facultative : le document passe dans « À renouveler » un mois avant. ⚠ PAS de notification de rappel : à valider par Blandine (tâche quotidienne qui écrirait dans notifications) — en attente de son accord.
+- Échéance facultative : le document passe dans « À renouveler » un mois avant, et un rappel arrive dans la cloche (voir entrée 19h30).
 - SANTÉ (sql-12-11-sante-reservee.sql, passé le 12/11 ~19h ; hype-ecran-sante-cheval.js ?v=18) : nouvelle fonction hype_peut_voir_sante_sensible = propriétaire du cheval OU responsable de l'écurie du cheval (club / écurie revendiqué ou gestionnaire) OU modératrice. Soins (vaccins, vermifuges, maréchal, dentiste…), documents (carnets, ordonnances) et leurs fichiers ne reviennent plus qu'à eux. AVANT : tout cavalier qui s'ajoutait lui-même un cheval (chevaux_liens, sans accord) les lisait (38 rattachements concernés).
 - Pour les autres : Suivi + Carnet de santé grisés et flous avec « Réservé — Vaccins, soins et documents sont visibles par le propriétaire du cheval et la responsable de son écurie » (Blandine : « gentiment grisés, semi-flous, un petit mot réservé »). Consignes et équipe de soins restent visibles (inchangé). Retour arrière : remettre hype_peut_voir_sante dans soins_lire, docs_lire, sante_voir.
 - Textes traduits dans les 14 langues + persan (i18n/gestion-*.json, I18N_V 15 ; textes Santé et bande Cavalier dans le code).
 - Mail d'inscription (autre conversation, branche « travail ») : la ligne « 🔐 Ton coffre-fort à documents » pointe déjà vers https://2hype.fr/#coffre — il peut être collé dans Supabase.
-- RESTE : rappel d'échéance (accord de Blandine) ; cartes grises du van DK-124-BL et ancienne du Master BN-360-LM à ranger dans Le camion (envoyées à Blandine) ; chantier séparé « devenir responsable d'écurie » (demande + validation, sans stocker de pièce d'identité).
+- RESTE : cartes grises du van DK-124-BL et ancienne du Master BN-360-LM à ranger dans Le camion (envoyées à Blandine) ; chantier séparé « devenir responsable d'écurie » (demande + validation, sans stocker de pièce d'identité).
 
 ### 12/11 18h15 — build 20261112-1845 — PHOTOS : effet doré adouci partout (Blandine : « il est quand même assez violent », choix « C »)
 - HYPE_PH_SOLEIL_CSS (index.html) prend les valeurs de HC_B2_CSS déjà validées le 09/11 pour les médias du concours : à peu près moitié moins fort (moins jauni, lueur orangée et coins sombres réduits).
