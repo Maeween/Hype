@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — Mail de relance « Les écuries sont bien vides sans toi… » (comptes pas encore abonnés) — BROUILLON BREVO n°4
+- Demande de Blandine (14h20) : relance des comptes jamais abonnés, ton Hypo, ce qu'on fait avec un compte gratuit / avec Premium, liens ; pas de partie pro ; envoyer « qu'à ceux pas déjà abonnés ».
+- Contenu : outils/mails-relance.py → outils/mails/relance-inactifs.html (encadré « premier mois offert » avec HYPE1MOIS). Chiffres vérifiés en base : gratuit 2 chevaux / 3 vidéos / 1 question Hey Baby par jour ; Premium 9 / 15 / 4.
+- brevo-sync v2 : nouvelle liste Brevo n°5 « Pas encore abonnés » (sans Premium ni ambassadeur, hors comptes de Blandine et de test) = 46 contacts au 12/11 14h52.
+- Campagne Brevo n°4 en brouillon (expéditeur Hype <contact@2hype.fr>, réponse feinn@live.fr), test envoyé à feinn@live.fr. ENVOI seulement sur accord de Blandine (ajout de la campagne 4 dans brevo_envois_autorises puis brevo-envoyer).
+
 ### 12/11 14h51 — build 20261112-1455 — Performances du cavalier : plus de « 0 % » (Blandine « Ok »)
 - hype-ecran-perf-cheval.js ?v=13 : « Sa régularité » affiche le pourcentage de classement seulement s'il y a au moins un classement (+ « · N podium(s) ») ; sinon la phrase « Ses prochains classements et podiums s'afficheront ici. » (14 langues).
 
