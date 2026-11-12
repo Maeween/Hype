@@ -1174,8 +1174,8 @@ function EcranTeamCompetition() {
   function ouvrirImportRes() { try { window.HYPE_IMPORT_MULTI = true; window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIm) { } setEcran("import-resultats"); }
   var _frO = React.useState({}); var frOuv = _frO[0], setFrOuv = _frO[1];
   function basculerFr(k) { setFrOuv(function (o) { var n = Object.assign({}, o); n[k] = !n[k]; return n; }); }
-  var RES_VARIANTE = (typeof window !== "undefined" && window.__resVariante) || "B";   /* 13h40 : B retenue (Blandine) */
-  var sansFrise = RES_VARIANTE === "B";
+  var RES_VARIANTE = (typeof window !== "undefined" && window.__resVariante) || "E";   /* 12/11 20h45 : E = cartes de la page Écurie */   /* 13h40 : B retenue (Blandine) */
+  var sansFrise = RES_VARIANTE === "B" || RES_VARIANTE === "E";
   function podiumsDu(jour) {
     var l = resVisibles.filter(function (x) { return String(x.date_epreuve || "").slice(0, 10) === jour; });
     var p = l.filter(function (x) { var pl = placeDe(x); return pl != null && pl >= 1 && pl <= 3; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
@@ -1220,7 +1220,7 @@ function EcranTeamCompetition() {
       var lieu = infosRes(r0).lieuNom, jm = jourMois(r0.date_epreuve || r0.created_at);
       var k = "fr" + j;
       enfants.push(h("div", { key: k }, pointFr([jm, lieu].filter(Boolean).join(" · "), idx === 0)));
-      if (idx === 0) {
+      if (idx === 0 && RES_VARIANTE !== "E") {
         var ouv0 = !!frOuv[k], l0 = (ouv0 || (sansFrise && P.pod.length)) ? P.liste : P.liste.slice(0, 3);   /* 13h50 : tous les podiums (ex æquo compris), jamais un 3e affiché et l autre caché */
         enfants.push(h("div", { key: k + "l" }, l0.map(vignetteFr)));
         if (sansFrise) {   /* 13h42 (Blandine) : « Importer des résultats » en discret, à droite de « Voir les N autres » */
@@ -1267,14 +1267,63 @@ function EcranTeamCompetition() {
     lienSaison, lienSaison ? courbeJointure("j1", false) : null,
     bPerf,
     null);   /* 13h45 : Cavaliers ouvre la page performances-cavaliers */
+  /* 12/11 20h45 (Blandine, 17h38 : « reprends exactement les mêmes petites cartes sur le rail » de la page Écurie) : variante « E »,
+     une carte par épreuve (bleu pétrole, coupe, date, photo ronde du cheval, « 1er X sur Y », concours, épreuve / partants,
+     « + N autres classées »). Podiums de la saison (depuis le 1er septembre), du plus récent au plus ancien. */
+  var SURF_E = "#101D22", BORD_E = "rgba(201,166,107,0.28)", BORD2_E = "rgba(201,166,107,0.18)", CH_E = "#C9A66B", IV_E = "#F3EEE4", GR2_E = "#BDB6AA", GR3_E = "#8E8A80";
+  var groupesE = (function () {
+    var deb = (function () { var d = new Date(); return (d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1) + "-09-01"; })();
+    var G = {}, ordre = [];
+    resVisibles.forEach(function (x) {
+      var j = String(x.date_epreuve || "").slice(0, 10); if (!j || j < deb) return;
+      var k = j + "|" + normTeam(x.concours) + "|" + String(x.epreuve || "").trim().toLowerCase();
+      if (!G[k]) { G[k] = { d: j, l: [] }; ordre.push(k); }
+      G[k].l.push(x);
+    });
+    return ordre.map(function (k) {
+      var l = G[k].l.filter(function (x) { return placeDe(x) != null; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
+      return { d: G[k].d, places: l };
+    }).filter(function (g) { var p0 = g.places[0] && placeDe(g.places[0]); return p0 != null && p0 >= 1 && p0 <= 3; })
+      .sort(function (a2, b2) { return b2.d.localeCompare(a2.d) || (placeNum(a2.places[0]) - placeNum(b2.places[0])); }).slice(0, 12);
+  })();
+  function carteResE(g, iR, mode) {
+    var r = g.places[0], I = infosRes(r), pl = placeDe(r);
+    var pt = mode === "car";
+    var photo = I.photo ? ((typeof vignetteHype === "function") ? vignetteHype(I.photo, 160, 160) : I.photo) : "";
+    var dateTxt = ""; try { var dd = dateLoc(g.d); dateTxt = dd ? new Intl.DateTimeFormat(LOC, { day: "numeric", month: "short", year: "numeric" }).format(dd) : ""; } catch (eD) { }
+    var nA = Math.max(0, g.places.length - 1);
+    return h("button", { key: "rse" + iR, type: "button", onClick: function () { ouvrirResultat(r); }, style: { flex: pt ? "0 0 calc((100% - 20px) / 3)" : "1 1 auto", width: pt ? undefined : "100%", height: pt ? 192 : undefined, justifyContent: pt ? "flex-start" : "center", scrollSnapAlign: "start", minWidth: 0, overflow: "hidden", boxSizing: "border-box", padding: pt ? "8px 7px 9px" : "10px 12px 11px", borderRadius: pt ? 14 : 20, background: "linear-gradient(165deg, rgba(40,74,86,0.55) 0%, " + SURF_E + " 45%, rgba(8,13,16,0.98) 100%)", border: "1px solid " + BORD_E, boxShadow: "0 12px 24px rgba(0,0,0,0.6), 0 3px 6px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.09), inset 0 -14px 22px rgba(0,0,0,0.28)", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", color: IV_E } },
+      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" } },
+        h("svg", { width: pt ? 14 : 18, height: pt ? 14 : 18, viewBox: "0 0 24 24", fill: "none", stroke: CH_E, strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4Zm0 1.5H5c0 2.6 1.3 3.9 3.3 4.2M16 5.5h3c0 2.6-1.3 3.9-3.3 4.2M12 13v3.5M9 20h6M10 16.5h4" })),
+        dateTxt ? h("span", { style: { fontFamily: M, fontSize: pt ? 7.5 : 9, letterSpacing: pt ? 0 : 0.3, textTransform: "uppercase", color: GR2_E, whiteSpace: "nowrap" } }, dateTxt) : null),
+      photo ? h("img", { src: photo, alt: "", loading: "lazy", style: { width: pt ? 40 : 56, height: pt ? 40 : 56, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", margin: "6px auto 0", display: "block", border: "1px solid " + BORD_E } })
+        : h("div", { "aria-hidden": "true", style: { width: pt ? 40 : 56, height: pt ? 40 : 56, flex: "0 0 auto", borderRadius: "50%", margin: "6px auto 0", border: "1px solid " + BORD_E, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: pt ? 17 : 22, color: CH_E } }, String(I.cheval || I.qui || "?").charAt(0).toUpperCase()),
+      h("div", { dir: "auto", style: { marginTop: pt ? 6 : 8, width: "100%", fontFamily: M, fontSize: pt ? 9.5 : 11.5, lineHeight: 1.3, color: IV_E, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } },
+        pl != null ? h("b", { style: { color: CH_E, fontWeight: 700 } }, ordinal(pl) + " ") : null, I.qui,
+        I.cheval ? h("span", { style: { color: GR2_E } }, " " + T("sur", "on", "con", "su", "と", "auf", "على", "/", "van", "de", "av", "из", "z", "중", "از") + " ") : null,
+        I.cheval ? h("span", { style: { color: CH_E } }, I.cheval) : null),
+      h("div", { dir: "auto", style: { marginTop: pt ? 5 : 7, width: "100%", fontFamily: SERIF, fontSize: pt ? 11.5 : 14, fontWeight: 600, lineHeight: 1.25, color: IV_E, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", overflowWrap: "anywhere" } }, nomConcoursPropre(r.concours) || I.lieuNom || "—"),
+      (r.epreuve || r.partants) ? h("div", { dir: "auto", style: { marginTop: 2, width: "100%", fontFamily: M, fontSize: pt ? 8.5 : 9.5, lineHeight: 1.3, color: GR2_E, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, [r.epreuve || "", r.partants ? ("/ " + r.partants) : ""].filter(Boolean).join(" ")) : null,
+      nA ? h("div", { style: { marginTop: pt ? 5 : 7, paddingTop: pt ? 4 : 6, borderTop: "1px solid " + BORD2_E, width: "100%", fontFamily: M, fontSize: pt ? 8 : 9.5, color: GR3_E, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+        "+ " + nA + " " + (nA === 1 ? T("autre classé", "other placed", "otro clasificado", "altro classificato", "件の入賞", "weitere Platzierung", "مصنف آخر", "位其他获得名次者", "andere geplaatste", "outro classificado", "annan placerad", "ещё один призёр", "inny sklasyfikowany", "명 더 순위권", "رتبه‌دار دیگر") : T("autres classés", "others placed", "otros clasificados", "altri classificati", "件の入賞", "weitere Platzierungen", "مصنفون آخرون", "位其他获得名次者", "andere geplaatsten", "outros classificados", "andra placerade", "ещё призёры", "inni sklasyfikowani", "명 더 순위권", "رتبه‌دار دیگر"))) : null);
+  }
+  function railResE() {
+    var n = groupesE.length; if (!n) return null;
+    return n === 1 ? h("div", { key: "s", style: { display: "flex" } }, carteResE(groupesE[0], 0, "seul"))
+      : n === 2 ? h("div", { key: "d", style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } }, groupesE.map(function (g, k) { return carteResE(g, k, "duo"); }))
+      : h("div", { key: "car", "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", alignItems: "stretch", gap: 10, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", margin: "0 -20px", padding: "0 20px 6px", scrollPaddingInline: 20, scrollbarWidth: "none" } }, groupesE.map(function (g, k) { return carteResE(g, k, "car"); }));
+  }
   var nbConcAvant = (function () { var d = new Date(); var deb = (d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1) + "-09-01"; var J = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && j >= deb && J.indexOf(j) < 0) J.push(j); }); return Math.max(0, J.length - 1); })();
   var blocRes = section(h("div", null,
-    enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과", "نتایج اخیر"), "res", (RES_VARIANTE === "B") ? nbConcAvant : autresRes.length, 0),
+    enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과", "نتایج اخیر"), "res", (RES_VARIANTE === "B" || RES_VARIANTE === "E") ? nbConcAvant : autresRes.length, 0),
     resultats === null ? chargement()
       : h("div", null,
         !resVisibles.length ? videCartePh(ICO.coupe, "images/concours-hero-bai-tresse.webp", T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요.", "فعلاً نتیجه‌ای نیست."))
           : (RES_VARIANTE === "M" ? h("div", null, sousTitreRes(), medaillonsRes(), resDetailMed, ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)
-            : (RES_VARIANTE === "A" || RES_VARIANTE === "B") ? h("div", { style: { marginTop: -10 } }, friseRes())
+            : (RES_VARIANTE === "E" && groupesE.length) ? h("div", null, railResE(),
+                (gestion && groupe) ? h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 8 } }, h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 30, padding: 0, border: "none", background: "transparent", color: GR, fontFamily: M, fontSize: 11, cursor: "pointer", whiteSpace: "nowrap" } }, "+ " + T("Importer des résultats", "Import results", "Importar resultados", "Importa risultati", "成績を取り込む", "Ergebnisse importieren", "استيراد النتائج", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기", "وارد کردن نتایج"))) : null,
+                ouvert.res ? h("div", { style: { marginTop: 4 } }, friseRes()) : null)
+            : (RES_VARIANTE === "A" || RES_VARIANTE === "B" || RES_VARIANTE === "E") ? h("div", { style: { marginTop: -10 } }, friseRes())
             : h("div", null, sousTitreRes(), listeBand.map(ligneRes), ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)),   /* 12/11 : bandeau + podiums ; « Voir tout » = les autres */
         /* (529) resultats retires : visibles seulement pour la proprietaire / les gestionnaires, pour les remettre */
         (gestion && resRetires.length) ? h("div", { style: { marginTop: 4 } },
@@ -1282,7 +1331,7 @@ function EcranTeamCompetition() {
             T("Résultats retirés", "Removed results", "Resultados quitados", "Risultati tolti", "外した結果", "Entfernte Ergebnisse", "النتائج المحذوفة", "已移除的成绩", "Verwijderde resultaten", "Resultados removidos", "Borttagna resultat", "Убранные результаты", "Usunięte wyniki", "삭제된 결과", "نتایج برداشته‌شده") + " (" + resRetires.length + ") " + (voirRetires ? "˄" : "˅")),
           voirRetires ? h("div", { style: { opacity: 0.6, marginTop: 6 } }, resRetires.map(carteRes)) : null) : null,
         /* 11/11 22h29 (Blandine : les boutons « ne devraient pas aller ailleurs ? ») : « Importer des résultats » vit sous les résultats */
-        (gestion && groupe && !(RES_VARIANTE === "B" && listeBand.length)) ? h("div", { style: { marginTop: 12 } }, h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
+        (gestion && groupe && !((RES_VARIANTE === "B" || RES_VARIANTE === "E") && listeBand.length)) ? h("div", { style: { marginTop: 12 } }, h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
       T("Importer des r\u00e9sultats", "Import results", "Importar resultados", "Importa risultati", "\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기", "وارد کردن نتایج"))) : null)));
 
   /* ── souvenirs récents ── */

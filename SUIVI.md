@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 00h05 — build 20261113-0005 — Équipe : résultats récents en cartes de l'Écurie · Performances du cavalier : chiffres dépliables
+- hype-ecran-team.js v=56 : « Résultats récents » = mêmes cartes que le rail « Derniers résultats » de la page Écurie (bleu pétrole, coupe, date, photo ronde, « 1er X sur Y », concours, épreuve / partants, « + N autres classés »), une carte par épreuve avec un podium de la saison ; « Voir tout » déplie les concours (classés seulement) ; « + Importer des résultats » discret à droite.
+- hype-ecran-perf-cheval.js v=19 : « En bref » de la page d'un cavalier : toucher l'anneau ou un chiffre déplie la liste des épreuves concernées (✓ = classé, premier quart ; lignes cachées comptées mais pas listées). Textes FR + EN seulement : traductions à faire après validation du français.
+- En essai, invisibles (pas validés) : maquette A2 sur la page d'un CHEVAL (window.__perfChevalA2), variantes B à E de « Ses chevaux » (window.__magVar).
+
 ### 12/11 21h05 — build 20261112-2105 — COFFRE : Modifier, cadenas, pages de santé rassemblées, petit fil des derniers ajouts (Blandine 19h43-19h46)
 - « Modifier » sous chaque document : nom, catégorie (Mes documents / Mon coffre-fort / nouvelle catégorie), cheval, échéance (nouvelle date → le rappel repartira). Carnets de santé : seul le nom se modifie (propriétaire du cheval).
 - Cadenas « Verrouiller / Verrouillé » : un document verrouillé n'a plus de bouton Retirer, et la base refuse de le supprimer (colonne coffre_documents.verrouille + policy coffre_supprimer « and not verrouille », passées le 12/11 19h50).

@@ -9,7 +9,8 @@ function EcranPerformancesCheval(props) {
      le filtre porte sur les CHEVAUX ; droits = ceux du cavalier (ajout et import a son nom, choix des moments forts comme avant). */
   var riderId = (props && props.cavalierId) ? String(props.cavalierId) : "";
   var modeCav = !!riderId;
-  var archSt = React.useState("saison"), chOuvSt = React.useState({});   /* 12/11 19h : archives de la page du cavalier (par saison / par cheval) */
+  var archSt = React.useState("saison"), chOuvSt = React.useState({});
+  var detSt = React.useState(null); var detOuv = detSt[0], setDetOuv = detSt[1];   /* 12/11 20h50 (Blandine 16h36 : « que ça se déplie ») : chiffre de « En bref » déplié */   /* 12/11 19h : archives de la page du cavalier (par saison / par cheval) */
   var app = useApp();
   var tr = app.tr || function (o) { return (o && o.fr) || ""; };
   function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko, fa: fa }); }
@@ -976,7 +977,7 @@ function EcranPerformancesCheval(props) {
   /* 12/11 19h (Blandine, maquette A2 validée : « Ok, super, vas-y, tu peux mettre en ligne ») — page du cavalier façon « groupe compétition » :
      1 En bref (anneau % par concours + 4 chiffres + barre) · 2 Ses chevaux (magazine immersif, photo entière) · 3 Récent (3 cartes basses)
      · 4 Souvenirs (3 moments forts) · 5 Archives (par saison / par cheval). Jamais de zéro ; les lignes masquées ne sont jamais listées. */
-  if (modeCav && base.length) (function () {
+  if (base.length && (modeCav || (typeof window !== "undefined" && window.__perfChevalA2))) (function () {   /* (page du cheval : en essai, pas encore validée) 12/11 23h48 (Blandine « Ok, super, vas-y ») : la maquette A2 sert aussi à la page d'un CHEVAL (ses cavaliers à la place de ses chevaux) */
     var visL = function (f) { return montreMasques || !f.masque; };
     var nPart = 0;
     var sepA2 = function (k) { return h("div", { key: k, "aria-hidden": "true", style: { height: 1, background: "rgba(201,166,107,0.18)", margin: "34px 22px 0" } }); };
@@ -988,9 +989,12 @@ function EcranPerformancesCheval(props) {
     var L_V = function (n) { return n > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승", "پیروزی") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승", "پیروزی"); };
     var L_P = function (n) { return n > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podiów", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대", "سکو"); };
     var L_Q = function (n) { return n > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "次获得名次", "klasseringen", "classificações", "placeringar", "призовых мест", "klasyfikacji", "입상", "رتبه") : T("classement", "placing", "clasificación", "piazzamento", "入賞", "Platzierung", "تصنيف", "次获得名次", "klassering", "classificação", "placering", "призовое место", "klasyfikacja", "입상", "رتبه"); };
-    var chiffre = function (k, v, lib, or, taille) { return h("div", { key: k, style: { textAlign: "center", minWidth: 0 } },
+    var chiffreS = function (k, v, lib, or, taille) { return h("div", { key: k, style: { textAlign: "center", minWidth: 0 } },
       h("div", { style: { fontFamily: SERIF, fontSize: taille || 32, fontWeight: 500, lineHeight: 1, color: or ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
-      h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib)); };
+      h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib)); };   /* chiffres des blocs chevaux : pas de dépliage */
+    var chiffre = function (k, v, lib, or, taille) { var act = detOuv === k; return h("div", { key: k, role: "button", tabIndex: 0, "aria-expanded": act, onClick: function () { setDetOuv(act ? null : k); }, style: { textAlign: "center", minWidth: 0, cursor: "pointer", padding: "6px 2px", borderRadius: 12, border: "1px solid " + (act ? "rgba(201,166,107,0.55)" : "transparent"), background: act ? "rgba(201,166,107,0.06)" : "transparent" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 32, fontWeight: 500, lineHeight: 1, color: or ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, act ? "˄" : "˅"))); };
     var parCheval = function (nm) { var r = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === nm)) r = { id: k, c: c }; }); } catch (eP) { } return r; };
     var ouvrirFiche = function (id) { try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); };
     var meilleur = function (ls) { var pl = ls.filter(function (f) { return f.pl != null && visL(f) && estClasseQ(f); });   /* seulement un vrai classement */ if (!pl.length) return null; return pl.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || String(b.d || "").localeCompare(String(a.d || "")); })[0]; };
@@ -1024,33 +1028,126 @@ function EcranPerformancesCheval(props) {
     var anneau = null;
     if (nJ && nJQ) {
       var pct = Math.round(100 * nJQ / nJ), r = 48, ci = 2 * Math.PI * r;
-      anneau = h("div", { style: { textAlign: "center", flex: "0 0 auto" } },
+      anneau = h("div", { role: "button", tabIndex: 0, "aria-expanded": detOuv === "pct", onClick: function () { setDetOuv(detOuv === "pct" ? null : "pct"); }, style: { textAlign: "center", flex: "0 0 auto", cursor: "pointer", padding: 4, borderRadius: 16, border: "1px solid " + (detOuv === "pct" ? "rgba(201,166,107,0.55)" : "transparent"), background: detOuv === "pct" ? "rgba(201,166,107,0.06)" : "transparent" } },
         h("svg", { width: 128, height: 128, viewBox: "0 0 120 120", role: "img", "aria-label": pct + " %" },
           h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: "rgba(243,238,228,0.1)", strokeWidth: 9 }),
           h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: CHAMP, strokeWidth: 9, strokeLinecap: "round", strokeDasharray: (ci * pct / 100).toFixed(1) + " " + ci.toFixed(1), transform: "rotate(-90 60 60)" }),
           h("text", { x: 60, y: 64, textAnchor: "middle", fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: 34, fill: IVOIRE }, pct + "%")),
         h("div", { style: { fontFamily: SANS, fontSize: 10.5, lineHeight: 1.3, marginTop: -2, color: MUET } },
           T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞 ", "platziert bei ", "مصنف في ", "获得名次 ", "geplaatst op ", "classificado em ", "placerad på ", "в призах на ", "w czołówce na ", "입상 ", "رتبه در ") + nJQ + " " + T("concours", "shows", "concursos", "concorsi", "大会", "Turnieren", "مسابقات", "场赛事", "wedstrijden", "concursos", "tävlingar", "турнирах", "zawodach", "대회", "مسابقه"),
-          h("br"), SUR() + " " + nJ));
+          h("br"), SUR() + " " + nJ, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, detOuv === "pct" ? "˄" : "˅")));
     }
+    /* Détail déplié : sur quoi le chiffre est calculé. Les lignes cachées comptent dans les chiffres mais ne sont jamais listées. */
+    var detail = (function () {
+      if (!detOuv) return null;
+      var court = function (ls) { return ls.slice().sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")) || ((a.pl || 99) - (b.pl || 99)); }); };
+      var expl = null, titre = "", lignesD = [], nbCaches = 0;
+      var avecRes = function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; };
+      var EXPL_Q = T("✓ = classé : dans le premier quart des partants (en préparatoire, seulement la 1re place).", "✓ = placed: in the top quarter of starters (in preparatory classes, 1st place only).");
+      var propre = function (x) { var n = concoursC({ nom: x }); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|D’|D') ?/g, function (m) { return m.toLowerCase(); }); return n; };
+      if (detOuv === "pct") {
+        titre = T("Classé au moins une fois dans " + nJQ + " concours sur " + nJ, "Placed at least once in " + nJQ + " shows out of " + nJ);
+        expl = EXPL_Q;
+        Object.keys(jrs).sort().reverse().forEach(function (jr) {
+          var ls = base.filter(function (f) { return f.d === jr && avecRes(f); });
+          var vis = ls.filter(visL); if (!vis.length) { nbCaches++; return; }
+          var best = vis.filter(estClasseQ).sort(function (a, b) { return a.pl - b.pl; })[0] || vis.slice().sort(function (a, b) { return (a.pl || 99) - (b.pl || 99); })[0];
+          lignesD.push({ f: best, ok: jrs[jr], sous: ls.length > 1 ? ls.length + " " + L_EP(ls.length) : "" });
+        });
+      } else {
+        var filt = detOuv === "v" ? function (f) { return f.pl === 1; } : detOuv === "p" ? function (f) { return f.pl != null && f.pl <= 3; } : detOuv === "q" ? estClasseQ : avecRes;
+        var ls = base.filter(filt);
+        titre = detOuv === "v" ? T("Ses victoires", "Wins") : detOuv === "p" ? T("Ses podiums : 1er, 2e ou 3e", "Podiums: 1st, 2nd or 3rd") : detOuv === "q" ? T("Ses classements", "Placings") : T("Toutes ses épreuves", "All classes");
+        if (detOuv === "q") expl = EXPL_Q;
+        if (detOuv === "e") expl = T("Éliminations et abandons compris. ", "Eliminations and retirements included. ") + EXPL_Q;
+        court(ls).forEach(function (f) { if (!visL(f)) { nbCaches++; return; } lignesD.push({ f: f, ok: (detOuv === "e") ? estClasseQ(f) : true }); });
+      }
+      return h("div", { key: "det", style: { marginTop: 14, padding: "14px 14px 6px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.22)", background: "rgba(243,238,228,0.03)" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 19, lineHeight: 1.2, color: IVOIRE } }, titre),
+        expl ? h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 11, lineHeight: 1.4, color: MUET } }, expl) : null,
+        h("div", { style: { marginTop: 8 } }, lignesD.map(function (L, iL) {
+          var f = L.f;
+          return h("div", { key: "dl" + iL, role: "button", tabIndex: 0, onClick: function () { allerAuFort(f); }, style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderTop: iL ? "1px solid rgba(243,238,228,0.07)" : "none", cursor: "pointer" } },
+            h("span", { "aria-hidden": "true", style: { flex: "0 0 16px", textAlign: "center", fontSize: 12, color: L.ok ? CHAMP : "rgba(243,238,228,0.3)" } }, L.ok ? "✓" : "–"),
+            h("span", { style: { flex: 1, minWidth: 0 } },
+              h("span", { dir: "auto", style: { display: "block", fontFamily: SANS, fontSize: 12.5, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, propre(f.nom) || "—"),
+              h("span", { dir: "auto", style: { display: "block", fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [f.d ? dateLisible(f.d) : "", L.sous || f.ep, L.sous ? "" : f.cav].filter(Boolean).join(" · "))),
+            h("span", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 17, color: f.pl != null && f.pl <= 3 ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, resTxt(f) + (f.pl != null && f.part ? " / " + f.part : "")));
+        })),
+        nbCaches ? h("div", { style: { padding: "8px 0 6px", borderTop: "1px solid rgba(243,238,228,0.07)", fontFamily: SANS, fontSize: 11, color: MUET } },
+          "+ " + nbCaches + " " + (nbCaches > 1 ? T("résultats cachés, comptés aussi", "hidden results, counted too") : T("résultat caché, compté aussi", "hidden result, counted too"))) : null);
+    })();
     g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش")));
     g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
         its.length ? h("div", { style: { flex: 1, display: "grid", gridTemplateColumns: its.length > 1 ? "1fr 1fr" : "1fr", gap: "12px 6px" } }, its) : null),
+      detail,
       h("div", { style: { marginTop: 14 } }, barre(base))));
 
     /* 2 · Ses chevaux — magazine immersif */
-    var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: parCheval(nm) }; }).filter(function (c) { return nbEpDe(c.ls.filter(visL)) > 0; });   /* 12/11 20h (Blandine « Ok vas y ») : un cheval dont tous les résultats sont cachés n a pas de bloc */
+    var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: modeCav ? parCheval(nm) : null, cid: (ls.filter(function (f) { return f.cavId; })[0] || {}).cavId || null }; }).filter(function (c) { return nbEpDe(c.ls.filter(visL)) > 0; });   /* 12/11 20h (Blandine « Ok vas y ») : un cheval dont tous les résultats sont cachés n a pas de bloc */
     if (chx.length) {
-      g.push(sepA2("s2")); g.push(partie("p2", T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش"), T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان")));
+      g.push(sepA2("s2")); g.push(partie("p2", modeCav ? T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش") : T("Ses cavaliers", "The riders"), modeCav ? T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان") : T("Un couple, une histoire", "One pair, one story")));
+      var MV = (typeof window !== "undefined" && window.__magVar) || "A";   /* 12/11 23h55 (Blandine : « avec 5 chevaux ça n'en finit pas », 3-4 propositions) : A = actuel ; B carrousel ; C un grand + lignes ; D grille 2 ; E liste */
+      var infoC = function (c) { var st = hypePerfStatsHisto(c.ls), ne = nbEpDe(c.ls); var ph = c.ch && c.ch.c && c.ch.c.photo_url;
+        var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : ((!modeCav && c.cid) ? function () { try { window.__perfCavalierId = c.cid; } catch (eC) { } setEcran("performances-cavalier"); } : undefined);
+        var txt = [ne ? ne + " " + L_EP(ne) : "", st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : ""].filter(Boolean);
+        return { st: st, ne: ne, ph: ph, ouvrir: ouvrir, txt: txt, b: meilleur(c.ls) }; };
+      var photoEntiere = function (ph, hauteur, rayon) { return h("div", { style: { height: hauteur, background: "#000", borderRadius: rayon || 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" } },
+        ph ? h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { maxWidth: "100%", maxHeight: "100%", display: "block" } }) : h("div", { style: { width: "100%", height: "100%", background: "radial-gradient(120% 90% at 30% 20%, " + PETROLE2 + " 0%, #000 80%)" } })); };
+      var miniC = function (I) { var m = []; if (I.ne) m.push(chiffreS("e", I.ne, L_EP(I.ne), false, 24)); if (I.st.victoires) m.push(chiffreS("v", I.st.victoires, L_V(I.st.victoires), true, 24)); if (I.st.podiums) m.push(chiffreS("p", I.st.podiums, L_P(I.st.podiums), true, 24)); return m; };
+      if (MV === "B") {
+        g.push(h("div", { key: "magB", "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", padding: "18px 22px 4px", scrollPaddingInline: 22, scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } }, chx.map(function (c, i) {
+          var I = infoC(c);
+          return h("div", { key: "b" + i, role: I.ouvrir ? "button" : undefined, onClick: I.ouvrir, style: { flex: "0 0 84%", scrollSnapAlign: "start", border: "1px solid rgba(201,166,107,0.28)", borderRadius: 20, overflow: "hidden", background: "#000", cursor: I.ouvrir ? "pointer" : "default" } },
+            photoEntiere(I.ph, 230),
+            h("div", { style: { padding: "12px 16px 16px" } },
+              h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline" } },
+                h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1.05, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
+                h("div", { style: { fontFamily: SERIF, fontSize: 13, color: "rgba(243,238,228,0.6)", letterSpacing: ".15em", direction: "ltr" } }, ("0" + (i + 1)).slice(-2) + " / " + ("0" + chx.length).slice(-2))),
+              h("div", { style: { display: "flex", gap: 16, marginTop: 10 } }, miniC(I)),
+              h("div", { style: { marginTop: 10 } }, barre(c.ls))));
+        })));
+      } else if (MV === "C" || MV === "E") {
+        var rangeeC = function (c, i) { var I = infoC(c);
+          return h("div", { key: "r" + i, role: I.ouvrir ? "button" : undefined, onClick: I.ouvrir, style: { display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderTop: i ? "1px solid rgba(243,238,228,0.08)" : "none", cursor: I.ouvrir ? "pointer" : "default" } },
+            h("div", { style: { flex: "0 0 74px" } }, photoEntiere(I.ph, 74, 14)),
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.1, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
+              h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 3 } }, I.txt.join(" · ")),
+              h("div", { style: { marginTop: 7 } }, barre(c.ls))),
+            I.ouvrir ? h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 18 } }, rtl ? "‹" : "›") : null); };
+        if (MV === "C") {
+          var I0 = infoC(chx[0]);
+          g.push(h("div", { key: "magC0", role: I0.ouvrir ? "button" : undefined, onClick: I0.ouvrir, style: { margin: "18px 22px 0", border: "1px solid rgba(201,166,107,0.28)", borderRadius: 20, overflow: "hidden", background: "#000", cursor: I0.ouvrir ? "pointer" : "default" } },
+            photoEntiere(I0.ph, 240),
+            h("div", { style: { padding: "12px 16px 16px" } },
+              h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".32em", textTransform: "uppercase", color: CHAMP } }, T("Son partenaire principal", "Main partner")),
+              h("div", { style: { fontFamily: SERIF, fontSize: 36, lineHeight: 1.05, marginTop: 4, color: IVOIRE } }, chx[0].nm),
+              h("div", { style: { display: "flex", gap: 16, marginTop: 10 } }, miniC(I0)),
+              h("div", { style: { marginTop: 10 } }, barre(chx[0].ls)))));
+          if (chx.length > 1) g.push(h("div", { key: "magCr", style: { padding: "12px 22px 0" } }, chx.slice(1).map(function (c, i) { return rangeeC(c, i); })));
+        } else g.push(h("div", { key: "magE", style: { padding: "14px 22px 0" } }, chx.map(rangeeC)));
+      } else if (MV === "D") {
+        g.push(h("div", { key: "magD", style: { display: "grid", gridTemplateColumns: chx.length === 1 ? "1fr" : "1fr 1fr", gap: 10, padding: "18px 22px 0" } }, chx.map(function (c, i) {
+          var I = infoC(c), plein = chx.length % 2 === 1 && i === chx.length - 1 && chx.length > 1;   /* dernier seul = pleine largeur (grille équilibrée) */
+          return h("div", { key: "d" + i, role: I.ouvrir ? "button" : undefined, onClick: I.ouvrir, style: { gridColumn: plein ? "1 / -1" : undefined, border: "1px solid rgba(201,166,107,0.28)", borderRadius: 16, overflow: "hidden", background: "#000", cursor: I.ouvrir ? "pointer" : "default" } },
+            photoEntiere(I.ph, plein ? 190 : 140),
+            h("div", { style: { padding: "8px 11px 11px" } },
+              h("div", { style: { fontFamily: SERIF, fontSize: 21, lineHeight: 1.1, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
+              h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET, marginTop: 3, lineHeight: 1.35 } }, I.txt.join(" · ")),
+              h("div", { style: { marginTop: 7 } }, barre(c.ls))));
+        })));
+      }
       chx.forEach(function (c, i) {
+        if (MV !== "A") return;
         var st = hypePerfStatsHisto(c.ls), ne = nbEpDe(c.ls), b = meilleur(c.ls);
         var ph = c.ch && c.ch.c && c.ch.c.photo_url;
-        var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : undefined;
+        var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : ((!modeCav && c.cid) ? function () { try { window.__perfCavalierId = c.cid; } catch (eC) { } setEcran("performances-cavalier"); } : undefined);
         var mini = [];
-        if (ne) mini.push(chiffre("e", ne, L_EP(ne), false, 28));
-        if (st.victoires) mini.push(chiffre("v", st.victoires, L_V(st.victoires), true, 28));
-        if (st.podiums) mini.push(chiffre("p", st.podiums, L_P(st.podiums), true, 28));
+        if (ne) mini.push(chiffreS("e", ne, L_EP(ne), false, 28));
+        if (st.victoires) mini.push(chiffreS("v", st.victoires, L_V(st.victoires), true, 28));
+        if (st.podiums) mini.push(chiffreS("p", st.podiums, L_P(st.podiums), true, 28));
         g.push(h("div", { key: "mag" + i, "data-perf-cheval-mag": String(i), role: ouvrir ? "button" : undefined, tabIndex: ouvrir ? 0 : undefined, onClick: ouvrir, style: { position: "relative", marginTop: 18, background: "#000", overflow: "hidden", paddingBottom: 20, cursor: ouvrir ? "pointer" : "default" } },
           ph ? h("div", { style: { position: "relative", minHeight: 200, display: "flex", alignItems: "flex-end" } },   /* photo entière ; une photo très large laisse du noir en haut pour le numéro */
             h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
@@ -1062,7 +1159,7 @@ function EcranPerformancesCheval(props) {
             mini.length ? h("div", { style: { display: "flex", gap: 18, marginTop: 10 } }, mini) : null,
             b ? h("div", { style: { fontFamily: SANS, fontSize: 11, marginTop: 8, maxWidth: "72%", color: MUET, lineHeight: 1.4 } }, T("Son meilleur : ", "Best: ", "Su mejor: ", "Il migliore: ", "ベスト：", "Bestes: ", "أفضل نتيجة: ", "最佳：", "Beste: ", "Melhor: ", "Bäst: ", "Лучший: ", "Najlepszy: ", "최고: ", "بهترین: "), h("span", { style: { color: CHAMP } }, rangTxt(b.pl)), [b.ep, b.d ? String(b.d).slice(0, 4) : ""].filter(Boolean).map(function (x) { return " · " + x; }).join("")) : null,
             h("div", { style: { marginTop: 10, maxWidth: "72%" } }, barre(c.ls)),
-            ouvrir ? h("div", { style: { position: "absolute", insetInlineEnd: 0, bottom: 0, fontFamily: SANS, fontSize: 12, color: CHAMP } }, T("Sa fiche", "Profile", "Su ficha", "La scheda", "プロフィール", "Profil", "ملفه", "档案", "Profiel", "Ficha", "Profil", "Профиль", "Profil", "프로필", "پرونده") + (rtl ? " ‹" : " ›")) : null)));
+            ouvrir ? h("div", { style: { position: "absolute", insetInlineEnd: 0, bottom: 0, fontFamily: SANS, fontSize: 12, color: CHAMP } }, (modeCav ? T("Sa fiche", "Profile", "Su ficha", "La scheda", "プロフィール", "Profil", "ملفه", "档案", "Profiel", "Ficha", "Profil", "Профиль", "Profil", "프로필", "پرونده") : T("Ses performances", "Performances")) + (rtl ? " ‹" : " ›")) : null)));
       });
     }
 
@@ -1100,7 +1197,7 @@ function EcranPerformancesCheval(props) {
     var bascBtn = function (cle, lib) { var on = vueA === cle; return h("button", { key: "b" + cle, type: "button", onClick: function () { setVueA(cle); }, style: { flex: 1, minHeight: 38, borderRadius: 999, border: "none", background: on ? "rgba(201,166,107,0.16)" : "transparent", color: on ? "#E6CF9C" : MUET, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", boxShadow: on ? "inset 0 0 0 1px rgba(201,166,107,0.55)" : "none" } }, lib); };
     if (chx.length > 1) d.push(h("div", { key: "basc", style: { display: "flex", gap: 4, padding: 4, margin: "16px 22px 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.12)" } },
       bascBtn("saison", T("Par saison", "By season", "Por temporada", "Per stagione", "シーズン別", "Nach Saison", "حسب الموسم", "按赛季", "Per seizoen", "Por temporada", "Per säsong", "По сезонам", "Według sezonu", "시즌별", "بر اساس فصل")),
-      chx.length > 1 ? bascBtn("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب")) : null));
+      chx.length > 1 ? bascBtn("cheval", (modeCav ? T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب") : T("Par cavalier", "By rider"))) : null));
     if (vueA === "cheval" && chx.length > 1) {
       var chOuv = chOuvSt[0], setChOuv = chOuvSt[1];
       d.push(h("div", { key: "acc", "data-perf-tableau": "1", style: { padding: "0 22px" } }, chx.map(function (c, i) {
@@ -1120,7 +1217,8 @@ function EcranPerformancesCheval(props) {
       d.push(elD[3]); d.push(elD[4]);
     }
     d.push(elD[5]); d.push(elD[7]); d.push(elD[8]);
-    elG = [menuCav].concat(g);
+    if (!modeCav) { d.push(actionsCompactes); d.push(outilCapture); }
+    elG = [modeCav ? menuCav : null].concat(g);
     elD = d;
   })();
   return h("div", { "data-ecran": "performances-cheval", style: racineSt },
