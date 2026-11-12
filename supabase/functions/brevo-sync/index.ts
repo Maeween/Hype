@@ -5,6 +5,8 @@
 // Règles : - nouveau contact -> PRENOM tiré du pseudo (1er mot) ; contact existant -> PRENOM JAMAIS écrasé (prénoms corrigés à la main).
 //          - liste 2 (tous les cavaliers) <- tout le monde sauf EXCLUS (comptes de Blandine et de test).
 //          - liste 4 « Accès offert » <- Premium offert sans Stripe qui expire le 10/12/2026 (OFFRE = acces_offert).
+//          - 12/11 : liste « Pas encore abonnés » (créée si absente) <- comptes sans Premium (ni abonnement actif, ni ambassadeur) ;
+//            un compte qui devient Premium en est retiré à la synchro suivante. Sert au mail de relance.
 //          - GENRE = "m" pour les garçons listés dans GARCONS (sert au « Prêt / Prête » des mails).
 // Appel (par Claude, depuis la base) : select net.http_post(url:='https://ldpjebgtskzdokrublfg.supabase.co/functions/v1/brevo-sync', body:='{}'::jsonb, headers:='{"Content-Type":"application/json"}'::jsonb, timeout_milliseconds:=120000);
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -46,6 +48,8 @@ Deno.serve(async (req: Request) => {
   }
   const { data: profils } = await sb.from("profiles").select("id,pseudo,ecurie,ecurie2,compte_supprime");
   const { data: abos } = await sb.from("abonnements_premium").select("user_id,statut,expire_le,stripe_subscription");
+  const { data: ambas } = await sb.from("hype_ambassadeurs").select("email");
+  const AMB = new Set((ambas || []).map((x: any) => String(x.email || "").toLowerCase()));
   const P = new Map((profils || []).map((p: any) => [p.id, p]));
   const A = new Map((abos || []).map((a: any) => [a.user_id, a]));
   const maintenant = Date.now();
@@ -59,9 +63,16 @@ Deno.serve(async (req: Request) => {
     if (!j.contacts || j.contacts.length < 1000) break;
   }
 
+  let LISTE_PAS_ABONNES = 0;
+  { const r = await fetch(`${B}/contacts/lists?limit=50`, { headers: hb }); const j = r.ok ? await r.json() : {};
+    const l = (j.lists || []).find((x: any) => x.name === "Pas encore abonnés"); if (l) LISTE_PAS_ABONNES = l.id; }
+  if (!LISTE_PAS_ABONNES && !essai) {
+    const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: "Pas encore abonnés", folderId: 1 }) });
+    if (r.ok) LISTE_PAS_ABONNES = (await r.json()).id;
+  }
   if (!essai) { await fetch(`${B}/contacts/attributes/normal/GENRE`, { method: "POST", headers: hb, body: JSON.stringify({ type: "text" }) }); }
 
-  const bilan = { comptes: users.length, ajoutes: [] as string[], mis_a_jour: 0, acces_offert: [] as string[], ignores: 0, erreurs: [] as string[] };
+  const bilan = { comptes: users.length, ajoutes: [] as string[], mis_a_jour: 0, acces_offert: [] as string[], pas_abonnes: 0, liste_pas_abonnes: 0, ignores: 0, erreurs: [] as string[] };
   for (const u of users) {
     const p: any = P.get(u.id) || {};
     if (EXCLUS.has(u.email) || /@example\.com$/.test(u.email) || p.compte_supprime) { bilan.ignores++; continue; }
@@ -77,10 +88,15 @@ Deno.serve(async (req: Request) => {
     if (PRENOMS[u.email] && (!deja || !(deja.attributes || {}).PRENOM)) attrs.PRENOM = PRENOMS[u.email];
     if (!deja) { const pr = PRENOMS[u.email] || prenomDe(p.pseudo); if (pr) attrs.PRENOM = pr; }
     const listes = [LISTE_TOUS]; if (offert) { listes.push(LISTE_ACCES_OFFERT); bilan.acces_offert.push(u.email); }
+    const sansPremium = !premium && !AMB.has(u.email);
+    const retirer: number[] = [];
+    if (LISTE_PAS_ABONNES) { if (sansPremium) listes.push(LISTE_PAS_ABONNES); else if (deja && (deja.listIds || []).includes(LISTE_PAS_ABONNES)) retirer.push(LISTE_PAS_ABONNES); }
+    if (sansPremium) bilan.pas_abonnes++;
     if (essai) { if (!deja) bilan.ajoutes.push(u.email); else bilan.mis_a_jour++; continue; }
-    const r = await fetch(`${B}/contacts`, { method: "POST", headers: hb, body: JSON.stringify({ email: u.email, attributes: attrs, listIds: listes, updateEnabled: true }) });
+    const r = await fetch(`${B}/contacts`, { method: "POST", headers: hb, body: JSON.stringify({ email: u.email, attributes: attrs, listIds: listes, ...(retirer.length ? { unlinkListIds: retirer } : {}), updateEnabled: true }) });
     if (r.ok || r.status === 204) { if (!deja) bilan.ajoutes.push(u.email); else bilan.mis_a_jour++; }
     else bilan.erreurs.push(`${u.email}: ${r.status} ${(await r.text()).slice(0, 120)}`);
   }
+  bilan.liste_pas_abonnes = LISTE_PAS_ABONNES;
   return rep({ ok: bilan.erreurs.length === 0, essai, ...bilan });
 });
