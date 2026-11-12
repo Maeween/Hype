@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 08h11 — build 20261112-0815 — Page équipe : titre « Agenda de l'équipe » au-dessus du prochain concours (Blandine « Ok »)
+- hype-ecran-team.js ?v=43. Le titre (avec Voir tout et +) passe avant le bandeau du prochain concours, qui fait partie de l'agenda.
+- En attente : forme des lignes d'agenda (maquettes A lignes plus hautes / B cartes photo / C petit bandeau centré, Claude conseille B), classements en deux cartes (A/B/C), place de Ma saison.
+
 ### 12/11 — Lien de partage de l'équipe : 2hype.fr/equipe/ (aperçu WhatsApp avec Hypo)
 - Demande de Blandine (08h07 : « c'est pas le bon design au-dessus, c'est pas Hypo ») : equipe/index.html (noindex), même image que /offert/ (images/hype-mois-offert-partage.jpg), titre « 🥇 Notre équipe compétition sur Hype », renvoi immédiat vers /#team-competition. Aucun changement dans l'appli (index.html non modifié, pas de nouveau numéro de version).
 

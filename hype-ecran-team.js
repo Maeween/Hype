@@ -898,7 +898,7 @@ function EcranTeamCompetition() {
       h("button", { type: "button", onClick: function () { if (miroir) ouvrirRdvPasse(ev); else ouvrirEv(ev); }, style: { alignSelf: droite ? "flex-end" : "flex-start", marginTop: 7, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
         (miroir ? T("Voir les résultats", "See the results", "Ver los resultados", "Vedi i risultati", "結果を見る", "Ergebnisse ansehen", "عرض النتائج", "查看成绩", "Uitslagen bekijken", "Ver os resultados", "Se resultaten", "Смотреть результаты", "Zobacz wyniki", "결과 보기") : T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기")), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
   }
-  var uneConcours = prochainC ? h("div", { style: { marginTop: 22 } }, bandeauConcours(prochainC, false)) : null;
+  var uneConcours = prochainC ? bandeauConcours(prochainC, false) : null;
   function ligneAg(ev, passe) {
     var cle = String(ev.id), ouv = rdvOuvert === cle;
     /* 12/11 02h31 (Blandine : « une photo par défaut quand il n'y a rien pour un concours ») : sans affiche, la photo de thème
@@ -920,8 +920,8 @@ function EcranTeamCompetition() {
   }
   var nbAgVisibles = 3;
   var blocAg = section(h("div", null,
-    uneConcours ? h("div", { style: { margin: "0 -20px 34px" } }, uneConcours) : null,
     enTete(T("Agenda de l’équipe", "Team calendar", "Agenda del equipo", "Agenda della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "团队日程", "Agenda van het team", "Agenda da equipa", "Lagets kalender", "Календарь команды", "Kalendarz drużyny", "팀 일정"), "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv),
+    uneConcours ? h("div", { style: { margin: "-6px -20px 10px" } }, uneConcours) : null,
     agenda === null ? chargement()
       : h("div", null,
           !agendaSansUne.length && !prochainC ? videCartePh(ICO.agenda, "images/concours-carte-passages.webp", T("Aucun rendez-vous à venir pour l’instant.", "No upcoming events yet.", "Aún no hay citas próximas.", "Nessun appuntamento in arrivo per ora.", "今後の予定はまだありません。", "Noch keine anstehenden Termine.", "لا توجد مواعيد قادمة حاليا.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")) : null,
