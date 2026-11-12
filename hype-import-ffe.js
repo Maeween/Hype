@@ -1265,6 +1265,7 @@
         blocCreer += "</div>";
       }
     } catch (eBc) { blocCreer = ""; }
+    if (E.creees && E.creees.length) blocOg = '<div class="hi-aide" style="margin-top:12px"><b>' + E.creees.length + (E.creees.length > 1 ? " fiches créées" : " fiche créée") + '</b><br>' + E.creees.map(ech).join(", ") + '. Leurs résultats y sont rangés.</div>' + blocOg;   /* 13/11 */
     return '<div class="hi-fin"><div class="ic">' + (n > 0 ? "🏆" : "✓") + '</div>' +
       "<b>" + titre + "</b><span>" + phrase + "</span></div>" + blocCreer + blocOg +
       '<div class="hi-pied"><button class="hi-bt" data-hi="encore">Importer une autre saison</button>' +

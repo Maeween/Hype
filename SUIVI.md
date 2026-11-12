@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h30 — build 20261113-0130 — Import : chevaux inconnus plus jamais perdus quand le reste est déjà là
+- Constat (Blandine, import de son .xls) : « Cette saison était déjà là — 67 lignes » : les 67 = lignes des chevaux connus (Vif Bellevue, Umea Borderie, Elfe de Feinn, Orlena), toutes en doublon ; les 57 lignes des 12 chevaux sans fiche avaient disparu sans un mot.
+- Cause : enregistrerImportFFE (index.html) sortait par « if (!neufs.length) return { n, doublons… } » SANS renvoyer inconnus/ambigus -> pas de création automatique des fiches, écran « déjà là ». Corrigé (inconnus + ambigus renvoyés).
+- hype-import-ffe.js v=37 : l'écran de fin liste les fiches créées.
+- Note : la recherche du sélecteur de fichiers de l'iPhone ne trouve pas toujours un fichier par son nom — c'est le système, pas Hype.
+
 ### 13/11 01h25 — build 20261113-0125 — Import : l'écran annonce le fichier .xls
 - hype-import-ffe.js v=36 : bouton « Choisir un fichier » (avant « Choisir un PDF ») + « PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet ». Sert aussi de repère : si l'écran dit encore « Choisir un PDF », le téléphone a l'ancienne version. Blandine ne retrouve pas son .xls dans le sélecteur (ni dans Téléchargements) — à suivre ; elle veut que l'OUTIL sache le faire, pas un import à la main.
 
