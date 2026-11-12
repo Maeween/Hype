@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h20 — build 20261113-0120 — Performances du cavalier : archives en couvertures de saison, tout resserré
+- hype-ecran-perf-cheval.js v=24 :
+  - « Tous tes résultats » = version I validée (« c'est déjà vachement plus sympa… ok ») : un bandeau par saison (année, chiffres, cheval principal en fondu, alterné gauche/droite, courbe dorée entre deux saisons) ; on touche pour ouvrir la liste de la saison ; points de qualification seulement pour la saison en cours ; l'ancien tableau des saisons n'est plus affiché ;
+  - titres de partie réduits (34 -> 24, « ça viole les yeux »), années des bandeaux 38 -> 26, bandeaux 170 -> 128 px ;
+  - « Tes chevaux » : cheval principal en carte basse (photo entière 96 px à gauche, nom, une ligne de chiffres avec classements), autres chevaux en lignes fines ; dépliage des 10 meilleurs en plus petit.
+- Reste en essai (invisible) : autres propositions d'archives (window.__archVar), page d'un cheval au nouveau design (window.__perfChevalA2).
+
 ### 13/11 01h15 — build 20261113-0115 — Performances : classements de chaque cheval
 - hype-ecran-perf-cheval.js v=23 : « Tes chevaux » affiche aussi le nombre de classements (premier quart) de chaque cheval (Blandine : Vif Bellevue « 53 épreuves, 2 podiums » sans ses 4e sur 85, 68, 59…). 5 nouvelles propositions « magazine » des archives en essai (window.__archVar = I…M), invisibles.
 
