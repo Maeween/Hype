@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 08h31 — build 20261112-0835 — Page équipe : Souvenirs en éventails, Ma saison avant Souvenirs, Classements sous Souvenirs (Blandine « C'est mieux déjà vas-y »)
+- hype-ecran-team.js ?v=45.
+- Souvenirs : titre « Nos plus beaux moments » ; dernières photos en éventail à gauche (→ toutes les photos dépliées sur place, il n'existe pas de page photos de l'équipe), dernières vidéos en éventail à droite (→ page de tous les parcours filmés). Case en pointillés quand il n'y a rien (« + Ajouter un parcours »). Les cartes « Nos photos » / « En piste » et la rangée de 3 vignettes disparaissent.
+- Ordre : La saison = agenda, résultats, Ma saison ; Souvenirs ; puis Classements (descendus sous Souvenirs à sa demande).
+- Rappel Blandine : ne rien publier tant qu'elle n'a pas validé la capture.
+- En attente : forme des lignes d'agenda (A/B/C), classements en deux cartes (A/B/C), page photos de l'équipe à créer peut-être.
+
 ### 12/11 08h15 — build 20261112-0820 — Agenda : même espace au-dessus et au-dessous des lignes (Blandine)
 - hype-ecran-team.js ?v=44. Espace entre le bandeau du prochain concours et la 1re ligne d'agenda passé de 18 à 34 px, comme entre la dernière ligne et le bandeau du dernier concours (mesuré : 34 / 34).
 - En attente : forme des lignes d'agenda (A/B/C), classements en deux cartes (A/B/C), Souvenirs (maquettes A mosaïque / B deux cartes / C le film, Claude conseille C), place de Ma saison.

@@ -1226,12 +1226,52 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
     carteBasse("svvi", ICO.video, T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로"),
       nbVidsSv ? (nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상"))) : T("Les parcours de l'équipe", "The team's rounds", "Los recorridos del equipo", "I percorsi della squadra", "チームの走行", "Die Ritte des Teams", "جولات الفريق", "团队的比赛视频", "De rondes van het team", "Os percursos da equipa", "Lagets rundor", "Маршруты команды", "Przejazdy drużyny", "팀의 주행 영상"),
       "images/galop2-hero-bai-entier.webp", function () { ouvrirMedias("videos"); }, svLarge ? { marginBottom: 0 } : null));
+  /* 12/11 08h29 (Blandine, maquette « F » retenue) : Souvenirs = « Nos plus beaux moments », un seul bloc :
+     les dernières photos en éventail à gauche (→ toutes les photos), les dernières vidéos à droite (→ tous les parcours filmés,
+     tous concours confondus). Une case vide garde sa place (« + Ajouter un parcours ») pour que le bloc reste équilibré. */
+  var FAN_P = [["2%", 14, -7], ["22%", 4, 3], ["40%", 18, 9]], FAN_V = [["4%", 6, -6], ["30%", 0, 2], ["54%", 10, 8]];
+  function eventail(srcs, video, onClick) {
+    var pos = video ? FAN_V : FAN_P;
+    return h("button", { type: "button", onClick: onClick, "aria-label": video ? T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상") : T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"),
+        style: { position: "relative", display: "block", width: "100%", height: svLarge ? 260 : 170, padding: 0, border: "none", background: "transparent", cursor: "pointer" } },
+      srcs.slice(0, 3).map(function (src, k) {
+        var P = pos[k];
+        return h("span", { key: k, style: { position: "absolute", left: P[0], top: P[1], width: video ? "46%" : "62%", aspectRatio: video ? "9 / 16" : "4 / 5", maxHeight: "92%", borderRadius: 10, overflow: "hidden", border: "2px solid " + BG, boxShadow: "0 8px 18px rgba(0,0,0,0.55)", background: "#000", transform: "rotate(" + P[2] + "deg)" } },
+          h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+          (video && k === Math.min(srcs.length, 3) - 1) ? h("span", { style: { position: "absolute", top: 6, right: 6, width: 22, height: 22, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(244,241,234,0.6)", display: "flex", alignItems: "center", justifyContent: "center" } },
+            h("svg", { width: 8, height: 9, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV }))) : null);
+      }));
+  }
+  function caseVide(txt, onClick) {
+    return h("button", { type: "button", onClick: onClick, style: { width: "100%", height: svLarge ? 260 : 170, border: "1px dashed rgba(244,241,234,0.18)", borderRadius: 12, background: "transparent", color: "rgba(244,241,234,0.5)", fontFamily: M, fontSize: 11, lineHeight: 1.5, padding: "0 12px", cursor: onClick ? "pointer" : "default", whiteSpace: "pre-line" } }, txt);
+  }
+  function legendeSv(sur, txt, onClick) {
+    return h("button", { type: "button", onClick: onClick, style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginTop: 12, padding: 0, border: "none", background: "transparent", color: IV, textAlign: "start", cursor: onClick ? "pointer" : "default" } },
+      h("span", null,
+        h("span", { style: { display: "block", fontFamily: M, fontSize: 9, letterSpacing: 1.6, textTransform: "uppercase", color: "rgba(244,241,234,0.5)", marginBottom: 2 } }, sur),
+        h("span", { style: { fontFamily: M, fontSize: 12 } }, txt)),
+      onClick ? h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›") : null);
+  }
+  var svPhotosTri = svPhotos.slice().sort(function (a2, b2) { return String(b2.d || "").localeCompare(String(a2.d || "")); });
+  var srcPhotos = svPhotosTri.map(function (x) { return vignette(x.u); }).filter(Boolean);
+  var srcVids = svVids.map(function (v) { return v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, 300, 534) : v.vignette) : ""; }).filter(Boolean);
+  var ouvrirPhotosSv = svPhotos.length ? function () { basculer("sv"); } : null;
+  var ouvrirVidsSv = function () { ouvrirMedias("videos"); };
+  var txtPhotos = svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진"));
+  var txtVids = nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상"));
+  var SUR_P = T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진");
+  var SUR_V = T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상");
   var blocSv = section(h("div", null,
+    h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: grandEq ? 36 : 26, lineHeight: 1.1, color: IV, marginBottom: 16 } }, T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간")),
     (souvenirs === null && vidsRecentes === null) ? chargement()
-      : (!svMix.length ? videCartePh(ICO.photo, "images/concours-carte-equipe.webp", T("Aucun souvenir pour l’instant.", "No memories yet.", "Aún no hay recuerdos.", "Nessun ricordo per ora.", "まだ思い出はありません。", "Noch keine Erinnerungen.", "لا توجد ذكريات حاليا.", "暂时还没有回忆。", "Nog geen herinneringen.", "Nenhuma lembrança por enquanto.", "Inga minnen ännu.", "Пока нет воспоминаний.", "Na razie brak wspomnień.", "아직 추억이 없어요."))
-        : h("div", { "data-noswipe": "1", style: { display: "flex", gap: 12, overflowX: svLarge ? "hidden" : "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: 2, scrollbarWidth: "none" } }, svMix.map(tuileSv))),
-    accesSv,
-    ouvert.sv && svPhotos.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + (svLarge ? 6 : 3) + ", minmax(0, 1fr))", gap: 8, marginTop: 12 } }, svPhotos.map(tuile)) : null), true);
+      : h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 30 } },
+          h("div", null,
+            srcPhotos.length ? eventail(srcPhotos, false, ouvrirPhotosSv) : caseVide(T("Pas encore de photo", "No photo yet", "Aún no hay fotos", "Ancora nessuna foto", "まだ写真はありません", "Noch kein Foto", "لا توجد صور بعد", "还没有照片", "Nog geen foto", "Ainda sem fotos", "Inga foton ännu", "Пока нет фото", "Jeszcze brak zdjęć", "아직 사진이 없어요"), null),
+            legendeSv(SUR_P, txtPhotos, ouvrirPhotosSv)),
+          h("div", null,
+            srcVids.length ? eventail(srcVids, true, ouvrirVidsSv) : caseVide(T("Pas encore de vidéo\n+ Ajouter un parcours", "No video yet\n+ Add a round", "Aún no hay vídeos\n+ Añadir un recorrido", "Ancora nessun video\n+ Aggiungi un percorso", "まだ動画はありません\n+ 走行を追加", "Noch kein Video\n+ Ritt hinzufügen", "لا يوجد فيديو بعد\n+ أضف جولة", "还没有视频\n+ 添加一段比赛", "Nog geen video\n+ Ronde toevoegen", "Ainda sem vídeos\n+ Adicionar um percurso", "Ingen video ännu\n+ Lägg till en runda", "Пока нет видео\n+ Добавить маршрут", "Jeszcze brak filmów\n+ Dodaj przejazd", "아직 영상이 없어요\n+ 주행 추가"), ouvrirVidsSv),
+            legendeSv(SUR_V, txtVids, ouvrirVidsSv))),
+    ouvert.sv && svPhotos.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + (svLarge ? 6 : 3) + ", minmax(0, 1fr))", gap: 8, marginTop: 16 } }, svPhotos.map(tuile)) : null), true);
 
   /* ── panneau « Gérer les membres » (propriétaire / gestionnaires ; la base tranche) ── */
   async function ajouterMembre(p) {
@@ -1374,8 +1414,8 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
     partie(PARTIES[0].id, 1, PARTIES[0].lab, null, blocGerer), blocEquipe, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "34px 0 6px" } }, lienSaison) : null, blocClass, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, trait(),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "34px 0 6px" } }, lienSaison) : null, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, h("div", { key: "clsv", style: { paddingTop: 34 } }, blocClass), trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
