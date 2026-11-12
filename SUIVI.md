@@ -88,6 +88,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Nos chevaux : images/bandeau-equipe-chevaux-5.webp (palomino dans les arbres, ombre + texte à DROITE) — ombres alternées gauche / droite comme demandé.
 - Images préparées par ChatGPT à partir des vraies photos ; Blandine a relevé des erreurs de retouche IA sur une version précédente de l oxer (barres, chandelier dédoublé) — si besoin, refaire à partir des originaux sans texte.
 - hype-ecran-team.js v=35 (texte des bandeaux « pleins » remonté au-dessus des barres ; miroir possible en mode plein).
+### 12/11 02h07 — build 20261112-0305 — Horaires depuis la photo + « L'équipe » dépliée (Blandine « Ok »)
+- hype-ecran-saison.js v=139 — lireProgramme (Jour J, « Les passages ») : quand la photo ne donne que l'heure de DÉBUT des épreuves, le N° de passage déjà enregistré (ordre1..5 = concours_tours.ordre_passage) sert au calcul hsEntreePiste ; avant, tout le monde tombait à l'heure de début (Versailles 15/11 : 14 passages à 08:00, non enregistrés). À refaire par Blandine : reprendre la photo des horaires.
+- hype-ecran-team.js v=36 — dépliés : portraits 4:5 qui défilent (proposition 4 du 11/11) pour les cavaliers, même format pour les chevaux (nom + points, effet photo HYPE_PH_SOLEIL), 40 px d'air sous le bandeau, apparition en fondu.
+- En attente : maquette du récapitulatif des engagements allégé (replié par défaut, une ligne par cavalier / par cheval) — montrée 02h05.
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').

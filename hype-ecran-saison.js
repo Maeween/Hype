@@ -6432,12 +6432,16 @@ function EcranJourJ(props) {
         var p = lu.passages.filter(function (x) { return x && (hsMemePers(x.cavalier, l.nom) || (ch && memeCh(x.cheval, ch))) && (!x.cheval || !ch || memeCh(x.cheval, ch)); })[0] || null;
         var eL = lu.epreuves.filter(function (x) { return x && (memeEp(x.nom, ep) || (p && (memeEp(x.nom, p.epreuve) || (x.numero && norm(x.numero) === norm(p.epreuve))))); })[0] || null;
         var heure = "", source = "";
+        /* 12/11 02h04 (Blandine : « l'outil n'arrive pas à faire le rapprochement entre les horaires et les heures de passage : tout le monde
+           à la même heure en début d'épreuve ») : la photo ne donnait que l'heure de DÉBUT de l'épreuve ; le N° de passage déjà connu
+           (liste de départ importée avant, ordre1..5 de la ligne) n'était pas utilisé. Il sert maintenant au calcul. */
+        var ordreConnu = (p && p.ordre) || l["ordre" + n] || null;
         if (p && p.heure) { heure = hsHeurePropre(p.heure); source = F("heure de passage lue"); }
-        else if (p && p.ordre && eL && eL.heure && hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep)) { var eP1 = hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), p.ordre, eL.nom || ep); heure = hsHeure(eP1.min); source = F("entrée en piste estimée") + " · " + eP1.parHeure + F(" cavaliers à l’heure") + (eP1.n > 15 ? " · " + F("à cheval vers le n° ") + eP1.aCheval : ""); }
+        else if (ordreConnu && eL && eL.heure && hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), ordreConnu, eL.nom || ep)) { var eP1 = hsEntreePiste(hsMinutes(hsHeurePropre(eL.heure)), ordreConnu, eL.nom || ep); heure = hsHeure(eP1.min); source = F("entrée en piste estimée") + " · " + eP1.parHeure + F(" cavaliers à l’heure") + (eP1.n > 15 ? " · " + F("à cheval vers le n° ") + eP1.aCheval : ""); }
         else if (eL && eL.heure) { heure = hsHeurePropre(eL.heure); source = F("début de l’épreuve (ordre pas encore connu)"); }
         var piste = String((p && p.piste) || (eL && eL.piste) || "").trim();
         if (!heure && !piste) return;
-        props.push({ i: i, n: n, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, num: eL && eL.numero ? String(eL.numero) : "", ordre: p && p.ordre ? String(p.ordre) : "", coche: true });
+        props.push({ i: i, n: n, nom: l.nom, ch: ch, ep: ep, heure: heure, piste: piste, source: source, num: eL && eL.numero ? String(eL.numero) : "", ordre: ordreConnu ? String(ordreConnu) : "", coche: true });
       }); });
       setProg({ props: props, epreuves: lu.epreuves });
       setProgLect(props.length ? "" : (lu.epreuves.length ? F("J’ai lu les épreuves, mais aucune ne correspond à celles de tes engagements.") : (hsAdresseDiff(lu.adresse, ev && ev.lieu) ? "" : F("Je n’ai rien trouvé d’utilisable sur cette image."))));

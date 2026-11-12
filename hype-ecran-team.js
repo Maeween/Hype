@@ -677,7 +677,25 @@ function EcranTeamCompetition() {
       h("span", { "aria-hidden": "true", style: { display: "block", width: 18, height: 1, background: OR, margin: "8px auto 0" } }));
   }
   function grilleEq(cle, items) {
-    return h("div", { id: "eq-liste-" + cle, style: { display: "grid", gridTemplateColumns: grandEq ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: 18, rowGap: 28, padding: "22px 20px 30px" } }, items);
+    return h("div", { id: "eq-liste-" + cle, style: { display: "grid", gridTemplateColumns: grandEq ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: 24, rowGap: 34, padding: "52px 30px 46px", animation: "eqDeplie .35s ease" } }, h("style", { key: "st" }, "@keyframes eqDeplie{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}"), items);   /* 12/11 01h55 (Blandine : « ça saute à la gueule, aère plus ») */
+  }
+  /* 12/11 01h56 (Blandine : « les cartes des cavaliers devaient pas être comme ça… aligne les chevaux sur les cavaliers, ça fait trop gros ») :
+     dépliés, on retrouve les portraits 4:5 qui défilent (proposition 4 du 11/11 : 100 px, 132 dès 820 px, nom + cheval dessous) ;
+     les chevaux prennent EXACTEMENT le même format (nom + points). */
+  function carteChEq(c) {
+    var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 280, 350) : c.photo_url) : "";
+    var pc = ptsChevaux[c.id] || 0;
+    return h("button", { key: "che" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { display: "block", flex: grandEq ? "0 0 132px" : "0 0 100px", padding: 0, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer", scrollSnapAlign: "start" } },
+      h("div", { style: { position: "relative", aspectRatio: "4 / 5", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#0D1318" } },
+        src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", className: "hps-f", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+          : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 34, color: "rgba(244,241,234,0.5)" } }, (c.nom || "?").charAt(0).toUpperCase()),
+        (src && typeof hypeVoileSoleil === "function") ? hypeVoileSoleil("che" + c.id) : null),   /* 12/11 01h57 (Blandine) : l'effet photo des chevaux de l'appli (lumière dorée, bords assombris) */
+      h("div", { style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.12, marginTop: 6 } }, c.nom || ""),
+      pc > 0 ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(244,241,234,0.6)", marginTop: 2, lineHeight: 1.3 } }, libPts(pc)) : null);
+  }
+  function rangeeEq(cle, items) {
+    return h("div", { id: "eq-liste-" + cle, "data-noswipe": "1", style: { display: "flex", alignItems: "flex-start", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", padding: "40px 20px 36px", scrollPaddingInline: 20, animation: "eqDeplie .35s ease" } },
+      h("style", { key: "st" }, "@keyframes eqDeplie{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}" + ((typeof HYPE_PH_SOLEIL_CSS !== "undefined") ? HYPE_PH_SOLEIL_CSS : "")), items);
   }
   var chevauxSaison = (chevaux || []).slice().sort(function (a, b) { return ((ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
   var blocEquipe = h("div", { key: "blocEq", style: { marginTop: 18 } },
@@ -685,12 +703,12 @@ function EcranTeamCompetition() {
       T("Une équipe soudée, passionnée et engagée.", "A close-knit, passionate and committed team.", "Un equipo unido, apasionado y comprometido.", "Una squadra unita, appassionata e impegnata.", "結束が固く、情熱的で、ひたむきなチーム。", "Ein eingeschworenes, leidenschaftliches und engagiertes Team.", "فريق متماسك، شغوف وملتزم.", "一支团结、热情、投入的队伍。", "Een hecht, gepassioneerd en betrokken team.", "Uma equipa unida, apaixonada e empenhada.", "Ett sammansvetsat, passionerat och engagerat lag.", "Сплочённая, увлечённая и преданная команда.", "Zgrany, pełen pasji i zaangażowany zespół.", "끈끈하고 열정적이며 헌신적인 팀."),
       T("Voir les cavaliers", "See the riders", "Ver los jinetes", "Vedi i cavalieri", "ライダーを見る", "Reiter ansehen", "عرض الفرسان", "查看骑手", "Ruiters bekijken", "Ver os cavaleiros", "Se ryttarna", "Смотреть всадников", "Zobacz jeźdźców", "기수 보기"), BANDEAU_EQ_CAV, false, false, BANDEAU_EQ_CAV_PLEIN),   /* 12/11 01h51 : la palomino sur l oxer (dernière envoyée), ombre à gauche */
     ouvert.bcav ? (membres === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
-      : grilleEq("bcav", (membres || []).map(function (p) { return tuileEq("tcv" + p.id, photoProfil(p), (p.pseudo || "") + (p.role === "coach" ? " · Coach" : ""), chevalDuCav[p.id] || "", function () { ouvrirCavaliere(p); }); }))) : null,
+      : rangeeEq("bcav", (membres || []).map(carteCav))) : null,
     bandeauEq("bch", T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"),
       T("Des partenaires de confiance.", "Partners we can trust.", "Compañeros de confianza.", "Compagni di fiducia.", "信頼できるパートナー。", "Partner, denen wir vertrauen.", "شركاء موثوقون.", "值得信赖的伙伴。", "Partners om op te vertrouwen.", "Parceiros de confiança.", "Partner att lita på.", "Надёжные партнёры.", "Zaufani partnerzy.", "믿음직한 파트너."),
       T("Voir les chevaux", "See the horses", "Ver los caballos", "Vedi i cavalli", "馬を見る", "Pferde ansehen", "عرض الخيول", "查看马匹", "Paarden bekijken", "Ver os cavalos", "Se hästarna", "Смотреть лошадей", "Zobacz konie", "말 보기"), BANDEAU_EQ_CH, true, false, BANDEAU_EQ_CH_PLEIN),   /* 12/11 01h51 (Blandine : « passer le sombre à droite ») : la palomino dans les arbres en miroir → ombre et texte à droite */
     ouvert.bch ? (chevaux === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
-      : grilleEq("bch", chevauxSaison.map(function (c) { var pc = ptsChevaux[c.id] || 0; return tuileEq("tch" + c.id, c.photo_url || "", c.nom || "", pc > 0 ? libPts(pc) : "", function () { ouvrirCheval(c.id); }, true); }))) : null,
+      : rangeeEq("bch", chevauxSaison.map(carteChEq))) : null,
     h("div", { style: { borderTop: "1px solid rgba(244,241,234,0.08)" } }),
     (modifGroupe && groupe && typeof CreationEquipeEH === "function") ? h(CreationEquipeEH, { clef: groupe.club_clef, club: TEAM_CLUB, groupe: groupe, communaute: groupe.type === "loisir", chevaux: [], piquets: [],
       onFermer: function () { setModifGroupe(false); },
