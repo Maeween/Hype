@@ -38,7 +38,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     pensions: { img: "images/communaute-carte-ecuries.webp", pos: "60% 50%" },
     planning: { img: "images/pansage-comprendre-2.webp", pos: "50% 40%" },
     liaison: { img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%" },
-    paddocks: { img: "images/mes-chevaux-fond-couchant.webp", pos: "50% 35%" }
+    paddocks: { img: "images/mes-chevaux-fond-couchant.webp", pos: "50% 35%" },
+    coffre: { img: "images/JOURNAL_CARNET_FOND.webp", pos: "45% 50%" }   /* 12/11 Mon coffre-fort */
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -1260,11 +1261,11 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       props.sortes ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-so-" + type }, "Quel papier"),
         h("select", { id: "hgd-so-" + type, value: sorte, onChange: function (e) { setSorte(e.target.value); } },
           [h("option", { key: "", value: "" }, "Choisir…")].concat(props.sortes.map(function (x) { return h("option", { key: x, value: x }, x); })))) : null,
-      props.sortes ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-qui-" + type }, "À qui il appartient (facultatif)"),
+      (props.sortes && !props.sansQui) ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-qui-" + type }, "À qui il appartient (facultatif)"),
         h("input", { id: "hgd-qui-" + type, type: "text", value: qui, maxLength: 60, placeholder: "Prénom et nom", onChange: function (e) { setQui(e.target.value); } })) : null,
       props.avecDate ? h("div", { className: "hg-f", style: { marginTop: 10 } }, h("label", { htmlFor: "hgd-val-" + type }, "Valable jusqu'au (facultatif)"),
         h("input", { id: "hgd-val-" + type, type: "date", value: valable, onChange: function (e) { setValable(e.target.value); } })) : null,
-      h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : props.bouton),
+      h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { if (props.bloque) { if (props.onBloque) props.onBloque(); return; } try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : props.bouton),   /* 12/11 : coffre de l'écurie réservé à Premium */
       h("input", { ref: refFichier, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ""; envoyer(f); } }),
       msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null);
   }
@@ -1580,6 +1581,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         if (v.assurance_fin) items.push({ k: "as" + v.id, date: String(v.assurance_fin).slice(0, 10), ch: null, titre: "Assurance du véhicule", sous: v.nom + (v.assureur ? " · " + v.assureur : ""), photo: PHOTOS.camion, clic: ouvrirCam });
       });
       (d.docsReg || []).forEach(function (x) { if (x.type === "camion" && x.valable_jusqu) items.push({ k: "dv" + x.id, date: String(x.valable_jusqu).slice(0, 10), ch: null, titre: x.titre || "Papier du camion", sous: "Fin de validité · papier du camion", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } }); });
+      (d.docsReg || []).forEach(function (x) { if (x.type === "autre" && x.valable_jusqu) items.push({ k: "dc" + x.id, date: String(x.valable_jusqu).slice(0, 10), ch: null, titre: x.titre || "Document de l'écurie", sous: "Fin de validité · coffre de l'écurie", photo: PHOTOS.coffre, clic: function () { try { window.__coffreOnglet = "ecurie"; } catch (eO) { } ouvrir("coffre"); } }); });   /* 12/11 */
       if (d.fiche && d.fiche.autorisation_transport_fin) items.push({ k: "aut", date: String(d.fiche.autorisation_transport_fin).slice(0, 10), ch: null, titre: "Autorisation de transport", sous: "Fin de validité · à renouveler auprès de la DDPP", photo: PHOTOS.camion, clic: function () { ouvrir("camion"); } });
       /* 07/11 : les dates des obligations (page « Les obligations ») et les cartes pro du personnel */
       var plus = function (iso, mois) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; var dd = new Date(+m[1], +m[2] - 1 + mois, +m[3]); return dd.getFullYear() + "-" + String(dd.getMonth() + 1).padStart(2, "0") + "-" + String(dd.getDate()).padStart(2, "0"); };
@@ -2617,5 +2619,275 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   }
   var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK), EcranPensions = EcranListe(CFG_PENSIONS), EcranPlanning = EcranListe(CFG_PLANNING), EcranLiaison = EcranListe(CFG_LIAISON), EcranPaddocks = EcranListe(CFG_PADDOCKS);
 
-  window.HypeGestion = { Liaison: EcranLiaison, Paddocks: EcranPaddocks, Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ 12/11 PAGE « MON COFFRE-FORT » ═════════════════════════
+     Demande de Blandine (12/11, 13 h 52) : une page « Mon coffre-fort » pour chaque utilisateur (entrée depuis la page Cavalier
+     et depuis la fiche de chaque cheval), photo ou PDF avec un type, rattachable à un cheval, échéance facultative, ouverture en
+     un geste, visible UNIQUEMENT par la personne qui a déposé le document. 14 h 05 : « Premium », et aussi un coffre commun
+     d'écurie partagé avec la gérante (« on peut faire les deux vas y »).
+     · Coffre perso : table coffre_documents (sql-12-11-coffre.sql : chaque compte ne lit que ses lignes) + espace de fichiers
+       privé « documents » (créé le 10/11 : chaque compte n'ouvre que son dossier <son id>/). Personne d'autre, ni coach, ni écurie.
+     · Coffre de l'écurie : documents du registre de type « autre » (mêmes droits que Le camion : les responsables de l'écurie),
+       leurs dates remontent dans « Les échéances ».
+     · Premium : sans abonnement on voit la page et les documents déjà rangés ; ajouter ouvre la fenêtre Premium.
+     · Adresse directe : 2hype.fr/#coffre. */
+  var TYPES_COFFRE = [
+    { k: "licence", b: "Licence", photo: { img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%" } },
+    { k: "vaccins", b: "Carnet de vaccination", photo: { img: "images/cours-g1-c3-box.webp", pos: "50% 40%" } },
+    { k: "vehicule", b: "Papiers du camion / van", photo: { img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 50%" } },
+    { k: "assurance", b: "Assurance", photo: { img: "images/galops-carte-quiz-carnet.webp", pos: "50% 50%" } },
+    { k: "contrat", b: "Contrat", photo: { img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%" } },
+    { k: "autre", b: "Autre", photo: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "60% 50%" } }
+  ];
+  function typeCoffre(k) { return TYPES_COFFRE.filter(function (t) { return t.k === k; })[0] || TYPES_COFFRE[TYPES_COFFRE.length - 1]; }
+  var SORTES_COFFRE_ECURIE = ["Assurance", "Contrat", "Carte grise", "Licence", "Autre"];
+  var JOURS_RAPPEL = 30;
+  function etatEcheance(iso) {
+    if (!iso) return null;
+    var j = ecartJours(String(iso).slice(0, 10), isoAuj());
+    if (j < 0) return { alerte: true, t: "Expiré · " + dateCourte(iso) };
+    if (j <= JOURS_RAPPEL) return { alerte: true, t: "À renouveler · " + dateCourte(iso) };
+    return { alerte: false, t: "Jusqu'au " + dateCourte(iso) };
+  }
+  function FenetrePremiumCoffre(props) {
+    var h = hT;
+    var fen = h("div", { "data-noswipe": "true", onClick: props.fermer, style: { position: "fixed", inset: 0, zIndex: 9600, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
+      h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } }, style: { width: "100%", maxWidth: 380, borderRadius: 20, border: "1px solid rgba(201,166,107,0.35)", background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)", padding: "24px 20px 18px", textAlign: "center", fontFamily: "'Montserrat',sans-serif" } },
+        h("div", { style: { fontSize: 26, marginBottom: 8, color: "#C9A66B" } }, "✦"),
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 22, fontWeight: 600, color: "#F3EEE4", marginBottom: 8 } }, "Réservé aux abonnés Premium"),
+        h("div", { style: { fontSize: 12.5, lineHeight: 1.55, color: "rgba(243,238,228,0.72)", marginBottom: 18 } }, "Le coffre-fort fait partie de Hype Premium : range tes licences, carnets de vaccination, assurances et contrats, et retrouve-les en un geste, même au concours."),
+        h("button", { type: "button", onClick: props.premium, style: { width: "100%", minHeight: 46, borderRadius: 999, border: "1px solid #C9A66B", background: "transparent", color: "#C9A66B", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "Découvrir Premium"),
+        h("button", { type: "button", onClick: props.fermer, style: { width: "100%", marginTop: 8, minHeight: 42, borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(243,238,228,0.75)", fontSize: 12.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "Plus tard")));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
+  }
+  function EcranCoffre() {
+    var h = hT; useLangue();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var _u = React.useState(undefined); var moi = _u[0], setMoi = _u[1];
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var _d = React.useState(null); var docs = _d[0], setDocs = _d[1];
+    var _l = React.useState({}); var liens = _l[0], setLiens = _l[1];
+    var _c = React.useState([]); var chevaux = _c[0], setChevaux = _c[1];
+    var _mo = React.useState(false); var moderatrice = _mo[0], setModeratrice = _mo[1];
+    var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+    var _on = React.useState(function () { try { var o = window.__coffreOnglet; window.__coffreOnglet = ""; return o === "ecurie" ? "ecurie" : "perso"; } catch (e) { return "perso"; } });
+    var onglet = _on[0], setOnglet = _on[1];
+    var _f = React.useState(function () { try { var k = window.__coffreCheval; window.__coffreCheval = ""; return k ? ("ch:" + k) : "tous"; } catch (e) { return "tous"; } });
+    var filtre = _f[0], setFiltre = _f[1];
+    var _o = React.useState(false); var ouvert = _o[0], setOuvert = _o[1];
+    var _ty = React.useState(""); var type = _ty[0], setType = _ty[1];
+    var _ti = React.useState(""); var titre = _ti[0], setTitre = _ti[1];
+    var _ch = React.useState(""); var cheval = _ch[0], setCheval = _ch[1];
+    var _ec = React.useState(""); var echeance = _ec[0], setEcheance = _ec[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
+    var _vp = React.useState(false); var voileP = _vp[0], setVoileP = _vp[1];
+    var refFichier = React.useRef(null);
+    var c = useClub();
+    var _pg = React.useState(false); var peutGerer = _pg[0], setPeutGerer = _pg[1];
+    var _dr = React.useState([]); var docsReg = _dr[0], setDocsReg = _dr[1];
+    var premiumOk = !!app.premium || moderatrice;
+
+    React.useEffect(function () {
+      var vif = true;
+      (async function () {
+        try {
+          var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+          if (!vif) return;
+          if (!u || !u.id || typeof supa === "undefined" || !supa) { setMoi(null); return; }
+          setMoi(u);
+          try { var rm = await supa.rpc("hype_est_moderatrice"); if (vif) setModeratrice(!!(rm && rm.data === true)); } catch (eM) { }
+          var r = await supa.from("coffre_documents").select("*").order("created_at", { ascending: false }).limit(500);
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          var liste = (r && r.data) || [];
+          /* ses chevaux : ceux dont on est propriétaire + ceux qu'on a ajoutés à « ses chevaux » */
+          var mesCh = [];
+          try {
+            var rc = await supa.from("chevaux").select("*").eq("user_id", u.id).is("supprime_le", null).limit(200);
+            var rh = await supa.from("chevaux_histoires").select("*").eq("user_id", u.id).limit(200);
+            var perso = {}; ((rh && !rh.error && rh.data) || []).forEach(function (x) { perso[String(x.cheval_id)] = x; });
+            mesCh = ((rc && !rc.error && rc.data) || []).slice();
+            var manquants = Object.keys(perso).concat(liste.map(function (x) { return x.cheval_id ? String(x.cheval_id) : ""; }))
+              .filter(function (id, i, a) { return id && a.indexOf(id) === i && !mesCh.some(function (x) { return String(x.id) === id; }); });
+            if (manquants.length) { var rx = await supa.from("chevaux").select("*").in("id", manquants.slice(0, 200)).is("supprime_le", null); mesCh = mesCh.concat((rx && !rx.error && rx.data) || []); }
+            mesCh = mesCh.map(function (x) { var p = perso[String(x.id)] || {}; return { id: x.id, nom: String(p.surnom || x.alias || x.nom || "").trim() || "?", photo: p.photo_url || x.photo_url || "" }; })
+              .sort(function (a, b) { return a.nom.localeCompare(b.nom, "fr"); });
+          } catch (eC) { }
+          /* liens d'ouverture préparés d'avance (1 h) : toucher une carte ouvre le document tout de suite */
+          var chemins = liste.map(function (x) { return x.chemin; }).filter(Boolean);
+          var lk = {};
+          if (chemins.length) {
+            try {
+              var rs = await supa.storage.from("documents").createSignedUrls(chemins, 3600);
+              ((rs && rs.data) || []).forEach(function (x) { if (x && x.path && (x.signedUrl || x.signedURL)) lk[x.path] = x.signedUrl || x.signedURL; });
+            } catch (eS) { }
+          }
+          if (!vif) return;
+          setChevaux(mesCh); setLiens(lk); setDocs(liste); setErreur("");
+        } catch (e) { if (vif) { setDocs([]); setErreur(String((e && e.message) || e)); } }
+      })();
+      return function () { vif = false; };
+    }, [recharge]);
+
+    React.useEffect(function () {
+      var vif = true;
+      setPeutGerer(false); setDocsReg([]);
+      (async function () {
+        try {
+          if (!c.club || typeof supa === "undefined" || !supa) return;
+          var clef = clefDe(c.club), ok = false;
+          try { var r1 = await supa.rpc("hype_est_moderatrice"); ok = !!(r1 && r1.data === true); } catch (eM) { }
+          if (!ok) { try { var r2 = await supa.rpc("hype_peut_gerer_club", { clef: clef }); ok = !!(r2 && r2.data === true); } catch (eG) { } }
+          if (!vif) return;
+          setPeutGerer(ok);
+          if (!ok) return;
+          var rd = await supa.from("registre_documents").select("*").eq("club_clef", clef).eq("type", "autre").order("date_doc", { ascending: false }).limit(200);
+          if (vif && rd && !rd.error) setDocsReg(rd.data || []);
+        } catch (e) { }
+      })();
+      return function () { vif = false; };
+    }, [c.club, recharge]);
+
+    function ouvrirForm() {
+      if (!premiumOk) { setVoileP(true); return; }
+      setMsg(""); setOuvert(!ouvert);
+      if (!ouvert && filtre.indexOf("ch:") === 0) setCheval(filtre.slice(3));
+    }
+    async function envoyer(f) {
+      if (!f || !moi) return;
+      if (!premiumOk) { setVoileP(true); return; }
+      if (f.size > 15 * 1024 * 1024) { setMsg("Fichier trop lourd (15 Mo au plus)."); return; }
+      setEnvoi(true); setMsg("");
+      var id = null;
+      try {
+        var ligne = { type: type || "autre", titre: titre.trim() || null, cheval_id: cheval || null, echeance: echeance || null, mime: f.type || null, taille: f.size || null };
+        var r = await supa.from("coffre_documents").insert(ligne).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré.");
+        id = r.data[0].id;
+        var chemin = moi.id + "/" + id + "-" + nomFichierSur(f.name);
+        var up = await supa.storage.from("documents").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
+        if (up && up.error) throw new Error(up.error.message || String(up.error));
+        var r2 = await supa.from("coffre_documents").update({ chemin: chemin }).eq("id", id).select("id");
+        if (r2 && r2.error) throw new Error(r2.error.message || String(r2.error));
+        setMsg("✓ Rangé dans ton coffre"); setType(""); setTitre(""); setCheval(""); setEcheance(""); setOuvert(false);
+        setRecharge(function (n) { return n + 1; });
+      } catch (e) {
+        if (id) { try { await supa.from("coffre_documents").delete().eq("id", id); } catch (eD) { } }
+        setMsg("Pas ajouté : " + String((e && e.message) || e));
+      }
+      setEnvoi(false);
+    }
+    async function supprimer(doc) {
+      setEnvoi(true); setMsg("");
+      try {
+        var r = await supa.from("coffre_documents").delete().eq("id", doc.id).select("id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé.");
+        if (doc.chemin) { try { await supa.storage.from("documents").remove([doc.chemin]); } catch (eS) { } }
+        setASuppr(null); setMsg("Document retiré."); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas retiré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    function ouvrirDoc(doc) {
+      var u = doc.chemin && liens[doc.chemin];
+      if (u) { try { var w = window.open(u, "_blank"); if (w) return; } catch (eW) { } try { window.location.href = u; } catch (eL) { } return; }
+      (async function () {
+        try {
+          var r = await supa.storage.from("documents").createSignedUrl(doc.chemin, 3600);
+          var l = r && r.data && (r.data.signedUrl || r.data.signedURL);
+          if (!l) throw new Error((r && r.error && r.error.message) || "lien indisponible");
+          window.location.href = l;
+        } catch (e) { setMsg("Impossible d'ouvrir : " + String((e && e.message) || e)); }
+      })();
+    }
+    function chevalDe(id) { return chevaux.filter(function (x) { return String(x.id) === String(id); })[0] || null; }
+
+    var corps;
+    if (moi === undefined || (moi && !docs)) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (moi === null) corps = h("div", null,
+      h("div", { className: "hg-vide" }, "Connecte-toi pour ouvrir ton coffre-fort."),
+      h("button", { type: "button", className: "hg-btn", onClick: function () { setEcran("connexion"); } }, "Se connecter"));
+    else {
+      var aRenouveler = docs.filter(function (x) { var e = etatEcheance(x.echeance); return e && e.alerte; });
+      var avecCheval = docs.filter(function (x) { return !!x.cheval_id; });
+      var chFiltre = filtre.indexOf("ch:") === 0 ? chevalDe(filtre.slice(3)) : null;
+      var liste = filtre === "alerte" ? aRenouveler.slice().sort(function (a, b) { return String(a.echeance).localeCompare(String(b.echeance)); })
+        : filtre === "chevaux" ? avecCheval
+        : filtre.indexOf("ch:") === 0 ? docs.filter(function (x) { return String(x.cheval_id) === filtre.slice(3); })
+        : docs;
+      var cases = [
+        { k: "tous", b: "Documents", s: String(docs.length), on: function () { setFiltre("tous"); } },
+        { k: "alerte", b: "À renouveler", s: aRenouveler.length ? String(aRenouveler.length) : "Rien", alerte: aRenouveler.length > 0, on: aRenouveler.length ? function () { setFiltre(filtre === "alerte" ? "tous" : "alerte"); } : null },
+        { k: "chevaux", b: "Chevaux", s: String(avecCheval.length), on: avecCheval.length ? function () { setFiltre(filtre === "chevaux" ? "tous" : "chevaux"); } : null },
+        { k: "ajout", b: "Ajouter", s: "Photo ou PDF", on: ouvrirForm }
+      ];
+      var titreListe = filtre === "alerte" ? "À renouveler" : (filtre === "chevaux" ? "Les documents de mes chevaux" : (chFiltre ? ("Les documents de " + chFiltre.nom) : "Mes documents"));
+      var perso = h("div", null,
+        h("div", { className: "hv2-choix" },
+          h("div", { className: "hv2-choix-rang" }, cases.map(function (x) {
+            var on = (x.k === "ajout" && ouvert) || (x.k !== "tous" && x.k !== "ajout" && filtre === x.k);
+            return h("button", { key: x.k, type: "button", className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, disabled: !x.on, onClick: x.on || undefined },
+              h("b", { style: String(x.b).length > 8 ? { fontSize: 14.5, letterSpacing: "-.01em" } : null }, x.b), h("span", { className: x.alerte ? "or" : "" }, x.s));
+          }))),
+        !premiumOk ? h("div", { className: "hg-encart" }, h("b", { style: { display: "block", color: "#C9A66B", marginBottom: 4 } }, "Hype Premium"),
+          "Le coffre-fort fait partie de Premium. Abonne-toi pour y ranger tes documents ; ceux déjà rangés restent toujours à toi.",
+          h("button", { type: "button", className: "hg-btn", style: { marginTop: 12 }, onClick: function () { setEcran("premium"); } }, "Découvrir Premium")) : null,
+        ouvert ? h("div", { className: "hg-f" }, h("h2", { className: "hv3-h2" }, "Nouveau document"),
+          h("label", { htmlFor: "hgc-type" }, "Type de document"),
+          h("select", { id: "hgc-type", value: type, onChange: function (e) { setType(e.target.value); setMsg(""); } },
+            [h("option", { key: "", value: "" }, "Choisir…")].concat(TYPES_COFFRE.map(function (t) { return h("option", { key: t.k, value: t.k }, t.b); }))),
+          h("label", { htmlFor: "hgc-titre" }, "Nom du document (facultatif)"),
+          h("input", { id: "hgc-titre", type: "text", value: titre, maxLength: 80, placeholder: "ex. Licence 2027, contrat de travail", onChange: function (e) { setTitre(e.target.value); } }),
+          chevaux.length ? h("label", { htmlFor: "hgc-cheval" }, "Cheval (facultatif)") : null,
+          chevaux.length ? h("select", { id: "hgc-cheval", value: cheval, onChange: function (e) { setCheval(e.target.value); } },
+            [h("option", { key: "", value: "" }, "Aucun")].concat(chevaux.map(function (x) { return h("option", { key: x.id, value: x.id }, x.nom); }))) : null,
+          h("label", { htmlFor: "hgc-ech" }, "Échéance (facultatif)"),
+          h("input", { id: "hgc-ech", type: "date", value: echeance, onChange: function (e) { setEcheance(e.target.value); } }),
+          h("div", { className: "hg-aide" }, "Assurance, contrôle technique, licence… Hype te prévient un mois avant."),
+          h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { if (!type) { setMsg("Choisis d'abord le type de document."); return; } try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : "Choisir la photo ou le PDF"),
+          h("input", { ref: refFichier, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: function (e) { var fi = e.target.files && e.target.files[0]; e.target.value = ""; envoyer(fi); } })) : null,
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 } },
+          h("h2", { className: "hv3-h2" }, titreListe),
+          filtre !== "tous" ? h("button", { type: "button", onClick: function () { setFiltre("tous"); }, style: { background: "none", border: "none", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, padding: "8px 0", flexShrink: 0 } }, "Tout voir") : null),
+        liste.length ? h("div", { className: "hv3-cartes" }, liste.map(function (x) {
+          var t = typeCoffre(x.type), ch = x.cheval_id ? chevalDe(x.cheval_id) : null, ec = etatEcheance(x.echeance);
+          var photo = (ch && ch.photo) ? { img: ch.photo, pos: "50% 35%" } : t.photo;
+          var dernierSeul = liste.length % 2 === 1 && liste.length > 1 && x === liste[liste.length - 1];   /* tablette / ordinateur : pas de ligne à moitié vide */
+          return h("div", { key: x.id, style: dernierSeul ? { gridColumn: "1 / -1" } : null },
+            carte(h, { cle: x.id, photo: photo, titre: x.titre || (ch ? ch.nom : t.b), sous: ec ? ec.t : ("Ajouté le " + dateCourte(x.created_at)), pill: t.b, qui: (ch && x.titre) ? ch.nom : "",
+              etat: x.chemin ? "Ouvrir" : "Fichier absent", alerte: !!(ec && ec.alerte), onClick: x.chemin ? function () { setMsg(""); ouvrirDoc(x); } : null }),
+            aSuppr === x.id
+              ? h("div", { style: { display: "flex", gap: 8, marginTop: 6 } },
+                  h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setASuppr(null); } }, "Garder"),
+                  h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, disabled: envoi, onClick: function () { supprimer(x); } }, "Retirer vraiment"))
+              : h("button", { type: "button", onClick: function () { setASuppr(x.id); }, style: { display: "block", margin: "6px 0 0 auto", background: "none", border: "none", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer"));
+        })) : h("div", { className: "hg-vide" }, docs.length ? "Aucun document ici." : "Ton coffre est vide. Touche « Ajouter » pour y ranger ta licence, un carnet de vaccination, une assurance ou un contrat."),
+        erreur ? h("div", { className: "hg-err" }, "Le coffre n'a pas pu être lu : " + erreur) : null,
+        h("div", { className: "hg-legal" }, "Ton coffre est privé : toi seul vois tes documents.", h("br"), "Ni ton coach ni ton écurie n'y ont accès."));
+      var ecurie = h("div", null,
+        ligneEcurie(h, c, []),
+        h("h2", { className: "hv3-h2" }, "Le coffre de l'écurie"),
+        h(DocsRegistre, { donnees: { docsReg: docsReg }, club: c.club, type: "autre", avecDate: true, sortes: SORTES_COFFRE_ECURIE, titreDefaut: "Document de l'écurie", photo: PHOTOS.coffre, bouton: "+ Ajouter un document", sansQui: true,
+          bloque: !premiumOk, onBloque: function () { setVoileP(true); }, onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
+        h("div", { className: "hg-aide" }, "Assurances, contrats, cartes grises de l'écurie. Partagé avec les responsables de l'écurie, eux seuls le voient. Les échéances remontent dans « Les échéances » de Mon écurie."));
+      var avecEcurie = peutGerer && !!c.club;
+      corps = h("div", null,
+        avecEcurie ? h("div", { className: "hv3-pils", role: "tablist", style: { marginTop: 18 } },
+          [["perso", "Mes documents"], ["ecurie", "Coffre de l'écurie"]].map(function (o) {
+            var on = (onglet === "ecurie" ? "ecurie" : "perso") === o[0];
+            return h("button", { key: o[0], type: "button", className: "hv3-pil" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { setOnglet(o[0]); setMsg(""); } }, o[1]);
+          })) : null,
+        (avecEcurie && onglet === "ecurie") ? ecurie : perso);
+    }
+    var peutRetour = !!(app.peutReculer && typeof app.retourEcran === "function");
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      hero(h, { photo: PHOTOS.coffre, titre: "Mon coffre-fort", sous: "Tes papiers importants, toujours sous la main.", retour: peutRetour ? function () { app.retourEcran(); } : null, retourTxt: "Retour" }),
+      h("div", { className: "hv2-in" }, corps),
+      voileP ? h(FenetrePremiumCoffre, { fermer: function () { setVoileP(false); }, premium: function () { setVoileP(false); setEcran("premium"); } }) : null);
+  }
+  window.HypeGestion = { Coffre: EcranCoffre, Liaison: EcranLiaison, Paddocks: EcranPaddocks, Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();

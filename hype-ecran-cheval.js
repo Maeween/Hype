@@ -3088,6 +3088,13 @@ async function supprimerSouvenirOuvert() {
     var esp = D ? 34 : (L ? 28 : 24);
     function sp(k) { return h("div", { key: k, style: { height: esp } }); }
     /* 07/11 personnalisation (nouvelle fiche tablette / ordinateur) : memes blocs masques que sur telephone ; « resultats » masque si les 3 blocs de resultats le sont */
+    /* 12/11 (Blandine : coffre-fort « avec une entrée depuis la fiche de chaque cheval », « son carnet de vaccination apparaît aussi sur sa fiche ») :
+       sous les raccourcis, pour le propriétaire et les cavaliers qui l ont ajouté à leurs chevaux. Ouvre MON coffre sur les documents de ce cheval ;
+       le nombre affiché ne compte que MES documents (la base ne rend que les siens). */
+    var coffreCh = ((estMonChevalFiche || estLieFiche) && typeof HypeLienCoffre === "function" && ((c && c.dbId) || id))
+      ? h("div", { style: { margin: (D ? "18px " : "14px ") + pad + "px 0" } }, h(HypeLienCoffre, { setEcran: setEcran, chevalId: (c && c.dbId) || id, large: D || L }))
+      : null;
+    if (coffreCh) raccourcis = h(React.Fragment, null, raccourcis, coffreCh);
     var pzItems = [["raccourcis", raccourcis], ["identite", blocAI], ["identite", origines], ["ipo", bandeauIpo], ["resultatsV4", resultats], ["medias", medias], ["partage", partage]];
     var pzOrd = pzcOrdre(); pzItems = pzItems.map(function (it, iI) { return [it, iI]; }).sort(function (x, y) { return (pzOrd.indexOf(x[0][0]) - pzOrd.indexOf(y[0][0])) || (x[1] - y[1]); }).map(function (x) { return x[0]; });
     var pzOut = [];
@@ -3344,6 +3351,11 @@ async function supprimerSouvenirOuvert() {
         /* (1076) « passe les 6 cartes au dessus » : la grille des 6 tuiles remonte AVANT la carte Origines */
         pzM("raccourcis", (function () { /* 31/07 soir : les 3 raccourcis remontent sous le badge, en grille compacte de 3 (demande Blandine) */
           var nbR = ((palmTous && palmTous.length) || 0) + ((c.flots && c.flots.length) || 0);
+          /* 12/11 Mon coffre-fort : même entrée que sur la fiche tablette / ordinateur, sous les 6 raccourcis (propriétaire et cavaliers qui l ont ajouté) */
+          function avecCofR(el) {
+            if (!((estMonChevalFiche || estLieFiche) && typeof HypeLienCoffre === "function" && ((c && c.dbId) || id))) return el;
+            return h(React.Fragment, null, el, h("div", { style: { margin: "14px 16px 0" } }, h(HypeLienCoffre, { setEcran: setEcran, chevalId: (c && c.dbId) || id })));
+          }
           function carteR(img3, ic3, ti3, cta3, act3, kR) {
             /* 10/10 (901) Blandine : « applique exactement le design des tuiles de l accueil, et leurs couleurs » (.acc2-tuile) :
                fond petrole #111B1F -> #0B1215, filet champagne 20 %, icone champagne sans rond, nom en Cormorant ivoire 14 px,
@@ -3354,7 +3366,7 @@ async function supprimerSouvenirOuvert() {
                 h("svg", { viewBox: "0 0 24 24", style: { width: 27, height: 27, display: "block", stroke: "#D6C4A1", fill: "none", strokeWidth: 1.51, strokeLinecap: "round", strokeLinejoin: "round" } }, ic3)),
               h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 14, fontWeight: 600, lineHeight: 1.12, textAlign: "center", color: "#F3EEE4", maxWidth: "100%", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, ti3));
           }
-          return h("div", { className: "rise chvRac" /* (1149) */, style: { animationDelay: ".05s", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, margin: "24px 16px 2px" } },   /* (1071) 32 -> 28 */   /* (901) espacement des tuiles de l accueil */ /* 13/09 (115) : marge du haut 18 -> 32 px, demande de Blandine (« laisse plus d espace entre le trait du bas de la carte Origines et les boutons ») */ /* 29/08 : passe de 3 a 6 cartes (demande Blandine) — Photos / Videos / Actualite ajoutees sur une 2e rangee, « Carriere » renommee « Performances » pour coller au libelle de l'onglet correspondant */
+          return avecCofR(h("div", { className: "rise chvRac" /* (1149) */, style: { animationDelay: ".05s", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, margin: "24px 16px 2px" } },   /* (1071) 32 -> 28 */   /* (901) espacement des tuiles de l accueil */ /* 13/09 (115) : marge du haut 18 -> 32 px, demande de Blandine (« laisse plus d espace entre le trait du bas de la carte Origines et les boutons ») */ /* 29/08 : passe de 3 a 6 cartes (demande Blandine) — Photos / Videos / Actualite ajoutees sur une 2e rangee, « Carriere » renommee « Performances » pour coller au libelle de l'onglet correspondant */
             carteR(photoCh, h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" }),
               T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e", "Geschichte", "\u0627\u0644\u0642\u0635\u0629", "故事", "Verhaal", "História", "Historia", "История", "Historia", "이야기"),
               T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa", "Erinnerungen", "\u0627\u0644\u0630\u0643\u0631\u064a\u0627\u062a", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억"),
@@ -3388,7 +3400,7 @@ async function supprimerSouvenirOuvert() {
             carteR(null, h("g", null, h("path", { d: "M4 5h13a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V5z", strokeLinejoin: "round" }), h("path", { d: "M7 9h7M7 12.5h7M7 16h4" })),
               T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식"),
               T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f", "\u00d6ffnen", "\u0641\u062a\u062d", "打开", "Openen", "Abrir", "Öppna", "Открыть", "Otwórz", "열기"),
-              function () { setPanneau("actualite"); }, "rn")); /* 14/09 (127) : la carte n est plus grisee, la page est ouverte */ /* 29/08 : carte grisee et non cliquable (demande Blandine) — la page existe deja (panneau "actualite") mais reste fermee le temps de decider qui publie et ce qu'est un post */
+              function () { setPanneau("actualite"); }, "rn"))); /* 14/09 (127) : la carte n est plus grisee, la page est ouverte */ /* 29/08 : carte grisee et non cliquable (demande Blandine) — la page existe deja (panneau "actualite") mais reste fermee le temps de decider qui publie et ce qu'est un post */
         })()),
         /* (1081) titre de section au-dessus de la carte, comme la V2 */
         pzM("identite", h("h2", { key: "titreOrigV1", style: { margin: "40px 20px 14px" /* 13/10 (1093) ecart unique de 40 px entre les chapitres (mesure) */, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 22, lineHeight: 1.2, color: "#F3EEE4" } }, T("Identité & origines", "Identity & bloodline", "Identidad y orígenes", "Identità e origini", "プロフィールと血統", "Identität & Herkunft", "الهوية والنسب", "身份与血统", "Identiteit & afstamming", "Identidade e origens", "Identitet & ursprung", "Данные и происхождение", "Tożsamość i pochodzenie", "기본 정보 & 혈통"))),
