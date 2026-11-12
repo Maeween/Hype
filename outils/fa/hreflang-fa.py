@@ -41,3 +41,25 @@ for f in glob.glob("sitemap*.xml"):
             t = t[:m.end()] + bloc + t[m.end():]; n += 1
     if t != s: open(f, "w", encoding="utf-8").write(t)
 print("[fa] pages persanes:", len(fa_pages), "— ajouts:", n)
+
+# Menu des langues en haut des pages : ajoute « فارسی » après « 한국어 » (lien, ou langue en cours sur les pages fa/).
+m_n = 0
+for f in glob.glob("*/**/index.html", recursive=True):
+    if f.startswith(("docs/", "outils/", "node_modules/")): continue
+    lg = f.split("/")[0]
+    c = os.path.dirname(f)[len(lg) + 1:]
+    if c not in fa_pages: continue
+    s = open(f, encoding="utf-8").read()
+    if 'lang="fa">فارسی' in s or 'lang="fa" aria-current="page">' in s: continue
+    suf = (c + "/") if c else ""
+    if lg == "fa":
+        s2 = s.replace('<li><strong lang="en" aria-current="page">English</strong></li>',
+                       '<li><a href="https://2hype.fr/en/' + suf + '" hreflang="en" lang="en">English</a></li>')
+        item = '<li><strong lang="fa" aria-current="page">فارسی</strong></li>'
+    else:
+        s2 = s
+        item = '<li><a href="https://2hype.fr/fa/' + suf + '" hreflang="fa" lang="fa">فارسی</a></li>'
+    t = re.sub(r'(<li><a href="https://2hype\.fr/ko/[^"]*" hreflang="ko" lang="ko">[^<]*</a></li>|<li><strong lang="ko" aria-current="page">[^<]*</strong></li>)',
+               lambda m: m.group(1) + item, s2, count=1)
+    if t != s: open(f, "w", encoding="utf-8").write(t); m_n += 1
+print("[fa] menus de langues complétés :", m_n)
