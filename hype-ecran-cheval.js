@@ -3088,13 +3088,6 @@ async function supprimerSouvenirOuvert() {
     var esp = D ? 34 : (L ? 28 : 24);
     function sp(k) { return h("div", { key: k, style: { height: esp } }); }
     /* 07/11 personnalisation (nouvelle fiche tablette / ordinateur) : memes blocs masques que sur telephone ; « resultats » masque si les 3 blocs de resultats le sont */
-    /* 12/11 (Blandine : coffre-fort « avec une entrée depuis la fiche de chaque cheval », « son carnet de vaccination apparaît aussi sur sa fiche ») :
-       sous les raccourcis, pour le propriétaire et les cavaliers qui l ont ajouté à leurs chevaux. Ouvre MON coffre sur les documents de ce cheval ;
-       le nombre affiché ne compte que MES documents (la base ne rend que les siens). */
-    var coffreCh = ((estMonChevalFiche || estLieFiche) && typeof HypeLienCoffre === "function" && ((c && c.dbId) || id))
-      ? h("div", { style: { margin: (D ? "18px " : "14px ") + pad + "px 0" } }, h(HypeLienCoffre, { setEcran: setEcran, chevalId: (c && c.dbId) || id, large: D || L }))
-      : null;
-    if (coffreCh) raccourcis = h(React.Fragment, null, raccourcis, coffreCh);
     var pzItems = [["raccourcis", raccourcis], ["identite", blocAI], ["identite", origines], ["ipo", bandeauIpo], ["resultatsV4", resultats], ["medias", medias], ["partage", partage]];
     var pzOrd = pzcOrdre(); pzItems = pzItems.map(function (it, iI) { return [it, iI]; }).sort(function (x, y) { return (pzOrd.indexOf(x[0][0]) - pzOrd.indexOf(y[0][0])) || (x[1] - y[1]); }).map(function (x) { return x[0]; });
     var pzOut = [];
@@ -3351,11 +3344,8 @@ async function supprimerSouvenirOuvert() {
         /* (1076) « passe les 6 cartes au dessus » : la grille des 6 tuiles remonte AVANT la carte Origines */
         pzM("raccourcis", (function () { /* 31/07 soir : les 3 raccourcis remontent sous le badge, en grille compacte de 3 (demande Blandine) */
           var nbR = ((palmTous && palmTous.length) || 0) + ((c.flots && c.flots.length) || 0);
-          /* 12/11 Mon coffre-fort : même entrée que sur la fiche tablette / ordinateur, sous les 6 raccourcis (propriétaire et cavaliers qui l ont ajouté) */
-          function avecCofR(el) {
-            if (!((estMonChevalFiche || estLieFiche) && typeof HypeLienCoffre === "function" && ((c && c.dbId) || id))) return el;
-            return h(React.Fragment, null, el, h("div", { style: { margin: "14px 16px 0" } }, h(HypeLienCoffre, { setEcran: setEcran, chevalId: (c && c.dbId) || id })));
-          }
+          /* 12/11 Blandine : « Redondant non » — pas d entrée coffre sur la fiche cheval, seulement sur la page Cavalier */
+          function avecCofR(el) { return el; }
           function carteR(img3, ic3, ti3, cta3, act3, kR) {
             /* 10/10 (901) Blandine : « applique exactement le design des tuiles de l accueil, et leurs couleurs » (.acc2-tuile) :
                fond petrole #111B1F -> #0B1215, filet champagne 20 %, icone champagne sans rond, nom en Cormorant ivoire 14 px,
