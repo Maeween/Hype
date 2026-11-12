@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 13h42 — build 20261112-1345 — Page équipe : concours raccourcis, résultats récents « dernier concours » (Blandine « tu peux mettre en ligne l'ensemble »)
+- hype-ecran-team.js ?v=48.
+- Prochain / dernier concours : sous le sur-titre, la date centrée au-dessus d'une seule ligne « discipline + ville » (ligneCourte : discipline lue dans le titre, ville = ce qui suit le dernier « de » du lieu, parenthèses retirées ; ex. « CSO Folleville »). Plus de titre long ni de lieu.
+- Résultats récents (variante B, par défaut) : seulement le dernier concours (date · lieu en doré, podiums en vignettes, 3 puis « Voir les N autres »), sans frise. « Voir tout » déplie les concours de la saison (depuis le 1er septembre), seulement les classements (résultats avec une place). « + Importer des résultats » en lien discret à droite de « Voir les N autres » (gestionnaires).
+- Variantes gardées dans le code (window.__resVariante) : "7" lignes fines, "A" frise, "M" médaillons.
+
 ### 12/11 13h31 — build 20261112-1335 — Page équipe : duo Ma saison / Performances, résultats récents en liste, outils du bas mis de côté (Blandine « Ok »)
 - hype-ecran-team.js ?v=47.
 - Duo en miroir (bandeauDuo) : même cadre, photo entière (contain, mix-blend lighten pour fondre le noir), bords et bas ombrés, une courbe dorée relie les deux. « Ma saison » (bai à droite, bouton Voir ma saison) ; « Performances » (cheval doré à gauche, images/cheval-golden-des-brouets-provisoire.webp) avec deux boutons Cavaliers (déplie le classement) et Chevaux (page performances-chevaux).

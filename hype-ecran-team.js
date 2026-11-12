@@ -906,17 +906,33 @@ function EcranTeamCompetition() {
   /* 12/11 02h53 (Blandine : « les deux encarts [prochain / dernier concours] sont pas du tout présentés pareillement… change-les ») :
      un seul modèle de bandeau pour les deux. Le dernier concours est le miroir du prochain (photo à gauche, texte à droite, courbe dans
      l'autre sens), placé après l'agenda pour qu'ils ne se suivent pas. Photo provisoire du dernier : la même, retournée. */
+  /* 12/11 13h33 (Blandine : « CSO Versailles Versailles, c'est redondant et trop long ») : sous la date, une seule ligne
+     « discipline + ville » (ex. « CSO Versailles », « CSO Folleville »). La discipline est lue dans le titre, la ville dans le lieu
+     (ce qui suit le dernier « de » : « Haras de Folleville » → « Folleville »). */
+  function ligneCourte(ev) {
+    var t = String(ev.titre || ""), l = String(ev.lieu || "").replace(/\s*\([^)]*\)\s*/g, " ").trim();
+    var m = t.match(/\b(CSO|CCE|Dressage|Hunter|Pony[- ]games|Endurance|Ride and run|Equifun|Attelage|TREC|Voltige)\b/i);
+    var disc = m ? (m[1].length <= 4 ? m[1].toUpperCase() : m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : "";
+    var ville = l;
+    var k = l.toLowerCase().lastIndexOf(" de ");
+    if (k > 0) ville = l.slice(k + 4).trim();
+    if (ville) ville = ville.charAt(0).toUpperCase() + ville.slice(1);
+    if (!ville) return t;
+    if (!disc) return ville;
+    return disc + " " + ville;
+  }
   function bandeauConcours(ev, miroir) {
     var droite = miroir ? !rtl : rtl;   /* côté du texte */
     return h("div", { key: miroir ? "dern" : "une", "data-team-dernier": miroir ? "1" : null, style: { position: "relative", overflow: "hidden", background: BG } },
     h("img", { src: miroir ? "images/bandeau-dernier-concours.webp" : BANDEAU_PROCHAIN, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", aspectRatio: "1920 / 819", objectFit: "cover" } }),
     h("div", { style: { position: "absolute", top: 0, bottom: 0, left: droite ? "auto" : 0, right: droite ? 0 : "auto", width: "48%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-end" : "flex-start", textAlign: droite ? "right" : "left", padding: droite ? "0 16px 6% 0" : "0 0 6% 16px", boxSizing: "border-box" } },
       h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 26 : 13.5, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, miroir ? T("Dernier concours", "Last competition", "Último concurso", "Ultimo concorso", "前回の大会", "Letztes Turnier", "آخر مسابقة", "上一场比赛", "Laatste wedstrijd", "Último concurso", "Senaste tävlingen", "Последние соревнования", "Ostatnie zawody", "지난 대회") : T("Prochain concours", "Next competition", "Próximo concurso", "Prossimo concorso", "次の大会", "Nächstes Turnier", "المسابقة القادمة", "下一场比赛", "Volgende wedstrijd", "Próximo concurso", "Nästa tävling", "Следующие соревнования", "Następne zawody", "다음 대회")),
-      h("div", { style: { display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 } },
+      h("div", { style: { display: "inline-flex", flexDirection: "column", alignItems: "center", marginTop: 4 } },   /* 13h35 : date centrée sur la ligne « CSO Ville » */
+      h("div", { style: { display: "flex", alignItems: "baseline", gap: 6 } },
         h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 64 : 30, fontWeight: 500, lineHeight: 0.9, color: IV } }, jourNum(ev.date_jour)),
         h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 22 : 12, textTransform: "uppercase", letterSpacing: 1, color: IV } }, moisCourt(ev.date_jour))),
-      h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 15.5, fontWeight: 500, lineHeight: 1.08, marginTop: 4, color: IV } }, ev.titre || ""),
-      ev.lieu ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: grandEq ? 13 : 9.5, color: "rgba(244,241,234,0.72)", marginTop: 3 } }, ev.lieu) : null,
+      h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 17, fontWeight: 500, lineHeight: 1.08, marginTop: 4, color: IV, textAlign: "center" } }, ligneCourte(ev))),
+      
       h("button", { type: "button", onClick: function () { if (miroir) ouvrirRdvPasse(ev); else ouvrirEv(ev); }, style: { alignSelf: droite ? "flex-end" : "flex-start", marginTop: 7, minHeight: 26, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
         (miroir ? T("Voir les résultats", "See the results", "Ver los resultados", "Vedi i risultati", "結果を見る", "Ergebnisse ansehen", "عرض النتائج", "查看成绩", "Uitslagen bekijken", "Ver os resultados", "Se resultaten", "Смотреть результаты", "Zobacz wyniki", "결과 보기") : T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기")), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
   }
@@ -1128,9 +1144,33 @@ function EcranTeamCompetition() {
   /* 12/11 13h04 (Blandine : « propose-moi aussi la A, et que ça déplie quand besoin ») : variante A = bandeau puis frise dorée,
      un point par concours ; le dernier montre ses podiums en vignettes (3 d'abord, « Voir les N autres » déplie), les concours
      d'avant restent repliés en une ligne de bilan qu'on touche pour déplier. */
+  /* 13h35 : variante « médaillons » (proposition 1) : rangée de portraits ronds qui défile, place dans une pastille dorée. */
+  function medaillonsRes() {
+    return h("div", { "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 16, overflowX: "auto", scrollbarWidth: "none", margin: "4px -20px 0", padding: "0 20px 6px", scrollPaddingInline: 20 } },
+      listeBand.map(function (r) {
+        var I = infosRes(r), pl = placeDe(r);
+        var src = I.photo ? ((typeof vignetteHype === "function") ? vignetteHype(I.photo, 200, 200) : I.photo) : "";
+        return h("button", { key: "md" + r.id, type: "button", onClick: function () { setResOuvert(resOuvert === r.id ? null : r.id); }, style: { flex: "0 0 96px", padding: 0, border: "none", background: "transparent", color: IV, textAlign: "center", cursor: "pointer" } },
+          h("span", { style: { position: "relative", display: "block", width: 88, height: 88, margin: "0 auto" } },
+            h("span", { style: { display: "block", width: 88, height: 88, borderRadius: "50%", overflow: "hidden", border: "1.5px solid " + (pl === 1 ? OR : "rgba(201,166,107,0.6)"), background: "#11171C", boxSizing: "border-box" } },
+              src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+            h("span", { style: { position: "absolute", insetInlineEnd: -2, bottom: -2, width: 30, height: 30, borderRadius: "50%", background: BG, border: "1px solid " + OR, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 14, color: OR } }, pl != null ? ordinal(pl) : "—")),
+          h("span", { dir: "auto", style: { display: "block", fontFamily: SERIF, fontSize: 15, lineHeight: 1.1, marginTop: 8 } }, I.qui || ""),
+          h("span", { dir: "auto", style: { display: "block", fontFamily: M, fontSize: 9.5, color: GR, marginTop: 2, lineHeight: 1.25 } }, [I.cheval, r.epreuve].filter(Boolean).join(" · ")));
+      }));
+  }
+  function sousTitreRes() {
+    if (!listeBand.length) return null;
+    var I0 = infosRes(listeBand[0]), jm = jourMois(listeBand[0].date_epreuve || listeBand[0].created_at), nbP = podDernier.length;
+    var t = [I0.lieuNom, jm].filter(Boolean).join(" · ") + (nbP ? " · " + nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대")) : "");
+    return h("div", { dir: "auto", style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2, fontWeight: 600, textTransform: "uppercase", color: OR, margin: "-4px 0 14px" } }, t);
+  }
+  var resDetailMed = (function () { var r = listeBand.filter(function (x) { return x.id === resOuvert; })[0]; return r ? detailRes(r, infosRes(r), placeDe(r)) : null; })();
+  function ouvrirImportRes() { try { window.HYPE_IMPORT_MULTI = true; window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIm) { } setEcran("import-resultats"); }
   var _frO = React.useState({}); var frOuv = _frO[0], setFrOuv = _frO[1];
   function basculerFr(k) { setFrOuv(function (o) { var n = Object.assign({}, o); n[k] = !n[k]; return n; }); }
-  var RES_VARIANTE = (typeof window !== "undefined" && window.__resVariante) || "7";
+  var RES_VARIANTE = (typeof window !== "undefined" && window.__resVariante) || "B";   /* 13h40 : B retenue (Blandine) */
+  var sansFrise = RES_VARIANTE === "B";
   function podiumsDu(jour) {
     var l = resVisibles.filter(function (x) { return String(x.date_epreuve || "").slice(0, 10) === jour; });
     var p = l.filter(function (x) { var pl = placeDe(x); return pl != null && pl >= 1 && pl <= 3; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
@@ -1145,7 +1185,7 @@ function EcranTeamCompetition() {
   }
   function pointFr(txt, plein) {
     return h("div", { style: { position: "relative", fontFamily: M, fontSize: 9.5, letterSpacing: 2, fontWeight: 600, textTransform: "uppercase", color: OR, margin: "4px 0 10px" } },
-      h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineStart: -21, top: 1, width: 9, height: 9, borderRadius: "50%", background: plein ? OR : BG, border: "1px solid " + OR } }), txt);
+      sansFrise ? null : h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineStart: -21, top: 1, width: 9, height: 9, borderRadius: "50%", background: plein ? OR : BG, border: "1px solid " + OR } }), txt);
   }
   function vignetteFr(r) {
     var I = infosRes(r), pl = placeDe(r), ouv = (resOuvert === r.id);
@@ -1166,7 +1206,11 @@ function EcranTeamCompetition() {
   function friseRes() {
     var jours = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && jours.indexOf(j) < 0) jours.push(j); });
     var enfants = [];
-    jours.slice(0, ouvert.res ? 99 : 4).forEach(function (j, idx) {
+    var debSaison = (function () { var d = new Date(); var y = d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1; return y + "-09-01"; })();
+    if (sansFrise) jours = jours.filter(function (j, k) { return k === 0 || j >= debSaison; });
+    /* 13h40 (Blandine) : par défaut le dernier concours seulement ; « Voir tout » déplie les concours de la saison (depuis le
+       1er septembre), avec seulement les classements (résultats qui ont une place). */
+    jours.slice(0, sansFrise ? (ouvert.res ? 99 : 1) : (ouvert.res ? 99 : 4)).forEach(function (j, idx) {
       var P = podiumsDu(j), r0 = P.liste[0] || P.tous[0]; if (!r0) return;
       var lieu = infosRes(r0).lieuNom, jm = jourMois(r0.date_epreuve || r0.created_at);
       var k = "fr" + j;
@@ -1174,7 +1218,15 @@ function EcranTeamCompetition() {
       if (idx === 0) {
         var ouv0 = !!frOuv[k], l0 = ouv0 ? P.liste : P.liste.slice(0, 3);
         enfants.push(h("div", { key: k + "l" }, l0.map(vignetteFr)));
-        if (P.liste.length > 3) enfants.push(h("div", { key: k + "d" }, lienDeplier(k, ouv0, P.liste.length - 3)));
+        if (sansFrise) {   /* 13h42 (Blandine) : « Importer des résultats » en discret, à droite de « Voir les N autres » */
+          enfants.push(h("div", { key: k + "d", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
+            P.liste.length > 3 ? lienDeplier(k, ouv0, P.liste.length - 3) : h("span", null),
+            (gestion && groupe) ? h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 30, padding: 0, margin: "-4px 0 12px", border: "none", background: "transparent", color: GR, fontFamily: M, fontSize: 11, cursor: "pointer", whiteSpace: "nowrap" } },
+              "+ " + T("Importer des résultats", "Import results", "Importar resultados", "Importa risultati", "成績を取り込む", "Ergebnisse importieren", "استيراد النتائج", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기")) : null));
+        } else if (P.liste.length > 3) enfants.push(h("div", { key: k + "d" }, lienDeplier(k, ouv0, P.liste.length - 3)));
+      } else if (sansFrise) {
+        var cl = P.tous.filter(function (x) { return placeDe(x) != null; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
+        enfants.push(h("div", { key: k + "l", style: { marginTop: 8 } }, cl.length ? cl.map(vignetteFr) : h("div", { style: { fontFamily: M, fontSize: 11, color: GR, margin: "-2px 0 14px" } }, T("Pas de classement", "No placing", "Sin clasificación", "Nessun piazzamento", "入賞なし", "Keine Platzierung", "لا تصنيف", "无名次", "Geen klassering", "Sem classificação", "Ingen placering", "Без места", "Brak miejsca", "순위 없음"))));
       } else {
         var ouv = !!frOuv[k];
         enfants.push(h("button", { key: k + "b", type: "button", onClick: function () { basculerFr(k); }, style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: 0, margin: "-4px 0 14px", border: "none", background: "transparent", color: IV, fontFamily: M, fontSize: 12, cursor: "pointer", textAlign: "start" } },
@@ -1182,6 +1234,7 @@ function EcranTeamCompetition() {
         if (ouv) enfants.push(h("div", { key: k + "l" }, P.liste.map(vignetteFr)));
       }
     });
+    if (sansFrise) return h("div", { key: "frise", style: { marginTop: 18 } }, enfants);   /* 13h38 : même chose sans la ligne dorée ni les points */
     return h("div", { key: "frise", style: { position: "relative", paddingInlineStart: 22, marginTop: 18 } },
       h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineStart: 5, top: 6, bottom: 14, width: 1, background: "rgba(201,166,107,0.4)" } }), enfants);
   }
@@ -1209,20 +1262,22 @@ function EcranTeamCompetition() {
     lienSaison, lienSaison ? courbeJointure("j1", false) : null,
     bPerf,
     listePerfCav ? h("div", { style: { padding: "10px 20px 0" } }, listePerfCav) : null);
+  var nbConcAvant = (function () { var d = new Date(); var deb = (d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1) + "-09-01"; var J = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && j >= deb && J.indexOf(j) < 0) J.push(j); }); return Math.max(0, J.length - 1); })();
   var blocRes = section(h("div", null,
-    enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과"), "res", autresRes.length, 0),
+    enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과"), "res", (RES_VARIANTE === "B") ? nbConcAvant : autresRes.length, 0),
     resultats === null ? chargement()
       : h("div", null,
         !resVisibles.length ? videCartePh(ICO.coupe, "images/concours-hero-bai-tresse.webp", T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요."))
-          : (RES_VARIANTE === "A" ? h("div", { style: { marginTop: -10 } }, friseRes())
-            : h("div", null, listeBand.map(ligneRes), ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)),   /* 12/11 : bandeau + podiums ; « Voir tout » = les autres */
+          : (RES_VARIANTE === "M" ? h("div", null, sousTitreRes(), medaillonsRes(), resDetailMed, ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)
+            : (RES_VARIANTE === "A" || RES_VARIANTE === "B") ? h("div", { style: { marginTop: -10 } }, friseRes())
+            : h("div", null, sousTitreRes(), listeBand.map(ligneRes), ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)),   /* 12/11 : bandeau + podiums ; « Voir tout » = les autres */
         /* (529) resultats retires : visibles seulement pour la proprietaire / les gestionnaires, pour les remettre */
         (gestion && resRetires.length) ? h("div", { style: { marginTop: 4 } },
           h("button", { type: "button", onClick: function () { setVoirRetires(!voirRetires); }, style: { background: "none", border: "none", padding: 0, minHeight: 32, color: GR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: "pointer" } },
             T("Résultats retirés", "Removed results", "Resultados quitados", "Risultati tolti", "外した結果", "Entfernte Ergebnisse", "النتائج المحذوفة", "已移除的成绩", "Verwijderde resultaten", "Resultados removidos", "Borttagna resultat", "Убранные результаты", "Usunięte wyniki", "삭제된 결과") + " (" + resRetires.length + ") " + (voirRetires ? "˄" : "˅")),
           voirRetires ? h("div", { style: { opacity: 0.6, marginTop: 6 } }, resRetires.map(carteRes)) : null) : null,
         /* 11/11 22h29 (Blandine : les boutons « ne devraient pas aller ailleurs ? ») : « Importer des résultats » vit sous les résultats */
-        (gestion && groupe) ? h("div", { style: { marginTop: 12 } }, h("button", { type: "button", "data-import-multi": "1", onClick: function () { try { window.HYPE_IMPORT_MULTI = true; window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIm) { } setEcran("import-resultats"); }, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
+        (gestion && groupe && !(RES_VARIANTE === "B" && listeBand.length)) ? h("div", { style: { marginTop: 12 } }, h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 36, padding: "0 10px", whiteSpace: "nowrap", flex: "0 1 auto", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 0.9, textTransform: "uppercase", cursor: "pointer" } },
       T("Importer des r\u00e9sultats", "Import results", "Importar resultados", "Importa risultati", "\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기"))) : null)));
 
   /* ── souvenirs récents ── */
