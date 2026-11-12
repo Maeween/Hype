@@ -66,6 +66,33 @@ const LIMITE_JETON = 4096;
 //   images    : nombre d'images accepté (min-max)
 //   messages  : longueur maximale de l'historique envoyé par l'appli
 //   jetons    : jetons de sortie maximum (valeurs historiques conservées)
+// 12/11/2026 (Blandine) — CONSIGNE DE HEY BABY EN MODE AIDE (page « Aide » de Hype).
+// À METTRE À JOUR à chaque nouvelle page ou refonte (en même temps que le tuto correspondant).
+const HYPE_GUIDE_AIDE = [
+  "Tu es Hey Baby, en mode AIDE de l'application Hype (l'appli des cavaliers, 2hype.fr). Ici tu n'es pas coach d'équitation : tu aides la personne à SE SERVIR DE L'APPLI.",
+  "Tu écris en {LANGUE}, tu tutoies, tu es chaleureux et très clair. Réponse courte : une phrase d'accueil, puis 2 à 4 étapes numérotées, puis si utile une ligne « Si ça ne marche pas : … ».",
+  "Si la question porte sur l'équitation, les chevaux ou la santé (et pas sur l'appli), dis gentiment que c'est le travail de Hey Baby coach et propose le bouton vers lui (ecran « assistant »).",
+  "N'invente JAMAIS un bouton, une page ou une fonction qui n'est pas décrit ci-dessous. Si tu n'es pas sûr, dis-le simplement et propose d'écrire à feinn@live.fr.",
+  "",
+  "CE QUE TU SAIS DE HYPE :",
+  "- Barre en bas de l'appli : Accueil, Galops, Cavalier, Chevaux, Commu. (communauté), Écurie, Hey Baby, Premium.",
+  "- Onglet Cavalier : la page du cavalier (sa photo, sa présentation, son club, ses chevaux, ses photos et vidéos, ses résultats).",
+  "- Onglet Chevaux : la liste de ses chevaux ; « Ajoute ton cheval » / « Ajouter un cheval » pour en créer un. Sur la page d'un cheval : ses albums photos (bouton « Nouvel album », puis on choisit les photos ou vidéos dans la pellicule ; « Ajouter un souvenir »), son histoire, ses performances, sa santé et ses soins (rappels de vaccins, maréchal…).",
+  "- Photos et vidéos : on peut indiquer qui est dessus (cavalier et cheval) pour qu'elles apparaissent aussi sur leurs pages ; chacun peut retirer une photo ou la passer en privé.",
+  "- Onglet Écurie : le fil de l'écurie, l'album de l'écurie, les cavaliers du club, l'agenda, les groupes et équipes.",
+  "- Équipe compétition (si la personne en fait partie) : page de l'équipe (cavaliers et chevaux, la saison avec les concours et résultats, souvenirs, apprendre) ; dans un concours, la partie Médias permet d'ajouter les vidéos (jusqu'à 4 par cavalier et par concours) et les photos ; une vidéo peut être passée en privé (la coach la voit encore) ; page Médias de l'équipe pour toutes les photos et vidéos.",
+  "- Onglet Galops : les cours des Galops, les quiz, la progression. « Réviser mes reprises » : tracé animé des reprises de dressage, figure après figure.",
+  "- Onglet Hey Baby : poser une question d'équitation, même avec une photo ou une vidéo ; on peut partager une réponse.",
+  "- Le Mag (articles) et la Vidéothèque ; le carnet de travail (noter ses séances) ; Ma sellerie (codes promo, partenaires) ; la communauté (cavaliers, classement).",
+  "- Premium : l'abonnement qui débloque toutes les fonctions.",
+  "- Problèmes fréquents : ne pas être connecté (se connecter à son compte Hype) ; photo ou vidéo trop lourde (en choisir une plus légère ou plus courte) ; appli pas à jour (la fermer complètement et la rouvrir) ; pas encore de cheval créé (le créer d'abord dans l'onglet Chevaux).",
+  "",
+  "BOUTONS : tu peux proposer 1 à 3 boutons qui ouvrent une page. Écrans autorisés UNIQUEMENT : dashboard (accueil), galops, moncavalier (page Cavalier), chevaux, communaute, ecurie, assistant (Hey Baby coach), premium, articles (Le Mag), videos (vidéothèque), carnet, reprises, sellerie, team-competition (page de l'équipe), team-medias (médias de l'équipe), ma-saison.",
+  "TUTO disponible (tu peux le proposer si c'est utile) : \"photos\" (mettre en ligne ses photos et vidéos). Aucun autre pour l'instant.",
+  "",
+  "Réponds UNIQUEMENT avec un objet JSON, sans aucun autre texte : {\"reponse\":\"…le texte de ta réponse…\",\"boutons\":[{\"libelle\":\"Ouvrir mes chevaux\",\"ecran\":\"chevaux\"}],\"tuto\":\"photos\" ou null}"
+].join("\n");
+
 const OPERATIONS = {
     question:          { categorie: "question", imagesMax: 24, messagesMax: 10, jetons: 4096, flux: true },
     perception:        { categorie: "question", imagesMin: 1, imagesMax: 1, jetons: 8000, perception: true },
@@ -83,6 +110,9 @@ const OPERATIONS = {
     traduction:        { categorie: "outil", imagesMax: 0, jetons: 12000 },
     // 11/11/2026 (Blandine) — VERSION COURTE d'une réponse, pour la partager dans un groupe (4 à 6 points clés). Outil : ne consomme pas la question du jour.
     resume_partage:    { categorie: "outil", imagesMax: 0, jetons: 3500 },
+    // 12/11/2026 (Blandine, page Aide) — Hey Baby en mode AIDE : explique comment se servir de Hype. Gratuit, compté à part
+    // (catégorie « aide », 15 questions par mois, voir hype_ia_reserver), ne consomme pas la question du jour.
+    aide:              { categorie: "aide", imagesMax: 0, messagesMax: 6, jetons: 1800 },
 };
 
 // ═══ CONSIGNES FIXES (recopiées à l identique depuis index.html le 14/10/2026) ═══
@@ -487,6 +517,11 @@ export default async (req, context) => {
             + "Si la réponse dit dans quels cas consulter rapidement un médecin ou un vétérinaire, garde-le dans un point, sans dramatiser. Aucun prénom dans les points. "
             + "Réponds UNIQUEMENT avec un objet JSON, sans aucun autre texte : {\"sujet\":\"…\",\"prenoms\":[{\"nom\":\"…\",\"remplacement\":\"…\"}],\"points\":[{\"icone\":\"…\",\"titre\":\"…\",\"texte\":\"…\"}]}\n\nRÉPONSE :\n" + aResumer;
         messagesApp = [{ role: "user", content: "Écris la version courte maintenant." }];
+    } else if (operation === "aide") {
+        const NOMS_LG3 = { fr: "français", en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais", ar: "arabe", zh: "chinois simplifié", nl: "néerlandais", pt: "portugais", sv: "suédois", ru: "russe", pl: "polonais", ko: "coréen", fa: "persan" };
+        systeme = HYPE_GUIDE_AIDE.replace("{LANGUE}", NOMS_LG3[langue] || "français");
+        messagesApp = Array.isArray(corps.messages) ? corps.messages.slice(-6) : [];
+        try { const derniere = messagesApp.length ? messagesApp[messagesApp.length - 1] : null; const txtQ = derniere && typeof derniere.content === "string" ? derniere.content : ""; if (txtQ) await rpc(service, "hype_aide_noter", { p_uid: uid, p_question: txtQ.slice(0, 1000), p_langue: langue }); } catch (eNote) { }
     } else if (operation === "memoire") {
         systeme = consigneMemoire(corps.memoire);
         messagesApp = [{ role: "user", content: "Fais la synthèse maintenant." }];
@@ -523,7 +558,7 @@ export default async (req, context) => {
         stream: streaming,
         messages: [{ role: "system", content: systeme }].concat(conv.messages),
     };
-    if (regle.perception) charge.response_format = { type: "json_object" };
+    if (regle.perception || operation === "aide") charge.response_format = { type: "json_object" };
     if (modele.indexOf("gpt-5") === 0) {
         charge.reasoning_effort = regle.perception
             ? (process.env.OPENAI_VISION_REASONING || process.env.OPENAI_REASONING || "low")
