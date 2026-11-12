@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 14h09 — build 20261112-1415 — Agenda resserré en un seul bloc (Blandine « option B »)
+- hype-ecran-team.js ?v=50 : AG_BLOC = "avec" par défaut : prochain concours, rendez-vous juste dessous (peu d'espace), puis dernier concours collé.
+
 ### 12/11 14h08 — build 20261112-1410 — Page « Performances des cavaliers », tous les podiums, fin de page remise (Blandine « Ok »)
 - index.html : nouvelle route « performances-cavaliers » = EcranPerformancesChevaux({ cav: true }) : membres du groupe (sauf coach), points = resultats.points par cavalier_id, même saison / filtres / barème ; une carte ouvre performances-cavalier. Titre « Performances des cavaliers ». Image du haut = celle des chevaux (en attente d'une photo de cavalier). Pas encore de lien de partage dédié.
 - hype-ecran-team.js ?v=49 : bouton « Cavaliers » du bandeau Performances → cette page. Résultats récents : TOUS les podiums du dernier concours (ex æquo compris), plus de coupure à 3. Partie « 4 · Apprendre » remise (Hey Baby, Optimise tes perfs en lignes) + onglet Apprendre ; règlements de nouveau en cartes (comme avant).

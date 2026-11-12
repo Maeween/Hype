@@ -957,7 +957,7 @@ function EcranTeamCompetition() {
       ouv ? carteRdvE(ev, passe) : null);
   }
   var nbAgVisibles = 3;
-  var AG_BLOC = (typeof window !== "undefined" && window.__agBloc) || "";   /* 13h50 : essai « un seul bloc » (avec / sans les rendez-vous au milieu) */
+  var AG_BLOC = (typeof window !== "undefined" && window.__agBloc) || "avec";   /* 14h09 : « resserre au milieu, option B » (Blandine) */   /* 13h50 : essai « un seul bloc » (avec / sans les rendez-vous au milieu) */
   var blocAg = section(h("div", null,
     enTete(T("Agenda de l’équipe", "Team calendar", "Agenda del equipo", "Agenda della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "团队日程", "Agenda van het team", "Agenda da equipa", "Lagets kalender", "Календарь команды", "Kalendarz drużyny", "팀 일정"), "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv),
     uneConcours ? h("div", { style: { margin: AG_BLOC ? "-6px -20px 0" : "-6px -20px 34px" } }, uneConcours) : null,
