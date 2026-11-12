@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 15h55 — build 20261112-1600 — maquette cachée Médias de la saison, v2 (Blandine)
+- Base : « CSO étrier de Paris » (agenda Écurie Feinn, 20/09) SUPPRIMÉ (« garde la plus remplie et vire l'autre ») ; ses 3 photos rattachées à « CSO l'étrier » (agenda SEP, 5 résultats), qui en a 6. Lien agenda_groupes de la fiche supprimée retiré.
+- Maquette v1 refusée (« un vrai bordel », titre sur le nez du cheval). v2 dans l'esprit de la fiche concours : photo (galop1-hero-bai), titre « Médias de la saison » posé SOUS le cheval dans le noir, courbe ; 4 cartes photo Parcours · Travail · Photos · Cavaliers.
+- Parcours et Photos : un encart par concours, le dernier ouvert, les autres repliés et dépliables ; photos entières en mosaïque. Travail : vidéos hors concours. Cavaliers : ronds, puis ses médias concours par concours.
+- Même adresse cachée, à retirer avec la vraie publication.
+
 ### 12/11 15h35 — build 20261112-1550 — maquette cachée « Médias de la saison » (Blandine « Oui fais ça pour la page cachée »)
 - maquette-medias-saison.html à la racine (2hype.fr/maquette-medias-saison.html) : non reliée à l'appli, noindex. Vraies vidéos / photos de la saison (team_videos + photos des concours), vues Par concours / Par cavalier (frise de la saison) / Par cheval, partage + fin de page.
 - En tête : les deux fiches du 20/09 (« CSO l'étrier », agenda SEP, 5 résultats ; « CSO étrier de Paris », agenda Écurie Feinn) pour choisir l'affiche ; la page Médias les montrera comme un seul concours (aucune fiche supprimée sans accord).

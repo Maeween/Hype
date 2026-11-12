@@ -5,94 +5,101 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Maquette · Médias de la saison</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Montserrat:wght@400;500;600&display=swap">
 <style>
-/* Maquette du 12/11 (Blandine) : une page Médias commune à tous les concours de la saison,
-   à l'adresse de l'actuelle page Médias de l'équipe. Vraies données (vidéos et photos en ligne), vraies polices. */
-:root{--noir:#070A08;--pan:#0B0E0C;--iv:#F3EEE4;--iv2:rgba(243,238,228,.72);--iv3:rgba(243,238,228,.48);--ch:#C9A66B;--ch2:rgba(201,166,107,.55);--ch3:rgba(201,166,107,.22);
+/* Maquette v2 (12/11, Blandine « Ok ») : copie de la page Médias du concours — même héros (photo, titre dans le noir sous le cheval,
+   courbe), même rangée de cartes photo, mêmes blocs. Vraies vidéos et photos en ligne. Page cachée, non reliée à l'appli. */
+:root{--noir:#070A08;--pan:#0B0E0C;--iv:#F3EEE4;--iv2:rgba(243,238,228,.75);--iv3:rgba(243,238,228,.5);--ch:#C9A66B;--ch2:rgba(201,166,107,.55);
 --serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',Arial,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--noir);color:var(--iv);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 body{overflow-x:hidden}
 img{max-width:100%}
-button{font:inherit}
+button{font:inherit;color:inherit}
 .page{max-width:820px;margin:0 auto}
-.hero{position:relative;height:330px;overflow:hidden}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 35%;-webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 96%);mask-image:linear-gradient(180deg,#000 40%,transparent 96%)}
-.hero .txt{position:absolute;right:max(20px,env(safe-area-inset-right));bottom:46px;text-align:right}
-.hero h1{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(54px,15vw,84px);line-height:.95}
-.hero p{margin:8px 0 0;font-family:var(--serif);font-style:italic;font-size:clamp(20px,5.6vw,28px);color:var(--iv)}
-.hero svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:46px}
-.wrap{padding:0 max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left))}
-.retour{display:inline-block;margin-top:14px;color:var(--ch);font-size:13px;font-weight:600;text-decoration:none}
-.intro{font-size:13px;line-height:1.6;color:var(--iv2);margin:14px 0 0;max-width:46ch}
-.chiffres{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:22px 0 4px;border-top:1px solid rgba(243,238,228,.1);border-bottom:1px solid rgba(243,238,228,.1)}
-.chiffres div{padding:14px 4px;text-align:center}
-.chiffres div+div{border-left:1px solid rgba(243,238,228,.08)}
-.chiffres b{display:block;font-family:var(--serif);font-weight:500;font-size:34px;line-height:1;color:var(--iv)}
-.chiffres span{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--iv3)}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:26px -4px 4px;position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--noir) 80%,rgba(7,10,8,0));padding-top:env(safe-area-inset-top)}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;background:none;border:none;border-bottom:1.5px solid transparent;color:var(--iv3);font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:12px 10px;cursor:pointer}
-.tab.on{color:var(--iv);border-bottom-color:var(--ch)}
-.tab:focus-visible,.btn:focus-visible{outline:1px solid var(--ch);outline-offset:3px}
-/* chapitre de concours */
-.cc{padding:34px 0 8px}
-.cc-tete{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
-.cc-date{width:64px;text-align:center;border-right:1px solid var(--ch3);padding-right:14px}
-.cc-date b{display:block;font-family:var(--serif);font-weight:500;font-size:40px;line-height:.9}
-.cc-date span{display:block;margin-top:4px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ch)}
-.cc-t{font-family:var(--serif);font-weight:500;font-size:clamp(24px,7vw,32px);line-height:1.05;text-wrap:balance}
-.cc-l{font-size:11.5px;color:var(--iv3);margin-top:5px}
-.cc-n{font-size:11px;color:var(--iv2);margin-top:6px}
-.galh{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:18px calc(-1*max(18px,env(safe-area-inset-right))) 0 0;padding-right:18px;scroll-snap-type:x proximity}
-.galh::-webkit-scrollbar{display:none}
-.m{position:relative;flex:0 0 auto;height:clamp(150px,44vw,250px);border-radius:12px;overflow:hidden;background:var(--pan);scroll-snap-align:start;line-height:0}
-.m img{height:100%;width:auto;display:block}
-.m .play{position:absolute;inset:0;margin:auto;width:46px;height:46px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:flex;align-items:center;justify-content:center}
-.m .d{position:absolute;right:7px;bottom:7px;font-size:10.5px;line-height:1;padding:5px 8px;border-radius:7px;background:rgba(7,10,8,.72);color:var(--iv)}
-.m .qui{position:absolute;left:7px;bottom:7px;max-width:80%;font-size:10.5px;line-height:1.2;padding:5px 8px;border-radius:7px;background:rgba(7,10,8,.72);color:var(--iv);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;min-height:38px;padding:0 16px;border-radius:999px;border:1px solid var(--ch2);background:transparent;color:var(--iv);font-size:12.5px;cursor:pointer;text-decoration:none}
-.btn i{font-style:normal;color:var(--ch)}
-.courbe{display:block;width:100%;height:30px;margin:26px 0 0}
-/* cavalier / cheval : frise de la saison */
-.pp{padding:34px 0 6px}
-.pp-tete{display:flex;align-items:center;gap:14px}
-.av{flex:0 0 64px;width:64px;height:64px;border-radius:50%;border:1px solid var(--ch2);overflow:hidden;background:var(--pan);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;color:var(--ch)}
-.av img{width:100%;height:100%;object-fit:cover}
-.pp-n{font-family:var(--serif);font-weight:500;font-size:clamp(28px,8vw,36px);line-height:1}
-.pp-s{font-size:11.5px;color:var(--iv3);margin-top:5px}
-.prog{margin-top:14px;font-size:12px;color:var(--iv2);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.prog .pl{border:1px solid var(--ch2);border-radius:999px;padding:3px 10px;color:var(--iv);font-size:11.5px}
-.prog .pl.or{border-color:var(--ch);color:var(--ch)}
-.prog .fl{color:var(--ch)}
-.frise{position:relative;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;margin:18px calc(-1*max(18px,env(safe-area-inset-right))) 0 0;padding:0 18px 4px 0}
-.frise::-webkit-scrollbar{display:none}
-.etape{flex:0 0 auto;position:relative;padding-top:38px}
-.etape:before{content:"";position:absolute;top:26px;left:0;right:-18px;height:1px;background:linear-gradient(90deg,var(--ch),rgba(201,166,107,.25))}
-.etape:last-child:before{right:0;background:linear-gradient(90deg,var(--ch),rgba(201,166,107,0))}
-.etape .pt{position:absolute;top:22px;left:0;width:9px;height:9px;border-radius:50%;background:var(--noir);border:1px solid var(--ch)}
-.etape .qd{position:absolute;top:0;left:0;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ch);white-space:nowrap}
-.etape .lg{margin-top:9px;max-width:220px}
-.etape .lg b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.etape .lg span{display:block;font-size:10.5px;color:var(--iv3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.etape .lg .res{display:inline-block;margin-top:6px;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--ch2);color:var(--iv)}
-.etape .lg .res.pod{border-color:var(--ch);color:var(--ch)}
-.duo{margin:30px 0 0;padding:20px 0 4px;border-top:1px solid rgba(201,166,107,.25);border-bottom:1px solid rgba(201,166,107,.25)}
-.duo h2{margin:0;font-family:var(--serif);font-weight:500;font-size:26px;line-height:1.1}
-.duo p{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--iv2)}
-.duo-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.duo-c{min-width:0}
-.duo-c .im{border-radius:12px;overflow:hidden;background:var(--pan);line-height:0}
-.duo-c img{width:100%;height:auto;display:block}
-.duo-c b{display:block;margin-top:10px;font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.1}
-.duo-c span{display:block;margin-top:4px;font-size:10.5px;line-height:1.45;color:var(--iv3)}
-.duo-c .k{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ch)}
+/* héros : comme la fiche concours */
+.hero{position:relative;background:var(--noir)}
+.hero .ph{min-height:calc(env(safe-area-inset-top) + 210px)}
+.hero .ph img{display:block;width:100%;height:auto;max-height:118vw;object-fit:cover;-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}
+.hero .titre{position:relative;z-index:3;margin-top:-6px;padding:0 max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left))}
+.hero h1{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(30px,8.6vw,46px);line-height:1.02}
+.hero p{margin:8px 0 0;font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(14px,4vw,19px);opacity:.92;white-space:nowrap}
+.hero svg{display:block;width:100%;height:40px;margin-top:10px}
+.hero .rond{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);left:14px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(243,238,228,.55);background:rgba(7,10,8,.32);display:flex;align-items:center;justify-content:center;color:var(--iv);font-size:20px;text-decoration:none}
+.wrap{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+/* cartes : comme Engagements / Jour J / Résultats / Médias */
+.cartes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:40px;padding-bottom:30px}
+.carte{position:relative;aspect-ratio:.82;border-radius:13px;overflow:hidden;border:1px solid rgba(201,166,107,.32);background:linear-gradient(160deg,#141a1c,#0a0d0e);padding:0;cursor:pointer}
+.carte.on{border:1.5px solid var(--ch)}
+.carte img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.carte span{position:absolute;left:0;right:0;bottom:0;padding:26px 4px 11px;background:linear-gradient(180deg,rgba(7,10,8,0),rgba(7,10,8,.85));font-size:12px;font-weight:600;text-align:center}
+/* choix du concours / du cavalier / du cheval */
+.choix{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*max(18px,env(safe-area-inset-right))) 0 0;padding:2px 18px 4px 0}
+.choix::-webkit-scrollbar,.galh::-webkit-scrollbar,.rangee::-webkit-scrollbar{display:none}
+.pil{flex:0 0 auto;border:1px solid var(--ch2);border-radius:999px;padding:8px 13px;background:transparent;font-size:12px;cursor:pointer;white-space:nowrap}
+.pil b{font-weight:600;color:var(--ch);margin-right:6px}
+.pil.on{border-color:var(--ch);color:var(--ch)}
+.per{flex:0 0 auto;width:74px;background:none;border:none;padding:0;cursor:pointer;text-align:center}
+.per i{display:block;width:64px;height:64px;margin:0 auto;border-radius:50%;overflow:hidden;border:1px solid var(--ch2);background:var(--pan);font-style:normal;font-family:var(--serif);font-size:26px;line-height:62px;color:var(--ch)}
+.per i img{width:100%;height:100%;object-fit:cover;display:block}
+.per span{display:block;margin-top:7px;font-size:11px;color:var(--iv2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.per.on i{border:1.5px solid var(--ch)}
+.per.on span{color:var(--ch)}
+/* blocs de la page Médias du concours */
+.st{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:34px 0 18px}
+.st h2{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(26px,7.6vw,34px);line-height:1.05;text-wrap:balance}
+.st span{flex:0 0 auto;font-size:12.5px;color:var(--iv2)}
+.sous{margin:-10px 0 18px;font-size:12px;color:var(--iv3)}
+.une{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.une.seule{grid-template-columns:1fr}
+.une-p{display:flex;justify-content:center}
+.m{position:relative;display:block;padding:0;border:none;background:var(--pan);border-radius:14px;overflow:hidden;line-height:0;cursor:pointer}
+.une-p .m img{display:block;max-width:100%;max-height:min(46vh,340px);width:auto;height:auto}
+.ronds{display:flex;flex-direction:column;align-items:center;gap:12px}
+.rd{position:relative;width:clamp(58px,17vw,96px);height:clamp(58px,17vw,96px);border-radius:50%;overflow:hidden;padding:0;border:1px solid rgba(201,166,107,.6);background:var(--pan);cursor:pointer}
+.rd img{width:100%;height:100%;object-fit:cover;display:block}
+.rangee,.galh{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-top:12px;margin-right:calc(-1*max(18px,env(safe-area-inset-right)));padding-right:18px}
+.rangee .m{flex:0 0 auto;height:clamp(64px,19vw,110px);border-radius:10px}
+.rangee .m img,.galh .m img{height:100%;width:auto;display:block}
+.galh .it{flex:0 0 auto;max-width:78vw}
+.galh .m{height:clamp(150px,44vw,250px);border-radius:12px}
+.play{position:absolute;inset:0;margin:auto;width:42px;height:42px;border-radius:50%;border:1px solid rgba(243,238,228,.7);background:rgba(7,10,8,.45);display:flex;align-items:center;justify-content:center}
+.dur{position:absolute;right:7px;bottom:7px;font-size:10.5px;line-height:1;padding:5px 7px;border-radius:7px;background:rgba(7,10,8,.72);color:var(--iv)}
+.leg{margin-top:9px;line-height:1.35}
+.leg b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg span{display:block;font-size:10.5px;color:var(--iv3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg em{display:inline-block;margin-top:5px;font-style:normal;font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid var(--ch2)}
+.leg em.pod{border-color:var(--ch);color:var(--ch)}
+.etape{margin-top:26px}
+.etape .qd{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ch)}
+.etape .qd:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(201,166,107,.6),rgba(201,166,107,0))}
+.etape .qd small{font-size:10px;letter-spacing:.06em;text-transform:none;color:var(--iv3)}
+.actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+.lien{color:var(--iv);font-size:12.5px;text-decoration:none;border-bottom:1px solid var(--ch2);padding-bottom:2px}
+.lien i{font-style:normal;color:var(--ch)}
+.aj{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 16px;border-radius:10px;border:1px solid rgba(201,166,107,.7);background:transparent;color:var(--ch);font-size:12.5px;font-weight:500;cursor:pointer}
+.aj span{font-size:18px;font-weight:400;line-height:1}
+.enc{margin-top:14px;border:1px solid rgba(201,166,107,.28);border-radius:16px;overflow:hidden;background:var(--pan)}
+.enc.ouv{border-color:rgba(201,166,107,.6)}
+.enc-t{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:96px;padding:0 16px 0 0;border:none;background:none;text-align:start;cursor:pointer}
+.enc-t .ph{flex:0 0 112px;align-self:stretch;position:relative;overflow:hidden}
+.enc-t .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);mask-image:linear-gradient(90deg,#000 55%,transparent)}
+.enc-t .tx{flex:1;min-width:0;padding:14px 0}
+.enc-t .tx small{display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ch)}
+.enc-t .tx b{display:block;margin-top:4px;font-family:var(--serif);font-weight:500;font-size:21px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.enc-t .tx span{display:block;margin-top:4px;font-size:11px;color:var(--iv3)}
+.enc-t .chev{flex:0 0 auto;color:var(--ch);font-size:18px;transition:transform .2s}
+.enc.ouv .enc-t .chev{transform:rotate(90deg)}
+.enc-c{padding:4px 14px 18px}
+.mos{column-count:2;column-gap:8px}
+.mos .m{width:100%;margin:0 0 8px;break-inside:avoid;border-radius:10px}
+.mos .m img{width:100%;height:auto;display:block}
+.mos.un{column-count:1}
+.note{margin:6px 0 0;font-size:12px;line-height:1.55;color:var(--iv3)}
+@media (prefers-reduced-motion:reduce){.enc-t .chev{transition:none}}
+@media (min-width:768px){.mos{column-count:3}}
 .vue[hidden]{display:none!important}
-.ajout{display:flex;justify-content:center;margin:40px 0 0}
-.ajout .btn{font-size:14px;padding:0 26px;min-height:46px}
-.partage{display:flex;align-items:center;gap:12px;margin:44px 0 0;padding:10px 2px;border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18)}
+.partage{display:flex;align-items:center;gap:12px;margin:46px 0 0;padding:10px 2px;border-top:1px solid rgba(201,166,107,.18);border-bottom:1px solid rgba(201,166,107,.18)}
 .partage div{flex:1;font-family:var(--serif);font-size:18px;color:rgba(243,238,228,.82)}
 .partage span{width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,166,107,.45);display:inline-flex;align-items:center;justify-content:center;color:var(--ch)}
 .fin{padding:56px 0 30px}
@@ -101,42 +108,31 @@ button{font:inherit}
 .fin .im:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--noir) 0%,rgba(7,10,8,0) 12%,rgba(7,10,8,0) 88%,var(--noir) 100%)}
 .fin .hy{display:flex;align-items:center;gap:14px;padding:6px 24px 0}
 .fin .hy i{flex:1;height:1px;background:linear-gradient(90deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
-.fin .hy i+b+i{background:linear-gradient(270deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
+.fin .hy i:last-child{background:linear-gradient(270deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
 .fin .hy b{font-family:var(--serif);font-weight:400;font-size:13px;letter-spacing:4px;color:#C5AA78}
-.bandeau-maq{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--iv3);text-align:center;padding:10px 0 0}
-@media (min-width:768px){.hero{height:420px}.m{height:240px}}
-@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+button:focus-visible,a:focus-visible{outline:1px solid var(--ch);outline-offset:3px}
+@media (min-width:768px){.hero .ph img{max-height:62vh}.cartes{gap:12px}.une-p .m img{max-height:min(70vh,640px)}.galh .m{height:240px}}
 </style>
 </head>
 <body>
 <div class="page">
   <div class="hero">
-    <img src="images/concours-hero-bai-tresse.webp" alt="">
-    <div class="txt"><h1>Médias</h1><p>Team CSO Club · SEP</p></div>
-    <svg viewBox="0 0 400 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C 140 44, 260 30, 400 6" fill="none" stroke="#C9A66B" stroke-width="1.1"/></svg>
+    <a class="rond" href="#" aria-label="Retour">‹</a>
+    <div class="ph"><img src="images/galop1-hero-bai.webp" alt=""></div>
+    <div class="titre"><h1>Médias de la saison</h1><p>Team CSO Club · SEP</p></div>
+    <svg viewBox="0 0 400 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 44 C 150 44, 280 30, 400 4" fill="none" stroke="#C9A66B" stroke-width="1.1"/></svg>
   </div>
   <div class="wrap">
-    <div class="bandeau-maq">Maquette · vraies vidéos et photos en ligne</div>
-    <a class="retour" href="#">‹ L'équipe</a>
-    <p class="intro">Tous les concours de la saison au même endroit : revois chaque concours, ou suis un cavalier ou un cheval d'un concours à l'autre.</p>
-    <section class="duo" aria-label="Les deux fiches du 20 septembre">
-      <h2>Les deux fiches du 20 septembre</h2>
-      <p>Le même concours a été créé deux fois, une fois dans chaque agenda. Choisis l'affiche à garder : la page Médias les montrera comme un seul concours, avec les 6 photos ensemble.</p>
-      <div class="duo-g">
-        <div class="duo-c"><div class="im"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/bc7c52ee-7a42-4162-97dd-50ff5885941e/1789938253882.jpeg" alt="Affiche CSO l’étrier"></div><span class="k">Fiche 1 · agenda SEP</span><b>CSO l’étrier</b><span>L’étrier de Paris · « Cosse Brissac » · 5 résultats · 3 photos · créée le 20/09</span></div>
-        <div class="duo-c"><div class="im"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/bc7c52ee-7a42-4162-97dd-50ff5885941e/1789420143369.jpeg" alt="Affiche CSO étrier de Paris"></div><span class="k">Fiche 2 · agenda Écurie Feinn</span><b>CSO étrier de Paris</b><span>Étrier de Paris · « CSO club et poney, rdv 08h40 départ de la SEP » · 0 résultat · 3 photos · créée le 12/09</span></div>
-      </div>
-    </section>
-    <div class="chiffres" id="chiffres"></div>
-    <div class="tabs" role="tablist">
-      <button class="tab on" data-v="concours" role="tab" aria-selected="true">Par concours</button>
-      <button class="tab" data-v="cavalier" role="tab" aria-selected="false">Par cavalier</button>
-      <button class="tab" data-v="cheval" role="tab" aria-selected="false">Par cheval</button>
+    <div class="cartes" role="tablist">
+      <button class="carte on" data-v="parcours" role="tab"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/05f6c9a5-b585-4db9-86f6-0da4d54774cf/1794419162293.jpg" alt=""><span>Parcours</span></button>
+      <button class="carte" data-v="travail" role="tab"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/6ca52fb4-6808-4b7c-8563-f49c6f8d6cb8/1794390570461.jpg" alt=""><span>Travail</span></button>
+      <button class="carte" data-v="photos" role="tab"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/bc7c52ee-7a42-4162-97dd-50ff5885941e/1793362472850.jpeg" alt=""><span>Photos</span></button>
+      <button class="carte" data-v="cavalier" role="tab"><img src="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/f1d46b66-34d3-464b-babd-fc601806cb47/1790781034093.jpg" alt=""><span>Cavaliers</span></button>
     </div>
-    <div class="vue" id="v-concours"></div>
+    <div class="vue" id="v-parcours"></div>
+    <div class="vue" id="v-travail" hidden></div>
+    <div class="vue" id="v-photos" hidden></div>
     <div class="vue" id="v-cavalier" hidden></div>
-    <div class="vue" id="v-cheval" hidden></div>
-    <div class="ajout"><button class="btn" type="button"><i>+</i> Ajouter des médias</button></div>
     <div class="partage"><div>Partage cette page</div>
       <span><svg viewBox="0 0 24 24" width="17" height="17"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></g></svg></span>
       <span><svg viewBox="0 0 24 24" width="17" height="17"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></g></svg></span>
@@ -149,12 +145,11 @@ button{font:inherit}
 (function(){
 var B="https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/", S="bc7c52ee-7a42-4162-97dd-50ff5885941e/";
 var AV={"Aurélie":"6ca52fb4-6808-4b7c-8563-f49c6f8d6cb8/1791529262561.jpg","Chloé":"273a4599-1356-426f-8889-af563ad6b9b6/1785081119406.jpg","Ella":"f1d46b66-34d3-464b-babd-fc601806cb47/1790781034093.jpg","Eva":"05f6c9a5-b585-4db9-86f6-0da4d54774cf/1793535777646.jpg","MAELYS":"72a143cd-a079-4d24-bf6b-4796c4901bcb/1794390673468.jpg","Romy-Thaïs":"a59219b4-ab66-4258-9d83-ab1ed1910eda/1793388174339.jpg"};
-/* concours de la saison qui ont des médias (club_agenda + team_videos + commentaires, lus le 12/11) */
+var CHP={"Aceitunero":S+"1788461969349.jpg","Apache du Lys":"4187dcc2-7b49-438f-aca8-f46c211f159c/1790410042671.jpg","Cirrus des lauriers":S+"1788461332428.jpg","Dakota ca":S+"1788380143324.jpg","Daphne velleda":S+"1785588877819.jpg","Ecolo louvo":S+"1788390522672.jpg","Elle m’a dit circee":S+"1788462715658.jpg","Orchid’s yellow":S+"1788461831278.jpg","Rizotto d'Emery":S+"1788048741874.jpg"};
 var CONC=[
  {id:"tig",t:"CSO Tigery",l:"Tigery",d:"2026-11-08",ph:[S+"1794229413058.jpeg",S+"1794238407581.jpeg"]},
- {id:"fol",t:"CSO équipe club / challenge",l:"Haras de Folleville",d:"2026-10-25",ph:[S+"1792862331818.png",S+"1792862466139.png",S+"1793362472850.jpeg",S+"1793362647675.jpeg"]},
- {id:"etp",t:"CSO étrier de Paris",l:"Étrier de Paris",d:"2026-09-20",ph:[S+"1789937988281.jpeg",S+"1789911510811.jpg",S+"1789985936680.jpeg"]},
- {id:"etr",t:"CSO l’étrier",l:"L’étrier de Paris",d:"2026-09-20",ph:[S+"1789938601761.jpeg",S+"1789938429889.jpg",S+"1790846296418.jpeg"]},
+ {id:"fol",t:"CSO équipe club / challenge",l:"Haras de Folleville",d:"2026-10-25",ph:[S+"1793362472850.jpeg",S+"1793362647675.jpeg",S+"1792862331818.png",S+"1792862466139.png"]},
+ {id:"etr",t:"CSO l’étrier",l:"L’étrier de Paris",d:"2026-09-20",ph:[S+"1789938601761.jpeg",S+"1789938429889.jpg",S+"1790846296418.jpeg",S+"1789937988281.jpeg",S+"1789911510811.jpg",S+"1789985936680.jpeg"]},
  {id:"cso",t:"Cso",l:"Haras de Folleville",d:"2026-09-13",ph:[S+"1789406356051.jpg"]},
  {id:"ch1",t:"CSO challenge 1",l:"Haras de Folleville",d:"2026-09-12",ph:[S+"1789723330205.jpg",S+"1789721927174.jpg",S+"1789722142205.jpg",S+"1789723373789.png"]}
 ];
@@ -176,49 +171,69 @@ var VID=[
 var MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 function cO(id){for(var i=0;i<CONC.length;i++)if(CONC[i].id===id)return CONC[i];return null}
 function dt(v){var c=cO(v.c);return c?c.d:v.dt}
-function jm(d){var x=d.split("-");return {j:+x[2],m:MOIS[+x[1]-1]}}
+function jm(d){var x=d.split("-");return +x[2]+" "+MOIS[+x[1]-1]}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function duree(s){return Math.floor(s/60)+":"+("0"+(s%60)).slice(-2)}
+function pod(r){return /^[1-3](er|e) /.test(r||"")}
 var PLAY='<span class="play"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 6.5v11l9-5.5z" fill="#F3EEE4"/></svg></span>';
-function mv(v,qui){return '<div class="m"><img loading="lazy" src="'+B+v.v+'" alt="">'+PLAY+'<span class="d">'+duree(v.du)+'</span>'+(qui?'<span class="qui">'+esc(qui)+'</span>':'')+'</div>'}
-function mp(u){return '<div class="m"><img loading="lazy" src="'+B+u+'" alt=""></div>'}
-var COURBE='<svg class="courbe" viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 C 120 28, 260 4, 400 12" fill="none" stroke="#C9A66B" stroke-opacity=".7" stroke-width="1"/></svg>';
-var nP=0;CONC.forEach(function(c){nP+=c.ph.length});
-document.getElementById("chiffres").innerHTML='<div><b>'+CONC.length+'</b><span>concours</span></div><div><b>'+VID.length+'</b><span>vidéos</span></div><div><b>'+nP+'</b><span>photos</span></div>';
-/* PAR CONCOURS */
-var h="";
-CONC.forEach(function(c,i){
-  var vs=VID.filter(function(v){return v.c===c.id}), d=jm(c.d);
-  var n=[];if(vs.length)n.push(vs.length+(vs.length>1?" vidéos":" vidéo"));if(c.ph.length)n.push(c.ph.length+(c.ph.length>1?" photos":" photo"));
-  h+=(i?COURBE:"")+'<section class="cc"><div class="cc-tete"><div class="cc-date"><b>'+d.j+'</b><span>'+d.m+'</span></div><div style="min-width:0"><div class="cc-t">'+esc(c.t)+'</div><div class="cc-l">'+esc(c.l)+'</div><div class="cc-n">'+n.join(" · ")+'</div></div></div>'
-   +'<div class="galh">'+vs.map(function(v){return mv(v,v.cav+" × "+v.ch+(v.res?" · "+v.res:""))}).join("")+c.ph.map(mp).join("")+'</div>'
-   +'<a class="btn" href="#">Voir les médias du concours <i>›</i></a></section>';
-});
-document.getElementById("v-concours").innerHTML=h;
-/* PAR CAVALIER / PAR CHEVAL : la saison en frise, du plus ancien au plus récent */
-function grouper(cle,autre){
+function media(x,cls){return '<button type="button" class="m'+(cls||"")+'"><img loading="lazy" src="'+B+x.u+'" alt="">'+(x.du?PLAY+'<span class="dur">'+duree(x.du)+'</span>':'')+'</button>'}
+function plur(n,a,b){return n+" "+(n>1?b:a)}
+/* ---------- encarts de concours : le dernier ouvert, les autres repliés ---------- */
+var ouverts={parcours:{},photos:{}};
+function encarts(boite,quoi){
+  var h="",premier=true;
+  CONC.forEach(function(c){
+    var vs=VID.filter(function(v){return v.c===c.id}), L=quoi==="photos"?c.ph.map(function(p){return {u:p}}):vs;
+    if(!L.length)return;
+    if(ouverts[quoi][c.id]===undefined)ouverts[quoi][c.id]=premier; premier=false;
+    var ouv=ouverts[quoi][c.id], couv=quoi==="photos"?c.ph[0]:(vs[0]&&vs[0].v);
+    var n=quoi==="photos"?plur(c.ph.length,"photo","photos"):plur(vs.length,"parcours filmé","parcours filmés");
+    h+='<div class="enc'+(ouv?" ouv":"")+'"><button type="button" class="enc-t" data-c="'+c.id+'" aria-expanded="'+ouv+'"><span class="ph"><img loading="lazy" src="'+B+couv+'" alt=""></span><span class="tx"><small>'+jm(c.d)+'</small><b>'+esc(c.t)+'</b><span>'+esc(c.l)+' · '+n+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
+    if(ouv){
+      if(quoi==="photos")h+='<div class="enc-c"><div class="mos'+(L.length===1?" un":"")+'">'+L.map(function(x){return media(x)}).join("")+'</div></div>';
+      else h+='<div class="enc-c"><div class="galh">'+vs.map(function(v){return '<div class="it">'+media({u:v.v,du:v.du})+'<div class="leg"><b>'+esc(v.cav)+' × '+esc(v.ch)+'</b><span>'+(v.ep?esc(v.ep):"&nbsp;")+'</span>'+(v.res?'<em class="'+(pod(v.res)?"pod":"")+'">'+esc(v.res)+'</em>':'')+'</div></div>'}).join("")+'</div><div class="actions"><a class="lien" href="#">Voir la fiche du concours <i>›</i></a></div></div>';
+    }
+    h+='</div>';
+  });
+  h+='<div class="actions" style="justify-content:flex-end"><button type="button" class="aj"><span>+</span> '+(quoi==="photos"?"Ajouter des photos":"Ajouter un parcours")+'</button></div>';
+  var el=document.getElementById(boite); el.innerHTML=h;
+  el.querySelectorAll(".enc-t").forEach(function(b){b.onclick=function(){var k=b.getAttribute("data-c");ouverts[quoi][k]=!ouverts[quoi][k];encarts(boite,quoi)}});
+}
+function vueTravail(){
+  var T=VID.filter(function(v){return !v.c});
+  var h='<div class="st"><h2>Vidéos de travail</h2><span>'+plur(T.length,"vidéo","vidéos")+'</span></div><p class="sous">Les séances à la maison, hors concours.</p>';
+  h+='<div class="galh">'+T.map(function(v){return '<div class="it">'+media({u:v.v,du:v.du})+'<div class="leg"><b>'+esc(v.cav)+' × '+esc(v.ch)+'</b><span>'+jm(v.dt)+'</span></div></div>'}).join("")+'</div>';
+  h+='<div class="actions" style="justify-content:flex-end"><button type="button" class="aj"><span>+</span> Ajouter une vidéo de travail</button></div>';
+  document.getElementById("v-travail").innerHTML=h;
+}
+/* ---------- PAR CAVALIER / PAR CHEVAL : on choisit dans les ronds, ses médias du plus ancien au plus récent ---------- */
+var sel={cav:null,ch:null};
+function vuePersonne(cle,autre,boite){
   var G={},ordre=[];
   VID.forEach(function(v){var k=v[cle];if(!G[k]){G[k]=[];ordre.push(k)}G[k].push(v)});
   ordre.sort(function(a,b){return G[b].length-G[a].length||a.localeCompare(b)});
-  return ordre.map(function(k,i){
-    var L=G[k].slice().sort(function(a,b){return dt(a).localeCompare(dt(b))});
-    var nc={};L.forEach(function(v){nc[v.c||"ent"]=1});var ncc=Object.keys(nc).filter(function(x){return x!=="ent"}).length;
-    var res=L.filter(function(v){return v.res});
-    var prog=res.length?'<div class="prog"><span>Classements</span>'+res.map(function(v,j){return (j?'<span class="fl">→</span>':'')+'<span class="pl'+(/^[1-3](er|e) /.test(v.res)?" or":"")+'">'+esc(v.res.split(" /")[0])+'</span>'}).join("")+'</div>':"";
-    var tete=cle==="cav"?'<div class="av">'+(AV[k]?'<img src="'+B+AV[k]+'" alt="">':esc(k.charAt(0)))+'</div>':'<div class="av">'+esc(k.charAt(0))+'</div>';
-    var etapes=L.map(function(v){var d=jm(dt(v)),c=cO(v.c);
-      return '<div class="etape"><span class="pt"></span><span class="qd">'+d.j+" "+d.m+'</span>'+mv(v)
-       +'<div class="lg"><b>'+esc(v[autre])+'</b><span>'+esc(c?c.t:"Entraînement")+(v.ep?" · "+esc(v.ep):"")+'</span>'+(v.res?'<span class="res'+(/^[1-3](er|e) /.test(v.res)?" pod":"")+'">'+esc(v.res)+'</span>':'')+'</div></div>'}).join("");
-    return (i?COURBE:"")+'<section class="pp"><div class="pp-tete">'+tete+'<div style="min-width:0"><div class="pp-n">'+esc(k)+'</div><div class="pp-s">'+L.length+(L.length>1?" vidéos":" vidéo")+(ncc?" · "+ncc+" concours":"")+'</div></div></div>'+prog+'<div class="frise">'+etapes+'</div><a class="btn" href="#">'+(cle==="cav"?"Sa saison complète":"Sa saison complète")+' <i>›</i></a></section>';
-  }).join("");
+  if(!sel[cle])sel[cle]=ordre[0];
+  var k=sel[cle], L=G[k].slice().sort(function(a,b){return dt(a).localeCompare(dt(b))});
+  var pics=cle==="cav"?AV:CHP;
+  var h='<div class="choix">'+ordre.map(function(p){return '<button type="button" class="per'+(p===k?" on":"")+'" data-p="'+esc(p)+'"><i>'+(pics[p]?'<img loading="lazy" src="'+B+pics[p]+'" alt="">':esc(p.charAt(0)))+'</i><span>'+esc(p)+'</span></button>'}).join("")+'</div>';
+  var parC={},cles=[];L.forEach(function(v){var c=v.c||("ent-"+v.dt);if(!parC[c]){parC[c]=[];cles.push(c)}parC[c].push(v)});
+  var nconc=cles.filter(function(c){return c.indexOf("ent-")!==0}).length;
+  h+='<div class="st"><h2>'+esc(k)+'</h2><span>'+plur(L.length,"vidéo","vidéos")+(nconc?" · "+plur(nconc,"concours","concours"):"")+'</span></div>';
+  cles.forEach(function(c){
+    var co=cO(c), vs=parC[c];
+    h+='<div class="etape"><div class="qd">'+jm(dt(vs[0]))+' <small>'+esc(co?co.t:"Entraînement")+'</small></div><div class="galh">'+vs.map(function(v){
+      return '<div class="it">'+media({u:v.v,du:v.du})+'<div class="leg"><b>'+esc(v[autre])+'</b><span>'+(v.ep?esc(v.ep):(co?esc(co.l):"&nbsp;"))+'</span>'+(v.res?'<em class="'+(pod(v.res)?"pod":"")+'">'+esc(v.res)+'</em>':'')+'</div></div>'}).join("")+'</div></div>';
+  });
+  h+='<div class="actions"><a class="lien" href="#">'+(cle==="cav"?"Ses performances":"Ses performances")+' <i>›</i></a><button type="button" class="aj"><span>+</span> Ajouter des médias</button></div>';
+  var el=document.getElementById(boite); el.innerHTML=h;
+  el.querySelectorAll(".per").forEach(function(b){b.onclick=function(){sel[cle]=b.getAttribute("data-p");vuePersonne(cle,autre,boite)}});
 }
-document.getElementById("v-cavalier").innerHTML=grouper("cav","ch");
-document.getElementById("v-cheval").innerHTML=grouper("ch","cav");
-var tabs=document.querySelectorAll(".tab");
-function montrer(v){tabs.forEach(function(t){var on=t.getAttribute("data-v")===v;t.classList.toggle("on",on);t.setAttribute("aria-selected",on)});["concours","cavalier","cheval"].forEach(function(x){document.getElementById("v-"+x).hidden=x!==v})}
-tabs.forEach(function(t){t.addEventListener("click",function(){montrer(t.getAttribute("data-v"));try{history.replaceState(null,"","#"+t.getAttribute("data-v"))}catch(e){}})});
-var hs=(location.hash||"").slice(1);if(hs==="cavalier"||hs==="cheval")montrer(hs);
-document.querySelectorAll('a[href="#"]').forEach(function(a){a.addEventListener("click",function(e){e.preventDefault()})});
+encarts("v-parcours","parcours"); vueTravail(); encarts("v-photos","photos"); vuePersonne("cav","ch","v-cavalier");
+var cartes=document.querySelectorAll(".carte");
+function montrer(v){cartes.forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===v)});["parcours","travail","photos","cavalier"].forEach(function(x){document.getElementById("v-"+x).hidden=x!==v})}
+cartes.forEach(function(t){t.addEventListener("click",function(){montrer(t.getAttribute("data-v"))})});
+var hs=(location.hash||"").slice(1);if(["travail","photos","cavalier"].indexOf(hs)>=0)montrer(hs);
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href="#"]');if(a)e.preventDefault()});
 })();
 </script>
 </body>
