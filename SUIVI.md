@@ -12,6 +12,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — build 20261112-1710 — PERSAN (fa), 15e langue de l'appli — étape 1 : l'appli
+- Demande de Blandine (12/11, pour Faïmé) : « fais-le, je te laisse tout faire ». Sélecteurs : « ایران (فارسی) » sans drapeau, pastille « IR » (Blandine : « tu marques Iran et on se prend pas la tête » ; Faïmé refuse le drapeau actuel).
+- 21 460 textes traduits en persan (tutoiement, glossaire équestre dans outils/fa/CONSIGNES.md) par 28 assistants en parallèle, puis vérifiés (aucun manquant, variables intactes).
+- Sens droite-à-gauche étendu au persan partout où il l'était pour l'arabe ; textes non traduits → repli sur l'anglais ; dates en persan mais calendrier grégorien (fa-IR-u-ca-gregory) ; lang="fa" sur la page.
+- Outils relançables (à relancer après tout ajout de texte) : python3 outils/fa/rtl-fa.py puis node outils/fa/injecter-fa.cjs ; nouveaux textes → node outils/fa/injecter-fa.cjs --extraire, traduire, outils/fa/fusionner.py.
+- Fichiers : index.html + 62 fichiers hype-*.js (?v= augmentés), outils/fa/.
+- Vérifié (Chromium, téléphone/tablette/ordinateur) : accueil, Galops, Cavalier, Chevaux, Communauté, Écurie, Team, Médias, Ma saison, Hey Baby, Premium, Messagerie, Agenda, Santé, Vidéothèque, Mon compte → persan, aucune erreur ; français inchangé.
+- RESTE (étape 2) : textes chargés à part (i18n/gestion-*.json, i18n/prepa-*.json → créer les versions fa), pages publiques Google/Bing (dossier fa/ + générateurs + plans du site), mails, puis « 14 langues » → « 15 langues » partout. Phrases coupées en morceaux dans le code : ordre des mots parfois bancal en persan, à corriger au cas par cas.
+
 ### 12/11 16h50 — build 20261112-1705 — NAVIGATION : retours et fiches concours (Blandine : « ça part dans tous les sens, un enfer »)
 - CAUSE 1 : les flèches ‹ de Ma saison, fiche concours, Médias, Équipe, vidéothèque lisaient app.histLen, qui n'était PAS fourni par l'appli → elles renvoyaient toujours vers une page fixe (Ma saison, l'Équipe, le Centre…) au lieu de la page d'où l'on vient. index.html : histLen ajouté au contexte → la flèche ‹ revient à la page précédente, comme le balayage.
 - CAUSE 2 : l'historique ne retenait que le nom de l'écran ; toutes les fiches concours (et les Médias de la saison) s'appellent « concours » → le retour rouvrait la dernière fiche ouverte, et passer d'une fiche à une autre (ex. Folleville → Médias de la saison) ne faisait rien ou mélangeait les deux. index.html : pile des identifiants de concours parallèle à l'historique + fiche redessinée à chaque changement d'identifiant (clé concCle).
