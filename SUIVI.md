@@ -12,6 +12,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — build 20261112-1900 — PERSAN étape 3 : pages publiques Google/Bing + « 15 langues »
+- 17 pages publiques en persan dans fa/ (accueil, association + mentions légales, CGV, concours, fiche cheval, gestion d'écurie, IA, logiciel, photos, plan Lamotte, 4 prépas, reprises, santé), droite-à-gauche, tutoiement (sauf CGV, mentions, association : « شما »).
+- Liens pour les moteurs : hreflang « fa » ajouté dans toutes les langues + plan du site (12 entrées fa) ; « فارسی » ajouté aux menus et pieds de page de langues. Bing prévenu automatiquement à la publication (IndexNow Netlify).
+- « 14 langues » → « 15 langues » et persan ajouté à la fin des listes de langues, sur les pages publiques des 14 autres langues.
+- Outils relançables : outils/fa/hreflang-fa.py, outils/fa/quinze-langues.py (à relancer si un générateur refait les pages).
+- RESTE pour le persan :
+  1. Générateurs des pages (seo-*.cjs/.py, association-generer.py, cgv-generer.py) ne connaissent pas encore « fa » : s'ils sont relancés, relancer ensuite les deux outils ci-dessus (les pages fa/ ne sont pas touchées par eux).
+  2. Fiches chevaux publiques (netlify/edge-functions/cheval-route.ts) : pas encore de version persane.
+  3. Mails (invitation, tips) en persan.
+  4. Relecture par une personne persanophone (Faïmé) — phrases coupées en morceaux dans l'appli.
+
 ### 12/11 18h15 — build 20261112-1845 — PHOTOS : effet doré adouci partout (Blandine : « il est quand même assez violent », choix « C »)
 - HYPE_PH_SOLEIL_CSS (index.html) prend les valeurs de HC_B2_CSS déjà validées le 09/11 pour les médias du concours : à peu près moitié moins fort (moins jauni, lueur orangée et coins sombres réduits).
 - Touche toutes les pages qui l'utilisent : Écurie (événements, cartes d'équipe, chevaux), page Cavalier, page Équipe, vidéos du Galop 5.
