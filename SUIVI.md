@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — Mail d'inscription étoffé (14 langues), PAS ENCORE APPLIQUÉ dans Supabase
+- Demandes de Blandine (12/11 13h25 → 14h17) : photo entière (choix 3 : images/accueil-video-ordi-poster.jpg), « Ce qui t'attend sur Hype » (10 fonctions avec liens, dont coffre-fort → 2hype.fr/#coffre, Galops 1 à 9 & prépas AE/BPJEPS/DEJEPS), « Et pour les professionnels » (registre d'élevage, résultats en une capture, rappels, page publique, agenda/messagerie, documents légaux, pensions/contrats, compta et demandes d'aides ; « Personnel » retiré), Hypo qui signe. Traduit dans les 14 langues (outils/mails-fonctions-langues.py) ; généré par outils/mails-generer.py → outils/mails/confirmation.html.
+- Pas de copier-coller pour Blandine : fonction reglages-mails (v5) avec nouvelle action « appliquer_confirmation » (recopie confirmation.html + objet depuis le dépôt dans Supabase). Les mails partent déjà par Brevo (SMTP smtp-relay.brevo.com, contact@2hype.fr).
+- À FAIRE : appliquer seulement quand le coffre-fort (#coffre, autre conversation) est en ligne → select net.http_post(url:='https://ldpjebgtskzdokrublfg.supabase.co/functions/v1/reglages-mails', body:='{"action":"appliquer_confirmation"}'::jsonb, headers:='{"Content-Type":"application/json"}'::jsonb); puis compte de test.
+
 ### 12/11 14h09 — build 20261112-1415 — Agenda resserré en un seul bloc (Blandine « option B »)
 - hype-ecran-team.js ?v=50 : AG_BLOC = "avec" par défaut : prochain concours, rendez-vous juste dessous (peu d'espace), puis dernier concours collé.
 
