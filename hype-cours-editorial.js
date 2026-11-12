@@ -3830,7 +3830,7 @@ var GLEX_IC = {
 /* 04/11 22h16 (Blandine « 3c ») — en bas de chaque notion : « Tu veux découvrir cette notion dans une autre langue ? », qui se déplie
    sur le nom de la notion dans les 13 autres langues (même notion retrouvée par son cours et son rang) */
 var GLEX_NOMS_LG = { fr: "Français", en: "English", es: "Español", it: "Italiano", ja: "日本語", de: "Deutsch", ar: "العربية", zh: "中文", nl: "Nederlands", pt: "Português", sv: "Svenska", ru: "Русский", pl: "Polski", ko: "한국어", fa: "English" };
-var GLEX_DRAP = { fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸", it: "🇮🇹", ja: "🇯🇵", de: "🇩🇪", ar: "🇸🇦", zh: "🇨🇳", nl: "🇳🇱", pt: "🇵🇹", sv: "🇸🇪", ru: "🇷🇺", pl: "🇵🇱", ko: "🇰🇷", fa: "🇮🇷" };
+var GLEX_DRAP = { fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸", it: "🇮🇹", ja: "🇯🇵", de: "🇩🇪", ar: "🇸🇦", zh: "🇨🇳", nl: "🇳🇱", pt: "🇵🇹", sv: "🇸🇪", ru: "🇷🇺", pl: "🇵🇱", ko: "🇰🇷", fa: "IR" };
 var GLEX_ORDRE_LG = ["fr", "en", "es", "it", "de", "nl", "pt", "sv", "pl", "ru", "ar", "ja", "zh", "ko"];
 var GLEX_CACHE_LG = {};
 function glexDansLangue(id, lg2, pret, charge) {
