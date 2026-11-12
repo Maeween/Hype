@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 16h50 — build 20261112-1705 — NAVIGATION : retours et fiches concours (Blandine : « ça part dans tous les sens, un enfer »)
+- CAUSE 1 : les flèches ‹ de Ma saison, fiche concours, Médias, Équipe, vidéothèque lisaient app.histLen, qui n'était PAS fourni par l'appli → elles renvoyaient toujours vers une page fixe (Ma saison, l'Équipe, le Centre…) au lieu de la page d'où l'on vient. index.html : histLen ajouté au contexte → la flèche ‹ revient à la page précédente, comme le balayage.
+- CAUSE 2 : l'historique ne retenait que le nom de l'écran ; toutes les fiches concours (et les Médias de la saison) s'appellent « concours » → le retour rouvrait la dernière fiche ouverte, et passer d'une fiche à une autre (ex. Folleville → Médias de la saison) ne faisait rien ou mélangeait les deux. index.html : pile des identifiants de concours parallèle à l'historique + fiche redessinée à chaque changement d'identifiant (clé concCle).
+- À tester : Équipe → Médias de la saison → un concours → ‹ ‹ ‹ (doit repasser par chaque page dans l'ordre, jusqu'à l'Équipe).
+
 ### 12/11 16h40 — build 20261112-1700 — page Équipe : tout bandeau s'ouvre au toucher, pas seulement son bouton (Blandine : « généralise le tap »)
 - hype-ecran-team.js ?v=54 : bandeaux « Prochain concours » / « Dernier concours » entièrement cliquables ; bandeaux duo (Ma saison, Performances, Derniers résultats) : toucher le bandeau = son bouton (Performances : le premier, Cavaliers).
 - Correction d'un défaut introduit à 15h30 : sur « Derniers résultats », toucher le bouton dépliait puis repliait aussitôt (deux actions) — le bouton n'agit plus qu'une fois.
