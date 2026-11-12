@@ -497,7 +497,7 @@ function EcranTeamCompetition() {
   var _pa = React.useState(0); var partieActive = _pa[0], setPartieActive = _pa[1];
   function allerPartie(i) { setPartieActive(i); try { var el = document.getElementById(PARTIES[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }
   var menuParties = h("div", { "data-noswipe": "1", "data-hscroll": "1", style: { position: "sticky", top: 0, zIndex: 20, display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", padding: "calc(env(safe-area-inset-top) + 10px) 20px 12px", background: "rgba(6,7,9,0.94)", borderBottom: "1px solid rgba(214,182,118,0.18)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
-    PARTIES.slice(0, 3).map(function (P, i) { var on = i === partieActive; return h("button", { key: "mp" + i, type: "button", onClick: function () { allerPartie(i); }, style: { flex: "0 0 auto", minHeight: 38, padding: "0 15px", borderRadius: 999, border: on ? "1.5px solid " + OR : "1px solid rgba(244,241,234,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, P.lab); }));
+    PARTIES.map(function (P, i) { var on = i === partieActive; return h("button", { key: "mp" + i, type: "button", onClick: function () { allerPartie(i); }, style: { flex: "0 0 auto", minHeight: 38, padding: "0 15px", borderRadius: 999, border: on ? "1.5px solid " + OR : "1px solid rgba(244,241,234,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, P.lab); }));
   React.useEffect(function () {   /* le bouton du menu suit la partie qu'on regarde */
     function surDefil() { try { var act = 0; PARTIES.forEach(function (P, i) { var el = document.getElementById(P.id); if (el && el.getBoundingClientRect().top < 140) act = i; }); setPartieActive(act); } catch (e) { } }
     window.addEventListener("scroll", surDefil, { passive: true }); return function () { window.removeEventListener("scroll", surDefil); };
@@ -957,14 +957,16 @@ function EcranTeamCompetition() {
       ouv ? carteRdvE(ev, passe) : null);
   }
   var nbAgVisibles = 3;
+  var AG_BLOC = (typeof window !== "undefined" && window.__agBloc) || "";   /* 13h50 : essai « un seul bloc » (avec / sans les rendez-vous au milieu) */
   var blocAg = section(h("div", null,
     enTete(T("Agenda de l’équipe", "Team calendar", "Agenda del equipo", "Agenda della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "团队日程", "Agenda van het team", "Agenda da equipa", "Lagets kalender", "Календарь команды", "Kalendarz drużyny", "팀 일정"), "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv),
-    uneConcours ? h("div", { style: { margin: "-6px -20px 34px" } }, uneConcours) : null,
+    uneConcours ? h("div", { style: { margin: AG_BLOC ? "-6px -20px 0" : "-6px -20px 34px" } }, uneConcours) : null,
+    (AG_BLOC === "sans" && dernierConcours) ? h("div", { style: { margin: "0 -20px" } }, bandeauConcours(dernierConcours, true)) : null,
     agenda === null ? chargement()
       : h("div", null,
           !agendaSansUne.length && !prochainC ? videCartePh(ICO.agenda, "images/concours-carte-passages.webp", T("Aucun rendez-vous à venir pour l’instant.", "No upcoming events yet.", "Aún no hay citas próximas.", "Nessun appuntamento in arrivo per ora.", "今後の予定はまだありません。", "Noch keine anstehenden Termine.", "لا توجد مواعيد قادمة حاليا.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")) : null,
-          (ouvert.ag ? agendaSansUne : agendaSansUne.slice(0, nbAgVisibles)).map(function (ev) { return ligneAg(ev, false); }),
-          dernierConcours ? h("div", { style: { margin: "34px -20px 0" } }, bandeauConcours(dernierConcours, true)) : null,
+          h("div", { style: AG_BLOC === "avec" ? { padding: "6px 0 18px" } : AG_BLOC === "sans" ? { paddingTop: 22 } : null }, (ouvert.ag ? agendaSansUne : agendaSansUne.slice(0, nbAgVisibles)).map(function (ev) { return ligneAg(ev, false); })),
+          (dernierConcours && AG_BLOC !== "sans") ? h("div", { style: { margin: AG_BLOC ? "0 -20px" : "34px -20px 0" } }, bandeauConcours(dernierConcours, true)) : null,
           (ouvert.ag && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous passés", "Past events", "Citas pasadas", "Appuntamenti passati", "過去の予定", "Vergangene Termine", "مواعيد سابقة", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
             h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return ligneAg(ev, true); }))) : null)), true);
@@ -1216,11 +1218,11 @@ function EcranTeamCompetition() {
       var k = "fr" + j;
       enfants.push(h("div", { key: k }, pointFr([jm, lieu].filter(Boolean).join(" · "), idx === 0)));
       if (idx === 0) {
-        var ouv0 = !!frOuv[k], l0 = ouv0 ? P.liste : P.liste.slice(0, 3);
+        var ouv0 = !!frOuv[k], l0 = (ouv0 || (sansFrise && P.pod.length)) ? P.liste : P.liste.slice(0, 3);   /* 13h50 : tous les podiums (ex æquo compris), jamais un 3e affiché et l autre caché */
         enfants.push(h("div", { key: k + "l" }, l0.map(vignetteFr)));
         if (sansFrise) {   /* 13h42 (Blandine) : « Importer des résultats » en discret, à droite de « Voir les N autres » */
           enfants.push(h("div", { key: k + "d", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
-            P.liste.length > 3 ? lienDeplier(k, ouv0, P.liste.length - 3) : h("span", null),
+            (!P.pod.length && P.liste.length > 3) ? lienDeplier(k, ouv0, P.liste.length - 3) : h("span", null),
             (gestion && groupe) ? h("button", { type: "button", "data-import-multi": "1", onClick: ouvrirImportRes, style: { minHeight: 30, padding: 0, margin: "-4px 0 12px", border: "none", background: "transparent", color: GR, fontFamily: M, fontSize: 11, cursor: "pointer", whiteSpace: "nowrap" } },
               "+ " + T("Importer des résultats", "Import results", "Importar resultados", "Importa risultati", "成績を取り込む", "Ergebnisse importieren", "استيراد النتائج", "导入成绩", "Resultaten importeren", "Importar resultados", "Importera resultat", "Импортировать результаты", "Importuj wyniki", "결과 가져오기")) : null));
         } else if (P.liste.length > 3) enfants.push(h("div", { key: k + "d" }, lienDeplier(k, ouv0, P.liste.length - 3)));
@@ -1256,12 +1258,12 @@ function EcranTeamCompetition() {
   var TV_CLASS = T("Voir le classement", "See the ranking", "Ver la clasificación", "Vedi la classifica", "ランキングを見る", "Rangliste ansehen", "عرض التصنيف", "查看排名", "Klassement bekijken", "Ver a classificação", "Se rankningen", "Смотреть рейтинг", "Zobacz klasyfikację", "순위 보기");
   var bPerf = bandeauDuo("bperf", true, "images/cheval-golden-des-brouets-provisoire.webp", !rtl, null,
     T("Performances", "Performance", "Rendimiento", "Prestazioni", "成績", "Leistungen", "أداء", "表现", "Prestaties", "Desempenho", "Prestationer", "Выступления", "Osiągnięcia", "성적"), null,
-    [[ouvert.pcav ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기") : T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더"), function () { basculer("pcav"); }],
+    [[T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더"), function () { setEcran("performances-cavaliers"); }],
      [T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말"), function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }]]);
   var duoSaisonRes = h("div", { key: "duo", style: { paddingTop: 40 } },
     lienSaison, lienSaison ? courbeJointure("j1", false) : null,
     bPerf,
-    listePerfCav ? h("div", { style: { padding: "10px 20px 0" } }, listePerfCav) : null);
+    null);   /* 13h45 : Cavaliers ouvre la page performances-cavaliers */
   var nbConcAvant = (function () { var d = new Date(); var deb = (d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1) + "-09-01"; var J = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && j >= deb && J.indexOf(j) < 0) J.push(j); }); return Math.max(0, J.length - 1); })();
   var blocRes = section(h("div", null,
     enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과"), "res", (RES_VARIANTE === "B") ? nbConcAvant : autresRes.length, 0),
@@ -1364,11 +1366,23 @@ function EcranTeamCompetition() {
 
   /* (721) CHAPITRE « Règlements » : les règlements officiels (PDF dans docs/), ouverts dans un nouvel onglet.
      11/11 21h46 (Blandine : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ») : deux carrés. */
-  function carteReg(attr, href, titre, sous, source, photo) {   /* 12/11 : ligne « sommaire » (Blandine) */
-    return ligneSom(attr, titre, h("span", null, sous, h("span", { style: { display: "block", fontStyle: "italic", fontSize: 10, color: "rgba(243,238,228,0.5)", marginTop: 2 } }, source)), photo, null, { href: href, attr: attr, pdf: true });
+  function carteReg(attr, href, titre, sous, source, photo) {   /* 11/11 21h51 : « mets un visuel dessus quand même » → photo en fond, voilée */
+    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", minHeight: 104, backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.35) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.95) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
+    pr[attr] = "1";
+    return h("a", pr,
+      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
+        h("svg", { width: 18, height: 18, viewBox: "0 0 20 20", "aria-hidden": "true" },
+          h("path", { d: "M5 2h7l4 4v12H5z", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinejoin: "round" }),
+          h("path", { d: "M12 2v4h4M7.5 10h6M7.5 13h6", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round" })),
+        h("span", { style: { fontFamily: M, fontSize: 8.5, letterSpacing: 1.3, color: OR } }, "PDF")),
+      h("div", null,
+        h("div", { style: { fontFamily: SERIF, fontSize: 14, fontWeight: 600, color: IV, lineHeight: 1.1 } }, titre),
+        h("div", { style: { fontFamily: M, fontSize: 9, color: "rgba(244,241,234,0.72)", marginTop: 3, lineHeight: 1.3 } }, sous),
+        h("div", { style: { fontFamily: M, fontSize: 8, fontStyle: "italic", color: "rgba(243,238,228,0.55)", marginTop: 3, lineHeight: 1.25 } }, source)));
   }
   var blocReg = section(h("div", null,
-    h("div", null,   /* 11/11 22h05 : petits rectangles sur toute la largeur */
+    enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정"), "rg", 0, 0),   /* 13h50 : de nouveau en cartes (Blandine) */
+    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } },   /* 11/11 22h05 : petits rectangles sur toute la largeur */
       carteReg("data-reglement-odf", "docs/reglement-open-de-france-2026.pdf",
         T("Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "オープン・ド・フランス2026", "Open de France 2026", "أوبن فرنسا 2026", "2026 年法国公开赛", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "2026 Open de France"),
         T("Championnats de France Poney & Clubs", "French Pony & Club Championships", "Campeonatos de Francia Poni y Clubes", "Campionati di Francia Pony e Club", "フランス選手権 ポニー&クラブ", "Französische Pony- & Club-Meisterschaften", "بطولات فرنسا للبوني والأندية", "法国小马与俱乐部锦标赛", "Franse kampioenschappen Pony & Clubs", "Campeonatos da França de Pônei e Clubes", "Franska mästerskapen för ponny & ridklubb", "Чемпионаты Франции: пони и клубы", "Mistrzostwa Francji Kucyków i Klubów", "프랑스 포니·클럽 선수권"),
@@ -1601,7 +1615,8 @@ function EcranTeamCompetition() {
     /* 12/11 12h33 (Blandine, maquette B, « touche à rien d'autre ») : La saison = agenda puis Ma saison ; Souvenirs = Nos plus beaux moments,
        puis en dernier les résultats récents et les classements (et Apprendre ensuite). Styles inchangés. */
     partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, duoSaisonRes, h("div", { key: "rsa", style: { paddingTop: 20 } }, blocRes), trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, h("div", { style: { height: 30 } }),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, trait(),
+    partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),   /* 13h50 : fin de page remise (Hey Baby, Optimise tes perfs, règlements) */
     /* 12/11 13h11 (Blandine : « vire les outils en bas de page, on avisera après ») : classements, Hey Baby, Optimise tes perfs,
        règlements mis de côté (code gardé : blocClass, blocMedias, blocReg). */
     panneauEl,

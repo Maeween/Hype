@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 14h08 — build 20261112-1410 — Page « Performances des cavaliers », tous les podiums, fin de page remise (Blandine « Ok »)
+- index.html : nouvelle route « performances-cavaliers » = EcranPerformancesChevaux({ cav: true }) : membres du groupe (sauf coach), points = resultats.points par cavalier_id, même saison / filtres / barème ; une carte ouvre performances-cavalier. Titre « Performances des cavaliers ». Image du haut = celle des chevaux (en attente d'une photo de cavalier). Pas encore de lien de partage dédié.
+- hype-ecran-team.js ?v=49 : bouton « Cavaliers » du bandeau Performances → cette page. Résultats récents : TOUS les podiums du dernier concours (ex æquo compris), plus de coupure à 3. Partie « 4 · Apprendre » remise (Hey Baby, Optimise tes perfs en lignes) + onglet Apprendre ; règlements de nouveau en cartes (comme avant).
+- Agenda : version actuelle gardée. Essai « un seul bloc » (window.__agBloc = "avec" | "sans") dans le code, non activé : Blandine n'a pas encore choisi.
+
 ### 12/11 13h42 — build 20261112-1345 — Page équipe : concours raccourcis, résultats récents « dernier concours » (Blandine « tu peux mettre en ligne l'ensemble »)
 - hype-ecran-team.js ?v=48.
 - Prochain / dernier concours : sous le sur-titre, la date centrée au-dessus d'une seule ligne « discipline + ville » (ligneCourte : discipline lue dans le titre, ville = ce qui suit le dernier « de » du lieu, parenthèses retirées ; ex. « CSO Folleville »). Plus de titre long ni de lieu.
