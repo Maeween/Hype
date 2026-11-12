@@ -23724,6 +23724,29 @@ const LANGUES = [
     { code: "pl", label: "Polski", drapeau: "🇵🇱" },
     { code: "ko", label: "한국어", drapeau: "🇰🇷" },
 ];
+/* 12/11 (Blandine : « Liban et entre parenthèses arabe ») — entrée « Liban » dans les sélecteurs de langue.
+   Ce N'EST PAS une 15e langue : elle ouvre l'arabe standard déjà en place (code "ar"), seul le drapeau libanais change.
+   LANGUES reste à 14 (traductions, drapeaux des contenus) ; LANGUES_CHOIX = liste montrée dans les 3 sélecteurs
+   (page d'entrée, écrans de connexion, sélecteur de l'appli). Le choix « Liban » est mémorisé (hype_langue_variante). */
+const LANGUES_CHOIX = (function () {
+    var r = [];
+    LANGUES.forEach(function (l) {
+        r.push({ id: l.code, code: l.code, label: l.label, drapeau: l.drapeau });
+        if (l.code === "ar") r.push({ id: "ar-lb", code: "ar", label: "\u0644\u0628\u0646\u0627\u0646 (\u0627\u0644\u0639\u0631\u0628\u064a\u0629)", drapeau: "🇱🇧" });
+    });
+    return r;
+})();
+function hypeIdLangue(code) {
+    var v = ""; try { v = localStorage.getItem("hype_langue_variante") || ""; } catch (eV) { }
+    return (code === "ar" && v === "ar-lb") ? "ar-lb" : code;
+}
+function hypeChoixLangue(id) {
+    for (var i = 0; i < LANGUES_CHOIX.length; i++) if (LANGUES_CHOIX[i].id === id) return LANGUES_CHOIX[i];
+    return null;
+}
+function hypeMemoVariante(id) {
+    try { if (id === "ar-lb") localStorage.setItem("hype_langue_variante", "ar-lb"); else localStorage.removeItem("hype_langue_variante"); } catch (eV) { }
+}
 const I18N = {
     app_tagline: { fr: "Apprends et révise les Galops", en: "Learn and review riding levels", ja: "騎馬資格を学び、復習する", es: "Aprende y repasa los Galops", it: "Impara e ripassa i Galops", de: "Lerne und wiederhole die Galops" ,"ar":"تعلّمي وراجعي الغالوبات", zh: "学习并复习 Galop", nl: "Leer en repeteer de Galop-niveaus", pt: "Aprenda e revise os Galops", sv: "Lär dig och repetera Galop-nivåerna", ru: "Учи и повторяй уровни Galop", pl: "Ucz się i powtarzaj poziomy Galop", ko: "Galop을 배우고 복습해요"},
     onboarding_1_titre: { fr: "Apprends à ton rythme", en: "Learn at your own pace", ja: "自分のペースで学ぶ", es: "Aprende a tu propio ritmo", it: "Impara al tuo ritmo", de: "Lerne in deinem Tempo" ,"ar":"تعلّمي بوتيرتكِ", zh: "按你的节奏学习", nl: "Leer in je eigen tempo", pt: "Aprenda no seu ritmo", sv: "Lär dig i din egen takt", ru: "Учись в своём темпе", pl: "Ucz się we własnym tempie", ko: "나만의 속도로 배워요"},
@@ -30603,16 +30626,18 @@ var HBL_CSS = ".hbl{position:relative}" +
 function HypeBandeLangues() {
   var h = React.createElement;
   var app = useApp(); var actif = app.langue || "fr";
+  var mSt = React.useState(0); var majVariante = mSt[1];   /* 12/11 : redessine quand on passe d'arabe à Liban (même langue) */
+  var actifId = hypeIdLangue(actif);
   var oSt = React.useState(false); var ouvert = oSt[0], setOuvert = oSt[1];
   var pSt = React.useState(false); var peek = pSt[0], setPeek = pSt[1];
   var interagi = React.useRef(false), boiteRef = React.useRef(null), bandeRef = React.useRef(null), listeRef = React.useRef(null);
-  var LG = (typeof LANGUES !== "undefined" && LANGUES.length) ? LANGUES : [{ code: "fr", label: "Français", drapeau: "🇫🇷" }];
+  var LG = (typeof LANGUES_CHOIX !== "undefined" && LANGUES_CHOIX.length) ? LANGUES_CHOIX : [{ id: "fr", code: "fr", label: "Français", drapeau: "🇫🇷" }];
   var rtlB = actif === "ar";
   function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return (app.tr ? app.tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }) : fr); }   /* 21/10 : russe et polonais (avant : anglais a la place) */
   var tLangues = T("Langues", "Languages", "Idiomas", "Lingue", "言語", "Sprachen", "اللغات", "语言", "Talen", "Idiomas", "Språk", "Языки", "Języki", "언어");
   var tChoisir = T("Choisir la langue", "Choose language", "Elegir idioma", "Scegli la lingua", "言語を選ぶ", "Sprache wählen", "اختاري اللغة", "选择语言", "Taal kiezen", "Escolher idioma", "Välj språk", "Выбрать язык", "Wybierz język", "언어 선택");
   var tActuelle = T("Langue actuelle :", "Current language:", "Idioma actual:", "Lingua attuale:", "現在の言語：", "Aktuelle Sprache:", "اللغة الحالية:", "当前语言：", "Huidige taal:", "Idioma atual:", "Nuvarande språk:", "Текущий язык:", "Aktualny język:", "현재 언어:");
-  var iA = 0; for (var i = 0; i < LG.length; i++) { if (LG[i].code === actif) { iA = i; break; } }
+  var iA = 0; for (var i = 0; i < LG.length; i++) { if (LG[i].id === actifId) { iA = i; break; } }
   function voisin(d) { var n = LG.length; return LG[((iA + d) % n + n) % n]; }
   function arreter() { interagi.current = true; setPeek(false); }
   React.useEffect(function () {
@@ -30630,7 +30655,7 @@ function HypeBandeLangues() {
     try { var c = listeRef.current && (listeRef.current.querySelector('[aria-current="true"]') || listeRef.current.querySelector("button")); if (c) c.focus(); } catch (eF) { }
   }, [ouvert]);
   function fermer(rendreFocus) { setOuvert(false); if (rendreFocus) { try { bandeRef.current && bandeRef.current.focus(); } catch (eF) { } } }
-  function choisir(code) { fermer(true); if (code !== actif && app.setLangue) app.setLangue(code); }
+  function choisir(l) { fermer(true); if (l.id === actifId) return; hypeMemoVariante(l.id); majVariante(function (k) { return k + 1; }); if (l.code !== actif && app.setLangue) app.setLangue(l.code); }
   function surTouche(e) {
     if (e.key === "Escape") { e.preventDefault(); fermer(true); return; }
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
@@ -30650,7 +30675,7 @@ function HypeBandeLangues() {
       h("span", { className: "hbl-col" + (peek ? " peek" : ""), onAnimationEnd: function () { setPeek(false); interagi.current = true; } }, col)),
     ouvert ? h("div", { ref: listeRef, className: "hbl-liste", role: "group", "aria-label": tChoisir },
       LG.map(function (l) {
-        return h("button", { key: l.code, type: "button", className: "hbl-opt", lang: l.code, "aria-current": l.code === actif ? "true" : undefined, onClick: function () { choisir(l.code); } },
+        return h("button", { key: l.id, type: "button", className: "hbl-opt", lang: l.code, "aria-current": l.id === actifId ? "true" : undefined, onClick: function () { choisir(l); } },
           h("span", { className: "hbl-f", "aria-hidden": "true" }, l.drapeau), h("span", null, l.label));
       })) : null);
 }
@@ -30660,7 +30685,9 @@ function SelecteurLangue({ compact, variante }) {
     const [ouvert, setOuvert] = useState(false);
     const [aGauche, setAGauche] = useState(false);
     const btnRef = useRef(null);
-    const actuelle = LANGUES.find((l) => l.code === langue);
+    const [, majVariante] = useState(0);   /* 12/11 : entrée Liban (même langue que l'arabe) */
+    const actuelleId = hypeIdLangue(langue);
+    const actuelle = hypeChoixLangue(actuelleId) || LANGUES.find((l) => l.code === langue);
     const basculer = () => {
         if (!ouvert && btnRef.current) {
             const r = btnRef.current.getBoundingClientRect();
@@ -30673,7 +30700,7 @@ function SelecteurLangue({ compact, variante }) {
             React.createElement("span", { style: { fontSize: 15 } }, actuelle.drapeau),
             !compact && React.createElement("span", null, actuelle.label),
             React.createElement("span", { style: { fontSize: 10, color: COLORS.grisDoux } }, "\u25BE")),
-        ouvert && (React.createElement("div", { style: { position: "absolute", top: "110%", ...(aGauche ? { left: 0 } : { right: 0 }), background: COLORS.nuitElevee, borderRadius: 14, border: `1px solid ${COLORS.nuitBordure}`, boxShadow: "0 8px 24px rgba(10,26,36,0.11)", overflow: "hidden", zIndex: 30, minWidth: 150 } }, LANGUES.map((l) => (React.createElement("button", { key: l.code, onClick: () => { setLangue(l.code); setOuvert(false); }, style: { width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "11px 14px", fontSize: 13.5, fontWeight: l.code === langue ? 700 : 500, color: l.code === langue ? COLORS.turquoise : COLORS.blanc, background: l.code === langue ? `${COLORS.turquoise}1A` : "transparent", textAlign: "left" } },
+        ouvert && (React.createElement("div", { style: { position: "absolute", top: "110%", ...(aGauche ? { left: 0 } : { right: 0 }), background: COLORS.nuitElevee, borderRadius: 14, border: `1px solid ${COLORS.nuitBordure}`, boxShadow: "0 8px 24px rgba(10,26,36,0.11)", overflow: "hidden", zIndex: 30, minWidth: 150 } }, LANGUES_CHOIX.map((l) => (React.createElement("button", { key: l.id, onClick: () => { hypeMemoVariante(l.id); majVariante((k) => k + 1); setLangue(l.code); setOuvert(false); }, style: { width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "11px 14px", fontSize: 13.5, fontWeight: l.id === actuelleId ? 700 : 500, color: l.id === actuelleId ? COLORS.turquoise : COLORS.blanc, background: l.id === actuelleId ? `${COLORS.turquoise}1A` : "transparent", textAlign: "left" } },
             React.createElement("span", { style: { fontSize: 15 } }, l.drapeau),
             " ",
             l.label)))))));
@@ -30745,9 +30772,9 @@ function EcranIntro() {
             f.contentWindow.postMessage({
                 t: "entree-init",
                 fini: !!sansAnimEntreeRef.current,
-                actif: langueIntro || "fr",
+                actif: hypeIdLangue(langueIntro || "fr"),
                 rtl: langueIntro === "ar",
-                langues: LANGUES.map(function (l) { return { code: l.code, label: l.label, drapeau: l.drapeau }; }),
+                langues: LANGUES_CHOIX.map(function (l) { return { code: l.id, label: l.label, drapeau: l.drapeau }; }),   /* 12/11 : code = id (« ar-lb » pour Liban) */
                 textes: {
                     kicker: hypeT7("Ton voyage \u00e9questre", "Your riding journey", "Tu viaje ecuestre", "Il tuo viaggio equestre", "\u3042\u306a\u305f\u306e\u4e57\u99ac\u306e\u65c5", "Deine Reiterreise", "\u0631\u062d\u0644\u062a\u0643 \u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629", "\u4f60\u7684\u9a6c\u672f\u4e4b\u65c5", "Jouw paardenreis", "Sua jornada equestre", "Din ridresa", "Твоё конное путешествие", "Twoja jeździecka podróż", "나의 승마 여정"),
                     creer: hypeT7("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen", "\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u064a", "\u521b\u5efa\u6211\u7684\u8d26\u6237", "Mijn account aanmaken", "Criar minha conta", "Skapa mitt konto", "Создать аккаунт", "Załóż konto", "계정 만들기"),
@@ -30775,7 +30802,7 @@ function EcranIntro() {
             else if (e && e.data && e.data.t === "entree-creer") { try { window.__hypeDepuisEntree = true; } catch (eD) { } versConnexionRef.current("inscription"); }
             else if (e && e.data && e.data.t === "entree-connexion") { try { window.__hypeDepuisEntree = true; } catch (eD) { } versConnexionRef.current("connexion"); }
             else if (e && e.data && e.data.t === "entree-passer") { setEcranRef.current("dashboard"); }
-            else if (e && e.data && e.data.t === "entree-langue" && typeof e.data.code === "string") { if (LANGUES.some(function(l){ return l.code === e.data.code; })) setLangueRef.current(e.data.code); }
+            else if (e && e.data && e.data.t === "entree-langue" && typeof e.data.code === "string") { var chx = hypeChoixLangue(e.data.code); if (chx) { hypeMemoVariante(chx.id); setLangueRef.current(chx.code); try { envoyerEntreeRef.current(); } catch (eEn) { } } }
         }
         window.addEventListener("message", onMsg);
         return function(){ window.removeEventListener("message", onMsg); };

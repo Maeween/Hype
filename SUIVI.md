@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — Entrée « Liban » dans les sélecteurs de langue (prête, PAS publiée)
+- Demande de Blandine (« Liban et entre parenthèses arabe ») : entrée « لبنان (العربية) » avec le drapeau libanais, juste sous l'arabe, dans les 3 sélecteurs (page d'entrée, écrans de connexion, sélecteur de l'appli).
+- Ce n'est pas une 15e langue : elle ouvre l'arabe standard déjà en place (le libanais est surtout parlé ; à l'écrit, le Liban utilise l'arabe standard). Rien à traduire. Choix mémorisé sur l'appareil (hype_langue_variante) ; choisir une autre langue l'efface.
+- LANGUES reste à 14 (traductions, drapeaux des contenus inchangés) ; nouvelle liste LANGUES_CHOIX pour les sélecteurs.
+- Vérifié (Chromium 390×844) : page d'entrée et sélecteur de l'appli (Galops, Premium) → arabe, sens droite-à-gauche, drapeau libanais coché ; retour au français → choix effacé ; aucune erreur.
+
 ### 12/11 — Mail de relance « Les écuries sont bien vides sans toi… » (comptes pas encore abonnés) — BROUILLON BREVO n°4
 - Demande de Blandine (14h20) : relance des comptes jamais abonnés, ton Hypo, ce qu'on fait avec un compte gratuit / avec Premium, liens ; pas de partie pro ; envoyer « qu'à ceux pas déjà abonnés ».
 - Contenu : outils/mails-relance.py → outils/mails/relance-inactifs.html (encadré « premier mois offert » avec HYPE1MOIS). Chiffres vérifiés en base : gratuit 2 chevaux / 3 vidéos / 1 question Hey Baby par jour ; Premium 9 / 15 / 4.
