@@ -1,4 +1,4 @@
-# 🗓️ 12/11 (soir) — PERSAN (fa) : 17e LANGUE, LANGUE DE L'APPLI ET LANGUE À APPRENDRE + « LIBAN (ARABE) » — horselingo branche `fa` (`db4389d`), PRÊT, PAS ENCORE PUBLIÉ
+# 🗓️ 12/11 (soir) — PERSAN (fa) : 17e LANGUE, LANGUE DE L'APPLI ET LANGUE À APPRENDRE + « LIBAN (ARABE) » — horselingo `727be3f` [publier] (12/11 20h05, après « Ok » de Blandine)
 
 **Demande de Blandine** : « tu peux faire la même chose pour Hippolingo » (= Horse Lingo, après le persan de Hype), puis « Il faut faire les deux. Et oui » → persan comme langue de l'appli ET comme langue à apprendre, entrée « Liban (arabe) », pas d'autre langue. Pas de drapeau : « IR » écrit (comme Hype, « tu marques Iran »).
 
@@ -20,7 +20,7 @@
 - Fautes repérées dans le français d'origine : « RENDA » (rend), « crossses », « XIX siècle » sans « e » (plusieurs), « raccourtit », « évite qu'un cheval part », « derriere », « ou l'on saute » ; « Apy, la mascotte de Hype Baby » ; 1,49 m ferré vs 1,48 m ; « pas de 80 cm » pour mesurer un parcours ; une case française contient de l'anglais (« Ten words… ») ; « la race du bétail australien » (c'est un cheval) ; « Embouchure sans mors » se contredit.
 - Termes persans à faire confirmer par Faïmé : rouan/gris (ابرش), boulet (مفصل مچ), paturon (بخلو), jarret (مفصل خرگوشی), coup de sang (گرفتگی عضلانی), barrage (جامپ‌آف), balzane, liste, cession à la jambe, haute école.
 
-**Reste** : accord de Blandine pour publier (fusion de `fa` dans main avec [publier]) ; relecture Faïmé.
+**Reste** : relecture Faïmé ; correction éventuelle du bug de l'arabe (si Blandine le veut) ; fautes du français d'origine à corriger avec elle.
 
 # 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
 
