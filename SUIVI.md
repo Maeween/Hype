@@ -12,6 +12,17 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 00h35 — build 20261113-0035 — Performances du cavalier : tes résultats, beaux moments, chevaux en C
+- hype-ecran-perf-cheval.js v=20 :
+  - un engagement sans résultat (classement vide : pas parti) ne compte plus nulle part (pourcentage de concours compris) ;
+  - sur sa propre page, la propriétaire peut afficher ses lignes masquées (avant : bouton absent sur la page du cavalier) ;
+  - sur sa propre page : « Ta saison, tes chiffres », « Tes chevaux », « Tous tes résultats »… (FR + EN ; autres langues après validation du français) ;
+  - encarts plus petits (titre des saisons, Points de qualification, total, carte du cheval principal) ;
+  - « Ses chevaux » en version C : le principal en carte, les autres en lignes ; chacun se déplie sur ses 10 meilleurs résultats ensemble ;
+  - « Plus beaux moments » refaits : choisis à la main, puis plus haute épreuve (hauteur lue dans le nom : hauteur écrite, anciennes catégories B/C/D selon Blandine — indice 4 = 10 cm sous l'indice 3, à confirmer —, catégories actuelles d'après le règlement CSO 2026 art. 6.3), puis podiums par nombre de partants (au moins 5), puis classements ; 8 au plus.
+- Toujours en essai (invisible) : nouveau design de la page d'un CHEVAL (window.__perfChevalA2).
+- À voir : 2 victoires de Blandine à Liverdy (1er/17 25/06/2021, 1er/5 07/05/2021) retirées de sa page (masque_cavaliere) sans copie visible — attendre son accord pour les remettre ; sa saison 2021-22 affichait « 1 épreuve » en ligne alors que le banc en compte 3 (à revérifier sur son téléphone).
+
 ### 13/11 00h05 — build 20261113-0005 — Équipe : résultats récents en cartes de l'Écurie · Performances du cavalier : chiffres dépliables
 - hype-ecran-team.js v=56 : « Résultats récents » = mêmes cartes que le rail « Derniers résultats » de la page Écurie (bleu pétrole, coupe, date, photo ronde, « 1er X sur Y », concours, épreuve / partants, « + N autres classés »), une carte par épreuve avec un podium de la saison ; « Voir tout » déplie les concours (classés seulement) ; « + Importer des résultats » discret à droite.
 - hype-ecran-perf-cheval.js v=19 : « En bref » de la page d'un cavalier : toucher l'anneau ou un chiffre déplie la liste des épreuves concernées (✓ = classé, premier quart ; lignes cachées comptées mais pas listées). Textes FR + EN seulement : traductions à faire après validation du français.

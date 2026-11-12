@@ -10,7 +10,8 @@ function EcranPerformancesCheval(props) {
   var riderId = (props && props.cavalierId) ? String(props.cavalierId) : "";
   var modeCav = !!riderId;
   var archSt = React.useState("saison"), chOuvSt = React.useState({});
-  var detSt = React.useState(null); var detOuv = detSt[0], setDetOuv = detSt[1];   /* 12/11 20h50 (Blandine 16h36 : « que ça se déplie ») : chiffre de « En bref » déplié */   /* 12/11 19h : archives de la page du cavalier (par saison / par cheval) */
+  var detSt = React.useState(null); var detOuv = detSt[0], setDetOuv = detSt[1];
+  var magSt = React.useState(null); var magOuv = magSt[0], setMagOuv = magSt[1];   /* 13/11 00h04 (Blandine) : cheval déplié = ses 10 meilleurs résultats ensemble */   /* 12/11 20h50 (Blandine 16h36 : « que ça se déplie ») : chiffre de « En bref » déplié */   /* 12/11 19h : archives de la page du cavalier (par saison / par cheval) */
   var app = useApp();
   var tr = app.tr || function (o) { return (o && o.fr) || ""; };
   function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko, fa: fa }); }
@@ -75,6 +76,7 @@ function EcranPerformancesCheval(props) {
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   React.useEffect(function () { var v = true; try { utilisateurActuel().then(function (u) { if (v) setMoi(u || null); }).catch(function () { }); } catch (eU) { } return function () { v = false; }; }, []);
   var estProprio = modeCav ? !!(moi && moi.id === riderId) : !!(moi && dbId && ligneCh.user_id === moi.id);
+  var MOI = !!(modeCav && estProprio);   /* 13/11 00h10 (Blandine, sur sa propre page : « je vois ses meilleurs moments ») : « tes » au lieu de « ses » */
   var estMod = !!(moi && typeof estModerateurHype === "function" && estModerateurHype(moi));
   var droitsSt = React.useState({ lie: false, memeEcurie: false }); var droits = droitsSt[0], setDroits = droitsSt[1];
   React.useEffect(function () {
@@ -128,7 +130,7 @@ function EcranPerformancesCheval(props) {
      cachent les lignes masquees (la proprietaire peut les afficher). */
   var tous = React.useMemo(function () { return hypePerfLignes(lignesVues, true, true); }, [lignesVues]);
   var montreMasques = !!(voirMasques && estProprio);
-  var nbMasques = modeCav ? 0 : (lignes || []).filter(function (r) { return r && r.visible === false; }).length;   /* (g9) les masquages restent ceux de la page du cheval */
+  var nbMasques = (lignes || []).filter(function (r) { return r && r.visible === false; }).length;   /* 13/11 00h10 (Blandine « je vois pas où modifier ») : aussi sur la page du cavalier */   /* (g9) les masquages restent ceux de la page du cheval */
 
   /* ── filtre cavalier (decision D3 : il agit sur les chiffres du haut ET sur le tableau) ── */
   var cavSt = React.useState("tous"); var cavChoisi = cavSt[0], setCavChoisi = cavSt[1];
@@ -160,13 +162,26 @@ function EcranPerformancesCheval(props) {
   var forts = React.useMemo(function () {
     if (typeof hypePrincipauxResultats !== "function") return [];
     var vis = lignesVues.filter(function (r) { return r && (r.visible !== false || (voirMasques && estProprio)); });
-    var resF = hypePrincipauxResultats(vis, (chV && chV.demo && secours.palmares) || [], 5);
+    var resF = hypePrincipauxResultats(vis, (chV && chV.demo && secours.palmares) || [], 400);
+    /* 13/11 00h25 (Blandine : « je comprends pas comment tu choisis… des 3e sur 21 alors que j'ai des 1er sur 115 ») — nouveau choix :
+       1) les moments choisis à la main ; 2) la PLUS HAUTE ÉPREUVE courue (hauteur lue dans le nom) ; 3) les podiums sur les plus gros
+       nombres de partants (à égalité : la plus haute, puis la meilleure place) ; complétés par les classements (premier quart). 8 au plus. */
+    var forces = resF.filter(function (f) { return f && f.ff && !f.fx; });
+    var libres = resF.filter(function (f) { return f && !f.ff && !f.fx && f.pl != null; });
+    if (modeCav) libres = libres.filter(function (f) { return !(f.d && typeof hypePerfSaisonDe === "function" && hypePerfSaisonDe(f.d) === saisonCour); });
+    libres.forEach(function (f) { f.haut = hauteurEp(f.ep); });
+    var haute = null; libres.forEach(function (f) { if (f.haut != null && (!haute || f.haut > haute.haut || (f.haut === haute.haut && (f.pl < haute.pl || (f.pl === haute.pl && (f.part || 0) > (haute.part || 0)))))) haute = f; });
+    var triG = function (a, b) { return ((b.part || 0) - (a.part || 0)) || ((b.haut || 0) - (a.haut || 0)) || (a.pl - b.pl); };
+    var pods = libres.filter(function (f) { return f !== haute && f.pl <= 3 && (f.part == null || f.part >= 5); }).sort(triG);   /* un podium sur moins de 5 partants n est pas un « beau moment » */
+    var cls = libres.filter(function (f) { return f !== haute && f.pl > 3 && estClasseQ(f); }).sort(triG);
+    if (haute) haute.plusHaute = true;
+    resF = forces.concat(haute ? [haute] : [], pods, cls).slice(0, 8);
+    return resF;
     /* 12/11 16h30 (page du cavalier) : un moment fort choisi automatiquement doit être un vrai classement (premier quart) ;
        ceux choisis à la main par la propriétaire restent */
     /* 12/11 16h35 (Blandine : « entre pas de doublons et tout retirer, il y a un juste milieu ») : les moments forts choisis
        automatiquement viennent des saisons PASSÉES ; la saison en cours est déjà ouverte en bas avec ses résultats récents */
-    if (modeCav) resF = resF.filter(function (f) { return f && (f.fx || (estClasseQ(f) && !(f.d && typeof hypePerfSaisonDe === "function" && hypePerfSaisonDe(f.d) === saisonCour))); });
-    return resF;
+
   }, [lignesVues, voirMasques, estProprio, chV]);
 
   /* ── portraits des cavaliers relies a un compte ── */
@@ -664,7 +679,26 @@ function EcranPerformancesCheval(props) {
      Podiums = 3 premiers (preparatoire : victoire seule), Sans faute = mention du telemat (proprietaire). Ils ne touchent pas aux chiffres. */
   /* 12/11 14h25 (Blandine) : « classé » = premier quart des partants (place ≤ partants ÷ 4, arrondi au-dessus) ; la colonne
      quart du fichier FFE ne sert que si le nombre de partants manque. Les points restent ceux écrits par la FFE (dégressifs). */
-  function estClasseQ(f) {
+  /* 13/11 00h25 (Blandine) : hauteur d'une épreuve, lue dans son nom. 1) hauteur écrite : « (0,90 m) », « 1m05 », « 85 cm » ;
+   2) anciennes catégories (tableau de Blandine) : B1 1,35 · B2 = C1 1,25 · C2 = D1 1,15 · C3 = D2 1,05 ; l'indice 4 (venu plus tard) :
+   10 cm sous l'indice 3 (Blandine pas sûre : même hauteur ou 10 cm de moins — on prend le plus bas pour ne jamais surestimer) ;
+   3) catégories actuelles : tableau officiel FFE (règlement CSO 2026, art. 6.3). Inconnue -> null. */
+function hauteurEp(ep) {
+  var t = String(ep || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  var m = /(\d)[,.](\d{2})\s*m\b/.exec(t); if (m) return Number(m[1]) + Number(m[2]) / 100;
+  m = /\b(\d)\s*m\s*(\d{2})\b/.exec(t); if (m) return Number(m[1]) + Number(m[2]) / 100;
+  m = /\b(\d{2,3})\s*cm\b/.exec(t); if (m) return Number(m[1]) / 100;
+  m = /(?:^|[^a-z])([bcd])([1-4])(?![0-9])/.exec(t);
+  if (m) { var base = { b: 1.45, c: 1.35, d: 1.25 }[m[1]]; return Math.round((base - 0.10 * Number(m[2])) * 100) / 100; }
+  var niv = function (re) { var x = re.exec(t); return x ? (/elite/.test(x[1]) ? "e" : x[1]) : null; };
+  var n;
+  if ((n = niv(/as\s*poney\s*(elite|[12])/))) return { e: 1.25, "1": 1.20, "2": 1.10 }[n];
+  if ((n = niv(/\bpro\s*(elite|[1-3])/))) return { e: 1.50, "1": 1.40, "2": 1.30, "3": 1.20 }[n];
+  if ((n = niv(/(?:amateur|enseignant)\s*(elite|[1-3])/))) return { e: 1.25, "1": 1.15, "2": 1.05, "3": 0.95 }[n];
+  if ((n = niv(/(?:club|poney)\s*(elite|[1-4])/))) return { e: 1.00, "1": 0.90, "2": 0.80, "3": 0.70, "4": 0.60 }[n];
+  return null;
+}
+function estClasseQ(f) {
     if (!f || f.pl == null) return false;
     if (hypePerfEstPrepa(f.ep)) return f.pl === 1;
     if (f.part) return f.pl <= Math.ceil(f.part / 4);
@@ -689,7 +723,7 @@ function EcranPerformancesCheval(props) {
     var fsAff = montreMasques ? fs : fs.filter(function (f) { return !f.masque; });   /* (g11) liste affichee : sans les lignes masquees */
     var liste = filtrer(fsAff, cleF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
     var nbF = {}; FILTRES_SEC.forEach(function (fx) { nbF[fx[0]] = filtrer(montreMasques ? fs : fs.filter(function (f) { return !f.masque; }), fx[0]).length; });
-    var titreSec = function (txt, extra) { return h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, lineHeight: 1.1 } }, txt), extra || null); };
+    var titreSec = function (txt, extra) { return h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 600, color: IVOIRE, lineHeight: 1.1 } }, txt), extra || null); };
     /* (g1) l INTERIEUR D UNE SAISON reprend l ecran 2 de la maquette (Details de la saison) : plus de chiffres repetes, titre serif,
        barres epaisses + encadre « Total saison » a droite, « Tous les resultats » avec les filtres et leurs nombres. Calculs inchanges. */
     var infoPts = h("button", { type: "button", "aria-label": T("À propos des points", "About the points", "Sobre los puntos", "Informazioni sui punti", "ポイントについて", "Zu den Punkten", "حول النقاط", "关于积分", "Over de punten", "Sobre os pontos", "Om poängen", "Об очках", "O punktach", "점수 안내", "دربارهٔ امتیازها"), onClick: function () { annonce(T("Points FFE enregistrés avec chaque résultat (télémat), jamais recalculés ici.", "FFE points recorded with each result, never recalculated here.", "Puntos FFE registrados con cada resultado, nunca recalculados aquí.", "Punti FFE registrati con ogni risultato, mai ricalcolati qui.", "各成績に記録されたFFEポイントで、ここでは再計算しません。", "Mit jedem Ergebnis gespeicherte FFE-Punkte, hier nie neu berechnet.", "نقاط FFE مسجلة مع كل نتيجة، ولا يعاد حسابها هنا.", "FFE 积分随每条成绩一起记录（télémat），这里绝不会重新计算。", "FFE-punten zoals ze bij elk resultaat zijn geregistreerd (télémat), hier nooit opnieuw berekend.", "Pontos da FFE registrados com cada resultado (télémat), nunca recalculados aqui.", "FFE-poäng som sparas med varje resultat (télémat), de räknas aldrig om här.", "Очки FFE записываются вместе с каждым результатом (télémat) и здесь никогда не пересчитываются.", "Punkty FFE zapisane przy każdym wyniku (télémat), nigdy nie są tu przeliczane.", "FFE 점수는 각 결과(télémat)와 함께 저장되며, 여기서 다시 계산하지 않아요.", "امتیازهای FFE همراه هر نتیجه ثبت شده‌اند (télémat) و هرگز اینجا دوباره محاسبه نمی‌شوند.")); }, style: { width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.7)", background: "transparent", color: "#E6CF9C", fontFamily: SERIF, fontSize: 13, fontWeight: 700, fontStyle: "italic", lineHeight: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0, cursor: "pointer", flex: "0 0 auto" } }, "i");
@@ -708,7 +742,7 @@ function EcranPerformancesCheval(props) {
           })),
           h("div", { "data-perf-total": sx.cle, style: { flex: "0 0 92px", alignSelf: "center", padding: "14px 6px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.32)", background: "rgba(16,26,29,0.6)", textAlign: "center" } },
             h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET } }, T("Total saison", "Season total", "Total temporada", "Totale stagione", "シーズン合計", "Saison gesamt", "مجموع الموسم", "赛季总计", "Totaal seizoen", "Total da temporada", "Totalt för säsongen", "Итого за сезон", "Suma za sezon", "시즌 합계", "مجموع فصل")),
-            h("div", { style: { marginTop: 4, fontFamily: SERIF, fontSize: 36, fontWeight: 600, color: "#E6CF9C", lineHeight: 1, direction: "ltr", unicodeBidi: "isolate" } }, String(arr(total))),
+            h("div", { style: { marginTop: 4, fontFamily: SERIF, fontSize: 28, fontWeight: 600, color: "#E6CF9C", lineHeight: 1, direction: "ltr", unicodeBidi: "isolate" } }, String(arr(total))),
             h("div", { style: { marginTop: 2, fontFamily: SANS, fontSize: 11.5, color: "#E6CF9C" } }, T("points", "points", "puntos", "punti", "ポイント", "Punkte", "نقاط", "分", "punten", "pontos", "poäng", "очков", "punkty", "점", "امتیاز")))) :
           h("div", { style: { marginTop: 8, fontFamily: SANS, fontSize: 12, color: MUET } }, T("Aucun point connu sur cette saison.", "No known points this season.", "Ningún punto conocido esta temporada.", "Nessun punto noto in questa stagione.", "このシーズンの判明ポイントはありません。", "Keine bekannten Punkte in dieser Saison.", "لا توجد نقاط معروفة في هذا الموسم.", "这个赛季没有已知积分。", "Geen bekende punten in dit seizoen.", "Nenhum ponto conhecido nesta temporada.", "Inga kända poäng den här säsongen.", "За этот сезон нет известных очков.", "Brak znanych punktów w tym sezonie.", "이번 시즌에 확인된 점수가 없어요.", "در این فصل هیچ امتیاز مشخصی نیست.")),
         sansP > 0 ? h("div", { style: { marginTop: 10, display: "flex", alignItems: "center", gap: 7, fontFamily: SANS, fontSize: 11.5, color: MUET } },
@@ -737,7 +771,7 @@ function EcranPerformancesCheval(props) {
       h("button", { type: "button", "aria-expanded": ouverte ? "true" : "false", onClick: function () { basculerSaison(sx.cle); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IVOIRE, cursor: "pointer", fontFamily: SANS } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
           h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 700, color: IVOIRE, lineHeight: 1.1, direction: "ltr", unicodeBidi: "isolate", textAlign: "start" } }, sx.lib),
+            h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 700, color: IVOIRE, lineHeight: 1.1, direction: "ltr", unicodeBidi: "isolate", textAlign: "start" } }, sx.lib),
             h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 11, color: MUET, lineHeight: 1.4 } }, resume.join("  ·  "))),
           h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: CHAMP, fontSize: 16, lineHeight: 1, transition: "transform .2s ease", transform: ouverte ? "rotate(180deg)" : "none" } }, "˅")),
         barre(sx.lignes)),
@@ -886,7 +920,7 @@ function EcranPerformancesCheval(props) {
     /* (sans faute retiré le 12/11 16h30) */
     /* 12/11 18h35 (Blandine : « classement par concours, c'est plus sympa ») : le pourcentage se compte par CONCOURS (journée) :
        classé au moins une fois (premier quart) ce jour-là ; affiché seulement s il n est pas à zéro */
-    var jrs2 = {}; base.forEach(function (f) { if (f.d) { if (!jrs2[f.d]) jrs2[f.d] = false; if (estClasseQ(f)) jrs2[f.d] = true; } });
+    var jrs2 = {}; base.forEach(function (f) { if (f.d && (f.pl != null || f.statut === "el" || f.statut === "ab")) {   /* 13/11 : un engagement sans résultat (pas parti) ne compte pas */ if (!jrs2[f.d]) jrs2[f.d] = false; if (estClasseQ(f)) jrs2[f.d] = true; } });
     var nJ2 = Object.keys(jrs2).length, nJQ2 = Object.keys(jrs2).filter(function (k) { return jrs2[k]; }).length;
     if (nJ2 && nJQ2) tuiles.push([Math.round(100 * nJQ2 / nJ2) + " %", T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞：", "platziert bei ", "مصنف في ", "获得名次：", "geplaatst op ", "classificado em ", "placerad på ", "в призах: ", "w czołówce: ", "입상: ") + nJQ2 + " " + T("concours sur", "shows out of", "concursos de", "concorsi su", "大会 /", "Turnieren von", "مسابقة من", "场比赛，共", "wedstrijden van", "concursos em", "tävlingar av", "соревнований из", "zawodach z", "대회 /") + " " + nJ2]);
     /* jamais de ligne à moitié vide : 6 colonnes, chaque ligne remplie */
@@ -935,7 +969,7 @@ function EcranPerformancesCheval(props) {
     chapitres,
     /* ses moments forts : mosaique de la maquette, une grande a gauche + quatre petites (2 x 2) ; toute la carriere, tous cavaliers */
     (forts.length || peutForts) ? h(React.Fragment, null,
-      titreSection(T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة", "它的精彩时刻", "Zijn hoogtepunten", "Seus momentos marcantes", "Dess höjdpunkter", "Её яркие моменты", "Jego najważniejsze momenty", "하이라이트", "لحظه‌های مهمش")),
+      titreSection((MOI ? T("Tes moments forts", "Your highlights") : T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة", "它的精彩时刻", "Zijn hoogtepunten", "Seus momentos marcantes", "Dess höjdpunkter", "Её яркие моменты", "Jego najważniejsze momenty", "하이라이트", "لحظه‌های مهمش"))),
       (function () {
         var cases = [];
         if (forts[0]) cases.push(carteFort(forts[0], true, 0)); else if (peutForts) cases.push(tuileAjoutFort());
@@ -964,7 +998,7 @@ function EcranPerformancesCheval(props) {
     chapChevaux,
     null,   /* 12/11 16h20 : titre « Chapitre V » retiré (proposition sans chapitres numérotés) */
     /* toutes ses saisons : le tableau depliable */
-    titreSection(T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه", "它的所有赛季", "Al zijn seizoenen", "Todas as temporadas", "Alla dess säsonger", "Все её сезоны", "Wszystkie jego sezony", "모든 시즌", "همهٔ فصل‌هایش")),
+    titreSection((MOI ? T("Toutes tes saisons", "All your seasons") : T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه", "它的所有赛季", "Al zijn seizoenen", "Todas as temporadas", "Alla dess säsonger", "Все её сезоны", "Wszystkie jego sezony", "모든 시즌", "همهٔ فصل‌هایش"))),
     h("div", { style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "-4px 18px 12px" } }, LEGENDE.map(function (lg, i) {
       return h("span", { key: "lg" + i, style: { display: "inline-flex", alignItems: "center", gap: 5, fontFamily: SANS, fontSize: 10.5, color: MUET } }, h("span", { style: { width: 12, height: 8, borderRadius: 2, background: lg[0] } }), lg[1]);
     })),
@@ -1017,7 +1051,7 @@ function EcranPerformancesCheval(props) {
     var g = [];
 
     /* 1 · En bref */
-    var jrs = {}; base.forEach(function (f) { if (f.d) { if (!jrs[f.d]) jrs[f.d] = false; if (estClasseQ(f)) jrs[f.d] = true; } });
+    var jrs = {}; base.forEach(function (f) { if (f.d && (f.pl != null || f.statut === "el" || f.statut === "ab")) {   /* 13/11 : un engagement sans résultat (pas parti) ne compte pas */ if (!jrs[f.d]) jrs[f.d] = false; if (estClasseQ(f)) jrs[f.d] = true; } });
     var nJ = Object.keys(jrs).length, nJQ = Object.keys(jrs).filter(function (k) { return jrs[k]; }).length;
     var nEp = nbEpDe(base), nQ = base.filter(estClasseQ).length;
     var its = [];
@@ -1057,7 +1091,7 @@ function EcranPerformancesCheval(props) {
       } else {
         var filt = detOuv === "v" ? function (f) { return f.pl === 1; } : detOuv === "p" ? function (f) { return f.pl != null && f.pl <= 3; } : detOuv === "q" ? estClasseQ : avecRes;
         var ls = base.filter(filt);
-        titre = detOuv === "v" ? T("Ses victoires", "Wins") : detOuv === "p" ? T("Ses podiums : 1er, 2e ou 3e", "Podiums: 1st, 2nd or 3rd") : detOuv === "q" ? T("Ses classements", "Placings") : T("Toutes ses épreuves", "All classes");
+        titre = detOuv === "v" ? (MOI ? T("Tes victoires", "Your wins") : T("Ses victoires", "Wins")) : detOuv === "p" ? (MOI ? T("Tes podiums : 1er, 2e ou 3e", "Your podiums: 1st, 2nd or 3rd") : T("Ses podiums : 1er, 2e ou 3e", "Podiums: 1st, 2nd or 3rd")) : detOuv === "q" ? (MOI ? T("Tes classements", "Your placings") : T("Ses classements", "Placings")) : (MOI ? T("Toutes tes épreuves", "All your classes") : T("Toutes ses épreuves", "All classes"));
         if (detOuv === "q") expl = EXPL_Q;
         if (detOuv === "e") expl = T("Éliminations et abandons compris. ", "Eliminations and retirements included. ") + EXPL_Q;
         court(ls).forEach(function (f) { if (!visL(f)) { nbCaches++; return; } lignesD.push({ f: f, ok: (detOuv === "e") ? estClasseQ(f) : true }); });
@@ -1077,7 +1111,7 @@ function EcranPerformancesCheval(props) {
         nbCaches ? h("div", { style: { padding: "8px 0 6px", borderTop: "1px solid rgba(243,238,228,0.07)", fontFamily: SANS, fontSize: 11, color: MUET } },
           "+ " + nbCaches + " " + (nbCaches > 1 ? T("résultats cachés, comptés aussi", "hidden results, counted too") : T("résultat caché, compté aussi", "hidden result, counted too"))) : null);
     })();
-    g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش")));
+    g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), (MOI ? T("Ta saison, tes chiffres", "Your season, your numbers") : T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش"))));
     g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
         its.length ? h("div", { style: { flex: 1, display: "grid", gridTemplateColumns: its.length > 1 ? "1fr 1fr" : "1fr", gap: "12px 6px" } }, its) : null),
@@ -1087,8 +1121,8 @@ function EcranPerformancesCheval(props) {
     /* 2 · Ses chevaux — magazine immersif */
     var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: modeCav ? parCheval(nm) : null, cid: (ls.filter(function (f) { return f.cavId; })[0] || {}).cavId || null }; }).filter(function (c) { return nbEpDe(c.ls.filter(visL)) > 0; });   /* 12/11 20h (Blandine « Ok vas y ») : un cheval dont tous les résultats sont cachés n a pas de bloc */
     if (chx.length) {
-      g.push(sepA2("s2")); g.push(partie("p2", modeCav ? T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش") : T("Ses cavaliers", "The riders"), modeCav ? T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان") : T("Un couple, une histoire", "One pair, one story")));
-      var MV = (typeof window !== "undefined" && window.__magVar) || "A";   /* 12/11 23h55 (Blandine : « avec 5 chevaux ça n'en finit pas », 3-4 propositions) : A = actuel ; B carrousel ; C un grand + lignes ; D grille 2 ; E liste */
+      g.push(sepA2("s2")); g.push(partie("p2", modeCav ? (MOI ? T("Tes chevaux", "Your horses") : T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش")) : T("Ses cavaliers", "The riders"), modeCav ? T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان") : T("Un couple, une histoire", "One pair, one story")));
+      var MV = (typeof window !== "undefined" && window.__magVar) || "C";   /* 12/11 23h55 (Blandine : « avec 5 chevaux ça n'en finit pas », 3-4 propositions) : A = actuel ; B carrousel ; C un grand + lignes ; D grille 2 ; E liste */
       var infoC = function (c) { var st = hypePerfStatsHisto(c.ls), ne = nbEpDe(c.ls); var ph = c.ch && c.ch.c && c.ch.c.photo_url;
         var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : ((!modeCav && c.cid) ? function () { try { window.__perfCavalierId = c.cid; } catch (eC) { } setEcran("performances-cavalier"); } : undefined);
         var txt = [ne ? ne + " " + L_EP(ne) : "", st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : ""].filter(Boolean);
@@ -1109,7 +1143,31 @@ function EcranPerformancesCheval(props) {
               h("div", { style: { marginTop: 10 } }, barre(c.ls))));
         })));
       } else if (MV === "C" || MV === "E") {
+        /* les 10 meilleurs : place d'abord, puis le plus de partants, puis le plus récent ; lignes cachées jamais montrées */
+        var top10 = function (c) { return c.ls.filter(function (f) { return visL(f) && f.pl != null; }).slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || String(b.d || "").localeCompare(String(a.d || "")); }).slice(0, 10); };
+        var deplie = function (c, I) {
+          var t = top10(c);
+          return h("div", { style: { padding: "4px 0 10px" } },
+            h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP, margin: "6px 0 4px" } }, t.length > 1 ? (MOI ? T("Vos " + t.length + " meilleurs résultats ensemble", "Your " + t.length + " best results together") : T("Ses " + t.length + " meilleurs résultats ensemble", "Their " + t.length + " best results together")) : (MOI ? T("Votre meilleur résultat ensemble", "Your best result together") : T("Son meilleur résultat ensemble", "Their best result together"))),
+            t.map(function (f, j) { return h("div", { key: "t" + j, role: "button", tabIndex: 0, onClick: function (e) { e.stopPropagation(); allerAuFort(f); }, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: j ? "1px solid rgba(243,238,228,0.07)" : "none", cursor: "pointer" } },
+              h("span", { style: { flex: "0 0 22px", fontFamily: SERIF, fontSize: 15, color: "rgba(243,238,228,0.45)", direction: "ltr" } }, String(j + 1)),
+              h("span", { style: { flex: 1, minWidth: 0 } },
+                h("span", { dir: "auto", style: { display: "block", fontFamily: SANS, fontSize: 12.5, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [f.ep, (function (n) { if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et) /g, function (m) { return m.toLowerCase(); }); return n; })(concoursC(f))].filter(Boolean).join(" · ")),
+                h("span", { style: { display: "block", fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 1 } }, f.d ? dateLisible(f.d) : "")),
+              h("span", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 17, color: f.pl <= 3 ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, rangTxt(f.pl) + (f.part ? " / " + f.part : ""))); }),
+            I.ouvrir ? h("div", { role: "button", tabIndex: 0, onClick: function (e) { e.stopPropagation(); I.ouvrir(); }, style: { textAlign: "end", paddingTop: 6, fontFamily: SANS, fontSize: 12, color: CHAMP, cursor: "pointer" } }, (modeCav ? T("Sa fiche", "Profile") : T("Ses performances", "Performances")) + " " + (rtl ? "‹" : "›")) : null);
+        };
         var rangeeC = function (c, i) { var I = infoC(c);
+          if (MV === "C") { var ouv = magOuv === c.nm;
+            return h("div", { key: "r" + i, style: { borderTop: i ? "1px solid rgba(243,238,228,0.08)" : "none" } },
+              h("div", { role: "button", tabIndex: 0, "aria-expanded": ouv, onClick: function () { setMagOuv(ouv ? null : c.nm); }, style: { display: "flex", alignItems: "center", gap: 14, padding: "10px 0", cursor: "pointer" } },
+                h("div", { style: { flex: "0 0 74px" } }, photoEntiere(I.ph, 74, 14)),
+                h("div", { style: { flex: 1, minWidth: 0 } },
+                  h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.1, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
+                  h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 3 } }, I.txt.join(" · ")),
+                  h("div", { style: { marginTop: 7 } }, barre(c.ls))),
+                h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 14 } }, ouv ? "˄" : "˅")),
+              ouv ? deplie(c, I) : null); }
           return h("div", { key: "r" + i, role: I.ouvrir ? "button" : undefined, onClick: I.ouvrir, style: { display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderTop: i ? "1px solid rgba(243,238,228,0.08)" : "none", cursor: I.ouvrir ? "pointer" : "default" } },
             h("div", { style: { flex: "0 0 74px" } }, photoEntiere(I.ph, 74, 14)),
             h("div", { style: { flex: 1, minWidth: 0 } },
@@ -1119,13 +1177,16 @@ function EcranPerformancesCheval(props) {
             I.ouvrir ? h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 18 } }, rtl ? "‹" : "›") : null); };
         if (MV === "C") {
           var I0 = infoC(chx[0]);
-          g.push(h("div", { key: "magC0", role: I0.ouvrir ? "button" : undefined, onClick: I0.ouvrir, style: { margin: "18px 22px 0", border: "1px solid rgba(201,166,107,0.28)", borderRadius: 20, overflow: "hidden", background: "#000", cursor: I0.ouvrir ? "pointer" : "default" } },
-            photoEntiere(I0.ph, 240),
+          var ouv0 = magOuv === chx[0].nm;
+          g.push(h("div", { key: "magC0", role: "button", tabIndex: 0, "aria-expanded": ouv0, onClick: function () { setMagOuv(ouv0 ? null : chx[0].nm); }, style: { margin: "18px 22px 0", border: "1px solid rgba(201,166,107,0.28)", borderRadius: 20, overflow: "hidden", background: "#000", cursor: "pointer" } },
+            photoEntiere(I0.ph, 160),
             h("div", { style: { padding: "12px 16px 16px" } },
-              h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".32em", textTransform: "uppercase", color: CHAMP } }, T("Son partenaire principal", "Main partner")),
-              h("div", { style: { fontFamily: SERIF, fontSize: 36, lineHeight: 1.05, marginTop: 4, color: IVOIRE } }, chx[0].nm),
+              h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".32em", textTransform: "uppercase", color: CHAMP } }, (MOI ? T("Ton partenaire principal", "Your main partner") : T("Son partenaire principal", "Main partner"))),
+              h("div", { style: { fontFamily: SERIF, fontSize: 28, lineHeight: 1.05, marginTop: 4, color: IVOIRE } }, chx[0].nm),
               h("div", { style: { display: "flex", gap: 16, marginTop: 10 } }, miniC(I0)),
-              h("div", { style: { marginTop: 10 } }, barre(chx[0].ls)))));
+              h("div", { style: { marginTop: 10 } }, barre(chx[0].ls)),
+              h("div", { style: { marginTop: 10, textAlign: "center", fontFamily: SANS, fontSize: 11.5, color: CHAMP } }, ouv0 ? "˄" : ((MOI ? T("Vos meilleurs résultats ensemble", "Your best results together") : T("Ses meilleurs résultats ensemble", "Best results together")) + " ˅")),
+              ouv0 ? deplie(chx[0], I0) : null)));
           if (chx.length > 1) g.push(h("div", { key: "magCr", style: { padding: "12px 22px 0" } }, chx.slice(1).map(function (c, i) { return rangeeC(c, i); })));
         } else g.push(h("div", { key: "magE", style: { padding: "14px 22px 0" } }, chx.map(rangeeC)));
       } else if (MV === "D") {
@@ -1157,7 +1218,7 @@ function EcranPerformancesCheval(props) {
             h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".32em", textTransform: "uppercase", color: CHAMP } }, T("Avec", "With", "Con", "Con", "パートナー", "Mit", "مع", "搭档", "Met", "Com", "Med", "С", "Z", "함께", "با")),
             h("div", { style: { fontFamily: SERIF, fontSize: 44, lineHeight: 1, marginTop: 4, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
             mini.length ? h("div", { style: { display: "flex", gap: 18, marginTop: 10 } }, mini) : null,
-            b ? h("div", { style: { fontFamily: SANS, fontSize: 11, marginTop: 8, maxWidth: "72%", color: MUET, lineHeight: 1.4 } }, T("Son meilleur : ", "Best: ", "Su mejor: ", "Il migliore: ", "ベスト：", "Bestes: ", "أفضل نتيجة: ", "最佳：", "Beste: ", "Melhor: ", "Bäst: ", "Лучший: ", "Najlepszy: ", "최고: ", "بهترین: "), h("span", { style: { color: CHAMP } }, rangTxt(b.pl)), [b.ep, b.d ? String(b.d).slice(0, 4) : ""].filter(Boolean).map(function (x) { return " · " + x; }).join("")) : null,
+            b ? h("div", { style: { fontFamily: SANS, fontSize: 11, marginTop: 8, maxWidth: "72%", color: MUET, lineHeight: 1.4 } }, (MOI ? T("Ton meilleur : ", "Your best: ") : T("Son meilleur : ", "Best: ", "Su mejor: ", "Il migliore: ", "ベスト：", "Bestes: ", "أفضل نتيجة: ", "最佳：", "Beste: ", "Melhor: ", "Bäst: ", "Лучший: ", "Najlepszy: ", "최고: ", "بهترین: ")), h("span", { style: { color: CHAMP } }, rangTxt(b.pl)), [b.ep, b.d ? String(b.d).slice(0, 4) : ""].filter(Boolean).map(function (x) { return " · " + x; }).join("")) : null,
             h("div", { style: { marginTop: 10, maxWidth: "72%" } }, barre(c.ls)),
             ouvrir ? h("div", { style: { position: "absolute", insetInlineEnd: 0, bottom: 0, fontFamily: SANS, fontSize: 12, color: CHAMP } }, (modeCav ? T("Sa fiche", "Profile", "Su ficha", "La scheda", "プロフィール", "Profil", "ملفه", "档案", "Profiel", "Ficha", "Profil", "Профиль", "Profil", "프로필", "پرونده") : T("Ses performances", "Performances")) + (rtl ? " ‹" : " ›")) : null)));
       });
@@ -1166,7 +1227,7 @@ function EcranPerformancesCheval(props) {
     /* 3 · Récent */
     var recents = tous.filter(function (f) { return visL(f) && f.d && (f.pl != null || f.statut === "el" || f.statut === "ab"); }).slice().sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); }).slice(0, 3);
     if (recents.length) {
-      g.push(sepA2("s3")); g.push(partie("p3", T("Récent", "Recent", "Reciente", "Recenti", "最近", "Zuletzt", "الأحدث", "最近", "Recent", "Recente", "Senaste", "Недавно", "Ostatnio", "최근", "اخیر"), T("Ses derniers concours", "Latest shows", "Sus últimos concursos", "Gli ultimi concorsi", "最近の大会", "Die letzten Turniere", "آخر مسابقاته", "最近的赛事", "Laatste wedstrijden", "Últimos concursos", "Senaste tävlingarna", "Последние турниры", "Ostatnie zawody", "최근 대회", "آخرین مسابقه‌هایش")));
+      g.push(sepA2("s3")); g.push(partie("p3", T("Récent", "Recent", "Reciente", "Recenti", "最近", "Zuletzt", "الأحدث", "最近", "Recent", "Recente", "Senaste", "Недавно", "Ostatnio", "최근", "اخیر"), (MOI ? T("Tes derniers concours", "Your latest shows") : T("Ses derniers concours", "Latest shows", "Sus últimos concursos", "Gli ultimi concorsi", "最近の大会", "Die letzten Turniere", "آخر مسابقاته", "最近的赛事", "Laatste wedstrijden", "Últimos concursos", "Senaste tävlingarna", "Последние турниры", "Ostatnie zawody", "최근 대회", "آخرین مسابقه‌هایش"))));
       g.push(h("div", { key: "p3c", style: { padding: "16px 22px 0" } }, recents.map(function (f, i) {
         var chP = parCheval(f.cav), ph = (chP && chP.c && chP.c.photo_url) || null;
         return carteBasse("rc" + i, TROPH(), h(React.Fragment, null, h("span", { style: { color: f.pl === 1 ? CHAMP : IVOIRE } }, resTxt(f)), f.ep ? " · " + f.ep : ""),
@@ -1175,15 +1236,17 @@ function EcranPerformancesCheval(props) {
     }
 
     /* 4 · Souvenirs */
-    var fs3 = forts.slice(0, 3);
+    var fs3 = forts.slice(0, 8);   /* 13/11 : jusqu à 8 (plus haute épreuve + plus beaux podiums) */
     if (fs3.length) {
-      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش")));
+      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), (MOI ? T("Tes plus beaux moments", "Your finest moments") : T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش"))));
       g.push(h("div", { key: "p4c", style: { padding: "16px 22px 0" } }, fs3.map(function (f, i) {
         var pf = photosForts[i], chP = parCheval(f.cav);
         var ph = (pf && !pf.video && pf.url) || (chP && chP.c && chP.c.photo_url) || null;
         var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
-        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, h("span", { style: { color: CHAMP } }, rangTxt(f.pl)), f.part ? " " + SUR() + " " + f.part : ""),
-          h(React.Fragment, null, f.ep || concoursC(f), h("br"), [annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")), ph, function () { allerAuFort(f); });
+        var hTxt = (f.haut != null && !/\d\s*(m|cm)\b|\dm\d/i.test(f.ep || "")) ? String(f.haut.toFixed(2)).replace(".", ",") + " m" : "";   /* pas de doublon si la hauteur est déjà écrite */
+        var propreC = function (n) { if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
+        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, f.plusHaute ? h("span", { style: { display: "block", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".22em", textTransform: "uppercase", color: CHAMP, marginBottom: 3 } }, MOI ? T("Ta plus haute épreuve", "Your highest class") : T("Sa plus haute épreuve", "Highest class")) : null, h("span", { style: { color: CHAMP } }, rangTxt(f.pl)), f.part ? " " + SUR() + " " + f.part : ""),
+          h(React.Fragment, null, [f.ep, hTxt].filter(Boolean).join(" · ") || concoursC(f), h("br"), [propreC(concoursC(f)), annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")), ph, function () { allerAuFort(f); });
       })));
     }
     if (peutForts) g.push(h("div", { key: "ajf", style: { textAlign: "center", marginTop: fs3.length ? 4 : 18 } }, h("button", { type: "button", onClick: function () { setChoixFortOuvert(true); }, style: { minHeight: 36, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "transparent", color: "#E6CF9C", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Choisir ses moments forts", "Choose highlights", "Elegir momentos", "Scegli i momenti", "ハイライトを選ぶ", "Highlights wählen", "اختيار اللحظات", "选择精彩时刻", "Hoogtepunten kiezen", "Escolher momentos", "Välj höjdpunkter", "Выбрать моменты", "Wybierz momenty", "하이라이트 선택", "انتخاب لحظه‌ها"))));
@@ -1193,7 +1256,7 @@ function EcranPerformancesCheval(props) {
     var d = [];
     var vueA = archSt[0], setVueA = archSt[1];
     if (!largeP) d.push(sepA2("s5"));
-    d.push(partie("p5", T("Archives", "Archive", "Archivo", "Archivio", "アーカイブ", "Archiv", "الأرشيف", "档案", "Archief", "Arquivo", "Arkiv", "Архив", "Archiwum", "기록 보관", "بایگانی"), T("Tous ses résultats", "All results", "Todos sus resultados", "Tutti i risultati", "全成績", "Alle Ergebnisse", "كل نتائجه", "所有成绩", "Alle resultaten", "Todos os resultados", "Alla resultat", "Все результаты", "Wszystkie wyniki", "모든 성적", "همهٔ نتایجش")));
+    d.push(partie("p5", T("Archives", "Archive", "Archivo", "Archivio", "アーカイブ", "Archiv", "الأرشيف", "档案", "Archief", "Arquivo", "Arkiv", "Архив", "Archiwum", "기록 보관", "بایگانی"), (MOI ? T("Tous tes résultats", "All your results") : T("Tous ses résultats", "All results", "Todos sus resultados", "Tutti i risultati", "全成績", "Alle Ergebnisse", "كل نتائجه", "所有成绩", "Alle resultaten", "Todos os resultados", "Alla resultat", "Все результаты", "Wszystkie wyniki", "모든 성적", "همهٔ نتایجش"))));
     var bascBtn = function (cle, lib) { var on = vueA === cle; return h("button", { key: "b" + cle, type: "button", onClick: function () { setVueA(cle); }, style: { flex: 1, minHeight: 38, borderRadius: 999, border: "none", background: on ? "rgba(201,166,107,0.16)" : "transparent", color: on ? "#E6CF9C" : MUET, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", boxShadow: on ? "inset 0 0 0 1px rgba(201,166,107,0.55)" : "none" } }, lib); };
     if (chx.length > 1) d.push(h("div", { key: "basc", style: { display: "flex", gap: 4, padding: 4, margin: "16px 22px 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.12)" } },
       bascBtn("saison", T("Par saison", "By season", "Por temporada", "Per stagione", "シーズン別", "Nach Saison", "حسب الموسم", "按赛季", "Per seizoen", "Por temporada", "Per säsong", "По сезонам", "Według sezonu", "시즌별", "بر اساس فصل")),
