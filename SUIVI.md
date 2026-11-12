@@ -12,6 +12,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 20h10 — build 20261112-2010 — PERSAN étape finale : serveur, Hey Baby, mails, notifications, coffre
+- Fiches publiques en persan : chevaux, cours, écuries, événements (netlify/edge-functions/*-route.ts) + plans du site chevaux/écuries/événements.
+- Hey Baby (netlify/functions/assistant.js) : le persan est accepté (avant : réponse en français pour une persanophone) ; questions, « Traduire » et « Version courte » vérifiées dans les 15 langues (banc local : bonne consigne de langue envoyée à l'IA pour chacune).
+- Fonctions Supabase hey-baby-vision (analyse photo) et notifier-notif (notifications sur le téléphone) : persan ajouté, déployées par ce commit ([fonctions] [seulement:…], verify_jwt inchangé). Version en ligne comparée avant : identique au dépôt hors ajouts persans.
+- Mails : persan ajouté aux générateurs (outils/mails-generer.py…), « 14 langues » → « 15 langues » ; confirmation.html et reinitialisation.html régénérés.
+- Appli : 7 textes du coffre-fort (hype-ecran-sante-cheval.js ?v=19), 4 textes des rappels d'échéance, lien « Se connecter » de l'accueil (était figé en français, sortait « Log in » en persan).
+- RESTE (Blandine) : recoller dans Supabase › Authentication › Emails › Templates les modèles outils/mails/confirmation.html et reinitialisation.html (+ objets dans outils/mails/objets.txt) — sans ça, les mails d'inscription restent sans persan.
+- RESTE : relecture par Faïmé ; générateurs des pages publiques (seo-*.cjs, association, cgv) sans « fa » → relancer outils/fa/hreflang-fa.py et quinze-langues.py après toute régénération ; nouveaux textes : node outils/fa/injecter-fa.cjs --extraire liste ce qui manque.
+
 ### 12/11 19h30 — build 20261112-1930 — RAPPELS D'ÉCHÉANCE (Blandine 18h27 : « Ok, continue… des rappels d'échéance, même pour les contrôles techniques… les assurances »)
 - Base (sql-12-11-rappels-echeances.sql, passé le 12/11) : fonction hype_rappels_echeances() + tâche planifiée « rappels-echeances-quotidien » (pg_cron, 6h15 UTC = 7h15 à Paris l'hiver, 8h15 l'été). Aucune table, aucun droit changé.
 - Dans le mois qui précède, UNE notification « À renouveler » par échéance : coffre (coffre_documents.echeance → le propriétaire ; rappel_le noté) ; véhicules de l'écurie (ecurie_vehicules.ct_prochain = contrôle technique, assurance_fin = assurance) et papiers de l'écurie (registre_documents.valable_jusqu, ex. assurances) → les responsables de l'écurie (clubs_revendiques + club_gestionnaires). Testé en base (2 rappels créés, 0 au 2e passage, annulé).
@@ -25,8 +34,8 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Outils relançables : outils/fa/hreflang-fa.py, outils/fa/quinze-langues.py (à relancer si un générateur refait les pages).
 - RESTE pour le persan :
   1. Générateurs des pages (seo-*.cjs/.py, association-generer.py, cgv-generer.py) ne connaissent pas encore « fa » : s'ils sont relancés, relancer ensuite les deux outils ci-dessus (les pages fa/ ne sont pas touchées par eux).
-  2. Fiches chevaux publiques (netlify/edge-functions/cheval-route.ts) : pas encore de version persane.
-  3. Mails (invitation, tips) en persan.
+  2. ✅ FAIT 12/11 20h10 — Fiches chevaux publiques en persan.
+  3. ✅ FAIT 12/11 20h10 — Mails en persan (modèles Supabase à recoller par Blandine).
   4. Relecture par une personne persanophone (Faïmé) — phrases coupées en morceaux dans l'appli.
 ### 12/11 19h00 — build 20261112-1900 — MON COFFRE-FORT en ligne + SANTÉ DU CHEVAL : le sensible réservé (Blandine : « tu t'en charges… tu peux le mettre en ligne »)
 - COFFRE (hype-ecran-gestion.js ?v=37, index.html) : page #coffre (ouvre « Mon coffre-fort ») et #mes-documents (ouvre « Mes documents »), aussi #coffre-fort. Entrée : bande « Mes documents et coffre-fort » sur la page Cavalier, sous les 6 accès (hype-ecran-cavalier.js ?v=25). PAS d'entrée sur la fiche cheval (Blandine : « Redondant non »).

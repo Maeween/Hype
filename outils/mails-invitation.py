@@ -34,7 +34,7 @@ H = f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="v
 <tr><td align="center" style="padding:6px 0 18px;font-family:{S};font-size:10px;letter-spacing:4px;color:{GR};">L&rsquo;APP DES CAVALIERS</td></tr>
 <tr><td style="padding:0;"><img src="https://2hype.fr/images/accueil-video-ordi-poster.jpg" width="520" alt="" style="display:block;width:100%;max-width:520px;height:auto;border:0;border-radius:14px;"></td></tr>
 <tr><td style="padding:30px 4px 0;font-family:{G};font-style:italic;font-size:26px;line-height:1.25;color:{IV};">Coucou {{{{ contact.PRENOM }}}}&nbsp;!</td></tr>
-<tr><td style="padding:12px 4px 0;font-family:{S};font-size:15px;line-height:1.6;color:{GR};">Comme promis, voici <b style="color:{IV};">Hype</b>, l&rsquo;appli que je développe pour les cavaliers, leurs chevaux et les écuries. Elle fonctionne sur téléphone, tablette et ordinateur, en 14 langues.<br><br>Pour que tu puisses tout tester, je t&rsquo;offre ton premier mois Premium 🎁</td></tr>
+<tr><td style="padding:12px 4px 0;font-family:{S};font-size:15px;line-height:1.6;color:{GR};">Comme promis, voici <b style="color:{IV};">Hype</b>, l&rsquo;appli que je développe pour les cavaliers, leurs chevaux et les écuries. Elle fonctionne sur téléphone, tablette et ordinateur, en 15 langues.<br><br>Pour que tu puisses tout tester, je t&rsquo;offre ton premier mois Premium 🎁</td></tr>
 {encadre()}
 {titre(e(F[0]))}
 <tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{liste(F[1])}{LIGNE}</table></td></tr>
