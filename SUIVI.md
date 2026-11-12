@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 16h40 — build 20261112-1700 — page Équipe : tout bandeau s'ouvre au toucher, pas seulement son bouton (Blandine : « généralise le tap »)
+- hype-ecran-team.js ?v=54 : bandeaux « Prochain concours » / « Dernier concours » entièrement cliquables ; bandeaux duo (Ma saison, Performances, Derniers résultats) : toucher le bandeau = son bouton (Performances : le premier, Cavaliers).
+- Correction d'un défaut introduit à 15h30 : sur « Derniers résultats », toucher le bouton dépliait puis repliait aussitôt (deux actions) — le bouton n'agit plus qu'une fois.
+
 ### 12/11 16h35 — build 20261112-1655 — Médias de la saison : formulaire photo (concours, qui monte, quel cheval) + aération façon Team Compétition
 - hype-ecran-saison.js ?v=142 : « + Ajouter » → « Photos ou vidéos du concours » → choix du concours → formulaire : choisir les photos, « Qui monte ? » (ronds des membres de l'équipe), « Quel cheval ? » (ronds des chevaux de l'équipe), Publier. Chaque photo = un post sur le concours (posterCommentaire) + identifications cavalier / cheval (identifierSouvenir, statut « attente » : la personne ou le propriétaire du cheval valide l'ajout dans son album, comme partout dans Hype). Aucune table nouvelle.
 - Héros de la page = gabarit de la page Équipe (photo à droite fondue, « ■ MÉDIAS ——», grand titre, filet doré, phrase) ; blocs plus espacés (Blandine : « plus de recul, plus d'aération »).
