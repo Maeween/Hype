@@ -94,6 +94,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - En attente : maquette du récapitulatif des engagements allégé (replié par défaut, une ligne par cavalier / par cheval) — montrée 02h05.
 ### 12/11 02h11 — build 20261112-0315 — L'équipe : un seul bandeau ouvert, effet photo cavaliers, espace, « Gérer l'équipe » discret (Blandine « Ok »)
 - hype-ecran-team.js v=37 : basculerEq (ouvrir un bandeau referme l autre) ; effet photo HYPE_PH_SOLEIL sur les portraits des cavaliers ; rangée dépliée 44 px au-dessus / 60 px en dessous ; « Gérer l'équipe » devient un petit lien ivoire à droite de « 1 · L'ÉQUIPE » (partie(..., droite)), menu en surimpression à droite (membres, chevaux, modifier le groupe).
+### 12/11 02h30 — build 20261112-0330 — La saison : prochain concours à la une + agenda en lignes (brief Blandine 02h24, « Ok »)
+- hype-ecran-team.js v=38 : bandeau « Prochain concours » (images/bandeau-prochain-concours.webp, textes HTML 14 langues : jour en grand, mois, nom, lieu, « Voir le concours » → hypeOuvrirRdv) = 1er rendez-vous de type concours de l agenda DE L ÉQUIPE ouverte (donc propre à chaque équipe) ; masqué s il n y en a pas.
+- « Agenda de l'équipe » : lignes compactes (date | nom + lieu | ›, affiche à droite si image_url), sans le concours de la une ; 3 visibles, « Voir tout » pour le reste + rendez-vous passés ; bouton + conservé. Un toucher ouvre la fiche (repli : le détail sous la ligne).
+- Onglets fixes du haut : padding haut = env(safe-area-inset-top) + 10 px (ne passent plus sous l heure / la batterie).
+- À faire ensuite : récapitulatif des engagements version D (petites cartes) + onglets Par cavalier / Par cheval / Par épreuve (choix Blandine 02h25).
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').
