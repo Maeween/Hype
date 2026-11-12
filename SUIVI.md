@@ -103,6 +103,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - hype-ecran-saison.js v=140 (EcranEngagements › recapFin) : replié par défaut (« Voir le récapitulatif »), onglets Par cavalier / Par cheval / Par épreuve ; vue cavaliers en petites cartes D (photo ronde, prénom, chevaux + n° de tour en doré), 2 par ligne ; vues chevaux et épreuves inchangées, une seule à la fois.
 - images/bandeau-prochain-concours.webp recadré à droite (plus d obstacle jaune, cheval plus grand) ; hype-ecran-team.js v=39 (?v=2 sur l image, texte sur 42 %).
 - Le bandeau « Prochain concours » passe tout seul au concours suivant dès que la date du précédent est passée ; même photo pour tous (affiche du concours possible plus tard).
+### 12/11 02h55 — build 20261112-0400 — Page équipe : prochain et dernier concours pareils, bandeau « Ma saison », sur-titres seuls (Blandine « tu peux déjà le remettre en ligne »)
+- hype-ecran-team.js ?v=41.
+- Prochain et dernier concours : même bandeau (bandeauConcours). Le dernier est en miroir (photo à gauche, texte à droite, courbe inversée), après l'agenda, bouton « Voir les résultats ». Photo du dernier = provisoire (la même retournée, le tapis se lit à l'envers) : attendre une vraie photo de Blandine.
+- « Ma saison » : grand bandeau, bai sur fond noir (images/galop1-hero-bai.webp) entier à droite, bords fondus, texte à gauche, « Voir ma saison ». Toujours réservé à la modératrice. Place provisoire (après les résultats) : à décider (sous l'agenda ou en bas de La saison).
+- Parties 2, 3, 4 : grands titres blancs retirés (« Concours & résultats », « Nos plus beaux moments », « Progresser ensemble ») ; seul le petit sur-titre reste, comme la partie 1.
+- Textes nouveaux traduits dans les 14 langues.
+
 ### 12/11 02h34 — build 20261112-0345 — Agenda de l'équipe : photo par défaut (Blandine « vas-y, mets ça »)
 - hype-ecran-team.js v=40 : ligneAg sans affiche → photo de thème (concours hype-entete-concours.jpg, stage theme-dressage-bai-trot.webp, sortie actualite-ambiance.webp), même règle que l agenda du club.
 

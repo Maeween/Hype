@@ -857,9 +857,21 @@ function EcranTeamCompetition() {
     }, style: { flex: "0 0 auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(214,182,118,0.7)", background: "transparent", color: OR, fontSize: 18, lineHeight: "28px", fontWeight: 400, padding: 0, cursor: "pointer", fontFamily: M } }, "+") : null;   /* 01/10 (527) : un simple « + » entoure, a droite du titre (Blandine : « le bouton prend beaucoup de place ») */
   /* 04/11 — CENTRE DE COMPÉTITION, ÉTAPE 1 : lien vers la page « Ma saison » (hype-ecran-saison.js), sous l agenda. */
   /* 04/11 23h20 (Blandine : « pour l'instant, toute cette série-là, tu la laisses accessible à personne à part moi ») : bouton visible par la modératrice seulement */
+  /* 12/11 02h34 (Blandine : « on avait un super bel onglet avec une photo de cheval magnifique pour Ma saison… là ce serait juste un bouton doré ») :
+     carte photo comme les autres accès de la page (le bai tressé de l'en-tête de Ma saison) */
+  /* 12/11 02h53 (Blandine : « remets le bandeau, la deuxième proposition ») : grand bandeau, le bai sur fond noir à droite (photo entière,
+     bords fondus dans le noir), texte à gauche. Place définitive à décider. */
   var lienSaison = !((typeof estModerateurHype === "function") && estModerateurHype(moi)) ? null : h("button", { type: "button", onClick: function () { setEcran("ma-saison"); },
-      style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", minHeight: 44, marginTop: 14, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: OR, fontFamily: M, fontSize: 12.5, letterSpacing: 0.3, cursor: "pointer" } },
-    h("span", null, tr({ fr: "Ma saison : tous les concours" })), h("span", { style: { fontSize: 16 } }, CHEV));
+      "aria-label": T("Ma saison", "My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"),
+      style: { position: "relative", display: "block", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 44", padding: 0, border: "none", background: BG, color: IV, cursor: "pointer", overflow: "hidden", textAlign: "start" } },
+    h("img", { src: "images/galop1-hero-bai.webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: grandEq ? "45%" : "66%", height: "100%", objectFit: "contain", objectPosition: rtl ? "left center" : "right center",
+      WebkitMaskImage: "linear-gradient(90deg,transparent,#000 22%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent)", WebkitMaskComposite: "source-in", maskComposite: "intersect", transform: rtl ? "scaleX(-1)" : "none" } }),
+    h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: grandEq ? "50%" : "46%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", paddingInlineStart: grandEq ? 40 : 18, boxSizing: "border-box" } },
+      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 22 : 16, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, T("Centre de compétition", "Competition centre", "Centro de competición", "Centro gare", "競技センター", "Turnierzentrale", "مركز المسابقات", "比赛中心", "Wedstrijdcentrum", "Centro de competição", "Tävlingscenter", "Центр соревнований", "Centrum zawodów", "대회 센터")),
+      h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: grandEq ? 40 : 28, lineHeight: 1.05, marginTop: 4 } }, T("Ma saison", "My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌")),
+      h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 11, color: "rgba(244,241,234,0.72)", marginTop: 6, lineHeight: 1.4 } }, T("Tous les concours de la saison", "All the season's competitions", "Todos los concursos de la temporada", "Tutti i concorsi della stagione", "シーズンのすべての大会", "Alle Turniere der Saison", "كل مسابقات الموسم", "本赛季的所有比赛", "Alle wedstrijden van het seizoen", "Todos os concursos da temporada", "Säsongens alla tävlingar", "Все соревнования сезона", "Wszystkie zawody sezonu", "이번 시즌의 모든 대회")),
+      h("span", { style: { marginTop: 10, minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, display: "inline-flex", alignItems: "center", gap: 6 } },
+        T("Voir ma saison", "See my season", "Ver mi temporada", "Vedi la mia stagione", "シーズンを見る", "Meine Saison ansehen", "عرض موسمي", "查看我的赛季", "Mijn seizoen bekijken", "Ver minha temporada", "Se min säsong", "Смотреть мой сезон", "Zobacz mój sezon", "나의 시즌 보기"), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
   /* ── 12/11 02h24 — brief de Blandine « REFONTE DE LA SECTION AGENDA » : prochain concours à la une (bandeau photo, textes en HTML,
      traduits), puis « Agenda de l'équipe » en lignes compactes (date | nom + lieu | flèche, photo à droite si le rendez-vous en a une),
      sans répéter le concours mis à la une. Pas de concours prévu → pas de bandeau, l'agenda reste. Photo provisoire : BANDEAU_PROCHAIN. ── */
@@ -869,17 +881,24 @@ function EcranTeamCompetition() {
   function ouvrirEv(ev) { hypeOuvrirRdv(ev, setEcran, function () { setRdvOuvert(rdvOuvert === String(ev.id) ? null : String(ev.id)); }); }
   function jourNum(iso) { var d = dateLoc(iso); return d ? String(d.getDate()) : ""; }
   function moisCourt(iso) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, { month: "short" }).format(d); } catch (e) { return ""; } }
-  var uneConcours = !prochainC ? null : h("div", { key: "une", style: { position: "relative", marginTop: 22, overflow: "hidden", background: BG } },
-    h("img", { src: BANDEAU_PROCHAIN, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
-    h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: "42%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0 9% 18px", boxSizing: "border-box" } },
-      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 26 : 16, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, T("Prochain concours", "Next competition", "Próximo concurso", "Prossimo concorso", "次の大会", "Nächstes Turnier", "المسابقة القادمة", "下一场比赛", "Volgende wedstrijd", "Próximo concurso", "Nästa tävling", "Следующие соревнования", "Następne zawody", "다음 대회")),
+  /* 12/11 02h53 (Blandine : « les deux encarts [prochain / dernier concours] sont pas du tout présentés pareillement… change-les ») :
+     un seul modèle de bandeau pour les deux. Le dernier concours est le miroir du prochain (photo à gauche, texte à droite, courbe dans
+     l'autre sens), placé après l'agenda pour qu'ils ne se suivent pas. Photo provisoire du dernier : la même, retournée. */
+  function bandeauConcours(ev, miroir) {
+    var droite = miroir ? !rtl : rtl;   /* côté du texte */
+    return h("div", { key: miroir ? "dern" : "une", "data-team-dernier": miroir ? "1" : null, style: { position: "relative", overflow: "hidden", background: BG } },
+    h("img", { src: BANDEAU_PROCHAIN, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto", transform: miroir ? "scaleX(-1)" : "none" } }),
+    h("div", { style: { position: "absolute", top: 0, bottom: 0, left: droite ? "auto" : 0, right: droite ? 0 : "auto", width: "44%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-end" : "flex-start", textAlign: droite ? "right" : "left", padding: droite ? "0 18px 9% 0" : "0 0 9% 18px", boxSizing: "border-box" } },
+      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 26 : 16, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, miroir ? T("Dernier concours", "Last competition", "Último concurso", "Ultimo concorso", "前回の大会", "Letztes Turnier", "آخر مسابقة", "上一场比赛", "Laatste wedstrijd", "Último concurso", "Senaste tävlingen", "Последние соревнования", "Ostatnie zawody", "지난 대회") : T("Prochain concours", "Next competition", "Próximo concurso", "Prossimo concorso", "次の大会", "Nächstes Turnier", "المسابقة القادمة", "下一场比赛", "Volgende wedstrijd", "Próximo concurso", "Nästa tävling", "Следующие соревнования", "Następne zawody", "다음 대회")),
       h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 } },
-        h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 64 : 40, fontWeight: 500, lineHeight: 0.9, color: IV } }, jourNum(prochainC.date_jour)),
-        h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 22 : 15, textTransform: "uppercase", letterSpacing: 1, color: IV } }, moisCourt(prochainC.date_jour))),
-      h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 18, fontWeight: 500, lineHeight: 1.1, marginTop: 6, color: IV } }, prochainC.titre || ""),
-      prochainC.lieu ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: grandEq ? 13 : 10, color: "rgba(244,241,234,0.72)", marginTop: 3 } }, prochainC.lieu) : null,
-      h("button", { type: "button", onClick: function () { ouvrirEv(prochainC); }, style: { alignSelf: "flex-start", marginTop: 9, minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
-        T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기"), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
+        h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 64 : 40, fontWeight: 500, lineHeight: 0.9, color: IV } }, jourNum(ev.date_jour)),
+        h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 22 : 15, textTransform: "uppercase", letterSpacing: 1, color: IV } }, moisCourt(ev.date_jour))),
+      h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 18, fontWeight: 500, lineHeight: 1.1, marginTop: 6, color: IV } }, ev.titre || ""),
+      ev.lieu ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: grandEq ? 13 : 10, color: "rgba(244,241,234,0.72)", marginTop: 3 } }, ev.lieu) : null,
+      h("button", { type: "button", onClick: function () { if (miroir) ouvrirRdvPasse(ev); else ouvrirEv(ev); }, style: { alignSelf: droite ? "flex-end" : "flex-start", marginTop: 9, minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 } },
+        (miroir ? T("Voir les résultats", "See the results", "Ver los resultados", "Vedi i risultati", "結果を見る", "Ergebnisse ansehen", "عرض النتائج", "查看成绩", "Uitslagen bekijken", "Ver os resultados", "Se resultaten", "Смотреть результаты", "Zobacz wyniki", "결과 보기") : T("Voir le concours", "See the competition", "Ver el concurso", "Vedi il concorso", "大会を見る", "Turnier ansehen", "عرض المسابقة", "查看比赛", "Wedstrijd bekijken", "Ver o concurso", "Se tävlingen", "Смотреть соревнования", "Zobacz zawody", "대회 보기")), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
+  }
+  var uneConcours = prochainC ? h("div", { style: { marginTop: 22 } }, bandeauConcours(prochainC, false)) : null;
   function ligneAg(ev, passe) {
     var cle = String(ev.id), ouv = rdvOuvert === cle;
     /* 12/11 02h31 (Blandine : « une photo par défaut quand il n'y a rien pour un concours ») : sans affiche, la photo de thème
@@ -907,7 +926,7 @@ function EcranTeamCompetition() {
       : h("div", null,
           !agendaSansUne.length && !prochainC ? videCartePh(ICO.agenda, "images/concours-carte-passages.webp", T("Aucun rendez-vous à venir pour l’instant.", "No upcoming events yet.", "Aún no hay citas próximas.", "Nessun appuntamento in arrivo per ora.", "今後の予定はまだありません。", "Noch keine anstehenden Termine.", "لا توجد مواعيد قادمة حاليا.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")) : null,
           (ouvert.ag ? agendaSansUne : agendaSansUne.slice(0, nbAgVisibles)).map(function (ev) { return ligneAg(ev, false); }),
-          dernierConcours ? carteDernier(dernierConcours) : null,
+          dernierConcours ? h("div", { style: { margin: "34px -20px 0" } }, bandeauConcours(dernierConcours, true)) : null,
           (ouvert.ag && autresPasses.length) ? h("div", { style: { marginTop: 16 } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: GR, marginBottom: 4 } }, T("Rendez-vous passés", "Past events", "Citas pasadas", "Appuntamenti passati", "過去の予定", "Vergangene Termine", "مواعيد سابقة", "过去的日程", "Afgelopen afspraken", "Compromissos passados", "Tidigare evenemang", "Прошедшие события", "Minione wydarzenia", "지난 일정")),
             h("div", { style: { marginTop: 6 } }, autresPasses.map(function (ev) { return ligneAg(ev, true); }))) : null)), true);
@@ -1355,9 +1374,9 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
     partie(PARTIES[0].id, 1, PARTIES[0].lab, null, blocGerer), blocEquipe, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocSv, trait(),
-    partie(PARTIES[3].id, 4, PARTIES[3].lab, PARTIES[3].titre), blocMedias, blocReg, h("div", { style: { height: 30 } }),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "34px 0 6px" } }, lienSaison) : null, blocClass, trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, trait(),
+    partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
