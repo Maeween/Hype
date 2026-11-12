@@ -12,6 +12,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — build 20261112-1545 — Référencement Liban (hreflang ar-LB) publié
+- Demande de Blandine (« rajouter Liban sur le référencement Google, Bing »). Chaque page publique en arabe est désormais aussi signalée aux moteurs de recherche comme destinée au Liban (hreflang « ar-LB », même adresse /ar/).
+- 238 pages + sitemap-pages.xml (200 entrées). Générateurs mis à jour pour que ça reste à la prochaine génération : seo-galops.cjs, seo-lexique.cjs, seo-prepas.py, association-generer.py, cgv-generer.py.
+- Nombre de langues annoncé (« 14 langues ») : PAS modifié, en attente de la décision de Blandine (le Liban ouvre l'arabe ; ce n'est pas une 15e langue).
+- Vérifié : plans de site valides, générateurs sans erreur, aucune page arabe oubliée.
+
 ### 12/11 — build 20261112-1535 — Entrée « Liban (arabe) » dans les sélecteurs de langue (publiée)
 - Demande de Blandine (« Liban et entre parenthèses arabe ») : entrée « لبنان (العربية) » avec le drapeau libanais, juste sous l'arabe, dans les 3 sélecteurs (page d'entrée, écrans de connexion, sélecteur de l'appli).
 - Ce n'est pas une 15e langue : elle ouvre l'arabe standard déjà en place (le libanais est surtout parlé ; à l'écrit, le Liban utilise l'arabe standard). Rien à traduire. Choix mémorisé sur l'appareil (hype_langue_variante) ; choisir une autre langue l'efface.
