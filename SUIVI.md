@@ -12,6 +12,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 20h45 — build 20261112-2045 — IMPORT FFE Compet : quart calculé quand la FFE n'en donne pas
+- Blandine (18 h 49) : « tu peux lui donner consigne de les calculer 1/4 partants ».
+- hype-import-ffe.js v=33 : dans le lecteur FFE Compet SEULEMENT, une ligne classée sans quart reçoit quart = place ÷ (partants ÷ 4 arrondi au supérieur) — la règle quartAttendu vérifiée 21/21. Marquée quart_calcule (non écrit en base). Un quart donné par la FFE n'est jamais remplacé. Exception volontaire et limitée à la règle « on ne calcule jamais le quart » (telemat et SIF inchangés).
+- Vérifié sur ses 3 PDF : 10 classements anciens reçoivent leur quart (ex. 8/49 → 1er quart, 11/21 → 2e, 50/72 → 3e) ; les 11 quarts donnés par la FFE restent tels quels. Effet : avec le choix par défaut « Ses classements », ses vieux résultats du premier quart arrivent cochés.
+
 ### 12/11 20h30 — build 20261112-2030 — IMPORT : les PDF « Engagements et performances » de FFE Compet sont enfin lus
 - Blandine (18 h 36) : ses résultats viennent de FFE Compet, pas du SIF/telemat — « il a jamais su me les lire » (message « Aucun résultat trouvé dans ce PDF »). 3 PDF réels fournis (CSO_Bl_9.pdf 1998, CSO_Bl_2.pdf 2004, Performances_Blandine_PRONOST.pdf 2009-2022), enregistrés depuis Safari iPhone.
 - Cause : le lecteur ne connaissait que le telemat (fiches « Date / Épreuve / Concours… ») et la page SIF « Résultats détaillés ». La page FFE Compet a deux colonnes (gauche : n° de concours, lieu, date, « 15 - SO - Préparatoire (0,90 m) », « Nom du cheval: » ; droite : « Clst : 1/33 », « Quart : 1/4 », « Gains »), qui se mélangeaient à la lecture.

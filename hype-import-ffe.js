@@ -584,6 +584,11 @@
       if (!r.epreuve) r.doute = "épreuve absente";
       var att = quartAttendu(r.place, r.partants);
       if (att && r.quart && att !== r.quart) r.doute = "quart incohérent : la FFE dit " + r.quart + "e, le calcul donne " + att + "e";
+      /* 12/11 (Blandine, 18 h 49 : « tu peux lui donner consigne de les calculer 1/4 partants ») — EXCEPTION
+         VOULUE à la règle « on ne calcule jamais le quart », LIMITÉE à FFE Compet et aux lignes où la FFE n'en
+         donne AUCUN (résultats anciens, avant ~2010) : quart = place ÷ (partants ÷ 4 arrondi au supérieur),
+         la règle vérifiée 21 fois sur 21 (quartAttendu). Un quart donné par la FFE n'est jamais remplacé. */
+      if (att && !r.quart && c.statut === "classe") { r.quart = att; r.quart_calcule = true; }
       if (r.doute) alertes.push(r);
       if (c.statut !== "non_partant" && c.statut !== "annulee") sorties.push(r);
     });
