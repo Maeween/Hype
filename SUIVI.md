@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 14h51 — build 20261112-1455 — Performances du cavalier : plus de « 0 % » (Blandine « Ok »)
+- hype-ecran-perf-cheval.js ?v=13 : « Sa régularité » affiche le pourcentage de classement seulement s'il y a au moins un classement (+ « · N podium(s) ») ; sinon la phrase « Ses prochains classements et podiums s'afficheront ici. » (14 langues).
+
 ### 12/11 14h26 — build 20261112-1430 — Performances du cavalier : « classé » = premier quart, éliminations masquées comptées (Blandine « vas-y »)
 - hype-ecran-perf-cheval.js ?v=12.
 - estClasseQ : classé = place ≤ partants ÷ 4 arrondi au-dessus (préparatoire : 1er seulement) ; la case quart du fichier FFE ne sert que si les partants manquent (elle peut être fausse : Paris 20/09, 10e/36 notée quart 1).
