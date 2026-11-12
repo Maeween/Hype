@@ -151,6 +151,13 @@ var HS_TR_BRUT = {
   "Moi": ["Me", "Yo", "Io", "自分", "Ich", "أنا", "我", "Ik", "Eu", "Jag", "Я", "Ja", "나"],
   /* 12/11 16h30 — Médias de la saison */
   "Performances": ["Performance", "Rendimiento", "Prestazioni", "成績", "Leistungen", "أداء", "表现", "Prestaties", "Desempenho", "Prestationer", "Выступления", "Osiągnięcia", "성적"],
+  "Erreur : ": ["Error: ", "Error: ", "Errore: ", "エラー：", "Fehler: ", "خطأ: ", "错误：", "Fout: ", "Erro: ", "Fel: ", "Ошибка: ", "Błąd: ", "오류: "],
+  "Qui monte ?": ["Who's riding?", "¿Quién monta?", "Chi monta?", "誰が乗ってる？", "Wer reitet?", "من يركب؟", "谁在骑？", "Wie rijdt er?", "Quem monta?", "Vem rider?", "Кто едет?", "Kto jedzie?", "누가 타고 있어?"],
+  "Quel cheval ?": ["Which horse?", "¿Qué caballo?", "Quale cavallo?", "どの馬？", "Welches Pferd?", "أي حصان؟", "哪匹马？", "Welk paard?", "Qual cavalo?", "Vilken häst?", "Какая лошадь?", "Który koń?", "어떤 말?"],
+  "Choisis tes photos": ["Choose your photos", "Elige tus fotos", "Scegli le tue foto", "写真を選んでね", "Wähle deine Fotos", "اختر صورك", "选择你的照片", "Kies je foto's", "Escolhe as tuas fotos", "Välj dina foton", "Выбери фото", "Wybierz zdjęcia", "사진을 골라줘"],
+  "photo(s) choisie(s)": ["photo(s) selected", "foto(s) elegida(s)", "foto selezionata/e", "枚選択済み", "Foto(s) ausgewählt", "صورة/صور مختارة", "张已选", "foto('s) gekozen", "foto(s) escolhida(s)", "foto(n) valda", "фото выбрано", "wybrane zdjęcia", "장 선택됨"],
+  "Publication…": ["Posting…", "Publicando…", "Pubblicazione…", "投稿中…", "Wird veröffentlicht…", "جارٍ النشر…", "发布中…", "Bezig met plaatsen…", "A publicar…", "Publicerar…", "Публикация…", "Publikowanie…", "게시 중…"],
+  "C’est publié. Les cavaliers identifiés valident l’ajout dans leurs albums.": ["Posted. The tagged riders approve adding it to their albums.", "Publicado. Los jinetes identificados validan la incorporación a sus álbumes.", "Pubblicato. I cavalieri identificati confermano l’aggiunta ai loro album.", "投稿しました。タグ付けされたライダーがアルバムへの追加を承認します。", "Veröffentlicht. Die markierten Reiter bestätigen die Aufnahme in ihre Alben.", "تم النشر. يوافق الفرسان المُعرَّفون على إضافتها إلى ألبوماتهم.", "已发布。被标记的骑手会确认是否加入他们的相册。", "Geplaatst. De getagde ruiters keuren de toevoeging aan hun albums goed.", "Publicado. Os cavaleiros identificados validam a adição aos seus álbuns.", "Publicerat. De taggade ryttarna godkänner att det läggs i deras album.", "Опубликовано. Отмеченные всадники подтвердят добавление в свои альбомы.", "Opublikowano. Oznaczeni jeźdźcy zatwierdzą dodanie do swoich albumów.", "게시했어. 태그된 라이더가 앨범 추가를 승인해."],
   "Médias de la saison": ["Season media", "Medios de la temporada", "Media della stagione", "シーズンのメディア", "Medien der Saison", "وسائط الموسم", "赛季媒体", "Media van het seizoen", "Mídias da temporada", "Säsongens media", "Медиа сезона", "Media sezonu", "시즌 미디어"],
   "Tous les concours de la saison": ["All the season's competitions", "Todos los concursos de la temporada", "Tutti i concorsi della stagione", "シーズンの全競技会", "Alle Turniere der Saison", "كل مسابقات الموسم", "本赛季所有比赛", "Alle wedstrijden van het seizoen", "Todos os concursos da temporada", "Säsongens alla tävlingar", "Все соревнования сезона", "Wszystkie zawody sezonu", "시즌 전체 대회"],
   "Pas encore de média cette saison.": ["No media this season yet.", "Aún no hay medios esta temporada.", "Ancora nessun media in questa stagione.", "今シーズンのメディアはまだありません。", "Diese Saison noch keine Medien.", "لا توجد وسائط هذا الموسم بعد.", "本赛季还没有媒体。", "Nog geen media dit seizoen.", "Ainda não há mídias nesta temporada.", "Inga media den här säsongen än.", "В этом сезоне пока нет медиа.", "W tym sezonie brak jeszcze mediów.", "이번 시즌 미디어가 아직 없어요."],
@@ -1310,6 +1317,7 @@ function EcranConcours() {
   var _msl = React.useState(null); var medSel = _msl[0], setMedSel = _msl[1];
   var _ajc = React.useState(""); var ajConc = _ajc[0], setAjConc = _ajc[1];   /* 12/11 16h30 : mode saison — concours choisi pour poster des photos */
   var _ajl = React.useState(false); var ajListe = _ajl[0], setAjListe = _ajl[1];
+  var _ajf = React.useState(null); var ajForm = _ajf[0], setAjForm = _ajf[1];   /* 12/11 16h25 (Blandine : « ça demande quel concours, quel cheval et cavalier ») : { conc, files, cav, ch, occ, msg } */
   var _fov = React.useState(false); var filOuv = _fov[0], setFilOuv = _fov[1];   /* 09/11 16h35 : le fil n'apparaît que pour ajouter des photos */
   var _vgf = React.useState({}); var vgFerme = _vgf[0], setVgFerme = _vgf[1];   /* 09/11 19h15 : lots de vidéos repliés */
   var _mvu = React.useState(""); var medVue = _mvu[0], setMedVue = _mvu[1];   /* 09/11 soir (maquette validée) : "" = galerie ; "cav" / "ch" / "ep" = vue Explorer les médias */
@@ -1522,7 +1530,16 @@ function EcranConcours() {
       if (idsCavG.length) { var rnc = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsCavG.slice(0, 200)); ((rnc && rnc.data) || []).forEach(function (x) { nomsG.cav[String(x.id)] = { nom: x.pseudo || "", ph: x.avatar_url || null }; }); }
       if (idsChG.length) { var rnh = await supa.from("chevaux").select("id, nom, photo_url").in("id", idsChG.slice(0, 200)); ((rnh && rnh.data) || []).forEach(function (x) { nomsG.ch[String(x.id)] = { nom: x.nom || "", ph: x.photo_url || null }; }); }
     } catch (eN) { }
-    if (vifF()) { medGCharge.current = true; setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG, noms: nomsG, conc: conc, ordreConc: idsC }); }
+    var eqCav = [], eqCh = [];   /* pour « Qui monte ? » / « Quel cheval ? » */
+    try {
+      var rgm = await supa.from("groupes_membres").select("user_id").eq("groupe_id", eq.id);
+      var idm = ((rgm && rgm.data) || []).map(function (x) { return x.user_id; }).filter(Boolean);
+      if (idm.length) { var rpm = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idm.slice(0, 200)); eqCav = ((rpm && rpm.data) || []).map(function (x) { return { id: String(x.id), nom: x.pseudo || "", ph: x.avatar_url || null }; }).sort(function (a, b) { return a.nom.localeCompare(b.nom); }); }
+      var rgc = await supa.from("groupes_chevaux").select("cheval_id").eq("groupe_id", eq.id);
+      var idh = ((rgc && rgc.data) || []).map(function (x) { return x.cheval_id; }).filter(Boolean);
+      if (idh.length) { var rph = await supa.from("chevaux").select("id, nom, photo_url").in("id", idh.slice(0, 200)); eqCh = ((rph && rph.data) || []).map(function (x) { return { id: String(x.id), nom: x.nom || "", ph: x.photo_url || null }; }).sort(function (a, b) { return a.nom.localeCompare(b.nom); }); }
+    } catch (eM) { }
+    if (vifF()) { medGCharge.current = true; setMedG({ posts: postsG, tv: tvG, ident: identG, resCav: resCavG, auteurs: auteursG, noms: nomsG, conc: conc, ordreConc: idsC, eqCav: eqCav, eqCh: eqCh }); }
   }
   React.useEffect(function () {
     var vif = true;
@@ -2558,12 +2575,57 @@ function EcranConcours() {
   function sel(val, set, libre, opts) {
     return h("label", { className: "hc-fsel" + (val ? " on" : "") }, h("span", null, libre), h("select", { value: val, onChange: function (e) { set(e.target.value); setMedNM(12); setMedNE(24); } }, h("option", { value: "" }, F("Tous")), opts.map(function (o) { return h("option", { key: o.id || o, value: o.id || o }, o.nom || o); })));
   }
+  /* 12/11 16h25 — mode saison : publier des photos avec le concours, qui monte et quel cheval (identifications « attente » :
+     comme partout dans Hype, la personne ou le propriétaire du cheval valide l'ajout dans son album) */
+  function formulairePhotos() {
+    var fo = ajForm, c = (medG && medG.conc && medG.conc[fo.conc]) || {};
+    function maj(o) { setAjForm(Object.assign({}, ajForm, o)); }
+    function bascule(k, id) { var l = fo[k].slice(), i = l.indexOf(id); if (i === -1) l.push(id); else l.splice(i, 1); var o = {}; o[k] = l; maj(o); }
+    function rond(k, p) {
+      var on = fo[k].indexOf(p.id) !== -1;
+      return h("button", { key: k + p.id, type: "button", "aria-pressed": on, onClick: function () { bascule(k, p.id); }, style: { flex: "0 0 auto", width: 70, background: "none", border: "none", padding: 0, color: on ? "#C9A66B" : "rgba(243,238,228,.8)", cursor: "pointer", textAlign: "center" } },
+        h("span", { style: { display: "block", width: 56, height: 56, margin: "0 auto", borderRadius: "50%", overflow: "hidden", border: on ? "2px solid #C9A66B" : "1px solid rgba(201,166,107,.4)", background: "#0B0E0C", lineHeight: "54px", fontSize: 22, fontFamily: "'Cormorant Garamond',Georgia,serif", color: "#C9A66B" } },
+          p.ph ? h("img", { src: p.ph, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : String(p.nom || "?").charAt(0)),
+        h("span", { style: { display: "block", marginTop: 6, fontSize: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, p.nom));
+    }
+    function rangee(l, k) { return h("div", { "data-hscroll": "1", style: { display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", padding: "4px 0 8px" } }, l.map(function (p) { return rond(k, p); })); }
+    async function publier() {
+      if (!fo.files.length || fo.occ) return;
+      maj({ occ: true, msg: F("Publication…") });
+      var err = "";
+      try {
+        for (var i = 0; i < fo.files.length; i++) {
+          var r = await posterCommentaire({ cible: "agenda:" + fo.conc, texte: null, fichierPhoto: fo.files[i] });
+          if (!r || r.error || !r.data) { err = String((r && r.error && (r.error.message || r.error)) || "?"); break; }
+          var url = r.data.photo_url; if (!url) continue;
+          for (var a = 0; a < fo.cav.length; a++) { var pc = (medG.eqCav || []).filter(function (x) { return x.id === fo.cav[a]; })[0]; await identifierSouvenir(url, "cavalier", fo.cav[a], pc ? pc.nom : null); }
+          for (var b = 0; b < fo.ch.length; b++) { var ph = (medG.eqCh || []).filter(function (x) { return x.id === fo.ch[b]; })[0]; await identifierSouvenir(url, "cheval", fo.ch[b], ph ? ph.nom : null); }
+        }
+      } catch (eP) { err = String((eP && eP.message) || eP); }
+      if (err) { setAjForm(Object.assign({}, fo, { occ: false, msg: F("Erreur : ") + err })); return; }
+      setAjForm(null); setMedAjout(false); setMedMsg(F("C’est publié. Les cavaliers identifiés valident l’ajout dans leurs albums."));
+      setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 400);
+    }
+    var lab = { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, color: "#F3EEE4", margin: "14px 0 6px" };
+    return h("div", { key: "ajform", className: "hs-carte", style: { padding: "14px 14px 16px" } },
+      h("div", { style: { fontSize: 10.5, letterSpacing: ".2em", textTransform: "uppercase", color: "#C9A66B" } }, c.lab || F("Concours")),
+      h("div", { style: lab }, F("Choisis tes photos")),
+      h("label", { className: "hc-md-aj", style: { cursor: "pointer" } }, h("span", { "aria-hidden": "true" }, "+"), " " + (fo.files.length ? fo.files.length + " " + F("photo(s) choisie(s)") : F("Choisis tes photos")),
+        h("input", { type: "file", accept: "image/*", multiple: true, style: { display: "none" }, onChange: function (e) { var l = Array.prototype.slice.call((e.target && e.target.files) || []); maj({ files: l }); } })),
+      h("div", { style: lab }, F("Qui monte ?")), rangee((medG && medG.eqCav) || [], "cav"),
+      h("div", { style: lab }, F("Quel cheval ?")), rangee((medG && medG.eqCh) || [], "ch"),
+      fo.msg ? h("div", { className: "hs-note", style: { marginTop: 8 } }, fo.msg) : null,
+      h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
+        h("button", { type: "button", className: "hc-btn-l", style: { flex: 1 }, onClick: function () { setAjForm(null); } }, F("Annuler")),
+        h("button", { type: "button", className: "hc-md-aj", disabled: !fo.files.length || fo.occ, style: { flex: 1, justifyContent: "center", opacity: (!fo.files.length || fo.occ) ? .5 : 1 }, onClick: publier }, F("Publier"))));
+  }
   var panneauAjout = medAjout ? h("div", { key: "paj", className: "hc-outils" },
     outil("ajF", F("Photos ou vidéos du concours"), F("Tu pourras ensuite identifier qui est dessus avec ⋯."), function () { if (SAISON) { setAjListe(!ajListe); return; } setMedAjout(false); setFilOuv(true); setTimeout(function () { try { var el = document.getElementById("hs-fil"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 200); }),
     (SAISON && ajListe) ? h("div", { key: "ajl", className: "hs-carte", style: { padding: "12px 14px" } },
       h("div", { className: "hc-sous", style: { marginTop: 0 } }, F("De quel concours sont tes photos ?")),
-      ((medG && medG.ordreConc) || []).map(function (idc) { var c = medG.conc[idc]; return h("button", { key: "ajc" + idc, type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", borderTop: "1px solid rgba(243,238,228,.07)", color: "inherit", textAlign: "start", cursor: "pointer" }, onClick: function () { setAjConc(idc); setAjListe(false); setMedAjout(false); setFilOuv(true); setTimeout(function () { try { var el = document.getElementById("hs-fil"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { } }, 250); } },
+      ((medG && medG.ordreConc) || []).map(function (idc) { var c = medG.conc[idc]; return h("button", { key: "ajc" + idc, type: "button", className: "hs-row", style: { width: "100%", background: "none", border: "none", borderTop: "1px solid rgba(243,238,228,.07)", color: "inherit", textAlign: "start", cursor: "pointer" }, onClick: function () { setAjListe(false); setAjForm({ conc: idc, files: [], cav: [], ch: [], occ: false, msg: "" }); } },
         h("div", { className: "g" }, h("b", null, c.titre || F("Concours")), h("span", null, [hsFmt(c.date, { day: "numeric", month: "long" }), c.lieu].filter(Boolean).join(" · "))), h("span", { className: "d", style: { color: "#C9A66B" } }, rtl ? "‹" : "›")); })) : null,
+    (SAISON && ajForm) ? formulairePhotos() : null,
     (equipe && equipe.membre) ? outil("ajT", F("Vidéo de parcours de l’équipe"), F("Rattachée à l’épreuve et au résultat."), function () { setMedAjout(false); try { window.__teamMediasGroupe = equipe.id; window.__teamMediasOnglet = "videos"; window.__teamMediasAjout = SAISON ? null : { agenda_id: idEv, titre: ev.titre, lieu: ev.lieu, date: ev.date_jour }; if (SAISON) window.__teamMediasAjoutLibre = true; } catch (e) { } setEcran("team-medias"); }) : null) : null;
   /* ── 09/11 13h10 — nouvelle présentation (maquette « reportage ») : un grand média à l'honneur dans son format naturel,
      trois vignettes rondes à droite pour en changer, les autres en rangée dessous ; puis l'équipe en galerie horizontale
@@ -3246,8 +3308,30 @@ function EcranConcours() {
         h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
         h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van"))),
       fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
-  if (SAISON) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },   /* 12/11 16h30 : Médias de la saison */
-    heroC(F("Médias de la saison"), F("Tous les concours de la saison")),
+  /* 12/11 16h25 (Blandine : « plus de recul, plus d'aération, exactement comme sur la page Team Compétition ») : héros du même
+     gabarit que la page Équipe (photo à droite fondue, sur-titre doré, grand titre, filet, phrase), blocs plus espacés */
+  function heroSaison() {
+    var BG = "#070A08", OR = "#C9A66B", SER = "'Cormorant Garamond',Georgia,serif", MO = "'Montserrat',Arial,sans-serif";
+    return h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 400px)", overflow: "hidden", background: BG, marginBottom: 18 } },
+      h("img", { src: HS_IMG_CONCOURS.medias, alt: "", decoding: "async", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 64px)", bottom: 0, insetInlineEnd: 0, width: "72%", height: "calc(100% - env(safe-area-inset-top) - 64px)", objectFit: "cover", objectPosition: "center 25%", display: "block" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 64px)", insetInline: 0, height: 60, pointerEvents: "none", background: "linear-gradient(180deg, " + BG + ", rgba(7,10,8,0))" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", " + BG + " 26%, rgba(7,10,8,0.82) 40%, rgba(7,10,8,0.25) 62%, rgba(7,10,8,0) 78%)" } }),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, bottom: 0, height: 70, pointerEvents: "none", background: "linear-gradient(180deg, rgba(7,10,8,0), " + BG + ")" } }),
+      h("button", { type: "button", onClick: function () { try { if (app.histLen && app.histLen > 0 && app.retourEcran) { app.retourEcran(); return; } } catch (e) { } setEcran("ma-saison"); }, "aria-label": F("Retour"),
+        style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid rgba(244,241,234,0.16)", color: "#F3EEE4", fontSize: 18, cursor: "pointer", zIndex: 2 } }, rtl ? "›" : "‹"),
+      (typeof SelecteurLangue === "function") ? h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", insetInlineEnd: 14, zIndex: 2 } }, h(SelecteurLangue, { compact: true })) : null,
+      h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 40, maxWidth: "62%", zIndex: 1 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+          h("span", { style: { width: 5, height: 5, background: OR, display: "inline-block" } }),
+          h("span", { style: { fontFamily: MO, fontSize: 9.5, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: OR } }, F("Médias")),
+          h("span", { style: { width: 34, height: 1, background: "rgba(214,182,118,0.6)", display: "inline-block" } })),
+        h("div", { style: { fontFamily: SER, fontWeight: 500, fontSize: 40, lineHeight: 1.0, color: "#F3EEE4", marginTop: 12 } }, F("Médias de la saison")),
+        h("span", { style: { display: "block", width: 38, height: 1, background: OR, margin: "14px 0 12px" } }),
+        h("div", { style: { fontFamily: MO, fontSize: 12, lineHeight: 1.55, color: "rgba(244,241,234,0.86)" } }, F("Tous les concours de la saison"))));
+  }
+  if (SAISON) return h("div", { className: "hs hc hc-saison", dir: rtl ? "rtl" : "ltr" },   /* 12/11 16h30 : Médias de la saison */
+    h("style", null, ".hc-saison .hs-in{padding-top:18px}.hc-saison .hc-rep-s{margin-bottom:58px}.hc-saison .hc-rep-st{margin-bottom:28px}.hc-saison .vr-c{margin:64px 0 34px!important}.hc-saison .vr-ong{margin-top:12px;margin-bottom:40px}.hc-saison .hc-outils{margin-top:14px}"),
+    heroSaison(),
     h("div", { className: "hs-in" },
       h("div", { className: "hc-onglet" }, blocGalerie, (filOuv && blocFil) ? h("div", { key: "filw" }, blocFil, h("div", { style: { textAlign: "center", margin: "6px 0 18px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setFilOuv(false); setAjConc(""); setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 300); } }, F("Terminer")))) : null),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));

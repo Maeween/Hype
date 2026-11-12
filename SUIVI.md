@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 16h35 — build 20261112-1655 — Médias de la saison : formulaire photo (concours, qui monte, quel cheval) + aération façon Team Compétition
+- hype-ecran-saison.js ?v=142 : « + Ajouter » → « Photos ou vidéos du concours » → choix du concours → formulaire : choisir les photos, « Qui monte ? » (ronds des membres de l'équipe), « Quel cheval ? » (ronds des chevaux de l'équipe), Publier. Chaque photo = un post sur le concours (posterCommentaire) + identifications cavalier / cheval (identifierSouvenir, statut « attente » : la personne ou le propriétaire du cheval valide l'ajout dans son album, comme partout dans Hype). Aucune table nouvelle.
+- Héros de la page = gabarit de la page Équipe (photo à droite fondue, « ■ MÉDIAS ——», grand titre, filet doré, phrase) ; blocs plus espacés (Blandine : « plus de recul, plus d'aération »).
+- hype-ecran-team-medias.js ?v=45 : cartes Parcours / Travail / Photos retirées de l'ancienne page (la carte Photos montrait une affiche ; remplacée par les Médias de la saison).
+- Liens des mails vérifiés : #ajouter-video (formulaire vidéo de la Team), #hb=1, #reprises, #team-competition, #coffre, #monecurie — aucun ne passe par les pages changées, aucun ne mène aux conseils Hey Baby par erreur.
+- RESTE : photos privées / retirées par le cavalier, album « Insolites & chutes » (table « photos de l'équipe » à proposer).
+
 ### 12/11 16h50 — build 20261112-1650 — MÉDIAS DE LA SAISON (page Médias des concours, tous les concours) + cartes dans Ma saison (Blandine « Ok », « mets tout en ligne »)
 - Direction de Blandine (16h09) : reprendre la page Médias d'une fiche concours (poster, Mes médias / Les médias de l'équipe, par cavalier, par cheval, par couple) pour TOUTE la saison ; tout centraliser (« on a 10 pages différentes »).
 - hype-ecran-saison.js ?v=141 : identifiant spécial « __saison » dans EcranConcours (SAISON) → héros « Médias de la saison », pas de cartes Engagements/Jour J/Résultats, directement la galerie. chargerGalerieSaison : concours de l'équipe (agenda_groupes) depuis le 1er septembre, leurs photos (SAUF celles postées avant le jour du concours : affiches, ordres de départ, horaires — demande de 16h06), toutes les vidéos de l'équipe (concours + entraînement). Le filtre « épreuve » devient le concours (« CSO Tigery · 8 nov. », « Entraînement »).

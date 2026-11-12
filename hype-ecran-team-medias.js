@@ -1805,7 +1805,7 @@ null)) });
         onglet === "accueil" ? null : retourAccueil(),
         onglet === "accueil" ? null : enteteRubrique(onglet),
         erreur ? ((!moi || /permission denied|not authorized|jwt/i.test(String(erreur))) ? carteAcces() : h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ") + erreur)) : null,
-        (onglet === "videos" || onglet === "travail" || onglet === "photos") ? cartesMedias() : null,   /* 12/11 16h */
+        /* 12/11 16h25 : les cartes Parcours / Travail / Photos retirées — remplacées par les Médias de la saison (fiche concours, tous concours) */
         onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "travail" ? ongletTravail() : onglet === "photos" ? ongletPhotos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles(),)),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
