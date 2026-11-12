@@ -83,6 +83,11 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 ### 12/11 01h44 — build 20261112-0245 — Bandeaux « L'équipe » avec les vraies photos (Blandine « vas-y »)
 - images/bandeau-equipe-cavaliers.webp (cavalière sur le gris, noir + filet doré à gauche) et images/bandeau-equipe-chevaux.webp (palomino sur l oxer, noir à droite), envoyées par Blandine, déjà composées en bandeau.
 - hype-ecran-team.js v=34 : bandeauEq en mode « plein » (8e argument) : photo entière sur toute la largeur, texte posé dans la zone noire (gauche pour les cavaliers, droite et remonté au-dessus des plantes pour les chevaux). Remplacer une photo = changer BANDEAU_EQ_CAV / BANDEAU_EQ_CH.
+### 12/11 01h55 — build 20261112-0255 — Bandeaux « L'équipe » définitifs (Blandine « on la tient, vas-y »)
+- Nos cavaliers : images/bandeau-equipe-cavaliers-2.webp (palomino sur l oxer rouge, saute vers la gauche, ombre + texte à GAUCHE).
+- Nos chevaux : images/bandeau-equipe-chevaux-5.webp (palomino dans les arbres, ombre + texte à DROITE) — ombres alternées gauche / droite comme demandé.
+- Images préparées par ChatGPT à partir des vraies photos ; Blandine a relevé des erreurs de retouche IA sur une version précédente de l oxer (barres, chandelier dédoublé) — si besoin, refaire à partir des originaux sans texte.
+- hype-ecran-team.js v=35 (texte des bandeaux « pleins » remonté au-dessus des barres ; miroir possible en mode plein).
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').
