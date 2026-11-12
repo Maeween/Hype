@@ -382,7 +382,7 @@ HL = {"zh": "zh-Hans", "pt": "pt-BR"}  # code de langue HTML/hreflang quand il d
 def page(lg):
     t = T[lg]; e = html.escape
     dirr = ' dir="rtl"' if lg == "ar" else ""
-    alt = "\n".join(f'<link rel="alternate" hreflang="{HL.get(l,l)}" href="https://2hype.fr/{l}/cgv/">' for l in LANGUES)
+    alt = "\n".join(f'<link rel="alternate" hreflang="{HL.get(l,l)}" href="https://2hype.fr/{l}/cgv/">'+('\n<link rel="alternate" hreflang="ar-LB" href="https://2hype.fr/ar/cgv/">' if l=="ar" else "") for l in LANGUES)
     corps = "".join(f"<h2>{e(titre)}</h2>\n{contenu}\n" for titre, contenu in t["s"])
     langues = " · ".join((f"<b>{NOMS[l]}</b>" if l == lg else f'<a href="/{l}/cgv/" lang="{HL.get(l,l)}">{NOMS[l]}</a>') for l in LANGUES)
     foi = f'<p class="maj">{e(t["foi"])}</p>' if t["foi"] else ""

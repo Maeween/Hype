@@ -437,7 +437,7 @@ ${o.cible ? `<meta name="hype-cible" content="${e(o.cible)}">\n` : ""}<!--hype-s
 <title>${e(o.titre)}</title>
 <meta name="description" content="${e(o.desc)}">
 <link rel="canonical" href="${url}">
-${alts.map((x) => `<link rel="alternate" hreflang="${HL[x]}" href="${DOM}/${x}/${o.chemin}">`).join("\n")}
+${alts.map((x) => `<link rel="alternate" hreflang="${HL[x]}" href="${DOM}/${x}/${o.chemin}">` + (x === "ar" ? `\n<link rel="alternate" hreflang="ar-LB" href="${DOM}/ar/${o.chemin}">` : "")).join("\n")}
 <link rel="alternate" hreflang="x-default" href="${DOM}/fr/${o.chemin}">
 <meta name="theme-color" content="#07110f">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -611,7 +611,7 @@ function principal() {
   let x = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
   for (const u of urls) {
     const ls = u.langues || LANGS;
-    const alt = ls.map((l) => `    <xhtml:link rel="alternate" hreflang="${HL[l]}" href="${DOM}/${l}/${u.chemin}"/>\n`).join("") + `    <xhtml:link rel="alternate" hreflang="x-default" href="${DOM}/fr/${u.chemin}"/>\n`;
+    const alt = ls.map((l) => `    <xhtml:link rel="alternate" hreflang="${HL[l]}" href="${DOM}/${l}/${u.chemin}"/>\n` + (l === "ar" ? `    <xhtml:link rel="alternate" hreflang="ar-LB" href="${DOM}/ar/${u.chemin}"/>\n` : "")).join("") + `    <xhtml:link rel="alternate" hreflang="x-default" href="${DOM}/fr/${u.chemin}"/>\n`;
     for (const l of ls) x += `  <url>\n    <loc>${DOM}/${l}/${u.chemin}</loc>\n${alt}  </url>\n`;
   }
   x += "</urlset>\n";

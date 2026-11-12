@@ -126,7 +126,7 @@ function principal() {
   }
   if (!pages.length) { log("aucune page écrite"); return; }
   let x = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
-  const alt = pages.map(function (l) { return `    <xhtml:link rel="alternate" hreflang="${G.HL[l]}" href="${G.DOM}/${l}/lexique/"/>\n`; }).join("") + `    <xhtml:link rel="alternate" hreflang="x-default" href="${G.DOM}/fr/lexique/"/>\n`;
+  const alt = pages.map(function (l) { return `    <xhtml:link rel="alternate" hreflang="${G.HL[l]}" href="${G.DOM}/${l}/lexique/"/>\n` + (l === "ar" ? `    <xhtml:link rel="alternate" hreflang="ar-LB" href="${G.DOM}/ar/lexique/"/>\n` : ""); }).join("") + `    <xhtml:link rel="alternate" hreflang="x-default" href="${G.DOM}/fr/lexique/"/>\n`;
   for (const l of pages) x += `  <url>\n    <loc>${G.DOM}/${l}/lexique/</loc>\n${alt}  </url>\n`;
   x += "</urlset>\n";
   fs.writeFileSync(path.join(RACINE, "sitemap-lexique.xml"), x);

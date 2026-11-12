@@ -63,7 +63,7 @@ def page(lg,D,dip,slug,dd):
     else: mt=T['titre'].replace('{titre}',titre+' ('+sous+')'); md=T['desc'].replace('{sous}',sous)
     url='https://2hype.fr/%s/%s/'%(lg,slug)
     data=dd[lg]['data'][dip]; S=data['sections']
-    alt=''.join('<link rel="alternate" hreflang="%s" href="https://2hype.fr/%s/%s/">\n'%(HREF.get(l,l),l,slug) for l in LG)+'<link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/%s/">\n'%slug
+    alt=''.join('<link rel="alternate" hreflang="%s" href="https://2hype.fr/%s/%s/">\n'%(HREF.get(l,l),l,slug)+('<link rel="alternate" hreflang="ar-LB" href="https://2hype.fr/ar/%s/">\n'%slug if l=='ar' else '') for l in LG)+'<link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/%s/">\n'%slug
     corps=''.join(bloc(b) for b in S[0]['b'])
     som='<ul>'+''.join('<li><strong>%s</strong>%s</li>'%(esc(s['titre']), ('<ul>'+''.join('<li>%s</li>'%esc(sb['titre']+((' ('+sb['m']+')') if sb.get('m') else '')) for sb in s['sous'])+'</ul>') if s['sous'] else '') for s in S[1:])+'</ul>'
     autres='<ul class="liste">'+''.join('<li><a href="https://2hype.fr/%s/%s/">%s<span class="sous">%s</span></a></li>'%(lg,sl,esc(ui['titre_'+k]),esc(ui['sous_'+k])) for k,sl in DIP if k!=dip)+'</ul>'
@@ -122,7 +122,7 @@ def principal():
     s=re.sub(r'<url>\s*<loc>https://2hype\.fr/[a-z]{2}/prepa-[a-z-]+/</loc>.*?</url>\s*','',s,flags=re.S)
     bloc=''
     for slug in urls:
-        alts=''.join('    <xhtml:link rel="alternate" hreflang="%s" href="https://2hype.fr/%s/%s/"/>\n'%(HREF.get(l,l),l,slug) for l in LG)+'    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/%s/"/>\n'%slug
+        alts=''.join('    <xhtml:link rel="alternate" hreflang="%s" href="https://2hype.fr/%s/%s/"/>\n'%(HREF.get(l,l),l,slug)+('    <xhtml:link rel="alternate" hreflang="ar-LB" href="https://2hype.fr/ar/%s/"/>\n'%slug if l=='ar' else '') for l in LG)+'    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/%s/"/>\n'%slug
         for lg in LG: bloc+='<url>\n    <loc>https://2hype.fr/%s/%s/</loc>\n%s  </url>\n'%(lg,slug,alts)
     s=s.replace('</urlset>',bloc+'</urlset>')
     open(p,'w').write(s)

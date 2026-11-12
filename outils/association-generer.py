@@ -831,7 +831,7 @@ def selecteur(lg, ident=""):
 
 def page(lg, ml=False):
     t=T[lg]; url=f"{DOM}/{lg}/{CHEMIN}"+("mentions-legales/" if ml else ""); pre=f"/{lg}/{CHEMIN}" if ml else ""
-    alts="\n".join(f'<link rel="alternate" hreflang="{HL.get(x,x)}" href="{DOM}/{x}/{CHEMIN}{"mentions-legales/" if ml else ""}">' for x in L)
+    alts="\n".join(f'<link rel="alternate" hreflang="{HL.get(x,x)}" href="{DOM}/{x}/{CHEMIN}{"mentions-legales/" if ml else ""}">'+(f'\n<link rel="alternate" hreflang="ar-LB" href="{DOM}/ar/{CHEMIN}{"mentions-legales/" if ml else ""}">' if x=="ar" else "") for x in L)
     jl={"@context":"https://schema.org","@type":"NGO","name":"FEINN Équitation et Environnement","url":url,"logo":f"{DOM}/{LOGO}","email":"feinn@live.fr","foundingDate":"2020-11-19",
         "address":{"@type":"PostalAddress","streetAddress":"3 chemin des Prés Picard","postalCode":"91760","addressLocality":"Itteville","addressCountry":"FR"},
         "identifier":"SIREN 898 028 980","description":t["desc"]}
