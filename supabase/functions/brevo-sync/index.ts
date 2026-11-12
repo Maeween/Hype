@@ -17,7 +17,12 @@ const PRENOMS: Record<string, string> = { "filou_2016@yahoo.com": "Grace" };
 // 12/11 (Blandine, 14h54 : « tu peux ajouter les deux adresses mail que je te donne ») — personnes SANS compte invitées par
 // Blandine (dont des pros) : liste Brevo « Invitations » (créée si absente), mail d'invitation + 1 mois offert. Ajout uniquement
 // à sa demande ; dès qu'une de ces adresses crée son compte, elle est traitée comme les autres comptes.
-const INVITES: Record<string, [string, string]> = { "clementine.savin@gmail.com": ["Clémentine", "Arlin"], "david.arlin20@gmail.com": ["David", "Arlin"], "deborah.guilmain@free.fr": ["Déborah", "Guilmain"] };
+// Chaque vague d'invitations a sa propre liste (le mail d'une vague déjà envoyée ne repart pas).
+const INVITES: Record<string, [string, string, string]> = {
+  "clementine.savin@gmail.com": ["Clémentine", "Arlin", "Invitations"], "david.arlin20@gmail.com": ["David", "Arlin", "Invitations"],
+  "deborah.guilmain@free.fr": ["Déborah", "Guilmain", "Invitations"],
+  "fahimeh.v@gmail.com": ["Fahimeh", "Vezi", "Invitations 2"],   // 12/11 15h28
+};
 const LISTE_TOUS = 2, LISTE_ACCES_OFFERT = 4, FIN_OFFRE = "2026-12-10";
 const B = "https://api.brevo.com/v3";
 
@@ -74,12 +79,13 @@ Deno.serve(async (req: Request) => {
     const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: "Pas encore abonnés", folderId: 1 }) });
     if (r.ok) LISTE_PAS_ABONNES = (await r.json()).id;
   }
-  let LISTE_INVITES = 0;
+  const LISTES_INV: Record<string, number> = {};
   { const r = await fetch(`${B}/contacts/lists?limit=50`, { headers: hb }); const j = r.ok ? await r.json() : {};
-    const l = (j.lists || []).find((x: any) => x.name === "Invitations"); if (l) LISTE_INVITES = l.id; }
-  if (!LISTE_INVITES && !essai) {
-    const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: "Invitations", folderId: 1 }) });
-    if (r.ok) LISTE_INVITES = (await r.json()).id;
+    for (const x of (j.lists || [])) if (/^Invitations/.test(x.name)) LISTES_INV[x.name] = x.id; }
+  for (const nomListe of new Set(Object.values(INVITES).map((v) => v[2]))) {
+    if (LISTES_INV[nomListe] || essai) continue;
+    const r = await fetch(`${B}/contacts/lists`, { method: "POST", headers: hb, body: JSON.stringify({ name: nomListe, folderId: 1 }) });
+    if (r.ok) LISTES_INV[nomListe] = (await r.json()).id;
   }
   if (!essai) { await fetch(`${B}/contacts/attributes/normal/GENRE`, { method: "POST", headers: hb, body: JSON.stringify({ type: "text" }) }); }
 
@@ -111,13 +117,14 @@ Deno.serve(async (req: Request) => {
   bilan.liste_pas_abonnes = LISTE_PAS_ABONNES;
   const aComptes = new Set(users.map((u) => u.email));
   const invites: string[] = [];
-  for (const [mail, [prenom, nom]] of Object.entries(INVITES)) {
+  for (const [mail, [prenom, nom, nomListe]] of Object.entries(INVITES)) {
+    const LISTE_INVITES = LISTES_INV[nomListe];
     if (aComptes.has(mail) || !LISTE_INVITES || essai) continue;
     const deja = existants.get(mail);
     const attrs: Record<string, string> = { NOM: nom }; if (!deja || !(deja.attributes || {}).PRENOM) attrs.PRENOM = prenom;
     const r = await fetch(`${B}/contacts`, { method: "POST", headers: hb, body: JSON.stringify({ email: mail, attributes: attrs, listIds: [LISTE_INVITES], updateEnabled: true }) });
     if (r.ok || r.status === 204) invites.push(mail); else bilan.erreurs.push(`${mail}: ${r.status} ${(await r.text()).slice(0, 120)}`);
   }
-  (bilan as any).invites = invites.length; (bilan as any).liste_invites = LISTE_INVITES;
+  (bilan as any).invites = invites.length; (bilan as any).listes_invites = LISTES_INV;
   return rep({ ok: bilan.erreurs.length === 0, essai, ...bilan });
 });
