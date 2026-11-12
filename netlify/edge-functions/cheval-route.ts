@@ -70,7 +70,7 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 
 // 13/10/2026 : aussi /en/cheval/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl|ko)\/)?cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl|ko|fa)\/)?cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");   // build 4 : remplacé par le titre du cheval
@@ -79,11 +79,11 @@ const NB_RESULTATS_TEXTE = 50;
 const DOMAINE = "https://2hype.fr";
 
 /* ---------- 13/10/2026 : les 8 langues de la page (textes autour des données ; noms, races, épreuves restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL", ko: "ko_KR" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko" | "fa";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL", ko: "ko_KR", fa: "fa_IR" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl", ko: "ko" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl", ko: "ko", fa: "fa" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { profil: "Profil cheval", mots: ["Profil", "photos", "origines", "résultats en concours"], et: " et ", sur: " sur Hype.", surnom: "Surnom", ne: (d: string) => "né(e) le " + d, neAn: (a: string) => "né(e) en " + a, neBrut: (t: string) => "né(e) le " + t, origines: "Origines", ecurie: "Écurie", resultats: "Résultats en concours", rang: (n: number) => (n === 1 ? "1er" : n + "e"), partants: (n: number) => " sur " + n + " partants", sf: "sans faute", autres: "… et d’autres résultats sur Hype.", cheval: "Cheval" },
@@ -100,14 +100,15 @@ const TX: Record<Lg, Record<string, any>> = {
   ru: { profil: "Профиль лошади", mots: ["Профиль", "фото", "родословная", "результаты соревнований"], et: " и ", sur: " на Hype.", surnom: "Кличка", ne: (d: string) => "дата рождения: " + d, neAn: (a: string) => "год рождения: " + a, neBrut: (t: string) => "дата рождения: " + t, origines: "Родословная", ecurie: "Конюшня", resultats: "Результаты соревнований", rang: (n: number) => n + "-е", partants: (n: number) => " из " + n + " участников", sf: "без ошибок", autres: "… и другие результаты на Hype.", cheval: "Лошадь" },
   pl: { profil: "Profil konia", mots: ["Profil", "zdjęcia", "rodowód", "wyniki zawodów"], et: " i ", sur: " w Hype.", surnom: "Przydomek", ne: (d: string) => "data urodzenia: " + d, neAn: (a: string) => "rok urodzenia: " + a, neBrut: (t: string) => "data urodzenia: " + t, origines: "Rodowód", ecurie: "Stajnia", resultats: "Wyniki zawodów", rang: (n: number) => n + ".", partants: (n: number) => " z " + n + " startujących", sf: "bez błędów", autres: "… i inne wyniki w Hype.", cheval: "Koń" },
   ko: { profil: "말 프로필", mots: ["프로필", "사진", "혈통", "대회 성적"], et: " 및 ", sur: "을 Hype에서 확인해 보세요.", surnom: "별명", ne: (d: string) => d + " 출생", neAn: (a: string) => a + "년 출생", neBrut: (t: string) => t + " 출생", origines: "혈통", ecurie: "마구간", resultats: "대회 성적", rang: (n: number) => n + "위", partants: (n: number) => " (출전 " + n + "마리)", sf: "무벌점", autres: "… 다른 성적도 Hype에서 확인해 보세요.", cheval: "말" },
+  fa: { profil: "نمایهٔ اسب", mots: ["نمایه", "عکس‌ها", "شجره‌نامه", "نتایج مسابقات"], et: " و ", sur: " در Hype.", surnom: "لقب", ne: (d: string) => "متولد " + d, neAn: (a: string) => "متولد " + a, neBrut: (t: string) => "متولد " + t, origines: "شجره‌نامه", ecurie: "اصطبل", resultats: "نتایج مسابقات", rang: (n: number) => "رتبهٔ " + n, partants: (n: number) => " از " + n + " شرکت‌کننده", sf: "بدون خطا", autres: "… و نتایج بیشتر در Hype.", cheval: "اسب" },
 };
 /* Sexe : même lecture que l'appli (sexeEnClair) ; valeur inconnue → telle quelle. */
 function sexeLg(v: unknown, lg: Lg): string {
   const k = String(v || "").toLowerCase().trim();
   if (!k) return "";
-  const J: Record<Lg, string> = { fr: "Jument", en: "Mare", es: "Yegua", it: "Giumenta", de: "Stute", ja: "牝馬", ar: "فرس", zh: "母马", nl: "Merrie", pt: "Égua", sv: "Sto", ru: "Кобыла", pl: "Klacz", ko: "암말" };
-  const H: Record<Lg, string> = { fr: "Hongre", en: "Gelding", es: "Castrado", it: "Castrone", de: "Wallach", ja: "せん馬", ar: "حصان مخصي", zh: "骟马", nl: "Ruin", pt: "Castrado", sv: "Valack", ru: "Мерин", pl: "Wałach", ko: "거세마" };
-  const E: Record<Lg, string> = { fr: "Entier", en: "Stallion", es: "Entero", it: "Stallone", de: "Hengst", ja: "牡馬", ar: "فحل", zh: "种公马", nl: "Hengst", pt: "Garanhão", sv: "Hingst", ru: "Жеребец", pl: "Ogier", ko: "종마" };
+  const J: Record<Lg, string> = { fr: "Jument", en: "Mare", es: "Yegua", it: "Giumenta", de: "Stute", ja: "牝馬", ar: "فرس", zh: "母马", nl: "Merrie", pt: "Égua", sv: "Sto", ru: "Кобыла", pl: "Klacz", ko: "암말", fa: "مادیان" };
+  const H: Record<Lg, string> = { fr: "Hongre", en: "Gelding", es: "Castrado", it: "Castrone", de: "Wallach", ja: "せん馬", ar: "حصان مخصي", zh: "骟马", nl: "Ruin", pt: "Castrado", sv: "Valack", ru: "Мерин", pl: "Wałach", ko: "거세마", fa: "اسب اخته" };
+  const E: Record<Lg, string> = { fr: "Entier", en: "Stallion", es: "Entero", it: "Stallone", de: "Hengst", ja: "牡馬", ar: "فحل", zh: "种公马", nl: "Hengst", pt: "Garanhão", sv: "Hingst", ru: "Жеребец", pl: "Ogier", ko: "종마", fa: "اسب نر" };
   if (lg === "fr") return String(v).trim();   // le français reste exactement comme avant
   if (k === "f" || k.startsWith("jument") || k.startsWith("femelle") || k.startsWith("pouliche")) return J[lg];
   if (k === "h" || k.startsWith("hongre")) return H[lg];
@@ -116,14 +117,14 @@ function sexeLg(v: unknown, lg: Lg): string {
 }
 /* Robe : les plus courantes ; une robe inconnue reste en français plutôt que d'être devinée. */
 const ROBES: Record<string, Record<Exclude<Lg, "fr">, string>> = {
-  "bai": { en: "bay", es: "castaño", it: "baio", de: "Brauner", ja: "鹿毛", ar: "كميت", zh: "骝毛", nl: "bruin", pt: "castanho", sv: "brun", ru: "гнедая", pl: "gniady", ko: "밤색" },
-  "bai brun": { en: "dark bay", es: "castaño oscuro", it: "baio scuro", de: "Dunkelbrauner", ja: "黒鹿毛", ar: "كميت داكن", zh: "深骝毛", nl: "donkerbruin", pt: "castanho escuro", sv: "mörkbrun", ru: "темно-гнедая", pl: "ciemnogniady", ko: "진한 밤색" },
-  "alezan": { en: "chestnut", es: "alazán", it: "sauro", de: "Fuchs", ja: "栗毛", ar: "أشقر", zh: "栗毛", nl: "vos", pt: "alazão", sv: "fux", ru: "рыжая", pl: "kasztanowaty", ko: "적갈색" },
-  "alezan brule": { en: "liver chestnut", es: "alazán tostado", it: "sauro bruciato", de: "Dunkelfuchs", ja: "栃栗毛", ar: "أشقر داكن", zh: "深栗毛", nl: "donkervos", pt: "alazão tostado", sv: "mörk fux", ru: "караковая", pl: "ciemnokasztanowaty", ko: "진한 적갈색" },
-  "noir": { en: "black", es: "negro", it: "morello", de: "Rappe", ja: "青毛", ar: "أدهم", zh: "黑毛", nl: "zwart", pt: "preto", sv: "svart", ru: "вороная", pl: "kary", ko: "흑색" },
-  "gris": { en: "grey", es: "tordo", it: "grigio", de: "Schimmel", ja: "芦毛", ar: "أشهب", zh: "青毛", nl: "schimmel", pt: "tordilho", sv: "grå", ru: "серая", pl: "siwy", ko: "백마색" },
-  "pie": { en: "pinto", es: "pío", it: "pezzato", de: "Schecke", ja: "駁毛", ar: "أبلق", zh: "花毛", nl: "bont", pt: "pampa", sv: "skäckig", ru: "пегая", pl: "srokaty", ko: "얼룩무늬" },
-  "palomino": { en: "palomino", es: "palomino", it: "palomino", de: "Palomino", ja: "パロミノ", ar: "بالومينو", zh: "帕洛米诺毛色", nl: "palomino", pt: "palomino", sv: "palomino", ru: "паломино", pl: "izabelowaty", ko: "팔로미노" },
+  "bai": { en: "bay", es: "castaño", it: "baio", de: "Brauner", ja: "鹿毛", ar: "كميت", zh: "骝毛", nl: "bruin", pt: "castanho", sv: "brun", ru: "гнедая", pl: "gniady", ko: "밤색", fa: "کهر" },
+  "bai brun": { en: "dark bay", es: "castaño oscuro", it: "baio scuro", de: "Dunkelbrauner", ja: "黒鹿毛", ar: "كميت داكن", zh: "深骝毛", nl: "donkerbruin", pt: "castanho escuro", sv: "mörkbrun", ru: "темно-гнедая", pl: "ciemnogniady", ko: "진한 밤색", fa: "کهر تیره" },
+  "alezan": { en: "chestnut", es: "alazán", it: "sauro", de: "Fuchs", ja: "栗毛", ar: "أشقر", zh: "栗毛", nl: "vos", pt: "alazão", sv: "fux", ru: "рыжая", pl: "kasztanowaty", ko: "적갈색", fa: "کرند" },
+  "alezan brule": { en: "liver chestnut", es: "alazán tostado", it: "sauro bruciato", de: "Dunkelfuchs", ja: "栃栗毛", ar: "أشقر داكن", zh: "深栗毛", nl: "donkervos", pt: "alazão tostado", sv: "mörk fux", ru: "караковая", pl: "ciemnokasztanowaty", ko: "진한 적갈색", fa: "کرند تیره" },
+  "noir": { en: "black", es: "negro", it: "morello", de: "Rappe", ja: "青毛", ar: "أدهم", zh: "黑毛", nl: "zwart", pt: "preto", sv: "svart", ru: "вороная", pl: "kary", ko: "흑색", fa: "سیاه" },
+  "gris": { en: "grey", es: "tordo", it: "grigio", de: "Schimmel", ja: "芦毛", ar: "أشهب", zh: "青毛", nl: "schimmel", pt: "tordilho", sv: "grå", ru: "серая", pl: "siwy", ko: "백마색", fa: "خاکستری (ابرش)" },
+  "pie": { en: "pinto", es: "pío", it: "pezzato", de: "Schecke", ja: "駁毛", ar: "أبلق", zh: "花毛", nl: "bont", pt: "pampa", sv: "skäckig", ru: "пегая", pl: "srokaty", ko: "얼룩무늬", fa: "ابلق" },
+  "palomino": { en: "palomino", es: "palomino", it: "palomino", de: "Palomino", ja: "パロミノ", ar: "بالومينو", zh: "帕洛米诺毛色", nl: "palomino", pt: "palomino", sv: "palomino", ru: "паломино", pl: "izabelowaty", ko: "팔로미노", fa: "پالومینو" },
 };
 function robeLg(v: unknown, lg: Lg): string {
   const brut = propre(v);
@@ -208,7 +209,7 @@ async function adresseEcurie(club: string, origine: string): Promise<string> {
 /* ---------- Petites pages d'erreur (8 langues, sans dépendre de l'appli) ---------- */
 function pageSimple(statut: number, lignes: string[][], titre: string): Response {
   const corps = lignes.map(([lang, txt]) =>
-    `<p lang="${HL[lang as Lg]}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
+    `<p lang="${HL[lang as Lg]}"${lang === "ar" || lang === "fa" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${titre}</title>
@@ -239,6 +240,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["ru", "Эта лошадь недоступна."],
   ["pl", "Ten koń jest niedostępny."],
   ["ko", "이 말은 볼 수 없어요."],
+  ["fa", "این اسب در دسترس نیست."],
 ], "Hype");
 
 const PAGE_503 = () => pageSimple(503, [
@@ -256,6 +258,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["ru", "Hype временно недоступен. Попробуй ещё раз через минуту."],
   ["pl", "Hype jest chwilowo niedostępny. Spróbuj ponownie za minutę."],
   ["ko", "Hype를 잠시 이용할 수 없어요. 잠시 후 다시 시도해 주세요."],
+  ["fa", "Hype موقتاً در دسترس نیست. چند لحظه دیگر دوباره امتحان کن."],
 ], "Hype");
 
 /* ---------- Build 4 : titre, description, canonical ---------- */
@@ -303,7 +306,7 @@ function infosSeo(cheval: any, nbResultats: number, slug: string, lg: Lg = "fr")
   if (propre(cheval.photo_url)) contenu.push(t.mots[1]);
   if (origines && (nomParent(origines.pere) || nomParent(origines.mere))) contenu.push(t.mots[2]);
   if (nbResultats > 0) contenu.push(t.mots[3]);
-  const virgule = lg === "ja" || lg === "zh" ? "、" : lg === "ar" ? "، " : ", ";
+  const virgule = lg === "ja" || lg === "zh" ? "、" : lg === "ar" || lg === "fa" ? "، " : ", ";
   const liste = contenu.length === 1 ? contenu[0]
     : contenu.slice(0, -1).join(virgule) + t.et + contenu[contenu.length - 1];
   phrase += liste + t.sur;
@@ -343,7 +346,7 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlu
   if (naiss) infos.push(t.ne(dateLg(naiss[3], naiss[2], naiss[1], lg)));
   else if (propre(og.naissance)) infos.push(/^\d{4}$/.test(propre(og.naissance)) ? t.neAn(texte(og.naissance)) : t.neBrut(texte(og.naissance)));
   const club = (propre(cheval.club) || propre(cheval.ecurie));
-  let html = `<main id="seo-cheval" lang="${HL[lg]}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  let html = `<main id="seo-cheval" lang="${HL[lg]}"${lg === "ar" || lg === "fa" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
   const dp = lg === "fr" ? " : " : lg === "ja" || lg === "zh" ? "：" : ": ";
   if (propre(cheval.alias)) html += `<p>${t.surnom}${dp}${texte(cheval.alias)}</p>`;
@@ -364,7 +367,7 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlu
       let fin = cl ? texte(cl) : "";
       const pa = parseInt(String(r.partants == null ? "" : r.partants), 10);
       if (fin && isFinite(pa) && pa > 0) fin += t.partants(pa);
-      if (propre(r.mention)) fin += (fin ? (lg === "ja" || lg === "zh" ? "、" : lg === "ar" ? "، " : ", ") : "") + (/^sf$/i.test(propre(r.mention)) ? t.sf : texte(r.mention));
+      if (propre(r.mention)) fin += (fin ? (lg === "ja" || lg === "zh" ? "、" : lg === "ar" || lg === "fa" ? "، " : ", ") : "") + (/^sf$/i.test(propre(r.mention)) ? t.sf : texte(r.mention));
       if (fin) morceaux.push(fin);
       if (morceaux.length) html += `<li>${morceaux.join(" — ")}</li>`;
     }
@@ -574,4 +577,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/cheval/*", "/en/cheval/*", "/es/cheval/*", "/it/cheval/*", "/de/cheval/*", "/ja/cheval/*", "/ar/cheval/*", "/zh/cheval/*", "/nl/cheval/*", "/pt/cheval/*", "/sv/cheval/*", "/ru/cheval/*", "/pl/cheval/*", "/ko/cheval/*"] };
+export const config = { path: ["/cheval/*", "/en/cheval/*", "/es/cheval/*", "/it/cheval/*", "/de/cheval/*", "/ja/cheval/*", "/ar/cheval/*", "/zh/cheval/*", "/nl/cheval/*", "/pt/cheval/*", "/sv/cheval/*", "/ru/cheval/*", "/pl/cheval/*", "/ko/cheval/*", "/fa/cheval/*"] };
