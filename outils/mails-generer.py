@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Genere les modeles de mails Supabase de Hype (14 langues) + des apercus par langue.
+"""Genere les modeles de mails Supabase de Hype (15 langues) + des apercus par langue.
 Sortie : outils/mails/reinitialisation.html, confirmation.html, objets.txt (a coller dans Supabase,
 Authentication > Emails > Templates). La langue vient de {{ .Data.langue }} (user_metadata.langue,
 recopiee par l appli) ; sans langue connue -> francais."""
 import os, html
 ICI = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ICI, "mails")
-LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl","ko"]
+LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl","ko","fa"]
 IMG = "https://2hype.fr/images/mail-cheval.jpg"
 IMG_CONF = "https://2hype.fr/images/accueil-video-ordi-poster.jpg"   # 12/11 (Blandine : « la photo est coupée » → choix 3, la silhouette dans la nuit, entière)
 # cles : objet, pre, titre, accroche, corps, bouton, petit, signe
@@ -25,6 +25,7 @@ RESET = {
 "ru": ["HYPE — твоя лошадь ждёт тебя 🐴","Выбери новый пароль в одно касание.","Не помнишь пароль?","Без паники: даже лучшие всадники иногда теряют стремя.","Нажми на кнопку ниже, чтобы выбрать новый пароль и вернуться к своей лошади в Hype.","Выбрать новый пароль","Если запрос отправлен не тобой, просто проигнорируй это письмо: пароль не изменится.","До встречи в седле — команда Hype"],
 "pl": ["HYPE — twój koń na ciebie czeka 🐴","Wybierz nowe hasło jednym dotknięciem.","Nie pamiętasz hasła?","Spokojnie: nawet najlepsi jeźdźcy czasem gubią strzemię.","Dotknij przycisku poniżej, aby wybrać nowe hasło i wrócić do swojego konia w Hype.","Wybieram nowe hasło","To nie ty? Po prostu zignoruj tę wiadomość: twoje hasło się nie zmieni.","Do zobaczenia w siodle — zespół Hype"],
 "ko": ["HYPE — 말이 기다리고 있어요 🐴","한 번의 터치로 새 비밀번호를 정하세요.","비밀번호를 잊어버렸나요?","걱정 마세요. 최고의 기수도 가끔은 등자를 놓친답니다.","아래 버튼을 눌러 새 비밀번호를 정하고 Hype에서 다시 말을 만나 보세요.","새 비밀번호 정하기","요청한 적이 없나요? 이 메일은 무시하셔도 돼요. 비밀번호는 바뀌지 않아요.","곧 안장 위에서 만나요 — Hype 팀"],
+"fa": ["HYPE — اسبت منتظرت است 🐴","با یک لمس، رمز عبور تازه‌ای انتخاب کن.","رمز عبورت را فراموش کرده‌ای؟","نگران نباش: حتی بهترین سوارکاران هم گاهی رکابشان را گم می‌کنند.","دکمهٔ زیر را لمس کن تا رمز عبور تازه‌ای انتخاب کنی و در Hype دوباره به اسبت برسی.","انتخاب رمز عبور تازه‌ام","چیزی درخواست نکرده‌ای؟ کافی است این پیام را نادیده بگیری: رمز عبورت تغییر نمی‌کند.","به‌زودی روی زین می‌بینمت — تیم Hype"],
 }
 CONF = {
 "fr": ["HYPE — bienvenue en selle 🐴","Confirme ton adresse pour ouvrir ton compte.","Bienvenue sur Hype !","Ton cheval piaffe déjà d'impatience.","Confirme ton adresse e-mail pour ouvrir ton compte et commencer ton voyage équestre.","Confirmer mon adresse","Tu n'as pas créé de compte Hype ? Ignore simplement ce message.","À tout de suite en selle — l'équipe Hype"],
@@ -41,8 +42,9 @@ CONF = {
 "ru": ["HYPE — добро пожаловать в седло 🐴","Подтверди адрес, чтобы открыть аккаунт.","Добро пожаловать в Hype!","Твоя лошадь уже бьёт копытом от нетерпения.","Подтверди адрес электронной почты, чтобы открыть аккаунт и начать своё конное путешествие.","Подтвердить адрес","Если аккаунт в Hype создан не тобой, просто проигнорируй это письмо.","До встречи в седле — команда Hype"],
 "pl": ["HYPE — witaj w siodle 🐴","Potwierdź adres, aby otworzyć konto.","Witaj w Hype!","Twój koń już przebiera kopytami z niecierpliwości.","Potwierdź swój adres e-mail, aby otworzyć konto i rozpocząć swoją jeździecką przygodę.","Potwierdzam adres","To nie ty zakładasz konto w Hype? Po prostu zignoruj tę wiadomość.","Do zobaczenia w siodle — zespół Hype"],
 "ko": ["HYPE — 안장 위에 오신 걸 환영해요 🐴","주소를 확인하고 계정을 열어 보세요.","Hype에 오신 걸 환영해요!","말이 벌써 기다리느라 발을 구르고 있어요.","이메일 주소를 확인하고 계정을 열어 승마 여행을 시작하세요.","내 주소 확인하기","Hype 계정을 만든 적이 없나요? 이 메일은 무시하셔도 돼요.","곧 안장 위에서 만나요 — Hype 팀"],
+"fa": ["HYPE — به زین خوش آمدی 🐴","نشانی‌ات را تأیید کن تا حسابت باز شود.","به Hype خوش آمدی!","اسبت از همین حالا بی‌تابانه سم بر زمین می‌کوبد.","نشانی ایمیلت را تأیید کن تا حسابت باز شود و سفر سوارکاری‌ات را آغاز کنی.","تأیید نشانی‌ام","حساب Hype نساخته‌ای؟ کافی است این پیام را نادیده بگیری.","به‌زودی روی زین می‌بینمت — تیم Hype"],
 }
-LIEN_TXT = {"fr":"Le bouton ne marche pas ? Copie ce lien :","en":"Button not working? Copy this link:","es":"¿El botón no funciona? Copia este enlace:","it":"Il pulsante non funziona? Copia questo link:","de":"Der Button funktioniert nicht? Kopiere diesen Link:","ja":"ボタンが使えない場合は、このリンクをコピーしてね：","ar":"الزر لا يعمل؟ انسخي هذا الرابط:","zh":"按钮无法使用？复制此链接：","nl":"Werkt de knop niet? Kopieer deze link:","pt":"O botão não funciona? Copie este link:","sv":"Fungerar inte knappen? Kopiera den här länken:","ru":"Кнопка не работает? Скопируй эту ссылку:","pl":"Przycisk nie działa? Skopiuj ten link:","ko":"버튼이 작동하지 않나요? 이 링크를 복사하세요:"}
+LIEN_TXT = {"fr":"Le bouton ne marche pas ? Copie ce lien :","en":"Button not working? Copy this link:","es":"¿El botón no funciona? Copia este enlace:","it":"Il pulsante non funziona? Copia questo link:","de":"Der Button funktioniert nicht? Kopiere diesen Link:","ja":"ボタンが使えない場合は、このリンクをコピーしてね：","ar":"الزر لا يعمل؟ انسخي هذا الرابط:","zh":"按钮无法使用？复制此链接：","nl":"Werkt de knop niet? Kopieer deze link:","pt":"O botão não funciona? Copie este link:","sv":"Fungerar inte knappen? Kopiera den här länken:","ru":"Кнопка не работает? Скопируй эту ссылку:","pl":"Przycisk nie działa? Skopiuj ten link:","ko":"버튼이 작동하지 않나요? 이 링크를 복사하세요:","fa":"دکمه کار نمی‌کند؟ این پیوند را کپی کن:"}
 for d in (RESET, CONF):
     assert sorted(d) == sorted(LANGUES)
     for k, v in d.items(): assert len(v) == 8, k
@@ -93,7 +95,7 @@ for _lg, _t in _ns["T"].items():
 assert sorted(FONCTIONS) == sorted(LANGUES)
 def bloc_fonctions_modele(serif, sans):
     """Modèle Supabase : un bloc par langue, choisi par $l (français par défaut)."""
-    def b(l): return bloc_fonctions(l, "right" if l == "ar" else "left", "rtl" if l == "ar" else "ltr", serif, sans)
+    def b(l): return bloc_fonctions(l, "right" if l in ("ar", "fa") else "left", "rtl" if l in ("ar", "fa") else "ltr", serif, sans)
     autres = [l for l in LANGUES if l != "fr"]
     return "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + b(l) for n, l in enumerate(autres)]) + "{{ else }}" + b("fr") + "{{ end }}"
 def bloc_fonctions(lg, alignv, dirv, serif, sans):
@@ -120,15 +122,15 @@ def corps(textes, champ, lg=None):
         T = lambda cle: choix(textes, cle)
         TL = choix(LIEN_TXT, None) if False else ""
         lien_txt = "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + e(LIEN_TXT[l]) for n, l in enumerate([x for x in LANGUES if x != "fr"])]) + "{{ else }}" + e(LIEN_TXT["fr"]) + "{{ end }}"
-        dirv = '{{ if eq $l "ar" }}rtl{{ else }}ltr{{ end }}'
-        alignv = '{{ if eq $l "ar" }}right{{ else }}left{{ end }}'
+        dirv = '{{ if eq $l "ar" "fa" }}rtl{{ else }}ltr{{ end }}'
+        alignv = '{{ if eq $l "ar" "fa" }}right{{ else }}left{{ end }}'
         langv = "{{ $l }}"
         tete = '{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}'
         url = "{{ .ConfirmationURL }}"
-        fleche = '{{ if eq $l "ar" }}&#8592;{{ else }}&#8594;{{ end }}'
+        fleche = '{{ if eq $l "ar" "fa" }}&#8592;{{ else }}&#8594;{{ end }}'
     else:
         T = lambda cle: e(textes[lg][I[cle]])
-        lien_txt = e(LIEN_TXT[lg]); dirv = "rtl" if lg == "ar" else "ltr"; alignv = "right" if lg == "ar" else "left"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg == "ar" else "&#8594;"
+        lien_txt = e(LIEN_TXT[lg]); dirv = "rtl" if lg in ("ar", "fa") else "ltr"; alignv = "right" if lg in ("ar", "fa") else "left"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg in ("ar", "fa") else "&#8594;"
     serif = "'Cormorant Garamond',Georgia,'Times New Roman',serif"
     sans = "'Montserrat',Helvetica,Arial,sans-serif"
     nom = champ
@@ -184,6 +186,7 @@ RESET_A = {
 "ru": ["ПРИЛОЖЕНИЕ ДЛЯ ВСАДНИКОВ","Не помнишь","свой пароль?","Ничего страшного! Нажми на кнопку, чтобы создать новый пароль и вернуться в свой Hype.","Сбросить пароль","Ты ничего не запрашивал(а)? Просто проигнорируй это письмо: пароль не изменится.","Жду тебя с нетерпением в конюшне! 🥕"],
 "pl": ["APLIKACJA DLA JEŹDŹCÓW","Nie pamiętasz","hasła?","Nic się nie stało! Dotknij przycisku, aby utworzyć nowe hasło i wrócić do swojego Hype.","Zresetuj hasło","To nie ty? Zignoruj tę wiadomość: twoje hasło się nie zmieni.","Czekam na ciebie niecierpliwie w stajni! 🥕"],
 "ko": ["라이더를 위한 앱","비밀번호를","잊어버렸나요?","괜찮아요! 버튼을 눌러 새 비밀번호를 만들고 Hype로 돌아오세요.","비밀번호 재설정","요청한 적이 없나요? 이 메일은 무시하세요. 비밀번호는 바뀌지 않아요.","마구간에서 애타게 기다리고 있을게요! 🥕"],
+"fa": ["اپلیکیشن سوارکاران","رمز عبورت را","فراموش کرده‌ای؟","اشکالی ندارد! دکمه را لمس کن تا رمز عبور تازه‌ای بسازی و به فضای Hype خودت برگردی.","بازنشانی رمز عبورم","چیزی درخواست نکرده‌ای؟ این ایمیل را نادیده بگیر، رمز عبورت تغییر نمی‌کند.","بی‌صبرانه در اصطبل منتظرت هستم! 🥕"],
 }
 assert sorted(RESET_A) == sorted(LANGUES)
 for k, v in RESET_A.items(): assert len(v) == 7, k
@@ -196,12 +199,12 @@ def corps_A(lg=None):
             return s + "{{ else }}" + e(RESET_A["fr"][IA[cle]]) + "{{ end }}"
         pre = choix(RESET, "pre")
         lien_txt = "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + e(LIEN_TXT[l]) for n, l in enumerate([x for x in LANGUES if x != "fr"])]) + "{{ else }}" + e(LIEN_TXT["fr"]) + "{{ end }}"
-        dirv = '{{ if eq $l "ar" }}rtl{{ else }}ltr{{ end }}'; langv = "{{ $l }}"
+        dirv = '{{ if eq $l "ar" "fa" }}rtl{{ else }}ltr{{ end }}'; langv = "{{ $l }}"
         tete = '{{ $l := "fr" }}{{ with .Data }}{{ with .langue }}{{ $l = . }}{{ end }}{{ end }}'
-        url = "{{ .ConfirmationURL }}"; fleche = '{{ if eq $l "ar" }}&#8592;{{ else }}&#8594;{{ end }}'
+        url = "{{ .ConfirmationURL }}"; fleche = '{{ if eq $l "ar" "fa" }}&#8592;{{ else }}&#8594;{{ end }}'
     else:
         T = lambda cle: e(RESET_A[lg][IA[cle]]); pre = e(RESET[lg][I["pre"]]); lien_txt = e(LIEN_TXT[lg])
-        dirv = "rtl" if lg == "ar" else "ltr"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg == "ar" else "&#8594;"
+        dirv = "rtl" if lg in ("ar", "fa") else "ltr"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg in ("ar", "fa") else "&#8594;"
     c = "#5CC8EA"
     serif = "Georgia,'Times New Roman',serif"
     sans = "-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif"
@@ -237,8 +240,8 @@ for nom, textes in (("reinitialisation", RESET), ("confirmation", CONF)):
     for lg in LANGUES:
         open(os.path.join(OUT, "apercus", f"{nom}-{lg}.html"), "w", encoding="utf-8").write(gen(lg))
 open(os.path.join(OUT, "objets.txt"), "w", encoding="utf-8").write(
-"OBJET « Reset Password » (mot de passe oublié) — version 14 langues :\n" + objet_modele(RESET, "reinitialisation") +
+"OBJET « Reset Password » (mot de passe oublié) — version 15 langues :\n" + objet_modele(RESET, "reinitialisation") +
 "\n\nOBJET « Reset Password » — version de secours (si Supabase n'accepte pas les conditions dans l'objet) :\n" + RESET["fr"][0] +
-"\n\nOBJET « Confirm signup » (confirmation d'inscription) — version 14 langues :\n" + objet_modele(CONF, "confirmation") +
+"\n\nOBJET « Confirm signup » (confirmation d'inscription) — version 15 langues :\n" + objet_modele(CONF, "confirmation") +
 "\n\nOBJET « Confirm signup » — version de secours :\n" + CONF["fr"][0] + "\n")
 print("ok")
