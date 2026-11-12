@@ -69,16 +69,27 @@ FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
  ("💬", "Hey Baby", "Ton coach virtuel pour toutes tes questions, même à partir d’une photo.", "https://2hype.fr/fr/ia-equestre/"),
  ("🌍", "Horse Lingo", "Le vocabulaire équestre dans plusieurs langues.", "https://horselingo.fr"),
  ("🏇", "La vie de l’écurie", "Stages, concours, inscriptions et infos pratiques.", "https://2hype.fr/#monecurie"),
-], "J’ai hâte de te voir aux écuries !"]}
+], "J’ai hâte de te voir aux écuries !", "Et pour les professionnels", [
+ ("📒", "Registre d’élevage", "Chevaux présents, entrées, sorties, soins et ordonnances. Les déplacements en concours s’y ajoutent tout seuls grâce aux engagements. Prêt à imprimer pour un contrôle.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("📸", "Résultats en une capture", "Une seule capture d’écran suffit pour entrer les numéros et les résultats de tes cavaliers.", "https://2hype.fr/fr/concours-resultats/"),
+ ("💉", "Rappels pour toute l’écurie", "Vaccins, vermifuges, maréchal, dentiste… Hype te rappelle chaque échéance à temps.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("👥", "Personnel et obligations", "Registre unique du personnel, planning des tâches et obligations légales rappelées avant l’échéance.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("📄", "Pensions, contrats et compta", "Les paiements à encaisser, les contrats à renouveler, et ta compta préparée pour ton comptable.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+]]}
 def bloc_fonctions(lg, alignv, dirv, serif, sans):
     F = FONCTIONS.get(lg or "fr", FONCTIONS["fr"])
-    lignes = "".join(f'''<tr><td style="padding:12px 0;border-top:1px solid #1C2A2C;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}"><tr>
+    def liste(items): return "".join(f'''<tr><td style="padding:12px 0;border-top:1px solid #1C2A2C;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}"><tr>
 <td width="40" valign="top" style="font-size:22px;line-height:1.2;">{ico}</td>
 <td valign="top" style="text-align:{alignv};"><a href="{url}" style="font-family:{sans};font-size:15px;font-weight:600;color:#F3EEE4;text-decoration:none;">{e(t)} <span style="color:#C9A66B;">&#8250;</span></a><div style="padding:3px 0 0;font-family:{sans};font-size:13.5px;line-height:1.5;color:#A7AFA9;">{e(d)}</div></td>
-</tr></table></td></tr>''' for ico, t, d, url in F[1])
+</tr></table></td></tr>''' for ico, t, d, url in items)
+    lignes = liste(F[1])
+    pro = f'''<tr><td style="padding:30px 0 12px;text-align:{alignv};font-family:{serif};font-style:italic;font-size:22px;color:#C9A66B;">{e(F[3])}</td></tr>
+{liste(F[4])}''' if len(F) > 4 else ""
     return f'''<tr><td style="padding:34px 32px 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}">
 <tr><td style="padding:0 0 12px;text-align:{alignv};font-family:{serif};font-style:italic;font-size:22px;color:#C9A66B;">{e(F[0])}</td></tr>
 {lignes}
+<tr><td style="border-top:1px solid #1C2A2C;font-size:0;line-height:0;">&nbsp;</td></tr>
+{pro}
 <tr><td style="border-top:1px solid #1C2A2C;font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
 <tr><td align="center" style="padding:30px 0 0;"><img src="{IMG_HYPO}" width="130" height="130" alt="🐴" style="display:block;width:130px;height:130px;border:0;border-radius:22px;font-size:40px;line-height:130px;color:#C9A66B;text-align:center;"></td></tr>
 <tr><td align="center" style="padding:8px 0 0;font-family:{serif};font-style:italic;font-size:26px;color:#F3EEE4;">Hypo <span style="color:#C9A66B;">&#9825;</span></td></tr>
