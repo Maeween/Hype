@@ -23,7 +23,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rid några steg i skritt och tänk bara på dina axlar: låt dem sjunka naturligt. Känn sedan efter om fingrarna kan vara mjuka utan att överkroppen tippar.",
 "ru": "Пройди несколько темпов шагом, думая только о плечах: дай им свободно опуститься. Затем проверь, могут ли пальцы оставаться мягкими так, чтобы корпус не заваливался вперёд.",
 "pl": "Zrób kilka kroków stępem, myśląc tylko o ramionach: pozwól im naturalnie opaść. Potem sprawdź, czy palce mogą pozostać miękkie, a tułów nie przechyla się do przodu.",
-"ko": "평보로 몇 걸음 가면서 어깨만 생각해 봐요. 어깨를 자연스럽게 내려놓아요. 그다음 상체가 기울지 않은 채 손가락을 부드럽게 유지할 수 있는지 확인해 봐요.", fa: "Ride a few steps at walk while thinking only about your shoulders: let them drop naturally. Then check whether your fingers can stay soft without your body tipping forward."
+"ko": "평보로 몇 걸음 가면서 어깨만 생각해 봐요. 어깨를 자연스럽게 내려놓아요. 그다음 상체가 기울지 않은 채 손가락을 부드럽게 유지할 수 있는지 확인해 봐요.", fa: "چند گام در قدم برو و فقط به شانه‌هایت فکر کن: بگذار طبیعی پایین بیفتند. سپس بررسی کن که آیا انگشتانت می‌توانند نرم بمانند بی‌آنکه بالاتنه‌ات کج شود."
 },
 "defi": {
 "titre": {
@@ -40,7 +40,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Fria armbågar",
 "ru": "Свободные локти",
 "pl": "Swobodne łokcie",
-"ko": "자유로운 팔꿈치", fa: "Available elbows"
+"ko": "자유로운 팔꿈치", fa: "آرنج‌های آزاد"
 },
 "accroche": {
 "fr": "Au pas, observe ton contact sans chercher à changer la tête du cheval.",
@@ -56,7 +56,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Iaktta din kontakt i skritt utan att försöka ändra hästens huvud.",
 "ru": "На шагу понаблюдай за своим контактом, не пытаясь изменить положение головы лошади.",
 "pl": "W stępie obserwuj swój kontakt, nie próbując zmieniać ustawienia głowy konia.",
-"ko": "평보에서 말의 머리 위치를 바꾸려 하지 말고 내 컨택을 관찰해 봐요.", fa: "At walk, observe your contact without trying to change the horse’s head position."
+"ko": "평보에서 말의 머리 위치를 바꾸려 하지 말고 내 컨택을 관찰해 봐요.", fa: "در قدم، تماست را مشاهده کن، بدون اینکه بخواهی وضعیت سر اسب را تغییر دهی."
 },
 "points": [
 {
@@ -73,7 +73,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är tygelspänningen jämn?",
 "ru": "Натяжение повода остаётся равномерным?",
 "pl": "Czy napięcie wodzy pozostaje równe?",
-"ko": "고삐의 텐션이 일정하게 유지되나요?", fa: "Is the rein tension even?"
+"ko": "고삐의 텐션이 일정하게 유지되나요?", fa: "آیا کشش عنان‌ها یکنواخت می‌ماند؟"
 },
 {
 "fr": "Mes coudes suivent-ils l’encolure ?",
@@ -89,7 +89,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Följer mina armbågar halsen?",
 "ru": "Следуют ли мои локти за шеей?",
 "pl": "Czy moje łokcie podążają za szyją?",
-"ko": "내 팔꿈치가 목의 움직임을 따라가나요?", fa: "Do my elbows follow the neck?"
+"ko": "내 팔꿈치가 목의 움직임을 따라가나요?", fa: "آیا آرنج‌هایم گردن را دنبال می‌کنند؟"
 },
 {
 "fr": "Puis-je céder sans perdre ma stabilité ?",
@@ -105,7 +105,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kan jag ge efter utan att tappa stabiliteten?",
 "ru": "Могу ли я уступить, не теряя устойчивости?",
 "pl": "Czy mogę oddać, nie tracąc stabilności?",
-"ko": "안정감을 잃지 않고 고삐를 양보할 수 있나요?", fa: "Can I soften without losing my balance?"
+"ko": "안정감을 잃지 않고 고삐를 양보할 수 있나요?", fa: "آیا می‌توانم بدون از دست دادن ثباتم دست را آزاد کنم؟"
 }
 ]
 },
@@ -124,7 +124,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kontakten är kommunikation, inte ett stöd att hålla sig i.",
 "ru": "Контакт — это общение, а не опора, чтобы держаться.",
 "pl": "Kontakt to komunikacja, a nie podparcie, żeby się utrzymać.",
-"ko": "컨택은 소통이지, 몸을 지탱하는 버팀목이 아니에요.", fa: "Contact is communication, not something to balance on."
+"ko": "컨택은 소통이지, 몸을 지탱하는 버팀목이 아니에요.", fa: "تماس یک گفت‌وگوست، نه تکیه‌گاهی برای نگه داشتن خودت."
 },
 {
 "fr": "La main accompagne le mouvement de l’encolure.",
@@ -140,7 +140,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Handen följer halsens rörelse.",
 "ru": "Рука сопровождает движение шеи.",
 "pl": "Ręka podąża za ruchem szyi.",
-"ko": "손은 목의 움직임을 따라가요.", fa: "Your hands follow the neck’s movement."
+"ko": "손은 목의 움직임을 따라가요.", fa: "دست حرکت گردن را همراهی می‌کند."
 },
 {
 "fr": "Une tension régulière vaut mieux qu’une traction.",
@@ -156,7 +156,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En jämn spänning är bättre än att dra.",
 "ru": "Равномерное натяжение лучше, чем тяга.",
 "pl": "Równe napięcie jest lepsze niż ciągnięcie.",
-"ko": "당기는 것보다 일정한 텐션이 더 좋아요.", fa: "Consistent tension is better than pulling."
+"ko": "당기는 것보다 일정한 텐션이 더 좋아요.", fa: "کشش منظم بهتر از کشیدن است."
 },
 {
 "fr": "Le cheval doit pouvoir avancer vers le contact.",
@@ -172,7 +172,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hästen ska kunna gå fram mot kontakten.",
 "ru": "Лошадь должна иметь возможность идти вперёд к контакту.",
 "pl": "Koń musi móc iść do przodu, do kontaktu.",
-"ko": "말이 컨택을 향해 앞으로 나아갈 수 있어야 해요.", fa: "The horse must be able to seek the contact."
+"ko": "말이 컨택을 향해 앞으로 나아갈 수 있어야 해요.", fa: "اسب باید بتواند به سوی تماس جلو برود."
 },
 {
 "fr": "La réponse juste se reconnaît à la décontraction.",
@@ -188,7 +188,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rätt svar känns igen på avspänningen.",
 "ru": "Правильный ответ узнаётся по расслабленности.",
 "pl": "Właściwą odpowiedź poznasz po rozluźnieniu.",
-"ko": "올바른 반응은 이완된 모습으로 알 수 있어요.", fa: "A good response includes relaxation."
+"ko": "올바른 반응은 이완된 모습으로 알 수 있어요.", fa: "پاسخ درست را از رهایی و آرامش بدن می‌شناسیم."
 }
 ],
 "hb": [
@@ -206,7 +206,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför öppnar min häst munnen när jag tar upp tyglarna?",
 "ru": "Почему моя лошадь открывает рот, когда я набираю повод?",
 "pl": "Dlaczego mój koń otwiera pysk, gdy nabieram wodze?",
-"ko": "고삐를 잡으면 왜 말이 입을 벌릴까요?", fa: "Why does my horse open its mouth when I take the reins?"
+"ko": "고삐를 잡으면 왜 말이 입을 벌릴까요?", fa: "چرا اسبم وقتی عنان را می‌گیرم دهانش را باز می‌کند؟"
 },
 {
 "fr": "Comment distinguer un contact stable d’un contact figé ?",
@@ -222,7 +222,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur skiljer jag en stadig kontakt från en stel kontakt?",
 "ru": "Как отличить стабильный контакт от застывшего?",
 "pl": "Jak odróżnić stabilny kontakt od sztywnego?",
-"ko": "안정된 컨택과 굳은 컨택은 어떻게 구별해요?", fa: "How can I tell steady contact from rigid contact?"
+"ko": "안정된 컨택과 굳은 컨택은 어떻게 구별해요?", fa: "چگونه تماس پایدار را از تماس خشک‌شده تشخیص دهیم؟"
 },
 {
 "fr": "Pourquoi mes rênes se détendent-elles à chaque foulée ?",
@@ -238,7 +238,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför slaknar mina tyglar i varje steg?",
 "ru": "Почему мой повод провисает на каждом темпе?",
 "pl": "Dlaczego moje wodze luzują się w każdym kroku?",
-"ko": "왜 보폭마다 고삐가 느슨해질까요?", fa: "Why do my reins go slack on every stride?"
+"ko": "왜 보폭마다 고삐가 느슨해질까요?", fa: "چرا عنان‌هایم در هر گام شل می‌شوند؟"
 },
 {
 "fr": "Comment vérifier que je ne m’accroche pas aux rênes ?",
@@ -254,7 +254,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur kollar jag att jag inte hänger i tyglarna?",
 "ru": "Как проверить, что я не держусь за повод?",
 "pl": "Jak sprawdzić, czy nie trzymam się wodzy?",
-"ko": "고삐에 매달리고 있지 않은지 어떻게 확인해요?", fa: "How can I check that I am not holding on to the reins?"
+"ko": "고삐에 매달리고 있지 않은지 어떻게 확인해요?", fa: "چگونه بررسی کنم که به عنان‌ها آویزان نمی‌شوم؟"
 },
 {
 "fr": "Que faire si mon cheval s’appuie brusquement sur ma main ?",
@@ -270,7 +270,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör jag om min häst plötsligt lägger sig i handen?",
 "ru": "Что делать, если лошадь резко наваливается на руку?",
 "pl": "Co zrobić, jeśli koń nagle opiera się na mojej ręce?",
-"ko": "말이 갑자기 손에 기대 오면 어떻게 해요?", fa: "What should I do if my horse suddenly leans on my hand?"
+"ko": "말이 갑자기 손에 기대 오면 어떻게 해요?", fa: "اگر اسبم ناگهان روی دستم تکیه کند چه کار کنم؟"
 }
 ],
 "fin": {
@@ -287,7 +287,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En exakt hand börjar med en fri armbåge.",
 "ru": "Точность руки начинается со свободы локтя.",
 "pl": "Precyzja ręki zaczyna się od swobody łokcia.",
-"ko": "정확한 손은 자유로운 팔꿈치에서 시작돼요.", fa: "Precise hands begin with free elbows."
+"ko": "정확한 손은 자유로운 팔꿈치에서 시작돼요.", fa: "دقت دست از آزادی آرنج شروع می‌شود."
 }
 },
 "g4-aides": {
@@ -305,7 +305,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Gå före förfrågan igenom din blick, din överkropp och dina ben i tankarna. Om hästen tvekar, förenkla en enda signal i stället för att lägga till tre.",
 "ru": "Перед командой мысленно проверь свой взгляд, корпус и ноги. Если лошадь сомневается, упрости один сигнал вместо того, чтобы добавлять ещё три.",
 "pl": "Przed sygnałem sprawdź w myślach swój wzrok, tułów i łydki. Jeśli koń się waha, uprość jeden sygnał zamiast dodawać trzy kolejne.",
-"ko": "요구하기 전에 시선, 상체, 다리를 머릿속으로 점검해 봐요. 말이 망설이면 신호를 세 개 더하지 말고 하나를 단순하게 해요.", fa: "Before asking, mentally check your gaze, body and legs. If the horse hesitates, simplify one signal instead of adding three more."
+"ko": "요구하기 전에 시선, 상체, 다리를 머릿속으로 점검해 봐요. 말이 망설이면 신호를 세 개 더하지 말고 하나를 단순하게 해요.", fa: "پیش از درخواست، در ذهنت نگاه، بالاتنه و پاهایت را مرور کن. اگر اسب مردد است، به جای افزودن سه علامت، فقط یک علامت را ساده‌تر کن."
 },
 "defi": {
 "titre": {
@@ -322,7 +322,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En tydlig avsikt",
 "ru": "Одно ясное намерение",
 "pl": "Jeden jasny zamiar",
-"ko": "분명한 의도", fa: "One clear intention"
+"ko": "분명한 의도", fa: "یک نیت روشن"
 },
 "accroche": {
 "fr": "Choisis une demande facile et vérifie que tes aides vont toutes dans le même sens.",
@@ -338,7 +338,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Välj en enkel förfrågan och kontrollera att alla dina hjälper verkar åt samma håll.",
 "ru": "Выбери лёгкое задание и проверь, что все твои средства управления действуют в одном направлении.",
 "pl": "Wybierz łatwe zadanie i sprawdź, czy wszystkie twoje pomoce działają w tym samym kierunku.",
-"ko": "쉬운 요구 하나를 골라서 부조가 모두 같은 방향을 향하는지 확인해 봐요.", fa: "Choose an easy request and check that all your aids convey the same message."
+"ko": "쉬운 요구 하나를 골라서 부조가 모두 같은 방향을 향하는지 확인해 봐요.", fa: "یک درخواست آسان انتخاب کن و بررسی کن که همهٔ فرمان‌هایت در یک جهت باشند."
 },
 "points": [
 {
@@ -355,7 +355,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Förberedde jag innan jag frågade?",
 "ru": "Была ли подготовка перед командой?",
 "pl": "Czy było przygotowanie przed sygnałem?",
-"ko": "요구하기 전에 준비했나요?", fa: "Did I prepare before asking?"
+"ko": "요구하기 전에 준비했나요?", fa: "آیا پیش از درخواست آماده کردم؟"
 },
 {
 "fr": "Mes mains laissent-elles agir mes jambes ?",
@@ -371,7 +371,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Låter mina händer benen verka?",
 "ru": "Дают ли мои руки работать ногам?",
 "pl": "Czy moje ręce pozwalają działać łydkom?",
-"ko": "내 손이 다리가 작용하도록 허용하나요?", fa: "Do my hands allow my legs to work?"
+"ko": "내 손이 다리가 작용하도록 허용하나요?", fa: "آیا دست‌هایم اجازه می‌دهند پاهایم اثر کنند؟"
 },
 {
 "fr": "Ai-je cessé d’agir à la bonne réponse ?",
@@ -387,7 +387,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Slutade jag verka vid rätt svar?",
 "ru": "Прекратилось ли воздействие при правильном ответе?",
 "pl": "Czy pomoce ustały przy dobrej odpowiedzi?",
-"ko": "올바른 반응이 나왔을 때 부조를 멈췄나요?", fa: "Did I stop asking when the horse responded?"
+"ko": "올바른 반응이 나왔을 때 부조를 멈췄나요?", fa: "آیا با پاسخ درست، از عمل کردن دست کشیدم؟"
 }
 ]
 },
@@ -406,7 +406,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varje förfrågan ska vara begriplig.",
 "ru": "Каждая команда должна оставаться понятной.",
 "pl": "Każdy sygnał musi być zrozumiały.",
-"ko": "모든 요구는 이해할 수 있어야 해요.", fa: "Every request must be understandable."
+"ko": "모든 요구는 이해할 수 있어야 해요.", fa: "هر درخواست باید قابل‌فهم بماند."
 },
 {
 "fr": "Une aide principale donne le signal.",
@@ -422,7 +422,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En huvudhjälp ger signalen.",
 "ru": "Сигнал подаёт одно основное средство управления.",
 "pl": "Jedna główna pomoc daje sygnał.",
-"ko": "주된 부조 하나가 신호를 줘요.", fa: "One main aid gives the signal."
+"ko": "주된 부조 하나가 신호를 줘요.", fa: "یک کمک اصلی علامت می‌دهد."
 },
 {
 "fr": "Les autres aides accompagnent sans contredire.",
@@ -438,7 +438,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "De andra hjälperna stöttar utan att motverka.",
 "ru": "Остальные средства сопровождают, не противореча.",
 "pl": "Pozostałe pomoce wspierają, nie przecząc mu.",
-"ko": "다른 부조들은 모순 없이 함께해요.", fa: "The other aids support it without contradiction."
+"ko": "다른 부조들은 모순 없이 함께해요.", fa: "کمک‌های دیگر همراهی می‌کنند بی‌آنکه تناقض ایجاد کنند."
 },
 {
 "fr": "Une préparation calme favorise la réponse.",
@@ -454,7 +454,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En lugn förberedelse främjar svaret.",
 "ru": "Спокойная подготовка облегчает ответ.",
 "pl": "Spokojne przygotowanie ułatwia odpowiedź.",
-"ko": "차분한 준비가 반응을 이끌어요.", fa: "Calm preparation helps the response."
+"ko": "차분한 준비가 반응을 이끌어요.", fa: "آماده‌سازی آرام به پاسخ کمک می‌کند."
 },
 {
 "fr": "La pression cesse dès que le cheval comprend.",
@@ -470,7 +470,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Trycket upphör så fort hästen förstår.",
 "ru": "Давление прекращается, как только лошадь понимает.",
 "pl": "Nacisk ustaje, gdy tylko koń zrozumie.",
-"ko": "말이 이해하면 바로 압박을 멈춰요.", fa: "Pressure ends when the horse understands."
+"ko": "말이 이해하면 바로 압박을 멈춰요.", fa: "فشار به محض اینکه اسب بفهمد قطع می‌شود."
 }
 ],
 "hb": [
@@ -488,7 +488,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför verkar mina ben och händer säga emot varandra?",
 "ru": "Почему мои ноги и руки как будто противоречат друг другу?",
 "pl": "Dlaczego moje łydki i ręce zdają się sobie przeczyć?",
-"ko": "왜 다리와 손이 서로 모순되는 것 같을까요?", fa: "Why do my legs and hands seem to contradict each other?"
+"ko": "왜 다리와 손이 서로 모순되는 것 같을까요?", fa: "چرا پاها و دست‌هایم انگار با هم تناقض دارند؟"
 },
 {
 "fr": "Quelle aide dois-je privilégier pour cette demande ?",
@@ -504,7 +504,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilken hjälp ska jag prioritera för den här förfrågan?",
 "ru": "Какому средству управления отдать приоритет в этой команде?",
 "pl": "Która pomoc powinna prowadzić to zadanie?",
-"ko": "이 요구에는 어떤 부조를 우선해야 해요?", fa: "Which aid should lead this request?"
+"ko": "이 요구에는 어떤 부조를 우선해야 해요?", fa: "برای این درخواست کدام کمک را باید در اولویت بگذارم؟"
 },
 {
 "fr": "Comment reconnaître une réponse discrète ?",
@@ -520,7 +520,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känner jag igen ett diskret svar?",
 "ru": "Как распознать едва заметный ответ?",
 "pl": "Jak rozpoznać subtelną odpowiedź?",
-"ko": "작은 반응은 어떻게 알아봐요?", fa: "How can I recognise a subtle response?"
+"ko": "작은 반응은 어떻게 알아봐요?", fa: "پاسخی ظریف را چگونه تشخیص دهیم؟"
 },
 {
 "fr": "Que faire si mon cheval hésite ?",
@@ -536,7 +536,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör jag om min häst tvekar?",
 "ru": "Что делать, если лошадь сомневается?",
 "pl": "Co zrobić, jeśli mój koń się waha?",
-"ko": "말이 망설이면 어떻게 해요?", fa: "What if my horse hesitates?"
+"ko": "말이 망설이면 어떻게 해요?", fa: "اگر اسبم مردد باشد چه کنم؟"
 },
 {
 "fr": "Comment rendre mes aides moins fortes ?",
@@ -552,7 +552,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur gör jag mina hjälper mindre kraftiga?",
 "ru": "Как сделать мои средства управления мягче?",
 "pl": "Jak sprawić, by moje pomoce były delikatniejsze?",
-"ko": "부조를 더 가볍게 하려면 어떻게 해요?", fa: "How can I make my aids lighter?"
+"ko": "부조를 더 가볍게 하려면 어떻게 해요?", fa: "چطور کمک‌هایم را ملایم‌تر کنم؟"
 }
 ],
 "fin": {
@@ -569,7 +569,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En tydlig förfrågan är bättre än flera envisa.",
 "ru": "Одна ясная команда лучше нескольких настойчивых.",
 "pl": "Jeden jasny sygnał jest lepszy niż kilka natarczywych.",
-"ko": "여러 번 고집하는 요구보다 분명한 요구 하나가 나아요.", fa: "One clear request beats several insistent ones."
+"ko": "여러 번 고집하는 요구보다 분명한 요구 하나가 나아요.", fa: "یک درخواست روشن بهتر از چند درخواست پافشارانه است."
 }
 },
 "g4-transitions": {
@@ -587,7 +587,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Fäst blicken på punkten där du vill få den nya gångarten. När övergången har lyckats, bedöm först de två följande stegen innan du börjar om.",
 "ru": "Смотри на точку, где хочешь получить новый аллюр. После удачного перехода сначала оцени два следующих темпа, а потом повторяй.",
 "pl": "Patrz na punkt, w którym chcesz uzyskać nowy chód. Po udanym przejściu najpierw oceń dwa kolejne kroki, zanim powtórzysz.",
-"ko": "새 보법으로 바꾸고 싶은 지점에 시선을 고정해요. 전환이 성공하면 다시 하기 전에 먼저 다음 두 보폭을 평가해 봐요.", fa: "Look towards the point where you want the new gait. Once the transition succeeds, judge the next two strides before repeating."
+"ko": "새 보법으로 바꾸고 싶은 지점에 시선을 고정해요. 전환이 성공하면 다시 하기 전에 먼저 다음 두 보폭을 평가해 봐요.", fa: "نگاهت را روی نقطه‌ای که می‌خواهی راه‌رفتن تازه را در آن بگیری ثابت کن. وقتی گذار موفق شد، پیش از تکرار، اول دو گام بعدی را بسنج."
 },
 "defi": {
 "titre": {
@@ -604,7 +604,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En förberedd övergång",
 "ru": "Подготовленный переход",
 "pl": "Przygotowane przejście",
-"ko": "준비된 전환", fa: "Prepare the transition"
+"ko": "준비된 전환", fa: "گذاری آماده‌شده"
 },
 "accroche": {
 "fr": "Avec ton enseignant, réalise une transition à un repère précis sans attendre le dernier moment.",
@@ -620,7 +620,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Gör tillsammans med din ridlärare en övergång vid en bestämd punkt utan att vänta till sista stund.",
 "ru": "Вместе с тренером выполни переход у точного ориентира, не дожидаясь последнего момента.",
 "pl": "Z instruktorem wykonaj przejście przy dokładnym punkcie, nie czekając do ostatniej chwili.",
-"ko": "선생님과 함께, 마지막 순간까지 기다리지 말고 정확한 표지에서 전환해 봐요.", fa: "With your instructor, make a transition at a precise marker without leaving the request until the last moment."
+"ko": "선생님과 함께, 마지막 순간까지 기다리지 말고 정확한 표지에서 전환해 봐요.", fa: "همراه مربی‌ات، یک گذار را در یک نشانهٔ دقیق انجام بده، بی‌آنکه تا آخرین لحظه صبر کنی."
 },
 "points": [
 {
@@ -637,7 +637,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Förberedde jag mig i tid inför punkten?",
 "ru": "Удалось ли заранее подготовиться к ориентиру?",
 "pl": "Czy punkt był przewidziany z wyprzedzeniem?",
-"ko": "표지를 미리 예상했나요?", fa: "Did I anticipate the marker?"
+"ko": "표지를 미리 예상했나요?", fa: "آیا نشانه را از پیش دیدم؟"
 },
 {
 "fr": "Mon bassin accompagne-t-il le changement ?",
@@ -653,7 +653,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Följer mitt bäcken med i förändringen?",
 "ru": "Сопровождает ли мой таз изменение?",
 "pl": "Czy moja miednica podąża za zmianą?",
-"ko": "골반이 변화를 따라가나요?", fa: "Did my seat follow the change?"
+"ko": "골반이 변화를 따라가나요?", fa: "آیا لگنم همراه تغییر می‌شود؟"
 },
 {
 "fr": "Le nouveau rythme est-il stable ?",
@@ -669,7 +669,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är den nya takten stabil?",
 "ru": "Стабилен ли новый ритм?",
 "pl": "Czy nowy rytm jest stabilny?",
-"ko": "새 리듬이 안정적인가요?", fa: "Is the new rhythm steady?"
+"ko": "새 리듬이 안정적인가요?", fa: "آیا ریتم جدید پایدار است؟"
 }
 ]
 },
@@ -688,7 +688,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En övergång börjar före gångartsbytet.",
 "ru": "Переход начинается до смены аллюра.",
 "pl": "Przejście zaczyna się przed zmianą chodu.",
-"ko": "전환은 보법이 바뀌기 전에 시작돼요.", fa: "A transition starts before the gait changes."
+"ko": "전환은 보법이 바뀌기 전에 시작돼요.", fa: "یک گذار پیش از تغییر حرکت آغاز می‌شود."
 },
 {
 "fr": "Le cavalier prépare son équilibre.",
@@ -704,7 +704,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttaren förbereder sin balans.",
 "ru": "Всадник готовит своё равновесие.",
 "pl": "Jeździec przygotowuje swoją równowagę.",
-"ko": "기수는 자신의 균형을 준비해요.", fa: "The rider prepares their balance."
+"ko": "기수는 자신의 균형을 준비해요.", fa: "سوارکار تعادلش را آماده می‌کند."
 },
 {
 "fr": "La demande doit rester lisible.",
@@ -720,7 +720,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Förfrågan ska vara tydlig.",
 "ru": "Команда должна оставаться понятной.",
 "pl": "Sygnał musi pozostać czytelny.",
-"ko": "요구는 알아보기 쉬워야 해요.", fa: "The request must remain clear."
+"ko": "요구는 알아보기 쉬워야 해요.", fa: "درخواست باید خوانا بماند."
 },
 {
 "fr": "Les mains ne remplacent pas l’assiette.",
@@ -736,7 +736,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Händerna ersätter inte sitsen.",
 "ru": "Руки не заменяют посадку.",
 "pl": "Ręce nie zastępują dosiadu.",
-"ko": "손이 시트를 대신하지 않아요.", fa: "Hands do not replace the seat."
+"ko": "손이 시트를 대신하지 않아요.", fa: "دست‌ها جای نشست را نمی‌گیرند."
 },
 {
 "fr": "Une bonne transition se termine dans le calme.",
@@ -752,7 +752,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En bra övergång slutar i lugn.",
 "ru": "Хороший переход заканчивается спокойно.",
 "pl": "Dobre przejście kończy się spokojnie.",
-"ko": "좋은 전환은 차분하게 끝나요.", fa: "A good transition finishes calmly."
+"ko": "좋은 전환은 차분하게 끝나요.", fa: "یک انتقال خوب در آرامش تمام می‌شود."
 }
 ],
 "hb": [
@@ -770,7 +770,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför rusar min häst innan den byter gångart?",
 "ru": "Почему моя лошадь торопится перед сменой аллюра?",
 "pl": "Dlaczego mój koń się spieszy przed zmianą chodu?",
-"ko": "왜 말이 보법을 바꾸기 전에 서두를까요?", fa: "Why does my horse rush before changing gait?"
+"ko": "왜 말이 보법을 바꾸기 전에 서두를까요?", fa: "چرا اسبم پیش از تغییر حرکت شتاب‌زده می‌شود؟"
 },
 {
 "fr": "Comment préparer une transition sans tirer ?",
@@ -786,7 +786,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur förbereder jag en övergång utan att dra?",
 "ru": "Как подготовить переход, не таща за повод?",
 "pl": "Jak przygotować przejście bez ciągnięcia?",
-"ko": "당기지 않고 전환을 준비하려면 어떻게 해요?", fa: "How can I prepare a transition without pulling?"
+"ko": "당기지 않고 전환을 준비하려면 어떻게 해요?", fa: "چگونه یک گذار را بدون کشیدن آماده کنیم؟"
 },
 {
 "fr": "Pourquoi mon cheval lève-t-il la tête pendant la transition ?",
@@ -802,7 +802,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför höjer min häst huvudet under övergången?",
 "ru": "Почему лошадь поднимает голову во время перехода?",
 "pl": "Dlaczego mój koń podnosi głowę podczas przejścia?",
-"ko": "왜 전환할 때 말이 머리를 들까요?", fa: "Why does my horse lift its head during the transition?"
+"ko": "왜 전환할 때 말이 머리를 들까요?", fa: "چرا اسبم هنگام گذار سرش را بالا می‌برد؟"
 },
 {
 "fr": "Comment améliorer l’arrêt après le trot ?",
@@ -818,7 +818,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur förbättrar jag halten efter trav?",
 "ru": "Как улучшить остановку после рыси?",
 "pl": "Jak poprawić zatrzymanie po kłusie?",
-"ko": "속보 후 정지를 어떻게 개선해요?", fa: "How can I improve the halt after trot?"
+"ko": "속보 후 정지를 어떻게 개선해요?", fa: "توقف بعد از یورتمه را چگونه بهتر کنیم؟"
 },
 {
 "fr": "À quel moment dois-je relâcher mes aides ?",
@@ -834,7 +834,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När ska jag släppa efter med hjälperna?",
 "ru": "В какой момент нужно ослабить средства управления?",
 "pl": "W którym momencie mam rozluźnić pomoce?",
-"ko": "언제 부조를 풀어야 해요?", fa: "When should I release my aids?"
+"ko": "언제 부조를 풀어야 해요?", fa: "در چه لحظه‌ای باید کمک‌هایم را رها کنم؟"
 }
 ],
 "fin": {
@@ -851,7 +851,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En övergångs kvalitet syns också i stegen efteråt.",
 "ru": "Качество перехода видно и по следующим темпам.",
 "pl": "Jakość przejścia widać też w kolejnych krokach.",
-"ko": "전환의 질은 뒤따르는 보폭에서도 보여요.", fa: "The quality of a transition also shows in the strides afterwards."
+"ko": "전환의 질은 뒤따르는 보폭에서도 보여요.", fa: "کیفیت یک گذر در گام‌هایی که پس از آن می‌آیند هم پیداست."
 }
 },
 "g4-incurvation": {
@@ -869,7 +869,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Välj en volt som är stor nog så att du inte behöver tvinga fram riktningen. Kontrollera ett helt varv av jämnhet innan du ber om mer ställning.",
 "ru": "Выбери круг достаточно большой, чтобы не приходилось форсировать поворот. Проверь равномерность на целом круге, прежде чем просить больший изгиб.",
 "pl": "Wybierz koło na tyle duże, żeby nie musieć forsować skrętu. Sprawdź równość przez całe koło, zanim poprosisz o większe ustawienie.",
-"ko": "방향을 억지로 틀지 않아도 될 만큼 큰 원을 골라요. 굴곡을 더 요구하기 전에 한 바퀴 내내 규칙적인지 확인해 봐요.", fa: "Choose a circle large enough to avoid forcing the turn. Check that it stays regular for one full lap before asking for more flexion."
+"ko": "방향을 억지로 틀지 않아도 될 만큼 큰 원을 골라요. 굴곡을 더 요구하기 전에 한 바퀴 내내 규칙적인지 확인해 봐요.", fa: "دایره‌ای به اندازهٔ کافی بزرگ انتخاب کن تا مجبور نباشی جهت را به زور بدهی. پیش از درخواست خمش بیشتر، یک دور کامل منظم بودن را بررسی کن."
 },
 "defi": {
 "titre": {
@@ -886,7 +886,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kroppen på bågen",
 "ru": "Корпус по дуге",
 "pl": "Ciało na łuku",
-"ko": "곡선을 따르는 몸", fa: "Follow the curve"
+"ko": "곡선을 따르는 몸", fa: "بدن روی پیچ"
 },
 "accroche": {
 "fr": "Sur un grand cercle, recherche d’abord une trajectoire régulière plutôt qu’un pli spectaculaire.",
@@ -902,7 +902,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sök på en stor volt först ett jämnt spår snarare än en spektakulär ställning.",
 "ru": "На большом круге сначала добивайся ровной траектории, а не эффектного изгиба.",
 "pl": "Na dużym kole szukaj najpierw równej linii, a nie efektownego ustawienia.",
-"ko": "큰 원에서 화려한 굴곡보다 먼저 규칙적인 궤적을 찾아봐요.", fa: "On a large circle, aim for a regular track rather than an exaggerated bend."
+"ko": "큰 원에서 화려한 굴곡보다 먼저 규칙적인 궤적을 찾아봐요.", fa: "روی یک دایرهٔ بزرگ، اول دنبال یک مسیر منظم باش، نه یک خمش نمایشی."
 },
 "points": [
 {
@@ -919,7 +919,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Följer bogarna med i bågen?",
 "ru": "Следуют ли плечи по дуге?",
 "pl": "Czy łopatki podążają po łuku?",
-"ko": "어깨가 곡선을 따라가나요?", fa: "Do the shoulders follow the curve?"
+"ko": "어깨가 곡선을 따라가나요?", fa: "آیا شانه‌ها انحنا را دنبال می‌کنند؟"
 },
 {
 "fr": "Les hanches restent-elles sur le tracé ?",
@@ -935,7 +935,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Stannar bakdelen kvar på spåret?",
 "ru": "Остаётся ли круп на линии?",
 "pl": "Czy zad pozostaje na śladzie?",
-"ko": "후구가 궤적 위에 머무르나요?", fa: "Do the hindquarters stay on the track?"
+"ko": "후구가 궤적 위에 머무르나요?", fa: "آیا کفل روی مسیر می‌ماند؟"
 },
 {
 "fr": "Ma rêne intérieure demeure-t-elle légère ?",
@@ -951,7 +951,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är min innertygel fortfarande lätt?",
 "ru": "Остаётся ли мой внутренний повод лёгким?",
 "pl": "Czy moja wewnętrzna wodza pozostaje lekka?",
-"ko": "안쪽 고삐가 가볍게 유지되나요?", fa: "Does my inside rein remain light?"
+"ko": "안쪽 고삐가 가볍게 유지되나요?", fa: "آیا عنان داخلی‌ام سبک می‌ماند؟"
 }
 ]
 },
@@ -970,7 +970,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Synlig ställning räcker inte som bevis för böjning.",
 "ru": "Видимого сгибания недостаточно, чтобы доказать изгиб.",
 "pl": "Widoczne ustawienie nie wystarcza, by dowieść zgięcia.",
-"ko": "눈에 보이는 휨만으로는 굴곡을 증명할 수 없어요.", fa: "Visible flexion alone does not prove bend."
+"ko": "눈에 보이는 휨만으로는 굴곡을 증명할 수 없어요.", fa: "خم دیدنی گردن برای اثبات خمیدگی کافی نیست."
 },
 {
 "fr": "Le corps doit suivre la courbe.",
@@ -986,7 +986,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kroppen ska följa bågen.",
 "ru": "Корпус должен следовать по дуге.",
 "pl": "Ciało musi podążać po łuku.",
-"ko": "몸이 곡선을 따라가야 해요.", fa: "The body must follow the curve."
+"ko": "몸이 곡선을 따라가야 해요.", fa: "بدن باید منحنی را دنبال کند."
 },
 {
 "fr": "La jambe intérieure entretient l’activité.",
@@ -1002,7 +1002,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Innerskänkeln håller igång aktiviteten.",
 "ru": "Внутренняя нога поддерживает активность.",
 "pl": "Wewnętrzna łydka podtrzymuje aktywność.",
-"ko": "안쪽 다리가 활동성을 유지해요.", fa: "The inside leg maintains activity."
+"ko": "안쪽 다리가 활동성을 유지해요.", fa: "پای داخلی فعالیت را حفظ می‌کند."
 },
 {
 "fr": "La rêne extérieure aide à guider les épaules.",
@@ -1018,7 +1018,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Yttertygeln hjälper till att leda bogarna.",
 "ru": "Наружный повод помогает направлять плечи.",
 "pl": "Zewnętrzna wodza pomaga prowadzić łopatki.",
-"ko": "바깥쪽 고삐가 어깨를 이끄는 걸 도와요.", fa: "The outside rein helps steer the shoulders."
+"ko": "바깥쪽 고삐가 어깨를 이끄는 걸 도와요.", fa: "عنان بیرونی به هدایت شانه‌ها کمک می‌کند."
 },
 {
 "fr": "La régularité compte davantage qu’une forte flexion.",
@@ -1034,7 +1034,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämnhet är viktigare än en kraftig böjning.",
 "ru": "Равномерность важнее сильного сгибания.",
 "pl": "Równość jest ważniejsza niż mocne ustawienie.",
-"ko": "강한 휨보다 규칙성이 더 중요해요.", fa: "Regularity matters more than excessive flexion."
+"ko": "강한 휨보다 규칙성이 더 중요해요.", fa: "منظم بودن مهم‌تر از خمش زیاد است."
 }
 ],
 "hb": [
@@ -1052,7 +1052,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför vrider min häst huvudet utan att följa volten?",
 "ru": "Почему моя лошадь поворачивает голову, но не идёт по кругу?",
 "pl": "Dlaczego mój koń skręca głowę, ale nie idzie po kole?",
-"ko": "왜 말이 원을 따라가지 않고 머리만 돌릴까요?", fa: "Why does my horse turn its head without following the circle?"
+"ko": "왜 말이 원을 따라가지 않고 머리만 돌릴까요?", fa: "چرا اسبم سرش را می‌چرخاند اما دایره را دنبال نمی‌کند؟"
 },
 {
 "fr": "Comment sentir l’épaule intérieure tomber ?",
@@ -1068,7 +1068,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känner jag att innerbogen faller in?",
 "ru": "Как почувствовать, что внутреннее плечо заваливается?",
 "pl": "Jak wyczuć, że wewnętrzna łopatka wpada do środka?",
-"ko": "안쪽 어깨가 쏠리는 걸 어떻게 느껴요?", fa: "How can I feel the inside shoulder falling in?"
+"ko": "안쪽 어깨가 쏠리는 걸 어떻게 느껴요?", fa: "چگونه افتادن شانهٔ داخلی را حس کنیم؟"
 },
 {
 "fr": "Que fait ma rêne extérieure sur une courbe ?",
@@ -1084,7 +1084,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör min yttertygel i en båge?",
 "ru": "Что делает мой наружный повод на дуге?",
 "pl": "Co robi moja zewnętrzna wodza na łuku?",
-"ko": "곡선에서 바깥쪽 고삐는 무슨 일을 해요?", fa: "What does my outside rein do on a bend?"
+"ko": "곡선에서 바깥쪽 고삐는 무슨 일을 해요?", fa: "عنان بیرونی‌ام در یک انحنا چه می‌کند؟"
 },
 {
 "fr": "Pourquoi mon cercle devient-il ovale ?",
@@ -1100,7 +1100,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför blir min volt oval?",
 "ru": "Почему мой круг становится овальным?",
 "pl": "Dlaczego moje koło robi się owalne?",
-"ko": "왜 내 원이 타원이 될까요?", fa: "Why does my circle become oval?"
+"ko": "왜 내 원이 타원이 될까요?", fa: "چرا دایره‌ام بیضی می‌شود؟"
 },
 {
 "fr": "Comment travailler les deux mains sans forcer ?",
@@ -1116,7 +1116,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur arbetar jag åt båda hållen utan att tvinga?",
 "ru": "Как работать в обе стороны, не форсируя?",
 "pl": "Jak pracować na obie ręce bez forsowania?",
-"ko": "억지로 하지 않고 양쪽 방향을 연습하려면 어떻게 해요?", fa: "How can I practise in both directions without forcing?"
+"ko": "억지로 하지 않고 양쪽 방향을 연습하려면 어떻게 해요?", fa: "چگونه هر دو دست را بدون فشار آوردن کار کنیم؟"
 }
 ],
 "fin": {
@@ -1133,7 +1133,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rid först en bra båge; ställningen kommer med balansen.",
 "ru": "Сначала нарисуй правильную дугу — изгиб придёт вместе с равновесием.",
 "pl": "Najpierw narysuj dobry łuk; zgięcie przyjdzie z równowagą.",
-"ko": "먼저 좋은 곡선을 그려요. 휨은 균형과 함께 따라와요.", fa: "Ride the right curve first; bend will follow balance."
+"ko": "먼저 좋은 곡선을 그려요. 휨은 균형과 함께 따라와요.", fa: "اول یک انحنای خوب رسم کن؛ خمیدگی همراه با تعادل می‌آید."
 }
 },
 "g4-vitesse": {
@@ -1152,7 +1152,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Öka utan att springa",
 "ru": "Удлинять, а не бежать",
 "pl": "Wydłużać, nie pędzić",
-"ko": "서두르지 말고 늘이기", fa: "Lengthen, do not rush"
+"ko": "서두르지 말고 늘이기", fa: "کشیده کردن بدون دویدن"
 },
 "accroche": {
 "fr": "Au trot, cherche une foulée plus ample sans laisser le cheval se précipiter.",
@@ -1168,7 +1168,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sök i trav ett längre steg utan att låta hästen rusa.",
 "ru": "На рыси ищи более размашистый темп, не позволяя лошади торопиться.",
 "pl": "W kłusie szukaj obszerniejszego kroku, nie pozwalając koniowi się spieszyć.",
-"ko": "속보에서 말이 서두르지 않게 하면서 더 큰 보폭을 찾아봐요.", fa: "At trot, look for a longer stride without letting your horse rush."
+"ko": "속보에서 말이 서두르지 않게 하면서 더 큰 보폭을 찾아봐요.", fa: "در یورتمه، دنبال گامی گشاده‌تر باش بی‌آنکه بگذاری اسب شتاب‌زده شود."
 },
 "points": [
 {
@@ -1185,7 +1185,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är takten fortfarande igenkännbar?",
 "ru": "Узнаваем ли ещё ритм?",
 "pl": "Czy rytm pozostaje rozpoznawalny?",
-"ko": "리듬이 그대로 느껴지나요?", fa: "Does the rhythm remain clear?"
+"ko": "리듬이 그대로 느껴지나요?", fa: "آیا ریتم قابل تشخیص می‌ماند؟"
 },
 {
 "fr": "Les foulées couvrent-elles plus de terrain ?",
@@ -1201,7 +1201,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Täcker stegen mer mark?",
 "ru": "Захватывают ли темпы больше пространства?",
 "pl": "Czy kroki pokrywają więcej terenu?",
-"ko": "보폭이 더 많은 땅을 커버하나요?", fa: "Do the strides cover more ground?"
+"ko": "보폭이 더 많은 땅을 커버하나요?", fa: "آیا گام‌ها زمین بیشتری را می‌پوشانند؟"
 },
 {
 "fr": "Mon cheval conserve-t-il son équilibre ?",
@@ -1217,7 +1217,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Behåller min häst balansen?",
 "ru": "Сохраняет ли лошадь равновесие?",
 "pl": "Czy mój koń zachowuje równowagę?",
-"ko": "말이 균형을 유지하나요?", fa: "Does my horse stay balanced?"
+"ko": "말이 균형을 유지하나요?", fa: "آیا اسبم تعادلش را حفظ می‌کند؟"
 }
 ]
 },
@@ -1236,7 +1236,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Behåll samma takt när du ändrar tempo.",
 "ru": "Сохраняй тот же ритм, когда меняешь скорость.",
 "pl": "Utrzymuj ten sam rytm, gdy zmieniasz tempo.",
-"ko": "속도를 바꿀 때도 같은 리듬을 유지해요.", fa: "Keep the same rhythm when you change speed."
+"ko": "속도를 바꿀 때도 같은 리듬을 유지해요.", fa: "وقتی سرعت را تغییر می‌دهی، همان ریتم را حفظ کن."
 },
 {
 "fr": "Cherche des foulées plus longues, pas plus rapides.",
@@ -1252,7 +1252,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sök längre steg, inte snabbare.",
 "ru": "Ищи более длинные темпы, а не более быстрые.",
 "pl": "Szukaj dłuższych kroków, a nie szybszych.",
-"ko": "더 빠른 보폭이 아니라 더 긴 보폭을 찾아요.", fa: "Look for longer strides, not quicker ones."
+"ko": "더 빠른 보폭이 아니라 더 긴 보폭을 찾아요.", fa: "دنبال گام‌های بلندتر باش، نه سریع‌تر."
 },
 {
 "fr": "Si le rythme se dérègle, reviens à une vitesse plus calme.",
@@ -1268,7 +1268,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Om takten blir ojämn, gå tillbaka till ett lugnare tempo.",
 "ru": "Если ритм сбивается, вернись к более спокойной скорости.",
 "pl": "Jeśli rytm się rozregulowuje, wróć do spokojniejszego tempa.",
-"ko": "리듬이 흐트러지면 더 차분한 속도로 돌아가요.", fa: "If the rhythm breaks, go back to a calmer speed."
+"ko": "리듬이 흐트러지면 더 차분한 속도로 돌아가요.", fa: "اگر ریتم به هم خورد، به سرعتی آرام‌تر برگرد."
 },
 {
 "fr": "Accélérer n’oblige pas à précipiter.",
@@ -1284,7 +1284,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Att öka betyder inte att rusa.",
 "ru": "Ускоряться не значит торопиться.",
 "pl": "Przyspieszenie nie oznacza pośpiechu.",
-"ko": "속도를 높인다고 서둘러야 하는 건 아니에요.", fa: "Going faster does not have to mean rushing."
+"ko": "속도를 높인다고 서둘러야 하는 건 아니에요.", fa: "سرعت گرفتن به معنای شتاب‌زدگی نیست."
 },
 {
 "fr": "Un changement juste préserve équilibre et régularité.",
@@ -1300,7 +1300,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ett bra tempobyte bevarar balans och jämnhet.",
 "ru": "Правильное изменение сохраняет равновесие и равномерность.",
 "pl": "Dobra zmiana zachowuje równowagę i regularność.",
-"ko": "올바른 변화는 균형과 규칙성을 지켜요.", fa: "A good change preserves balance and regularity."
+"ko": "올바른 변화는 균형과 규칙성을 지켜요.", fa: "یک تغییر درست، تعادل و منظم بودن را حفظ می‌کند."
 }
 ],
 "hb": [
@@ -1318,7 +1318,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känner jag att ett steg blir längre?",
 "ru": "Как почувствовать, что темп удлиняется?",
 "pl": "Jak wyczuć, że krok się wydłuża?",
-"ko": "보폭이 늘어나는 걸 어떻게 느껴요?", fa: "How can I feel a stride lengthen?"
+"ko": "보폭이 늘어나는 걸 어떻게 느껴요?", fa: "چطور حس کنیم که یک گام بلندتر می‌شود؟"
 },
 {
 "fr": "Pourquoi mon cheval accélère-t-il sans couvrir plus de terrain ?",
@@ -1334,7 +1334,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför ökar min häst farten utan att täcka mer mark?",
 "ru": "Почему лошадь ускоряется, но не захватывает больше пространства?",
 "pl": "Dlaczego mój koń przyspiesza, ale nie pokrywa więcej terenu?",
-"ko": "왜 말이 빨라지는데 더 많은 땅을 커버하지 못할까요?", fa: "Why does my horse go faster without covering more ground?"
+"ko": "왜 말이 빨라지는데 더 많은 땅을 커버하지 못할까요?", fa: "چرا اسبم تندتر می‌رود اما زمین بیشتری را طی نمی‌کند؟"
 },
 {
 "fr": "Quelle différence entre rythme et cadence ?",
@@ -1350,7 +1350,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad är skillnaden mellan takt och kadens?",
 "ru": "Чем ритм отличается от каденции?",
 "pl": "Jaka jest różnica między rytmem a kadencją?",
-"ko": "리듬과 케이던스는 뭐가 달라요?", fa: "What is the difference between rhythm and cadence?"
+"ko": "리듬과 케이던스는 뭐가 달라요?", fa: "تفاوت میان ریتم و آهنگ (کادانس) چیست؟"
 },
 {
 "fr": "Comment ralentir sans raccourcir brutalement la foulée ?",
@@ -1366,7 +1366,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur saktar jag av utan att plötsligt korta steget?",
 "ru": "Как замедлиться, не укорачивая темп резко?",
 "pl": "Jak zwolnić, nie skracając gwałtownie kroku?",
-"ko": "보폭을 갑자기 줄이지 않고 속도를 늦추려면 어떻게 해요?", fa: "How do I slow down without abruptly shortening the stride?"
+"ko": "보폭을 갑자기 줄이지 않고 속도를 늦추려면 어떻게 해요?", fa: "چطور سرعت را کم کنم بدون اینکه گام را ناگهان کوتاه کنم؟"
 },
 {
 "fr": "Quel exercice aide à conserver une cadence régulière ?",
@@ -1382,7 +1382,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilken övning hjälper att hålla en jämn kadens?",
 "ru": "Какое упражнение помогает сохранять ровную каденцию?",
 "pl": "Jakie ćwiczenie pomaga utrzymać równą kadencję?",
-"ko": "일정한 케이던스를 유지하는 데 도움이 되는 운동은 뭐예요?", fa: "What exercise helps keep cadence steady?"
+"ko": "일정한 케이던스를 유지하는 데 도움이 되는 운동은 뭐예요?", fa: "کدام تمرین به حفظ ریتمی منظم کمک می‌کند؟"
 }
 ],
 "fin": {
@@ -1399,7 +1399,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sök mer marktäckning, inte mer brådska.",
 "ru": "Стремись пройти больше пространства, а не торопиться.",
 "pl": "Szukaj pokonywania większego terenu, a nie pośpiechu.",
-"ko": "더 서두르는 게 아니라 더 많은 땅을 커버하는 걸 목표로 해요.", fa: "Aim to cover more ground, not to rush."
+"ko": "더 서두르는 게 아니라 더 많은 땅을 커버하는 걸 목표로 해요.", fa: "دنبال پوشاندن زمین بیشتر باش، نه شتاب بیشتر."
 }
 },
 "g4-epaules-hanches": {
@@ -1417,7 +1417,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Be om en mycket liten rörelse och rid sedan rakt några steg. Jämför hur lätt det går åt ena och andra hållet utan att kräva exakt samma omfång.",
 "ru": "Попроси совсем небольшое движение, затем пройди несколько темпов прямо. Сравни, насколько легко это получается в одну и в другую сторону, не добиваясь любой ценой одинаковой амплитуды.",
 "pl": "Poproś o bardzo mały ruch, potem przejdź kilka kroków prosto. Porównaj łatwość na jedną i drugą rękę, nie wymagając za wszelką cenę takiej samej amplitudy.",
-"ko": "아주 작은 움직임을 요구한 다음, 몇 걸음 똑바로 걸어요. 양쪽 방향의 쉬운 정도를 비교해 보되, 꼭 같은 폭을 얻으려고 하지 않아도 돼요.", fa: "Ask for a tiny movement, then walk straight for a few strides. Compare both directions without insisting on exactly the same range of movement."
+"ko": "아주 작은 움직임을 요구한 다음, 몇 걸음 똑바로 걸어요. 양쪽 방향의 쉬운 정도를 비교해 보되, 꼭 같은 폭을 얻으려고 하지 않아도 돼요.", fa: "یک حرکت خیلی کوچک بخواه، سپس چند گام صاف راه برو. آسانی کار را در یک دست و دست دیگر مقایسه کن، بی‌آنکه حتماً بخواهی همان دامنه را به دست آوری."
 },
 "defi": {
 "titre": {
@@ -1434,7 +1434,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En del i taget",
 "ru": "По одной части",
 "pl": "Jedna część naraz",
-"ko": "한 번에 한 부분씩", fa: "One part at a time"
+"ko": "한 번에 한 부분씩", fa: "هر بار یک بخش"
 },
 "accroche": {
 "fr": "Au pas et sous la conduite de ton enseignant, différencie un déplacement des épaules de celui des hanches.",
@@ -1450,7 +1450,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Skilj i skritt, under din ridlärares ledning, mellan att flytta bogen och att flytta bakdelen.",
 "ru": "На шагу под руководством тренера научись отличать смещение плеч от смещения крупа.",
 "pl": "W stępie, pod okiem instruktora, odróżnij przesunięcie łopatek od przesunięcia zadu.",
-"ko": "평보에서 선생님의 지도를 받으며 어깨의 이동과 후구의 이동을 구별해 봐요.", fa: "At walk, with your instructor, distinguish a shoulder movement from a hindquarter movement."
+"ko": "평보에서 선생님의 지도를 받으며 어깨의 이동과 후구의 이동을 구별해 봐요.", fa: "در قدم و زیر هدایت مربی‌ات، جابه‌جایی شانه‌ها را از جابه‌جایی کفل تشخیص بده."
 },
 "points": [
 {
@@ -1467,7 +1467,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rörde sig den del jag bad om?",
 "ru": "Сдвинулась ли нужная часть?",
 "pl": "Czy poruszyła się właściwa część?",
-"ko": "요구한 부분이 움직였나요?", fa: "Did the intended part move?"
+"ko": "요구한 부분이 움직였나요?", fa: "آیا بخش درخواست‌شده حرکت کرد؟"
 },
 {
 "fr": "Le pas reste-t-il régulier ?",
@@ -1483,7 +1483,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är skritten fortfarande jämn?",
 "ru": "Остаётся ли шаг равномерным?",
 "pl": "Czy stęp pozostaje regularny?",
-"ko": "평보가 규칙적으로 유지되나요?", fa: "Did the walk remain regular?"
+"ko": "평보가 규칙적으로 유지되나요?", fa: "آیا قدم یکنواخت می‌ماند؟"
 },
 {
 "fr": "Ai-je arrêté mes aides dès la réponse ?",
@@ -1499,7 +1499,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Slutade jag med hjälperna så fort svaret kom?",
 "ru": "Прекратилось ли воздействие сразу после ответа?",
 "pl": "Czy pomoce ustały zaraz po odpowiedzi?",
-"ko": "반응이 나오자마자 부조를 멈췄나요?", fa: "Did I stop the aid when the horse responded?"
+"ko": "반응이 나오자마자 부조를 멈췄나요?", fa: "آیا به محض پاسخ، کمک‌هایم را متوقف کردم؟"
 }
 ]
 },
@@ -1518,7 +1518,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Framdelen styr riktningen.",
 "ru": "Передняя часть лошади задаёт направление.",
 "pl": "Przód konia wyznacza kierunek.",
-"ko": "전구가 방향을 이끌어요.", fa: "The forehand guides direction."
+"ko": "전구가 방향을 이끌어요.", fa: "جلوی بدن جهت را هدایت می‌کند."
 },
 {
 "fr": "L’arrière-main participe à la propulsion.",
@@ -1534,7 +1534,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Bakdelen bidrar till framdrivningen.",
 "ru": "Задняя часть участвует в толчке.",
 "pl": "Zad uczestniczy w napędzie.",
-"ko": "후구는 추진에 관여해요.", fa: "The hindquarters contribute to propulsion."
+"ko": "후구는 추진에 관여해요.", fa: "عقب بدن در پیش‌رانش نقش دارد."
 },
 {
 "fr": "Le cavalier apprend à les mobiliser séparément.",
@@ -1550,7 +1550,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttaren lär sig att röra dem var för sig.",
 "ru": "Всадник учится управлять ими по отдельности.",
 "pl": "Jeździec uczy się poruszać nimi oddzielnie.",
-"ko": "기수는 이들을 따로 움직이는 법을 배워요.", fa: "The rider learns to move them separately."
+"ko": "기수는 이들을 따로 움직이는 법을 배워요.", fa: "سوارکار یاد می‌گیرد آن‌ها را جداگانه به کار بگیرد."
 },
 {
 "fr": "La précision passe avant l’amplitude.",
@@ -1566,7 +1566,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Precision går före omfång.",
 "ru": "Точность важнее амплитуды.",
 "pl": "Precyzja jest ważniejsza niż amplituda.",
-"ko": "폭보다 정확성이 먼저예요.", fa: "Precision comes before amplitude."
+"ko": "폭보다 정확성이 먼저예요.", fa: "دقت پیش از دامنه می‌آید."
 },
 {
 "fr": "La décontraction doit rester présente.",
@@ -1582,7 +1582,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Avspänningen ska finnas kvar.",
 "ru": "Расслабленность должна сохраняться.",
 "pl": "Rozluźnienie musi pozostać.",
-"ko": "이완이 계속 유지되어야 해요.", fa: "Relaxation must remain present."
+"ko": "이완이 계속 유지되어야 해요.", fa: "آرامش باید همچنان باقی بماند."
 }
 ],
 "hb": [
@@ -1600,7 +1600,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur skiljer jag på att flytta bogen och att bara svänga?",
 "ru": "Чем смещение плеч отличается от простого поворота?",
 "pl": "Jak odróżnić przesunięcie łopatek od zwykłego skrętu?",
-"ko": "어깨 이동과 단순한 회전은 어떻게 구별해요?", fa: "How is moving the shoulders different from simply turning?"
+"ko": "어깨 이동과 단순한 회전은 어떻게 구별해요?", fa: "جابه‌جا کردن شانه‌ها چه فرقی با یک چرخیدن ساده دارد؟"
 },
 {
 "fr": "Pourquoi les hanches partent-elles avec les épaules ?",
@@ -1616,7 +1616,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför följer bakdelen med bogen?",
 "ru": "Почему круп уходит вместе с плечами?",
 "pl": "Dlaczego zad przesuwa się razem z łopatkami?",
-"ko": "왜 후구가 어깨와 함께 움직일까요?", fa: "Why do the hindquarters follow the shoulders?"
+"ko": "왜 후구가 어깨와 함께 움직일까요?", fa: "چرا کفل‌ها همراه با شانه‌ها حرکت می‌کنند؟"
 },
 {
 "fr": "Comment garder le pas pendant l’exercice ?",
@@ -1632,7 +1632,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur behåller jag skritten under övningen?",
 "ru": "Как сохранить шаг во время упражнения?",
 "pl": "Jak utrzymać stęp podczas ćwiczenia?",
-"ko": "운동하는 동안 평보를 어떻게 유지해요?", fa: "How do I keep a clear walk during the exercise?"
+"ko": "운동하는 동안 평보를 어떻게 유지해요?", fa: "چگونه در طول تمرین قدم را حفظ کنیم؟"
 },
 {
 "fr": "Quel signe montre que j’en demande trop ?",
@@ -1648,7 +1648,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilket tecken visar att jag ber om för mycket?",
 "ru": "Какой признак показывает, что я прошу слишком много?",
 "pl": "Po czym poznać, że wymagam za dużo?",
-"ko": "내가 너무 많이 요구한다는 신호는 뭐예요?", fa: "What tells me I am asking too much?"
+"ko": "내가 너무 많이 요구한다는 신호는 뭐예요?", fa: "کدام نشانه نشان می‌دهد که بیش از حد می‌خواهم؟"
 },
 {
 "fr": "Quand récompenser le cheval ?",
@@ -1664,7 +1664,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När ska jag belöna hästen?",
 "ru": "Когда поощрять лошадь?",
 "pl": "Kiedy nagrodzić konia?",
-"ko": "언제 말을 칭찬해 줘야 해요?", fa: "When should I reward the horse?"
+"ko": "언제 말을 칭찬해 줘야 해요?", fa: "کی به اسب پاداش بدهیم؟"
 }
 ]
 },
@@ -1683,7 +1683,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta direkt på huden och håren under när du har tagit av ett benskydd. Ser du skav, fråga om råd innan du sätter på samma utrustning igen.",
 "ru": "Сняв ногавку, сразу осмотри кожу и шерсть под ней. Если заметишь потёртость, спроси совета, прежде чем снова надевать то же снаряжение.",
 "pl": "Po zdjęciu ochraniacza od razu obejrzyj skórę i sierść pod spodem. Jeśli zauważysz otarcie, zapytaj o radę, zanim znów założysz ten sam sprzęt.",
-"ko": "보호대를 벗긴 뒤 바로 그 아래 피부와 털을 살펴봐요. 쓸린 자국이 보이면 같은 장비를 다시 채우기 전에 의견을 물어봐요.", fa: "After removing a boot, immediately inspect the skin and coat beneath it. If you notice rubbing, seek advice before putting it back on."
+"ko": "보호대를 벗긴 뒤 바로 그 아래 피부와 털을 살펴봐요. 쓸린 자국이 보이면 같은 장비를 다시 채우기 전에 의견을 물어봐요.", fa: "پس از درآوردن ساق‌بند، بلافاصله پوست و موهای زیر آن را نگاه کن. اگر ساییدگی دیدی، پیش از دوباره گذاشتن همان وسیله نظر بخواه."
 },
 "defi": {
 "titre": {
@@ -1700,7 +1700,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rätt passform",
 "ru": "Правильная подгонка",
 "pl": "Dobre dopasowanie",
-"ko": "올바른 착용", fa: "Check the fit"
+"ko": "올바른 착용", fa: "تنظیم درست"
 },
 "accroche": {
 "fr": "Avec l’enseignant, observe une protection posée avant le travail et après son retrait.",
@@ -1716,7 +1716,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta tillsammans med ridläraren på ett skydd före arbetet och efter att det tagits av.",
 "ru": "Вместе с тренером осмотри защиту, надетую перед работой, и после её снятия.",
 "pl": "Z instruktorem obejrzyj ochraniacz założony przed pracą i po jego zdjęciu.",
-"ko": "선생님과 함께 운동 전에 채운 보호대와 벗긴 후의 상태를 관찰해 봐요.", fa: "With your instructor, observe a boot before work and again once it has been removed."
+"ko": "선생님과 함께 운동 전에 채운 보호대와 벗긴 후의 상태를 관찰해 봐요.", fa: "همراه مربی، یک ساق‌بند را پیش از کار و پس از برداشتنش مشاهده کن."
 },
 "points": [
 {
@@ -1733,7 +1733,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är skyddet rent?",
 "ru": "Чистая ли защита?",
 "pl": "Czy ochraniacz jest czysty?",
-"ko": "보호대가 깨끗한가요?", fa: "Is the boot clean?"
+"ko": "보호대가 깨끗한가요?", fa: "آیا محافظ تمیز است؟"
 },
 {
 "fr": "Reste-t-elle bien en place sans point de pression ?",
@@ -1749,7 +1749,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sitter det kvar ordentligt utan tryckpunkter?",
 "ru": "Хорошо ли она держится без точек давления?",
 "pl": "Czy dobrze się trzyma bez punktów ucisku?",
-"ko": "압박 지점 없이 제자리에 잘 있나요?", fa: "Does it stay in place without pressure points?"
+"ko": "압박 지점 없이 제자리에 잘 있나요?", fa: "آیا بدون نقطهٔ فشار به خوبی سر جایش می‌ماند؟"
 },
 {
 "fr": "La peau est-elle normale après retrait ?",
@@ -1765,7 +1765,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ser huden normal ut när skyddet är av?",
 "ru": "Нормальна ли кожа после снятия?",
 "pl": "Czy skóra wygląda normalnie po zdjęciu?",
-"ko": "벗긴 후 피부가 정상인가요?", fa: "Does the skin look normal after removal?"
+"ko": "벗긴 후 피부가 정상인가요?", fa: "آیا پوست پس از برداشتن عادی است؟"
 }
 ]
 },
@@ -1784,7 +1784,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ett skydd minskar vissa risker för slag.",
 "ru": "Защита снижает некоторые риски ударов.",
 "pl": "Ochraniacz zmniejsza niektóre ryzyka uderzeń.",
-"ko": "보호대는 일부 충격 위험을 줄여요.", fa: "A boot can reduce certain impact risks."
+"ko": "보호대는 일부 충격 위험을 줄여요.", fa: "محافظ برخی خطرهای ضربه را کم می‌کند."
 },
 {
 "fr": "Elle ne rend pas le membre invulnérable.",
@@ -1800,7 +1800,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Det gör inte benet osårbart.",
 "ru": "Она не делает ногу неуязвимой.",
 "pl": "Nie sprawia, że noga staje się niezniszczalna.",
-"ko": "다리를 절대 다치지 않게 만들어 주지는 않아요.", fa: "It does not make the limb invulnerable."
+"ko": "다리를 절대 다치지 않게 만들어 주지는 않아요.", fa: "اما دست یا پا را آسیب‌ناپذیر نمی‌کند."
 },
 {
 "fr": "Le modèle dépend du cheval et du travail.",
@@ -1816,7 +1816,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Modellen beror på hästen och arbetet.",
 "ru": "Модель зависит от лошади и работы.",
 "pl": "Model zależy od konia i rodzaju pracy.",
-"ko": "종류는 말과 운동에 따라 달라요.", fa: "The choice depends on the horse and the work."
+"ko": "종류는 말과 운동에 따라 달라요.", fa: "مدل به اسب و نوع کار بستگی دارد."
 },
 {
 "fr": "Une pose incorrecte peut blesser.",
@@ -1832,7 +1832,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Felaktigt påsatt kan det skada.",
 "ru": "Неправильно надетая защита может травмировать.",
 "pl": "Źle założony ochraniacz może zranić.",
-"ko": "잘못 채우면 다칠 수 있어요.", fa: "Poor fitting can cause injury."
+"ko": "잘못 채우면 다칠 수 있어요.", fa: "گذاشتن نادرست می‌تواند آسیب بزند."
 },
 {
 "fr": "Le contrôle continue après la séance.",
@@ -1848,7 +1848,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kontrollen fortsätter efter passet.",
 "ru": "Проверка продолжается после занятия.",
 "pl": "Kontrola trwa także po treningu.",
-"ko": "점검은 운동 후에도 이어져요.", fa: "Checks continue after the session."
+"ko": "점검은 운동 후에도 이어져요.", fa: "کنترل پس از جلسه ادامه دارد."
 }
 ],
 "hb": [
@@ -1866,7 +1866,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känner jag igen ett dåligt anpassat benskydd?",
 "ru": "Как распознать плохо подогнанную ногавку?",
 "pl": "Jak rozpoznać źle dopasowany ochraniacz?",
-"ko": "잘못 채운 보호대는 어떻게 알아봐요?", fa: "How can I spot a poorly fitted boot?"
+"ko": "잘못 채운 보호대는 어떻게 알아봐요?", fa: "ساق‌بندی را که درست تنظیم نشده چگونه تشخیص دهیم؟"
 },
 {
 "fr": "Quand une cloche est-elle utile ?",
@@ -1882,7 +1882,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När är klockor användbara?",
 "ru": "Когда полезны колокола?",
 "pl": "Kiedy przydają się kalosze?",
-"ko": "벨 부츠는 언제 유용해요?", fa: "When are overreach boots useful?"
+"ko": "벨 부츠는 언제 유용해요?", fa: "محافظ زنگوله‌ای کی مفید است؟"
 },
 {
 "fr": "Pourquoi les bandes de repos ne conviennent-elles pas au travail monté ?",
@@ -1898,7 +1898,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför passar inte stallbandage för ridning?",
 "ru": "Почему денниковые бинты не подходят для работы под седлом?",
 "pl": "Dlaczego bandaże stajenne nie nadają się do jazdy?",
-"ko": "휴식용 붕대는 왜 기승 운동에 맞지 않아요?", fa: "Why should stable bandages not be used while riding?"
+"ko": "휴식용 붕대는 왜 기승 운동에 맞지 않아요?", fa: "چرا باندهای استراحت برای کار سواره مناسب نیستند؟"
 },
 {
 "fr": "Comment nettoyer les protections ?",
@@ -1914,7 +1914,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur rengör jag skydden?",
 "ru": "Как чистить защиту?",
 "pl": "Jak czyścić ochraniacze?",
-"ko": "보호대는 어떻게 세척해요?", fa: "How should protective boots be cleaned?"
+"ko": "보호대는 어떻게 세척해요?", fa: "محافظ‌ها را چگونه تمیز کنیم؟"
 },
 {
 "fr": "Quand faut-il prévenir un responsable après les avoir retirées ?",
@@ -1930,7 +1930,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När ska jag meddela en ansvarig efter att ha tagit av dem?",
 "ru": "Когда нужно предупредить ответственного после их снятия?",
 "pl": "Kiedy trzeba powiadomić opiekuna po ich zdjęciu?",
-"ko": "벗긴 후 언제 책임자에게 알려야 해요?", fa: "When should I tell an adult after removing them?"
+"ko": "벗긴 후 언제 책임자에게 알려야 해요?", fa: "پس از برداشتن آن‌ها، کی باید به یک مسئول خبر داد؟"
 }
 ]
 },
@@ -1949,7 +1949,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Räkna tyst två galoppsprång efter varje litet hopp och håll blicken långt fram. Det hjälper dig att se vad du bygger upp mellan hindren, inte bara ovanför bommarna.",
 "ru": "После каждого небольшого прыжка про себя отсчитай два темпа, глядя далеко вперёд. Это помогает замечать то, что ты строишь между препятствиями, а не только над жердями.",
 "pl": "Po każdym małym skoku policz w myślach dwie foule, patrząc daleko przed siebie. To pomaga ci zauważyć, co budujesz między przeszkodami, a nie tylko nad drągami.",
-"ko": "작은 점프를 할 때마다 시선을 멀리 둔 채 속으로 두 보폭을 세어 봐요. 바 위에서만이 아니라 장애물 사이에서 무엇을 만들고 있는지 관찰하는 데 도움이 돼요.", fa: "After each small jump, quietly count two strides while looking ahead. This helps you notice the work between fences, not just over the poles."
+"ko": "작은 점프를 할 때마다 시선을 멀리 둔 채 속으로 두 보폭을 세어 봐요. 바 위에서만이 아니라 장애물 사이에서 무엇을 만들고 있는지 관찰하는 데 도움이 돼요.", fa: "پس از هر پرش کوچک، در دلت دو گام بشمار و نگاهت را دور به جلو نگه دار. این به تو کمک می‌کند ببینی میان موانع چه می‌سازی، نه فقط بالای میله‌ها."
 },
 "defi": {
 "titre": {
@@ -1966,7 +1966,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Efter landningen",
 "ru": "После приземления",
 "pl": "Po lądowaniu",
-"ko": "착지 후", fa: "After landing"
+"ko": "착지 후", fa: "پس از فرود"
 },
 "accroche": {
 "fr": "Sur une petite ligne choisie par ton enseignant, concentre-toi sur les foulées entre les obstacles.",
@@ -1982,7 +1982,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Koncentrera dig på galoppsprången mellan hindren på en liten linje som din ridlärare väljer.",
 "ru": "На небольшой линии, выбранной тренером, сосредоточься на темпах между препятствиями.",
 "pl": "Na małej linii wybranej przez instruktora skup się na foulach między przeszkodami.",
-"ko": "선생님이 고른 작은 라인에서 장애물 사이의 보폭에 집중해 봐요.", fa: "On a small line chosen by your instructor, focus on the strides between fences."
+"ko": "선생님이 고른 작은 라인에서 장애물 사이의 보폭에 집중해 봐요.", fa: "روی یک خط کوچک که مربی‌ات انتخاب کرده، روی گام‌های بین موانع تمرکز کن."
 },
 "points": [
 {
@@ -1999,7 +1999,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är min blick redan på väg mot nästa?",
 "ru": "Направлен ли мой взгляд уже дальше?",
 "pl": "Czy mój wzrok kieruje się już dalej?",
-"ko": "시선이 벌써 다음을 향하고 있나요?", fa: "Am I already looking towards what comes next?"
+"ko": "시선이 벌써 다음을 향하고 있나요?", fa: "آیا نگاهم از همین حالا به ادامهٔ مسیر است؟"
 },
 {
 "fr": "Ma position redevient-elle stable après réception ?",
@@ -2015,7 +2015,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Blir min sits stabil igen efter landningen?",
 "ru": "Становится ли моя посадка снова устойчивой после приземления?",
 "pl": "Czy moja pozycja znów jest stabilna po lądowaniu?",
-"ko": "착지 후 자세가 다시 안정되나요?", fa: "Do I regain a stable position after landing?"
+"ko": "착지 후 자세가 다시 안정되나요?", fa: "آیا وضعیت بدنم پس از فرود دوباره پایدار می‌شود؟"
 },
 {
 "fr": "Mon cheval garde-t-il son rythme ?",
@@ -2031,7 +2031,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Behåller min häst takten?",
 "ru": "Сохраняет ли лошадь ритм?",
 "pl": "Czy mój koń utrzymuje rytm?",
-"ko": "말이 리듬을 유지하나요?", fa: "Does my horse keep its rhythm?"
+"ko": "말이 리듬을 유지하나요?", fa: "آیا اسبم ریتمش را حفظ می‌کند؟"
 }
 ]
 },
@@ -2050,7 +2050,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Häst och ryttare delar en gemensam balans.",
 "ru": "Лошадь и всадник разделяют одно равновесие.",
 "pl": "Koń i jeździec dzielą jedną równowagę.",
-"ko": "말과 기수는 하나의 균형을 함께 나눠요.", fa: "Horse and rider share one balance."
+"ko": "말과 기수는 하나의 균형을 함께 나눠요.", fa: "زوج اسب و سوارکار یک تعادل مشترک دارند."
 },
 {
 "fr": "La stabilité du cavalier aide le cheval.",
@@ -2066,7 +2066,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttarens stabilitet hjälper hästen.",
 "ru": "Устойчивость всадника помогает лошади.",
 "pl": "Stabilność jeźdźca pomaga koniowi.",
-"ko": "기수의 안정이 말을 도와요.", fa: "Rider stability helps the horse."
+"ko": "기수의 안정이 말을 도와요.", fa: "ثبات سوارکار به اسب کمک می‌کند."
 },
 {
 "fr": "L’abord se prépare avant l’obstacle.",
@@ -2082,7 +2082,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Anridningen förbereds före hindret.",
 "ru": "Заход готовится до препятствия.",
 "pl": "Najazd przygotowuje się przed przeszkodą.",
-"ko": "접근은 장애물 전에 준비해요.", fa: "The approach starts before the fence."
+"ko": "접근은 장애물 전에 준비해요.", fa: "نزدیک شدن پیش از مانع آماده می‌شود."
 },
 {
 "fr": "La réception prépare l’élément suivant.",
@@ -2098,7 +2098,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Landningen förbereder nästa moment.",
 "ru": "Приземление готовит следующий элемент.",
 "pl": "Lądowanie przygotowuje kolejny element.",
-"ko": "착지가 다음 요소를 준비해요.", fa: "Landing prepares the next element."
+"ko": "착지가 다음 요소를 준비해요.", fa: "فرود، عنصر بعدی را آماده می‌کند."
 },
 {
 "fr": "La vitesse ne remplace pas l’impulsion.",
@@ -2114,7 +2114,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Fart ersätter inte framåtbjudning.",
 "ru": "Скорость не заменяет импульс.",
 "pl": "Szybkość nie zastąpi impulsu.",
-"ko": "속도는 임펄션을 대신할 수 없어요.", fa: "Speed cannot replace impulsion."
+"ko": "속도는 임펄션을 대신할 수 없어요.", fa: "سرعت جای پیش‌رانش را نمی‌گیرد."
 }
 ],
 "hb": [
@@ -2132,7 +2132,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför lutar jag mig framåt i anridningen?",
 "ru": "Почему я наклоняюсь вперёд на заходе?",
 "pl": "Dlaczego pochylam się do przodu na najeździe?",
-"ko": "왜 접근할 때 앞으로 숙여질까요?", fa: "Why do I lean forward on the approach?"
+"ko": "왜 접근할 때 앞으로 숙여질까요?", fa: "چرا هنگام نزدیک شدن به جلو خم می‌شوم؟"
 },
 {
 "fr": "Comment retrouver mon équilibre après la réception ?",
@@ -2148,7 +2148,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur hittar jag balansen igen efter landningen?",
 "ru": "Как восстановить равновесие после приземления?",
 "pl": "Jak odzyskać równowagę po lądowaniu?",
-"ko": "착지 후 균형을 어떻게 되찾아요?", fa: "How do I regain balance after landing?"
+"ko": "착지 후 균형을 어떻게 되찾아요?", fa: "بعد از فرود چگونه تعادلم را بازیابم؟"
 },
 {
 "fr": "Que faire si mon cheval accélère entre deux sauts ?",
@@ -2164,7 +2164,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör jag om min häst ökar mellan två hopp?",
 "ru": "Что делать, если лошадь ускоряется между прыжками?",
 "pl": "Co zrobić, jeśli koń przyspiesza między skokami?",
-"ko": "두 점프 사이에서 말이 빨라지면 어떻게 해요?", fa: "What if my horse speeds up between fences?"
+"ko": "두 점프 사이에서 말이 빨라지면 어떻게 해요?", fa: "اگر اسبم بین دو پرش سرعت بگیرد چه کنم؟"
 },
 {
 "fr": "Comment regarder le prochain obstacle sans tourner mes épaules ?",
@@ -2180,7 +2180,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur tittar jag mot nästa hinder utan att vrida axlarna?",
 "ru": "Как смотреть на следующее препятствие, не разворачивая плечи?",
 "pl": "Jak patrzeć na następną przeszkodę, nie skręcając ramion?",
-"ko": "어깨를 돌리지 않고 다음 장애물을 보려면 어떻게 해요?", fa: "How can I look at the next fence without twisting my shoulders?"
+"ko": "어깨를 돌리지 않고 다음 장애물을 보려면 어떻게 해요?", fa: "چطور به مانع بعدی نگاه کنم بی‌آنکه شانه‌هایم را بچرخانم؟"
 },
 {
 "fr": "Quels exercices simples améliorent ma stabilité sur les étriers ?",
@@ -2196,7 +2196,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilka enkla övningar förbättrar min stabilitet i stigbyglarna?",
 "ru": "Какие простые упражнения улучшают мою устойчивость в стременах?",
 "pl": "Jakie proste ćwiczenia poprawią moją stabilność w strzemionach?",
-"ko": "등자 위에서 안정감을 높이는 간단한 운동은 뭐예요?", fa: "Which simple exercises improve my balance in the stirrups?"
+"ko": "등자 위에서 안정감을 높이는 간단한 운동은 뭐예요?", fa: "کدام تمرین‌های ساده ثبات مرا روی رکاب‌ها بهتر می‌کند؟"
 }
 ],
 "fin": {
@@ -2213,7 +2213,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ett bra hopp börjar före bommen och fortsätter efter.",
 "ru": "Хороший прыжок начинается до жерди и продолжается после неё.",
 "pl": "Dobry skok zaczyna się przed drągiem i trwa po nim.",
-"ko": "좋은 점프는 바 앞에서 시작해서 그 뒤로도 이어져요.", fa: "A good jump starts before the fence and continues after it."
+"ko": "좋은 점프는 바 앞에서 시작해서 그 뒤로도 이어져요.", fa: "پرش خوب پیش از مانع آغاز می‌شود و پس از آن ادامه دارد."
 }
 },
 "g4-soins-travail": {
@@ -2231,7 +2231,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämför två observationer av samma häst, i lugn och ro, i stället för att automatiskt upprepa en lista med moment. Anteckna det som är ovanligt och säg till din ridlärare innan du bestämmer någon skötsel.",
 "ru": "Сравни два спокойных наблюдения одной и той же лошади, вместо того чтобы машинально повторять список действий. Отметь всё необычное и предупреди тренера, прежде чем решать, какой нужен уход.",
 "pl": "Porównaj dwie spokojne obserwacje tego samego konia, zamiast mechanicznie powtarzać listę czynności. Zanotuj, co jest nietypowe, i powiedz instruktorowi, zanim zdecydujesz o jakimkolwiek zabiegu.",
-"ko": "정해진 동작을 기계적으로 반복하기보다, 차분한 상태의 같은 말을 두 번 관찰해 비교해 봐요. 평소와 다른 점은 적어 두고, 처치를 정하기 전에 선생님께 알려요.", fa: "Compare two calm observations of the same horse rather than mechanically repeating a checklist. Report anything unusual to your instructor before choosing a treatment."
+"ko": "정해진 동작을 기계적으로 반복하기보다, 차분한 상태의 같은 말을 두 번 관찰해 비교해 봐요. 평소와 다른 점은 적어 두고, 처치를 정하기 전에 선생님께 알려요.", fa: "دو مشاهده از یک اسب را در آرامش مقایسه کن، به جای اینکه فهرستی از کارها را خودکار تکرار کنی. آنچه غیرعادی است یادداشت کن و پیش از تصمیم دربارهٔ هر مراقبتی به مربی‌ات خبر بده."
 },
 "defi": {
 "titre": {
@@ -2248,7 +2248,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämför före och efter",
 "ru": "Сравнить до и после",
 "pl": "Porównaj przed i po",
-"ko": "전후 비교하기", fa: "Compare before and after"
+"ko": "전후 비교하기", fa: "مقایسهٔ قبل و بعد"
 },
 "accroche": {
 "fr": "Observe le même cheval avant la préparation puis après le retour au calme.",
@@ -2264,7 +2264,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Iaktta samma häst innan du gör i ordning den och efter nedskrittningen.",
 "ru": "Понаблюдай за одной лошадью до подготовки и после того, как она успокоится.",
 "pl": "Obserwuj tego samego konia przed przygotowaniem i po uspokojeniu.",
-"ko": "준비 전과 쿨다운 후에 같은 말을 관찰해 봐요.", fa: "Observe the same horse before preparation and again after cooling down."
+"ko": "준비 전과 쿨다운 후에 같은 말을 관찰해 봐요.", fa: "یک اسب را پیش از آماده‌سازی و سپس بعد از بازگشت به آرامش مشاهده کن."
 },
 "points": [
 {
@@ -2281,7 +2281,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kontrollerade jag hästens allmäntillstånd från början?",
 "ru": "Осмотрено ли общее состояние в начале?",
 "pl": "Czy ogólny stan został sprawdzony na początku?",
-"ko": "처음에 전반적인 상태를 점검했나요?", fa: "Did I check its general condition before work?"
+"ko": "처음에 전반적인 상태를 점검했나요?", fa: "آیا در شروع، وضعیت کلی‌اش را بررسی کردم؟"
 },
 {
 "fr": "Ai-je laissé du temps à la récupération ?",
@@ -2297,7 +2297,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Gav jag tid för återhämtning?",
 "ru": "Было ли дано время на восстановление?",
 "pl": "Czy był czas na regenerację?",
-"ko": "회복할 시간을 줬나요?", fa: "Did I allow time to recover?"
+"ko": "회복할 시간을 줬나요?", fa: "آیا برای بازیابی وقت گذاشتم؟"
 },
 {
 "fr": "Ai-je remarqué un changement à signaler ?",
@@ -2313,7 +2313,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Märkte jag någon förändring att rapportera?",
 "ru": "Замечено ли изменение, о котором нужно сообщить?",
 "pl": "Czy jest zmiana, którą trzeba zgłosić?",
-"ko": "알려야 할 변화를 발견했나요?", fa: "Did I notice any change to report?"
+"ko": "알려야 할 변화를 발견했나요?", fa: "آیا تغییری دیده‌ام که باید گزارش شود؟"
 }
 ]
 },
@@ -2332,7 +2332,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Skötselrutinen börjar före ridningen.",
 "ru": "Уход начинается до езды.",
 "pl": "Pielęgnacja zaczyna się przed jazdą.",
-"ko": "관리 루틴은 기승 전에 시작돼요.", fa: "The care routine starts before riding."
+"ko": "관리 루틴은 기승 전에 시작돼요.", fa: "روال مراقبت پیش از سواری شروع می‌شود."
 },
 {
 "fr": "L’observation guide les gestes utiles.",
@@ -2348,7 +2348,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Observationen styr vilka moment som behövs.",
 "ru": "Наблюдение подсказывает нужные действия.",
 "pl": "Obserwacja podpowiada potrzebne czynności.",
-"ko": "관찰이 필요한 처치를 알려 줘요.", fa: "Observation guides useful actions."
+"ko": "관찰이 필요한 처치를 알려 줘요.", fa: "مشاهده، حرکات مفید را هدایت می‌کند."
 },
 {
 "fr": "Le matériel doit être vérifié.",
@@ -2364,7 +2364,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Utrustningen ska kontrolleras.",
 "ru": "Снаряжение нужно проверять.",
 "pl": "Sprzęt trzeba sprawdzić.",
-"ko": "장비는 점검해야 해요.", fa: "Tack must be checked."
+"ko": "장비는 점검해야 해요.", fa: "وسایل باید بررسی شوند."
 },
 {
 "fr": "La récupération se fait progressivement.",
@@ -2380,7 +2380,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Återhämtningen sker gradvis.",
 "ru": "Восстановление происходит постепенно.",
 "pl": "Regeneracja przebiega stopniowo.",
-"ko": "회복은 점진적으로 해요.", fa: "Recovery should be gradual."
+"ko": "회복은 점진적으로 해요.", fa: "بازیابی به‌تدریج انجام می‌شود."
 },
 {
 "fr": "Toute anomalie mérite un avis responsable.",
@@ -2396,7 +2396,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varje avvikelse ska bedömas av en ansvarig.",
 "ru": "Любое отклонение требует мнения ответственного.",
 "pl": "Każda nieprawidłowość wymaga opinii odpowiedzialnej osoby.",
-"ko": "이상이 있으면 책임자의 의견을 들어야 해요.", fa: "Anything unusual calls for responsible advice."
+"ko": "이상이 있으면 책임자의 의견을 들어야 해요.", fa: "هر ناهنجاری سزاوار نظر یک فرد مسئول است."
 }
 ],
 "hb": [
@@ -2414,7 +2414,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilka skillnader ska jag se efter före och efter passet?",
 "ru": "Какие различия замечать до и после занятия?",
 "pl": "Jakie różnice obserwować przed treningiem i po nim?",
-"ko": "운동 전후에 어떤 차이를 관찰해야 해요?", fa: "What differences should I look for before and after riding?"
+"ko": "운동 전후에 어떤 차이를 관찰해야 해요?", fa: "پیش و پس از جلسه چه تفاوت‌هایی را باید مشاهده کرد؟"
 },
 {
 "fr": "Comment savoir si mon cheval a suffisamment récupéré ?",
@@ -2430,7 +2430,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur vet jag om min häst har återhämtat sig tillräckligt?",
 "ru": "Как понять, что лошадь достаточно восстановилась?",
 "pl": "Jak sprawdzić, czy mój koń wystarczająco odpoczął?",
-"ko": "말이 충분히 회복했는지 어떻게 알아요?", fa: "How can I tell whether my horse has recovered?"
+"ko": "말이 충분히 회복했는지 어떻게 알아요?", fa: "چگونه بفهمم اسبم به اندازهٔ کافی ریکاوری کرده است؟"
 },
 {
 "fr": "Pourquoi vérifier le passage de sangle ?",
@@ -2446,7 +2446,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför kontrollera gjordstället?",
 "ru": "Зачем проверять место под подпругой?",
 "pl": "Dlaczego warto sprawdzać miejsce pod popręgiem?",
-"ko": "왜 복대 닿는 부위를 확인해요?", fa: "Why inspect the girth area?"
+"ko": "왜 복대 닿는 부위를 확인해요?", fa: "چرا جای تنگ را بررسی کنیم؟"
 },
 {
 "fr": "Faut-il toujours doucher un cheval après le travail ?",
@@ -2462,7 +2462,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Måste man alltid duscha en häst efter arbetet?",
 "ru": "Нужно ли всегда мыть лошадь из шланга после работы?",
 "pl": "Czy zawsze trzeba myć konia wodą po pracy?",
-"ko": "운동 후에는 항상 말을 샤워시켜야 해요?", fa: "Should every horse be hosed after work?"
+"ko": "운동 후에는 항상 말을 샤워시켜야 해요?", fa: "آیا همیشه باید اسب را بعد از کار دوش داد؟"
 },
 {
 "fr": "Que faire en présence d’une chaleur anormale sur un membre ?",
@@ -2478,7 +2478,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör jag om ett ben känns onormalt varmt?",
 "ru": "Что делать, если нога необычно горячая?",
 "pl": "Co zrobić, gdy noga jest nienaturalnie ciepła?",
-"ko": "다리에 비정상적인 열감이 있으면 어떻게 해요?", fa: "What if a leg feels unusually warm?"
+"ko": "다리에 비정상적인 열감이 있으면 어떻게 해요?", fa: "در صورت گرمای غیرعادی روی یک دست یا پا چه باید کرد؟"
 }
 ],
 "fin": {
@@ -2495,7 +2495,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "God skötsel börjar med noggrann observation.",
 "ru": "Хороший уход начинается с внимательного наблюдения.",
 "pl": "Dobra pielęgnacja zaczyna się od uważnej obserwacji.",
-"ko": "좋은 관리는 세심한 관찰에서 시작돼요.", fa: "Good care begins with careful observation."
+"ko": "좋은 관리는 세심한 관찰에서 시작돼요.", fa: "یک مراقبت خوب با مشاهدهٔ دقیق آغاز می‌شود."
 }
 },
 "g4-identite": {
@@ -2513,7 +2513,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Beskriv först vad du verkligen ser när du tittar på en häst. Kontrollera sedan din observation med en ansvarig och passet, utan att blanda ihop synliga kännetecken med administrativa bevis.",
 "ru": "Глядя на лошадь, сначала опиши то, что действительно видишь. Затем проверь наблюдение с ответственным и по паспорту, не путая внешние признаки с официальным доказательством.",
 "pl": "Patrząc na konia, najpierw opisz to, co naprawdę widzisz. Potem sprawdź swoją obserwację z opiekunem i w paszporcie, nie myląc wskazówek wizualnych z urzędowym dowodem.",
-"ko": "말을 볼 때는 먼저 실제로 보이는 것을 묘사해요. 그다음 책임자와 함께 마필 여권으로 확인해요. 눈에 보이는 단서와 공식 증명을 헷갈리지 말아요.", fa: "Describe only what you can actually see. Then check it with a responsible adult and the identification document, without confusing visual clues with official proof."
+"ko": "말을 볼 때는 먼저 실제로 보이는 것을 묘사해요. 그다음 책임자와 함께 마필 여권으로 확인해요. 눈에 보이는 단서와 공식 증명을 헷갈리지 말아요.", fa: "وقتی به اسبی نگاه می‌کنی، اول آنچه را واقعاً می‌بینی توصیف کن. سپس مشاهده‌ات را با یک مسئول و شناسنامه بررسی کن، بی‌آنکه نشانه‌های دیداری را با مدرک اداری اشتباه بگیری."
 },
 "defi": {
 "titre": {
@@ -2530,7 +2530,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta på detaljerna",
 "ru": "Смотреть на детали",
 "pl": "Patrz na szczegóły",
-"ko": "세부를 보기", fa: "Look at the details"
+"ko": "세부를 보기", fa: "به جزئیات نگاه کن"
 },
 "accroche": {
 "fr": "Compare deux chevaux qui se ressemblent sans consulter leurs noms.",
@@ -2546,7 +2546,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämför två hästar som liknar varandra utan att titta på deras namn.",
 "ru": "Сравни двух похожих лошадей, не заглядывая в их клички.",
 "pl": "Porównaj dwa podobne konie, nie sprawdzając ich imion.",
-"ko": "이름을 보지 않고 닮은 말 두 마리를 비교해 봐요.", fa: "Compare two similar-looking horses without checking their names."
+"ko": "이름을 보지 않고 닮은 말 두 마리를 비교해 봐요.", fa: "دو اسبِ شبیه به هم را بدون نگاه کردن به نامشان مقایسه کن."
 },
 "points": [
 {
@@ -2563,7 +2563,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag beskrivit kön och färg?",
 "ru": "Описаны ли пол и масть?",
 "pl": "Czy opisana jest płeć i maść?",
-"ko": "성별과 털색을 묘사했나요?", fa: "Did I describe sex and coat colour?"
+"ko": "성별과 털색을 묘사했나요?", fa: "آیا جنس و رنگ پوشش را توصیف کرده‌ام؟"
 },
 {
 "fr": "Ai-je observé marques et épis ?",
@@ -2579,7 +2579,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag tittat på tecken och virvlar?",
 "ru": "Осмотрены ли отметины и вихры?",
 "pl": "Czy obejrzane są odmiany i wichrze?",
-"ko": "흰 반점과 가마를 관찰했나요?", fa: "Did I look at markings and whorls?"
+"ko": "흰 반점과 가마를 관찰했나요?", fa: "آیا نشانه‌ها و پیچش‌های مو را دیده‌ام؟"
 },
 {
 "fr": "Ai-je distingué observation et document officiel ?",
@@ -2595,7 +2595,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag skilt på observation och officiellt dokument?",
 "ru": "Отделено ли наблюдение от официального документа?",
 "pl": "Czy obserwacja jest oddzielona od dokumentu urzędowego?",
-"ko": "관찰과 공식 서류를 구별했나요?", fa: "Did I distinguish observation from official documents?"
+"ko": "관찰과 공식 서류를 구별했나요?", fa: "آیا مشاهده را از سند رسمی تمیز دادم؟"
 }
 ]
 },
@@ -2614,7 +2614,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Färgen ensam identifierar inte en häst.",
 "ru": "Одна масть не позволяет опознать лошадь.",
 "pl": "Sama maść nie identyfikuje konia.",
-"ko": "털색만으로는 말을 식별할 수 없어요.", fa: "Coat colour alone cannot identify a horse."
+"ko": "털색만으로는 말을 식별할 수 없어요.", fa: "رنگ پوشش به‌تنهایی اسب را شناسایی نمی‌کند."
 },
 {
 "fr": "Les marques et les épis le distinguent.",
@@ -2630,7 +2630,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Tecknen och virvlarna skiljer den från andra.",
 "ru": "Её отличают отметины и вихры.",
 "pl": "Odmiany i wichrze go wyróżniają.",
-"ko": "흰 반점과 가마로 구별할 수 있어요.", fa: "Markings and whorls help distinguish it."
+"ko": "흰 반점과 가마로 구별할 수 있어요.", fa: "نشانه‌ها و پیچش‌های مو او را متمایز می‌کنند."
 },
 {
 "fr": "Le sexe fait partie du signalement.",
@@ -2646,7 +2646,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Könet ingår i signalementet.",
 "ru": "Пол входит в описание примет.",
 "pl": "Płeć jest częścią opisu.",
-"ko": "성별도 특징 기재의 일부예요.", fa: "Sex is part of its description."
+"ko": "성별도 특징 기재의 일부예요.", fa: "جنسیت بخشی از مشخصات است."
 },
 {
 "fr": "Le document officiel confirme son identité.",
@@ -2662,7 +2662,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Det officiella dokumentet bekräftar identiteten.",
 "ru": "Официальный документ подтверждает личность.",
 "pl": "Dokument urzędowy potwierdza tożsamość.",
-"ko": "공식 서류가 신원을 확인해요.", fa: "Official documents confirm identity."
+"ko": "공식 서류가 신원을 확인해요.", fa: "سند رسمی هویتش را تأیید می‌کند."
 },
 {
 "fr": "En cas de doute, on demande une vérification.",
@@ -2678,7 +2678,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vid tvivel ber man om en kontroll.",
 "ru": "Если есть сомнение, нужно попросить проверку.",
 "pl": "W razie wątpliwości prosi się o weryfikację.",
-"ko": "확실하지 않으면 확인을 요청해요.", fa: "If unsure, ask for verification."
+"ko": "확실하지 않으면 확인을 요청해요.", fa: "در صورت تردید، درخواست بررسی می‌کنیم."
 }
 ],
 "hb": [
@@ -2696,7 +2696,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför är två hästar med samma färg inte identiska?",
 "ru": "Почему две лошади одной масти не одинаковы?",
 "pl": "Dlaczego dwa konie tej samej maści nie są identyczne?",
-"ko": "왜 같은 털색의 두 말이 똑같지 않을까요?", fa: "Why are two horses of the same colour not identical?"
+"ko": "왜 같은 털색의 두 말이 똑같지 않을까요?", fa: "چرا دو اسب با رنگ پوشش یکسان، یکسان نیستند؟"
 },
 {
 "fr": "Comment différencier une étoile d’une pelote ?",
@@ -2712,7 +2712,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur skiljer jag en stjärn från en liten stjärn?",
 "ru": "Как отличить звёздочку от звезды?",
 "pl": "Jak odróżnić gwiazdkę od gwiazdy?",
-"ko": "큰 별과 작은 별 무늬는 어떻게 구별해요?", fa: "How can I distinguish two different forehead markings?"
+"ko": "큰 별과 작은 별 무늬는 어떻게 구별해요?", fa: "چگونه ستارهٔ پیشانی را از لکهٔ کوچک پیشانی تشخیص دهیم؟"
 },
 {
 "fr": "Où chercher les épis ?",
@@ -2728,7 +2728,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Var letar jag efter virvlar?",
 "ru": "Где искать вихры?",
 "pl": "Gdzie szukać wichrów?",
-"ko": "가마는 어디서 찾아요?", fa: "Where should I look for hair whorls?"
+"ko": "가마는 어디서 찾아요?", fa: "پیچش‌های مو را کجا باید جست؟"
 },
 {
 "fr": "Quelle information contient le livret signalétique ?",
@@ -2744,7 +2744,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilken information finns i passet?",
 "ru": "Какие сведения содержит паспорт лошади?",
 "pl": "Jakie informacje zawiera paszport konia?",
-"ko": "마필 여권에는 어떤 정보가 있어요?", fa: "What information does the identification document contain?"
+"ko": "마필 여권에는 어떤 정보가 있어요?", fa: "شناسنامهٔ اسب چه اطلاعاتی دارد؟"
 },
 {
 "fr": "Qui peut vérifier une identité officielle ?",
@@ -2760,7 +2760,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vem kan kontrollera en officiell identitet?",
 "ru": "Кто может проверить официальную идентификацию?",
 "pl": "Kto może sprawdzić urzędową tożsamość?",
-"ko": "공식 신원은 누가 확인할 수 있어요?", fa: "Who can check a horse’s official identity?"
+"ko": "공식 신원은 누가 확인할 수 있어요?", fa: "چه کسی می‌تواند هویت رسمی را بررسی کند؟"
 }
 ],
 "fin": {
@@ -2777,7 +2777,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Noggrann observation gör att du inte blandar ihop två lika hästar.",
 "ru": "Точное наблюдение помогает не спутать двух похожих лошадей.",
 "pl": "Dokładna obserwacja pozwala nie pomylić dwóch podobnych koni.",
-"ko": "정확히 관찰하면 닮은 두 말을 헷갈리지 않아요.", fa: "Careful observation helps distinguish similar horses."
+"ko": "정확히 관찰하면 닮은 두 말을 헷갈리지 않아요.", fa: "مشاهدهٔ دقیق از اشتباه گرفتن دو اسب شبیه به هم جلوگیری می‌کند."
 }
 },
 "g4-nourrir": {
@@ -2795,7 +2795,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ge aldrig extra foder på eget initiativ. Om en häst verkar lämna sitt foder eller inte dricka som vanligt, säg till innan du ändrar något.",
 "ru": "Никогда не давай дополнительный корм по собственной инициативе. Если лошадь не доедает или, кажется, пьёт не как обычно, сообщи об этом, прежде чем что-либо менять.",
 "pl": "Nigdy nie dawaj dodatkowej paszy z własnej inicjatywy. Jeśli koń zostawia posiłek albo wydaje się, że nie pije normalnie, zgłoś to, zanim cokolwiek zmienisz.",
-"ko": "절대 마음대로 사료를 더 주지 마요. 말이 먹이를 남기거나 물을 평소처럼 마시지 않는 것 같으면, 무엇이든 바꾸기 전에 알려요.", fa: "Never give extra feed on your own initiative. If a horse leaves its meal or appears not to drink normally, report it before changing anything."
+"ko": "절대 마음대로 사료를 더 주지 마요. 말이 먹이를 남기거나 물을 평소처럼 마시지 않는 것 같으면, 무엇이든 바꾸기 전에 알려요.", fa: "هرگز به ابتکار خودت غذای اضافی نده. اگر اسبی به نظر می‌رسد غذایش را نیمه‌کاره می‌گذارد یا عادی آب نمی‌خورد، پیش از تغییر هر چیزی آن را گزارش بده."
 },
 "defi": {
 "titre": {
@@ -2812,7 +2812,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta på foderstaten",
 "ru": "Наблюдать за рационом",
 "pl": "Obserwuj dawkę",
-"ko": "사료 관찰하기", fa: "Observe the ration"
+"ko": "사료 관찰하기", fa: "بررسی جیره"
 },
 "accroche": {
 "fr": "Avec un responsable, compare la ration de deux chevaux dont les besoins diffèrent.",
@@ -2828,7 +2828,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämför tillsammans med en ansvarig foderstaten för två hästar med olika behov.",
 "ru": "Вместе с ответственным сравни рационы двух лошадей с разными потребностями.",
 "pl": "Z opiekunem porównaj dawki dwóch koni o różnych potrzebach.",
-"ko": "책임자와 함께 필요량이 다른 두 말의 사료를 비교해 봐요.", fa: "With a responsible adult, compare the feed plans of two horses with different needs."
+"ko": "책임자와 함께 필요량이 다른 두 말의 사료를 비교해 봐요.", fa: "همراه یک مسئول، جیرهٔ دو اسب را که نیازهای متفاوتی دارند مقایسه کن."
 },
 "points": [
 {
@@ -2845,7 +2845,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Finns det grovfoder?",
 "ru": "Есть ли грубый корм?",
 "pl": "Czy jest pasza objętościowa?",
-"ko": "조사료가 잘 있나요?", fa: "Is forage available?"
+"ko": "조사료가 잘 있나요?", fa: "آیا علوفه به‌اندازهٔ کافی هست؟"
 },
 {
 "fr": "L’eau propre est-elle accessible ?",
@@ -2861,7 +2861,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Finns det rent vatten tillgängligt?",
 "ru": "Доступна ли чистая вода?",
 "pl": "Czy czysta woda jest dostępna?",
-"ko": "깨끗한 물을 마실 수 있나요?", fa: "Is clean water accessible?"
+"ko": "깨끗한 물을 마실 수 있나요?", fa: "آیا آب تمیز در دسترس است؟"
 },
 {
 "fr": "La ration suit-elle les consignes du cheval ?",
@@ -2877,7 +2877,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Följer foderstaten instruktionerna för hästen?",
 "ru": "Соответствует ли рацион указаниям для этой лошади?",
 "pl": "Czy dawka zgadza się z zaleceniami dla tego konia?",
-"ko": "사료가 그 말의 지침을 따르나요?", fa: "Does the ration follow this horse’s instructions?"
+"ko": "사료가 그 말의 지침을 따르나요?", fa: "آیا جیره از دستورالعمل‌های مربوط به اسب پیروی می‌کند؟"
 }
 ]
 },
@@ -2896,7 +2896,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hästen behöver fibrer.",
 "ru": "Лошади нужна клетчатка.",
 "pl": "Koń potrzebuje włókna.",
-"ko": "말에게는 섬유질이 필요해요.", fa: "Horses need fibre."
+"ko": "말에게는 섬유질이 필요해요.", fa: "اسب به فیبر نیاز دارد."
 },
 {
 "fr": "Le fourrage forme la base de la ration.",
@@ -2912,7 +2912,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Grovfoder är grunden i foderstaten.",
 "ru": "Грубый корм — основа рациона.",
 "pl": "Pasza objętościowa jest podstawą dawki.",
-"ko": "조사료가 사료의 기본이에요.", fa: "Forage is the basis of the ration."
+"ko": "조사료가 사료의 기본이에요.", fa: "علوفه پایهٔ جیره را تشکیل می‌دهد."
 },
 {
 "fr": "L’eau propre reste indispensable.",
@@ -2928,7 +2928,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Rent vatten är alltid nödvändigt.",
 "ru": "Чистая вода необходима.",
 "pl": "Czysta woda jest niezbędna.",
-"ko": "깨끗한 물은 꼭 필요해요.", fa: "Clean water is essential."
+"ko": "깨끗한 물은 꼭 필요해요.", fa: "آب تمیز همچنان ضروری است."
 },
 {
 "fr": "Les concentrés dépendent des besoins individuels.",
@@ -2944,7 +2944,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kraftfoder beror på individuella behov.",
 "ru": "Концентраты зависят от индивидуальных потребностей.",
 "pl": "Pasze treściwe zależą od indywidualnych potrzeb.",
-"ko": "농후사료는 개별 필요에 따라 달라요.", fa: "Concentrates depend on individual needs."
+"ko": "농후사료는 개별 필요에 따라 달라요.", fa: "خوراک‌های کنسانتره به نیازهای هر اسب بستگی دارند."
 },
 {
 "fr": "Une modification de ration doit être progressive.",
@@ -2960,7 +2960,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En ändring av foderstaten ska ske gradvis.",
 "ru": "Рацион нужно менять постепенно.",
 "pl": "Zmiana dawki musi być stopniowa.",
-"ko": "사료 변경은 점진적이어야 해요.", fa: "Feed changes must be gradual."
+"ko": "사료 변경은 점진적이어야 해요.", fa: "تغییر جیره باید تدریجی باشد."
 }
 ],
 "hb": [
@@ -2978,7 +2978,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför behöver en häst regelbundet grovfoder?",
 "ru": "Почему лошади регулярно нужен грубый корм?",
 "pl": "Dlaczego koń regularnie potrzebuje paszy objętościowej?",
-"ko": "왜 말은 조사료를 규칙적으로 먹어야 해요?", fa: "Why do horses need forage regularly?"
+"ko": "왜 말은 조사료를 규칙적으로 먹어야 해요?", fa: "چرا اسب به‌طور منظم به علوفه نیاز دارد؟"
 },
 {
 "fr": "Quels signes peuvent suggérer un manque d’eau ?",
@@ -2994,7 +2994,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilka tecken kan tyda på vattenbrist?",
 "ru": "Какие признаки могут указывать на нехватку воды?",
 "pl": "Jakie oznaki mogą wskazywać na brak wody?",
-"ko": "물이 부족하다는 신호는 뭐예요?", fa: "What might indicate a lack of water?"
+"ko": "물이 부족하다는 신호는 뭐예요?", fa: "کدام نشانه‌ها می‌توانند به کمبود آب اشاره کنند؟"
 },
 {
 "fr": "Quand les concentrés sont-ils utiles ?",
@@ -3010,7 +3010,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När är kraftfoder användbart?",
 "ru": "Когда полезны концентраты?",
 "pl": "Kiedy przydają się pasze treściwe?",
-"ko": "농후사료는 언제 유용해요?", fa: "When can concentrates be useful?"
+"ko": "농후사료는 언제 유용해요?", fa: "خوراک‌های کنسانتره کی مفیدند؟"
 },
 {
 "fr": "Pourquoi ne pas modifier une ration soudainement ?",
@@ -3026,7 +3026,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför ska man inte ändra foderstaten plötsligt?",
 "ru": "Почему нельзя резко менять рацион?",
 "pl": "Dlaczego nie zmieniać dawki nagle?",
-"ko": "왜 사료를 갑자기 바꾸면 안 돼요?", fa: "Why must feed changes be gradual?"
+"ko": "왜 사료를 갑자기 바꾸면 안 돼요?", fa: "چرا نباید جیره را ناگهان تغییر داد؟"
 },
 {
 "fr": "Qui décide de la ration d’un cheval au club ?",
@@ -3042,7 +3042,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vem bestämmer en hästs foderstat på ridskolan?",
 "ru": "Кто решает, каким будет рацион лошади в клубе?",
 "pl": "Kto w klubie decyduje o dawce konia?",
-"ko": "클럽에서 말의 사료는 누가 정해요?", fa: "Who decides a riding-school horse’s ration?"
+"ko": "클럽에서 말의 사료는 누가 정해요?", fa: "در باشگاه، چه کسی جیرهٔ اسب را تعیین می‌کند؟"
 }
 ],
 "fin": {
@@ -3059,7 +3059,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En bra foderstat utgår från hästens behov, inte från en vana.",
 "ru": "Хороший рацион отвечает потребностям лошади, а не привычке.",
 "pl": "Dobra dawka odpowiada na potrzeby konia, a nie na przyzwyczajenie.",
-"ko": "좋은 사료는 습관이 아니라 말의 필요에 맞춰요.", fa: "A good ration meets the horse’s needs, not a habit."
+"ko": "좋은 사료는 습관이 아니라 말의 필요에 맞춰요.", fa: "یک جیرهٔ خوب به نیازهای اسب پاسخ می‌دهد، نه به یک عادت."
 }
 },
 "g4-exterieur": {
@@ -3077,7 +3077,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Leta redan före ett svårt parti upp en lugn plats där du kan stanna om det behövs. Låt din ridlärare leda dig och gör aldrig en tvekan till en kraftmätning.",
 "ru": "Перед трудным участком заранее найди спокойное место, где можно остановиться при необходимости. Следуй указаниям тренера и никогда не превращай сомнение в борьбу.",
 "pl": "Przed trudnym miejscem wypatrz spokojne miejsce, gdzie w razie potrzeby się zatrzymasz. Słuchaj instruktora i nigdy nie zamieniaj wahania w siłowanie się.",
-"ko": "어려운 구간 전에 필요하면 멈출 수 있는 차분한 곳을 미리 봐 둬요. 선생님의 안내를 따르고, 망설임을 절대 힘겨루기로 만들지 마요.", fa: "Before an obstacle, spot a calm place where you can stop if needed. Follow your instructor and never turn hesitation into a struggle."
+"ko": "어려운 구간 전에 필요하면 멈출 수 있는 차분한 곳을 미리 봐 둬요. 선생님의 안내를 따르고, 망설임을 절대 힘겨루기로 만들지 마요.", fa: "پیش از یک دشواری، از قبل جای آرامی برای توقف در صورت لزوم پیدا کن. بگذار مربی‌ات راهنمایی‌ات کند و هرگز یک تردید را به کشمکش تبدیل نکن."
 },
 "defi": {
 "titre": {
@@ -3094,7 +3094,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En lugn passage",
 "ru": "Спокойное прохождение",
 "pl": "Spokojne pokonanie",
-"ko": "차분한 통과", fa: "A calm passage"
+"ko": "차분한 통과", fa: "گذری آرام"
 },
 "accroche": {
 "fr": "Sur un petit parcours encadré, recherche une allure régulière et un cheval attentif.",
@@ -3110,7 +3110,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Sök en jämn gångart och en uppmärksam häst på en kort, ledd tur.",
 "ru": "На небольшом маршруте под присмотром добивайся ровного аллюра и внимательной лошади.",
 "pl": "Na krótkiej trasie pod opieką szukaj równego chodu i uważnego konia.",
-"ko": "지도자가 있는 작은 코스에서 규칙적인 보법과 집중하는 말을 찾아봐요.", fa: "On a supervised obstacle trail, aim for a steady gait and an attentive horse."
+"ko": "지도자가 있는 작은 코스에서 규칙적인 보법과 집중하는 말을 찾아봐요.", fa: "روی یک مسیر کوچک با نظارت مربی، دنبال گامی منظم و اسبی گوش‌به‌فرمان باش."
 },
 "points": [
 {
@@ -3127,7 +3127,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Tittade jag mot slutet av det svåra partiet?",
 "ru": "Был ли взгляд направлен за трудный участок?",
 "pl": "Czy wzrok był skierowany za trudność?",
-"ko": "어려운 구간의 출구를 봤나요?", fa: "Did I look beyond the difficulty?"
+"ko": "어려운 구간의 출구를 봤나요?", fa: "آیا به خروجی سختی نگاه کرده‌ام؟"
 },
 {
 "fr": "Ai-je gardé une distance sûre ?",
@@ -3143,7 +3143,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Höll jag ett säkert avstånd?",
 "ru": "Сохранена ли безопасная дистанция?",
 "pl": "Czy zachowany był bezpieczny odstęp?",
-"ko": "안전거리를 유지했나요?", fa: "Did I keep a safe distance?"
+"ko": "안전거리를 유지했나요?", fa: "آیا فاصلهٔ ایمن را حفظ کردم؟"
 },
 {
 "fr": "Ai-je renoncé si le passage semblait dangereux ?",
@@ -3159,7 +3159,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Avstod jag när passagen verkade farlig?",
 "ru": "Удалось ли отказаться от прохождения, если оно казалось опасным?",
 "pl": "Czy z przejścia zrezygnowano, gdy wydawało się niebezpieczne?",
-"ko": "통과가 위험해 보일 때 포기했나요?", fa: "Did I stop if the passage seemed unsafe?"
+"ko": "통과가 위험해 보일 때 포기했나요?", fa: "آیا اگر عبور خطرناک به نظر می‌رسید منصرف شدم؟"
 }
 ]
 },
@@ -3178,7 +3178,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En uteritt förbereds före start.",
 "ru": "Выезд готовится до начала.",
 "pl": "Wyjazd przygotowuje się przed startem.",
-"ko": "외승은 출발 전에 준비해요.", fa: "An outing begins with preparation."
+"ko": "외승은 출발 전에 준비해요.", fa: "یک سواری بیرونی پیش از حرکت آماده می‌شود."
 },
 {
 "fr": "Le terrain commande l’allure.",
@@ -3194,7 +3194,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Underlaget bestämmer gångarten.",
 "ru": "Грунт определяет аллюр.",
 "pl": "Teren decyduje o chodzie.",
-"ko": "지면이 보법을 정해요.", fa: "The ground determines the gait."
+"ko": "지면이 보법을 정해요.", fa: "زمین تعیین‌کنندهٔ گام است."
 },
 {
 "fr": "Le cavalier reste attentif au groupe.",
@@ -3210,7 +3210,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttaren håller uppsikt över gruppen.",
 "ru": "Всадник остаётся внимательным к группе.",
 "pl": "Jeździec pozostaje uważny na grupę.",
-"ko": "기수는 그룹에 계속 주의를 기울여요.", fa: "The rider remains aware of the group."
+"ko": "기수는 그룹에 계속 주의를 기울여요.", fa: "سوارکار حواسش به گروه است."
 },
 {
 "fr": "On aborde une difficulté sans se précipiter.",
@@ -3226,7 +3226,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ett svårt parti rider man an utan att rusa.",
 "ru": "К трудному участку подходят без спешки.",
 "pl": "Do trudności podjeżdża się bez pośpiechu.",
-"ko": "어려운 구간은 서두르지 않고 접근해요.", fa: "Approach difficulties without rushing."
+"ko": "어려운 구간은 서두르지 않고 접근해요.", fa: "با یک سختی بدون عجله روبه‌رو می‌شویم."
 },
 {
 "fr": "La sécurité passe avant la réussite du passage.",
@@ -3242,7 +3242,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Säkerheten går före att klara passagen.",
 "ru": "Безопасность важнее, чем пройти участок.",
 "pl": "Bezpieczeństwo jest ważniejsze niż pokonanie trudności.",
-"ko": "통과 성공보다 안전이 먼저예요.", fa: "Safety matters more than completing an obstacle."
+"ko": "통과 성공보다 안전이 먼저예요.", fa: "ایمنی مقدم بر موفقیت در عبور است."
 }
 ],
 "hb": [
@@ -3260,7 +3260,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur förbereder jag en uteritt med min ridlärare?",
 "ru": "Как подготовить выезд вместе с тренером?",
 "pl": "Jak przygotować wyjazd z instruktorem?",
-"ko": "선생님과 외승을 어떻게 준비해요?", fa: "How should I prepare an outing with my instructor?"
+"ko": "선생님과 외승을 어떻게 준비해요?", fa: "چگونه یک بیرون‌رفتن را با مربی‌ام آماده کنم؟"
 },
 {
 "fr": "Que faire si mon cheval hésite devant une flaque ?",
@@ -3276,7 +3276,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad gör jag om min häst tvekar vid en vattenpöl?",
 "ru": "Что делать, если лошадь сомневается перед лужей?",
 "pl": "Co zrobić, jeśli koń waha się przed kałużą?",
-"ko": "말이 물웅덩이 앞에서 망설이면 어떻게 해요?", fa: "What if my horse hesitates at a puddle?"
+"ko": "말이 물웅덩이 앞에서 망설이면 어떻게 해요?", fa: "اگر اسبم جلوی یک چالهٔ آب مردد شود چه کنم؟"
 },
 {
 "fr": "Pourquoi le pas est-il souvent préférable sur un sol difficile ?",
@@ -3292,7 +3292,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför är skritt ofta bäst på svårt underlag?",
 "ru": "Почему на трудном грунте часто лучше идти шагом?",
 "pl": "Dlaczego na trudnym podłożu stęp jest często lepszy?",
-"ko": "왜 험한 지면에서는 평보가 더 나은 경우가 많아요?", fa: "Why is walk often better on difficult ground?"
+"ko": "왜 험한 지면에서는 평보가 더 나은 경우가 많아요?", fa: "چرا روی زمین دشوار اغلب قدم ترجیح دارد؟"
 },
 {
 "fr": "Comment garder ses distances en groupe ?",
@@ -3308,7 +3308,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur håller man avstånd i grupp?",
 "ru": "Как держать дистанцию в группе?",
 "pl": "Jak zachować odstępy w grupie?",
-"ko": "그룹에서 거리를 어떻게 유지해요?", fa: "How can I keep a safe group distance?"
+"ko": "그룹에서 거리를 어떻게 유지해요?", fa: "در گروه چگونه فاصله را حفظ کنیم؟"
 },
 {
 "fr": "Quand vaut-il mieux descendre ou renoncer ?",
@@ -3324,7 +3324,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När är det bättre att sitta av eller avstå?",
 "ru": "Когда лучше спешиться или отказаться?",
 "pl": "Kiedy lepiej zsiąść lub zrezygnować?",
-"ko": "언제 내리거나 포기하는 게 나아요?", fa: "When should I dismount or turn back?"
+"ko": "언제 내리거나 포기하는 게 나아요?", fa: "چه وقت بهتر است پیاده شد یا منصرف شد؟"
 }
 ],
 "fin": {
@@ -3341,7 +3341,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ute i terrängen är ett försiktigt val bättre än en forcerad passage.",
 "ru": "На природе осторожное решение лучше, чем пройти силой.",
 "pl": "W terenie ostrożny wybór jest lepszy niż przejście na siłę.",
-"ko": "야외에서는 억지로 통과하기보다 신중한 선택이 나아요.", fa: "Outdoors, a careful decision beats a forced passage."
+"ko": "야외에서는 억지로 통과하기보다 신중한 선택이 나아요.", fa: "در بیرون، یک انتخاب محتاطانه بهتر از یک عبور اجباری است."
 }
 },
 "g4-biomeca": {
@@ -3359,7 +3359,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta på några steg från marken innan du söker en känsla i sadeln. En enkel observation, upprepad i samma lugn, hjälper dig att koppla ihop det du ser med det du känner.",
 "ru": "Понаблюдай несколько темпов с земли, прежде чем искать ощущение в седле. Простое наблюдение, спокойно повторяемое, помогает связать то, что ты видишь, с тем, что чувствуешь.",
 "pl": "Obserwuj kilka kroków z ziemi, zanim poszukasz odczucia w siodle. Prosta obserwacja, powtarzana w spokoju, pomaga połączyć to, co widzisz, z tym, co czujesz.",
-"ko": "안장 위에서 감각을 찾기 전에 땅에서 몇 보폭을 지켜봐요. 같은 차분함 속에서 반복하는 단순한 관찰이 보이는 것과 느끼는 것을 연결해 줘요.", fa: "Watch a few strides from the ground before looking for the same feeling in the saddle. Calm, repeated observation connects what you see with what you feel."
+"ko": "안장 위에서 감각을 찾기 전에 땅에서 몇 보폭을 지켜봐요. 같은 차분함 속에서 반복하는 단순한 관찰이 보이는 것과 느끼는 것을 연결해 줘요.", fa: "پیش از آنکه به دنبال حسی روی زین باشی، چند گام را از روی زمین نگاه کن. مشاهده‌ای ساده که با همان آرامش تکرار شود، کمک می‌کند آنچه می‌بینی را به آنچه حس می‌کنی پیوند دهی."
 },
 "defi": {
 "titre": {
@@ -3376,7 +3376,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Titta på rörelsen",
 "ru": "Смотреть на движение",
 "pl": "Patrz na ruch",
-"ko": "움직임 보기", fa: "Watch the movement"
+"ko": "움직임 보기", fa: "تماشای حرکت"
 },
 "accroche": {
 "fr": "Observe un cheval au pas avant de chercher à analyser une difficulté montée.",
@@ -3392,7 +3392,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Iaktta en häst i skritt innan du försöker analysera ett problem i sadeln.",
 "ru": "Понаблюдай за лошадью на шагу, прежде чем анализировать трудность под седлом.",
 "pl": "Obserwuj konia w stępie, zanim spróbujesz analizować trudność pod siodłem.",
-"ko": "기승 중의 어려움을 분석하기 전에 평보하는 말을 관찰해 봐요.", fa: "Observe a horse at walk before trying to analyse a problem under saddle."
+"ko": "기승 중의 어려움을 분석하기 전에 평보하는 말을 관찰해 봐요.", fa: "پیش از اینکه بخواهی مشکلی را در حال سواری تحلیل کنی، اسب را در قدم مشاهده کن."
 },
 "points": [
 {
@@ -3409,7 +3409,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Följer huvud och hals med i skritten?",
 "ru": "Сопровождают ли голова и шея шаг?",
 "pl": "Czy głowa i szyja podążają za stępem?",
-"ko": "머리와 목이 평보를 따라 움직이나요?", fa: "Do the head and neck follow the walk?"
+"ko": "머리와 목이 평보를 따라 움직이나요?", fa: "آیا سر و گردن قدم را همراهی می‌کنند؟"
 },
 {
 "fr": "Le dos paraît-il mobile ?",
@@ -3425,7 +3425,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ser ryggen rörlig ut?",
 "ru": "Выглядит ли спина подвижной?",
 "pl": "Czy grzbiet wydaje się ruchomy?",
-"ko": "등이 유연하게 움직이는 것 같나요?", fa: "Does the back look mobile?"
+"ko": "등이 유연하게 움직이는 것 같나요?", fa: "آیا پشت متحرک به نظر می‌رسد؟"
 },
 {
 "fr": "Ma propre position perturbe-t-elle le mouvement ?",
@@ -3441,7 +3441,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Stör min egen sits rörelsen?",
 "ru": "Мешает ли моя посадка движению?",
 "pl": "Czy moja pozycja zaburza ruch?",
-"ko": "내 자세가 움직임을 방해하나요?", fa: "Does my own posture disturb the movement?"
+"ko": "내 자세가 움직임을 방해하나요?", fa: "آیا وضعیت بدن خودم حرکت را مختل می‌کند؟"
 }
 ]
 },
@@ -3460,7 +3460,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Bakbenen bidrar till framdrivningen.",
 "ru": "Задние ноги участвуют в толчке.",
 "pl": "Kończyny tylne uczestniczą w napędzie.",
-"ko": "뒷다리가 추진에 기여해요.", fa: "The hindquarters contribute to propulsion."
+"ko": "뒷다리가 추진에 기여해요.", fa: "پاهای عقب در پیش‌رانش نقش دارند."
 },
 {
 "fr": "Le dos transmet le mouvement.",
@@ -3476,7 +3476,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryggen för vidare rörelsen.",
 "ru": "Спина передаёт движение.",
 "pl": "Grzbiet przenosi ruch.",
-"ko": "등이 움직임을 전달해요.", fa: "The back carries movement through the body."
+"ko": "등이 움직임을 전달해요.", fa: "پشت، حرکت را منتقل می‌کند."
 },
 {
 "fr": "L’encolure intervient dans l’équilibre.",
@@ -3492,7 +3492,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Halsen påverkar balansen.",
 "ru": "Шея участвует в равновесии.",
 "pl": "Szyja bierze udział w utrzymaniu równowagi.",
-"ko": "목은 균형에 관여해요.", fa: "The neck helps with balance."
+"ko": "목은 균형에 관여해요.", fa: "گردن در تعادل نقش دارد."
 },
 {
 "fr": "L’avant-main reçoit et guide le mouvement.",
@@ -3508,7 +3508,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Framdelen tar emot och leder rörelsen.",
 "ru": "Передняя часть принимает и направляет движение.",
 "pl": "Przód konia przyjmuje i prowadzi ruch.",
-"ko": "전구는 움직임을 받아서 이끌어요.", fa: "The forehand supports and guides movement."
+"ko": "전구는 움직임을 받아서 이끌어요.", fa: "جلوی بدن حرکت را دریافت و هدایت می‌کند."
 },
 {
 "fr": "La position du cavalier change l’ensemble.",
@@ -3524,7 +3524,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttarens sits påverkar helheten.",
 "ru": "Посадка всадника меняет всё целиком.",
 "pl": "Pozycja jeźdźca zmienia całość.",
-"ko": "기수의 자세가 전체를 바꿔요.", fa: "The rider’s position affects the whole system."
+"ko": "기수의 자세가 전체를 바꿔요.", fa: "وضعیت سوارکار همه‌چیز را تغییر می‌دهد."
 }
 ],
 "hb": [
@@ -3542,7 +3542,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför rör sig halsen i skritt?",
 "ru": "Почему шея двигается на шагу?",
 "pl": "Dlaczego szyja porusza się w stępie?",
-"ko": "왜 평보에서 목이 움직일까요?", fa: "Why does the neck move at walk?"
+"ko": "왜 평보에서 목이 움직일까요?", fa: "چرا گردن در قدم حرکت می‌کند؟"
 },
 {
 "fr": "Quel rôle joue le dos dans la locomotion ?",
@@ -3558,7 +3558,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vilken roll spelar ryggen i rörelsen?",
 "ru": "Какую роль играет спина в движении?",
 "pl": "Jaką rolę odgrywa grzbiet w poruszaniu się?",
-"ko": "이동 운동에서 등은 어떤 역할을 해요?", fa: "What role does the back play in movement?"
+"ko": "이동 운동에서 등은 어떤 역할을 해요?", fa: "پشت در حرکت چه نقشی دارد؟"
 },
 {
 "fr": "Que ressent-on quand les postérieurs sont actifs ?",
@@ -3574,7 +3574,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känns det när bakbenen är aktiva?",
 "ru": "Что чувствуешь, когда задние ноги активны?",
 "pl": "Co się czuje, gdy kończyny tylne są aktywne?",
-"ko": "뒷다리가 활발할 때 어떤 느낌이 들어요?", fa: "What can I feel when the hindquarters are active?"
+"ko": "뒷다리가 활발할 때 어떤 느낌이 들어요?", fa: "وقتی پاهای عقب فعال‌اند چه حسی داریم؟"
 },
 {
 "fr": "Pourquoi mon buste influence-t-il le cheval ?",
@@ -3590,7 +3590,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför påverkar min överkropp hästen?",
 "ru": "Почему мой корпус влияет на лошадь?",
 "pl": "Dlaczego mój tułów wpływa na konia?",
-"ko": "왜 내 상체가 말에게 영향을 줄까요?", fa: "Why does my upper body affect the horse?"
+"ko": "왜 내 상체가 말에게 영향을 줄까요?", fa: "چرا بالاتنه‌ام روی اسب اثر می‌گذارد؟"
 },
 {
 "fr": "Comment observer une locomotion régulière ?",
@@ -3606,7 +3606,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur iakttar jag en jämn rörelse?",
 "ru": "Как наблюдать за ровным движением?",
 "pl": "Jak obserwować regularny ruch?",
-"ko": "규칙적인 움직임은 어떻게 관찰해요?", fa: "How can I recognise regular movement?"
+"ko": "규칙적인 움직임은 어떻게 관찰해요?", fa: "چگونه یک حرکت منظم را مشاهده کنیم؟"
 }
 ],
 "fin": {
@@ -3623,7 +3623,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Att förstå rörelsen hjälper dig att använda mindre kraft.",
 "ru": "Понимание движения помогает действовать с меньшей силой.",
 "pl": "Zrozumienie ruchu pomaga działać z mniejszą siłą.",
-"ko": "움직임을 이해하면 더 적은 힘으로 부조할 수 있어요.", fa: "Understanding movement helps us use less force."
+"ko": "움직임을 이해하면 더 적은 힘으로 부조할 수 있어요.", fa: "درک حرکت کمک می‌کند با نیروی کمتری عمل کنیم."
 }
 },
 "g4-galop-qualite": {
@@ -3642,7 +3642,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Galoppfattning utan brådska",
 "ru": "Подъём в галоп без спешки",
 "pl": "Zagalopowanie bez pośpiechu",
-"ko": "서두르지 않는 구보 발진", fa: "A departure without rushing"
+"ko": "서두르지 않는 구보 발진", fa: "شروعی بدون عجله"
 },
 "accroche": {
 "fr": "Avec ton enseignant, compare deux départs au galop en t’intéressant à leur préparation.",
@@ -3658,7 +3658,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Jämför tillsammans med din ridlärare två galoppfattningar och fokusera på förberedelsen.",
 "ru": "Вместе с тренером сравни два подъёма в галоп, обращая внимание на их подготовку.",
 "pl": "Z instruktorem porównaj dwa zagalopowania, zwracając uwagę na ich przygotowanie.",
-"ko": "선생님과 함께 두 번의 구보 발진을 준비 과정에 주목하며 비교해 봐요.", fa: "With your instructor, compare two canter transitions by looking at how they were prepared."
+"ko": "선생님과 함께 두 번의 구보 발진을 준비 과정에 주목하며 비교해 봐요.", fa: "همراه مربی‌ات، دو شروع چهارنعل را با توجه به آماده‌سازی‌شان مقایسه کن."
 },
 "points": [
 {
@@ -3675,7 +3675,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Var traven jämn före förfrågan?",
 "ru": "Была ли рысь ровной перед командой?",
 "pl": "Czy kłus był regularny przed sygnałem?",
-"ko": "요구 전에 속보가 규칙적이었나요?", fa: "Was the trot regular before the aid?"
+"ko": "요구 전에 속보가 규칙적이었나요?", fa: "آیا یورتمه پیش از درخواست منظم بود؟"
 },
 {
 "fr": "Le cheval a-t-il accéléré avant de partir ?",
@@ -3691,7 +3691,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ökade hästen innan den fattade galopp?",
 "ru": "Ускорилась ли лошадь перед подъёмом?",
 "pl": "Czy koń przyspieszył przed zagalopowaniem?",
-"ko": "출발 전에 말이 빨라졌나요?", fa: "Did the horse speed up before cantering?"
+"ko": "출발 전에 말이 빨라졌나요?", fa: "آیا اسب پیش از حرکت سرعت گرفت؟"
 },
 {
 "fr": "Les premières foulées étaient-elles calmes et équilibrées ?",
@@ -3707,7 +3707,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Var de första galoppsprången lugna och i balans?",
 "ru": "Были ли первые темпы спокойными и уравновешенными?",
 "pl": "Czy pierwsze kroki galopu były spokojne i zrównoważone?",
-"ko": "첫 보폭들이 차분하고 균형 잡혀 있었나요?", fa: "Were the first strides calm and balanced?"
+"ko": "첫 보폭들이 차분하고 균형 잡혀 있었나요?", fa: "آیا نخستین گام‌ها آرام و متعادل بودند؟"
 }
 ]
 },
@@ -3726,7 +3726,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En bra galoppfattning börjar före förfrågan.",
 "ru": "Хороший подъём в галоп начинается до команды.",
 "pl": "Dobre zagalopowanie zaczyna się przed sygnałem.",
-"ko": "좋은 발진은 요구 전에 시작돼요.", fa: "A good canter transition starts before the aid."
+"ko": "좋은 발진은 요구 전에 시작돼요.", fa: "یک حرکت خوب پیش از درخواست آغاز می‌شود."
 },
 {
 "fr": "Le cheval doit rester disponible.",
@@ -3742,7 +3742,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hästen ska vara lyhörd.",
 "ru": "Лошадь должна оставаться отзывчивой.",
 "pl": "Koń musi pozostać uważny na pomoce.",
-"ko": "말은 반응할 수 있는 상태여야 해요.", fa: "The horse must stay responsive."
+"ko": "말은 반응할 수 있는 상태여야 해요.", fa: "اسب باید آماده و پذیرا بماند."
 },
 {
 "fr": "La précipitation peut masquer un manque d’équilibre.",
@@ -3758,7 +3758,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Brådska kan dölja bristande balans.",
 "ru": "Спешка может скрывать недостаток равновесия.",
 "pl": "Pośpiech może ukrywać brak równowagi.",
-"ko": "서두름이 균형 부족을 가릴 수 있어요.", fa: "Rushing can hide a loss of balance."
+"ko": "서두름이 균형 부족을 가릴 수 있어요.", fa: "شتاب‌زدگی می‌تواند کمبود تعادل را پنهان کند."
 },
 {
 "fr": "Les aides restent discrètes après une bonne préparation.",
@@ -3774,7 +3774,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hjälperna förblir diskreta efter en bra förberedelse.",
 "ru": "После хорошей подготовки средства управления остаются незаметными.",
 "pl": "Po dobrym przygotowaniu pomoce pozostają dyskretne.",
-"ko": "잘 준비하면 부조는 은은하게 유지돼요.", fa: "Good preparation allows subtle aids."
+"ko": "잘 준비하면 부조는 은은하게 유지돼요.", fa: "پس از یک آماده‌سازی خوب، کمک‌ها نامحسوس می‌مانند."
 },
 {
 "fr": "Le cavalier accompagne les premières foulées.",
@@ -3790,7 +3790,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttaren följer med i de första galoppsprången.",
 "ru": "Всадник сопровождает первые темпы.",
 "pl": "Jeździec podąża za pierwszymi krokami galopu.",
-"ko": "기수는 첫 보폭들을 따라가요.", fa: "The rider follows the first canter strides."
+"ko": "기수는 첫 보폭들을 따라가요.", fa: "سوارکار نخستین گام‌ها را همراهی می‌کند."
 }
 ],
 "hb": [
@@ -3808,7 +3808,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur känner jag igen en galoppfattning från god balans?",
 "ru": "Как распознать подъём в галоп через уравновешивание?",
 "pl": "Jak rozpoznać zagalopowanie z zachowaniem równowagi?",
-"ko": "균형을 잡고 하는 발진은 어떻게 알아봐요?", fa: "How can I recognise a balanced canter transition?"
+"ko": "균형을 잡고 하는 발진은 어떻게 알아봐요?", fa: "چگونه حرکتی را که با به دست آوردن تعادل آغاز می‌شود تشخیص دهیم؟"
 },
 {
 "fr": "Pourquoi mon cheval accélère-t-il au trot avant de partir ?",
@@ -3824,7 +3824,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Varför ökar min häst i traven innan den fattar galopp?",
 "ru": "Почему моя лошадь ускоряется на рыси перед подъёмом?",
 "pl": "Dlaczego mój koń przyspiesza w kłusie przed zagalopowaniem?",
-"ko": "왜 말이 출발 전에 속보에서 빨라질까요?", fa: "Why does my horse speed up in trot before cantering?"
+"ko": "왜 말이 출발 전에 속보에서 빨라질까요?", fa: "چرا اسبم پیش از حرکت به چهارنعل، در یورتمه شتاب می‌گیرد؟"
 },
 {
 "fr": "Que dois-je sentir dans les premières foulées ?",
@@ -3840,7 +3840,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vad ska jag känna i de första galoppsprången?",
 "ru": "Что нужно почувствовать в первых темпах?",
 "pl": "Co powinno się czuć w pierwszych krokach galopu?",
-"ko": "첫 보폭에서 무엇을 느껴야 해요?", fa: "What should I feel in the first strides?"
+"ko": "첫 보폭에서 무엇을 느껴야 해요?", fa: "در نخستین گام‌ها چه باید حس کنم؟"
 },
 {
 "fr": "Comment préparer un départ sans tirer ?",
@@ -3856,7 +3856,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Hur förbereder jag en galoppfattning utan att dra?",
 "ru": "Как подготовить подъём, не таща за повод?",
 "pl": "Jak przygotować zagalopowanie bez ciągnięcia?",
-"ko": "당기지 않고 발진을 준비하려면 어떻게 해요?", fa: "How can I prepare without pulling?"
+"ko": "당기지 않고 발진을 준비하려면 어떻게 해요?", fa: "چطور حرکت را بدون کشیدن آماده کنیم؟"
 },
 {
 "fr": "Quand vaut-il mieux revenir au trot et recommencer ?",
@@ -3872,7 +3872,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "När är det bättre att gå tillbaka till trav och börja om?",
 "ru": "Когда лучше вернуться на рысь и начать заново?",
 "pl": "Kiedy lepiej wrócić do kłusa i zacząć od nowa?",
-"ko": "언제 속보로 돌아가서 다시 하는 게 나아요?", fa: "When is it better to return to trot and try again?"
+"ko": "언제 속보로 돌아가서 다시 하는 게 나아요?", fa: "کی بهتر است به یورتمه برگردیم و دوباره شروع کنیم؟"
 }
 ],
 "fin": {
@@ -3889,7 +3889,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En fin galoppfattning förbereds, den rycks inte fram.",
 "ru": "Хороший подъём в галоп готовят, а не вырывают.",
 "pl": "Dobre zagalopowanie się przygotowuje, a nie wyrywa.",
-"ko": "멋진 발진은 준비하는 것이지, 억지로 끌어내는 게 아니에요.", fa: "A good canter transition is prepared, not forced."
+"ko": "멋진 발진은 준비하는 것이지, 억지로 끌어내는 게 아니에요.", fa: "یک حرکت زیبا آماده می‌شود، به زور گرفته نمی‌شود."
 }
 },
 "g4-c5": {
@@ -3907,7 +3907,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Lär dig först känna igen vad som är normalt för varje häst. Ett ovanligt beteende ska beskrivas noggrant för en ansvarig, utan improviserad behandling.",
 "ru": "Сначала научись узнавать, что привычно для каждой лошади. Необычное поведение нужно точно описать ответственному, без самодеятельного лечения.",
 "pl": "Najpierw naucz się rozpoznawać, co jest zwyczajne dla każdego konia. Nietypowe zachowanie trzeba dokładnie opisać odpowiedzialnej osobie, bez improwizowanego leczenia.",
-"ko": "먼저 각 말의 평소 모습이 어떤지 알아보는 것부터 배워요. 평소와 다른 모습은 즉흥적인 처치 없이 책임자에게 정확히 설명해요.", fa: "First learn what is normal for each horse. Describe unusual behaviour accurately to a person in charge, without trying an improvised treatment."
+"ko": "먼저 각 말의 평소 모습이 어떤지 알아보는 것부터 배워요. 평소와 다른 모습은 즉흥적인 처치 없이 책임자에게 정확히 설명해요.", fa: "اول یاد بگیر چه چیزی برای هر اسب عادی است. رفتاری غیرعادی باید دقیقاً برای یک مسئول توصیف شود، بدون درمان بداهه."
 },
 "defi": {
 "titre": {
@@ -3924,7 +3924,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Det uppmärksamma ögat",
 "ru": "Внимательный глаз",
 "pl": "Uważne oko",
-"ko": "세심한 눈", fa: "An observant eye"
+"ko": "세심한 눈", fa: "چشم دقیق"
 },
 "accroche": {
 "fr": "Pendant une semaine, observe l’attitude habituelle des chevaux que tu prépares.",
@@ -3940,7 +3940,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Iaktta under en vecka det vanliga beteendet hos hästarna du gör i ordning.",
 "ru": "В течение недели наблюдай за обычным поведением лошадей, которых ты готовишь.",
 "pl": "Przez tydzień obserwuj zwykłe zachowanie koni, które przygotowujesz.",
-"ko": "일주일 동안 내가 준비하는 말들의 평소 모습을 관찰해 봐요.", fa: "For one week, observe the usual behaviour of the horses you prepare."
+"ko": "일주일 동안 내가 준비하는 말들의 평소 모습을 관찰해 봐요.", fa: "به مدت یک هفته، رفتار معمول اسب‌هایی را که آماده می‌کنی زیر نظر بگیر."
 },
 "points": [
 {
@@ -3957,7 +3957,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag märkt en förändring i beteendet?",
 "ru": "Замечено ли изменение поведения?",
 "pl": "Czy widać zmianę zachowania?",
-"ko": "행동의 변화를 알아챘나요?", fa: "Did I notice a change in behaviour?"
+"ko": "행동의 변화를 알아챘나요?", fa: "آیا تغییری در رفتار دیده‌ام؟"
 },
 {
 "fr": "Ai-je repéré une anomalie à signaler ?",
@@ -3973,7 +3973,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag upptäckt en avvikelse att rapportera?",
 "ru": "Обнаружено ли отклонение, о котором нужно сообщить?",
 "pl": "Czy jest nieprawidłowość do zgłoszenia?",
-"ko": "알려야 할 이상을 발견했나요?", fa: "Did I spot anything unusual to report?"
+"ko": "알려야 할 이상을 발견했나요?", fa: "آیا ناهنجاری‌ای دیده‌ام که باید گزارش شود؟"
 },
 {
 "fr": "Ai-je prévenu un responsable sans improviser un soin ?",
@@ -3989,7 +3989,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Har jag meddelat en ansvarig utan att improvisera en behandling?",
 "ru": "Предупреждён ли ответственный без самодеятельного ухода?",
 "pl": "Czy odpowiedzialna osoba została powiadomiona bez improwizowanego zabiegu?",
-"ko": "즉흥적으로 처치하지 않고 책임자에게 알렸나요?", fa: "Did I alert a responsible adult without attempting treatment?"
+"ko": "즉흥적으로 처치하지 않고 책임자에게 알렸나요?", fa: "آیا به یک مسئول خبر دادم، بی‌آنکه خودسرانه درمانی انجام دهم؟"
 }
 ]
 },
@@ -4008,7 +4008,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Daglig observation hjälper dig att lära känna hästen.",
 "ru": "Ежедневное наблюдение помогает узнать лошадь.",
 "pl": "Codzienna obserwacja pomaga poznać konia.",
-"ko": "매일 관찰하면 말을 알 수 있어요.", fa: "Daily observation helps you know the horse."
+"ko": "매일 관찰하면 말을 알 수 있어요.", fa: "مشاهدهٔ روزانه به شناخت اسب کمک می‌کند."
 },
 {
 "fr": "Un changement inhabituel doit attirer l’attention.",
@@ -4024,7 +4024,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "En ovanlig förändring ska väcka uppmärksamhet.",
 "ru": "Необычное изменение должно привлекать внимание.",
 "pl": "Nietypowa zmiana powinna zwrócić uwagę.",
-"ko": "평소와 다른 변화에는 주의해야 해요.", fa: "An unusual change deserves attention."
+"ko": "평소와 다른 변화에는 주의해야 해요.", fa: "هر تغییر غیرعادی باید توجه را جلب کند."
 },
 {
 "fr": "Les constantes s’interprètent avec le contexte.",
@@ -4040,7 +4040,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Vitalparametrar tolkas utifrån sammanhanget.",
 "ru": "Физиологические показатели оцениваются с учётом обстоятельств.",
 "pl": "Parametry życiowe ocenia się w kontekście.",
-"ko": "활력 징후는 상황과 함께 해석해요.", fa: "Vital signs depend on context."
+"ko": "활력 징후는 상황과 함께 해석해요.", fa: "علائم حیاتی با توجه به شرایط تفسیر می‌شوند."
 },
 {
 "fr": "Une colique ou une boiterie nécessite un avis rapide.",
@@ -4056,7 +4056,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Kolik eller hälta kräver snabbt råd.",
 "ru": "Колика или хромота требуют быстрого совета специалиста.",
 "pl": "Kolka lub kulawizna wymaga szybkiej konsultacji.",
-"ko": "산통이나 파행은 빠른 의견이 필요해요.", fa: "Colic or lameness calls for prompt advice."
+"ko": "산통이나 파행은 빠른 의견이 필요해요.", fa: "قولنج یا لنگش به نظر سریع متخصص نیاز دارد."
 },
 {
 "fr": "Le cavalier alerte sans se substituer au vétérinaire.",
@@ -4072,7 +4072,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Ryttaren larmar men ersätter inte veterinären.",
 "ru": "Всадник предупреждает, но не заменяет ветеринара.",
 "pl": "Jeździec alarmuje, ale nie zastępuje weterynarza.",
-"ko": "기수는 알리되, 수의사를 대신하지 않아요.", fa: "The rider reports concerns rather than replacing a vet."
+"ko": "기수는 알리되, 수의사를 대신하지 않아요.", fa: "سوارکار هشدار می‌دهد، بی‌آنکه جای دامپزشک را بگیرد."
 }
 ],
 "fin": {
@@ -4089,7 +4089,7 @@ window.HYPE_G4_TEXTES = {
 "sv": "Är du osäker på hästens hälsa, larma hellre än improvisera.",
 "ru": "Если сомневаешься в здоровье лошади, лучше сообщи, чем импровизируй.",
 "pl": "Gdy masz wątpliwość co do zdrowia konia, zgłoś to zamiast improwizować.",
-"ko": "건강이 걱정될 때는 즉흥적으로 하지 말고 알려요.", fa: "When in doubt about health, report it rather than improvising."
+"ko": "건강이 걱정될 때는 즉흥적으로 하지 말고 알려요.", fa: "وقتی دربارهٔ سلامتش تردید داری، به جای کار خودسرانه، خبر بده."
 }
 }
 };

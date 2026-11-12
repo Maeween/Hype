@@ -5410,13 +5410,13 @@ function EcranEngagements() {
       }).sort(function (a, b) { return (rgS[a.src] - rgS[b.src]) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); }));
       setChoixCh(null);
     } catch (eC) {
-      setChoixCh(Object.assign({}, choixCh, { sel: sel, busy: false, err: T7("Les chevaux n’ont pas pu être enregistrés : ", "Horses could not be saved: ", "No se pudieron guardar los caballos: ", "Impossibile salvare i cavalli: ", "馬を保存できませんでした：", "Pferde konnten nicht gespeichert werden: ", "تعذّر حفظ الخيول: ", "无法保存马匹：", "De paarden konden niet worden opgeslagen: ", "Não foi possível salvar os cavalos: ", "Hästarna kunde inte sparas: ", "Не удалось сохранить лошадей: ", "Nie udało się zapisać koni: ", "말을 저장하지 못했어요: ", "Horses could not be saved: ") + String((eC && eC.message) || eC).slice(0, 160) }));
+      setChoixCh(Object.assign({}, choixCh, { sel: sel, busy: false, err: T7("Les chevaux n’ont pas pu être enregistrés : ", "Horses could not be saved: ", "No se pudieron guardar los caballos: ", "Impossibile salvare i cavalli: ", "馬を保存できませんでした：", "Pferde konnten nicht gespeichert werden: ", "تعذّر حفظ الخيول: ", "无法保存马匹：", "De paarden konden niet worden opgeslagen: ", "Não foi possível salvar os cavalos: ", "Hästarna kunde inte sparas: ", "Не удалось сохранить лошадей: ", "Nie udało się zapisać koni: ", "말을 저장하지 못했어요: ", "اسب‌ها ذخیره نشدند: ") + String((eC && eC.message) || eC).slice(0, 160) }));
     }
   }
   function boutonChoixCh() {
     return h("button", { type: "button", className: "hs-btn", "data-choisir-chevaux-eng": "1", style: { marginTop: 12 }, onClick: ouvrirChoixCh },
-      nomsCh.length ? T7("Modifier les chevaux", "Change the horses", "Cambiar los caballos", "Modifica i cavalli", "馬を変更", "Pferde ändern", "تعديل الخيول", "修改马匹", "Paarden wijzigen", "Alterar os cavalos", "Ändra hästar", "Изменить лошадей", "Zmień konie", "말 변경", "Change the horses")
-        : T7("Choisir les chevaux", "Choose the horses", "Elegir los caballos", "Scegli i cavalli", "馬を選ぶ", "Pferde auswählen", "اختر الخيول", "选择马匹", "Paarden kiezen", "Escolher os cavalos", "Välj hästar", "Выбрать лошадей", "Wybierz konie", "말 선택", "Choose the horses"));
+      nomsCh.length ? T7("Modifier les chevaux", "Change the horses", "Cambiar los caballos", "Modifica i cavalli", "馬を変更", "Pferde ändern", "تعديل الخيول", "修改马匹", "Paarden wijzigen", "Alterar os cavalos", "Ändra hästar", "Изменить лошадей", "Zmień konie", "말 변경", "تغییر اسب‌ها")
+        : T7("Choisir les chevaux", "Choose the horses", "Elegir los caballos", "Scegli i cavalli", "馬を選ぶ", "Pferde auswählen", "اختر الخيول", "选择马匹", "Paarden kiezen", "Escolher os cavalos", "Välj hästar", "Выбрать лошадей", "Wybierz konie", "말 선택", "انتخاب اسب‌ها"));
   }
   function fenetreChoixCh() {
     if (!choixCh) return null;
@@ -5425,9 +5425,9 @@ function EcranEngagements() {
       style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(3,5,6,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { style: { width: "100%", maxWidth: 560, maxHeight: "86vh", display: "flex", flexDirection: "column", background: "#0B1113", borderTop: "1px solid rgba(201,166,107,0.35)", borderRadius: "22px 22px 0 0", padding: "18px 16px calc(env(safe-area-inset-bottom) + 16px)" } },
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 24, color: "var(--hs-iv)", textAlign: "center" } },
-          T7("Qui part ?", "Who’s going?", "¿Quién va?", "Chi parte?", "誰が行く？", "Wer fährt mit?", "من سيذهب؟", "谁去？", "Wie gaat er mee?", "Quem vai?", "Vem åker?", "Кто едет?", "Kto jedzie?", "누가 가나요?", "Who’s going?")),
+          T7("Qui part ?", "Who’s going?", "¿Quién va?", "Chi parte?", "誰が行く？", "Wer fährt mit?", "من سيذهب؟", "谁去？", "Wie gaat er mee?", "Quem vai?", "Vem åker?", "Кто едет?", "Kto jedzie?", "누가 가나요?", "چه کسی می‌رود؟")),
         h("div", { style: { fontSize: 12.5, color: "var(--hs-iv2)", textAlign: "center", margin: "4px 0 14px" } },
-          T7("Coche les chevaux qui partent au concours.", "Tick the horses going to the show.", "Marca los caballos que van al concurso.", "Spunta i cavalli che vanno al concorso.", "大会に行く馬にチェックを入れてね。", "Hake die Pferde an, die zum Turnier fahren.", "حدّد الخيول التي تذهب إلى المسابقة.", "勾选去比赛的马匹。", "Vink de paarden aan die naar de wedstrijd gaan.", "Marque os cavalos que vão ao concurso.", "Bocka i hästarna som åker till tävlingen.", "Отметь лошадей, которые едут на соревнования.", "Zaznacz konie, które jadą na zawody.", "대회에 가는 말을 체크해 줘.", "Tick the horses going to the show.")),
+          T7("Coche les chevaux qui partent au concours.", "Tick the horses going to the show.", "Marca los caballos que van al concurso.", "Spunta i cavalli che vanno al concorso.", "大会に行く馬にチェックを入れてね。", "Hake die Pferde an, die zum Turnier fahren.", "حدّد الخيول التي تذهب إلى المسابقة.", "勾选去比赛的马匹。", "Vink de paarden aan die naar de wedstrijd gaan.", "Marque os cavalos que vão ao concurso.", "Bocka i hästarna som åker till tävlingen.", "Отметь лошадей, которые едут на соревнования.", "Zaznacz konie, które jadą na zawody.", "대회에 가는 말을 체크해 줘.", "اسب‌هایی را که به مسابقه می‌روند علامت بزن.")),
         h("div", { style: { flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
           chevaux.length ? chevaux.map(function (c) {
             var on = !!sel[c.id];
@@ -5436,7 +5436,7 @@ function EcranEngagements() {
               h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: photoCh(c.nom), alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } })),
               h("span", { style: { flex: 1, minWidth: 0, fontSize: 15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
               h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? "#C9A66B" : "rgba(243,238,228,0.35)"), color: "#C9A66B", fontSize: 14, lineHeight: "21px", textAlign: "center" } }, on ? "✓" : ""));
-          }) : h("div", { className: "hs-vide" }, T7("Aucun cheval trouvé dans l’écurie.", "No horse found in the stable.", "No se encontró ningún caballo en la cuadra.", "Nessun cavallo trovato nella scuderia.", "厩舎に馬が見つかりません。", "Kein Pferd im Stall gefunden.", "لم يُعثر على أي حصان في الإسطبل.", "马厩里没有找到马。", "Geen paard gevonden in de stal.", "Nenhum cavalo encontrado na hípica.", "Ingen häst hittades i stallet.", "В конюшне не найдено лошадей.", "Nie znaleziono koni w stajni.", "마구간에서 말을 찾지 못했어요.", "No horse found in the stable."))),
+          }) : h("div", { className: "hs-vide" }, T7("Aucun cheval trouvé dans l’écurie.", "No horse found in the stable.", "No se encontró ningún caballo en la cuadra.", "Nessun cavallo trovato nella scuderia.", "厩舎に馬が見つかりません。", "Kein Pferd im Stall gefunden.", "لم يُعثر على أي حصان في الإسطبل.", "马厩里没有找到马。", "Geen paard gevonden in de stal.", "Nenhum cavalo encontrado na hípica.", "Ingen häst hittades i stallet.", "В конюшне не найдено лошадей.", "Nie znaleziono koni w stajni.", "마구간에서 말을 찾지 못했어요.", "هیچ اسبی در اصطبل پیدا نشد."))),
         choixCh.err ? h("div", { className: "hs-err", style: { marginTop: 8 } }, choixCh.err) : null,
         h("div", { className: "hs-duo", style: { marginTop: 12 } },
           h("button", { type: "button", className: "hs-btn", disabled: choixCh.busy, onClick: function () { setChoixCh(null); } },
@@ -5446,7 +5446,7 @@ function EcranEngagements() {
   }
   function vueChevauxV1() {
     if (!nomsCh.length) return h(React.Fragment, null,
-      h("div", { className: "hs-vide" }, T7("Aucun cheval pour l’instant. Choisis ceux qui partent au concours.", "No horse yet. Choose the ones going to the show.", "Aún no hay caballos. Elige los que van al concurso.", "Ancora nessun cavallo. Scegli quelli che vanno al concorso.", "まだ馬がいません。大会に行く馬を選んでね。", "Noch kein Pferd. Wähle die, die zum Turnier fahren.", "لا خيول بعد. اختر التي تذهب إلى المسابقة.", "还没有马。选择去比赛的马匹。", "Nog geen paard. Kies de paarden die naar de wedstrijd gaan.", "Ainda nenhum cavalo. Escolha os que vão ao concurso.", "Inga hästar än. Välj de som åker till tävlingen.", "Пока нет лошадей. Выбери тех, кто едет на соревнования.", "Jeszcze brak koni. Wybierz te, które jadą na zawody.", "아직 말이 없어요. 대회에 가는 말을 골라 줘.", "No horse yet. Choose the ones going to the show.")),
+      h("div", { className: "hs-vide" }, T7("Aucun cheval pour l’instant. Choisis ceux qui partent au concours.", "No horse yet. Choose the ones going to the show.", "Aún no hay caballos. Elige los que van al concurso.", "Ancora nessun cavallo. Scegli quelli che vanno al concorso.", "まだ馬がいません。大会に行く馬を選んでね。", "Noch kein Pferd. Wähle die, die zum Turnier fahren.", "لا خيول بعد. اختر التي تذهب إلى المسابقة.", "还没有马。选择去比赛的马匹。", "Nog geen paard. Kies de paarden die naar de wedstrijd gaan.", "Ainda nenhum cavalo. Escolha os que vão ao concurso.", "Inga hästar än. Välj de som åker till tävlingen.", "Пока нет лошадей. Выбери тех, кто едет на соревнования.", "Jeszcze brak koni. Wybierz te, które jadą na zawody.", "아직 말이 없어요. 대회에 가는 말을 골라 줘.", "فعلاً هیچ اسبی نیست. اسب‌هایی را که به مسابقه می‌روند انتخاب کن.")),
       boutonChoixCh());
     return h(React.Fragment, null,
       h("div", { className: "e1-compte" }, h("span", null, nomsCh.length + (nomsCh.length > 1 ? F(" chevaux · ") : F(" cheval · ")) + libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre"))), choixMax()),
@@ -5500,7 +5500,7 @@ function EcranEngagements() {
         msg ? h("div", { className: "hs-msg", style: { marginTop: 0, marginBottom: 8 } }, msg) : null,
         h("div", { className: "hs-duo", style: { marginTop: 0 } },
           h("button", { type: "button", className: "hs-btn plein", disabled: occupe || !modifie, onClick: function () { enregistrer(); } }, occupe ? F("Enregistrement…") : (modifie ? F("Enregistrer") : F("✓ Enregistré"))),
-          h("button", { type: "button", className: "hs-btn", onClick: function () { setVoirFeuille(true); } }, estSep ? F("Feuille SEP") : T7("Feuille d’engagement", "Entry sheet", "Hoja de inscripción", "Foglio di iscrizione", "エントリーシート", "Nennungsliste", "ورقة التسجيل", "报名表", "Inschrijvingsformulier", "Ficha de inscrição", "Anmälningsblad", "Лист заявок", "Lista zgłoszeń", "참가 신청서", "Entry sheet")))),
+          h("button", { type: "button", className: "hs-btn", onClick: function () { setVoirFeuille(true); } }, estSep ? F("Feuille SEP") : T7("Feuille d’engagement", "Entry sheet", "Hoja de inscripción", "Foglio di iscrizione", "エントリーシート", "Nennungsliste", "ورقة التسجيل", "报名表", "Inschrijvingsformulier", "Ficha de inscrição", "Anmälningsblad", "Лист заявок", "Lista zgłoszeń", "참가 신청서", "برگهٔ ثبت‌نام")))),
       erreur ? h("div", { className: "hs-err" }, erreur) : null),
     fenetreChoixCh(),
     voirFeuille ? (estSep ? feuilleSep(h, ev, feuille, hsLignesFeuille(lignes), function () { setVoirFeuille(false); }, modifie)

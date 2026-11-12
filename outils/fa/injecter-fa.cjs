@@ -25,6 +25,19 @@ function persan(fr, en) {
   return (en !== null && en !== undefined && en !== "") ? en : fr;
 }
 function js(s) { return JSON.stringify(s).split(String.fromCharCode(0x2028)).join("\\u2028").split(String.fromCharCode(0x2029)).join("\\u2029"); }
+function construire(code, fr, en) {
+  const src = (n) => code.slice(n.start, n.end);
+  const lf = lit(fr), le = en ? lit(en) : null;
+  if (lf !== null && (en === null || le !== null)) return js(persan(lf, le));
+  if (fr.type === "ArrayExpression" && (!en || (en.type === "ArrayExpression" && en.elements.length === fr.elements.length)) && fr.elements.every((e) => e && e.type !== "SpreadElement")) {
+    return "[" + fr.elements.map((e, i) => construire(code, e, en ? en.elements[i] : null)).join(", ") + "]";
+  }
+  if (fr.type === "ObjectExpression" && fr.properties.every((p) => p.type === "Property" && !p.computed && p.kind === "init")) {
+    const pe = {}; if (en && en.type === "ObjectExpression") en.properties.forEach((p) => { if (p.type === "Property") pe[cle(p)] = p; });
+    return "{ " + fr.properties.map((p) => code.slice(p.key.start, p.key.end) + ": " + construire(code, p.value, pe[cle(p)] ? pe[cle(p)].value : null)).join(", ") + " }";
+  }
+  return src(en || fr);
+}
 function traiter(code, edits, base) {
   const ast = acorn.parse(code, { ecmaVersion: "latest", allowReturnOutsideFunction: true, allowHashBang: true });
   (function w(x) {
@@ -39,6 +52,11 @@ function traiter(code, edits, base) {
           else edits.push([base + ps.ko.end, base + ps.ko.end, ", fa: " + js(v)]);
         } else if (!ps.fa && ps.ko.value.type === "Identifier" && ps.ko.value.name === "ko" && ps.fr.value.type === "Identifier") {
           edits.push([base + ps.ko.end, base + ps.ko.end, ", fa: fa"]);
+        } else if (ko === null && !(ps.ko.value.type === "Identifier")) {
+          /* 12/11 : listes, blocs de textes et expressions → on construit le persan sur le modèle du français/anglais */
+          const v = construire(code, ps.fr.value, ps.en ? ps.en.value : null);
+          if (ps.fa) { const old = code.slice(ps.fa.value.start, ps.fa.value.end); if (old !== v) edits.push([base + ps.fa.value.start, base + ps.fa.value.end, v]); }
+          else edits.push([base + ps.ko.end, base + ps.ko.end, ", fa: " + v]);
         }
       }
     }

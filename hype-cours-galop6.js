@@ -911,7 +911,7 @@ var TR_G6N = {"g6n-01|type|":["pratique","practical","práctica","pratica","実�
 window.COURS_GALOP6_NOUVEAUX = COURS;
 window.COURS_GALOP6_FR = COURS;
 window.HYPE_LEXIQUE_EXTRA = window.HYPE_LEXIQUE_EXTRA || {};
-var TITRE_LEX = {"fr":"Petit lexique","en":"Mini glossary","es":"Pequeño glosario","it":"Piccolo glossario","ja":"ミニ用語集","de":"Kleines Lexikon","ar":"معجم صغير","zh":"小词汇表","nl":"Kleine woordenlijst","pt":"Pequeno glossário","sv":"Liten ordlista","ru":"Маленький словарь","pl":"Mały słowniczek","ko":"작은 용어집", fa: "Mini glossary"};
+var TITRE_LEX = {"fr":"Petit lexique","en":"Mini glossary","es":"Pequeño glosario","it":"Piccolo glossario","ja":"ミニ用語集","de":"Kleines Lexikon","ar":"معجم صغير","zh":"小词汇表","nl":"Kleine woordenlijst","pt":"Pequeno glossário","sv":"Liten ordlista","ru":"Маленький словарь","pl":"Mały słowniczek","ko":"작은 용어집", fa: "واژه‌نامهٔ کوچک"};
 COURS.forEach(function (c) { if (c.lexique && c.lexique.fr) { var o = {}; Object.keys(c.lexique).forEach(function (lg) { if (Array.isArray(c.lexique[lg])) o[lg] = { titre: TITRE_LEX[lg] || TITRE_LEX.fr, mots: c.lexique[lg] }; }); window.HYPE_LEXIQUE_EXTRA[c.id] = o; } });
 window.COURS_GALOP6_VERSION = COURS_GALOP6_VERSION;
 })();
