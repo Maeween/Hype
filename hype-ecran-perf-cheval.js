@@ -1126,11 +1126,12 @@ function estClasseQ(f) {
       var MV = (typeof window !== "undefined" && window.__magVar) || "C";   /* 12/11 23h55 (Blandine : « avec 5 chevaux ça n'en finit pas », 3-4 propositions) : A = actuel ; B carrousel ; C un grand + lignes ; D grille 2 ; E liste */
       var infoC = function (c) { var st = hypePerfStatsHisto(c.ls), ne = nbEpDe(c.ls); var ph = c.ch && c.ch.c && c.ch.c.photo_url;
         var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : ((!modeCav && c.cid) ? function () { try { window.__perfCavalierId = c.cid; } catch (eC) { } setEcran("performances-cavalier"); } : undefined);
-        var txt = [ne ? ne + " " + L_EP(ne) : "", st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : ""].filter(Boolean);
-        return { st: st, ne: ne, ph: ph, ouvrir: ouvrir, txt: txt, b: meilleur(c.ls) }; };
+        var nq = c.ls.filter(estClasseQ).length;   /* 13/11 (Blandine : « plein de 4e sur 90… mais les classements ») */
+        var txt = [ne ? ne + " " + L_EP(ne) : "", st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : "", nq ? nq + " " + L_Q(nq) : ""].filter(Boolean);
+        return { st: st, ne: ne, nq: nq, ph: ph, ouvrir: ouvrir, txt: txt, b: meilleur(c.ls) }; };
       var photoEntiere = function (ph, hauteur, rayon) { return h("div", { style: { height: hauteur, background: "#000", borderRadius: rayon || 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" } },
         ph ? h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { maxWidth: "100%", maxHeight: "100%", display: "block" } }) : h("div", { style: { width: "100%", height: "100%", background: "radial-gradient(120% 90% at 30% 20%, " + PETROLE2 + " 0%, #000 80%)" } })); };
-      var miniC = function (I) { var m = []; if (I.ne) m.push(chiffreS("e", I.ne, L_EP(I.ne), false, 24)); if (I.st.victoires) m.push(chiffreS("v", I.st.victoires, L_V(I.st.victoires), true, 24)); if (I.st.podiums) m.push(chiffreS("p", I.st.podiums, L_P(I.st.podiums), true, 24)); return m; };
+      var miniC = function (I) { var m = []; if (I.ne) m.push(chiffreS("e", I.ne, L_EP(I.ne), false, 24)); if (I.st.victoires) m.push(chiffreS("v", I.st.victoires, L_V(I.st.victoires), true, 24)); if (I.st.podiums) m.push(chiffreS("p", I.st.podiums, L_P(I.st.podiums), true, 24)); if (I.nq) m.push(chiffreS("q", I.nq, L_Q(I.nq), false, 24)); return m; };
       if (MV === "B") {
         g.push(h("div", { key: "magB", "data-hscroll": "1", "data-noswipe": "1", style: { display: "flex", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", padding: "18px 22px 4px", scrollPaddingInline: 22, scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } }, chx.map(function (c, i) {
           var I = infoC(c);
@@ -1341,6 +1342,74 @@ function estClasseQ(f) {
           c.ls.map(function (f, j) { return h("div", { key: "hf" + j, role: "button", tabIndex: 0, onClick: function () { allerAuFort(f); }, style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "4px 0 0 12px", cursor: "pointer" } },
             h("span", { style: { fontFamily: SANS, fontSize: 11.5, color: MUET, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, [f.ep, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")),
             h("span", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 16, color: colR(f), direction: "ltr" } }, resA(f))); })); })));
+      }
+      /* 13/11 00h50 (Blandine : « vraiment différents… modernes et magazine, comme la page de l'équipe, les médias, la Vidéothèque ») */
+      var chevalPrincipal = function (x) { var n = {}; x.ls.forEach(function (f) { if (f.cav) n[f.cav] = (n[f.cav] || 0) + 1; }); var best = Object.keys(n).sort(function (a, b) { return n[b] - n[a]; })[0]; var cx = best ? parCheval(best) : null; return { nom: best || "", ph: (cx && cx.c && cx.c.photo_url) || "" }; };
+      var meilleurS = function (x) { return x.ls.filter(function (f) { return f.pl != null; }).sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)); })[0] || null; };
+      var anCourt = function (lib) { return String(lib).replace(/^(\d{4})-\d{2}(\d{2})$/, "$1–$2"); };
+      var ouvrirS = function (x, i) { var o = arOuv[x.cle] != null ? arOuv[x.cle] : false; return [o, function () { var n = Object.assign({}, arOuv); n[x.cle] = !o; setArOuv(n); }]; };
+      var listeOuv = function (x) { return h("div", { style: { padding: "6px 22px 10px" } }, x.ls.map(function (f, j) { return ligneA(f, j); })); };
+      var photoBloc = function (ph, hauteur, cote) { return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "62%", display: "flex", justifyContent: cote === "right" ? "flex-end" : "flex-start", alignItems: "center", pointerEvents: "none" } },
+        ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block", mixBlendMode: "lighten", WebkitMaskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)", maskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)" } }) : null); };
+      var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
+      if (AV === "I") {   /* couvertures de saison en miroir, courbe dorée entre elles */
+        S.forEach(function (x, i) { var P = chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
+          if (i) out.push(courbe("ci" + i, i % 2 === 0));
+          out.push(h("div", { key: "I" + x.cle },
+            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 170, overflow: "hidden", cursor: "pointer", background: "#000" } },
+              photoBloc(P.ph, 170, droite ? "right" : "left"),
+              h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
+                h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Saison", "Season")),
+                h("div", { style: { fontFamily: SERIF, fontSize: 38, lineHeight: 1, color: IVOIRE, marginTop: 4, direction: "ltr" } }, anCourt(x.lib)),
+                h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 6 } }, resume(x)),
+                P.nom ? h("div", { style: { fontFamily: SERIF, fontSize: 15, color: CHAMP, marginTop: 4, fontStyle: "italic" } }, T("avec ", "with ") + nomCourt(P.nom)) : null,
+                h("div", { style: { fontFamily: SANS, fontSize: 11, color: CHAMP, marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
+            oo[0] ? listeOuv(x) : null)); });
+      } else if (AV === "J") {   /* affiches de saison qui défilent, la liste dessous */
+        out.push(rail("Jr", S.map(function (x) { var P = chevalPrincipal(x), on = x.cle === sel, b = meilleurS(x);
+          return h("div", { key: "j" + x.cle, role: "button", tabIndex: 0, onClick: function () { setArSel(x.cle); }, style: { flex: "0 0 150px", position: "relative", height: 210, borderRadius: 18, overflow: "hidden", background: "#000", border: on ? "1.5px solid " + CHAMP : "1px solid rgba(201,166,107,0.22)", cursor: "pointer" } },
+            P.ph ? h("img", { src: P.ph, alt: "", loading: "lazy", style: { position: "absolute", top: 8, left: 0, right: 0, margin: "0 auto", maxWidth: "100%", maxHeight: 130, objectFit: "contain", display: "block" } }) : null,
+            h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.92) 72%)" } }),
+            h("div", { style: { position: "absolute", left: 12, right: 12, bottom: 12 } },
+              h("div", { style: { fontFamily: SERIF, fontSize: 26, lineHeight: 1, color: on ? "#E6CF9C" : IVOIRE, direction: "ltr" } }, anCourt(x.lib)),
+              h("div", { style: { fontFamily: SANS, fontSize: 10, color: MUET, marginTop: 4 } }, x.ls.length + " " + L_EP(x.ls.length)),
+              b ? h("div", { style: { fontFamily: SERIF, fontSize: 15, color: CHAMP, marginTop: 3 } }, resA(b)) : null)); })));
+        out.push(h("div", { key: "Jt", style: { padding: "14px 22px 0", fontFamily: SERIF, fontSize: 22, color: IVOIRE } }, T("Saison ", "Season ") + X.lib));
+        out.push(bloc("J", X.ls.map(function (f, j) { return ligneA(f, j); })));
+      } else if (AV === "K") {   /* sommaire de magazine : grands numéros, filets, petite photo ronde */
+        out.push(bloc("K", S.map(function (x, i) { var P = chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), oo = ouvrirS(x, i);
+          return h("div", { key: "k" + x.cle, style: { borderTop: i ? "1px solid rgba(201,166,107,0.2)" : "none" } },
+            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { display: "flex", alignItems: "center", gap: 14, padding: "14px 0", cursor: "pointer" } },
+              h("span", { style: { flex: "0 0 40px", fontFamily: SERIF, fontSize: 34, color: "rgba(201,166,107,0.75)", lineHeight: 1, direction: "ltr" } }, ("0" + (i + 1)).slice(-2)),
+              h("span", { style: { flex: 1, minWidth: 0 } },
+                h("span", { style: { display: "block", fontFamily: SERIF, fontSize: 22, color: IVOIRE, lineHeight: 1.1, direction: "ltr" } }, x.lib),
+                h("span", { style: { display: "block", fontFamily: SANS, fontSize: 10.5, color: MUET, marginTop: 3 } }, resume(x) + (P.nom ? " · " + nomCourt(P.nom) : ""))),
+              P.ph ? h("span", { style: { flex: "0 0 64px", width: 64, height: 52, borderRadius: 12, background: "#000", border: "1px solid rgba(201,166,107,0.3)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } }, h("img", { src: P.ph, alt: "", loading: "lazy", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" } })) : null),   /* photo entière */
+            oo[0] ? h("div", { style: { paddingBottom: 10 } }, x.ls.map(function (f, j) { return ligneA(f, j); })) : null); })));
+      } else if (AV === "L") {   /* la plus belle de chaque saison en vedette, le reste à déplier */
+        out.push(bloc("L", S.map(function (x, i) { var b = meilleurS(x) || x.ls[0], cx = b && b.cav ? parCheval(b.cav) : null, ph = cx && cx.c && cx.c.photo_url, oo = ouvrirS(x, i), reste = x.ls.length - 1;
+          return h("div", { key: "l" + x.cle, style: { marginBottom: 14 } },
+            h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "4px 0 8px" } },
+              h("span", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".28em", color: CHAMP, direction: "ltr" } }, x.lib),
+              h("span", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET } }, resume(x))),
+            h("div", { role: "button", tabIndex: 0, onClick: function () { allerAuFort(b); }, style: { position: "relative", minHeight: 108, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, rgba(40,74,86,0.45) 0%, #0B1114 60%)", cursor: "pointer" } },
+              photoBloc(ph, 108, "right"),
+              h("div", { style: { position: "relative", padding: "14px 16px", maxWidth: "62%" } },
+                h("div", { style: { fontFamily: SERIF, fontSize: 32, lineHeight: 1, color: b && b.pl != null && b.pl <= 3 ? CHAMP : IVOIRE, direction: "ltr" } }, b ? resA(b) : ""),
+                h("div", { style: { fontFamily: SANS, fontSize: 11.5, color: IVOIRE, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, b ? propreA(b.nom) : ""),
+                h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET, marginTop: 2 } }, b ? [b.ep, b.cav ? nomCourt(b.cav) : ""].filter(Boolean).join(" · ") : ""))),
+            reste > 0 ? h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { textAlign: "center", padding: "8px 0 0", fontFamily: SANS, fontSize: 11.5, color: CHAMP, cursor: "pointer" } }, oo[0] ? "˄" : ("+ " + reste + " " + (reste > 1 ? T("autres résultats", "other results") : T("autre résultat", "other result")) + " ˅")) : null,
+            oo[0] ? h("div", null, x.ls.filter(function (f) { return f !== b; }).map(function (f, j) { return ligneA(f, j); })) : null); })));
+      } else if (AV === "M") {   /* mosaïque de saisons, photo entière, grille équilibrée */
+        out.push(h("div", { key: "Mg", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "14px 22px 0" } }, S.map(function (x, i) { var P = chevalPrincipal(x), on = x.cle === sel, st = hypePerfStatsHisto(x.ls), plein = S.length % 2 === 1 && i === 0;
+          return h("div", { key: "m" + x.cle, role: "button", tabIndex: 0, onClick: function () { setArSel(x.cle); }, style: { gridColumn: plein ? "1 / -1" : undefined, position: "relative", height: plein ? 170 : 150, borderRadius: 16, overflow: "hidden", background: "#000", border: on ? "1.5px solid " + CHAMP : "1px solid rgba(201,166,107,0.2)", cursor: "pointer" } },
+            P.ph ? h("img", { src: P.ph, alt: "", loading: "lazy", style: { position: "absolute", top: 0, bottom: 0, right: 0, height: "100%", maxWidth: plein ? "60%" : "100%", objectFit: "contain", display: "block", opacity: on ? 1 : 0.75 } }) : null,
+            h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%)" } }),
+            h("div", { style: { position: "absolute", left: 12, bottom: 10, right: 10 } },
+              h("div", { style: { fontFamily: SERIF, fontSize: plein ? 30 : 24, lineHeight: 1, color: on ? "#E6CF9C" : IVOIRE, direction: "ltr" } }, anCourt(x.lib)),
+              h("div", { style: { fontFamily: SANS, fontSize: 10, color: MUET, marginTop: 3 } }, x.ls.length + " " + L_EP(x.ls.length) + (st.victoires ? " · " + st.victoires + " " + L_V(st.victoires) : "")))); })));
+        out.push(h("div", { key: "Mt", style: { padding: "16px 22px 0", fontFamily: SERIF, fontSize: 22, color: IVOIRE } }, T("Saison ", "Season ") + X.lib));
+        out.push(bloc("M", X.ls.map(function (f, j) { return ligneA(f, j); })));
       }
       return h.apply(null, ["div", { key: "arch" + AV, "data-perf-archives": AV }].concat(out));
     }

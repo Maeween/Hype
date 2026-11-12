@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h15 — build 20261113-0115 — Performances : classements de chaque cheval
+- hype-ecran-perf-cheval.js v=23 : « Tes chevaux » affiche aussi le nombre de classements (premier quart) de chaque cheval (Blandine : Vif Bellevue « 53 épreuves, 2 podiums » sans ses 4e sur 85, 68, 59…). 5 nouvelles propositions « magazine » des archives en essai (window.__archVar = I…M), invisibles.
+
 ### 13/11 01h10 — build 20261113-0110 — Import : l'iPhone propose tous les fichiers
 - hype-import-ffe.js v=35 : plus de filtre sur le type de fichier (avant : PDF seulement, puis PDF + .xls) — l'iPhone grisait ou cachait le fichier « Eng_Result_….xls » de FFE Compet et sa recherche ne le trouvait pas. Le module reconnaît lui-même le PDF et l'export .xls.
 - hype-ecran-perf-cheval.js v=22 : 8 propositions de « Tous tes résultats » en essai (window.__archVar = A…H), invisibles tant que Blandine n'a pas choisi ; points de qualification réservés à la saison en cours dans ces propositions.
