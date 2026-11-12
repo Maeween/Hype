@@ -12,6 +12,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 16h20 — build 20261112-1620 — vraie page Médias : encarts de concours, rubriques Travail et Photos (Blandine « Ok » sur la maquette v2)
+- hype-ecran-team-medias.js ?v=44 : trois cartes photo en tête (Parcours · Travail · Photos). Parcours = un encart par concours, le plus récent ouvert, les autres repliés (bandeau photo, date, nom, nombre) ; plus de pastilles de concours. La page s'ouvre sur ces encarts (avant : par cavalier). Par cavalier / par cheval inchangés (sélecteur). Vidéos sans concours → Travail.
+- Photos = album : photos postées sur chaque concours de l'équipe (commentaires agenda:<id>, privées exclues), un encart par concours, photos entières en colonnes, « Voir la fiche du concours » et « + Ajouter des photos » (ouvre la fiche concours).
+- hype-ecran-team.js ?v=52 : « Photos » de « Nos plus beaux moments » ouvre cet album (plus de grille dépliée sur la page Équipe).
+- ⚠ L'éventail de photos de Souvenirs vient encore des albums chevaux/cavaliers : elles ne sont pas toutes dans l'album des concours. À trancher.
+- Maquette cachée retirée (maquette-medias-saison.html supprimé). Textes traduits (14 langues).
+- RESTE : onglets « Médias » et « Performances cavaliers » dans Ma saison ; puis Ma saison = toute l'année (épingles, articles lus…).
+
 ### 12/11 15h55 — build 20261112-1600 — maquette cachée Médias de la saison, v2 (Blandine)
 - Base : « CSO étrier de Paris » (agenda Écurie Feinn, 20/09) SUPPRIMÉ (« garde la plus remplie et vire l'autre ») ; ses 3 photos rattachées à « CSO l'étrier » (agenda SEP, 5 résultats), qui en a 6. Lien agenda_groupes de la fiche supprimée retiré.
 - Maquette v1 refusée (« un vrai bordel », titre sur le nez du cheval). v2 dans l'esprit de la fiche concours : photo (galop1-hero-bai), titre « Médias de la saison » posé SOUS le cheval dans le noir, courbe ; 4 cartes photo Parcours · Travail · Photos · Cavaliers.

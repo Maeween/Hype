@@ -130,6 +130,32 @@ function EcranTeamMedias() {
      faire le lien avec les dates de concours », en option ; choix A puis B : on touche un concours de l'agenda de la Team, sinon
      « Autre » = date et lieu écrits ; la personne qui a posté peut corriger ensuite). La base vérifie (team_video_concours). */
   var _cq = React.useState([]); var concoursEquipe = _cq[0], setConcoursEquipe = _cq[1];
+  var _cql = React.useState(false); var concLus = _cql[0], setConcLus = _cql[1];   /* 12/11 16h : liste des concours de l'équipe lue */
+  var _eo = React.useState({}); var encOuv = _eo[0], setEncOuv = _eo[1];   /* 12/11 16h : encarts de concours ouverts / fermés */
+  var _phc = React.useState(null); var photosConc = _phc[0], setPhotosConc = _phc[1];   /* 12/11 16h : photos des concours de l'équipe, par concours */
+  React.useEffect(function () {   /* 12/11 16h : rubrique Photos — les photos postées sur chaque concours de l'équipe (privées exclues) */
+    if (!concLus) return;
+    var vifP = true;
+    (async function () {
+      try {
+        var cs = (concoursEquipe || []).filter(function (c) { return c && c.id; });
+        if (!cs.length) { if (vifP) setPhotosConc([]); return; }
+        var r = await supa.from("commentaires").select("cible, user_id, photo_url, medias, prive, created_at").in("cible", cs.map(function (c) { return "agenda:" + c.id; })).order("created_at", { ascending: true }).limit(600);
+        var u = null; try { u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; } catch (eU) { }
+        var par = {};
+        ((r && !r.error && r.data) || []).forEach(function (po) {
+          if (po.prive && !(u && po.user_id === u.id)) return;
+          var id = String(po.cible || "").slice(7); if (!par[id]) par[id] = [];
+          [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (x) {
+            if (!x || typeof x !== "string" || !/^https?:\/\//i.test(x) || /\.(mp4|mov|m4v|webm)(\?|$)/i.test(x) || ((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(x))) return;
+            if (par[id].indexOf(x) === -1) par[id].push(x);
+          });
+        });
+        if (vifP) setPhotosConc(cs.map(function (c) { return { id: c.id, titre: c.titre, lieu: c.lieu, date_jour: c.date_jour, photos: par[c.id] || [] }; }));
+      } catch (eP) { if (vifP) setPhotosConc([]); }
+    })();
+    return function () { vifP = false; };
+  }, [concoursEquipe, concLus]);
   var _fq = React.useState(null); var feuilleConc = _fq[0], setFeuilleConc = _fq[1];   /* null | { pour: "form" } | { pour: <vidéo> } */
   var _qa = React.useState(false); var concAutre = _qa[0], setConcAutre = _qa[1];
   var _qd = React.useState(""); var concDate = _qd[0], setConcDate = _qd[1];
@@ -147,11 +173,11 @@ function EcranTeamMedias() {
       try {
         var ra = await supa.from("agenda_groupes").select("agenda_id").eq("groupe_id", groupe.id);
         var ids = ((ra && ra.data) || []).map(function (x) { return x.agenda_id; }).filter(Boolean);
-        if (!ids.length) { if (vifQ) setConcoursEquipe([]); return; }
+        if (!ids.length) { if (vifQ) { setConcoursEquipe([]); setConcLus(true); } return; }
         var auj = new Date(); var lim = auj.getFullYear() + "-" + String(auj.getMonth() + 1).padStart(2, "0") + "-" + String(auj.getDate()).padStart(2, "0");
         var re = await supa.from("club_agenda").select("id, titre, date_jour, lieu, type").in("id", ids.slice(0, 300)).eq("type", "concours").lte("date_jour", lim).order("date_jour", { ascending: false }).limit(15);
-        if (vifQ) setConcoursEquipe((re && re.data) || []);
-      } catch (eQ) { if (vifQ) setConcoursEquipe([]); }
+        if (vifQ) { setConcoursEquipe((re && re.data) || []); setConcLus(true); }
+      } catch (eQ) { if (vifQ) { setConcoursEquipe([]); setConcLus(true); } }
     })();
     return function () { vifQ = false; };
   }, [groupe && groupe.id]);
@@ -731,7 +757,7 @@ function EcranTeamMedias() {
 
   /* ───────── vue PAR CHEVAL (mêmes vidéos, mêmes rattachements) : une section par cheval, 2 vidéos, « Voir tout » ouvre
      la page du cheval avec un onglet par cavalière. Les chevaux n'apparaissent que s'ils ont au moins une vidéo. ───────── */
-  var _vu = React.useState("cavaliere"); var vue = _vu[0], setVue = _vu[1];
+  var _vu = React.useState("concours"); var vue = _vu[0], setVue = _vu[1];   /* 12/11 16h : la page s'ouvre sur les encarts de concours */
   var _cho = React.useState(null); var chOuvert = _cho[0], setChOuvert = _cho[1];
   var _ocv = React.useState("tous"); var ongletCav = _ocv[0], setOngletCav = _ocv[1];
   function videosDuCheval(c) { return (videos || []).filter(function (v) { return v.chevaux.indexOf(c) !== -1; }); }
@@ -797,39 +823,28 @@ function EcranTeamMedias() {
       if (ouverte) return pageCavaliere(ouverte);
     } else if (chOuvert) return pageCheval(chOuvert);
     var corps;
-    if (vue === "concours") {   /* 06/11 soir (Blandine : « ajoute l'onglet par concours en haut de la page vidéo ») */
+    if (vue === "concours") {   /* 12/11 16h (Blandine : « en encart, toutes les vidéos du dernier concours visibles, les autres se déplient ») :
+         un encart par concours, le plus récent ouvert, les autres repliés en bandeau (photo, date, nom, nombre). Les vidéos sans
+         concours passent dans la rubrique Travail. */
       var grp = {}, ordre = [];
       (videos || []).forEach(function (v) {
         var cle = v.agenda_id ? "a:" + v.agenda_id : ((v.lieu || v.concours) ? "x:" + (v.lieu || v.concours) + "|" + (v.date_video || "") : "_sans");
-        if (!grp[cle]) { grp[cle] = { cle: cle, titre: cle === "_sans" ? "" : (v.lieu || v.concours || ""), sous: (v.lieu && v.concours && v.concours !== v.lieu) ? v.concours : "", date: v.date_video || "", liste: [] }; ordre.push(cle); }
+        if (cle === "_sans") return;
+        if (!grp[cle]) { grp[cle] = { cle: cle, titre: v.lieu || v.concours || "", sous: (v.lieu && v.concours && v.concours !== v.lieu) ? v.concours : "", date: v.date_video || "", liste: [] }; ordre.push(cle); }
         grp[cle].liste.push(v);
       });
-      ordre.sort(function (a, b) { if (a === "_sans") return 1; if (b === "_sans") return -1; return String(grp[b].date).localeCompare(String(grp[a].date)); });
+      ordre.sort(function (a, b) { return String(grp[b].date).localeCompare(String(grp[a].date)); });
       var colsQ = largeur >= 700 ? 3 : 2;
-      /* 10/11 06h30 (idée de Blandine du 09/11, maquette validée) : un onglet par concours, le plus récent en premier, plus
-         « Toute la saison » ; chaque nouveau concours s'ajoute tout seul en tête. */
-      var ordreTous = ordre.slice(), selOk = selConc && grp[selConc] ? selConc : "";
-      if (selOk) ordre = [selOk];
-      var ongletsConc = ordreTous.length > 1 ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", margin: "4px 0 6px", paddingBottom: 4 } },
-        [h("button", { key: "tous", type: "button", onClick: function () { setSelConc(""); }, style: { flex: "0 0 auto", minHeight: 36, padding: "0 15px", borderRadius: 999, border: "1px solid " + (!selOk ? CH : "rgba(201,166,107,.3)"), background: "transparent", color: !selOk ? CH : IV, fontFamily: SERIF, fontSize: 16, whiteSpace: "nowrap", cursor: "pointer" } }, T("Toute la saison", "Whole season", "Toda la temporada", "Tutta la stagione", "シーズン全体", "Ganze Saison", "الموسم كله", "整个赛季", "Hele seizoen", "Toda a temporada", "Hela säsongen", "Весь сезон", "Cały sezon", "시즌 전체"))]
-        .concat(ordreTous.filter(function (c) { return c !== "_sans"; }).map(function (c) {
-          var g = grp[c], on = selOk === c;
-          return h("button", { key: c, type: "button", onClick: function () { setSelConc(c); }, style: { flex: "0 0 auto", minHeight: 36, padding: "0 15px", borderRadius: 999, border: "1px solid " + (on ? CH : "rgba(201,166,107,.3)"), background: "transparent", color: on ? CH : IV, fontFamily: SERIF, fontSize: 16, whiteSpace: "nowrap", cursor: "pointer" } },
-            g.titre || "—", g.date ? h("small", { style: { fontFamily: M, fontSize: 10.5, color: IV3, marginInlineStart: 6 } }, dateCourte(g.date)) : null);
-        }))) : null;
       corps = ordre.map(function (cle, i) {
-            var g = grp[cle], n = g.liste.length, resteQ = n % colsQ;
-            return h("section", { key: "sq" + cle, style: { padding: "18px 0 20px", borderTop: i ? "1px solid " + CH3 : "none" } },
-              h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 } },
-                h("div", { style: { minWidth: 0 } },
-                  h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.1, color: cle === "_sans" ? IV2 : IV } }, cle === "_sans" ? T("Sans concours", "No competition", "Sin concurso", "Senza concorso", "競技会なし", "Ohne Turnier", "بدون مسابقة", "未关联比赛", "Zonder wedstrijd", "Sem concurso", "Utan tävling", "Без соревнования", "Bez zawodów", "대회 없음") : g.titre),
-                  g.sous ? h("div", { dir: "auto", style: { fontSize: 11, color: IV3, marginTop: 3 } }, g.sous) : null),
-                g.date && cle !== "_sans" ? h("div", { style: { flex: "0 0 auto", fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: CH } }, dateCourte(g.date)) : null),
-              h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + colsQ + ", minmax(0, 1fr))", gap: "14px 10px" } },
-                g.liste.map(function (v, k) { var derniere = k === n - 1 && resteQ; return tuileVideo(v, "q" + cle + v.id, true, derniere ? colsQ - resteQ + 1 : 0); })));
-          });
-      corps = [ongletsConc].concat(corps);
-      if (!(videos || []).length) corps = vide(T("Les concours apparaîtront ici dès qu'une vidéo y sera rattachée.", "Competitions will appear here as soon as a video is linked to one.", "Los concursos aparecerán aquí en cuanto se vincule un vídeo.", "I concorsi appariranno qui appena un video sarà collegato.", "動画が紐づけられると、ここに競技会が表示されます。", "Turniere erscheinen hier, sobald ein Video damit verknüpft ist.", "ستظهر المسابقات هنا بمجرد ربط فيديو بها.", "一旦有视频关联比赛，比赛就会显示在这里。", "Wedstrijden verschijnen hier zodra er een video aan gekoppeld is.", "Os concursos aparecerão aqui assim que um vídeo for ligado a eles.", "Tävlingar visas här så snart en video kopplas till dem.", "Соревнования появятся здесь, как только к ним привяжут видео.", "Zawody pojawią się tu, gdy tylko zostanie do nich przypisane wideo.", "영상이 연결되면 여기에 대회가 표시돼요."));
+        var g = grp[cle], n = g.liste.length, resteQ = n % colsQ;
+        var ouv = (encOuv[cle] === undefined) ? i === 0 : !!encOuv[cle];
+        var vis = g.liste.filter(function (v) { return vignetteDe(v) && peutLire(v); })[0];
+        return encartConcours("pq" + cle, cle, ouv, vis ? vignetteDe(vis) : "", g.date, g.titre || "—", (g.sous ? g.sous + " · " : "") + compte(n, T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad rond", "маршрут на видео", "nagrany przejazd", "개 주행 영상"), T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade ronder", "маршрутов на видео", "nagranych przejazdów", "개 주행 영상")),
+          ouv ? [h("div", { key: "g", style: { display: "grid", gridTemplateColumns: "repeat(" + colsQ + ", minmax(0, 1fr))", gap: "14px 10px" } },
+              g.liste.map(function (v, k) { var derniere = k === n - 1 && resteQ; return tuileVideo(v, "q" + cle + v.id, true, derniere ? colsQ - resteQ + 1 : 0); })),
+            cle.indexOf("a:") === 0 ? h("div", { key: "f", style: { marginTop: 16 } }, lienFiche(cle.slice(2))) : null] : null);
+      });
+      if (!ordre.length) corps = vide(T("Les concours apparaîtront ici dès qu'une vidéo y sera rattachée.", "Competitions will appear here as soon as a video is linked to one.", "Los concursos aparecerán aquí en cuanto se vincule un vídeo.", "I concorsi appariranno qui appena un video sarà collegato.", "動画が紐づけられると、ここに競技会が表示されます。", "Turniere erscheinen hier, sobald ein Video verknüpft ist.", "ستظهر المسابقات هنا بمجرد ربط فيديو بها.", "一旦有视频关联，比赛就会显示在这里。", "Wedstrijden verschijnen hier zodra er een video aan gekoppeld is.", "Os concursos aparecerão aqui assim que um vídeo for associado.", "Tävlingar visas här så snart en video kopplas.", "Соревнования появятся здесь, как только к ним привяжут видео.", "Zawody pojawią się tu, gdy tylko zostanie do nich przypisany film.", "영상이 연결되면 여기에 대회가 표시돼요."));
     } else if (vue === "cavaliere") {
       /* les cavalières qui ont des vidéos d'abord, puis les autres par ordre alphabétique */
       var liste = (membres || []).slice().sort(function (a, b) { var d = videosDe(b).length - videosDe(a).length; return d || nomProfil(a).localeCompare(nomProfil(b)); });
@@ -848,6 +863,66 @@ function EcranTeamMedias() {
       selecteurVue(), h("div", { style: { marginTop: 4 } }, corps));
   }
 
+  /* ───────── 12/11 16h — encarts de concours (Parcours et Photos), rubriques Travail et Photos ───────── */
+  function ouvrirFicheConcours(idAg) { try { window.__concoursId = idAg; window.__engagementsId = idAg; window.__concoursPhoto = null; } catch (e) { return; } setEcran("concours"); }
+  function lienFiche(idAg) {
+    return h("button", { type: "button", onClick: function () { ouvrirFicheConcours(idAg); }, style: { background: "none", border: "none", borderBottom: "1px solid " + CH2, padding: "0 0 2px", color: IV, fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
+      T("Voir la fiche du concours", "See the competition page", "Ver la ficha del concurso", "Vedi la scheda del concorso", "競技会ページを見る", "Turnierseite ansehen", "عرض صفحة المسابقة", "查看比赛页面", "Wedstrijdpagina bekijken", "Ver a ficha do concurso", "Se tävlingssidan", "Открыть страницу соревнования", "Zobacz kartę zawodów", "대회 페이지 보기") + " ", h("span", { style: { color: CH } }, rtl ? "‹" : "›"));
+  }
+  function encartConcours(key, cle, ouv, img, date, titre, sous, contenu) {
+    return h("div", { key: key, style: { marginTop: 14, border: "1px solid " + (ouv ? "rgba(201,166,107,.6)" : "rgba(201,166,107,.28)"), borderRadius: 16, overflow: "hidden", background: PAN } },
+      h("button", { type: "button", "aria-expanded": ouv, onClick: function () { var o = Object.assign({}, encOuv); o[cle] = !ouv; setEncOuv(o); },
+        style: { display: "flex", alignItems: "stretch", gap: 14, width: "100%", minHeight: 96, padding: 0, paddingInlineEnd: 16, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { position: "relative", flex: "0 0 112px", overflow: "hidden", background: "#0B0E0C" } },
+          img ? h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", WebkitMaskImage: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #000 55%, transparent)", maskImage: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #000 55%, transparent)" } }) : null),
+        h("span", { style: { flex: 1, minWidth: 0, padding: "14px 0", display: "flex", flexDirection: "column", justifyContent: "center" } },
+          date ? h("span", { style: { fontSize: 10, letterSpacing: ".22em", textTransform: "uppercase", color: CH } }, dateCourte(date)) : null,
+          h("span", { dir: "auto", style: { marginTop: 4, fontFamily: SERIF, fontSize: 21, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titre),
+          h("span", { dir: "auto", style: { marginTop: 4, fontSize: 11, color: IV3 } }, sous)),
+        h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", alignSelf: "center", color: CH, fontSize: 18, transform: ouv ? "rotate(90deg)" : (rtl ? "scaleX(-1)" : "none") } }, "›")),
+      ouv ? h("div", { style: { padding: "4px 14px 18px" } }, contenu) : null);
+  }
+  function cartesMedias() {   /* trois cartes photo en tête des rubriques, comme sur la fiche concours */
+    var vidsC = (videos || []).filter(function (v) { return (v.agenda_id || v.lieu || v.concours) && vignetteDe(v) && peutLire(v); });
+    var vidsT = (videos || []).filter(function (v) { return !(v.agenda_id || v.lieu || v.concours) && vignetteDe(v) && peutLire(v); });
+    var ph0 = (photosConc || []).filter(function (g) { return g.photos.length; })[0];
+    var C = [["videos", PORTES.videos.titre, vidsC[0] ? vignetteDe(vidsC[0]) : PORTES.videos.img],
+      ["travail", PORTES.travail.titre, vidsT[0] ? vignetteDe(vidsT[0]) : PORTES.travail.img],
+      ["photos", PORTES.photos.titre, ph0 ? ((typeof vignetteHype === "function") ? vignetteHype(ph0.photos[0], 300, 360) : ph0.photos[0]) : PORTES.photos.img]];
+    return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: largeur >= 700 ? 12 : 9, marginTop: 20 } }, C.map(function (c) {
+      var on = onglet === c[0];
+      return h("button", { key: "cm" + c[0], type: "button", "aria-pressed": on, onClick: function () { if (c[0] === "videos") setVue("concours"); allerOnglet(c[0]); },
+        style: { position: "relative", aspectRatio: "1.05", borderRadius: 13, overflow: "hidden", border: on ? "1.5px solid " + CH : "1px solid rgba(201,166,107,.32)", background: "linear-gradient(160deg,#141a1c,#0a0d0e)", padding: 0, cursor: "pointer" } },
+        h("img", { src: c[2], alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+        h("span", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "26px 6px 11px", background: "linear-gradient(180deg, rgba(7,10,8,0), rgba(7,10,8,.85))", color: IV, fontFamily: M, fontSize: 12.5, fontWeight: 600, textAlign: "center" } }, c[1]));
+    }));
+  }
+  function ongletTravail() {
+    if (videos === null || membres === null) return chargement();
+    var liste = (videos || []).filter(function (v) { return !(v.agenda_id || v.lieu || v.concours); });
+    var colsT = largeur >= 700 ? 3 : 2;
+    return h("div", null,
+      h("div", { style: { fontFamily: M, fontSize: 12, color: IV3, margin: "16px 0 14px" } }, T("Les séances à la maison, hors concours.", "Sessions at home, outside competitions.", "Las sesiones en casa, fuera de concurso.", "Le sedute a casa, fuori concorso.", "競技会以外の、ふだんの練習。", "Die Einheiten zu Hause, außerhalb von Turnieren.", "الحصص في الإسطبل، خارج المسابقات.", "在家训练，非比赛。", "De trainingen thuis, buiten wedstrijden.", "As sessões em casa, fora de concurso.", "Passen hemma, utanför tävlingar.", "Тренировки дома, вне соревнований.", "Treningi w domu, poza zawodami.", "대회가 아닌, 평소 훈련.")),
+      liste.length || estDuGroupe ? grilleEquilibree(liste, "tr", colsT) : vide(T("Pas encore de vidéo de travail.", "No training video yet.", "Aún no hay vídeos de trabajo.", "Ancora nessun video di lavoro.", "練習の動画はまだありません。", "Noch kein Trainingsvideo.", "لا يوجد فيديو تدريب بعد.", "还没有训练视频。", "Nog geen trainingsvideo.", "Ainda não há vídeos de treino.", "Ingen träningsvideo än.", "Видео тренировок пока нет.", "Brak filmów z treningu.", "아직 훈련 영상이 없어요.")));
+  }
+  function ongletPhotos() {
+    if (photosConc === null) return chargement();
+    var avec = photosConc.filter(function (g) { return g.photos.length; });
+    if (!avec.length) return vide(T("Les photos des concours de l’équipe apparaîtront ici.", "Photos from the team's competitions will appear here.", "Las fotos de los concursos del equipo aparecerán aquí.", "Le foto dei concorsi della squadra appariranno qui.", "チームの競技会の写真がここに表示されます。", "Die Fotos der Turniere des Teams erscheinen hier.", "ستظهر هنا صور مسابقات الفريق.", "团队比赛的照片会显示在这里。", "De foto's van de wedstrijden van het team verschijnen hier.", "As fotos dos concursos da equipa aparecerão aqui.", "Bilder från lagets tävlingar visas här.", "Здесь появятся фото с соревнований команды.", "Tu pojawią się zdjęcia z zawodów drużyny.", "팀 대회 사진이 여기에 표시돼요."));
+    var colsP = largeur >= 700 ? 3 : 2;
+    return h("div", null, avec.map(function (g, i) {
+      var cle = "p:" + g.id, ouv = (encOuv[cle] === undefined) ? i === 0 : !!encOuv[cle], n = g.photos.length;
+      var src0 = (typeof vignetteHype === "function") ? vignetteHype(g.photos[0], 300, 300) : g.photos[0];
+      return encartConcours("ph" + g.id, cle, ouv, src0, g.date_jour, g.titre || "—", (g.lieu ? g.lieu + " · " : "") + compte(n, T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진"), T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진")),
+        ouv ? [h("div", { key: "m", style: { columnCount: n === 1 ? 1 : colsP, columnGap: 8 } }, g.photos.map(function (u, k) {
+            var src = (typeof grandeImageHype === "function") ? grandeImageHype(u, 900) : u;
+            return h("button", { key: "pp" + k, type: "button", onClick: function () { setVisuMuet(false); setVisu(u); }, style: { display: "block", width: "100%", margin: "0 0 8px", padding: 0, border: "none", borderRadius: 10, overflow: "hidden", background: "#0B0E0C", breakInside: "avoid", cursor: "pointer", lineHeight: 0 } },
+              h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.parentNode.style.display = "none"; } catch (e) { } }, style: { width: "100%", height: "auto", display: "block" } }));
+          })),
+          h("div", { key: "a", style: { display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginTop: 14 } }, lienFiche(g.id),
+            estDuGroupe ? h("button", { type: "button", onClick: function () { ouvrirFicheConcours(g.id); }, style: { minHeight: 36, padding: "0 14px", borderRadius: 10, border: "1px solid rgba(201,166,107,.7)", background: "transparent", color: CH, fontFamily: M, fontSize: 12.5, cursor: "pointer" } }, "+ " + T("Ajouter des photos", "Add photos", "Añadir fotos", "Aggiungi foto", "写真を追加", "Fotos hinzufügen", "إضافة صور", "添加照片", "Foto's toevoegen", "Adicionar fotos", "Lägg till foton", "Добавить фото", "Dodaj zdjęcia", "사진 추가")) : null)] : null);
+    }));
+  }
   /* ───────── THÉORIE : partages (lecture seule à cette étape) ───────── */
   var LIB_TYPE = { article_hype: T("Article Hype", "Hype article", "Artículo Hype", "Articolo Hype", "Hype記事", "Hype-Artikel", "مقال Hype", "Hype 文章", "Hype-artikel", "Artigo Hype", "Hype-artikel", "Статья Hype", "Artykuł Hype", "Hype 기사"), lien: T("Lien", "Link", "Enlace", "Link", "リンク", "Link", "رابط", "链接", "Link", "Link", "Länk", "Ссылка", "Link", "링크"), video: T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video", "فيديو", "视频", "Video", "Vídeo", "Video", "Видео", "Film", "동영상"), ressource: T("Ressource", "Resource", "Recurso", "Risorsa", "資料", "Ressource", "مورد", "资源", "Bron", "Recurso", "Resurs", "Ресурс", "Materiał", "자료") };
   /* article Hype : on ouvre la page d'origine DANS Hype (on ne copie jamais le contenu) ; sinon le lien externe */
@@ -1647,6 +1722,8 @@ null)) });
      textes choisis : « En piste », « Les clés de Hey Baby », « LES MÉDIAS À DÉCOUVRIR — Optimise tes perfs ») — ACCUEIL EN TROIS PORTES :
      chaque univers a sa page ; photos entières ; texte posé sur la photo quand elle est sombre, sous la photo quand elle est claire. */
   var PORTES = {
+    travail: { lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"), titre: T("Travail", "Training", "Trabajo", "Lavoro", "練習", "Training", "التدريب", "训练", "Training", "Treino", "Träning", "Тренировки", "Trening", "훈련"), img: "images/galop2-hero-bai-entier.webp" },
+    photos: { lab: T("L’album", "The album", "El álbum", "L’album", "アルバム", "Das Album", "الألبوم", "相册", "Het album", "O álbum", "Albumet", "Альбом", "Album", "앨범"), titre: T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진"), img: "images/concours-carte-equipe.webp" },
     videos: { lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상"), titre: T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로"), img: "images/concours-hero-cso.webp" },
     epingles: { lab: T("Les conseils de Hey Baby", "Hey Baby's tips", "Los consejos de Hey Baby", "I consigli di Hey Baby", "Hey Baby のアドバイス", "Die Tipps von Hey Baby", "نصائح Hey Baby", "Hey Baby 的建议", "De tips van Hey Baby", "Os conselhos do Hey Baby", "Hey Babys tips", "Советы Hey Baby", "Rady Hey Baby", "Hey Baby의 조언"), titre: T("Les clés de Hey Baby", "Hey Baby's keys", "Las claves de Hey Baby", "Le chiavi di Hey Baby", "Hey Baby のポイント", "Die Schlüssel von Hey Baby", "مفاتيح Hey Baby", "Hey Baby 的要点", "De sleutels van Hey Baby", "As chaves do Hey Baby", "Hey Babys nycklar", "Ключи от Hey Baby", "Klucze Hey Baby", "Hey Baby의 핵심"), img: "images/concours-hero-bai-tresse.webp" },
     theorie: { lab: T("Les médias à découvrir", "Media to discover", "Medios para descubrir", "Media da scoprire", "おすすめメディア", "Medien zum Entdecken", "وسائط لاكتشافها", "值得一看的媒体", "Media om te ontdekken", "Mídia a descobrir", "Media att upptäcka", "Медиа для открытий", "Media do odkrycia", "살펴볼 미디어"), titre: T("Optimise tes perfs", "Boost your performance", "Optimiza tu rendimiento", "Ottimizza le tue prestazioni", "パフォーマンスを高めよう", "Optimiere deine Leistung", "حسّن أداءك", "提升你的表现", "Optimaliseer je prestaties", "Otimiza o teu desempenho", "Optimera dina prestationer", "Улучшай свои результаты", "Popraw swoje wyniki", "실력을 끌어올려"), img: "images/galop2-hero-bai-entier.webp" }   /* 11/11 21h (Blandine : photo sombre, dans l'esprit des deux autres) */
@@ -1728,7 +1805,8 @@ null)) });
         onglet === "accueil" ? null : retourAccueil(),
         onglet === "accueil" ? null : enteteRubrique(onglet),
         erreur ? ((!moi || /permission denied|not authorized|jwt/i.test(String(erreur))) ? carteAcces() : h("div", { style: { marginTop: 14, padding: "9px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", color: "#FF9B9B", fontSize: 12 } }, T("Impossible de charger : ", "Could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "読み込めませんでした：", "Laden fehlgeschlagen: ", "تعذّر التحميل: ", "无法加载：", "Kan niet laden: ", "Não foi possível carregar: ", "Kunde inte laddas: ", "Не удалось загрузить: ", "Nie można wczytać: ", "불러오지 못했어요: ") + erreur)) : null,
-        onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles(),)),
+        (onglet === "videos" || onglet === "travail" || onglet === "photos") ? cartesMedias() : null,   /* 12/11 16h */
+        onglet === "accueil" ? pageAccueil() : onglet === "videos" ? ongletVideos() : onglet === "travail" ? ongletTravail() : onglet === "photos" ? ongletPhotos() : onglet === "theorie" ? ongletTheorie() : ongletEpingles(),)),
     (typeof caleBarreHype === "function") ? caleBarreHype() : null,
     calqueReserve,
     questionPub ? h("div", { role: "dialog", "aria-modal": "true", onClick: function (eF) { if (eF.target === eF.currentTarget) setQuestionPub(null); },

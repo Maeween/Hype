@@ -1455,7 +1455,7 @@ function EcranTeamCompetition() {
   var svPhotosTri = svPhotos.slice().sort(function (a2, b2) { return String(b2.d || "").localeCompare(String(a2.d || "")); });
   var srcPhotos = svPhotosTri.map(function (x) { return vignette(x.u); }).filter(Boolean);
   var srcVids = svVids.map(function (v) { return v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, 300, 534) : v.vignette) : ""; }).filter(Boolean);
-  var ouvrirPhotosSv = svPhotos.length ? function () { basculer("sv"); } : null;
+  var ouvrirPhotosSv = function () { ouvrirMedias("photos"); };   /* 12/11 16h (Blandine) : « Photos » ouvre l'album des Médias (encarts par concours), plus de grille dépliée */
   var ouvrirVidsSv = function () { ouvrirMedias("videos"); };
   var txtPhotos = svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진"));
   var txtVids = nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상"));
