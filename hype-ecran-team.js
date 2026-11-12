@@ -921,7 +921,7 @@ function EcranTeamCompetition() {
   var nbAgVisibles = 3;
   var blocAg = section(h("div", null,
     enTete(T("Agenda de l’équipe", "Team calendar", "Agenda del equipo", "Agenda della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "团队日程", "Agenda van het team", "Agenda da equipa", "Lagets kalender", "Календарь команды", "Kalendarz drużyny", "팀 일정"), "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv),
-    uneConcours ? h("div", { style: { margin: "-6px -20px 10px" } }, uneConcours) : null,
+    uneConcours ? h("div", { style: { margin: "-6px -20px 34px" } }, uneConcours) : null,
     agenda === null ? chargement()
       : h("div", null,
           !agendaSansUne.length && !prochainC ? videCartePh(ICO.agenda, "images/concours-carte-passages.webp", T("Aucun rendez-vous à venir pour l’instant.", "No upcoming events yet.", "Aún no hay citas próximas.", "Nessun appuntamento in arrivo per ora.", "今後の予定はまだありません。", "Noch keine anstehenden Termine.", "لا توجد مواعيد قادمة حاليا.", "目前没有即将到来的日程。", "Nog geen komende afspraken.", "Nenhum compromisso futuro por enquanto.", "Inga kommande evenemang ännu.", "Пока нет предстоящих событий.", "Na razie brak nadchodzących wydarzeń.", "예정된 일정이 아직 없어요.")) : null,

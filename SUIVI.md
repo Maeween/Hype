@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 08h15 — build 20261112-0820 — Agenda : même espace au-dessus et au-dessous des lignes (Blandine)
+- hype-ecran-team.js ?v=44. Espace entre le bandeau du prochain concours et la 1re ligne d'agenda passé de 18 à 34 px, comme entre la dernière ligne et le bandeau du dernier concours (mesuré : 34 / 34).
+- En attente : forme des lignes d'agenda (A/B/C), classements en deux cartes (A/B/C), Souvenirs (maquettes A mosaïque / B deux cartes / C le film, Claude conseille C), place de Ma saison.
+
 ### 12/11 08h11 — build 20261112-0815 — Page équipe : titre « Agenda de l'équipe » au-dessus du prochain concours (Blandine « Ok »)
 - hype-ecran-team.js ?v=43. Le titre (avec Voir tout et +) passe avant le bandeau du prochain concours, qui fait partie de l'agenda.
 - En attente : forme des lignes d'agenda (maquettes A lignes plus hautes / B cartes photo / C petit bandeau centré, Claude conseille B), classements en deux cartes (A/B/C), place de Ma saison.
