@@ -73,8 +73,10 @@ FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
  ("📒", "Registre d’élevage", "Chevaux présents, entrées, sorties, soins et ordonnances. Les déplacements en concours s’y ajoutent tout seuls grâce aux engagements. Prêt à imprimer pour un contrôle.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("📸", "Résultats en une capture", "Une seule capture d’écran suffit pour entrer les numéros et les résultats de tes cavaliers.", "https://2hype.fr/fr/concours-resultats/"),
  ("💉", "Rappels pour toute l’écurie", "Vaccins, vermifuges, maréchal, dentiste… Hype te rappelle chaque échéance à temps.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
- ("👥", "Personnel et obligations", "Registre unique du personnel, planning des tâches et obligations légales rappelées avant l’échéance.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
- ("📄", "Pensions, contrats et compta", "Les paiements à encaisser, les contrats à renouveler, et ta compta préparée pour ton comptable.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("👥", "Personnel", "Registre unique du personnel et planning des tâches : chacun voit ce qu’il a à faire.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("⚖️", "Documents légaux", "Affichages obligatoires, document unique, assurances, transport des chevaux : tout est expliqué simplement, et Hype te rappelle chaque échéance.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("📄", "Pensions et contrats", "Les paiements à encaisser et les contrats à renouveler, sans tableau à tenir à côté.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
+ ("💶", "Compta et demandes d’aides", "Ta compta préparée pour ton comptable, et Hey Baby pour t’aider à trouver les aides possibles et à monter tes dossiers de demande.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
 ]]}
 def bloc_fonctions(lg, alignv, dirv, serif, sans):
     F = FONCTIONS.get(lg or "fr", FONCTIONS["fr"])
