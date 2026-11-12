@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 18h15 — build 20261112-1845 — PHOTOS : effet doré adouci partout (Blandine : « il est quand même assez violent », choix « C »)
+- HYPE_PH_SOLEIL_CSS (index.html) prend les valeurs de HC_B2_CSS déjà validées le 09/11 pour les médias du concours : à peu près moitié moins fort (moins jauni, lueur orangée et coins sombres réduits).
+- Touche toutes les pages qui l'utilisent : Écurie (événements, cartes d'équipe, chevaux), page Cavalier, page Équipe, vidéos du Galop 5.
+
 ### 12/11 — build 20261112-1820 — PERSAN étape 2 : Gestion d'écurie (« Mon écurie ») et Prépa DE en persan
 - Demande de Blandine (« la prépa DE ce serait bien, la gestion des écuries aussi »). Nouveaux fichiers i18n/gestion-fa.json (950 textes) et i18n/prepa-fa.json (AE, BP, DE, DES + écran), même structure que l'anglais (vérifiée). Libellés « à pied / monté » traduits (پیاده / سواره).
 - Versions augmentées : hype-ecran-gestion.js (I18N_V 14, ?v=36), hype-ecran-prepa.js (I18N_V 4, ?v=10). Morceaux de travail : outils/fa/i18n/.
@@ -187,6 +191,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Blandine (23 h 06 « je l'aurais mis après la saison », 23 h 15 « 1 est pas mal », 23 h 20 « mets le reste en ligne »). hype-ecran-team.js v=30.
 - Ordre (menu compris) : 1 L'équipe — « Cavaliers & chevaux » (remplace « Qui monte, sur qui », jugé « vraiment nul ») · 2 La saison — « Concours & résultats » (la pastille « Les concours » devient « La saison ») · 3 Souvenirs — « Nos plus beaux moments » · 4 Apprendre — « Progresser ensemble ». Nouveaux titres traduits dans les 14 langues.
 - En attente de son choix : présentation des cavaliers (aujourd'hui 8 au plus puis « Voir tout », contraire à sa règle « tout le monde visible ») — 8 maquettes montrées ; retrait éventuel des petits titres « Nos cavaliers » / « Nos chevaux ».
+### 12/11 18h35 — build 20261112-1835 — 🚑 URGENT : plantage des fiches concours (« concCle is not defined ») corrigé
+- Cause (diagnostic ChatGPT, confirmé) : le commit aa6a29a déclare concCle dans HypeApp, mais Router l'utilise (key de EcranConcours) sans le lire du contexte → ReferenceError, écran de secours Hypo à l'ouverture des fiches concours (Versailles, Médias de la saison). Router utilisait aussi `profil` (balayage depuis l'accueil) sans le lire.
+- Correctif (index.html seul, aucun changement de design, de données ni de Supabase) : concCle ajouté à `value` du contexte ; `concCle, profil` ajoutés à la déstructuration useApp() de Router ; nouvelle pile `concPileAvant` (vidée à chaque navigation, empilée par retourEcran, dépilée par avancerEcran qui restaure __concoursId / __engagementsId / hype_concours_ouvert / setConcCle).
+- Contrôles : audit des variables hors portée de tout Router (aucune autre) ; Chromium fr + fa : Équipe → Médias de la saison → concours A → concours B → retour (A retrouvé) → retour → Ma saison → Vidéothèque → Chevaux → Accueil, sans écran de secours ni erreur ; la version en ligne précédente plantait sur le même parcours ; verif.py : tous les blocs OK. Non vérifié : fiche Versailles réelle avec un compte connecté.
+- Persan conservé intégralement (repart de 5e122ca, build 1820).
+- Signalé par Blandine en même temps, NON TRAITÉ faute d'éléments : import PDF « Aucun résultat trouvé dans ce PDF » (le lecteur n'a pas changé depuis le 11/11 : seul un texte persan ajouté) → il faut le PDF ; « Cheval introuvable » (page Performances du cheval : l'identifiant du cheval n'arrive pas, ou fiche absente) → il faut savoir depuis quelle page.
+
 ### 12/11 8h10 — build 20261112-0810 — Page d'au revoir avant « Supprimer mon compte » (maquette A)
 - Blandine voulait une vraie page (« beaux designs, dans l'esprit Hype, un petit mot sympa avec la mascotte… réexpliquer combien de temps son compte sera conservé ») ; deux maquettes montrées (vraies polices/images), A choisie (« la première est plutôt bien »), publication « Ok continue ».
 - index.html seul : EcranSupprimerCompte reçoit une étape 0 (photo ECURIE_HERO2 + courbe champagne comme la Vidéothèque, kicker « Mon compte », Hypo poney-mascotte.png « Tu vas nous manquer… garde ta place 60 jours », frise Aujourd'hui / Pendant 60 jours / « Le <date du jour + 60 j> », cartes Supprimé / Conservé (listes existantes SUPPR_I18N), rappel abonnement, bouton à contour « Continuer la suppression », lien « Finalement, je reste », fin de page Hype). Nouveaux textes SUPPR_V2 en 14 langues (fr, en, es, it, ja, de, ar avec sens droite-gauche, zh, nl, pt, sv, ru, pl, ko).
