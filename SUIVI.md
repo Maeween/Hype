@@ -19,6 +19,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - Campagne Brevo n°4 ENVOYÉE le 12/11 à 14h55 (« Ok vas y » de Blandine) aux 46 contacts de la liste 5 (réponse Brevo 204).
 - 12/11 15h — MAIL D'INVITATION (personnes sans compte, dont des pros) : outils/mails-invitation.py → outils/mails/invitation.html (lignes perso + « Et pour ton écurie » du mail d'inscription, encadré 1 mois offert HYPE1MOIS, signé Blandine). brevo-sync v4 : INVITES (adresses données par Blandine) → liste Brevo n°6 « Invitations » (3 contacts). Campagne Brevo n°5 ENVOYÉE le 12/11 à 15h05 (« Ok vas y ») aux 3 invités (réponse Brevo 204). Fahimeh Vezi : adresse à demander.
 
+### 12/11 15h30 — build 20261112-1530 — page Équipe : chapitre La saison sans titre en double, bandeau Ma saison cliquable (Blandine)
+- hype-ecran-team.js ?v=51.
+- « Agenda de l'équipe » (titre blanc, seul chapitre encore de ce type) RETIRÉ (« pas les deux ») : on garde le petit chapitre « 2 · La saison » ; « Voir tout » et « + » passent sur la ligne de ce chapitre (enTete(null…) = boutons seuls).
+- Bandeau « Ma saison » : toucher n'importe où (photo, titre) ouvre Ma saison, plus seulement le bouton (« j'ai dû m'y reprendre à 3 fois »). Bandeau Performances inchangé (deux boutons) : question posée à Blandine (photo → Cavaliers, Chevaux ou rien).
+- Aucun nouveau texte.
+- EN ATTENTE (direction donnée 15h24) : « Photos » et « Vidéos » de Souvenirs → page Médias du concours en version saison ; Ma saison = tout ce qui s'est passé dans l'année (médias, photos, épingles, articles lus…) ; y remettre les vidéos déjà en ligne. Plan à valider.
+
 ### 12/11 15h20 — build 20261112-1520 — « Partage cette page » visible sur les Médias de l'équipe (Blandine « Ok, vas-y »)
 - Constat de Blandine (15h12, capture Médias · En piste · Team CSO Club SEP) : pas de partage sur cette page.
 - Cause : la ligne de partage (EncartPartagePage, posée par FinPageHype) ne trouvait pas d'adresse pour « team-medias » quand aucune équipe précise n'était ouverte (équipe par défaut) → elle se cachait. La page Équipe avait un secours, pas les Médias.

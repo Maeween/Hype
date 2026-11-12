@@ -423,8 +423,8 @@ function EcranTeamCompetition() {
   /* ── petits éléments de style ── */
   function enTete(titre, cle, total, seuil, extra) {   /* (527) extra : petit bouton pose a droite du titre */
     var montrer = (total || 0) > seuil;
-    return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, margin: "0 0 12px" } },
-      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 500, color: IV, lineHeight: 1.15, minWidth: 0 } }, titre),   /* 12/11 : UNE taille pour tous les sous-titres */
+    return h("div", { style: { display: "flex", alignItems: "center", justifyContent: titre === null ? "flex-end" : "space-between", gap: 10, margin: titre === null ? 0 : "0 0 12px" } },   /* 12/11 15h25 : titre null = boutons seuls (posés sur la ligne du chapitre) */
+      titre === null ? null : h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 500, color: IV, lineHeight: 1.15, minWidth: 0 } }, titre),   /* 12/11 : UNE taille pour tous les sous-titres */
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto" } },
       montrer ? h("button", { type: "button", onClick: function () { if (cle === "ch" && destPiquet) { try { window.__ecurieHypeClub = TEAM_CLUB; window.__ecurieHypePiquet = destPiquet; } catch (eDp) { } setEcran("ecurie-hype"); return; } basculer(cle); },   /* (799) chevaux : vers le piquet de destination s'il est réglé */ style: { flex: "0 0 auto", minHeight: 36, padding: "0 2px", background: "none", border: "none", color: "rgba(244,241,234,0.78)", fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } },
         (ouvert[cle] ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기") : T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기")) + " " + (ouvert[cle] ? "˄" : CHEV)) : null,
@@ -877,7 +877,8 @@ function EcranTeamCompetition() {
     stImg[cotePhoto] = 0;
     var stTxt = { position: "absolute", top: 0, bottom: 0, width: grandEq ? "48%" : "40%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: gauche ? "flex-end" : "flex-start", textAlign: gauche ? "end" : "start", boxSizing: "border-box" };
     stTxt[coteTxt] = grandEq ? 40 : 20;
-    return h("div", { key: key, style: { position: "relative", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 41.3", overflow: "hidden", background: "transparent" } },
+    var toutClic = (!Array.isArray(btn) && typeof onClick === "function") ? onClick : null;   /* 12/11 15h25 (Blandine) : un seul bouton → tout le bandeau ouvre la page */
+    return h("div", { key: key, onClick: toutClic, role: toutClic ? "link" : undefined, style: { cursor: toutClic ? "pointer" : "default", position: "relative", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 41.3", overflow: "hidden", background: "transparent" } },
       h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: stImg }),
       h("div", { style: stTxt },
         surtitre ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 22 : 15, color: "rgba(244,241,234,0.9)", lineHeight: 1.15 } }, surtitre) : null,
@@ -958,8 +959,9 @@ function EcranTeamCompetition() {
   }
   var nbAgVisibles = 3;
   var AG_BLOC = (typeof window !== "undefined" && window.__agBloc) || "avec";   /* 14h09 : « resserre au milieu, option B » (Blandine) */   /* 13h50 : essai « un seul bloc » (avec / sans les rendez-vous au milieu) */
+  /* 12/11 15h25 (Blandine : « retire Agenda de l’équipe… pas les deux ») : plus de titre blanc ; « Voir tout » et « + » passent sur la ligne du chapitre La saison */
+  var droiteAg = enTete(null, "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv);
   var blocAg = section(h("div", null,
-    enTete(T("Agenda de l’équipe", "Team calendar", "Agenda del equipo", "Agenda della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "团队日程", "Agenda van het team", "Agenda da equipa", "Lagets kalender", "Календарь команды", "Kalendarz drużyny", "팀 일정"), "ag", agendaSansUne.length + ((agendaPasse || []).length ? 9 : 0), nbAgVisibles, btnAjoutRdv),
     uneConcours ? h("div", { style: { margin: AG_BLOC ? "-6px -20px 0" : "-6px -20px 34px" } }, uneConcours) : null,
     (AG_BLOC === "sans" && dernierConcours) ? h("div", { style: { margin: "0 -20px" } }, bandeauConcours(dernierConcours, true)) : null,
     agenda === null ? chargement()
@@ -1614,7 +1616,7 @@ function EcranTeamCompetition() {
     partie(PARTIES[0].id, 1, PARTIES[0].lab, null, blocGerer), blocEquipe, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
     /* 12/11 12h33 (Blandine, maquette B, « touche à rien d'autre ») : La saison = agenda puis Ma saison ; Souvenirs = Nos plus beaux moments,
        puis en dernier les résultats récents et les classements (et Apprendre ensuite). Styles inchangés. */
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, duoSaisonRes, h("div", { key: "rsa", style: { paddingTop: 20 } }, blocRes), trait(),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, null, droiteAg), blocAg, duoSaisonRes, h("div", { key: "rsa", style: { paddingTop: 20 } }, blocRes), trait(),
     partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),   /* 13h50 : fin de page remise (Hey Baby, Optimise tes perfs, règlements) */
     /* 12/11 13h11 (Blandine : « vire les outils en bas de page, on avisera après ») : classements, Hey Baby, Optimise tes perfs,
