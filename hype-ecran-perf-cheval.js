@@ -1040,7 +1040,7 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { marginTop: 14 } }, barre(base))));
 
     /* 2 · Ses chevaux — magazine immersif */
-    var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: parCheval(nm) }; }).filter(function (c) { return nbEpDe(c.ls) > 0; });
+    var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: parCheval(nm) }; }).filter(function (c) { return nbEpDe(c.ls.filter(visL)) > 0; });   /* 12/11 20h (Blandine « Ok vas y ») : un cheval dont tous les résultats sont cachés n a pas de bloc */
     if (chx.length) {
       g.push(sepA2("s2")); g.push(partie("p2", T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش"), T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان")));
       chx.forEach(function (c, i) {
