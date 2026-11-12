@@ -103,6 +103,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - hype-ecran-saison.js v=140 (EcranEngagements › recapFin) : replié par défaut (« Voir le récapitulatif »), onglets Par cavalier / Par cheval / Par épreuve ; vue cavaliers en petites cartes D (photo ronde, prénom, chevaux + n° de tour en doré), 2 par ligne ; vues chevaux et épreuves inchangées, une seule à la fois.
 - images/bandeau-prochain-concours.webp recadré à droite (plus d obstacle jaune, cheval plus grand) ; hype-ecran-team.js v=39 (?v=2 sur l image, texte sur 42 %).
 - Le bandeau « Prochain concours » passe tout seul au concours suivant dès que la date du précédent est passée ; même photo pour tous (affiche du concours possible plus tard).
+### 12/11 03h12 — build 20261112-0415 — Prochain et dernier concours vraiment symétriques (Blandine « pourquoi pas mettre ça en ligne pour ce soir »)
+- hype-ecran-team.js ?v=42.
+- Les deux bandeaux au même format large (1920×819), même hauteur, en miroir ; textes un peu plus petits pour tenir.
+- Prochain : images/bandeau-prochain-concours-large.webp (photo de Versailles prolongée de noir à gauche, rien de coupé).
+- Dernier : images/bandeau-dernier-concours.webp (photo envoyée par Blandine : gris, cavalière penchée sur l'encolure). Fini la photo retournée.
+- Ma saison reste après les résultats (pas entre les deux bandeaux, décision de Blandine).
+- À faire demain : place définitive de Ma saison ; classements cavaliers / chevaux en deux cartes (maquettes A, B, C montrées) ; l'autre photo de Blandine (saut sur l'obstacle bleu) gardée de côté.
+
 ### 12/11 02h55 — build 20261112-0400 — Page équipe : prochain et dernier concours pareils, bandeau « Ma saison », sur-titres seuls (Blandine « tu peux déjà le remettre en ligne »)
 - hype-ecran-team.js ?v=41.
 - Prochain et dernier concours : même bandeau (bandeauConcours). Le dernier est en miroir (photo à gauche, texte à droite, courbe inversée), après l'agenda, bouton « Voir les résultats ». Photo du dernier = provisoire (la même retournée, le tapis se lit à l'envers) : attendre une vraie photo de Blandine.
