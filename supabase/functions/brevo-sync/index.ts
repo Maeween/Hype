@@ -23,6 +23,9 @@ const INVITES: Record<string, [string, string, string]> = {
   "deborah.guilmain@free.fr": ["Déborah", "Guilmain", "Invitations"],
   "fahimeh.v@gmail.com": ["Fahimeh", "Vezi", "Invitations 2"],   // 12/11 15h28
 };
+// 12/11 18h09 (Blandine : « envoie-lui automatiquement le mail ») — Fahimeh a déjà un compte : ajoutée quand même à sa liste
+// d'invitation pour recevoir la version en persan.
+const INVITES_AVEC_COMPTE = new Set(["fahimeh.v@gmail.com"]);
 const LISTE_TOUS = 2, LISTE_ACCES_OFFERT = 4, FIN_OFFRE = "2026-12-10";
 const B = "https://api.brevo.com/v3";
 
@@ -119,7 +122,7 @@ Deno.serve(async (req: Request) => {
   const invites: string[] = [];
   for (const [mail, [prenom, nom, nomListe]] of Object.entries(INVITES)) {
     const LISTE_INVITES = LISTES_INV[nomListe];
-    if (aComptes.has(mail) || !LISTE_INVITES || essai) continue;
+    if ((aComptes.has(mail) && !INVITES_AVEC_COMPTE.has(mail)) || !LISTE_INVITES || essai) continue;
     const deja = existants.get(mail);
     const attrs: Record<string, string> = { NOM: nom }; if (!deja || !(deja.attributes || {}).PRENOM) attrs.PRENOM = prenom;
     const r = await fetch(`${B}/contacts`, { method: "POST", headers: hb, body: JSON.stringify({ email: mail, attributes: attrs, listIds: [LISTE_INVITES], updateEnabled: true }) });
