@@ -12,6 +12,16 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — build 20261112-1820 — PERSAN étape 2 : Gestion d'écurie (« Mon écurie ») et Prépa DE en persan
+- Demande de Blandine (« la prépa DE ce serait bien, la gestion des écuries aussi »). Nouveaux fichiers i18n/gestion-fa.json (950 textes) et i18n/prepa-fa.json (AE, BP, DE, DES + écran), même structure que l'anglais (vérifiée). Libellés « à pied / monté » traduits (پیاده / سواره).
+- Versions augmentées : hype-ecran-gestion.js (I18N_V 14, ?v=36), hype-ecran-prepa.js (I18N_V 4, ?v=10). Morceaux de travail : outils/fa/i18n/.
+- Vérifié (Chromium 390×844) : Mon écurie et Prépa diplômes en persan, droite-à-gauche, aucune erreur.
+- RESTE À FAIRE pour le persan (à reprendre sur « continue le persan ») :
+  1. Pages publiques Google/Bing en persan : dossier fa/ + générateurs (seo-*.cjs/.py, association, cgv) + plans du site (hreflang fa) — Bing est prévenu tout seul à chaque publication.
+  2. Mails (invitation, tips) en persan.
+  3. « 14 langues » → « 15 langues » partout (pages publiques, mails, textes de l'appli) — seulement quand le point 1 est fait.
+  4. Relire les phrases coupées en morceaux (ordre des mots persan parfois bancal) ; relecture par Faïmé idéale.
+
 ### 12/11 — build 20261112-1710 — PERSAN (fa), 15e langue de l'appli — étape 1 : l'appli
 - Demande de Blandine (12/11, pour Faïmé) : « fais-le, je te laisse tout faire ». Sélecteurs : « ایران (فارسی) » sans drapeau, pastille « IR » (Blandine : « tu marques Iran et on se prend pas la tête » ; Faïmé refuse le drapeau actuel).
 - 21 460 textes traduits en persan (tutoiement, glossaire équestre dans outils/fa/CONSIGNES.md) par 28 assistants en parallèle, puis vérifiés (aucun manquant, variables intactes).

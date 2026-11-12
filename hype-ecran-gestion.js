@@ -75,7 +75,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 13;
+  var I18N_V = 14;   /* 12/11 : + persan (i18n/gestion-fa.json) */
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
