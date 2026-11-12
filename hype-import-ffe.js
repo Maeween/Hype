@@ -863,7 +863,7 @@
     sv: "Bara hästens ägare kan ändra vad som visas. Dina resultat sparas med standardinställningen: placeringar.",
     ru: "Только владелица лошади может менять то, что показывается. Твои результаты будут сохранены с настройкой по умолчанию: призовые места.",
     pl: "Tylko właścicielka konia może zmienić to, co jest wyświetlane. Twoje wyniki zostaną zapisane z ustawieniem domyślnym: lokaty.",
-    ko: "표시 내용은 말 주인만 바꿀 수 있어요. 내 성적은 기본 설정(입상)으로 저장돼요."
+    ko: "표시 내용은 말 주인만 바꿀 수 있어요. 내 성적은 기본 설정(입상)으로 저장돼요.", fa: "Only the horse's owner can change what is displayed. Your results will be saved with the default setting: placings."
   };
   function txtVerrou() { var lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (eLg) { } return TXT_VERROU[lg] || TXT_VERROU.en; }
 

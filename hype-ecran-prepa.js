@@ -191,7 +191,7 @@ window.__HYPE_PREPA_DATA = {"AE": {"sections": [{"titre": "L'AE en bref", "b": [
   function Prepa() {
     var app = (typeof useApp === "function") ? useApp() : {};
     var setEcran = app.setEcran || function () { };
-    var lg = (app && app.langue) || "fr", rtl = lg === "ar";
+    var lg = (app && app.langue) || "fr", rtl = (lg === "ar" || lg === "fa");
     var _f = React.useState(0), forcer = _f[1];
     React.useEffect(function () { if (lg !== "fr" && !TR[lg]) chargerTr(lg).then(function () { forcer(function (n) { return n + 1; }); }); }, [lg]);
     LG = lg; var TL = lg !== "fr" ? TR[lg] : null; UI = TL ? TL.ui : null;

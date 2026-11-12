@@ -8,13 +8,13 @@ function EcranMonCarnet() {
   var tr = ctx.tr || function (o) { return (o && (o.fr || "")) || ""; };
   var setEcran = ctx.setEcran || function () { };
   var retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
-  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko }); }   /* 27/09 (411) : arabe */
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko, fa: fa }); }   /* 27/09 (411) : arabe */
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
   var OR = "#E8B84B", TQ = "#7FA3AD", TQL = "#CFE3E8";
   /* 27/09 (425) : palette du journal de progression */
   /* 27/09 (431) : « ca manque un peu de dore et de vie dans le bleu » - petrole plus vif, dore plus franc, textes plus lumineux. */
   var JC = { fond: "#080A0B", carte: "#131819", pet: "#2E6A80", reflet: "#7DB6C3", bronze: "#C29B5C", champ: "#D6B676", ivoire: "#F2EDE4", ligne: "rgba(242,237,228,0.16)" };
-  var rtlJC = (ctx.langue === "ar");
+  var rtlJC = ((ctx.langue === "ar" || ctx.langue === "fa"));
 
   var stN = React.useState(null); var nbConseils = stN[0], setNbConseils = stN[1];
   /* 27/09 (441) : etats prios et toutVoir retires (plus affiches depuis le 425), ainsi que leur lecture en base. */
@@ -148,7 +148,7 @@ function EcranMonCarnet() {
       setObjEd(null); setObjSup(false);
     } catch (eE) {
       try { console.warn("[journal] objectif non enregistre :", (eE && eE.message) || eE); } catch (eC2) { }
-      setObjErr(T("L’objectif n’a pas pu être enregistré.", "The goal could not be saved.", "No se pudo guardar el objetivo.", "Impossibile salvare l’obiettivo.", "目標を保存できませんでした。", "Das Ziel konnte nicht gespeichert werden.", "تعذر حفظ الهدف.", "目标保存失败。", "Het doel kon niet worden opgeslagen.", "Não foi possível salvar o objetivo.", "Målet kunde inte sparas.", "Не удалось сохранить цель.", "Nie udało się zapisać celu.", "목표를 저장하지 못했어요."));
+      setObjErr(T("L’objectif n’a pas pu être enregistré.", "The goal could not be saved.", "No se pudo guardar el objetivo.", "Impossibile salvare l’obiettivo.", "目標を保存できませんでした。", "Das Ziel konnte nicht gespeichert werden.", "تعذر حفظ الهدف.", "目标保存失败。", "Het doel kon niet worden opgeslagen.", "Não foi possível salvar o objetivo.", "Målet kunde inte sparas.", "Не удалось сохранить цель.", "Nie udało się zapisać celu.", "목표를 저장하지 못했어요.", "The goal could not be saved."));
     }
     setObjEnv(false);
   }
@@ -165,7 +165,7 @@ function EcranMonCarnet() {
       setObjEd(null); setObjSup(false);
     } catch (eD) {
       try { console.warn("[journal] objectif non supprime :", (eD && eD.message) || eD); } catch (eC3) { }
-      setObjErr(T("L’objectif n’a pas pu être supprimé.", "The goal could not be deleted.", "No se pudo eliminar el objetivo.", "Impossibile eliminare l’obiettivo.", "目標を削除できませんでした。", "Das Ziel konnte nicht gelöscht werden.", "تعذر حذف الهدف.", "目标删除失败。", "Het doel kon niet worden verwijderd.", "Não foi possível excluir o objetivo.", "Målet kunde inte tas bort.", "Не удалось удалить цель.", "Nie udało się usunąć celu.", "목표를 삭제하지 못했어요."));
+      setObjErr(T("L’objectif n’a pas pu être supprimé.", "The goal could not be deleted.", "No se pudo eliminar el objetivo.", "Impossibile eliminare l’obiettivo.", "目標を削除できませんでした。", "Das Ziel konnte nicht gelöscht werden.", "تعذر حذف الهدف.", "目标删除失败。", "Het doel kon niet worden verwijderd.", "Não foi possível excluir o objetivo.", "Målet kunde inte tas bort.", "Не удалось удалить цель.", "Nie udało się usunąć celu.", "목표를 삭제하지 못했어요.", "The goal could not be deleted."));
     }
     setObjEnv(false);
   }
@@ -215,7 +215,7 @@ function EcranMonCarnet() {
 
   function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("moncavalier"); } }
 
-  var MOIS = [T("janvier", "January", "enero", "gennaio", "1\u6708", "Januar", "\u064a\u0646\u0627\u064a\u0631", "一月", "januari", "janeiro", "januari", "январь", "styczeń", "1월"), T("f\u00e9vrier", "February", "febrero", "febbraio", "2\u6708", "Februar", "\u0641\u0628\u0631\u0627\u064a\u0631", "二月", "februari", "fevereiro", "februari", "февраль", "luty", "2월"), T("mars", "March", "marzo", "marzo", "3\u6708", "M\u00e4rz", "\u0645\u0627\u0631\u0633", "3月", "mrt", "mar", "mars", "мар", "mar", "3월"), T("avril", "April", "abril", "aprile", "4\u6708", "April", "\u0623\u0628\u0631\u064a\u0644", "四月", "april", "abril", "april", "апрель", "kwiecień", "4월"), T("mai", "May", "mayo", "maggio", "5\u6708", "Mai", "\u0645\u0627\u064a\u0648", "5月", "mei", "mai", "maj", "мая", "maj", "5월"), T("juin", "June", "junio", "giugno", "6\u6708", "Juni", "\u064a\u0648\u0646\u064a\u0648", "6月", "jun", "jun", "juni", "июн", "cze", "6월"), T("juillet", "July", "julio", "luglio", "7\u6708", "Juli", "\u064a\u0648\u0644\u064a\u0648", "七月", "juli", "julho", "juli", "июль", "lipiec", "7월"), T("ao\u00fbt", "August", "agosto", "agosto", "8\u6708", "August", "\u0623\u063a\u0633\u0637\u0633", "8月", "aug", "ago", "aug", "авг", "sie", "8월"), T("septembre", "September", "septiembre", "settembre", "9\u6708", "September", "\u0633\u0628\u062a\u0645\u0628\u0631", "九月", "september", "setembro", "september", "сентябрь", "wrzesień", "9월"), T("octobre", "October", "octubre", "ottobre", "10\u6708", "Oktober", "\u0623\u0643\u062a\u0648\u0628\u0631", "十月", "oktober", "outubro", "oktober", "октябрь", "październik", "10월"), T("novembre", "November", "noviembre", "novembre", "11\u6708", "November", "\u0646\u0648\u0641\u0645\u0628\u0631", "十一月", "november", "novembro", "november", "ноябрь", "listopad", "11월"), T("d\u00e9cembre", "December", "diciembre", "dicembre", "12\u6708", "Dezember", "\u062f\u064a\u0633\u0645\u0628\u0631", "十二月", "december", "dezembro", "december", "декабрь", "grudzień", "12월")];
+  var MOIS = [T("janvier", "January", "enero", "gennaio", "1\u6708", "Januar", "\u064a\u0646\u0627\u064a\u0631", "一月", "januari", "janeiro", "januari", "январь", "styczeń", "1월", "January"), T("f\u00e9vrier", "February", "febrero", "febbraio", "2\u6708", "Februar", "\u0641\u0628\u0631\u0627\u064a\u0631", "二月", "februari", "fevereiro", "februari", "февраль", "luty", "2월", "February"), T("mars", "March", "marzo", "marzo", "3\u6708", "M\u00e4rz", "\u0645\u0627\u0631\u0633", "3月", "mrt", "mar", "mars", "мар", "mar", "3월", "March"), T("avril", "April", "abril", "aprile", "4\u6708", "April", "\u0623\u0628\u0631\u064a\u0644", "四月", "april", "abril", "april", "апрель", "kwiecień", "4월", "April"), T("mai", "May", "mayo", "maggio", "5\u6708", "Mai", "\u0645\u0627\u064a\u0648", "5月", "mei", "mai", "maj", "мая", "maj", "5월", "May"), T("juin", "June", "junio", "giugno", "6\u6708", "Juni", "\u064a\u0648\u0646\u064a\u0648", "6月", "jun", "jun", "juni", "июн", "cze", "6월", "June"), T("juillet", "July", "julio", "luglio", "7\u6708", "Juli", "\u064a\u0648\u0644\u064a\u0648", "七月", "juli", "julho", "juli", "июль", "lipiec", "7월", "July"), T("ao\u00fbt", "August", "agosto", "agosto", "8\u6708", "August", "\u0623\u063a\u0633\u0637\u0633", "8月", "aug", "ago", "aug", "авг", "sie", "8월", "August"), T("septembre", "September", "septiembre", "settembre", "9\u6708", "September", "\u0633\u0628\u062a\u0645\u0628\u0631", "九月", "september", "setembro", "september", "сентябрь", "wrzesień", "9월", "September"), T("octobre", "October", "octubre", "ottobre", "10\u6708", "Oktober", "\u0623\u0643\u062a\u0648\u0628\u0631", "十月", "oktober", "outubro", "oktober", "октябрь", "październik", "10월", "October"), T("novembre", "November", "noviembre", "novembre", "11\u6708", "November", "\u0646\u0648\u0641\u0645\u0628\u0631", "十一月", "november", "novembro", "november", "ноябрь", "listopad", "11월", "November"), T("d\u00e9cembre", "December", "diciembre", "dicembre", "12\u6708", "Dezember", "\u062f\u064a\u0633\u0645\u0628\u0631", "十二月", "december", "dezembro", "december", "декабрь", "grudzień", "12월", "December")];
   function enClair(s) {
     var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (!m) return String(s || "");
@@ -235,12 +235,12 @@ function EcranMonCarnet() {
   var JC_DISC = ["plat", "dressage", "saut", "exterieur", "travail_a_pied", "autre"];
   function jcNorm(v) { try { return String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); } catch (eN) { return String(v || "").toLowerCase().trim(); } }
   function jcLibDisc(k) {
-    if (k === "plat") return T("Plat", "Flatwork", "Plano", "Piano", "馬場", "Flacharbeit", "التدريب المسطح", "平地", "Binnenwerk", "Plano", "Plan ridning", "Работа на плацу", "Ujeżdżenie na płaskim", "평지");
-    if (k === "dressage") return T("Dressage", "Dressage", "Doma", "Dressage", "馬術", "Dressur", "الترويض", "盛装舞步", "Dressuur", "Adestramento", "Dressyr", "Выездка", "Ujeżdżenie", "마장마술");
-    if (k === "saut") return T("Saut", "Jumping", "Salto", "Salto", "障害", "Springen", "قفز الحواجز", "跳跃", "Springen", "Salto", "Hoppning", "Конкур", "Skoki", "장애물");
-    if (k === "exterieur") return T("Extérieur", "Outdoor", "Exterior", "Esterno", "外乗", "Ausritt", "نزهة خارجية", "户外", "Buiten", "Externo", "Utomhus", "Прогулка", "Teren", "야외");
-    if (k === "travail_a_pied") return T("Travail à pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "地上作業", "Bodenarbeit", "العمل من الأرض", "地面训练", "Grondwerk", "Trabalho a pé", "Arbete från marken", "Работа с земли", "Praca z ziemi", "지상 훈련");
-    if (k === "autre") return T("Autre", "Other", "Otro", "Altro", "その他", "Andere", "أخرى", "其他", "Anders", "Outro", "Annat", "Другое", "Inne", "기타");
+    if (k === "plat") return T("Plat", "Flatwork", "Plano", "Piano", "馬場", "Flacharbeit", "التدريب المسطح", "平地", "Binnenwerk", "Plano", "Plan ridning", "Работа на плацу", "Ujeżdżenie na płaskim", "평지", "Flatwork");
+    if (k === "dressage") return T("Dressage", "Dressage", "Doma", "Dressage", "馬術", "Dressur", "الترويض", "盛装舞步", "Dressuur", "Adestramento", "Dressyr", "Выездка", "Ujeżdżenie", "마장마술", "Dressage");
+    if (k === "saut") return T("Saut", "Jumping", "Salto", "Salto", "障害", "Springen", "قفز الحواجز", "跳跃", "Springen", "Salto", "Hoppning", "Конкур", "Skoki", "장애물", "Jumping");
+    if (k === "exterieur") return T("Extérieur", "Outdoor", "Exterior", "Esterno", "外乗", "Ausritt", "نزهة خارجية", "户外", "Buiten", "Externo", "Utomhus", "Прогулка", "Teren", "야외", "Outdoor");
+    if (k === "travail_a_pied") return T("Travail à pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "地上作業", "Bodenarbeit", "العمل من الأرض", "地面训练", "Grondwerk", "Trabalho a pé", "Arbete från marken", "Работа с земли", "Praca z ziemi", "지상 훈련", "Groundwork");
+    if (k === "autre") return T("Autre", "Other", "Otro", "Altro", "その他", "Andere", "أخرى", "其他", "Anders", "Outro", "Annat", "Другое", "Inne", "기타", "Other");
     return "";
   }
   function jcCleDisc(se) {
@@ -257,9 +257,9 @@ function EcranMonCarnet() {
     return se.discipline ? String(se.discipline) : "";
   }
   function jcRessenti(cle) {
-    if (cle === "bonnes") return T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "良い感覚", "Gutes Gefühl", "إحساس جيد", "感觉很好", "Goed gevoel", "Boas sensações", "Bra känsla", "Хорошие ощущения", "Dobre odczucia", "좋은 느낌");
-    if (cle === "mitigees") return T("Sensations mitigées", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "まあまあ", "Gemischtes Gefühl", "إحساس متفاوت", "感觉一般", "Wisselend gevoel", "Sensações mistas", "Blandade känslor", "Смешанные ощущения", "Mieszane odczucia", "그저 그런 느낌");
-    if (cle === "difficile") return T("Séance difficile", "Tough session", "Sesión difícil", "Sessione difficile", "難しい稽古", "Schwierige Einheit", "حصة صعبة", "艰难的训练", "Zware training", "Sessão difícil", "Tufft ridpass", "Тяжёлая тренировка", "Trudny trening", "힘든 훈련");
+    if (cle === "bonnes") return T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "良い感覚", "Gutes Gefühl", "إحساس جيد", "感觉很好", "Goed gevoel", "Boas sensações", "Bra känsla", "Хорошие ощущения", "Dobre odczucia", "좋은 느낌", "Good feelings");
+    if (cle === "mitigees") return T("Sensations mitigées", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "まあまあ", "Gemischtes Gefühl", "إحساس متفاوت", "感觉一般", "Wisselend gevoel", "Sensações mistas", "Blandade känslor", "Смешанные ощущения", "Mieszane odczucia", "그저 그런 느낌", "Mixed feelings");
+    if (cle === "difficile") return T("Séance difficile", "Tough session", "Sesión difícil", "Sessione difficile", "難しい稽古", "Schwierige Einheit", "حصة صعبة", "艰难的训练", "Zware training", "Sessão difícil", "Tufft ridpass", "Тяжёлая тренировка", "Trudny trening", "힘든 훈련", "Tough session");
     return cle ? String(cle) : "";
   }
   /* Date de la carte : jour en grand + mois court dans la langue de l appli. La chaine AAAA-MM-JJ est
@@ -321,11 +321,11 @@ function EcranMonCarnet() {
         (aRet || noteC) ? h("div", { style: { display: "flex", alignItems: "flex-start", gap: 7, minWidth: 0 } },
           jcIco(["M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"], 15, "rgba(242,237,228,0.8)"),
           h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 12.5, lineHeight: 1.45, color: "rgba(242,237,228,0.92)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } },
-            aRet ? h("span", { style: { fontStyle: "italic", color: "rgba(242,237,228,0.82)" } }, T("À retenir : ", "To remember: ", "Para recordar: ", "Da ricordare: ", "覚えておくこと：", "Merken: ", "للتذكر: ", "要点：", "Om te onthouden: ", "Para lembrar: ", "Att komma ihåg: ", "Запомнить: ", "Do zapamiętania: ", "기억할 점: ")) : null,
+            aRet ? h("span", { style: { fontStyle: "italic", color: "rgba(242,237,228,0.82)" } }, T("À retenir : ", "To remember: ", "Para recordar: ", "Da ricordare: ", "覚えておくこと：", "Merken: ", "للتذكر: ", "要点：", "Om te onthouden: ", "Para lembrar: ", "Att komma ihåg: ", "Запомнить: ", "Do zapamiętania: ", "기억할 점: ", "To remember: ")) : null,
             h("span", { dir: "auto" }, aRet || noteC))) : null) : null,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginTop: 10, minWidth: 0 } },
         h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, fontFamily: M, fontSize: 13, fontWeight: 500, color: "#8ECBD8" } },
-          T("Voir la séance", "View the session", "Ver la sesión", "Vedi la sessione", "セッションを見る", "Einheit ansehen", "عرض الحصة", "查看训练", "De training bekijken", "Ver a sessão", "Se ridpasset", "Смотреть тренировку", "Zobacz trening", "훈련 보기"),
+          T("Voir la séance", "View the session", "Ver la sesión", "Vedi la sessione", "セッションを見る", "Einheit ansehen", "عرض الحصة", "查看训练", "De training bekijken", "Ver a sessão", "Se ridpasset", "Смотреть тренировку", "Zobacz trening", "훈련 보기", "View the session"),
           h("span", { "aria-hidden": "true", style: { fontSize: 18, lineHeight: 1 } }, "›")),
         ress ? h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.75)", fontFamily: M, fontSize: 11.5, color: "rgba(242,237,228,0.95)", maxWidth: "100%", boxSizing: "border-box" } },
           h("span", { "aria-hidden": "true", style: { width: 6, height: 6, borderRadius: "50%", background: JC.champ, flex: "0 0 auto" } }), ress) : null));
@@ -353,7 +353,7 @@ function EcranMonCarnet() {
         style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 56, padding: "0 16px", borderRadius: 14, border: "1px solid " + JC.reflet, background: "linear-gradient(180deg, #37788F 0%, " + JC.pet + " 100%)", color: JC.ivoire, cursor: "pointer", boxSizing: "border-box", boxShadow: "0 6px 18px rgba(46,106,128,0.28)" } },
         h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.86)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19, fontWeight: 300, lineHeight: 1 } }, "+"),
         h("span", { style: { flex: 1, minWidth: 0, textAlign: "center", fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 21, fontWeight: 600, lineHeight: 1.15 } },
-          T("Noter une séance", "Log a session", "Registrar una sesión", "Registra una sessione", "セッションを記録", "Einheit eintragen", "تدوين حصة", "记录一次训练", "Een training noteren", "Anotar uma sessão", "Anteckna ett ridpass", "Записать тренировку", "Zapisz trening", "훈련 기록하기")),
+          T("Noter une séance", "Log a session", "Registrar una sesión", "Registra una sessione", "セッションを記録", "Einheit eintragen", "تدوين حصة", "记录一次训练", "Een training noteren", "Anotar uma sessão", "Anteckna ett ridpass", "Записать тренировку", "Zapisz trening", "훈련 기록하기", "Log a session")),
         h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 30, textAlign: "center", fontSize: 22, lineHeight: 1, opacity: 0.85 } }, "\u203a")),
 
       /* 27/09 (428) : LE CALENDRIER COMPACT. Calcule sur la liste DEJA chargee (aucune requete).
@@ -373,9 +373,9 @@ function EcranMonCarnet() {
         var moisTxt = "";
         try { moisTxt = new Intl.DateTimeFormat(ctx.langue || "fr", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(jcT(jeudi))); } catch (eM) { moisTxt = ym; }
         var nbTxt = (nbMois === 0)
-          ? T("aucune séance", "no sessions", "ninguna sesión", "nessuna sessione", "0回", "keine Einheit", "لا حصص", "没有训练", "geen trainingen", "nenhuma sessão", "inga ridpass", "нет тренировок", "brak treningów", "훈련 없음")
+          ? T("aucune séance", "no sessions", "ninguna sesión", "nessuna sessione", "0回", "keine Einheit", "لا حصص", "没有训练", "geen trainingen", "nenhuma sessão", "inga ridpass", "нет тренировок", "brak treningów", "훈련 없음", "no sessions")
           : (nbMois === 1)
-          ? T("1 séance", "1 session", "1 sesión", "1 sessione", "1回", "1 Einheit", "حصة واحدة", "1 次训练", "1 training", "1 sessão", "1 ridpass", "1 тренировка", "1 trening", "훈련 1번")
+          ? T("1 séance", "1 session", "1 sesión", "1 sessione", "1回", "1 Einheit", "حصة واحدة", "1 次训练", "1 training", "1 sessão", "1 ridpass", "1 тренировка", "1 trening", "훈련 1번", "1 session")
           : T(nbMois + " séances", nbMois + " sessions", nbMois + " sesiones", nbMois + " sessioni", nbMois + "回", nbMois + " Einheiten", nbMois + " حصص", nbMois + " 次训练", nbMois + " trainingen", nbMois + " sessões", (nbMois + " ridpass"), (nbMois + " " + (nbMois % 10 === 1 && nbMois % 100 !== 11 ? "тренировка" : (nbMois % 10 >= 2 && nbMois % 10 <= 4 && (nbMois % 100 < 10 || nbMois % 100 >= 20)) ? "тренировки" : "тренировок")), (nbMois + " " + (nbMois === 1 ? "trening" : (nbMois % 10 >= 2 && nbMois % 10 <= 4 && (nbMois % 100 < 10 || nbMois % 100 >= 20)) ? "treningi" : "treningów")), (nbMois + "번의 훈련"));
         var fleche = function (sens, txt, aria) {
           return h("button", { type: "button", "aria-label": aria, onClick: function () { changerSemJC(jcDecale(lundi, sens * 7)); },
@@ -383,11 +383,11 @@ function EcranMonCarnet() {
         };
         return h("div", { className: "jc-cal", style: { marginTop: 14, padding: "6px 8px 10px", borderRadius: 16, border: "1px solid rgba(214,182,118,0.72)", background: JC.carte, minWidth: 0 } },
           h("div", { style: { display: "flex", alignItems: "center", gap: 4, minWidth: 0 } },
-            fleche(-1, "‹", T("Semaine précédente", "Previous week", "Semana anterior", "Settimana precedente", "前の週", "Vorherige Woche", "الأسبوع السابق", "上一周", "Vorige week", "Semana anterior", "Föregående vecka", "Предыдущая неделя", "Poprzedni tydzień", "이전 주")),
+            fleche(-1, "‹", T("Semaine précédente", "Previous week", "Semana anterior", "Settimana precedente", "前の週", "Vorherige Woche", "الأسبوع السابق", "上一周", "Vorige week", "Semana anterior", "Föregående vecka", "Предыдущая неделя", "Poprzedni tydzień", "이전 주", "Previous week")),
             h("div", { style: { flex: 1, minWidth: 0, display: "flex", alignItems: "baseline", justifyContent: "center", flexWrap: "wrap", columnGap: 10, rowGap: 2, textAlign: "center" } },
               h("span", { style: { fontFamily: C, fontSize: 15, fontWeight: 600, letterSpacing: rtlJC ? 0 : 1.6, textTransform: "uppercase", color: JC.ivoire } }, moisTxt),
               h("span", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(242,237,228,0.86)" } }, "• " + nbTxt)),
-            fleche(1, "›", T("Semaine suivante", "Next week", "Semana siguiente", "Settimana successiva", "次の週", "Nächste Woche", "الأسبوع التالي", "下一周", "Volgende week", "Próxima semana", "Nästa vecka", "Следующая неделя", "Następny tydzień", "다음 주"))),
+            fleche(1, "›", T("Semaine suivante", "Next week", "Semana siguiente", "Settimana successiva", "次の週", "Nächste Woche", "الأسبوع التالي", "下一周", "Volgende week", "Próxima semana", "Nästa vecka", "Следующая неделя", "Następny tydzień", "다음 주", "Next week"))),
           h("div", { style: { display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 2, marginTop: 4 } },
             jours.map(function (iso) {
               var pris = jourJC === iso;
@@ -425,12 +425,12 @@ function EcranMonCarnet() {
             style: Object.assign({ display: "inline-flex", alignItems: "center", gap: 10, minHeight: 44, padding: "0 18px", borderRadius: 999, border: "1px solid " + JC.champ, background: "transparent", color: JC.champ, fontFamily: M, fontSize: 13.5, fontWeight: 500, letterSpacing: 0.3, cursor: "pointer" }, extra || {}) }, txt);
         };
         var plus = h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: JC.champ, strokeWidth: 1.6, strokeLinecap: "round", "aria-hidden": "true", style: { display: "block" } }, h("path", { d: "M12 5v14M5 12h14" }));
-        var lObjectif = T("Objectif", "Goal", "Objetivo", "Obiettivo", "目標", "Ziel", "الهدف", "目标", "Doel", "Objetivo", "Mål", "Цель", "Cel", "목표");
-        var lAnnuler = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소");
+        var lObjectif = T("Objectif", "Goal", "Objetivo", "Obiettivo", "目標", "Ziel", "الهدف", "目标", "Doel", "Objetivo", "Mål", "Цель", "Cel", "목표", "Goal");
+        var lAnnuler = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "Cancel");
 
         function carte(o, i) {
           var p = objPhotoJC(o.photo);
-          return h("div", { key: o.id, role: "button", "aria-label": T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "修改", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정") + " — " + (o.texte || ""),
+          return h("div", { key: o.id, role: "button", "aria-label": T("Modifier", "Edit", "Editar", "Modifica", "編集", "Bearbeiten", "تعديل", "修改", "Bewerken", "Editar", "Redigera", "Изменить", "Edytuj", "수정", "Edit") + " — " + (o.texte || ""),
               onClick: function () { setObjErr(""); setObjSup(false); setObjEd({ id: o.id, texte: o.texte || "", photo: p.k }); },
               style: { position: "relative", minHeight: 168, borderRadius: 18, overflow: "hidden", border: "1px solid " + JC.ligne, background: JC.carte, cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "flex-end", minWidth: 0 } },
             h("img", { src: p.img, alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: p.pos } }),
@@ -448,13 +448,13 @@ function EcranMonCarnet() {
           var neuf = !objEd.id;
           return h("div", { key: "ed", style: { padding: 16, borderRadius: 18, border: "1px solid " + JC.ligne, background: JC.carte, display: "flex", flexDirection: "column", gap: 14, minWidth: 0 } },
             h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 500, letterSpacing: rtl ? 0 : "0.26em", textTransform: "uppercase", color: JC.champ } },
-              T("Mon objectif", "My goal", "Mi objetivo", "Il mio obiettivo", "私の目標", "Mein Ziel", "هدفي", "我的目标", "Mijn doel", "Meu objetivo", "Mitt mål", "Моя цель", "Mój cel", "내 목표")),
+              T("Mon objectif", "My goal", "Mi objetivo", "Il mio obiettivo", "私の目標", "Mein Ziel", "هدفي", "我的目标", "Mijn doel", "Meu objetivo", "Mitt mål", "Моя цель", "Mój cel", "내 목표", "My goal")),
             h("textarea", { value: objEd.texte, rows: 2, maxLength: 140, dir: String(objEd.texte || "").trim() ? "auto" : (rtl ? "rtl" : "ltr"),
               onChange: function (e) { var v = e.target.value; setObjEd(function (x) { return Object.assign({}, x, { texte: v }); }); },
-              placeholder: T("ex. Gagner en stabilité dans mes transitions", "e.g. Gain stability in my transitions", "p. ej. Ganar estabilidad en mis transiciones", "es. Più stabilità nelle transizioni", "例：移行を安定させる", "z. B. Mehr Stabilität in den Übergängen", "مثلا: ثبات أكبر في الانتقالات", "例如：让我的过渡更稳定", "bijv. Stabieler worden in mijn overgangen", "ex.: Ganhar estabilidade nas minhas transições", "t.ex. Bli stadigare i mina övergångar", "напр. Стать устойчивее в переходах", "np. Zyskać stabilność w przejściach", "예: 전환할 때 더 안정적으로 하기"),
+              placeholder: T("ex. Gagner en stabilité dans mes transitions", "e.g. Gain stability in my transitions", "p. ej. Ganar estabilidad en mis transiciones", "es. Più stabilità nelle transizioni", "例：移行を安定させる", "z. B. Mehr Stabilität in den Übergängen", "مثلا: ثبات أكبر في الانتقالات", "例如：让我的过渡更稳定", "bijv. Stabieler worden in mijn overgangen", "ex.: Ganhar estabilidade nas minhas transições", "t.ex. Bli stadigare i mina övergångar", "напр. Стать устойчивее в переходах", "np. Zyskać stabilność w przejściach", "예: 전환할 때 더 안정적으로 하기", "e.g. Gain stability in my transitions"),
               style: { display: "block", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", minHeight: 72, padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(242,237,228,0.2)", background: JC.fond, color: JC.ivoire, fontFamily: M, fontSize: 16, lineHeight: 1.45, resize: "none", outline: "none", WebkitAppearance: "none" } }),
             h("div", { style: { fontFamily: M, fontSize: 11, fontWeight: 500, letterSpacing: rtl ? 0 : "0.26em", textTransform: "uppercase", color: JC.champ } },
-              T("Choisis ta photo", "Choose your photo", "Elige tu foto", "Scegli la tua foto", "写真を選ぼう", "Wähle dein Foto", "اختاري صورتك", "选择你的照片", "Kies je foto", "Escolha sua foto", "Välj ditt foto", "Выбери фото", "Wybierz zdjęcie", "사진을 골라 보세요")),
+              T("Choisis ta photo", "Choose your photo", "Elige tu foto", "Scegli la tua foto", "写真を選ぼう", "Wähle dein Foto", "اختاري صورتك", "选择你的照片", "Kies je foto", "Escolha sua foto", "Välj ditt foto", "Выбери фото", "Wybierz zdjęcie", "사진을 골라 보세요", "Choose your photo")),
             h("div", { role: "radiogroup", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
               OBJ_PHOTOS_JC.map(function (p) {
                 var on = objPhotoJC(objEd.photo).k === p.k;
@@ -469,33 +469,33 @@ function EcranMonCarnet() {
             h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 } },
               neuf ? h("span", null) : h("div", { role: "button", onClick: supprimerObjJC,
                 style: { display: "flex", alignItems: "center", minHeight: 44, fontFamily: M, fontSize: 13, color: "#FF9B9B", cursor: "pointer" } },
-                objSup ? T("Confirmer la suppression", "Confirm deletion", "Confirmar la eliminación", "Conferma l’eliminazione", "削除を確定", "Löschen bestätigen", "تأكيد الحذف", "确认删除", "Verwijderen bevestigen", "Confirmar exclusão", "Bekräfta borttagning", "Подтвердить удаление", "Potwierdź usunięcie", "삭제 확인")
-                  : T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제")),
+                objSup ? T("Confirmer la suppression", "Confirm deletion", "Confirmar la eliminación", "Conferma l’eliminazione", "削除を確定", "Löschen bestätigen", "تأكيد الحذف", "确认删除", "Verwijderen bevestigen", "Confirmar exclusão", "Bekräfta borttagning", "Подтвердить удаление", "Potwierdź usunięcie", "삭제 확인", "Confirm deletion")
+                  : T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제", "Delete")),
               h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
                 h("div", { role: "button", onClick: function () { setObjEd(null); setObjErr(""); setObjSup(false); },
                   style: { display: "flex", alignItems: "center", minHeight: 44, padding: "0 12px", fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.86)", cursor: "pointer" } }, lAnnuler),
-                bouton(objEnv ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…", "جار الحفظ…", "保存中…", "Opslaan…", "Salvando…", "Sparar…", "Сохранение…", "Zapisywanie…", "저장하는 중…") : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장"),
+                bouton(objEnv ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…", "جار الحفظ…", "保存中…", "Opslaan…", "Salvando…", "Sparar…", "Сохранение…", "Zapisywanie…", "저장하는 중…", "Saving…") : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "Save"),
                   enregistrerObjJC, { opacity: objEnv ? 0.6 : 1, cursor: objEnv ? "default" : "pointer" }))));
         }
 
         var enfants = [];
         if (objsJC === null) {
           enfants.push(h("div", { key: "ind", style: { padding: "14px 16px", borderRadius: 14, border: "1px solid " + JC.ligne, background: JC.carte, fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.8)" } },
-            T("Objectifs indisponibles pour le moment.", "Goals unavailable for now.", "Objetivos no disponibles por ahora.", "Obiettivi non disponibili al momento.", "目標は現在表示できません。", "Ziele derzeit nicht verfügbar.", "الأهداف غير متاحة حاليًا.", "目标暂时无法使用。", "Doelen op dit moment niet beschikbaar.", "Objetivos indisponíveis no momento.", "Målen är inte tillgängliga just nu.", "Цели пока недоступны.", "Cele chwilowo niedostępne.", "지금은 목표를 사용할 수 없어요.")));
+            T("Objectifs indisponibles pour le moment.", "Goals unavailable for now.", "Objetivos no disponibles por ahora.", "Obiettivi non disponibili al momento.", "目標は現在表示できません。", "Ziele derzeit nicht verfügbar.", "الأهداف غير متاحة حاليًا.", "目标暂时无法使用。", "Doelen op dit moment niet beschikbaar.", "Objetivos indisponíveis no momento.", "Målen är inte tillgängliga just nu.", "Цели пока недоступны.", "Cele chwilowo niedostępne.", "지금은 목표를 사용할 수 없어요.", "Goals unavailable for now.")));
         } else {
           liste.forEach(function (o, i) { enfants.push((objEd && objEd.id === o.id) ? editeur() : carte(o, i)); });
           if (objEd && !objEd.id) enfants.push(editeur());
           else if (liste.length < 3) {
             if (!liste.length) enfants.push(h("div", { key: "vide", style: { fontFamily: M, fontSize: 13.5, lineHeight: 1.5, color: "rgba(242,237,228,0.84)" } },
-              T("Choisis jusqu’à 3 objectifs sur lesquels te concentrer.", "Pick up to 3 goals to focus on.", "Elige hasta 3 objetivos en los que concentrarte.", "Scegli fino a 3 obiettivi su cui concentrarti.", "取り組む目標を3つまで決めましょう。", "Wähle bis zu 3 Ziele, auf die du dich konzentrierst.", "اختاري حتى 3 أهداف تركزين عليها.", "最多选 3 个要专注的目标。", "Kies tot 3 doelen om je op te richten.", "Escolha até 3 objetivos para focar.", "Välj upp till 3 mål att fokusera på.", "Выбери до 3 целей, на которых сосредоточиться.", "Wybierz do 3 celów, na których chcesz się skupić.", "집중할 목표를 3개까지 골라 보세요.")));
-            enfants.push(h("div", { key: "aj" }, bouton([plus, h("span", { key: "t" }, T("Ajouter un objectif", "Add a goal", "Añadir un objetivo", "Aggiungi un obiettivo", "目標を追加", "Ziel hinzufügen", "إضافة هدف", "添加目标", "Doel toevoegen", "Adicionar objetivo", "Lägg till ett mål", "Добавить цель", "Dodaj cel", "목표 추가"))],
+              T("Choisis jusqu’à 3 objectifs sur lesquels te concentrer.", "Pick up to 3 goals to focus on.", "Elige hasta 3 objetivos en los que concentrarte.", "Scegli fino a 3 obiettivi su cui concentrarti.", "取り組む目標を3つまで決めましょう。", "Wähle bis zu 3 Ziele, auf die du dich konzentrierst.", "اختاري حتى 3 أهداف تركزين عليها.", "最多选 3 个要专注的目标。", "Kies tot 3 doelen om je op te richten.", "Escolha até 3 objetivos para focar.", "Välj upp till 3 mål att fokusera på.", "Выбери до 3 целей, на которых сосредоточиться.", "Wybierz do 3 celów, na których chcesz się skupić.", "집중할 목표를 3개까지 골라 보세요.", "Pick up to 3 goals to focus on.")));
+            enfants.push(h("div", { key: "aj" }, bouton([plus, h("span", { key: "t" }, T("Ajouter un objectif", "Add a goal", "Añadir un objetivo", "Aggiungi un obiettivo", "目標を追加", "Ziel hinzufügen", "إضافة هدف", "添加目标", "Doel toevoegen", "Adicionar objetivo", "Lägg till ett mål", "Добавить цель", "Dodaj cel", "목표 추가", "Add a goal"))],
               function () { setObjErr(""); setObjSup(false); setObjEd({ id: "", texte: "", photo: OBJ_PHOTOS_JC[0].k }); })));
           }
         }
 
         return h("div", { className: "jc-obj", style: { marginTop: 30, minWidth: 0 } },
           h("div", { style: { fontFamily: G, fontWeight: 500, fontSize: "clamp(34px, 10vw, 42px)", lineHeight: 1, color: JC.ivoire } },
-            T("Mes objectifs", "My goals", "Mis objetivos", "I miei obiettivi", "私の目標", "Meine Ziele", "أهدافي", "我的目标", "Mijn doelen", "Meus objetivos", "Mina mål", "Мои цели", "Moje cele", "나의 목표")),
+            T("Mes objectifs", "My goals", "Mis objetivos", "I miei obiettivi", "私の目標", "Meine Ziele", "أهدافي", "我的目标", "Mijn doelen", "Meus objetivos", "Mina mål", "Мои цели", "Moje cele", "나의 목표", "My goals")),
           h("div", { style: { margin: "6px 0 14px" } }, courbeObj("jcogt", "M0 36 C 120 34, 240 20, 400 4", 30, 1.1, false)),
           h("div", { style: { display: "flex", flexDirection: "column", gap: 14, minWidth: 0 } }, enfants));
       })(),
@@ -510,7 +510,7 @@ function EcranMonCarnet() {
           h("path", { d: "M3 6.5c3-1.3 6-1.3 9 .6v12.4c-3-1.9-6-1.9-9-.6z" }),
           h("path", { d: "M21 6.5c-3-1.3-6-1.3-9 .6v12.4c3-1.9 6-1.9 9-.6z" })),
         h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 14, color: "rgba(242,237,228,0.95)" } },
-          T("Mes conseils Hey Baby", "My Hey Baby tips", "Mis consejos Hey Baby", "I miei consigli Hey Baby", "\u30a2\u30c9\u30d0\u30a4\u30b9", "Meine Hey-Baby-Tipps", "\u0646\u0635\u0627\u0626\u062d\u064a \u0645\u0646 Hey Baby", "我的 Hey Baby 建议", "Mijn Hey Baby-tips", "Minhas dicas do Hey Baby", "Mina Hey Baby-tips", "Мои советы Hey Baby", "Moje porady Hey Baby", "내 Hey Baby 조언")),
+          T("Mes conseils Hey Baby", "My Hey Baby tips", "Mis consejos Hey Baby", "I miei consigli Hey Baby", "\u30a2\u30c9\u30d0\u30a4\u30b9", "Meine Hey-Baby-Tipps", "\u0646\u0635\u0627\u0626\u062d\u064a \u0645\u0646 Hey Baby", "我的 Hey Baby 建议", "Mijn Hey Baby-tips", "Minhas dicas do Hey Baby", "Mina Hey Baby-tips", "Мои советы Hey Baby", "Moje porady Hey Baby", "내 Hey Baby 조언", "My Hey Baby tips")),
         h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 14, fontWeight: 600, color: JC.champ } }, (nbConseils === null) ? "\u2026" : String(nbConseils)),
         h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: "rgba(242,237,228,0.86)", fontSize: 20, lineHeight: 1 } }, "\u203a")),
 
@@ -520,39 +520,39 @@ function EcranMonCarnet() {
         h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 14, minWidth: 0 } },
           h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 30, height: 2, background: JC.champ } }),
           h("div", { style: { flex: 1, minWidth: 0, fontFamily: C, fontSize: 17, fontWeight: 600, letterSpacing: rtlJC ? 0 : 1.4, textTransform: "uppercase", color: JC.ivoire, lineHeight: 1.25 } },
-            T("Mes dernières séances", "My latest sessions", "Mis últimas sesiones", "Le mie ultime sessioni", "最近のセッション", "Meine letzten Einheiten", "حصصي الأخيرة", "我最近的训练", "Mijn laatste trainingen", "Minhas últimas sessões", "Mina senaste ridpass", "Мои последние тренировки", "Moje ostatnie treningi", "내 최근 훈련"))),
+            T("Mes dernières séances", "My latest sessions", "Mis últimas sesiones", "Le mie ultime sessioni", "最近のセッション", "Meine letzten Einheiten", "حصصي الأخيرة", "我最近的训练", "Mijn laatste trainingen", "Minhas últimas sessões", "Mina senaste ridpass", "Мои последние тренировки", "Moje ostatnie treningi", "내 최근 훈련", "My latest sessions"))),
         /* les filtres : rail horizontal (data-hscroll : pas de changement d onglet au balayage) */
         h("div", { className: "jc-rail", "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", overflowY: "hidden", WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollbarWidth: "none", minWidth: 0, maxWidth: "100%", margin: "0 0 16px", paddingBottom: 2 } },
           [""].concat(JC_DISC).map(function (k) {
             var pris = filtreJC === k;
             return h("div", { key: "f" + (k || "tout"), role: "button", "aria-pressed": pris ? "true" : "false", onClick: function () { choisirFiltreJC(k); },
               style: { flex: "0 0 auto", display: "flex", alignItems: "center", minHeight: 44, padding: "0 16px", borderRadius: 999, border: "1px solid " + (pris ? JC.reflet : "rgba(242,237,228,0.24)"), background: pris ? "rgba(42,97,118,0.95)" : "transparent", color: pris ? JC.ivoire : "rgba(242,237,228,0.9)", fontFamily: M, fontSize: 13.5, fontWeight: pris ? 600 : 500, whiteSpace: "nowrap", cursor: "pointer", boxSizing: "border-box" } },
-              k ? jcLibDisc(k) : T("Toutes", "All", "Todas", "Tutte", "すべて", "Alle", "الكل", "全部", "Alle", "Todas", "Alla", "Все", "Wszystkie", "전체"));
+              k ? jcLibDisc(k) : T("Toutes", "All", "Todas", "Tutte", "すべて", "Alle", "الكل", "全部", "Alle", "Todas", "Alla", "Все", "Wszystkie", "전체", "All"));
           })),
         /* 27/09 (428) : jour choisi dans le calendrier -> rappel et « Tout afficher » */
         jourJC ? h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, margin: "-4px 0 12px", minWidth: 0 } },
-          h("span", { style: { fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.92)" } }, T("Séances du ", "Sessions on ", "Sesiones del ", "Sessioni del ", "", "Einheiten am ", "حصص يوم ", "训练日期：", "Trainingen van ", "Sessões de ", "Ridpass den ", "Тренировки: ", "Treningi z dnia ", "훈련 날짜: ") + enClair(jourJC) + T("", "", "", "", " のセッション", "", "", "", "", "", "", "", "", "")),
+          h("span", { style: { fontFamily: M, fontSize: 13, color: "rgba(242,237,228,0.92)" } }, T("Séances du ", "Sessions on ", "Sesiones del ", "Sessioni del ", "", "Einheiten am ", "حصص يوم ", "训练日期：", "Trainingen van ", "Sessões de ", "Ridpass den ", "Тренировки: ", "Treningi z dnia ", "훈련 날짜: ", "Sessions on ") + enClair(jourJC) + T("", "", "", "", " のセッション", "", "", "", "", "", "", "", "", "", "")),
           h("div", { role: "button", onClick: function () { choisirJourJC(""); },
             style: { display: "flex", alignItems: "center", minHeight: 44, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(242,237,228,0.2)", fontFamily: M, fontSize: 12.5, color: JC.ivoire, cursor: "pointer", boxSizing: "border-box" } },
-            T("Tout afficher", "Show all", "Mostrar todo", "Mostra tutto", "すべて表示", "Alle anzeigen", "عرض الكل", "全部显示", "Alles tonen", "Exibir tudo", "Visa allt", "Показать всё", "Pokaż wszystko", "모두 표시"))) : null,
+            T("Tout afficher", "Show all", "Mostrar todo", "Mostra tutto", "すべて表示", "Alle anzeigen", "عرض الكل", "全部显示", "Alles tonen", "Exibir tudo", "Visa allt", "Показать всё", "Pokaż wszystko", "모두 표시", "Show all"))) : null,
         filtrees.length
           ? h("div", { className: "jc-liste", style: { display: "flex", flexDirection: "column", gap: 12 } }, vues.map(function (se) { return ligneSeance(se, false); }))
           : h("div", { style: { padding: "22px 16px", borderRadius: 16, border: "1px solid " + JC.ligne, background: JC.carte, textAlign: "center", fontFamily: M, fontSize: 13.5, lineHeight: 1.5, color: "rgba(242,237,228,0.84)" } },
               jourJC
-                ? T("Aucune séance ce jour-là.", "No session on that day.", "No hay sesiones ese día.", "Nessuna sessione quel giorno.", "この日のセッションはありません。", "Keine Einheit an diesem Tag.", "لا توجد حصص في ذلك اليوم.", "那天没有课程。", "Geen les op die dag.", "Nenhuma sessão neste dia.", "Inga pass den dagen.", "В этот день занятий нет.", "Tego dnia nie ma żadnej jazdy.", "그날은 레슨이 없어요.")
-                : T("Aucune séance dans cette discipline pour le moment.", "No session in this discipline yet.", "Aún no hay sesiones en esta disciplina.", "Ancora nessuna sessione in questa disciplina.", "この種目のセッションはまだありません。", "Noch keine Einheit in dieser Disziplin.", "لا توجد حصص في هذا الاختصاص حاليًا.", "这个项目暂时还没有训练记录。", "Nog geen training in deze discipline.", "Nenhuma sessão nesta modalidade por enquanto.", "Inga ridpass i den här grenen ännu.", "Пока нет ни одной тренировки в этой дисциплине.", "Na razie brak treningów w tej dyscyplinie.", "이 종목에는 아직 훈련 기록이 없어요.")),
+                ? T("Aucune séance ce jour-là.", "No session on that day.", "No hay sesiones ese día.", "Nessuna sessione quel giorno.", "この日のセッションはありません。", "Keine Einheit an diesem Tag.", "لا توجد حصص في ذلك اليوم.", "那天没有课程。", "Geen les op die dag.", "Nenhuma sessão neste dia.", "Inga pass den dagen.", "В этот день занятий нет.", "Tego dnia nie ma żadnej jazdy.", "그날은 레슨이 없어요.", "No session on that day.")
+                : T("Aucune séance dans cette discipline pour le moment.", "No session in this discipline yet.", "Aún no hay sesiones en esta disciplina.", "Ancora nessuna sessione in questa disciplina.", "この種目のセッションはまだありません。", "Noch keine Einheit in dieser Disziplin.", "لا توجد حصص في هذا الاختصاص حاليًا.", "这个项目暂时还没有训练记录。", "Nog geen training in deze discipline.", "Nenhuma sessão nesta modalidade por enquanto.", "Inga ridpass i den här grenen ännu.", "Пока нет ни одной тренировки в этой дисциплине.", "Na razie brak treningów w tej dyscyplinie.", "이 종목에는 아직 훈련 기록이 없어요.", "No session in this discipline yet.")),
         /* affichage progressif : 8 de plus a chaque toucher, puis « Replier » */
         (filtrees.length > 8) ? h("div", { role: "button", onClick: function () { if (vues.length < filtrees.length) voirPlusJC(nbJC + 8); else voirPlusJC(8); },
           style: { margin: "16px auto 0", display: "flex", alignItems: "center", justifyContent: "center", width: "fit-content", minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid " + JC.reflet, background: "rgba(42,97,118,0.35)", color: JC.ivoire, fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer", boxSizing: "border-box" } },
           (vues.length < filtrees.length)
-            ? (T("Voir plus", "See more", "Ver más", "Vedi altro", "もっと見る", "Mehr anzeigen", "عرض المزيد", "查看更多", "Meer bekijken", "Ver mais", "Visa mer", "Показать ещё", "Zobacz więcej", "더 보기") + "  (" + (filtrees.length - vues.length) + ")")
-            : T("Replier", "Collapse", "Reducir", "Riduci", "閉じる", "Einklappen", "طي", "收起", "Inklappen", "Recolher", "Fäll ihop", "Свернуть", "Zwiń", "접기")) : null) : null,
+            ? (T("Voir plus", "See more", "Ver más", "Vedi altro", "もっと見る", "Mehr anzeigen", "عرض المزيد", "查看更多", "Meer bekijken", "Ver mais", "Visa mer", "Показать ещё", "Zobacz więcej", "더 보기", "See more") + "  (" + (filtrees.length - vues.length) + ")")
+            : T("Replier", "Collapse", "Reducir", "Riduci", "閉じる", "Einklappen", "طي", "收起", "Inklappen", "Recolher", "Fäll ihop", "Свернуть", "Zwiń", "접기", "Collapse")) : null) : null,
 
       /* Rien encore : on le dit simplement, sans bouton qui ne marche pas. */
       (!seances.length) ? h("div", { className: "jc-vide", style: { marginTop: 30, padding: "26px 20px", borderRadius: 18, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", textAlign: "center" } },
         h("div", { style: { fontSize: 30 } }, "\ud83d\udcd2"),
         h("div", { style: { fontFamily: M, fontSize: 13.5, color: "#C9D3D8", marginTop: 12, lineHeight: 1.6 } },
-          T("Ton carnet est vide. Note ta premi\u00e8re s\u00e9ance avec le bouton ci-dessus.", "Your notebook is empty. Record your first session with the button above.", "Tu cuaderno est\u00e1 vac\u00edo. Anota tu primera sesi\u00f3n con el bot\u00f3n de arriba.", "Il tuo quaderno \u00e8 vuoto. Annota la prima sessione col pulsante sopra.", "\u30ce\u30fc\u30c8\u306f\u7a7a\u3067\u3059\u3002", "Dein Heft ist leer.", "\u062f\u0641\u062a\u0631\u0643 \u0641\u0627\u0631\u063a. \u0633\u062c\u0644\u064a \u0623\u0648\u0644 \u062d\u0635\u0629 \u0628\u0627\u0644\u0632\u0631 \u0623\u0639\u0644\u0627\u0647.", "你的日志还是空的。点击上方按钮，记录你的第一次训练吧。", "Je logboek is leeg. Noteer je eerste training met de knop hierboven.", "Seu caderno está vazio. Anote a sua primeira sessão com o botão acima.", "Din anteckningsbok är tom. Anteckna ditt första ridpass med knappen ovan.", "Твой дневник пуст. Запиши первую тренировку кнопкой выше.", "Twój notes jest pusty. Zapisz swój pierwszy trening przyciskiem powyżej.", "노트가 비어 있어요. 위 버튼으로 첫 훈련을 기록해 보세요."))) : null);
+          T("Ton carnet est vide. Note ta premi\u00e8re s\u00e9ance avec le bouton ci-dessus.", "Your notebook is empty. Record your first session with the button above.", "Tu cuaderno est\u00e1 vac\u00edo. Anota tu primera sesi\u00f3n con el bot\u00f3n de arriba.", "Il tuo quaderno \u00e8 vuoto. Annota la prima sessione col pulsante sopra.", "\u30ce\u30fc\u30c8\u306f\u7a7a\u3067\u3059\u3002", "Dein Heft ist leer.", "\u062f\u0641\u062a\u0631\u0643 \u0641\u0627\u0631\u063a. \u0633\u062c\u0644\u064a \u0623\u0648\u0644 \u062d\u0635\u0629 \u0628\u0627\u0644\u0632\u0631 \u0623\u0639\u0644\u0627\u0647.", "你的日志还是空的。点击上方按钮，记录你的第一次训练吧。", "Je logboek is leeg. Noteer je eerste training met de knop hierboven.", "Seu caderno está vazio. Anote a sua primeira sessão com o botão acima.", "Din anteckningsbok är tom. Anteckna ditt första ridpass med knappen ovan.", "Твой дневник пуст. Запиши первую тренировку кнопкой выше.", "Twój notes jest pusty. Zapisz swój pierwszy trening przyciskiem powyżej.", "노트가 비어 있어요. 위 버튼으로 첫 훈련을 기록해 보세요.", "Your notebook is empty. Record your first session with the button above."))) : null);
   }
 
   /* 27/09 (425) : LE BANDEAU DU JOURNAL (image du carnet en cuir, images/JOURNAL_CARNET_FOND.webp).
@@ -571,18 +571,18 @@ function EcranMonCarnet() {
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundColor: JC.fond, backgroundImage: "url(images/JOURNAL_CARNET_FOND.webp)", backgroundSize: "cover", backgroundPosition: "72% 40%", backgroundRepeat: "no-repeat", transform: rtlJC ? "scaleX(-1)" : "none" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlJC ? "270deg" : "90deg") + ", rgba(8,10,11,0.82) 0%, rgba(8,10,11,0.55) 42%, rgba(8,10,11,0.10) 78%)" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,10,11,0.35) 0%, rgba(8,10,11,0.05) 32%, rgba(8,10,11,0.45) 72%, rgba(8,10,11,0.9) 90%, #080A0B 100%)" } }),
-      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
+      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"),
         style: Object.assign({ position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", zIndex: 2, width: 44, height: 44, borderRadius: "50%", background: "rgba(8,10,11,0.45)", border: "1px solid rgba(242,237,228,0.22)", color: JC.ivoire, fontSize: 20, lineHeight: 1, cursor: "pointer", padding: 0 }, rtlJC ? { right: 14 } : { left: 14 }) }, "\u2039"),
       h("div", { style: { position: "relative", zIndex: 1, padding: "calc(env(safe-area-inset-top) + 84px) 20px 26px", minWidth: 0, maxWidth: 520 } },
         h("div", { style: { fontFamily: C, fontSize: "clamp(21px, 6.6vw, 28px)", fontWeight: 600, lineHeight: 1.12, letterSpacing: rtlJC ? 0 : 0.6, textTransform: "uppercase", color: JC.ivoire, overflowWrap: "break-word", maxWidth: "74%" } },   /* 27/09 (425) : taille souple, jamais un mot coupe au milieu (cesure douce en allemand) */
-          T("Mon journal de progression", "My progress journal", "Mi diario de progreso", "Il mio diario dei progressi", "私の上達日記", "Mein Fortschritts\u00adtagebuch", "مذكّرة تقدّمي", "我的成长日志", "Mijn voortgangsdagboek", "Meu diário de progresso", "Min utvecklingsdagbok", "Мой дневник прогресса", "Mój dziennik postępów", "내 진행 일지")),
+          T("Mon journal de progression", "My progress journal", "Mi diario de progreso", "Il mio diario dei progressi", "私の上達日記", "Mein Fortschritts\u00adtagebuch", "مذكّرة تقدّمي", "我的成长日志", "Mijn voortgangsdagboek", "Meu diário de progresso", "Min utvecklingsdagbok", "Мой дневник прогресса", "Mój dziennik postępów", "내 진행 일지", "My progress journal")),
         h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: rtlJC ? 0 : 2.4, textTransform: "uppercase", color: "rgba(242,237,228,0.94)", fontWeight: 500, marginTop: 14, lineHeight: 1.6 } },
-          T("Mes séances · Mes sensations · Mes objectifs", "My sessions · My feelings · My goals", "Mis sesiones · Mis sensaciones · Mis objetivos", "Le mie sessioni · Le mie sensazioni · I miei obiettivi", "セッション・感覚・目標", "Meine Einheiten · Meine Gefühle · Meine Ziele", "حصصي · إحساسي · أهدافي", "我的训练 · 我的感受 · 我的目标", "Mijn trainingen · Mijn gevoel · Mijn doelen", "Minhas sessões · Minhas sensações · Meus objetivos", "Mina ridpass · Mina känslor · Mina mål", "Мои тренировки · Мои ощущения · Мои цели", "Moje treningi · Moje odczucia · Moje cele", "내 훈련 · 내 느낌 · 내 목표")),
+          T("Mes séances · Mes sensations · Mes objectifs", "My sessions · My feelings · My goals", "Mis sesiones · Mis sensaciones · Mis objetivos", "Le mie sessioni · Le mie sensazioni · I miei obiettivi", "セッション・感覚・目標", "Meine Einheiten · Meine Gefühle · Meine Ziele", "حصصي · إحساسي · أهدافي", "我的训练 · 我的感受 · 我的目标", "Mijn trainingen · Mijn gevoel · Mijn doelen", "Minhas sessões · Minhas sensações · Meus objetivos", "Mina ridpass · Mina känslor · Mina mål", "Мои тренировки · Мои ощущения · Мои цели", "Moje treningi · Moje odczucia · Moje cele", "내 훈련 · 내 느낌 · 내 목표", "My sessions · My feelings · My goals")),
         h("div", { "aria-hidden": "true", style: { width: 34, height: 1.5, background: JC.champ, opacity: 0.8, margin: "16px 0 12px" } }),
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 21, fontWeight: 500, lineHeight: 1.25, color: JC.champ } },
-          T("Chaque séance laisse une trace.", "Every session leaves a mark.", "Cada sesión deja huella.", "Ogni sessione lascia una traccia.", "一つひとつのセッションが、成長の跡を残す。", "Jede Einheit hinterlässt eine Spur.", "كل حصة تترك أثرًا.", "每一次训练都会留下痕迹。", "Elke training laat een spoor na.", "Cada sessão deixa uma marca.", "Varje ridpass lämnar ett spår.", "Каждая тренировка оставляет след.", "Każdy trening zostawia ślad.", "훈련할 때마다 흔적이 남아요.")))),
+          T("Chaque séance laisse une trace.", "Every session leaves a mark.", "Cada sesión deja huella.", "Ogni sessione lascia una traccia.", "一つひとつのセッションが、成長の跡を残す。", "Jede Einheit hinterlässt eine Spur.", "كل حصة تترك أثرًا.", "每一次训练都会留下痕迹。", "Elke training laat een spoor na.", "Cada sessão deixa uma marca.", "Varje ridpass lämnar ett spår.", "Каждая тренировка оставляет след.", "Każdy trening zostawia ślad.", "훈련할 때마다 흔적이 남아요.", "Every session leaves a mark.")))),
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
-      T("Le carnet n\u2019a pas pu \u00eatre lu : ", "The notebook could not load: ", "No se pudo cargar el cuaderno: ", "Impossibile caricare il quaderno: ", "\u30ce\u30fc\u30c8\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Heft nicht geladen: ", "\u062a\u0639\u0630\u0631\u062a \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062f\u0641\u062a\u0631: ", "日志无法读取：", "Het logboek kon niet worden geladen: ", "Não foi possível ler o caderno: ", "Anteckningsboken kunde inte läsas: ", "Не удалось прочитать дневник: ", "Nie udało się wczytać notesu: ", "노트를 불러오지 못했어요: ") + err) : null,
+      T("Le carnet n\u2019a pas pu \u00eatre lu : ", "The notebook could not load: ", "No se pudo cargar el cuaderno: ", "Impossibile caricare il quaderno: ", "\u30ce\u30fc\u30c8\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Heft nicht geladen: ", "\u062a\u0639\u0630\u0631\u062a \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062f\u0641\u062a\u0631: ", "日志无法读取：", "Het logboek kon niet worden geladen: ", "Não foi possível ler o caderno: ", "Anteckningsboken kunde inte läsas: ", "Не удалось прочитать дневник: ", "Nie udało się wczytać notesu: ", "노트를 불러오지 못했어요: ", "The notebook could not load: ") + err) : null,
     corps,
     /* 15/09 (179) : le panneau des conseils, monte a la demande seulement. */
     panOuvert ? h(PanneauConseilsHB, { depuis: "carnet", onFermer: function () { setPanOuvert(false); } }) : null);

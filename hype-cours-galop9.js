@@ -1989,7 +1989,7 @@ window.COURS_GALOP9_FR = COURS;
 window.COURS_GALOP9_VERSION = COURS_GALOP9_VERSION;
 /* petit lexique de chaque cours, montré sur la page « Révise en 2 minutes » (comme les Galops 5, 7 et 8) */
 window.HYPE_LEXIQUE_EXTRA = window.HYPE_LEXIQUE_EXTRA || {};
-var TITRE_LEX = {"fr":"Petit lexique","en":"Mini glossary","es":"Pequeño glosario","it":"Piccolo glossario","ja":"ミニ用語集","de":"Kleines Lexikon","ar":"معجم صغير","zh":"小词汇表","nl":"Kleine woordenlijst","pt":"Pequeno glossário","sv":"Liten ordlista","ru":"Маленький словарь","pl":"Mały słowniczek","ko":"작은 용어집"};
+var TITRE_LEX = {"fr":"Petit lexique","en":"Mini glossary","es":"Pequeño glosario","it":"Piccolo glossario","ja":"ミニ用語集","de":"Kleines Lexikon","ar":"معجم صغير","zh":"小词汇表","nl":"Kleine woordenlijst","pt":"Pequeno glossário","sv":"Liten ordlista","ru":"Маленький словарь","pl":"Mały słowniczek","ko":"작은 용어집", fa: "Mini glossary"};
 COURS.forEach(function (c) { if (c.lexique && c.lexique.fr) { var o = {}; Object.keys(c.lexique).forEach(function (lg) { if (Array.isArray(c.lexique[lg])) o[lg] = { titre: TITRE_LEX[lg] || TITRE_LEX.fr, mots: c.lexique[lg] }; }); window.HYPE_LEXIQUE_EXTRA[c.id] = o; } });
 window.COURS_GALOP9_PARTIES = { vie: ["g9n-01", "g9n-02", "g9n-03", "g9n-04", "g9n-05"], connaissance: ["g9n-06", "g9n-07", "g9n-08", "g9n-09"], technique: ["g9n-10", "g9n-11", "g9n-12", "g9n-13", "g9n-14", "g9n-15"], culture: ["g9n-16", "g9n-17", "g9n-18", "g9n-19"] };
 })();

@@ -77,7 +77,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      s'il est connu). */
   var I18N_V = 13;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
-  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
   function chargerDico(lg) {
     if (CHARGE[lg]) return CHARGE[lg];
@@ -410,7 +410,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.accueil, titre: "Mon écurie", sous: c.club ? c.club : "Tout en règle. Pars tranquille." }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -458,7 +458,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.registre, titre: "Le registre", sous: "Ton registre d'élevage, toujours prêt.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -569,7 +569,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "La personne qui s'occupe du lieu où vivent les chevaux doit se déclarer à l'IFCE. Ces informations ouvrent ton registre d'élevage."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.detenteur, titre: "Le détenteur", sous: "Parties I et III de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -683,7 +683,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Touche un cheval pour compléter sa ligne du registre. Sa fiche à lui ne change pas."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.chevaux, titre: "Les chevaux", sous: "Partie IV de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -797,7 +797,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })),
       h("div", { className: "hg-sous" }, "Ces soins ont été ajoutés par des cavaliers. Ils comptent déjà partout ; confirme-les après avoir vérifié avec le propriétaire. Leur auteur reste noté."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.soins, titre: "À confirmer", sous: "Les soins ajoutés par les cavaliers.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -910,7 +910,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Les ordonnances et factures se gardent 5 ans avec le registre."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.soins, titre: "Les soins", sous: "Partie VI de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1077,7 +1077,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Concours, stages, randonnées, vétérinaire : chaque sortie provisoire d'un cheval, avec ses dates et sa destination. À garder 5 ans."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.mouvements, titre: "Mouvements temporaires", sous: "Partie V de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1311,7 +1311,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
       h("div", { className: "hg-sous" }, "Le plan montre tous les bâtiments et toutes les pâtures où vivent les chevaux, même de temps en temps. Un plan dessiné, un plan du cadastre ou une vue satellite conviennent."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.plan, titre: "Le plan des lieux", sous: "Partie II de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1403,7 +1403,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       h(DocsRegistre, { donnees: d, club: c.club, type: "controle", titreDefaut: "Page de contrôle signée", photo: PHOTOS.controles, bouton: "+ Ajouter une page signée", onChange: function () { setRecharge(function (n) { return n + 1; }); } }),
       h("div", { className: "hg-sous" }, "Cette partie est remplie et signée par l'agent de la DDPP ou de l'IFCE, ou visée par ton vétérinaire. Imprime le registre : les pages à signer, numérotées, sont à la fin. Note ensuite la visite ici et ajoute la photo de la page signée."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.controles, titre: "Les contrôles", sous: "Partie VII de ton registre.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1529,7 +1529,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Registre tenu sur l'appli : imprime-le chaque trimestre, après chaque visite du vétérinaire et si un contrôleur te le demande. « Imprimer » te propose aussi d'enregistrer un PDF."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.registre, titre: "Le registre imprimé", sous: "Les 7 parties, prêtes à montrer.", retour: function () { setEcran("registre"); }, retourTxt: "Le registre" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1621,7 +1621,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Les rappels viennent des soins notés (date du prochain soin) et des dates du camion."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.controles, titre: "Les échéances", sous: "Ce qui arrive, au bon moment.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1767,7 +1767,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Au-delà de 65 km : autorisation de transport, certificat de compétence (CAPTAV) du conducteur et registre de transport gardé 3 ans. À toute distance : le document d'accompagnement de chaque cheval. Les dates du contrôle technique, de l'assurance et de l'autorisation remontent dans « Les échéances »."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.camion, titre: "Le camion", sous: "Papiers et dates à surveiller.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1853,7 +1853,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, (cur.source ? "Préparé à partir de " + cur.source + ". " : "") + "Hype t'aide à préparer ta comptabilité : c'est toi qui la valides. Les comptes restent sous la responsabilité de " + (D.forme === "association" ? "l'association et sont approuvés en assemblée générale." : "ta structure, et ton comptable les finalise.")),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.compta, titre: "Ma compta", sous: sousHero, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -1927,7 +1927,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })),
       h("div", { className: "hg-sous" }, "Montants et dates vérifiés le 6 novembre 2026, sauf les aides marquées « À vérifier ». Ils changent souvent : vérifie toujours la source avant de faire ta demande. Hype n'a aucun accord commercial avec ces organismes."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.aides, titre: "Aides et contacts", sous: "Ce à quoi ton écurie a droit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -2012,7 +2012,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       })),
       h("div", { className: "hg-encart", style: { marginTop: 22, textAlign: "center" } }, h("b", null, "Le tout en 14 langues"), "Chacun lit l'appli dans sa langue : cavaliers, parents, propriétaires."),
       h("button", { type: "button", className: "hg-btn", style: { marginTop: 22 }, onClick: entrer }, depuisAccueil.current ? "Entrer dans Hype" : "Retour à l'accueil"));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: v.photo, titre: v.titre, sous: v.sous }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -2138,7 +2138,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
       blocDates(),
       h("div", { className: "hg-sous" }, "Vérifié le 7 novembre 2026 sur des sources officielles. Les règles changent : vérifie toujours la source, et demande à ta mairie, aux pompiers ou au service jeunesse et sports de ton département pour ce qui dépend de ton cas. Hype t'aide à ne rien oublier ; la responsabilité reste celle du dirigeant."),
       LEGAL(h));
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.obligations, titre: "Les obligations", sous: "Tout ce que la loi demande, au même endroit.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -2308,7 +2308,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("div", { className: "hg-sous" }, "Obligatoire dès le premier salarié : chaque personne est notée au moment de l'embauche, dans l'ordre d'arrivée, puis gardée 5 ans après son départ. Les bénévoles n'y figurent pas. Seuls les responsables de l'écurie voient cette page."),
         LEGAL(h));
     }
-    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+    return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
       hero(h, { photo: PHOTOS.detenteur, titre: "Le personnel", sous: "Le registre unique du personnel.", retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
       h("div", { className: "hv2-in" }, corps));
   }
@@ -2610,7 +2610,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
           })) : h("div", { className: "hg-vide" }, L.length ? "Rien pour ce choix." : cfg.vide),
           h("div", { className: "hg-sous" }, d.peutGerer ? cfg.aide : (cfg.aidePerso || "Touche une tâche puis « C'est fait » quand tu l'as faite. Le responsable de l'écurie le voit tout de suite.")));
       }
-      return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },
         hero(h, { photo: PHOTOS[cfg.photo], titre: cfg.titre, sous: cfg.sous, retour: function () { setEcran("mon-ecurie"); }, retourTxt: "Mon écurie" }),
         h("div", { className: "hv2-in" }, corps));
     };

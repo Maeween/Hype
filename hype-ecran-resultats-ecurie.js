@@ -25,7 +25,7 @@ var IMG_HERO = "images/piquet-cso.webp";
 var RV3_NOMS_COMPLETS_ADULTES = false;   /* voir plus bas (nom affiché) */
 var NOIR = "#070A08", PETROLE = "#0E1210", PETROLE2 = "#0B0E0C",   /* 30/10 22h05 Blandine : « trop de bleu pétrole partout » -> fonds noirs */ IVOIRE = "#F3EEE4", CHAMP = "#C9A66B", GRIS = "#A9A398";
 var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',sans-serif";
-var LANGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
+var LANGS = ["fr", "en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
 /* Textes : une ligne par texte, les 14 langues dans l'ordre de LANGS. */
 var W = {
   kicker: ["Écurie", "Stable", "Cuadra", "Scuderia", "厩舎", "Stall", "الإسطبل", "马厩", "Stal", "Estábulo", "Stall", "Конюшня", "Stajnia", "마구간"],
@@ -107,7 +107,7 @@ var W1 = {
   nCavaliers: ["cavalier", "rider", "jinete", "cavaliere", "ライダー", "Reiter", "فارس", "名骑手", "ruiter", "cavaleiro", "ryttare", "всадник", "jeździec", "기수"],
   nResultats: ["résultat", "result", "resultado", "risultato", "件の成績", "Ergebnis", "نتيجة", "条成绩", "resultaat", "resultado", "resultat", "результат", "wynik", "개 성적"]
 };
-var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
+var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" };
 
 /* ── outils de données (purs) ── */
 function nrm(x) { var s = String(x || ""); try { s = s.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { } return s.toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim(); }
@@ -139,7 +139,7 @@ function EcranResultatsEcurie() {
   function t(k) { var l = W[k]; return l ? (l[iL] || l[1] || l[0]) : k; }
   function tg(k) { var l = WG[k]; return l ? (l[iL] || l[1] || l[0]) : k; }
   function tn(k, n) { if (n === 1 && W1[k]) return W1[k][iL] || W1[k][0]; return t(k); }
-  var rtl = lg === "ar";
+  var rtl = (lg === "ar" || lg === "fa");
   var R = window.HYPE_RESULTATS || null;
   var profil = app.profil || {};
   var club = "";
@@ -417,7 +417,7 @@ function EcranResultatsEcurie() {
     if (lg === "nl") return n + "e";
     if (lg === "ja") return n + "位";
     if (lg === "zh") return "第" + n + "名";
-    if (lg === "ko") return n + "위";
+    if (lg === "ko" || lg === "fa") return n + "위";
     if (lg === "es" || lg === "pt" || lg === "it") return n + "º";
     if (lg === "ar") return String(n);
     return n + ".";

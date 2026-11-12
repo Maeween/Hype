@@ -135,7 +135,7 @@ function Article() {
   var app = useApp();
   var lg = app.langue || "fr";
   var L = TXT[lg] || TXT.fr;
-  var rtl = (lg === "ar");
+  var rtl = ((lg === "ar" || lg === "fa"));
   var appRef = React.useRef(app); appRef.current = app;
   var stEt = React.useState(1); var etape = stEt[0], setEtape = stEt[1];
   React.useEffect(function () { polices(); try { if (typeof hypeMarquerVue === "function") hypeMarquerVue("article", 8); } catch (e) { } try { if (typeof hypeQueteMarquer === "function") hypeQueteMarquer("article"); } catch (e2) { } }, []);
