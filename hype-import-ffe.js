@@ -115,8 +115,26 @@
       l.mots.push({ x: x, t: t });
     });
     lignes.sort(function (a, b) { return b.y - a.y; });   /* de haut en bas */
+    /* 12/11 (Blandine : « ils viennent de FFE Compet… il a jamais su me les lire ») — LA PAGE
+       « Engagements et performances » DE FFE COMPET a DEUX COLONNES : à gauche le concours, la date,
+       l'épreuve et le cheval ; à droite « Clst : 8/49 / Quart : 3/4 / Gains : 0,00 ». Regroupées par
+       hauteur, les deux colonnes se mélangeaient (« 202177100 LIVERDY EN BRIE Clst : 8/11 »).
+       Sur CETTE page seulement (elle porte « Nom du cheval » ET « Clst »), on garde la colonne de droite
+       à part, séparée par « ‖ ». Tous les autres PDF sont lus exactement comme avant. */
+    var xDroite = null;
+    var estCompet = items.some(function (it) { return /Nom du cheval/i.test(String(it.str || "")); });
+    if (estCompet) items.forEach(function (it) {
+      if (/^\s*Clst\b/i.test(String(it.str || "")) && it.transform) {
+        var xc = it.transform[4]; if (xDroite === null || xc < xDroite) xDroite = xc;
+      }
+    });
     return lignes.map(function (l) {
       l.mots.sort(function (a, b) { return a.x - b.x; }); /* de gauche à droite */
+      if (xDroite !== null) {
+        var gauche = l.mots.filter(function (m) { return m.x < xDroite - 4; }).map(function (m) { return m.t; }).join(" ");
+        var droite = l.mots.filter(function (m) { return m.x >= xDroite - 4; }).map(function (m) { return m.t; }).join(" ");
+        if (droite.trim()) l.mots = [{ x: 0, t: gauche + " \u2016 " + droite }];
+      }
       return reparerMojibake(l.mots.map(function (m) { return m.t; }).join(" "))
         .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "")
         .replace(/\s+/g, " ").trim(); /* 26/08 : reparation AUSSI sur la ligne assemblee — « PrÃ©paratoire » arrivait coupe en fragments, la reparation par fragment le ratait */
@@ -490,8 +508,91 @@
     return "";
   }
 
+  /* ════════ 12/11 — FFE COMPET : « ENGAGEMENTS ET PERFORMANCES » D'UN CAVALIER ════════
+     Mesuré sur ses trois PDF réels (CSO_Bl_9.pdf 1998, CSO_Bl_2.pdf 2004, Performances_Blandine_PRONOST.pdf
+     2021-2022), enregistrés depuis l'iPhone (« Imprimer » de Safari). Chaque engagement est un bloc :
+       gauche : « 202177023 BOISSY LE CHATEL- » / « HARAS DE MONTHOME » / « (12/06/2021) »
+                « 15 - SO - Préparatoire (0,90 m) » / « - Mnt eng : 24,00 » / « Nom du cheval: UMEA BORDERIE »
+       droite : « Clst : 1/33 » / « Quart : 1/4 » / « Gains : 14,86 »
+     Le nom du cavalier n'est écrit qu'une fois : « Fiche d'information BLANDINE PRONOST » (PRÉNOM NOM,
+     même ordre que « Monté par »). Chaque ligne porte son cheval : elles vont sur la fiche de leur cheval,
+     comme pour un telemat de cavalier (un cheval inconnu n'est jamais écrit, l'écran le dit).
+     Classement : « 8/49 » = classé ; « Non classé » = a couru sans être classé ; « Non partant » = forfait,
+     SAUF si la FFE donne un quart (alors il a couru : on le garde comme non classé). */
+  function estFFECompet(texte) {
+    return /Nom du cheval\s*:/i.test(texte) && /Clst\s*:/i.test(texte) && /‖/.test(texte);
+  }
+  function lireCompet(texte) {
+    var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    var cav = null;
+    for (var iF = 0; iF < lignes.length; iF++) {
+      var mF = lignes[iF].match(/^Fiche d.information\s+(.+?)\s*(?:‖.*)?$/i);
+      if (mF) { cav = mF[1].replace(/\s+/g, " ").trim(); break; }
+    }
+    try { window.__hypeCavalierPdfFFE = cav; window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; } catch (eW) { }
+    var blocs = [], b = null;
+    lignes.forEach(function (l) {
+      var parts = l.split("‖"), g = parts[0].trim(), d = parts.slice(1).join(" ").trim();
+      if (/^\d{6,9}\s+\S/.test(g) && (/^Clst\b/i.test(d) || /Clst\s*:/i.test(l))) {
+        if (b) blocs.push(b);
+        b = { g: [g], d: [d], cheval: null, suiteCheval: false }; return;
+      }
+      if (!b) return;
+      if (d) b.d.push(d);
+      if (b.cheval !== null) {
+        /* le nom du cheval peut tenir sur deux lignes (« GIRON DES » / « BRUYERES ») : une seule suite, en capitales */
+        if (b.suiteCheval && g && /^[A-ZÀ-Ü0-9' .*-]{2,40}$/.test(g) && /[A-Z]/.test(g)) b.cheval += " " + g;
+        b.suiteCheval = false; return;
+      }
+      var mC = g.match(/^Nom du cheval\s*:\s*(.*)$/i);
+      if (mC) { b.cheval = mC[1].trim(); b.suiteCheval = true; return; }
+      if (g) b.g.push(g);
+    });
+    if (b) blocs.push(b);
+    var sorties = [], alertes = [];
+    blocs.forEach(function (bl, rang) {
+      var gT = bl.g.join(" ").replace(/-\s*Mnt\s*eng\s*:\s*[\d\s.,]*/gi, " ").replace(/(\S)-\s+(?=\S)/g, "$1-").replace(/\s+/g, " ").trim();
+      var dT = bl.d.join(" ").replace(/\s+/g, " ").trim();
+      var mG = gT.match(/^(\d{6,9})\s+(.*?)\s*\((\d{2}\/\d{2}\/\d{4})\)\s*(.*)$/);
+      if (!mG) return;
+      var concours = mG[2].replace(/-$/, "").trim(), date = lireDate(mG[3]), ep = mG[4].trim();
+      var numEp = "", disc = "";
+      var mE = ep.match(/^([0-9A-Z]{1,4})\s*-\s*([A-Z]{2,4})\s*-\s*(.*)$/);
+      if (mE) { numEp = mE[1]; disc = mE[2]; ep = mE[3]; }
+      ep = ep.replace(/^\$\s*/, "").replace(/^CSO\s*-?\s*/i, "").trim();
+      if (disc && disc !== "SO" && ep) ep = disc + " " + ep;
+      var mD = dT.match(/Clst\s*:\s*(.*?)\s*Quart\s*:\s*(.*?)\s*Gains\s*:\s*(.*)$/i) || dT.match(/Clst\s*:\s*(.*?)\s*Quart\s*:\s*(.*)$/i);
+      var clst = mD ? mD[1].trim() : "", quartT = mD ? mD[2].trim() : "";
+      var q = null, mQ = quartT.match(/^(\d)\s*\/\s*4/); if (mQ) q = parseInt(mQ[1], 10);
+      var c;
+      var mP = clst.match(/^(\d+)\s*(?:er|e|ère)?\s*\/\s*(\d+)/i);
+      if (mP) c = { statut: "classe", place: nb(mP[1]), partants: nb(mP[2]), mention: "" };
+      else if (/^Non\s*class/i.test(clst)) c = { statut: "hors_classement" };
+      else if (/^Non\s*part/i.test(clst)) c = q ? { statut: "hors_classement" } : { statut: "non_partant" };
+      else if (/^Forfait/i.test(clst)) c = { statut: "non_partant" };
+      else c = lireClassement(clst);
+      var r = {
+        rang: rang + 1, date: date, epreuve: ep, concours: concours, numero_epreuve: numEp,
+        cheval_pdf: String(bl.cheval || "").replace(/\s+/g, " ").trim(),
+        cavalier: cav || "",
+        place: c.place || null, partants: c.partants || null, quart: q, statut: c.statut,
+        mention: String(c.mention || "").trim(), points: null,
+        garder: c.statut === "classe"
+      };
+      if (c.statut === "illisible") { r.doute = "classement illisible : « " + (c.brut || clst) + " »"; r.garder = false; }
+      if (!r.date) { r.doute = "date absente"; r.garder = false; }
+      if (!r.epreuve) r.doute = "épreuve absente";
+      var att = quartAttendu(r.place, r.partants);
+      if (att && r.quart && att !== r.quart) r.doute = "quart incohérent : la FFE dit " + r.quart + "e, le calcul donne " + att + "e";
+      if (r.doute) alertes.push(r);
+      if (c.statut !== "non_partant" && c.statut !== "annulee") sorties.push(r);
+    });
+    return { lignes: sorties, alertes: alertes, format: "ffecompet", blocs: blocs.length };
+  }
+
   function lire(texte) {
     if (estResultatsDetailles(texte)) return lireSIF(texte);
+    if (estFFECompet(texte)) return lireCompet(texte);
     var sorties = [], alertes = [];
     lireFiches(texte).forEach(function (f, rang) {
       var c = lireClassement(f.classement);
@@ -995,7 +1096,8 @@
       : s === "elimine" ? "éliminé"
       : s === "abandon" ? "abandon"
       : s === "annulee" ? "annulée"
-      : s === "illisible" ? "illisible" : "—";
+      : s === "illisible" ? "illisible"
+      : s === "hors_classement" ? "non classé" : "—";   /* 12/11 : FFE Compet « Non classé » */
   }
 
   /* ==== 4 · C'EST FAIT ================================================= */
@@ -1233,8 +1335,10 @@
         window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
           var o = window.HYPE_IMPORT.lire(txt);
           if (!o.lignes.length) {
-            E.err = "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
-                    "entière de ton telemat (ou la page « Résultats détaillés » d'une épreuve), et non une capture en image.";
+            E.err = (o.format === "ffecompet")
+              ? "Ce PDF FFE Compet ne contient que des engagements non partants : aucun résultat à importer."
+              : "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
+                "entière de ton telemat, ta page « Engagements et performances » FFE Compet ou la page « Résultats détaillés » d'une épreuve, et non une capture en image.";
             E.etape = "choix"; refaire(); return;
           }
           E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
