@@ -26,7 +26,7 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/evenement/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl|ko)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl|ko|fa)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
@@ -35,12 +35,12 @@ const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL", ko: "ko_KR" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl" | "ko" | "fa";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL", ko: "ko_KR", fa: "fa_IR" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl", ko: "ko" };
-const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl", ko: "ko", fa: "fa" };
+const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory-nu-latn" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   en: { stage: "Clinic", concours: "Competition", sortie: "Outing", cours: "Lesson", soiree: "Evening event", reunion: "Meeting" },
@@ -56,6 +56,7 @@ const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   ru: { stage: "Мастер-класс", concours: "Соревнования", sortie: "Выезд", cours: "Занятие", soiree: "Вечер", reunion: "Встреча" },
   pl: { stage: "Warsztaty", concours: "Zawody", sortie: "Wyjazd", cours: "Lekcja", soiree: "Wieczór", reunion: "Spotkanie" },
   ko: { stage: "클리닉", concours: "대회", sortie: "외승", cours: "레슨", soiree: "저녁 행사", reunion: "모임" },
+  fa: { stage: "کارگاه آموزشی", concours: "مسابقه", sortie: "گردش", cours: "درس", soiree: "مراسم شبانه", reunion: "جلسه" },
 };
 const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   en: { rdv: "Event", du: (a: string, b: string) => "from " + a + " to " + b, le: (a: string) => "on " + a, a: (l: string) => "at " + l, heure: (h: string) => "At " + h, lieu: "Venue", org: (c: string) => "Organised by the stable " + c, defaut: "All the event details on Hype.", pied: "Hype is an independent app with no official link to this stable or to the FFE.", dp: ": " },
@@ -71,6 +72,7 @@ const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   ru: { rdv: "Событие", du: (a: string, b: string) => "с " + a + " по " + b, le: (a: string) => a, a: (l: string) => "в " + l, heure: (h: string) => "В " + h, lieu: "Место", org: (c: string) => "Организатор: конюшня " + c, defaut: "Все подробности о событии — на Hype.", pied: "Hype — независимое приложение, не связанное официально ни с этой конюшней, ни с FFE.", dp: ": " },
   pl: { rdv: "Wydarzenie", du: (a: string, b: string) => "od " + a + " do " + b, le: (a: string) => a, a: (l: string) => "w " + l, heure: (h: string) => "Godz. " + h, lieu: "Miejsce", org: (c: string) => "Organizator: stajnia " + c, defaut: "Wszystkie szczegóły wydarzenia znajdziesz w Hype.", pied: "Hype to niezależna aplikacja, bez oficjalnych powiązań z tą stajnią ani z FFE.", dp: ": " },
   ko: { rdv: "일정", du: (a: string, b: string) => a + " ~ " + b, le: (a: string) => a, a: (l: string) => l + "에서", heure: (h: string) => h + " 시작", lieu: "장소", org: (c: string) => "주최: " + c + " 마구간", defaut: "일정의 자세한 내용은 Hype에서 확인해요.", pied: "Hype는 독립적인 앱이며, 이 마구간이나 FFE와 공식적인 관계가 없어요.", dp: ": " },
+  fa: { rdv: "رویداد", du: (a: string, b: string) => "از " + a + " تا " + b, le: (a: string) => "در " + a, a: (l: string) => "در " + l, heure: (h: string) => "ساعت " + h, lieu: "مکان", org: (c: string) => "برگزارکننده: اصطبل " + c, defaut: "همهٔ جزئیات رویداد در Hype.", pied: "Hype یک اپلیکیشن مستقل است و هیچ ارتباط رسمی با این اصطبل یا FFE ندارد.", dp: ": " },
 };
 function dateLongueLg(d: unknown, lg: Lg): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -116,7 +118,7 @@ export function adresseEvenement(titre: string, id: string): string {
 
 /* ---------- Petites pages d'erreur (8 langues) ---------- */
 function pageSimple(statut: number, lignes: string[][]): Response {
-  const corps = lignes.map(([lang, txt]) => `<p lang="${lang === "zh" ? "zh-Hans" : lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
+  const corps = lignes.map(([lang, txt]) => `<p lang="${lang === "zh" ? "zh-Hans" : lang}"${lang === "ar" || lang === "fa" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>Hype</title>
@@ -146,6 +148,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["ru", "Это событие недоступно."],
   ["pl", "To wydarzenie jest niedostępne."],
   ["ko", "이 일정은 볼 수 없어요."],
+  ["fa", "این رویداد در دسترس نیست."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -162,6 +165,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["ru", "Hype временно недоступен. Попробуй ещё раз через минуту."],
   ["pl", "Hype jest chwilowo niedostępny. Spróbuj ponownie za minutę."],
   ["ko", "Hype를 잠시 이용할 수 없어요. 잠시 후 다시 시도해 주세요."],
+  ["fa", "Hype موقتاً در دسترس نیست. کمی بعد دوباره امتحان کن."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -274,7 +278,7 @@ function construireLg(ev: any, ec: Ecurie | null, adresse: string, lg: Exclude<L
   let description = morceaux.join(lg === "ja" ? " " : " ") + (lg === "ja" || lg === "zh" ? "。" : ". ");
   description += propre(ev.description) ? propre(ev.description).slice(0, 110) : t.defaut;
 
-  let html = `<main id="seo-evenement" lang="${HL[lg]}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  let html = `<main id="seo-evenement" lang="${HL[lg]}"${lg === "ar" || lg === "fa" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(titreEv)}</h1>`;
   const lignes: string[] = [];
   if (type) lignes.push(texte(type));
@@ -464,4 +468,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*", "/pt/evenement/*", "/sv/evenement/*", "/ru/evenement/*", "/pl/evenement/*", "/ko/evenement/*"] };
+export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*", "/pt/evenement/*", "/sv/evenement/*", "/ru/evenement/*", "/pl/evenement/*", "/ko/evenement/*", "/fa/evenement/*"] };
