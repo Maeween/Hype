@@ -64,6 +64,7 @@ FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
  ("🐴", "Ton cheval", "Sa fiche, ses origines, son pedigree, ses photos et ses résultats.", "https://2hype.fr/fr/fiche-cheval/"),
  ("🏆", "Concours", "Toute ta saison importée en une seule manipulation : résultats, classements et points.", "https://2hype.fr/fr/concours-resultats/"),
  ("🩺", "Santé", "Soins, vaccins, maréchal… avec des rappels automatiques.", "https://2hype.fr/fr/sante-cheval/"),
+ ("🔐", "Ton coffre-fort à documents", "Carnet de vaccination, papiers du camion, licence, contrats… tous tes dossiers importants, rangés en sécurité et toujours sous la main.", "https://2hype.fr/"),
  ("🎓", "Galops 1 à 9 & prépas pro", "Cours, quiz et examens blancs, plus les prépas AE, BPJEPS et DEJEPS.", "https://2hype.fr/fr/galops/"),
  ("🧭", "Dressage", "Les reprises avec leur tracé animé, pour les apprendre par cœur.", "https://2hype.fr/fr/reprises-dressage/"),
  ("💬", "Hey Baby", "Ton coach virtuel pour toutes tes questions, même à partir d’une photo.", "https://2hype.fr/fr/ia-equestre/"),
