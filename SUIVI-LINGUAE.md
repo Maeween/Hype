@@ -1,3 +1,27 @@
+# 🗓️ 12/11 (soir) — PERSAN (fa) : 17e LANGUE, LANGUE DE L'APPLI ET LANGUE À APPRENDRE + « LIBAN (ARABE) » — horselingo branche `fa` (`db4389d`), PRÊT, PAS ENCORE PUBLIÉ
+
+**Demande de Blandine** : « tu peux faire la même chose pour Hippolingo » (= Horse Lingo, après le persan de Hype), puis « Il faut faire les deux. Et oui » → persan comme langue de l'appli ET comme langue à apprendre, entrée « Liban (arabe) », pas d'autre langue. Pas de drapeau : « IR » écrit (comme Hype, « tu marques Iran »).
+
+**Contenu** : 3 346 textes (récits, lettres, définitions, phrases, dialogues, interface des 5 pages) + 896 mots à apprendre avec leur prononciation à la française (ex. « رزرو کردن [ ré-zerv kar-dan ] »). Traduits par Claude (agents en parallèle, glossaire équestre de Hype imposé), **jamais relus par un natif** → relecture par Faïmé. Outils relançables : `outils/fa/injecter-fa.cjs` (ajoute/met à jour fa partout où il y a « ro »), `outils/fa/fusionner.py`, `outils/fa/tables-noms-fa.cjs` (les 2 tables de noms de langues), consignes `outils/fa/CONSIGNES-LINGO.md`.
+
+**Activation** : LANGUES_UI, LG/LGN, LX_LANGUES (lexique), destination « Le persan » (clé neuve `zagros`), signature « به امید دیدار، Hype », écriture de droite à gauche pour remettre une phrase en ordre (comme l'arabe), tri du lexique en persan. « seize langues » → **dix-sept** (et « · FA » dans les listes) dans les 16 langues. Sélecteurs : **deux lignes de 9** (17 langues + Liban). « Liban (arabe) » = drapeau 🇱🇧 à côté de l'arabe dans les deux rangées de lecture : ouvre l'arabe standard, retient seulement le drapeau (`hype_lingua_lb`).
+
+**Voix** : l'iPhone n'a pas de voix persane. Sans voix « fa » sur l'appareil : pas de lecture avec une voix étrangère, bouton « Écouter » masqué, exercices d'écoute et de parole remplacés par leurs versions visuelles (comme « sans le son ») ; pas de « écris le mot » en persan (clavier persan non exigé, comme japonais/chinois/arabe). La prononciation écrite reste affichée.
+
+**Google / Bing** : `outils/seo-lexique.cjs` fabrique **/fa/vazhegan/** (sommaire + 39 étapes, droite à gauche), hreflang fa partout, 40 adresses fa dans le sitemap (681 en tout) ; garde-fou ajouté : une langue traduite à moins de 90 % n'est pas publiée (sinon le script jetait tous les mots). Aperçu des chapitres : « en 17 langues ». Cache du téléphone : `linguae-v12`.
+
+**Pas touché** : paiement Stripe (pas de langue « fa » envoyée à Stripe, comme l'arabe), tarifs, droits.
+
+**Contrôles (Chromium)** : leçon fr→fa (mots, prononciation, « Quel est ce mot ? »), leçon fa→en, récit de La Baule en persan, dialogue fr→fa et fa→en, page d'entrée en persan / en arabe-Liban à 390, 820, 1440 px, pages Google fa générées sur une copie : **aucune erreur JS** ; aucun texte d'origine perdu (seuls les 48 textes « seize langues » ont changé, volontairement).
+
+**Signalé (non corrigé, à voir avec Blandine)** :
+- Bug ANCIEN de l'arabe (non touché, hors sujet) : quand l'arabe est la langue apprise, la leçon peut imposer « Écris le mot » et toute réponse est acceptée (la comparaison ne lit pas l'alphabet arabe). Le persan est protégé.
+- La page Dialogue garde son interface en français quelle que soit la langue (déjà le cas avant).
+- Fautes repérées dans le français d'origine : « RENDA » (rend), « crossses », « XIX siècle » sans « e » (plusieurs), « raccourtit », « évite qu'un cheval part », « derriere », « ou l'on saute » ; « Apy, la mascotte de Hype Baby » ; 1,49 m ferré vs 1,48 m ; « pas de 80 cm » pour mesurer un parcours ; une case française contient de l'anglais (« Ten words… ») ; « la race du bétail australien » (c'est un cheval) ; « Embouchure sans mors » se contredit.
+- Termes persans à faire confirmer par Faïmé : rouan/gris (ابرش), boulet (مفصل مچ), paturon (بخلو), jarret (مفصل خرگوشی), coup de sang (گرفتگی عضلانی), barrage (جامپ‌آف), balzane, liste, cession à la jambe, haute école.
+
+**Reste** : accord de Blandine pour publier (fusion de `fa` dans main avec [publier]) ; relecture Faïmé.
+
 # 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
 
 **Page de relecture pour natifs** : artifact « Relecture Horse Lingo » (privé ; Blandine le partage par lien depuis le bouton Partager). 67 mots (36 de base + 31 délicats) × 10 langues (nl, pt, br, sv, pl, ro, da, no, ar, zh) ; le relecteur coche « juste » ou propose un mot, ses réponses restent sur son appareil et se copient en un texte à renvoyer à Blandine. Mise à jour du 15/10 : affiche aussi les variantes de l'anglais (ex. stable ≈ loose box / stall) et les mots corrigés ci-dessous.
