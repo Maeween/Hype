@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 — Lien de partage de l'équipe : 2hype.fr/equipe/ (aperçu WhatsApp avec Hypo)
+- Demande de Blandine (08h07 : « c'est pas le bon design au-dessus, c'est pas Hypo ») : equipe/index.html (noindex), même image que /offert/ (images/hype-mois-offert-partage.jpg), titre « 🥇 Notre équipe compétition sur Hype », renvoi immédiat vers /#team-competition. Aucun changement dans l'appli (index.html non modifié, pas de nouveau numéro de version).
+
 ### 12/11 — build 20261112-0100 — « 1 mois offert » : lien de partage avec Hypo, code prérempli sur Premium Cavalier
 - Demande de Blandine (11/11 22h10 « Ok Feinn », puis 22h21 : plus de 30 utilisations, pas le Pack Duo « ça va me coûter cher » avec Hey Baby).
 - STRIPE (compte de l'association) : code HYPE1MOIS sur le coupon BLN8QOMl (100 %, une fois) — 150 utilisations, nouveaux clients seulement. Codes promo autorisés UNIQUEMENT sur le lien Premium Cavalier mensuel (plink_1UUsXHHWk0xyvsbCy7nEE0oL) ; Duo remis sans code. Ancien code FEINN1MOIS (30 utilisations) toujours actif mais plus utilisé — Claude ne peut pas le désactiver d'ici (Stripe → Coupons → FEINN1MOIS → Désactiver).
