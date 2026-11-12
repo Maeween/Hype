@@ -733,7 +733,7 @@ function EcranGuilde() {
         T("Connecte-toi ou cr\u00e9e ton compte pour retrouver ton \u00e9curie, ses rendez-vous et ses moments.", "Sign in or create your account to find your stable, its events and its moments.", "Inicia sesi\u00f3n o crea tu cuenta para encontrar tu cuadra, sus citas y sus momentos.", "Accedi o crea il tuo account per ritrovare la tua scuderia, i suoi eventi e i suoi momenti.", "\u30ed\u30b0\u30a4\u30f3\u307e\u305f\u306f\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u4f5c\u6210\u3057\u3066\u3001\u3042\u306a\u305f\u306e\u53a9\u820e\u306e\u4e88\u5b9a\u3084\u601d\u3044\u51fa\u3092\u898b\u3064\u3051\u3088\u3046\u3002", "Melde dich an oder erstelle dein Konto, um deinen Stall, seine Termine und Momente zu finden.", "\u0633\u062c\u0644\u064a \u0627\u0644\u062f\u062e\u0648\u0644 \u0623\u0648 \u0623\u0646\u0634\u0626\u064a \u062d\u0633\u0627\u0628\u0643 \u0644\u062a\u062c\u062f\u064a \u0625\u0633\u0637\u0628\u0644\u0643 \u0648\u0645\u0648\u0627\u0639\u064a\u062f\u0647 \u0648\u0644\u062d\u0638\u0627\u062a\u0647.", "登录或创建账户，找回你的马厩、日程和美好时刻。", "Log in of maak een account aan om je stal, de afspraken en de mooiste momenten terug te vinden.", "Entre ou crie sua conta para encontrar sua cocheira, seus compromissos e seus momentos.", "Logga in eller skapa ditt konto för att hitta ditt stall, dess evenemang och dess stunder.", "Войди или создай аккаунт, чтобы найти свою конюшню, её события и важные моменты.", "Zaloguj się lub załóż konto, aby odnaleźć swoją stajnię, jej wydarzenia i chwile.", "로그인하거나 계정을 만들어 내 마구간과 일정, 소중한 순간들을 만나 보세요.", "Sign in or create your account to find your stable, its events and its moments.")),
       h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
         h("button", { type: "button", onClick: function () { allerAuthG("connexion"); }, style: { flex: 1, minWidth: 0, minHeight: 44, borderRadius: 999, border: "1px solid rgba(" + RGBTL + ",0.55)", background: "transparent", color: TURQL, fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", padding: "0 8px" } },
-          T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden", "\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644", "登录", "Inloggen", "Entrar", "Logga in", "Войти", "Zaloguj się", "로그인", "Sign in")),
+          T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden", "\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644", "登录", "Inloggen", "Entrar", "Logga in", "Войти", "Zaloguj się", "로그인", "ورود")),
         h("button", { type: "button", onClick: function () { allerAuthG("inscription"); }, style: { flex: 1, minWidth: 0, minHeight: 44, borderRadius: 999, border: "none", background: "linear-gradient(90deg," + TURQ + "," + TURQL + ")", color: "#04252A", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 800, cursor: "pointer", padding: "0 8px" } },
           T("Cr\u00e9er un compte", "Create an account", "Crear una cuenta", "Crea un account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u4f5c\u6210", "Konto erstellen", "\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628", "创建账户", "Account aanmaken", "Criar uma conta", "Skapa ett konto", "Создать аккаунт", "Załóż konto", "계정 만들기", "Create an account")))) : null,
     /* 30/08 (choix de Blandine, maquette B) — LA BANNIERE N'EST PLUS RECADREE.
@@ -766,7 +766,7 @@ function EcranGuilde() {
                   "#" + String(monRang)))
             : h("div", { "aria-hidden": "true", style: { width: 44, flex: "0 0 auto" } })),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
-          (villeClub ? ("\ud83d\udccd " + villeClub + " \u00b7 ") : "") + maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc", "Mitglieder", "\u0623\u0639\u0636\u0627\u0621", "成员", "leden", "membros", "medlemmar", "участников", "członków", "멤버", "members")),
+          (villeClub ? ("\ud83d\udccd " + villeClub + " \u00b7 ") : "") + maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc", "Mitglieder", "\u0623\u0639\u0636\u0627\u0621", "成员", "leden", "membros", "medlemmar", "участников", "członków", "멤버", "عضو")),
         /* 30/08 (Blandine : « on ne voit pas le club officiel, mets-le là où l'autre
            était avant ») — pose en haut a droite de la photo, le badge se perdait sur
            une image chargee. Il reprend EXACTEMENT la place de l'ancienne pastille :
@@ -802,7 +802,7 @@ function EcranGuilde() {
           }))) : null,
         errTeinte ? h("div", { style: { padding: "8px", color: "#E08A8A", fontFamily: M, fontSize: 12 } }, T("Impossible : ", "Not possible: ", "Imposible: ", "Impossibile: ", "できません：", "Nicht möglich: ", "غير ممكن: ", "无法操作：", "Niet mogelijk: ", "Não é possível: ", "Det går inte: ", "Невозможно: ", "Niemożliwe: ", "할 수 없어요: ", "Not possible: ") + errTeinte) : null,
         h("button", { type: "button", onClick: function () { setMenuPhotoG(false); }, style: { width: "100%", textAlign: "center", marginTop: 10, padding: "12px 8px", background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 12, color: "#EDF2F5", fontSize: 14, fontFamily: M, cursor: "pointer" } },
-          T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close")))) : null,
+          T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن")))) : null,
     /* 12/08 (114) : bandeau des stories. */
     /* 01/09 (Blandine) : deux bandes grises au-dessus et en dessous du bandeau
        des stories, a l identique de la page Cavalier (Club), pour couper la
@@ -880,12 +880,12 @@ function EcranGuilde() {
           h("div", { style: { position: "relative", zIndex: 2, fontFamily: C, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.5, color: titreG, marginTop: 9, whiteSpace: "nowrap" } }, tiG),
           h("div", { style: { position: "relative", zIndex: 2, marginTop: "auto", paddingTop: 5, borderTop: "1px solid " + filetG, width: "86%", textAlign: "center", fontSize: 8, letterSpacing: "0.08em", fontWeight: 800, color: traitG, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ctaG + " \u2192"));
       }
-      var BIENTOT = T("Bient\u00f4t", "Soon", "Pronto", "Presto", "\u6e96\u5099\u4e2d", "Bald", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧 공개", "Soon");
-      var OUVRIR = T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f", "\u00d6ffnen", "\u0641\u062a\u062d", "打开", "Openen", "Abrir", "Öppna", "Открыть", "Otwórz", "열기", "Open");
+      var BIENTOT = T("Bient\u00f4t", "Soon", "Pronto", "Presto", "\u6e96\u5099\u4e2d", "Bald", "\u0642\u0631\u064a\u0628\u0627", "即将推出", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧 공개", "به‌زودی");
+      var OUVRIR = T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f", "\u00d6ffnen", "\u0641\u062a\u062d", "打开", "Openen", "Abrir", "Öppna", "Открыть", "Otwórz", "열기", "باز کردن");
       /* 14/09 (154) : marge du haut 10 -> 34 px, pour degager le mur immersif. */
       return h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 9, margin: "34px 16px 30px" } },   /* 28/09 (496) : 2 -> 30 px sous les 6 onglets (Blandine : « laisse plus d espace ») */
         carteG(h("g", null, h("circle", { cx: 9, cy: 8, r: 3.2 }), h("circle", { cx: 16.5, cy: 9.5, r: 2.4 }), h("path", { d: "M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M16 14.5c2.6.3 4.5 2.2 4.5 4.5" })),
-          T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "\u30e9\u30a4\u30c0\u30fc", "Reiter", "\u0627\u0644\u0641\u0631\u0633\u0627\u0646", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "기수", "Riders"), OUVRIR,
+          T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "\u30e9\u30a4\u30c0\u30fc", "Reiter", "\u0627\u0644\u0641\u0631\u0633\u0627\u0646", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "기수", "سوارکاران"), OUVRIR,
           /* 15/09 (163) : la page des cavaliers du club. Le club vise passe par
              window.__cavaliersClub, sur le modele de window.__agendaClub. */
           function () {
@@ -893,7 +893,7 @@ function EcranGuilde() {
             setEcran("cavaliers-club");
           }, "gc"),
         carteG(h("g", null, h("path", { d: "M4 18c0-4 2.5-7 6-8l1.5-3 2 2.5c2.5.4 4.5 2.4 4.5 5.5 0 1.5-.6 2.8-1.5 3.8", strokeLinejoin: "round" }), h("path", { d: "M8 18v2m8-2v2" })),
-          T("Chevaux", "Horses", "Caballos", "Cavalli", "\u99ac", "Pferde", "\u0627\u0644\u062e\u064a\u0648\u0644", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "Horses"), OUVRIR,
+          T("Chevaux", "Horses", "Caballos", "Cavalli", "\u99ac", "Pferde", "\u0627\u0644\u062e\u064a\u0648\u0644", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "اسب‌ها"), OUVRIR,
           /* 14/09 (143) : la page existait deja - EcranEcurieHype, ecran « ecurie-hype ».
              15/09 (164) - CORRECTIF : cette page a DEUX MODES et il faut lui dire lequel AVANT
              d y aller. Sans contexte, elle affiche la galerie GLOBALE « L ecurie Hype » : tous
@@ -910,10 +910,10 @@ function EcranGuilde() {
             setEcran("ecurie-hype");
           }, "gh"),
         carteG(h("g", null, h("rect", { x: 3.5, y: 5, width: 17, height: 15, rx: 2.5 }), h("path", { d: "M3.5 10h17M8 3.5v3m8-3v3" })),
-          T("Agenda", "Agenda", "Agenda", "Agenda", "\u4e88\u5b9a", "Termine", "\u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f", "日程", "Agenda", "Agenda", "Kalender", "Календарь", "Kalendarz", "일정", "Agenda"), OUVRIR,
+          T("Agenda", "Agenda", "Agenda", "Agenda", "\u4e88\u5b9a", "Termine", "\u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f", "日程", "Agenda", "Agenda", "Kalender", "Календарь", "Kalendarz", "일정", "تقویم"), OUVRIR,
           function () { try { window.__agendaClub = monClub || ""; } catch (eA1) { } setEcran("agenda-club"); }, "ga"),
         carteG(h("g", null, h("rect", { x: 3.5, y: 5.5, width: 17, height: 13, rx: 2 }), h("path", { d: "M7 9.5h6M7 13h10M7 15.5h7" })),
-          T("Actualit\u00e9s", "News", "Novedades", "Novit\u00e0", "\u6d3b\u52d5", "News", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식", "News"), OUVRIR,
+          T("Actualit\u00e9s", "News", "Novedades", "Novit\u00e0", "\u6d3b\u52d5", "News", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식", "اخبار"), OUVRIR,
           function () {
             try {
               window.__filEcurieCible = "ecurie:" + String(monClub || "").trim().toLowerCase();
@@ -928,7 +928,7 @@ function EcranGuilde() {
             setEcran("souvenirs-club");
           }, "gs"),
         carteG(h("g", null, h("path", { d: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3.5a4.5 4.5 0 0 0 9 0V14" }), h("circle", { cx: 19, cy: 11.5, r: 2.2 })),
-          T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit", "\u0627\u0644\u0635\u062d\u0629", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "Health"), OUVRIR,
+          T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit", "\u0627\u0644\u0635\u062d\u0629", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "سلامت"), OUVRIR,
           /* 15/09 (170) : la sante de tous les chevaux de l ecurie. Le club vise passe par
              window.__santeClub, sur le modele de window.__agendaClub. */
           function () {
@@ -945,17 +945,17 @@ function EcranGuilde() {
          Meme action, meme apparence : seule la position change.
          NB : l autre bouton retour au code identique (ecran de gestion de l ecurie) est
          volontairement laisse tel quel — son conteneur est bien en haut de page. */
-      h("button", { onClick: function () { setEcran("moncavalier"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"), style: { position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, zIndex: 60, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039")),
+      h("button", { onClick: function () { setEcran("moncavalier"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"), style: { position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, zIndex: 60, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039")),
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "12px 16px 0" } },
       h("div", { style: { background: "linear-gradient(135deg, rgba(" + RGBT + ",0.222), rgba(7,9,12,0.92))", border: "1px solid rgba(" + RGBT + ",0.555)", borderRadius: 20, padding: "18px", display: "flex", alignItems: "center", gap: 16 } },
         cristal(niv.niveau),
         h("div", { style: { minWidth: 0 } },
           h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between" } },
-            h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#B9C6CC" } }, T("Niveau", "Level", "Nivel", "Livello", "\u30ec\u30d9\u30eb", "Stufe", "\u0627\u0644\u0645\u0633\u062a\u0648\u0649", "等级", "Niveau", "Nível", "Nivå", "Уровень", "Poziom", "레벨", "Level") + " " + niv.niveau),
+            h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#B9C6CC" } }, T("Niveau", "Level", "Nivel", "Livello", "\u30ec\u30d9\u30eb", "Stufe", "\u0627\u0644\u0645\u0633\u062a\u0648\u0649", "等级", "Niveau", "Nível", "Nivå", "Уровень", "Poziom", "레벨", "سطح") + " " + niv.niveau),
             h("div", { style: { fontFamily: M, fontSize: 12, color: TURQL, fontWeight: 700 } }, "#" + monRang + " / " + liste.length)),
           h("div", { style: { height: 10, borderRadius: 6, background: "rgba(255,255,255,0.08)", overflow: "hidden", margin: "9px 0 6px" } },
             h("div", { style: { height: "100%", width: niv.pct + "%", background: "linear-gradient(90deg," + TURQL + "," + TURQ + ")", borderRadius: 6 } })),
-          h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, maG.xp + " XP \u00b7 " + niv.reste + "/" + niv.besoin + " " + T("vers niv.", "to lvl", "a niv.", "a liv.", "\u6b21", "bis Stufe", "\u0646\u062d\u0648 \u0627\u0644\u0645\u0633\u062a\u0648\u0649", "升至等级", "naar niv.", "para o nív.", "mot nivå", "до ур.", "do poz.", "다음 레벨까지", "to lvl") + " " + (niv.niveau + 1))))) : null,
+          h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, maG.xp + " XP \u00b7 " + niv.reste + "/" + niv.besoin + " " + T("vers niv.", "to lvl", "a niv.", "a liv.", "\u6b21", "bis Stufe", "\u0646\u062d\u0648 \u0627\u0644\u0645\u0633\u062a\u0648\u0649", "升至等级", "naar niv.", "para o nív.", "mot nivå", "до ур.", "do poz.", "다음 레벨까지", "به سطح") + " " + (niv.niveau + 1))))) : null,
     AFFICHER_GAMIF_CLUB ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "flex", alignItems: "center", gap: 6, margin: "10px 16px 0", padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(" + RGBT + ",0.35)", background: "rgba(" + RGBT + ",0.08)", color: TURQL, fontSize: 11, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir les qu\u00eates du club", "See club quests", "Ver misiones del club", "Vedi le missioni del club", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b", "Vereinsquests ansehen", "\u0639\u0631\u0636 \u0645\u0647\u0627\u0645 \u0627\u0644\u0646\u0627\u062f\u064a", "查看俱乐部任务", "Bekijk de quests van de manege", "Ver as missões do clube", "Se klubbens uppdrag", "Смотреть задания клуба", "Zobacz zadania klubu", "클럽 퀘스트 보기", "See club quests") + " \u203a") : null,
     /* 28/08 : le compteur MEMBRES est retire d ici, deplace a droite du nom du club
        dans le bandeau du haut (demande Blandine : « retire le au milieu, affiche-le
@@ -964,8 +964,8 @@ function EcranGuilde() {
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "14px 16px 0" } },
       h("div", { style: { display: "flex", gap: 6, padding: "14px 8px", borderRadius: 16, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" } },
         statMini(maG.membres, T("Membres", "Members", "Miembros", "Membri", "\u30e1\u30f3\u30d0\u30fc", "Mitglieder", "\u0627\u0644\u0623\u0639\u0636\u0627\u0621", "成员", "Leden", "Membros", "Medlemmar", "Участники", "Członkowie", "멤버", "Members")),
-        statMini(maG.hf, T("Hauts faits", "Feats", "Logros", "Imprese", "\u5b9f\u7e3e", "Erfolge", "\u0627\u0644\u0625\u0646\u062c\u0627\u0632\u0627\u062a", "成就", "Prestaties", "Conquistas", "Bedrifter", "Достижения", "Osiągnięcia", "하이라이트", "Feats")),
-        statMini(maG.res, T("R\u00e9sultats", "Results", "Result.", "Risult.", "\u6210\u7e3e", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c", "成绩", "Resultaten", "Resultados", "Resultat", "Результаты", "Wyniki", "결과", "Results")),
+        statMini(maG.hf, T("Hauts faits", "Feats", "Logros", "Imprese", "\u5b9f\u7e3e", "Erfolge", "\u0627\u0644\u0625\u0646\u062c\u0627\u0632\u0627\u062a", "成就", "Prestaties", "Conquistas", "Bedrifter", "Достижения", "Osiągnięcia", "하이라이트", "افتخارات")),
+        statMini(maG.res, T("R\u00e9sultats", "Results", "Result.", "Risult.", "\u6210\u7e3e", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c", "成绩", "Resultaten", "Resultados", "Resultat", "Результаты", "Wyniki", "결과", "نتایج")),
         statMini(maG.pod, T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podestpl\u00e4tze", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c", "领奖台", "Podiums", "Pódios", "Prispallsplaceringar", "Пьедесталы", "Podia", "시상대", "Podiums"), "#E8C887"))) : null,
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "8px 20px 0", fontSize: 10.5, color: "#6B7580", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, T("XP = membres\u00d710 + hauts faits\u00d75 + r\u00e9sultats\u00d73 + podiums\u00d78", "XP = members\u00d710 + feats\u00d75 + results\u00d73 + podiums\u00d78", "XP = miembros×10 + hazañas×5 + resultados×3 + podios×8", "XP = membri×10 + imprese×5 + risultati×3 + podi×8", "XP = メンバー×10 + 偉業×5 + 成績×3 + 表彰台×8", "XP = Mitglieder\u00d710 + Erfolge\u00d75 + Ergebnisse\u00d73 + Podestpl\u00e4tze\u00d78", "XP = \u0627\u0644\u0623\u0639\u0636\u0627\u0621\u00d710 + \u0627\u0644\u0625\u0646\u062c\u0627\u0632\u0627\u062a\u00d75 + \u0627\u0644\u0646\u062a\u0627\u0626\u062c\u00d73 + \u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c\u00d78", "XP = 成员×10 + 成就×5 + 成绩×3 + 领奖台×8", "XP = leden×10 + prestaties×5 + resultaten×3 + podiumplaatsen×8", "XP = membros×10 + conquistas×5 + resultados×3 + pódios×8", "XP = medlemmar×10 + bedrifter×5 + resultat×3 + prispallsplatser×8", "XP = участники×10 + достижения×5 + результаты×3 + пьедесталы×8", "XP = członkowie×10 + osiągnięcia×5 + wyniki×3 + podia×8", "XP = 멤버×10 + 업적×5 + 결과×3 + 시상대×8", "XP = members×10 + feats×5 + results×3 + podiums×8")) : null,
     h("div", { style: { padding: "0 16px 0", marginTop: -18 } }, /* 30/08 (Blandine : « remonte un peu la citation ») */
@@ -1003,7 +1003,7 @@ function EcranGuilde() {
          qu un toucher par megarde se voie avant d etre execute. */
       exDemande ? h("div", { style: { position: "fixed", left: 12, right: 12, bottom: "calc(env(safe-area-inset-bottom) + 84px)", zIndex: 8300, padding: "13px 15px", borderRadius: 16, background: "rgba(12,16,22,0.97)", border: "1px solid rgba(255,154,168,0.45)", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" } },
         h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#FFD3D9", lineHeight: 1.5 } },
-          T("Retirer ", "Remove ", "Quitar ", "Rimuovere ", "", "", "\u0625\u0632\u0627\u0644\u0629 ", "移除", "Verwijder ", "Tirar ", "Ta bort ", "Убрать ", "Usunąć ", " ", "Remove ")
+          T("Retirer ", "Remove ", "Quitar ", "Rimuovere ", "", "", "\u0625\u0632\u0627\u0644\u0629 ", "移除", "Verwijder ", "Tirar ", "Ta bort ", "Убрать ", "Usunąć ", " ", "برداشتن ")
             + (exDemande.pseudo || T("ce cavalier", "this rider", "este jinete", "questo cavaliere", "このライダー", "diesen Reiter", "هذا الفارس", "这位骑手", "deze ruiter", "este cavaleiro", "den här ryttaren", "этого всадника", "tego jeźdźca", "이 기수", "this rider"))
             + T(" de l\u2019\u00e9curie ? Touche la croix une seconde fois pour confirmer.",
                 " from the stable? Tap the cross again to confirm.",
@@ -1013,7 +1013,7 @@ function EcranGuilde() {
                 " aus dem Stall entfernen? Kreuz erneut tippen.", " \u0645\u0646 \u0627\u0644\u0625\u0633\u0637\u0628\u0644\u061f \u0627\u0644\u0645\u0633\u064a \u0627\u0644\u0639\u0644\u0627\u0645\u0629 \u0645\u0631\u0629 \u062b\u0627\u0646\u064a\u0629 \u0644\u0644\u062a\u0623\u0643\u064a\u062f.", " 出马厩吗？再点一次叉号确认。", " uit de stal? Tik nog een keer op het kruisje om te bevestigen.", " da cocheira? Toque na cruz mais uma vez para confirmar.", " från stallet? Tryck på krysset en gång till för att bekräfta.", " из конюшни? Нажми на крестик ещё раз, чтобы подтвердить.", " ze stajni? Dotknij krzyżyka jeszcze raz, aby potwierdzić.", " 를 마구간에서 뺄까요? 확인하려면 X를 한 번 더 눌러 주세요.", " from the stable? Tap the cross again to confirm.")),
         h("div", { role: "button", onClick: function () { setExDemande(null); },
           style: { marginTop: 9, display: "inline-block", padding: "7px 15px", minHeight: 36, borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", color: "#EDF2F5", fontFamily: M, fontSize: 12, fontWeight: 700, cursor: "pointer" } },
-          T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "\u0625\u0644\u063a\u0627\u0621", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "Cancel"))) : null,
+          T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "\u0625\u0644\u063a\u0627\u0621", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "لغو"))) : null,
       selCav ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8200, background: "rgba(4,6,9,0.72)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { setSelCav(false); } },
         h("div", { onClick: function (eSh) { eSh.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(" + RGBT + ",0.3)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
           h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.8, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } }, T("Compose ton \u00e9curie", "Build your stable", "Compone tu cuadra", "Componi la tua scuderia", "\u53a9\u820e\u3092\u30c7\u30b6\u30a4\u30f3", "Stell deinen Stall zusammen", "\u0643\u0648\u0646\u064a \u0625\u0633\u0637\u0628\u0644\u0643", "组建你的马厩", "Stel je stal samen", "Monte sua cocheira", "Skapa ditt stall", "Собери свою конюшню", "Stwórz swoją stajnię", "내 마구간 꾸리기", "Build your stable")),
@@ -1037,10 +1037,10 @@ function EcranGuilde() {
                   h("button", { onClick: function () { basculerChoisi(p); }, style: deja
                     ? { flexShrink: 0, padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "rgba(237,242,245,0.55)", fontSize: 11, fontWeight: 800, fontFamily: M, cursor: "pointer" }
                     : { flexShrink: 0, padding: "7px 14px", borderRadius: 999, border: "none", background: "linear-gradient(90deg," + TURQ + "," + TURQL + ")", color: "#04252A", fontSize: 11, fontWeight: 800, fontFamily: M, cursor: "pointer" } },
-                    deja ? T("Retirer", "Remove", "Quitar", "Rimuovi", "\u524a\u9664", "Entfernen", "\u0625\u0632\u0627\u0644\u0629", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "Remove") : T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add")));
+                    deja ? T("Retirer", "Remove", "Quitar", "Rimuovi", "\u524a\u9664", "Entfernen", "\u0625\u0632\u0627\u0644\u0629", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "برداشتن") : T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن")));
               });
             })()),
-          h("button", { onClick: function () { setSelCav(false); }, style: { marginTop: 12, width: "100%", padding: "13px 0", borderRadius: 14, border: "1px solid rgba(" + RGBT + ",0.4)", background: "rgba(" + RGBT + ",0.08)", color: TURQL, fontSize: 13.5, fontWeight: 800, fontFamily: M, cursor: "pointer" } }, T("Termin\u00e9", "Done", "Hecho", "Fatto", "\u5b8c\u4e86", "Fertig", "\u062a\u0645", "已完成", "Beëindigd", "Encerrado", "Avslutad", "Завершено", "Zakończono", "완료", "Done")))) : null),
+          h("button", { onClick: function () { setSelCav(false); }, style: { marginTop: 12, width: "100%", padding: "13px 0", borderRadius: 14, border: "1px solid rgba(" + RGBT + ",0.4)", background: "rgba(" + RGBT + ",0.08)", color: TURQL, fontSize: 13.5, fontWeight: 800, fontFamily: M, cursor: "pointer" } }, T("Termin\u00e9", "Done", "Hecho", "Fatto", "\u5b8c\u4e86", "Fertig", "\u062a\u0645", "已完成", "Beëindigd", "Encerrado", "Avslutad", "Завершено", "Zakończono", "완료", "انجام شد")))) : null),
     h("div", { style: { padding: "46px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
         /* 01/09 (Blandine) : le titre « CHEVAUX DU CLUB » est RETIRE — la carte
@@ -1050,7 +1050,7 @@ function EcranGuilde() {
         null,
         h("div", { style: { display: "flex", alignItems: "baseline", gap: 12 } },
           (chevauxClub && chevauxClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, chevauxClub.length) : null,
-          h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer", padding: 0 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add")))),
+          h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer", padding: 0 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن")))),
       /* 14/08 (demande de Blandine) : « les chevaux du club c'est LA pour le
          coup ou ils doivent apparaitre en grand ! Reprends l'encodage que tu
          as sur la page cavalier ». Le rail defilant de vignettes 108 px (qui
@@ -1100,13 +1100,13 @@ function EcranGuilde() {
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(" + RGBT + ",0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
               cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
               (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", bottom: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#1A1E22,#0B0E11)" /* (536) sobre */, display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: TURQ, filter: "drop-shadow(0 0 6px rgba(0,0,0,.6))" } }, String(liensClub[cv.id])) : null),
-            h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || hypeT7("Cheval", "Horse", "Caballo", "Cavallo", "\u99ac", "Pferd", "\u062d\u0635\u0627\u0646", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말", "Horse")));
+            h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || hypeT7("Cheval", "Horse", "Caballo", "Cavallo", "\u99ac", "Pferd", "\u062d\u0635\u0627\u0646", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말", "اسب")));
           });
           var carteCentre = h("button", { key: "__carteCentreChevaux", onClick: function () { try { window.__ecurieHypeClub = monClub; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(" + RGBT + ",0.34)", background: "linear-gradient(160deg, rgba(12,18,24,0.96), rgba(6,7,9,0.98))", boxShadow: "0 10px 26px rgba(0,0,0,0.5)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 7px" } },
               h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase", color: "#EDF2F5", textAlign: "center", lineHeight: 1.35 } },
                 T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a9\u820e\u306e\u99ac", "Die Pferde des Stalls", "\u062e\u064a\u0648\u0644 \u0627\u0644\u0625\u0633\u0637\u0628\u0644", "马厩里的马", "De paarden van de stal", "Os cavalos da cocheira", "Stallets hästar", "Лошади конюшни", "Konie ze stajni", "마구간의 말들", "The stable's horses")),
-              h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, color: TURQL, textAlign: "center" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "See all") + " \u2192")),
+              h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, color: TURQL, textAlign: "center" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "دیدن همه") + " \u2192")),
             /* Ligne vide au gabarit du nom : garde les rangees alignees. */
             h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "transparent", whiteSpace: "nowrap" } }, "\u00a0"));
           return hypePlacerAuMilieu(cellules, carteCentre, "__videCentreChevaux");   /* 27/09 (449) : avant, au centre des 5 chevaux, sinon a la fin */
@@ -1134,7 +1134,7 @@ function EcranGuilde() {
         /* 01/09 : « Palmares » ne convient plus a un bloc trie par date — le mot
            reste libre pour la partie « grands resultats passes » a venir. */
         h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc) { } setEcran("perf-concours"); }, style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } }, T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u7d50\u679c", "Neueste Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c", "最近成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultat", "Последние результаты", "Ostatnie wyniki", "최근 결과", "Latest results")),
-        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc2) { } setEcran("perf-concours"); }, style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: TURQL, cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "See all") + " \u2192")),
+        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc2) { } setEcran("perf-concours"); }, style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: TURQL, cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "دیدن همه") + " \u2192")),
       /* 30/08 — LE RAIL AUX COUPES, au-dessus du fil. Rempli AUTOMATIQUEMENT par les
          regles de Blandine (titres > niveau > partants > rang) ; un resultat epingle
          passe devant. Podium seulement : un rail de coupes ne montre pas des 12es. */
@@ -1218,7 +1218,7 @@ function EcranGuilde() {
       epErr ? h("div", { style: { margin: "0 0 10px", padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.5)", fontSize: 11.5, color: "#FFD3D9", fontFamily: M, lineHeight: 1.5 } },
         epErr,
         h("div", { role: "button", onClick: function () { setEpErr(null); }, style: { marginTop: 7, display: "inline-block", padding: "6px 13px", borderRadius: 999, border: "1px solid rgba(255,154,168,0.5)", color: "#FF9AA8", fontSize: 11, fontWeight: 700, cursor: "pointer" } },
-          T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close"))) : null,
+          T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن"))) : null,
       /* 30/08 — PALMARES DU CLUB, FIL GROUPE PAR EPREUVE, ARDOISE EN FUME TURQUOISE.
          Maquette validee par Blandine. Une carte par epreuve, tous les classes du club
          alignes dessous. Le verre fume reprend a l'identique le style des boutons

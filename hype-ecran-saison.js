@@ -656,7 +656,7 @@ function EcranMaSaison() {
 
   /* ── dates ── */
   function dateLoc(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }
-  var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" }[lg] || "fr-FR";
+  var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" }[lg] || "fr-FR";
   function fmt(iso, o) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, o).format(d); } catch (e) { return String(iso).slice(0, 10); } }
   function plage(ev) {
     var deb = String(ev.date_jour || "").slice(0, 10), fin = String(ev.date_fin || "").slice(0, 10);
@@ -5440,9 +5440,9 @@ function EcranEngagements() {
         choixCh.err ? h("div", { className: "hs-err", style: { marginTop: 8 } }, choixCh.err) : null,
         h("div", { className: "hs-duo", style: { marginTop: 12 } },
           h("button", { type: "button", className: "hs-btn", disabled: choixCh.busy, onClick: function () { setChoixCh(null); } },
-            T7("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "Cancel")),
+            T7("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "لغو")),
           h("button", { type: "button", className: "hs-btn", disabled: choixCh.busy, onClick: enregistrerChoixCh },
-            choixCh.busy ? "…" : T7("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "Save")))));
+            choixCh.busy ? "…" : T7("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "ذخیره")))));
   }
   function vueChevauxV1() {
     if (!nomsCh.length) return h(React.Fragment, null,

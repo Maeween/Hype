@@ -239,7 +239,7 @@ function EcranEcurieHype() {
   function badge(rarete) {
     var lib = rarete === "legendaire" ? T("Légendaire", "Legendary", "Legendario", "Leggendario", "レジェンド", "Legend\u00e4r", "\u0623\u0633\u0637\u0648\u0631\u064a", "传奇", "Legendarisch", "Lendário", "Legendarisk", "Легендарная", "Legendarny", "레전드", "Legendary")
       : rarete === "exceptionnel" ? T("Exceptionnel", "Exceptional", "Excepcional", "Eccezionale", "エクセプショナル", "Au\u00dfergew\u00f6hnlich", "\u0627\u0633\u062a\u062b\u0646\u0627\u0626\u064a", "杰出", "Uitzonderlijk", "Excepcional", "Exceptionell", "Исключительная", "Wyjątkowy", "특별한", "Exceptional")
-      : T("Sport", "Sport", "Sport", "Sport", "スポーツ", "Sport", "\u0631\u064a\u0627\u0636\u0629", "运动", "Sport", "Esporte", "Sport", "Спорт", "Sport", "스포츠", "Sport");
+      : T("Sport", "Sport", "Sport", "Sport", "スポーツ", "Sport", "\u0631\u064a\u0627\u0636\u0629", "运动", "Sport", "Esporte", "Sport", "Спорт", "Sport", "스포츠", "ورزش");
     return h("span", { className: "ehyBadge " + rarete }, "✦ " + lib);
   }
 
@@ -261,7 +261,7 @@ function EcranEcurieHype() {
         : h("div", { className: "ehyPortrait", style: { position: "absolute", inset: 0 } }, ehyReseauSVG(h, "c" + cv.id), h("div", { className: "ini", style: { fontSize: 74 } }, (cv.nom || "?").charAt(0))),
       h("div", { className: "ombre" }),
       h("div", { className: "txt" },
-        h("div", { className: "ehyComNom" }, cv.nom || T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "\u062d\u0635\u0627\u0646", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말", "Horse")),
+        h("div", { className: "ehyComNom" }, cv.nom || T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "\u062d\u0635\u0627\u0646", "马", "Paard", "Cavalo", "Häst", "Лошадь", "Koń", "말", "اسب")),
         cv.race ? h("div", { className: "ehyComSous" }, String(cv.race)) : null,
         p ? h("div", { className: "ehyProprio" },
           h("div", { className: "av" }, p.avatar_url ? h("img", { src: p.avatar_url, alt: "" }) : null),
@@ -281,15 +281,15 @@ function EcranEcurieHype() {
         h("h1", { className: "fnom" }, lg.nom),
         h("div", { className: "fresume" }, tr(lg.resume)),
         h("div", { className: "fongles" },
-          [["infos", T("Infos", "Info", "Info", "Info", "情報", "Infos", "\u0645\u0639\u0644\u0648\u0645\u0627\u062a", "信息", "Info", "Infos", "Info", "Инфо", "Info", "정보", "Info")],
-           ["palmares", T("Palmarès", "Record", "Palmarés", "Palmarès", "実績", "Erfolge", "\u0633\u062c\u0644 \u0627\u0644\u0625\u0646\u062c\u0627\u0632\u0627\u062a", "战绩", "Palmares", "Histórico de resultados", "Meritlista", "Достижения", "Dorobek sportowy", "수상 기록", "Record")],
-           ["album", T("Album", "Album", "Álbum", "Album", "アルバム", "Album", "\u0623\u0644\u0628\u0648\u0645", "相册", "Album", "Álbum", "Album", "Альбом", "Album", "앨범", "Album")],
+          [["infos", T("Infos", "Info", "Info", "Info", "情報", "Infos", "\u0645\u0639\u0644\u0648\u0645\u0627\u062a", "信息", "Info", "Infos", "Info", "Инфо", "Info", "정보", "اطلاعات")],
+           ["palmares", T("Palmarès", "Record", "Palmarés", "Palmarès", "実績", "Erfolge", "\u0633\u062c\u0644 \u0627\u0644\u0625\u0646\u062c\u0627\u0632\u0627\u062a", "战绩", "Palmares", "Histórico de resultados", "Meritlista", "Достижения", "Dorobek sportowy", "수상 기록", "افتخارات")],
+           ["album", T("Album", "Album", "Álbum", "Album", "アルバム", "Album", "\u0623\u0644\u0628\u0648\u0645", "相册", "Album", "Álbum", "Album", "Альбом", "Album", "앨범", "آلبوم")],
            ["communaute", T("Communauté", "Community", "Comunidad", "Comunità", "コミュニティ", "Community", "\u0627\u0644\u0645\u062c\u062a\u0645\u0639", "社区", "Community", "Comunidade", "Community", "Сообщество", "Społeczność", "커뮤니티", "Community")]].map(function (o) {
             return h("div", { key: o[0], className: "fongle" + (fTab === o[0] ? " on" : ""), onClick: function () { setFTab(o[0]); } }, o[1]);
           })),
         fTab === "infos" ? h("div", { className: "fgrid" },
-          h("div", { className: "fcell" }, h("div", { className: "l" }, T("Taille", "Height", "Alzada", "Altezza", "体高", "Gr\u00f6\u00dfe", "\u0627\u0644\u0637\u0648\u0644", "体高", "Stokmaat", "Altura", "Mankhöjd", "Рост", "Wzrost", "체고", "Height")), h("div", { className: "v" }, lg.taille)),
-          h("div", { className: "fcell" }, h("div", { className: "l" }, T("Race", "Breed", "Raza", "Razza", "品種", "Rasse", "\u0627\u0644\u0633\u0644\u0627\u0644\u0629", "品种", "Ras", "Raça", "Ras", "Порода", "Rasa", "품종", "Breed")), h("div", { className: "v" }, lg.race)),
+          h("div", { className: "fcell" }, h("div", { className: "l" }, T("Taille", "Height", "Alzada", "Altezza", "体高", "Gr\u00f6\u00dfe", "\u0627\u0644\u0637\u0648\u0644", "体高", "Stokmaat", "Altura", "Mankhöjd", "Рост", "Wzrost", "체고", "قد")), h("div", { className: "v" }, lg.taille)),
+          h("div", { className: "fcell" }, h("div", { className: "l" }, T("Race", "Breed", "Raza", "Razza", "品種", "Rasse", "\u0627\u0644\u0633\u0644\u0627\u0644\u0629", "品种", "Ras", "Raça", "Ras", "Порода", "Rasa", "품종", "نژاد")), h("div", { className: "v" }, lg.race)),
           h("div", { className: "fcell" }, h("div", { className: "l" }, T("Origines", "Bloodlines", "Orígenes", "Origini", "血統", "Abstammung", "\u0627\u0644\u0646\u0633\u0628", "血统", "Afstamming", "Origens", "Ursprung", "Происхождение", "Pochodzenie", "혈통", "Bloodlines")), h("div", { className: "v" }, lg.origines)),
           h("div", { className: "fcell" }, h("div", { className: "l" }, T("Pays", "Country", "País", "Paese", "国", "Land", "\u0627\u0644\u0628\u0644\u062f", "国家", "Land", "País", "Land", "Страна", "Kraj", "국가", "Country")), h("div", { className: "v" }, tr(lg.pays))),
           h("div", { className: "fcell" }, h("div", { className: "l" }, T("Discipline", "Discipline", "Disciplina", "Disciplina", "競技", "Disziplin", "\u0627\u0644\u0627\u062e\u062a\u0635\u0627\u0635", "项目", "Discipline", "Modalidade", "Gren", "Дисциплина", "Dyscyplina", "종목", "Discipline")), h("div", { className: "v" }, tr(lg.disc))),
@@ -309,7 +309,7 @@ function EcranEcurieHype() {
           T("Ajouter à mon écurie", "Add to my stable", "Añadir a mi cuadra", "Aggiungi alla scuderia", "厩舎に追加", "Zu meinem Stall hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0625\u0644\u0649 \u0625\u0633\u0637\u0628\u0644\u064a", "加入我的马厩", "Aan mijn stal toevoegen", "Adicionar à minha cocheira", "Lägg till i mitt stall", "Добавить в мою конюшню", "Dodaj do mojej stajni", "내 마구간에 추가", "Add to my stable") + " 💎 100")));
   }
 
-  var ansEH = T("ans", "yo", "años", "anni", "歳", "Jahre", "\u0633\u0646\u0648\u0627\u062a", "岁", "jaar", "anos", "år", "лет", "lat", "세", "yo");
+  var ansEH = T("ans", "yo", "años", "anni", "歳", "Jahre", "\u0633\u0646\u0648\u0627\u062a", "岁", "jaar", "anos", "år", "лет", "lat", "세", "ساله");
   /* 29/08 : VITRINE CODEE EN DUR SUPPRIMEE (demande Blandine). Cette grille affichait
      six entrees ecrites a la main (Rizotto, Elfe, Cooltax, Borealis, Tully, Hey Baby)
      avec des images fixes et des identifiants factices — jamais les vrais chevaux.
@@ -382,14 +382,14 @@ function EcranEcurieHype() {
         /* 28/09 (469) : la fleche RETOUR en haut a gauche (Blandine : « mets la petite fleche en haut a gauche
            pour revenir en arriere sur la page chevaux de l ecurie »). Meme pastille que + et ... a droite ;
            revient a l ecran precedent, sinon a la page Ecurie. */
-        h("div", { className: "ec2btn", role: "button", "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"),
+        h("div", { className: "ec2btn", role: "button", "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"),
           onClick: function () { try { if (ctx.peutReculer && typeof ctx.retourEcran === "function") { ctx.retourEcran(); return; } } catch (eRt) { } setEcran("guilde"); },
           style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 16px)", left: 14, zIndex: 4 } },
           h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M15 5l-7 7 7 7" }))),
         h("div", { className: "ec2btns" },
           clubCtxEH ? h(HypeBoutonPartagerPage, { inline: true, taille: 40, obtenir: function () { return { fam: "ec", val: String(clubCtxEH), titre: String(clubCtxEH) }; } }) : null,   /* (492) */
           h(HypeDrapeauLangue, { inline: true, taille: 40 }),   /* (491) */
-          h("div", { className: "ec2btn", onClick: bientotEH, role: "button", "aria-label": T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add") },
+          h("div", { className: "ec2btn", onClick: bientotEH, role: "button", "aria-label": T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن") },
             h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 5v14M5 12h14" }))),
           h("div", { className: "ec2btn", onClick: bientotEH, role: "button", "aria-label": "Menu" },
             h("svg", { viewBox: "0 0 24 24", className: "pts" }, h("circle", { cx: 12, cy: 5, r: 1.7 }), h("circle", { cx: 12, cy: 12, r: 1.7 }), h("circle", { cx: 12, cy: 19, r: 1.7 })))),
@@ -405,7 +405,7 @@ function EcranEcurieHype() {
         h("div", { className: "ec2sous", style: { fontStyle: "italic", textTransform: "none", letterSpacing: "0.05em", fontSize: 11.5, fontWeight: 300, padding: "0 84px", lineHeight: 1.55 } }, T("Agrandis ton écurie et découvre les chevaux des autres", "Grow your stable and discover other riders' horses", "Amplía tu cuadra y descubre los caballos de los demás", "Amplia la tua scuderia e scopri i cavalli degli altri", "厩舎を大きくして、みんなの馬を見つけよう", "Vergr\u00f6\u00dfere deinen Stall und entdecke die Pferde der anderen", "\u0648\u0633\u0639\u064a \u0625\u0633\u0637\u0628\u0644\u0643 \u0648\u0627\u0643\u062a\u0634\u0641\u064a \u062e\u064a\u0648\u0644 \u0627\u0644\u0622\u062e\u0631\u064a\u0646", "扩大你的马厩，发现其他骑手的马", "Breid je stal uit en ontdek de paarden van anderen", "Aumente sua cocheira e descubra os cavalos dos outros", "Utöka ditt stall och upptäck andra ryttares hästar", "Расширяй свою конюшню и открывай лошадей других всадников", "Powiększ swoją stajnię i poznaj konie innych jeźdźców", "마구간을 넓히고 다른 기수들의 말을 만나 보세요", "Grow your stable and discover other riders' horses")),
         h("div", { className: "ec2orn" }, h("span", { className: "li" }), h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 2l3 8 7 2-7 2-3 8-3-8-7-2 7-2 3-8z" })), h("span", { className: "li r" })),
         h("div", { className: "ec2imgw" },
-          h("img", { ref: refHeroEH, src: ECURIE_HERO2, alt: hypeT7("Écurie", "Stable", "Cuadra", "Scuderia", "\u53a9\u820e", "Stall", "\u0627\u0644\u0625\u0633\u0637\u0628\u0644", "马厩", "Stal", "Cocheira", "Stall", "Конюшня", "Stajnia", "마구간", "Stable"), style: { transform: "scale(1.12)", willChange: "transform" } }),
+          h("img", { ref: refHeroEH, src: ECURIE_HERO2, alt: hypeT7("Écurie", "Stable", "Cuadra", "Scuderia", "\u53a9\u820e", "Stall", "\u0627\u0644\u0625\u0633\u0637\u0628\u0644", "马厩", "Stal", "Cocheira", "Stall", "Конюшня", "Stajnia", "마구간", "اصطبل"), style: { transform: "scale(1.12)", willChange: "transform" } }),
           h("div", { className: "ec2souffle" }),
           h("div", { className: "ec2lant", style: { left: "2%", top: "34%", width: 70, height: 70 } }),
           h("div", { className: "ec2lant", style: { left: "16%", top: "44%", width: 44, height: 44, animationDelay: "3s" } }),
@@ -414,8 +414,8 @@ function EcranEcurieHype() {
             return h("div", { key: "ps" + iD, className: "ec2pouss", style: { left: pP.g + "%", top: pP.h + "%", width: pP.t, height: pP.t, animationDuration: pP.du + "s", animationDelay: pP.de + "s", "--o": pP.o, "--dx": pP.dx + "px", "--dy": pP.dy + "px" } });
           }))),
       h("div", { className: "ec2stats" },
-        h("div", { className: "ec2stat" }, h("div", { className: "v" }, String(cptEH[0])), h("div", { className: "l" }, T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "\u0627\u0644\u062e\u064a\u0648\u0644", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "Horses"))),
-        h("div", { className: "ec2stat" }, h("div", { className: "v" }, String(cptEH[1])), h("div", { className: "l" }, T("Poneys", "Ponies", "Ponis", "Pony", "ポニー", "Ponys", "\u0627\u0644\u0645\u0647\u0648\u0631", "小马", "Pony’s", "Pôneis", "Ponnyer", "Пони", "Kucyki", "포니", "Ponies"))),
+        h("div", { className: "ec2stat" }, h("div", { className: "v" }, String(cptEH[0])), h("div", { className: "l" }, T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "\u0627\u0644\u062e\u064a\u0648\u0644", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "اسب‌ها"))),
+        h("div", { className: "ec2stat" }, h("div", { className: "v" }, String(cptEH[1])), h("div", { className: "l" }, T("Poneys", "Ponies", "Ponis", "Pony", "ポニー", "Ponys", "\u0627\u0644\u0645\u0647\u0648\u0631", "小马", "Pony’s", "Pôneis", "Ponnyer", "Пони", "Kucyki", "포니", "پونی‌ها"))),
         h("div", { className: "ec2stat" }, h("div", { className: "v" }, "0"), h("div", { className: "l" }, T("À venir", "Upcoming", "Próximos", "In arrivo", "予定", "Demn\u00e4chst", "\u0642\u0627\u062f\u0645", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "공개 예정", "Upcoming"))),
         h("div", { className: "ec2stat" }, h("div", { className: "v" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m12 3 2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 16.5 6.8 19.2l1-5.8-4.3-4.2 5.9-.9L12 3Z" }))), h("div", { className: "l" }, T("Favori", "Favorite", "Favorito", "Preferito", "お気に入り", "Favorit", "\u0645\u0641\u0636\u0644", "最爱", "Favoriet", "Favorito", "Favorit", "Любимая", "Ulubiony", "즐겨찾기", "Favorite")))),
       /* (787) BARRE DES PIQUETS : « Tous les chevaux », les piquets, puis « + » (gestion de l'écurie seulement). Défile à l'horizontale. */
@@ -448,14 +448,14 @@ function EcranEcurieHype() {
         var phraseP = loisirP
           ? T("Les chevaux de l’écurie pour le plaisir, la balade et la complicité.", "The stable’s horses for pleasure, hacking and partnership.", "Los caballos de la cuadra para el placer, el paseo y la complicidad.", "I cavalli della scuderia per il piacere, le passeggiate e l’intesa.", "楽しみと外乗、絆のための厩舎の馬たち。", "Die Pferde des Stalls für Freude, Ausritte und Vertrauen.", "خيول الإسطبل للمتعة والنزهة والانسجام.", "马厩里用于休闲、外出骑行和默契相伴的马。", "De paarden van de stal voor plezier, buitenritten en verbondenheid.", "Os cavalos da cocheira para o prazer, o passeio e a cumplicidade.", "Stallets hästar för nöjes skull, utritt och samspel.", "Лошади конюшни для удовольствия, прогулок и взаимопонимания.", "Konie ze stajni do przyjemności, spacerów i współpracy.", "즐거움과 산책, 교감을 위한 마구간의 말들.", "The stable’s horses for pleasure, hacking and partnership.")
           : T("Les chevaux de l’écurie engagés en " + nomP + ".", "The stable’s horses competing in " + nomP + ".", "Los caballos de la cuadra que compiten en " + nomP + ".", "I cavalli della scuderia in gara in " + nomP + ".", nomP + "に出場する厩舎の馬たち。", "Die Pferde des Stalls, die in " + nomP + " starten.", "خيول الإسطبل المشاركة في " + nomP + ".", "马厩里参加 " + nomP + " 的马。", "De paarden van de stal die meedoen aan " + nomP + ".", "Os cavalos da cocheira inscritos em " + nomP + ".", ("Stallets hästar som tävlar i " + nomP + "."), ("Лошади конюшни, заявленные: " + nomP + "."), ("Konie ze stajni startujące w dyscyplinie: " + nomP + "."), (nomP + "에 출전하는 마구간의 말들이에요."));
-        var nbTxt = nbP + " " + (nbP > 1 ? T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошадей", "konie", "말", "horses") : T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "horse"));
+        var nbTxt = nbP + " " + (nbP > 1 ? T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лошадей", "konie", "말", "اسب") : T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "اسب"));
         return h("section", { "data-piquet-bloc": piqActifObj.id, style: { margin: "16px 18px 0", borderRadius: 22, overflow: "hidden", background: "linear-gradient(165deg, rgba(55,107,125,0.22) 0%, rgba(16,26,29,0.55) 50%, rgba(6,7,9,0.35) 100%)", border: "1px solid rgba(201,166,107,0.18)", boxShadow: "0 14px 34px rgba(0,0,0,0.5), inset 0 1px 0 rgba(243,238,228,0.05)" } },   /* 10/10 (806) Blandine : encart transparent, dégradé pétrole, ombré */
           h("div", { style: { position: "relative", height: 210, overflow: "hidden" } },
             h("img", { src: hypePhotoPiquet(piqActifObj), alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "60% 40%", display: "block" } }),
             h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0) 30%, rgba(11,18,21,0.55) 65%, #0B1215 100%)" } }),
             h("div", { style: { position: "absolute", insetInline: 18, bottom: 14 } },
               h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
-                h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2.6, textTransform: "uppercase", color: "#C9A66B" } }, T("Piquet", "Group", "Grupo", "Gruppo", "グループ", "Gruppe", "مجموعة", "分组", "Groep", "Piquete", "Grupp", "Группа", "Grupa", "그룹", "Group")),
+                h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2.6, textTransform: "uppercase", color: "#C9A66B" } }, T("Piquet", "Group", "Grupo", "Gruppo", "グループ", "Gruppe", "مجموعة", "分组", "Groep", "Piquete", "Grupp", "Группа", "Grupa", "그룹", "گروه")),
                 badgeP ? h("span", { style: { padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#D2B07A" } }, badgeP) : null,
                 piqActifObj.saison ? h("span", { dir: "ltr", style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, letterSpacing: 1, color: "rgba(243,238,228,0.78)" } }, piqActifObj.saison) : null),
               h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 32, fontWeight: 500, lineHeight: 1.05, color: "#F3EEE4", marginTop: 6 } }, nomP))),
@@ -522,7 +522,7 @@ function EcranEcurieHype() {
             h("div", { style: { width: "100%", aspectRatio: "1 / 1", background: "#0D1518" } },
               couvEH ? h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(couvEH, 420, 420) : couvEH), alt: "", loading: "lazy", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
             h("div", { style: { padding: "9px 10px 11px" } },
-              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, color: "#F3EEE4", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, aEH.nom || T("Album", "Album", "Álbum", "Album", "アルバム", "Album", "\u0623\u0644\u0628\u0648\u0645", "相册", "Album", "Álbum", "Album", "Альбом", "Album", "앨범", "Album")),
+              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, color: "#F3EEE4", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, aEH.nom || T("Album", "Album", "Álbum", "Album", "アルバム", "Album", "\u0623\u0644\u0628\u0648\u0645", "相册", "Album", "Álbum", "Album", "Альбом", "Album", "앨범", "آلبوم")),
               h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.84)", marginTop: 2 } }, (aEH.photos ? aEH.photos.length : 0) + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "\u0630\u0643\u0631\u064a\u0627\u062a", "个回忆", "herinneringen", "lembranças", "minnen", "воспоминания", "wspomnienia", "추억", "memories"))));
         }))) : null,
     toastEH ? h("div", { className: "ehyToast" }, toastEH) : null);

@@ -29,16 +29,16 @@ function NoterPlusieurs(props) {
   var s9 = React.useState(null); var bilan = s9[0], setBilan = s9[1];
   function changer(ty, d) { if (!prochMain) setProchaine(proch(ty, d)); }
   var TYS = [
-    ["vaccin", T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepionka", "백신", "Vaccine")],
+    ["vaccin", T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepionka", "백신", "واکسن")],
     ["vermifuge", T("Vermifuge", "Deworming", "Vermífugo", "Vermifugo", "駆虫", "Wurmkur", "مضاد الديدان", "驱虫", "Ontwormen", "Vermífugo", "Avmaskning", "Глистогонное", "Odrobaczanie", "구충제", "Deworming")],
-    ["ferrure", T("Ferrure", "Shoeing", "Herraje", "Ferratura", "装蹄", "Beschlag", "تركيب الحدوة", "钉蹄", "Beslag", "Ferrageamento", "Skoning", "Ковка", "Kucie", "장제", "Shoeing")],
+    ["ferrure", T("Ferrure", "Shoeing", "Herraje", "Ferratura", "装蹄", "Beschlag", "تركيب الحدوة", "钉蹄", "Beslag", "Ferrageamento", "Skoning", "Ковка", "Kucie", "장제", "نعل‌بندی")],
     ["parage", T("Parage", "Trimming", "Recorte de cascos", "Pareggio", "削蹄", "Hufbearbeitung", "تقليم الحوافر", "修蹄", "Bekappen", "Casqueamento", "Verkning", "Расчистка", "Werkowanie", "삭제", "Trimming")],
-    ["dentiste", T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "Dentist")],
+    ["dentiste", T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "دندان‌پزشک")],
     ["osteopathe", T("Ostéopathe", "Osteopath", "Osteópata", "Osteopata", "整骨", "Osteopath", "أخصائي العظام", "整骨", "Osteopaat", "Osteopata", "Osteopat", "Остеопат", "Osteopata", "오스테오파시", "Osteopath")],
-    ["veterinaire", T("Vétérinaire", "Vet", "Veterinario", "Veterinario", "獣医", "Tierarzt", "طبيب بيطري", "兽医", "Dierenarts", "Veterinário", "Veterinär", "Ветеринар", "Weterynarz", "수의사", "Vet")]
+    ["veterinaire", T("Vétérinaire", "Vet", "Veterinario", "Veterinario", "獣医", "Tierarzt", "طبيب بيطري", "兽医", "Dierenarts", "Veterinário", "Veterinär", "Ветеринар", "Weterynarz", "수의사", "دامپزشک")]
   ];
   var VACS = [
-    ["grippe", T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자", "Flu")],
+    ["grippe", T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자", "آنفولانزا")],
     ["rhino", T("Rhinopneumonie", "Rhinopneumonitis", "Rinoneumonitis", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "التهاب الأنف والرئة", "鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumonit", "Ринопневмония", "Rhinopneumonia", "비폐렴", "Rhinopneumonitis")],
     ["tetanos", T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Stelkramp", "Столбняк", "Tężec", "파상풍", "Tetanus")],
     ["westnile", "West Nile"]
@@ -75,12 +75,12 @@ function NoterPlusieurs(props) {
   function svg(d, cls) { return h("svg", { className: cls, viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: d })); }
   function moisCourt(d) { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})$/); if (!m) return ""; try { return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString((document.documentElement && document.documentElement.lang) || undefined, { day: "numeric", month: "long", year: "numeric" }); } catch (eD) { return m[3] + "/" + m[2] + "/" + m[1]; } }
   var METIERS = [
-    { k: "veterinaire", img: "images/sante-pro-veterinaire.webp", t: T("Vétérinaire", "Vet", "Veterinario", "Veterinario", "獣医", "Tierarzt", "طبيب بيطري", "兽医", "Dierenarts", "Veterinário", "Veterinär", "Ветеринар", "Weterynarz", "수의사", "Vet"), types: ["vaccin", "vermifuge", "veterinaire"] },
+    { k: "veterinaire", img: "images/sante-pro-veterinaire.webp", t: T("Vétérinaire", "Vet", "Veterinario", "Veterinario", "獣医", "Tierarzt", "طبيب بيطري", "兽医", "Dierenarts", "Veterinário", "Veterinär", "Ветеринар", "Weterynarz", "수의사", "دامپزشک"), types: ["vaccin", "vermifuge", "veterinaire"] },
     { k: "marechal", img: "images/sante-pro-marechal.webp", t: T("Maréchal", "Farrier", "Herrador", "Maniscalco", "装蹄師", "Hufschmied", "البيطار", "蹄铁匠", "Hoefsmid", "Ferrador", "Hovslagare", "Коваль", "Kowal", "장제사", "Farrier"), types: ["ferrure", "parage"] },
-    { k: "dentiste", img: "images/sante-pro-dentiste.webp", t: T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "Dentist"), types: ["dentiste"], desc: T("Contrôle, râpage", "Check-up, rasping", "Revisión, limado", "Controllo, limatura", "検査・歯削り", "Kontrolle, Raspeln", "فحص وبرد", "检查、锉牙", "Controle, raspen", "Revisão, grosagem", "Kontroll, raspning", "Осмотр, рашпилевание", "Kontrola, tarnikowanie", "검진, 치아 연마", "Check-up, rasping") },
+    { k: "dentiste", img: "images/sante-pro-dentiste.webp", t: T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "دندان‌پزشک"), types: ["dentiste"], desc: T("Contrôle, râpage", "Check-up, rasping", "Revisión, limado", "Controllo, limatura", "検査・歯削り", "Kontrolle, Raspeln", "فحص وبرد", "检查、锉牙", "Controle, raspen", "Revisão, grosagem", "Kontroll, raspning", "Осмотр, рашпилевание", "Kontrola, tarnikowanie", "검진, 치아 연마", "Check-up, rasping") },
     { k: "osteopathe", img: "images/sante-pro-osteopathe.webp", t: T("Ostéopathe", "Osteopath", "Osteópata", "Osteopata", "整骨", "Osteopath", "أخصائي العظام", "整骨师", "Osteopaat", "Osteopata", "Osteopat", "Остеопат", "Osteopata", "오스테오파시", "Osteopath"), types: ["osteopathe"], desc: T("Séance", "Session", "Sesión", "Seduta", "施術", "Behandlung", "جلسة", "治疗", "Behandeling", "Sessão", "Behandling", "Сеанс", "Sesja", "세션", "Session") }
   ];
-  var VISITE = T("Visite", "Visit", "Visita", "Visita", "診察", "Besuch", "زيارة", "出诊", "Bezoek", "Visita", "Besök", "Осмотр", "Wizyta", "진료", "Visit");
+  var VISITE = T("Visite", "Visit", "Visita", "Visita", "診察", "Besuch", "زيارة", "出诊", "Bezoek", "Visita", "Besök", "Осмотр", "Wizyta", "진료", "بازدید");
   function libT(ty) { if (ty === "veterinaire") return VISITE; return (TYS.filter(function (t) { return t[0] === ty; })[0] || ["", ""])[1]; }
   var metier = (METIERS.filter(function (m) { return m.types.indexOf(type) >= 0; })[0] || METIERS[0]).k;
   function sousTitre(m) {
@@ -99,7 +99,7 @@ function NoterPlusieurs(props) {
       h("div", { className: "sc-photo" }, h("img", { src: "images/galop7-tmp-19-ecurie-couchant.webp", alt: "", decoding: "async", style: { objectPosition: "58% 50%" } })),
       h("svg", { className: "sc-courbe c2", viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true" }, h("defs", null, h("linearGradient", { id: "nfc2", x1: "0", x2: "1", y1: "0", y2: "0" }, h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))), h("path", { d: "M0 92 C 130 90, 240 62, 400 8 L400 100 L0 100 Z", fill: "#070A08", stroke: "none" }), h("path", { d: "M0 92 C 130 90, 240 62, 400 8", fill: "none", stroke: "url(#nfc2)", strokeWidth: 1.1, vectorEffect: "non-scaling-stroke" })),
       h("div", { className: "sc-in" }, h("div", { className: "sc-titre" }, h("h1", null, T("Noter un soin", "Record a care", "Registrar un cuidado", "Registra una cura", "ケアを記録", "Pflege eintragen", "تسجيل عناية", "记录护理", "Verzorging noteren", "Registrar um cuidado", "Registrera vård", "Записать уход", "Zapisz zabieg", "관리 기록", "Record a care")), h("p", null, T("Un soin, une date, tous les chevaux concernés.", "One care, one date, all the horses concerned.", "Un cuidado, una fecha, todos los caballos.", "Una cura, una data, tutti i cavalli interessati.", "ひとつのケア、ひとつの日付、対象の馬すべてに。", "Eine Pflege, ein Datum, alle betroffenen Pferde.", "عناية واحدة، تاريخ واحد، كل الخيول المعنية.", "一项护理，一个日期，所有相关马匹。", "Eén verzorging, één datum, alle betrokken paarden.", "Um cuidado, uma data, todos os cavalos.", "En vård, ett datum, alla berörda hästar.", "Один уход, одна дата, все нужные лошади.", "Jeden zabieg, jedna data, wszystkie konie.", "하나의 관리, 하나의 날짜, 해당 말 모두.", "One care, one date, all the horses concerned.")))),
-      h("button", { type: "button", className: "nf-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close") }, svg("M6 6l12 12M18 6L6 18"))),
+      h("button", { type: "button", className: "nf-x", onClick: props.onFermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن") }, svg("M6 6l12 12M18 6L6 18"))),
     h("div", { className: "nf-in" },
       h("div", { className: "nf-metiers" }, METIERS.map(function (m) {
         var on = m.k === metier;
@@ -121,7 +121,7 @@ function NoterPlusieurs(props) {
         h("span", { className: "nf-lab" }, type === "vaccin" ? T("Nom du vaccin (facultatif)", "Vaccine name (optional)", "Nombre de la vacuna (opcional)", "Nome del vaccino (facoltativo)", "ワクチン名（任意）", "Name des Impfstoffs (optional)", "اسم اللقاح (اختياري)", "疫苗名称（选填）", "Naam van het vaccin (optioneel)", "Nome da vacina (opcional)", "Vaccinets namn (valfritt)", "Название вакцины (необязательно)", "Nazwa szczepionki (opcjonalnie)", "백신 이름 (선택)", "Vaccine name (optional)") : T("Précision (facultatif)", "Details (optional)", "Detalle (opcional)", "Dettaglio (facoltativo)", "詳細（任意）", "Angabe (optional)", "تفاصيل (اختياري)", "说明（选填）", "Toelichting (optioneel)", "Detalhe (opcional)", "Detalj (valfritt)", "Уточнение (необязательно)", "Szczegóły (opcjonalnie)", "세부 사항 (선택)", "Details (optional)")),
         h("input", { type: "text", value: produit, onChange: function (e) { setProduit(e.target.value); }, placeholder: type === "vaccin" ? "Equip F, ProteqFlu-Te…" : "", maxLength: 120 })),
       h("div", { className: "nf-dates" },
-        h("label", { className: "nf-d1" }, h("span", { className: "nf-lab" }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "Date")),
+        h("label", { className: "nf-d1" }, h("span", { className: "nf-lab" }, T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "تاریخ")),
           h("input", { type: "date", value: date, onChange: function (e) { setDate(e.target.value); changer(type, e.target.value); } })),
         h("label", { className: "nf-d2" }, h("span", { className: "nf-lab" }, T("Prochaine échéance", "Next due date", "Próximo vencimiento", "Prossima scadenza", "次回予定", "Nächste Fälligkeit", "الموعد القادم", "下次到期", "Volgende vervaldatum", "Próximo vencimento", "Nästa förfallodatum", "Следующий срок", "Następny termin", "다음 예정일", "Next due date")),
           h("input", { type: "date", value: prochaine, onChange: function (e) { setProchaine(e.target.value); setProchMain(true); } }))),
@@ -430,19 +430,19 @@ function EcranSanteClub() {
   function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("guilde"); } }
   function ouvrir(c) { try { window.__santeCheval = { id: c.id, nom: c.nom || "" }; } catch (eO) { } setEcran("sante-cheval"); }
 
-  var MOIS = [T("janv.", "Jan", "ene.", "genn.", "1月", "Jan.", "يناير", "1月", "jan.", "jan.", "jan.", "янв.", "sty", "1월", "Jan"), T("févr.", "Feb", "feb.", "febbr.", "2月", "Feb.", "فبراير", "2月", "feb.", "fev.", "feb.", "февр.", "lut", "2월", "Feb"), T("mars", "Mar", "mar.", "mar.", "3月", "März", "مارس", "3月", "mrt.", "mar.", "mars", "март", "mar", "3월", "Mar"), T("avr.", "Apr", "abr.", "apr.", "4月", "Apr.", "أبريل", "4月", "apr.", "abr.", "apr.", "апр.", "kwi", "4월", "Apr"), T("mai", "May", "may.", "mag.", "5月", "Mai", "مايو", "5月", "mei", "mai.", "maj", "май", "maj", "5월", "May"), T("juin", "Jun", "jun.", "giu.", "6月", "Juni", "يونيو", "6月", "jun.", "jun.", "juni", "июнь", "cze", "6월", "Jun"), T("juil.", "Jul", "jul.", "lug.", "7月", "Juli", "يوليو", "7月", "jul.", "jul.", "juli", "июль", "lip", "7월", "Jul"), T("août", "Aug", "ago.", "ago.", "8月", "Aug.", "أغسطس", "8月", "aug.", "ago.", "aug.", "авг.", "sie", "8월", "Aug"), T("sept.", "Sep", "sep.", "set.", "9月", "Sept.", "سبتمبر", "9月", "sep.", "set.", "sep.", "сент.", "wrz", "9월", "Sep"), T("oct.", "Oct", "oct.", "ott.", "10月", "Okt.", "أكتوبر", "10月", "okt.", "out.", "okt.", "окт.", "paź", "10월", "Oct"), T("nov.", "Nov", "nov.", "nov.", "11月", "Nov.", "نوفمبر", "11月", "nov.", "nov.", "nov.", "нояб.", "lis", "11월", "Nov"), T("déc.", "Dec", "dic.", "dic.", "12月", "Dez.", "ديسمبر", "12月", "dec.", "dez.", "dec.", "дек.", "gru", "12월", "Dec")];
+  var MOIS = [T("janv.", "Jan", "ene.", "genn.", "1月", "Jan.", "يناير", "1月", "jan.", "jan.", "jan.", "янв.", "sty", "1월", "ژانویه"), T("févr.", "Feb", "feb.", "febbr.", "2月", "Feb.", "فبراير", "2月", "feb.", "fev.", "feb.", "февр.", "lut", "2월", "فوریه"), T("mars", "Mar", "mar.", "mar.", "3月", "März", "مارس", "3月", "mrt.", "mar.", "mars", "март", "mar", "3월", "مارس"), T("avr.", "Apr", "abr.", "apr.", "4月", "Apr.", "أبريل", "4月", "apr.", "abr.", "apr.", "апр.", "kwi", "4월", "آوریل"), T("mai", "May", "may.", "mag.", "5月", "Mai", "مايو", "5月", "mei", "mai.", "maj", "май", "maj", "5월", "مه"), T("juin", "Jun", "jun.", "giu.", "6月", "Juni", "يونيو", "6月", "jun.", "jun.", "juni", "июнь", "cze", "6월", "ژوئن"), T("juil.", "Jul", "jul.", "lug.", "7月", "Juli", "يوليو", "7月", "jul.", "jul.", "juli", "июль", "lip", "7월", "ژوئیه"), T("août", "Aug", "ago.", "ago.", "8月", "Aug.", "أغسطس", "8月", "aug.", "ago.", "aug.", "авг.", "sie", "8월", "اوت"), T("sept.", "Sep", "sep.", "set.", "9月", "Sept.", "سبتمبر", "9月", "sep.", "set.", "sep.", "сент.", "wrz", "9월", "سپتامبر"), T("oct.", "Oct", "oct.", "ott.", "10月", "Okt.", "أكتوبر", "10月", "okt.", "out.", "okt.", "окт.", "paź", "10월", "اکتبر"), T("nov.", "Nov", "nov.", "nov.", "11月", "Nov.", "نوفمبر", "11月", "nov.", "nov.", "nov.", "нояб.", "lis", "11월", "نوامبر"), T("déc.", "Dec", "dic.", "dic.", "12月", "Dez.", "ديسمبر", "12月", "dec.", "dez.", "dec.", "дек.", "gru", "12월", "دسامبر")];
   function jourDe(s) { var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }
   function enClair(s) { var d = jourDe(s); return d ? (d.getDate() + " " + MOIS[d.getMonth()] + " " + d.getFullYear()) : ""; }
   function joursAvant(s) { var d = jourDe(s); if (!d) return null; var auj = new Date(); auj.setHours(0, 0, 0, 0); return Math.round((d.getTime() - auj.getTime()) / 86400000); }
   var LIB = {
-    vaccin: T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepionka", "백신", "Vaccine"),
+    vaccin: T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "ワクチン", "Impfung", "لقاح", "疫苗", "Vaccin", "Vacina", "Vaccin", "Прививка", "Szczepionka", "백신", "واکسن"),
     vermifuge: T("Vermifuge", "Deworming", "Vermífugo", "Vermifugo", "駆虫", "Wurmkur", "مضاد الديدان", "驱虫", "Ontwormen", "Vermífugo", "Avmaskning", "Глистогонное", "Odrobaczanie", "구충제", "Deworming"),
-    ferrure: T("Ferrure", "Shoeing", "Herraje", "Ferratura", "装蹄", "Beschlag", "تركيب الحدوة", "钉蹄", "Beslag", "Ferrageamento", "Skoning", "Ковка", "Kucie", "장제", "Shoeing"),
+    ferrure: T("Ferrure", "Shoeing", "Herraje", "Ferratura", "装蹄", "Beschlag", "تركيب الحدوة", "钉蹄", "Beslag", "Ferrageamento", "Skoning", "Ковка", "Kucie", "장제", "نعل‌بندی"),
     parage: T("Parage", "Trimming", "Recorte de cascos", "Pareggio", "削蹄", "Hufbearbeitung", "تقليم الحوافر", "修蹄", "Bekappen", "Casqueamento", "Verkning", "Расчистка", "Werkowanie", "삭제", "Trimming"),
-    dentiste: T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "Dentist")
+    dentiste: T("Dentiste", "Dentist", "Dentista", "Dentista", "歯科", "Zahnarzt", "طبيب الأسنان", "牙医", "Tandarts", "Dentista", "Tandläkare", "Зубной врач", "Dentysta", "치과", "دندان‌پزشک")
   };
-  function libelle(s) { var k = String(s || "").toLowerCase().trim(); return LIB[k] || (k ? k.charAt(0).toUpperCase() + k.slice(1) : T("Soin", "Care", "Cuidado", "Cura", "ケア", "Pflege", "عناية", "护理", "Verzorging", "Cuidado", "Vård", "Уход", "Opieka", "케어", "Care")); }
-  function nbChevaux(n) { return n + " " + (n > 1 ? T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лош.", "konie", "마리", "horses") : T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "horse")); }
+  function libelle(s) { var k = String(s || "").toLowerCase().trim(); return LIB[k] || (k ? k.charAt(0).toUpperCase() + k.slice(1) : T("Soin", "Care", "Cuidado", "Cura", "ケア", "Pflege", "عناية", "护理", "Verzorging", "Cuidado", "Vård", "Уход", "Opieka", "케어", "مراقبت")); }
+  function nbChevaux(n) { return n + " " + (n > 1 ? T("chevaux", "horses", "caballos", "cavalli", "頭", "Pferde", "خيول", "匹马", "paarden", "cavalos", "hästar", "лош.", "konie", "마리", "اسب") : T("cheval", "horse", "caballo", "cavallo", "頭", "Pferd", "حصان", "匹马", "paard", "cavalo", "häst", "лошадь", "koń", "마리", "اسب")); }
 
   /* --- calculs : prochaine echeance par cheval, et point par soin --- */
   var liste = chevaux || [];
@@ -480,13 +480,13 @@ function EcranSanteClub() {
     if (j < 0) return Math.abs(j) === 1
       ? T("en retard d’un jour", "1 day overdue", "1 día de retraso", "1 giorno di ritardo", "1日過ぎ", "1 Tag überfällig", "متأخر بيوم", "逾期 1 天", "1 dag te laat", "1 dia de atraso", "en dag försenad", "просрочено на день", "1 dzień spóźnienia", "1일 지남", "1 day overdue")
       : T("en retard de " + Math.abs(j) + " jours", Math.abs(j) + " days overdue", Math.abs(j) + " días de retraso", Math.abs(j) + " giorni di ritardo", Math.abs(j) + "日過ぎ", "seit " + Math.abs(j) + " Tagen fällig", "متأخر بـ " + Math.abs(j) + " أيام", "逾期 " + Math.abs(j) + " 天", Math.abs(j) + " dagen te laat", Math.abs(j) + " dias de atraso", Math.abs(j) + " dagar försenad", "просрочено на " + Math.abs(j) + " дн.", Math.abs(j) + " dni spóźnienia", Math.abs(j) + "일 지남");
-    if (j === 0) return T("aujourd’hui", "today", "hoy", "oggi", "今日", "heute", "اليوم", "今天", "vandaag", "hoje", "idag", "сегодня", "dzisiaj", "오늘", "today");
+    if (j === 0) return T("aujourd’hui", "today", "hoy", "oggi", "今日", "heute", "اليوم", "今天", "vandaag", "hoje", "idag", "сегодня", "dzisiaj", "오늘", "امروز");
     if (j === 1) return T("demain", "tomorrow", "mañana", "domani", "明日", "morgen", "غدا", "明天", "morgen", "amanhã", "imorgon", "завтра", "jutro", "내일", "tomorrow");
     return T("dans " + j + " jours", "in " + j + " days", "en " + j + " días", "tra " + j + " giorni", j + "日後", "in " + j + " Tagen", "بعد " + j + " أيام", "还有 " + j + " 天", "over " + j + " dagen", "em " + j + " dias", "om " + j + " dagar", "через " + j + " дн.", "za " + j + " dni", j + "일 후");
   }
   var RX = { grippe: /grippe|equip\s*f\b|equip\s*ft|proteq|resequin|prequenza|influenza/i, rhino: /rhino|ehv|pneumequin/i, tetanos: /t[ée]tanos|equip\s*ft|prequenza\s*te|flu-?te|tetanus/i, westnile: /wnv|west\s*-?\s*nil|nilo\s*occ|nil\s*occ/i };
   var TYPES = [
-    { k: "grippe", pic: "s", t: T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자", "Flu"), vac: true },
+    { k: "grippe", pic: "s", t: T("Grippe", "Flu", "Gripe", "Influenza", "インフルエンザ", "Influenza", "الإنفلونزا", "流感", "Griep", "Gripe", "Influensa", "Грипп", "Grypa", "인플루엔자", "آنفولانزا"), vac: true },
     { k: "rhino", pic: "s", t: T("Rhinopneumonie", "Rhinopneumonitis", "Rinoneumonitis", "Rinopolmonite", "鼻肺炎", "Rhinopneumonitis", "التهاب الأنف والرئة", "鼻肺炎", "Rhinopneumonie", "Rinopneumonite", "Rhinopneumonit", "Ринопневмония", "Rhinopneumonia", "비폐렴", "Rhinopneumonitis") , vac: true },
     { k: "tetanos", pic: "s", t: T("Tétanos", "Tetanus", "Tétanos", "Tetano", "破傷風", "Tetanus", "الكزاز", "破伤风", "Tetanus", "Tétano", "Stelkramp", "Столбняк", "Tężec", "파상풍", "Tetanus"), vac: true },
     { k: "westnile", pic: "s", t: T("West Nile", "West Nile", "Nilo Occidental", "West Nile", "西ナイル熱", "West-Nil", "غرب النيل", "西尼罗", "West-Nijl", "Nilo Ocidental", "West Nile", "Западный Нил", "Zachodni Nil", "웨스트나일", "West Nile"), vac: true },
@@ -539,7 +539,7 @@ function EcranSanteClub() {
       ph ? h("img", { className: "ph", src: ph, alt: "", loading: "lazy", decoding: "async" }) : h("span", { className: "ph vide", "aria-hidden": "true" }, "🐎"),
       h("b", null, c.nom || ""),
       h("span", { className: "g" },
-        h("span", null, e.so ? libelle(e.so.type) : T("Prochain", "Next", "Próximo", "Prossimo", "次回", "Nächster", "القادم", "下一次", "Volgende", "Próximo", "Nästa", "Следующий", "Następny", "다음", "Next")),
+        h("span", null, e.so ? libelle(e.so.type) : T("Prochain", "Next", "Próximo", "Prossimo", "次回", "Nächster", "القادم", "下一次", "Volgende", "Próximo", "Nästa", "Следующий", "Następny", "다음", "بعدی")),
         h("em", { style: { color: e.so ? coul : "rgba(243,238,228,.45)" } }, e.so ? (alerte ? motRetard(e.j) : enClair(e.so.date_prochaine)) : "—")),
       h("span", { className: "c", "aria-hidden": "true" }, "›"));
   }
@@ -606,7 +606,7 @@ function EcranSanteClub() {
             h("p", { className: "sc-lab" }, T("Il reste", "Still to do", "Faltan", "Mancano", "残り", "Noch offen", "المتبقي", "还剩", "Nog te doen", "Faltam", "Kvar", "Осталось", "Pozostało", "남은 말", "Still to do") + " · " + reste.length),
             h("div", { className: "sc-chips" }, reste.map(function (c) { return h("button", { key: "r" + c.id, type: "button", className: "sc-chip", onClick: function () { ouvrir(c); } }, c.nom || ""); })))
           : n ? h("div", null,
-            h("p", { className: "sc-lab" }, T("Faits", "Done", "Hechos", "Fatti", "済み", "Erledigt", "تمّت", "已完成", "Gedaan", "Feitos", "Klara", "Сделано", "Zrobione", "완료", "Done") + " · " + n),
+            h("p", { className: "sc-lab" }, T("Faits", "Done", "Hechos", "Fatti", "済み", "Erledigt", "تمّت", "已完成", "Gedaan", "Feitos", "Klara", "Сделано", "Zrobione", "완료", "انجام‌شده") + " · " + n),
             h("div", { className: "sc-chips" }, pt.faits.map(function (c) { return h("button", { key: "f" + c.id, type: "button", className: "sc-chip ok", onClick: function () { ouvrir(c); } }, c.nom || ""); })))
           : h("p", { className: "sc-lab", style: { textTransform: "none", letterSpacing: 0, fontSize: 12.5 } }, T("Aucun cheval n’a ce soin noté dans les 12 derniers mois.", "No horse has this recorded in the last 12 months.", "Ningún caballo lo tiene registrado en los últimos 12 meses.", "Nessun cavallo lo ha registrato negli ultimi 12 mesi.", "過去12か月に記録された馬はいません。", "Bei keinem Pferd in den letzten 12 Monaten eingetragen.", "لا يوجد حصان مسجل له ذلك خلال آخر 12 شهرًا.", "过去 12 个月没有马匹记录此项。", "Bij geen enkel paard ingevuld in de laatste 12 maanden.", "Nenhum cavalo tem isto registrado nos últimos 12 meses.", "Ingen häst har detta registrerat de senaste 12 månaderna.", "Ни у одной лошади нет записи за 12 месяцев.", "Żaden koń nie ma tego zapisanego w ostatnich 12 miesiącach.", "최근 12개월 동안 기록된 말이 없습니다.", "No horse has this recorded in the last 12 months."))) : null);
   }
@@ -642,7 +642,7 @@ function EcranSanteClub() {
     ps.forEach(function (p) {
       lignesEq.push(h("div", { key: "eq" + p.id, className: "sc-eq-l plein" }, h("span", { className: "r" }, h("img", { src: img, alt: "", loading: "lazy" })),
         h("div", { className: "n" }, h("b", null, p.nom || ""), h("span", null, (ROLES[r] || r) + " · " + nbChevaux(p.nCh || 0))),
-        p.tel ? h("a", { className: "sx-tel", href: "tel:" + String(p.tel).replace(/\s+/g, ""), "aria-label": T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화", "Call") + " " + String(p.tel) }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" }))) : null));
+        p.tel ? h("a", { className: "sx-tel", href: "tel:" + String(p.tel).replace(/\s+/g, ""), "aria-label": T("Appeler", "Call", "Llamar", "Chiama", "電話", "Anrufen", "اتصال", "拨打电话", "Bellen", "Ligar", "Ring", "Позвонить", "Zadzwoń", "전화", "تماس") + " " + String(p.tel) }, h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" }))) : null));
     });
   });
   var blocEquipe = h("div", null,
@@ -680,11 +680,11 @@ function EcranSanteClub() {
     h("div", { className: "sx-hero" },
       h("div", { className: "ph" }, h("img", { src: "images/theme-sante-bai-repos.webp", alt: "", fetchPriority: "high" })),
       (typeof SelecteurLangue === "function") ? h("div", { className: "sc-langue" }, h(SelecteurLangue, { compact: true })) : null,
-      h("button", { type: "button", className: "sx-rond", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "Back") },
+      h("button", { type: "button", className: "sx-rond", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wstecz", "뒤로", "بازگشت") },
         h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: "M15 5l-7 7 7 7" }))),
       h("div", { className: "nom" },
         h("div", { className: "k" }, T("Santé & soins", "Health & care", "Salud y cuidados", "Salute e cure", "健康とケア", "Gesundheit & Pflege", "الصحة والعناية", "健康与护理", "Gezondheid & verzorging", "Saúde & cuidados", "Hälsa & vård", "Здоровье и уход", "Zdrowie i opieka", "건강 & 케어", "Health & care")),
-        h("h1", null, clubS || T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "Health")),
+        h("h1", null, clubS || T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "سلامت")),
         liste.length ? h("div", { className: "s" }, nbChevaux(liste.length)) : null)),
     h("div", { className: "sc-in" },
       h("p", { className: "sx-phrase" }, T("Prendre soin, c’est déjà aimer.", "Caring is already loving.", "Cuidar ya es amar.", "Prendersi cura è già amare.", "世話をすることは、もう愛すること。", "Sich kümmern heißt schon lieben.", "الرعاية حبٌّ بالفعل.", "照顾，就是爱。", "Zorgen is al liefhebben.", "Cuidar já é amar.", "Att ta hand om är redan att älska.", "Заботиться — значит уже любить.", "Troszczyć się to już kochać.", "돌보는 것이 곧 사랑입니다.", "Caring is already loving.")),

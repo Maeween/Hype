@@ -77,7 +77,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      s'il est connu). */
   var I18N_V = 13;
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
-  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" };
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
   function chargerDico(lg) {
     if (CHARGE[lg]) return CHARGE[lg];

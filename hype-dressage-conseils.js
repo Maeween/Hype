@@ -288,7 +288,7 @@ window.HYPE_DRESSAGE.fiches = {
    "es": "Saludo",
    "it": "Saluto",
    "de": "Gruß",
-   "ja": "あいさつ", "zh": "敬礼", "ar": "التحية", "nl": "Groet", "pt": "Saudação", "sv": "Hälsning", "ru": "Приветствие", "pl": "Pozdrowienie", "ko": "경례", fa: "Salute"
+   "ja": "あいさつ", "zh": "敬礼", "ar": "التحية", "nl": "Groet", "pt": "Saudação", "sv": "Hälsning", "ru": "Приветствие", "pl": "Pozdrowienie", "ko": "경례", fa: "سلام دادن"
   },
   "phase": "Arrêt",
   "galopMin": 3,

@@ -20,7 +20,7 @@ function lit(n) { if (!n) return null; if (n.type === "Literal" && typeof n.valu
 function cle(p) { return p && p.key && (p.key.name !== undefined ? p.key.name : p.key.value); }
 function persan(fr, en) {
   const k = fr + "\u0001" + (en || "");
-  if (DICO[k]) return DICO[k];
+  if (Object.prototype.hasOwnProperty.call(DICO, k) && DICO[k] !== "") return DICO[k];
   if (!aTraduire.has(k)) aTraduire.set(k, { fr: fr, en: en || "" });
   return (en !== null && en !== undefined && en !== "") ? en : fr;
 }

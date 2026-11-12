@@ -201,7 +201,7 @@ function EcranTeamCompetition() {
     var d = new Date(); d.setHours(0, 0, 0, 0);
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
-  var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" }[lg] || "fr-FR";
+  var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" }[lg] || "fr-FR";
   function dateLoc(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }
   function moisCourt(iso) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, { month: "short" }).format(d); } catch (e) { return ""; } }
   function jourMois(iso) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, { day: "2-digit", month: "short" }).format(d); } catch (e) { return String(iso).slice(0, 10); } }
@@ -427,7 +427,7 @@ function EcranTeamCompetition() {
       titre === null ? null : h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 500, color: IV, lineHeight: 1.15, minWidth: 0 } }, titre),   /* 12/11 : UNE taille pour tous les sous-titres */
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto" } },
       montrer ? h("button", { type: "button", onClick: function () { if (cle === "ch" && destPiquet) { try { window.__ecurieHypeClub = TEAM_CLUB; window.__ecurieHypePiquet = destPiquet; } catch (eDp) { } setEcran("ecurie-hype"); return; } basculer(cle); },   /* (799) chevaux : vers le piquet de destination s'il est réglé */ style: { flex: "0 0 auto", minHeight: 36, padding: "0 2px", background: "none", border: "none", color: "rgba(244,241,234,0.78)", fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } },
-        (ouvert[cle] ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기", "Show less") : T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "See all")) + " " + (ouvert[cle] ? "˄" : CHEV)) : null,
+        (ouvert[cle] ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기", "Show less") : T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "دیدن همه")) + " " + (ouvert[cle] ? "˄" : CHEV)) : null,
       extra || null));
   }
   function vide(txt) { return h("div", { style: { fontFamily: M, fontSize: 11.5, color: GR, fontStyle: "italic", padding: "4px 0 2px" } }, txt); }
@@ -491,7 +491,7 @@ function EcranTeamCompetition() {
       titre: T("Concours & résultats", "Competitions & results", "Concursos y resultados", "Concorsi e risultati", "競技会と成績", "Turniere & Ergebnisse", "المسابقات والنتائج", "比赛与成绩", "Wedstrijden & resultaten", "Concursos e resultados", "Tävlingar & resultat", "Соревнования и результаты", "Zawody i wyniki", "대회와 결과", "Competitions & results") },
     { id: "eq-p3", lab: T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "الذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "Memories"),
       titre: T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간", "Our best moments") },
-    { id: "eq-p4", lab: T("Apprendre", "Learn", "Aprender", "Imparare", "学ぶ", "Lernen", "التعلّم", "学习", "Leren", "Aprender", "Lära", "Учиться", "Nauka", "배우기", "Learn"),
+    { id: "eq-p4", lab: T("Apprendre", "Learn", "Aprender", "Imparare", "学ぶ", "Lernen", "التعلّم", "学习", "Leren", "Aprender", "Lära", "Учиться", "Nauka", "배우기", "یادگیری"),
       titre: T("Progresser ensemble", "Grow together", "Progresar juntos", "Progredire insieme", "一緒に上達しよう", "Gemeinsam besser werden", "نتقدّم معًا", "一起进步", "Samen vooruit", "Progredir juntos", "Utvecklas tillsammans", "Расти вместе", "Rozwijać się razem", "함께 성장하기", "Grow together") }
   ];
   var _pa = React.useState(0); var partieActive = _pa[0], setPartieActive = _pa[1];
@@ -562,12 +562,12 @@ function EcranTeamCompetition() {
     h("div", { "aria-hidden": "true", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 64px)", insetInline: 0, height: 60, pointerEvents: "none", background: "linear-gradient(180deg, " + BG + ", rgba(6,7,9,0))" } }),
     h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", " + BG + " 26%, rgba(6,7,9,0.82) 40%, rgba(6,7,9,0.25) 62%, rgba(6,7,9,0) 78%)" } }),
     h("div", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, bottom: 0, height: 70, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0), " + BG + ")" } }),
-    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"),
+    h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"),
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 18, cursor: "pointer", zIndex: 2 } }, rtl ? "›" : "‹"),
     h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 40, maxWidth: "62%", zIndex: 1 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
         h("span", { style: { width: 5, height: 5, background: OR, display: "inline-block" } }),
-        h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: OR } }, T("Équipe", "Team", "Equipo", "Squadra", "チーム", "Team", "الفريق", "队伍", "Team", "Equipe", "Lag", "Команда", "Drużyna", "팀", "Team")),
+        h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: OR } }, T("Équipe", "Team", "Equipo", "Squadra", "チーム", "Team", "الفريق", "队伍", "Team", "Equipe", "Lag", "Команда", "Drużyna", "팀", "تیم")),
         h("span", { style: { width: 34, height: 1, background: "rgba(214,182,118,0.6)", display: "inline-block" } })),
       h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: 40, lineHeight: 1.0, color: IV, marginTop: 12 } },
         /* (784) E3 : titre tiré du NOM de la Team dans sa fiche (« Team CSO Club » -> « Team » / « CSO Club ») ;
@@ -575,7 +575,7 @@ function EcranTeamCompetition() {
         (groupe && /^Team\s+\S/.test(String(groupe.nom || "")) && !/^Team\s+Comp/i.test(String(groupe.nom || "")))
           ? [h("div", { key: "t1" }, "Team"), h("div", { key: "t2" }, String(groupe.nom).replace(/^Team\s+/, ""))]
           : [h("div", { key: "t1" }, T("Team", "Competition", "Equipo de", "Team", "競技", "Wettkampf", "فريق", "Team", "Competitie", "Team", "Team", "Team", "Team", "팀", "Competition")),
-             h("div", { key: "t2" }, T("Compétition", "Team", "competición", "Agonistico", "チーム", "Team", "المنافسات", "比赛", "Wedstrijdsport", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "Team"))]),
+             h("div", { key: "t2" }, T("Compétition", "Team", "competición", "Agonistico", "チーム", "Team", "المنافسات", "比赛", "Wedstrijdsport", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "مسابقه"))]),
       (groupe && hypeNomClubLisible(groupe.club_clef)) ? h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: 21, color: OR, marginTop: 8 } }, hypeNomClubLisible(groupe.club_clef)) : null,   /* 10/11 22h : le club de l'équipe, sous le titre */
       h("span", { style: { display: "block", width: 38, height: 1, background: OR, margin: "14px 0 12px" } }),
       h("div", { style: { fontFamily: M, fontSize: 12, lineHeight: 1.55, color: "rgba(244,241,234,0.86)" } },
@@ -617,7 +617,7 @@ function EcranTeamCompetition() {
     if (vedette && (dernierC.pts[vedette.id] || 0) > 0) chevauxOrdonnes = [vedette].concat(chevauxOrdonnes.filter(function (c) { return c.id !== vedette.id; }));
     else dernierC = null;
   }
-  function libPts(n) { return n + " " + (n > 1 ? T("pts", "pts", "pts", "pt", "pt", "Pkt.", "نقاط", "分", "ptn", "pts", "p", "очк.", "pkt", "점", "pts") : T("pt", "pt", "pt", "pt", "pt", "Pkt.", "نقطة", "分", "pt", "pt", "p", "очк.", "pkt", "점", "pt")); }
+  function libPts(n) { return n + " " + (n > 1 ? T("pts", "pts", "pts", "pt", "pt", "Pkt.", "نقاط", "分", "ptn", "pts", "p", "очк.", "pkt", "점", "امتیاز") : T("pt", "pt", "pt", "pt", "pt", "Pkt.", "نقطة", "分", "pt", "pt", "p", "очк.", "pkt", "점", "امتیاز")); }
   function grandCheval(c) {
     /* 12/11 : la vedette du dernier concours montre SES points et SES cavaliers de ce jour-là */
     var vedetteD = !!(dernierC && (dernierC.pts[c.id] || 0) > 0);
@@ -675,7 +675,7 @@ function EcranTeamCompetition() {
         h("div", { style: { position: "absolute", top: 0, bottom: 0, [texteADroite ? "right" : "left"]: 0, width: texteADroite ? "38%" : "44%", display: "flex", flexDirection: "column", justifyContent: "center", padding: texteADroite ? "0 16px 16% 0" : "0 0 14% 20px", boxSizing: "border-box" } },   /* texte remonté au-dessus des barres */
           h("div", { style: { fontFamily: SERIF, fontSize: grandEq ? 34 : 24, fontWeight: 500, lineHeight: 1.05 } }, titre),
           h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, lineHeight: 1.45, color: "rgba(244,241,234,0.72)", marginTop: 5 } }, desc),
-          h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, color: OR, marginTop: 7, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기", "Close") : lien,
+          h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, color: OR, marginTop: 7, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기", "بستن") : lien,
             h("span", { "aria-hidden": "true", style: { display: "inline-block", transform: ouv ? "rotate(-90deg)" : (rtl ? "rotate(180deg)" : "none"), transition: "transform .2s" } }, "›"))));
     }
     var photo = h("div", { style: { flex: "0 0 auto", height: hB, display: "flex", alignItems: "center", justifyContent: texteADroite ? "flex-start" : "flex-end", maxWidth: "58%" } },
@@ -683,7 +683,7 @@ function EcranTeamCompetition() {
     var texte = h("div", { style: { flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: texteADroite ? "0 20px 0 16px" : "0 16px 0 20px" } },
       h("div", { style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 24, fontWeight: 500, lineHeight: 1.05 } }, titre),
       h("div", { style: { fontFamily: M, fontSize: 11, lineHeight: 1.45, color: "rgba(244,241,234,0.72)", marginTop: 5 } }, desc),
-      h("div", { style: { fontFamily: M, fontSize: 11, color: OR, marginTop: 8, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기", "Close") : lien,
+      h("div", { style: { fontFamily: M, fontSize: 11, color: OR, marginTop: 8, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기", "بستن") : lien,
         h("span", { "aria-hidden": "true", style: { display: "inline-block", transform: ouv ? "rotate(-90deg)" : (rtl ? "rotate(180deg)" : "none"), transition: "transform .2s" } }, "›")));
     return h("button", { key: "bd" + cle, type: "button", "aria-expanded": ouv, "aria-controls": "eq-liste-" + cle, onClick: function () { basculerEq(cle); },
         style: { display: "flex", alignItems: "stretch", width: "100%", height: hB, padding: 0, margin: 0, border: "none", borderTop: "1px solid rgba(244,241,234,0.08)", background: BG, color: IV, textAlign: "start", cursor: "pointer", overflow: "hidden" } },
@@ -793,9 +793,9 @@ function EcranTeamCompetition() {
      l affiche EN GRAND si elle existe, « Ouvrir le rendez-vous › » vers l agenda du club). Pas de mur de
      photos, pas de « Je participe ». ── */
   function libTypeRdv(t) {
-    return (t === "concours") ? T("Concours", "Show", "Concurso", "Concorso", "大会", "Turnier", "مسابقة", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "Show")
-      : (t === "sortie") ? T("Sortie", "Outing", "Salida", "Uscita", "お出かけ", "Ausflug", "خرجة", "外出活动", "Uitje", "Passeio", "Utflykt", "Выезд", "Wyjazd", "나들이", "Outing")
-      : T("Stage", "Clinic", "Curso", "Stage", "講習会", "Kurs", "تدريب", "训练营", "Clinic", "Estágio", "Kurs", "Сбор", "Warsztaty", "클리닉", "Clinic");
+    return (t === "concours") ? T("Concours", "Show", "Concurso", "Concorso", "大会", "Turnier", "مسابقة", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "مسابقه")
+      : (t === "sortie") ? T("Sortie", "Outing", "Salida", "Uscita", "お出かけ", "Ausflug", "خرجة", "外出活动", "Uitje", "Passeio", "Utflykt", "Выезд", "Wyjazd", "나들이", "گردش")
+      : T("Stage", "Clinic", "Curso", "Stage", "講習会", "Kurs", "تدريب", "训练营", "Clinic", "Estágio", "Kurs", "Сбор", "Warsztaty", "클리닉", "دورهٔ آموزشی");
   }
   /* 09/11 14h40 (Blandine : « fais un encart similaire pour le dernier concours ») : le dernier concours passé, même carte que « À venir »,
      le toucher ouvre directement sa fiche (résultats, vidéos, médias) */
@@ -817,7 +817,7 @@ function EcranTeamCompetition() {
     var cle = String(ev.id), ouv = (rdvOuvert === cle);
     var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
     var enCours = !passe && String(ev.date_jour || "") <= isoAuj();
-    var etat = passe ? T("Passé", "Past", "Pasado", "Passato", "終了", "Vorbei", "سابق", "已结束", "Afgelopen", "Passado", "Tidigare", "Прошедшие", "Minione", "지난 대회", "Past")
+    var etat = passe ? T("Passé", "Past", "Pasado", "Passato", "終了", "Vorbei", "سابق", "已结束", "Afgelopen", "Passado", "Tidigare", "Прошедшие", "Minione", "지난 대회", "گذشته")
       : (enCours ? T("En cours", "Ongoing", "En curso", "In corso", "開催中", "Läuft", "جارٍ", "进行中", "Lopend", "Em andamento", "Pågående", "Текущие", "Trwające", "진행 중", "Ongoing") : T("À venir", "Upcoming", "Próximo", "In arrivo", "予定", "Demnächst", "قادم", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "공개 예정", "Upcoming"));
     var sous = [ev.lieu || "", ev.heure || ""].filter(Boolean).join(" · ");
     return h("div", { key: "crdv" + cle },
@@ -839,9 +839,9 @@ function EcranTeamCompetition() {
     if (ev.heure) dateT += " · " + ev.heure;
     return h("div", { style: { background: PANEL, border: "1px solid rgba(244,241,234,0.12)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
       h("div", { style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 10px", fontFamily: M, fontSize: 11.5 } },
-        ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "Date"), dateT),
-        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "Venue"), ev.lieu || ""),
-        ligneKV(T("Type", "Type", "Tipo", "Tipo", "種類", "Art", "النوع", "类型", "Type", "Tipo", "Typ", "Тип", "Typ", "유형", "Type"), libTypeRdv(ev.type))),
+        ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "تاریخ"), dateT),
+        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "محل"), ev.lieu || ""),
+        ligneKV(T("Type", "Type", "Tipo", "Tipo", "種類", "Art", "النوع", "类型", "Type", "Tipo", "Typ", "Тип", "Typ", "유형", "نوع"), libTypeRdv(ev.type))),
       aff ? h("div", { style: { marginTop: 12 } },
         h("button", { type: "button", onClick: function () { setVisu(aff); }, style: { display: "block", width: "100%", padding: 0, border: "none", background: "none", cursor: "zoom-in" } },
           h("img", { src: aff, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto", maxHeight: 560, objectFit: "contain", borderRadius: 10, background: "#060709" } })),
@@ -1037,7 +1037,7 @@ function EcranTeamCompetition() {
     var I = infosRes(r);
     var pl = placeDe(r); var podium = pl != null && pl >= 1 && pl <= 3;
     var med = pl === 1 ? "🏆 " : pl === 2 ? "🥈 " : pl === 3 ? "🥉 " : "";
-    var etiq = (pl === 1 ? T("Victoire", "Win", "Victoria", "Vittoria", "優勝", "Sieg", "فوز", "冠军（获胜）", "Overwinning", "Vitória", "Seger", "Победа", "Zwycięstwo", "우승", "Win") : (pl != null ? ordinal(pl) : (String(r.classement || "").trim().slice(0, 12) || "—")));
+    var etiq = (pl === 1 ? T("Victoire", "Win", "Victoria", "Vittoria", "優勝", "Sieg", "فوز", "冠军（获胜）", "Overwinning", "Vitória", "Seger", "Победа", "Zwycięstwo", "우승", "پیروزی") : (pl != null ? ordinal(pl) : (String(r.classement || "").trim().slice(0, 12) || "—")));
     var jm = jourMois(r.date_epreuve || r.created_at);
     var titre = [I.qui, I.cheval].filter(Boolean).join(" & ") || (r.concours || "");
     var placeTxt = (pl != null ? ordinal(pl) : "") + (r.partants ? " / " + r.partants : "");
@@ -1079,15 +1079,15 @@ function EcranTeamCompetition() {
       h("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 12.5 } },
         I.cv ? h("img", { src: photoProfil(I.cv), alt: "", style: { width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(214,182,118,0.6)" } }) : null,
         I.qui ? h("b", null, I.qui) : null,
-        (I.qui && I.cheval) ? h("span", { style: { color: GR } }, T("sur", "on", "con", "su", "と", "auf", "على", "/", "van", "de", "av", "из", "z", "중", "on")) : null,
+        (I.qui && I.cheval) ? h("span", { style: { color: GR } }, T("sur", "on", "con", "su", "と", "auf", "على", "/", "van", "de", "av", "из", "z", "중", "از")) : null,
         (I.ch && I.ch.photo_url) ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(I.ch.photo_url, 120, 120) : I.ch.photo_url, alt: "", style: { width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(214,182,118,0.6)" } }) : null,
         I.cheval ? h("b", { style: { color: OR } }, I.cheval) : null),
       h("div", { style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 10px", fontFamily: M, fontSize: 11.5, marginTop: 10 } },
-        ligneKV(T("Concours", "Show", "Concurso", "Concorso", "大会", "Turnier", "المسابقة", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "Show"), r.concours || ""),
-        ligneKV(T("Épreuve", "Class", "Prueba", "Prova", "競技", "Prüfung", "الفئة", "比赛项目", "Proef", "Prova", "Klass", "Маршрут", "Konkurencja", "경기", "Class"), r.epreuve || ""),
+        ligneKV(T("Concours", "Show", "Concurso", "Concorso", "大会", "Turnier", "المسابقة", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "مسابقه"), r.concours || ""),
+        ligneKV(T("Épreuve", "Class", "Prueba", "Prova", "競技", "Prüfung", "الفئة", "比赛项目", "Proef", "Prova", "Klass", "Маршрут", "Konkurencja", "경기", "رده"), r.epreuve || ""),
         ligneKV(T("Classement", "Placing", "Clasificación", "Classifica", "順位", "Platzierung", "الترتيب", "排名", "Klassement", "Classificação", "Rankning", "Рейтинг", "Klasyfikacja", "순위", "Placing"), classT),
-        ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "Date"), dateLongue(r.date_epreuve || r.created_at)),
-        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "Venue"), lieuT)),
+        ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "تاریخ"), dateLongue(r.date_epreuve || r.created_at)),
+        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "محل"), lieuT)),
       h("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", marginTop: 10 } },
         r.cheval_id ? h("button", { type: "button", onClick: function () { ouvrirCheval(r.cheval_id); }, style: { background: "none", border: "none", padding: 0, minHeight: 32, color: OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: "pointer" } }, T("Fiche du cheval", "Horse page", "Ficha del caballo", "Scheda del cavallo", "馬のページ", "Pferdeseite", "صفحة الحصان", "马的档案", "Paardenprofiel", "Perfil do cavalo", "Hästens sida", "Карточка лошади", "Karta konia", "말 페이지", "Horse page") + " " + CHEV) : null,
         r.cavalier_id ? h("button", { type: "button", onClick: function () { try { window.__resCavaliereId = r.cavalier_id; } catch (e) { } setEcran("resultats-cavalier"); }, style: { background: "none", border: "none", padding: 0, minHeight: 32, color: OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: "pointer" } }, T("Tous ses résultats", "All results", "Todos sus resultados", "Tutti i risultati", "すべての結果", "Alle Ergebnisse", "كل نتائجها", "它的所有成绩", "Al zijn resultaten", "Todos os resultados", "Alla hans resultat", "Все её результаты", "Wszystkie jego wyniki", "모든 결과", "All results") + " " + CHEV) : null),
@@ -1124,7 +1124,7 @@ function EcranTeamCompetition() {
     if (!listeBand.length) return null;
     var I0 = infosRes(listeBand[0]);
     var nbP = podDernier.length;
-    var grand = nbP ? (nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "podiums") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "podium")))
+    var grand = nbP ? (nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "سکو") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "سکو")))
       : T("Nos résultats", "Our results", "Nuestros resultados", "I nostri risultati", "私たちの結果", "Unsere Ergebnisse", "نتائجنا", "我们的成绩", "Onze resultaten", "Os nossos resultados", "Våra resultat", "Наши результаты", "Nasze wyniki", "우리의 결과", "Our results");
     var dontV = nbVict ? (nbVict > 1 ? T("dont {n} victoires", "including {n} wins", "con {n} victorias", "di cui {n} vittorie", "うち優勝{n}回", "davon {n} Siege", "منها {n} انتصارات", "其中 {n} 次夺冠", "waarvan {n} overwinningen", "incluindo {n} vitórias", "varav {n} segrar", "из них {n} побед", "w tym {n} zwycięstwa", "그중 우승 {n}회", "including {n} wins") : T("dont 1 victoire", "including 1 win", "con 1 victoria", "di cui 1 vittoria", "うち優勝1回", "davon 1 Sieg", "منها انتصار واحد", "其中 1 次夺冠", "waarvan 1 overwinning", "incluindo 1 vitória", "varav 1 seger", "из них 1 победа", "w tym 1 zwycięstwo", "그중 우승 1회", "including 1 win")).replace("{n}", nbVict) : "";
     var jm = jourMois(listeBand[0].date_epreuve || listeBand[0].created_at);
@@ -1166,7 +1166,7 @@ function EcranTeamCompetition() {
   function sousTitreRes() {
     if (!listeBand.length) return null;
     var I0 = infosRes(listeBand[0]), jm = jourMois(listeBand[0].date_epreuve || listeBand[0].created_at), nbP = podDernier.length;
-    var t = [I0.lieuNom, jm].filter(Boolean).join(" · ") + (nbP ? " · " + nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "podiums") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "podium")) : "");
+    var t = [I0.lieuNom, jm].filter(Boolean).join(" · ") + (nbP ? " · " + nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "سکو") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "سکو")) : "");
     return h("div", { dir: "auto", style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2, fontWeight: 600, textTransform: "uppercase", color: OR, margin: "-4px 0 14px" } }, t);
   }
   var resDetailMed = (function () { var r = listeBand.filter(function (x) { return x.id === resOuvert; })[0]; return r ? detailRes(r, infosRes(r), placeDe(r)) : null; })();
@@ -1183,8 +1183,8 @@ function EcranTeamCompetition() {
   function bilanTxt(P) {
     var nbP = P.pod.length, nbV = P.pod.filter(function (x) { return placeDe(x) === 1; }).length;
     if (!nbP) return P.tous.length + " " + (P.tous.length > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "件の入賞", "Platzierungen", "تصنيفات", "个名次", "klasseringen", "classificações", "placeringar", "мест", "miejsca", "개의 순위", "placings") : T("classement", "placing", "clasificación", "piazzamento", "件の入賞", "Platzierung", "تصنيف", "个名次", "klassering", "classificação", "placering", "место", "miejsce", "개의 순위", "placing"));
-    var t = nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "podiums") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "podium"));
-    if (nbV) t += " · " + nbV + " " + (nbV > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次夺冠", "overwinningen", "vitórias", "segrar", "побед", "zwycięstwa", "승", "wins") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次夺冠", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승", "win"));
+    var t = nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대", "سکو") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대", "سکو"));
+    if (nbV) t += " · " + nbV + " " + (nbV > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次夺冠", "overwinningen", "vitórias", "segrar", "побед", "zwycięstwa", "승", "پیروزی") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次夺冠", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승", "پیروزی"));
     return t;
   }
   function pointFr(txt, plein) {
@@ -1205,7 +1205,7 @@ function EcranTeamCompetition() {
   }
   function lienDeplier(k, ouv, n) {
     return h("button", { type: "button", onClick: function () { basculerFr(k); }, style: { display: "inline-flex", alignItems: "center", gap: 6, minHeight: 30, padding: 0, margin: "-4px 0 12px", border: "none", background: "transparent", color: OR, fontFamily: M, fontSize: 11, cursor: "pointer" } },
-      ouv ? T("Replier", "Fold", "Plegar", "Chiudi", "たたむ", "Einklappen", "طيّ", "收起", "Inklappen", "Recolher", "Fäll ihop", "Свернуть", "Zwiń", "접기", "Fold") : T("Voir les {n} autres", "See the other {n}", "Ver los otros {n}", "Vedi gli altri {n}", "残り{n}件を見る", "Die anderen {n} ansehen", "عرض {n} الأخرى", "查看其余 {n} 个", "De andere {n} bekijken", "Ver os outros {n}", "Se de andra {n}", "Смотреть остальные {n}", "Zobacz pozostałe {n}", "나머지 {n}개 보기", "See the other {n}").replace("{n}", n), h("span", { "aria-hidden": "true" }, ouv ? "˄" : "˅"));
+      ouv ? T("Replier", "Fold", "Plegar", "Chiudi", "たたむ", "Einklappen", "طيّ", "收起", "Inklappen", "Recolher", "Fäll ihop", "Свернуть", "Zwiń", "접기", "جمع کردن") : T("Voir les {n} autres", "See the other {n}", "Ver los otros {n}", "Vedi gli altri {n}", "残り{n}件を見る", "Die anderen {n} ansehen", "عرض {n} الأخرى", "查看其余 {n} 个", "De andere {n} bekijken", "Ver os outros {n}", "Se de andra {n}", "Смотреть остальные {n}", "Zobacz pozostałe {n}", "나머지 {n}개 보기", "See the other {n}").replace("{n}", n), h("span", { "aria-hidden": "true" }, ouv ? "˄" : "˅"));
   }
   function friseRes() {
     var jours = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && jours.indexOf(j) < 0) jours.push(j); });
@@ -1260,8 +1260,8 @@ function EcranTeamCompetition() {
   var TV_CLASS = T("Voir le classement", "See the ranking", "Ver la clasificación", "Vedi la classifica", "ランキングを見る", "Rangliste ansehen", "عرض التصنيف", "查看排名", "Klassement bekijken", "Ver a classificação", "Se rankningen", "Смотреть рейтинг", "Zobacz klasyfikację", "순위 보기", "See the ranking");
   var bPerf = bandeauDuo("bperf", true, "images/cheval-golden-des-brouets-provisoire.webp", !rtl, null,
     T("Performances", "Performance", "Rendimiento", "Prestazioni", "成績", "Leistungen", "أداء", "表现", "Prestaties", "Desempenho", "Prestationer", "Выступления", "Osiągnięcia", "성적", "Performance"), null,
-    [[T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더", "Riders"), function () { setEcran("performances-cavaliers"); }],
-     [T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "Horses"), function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }]]);
+    [[T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더", "سوارکاران"), function () { setEcran("performances-cavaliers"); }],
+     [T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "اسب‌ها"), function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }]]);
   var duoSaisonRes = h("div", { key: "duo", style: { paddingTop: 40 } },
     lienSaison, lienSaison ? courbeJointure("j1", false) : null,
     bPerf,
@@ -1318,7 +1318,7 @@ function EcranTeamCompetition() {
             h("svg", { width: 9, height: 10, viewBox: "0 0 9 10", "aria-hidden": "true" }, h("path", { d: "M1 .8v8.4L8.2 5Z", fill: IV })))),
         v.jaime ? h("span", { style: { position: "absolute", insetInlineStart: 6, top: 6, fontFamily: M, fontSize: 10, padding: "2px 7px", borderRadius: 999, background: "rgba(6,7,9,0.66)" } }, "\u2661 " + v.jaime) : null,
         dureeM(v.duree) ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(6,7,9,0.72)", fontVariantNumeric: "tabular-nums" } }, dureeM(v.duree)) : null),
-      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, marginTop: 7, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, ((v.prenoms && v.nomsChevaux) ? v.prenoms + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "×", "on") + " " + v.nomsChevaux : (v.titre || v.nomsChevaux || T("Vidéo", "Video"))),   /* 08/11 : « Daphné sur Velleda 🏆 2e / 35 » */
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 12, marginTop: 7, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, ((v.prenoms && v.nomsChevaux) ? v.prenoms + " " + T("sur", "on", "con", "su", "×", "auf", "على", "骑", "op", "com", "på", "на", "na", "×", "از") + " " + v.nomsChevaux : (v.titre || v.nomsChevaux || T("Vidéo", "Video"))),   /* 08/11 : « Daphné sur Velleda 🏆 2e / 35 » */
         v.resultat ? h("span", { style: { color: "#C9A66B", fontWeight: 600 } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null));
   }
   var LIB_PARTAGE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
@@ -1334,7 +1334,7 @@ function EcranTeamCompetition() {
      Médias, qui disparaît) ; « Les plus aimées », « Derniers partages » et « Conseils du coach » (déjà dans Optimise tes perfs) sont retirés. */
   var PORTES_M = [
     { cle: "videos", img: "images/concours-hero-cso.webp",
-      lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상", "Videos"),
+      lab: T("Les vidéos", "Videos", "Los vídeos", "I video", "動画", "Die Videos", "الفيديوهات", "视频", "De video's", "Os vídeos", "Videorna", "Видео", "Filmy", "동영상", "ویدیوها"),
       titre: T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로", "In the ring"),
       sous: T("Les parcours de l'équipe", "The team's rounds", "Los recorridos del equipo", "I percorsi della squadra", "チームの走行", "Die Ritte des Teams", "جولات الفريق", "团队的比赛视频", "De rondes van het team", "Os percursos da equipa", "Lagets rundor", "Маршруты команды", "Przejazdy drużyny", "팀의 주행 영상", "The team's rounds") },
     { cle: "epingles", img: "images/concours-hero-bai-tresse.webp",
@@ -1383,7 +1383,7 @@ function EcranTeamCompetition() {
         h("div", { style: { fontFamily: M, fontSize: 8, fontStyle: "italic", color: "rgba(243,238,228,0.55)", marginTop: 3, lineHeight: 1.25 } }, source)));
   }
   var blocReg = section(h("div", null,
-    enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정", "Rules"), "rg", 0, 0),   /* 13h50 : de nouveau en cartes (Blandine) */
+    enTete(T("Règlements", "Rules", "Reglamentos", "Regolamenti", "規則", "Reglements", "اللوائح", "规则", "Reglementen", "Regulamentos", "Regler", "Регламенты", "Regulaminy", "규정", "مقررات"), "rg", 0, 0),   /* 13h50 : de nouveau en cartes (Blandine) */
     h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 } },   /* 11/11 22h05 : petits rectangles sur toute la largeur */
       carteReg("data-reglement-odf", "docs/reglement-open-de-france-2026.pdf",
         T("Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "オープン・ド・フランス2026", "Open de France 2026", "أوبن فرنسا 2026", "2026 年法国公开赛", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "Open de France 2026", "2026 Open de France", "Open de France 2026"),
@@ -1421,7 +1421,7 @@ function EcranTeamCompetition() {
   var nbVidsSv = (vidsRecentes && vidsRecentes.n) || 0;
   var accesSv = h("div", { style: { display: "grid", gridTemplateColumns: svLarge ? "1fr 1fr" : "1fr", gap: svLarge ? 12 : 0, marginTop: 4 } },
     carteBasse("svph", ICO.photo, T("Nos photos", "Our photos", "Nuestras fotos", "Le nostre foto", "私たちの写真", "Unsere Fotos", "صورنا", "我们的照片", "Onze foto's", "As nossas fotos", "Våra foton", "Наши фото", "Nasze zdjęcia", "우리의 사진", "Our photos"),
-      svPhotos.length ? (svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진", "photos") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진", "photo"))) : T("Les photos des concours", "Competition photos", "Las fotos de los concursos", "Le foto dei concorsi", "大会の写真", "Die Turnierfotos", "صور المسابقات", "比赛照片", "De wedstrijdfoto's", "As fotos dos concursos", "Tävlingsfotona", "Фото с соревнований", "Zdjęcia z zawodów", "대회 사진", "Competition photos"),
+      svPhotos.length ? (svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진", "عکس") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진", "عکس"))) : T("Les photos des concours", "Competition photos", "Las fotos de los concursos", "Le foto dei concorsi", "大会の写真", "Die Turnierfotos", "صور المسابقات", "比赛照片", "De wedstrijdfoto's", "As fotos dos concursos", "Tävlingsfotona", "Фото с соревнований", "Zdjęcia z zawodów", "대회 사진", "Competition photos"),
       "images/concours-carte-equipe.webp", svPhotos.length ? function () { basculer("sv"); } : null, svLarge ? { marginBottom: 0 } : null),
     carteBasse("svvi", ICO.video, T("En piste", "In the ring", "En pista", "In campo", "いざ、コースへ", "Ab in den Parcours", "إلى الميدان", "上场", "Op de piste", "Em pista", "På banan", "На маршруте", "Na parkurze", "코스로", "In the ring"),
       nbVidsSv ? (nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상", "filmed rounds") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상", "filmed round"))) : T("Les parcours de l'équipe", "The team's rounds", "Los recorridos del equipo", "I percorsi della squadra", "チームの走行", "Die Ritte des Teams", "جولات الفريق", "团队的比赛视频", "De rondes van het team", "Os percursos da equipa", "Lagets rundor", "Маршруты команды", "Przejazdy drużyny", "팀의 주행 영상", "The team's rounds"),
@@ -1432,7 +1432,7 @@ function EcranTeamCompetition() {
   var FAN_P = [["2%", 14, -7], ["22%", 4, 3], ["40%", 18, 9]], FAN_V = [["4%", 6, -6], ["30%", 0, 2], ["54%", 10, 8]];
   function eventail(srcs, video, onClick) {
     var pos = video ? FAN_V : FAN_P;
-    return h("button", { type: "button", onClick: onClick, "aria-label": video ? T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상", "Videos") : T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "Photos"),
+    return h("button", { type: "button", onClick: onClick, "aria-label": video ? T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상", "ویدیوها") : T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها"),
         style: { position: "relative", display: "block", width: "100%", height: svLarge ? 260 : 170, padding: 0, border: "none", background: "transparent", cursor: "pointer" } },
       srcs.slice(0, 3).map(function (src, k) {
         var P = pos[k];
@@ -1457,10 +1457,10 @@ function EcranTeamCompetition() {
   var srcVids = svVids.map(function (v) { return v.vignette ? ((typeof vignetteHype === "function") ? vignetteHype(v.vignette, 300, 534) : v.vignette) : ""; }).filter(Boolean);
   var ouvrirPhotosSv = svPhotos.length ? function () { basculer("sv"); } : null;
   var ouvrirVidsSv = function () { ouvrirMedias("videos"); };
-  var txtPhotos = svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진", "photos") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진", "photo"));
+  var txtPhotos = svPhotos.length + " " + (svPhotos.length > 1 ? T("photos", "photos", "fotos", "foto", "枚の写真", "Fotos", "صور", "张照片", "foto's", "fotos", "foton", "фото", "zdjęć", "장의 사진", "عکس") : T("photo", "photo", "foto", "foto", "枚の写真", "Foto", "صورة", "张照片", "foto", "foto", "foto", "фото", "zdjęcie", "장의 사진", "عکس"));
   var txtVids = nbVidsSv + " " + (nbVidsSv > 1 ? T("parcours filmés", "filmed rounds", "recorridos grabados", "percorsi filmati", "本の走行動画", "gefilmte Ritte", "جولات مصوّرة", "段比赛视频", "gefilmde rondes", "percursos filmados", "filmade rundor", "снятых маршрутов", "nagranych przejazdów", "개의 주행 영상", "filmed rounds") : T("parcours filmé", "filmed round", "recorrido grabado", "percorso filmato", "本の走行動画", "gefilmter Ritt", "جولة مصوّرة", "段比赛视频", "gefilmde ronde", "percurso filmado", "filmad runda", "снятый маршрут", "nagrany przejazd", "개의 주행 영상", "filmed round"));
-  var SUR_P = T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "Photos");
-  var SUR_V = T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상", "Videos");
+  var SUR_P = T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها");
+  var SUR_V = T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "동영상", "ویدیوها");
   var blocSv = section(h("div", null,
     h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: grandEq ? 36 : 26, lineHeight: 1.1, color: IV, marginBottom: 16 } }, T("Nos plus beaux moments", "Our best moments", "Nuestros mejores momentos", "I nostri momenti più belli", "最高の瞬間", "Unsere schönsten Momente", "أجمل لحظاتنا", "我们最美的时刻", "Onze mooiste momenten", "Os nossos melhores momentos", "Våra finaste stunder", "Наши лучшие моменты", "Nasze najpiękniejsze chwile", "우리의 가장 멋진 순간", "Our best moments")),
     (souvenirs === null && vidsRecentes === null) ? chargement()
@@ -1535,7 +1535,7 @@ function EcranTeamCompetition() {
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: 2.4, textTransform: "uppercase", color: OR } }, (groupe && groupe.nom) || TEAM_NOM_GROUPE),   /* (783) nom lu dans la fiche */
           h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 2 } }, (modeCh ? T("Chevaux de l\u2019\u00e9quipe", "Team horses", "Caballos del equipo", "Cavalli della squadra", "\u30c1\u30fc\u30e0\u306e\u99ac", "Pferde des Teams", "\u062e\u064a\u0648\u0644 \u0627\u0644\u0641\u0631\u064a\u0642", "队里的马", "Paarden van het team", "Cavalos da equipe", "Lagets hästar", "Лошади команды", "Konie drużyny", "팀의 말", "Team horses") : T("Membres de l’équipe", "Team members", "Miembros del equipo", "Membri della squadra", "チームメンバー", "Teammitglieder", "أعضاء الفريق", "队员", "Teamleden", "Membros da equipe", "Lagets medlemmar", "Участники команды", "Członkowie drużyny", "팀 멤버", "Team members")))),
-        h("button", { type: "button", onClick: function () { setPanneau(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close"), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(244,241,234,0.06)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 16, cursor: "pointer" } }, "✕")),
+        h("button", { type: "button", onClick: function () { setPanneau(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن"), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(244,241,234,0.06)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 16, cursor: "pointer" } }, "✕")),
       h("div", { style: { padding: "12px 18px 6px" } },
         h("input", { value: recherche, onChange: function (e) { setRecherche(e.target.value); }, placeholder: (modeCh ? SEPx(T("Rechercher un cheval de la SEP", "Search a SEP horse", "Buscar un caballo de la SEP", "Cerca un cavallo della SEP", "SEP\u306e\u99ac\u3092\u691c\u7d22", "SEP-Pferd suchen", "\u0627\u0628\u062d\u062b \u0639\u0646 \u062d\u0635\u0627\u0646 \u0645\u0646 SEP", "搜索 SEP 的马", "Zoek een paard van de SEP", "Procurar um cavalo da SEP", "Sök en häst från SEP", "Найти лошадь SEP", "Szukaj konia z SEP", "SEP의 말 검색", "Search a SEP horse")) : T("Rechercher un cavalier de la SEP", "Search a SEP rider", "Buscar un jinete de la SEP", "Cerca un cavaliere della SEP", "SEPのライダーを検索", "SEP-Reiter suchen", "ابحث عن فارس من SEP", "搜索 SEP 的骑手", "Zoek een ruiter van de SEP", "Procurar um cavaleiro da SEP", "Sök en ryttare från SEP", "Найти всадника SEP", "Szukaj jeźdźca z SEP", "SEP의 기수 검색", "Search a SEP rider")),
           style: { width: "100%", boxSizing: "border-box", height: 42, padding: "0 14px", borderRadius: 10, border: "1px solid rgba(244,241,234,0.14)", background: PANEL, color: IV, fontFamily: M, fontSize: 16, outline: "none" } }),
@@ -1556,7 +1556,7 @@ function EcranTeamCompetition() {
             })() : null,
             h("button", { type: "button", disabled: busy, onClick: function () { if (modeCh) basculerCheval(p, est); else if (est) retirerMembre(p); else ajouterMembre(p); },
               style: { flex: "0 0 auto", minHeight: 34, minWidth: 84, padding: "0 12px", borderRadius: 999, border: "1px solid " + (est ? "rgba(244,241,234,0.25)" : "rgba(214,182,118,0.6)"), background: est ? "transparent" : "rgba(214,182,118,0.10)", color: est ? "rgba(244,241,234,0.8)" : OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1 } },
-              busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "Remove") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add"))));
+              busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "برداشتن") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن"))));
         })));
   }
 
@@ -1582,14 +1582,14 @@ function EcranTeamCompetition() {
               ev.lieu ? h("div", { dir: "auto", style: { fontSize: 10.5, color: GR, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, ev.lieu) : null),
             h("button", { type: "button", disabled: busy, onClick: function () { basculerRdv(ev, est); },
               style: { flex: "0 0 auto", minHeight: 34, minWidth: 84, padding: "0 12px", borderRadius: 999, border: "1px solid " + (est ? "rgba(244,241,234,0.25)" : "rgba(214,182,118,0.6)"), background: est ? "transparent" : "rgba(214,182,118,0.10)", color: est ? "rgba(244,241,234,0.8)" : OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1 } },
-              busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "Remove") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add"))));
+              busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "برداشتن") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن"))));
     }
     panneauEl = h("div", { "data-noswipe": "1", "data-hscroll": "1", dir: rtl ? "rtl" : "ltr", style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(6,7,9,0.97)", display: "flex", flexDirection: "column", fontFamily: M, color: IV } },
       h("div", { style: { padding: "calc(env(safe-area-inset-top) + 16px) 18px 12px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(214,182,118,0.18)" } },
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: 2.4, textTransform: "uppercase", color: OR } }, (groupe && groupe.nom) || TEAM_NOM_GROUPE),   /* (783) nom lu dans la fiche */
           h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 2 } }, T("Rendez-vous de l’équipe", "Team events", "Citas del equipo", "Appuntamenti della squadra", "チームの予定", "Termine des Teams", "مواعيد الفريق", "队里的日程", "Afspraken van het team", "Compromissos da equipe", "Lagets evenemang", "События команды", "Wydarzenia drużyny", "팀 일정", "Team events"))),
-        h("button", { type: "button", onClick: function () { setPanneau(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close"), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(244,241,234,0.06)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 16, cursor: "pointer" } }, "✕")),
+        h("button", { type: "button", onClick: function () { setPanneau(false); }, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن"), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(244,241,234,0.06)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 16, cursor: "pointer" } }, "✕")),
       h("div", { style: { padding: "12px 18px 6px" } },
         h("button", { type: "button", onClick: function () {
             try { window.__guildeEcurie = TEAM_CLUB; window.__agendaOuvrirAjout = true; window.__agendaGroupesCoches = [groupe.id]; } catch (eAr) { }

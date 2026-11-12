@@ -99,8 +99,8 @@ function EcranChevalV2() {
   var race = String(ligne.race || "").trim();
   /* sexe : range dans les origines (decision du 08/10, saisie au build « sexe ») — rien tant qu il n est pas renseigne */
   var SEXES = {
-    hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي", "骟马", "Ruin", "Castrado", "Valack", "Мерин", "Wałach", "거세마", "Gelding"),
-    jument: T("Jument", "Mare", "Yegua", "Giumenta", "牝馬", "Stute", "فرس", "母马", "Merrie", "Égua", "Sto", "Кобыла", "Klacz", "암말", "Mare"),
+    hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي", "骟马", "Ruin", "Castrado", "Valack", "Мерин", "Wałach", "거세마", "اسب اخته"),
+    jument: T("Jument", "Mare", "Yegua", "Giumenta", "牝馬", "Stute", "فرس", "母马", "Merrie", "Égua", "Sto", "Кобыла", "Klacz", "암말", "مادیان"),
     entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل", "种公马", "Hengst", "Garanhão", "Hingst", "Жеребец", "Ogier", "종마", "Stallion")
   };
   var sexe = SEXES[String(og.sexe || "").toLowerCase().trim()] || "";
@@ -196,7 +196,7 @@ function EcranChevalV2() {
   lignesRecto.push(resumeOrig
     ? ligneId("orig", LIB_ORIG, resumeOrig)
     : ligneId("orig", T("Origines non renseignées", "Bloodline not provided", "Orígenes no indicados", "Origini non indicate", "血統は未登録", "Herkunft nicht angegeben", "النسب غير مُدخل", "血统未填写", "Afstamming niet ingevuld", "Origens não informadas", "Ursprung ej angivet", "Происхождение не указано", "Brak informacji o pochodzeniu", "혈통 정보 없음", "Bloodline not provided")));  if (teamInfo) lignesRecto.push(ligneId("team", (teamInfo.nom || T("Team compétition", "Competition team", "Equipo de competición", "Team agonistico", "競技チーム", "Turnierteam", "فريق المنافسات", "比赛队", "Wedstrijdteam", "Team de competição", "Tävlingsteam", "Команда соревнований", "Drużyna zawodnicza", "팀 대회", "Competition team")),   /* (786) nom lu dans la fiche */
-    "#" + teamInfo.rang + " · " + teamInfo.pts + " " + T("points", "points", "puntos", "punti", "ポイント", "Punkte", "نقاط", "分", "punten", "pontos", "poäng", "очков", "punkty", "점", "points")));
+    "#" + teamInfo.rang + " · " + teamInfo.pts + " " + T("points", "points", "puntos", "punti", "ポイント", "Punkte", "نقاط", "分", "punten", "pontos", "poäng", "очков", "punkty", "점", "امتیاز")));
 
 
   /* (739) RETOURNEMENT DE LA CARTE : quart de tour, changement de face, quart de tour retour.
@@ -237,7 +237,7 @@ function EcranChevalV2() {
     for (var iA = 0; iA < parente.tousChevaux.length; iA++) { if (nomsHippiquesProches(parente.tousChevaux[iA].nom, nomA)) return parente.tousChevaux[iA].id; }
     return null;
   }
-  var LIB_PERE = T("Père", "Sire", "Padre", "Padre", "父", "Vater", "الأب", "父亲", "Vader", "Pai", "Far", "Отец", "Ojciec", "아버지", "Sire"), LIB_MERE = T("Mère", "Dam", "Madre", "Madre", "母", "Mutter", "الأم", "母亲", "Moeder", "Mãe", "Mor", "Мать", "Matka", "어머니", "Dam");
+  var LIB_PERE = T("Père", "Sire", "Padre", "Padre", "父", "Vater", "الأب", "父亲", "Vader", "Pai", "Far", "Отец", "Ojciec", "아버지", "پدر"), LIB_MERE = T("Mère", "Dam", "Madre", "Madre", "母", "Mutter", "الأم", "母亲", "Moeder", "Mãe", "Mor", "Мать", "Matka", "어머니", "مادر");
   function celPed(n, o) {
     o = o || {};
     var nomN = (n && typeof n === "object") ? String(n.nom || "") : (typeof n === "string" ? n : "");
@@ -302,7 +302,7 @@ function EcranChevalV2() {
     }
     if (parente && parente.descendants && parente.descendants.length) {
       blocs.push(h("div", { key: "poul", style: { marginTop: 16, padding: "14px 4px 2px", borderTop: "1px solid rgba(201,169,110,0.16)" } },
-        h("div", { style: { fontFamily: SANS, fontSize: 9.5, letterSpacing: "0.2em", textTransform: "uppercase", color: CHAMPAGNE, marginBottom: 10 } }, T("Poulains", "Foals", "Potros", "Puledri", "子馬", "Fohlen", "المهور", "小马驹", "Veulens", "Potros", "Föl", "Жеребята", "Źrebaki", "망아지", "Foals")),
+        h("div", { style: { fontFamily: SANS, fontSize: 9.5, letterSpacing: "0.2em", textTransform: "uppercase", color: CHAMPAGNE, marginBottom: 10 } }, T("Poulains", "Foals", "Potros", "Puledri", "子馬", "Fohlen", "المهور", "小马驹", "Veulens", "Potros", "Föl", "Жеребята", "Źrebaki", "망아지", "کره‌اسب‌ها")),
         h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8 } },
           parente.descendants.map(function (d) {
             return h("button", { key: d.id, onClick: function () { ouvrirAutreCheval(d.id); }, style: { padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(201,169,110,0.45)", background: "rgba(201,169,110,0.06)", color: IVOIRE, fontFamily: SERIF, fontSize: 15, cursor: "pointer" } }, d.nom);
@@ -413,7 +413,7 @@ function EcranChevalV2() {
     try { window.__chevalOuvert = id; window.__chevalPhotoOuvrir = u; } catch (eO) { }
     setEcran("cheval");
   }
-  var LIB_VOIR_TOUT = T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "See all");
+  var LIB_VOIR_TOUT = T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기", "دیدن همه");
   function enteteSection(titre, onVoir) {
     return h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, margin: "0 4px 18px" } },   /* (746) 22 px sous le titre */
       h("h2", { style: { margin: 0, fontFamily: SERIF, fontWeight: 500, fontSize: 22, lineHeight: 1.2, color: IVOIRE } }, titre),
@@ -504,7 +504,7 @@ function EcranChevalV2() {
       portrait ? h("img", { src: portrait, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.currentTarget.style.display = "none"; } catch (e9) { } }, style: { width: 66, height: 66, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(201,169,110,0.35)" } }) : null,
       h("div", { style: { marginTop: 10, fontFamily: SANS, fontSize: 11.5, fontWeight: 700, lineHeight: 1.35, color: IVOIRE } },
         (rangM ? (rangM + " ") : "") + (meilleur.cav || ""),
-        nomAffiche ? h("span", { style: { color: CHAMPAGNE, fontWeight: 600 } }, " " + T("sur", "on", "con", "su", "騎乗", "auf", "على", "/", "van", "de", "av", "из", "z", "중", "on") + " " + nomAffiche) : null),
+        nomAffiche ? h("span", { style: { color: CHAMPAGNE, fontWeight: 600 } }, " " + T("sur", "on", "con", "su", "騎乗", "auf", "على", "/", "van", "de", "av", "из", "z", "중", "از") + " " + nomAffiche) : null),
       h("div", { style: { marginTop: 10, fontFamily: SERIF, fontSize: 14, fontWeight: 600, lineHeight: 1.25, color: IVOIRE, overflowWrap: "anywhere" } }, String(r.concours || "").trim() || "—"),
       r.epreuve ? h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 9.5, lineHeight: 1.35, color: "rgba(242,235,221,0.6)" } }, String(r.epreuve).trim()) : null,
       r.partants ? h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 9, color: "rgba(242,235,221,0.45)" } }, "/ " + r.partants) : null,
@@ -567,10 +567,10 @@ function EcranChevalV2() {
   var ACCES = [
     { c: "histoire", t: T("Son histoire", "Their story", "Su historia", "La sua storia", "物語", "Seine Geschichte", "قصته", "它的故事", "Zijn verhaal", "A história dele", "Berättelsen", "Его история", "Jego historia", "이야기", "Their story"), ic: h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z" }) },
     { c: "performances", t: T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki sportowe", "성적", "Performances"), ic: h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }) },
-    { c: "sante", t: T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "Health"), ic: h("g", null, h("path", { d: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3.5a4.5 4.5 0 0 0 9 0V14" }), h("circle", { cx: 19, cy: 11.5, r: 2.2 })) },
-    { c: "photos", t: T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "Photos"), ic: h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" })) },
-    { c: "videos", t: T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상", "Videos"), ic: h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z" })) },
-    { c: "actualite", t: T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식", "News"), ic: h("g", null, h("path", { d: "M4 5h13a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V5z" }), h("path", { d: "M7 9h7M7 12.5h7M7 16h4" })) }
+    { c: "sante", t: T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة", "健康", "Gezondheid", "Saúde", "Hälsa", "Здоровье", "Zdrowie", "건강", "سلامت"), ic: h("g", null, h("path", { d: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3.5a4.5 4.5 0 0 0 9 0V14" }), h("circle", { cx: 19, cy: 11.5, r: 2.2 })) },
+    { c: "photos", t: T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها"), ic: h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" })) },
+    { c: "videos", t: T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "الفيديوهات", "视频", "Video's", "Vídeos", "Videor", "Видео", "Filmy", "영상", "ویدیوها"), ic: h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z" })) },
+    { c: "actualite", t: T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식", "خبر"), ic: h("g", null, h("path", { d: "M4 5h13a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V5z" }), h("path", { d: "M7 9h7M7 12.5h7M7 16h4" })) }
   ];
   /* (1067) « Importer mes resultats officiels », comme la V1 (meme ecran, meme cible d import) */
   function ouvrirImportV2() {
@@ -613,7 +613,7 @@ function EcranChevalV2() {
       h("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(7,10,8,0.6) 0%, rgba(7,10,8,0.2) 45%, rgba(7,10,8,0) 70%)" } })),
       h("div", { style: { position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", padding: "calc(env(safe-area-inset-top) + 14px) 20px 0" } },
         rond(h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: CHAMPAGNE, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" })),
-          T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"), retour),
+          T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"), retour),
         /* ••• : visible comme sur la maquette ; le menu arrive dans sa propre livraison (V2-13) */
         h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },   /* (1067) langue a cote du menu, comme la V1 */
           (typeof SelecteurLangue === "function") ? h(SelecteurLangue, { compact: true }) : null,

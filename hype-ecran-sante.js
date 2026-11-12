@@ -97,7 +97,7 @@ function EcranSante() {
         {
             id: "coliques", img: imgColique, pos: "center 58%",
             badge: L("Urgence", "Emergency", "Urgencia", "Emergenza", "緊急", "Notfall", "طوارئ", "紧急", "Noodgeval", "Emergência", "Akut", "Срочно", "Nagły wypadek", "응급", "Emergency"),
-            titre: L("Coliques", "Colic", "Cólicos", "Coliche", "疝痛", "Koliken", "المغص", "疝痛", "Koliek", "Cólicas", "Koliker", "Колики", "Kolki", "산통", "Colic"),
+            titre: L("Coliques", "Colic", "Cólicos", "Coliche", "疝痛", "Koliken", "المغص", "疝痛", "Koliek", "Cólicas", "Koliker", "Колики", "Kolki", "산통", "قولنج"),
             sous: L("Les gestes qui sauvent", "The moves that save lives", "Los gestos que salvan", "I gesti che salvano", "命を守る対応", "Die Handgriffe, die Leben retten", "التصرفات التي تنقذ الأرواح", "救命的做法", "De handelingen die levens redden", "Os gestos que salvam", "Handgreppen som räddar liv", "Действия, которые спасают", "Gesty, które ratują życie", "생명을 살리는 행동", "The moves that save lives"),
             intro: L("La colique est l'urgence numéro un chez le cheval : un mal de ventre qui va du simple inconfort à l'urgence vitale, et la première cause de mortalité hors vieillesse. La bonne nouvelle : dans l'immense majorité des cas, une colique repérée tôt et prise en charge vite se termine bien. Tout se joue donc sur ton œil, et sur les minutes qui suivent.",
                 "Colic is the number-one equine emergency: abdominal pain ranging from mild discomfort to a life-threatening crisis, and the leading cause of death outside old age. The good news: the vast majority of colic cases spotted early and treated quickly end well. Everything comes down to your eye — and the minutes that follow.",
@@ -209,7 +209,7 @@ function EcranSante() {
         },
         {
             id: "plaies", img: imgPlaies,
-            badge: L("Soins", "Care", "Cuidados", "Cure", "ケア", "Pflege", "العناية", "护理", "Verzorging", "Cuidados", "Vård", "Уход", "Opieka", "케어", "Care"),
+            badge: L("Soins", "Care", "Cuidados", "Cure", "ケア", "Pflege", "العناية", "护理", "Verzorging", "Cuidados", "Vård", "Уход", "Opieka", "케어", "مراقبت"),
             titre: L("Plaies & bobos", "Wounds & scrapes", "Heridas y golpes", "Ferite e graffi", "傷の手当て", "Wunden & Kratzer", "الجروح والخدوش", "伤口和小磕碰", "Wondjes & schaafwonden", "Feridas e machucados", "Sår och skråmor", "Раны и ссадины", "Rany i drobne urazy", "상처 & 긁힘", "Wounds & scrapes"),
             sous: L("Soigner sans aggraver", "Treating without harming", "Curar sin agravar", "Curare senza peggiorare", "悪化させないケア", "Versorgen, ohne es schlimmer zu machen", "العلاج دون تفاقم الإصابة", "护理而不加重伤情", "Verzorgen zonder te verergeren", "Cuidar sem piorar", "Vårda utan att förvärra", "Лечить, не навредив", "Leczyć, nie pogarszając", "악화시키지 않고 치료하기", "Treating without harming"),
             intro: L("Un cheval, c'est un animal d'un demi-tonne, curieux, entouré de clôtures — autant dire qu'il trouvera toujours le moyen de se blesser. La plupart des plaies sont bénignes ; certaines, minuscules en apparence, sont de vraies urgences. Tout l'art consiste à savoir trier : ce que tu peux soigner toi-même, et ce qui doit voir un vétérinaire dans l'heure.",
@@ -359,7 +359,7 @@ function EcranSante() {
                 React.createElement("span", { style: { flex: 1, height: 1, background: "rgba(255,255,255,0.1)" } })),
             AVENIR.map((v, i5) => React.createElement("div", { key: i5, style: { display: "flex", alignItems: "stretch", gap: 0, overflow: "hidden", borderRadius: 18, border: "1px solid rgba(255,255,255,0.08)", background: "#0B1013", marginTop: i5 ? 12 : 0 } },
                 React.createElement("div", { style: { width: 118, flex: "0 0 auto", position: "relative", backgroundImage: v.img ? ("url(" + v.img + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", filter: "grayscale(30%) brightness(0.85)" } },
-                    React.createElement("span", { style: { position: "absolute", top: 8, left: 8, padding: "3px 8px", borderRadius: 999, background: "rgba(7,8,10,0.72)", border: "1px solid rgba(127,163,173,0.4)", color: "#CFE3E8", fontSize: 8, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700 } }, L("Bient\u00f4t", "Soon", "Pronto", "Presto", "\u8fd1\u65e5", "Bald", "قريبا", "即将推出", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧 공개", "Soon"))),
+                    React.createElement("span", { style: { position: "absolute", top: 8, left: 8, padding: "3px 8px", borderRadius: 999, background: "rgba(7,8,10,0.72)", border: "1px solid rgba(127,163,173,0.4)", color: "#CFE3E8", fontSize: 8, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700 } }, L("Bient\u00f4t", "Soon", "Pronto", "Presto", "\u8fd1\u65e5", "Bald", "قريبا", "即将推出", "Binnenkort", "Em breve", "Snart", "Скоро", "Wkrótce", "곧 공개", "به‌زودی"))),
                 React.createElement("div", { style: { flex: 1, minWidth: 0, padding: "13px 14px", display: "flex", flexDirection: "column", justifyContent: "center" } },
                     React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 17, color: "#EAF2F4", fontWeight: 700 } }, v.titre),
                     React.createElement("div", { style: { fontSize: 11.5, color: "rgba(234,242,244,0.6)", marginTop: 3 } }, v.sous),

@@ -107,7 +107,7 @@ var W1 = {
   nCavaliers: ["cavalier", "rider", "jinete", "cavaliere", "ライダー", "Reiter", "فارس", "名骑手", "ruiter", "cavaleiro", "ryttare", "всадник", "jeździec", "기수"],
   nResultats: ["résultat", "result", "resultado", "risultato", "件の成績", "Ergebnis", "نتيجة", "条成绩", "resultaat", "resultado", "resultat", "результат", "wynik", "개 성적"]
 };
-var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" };
+var LOC = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
 
 /* ── outils de données (purs) ── */
 function nrm(x) { var s = String(x || ""); try { s = s.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { } return s.toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim(); }

@@ -274,7 +274,7 @@ function EcranProfilInterne() {
             React.createElement(ChampTexte, { placeholder: t("club_placeholder"), value: local.club, onChange: (v) => setLocal({ ...local, club: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" })) : null),
 
         /* ---------- COMPTE ---------- */
-        eyebrow(tr({ fr: "Compte", en: "Account", es: "Cuenta", it: "Account", ja: "アカウント", de: "Konto", ar: "\u0627\u0644\u062d\u0633\u0627\u0628", zh: "账户", nl: "Account", pt: "Conta", sv: "Konto", ru: "Аккаунт", pl: "Konto", ko: "계정", fa: "Account" })),
+        eyebrow(tr({ fr: "Compte", en: "Account", es: "Cuenta", it: "Account", ja: "アカウント", de: "Konto", ar: "\u0627\u0644\u062d\u0633\u0627\u0628", zh: "账户", nl: "Account", pt: "Conta", sv: "Konto", ru: "Аккаунт", pl: "Konto", ko: "계정", fa: "حساب" })),
         grille("g-compte", [
             /* 04/09 — MON ABONNEMENT, en tete de la section COMPTE. */
             (function () {
@@ -291,7 +291,7 @@ function EcranProfilInterne() {
                     sousLigne = tr({ fr: "Lecture impossible — réessaie plus tard.", en: "Couldn't read — try again later.", es: "No se pudo leer — inténtalo más tarde.", it: "Lettura impossibile — riprova più tardi.", ja: "読み込めませんでした。あとでお試しください。", de: "Nicht lesbar — versuche es später.", ar: "\u062a\u0639\u0630\u0631\u062a \u0627\u0644\u0642\u0631\u0627\u0621\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0644\u0627\u062d\u0642\u0627.", zh: "无法读取——请稍后再试。", nl: "Lezen niet mogelijk — probeer het later opnieuw.", pt: "Não foi possível ler — tente novamente mais tarde.", sv: "Kunde inte läsas – försök igen senare.", ru: "Не удалось прочитать — попробуй позже.", pl: "Nie można odczytać — spróbuj później.", ko: "읽을 수 없어요. 나중에 다시 시도해 주세요.", fa: "Couldn't read — try again later." });
                 } else if (aboMoi === null && famillePremium) {
                     /* Premium Famille : pas de ligne personnelle, mais Premium via la famille (détail juste en dessous) */
-                    pastille = tr({ fr: "Actif", en: "Active", es: "Activa", it: "Attivo", ja: "有効", de: "Aktiv", ar: "\u0646\u0634\u0637", zh: "有效", nl: "Actief", pt: "Ativo", sv: "Aktiv", ru: "Активна", pl: "Aktywna", ko: "활성", fa: "Active" });
+                    pastille = tr({ fr: "Actif", en: "Active", es: "Activa", it: "Attivo", ja: "有効", de: "Aktiv", ar: "\u0646\u0634\u0637", zh: "有效", nl: "Actief", pt: "Ativo", sv: "Aktiv", ru: "Активна", pl: "Aktywna", ko: "활성", fa: "فعال" });
                     sousLigne = famT(langue, "titre");
                 } else if (aboMoi === null) {
                     sousLigne = tr({ fr: "Aucun abonnement", en: "No subscription", es: "Sin suscripción", it: "Nessun abbonamento", ja: "サブスクリプションなし", de: "Kein Abo", ar: "\u0644\u0627 \u064a\u0648\u062c\u062f \u0627\u0634\u062a\u0631\u0627\u0643", zh: "没有订阅", nl: "Geen abonnement", pt: "Nenhuma assinatura", sv: "Ingen prenumeration", ru: "Нет подписки", pl: "Brak subskrypcji", ko: "구독 없음", fa: "No subscription" });
@@ -299,10 +299,10 @@ function EcranProfilInterne() {
                     /* meme regle d actif que l application entiere */
                     const actifAb = aboMoi.statut === "actif" && (!aboMoi.expire_le || new Date(aboMoi.expire_le).getTime() > Date.now());
                     if (actifAb) {
-                        pastille = tr({ fr: "Actif", en: "Active", es: "Activa", it: "Attivo", ja: "有効", de: "Aktiv", ar: "\u0646\u0634\u0637", zh: "有效", nl: "Actief", pt: "Ativo", sv: "Aktiv", ru: "Активна", pl: "Aktywna", ko: "활성", fa: "Active" });
+                        pastille = tr({ fr: "Actif", en: "Active", es: "Activa", it: "Attivo", ja: "有効", de: "Aktiv", ar: "\u0646\u0634\u0637", zh: "有效", nl: "Actief", pt: "Ativo", sv: "Aktiv", ru: "Активна", pl: "Aktywna", ko: "활성", fa: "فعال" });
                         sousLigne = nomPlan(aboMoi.plan) + (aboMoi.expire_le ? tr({ fr: " · jusqu'au ", en: " · until ", es: " · hasta el ", it: " · fino al ", ja: " · ", de: " · bis ", ar: " \u00b7 \u062d\u062a\u0649 ", zh: " · 至 ", nl: " · tot ", pt: " · até ", sv: " · till och med ", ru: " · до ", pl: " · do ", ko: " · 만료: ", fa: " · until " }) + dateLisible(aboMoi.expire_le) : "");
                     } else {
-                        pastille = tr({ fr: "Terminé", en: "Ended", es: "Terminada", it: "Terminato", ja: "終了", de: "Beendet", ar: "\u0645\u0646\u062a\u0647", zh: "已完成", nl: "Beëindigd", pt: "Encerrado", sv: "Avslutad", ru: "Завершено", pl: "Zakończono", ko: "완료", fa: "Ended" });
+                        pastille = tr({ fr: "Terminé", en: "Ended", es: "Terminada", it: "Terminato", ja: "終了", de: "Beendet", ar: "\u0645\u0646\u062a\u0647", zh: "已完成", nl: "Beëindigd", pt: "Encerrado", sv: "Avslutad", ru: "Завершено", pl: "Zakończono", ko: "완료", fa: "پایان یافت" });
                         sousLigne = nomPlan(aboMoi.plan) + (aboMoi.expire_le ? tr({ fr: " · terminé le ", en: " · ended on ", es: " · terminada el ", it: " · terminato il ", ja: " · 終了日 ", de: " · beendet am ", ar: " \u00b7 \u0627\u0646\u062a\u0647\u0649 \u0641\u064a ", zh: " · 结束于 ", nl: " · beëindigd op ", pt: " · encerrada em ", sv: " · avslutades ", ru: " · завершена ", pl: " · zakończono ", ko: " · 종료: ", fa: " · ended on " }) + dateLisible(aboMoi.expire_le) : "");
                     }
                 }
@@ -449,7 +449,7 @@ function EcranProfilInterne() {
         ]),
 
         /* ---------- AIDE ---------- */
-        eyebrow(tr({ fr: "Aide", en: "Help", es: "Ayuda", it: "Aiuto", ja: "ヘルプ", de: "Hilfe", ar: "\u0645\u0633\u0627\u0639\u062f\u0629", zh: "帮助", nl: "Hulp", pt: "Ajuda", sv: "Hjälp", ru: "Помощь", pl: "Pomoc", ko: "도움말", fa: "Help" })),
+        eyebrow(tr({ fr: "Aide", en: "Help", es: "Ayuda", it: "Aiuto", ja: "ヘルプ", de: "Hilfe", ar: "\u0645\u0633\u0627\u0639\u062f\u0629", zh: "帮助", nl: "Hulp", pt: "Ajuda", sv: "Hjälp", ru: "Помощь", pl: "Pomoc", ko: "도움말", fa: "راهنما" })),
         grille("g-aide", [
             tuile({
                 cle: "bug",
@@ -540,7 +540,7 @@ function EcranProfilInterne() {
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 340, borderRadius: 22, border: "1px solid rgba(127,163,173,0.45)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "26px 22px", textAlign: "center" } },
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17, fontWeight: 700, color: "#EDF2F5", letterSpacing: 0.8, marginBottom: 8 } }, tr({ fr: "Un cheval, puis Premium", en: "One horse, then Premium", es: "Un caballo, luego Premium", it: "Un cavallo, poi Premium", ja: "1頭目は無料", de: "Ein Pferd, dann Premium", ar: "\u062d\u0635\u0627\u0646\u060c \u062b\u0645 Premium", zh: "先养一匹马，再升级 Premium", nl: "Eerst een paard, dan Premium", pt: "Um cavalo, depois Premium", sv: "En häst, sedan Premium", ru: "Сначала лошадь, потом Premium", pl: "Jeden koń, potem Premium", ko: "말 한 마리, 그다음 Premium", fa: "One horse, then Premium" })),
                 React.createElement("button", { onClick: () => { setLimiteCheval(false); setEcran("premium"); }, style: { width: "100%", border: "none", borderRadius: 999, padding: "13px 0", fontSize: 14, fontWeight: 800, background: "linear-gradient(90deg,#7FA3AD,#CFE3E8)", color: "#04252A", cursor: "pointer" } }, tr({ fr: "Découvrir Premium", en: "Discover Premium", es: "Descubrir Premium", it: "Scopri Premium", ja: "Premiumを見る", de: "Premium entdecken", ar: "\u0627\u0643\u062a\u0634\u0627\u0641 Premium", zh: "了解 Premium", nl: "Ontdek Premium", pt: "Conheça o Premium", sv: "Upptäck Premium", ru: "Узнать о Premium", pl: "Poznaj Premium", ko: "Premium 알아보기", fa: "Discover Premium" })),
-                React.createElement("button", { onClick: () => setLimiteCheval(false), style: { marginTop: 12, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, tr({ fr: "Plus tard", en: "Later", es: "Más tarde", it: "Più tardi", ja: "後で", de: "Später", ar: "\u0644\u0627\u062d\u0642\u0627", zh: "以后再说", nl: "Later", pt: "Mais tarde", sv: "Senare", ru: "Позже", pl: "Później", ko: "나중에", fa: "Later" }))))));
+                React.createElement("button", { onClick: () => setLimiteCheval(false), style: { marginTop: 12, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, tr({ fr: "Plus tard", en: "Later", es: "Más tarde", it: "Più tardi", ja: "後で", de: "Später", ar: "\u0644\u0627\u062d\u0642\u0627", zh: "以后再说", nl: "Later", pt: "Mais tarde", sv: "Senare", ru: "Позже", pl: "Później", ko: "나중에", fa: "بعداً" }))))));
 }
 window.HypeProfilInterne = { ProfilInterne: EcranProfilInterne };
 })();

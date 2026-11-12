@@ -425,7 +425,7 @@ function hypeRecompense(place, partants) {
     var f2 = function (t) { t = ((t % 1440) + 1440) % 1440; return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };
     return f2(deb) + " – " + f2(fin);
   }
-  var LOCF = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" };
+  var LOCF = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   var txtRefusF = T("Rien n’a été supprimé (refus de la base).", "Nothing was deleted (refused by the database).", "No se eliminó nada (rechazado por la base).", "Niente è stato eliminato (rifiuto del database).", "何も削除されませんでした（データベースが拒否）。", "Nichts gelöscht (von der Datenbank abgelehnt).", "لم يُحذف شيء (رفضت قاعدة البيانات).", "没有删除任何内容（被数据库拒绝）。", "Er is niets verwijderd (geweigerd door de database).", "Nada foi excluído (recusado pelo banco de dados).", "Inget raderades (nekades av databasen).", "Ничего не было удалено (база данных отказала).", "Nic nie zostało usunięte (odmowa bazy).", "삭제된 것이 없어요(데이터베이스가 거부했어요).", "Nothing was deleted (refused by the database).");
   var txtRienF = T("La base n’a rien renvoyé.", "The database returned nothing.", "La base no devolvió nada.", "Il database non ha restituito nulla.", "データベースから応答がありません。", "Die Datenbank hat nichts zurückgegeben.", "لم تُرجع قاعدة البيانات شيئًا.", "数据库没有返回任何内容。", "De database heeft niets teruggegeven.", "O banco de dados não retornou nada.", "Databasen returnerade ingenting.", "База данных ничего не вернула.", "Baza nic nie zwróciła.", "데이터베이스에서 아무것도 돌아오지 않았어요.", "The database returned nothing.");
   async function creerForfait() {
@@ -581,12 +581,12 @@ function hypeRecompense(place, partants) {
   var BTN_OR_F = { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(217,199,163,0.5)", background: "rgba(217,199,163,0.14)", color: OR, fontSize: 14, fontWeight: 600, fontFamily: M, cursor: "pointer", minHeight: 44 };
   var BTN_GRIS_F = { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.15)", background: "none", color: "#C9CFD4", fontSize: 14, fontFamily: M, cursor: "pointer", minHeight: 44 };
   var TXT_SEANCES_F = T("séances", "sessions", "sesiones", "lezioni", "回", "Einheiten", "حصص", "节课", "lessen", "sessões", "pass", "занятий", "jazd", "회", "sessions");
-  var TXT_SUPPR_F = T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제", "Delete");
-  var TXT_ANNULER_F = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "Cancel");
+  var TXT_SUPPR_F = T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف", "删除", "Verwijderen", "Excluir", "Ta bort", "Удалить", "Usuń", "삭제", "حذف");
+  var TXT_ANNULER_F = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj", "취소", "لغو");
   var META2 = {
-    stage: { emoji: "\uD83C\uDF93", label: T("Stage", "Clinic", "Cursillo", "Stage", "\u8B1B\u7FD2", "Lehrgang", "\u062a\u062f\u0631\u064a\u0628", "训练营", "Clinic", "Estágio", "Kurs", "Сбор", "Warsztaty", "클리닉", "Clinic") },
-    concours: { emoji: "\uD83C\uDFC6", label: T("Concours", "Show", "Concurso", "Concorso", "\u7AF6\u6280\u4F1A", "Turnier", "\u0645\u0633\u0627\u0628\u0642\u0629", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "Show") },
-    sortie: { emoji: "\uD83C\uDF3F", label: T("Sortie", "Outing", "Salida", "Uscita", "\u5916\u51FA", "Ausflug", "\u062e\u0631\u062c\u0629", "外出活动", "Uitje", "Passeio", "Utflykt", "Выезд", "Wyjazd", "나들이", "Outing") }
+    stage: { emoji: "\uD83C\uDF93", label: T("Stage", "Clinic", "Cursillo", "Stage", "\u8B1B\u7FD2", "Lehrgang", "\u062a\u062f\u0631\u064a\u0628", "训练营", "Clinic", "Estágio", "Kurs", "Сбор", "Warsztaty", "클리닉", "دورهٔ آموزشی") },
+    concours: { emoji: "\uD83C\uDFC6", label: T("Concours", "Show", "Concurso", "Concorso", "\u7AF6\u6280\u4F1A", "Turnier", "\u0645\u0633\u0627\u0628\u0642\u0629", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "مسابقه") },
+    sortie: { emoji: "\uD83C\uDF3F", label: T("Sortie", "Outing", "Salida", "Uscita", "\u5916\u51FA", "Ausflug", "\u062e\u0631\u062c\u0629", "外出活动", "Uitje", "Passeio", "Utflykt", "Выезд", "Wyjazd", "나들이", "گردش") }
   };
   var MOIS2 = ({
     fr: ["janvier", "f\u00e9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\u00fbt", "septembre", "octobre", "novembre", "d\u00e9cembre"],
@@ -688,7 +688,7 @@ function hypeRecompense(place, partants) {
        jour choisi = contour champagne et fond un peu plus clair (pas de gros rond dore) ; petits
        points sobres sous le numero ; jours du mois d avant / d apres estompes (decor seulement,
        on ne les touche pas). FONCTIONNEMENT INCHANGE : memes gestes, memes donnees. */
-    var locCal = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" })[lg] || "fr-FR";
+    var locCal = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" })[lg] || "fr-FR";
     var initiales = [0, 1, 2, 3, 4, 5, 6].map(function (i) {
       var j = (i + 1) % 7;
       try {
@@ -806,7 +806,7 @@ function hypeRecompense(place, partants) {
           h("div", { "data-forfaits-jour": jourVu, "data-noswipe": "1", onClick: function (eV) { try { eV.stopPropagation(); } catch (eV2) { } }, style: { position: "relative", width: "100%", maxWidth: 560, maxHeight: "min(76vh, 680px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(255,255,255,0.09)", borderBottom: "none", padding: "10px 16px calc(env(safe-area-inset-bottom) + 24px)", boxShadow: "0 -14px 44px rgba(0,0,0,0.55)" } },
           h("div", { style: { width: 44, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.18)", margin: "0 auto 12px" } }),
           h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 6 } },
-            h("button", { "data-forfaits-fermer": "1", onClick: fermerJour, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "Close"), style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#EDF2F5", fontSize: 15, cursor: "pointer", flex: "0 0 auto", padding: 0 } }, "\u2715"),
+            h("button", { "data-forfaits-fermer": "1", onClick: fermerJour, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642", "关闭", "Sluiten", "Fechar", "Stäng", "Закрыть", "Zamknij", "닫기", "بستن"), style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#EDF2F5", fontSize: 15, cursor: "pointer", flex: "0 0 auto", padding: 0 } }, "\u2715"),
             h("div", { style: { flex: 1, textAlign: "center", fontFamily: C, fontSize: 16, color: "#F3EEE4", lineHeight: 1.25 } }, titreJ.charAt(0).toUpperCase() + titreJ.slice(1)),
             h("div", { style: { width: 38, flex: "0 0 auto" } })),
           false ? h("div", { style: { margin: "4px 0 6px", padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.07)" } }, evsJour.map(function (ev) {   /* (648) les rendez-vous du club restent dans leur onglet */
@@ -830,14 +830,14 @@ function hypeRecompense(place, partants) {
                 h("select", { value: editS.forfait_id || "", onChange: function (e) { var v = e.target.value; setEditS(function (a) { return Object.assign({}, a || {}, { forfait_id: v }); }); }, style: STYLE_CHAMP_F },
                   choixE.map(function (f2) { return h("option", { key: "oe" + f2.id, value: f2.id }, f2.cavalier_nom + " \u00b7 " + restantesDe(f2) + " / " + f2.seances_total); })),
                 h("div", { style: { display: "flex", gap: 8, alignItems: "center" } },   /* (649) le jour */
-                  h("span", { style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", flex: "0 0 auto" } }, T("Jour", "Day", "D\u00eda", "Giorno", "\u65e5\u4ed8", "Tag", "\u0627\u0644\u064a\u0648\u0645", "日期", "Dag", "Dia", "Dag", "День", "Dzień", "날짜", "Day")),
+                  h("span", { style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", flex: "0 0 auto" } }, T("Jour", "Day", "D\u00eda", "Giorno", "\u65e5\u4ed8", "Tag", "\u0627\u0644\u064a\u0648\u0645", "日期", "Dag", "Dia", "Dag", "День", "Dzień", "날짜", "روز")),
                   h("input", { type: "date", "data-seance-jour": "1", value: editS.date_jour || "", onChange: function (e) { var v = e.target.value; setEditS(function (a) { return Object.assign({}, a || {}, { date_jour: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { flex: 1, width: "auto", minWidth: 0 }) })),
                 h("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
                   h("span", { style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", flex: "0 0 auto" } }, T("Heure (facultatif)", "Time (optional)", "Hora (opcional)", "Ora (facoltativa)", "\u6642\u523b\uff08\u4efb\u610f\uff09", "Uhrzeit (optional)", "\u0627\u0644\u0648\u0642\u062a (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)", "时间（可选）", "Tijd (optioneel)", "Hora (opcional)", "Tid (valfritt)", "Время (необязательно)", "Godzina (opcjonalnie)", "시간(선택)", "Time (optional)")),
                   h("input", { type: "time", value: editS.heure || "", onChange: function (e) { var v = e.target.value; setEditS(function (a) { return Object.assign({}, a || {}, { heure: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { flex: 1, width: "auto", minWidth: 0 }) })),
                 h("div", { style: { display: "flex", gap: 8 } },
                   h("button", { onClick: function () { setEditS(null); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
-                  h("button", { onClick: modifierSeance, disabled: busyF, style: BTN_OR_F }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "Save"))));
+                  h("button", { onClick: modifierSeance, disabled: busyF, style: BTN_OR_F }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "ذخیره"))));
             }
             return h("div", { key: "fs" + x.s.id, className: "forf-seance", role: "button", "data-seance": x.s.id,
               onClick: function () { setAjoutF(null); setErrF(""); setEditS({ id: x.s.id, forfait_id: x.f.id, heure: x.s.heure || "", date_jour: String(x.s.date_jour || jourVu).slice(0, 10) }); },   /* (641) toucher = modifier */
@@ -862,7 +862,7 @@ function hypeRecompense(place, partants) {
               h("input", { type: "time", value: ajoutF.heure || "", onChange: function (e) { var v = e.target.value; setAjoutF(function (a) { return Object.assign({}, a || {}, { heure: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { flex: 1, width: "auto", minWidth: 0 }) })),
             h("div", { style: { display: "flex", gap: 8 } },
               h("button", { onClick: function () { setAjoutF(null); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
-              h("button", { onClick: function () { ajouterSeance(jourVu); }, disabled: busyF, style: BTN_OR_F }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "Add"))))
+              h("button", { onClick: function () { ajouterSeance(jourVu); }, disabled: busyF, style: BTN_OR_F }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن"))))
             : (dispo.length ? h("div", { role: "button", "data-forfait-plus": "1", onClick: function () { setErrF(""); setEditS(null); setAjoutF({ forfait_id: dispo.length === 1 ? dispo[0].id : "", heure: "" }); },
               style: { marginTop: 10, textAlign: "center", padding: "11px 8px", borderRadius: 13, border: "1px dashed rgba(217,199,163,0.4)", color: OR, fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer", fontFamily: M } },
               "＋ " + T("Ajouter une séance", "Add a session", "Añadir una sesión", "Aggiungi una lezione", "レッスンを追加", "Einheit hinzufügen", "إضافة حصة", "添加课程", "Les toevoegen", "Adicionar uma sessão", "Lägg till ett pass", "Добавить занятие", "Dodaj jazdę", "레슨 추가", "Add a session"))
@@ -895,7 +895,7 @@ function hypeRecompense(place, partants) {
                 h("input", { "data-forfait-edit-nom": "1", value: editF.nom || "", maxLength: 60, placeholder: T("Nom du cavalier", "Rider\u2019s name", "Nombre del jinete", "Nome del cavaliere", "\u9a0e\u624b\u306e\u540d\u524d", "Name der Reiter / des Reiters", "اسم الفارس أو الفارس", "骑手姓名", "Naam van de ruiter", "Nome do cavaleiro ou do cavaleiro", "Ryttarens namn", "Имя всадники или всадника", "Imię i nazwisko jeźdźcy lub jeźdźca", "기수 이름", "Rider’s name"), onChange: function (e) { var v = e.target.value; setEditF(function (a) { return Object.assign({}, a || {}, { nom: v }); }); }, style: STYLE_CHAMP_F }),
                 h("div", { style: { display: "flex", gap: 8 } },
                   h("button", { onClick: function () { setEditF(null); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
-                  h("button", { onClick: modifierForfait, disabled: busyF, style: BTN_OR_F }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "Save"))));
+                  h("button", { onClick: modifierForfait, disabled: busyF, style: BTN_OR_F }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638", "保存", "Opslaan", "Salvar", "Spara", "Сохранить", "Zapisz", "저장", "ذخیره"))));
             }
             return h("div", { key: "fc" + f.id, className: "forf-carte", "data-forfait": f.id, role: "button", onClick: function () { setErrF(""); setFormF(false); setEditF({ id: f.id, cavalier_id: f.cavalier_id || "", nom: f.cavalier_nom || "" }); },   /* (653) toucher = modifier */ style: { position: "relative", padding: "12px 12px 12px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#0D1518", opacity: fini ? 0.82 : 1, cursor: "pointer" } },   /* (640) moins estompee : le bouton Renouveler doit rester lisible */
               h("div", { style: { display: "flex", alignItems: "center", gap: 9, paddingInlineEnd: 22 } },
@@ -907,7 +907,7 @@ function hypeRecompense(place, partants) {
                 h("div", { style: { width: (tot ? Math.round(rest / tot * 100) : 0) + "%", height: "100%", borderRadius: 2, background: f.couleur || FORF_COULEURS[0] } })),
               h("div", { style: { marginTop: 6, fontFamily: M, fontSize: 10, color: "#6B7580" } }, dureeTxtF(f.duree_min) + (fini ? " · " + T("Terminé", "Used up", "Agotado", "Esaurito", "終了", "Aufgebraucht", "منتهية", "已完成", "Beëindigd", "Encerrado", "Avslutad", "Завершено", "Zakończono", "완료", "Used up") : "")),
               fini ? h("button", { "data-forfait-renouveler": f.id, onClick: function (eRn) { try { eRn.stopPropagation(); } catch (eR4) { } renouvelerForfait(f); }, disabled: busyF, style: { marginTop: 9, width: "100%", minHeight: 36, padding: "0 10px", borderRadius: 999, border: "1px solid rgba(217,199,163,0.45)", background: "rgba(217,199,163,0.10)", color: OR, fontFamily: M, fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } },
-                "\u21bb " + T("Renouveler", "Renew", "Renovar", "Rinnova", "\u66f4\u65b0", "Erneuern", "\u062a\u062c\u062f\u064a\u062f", "续订", "Vernieuwen", "Renovar", "Förnya", "Продлить", "Odnów", "갱신", "Renew")) : null,   /* (640) */
+                "\u21bb " + T("Renouveler", "Renew", "Renovar", "Rinnova", "\u66f4\u65b0", "Erneuern", "\u062a\u062c\u062f\u064a\u062f", "续订", "Vernieuwen", "Renovar", "Förnya", "Продлить", "Odnów", "갱신", "تمدید")) : null,   /* (640) */
               h("button", { onClick: function (eSf) { try { eSf.stopPropagation(); } catch (eS4) { } supprimerForfait(f); }, "aria-label": TXT_SUPPR_F, disabled: busyF, style: { position: "absolute", top: 8, insetInlineEnd: 8, width: 24, height: 24, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.10)", background: "rgba(255,255,255,0.03)", color: "#8A929C", fontSize: 10, cursor: "pointer", padding: 0 } }, "✕"));
           })) : h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#6B7580", fontStyle: "italic", padding: "4px 0 8px" } },
             T("Aucun forfait pour l’instant.", "No package yet.", "Todavía no hay bonos.", "Nessun pacchetto per ora.", "回数券はまだありません。", "Noch keine Karte.", "لا توجد باقات بعد.", "目前还没有课时卡。", "Nog geen lessenkaart.", "Nenhum pacote por enquanto.", "Inga klippkort ännu.", "Пока нет ни одного абонемента.", "Na razie brak karnetów.", "아직 회차권이 없어요.", "No package yet."))),
@@ -928,7 +928,7 @@ function hypeRecompense(place, partants) {
                 h("input", { type: "number", inputMode: "numeric", min: 15, max: 600, step: 15, value: nouvF.duree, onChange: function (e) { var v = e.target.value; setNouvF(function (n) { return Object.assign({}, n, { duree: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { marginTop: 4 }) }))),
             h("div", { style: { display: "flex", gap: 8 } },
               h("button", { onClick: function () { setFormF(false); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
-              h("button", { onClick: creerForfait, disabled: busyF, style: BTN_OR_F }, T("Créer", "Create", "Crear", "Crea", "作成", "Anlegen", "إنشاء", "创建", "Aanmaken", "Criar", "Skapa", "Создать", "Utwórz", "만들기", "Create"))))
+              h("button", { onClick: creerForfait, disabled: busyF, style: BTN_OR_F }, T("Créer", "Create", "Crear", "Crea", "作成", "Anlegen", "إنشاء", "创建", "Aanmaken", "Criar", "Skapa", "Создать", "Utwórz", "만들기", "ساختن"))))
           : h("div", { role: "button", "data-forfait-nouveau": "1", onClick: function () { setErrF(""); setFormF(true); },
             style: { marginTop: 12, textAlign: "center", padding: "12px 8px", borderRadius: 13, border: "1px solid rgba(217,199,163,0.30)", color: OR, fontSize: 11, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", fontFamily: M } },
             "＋ " + T("Nouveau forfait", "New package", "Nuevo bono", "Nuovo pacchetto", "新しい回数券", "Neue Karte", "باقة جديدة", "新建课时卡", "Nieuwe lessenkaart", "Novo pacote", "Nytt klippkort", "Новый абонемент", "Nowy karnet", "새 회차권", "New package"))) : null);
@@ -954,7 +954,7 @@ function hypeRecompense(place, partants) {
           maskImage: "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 38%, #000 70%)" } })),
     h("button", {
       onClick: function () { setEcran("guilde"); },
-      "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"),
+      "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"),
       style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14 /* (1053) a gauche meme en arabe : le drapeau de langue occupe la droite */, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.45)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer" }
     }, "\u2039"),
     h("div", { style: { position: "relative", zIndex: 1 } },
@@ -1055,7 +1055,7 @@ function hypeRecompense(place, partants) {
     }
     function moisCourt(pd) {
       try {
-        var loc = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" })[lg] || "fr-FR";
+        var loc = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" })[lg] || "fr-FR";
         var t = new Date(pd.an, pd.mois - 1, pd.jour).toLocaleDateString(loc, { month: "short" });
         return String(t || "").replace(/\.$/, "");
       } catch (eMc) {
@@ -1148,14 +1148,14 @@ function hypeRecompense(place, partants) {
     /* --- la ligne de resume : seulement ce qui existe --- */
     var morceaux = [];
     if (nbMedias) morceaux.push(nbMedias + " " + (nbMedias === 1
-      ? T("m\u00e9dia", "media", "archivo", "media", "\u4ef6\u306e\u30e1\u30c7\u30a3\u30a2", "Medium", "\u0648\u0633\u064a\u0637", "媒体", "mediabestand", "mídia", "media", "медиафайл", "plik multimedialny", "미디어", "media")
-      : T("m\u00e9dias", "media", "archivos", "media", "\u4ef6\u306e\u30e1\u30c7\u30a3\u30a2", "Medien", "\u0648\u0633\u0627\u0626\u0637", "媒体", "mediabestanden", "mídias", "media", "медиафайлов", "pliki multimedialne", "미디어", "media")));
+      ? T("m\u00e9dia", "media", "archivo", "media", "\u4ef6\u306e\u30e1\u30c7\u30a3\u30a2", "Medium", "\u0648\u0633\u064a\u0637", "媒体", "mediabestand", "mídia", "media", "медиафайл", "plik multimedialny", "미디어", "رسانه")
+      : T("m\u00e9dias", "media", "archivos", "media", "\u4ef6\u306e\u30e1\u30c7\u30a3\u30a2", "Medien", "\u0648\u0633\u0627\u0626\u0637", "媒体", "mediabestanden", "mídias", "media", "медиафайлов", "pliki multimedialne", "미디어", "رسانه")));
     if (estConcours && listeRes.length) morceaux.push(listeRes.length + " " + (listeRes.length === 1
-      ? T("r\u00e9sultat", "result", "resultado", "risultato", "\u4ef6\u306e\u7d50\u679c", "Ergebnis", "\u0646\u062a\u064a\u062c\u0629", "成绩", "resultaat", "resultado", "resultat", "результат", "wynik", "결과", "result")
-      : T("r\u00e9sultats", "results", "resultados", "risultati", "\u4ef6\u306e\u7d50\u679c", "Ergebnisse", "\u0646\u062a\u0627\u0626\u062c", "成绩", "resultaten", "resultados", "resultat", "результатов", "wyniki", "결과", "results")));
+      ? T("r\u00e9sultat", "result", "resultado", "risultato", "\u4ef6\u306e\u7d50\u679c", "Ergebnis", "\u0646\u062a\u064a\u062c\u0629", "成绩", "resultaat", "resultado", "resultat", "результат", "wynik", "결과", "نتیجه")
+      : T("r\u00e9sultats", "results", "resultados", "risultati", "\u4ef6\u306e\u7d50\u679c", "Ergebnisse", "\u0646\u062a\u0627\u0626\u062c", "成绩", "resultaten", "resultados", "resultat", "результатов", "wyniki", "결과", "نتیجه")));
     if (!estConcours && postsIci.length) morceaux.push(postsIci.length + " " + (postsIci.length === 1
-      ? T("publication", "post", "publicaci\u00f3n", "post", "\u4ef6\u306e\u6295\u7a3f", "Beitrag", "\u0645\u0646\u0634\u0648\u0631", "条发布", "bericht", "publicação", "inlägg", "публикация", "publikacja", "게시물", "post")
-      : T("publications", "posts", "publicaciones", "post", "\u4ef6\u306e\u6295\u7a3f", "Beitr\u00e4ge", "\u0645\u0646\u0634\u0648\u0631\u0627\u062a", "条发布", "berichten", "publicações", "inlägg", "публикаций", "publikacje", "게시물", "posts")));
+      ? T("publication", "post", "publicaci\u00f3n", "post", "\u4ef6\u306e\u6295\u7a3f", "Beitrag", "\u0645\u0646\u0634\u0648\u0631", "条发布", "bericht", "publicação", "inlägg", "публикация", "publikacja", "게시물", "پست")
+      : T("publications", "posts", "publicaciones", "post", "\u4ef6\u306e\u6295\u7a3f", "Beitr\u00e4ge", "\u0645\u0646\u0634\u0648\u0631\u0627\u062a", "条发布", "berichten", "publicações", "inlägg", "публикаций", "publikacje", "게시물", "پست")));
     var resume = morceaux.length
       ? h("div", { className: "hype-agenda-passe-summary" },
           morceaux.map(function (mc, iM) {
@@ -1334,8 +1334,8 @@ function hypeRecompense(place, partants) {
   function pagePasses() {
     var grand = l768P;
     var FILTRES_P = [
-      ["tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alles", "Todos", "Alla", "Все", "Wszystkie", "전체", "All")],
-      ["concours", T("Concours", "Shows", "Concursos", "Concorsi", "競技会", "Turniere", "المسابقات", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "Shows")],
+      ["tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل", "全部", "Alles", "Todos", "Alla", "Все", "Wszystkie", "전체", "همه")],
+      ["concours", T("Concours", "Shows", "Concursos", "Concorsi", "競技会", "Turniere", "المسابقات", "比赛", "Wedstrijd", "Competição", "Tävling", "Соревнования", "Zawody", "대회", "مسابقه‌ها")],
       ["stage", T("Stages", "Clinics", "Cursillos", "Stage", "講習", "Lehrgänge", "التدريبات", "集训", "Stages", "Clínicas", "Kurser", "Сборы", "Warsztaty", "스테이지", "Clinics")],
       ["sortie", T("Sorties", "Outings", "Salidas", "Uscite", "外出", "Ausflüge", "الخرجات", "外出活动", "Uitstapjes", "Passeios", "Utflykter", "Выезды", "Wyjazdy", "외승", "Outings")]];
     /* 12/10 (1056) - ANNEES ET « VOIR PLUS ». Le choix de l annee n apparait que si les
@@ -1363,7 +1363,7 @@ function hypeRecompense(place, partants) {
         h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", rgba(5,8,11,0.85) 0%, rgba(5,8,11,0.55) " + (grand ? "38%" : "48%") + ", rgba(5,8,11,0.05) " + (grand ? "70%" : "85%") + ")" } }));
     var hero = h("div", { "data-passes-tete": "1", style: { position: "relative", zIndex: 1 } },
       h("button", { onClick: function () { setEcran("agenda-club"); },
-        "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "Back"),
+        "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"),
         style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(5,8,11,0.45)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer" } }, "‹"),
       h("div", { style: { position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: (grand ? "calc(env(safe-area-inset-top) + 74px) " : "calc(env(safe-area-inset-top) + 70px) ") + gouttiere + "px " + (grand ? "26px" : "20px") } },
         grand ? h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 18, fontFamily: M, fontSize: 12.5 } },
@@ -1392,7 +1392,7 @@ function hypeRecompense(place, partants) {
       h("span", { style: { flex: 1, minWidth: grand ? 92 : 0 } }, anneeEff === "toutes" ? T("Toutes les ann\u00e9es", "All years", "Todos los a\u00f1os", "Tutti gli anni", "\u3059\u3079\u3066\u306e\u5e74", "Alle Jahre", "\u0643\u0644 \u0627\u0644\u0633\u0646\u0648\u0627\u062a", "所有年份", "Alle jaren", "Todos os anos", "Alla år", "Все годы", "Wszystkie lata", "전체 연도", "All years") : anneeEff),
       h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "rgba(243,238,228,0.7)", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flex: "none" } }, h("path", { d: "M6 9l6 6 6-6" })),
       /* le vrai menu du telephone, invisible par-dessus : la roue de choix native sur iPhone */
-      h("select", { value: anneeEff, "aria-label": T("Ann\u00e9e", "Year", "A\u00f1o", "Anno", "\u5e74", "Jahr", "\u0627\u0644\u0633\u0646\u0629", "年份", "Jaar", "Ano", "År", "Год", "Rok", "연도", "Year"),
+      h("select", { value: anneeEff, "aria-label": T("Ann\u00e9e", "Year", "A\u00f1o", "Anno", "\u5e74", "Jahr", "\u0627\u0644\u0633\u0646\u0629", "年份", "Jaar", "Ano", "År", "Год", "Rok", "연도", "سال"),
         onChange: function (e) { setAnneeP(e.target.value); setNbVusP(12); },
         style: { position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", fontSize: 16 } },
         h("option", { value: "toutes" }, T("Toutes les ann\u00e9es", "All years", "Todos los a\u00f1os", "Tutti gli anni", "\u3059\u3079\u3066\u306e\u5e74", "Alle Jahre", "\u0643\u0644 \u0627\u0644\u0633\u0646\u0648\u0627\u062a", "所有年份", "Alle jaren", "Todos os anos", "Alla år", "Все годы", "Wszystkie lata", "전체 연도", "All years")),
@@ -1467,7 +1467,7 @@ function hypeRecompense(place, partants) {
      confirmation. Pas d affiche : pas de photo pour l instant (Blandine enverra une image par
      sorte de rendez-vous). */
   var COUL_SOBRE = { concours: "#C9A66B", stage: "#B9735E", sortie: "#9483BD" };
-  var LOC_AG = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "en-GB" })[lg] || "fr-FR";
+  var LOC_AG = ({ fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" })[lg] || "fr-FR";
   function moisCourt(d) { try { return new Intl.DateTimeFormat(LOC_AG, { month: "short" }).format(d); } catch (eMc) { return String(d.getMonth() + 1); } }
   function titreSectionAg(txt) {
     return h("div", { style: { display: "flex", alignItems: "center", gap: 14, margin: "6px 0 14px" } },
@@ -1629,7 +1629,7 @@ function hypeRecompense(place, partants) {
        calendrier en place, pour qu aucune information ne disparaisse entre deux livraisons. */
     /* 12/10 (1053) : onglets soulignes (maquette) au lieu de la pilule ; memes onglets, meme effet. */
     peutForfaits ? h("div", { "data-agenda-onglets": "1", role: "tablist", style: { display: "flex", gap: 8, margin: "0 22px 14px", borderBottom: "1px solid rgba(255,255,255,0.10)" } },
-      [["rdv", T("Rendez-vous", "Events", "Citas", "Eventi", "\u4e88\u5b9a", "Termine", "\u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f", "约会", "Afspraak", "Compromisso", "Händelse", "Событие", "Wydarzenie", "일정", "Events")], ["forfaits", T("Forfaits", "Packages", "Bonos", "Pacchetti", "\u56de\u6570\u5238", "Karten", "\u0627\u0644\u0628\u0627\u0642\u0627\u062a", "课时卡", "Lessenkaarten", "Pacotes", "Klippkort", "Абонементы", "Karnety", "회차권", "Packages")]].map(function (o) {
+      [["rdv", T("Rendez-vous", "Events", "Citas", "Eventi", "\u4e88\u5b9a", "Termine", "\u0627\u0644\u0645\u0648\u0627\u0639\u064a\u062f", "约会", "Afspraak", "Compromisso", "Händelse", "Событие", "Wydarzenie", "일정", "قرارها")], ["forfaits", T("Forfaits", "Packages", "Bonos", "Pacchetti", "\u56de\u6570\u5238", "Karten", "\u0627\u0644\u0628\u0627\u0642\u0627\u062a", "课时卡", "Lessenkaarten", "Pacotes", "Klippkort", "Абонементы", "Karnety", "회차권", "Packages")]].map(function (o) {
         var actifO = ongletAg === o[0];
         return h("button", { key: "og" + o[0], role: "tab", "aria-selected": actifO ? "true" : "false", "data-onglet-agenda": o[0],
           onClick: function () { setOngletAg(o[0]); setJourVu(""); setAjoutF(null); setEditS(null); setErrF(""); },
