@@ -76,7 +76,6 @@ FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
  ("💉", "Rappels pour toute l’écurie", "Vaccins, vermifuges, maréchal, dentiste… Hype te rappelle chaque échéance à temps.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("🏠", "La page publique de ton écurie", "Présente ton écurie, tes chevaux et tes activités pour te faire connaître et trouver de nouveaux cavaliers.", "https://2hype.fr/fr/centres-equestres/"),
  ("📅", "Agenda et messagerie du club", "Les rendez-vous de l’écurie, les inscriptions, les groupes de discussion et les alertes sur le téléphone.", "https://2hype.fr/fr/gestion-ecurie/"),
- ("👥", "Personnel", "Registre unique du personnel et planning des tâches : chacun voit ce qu’il a à faire.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("⚖️", "Documents légaux", "Affichages obligatoires, document unique, assurances, transport des chevaux : tout est expliqué simplement, et Hype te rappelle chaque échéance.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("📄", "Pensions et contrats", "Les paiements à encaisser et les contrats à renouveler, sans tableau à tenir à côté.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("💶", "Compta et demandes d’aides", "Ta compta préparée pour ton comptable, et Hey Baby pour t’aider à trouver les aides possibles et à monter tes dossiers de demande.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
