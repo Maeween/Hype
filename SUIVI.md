@@ -80,6 +80,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - hype-ecran-team-medias.js v=43 : « · par Maëlys » / « · par toi » au bout de la ligne des vignettes vidéo ; ligne concours · épreuve · date · « postée par » sous la vidéo ouverte.
 - index.html : PanneauConseilsHB rendu par hypePortailBody (Blandine : page noire depuis Mon apprentissage › Mes conseils Hey Baby ; non reproduit sur le banc, même avec ses 15 vrais conseils — précaution, à revérifier sur son iPhone).
 - Vidéo d Aurélie : aucun plafond à 2 ; son compte Premium (15) n en a qu une ; un envoi raté le 11/11 10h47 « réseau interrompu pendant l envoi ».
+### 12/11 01h44 — build 20261112-0245 — Bandeaux « L'équipe » avec les vraies photos (Blandine « vas-y »)
+- images/bandeau-equipe-cavaliers.webp (cavalière sur le gris, noir + filet doré à gauche) et images/bandeau-equipe-chevaux.webp (palomino sur l oxer, noir à droite), envoyées par Blandine, déjà composées en bandeau.
+- hype-ecran-team.js v=34 : bandeauEq en mode « plein » (8e argument) : photo entière sur toute la largeur, texte posé dans la zone noire (gauche pour les cavaliers, droite et remonté au-dessus des plantes pour les chevaux). Remplacer une photo = changer BANDEAU_EQ_CAV / BANDEAU_EQ_CH.
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').

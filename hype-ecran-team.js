@@ -639,12 +639,23 @@ function EcranTeamCompetition() {
      photo dépliables (accordéons indépendants) ; dessous, une grille 2 par ligne (3 dès 820 px) de portraits CARRÉS où la photo
      reste ENTIÈRE (contain, marges noires), noms centrés, aucun encadrement. Chevaux : les deux meilleurs de la SAISON d'abord.
      Photos des bandeaux : celles de l'appli en attendant les vraies de l'écurie (BANDEAU_EQ_*, à remplacer en un seul endroit). ── */
-  var BANDEAU_EQ_CAV = "images/FOND_CAVALIERS_ECURIE.webp", BANDEAU_EQ_CH = "images/concours-hero-bai-tresse.webp";
+  var BANDEAU_EQ_CAV = "images/bandeau-equipe-cavaliers.webp", BANDEAU_EQ_CAV_PLEIN = true   /* 12/11 01h39 : vraie photo envoyée par Blandine, déjà composée en bandeau (noir à gauche) */, BANDEAU_EQ_CH = "images/bandeau-equipe-chevaux.webp", BANDEAU_EQ_CH_PLEIN = true;   /* 12/11 01h41 : 2e vraie photo (noir à droite) */
   var grandEq = largEcran >= 820;
   function bandeauEq(cle, titre, desc, lien, img, texteADroite, miroir) {
     /* 12/11 01h22 (Blandine : « ils sont énormes tes bandeaux ») : hauteur fixe et basse (130 px, 170 px dès 820 px), comme la
        maquette ; la photo, ENTIÈRE, occupe son côté (pas de recadrage), le texte l'autre côté — plus de texte posé sur la photo. */
     var ouv = !!ouvert[cle], hB = grandEq ? 170 : 130;
+    /* bandeau « plein » : l'image est déjà composée (zone noire pour le texte) → photo ENTIÈRE sur toute la largeur, texte posé dans le noir */
+    if (arguments[7]) {
+      return h("button", { key: "bd" + cle, type: "button", "aria-expanded": ouv, "aria-controls": "eq-liste-" + cle, onClick: function () { basculer(cle); },
+          style: { position: "relative", display: "block", width: "100%", padding: 0, margin: 0, border: "none", borderTop: "1px solid rgba(244,241,234,0.08)", background: BG, color: IV, textAlign: "start", cursor: "pointer", overflow: "hidden" } },
+        h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
+        h("div", { style: { position: "absolute", top: 0, bottom: 0, [texteADroite ? "right" : "left"]: 0, width: texteADroite ? "38%" : "44%", display: "flex", flexDirection: "column", justifyContent: "center", padding: texteADroite ? "0 16px 14% 0" : "0 0 0 20px", boxSizing: "border-box" } },
+          h("div", { style: { fontFamily: SERIF, fontSize: grandEq ? 34 : 24, fontWeight: 500, lineHeight: 1.05 } }, titre),
+          h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, lineHeight: 1.45, color: "rgba(244,241,234,0.72)", marginTop: 5 } }, desc),
+          h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, color: OR, marginTop: 7, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기") : lien,
+            h("span", { "aria-hidden": "true", style: { display: "inline-block", transform: ouv ? "rotate(-90deg)" : (rtl ? "rotate(180deg)" : "none"), transition: "transform .2s" } }, "›"))));
+    }
     var photo = h("div", { style: { flex: "0 0 auto", height: hB, display: "flex", alignItems: "center", justifyContent: texteADroite ? "flex-start" : "flex-end", maxWidth: "58%" } },
       h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", transform: miroir ? "scaleX(-1)" : "none" } }));
     var texte = h("div", { style: { flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: texteADroite ? "0 20px 0 16px" : "0 16px 0 20px" } },
@@ -672,12 +683,12 @@ function EcranTeamCompetition() {
   var blocEquipe = h("div", { key: "blocEq", style: { marginTop: 18 } },
     bandeauEq("bcav", T("Nos cavaliers", "Our riders", "Nuestros jinetes", "I nostri cavalieri", "私たちのライダー", "Unsere Reiter", "فرساننا", "我们的骑手", "Onze ruiters", "Nossos cavaleiros", "Våra ryttare", "Наши всадники", "Nasi jeźdźcy", "우리 기수"),
       T("Une équipe soudée, passionnée et engagée.", "A close-knit, passionate and committed team.", "Un equipo unido, apasionado y comprometido.", "Una squadra unita, appassionata e impegnata.", "結束が固く、情熱的で、ひたむきなチーム。", "Ein eingeschworenes, leidenschaftliches und engagiertes Team.", "فريق متماسك، شغوف وملتزم.", "一支团结、热情、投入的队伍。", "Een hecht, gepassioneerd en betrokken team.", "Uma equipa unida, apaixonada e empenhada.", "Ett sammansvetsat, passionerat och engagerat lag.", "Сплочённая, увлечённая и преданная команда.", "Zgrany, pełen pasji i zaangażowany zespół.", "끈끈하고 열정적이며 헌신적인 팀."),
-      T("Voir les cavaliers", "See the riders", "Ver los jinetes", "Vedi i cavalieri", "ライダーを見る", "Reiter ansehen", "عرض الفرسان", "查看骑手", "Ruiters bekijken", "Ver os cavaleiros", "Se ryttarna", "Смотреть всадников", "Zobacz jeźdźców", "기수 보기"), BANDEAU_EQ_CAV, true, true),
+      T("Voir les cavaliers", "See the riders", "Ver los jinetes", "Vedi i cavalieri", "ライダーを見る", "Reiter ansehen", "عرض الفرسان", "查看骑手", "Ruiters bekijken", "Ver os cavaleiros", "Se ryttarna", "Смотреть всадников", "Zobacz jeźdźców", "기수 보기"), BANDEAU_EQ_CAV, !BANDEAU_EQ_CAV_PLEIN, !BANDEAU_EQ_CAV_PLEIN, BANDEAU_EQ_CAV_PLEIN),
     ouvert.bcav ? (membres === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
       : grilleEq("bcav", (membres || []).map(function (p) { return tuileEq("tcv" + p.id, photoProfil(p), (p.pseudo || "") + (p.role === "coach" ? " · Coach" : ""), chevalDuCav[p.id] || "", function () { ouvrirCavaliere(p); }); }))) : null,
     bandeauEq("bch", T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"),
       T("Des partenaires de confiance.", "Partners we can trust.", "Compañeros de confianza.", "Compagni di fiducia.", "信頼できるパートナー。", "Partner, denen wir vertrauen.", "شركاء موثوقون.", "值得信赖的伙伴。", "Partners om op te vertrouwen.", "Parceiros de confiança.", "Partner att lita på.", "Надёжные партнёры.", "Zaufani partnerzy.", "믿음직한 파트너."),
-      T("Voir les chevaux", "See the horses", "Ver los caballos", "Vedi i cavalli", "馬を見る", "Pferde ansehen", "عرض الخيول", "查看马匹", "Paarden bekijken", "Ver os cavalos", "Se hästarna", "Смотреть лошадей", "Zobacz konie", "말 보기"), BANDEAU_EQ_CH, false, false),
+      T("Voir les chevaux", "See the horses", "Ver los caballos", "Vedi i cavalli", "馬を見る", "Pferde ansehen", "عرض الخيول", "查看马匹", "Paarden bekijken", "Ver os cavalos", "Se hästarna", "Смотреть лошадей", "Zobacz konie", "말 보기"), BANDEAU_EQ_CH, BANDEAU_EQ_CH_PLEIN, false, BANDEAU_EQ_CH_PLEIN),
     ouvert.bch ? (chevaux === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
       : grilleEq("bch", chevauxSaison.map(function (c) { var pc = ptsChevaux[c.id] || 0; return tuileEq("tch" + c.id, c.photo_url || "", c.nom || "", pc > 0 ? libPts(pc) : "", function () { ouvrirCheval(c.id); }, true); }))) : null,
     h("div", { style: { borderTop: "1px solid rgba(244,241,234,0.08)" } }),
