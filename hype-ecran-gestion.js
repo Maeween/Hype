@@ -38,7 +38,8 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
     pensions: { img: "images/communaute-carte-ecuries.webp", pos: "60% 50%" },
     planning: { img: "images/pansage-comprendre-2.webp", pos: "50% 40%" },
     liaison: { img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%" },
-    paddocks: { img: "images/mes-chevaux-fond-couchant.webp", pos: "50% 35%" }
+    paddocks: { img: "images/mes-chevaux-fond-couchant.webp", pos: "50% 35%" },
+    coffre: { img: "images/JOURNAL_CARNET_FOND.webp", pos: "45% 50%" }   /* 12/11 Mon coffre-fort */
   };
 
   var CSS_ID = "hype-gestion-css-1";
@@ -75,7 +76,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 14;   /* 12/11 : + persan (i18n/gestion-fa.json) */
+  var I18N_V = 15;   /* 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -2617,5 +2618,355 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
   }
   var EcranContrats = EcranListe(CFG_CONTRATS), EcranStock = EcranListe(CFG_STOCK), EcranPensions = EcranListe(CFG_PENSIONS), EcranPlanning = EcranListe(CFG_PLANNING), EcranLiaison = EcranListe(CFG_LIAISON), EcranPaddocks = EcranListe(CFG_PADDOCKS);
 
-  window.HypeGestion = { Liaison: EcranLiaison, Paddocks: EcranPaddocks, Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
+  /* ═════════════════════════ 12/11 PAGE « MES DOCUMENTS / MON COFFRE-FORT » ═════════════════════════
+     Demande de Blandine (12/11, 13 h 52) : une page pour chaque utilisateur (entrée depuis la page Cavalier et depuis la fiche
+     de chaque cheval), photo ou PDF avec un type, rattachable à un cheval, échéance facultative, ouverture en un geste, visible
+     UNIQUEMENT par la personne qui a déposé le document. 14 h 05 : « Premium ». 14 h 28-14 h 31 : deux espaces au lieu d'un,
+     sans coffre d'écurie (« laisse tomber ») :
+       · « Mes documents » : les papiers pratiques (licence, carnet et vaccination, camion / van, assurance) ; dans « Carnet et
+         vaccination », un encart par cheval ;
+       · « Mon coffre-fort » : le sensible (contrat de travail, compta, livret de famille, identité et permis, diplômes).
+     Les deux sont fermés à tout le monde sauf à la personne : table coffre_documents (sql-12-11-coffre.sql : chaque compte ne
+     lit que ses lignes) + espace de fichiers privé « documents » (chaque compte n'ouvre que son dossier <son id>/).
+     Premium : sans abonnement on voit la page et les documents déjà rangés ; ajouter ouvre la fenêtre Premium.
+     Adresse directe : 2hype.fr/#coffre (onglet coffre-fort) et 2hype.fr/#mes-documents. */
+  var TYPES_COFFRE = [
+    { k: "licence", e: "docs", b: "Licence", photo: { img: "images/concours-hero-bai-tresse.webp", pos: "70% 30%" } },
+    { k: "vaccins", e: "docs", b: "Carnet et vaccination", photo: { img: "images/cours-g1-c3-box.webp", pos: "50% 40%" } },
+    { k: "vehicule", e: "docs", b: "Papiers du camion / van", photo: { img: "images/ecurie-couverture-defaut-2.webp", pos: "50% 55%" } },
+    { k: "assurance", e: "docs", b: "Assurance", photo: { img: "images/sellerie-adr-delgrange-hd.jpg", pos: "60% 50%" } },
+    { k: "autre", e: "docs", b: "Autres documents", photo: { img: "images/JOURNAL_SEANCE_FOND.webp", pos: "60% 40%" } },
+    { k: "contrat", e: "coffre", b: "Contrat de travail", photo: { img: "images/cours-pansage-13_quiz_carnet_crayon.webp", pos: "50% 55%" } },
+    { k: "compta", e: "coffre", b: "Compta", photo: { img: "images/galops-carte-quiz-carnet.webp", pos: "50% 50%" } },
+    { k: "famille", e: "coffre", b: "Livret de famille", photo: { img: "images/couv-g2-familles.jpg", pos: "50% 72%" } },
+    { k: "identite", e: "coffre", b: "Identité et permis", photo: { img: "images/hype-doc-parchemin.jpg", pos: "50% 30%" } },
+    { k: "diplomes", e: "coffre", b: "Diplômes et carte pro", photo: { img: "images/fond-cavaliers-ecurie.webp", pos: "50% 60%" } },
+    { k: "autre_perso", e: "coffre", b: "Autres papiers", photo: { img: "images/JOURNAL_CARNET_FOND.webp", pos: "45% 50%" } }
+  ];
+  /* 12/11 14 h 32 (Blandine : « ils peuvent mettre ce qu'ils veulent… créer un onglet avec un nom, et paf ») : les catégories
+     ci-dessus ne sont que des suggestions ; chacun peut créer la sienne. Elle est enregistrée dans le type du document
+     (« c:docs:<nom> » ou « c:coffre:<nom> ») : aucune table en plus, la catégorie existe tant qu'elle contient un document. */
+  function typeCoffre(k) {
+    var m = String(k || "").match(/^c:(docs|coffre):(.+)$/);
+    if (m) return { k: k, e: m[1], b: m[2], perso: true, photo: m[1] === "coffre" ? { img: "images/JOURNAL_CARNET_FOND.webp", pos: "45% 50%" } : { img: "images/JOURNAL_SEANCE_FOND.webp", pos: "60% 40%" } };
+    return TYPES_COFFRE.filter(function (t) { return t.k === k; })[0] || TYPES_COFFRE[4];
+  }
+  function espaceDe(doc) { return typeCoffre(doc.type).e; }
+  var JOURS_RAPPEL = 30;
+  function etatEcheance(iso) {
+    if (!iso) return null;
+    var j = ecartJours(String(iso).slice(0, 10), isoAuj());
+    if (j < 0) return { alerte: true, t: "Expiré · " + dateCourte(iso) };
+    if (j <= JOURS_RAPPEL) return { alerte: true, t: "À renouveler · " + dateCourte(iso) };
+    return { alerte: false, t: "Jusqu'au " + dateCourte(iso) };
+  }
+  var LIB_SANTE = { carnet_vaccin: "Page du carnet de vaccination", certificat_vaccin: "Certificat de vaccination", ordonnance: "Ordonnance", compte_rendu: "Compte rendu", protocole: "Protocole", facture: "Facture", autre: "Autre document" };
+  function nbDocs(n) { return n === 0 ? "Vide" : (n === 1 ? "1 document" : (n + " documents")); }
+  function FenetrePremiumCoffre(props) {
+    var h = hT;
+    var fen = h("div", { "data-noswipe": "true", onClick: props.fermer, style: { position: "fixed", inset: 0, zIndex: 9600, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
+      h("div", { onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } }, style: { width: "100%", maxWidth: 380, borderRadius: 20, border: "1px solid rgba(201,166,107,0.35)", background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)", padding: "24px 20px 18px", textAlign: "center", fontFamily: "'Montserrat',sans-serif" } },
+        h("div", { style: { fontSize: 26, marginBottom: 8, color: "#C9A66B" } }, "✦"),
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 22, fontWeight: 600, color: "#F3EEE4", marginBottom: 8 } }, "Réservé aux abonnés Premium"),
+        h("div", { style: { fontSize: 12.5, lineHeight: 1.55, color: "rgba(243,238,228,0.72)", marginBottom: 18 } }, "Tes documents et ton coffre-fort font partie de Hype Premium : range licences, carnets, assurances et papiers personnels, et retrouve-les en un geste, même au concours."),
+        h("button", { type: "button", onClick: props.premium, style: { width: "100%", minHeight: 46, borderRadius: 999, border: "1px solid #C9A66B", background: "transparent", color: "#C9A66B", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "Découvrir Premium"),
+        h("button", { type: "button", onClick: props.fermer, style: { width: "100%", marginTop: 8, minHeight: 42, borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(243,238,228,0.75)", fontSize: 12.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "Plus tard")));
+    return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
+  }
+  function EcranCoffre() {
+    var h = hT; useLangue();
+    var app = (typeof useApp === "function") ? useApp() : {};
+    var setEcran = app.setEcran || function () { };
+    usePreparerEcran();
+    var _u = React.useState(undefined); var moi = _u[0], setMoi = _u[1];
+    var _r = React.useState(0); var recharge = _r[0], setRecharge = _r[1];
+    var _d = React.useState(null); var docs = _d[0], setDocs = _d[1];
+    var _l = React.useState({}); var liens = _l[0], setLiens = _l[1];
+    var _c = React.useState([]); var chevaux = _c[0], setChevaux = _c[1];
+    var _mo = React.useState(false); var moderatrice = _mo[0], setModeratrice = _mo[1];
+    var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+    /* l'espace ouvert : « docs » (Mes documents) ou « coffre » (Mon coffre-fort) ; la vue : accueil des catégories,
+       « liste » (tout), « alerte », « t:<type> » (une catégorie) ou « ch:<id> » (un cheval) */
+    var _es = React.useState(function () { try { var o = window.__coffreOnglet; window.__coffreOnglet = ""; if (o) return o === "coffre" ? "coffre" : "docs"; return window.__coffreCheval ? "docs" : (/mes-documents/.test(String(location.hash || "")) ? "docs" : "coffre"); } catch (e) { return "docs"; } });
+    var espace = _es[0], setEspace = _es[1];
+    var _f = React.useState(function () { try { var k = window.__coffreCheval; window.__coffreCheval = ""; return k ? ("ch:" + k) : "accueil"; } catch (e) { return "accueil"; } });
+    var vue = _f[0], setVue = _f[1];
+    var _o = React.useState(false); var ouvert = _o[0], setOuvert = _o[1];
+    var _ty = React.useState(""); var type = _ty[0], setType = _ty[1];
+    var _nc = React.useState(""); var nouvelleCat = _nc[0], setNouvelleCat = _nc[1];
+    var _ti = React.useState(""); var titre = _ti[0], setTitre = _ti[1];
+    var _ch = React.useState(""); var cheval = _ch[0], setCheval = _ch[1];
+    var _ec = React.useState(""); var echeance = _ec[0], setEcheance = _ec[1];
+    var _m = React.useState(""); var msg = _m[0], setMsg = _m[1];
+    var _e = React.useState(false); var envoi = _e[0], setEnvoi = _e[1];
+    var _s = React.useState(null); var aSuppr = _s[0], setASuppr = _s[1];
+    var _vp = React.useState(false); var voileP = _vp[0], setVoileP = _vp[1];
+    var refFichier = React.useRef(null);
+    var premiumOk = !!app.premium || moderatrice;
+    var large = false; try { large = (window.innerWidth || 390) >= 1100; } catch (eL) { }
+
+    React.useEffect(function () {
+      var vif = true;
+      (async function () {
+        try {
+          var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+          if (!vif) return;
+          if (!u || !u.id || typeof supa === "undefined" || !supa) { setMoi(null); return; }
+          setMoi(u);
+          try { var rm = await supa.rpc("hype_est_moderatrice"); if (vif) setModeratrice(!!(rm && rm.data === true)); } catch (eM) { }
+          var r = await supa.from("coffre_documents").select("*").order("created_at", { ascending: false }).limit(500);
+          if (r && r.error) throw new Error(r.error.message || String(r.error));
+          var liste = (r && r.data) || [];
+          /* ses chevaux : ceux dont on est propriétaire + ceux qu'on a ajoutés à « ses chevaux » */
+          var mesCh = [];
+          try {
+            var rc = await supa.from("chevaux").select("*").eq("user_id", u.id).is("supprime_le", null).limit(200);
+            var rh = await supa.from("chevaux_histoires").select("*").eq("user_id", u.id).limit(200);
+            var perso = {}; ((rh && !rh.error && rh.data) || []).forEach(function (x) { perso[String(x.cheval_id)] = x; });
+            mesCh = ((rc && !rc.error && rc.data) || []).slice();
+            var manquants = Object.keys(perso).concat(liste.map(function (x) { return x.cheval_id ? String(x.cheval_id) : ""; }))
+              .filter(function (id, i, a) { return id && a.indexOf(id) === i && !mesCh.some(function (x) { return String(x.id) === id; }); });
+            if (manquants.length) { var rx = await supa.from("chevaux").select("*").in("id", manquants.slice(0, 200)).is("supprime_le", null); mesCh = mesCh.concat((rx && !rx.error && rx.data) || []); }
+            mesCh = mesCh.map(function (x) { var p = perso[String(x.id)] || {}; return { id: x.id, nom: String(p.surnom || x.alias || x.nom || "").trim() || "?", photo: p.photo_url || x.photo_url || "", aMoi: x.user_id === u.id }; })
+              .sort(function (a, b) { return a.nom.localeCompare(b.nom, "fr"); });
+          } catch (eC) { }
+          /* 12/11 (Blandine : « il faudra s'assurer que ces deux pages-là soient bien la même ») : « Carnet et vaccination » montre
+             LES MÊMES documents que la page Santé de chaque cheval (table cheval_documents, espace « sante »), sans copie.
+             La base ne les rend qu'au propriétaire, à la responsable de l'écurie du cheval et à la modératrice. */
+          var sante = [];
+          try {
+            var idsCh = mesCh.map(function (x) { return x.id; });
+            if (idsCh.length) {
+              var rd = await supa.from("cheval_documents").select("*").in("cheval_id", idsCh.slice(0, 200)).order("date_doc", { ascending: false }).limit(500);
+              sante = ((rd && !rd.error && rd.data) || []).map(function (x) {
+                return { id: "s:" + x.id, idSante: x.id, sante: true, type: "vaccins", typeSante: x.type, titre: x.titre || null, cheval_id: x.cheval_id, echeance: null, chemin: x.chemin, created_at: x.date_doc || x.created_at };
+              });
+            }
+          } catch (eSa) { }
+          /* liens d'ouverture préparés d'avance (1 h) : toucher une carte ouvre le document tout de suite */
+          var chemins = liste.map(function (x) { return x.chemin; }).filter(Boolean);
+          var lk = {};
+          if (chemins.length) {
+            try {
+              var rs = await supa.storage.from("documents").createSignedUrls(chemins, 3600);
+              ((rs && rs.data) || []).forEach(function (x) { if (x && x.path && (x.signedUrl || x.signedURL)) lk[x.path] = x.signedUrl || x.signedURL; });
+            } catch (eS) { }
+          }
+          var cheminsS = sante.map(function (x) { return x.chemin; }).filter(Boolean);
+          if (cheminsS.length) {
+            try {
+              var rs2 = await supa.storage.from("sante").createSignedUrls(cheminsS, 3600);
+              ((rs2 && rs2.data) || []).forEach(function (x) { if (x && x.path && (x.signedUrl || x.signedURL)) lk["sante:" + x.path] = x.signedUrl || x.signedURL; });
+            } catch (eS2) { }
+          }
+          liste = liste.filter(function (x) { return x.type !== "vaccins"; }).concat(sante);
+          if (!vif) return;
+          setChevaux(mesCh); setLiens(lk); setDocs(liste); setErreur("");
+        } catch (e) { if (vif) { setDocs([]); setErreur(String((e && e.message) || e)); } }
+      })();
+      return function () { vif = false; };
+    }, [recharge]);
+
+    function changerEspace(e) { setEspace(e); setVue("accueil"); setOuvert(false); setMsg(""); setType(""); }
+    function ouvrirForm() {
+      if (!premiumOk) { setVoileP(true); return; }
+      setMsg(""); var o = !ouvert; setOuvert(o);
+      if (o) {
+        if (vue.indexOf("t:") === 0) setType(vue.slice(2));
+        else if (vue.indexOf("ch:") === 0) { setType("vaccins"); setCheval(vue.slice(3)); }
+      }
+    }
+    async function envoyer(f) {
+      if (!f || !moi) return;
+      if (!premiumOk) { setVoileP(true); return; }
+      if (f.size > 15 * 1024 * 1024) { setMsg("Fichier trop lourd (15 Mo au plus)."); return; }
+      if (type === "vaccins") { envoyerSante(f); return; }
+      setEnvoi(true); setMsg("");
+      var id = null;
+      try {
+        var typeFinal = type === "__nouvelle" ? ("c:" + espace + ":" + nouvelleCat.trim().slice(0, 40)) : type;
+        var ligne = { type: typeFinal, titre: titre.trim() || null, cheval_id: (espace === "docs" && cheval) ? cheval : null, echeance: echeance || null, mime: f.type || null, taille: f.size || null };
+        var r = await supa.from("coffre_documents").insert(ligne).select("*");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien enregistré.");
+        id = r.data[0].id;
+        var chemin = moi.id + "/" + id + "-" + nomFichierSur(f.name);
+        var up = await supa.storage.from("documents").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
+        if (up && up.error) throw new Error(up.error.message || String(up.error));
+        var r2 = await supa.from("coffre_documents").update({ chemin: chemin }).eq("id", id).select("id");
+        if (r2 && r2.error) throw new Error(r2.error.message || String(r2.error));
+        setMsg(espace === "coffre" ? "✓ Rangé dans ton coffre-fort" : "✓ Rangé dans tes documents"); setTitre(""); setEcheance(""); setNouvelleCat(""); if (type === "__nouvelle") setType(typeFinal); setOuvert(false);
+        setRecharge(function (n) { return n + 1; });
+      } catch (e) {
+        if (id) { try { await supa.from("coffre_documents").delete().eq("id", id); } catch (eD) { } }
+        setMsg("Pas ajouté : " + String((e && e.message) || e));
+      }
+      setEnvoi(false);
+    }
+    /* le carnet va dans la page Santé du cheval (mêmes règles que là-bas : propriétaire du cheval, abonné Premium) */
+    async function envoyerSante(f) {
+      if (!cheval) { setMsg("Choisis d'abord le cheval."); return; }
+      setEnvoi(true); setMsg("");
+      var chemin = null;
+      try {
+        var ext = (String(f.name || "").split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (String(f.type).indexOf("pdf") >= 0 ? "pdf" : "jpg");
+        chemin = String(cheval) + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
+        var up = await supa.storage.from("sante").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
+        if (up && up.error) throw new Error("Seul le propriétaire du cheval peut ranger son carnet.");
+        var d = new Date(), iso = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+        var r = await supa.from("cheval_documents").insert({ cheval_id: cheval, type: "carnet_vaccin", titre: titre.trim() || null, date_doc: iso, chemin: chemin, mime: f.type || null, taille: f.size || null }).select("id");
+        if ((r && r.error) || !r || !r.data || !r.data.length) { try { await supa.storage.from("sante").remove([chemin]); } catch (eR) { } throw new Error("Seul le propriétaire du cheval peut ranger son carnet."); }
+        setMsg("✓ Rangé dans le carnet du cheval, aussi sur sa page Santé"); setTitre(""); setOuvert(false);
+        setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas ajouté : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    async function supprimer(doc) {
+      setEnvoi(true); setMsg("");
+      if (doc.sante) {
+        try {
+          var rS = await supa.from("cheval_documents").delete().eq("id", doc.idSante).select("id");
+          if ((rS && rS.error) || !rS || !rS.data || !rS.data.length) throw new Error("Seul le propriétaire du cheval peut retirer ce document.");
+          if (doc.chemin) { try { await supa.storage.from("sante").remove([doc.chemin]); } catch (eS) { } }
+          setASuppr(null); setMsg("Document retiré."); setRecharge(function (n) { return n + 1; });
+        } catch (e) { setMsg("Pas retiré : " + String((e && e.message) || e)); }
+        setEnvoi(false); return;
+      }
+      try {
+        var r = await supa.from("coffre_documents").delete().eq("id", doc.id).select("id");
+        if (r && r.error) throw new Error(r.error.message || String(r.error));
+        if (!r || !r.data || !r.data.length) throw new Error("La base n'a rien supprimé.");
+        if (doc.chemin) { try { await supa.storage.from("documents").remove([doc.chemin]); } catch (eS) { } }
+        setASuppr(null); setMsg("Document retiré."); setRecharge(function (n) { return n + 1; });
+      } catch (e) { setMsg("Pas retiré : " + String((e && e.message) || e)); }
+      setEnvoi(false);
+    }
+    function ouvrirDoc(doc) {
+      var u = doc.chemin && liens[(doc.sante ? "sante:" : "") + doc.chemin];
+      if (u) { try { var w = window.open(u, "_blank"); if (w) return; } catch (eW) { } try { window.location.href = u; } catch (eL) { } return; }
+      (async function () {
+        try {
+          var r = await supa.storage.from(doc.sante ? "sante" : "documents").createSignedUrl(doc.chemin, 3600);
+          var l = r && r.data && (r.data.signedUrl || r.data.signedURL);
+          if (!l) throw new Error((r && r.error && r.error.message) || "lien indisponible");
+          window.location.href = l;
+        } catch (e) { setMsg("Impossible d'ouvrir : " + String((e && e.message) || e)); }
+      })();
+    }
+    function chevalDe(id) { return chevaux.filter(function (x) { return String(x.id) === String(id); })[0] || null; }
+    function cartesDocs(liste) {
+      return h("div", { className: "hv3-cartes" }, liste.map(function (x) {
+        var t = typeCoffre(x.type), ch = x.cheval_id ? chevalDe(x.cheval_id) : null, ec = etatEcheance(x.echeance);
+        var titreC = x.titre || (x.sante ? (LIB_SANTE[x.typeSante] || "Document de santé") : t.b);
+        var photo = (ch && ch.photo) ? { img: ch.photo, pos: "50% 35%" } : t.photo;
+        var dernierSeul = liste.length % 2 === 1 && liste.length > 1 && x === liste[liste.length - 1];   /* tablette / ordinateur : pas de ligne à moitié vide */
+        return h("div", { key: x.id, style: dernierSeul ? { gridColumn: "1 / -1" } : null },
+          carte(h, { cle: x.id, photo: photo, titre: titreC, sous: ec ? ec.t : ("Ajouté le " + dateCourte(x.created_at)), pill: ch ? ch.nom : t.b,
+            etat: x.chemin ? "Ouvrir" : "Fichier absent", alerte: !!(ec && ec.alerte), onClick: x.chemin ? function () { setMsg(""); ouvrirDoc(x); } : null }),
+          aSuppr === x.id
+            ? h("div", { style: { display: "flex", gap: 8, marginTop: 6 } },
+                h("button", { type: "button", className: "hg-btn", style: { marginTop: 0, color: "#F3EEE4", borderColor: "rgba(243,238,228,.25)", fontWeight: 400 }, onClick: function () { setASuppr(null); } }, "Garder"),
+                h("button", { type: "button", className: "hg-btn", style: { marginTop: 0 }, disabled: envoi, onClick: function () { supprimer(x); } }, "Retirer vraiment"))
+            : h("button", { type: "button", onClick: function () { setASuppr(x.id); }, style: { display: "block", margin: "6px 0 0 auto", background: "none", border: "none", color: "rgba(243,238,228,.5)", fontFamily: "'Montserrat',sans-serif", fontSize: 12, textDecoration: "underline" } }, "Retirer"));
+      }));
+    }
+
+    var corps;
+    if (moi === undefined || (moi && !docs)) corps = h("div", { className: "hg-attente", "aria-busy": "true" }, "…");
+    else if (moi === null) corps = h("div", null,
+      h("div", { className: "hg-vide" }, "Connecte-toi pour ouvrir tes documents."),
+      h("button", { type: "button", className: "hg-btn", onClick: function () { setEcran("connexion"); } }, "Se connecter"));
+    else {
+      var ici = docs.filter(function (x) { return espaceDe(x) === espace; });
+      var types = TYPES_COFFRE.filter(function (t) { return t.e === espace; });
+      ici.forEach(function (x) { if (/^c:/.test(String(x.type)) && !types.some(function (t) { return t.k === x.type; })) types.push(typeCoffre(x.type)); });   /* ses propres catégories */
+      var aRenouveler = ici.filter(function (x) { var e = etatEcheance(x.echeance); return e && e.alerte; }).sort(function (a, b) { return String(a.echeance).localeCompare(String(b.echeance)); });
+      var cases = [
+        { k: "liste", b: "Documents", s: String(ici.length), on: ici.length ? function () { setVue(vue === "liste" ? "accueil" : "liste"); } : null },
+        { k: "alerte", b: "À renouveler", s: aRenouveler.length ? String(aRenouveler.length) : "Rien", alerte: aRenouveler.length > 0, on: aRenouveler.length ? function () { setVue(vue === "alerte" ? "accueil" : "alerte"); } : null },
+        { k: "ajout", b: "Ajouter", s: "Photo ou PDF", on: ouvrirForm }
+      ];
+      var contenu, titreVue = null;
+      if (vue === "accueil") {
+        var n = types.length;
+        contenu = h("div", { className: "hv2-grille", style: { gridTemplateColumns: large ? "repeat(4, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))" } }, types.map(function (t, i) {
+          var nb = ici.filter(function (x) { return x.type === t.k; }).length;
+          var grand = i === 0 || ((n - 1) % 2 === 1 && i === n - 1);   /* sur téléphone, jamais de ligne à moitié vide : 1 grande + paires (+ 1 grande) */
+          return theme(h, grand ? "large" : "", t.photo, t.b, nbDocs(nb), function () { setVue("t:" + t.k); setOuvert(false); setMsg(""); });
+        }));
+      } else if (vue === "t:vaccins") {
+        titreVue = "Carnet et vaccination";
+        var lv = ici.filter(function (x) { return x.type === "vaccins"; });
+        var parCheval = {}; lv.forEach(function (x) { if (x.cheval_id) parCheval[String(x.cheval_id)] = (parCheval[String(x.cheval_id)] || 0) + 1; });
+        chevaux.forEach(function (c) { if (c.aMoi && parCheval[String(c.id)] == null) parCheval[String(c.id)] = 0; });   /* ses propres chevaux, même sans carnet, pour pouvoir l'ajouter */
+        var ids = Object.keys(parCheval).sort(function (a, b) { var ca = chevalDe(a), cb = chevalDe(b); return String(ca ? ca.nom : "").localeCompare(String(cb ? cb.nom : ""), "fr"); });
+        var sansCh = lv.filter(function (x) { return !x.cheval_id; });
+        contenu = h("div", null,
+          ids.length ? h("div", { className: "hv3-cartes" }, ids.map(function (cid, i) {
+            var ch = chevalDe(cid) || { nom: "?", photo: "" };
+            var seul = ids.length % 2 === 1 && ids.length > 1 && i === ids.length - 1;
+            return h("div", { key: cid, style: seul ? { gridColumn: "1 / -1" } : null },
+              carte(h, { cle: cid, photo: ch.photo ? { img: ch.photo, pos: "50% 35%" } : typeCoffre("vaccins").photo, titre: ch.nom, sous: nbDocs(parCheval[cid]), pill: "Carnet et vaccination", etat: "Voir", onClick: function () { setVue("ch:" + cid); } }));
+          })) : null,
+          sansCh.length ? cartesDocs(sansCh) : null,
+          (!ids.length && !sansCh.length) ? h("div", { className: "hg-vide" }, "Aucun carnet pour l'instant. Les carnets de tes chevaux apparaissent ici et sur leur page Santé.") : null);
+      } else if (vue.indexOf("t:") === 0) {
+        var tt = typeCoffre(vue.slice(2)); titreVue = tt.b;
+        var lt = ici.filter(function (x) { return x.type === tt.k; });
+        contenu = lt.length ? cartesDocs(lt) : h("div", { className: "hg-vide" }, "Rien ici pour l'instant. Touche « Ajouter » pour ranger un document.");
+      } else if (vue.indexOf("ch:") === 0) {
+        var chV = chevalDe(vue.slice(3)); titreVue = chV ? chV.nom : "Mes chevaux";
+        var lc = docs.filter(function (x) { return String(x.cheval_id) === vue.slice(3); });
+        contenu = lc.length ? cartesDocs(lc) : h("div", { className: "hg-vide" }, "Aucun document pour ce cheval. Touche « Ajouter » pour ranger son carnet.");
+      } else if (vue === "alerte") { titreVue = "À renouveler"; contenu = cartesDocs(aRenouveler); }
+      else { titreVue = espace === "coffre" ? "Tout mon coffre-fort" : "Tous mes documents"; contenu = cartesDocs(ici); }
+      var formulaire = ouvert ? h("div", { className: "hg-f" }, h("h2", { className: "hv3-h2" }, espace === "coffre" ? "Ranger dans mon coffre-fort" : "Ranger un document"),
+        h("label", { htmlFor: "hgc-type" }, "Catégorie"),
+        h("select", { id: "hgc-type", value: type, onChange: function (e) { setType(e.target.value); setMsg(""); } },
+          [h("option", { key: "", value: "" }, "Choisir…")].concat(types.map(function (t) { return h("option", { key: t.k, value: t.k }, t.b); }), [h("option", { key: "__nouvelle", value: "__nouvelle" }, "+ Créer ma catégorie")])),
+        type === "__nouvelle" ? h("label", { htmlFor: "hgc-cat" }, "Nom de ta catégorie") : null,
+        type === "__nouvelle" ? h("input", { id: "hgc-cat", type: "text", value: nouvelleCat, maxLength: 40, placeholder: "ex. Factures véto, Papiers de la maison", onChange: function (e) { setNouvelleCat(e.target.value); setMsg(""); } }) : null,
+        h("label", { htmlFor: "hgc-titre" }, "Nom du document (facultatif)"),
+        h("input", { id: "hgc-titre", type: "text", value: titre, maxLength: 80, placeholder: espace === "coffre" ? "ex. Contrat SEP, avis d'imposition 2025" : "ex. Licence 2027, attestation d'assurance", onChange: function (e) { setTitre(e.target.value); } }),
+        (espace === "docs" && chevaux.length) ? h("label", { htmlFor: "hgc-cheval" }, type === "vaccins" ? "Cheval" : "Cheval (facultatif)") : null,
+        (espace === "docs" && chevaux.length) ? h("select", { id: "hgc-cheval", value: cheval, onChange: function (e) { setCheval(e.target.value); } },
+          [h("option", { key: "", value: "" }, "Aucun")].concat(chevaux.map(function (x) { return h("option", { key: x.id, value: x.id }, x.nom); }))) : null,
+        type === "vaccins" ? h("div", { className: "hg-aide" }, "Le carnet est rangé sur la page Santé du cheval : tu le retrouves aux deux endroits.") : null,
+        type !== "vaccins" ? h("label", { htmlFor: "hgc-ech" }, "Échéance (facultatif)") : null,
+        type !== "vaccins" ? h("input", { id: "hgc-ech", type: "date", value: echeance, onChange: function (e) { setEcheance(e.target.value); } }) : null,
+        type !== "vaccins" ? h("div", { className: "hg-aide" }, "Assurance, contrôle technique, licence, carte d'identité… Le document passe dans « À renouveler » un mois avant.") : null,
+        h("button", { type: "button", className: "hg-btn", disabled: envoi, onClick: function () { if (!type) { setMsg("Choisis d'abord la catégorie."); return; } if (type === "__nouvelle" && !nouvelleCat.trim()) { setMsg("Donne un nom à ta catégorie."); return; } try { refFichier.current.click(); } catch (e) { } } }, envoi ? "Envoi…" : "Choisir la photo ou le PDF"),
+        h("input", { ref: refFichier, type: "file", accept: "image/*,application/pdf", style: { display: "none" }, onChange: function (e) { var fi = e.target.files && e.target.files[0]; e.target.value = ""; envoyer(fi); } })) : null;
+      corps = h("div", null,
+        h("div", { className: "hv3-pils", role: "tablist", style: { marginTop: 18 } },
+          [["docs", "Mes documents"], ["coffre", "Mon coffre-fort"]].map(function (o) {
+            var on = espace === o[0];
+            return h("button", { key: o[0], type: "button", className: "hv3-pil" + (on ? " on" : ""), "aria-pressed": on, onClick: function () { changerEspace(o[0]); } }, o[1]);
+          })),
+        h("div", { className: "hg-aide", style: { marginTop: 10, fontSize: 12 } }, espace === "coffre" ? "Le privé et le sensible : contrat de travail, compta, livret de famille, papiers d'identité." : "Les papiers de tous les jours : licence, carnets des chevaux, camion, assurances."),
+        h("div", { className: "hv2-choix" },
+          h("div", { className: "hv2-choix-rang", style: { gridTemplateColumns: "repeat(3, minmax(0, 1fr))" } }, cases.map(function (x) {
+            var on = (x.k === "ajout" && ouvert) || (x.k !== "ajout" && vue === x.k);
+            return h("button", { key: x.k, type: "button", className: "hv2-og hv2-cg" + (on ? " on" : ""), "aria-pressed": on, disabled: !x.on, onClick: x.on || undefined },
+              h("b", { style: String(x.b).length > 8 ? { fontSize: 14.5, letterSpacing: "-.01em" } : null }, x.b), h("span", { className: x.alerte ? "or" : "" }, x.s));
+          }))),
+        !premiumOk ? h("div", { className: "hg-encart" }, h("b", { style: { display: "block", color: "#C9A66B", marginBottom: 4 } }, "Hype Premium"),
+          "Ranger des documents fait partie de Premium. Ceux que tu as déjà rangés restent toujours à toi.",
+          h("button", { type: "button", className: "hg-btn", style: { marginTop: 12 }, onClick: function () { setEcran("premium"); } }, "Découvrir Premium")) : null,
+        formulaire,
+        msg ? h("div", { className: "hg-ok", role: "status" }, msg) : null,
+        h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 } },
+          h("h2", { className: "hv3-h2" }, titreVue || "Mes catégories"),
+          vue !== "accueil" ? h("button", { type: "button", onClick: function () { setVue(vue.indexOf("ch:") === 0 && espace === "docs" ? "t:vaccins" : "accueil"); }, style: { background: "none", border: "none", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, padding: "8px 0", flexShrink: 0 } }, "‹ Retour") : null),
+        contenu,
+        erreur ? h("div", { className: "hg-err" }, "Tes documents n'ont pas pu être lus : " + erreur) : null,
+        h("div", { className: "hg-legal" }, "Tes documents et ton coffre-fort sont privés : toi seul les vois.", h("br"), "Seule exception : les carnets de tes chevaux sont aussi sur leur page Santé, visibles par toi et la responsable de leur écurie."));
+    }
+    var peutRetour = !!(app.peutReculer && typeof app.retourEcran === "function");
+    return h("div", { className: RACINE, style: FILTRE, dir: LG === "ar" ? "rtl" : undefined },
+      hero(h, { photo: PHOTOS.coffre, titre: espace === "coffre" ? "Mon coffre-fort" : "Mes documents", sous: "Tes papiers importants, toujours sous la main.", retour: peutRetour ? function () { app.retourEcran(); } : null, retourTxt: "Retour" }),
+      h("div", { className: "hv2-in" }, corps),
+      voileP ? h(FenetrePremiumCoffre, { fermer: function () { setVoileP(false); }, premium: function () { setVoileP(false); setEcran("premium"); } }) : null);
+  }
+  window.HypeGestion = { Coffre: EcranCoffre, Liaison: EcranLiaison, Paddocks: EcranPaddocks, Pensions: EcranPensions, Planning: EcranPlanning, Contrats: EcranContrats, Stock: EcranStock, Personnel: EcranPersonnel, Obligations: EcranObligations, PourToi: EcranPourToi, Aides: EcranAides, Compta: EcranCompta, Camion: EcranCamion, Echeances: EcranEcheances, RegistrePlan: EcranRegistrePlan, RegistreControles: EcranRegistreControles, RegistreImprimer: EcranRegistreImprimer, RegistreMouvements: EcranRegistreMouvements, RegistreSoins: EcranRegistreSoins, MonEcurie: EcranMonEcurie, Registre: EcranRegistre, Detenteur: EcranDetenteur, RegistreChevaux: EcranRegistreChevaux, SoinsAConfirmer: EcranSoinsAConfirmer, TraceSoin: TraceSoin };
 })();

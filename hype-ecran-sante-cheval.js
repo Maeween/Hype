@@ -49,6 +49,52 @@ function EcranSanteCheval() {
   function setFeuillePro(v) { if (v && !premiumSanteOk()) { setVoilePremium(true); return; } setFeuilleProBrut(v); }   /* (930) */
   /* Les observations Hey Baby epinglees sur ce cheval. null = pas encore lu. */
   var stHb = React.useState(null); var epingles = stHb[0], setEpingles = stHb[1];
+  /* 12/11 (Blandine : « la santé est visible uniquement par le propriétaire ou responsable d'écurie » ; « bloque juste ce qui est
+     un peu touchy… vaccination, maréchalerie… gentiment grisés, semi-flous, avec un petit mot réservé »). La base décide
+     (hype_peut_voir_sante_sensible) : soins et documents ne reviennent qu'au propriétaire, à la responsable de l'écurie du cheval
+     et à la modératrice. Ici on ne fait que griser le Suivi et le Carnet pour les autres ; consignes et équipe restent visibles. */
+  var stRs = React.useState(null); var santeOuverte = stRs[0], setSanteOuverte = stRs[1];
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa || !chId) return;
+        var r = await supa.rpc("hype_peut_voir_sante_sensible", { p_cheval: chId });
+        if (!actif) return;
+        if (r && !r.error) setSanteOuverte(r.data === true);   /* fonction absente ou erreur : on laisse la page comme avant */
+      } catch (eRs) { }
+    })();
+    return function () { actif = false; };
+  }, [chId]);
+  function voileReserve(enfant, cle) {
+    if (santeOuverte !== false) return enfant;
+    return h("div", { key: cle, "data-sante-reserve": "1", style: { position: "relative", marginTop: 18 } },
+      h("div", { "aria-hidden": "true", inert: "", style: { filter: "blur(3.5px) grayscale(.5)", opacity: 0.5, pointerEvents: "none", userSelect: "none", WebkitUserSelect: "none", maxHeight: 420, overflow: "hidden",
+        WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 75%, transparent 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 75%, transparent 100%)" } }, enfant),
+      h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 18px" } },
+        h("div", { style: { maxWidth: 340, textAlign: "center", padding: "16px 18px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.35)", background: "rgba(8,11,13,0.78)", boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } },
+          h("div", { "aria-hidden": "true", style: { display: "flex", justifyContent: "center", marginBottom: 8 } },
+            h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: TQ, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
+              h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
+          h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2 } },
+            T("Réservé", "Private", "Reservado", "Riservato", "非公開", "Vertraulich", "محجوز", "仅限授权", "Afgeschermd", "Reservado", "Privat", "Закрыто", "Zastrzeżone", "비공개", "محرمانه")),
+          h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.7)", marginTop: 6, lineHeight: 1.5 } },
+            T("Vaccins, soins et documents sont visibles par le propriétaire du cheval et la responsable de son écurie.",
+              "Vaccines, care and documents are visible to the horse's owner and the manager of its stable.",
+              "Las vacunas, los cuidados y los documentos solo los ven el propietario del caballo y la responsable de su cuadra.",
+              "Vaccini, cure e documenti sono visibili al proprietario del cavallo e alla responsabile della sua scuderia.",
+              "ワクチン・ケア・書類は、馬のオーナーと厩舎の責任者だけが見られます。",
+              "Impfungen, Pflege und Dokumente sehen nur der Besitzer des Pferdes und die Leitung seines Stalls.",
+              "اللقاحات والعناية والمستندات يراها مالك الحصان ومسؤولة إسطبله فقط.",
+              "疫苗、护理和文件仅马主和马厩负责人可见。",
+              "Vaccinaties, verzorging en documenten zijn alleen zichtbaar voor de eigenaar van het paard en de verantwoordelijke van de stal.",
+              "Vacinas, cuidados e documentos são visíveis apenas para o dono do cavalo e a responsável pela sua cocheira.",
+              "Vaccinationer, vård och dokument syns bara för hästens ägare och stallets ansvariga.",
+              "Прививки, уход и документы видят только владелец лошади и руководитель её конюшни.",
+              "Szczepienia, zabiegi i dokumenty widzą tylko właściciel konia i kierownik jego stajni.",
+              "백신, 관리 기록과 서류는 말의 주인과 마구간 책임자만 볼 수 있어요.",
+              "واکسن‌ها، مراقبت‌ها و مدارک را فقط صاحب اسب و مسئول اصطبلش می‌بینند.")))));
+  }
   var stHo = React.useState(null); var epingleVue = stHo[0], setEpingleVue = stHo[1];
 
   React.useEffect(function () {
@@ -2364,11 +2410,10 @@ function EcranSanteCheval() {
   }
   function mepSante(blocCarnet) {
     if (!largeS) return h("div", { style: { padding: "0 16px 30px" } },
-      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */, blocCarnet,
+      voileReserve(h(React.Fragment, null, suivi(), blocCarnet), "rsv"), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » ; 12/11 voile Réservé */,
       h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));
     return h("div", { style: { padding: "0 32px 40px" } },
-      suivi(), null /* (968) protocole vaccinal deplace dans la fenetre « Vaccin » */,
-      h("div", { style: { minWidth: 0 } }, blocCarnet),   /* 07/11 (Blandine, choix B) : carnet sur toute la largeur, */
+      voileReserve(h(React.Fragment, null, suivi(), h("div", { style: { minWidth: 0 } }, blocCarnet)), "rsv"),   /* 07/11 (Blandine, choix B) : carnet sur toute la largeur ; 12/11 voile Réservé */
       h("div", { style: { minWidth: 0, marginTop: 30 } }, equipeCarres()),   /* puis l equipe en carres, noms en entier */
       h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 30, alignItems: "start" } },
         h("div", { style: { minWidth: 0 } }, blocHeyBaby()),
