@@ -12,6 +12,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 18h15 — build 20261112-1845 — PHOTOS : effet doré adouci partout (Blandine : « il est quand même assez violent », choix « C »)
+- HYPE_PH_SOLEIL_CSS (index.html) prend les valeurs de HC_B2_CSS déjà validées le 09/11 pour les médias du concours : à peu près moitié moins fort (moins jauni, lueur orangée et coins sombres réduits).
+- Touche toutes les pages qui l'utilisent : Écurie (événements, cartes d'équipe, chevaux), page Cavalier, page Équipe, vidéos du Galop 5.
+
 ### 12/11 — build 20261112-1820 — PERSAN étape 2 : Gestion d'écurie (« Mon écurie ») et Prépa DE en persan
 - Demande de Blandine (« la prépa DE ce serait bien, la gestion des écuries aussi »). Nouveaux fichiers i18n/gestion-fa.json (950 textes) et i18n/prepa-fa.json (AE, BP, DE, DES + écran), même structure que l'anglais (vérifiée). Libellés « à pied / monté » traduits (پیاده / سواره).
 - Versions augmentées : hype-ecran-gestion.js (I18N_V 14, ?v=36), hype-ecran-prepa.js (I18N_V 4, ?v=10). Morceaux de travail : outils/fa/i18n/.
