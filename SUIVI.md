@@ -12,6 +12,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 13h31 — build 20261112-1335 — Page équipe : duo Ma saison / Performances, résultats récents en liste, outils du bas mis de côté (Blandine « Ok »)
+- hype-ecran-team.js ?v=47.
+- Duo en miroir (bandeauDuo) : même cadre, photo entière (contain, mix-blend lighten pour fondre le noir), bords et bas ombrés, une courbe dorée relie les deux. « Ma saison » (bai à droite, bouton Voir ma saison) ; « Performances » (cheval doré à gauche, images/cheval-golden-des-brouets-provisoire.webp) avec deux boutons Cavaliers (déplie le classement) et Chevaux (page performances-chevaux).
+- Résultats récents sous le duo : en-tête + podiums du dernier concours en lignes fines (variante 7 ; variante A « frise » gardée dans le code, window.__resVariante = "A") ; Voir tout = les autres résultats. Le bandeau de résultats (bandeauRes) n'est plus affiché.
+- Mis de côté (code gardé) : classements en lignes, Hey Baby, Optimise tes perfs, règlements, et l'onglet « Apprendre » du menu. La page finit sur Nos plus beaux moments.
+- À venir : refonte de l'affichage des résultats récents (propositions en cours).
+
 ### 12/11 12h45 — build 20261112-1250 — Page équipe : ordre B, bas en « sommaire », retour par balayage sur les pages en calque (Blandine « vas-y »)
 - hype-ecran-team.js ?v=46 + index.html.
 - Ordre : 1 L'équipe ; 2 La saison = agenda (prochain, rendez-vous, dernier) puis Ma saison ; 3 Souvenirs = Nos plus beaux moments, puis résultats récents (design inchangé) et classements ; 4 Apprendre.

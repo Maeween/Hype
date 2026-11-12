@@ -497,7 +497,7 @@ function EcranTeamCompetition() {
   var _pa = React.useState(0); var partieActive = _pa[0], setPartieActive = _pa[1];
   function allerPartie(i) { setPartieActive(i); try { var el = document.getElementById(PARTIES[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }
   var menuParties = h("div", { "data-noswipe": "1", "data-hscroll": "1", style: { position: "sticky", top: 0, zIndex: 20, display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", padding: "calc(env(safe-area-inset-top) + 10px) 20px 12px", background: "rgba(6,7,9,0.94)", borderBottom: "1px solid rgba(214,182,118,0.18)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
-    PARTIES.map(function (P, i) { var on = i === partieActive; return h("button", { key: "mp" + i, type: "button", onClick: function () { allerPartie(i); }, style: { flex: "0 0 auto", minHeight: 38, padding: "0 15px", borderRadius: 999, border: on ? "1.5px solid " + OR : "1px solid rgba(244,241,234,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, P.lab); }));
+    PARTIES.slice(0, 3).map(function (P, i) { var on = i === partieActive; return h("button", { key: "mp" + i, type: "button", onClick: function () { allerPartie(i); }, style: { flex: "0 0 auto", minHeight: 38, padding: "0 15px", borderRadius: 999, border: on ? "1.5px solid " + OR : "1px solid rgba(244,241,234,0.22)", background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, P.lab); }));
   React.useEffect(function () {   /* le bouton du menu suit la partie qu'on regarde */
     function surDefil() { try { var act = 0; PARTIES.forEach(function (P, i) { var el = document.getElementById(P.id); if (el && el.getBoundingClientRect().top < 140) act = i; }); setPartieActive(act); } catch (e) { } }
     window.addEventListener("scroll", surDefil, { passive: true }); return function () { window.removeEventListener("scroll", surDefil); };
@@ -866,17 +866,34 @@ function EcranTeamCompetition() {
      carte photo comme les autres accès de la page (le bai tressé de l'en-tête de Ma saison) */
   /* 12/11 02h53 (Blandine : « remets le bandeau, la deuxième proposition ») : grand bandeau, le bai sur fond noir à droite (photo entière,
      bords fondus dans le noir), texte à gauche. Place définitive à décider. */
-  var lienSaison = !((typeof estModerateurHype === "function") && estModerateurHype(moi)) ? null : h("button", { type: "button", onClick: function () { setEcran("ma-saison"); },
-      "aria-label": T("Ma saison", "My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"),
-      style: { position: "relative", display: "block", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 44", padding: 0, border: "none", background: BG, color: IV, cursor: "pointer", overflow: "hidden", textAlign: "start" } },
-    h("img", { src: "images/galop1-hero-bai.webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: grandEq ? "45%" : "66%", height: "100%", objectFit: "contain", objectPosition: rtl ? "left center" : "right center",
-      WebkitMaskImage: "linear-gradient(90deg,transparent,#000 22%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent)", WebkitMaskComposite: "source-in", maskComposite: "intersect", transform: rtl ? "scaleX(-1)" : "none" } }),
-    h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: grandEq ? "50%" : "46%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", paddingInlineStart: grandEq ? 40 : 18, boxSizing: "border-box" } },
-      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 22 : 16, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, T("Centre de compétition", "Competition centre", "Centro de competición", "Centro gare", "競技センター", "Turnierzentrale", "مركز المسابقات", "比赛中心", "Wedstrijdcentrum", "Centro de competição", "Tävlingscenter", "Центр соревнований", "Centrum zawodów", "대회 센터")),
-      h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: grandEq ? 40 : 28, lineHeight: 1.05, marginTop: 4 } }, T("Ma saison", "My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌")),
-      h("div", { style: { fontFamily: M, fontSize: grandEq ? 13 : 11, color: "rgba(244,241,234,0.72)", marginTop: 6, lineHeight: 1.4 } }, T("Tous les concours de la saison", "All the season's competitions", "Todos los concursos de la temporada", "Tutti i concorsi della stagione", "シーズンのすべての大会", "Alle Turniere der Saison", "كل مسابقات الموسم", "本赛季的所有比赛", "Alle wedstrijden van het seizoen", "Todos os concursos da temporada", "Säsongens alla tävlingar", "Все соревнования сезона", "Wszystkie zawody sezonu", "이번 시즌의 모든 대회")),
-      h("span", { style: { marginTop: 10, minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, display: "inline-flex", alignItems: "center", gap: 6 } },
-        T("Voir ma saison", "See my season", "Ver mi temporada", "Vedi la mia stagione", "シーズンを見る", "Meine Saison ansehen", "عرض موسمي", "查看我的赛季", "Mijn seizoen bekijken", "Ver minha temporada", "Se min säsong", "Смотреть мой сезон", "Zobacz mój sezon", "나의 시즌 보기"), h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"))));
+  /* 12/11 13h11 (Blandine : « vraiment une symétrie entre les deux, même taille de cheval, même cadre ; les boutons et titres
+     sont différents à chaque fois ») : UN gabarit pour Ma saison et les podiums. Même boîte, même photo entière (contain, les deux
+     images font 1536×1024, cheval sur fond noir), bords fondus ; côté opposé : sur-titre en italique, grand titre, petite ligne, bouton. */
+  function bandeauDuo(key, gauche, img, retourner, surtitre, titre, sous, btn, onClick) {
+    var cotePhoto = gauche ? "insetInlineStart" : "insetInlineEnd", coteTxt = gauche ? "insetInlineEnd" : "insetInlineStart";
+    var dirFondu = (gauche !== rtl) ? "270deg" : "90deg";
+    var stImg = { position: "absolute", top: 0, width: grandEq ? "45%" : "58%", height: "100%", objectFit: "contain", display: "block", mixBlendMode: "lighten", transform: retourner ? "scaleX(-1)" : "none",
+      WebkitMaskImage: "linear-gradient(" + dirFondu + ", transparent, #000 24%, #000 94%, transparent), linear-gradient(180deg, transparent, #000 10%, #000 66%, transparent 98%)", WebkitMaskComposite: "source-in", maskComposite: "intersect" };
+    stImg[cotePhoto] = 0;
+    var stTxt = { position: "absolute", top: 0, bottom: 0, width: grandEq ? "48%" : "40%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: gauche ? "flex-end" : "flex-start", textAlign: gauche ? "end" : "start", boxSizing: "border-box" };
+    stTxt[coteTxt] = grandEq ? 40 : 20;
+    return h("div", { key: key, style: { position: "relative", width: "100%", aspectRatio: grandEq ? "100 / 30" : "100 / 41.3", overflow: "hidden", background: "transparent" } },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: stImg }),
+      h("div", { style: stTxt },
+        surtitre ? h("div", { dir: "auto", style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 22 : 15, color: "rgba(244,241,234,0.9)", lineHeight: 1.15 } }, surtitre) : null,
+        h("div", { dir: "auto", style: { fontFamily: SERIF, fontWeight: 500, fontSize: grandEq ? 40 : 28, lineHeight: 1.05, marginTop: surtitre ? 4 : 0, color: IV } }, titre),
+        sous ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: grandEq ? 13 : 10.5, color: "rgba(244,241,234,0.72)", marginTop: 5, lineHeight: 1.35 } }, sous) : null,
+        (function () {   /* 13h28 : un ou plusieurs boutons ([[libellé, action], …]) */
+          var L = Array.isArray(btn) ? btn : (btn ? [[btn, onClick]] : []);
+          if (!L.length) return null;
+          return h("div", { style: { display: "flex", flexDirection: "column", alignItems: gauche ? "flex-end" : "flex-start", gap: 8, marginTop: 10 } }, L.map(function (B, iB) {
+            return h("button", { key: iB, type: "button", onClick: B[1], style: { minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.75)", background: "transparent", color: IV, fontFamily: M, fontSize: grandEq ? 13 : 10.5, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", whiteSpace: "nowrap" } },
+              B[0], h("span", { "aria-hidden": "true", style: { color: OR } }, rtl ? "‹" : "›"));
+          }));
+        })()));
+  }
+  var lienSaison = !((typeof estModerateurHype === "function") && estModerateurHype(moi)) ? null
+    : bandeauDuo("bms", false, "images/galop1-hero-bai.webp", rtl, null, T("Ma saison", "My season", "Mi temporada", "La mia stagione", "わたしのシーズン", "Meine Saison", "موسمي", "我的赛季", "Mijn seizoen", "Minha temporada", "Min säsong", "Мой сезон", "Mój sezon", "나의 시즌"), null, T("Voir ma saison", "See my season", "Ver mi temporada", "Vedi la mia stagione", "シーズンを見る", "Meine Saison ansehen", "عرض موسمي", "查看我的赛季", "Mijn seizoen bekijken", "Ver minha temporada", "Se min säsong", "Смотреть мой сезон", "Zobacz mój sezon", "나의 시즌 보기"), function () { setEcran("ma-saison"); });   /* 13h12 : épuré (Blandine) */
   /* ── 12/11 02h24 — brief de Blandine « REFONTE DE LA SECTION AGENDA » : prochain concours à la une (bandeau photo, textes en HTML,
      traduits), puis « Agenda de l'équipe » en lignes compactes (date | nom + lieu | flèche, photo à droite si le rendez-vous en a une),
      sans répéter le concours mis à la une. Pas de concours prévu → pas de bandeau, l'agenda reste. Photo provisoire : BANDEAU_PROCHAIN. ── */
@@ -1072,13 +1089,133 @@ function EcranTeamCompetition() {
   function placeNum(x) { var n = parseInt(String((x && (x.place != null ? x.place : x.classement)) || ""), 10); return isFinite(n) && n > 0 ? n : 9999; }
   var resVisibles = (resultats || []).filter(function (x) { return !resMasques[String(x.id)]; }).sort(function (a, b) { return String(b.date_epreuve || "").localeCompare(String(a.date_epreuve || "")) || (placeNum(a) - placeNum(b)); });   /* (529) */
   var resRetires = (resultats || []).filter(function (x) { return !!resMasques[String(x.id)]; });
+  /* 12/11 13h02 (Blandine, proposition 7 « le bandeau ») : en tête des résultats, un bandeau du dernier concours
+     (« N podiums · dont X victoires », photo du cheval gagnant fondue dans le noir à droite, texte à gauche sans jamais
+     passer sur le cheval), puis TOUS les podiums de ce concours en lignes fines (même 5 ou plus). Les autres résultats
+     restent dans « Voir tout ». */
+  var dernierJourRes = resVisibles.length ? String(resVisibles[0].date_epreuve || "").slice(0, 10) : "";
+  var resDernier = resVisibles.filter(function (x) { return String(x.date_epreuve || "").slice(0, 10) === dernierJourRes; });
+  var podDernier = resDernier.filter(function (x) { var pl = placeDe(x); return pl != null && pl >= 1 && pl <= 3; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
+  var listeBand = podDernier.length ? podDernier : resDernier.slice().sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); }).slice(0, 3);
+  var nbVict = podDernier.filter(function (x) { return placeDe(x) === 1; }).length;
+  var idsBand = {}; listeBand.forEach(function (x) { idsBand[String(x.id)] = true; });
+  var autresRes = resVisibles.filter(function (x) { return !idsBand[String(x.id)]; });
+  function bandeauRes() {
+    if (!listeBand.length) return null;
+    var I0 = infosRes(listeBand[0]);
+    var nbP = podDernier.length;
+    var grand = nbP ? (nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대")))
+      : T("Nos résultats", "Our results", "Nuestros resultados", "I nostri risultati", "私たちの結果", "Unsere Ergebnisse", "نتائجنا", "我们的成绩", "Onze resultaten", "Os nossos resultados", "Våra resultat", "Наши результаты", "Nasze wyniki", "우리의 결과");
+    var dontV = nbVict ? (nbVict > 1 ? T("dont {n} victoires", "including {n} wins", "con {n} victorias", "di cui {n} vittorie", "うち優勝{n}回", "davon {n} Siege", "منها {n} انتصارات", "其中 {n} 次夺冠", "waarvan {n} overwinningen", "incluindo {n} vitórias", "varav {n} segrar", "из них {n} побед", "w tym {n} zwycięstwa", "그중 우승 {n}회") : T("dont 1 victoire", "including 1 win", "con 1 victoria", "di cui 1 vittoria", "うち優勝1回", "davon 1 Sieg", "منها انتصار واحد", "其中 1 次夺冠", "waarvan 1 overwinning", "incluindo 1 vitória", "varav 1 seger", "из них 1 победа", "w tym 1 zwycięstwo", "그중 우승 1회")).replace("{n}", nbVict) : "";
+    var jm = jourMois(listeBand[0].date_epreuve || listeBand[0].created_at);
+    /* 13h11 : même gabarit que Ma saison, en miroir (cheval à gauche, retourné pour regarder vers l'extérieur) ; le titre
+       « Résultats récents » passe en sur-titre, le bouton ouvre la suite. */
+    return bandeauDuo("bres", true, "images/cheval-golden-des-brouets-provisoire.webp", !rtl, null,
+      T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の結果", "Letzte Ergebnisse", "آخر النتائج", "最新成绩", "Laatste resultaten", "Últimos resultados", "Senaste resultaten", "Последние результаты", "Najnowsze wyniki", "최근 결과"), null,
+      autresRes.length ? (ouvert.res ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기") : T("Tous les résultats", "All results", "Todos los resultados", "Tutti i risultati", "すべての結果", "Alle Ergebnisse", "كل النتائج", "全部成绩", "Alle resultaten", "Todos os resultados", "Alla resultat", "Все результаты", "Wszystkie wyniki", "모든 결과")) : null,
+      function () { basculer("res"); });
+  }
+  function ligneRes(r) {
+    var I = infosRes(r), pl = placeDe(r), ouv = (resOuvert === r.id);
+    var titre = [I.qui, I.cheval].filter(Boolean).join(" & ") || (r.concours || "");
+    return h("div", { key: "lres" + r.id },
+      h("button", { type: "button", onClick: function () { setResOuvert(ouv ? null : r.id); }, style: { display: "flex", alignItems: "baseline", gap: 12, width: "100%", padding: "11px 0", border: "none", borderBottom: "1px solid rgba(244,241,234,0.08)", background: "transparent", color: IV, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { flex: "0 0 34px", fontFamily: SERIF, fontSize: 20, color: OR, lineHeight: 1 } }, pl != null ? ordinal(pl) : "—"),
+        h("span", { dir: "auto", style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 12.5, lineHeight: 1.3 } }, titre),
+        h("span", { dir: "auto", style: { flex: "0 1 auto", fontFamily: M, fontSize: 10.5, color: GR, textAlign: "end", maxWidth: "38%" } }, r.epreuve || "")),
+      ouv ? detailRes(r, I, pl) : null);
+  }
+  /* 12/11 13h04 (Blandine : « propose-moi aussi la A, et que ça déplie quand besoin ») : variante A = bandeau puis frise dorée,
+     un point par concours ; le dernier montre ses podiums en vignettes (3 d'abord, « Voir les N autres » déplie), les concours
+     d'avant restent repliés en une ligne de bilan qu'on touche pour déplier. */
+  var _frO = React.useState({}); var frOuv = _frO[0], setFrOuv = _frO[1];
+  function basculerFr(k) { setFrOuv(function (o) { var n = Object.assign({}, o); n[k] = !n[k]; return n; }); }
+  var RES_VARIANTE = (typeof window !== "undefined" && window.__resVariante) || "7";
+  function podiumsDu(jour) {
+    var l = resVisibles.filter(function (x) { return String(x.date_epreuve || "").slice(0, 10) === jour; });
+    var p = l.filter(function (x) { var pl = placeDe(x); return pl != null && pl >= 1 && pl <= 3; }).sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); });
+    return { tous: l, pod: p, liste: p.length ? p : l.slice().sort(function (a2, b2) { return placeNum(a2) - placeNum(b2); }).slice(0, 3) };
+  }
+  function bilanTxt(P) {
+    var nbP = P.pod.length, nbV = P.pod.filter(function (x) { return placeDe(x) === 1; }).length;
+    if (!nbP) return P.tous.length + " " + (P.tous.length > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "件の入賞", "Platzierungen", "تصنيفات", "个名次", "klasseringen", "classificações", "placeringar", "мест", "miejsca", "개의 순위") : T("classement", "placing", "clasificación", "piazzamento", "件の入賞", "Platzierung", "تصنيف", "个名次", "klassering", "classificação", "placering", "место", "miejsce", "개의 순위"));
+    var t = nbP + " " + (nbP > 1 ? T("podiums", "podiums", "podios", "podi", "回の表彰台", "Podestplätze", "منصات تتويج", "次登上领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "번의 시상대") : T("podium", "podium", "podio", "podio", "回の表彰台", "Podestplatz", "منصة تتويج", "次登上领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "번의 시상대"));
+    if (nbV) t += " · " + nbV + " " + (nbV > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次夺冠", "overwinningen", "vitórias", "segrar", "побед", "zwycięstwa", "승") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次夺冠", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승"));
+    return t;
+  }
+  function pointFr(txt, plein) {
+    return h("div", { style: { position: "relative", fontFamily: M, fontSize: 9.5, letterSpacing: 2, fontWeight: 600, textTransform: "uppercase", color: OR, margin: "4px 0 10px" } },
+      h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineStart: -21, top: 1, width: 9, height: 9, borderRadius: "50%", background: plein ? OR : BG, border: "1px solid " + OR } }), txt);
+  }
+  function vignetteFr(r) {
+    var I = infosRes(r), pl = placeDe(r), ouv = (resOuvert === r.id);
+    var titre = [I.qui, I.cheval].filter(Boolean).join(" & ") || (r.concours || "");
+    var src = I.photo ? ((typeof vignetteHype === "function") ? vignetteHype(I.photo, 120, 120) : I.photo) : "";
+    return h("div", { key: "fv" + r.id },
+      h("button", { type: "button", onClick: function () { setResOuvert(ouv ? null : r.id); }, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", padding: 0, margin: "0 0 12px", border: "none", background: "transparent", color: IV, textAlign: "start", cursor: "pointer" } },
+        h("span", { style: { flex: "0 0 46px", width: 46, height: 46, borderRadius: 10, overflow: "hidden", background: "#11171C" } }, src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+        h("span", { style: { flex: 1, minWidth: 0 } },
+          h("span", { dir: "auto", style: { display: "block", fontFamily: SERIF, fontSize: 18, lineHeight: 1.15 } }, h("span", { style: { color: OR } }, pl != null ? ordinal(pl) : "—"), " · ", titre),
+          h("span", { dir: "auto", style: { display: "block", fontFamily: M, fontSize: 10.5, color: GR, marginTop: 2 } }, [r.epreuve, r.partants ? r.partants + " " + T("partants", "starters", "participantes", "partenti", "出走", "Starter", "مشاركين", "名参赛", "deelnemers", "participantes", "startande", "участников", "startujących", "명 출전") : ""].filter(Boolean).join(" · ")))),
+      ouv ? detailRes(r, I, pl) : null);
+  }
+  function lienDeplier(k, ouv, n) {
+    return h("button", { type: "button", onClick: function () { basculerFr(k); }, style: { display: "inline-flex", alignItems: "center", gap: 6, minHeight: 30, padding: 0, margin: "-4px 0 12px", border: "none", background: "transparent", color: OR, fontFamily: M, fontSize: 11, cursor: "pointer" } },
+      ouv ? T("Replier", "Fold", "Plegar", "Chiudi", "たたむ", "Einklappen", "طيّ", "收起", "Inklappen", "Recolher", "Fäll ihop", "Свернуть", "Zwiń", "접기") : T("Voir les {n} autres", "See the other {n}", "Ver los otros {n}", "Vedi gli altri {n}", "残り{n}件を見る", "Die anderen {n} ansehen", "عرض {n} الأخرى", "查看其余 {n} 个", "De andere {n} bekijken", "Ver os outros {n}", "Se de andra {n}", "Смотреть остальные {n}", "Zobacz pozostałe {n}", "나머지 {n}개 보기").replace("{n}", n), h("span", { "aria-hidden": "true" }, ouv ? "˄" : "˅"));
+  }
+  function friseRes() {
+    var jours = []; resVisibles.forEach(function (x) { var j = String(x.date_epreuve || "").slice(0, 10); if (j && jours.indexOf(j) < 0) jours.push(j); });
+    var enfants = [];
+    jours.slice(0, ouvert.res ? 99 : 4).forEach(function (j, idx) {
+      var P = podiumsDu(j), r0 = P.liste[0] || P.tous[0]; if (!r0) return;
+      var lieu = infosRes(r0).lieuNom, jm = jourMois(r0.date_epreuve || r0.created_at);
+      var k = "fr" + j;
+      enfants.push(h("div", { key: k }, pointFr([jm, lieu].filter(Boolean).join(" · "), idx === 0)));
+      if (idx === 0) {
+        var ouv0 = !!frOuv[k], l0 = ouv0 ? P.liste : P.liste.slice(0, 3);
+        enfants.push(h("div", { key: k + "l" }, l0.map(vignetteFr)));
+        if (P.liste.length > 3) enfants.push(h("div", { key: k + "d" }, lienDeplier(k, ouv0, P.liste.length - 3)));
+      } else {
+        var ouv = !!frOuv[k];
+        enfants.push(h("button", { key: k + "b", type: "button", onClick: function () { basculerFr(k); }, style: { display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: 0, margin: "-4px 0 14px", border: "none", background: "transparent", color: IV, fontFamily: M, fontSize: 12, cursor: "pointer", textAlign: "start" } },
+          h("span", null, bilanTxt(P)), h("span", { "aria-hidden": "true", style: { color: OR } }, ouv ? "˄" : "˅")));
+        if (ouv) enfants.push(h("div", { key: k + "l" }, P.liste.map(vignetteFr)));
+      }
+    });
+    return h("div", { key: "frise", style: { position: "relative", paddingInlineStart: 22, marginTop: 18 } },
+      h("span", { "aria-hidden": "true", style: { position: "absolute", insetInlineStart: 5, top: 6, bottom: 14, width: 1, background: "rgba(201,166,107,0.4)" } }), enfants);
+  }
+  /* 12/11 13h15 (Blandine : « que les coupures restent ombrées et que ça se succède comme une courbe entre l'image du haut et
+     celle du bas, que ça fasse vraiment un duo ») : Ma saison et Derniers résultats collés, une courbe dorée traverse la jointure. */
+  /* 12/11 13h27 (Blandine : « mettre plutôt les performances chevaux et cavaliers à la place des résultats récents, ça fait un beau
+     rectangle de même taille ») : duo Ma saison / Performances (13h28 : « les deux boutons dans le même onglet » : Cavaliers et Chevaux), même gabarit, en miroir,
+     reliés par des courbes dorées. Les résultats récents repassent dessous (à retravailler). */
+  function courbeJointure(k, inverse) {
+    var d = inverse ? "M0 10 C 20 8, 120 30, 200 52 S 300 60, 390 58" : "M0 58 C 90 60, 190 52, 270 30 S 370 8, 390 10";
+    if (rtl) d = inverse ? "M390 10 C 370 8, 270 30, 190 52 S 90 60, 0 58" : "M390 58 C 300 60, 200 52, 120 30 S 20 8, 0 10";
+    return h("div", { key: k, "aria-hidden": "true", style: { position: "relative", height: 0, zIndex: 2, pointerEvents: "none" } },
+      h("svg", { viewBox: "0 0 390 70", preserveAspectRatio: "none", style: { position: "absolute", left: 0, top: -38, width: "100%", height: 70, overflow: "visible", filter: "drop-shadow(0 0 4px rgba(232,201,138,0.55))" } },
+        h("defs", null, h("linearGradient", { id: "hduoG" + k, x1: inverse ? "1" : "0", x2: inverse ? "0" : "1", y1: "0", y2: "0" },
+          h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: "0.35", stopColor: "#C9A66B", stopOpacity: "0.85" }),
+          h("stop", { offset: "0.62", stopColor: "#F3DDA6", stopOpacity: "1" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: "0.15" }))),
+        h("path", { d: d, fill: "none", stroke: "url(#hduoG" + k + ")", strokeWidth: 1.4, vectorEffect: "non-scaling-stroke" })));
+  }
+  var TV_CLASS = T("Voir le classement", "See the ranking", "Ver la clasificación", "Vedi la classifica", "ランキングを見る", "Rangliste ansehen", "عرض التصنيف", "查看排名", "Klassement bekijken", "Ver a classificação", "Se rankningen", "Смотреть рейтинг", "Zobacz klasyfikację", "순위 보기");
+  var bPerf = bandeauDuo("bperf", true, "images/cheval-golden-des-brouets-provisoire.webp", !rtl, null,
+    T("Performances", "Performance", "Rendimiento", "Prestazioni", "成績", "Leistungen", "أداء", "表现", "Prestaties", "Desempenho", "Prestationer", "Выступления", "Osiągnięcia", "성적"), null,
+    [[ouvert.pcav ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기") : T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "ライダー", "Reiter", "الفرسان", "骑手", "Ruiters", "Cavaleiros", "Ryttare", "Всадники", "Jeźdźcy", "라이더"), function () { basculer("pcav"); }],
+     [T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말"), function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }]]);
+  var duoSaisonRes = h("div", { key: "duo", style: { paddingTop: 40 } },
+    lienSaison, lienSaison ? courbeJointure("j1", false) : null,
+    bPerf,
+    listePerfCav ? h("div", { style: { padding: "10px 20px 0" } }, listePerfCav) : null);
   var blocRes = section(h("div", null,
-    enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
-T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과")), "res", resVisibles.length, 3),
+    enTete(T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과"), "res", autresRes.length, 0),
     resultats === null ? chargement()
       : h("div", null,
         !resVisibles.length ? videCartePh(ICO.coupe, "images/concours-hero-bai-tresse.webp", T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요."))
-          : h("div", null, (ouvert.res ? resVisibles : resVisibles.slice(0, 3)).map(carteRes)),   /* (528) cartes E bis */
+          : (RES_VARIANTE === "A" ? h("div", { style: { marginTop: -10 } }, friseRes())
+            : h("div", null, listeBand.map(ligneRes), ouvert.res && autresRes.length ? h("div", { style: { marginTop: 14 } }, autresRes.map(carteRes)) : null)),   /* 12/11 : bandeau + podiums ; « Voir tout » = les autres */
         /* (529) resultats retires : visibles seulement pour la proprietaire / les gestionnaires, pour les remettre */
         (gestion && resRetires.length) ? h("div", { style: { marginTop: 4 } },
           h("button", { type: "button", onClick: function () { setVoirRetires(!voirRetires); }, style: { background: "none", border: "none", padding: 0, minHeight: 32, color: GR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: "pointer" } },
@@ -1408,9 +1545,10 @@ T("Résultats récents", "Recent results", "Resultados recientes", "Risultati re
     partie(PARTIES[0].id, 1, PARTIES[0].lab, null, blocGerer), blocEquipe, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
     /* 12/11 12h33 (Blandine, maquette B, « touche à rien d'autre ») : La saison = agenda puis Ma saison ; Souvenirs = Nos plus beaux moments,
        puis en dernier les résultats récents et les classements (et Apprendre ensuite). Styles inchangés. */
-    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, lienSaison ? h("div", { key: "lsa", style: { padding: "40px 0 0" } }, lienSaison) : null, trait(),
-    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, blocRes, h("div", { key: "clsv", style: { paddingTop: 34 } }, blocClass), trait(),
-    partie(PARTIES[3].id, 4, PARTIES[3].lab, null), blocMedias, blocReg, h("div", { style: { height: 30 } }),
+    partie(PARTIES[1].id, 2, PARTIES[1].lab, null), blocAg, duoSaisonRes, h("div", { key: "rsa", style: { paddingTop: 20 } }, blocRes), trait(),
+    partie(PARTIES[2].id, 3, PARTIES[2].lab, null), blocSv, h("div", { style: { height: 30 } }),
+    /* 12/11 13h11 (Blandine : « vire les outils en bas de page, on avisera après ») : classements, Hey Baby, Optimise tes perfs,
+       règlements mis de côté (code gardé : blocClass, blocMedias, blocReg). */
     panneauEl,
     (typeof hypeCalquePhoto === "function") ? hypeCalquePhoto(visu, function () { setVisu(null); }) : null);
 }
