@@ -767,6 +767,9 @@ Petite structure familiale, enseignante DE.
 ```
 
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
+### 13/11 — build 20261113-0055 — Page Aide : tuto n° 5 « Ta première question à Hey Baby »
+- Sur le « Ok continue » de Blandine (00h40) : tuto n° 5 (hype-ecran-aide.js v5), 15 langues — 1 onglet Hey Baby, 2 écrire avec des détails, 3 ajouter une photo ou une vidéo (il dit ce qui est réussi et ce qui peut progresser), 4 épingler un conseil (rangé sur sa page ou celle du cheval), 5 « Partager » (lisible sans compte) ; bouton « Parler à Hey Baby ». Photo IMG_HEYBABY_BANNIERE. Consigne de Hey Baby aide mise à jour. Prochain : n° 6 « Les Galops ».
+
 ### 13/11 — build 20261113-0035 — Page Aide : tuto n° 4 « Rejoins ton écurie »
 - Sur le « Super, tu peux continuer » de Blandine (00h28) : tuto n° 4 (hype-ecran-aide.js v4), 15 langues — 1 onglet Écurie → « Choisir mon club » (ou « Mon club » sur la page cavalier), 2 le fil et « Publier », 3 « L'agenda du club », 4 j'aime, commentaires, identifier cavaliers et chevaux sur les photos ; bouton « Ouvrir mon écurie ». Photo ECURIE_HERO2, entière. Consigne de Hey Baby aide mise à jour. Catalogue : n° 1 à 4 dans la page Aide ; prochain n° 5 « Ta première question à Hey Baby ».
 
