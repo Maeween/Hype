@@ -24,19 +24,20 @@ for f in glob.glob("*/**/index.html", recursive=True):
 re_x = re.compile(r'(\s*)(<xhtml:link rel="alternate" hreflang="ko" href="(https://2hype\.fr/ko/[^"]*)"/>)')
 for f in glob.glob("sitemap*.xml"):
     s = open(f, encoding="utf-8").read()
-    if 'hreflang="fa"' in s: continue
     def rx(m):
         global n
+        if t0[m.end():m.end() + 60].lstrip().startswith('<xhtml:link rel="alternate" hreflang="fa"'): return m.group(0)   # déjà fait
         c = chemin(m.group(3))
         if c is None or c not in fa_pages: return m.group(0)
         n += 1
         return m.group(0) + m.group(1) + '<xhtml:link rel="alternate" hreflang="fa" href="https://2hype.fr/fa/' + (c + "/" if c else "") + '"/>'
+    t0 = s
     t = re_x.sub(rx, s)
     # une entrée <url> par page persane, copiée sur l'entrée coréenne
     for c in sorted(fa_pages):
         ko = "https://2hype.fr/ko/" + (c + "/" if c else "")
-        m = re.search(r'  <url>\n    <loc>' + re.escape(ko) + r'</loc>[\s\S]*?</url>\n', t)
-        if m and ("<loc>https://2hype.fr/fa/" + (c + "/" if c else "") + "</loc>") not in t:
+        m = re.search(r'[ \t]*<url>\s*<loc>' + re.escape(ko) + r'</loc>[\s\S]*?</url>\n', t)
+        if m and ("<loc>https://2hype.fr/fa/" + (c + "/" if c else "") + "</loc>") not in t:   # (la recherche tolère les retraits)
             bloc = m.group(0).replace("<loc>" + ko + "</loc>", "<loc>https://2hype.fr/fa/" + (c + "/" if c else "") + "</loc>")
             t = t[:m.end()] + bloc + t[m.end():]; n += 1
     if t != s: open(f, "w", encoding="utf-8").write(t)
@@ -63,3 +64,23 @@ for f in glob.glob("*/**/index.html", recursive=True):
                lambda m: m.group(1) + item, s2, count=1)
     if t != s: open(f, "w", encoding="utf-8").write(t); m_n += 1
 print("[fa] menus de langues complétés :", m_n)
+
+# Pied de page « · »-séparé : ajoute « فارسی » après « 한국어 » (lien, ou langue en cours sur fa/), et rend « English » cliquable sur fa/.
+p_n = 0
+for f in glob.glob("*/**/index.html", recursive=True):
+    if f.startswith(("docs/", "outils/", "node_modules/")): continue
+    lg = f.split("/")[0]
+    c = os.path.dirname(f)[len(lg) + 1:]
+    if c not in fa_pages: continue
+    s = open(f, encoding="utf-8").read()
+    if ' · <a href="https://2hype.fr/fa/' in s or ' · <strong lang="fa">' in s: continue
+    suf = (c + "/") if c else ""
+    if lg == "fa":
+        s2 = s.replace('<strong lang="en">English</strong>', '<a href="https://2hype.fr/en/' + suf + '" hreflang="en" lang="en">English</a>')
+        item = ' · <strong lang="fa">فارسی</strong>'
+    else:
+        s2 = s
+        item = ' · <a href="https://2hype.fr/fa/' + suf + '" hreflang="fa" lang="fa">فارسی</a>'
+    t = re.sub(r'(<a href="https://2hype\.fr/ko/[^"]*" hreflang="ko" lang="ko">[^<]*</a>|<strong lang="ko">[^<]*</strong>)(?=</p>)', lambda m: m.group(1) + item, s2, count=1)
+    if t != s: open(f, "w", encoding="utf-8").write(t); p_n += 1
+print("[fa] pieds de page complétés :", p_n)
