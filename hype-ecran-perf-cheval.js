@@ -9,6 +9,7 @@ function EcranPerformancesCheval(props) {
      le filtre porte sur les CHEVAUX ; droits = ceux du cavalier (ajout et import a son nom, choix des moments forts comme avant). */
   var riderId = (props && props.cavalierId) ? String(props.cavalierId) : "";
   var modeCav = !!riderId;
+  var archSt = React.useState("saison"), chOuvSt = React.useState({});   /* 12/11 19h : archives de la page du cavalier (par saison / par cheval) */
   var app = useApp();
   var tr = app.tr || function (o) { return (o && o.fr) || ""; };
   function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl, ko, fa) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl, ko: ko, fa: fa }); }
@@ -158,7 +159,13 @@ function EcranPerformancesCheval(props) {
   var forts = React.useMemo(function () {
     if (typeof hypePrincipauxResultats !== "function") return [];
     var vis = lignesVues.filter(function (r) { return r && (r.visible !== false || (voirMasques && estProprio)); });
-    return hypePrincipauxResultats(vis, (chV && chV.demo && secours.palmares) || [], 5);
+    var resF = hypePrincipauxResultats(vis, (chV && chV.demo && secours.palmares) || [], 5);
+    /* 12/11 16h30 (page du cavalier) : un moment fort choisi automatiquement doit être un vrai classement (premier quart) ;
+       ceux choisis à la main par la propriétaire restent */
+    /* 12/11 16h35 (Blandine : « entre pas de doublons et tout retirer, il y a un juste milieu ») : les moments forts choisis
+       automatiquement viennent des saisons PASSÉES ; la saison en cours est déjà ouverte en bas avec ses résultats récents */
+    if (modeCav) resF = resF.filter(function (f) { return f && (f.fx || (estClasseQ(f) && !(f.d && typeof hypePerfSaisonDe === "function" && hypePerfSaisonDe(f.d) === saisonCour))); });
+    return resF;
   }, [lignesVues, voirMasques, estProprio, chV]);
 
   /* ── portraits des cavaliers relies a un compte ── */
@@ -709,7 +716,7 @@ function EcranPerformancesCheval(props) {
       h("div", { style: { height: 1, background: "rgba(243,238,228,0.07)", margin: "18px 0 16px" } }),
       titreSec(T("Tous les résultats", "All results", "Todos los resultados", "Tutti i risultati", "すべての成績", "Alle Ergebnisse", "كل النتائج", "所有成绩", "Alle resultaten", "Todos os resultados", "Alla resultat", "Все результаты", "Wszystkie wyniki", "모든 결과", "همهٔ نتایج")),
       h("div", { style: { display: "flex", gap: 6, marginTop: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", paddingBottom: 2 } },
-        FILTRES_SEC.map(function (fx) {
+        FILTRES_SEC.filter(function (fx) { return !modeCav || fx[0] === "tous" || fx[0] === cleF || nbF[fx[0]]; }).map(function (fx) {   /* 12/11 16h30 : pas de pastille « Classés (0) » */
           var on = cleF === fx[0];
           return h("button", { key: "f" + sx.cle + fx[0], type: "button", onClick: function () { var n = Object.assign({}, filtres); n[sx.cle] = fx[0]; setFiltres(n); try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(fx[0]); } catch (eVp) { } }, style: { flex: "0 0 auto", minHeight: 32, padding: "0 9px", borderRadius: 10, border: (on ? "1.5px solid #C9A66B" : "1px solid rgba(243,238,228,0.14)"), background: "transparent", color: on ? "#F3EEE4" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, fx[1] + " (" + nbF[fx[0]] + ")");
         })),
@@ -722,6 +729,8 @@ function EcranPerformancesCheval(props) {
       st.victoires + " " + (st.victoires > 1 ? T("victoires", "wins", "victorias", "vittorie", "優勝", "Siege", "انتصارات", "冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstwa", "우승", "پیروزی") : T("victoire", "win", "victoria", "vittoria", "優勝", "Sieg", "انتصار", "冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "우승", "پیروزی")),
       st.podiums + " " + (st.podiums > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podien", "منصات", "领奖台", "podiumplaatsen", "pódios", "prispallsplaceringar", "пьедесталов", "podia", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podium", "منصة", "领奖台", "podium", "pódio", "prispallsplacering", "пьедестал", "podium", "시상대", "سکو")),
       st.classes + " " + (st.classes > 1 ? T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "获得名次", "geplaatst", "classificados", "placerade", "призовых мест", "w czołówce", "입상", "رتبه‌دار") : T("classé", "placing", "clasificado", "piazzamento", "入賞", "Platzierung", "تصنيف", "获得名次", "geplaatst", "classificação", "placering", "призёр", "miejsce w klasyfikacji", "입상", "رتبه‌دار"))];
+    /* 12/11 16h30 (page du cavalier) : « classés » = premier quart, comme « Ses chiffres » ; jamais de « 0 victoire » ni « 0 podium » */
+    if (modeCav) { var nQs = sx.lignes.filter(estClasseQ).length; resume[3] = resume[3].replace(/^\d+/, String(nQs)); var nEpS = sx.lignes.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length; resume[0] = nEpS + " " + (nEpS > 1 ? T("épreuves", "classes", "pruebas", "prove", "競技", "Prüfungen", "مسابقات", "场比赛", "proeven", "provas", "klasser", "стартов", "konkursów", "경기") : T("épreuve", "class", "prueba", "prova", "競技", "Prüfung", "مسابقة", "场比赛", "proef", "prova", "klass", "старт", "konkurs", "경기")); resume = resume.filter(function (x) { return !/^0 /.test(x); }); }
     if (st.elAb) resume.push(st.elAb + " " + T("élim. / ab.", "elim. / ret.", "elim. / ab.", "elim. / rit.", "失権/棄権", "Ausg./Aufg.", "استبعاد/انسحاب", "淘汰 / 弃权", "uitgesch. / opg.", "elim. / desist.", "utsl. / avbr.", "выб. / снят.", "wyc. / rez.", "탈락 / 기권", "حذف / انصراف"));
     return h("div", { key: "sa" + sx.cle, id: "perf-saison-" + sx.cle, "data-perf-saison": sx.cle, style: { margin: "0 18px 12px", padding: "14px 14px", scrollMarginTop: 16, borderRadius: 16, background: "linear-gradient(165deg, " + PETROLE2 + " 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid " + (ouverte ? "rgba(201,166,107,0.55)" : FILET) } },
       h("button", { type: "button", "aria-expanded": ouverte ? "true" : "false", onClick: function () { basculerSaison(sx.cle); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IVOIRE, cursor: "pointer", fontFamily: SANS } },
@@ -857,6 +866,50 @@ function EcranPerformancesCheval(props) {
       }),
       h("svg", { viewBox: "0 0 400 34", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 24, marginTop: 20, transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M0 8 C 120 12, 230 32, 400 6", fill: "none", stroke: CHAMP, strokeWidth: 1 })));
   }
+  /* 12/11 16h20 PROPOSITION (Blandine : « tout se mélange… des trucs en doublon ») — page du cavalier sans doublon :
+     une seule fois chaque information. Les chiffres (sorties, victoires, podiums, classements, sans faute, %) dans une seule grille ;
+     plus de « Son dernier concours » (c est la 1re ligne de la saison), plus de « Ses points » en haut (ils sont dans la saison,
+     avec le détail par type d épreuve), plus de chapitre « Ses chevaux » (les pastilles des chevaux font le tri ; « Sa fiche » sous
+     les pastilles quand un cheval est choisi) ; « Son record » seulement s il n y a pas encore de moments forts. */
+  if (modeCav && base.length) {
+    var nbSF2 = base.filter(function (f) { return typeof hypePerfEstSansFaute === "function" && hypePerfEstSansFaute(f); }).length;
+    var pl2 = function (n, un, plu) { return n > 1 ? plu : un; };
+    var tuiles = [];
+    /* 12/11 16h30 (Blandine : « des chiffres depuis le début, d autres sur la saison… pas clair ») : tout est compté en ÉPREUVES,
+       sur toute sa carrière ; plus de « sorties » (journées, une autre unité) ni de « sans faute » (la mention manque dans la plupart des imports FFE) */
+    var nbEp2 = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length;
+    if (nbEp2) tuiles.push([String(nbEp2), pl2(nbEp2, T("épreuve courue", "class ridden", "prueba disputada", "prova disputata", "出場競技", "Prüfung geritten", "مسابقة", "场比赛", "proef gereden", "prova disputada", "klass riden", "старт", "konkurs", "경기 출전"), T("épreuves courues", "classes ridden", "pruebas disputadas", "prove disputate", "出場競技", "Prüfungen geritten", "مسابقات", "场比赛", "proeven gereden", "provas disputadas", "klasser ridna", "стартов", "konkursów", "경기 출전"))]);
+    if (stats.victoires) tuiles.push([String(stats.victoires), pl2(stats.victoires, T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승"), T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승")), 1]);
+    if (stats.podiums) tuiles.push([String(stats.podiums), pl2(stats.podiums, T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대"), T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "시상대")), 1]);
+    if (nbClassesQ) tuiles.push([String(nbClassesQ), pl2(nbClassesQ, T("classement", "placing", "clasificación", "piazzamento", "入賞", "Platzierung", "تصنيف", "次获得名次", "klassering", "classificação", "placering", "призовое место", "klasyfikacja", "입상"), T("classements", "placings", "clasificaciones", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "次获得名次", "klasseringen", "classificações", "placeringar", "призовых мест", "klasyfikacje", "입상"))]);
+    /* (sans faute retiré le 12/11 16h30) */
+    /* 12/11 18h35 (Blandine : « classement par concours, c'est plus sympa ») : le pourcentage se compte par CONCOURS (journée) :
+       classé au moins une fois (premier quart) ce jour-là ; affiché seulement s il n est pas à zéro */
+    var jrs2 = {}; base.forEach(function (f) { if (f.d) { if (!jrs2[f.d]) jrs2[f.d] = false; if (estClasseQ(f)) jrs2[f.d] = true; } });
+    var nJ2 = Object.keys(jrs2).length, nJQ2 = Object.keys(jrs2).filter(function (k) { return jrs2[k]; }).length;
+    if (nJ2 && nJQ2) tuiles.push([Math.round(100 * nJQ2 / nJ2) + " %", T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞：", "platziert bei ", "مصنف في ", "获得名次：", "geplaatst op ", "classificado em ", "placerad på ", "в призах: ", "w czołówce: ", "입상: ") + nJQ2 + " " + T("concours sur", "shows out of", "concursos de", "concorsi su", "大会 /", "Turnieren von", "مسابقة من", "场比赛，共", "wedstrijden van", "concursos em", "tävlingar av", "соревнований из", "zawodach z", "대회 /") + " " + nJ2]);
+    /* jamais de ligne à moitié vide : 6 colonnes, chaque ligne remplie */
+    var nT = tuiles.length, spans = [];
+    if (nT === 4) spans = [3, 3, 3, 3]; else if (nT === 5) spans = [2, 2, 2, 3, 3]; else if (nT === 6) spans = [2, 2, 2, 2, 2, 2];
+    else for (var iS = 0; iS < nT; iS++) spans.push(6 / nT);
+    var ficheCh = null;
+    if (cavEffectif !== "tous") { try { Object.keys((cav && cav.chevaux) || {}).forEach(function (idc) { var c = cav.chevaux[idc]; if (c && ((String(c.alias || "").trim() || c.nom) === cavEffectif)) ficheCh = idc; }); } catch (eFc) { } }
+    chapitres = h(React.Fragment, null,
+      ficheCh ? h("div", { style: { textAlign: "end", margin: "8px 22px 0" } }, h("button", { type: "button", onClick: function () { try { window.__chevalOuvert = ficheCh; } catch (eO) { } setEcran("cheval"); }, style: { border: "none", background: "transparent", color: CHAMP, fontFamily: SANS, fontSize: 12.5, cursor: "pointer", padding: 0 } }, T("Voir la fiche de ", "See the profile of ", "Ver la ficha de ", "Vedi la scheda di ", "プロフィールを見る：", "Profil ansehen: ", "عرض ملف ", "查看资料：", "Bekijk het profiel van ", "Ver a ficha de ", "Se profilen för ", "Карточка: ", "Zobacz profil: ", "프로필 보기: ") + cavEffectif + (rtl ? " ‹" : " ›"))) : null,
+      h("div", { "data-perf-chiffres": "1", style: { margin: "22px 18px 0" } },
+        h("div", { style: { textAlign: "center", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Ses chiffres", "In numbers", "Sus cifras", "I suoi numeri", "数字で見る", "In Zahlen", "بالأرقام", "数据", "In cijfers", "Em números", "I siffror", "В цифрах", "W liczbach", "숫자로 보기")),
+        nT ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8, marginTop: 12 } }, tuiles.map(function (c, ic) {
+          return h("div", { key: "tu" + ic, style: { gridColumn: "span " + spans[ic], textAlign: "center", padding: "12px 4px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.18)", background: "rgba(243,238,228,0.03)" } },
+            h("div", { style: { fontFamily: SERIF, fontSize: 28, fontWeight: 500, lineHeight: 1, color: c[2] ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, c[0]),
+            h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 11, lineHeight: 1.3, color: "rgba(243,238,228,0.72)" } }, c[1]));
+        })) : null,
+        h("div", { style: { marginTop: 14 } }, barre(base))),
+      false ? chapitre("rec", "images/concours-carte-passages.webp", T("Son record", "Personal best", "Su récord", "Il suo record", "自己ベスト", "Sein Rekord", "رقمه القياسي", "最佳成绩", "Zijn record", "O recorde", "Rekordet", "Рекорд", "Rekord", "최고 기록"),
+        h("div", null,
+          h("div", { style: { fontFamily: SERIF, fontSize: 28, fontWeight: 500, lineHeight: 1, color: IVOIRE, marginTop: 6, direction: "ltr", unicodeBidi: "isolate" } }, rangTxt(record.pl), record.part ? h("span", { style: { fontSize: 16, color: "rgba(243,238,228,0.7)" } }, " / " + record.part) : null),
+          h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 13, color: "rgba(243,238,228,0.75)" } }, [record.ep, record.nom, record.d ? dateLisible(record.d) : ""].filter(Boolean).join(" · ")))) : null);
+    chapChevaux = null;
+  }
   var elG = [
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
     /* (g2) comme la maquette : chiffres poses sur le fond, sans cadre, chiffres ivoire en serif, libelles en minuscules, filet fin dessous */
@@ -908,7 +961,7 @@ function EcranPerformancesCheval(props) {
   ];
   var elD = [
     chapChevaux,
-    modeCav ? h("div", { style: { padding: "20px 18px 0", fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, T("Chapitre V", "Chapter V", "Capítulo V", "Capitolo V", "第5章", "Kapitel V", "الفصل الخامس", "第五章", "Hoofdstuk V", "Capítulo V", "Kapitel V", "Глава V", "Rozdział V", "5장", "فصل V")) : null,
+    null,   /* 12/11 16h20 : titre « Chapitre V » retiré (proposition sans chapitres numérotés) */
     /* toutes ses saisons : le tableau depliable */
     titreSection(T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه", "它的所有赛季", "Al zijn seizoenen", "Todas as temporadas", "Alla dess säsonger", "Все её сезоны", "Wszystkie jego sezony", "모든 시즌", "همهٔ فصل‌هایش")),
     h("div", { style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "-4px 18px 12px" } }, LEGENDE.map(function (lg, i) {
@@ -916,10 +969,160 @@ function EcranPerformancesCheval(props) {
     })),
     h("div", { "data-perf-tableau": "1" }, saisons.map(ligneSaison)),
     (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "6px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer", padding: "8px" } }, libMasques())) : null,
-    h("div", { "data-perf-compteur": "1", style: { textAlign: "center", margin: "6px 18px 0", fontFamily: SANS, fontSize: 10.5, color: MUET2 } }, places.length + " " + (places.length > 1 ? T("résultats enregistrés", "recorded results", "resultados registrados", "risultati registrati", "件の成績", "erfasste Ergebnisse", "نتائج مسجلة", "条已记录的成绩", "geregistreerde resultaten", "resultados registrados", "sparade resultat", "сохранённых результатов", "zapisanych wyników", "저장된 결과", "نتیجهٔ ثبت‌شده") : T("résultat enregistré", "recorded result", "resultado registrado", "risultato registrato", "件の成績", "erfasstes Ergebnis", "نتيجة مسجلة", "条已记录的成绩", "geregistreerd resultaat", "resultado registrado", "sparat resultat", "сохранённый результат", "zapisany wynik", "저장된 결과", "نتیجهٔ ثبت‌شده"))),
+    modeCav ? null : h("div", { "data-perf-compteur": "1",   /* 12/11 16h35 : sur la page du cavalier, le total est déjà dans « Ses chiffres » */ style: { textAlign: "center", margin: "6px 18px 0", fontFamily: SANS, fontSize: 10.5, color: MUET2 } }, places.length + " " + (places.length > 1 ? T("résultats enregistrés", "recorded results", "resultados registrados", "risultati registrati", "件の成績", "erfasste Ergebnisse", "نتائج مسجلة", "条已记录的成绩", "geregistreerde resultaten", "resultados registrados", "sparade resultat", "сохранённых результатов", "zapisanych wyników", "저장된 결과", "نتیجهٔ ثبت‌شده") : T("résultat enregistré", "recorded result", "resultado registrado", "risultato registrato", "件の成績", "erfasstes Ergebnis", "نتيجة مسجلة", "条已记录的成绩", "geregistreerd resultaat", "resultado registrado", "sparat resultat", "сохранённый результат", "zapisany wynik", "저장된 결과", "نتیجهٔ ثبت‌شده"))),
     modeCav ? actionsCompactes : null,
     modeCav ? outilCapture : null,
   ];
+  /* 12/11 19h (Blandine, maquette A2 validée : « Ok, super, vas-y, tu peux mettre en ligne ») — page du cavalier façon « groupe compétition » :
+     1 En bref (anneau % par concours + 4 chiffres + barre) · 2 Ses chevaux (magazine immersif, photo entière) · 3 Récent (3 cartes basses)
+     · 4 Souvenirs (3 moments forts) · 5 Archives (par saison / par cheval). Jamais de zéro ; les lignes masquées ne sont jamais listées. */
+  if (modeCav && base.length) (function () {
+    var visL = function (f) { return montreMasques || !f.masque; };
+    var nPart = 0;
+    var sepA2 = function (k) { return h("div", { key: k, "aria-hidden": "true", style: { height: 1, background: "rgba(201,166,107,0.18)", margin: "34px 22px 0" } }); };
+    var partie = function (k, kick, titre) { nPart++; return h("div", { key: k, style: { padding: "30px 22px 0" } },
+      h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, nPart + " · " + kick),
+      h("div", { style: { fontFamily: SERIF, fontSize: 34, lineHeight: 1.08, marginTop: 6, color: IVOIRE } }, titre)); };
+    var nbEpDe = function (ls) { return ls.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length; };
+    var L_EP = function (n) { return n > 1 ? T("épreuves", "classes", "pruebas", "prove", "競技", "Prüfungen", "مسابقات", "场比赛", "proeven", "provas", "klasser", "стартов", "konkursów", "경기", "مسابقه") : T("épreuve", "class", "prueba", "prova", "競技", "Prüfung", "مسابقة", "场比赛", "proef", "prova", "klass", "старт", "konkurs", "경기", "مسابقه"); };
+    var L_V = function (n) { return n > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승", "پیروزی") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승", "پیروزی"); };
+    var L_P = function (n) { return n > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podiów", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대", "سکو"); };
+    var L_Q = function (n) { return n > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "次获得名次", "klasseringen", "classificações", "placeringar", "призовых мест", "klasyfikacji", "입상", "رتبه") : T("classement", "placing", "clasificación", "piazzamento", "入賞", "Platzierung", "تصنيف", "次获得名次", "klassering", "classificação", "placering", "призовое место", "klasyfikacja", "입상", "رتبه"); };
+    var chiffre = function (k, v, lib, or, taille) { return h("div", { key: k, style: { textAlign: "center", minWidth: 0 } },
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 32, fontWeight: 500, lineHeight: 1, color: or ? CHAMP : IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib)); };
+    var parCheval = function (nm) { var r = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === nm)) r = { id: k, c: c }; }); } catch (eP) { } return r; };
+    var ouvrirFiche = function (id) { try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); };
+    var meilleur = function (ls) { var pl = ls.filter(function (f) { return f.pl != null && visL(f) && estClasseQ(f); });   /* seulement un vrai classement */ if (!pl.length) return null; return pl.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || String(b.d || "").localeCompare(String(a.d || "")); })[0]; };
+    var resTxt = function (f) { return f.pl != null ? rangTxt(f.pl) : (f.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "استبعاد", "淘汰", "Uitg.", "Elim.", "Utsl.", "Искл.", "Wyel.", "실격", "حذف") : T("Ab.", "Ret.", "Ab.", "Rit.", "棄権", "Aufg.", "انسحاب", "弃权", "Opg.", "Desist.", "Bröt", "Сход", "Rez.", "기권", "انصراف")); };
+    var SUR = function () { return T("sur", "of", "de", "su", "/", "von", "من", "/", "van", "de", "av", "из", "z", "중", "از"); };
+    var TROPH = function () { return h("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4" })); };
+    var ETOI = function () { return h("svg", { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" })); };
+    /* carte basse (style des portes de la page Team) : icône, filet, texte, photo entière à droite en fondu */
+    var carteBasse = function (k, ico, l1, l2, ph, onClick) {
+      return h("div", { key: k, role: "button", tabIndex: 0, onClick: onClick, style: { position: "relative", display: "flex", alignItems: "center", minHeight: 88, border: "1px solid rgba(201,166,107,0.28)", borderRadius: 18, background: "#0B1114", overflow: "hidden", marginBottom: 10, cursor: "pointer" } },
+        ph ? h("div", { "aria-hidden": "true", style: { position: "absolute", insetInlineEnd: 0, top: 0, bottom: 0, width: "46%", display: "flex", justifyContent: "flex-end" } },
+          h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { height: "100%", width: "auto", maxWidth: "100%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", transparent, #000 55%)", maskImage: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", transparent, #000 55%)" } })) : null,
+        h("div", { style: { width: 58, flex: "0 0 auto", display: "flex", justifyContent: "center", color: CHAMP, position: "relative" } }, ico),
+        h("div", { style: { width: 1, alignSelf: "stretch", margin: "16px 0", background: "rgba(201,166,107,0.3)", position: "relative" } }),
+        h("div", { style: { padding: "12px 14px", position: "relative", minWidth: 0, maxWidth: ph ? "64%" : "100%" } },
+          h("div", { style: { fontFamily: SERIF, fontSize: 23, lineHeight: 1.1, color: IVOIRE, overflowWrap: "anywhere" } }, l1),
+          h("div", { style: { fontFamily: SANS, fontSize: 11.5, color: "rgba(243,238,228,0.65)", marginTop: 3, lineHeight: 1.35 } }, l2)));
+    };
+    var concoursC = function (f) { return String(f.nom || "").replace(/^\s*CSO\s+/i, ""); };
+    var g = [];
+
+    /* 1 · En bref */
+    var jrs = {}; base.forEach(function (f) { if (f.d) { if (!jrs[f.d]) jrs[f.d] = false; if (estClasseQ(f)) jrs[f.d] = true; } });
+    var nJ = Object.keys(jrs).length, nJQ = Object.keys(jrs).filter(function (k) { return jrs[k]; }).length;
+    var nEp = nbEpDe(base), nQ = base.filter(estClasseQ).length;
+    var its = [];
+    if (nEp) its.push(chiffre("e", nEp, L_EP(nEp), false));
+    if (stats.victoires) its.push(chiffre("v", stats.victoires, L_V(stats.victoires), true));
+    if (stats.podiums) its.push(chiffre("p", stats.podiums, L_P(stats.podiums), true));
+    if (nQ) its.push(chiffre("q", nQ, L_Q(nQ), false));
+    var anneau = null;
+    if (nJ && nJQ) {
+      var pct = Math.round(100 * nJQ / nJ), r = 48, ci = 2 * Math.PI * r;
+      anneau = h("div", { style: { textAlign: "center", flex: "0 0 auto" } },
+        h("svg", { width: 128, height: 128, viewBox: "0 0 120 120", role: "img", "aria-label": pct + " %" },
+          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: "rgba(243,238,228,0.1)", strokeWidth: 9 }),
+          h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: CHAMP, strokeWidth: 9, strokeLinecap: "round", strokeDasharray: (ci * pct / 100).toFixed(1) + " " + ci.toFixed(1), transform: "rotate(-90 60 60)" }),
+          h("text", { x: 60, y: 64, textAnchor: "middle", fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: 34, fill: IVOIRE }, pct + "%")),
+        h("div", { style: { fontFamily: SANS, fontSize: 10.5, lineHeight: 1.3, marginTop: -2, color: MUET } },
+          T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞 ", "platziert bei ", "مصنف في ", "获得名次 ", "geplaatst op ", "classificado em ", "placerad på ", "в призах на ", "w czołówce na ", "입상 ", "رتبه در ") + nJQ + " " + T("concours", "shows", "concursos", "concorsi", "大会", "Turnieren", "مسابقات", "场赛事", "wedstrijden", "concursos", "tävlingar", "турнирах", "zawodach", "대회", "مسابقه"),
+          h("br"), SUR() + " " + nJ));
+    }
+    g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش")));
+    g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
+        its.length ? h("div", { style: { flex: 1, display: "grid", gridTemplateColumns: its.length > 1 ? "1fr 1fr" : "1fr", gap: "12px 6px" } }, its) : null),
+      h("div", { style: { marginTop: 14 } }, barre(base))));
+
+    /* 2 · Ses chevaux — magazine immersif */
+    var chx = cavaliers.map(function (nm) { var ls = tous.filter(function (f) { return f.cav === nm; }); return { nm: nm, ls: ls, ch: parCheval(nm) }; }).filter(function (c) { return nbEpDe(c.ls) > 0; });
+    if (chx.length) {
+      g.push(sepA2("s2")); g.push(partie("p2", T("Ses chevaux", "The horses", "Sus caballos", "I cavalli", "愛馬たち", "Die Pferde", "خيوله", "马匹", "De paarden", "Os cavalos", "Hästarna", "Лошади", "Konie", "말들", "اسب‌هایش"), T("Un couple, une histoire", "One pair, one story", "Una pareja, una historia", "Una coppia, una storia", "人馬の物語", "Ein Paar, eine Geschichte", "ثنائي وحكاية", "人马搭档的故事", "Een duo, een verhaal", "Uma dupla, uma história", "Ett par, en historia", "Пара и её история", "Para i jej historia", "한 쌍의 이야기", "یک زوج، یک داستان")));
+      chx.forEach(function (c, i) {
+        var st = hypePerfStatsHisto(c.ls), ne = nbEpDe(c.ls), b = meilleur(c.ls);
+        var ph = c.ch && c.ch.c && c.ch.c.photo_url;
+        var ouvrir = c.ch ? function () { ouvrirFiche(c.ch.id); } : undefined;
+        var mini = [];
+        if (ne) mini.push(chiffre("e", ne, L_EP(ne), false, 28));
+        if (st.victoires) mini.push(chiffre("v", st.victoires, L_V(st.victoires), true, 28));
+        if (st.podiums) mini.push(chiffre("p", st.podiums, L_P(st.podiums), true, 28));
+        g.push(h("div", { key: "mag" + i, "data-perf-cheval-mag": String(i), role: ouvrir ? "button" : undefined, tabIndex: ouvrir ? 0 : undefined, onClick: ouvrir, style: { position: "relative", marginTop: 18, background: "#000", overflow: "hidden", paddingBottom: 20, cursor: ouvrir ? "pointer" : "default" } },
+          ph ? h("div", { style: { position: "relative", minHeight: 200, display: "flex", alignItems: "flex-end" } },   /* photo entière ; une photo très large laisse du noir en haut pour le numéro */
+            h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
+            h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, #000 100%)" } })) : h("div", { style: { height: 130, background: "radial-gradient(120% 90% at 30% 20%, " + PETROLE2 + " 0%, #000 80%)" } }),
+          h("div", { style: { position: "absolute", top: 16, insetInlineStart: 22, fontFamily: SERIF, fontSize: 15, color: "rgba(243,238,228,0.75)", letterSpacing: ".2em", textShadow: "0 1px 6px rgba(0,0,0,0.8)", direction: "ltr", unicodeBidi: "isolate" } }, ("0" + (i + 1)).slice(-2) + " / " + ("0" + chx.length).slice(-2)),
+          h("div", { style: { position: "relative", margin: ph ? "-96px 22px 0" : "-50px 22px 0" } },
+            h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".32em", textTransform: "uppercase", color: CHAMP } }, T("Avec", "With", "Con", "Con", "パートナー", "Mit", "مع", "搭档", "Met", "Com", "Med", "С", "Z", "함께", "با")),
+            h("div", { style: { fontFamily: SERIF, fontSize: 44, lineHeight: 1, marginTop: 4, color: IVOIRE, overflowWrap: "anywhere" } }, c.nm),
+            mini.length ? h("div", { style: { display: "flex", gap: 18, marginTop: 10 } }, mini) : null,
+            b ? h("div", { style: { fontFamily: SANS, fontSize: 11, marginTop: 8, maxWidth: "72%", color: MUET, lineHeight: 1.4 } }, T("Son meilleur : ", "Best: ", "Su mejor: ", "Il migliore: ", "ベスト：", "Bestes: ", "أفضل نتيجة: ", "最佳：", "Beste: ", "Melhor: ", "Bäst: ", "Лучший: ", "Najlepszy: ", "최고: ", "بهترین: "), h("span", { style: { color: CHAMP } }, rangTxt(b.pl)), [b.ep, b.d ? String(b.d).slice(0, 4) : ""].filter(Boolean).map(function (x) { return " · " + x; }).join("")) : null,
+            h("div", { style: { marginTop: 10, maxWidth: "72%" } }, barre(c.ls)),
+            ouvrir ? h("div", { style: { position: "absolute", insetInlineEnd: 0, bottom: 0, fontFamily: SANS, fontSize: 12, color: CHAMP } }, T("Sa fiche", "Profile", "Su ficha", "La scheda", "プロフィール", "Profil", "ملفه", "档案", "Profiel", "Ficha", "Profil", "Профиль", "Profil", "프로필", "پرونده") + (rtl ? " ‹" : " ›")) : null)));
+      });
+    }
+
+    /* 3 · Récent */
+    var recents = tous.filter(function (f) { return visL(f) && f.d && (f.pl != null || f.statut === "el" || f.statut === "ab"); }).slice().sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); }).slice(0, 3);
+    if (recents.length) {
+      g.push(sepA2("s3")); g.push(partie("p3", T("Récent", "Recent", "Reciente", "Recenti", "最近", "Zuletzt", "الأحدث", "最近", "Recent", "Recente", "Senaste", "Недавно", "Ostatnio", "최근", "اخیر"), T("Ses derniers concours", "Latest shows", "Sus últimos concursos", "Gli ultimi concorsi", "最近の大会", "Die letzten Turniere", "آخر مسابقاته", "最近的赛事", "Laatste wedstrijden", "Últimos concursos", "Senaste tävlingarna", "Последние турниры", "Ostatnie zawody", "최근 대회", "آخرین مسابقه‌هایش")));
+      g.push(h("div", { key: "p3c", style: { padding: "16px 22px 0" } }, recents.map(function (f, i) {
+        var chP = parCheval(f.cav), ph = (chP && chP.c && chP.c.photo_url) || null;
+        return carteBasse("rc" + i, TROPH(), h(React.Fragment, null, h("span", { style: { color: f.pl === 1 ? CHAMP : IVOIRE } }, resTxt(f)), f.ep ? " · " + f.ep : ""),
+          [concoursC(f), f.d ? dateLisible(f.d) : "", f.part ? SUR() + " " + f.part : ""].filter(Boolean).join(" · "), ph, function () { allerAuFort(f); });
+      })));
+    }
+
+    /* 4 · Souvenirs */
+    var fs3 = forts.slice(0, 3);
+    if (fs3.length) {
+      g.push(sepA2("s4")); g.push(partie("p4", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen", "ذكريات", "回忆", "Herinneringen", "Lembranças", "Minnen", "Воспоминания", "Wspomnienia", "추억", "خاطره‌ها"), T("Ses plus beaux moments", "Finest moments", "Sus mejores momentos", "I momenti più belli", "最高の瞬間", "Die schönsten Momente", "أجمل لحظاته", "最美好的时刻", "Mooiste momenten", "Os melhores momentos", "Finaste stunderna", "Лучшие моменты", "Najpiękniejsze chwile", "최고의 순간", "زیباترین لحظه‌هایش")));
+      g.push(h("div", { key: "p4c", style: { padding: "16px 22px 0" } }, fs3.map(function (f, i) {
+        var pf = photosForts[i], chP = parCheval(f.cav);
+        var ph = (pf && !pf.video && pf.url) || (chP && chP.c && chP.c.photo_url) || null;
+        var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
+        return carteBasse("sv" + i, ETOI(), h(React.Fragment, null, h("span", { style: { color: CHAMP } }, rangTxt(f.pl)), f.part ? " " + SUR() + " " + f.part : ""),
+          h(React.Fragment, null, f.ep || concoursC(f), h("br"), [annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")), ph, function () { allerAuFort(f); });
+      })));
+    }
+    if (peutForts) g.push(h("div", { key: "ajf", style: { textAlign: "center", marginTop: fs3.length ? 4 : 18 } }, h("button", { type: "button", onClick: function () { setChoixFortOuvert(true); }, style: { minHeight: 36, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "transparent", color: "#E6CF9C", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Choisir ses moments forts", "Choose highlights", "Elegir momentos", "Scegli i momenti", "ハイライトを選ぶ", "Highlights wählen", "اختيار اللحظات", "选择精彩时刻", "Hoogtepunten kiezen", "Escolher momentos", "Välj höjdpunkter", "Выбрать моменты", "Wybierz momenty", "하이라이트 선택", "انتخاب لحظه‌ها"))));
+    if (teamInfo) g.push(elG[4]);
+
+    /* 5 · Archives — par saison / par cheval */
+    var d = [];
+    var vueA = archSt[0], setVueA = archSt[1];
+    if (!largeP) d.push(sepA2("s5"));
+    d.push(partie("p5", T("Archives", "Archive", "Archivo", "Archivio", "アーカイブ", "Archiv", "الأرشيف", "档案", "Archief", "Arquivo", "Arkiv", "Архив", "Archiwum", "기록 보관", "بایگانی"), T("Tous ses résultats", "All results", "Todos sus resultados", "Tutti i risultati", "全成績", "Alle Ergebnisse", "كل نتائجه", "所有成绩", "Alle resultaten", "Todos os resultados", "Alla resultat", "Все результаты", "Wszystkie wyniki", "모든 성적", "همهٔ نتایجش")));
+    var bascBtn = function (cle, lib) { var on = vueA === cle; return h("button", { key: "b" + cle, type: "button", onClick: function () { setVueA(cle); }, style: { flex: 1, minHeight: 38, borderRadius: 999, border: "none", background: on ? "rgba(201,166,107,0.16)" : "transparent", color: on ? "#E6CF9C" : MUET, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", boxShadow: on ? "inset 0 0 0 1px rgba(201,166,107,0.55)" : "none" } }, lib); };
+    if (chx.length > 1) d.push(h("div", { key: "basc", style: { display: "flex", gap: 4, padding: 4, margin: "16px 22px 14px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.12)" } },
+      bascBtn("saison", T("Par saison", "By season", "Por temporada", "Per stagione", "シーズン別", "Nach Saison", "حسب الموسم", "按赛季", "Per seizoen", "Por temporada", "Per säsong", "По сезонам", "Według sezonu", "시즌별", "بر اساس فصل")),
+      chx.length > 1 ? bascBtn("cheval", T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب")) : null));
+    if (vueA === "cheval" && chx.length > 1) {
+      var chOuv = chOuvSt[0], setChOuv = chOuvSt[1];
+      d.push(h("div", { key: "acc", "data-perf-tableau": "1", style: { padding: "0 22px" } }, chx.map(function (c, i) {
+        var ls = c.ls.filter(visL).slice().sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")); });
+        var ouvert = chOuv[c.nm] != null ? chOuv[c.nm] : i === 0;
+        var ph = c.ch && c.ch.c && c.ch.c.photo_url, ne = nbEpDe(c.ls);
+        return h("div", { key: "ac" + i, style: { borderTop: "1px solid rgba(243,238,228,0.1)" } },
+          h("div", { role: "button", tabIndex: 0, onClick: function () { var o = Object.assign({}, chOuv); o[c.nm] = !ouvert; setChOuv(o); }, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 0", cursor: "pointer" } },
+            ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { width: 40, height: 40, borderRadius: 10, objectFit: "cover", flex: "0 0 auto" } }) : null,
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { fontFamily: SERIF, fontSize: 21, color: IVOIRE, lineHeight: 1.1 } }, c.nm),
+              h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 2 } }, ne + " " + L_EP(ne))),
+            h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 18, transform: ouvert ? "rotate(90deg)" : "none", transition: "transform .2s" } }, rtl ? "‹" : "›")),
+          ouvert ? h("div", { style: { paddingBottom: 8 } }, ls.map(function (f, j) { return ligneResultat(f, j); })) : null);
+      })));
+    } else {
+      d.push(elD[3]); d.push(elD[4]);
+    }
+    d.push(elD[5]); d.push(elD[7]); d.push(elD[8]);
+    elG = [menuCav].concat(g);
+    elD = d;
+  })();
   return h("div", { "data-ecran": "performances-cheval", style: racineSt },
     heroCav || hero,
     largeP ? h("div", { "data-perf-colonnes": "1", style: { display: "grid", gridTemplateColumns: ordiP ? "minmax(0, 1fr) minmax(0, 1.25fr)" : "minmax(0, 1fr) minmax(0, 1.1fr)", gap: ordiP ? 28 : 18, alignItems: "start", padding: ordiP ? "0 14px" : "0 4px" } },
