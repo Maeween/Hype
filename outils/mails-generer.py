@@ -8,6 +8,7 @@ ICI = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ICI, "mails")
 LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl","ko"]
 IMG = "https://2hype.fr/images/mail-cheval.jpg"
+IMG_CONF = "https://2hype.fr/images/accueil-video-ordi-poster.jpg"   # 12/11 (Blandine : « la photo est coupée » → choix 3, la silhouette dans la nuit, entière)
 # cles : objet, pre, titre, accroche, corps, bouton, petit, signe
 RESET = {
 "fr": ["HYPE — ton cheval t'attend 🐴","Choisis un nouveau mot de passe en un geste.","Mot de passe oublié ?","Pas de panique : même les meilleurs cavaliers perdent parfois un étrier.","Touche le bouton ci-dessous pour choisir un nouveau mot de passe et retrouver ton cheval sur Hype.","Choisir mon nouveau mot de passe","Tu n'as rien demandé ? Ignore simplement ce message : ton mot de passe ne change pas.","À tout de suite en selle — l'équipe Hype"],
@@ -55,6 +56,33 @@ def choix(textes, cle, echap=True):
     for n, lg in enumerate(autres):
         s += ('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % lg + val(lg)
     return s + "{{ else }}" + val("fr") + "{{ end }}"
+# 12/11 (Blandine : « ce serait pas mal qu'on étoffe un peu avec les fonctionnalités et liens ») : sous le bouton,
+# « Ce qui t'attend sur Hype » (une ligne par fonction, avec son lien), puis Hypo qui signe. Français d'abord ; les 13 autres
+# langues seront traduites une fois le français validé (en attendant, elles reçoivent le français pour ce bloc).
+FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
+ ("📸", "Photos & vidéos", "Range les souvenirs de tes concours et de tes entraînements, et crée tes stories.", "https://2hype.fr/fr/photos-souvenirs/"),
+ ("🐴", "Ton cheval", "Sa fiche, ses origines, son pedigree, ses photos et ses résultats.", "https://2hype.fr/fr/fiche-cheval/"),
+ ("🏆", "Concours", "Toute ta saison importée en une seule manipulation : résultats, classements et points.", "https://2hype.fr/fr/concours-resultats/"),
+ ("🩺", "Santé", "Soins, vaccins, maréchal… avec des rappels automatiques.", "https://2hype.fr/fr/sante-cheval/"),
+ ("🎓", "Galops 1 à 9", "Cours, quiz, examens blancs et prépas aux formations pro.", "https://2hype.fr/fr/galops/"),
+ ("🧭", "Dressage", "Les reprises avec leur tracé animé, pour les apprendre par cœur.", "https://2hype.fr/fr/reprises-dressage/"),
+ ("💬", "Hey Baby", "Ton coach virtuel pour toutes tes questions, même à partir d’une photo.", "https://2hype.fr/fr/ia-equestre/"),
+ ("🌍", "Horse Lingo", "Le vocabulaire équestre dans plusieurs langues.", "https://horselingo.fr"),
+ ("🏇", "La vie de l’écurie", "Stages, concours, inscriptions et infos pratiques.", "https://2hype.fr/#monecurie"),
+], "J’ai hâte de te voir aux écuries !"]}
+def bloc_fonctions(lg, alignv, dirv, serif, sans):
+    F = FONCTIONS.get(lg or "fr", FONCTIONS["fr"])
+    lignes = "".join(f'''<tr><td style="padding:12px 0;border-top:1px solid #1C2A2C;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}"><tr>
+<td width="40" valign="top" style="font-size:22px;line-height:1.2;">{ico}</td>
+<td valign="top" style="text-align:{alignv};"><a href="{url}" style="font-family:{sans};font-size:15px;font-weight:600;color:#F3EEE4;text-decoration:none;">{e(t)} <span style="color:#C9A66B;">&#8250;</span></a><div style="padding:3px 0 0;font-family:{sans};font-size:13.5px;line-height:1.5;color:#A7AFA9;">{e(d)}</div></td>
+</tr></table></td></tr>''' for ico, t, d, url in F[1])
+    return f'''<tr><td style="padding:34px 32px 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}">
+<tr><td style="padding:0 0 12px;text-align:{alignv};font-family:{serif};font-style:italic;font-size:22px;color:#C9A66B;">{e(F[0])}</td></tr>
+{lignes}
+<tr><td style="border-top:1px solid #1C2A2C;font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
+<tr><td align="center" style="padding:30px 0 0;"><img src="{IMG_HYPO}" width="130" height="130" alt="🐴" style="display:block;width:130px;height:130px;border:0;border-radius:22px;font-size:40px;line-height:130px;color:#C9A66B;text-align:center;"></td></tr>
+<tr><td align="center" style="padding:8px 0 0;font-family:{serif};font-style:italic;font-size:26px;color:#F3EEE4;">Hypo <span style="color:#C9A66B;">&#9825;</span></td></tr>
+<tr><td align="center" style="padding:4px 20px 0;font-family:{serif};font-style:italic;font-size:16px;color:#C9D3DD;">{e(F[2])}</td></tr>'''
 def corps(textes, champ, lg=None):
     """lg=None -> modele Supabase (conditions) ; lg='xx' -> apercu de cette langue"""
     if lg is None:
@@ -72,6 +100,7 @@ def corps(textes, champ, lg=None):
         lien_txt = e(LIEN_TXT[lg]); dirv = "rtl" if lg == "ar" else "ltr"; alignv = "right" if lg == "ar" else "left"; langv = lg; tete = ""; url = "https://2hype.fr/#exemple"; fleche = "&#8592;" if lg == "ar" else "&#8594;"
     serif = "'Cormorant Garamond',Georgia,'Times New Roman',serif"
     sans = "'Montserrat',Helvetica,Arial,sans-serif"
+    nom = champ
     return f'''{tete}<!DOCTYPE html>
 <html lang="{langv}" dir="{dirv}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>HYPE</title></head>
 <body style="margin:0;padding:0;background:#070A08;">
@@ -79,7 +108,7 @@ def corps(textes, champ, lg=None):
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#070A08;"><tr><td align="center" style="padding:28px 12px 36px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background:#0B1215;border:1px solid #23302F;border-radius:18px;overflow:hidden;" dir="{dirv}">
 <tr><td style="padding:26px 0 18px;text-align:center;font-family:{serif};font-size:22px;letter-spacing:10px;color:#C9A66B;">HYPE</td></tr>
-<tr><td style="padding:0;"><img src="{IMG}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border:0;"></td></tr>
+<tr><td style="padding:0;"><img src="{IMG_CONF if nom == 'confirmation' else IMG}" width="560" alt="" style="display:block;width:100%;max-width:560px;height:auto;border:0;"></td></tr>
 <tr><td style="padding:30px 32px 6px;text-align:{alignv};font-family:{serif};font-size:30px;line-height:1.2;color:#F3EEE4;">{T("titre")}</td></tr>
 <tr><td style="padding:6px 32px 0;text-align:{alignv};font-family:{serif};font-style:italic;font-size:19px;line-height:1.45;color:#C9A66B;">{T("accroche")}</td></tr>
 <tr><td style="padding:16px 32px 0;text-align:{alignv};font-family:{sans};font-size:15px;line-height:1.6;color:#D9D4CA;">{T("corps")}</td></tr>
@@ -89,6 +118,7 @@ def corps(textes, champ, lg=None):
 </td></tr></table></td></tr>
 <tr><td style="padding:22px 32px 0;text-align:{alignv};font-family:{sans};font-size:12.5px;line-height:1.6;color:#8E978F;">{T("petit")}</td></tr>
 <tr><td style="padding:14px 32px 0;text-align:{alignv};font-family:{sans};font-size:11.5px;line-height:1.5;color:#6F7872;">{lien_txt}<br><a href="{url}" style="color:#C9A66B;word-break:break-all;">{url}</a></td></tr>
+{bloc_fonctions(lg, alignv, dirv, serif, sans) if champ == 'confirmation' else ''}
 <tr><td style="padding:26px 32px 30px;text-align:{alignv};font-family:{serif};font-size:17px;color:#F3EEE4;">{T("signe")}<br><a href="https://2hype.fr" style="font-family:{sans};font-size:12px;letter-spacing:2px;color:#C9A66B;text-decoration:none;">2HYPE.FR</a></td></tr>
 </table></td></tr></table>
 </body></html>
