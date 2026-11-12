@@ -1,0 +1,1528 @@
+{
+ "DE": {
+  "sections": [
+   {
+    "titre": "The DEJEPS at a glance",
+    "b": [
+     {
+      "k": "p",
+      "x": "The DEJEPS in equestrian sports makes you a state-qualified coach. It is a Ministry of Sport qualification at level 5 (bac + 2, two years of higher education). It lets you teach riding for pay and help horse-and-rider combinations progress in competition, up to Amateur level."
+     },
+     {
+      "k": "p",
+      "x": "The pathway has three stages, all explained below:"
+     },
+     {
+      "k": "ol",
+      "it": [
+       "The entry tests, to get a place on the course.",
+       "A safety check before you teach on your own on placement.",
+       "The 4 exams of the qualification, called UC, which you pass one by one at an approved training centre, often alongside work at a riding centre."
+      ]
+     },
+     {
+      "k": "p",
+      "x": "Some exams are on foot, others mounted: each section says which."
+     }
+    ],
+    "sous": [],
+    "c": "At a glance"
+   },
+   {
+    "titre": "The entry tests",
+    "b": [
+     {
+      "k": "p",
+      "x": "To start training, you provide two documents and pass three tests: two mounted and one on foot. You can take them in any order. To be accepted, you need a favourable opinion on all three."
+     },
+     {
+      "k": "tab",
+      "head": [
+       "Test",
+       "Mounted or on foot",
+       "Duration"
+      ],
+      "rows": [
+       [
+        "A1 — Dressage",
+        "Mounted",
+        "The length of the Amateur 3 Grand Prix test"
+       ],
+       [
+        "A2 — Show jumping",
+        "Mounted",
+        "The length of a course"
+       ],
+       [
+        "Teaching test",
+        "On foot",
+        "20-minute session + interview of no more than 10 minutes"
+       ]
+      ]
+     }
+    ],
+    "sous": [
+     {
+      "titre": "How it is assessed",
+      "b": [
+       {
+        "k": "p",
+        "x": "There is no mark. The assessors follow an official grid and give a \"favourable\" or \"unfavourable\" opinion, always explained in writing."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "Documents to provide",
+      "b": [
+       {
+        "k": "ul",
+        "it": [
+         "A medical certificate stating you are fit to take part in equestrian sports, less than a year old on the day you start training.",
+         "A first aid certificate: the PSC1, or an equivalent certificate recognised by the Code du sport (French sports code)."
+        ]
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "Test A1 — Dressage",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You ride the Amateur 3 Grand Prix test in a 60 × 20 m arena. Someone can call it for you. Your clothing and tack must comply with the FFE rules for Amateur competitions."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official grid.",
+          "b": 1
+         },
+         {
+          "t": " The assessors look at six points:"
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Your bearing, how you ride, your seat and how at ease you are.",
+         "How accurate your aids are.",
+         "How accurate your lines and figures are.",
+         "Correct paces: rhythm, regularity, forwardness.",
+         "The quality of the contact, the horse's outline and how responsive it is to the aids.",
+         "Impulsion and straightness."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Learn the test by heart, even though it can be called: you will be able to focus on your horse. The animated diagram is in \"Review my tests\".",
+         "Ride it in full at least once a week in a 60 × 20 m arena with the letters in the right places.",
+         "Work on every transition so that it happens at the letter, not a stride later.",
+         "Enter competitions at this level. In competition, each movement is marked from 0 to 10: the judges' comments show you exactly where to improve.",
+         "Have someone film you from the side and from the front: straightness and accuracy show up better on video than from the saddle."
+        ]
+       }
+      ],
+      "m": "mounted"
+     },
+     {
+      "titre": "Test A2 — Show jumping",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You ride an Amateur 2 level course, between 1.05 m and 1.10 m, built to current technical standards. Your clothing and tack comply with the FFE rules. The elimination rules of the competition regulations apply: an elimination leads to an unfavourable opinion."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official grid.",
+          "b": 1
+         },
+         {
+          "t": " The assessors look at six points:"
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Your bearing, how you ride, your stability, your suppleness and how at ease you are.",
+         "How accurate your aids are.",
+         "Impulsion, a regular rhythm and an appropriate length of stride.",
+         "Your track: the quality of your turns and riding to the centre of the fences.",
+         "The jumps: keeping the horse between hand and leg, and the line.",
+         "The quality of the contact, harmony and flow."
+        ]
+       },
+       {
+        "k": "p",
+        "x": "The grid judges how you ride, not just the result: a clear round that is pulled about and messy can be judged less favourably than a flowing round with one pole down."
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Jump full courses at 1.05–1.10 m regularly, not just single fences.",
+         "Enter Amateur 2 competitions to get to know the level in real conditions.",
+         "Work on your rhythm and your turns on the flat and over ground poles: they are what make a course flow.",
+         "Walk every course, counting the strides in the lines, just as you would in competition.",
+         "Have someone film you to check your stability on the approach and on landing."
+        ]
+       }
+      ],
+      "m": "mounted"
+     },
+     {
+      "titre": "Teaching test",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You run a 20-minute flatwork session for 3 riders of at least Galop 5. An interview of no more than 10 minutes follows the session."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": "You choose your discipline from the 14 on the list: dressage, para-dressage, show jumping, eventing, driving, vaulting, western riding, endurance, horse-ball, TREC, hunter, mounted archery, pony games, working equitation."
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official grid for the session.",
+          "b": 1
+         },
+         {
+          "t": " The assessors look at five points:"
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "The safety of the riders, the horses and the people around.",
+         "How you use the space and lay out the arena.",
+         "How coherent your exercises are and how they link together.",
+         "Group management: keeping it lively and adapting the pace.",
+         "How you communicate to get the riders involved."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The grid for the interview.",
+          "b": 1
+         },
+         {
+          "t": " The assessors look at whether you judge your session honestly and whether your analysis is accurate."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Teach lessons before the test: it is the best preparation.",
+         "Practise running a 20-minute session with a stopwatch: an objective, a warm-up, two or three exercises that flow together, a cool-down.",
+         "Start by checking the tack and the riders' equipment: it is the first point on the grid.",
+         "Position yourself so you can see all three riders at once, and call each of them by name.",
+         "After each session, say out loud what worked and what you would change. That is exactly what the interview asks of you.",
+         "Ask a qualified teacher to watch you and give you feedback."
+        ]
+       }
+      ],
+      "m": "on foot"
+     }
+    ],
+    "c": "Entry"
+   },
+   {
+    "titre": "Before teaching on placement",
+    "b": [
+     {
+      "k": "p",
+      "x": "Once you are on the course, a safety check awaits you before you teach on your own on placement. It is done on foot, and a trainer from your centre assesses you."
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "How it works.",
+        "b": 1
+       },
+       {
+        "t": " You run a 20-minute group beginner session, in an outdoor or indoor arena, for riders from Galop 1 to 4. An interview of no more than 10 minutes follows the session."
+       }
+      ]
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "The official grid for the session.",
+        "b": 1
+       }
+      ]
+     },
+     {
+      "k": "ol",
+      "it": [
+       "Making the working area safe.",
+       "Checking the tack and the riders' equipment.",
+       "Paying attention to how riders and horses are behaving.",
+       "Respecting the horses' physical wellbeing.",
+       "The riders' safety."
+      ]
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "The grid for the interview.",
+        "b": 1
+       },
+       {
+        "t": " You can spot the risks in the situation and state the safety rules to follow."
+       }
+      ]
+     },
+     {
+      "k": "p",
+      "x": "With a favourable opinion, you can apply for your trainee sports coach card (carte d'éducateur sportif stagiaire)."
+     }
+    ],
+    "sous": [],
+    "c": "Before placement"
+   },
+   {
+    "titre": "The qualification exams",
+    "b": [
+     {
+      "k": "p",
+      "x": "The qualification has 4 UC. Three are on foot, one is mounted."
+     },
+     {
+      "k": "tab",
+      "head": [
+       "UC",
+       "What you need to be able to do",
+       "Mounted or on foot"
+      ],
+      "rows": [
+       [
+        "UC1",
+        "Design a sports development project",
+        "On foot: written file and oral"
+       ],
+       [
+        "UC2",
+        "Coordinate this project",
+        "On foot: written file and oral, together with UC1"
+       ],
+       [
+        "UC3",
+        "Help riders progress",
+        "On foot: you teach"
+       ],
+       [
+        "UC4",
+        "Supervise safely",
+        "Mounted: demonstration with commentary"
+       ]
+      ]
+     }
+    ],
+    "sous": [
+     {
+      "titre": "How it is assessed",
+      "b": [
+       {
+        "k": "p",
+        "x": "UC3 and UC4 are judged by at least two assessors who have held a riding qualification for at least 3 years. They follow a grid and give a favourable or unfavourable opinion, explained in writing. The regional jury then decides whether the UC is passed or not: there is no mark."
+       },
+       {
+        "k": "p",
+        "x": "If you fail, you take a resit session. Generally, you keep the part of the exam you have already passed."
+       },
+       {
+        "k": "p",
+        "x": "For UC3 and UC4, you choose a single discipline, the same for both, from the 14 of the teaching test. In driving, the UC4 demonstration is done driving; in vaulting, mounted or on the lunge."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "UC1 and UC2 — The project",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You write a file of no more than 20 pages, not counting annexes. In it you analyse an experience in which you designed and coordinated a sports development programme.",
+         "You present it orally for no more than 20 minutes. You can use videos to support it.",
+         "An interview of no more than 40 minutes follows your presentation."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "What is assessed.",
+          "b": 1
+         },
+         {
+          "t": " For UC1: your analysis of your yard's context, how you built your project and the resources you planned. For UC2: how you lead a team, promote your actions, manage logistics and monitor the quality of what you offer."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Choose a real project early on that you are running at your work-based yard: a clinic, competition preparation, a programme for a group.",
+         "Keep everything as the project goes on: schedule, budget, reports, photos, videos, results. These will be your annexes.",
+         "Write down what didn't work and what you changed: that is what shows your ability to analyse.",
+         "Rehearse your presentation out loud, with a stopwatch, in front of someone who asks you questions."
+        ]
+       }
+      ],
+      "m": "on foot"
+     },
+     {
+      "titre": "UC3 — Helping riders progress",
+      "b": [
+       {
+        "k": "p",
+        "x": "UC3 has two sessions, judged separately. You must pass both."
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "Session A — Teaching.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "The assessors give you the theme, the level and the type of riders.",
+         "You have 1 hour to prepare and set up the arena. The riders are with you during this hour.",
+         "You run a session of no more than 30 minutes for at least 4 riders of Galop 4 or below.",
+         "An interview of no more than 15 minutes follows the session."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "Session B — Coaching.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You watch an Amateur-level horse-and-rider combination for no more than 10 minutes.",
+         "In 5 minutes, you present your assessment and the objectives of your session.",
+         "You run a coaching session of no more than 30 minutes.",
+         "An interview of no more than 15 minutes follows the session."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "What is assessed.",
+          "b": 1
+         },
+         {
+          "t": " Your ability to teach, to coach and to help each rider progress. At the resit, you can keep the session you have already passed."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "For session A, prepare several sample session plans in advance, for each Galop level: on the day, you will only have an hour.",
+         "For session B, practise watching a combination for 10 minutes and summing up in one sentence what is holding them back, before suggesting anything.",
+         "Set just one objective per session, and check at the end whether it has been reached.",
+         "Have someone film you teaching so you can listen back to your instructions: are they short, clear and well timed?"
+        ]
+       }
+      ],
+      "m": "on foot"
+     },
+     {
+      "titre": "UC4 — Supervising safely",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " It is a technical demonstration with commentary, in five stages:"
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You explain the technical difficulties you are going to show: no more than 5 minutes.",
+         "You show these difficulties mounted, at Amateur 2 level at least: no more than 10 minutes.",
+         "You analyse your performance and set work objectives: no more than 5 minutes.",
+         "You run a mounted work session while commenting on it: no more than 20 minutes.",
+         "A safety interview follows: 10 to 15 minutes."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official safety grid.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Making the working area safe.",
+         "Checking the tack, how it is fitted and its condition.",
+         "Checking your own equipment: suitable clothing and a hat.",
+         "Paying attention to how the riders and horses present are behaving.",
+         "Respecting the horse's physical wellbeing.",
+         "The riders' safety."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The grid for the interview.",
+          "b": 1
+         },
+         {
+          "t": " You can analyse your session in a few words, show what you know about safety, spot the risks for yourself and others, and state the rules to follow."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Choose your difficulties in advance with your trainer, at Amateur 2 level at least, on a horse you know well.",
+         "Practise talking while you ride: describe what you are doing, why, and what you feel.",
+         "Before you get on, show that you are checking the ground, your tack and your equipment.",
+         "Prepare an honest analysis: what went well, what didn't, and the exercise that will fix it."
+        ]
+       }
+      ],
+      "m": "mounted"
+     }
+    ],
+    "c": "The exams"
+   },
+   {
+    "titre": "Exemptions",
+    "b": [
+     {
+      "k": "p",
+      "x": "Your qualification or your competition results may exempt you from some of the tests, and sometimes from a UC. Exemption is never automatic: it is confirmed by the FFE's national technical director, on request with your supporting documents."
+     }
+    ],
+    "sous": [
+     {
+      "titre": "If you already have a qualification",
+      "b": [
+       {
+        "k": "tab",
+        "head": [
+         "Your qualification",
+         "What it gives you"
+        ],
+        "rows": [
+         [
+          "An older DEJEPS in dressage, show jumping or eventing",
+          "Exemption from the entry tests and the matching UCs"
+         ],
+         [
+          "A level 4 state qualification that allows you to teach, such as the BPJEPS",
+          "Exemption from the teaching test, the check before placement and UC3"
+         ]
+        ]
+       },
+       {
+        "k": "p",
+        "x": "Other qualifications also give exemptions, provided you have supervised at least 300 hours in the last 5 years: the Animateur d'équitation, Degrés 3 and 4, the FFE level 2 coaching award (brevet fédéral d'entraîneur), and the CQP ASA, ORE and EAE."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "If you have competition results",
+      "b": [
+       {
+        "k": "p",
+        "x": "Your placings can replace the mounted tests and, with better results, part of UC4. What is required depends on one thing: do you already have a teaching qualification (BPJEPS, CQP EAE or a level 4 qualification), with at least 300 hours of supervising in the last 5 years?"
+       },
+       {
+        "k": "p",
+        "x": "With a teaching qualification, good results exempt you from the entry tests, the check before placement and UC3:"
+       },
+       {
+        "k": "tab",
+        "head": [
+         "Discipline",
+         "Exemption from the tests and UC3",
+         "Also exempt from UC4"
+        ],
+        "rows": [
+         [
+          "Dressage",
+          "3 placings in the top third, in Amateur 3 Préliminaire or higher",
+          "3 placings in the top third, in Amateur 2 Grand Prix or higher"
+         ],
+         [
+          "Show jumping",
+          "5 placings in the top quarter, in Amateur 2 Grand Prix or higher (excluding special classes)",
+          "5 placings in the top quarter, in Amateur 1 Grand Prix or Pro 3 or higher"
+         ],
+         [
+          "Eventing",
+          "3 placings in the top third, in Amateur 2 or higher",
+          "3 placings in the top third, in Amateur 1 or higher"
+         ]
+        ]
+       },
+       {
+        "k": "p",
+        "x": "Without a teaching qualification, results only exempt you from the mounted tests, and you need slightly more:"
+       },
+       {
+        "k": "tab",
+        "head": [
+         "Discipline",
+         "Exemption from the mounted tests",
+         "Also exempt from the UC4 technical demonstration"
+        ],
+        "rows": [
+         [
+          "Dressage",
+          "3 placings in the top third, in Amateur 2 Préliminaire or higher",
+          "3 placings in the top third, in Amateur 1 Grand Prix or higher"
+         ],
+         [
+          "Show jumping",
+          "5 placings in the top quarter, in Amateur 1 Grand Prix or higher",
+          "5 placings in the top quarter, in Amateur Élite Grand Prix"
+         ],
+         [
+          "Eventing",
+          "3 placings in the top third, in Amateur 1 or higher",
+          "3 placings in the top third, in Amateur Élite or higher"
+         ]
+        ]
+       },
+       {
+        "k": "p",
+        "x": "The other 11 disciplines have their own criteria. To have your results recognised, ask the FFE for a performance certificate."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "If you are an elite athlete",
+      "b": [
+       {
+        "k": "p",
+        "x": "If you are or have been on the ministry's official list of elite athletes, you are exempt from the technical tests and UC4. With a teaching qualification, you are also exempt from the teaching test, the check before placement and UC3."
+       },
+       {
+        "k": "p",
+        "x": "The FFE and the IFCE in Saumur also run a course reserved for athletes on the Élite, Senior, Relève and Reconversion lists. On this course, the teaching test is still compulsory."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "How to apply for an exemption",
+      "b": [
+       {
+        "k": "p",
+        "x": "You apply to the FFE on its riding careers website. Include your name, your licence number, your contact details and your official supporting documents. For a UC4 exemption, your teaching qualification must be registered on your licence."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "VAE",
+      "b": [
+       {
+        "k": "p",
+        "x": "If you have already been coaching for a long time, you can also obtain all or part of the qualification through accreditation of prior experience (VAE)."
+       }
+      ],
+      "m": null
+     }
+    ],
+    "c": "Exemptions"
+   },
+   {
+    "titre": "My preparation",
+    "b": [
+     {
+      "k": "p",
+      "x": "Plan your preparation over a full season. The tips for each exam are in the sections above; here is the order to work on them."
+     }
+    ],
+    "sous": [
+     {
+      "titre": "1. Take stock",
+      "b": [
+       {
+        "k": "p",
+        "x": "Compare your competition results and qualifications with the \"Exemptions\" section. No need to prepare for a test you are exempt from. If in doubt, ask the FFE before you start."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "2. Prepare the two mounted tests",
+      "b": [
+       {
+        "k": "p",
+        "x": "Work on dressage and show jumping at the same time, throughout the season, and enter competitions at both levels. Your placings may also count towards an exemption."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "3. Prepare the teaching test",
+      "b": [
+       {
+        "k": "p",
+        "x": "Start teaching lessons as early as possible: you need experience before the test."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "4. Choose your training centre",
+      "b": [
+       {
+        "k": "ul",
+        "it": [
+         "Find the approved centres near you: they are listed by the regional authority (DRAJES) and on the FFE careers website.",
+         "Compare their test dates, their timetables (work-based, apprenticeship, continuing education) and their funding.",
+         "Find a riding centre and a tutor for your work-based training: many centres ask for a signed agreement before you start."
+        ]
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "My checklist",
+      "b": [
+       {
+        "k": "chk",
+        "it": [
+         "I have checked whether I am entitled to an exemption",
+         "I have my first aid certificate (PSC1 or equivalent)",
+         "I have my medical certificate, less than a year old",
+         "I know the Amateur 3 Grand Prix test by heart",
+         "I have jumped Amateur 2 courses in competition",
+         "I have run several 20-minute sessions for Galop 5 riders",
+         "I have chosen my training centre and noted its test dates",
+         "I have found my host yard and my tutor",
+         "I have submitted my application"
+        ]
+       }
+      ],
+      "m": null,
+      "o": 1
+     }
+    ],
+    "c": "My preparation"
+   }
+  ],
+  "sources": [
+   [
+    {
+     "t": "Decree (arrêté) of 21 September 2018 creating the DEJEPS equestrian sports specialism",
+     "u": "https://www.creps-pdl.sports.gouv.fr/assets/images/formation/content/Arretes/arrete_21_sept_2018_sp_equestres.pdf"
+    },
+    {
+     "t": " — tests, check before placement, exemptions (annex III), UC3 and UC4 exams"
+    }
+   ],
+   [
+    {
+     "t": "France Compétences RNCP 39573 listing",
+     "u": "https://www.francecompetences.fr/recherche/rncp/39573"
+    },
+    {
+     "t": " — level 5, competence blocks, prerequisites, registered until 31/08/2029"
+    }
+   ],
+   [
+    {
+     "t": "FFE DEJEPS equestrian sports course handbook, September 2024",
+     "u": "https://metiers.ffe.com/wp-content/uploads/2024/09/Livret_peda_DEJEPS_SE_V12-09-2024.pdf"
+    },
+    {
+     "t": " — test criteria, documents, UC exams"
+    }
+   ],
+   [
+    {
+     "t": "FFE — Higher-level training",
+     "u": "https://metiers.ffe.com/formations-superieures/"
+    },
+    {
+     "t": " — exemption requests, VAE"
+    }
+   ],
+   [
+    {
+     "t": "FFE / IFCE — DEJEPS reserved for elite athletes",
+     "u": "https://metiers.ffe.com/wp-content/uploads/2025/01/Web_texte_DEJEPS_SHN_2026-2027.pdf"
+    }
+   ],
+   [
+    {
+     "t": "Decree (arrêté) of 27 May 2024 amending the DEJEPS equestrian sports",
+     "u": "https://nicolas-hui.fr/editeur/files/dejeps-arrete-v-2025.pdf"
+    },
+    {
+     "t": " — text in force for courses starting from 1 September 2024: tests, UC3 and UC4 discipline, exemptions"
+    }
+   ]
+  ]
+ },
+ "DES": {
+  "sections": [
+   {
+    "titre": "The DESJEPS at a glance",
+    "b": [
+     {
+      "k": "p",
+      "x": "The DESJEPS, riding specialism, makes you a senior instructor (instructeur). It is the highest state qualification for teaching riding, at level 6 (bac + 3, three years of higher education), awarded by the Ministry of Sport. It prepares you to lead the teaching at a yard, train teachers and run a coaching programme."
+     },
+     {
+      "k": "p",
+      "x": "It certifies 4 competences: building a yard's strategy, managing its people and finances, running a riding coaching programme and supervising riding safely."
+     },
+     {
+      "k": "p",
+      "x": "The pathway has three stages, all explained below:"
+     },
+     {
+      "k": "ol",
+      "it": [
+       "The entry tests, to get a place on the course.",
+       "A safety check before you teach on placement.",
+       "The 4 exams of the qualification, called UC."
+      ]
+     },
+     {
+      "k": "p",
+      "x": "Some exams are on foot, others mounted: each section says which."
+     }
+    ],
+    "sous": [],
+    "c": "At a glance"
+   },
+   {
+    "titre": "The entry tests",
+    "b": [
+     {
+      "k": "p",
+      "x": "To start training, you pass three tests: two mounted and one on foot. You can take them in any order, and you keep a test you have passed even if you fail another one."
+     },
+     {
+      "k": "tab",
+      "head": [
+       "Test",
+       "Mounted or on foot",
+       "Level"
+      ],
+      "rows": [
+       [
+        "A1 — Dressage",
+        "Mounted",
+        "Amateur 2 Grand Prix or equivalent"
+       ],
+       [
+        "A2 — Show jumping",
+        "Mounted",
+        "Amateur 1 or equivalent"
+       ],
+       [
+        "B — Teaching test",
+        "On foot",
+        "20-minute session + interview of no more than 10 minutes"
+       ]
+      ]
+     }
+    ],
+    "sous": [
+     {
+      "titre": "How it is assessed",
+      "b": [
+       {
+        "k": "p",
+        "x": "There is no mark. The assessors follow an official grid and give a \"favourable\" or \"unfavourable\" opinion, always explained in writing."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "Documents to provide",
+      "b": [
+       {
+        "k": "ul",
+        "it": [
+         "A first aid certificate: the PSC1 or an equivalent certificate.",
+         "A medical certificate stating you are fit to ride, less than a year old on the day you start training."
+        ]
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "Test A1 — Dressage",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You ride an Amateur 2 Grand Prix test in a 60 × 20 m arena. Someone can call it for you. Your clothing and tack comply with the FFE rules for Amateur competitions."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official grid.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Your bearing, your seat and how at ease you are.",
+         "How accurate your aids are.",
+         "How accurate your lines and figures are.",
+         "The quality of the paces: rhythm, regularity, forwardness.",
+         "The quality of the contact and how responsive the horse is.",
+         "Impulsion and straightness."
+        ]
+       }
+      ],
+      "m": "mounted"
+     },
+     {
+      "titre": "Test A2 — Show jumping",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You ride an Amateur 1 level course, built to current technical standards. The competition elimination rules apply."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The official grid.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Your bearing, your stability and your suppleness.",
+         "How accurate your aids are.",
+         "A regular rhythm and length of stride.",
+         "How accurate your lines and figures are.",
+         "The jumps: keeping the horse between hand and leg, and the line.",
+         "The quality of the contact and flow."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare for the two mounted tests.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Compete at these levels for at least one season: your placings may also exempt you from the tests.",
+         "Have a more highly qualified teacher film and coach you, in dressage as well as over fences."
+        ]
+       }
+      ],
+      "m": "mounted"
+     },
+     {
+      "titre": "Test B — The teaching test",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " You run a flatwork improvement session of no more than 20 minutes for 3 riders of Galop 5 or above. An interview of no more than 10 minutes follows."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": "You choose your discipline from: dressage, show jumping, eventing, driving, vaulting, western riding, endurance."
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The grid for the session.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "Safety.",
+         "How you use the space.",
+         "How coherent your exercises are.",
+         "Group management.",
+         "Appropriate communication."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "The grid for the interview.",
+          "b": 1
+         },
+         {
+          "t": " You judge your session honestly and your analysis is accurate."
+         }
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Build your session around a single objective, and show how each exercise leads to it.",
+         "After every lesson you teach, analyse it out loud: that is what the interview asks of you."
+        ]
+       }
+      ],
+      "m": "on foot"
+     }
+    ],
+    "c": "Entry"
+   },
+   {
+    "titre": "Before teaching on placement",
+    "b": [
+     {
+      "k": "p",
+      "x": "Right at the start of your training, before any session with riders, your centre checks that you can keep everyone safe. You are exempt if you already have a teaching qualification."
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "How it works.",
+        "b": 1
+       },
+       {
+        "t": " You run a group session of no more than 20 minutes for 3 riders of at least Galop 7, in one of the teaching test disciplines. An interview of no more than 10 minutes follows, mainly on safety."
+       }
+      ]
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "The grid for the session.",
+        "b": 1
+       }
+      ]
+     },
+     {
+      "k": "ol",
+      "it": [
+       "Making the working area safe.",
+       "Checking the tack and the riders' equipment.",
+       "Paying attention to how riders and horses are behaving.",
+       "Respecting the horses' physical wellbeing.",
+       "The riders' safety."
+      ]
+     },
+     {
+      "k": "p",
+      "x": [
+       {
+        "t": "The grid for the interview.",
+        "b": 1
+       },
+       {
+        "t": " You can spot the risks in the situation and state the safety rules to follow."
+       }
+      ]
+     }
+    ],
+    "sous": [],
+    "c": "Before placement"
+   },
+   {
+    "titre": "The qualification exams",
+    "b": [
+     {
+      "k": "tab",
+      "head": [
+       "UC",
+       "What you need to be able to do",
+       "Mounted or on foot"
+      ],
+      "rows": [
+       [
+        "UC1",
+        "Build a yard's strategy",
+        "On foot: written file"
+       ],
+       [
+        "UC2",
+        "Manage its people and finances",
+        "On foot: written file, together with UC1"
+       ],
+       [
+        "UC3",
+        "Run a coaching programme",
+        "On foot, in the classroom and in the arena"
+       ],
+       [
+        "UC4",
+        "Supervise riding safely",
+        "Mounted: demonstration with commentary"
+       ]
+      ]
+     },
+     {
+      "k": "p",
+      "x": "Each UC is either passed or not passed. The assessors give a favourable or unfavourable opinion, always with reasons, and the regional jury decides."
+     }
+    ],
+    "sous": [
+     {
+      "titre": "UC1 and UC2 — The project",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You write a file of no more than 20 pages, not counting annexes. In it you analyse an experience in which you designed and coordinated a sports performance programme in riding, including how it was evaluated.",
+         "You present it orally for no more than 20 minutes. You can use videos to support it.",
+         "An interview of no more than 40 minutes follows."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         },
+         {
+          "t": " Choose a real project that you lead, with measurable targets, a budget and a team. Keep records of everything throughout the year."
+         }
+        ]
+       }
+      ],
+      "m": "on foot"
+     },
+     {
+      "titre": "UC3 — Running a coaching programme",
+      "b": [
+       {
+        "k": "p",
+        "x": "UC3 has two exams."
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "Exam 1 — The video and its defence.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You make a video of no more than 15 minutes in which you train 3 to 5 BPJEPS or DEJEPS trainees: assessment, training or remedial work, then review. You add a written document of no more than 10 pages.",
+         "You defend them orally for no more than 15 minutes.",
+         "This is followed by an interview of no more than 15 minutes."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "Exam 2 — The training session.",
+          "b": 1
+         },
+         {
+          "t": " The assessors set the theme. You train 3 trainees in two parts:"
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "In the classroom: no more than 30 minutes of preparation, then no more than 30 minutes of theory lesson.",
+         "In the arena: no more than 30 minutes of mounted preparation (setting up the arena, getting the trainees ready), then no more than 30 minutes of technical session.",
+         "This is followed by an interview of no more than 15 minutes."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         }
+        ]
+       },
+       {
+        "k": "ul",
+        "it": [
+         "Train trainees as soon as you can during your course, and film your sessions.",
+         "Practise making an accurate assessment in a few minutes, then building the remedial work.",
+         "Prepare short, illustrated theory lessons on the main teaching topics."
+        ]
+       }
+      ],
+      "m": "on foot"
+     },
+     {
+      "titre": "UC4 — Supervising safely",
+      "b": [
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How it works.",
+          "b": 1
+         },
+         {
+          "t": " A mounted demonstration at Amateur 1 level at least, in a discipline drawn at random: dressage, show jumping or eventing. The exam lasts no more than 55 minutes."
+         }
+        ]
+       },
+       {
+        "k": "ol",
+        "it": [
+         "You explain the technical difficulties you are going to show: no more than 5 minutes.",
+         "After the warm-up, you show them: 5 to 10 minutes.",
+         "You analyse your performance and set the objectives for a session: no more than 5 minutes.",
+         "You work the horse while commenting: no more than 20 minutes.",
+         "An interview on your session and safety follows: no more than 15 minutes."
+        ]
+       },
+       {
+        "k": "p",
+        "x": [
+         {
+          "t": "How to prepare.",
+          "b": 1
+         },
+         {
+          "t": " The discipline is drawn at random: prepare all three, dressage, show jumping and eventing, at Amateur 1 level, and practise talking while you ride."
+         }
+        ]
+       }
+      ],
+      "m": "mounted"
+     }
+    ],
+    "c": "The exams"
+   },
+   {
+    "titre": "Exemptions",
+    "b": [
+     {
+      "k": "p",
+      "x": "Your qualifications, your teaching experience or your competition results may exempt you from tests, and sometimes from UCs. These exemptions are confirmed by the FFE's national technical director."
+     }
+    ],
+    "sous": [
+     {
+      "titre": "With a teaching qualification",
+      "b": [
+       {
+        "k": "p",
+        "x": "Most exemptions based on qualifications also require 300 hours of supervising in the last 5 years. They include:"
+       },
+       {
+        "k": "ul",
+        "it": [
+         "a level 4 qualification that allows you to teach for pay (such as the BPJEPS), or the CQP EAE;",
+         "the DEJEPS in equestrian sports;",
+         "the BEES 2, riding option;",
+         "an older DESJEPS in dressage, show jumping, eventing or equestrian sports;",
+         "FFE Degrés 4 and 5."
+        ]
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "With competition results",
+      "b": [
+       {
+        "k": "p",
+        "x": "These must come on top of a teaching qualification and the 300 hours of supervising. Examples of results that count:"
+       },
+       {
+        "k": "ul",
+        "it": [
+         "in show jumping: 5 placings in Pro 3, or in Pro 2;",
+         "in eventing: 3 placings in Amateur 1, or in Amateur Élite;",
+         "in dressage: 3 placings in Amateur 1 Préliminaire, or in Amateur Élite Préliminaire, with 1 placing in Amateur 2 show jumping or eventing;",
+         "in driving, western, vaulting and endurance: top Amateur-level results, with 1 placing in Amateur 2 show jumping, dressage or eventing."
+        ]
+       },
+       {
+        "k": "p",
+        "x": "If you are or have been an elite rider, you are also entitled to exemptions."
+       },
+       {
+        "k": "p",
+        "x": "Exactly what each qualification or result exempts you from (tests, UCs) depends on your situation: ask the FFE before you sign up."
+       }
+      ],
+      "m": null
+     }
+    ],
+    "c": "Exemptions"
+   },
+   {
+    "titre": "My preparation",
+    "b": [],
+    "sous": [
+     {
+      "titre": "1. Take stock",
+      "b": [
+       {
+        "k": "p",
+        "x": "Compare your qualifications, supervising hours and results with the \"Exemptions\" section."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "2. Reach the level in competition",
+      "b": [
+       {
+        "k": "p",
+        "x": "You need Amateur 2 Grand Prix in dressage and Amateur 1 in show jumping for the tests, and Amateur 1 in dressage, show jumping and eventing for UC4. Allow several seasons if you are not there yet."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "3. Train teachers",
+      "b": [
+       {
+        "k": "p",
+        "x": "UC3 requires you to train BPJEPS or DEJEPS trainees: offer to be a tutor as soon as you can."
+       }
+      ],
+      "m": null
+     },
+     {
+      "titre": "My checklist",
+      "b": [
+       {
+        "k": "chk",
+        "it": [
+         "I have checked whether I am entitled to an exemption",
+         "I am counting my supervising hours over the last 5 years",
+         "I ride at Amateur 2 Grand Prix level in dressage",
+         "I jump at Amateur 1 level in show jumping",
+         "I train in eventing at Amateur 1 level",
+         "I have already trained or supported trainees",
+         "I have chosen my training centre"
+        ]
+       }
+      ],
+      "m": null,
+      "o": 1
+     }
+    ],
+    "c": "My preparation"
+   }
+  ],
+  "sources": [
+   [
+    {
+     "t": "Decree (arrêté) of 27 May 2024 on the DESJEPS riding specialism",
+     "u": "https://metiers.ffe.com/wp-content/uploads/2024/09/Arrete-du-27-mai-2024-portant-creation-de-la-mention-equitation-du-DESJEPS-performance-sportive-.pdf"
+    },
+    {
+     "t": " — tests, check before placement, UC3 and UC4 exams, exemptions"
+    }
+   ],
+   [
+    {
+     "t": "FFE — Higher-level training",
+     "u": "https://metiers.ffe.com/formations-superieures/"
+    },
+    {
+     "t": " — RNCP 39572 listing, exemption requests, VAE"
+    }
+   ],
+   [
+    {
+     "t": "FFE DESJEPS riding specialism course handbook, September 2024",
+     "u": "https://metiers.ffe.com/wp-content/uploads/2024/09/Livret_peda_DESJEPS_Equit_V12-09-2024.pdf"
+    },
+    {
+     "t": " — test grids, how the UCs work, assessment"
+    }
+   ]
+  ]
+ }
+}
