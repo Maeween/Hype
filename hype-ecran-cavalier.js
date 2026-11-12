@@ -1454,10 +1454,13 @@ function EcranMonCavalier() {
       ];
       /* 22/09 (365) : en visite il reste 4 tuiles - sur 3 colonnes, la 4e restait seule sur sa ligne
          (sa capture de 13 h 24). 4 tuiles -> grille 2 x 2 ; 6 tuiles -> 3 x 2 comme avant. */
-      if (CAV_V2 && cavPanneau) return h("nav", { "data-cav-acces": "panneau", style: { display: "flex", flexDirection: "column", marginTop: 28, borderTop: "1px solid rgba(201,166,107,0.16)" } }, cartes);   /* 22/10 ordinateur : liste du panneau gauche */
-      if (CAV_V2 && cavTab) return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: cavOrdi ? 16 : 10, margin: cavOrdi ? "30px 16px 0" : "26px 16px 0", maxWidth: cavOrdi ? 900 : "none" } }, cartes);   /* (1131) une rangee de 6 cartes photo */
-      if (CAV_V2) return h("div", { style: { display: "grid", gridTemplateColumns: largAcc >= 700 ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: largAcc >= 700 ? 24 : 16, margin: largAcc >= 700 ? "26px 24px 0" : "20px 16px 0" } }, cartes);   /* (1105) ; (1118) liste N */
-      return h("div", { style: { display: "grid", gridTemplateColumns: (cartes.length === 4 ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))"), gap: 9, margin: "26px 16px 0" } }, cartes);
+      /* 12/11 (Blandine : « une entrée depuis la page Cavalier ») : Mon coffre-fort, sur SA propre page seulement, en bande pleine largeur sous les accès (les 6 tuiles restent équilibrées). */
+      var lienCof = (pageAMoi && typeof HypeLienCoffre === "function") ? h(HypeLienCoffre, { setEcran: setEcran, large: largAcc >= 700 }) : null;
+      function avecCof(el, marge) { return lienCof ? h(React.Fragment, null, el, h("div", { style: { margin: marge } }, lienCof)) : el; }
+      if (CAV_V2 && cavPanneau) return h("nav", { "data-cav-acces": "panneau", style: { display: "flex", flexDirection: "column", marginTop: 28, borderTop: "1px solid rgba(201,166,107,0.16)" } }, cartes, lienCof ? h("div", { style: { marginTop: 16 } }, lienCof) : null);   /* 22/10 ordinateur : liste du panneau gauche */
+      if (CAV_V2 && cavTab) return avecCof(h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: cavOrdi ? 16 : 10, margin: cavOrdi ? "30px 16px 0" : "26px 16px 0", maxWidth: cavOrdi ? 900 : "none" } }, cartes), cavOrdi ? "16px 16px 0" : "14px 16px 0");   /* (1131) une rangee de 6 cartes photo */
+      if (CAV_V2) return avecCof(h("div", { style: { display: "grid", gridTemplateColumns: largAcc >= 700 ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: largAcc >= 700 ? 24 : 16, margin: largAcc >= 700 ? "26px 24px 0" : "20px 16px 0" } }, cartes), largAcc >= 700 ? "18px 24px 0" : "14px 16px 0");   /* (1105) ; (1118) liste N */
+      return avecCof(h("div", { style: { display: "grid", gridTemplateColumns: (cartes.length === 4 ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))"), gap: 9, margin: "26px 16px 0" } }, cartes), "14px 16px 0");
     })()),
     /* 22/09 (347) - L ENCART ECURIE DE LA PAGE CAVALIER. Blandine : « rares sont ceux qui en ont
        deux ; il vaudrait mieux un petit + quelque part pour ajouter une écurie qu un gros onglet qui
