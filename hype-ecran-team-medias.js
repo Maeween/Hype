@@ -614,7 +614,14 @@ function EcranTeamMedias() {
         d ? h("span", { style: { position: "absolute", insetInlineEnd: 6, bottom: 6, fontFamily: M, fontSize: 9.5, padding: "2px 6px", borderRadius: 6, background: "rgba(7,10,8,0.72)", fontVariantNumeric: "tabular-nums" } }, d) : null),
       h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, marginTop: 6, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, titreAff,
         v.resultat ? h("span", { style: { color: CH, fontWeight: 600, whiteSpace: "nowrap" } }, " " + (/^\s*\d/.test(v.resultat) ? "🏆 " : "· ") + v.resultat) : null),
-      meta ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, meta) : null),
+      /* 12/11 01h00 (Blandine : « savoir si c'est moi qui l'ai mise ou elles ») : « par Maëlys » / « par toi », en tout discret au bout de la ligne */
+      (function () {
+        var auP = v.auteur_id ? (estAuteur ? T("par toi", "by you", "por ti", "da te", "あなたが投稿", "von dir", "بواسطتك", "你发布的", "door jou", "por ti", "av dig", "от тебя", "przez ciebie", "내가 올림") : (profilsParId[v.auteur_id] ? T("par ", "by ", "por ", "da ", "投稿：", "von ", "بواسطة ", "发布者：", "door ", "por ", "av ", "от ", "od ", "올린 이: ") + String(nomProfil(profilsParId[v.auteur_id])).split(/\s+/)[0] : "")) : "";
+        if (!meta && !auP) return null;
+        return h("div", { style: { display: "flex", alignItems: "baseline", gap: 5, marginTop: 2, paddingInlineEnd: estAuteur ? 30 : 0, minWidth: 0 } },
+          meta ? h("span", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: ".08em", textTransform: "uppercase", color: IV3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 } }, meta) : null,
+          auP ? h("span", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 9.5, fontStyle: "italic", color: "rgba(244,241,234,0.42)", whiteSpace: "nowrap" } }, (meta ? "· " : "") + auP) : null);
+      })()),
       /* 10/11 21h44 (Blandine) : le mot posté avec la vidéo n'apparaît plus sur la vignette (seulement nom × cheval, épreuve, lieu) */
       /* 06/11 nuit : j'aime sur la vidéo (Blandine : « tu peux ajouter des j'aime ou commentaires sur les vidéos de la team ») */
       (typeof HypeJaimeTexte === "function" && !verrou) ? h(HypeJaimeTexte, { cible: "teamvideo:" + v.id, petit: true, marge: 2 }) : null,
@@ -1558,6 +1565,12 @@ function EcranTeamMedias() {
       bas: h("div", { className: "sc-theme-team" },
         h("style", null, ".sc-theme-team .sc-ouvrir{color:" + CH + " !important}.sc-theme-team .sc-envoyer{background:transparent !important;border:1px solid " + CH + " !important;color:" + CH + " !important}"),
         h("div", { style: { padding: "18px 18px 0" } },
+            /* 12/11 01h01 (Blandine : « sur la page média des cavaliers il n'y a rien écrit sous les vidéos ») : une petite ligne discrète — concours, épreuve, date, et qui l'a postée */
+            (function () {
+              var auL = v.auteur_id ? (estAuteurV ? T("postée par toi", "posted by you", "publicado por ti", "pubblicato da te", "あなたが投稿", "von dir gepostet", "نشرتِه أنت", "由你发布", "door jou geplaatst", "publicado por ti", "upplagd av dig", "опубликовано тобой", "dodane przez ciebie", "내가 올림") : (profilsParId[v.auteur_id] ? T("postée par ", "posted by ", "publicado por ", "pubblicato da ", "投稿：", "gepostet von ", "نشرها ", "发布者：", "geplaatst door ", "publicado por ", "upplagd av ", "опубликовал(а) ", "dodane przez ", "올린 이: ") + String(nomProfil(profilsParId[v.auteur_id])).split(/\s+/)[0] : "")) : "";
+              var lg2 = [lieuLigne, auL].filter(Boolean).join(" · ");
+              return lg2 ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11.5, color: IV3, lineHeight: 1.5 } }, lg2) : null;
+            })(),
             /* 10/11 17h46 (Blandine : « ma description de vidéo, que je puisse la modifier ou la supprimer, et qu'elle se déroule en
                dessous avec les commentaires ») : plus affichée sous la vidéo ; elle devient le 1er message de la liste repliée */
             /* 09/11 21h20 (Blandine : « ne laisse pas les commentaires visibles sur la page ») : plus de filet ni de section à part —

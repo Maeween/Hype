@@ -424,7 +424,7 @@ function EcranTeamCompetition() {
   function enTete(titre, cle, total, seuil, extra) {   /* (527) extra : petit bouton pose a droite du titre */
     var montrer = (total || 0) > seuil;
     return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, margin: "0 0 12px" } },
-      h("div", { style: { fontFamily: SERIF, fontSize: 24, fontWeight: 500, color: IV, lineHeight: 1.1, minWidth: 0 } }, titre),
+      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 500, color: IV, lineHeight: 1.15, minWidth: 0 } }, titre),   /* 12/11 : UNE taille pour tous les sous-titres */
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, flex: "0 0 auto" } },
       montrer ? h("button", { type: "button", onClick: function () { if (cle === "ch" && destPiquet) { try { window.__ecurieHypeClub = TEAM_CLUB; window.__ecurieHypePiquet = destPiquet; } catch (eDp) { } setEcran("ecurie-hype"); return; } basculer(cle); },   /* (799) chevaux : vers le piquet de destination s'il est réglé */ style: { flex: "0 0 auto", minHeight: 36, padding: "0 2px", background: "none", border: "none", color: "rgba(244,241,234,0.78)", fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" } },
         (ouvert[cle] ? T("Réduire", "Show less", "Mostrar menos", "Riduci", "閉じる", "Weniger", "إخفاء", "收起", "Minder tonen", "Mostrar menos", "Visa mindre", "Свернуть", "Zwiń", "접기") : T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل", "查看全部", "Alles bekijken", "Ver tudo", "Visa alla", "Смотреть все", "Zobacz wszystko", "전체 보기")) + " " + (ouvert[cle] ? "˄" : CHEV)) : null,
@@ -433,36 +433,37 @@ function EcranTeamCompetition() {
   function vide(txt) { return h("div", { style: { fontFamily: M, fontSize: 11.5, color: GR, fontStyle: "italic", padding: "4px 0 2px" } }, txt); }
   function chargement() { return h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(146,153,160,0.7)", padding: "4px 0 2px" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Lädt…", "جار التحميل…", "加载中…", "Laden…", "Carregando…", "Laddar…", "Загрузка…", "Ładowanie…", "불러오는 중…")); }
   function section(contenu, premier) { return h("div", { style: { padding: premier ? "8px 20px 0" : "26px 20px 0" } }, contenu); }
-  function trait() { return h("div", { style: { height: 1, margin: "24px 20px 0", background: "linear-gradient(90deg, rgba(214,182,118,0), rgba(214,182,118,0.22), rgba(214,182,118,0))" } }); }
+  function trait() { return h("div", { style: { height: 1, margin: "24px 20px 0", background: "rgba(244,241,234,0.07)" } }); }
 
   /* 11/11 21h40 refonte de la page (maquette validée par Blandine) : cartes basses alignées, parties vides en petite carte avec photo */
   function carteBasse(key, icone, titre, sous, img, onClick, extraStyle) {
     var Tag = onClick ? "button" : "div";
-    return h(Tag, Object.assign({ key: key, style: Object.assign({ position: "relative", overflow: "hidden", width: "100%", minHeight: 92, display: "flex", alignItems: "center", gap: 12, padding: "12px 13px", marginTop: 10, borderRadius: 14, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.32)", color: IV, textAlign: "start", fontFamily: M, cursor: onClick ? "pointer" : "default", boxSizing: "border-box" }, extraStyle || {}) }, onClick ? { type: "button", onClick: onClick } : {}),
+    return h(Tag, Object.assign({ key: key, style: Object.assign({ position: "relative", overflow: "hidden", width: "100%", minHeight: 92, display: "flex", alignItems: "center", gap: 12, padding: "12px 13px", marginTop: 10, borderRadius: 14, background: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, textAlign: "start", fontFamily: M, cursor: onClick ? "pointer" : "default", boxSizing: "border-box" }, extraStyle || {}) }, onClick ? { type: "button", onClick: onClick } : {}),
       img ? h("img", { src: img, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "50%", height: "100%", objectFit: "cover", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }) : null,
       img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 46%, rgba(11,15,19,0.78) 62%, rgba(11,15,19,0) 88%)" } }) : null,
       h("span", { style: { flex: "0 0 26px", position: "relative", display: "flex", justifyContent: "center" } }, icone),
-      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(214,182,118,0.28)" } }),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(244,241,234,0.14)" } }),
       h("div", { style: { flex: 1, minWidth: 0, position: "relative", maxWidth: img ? "64%" : "none" } },
         h("div", { style: { fontFamily: SERIF, fontSize: 19, fontWeight: 600, color: IV, lineHeight: 1.15 } }, titre),
         sous ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(244,241,234,0.72)", marginTop: 4, lineHeight: 1.4 } }, sous) : null),
       onClick ? h("span", { style: { flex: "0 0 auto", position: "relative", color: OR, fontSize: 18, lineHeight: 1, marginInlineStart: "auto" } }, CHEV) : null);
   }
   var ICO = {
-    agenda: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("rect", { x: 1.5, y: 3, width: 15, height: 13.5, rx: 2, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M1.5 7h15M5.5 1v4M12.5 1v4", stroke: OR, strokeWidth: 1.2 })),
-    coupe: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("path", { d: "M5 2h8v4a4 4 0 0 1-8 0V2Zm0 1.5H2.2c0 2.4 1.2 3.6 3.1 3.9M13 3.5h2.8c0 2.4-1.2 3.6-3.1 3.9M9 10v3.5M6 16h6M7 13.5h4", fill: "none", stroke: OR, strokeWidth: 1.2 })),
-    photo: h("svg", { width: 22, height: 20, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 1.5, width: 16, height: 13, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M2.5 12.5l4-4 3 3 2-2 4 3", fill: "none", stroke: OR, strokeWidth: 1.2 })),
-    cavalier: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("circle", { cx: 10, cy: 6.5, r: 3.2, fill: "none", stroke: OR, strokeWidth: 1.3 }), h("path", { d: "M3.5 17.5c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5", fill: "none", stroke: OR, strokeWidth: 1.3 })),
-    video: h("svg", { width: 24, height: 21, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 2, width: 12, height: 12, rx: 1.5, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M13 6.5l4-2.5v8l-4-2.5", fill: "none", stroke: OR, strokeWidth: 1.2 })),
-    bulle: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3 2.5V13A2.5 2.5 0 0 1 4 10.5z", fill: "none", stroke: OR, strokeWidth: 1.3 })),
-    perfs: h("svg", { width: 24, height: 24, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }), h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: OR, strokeWidth: 1.3 }))
+    agenda: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("rect", { x: 1.5, y: 3, width: 15, height: 13.5, rx: 2, fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 }), h("path", { d: "M1.5 7h15M5.5 1v4M12.5 1v4", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 })),
+    coupe: h("svg", { width: 22, height: 22, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("path", { d: "M5 2h8v4a4 4 0 0 1-8 0V2Zm0 1.5H2.2c0 2.4 1.2 3.6 3.1 3.9M13 3.5h2.8c0 2.4-1.2 3.6-3.1 3.9M9 10v3.5M6 16h6M7 13.5h4", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 })),
+    photo: h("svg", { width: 22, height: 20, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 1.5, width: 16, height: 13, rx: 1.5, fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 }), h("path", { d: "M2.5 12.5l4-4 3 3 2-2 4 3", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 })),
+    cavalier: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("circle", { cx: 10, cy: 6.5, r: 3.2, fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3 }), h("path", { d: "M3.5 17.5c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3 })),
+    video: h("svg", { width: 24, height: 21, viewBox: "0 0 18 16", "aria-hidden": "true" }, h("rect", { x: 1, y: 2, width: 12, height: 12, rx: 1.5, fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 }), h("path", { d: "M13 6.5l4-2.5v8l-4-2.5", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.2 })),
+    bulle: h("svg", { width: 22, height: 22, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v4a2.5 2.5 0 0 1-2.5 2.5H9l-3 2.5V13A2.5 2.5 0 0 1 4 10.5z", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3 })),
+    perfs: h("svg", { width: 24, height: 24, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }), h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: "rgba(244,241,234,0.78)", strokeWidth: 1.3 }))
   };
   function videCartePh(icone, img, txt) { return videCarte(icone, txt, img); }
   function videCarte(icone, txt, img) { return carteBasse(null, icone, h("span", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 400, lineHeight: 1.4 } }, txt), null, img, null, { marginTop: 0 }); }
   function partie(id, n, lab, titre) {
-    return h("div", { id: id, style: { padding: "34px 20px 0", scrollMarginTop: 70 } },
-      h("div", { style: { fontFamily: M, fontSize: 11, letterSpacing: ".24em", textTransform: "uppercase", color: OR, fontWeight: 600 } }, n + " · " + lab),
-      h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.05, color: IV, marginTop: 4 } }, titre));
+    return h("div", { id: id, style: { padding: "44px 20px 6px", scrollMarginTop: 70 } },
+      h("div", { style: { fontFamily: M, fontSize: 10.5, letterSpacing: ".24em", textTransform: "uppercase", color: "rgba(244,241,234,0.5)", fontWeight: 600 } }, n + " · " + lab),
+      titre ? h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 500, lineHeight: 1.05, color: IV, marginTop: 6 } }, titre) : null,
+      titre ? h("span", { "aria-hidden": "true", style: { display: "block", width: 32, height: 1, background: OR, marginTop: 14 } }) : null);   /* 12/11 01h13 : le seul doré des titres, un filet fin */
   }
   var PARTIES = [   /* 11/11 23h06 : Souvenirs après Les concours (« après la saison ») */
     { id: "eq-p1", lab: T("L'équipe", "The team", "El equipo", "La squadra", "チーム", "Das Team", "الفريق", "团队", "Het team", "A equipa", "Laget", "Команда", "Drużyna", "팀"),
@@ -535,13 +536,16 @@ function EcranTeamCompetition() {
   var chevauxCarres = largEcran < 1024, carresParLigne = largEcran < 600 ? 3 : 4;
 
   /* ── hero ── */
-  var hero = h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 292px)", overflow: "hidden", background: BG } },
-    h("img", { src: "images/TEAM_COMPETITION.webp", alt: "", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "72%", height: "100%", objectFit: "cover", objectPosition: "center 28%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
+  /* 12/11 01h03 (Blandine : « le haut était beaucoup plus aéré… le héros était beaucoup plus grand… même le drapeau dans la tête du cheval ») :
+     héros plus haut (titre loin du bouton retour), photo qui commence SOUS la rangée retour / drapeau, et de l'air avant le menu des parties */
+  var hero = h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 400px)", overflow: "hidden", background: BG, marginBottom: 18 } },
+    h("img", { src: "images/TEAM_COMPETITION.webp", alt: "", decoding: "async", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 64px)", bottom: 0, insetInlineEnd: 0, width: "72%", height: "calc(100% - env(safe-area-inset-top) - 64px)", objectFit: "cover", objectPosition: "center 20%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
+    h("div", { "aria-hidden": "true", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 64px)", insetInline: 0, height: 60, pointerEvents: "none", background: "linear-gradient(180deg, " + BG + ", rgba(6,7,9,0))" } }),
     h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", " + BG + " 26%, rgba(6,7,9,0.82) 40%, rgba(6,7,9,0.25) 62%, rgba(6,7,9,0) 78%)" } }),
     h("div", { "aria-hidden": "true", style: { position: "absolute", insetInline: 0, bottom: 0, height: 70, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0), " + BG + ")" } }),
     h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로"),
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", insetInlineStart: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(244,241,234,0.16)", color: IV, fontSize: 18, cursor: "pointer", zIndex: 2 } }, rtl ? "›" : "‹"),
-    h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 34, maxWidth: "62%", zIndex: 1 } },
+    h("div", { style: { position: "absolute", insetInlineStart: 20, bottom: 40, maxWidth: "62%", zIndex: 1 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
         h("span", { style: { width: 5, height: 5, background: OR, display: "inline-block" } }),
         h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: OR } }, T("Équipe", "Team", "Equipo", "Squadra", "チーム", "Team", "الفريق", "队伍", "Team", "Equipe", "Lag", "Команда", "Drużyna", "팀")),
@@ -564,7 +568,7 @@ function EcranTeamCompetition() {
     var src = photoProfil(p);
     var nom = (p.pseudo || "") + (p.role === "coach" ? " · Coach" : "");
     return h("button", { key: "cv" + p.id, type: "button", onClick: function () { ouvrirCavaliere(p); }, style: { display: "block", flex: (typeof window !== "undefined" && window.innerWidth >= 820) ? "0 0 132px" : "0 0 100px", padding: 0, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer", scrollSnapAlign: "start" } },
-      h("div", { style: { position: "relative", aspectRatio: "4 / 5", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(214,182,118,0.3)", background: "#0D1318" } },
+      h("div", { style: { position: "relative", aspectRatio: "4 / 5", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#0D1318" } },
         src ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(src, 280, 350) : src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" } })
           : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 34, color: OR } }, (p.pseudo || "?").charAt(0).toUpperCase())),
       h("div", { style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.12, marginTop: 6 } }, nom),
@@ -601,7 +605,7 @@ function EcranTeamCompetition() {
     /* 12/11 00h50 (Blandine : « que le cheval soit pas coupé en deux ») : photo ENTIÈRE (contain), le même cliché flouté remplit les bords */
     var src = c.photo_url ? ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(c.photo_url, 900, 900) : c.photo_url) : "";
     var srcFond = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 300, 200) : c.photo_url) : "";
-    return h("button", { key: "chg" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { position: "relative", display: "block", width: "100%", height: chevauxCarres ? 200 : 260, padding: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(214,182,118,0.38)", background: "#11171C", cursor: "pointer", textAlign: "start", color: IV } },
+    return h("button", { key: "chg" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { position: "relative", display: "block", width: "100%", height: chevauxCarres ? 200 : 260, padding: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#11171C", cursor: "pointer", textAlign: "start", color: IV } },
       srcFond ? h("img", { src: srcFond, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", style: { position: "absolute", inset: -24, width: "calc(100% + 48px)", height: "calc(100% + 48px)", objectFit: "cover", filter: "blur(22px) brightness(0.45)" } }) : null,
       src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" } }) : null,
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0) 38%, rgba(6,7,9,0.88) 100%)" } }),
@@ -614,7 +618,7 @@ function EcranTeamCompetition() {
     var pts = ptsChevaux[c.id] || 0;
     var src = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 240, 240) : c.photo_url) : "";
     return h("button", { key: "chp" + c.id, type: "button", onClick: function () { ouvrirCheval(c.id); }, style: { display: "block", flex: chevauxCarres ? "0 0 96px" : "0 0 128px", padding: 0, border: "none", background: "none", color: IV, textAlign: "start", cursor: "pointer", scrollSnapAlign: "start" } },
-      h("div", { style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(214,182,118,0.28)", background: "#11171C" } },
+      h("div", { style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#11171C" } },
         src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
           : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 28, color: OR } }, (c.nom || "?").charAt(0))),
       h("div", { style: { fontFamily: SERIF, fontSize: 14.5, fontWeight: 600, lineHeight: 1.12, marginTop: 6 } }, c.nom || ""),
@@ -631,11 +635,60 @@ function EcranTeamCompetition() {
     null));
 
   /* 11/11 22h29 : un seul bouton « Gérer l'équipe » (coach) en bas de « L'équipe », qui ouvre les trois réglages */
+  /* ── 12/11 01h17 — SECTION « L'ÉQUIPE » d'après le brief de Blandine (ChatGPT) : plus de grand titre, deux grands bandeaux
+     photo dépliables (accordéons indépendants) ; dessous, une grille 2 par ligne (3 dès 820 px) de portraits CARRÉS où la photo
+     reste ENTIÈRE (contain, marges noires), noms centrés, aucun encadrement. Chevaux : les deux meilleurs de la SAISON d'abord.
+     Photos des bandeaux : celles de l'appli en attendant les vraies de l'écurie (BANDEAU_EQ_*, à remplacer en un seul endroit). ── */
+  var BANDEAU_EQ_CAV = "images/FOND_CAVALIERS_ECURIE.webp", BANDEAU_EQ_CH = "images/concours-hero-bai-tresse.webp";
+  var grandEq = largEcran >= 820;
+  function bandeauEq(cle, titre, desc, lien, img, texteADroite, miroir) {
+    /* 12/11 01h22 (Blandine : « ils sont énormes tes bandeaux ») : hauteur fixe et basse (130 px, 170 px dès 820 px), comme la
+       maquette ; la photo, ENTIÈRE, occupe son côté (pas de recadrage), le texte l'autre côté — plus de texte posé sur la photo. */
+    var ouv = !!ouvert[cle], hB = grandEq ? 170 : 130;
+    var photo = h("div", { style: { flex: "0 0 auto", height: hB, display: "flex", alignItems: "center", justifyContent: texteADroite ? "flex-start" : "flex-end", maxWidth: "58%" } },
+      h("img", { src: img, alt: "", loading: "lazy", decoding: "async", style: { display: "block", height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", transform: miroir ? "scaleX(-1)" : "none" } }));
+    var texte = h("div", { style: { flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: texteADroite ? "0 20px 0 16px" : "0 16px 0 20px" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: grandEq ? 30 : 24, fontWeight: 500, lineHeight: 1.05 } }, titre),
+      h("div", { style: { fontFamily: M, fontSize: 11, lineHeight: 1.45, color: "rgba(244,241,234,0.72)", marginTop: 5 } }, desc),
+      h("div", { style: { fontFamily: M, fontSize: 11, color: OR, marginTop: 8, display: "flex", alignItems: "center", gap: 6 } }, ouv ? T("Refermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق", "收起", "Sluiten", "Fechar", "Stäng", "Свернуть", "Zwiń", "닫기") : lien,
+        h("span", { "aria-hidden": "true", style: { display: "inline-block", transform: ouv ? "rotate(-90deg)" : (rtl ? "rotate(180deg)" : "none"), transition: "transform .2s" } }, "›")));
+    return h("button", { key: "bd" + cle, type: "button", "aria-expanded": ouv, "aria-controls": "eq-liste-" + cle, onClick: function () { basculer(cle); },
+        style: { display: "flex", alignItems: "stretch", width: "100%", height: hB, padding: 0, margin: 0, border: "none", borderTop: "1px solid rgba(244,241,234,0.08)", background: BG, color: IV, textAlign: "start", cursor: "pointer", overflow: "hidden" } },
+      texteADroite ? [h(React.Fragment, { key: "p" }, photo), h(React.Fragment, { key: "t" }, texte)] : [h(React.Fragment, { key: "t" }, texte), h(React.Fragment, { key: "p" }, photo)]);
+  }
+  function tuileEq(key, src, nom, sous, onClick, remplir) {   /* 12/11 01h23 (Blandine : « les chevaux, plus en carré, on les voit pas très bien ») : remplir = photo qui remplit le carré */
+    return h("button", { key: key, type: "button", onClick: onClick, style: { display: "block", width: "100%", padding: 0, border: "none", background: "none", color: IV, cursor: "pointer", textAlign: "center" } },
+      h("div", { style: { position: "relative", aspectRatio: "1 / 1", background: BG, overflow: "hidden" } },
+        src ? h("img", { src: remplir ? ((typeof vignetteHype === "function") ? vignetteHype(src, 420, 420) : src) : ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(src, 420, 420) : src), alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: remplir ? "cover" : "contain", display: "block" } })
+          : h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 40, color: "rgba(244,241,234,0.5)" } }, (nom || "?").charAt(0).toUpperCase())),
+      h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11, fontWeight: 600, letterSpacing: ".2em", textTransform: "uppercase", marginTop: 12, lineHeight: 1.3 } }, nom),
+      sous ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 10.5, color: "rgba(244,241,234,0.55)", marginTop: 3 } }, sous) : null,
+      h("span", { "aria-hidden": "true", style: { display: "block", width: 18, height: 1, background: OR, margin: "8px auto 0" } }));
+  }
+  function grilleEq(cle, items) {
+    return h("div", { id: "eq-liste-" + cle, style: { display: "grid", gridTemplateColumns: grandEq ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: 18, rowGap: 28, padding: "22px 20px 30px" } }, items);
+  }
+  var chevauxSaison = (chevaux || []).slice().sort(function (a, b) { return ((ptsChevaux[b.id] || 0) - (ptsChevaux[a.id] || 0)) || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+  var blocEquipe = h("div", { key: "blocEq", style: { marginTop: 18 } },
+    bandeauEq("bcav", T("Nos cavaliers", "Our riders", "Nuestros jinetes", "I nostri cavalieri", "私たちのライダー", "Unsere Reiter", "فرساننا", "我们的骑手", "Onze ruiters", "Nossos cavaleiros", "Våra ryttare", "Наши всадники", "Nasi jeźdźcy", "우리 기수"),
+      T("Une équipe soudée, passionnée et engagée.", "A close-knit, passionate and committed team.", "Un equipo unido, apasionado y comprometido.", "Una squadra unita, appassionata e impegnata.", "結束が固く、情熱的で、ひたむきなチーム。", "Ein eingeschworenes, leidenschaftliches und engagiertes Team.", "فريق متماسك، شغوف وملتزم.", "一支团结、热情、投入的队伍。", "Een hecht, gepassioneerd en betrokken team.", "Uma equipa unida, apaixonada e empenhada.", "Ett sammansvetsat, passionerat och engagerat lag.", "Сплочённая, увлечённая и преданная команда.", "Zgrany, pełen pasji i zaangażowany zespół.", "끈끈하고 열정적이며 헌신적인 팀."),
+      T("Voir les cavaliers", "See the riders", "Ver los jinetes", "Vedi i cavalieri", "ライダーを見る", "Reiter ansehen", "عرض الفرسان", "查看骑手", "Ruiters bekijken", "Ver os cavaleiros", "Se ryttarna", "Смотреть всадников", "Zobacz jeźdźców", "기수 보기"), BANDEAU_EQ_CAV, true, true),
+    ouvert.bcav ? (membres === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
+      : grilleEq("bcav", (membres || []).map(function (p) { return tuileEq("tcv" + p.id, photoProfil(p), (p.pseudo || "") + (p.role === "coach" ? " · Coach" : ""), chevalDuCav[p.id] || "", function () { ouvrirCavaliere(p); }); }))) : null,
+    bandeauEq("bch", T("Nos chevaux", "Our horses", "Nuestros caballos", "I nostri cavalli", "私たちの馬", "Unsere Pferde", "خيولنا", "我们的马", "Onze paarden", "Nossos cavalos", "Våra hästar", "Наши лошади", "Nasze konie", "우리 말"),
+      T("Des partenaires de confiance.", "Partners we can trust.", "Compañeros de confianza.", "Compagni di fiducia.", "信頼できるパートナー。", "Partner, denen wir vertrauen.", "شركاء موثوقون.", "值得信赖的伙伴。", "Partners om op te vertrouwen.", "Parceiros de confiança.", "Partner att lita på.", "Надёжные партнёры.", "Zaufani partnerzy.", "믿음직한 파트너."),
+      T("Voir les chevaux", "See the horses", "Ver los caballos", "Vedi i cavalli", "馬を見る", "Pferde ansehen", "عرض الخيول", "查看马匹", "Paarden bekijken", "Ver os cavalos", "Se hästarna", "Смотреть лошадей", "Zobacz konie", "말 보기"), BANDEAU_EQ_CH, false, false),
+    ouvert.bch ? (chevaux === null ? h("div", { style: { padding: "18px 20px" } }, chargement())
+      : grilleEq("bch", chevauxSaison.map(function (c) { var pc = ptsChevaux[c.id] || 0; return tuileEq("tch" + c.id, c.photo_url || "", c.nom || "", pc > 0 ? libPts(pc) : "", function () { ouvrirCheval(c.id); }, true); }))) : null,
+    h("div", { style: { borderTop: "1px solid rgba(244,241,234,0.08)" } }),
+    (modifGroupe && groupe && typeof CreationEquipeEH === "function") ? h(CreationEquipeEH, { clef: groupe.club_clef, club: TEAM_CLUB, groupe: groupe, communaute: groupe.type === "loisir", chevaux: [], piquets: [],
+      onFermer: function () { setModifGroupe(false); },
+      onFini: function (gN) { setGroupe(Object.assign({}, groupe, gN || {})); setModifGroupe(false); } }) : null);
   var blocGerer = (gestion && groupe) ? section(h("div", { style: { position: "relative" } },
     h("button", { type: "button", "aria-expanded": menuGerer ? "true" : "false", onClick: function () { setMenuGerer(!menuGerer); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 38, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(214,182,118,0.45)", background: "transparent", color: OR, fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } },
       h("svg", { width: 15, height: 15, viewBox: "0 0 20 20", "aria-hidden": "true" }, h("circle", { cx: 10, cy: 10, r: 2.6, fill: "none", stroke: OR, strokeWidth: 1.3 }), h("path", { d: "M10 2.5v2.2M10 15.3v2.2M2.5 10h2.2M15.3 10h2.2M4.7 4.7l1.6 1.6M13.7 13.7l1.6 1.6M4.7 15.3l1.6-1.6M13.7 6.3l1.6-1.6", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round" })),
       T("Gérer l'équipe", "Manage the team", "Gestionar el equipo", "Gestisci la squadra", "チームを管理", "Team verwalten", "إدارة الفريق", "管理团队", "Team beheren", "Gerenciar a equipe", "Hantera laget", "Управлять командой", "Zarządzaj drużyną", "팀 관리"), h("span", { "aria-hidden": "true", style: { fontSize: 11 } }, menuGerer ? "▴" : "▾")),
-    menuGerer ? h("div", { style: { marginTop: 8, maxWidth: 320, borderRadius: 14, border: "1px solid rgba(214,182,118,0.38)", background: "#0B0F13", overflow: "hidden" } },
+    menuGerer ? h("div", { style: { marginTop: 8, maxWidth: 320, borderRadius: 14, border: "1px solid rgba(244,241,234,0.12)", background: "#0B0F13", overflow: "hidden" } },
       h("button", { type: "button", onClick: function () { setMenuGerer(false); setErrPanneau(""); setRecherche(""); setPanneau("membres"); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Gérer les membres", "Manage members", "Gestionar miembros", "Gestisci i membri", "メンバーを管理", "Mitglieder verwalten", "إدارة الأعضاء", "管理成员", "Leden beheren", "Gerenciar os membros", "Hantera medlemmar", "Управлять участниками", "Zarządzaj członkami", "멤버 관리")),
       h("button", { type: "button", onClick: function () { setMenuGerer(false); setErrPanneau(""); setRecherche(""); setPanneau("chevaux"); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", borderTop: "1px solid rgba(214,182,118,0.16)", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Gérer les chevaux", "Manage horses", "Gestionar caballos", "Gestisci i cavalli", "馬を管理", "Pferde verwalten", "إدارة الخيول", "管理马匹", "Paarden beheren", "Gerenciar os cavalos", "Hantera hästar", "Управлять лошадьми", "Zarządzaj końmi", "말 관리")),
       typeof CreationEquipeEH === "function" ? h("button", { type: "button", onClick: function () { setMenuGerer(false); setModifGroupe(true); }, style: { display: "block", width: "100%", textAlign: "start", padding: "13px 14px", background: "transparent", border: "none", borderTop: "1px solid rgba(214,182,118,0.16)", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Modifier le groupe", "Edit the group", "Modificar el grupo", "Modifica il gruppo", "グループを編集", "Gruppe bearbeiten", "تعديل المجموعة", "修改小组", "Groep wijzigen", "Modificar o grupo", "Ändra gruppen", "Изменить группу", "Edytuj grupę", "그룹 수정")) : null) : null), false) : null;
@@ -643,7 +696,7 @@ function EcranTeamCompetition() {
   /* (706) CHAPITRE « Classements des chevaux » : meme titre et meme carte que les autres chapitres de la page ;
      l'onglet « Performances chevaux » mene a la page classement (route performances-chevaux). */
   /* 11/11 : « Classement des cavaliers » (comme Performances chevaux) : la liste des cavaliers de l'équipe, chacun ouvre sa page Performances */
-  var listePerfCav = !ouvert.pcav ? null : h("div", { style: { marginTop: 6, borderRadius: 14, border: "1px solid rgba(214,182,118,0.2)", overflow: "hidden" } },
+  var listePerfCav = !ouvert.pcav ? null : h("div", { style: { marginTop: 6, borderRadius: 14, border: "1px solid rgba(244,241,234,0.12)", overflow: "hidden" } },
     (membres || []).filter(function (p) { return p.role !== "coach"; }).map(function (p) {
       return h("button", { key: "pc" + p.id, type: "button", onClick: function () { try { window.__perfCavalierId = p.id; } catch (ePc) { } setEcran("performances-cavalier"); },
         style: { width: "100%", display: "flex", alignItems: "center", gap: 12, minHeight: 54, padding: "6px 14px", background: "transparent", border: "none", borderBottom: "1px solid rgba(244,241,234,0.06)", color: IV, fontFamily: M, fontSize: 14, textAlign: "start", cursor: "pointer" } },
@@ -658,14 +711,14 @@ function EcranTeamCompetition() {
       "images/cavalier-acces-performances.webp", function () { basculer("pcav"); }, { marginTop: 0 }),
     listePerfCav,
     h("div", { style: { height: 10 } }),
-    h("button", { type: "button", "data-perf-chevaux": "1", onClick: function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
+    h("button", { type: "button", "data-perf-chevaux": "1", onClick: function () { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eP0) { } setEcran("performances-chevaux"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
       h("img", { src: "images/team-competition-performances-hero.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", objectPosition: "78% 40%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
       h("svg", { width: 26, height: 26, viewBox: "0 0 20 20", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
         h("rect", { x: 2, y: 11, width: 4, height: 7, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 }),
         h("rect", { x: 8, y: 6, width: 4, height: 12, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 }),
         h("rect", { x: 14, y: 2, width: 4, height: 16, rx: 1, fill: "none", stroke: OR, strokeWidth: 1.3 })),
-      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(214,182,118,0.28)" } }),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(244,241,234,0.14)" } }),
       h("div", { style: { flex: 1, minWidth: 0, position: "relative" } },
         h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Performances chevaux", "Horse performances", "Rendimiento de los caballos", "Prestazioni dei cavalli", "\u99ac\u306e\u6210\u7e3e", "Leistungen der Pferde", "\u0623\u062f\u0627\u0621 \u0627\u0644\u062e\u064a\u0648\u0644", "马匹表现", "Prestaties van de paarden", "Desempenho dos cavalos", "Hästarnas prestationer", "Выступления лошадей", "Osiągnięcia koni", "말 성적")),
         h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Classement de la saison", "Season ranking", "Clasificaci\u00f3n de la temporada", "Classifica della stagione", "\u30b7\u30fc\u30ba\u30f3\u306e\u30e9\u30f3\u30ad\u30f3\u30b0", "Saisonwertung", "\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u0645\u0648\u0633\u0645", "赛季排名", "Klassement van het seizoen", "Classificação da temporada", "Säsongens rankning", "Рейтинг сезона", "Klasyfikacja sezonu", "시즌 순위"))),
@@ -681,7 +734,7 @@ function EcranTeamCompetition() {
   function carteRdv(ev) {
     var jour = (String(ev.date_jour || "").match(/-(\d{2})$/) || [])[1] || "";
     var sous = String(ev.description || "").split("\n")[0].trim();
-    return h("button", { key: "rdv" + ev.id, type: "button", onClick: function () { ouvrirRdv(ev); }, style: { width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 12px 14px 14px", borderRadius: 12, background: PANEL, border: "1px solid rgba(214,182,118,0.16)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
+    return h("button", { key: "rdv" + ev.id, type: "button", onClick: function () { ouvrirRdv(ev); }, style: { width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 12px 14px 14px", borderRadius: 12, background: PANEL, border: "1px solid rgba(244,241,234,0.12)", color: IV, cursor: "pointer", textAlign: "start", boxSizing: "border-box" } },
       h("div", { style: { flex: "0 0 auto", width: 52, textAlign: "center" } },
         h("div", { style: { fontFamily: SERIF, fontSize: 36, lineHeight: 1, color: OR } }, jour),
         h("div", { style: { fontFamily: SERIF, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", color: OR, marginTop: 3 } }, moisCourt(ev.date_jour))),
@@ -709,7 +762,7 @@ function EcranTeamCompetition() {
   function carteDernier(ev) {
     var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
     var sous = [ev.lieu || ""].filter(Boolean).join(" · ");
-    return h("button", { key: "dern" + ev.id, type: "button", "data-team-dernier": "1", onClick: function () { ouvrirRdvPasse(ev); }, style: { position: "relative", display: "block", width: "100%", height: 104, padding: 0, marginBottom: 10, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(214,182,118,0.38)", background: "#0B0F13", cursor: "pointer", textAlign: "start", color: IV } },
+    return h("button", { key: "dern" + ev.id, type: "button", "data-team-dernier": "1", onClick: function () { ouvrirRdvPasse(ev); }, style: { position: "relative", display: "block", width: "100%", height: 104, padding: 0, marginBottom: 10, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#0B0F13", cursor: "pointer", textAlign: "start", color: IV } },
       h("img", { src: aff ? ((typeof vignetteHype === "function") ? vignetteHype(aff, 480, 300) : aff) : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg"), alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", display: "block" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
       h("div", { style: { position: "absolute", insetInlineStart: 13, top: 11, insetInlineEnd: "40%" } },
@@ -744,7 +797,7 @@ function EcranTeamCompetition() {
     var dateT = dateLongue(ev.date_jour);
     if (ev.date_fin && String(ev.date_fin) !== String(ev.date_jour)) dateT += " → " + dateLongue(ev.date_fin);
     if (ev.heure) dateT += " · " + ev.heure;
-    return h("div", { style: { background: PANEL, border: "1px solid rgba(214,182,118,0.18)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
+    return h("div", { style: { background: PANEL, border: "1px solid rgba(244,241,234,0.12)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
       h("div", { style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 10px", fontFamily: M, fontSize: 11.5 } },
         ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜"), dateT),
         ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소"), ev.lieu || ""),
@@ -774,7 +827,6 @@ function EcranTeamCompetition() {
     h("span", null, tr({ fr: "Ma saison : tous les concours" })), h("span", { style: { fontSize: 16 } }, CHEV));
   var blocAg = section(h("div", null,
     enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
-      h("svg", { width: 18, height: 18, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("rect", { x: 1.5, y: 3, width: 15, height: 13.5, rx: 2, fill: "none", stroke: OR, strokeWidth: 1.2 }), h("path", { d: "M1.5 7h15M5.5 1v4M12.5 1v4", stroke: OR, strokeWidth: 1.2, fill: "none" })),
       T("Agenda", "Calendar", "Agenda", "Agenda", "予定", "Termine", "المواعيد", "日程", "Agenda", "Agenda", "Kalender", "Календарь", "Kalendarz", "일정")), "ag", (agenda || []).length + ((agendaPasse || []).length ? 9 : 0), 1, btnAjoutRdv),
     agenda === null ? chargement()
       : h("div", null,
@@ -889,7 +941,7 @@ function EcranTeamCompetition() {
     var villeT = I.L && I.L.ville ? (I.L.ville + (I.L.departement ? " (" + I.L.departement + ")" : "")) : "";
     var lieuT = [I.L && I.L.lieu_nom, villeT].filter(Boolean).join(" · ");   /* vide si le concours n est pas encore relie a un lieu : la ligne disparait */
     var classT = (pl != null ? ordinal(pl) : (String(r.classement || "").trim() || "—")) + (r.partants ? " / " + r.partants : "") + (r.mention ? " · " + T("sans faute", "clear round", "sin faltas", "netto", "減点なし", "fehlerfrei", "دون أخطاء", "零罚分", "foutloos", "sem faltas", "felfri", "без штрафных очков", "bez błędów", "무벌점") : "");
-    return h("div", { style: { background: PANEL, border: "1px solid rgba(214,182,118,0.18)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
+    return h("div", { style: { background: PANEL, border: "1px solid rgba(244,241,234,0.12)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 12.5 } },
         I.cv ? h("img", { src: photoProfil(I.cv), alt: "", style: { width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(214,182,118,0.6)" } }) : null,
         I.qui ? h("b", null, I.qui) : null,
@@ -925,8 +977,7 @@ function EcranTeamCompetition() {
   var resRetires = (resultats || []).filter(function (x) { return !!resMasques[String(x.id)]; });
   var blocRes = section(h("div", null,
     enTete(h("span", { style: { display: "inline-flex", alignItems: "center", gap: 10 } },
-      h("svg", { width: 18, height: 18, viewBox: "0 0 18 18", "aria-hidden": "true" }, h("path", { d: "M5 2h8v4a4 4 0 0 1-8 0V2Zm0 1.5H2.2c0 2.4 1.2 3.6 3.1 3.9M13 3.5h2.8c0 2.4-1.2 3.6-3.1 3.9M9 10v3.5M6 16h6M7 13.5h4", fill: "none", stroke: OR, strokeWidth: 1.2, strokeLinejoin: "round" })),
-      T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과")), "res", resVisibles.length, 3),
+T("Résultats récents", "Recent results", "Resultados recientes", "Risultati recenti", "最近の結果", "Neueste Ergebnisse", "أحدث النتائج", "最近的成绩", "Recente resultaten", "Resultados recentes", "Senaste resultat", "Недавние результаты", "Ostatnie wyniki", "최근 결과")), "res", resVisibles.length, 3),
     resultats === null ? chargement()
       : h("div", null,
         !resVisibles.length ? videCartePh(ICO.coupe, "images/concours-hero-bai-tresse.webp", T("Aucun résultat pour l’instant.", "No results yet.", "Aún no hay resultados.", "Nessun risultato per ora.", "まだ結果はありません。", "Noch keine Ergebnisse.", "لا توجد نتائج حاليا.", "目前还没有成绩。", "Nog geen resultaten.", "Nenhum resultado por enquanto.", "Inga resultat ännu.", "Пока нет результатов.", "Na razie brak wyników.", "아직 결과가 없어요."))
@@ -951,7 +1002,7 @@ function EcranTeamCompetition() {
   function tuile(s, i) {
     var vid = estVid(s.u), src = vignette(s.u);
     return h("button", { key: "sv" + i, type: "button", onClick: function () { setVisu(((typeof hypeEstVideoMux === "function") && hypeEstVideoMux(s.u) && typeof hypeMuxLecture === "function") ? hypeMuxLecture(s.u) : s.u); },
-      style: { position: "relative", padding: 0, border: "1px solid rgba(214,182,118,0.25)", borderRadius: 10, overflow: "hidden", aspectRatio: "1 / 1", background: "#11171C", cursor: "pointer", minWidth: 0 } },
+      style: { position: "relative", padding: 0, border: "1px solid rgba(244,241,234,0.12)", borderRadius: 10, overflow: "hidden", aspectRatio: "1 / 1", background: "#11171C", cursor: "pointer", minWidth: 0 } },
       src ? h("img", { src: src, alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
       vid ? h("span", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
         h("span", { style: { width: 26, height: 26, borderRadius: "50%", background: "rgba(6,7,9,0.6)", border: "1px solid rgba(244,241,234,0.5)", display: "flex", alignItems: "center", justifyContent: "center" } },
@@ -979,7 +1030,7 @@ function EcranTeamCompetition() {
   }
   var LIB_PARTAGE = { article_hype: T("Article Hype", "Hype article"), lien: T("Lien", "Link"), video: T("Vidéo", "Video"), ressource: T("Ressource", "Resource") };
   function tuilePartage(p, seule) {
-    return h("button", { key: "mp" + p.id, type: "button", onClick: function () { ouvrirMedias("theorie"); }, style: { display: "flex", flexDirection: "column", gap: 5, padding: 12, borderRadius: 12, border: "1px solid rgba(214,182,118,0.22)", background: "transparent", color: IV, textAlign: "start", cursor: "pointer", minWidth: 0, gridColumn: seule ? "1 / -1" : "auto" } },
+    return h("button", { key: "mp" + p.id, type: "button", onClick: function () { ouvrirMedias("theorie"); }, style: { display: "flex", flexDirection: "column", gap: 5, padding: 12, borderRadius: 12, border: "1px solid rgba(244,241,234,0.12)", background: "transparent", color: IV, textAlign: "start", cursor: "pointer", minWidth: 0, gridColumn: seule ? "1 / -1" : "auto" } },
       h("span", { style: { fontFamily: M, fontSize: 9, letterSpacing: 1.6, textTransform: "uppercase", color: OR } }, LIB_PARTAGE[p.type] || ""),
       h("span", { dir: "auto", style: { fontFamily: SERIF, fontSize: 16, fontWeight: 600, lineHeight: 1.15, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" } }, p.titre || p.url),
       p.auteur_nom ? h("span", { style: { fontFamily: M, fontSize: 10.5, color: GR } }, T("Partagé par ", "Shared by ") + p.auteur_nom) : null);
@@ -1011,13 +1062,13 @@ function EcranTeamCompetition() {
      la page de l'article affiche elle-même son écran « Article réservé » aux non-abonnés). Même carte que « Performances chevaux ». */
   var blocCoach = section(h("div", null,
     enTete(T("Conseils du coach", "Coach’s tips", "Consejos del entrenador", "Consigli del coach", "コーチのアドバイス", "Tipps vom Coach", "نصائح المدرّب", "教练建议", "Tips van de coach", "Dicas do treinador", "Tränarens råd", "Советы тренера", "Rady trenera", "코치의 조언"), "co", 0, 0),
-    h("button", { type: "button", "data-article-cso": "1", onClick: function () { setEcran("article-cso"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(214,182,118,0.25)", color: IV, cursor: "pointer", textAlign: "start" } },
+    h("button", { type: "button", "data-article-cso": "1", onClick: function () { setEcran("article-cso"); }, style: { position: "relative", overflow: "hidden", width: "100%", height: 104, display: "flex", alignItems: "center", gap: 12, padding: "0 13px", borderRadius: 12, background: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, cursor: "pointer", textAlign: "start" } },
       h("img", { src: "images/article-cso-tuile.webp", alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "42%", height: "100%", objectFit: "cover", objectPosition: "center 35%" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
       h("svg", { width: 26, height: 26, viewBox: "0 0 20 20", "aria-hidden": "true", style: { flex: "0 0 auto", position: "relative" } },
         h("path", { d: "M3 15 H9 Q12 15 13.5 12.5 L16 7", fill: "none", stroke: OR, strokeWidth: 1.3, strokeLinecap: "round", strokeDasharray: "2 2" }),
         h("path", { d: "M14 3.5 L18.5 8 M15.2 2.3 L19.7 6.8", stroke: OR, strokeWidth: 1.3 })),
-      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(214,182,118,0.28)" } }),
+      h("span", { style: { flex: "0 0 auto", position: "relative", width: 1, alignSelf: "stretch", background: "rgba(244,241,234,0.14)" } }),
       h("div", { style: { flex: 1, minWidth: 0, position: "relative", maxWidth: "66%" } },
         h("div", { style: { fontFamily: SERIF, fontSize: 17, fontWeight: 600, color: IV, lineHeight: 1.15 } }, T("Pourquoi éviter la longue après un virage serré ?", "Why avoid the long spot after a tight turn?", "¿Por qué evitar la batida larga tras un giro cerrado?", "Perché evitare la battuta lunga dopo una curva stretta?", "急なターンの直後、なぜ遠い踏み切りを避けるの？", "Warum nach einer engen Wendung den weiten Absprung vermeiden?", "لماذا تتجنّبين الارتقاء البعيد بعد منعطف حاد؟", "急转弯之后，为什么要避免远点起跳？", "Waarom geen lange afstand na een korte wending?", "Por que evitar a distância longa depois de uma curva fechada?", "Varför undvika långt avsprång efter en snäv sväng?", "Почему не стоит брать далёкую точку после крутого поворота?", "Dlaczego unikać dalekiego wybicia po ciasnym zakręcie?", "급회전 직후, 왜 먼 도약은 피해야 할까요?")),
         h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4 } }, T("Décryptage CSO · 7 min", "Show-jumping breakdown · 7 min", "Análisis de salto · 7 min", "Analisi salto ostacoli · 7 min", "障害飛越の解説 · 7分", "Analyse Springen · 7 Min.", "تحليل قفز الحواجز · 7 دقائق", "场地障碍解析 · 7 分钟", "Springanalyse · 7 min", "Análise de salto · 7 min", "Hoppanalys · 7 min", "Разбор конкура · 7 мин", "Analiza skoków · 7 min", "장애물 비월 분석 · 7분"))),
@@ -1026,7 +1077,7 @@ function EcranTeamCompetition() {
   /* (721) CHAPITRE « Règlements » : les règlements officiels (PDF dans docs/), ouverts dans un nouvel onglet.
      11/11 21h46 (Blandine : « deux petites cartes carrées côte à côte, ça prend beaucoup de place pour rien ») : deux carrés. */
   function carteReg(attr, href, titre, sous, source, photo) {   /* 11/11 21h51 : « mets un visuel dessus quand même » → photo en fond, voilée */
-    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", minHeight: 104, backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.35) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.95) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(214,182,118,0.38)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
+    var pr = { href: href, target: "_blank", rel: "noopener noreferrer", style: { position: "relative", minHeight: 104, backgroundImage: "linear-gradient(180deg, rgba(6,7,9,0.35) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.95) 100%), url(" + photo + ")", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "10px 10px 9px", borderRadius: 12, backgroundColor: "#0B0F13", border: "1px solid rgba(244,241,234,0.12)", color: IV, textDecoration: "none", textAlign: "start", boxSizing: "border-box", overflow: "hidden" } };
     pr[attr] = "1";
     return h("a", pr,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" } },
@@ -1062,7 +1113,7 @@ function EcranTeamCompetition() {
     .sort(function (a, b) { return b.d.localeCompare(a.d); }).slice(0, 8);
   var svLarge = (typeof window !== "undefined" && window.innerWidth >= 820);
   function tuileSv(m, i) {
-    var base = { flex: svLarge ? "0 0 calc((100% - 36px) / 4)" : "0 0 calc((100% - 24px) / 3)", aspectRatio: "4 / 5",   /* 11/11 22h15 : 3 photos visibles avant de faire glisser */ position: "relative", padding: 0, border: "1px solid rgba(214,182,118,0.25)", borderRadius: 12, overflow: "hidden", background: "#11171C", cursor: "pointer", scrollSnapAlign: "start" };
+    var base = { flex: svLarge ? "0 0 calc((100% - 36px) / 4)" : "0 0 calc((100% - 24px) / 3)", aspectRatio: "4 / 5",   /* 11/11 22h15 : 3 photos visibles avant de faire glisser */ position: "relative", padding: 0, border: "1px solid rgba(244,241,234,0.12)", borderRadius: 12, overflow: "hidden", background: "#11171C", cursor: "pointer", scrollSnapAlign: "start" };
     if (m.t === "v") {
       var v = m.v, src = (typeof vignetteHype === "function") ? vignetteHype(v.vignette, 400, 500) : v.vignette;
       return h("button", { key: "svv" + v.id, type: "button", onClick: function () { ouvrirMedias("videos", v.id); }, style: base },
@@ -1230,7 +1281,7 @@ function EcranTeamCompetition() {
     erreur ? h("div", { style: { margin: "4px 20px 0", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12 } },
       T("La page n’a pas pu se charger : ", "The page could not load: ", "No se pudo cargar la página: ", "Impossibile caricare la pagina: ", "ページを読み込めません：", "Seite nicht geladen: ", "تعذر تحميل الصفحة: ", "页面加载失败：", "De pagina kon niet laden: ", "Não foi possível carregar a página: ", "Sidan kunde inte laddas: ", "Не удалось загрузить страницу: ", "Nie udało się załadować strony: ", "페이지를 불러오지 못했어요: ") + erreur) : null,
     menuParties,
-    partie(PARTIES[0].id, 1, PARTIES[0].lab, PARTIES[0].titre), blocCav, blocCh, blocGerer, trait(),
+    partie(PARTIES[0].id, 1, PARTIES[0].lab, null), blocEquipe, blocGerer, trait(),   /* 12/11 : brief « L'équipe » — plus de « Cavaliers & chevaux », deux bandeaux */
     partie(PARTIES[1].id, 2, PARTIES[1].lab, PARTIES[1].titre), blocAg, blocRes, lienSaison ? h("div", { key: "lsa", style: { padding: "26px 20px 0" } }, lienSaison) : null, blocClass, trait(),
     partie(PARTIES[2].id, 3, PARTIES[2].lab, PARTIES[2].titre), blocSv, trait(),
     partie(PARTIES[3].id, 4, PARTIES[3].lab, PARTIES[3].titre), blocMedias, blocReg, h("div", { style: { height: 30 } }),
