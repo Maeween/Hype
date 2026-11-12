@@ -12,6 +12,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 12/11 16h50 — build 20261112-1650 — MÉDIAS DE LA SAISON (page Médias des concours, tous les concours) + cartes dans Ma saison (Blandine « Ok », « mets tout en ligne »)
+- Direction de Blandine (16h09) : reprendre la page Médias d'une fiche concours (poster, Mes médias / Les médias de l'équipe, par cavalier, par cheval, par couple) pour TOUTE la saison ; tout centraliser (« on a 10 pages différentes »).
+- hype-ecran-saison.js ?v=141 : identifiant spécial « __saison » dans EcranConcours (SAISON) → héros « Médias de la saison », pas de cartes Engagements/Jour J/Résultats, directement la galerie. chargerGalerieSaison : concours de l'équipe (agenda_groupes) depuis le 1er septembre, leurs photos (SAUF celles postées avant le jour du concours : affiches, ordres de départ, horaires — demande de 16h06), toutes les vidéos de l'équipe (concours + entraînement). Le filtre « épreuve » devient le concours (« CSO Tigery · 8 nov. », « Entraînement »).
+- Ajouter en mode saison : photos → « De quel concours sont tes photos ? » puis le fil de ce concours sous la galerie ; vidéo → formulaire d'ajout de la Team (concours à choisir).
+- Ma saison : deux cartes photo en haut, « Médias de la saison » et « Performances » (page performances-cavaliers).
+- Liens : page Équipe « Photos » / « Vidéos » (Nos plus beaux moments) → Médias de la saison (hype-ecran-team.js ?v=53) ; adresses #tm=… et #team-medias (mails) → Médias de la saison ; « Vidéothèque de la Team » d'une fiche concours → idem ; partage de la page = #team-medias. Une vidéo précise ouverte depuis la page Équipe garde l'ancien lecteur.
+- L'ancienne page Médias de l'équipe reste (Conseils Hey Baby, À découvrir, formulaire d'ajout vidéo) — rien supprimé.
+- ⚠ À FAIRE (demande 16h12) : le petit menu d'ajout de PHOTO comme pour les vidéos (quel cheval, concours ou non, qui monte, afficher ou non dans l'album du cheval) + photos privées / retirées + album « Insolites & chutes » : nécessite une table « photos de l'équipe » (même modèle que team_videos) — SQL à montrer à Blandine avant de créer.
+
 ### 12/11 16h20 — build 20261112-1620 — vraie page Médias : encarts de concours, rubriques Travail et Photos (Blandine « Ok » sur la maquette v2)
 - hype-ecran-team-medias.js ?v=44 : trois cartes photo en tête (Parcours · Travail · Photos). Parcours = un encart par concours, le plus récent ouvert, les autres repliés (bandeau photo, date, nom, nombre) ; plus de pastilles de concours. La page s'ouvre sur ces encarts (avant : par cavalier). Par cavalier / par cheval inchangés (sélecteur). Vidéos sans concours → Travail.
 - Photos = album : photos postées sur chaque concours de l'équipe (commentaires agenda:<id>, privées exclues), un encart par concours, photos entières en colonnes, « Voir la fiche du concours » et « + Ajouter des photos » (ouvre la fiche concours).
