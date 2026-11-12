@@ -15,12 +15,12 @@
 **Contrôles (Chromium)** : leçon fr→fa (mots, prononciation, « Quel est ce mot ? »), leçon fa→en, récit de La Baule en persan, dialogue fr→fa et fa→en, page d'entrée en persan / en arabe-Liban à 390, 820, 1440 px, pages Google fa générées sur une copie : **aucune erreur JS** ; aucun texte d'origine perdu (seuls les 48 textes « seize langues » ont changé, volontairement).
 
 **Signalé (non corrigé, à voir avec Blandine)** :
-- Bug ANCIEN de l'arabe (non touché, hors sujet) : quand l'arabe est la langue apprise, la leçon peut imposer « Écris le mot » et toute réponse est acceptée (la comparaison ne lit pas l'alphabet arabe). Le persan est protégé.
+- ✅ CORRIGÉ 12/11 20h45 (horselingo `e79fa69` [publier], Blandine « Ok ») — bug ancien de l'arabe : la leçon pouvait imposer « Écris le mot » quand on apprend l'arabe, et toute réponse était acceptée. Plus d'écrit imposé en arabe (comme japonais, chinois, persan). Testé : leçons fr→ar La Baule et Kildare, aucun « Écris le mot », aucune erreur. Cache linguae-v13.
 - La page Dialogue garde son interface en français quelle que soit la langue (déjà le cas avant).
 - Fautes repérées dans le français d'origine : « RENDA » (rend), « crossses », « XIX siècle » sans « e » (plusieurs), « raccourtit », « évite qu'un cheval part », « derriere », « ou l'on saute » ; « Apy, la mascotte de Hype Baby » ; 1,49 m ferré vs 1,48 m ; « pas de 80 cm » pour mesurer un parcours ; une case française contient de l'anglais (« Ten words… ») ; « la race du bétail australien » (c'est un cheval) ; « Embouchure sans mors » se contredit.
 - Termes persans à faire confirmer par Faïmé : rouan/gris (ابرش), boulet (مفصل مچ), paturon (بخلو), jarret (مفصل خرگوشی), coup de sang (گرفتگی عضلانی), barrage (جامپ‌آف), balzane, liste, cession à la jambe, haute école.
 
-**Reste** : relecture Faïmé ; correction éventuelle du bug de l'arabe (si Blandine le veut) ; fautes du français d'origine à corriger avec elle.
+**Reste** : relecture Faïmé ; fautes du français d'origine à corriger avec elle.
 
 # 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
 
