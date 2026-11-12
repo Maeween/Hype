@@ -99,6 +99,10 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 - « Agenda de l'équipe » : lignes compactes (date | nom + lieu | ›, affiche à droite si image_url), sans le concours de la une ; 3 visibles, « Voir tout » pour le reste + rendez-vous passés ; bouton + conservé. Un toucher ouvre la fiche (repli : le détail sous la ligne).
 - Onglets fixes du haut : padding haut = env(safe-area-inset-top) + 10 px (ne passent plus sous l heure / la batterie).
 - À faire ensuite : récapitulatif des engagements version D (petites cartes) + onglets Par cavalier / Par cheval / Par épreuve (choix Blandine 02h25).
+### 12/11 02h33 — build 20261112-0340 — Récapitulatif des engagements D + onglets ; bandeau du prochain concours recadré
+- hype-ecran-saison.js v=140 (EcranEngagements › recapFin) : replié par défaut (« Voir le récapitulatif »), onglets Par cavalier / Par cheval / Par épreuve ; vue cavaliers en petites cartes D (photo ronde, prénom, chevaux + n° de tour en doré), 2 par ligne ; vues chevaux et épreuves inchangées, une seule à la fois.
+- images/bandeau-prochain-concours.webp recadré à droite (plus d obstacle jaune, cheval plus grand) ; hype-ecran-team.js v=39 (?v=2 sur l image, texte sur 42 %).
+- Le bandeau « Prochain concours » passe tout seul au concours suivant dès que la date du précédent est passée ; même photo pour tous (affiche du concours possible plus tard).
 
 ### 11/11 23h20 — BASE — 🔒 Chevaux « privé » illisibles sans compte (temps 1 de la fermeture en base)
 - Blandine : « Ok ». Migration `chevaux_prives_invisibles_sans_compte` passée par Claude : nouvelle policy `chevaux lecture connectes` (SELECT, authenticated, true) ; supprimées `chevaux lecture` et `chevaux_lecture` (SELECT, public, true). Reste pour les visiteurs sans compte : `fiche cheval publique en lecture` (anon, visibilite <> 'prive').

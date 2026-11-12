@@ -863,7 +863,7 @@ function EcranTeamCompetition() {
   /* ── 12/11 02h24 — brief de Blandine « REFONTE DE LA SECTION AGENDA » : prochain concours à la une (bandeau photo, textes en HTML,
      traduits), puis « Agenda de l'équipe » en lignes compactes (date | nom + lieu | flèche, photo à droite si le rendez-vous en a une),
      sans répéter le concours mis à la une. Pas de concours prévu → pas de bandeau, l'agenda reste. Photo provisoire : BANDEAU_PROCHAIN. ── */
-  var BANDEAU_PROCHAIN = "images/bandeau-prochain-concours.webp";   /* 12/11 02h28 : image envoyée par Blandine (gris, noir à gauche) */
+  var BANDEAU_PROCHAIN = "images/bandeau-prochain-concours.webp?v=2";   /* 12/11 02h28 : image envoyée par Blandine (gris, noir à gauche) */
   var prochainC = (agenda || []).filter(function (ev) { return String(ev.type || "").toLowerCase() === "concours"; })[0] || null;
   var agendaSansUne = (agenda || []).filter(function (ev) { return !prochainC || ev.id !== prochainC.id; });
   function ouvrirEv(ev) { hypeOuvrirRdv(ev, setEcran, function () { setRdvOuvert(rdvOuvert === String(ev.id) ? null : String(ev.id)); }); }
@@ -871,7 +871,7 @@ function EcranTeamCompetition() {
   function moisCourt(iso) { var d = dateLoc(iso); if (!d) return ""; try { return new Intl.DateTimeFormat(LOC, { month: "short" }).format(d); } catch (e) { return ""; } }
   var uneConcours = !prochainC ? null : h("div", { key: "une", style: { position: "relative", marginTop: 22, overflow: "hidden", background: BG } },
     h("img", { src: BANDEAU_PROCHAIN, alt: "", loading: "lazy", decoding: "async", style: { display: "block", width: "100%", height: "auto" } }),
-    h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: "39%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0 9% 18px", boxSizing: "border-box" } },
+    h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineStart: 0, width: "42%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0 9% 18px", boxSizing: "border-box" } },
       h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: grandEq ? 26 : 16, color: "rgba(244,241,234,0.9)", lineHeight: 1.1 } }, T("Prochain concours", "Next competition", "Próximo concurso", "Prossimo concorso", "次の大会", "Nächstes Turnier", "المسابقة القادمة", "下一场比赛", "Volgende wedstrijd", "Próximo concurso", "Nästa tävling", "Следующие соревнования", "Następne zawody", "다음 대회")),
       h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 } },
         h("span", { style: { fontFamily: SERIF, fontSize: grandEq ? 64 : 40, fontWeight: 500, lineHeight: 0.9, color: IV } }, jourNum(prochainC.date_jour)),

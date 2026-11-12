@@ -903,6 +903,10 @@ var CSS2 = [
   ".rc-gt em{font-style:normal;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--hs-iv3)}",
   ".rc-gt.vide{display:block;color:var(--hs-iv3);font-style:italic;font-size:12px}",
   ".rc-dg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}",
+  /* 12/11 02h25 — récapitulatif D : petites cartes (photo ronde, prénom, ses chevaux + n° de tour), replié par défaut, onglets */
+  ".rc .rc-plier{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;margin-top:16px;padding:0 18px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#C9A66B;font-family:Montserrat,sans-serif;font-size:12.5px;letter-spacing:.04em;cursor:pointer}.rc .rc-plier i{font-style:normal;font-size:11px}",
+  ".rc .rc-ong{display:flex;gap:8px;margin:16px 0 4px;overflow-x:auto;scrollbar-width:none}.rc .rc-ong button{flex:0 0 auto;min-height:34px;padding:0 14px;border-radius:999px;border:1px solid rgba(243,238,228,.16);background:transparent;color:rgba(243,238,228,.75);font-family:Montserrat,sans-serif;font-size:12px;cursor:pointer}.rc .rc-ong button.on{border-color:#C9A66B;color:#F3EEE4}",
+  ".rc .rc-dg{gap:10px}.rc .rc-dc{aspect-ratio:auto;display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;border:1px solid rgba(243,238,228,.1);background:transparent}.rc .rc-dc img{position:static;width:36px;height:36px;flex:0 0 36px;border-radius:50%;opacity:1}.rc .rc-dc .voile,.rc .rc-dc .rc-dn,.rc .rc-dc .rc-dl{display:none}.rc .rc-dc .rc-dt{position:static;min-width:0;flex:1}.rc .rc-dc .rc-dt h4{font-family:Montserrat,sans-serif;font-size:13px;font-weight:500;margin:0 0 2px}.rc .rc-dc .rc-dt h4 span{display:none}.rc .rc-dc .rc-dt ol{font-size:10.5px;line-height:1.45}.rc .rc-dc .rc-dt ol em{display:none}.rc .rc-dc .sup{color:#C9A66B}",
   ".rc-dc{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/4;max-width:100%;background:#0d1214;border:1px solid rgba(243,238,228,.06)}",
   ".rc-dc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.88}",
   ".rc-dc .voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.05) 25%,rgba(7,10,8,.93) 76%)}",
@@ -4352,6 +4356,9 @@ function EcranEngagements() {
   var rtl = (lg === "ar");
   var idEv = hsIdConcours();
 
+  /* 12/11 02h25 (Blandine : « rien n'était replié », choix D + « l'onglet qui permettait de switcher du cavalier au cheval et à l'épreuve ») */
+  var _rcO = React.useState(false); var rcOuvert = _rcO[0], setRcOuvert = _rcO[1];
+  var _rcT = React.useState("cav"); var rcTab = _rcT[0], setRcTab = _rcT[1];
   var _ev = React.useState(null); var ev = _ev[0], setEv = _ev[1];
   var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
   var _ge = React.useState(null); var gestion = _ge[0], setGestion = _ge[1];
@@ -4960,6 +4967,9 @@ function EcranEngagements() {
         h("div", { className: "rc-eb" }, F("Récapitulatif")),
         h("h2", null, F("La journée en un coup d’œil")),
         h("p", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours · ") : F(" tour · ")) + nomsCh.length + (nomsCh.length > 1 ? F(" chevaux") : F(" cheval")))),
+      h("button", { type: "button", className: "rc-plier", "aria-expanded": rcOuvert, onClick: function () { setRcOuvert(!rcOuvert); } }, h("span", null, rcOuvert ? F("Replier le récapitulatif") : F("Voir le récapitulatif")), h("i", { "aria-hidden": "true" }, rcOuvert ? "▴" : "▾")),
+      rcOuvert ? h("div", { className: "rc-ong", role: "tablist" }, [["cav", F("Par cavalier")], ["ch", F("Par cheval")], ["ep", F("Par épreuve")]].map(function (o) { return h("button", { key: o[0], type: "button", role: "tab", "aria-selected": rcTab === o[0], className: rcTab === o[0] ? "on" : "", onClick: function () { setRcTab(o[0]); } }, o[1]); })) : null,
+      (rcOuvert && rcTab === "cav") ? h(React.Fragment, null,
       /* les cavalières : cartes photo deux par ligne, comme les cartes chevaux du « programme » (D) — essai demandé par Blandine
          07/11 01h32. Fond : sa photo de profil si elle en a une, sinon la photo de son premier cheval. */
       h("div", { className: "rc-t" }, h("h3", null, F("Les cavaliers")), h("span", null, cav.length + (cav.length > 1 ? F(" cavaliers · ") : F(" cavalier · ")) + nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
@@ -4975,9 +4985,9 @@ function EcranEngagements() {
           h("div", { className: "rc-dt" },
             h("h4", null, np[1] || np[0], np[1] && np[0] ? h("span", null, np[0]) : null),
             h("ol", null, tours.length ? tours.map(function (t, k) { return h("li", { key: k }, (t.c || F("cheval à choisir")), t.k ? h("span", { className: "sup" }, String(t.k)) : null, t.e ? h("em", null, " · " + t.e) : null); }) : h("li", { className: "libre" }, F("chevaux à choisir")))));
-      })),
+      }))) : null,
       /* les chevaux : cartes à faire glisser, leurs tours en cases */
-      nomsCh.length ? h(React.Fragment, null,
+      (rcOuvert && rcTab === "ch" && nomsCh.length) ? h(React.Fragment, null,
         h("div", { className: "rc-t" }, h("h3", null, F("Les chevaux")), h("span", null, libresTot + (libresTot > 1 ? F(" places libres") : F(" place libre")))),
         h("div", { className: "rc-rail", "data-hscroll": "1", "data-noswipe": "1" }, nomsCh.map(function (c) {
           var m = montes[c] || [], cases = [];
@@ -4994,6 +5004,7 @@ function EcranEngagements() {
             h("div", { className: "rc-slots" }, cases));
         }))) : null,
       /* les épreuves : le fil, par ordre de passage une fois sorti */
+      (rcOuvert && rcTab === "ep") ? h(React.Fragment, null,
       h("div", { className: "rc-t" }, h("h3", null, F("Les épreuves")), h("span", null, nbTours + (nbTours > 1 ? F(" tours") : F(" tour")))),
       /* L (choix de Blandine 07/11 01h37) : un bandeau photo par épreuve, puis la liste de départ numérotée, médaillon du cheval,
          heure à droite ; dans l'ordre de passage dès qu'il est connu (heures de Jour J), sinon dans l'ordre de la feuille. */
@@ -5028,7 +5039,7 @@ function EcranEngagements() {
                     h("button", { type: "button", className: "hs-lien", onClick: function () { setModTour(null); } }, F("Annuler")),
                     h("button", { type: "button", className: "rc-modok", onClick: validerModif }, F("Enregistrer")))) : null);
           }));
-      }));
+      })) : null);
   }
   /* ═══ 07/11/2026 23h20 — P1 + D3 (choix de Blandine) : on engage en 3 touchers, cavalier ou cavalière → cheval → épreuve,
      en tuiles photo (3 par ligne) ; la barre du bas se remplit et « Engager » s'allume. Le couple reste choisi pour le tour
