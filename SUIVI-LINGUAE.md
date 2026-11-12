@@ -20,7 +20,9 @@
 - Fautes repérées dans le français d'origine : « RENDA » (rend), « crossses », « XIX siècle » sans « e » (plusieurs), « raccourtit », « évite qu'un cheval part », « derriere », « ou l'on saute » ; « Apy, la mascotte de Hype Baby » ; 1,49 m ferré vs 1,48 m ; « pas de 80 cm » pour mesurer un parcours ; une case française contient de l'anglais (« Ten words… ») ; « la race du bétail australien » (c'est un cheval) ; « Embouchure sans mors » se contredit.
 - Termes persans à faire confirmer par Faïmé : rouan/gris (ابرش), boulet (مفصل مچ), paturon (بخلو), jarret (مفصل خرگوشی), coup de sang (گرفتگی عضلانی), barrage (جامپ‌آف), balzane, liste, cession à la jambe, haute école.
 
-**Reste** : relecture Faïmé ; fautes du français d'origine à corriger avec elle.
+- ✅ 12/11 23h35 (Blandine « Ok ») — fautes de frappe du français corrigées : RENDA→rend, crossses→cross (×2), raccourtit→raccourcit, « qu'un cheval part »→parte (×2), derriere→derrière, « ou l'on saute »→où, XVIIe/XVIIIe/XIXe/XXe siècle (×7). Traductions persanes rattachées aux textes corrigés (aucune perdue). OUBLI du 12/11 rattrapé : les ?l= des 46 lexiques (toutes les pages) augmentés de 1 pour que les téléphones reprennent les lexiques avec le persan ; cache linguae-v14.
+**Questions de fond laissées à Blandine (rien changé)** : « Apy, la mascotte de Hype Baby » (Hey Baby ? dans toutes les langues) ; 1,49 m ferré vs limite 1,48 m ; « pas de 80 cm » pour mesurer un parcours ; une case française en anglais (« Ten words… ») ; « la race du bétail australien » (stock horse = cheval) ; « Embouchure sans mors » (bride sans mors ?) ; « recède dans la main » ; poids « dans les étriers » (n° 281/284/305 des lots persans) vs règle « le poids descend dans les talons ».
+**Reste** : relecture Faïmé ; réponses de Blandine aux questions de fond ci-dessus.
 
 # 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
 
