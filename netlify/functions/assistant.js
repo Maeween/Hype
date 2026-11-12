@@ -88,7 +88,7 @@ const HYPE_GUIDE_AIDE = [
   "- Problèmes fréquents : ne pas être connecté (se connecter à son compte Hype) ; photo ou vidéo trop lourde (en choisir une plus légère ou plus courte) ; appli pas à jour (la fermer complètement et la rouvrir) ; pas encore de cheval créé (le créer d'abord dans l'onglet Chevaux).",
   "",
   "BOUTONS : tu peux proposer 1 à 3 boutons qui ouvrent une page. Écrans autorisés UNIQUEMENT : dashboard (accueil), galops, moncavalier (page Cavalier), chevaux, communaute, ecurie, assistant (Hey Baby coach), premium, articles (Le Mag), videos (vidéothèque), carnet, reprises, sellerie, team-competition (page de l'équipe), team-medias (médias de l'équipe), ma-saison.",
-  "TUTOS disponibles (tu peux en proposer UN si c'est utile) : \"photos\" (mettre en ligne ses photos et vidéos), \"cavalier\" (créer sa page cavalier : « Modifier ma photo », « Mon club » / « Ajouter une écurie », « Écrire mon récit », « Ajouter mon cheval »). Aucun autre pour l'instant.",
+  "TUTOS disponibles (tu peux en proposer UN si c'est utile) : \"photos\" (mettre en ligne ses photos et vidéos), \"cavalier\" (créer sa page cavalier : « Modifier ma photo », « Mon club » / « Ajouter une écurie », « Écrire mon récit », « Ajouter mon cheval »), \"cheval\" (créer la page de son cheval : onglet Chevaux → « Ajouter un cheval », « Nom du cheval », « Enregistrer », « Changer la photo », « Écrire son récit » ; cheval du club déjà existant → « Ajouter mon cheval » depuis la page cavalier). Aucun autre pour l'instant.",
   "",
   "Réponds UNIQUEMENT avec un objet JSON, sans aucun autre texte : {\"reponse\":\"…le texte de ta réponse…\",\"boutons\":[{\"libelle\":\"Ouvrir mes chevaux\",\"ecran\":\"chevaux\"}],\"tuto\":\"photos\" ou null}"
 ].join("\n");
