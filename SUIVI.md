@@ -12,6 +12,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 00h50 — build 20261113-0050 — IMPORT FFE : chevaux inconnus gardés, fichier .xls FFE Compet, non partants
+- Constat (fichier « Eng_Result » de Blandine, 224 engagements) : 18 places sur 48 manquaient dans Hype, TOUTES sur des chevaux sans fiche (Cabri Eole, Gamine des Bois, Bruant II, Kignonette du Chêne, Lina du Val, Mab Danhouet, Peper) — règle du 18/09 « cheval non reconnu = ligne non écrite » ; un bouton « Créer sa fiche » existait en fin d'import mais restait manuel.
+- hype-import-ffe.js v=34 :
+  - les chevaux inconnus reçoivent leur fiche AUTOMATIQUEMENT en fin d'import (une fois par import), puis l'enregistrement est rejoué ; les homonymes restent à trancher à la main ;
+  - accepte l'export « Engagements et résultats » de FFE Compet (.xls = tableau HTML) : une colonne par information (place, partants, cheval…), testé sur le fichier de Blandine : 124 lignes (48 classées, 74 non classées, 2 éliminées ; 100 non partants/forfaits écartés) ;
+  - « Non partant » n'est plus jamais importé (avant : importé s'il portait un quart).
+- Base : 3 lignes « Non partant » de Blandine supprimées (11/09/2020 La Carrière de la Vallée, 22/10/2021 Liverdy ×2) ; 2 victoires remises sur sa page (Liverdy 1er/17 et 1er/5, masque_cavaliere = false).
+- hype-ecran-perf-cheval.js v=21 : les lignes sans place sont des « Non classé » FFE (parcours couru) : elles comptent comme épreuves et s'affichent « Non classé » (correction de l'exclusion du build 0040).
+
 ### 13/11 00h35 — build 20261113-0040 (0035 déjà pris par la page Aide) — Performances du cavalier : tes résultats, beaux moments, chevaux en C
 - hype-ecran-perf-cheval.js v=20 :
   - un engagement sans résultat (classement vide : pas parti) ne compte plus nulle part (pourcentage de concours compris) ;

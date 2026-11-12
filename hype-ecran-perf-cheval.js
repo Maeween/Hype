@@ -765,7 +765,7 @@ function estClasseQ(f) {
       st.podiums + " " + (st.podiums > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podien", "منصات", "领奖台", "podiumplaatsen", "pódios", "prispallsplaceringar", "пьедесталов", "podia", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podium", "منصة", "领奖台", "podium", "pódio", "prispallsplacering", "пьедестал", "podium", "시상대", "سکو")),
       st.classes + " " + (st.classes > 1 ? T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "获得名次", "geplaatst", "classificados", "placerade", "призовых мест", "w czołówce", "입상", "رتبه‌دار") : T("classé", "placing", "clasificado", "piazzamento", "入賞", "Platzierung", "تصنيف", "获得名次", "geplaatst", "classificação", "placering", "призёр", "miejsce w klasyfikacji", "입상", "رتبه‌دار"))];
     /* 12/11 16h30 (page du cavalier) : « classés » = premier quart, comme « Ses chiffres » ; jamais de « 0 victoire » ni « 0 podium » */
-    if (modeCav) { var nQs = sx.lignes.filter(estClasseQ).length; resume[3] = resume[3].replace(/^\d+/, String(nQs)); var nEpS = sx.lignes.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length; resume[0] = nEpS + " " + (nEpS > 1 ? T("épreuves", "classes", "pruebas", "prove", "競技", "Prüfungen", "مسابقات", "场比赛", "proeven", "provas", "klasser", "стартов", "konkursów", "경기") : T("épreuve", "class", "prueba", "prova", "競技", "Prüfung", "مسابقة", "场比赛", "proef", "prova", "klass", "старт", "konkurs", "경기")); resume = resume.filter(function (x) { return !/^0 /.test(x); }); }
+    if (modeCav) { var nQs = sx.lignes.filter(estClasseQ).length; resume[3] = resume[3].replace(/^\d+/, String(nQs)); var nEpS = sx.lignes.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom); }).length; resume[0] = nEpS + " " + (nEpS > 1 ? T("épreuves", "classes", "pruebas", "prove", "競技", "Prüfungen", "مسابقات", "场比赛", "proeven", "provas", "klasser", "стартов", "konkursów", "경기") : T("épreuve", "class", "prueba", "prova", "競技", "Prüfung", "مسابقة", "场比赛", "proef", "prova", "klass", "старт", "konkurs", "경기")); resume = resume.filter(function (x) { return !/^0 /.test(x); }); }
     if (st.elAb) resume.push(st.elAb + " " + T("élim. / ab.", "elim. / ret.", "elim. / ab.", "elim. / rit.", "失権/棄権", "Ausg./Aufg.", "استبعاد/انسحاب", "淘汰 / 弃权", "uitgesch. / opg.", "elim. / desist.", "utsl. / avbr.", "выб. / снят.", "wyc. / rez.", "탈락 / 기권", "حذف / انصراف"));
     return h("div", { key: "sa" + sx.cle, id: "perf-saison-" + sx.cle, "data-perf-saison": sx.cle, style: { margin: "0 18px 12px", padding: "14px 14px", scrollMarginTop: 16, borderRadius: 16, background: "linear-gradient(165deg, " + PETROLE2 + " 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid " + (ouverte ? "rgba(201,166,107,0.55)" : FILET) } },
       h("button", { type: "button", "aria-expanded": ouverte ? "true" : "false", onClick: function () { basculerSaison(sx.cle); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: 0, textAlign: "start", color: IVOIRE, cursor: "pointer", fontFamily: SANS } },
@@ -802,7 +802,7 @@ function estClasseQ(f) {
   var chapitres = null;
   if (modeCav && base.length) {
     var nbClassesQ = base.filter(estClasseQ).length;   /* 14h19 : « classé » = dans le quart (comme le filtre Classés) */
-    var nbEpreuves = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length;   /* toutes les épreuves courues, éliminations et abandons compris */
+    var nbEpreuves = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom); }).length;   /* toutes les épreuves courues, éliminations et abandons compris */
     var pctCl = nbEpreuves ? Math.round(nbClassesQ / nbEpreuves * 100) : 0;
     var lgCour = base.filter(function (f) { return f.saison === saisonCour; });
     var famPts = {}, famOrdre = [];
@@ -912,7 +912,7 @@ function estClasseQ(f) {
     var tuiles = [];
     /* 12/11 16h30 (Blandine : « des chiffres depuis le début, d autres sur la saison… pas clair ») : tout est compté en ÉPREUVES,
        sur toute sa carrière ; plus de « sorties » (journées, une autre unité) ni de « sans faute » (la mention manque dans la plupart des imports FFE) */
-    var nbEp2 = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length;
+    var nbEp2 = base.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom); }).length;
     if (nbEp2) tuiles.push([String(nbEp2), pl2(nbEp2, T("épreuve courue", "class ridden", "prueba disputada", "prova disputata", "出場競技", "Prüfung geritten", "مسابقة", "场比赛", "proef gereden", "prova disputada", "klass riden", "старт", "konkurs", "경기 출전"), T("épreuves courues", "classes ridden", "pruebas disputadas", "prove disputate", "出場競技", "Prüfungen geritten", "مسابقات", "场比赛", "proeven gereden", "provas disputadas", "klasser ridna", "стартов", "konkursów", "경기 출전"))]);
     if (stats.victoires) tuiles.push([String(stats.victoires), pl2(stats.victoires, T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승"), T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승")), 1]);
     if (stats.podiums) tuiles.push([String(stats.podiums), pl2(stats.podiums, T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대"), T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podia", "시상대")), 1]);
@@ -920,7 +920,7 @@ function estClasseQ(f) {
     /* (sans faute retiré le 12/11 16h30) */
     /* 12/11 18h35 (Blandine : « classement par concours, c'est plus sympa ») : le pourcentage se compte par CONCOURS (journée) :
        classé au moins une fois (premier quart) ce jour-là ; affiché seulement s il n est pas à zéro */
-    var jrs2 = {}; base.forEach(function (f) { if (f.d && (f.pl != null || f.statut === "el" || f.statut === "ab")) {   /* 13/11 : un engagement sans résultat (pas parti) ne compte pas */ if (!jrs2[f.d]) jrs2[f.d] = false; if (estClasseQ(f)) jrs2[f.d] = true; } });
+    var jrs2 = {}; base.forEach(function (f) { if (f.d) {   /* 13/11 : les lignes sans place sont des « Non classé » FFE (parcours couru) ; les non partants ne sont jamais importés */ if (!jrs2[f.d]) jrs2[f.d] = false; if (estClasseQ(f)) jrs2[f.d] = true; } });
     var nJ2 = Object.keys(jrs2).length, nJQ2 = Object.keys(jrs2).filter(function (k) { return jrs2[k]; }).length;
     if (nJ2 && nJQ2) tuiles.push([Math.round(100 * nJQ2 / nJ2) + " %", T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞：", "platziert bei ", "مصنف في ", "获得名次：", "geplaatst op ", "classificado em ", "placerad på ", "в призах: ", "w czołówce: ", "입상: ") + nJQ2 + " " + T("concours sur", "shows out of", "concursos de", "concorsi su", "大会 /", "Turnieren von", "مسابقة من", "场比赛，共", "wedstrijden van", "concursos em", "tävlingar av", "соревнований из", "zawodach z", "대회 /") + " " + nJ2]);
     /* jamais de ligne à moitié vide : 6 colonnes, chaque ligne remplie */
@@ -1018,7 +1018,7 @@ function estClasseQ(f) {
     var partie = function (k, kick, titre) { nPart++; return h("div", { key: k, style: { padding: "30px 22px 0" } },
       h("div", { style: { fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, nPart + " · " + kick),
       h("div", { style: { fontFamily: SERIF, fontSize: 34, lineHeight: 1.08, marginTop: 6, color: IVOIRE } }, titre)); };
-    var nbEpDe = function (ls) { return ls.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; }).length; };
+    var nbEpDe = function (ls) { return ls.filter(function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom); }).length; };
     var L_EP = function (n) { return n > 1 ? T("épreuves", "classes", "pruebas", "prove", "競技", "Prüfungen", "مسابقات", "场比赛", "proeven", "provas", "klasser", "стартов", "konkursów", "경기", "مسابقه") : T("épreuve", "class", "prueba", "prova", "競技", "Prüfung", "مسابقة", "场比赛", "proef", "prova", "klass", "старт", "konkurs", "경기", "مسابقه"); };
     var L_V = function (n) { return n > 1 ? T("victoires", "wins", "victorias", "vittorie", "勝", "Siege", "انتصارات", "次冠军", "overwinningen", "vitórias", "segrar", "побед", "zwycięstw", "승", "پیروزی") : T("victoire", "win", "victoria", "vittoria", "勝", "Sieg", "انتصار", "次冠军", "overwinning", "vitória", "seger", "победа", "zwycięstwo", "승", "پیروزی"); };
     var L_P = function (n) { return n > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podiów", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대", "سکو"); };
@@ -1032,7 +1032,7 @@ function estClasseQ(f) {
     var parCheval = function (nm) { var r = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === nm)) r = { id: k, c: c }; }); } catch (eP) { } return r; };
     var ouvrirFiche = function (id) { try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); };
     var meilleur = function (ls) { var pl = ls.filter(function (f) { return f.pl != null && visL(f) && estClasseQ(f); });   /* seulement un vrai classement */ if (!pl.length) return null; return pl.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || String(b.d || "").localeCompare(String(a.d || "")); })[0]; };
-    var resTxt = function (f) { return f.pl != null ? rangTxt(f.pl) : (f.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "استبعاد", "淘汰", "Uitg.", "Elim.", "Utsl.", "Искл.", "Wyel.", "실격", "حذف") : T("Ab.", "Ret.", "Ab.", "Rit.", "棄権", "Aufg.", "انسحاب", "弃权", "Opg.", "Desist.", "Bröt", "Сход", "Rez.", "기권", "انصراف")); };
+    var resTxt = function (f) { return f.pl != null ? rangTxt(f.pl) : (f.statut === "" ? T("Non classé", "Not placed") : f.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "استبعاد", "淘汰", "Uitg.", "Elim.", "Utsl.", "Искл.", "Wyel.", "실격", "حذف") : T("Ab.", "Ret.", "Ab.", "Rit.", "棄権", "Aufg.", "انسحاب", "弃权", "Opg.", "Desist.", "Bröt", "Сход", "Rez.", "기권", "انصراف")); };
     var SUR = function () { return T("sur", "of", "de", "su", "/", "von", "من", "/", "van", "de", "av", "из", "z", "중", "از"); };
     var TROPH = function () { return h("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4" })); };
     var ETOI = function () { return h("svg", { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" })); };
@@ -1051,7 +1051,7 @@ function estClasseQ(f) {
     var g = [];
 
     /* 1 · En bref */
-    var jrs = {}; base.forEach(function (f) { if (f.d && (f.pl != null || f.statut === "el" || f.statut === "ab")) {   /* 13/11 : un engagement sans résultat (pas parti) ne compte pas */ if (!jrs[f.d]) jrs[f.d] = false; if (estClasseQ(f)) jrs[f.d] = true; } });
+    var jrs = {}; base.forEach(function (f) { if (f.d) {   /* 13/11 : les lignes sans place sont des « Non classé » FFE (parcours couru) ; les non partants ne sont jamais importés */ if (!jrs[f.d]) jrs[f.d] = false; if (estClasseQ(f)) jrs[f.d] = true; } });
     var nJ = Object.keys(jrs).length, nJQ = Object.keys(jrs).filter(function (k) { return jrs[k]; }).length;
     var nEp = nbEpDe(base), nQ = base.filter(estClasseQ).length;
     var its = [];
@@ -1076,7 +1076,7 @@ function estClasseQ(f) {
       if (!detOuv) return null;
       var court = function (ls) { return ls.slice().sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")) || ((a.pl || 99) - (b.pl || 99)); }); };
       var expl = null, titre = "", lignesD = [], nbCaches = 0;
-      var avecRes = function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab"; };
+      var avecRes = function (f) { return f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom); };
       var EXPL_Q = T("✓ = classé : dans le premier quart des partants (en préparatoire, seulement la 1re place).", "✓ = placed: in the top quarter of starters (in preparatory classes, 1st place only).");
       var propre = function (x) { var n = concoursC({ nom: x }); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|D’|D') ?/g, function (m) { return m.toLowerCase(); }); return n; };
       if (detOuv === "pct") {
@@ -1225,7 +1225,7 @@ function estClasseQ(f) {
     }
 
     /* 3 · Récent */
-    var recents = tous.filter(function (f) { return visL(f) && f.d && (f.pl != null || f.statut === "el" || f.statut === "ab"); }).slice().sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); }).slice(0, 3);
+    var recents = tous.filter(function (f) { return visL(f) && f.d && (f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom)); }).slice().sort(function (a, b) { return String(b.d).localeCompare(String(a.d)); }).slice(0, 3);
     if (recents.length) {
       g.push(sepA2("s3")); g.push(partie("p3", T("Récent", "Recent", "Reciente", "Recenti", "最近", "Zuletzt", "الأحدث", "最近", "Recent", "Recente", "Senaste", "Недавно", "Ostatnio", "최근", "اخیر"), (MOI ? T("Tes derniers concours", "Your latest shows") : T("Ses derniers concours", "Latest shows", "Sus últimos concursos", "Gli ultimi concorsi", "最近の大会", "Die letzten Turniere", "آخر مسابقاته", "最近的赛事", "Laatste wedstrijden", "Últimos concursos", "Senaste tävlingarna", "Последние турниры", "Ostatnie zawody", "최근 대회", "آخرین مسابقه‌هایش"))));
       g.push(h("div", { key: "p3c", style: { padding: "16px 22px 0" } }, recents.map(function (f, i) {

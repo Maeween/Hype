@@ -52,6 +52,12 @@
      Chaque fragment porte ses coordonnées. On les range par ligne
      (même hauteur à 2,5 points près), puis de gauche à droite.        */
   function texteDuPdf(fichier) {
+    /* 13/11 (Blandine : son fichier FFE Compet « Eng_Result_….xls » n'était même pas proposé) : l'export « Engagements et
+       résultats » de FFE Compet est une page HTML nommée .xls. On le lit tel quel, sans PDF.js. */
+    var nomF = String((fichier && fichier.name) || "").toLowerCase();
+    if (/\.(xls|html?)$/.test(nomF) || /html|excel/.test(String((fichier && fichier.type) || ""))) {
+      return fichier.text().then(function (t) { return "__HYPE_XLS__" + t; });
+    }
     return chargerPdfJs().then(function (pdfjsLib) {
       return fichier.arrayBuffer();
     }).then(function (buf) {
@@ -568,7 +574,7 @@
       var mP = clst.match(/^(\d+)\s*(?:er|e|ère)?\s*\/\s*(\d+)/i);
       if (mP) c = { statut: "classe", place: nb(mP[1]), partants: nb(mP[2]), mention: "" };
       else if (/^Non\s*class/i.test(clst)) c = { statut: "hors_classement" };
-      else if (/^Non\s*part/i.test(clst)) c = q ? { statut: "hors_classement" } : { statut: "non_partant" };
+      else if (/^Non\s*part/i.test(clst)) c = { statut: "non_partant" };   /* 13/11 (Blandine : « non partant… la personne n'a pas pris le départ ») : jamais importé, même avec un quart */
       else if (/^Forfait/i.test(clst)) c = { statut: "non_partant" };
       else c = lireClassement(clst);
       var r = {
@@ -595,7 +601,48 @@
     return { lignes: sorties, alertes: alertes, format: "ffecompet", blocs: blocs.length };
   }
 
+  /* 13/11 — export « Engagements et résultats » de FFE Compet (.xls = tableau HTML) : une colonne par information
+     (Date, Concours, Lieu, Discipline, N° épreuve, Épreuve, Barème, Cheval / Poney, N° départ, Nbr engagés, Place,
+     Nbr partants, Cause, Gains, Mnt eng). Mêmes règles que le PDF FFE Compet : non partants et forfaits ne sont pas
+     importés ; « Non classé » est un parcours couru sans place ; quart calculé quand la FFE n'en donne pas. */
+  function lireXlsCompet(html) {
+    var dec = function (x) { var d = document.createElement("textarea"); d.innerHTML = String(x || "").replace(/<[^>]+>/g, " "); return d.value.replace(/\s+/g, " ").trim(); };
+    var lignesT = [], mTr, reTr = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+    while ((mTr = reTr.exec(html))) { var cel = [], mTd, reTd = /<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/gi; while ((mTd = reTd.exec(mTr[1]))) cel.push(dec(mTd[1])); lignesT.push(cel); }
+    var cav = "";
+    lignesT.some(function (c) { var m = /r[ée]sultats pour\s+(.+)$/i.exec(c[0] || ""); if (m) { cav = m[1].trim().toUpperCase(); return true; } return false; });
+    var iT = -1; lignesT.some(function (c, i) { if (c.indexOf("Date") === 0 && c.indexOf("Place") !== -1) { iT = i; return true; } return false; });
+    if (iT < 0) return { lignes: [], alertes: [], format: "ffecompet" };
+    var tete = lignesT[iT], col = function (n) { return tete.indexOf(n); };
+    var cD = col("Date"), cL = col("Lieu"), cDi = col("Discipline"), cN = col("N\u00b0 \u00e9preuve"), cE = col("\u00c9preuve"), cC = col("Cheval / Poney"), cP = col("Place"), cPa = col("Nbr partants");
+    var sorties = [], alertes = [];
+    lignesT.slice(iT + 1).forEach(function (c, rang) {
+      if (c.length < tete.length - 2) return;
+      var plT = String(c[cP] || "").trim(), pa = nb(c[cPa]), c2;
+      if (/^\d+$/.test(plT)) c2 = { statut: "classe", place: nb(plT), partants: pa };
+      else if (/^Non\s*class/i.test(plT)) c2 = { statut: "hors_classement", partants: pa };
+      else if (/^(Non\s*part|Forfait)/i.test(plT)) c2 = { statut: "non_partant" };
+      else if (/^[ÉE]limin|^El/i.test(plT)) c2 = { statut: "elimine", partants: pa };
+      else if (/^Ab/i.test(plT)) c2 = { statut: "abandon", partants: pa };
+      else if (/annul/i.test(plT)) c2 = { statut: "annulee" };
+      else c2 = { statut: "illisible", brut: plT };
+      if (c2.statut === "non_partant" || c2.statut === "annulee") return;
+      var ep = String(c[cE] || "").replace(/^\$\s*/, "").replace(/^CSO\s*-?\s*/i, "").trim();
+      var disc = String(c[cDi] || "").trim(); if (disc && disc !== "SO" && ep) ep = disc + " " + ep;
+      var r = { rang: rang + 1, date: lireDate(c[cD]), epreuve: ep, concours: String(c[cL] || "").trim(), numero_epreuve: String(c[cN] || "").trim(),
+        cheval_pdf: String(c[cC] || "").replace(/\s+/g, " ").trim(), cavalier: cav,
+        place: c2.place || null, partants: c2.partants || null, quart: null, statut: c2.statut, mention: "", points: null, garder: c2.statut === "classe" };
+      if (c2.statut === "illisible") { r.doute = "classement illisible : « " + c2.brut + " »"; r.garder = false; }
+      if (!r.date) { r.doute = "date absente"; r.garder = false; }
+      var att = quartAttendu(r.place, r.partants); if (att && c2.statut === "classe") { r.quart = att; r.quart_calcule = true; }
+      if (r.doute) alertes.push(r);
+      sorties.push(r);
+    });
+    return { lignes: sorties, alertes: alertes, format: "ffecompet" };
+  }
+
   function lire(texte) {
+    if (String(texte || "").indexOf("__HYPE_XLS__") === 0) return lireXlsCompet(String(texte).slice(12));
     if (estResultatsDetailles(texte)) return lireSIF(texte);
     if (estFFECompet(texte)) return lireCompet(texte);
     var sorties = [], alertes = [];
@@ -906,7 +953,7 @@
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
       '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs PDF' : 'Choisir un PDF') + '</b>' +
       '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Une fiche FFE par cheval : tu peux en choisir plusieurs d\'un coup' : 'Depuis Fichiers, sur ton téléphone') + '</span>' +
-      '<input type="file" accept="application/pdf,.pdf" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
+      '<input type="file" accept="application/pdf,.pdf,.xls,.html,.htm,application/vnd.ms-excel,text/html" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
       '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
       '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
@@ -1517,6 +1564,21 @@
         E.doublons = 0; E.completes = 0; E.refusees = 0;
       }
       if (E.relance) { E.enregistres = (E.enregistres || 0) + (E.avantEnreg || 0); E.doublons = E.avantDoublons || 0; E.relance = false; E.avantEnreg = 0; E.avantDoublons = 0; }   /* 07/10 (695) : le total reste cumule apres la creation d une fiche */
+      /* 13/11 (Blandine : « on avait dit qu'on créait des fiches pour les chevaux qui n'étaient pas déjà dans la base…
+         tu les gardes ») : les chevaux inconnus du fichier reçoivent leur fiche AUTOMATIQUEMENT (une seule fois par import),
+         puis l'enregistrement est rejoué — les lignes déjà écrites sont reconnues comme doublons. Les homonymes restent à part. */
+      var aCreer = (E.peutCreer && E.inconnus && !E.autoCree) ? Object.keys(E.inconnus).filter(function (k) { return k && k !== "?"; }) : [];
+      if (aCreer.length) {
+        E.autoCree = true; E.creees = []; E.occupe = true; E.creation = "auto"; refaire();
+        var joliN = function (k) { return String(k).toLowerCase().replace(/(^|[\s\-'])([a-z\u00e0-\u00ff])/g, function (m0, a0, b0) { return a0 + b0.toUpperCase(); }); };
+        aCreer.reduce(function (ch, k) { return ch.then(function () { return Promise.resolve(options.onCreerCheval(joliN(k))).then(function (rC) { if (rC && !rC.error) E.creees.push(joliN(k)); }).catch(function () { }); }); }, Promise.resolve())
+          .then(function () {
+            E.creation = null; E.occupe = false;
+            E.avantEnreg = E.enregistres || 0; E.avantDoublons = E.doublons || 0; E.relance = true;
+            enregistrer(hote, options, refaire);
+          });
+        return;
+      }
       E.envoyees = aGarder.length;
       E.originesInfo = (rep && typeof rep === "object" && rep.origines) ? rep.origines : null; /* 26/08 */
       E.etape = "fin"; refaire();
