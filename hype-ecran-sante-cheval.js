@@ -77,7 +77,7 @@ function EcranSanteCheval() {
             h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: TQ, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
               h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }))),
           h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 20, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.2 } },
-            T("Réservé", "Private", "Reservado", "Riservato", "非公開", "Vertraulich", "محجوز", "仅限授权", "Afgeschermd", "Reservado", "Privat", "Закрыто", "Zastrzeżone", "비공개", "Private")),
+            T("Réservé", "Private", "Reservado", "Riservato", "非公開", "Vertraulich", "محجوز", "仅限授权", "Afgeschermd", "Reservado", "Privat", "Закрыто", "Zastrzeżone", "비공개", "محدود")),
           h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(243,238,228,0.7)", marginTop: 6, lineHeight: 1.5 } },
             T("Vaccins, soins et documents sont visibles par le propriétaire du cheval et la responsable de son écurie.",
               "Vaccines, care and documents are visible to the horse's owner and the manager of its stable.",
@@ -93,7 +93,7 @@ function EcranSanteCheval() {
               "Прививки, уход и документы видят только владелец лошади и руководитель её конюшни.",
               "Szczepienia, zabiegi i dokumenty widzą tylko właściciel konia i kierownik jego stajni.",
               "백신, 관리 기록과 서류는 말의 주인과 마구간 책임자만 볼 수 있어요.",
-              "Vaccines, care and documents are visible to the horse's owner and the manager of its stable.")))));
+              "واکسن‌ها، مراقبت‌ها و مدارک برای مالک اسب و مسئول اصطبلش قابل مشاهده است.")))));
   }
   var stHo = React.useState(null); var epingleVue = stHo[0], setEpingleVue = stHo[1];
 
