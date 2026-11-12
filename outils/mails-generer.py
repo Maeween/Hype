@@ -80,11 +80,27 @@ FONCTIONS = {"fr": ["Ce qui t’attend sur Hype", [
  ("📄", "Pensions et contrats", "Les paiements à encaisser et les contrats à renouveler, sans tableau à tenir à côté.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
  ("💶", "Compta et demandes d’aides", "Ta compta préparée pour ton comptable, et Hey Baby pour t’aider à trouver les aides possibles et à monter tes dossiers de demande.", "https://2hype.fr/fr/logiciel-gestion-ecurie/"),
 ]]}
+# 12/11 « Traduis » : les 13 autres langues (outils/mails-fonctions-langues.py) ; mêmes icônes, liens vers la page de la langue.
+_ns = {}; exec(open(os.path.join(ICI, "mails-fonctions-langues.py"), encoding="utf-8").read(), _ns)
+def _url(u, lg):
+    if "/fr/centres-equestres/" in u: return u.replace("/fr/centres-equestres/", "/%s/gestion-ecurie/" % lg)   # pas de page centres équestres hors français
+    return u.replace("/fr/", "/%s/" % lg)
+for _lg, _t in _ns["T"].items():
+    _fr = FONCTIONS["fr"]
+    assert len(_t[1]) == len(_fr[1]) and len(_t[4]) == len(_fr[4]), _lg
+    FONCTIONS[_lg] = [_t[0], [(a[0], b[0], b[1], _url(a[3], _lg)) for a, b in zip(_fr[1], _t[1])], _t[2], _t[3],
+                      [(a[0], b[0], b[1], _url(a[3], _lg)) for a, b in zip(_fr[4], _t[4])]]
+assert sorted(FONCTIONS) == sorted(LANGUES)
+def bloc_fonctions_modele(serif, sans):
+    """Modèle Supabase : un bloc par langue, choisi par $l (français par défaut)."""
+    def b(l): return bloc_fonctions(l, "right" if l == "ar" else "left", "rtl" if l == "ar" else "ltr", serif, sans)
+    autres = [l for l in LANGUES if l != "fr"]
+    return "".join([('{{ if eq $l "%s" }}' if n == 0 else '{{ else if eq $l "%s" }}') % l + b(l) for n, l in enumerate(autres)]) + "{{ else }}" + b("fr") + "{{ end }}"
 def bloc_fonctions(lg, alignv, dirv, serif, sans):
     F = FONCTIONS.get(lg or "fr", FONCTIONS["fr"])
     def liste(items): return "".join(f'''<tr><td style="padding:12px 0;border-top:1px solid #1C2A2C;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="{dirv}"><tr>
 <td width="40" valign="top" style="font-size:22px;line-height:1.2;">{ico}</td>
-<td valign="top" style="text-align:{alignv};"><a href="{url}" style="font-family:{sans};font-size:15px;font-weight:600;color:#F3EEE4;text-decoration:none;">{e(t)} <span style="color:#C9A66B;">&#8250;</span></a><div style="padding:3px 0 0;font-family:{sans};font-size:13.5px;line-height:1.5;color:#A7AFA9;">{e(d)}</div></td>
+<td valign="top" style="text-align:{alignv};"><a href="{url}" style="font-family:{sans};font-size:15px;font-weight:600;color:#F3EEE4;text-decoration:none;">{e(t)} <span style="color:#C9A66B;">{"&#8249;" if dirv == "rtl" else "&#8250;"}</span></a><div style="padding:3px 0 0;font-family:{sans};font-size:13.5px;line-height:1.5;color:#A7AFA9;">{e(d)}</div></td>
 </tr></table></td></tr>''' for ico, t, d, url in items)
     lignes = liste(F[1])
     pro = f'''<tr><td style="padding:30px 0 12px;text-align:{alignv};font-family:{serif};font-style:italic;font-size:22px;color:#C9A66B;">{e(F[3])}</td></tr>
@@ -133,7 +149,7 @@ def corps(textes, champ, lg=None):
 </td></tr></table></td></tr>
 <tr><td style="padding:22px 32px 0;text-align:{alignv};font-family:{sans};font-size:12.5px;line-height:1.6;color:#8E978F;">{T("petit")}</td></tr>
 <tr><td style="padding:14px 32px 0;text-align:{alignv};font-family:{sans};font-size:11.5px;line-height:1.5;color:#6F7872;">{lien_txt}<br><a href="{url}" style="color:#C9A66B;word-break:break-all;">{url}</a></td></tr>
-{bloc_fonctions(lg, alignv, dirv, serif, sans) if champ == 'confirmation' else ''}
+{(bloc_fonctions(lg, alignv, dirv, serif, sans) if lg else bloc_fonctions_modele(serif, sans)) if champ == 'confirmation' else ''}
 <tr><td style="padding:26px 32px 30px;text-align:{alignv};font-family:{serif};font-size:17px;color:#F3EEE4;">{T("signe")}<br><a href="https://2hype.fr" style="font-family:{sans};font-size:12px;letter-spacing:2px;color:#C9A66B;text-decoration:none;">2HYPE.FR</a></td></tr>
 </table></td></tr></table>
 </body></html>
