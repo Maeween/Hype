@@ -23,8 +23,10 @@ function EcranPerformancesCheval(props) {
   var idSt = React.useState(function () {
     try { if (typeof window !== "undefined" && window.__chevalOuvert) return String(window.__chevalOuvert); } catch (eW) { }
     try { var hs = (typeof location !== "undefined" && location.hash) || ""; var m = hs.match(/perf-([\w-]+)/); if (m && m[1]) return m[1]; } catch (eH) { }
+    try { var dern = sessionStorage.getItem("hype_perf_cheval"); if (dern) return dern; } catch (eS) { }   /* 12/11 18h40 (Blandine : « Cheval introuvable » sur Rizotto) : repli sur le dernier cheval ouvert ici */
     return "";
   });
+  try { if (id) sessionStorage.setItem("hype_perf_cheval", String(id)); } catch (eSs) { }
   var id = idSt[0];
   var etSt = React.useState({ charge: false, cheval: null, erreur: null }); var etat = etSt[0], setEtat = etSt[1];
   React.useEffect(function () {
@@ -280,7 +282,7 @@ function EcranPerformancesCheval(props) {
       annonce(T("Résultat retiré.", "Result removed.", "Resultado eliminado.", "Risultato rimosso.", "結果を削除しました。", "Ergebnis entfernt.", "تمت إزالة النتيجة.", "成绩已移除。", "Resultaat verwijderd.", "Resultado removido.", "Resultatet har tagits bort.", "Результат удалён.", "Wynik usunięty.", "결과를 삭제했어요.", "نتیجه برداشته شد."));
     } catch (eS) { annonce(T("Suppression impossible.", "Could not delete.", "No se pudo eliminar.", "Eliminazione impossibile.", "削除できません。", "Löschen nicht möglich.", "تعذر الحذف.", "无法删除。", "Verwijderen niet mogelijk.", "Não foi possível excluir.", "Det gick inte att ta bort.", "Не удалось удалить.", "Nie udało się usunąć.", "삭제할 수 없어요.", "حذف ممکن نیست.")); }
   }
-  function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } if (modeCav) { setEcran("dashboard"); return; } /* (g9) */ try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }
+  function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } if (modeCav) { setEcran("dashboard"); return; } /* (g9) */ if (!id) { setEcran("chevaux"); return; } /* 12/11 : sans cheval, la fiche serait vide aussi */ try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }
   function ouvrirImport() {
     if (!peutImporter) return;
     if (modeCav) { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.HYPE_IMPORT_RETOUR = "performances-cavalier"; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); return; }   /* (g9) import a son nom, comme l ancienne page cavaliere */
