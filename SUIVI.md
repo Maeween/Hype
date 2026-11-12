@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h25 — build 20261113-0125 — Import : l'écran annonce le fichier .xls
+- hype-import-ffe.js v=36 : bouton « Choisir un fichier » (avant « Choisir un PDF ») + « PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet ». Sert aussi de repère : si l'écran dit encore « Choisir un PDF », le téléphone a l'ancienne version. Blandine ne retrouve pas son .xls dans le sélecteur (ni dans Téléchargements) — à suivre ; elle veut que l'OUTIL sache le faire, pas un import à la main.
+
 ### 13/11 01h20 — build 20261113-0120 — Performances du cavalier : archives en couvertures de saison, tout resserré
 - hype-ecran-perf-cheval.js v=24 :
   - « Tous tes résultats » = version I validée (« c'est déjà vachement plus sympa… ok ») : un bandeau par saison (année, chiffres, cheval principal en fondu, alterné gauche/droite, courbe dorée entre deux saisons) ; on touche pour ouvrir la liste de la saison ; points de qualification seulement pour la saison en cours ; l'ancien tableau des saisons n'est plus affiché ;

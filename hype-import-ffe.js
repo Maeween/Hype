@@ -951,8 +951,8 @@
       (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Rattach\u00e9 \u00e0 : <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
-      '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs PDF' : 'Choisir un PDF') + '</b>' +
-      '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Une fiche FFE par cheval : tu peux en choisir plusieurs d\'un coup' : 'Depuis Fichiers, sur ton téléphone') + '</span>' +
+      '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs fichiers' : 'Choisir un fichier') + '</b>' +
+      '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet' : 'PDF FFE, ou le fichier « Eng_Result… .xls » de FFE Compet (tout ton palmarès d\'un coup)') + '</span>' +
       '<input type="file" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
       '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
