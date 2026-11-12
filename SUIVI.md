@@ -12,7 +12,7 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
-### 13/11 00h35 — build 20261113-0035 — Performances du cavalier : tes résultats, beaux moments, chevaux en C
+### 13/11 00h35 — build 20261113-0040 (0035 déjà pris par la page Aide) — Performances du cavalier : tes résultats, beaux moments, chevaux en C
 - hype-ecran-perf-cheval.js v=20 :
   - un engagement sans résultat (classement vide : pas parti) ne compte plus nulle part (pourcentage de concours compris) ;
   - sur sa propre page, la propriétaire peut afficher ses lignes masquées (avant : bouton absent sur la page du cavalier) ;
