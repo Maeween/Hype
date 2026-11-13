@@ -76,7 +76,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
      Le REGISTRE IMPRIMÉ reste en français (document officiel montré à la DDPP / l'IFCE) : il utilise hF.
      Clés du dictionnaire : le texte français exact, ou un modèle avec {n} (nombre) et {x} (texte, lui-même traduit
      s'il est connu). */
-  var I18N_V = 16;   /* 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
+  var I18N_V = 17;   /* 13/11 : + encart « Ce que dit la règle » ; 12/11 : + persan (i18n/gestion-fa.json) ; 12/11 soir : + coffre-fort */
   var LG = "fr", DICO = {}, MODELES = {}, CHARGE = {};
   var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar", zh: "zh-CN", nl: "nl-NL", pt: "pt-PT", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL", ko: "ko-KR", fa: "fa-IR-u-ca-gregory" };
   function locale() { return LOCALES[LG] || "fr-FR"; }
@@ -170,6 +170,23 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         h("span", { className: "hv3-meta" }, o.pill ? h("i", { className: "hv3-pill" }, o.pill) : null, o.qui ? h("span", { className: "hv3-qui" }, o.qui) : null),
         o.etat ? h("span", { className: "hv3-prog" }, h("span", { style: { flex: 1 } }), h("span", { className: "hv3-etat" + (o.alerte ? " or" : "") }, o.etat)) : null));
   }
+  /* 13/11 22h24 (Blandine : « remettre toutes ces précisions-là… que l'outil était optionnel là-bas, tu peux mettre les documents,
+     les manquements peuvent entraîner des sanctions… en cas de contrôle ») : ce que dit la règle, sources IFCE (guide détenteur,
+     fiche « registre des mouvements », point contrôles 2017). */
+  var REGLE_REGISTRE = function (h) {
+    var li = function (t) { return h("li", { style: { margin: "0 0 7px" } }, t); };
+    /* styles en ligne : la classe hg-encart n'est injectée que sur les pages à formulaire */
+    return h("div", { style: { marginTop: 28, border: "1px solid rgba(201,166,107,.4)", borderRadius: 14, padding: "14px 14px 12px", background: "linear-gradient(135deg,rgba(201,166,107,.08),rgba(7,10,8,0) 70%)", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, lineHeight: 1.5, color: "rgba(243,238,228,.8)" } },
+      h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 21, color: "#F3EEE4", marginBottom: 6 } }, "Ce que dit la règle"),
+      h("ul", { style: { margin: "6px 0 0", paddingInlineStart: 16 } },
+        li("Tout détenteur de chevaux doit tenir un registre d'élevage, quel que soit le nombre de chevaux et leur utilisation."),
+        li("Chaque arrivée et chaque départ y est noté : la date, d'où vient le cheval ou où il va, et le motif."),
+        li("Il peut être tenu sur papier ou sur informatique : celui de Hype compte, à condition d'être à jour. Garde-le au moins cinq ans."),
+        li("L'IFCE propose aussi un outil en ligne, « Gestion des mouvements des équidés », dans ton espace SIRE. Il est gratuit et facultatif."),
+        li("En cas de contrôle, tu dois montrer le récapitulatif des chevaux présents et de leurs mouvements : « Imprimer le registre » le prépare."),
+        li("Chaque manquement peut être sanctionné de 450 à 1 500 €.")),
+      h("div", { style: { marginTop: 8, color: "rgba(243,238,228,.62)" } }, "Pour noter une arrivée ou un départ, dis-le simplement à l'outil « Ajouter un document » en bas de la page, ou donne-lui le contrat de vente, de prêt ou de pension."));
+  };
   var LEGAL = function (h) { return h("div", { className: "hg-legal" }, "Hype t'aide à tenir ton registre à jour et à ne rien oublier.", h("br"), "Le registre reste sous ta responsabilité de détenteur."); };
 
   /* ───────────── lecture des données (partagée par les deux pages) ───────────── */
@@ -459,6 +476,7 @@ var GESTION_CSS_VIDEO = ".hv2{--hv-noir:#070A08;--hv-p1:rgba(16,26,29,.74);--hv-
         vis.a.length ? h("div", null, h("h2", { className: "hv3-h2" }, "À compléter"), h("div", { className: "hv3-cartes" }, vis.a.map(function (p) { return carte(h, { cle: p.cle, photo: p.photo, titre: p.titre, sous: p.sous, pill: p.pill, qui: p.qui, etat: p.etat, alerte: p.alerte, onClick: p.on }); }))) : null,
         vis.j.length ? h("div", null, h("h2", { className: "hv3-h2" }, "À jour"), h("div", { className: "hv3-cartes" }, vis.j.map(function (p) { return carte(h, { cle: p.cle, photo: p.photo, titre: p.titre, sous: p.sous, pill: p.pill, qui: p.qui, etat: p.etat, onClick: p.on }); }))) : null,
         d.erreur ? h("div", { className: "hg-err" }, "Une partie n'a pas pu être lue : " + d.erreur) : null,
+        REGLE_REGISTRE(h),
         LEGAL(h));
     }
     return h("div", { className: RACINE, style: FILTRE, dir: (LG === "ar" || LG === "fa") ? "rtl" : undefined },

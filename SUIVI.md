@@ -34,6 +34,18 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 22:36 — build 20261113-2236 — Registre : arrivées / départs par l'outil, création de fiche, « Ce que dit la règle »
+- Outil « Ajouter un document » : nouveau type **arrivée / départ d'un cheval** (dit en vocal, écrit, ou contrat de vente/prêt/pension). Arrivée → registre_chevaux (date d'entrée, provenance) ; départ définitif → registre_chevaux (date de sortie, motif, destination) ; sortie provisoire (concours, stage, véto…) → registre_mouvements (source « outil »). Document éventuel rangé dans la page Santé du cheval. Message de fin : rappel de déclarer aussi sur l'espace IFCE si on l'utilise.
+- Cheval qui arrive et n'existe pas dans Hype : « ＋ Nouveau cheval : je crée sa fiche » (nom prérempli, choix de l'écurie si deux) → ajouterCheval (même création que « + Ajouter un cheval » : la personne qui crée devient propriétaire dans Hype).
+- Piège corrigé : pour une arrivée, plus de rapprochement des noms sur le seul premier mot (« Cooltax du Chênay » ≠ « Cooltax de Virchel Z »).
+- Papiers : « ✓ déjà au registre » au lieu de « déjà sur la fiche » pour puce / propriétaire.
+- Page Registre : encart « Ce que dit la règle » (obligation pour tout détenteur, entrées/sorties à noter, papier ou informatique, 5 ans, outil IFCE gratuit et facultatif, récapitulatif en cas de contrôle, 450 à 1 500 € par manquement). Sources IFCE.
+- L'outil apparaît aussi en bas des pages « registre » et « registre-mouvements ».
+- Traductions : 15 langues (outil + i18n/gestion-*.json, I18N_V 17).
+- Fichiers : hype-outil-doc.js (v=8), hype-ecran-gestion.js (v=40), i18n/gestion-*.json (14), index.html (build + liste des pages de l'outil), SUIVI.md.
+- Pas testé sur la vraie base : l'enregistrement est à vérifier sur iPhone.
+- À venir (demandé 22h29) : créer en série les fiches des chevaux absents d'une liste (engagements, résultats…), par écrit ou en vocal, avec autorisation. Noté : rendre plus joli le formulaire d'infos du cheval dans l'outil.
+
 ## 2026-11-13 22:05 — build 20261113-2205 — Outil « Ajouter un document » : remplit le registre
 - Papiers du cheval (SIRE, livret, carte) : l'outil lit aussi le **n° de puce** et le **propriétaire**.
 - Ils sont comparés au registre de l'écurie (« vide au registre » / « déjà au registre » / « différent — coche pour remplacer ») et, une fois cochés, inscrits dans `registre_chevaux` (club + cheval) ; le SIRE coché y est recopié aussi. Le reste (naissance, sexe, robe, origines…) va toujours sur la fiche.
