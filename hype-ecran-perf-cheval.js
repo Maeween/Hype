@@ -1349,34 +1349,20 @@ function estClasseQ(f) {
       var meilleurS = function (x) { return x.ls.filter(function (f) { return f.pl != null; }).sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)); })[0] || null; };
       var anCourt = function (lib) { return String(lib).replace(/^(\d{4})-\d{2}(\d{2})$/, "$1–$2"); };
       var ouvrirS = function (x, i) { var o = arOuv[x.cle] != null ? arOuv[x.cle] : false; return [o, function () { var n = Object.assign({}, arOuv); n[x.cle] = !o; setArOuv(n); }]; };
-      var listeOuv = function (x) {
-        if (!x.cheval) return h("div", { style: { padding: "6px 22px 10px" } }, x.ls.map(function (f, j) { return ligneA(f, j); }));
-        /* 13/11 01h06 (Blandine : « par cheval, un tri par année ») : les résultats du cheval rangés par saison, petit intertitre doré */
-        var par = {}, cles = []; x.ls.forEach(function (f) { var k = (f.d && typeof hypePerfSaisonDe === "function") ? hypePerfSaisonDe(f.d) : null; k = k == null ? "?" : String(k); if (!par[k]) { par[k] = []; cles.push(k); } par[k].push(f); });
-        cles.sort(function (a, b) { return Number(b) - Number(a); });
-        return h("div", { style: { padding: "2px 22px 10px" } }, cles.map(function (k) { return h("div", { key: "an" + k },
-          h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "12px 0 4px", borderBottom: "1px solid rgba(201,166,107,0.3)" } },
-            h("span", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".24em", color: CHAMP, direction: "ltr" } }, k === "?" ? "—" : (Number(k) + "-" + (Number(k) + 1))),
-            h("span", { style: { fontFamily: SANS, fontSize: 10, color: MUET } }, par[k].length + " " + L_EP(par[k].length))),
-          par[k].map(function (f, j) { return ligneA(f, j); })); }));
-      };
-      var photoBloc = function (ph, hauteur, cote, larg) {   /* 13/11 01h06 (Blandine : « les photos un peu plus larges sur les côtés ») : photo ENTIÈRE au centre de sa zone, prolongée sur les côtés par son propre flou */
-        var masque = "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 " + (larg ? "50%" : "45%") + ")";
-        return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: larg || "62%", pointerEvents: "none", overflow: "hidden", WebkitMaskImage: masque, maskImage: masque } },
-          ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { position: "absolute", inset: "-14px", width: "calc(100% + 28px)", height: "calc(100% + 28px)", objectFit: "cover", filter: "blur(16px) brightness(.5) saturate(.9)", opacity: 0.85 } }) : null,
-          ph ? h("div", { style: { position: "absolute", inset: 0, display: "flex", justifyContent: cote === "right" ? "flex-end" : "flex-start", alignItems: "center" } }, h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block" } })) : null); };
+      var listeOuv = function (x) { return h("div", { style: { padding: "6px 22px 10px" } }, x.ls.map(function (f, j) { return ligneA(f, j); })); };
+      var photoBloc = function (ph, hauteur, cote) { return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "62%", display: "flex", justifyContent: cote === "right" ? "flex-end" : "flex-start", alignItems: "center", pointerEvents: "none" } },
+        ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block", mixBlendMode: "lighten", WebkitMaskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)", maskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)" } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
       if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
         S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
           if (i) out.push(courbe("ci" + i, i % 2 === 0));
           out.push(h("div", { key: "I" + x.cle },
-            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 150, overflow: "hidden", cursor: "pointer", background: "#000" } },
-              photoBloc(P.ph, 150, droite ? "right" : "left", "74%"),
+            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer", background: "#000" } },
+              photoBloc(P.ph, 128, droite ? "right" : "left"),
               h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
                 h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
                 h("div", { style: { fontFamily: SERIF, fontSize: x.cheval ? 24 : 26, lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),
-                (function () { var st = hypePerfStatsHisto(x.ls), nq = x.ls.filter(estClasseQ).length, t = [st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : "", nq ? nq + " " + L_Q(nq) : ""].filter(Boolean).join(" · ");   /* 13/11 01h08 : sans le nombre d'épreuves */
-                  return t ? h("div", { style: { fontFamily: SANS, fontSize: 11, color: "rgba(243,238,228,0.82)", marginTop: 6, textShadow: "0 1px 6px rgba(0,0,0,0.9)" } }, t) : null; })(),
+                h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 6 } }, resume(x)),
                 P.nom ? h("div", { style: { fontFamily: SERIF, fontSize: 15, color: CHAMP, marginTop: 4, fontStyle: "italic" } }, T("avec ", "with ") + nomCourt(P.nom)) : null,
                 h("div", { style: { fontFamily: SANS, fontSize: 11, color: CHAMP, marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
             oo[0] ? listeOuv(x) : null)); });

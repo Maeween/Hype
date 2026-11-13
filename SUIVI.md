@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0150 — Performances : retour aux bandeaux d'avant
+- Blandine : « remets comme c'était avant, c'est un carnage ». Le module Performances revient à son état du build 0140 (photos des bandeaux à leur ancienne largeur, sans le tri par année du build 0145). v=27.
+
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
 ### 13/11 01h45 — build 20261113-0145 — Performances : bandeaux à photo plus large, tri par année par cheval
