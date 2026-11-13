@@ -17,6 +17,9 @@
   var OR = "#C9A66B";
   var LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
   var TXT = {
+"N° de puce": ["Microchip no.", "N.º de chip", "N. microchip", "マイクロチップ番号", "Chipnummer", "رقم الشريحة", "芯片号", "Chipnummer", "N.º do microchip", "Chipnummer", "Номер чипа", "Nr chipa", "마이크로칩 번호", "شماره تراشه"],
+"Propriétaire": ["Owner", "Propietario", "Proprietario", "所有者", "Besitzer", "المالك", "马主", "Eigenaar", "Proprietário", "Ägare", "Владелец", "Właściciel", "소유주", "مالک"],
+
 "Je t’écoute.": ["I’m listening.", "Te escucho.", "Ti ascolto.", "聞いています。", "Ich höre dir zu.", "أنا أستمع إليك.", "我在听。", "Ik luister.", "Estou a ouvir-te.", "Jag lyssnar.", "Я слушаю.", "Słucham cię.", "듣고 있어요.", "گوش می‌دهم."],
 "Je t’écoute…": ["Listening…", "Te escucho…", "Ti ascolto…", "聞いています…", "Ich höre zu…", "أستمع…", "正在听……", "Ik luister…", "Estou a ouvir…", "Jag lyssnar…", "Слушаю…", "Słucham…", "듣고 있어요…", "گوش می‌دهم…"],
 "Conversation à la voix : activée": ["Voice conversation: on", "Conversación por voz: activada", "Conversazione a voce: attiva", "音声会話：オン", "Sprachgespräch: aktiv", "المحادثة الصوتية: مفعّلة", "语音对话：已开启", "Spraakgesprek: aan", "Conversa por voz: ativada", "Röstsamtal: på", "Голосовой разговор: включён", "Rozmowa głosowa: włączona", "음성 대화: 켜짐", "گفتگوی صوتی: فعال"],
@@ -58,6 +61,7 @@
 "✓ déjà sur la fiche": ["✓ already on the profile", "✓ ya en la ficha", "✓ già sulla scheda", "✓ プロフィールに記載済み", "✓ schon im Profil", "✓ موجود في البطاقة", "✓ 资料中已有", "✓ staat al op het profiel", "✓ já na ficha", "✓ finns redan i profilen", "✓ уже в карточке", "✓ już w profilu", "✓ 이미 프로필에 있음", "✓ از قبل در کارت هست"],
 "Différent de la fiche : ": ["Different from the profile: ", "Distinto de la ficha: ", "Diverso dalla scheda: ", "プロフィールと異なる：", "Anders als im Profil: ", "مختلف عن البطاقة: ", "与资料不同：", "Anders dan het profiel: ", "Diferente da ficha: ", "Skiljer sig från profilen: ", "Отличается от карточки: ", "Inne niż w profilu: ", "프로필과 다름: ", "با کارت فرق دارد: "],
 " — coche pour remplacer": [" — tick to replace", " — marca para reemplazar", " — spunta per sostituire", " — チェックで置き換え", " — anhaken zum Ersetzen", " — حدّد للاستبدال", " — 勾选以替换", " — vink aan om te vervangen", " — assinala para substituir", " — markera för att ersätta", " — отметь, чтобы заменить", " — zaznacz, aby zastąpić", " — 체크하면 바꿔요", " — برای جایگزینی علامت بزن"],
+"vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
 "Compléter et ranger": ["Complete and file", "Completar y guardar", "Completa e archivia", "補完して保存", "Ergänzen und ablegen", "إكمال وحفظ", "补全并归档", "Aanvullen en opslaan", "Completar e guardar", "Komplettera och spara", "Дополнить и сохранить", "Uzupełnij i zapisz", "채우고 보관", "کامل کن و بایگانی کن"],
@@ -1395,7 +1399,7 @@
       + "Reponds UNIQUEMENT en JSON : {\"message\":\"ta reponse a la personne, 1 a 3 phrases : ce que tu as compris et ce que tu vas faire ; si tu as un doute, termine par ta question\",\"type\":\"...\",\"resume\":\"une phrase simple qui dit ce que tu as compris\",\"question\":\"ta question s'il y a un doute, sinon vide\","
       + "\"cheval\":\"nom du cheval concerne si un seul, sinon vide\",\"soins\":[{\"cheval\":\"nom\",\"soin\":\"ferrure|parage|vermifuge|vaccin|dentiste|osteopathe|veterinaire|traitement|autre\",\"date\":\"AAAA-MM-JJ ou vide\",\"detail\":\"precision courte ou vide\"}],"
       + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
-      + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"}}. "
+      + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"puce\":\"numero de transpondeur (15 chiffres) ou vide\",\"proprietaire\":\"nom du ou des proprietaires ou vide\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"}}. "
       + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
     var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
     var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
@@ -1579,7 +1583,9 @@
         ["race", T("Race"), String((f && f.race) || ""), String(p.race || "")],
         ["pere", T("Père"), nomDe(o.pere), String(p.pere || "")],
         ["mere", T("Mère"), nomDe(o.mere), String(p.mere || "")],
-        ["naisseur", T("Naisseur"), String(o.naisseur || ""), String(p.naisseur || "")]
+        ["naisseur", T("Naisseur"), String(o.naisseur || ""), String(p.naisseur || "")],
+        ["puce", T("N° de puce"), String(((f && f.reg) || {}).puce || ""), (f && f.clefReg && f.regLisible) ? String(p.puce || "").replace(/\s+/g, "") : ""],
+        ["proprietaire", T("Propriétaire"), String(((f && f.reg) || {}).proprietaire || ""), (f && f.clefReg && f.regLisible) ? String(p.proprietaire || "") : ""]
       ].filter(function (c) { return c[3]; }).map(function (c) {
         var pareil = norm(c[2]) === norm(c[3]);
         return { k: c[0], lib: c[1], fiche: c[2], lu: c[3], pareil: pareil, diff: !!c[2] && !pareil };
@@ -1588,17 +1594,36 @@
     React.useEffect(function () {
       if (!st.lu || st.lu.type !== "papiers_cheval" || !st.chevalId) { setFiche(null); return; }
       var vif = true;
-      supa.from("chevaux").select("id, nom, race, age, origines").eq("id", st.chevalId).maybeSingle().then(function (r) {
+      supa.from("chevaux").select("id, nom, race, age, origines, club").eq("id", st.chevalId).maybeSingle().then(async function (r) {
         if (!vif) return;
-        var f = (r && !r.error && r.data) || null; setFiche(f);
+        var f = (r && !r.error && r.data) || null;
+        /* 13/11 21h43 (Blandine : « faire en sorte qu'ils remplissent la table du registre ») : la ligne du registre des chevaux
+           de son écurie (registre_chevaux, clé = écurie du cheval + cheval) — n° de puce et propriétaire viennent des papiers */
+        if (f && String(f.club || "").trim()) {
+          f.clefReg = (typeof clefClubG === "function") ? clefClubG(f.club) : String(f.club).toLowerCase().trim();
+          try { var rg = await supa.from("registre_chevaux").select("*").eq("club_clef", f.clefReg).eq("cheval_id", f.id).maybeSingle(); f.reg = (rg && !rg.error && rg.data) || {}; f.regLisible = !!(rg && !rg.error); } catch (eR) { f.reg = {}; }
+        }
+        if (!vif) return;
+        setFiche(f);
         var ck = {}; champsPapiers(st.lu.papiers || {}, f).forEach(function (c) { ck[c.k] = !c.pareil && !c.diff; }); setCoches(ck);
       });
       return function () { vif = false; };
     }, [st.chevalId, st.lu]);
     async function completerFiche() {
       if (!fiche) return true;
-      var champs = champsPapiers((st.lu && st.lu.papiers) || {}, fiche).filter(function (c) { return coches[c.k] && !c.pareil; });
-      if (!champs.length) return true;
+      var tous = champsPapiers((st.lu && st.lu.papiers) || {}, fiche).filter(function (c) { return coches[c.k] && !c.pareil; });
+      if (!tous.length) return true;
+      /* registre des chevaux de l'écurie : puce, propriétaire (+ SIRE recopié s'il est lu) */
+      var reg = tous.filter(function (c) { return c.k === "puce" || c.k === "proprietaire"; });
+      var champs = tous.filter(function (c) { return c.k !== "puce" && c.k !== "proprietaire"; });
+      if (reg.length && fiche.clefReg) {
+        var lig = { club_clef: fiche.clefReg, cheval_id: fiche.id };
+        reg.forEach(function (c) { lig[c.k] = c.lu; });
+        var sireLu = tous.filter(function (c) { return c.k === "sire"; })[0]; if (sireLu) lig.sire = sireLu.lu;
+        var rr = await supa.from("registre_chevaux").upsert(lig, { onConflict: "club_clef,cheval_id" }).select("cheval_id");
+        if (!rr || rr.error || !rr.data || !rr.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
+      }
+      if (!champs.length) return reg.length;
       var o = Object.assign({}, (fiche.origines && typeof fiche.origines === "object") ? fiche.origines : {});
       var race = fiche.race || null;
       champs.forEach(function (c) {
@@ -1609,7 +1634,7 @@
       var r = (typeof hypeMajOriginesCheval === "function") ? await hypeMajOriginesCheval(fiche.id, { origines: o, race: race, age: fiche.age == null ? null : fiche.age })
         : await supa.from("chevaux").update({ origines: o, race: race }).eq("id", fiche.id).select("id");
       if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
-      return champs.length;
+      return champs.length + reg.length;
     }
     async function rangerDoc(typeDoc) {
       var f = st.fichier; var chId = st.chevalId;
@@ -1759,7 +1784,7 @@
                   h("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13 } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, c.lib), h("b", { style: { fontWeight: 500 } }, c.lu)),
                   c.pareil ? h("div", { style: { fontSize: 11.5, color: "#96CDAA" } }, T("✓ déjà sur la fiche")) :
                   c.diff ? h("div", { style: { fontSize: 11.5, color: "#E8D3A8" } }, T("Différent de la fiche : ") + c.fiche + T(" — coche pour remplacer")) :
-                  h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.5)" } }, T("vide sur la fiche"))));
+                  h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.5)" } }, (c.k === "puce" || c.k === "proprietaire") ? T("vide au registre") : T("vide sur la fiche"))));
             }) : h("div", { className: "hod-note" }, T("Je n’ai rien lu d’utile pour la fiche."))) : null,
           h("div", { className: "hod-note" }, T("Je le range dans les documents de la page Santé du cheval :")), choixCheval(),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: function () { rangerDoc(typeDoc); } }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")))));

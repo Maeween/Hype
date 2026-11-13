@@ -34,6 +34,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 22:05 — build 20261113-2205 — Outil « Ajouter un document » : remplit le registre
+- Papiers du cheval (SIRE, livret, carte) : l'outil lit aussi le **n° de puce** et le **propriétaire**.
+- Ils sont comparés au registre de l'écurie (« vide au registre » / « déjà au registre » / « différent — coche pour remplacer ») et, une fois cochés, inscrits dans `registre_chevaux` (club + cheval) ; le SIRE coché y est recopié aussi. Le reste (naissance, sexe, robe, origines…) va toujours sur la fiche.
+- Lignes visibles seulement pour qui a le droit de modifier le registre du club.
+- Traductions : 15 langues.
+- Fichiers : hype-outil-doc.js (v=6), index.html (build), SUIVI.md.
+- Reste : entrées/sorties du registre (date d'entrée, provenance, départ) non gérées par l'outil.
+
 ## 20261113-2156 — GUIDE DU COACH : entrée dans la page Aide, page « Le guide du coach », page « Journée de compétition »
 Blandine 13/11 21h46 (« je ne sais même pas comment on accède à tes pages de tuto […] une partie tuto, le guide du coach […] organiser une journée de compétition […] tous les tutos de cette journée-là »), 21h47 « Ok ».
 - Page Aide (hype-ecran-aide.js) : carte « Le guide du coach » en haut des petits tutos.
