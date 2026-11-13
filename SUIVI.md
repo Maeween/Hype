@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h45 — build 20261113-0145 — Performances : bandeaux à photo plus large, tri par année par cheval
+- hype-ecran-perf-cheval.js v=26 : bandeaux de saison et de cheval plus hauts (150 px), zone photo 74 %, photo entière poussée vers le bord et prolongée par son propre flou ; texte du bandeau sans le nombre d'épreuves (victoires · podiums · classements), avec ombre douce ; « Par cheval » ouvert = résultats rangés par saison (intertitre doré).
+
 ### 13/11 01h40 — build 20261113-0140 — Import : le VRAI coupable des chevaux inconnus perdus
 - index.html : en import depuis la page d'un CAVALIER (et depuis la fiche d'un cheval), le routeur recopiait la réponse de enregistrerImportFFE en ne gardant que n/doublons/completes/refusees/agenda — inconnus, ambigus et ailleurs étaient jetés. Le module ne voyait donc jamais les chevaux inconnus : pas de création automatique des fiches, écran « Cette saison était déjà là » (Blandine, 2 essais). Les trois champs sont maintenant transmis (l'import de plusieurs fichiers les transmettait déjà).
 
