@@ -22,6 +22,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1325 — Encadré « À déclarer au jury » en tickets, non partants regroupés
+Blandine 13/11 13h09-13h12 (capture des « Tickets » + « Ok, c'est bien… pas la peine d'un ticket par non partant, la liste »). hype-ecran-saison.js v=155.
+- Habillage « tickets » (alr-5) : grand titre, un ticket par changement (N° dans un talon à pointillés), ivoire.
+- Les non partants : un seul ticket « Déclarer non partant(s) » avec la liste « N° 3 · Apache du Lys · Emma · Club 3 Grand Prix ».
+- Couleurs essayables : alc-1 ivoire, alc-2 champagne, alc-3 bleu pétrole, alc-4 sauge, alc-5 mauve poudré (pas choisi : reste ivoire).
+- EN ATTENTE : visuel des cavaliers avec carrés (A carré à gauche, B onglet carré à gauche, C onglet carré à droite, D carré à droite) — en ligne : petit rond à droite (rcp-1).
+
 ## 20261113-1320 — Passages : petit rond à droite par cavalier/cheval, encadré « À déclarer au jury » repensé, groupes rangés par groupe, chevaux sans doublon
 Blandine 13/11 12h53 → 13h05 (« Mets en ligne le reste en attendant et on peut tester ça pour cavaliers »). hype-ecran-saison.js v=154.
 - Par cavalier / par cheval : nom à gauche, petite photo ronde (cavalier, ou cheval en « Par cheval ») à droite, filet dessous — classe rcp-1. Par épreuve inchangé (modèle IMG_8420). Autres essais prêts : rcp-2 … rcp-14 (dont carrés : rcp-6, rcp-11 … rcp-14).

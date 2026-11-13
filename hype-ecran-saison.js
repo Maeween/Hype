@@ -1029,6 +1029,13 @@ var CSS2 = [
   "html.alr-2 .hc-alerte.al2{background:#F3EEE4;border-color:#F3EEE4}html.alr-2 .hc-alerte.al2 .al-t{color:#0B0E0C;border-bottom-color:rgba(11,14,12,.12)}html.alr-2 .hc-alerte.al2 .al-t i{border-color:rgba(11,14,12,.4)}html.alr-2 .hc-alerte.al2 .al-i{border-top-color:rgba(11,14,12,.1)}html.alr-2 .hc-alerte.al2 .al-n,html.alr-2 .hc-alerte.al2 .al-l1 b{color:#0B0E0C}html.alr-2 .hc-alerte.al2 .al-l1{color:rgba(11,14,12,.7)}html.alr-2 .hc-alerte.al2 .al-l2,html.alr-2 .hc-alerte.al2 .al-l3,html.alr-2 .hc-alerte.al2 .al-n small{color:rgba(11,14,12,.55)}html.alr-2 .hc-alerte.al2 .al-tag{border-color:rgba(11,14,12,.3);color:#0B0E0C}html.alr-2 .hc-alerte.al2 .al-tag:not(.ok){background:#0B0E0C;color:#F3EEE4}",
   "html.alr-3 .hc-alerte.al2{border-color:rgba(95,163,174,.45);background:linear-gradient(180deg,rgba(47,111,122,.18),#0e1212 60%)}html.alr-3 .hc-alerte.al2 .al-t{color:#9CC7CF}html.alr-3 .hc-alerte.al2 .al-t i{border-color:rgba(156,199,207,.5)}html.alr-3 .hc-alerte.al2 .al-n{color:#9CC7CF}html.alr-3 .hc-alerte.al2 .al-tag:not(.ok){border-color:rgba(156,199,207,.6);color:#9CC7CF}",
   "html.alr-4 .hc-alerte.al2{border:0;background:none;padding:0}html.alr-4 .hc-alerte.al2 .al-t{border-bottom:1px solid rgba(243,238,228,.2)}html.alr-4 .hc-alerte.al2 .al-i{margin-top:8px;padding:12px 12px 12px 0;border:1px solid rgba(243,238,228,.1);border-left:3px solid #F3EEE4;border-radius:12px;background:#0e1212}html.alr-4 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.1)}",
+  /* 13/11 13h05 (Blandine : « tu peux mieux faire, propose-moi d'autres choses… et des propositions de couleurs ») */
+  ".hc-alerte.al2 .al-npl{font-family:Montserrat,sans-serif;font-size:13px;color:rgba(243,238,228,.6);line-height:1.5}.hc-alerte.al2 .al-npl b{color:#F3EEE4;font-weight:600}",
+  "html.alr-5 .hc-alerte.al2{background:none;border:0;padding:0}html.alr-5 .hc-alerte.al2 .al-t{font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:26px;font-weight:500;border-bottom:0;padding:0 0 10px}html.alr-5 .hc-alerte.al2 .al-i{grid-template-columns:64px minmax(0,1fr);gap:0;margin-bottom:10px;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:14px;background:#0e1212;overflow:hidden}html.alr-5 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.12)}html.alr-5 .hc-alerte.al2 .al-n{align-self:stretch;border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 0}html.alr-5 .hc-alerte.al2 .al-c{padding:12px 14px}",
+  "html.alr-6 .hc-alerte.al2 .al-i{grid-template-columns:1fr;padding:10px 0}html.alr-6 .hc-alerte.al2 .al-n{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:4px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em}html.alr-6 .hc-alerte.al2 .al-n small{font-size:12px;letter-spacing:.06em;margin:0;color:inherit}html.alr-6 .hc-alerte.al2 .al-c{flex-direction:row;flex-wrap:wrap;column-gap:8px;row-gap:2px;align-items:baseline}html.alr-6 .hc-alerte.al2 .al-l1{flex-basis:100%;font-size:15px}html.alr-6 .hc-alerte.al2 .al-l2{font-size:15px}html.alr-6 .hc-alerte.al2 .al-l3:before{content:'· '}html.alr-6 .hc-alerte.al2 .al-tag{flex-basis:auto;margin-top:2px}",
+  "html.alr-7 .hc-alerte.al2{border:0;border-top:1px solid var(--al,#C9A66B);border-bottom:1px solid var(--al,#C9A66B);border-radius:0;background:none;padding:2px 0 6px}html.alr-7 .hc-alerte.al2 .al-t{justify-content:center;gap:12px;border-bottom:0;font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:24px;font-weight:500}html.alr-7 .hc-alerte.al2 .al-i{border-top:1px solid rgba(243,238,228,.07)}html.alr-7 .hc-alerte.al2 .al-n{font-size:34px}",
+  "html.alc-1{--al:#F3EEE4}html.alc-2{--al:#D8C39A}html.alc-3{--al:#9CC7CF}html.alc-4{--al:#A9C2A6}html.alc-5{--al:#C9B2C4}",
+  "html[class*='alc-'] .hc-alerte.al2 .al-n,html[class*='alc-'] .hc-alerte.al2 .al-t,html[class*='alc-'] .hc-alerte.al2 .al-l2{color:var(--al)}html[class*='alc-'] .hc-alerte.al2 .al-t i,html[class*='alc-'] .hc-alerte.al2 .al-tag:not(.ok){border-color:var(--al);color:var(--al)}html[class*='alc-'] .hc-alerte.al2{border-color:color-mix(in srgb,var(--al) 35%,transparent)}html[class*='alc-'] .rc-li .q>span.rc-alp{color:var(--al) !important}",
   ".e1 .rc-modnp{min-height:38px;padding:0 16px;border-radius:999px;border:1px solid rgba(201,166,107,.6);background:transparent;color:#C9A66B;font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer}",
   ".e1 .rc-modnp.on{border-color:#F3EEE4;color:#F3EEE4}",
   "html.rcv-a .rc-le{margin-bottom:18px}html.rcv-a .rc-ban{height:64px;border-radius:16px}html.rcv-a .rc-ban .t{bottom:9px}html.rcv-a .rc-ban .t b{font-size:22px}html.rcv-a .rc-li{padding:7px 0;grid-template-columns:22px 38px minmax(0,1fr) auto 32px !important}html.rcv-a .rc-li img,html.rcv-a .rc-vide3{width:38px;height:38px}",
@@ -1306,7 +1313,7 @@ var HS_IMG_LOTS_CH = ["images/concours-carte-medias.webp", "images/galop1-hero-b
 /* 13/11 12h16 (Blandine : « Mets D que je vois si ça passe ») : listes des passages en visuel D (petite vignette photo à côté du nom).
    Les autres visuels restent essayables : classe rcv-a, -b, -c, -e … -i sur <html>. */
 try { var _rcR = document.documentElement; if (!/\brcv-/.test(_rcR.className)) _rcR.classList.add("rcv-n");   /* 13/11 12h50 : choix N de Blandine */ if (!/\brcp-/.test(_rcR.className)) _rcR.classList.add("rcp-1");   /* 13/11 13h05 : par cavalier / par cheval, nom à gauche et petit rond à droite */
-  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-0");   /* 13/11 13h05 : encadré du jury « sobre » en attendant son choix */ } catch (eRcv) { }
+  if (!/\balr-/.test(_rcR.className)) _rcR.classList.add("alr-5");   /* 13/11 13h09 : encadré du jury en « tickets » (choix de Blandine) */ } catch (eRcv) { }
 /* 13/11 12h55 (Blandine : « j'ai mis Dakota à la place de Dakota ca… tu décomptes comme deux chevaux ») : un nom tapé est ramené
    au cheval connu (même nom sans tenir compte des majuscules, ou début de nom qui ne correspond qu'à un seul cheval) */
 function hsChevalConnu(nom, liste) {
@@ -3834,10 +3841,15 @@ function EcranConcours() {
             if (p.cavalier_initial) { if (dejaCav) tags.push(F("cavalier déjà engagé : ") + dejaCav); else { tags.push(F("cavalier pas encore engagé : licence à donner")); ok = false; } }
             return item(i, p, [h("b", { key: "q" }, qui), " " + F("monte") + " ", h("b", { key: "c" }, ch || "?")], anc, tags.join(" · "), ok);
           }),
-          lnp.map(function (p, i) {
-            var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
-            return item("np" + i, p, [h("b", { key: "q" }, qui), " · ", h("b", { key: "c" }, ch || "?")], F("non partant"), "", true);
-          }));
+          /* 13/11 13h12 (Blandine : « pas la peine de mettre un ticket par non partant… déclaration non partant et la liste ») */
+          lnp.length ? h("button", { key: "np", type: "button", className: "al-i al-npg", onClick: aller },
+            h("span", { className: "al-n" }, h("small", null, F("NP")), String(lnp.length)),
+            h("span", { className: "al-c" },
+              h("span", { className: "al-l1" }, h("b", null, lnp.length > 1 ? F("Déclarer les non partants") : F("Déclarer non partant"))),
+              lnp.map(function (p, i) {
+                var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
+                return h("span", { key: i, className: "al-npl" }, h("b", null, (p.ordre_passage ? F("N° ") + p.ordre_passage : "–") + " · " + (ch || "?")), " · " + qui + (hsNomEpreuve(p.epreuve || "") ? " · " + hsNomEpreuve(p.epreuve || "") : ""));
+              }))) : null);
       })(),
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
