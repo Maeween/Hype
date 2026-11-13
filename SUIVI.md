@@ -37,6 +37,10 @@ Blandine 13/11 14h05 → 14h31 (« Ok », « Et oui B »). Un seul fichier : hyp
 
 > 🟧 À FAIRE ENSUITE (Blandine, 13/11 14h31, choix B) — OUTIL UNIQUE « AJOUTER UN PAPIER » sur la Santé du cheval : remplace les 3 entrées actuelles (« Photographier le carnet », « Lire le carnet de vaccination », « Joindre une page / + Document »). Photo ou PDF → rangé dans un encart « Papiers du cheval » (rouvrir / retélécharger) → lecture de TOUT (vaccins, n° SIRE, père, mère, naissance, autres soins) → récapitulatif à valider → remplit la page Vaccins ET la fiche du cheval. Constat : la lecture actuelle ne relève QUE les dates de vaccins — le PDF SIRE ajouté le 13/11 n'a rempli ni le SIRE ni les parents. Vérifier en base comment SIRE / parents sont rangés (ne pas écraser l'import FFE). Étape 1 = outil + encart ; étape 2 = lecture complète.
 
+## 20261113-1500 — Page de l'équipe : seulement la ville du concours (plus l'adresse complète)
+Blandine 13/11 14h56-14h57 (« garde l'adresse, on en aura besoin pour les infos du concours, mais ne l'affiche pas sur la première page… la discipline, la ville et la date »). hype-ecran-team.js : nouvelle fonction hypeLieuCourt (dernier morceau après la virgule, sans code postal) utilisée partout où la page affichait ev.lieu → « CSO Versailles · 15 nov. ». L'adresse complète reste en base (lieu) pour « Informations du concours » et Itinéraire.
+Erreur de Claude à noter : le 13/11 13h42, l'adresse avait été écrite dans le lieu du concours sans prévenir que la page de l'équipe l'afficherait aussi.
+
 ## 20261113-1420 — Ordre d'embarquement sans les heures de passage
 Blandine 13/11 14h12 (« j'ai peur que ça leur embrouille la tête » ; « Ok »). hype-ecran-saison.js : la liste montre seulement n°, cheval, cavalier ; l'ordre reste calculé sur le premier passage de chaque cheval (le dernier à passer embarque en premier).
 

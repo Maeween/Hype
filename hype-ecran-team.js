@@ -782,9 +782,9 @@ function EcranTeamCompetition() {
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 600, color: IV, lineHeight: 1.15, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", overflowWrap: "anywhere" } }, ev.titre || ""),
         sous ? h("div", { style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.72)", marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, sous) : null,
-        ev.lieu ? h("div", { style: { display: "flex", alignItems: "center", gap: 5, fontFamily: M, fontSize: 10.5, color: GR, marginTop: 5, minWidth: 0 } },
+        hypeLieuCourt(ev.lieu) ? h("div", { style: { display: "flex", alignItems: "center", gap: 5, fontFamily: M, fontSize: 10.5, color: GR, marginTop: 5, minWidth: 0 } },
           h("svg", { width: 10, height: 12, viewBox: "0 0 10 12", "aria-hidden": "true", style: { flex: "0 0 auto" } }, h("path", { d: "M5 0.6C2.6 0.6 0.8 2.4 0.8 4.7 0.8 7.6 5 11.4 5 11.4S9.2 7.6 9.2 4.7C9.2 2.4 7.4 0.6 5 0.6Zm0 5.7a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z", fill: OR })),
-          h("span", { style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ev.lieu)) : null),
+          h("span", { style: { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, hypeLieuCourt(ev.lieu))) : null),
       badgeRdv(ev),
       h("span", { style: { flex: "0 0 auto", color: OR, fontSize: 18, lineHeight: 1 } }, CHEV));
   }
@@ -801,7 +801,7 @@ function EcranTeamCompetition() {
      le toucher ouvre directement sa fiche (résultats, vidéos, médias) */
   function carteDernier(ev) {
     var aff = (typeof ev.image_url === "string" && ev.image_url.trim()) ? ev.image_url.trim() : "";
-    var sous = [ev.lieu || ""].filter(Boolean).join(" · ");
+    var sous = [hypeLieuCourt(ev.lieu) || ""].filter(Boolean).join(" · ");
     return h("button", { key: "dern" + ev.id, type: "button", "data-team-dernier": "1", onClick: function () { ouvrirRdvPasse(ev); }, style: { position: "relative", display: "block", width: "100%", height: 104, padding: 0, marginBottom: 10, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(244,241,234,0.12)", background: "#0B0F13", cursor: "pointer", textAlign: "start", color: IV } },
       h("img", { src: aff ? ((typeof vignetteHype === "function") ? vignetteHype(aff, 480, 300) : aff) : (({ stage: "images/theme-dressage-bai-trot.webp", sortie: "images/actualite-ambiance.webp" })[ev.type] || "images/hype-entete-concours.jpg"), alt: "", loading: "lazy", decoding: "async", onError: function (eI) { try { eI.target.style.visibility = "hidden"; } catch (e) { } }, style: { position: "absolute", top: 0, insetInlineEnd: 0, width: "55%", height: "100%", objectFit: "cover", display: "block" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", #0B0F13 40%, rgba(11,15,19,0.8) 55%, rgba(11,15,19,0) 82%)" } }),
@@ -819,7 +819,7 @@ function EcranTeamCompetition() {
     var enCours = !passe && String(ev.date_jour || "") <= isoAuj();
     var etat = passe ? T("Passé", "Past", "Pasado", "Passato", "終了", "Vorbei", "سابق", "已结束", "Afgelopen", "Passado", "Tidigare", "Прошедшие", "Minione", "지난 대회", "گذشته")
       : (enCours ? T("En cours", "Ongoing", "En curso", "In corso", "開催中", "Läuft", "جارٍ", "进行中", "Lopend", "Em andamento", "Pågående", "Текущие", "Trwające", "진행 중", "در جریان") : T("À venir", "Upcoming", "Próximo", "In arrivo", "予定", "Demnächst", "قادم", "即将推出", "Binnenkort", "Em breve", "Kommer snart", "Скоро", "Wkrótce", "공개 예정", "پیش رو"));
-    var sous = [ev.lieu || "", ev.heure || ""].filter(Boolean).join(" · ");
+    var sous = [hypeLieuCourt(ev.lieu) || "", ev.heure || ""].filter(Boolean).join(" · ");
     return h("div", { key: "crdv" + cle },
       h("button", { type: "button", onClick: function () { setRdvOuvert(ouv ? null : cle); }, style: { position: "relative", display: "block", width: "100%", height: 104, padding: 0, marginBottom: ouv ? 0 : 10, borderRadius: ouv ? "12px 12px 0 0" : 12, overflow: "hidden", border: "1px solid " + (passe ? "rgba(214,182,118,0.16)" : "rgba(214,182,118,0.38)"), background: "#0B0F13", cursor: "pointer", textAlign: "start", color: IV } },
         /* 07/11 23h45 (Blandine : « toujours pas de photo de thème quand il n'y a pas d'affiche ») : même règle que l'agenda du club —
@@ -840,7 +840,7 @@ function EcranTeamCompetition() {
     return h("div", { style: { background: PANEL, border: "1px solid rgba(244,241,234,0.12)", borderTop: "none", borderRadius: "0 0 12px 12px", padding: "12px 12px 10px", marginBottom: 10 } },
       h("div", { style: { display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 10px", fontFamily: M, fontSize: 11.5 } },
         ligneKV(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "التاريخ", "日期", "Datum", "Data", "Datum", "Дата", "Data", "날짜", "تاریخ"), dateT),
-        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "محل"), ev.lieu || ""),
+        ligneKV(T("Lieu", "Venue", "Lugar", "Luogo", "場所", "Ort", "المكان", "地点", "Plaats", "Local", "Plats", "Место", "Miejsce", "장소", "محل"), hypeLieuCourt(ev.lieu) || ""),
         ligneKV(T("Type", "Type", "Tipo", "Tipo", "種類", "Art", "النوع", "类型", "Type", "Tipo", "Typ", "Тип", "Typ", "유형", "نوع"), libTypeRdv(ev.type))),
       aff ? h("div", { style: { marginTop: 12 } },
         h("button", { type: "button", onClick: function () { setVisu(aff); }, style: { display: "block", width: "100%", padding: 0, border: "none", background: "none", cursor: "zoom-in" } },
@@ -911,7 +911,7 @@ function EcranTeamCompetition() {
      « discipline + ville » (ex. « CSO Versailles », « CSO Folleville »). La discipline est lue dans le titre, la ville dans le lieu
      (ce qui suit le dernier « de » : « Haras de Folleville » → « Folleville »). */
   function ligneCourte(ev) {
-    var t = String(ev.titre || ""), l = String(ev.lieu || "").replace(/\s*\([^)]*\)\s*/g, " ").trim();
+    var t = String(ev.titre || ""), l = String(hypeLieuCourt(ev.lieu) || "").replace(/\s*\([^)]*\)\s*/g, " ").trim();
     var m = t.match(/\b(CSO|CCE|Dressage|Hunter|Pony[- ]games|Endurance|Ride and run|Equifun|Attelage|TREC|Voltige)\b/i);
     var disc = m ? (m[1].length <= 4 ? m[1].toUpperCase() : m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : "";
     var ville = l;
@@ -954,7 +954,7 @@ function EcranTeamCompetition() {
         h("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 1px", alignSelf: "stretch", margin: "2px 14px", background: "rgba(244,241,234,0.16)" } }),
         h("div", { style: { position: "relative", flex: 1, minWidth: 0 } },
           h("div", { dir: "auto", style: { fontFamily: SERIF, fontSize: 17, lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ev.titre || ""),
-          ev.lieu ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.62)", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ev.lieu) : null),
+          hypeLieuCourt(ev.lieu) ? h("div", { dir: "auto", style: { fontFamily: M, fontSize: 11, color: "rgba(244,241,234,0.62)", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, hypeLieuCourt(ev.lieu)) : null),
         h("span", { "aria-hidden": "true", style: { position: "relative", flex: "0 0 auto", marginInlineStart: 10, color: OR, fontSize: 16 } }, rtl ? "‹" : "›")),
       ouv ? carteRdvE(ev, passe) : null);
   }
@@ -1617,7 +1617,7 @@ function EcranTeamCompetition() {
   if (panneau === "rdv") {
     var dansR = {}; (agenda || []).concat(agendaPasse || []).forEach(function (ev) { dansR[ev.id] = true; });
     var qR = normTeam(recherche);
-    var listeR = (clubRdv || []).filter(function (ev) { return ev && ev.id && (!qR || normTeam(ev.titre).indexOf(qR) >= 0 || normTeam(ev.lieu).indexOf(qR) >= 0); })
+    var listeR = (clubRdv || []).filter(function (ev) { return ev && ev.id && (!qR || normTeam(ev.titre).indexOf(qR) >= 0 || normTeam(hypeLieuCourt(ev.lieu)).indexOf(qR) >= 0); })
       .sort(function (a, b) {
         var fa = estAVenir(a), fb = estAVenir(b);   /* a venir d abord (le plus proche en haut), puis les passes (le plus recent en haut) */
         if (fa !== fb) return fa ? -1 : 1;
@@ -1632,7 +1632,7 @@ function EcranTeamCompetition() {
               h("div", { style: { fontFamily: SERIF, fontSize: 11, textTransform: "uppercase", color: est ? OR : GR, marginTop: 2 } }, moisCourt(ev.date_jour))),
             h("div", { style: { flex: 1, minWidth: 0 } },
               h("div", { dir: "auto", style: { fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, ev.titre || "—"),
-              ev.lieu ? h("div", { dir: "auto", style: { fontSize: 10.5, color: GR, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, ev.lieu) : null),
+              hypeLieuCourt(ev.lieu) ? h("div", { dir: "auto", style: { fontSize: 10.5, color: GR, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "start" } }, hypeLieuCourt(ev.lieu)) : null),
             h("button", { type: "button", disabled: busy, onClick: function () { basculerRdv(ev, est); },
               style: { flex: "0 0 auto", minHeight: 34, minWidth: 84, padding: "0 12px", borderRadius: 999, border: "1px solid " + (est ? "rgba(244,241,234,0.25)" : "rgba(214,182,118,0.6)"), background: est ? "transparent" : "rgba(214,182,118,0.10)", color: est ? "rgba(244,241,234,0.8)" : OR, fontFamily: M, fontSize: 11, fontWeight: 600, cursor: busy ? "default" : "pointer", opacity: busy ? 0.5 : 1 } },
               busy ? "…" : (est ? T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "إزالة", "移除", "Verwijderen", "Remover", "Ta bort", "Убрать", "Usuń", "삭제", "برداشتن") : T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة", "添加", "Toevoegen", "Adicionar", "Lägg till", "Добавить", "Dodaj", "추가", "افزودن"))));
@@ -1679,3 +1679,12 @@ function EcranTeamCompetition() {
 }
 window.HypeTeam = { Team: EcranTeamCompetition };
 })();
+
+/* 13/11 14h57 (Blandine : « garde l'adresse, on en aura besoin pour les infos du concours, mais ne l'affiche pas sur la première page ») :
+   sur la page de l'équipe, seulement la ville (« Club Hippique de Versailles, 59 rue Rémont, 78000 Versailles » → « Versailles »). */
+function hypeLieuCourt(l) {
+  var t = String(l == null ? "" : l).trim(); if (t.indexOf(",") < 0) return t;
+  var p = t.split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+  var der = (p[p.length - 1] || "").replace(/^\d{4,5}\s*/, "").trim();
+  return der || t;
+}
