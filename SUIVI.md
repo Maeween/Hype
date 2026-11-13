@@ -12,6 +12,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 ## 0 — Priorité absolue (Blandine, 04/11 21 h 40) : espace « Mon écurie » avant le Salon du Cheval (4-6/12)
 
+### 13/11 01h35 — build 20261113-0135 — Performances : onglet « Par cheval » en bandeaux qui se déroulent
+- hype-ecran-perf-cheval.js v=25 : « Par cheval » = un bandeau par cheval (photo entière en fondu, nom, épreuves · victoires · podiums · classements), tous fermés ; on touche pour dérouler ses résultats (date avec l'année, « Non classé » écrit). Avant : accordéon, le premier cheval ouvert = 15 pages. Les résumés de saison affichent aussi les classements.
+
 ### 13/11 01h30 — build 20261113-0130 — Import : chevaux inconnus plus jamais perdus quand le reste est déjà là
 - Constat (Blandine, import de son .xls) : « Cette saison était déjà là — 67 lignes » : les 67 = lignes des chevaux connus (Vif Bellevue, Umea Borderie, Elfe de Feinn, Orlena), toutes en doublon ; les 57 lignes des 12 chevaux sans fiche avaient disparu sans un mot.
 - Cause : enregistrerImportFFE (index.html) sortait par « if (!neufs.length) return { n, doublons… } » SANS renvoyer inconnus/ambigus -> pas de création automatique des fiches, écran « déjà là ». Corrigé (inconnus + ambigus renvoyés).

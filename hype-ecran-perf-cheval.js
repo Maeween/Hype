@@ -1259,23 +1259,23 @@ function estClasseQ(f) {
        8 formes ; points de qualification seulement pour la saison en cours. */
     function archives(AV) {
       var arSel = arSelSt[0], setArSel = arSelSt[1], arOuv = arOuvSt[0], setArOuv = arOuvSt[1];
-      var S = saisons.map(function (sx) { var ls = sx.lignes.filter(function (f) { return visL(f) && (f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom)); }).sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")) || ((a.pl || 99) - (b.pl || 99)); }); return { cle: sx.cle, lib: sx.lib, ls: ls, toutes: sx.lignes }; }).filter(function (x) { return x.ls.length; });
+      var S = (AV === "CH" ? chx.map(function (c) { return { cle: "ch:" + c.nm, lib: c.nm, lignes: c.ls, cheval: c }; }) : saisons).map(function (sx) { var ls = sx.lignes.filter(function (f) { return visL(f) && (f.pl != null || f.statut === "el" || f.statut === "ab" || (f.statut === "" && !!f.nom)); }).sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")) || ((a.pl || 99) - (b.pl || 99)); }); return { cle: sx.cle, lib: sx.lib, ls: ls, toutes: sx.lignes, cheval: sx.cheval || null }; }).filter(function (x) { return x.ls.length; });
       if (!S.length) return null;
       var propreA = function (n) { n = concoursC({ nom: n }); if (n && n === n.toUpperCase() && /[A-Z]/.test(n)) n = n.toLowerCase().replace(/(^|[\s'’\/-])(\S)/g, function (m, a1, a2) { return a1 + a2.toUpperCase(); }).replace(/ (De|Du|Des|La|Le|Les|Et|En|Sur) /g, function (m) { return m.toLowerCase(); }); return n; };
       var resA = function (f) { return f.pl != null ? rangTxt(f.pl) + (f.part ? " / " + f.part : "") : resTxt(f); };
       var colR = function (f) { return f.pl != null && f.pl <= 3 ? CHAMP : (f.pl != null ? IVOIRE : "rgba(243,238,228,0.45)"); };
-      var dateC = function (d) { try { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString(LOCALES[langue] || "fr-FR", { day: "numeric", month: "short", timeZone: "UTC" }) : ""; } catch (e) { return ""; } };
+      var dateC = function (d) { try { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString(LOCALES[langue] || "fr-FR", AV === "CH" ? { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" } : { day: "numeric", month: "short", timeZone: "UTC" }) : ""; } catch (e) { return ""; } };   /* par cheval : plusieurs années -> l'année aussi */
       var ligneA = function (f, i, sansDate) {
         return h("div", { key: "la" + i, role: "button", tabIndex: 0, onClick: function () { allerAuFort(f); }, style: { display: "flex", alignItems: "center", gap: 12, padding: "9px 0", borderTop: i ? "1px solid rgba(243,238,228,0.07)" : "none", cursor: "pointer" } },
-          sansDate ? null : h("span", { style: { flex: "0 0 46px", fontFamily: SANS, fontSize: 10.5, color: MUET2, lineHeight: 1.2 } }, dateC(f.d)),
+          sansDate ? null : h("span", { style: { flex: AV === "CH" ? "0 0 58px" : "0 0 46px", fontFamily: SANS, fontSize: 10.5, color: MUET2, lineHeight: 1.2 } }, dateC(f.d)),
           h("span", { style: { flex: 1, minWidth: 0 } },
             h("span", { dir: "auto", style: { display: "block", fontFamily: SANS, fontSize: 12.5, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, propreA(f.nom)),
             h("span", { dir: "auto", style: { display: "block", fontFamily: SANS, fontSize: 10.5, color: MUET, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [f.ep, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · "))),
           h("span", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 17, color: colR(f), direction: "ltr", unicodeBidi: "isolate", textAlign: "end" } }, resA(f)));
       };
-      var resume = function (x) { var st = hypePerfStatsHisto(x.ls), n = x.ls.length; return [n + " " + L_EP(n), st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : ""].filter(Boolean).join(" · "); };
+      var resume = function (x) { var st = hypePerfStatsHisto(x.ls), n = x.ls.length, nq = x.ls.filter(estClasseQ).length; return [n + " " + L_EP(n), st.victoires ? st.victoires + " " + L_V(st.victoires) : "", st.podiums ? st.podiums + " " + L_P(st.podiums) : "", nq ? nq + " " + L_Q(nq) : ""].filter(Boolean).join(" · "); };
       /* points de qualification : saison en cours seulement */
-      var cour = S.filter(function (x) { return Number(x.cle) === saisonCour; })[0];
+      var cour = AV === "CH" ? null : S.filter(function (x) { return Number(x.cle) === saisonCour; })[0];
       var pts = null;
       if (cour) { var tot = 0, parF = {}; cour.toutes.forEach(function (f) { if (f.pts != null && !isNaN(f.pts)) { tot += f.pts; var k = (typeof hypePerfFamille === "function") ? hypePerfFamille(f.ep) : "—"; parF[k] = (parF[k] || 0) + f.pts; } });
         if (tot > 0) pts = h("div", { key: "pq", style: { margin: "14px 22px 4px", padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.28)", display: "flex", alignItems: "center", gap: 14 } },
@@ -1353,15 +1353,15 @@ function estClasseQ(f) {
       var photoBloc = function (ph, hauteur, cote) { return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "62%", display: "flex", justifyContent: cote === "right" ? "flex-end" : "flex-start", alignItems: "center", pointerEvents: "none" } },
         ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { maxHeight: "100%", maxWidth: "100%", height: hauteur, objectFit: "contain", display: "block", mixBlendMode: "lighten", WebkitMaskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)", maskImage: "linear-gradient(" + (cote === "right" ? "90deg" : "270deg") + ", transparent 0%, #000 45%)" } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
-      if (AV === "I") {   /* couvertures de saison en miroir, courbe dorée entre elles */
-        S.forEach(function (x, i) { var P = chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
+      if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
+        S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x), st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
           if (i) out.push(courbe("ci" + i, i % 2 === 0));
           out.push(h("div", { key: "I" + x.cle },
             h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer", background: "#000" } },
               photoBloc(P.ph, 128, droite ? "right" : "left"),
               h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
-                h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Saison", "Season")),
-                h("div", { style: { fontFamily: SERIF, fontSize: 26, lineHeight: 1, color: IVOIRE, marginTop: 3, direction: "ltr" } }, anCourt(x.lib)),
+                h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
+                h("div", { style: { fontFamily: SERIF, fontSize: x.cheval ? 24 : 26, lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),
                 h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 6 } }, resume(x)),
                 P.nom ? h("div", { style: { fontFamily: SERIF, fontSize: 15, color: CHAMP, marginTop: 4, fontStyle: "italic" } }, T("avec ", "with ") + nomCourt(P.nom)) : null,
                 h("div", { style: { fontFamily: SANS, fontSize: 11, color: CHAMP, marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
@@ -1424,20 +1424,7 @@ function estClasseQ(f) {
       bascBtn("saison", T("Par saison", "By season", "Por temporada", "Per stagione", "シーズン別", "Nach Saison", "حسب الموسم", "按赛季", "Per seizoen", "Por temporada", "Per säsong", "По сезонам", "Według sezonu", "시즌별", "بر اساس فصل")),
       chx.length > 1 ? bascBtn("cheval", (modeCav ? T("Par cheval", "By horse", "Por caballo", "Per cavallo", "馬別", "Nach Pferd", "حسب الحصان", "按马匹", "Per paard", "Por cavalo", "Per häst", "По лошадям", "Według konia", "말별", "بر اساس اسب") : T("Par cavalier", "By rider"))) : null));
     if (vueA === "cheval" && chx.length > 1) {
-      var chOuv = chOuvSt[0], setChOuv = chOuvSt[1];
-      d.push(h("div", { key: "acc", "data-perf-tableau": "1", style: { padding: "0 22px" } }, chx.map(function (c, i) {
-        var ls = c.ls.filter(visL).slice().sort(function (a, b) { return String(b.d || "").localeCompare(String(a.d || "")); });
-        var ouvert = chOuv[c.nm] != null ? chOuv[c.nm] : i === 0;
-        var ph = c.ch && c.ch.c && c.ch.c.photo_url, ne = nbEpDe(c.ls);
-        return h("div", { key: "ac" + i, style: { borderTop: "1px solid rgba(243,238,228,0.1)" } },
-          h("div", { role: "button", tabIndex: 0, onClick: function () { var o = Object.assign({}, chOuv); o[c.nm] = !ouvert; setChOuv(o); }, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 0", cursor: "pointer" } },
-            ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { width: 40, height: 40, borderRadius: 10, objectFit: "cover", flex: "0 0 auto" } }) : null,
-            h("div", { style: { flex: 1, minWidth: 0 } },
-              h("div", { style: { fontFamily: SERIF, fontSize: 21, color: IVOIRE, lineHeight: 1.1 } }, c.nm),
-              h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 2 } }, ne + " " + L_EP(ne))),
-            h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 18, transform: ouvert ? "rotate(90deg)" : "none", transition: "transform .2s" } }, rtl ? "‹" : "›")),
-          ouvert ? h("div", { style: { paddingBottom: 8 } }, ls.map(function (f, j) { return ligneResultat(f, j); })) : null);
-      })));
+      d.push(archives("CH"));   /* 13/11 01h02 (Blandine : « par cheval… 15 pages de résultats ») : bandeaux par cheval, fermés, qui se déroulent */
     } else {
       d.push(archives((typeof window !== "undefined" && window.__archVar) || "I"));   /* 13/11 00h55 (Blandine « ok ») : couvertures de saison (I) */
     }
