@@ -22,6 +22,16 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1305 — Passages des concours : visuel D (plus compact), alerte des changements pour la coach, bouton Non partant
+Blandine 13/11 11h03 → 12h16 (« 10 fois trop gros… 2 cavaliers par page » ; « Mets D que je vois si ça passe »). hype-ecran-saison.js v=152.
+- Listes des passages (fiche du concours, Engagements, Modifier les passages) en visuel D : petite vignette photo carrée à côté du nom du groupe, lignes serrées. Autres visuels essayables par classe sur <html> : rcv-a, -b, -c (compacts) ; rcv-e … -i (« cinéma » plus petits : bandeau fin, carte, affiche à gauche, photo en fondu à droite, photo dans chaque ligne).
+- Toucher n'importe où sur une ligne ouvre le panneau de modification (plus seulement le crayon).
+- Engagements : « Non partant » devient un vrai bouton « Déclarer non partant » / « ✓ Non partant · remettre partant » (puis Enregistrer).
+- « à la place de … » en bordeaux avec ⚠ (cheval ET cavalier remplacés).
+- Fiche du concours, coach : encadré bordeaux « ⚠ N changements à faire » en haut — N° de passage · épreuve · heure, « X monte Y à la place de Z », et pour le jury « (cheval déjà engagé : n° 15 en Club 2…) » ou « (cheval pas encore engagé : papiers à donner au jury) » ; idem cavalier (licence). Toucher → passages.
+- « piste PISTE 1 » → « piste 1 ».
+- Textes nouveaux en FR seulement.
+
 ## 20261113-1225 — Médias de la Team (série « grand cheval noir », par cavalier, vidéos dépliées O3) + passages des concours unifiés
 Demandes de Blandine du 13/11 (matin), publication : « Si tu veux mets en ligne et on refait le point après ».
 - hype-ecran-team-medias.js (v=48) : héros de la série « grand cheval noir » (ronds Cavaliers / Chevaux / Concours, titre en bas à gauche, courbe) ; « Par cavalier » en premier ; bandeaux alternés séparés par des traits droits ; toucher un cavalier déplie ses vidéos en encart O3 (les plus récentes d'abord) ; petits ronds photo = seulement des photos du bon couple ; titre d'une vidéo → page du couple ; onglets Vidéos · Photos ; « Tes vidéos, tes règles » replié ; Entraînement rangé dans Vidéos.
