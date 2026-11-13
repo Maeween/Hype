@@ -34,7 +34,7 @@
     var rtl = lg === "ar" || lg === "fa";
     var _u = React.useState(null); var connecte = _u[0], setConnecte = _u[1];
     var _c = React.useState(null); var compteur = _c[0], setCompteur = _c[1];
-    var _q = React.useState(""); var q = _q[0], setQ = _q[1];
+    var _q = React.useState(function () { try { var v = window.__aideQuestion || ""; window.__aideQuestion = ""; return v; } catch (e) { return ""; } }); var q = _q[0], setQ = _q[1];   /* 13/11 : question tapée dans l'encart Hey Baby du guide coach */
     var _m = React.useState([]); var msgs = _m[0], setMsgs = _m[1];
     var _e = React.useState(false); var enCours = _e[0], setEnCours = _e[1];
     var _er = React.useState(""); var err = _er[0], setErr = _er[1];
