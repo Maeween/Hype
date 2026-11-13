@@ -34,6 +34,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 23:16 — build 20261113-2316 — Outil : tout au style noir et ivoire + résultats de concours
+- Style : en-tête immersif (grand cheval noir entier, courbe dorée fine) aussi sur l'accueil de l'outil ; tous les blocs (papiers du cheval, soins, carnet, programme / ordre de passage, horaires, registre, résultats, ranger le document) en cartes noires, petits titres dorés, valeurs ivoire, coches dorées à contour, champs noirs.
+- Résultats de concours : depuis la fiche d'un concours, l'outil pose le fichier (window.__resFichier) et ouvre la fiche → onglet Résultats → lecture lancée automatiquement (lireResultats existant : vérifier chaque épreuve, puis publier). Effet placé AVANT le « if (!ev) return » de EcranConcours (ordre des hooks). Les chevaux cités → mise à jour / création des fiches proposée dans l'outil.
+- Limite : il faut être sur la fiche du concours (l'outil ne devine pas encore le concours tout seul).
+- Traductions : 15 langues. Fichiers : hype-outil-doc.js (v=12), hype-ecran-saison.js (v=171), index.html (build), SUIVI.md.
+- Pas testé en vrai : le passage vers l'onglet Résultats avec un vrai PDF (à vérifier sur iPhone).
+
 ## 2026-11-13 23:05 — build 20261113-2305 — Outil : « Demander la correction » (fiches qui ne sont pas à soi)
 - Qui n'a pas les droits sur une fiche (ni propriétaire, ni équipe de l'écurie du cheval, ni modératrice) : la fiche est marquée « à faire valider » ; « Demander la correction » (ou « Faire les N changements » si certaines fiches sont à soi : celles-là sont corrigées tout de suite) → demande + document joint ; le propriétaire reçoit une notification (type « correction »).
 - Ceux qui peuvent valider voient en tête de l'outil « Corrections à valider » : qui demande, d'après quel document, ancienne valeur barrée / nouvelle, « Voir le document », « Refuser » / « Accepter » ; accepter corrige la fiche aussitôt, le demandeur est notifié.

@@ -2029,6 +2029,16 @@ function EcranConcours() {
       h("div", { className: "hs-in" }, h("div", { className: "hs-titre" }, h("h1", { style: String(titre || "").length > 14 ? { fontSize: "clamp(34px,9.5vw,52px)", lineHeight: 1.05 } : null }, titre), sous ? h("p", null, sous) : null)));
   }
   var sousTitre = ev ? [hsPlage(ev), hsVille(ev.lieu)].filter(Boolean).join(" · ") : "";   /* 13/11 15h : la ville seule dans le héros */
+  /* 13/11 23h05 (Blandine : résultats de concours par l'outil unique « Ajouter un document ») : l'outil pose le fichier dans
+     window.__resFichier et ouvre la fiche du concours ; on le lit ici dès que l'équipe engagée est chargée (sinon après 5 s).
+     ⚠️ Placé AVANT le « if (!ev) return » : un hook après ce retour changerait l'ordre des hooks. */
+  React.useEffect(function () {
+    var f = null; try { f = window.__resFichier || null; } catch (e) { }
+    if (!f || !ev) return undefined;
+    function go() { try { if (window.__resFichier !== f) return; window.__resFichier = null; } catch (e) { } setOngletC("resultats"); lireResultats({ target: { files: [f] } }); }
+    if ((passagesEq || []).length) { go(); return undefined; }
+    var t = setTimeout(go, 5000); return function () { clearTimeout(t); };
+  }, [ev && ev.id, (passagesEq || []).length]);
   if (!ev) return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" }, heroC(F("Concours"), ""), h("div", { className: "hs-in" },
     erreur ? h("div", { className: "hs-vide", style: { marginTop: 22 } }, F("Impossible d’ouvrir ce concours : ") + erreur) : h("div", { className: "hs-attente", "aria-busy": "true" }, "…")));
 

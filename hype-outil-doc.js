@@ -140,6 +140,13 @@
 "Voir le document": ["View the document", "Ver el documento", "Vedi il documento", "書類を見る", "Dokument ansehen", "عرض المستند", "查看文件", "Document bekijken", "Ver o documento", "Visa dokumentet", "Посмотреть документ", "Zobacz dokument", "서류 보기", "دیدن سند"],
 "Refuser": ["Decline", "Rechazar", "Rifiuta", "却下", "Ablehnen", "رفض", "拒绝", "Weigeren", "Recusar", "Avböj", "Отклонить", "Odrzuć", "거절", "رد کردن"],
 "Accepter": ["Accept", "Aceptar", "Accetta", "承認", "Annehmen", "قبول", "接受", "Aanvaarden", "Aceitar", "Godkänn", "Принять", "Zaakceptuj", "승인", "پذیرفتن"],
+"Carnet de vaccination": ["Vaccination record", "Cartilla de vacunación", "Libretto delle vaccinazioni", "ワクチン記録", "Impfpass", "سجل التطعيم", "疫苗接种记录", "Vaccinatieboekje", "Boletim de vacinação", "Vaccinationsbok", "Прививочный паспорт", "Książeczka szczepień", "예방접종 기록", "دفترچهٔ واکسن"],
+"Programme du concours": ["Show programme", "Programa del concurso", "Programma del concorso", "競技会のプログラム", "Turnierprogramm", "برنامج المسابقة", "比赛日程", "Wedstrijdprogramma", "Programa do concurso", "Tävlingsprogram", "Программа соревнований", "Program zawodów", "대회 프로그램", "برنامهٔ مسابقه"],
+"Ordre de passage": ["Start order", "Orden de salida", "Ordine di partenza", "出走順", "Startreihenfolge", "ترتيب الانطلاق", "出场顺序", "Startvolgorde", "Ordem de entrada", "Startordning", "Порядок выступлений", "Kolejność startów", "출전 순서", "ترتیب ورود"],
+"Chevaux": ["Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول", "马匹", "Paarden", "Cavalos", "Hästar", "Лошади", "Konie", "말", "اسب‌ها"],
+"Résultats du concours": ["Show results", "Resultados del concurso", "Risultati del concorso", "競技会の結果", "Turnierergebnisse", "نتائج المسابقة", "比赛成绩", "Wedstrijduitslagen", "Resultados do concurso", "Tävlingsresultat", "Результаты соревнований", "Wyniki zawodów", "대회 결과", "نتایج مسابقه"],
+"D’après ses papiers": ["According to its papers", "Según sus papeles", "Secondo i suoi documenti", "書類によると", "Laut seinen Papieren", "حسب أوراقه", "根据其证件", "Volgens zijn papieren", "Segundo os papéis", "Enligt pappren", "По документам", "Według dokumentów", "서류에 따르면", "بر اساس مدارکش"],
+"Je les lis dans l’onglet Résultats de la fiche du concours : tu vérifies chaque épreuve, puis tu publies. Ils iront sur les performances des cavaliers et des chevaux.": ["I'll read them in the Results tab of the show page: you check each class, then publish. They'll go to the riders' and horses' performances.", "Los leo en la pestaña Resultados de la ficha del concurso: revisas cada prueba y luego publicas. Irán a las actuaciones de los jinetes y de los caballos.", "Li leggo nella scheda Risultati del concorso: verifichi ogni prova, poi pubblichi. Andranno nelle prestazioni dei cavalieri e dei cavalli.", "競技会ページの「結果」タブで読み取ります：各競技を確認してから公開してね。ライダーと馬の成績に反映されます。", "Ich lese sie im Reiter Ergebnisse der Turnierseite: Du prüfst jede Prüfung und veröffentlichst dann. Sie erscheinen bei den Leistungen der Reiter und Pferde.", "أقرؤها في تبويب النتائج في صفحة المسابقة: تتحقق من كل منافسة ثم تنشر. ستظهر في أداء الفرسان والخيول.", "我会在比赛页面的「成绩」标签中读取：你逐项核对后发布。成绩会进入骑手和马匹的表现记录。", "Ik lees ze in het tabblad Uitslagen van de wedstrijdpagina: je controleert elke proef en publiceert dan. Ze komen bij de prestaties van ruiters en paarden.", "Leio-os no separador Resultados da ficha do concurso: verificas cada prova e depois publicas. Vão para os desempenhos dos cavaleiros e dos cavalos.", "Jag läser dem under fliken Resultat på tävlingssidan: du kontrollerar varje klass och publicerar sedan. De hamnar under ryttarnas och hästarnas prestationer.", "Я прочитаю их во вкладке «Результаты» на странице соревнований: ты проверяешь каждый маршрут и публикуешь. Они попадут в выступления всадников и лошадей.", "Odczytam je w zakładce Wyniki na stronie zawodów: sprawdzasz każdy konkurs, potem publikujesz. Trafią do wyników jeźdźców i koni.", "대회 페이지의 결과 탭에서 읽을게: 경기마다 확인한 뒤 게시해. 기수와 말의 성적에 반영돼.", "آن‌ها را در زبانهٔ نتایجِ صفحهٔ مسابقه می‌خوانم: هر رقابت را بررسی می‌کنی، بعد منتشر می‌کنی. به عملکرد سوارکاران و اسب‌ها اضافه می‌شوند."],
 "vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
@@ -1455,7 +1462,7 @@
       ".hod-hero{position:relative;margin:-16px -20px 10px;height:210px;background:#000;border-radius:24px 24px 0 0;overflow:hidden}",
       ".hod-hero img{position:absolute;right:0;top:0;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:right center}",
       ".hod-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 75%),linear-gradient(180deg,rgba(0,0,0,0) 55%,#050505 100%)}",
-      ".hod-hero-t{position:absolute;left:20px;bottom:22px;right:40%;z-index:2}",
+      ".hod-hero-t{position:absolute;left:20px;bottom:22px;right:32%;z-index:2}",
       ".hod-hero-t .hod-titre{margin:6px 0 0;font-size:27px;line-height:1.05}",
       ".hod-hero svg{position:absolute;left:0;right:0;bottom:8px;width:100%;height:40px;z-index:2}",
       ".hod-hero .hod-poignee{position:absolute;top:10px;left:50%;margin-left:-21px;z-index:3}",
@@ -1466,7 +1473,8 @@
       ".hod-chg-l{font-family:'Cinzel',Georgia,serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,166,107,.85)}",
       ".hod-chg-v{margin-top:3px;font-size:14px;line-height:1.35;color:#F3EEE4;overflow-wrap:anywhere}",
       ".hod-chg-a{display:block;font-size:11.5px;color:rgba(243,238,228,.42);text-decoration:line-through;margin-top:2px}",
-      ".hod-sel{width:100%;margin-top:6px;background:rgba(255,255,255,.04);color:#F3EEE4;border:1px solid rgba(243,238,228,.16);border-radius:12px;padding:10px 12px;font:inherit;font-size:13.5px}"
+      ".hod-sel{display:block;width:100%;box-sizing:border-box;margin-top:6px;background:#000;color:#F3EEE4;border:1px solid rgba(243,238,228,.16);border-radius:12px;padding:10px 12px;font:inherit;font-size:13.5px;color-scheme:dark}",
+      ".hod-sel:focus{outline:none;border-color:rgba(201,166,107,.7)}"
     ].join("\n");
     document.head.appendChild(st);
   }
@@ -1727,7 +1735,7 @@
     React.useEffect(function () {
       if (!st.lu || st.lu.type !== "papiers_cheval" || !st.chevalId) { setFiche(null); return; }
       var vif = true;
-      supa.from("chevaux").select("id, nom, race, age, origines, club").eq("id", st.chevalId).maybeSingle().then(async function (r) {
+      supa.from("chevaux").select("id, nom, race, age, origines, club, photo_url").eq("id", st.chevalId).maybeSingle().then(async function (r) {
         if (!vif) return;
         var f = (r && !r.error && r.data) || null;
         /* 13/11 21h43 (Blandine : « faire en sorte qu'ils remplissent la table du registre ») : la ligne du registre des chevaux
@@ -1825,9 +1833,9 @@
       if (!props.concoursId) { maj({ err: T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.") }); return; }
       try {
         window.__concoursId = props.concoursId; window.__engagementsId = props.concoursId;
-        if (type === "ordre_passage") window.__ordreFichier = st.fichier; else window.__progFichier = st.fichier;
+        if (type === "ordre_passage") window.__ordreFichier = st.fichier; else if (type === "resultats") window.__resFichier = st.fichier; else window.__progFichier = st.fichier;
       } catch (e) { }
-      props.fermer(); if (app.setEcran) app.setEcran(type === "ordre_passage" ? "engagements" : "jour-j");
+      props.fermer(); if (app.setEcran) app.setEcran(type === "ordre_passage" ? "engagements" : type === "resultats" ? "concours" : "jour-j");
     }
 
     /* 13/11 22h07 (Blandine : « quand un cheval entre ou quitte l'écurie… on est obligé de le signaler sur le registre d'élevage ») :
@@ -2139,9 +2147,13 @@
     var corps;
     if (st.etape === "choix") {
       corps = h("div", null,
+        h("div", { className: "hod-hero" },
+          h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }), h("div", { className: "hod-poignee" }),
+          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 })),
+          h("div", { className: "hod-hero-t" },
+            h("div", { className: "hod-k" }, T("Un document, une info ?")),
+            h("div", { className: "hod-titre" }, T("Que souhaites-tu enregistrer ?")))),
         blocAValider(),
-        h("div", { className: "hod-k" }, T("Un document, une info ?")),
-        h("div", { className: "hod-titre" }, T("Que souhaites-tu enregistrer ?")),
         h("div", { className: "hod-note" }, T("Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me le dire en vocal. Je te poserai une question si j’ai un doute.")),
         h("textarea", { className: "hod-ta", value: st.note, placeholder: T("Par exemple : « Enregistre les horaires : départ 6 h 30, embarquement 7 h, reco à 8 h pour la Club 3 »"), onChange: function (e) { maj({ note: e.target.value }); } }),
         h("div", { style: { display: "flex", gap: 8, marginTop: 8, alignItems: "center" } },
@@ -2165,94 +2177,102 @@
     } else {
       var lu = st.lu || {}, type = lu.type;
       var action = null;
+      /* 13/11 23h04 : tous les blocs de l'outil dans le même style noir et ivoire (cartes, petits titres dorés, coches à contour) */
+      var sec = function (titre, compte, intro) { var enfants = Array.prototype.slice.call(arguments, 3);
+        return h.apply(null, ["div", { className: "hod-sec" },
+          h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, titre), compte != null ? h("div", { className: "hod-pas" }, String(compte)) : null),
+          intro ? h("div", { className: "hod-sec-p" }, intro) : null].concat(enfants)); };
+      var lab = function (t) { return h("div", { className: "hod-chg-l", style: { marginTop: 14 } }, t); };
+      var bas = function (principal, libP, desact, sansAnnuler) { return h("div", { className: "hod-bas" }, sansAnnuler ? null : h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: !!desact, onClick: principal }, libP)); };
+      var ligneV = function (k, libelle, valeur) { return h("div", { key: k, className: "hod-chg", style: { cursor: "default" } }, h("div", { className: "hod-chx" }, h("div", { className: "hod-chg-l" }, libelle), h("div", { className: "hod-chg-v" }, valeur))); };
+      var tg = function (on) { return h("div", { className: "hod-tg" + (on ? " on" : "") }, "✓"); };
+      var selCheval = function () { return h("select", { className: "hod-sel", value: st.chevalId, onChange: function (e) { maj({ chevalId: e.target.value }); } }, h("option", { value: "" }, T("— Quel cheval ? —")), chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })); };
       if (type === "liste_soins") {
-        action = h("div", { className: "hod-bloc" },
-          h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Les soins à enregistrer")),
+        var nS = st.lignes.filter(function (l) { return l.coche; }).length;
+        action = sec(T("Les soins à enregistrer"), st.lignes.length || null, null,
           st.lignes.length ? st.lignes.map(function (l, i) {
             function ml(o) { var L = st.lignes.slice(); L[i] = Object.assign({}, l, o); maj({ lignes: L }); }
-            return h("div", { key: l.k, className: "hod-ligne" },
-              h("input", { type: "checkbox", checked: l.coche, onChange: function (e) { ml({ coche: e.target.checked }); } }),
-              h("div", null,
-                h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.55)" } }, T("Lu : « ") + (l.nomLu || "?") + " »" + (l.detail ? " · " + l.detail : "")),
-                h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 5 } },
-                  h("select", { value: l.chevalId, onChange: function (e) { ml({ chevalId: e.target.value }); } }, h("option", { value: "" }, T("— cheval ? —")), chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })),
-                  h("select", { value: l.soin, onChange: function (e) { ml({ soin: e.target.value }); } }, TYPES_SOIN.map(function (t) { return h("option", { key: t[0], value: t[0] }, T(t[1])); })),
-                  h("input", { type: "date", value: l.date, onChange: function (e) { ml({ date: e.target.value }); } }))));
-          }) : h("div", { className: "hod-note" }, T("Je n’ai trouvé aucune ligne de soin.")),
-          h("div", { className: "hod-bas" },
-            h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
-            h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: enregistrerSoins }, st.busy ? "…" : T("Enregistrer les soins cochés"))));
+            var ch = chevaux.filter(function (c) { return c.id === l.chevalId; })[0];
+            return h("div", { key: l.k, className: "hod-fm" + (l.coche ? "" : " off"), style: { opacity: l.coche ? 1 : .5 } },
+              h("div", { className: "hod-fm-h", style: { cursor: "pointer" }, onClick: function () { ml({ coche: !l.coche }); } },
+                h("div", { className: "hod-av" }, String((ch && ch.nom) || l.nomLu || "?").charAt(0).toUpperCase()),
+                h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, (ch && ch.nom) || l.nomLu || "?"), h("div", { className: "hod-chs" }, T("Lu : « ") + (l.nomLu || "?") + " »" + (l.detail ? " · " + l.detail : ""))),
+                tg(l.coche)),
+              h("div", { style: { padding: "0 12px 12px" } },
+                h("select", { className: "hod-sel", value: l.chevalId, onChange: function (e) { ml({ chevalId: e.target.value }); } }, h("option", { value: "" }, T("— cheval ? —")), chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })),
+                h("div", null,
+                  h("select", { className: "hod-sel", value: l.soin, onChange: function (e) { ml({ soin: e.target.value }); } }, TYPES_SOIN.map(function (t) { return h("option", { key: t[0], value: t[0] }, T(t[1])); })),
+                  h("input", { className: "hod-sel", type: "date", value: l.date, onChange: function (e) { ml({ date: e.target.value }); } }))));
+          }) : h("div", { className: "hod-sec-p" }, T("Je n’ai trouvé aucune ligne de soin.")),
+          bas(enregistrerSoins, st.busy ? "…" : T("Enregistrer les soins cochés"), st.busy || !nS));
       } else if (type === "carnet_vaccins") {
-        action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Je l’ouvre dans la page Santé du cheval et je lis les vaccins (tu valideras chaque date).")), choixCheval(),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", onClick: allerCarnet }, T("Lire le carnet"))));
+        action = sec(T("Carnet de vaccination"), null, T("Je l’ouvre dans la page Santé du cheval et je lis les vaccins (tu valideras chaque date)."),
+          lab(T("Cheval")), selCheval(), bas(allerCarnet, T("Lire le carnet")));
       } else if (type === "programme" || type === "ordre_passage") {
-        action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, type === "programme" ? T("Je le lis dans le Jour J du concours (horaires, recos, pistes) et je le garde dans le Dossier du concours.") : T("Je le lis dans les Engagements du concours (numéros et heures de passage) et je le garde dans le Dossier du concours.")),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", onClick: function () { allerConcours(type); } }, T("Continuer"))));
+        action = sec(type === "programme" ? T("Programme du concours") : T("Ordre de passage"), null, type === "programme" ? T("Je le lis dans le Jour J du concours (horaires, recos, pistes) et je le garde dans le Dossier du concours.") : T("Je le lis dans les Engagements du concours (numéros et heures de passage) et je le garde dans le Dossier du concours."),
+          bas(function () { allerConcours(type); }, T("Continuer")));
       } else if (type === "horaires_concours") {
         var hz = lu.horaires || {}, lignesH = Array.isArray(hz.lignes) ? hz.lignes.filter(function (x) { return x && x.heure; }) : [];
         var libT = { reco: T("Reco"), debut: T("Début"), autre: T("Autre") };
-        action = h("div", { className: "hod-bloc" },
-          h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Les horaires à enregistrer")),
-          hz.depart ? h("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, T("Départ")), h("b", { style: { fontWeight: 500 } }, hz.depart)) : null,
-          hz.embarquement ? h("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, T("Embarquement")), h("b", { style: { fontWeight: 500 } }, hz.embarquement)) : null,
-          lignesH.map(function (x, i) { return h("div", { key: "h" + i, style: { display: "flex", justifyContent: "space-between", fontSize: 13.5, padding: "4px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, (x.type === "autre" ? (x.lib || libT.autre) : (libT[x.type] || libT.autre)) + (x.epreuve ? " · " + x.epreuve : "")), h("b", { style: { fontWeight: 500 } }, x.heure)); }),
-          !props.concoursId ? h("div", { className: "hod-note", style: { marginTop: 8 } }, T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.")) : null,
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
-            h("button", { type: "button", className: "hod-btn", disabled: st.busy || !props.concoursId, onClick: enregistrerHoraires }, st.busy ? "…" : T("Enregistrer les horaires"))));
+        action = sec(T("Les horaires à enregistrer"), null, !props.concoursId ? T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page.") : null,
+          h("div", { className: "hod-fm" },
+            hz.depart ? ligneV("dep", T("Départ"), hz.depart) : null,
+            hz.embarquement ? ligneV("emb", T("Embarquement"), hz.embarquement) : null,
+            lignesH.map(function (x, i) { return ligneV("h" + i, (x.type === "autre" ? (x.lib || libT.autre) : (libT[x.type] || libT.autre)) + (x.epreuve ? " · " + x.epreuve : ""), x.heure); })),
+          bas(enregistrerHoraires, st.busy ? "…" : T("Enregistrer les horaires"), st.busy || !props.concoursId));
       } else if (type === "mouvement_cheval") {
         var mv = st.mv || {};
         function mm(o) { maj({ mv: Object.assign({}, mv, o) }); }
-        var stIn = { width: "100%", marginTop: 6, background: "rgba(255,255,255,.04)", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.16)", borderRadius: 12, padding: "9px 10px", font: "inherit", fontSize: 13, boxSizing: "border-box" };
-        var lab = function (t) { return h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.55)", marginTop: 10 } }, t); };
-        action = h("div", { className: "hod-bloc" },
-          h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Registre des chevaux")),
-          h("select", { value: mv.sens || "entree", onChange: function (e) { mm({ sens: e.target.value }); }, style: stIn },
+        action = sec(T("Registre des chevaux"), null, null,
+          h("select", { className: "hod-sel", value: mv.sens || "entree", onChange: function (e) { mm({ sens: e.target.value }); } },
             h("option", { value: "entree" }, T("Arrivée à l’écurie")),
             h("option", { value: "sortie" }, T("Départ définitif")),
             h("option", { value: "sortie_provisoire" }, T("Sortie provisoire (concours, stage, vétérinaire…)"))),
           lab(T("Cheval")),
-          h("select", { value: st.chevalId, onChange: function (e) { maj({ chevalId: e.target.value }); }, style: stIn },
+          h("select", { className: "hod-sel", value: st.chevalId, onChange: function (e) { maj({ chevalId: e.target.value }); } },
             h("option", { value: "" }, mv.sens === "entree" ? T("＋ Nouveau cheval : je crée sa fiche") : T("— Quel cheval ? —")),
             chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })),
           (!st.chevalId && mv.sens === "entree") ? h("div", null,
-            lab(T("Nom du cheval")), h("input", { value: mv.nom || "", placeholder: T("Son nom, comme sur ses papiers"), onChange: function (e) { mm({ nom: e.target.value }); }, style: stIn }),
+            lab(T("Nom du cheval")), h("input", { className: "hod-sel", value: mv.nom || "", placeholder: T("Son nom, comme sur ses papiers"), onChange: function (e) { mm({ nom: e.target.value }); } }),
             mesClubs.length > 1 ? lab(T("Écurie")) : null,
-            mesClubs.length > 1 ? h("select", { value: mv.club || mesClubs[0], onChange: function (e) { mm({ club: e.target.value }); }, style: stIn }, mesClubs.map(function (k) { return h("option", { key: k, value: k }, k); })) : null,
-            h("div", { className: "hod-note", style: { fontSize: 11.5 } }, T("Tu pourras compléter sa fiche ensuite (photo, papiers…)."))) :
-          (!st.chevalId ? h("div", { className: "hod-note", style: { fontSize: 11.5 } }, T("Le cheval doit déjà avoir sa fiche dans Hype.")) : null),
-          lab(mv.sens === "entree" ? T("Arrivé le") : T("Parti le")), h("input", { type: "date", value: mv.date || "", onChange: function (e) { mm({ date: e.target.value }); }, style: stIn }),
+            mesClubs.length > 1 ? h("select", { className: "hod-sel", value: mv.club || mesClubs[0], onChange: function (e) { mm({ club: e.target.value }); } }, mesClubs.map(function (k) { return h("option", { key: k, value: k }, k); })) : null,
+            h("div", { className: "hod-chs", style: { marginTop: 6 } }, T("Tu pourras compléter sa fiche ensuite (photo, papiers…)."))) :
+          (!st.chevalId ? h("div", { className: "hod-chs", style: { marginTop: 6 } }, T("Le cheval doit déjà avoir sa fiche dans Hype.")) : null),
+          lab(mv.sens === "entree" ? T("Arrivé le") : T("Parti le")), h("input", { className: "hod-sel", type: "date", value: mv.date || "", onChange: function (e) { mm({ date: e.target.value }); } }),
           mv.sens === "sortie_provisoire" ? lab(T("Retour le")) : null,
-          mv.sens === "sortie_provisoire" ? h("input", { type: "date", value: mv.date_retour || "", onChange: function (e) { mm({ date_retour: e.target.value }); }, style: stIn }) : null,
-          lab(mv.sens === "entree" ? T("Venant de") : T("Destination")), h("input", { value: mv.lieu || "", placeholder: mv.sens === "entree" ? T("Adresse ou élevage d’origine") : T("Adresse ou écurie de destination"), onChange: function (e) { mm({ lieu: e.target.value }); }, style: stIn }),
-          lab(T("Motif")), h("input", { value: mv.motif || "", placeholder: mv.sens === "entree" ? T("Achat, prêt, pension, naissance…") : mv.sens === "sortie" ? T("Vente, prêt, retour propriétaire, retraite…") : T("Concours, stage, vétérinaire…"), onChange: function (e) { mm({ motif: e.target.value }); }, style: stIn }),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
-            h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: enregistrerMouvement }, st.busy ? "…" : ((!st.chevalId && mv.sens === "entree") ? T("Créer sa fiche et l’inscrire") : T("Inscrire au registre")))));
+          mv.sens === "sortie_provisoire" ? h("input", { className: "hod-sel", type: "date", value: mv.date_retour || "", onChange: function (e) { mm({ date_retour: e.target.value }); } }) : null,
+          lab(mv.sens === "entree" ? T("Venant de") : T("Destination")), h("input", { className: "hod-sel", value: mv.lieu || "", placeholder: mv.sens === "entree" ? T("Adresse ou élevage d’origine") : T("Adresse ou écurie de destination"), onChange: function (e) { mm({ lieu: e.target.value }); } }),
+          lab(T("Motif")), h("input", { className: "hod-sel", value: mv.motif || "", placeholder: mv.sens === "entree" ? T("Achat, prêt, pension, naissance…") : mv.sens === "sortie" ? T("Vente, prêt, retour propriétaire, retraite…") : T("Concours, stage, vétérinaire…"), onChange: function (e) { mm({ motif: e.target.value }); } }),
+          bas(enregistrerMouvement, st.busy ? "…" : ((!st.chevalId && mv.sens === "entree") ? T("Créer sa fiche et l’inscrire") : T("Inscrire au registre")), st.busy));
       } else if (type === "liste_chevaux") {
-        action = manquants().length || nv.fait || propositions().length || mj.fait ? null : h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Tous ces chevaux ont déjà leur fiche dans Hype.")),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
+        action = manquants().length || nv.fait || propositions().length || mj.fait ? null : sec(T("Chevaux"), null, T("Tous ces chevaux ont déjà leur fiche dans Hype."), bas(props.fermer, T("Fermer"), false, true));
       } else if (type === "resultats") {
-        action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Les résultats se lisent encore depuis la carte « Résultats » de la fiche du concours : je les brancherai ici à la prochaine étape.")),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
+        action = sec(T("Résultats du concours"), null, props.concoursId ? T("Je les lis dans l’onglet Résultats de la fiche du concours : tu vérifies chaque épreuve, puis tu publies. Ils iront sur les performances des cavaliers et des chevaux.") : T("Ouvre d’abord la fiche du concours, puis redonne-moi le document en bas de la page."),
+          bas(function () { allerConcours("resultats"); }, T("Continuer"), !props.concoursId));
       } else {
         var typeDoc = type === "ordonnance" ? "ordonnance" : type === "facture" ? "facture" : "autre";
         var p = lu.papiers || {};
         var champs = (type === "papiers_cheval" && fiche) ? champsPapiers(p, fiche) : [];
-        action = h("div", { className: "hod-bloc" },
-          type === "papiers_cheval" ? h("div", { style: { marginBottom: 12 } },
-            h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Compléter la fiche du cheval")),
-            !st.chevalId ? h("div", { className: "hod-note" }, T("Choisis d’abord le cheval ci-dessous.")) :
-            !fiche ? h("div", { className: "hod-note" }, "…") :
-            champs.length ? champs.map(function (c) {
-              return h("label", { key: c.k, className: "hod-ligne", style: { cursor: c.pareil ? "default" : "pointer" } },
-                h("input", { type: "checkbox", disabled: c.pareil, checked: c.pareil || !!coches[c.k], onChange: function (e) { var x = Object.assign({}, coches); x[c.k] = e.target.checked; setCoches(x); } }),
-                h("div", null,
-                  h("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13 } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, c.lib), h("b", { style: { fontWeight: 500 } }, c.lu)),
-                  c.pareil ? h("div", { style: { fontSize: 11.5, color: "#96CDAA" } }, (c.k === "puce" || c.k === "proprietaire") ? T("✓ déjà au registre") : T("✓ déjà sur la fiche")) :
-                  c.diff ? h("div", { style: { fontSize: 11.5, color: "#E8D3A8" } }, T("Différent de la fiche : ") + c.fiche + T(" — coche pour remplacer")) :
-                  h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.5)" } }, (c.k === "puce" || c.k === "proprietaire") ? T("vide au registre") : T("vide sur la fiche"))));
-            }) : h("div", { className: "hod-note" }, T("Je n’ai rien lu d’utile pour la fiche."))) : null,
-          h("div", { className: "hod-note" }, T("Je le range dans les documents de la page Santé du cheval :")), choixCheval(),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: function () { rangerDoc(typeDoc); } }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")))));
+        var chF = chevaux.filter(function (c) { return c.id === st.chevalId; })[0];
+        action = h("div", null,
+          type === "papiers_cheval" ? sec(T("Compléter la fiche du cheval"), null, !st.chevalId ? T("Choisis d’abord le cheval ci-dessous.") : null,
+            st.chevalId && !fiche ? h("div", { className: "hod-sec-p" }, "…") : null,
+            st.chevalId && fiche ? (champs.length ? h("div", { className: "hod-fm" },
+              h("div", { className: "hod-fm-h" }, h("div", { className: "hod-av" }, fiche.photo_url ? h("img", { src: fiche.photo_url, alt: "" }) : String((chF && chF.nom) || "?").charAt(0).toUpperCase()), h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, (chF && chF.nom) || fiche.nom || ""), h("div", { className: "hod-chs" }, T("D’après ses papiers")))),
+              champs.map(function (c) {
+                var on = c.pareil || !!coches[c.k];
+                var reg = (c.k === "puce" || c.k === "proprietaire");
+                return h("div", { key: c.k, className: "hod-chg" + (on || c.pareil ? "" : " off"), style: { cursor: c.pareil ? "default" : "pointer" }, onClick: function () { if (c.pareil) return; var x = Object.assign({}, coches); x[c.k] = !coches[c.k]; setCoches(x); } },
+                  h("div", { className: "hod-chx" },
+                    h("div", { className: "hod-chg-l" }, c.lib),
+                    h("div", { className: "hod-chg-v" }, c.lu,
+                      c.pareil ? h("span", { className: "hod-chg-a", style: { textDecoration: "none", color: "#96CDAA" } }, reg ? T("✓ déjà au registre") : T("✓ déjà sur la fiche")) :
+                      c.diff ? h("span", { className: "hod-chg-a" }, c.fiche) :
+                      h("span", { className: "hod-chg-a", style: { textDecoration: "none" } }, reg ? T("vide au registre") : T("vide sur la fiche")))),
+                  c.pareil ? null : tg(on));
+              })) : h("div", { className: "hod-sec-p" }, T("Je n’ai rien lu d’utile pour la fiche."))) : null) : null,
+          sec(T("Ranger le document"), null, T("Je le range dans les documents de la page Santé du cheval :"), lab(T("Cheval")), selCheval(),
+            bas(function () { rangerDoc(typeDoc); }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")), st.busy)));
       }
       corps = h("div", null,
         h("div", { className: "hod-hero" },
@@ -2275,7 +2295,7 @@
         st.err ? h("div", { className: "hod-err" }, st.err) : null);
     }
     return h("div", { className: "hod-voile", onClick: function (e) { if (e.target === e.currentTarget && st.etape !== "lecture") props.fermer(); } },
-      h("div", { className: "hod-feuille", role: "dialog" }, st.etape === "compris" ? null : h("div", { className: "hod-poignee" }), corps));
+      h("div", { className: "hod-feuille", role: "dialog" }, (st.etape === "compris" || st.etape === "choix") ? null : h("div", { className: "hod-poignee" }), corps));
   }
 
   function Encart(props) {
