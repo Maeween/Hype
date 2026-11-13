@@ -34,6 +34,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 23:05 — build 20261113-2305 — Outil : « Demander la correction » (fiches qui ne sont pas à soi)
+- Qui n'a pas les droits sur une fiche (ni propriétaire, ni équipe de l'écurie du cheval, ni modératrice) : la fiche est marquée « à faire valider » ; « Demander la correction » (ou « Faire les N changements » si certaines fiches sont à soi : celles-là sont corrigées tout de suite) → demande + document joint ; le propriétaire reçoit une notification (type « correction »).
+- Ceux qui peuvent valider voient en tête de l'outil « Corrections à valider » : qui demande, d'après quel document, ancienne valeur barrée / nouvelle, « Voir le document », « Refuser » / « Accepter » ; accepter corrige la fiche aussitôt, le demandeur est notifié.
+- Base (accord de Blandine, « Ok » 22h56) : table cheval_corrections (RLS : le demandeur voit les siennes, le propriétaire / l'équipe de l'écurie / la modératrice voient celles de leurs chevaux), fonctions hype_peut_corriger_cheval et hype_traiter_correction (SECURITY DEFINER, applique nom / race / origines), bucket privé « corrections » (dossier = id de la demande).
+- Pas encore : notification des gestionnaires de l'écurie (seul le propriétaire est notifié ; l'équipe voit les demandes dans l'outil).
+- Traductions : 15 langues. Fichiers : hype-outil-doc.js (v=11), index.html (build), SUIVI.md.
+- IDÉE À DÉVELOPPER (Blandine, 22h57) : un PACK « Ton écurie prête à être gérée » — Hype s'occupe de tout à la création de l'écurie : récupère toutes les infos, crée tous les chevaux et toutes les fiches, pour que l'écurie démarre clé en main.
+
 ## 2026-11-13 22:50 — build 20261113-2250 — Outil : mise à jour des fiches au fil des documents + visuel noir et ivoire
 - Règle (Blandine 22h35-22h42) : un document officiel (engagements, papiers SIRE…) fait foi ; l'outil corrige les fiches au fur et à mesure, AVEC confirmation, et l'équipe de l'écurie peut le faire, en plus du propriétaire.
 - « Fiches à mettre à jour » : chaque cheval cité qui a déjà une fiche, même mal orthographiée (ressemblance ≥ 80 % : « Cooltax de Vigel Z » = « Cooltax de Virchel Z »), reçoit des propositions champ par champ — nom officiel, SIRE, naissance, sexe, robe, race, père, mère. Case vide sur la fiche = cochée d'office ; valeur différente = à cocher. Un nom mal écrit n'est plus proposé en création (plus de doublon).

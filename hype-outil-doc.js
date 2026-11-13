@@ -123,6 +123,23 @@
 " changements": [" changes", " cambios", " modifiche", " 件の変更を行う", " Änderungen vornehmen", " تغييرات", " 处修改", " wijzigingen door", " alterações", " ändringarna", " изменений", " zmian", " 개 변경하기", " تغییر"],
 "Faire le changement": ["Make the change", "Hacer el cambio", "Fai la modifica", "変更する", "Änderung vornehmen", "إجراء التغيير", "进行修改", "Voer de wijziging door", "Fazer a alteração", "Gör ändringen", "Внести изменение", "Wprowadź zmianę", "변경하기", "انجام تغییر"],
 "Nouvelle fiche": ["New profile", "Ficha nueva", "Nuova scheda", "新しいプロフィール", "Neues Profil", "بطاقة جديدة", "新资料", "Nieuw profiel", "Ficha nova", "Ny profil", "Новая карточка", "Nowy profil", "새 프로필", "کارت تازه"],
+"✓ Demandes de correction envoyées : ": ["✓ Correction requests sent: ", "✓ Solicitudes de corrección enviadas: ", "✓ Richieste di correzione inviate: ", "✓ 送信した修正依頼：", "✓ Gesendete Korrekturanfragen: ", "✓ طلبات التصحيح المرسلة: ", "✓ 已发送更正请求：", "✓ Verzonden correctieverzoeken: ", "✓ Pedidos de correção enviados: ", "✓ Skickade rättelseförfrågningar: ", "✓ Отправлено запросов на исправление: ", "✓ Wysłane prośby o poprawkę: ", "✓ 보낸 수정 요청: ", "✓ درخواست‌های اصلاح فرستاده‌شده: "],
+"Le propriétaire ou l’équipe de l’écurie va les valider.": ["The owner or the yard team will review them.", "El propietario o el equipo de la cuadra las validará.", "Il proprietario o lo staff della scuderia le convaliderà.", "馬主か厩舎のスタッフが確認します。", "Der Besitzer oder das Stallteam wird sie prüfen.", "سيتحقق منها المالك أو فريق الإسطبل.", "马主或马场团队会进行确认。", "De eigenaar of het stalteam keurt ze goed.", "O proprietário ou a equipa da coudelaria vai validá-los.", "Ägaren eller stallets team granskar dem.", "Владелец или команда конюшни их проверят.", "Właściciel lub zespół stajni je zatwierdzi.", "마주나 마구간 팀이 확인할 거야.", "مالک یا تیم اصطبل تأییدشان می‌کند."],
+"à faire valider": ["needs approval", "por validar", "da convalidare", "承認待ち", "zur Freigabe", "بانتظار الموافقة", "待确认", "ter goedkeuring", "a validar", "behöver godkännas", "на проверку", "do zatwierdzenia", "승인 필요", "نیاز به تأیید"],
+"Demander la correction": ["Request the correction", "Solicitar la corrección", "Chiedi la correzione", "修正を依頼する", "Korrektur anfragen", "طلب التصحيح", "申请更正", "Correctie aanvragen", "Pedir a correção", "Begär rättelse", "Запросить исправление", "Poproś o poprawkę", "수정 요청하기", "درخواست اصلاح"],
+"Les fiches marquées « à faire valider » ne sont pas à toi : j’envoie une demande de correction, avec le document, à leur propriétaire et à l’équipe de leur écurie.": ["Profiles marked “needs approval” aren't yours: I'll send a correction request, with the document, to their owner and their yard team.", "Las fichas marcadas «por validar» no son tuyas: envío una solicitud de corrección, con el documento, a su propietario y al equipo de su cuadra.", "Le schede segnate «da convalidare» non sono tue: invio una richiesta di correzione, con il documento, al proprietario e allo staff della loro scuderia.", "「承認待ち」のプロフィールはあなたのものではありません：書類を添えて、馬主と厩舎のスタッフに修正依頼を送ります。", "Profile mit „zur Freigabe“ gehören nicht dir: Ich sende eine Korrekturanfrage mit dem Dokument an den Besitzer und das Stallteam.", "البطاقات المعلَّمة «بانتظار الموافقة» ليست لك: سأرسل طلب تصحيح مع المستند إلى مالكها وفريق إسطبلها.", "标记为「待确认」的资料不属于你：我会把更正请求连同文件发给马主和其马场团队。", "Profielen met „ter goedkeuring” zijn niet van jou: ik stuur een correctieverzoek met het document naar de eigenaar en het stalteam.", "As fichas marcadas «a validar» não são tuas: envio um pedido de correção, com o documento, ao proprietário e à equipa da coudelaria.", "Profiler märkta ”behöver godkännas” är inte dina: jag skickar en rättelseförfrågan med dokumentet till ägaren och stallets team.", "Карточки с пометкой «на проверку» не твои: я отправлю запрос на исправление с документом владельцу и команде конюшни.", "Profile oznaczone „do zatwierdzenia” nie są twoje: wyślę prośbę o poprawkę z dokumentem do właściciela i zespołu stajni.", "「승인 필요」로 표시된 프로필은 네 것이 아니야: 서류와 함께 마주와 마구간 팀에 수정 요청을 보낼게.", "کارت‌هایی که «نیاز به تأیید» دارند مال تو نیستند: درخواست اصلاح را با سند برای مالک و تیم اصطبلشان می‌فرستم."],
+"Correction proposée pour ": ["Correction suggested for ", "Corrección propuesta para ", "Correzione proposta per ", "修正の提案：", "Korrekturvorschlag für ", "تصحيح مقترح لـ ", "更正建议：", "Correctie voorgesteld voor ", "Correção proposta para ", "Föreslagen rättelse för ", "Предложено исправление для ", "Proponowana poprawka dla ", "수정 제안: ", "اصلاح پیشنهادی برای "],
+"✓ Fiche corrigée.": ["✓ Profile corrected.", "✓ Ficha corregida.", "✓ Scheda corretta.", "✓ プロフィールを修正しました。", "✓ Profil korrigiert.", "✓ تم تصحيح البطاقة.", "✓ 资料已更正。", "✓ Profiel gecorrigeerd.", "✓ Ficha corrigida.", "✓ Profilen rättad.", "✓ Карточка исправлена.", "✓ Profil poprawiony.", "✓ 프로필을 고쳤어.", "✓ کارت اصلاح شد."],
+"Demande refusée.": ["Request declined.", "Solicitud rechazada.", "Richiesta rifiutata.", "依頼を却下しました。", "Anfrage abgelehnt.", "تم رفض الطلب.", "请求已拒绝。", "Verzoek geweigerd.", "Pedido recusado.", "Förfrågan avböjd.", "Запрос отклонён.", "Prośba odrzucona.", "요청을 거절했어.", "درخواست رد شد."],
+"Pas enregistré : la base a refusé (droits sur ce cheval ?)": ["Not saved: the database refused (rights on this horse?)", "No guardado: la base lo rechazó (¿permisos sobre este caballo?)", "Non salvato: il database ha rifiutato (permessi su questo cavallo?)", "保存できませんでした：データベースが拒否しました（この馬の権限？）", "Nicht gespeichert: die Datenbank hat abgelehnt (Rechte an diesem Pferd?)", "لم يُحفظ: رفضت القاعدة (صلاحيات على هذا الحصان؟)", "未保存：数据库拒绝（对这匹马的权限？）", "Niet opgeslagen: de database weigerde (rechten op dit paard?)", "Não guardado: a base recusou (permissões sobre este cavalo?)", "Inte sparat: databasen nekade (behörighet för hästen?)", "Не сохранено: база отказала (права на эту лошадь?)", "Nie zapisano: baza odmówiła (uprawnienia do tego konia?)", "저장 안 됨: 데이터베이스가 거부했어(이 말에 대한 권한?)", "ذخیره نشد: پایگاه داده نپذیرفت (دسترسی به این اسب؟)"],
+"Correction acceptée : ": ["Correction accepted: ", "Corrección aceptada: ", "Correzione accettata: ", "修正が承認されました：", "Korrektur angenommen: ", "تم قبول التصحيح: ", "更正已接受：", "Correctie aanvaard: ", "Correção aceite: ", "Rättelse godkänd: ", "Исправление принято: ", "Poprawka przyjęta: ", "수정 승인됨: ", "اصلاح پذیرفته شد: "],
+"Correction refusée : ": ["Correction declined: ", "Corrección rechazada: ", "Correzione rifiutata: ", "修正が却下されました：", "Korrektur abgelehnt: ", "تم رفض التصحيح: ", "更正被拒绝：", "Correctie geweigerd: ", "Correção recusada: ", "Rättelse avböjd: ", "Исправление отклонено: ", "Poprawka odrzucona: ", "수정 거절됨: ", "اصلاح رد شد: "],
+"Corrections à valider": ["Corrections to review", "Correcciones por validar", "Correzioni da convalidare", "承認待ちの修正", "Zu prüfende Korrekturen", "تصحيحات بانتظار الموافقة", "待确认的更正", "Te beoordelen correcties", "Correções a validar", "Rättelser att granska", "Исправления на проверку", "Poprawki do zatwierdzenia", "확인할 수정 요청", "اصلاح‌های در انتظار تأیید"],
+"On te propose de corriger ces fiches d’après un document. Vérifie, puis accepte ou refuse.": ["Someone suggests correcting these profiles based on a document. Check, then accept or decline.", "Te proponen corregir estas fichas según un documento. Revisa y acepta o rechaza.", "Ti propongono di correggere queste schede in base a un documento. Verifica, poi accetta o rifiuta.", "書類にもとづいて、これらのプロフィールの修正が提案されています。確認して、承認か却下を選んでね。", "Jemand schlägt anhand eines Dokuments vor, diese Profile zu korrigieren. Prüfe und nimm an oder lehne ab.", "يُقترح عليك تصحيح هذه البطاقات بناءً على مستند. تحقّق ثم اقبل أو ارفض.", "有人根据一份文件建议更正这些资料。请核对后接受或拒绝。", "Er wordt voorgesteld deze profielen te corrigeren op basis van een document. Controleer en aanvaard of weiger.", "Propõem-te corrigir estas fichas com base num documento. Verifica e aceita ou recusa.", "Någon föreslår att rätta dessa profiler utifrån ett dokument. Kontrollera och godkänn eller avböj.", "Тебе предлагают исправить эти карточки по документу. Проверь и прими или отклони.", "Proponowana jest poprawka tych profili na podstawie dokumentu. Sprawdź, a potem zaakceptuj lub odrzuć.", "서류를 근거로 이 프로필들을 고치자는 제안이 왔어. 확인하고 승인하거나 거절해.", "پیشنهاد شده این کارت‌ها بر اساس یک سند اصلاح شوند. بررسی کن، بعد بپذیر یا رد کن."],
+"Demandé par ": ["Requested by ", "Solicitado por ", "Richiesto da ", "依頼者：", "Angefragt von ", "طلبه ", "申请人：", "Aangevraagd door ", "Pedido por ", "Begärt av ", "Запросил(а) ", "Prośba od ", "요청한 사람: ", "درخواست از "],
+"Voir le document": ["View the document", "Ver el documento", "Vedi il documento", "書類を見る", "Dokument ansehen", "عرض المستند", "查看文件", "Document bekijken", "Ver o documento", "Visa dokumentet", "Посмотреть документ", "Zobacz dokument", "서류 보기", "دیدن سند"],
+"Refuser": ["Decline", "Rechazar", "Rifiuta", "却下", "Ablehnen", "رفض", "拒绝", "Weigeren", "Recusar", "Avböj", "Отклонить", "Odrzuć", "거절", "رد کردن"],
+"Accepter": ["Accept", "Aceptar", "Accetta", "承認", "Annehmen", "قبول", "接受", "Aanvaarden", "Aceitar", "Godkänn", "Принять", "Zaakceptuj", "승인", "پذیرفتن"],
 "vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
@@ -1838,7 +1855,7 @@
       var lu = st.lu; if (!lu || !(lu.chevaux_liste || []).length || lu.type === "mouvement_cheval" || lu.type === "papiers_cheval") return;
       var ids = []; (lu.chevaux_liste || []).forEach(function (x) { var p = proche((x && x.nom) || ""); if (p && ids.indexOf(p.c.id) < 0) ids.push(p.c.id); });
       if (!ids.length) return;
-      try { supa.from("chevaux").select("id, nom, race, age, origines, photo_url").in("id", ids.slice(0, 200)).then(function (r) { var m = {}; ((r && !r.error && r.data) || []).forEach(function (c) { m[c.id] = c; }); setFichesMaj(m); }, function () { }); } catch (eF) { }
+      try { supa.from("chevaux").select("id, nom, race, age, origines, photo_url, user_id").in("id", ids.slice(0, 200)).then(function (r) { var m = {}; ((r && !r.error && r.data) || []).forEach(function (c) { m[c.id] = c; }); setFichesMaj(m); }, function () { }); } catch (eF) { }
     }, [st.lu]);
     var CHAMPS_MAJ = [["sire", "N° SIRE"], ["naissance", "Naissance"], ["sexe", "Sexe"], ["robe", "Robe"], ["race", "Race"], ["pere", "Père"], ["mere", "Mère"]];
     function propositions() {
@@ -1864,10 +1881,14 @@
     function coche(fid, k, defaut) { var v = mj.off[fid + "|" + k]; return v === undefined ? defaut : v; }
     async function appliquerMaj(props2) {
       setMj(Object.assign({}, mj, { busy: true, err: "", ok: "" }));
-      var nOk = 0, refus = [];
+      var nOk = 0, nDem = 0, refus = [];
       for (var i = 0; i < props2.length; i++) {
         var f = props2[i].f, ch = props2[i].ch.filter(function (c) { return coche(f.id, c.k, c.defaut); });
         if (!ch.length) continue;
+        if (!aDroit(f.id)) {
+          try { await demanderCorrection(f, ch); nDem++; } catch (eDm) { refus.push(f.nom); }
+          continue;
+        }
         try {
           var nomC = ch.filter(function (c) { return c.k === "nom"; })[0];
           var autres = ch.filter(function (c) { return c.k !== "nom"; });
@@ -1888,7 +1909,7 @@
           nOk++;
         } catch (eU) { refus.push(f.nom); }
       }
-      setMj(Object.assign({}, mj, { busy: false, fait: true, ok: (nOk ? T("✓ Fiches mises à jour : ") + nOk + "." : "") + (refus.length ? " " + T("Pas modifiées (droits) : ") + refus.join(", ") + "." : "") }));
+      setMj(Object.assign({}, mj, { busy: false, fait: true, ok: (nOk ? T("✓ Fiches mises à jour : ") + nOk + "." : "") + (nDem ? (nOk ? " " : "") + T("✓ Demandes de correction envoyées : ") + nDem + ". " + T("Le propriétaire ou l’équipe de l’écurie va les valider.") : "") + (refus.length ? " " + T("Pas modifiées (droits) : ") + refus.join(", ") + "." : "") }));
     }
     function blocMaj() {
       if (mj.fait) return h("div", { className: "hod-bloc" }, h("div", { className: mj.ok.indexOf("✓") === 0 ? "hod-ok" : "hod-err" }, mj.ok));
@@ -1902,7 +1923,7 @@
           return h("div", { key: p.f.id, className: "hod-fm" },
             h("div", { className: "hod-fm-h" },
               h("div", { className: "hod-av" }, p.f.photo_url ? h("img", { src: p.f.photo_url, alt: "" }) : String(p.f.nom || "?").charAt(0).toUpperCase()),
-              h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, p.f.nom), h("div", { className: "hod-chs" }, nOn + " / " + p.ch.length + " " + T("changements")))),
+              h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, p.f.nom), h("div", { className: "hod-chs" }, nOn + " / " + p.ch.length + " " + T("changements") + (aDroit(p.f.id) ? "" : " · " + T("à faire valider"))))),
             p.ch.map(function (c) {
               var kk = p.f.id + "|" + c.k, on = coche(p.f.id, c.k, c.defaut);
               return h("div", { key: kk, className: "hod-chg" + (on ? "" : " off"), role: "checkbox", "aria-checked": on, onClick: function () { var o = Object.assign({}, mj.off); o[kk] = !on; setMj(Object.assign({}, mj, { off: o })); } },
@@ -1913,7 +1934,86 @@
             }));
         }),
         mj.err ? h("div", { className: "hod-err" }, mj.err) : null,
-        h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", disabled: mj.busy || !n, onClick: function () { appliquerMaj(pr); } }, mj.busy ? "…" : (n > 1 ? T("Faire les ") + n + T(" changements") : T("Faire le changement")))));
+        h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", disabled: mj.busy || !n, onClick: function () { appliquerMaj(pr); } }, mj.busy ? "…" : (pr.every(function (p) { return !aDroit(p.f.id); }) ? T("Demander la correction") : (n > 1 ? T("Faire les ") + n + T(" changements") : T("Faire le changement"))))),
+        pr.some(function (p) { return !aDroit(p.f.id); }) ? h("div", { className: "hod-sec-p", style: { marginTop: 10 } }, T("Les fiches marquées « à faire valider » ne sont pas à toi : j’envoie une demande de correction, avec le document, à leur propriétaire et à l’équipe de leur écurie.")) : null);
+    }
+    /* 13/11 22h56 (Blandine, « Ok ») : qui n'a pas les droits sur une fiche DEMANDE la correction (table cheval_corrections) ;
+       le propriétaire, l'équipe de l'écurie du cheval et la modératrice l'acceptent ou la refusent (hype_traiter_correction). */
+    var _dr = React.useState({}), droits = _dr[0], setDroits = _dr[1];
+    React.useEffect(function () {
+      var ids = Object.keys(fichesMaj); if (!ids.length) return;
+      var vif = true;
+      Promise.all(ids.map(function (id) { try { return supa.rpc("hype_peut_corriger_cheval", { p_cheval: id }).then(function (r) { return [id, !!(r && !r.error && r.data === true)]; }, function () { return [id, true]; }); } catch (eR) { return Promise.resolve([id, true]); } }))
+        .then(function (l) { if (!vif) return; var m = {}; l.forEach(function (x) { m[x[0]] = x[1]; }); setDroits(m); });
+      return function () { vif = false; };
+    }, [fichesMaj]);
+    function aDroit(id) { return droits[id] !== false; }
+    async function demanderCorrection(f, ch) {
+      var r = await supa.from("cheval_corrections").insert({ cheval_id: f.id, changements: ch.map(function (c) { return { k: c.k, lib: c.lib, avant: c.avant || "", apres: c.apres }; }), source: String((st.lu && st.lu.resume) || "").slice(0, 300) || null }).select("id");
+      if (!r || r.error || !r.data || !r.data.length) throw new Error("x");
+      var idD = r.data[0].id;
+      if (st.fichier) {
+        try {
+          var fi = st.fichier, ext = (String(fi.name || "").split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (/pdf/i.test(fi.type) ? "pdf" : "jpg");
+          var chemin = idD + "/document." + ext;
+          var up = await supa.storage.from("corrections").upload(chemin, fi, { contentType: fi.type || undefined, upsert: false });
+          if (!(up && up.error)) await supa.from("cheval_corrections").update({ doc_chemin: chemin, doc_mime: fi.type || null }).eq("id", idD);
+        } catch (eD) { }
+      }
+      try { if (f.user_id && typeof hypeNotifier === "function") hypeNotifier({ type: "correction", destinataire: f.user_id, extrait: T("Correction proposée pour ") + (f.nom || ""), cible: "cheval:" + f.id }); } catch (eN) { }
+    }
+    /* les demandes en attente que je peux traiter, montrées en tête de l'outil */
+    var _ca = React.useState([]), aValider = _ca[0], setAValider = _ca[1];
+    var _ct = React.useState({}), corrEtat = _ct[0], setCorrEtat = _ct[1];
+    React.useEffect(function () {
+      var vif = true;
+      (async function () {
+        try {
+          var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null; if (!u || !u.id) return;
+          var r = await supa.from("cheval_corrections").select("*").eq("statut", "attente").neq("demandeur", u.id).order("cree_le", { ascending: false }).limit(50);
+          var L = (r && !r.error && r.data) || []; if (!L.length) return;
+          var ids = L.map(function (x) { return x.cheval_id; });
+          var rc = await supa.from("chevaux").select("id, nom, photo_url").in("id", ids);
+          var noms = {}; ((rc && !rc.error && rc.data) || []).forEach(function (c) { noms[c.id] = c; });
+          var dem = []; L.forEach(function (x) { if (dem.indexOf(x.demandeur) < 0) dem.push(x.demandeur); });
+          var pseudos = {}; try { var rp = await supa.from("profiles").select("id, pseudo").in("id", dem); ((rp && !rp.error && rp.data) || []).forEach(function (p) { pseudos[p.id] = p.pseudo; }); } catch (eP) { }
+          if (vif) setAValider(L.map(function (x) { return Object.assign({}, x, { cheval: noms[x.cheval_id] || {}, qui: pseudos[x.demandeur] || "" }); }));
+        } catch (e) { }
+      })();
+      return function () { vif = false; };
+    }, []);
+    async function traiter(d, accepter) {
+      setCorrEtat(Object.assign({}, corrEtat, (function () { var o = {}; o[d.id] = "…"; return o; })()));
+      var ok = false; try { var r = await supa.rpc("hype_traiter_correction", { p_id: d.id, p_accepter: accepter, p_motif: null }); ok = !!(r && !r.error && r.data === true); } catch (e) { }
+      var o2 = {}; o2[d.id] = ok ? (accepter ? T("✓ Fiche corrigée.") : T("Demande refusée.")) : T("Pas enregistré : la base a refusé (droits sur ce cheval ?)");
+      setCorrEtat(function (x) { return Object.assign({}, x, o2); });
+      try { if (ok && typeof hypeNotifier === "function") hypeNotifier({ type: "correction", destinataire: d.demandeur, extrait: (accepter ? T("Correction acceptée : ") : T("Correction refusée : ")) + (d.cheval.nom || ""), cible: "cheval:" + d.cheval_id }); } catch (eN) { }
+    }
+    async function ouvrirDocCorr(d) {
+      try { var r = await supa.storage.from("corrections").createSignedUrl(d.doc_chemin, 600); if (r && r.data && r.data.signedUrl) window.open(r.data.signedUrl, "_blank"); } catch (e) { }
+    }
+    function blocAValider() {
+      if (!aValider.length) return null;
+      return h("div", { className: "hod-sec", style: { marginTop: 4, marginBottom: 16 } },
+        h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Corrections à valider")), h("div", { className: "hod-pas" }, String(aValider.length))),
+        h("div", { className: "hod-sec-p" }, T("On te propose de corriger ces fiches d’après un document. Vérifie, puis accepte ou refuse.")),
+        aValider.map(function (d) {
+          var fait = corrEtat[d.id];
+          return h("div", { key: d.id, className: "hod-fm" },
+            h("div", { className: "hod-fm-h" },
+              h("div", { className: "hod-av" }, d.cheval.photo_url ? h("img", { src: d.cheval.photo_url, alt: "" }) : String(d.cheval.nom || "?").charAt(0).toUpperCase()),
+              h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, d.cheval.nom || ""), h("div", { className: "hod-chs" }, (d.qui ? T("Demandé par ") + d.qui : "") + (d.source ? (d.qui ? " · " : "") + d.source : "")))),
+            (Array.isArray(d.changements) ? d.changements : []).map(function (c, i) {
+              return h("div", { key: i, className: "hod-chg", style: { cursor: "default" } },
+                h("div", { className: "hod-chx" }, h("div", { className: "hod-chg-l" }, c.lib || c.k),
+                  h("div", { className: "hod-chg-v" }, c.apres, c.avant ? h("span", { className: "hod-chg-a" }, c.avant) : h("span", { className: "hod-chg-a", style: { textDecoration: "none" } }, T("vide sur la fiche")))));
+            }),
+            fait ? h("div", { className: fait.indexOf("✓") === 0 ? "hod-ok" : "hod-note", style: { padding: "0 12px 12px" } }, fait) :
+              h("div", { style: { display: "flex", gap: 8, padding: "4px 12px 12px", flexWrap: "wrap" } },
+                d.doc_chemin ? h("button", { type: "button", className: "hod-btn sec", style: { flex: "1 1 100%" }, onClick: function () { ouvrirDocCorr(d); } }, T("Voir le document")) : null,
+                h("button", { type: "button", className: "hod-btn sec", style: { flex: 1 }, onClick: function () { traiter(d, false); } }, T("Refuser")),
+                h("button", { type: "button", className: "hod-btn", style: { flex: 1 }, onClick: function () { traiter(d, true); } }, T("Accepter"))));
+        }));
     }
     function manquants() {
       var lu = st.lu || {}; var vus = {}, out = [];
@@ -2039,6 +2139,7 @@
     var corps;
     if (st.etape === "choix") {
       corps = h("div", null,
+        blocAValider(),
         h("div", { className: "hod-k" }, T("Un document, une info ?")),
         h("div", { className: "hod-titre" }, T("Que souhaites-tu enregistrer ?")),
         h("div", { className: "hod-note" }, T("Tu peux me transmettre une photo, une capture ou un PDF, ou simplement me le dire en vocal. Je te poserai une question si j’ai un doute.")),
