@@ -26,12 +26,18 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
-> 🟧 À FAIRE ENSUITE (Blandine, 13/11 19h38 « fais les trois points ») — OUTIL PROGRAMME, POINT 3 : GARDER LE DOCUMENT lu (aujourd'hui il est lu puis jeté) dans les papiers du concours, pour le retrouver. Demande une petite modification de la base (endroit où ranger les papiers d'un concours) : à proposer à part, après son test de la livraison 20261113-1945.
+> ✅ FAIT par la conversation « documents / outil unique » (build 20261113-2050) — OUTIL PROGRAMME, POINT 3 : le document lu est gardé dans le Dossier du concours.
 > 🟧 À FAIRE (Blandine, 13/11 19h23) — BOUTON « VERROUILLER LA JOURNÉE » sur la page Jour J : une fois tout prêt, plus aucun bouton de modification (groupes, passages, non partants) pour éviter une fausse manip « dans la bagarre » ; cadenas + confirmation pour déverrouiller. Proposé, pas encore validé.
 > 🟧 À FAIRE (Blandine, 13/11 19h05) — IMAGE DE PARTAGE DU JOUR J : bouton « Partager cette page » de la fiche concours → image verticale Hype (concours, date, adresse, groupes du paddock avec heures de rdv, N°, cheval, heure de passage, remplacements, QR + lien), texte + lien. Deux maquettes faites avec les vraies données de Versailles (version noms complets + ronds / version prénoms seuls) ; elle les teste sur WhatsApp. À ajouter : ligne « Reco 7h30 » dans la carte du groupe concerné. Choix de version pas encore fait.
 > 🟨 PLUS TARD — MAIL EN PLUS DE LA NOTIFICATION à la publication des groupes (solution B, Brevo) pour les cavaliers sans notifications. Constat 13/11 19h30 : sur 7 cavaliers du CSO Versailles, seule Eva a les notifications activées.
 
 
+
+## 20261113-2155 — Groupes : « Enregistrer en brouillon » / « Enregistrer la version définitive et publier aux cavaliers » ; Hey Baby (Aide) connaît l'outil unique et le guide coach
+Blandine 13/11 20h38 (idée des noms de boutons) et 21h43 (« Ok », après le compte rendu de la conversation « documents / outil unique »). Fichiers : hype-ecran-saison.js (v=169), hype-ecran-aide.js (v=19), netlify/functions/assistant.js, index.html (build 20261113-2155, v=). Repris sur origin/main après les publications de l'autre conversation (outil unique, guide coach, builds 2050 → 2142) : rien d'écrasé.
+- Éditeur des groupes du paddock : « Enregistrer » → « Enregistrer en brouillon » ; « Publier aux cavaliers » → « Enregistrer la version définitive et publier aux cavaliers » (texte sur plusieurs lignes si besoin). 13 langues. L'encadré « Il te reste une étape » garde « Publier aux cavaliers ».
+- Hey Baby (Aide) : topo mis à jour avec ces noms ; ajout de l'OUTIL UNIQUE « Ajouter un document » (ce qu'il range et où, après validation ; ne remplit PAS la page « Registre des chevaux ») et du GUIDE COACH (2hype.fr/#guide-coach) ; bouton « guide-coach » autorisé dans les réponses de l'Aide.
+- Point 3 de l'outil programme (garder le document) : fait par l'autre conversation (Dossier du concours).
 
 ## 20261113-2150 — Outil unique : la voix, niveau 1 (Hype lit ses réponses, conversation 🎧 qui réécoute toute seule)
 Blandine 13/11 21h38 (« fil numéro 1 »), 21h43 « Oui, vas-y ». hype-outil-doc.js (v=5) ; index.html : build 20261113-2150. Aucune modification de la base.
