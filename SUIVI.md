@@ -26,6 +26,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1420 — Ordre d'embarquement sans les heures de passage
+Blandine 13/11 14h12 (« j'ai peur que ça leur embrouille la tête » ; « Ok »). hype-ecran-saison.js : la liste montre seulement n°, cheval, cavalier ; l'ordre reste calculé sur le premier passage de chaque cheval (le dernier à passer embarque en premier).
+
 ## 20261113-1415 — Santé de l'écurie : chevaux sans écurie retirés ; retour vers la page Santé de l'écurie
 Blandine 13/11 13h53-14h10 (Ablaï, cheval de Lylou sans écurie, apparaissait sur la Santé de la SEP ; « sors-les au moins de la page santé »).
 - hype-ecran-sante-club.js (v=5) : un cheval sans écurie (club vide) n'apparaît plus sur la page Santé d'une écurie.
