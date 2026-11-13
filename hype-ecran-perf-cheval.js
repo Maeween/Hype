@@ -554,6 +554,26 @@ function EcranPerformancesCheval(props) {
   var heroCav = (modeCav && typeof hypeHeroSousPageCavalier === "function") ? h(React.Fragment, null,
     (typeof HypeDrapeauLangue !== "undefined") ? h(HypeDrapeauLangue, null) : null,
     hypeHeroSousPageCavalier({ idCav: riderId, large: largeP, ordi: ordiP, retour: retour, labelRetour: T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع", "返回", "Terug", "Voltar", "Tillbaka", "Назад", "Wróć", "뒤로", "بازگشت"), libelle: T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki sportowe", "성적", "عملکردها"), nom: nomCh, photo: ligneCh.photo_url ? photoCh : "", ecurie: (ligneCh.ecurie && ligneCh.ecurie !== "__perso__") ? ligneCh.ecurie : "" })) : null;
+  /* 13/11 02h16 (Blandine : « remettre le héros comme pour la Vidéothèque, en conservant nos photos ») : même dessin que la
+     Vidéothèque — courbe dorée en haut à droite, grande photo fondue, courbe dorée dessous, titre à droite en Cormorant.
+     La photo reste ENTIÈRE (contain), jamais recadrée. Ancien héros : window.__heroVar = "A". */
+  if (modeCav && ((typeof window !== "undefined" && window.__heroVar) || "V") === "V") {
+    var srcHV = ""; try { srcHV = (typeof hypeImgCavalierDefaut === "function") ? hypeImgCavalierDefaut(riderId) : ((typeof IMG_CAVALIER_HERO_DEFAUT !== "undefined") ? IMG_CAVALIER_HERO_DEFAUT : ""); } catch (eHv) { }
+    var nomHV = cav ? (cav.prof.pseudo || "") : "", ecHV = cav ? (cav.prof.ecurie || "") : "";
+    var gradHV = function (id) { return h("defs", null, h("linearGradient", { id: id, x1: "0", x2: "1", y1: "0", y2: "0" }, h("stop", { offset: "0", stopColor: "#C9A66B", stopOpacity: "0" }), h("stop", { offset: ".45", stopColor: "#C9A66B", stopOpacity: ".95" }), h("stop", { offset: "1", stopColor: "#C9A66B", stopOpacity: ".15" }))); };
+    var hautHV = largeP ? 460 : 400;
+    heroCav = h("div", { "data-perf-hero-video": "1", style: { position: "relative", paddingTop: "calc(env(safe-area-inset-top) + 14px)", background: "linear-gradient(180deg, #000 0%, #000 70%, #070A08 100%)" } },   /* fond noir comme les photos : plus de rectangle visible */
+      (typeof HypeDrapeauLangue !== "undefined") ? h(HypeDrapeauLangue, null) : null,
+      h("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "absolute", left: 0, right: 0, top: "calc(env(safe-area-inset-top) + 2px)", width: "100%", height: 110, pointerEvents: "none", zIndex: 2 } }, gradHV("pfhv1"), h("path", { d: "M250 4 C 330 8, 385 40, 400 96", fill: "none", stroke: "url(#pfhv1)", strokeWidth: 1.6, vectorEffect: "non-scaling-stroke" })),
+      h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back"), style: { position: "relative", zIndex: 4, marginLeft: 14, width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.25)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, "aria-hidden": "true" }, h("path", { d: "M14.5 5.5 8 12l6.5 6.5", fill: "none", stroke: "currentColor", strokeWidth: 1.6 }))),
+      h("div", { style: { position: "relative", height: hautHV, marginTop: -30, display: "flex", justifyContent: "center", WebkitMaskImage: "linear-gradient(180deg, transparent 0, #000 32%, #000 62%, transparent 94%)", maskImage: "linear-gradient(180deg, transparent 0, #000 32%, #000 62%, transparent 94%)" } },
+        srcHV ? h("img", { src: srcHV, alt: "", "aria-hidden": "true", fetchpriority: "high", style: { height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", WebkitMaskImage: "linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%)", maskImage: "linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%)" } }) : null),   /* bords fondus : pas de rectangle visible */
+      h("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "relative", display: "block", width: "100%", height: 64, marginTop: -64, zIndex: 2 } }, gradHV("pfhv2"), h("path", { d: "M0 92 C 130 90, 240 62, 400 8 L400 100 L0 100 Z", fill: "#070A08" }), h("path", { d: "M0 92 C 130 90, 240 62, 400 8", fill: "none", stroke: "url(#pfhv2)", strokeWidth: 1.6, vectorEffect: "non-scaling-stroke" })),
+      h("div", { style: { position: "relative", zIndex: 3, textAlign: "end", padding: "0 22px", marginTop: -12 } },
+        h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".38em", textTransform: "uppercase", color: CHAMP } }, T("Performances", "Performances")),
+        h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: largeP ? 60 : 50, lineHeight: 1, margin: "6px 0 0", color: IVOIRE } }, nomHV),
+        ecHV ? h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: 19, margin: "8px 0 0", color: IVOIRE, opacity: 0.88 } }, ecHV) : null));
+  }
   var menuCav = h("div", { "data-perf-menu-cav": "1", style: { display: "flex", alignItems: "center", gap: 8, margin: "14px 0 0", padding: "0 18px 12px", borderBottom: "1px solid rgba(243,238,228,0.08)" } }, h("div", { "data-noswipe": "1", "data-hscroll": "1", style: { display: "flex", gap: 8, flex: 1, minWidth: 0, overflowX: "auto", scrollbarWidth: "none" } },
     [["perf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적", "عملکردها"), null],
      ["ph", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "الصور", "照片", "Foto's", "Fotos", "Foton", "Фото", "Zdjęcia", "사진", "عکس‌ها"), "photos-cavalier"],
@@ -821,10 +841,21 @@ function estClasseQ(f) {
   var ouvrirAffichage = function () { var br = {}; (lignes || []).forEach(function (r) { if (r && r.id) br[r.id] = r.cache_cavalier === true; }); setAffEtat(""); setAffBr(br); };
   if (modeCav && MOI) {
     var petitBtn = function (k, lib, onC, ico) { return h("button", { key: k, type: "button", onClick: onC, style: { flex: 1, minWidth: 0, minHeight: 40, padding: "0 8px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 11, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, whiteSpace: "nowrap" } }, ico || null, lib); };
-    actionsCompactes = h("div", { "data-perf-actions": "1", style: { display: "flex", gap: 8, margin: "22px 18px 0" } },
-      peutSaisir ? petitBtn("pa", T("Ajouter", "Add"), function () { setAjoutOuvert(true); }, h("span", { "aria-hidden": "true", style: { fontFamily: SERIF, fontSize: 17, lineHeight: 1, color: CHAMP } }, "+")) : null,
-      peutImporter ? petitBtn("pi", T("Importer", "Import"), ouvrirImport, premiumOk ? null : ICO_CADENAS) : null,
-      petitBtn("pm", T("Affichage", "Display"), ouvrirAffichage, h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 12 } }, "✎")));
+    /* 13/11 02h18 (Blandine : « les boutons en bas, pas très intuitif pour télécharger… un petit onglet : pour retrouver tes
+       résultats en concours, pense à les importer depuis la FFE ») : un encart d invitation + deux petits liens discrets. */
+    blocVideo = null;
+    var lienP = function (k, lib, onC) { return h("button", { key: k, type: "button", onClick: onC, style: { background: "none", border: "none", padding: "6px 4px", color: CHAMP, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, lib); };
+    actionsCompactes = h("div", { "data-perf-actions": "1", style: { margin: "26px 18px 0" } },
+      peutImporter ? h("div", { role: "button", tabIndex: 0, onClick: ouvrirImport, style: { position: "relative", padding: "18px 18px 16px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.45)", background: "linear-gradient(165deg, rgba(201,166,107,0.10) 0%, rgba(11,17,20,0.92) 65%)", cursor: "pointer" } },
+        h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, T("Résultats FFE", "FFE results")),
+        h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.15, color: IVOIRE, marginTop: 6 } }, T("Retrouve tous tes concours", "Bring in all your shows")),
+        h("div", { style: { fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(243,238,228,0.78)", marginTop: 6 } }, T("Importe ton palmarès depuis la FFE : une capture d'écran de FFE Compet suffit. Rien ne s'enregistre sans ta relecture.", "Import your record from the FFE: a screenshot of FFE Compet is enough. Nothing is saved without your review.")),
+        h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, padding: "9px 16px", borderRadius: 999, border: "1px solid " + CHAMP, color: "#E6CF9C", fontFamily: SANS, fontSize: 12.5, fontWeight: 600 } }, premiumOk ? null : ICO_CADENAS, T("Importer mes résultats", "Import my results") + " ›"),
+        premiumOk ? null : h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET2, marginTop: 6 } }, "Premium"),
+        h("button", { type: "button", onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } setVideoGrande(true); }, style: { display: "block", marginTop: 10, padding: 0, background: "none", border: "none", color: CHAMP, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, T("Voir comment faire ▸", "See how ▸"))) : null,   /* 13/11 02h20 (Blandine « ok ») : la vidéo d aide passe dans l encart, l ancien bloc vidéo disparaît (pas de doublon) */
+      h("div", { style: { display: "flex", justifyContent: "center", gap: 18, marginTop: 10 } },
+        peutSaisir ? lienP("pa", T("+ Ajouter un résultat à la main", "+ Add a result by hand"), function () { setAjoutOuvert(true); }) : null,
+        lienP("pm", T("Modifier l'affichage", "Edit what shows"), ouvrirAffichage)));
   }
   /* (g8) TABLETTE / ORDINATEUR : deux colonnes (ecrans 7 a 9 de la maquette) — a gauche chiffres, cavaliers, moments forts, Team,
      actions et video ; a droite le tableau des saisons, qui profite de la largeur. Sur iPhone : la meme suite, en une colonne. */
@@ -1168,8 +1199,8 @@ function estClasseQ(f) {
           h("div", { style: { position: "absolute", top: 16, left: 22, right: 22, textAlign: "end", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, kickH),
           h("img", { src: "images/portrait-defaut-isabelle.webp", alt: "", "aria-hidden": "true", style: { position: "absolute", top: 40, bottom: 0, left: 0, height: "calc(100% - 40px)", width: "auto", maxWidth: "50%", objectFit: "contain", WebkitMaskImage: msqB, maskImage: msqB } }),
           h("div", { style: { position: "absolute", top: 40, bottom: 0, right: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-end", textAlign: "end" } },
-            h("div", { style: { fontFamily: SERIF, fontSize: 54, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt),
-            h("div", { style: { fontFamily: SANS, fontSize: 13, color: CHAMP, marginTop: 6 } }, hauteF.ep))));
+            h("div", { style: { fontFamily: SERIF, fontSize: 44, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt),
+            h("div", { style: { fontFamily: SANS, fontSize: 13, color: CHAMP, marginTop: 6 } }, [hauteF.ep, hauteF.an || String(hauteF.d || "").slice(0, 4)].filter(Boolean).join(" · ")))));   /* 13/11 02h17 (Blandine) : juste l année en plus */
       } else if (HV === "C") {
         var MIN = 0.6, MAX = 1.6, pc = Math.max(0, Math.min(100, (hauteF.haut - MIN) / (MAX - MIN) * 100));
         var crans = [0.6, 0.8, 1.0, 1.2, 1.4, 1.6];
@@ -1226,6 +1257,13 @@ function estClasseQ(f) {
       else if (gC) { var f0 = gC.ls[0], chs = {}; gC.ls.forEach(function (f) { if (f.cav) chs[nomCourt(f.cav)] = 1; });
         recs.push({ k: "rc", l1: h(React.Fragment, null, kick(MOI ? T("Ton concours le plus réussi", "Your best show") : T("Son concours le plus réussi", "Best show")), gros(String(gC.n)), " " + T("classements", "placings")),
           l2: h(React.Fragment, null, propreR(f0.nom), h("br"), [dateLisible(gC.deb), Object.keys(chs).join(", ")].filter(Boolean).join(" · ")), ph: phDe(f0.cav), f: f0 }); }
+      /* 13/11 02h20 (Blandine : « l'outil pourra calculer les statistiques par saison… voir quelle était ta meilleure saison ») :
+         la saison au plus fort pourcentage de classements (au moins 5 parcours), à égalité la plus riche en classements. */
+      var parS = {}; bR.forEach(function (f) { if (!f.d || typeof hypePerfSaisonDe !== "function") return; var sa = hypePerfSaisonDe(f.d); if (sa == null) return; (parS[sa] = parS[sa] || []).push(f); });
+      var bS = null; Object.keys(parS).forEach(function (sa) { var ls = parS[sa], nE = nbEpDe(ls), nQ = ls.filter(estClasseQ).length; if (nE < 5) return; var pc = nQ / nE; if (!bS || pc > bS.pc || (pc === bS.pc && nQ > bS.nQ)) bS = { sa: Number(sa), ls: ls, nE: nE, nQ: nQ, pc: pc }; });
+      if (bS) { var vS = bS.ls.filter(function (f) { return f.pl === 1 && !faux1er(f); }).length, chS = {}; bS.ls.forEach(function (f) { if (f.cav) chS[f.cav] = (chS[f.cav] || 0) + 1; }); var chPS = Object.keys(chS).sort(function (a, b) { return chS[b] - chS[a]; })[0];
+        recs.push({ k: "rs", l1: h(React.Fragment, null, kick(MOI ? T("Ta meilleure saison", "Your best season") : T("Sa meilleure saison", "Best season")), gros(bS.sa + "–" + String(bS.sa + 1).slice(2))),
+          l2: h(React.Fragment, null, Math.round(bS.pc * 100) + " % " + T("de classements", "placed") + " · " + bS.nQ + " " + T("classements", "placings") + (vS ? " · " + vS + " " + (vS > 1 ? T("victoires", "wins") : T("victoire", "win")) : ""), chPS ? h(React.Fragment, null, h("br"), T("surtout avec ", "mostly with ") + nomCourt(chPS)) : null), ph: phDe(chPS), f: bS.ls.filter(estClasseQ)[0] || bS.ls[0] }); }
       /* 3 */
       var parC = {}; bR.filter(estClasseQ).forEach(function (f) { if (f.cav) parC[f.cav] = (parC[f.cav] || 0) + 1; });
       var cC = Object.keys(parC).sort(function (a, b) { return parC[b] - parC[a]; })[0];
@@ -1239,7 +1277,7 @@ function estClasseQ(f) {
       if (bH) recs.push({ k: "rm", l1: h(React.Fragment, null, kick(MOI ? T("Ton meilleur classement au plus haut niveau", "Your best placing at top level") : T("Son meilleur classement au plus haut niveau", "Best placing at top level")), gros(rangTxt(bH.pl)), bH.part ? " " + SUR() + " " + bH.part : ""),
         l2: h(React.Fragment, null, [bH.ep, hTx(bH)].filter(Boolean).join(" · "), h("br"), [propreR(bH.nom), String(bH.d || "").slice(0, 4), bH.cav ? nomCourt(bH.cav) : ""].filter(Boolean).join(" · ")), ph: phDe(bH.cav), f: bH });
     }
-    if (recs) { var ORD_R = ["rv", "rm", "rc", "rh"]; recs.sort(function (a, b) { return ORD_R.indexOf(a.k) - ORD_R.indexOf(b.k); }); }   /* 13/11 01h51 (Blandine) : victoire la plus disputée, meilleur au plus haut niveau, concours le plus réussi, cheval de cœur en dernier */
+    if (recs) { var ORD_R = ["rv", "rm", "rs", "rc", "rh"]; recs.sort(function (a, b) { return ORD_R.indexOf(a.k) - ORD_R.indexOf(b.k); }); }   /* 13/11 01h51 (Blandine) : victoire la plus disputée, meilleur au plus haut niveau, concours le plus réussi, cheval de cœur en dernier */
     /* 13/11 02h01 (Blandine : « remonter ta saison, tes chiffres entre la plus haute épreuve et les records… rupture visuelle ») : records APRÈS En bref */
     var pousserRecs = function () { if (!(recs && recs.length)) return;
       g.push(sepA2("s1b")); g.push(partie("p4", T("Palmarès", "Track record"), MOI ? T("Tes records", "Your records") : T("Ses records", "Records")));
@@ -1562,13 +1600,20 @@ function estClasseQ(f) {
             return h("button", { key: "pf" + x.cle + fx[0], type: "button", onClick: function () { var n = Object.assign({}, filtres); n[x.cle] = fx[0]; setFiltres(n); try { if (typeof hypeVueResPoser === "function") hypeVueResPoser(fx[0]); } catch (eVp) { } }, style: { flex: "0 0 auto", minHeight: 30, padding: "0 10px", borderRadius: 999, border: on ? "1.5px solid #C9A66B" : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? "#F3EEE4" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 11, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, fx[1] + " (" + nbF[fx[0]] + ")");
           }));
         var lsF = filtrer(x.ls, cleF);
-        return h("div", { style: { padding: "8px 22px 10px" } }, t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "2px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
+        /* 13/11 02h20 (Blandine : « quand on ouvre une saison, on voit le pourcentage de classement ») */
+        var nEx = nbEpDe(x.ls), nQx = x.ls.filter(estClasseQ).length, pcx = nEx ? Math.round(nQx / nEx * 100) : null;
+        return h("div", { style: { padding: "8px 22px 10px" } },
+          pcx != null ? h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, padding: "4px 0 2px" } },
+            h("span", { style: { fontFamily: SERIF, fontSize: 34, lineHeight: 1, color: "#E6CF9C", direction: "ltr" } }, pcx + " %"),
+            h("span", { style: { fontFamily: SANS, fontSize: 11.5, color: "rgba(243,238,228,0.8)" } }, T("de classements", "placed") + " · " + nQx + " " + T("sur", "of") + " " + nEx + " " + (nEx > 1 ? T("parcours", "rounds") : T("parcours", "round")))) : null,
+          t ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: CHAMP, padding: "4px 0 8px" } }, t) : null, pastilles, lsF.length ? lsF.map(function (f, j) { return ligneA(f, j); }) : h("div", { style: { padding: "12px 0", fontFamily: SANS, fontSize: 12, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter."))); };   /* 13/11 01h14 : les chiffres ne s affichent qu une fois deroule ; ligne grise plus grosse et plus claire */
       var photoBloc = function (ph, hauteur, cote, miroir) {   /* 13/11 01h37 (Blandine : « la photo d'Elfe est bien plus large que ce que tu montres ») : la photo prend toute la hauteur du bandeau et SA largeur naturelle, collée au bord, jamais coupée (contain) ; fondu sur son seul bord intérieur. Plus d img en flex (Safari la rétrécissait). */
         var dirM = cote === "right" ? "90deg" : "270deg", msq = "linear-gradient(" + dirM + ", transparent 0%, #000 18%)"; var msqM = "linear-gradient(" + (cote === "right" ? "270deg" : "90deg") + ", transparent 0%, #000 18%)";   /* image retournée : le masque se retourne avec elle */
         return h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, bottom: 0, [cote]: 0, width: "70%", pointerEvents: "none", overflow: "hidden" } },
           ph ? h("img", { src: ph, alt: "", loading: "lazy", style: { position: "absolute", top: 0, [cote]: 0, height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", objectPosition: cote === "right" ? "right center" : "left center", display: "block", transform: miroir ? "scaleX(-1)" : undefined, WebkitMaskImage: miroir ? msqM : msq, maskImage: miroir ? msqM : msq } }) : null); };
       var courbe = function (k, inv) { return h("svg", { key: k, viewBox: "0 0 390 26", preserveAspectRatio: "none", "aria-hidden": "true", style: { display: "block", width: "100%", height: 26 } }, h("path", { d: inv ? "M0 4 C 130 26, 260 26, 390 4" : "M0 22 C 130 0, 260 0, 390 22", fill: "none", stroke: "rgba(201,166,107,0.55)", strokeWidth: 1 })); };
       if (AV === "I" || AV === "CH") {   /* couvertures de saison en miroir, courbe dorée entre elles */
+        var BH = (typeof window !== "undefined" && window.__bandH) || 128;   /* 13/11 02h21 : essai de hauteurs (Blandine : « tous les résultats… un truc à rallonge ») */
         var TETES = ["images/portrait-defaut-alezan.webp", "images/portrait-defaut-gris.webp", "images/portrait-defaut-noir.webp", "images/portrait-defaut-isabelle.webp", "images/portrait-defaut-bai.webp", "images/portrait-defaut-blanc.webp"];
         var PH_DEF = function (nm) { var cx = nm ? parCheval(nm) : null; try { if (typeof chevalDefaut === "function") return chevalDefaut((cx && cx.c) || { nom: nm || "" }); } catch (eCd) { } return "images/portrait-defaut-bai.webp"; };   /* 13/11 01h35 (Blandine) : cheval sans photo = un des portraits par défaut choisis pour les chevaux (selon sa robe), comme partout dans Hype */
         S.forEach(function (x, i) { var P = x.cheval ? { nom: "", ph: (x.cheval.ch && x.cheval.ch.c && x.cheval.ch.c.photo_url) || "" } : chevalPrincipal(x); if (!P.ph) P = { nom: P.nom, ph: PH_DEF(x.cheval ? x.lib : P.nom) };
@@ -1577,12 +1622,12 @@ function estClasseQ(f) {
           if (!x.cheval) P = { nom: P.nom, ph: TV === "R" ? PH_DEF(P.nom) : TV === "F" ? "" : TETES[i % TETES.length] }; var st = hypePerfStatsHisto(x.ls), droite = i % 2 === 0, oo = ouvrirS(x, i);
           if (i) out.push(courbe("ci" + i, i % 2 === 0));
           out.push(h("div", { key: "I" + x.cle },
-            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: 128, overflow: "hidden", cursor: "pointer", background: "#000" } },   /* 13/11 01h14 (Blandine : « on laisse juste la saison, voir les résultats ») ; hauteur d origine gardee (01h17) */
-              photoBloc(P.ph, 128, droite ? "right" : "left", !x.cheval && droite),
+            h("div", { role: "button", tabIndex: 0, onClick: oo[1], style: { position: "relative", height: BH, overflow: "hidden", cursor: "pointer", background: "#000" } },   /* 13/11 01h14 (Blandine : « on laisse juste la saison, voir les résultats ») ; hauteur d origine gardee (01h17) */
+              photoBloc(P.ph, BH, droite ? "right" : "left", !x.cheval && droite),
               (!x.cheval && TV === "F") ? h("div", { "aria-hidden": "true", style: { position: "absolute", top: "50%", transform: "translateY(-50%)", [droite ? "right" : "left"]: 14, fontFamily: SERIF, fontSize: 118, lineHeight: 1, color: "transparent", WebkitTextStroke: "1px rgba(201,166,107,0.35)", pointerEvents: "none", direction: "ltr" } }, String(x.lib).slice(0, 4)) : null,   /* 13/11 01h47 (Blandine : « ils regardent tous dans la même direction ») : les têtes regardent toujours vers le texte */
               h("div", { style: { position: "absolute", top: 0, bottom: 0, [droite ? "left" : "right"]: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: droite ? "flex-start" : "flex-end", textAlign: droite ? "start" : "end", maxWidth: "56%" } },
                 h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, x.cheval ? (modeCav ? T("Cheval", "Horse") : T("Cavalier", "Rider")) : T("Saison", "Season")),
-                h("div", { style: { fontFamily: SERIF, fontSize: x.cheval ? 24 : 26, lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),
+                h("div", { style: { fontFamily: SERIF, fontSize: BH < 100 ? (x.cheval ? 21 : 23) : (x.cheval ? 24 : 26), lineHeight: 1.05, color: IVOIRE, marginTop: 3, direction: x.cheval ? undefined : "ltr", overflowWrap: "anywhere" } }, x.cheval ? x.lib : anCourt(x.lib)),
                 h("div", { style: { fontFamily: SANS, fontSize: 11, color: CHAMP, marginTop: 8 } }, oo[0] ? "˄" : (T("Voir les résultats", "See results") + " ˅")))),
             oo[0] ? listeOuv(x) : null)); });
       } else if (AV === "J") {   /* affiches de saison qui défilent, la liste dessous */

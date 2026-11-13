@@ -10,6 +10,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0325 — Performances du cavalier : héros façon Vidéothèque, meilleure saison, % par saison, encart d'import
+- Héros (page du cavalier) au dessin de la Vidéothèque : courbe dorée en haut à droite, grande photo ENTIÈRE fondue sur fond noir, courbe dorée dessous, « Performances / nom / écurie » à droite en Cormorant. Même photo qu'avant (hypeImgCavalierDefaut). Ancien héros : window.__heroVar = "A".
+- Plus haut niveau couru : 1,35 m un peu plus petit (54 -> 44), année ajoutée (« B1 Open · 2000 »).
+- Records : « Ta meilleure saison » (plus fort % de classements, au moins 5 parcours ; à égalité le plus de classements), en 3e position.
+- Archives : une saison dépliée commence par son % de classements en grand (« 68 % de classements · 21 sur 31 parcours »).
+- Bas de page (sa page) : encart « Résultats FFE — Retrouve tous tes concours » (import, capture d'écran suffit, « Voir comment faire ▸ » ouvre la vidéo d'aide) + liens discrets « + Ajouter un résultat à la main » et « Modifier l'affichage ». L'ancien bloc vidéo disparaît (doublon).
+- Hauteur des bandeaux de saison réglable pour essai (window.__bandH, 128 par défaut). perf v=35.
+
 ## 20261113-0320 — Performances du cavalier : page réordonnée, derniers concours en cartes, « Ce qui s'affiche »
 - Ordre (page du cavalier) : plus haut niveau couru → Ta saison, tes chiffres → Tes records (« Palmarès ») → Tes derniers concours → Tous tes résultats → boutons. « Un couple, une histoire » retiré de la page du cavalier (code gardé, à remettre plus tard si besoin). Page du cheval inchangée.
 - Records : à égalité de classements, jusqu'à 3 concours cités (« 3 classements chacun ») ; départage par meilleures places sur les plus gros effectifs.
