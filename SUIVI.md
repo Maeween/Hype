@@ -10,6 +10,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0330 — Performances : bandeaux de saison un peu moins hauts
+- Blandine choisit la hauteur 2 sur 4 proposées : 128 -> 108 (bandeaux des saisons et « Par cheval »). Rien d'autre. perf v=36.
+
 ## 20261113-0325 — Performances du cavalier : héros façon Vidéothèque, meilleure saison, % par saison, encart d'import
 - Héros (page du cavalier) au dessin de la Vidéothèque : courbe dorée en haut à droite, grande photo ENTIÈRE fondue sur fond noir, courbe dorée dessous, « Performances / nom / écurie » à droite en Cormorant. Même photo qu'avant (hypeImgCavalierDefaut). Ancien héros : window.__heroVar = "A".
 - Plus haut niveau couru : 1,35 m un peu plus petit (54 -> 44), année ajoutée (« B1 Open · 2000 »).
