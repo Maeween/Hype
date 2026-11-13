@@ -403,6 +403,8 @@ function EcranSanteClub() {
         var rc = await supa.from("chevaux").select("id, nom, photo_url, club, user_id").is("supprime_le", null).limit(500);
         if (rc && rc.error) { if (vif) { setErr(String((rc.error && rc.error.message) || rc.error)); setChevaux([]); } return; }
         var gardes = (typeof hypeChevauxDuClub === "function") ? hypeChevauxDuClub((rc && rc.data) || [], clubS) : [];
+        /* 13/11 14h10 (Blandine : « un cheval sans écurie n'apparaît dans aucune écurie… sors-les au moins de la page santé ») */
+        gardes = gardes.filter(function (c) { return String((c && c.club) || "").trim() !== ""; });
         gardes.sort(function (a, b) { return String(a.nom || "").trim().localeCompare(String(b.nom || "").trim(), "fr", { sensitivity: "base" }); });
         if (!vif) return;
         setErr(""); setChevaux(gardes);
@@ -428,7 +430,7 @@ function EcranSanteClub() {
   }, [clubS, recharge]);
 
   function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("guilde"); } }
-  function ouvrir(c) { try { window.__santeCheval = { id: c.id, nom: c.nom || "" }; } catch (eO) { } setEcran("sante-cheval"); }
+  function ouvrir(c) { try { window.__santeCheval = { id: c.id, nom: c.nom || "" }; window.__santeRetourClub = { club: clubS, id: c.id }; } catch (eO) { } setEcran("sante-cheval"); }   /* 13/11 : le retour revient ici */
 
   var MOIS = [T("janv.", "Jan", "ene.", "genn.", "1月", "Jan.", "يناير", "1月", "jan.", "jan.", "jan.", "янв.", "sty", "1월", "ژانویه"), T("févr.", "Feb", "feb.", "febbr.", "2月", "Feb.", "فبراير", "2月", "feb.", "fev.", "feb.", "февр.", "lut", "2월", "فوریه"), T("mars", "Mar", "mar.", "mar.", "3月", "März", "مارس", "3月", "mrt.", "mar.", "mars", "март", "mar", "3월", "مارس"), T("avr.", "Apr", "abr.", "apr.", "4月", "Apr.", "أبريل", "4月", "apr.", "abr.", "apr.", "апр.", "kwi", "4월", "آوریل"), T("mai", "May", "may.", "mag.", "5月", "Mai", "مايو", "5月", "mei", "mai.", "maj", "май", "maj", "5월", "مه"), T("juin", "Jun", "jun.", "giu.", "6月", "Juni", "يونيو", "6月", "jun.", "jun.", "juni", "июнь", "cze", "6월", "ژوئن"), T("juil.", "Jul", "jul.", "lug.", "7月", "Juli", "يوليو", "7月", "jul.", "jul.", "juli", "июль", "lip", "7월", "ژوئیه"), T("août", "Aug", "ago.", "ago.", "8月", "Aug.", "أغسطس", "8月", "aug.", "ago.", "aug.", "авг.", "sie", "8월", "اوت"), T("sept.", "Sep", "sep.", "set.", "9月", "Sept.", "سبتمبر", "9月", "sep.", "set.", "sep.", "сент.", "wrz", "9월", "سپتامبر"), T("oct.", "Oct", "oct.", "ott.", "10月", "Okt.", "أكتوبر", "10月", "okt.", "out.", "okt.", "окт.", "paź", "10월", "اکتبر"), T("nov.", "Nov", "nov.", "nov.", "11月", "Nov.", "نوفمبر", "11月", "nov.", "nov.", "nov.", "нояб.", "lis", "11월", "نوامبر"), T("déc.", "Dec", "dic.", "dic.", "12月", "Dez.", "ديسمبر", "12月", "dec.", "dez.", "dec.", "дек.", "gru", "12월", "دسامبر")];
   function jourDe(s) { var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null; }

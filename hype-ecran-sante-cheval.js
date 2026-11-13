@@ -211,7 +211,11 @@ function EcranSanteCheval() {
   /* Regle maison : tout ecran qui defile s'ouvre en haut. */
   React.useEffect(function () { try { if (typeof hypeDefilerHaut === "function") hypeDefilerHaut(); } catch (eD) { } }, []);
 
-  function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("moncavalier"); } }
+  function retour() {
+    /* 13/11 13h53 (Blandine : « je reviens en arrière… je reviens sur ma page de profil alors que j'étais sur la page santé de l'écurie ») */
+    var rc = ""; try { var o = window.__santeRetourClub; window.__santeRetourClub = null; if (o && o.club && (!o.id || !window.__santeCheval || window.__santeCheval.id === o.id)) rc = o.club; } catch (eR) { }
+    if (rc) { try { window.__santeClub = { nom: rc }; } catch (eS) { } setEcran("sante-club"); return; }
+    if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("moncavalier"); } }
 
   /* ---------- IDENTITE AFFICHEE : ce qui manque ne s'affiche pas, rien n'est invente ---------- */
   var og = (fiche && fiche.origines) || {};

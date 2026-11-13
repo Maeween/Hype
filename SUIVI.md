@@ -4,6 +4,8 @@
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
+> 🟨 À RÉFLÉCHIR À TÊTE REPOSÉE (Blandine, 13/11 14h10 : « laisse en suivi cette histoire-là ») — CHEVAUX SANS ÉCURIE : aujourd'hui la règle commune hypeMemeClub / hypeChevauxDuClub (index.html ~l. 3017) fait apparaître un cheval sans écurie (chevaux.club vide) DANS TOUTES les écuries (« sans club : partout »). Blandine : « un cheval sans écurie, il apparaît dans aucune écurie » (sauf si son propriétaire rejoint l'écurie). Pas appliqué partout (≈ 15 pages : Écurie, Team, Gestion, guilde, cavalier…) — corrigé seulement sur la page Santé de l'écurie (14h15). À décider : appliquer partout ? que faire des chevaux des membres sans écurie renseignée (ex. Ablaï, de Lylou, sans écurie) ? vérifier en base combien de chevaux ont club vide.
+
 > 🟨 EN ATTENTE (Blandine, 13/11 03h38 : « mets ça de côté pour demain ») — PAGE CAVALIER, RECORDS À LA PLACE DES « PRINCIPAUX RÉSULTATS » : prêt sur la branche GitHub `attente-records-cavalier` (index.html : recordsV2 dans BlocResultatsCavaliere + hypeHauteurEpreuve, copie de hauteurEp). Captures montrées (page entière). Reste : son avis, puis publication. Le filtre « faux 1ers » de hypePrincipauxResultats (B4, C4, préparatoires) est aussi en attente, non publié.
 
 > 🟨 EN ATTENTE (Blandine, 13/11 03h56 : « on laisse ça dans le suivi, on réfléchit, on verra ça demain ») — ORGANISATION DU PADDOCK (groupes de détente, hype-ecran-saison.js, éditeur l. ~1928-2005, bloc l. ~2006). ✅ A, B, C, D + H PUBLIÉS le 13/11 04h10 (entrée 20261113-0510) ; ✅ « Non partant » / « Retirer » publiés 08h20 (entrée 20261113-0820) ; ✅ G « Changer » publié 08h40 (entrée 20261113-0840) ; ✅ E, F publiés 09h05 (entrée 20261113-0905) ; ✅ I + horaires/reco par épreuve publiés 09h35 (entrée 20261113-0935) ; ✅ « Ajouter à mon agenda » publié 09h55 (alerte passage loin du rendez-vous, proposée, pas répondu). Bugs constatés en vrai la nuit du 13/11 (concours 766850e8…, Club 3 Grand Prix) : elle s'est fait « sortir » 8-9 fois avant de réussir.
@@ -21,6 +23,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > 🟥 RÈGLE PERMANENTE — NUMÉRO DE VERSION À CHAQUE PUBLICATION (Blandine, 09/11 01h03 : « note-le dans le suivi ») : À CHAQUE commit [publier], changer <meta name="hype-build" content="AAAAMMJJ-HHMM"> dans le <head> d'index.html avec une valeur PLUS GRANDE que celle en ligne. Sinon les téléphones gardent l'ancienne version (l'appli ne se recharge que si ce numéro change). Arrivé 2 fois dans la nuit du 08 au 09/11 (fiche concours publiée sans changer le numéro → Blandine voyait l'ancienne page). Avant chaque publication : git fetch, repartir de origin/main, vérifier le hype-build en ligne. Vaut pour TOUTES les conversations qui publient.
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
+
+## 20261113-1415 — Santé de l'écurie : chevaux sans écurie retirés ; retour vers la page Santé de l'écurie
+Blandine 13/11 13h53-14h10 (Ablaï, cheval de Lylou sans écurie, apparaissait sur la Santé de la SEP ; « sors-les au moins de la page santé »).
+- hype-ecran-sante-club.js (v=5) : un cheval sans écurie (club vide) n'apparaît plus sur la page Santé d'une écurie.
+- hype-ecran-sante-cheval.js (v=20) : la flèche retour d'une fiche santé ouverte depuis la Santé de l'écurie ramène à la Santé de l'écurie (avant : son profil).
+- La règle générale (index.html) n'est PAS changée : voir la note « À RÉFLÉCHIR » en tête du suivi.
 
 ## 20261113-1355 — « Informations du concours » (adresse, horaires par épreuve, Google Maps) + 3 boutons dont « Ordre d'embarquement »
 Blandine 13/11 13h41 → 13h48 (« Ok »). hype-ecran-saison.js v=161.
