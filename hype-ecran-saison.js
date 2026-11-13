@@ -274,6 +274,14 @@ var HS_TR_BRUT = {
   " est aussi dans ": [" is also in ", " también está en ", " è anche in ", " は次にも入っています：", " ist auch in ", " موجود أيضًا في ", " 也在 ", " zit ook in ", " também está em ", " är också i ", " также в ", " jest też w ", " 은(는) 다음에도 있어요: "],
   "un autre groupe": ["another group", "otro grupo", "un altro gruppo", "別のグループ", "einer anderen Gruppe", "مجموعة أخرى", "另一个分组", "een andere groep", "outro grupo", "en annan grupp", "другой группе", "innej grupie", "다른 그룹"],
   " à ": [" at ", " a las ", " alle ", " ", " um ", " الساعة ", " ", " om ", " às ", " kl. ", " в ", " o ", " "],
+  "à la place de ": ["instead of ", "en lugar de ", "al posto di ", "の代わり：", "statt ", "بدلاً من ", "代替 ", "in plaats van ", "em vez de ", "i stället för ", "вместо ", "zamiast ", "대신: "],
+  "Changer": ["Change", "Cambiar", "Cambia", "変更", "Ändern", "تغيير", "更换", "Wijzigen", "Mudar", "Ändra", "Изменить", "Zmień", "변경"],
+  "Valider": ["Confirm", "Confirmar", "Conferma", "確定", "Bestätigen", "تأكيد", "确认", "Bevestigen", "Confirmar", "Bekräfta", "Подтвердить", "Zatwierdź", "확인"],
+  "Remettre comme avant": ["Undo the change", "Volver a como estaba", "Ripristina", "元に戻す", "Wie vorher", "إرجاع كما كان", "恢复原样", "Terugzetten", "Repor como antes", "Återställ", "Вернуть как было", "Przywróć", "원래대로"],
+  "inchangé": ["unchanged", "sin cambio", "invariato", "変更なし", "unverändert", "دون تغيير", "不变", "ongewijzigd", "sem alteração", "oförändrad", "без изменений", "bez zmian", "변경 없음"],
+  "Autre…": ["Other…", "Otro…", "Altro…", "その他…", "Andere…", "آخر…", "其他…", "Andere…", "Outro…", "Annan…", "Другой…", "Inny…", "기타…"],
+  "Nom": ["Name", "Nombre", "Nome", "名前", "Name", "الاسم", "名字", "Naam", "Nome", "Namn", "Имя", "Imię", "이름"],
+  "Rien à changer.": ["Nothing to change.", "Nada que cambiar.", "Niente da cambiare.", "変更はありません。", "Nichts zu ändern.", "لا شيء لتغييره.", "没有需要更改的内容。", "Niets te wijzigen.", "Nada para mudar.", "Inget att ändra.", "Нечего менять.", "Nic do zmiany.", "바꿀 내용이 없어요."],
   "non partant": ["non-starter", "no participa", "non partente", "出場なし", "startet nicht", "غير مشارك", "不参赛", "start niet", "não participa", "startar inte", "не стартует", "nie startuje", "불참"],
   "Partant": ["Starting", "Participa", "Partente", "出場", "Startet", "مشارك", "参赛", "Start", "Participa", "Startar", "Стартует", "Startuje", "출전"],
   " sort de son groupe : pense à enregistrer.": [" leaves their group: remember to save.", " sale de su grupo: no olvides guardar.", " esce dal suo gruppo: ricordati di salvare.", " はグループから外れました。保存を忘れずに。", " verlässt die Gruppe: Denk ans Speichern.", " خرج من مجموعته: لا تنسَ الحفظ.", " 已移出分组：记得保存。", " gaat uit de groep: vergeet niet op te slaan.", " sai do grupo: lembra-te de guardar.", " lämnar sin grupp: kom ihåg att spara.", " выходит из группы: не забудь сохранить.", " wychodzi z grupy: pamiętaj, aby zapisać.", " 그룹에서 빠졌어요. 저장하는 걸 잊지 마세요."],
@@ -1406,7 +1414,19 @@ function EcranConcours() {
   var _io = React.useState(false); var infosOuv = _io[0], setInfosOuv = _io[1];
   var _fm = React.useState("tout"); var filtreM = _fm[0], setFiltreM = _fm[1];
   var _co = React.useState({}); var cartesOk = _co[0], setCartesOk = _co[1];
-  var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq = _pq[1];
+  var _pq = React.useState([]); var passagesEq = _pq[0], setPassagesEq0 = _pq[1];
+  /* 13/11 (Blandine : « Yellow entre parenthèses… remplacé par Dakota » → « Dakota (à la place de Yellow) ») : un passage changé garde
+     le nom d'avant entre parenthèses, partout où le nom s'affiche ; le vrai nom reste dans cheval_brut / pseudo_brut */
+  function setPassagesEq(v) {
+    function dec(l) { return (l || []).map(function (q) {
+      if (q.cheval_brut !== undefined) return q;
+      var x = Object.assign({}, q, { cheval_brut: q.cheval_nom || "", pseudo_brut: q.pseudo || "" });
+      if (q.cheval_initial_nom && q.cheval_initial_nom !== q.cheval_nom) x.cheval_nom = (q.cheval_nom || "") + " (" + F("à la place de ") + q.cheval_initial_nom + ")";
+      if (q.cavalier_initial) x.pseudo = (q.pseudo || "") + " (" + F("à la place de ") + q.cavalier_initial + ")";
+      return x; }); }
+    setPassagesEq0(typeof v === "function" ? function (o) { return dec(v(o)); } : dec(v));
+  }
+  var _chg = React.useState(null); var chg = _chg[0], setChg = _chg[1];   /* 13/11 : panneau « Changer » ouvert (cheval / cavalier d'un passage) */
   var _oc = React.useState(function () { if (SAISON) return "medias"; try { if (window.__medPageDirect) { window.__medPageDirect = null; return "medias"; } } catch (e) { } return null; }); var ongletChoisi = _oc[0], setOngletC = _oc[1];   /* null = carte choisie selon le moment (09/11) */
   var _rc = React.useState([]); var resConc = _rc[0], setResConc = _rc[1];   /* 09/11 : résultats rattachés à ce concours (resultats.agenda_id), jamais déduits de la date */   /* 09/11 : les 4 cartes sont des onglets (rien d'affiché tant qu'aucune n'est touchée) */
   React.useEffect(function () {
@@ -1918,6 +1938,7 @@ function EcranConcours() {
   var grpEp = grpListe.filter(function (g) { return hsNomEpreuve(g.epreuve || "") === epPaddock; });
   var gEp = null; parEpreuve.forEach(function (x) { if (x.ep === epPaddock) gEp = x; });
   /* conflits : un cavalier ou un cheval dans deux groupes à moins de 30 min d'écart */
+  function vivant(c) { var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)]; return p ? { cav: p.cavalier_id, chId: p.cheval_id, ch: p.cheval_brut || p.cheval_nom, np: !!p.non_partant } : { cav: c.cavalier_id, chId: c.cheval_id, ch: c.cheval_nom, np: false }; }
   function conflitsDe(g) {
     var out = []; var hg = minutesDe(g.heure_rdv); if (hg == null) return out;
     (g.couples || []).forEach(function (c) {
@@ -1925,7 +1946,8 @@ function EcranConcours() {
       grpListe.forEach(function (o) {
         if (o === g || (o.id && o.id === g.id)) return; var ho = minutesDe(o.heure_rdv); if (ho == null || Math.abs(ho - hg) >= 30) return;
         (o.couples || []).forEach(function (d) {
-          var memeCav = c.cavalier_id && d.cavalier_id === c.cavalier_id, memeCh = (c.cheval_id && d.cheval_id === c.cheval_id) || (!c.cheval_id && c.cheval_nom && d.cheval_nom === c.cheval_nom);
+          var vc = vivant(c), vd = vivant(d); if (vd.np) return;   /* 13/11 : données vivantes du passage (cheval ou cavalier changé, non partant) */
+          var memeCav = vc.cav && vd.cav === vc.cav, memeCh = (vc.chId && vd.chId === vc.chId) || (!vc.chId && vc.ch && vd.ch === vc.ch);
           if (memeCav || memeCh) { var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || c; out.push((memeCav ? prenomDe(p) : (c.cheval_nom || "")) + F(" est aussi dans ") + (o.nom || F("un autre groupe")) + " · " + hsNomEpreuve(o.epreuve || "") + F(" à ") + (o.heure_rdv || "")); }
         });
       });
@@ -1937,9 +1959,9 @@ function EcranConcours() {
     var out = [], parCav = {}, parCh = {}, oCav = [], oCh = [];
     (g.couples || []).forEach(function (c) {
       var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || c; if (p.non_partant) return; var et = p.ordre_passage ? F("N° ") + p.ordre_passage + " " : "";
-      var ch = c.cheval_nom || p.cheval_nom || "";
-      if (c.cavalier_id) { if (!parCav[c.cavalier_id]) { parCav[c.cavalier_id] = { nom: prenomDe(p), l: [] }; oCav.push(c.cavalier_id); } parCav[c.cavalier_id].l.push(et + ch); }
-      var kc = c.cheval_id || (ch ? "n:" + String(ch).toLowerCase() : null);
+      var ch = p.cheval_brut || c.cheval_nom || p.cheval_nom || "", cav = p.cavalier_id || c.cavalier_id, chId = p.cheval_brut !== undefined ? p.cheval_id : c.cheval_id;
+      if (cav) { if (!parCav[cav]) { parCav[cav] = { nom: prenomDe(p), l: [] }; oCav.push(cav); } parCav[cav].l.push(et + ch); }
+      var kc = chId || (ch ? "n:" + String(ch).toLowerCase() : null);
       if (kc) { if (!parCh[kc]) { parCh[kc] = { nom: ch, l: [] }; oCh.push(kc); } parCh[kc].l.push(et + prenomDe(p)); }
     });
     oCav.forEach(function (k) { var x = parCav[k]; if (x.l.length > 1) out.push(x.nom + F(" est deux fois dans ce groupe") + " (" + x.l.join(", ") + ")"); });
@@ -1948,9 +1970,9 @@ function EcranConcours() {
   }
   function membreCouple(c, k) {
     var p = infoCouple[c.engagement_id + ":" + (c.numero || 1)] || { pseudo: c.pseudo, avatar_url: null };
-    return h("div", { key: k, className: "hc-gm" + (moi && p.cavalier_id === moi.id ? " moi" : "") }, avatarHc(p, 46), h("b", null, prenomDe(p)), h("span", null, c.cheval_nom || p.cheval_nom || ""));
+    return h("div", { key: k, className: "hc-gm" + (moi && p.cavalier_id === moi.id ? " moi" : "") }, avatarHc(p, 46), h("b", null, prenomDe(p)), h("span", null, p.cheval_nom || c.cheval_nom || ""));
   }
-  var monGroupe = null; if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return c.cavalier_id === moi.id; })) { if (!monGroupe || hsNomEpreuve(g.epreuve) === epPaddock) monGroupe = g; } });
+  var monGroupe = null; if (moi) grpD.forEach(function (g) { if (g.publie && (g.couples || []).some(function (c) { return vivant(c).cav === moi.id; })) { if (!monGroupe || hsNomEpreuve(g.epreuve) === epPaddock) monGroupe = g; } });
   /* ── outils de la coach ── */
   function ouvrirEditeur() { setGrpMsg(""); setGrpSupp(null); setGrpEd(grpD.map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); })); }
   function majBrouillon(f) { setGrpEd(function (l) { var n = (l || []).map(function (g) { return Object.assign({}, g, { couples: (g.couples || []).slice() }); }); f(n); return n; }); }
@@ -1972,6 +1994,61 @@ function EcranConcours() {
       var etaitDans = (grpEd || []).some(function (g) { return !g.__suppr && (g.couples || []).some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; }); });
       if (etaitDans) { affecter(p, null); setGrpMsg(prenomDe(p) + (p.ordre_passage ? " (" + F("N° ") + p.ordre_passage + ")" : "") + F(" sort de son groupe : pense à enregistrer.")); } else setGrpMsg("");
     } else setGrpMsg("");
+  }
+  /* 13/11 — point G : changer le cheval ou le cavalier d'un passage ; le N° et l'heure restent, l'ancien nom s'affiche entre parenthèses */
+  function optionsChg() {
+    var ch = [], cav = [];
+    (passagesEq || []).forEach(function (q) {
+      var n = q.cheval_brut || q.cheval_nom; if (n && !ch.some(function (o) { return o.nom === n; })) ch.push({ id: q.cheval_id || null, nom: n });
+      if (q.cheval_initial_nom && !ch.some(function (o) { return o.nom === q.cheval_initial_nom; })) ch.push({ id: q.cheval_initial_id || null, nom: q.cheval_initial_nom });
+      var pn = q.pseudo_brut || q.pseudo; if (q.cavalier_id && !cav.some(function (o) { return o.id === String(q.cavalier_id); })) cav.push({ id: String(q.cavalier_id), nom: pn });
+      if (q.cavalier_initial_id && !cav.some(function (o) { return o.id === String(q.cavalier_initial_id); })) cav.push({ id: String(q.cavalier_initial_id), nom: q.cavalier_initial });
+    });
+    ch.sort(function (a, b) { return String(a.nom).localeCompare(String(b.nom)); }); cav.sort(function (a, b) { return String(a.nom).localeCompare(String(b.nom)); });
+    return { ch: ch, cav: cav };
+  }
+  async function ecrireTour(p, upd) {
+    try {
+      var r = await supa.from("concours_tours").update(upd).eq("engagement_id", p.engagement_id).eq("numero", p.numero || 1).select("id");
+      if (r && r.error) { setGrpMsg(F("Erreur : ") + (r.error.message || "")); return false; }
+      if (!r || !r.data || !r.data.length) { setGrpMsg(F("Ce passage n’a pas encore d’ordre de passage enregistré : enregistre d’abord les passages.")); return false; }
+    } catch (e) { setGrpMsg(F("Erreur : ") + String((e && e.message) || e)); return false; }
+    try { var rq = await supa.rpc("hype_passages_concours", { p_agenda: idEv }); if (rq && !rq.error && Array.isArray(rq.data)) setPassagesEq(rq.data); } catch (eR) { }
+    setChg(null); setGrpMsg(""); return true;
+  }
+  function validerChg(p) {
+    var o = optionsChg(), upd = {}, rien = true;
+    if (chg.ch) {
+      var nv = chg.ch === "__autre" ? { id: null, nom: String(chg.chNom || "").trim() } : o.ch.filter(function (x) { return x.nom === chg.ch; })[0];
+      if (nv && nv.nom && nv.nom !== p.cheval_brut) {
+        rien = false; upd.cheval_id = nv.id; upd.cheval_nom = nv.nom;
+        var ini = p.cheval_initial_nom || p.cheval_brut, iniId = p.cheval_initial_nom ? (p.cheval_initial_id || null) : (p.cheval_id || null);
+        if (nv.nom === ini) { upd.cheval_initial_nom = null; upd.cheval_initial_id = null; } else { upd.cheval_initial_nom = ini; upd.cheval_initial_id = iniId; }
+      }
+    }
+    if (chg.cav) {
+      var orig = p.cavalier_initial_id ? String(p.cavalier_initial_id) : String(p.cavalier_id || "");
+      if (chg.cav === "__autre") { var nn = String(chg.cavNom || "").trim(); if (nn) { rien = false; upd.cavalier_remplacant_id = null; upd.cavalier_remplacant_nom = nn; } }
+      else if (chg.cav !== String(p.cavalier_id || "")) { rien = false; if (chg.cav === orig) { upd.cavalier_remplacant_id = null; upd.cavalier_remplacant_nom = null; } else { upd.cavalier_remplacant_id = chg.cav; upd.cavalier_remplacant_nom = null; } }
+    }
+    if (rien) { setGrpMsg(F("Rien à changer.")); return; }
+    ecrireTour(p, upd);
+  }
+  function panneauChanger(p) {
+    var o = optionsChg(); var change = !!(p.cheval_initial_nom || p.cavalier_initial);
+    function sel(lib, val, liste, cle, cleNom, valNom) {
+      return h("label", { className: "hc-chg-l" }, h("span", null, lib),
+        h("select", { value: val, onChange: function (e) { var n = Object.assign({}, chg); n[cle] = e.target.value; setChg(n); } },
+          h("option", { value: "" }, F("inchangé")), liste.map(function (x) { return h("option", { key: x.nom + (x.id || ""), value: cle === "ch" ? x.nom : x.id }, x.nom); }), h("option", { value: "__autre" }, F("Autre…"))),
+        val === "__autre" ? h("input", { type: "text", value: valNom, placeholder: F("Nom"), onChange: function (e) { var n = Object.assign({}, chg); n[cleNom] = e.target.value; setChg(n); } }) : null);
+    }
+    return h("div", { className: "hc-chg" },
+      sel(F("Cheval"), chg.ch, o.ch, "ch", "chNom", chg.chNom),
+      sel(F("Cavalier"), chg.cav, o.cav, "cav", "cavNom", chg.cavNom),
+      h("div", { className: "hc-ged-fin", style: { marginTop: 2 } },
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { setChg(null); } }, F("Annuler")),
+        change ? h("button", { type: "button", className: "hc-btn-l", onClick: function () { ecrireTour(p, { cheval_id: p.cheval_initial_nom ? (p.cheval_initial_id || null) : p.cheval_id, cheval_nom: p.cheval_initial_nom || p.cheval_brut, cheval_initial_nom: null, cheval_initial_id: null, cavalier_remplacant_id: null, cavalier_remplacant_nom: null }); } }, F("Remettre comme avant")) : null,
+        h("button", { type: "button", className: "hc-btn-l", onClick: function () { validerChg(p); } }, F("Valider"))));
   }
   function affecter(p, cible) {   /* cible : groupe ou null (aucun) — déplace le couple dans le groupe choisi de cette épreuve */
     majBrouillon(function (n) {
@@ -2051,11 +2128,13 @@ function EcranConcours() {
       h("div", { className: "hc-ged-k" }, F("Couples de l’épreuve")),
       gEp.l.map(function (p, i) {
         var cl = cleCouple(p); var dans = null; grs.forEach(function (g) { if (g.couples.some(function (c) { return (c.engagement_id + ":" + (c.numero || 1)) === cl; })) dans = g; });
-        return h("div", { key: i, className: "hc-ged-c" + (p.non_partant ? " np" : "") },
+        return h(React.Fragment, { key: i }, h("div", { className: "hc-ged-c" + (p.non_partant ? " np" : "") },
           h("div", { className: "hc-ged-q" }, (p.ordre_passage ? h("span", { className: "hc-pl-n" }, F("N° ") + p.ordre_passage) : null), h("b", null, prenomDe(p)), h("span", null, " · " + (p.cheval_nom || "")), h("span", { className: "hc-ged-lk" },   /* 13/11 (Blandine : « c'est surtout modifier ou supprimer qu'il faudrait ») */
             dans && !p.non_partant ? h("button", { type: "button", className: "hs-lien", onClick: function () { affecter(p, null); } }, F("Retirer")) : null,
+            !p.non_partant ? h("button", { type: "button", className: "hs-lien", onClick: function () { setChg(chg && chg.cle === cl ? null : { cle: cl, ch: "", chNom: "", cav: "", cavNom: "" }); } }, F("Changer")) : null,
             h("button", { type: "button", className: "hs-lien", onClick: function () { basculerNonPartant(p); } }, p.non_partant ? F("Partant") : F("Non partant")))),
-          p.non_partant ? null : h("div", { className: "hc-ged-ch" }, grs.map(function (g, gi) { var on = dans === g; return h("button", { key: gi, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { affecter(p, on ? null : g); } }, String(g.nom || "").replace(/^Groupe\s*/i, "G") || ("G" + (gi + 1))); })));
+          p.non_partant ? null : h("div", { className: "hc-ged-ch" }, grs.map(function (g, gi) { var on = dans === g; return h("button", { key: gi, type: "button", className: "hc-chip-p" + (on ? " on" : ""), onClick: function () { affecter(p, on ? null : g); } }, String(g.nom || "").replace(/^Groupe\s*/i, "G") || ("G" + (gi + 1))); }))),
+          chg && chg.cle === cl ? panneauChanger(p) : null);
       }),
       h("div", { className: "hc-ged-fin" },
         h("button", { type: "button", className: "hc-btn-l", disabled: grpOcc, onClick: function () { setGrpEd(null); setGrpMsg(""); } }, F("Annuler")),
@@ -3924,6 +4003,9 @@ var HC_CSS = [
   ".hc .hc-ged-lk .hs-lien{font-size:12px;color:rgba(243,238,228,.62);background:none;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-family:inherit}",
   ".hc .hc-ged-c.np b,.hc .hc-ged-c.np .hc-pl-n,.hc .hc-ged-c.np .hc-ged-q>span:not(.hc-ged-lk){opacity:.4;text-decoration:line-through}",
   ".hc .hc-pl.np{opacity:.45}",
+  ".hc .hc-chg{display:flex;flex-direction:column;gap:10px;padding:12px;margin:2px 0 8px;border:1px solid rgba(201,166,107,.3);border-radius:12px}",
+  ".hc .hc-chg-l{display:flex;flex-direction:column;gap:5px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,238,228,.62)}",
+  ".hc .hc-chg-l select,.hc .hc-chg-l input{font:inherit;font-size:16px;letter-spacing:0;text-transform:none;color:#F3EEE4;background:#0d1012;border:1px solid rgba(243,238,228,.18);border-radius:10px;padding:10px 12px}",
   ".hc .hc-pl.np .hc-pl-q b{text-decoration:line-through}",
   ".hc .hc-pl-np{font-size:11px;letter-spacing:.06em;color:rgba(243,238,228,.7);white-space:nowrap}",
   ".hc .hc-ged-x{background:transparent;border:1px solid rgba(243,238,228,.2);border-radius:10px;color:rgba(243,238,228,.7);font-size:18px;cursor:pointer}",
