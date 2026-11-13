@@ -10,6 +10,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0410 — Performances du cavalier : haut de page plus petit, titres dorés, En bref tassé
+- Héros : prénom 40 -> 34, écurie 19 -> 16, « PERFORMANCES » 9 px doré ; onglets Performances/Photos/Vidéos plus petits (11,5 px, 30 px de haut), onglet actif à contour ivoire.
+- « Niveau le plus haut couru » : 1,35 m en 30, « B1 Open · 2000 » doré, encart 132 de haut, plus dégagé (marges 26 / 10).
+- Titres de chapitre C en 22 ; sur-titres (EN BREF, PALMARÈS…) dorés, filets dorés plus discrets.
+- « En bref » tassé en hauteur : anneau 78, chiffres 24, libellés 11,5, espacements réduits. Fond noir conservé (essai anthracite abandonné).
+- Petits titres des records restent en gris clair (question posée à Blandine). Essai d'échelle de page gardé (window.__zoomPerf), non utilisé. perf v=40.
+
 ## 20261113-0400 — Encore moins de doré (page et outil), anneau fin
 - Performances du cavalier : courbes entre bandeaux en ivoire très discret ; petits titres des records, « SAISON », « Voir les résultats », dates des cartes en ivoire/gris. Le doré reste : titres de chapitre, anneau, contours de boutons, hauteurs.
 - Anneau du % : doré FIN (trait 9 -> 3), choix B de Blandine (variantes window.__anVar A/B/C/D).

@@ -470,7 +470,9 @@ function EcranPerformancesCheval(props) {
   }
 
   /* ── etats de chargement ── */
-  var racineSt = { minHeight: "100vh", background: NOIR, color: IVOIRE, fontFamily: SANS, fontVariantNumeric: "lining-nums" /* (g1) chiffres droits : le Cormorant dessine par defaut des chiffres « a l ancienne » (12 ressemblait a I2) */, direction: rtl ? "rtl" : "ltr", paddingBottom: "calc(96px + env(safe-area-inset-bottom))" /* la barre d onglets du bas */ };
+  /* 13/11 02h53 (Blandine : « tout est presque écrit trop gros, on a envie de dézoomer ») : échelle de la page du cavalier — essai window.__zoomPerf */
+  var ZP = modeCav ? ((typeof window !== "undefined" && window.__zoomPerf) || 1) : 1;
+  var racineSt = { zoom: ZP !== 1 ? ZP : undefined, minHeight: "100vh", background: NOIR, color: IVOIRE, fontFamily: SANS, fontVariantNumeric: "lining-nums" /* (g1) chiffres droits : le Cormorant dessine par defaut des chiffres « a l ancienne » (12 ressemblait a I2) */, direction: rtl ? "rtl" : "ltr", paddingBottom: "calc(96px + env(safe-area-inset-bottom))" /* la barre d onglets du bas */ };
   if (!etat.charge || lignes === null) {
     return h("div", { "data-ecran": "performances-cheval", style: Object.assign({}, racineSt, { display: "flex", alignItems: "center", justifyContent: "center" }) },
       h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18, color: MUET } }, "…"));
@@ -570,9 +572,9 @@ function EcranPerformancesCheval(props) {
         srcHV ? h("img", { src: srcHV, alt: "", "aria-hidden": "true", fetchpriority: "high", style: { height: "100%", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", WebkitMaskImage: "linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%)", maskImage: "linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%)" } }) : null),   /* bords fondus : pas de rectangle visible */
       h("svg", { viewBox: "0 0 400 100", preserveAspectRatio: "none", "aria-hidden": "true", style: { position: "relative", display: "block", width: "100%", height: 64, marginTop: -64, zIndex: 2 } }, gradHV("pfhv2"), h("path", { d: "M0 92 C 130 90, 240 62, 400 8 L400 100 L0 100 Z", fill: "#070A08" }), h("path", { d: "M0 92 C 130 90, 240 62, 400 8", fill: "none", stroke: "url(#pfhv2)", strokeWidth: 1.6, vectorEffect: "non-scaling-stroke" })),
       h("div", { style: { position: "relative", zIndex: 3, textAlign: "end", padding: "0 22px", marginTop: -12 } },
-        h("div", { style: { fontFamily: SANS, fontSize: 10, fontWeight: 600, letterSpacing: ".38em", textTransform: "uppercase", color: CHAMP } }, T("Performances", "Performances")),
-        h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: largeP ? 50 : 40, lineHeight: 1, margin: "6px 0 0", color: IVOIRE } }, nomHV),
-        ecHV ? h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: 19, margin: "8px 0 0", color: IVOIRE, opacity: 0.88 } }, ecHV) : null));
+        h("div", { style: { fontFamily: SANS, fontSize: 9, fontWeight: 600, letterSpacing: ".34em", textTransform: "uppercase", color: CHAMP } }, T("Performances", "Performances")),
+        h("h1", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: largeP ? 42 : 34, lineHeight: 1, margin: "6px 0 0", color: IVOIRE } }, nomHV),
+        ecHV ? h("p", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 500, fontSize: 16, margin: "6px 0 0", color: IVOIRE, opacity: 0.88 } }, ecHV) : null));
   }
   var menuCav = h("div", { "data-perf-menu-cav": "1", style: { display: "flex", alignItems: "center", gap: 8, margin: "14px 0 0", padding: "0 18px 12px", borderBottom: "1px solid rgba(243,238,228,0.08)" } }, h("div", { "data-noswipe": "1", "data-hscroll": "1", style: { display: "flex", gap: 8, flex: 1, minWidth: 0, overflowX: "auto", scrollbarWidth: "none" } },
     [["perf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج", "表现", "Prestaties", "Performances", "Prestationer", "Выступления", "Wyniki", "성적", "عملکردها"), null],
@@ -581,9 +583,9 @@ function EcranPerformancesCheval(props) {
      ["ac", T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار", "动态", "Nieuws", "Novidades", "Nyheter", "Новости", "Aktualności", "소식", "خبر"), "actualite-cavalier"]].map(function (o) {
       var on = !o[2];
       return h("button", { key: "mc" + o[0], type: "button", onClick: on ? undefined : function () { allerPageCav(o[2]); }, "aria-current": on ? "page" : undefined,
-        style: { flex: "0 0 auto", minHeight: 34, padding: "0 14px", borderRadius: 999, border: on ? "1.5px solid " + CHAMP : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 13, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
+        style: { flex: "0 0 auto", minHeight: 30, padding: "0 12px", borderRadius: 999, border: on ? "1px solid rgba(243,238,228,0.7)" : "1px solid rgba(243,238,228,0.18)", background: "transparent", color: on ? IVOIRE : "rgba(243,238,228,0.78)", fontFamily: SANS, fontSize: 11.5, fontWeight: on ? 600 : 500, cursor: on ? "default" : "pointer", whiteSpace: "nowrap" } }, o[1]);
     })), h("button", { key: "mcPart", type: "button", onClick: partagerCav, "aria-label": T("Partager la page", "Share the page", "Compartir la página", "Condividi la pagina", "ページを共有", "Seite teilen", "مشاركة الصفحة", "分享页面", "Pagina delen", "Partilhar a página", "Dela sidan", "Поделиться страницей", "Udostępnij stronę", "페이지 공유", "اشتراک‌گذاری صفحه"),
-      style: { flex: "0 0 auto", width: 38, height: 38, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: CHAMP, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+      style: { flex: "0 0 auto", width: 32, height: 32, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: CHAMP, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
       h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" }))));
   var heroVide = !tous.length;   /* (g5) page sans resultat : la photo prend plus de place, comme l ecran 5 de la maquette */
   /* 11/11 21h45 (Blandine : « le héros est tout écrasé… sans résultat il est beaucoup plus grand et beaucoup plus beau ») : page du cavalier = toujours le grand héros */
@@ -1096,12 +1098,12 @@ function estClasseQ(f) {
           h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, kick),
           h("div", { style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1.1, marginTop: 4, color: IVOIRE } }, titre)),
         h("div", { style: { height: 1, marginTop: 14, background: "linear-gradient(90deg, rgba(201,166,107,0.7), rgba(201,166,107,0))" } }));
-      if (PV === "C") return h("div", { key: k, style: { padding: "34px 22px 0", textAlign: "center" } },
+      if (PV === "C") return h("div", { key: k, style: { padding: k === "p1" ? "18px 22px 0" : "28px 22px 0", textAlign: "center" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-          h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.7))" } }),
-          h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP, whiteSpace: "nowrap" } }, "✦  " + kick + "  ✦"),
-          h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.7), rgba(201,166,107,0))" } })),
-        h("div", { style: { fontFamily: SERIF, fontSize: 26, lineHeight: 1.1, marginTop: 8, color: IVOIRE } }, titre));
+          h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.45))" } }),
+          h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP, whiteSpace: "nowrap" } }, h("span", { style: { color: CHAMP } }, "✦"), "  " + kick + "  ", h("span", { style: { color: CHAMP } }, "✦")),
+          h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0.45), rgba(201,166,107,0))" } })),
+        h("div", { style: { fontFamily: SERIF, fontSize: 22, lineHeight: 1.1, marginTop: 6, color: IVOIRE } }, titre));
       if (PV === "D") return h("div", { key: k, style: { marginTop: 30, position: "relative", padding: "18px 22px 30px", background: "linear-gradient(180deg, rgba(40,74,86,0.35) 0%, rgba(40,74,86,0.12) 100%)" } },
         h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".28em", textTransform: "uppercase", color: CHAMP } }, nPart + " · " + kick),
         h("div", { style: { fontFamily: SERIF, fontSize: 25, lineHeight: 1.1, marginTop: 4, color: IVOIRE } }, titre),
@@ -1121,11 +1123,11 @@ function estClasseQ(f) {
     var L_P = function (n) { return n > 1 ? T("podiums", "podiums", "podios", "podi", "表彰台", "Podestplätze", "منصات", "次领奖台", "podiumplaatsen", "pódios", "pallplatser", "подиумов", "podiów", "시상대", "سکو") : T("podium", "podium", "podio", "podio", "表彰台", "Podestplatz", "منصة", "次领奖台", "podiumplaats", "pódio", "pallplats", "подиум", "podium", "시상대", "سکو"); };
     var L_Q = function (n) { return n > 1 ? T("classements", "placings", "clasificaciones", "piazzamenti", "入賞", "Platzierungen", "تصنيفات", "次获得名次", "klasseringen", "classificações", "placeringar", "призовых мест", "klasyfikacji", "입상", "رتبه") : T("classement", "placing", "clasificación", "piazzamento", "入賞", "Platzierung", "تصنيف", "次获得名次", "klassering", "classificação", "placering", "призовое место", "klasyfikacja", "입상", "رتبه"); };
     var chiffreS = function (k, v, lib, or, taille) { return h("div", { key: k, style: { textAlign: "center", minWidth: 0 } },
-      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 24, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
       h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 10.5, color: MUET } }, lib)); };   /* chiffres des blocs chevaux : pas de dépliage */
-    var chiffre = function (k, v, lib, or, taille) { var act = detOuv === k; return h("div", { key: k, role: "button", tabIndex: 0, "aria-expanded": act, onClick: function () { setDetOuv(act ? null : k); }, style: { textAlign: "center", minWidth: 0, cursor: "pointer", padding: "6px 2px", borderRadius: 12, border: "1px solid " + (act ? "rgba(201,166,107,0.55)" : "transparent"), background: act ? "rgba(201,166,107,0.06)" : "transparent" } },
-      h("div", { style: { fontFamily: SERIF, fontSize: taille || 27, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
-      h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12.5, fontWeight: 500, color: "#F3EEE4" } }, lib, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, act ? "˄" : "˅"))); };   /* 13/11 02h31 (Blandine : « épreuves, victoires… on a du mal à les lire ») : un peu plus gros et plus clair */
+    var chiffre = function (k, v, lib, or, taille) { var act = detOuv === k; return h("div", { key: k, role: "button", tabIndex: 0, "aria-expanded": act, onClick: function () { setDetOuv(act ? null : k); }, style: { textAlign: "center", minWidth: 0, cursor: "pointer", padding: "3px 2px", borderRadius: 12, border: "1px solid " + (act ? "rgba(201,166,107,0.55)" : "transparent"), background: act ? "rgba(201,166,107,0.06)" : "transparent" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: taille || 24, fontWeight: 500, lineHeight: 1, color: IVOIRE, direction: "ltr", unicodeBidi: "isolate" } }, String(v)),
+      h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 11.5, fontWeight: 500, color: "#F3EEE4" } }, lib, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, act ? "˄" : "˅"))); };   /* 13/11 02h31 (Blandine : « épreuves, victoires… on a du mal à les lire ») : un peu plus gros et plus clair */
     var parCheval = function (nm) { var r = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === nm)) r = { id: k, c: c }; }); } catch (eP) { } return r; };
     var ouvrirFiche = function (id) { try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); };
     var meilleur = function (ls) { var pl = ls.filter(function (f) { return f.pl != null && visL(f) && estClasseQ(f); });   /* seulement un vrai classement */ if (!pl.length) return null; return pl.slice().sort(function (a, b) { return (a.pl - b.pl) || ((b.part || 0) - (a.part || 0)) || String(b.d || "").localeCompare(String(a.d || "")); })[0]; };
@@ -1162,12 +1164,12 @@ function estClasseQ(f) {
       /* 13/11 02h49 (Blandine : « le pourcentage, ce qu on peut faire pour limiter le doré ») — essai window.__anVar : A doré épais · B doré fin · C ivoire fin · D ivoire fin + petit point doré */
       var AV2 = (typeof window !== "undefined" && window.__anVar) || "B", AN_C = (AV2 === "C" || AV2 === "D") ? "rgba(243,238,228,0.85)" : CHAMP, AN_W = AV2 === "A" ? 9 : 3;
       anneau = h("div", { role: "button", tabIndex: 0, "aria-expanded": detOuv === "pct", onClick: function () { setDetOuv(detOuv === "pct" ? null : "pct"); }, style: { textAlign: "center", flex: "0 0 auto", cursor: "pointer", padding: 4, borderRadius: 16, border: "1px solid " + (detOuv === "pct" ? "rgba(201,166,107,0.55)" : "transparent"), background: detOuv === "pct" ? "rgba(201,166,107,0.06)" : "transparent" } },
-        h("svg", { width: 104, height: 104, viewBox: "0 0 120 120", role: "img", "aria-label": pct + " %" },   /* 13/11 02h39 (Blandine : « réduire un peu cet encart ») : 128 -> 104 */
+        h("svg", { width: 78, height: 78, viewBox: "0 0 120 120", role: "img", "aria-label": pct + " %" },   /* 13/11 02h39 (Blandine : « réduire un peu cet encart ») : 128 -> 104 */
           h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: "rgba(243,238,228,0.1)", strokeWidth: AN_W }),
           h("circle", { cx: 60, cy: 60, r: r, fill: "none", stroke: AN_C, strokeWidth: AN_W, strokeLinecap: "round", strokeDasharray: (ci * pct / 100).toFixed(1) + " " + ci.toFixed(1), transform: "rotate(-90 60 60)" }),
           h("text", { x: 60, y: 64, textAnchor: "middle", fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: 34, fill: IVOIRE }, pct + "%"),
           AV2 === "D" ? h("circle", { cx: 60 + r * Math.sin(2 * Math.PI * pct / 100), cy: 60 - r * Math.cos(2 * Math.PI * pct / 100), r: 4.5, fill: CHAMP }) : null),
-        h("div", { style: { fontFamily: SANS, fontSize: 12, fontWeight: 500, lineHeight: 1.35, marginTop: 0, color: "#F3EEE4" } },
+        h("div", { style: { fontFamily: SANS, fontSize: 11, fontWeight: 500, lineHeight: 1.35, marginTop: 0, color: "#F3EEE4" } },
           T("classé à ", "placed at ", "clasificado en ", "piazzato in ", "入賞 ", "platziert bei ", "مصنف في ", "获得名次 ", "geplaatst op ", "classificado em ", "placerad på ", "в призах на ", "w czołówce na ", "입상 ", "رتبه در ") + nJQ + " " + T("concours", "shows", "concursos", "concorsi", "大会", "Turnieren", "مسابقات", "场赛事", "wedstrijden", "concursos", "tävlingar", "турнирах", "zawodach", "대회", "مسابقه"),
           h("br"), SUR() + " " + nJ, h("span", { "aria-hidden": "true", style: { color: CHAMP, marginInlineStart: 4 } }, detOuv === "pct" ? "˄" : "˅")));
     }
@@ -1224,12 +1226,12 @@ function estClasseQ(f) {
       if (HV === "B") {
         var msqB = "linear-gradient(270deg, transparent 0%, #000 18%)";
         /* l écriture passe AU-DESSUS de la tête (Blandine : « fais gaffe à ce que tu écris dans la tête du cheval… mets l onglet un peu plus haut ») */
-        g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: ouvrirH, "data-perf-haute": "1", style: { position: "relative", height: 140, marginTop: 22, overflow: "hidden", background: "#000", cursor: "pointer" } },   /* 176 -> 140 */
+        g.push(h("div", { key: "phx", role: "button", tabIndex: 0, onClick: ouvrirH, "data-perf-haute": "1", style: { position: "relative", height: 132, marginTop: 26, marginBottom: 10, overflow: "hidden", background: "#000", cursor: "pointer" } },   /* 176 -> 140 */
           h("div", { style: { position: "absolute", top: 14, left: 22, right: 22, textAlign: "end", fontFamily: SANS, fontSize: 9.5, fontWeight: 600, letterSpacing: ".3em", textTransform: "uppercase", color: CHAMP } }, kickH),
           h("img", { src: "images/portrait-defaut-isabelle.webp", alt: "", "aria-hidden": "true", style: { position: "absolute", top: 36, bottom: 0, left: 0, height: "calc(100% - 36px)", width: "auto", maxWidth: "50%", objectFit: "contain", WebkitMaskImage: msqB, maskImage: msqB } }),
           h("div", { style: { position: "absolute", top: 36, bottom: 0, right: 22, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-end", textAlign: "end" } },
-            h("div", { style: { fontFamily: SERIF, fontSize: 36, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt),
-            h("div", { style: { fontFamily: SANS, fontSize: 13, color: CHAMP, marginTop: 6 } }, [hauteF.ep, hauteF.an || String(hauteF.d || "").slice(0, 4)].filter(Boolean).join(" · ")))));   /* 13/11 02h17 (Blandine) : juste l année en plus */
+            h("div", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1, color: IVOIRE, direction: "ltr" } }, hautTxt),
+            h("div", { style: { fontFamily: SANS, fontSize: 11.5, color: CHAMP, marginTop: 5 } }, [hauteF.ep, hauteF.an || String(hauteF.d || "").slice(0, 4)].filter(Boolean).join(" · ")))));   /* 13/11 02h17 (Blandine) : juste l année en plus */
       } else if (HV === "C") {
         var MIN = 0.6, MAX = 1.6, pc = Math.max(0, Math.min(100, (hauteF.haut - MIN) / (MAX - MIN) * 100));
         var crans = [0.6, 0.8, 1.0, 1.2, 1.4, 1.6];
@@ -1328,11 +1330,11 @@ function estClasseQ(f) {
       g.push(h("div", { key: "p4r", style: { paddingTop: 16 } }, recsEl));
     };
     g.push(partie("p1", T("En bref", "In short", "En breve", "In breve", "ひと目で", "Kurz gesagt", "باختصار", "概览", "In het kort", "Em resumo", "I korthet", "Коротко", "W skrócie", "한눈에", "به‌طور خلاصه"), (MOI ? T("Ta saison, tes chiffres", "Your season, your numbers") : T("Sa saison, ses chiffres", "The season in numbers", "Su temporada, sus cifras", "La stagione, i numeri", "シーズンと数字", "Saison und Zahlen", "موسمه بالأرقام", "赛季与数据", "Seizoen en cijfers", "A temporada em números", "Säsongen i siffror", "Сезон в цифрах", "Sezon w liczbach", "시즌과 기록", "فصل و آمارش"))));
-    g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "0 22px" } },
-      h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: 16 } }, anneau,
-        its.length ? h("div", { style: { flex: 1, display: "grid", gridTemplateColumns: its.length > 1 ? "1fr 1fr" : "1fr", gap: "12px 6px" } }, its) : null),
+    g.push(h("div", { key: "p1c", "data-perf-chiffres": "1", style: { padding: "1px 22px 16px", } },   /* 13/11 02h54 (Blandine : « un peu de gris anthracite, la jonction ») */
+      h("div", { style: { display: "flex", alignItems: "center", gap: 12, marginTop: modeCav ? 8 : 16 } }, anneau,
+        its.length ? h("div", { style: { flex: 1, display: "grid", gridTemplateColumns: its.length > 1 ? "1fr 1fr" : "1fr", gap: "4px 6px" } }, its) : null),
       detail,
-      h("div", { style: { marginTop: 14 } }, barre(base))));
+      h("div", { style: { marginTop: modeCav ? 8 : 14 } }, barre(base))));
     pousserRecs();
 
     /* 2 · Ses chevaux — magazine immersif */
