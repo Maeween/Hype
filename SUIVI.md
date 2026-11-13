@@ -13,6 +13,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0450 — Mes chevaux : héros façon Vidéothèque, cartes des chevaux plus petites
+- Blandine (03h23 : « ta page mes chevaux, c'est bien, tu peux la mettre en ligne »). EcranMesChevaux (index.html) : courbe dorée en haut à droite, photo du cheval au couchant ENTIÈRE (340 px sur iPhone = taille « C »), courbe dorée dessous, « CHEVAUX / Mes chevaux » à droite. Ancien héros derrière window.__heroAncien.
+- Cartes des chevaux réduites (hauteur 76 / 88 / 104, nom 22 / 25 / 24, info 11).
+- NON publié volontairement : le filtre « faux 1ers » (B4, C4, préparatoires) de hypePrincipauxResultats — la section « Principaux résultats » de la page cavalier doit être remplacée par le design des records (en cours).
+- En cours : taille de la photo du héros à harmoniser (cavalier ~220 px, Performances 380, Mes chevaux 340) — Blandine regarde la taille C sur la page cavalier.
+
 ## 20261113-0440 — Page cavalier : héros des performances, sans « Personnaliser ma page », pastilles coach (étape 2/4)
 - cavV2Hero (hype-ecran-cavalier.js v=26) : en-tête « grande photo » (par défaut) au dessin Vidéothèque — courbe dorée en haut à droite, photo ENTIÈRE posée sur une courbe dorée, « CAVALIER / prénom / @pseudo · écurie » à droite. Autres en-têtes (bandeau, portrait, fond) et ordinateur à panneau inchangés. Ancien : window.__heroAncien = true.
 - Bouton « Personnaliser ma page » masqué (Blandine : « pas très fonctionnel, vire le gros bouton doré ») ; réglages gardés.
