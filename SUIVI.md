@@ -4,6 +4,8 @@
 Demande de Blandine (04/11) : « classer ce qui reste à faire par ordre d'urgence, en 4 catégories », gardé ICI, en tête du suivi,
 pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à jour à chaque livraison (barrer / retirer ce qui est fait).
 
+> 🟨 EN ATTENTE (Blandine, 13/11 03h38 : « mets ça de côté pour demain ») — PAGE CAVALIER, RECORDS À LA PLACE DES « PRINCIPAUX RÉSULTATS » : prêt sur la branche GitHub `attente-records-cavalier` (index.html : recordsV2 dans BlocResultatsCavaliere + hypeHauteurEpreuve, copie de hauteurEp). Captures montrées (page entière). Reste : son avis, puis publication. Le filtre « faux 1ers » de hypePrincipauxResultats (B4, C4, préparatoires) est aussi en attente, non publié.
+
 > 🟧 À FAIRE PLUS TARD — PAGE TEAM, PHOTOS ET VIDÉOS (Blandine, 13/11 03h08 : « tu t'es planté, tu as mis sur la même page les photos, les vidéos… quand on clique sur les photos ça renvoie sur une page, sur les vidéos ça renvoie sur la même page… il aurait fallu 2 onglets différents ») : séparer Photos et Vidéos de l'équipe en deux onglets / deux pages distinctes, chaque bouton menant à SA page. Ne pas toucher au héros de la page Team (Blandine 03h06 : « la page Team, tu la touches pas »).
 > 🟧 À FAIRE PLUS TARD — PAGE TEAM, « PAR CHEVAL » (Blandine, 13/11 03h09) : « quand on clique par cheval, on s'attendra à voir les onglets par cheval et pas toujours les onglets par cavalier » — le choix « Par cheval » doit afficher des onglets par cheval (aujourd'hui il garde ceux par cavalier).
 
