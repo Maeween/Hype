@@ -987,6 +987,10 @@ Petite structure familiale, enseignante DE.
 ```
 
 - [11/11 20h15] ✅ FAIT — MAILS SUPABASE SANS COPIER-COLLER : fonction serveur « reglages-mails » (supabase/functions/reglages-mails) + secret HYPE_PAT_REGLAGES (clé d'accès Supabase créée et collée PAR BLANDINE, jamais vue par Claude). Claude modifie outils/mails-generer.py, publie dans le dépôt, puis lance la fonction depuis la base (net.http_post … {"action":"appliquer"}) : elle recopie outils/mails/reinitialisation.html dans Supabase. Appliqué ce soir : nouveau mail « mot de passe oublié » (maquette A validée : titre en vrai texte, Hypo, 14 langues, Horse Lingo inchangé) + liens valables 24 h (mailer_otp_exp 86400, au lieu d'1 h — le lien ouvert 8 h après l'envoi avait expiré). Hypo (images/mail-hypo.jpg) visible après la prochaine publication de l'appli.
+### 13/11 — build 20261113-1220 — Page Aide : tuto n° 12 « Partage une page »
+- Sur le « Ok super » de Blandine (10h59) : tuto n° 12 (hype-ecran-aide.js v15), 15 langues, image accueil_v2_fin_de_page_v1.webp entière (l'image de fin, juste sous l'encadré de partage) — 1 en bas de page, l'encadré « Partage cette page », 2 « Envoyer », 3 « Copier le lien », 4 « QR code », 5 ce qui reste privé (documents, compte, messagerie) + « Partager sa fiche » sur un cheval. Pas de bouton : le partage se fait depuis la page qu'on veut partager. Hey Baby (aide) connaît ce tuto.
+- Prochain : n° 13 « Ta saison ».
+
 ### 13/11 — build 20261113-1210 — Page Aide : tuto n° 11 « Suis la santé de ton cheval »
 - Sur le « Super, continue » de Blandine (10h56) : tuto n° 11 (hype-ecran-aide.js v14), 15 langues, image sante-hero-defaut.webp entière ; l'intro dit que la santé fait partie de Hype Premium (règle du 02/11) — 1 onglet Chevaux → le cheval → onglet « Santé » + lien « Ouvrir mes chevaux », 2 « Ajouter un soin » (prochain rappel), 3 « Lire le carnet de vaccination », 4 « Ajouter un document », 5 « Ajouter ses consignes ». Hey Baby (aide) connaît ce tuto.
 - Prochain : n° 12 « Partage une page ».
