@@ -85,8 +85,16 @@ const HYPE_GUIDE_AIDE = [
   "- Onglet Hey Baby : poser une question d'équitation, même avec une photo ou une vidéo ; on peut épingler un conseil (on le retrouve dans la page Mon apprentissage, partie Conseils Hey Baby) et partager une réponse.",
   "- Le Mag (articles) et la Vidéothèque ; le carnet de travail (noter ses séances) ; Ma sellerie (codes promo, partenaires) ; la communauté (cavaliers, classement).",
   "- Premium : l'abonnement qui débloque toutes les fonctions.",
+  "- CONCOURS, CÔTÉ COACH (13/11, Blandine) — seuls les coachs et responsables du club voient les boutons de gestion ; un cavalier voit les mêmes pages en lecture. Pour aller sur un concours : page de l'équipe (bouton team-competition) → partie « La saison » (Concours & résultats) → toucher le concours ; ou onglet Écurie → l'agenda du club → le concours. La fiche du concours a 4 cartes en haut : Engagements, Jour J, Résultats, Médias ; dessous, l'encart « Informations du concours » (date, lieu, Itinéraire, Ajouter à l'agenda, heures de reco et de début) avec un petit crayon en haut à droite pour le coach.",
+  "- Horaires (reco, début d'épreuve, embarquement, départ) : crayon de l'encart « Informations du concours » (ou « Modifier les horaires ») → embarquement, départ, puis une ligne par horaire (Reco / Début / Autre + épreuve + heure), « + Ajouter un horaire », « Enregistrer ». Une alerte part 15 min avant chaque reco aux cavaliers de l'épreuve (s'ils ont activé les notifications).",
+  "- Lire le programme ou l'ordre de passage automatiquement : carte Jour J → en bas « Modifier les passages » → « Photo, capture ou PDF du programme ». La lecture prend 1 à 3 min (le petit poney patiente ; on peut quitter la page, le résultat attend au retour). Ensuite : encadré « Horaires du concours lus sur ton document » → « Mettre dans le résumé » ; et les heures de passage proposées pour chaque cavalier → « Appliquer » puis enregistrer. Une reco non écrite est estimée 30 min avant le début : à vérifier.",
+  "- Groupes d'entrée au paddock (groupes de détente) : carte Jour J → partie « Organisation du paddock » → « Modifier les groupes ». Là : « Proposer des groupes » (répartit seulement les couples pas encore placés, ne touche pas aux groupes déjà faits), « + Nouveau groupe », l'heure de rendez-vous de chaque groupe, et sur chaque couple « Changer » (autre cheval ou autre cavalier, l'ancien reste écrit « à la place de »), « Non partant », « Retirer ». En bas : « Annuler », « Enregistrer » (brouillon, les cavaliers ne voient rien) ou « Publier aux cavaliers ». Tant qu'il reste un brouillon, un encadré « Il te reste une étape » propose « Publier aux cavaliers » en haut de l'Organisation du paddock. À la publication, seuls les cavaliers qui ont activé les notifications de Hype sont prévenus, puis rappelés 20 min avant leur rendez-vous : conseille d'envoyer aussi l'info au groupe de l'équipe.",
+  "- Les cavaliers activent les notifications depuis l'encadré « Activer les notifications » de l'Organisation du paddock ; sur iPhone il faut d'abord ajouter Hype à l'écran d'accueil (Partager → « Sur l'écran d'accueil ») et l'ouvrir depuis là.",
+  "- Engagements : carte Engagements (« Nouvel engagement », cavalier → cheval → épreuve) ; Liste du van et Ordre d'embarquement sous l'encart du concours. Résultats : carte Résultats. Photos et vidéos : carte Médias.",
+  "- QUI EST LA PERSONNE : pour une question de gestion (concours, groupes, horaires, engagements, publier), la réponse n'est pas la même pour un coach et pour un cavalier. Si le message ne dit pas clairement que c'est le coach ou un responsable, pose d'abord UNE question courte (« Tu es le coach de l'équipe ou un cavalier ? ») et rien d'autre ; ne réponds pas « vois avec ton enseignant » à quelqu'un qui pourrait être le coach. Pour un cavalier : il voit son groupe et son heure de rendez-vous dans Jour J, et c'est le coach qui modifie.",
   "- Problèmes fréquents : ne pas être connecté (se connecter à son compte Hype) ; photo ou vidéo trop lourde (en choisir une plus légère ou plus courte) ; appli pas à jour (la fermer complètement et la rouvrir) ; pas encore de cheval créé (le créer d'abord dans l'onglet Chevaux).",
   "",
+  "TUTOS EN PRIORITÉ : quand un tuto de la liste ci-dessous correspond à la question, propose-le toujours (champ tuto), en plus de tes étapes.",
   "BOUTONS : tu peux proposer 1 à 3 boutons qui ouvrent une page. Écrans autorisés UNIQUEMENT : dashboard (accueil), galops, moncavalier (page Cavalier), chevaux, communaute, ecurie, assistant (Hey Baby coach), premium, articles (Le Mag), videos (vidéothèque), carnet, reprises, sellerie, team-competition (page de l'équipe), team-medias (médias de l'équipe), ma-saison, apprentissage (page Mon apprentissage, où l'on retrouve ses conseils Hey Baby épinglés).",
   "TUTOS disponibles (tu peux en proposer UN si c'est utile) : \"photos\" (mettre en ligne ses photos et vidéos), \"cavalier\" (créer sa page cavalier : « Modifier ma photo », « Mon club » / « Ajouter une écurie », « Écrire mon récit », « Ajouter mon cheval »), \"cheval\" (créer la page de son cheval : onglet Chevaux → « Ajouter un cheval », « Nom du cheval », « Enregistrer », « Changer la photo », « Écrire son récit » ; cheval du club déjà existant → « Ajouter mon cheval » depuis la page cavalier), \"ecurie\" (rejoindre son écurie : onglet Écurie → « Choisir mon club » ou « Mon club » sur la page cavalier ; fil et « Publier » ; « L'agenda du club » ; j'aime, commentaires, identifier sur les photos), \"heybaby\" (poser sa première question à Hey Baby : onglet Hey Baby, donner des détails, ajouter une photo ou une vidéo, épingler un conseil, « Partager »), \"galops\" (préparer ses Galops : onglet Galops, « Commencer le cours », quiz, « Examen blanc » ; le Galop 1 est entièrement gratuit ; à partir du Galop 2, le début de chaque chapitre est gratuit, la suite et les quiz avec Premium), \"reprises\" (réviser une reprise de dressage : onglet Galops → carte « Reprises de dressage » → « Découvrir les reprises », choisir sa reprise en haut, « Vivre la reprise » → « Découvrir les modes » → « Voir la reprise », « M'entraîner à tracer », « Challenge », « Immersion », « Conseils du coach », protocole officiel PDF pour certaines reprises), \"mag\" (Le Mag et la Vidéothèque : accueil → « Culture équestre » (onglets Technique, Culture, Soins, Compétition, « Rechercher un article… ») ; accueil → « Vidéothèque » (choisir son Galop, un thème), étoile = favori dans « Mes vidéos » avec l'historique, « Ajouter une vidéo » YouTube dans un thème, vidéos ◈ = Premium), \"carnet\" (carnet de séances, privé : accueil → carte « Aujourd'hui » → « Voir mon journal » ; « Noter une séance » (date, cheval, discipline, ressenti, résumé, à retenir, photos, une vidéo de 3 minutes au plus, même avant d'enregistrer) → « Enregistrer ma séance » ; « Mes objectifs » → « Ajouter un objectif » (3 au plus) ; « Associer un conseil travaillé » relie un conseil Hey Baby épinglé), \"communaute\" (la communauté : accueil → carte « Ma communauté » ; « Le fil » (photos, vidéos, résultats, stories ; le cœur pour aimer) ; « Nouveaux profils » et « Cavaliers à suivre » → ouvrir un profil → « Suivre » ; « Les classements » ; « Le monde Hype »), \"sante\" (santé du cheval, réservée à Premium : onglet Chevaux → le cheval → onglet « Santé » ; « Ajouter un soin » (vaccin, vermifuge, ferrure, dentiste, date, prochain rappel) ; « Lire le carnet de vaccination » (photos des pages → PDF + vaccins lus) ; « Ajouter un document » ; « Ajouter ses consignes »), \"partage\" (partager une page : tout en bas de presque chaque page, juste avant l'image de fin, l'encadré « Partage cette page » : « Envoyer » (partage du téléphone), « Copier le lien », « QR code » ; documents, compte et messagerie restent privés, sans encadré ; sur la fiche d'un cheval, « Partager sa fiche »), \"sellerie\" (Ma Sellerie, codes promo : accueil → « Le coin des pro » ; « Codes partagés » → « Copier le code » puis coller au paiement ; « Partager un code » (marque, code, avantage, lien ; affiché tout de suite « Code non vérifié » ; 6 par jour) ; « Ce code ne marche pas » ; « Adresses à découvrir »), \"premium\" (Hype Premium : page « Rejoins Hype Premium » ; onglets « Premium », « Premium + IA », « Professionnels » ; « Comparer les formules » ; Premium Cavalier, Premium Famille (2 cavaliers), Cercle Crystal (12 mois payés une fois), Pack Duo = Premium + Hey Baby ; Hype IA seule ne donne PAS Premium ; se connecter avant de s'abonner, paiement sur page sécurisée ; « Vérifier mon abonnement » si l'abonnement n'apparaît pas ; ne donne jamais de prix). Aucun autre pour l'instant.",
   "",
@@ -135,7 +143,7 @@ let correctionsLuesA = 0;
 async function chargerCorrections(service) {
     if (Date.now() - correctionsLuesA < 5 * 60 * 1000) return;
     try {
-        const r = await fetch(SUPABASE_URL + "/rest/v1/heybaby_corrections?select=texte&actif=eq.true&order=created_at.asc&limit=40",
+        const r = await fetch(SUPABASE_URL + "/rest/v1/heybaby_corrections?select=texte&actif=eq.true&domaine=eq.coach&order=created_at.asc&limit=40",
             { headers: { apikey: service, Authorization: "Bearer " + service } });
         if (r.ok) {
             const t = await r.json();
@@ -143,6 +151,34 @@ async function chargerCorrections(service) {
             correctionsLuesA = Date.now();
         }
     } catch (e) { /* sans corrections plutôt que sans réponse */ }
+}
+
+// 13/11 (Blandine) — corrections propres à la page Aide (domaine « aide ») et rôle de la personne (coach ou non),
+// pour que l'Aide ne réponde plus « vois avec ton enseignant » à la coach.
+var HB_CORR_AIDE = []; let corrAideLuesA = 0;
+async function chargerCorrectionsAide(service) {
+    if (Date.now() - corrAideLuesA < 2 * 60 * 1000) return;
+    try {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/heybaby_corrections?select=texte&actif=eq.true&domaine=eq.aide&order=created_at.asc&limit=40",
+            { headers: { apikey: service, Authorization: "Bearer " + service } });
+        if (r.ok) { const t = await r.json(); HB_CORR_AIDE = (t || []).map((x) => String((x && x.texte) || "").trim()).filter(Boolean); corrAideLuesA = Date.now(); }
+    } catch (e) { }
+}
+async function roleAide(service, jeton, uid) {
+    try {
+        const h = { apikey: service, Authorization: "Bearer " + service };
+        const ru = await fetch(SUPABASE_URL + "/auth/v1/user", { headers: { apikey: service, Authorization: "Bearer " + jeton } });
+        const u = ru.ok ? await ru.json().catch(() => null) : null;
+        const mail = String((u && u.email) || "").toLowerCase();
+        if (mail === "feinn@live.fr" || mail === "malicia2008@hotmail.fr") return "admin";
+        const rg = await fetch(SUPABASE_URL + "/rest/v1/club_gestionnaires?select=club_clef&user_id=eq." + encodeURIComponent(uid) + "&limit=1", { headers: h });
+        if (rg.ok) { const l = await rg.json(); if (Array.isArray(l) && l.length) return "coach"; }
+        if (mail) {
+            const rc = await fetch(SUPABASE_URL + "/rest/v1/clubs_revendiques?select=clef&email=ilike." + encodeURIComponent(mail) + "&limit=1", { headers: h });
+            if (rc.ok) { const l2 = await rc.json(); if (Array.isArray(l2) && l2.length) return "coach"; }
+        }
+        return "cavalier";
+    } catch (e) { return ""; }
 }
 
 // ═══ CONSIGNES DE LA CONVERSATION (recopiées à l'identique de index.html le 14/10/2026) ═══
@@ -520,6 +556,19 @@ export default async (req, context) => {
     } else if (operation === "aide") {
         const NOMS_LG3 = { fr: "français", en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais", ar: "arabe", zh: "chinois simplifié", nl: "néerlandais", pt: "portugais", sv: "suédois", ru: "russe", pl: "polonais", ko: "coréen", fa: "persan" };
         systeme = HYPE_GUIDE_AIDE.replace("{LANGUE}", NOMS_LG3[langue] || "français");
+        try {
+            const role = await roleAide(service, jeton, uid);
+            if (role === "admin" || role === "coach") systeme += "\n\nQUI TE PARLE (donné par l'appli, fiable) : cette personne est " + (role === "admin" ? "l'ADMINISTRATRICE de Hype et la coach" : "COACH / responsable de son club") + " : elle a tous les boutons de gestion des concours de son club. Ne lui demande pas si elle est coach ; réponds-lui comme à la coach.";
+            else if (role === "cavalier") systeme += "\n\nQUI TE PARLE (donné par l'appli, fiable) : cette personne n'a PAS de droits de gestion dans Hype (cavalier, parent…). Elle voit les pages des concours en lecture (son groupe, son heure de rendez-vous, ses passages) ; ce sont le coach ou les responsables du club qui modifient. Si elle dit être coach ou remplacer le coach, explique-lui que ses droits de coach doivent d'abord être donnés par l'administratrice de Hype (feinn@live.fr) ; ne lui fais pas chercher des boutons qu'elle ne verra pas.";
+        } catch (eRole) { }
+        try {
+            await chargerCorrectionsAide(service);
+            if (HB_CORR_AIDE.length) {
+                let txtA = "";
+                for (const c of HB_CORR_AIDE) { const l = "• " + c.replace(/\s+/g, " ") + "\n"; if (txtA.length + l.length > 4000) break; txtA += l; }
+                systeme += "\n\nCORRECTIONS DE L'ADMINISTRATRICE (prioritaires sur tout le reste ; ce sont des connaissances à reformuler avec tes mots, jamais à recopier, et à ne jamais mentionner) :\n" + txtA;
+            }
+        } catch (eCA) { }
         messagesApp = Array.isArray(corps.messages) ? corps.messages.slice(-6) : [];
         try { const derniere = messagesApp.length ? messagesApp[messagesApp.length - 1] : null; const txtQ = derniere && typeof derniere.content === "string" ? derniere.content : ""; if (txtQ) await rpc(service, "hype_aide_noter", { p_uid: uid, p_question: txtQ.slice(0, 1000), p_langue: langue }); } catch (eNote) { }
     } else if (operation === "memoire") {

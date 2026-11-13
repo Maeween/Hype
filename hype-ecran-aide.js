@@ -40,6 +40,22 @@
     var _er = React.useState(""); var err = _er[0], setErr = _er[1];
     var _tu = React.useState(function () { try { var v = window.__aideTuto || null; window.__aideTuto = null; return v; } catch (e) { return null; } }); var tutoOuvert = _tu[0], setTutoOuvert = _tu[1];
     var _rc = React.useState(""); var rech = _rc[0], setRech = _rc[1];
+    /* 13/11 20h36 (Blandine : « j'ai même pas de bouton correction pour rectifier ») : bouton « Corriger » sous chaque réponse,
+       réservé aux modératrices ; la correction (domaine « aide ») est lue par Hey Baby en mode Aide pour tout le monde. */
+    var _mo = React.useState(false); var estModo = _mo[0], setEstModo = _mo[1];
+    var _co = React.useState(null); var corr = _co[0], setCorr = _co[1];
+    React.useEffect(function () { (async function () { try { var r = await supa.rpc("hype_est_moderatrice"); setEstModo(!!(r && r.data === true)); } catch (e) { } })(); }, []);
+    async function envoyerCorrection(m, i) {
+      var texte = String((corr && corr.texte) || "").trim(); if (texte.length < 3 || (corr && corr.envoi)) return;
+      if (texte.length > 500) { setCorr(Object.assign({}, corr, { msg: "500 caractères au maximum (" + texte.length + ")." })); return; }
+      var qPrec = ""; for (var k = i - 1; k >= 0; k--) { if (msgs[k] && msgs[k].role === "user") { qPrec = String(msgs[k].content || ""); break; } }
+      setCorr(Object.assign({}, corr, { envoi: true, msg: "" }));
+      try {
+        var r = await supa.from("heybaby_corrections").insert({ texte: texte, question: qPrec.slice(0, 1000), reponse_extrait: String(m.reponse || "").slice(0, 1500), domaine: "aide" }).select("id");
+        if (r && r.error) throw r.error;
+        setCorr({ i: i, fait: true, msg: "✓ Correction enregistrée : Hey Baby en tient compte dès la prochaine question (pour tout le monde)." });
+      } catch (eC) { setCorr(Object.assign({}, corr, { envoi: false, msg: "Non enregistrée : " + ((eC && eC.message) || eC) })); }
+    }
     function majCompteur() { (async function () { try { var r = await supa.rpc("hype_aide_mon_compteur"); if (r && !r.error) setCompteur(r.data || null); } catch (e) { } })(); }
     React.useEffect(function () {
       (async function () { try { var u = await utilisateurActuel(); setConnecte(!!(u && u.id)); if (u && u.id) majCompteur(); } catch (e) { setConnecte(false); } })();
@@ -108,7 +124,16 @@
         m.reponse,
         (m.boutons && m.boutons.length) || m.tuto ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10, whiteSpace: "normal" } },
           (m.boutons || []).map(function (b, j) { return bouton(String(b.libelle).slice(0, 40) + " ›", function () { allerEcran(b.ecran); }, "b" + j); }),
-          m.tuto ? bouton(t("voirTuto") + " ›", function () { setTutoOuvert(m.tuto); }, "tu") : null) : null);
+          m.tuto ? bouton(t("voirTuto") + " ›", function () { setTutoOuvert(m.tuto); }, "tu") : null) : null,
+        estModo ? (corr && corr.i === i && !corr.fait ? h("div", { style: { marginTop: 12, whiteSpace: "normal" } },
+            h("textarea", { value: corr.texte || "", onChange: function (e) { setCorr(Object.assign({}, corr, { texte: e.target.value })); }, rows: 4, placeholder: "Ce qu’il aurait fallu répondre (ex. « pour modifier les groupes : Jour J → Organisation du paddock → Modifier les groupes »)", style: { width: "100%", boxSizing: "border-box", border: "1px solid rgba(201,166,107,.45)", background: "transparent", color: IV, borderRadius: 12, padding: "10px 12px", fontFamily: M, fontSize: 16, lineHeight: 1.5 } }),
+            h("div", { style: { display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 } },
+              bouton("Annuler", function () { setCorr(null); }, "ca"),
+              bouton(corr.envoi ? "…" : "Enregistrer la correction", function () { envoyerCorrection(m, i); }, "ce")),
+            corr.msg ? h("div", { style: { fontSize: 12, color: "#E8C78F", marginTop: 6 } }, corr.msg) : null)
+          : h("div", { style: { marginTop: 8, textAlign: "end", whiteSpace: "normal" } },
+              corr && corr.i === i && corr.fait ? h("div", { style: { fontSize: 12, color: CH, textAlign: "start" } }, corr.msg) :
+              h("button", { type: "button", onClick: function () { setCorr({ i: i, texte: "" }); }, style: { border: "none", background: "none", color: IV3, fontFamily: M, fontSize: 11.5, textDecoration: "underline", cursor: "pointer", padding: 0 } }, "Corriger"))) : null);
     };
     return h("div", { dir: rtl ? "rtl" : "ltr", style: { minHeight: "100vh", background: "#070A08", color: IV, fontFamily: M } },
       h("div", { style: { position: "relative", minHeight: 280, overflow: "hidden" } },
