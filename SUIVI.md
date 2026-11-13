@@ -65,6 +65,9 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2242 — Guide du coach : chapitre 03 « Programme »
+Blandine 13/11 22h40 (textes ChatGPT « Programme »). hype-ecran-coach.js : 4 cartes (Importer mes listes de départ, Récupérer les horaires, Calculer les passages, Actualiser mon programme), À savoir, encart vocal « Gère ton concours en vocal » avec exemples ; captures images/guide-coach/coach-cap-prog-*.jpg ; chapitre actif dans la liste. À vérifier : « Décale la Club 2 de 20 minutes » à la voix (l'outil ne sait pas encore décaler une épreuve ; le bouton « Décaler l'épreuve » oui). index.html : build 20261113-2242.
 ## 20261113-2241 — Guide du coach : textes courts Engagements et Paddock ; page du concours : encart « Ton rendez-vous au paddock »
 Blandine 13/11 22h38 (textes ChatGPT : Engagements, Paddock, « Ton rendez-vous au paddock »).
 - hype-ecran-coach.js : Engagements (Préparer mes engagements, Gérer même en vocal, Sortir ma fiche d'engagement, Mise à jour automatique « Bientôt », À savoir) ; Paddock « Organiser la détente de mes cavaliers. » (Organiser mes groupes, Calculer les rendez-vous, Consignes par cheval, Modifier mes groupes, Rappels de reconnaissance, À savoir) avec captures (images/guide-coach/coach-cap-pad-*.jpg).
