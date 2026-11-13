@@ -1927,6 +1927,14 @@ function EcranSanteCheval() {
             T("Tu as déjà un PDF ou des photos ? Choisir un fichier", "Already have a PDF or photos? Choose a file", "¿Ya tienes un PDF o fotos? Elegir un archivo", "Hai già un PDF o delle foto? Scegli un file", "PDFや写真がある？ファイルを選ぶ", "Schon ein PDF oder Fotos? Datei wählen", "لديك PDF أو صور؟ اختر ملفًا", "已有 PDF 或照片？选择文件", "Heb je al een pdf of foto's? Kies een bestand", "Já tens um PDF ou fotos? Escolher um ficheiro", "Har du redan en PDF eller foton? Välj en fil", "Уже есть PDF или фото? Выбрать файл", "Masz już PDF lub zdjęcia? Wybierz plik", "PDF나 사진이 이미 있나요? 파일 선택", "از قبل PDF یا عکس داری؟ یک فایل انتخاب کن")))));
     return (typeof hypePortailBody === "function") ? hypePortailBody(fen) : fen;
   }
+  /* 13/11 (outil unique « Ajouter un document », hype-outil-doc.js) : un carnet reconnu par l'outil arrive ici et sa lecture
+     part toute seule (meme fenetre de validation que « Lire le carnet ») */
+  React.useEffect(function () {
+    var f = null; try { f = window.__carnetFichier || null; window.__carnetFichier = null; } catch (e) { }
+    if (!f || !chId) return;
+    setLectCarnet({ etape: "lecture", lignes: [], err: "", garder: true, fichier: f, busy: false });
+    lireCarnetSur(f);
+  }, [chId]);
   function ouvrirLectCarnet() {
     if (!premiumSanteOk()) { setVoilePremium(true); return; }
     setLectCarnet({ etape: "choix", lignes: [], err: "", garder: true, fichier: null, busy: false });
