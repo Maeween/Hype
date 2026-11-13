@@ -17,6 +17,16 @@
   var OR = "#C9A66B";
   var LG = ["en", "es", "it", "ja", "de", "ar", "zh", "nl", "pt", "sv", "ru", "pl", "ko", "fa"];
   var TXT = {
+"✓ Fiche du cheval complétée : ": ["✓ Horse profile completed: ", "✓ Ficha del caballo completada: ", "✓ Scheda del cavallo completata: ", "✓ 馬のプロフィールを補完：", "✓ Pferdeprofil ergänzt: ", "✓ اكتملت بطاقة الحصان: ", "✓ 马匹资料已补全：", "✓ Paardenprofiel aangevuld: ", "✓ Ficha do cavalo completada: ", "✓ Hästens profil kompletterad: ", "✓ Карточка лошади дополнена: ", "✓ Profil konia uzupełniony: ", "✓ 말 프로필 보완: ", "✓ کارت اسب کامل شد: "],
+"Compléter la fiche du cheval": ["Complete the horse profile", "Completar la ficha del caballo", "Completa la scheda del cavallo", "馬のプロフィールを補完", "Pferdeprofil ergänzen", "إكمال بطاقة الحصان", "补全马匹资料", "Paardenprofiel aanvullen", "Completar a ficha do cavalo", "Komplettera hästens profil", "Дополнить карточку лошади", "Uzupełnij profil konia", "말 프로필 채우기", "کامل کردن کارت اسب"],
+"Choisis d’abord le cheval ci-dessous.": ["First choose the horse below.", "Primero elige el caballo abajo.", "Prima scegli il cavallo qui sotto.", "まず下で馬を選んでね。", "Wähle zuerst unten das Pferd.", "اختر الحصان أدناه أولًا.", "请先在下方选择马匹。", "Kies eerst hieronder het paard.", "Escolhe primeiro o cavalo abaixo.", "Välj först hästen nedan.", "Сначала выбери лошадь ниже.", "Najpierw wybierz konia poniżej.", "먼저 아래에서 말을 골라 줘요.", "اول اسب را در پایین انتخاب کن."],
+"✓ déjà sur la fiche": ["✓ already on the profile", "✓ ya en la ficha", "✓ già sulla scheda", "✓ プロフィールに記載済み", "✓ schon im Profil", "✓ موجود في البطاقة", "✓ 资料中已有", "✓ staat al op het profiel", "✓ já na ficha", "✓ finns redan i profilen", "✓ уже в карточке", "✓ już w profilu", "✓ 이미 프로필에 있음", "✓ از قبل در کارت هست"],
+"Différent de la fiche : ": ["Different from the profile: ", "Distinto de la ficha: ", "Diverso dalla scheda: ", "プロフィールと異なる：", "Anders als im Profil: ", "مختلف عن البطاقة: ", "与资料不同：", "Anders dan het profiel: ", "Diferente da ficha: ", "Skiljer sig från profilen: ", "Отличается от карточки: ", "Inne niż w profilu: ", "프로필과 다름: ", "با کارت فرق دارد: "],
+" — coche pour remplacer": [" — tick to replace", " — marca para reemplazar", " — spunta per sostituire", " — チェックで置き換え", " — anhaken zum Ersetzen", " — حدّد للاستبدال", " — 勾选以替换", " — vink aan om te vervangen", " — assinala para substituir", " — markera för att ersätta", " — отметь, чтобы заменить", " — zaznacz, aby zastąpić", " — 체크하면 바꿔요", " — برای جایگزینی علامت بزن"],
+"vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
+"Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
+"Compléter et ranger": ["Complete and file", "Completar y guardar", "Completa e archivia", "補完して保存", "Ergänzen und ablegen", "إكمال وحفظ", "补全并归档", "Aanvullen en opslaan", "Completar e guardar", "Komplettera och spara", "Дополнить и сохранить", "Uzupełnij i zapisz", "채우고 보관", "کامل کن و بایگانی کن"],
+
 "Un document ?": [
 "A document?",
 "¿Un documento?",
@@ -1428,11 +1438,62 @@
       }
       maj({ busy: false, etape: "fini", ok: T("✓ Soins enregistrés : ") + ok + (refus ? " · " + T("Refusés (droits sur ce cheval ?) : ") + refus : "") });
     }
+    /* 13/11 21h13 (étape b) : PAPIERS DU CHEVAL → compléter la fiche. On lit la fiche actuelle (origines, race, age) du cheval
+       choisi ; chaque info lue est proposée : cochée d'office si la fiche est vide, décochée + « différent » si la fiche a déjà
+       autre chose (Blandine : rien n'est écrasé sans son accord). Enregistrement par hypeMajOriginesCheval (même chemin que
+       la fiche cheval : mise à jour directe, sinon fonction de la base), race et âge actuels renvoyés tels quels. */
+    var _fc = React.useState(null); var fiche = _fc[0], setFiche = _fc[1];
+    var _ck = React.useState({}); var coches = _ck[0], setCoches = _ck[1];
+    function champsPapiers(p, f) {
+      var o = (f && f.origines && typeof f.origines === "object") ? f.origines : {};
+      function nomDe(x) { return x && typeof x === "object" ? String(x.nom || "") : String(x || ""); }
+      return [
+        ["sire", T("N° SIRE"), String(o.sire || ""), String(p.sire || "").replace(/\s+/g, "").toUpperCase()],
+        ["naissance", T("Naissance"), String(o.naissance || ""), /^\d{4}-\d{2}-\d{2}$/.test(String(p.naissance || "")) ? p.naissance : ""],
+        ["sexe", T("Sexe"), String(o.sexe || ""), String(p.sexe || "").toLowerCase()],
+        ["robe", T("Robe"), String(o.robe || ""), String(p.robe || "").toLowerCase()],
+        ["race", T("Race"), String((f && f.race) || ""), String(p.race || "")],
+        ["pere", T("Père"), nomDe(o.pere), String(p.pere || "")],
+        ["mere", T("Mère"), nomDe(o.mere), String(p.mere || "")],
+        ["naisseur", T("Naisseur"), String(o.naisseur || ""), String(p.naisseur || "")]
+      ].filter(function (c) { return c[3]; }).map(function (c) {
+        var pareil = norm(c[2]) === norm(c[3]);
+        return { k: c[0], lib: c[1], fiche: c[2], lu: c[3], pareil: pareil, diff: !!c[2] && !pareil };
+      });
+    }
+    React.useEffect(function () {
+      if (!st.lu || st.lu.type !== "papiers_cheval" || !st.chevalId) { setFiche(null); return; }
+      var vif = true;
+      supa.from("chevaux").select("id, nom, race, age, origines").eq("id", st.chevalId).maybeSingle().then(function (r) {
+        if (!vif) return;
+        var f = (r && !r.error && r.data) || null; setFiche(f);
+        var ck = {}; champsPapiers(st.lu.papiers || {}, f).forEach(function (c) { ck[c.k] = !c.pareil && !c.diff; }); setCoches(ck);
+      });
+      return function () { vif = false; };
+    }, [st.chevalId, st.lu]);
+    async function completerFiche() {
+      if (!fiche) return true;
+      var champs = champsPapiers((st.lu && st.lu.papiers) || {}, fiche).filter(function (c) { return coches[c.k] && !c.pareil; });
+      if (!champs.length) return true;
+      var o = Object.assign({}, (fiche.origines && typeof fiche.origines === "object") ? fiche.origines : {});
+      var race = fiche.race || null;
+      champs.forEach(function (c) {
+        if (c.k === "race") race = c.lu;
+        else if (c.k === "pere" || c.k === "mere") o[c.k] = Object.assign({}, (o[c.k] && typeof o[c.k] === "object") ? o[c.k] : {}, { nom: c.lu });
+        else o[c.k] = c.lu;
+      });
+      var r = (typeof hypeMajOriginesCheval === "function") ? await hypeMajOriginesCheval(fiche.id, { origines: o, race: race, age: fiche.age == null ? null : fiche.age })
+        : await supa.from("chevaux").update({ origines: o, race: race }).eq("id", fiche.id).select("id");
+      if (!r || r.error || !r.data || !r.data.length) throw new Error(T("la base a refusé (droits sur ce cheval ?)"));
+      return champs.length;
+    }
     async function rangerDoc(typeDoc) {
       var f = st.fichier; var chId = st.chevalId;
       if (!f || !chId) { maj({ err: T("Choisis le cheval concerné.") }); return; }
       maj({ busy: true, err: "" });
+      var nbFiche = 0;
       try {
+        if (st.lu && st.lu.type === "papiers_cheval") nbFiche = await completerFiche();
         var ext = (String(f.name || "").split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || (/pdf/i.test(f.type) ? "pdf" : "jpg");
         var chemin = String(chId) + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
         var up = await supa.storage.from("sante").upload(chemin, f, { contentType: f.type || undefined, upsert: false });
@@ -1440,7 +1501,7 @@
         var titre = typeDoc === "autre" && st.lu && st.lu.type === "papiers_cheval" ? "Papiers du cheval" : null;
         var r = await supa.from("cheval_documents").insert({ cheval_id: chId, type: typeDoc, titre: titre, date_doc: new Date().toISOString().slice(0, 10), chemin: chemin, mime: f.type || null, taille: f.size || null }).select("id");
         if ((r && r.error) || !r || !r.data || !r.data.length) { try { await supa.storage.from("sante").remove([chemin]); } catch (eR) { } throw (r && r.error) || new Error(T("la base a refusé (droits sur ce cheval ?)")); }
-        maj({ busy: false, etape: "fini", ok: T("✓ Document rangé dans la page Santé de ") + ((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || T("ce cheval")) + "." });
+        maj({ busy: false, etape: "fini", ok: (typeof nbFiche === "number" && nbFiche > 0 ? T("✓ Fiche du cheval complétée : ") + nbFiche + ". " : "") + T("✓ Document rangé dans la page Santé de ") + ((chevaux.filter(function (c) { return c.id === chId; })[0] || {}).nom || T("ce cheval")) + "." });
       } catch (eD) { maj({ busy: false, err: T("Pas rangé : ") + String((eD && eD.message) || eD) }); }
     }
     function allerCarnet() {
@@ -1517,13 +1578,23 @@
       } else {
         var typeDoc = type === "ordonnance" ? "ordonnance" : type === "facture" ? "facture" : "autre";
         var p = lu.papiers || {};
-        var infos = type === "papiers_cheval" ? [[T("N° SIRE"), p.sire], ["UELN", p.ueln], [T("Naissance"), p.naissance], [T("Sexe"), p.sexe], [T("Robe"), p.robe], [T("Race"), p.race], [T("Père"), p.pere], [T("Mère"), p.mere], [T("Naisseur"), p.naisseur]].filter(function (x) { return x[1]; }) : [];
+        var champs = (type === "papiers_cheval" && fiche) ? champsPapiers(p, fiche) : [];
         action = h("div", { className: "hod-bloc" },
-          infos.length ? h("div", { style: { marginBottom: 10 } }, h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Ce que j’ai lu")),
-            infos.map(function (x) { return h("div", { key: x[0], style: { display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13, padding: "3px 0" } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, x[0]), h("span", null, x[1])); }),
-            h("div", { className: "hod-note", style: { marginTop: 6 } }, T("Bientôt : je compléterai la fiche du cheval avec ces infos (avec ton accord). Pour l’instant, je range le document."))) : null,
+          type === "papiers_cheval" ? h("div", { style: { marginBottom: 12 } },
+            h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Compléter la fiche du cheval")),
+            !st.chevalId ? h("div", { className: "hod-note" }, T("Choisis d’abord le cheval ci-dessous.")) :
+            !fiche ? h("div", { className: "hod-note" }, "…") :
+            champs.length ? champs.map(function (c) {
+              return h("label", { key: c.k, className: "hod-ligne", style: { cursor: c.pareil ? "default" : "pointer" } },
+                h("input", { type: "checkbox", disabled: c.pareil, checked: c.pareil || !!coches[c.k], onChange: function (e) { var x = Object.assign({}, coches); x[c.k] = e.target.checked; setCoches(x); } }),
+                h("div", null,
+                  h("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13 } }, h("span", { style: { color: "rgba(243,238,228,.6)" } }, c.lib), h("b", { style: { fontWeight: 500 } }, c.lu)),
+                  c.pareil ? h("div", { style: { fontSize: 11.5, color: "#96CDAA" } }, T("✓ déjà sur la fiche")) :
+                  c.diff ? h("div", { style: { fontSize: 11.5, color: "#E8D3A8" } }, T("Différent de la fiche : ") + c.fiche + T(" — coche pour remplacer")) :
+                  h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,.5)" } }, T("vide sur la fiche"))));
+            }) : h("div", { className: "hod-note" }, T("Je n’ai rien lu d’utile pour la fiche."))) : null,
           h("div", { className: "hod-note" }, T("Je le range dans les documents de la page Santé du cheval :")), choixCheval(),
-          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: function () { rangerDoc(typeDoc); } }, st.busy ? "…" : T("Ranger le document"))));
+          h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: function () { rangerDoc(typeDoc); } }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")))));
       }
       corps = h("div", null,
         h("div", { className: "hod-k" }, T("Ce que j’ai compris")),

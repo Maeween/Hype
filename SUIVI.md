@@ -31,6 +31,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 > 🟧 À FAIRE (Blandine, 13/11 19h05) — IMAGE DE PARTAGE DU JOUR J : bouton « Partager cette page » de la fiche concours → image verticale Hype (concours, date, adresse, groupes du paddock avec heures de rdv, N°, cheval, heure de passage, remplacements, QR + lien), texte + lien. Deux maquettes faites avec les vraies données de Versailles (version noms complets + ronds / version prénoms seuls) ; elle les teste sur WhatsApp. À ajouter : ligne « Reco 7h30 » dans la carte du groupe concerné. Choix de version pas encore fait.
 > 🟨 PLUS TARD — MAIL EN PLUS DE LA NOTIFICATION à la publication des groupes (solution B, Brevo) pour les cavaliers sans notifications. Constat 13/11 19h30 : sur 7 cavaliers du CSO Versailles, seule Eva a les notifications activées.
 
+## 20261113-2125 — Outil unique : les papiers du cheval COMPLÈTENT LA FICHE (SIRE, naissance, sexe, robe, race, père, mère, naisseur)
+Blandine 13/11 21h21 (« Oui, vas-y »). hype-outil-doc.js (v=3) ; index.html : build 20261113-2125. Aucune modification de la base.
+- Papiers reconnus + cheval choisi : tableau « Compléter la fiche du cheval » = info lue vs fiche actuelle (chevaux.origines + race) : vide → cochée d'office ; identique → « ✓ déjà sur la fiche » ; DIFFÉRENTE → décochée, « Différent de la fiche : … — coche pour remplacer » (rien écrasé sans accord).
+- « Compléter et ranger » : hypeMajOriginesCheval (race et âge actuels renvoyés tels quels ; père / mère : seul le nom change, les grands-parents sont gardés), puis document rangé dans cheval_documents.
+- Cirrus des Lauriers : son PDF SIRE du 13/11 (rangé « autre ») n'a pas rempli la fiche → le redonner à l'outil.
+- Textes traduits dans les 15 langues.
+
 ## 20261113-2115 — OUTIL UNIQUE « Ajouter un document » (étapes 1 + 2) : encart en bas de toutes les pages de travail, lecture de n'importe quel document, question en cas de doute
 Blandine 13/11 20h55 (« Ok, vas-y »), 21h03 (« il faut qu'il apparaisse aussi en bas des pages écurie, cavalier… », « tu traduis »), 21h12 « Oui ». Nouveau fichier hype-outil-doc.js (v=2, chargé à la demande) ; hype-ecran-sante-cheval.js (v=22) ; index.html : build 20261113-2115. Aucune modification de la base.
 - Encart (maquette validée 16h15) : cheval entier (images/sante-fond-defaut.webp) en haut, « UN DOCUMENT ? / Hype s'occupe du reste. / Photo ou PDF : il le lit, le range et remplit les bonnes pages. », bouton « ＋ Ajouter un document » (contour), « Tout ce qu'il sait lire ⌄ » qui déplie la liste en italique. Comptes connectés seulement.
