@@ -22,6 +22,15 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-1340 — Fiche concours : encart « Le concours » en haut, jury plus bas, règles du paddock, boutons sans liseré
+Blandine 13/11 13h27 → 13h34 (« on met en ligne le reste pendant ce temps-là »). hype-ecran-saison.js v=158.
+- Encart « Le concours » (style tickets) en tête : date dans le talon, adresse, horaires remplis (embarquement, départ, reconnaissance, début), boutons « Itinéraire › » (plan) et « Infos pratiques › » (déplie le détail : modifier adresse/horaires, ajouter à l'agenda). L'ancienne ligne « 📍 Versailles › » est retirée.
+- « À déclarer au jury » descendu après les Règles du paddock (d'abord ce qui est pour les cavaliers). Étiquettes raccourcies (« déjà engagé · n° 18 · Club 2 GP »).
+- Règles du paddock : « Sois bien à l'heure… » en premier ; dernière règle fusionnée « Prévois si besoin quelqu'un pour marcher ton cheval pendant la reconnaissance, et de quoi changer la cartouche de ton gilet airbag. » (FR + EN). Message des groupes raccourci.
+- « Je participe » / « Liste du van » : fond sombre sans liseré doré. « Touche encore pour te retirer » sous ces boutons.
+- Titres de chapitre un peu plus bas sous la courbe et un peu plus petits ; titre du héros (CSO Versailles) un peu plus bas et plus petit.
+- Modifier les groupes : « Proposer des groupes » / « + Nouveau groupe » centrés.
+
 ## 20261113-1335 — Fiche concours : courbes entre les chapitres, boutons de la coach sans doré, règle « à l'heure », airbag, autres épreuves dans les groupes
 Blandine 13/11 13h19 → 13h26 (choix « 3 » pour les boutons ; groupes : on garde l'actuel). hype-ecran-saison.js v=157.
 - Chapitres « Organisation du paddock » et « Passages de l'équipe » : petite courbe très légèrement dorée, bien aérée, titre centré en grand (trait doré à gauche et icône retirés) ; la même courbe sous la dernière épreuve, avant « Modifier les passages ».

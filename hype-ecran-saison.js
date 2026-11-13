@@ -258,6 +258,10 @@ var HS_TR_BRUT = {
   "Règles du paddock": ["Warm-up arena rules", "Normas del paddock", "Regole del campo prova", "準備馬場のルール", "Regeln am Abreiteplatz", "قواعد ميدان الإحماء", "热身场规则", "Regels losrijring", "Regras do paddock", "Regler vid framridningen", "Правила разминки", "Zasady rozprężalni", "준비 마장 규칙"],
   "Ne rentre jamais seul au paddock : attends l’accord de ta coach.": ["Never enter the warm-up arena alone: wait for your coach's go-ahead.", "Nunca entres solo al paddock: espera el permiso de tu entrenadora.", "Non entrare mai da solo nel campo prova: aspetta il via della tua coach.", "一人で準備馬場に入らないこと。コーチの許可を待ちましょう。", "Geh nie allein auf den Abreiteplatz: warte auf das Okay deiner Trainerin.", "لا تدخل ميدان الإحماء وحدك أبدًا: انتظر موافقة مدربتك.", "切勿独自进入热身场：等待教练同意。", "Ga nooit alleen de losrijring op: wacht op het akkoord van je coach.", "Nunca entre sozinho no paddock: espere o sinal da sua treinadora.", "Gå aldrig in på framridningen ensam: vänta på din tränares klartecken.", "Никогда не заходи на разминку один: дождись разрешения тренера.", "Nigdy nie wchodź sam na rozprężalnię: poczekaj na zgodę trenerki.", "혼자 준비 마장에 들어가지 마세요. 코치의 허락을 기다려요."],
   "Dès ton arrivée, signale à ta coach que tu es sur le paddock.": ["As soon as you arrive, tell your coach you're in the warm-up arena.", "En cuanto llegues, avisa a tu entrenadora de que estás en el paddock.", "Appena arrivi, avvisa la tua coach che sei al campo prova.", "到着したら、準備馬場にいることをすぐコーチに伝えましょう。", "Sag deiner Trainerin gleich bei der Ankunft, dass du am Abreiteplatz bist.", "فور وصولك، أخبر مدربتك أنك في ميدان الإحماء.", "一到场就告诉教练你已在热身场。", "Laat je coach meteen weten dat je op de losrijring bent.", "Assim que chegar, avise sua treinadora que está no paddock.", "Säg till din tränare så fort du är på framridningen.", "Как только придёшь, сообщи тренеру, что ты на разминке.", "Zaraz po przyjściu daj znać trenerce, że jesteś na rozprężalni.", "도착하면 바로 코치에게 준비 마장에 왔다고 알려요."],
+  "Prévois si besoin quelqu’un pour marcher ton cheval pendant la reconnaissance, et de quoi changer la cartouche de ton gilet airbag.": ["If needed, arrange for someone to walk your horse during the course walk, and something to replace your airbag vest cartridge."],
+  "Prévois si besoin quelqu’un pour marcher ton cheval pendant la reconnaissance.": ["If needed, arrange for someone to walk your horse during the course walk."],
+  "Prévois de quoi changer la cartouche de ton gilet airbag, ou une protection dorsale.": ["Bring a spare cartridge for your airbag vest, or a back protector."],
+  "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance."],
   "Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.": ["Be right on time at the warm-up arena entrance: one late rider makes the whole team late."],
   "Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.": ["For practical reasons, we gather the rounds into groups. The times in gold are meeting times at the warm-up arena entrance. Remember to bring someone to hold your horse during the course walk, and something to replace your airbag vest cartridge or a back protector, just in case."],
   "Ne quitte jamais le paddock sans l’accord de ta coach.": ["Never leave the warm-up arena without your coach's go-ahead.", "Nunca salgas del paddock sin el permiso de tu entrenadora.", "Non lasciare mai il campo prova senza il via della tua coach.", "コーチの許可なしに準備馬場を離れないこと。", "Verlass den Abreiteplatz nie ohne das Okay deiner Trainerin.", "لا تغادر ميدان الإحماء أبدًا دون موافقة مدربتك.", "未经教练同意切勿离开热身场。", "Verlaat de losrijring nooit zonder akkoord van je coach.", "Nunca saia do paddock sem o sinal da sua treinadora.", "Lämna aldrig framridningen utan din tränares klartecken.", "Никогда не уходи с разминки без разрешения тренера.", "Nigdy nie opuszczaj rozprężalni bez zgody trenerki.", "코치의 허락 없이 준비 마장을 떠나지 마세요."],
@@ -1033,6 +1037,13 @@ var CSS2 = [
   "html.alr-4 .hc-alerte.al2{border:0;background:none;padding:0}html.alr-4 .hc-alerte.al2 .al-t{border-bottom:1px solid rgba(243,238,228,.2)}html.alr-4 .hc-alerte.al2 .al-i{margin-top:8px;padding:12px 12px 12px 0;border:1px solid rgba(243,238,228,.1);border-left:3px solid #F3EEE4;border-radius:12px;background:#0e1212}html.alr-4 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.1)}",
   /* 13/11 13h05 (Blandine : « tu peux mieux faire, propose-moi d'autres choses… et des propositions de couleurs ») */
   ".hc-alerte.al2 .al-npl{font-family:Montserrat,sans-serif;font-size:13px;color:rgba(243,238,228,.6);line-height:1.5}.hc-alerte.al2 .al-npl b{color:#F3EEE4;font-weight:600}",
+  ".hc-alerte.al2{margin-top:30px}.hc-alerte.al2 .al-tag{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}",
+  /* 13/11 13h27 (Blandine) : en modifiant les groupes, « Proposer des groupes » et « + Nouveau groupe » centrés et décollés du titre */
+  ".hc .hc-ged .hc-ged-act{justify-content:center;margin:6px 0 14px}",
+  ".hc-alerte.hc-infos{margin-top:30px}.hc-alerte.hc-infos .al-t{display:none}html.alr-5 .hc-alerte.hc-infos .al-t{display:flex}",
+  ".hc-alerte.al2 .hc-inf-h{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:4px}.hc-alerte.al2 .hc-inf-h>span{display:flex;flex-direction:column}.hc-alerte.al2 .hc-inf-h small{font-family:Montserrat,sans-serif;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(243,238,228,.5)}.hc-alerte.al2 .hc-inf-h b{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:20px;color:#F3EEE4}",
+  ".hc-alerte.al2 .hc-inf-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.hc-alerte.al2 .hc-inf-a .al-tag{width:auto !important;display:inline-block !important;padding:4px 12px !important;border-top:1px solid !important;margin-top:0;text-decoration:none;background:none;cursor:pointer;font:inherit;font-family:Montserrat,sans-serif;font-size:11.5px}",
+  ".hc-alerte.hc-infos .al-n small{text-transform:uppercase}",
   "html.alr-5 .hc-alerte.al2{background:none;border:0;padding:0}html.alr-5 .hc-alerte.al2 .al-t{font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:26px;font-weight:500;border-bottom:0;padding:0 0 10px}html.alr-5 .hc-alerte.al2 .al-i{grid-template-columns:64px minmax(0,1fr);gap:0;margin-bottom:10px;padding:0;border:1px solid rgba(243,238,228,.12);border-radius:14px;background:#0e1212;overflow:hidden}html.alr-5 .hc-alerte.al2 .al-i:first-of-type{border-top:1px solid rgba(243,238,228,.12)}html.alr-5 .hc-alerte.al2 .al-n{align-self:stretch;border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 0}html.alr-5 .hc-alerte.al2 .al-c{padding:12px 14px}",
   "html.alr-6 .hc-alerte.al2 .al-i{grid-template-columns:1fr;padding:10px 0}html.alr-6 .hc-alerte.al2 .al-n{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:4px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em}html.alr-6 .hc-alerte.al2 .al-n small{font-size:12px;letter-spacing:.06em;margin:0;color:inherit}html.alr-6 .hc-alerte.al2 .al-c{flex-direction:row;flex-wrap:wrap;column-gap:8px;row-gap:2px;align-items:baseline}html.alr-6 .hc-alerte.al2 .al-l1{flex-basis:100%;font-size:15px}html.alr-6 .hc-alerte.al2 .al-l2{font-size:15px}html.alr-6 .hc-alerte.al2 .al-l3:before{content:'· '}html.alr-6 .hc-alerte.al2 .al-tag{flex-basis:auto;margin-top:2px}",
   "html.alr-7 .hc-alerte.al2{border:0;border-top:1px solid var(--al,#C9A66B);border-bottom:1px solid var(--al,#C9A66B);border-radius:0;background:none;padding:2px 0 6px}html.alr-7 .hc-alerte.al2 .al-t{justify-content:center;gap:12px;border-bottom:0;font-family:'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:0;font-size:24px;font-weight:500}html.alr-7 .hc-alerte.al2 .al-i{border-top:1px solid rgba(243,238,228,.07)}html.alr-7 .hc-alerte.al2 .al-n{font-size:34px}",
@@ -1327,6 +1338,8 @@ function hsChevalConnu(nom, liste) {
   return pre.length === 1 ? pre[0] : null;
 }
 /* 13/11 : « piste PISTE 1 » devient « piste 1 » */
+/* 13/11 13h27 : « Club 2 Grand Prix » → « Club 2 GP » dans les étiquettes, pour tenir sur une ligne */
+function hsEpCourt(e) { return hsNomEpreuve(e || "").replace(/\bGrand Prix\b/i, "GP"); }
 function hsPiste(v) { var t = String(v || "").trim(); return "piste " + t.replace(/^piste\s*/i, ""); }
 var HS_IMG_LOTS_EP = ["images/article-cso-saut.webp", "images/article-cso-virage.webp", "images/article-cso-appel.webp", "images/article-cso-tuile.webp"];
 function hsPhotoDe(id) {
@@ -2392,7 +2405,7 @@ function EcranConcours() {
       h("div", { className: "hc-pad-tt" }, h("h2", null, F("Organisation du paddock")), h("span", null, F("Groupes de détente") + " · " + (epPaddock || ""))),
       (gestion && !grpEd) ? h("button", { type: "button", className: "hc-btn-l", onClick: ouvrirEditeur }, h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4z", fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinejoin: "round" })), F("Modifier les groupes")) : null),
     (!gestion && monGroupe) ? h("div", { className: "hc-pad-moi" }, F("Ton groupe : ") + (monGroupe.nom || "") + (monGroupe.heure_rdv ? F(" · rendez-vous au paddock à ") + monGroupe.heure_rdv : "")) : null,
-    (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock. Pense à prévoir quelqu’un pour tenir ton cheval pendant la reconnaissance du parcours, et de quoi changer la cartouche de ton gilet airbag ou une protection dorsale, au cas où.")   /* 13/11 13h22 (Blandine : « prévoir de quoi changer la cartouche d'airbag ou une protection dorsale au cas où ») */) : null,   /* 13/11 : message validé par Blandine */
+    (!grpEd && grpEp.some(function (g) { return gestion || g.publie; })) ? h("div", { className: "hc-pad-msg" }, F("Pour des raisons pratiques, nous rassemblons les passages par groupes. Les horaires en doré sont des rendez-vous à l’entrée du paddock.")   /* 13/11 13h22 (Blandine : « prévoir de quoi changer la cartouche d'airbag ou une protection dorsale au cas où ») */) : null,   /* 13/11 : message validé par Blandine */
     grpEd ? editeur() : (grpEp.length ? h("div", { className: "hc-grps" }, grpEp.filter(function (g) { return gestion || g.publie; }).map(carteGroupe)) : h("div", { className: "hs-note", style: { marginTop: 0 } }, gestion ? F("Pas encore de groupe pour cette épreuve : touche « Modifier les groupes ».") : F("Les groupes de détente apparaîtront quand ta coach les aura publiés."))),
     grpMsg ? h("div", { className: "hs-msg" }, grpMsg) : null) : null;
   /* 13/11 (Blandine : « une fois que les groupes sont faits, il faudra qu'ils soient au-dessus de l'ordre de passage ») */
@@ -2400,7 +2413,7 @@ function EcranConcours() {
   var blocRegles = parEpreuve.length ? h("div", { key: "reg", className: "hc-regles" },
     h("div", { className: "hc-reg-ic", "aria-hidden": "true" }, h("svg", { viewBox: "0 0 24 24", width: 34, height: 34 }, h("g", { fill: "none", stroke: "#C9A66B", strokeWidth: 1.3, strokeLinejoin: "round", strokeLinecap: "round" }, h("path", { d: "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z" }), h("path", { d: "M8.6 12.2l2.4 2.4 4.6-4.8" })))),
     h("h3", null, F("Règles du paddock")),
-    h("ul", null, [F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach."), F("Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
+    h("ul", null, [F("Sois bien à l’heure au rendez-vous à l’entrée du paddock : un retard met toute l’équipe en retard."), F("Ne rentre jamais seul au paddock : attends l’accord de ta coach."), F("Dès ton arrivée, signale à ta coach que tu es sur le paddock."), F("Ne quitte jamais le paddock sans l’accord de ta coach."), F("Prévois si besoin quelqu’un pour marcher ton cheval pendant la reconnaissance, et de quoi changer la cartouche de ton gilet airbag.")].map(function (t, i) { return h("li", { key: i }, h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, "aria-hidden": "true" }, h("path", { d: "M5 12.5l4.2 4.2L19 7", fill: "none", stroke: "#C9A66B", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" })), h("span", null, t)); }))) : null;
 
   /* ── ÉQUIPE : une ligne par cavalier (photo, nom, cheval) ; les épreuves restent dans Passages ── */
   var gens = [];
@@ -3748,8 +3761,9 @@ function EcranConcours() {
   }
   var blocPratique = h("div", { key: "prat", className: "hc-prat" },
       /* bandeau compact : lieu | départ | reconnaissance ; le toucher déplie toutes les infos pratiques */
-      h("div", { className: "hc-bande" + (infosOuv ? " ouv" : "") },
-        h("div", { className: "hc-b-ligne" },
+      /* 13/11 13h28 : la ligne compacte (lieu | départ) est remplacée par l'encart « Le concours » en haut ; ici ne reste que le détail, ouvert depuis l'encart */
+      !infosOuv ? null : h("div", { className: "hc-bande" + (infosOuv ? " ouv" : ""), id: "hc-infos-pratiques" },
+        h("div", { className: "hc-b-ligne", style: { display: "none" } },
           lieuCourt ? h("a", { className: "hc-b-case", href: lienPlan, target: "_blank", rel: "noopener" }, hcIcone("lieu"), h("div", null, h("b", null, lieuCourt))) : null,
           ev.heure_depart ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, hcIcone("heure"), h("div", null, h("small", null, F("Départ")), h("b", null, ev.heure_depart))) : null,
           (recoBande) ? h("button", { type: "button", className: "hc-b-case", onClick: function () { setInfosOuv(!infosOuv); } }, hcIcone("reco"), h("div", null, h("small", null, F("Reconnaissance")), h("b", null, recoBande))) : null,
@@ -3773,6 +3787,8 @@ function EcranConcours() {
       h("div", { className: "hc-actions" },
         h("button", { type: "button", className: "hc-act", disabled: occupe || fini, onClick: fini ? undefined : basculerJeViens }, hcIcone("ok"), jeViens ? F("✓ Tu participes").replace(/^✓\s*/, "") : F("Je participe")),
         h("button", { type: "button", className: "hc-act", onClick: function () { prep("liste-van"); } }, hcIcone("van"), F("Liste du van"))),
+      /* 13/11 13h27 (Blandine) : la petite phrase se met sous « Tu participes », plus collée à « À déclarer au jury » */
+      (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: -4 } }, F("Touche encore pour te retirer.")) : null,
       fini ? h("div", { className: "hc-fini" }, F("Ce concours est terminé.")) : null);
   /* 12/11 16h25 (Blandine : « plus de recul, plus d'aération, exactement comme sur la page Team Compétition ») : héros du même
      gabarit que la page Équipe (photo à droite fondue, sur-titre doré, grand titre, filet, phrase), blocs plus espacés */
@@ -3801,20 +3817,8 @@ function EcranConcours() {
     h("div", { className: "hs-in" },
       h("div", { className: "hc-onglet" }, blocGalerie, (filOuv && blocFil) ? h("div", { key: "filw" }, blocFil, h("div", { style: { textAlign: "center", margin: "6px 0 18px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setFilOuv(false); setAjConc(""); setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 300); } }, F("Terminer")))) : null),
       erreur ? h("div", { className: "hs-err" }, erreur) : null));
-  return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
-    heroC(ev.titre || F("Concours"), sousTitre),
-    h("div", { className: "hs-in" },
-      h("div", { className: "hc-cartes" + (fini ? " hc-c2" : "") },
-        fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
-        fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
-        carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
-        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
-      (!fini && jeViens) ? h("div", { className: "hs-note", style: { textAlign: "center", marginTop: 6 } }, F("Touche encore pour te retirer.")) : null,
-      msg ? h("div", { className: "hs-msg" }, msg) : null,
-      (!fini && msgPrep) ? h("div", { className: "hs-msg" }, msgPrep) : null,
-      pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null,
-      /* 13/11 11h06 (Blandine : « une petite alerte pour le coach en haut, avec les changements d'équidés ou de cavaliers à faire ») */
-      (function () {
+  /* 13/11 13h31 (Blandine : « l'encart à déclarer au jury, on le descend… d'abord ce qu'on transmet au cavalier, ensuite les changements ») */
+  var blocJury = (function () {
         if (!gestion || fini) return null;
         var l = (passagesEq || []).filter(function (p) { return !p.non_partant && ((p.cheval_initial_nom && p.cheval_initial_nom !== (p.cheval_brut || p.cheval_nom)) || p.cavalier_initial); });
         /* 13/11 12h56 (Blandine : « rajoute déclarer les non partants, avec le numéro d'ordre, le cavalier, le cheval, l'épreuve ») */
@@ -3834,21 +3838,21 @@ function EcranConcours() {
               h("span", { className: "al-l3" }, [hsNomEpreuve(p.epreuve || ""), p.passage].filter(Boolean).join(" · ")),
               tag ? h("span", { className: "al-tag" + (tagOk ? " ok" : "") }, tag) : null));
         }
-        return h("div", { className: "hc-alerte al2", role: "status" },
+        return h("div", { key: "jury", className: "hc-alerte al2", role: "status" },
           h("div", { className: "al-t" }, h("span", null, F("À déclarer au jury")), h("i", null, String(nbT))),
           l.map(function (p, i) {
             var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
             var chChange = p.cheval_initial_nom && p.cheval_initial_nom !== ch;
             function ailleurs(test) {
               var o = (passagesEq || []).filter(function (q) { return q !== p && !q.non_partant && test(q); })[0];
-              return o ? [o.ordre_passage ? "n° " + o.ordre_passage : "", hsNomEpreuve(o.epreuve || "")].filter(Boolean).join(" · ") : "";
+              return o ? [o.ordre_passage ? "n° " + o.ordre_passage : "", hsEpCourt(o.epreuve)].filter(Boolean).join(" · ") : "";
             }
             var dejaCh = chChange ? ailleurs(function (q) { return (q.cheval_id && p.cheval_id) ? String(q.cheval_id) === String(p.cheval_id) : String(q.cheval_brut || q.cheval_nom || "").toLowerCase() === String(ch || "").toLowerCase(); }) : "";
             var dejaCav = p.cavalier_initial ? ailleurs(function (q) { return q.cavalier_id && String(q.cavalier_id) === String(p.cavalier_id); }) : "";
             var anc = [chChange ? F("à la place de ") + p.cheval_initial_nom : "", p.cavalier_initial ? F("à la place de ") + p.cavalier_initial : ""].filter(Boolean).join(" · ");
             var tags = [], ok = true;
-            if (chChange) { if (dejaCh) tags.push(F("cheval déjà engagé : ") + dejaCh); else { tags.push(F("cheval pas encore engagé : papiers à donner")); ok = false; } }
-            if (p.cavalier_initial) { if (dejaCav) tags.push(F("cavalier déjà engagé : ") + dejaCav); else { tags.push(F("cavalier pas encore engagé : licence à donner")); ok = false; } }
+            if (chChange) { if (dejaCh) tags.push(F("déjà engagé") + " · " + dejaCh); else { tags.push(F("pas encore engagé · papiers à donner")); ok = false; } }
+            if (p.cavalier_initial) { if (dejaCav) tags.push(F("cavalier déjà engagé") + " · " + dejaCav); else { tags.push(F("cavalier pas encore engagé · licence à donner")); ok = false; } }
             return item(i, p, [h("b", { key: "q" }, qui), " " + F("monte") + " ", h("b", { key: "c" }, ch || "?")], anc, tags.join(" · "), ok);
           }),
           /* 13/11 13h12 (Blandine : « pas la peine de mettre un ticket par non partant… déclaration non partant et la liste ») */
@@ -3858,13 +3862,41 @@ function EcranConcours() {
               h("span", { className: "al-l1" }, h("b", null, lnp.length > 1 ? F("Déclarer les non partants") : F("Déclarer non partant"))),
               lnp.map(function (p, i) {
                 var ch = p.cheval_brut || p.cheval_nom, qui = p.pseudo_brut || p.pseudo || "";
-                return h("span", { key: i, className: "al-npl" }, h("b", null, (p.ordre_passage ? F("N° ") + p.ordre_passage : "–") + " · " + (ch || "?")), " · " + qui + (hsNomEpreuve(p.epreuve || "") ? " · " + hsNomEpreuve(p.epreuve || "") : ""));
+                return h("span", { key: i, className: "al-npl" }, h("b", null, (p.ordre_passage ? F("N° ") + p.ordre_passage : "–") + " · " + (ch || "?")), " · " + qui + (p.epreuve ? " · " + hsEpCourt(p.epreuve) : ""));
               }))) : null);
+      })();
+  return h("div", { className: "hs hc", dir: rtl ? "rtl" : "ltr" },
+    heroC(ev.titre || F("Concours"), sousTitre),
+    h("div", { className: "hs-in" },
+      h("div", { className: "hc-cartes" + (fini ? " hc-c2" : "") },
+        fini ? null : carte("engagements", F("Engagements"), "eng", HS_IMG_CONCOURS.engagements, null),   /* 12/11 00h55 (Blandine) : concours passé → plus d'Engagements ni de Jour J */
+        fini ? null : carte("passages", F("Jour J"), "pas", HS_IMG_CONCOURS.passages, null),   /* 10/11 (Blandine) : Passages devient « Jour J » */
+        carte("resultats", F("Résultats"), "res", HS_IMG_CONCOURS.equipe, null),   /* 09/11 01h04 Blandine : « remplace Équipe par Résultats » */
+        carte("medias", F("Médias"), "med", HS_IMG_CONCOURS.medias, null)),
+      msg ? h("div", { className: "hs-msg" }, msg) : null,
+      (!fini && msgPrep) ? h("div", { className: "hs-msg" }, msgPrep) : null,
+      pushMsg ? h("div", { className: "hs-msg" }, pushMsg) : null,
+      /* 13/11 13h28 (Blandine : « un petit encart propre en haut, même avant ce qu'il faut déclarer au jury, avec les infos du concours :
+         le lieu, l'heure de départ… l'adresse pour les parents, et le petit lien vers le plan ») — même dessin que les tickets du jury */
+      (function () {
+        var d = String(ev.date_jour || "").slice(0, 10), jour = "", mois = "";
+        if (/^\d{4}-\d{2}-\d{2}$/.test(d)) { var dt = new Date(d + "T12:00:00"); jour = String(dt.getDate()); try { mois = dt.toLocaleDateString(lg || "fr", { month: "short" }).replace(".", ""); } catch (eM) { mois = ""; } }
+        var lignes = [[F("Embarquement"), ev.heure_embarquement], [F("Départ"), ev.heure_depart], [F("Reconnaissance"), recoBande], [F("Début de l’épreuve"), ev.heure_epreuve]].filter(function (x) { return x[1]; });
+        return h("div", { className: "hc-alerte al2 hc-infos" },
+          h("div", { className: "al-t" }, h("span", null, F("Le concours"))),
+          h("div", { className: "al-i" },
+            h("span", { className: "al-n" }, h("small", null, mois || ""), jour || "–"),
+            h("span", { className: "al-c" },
+              h("span", { className: "al-l1" }, h("b", null, ev.lieu || F("Lieu pas encore indiqué"))),
+              lignes.length ? h("span", { className: "hc-inf-h" }, lignes.map(function (x, i) { return h("span", { key: i }, h("small", null, x[0]), h("b", null, x[1])); })) : h("span", { className: "al-l3" }, F("Les horaires ne sont pas encore indiqués.")),
+              h("span", { className: "hc-inf-a" },
+                lienPlan ? h("a", { className: "al-tag", href: lienPlan, target: "_blank", rel: "noopener" }, F("Itinéraire") + " ›") : null,
+                h("button", { type: "button", className: "al-tag ok", onClick: function () { setInfosOuv(!infosOuv); if (!infosOuv) setTimeout(function () { try { var el = document.getElementById("hc-infos-pratiques"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { } }, 150); } }, infosOuv ? F("Fermer") : F("Infos pratiques") + " ›")))));
       })(),
       /* 09/11 (Blandine « Oui ») : le contenu de la carte touchée, ici, sur la même page */
       ongletC ? h("div", { className: "hc-onglet" },
         ongletC === "engagements" ? blocMesEng : null,
-        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocModifPassages, blocPaddock, liensPassages] : (grpAuDessus ? [blocPratique, blocRegles, blocPaddock, blocPassages, outilsPassages, liensPassages] : [blocPratique, blocRegles, blocPassages, blocPaddock, outilsPassages, liensPassages])) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
+        ongletC === "passages" ? (jjOuv && gestion ? [blocPratique, blocRegles, blocJury, blocModifPassages, blocPaddock, liensPassages] : (grpAuDessus ? [blocPratique, blocRegles, blocJury, blocPaddock, blocPassages, outilsPassages, liensPassages] : [blocPratique, blocRegles, blocJury, blocPassages, blocPaddock, outilsPassages, liensPassages])) : null,   /* 09/11 14h49 (Blandine) : « Lire l'ordre de passage » en bas */   /* 09/11 14h16 (Blandine) : règles du paddock en haut */
         ongletC === "resultats" ? blocResultats : null,
         ongletC === "medias" ? [blocGalerie, filOuv ? h("div", { key: "filw" }, blocFil, h("div", { style: { textAlign: "center", margin: "6px 0 18px" } }, h("button", { type: "button", className: "hc-btn-l", onClick: function () { setFilOuv(false); setTimeout(function () { try { chargerGalerie(moi, function () { return true; }); } catch (e) { } }, 300); } }, F("Terminer")))) : null, medVue ? null : blocPartageConcours] : null)   /* 09/11 soir (maquette validée) : rien d'autre sous « Par cavalier / Par cheval » que le partage ; cartes Vidéothèque / Album retirées de cet onglet */   /* 09/11 16h31 (Blandine, capture barrée) : plus de filtres, de « Partager ce concours » ni de fil sous les médias */
         : null,
@@ -4399,18 +4431,21 @@ var HC_CSS = [
   ".hc .hc-g9-r.np{opacity:.45}",
   ".hc .hc-g9-r.np b{text-decoration:line-through}",
   /* 13/11 13h20 (Blandine : « entre les grands chapitres, la petite courbe très légèrement dorée, bien aérée au-dessus, en dessous, un chapitre propre centré ») */
-  ".hc .hc-ong-c .hc-pas-tete,.hc div.hc-pas-tete,.hc div.hc-pad-tete{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;margin:64px 0 26px;padding-top:54px}",
+  ".hc .hc-ong-c .hc-pas-tete,.hc div.hc-pas-tete,.hc div.hc-pad-tete{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;margin:64px 0 26px;padding-top:72px}",
   ".hc div.hc-pas-tete:before,.hc div.hc-pad-tete:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
-  ".hc .hc-pas-tete .hc-pas-titre{border:0 !important;padding:0 !important;white-space:normal;font-size:clamp(26px,7.4vw,32px)}",
+  ".hc .hc-pas-tete .hc-pas-titre{border:0 !important;padding:0 !important;white-space:normal;font-size:clamp(24px,6.6vw,29px)}",
   ".hc .hc-pad-tete .hc-pad-ic{display:none}",
-  ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(26px,7.4vw,32px)}",
+  ".hc .hc-pad-tete .hc-pad-tt h2{font-size:clamp(24px,6.6vw,29px)}",
   ".hc .hc-pad-tete .hc-pad-tt span{display:block;margin-top:6px}",
   ".hc .hc-apres-pas{position:relative;margin-top:44px;padding-top:56px}",
   ".hc .hc-apres-pas:before{content:'';position:absolute;top:0;left:6%;right:6%;height:30px;background:url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%2030'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20x2='1'%3E%3Cstop%20offset='0'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3Cstop%20offset='.5'%20stop-color='%23C9A66B'%20stop-opacity='.55'/%3E%3Cstop%20offset='1'%20stop-color='%23C9A66B'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M0%2026%20C%20120%2025,%20260%2010,%20400%203'%20fill='none'%20stroke='url(%23g)'%20stroke-width='1'/%3E%3C/svg%3E\") no-repeat center/100% 100%}",
   /* 13/11 13h24 (Blandine : « pas mal de boutons dorés… modifier les passages, etc… éviter de nous cramer les yeux ») : 3 propositions */
   "html.btn-1 .hc .hc-btn-l,html.btn-1 .e1 .rc-mod,html.btn-1 .hc .rc-mod{border-color:rgba(243,238,228,.22) !important;color:#F3EEE4 !important}html.btn-1 .hc .hc-btn-l svg path,html.btn-1 .rc-mod path{stroke:#F3EEE4}html.btn-1 .hc .hc-outil{border-color:rgba(243,238,228,.16);color:#F3EEE4;background:#0e1212}html.btn-1 .hc .hc-outil .hc-o-c{color:rgba(243,238,228,.5)}",
   "html.btn-2 .hc .hc-btn-l,html.btn-2 .e1 .rc-mod,html.btn-2 .hc .rc-mod{border-color:rgba(95,163,174,.5) !important;color:#9CC7CF !important}html.btn-2 .hc .hc-btn-l svg path,html.btn-2 .rc-mod path{stroke:#9CC7CF}html.btn-2 .hc .hc-outil{border-color:rgba(95,163,174,.4);color:#9CC7CF;background:rgba(47,111,122,.10)}",
+  "html.btn-3 .hc .hc-act{border-color:transparent !important;background:#121818 !important;color:#F3EEE4 !important}html.btn-3 .hc .hc-act svg *{stroke:#F3EEE4}",   /* 13/11 13h31 (Blandine : « Tu participes, Liste du van… pas besoin d'un liseré doré ») */
   "html.btn-3 .hc .hc-btn-l{border-color:transparent !important;background:#151b1b !important;color:#F3EEE4 !important}html.btn-3 .hc .hc-btn-l svg path{stroke:#F3EEE4}html.btn-3 .e1 .rc-mod,html.btn-3 .hc .rc-mod{border-color:transparent !important;background:#151b1b !important}html.btn-3 .rc-mod path{stroke:rgba(243,238,228,.8)}html.btn-3 .hc .hc-outil{border-color:transparent;background:#121818;color:#F3EEE4}html.btn-3 .hc .hc-outil .hc-o-c{color:rgba(243,238,228,.5)}",
+  /* 13/11 13h32 (Blandine : « descends un tout petit peu le titre de la courbe… réduis-le très légèrement ») : héros de la fiche concours */
+  ".hc-hero .hs-titre{margin-top:10px !important}.hc-hero .hs-titre h1{font-size:clamp(38px,10.4vw,56px) !important}",
   ".hc .hc-g9-r .hc-av{flex:none}",
   /* 13/11 13h17 (Blandine : « dans les couleurs des changements à faire auprès du jury… plus dans le noir et très légèrement pétrole… trop de doré ») */
   "html[class*='grp-'] .hc .hc-grp{border-color:rgba(243,238,228,.12);background:#0e1212;border-radius:16px;padding:0;overflow:hidden}html[class*='grp-'] .hc .hc-grp-t{padding:12px 14px 0;margin-bottom:10px}html[class*='grp-'] .hc .hc-grp-t b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500}html[class*='grp-'] .hc .hc-g9{gap:0;grid-template-columns:92px 1fr}html[class*='grp-'] .hc .hc-g9-h{border-inline-end:1px dashed rgba(243,238,228,.22);background:#121818;padding:12px 6px;align-items:center;text-align:center}html[class*='grp-'] .hc .hc-g9-h strong{color:#F3EEE4}html[class*='grp-'] .hc .hc-g9-l{padding:4px 12px 8px}html[class*='grp-'] .hc .hc-g9-n{color:rgba(243,238,228,.75)}html[class*='grp-'] .hc .hc-grp.moi{border-color:rgba(243,238,228,.4)}html[class*='grp-'] .hc .hc-g9-r.moi b{color:#F3EEE4}html[class*='grp-'] .hc .hc-grp-vide{padding:0 14px 14px}",
