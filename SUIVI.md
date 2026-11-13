@@ -13,6 +13,12 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 > 🟥 RÈGLE DE DESIGN PERMANENTE : PAS DE BOUTON PLEIN DORÉ (contour champagne fin, texte ivoire ou champagne, fond transparent). Redemandé 6 fois par Blandine. Détail dans « 2. RÈGLES DE TRAVAIL ».
 
+## 20261113-0440 — Page cavalier : héros des performances, sans « Personnaliser ma page », pastilles coach (étape 2/4)
+- cavV2Hero (hype-ecran-cavalier.js v=26) : en-tête « grande photo » (par défaut) au dessin Vidéothèque — courbe dorée en haut à droite, photo ENTIÈRE posée sur une courbe dorée, « CAVALIER / prénom / @pseudo · écurie » à droite. Autres en-têtes (bandeau, portrait, fond) et ordinateur à panneau inchangés. Ancien : window.__heroAncien = true.
+- Bouton « Personnaliser ma page » masqué (Blandine : « pas très fonctionnel, vire le gros bouton doré ») ; réglages gardés.
+- Onglets Coach -> petites pastilles anthracite sur une ligne (« COACH Team Feinn », « COACH Team SEP »).
+- À vérifier sur son iPhone : la photo réelle bien posée (capture faite avec un extrait de sa photo, la vraie n'a pas pu être téléchargée).
+
 ## 20261113-0430 — Héros façon Vidéothèque sur les sous-pages (étape 1/4)
 - Blandine (03h09) : « le design de la Vidéothèque partout… touche pas à ma page Team ». hypeHeroSousPageCavalier (index.html) passe au dessin Vidéothèque : courbe dorée en haut, photo ENTIÈRE fondue sur fond noir, courbe dorée dessous, petit titre doré + nom Cormorant + sous-titre italique à droite. Concerne les sous-pages d'un cavalier (Photos, Vidéos, Actualités, Résultats) et d'un cheval (Photos, etc.). Ancien dessin : window.__heroAncien = true.
 - Étapes suivantes (une à la fois, captures avant) : 2 page principale du cavalier, 3 page principale d'un cheval, 4 page de l'écurie. Page Team : ne pas toucher.
