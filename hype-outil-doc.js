@@ -112,6 +112,17 @@
 " fiches": [" profiles", " fichas", " schede", " 件のプロフィールを作成", " Profile anlegen", " بطاقات", " 份资料", " profielen aan", " fichas", " profilerna", " карточек", " profili", " 개 프로필 만들기", " کارت"],
 "Créer la fiche": ["Create the profile", "Crear la ficha", "Crea la scheda", "プロフィールを作成", "Profil anlegen", "إنشاء البطاقة", "创建资料", "Profiel aanmaken", "Criar a ficha", "Skapa profilen", "Создать карточку", "Utwórz profil", "프로필 만들기", "ساختن کارت"],
 "Tous ces chevaux ont déjà leur fiche dans Hype.": ["All these horses already have a profile in Hype.", "Todos estos caballos ya tienen ficha en Hype.", "Tutti questi cavalli hanno già una scheda in Hype.", "これらの馬はすべてHypeにプロフィールがあります。", "Alle diese Pferde haben schon ein Profil in Hype.", "كل هذه الخيول لديها بطاقات في Hype بالفعل.", "这些马在 Hype 中都已有资料。", "Al deze paarden hebben al een profiel in Hype.", "Todos estes cavalos já têm ficha no Hype.", "Alla dessa hästar har redan en profil i Hype.", "У всех этих лошадей уже есть карточки в Hype.", "Wszystkie te konie mają już profil w Hype.", "이 말들은 모두 이미 Hype에 프로필이 있어.", "همهٔ این اسب‌ها از قبل در Hype کارت دارند."],
+"Nom": ["Name", "Nombre", "Nome", "名前", "Name", "الاسم", "名字", "Naam", "Nome", "Namn", "Имя", "Imię", "이름", "نام"],
+" (nom : tu n’as pas le droit de le changer)": [" (name: you're not allowed to change it)", " (nombre: no tienes permiso para cambiarlo)", " (nome: non hai il diritto di cambiarlo)", "（名前：変更する権限がありません）", " (Name: du darfst ihn nicht ändern)", " (الاسم: لا يحق لك تغييره)", "（名字：你无权修改）", " (naam: je mag die niet wijzigen)", " (nome: não tens permissão para o alterar)", " (namn: du får inte ändra det)", " (имя: у тебя нет права его менять)", " (imię: nie masz prawa go zmienić)", " (이름: 바꿀 권한이 없어)", " (نام: اجازهٔ تغییرش را نداری)"],
+"✓ Fiches mises à jour : ": ["✓ Profiles updated: ", "✓ Fichas actualizadas: ", "✓ Schede aggiornate: ", "✓ 更新したプロフィール：", "✓ Aktualisierte Profile: ", "✓ البطاقات المحدّثة: ", "✓ 已更新资料：", "✓ Bijgewerkte profielen: ", "✓ Fichas atualizadas: ", "✓ Uppdaterade profiler: ", "✓ Обновлено карточек: ", "✓ Zaktualizowane profile: ", "✓ 업데이트한 프로필: ", "✓ کارت‌های به‌روزشده: "],
+"Pas modifiées (droits) : ": ["Not changed (permissions): ", "No modificadas (permisos): ", "Non modificate (permessi): ", "変更できませんでした（権限）：", "Nicht geändert (Rechte): ", "لم تُعدَّل (الصلاحيات): ", "未修改（权限）：", "Niet gewijzigd (rechten): ", "Não alteradas (permissões): ", "Inte ändrade (behörighet): ", "Не изменены (права): ", "Nie zmieniono (uprawnienia): ", "변경 안 됨(권한): ", "تغییر نکرد (دسترسی): "],
+"Fiches à mettre à jour": ["Profiles to update", "Fichas por actualizar", "Schede da aggiornare", "更新するプロフィール", "Zu aktualisierende Profile", "بطاقات بحاجة إلى تحديث", "需要更新的资料", "Profielen om bij te werken", "Fichas a atualizar", "Profiler att uppdatera", "Карточки для обновления", "Profile do aktualizacji", "업데이트할 프로필", "کارت‌هایی برای به‌روزرسانی"],
+"D’après ce document, je peux compléter ou corriger ces fiches. Tu m’autorises à faire ces changements ?": ["Based on this document, I can complete or correct these profiles. May I make these changes?", "Según este documento, puedo completar o corregir estas fichas. ¿Me autorizas a hacer estos cambios?", "In base a questo documento, posso completare o correggere queste schede. Mi autorizzi a fare queste modifiche?", "この書類をもとに、これらのプロフィールを補足・修正できます。変更してもいい？", "Laut diesem Dokument kann ich diese Profile ergänzen oder korrigieren. Darf ich diese Änderungen vornehmen?", "بناءً على هذا المستند، يمكنني إكمال هذه البطاقات أو تصحيحها. هل تسمح لي بإجراء هذه التغييرات؟", "根据这份文件，我可以补充或更正这些资料。允许我做这些修改吗？", "Op basis van dit document kan ik deze profielen aanvullen of corrigeren. Mag ik deze wijzigingen doen?", "Com base neste documento, posso completar ou corrigir estas fichas. Autorizas-me a fazer estas alterações?", "Utifrån det här dokumentet kan jag komplettera eller rätta dessa profiler. Får jag göra ändringarna?", "По этому документу я могу дополнить или исправить эти карточки. Можно внести изменения?", "Na podstawie tego dokumentu mogę uzupełnić lub poprawić te profile. Mogę wprowadzić te zmiany?", "이 서류를 바탕으로 이 프로필들을 보충하거나 고칠 수 있어. 이렇게 바꿔도 될까?", "بر اساس این سند می‌توانم این کارت‌ها را کامل یا اصلاح کنم. اجازه می‌دهی این تغییرات را بدهم؟"],
+"changements": ["changes", "cambios", "modifiche", "件の変更", "Änderungen", "تغييرات", "处修改", "wijzigingen", "alterações", "ändringar", "изменений", "zmian", "개 변경", "تغییر"],
+"Faire les ": ["Make the ", "Hacer los ", "Fai le ", "", "", "إجراء ", "进行 ", "Voer de ", "Fazer as ", "Gör de ", "Внести ", "Wprowadź ", "", "انجام "],
+" changements": [" changes", " cambios", " modifiche", " 件の変更を行う", " Änderungen vornehmen", " تغييرات", " 处修改", " wijzigingen door", " alterações", " ändringarna", " изменений", " zmian", " 개 변경하기", " تغییر"],
+"Faire le changement": ["Make the change", "Hacer el cambio", "Fai la modifica", "変更する", "Änderung vornehmen", "إجراء التغيير", "进行修改", "Voer de wijziging door", "Fazer a alteração", "Gör ändringen", "Внести изменение", "Wprowadź zmianę", "변경하기", "انجام تغییر"],
+"Nouvelle fiche": ["New profile", "Ficha nueva", "Nuova scheda", "新しいプロフィール", "Neues Profil", "بطاقة جديدة", "新资料", "Nieuw profiel", "Ficha nova", "Ny profil", "Новая карточка", "Nowy profil", "새 프로필", "کارت تازه"],
 "vide au registre": ["empty in the register", "vacío en el registro", "vuoto nel registro", "台帳では空欄", "im Register leer", "فارغ في السجل", "登记簿中为空", "leeg in het register", "vazio no registo", "tomt i registret", "в реестре пусто", "puste w rejestrze", "등록부에 비어 있음", "در دفتر ثبت خالی است"],
 "vide sur la fiche": ["empty on the profile", "vacío en la ficha", "vuoto sulla scheda", "プロフィールでは空欄", "im Profil leer", "فارغ في البطاقة", "资料中为空", "leeg op het profiel", "vazio na ficha", "tomt i profilen", "в карточке пусто", "puste w profilu", "프로필에 비어 있음", "در کارت خالی است"],
 "Je n’ai rien lu d’utile pour la fiche.": ["I didn’t read anything useful for the profile.", "No he leído nada útil para la ficha.", "Non ho letto nulla di utile per la scheda.", "プロフィールに役立つ情報は読み取れませんでした。", "Ich habe nichts Brauchbares für das Profil gelesen.", "لم أقرأ شيئًا مفيدًا للبطاقة.", "没有读到对资料有用的信息。", "Ik heb niets bruikbaars voor het profiel gelezen.", "Não li nada útil para a ficha.", "Jag läste inget användbart för profilen.", "Ничего полезного для карточки я не прочитал.", "Nie odczytałem nic przydatnego do profilu.", "프로필에 쓸 만한 내용을 읽지 못했어요.", "چیز مفیدی برای کارت نخواندم."],
@@ -1390,7 +1401,7 @@
       ".hod-plus.ouv span{transform:rotate(180deg)}",
       ".hod-liste{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:14.5px;line-height:1.45;color:rgba(243,238,228,.62);margin:12px 4px 0}",
       ".hod-voile{position:fixed;inset:0;background:rgba(4,6,9,.72);z-index:9000;display:flex;align-items:flex-end;justify-content:center}",
-      ".hod-feuille{width:100%;max-width:640px;max-height:88vh;overflow:auto;background:#0D110F;border-top:1px solid rgba(201,166,107,.35);border-radius:24px 24px 0 0;padding:16px 20px calc(26px + env(safe-area-inset-bottom));color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif}",
+      ".hod-feuille{width:100%;max-width:640px;max-height:88vh;overflow:auto;background:#050505;border-top:1px solid rgba(201,166,107,.35);border-radius:24px 24px 0 0;padding:16px 20px calc(26px + env(safe-area-inset-bottom));color:#F3EEE4;font-family:Montserrat,system-ui,sans-serif}",
       ".hod-poignee{width:42px;height:4px;border-radius:4px;background:rgba(243,238,228,.25);margin:0 auto 14px}",
       ".hod-titre{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;margin:6px 0 10px}",
       ".hod-note{font-size:12.5px;line-height:1.55;color:rgba(243,238,228,.7)}",
@@ -1407,7 +1418,38 @@
       ".hod-bulle.hype{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(201,166,107,.28);border-bottom-left-radius:6px;color:#F3EEE4}",
       ".hod-bulle.moi{align-self:flex-end;background:rgba(201,166,107,.12);border:1px solid rgba(201,166,107,.35);border-bottom-right-radius:6px;color:#E8D3A8}",
       ".hod-err{margin-top:10px;font-size:12.5px;color:#E8A0A0}",
-      ".hod-ok{margin-top:10px;font-size:13px;color:#96CDAA}"
+      ".hod-ok{margin-top:10px;font-size:13px;color:#96CDAA}",
+      /* 13/11 22h41 (Blandine : « fais un effort sur le visuel ») : cartes des chevaux à créer / fiches à mettre à jour */
+      ".hod-sec{margin-top:22px;border:1px solid rgba(201,166,107,.22);border-radius:20px;padding:16px 14px 14px;background:#0A0A0A}",
+      ".hod-sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px}",
+      ".hod-sec-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:23px;line-height:1.1;color:#F3EEE4}",
+      ".hod-pas{font-family:'Cinzel',Georgia,serif;font-size:10px;letter-spacing:.18em;color:" + OR + ";border:1px solid rgba(201,166,107,.5);border-radius:999px;padding:4px 10px;white-space:nowrap}",
+      ".hod-sec-p{font-size:12.5px;line-height:1.55;color:rgba(243,238,228,.66);margin:8px 2px 4px}",
+      ".hod-ch{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-top:8px;border-radius:14px;background:#000;border:1px solid rgba(243,238,228,.08);cursor:pointer;transition:opacity .2s}",
+      ".hod-ch.off{opacity:.42}",
+      ".hod-av{flex:0 0 42px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(201,166,107,.55);overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;color:" + OR + "}",
+      ".hod-av img{width:100%;height:100%;object-fit:cover;display:block}",
+      ".hod-chx{flex:1;min-width:0}",
+      ".hod-chn{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:18.5px;line-height:1.15;color:#F3EEE4;overflow:hidden;text-overflow:ellipsis}",
+      ".hod-chs{font-size:11.5px;color:rgba(243,238,228,.5);margin-top:2px;letter-spacing:.02em}",
+      ".hod-tg{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(243,238,228,.28);display:flex;align-items:center;justify-content:center;color:transparent;font-size:14px;background:transparent}",
+      ".hod-tg.on{border-color:" + OR + ";color:" + OR + "}",
+      /* en-tête immersif : grand cheval noir entier sur fond noir, titre en bas à gauche, courbe dorée discrète */
+      ".hod-hero{position:relative;margin:-16px -20px 10px;height:210px;background:#000;border-radius:24px 24px 0 0;overflow:hidden}",
+      ".hod-hero img{position:absolute;right:0;top:0;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:right center}",
+      ".hod-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 75%),linear-gradient(180deg,rgba(0,0,0,0) 55%,#050505 100%)}",
+      ".hod-hero-t{position:absolute;left:20px;bottom:22px;right:40%;z-index:2}",
+      ".hod-hero-t .hod-titre{margin:6px 0 0;font-size:27px;line-height:1.05}",
+      ".hod-hero svg{position:absolute;left:0;right:0;bottom:8px;width:100%;height:40px;z-index:2}",
+      ".hod-hero .hod-poignee{position:absolute;top:10px;left:50%;margin-left:-21px;z-index:3}",
+      ".hod-fm{margin-top:10px;border-radius:16px;background:#000;border:1px solid rgba(243,238,228,.08);overflow:hidden}",
+      ".hod-fm-h{display:flex;align-items:center;gap:12px;padding:12px 12px 10px}",
+      ".hod-chg{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid rgba(243,238,228,.06);cursor:pointer;transition:opacity .2s}",
+      ".hod-chg.off{opacity:.42}",
+      ".hod-chg-l{font-family:'Cinzel',Georgia,serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,166,107,.85)}",
+      ".hod-chg-v{margin-top:3px;font-size:14px;line-height:1.35;color:#F3EEE4;overflow-wrap:anywhere}",
+      ".hod-chg-a{display:block;font-size:11.5px;color:rgba(243,238,228,.42);text-decoration:line-through;margin-top:2px}",
+      ".hod-sel{width:100%;margin-top:6px;background:rgba(255,255,255,.04);color:#F3EEE4;border:1px solid rgba(243,238,228,.16);border-radius:12px;padding:10px 12px;font:inherit;font-size:13.5px}"
     ].join("\n");
     document.head.appendChild(st);
   }
@@ -1456,8 +1498,8 @@
       + "\"horaires\":{\"depart\":\"HHhMM ou vide\",\"embarquement\":\"HHhMM ou vide\",\"lignes\":[{\"type\":\"reco|debut|autre\",\"epreuve\":\"nom de l'epreuve (ex. Club 3) ou vide\",\"heure\":\"HHhMM\",\"lib\":\"libelle si autre, sinon vide\"}]},"
       + "\"papiers\":{\"sire\":\"\",\"ueln\":\"\",\"puce\":\"numero de transpondeur (15 chiffres) ou vide\",\"proprietaire\":\"nom du ou des proprietaires ou vide\",\"naissance\":\"AAAA-MM-JJ ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\",\"pere\":\"\",\"mere\":\"\",\"naisseur\":\"\"},"
       + "\"mouvement\":{\"sens\":\"entree|sortie|sortie_provisoire\",\"date\":\"AAAA-MM-JJ ou vide\",\"date_retour\":\"AAAA-MM-JJ ou vide (seulement sortie_provisoire)\",\"lieu\":\"d'ou il vient (entree) ou ou il va (sortie), adresse ou nom, ou vide\",\"motif\":\"achat, pret, pension, naissance... (entree) ; vente, pret, retour proprietaire, retraite, deces... (sortie) ; concours, stage, veterinaire, clinique, saillie... (sortie_provisoire) ; ou vide\"},"
-      + "\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\"}]}. "
-      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
+      + "\"chevaux_liste\":[{\"nom\":\"nom exact du cheval tel qu'ecrit (orthographe officielle du document)\",\"sire\":\"numero SIRE s'il est ecrit, sinon vide\",\"pere\":\"\",\"mere\":\"\",\"naissance\":\"AAAA-MM-JJ ou annee seule ou vide\",\"sexe\":\"\",\"robe\":\"\",\"race\":\"\"}]}. "
+      + "soins : seulement pour liste_soins (une ligne par cheval et par soin). papiers : seulement pour papiers_cheval. chevaux_liste : TOUS les chevaux nommes dans le document ou par la personne (engagements, ordre de passage, programme, resultats, liste…), un par cheval, sans doublon, avec tout ce que le document dit de lui (SIRE, pere, mere, naissance, sexe, robe, race ; vide si absent) ; vide sinon. mouvement : seulement pour mouvement_cheval (sortie = depart definitif ; sortie_provisoire = il reviendra ; « aujourd'hui » = date du jour ; un cheval qui ARRIVE peut ne pas etre dans la liste : c'est normal, mets son nom exact dans cheval sans poser de question, sa fiche sera creee). horaires : seulement pour horaires_concours (« reco » = reconnaissance ; « depart » = depart de l'ecurie). N'invente RIEN : ce qui est illisible reste vide.";
     var blocs = (images || []).map(function (du) { return { type: "image", source: { type: "base64", media_type: "image/jpeg", data: String(du).slice(String(du).indexOf(",") + 1) } }; });
     var txt = !(images && images.length) ? "Pas de document : voici ce que la personne dit." : images.length > 1 ? "Ces images sont les pages d'un meme document." : "Voici le document.";
     if (contexte.note) txt += " La personne precise : « " + contexte.note + " ».";
@@ -1774,6 +1816,105 @@
     /* 13/11 22h07 (Blandine : « quand un cheval entre ou quitte l'écurie… on est obligé de le signaler sur le registre d'élevage ») :
        arrivée → registre_chevaux (date_entree, provenance, motif dans provenance) ; départ définitif → registre_chevaux
        (date_sortie, motif_sortie, destination) ; sortie provisoire (concours, stage, véto…) → registre_mouvements, comme la page Registre. */
+    /* 13/11 22h35 (Blandine : « des noms mal orthographiés… dès qu'il te donne des justificatifs… tu mets tout à jour sur la fiche » ;
+       « tu peux faire confirmer : est-ce que tu m'autorises à changer Cooltax de Vego pour Cooltax de Vegan, numéro SIRE… ») :
+       chaque cheval cité qui a déjà une fiche (même mal écrite) → proposition de mise à jour, changement par changement. */
+    function proche(nom) {
+      var n = norm(nom); if (!n) return null;
+      var ex = trouverCheval(nom, chevaux, true); if (ex) return { c: ex, flou: norm(ex.nom) !== n };
+      var best = null, bs = 0;
+      chevaux.forEach(function (c) { var x = norm(c.nom); if (!x) return; var r = ressemblance(x, n); if (r > bs) { bs = r; best = c; } });
+      return (best && bs >= 0.8) ? { c: best, flou: true } : null;
+    }
+    function ressemblance(a, b) {
+      if (a === b) return 1; var la = a.length, lb = b.length; if (!la || !lb) return 0;
+      var d = []; for (var i = 0; i <= la; i++) { d[i] = [i]; } for (var j = 1; j <= lb; j++) d[0][j] = j;
+      for (i = 1; i <= la; i++) for (j = 1; j <= lb; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      return 1 - d[la][lb] / Math.max(la, lb);
+    }
+    var _fm = React.useState({}), fichesMaj = _fm[0], setFichesMaj = _fm[1];
+    var _mj = React.useState({ off: {}, busy: false, ok: "", err: "", fait: false }), mj = _mj[0], setMj = _mj[1];
+    React.useEffect(function () {
+      var lu = st.lu; if (!lu || !(lu.chevaux_liste || []).length || lu.type === "mouvement_cheval" || lu.type === "papiers_cheval") return;
+      var ids = []; (lu.chevaux_liste || []).forEach(function (x) { var p = proche((x && x.nom) || ""); if (p && ids.indexOf(p.c.id) < 0) ids.push(p.c.id); });
+      if (!ids.length) return;
+      try { supa.from("chevaux").select("id, nom, race, age, origines, photo_url").in("id", ids.slice(0, 200)).then(function (r) { var m = {}; ((r && !r.error && r.data) || []).forEach(function (c) { m[c.id] = c; }); setFichesMaj(m); }, function () { }); } catch (eF) { }
+    }, [st.lu]);
+    var CHAMPS_MAJ = [["sire", "N° SIRE"], ["naissance", "Naissance"], ["sexe", "Sexe"], ["robe", "Robe"], ["race", "Race"], ["pere", "Père"], ["mere", "Mère"]];
+    function propositions() {
+      var lu = st.lu || {}; if (lu.type === "mouvement_cheval" || lu.type === "papiers_cheval") return [];
+      var out = [], vus = {};
+      (lu.chevaux_liste || []).forEach(function (x) {
+        if (!x || !x.nom) return; var p = proche(x.nom); if (!p) return; var f = fichesMaj[p.c.id]; if (!f || vus[f.id]) return; vus[f.id] = 1;
+        var o = (f.origines && typeof f.origines === "object") ? f.origines : {};
+        var ch = [];
+        var nomLu = String(x.nom).replace(/\s+/g, " ").trim();
+        if (p.flou && norm(nomLu) !== norm(f.nom)) ch.push({ k: "nom", lib: T("Nom"), avant: f.nom || "", apres: nomLu, defaut: true });
+        CHAMPS_MAJ.forEach(function (c) {
+          var lu2 = String(x[c[0]] || "").trim(); if (!lu2) return;
+          if (c[0] === "sire") lu2 = lu2.replace(/\s+/g, "").toUpperCase();
+          var av = c[0] === "race" ? (f.race || "") : (c[0] === "pere" || c[0] === "mere") ? String(((o[c[0]] || {}).nom) || (typeof o[c[0]] === "string" ? o[c[0]] : "") || "") : String(o[c[0]] || "");
+          if (norm(av) === norm(lu2)) return;
+          ch.push({ k: c[0], lib: T(c[1]), avant: av, apres: lu2, defaut: !av });
+        });
+        if (ch.length) out.push({ f: f, ch: ch });
+      });
+      return out;
+    }
+    function coche(fid, k, defaut) { var v = mj.off[fid + "|" + k]; return v === undefined ? defaut : v; }
+    async function appliquerMaj(props2) {
+      setMj(Object.assign({}, mj, { busy: true, err: "", ok: "" }));
+      var nOk = 0, refus = [];
+      for (var i = 0; i < props2.length; i++) {
+        var f = props2[i].f, ch = props2[i].ch.filter(function (c) { return coche(f.id, c.k, c.defaut); });
+        if (!ch.length) continue;
+        try {
+          var nomC = ch.filter(function (c) { return c.k === "nom"; })[0];
+          var autres = ch.filter(function (c) { return c.k !== "nom"; });
+          if (autres.length) {
+            var o = Object.assign({}, (f.origines && typeof f.origines === "object") ? f.origines : {}), race = f.race || null;
+            autres.forEach(function (c) { if (c.k === "race") race = c.apres; else if (c.k === "pere" || c.k === "mere") o[c.k] = Object.assign({}, (o[c.k] && typeof o[c.k] === "object") ? o[c.k] : {}, { nom: c.apres }); else o[c.k] = c.apres; });
+            var r = (typeof hypeMajOriginesCheval === "function") ? await hypeMajOriginesCheval(f.id, { origines: o, race: race, age: f.age == null ? null : f.age }) : await supa.from("chevaux").update({ origines: o, race: race }).eq("id", f.id).select("id");
+            if (!r || r.error || !r.data || !r.data.length) throw new Error("x");
+          }
+          if (nomC) {
+            var rn = await supa.from("chevaux").update({ nom: nomC.apres.slice(0, 60) }).eq("id", f.id).select("id");
+            var okN = !!(rn && !rn.error && rn.data && rn.data.length);
+            /* 13/11 22h42 (Blandine : « possible par équipe d'écurie, en plus du propriétaire ») : sinon, la fonction en base
+               hype_renommer_cheval (mêmes droits que les origines : propriétaire, modératrice, équipe qui gère l'écurie du cheval) */
+            if (!okN) { try { var rr2 = await supa.rpc("hype_renommer_cheval", { p_id: f.id, p_nom: nomC.apres.slice(0, 60) }); okN = !!(rr2 && !rr2.error && rr2.data === true); } catch (eR2) { } }
+            if (!okN) { refus.push(f.nom + T(" (nom : tu n’as pas le droit de le changer)")); }
+          }
+          nOk++;
+        } catch (eU) { refus.push(f.nom); }
+      }
+      setMj(Object.assign({}, mj, { busy: false, fait: true, ok: (nOk ? T("✓ Fiches mises à jour : ") + nOk + "." : "") + (refus.length ? " " + T("Pas modifiées (droits) : ") + refus.join(", ") + "." : "") }));
+    }
+    function blocMaj() {
+      if (mj.fait) return h("div", { className: "hod-bloc" }, h("div", { className: mj.ok.indexOf("✓") === 0 ? "hod-ok" : "hod-err" }, mj.ok));
+      var pr = propositions(); if (!pr.length) return null;
+      var n = 0; pr.forEach(function (p) { p.ch.forEach(function (c) { if (coche(p.f.id, c.k, c.defaut)) n++; }); });
+      return h("div", { className: "hod-sec" },
+        h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Fiches à mettre à jour")), h("div", { className: "hod-pas" }, String(pr.length))),
+        h("div", { className: "hod-sec-p" }, T("D’après ce document, je peux compléter ou corriger ces fiches. Tu m’autorises à faire ces changements ?")),
+        pr.map(function (p) {
+          var nOn = p.ch.filter(function (c) { return coche(p.f.id, c.k, c.defaut); }).length;
+          return h("div", { key: p.f.id, className: "hod-fm" },
+            h("div", { className: "hod-fm-h" },
+              h("div", { className: "hod-av" }, p.f.photo_url ? h("img", { src: p.f.photo_url, alt: "" }) : String(p.f.nom || "?").charAt(0).toUpperCase()),
+              h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, p.f.nom), h("div", { className: "hod-chs" }, nOn + " / " + p.ch.length + " " + T("changements")))),
+            p.ch.map(function (c) {
+              var kk = p.f.id + "|" + c.k, on = coche(p.f.id, c.k, c.defaut);
+              return h("div", { key: kk, className: "hod-chg" + (on ? "" : " off"), role: "checkbox", "aria-checked": on, onClick: function () { var o = Object.assign({}, mj.off); o[kk] = !on; setMj(Object.assign({}, mj, { off: o })); } },
+                h("div", { className: "hod-chx" },
+                  h("div", { className: "hod-chg-l" }, c.lib),
+                  h("div", { className: "hod-chg-v" }, c.apres, c.avant ? h("span", { className: "hod-chg-a" }, c.avant) : h("span", { className: "hod-chg-a", style: { textDecoration: "none" } }, T("vide sur la fiche")))),
+                h("div", { className: "hod-tg" + (on ? " on" : "") }, "✓"));
+            }));
+        }),
+        mj.err ? h("div", { className: "hod-err" }, mj.err) : null,
+        h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", disabled: mj.busy || !n, onClick: function () { appliquerMaj(pr); } }, mj.busy ? "…" : (n > 1 ? T("Faire les ") + n + T(" changements") : T("Faire le changement")))));
+    }
     function manquants() {
       var lu = st.lu || {}; var vus = {}, out = [];
       var src = (lu.chevaux_liste || []).map(function (x) { return { nom: String((x && x.nom) || x || "").replace(/\s+/g, " ").trim(), sire: String((x && x.sire) || "").replace(/\s+/g, "").trim() }; });
@@ -1781,6 +1922,7 @@
       src.forEach(function (x) {
         if (!x.nom || x.nom.length < 2) return; var k = norm(x.nom); if (vus[k]) return; vus[k] = 1;
         if (trouverCheval(x.nom, chevaux, true)) return;
+        if (proche(x.nom)) return;   /* nom mal écrit d'un cheval qui a déjà sa fiche : proposé en mise à jour, pas en création */
         if (lu.type === "mouvement_cheval") return;   /* l'arrivée a son propre bloc (création d'une fiche) */
         out.push(x);
       });
@@ -1822,17 +1964,18 @@
       var liste = manquants(); if (!liste.length) return null;
       var n = liste.filter(function (x) { return !nv.off[norm(x.nom)]; }).length;
       var stS = { width: "100%", marginTop: 6, background: "rgba(255,255,255,.04)", color: "#F3EEE4", border: "1px solid rgba(243,238,228,.16)", borderRadius: 12, padding: "9px 10px", font: "inherit", fontSize: 13 };
-      return h("div", { className: "hod-bloc" },
-        h("div", { className: "hod-k", style: { marginBottom: 6 } }, T("Chevaux sans fiche")),
-        h("div", { className: "hod-note" }, (liste.length > 1 ? liste.length + " " + T("de ces chevaux n’ont pas encore leur fiche dans Hype.") : T("Ce cheval n’a pas encore sa fiche dans Hype.")) + " " + T("Tu m’autorises à les créer ? Tu pourras ensuite y accéder et les modifier.")),
-        h("div", { style: { maxHeight: 260, overflowY: "auto", marginTop: 6 } }, liste.map(function (x) {
-          var k = norm(x.nom);
-          return h("label", { key: k, className: "hod-ligne", style: { cursor: "pointer" } },
-            h("input", { type: "checkbox", checked: !nv.off[k], onChange: function (e) { var o = Object.assign({}, nv.off); if (e.target.checked) delete o[k]; else o[k] = 1; setNv(Object.assign({}, nv, { off: o })); } }),
-            h("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13.5 } }, h("span", null, x.nom), x.sire ? h("span", { style: { color: "rgba(243,238,228,.5)", fontSize: 12 } }, "SIRE " + x.sire) : null));
+      return h("div", { className: "hod-sec" },
+        h("div", { className: "hod-sec-h" }, h("div", { className: "hod-sec-t" }, T("Chevaux sans fiche")), h("div", { className: "hod-pas" }, String(liste.length))),
+        h("div", { className: "hod-sec-p" }, (liste.length > 1 ? liste.length + " " + T("de ces chevaux n’ont pas encore leur fiche dans Hype.") : T("Ce cheval n’a pas encore sa fiche dans Hype.")) + " " + T("Tu m’autorises à les créer ? Tu pourras ensuite y accéder et les modifier.")),
+        h("div", { style: { maxHeight: 330, overflowY: "auto", marginTop: 4 } }, liste.map(function (x) {
+          var k = norm(x.nom), on = !nv.off[k];
+          return h("div", { key: k, className: "hod-ch" + (on ? "" : " off"), role: "checkbox", "aria-checked": on, onClick: function () { var o = Object.assign({}, nv.off); if (on) o[k] = 1; else delete o[k]; setNv(Object.assign({}, nv, { off: o })); } },
+            h("div", { className: "hod-av" }, x.nom.charAt(0).toUpperCase()),
+            h("div", { className: "hod-chx" }, h("div", { className: "hod-chn" }, x.nom), h("div", { className: "hod-chs" }, x.sire ? "SIRE " + x.sire : T("Nouvelle fiche"))),
+            h("div", { className: "hod-tg" + (on ? " on" : "") }, "✓"));
         })),
-        mesClubs.length > 1 ? h("div", { style: { fontSize: 12, color: "rgba(243,238,228,.55)", marginTop: 10 } }, T("Écurie")) : null,
-        mesClubs.length > 1 ? h("select", { value: nv.club || mesClubs[0], onChange: function (e) { setNv(Object.assign({}, nv, { club: e.target.value })); }, style: stS }, mesClubs.map(function (c) { return h("option", { key: c, value: c }, c); })) : null,
+        mesClubs.length > 1 ? h("div", { className: "hod-chg-l", style: { marginTop: 14 } }, T("Écurie")) : null,
+        mesClubs.length > 1 ? h("select", { className: "hod-sel", value: nv.club || mesClubs[0], onChange: function (e) { setNv(Object.assign({}, nv, { club: e.target.value })); } }, mesClubs.map(function (c) { return h("option", { key: c, value: c }, c); })) : null,
         nv.err ? h("div", { className: "hod-err" }, nv.err) : null,
         h("div", { className: "hod-bas" },
           st.lu && st.lu.type === "liste_chevaux" ? h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")) : null,
@@ -1984,7 +2127,7 @@
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")),
             h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: enregistrerMouvement }, st.busy ? "…" : ((!st.chevalId && mv.sens === "entree") ? T("Créer sa fiche et l’inscrire") : T("Inscrire au registre")))));
       } else if (type === "liste_chevaux") {
-        action = manquants().length || nv.fait ? null : h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Tous ces chevaux ont déjà leur fiche dans Hype.")),
+        action = manquants().length || nv.fait || propositions().length || mj.fait ? null : h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Tous ces chevaux ont déjà leur fiche dans Hype.")),
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn", onClick: props.fermer }, T("Fermer"))));
       } else if (type === "resultats") {
         action = h("div", { className: "hod-bloc" }, h("div", { className: "hod-note" }, T("Les résultats se lisent encore depuis la carte « Résultats » de la fiche du concours : je les brancherai ici à la prochaine étape.")),
@@ -2011,8 +2154,12 @@
           h("div", { className: "hod-bas" }, h("button", { type: "button", className: "hod-btn sec", onClick: props.fermer }, T("Annuler")), h("button", { type: "button", className: "hod-btn", disabled: st.busy, onClick: function () { rangerDoc(typeDoc); } }, st.busy ? "…" : (type === "papiers_cheval" ? T("Compléter et ranger") : T("Ranger le document")))));
       }
       corps = h("div", null,
-        h("div", { className: "hod-k" }, T("Ce que j’ai compris")),
-        h("div", { className: "hod-titre" }, (function () { var x = T(NOMS_TYPE[type] || NOMS_TYPE.autre); return x.charAt(0).toUpperCase() + x.slice(1) + "."; })()),
+        h("div", { className: "hod-hero" },
+          h("img", { src: "images/portrait-defaut-noir.webp", alt: "" }), h("div", { className: "hod-poignee" }),
+          h("svg", { viewBox: "0 0 400 40", preserveAspectRatio: "none", "aria-hidden": "true" }, h("path", { d: "M0 34 C 120 34, 220 6, 400 10", fill: "none", stroke: "rgba(201,166,107,.55)", strokeWidth: 1 })),
+          h("div", { className: "hod-hero-t" },
+            h("div", { className: "hod-k" }, T("Ce que j’ai compris")),
+            h("div", { className: "hod-titre" }, (function () { var x = T(NOMS_TYPE[type] || NOMS_TYPE.autre); return x.charAt(0).toUpperCase() + x.slice(1) + "."; })()))),
         h("div", { className: "hod-fil" },
           st.fil.map(function (m, i) { return h("div", { key: "m" + i, className: "hod-bulle " + (m.qui === "moi" ? "moi" : "hype") }, m.t); }),
           st.reflechit ? h("div", { className: "hod-bulle hype" }, "…") : null),
@@ -2022,11 +2169,12 @@
           h("button", { type: "button", className: "hod-btn", disabled: !String(st.reponse || "").trim() || st.reflechit, onClick: function () { repondre(); } }, T("Envoyer"))),
         boutonVoix(),
         blocNouveaux(),
+        blocMaj(),
         action,
         st.err ? h("div", { className: "hod-err" }, st.err) : null);
     }
     return h("div", { className: "hod-voile", onClick: function (e) { if (e.target === e.currentTarget && st.etape !== "lecture") props.fermer(); } },
-      h("div", { className: "hod-feuille", role: "dialog" }, h("div", { className: "hod-poignee" }), corps));
+      h("div", { className: "hod-feuille", role: "dialog" }, st.etape === "compris" ? null : h("div", { className: "hod-poignee" }), corps));
   }
 
   function Encart(props) {

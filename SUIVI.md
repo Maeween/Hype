@@ -34,6 +34,14 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+## 2026-11-13 22:50 — build 20261113-2250 — Outil : mise à jour des fiches au fil des documents + visuel noir et ivoire
+- Règle (Blandine 22h35-22h42) : un document officiel (engagements, papiers SIRE…) fait foi ; l'outil corrige les fiches au fur et à mesure, AVEC confirmation, et l'équipe de l'écurie peut le faire, en plus du propriétaire.
+- « Fiches à mettre à jour » : chaque cheval cité qui a déjà une fiche, même mal orthographiée (ressemblance ≥ 80 % : « Cooltax de Vigel Z » = « Cooltax de Virchel Z »), reçoit des propositions champ par champ — nom officiel, SIRE, naissance, sexe, robe, race, père, mère. Case vide sur la fiche = cochée d'office ; valeur différente = à cocher. Un nom mal écrit n'est plus proposé en création (plus de doublon).
+- Base : fonction hype_renommer_cheval(p_id, p_nom) (SECURITY DEFINER, mêmes droits que hype_maj_origines_cheval : propriétaire, modératrice, gestionnaires de l'écurie du cheval) — appliquée avec l'accord de Blandine (« Ok », 22h43). Origines via hypeMajOriginesCheval (inchangé).
+- Visuel (« fais un effort », puis « reste dans le noir et ivoire ») : en-tête immersif grand cheval noir (portrait-defaut-noir.webp, entier) + courbe dorée fine, feuille noire (#050505, plus de vert-bleu), cartes cheval noires avec rond + coche dorée à contour, changements « ancienne valeur barrée / nouvelle en ivoire ».
+- Traductions : 15 langues. Fichiers : hype-outil-doc.js (v=10), index.html (build), SUIVI.md.
+- À faire ensuite (option 1 validée, « Ok » 22h43) : « Demander la correction » pour qui n'a pas les droits → demande au propriétaire et à l'équipe de l'écurie du cheval, avec le document ; Blandine seulement s'il n'y a ni propriétaire actif ni équipe.
+
 ## 2026-11-13 22:40 — build 20261113-2240 — Outil : création des chevaux en série (avec accord)
 - Dès qu'un document (engagements, ordre de passage, programme, résultats, liste) ou une phrase cite des chevaux sans fiche, l'outil propose : « N de ces chevaux n'ont pas encore leur fiche dans Hype. Tu m'autorises à les créer ? » — liste cochée, choix de l'écurie, « Créer les N fiches ».
 - Nouveau type « liste_chevaux » (« les engagements sont sortis, ajoute les nouveaux chevaux ») ; sur la page d'un concours, reprend les chevaux engagés sans fiche (concours_engagements cheval1/2_nom sans id) et RELIE les engagements aux fiches créées.
