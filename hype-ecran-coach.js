@@ -77,22 +77,22 @@
         paras: ["Importe ou dicte les horaires officiels de tes épreuves."], liste: ["Renseigne les horaires des épreuves.", "Ajoute les heures de reconnaissance.", "Tu peux également dicter ces informations à Hype.", "Vérifie et valide."] },
       { n: "03", ico: "liste", img: "coach-prog-fond-03", capture: "coach-cap-prog-passages", titre: "Calculer les passages", ecran: "concours",
         paras: ["Hype estime les heures de passage de chaque couple."], liste: ["Hype utilise les numéros de départ.", "Il tient compte des horaires et du rythme de l’épreuve.", "Consulte les heures estimées de tes cavaliers."] },
-      { n: "04", ico: "maj", capture: "coach-cap-prog-decaler", titre: "Actualiser mon programme", ecran: "concours",
+      { n: "04", ico: "maj", capture: "coach-cap-prog-decaler", img: "coach-hd-chrono", titre: "Actualiser mon programme", ecran: "concours",
         paras: ["Décale une épreuve et actualise les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous au paddock sont décalés.", "Coche « Prévenir les cavaliers » pour les avertir."] }
     ], savoir: "Les heures de passage sont estimées et peuvent évoluer pendant le concours.",
       vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." } },
     passages: { titre: "Passages", sous: "Gérer mes couples et suivre le déroulement des épreuves.", hero: "coach-pas-hero", cartes: [
       { n: "01", ico: "reglages", img: "coach-pas-fond-02", capture: "coach-cap-pas-changer", titre: "Changements et non-partants", ecran: "concours",
         paras: ["Modifie un couple ou déclare un non-partant."], liste: ["Appuie sur le crayon du passage concerné.", "Modifie le cavalier ou le cheval.", "Le remplacement apparaît sous le passage.", "Signale les non-partants si nécessaire."] },
-      { n: "02", ico: "jury", capture: "coach-cap-pas-jury", titre: "Déclarations au jury", ecran: "concours",
+      { n: "02", ico: "jury", capture: "coach-cap-pas-jury", img: "coach-hd-dossard", titre: "Déclarations au jury", ecran: "concours",
         paras: ["Hype rassemble les changements à déclarer au secrétariat."], liste: ["Retrouve la liste « À déclarer au jury ».", "Hype y ajoute automatiquement les changements.", "Les non-partants y figurent également.", "Présente cette liste au secrétariat."] },
-      { n: "03", ico: "liste", capture: "coach-cap-prog-passages", titre: "Suivre mes passages", ecran: "concours",
+      { n: "03", ico: "liste", capture: "coach-cap-prog-passages", img: "coach-hd-entree", titre: "Suivre mes passages", ecran: "concours",
         paras: ["Retrouve tes passages par épreuve, cavalier ou cheval."], liste: ["Choisis ton mode d’affichage.", "Consulte les numéros de départ.", "Retrouve les heures de reconnaissance et de début d’épreuve.", "Visualise les heures estimées de passage et les pistes."] },
-      { n: "04", ico: "lieu", capture: "coach-cap-pas-heure", titre: "Modifier un passage", ecran: "concours",
+      { n: "04", ico: "lieu", capture: "coach-cap-pas-heure", img: "coach-hd-selle", titre: "Modifier un passage", ecran: "concours",
         paras: ["Ajuste l’heure ou la piste d’un passage."], liste: ["Appuie sur le crayon du passage.", "Sélectionne « Heure et piste ».", "Renseigne les nouvelles informations."] },
-      { n: "05", ico: "horloge", capture: "coach-cap-prog-decaler", titre: "Décaler une épreuve", ecran: "concours",
+      { n: "05", ico: "horloge", capture: "coach-cap-prog-decaler", img: "coach-hd-chrono", titre: "Décaler une épreuve", ecran: "concours",
         paras: ["Un retard ? Hype recalcule les horaires de ton équipe."], liste: ["Appuie sur « Décaler l’épreuve ».", "Indique le décalage et valide.", "Hype recalcule les heures de passage.", "Les rendez-vous des groupes sont décalés.", "Coche « Prévenir les cavaliers » pour les avertir."] },
-      { n: "06", ico: "programme", capture: "coach-cap-pas-direct", titre: "Suivre le direct", ecran: "concours",
+      { n: "06", ico: "programme", capture: "coach-cap-pas-direct", img: "coach-hd-cso", titre: "Suivre le direct", ecran: "concours",
         paras: ["Retrouve le direct du chronométreur depuis Hype."], liste: ["Ouvre « Modifier les passages ».", "Ajuste le rythme de l’épreuve si nécessaire.", "Recherche le direct sur Winjump ou ajoute son lien.", "Préviens tes cavaliers si nécessaire."] }
     ], savoir: "Hype prépare tes déclarations au jury, mais tu dois toujours les transmettre au secrétariat." },
     jourj: { titre: "Jour J", sous: "Piloter mon concours et accompagner mon équipe.", hero: "coach-jj-hero", bas: "coach-fr-camion", cartes: [
@@ -110,25 +110,25 @@
       vocal: { titre: "Dicte tes consignes à Hype.", exemples: ["« La reconnaissance de la Club 3 est à 7h30. »", "« La Club 2 commence à 10h40. »"], texte: "Échange avec lui, précise tes demandes et valide les informations." },
       signature: ["Concentre-toi sur la performance.", "Hype gère la logistique."] },
     paddock: { titre: "Paddock", sous: "Organiser la détente de mes cavaliers.", hero: "images/concours-carte-equipe.webp", cartes: [
-      { n: "01", ico: "groupe", capture: "coach-cap-pad-proposer", titre: "Organiser mes groupes", ecran: "concours",
+      { n: "01", ico: "groupe", capture: "coach-cap-pad-proposer", img: "coach-hd-entree", titre: "Organiser mes groupes", ecran: "concours",
         paras: ["Hype rassemble tes cavaliers selon leurs heures de passage."], liste: ["Utilise les passages de ton équipe.", "Hype propose des groupes de six couples maximum.", "Les passages sont regroupés sur une période de 30 minutes."] },
-      { n: "02", ico: "horloge", capture: "coach-cap-pad-heure", titre: "Calculer les rendez-vous", ecran: "concours",
+      { n: "02", ico: "horloge", capture: "coach-cap-pad-heure", img: "coach-hd-chrono", titre: "Calculer les rendez-vous", ecran: "concours",
         paras: ["Hype calcule l’heure de rendez-vous de chaque groupe."], liste: ["Hype identifie le premier passage du groupe.", "Le rendez-vous est fixé 30 minutes avant ce passage.", "Tous les cavaliers du groupe se retrouvent à cette heure."] },
-      { n: "03", ico: "fer", capture: "coach-cap-fr-van", titre: "Consignes par cheval", ecran: "liste-van",
+      { n: "03", ico: "fer", capture: "coach-cap-fr-van", img: "coach-hd-materiel", titre: "Consignes par cheval", ecran: "liste-van",
         paras: ["Retrouve le matériel et les consignes propres à chaque cheval."], liste: ["Consulte les informations de la fiche du cheval.", "Retrouve son matériel et son enrênement.", "Consulte ses consignes particulières."] },
-      { n: "04", ico: "reglages", capture: "coach-cap-pad-modifier", titre: "Modifier mes groupes", ecran: "concours",
+      { n: "04", ico: "reglages", capture: "coach-cap-pad-modifier", img: "coach-hd-coach", titre: "Modifier mes groupes", ecran: "concours",
         paras: ["Adapte les groupes de détente à ton organisation."], liste: ["Consulte les groupes proposés.", "Modifie leur composition selon tes besoins.", "Vérifie ton organisation avant publication."] },
-      { n: "05", ico: "coche", capture: "coach-cap-pad-publier", titre: "Publier mes groupes", ecran: "concours",
+      { n: "05", ico: "coche", capture: "coach-cap-pad-publier", img: "coach-hd-dossard", titre: "Publier mes groupes", ecran: "concours",
         paras: ["Publie tes groupes pour les rendre visibles aux cavaliers."], liste: ["Vérifie la composition de tes groupes.", "Contrôle les heures de rendez-vous.", "Appuie sur « Publier aux cavaliers ».", "Tes cavaliers peuvent consulter leur groupe."] },
-      { n: "06", ico: "cloche", capture: "coach-cap-pad-reco", titre: "Rappels de reconnaissance", ecran: "concours",
+      { n: "06", ico: "cloche", capture: "coach-cap-pad-reco", img: "coach-hd-cso", titre: "Rappels de reconnaissance", ecran: "concours",
         paras: ["Tes cavaliers sont avertis 15 minutes avant la reconnaissance."], liste: ["Renseigne l’heure de reconnaissance.", "Hype programme le rappel automatique.", "Les cavaliers reçoivent une notification."] }
     ], savoir: "Au paddock, respecte l’heure de rendez-vous du groupe, même si ton passage est prévu plus tard." },
     resultats: { titre: "Résultats", sous: "Retrouver les performances de mon équipe.", hero: "images/team-competition-performances-hero.webp", cartes: [
-      { n: "01", ico: "coupe", capture: "coach-cap-res-lire", titre: "Importer mes résultats", ecran: "concours",
+      { n: "01", ico: "coupe", capture: "coach-cap-res-lire", img: "coach-hd-documents", titre: "Importer mes résultats", ecran: "concours",
         paras: ["Récupère les résultats depuis un PDF ou une capture d’écran."], liste: ["Ouvre les résultats du concours.", "Sélectionne « Lire les résultats ».", "Ajoute le PDF ou la capture d’écran.", "Vérifie les informations récupérées."] },
-      { n: "02", ico: "reglages", capture: "coach-cap-res-saisir", titre: "Saisir ou corriger", ecran: "concours",
+      { n: "02", ico: "reglages", capture: "coach-cap-res-saisir", img: "coach-hd-coach", titre: "Saisir ou corriger", ecran: "concours",
         paras: ["Complète ou corrige les résultats de tes cavaliers."], liste: ["Appuie sur « Saisir ou corriger ».", "Sélectionne le résultat concerné.", "Renseigne ou corrige les informations.", "Enregistre tes modifications."] },
-      { n: "03", ico: "liste", titre: "Retrouver mes résultats", ecran: "performances-chevaux",
+      { n: "03", ico: "liste", img: "coach-hd-cso", titre: "Retrouver mes résultats", ecran: "performances-chevaux",
         paras: ["Consulte les performances de ton équipe après le concours."], liste: ["Ouvre les résultats du concours.", "Retrouve les résultats de tes cavaliers.", "Vérifie les performances enregistrées.", "Retrouve-les aussi dans « Performances chevaux », le classement de la saison."] }
     ], savoir: "Vérifie les résultats récupérés avant de les enregistrer." }
   };
@@ -146,12 +146,27 @@
     var h = React.createElement;
     var app = ((typeof useApp === "function") ? useApp() : null) || {};
     var setEcran = app.setEcran || function () { };
+    var memo0 = React.useRef((function () { try { if (window.__coachVue) return null; return JSON.parse(sessionStorage.getItem("hype_coach_etat") || "null"); } catch (e) { return null; } })());
     var _c = React.useState(null); var conc = _c[0], setConc = _c[1];
-    var _d = React.useState({}); var deplie = _d[0], setDeplie = _d[1];
+    var _d = React.useState(function () { return (memo0.current && memo0.current.deplie) || {}; }); var deplie = _d[0], setDeplie = _d[1];
     var rtlG = app.langue === "ar" || app.langue === "fa";
-    var _v = React.useState(function () { try { var v = window.__coachVue || "accueil"; window.__coachVue = null; return (v === "accueil" || v === "journee" || PAGES[v]) ? v : "accueil"; } catch (e) { return "accueil"; } });
+    /* 13/11 23h (recette) : en revenant d'une page de l'appli, on retrouve le chapitre, les cartes ouvertes et la position de lecture */
+    var _v = React.useState(function () { try { var v = window.__coachVue || (memo0.current && memo0.current.vue) || "accueil"; window.__coachVue = null; return (v === "accueil" || v === "journee" || PAGES[v]) ? v : "accueil"; } catch (e) { return "accueil"; } });
     var vue = _v[0], setVue = _v[1];
-    React.useEffect(function () { try { window.__coachVueOuverte = vue; window.scrollTo(0, 0); var z = document.getElementById("hype-defile"); if (z) z.scrollTo(0, 0); } catch (e) { } }, [vue]);
+    var premierRendu = React.useRef(true);
+    React.useEffect(function () {
+      try {
+        window.__coachVueOuverte = vue; var z = document.getElementById("hype-defile");
+        var y = (premierRendu.current && memo0.current && memo0.current.vue === vue) ? (memo0.current.y || 0) : 0; premierRendu.current = false;
+        window.scrollTo(0, y); if (z) { z.scrollTo(0, y); if (y) setTimeout(function () { try { z.scrollTo(0, y); } catch (e2) { } }, 350); }
+      } catch (e) { }
+    }, [vue]);
+    React.useEffect(function () { try { var z = document.getElementById("hype-defile"); sessionStorage.setItem("hype_coach_etat", JSON.stringify({ vue: vue, deplie: deplie, y: z ? z.scrollTop : 0 })); } catch (e) { } }, [vue, deplie]);
+    React.useEffect(function () {   /* garde la position de lecture au fil du défilement */
+      var z = document.getElementById("hype-defile"); if (!z) return;
+      var t = null; function sv() { clearTimeout(t); t = setTimeout(function () { try { var o = JSON.parse(sessionStorage.getItem("hype_coach_etat") || "{}"); o.y = z.scrollTop; sessionStorage.setItem("hype_coach_etat", JSON.stringify(o)); } catch (e) { } }, 150); }
+      z.addEventListener("scroll", sv, { passive: true }); return function () { z.removeEventListener("scroll", sv); clearTimeout(t); };
+    }, []);
     React.useEffect(function () { return function () { try { window.__coachVueOuverte = null; } catch (e) { } }; }, []);
     React.useEffect(function () {   /* la frise montre le chapitre ouvert, même s'il est hors de l'écran */
       try { setTimeout(function () { var b = document.querySelector("[data-coach-frise] [aria-current=page]"); var c = b && b.parentElement; if (b && c) c.scrollLeft = Math.max(0, b.offsetLeft - (c.clientWidth - b.offsetWidth) / 2); }, 60); } catch (e) { }
@@ -184,14 +199,14 @@
     function hero(titre, sous, img) {   /* héros : cheval noir entier, titre, courbe dorée */
       return h("div", { style: { position: "relative", maxWidth: 900, margin: "0 auto" } },
         h("img", { src: img ? (img.indexOf("/") >= 0 ? img : "images/guide-coach/" + img + ".webp") : "images/portrait-defaut-noir.webp", alt: "", style: { display: "block", width: "100%", height: "clamp(270px, 66vw, 480px)", objectFit: "cover", objectPosition: img ? "right center" : "72% 30%" } }),   /* en-têtes harmonisés : même hauteur pour tous les chapitres */
-        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,10,8,0.85) 0%, rgba(7,10,8,0.35) 55%, rgba(7,10,8,0) 100%)" } }),
+        h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,10,8,0.92) 0%, rgba(7,10,8,0.72) 38%, rgba(7,10,8,0.25) 62%, rgba(7,10,8,0) 80%), linear-gradient(0deg, rgba(7,10,8,0.55) 0%, rgba(7,10,8,0) 45%)" } }),
         h("button", { type: "button", onClick: retour, "aria-label": "Retour", style: { position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 14px)", left: 14, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.45)", background: "rgba(9,13,17,0.35)", color: IV, fontSize: 18, cursor: "pointer" } }, "‹"),
         h("div", { style: { position: "absolute", left: 22, right: "30%", bottom: "20%" } },
           h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
             h("span", { style: { fontSize: 10.5, letterSpacing: "0.36em", color: CH, fontWeight: 500 } }, "GUIDE COACH"),
             h("span", { "aria-hidden": "true", style: { width: 44, height: 1, background: CH } })),
           h("div", { style: { fontFamily: SERIF, fontWeight: 500, fontSize: titre.length > 14 ? "clamp(32px, 8.4vw, 60px)" : "clamp(40px, 11vw, 72px)", lineHeight: 1, marginTop: 8 } }, titre),
-          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(17px, 4.6vw, 26px)", color: IV2, marginTop: 8, lineHeight: 1.2 } }, sous)),
+          h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(17px, 4.6vw, 26px)", color: IV, marginTop: 8, lineHeight: 1.2, textShadow: "0 1px 10px rgba(0,0,0,.9)" } }, sous)),
         courbe(true));
     }
     function gras(t) {   /* **mot** -> doré gras */
@@ -247,14 +262,14 @@
                1 fond noir · 2 photo calée à droite · 3 dégradé noir sans démarcation · 4 numéro, filet, picto, titre, phrase (pleine largeur) */
             h("div", { style: { position: "relative", overflow: "hidden" } },
               c.img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(images/guide-coach/" + c.img + ".webp)", backgroundSize: "cover", backgroundPosition: rtlG ? "left center" : "right center", transform: rtlG ? "scaleX(-1)" : "none" } }) : null,   /* 22h22 : fonds pleine largeur, dégradé déjà dans l'image */
-              c.img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", rgba(11,14,12,0.94) 0%, rgba(11,14,12,0.88) 48%, rgba(11,14,12,0.62) 70%, rgba(11,14,12,0.22) 88%, rgba(11,14,12,0.05) 100%)" } }) : null,   /* 22h26 : dégradé renforcé derrière le texte */
-              h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 11, padding: "16px 15px", minHeight: 100, boxSizing: "border-box" } },
-                h("div", { style: { flex: "0 0 30px", fontFamily: SERIF, fontWeight: 400, fontSize: 30, color: CH, lineHeight: 1, textAlign: "center" } }, c.n),
+              c.img ? h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", rgba(11,14,12,0.96) 0%, rgba(11,14,12,0.93) 46%, rgba(11,14,12,0.72) 64%, rgba(11,14,12,0.28) 84%, rgba(11,14,12,0.04) 100%)" } }) : null,   /* 22h26 : dégradé renforcé derrière le texte */
+              h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 9, padding: "16px 15px 16px 12px", minHeight: 100, boxSizing: "border-box" } },
+                h("div", { style: { flex: "0 0 26px", fontFamily: SERIF, fontWeight: 400, fontSize: 28, color: CH, lineHeight: 1, textAlign: "center" } }, c.n),
                 h("div", { "aria-hidden": "true", style: { flex: "0 0 1px", alignSelf: "stretch", background: "rgba(201,166,107,0.35)", margin: "8px 0" } }),
-                h("span", { style: { flex: "0 0 24px", display: "flex" } }, ico(h, c.ico, 24)),
+                h("span", { style: { flex: "0 0 22px", display: "flex" } }, ico(h, c.ico, 22)),
                 h("div", { style: { flex: "1 1 auto", minWidth: 0 } },
-                  h("div", { style: { fontSize: 16, fontWeight: 600, color: IV, lineHeight: 1.3, textShadow: "0 1px 8px rgba(0,0,0,.95)" } }, c.titre, c.accent ? h(React.Fragment, null, " ", h("span", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: 18.5, color: CH } }, c.accent)) : null),
-                  h("div", { style: { fontSize: 14.5, color: IV2, marginTop: 4, lineHeight: 1.4, textShadow: "0 1px 8px rgba(0,0,0,.95)" } }, gras(premier))))),
+                  h("div", { style: { fontSize: 16.5, fontWeight: 600, color: IV, lineHeight: 1.3, textShadow: "0 1px 8px rgba(0,0,0,.95)" } }, c.titre, c.accent ? h(React.Fragment, null, " ", h("span", { style: { fontFamily: SERIF, fontStyle: "italic", fontWeight: 600, fontSize: 18.5, color: CH } }, c.accent)) : null),
+                  h("div", { style: { fontSize: 15, fontWeight: 400, color: "#E8E4DC", marginTop: 4, lineHeight: 1.45, textShadow: "0 1px 8px rgba(0,0,0,.95)" } }, gras(premier))))),
             ouv ? h("div", { style: { position: "relative", padding: "12px 16px 16px", borderTop: "1px solid rgba(201,166,107,0.18)" } },
               /* la flèche, à droite : rejoindre la page concernée */
               h("button", { type: "button", "aria-label": "Ouvrir la page", onClick: function (ev) { ev.stopPropagation(); aller(c.ecran); }, style: { position: "absolute", top: 12, right: 14, width: 38, height: 38, borderRadius: "50%", border: "1px solid " + CH, background: "transparent", color: CH, fontSize: 18, cursor: "pointer" } }, "→"),
@@ -268,18 +283,17 @@
           var ouvS = !!deplie[vue + "savoir"];
           var m = String(PG.savoir).match(/^(.*?[.!?])\s+(.*)$/); var p1 = m ? m[1] : PG.savoir, p2 = m ? m[2] : "";
           function bS() { var o = Object.assign({}, deplie); o[vue + "savoir"] = !ouvS; setDeplie(o); }
-          return h("div", { role: p2 ? "button" : undefined, tabIndex: p2 ? 0 : undefined, onClick: p2 ? bS : undefined, style: { display: "grid", gridTemplateColumns: "30px auto 1px minmax(0,1fr)", alignItems: "center", columnGap: 12, padding: "16px 16px", borderRadius: 16, border: "1px solid rgba(243,238,228,0.16)", cursor: p2 ? "pointer" : "default" } },
-            ico(h, "info"),
-            h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 21, color: IV } }, "À savoir"),
+          return h("div", { role: p2 ? "button" : undefined, tabIndex: p2 ? 0 : undefined, onClick: p2 ? bS : undefined, style: { display: "grid", gridTemplateColumns: "22px auto 1px minmax(0,1fr)", alignItems: "center", columnGap: 10, padding: "16px 15px 16px 12px", borderRadius: 16, border: "1px solid rgba(243,238,228,0.16)", cursor: p2 ? "pointer" : "default" } },
+            h("span", { style: { display: "flex" } }, ico(h, "info", 22)), h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 19, color: IV, whiteSpace: "nowrap" } }, "À savoir"),
             h("div", { "aria-hidden": "true", style: { alignSelf: "stretch", background: "rgba(201,166,107,0.5)" } }),
-            h("div", { style: { fontSize: 14, color: IV2, lineHeight: 1.45 } }, gras(p1), ouvS && p2 ? h("div", { style: { marginTop: 6 } }, gras(p2)) : (p2 ? h("span", { style: { color: CH } }, " …") : null)));
+            h("div", { style: { fontSize: 15, color: "#E8E4DC", lineHeight: 1.45 } }, gras(p1), ouvS && p2 ? h("div", { style: { marginTop: 6 } }, gras(p2)) : (p2 ? h("span", { style: { color: CH } }, " …") : null)));
         })(),
         PG.vocal ? h("div", { style: { display: "grid", gridTemplateColumns: "30px minmax(0,1fr)", columnGap: 12, alignItems: "start", padding: "16px 16px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.35)", background: "linear-gradient(160deg, rgba(201,166,107,0.07), rgba(201,166,107,0.01))" } },
           ico(h, "micro"),
           h("div", null, h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.15 } }, PG.vocal.titre), (PG.vocal.exemples || []).map(function (x, k) { return h("div", { key: k, style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: CH, lineHeight: 1.35, marginTop: k ? 4 : 8 } }, x); }), h("div", { style: { fontSize: 14, color: IV2, lineHeight: 1.45, marginTop: 6 } }, gras(PG.vocal.texte)))) : null,
         PG.signature ? h("div", { style: { textAlign: "center", fontFamily: SERIF, fontStyle: "italic", fontSize: 22, color: IV, lineHeight: 1.3, margin: "14px 0 4px" } }, PG.signature[0], h("br"), h("span", { style: { color: CH } }, PG.signature[1])) : null),
-      PG.bas ? h("div", { style: { position: "relative", maxWidth: 900, margin: "22px auto 0" } },
-        h("img", { src: "images/guide-coach/" + PG.bas + ".webp", alt: "", loading: "lazy", style: { display: "block", width: "100%", height: "auto" } }),
+      (PG.bas || "coach-fr-camion") ? h("div", { style: { position: "relative", maxWidth: 900, margin: "22px auto 0" } },
+        h("img", { src: "images/guide-coach/" + (PG.bas || "coach-fr-camion") + ".webp", alt: "", loading: "lazy", style: { display: "block", width: "100%", height: "auto" } }),
         courbe(true)) : null,
       /* frise : les moments de la journée, chacun mène à sa page */
       h("div", { "data-coach-frise": "1", style: { maxWidth: 680, margin: "26px auto 0", padding: "0 12px 6px", display: "flex", alignItems: "center", overflowX: "auto", scrollbarWidth: "none" } },

@@ -84,6 +84,13 @@ pour qu'à chaque chose terminée on sache sur quoi passer ensuite. À tenir à 
 
 
 
+
+## 20261113-2312 — Guide du coach : recette et lisibilité (7 chapitres)
+Blandine 13/11 23h00–23h03 (cahiers « Recette fonctionnelle et visuelle », « Finalisation… recette », « Correction prioritaire — lisibilité sur iPhone »).
+- Lisibilité (composant commun) : titres 16,5 px ivoire, descriptions 15 px #E8E4DC interligne 1,45 ; colonne numéro/filet/picto resserrée ; dégradé renforcé derrière le texte ; en-têtes : zone sombre derrière le titre, sous-titre ivoire ; « À savoir » : libellé plus étroit, texte 15 px.
+- Mémoire du guide : en revenant d'une page de l'appli, on retrouve le chapitre, les cartes ouvertes et la position de lecture (sessionStorage hype_coach_etat).
+- Photos HD du pack sur les 15 cartes qui n'en avaient pas (images/guide-coach/coach-hd-*.webp) ; bandeau camion en fin de chaque chapitre.
+- Recette réelle (navigateur, données d'exemple) : 34 cartes ouvertes/fermées, 30 captures chargées, 34 flèches testées (page d'arrivée + concours conservé), frise 7/7, parcours Aide → Guide → Journée → chapitre, retour avec mémoire, aucune erreur JS, aucune image manquante, aucun débordement à 375/390/430 px. index.html : build 20261113-2312.
 ## 20261113-2257 — Guide du coach, chapitre Jour J complet (5 cartes, photos HD) ; fond HD de la carte 01 Engagements
 Blandine 13/11 22h55 (cahier « Chapitre 06 — Jour J », carte « Mes documents à portée de main », nouvel « À savoir », pack de photos). hype-ecran-coach.js : Préparer le départ, Mes documents à portée de main (→ Mon coffre-fort), Gérer les imprévus, Prévenir mes cavaliers, Activer mes alertes ; À savoir ; encart « Dicte tes consignes à Hype. » ; signature ; bandeau camion ; frise sur Jour J. Photos : images/guide-coach/coach-jj-*.webp ; coach-eng-fond-01 remplacé par la version HD (dossard). index.html : build 20261113-2257.
 ## 20261113-2254 — Guide du coach : les 7 chapitres finalisés (cahier « Finalisation des sept chapitres »)
